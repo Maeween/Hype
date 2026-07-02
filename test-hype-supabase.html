@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hype — Test Supabase</title>
+<style>
+  :root{ --noir:#07080A; --turq:#2DD4DE; --or:#d4af37; }
+  *{ box-sizing:border-box; }
+  body{ margin:0 auto; background:var(--noir); color:#EAEAEA;
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+        padding:18px; max-width:520px; }
+  h1{ font-size:19px; letter-spacing:2px; text-transform:uppercase; margin:0 0 4px; }
+  h2{ font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--turq); margin:22px 0 8px; }
+  .intro{ font-size:12px; color:#8b93a0; margin:0 0 6px; }
+  .carte{ background:#0E1014; border:1px solid #1c1f26; border-radius:14px; padding:14px; margin-bottom:12px; }
+  input{ width:100%; padding:11px; margin:5px 0; background:#141821; border:1px solid #232833;
+         border-radius:9px; color:#fff; font-size:15px; }
+  button{ padding:10px 14px; margin:5px 5px 0 0; border:none; border-radius:9px;
+          background:var(--turq); color:#04252a; font-weight:700; font-size:14px; cursor:pointer; }
+  button.ghost{ background:transparent; border:1px solid #2b313c; color:#cfd4dc; }
+  button.like{ background:transparent; border:1px solid #3a2f18; color:var(--or); }
+  .statut{ font-size:13px; color:#9aa2ad; margin-top:8px; min-height:18px; }
+  .miniature{ width:100%; border-radius:10px; margin-top:8px; display:block; }
+  .meta{ font-size:12px; color:#8b93a0; }
+  .pseudo{ font-weight:700; color:#fff; }
+  a{ color:var(--turq); }
+</style>
+</head>
+<body>
+  <h1>Hype — Test Supabase</h1>
+  <p class="intro">Petit test : créer un compte, publier un résultat, voir le fil. Si tout s'affiche, la base marche. ✅</p>
+
+  <h2>1 · Compte</h2>
+  <div class="carte">
+    <input id="pseudo" placeholder="Pseudo (ex : Blandine)">
+    <input id="email" type="email" placeholder="Email">
+    <input id="mdp" type="password" placeholder="Mot de passe (6 caractères min.)">
+    <button type="button" id="btnInscription">S'inscrire</button>
+    <button type="button" id="btnConnexion" class="ghost">Se connecter</button>
+    <button type="button" id="btnDeconnexion" class="ghost">Déconnexion</button>
+    <div class="statut" id="statutCompte">Non connecté</div>
+  </div>
+
+  <h2>2 · Publier un résultat</h2>
+  <div class="carte">
+    <input id="concours" placeholder="Concours (ex : CSO Itteville)">
+    <input id="classement" placeholder="Classement (ex : 2e)">
+    <input id="photo" type="file" accept="image/*">
+    <input id="media" placeholder="Lien vidéo (YouTube / Insta / TikTok) — optionnel">
+    <button type="button" id="btnPublier">Publier</button>
+    <div class="statut" id="statutPublier"></div>
+  </div>
+
+  <h2>3 · Le fil</h2>
+  <div class="carte">
+    <button type="button" id="btnFil">Rafraîchir le fil</button>
+    <div class="statut" id="statutFil"></div>
+  </div>
+  <div id="fil"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  /* ⚠️ REMPLACE par ta vraie clé Publishable
+     (Supabase -> Réglages du projet -> Clés API -> sb_publishable_...) */
+  const SUPABASE_URL   = "https://ldpjebgtskzdokrublfg.supabase.co";
+  const CLE_PUBLISHABLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
+
+  const { createClient } = window.supabase;
+  const supa = createClient(SUPABASE_URL, CLE_PUBLISHABLE);
+
+  const $ = (id) => document.getElementById(id);
+
+  async function utilisateurActuel(){
+    const { data } = await supa.auth.getUser();
+    return data && data.user ? data.user : null;
+  }
+  async function rafraichirStatut(){
+    const u = await utilisateurActuel();
+    $("statutCompte").textContent = u ? ("Connecté : " + (u.email || u.id)) : "Non connecté";
+  }
+
+  $("btnInscription").addEventListener("click", async () => {
+    $("statutCompte").textContent = "Création du compte…";
+    const email = $("email").value.trim();
+    const mdp = $("mdp").value;
+    const { error } = await supa.auth.signUp({
+      email, password: mdp, options: { data: { pseudo: $("pseudo").value.trim() } }
+    });
+    if (error) { $("statutCompte").textContent = "Erreur : " + error.message; return; }
+    // on tente de connecter tout de suite (marche si la confirmation email est désactivée)
+    await supa.auth.signInWithPassword({ email, password: mdp });
+    await rafraichirStatut();
+    if (!(await utilisateurActuel())) {
+      $("statutCompte").textContent =
+        "Compte créé ✓ — confirme via l'email reçu, ou désactive la confirmation email dans Supabase (voir note).";
+    }
+  });
+
+  $("btnConnexion").addEventListener("click", async () => {
+    const { error } = await supa.auth.signInWithPassword({
+      email: $("email").value.trim(), password: $("mdp").value
+    });
+    if (error) { $("statutCompte").textContent = "Erreur : " + error.message; return; }
+    await rafraichirStatut();
+  });
+
+  $("btnDeconnexion").addEventListener("click", async () => {
+    await supa.auth.signOut();
+    await rafraichirStatut();
+  });
+
+  $("btnPublier").addEventListener("click", async () => {
+    const u = await utilisateurActuel();
+    if (!u) { $("statutPublier").textContent = "Connecte-toi d'abord."; return; }
+    $("statutPublier").textContent = "Publication…";
+
+    let photo_url = null;
+    const f = $("photo").files[0];
+    if (f) {
+      const ext = (f.name.split(".").pop() || "jpg").toLowerCase();
+      const chemin = u.id + "/" + Date.now() + "." + ext;
+      const up = await supa.storage.from("photos").upload(chemin, f);
+      if (up.error) { $("statutPublier").textContent = "Erreur photo : " + up.error.message; return; }
+      photo_url = supa.storage.from("photos").getPublicUrl(chemin).data.publicUrl;
+    }
+
+    const { error } = await supa.from("resultats").insert({
+      user_id: u.id,
+      concours: $("concours").value.trim(),
+      classement: $("classement").value.trim(),
+      photo_url,
+      media_url: $("media").value.trim() || null
+    });
+    if (error) { $("statutPublier").textContent = "Erreur : " + error.message; return; }
+    $("statutPublier").textContent = "Publié ✓";
+    chargerFil();
+  });
+
+  async function chargerFil(){
+    $("statutFil").textContent = "Chargement…";
+    const u = await utilisateurActuel();
+
+    const { data: resultats, error } = await supa.from("resultats")
+      .select("*").order("created_at", { ascending:false }).limit(50);
+    if (error) { $("statutFil").textContent = "Erreur : " + error.message; return; }
+
+    const conteneur = $("fil");
+    conteneur.innerHTML = "";
+    if (!resultats || !resultats.length) { $("statutFil").textContent = "Aucun résultat pour l'instant."; return; }
+    $("statutFil").textContent = "";
+
+    // profils des auteurs
+    const idsAuteurs = [...new Set(resultats.map(r => r.user_id))];
+    const { data: profils } = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsAuteurs);
+    const parId = {}; (profils||[]).forEach(p => { parId[p.id] = p; });
+
+    // likes
+    const idsRes = resultats.map(r => r.id);
+    const { data: likes } = await supa.from("likes").select("resultat_id, user_id").in("resultat_id", idsRes);
+    const nb = {}, moi = {};
+    (likes||[]).forEach(l => {
+      nb[l.resultat_id] = (nb[l.resultat_id]||0) + 1;
+      if (u && l.user_id === u.id) moi[l.resultat_id] = true;
+    });
+
+    resultats.forEach(r => {
+      const carte = document.createElement("div"); carte.className = "carte";
+
+      const auteur = parId[r.user_id] || { pseudo:"Cavalier" };
+      const sp = document.createElement("div"); sp.className = "pseudo";
+      sp.textContent = auteur.pseudo || "Cavalier";
+      carte.appendChild(sp);
+
+      const meta = document.createElement("div"); meta.className = "meta";
+      meta.textContent = (r.concours || "Concours") + " · " + (r.classement || "");
+      carte.appendChild(meta);
+
+      if (r.photo_url) {
+        const img = document.createElement("img"); img.className = "miniature"; img.src = r.photo_url;
+        carte.appendChild(img);
+      }
+      if (r.media_url) {
+        const wrap = document.createElement("div"); wrap.style.marginTop = "8px";
+        const a = document.createElement("a"); a.href = r.media_url; a.target = "_blank"; a.textContent = "Voir la vidéo";
+        wrap.appendChild(a); carte.appendChild(wrap);
+      }
+
+      const btn = document.createElement("button"); btn.className = "like"; btn.type = "button";
+      const maj = () => { btn.textContent = (moi[r.id] ? "♥ Aimé" : "♡ J'aime") + " (" + (nb[r.id]||0) + ")"; };
+      maj();
+      btn.addEventListener("click", async () => {
+        if (!u) { alert("Connecte-toi pour aimer."); return; }
+        if (moi[r.id]) {
+          await supa.from("likes").delete().eq("user_id", u.id).eq("resultat_id", r.id);
+          moi[r.id] = false; nb[r.id] = Math.max(0, (nb[r.id]||1) - 1);
+        } else {
+          await supa.from("likes").insert({ user_id: u.id, resultat_id: r.id });
+          moi[r.id] = true; nb[r.id] = (nb[r.id]||0) + 1;
+        }
+        maj();
+      });
+      carte.appendChild(btn);
+
+      conteneur.appendChild(carte);
+    });
+  }
+
+  $("btnFil").addEventListener("click", chargerFil);
+
+  rafraichirStatut();
+  supa.auth.onAuthStateChange(() => rafraichirStatut());
+</script>
+</body>
+</html>
