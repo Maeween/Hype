@@ -136,6 +136,26 @@ async function supprimerResultat(id) {
   return await supa.from("resultats").delete().eq("id", id).eq("user_id", user.id);
 }
 
+async function syncProfilDistant(champs) {
+  try { const user = await utilisateurActuel(); if (!user) return { error: "Pas connect\u00e9" };
+    return await supa.from("profiles").update(champs).eq("id", user.id);
+  } catch (e) { return { error: String(e) }; }
+}
+async function ajouterChevalPerso({ nom, discipline, robe, note, photoDataUrl } = {}) {
+  const user = await utilisateurActuel();
+  if (!user) return { data: null, error: "Pas connect\u00e9" };
+  return await supa.from("chevaux").insert({ user_id: user.id, ecurie: "__perso__", nom, race: robe || null, discipline: discipline || null, age: note || null, photo_url: photoDataUrl || null }).select().single();
+}
+async function mesChevauxPerso() {
+  const user = await utilisateurActuel();
+  if (!user) return { data: [], error: null };
+  return await supa.from("chevaux").select("*").eq("user_id", user.id).eq("ecurie", "__perso__").order("created_at", { ascending: false });
+}
+async function mesResultats() {
+  const user = await utilisateurActuel();
+  if (!user) return { data: [], error: null };
+  return await supa.from("resultats").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30);
+}
 async function modifierResultat(id, { concours, classement, media_url } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { error: "Pas connect\u00e9" };
@@ -19253,6 +19273,35 @@ function HypeApp() {
         infolettre: false,
         partenaires: false,
     });
+    useEffect(() => {
+        let actif = true;
+        try {
+            if (typeof utilisateurActuel !== "function" || typeof supa === "undefined") return;
+            utilisateurActuel().then((u) => {
+                if (!u || !actif) return;
+                monProfil().then((r) => {
+                    if (!actif || !r || !r.data) return;
+                    const d = r.data;
+                    setProfil((p) => ({ ...p,
+                        pseudo: d.pseudo || p.pseudo, prenom: p.prenom || d.pseudo,
+                        ecurie: d.ecurie || p.ecurie, club: p.club || d.ecurie, ville: d.ville || p.ville,
+                        avatar: d.avatar || p.avatar, chevalPhoto: d.cheval_photo || p.chevalPhoto }));
+                }).catch(() => { });
+                if (typeof mesChevauxPerso === "function") {
+                    mesChevauxPerso().then((rc) => {
+                        if (!actif || !rc || !rc.data || !rc.data.length) return;
+                        setChevaux((l) => {
+                            const noms = l.map((c) => c.nom);
+                            const nouveaux = rc.data.filter((c) => !noms.includes(c.nom)).map((c) => ({ id: c.id, nom: c.nom, discipline: c.discipline || "", robe: c.race || "", note: c.age || "", photo: c.photo_url || null }));
+                            return l.concat(nouveaux).slice(0, 3);
+                        });
+                    }).catch(() => { });
+                }
+            }).catch(() => { });
+        } catch (e) { }
+        return () => { actif = false; };
+    }, []);
+
     const [xp, setXp] = useState(sauve && typeof sauve.xp === "number" ? sauve.xp : 340);
     const [serie, setSerie] = useState(sauve && typeof sauve.serie === "number" ? sauve.serie : 4);
     const [coursTermines, setCoursTermines] = useState(sauve && Array.isArray(sauve.coursTermines) ? sauve.coursTermines : ["g1-c15", "g1-c2"]);
@@ -19484,7 +19533,6 @@ function Router() {
                 ecran === "monde" && React.createElement(EcranMonde, null),
                 ecran === "communaute" && React.createElement(EcranCommunaute, null),
                 ecran === "evenement" && React.createElement(EcranEvenement, null),
-                ecran === "profil" && React.createElement(EcranProfil, null),
           ecran === "cavalier" && React.createElement(EcranCavalier, null),
                 ecran === "moncavalier" && React.createElement(EcranMonCavalier, null),
                 ecran === "guilde" && React.createElement(EcranGuilde, null),
@@ -23319,9 +23367,15 @@ function EcranMonCavalier() {
   var TURQ = "#2DD4DE", TURQL = "#5FE9F0";
   var fileRef = React.useRef(null);
   function choisirPhoto(e) { var f = e.target.files && e.target.files[0]; if (!f) return; var lr = new FileReader(); lr.onload = function () { setProfil(function (pp) { return Object.assign({}, pp, { avatar: lr.result }); }); }; lr.readAsDataURL(f); }
-  var pal = [];
+  var _mr = React.useState([]), resReels = _mr[0], setResReels = _mr[1];
+  React.useEffect(function () { (async function () { try { if (typeof mesResultats === "function" && typeof supa !== "undefined") { var r = await mesResultats(); if (r && r.data && r.data.length) setResReels(r.data); } } catch (e) {} })(); }, []);
+  var pal = [];  var pal = [];
   for (var hid in CHEVAUX_FICHE) { var ch = CHEVAUX_FICHE[hid]; if (ch && ch.palmares) { for (var kk = 0; kk < ch.palmares.length; kk++) { var r = ch.palmares[kk]; pal.push({ annee: r.annee, event: r.event, rang: r.rang, disc: (r.ds || "").split(" \u00b7 ")[0], chevalNom: ch.nom, chevalId: hid }); } } }
   pal.sort(function (a, b) { return (parseInt(b.annee) || 0) - (parseInt(a.annee) || 0); });
+  if (resReels.length) {
+    var reels = resReels.map(function (r) { var d = new Date(r.created_at); return { annee: String(d.getFullYear()), event: r.concours || "", rang: r.classement || "", auth: true, disc: "", chevalNom: "", chevalId: null, reel: true }; });
+    pal = reels.concat(pal.filter(function (p) { return !p.reel; }));
+  }
   var podiums = pal.filter(function (r) { return /^(1|2|3)/.test(r.rang); }).length;
   var chevaux = Object.keys(CHEVAUX_FICHE).map(function (id) { return { id: id, ch: CHEVAUX_FICHE[id] }; }).filter(function (x) { return x.ch; });
   var serie = (ctx.serie != null) ? ctx.serie : 0;
@@ -26493,7 +26547,7 @@ function EcranProfil() {
         if (!f)
             return;
         const lecteur = new FileReader();
-        lecteur.onload = () => setProfil((p) => ({ ...p, avatar: lecteur.result }));
+        lecteur.onload = () => { setProfil((p) => ({ ...p, avatar: lecteur.result })); try { if (typeof syncProfilDistant === "function" && typeof supa !== "undefined") syncProfilDistant({ avatar: lecteur.result }); } catch (e) { } };
         lecteur.readAsDataURL(f);
     };
     const chevalRef = useRef(null);
@@ -26502,7 +26556,7 @@ function EcranProfil() {
         if (!f)
             return;
         const lecteur = new FileReader();
-        lecteur.onload = () => setProfil((p) => ({ ...p, chevalPhoto: lecteur.result }));
+        lecteur.onload = () => { setProfil((p) => ({ ...p, chevalPhoto: lecteur.result })); try { if (typeof syncProfilDistant === "function" && typeof supa !== "undefined") syncProfilDistant({ cheval_photo: lecteur.result }); } catch (e) { } };
         lecteur.readAsDataURL(f);
     };
     const fondCheval = profil.chevalPhoto || (typeof CHEVAL_DEFAUT !== "undefined" ? CHEVAL_DEFAUT : PHOTOS.hero_dashboard);
@@ -26696,7 +26750,7 @@ function EcranProfil() {
         React.createElement(MenuLigne, { icone: "\uD83D\uDC64", texte: tr({ fr: "Mon compte", en: "My account", ja: "アカウント", es: "Mi cuenta", it: "Il mio account" }), sousTexte: tr({ fr: "Se connecter ou créer un compte", en: "Log in or create an account", ja: "ログインまたはアカウント作成", es: "Iniciar sesión o crear cuenta", it: "Accedi o crea un account" }), onClick: () => setEcran("moncompte") }),
         React.createElement(MenuLigne, { icone: "\u21AA", texte: t("se_deconnecter"), couleurTexte: COLORS.corail, onClick: () => { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } setEcran("moncompte"); } }),
         chevalVu && React.createElement(ModaleFicheCheval, { cheval: chevalVu, onClose: () => setChevalVu(null) }),
-        ajoutCheval && React.createElement(ModaleAjoutCheval, { onClose: () => setAjoutCheval(false), onAjouter: (c) => setChevaux((l) => (l.length >= 3 ? l : [...l, c])) }),
+        ajoutCheval && React.createElement(ModaleAjoutCheval, { onClose: () => setAjoutCheval(false), onAjouter: (c) => { setChevaux((l) => (l.length >= 3 ? l : [...l, c])); try { if (typeof ajouterChevalPerso === "function" && typeof supa !== "undefined") ajouterChevalPerso({ nom: c.nom, discipline: c.discipline, robe: c.robe, note: c.note, photoDataUrl: c.photo }); } catch (e) { } } }),
         limiteCheval && React.createElement("div", { onClick: () => setLimiteCheval(false), style: { position: "fixed", inset: 0, zIndex: 8500, background: "rgba(4,6,9,0.75)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 } },
             React.createElement("div", { onClick: (e) => e.stopPropagation(), style: { width: "100%", maxWidth: 340, borderRadius: 22, border: "1px solid rgba(45,212,222,0.45)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "26px 22px", textAlign: "center" } },
                 React.createElement("div", { style: { fontSize: 26, marginBottom: 10 } }, "\uD83D\uDC0E"),
