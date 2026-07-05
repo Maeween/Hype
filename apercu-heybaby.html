@@ -26378,16 +26378,28 @@ function EcranAssistantIA() {
         const majDerniere = (fn) => setMessages((prev) => { const c = prev.slice(); const d = { ...c[c.length - 1] }; fn(d); c[c.length - 1] = d; return c; });
         try {
             const API_ASSISTANT = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "https://majestic-melba-997a68.netlify.app/.netlify/functions/assistant";
-            const response = await fetch(API_ASSISTANT, {
+            const optionsFetch = {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                signal: ctrl.signal,
                 body: JSON.stringify({
                     stream: true,
                     system: getSystemPrompt(langue, { profil: profil, chevaux: chevaux, premium: premium, planAbo: planAbo, xp: xp, serie: serie, galopOuvert: galopOuvert, coursOuvert: coursOuvert }),
                     messages: nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).map((m) => ({ role: m.role, content: m.image ? (function () { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return blocs; })() : m.contenu })),
                 }),
-            });
+            };
+            let response;
+            try {
+                response = await fetch(API_ASSISTANT, { ...optionsFetch, signal: ctrl.signal });
+            }
+            catch (ePremier) {
+                // Certains environnements d'aperçu ne savent pas transmettre un AbortSignal
+                // (erreur « The object can not be cloned ») : on retente sans signal.
+                const msg = (ePremier && (ePremier.name === "DataCloneError" || String(ePremier.message || "").toLowerCase().indexOf("cloned") !== -1));
+                if (msg && !ctrl.signal.aborted) {
+                    hbLog("environnement sans AbortSignal — nouvel essai sans signal");
+                    response = await fetch(API_ASSISTANT, optionsFetch);
+                } else { throw ePremier; }
+            }
             if (!response.ok) throw new Error("HTTP " + response.status);
             const ctype = (response.headers.get("content-type") || "");
             if (ctype.indexOf("application/json") !== -1 || !response.body || !response.body.getReader) {
