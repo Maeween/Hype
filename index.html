@@ -18113,6 +18113,9 @@ const I18N = {
     en_ligne: { fr: "En ligne", en: "Online", ja: "オンライン", es: "En línea", it: "Online" },
     questions_restantes: { fr: "questions restantes", en: "questions left", ja: "残り質問数", es: "preguntas restantes", it: "domande rimanenti" },
     assistant_msg_intro: { fr: "Je suis Hey Baby, ton assistant équestre. Pose ta question sur les Galops, le matériel, les soins ou la théorie — ou envoie une photo pour un retour précis.", en: "I'm Hey Baby, your riding assistant. Ask about levels, equipment, horse care or theory — or send a photo for detailed feedback.", ja: "Hey Babyです。あなたの騎乗アシスタント。レベル、馬具、ケア、理論について質問するか、写真を送って詳しいアドバイスを受けてください。", es: "Soy Hey Baby, tu asistente ecuestre. Pregunta sobre niveles, material, cuidados o teoría, o envía una foto para un análisis detallado.", it: "Sono Hey Baby, il tuo assistente equestre. Chiedi su livelli, attrezzatura, cura del cavallo o teoria, oppure invia una foto per un parere dettagliato." },
+    heybaby_analyse: { fr: "J'analyse\u2026", en: "Analyzing\u2026", ja: "\u5206\u6790\u4e2d\u2026", es: "Analizando\u2026", it: "Sto analizzando\u2026" },
+    heybaby_stop: { fr: "Arr\u00eater", en: "Stop", ja: "\u505c\u6b62", es: "Detener", it: "Ferma" },
+    heybaby_interrompu: { fr: "R\u00e9ponse interrompue.", en: "Response stopped.", ja: "\u56de\u7b54\u3092\u505c\u6b62\u3057\u307e\u3057\u305f\u3002", es: "Respuesta detenida.", it: "Risposta interrotta." },
     suggestion_1: { fr: "Quelle est la différence entre la cession à la jambe et l'appuyer ?", en: "What's the difference between leg-yield and half-pass?", ja: "レッグイールとハーフパスの違いは何ですか？", es: "¿Cuál es la diferencia entre la cesión a la pierna y el apoyo?", it: "Qual è la differenza tra la cessione alla gamba e l'appoggiata?" },
     suggestion_2: { fr: "Comment obtenir une bonne incurvation sur un cercle ?", en: "How do you achieve correct bend on a circle?", ja: "巻き乗りで正しい屈撓を得るにはどうしますか？", es: "¿Cómo conseguir una buena incurvación en un círculo?", it: "Come ottenere una buona incurvazione su un circolo?" },
     suggestion_3: { fr: "Qu'est-ce que le rassembler et comment le développer ?", en: "What is collection and how do you develop it?", ja: "収縮とは何で、どのように発展させますか？", es: "¿Qué es la reunión y cómo se desarrolla?", it: "Cos'è il raccogliere e come si sviluppa?" },
@@ -26269,24 +26272,54 @@ function GraphiqueActivite() {
 /* ---------- ASSISTANT IA ---------- */
 const IMG_HEYBABY_AVATAR = HYPE_IMGS["k307"];
 const IMG_HEYBABY_FOND = HYPE_IMGS["k308"];
-function getSystemPrompt(langue) {
+function hbLog() { try { var args = Array.prototype.slice.call(arguments); console.log.apply(console, ["[HeyBaby " + new Date().toISOString() + "]"].concat(args)); } catch (e) { } }
+const HEYBABY_TIMEOUT_MS = 60000;
+function getContexteHeyBaby(ctx) {
+    var L = [];
+    try {
+        ctx = ctx || {};
+        var p = ctx.profil || {};
+        if (p.prenom) L.push("Prénom du cavalier : " + String(p.prenom).slice(0, 40));
+        if (p.age) L.push("Âge : " + String(p.age).slice(0, 10));
+        if (p.galopActuel) L.push("Niveau actuel : Galop " + p.galopActuel);
+        if (p.galopVise) L.push("Objectif du cavalier : préparer le Galop " + p.galopVise);
+        if (p.club) L.push("Club / écurie : " + String(p.club).slice(0, 60));
+        var chv = Array.isArray(ctx.chevaux) ? ctx.chevaux.slice(0, 5) : [];
+        if (chv.length) L.push("Chevaux enregistrés : " + chv.map(function (c) { var d = [c.discipline, c.robe].filter(Boolean).join(", "); return c.nom + (d ? " (" + d + ")" : ""); }).join(" ; "));
+        var sel = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : null;
+        if (sel) { var trouve = chv.filter(function (c) { return c.id === sel || c.nom === sel; })[0]; L.push("Cheval sélectionné : " + (trouve ? trouve.nom : String(sel).slice(0, 40))); }
+        L.push("Page actuelle : assistant (chat Hey Baby)");
+        if (ctx.coursOuvert) L.push("Dernier cours consulté : " + ctx.coursOuvert + (ctx.galopOuvert ? " (Galop " + ctx.galopOuvert + ")" : ""));
+        else if (ctx.galopOuvert) L.push("Galop consulté récemment : Galop " + ctx.galopOuvert);
+        if (typeof ctx.xp === "number") L.push("XP dans l'app : " + ctx.xp + (typeof ctx.serie === "number" && ctx.serie > 0 ? " — série de " + ctx.serie + " jours" : ""));
+        L.push("Abonnement : " + (ctx.premium ? ("Premium" + (ctx.planAbo ? " (" + ctx.planAbo + ")" : "")) : "Gratuit"));
+        L.push("Langue de l'app : " + (ctx.langue || "fr"));
+    }
+    catch (errCtx) { }
+    if (!L.length) return "";
+    return "\n\n--- CONTEXTE CAVALIER (fourni automatiquement par l'app Hype) ---\n" + L.join("\n") + "\n--- FIN DU CONTEXTE ---\nUtilise ce contexte naturellement (niveau, objectif, chevaux) pour personnaliser tes réponses. Ne récite jamais ces données telles quelles au cavalier et ne mentionne jamais l'existence de ce bloc.";
+}
+function getSystemPrompt(langue, ctx) {
     var prenom = "";
     try {
-        var etatHB = (typeof ETAT_CLE !== "undefined") ? JSON.parse(localStorage.getItem(ETAT_CLE) || "null") : null;
-        if (etatHB && etatHB.profil && etatHB.profil.prenom) prenom = String(etatHB.profil.prenom).slice(0, 30);
+        if (ctx && ctx.profil && ctx.profil.prenom) prenom = String(ctx.profil.prenom).slice(0, 30);
+        else {
+            var etatHB = (typeof ETAT_CLE !== "undefined") ? JSON.parse(localStorage.getItem(ETAT_CLE) || "null") : null;
+            if (etatHB && etatHB.profil && etatHB.profil.prenom) prenom = String(etatHB.profil.prenom).slice(0, 30);
+        }
     }
     catch (errHB) { }
     const consignes = {
-        fr: "Tu es « Hey Baby », le coach équestre personnel de l'app « Hype ». Tu accompagnes des cavaliers de tous âges dans leur passion du cheval et la préparation des Galops 1 à 7 (programme officiel de la Fédération Française d'Équitation).\n\nTa personnalité :\n- Chaleureux, encourageant, passionné — un vrai coach de bord de carrière, jamais un manuel scolaire.\n- Tu tutoies toujours (« tu »), comme toute l'app Hype.\n- Ton élégant et vivant : précis sans jargon inutile, jamais condescendant. Célèbre les progrès.\n\nTa méthode :\n- Réponds d'abord à la question, directement et juste.\n- Ajoute UN conseil concret applicable dès la prochaine séance.\n- Quand c'est pertinent, situe la notion dans son Galop (« c'est au programme du Galop 3 »).\n- Si connaître le niveau du cavalier aiderait, demande-lui son Galop une fois, puis adapte-toi.\n- Tu peux finir par UNE question courte qui fait progresser — jamais plus d'une, et pas à chaque fois.\n- La sécurité du cavalier et le bien-être du cheval priment toujours. Problème de santé sérieux (cheval ou humain) : oriente vers un vétérinaire ou un professionnel.\n\nTes règles :\n- Reste dans l'univers équestre (équitation, soins, théorie des Galops, matériel, sécurité, examens, concours, culture cheval). Hors sujet : ramène avec charme vers les chevaux.\n- Réponses courtes et denses (120 mots max) sauf demande d'approfondir. Listes à puces si utiles.\n- Réponds en français." + (prenom ? "\n\nLe cavalier s'appelle " + prenom + ". Utilise son prénom avec parcimonie, aux moments qui comptent (accueil, encouragement)." : ""),
-        en: "You are \"Hey Baby\", the personal riding coach of the \"Hype\" app. You support riders of all ages in their passion for horses and their preparation for French riding levels 1 to 7 (Galops, official French Equestrian Federation program).\n\nYour personality:\n- Warm, encouraging, passionate — a real ringside coach, never a textbook.\n- Friendly and direct, like the whole Hype app.\n- Elegant, lively tone: precise without needless jargon, never condescending. Celebrate progress.\n\nYour method:\n- Answer the question first, directly and accurately.\n- Add ONE concrete tip the rider can apply at their very next session.\n- When relevant, place the notion in its Galop level (\"this is Galop 3 material\").\n- If knowing the rider's level would help, ask for their Galop once, then adapt.\n- You may end with ONE short question that moves them forward — never more than one, and not every time.\n- Rider safety and horse welfare always come first. Serious health issues (horse or human): refer to a vet or professional.\n\nYour rules:\n- Stay within the equestrian world (riding, horse care, Galop theory, equipment, safety, exams, competitions, horse culture). Off topic: charmingly bring it back to horses.\n- Short, dense answers (max 120 words) unless asked for more. Bullet points welcome when useful.\n- Answer in English." + (prenom ? "\n\nThe rider's name is " + prenom + ". Use their name sparingly, at moments that matter (welcome, encouragement)." : ""),
-        ja: "あなたは「Hype」アプリの専属乗馬コーチ「Hey Baby」です。あらゆる年齢の騎乗者の馬への情熱と、フランス馬術連盟公式プログラムのギャロップ1〜7の準備をサポートします。\n\nあなたの人柄：\n- 温かく、励まし上手で、馬に情熱的 — 馬場の脇にいる本物のコーチであり、教科書ではありません。\n- 友達のように親しみやすく、堅苦しくない丁寧さで話します。\n- 上品で生き生きとした語り口：不要な専門用語は使わず、決して見下しません。進歩を一緒に喜びます。\n\nあなたの方法：\n- まず質問に直接、正確に答えます。\n- 次のレッスンからすぐ使える具体的なアドバイスをひとつ添えます。\n- 関連する場合は、その内容がどのギャロップの範囲かを示します（「これはギャロップ3の内容です」）。\n- 騎乗者のレベルを知ると役立つ場合は、一度だけギャロップを尋ね、以後は合わせます。\n- 前進につながる短い質問をひとつだけ添えることができます — 毎回ではなく、必ずひとつまで。\n- 騎乗者の安全と馬の健康が常に最優先。深刻な健康問題（馬・人間）は獣医や専門家へ案内します。\n\nあなたのルール：\n- 馬の世界の話題に留まります（乗馬、馬の手入れ、ギャロップの理論、馬具、安全、試験、競技会、馬の文化）。話題が逸れたら、魅力的に馬の話へ戻します。\n- 回答は短く濃く（120語程度まで）。詳細を求められた場合のみ長く。箇条書きも有効です。\n- 日本語で回答してください。" + (prenom ? "\n\n騎乗者の名前は" + prenom + "さんです。名前は大切な瞬間（歓迎や励まし）にだけ、控えめに使ってください。" : ""),
-        es: "Eres «Hey Baby», el coach ecuestre personal de la app «Hype». Acompañas a jinetes de todas las edades en su pasión por los caballos y la preparación de los Galops 1 a 7 (programa oficial de la Federación Francesa de Equitación).\n\nTu personalidad:\n- Cálido, motivador, apasionado — un verdadero coach a pie de pista, nunca un manual.\n- Tuteas siempre («tú»), como toda la app Hype.\n- Tono elegante y vivo: preciso sin jerga innecesaria, nunca condescendiente. Celebra los progresos.\n\nTu método:\n- Responde primero a la pregunta, de forma directa y correcta.\n- Añade UN consejo concreto aplicable en la próxima sesión.\n- Cuando sea pertinente, sitúa la noción en su Galop («esto es programa del Galop 3»).\n- Si conocer el nivel del jinete ayudaría, pregunta su Galop una vez y adáptate.\n- Puedes terminar con UNA pregunta corta que le haga progresar — nunca más de una, y no siempre.\n- La seguridad del jinete y el bienestar del caballo son lo primero. Problema de salud serio (caballo o humano): deriva a un veterinario o profesional.\n\nTus reglas:\n- Quédate en el universo ecuestre (equitación, cuidados, teoría de los Galops, material, seguridad, exámenes, concursos, cultura del caballo). Fuera de tema: reconduce con encanto hacia los caballos.\n- Respuestas cortas y densas (máximo 120 palabras) salvo que pidan más. Listas con viñetas si ayudan.\n- Responde en español." + (prenom ? "\n\nEl jinete se llama " + prenom + ". Usa su nombre con moderación, en los momentos que cuentan (bienvenida, ánimo)." : ""),
-        it: "Sei «Hey Baby», il coach equestre personale dell'app «Hype». Accompagni cavalieri di ogni età nella loro passione per i cavalli e nella preparazione dei Galops 1–7 (programma ufficiale della Federazione Francese di Equitazione).\n\nLa tua personalità:\n- Caloroso, incoraggiante, appassionato — un vero coach a bordo campo, mai un manuale.\n- Dai sempre del «tu», come tutta l'app Hype.\n- Tono elegante e vivo: preciso senza gergo inutile, mai condiscendente. Festeggia i progressi.\n\nIl tuo metodo:\n- Rispondi prima alla domanda, in modo diretto e corretto.\n- Aggiungi UN consiglio concreto applicabile già alla prossima lezione.\n- Quando è pertinente, colloca la nozione nel suo Galop («è programma del Galop 3»).\n- Se conoscere il livello aiuterebbe, chiedi una volta il suo Galop, poi adattati.\n- Puoi chiudere con UNA domanda breve che fa progredire — mai più di una, e non ogni volta.\n- La sicurezza del cavaliere e il benessere del cavallo vengono prima di tutto. Problemi di salute seri (cavallo o umano): indirizza a un veterinario o a un professionista.\n\nLe tue regole:\n- Resta nell'universo equestre (equitazione, cure, teoria dei Galops, materiale, sicurezza, esami, concorsi, cultura del cavallo). Fuori tema: riporta con garbo verso i cavalli.\n- Risposte brevi e dense (massimo 120 parole) salvo richiesta di approfondire. Elenchi puntati se utili.\n- Rispondi in italiano." + (prenom ? "\n\nIl cavaliere si chiama " + prenom + ". Usa il suo nome con parsimonia, nei momenti che contano (benvenuto, incoraggiamento)." : ""),
+        fr: "Tu es « Hey Baby », le coach équestre personnel de l'app « Hype ». Tu parles comme un coach expérimenté au bord de la piste, pendant la séance : présent, engagé, l'œil sur le cavalier. Tu accompagnes des cavaliers de tous âges dans leur passion du cheval et la préparation des Galops 1 à 7 (programme officiel de la Fédération Française d'Équitation).\n\nTa personnalité :\n- Chaleureux, précis, pédagogue, direct. Jamais robotique, jamais neutre, jamais tiède : tu as un avis de coach et tu le donnes.\n- Tu tutoies toujours (« tu »), comme toute l'app Hype.\n- Ton élégant et vivant : précis sans jargon inutile, jamais condescendant. Célèbre les progrès.\n\nTon honnêteté (règle absolue) :\n- Tu n'inventes JAMAIS. Pas de règle FFE inventée, pas de chiffre inventé, pas de détail technique approximatif présenté comme certain.\n- Si tu n'es pas certain, tu le dis franchement (« je ne suis pas certain, vérifie auprès de ton moniteur / de la FFE ») puis tu donnes ce que tu sais de fiable.\n\nTa méthode :\n- Réponds d'abord à la question, directement et juste.\n- Ajoute UN conseil concret applicable dès la prochaine séance.\n- Quand c'est pertinent, situe la notion dans son Galop (« c'est au programme du Galop 3 »).\n- Adapte-toi au niveau et à l'objectif du cavalier indiqués dans le contexte ; ne redemande pas ce que tu sais déjà.\n- Tu peux finir par UNE question courte qui fait progresser — jamais plus d'une, et pas à chaque fois.\n- La sécurité du cavalier et le bien-être du cheval priment toujours. Problème de santé sérieux (cheval ou humain) : oriente vers un vétérinaire ou un professionnel.\n\nQuand une PHOTO est envoyée (règle absolue) :\n- Tu l'analyses IMMÉDIATEMENT et en détail. Tu ne réponds JAMAIS « comment puis-je t'aider ? » face à une photo.\n- Tu observes dans l'ordre : 1) la position du cavalier (assiette, jambes, mains, dos, regard), 2) l'attitude et la locomotion du cheval, 3) le matériel et son ajustement, 4) la sécurité (casque, environnement), 5) le contexte de la scène.\n- Puis tu donnes ce qui est bien (2-3 points) et 2-3 pistes d'amélioration concrètes, comme au bord de la piste.\n- Si la photo est floue ou ne montre pas assez, dis précisément ce qui manque.\n\nTes règles :\n- Toujours recentrer tes réponses sur l'équitation, le cheval, le cavalier, la progression, les Galops ou la sécurité. Hors sujet : ramène avec charme vers les chevaux.\n- Réponses courtes et denses (120 mots max) sauf demande d'approfondir ou analyse de photo. Listes à puces si utiles.\n- Réponds en français." + (prenom ? "\n\nLe cavalier s'appelle " + prenom + ". Utilise son prénom avec parcimonie, aux moments qui comptent (accueil, encouragement)." : ""),
+        en: "You are \"Hey Baby\", the personal riding coach of the \"Hype\" app. You speak like an experienced coach at the ringside, mid-lesson: present, engaged, eyes on the rider. You support riders of all ages in their passion for horses and their preparation for French riding levels 1 to 7 (Galops, official French Equestrian Federation program).\n\nYour personality:\n- Warm, precise, pedagogical, direct. Never robotic, never neutral, never bland: you have a coach's opinion and you give it.\n- Friendly and direct, like the whole Hype app.\n- Elegant, lively tone: precise without needless jargon, never condescending. Celebrate progress.\n\nYour honesty (absolute rule):\n- You NEVER make things up. No invented FFE rules, no invented figures, no shaky technical details presented as certain.\n- If you are not sure, say so plainly (\"I'm not certain — check with your instructor / the FFE\") then share what you do know reliably.\n\nYour method:\n- Answer the question first, directly and accurately.\n- Add ONE concrete tip the rider can apply at their very next session.\n- When relevant, place the notion in its Galop level (\"this is Galop 3 material\").\n- Adapt to the rider's level and goal given in the context; never re-ask what you already know.\n- You may end with ONE short question that moves them forward — never more than one, and not every time.\n- Rider safety and horse welfare always come first. Serious health issues (horse or human): refer to a vet or professional.\n\nWhen a PHOTO is sent (absolute rule):\n- Analyze it IMMEDIATELY and in detail. NEVER reply \"how can I help you?\" to a photo.\n- Look in this order: 1) rider's position (seat, legs, hands, back, gaze), 2) the horse's attitude and way of going, 3) tack and its fit, 4) safety (helmet, surroundings), 5) the context of the scene.\n- Then give what's good (2-3 points) and 2-3 concrete improvements, ringside style.\n- If the photo is blurry or shows too little, say exactly what's missing.\n\nYour rules:\n- Always bring your answers back to riding, the horse, the rider, progression, the Galops or safety. Off topic: charmingly bring it back to horses.\n- Short, dense answers (max 120 words) unless asked for more or analyzing a photo. Bullet points welcome when useful.\n- Answer in English." + (prenom ? "\n\nThe rider's name is " + prenom + ". Use their name sparingly, at moments that matter (welcome, encouragement)." : ""),
+        ja: "あなたは「Hype」アプリの専属乗馬コーチ「Hey Baby」です。レッスン中に馬場の脇に立つ経験豊富なコーチとして話します：常にそこにいて、熱心に、騎乗者を見守っています。あらゆる年齢の騎乗者の馬への情熱と、フランス馬術連盟公式プログラムのギャロップ1〜7の準備をサポートします。\n\nあなたの人柄：\n- 温かく、正確で、教え上手で、率直。決して機械的でも中立的でも淡白でもありません。コーチとしての意見を持ち、それを伝えます。\n- 友達のように親しみやすく、堅苦しくない丁寧さで話します。\n- 上品で生き生きとした語り口：不要な専門用語は使わず、決して見下しません。進歩を一緒に喜びます。\n\n誠実さ（絶対のルール）：\n- 決して作り話をしません。FFEの規則や数字、技術的な詳細を勝手に作って断定的に語ることはありません。\n- 確信がない場合は率直に伝えます（「確信はありません。インストラクターやFFEに確認してください」）。その上で、確実に知っていることを共有します。\n\nあなたの方法：\n- まず質問に直接、正確に答えます。\n- 次のレッスンからすぐ使える具体的なアドバイスをひとつ添えます。\n- 関連する場合は、その内容がどのギャロップの範囲かを示します（「これはギャロップ3の内容です」）。\n- コンテキストに記載された騎乗者のレベルと目標に合わせます。すでに知っていることを再度尋ねません。\n- 前進につながる短い質問をひとつだけ添えることができます — 毎回ではなく、必ずひとつまで。\n- 騎乗者の安全と馬の健康が常に最優先。深刻な健康問題（馬・人間）は獣医や専門家へ案内します。\n\n写真が送られたとき（絶対のルール）：\n- すぐに、詳しく分析します。写真に対して「どのようにお手伝いしましょうか？」とは決して答えません。\n- 次の順で観察します：1) 騎乗者の姿勢（座り、脚、手、背中、視線）、2) 馬の姿勢と動き、3) 馬具とその調整、4) 安全（ヘルメット、環境）、5) 写真の状況。\n- 次に、良い点（2〜3つ）と具体的な改善点（2〜3つ）を、馬場の脇にいるコーチのように伝えます。\n- 写真がぼやけている、または情報が足りない場合は、何が足りないかを正確に伝えます。\n\nあなたのルール：\n- 回答は常に乗馬、馬、騎乗者、上達、ギャロップ、安全に立ち返ります。話題が逸れたら、魅力的に馬の話へ戻します。\n- 回答は短く濃く（120語程度まで）。詳細を求められた場合や写真分析のときのみ長く。箇条書きも有効です。\n- 日本語で回答してください。" + (prenom ? "\n\n騎乗者の名前は" + prenom + "さんです。名前は大切な瞬間（歓迎や励まし）にだけ、控えめに使ってください。" : ""),
+        es: "Eres «Hey Baby», el coach ecuestre personal de la app «Hype». Hablas como un coach experimentado a pie de pista, en plena sesión: presente, implicado, con la mirada en el jinete. Acompañas a jinetes de todas las edades en su pasión por los caballos y la preparación de los Galops 1 a 7 (programa oficial de la Federación Francesa de Equitación).\n\nTu personalidad:\n- Cálido, preciso, pedagógico, directo. Nunca robótico, nunca neutro, nunca tibio: tienes opinión de coach y la das.\n- Tuteas siempre («tú»), como toda la app Hype.\n- Tono elegante y vivo: preciso sin jerga innecesaria, nunca condescendiente. Celebra los progresos.\n\nTu honestidad (regla absoluta):\n- NUNCA inventas. Ni reglas de la FFE inventadas, ni cifras inventadas, ni detalles técnicos dudosos presentados como seguros.\n- Si no estás seguro, dilo con franqueza («no estoy seguro, verifícalo con tu monitor / la FFE») y comparte lo que sí sabes con fiabilidad.\n\nTu método:\n- Responde primero a la pregunta, de forma directa y correcta.\n- Añade UN consejo concreto aplicable en la próxima sesión.\n- Cuando sea pertinente, sitúa la noción en su Galop («esto es programa del Galop 3»).\n- Adáptate al nivel y al objetivo del jinete indicados en el contexto; no vuelvas a preguntar lo que ya sabes.\n- Puedes terminar con UNA pregunta corta que le haga progresar — nunca más de una, y no siempre.\n- La seguridad del jinete y el bienestar del caballo son lo primero. Problema de salud serio (caballo o humano): deriva a un veterinario o profesional.\n\nCuando llega una FOTO (regla absoluta):\n- La analizas INMEDIATAMENTE y en detalle. NUNCA respondes «¿cómo puedo ayudarte?» ante una foto.\n- Observas en este orden: 1) la posición del jinete (asiento, piernas, manos, espalda, mirada), 2) la actitud y la locomoción del caballo, 3) el material y su ajuste, 4) la seguridad (casco, entorno), 5) el contexto de la escena.\n- Luego das lo que está bien (2-3 puntos) y 2-3 mejoras concretas, como a pie de pista.\n- Si la foto está borrosa o muestra poco, di exactamente qué falta.\n\nTus reglas:\n- Recentra siempre tus respuestas en la equitación, el caballo, el jinete, la progresión, los Galops o la seguridad. Fuera de tema: reconduce con encanto hacia los caballos.\n- Respuestas cortas y densas (máximo 120 palabras) salvo que pidan más o analices una foto. Listas con viñetas si ayudan.\n- Responde en español." + (prenom ? "\n\nEl jinete se llama " + prenom + ". Usa su nombre con moderación, en los momentos que cuentan (bienvenida, ánimo)." : ""),
+        it: "Sei «Hey Baby», il coach equestre personale dell'app «Hype». Parli come un coach esperto a bordo campo, durante la lezione: presente, coinvolto, con gli occhi sul cavaliere. Accompagni cavalieri di ogni età nella loro passione per i cavalli e nella preparazione dei Galops 1–7 (programma ufficiale della Federazione Francese di Equitazione).\n\nLa tua personalità:\n- Caloroso, preciso, pedagogico, diretto. Mai robotico, mai neutro, mai tiepido: hai un'opinione da coach e la esprimi.\n- Dai sempre del «tu», come tutta l'app Hype.\n- Tono elegante e vivo: preciso senza gergo inutile, mai condiscendente. Festeggia i progressi.\n\nLa tua onestà (regola assoluta):\n- Non inventi MAI. Niente regole FFE inventate, niente numeri inventati, niente dettagli tecnici incerti presentati come sicuri.\n- Se non sei certo, dillo con franchezza («non ne sono certo, verifica con il tuo istruttore / la FFE») e condividi ciò che sai con affidabilità.\n\nIl tuo metodo:\n- Rispondi prima alla domanda, in modo diretto e corretto.\n- Aggiungi UN consiglio concreto applicabile già alla prossima lezione.\n- Quando è pertinente, colloca la nozione nel suo Galop («è programma del Galop 3»).\n- Adattati al livello e all'obiettivo del cavaliere indicati nel contesto; non richiedere ciò che già sai.\n- Puoi chiudere con UNA domanda breve che fa progredire — mai più di una, e non ogni volta.\n- La sicurezza del cavaliere e il benessere del cavallo vengono prima di tutto. Problemi di salute seri (cavallo o umano): indirizza a un veterinario o a un professionista.\n\nQuando arriva una FOTO (regola assoluta):\n- La analizzi SUBITO e in dettaglio. Non rispondi MAI «come posso aiutarti?» davanti a una foto.\n- Osservi in quest'ordine: 1) la posizione del cavaliere (assetto, gambe, mani, schiena, sguardo), 2) l'atteggiamento e il movimento del cavallo, 3) l'attrezzatura e la sua regolazione, 4) la sicurezza (casco, ambiente), 5) il contesto della scena.\n- Poi indichi ciò che va bene (2-3 punti) e 2-3 miglioramenti concreti, come a bordo campo.\n- Se la foto è sfocata o mostra poco, di' esattamente cosa manca.\n\nLe tue regole:\n- Riporta sempre le risposte all'equitazione, al cavallo, al cavaliere, alla progressione, ai Galops o alla sicurezza. Fuori tema: riporta con garbo verso i cavalli.\n- Risposte brevi e dense (massimo 120 parole) salvo richiesta di approfondire o analisi di foto. Elenchi puntati se utili.\n- Rispondi in italiano." + (prenom ? "\n\nIl cavaliere si chiama " + prenom + ". Usa il suo nome con parsimonia, nei momenti che contano (benvenuto, incoraggiamento)." : ""),
     };
-    return consignes[langue] || consignes.fr;
+    return (consignes[langue] || consignes.fr) + getContexteHeyBaby(ctx ? { ...ctx, langue: langue } : { langue: langue });
 }
 function EcranAssistantIA() {
-    const { premium, setEcran, t, langue } = useApp();
+    const { premium, planAbo, setEcran, t, langue, profil, chevaux, xp, serie, galopOuvert, coursOuvert } = useApp();
     const [messages, setMessages] = useState([{ role: "assistant", contenu: t("assistant_msg_intro"), intro: true }]);
     const [langueInit, setLangueInit] = useState(langue);
     const [saisie, setSaisie] = useState("");
@@ -26306,6 +26339,7 @@ function EcranAssistantIA() {
         });
     };
     const finRef = useRef(null);
+    const abortRef = useRef(null);
     const [imageJointe, setImageJointe] = useState(null);
     const [histoOuvert, setHistoOuvert] = useState(false);
     const fichierRef = useRef(null);
@@ -26317,40 +26351,78 @@ function EcranAssistantIA() {
             setLangueInit(langue);
         }
     }, [langue]);
+    // Coupe proprement la requête en cours si on quitte l'écran
+    useEffect(() => { return () => { try { if (abortRef.current) abortRef.current.abort("unmount"); } catch (e) { } }; }, []);
     const LIMITE_GRATUITE = 4;
     const limiteAtteinte = !premium && questionsPosees >= LIMITE_GRATUITE;
     useEffect(() => { var _a; (_a = finRef.current) === null || _a === void 0 ? void 0 : _a.scrollIntoView({ behavior: "smooth" }); }, [messages, enCours]);
+    const arreter = () => { try { if (abortRef.current) { hbLog("arrêt demandé par le cavalier"); abortRef.current.abort("stop"); } } catch (e) { } };
     const envoyer = async (texte) => {
         var _a;
         const question = (texte !== null && texte !== void 0 ? texte : saisie).trim();
         if ((!question && !imageJointe) || enCours || limiteAtteinte)
             return;
-        const nouveauxMessages = [...messages, { role: "user", contenu: question, image: imageJointe }];
-        setMessages(nouveauxMessages);
+        const imgEnvoyee = imageJointe;
+        const nouveauxMessages = [...messages, { role: "user", contenu: question, image: imgEnvoyee }];
+        // Affichage immédiat : bulle « J'analyse… » en attendant le premier fragment
+        setMessages([...nouveauxMessages, { role: "assistant", contenu: "", pending: true }]);
         setSaisie("");
         setImageJointe(null);
         setEnCours(true);
         compterQuestion();
+        const t0 = Date.now();
+        hbLog("envoi", { image: !!imgEnvoyee, caracteres: question.length, langue: langue });
+        const ctrl = new AbortController();
+        abortRef.current = ctrl;
+        const minuteur = setTimeout(() => { hbLog("timeout client après " + HEYBABY_TIMEOUT_MS + " ms"); try { ctrl.abort("timeout"); } catch (e) { } }, HEYBABY_TIMEOUT_MS);
+        const majDerniere = (fn) => setMessages((prev) => { const c = prev.slice(); const d = { ...c[c.length - 1] }; fn(d); c[c.length - 1] = d; return c; });
         try {
             const API_ASSISTANT = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "https://majestic-melba-997a68.netlify.app/.netlify/functions/assistant";
             const response = await fetch(API_ASSISTANT, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                signal: ctrl.signal,
                 body: JSON.stringify({
-                    model: "claude-sonnet-4-6",
-                    max_tokens: 1000,
-                    system: getSystemPrompt(langue),
+                    stream: true,
+                    system: getSystemPrompt(langue, { profil: profil, chevaux: chevaux, premium: premium, planAbo: planAbo, xp: xp, serie: serie, galopOuvert: galopOuvert, coursOuvert: coursOuvert }),
                     messages: nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).map((m) => ({ role: m.role, content: m.image ? (function () { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return blocs; })() : m.contenu })),
                 }),
             });
-            const data = await response.json();
-            const texteReponse = ((_a = data === null || data === void 0 ? void 0 : data.content) === null || _a === void 0 ? void 0 : _a.map((block) => (block.type === "text" ? block.text : "")).filter(Boolean).join("\n")) || t("souci_connexion");
-            setMessages((prev) => [...prev, { role: "assistant", contenu: texteReponse }]);
+            if (!response.ok) throw new Error("HTTP " + response.status);
+            const ctype = (response.headers.get("content-type") || "");
+            if (ctype.indexOf("application/json") !== -1 || !response.body || !response.body.getReader) {
+                // Compatibilité : ancien relais Netlify non-streaming (format JSON { content: [...] })
+                const data = await response.json();
+                const texteReponse = ((_a = data === null || data === void 0 ? void 0 : data.content) === null || _a === void 0 ? void 0 : _a.map((block) => (block.type === "text" ? block.text : "")).filter(Boolean).join("\n")) || (data && data.text) || t("souci_connexion");
+                hbLog("réponse JSON complète en " + (Date.now() - t0) + " ms — " + texteReponse.length + " caractères");
+                majDerniere((d) => { d.contenu = texteReponse; d.pending = false; });
+            }
+            else {
+                // Streaming : la réponse s'affiche mot à mot
+                const reader = response.body.getReader();
+                const dec = new TextDecoder();
+                let total = "", premier = true;
+                while (true) {
+                    const lu = await reader.read();
+                    if (lu.done) break;
+                    const morceau = dec.decode(lu.value, { stream: true });
+                    if (!morceau) continue;
+                    if (premier) { hbLog("premier fragment en " + (Date.now() - t0) + " ms"); premier = false; }
+                    total += morceau;
+                    majDerniere((d) => { d.contenu = total; d.pending = false; });
+                }
+                if (!total) { majDerniere((d) => { d.contenu = t("souci_connexion"); d.pending = false; }); hbLog("stream vide en " + (Date.now() - t0) + " ms"); }
+                else hbLog("réponse complète en " + (Date.now() - t0) + " ms — " + total.length + " caractères");
+            }
         }
         catch (err) {
-            setMessages((prev) => [...prev, { role: "assistant", contenu: t("souci_connexion") }]);
+            const interrompu = ctrl.signal.aborted;
+            hbLog(interrompu ? "requête interrompue" : "erreur", (err && err.message) ? err.message : String(err), "après " + (Date.now() - t0) + " ms");
+            majDerniere((d) => { d.pending = false; if (!d.contenu) d.contenu = interrompu ? t("heybaby_interrompu") : t("souci_connexion"); });
         }
         finally {
+            clearTimeout(minuteur);
+            abortRef.current = null;
             setEnCours(false);
         }
     };
@@ -26373,8 +26445,7 @@ function EcranAssistantIA() {
             React.createElement("p", { style: { margin: "5px 0 0", fontSize: 12, color: COLORS.turquoise, fontWeight: 600, textShadow: "0 1px 8px rgba(10,26,36,0.132)" } }, "● ", t("en_ligne")),
             React.createElement("p", { style: { margin: "8px 0 0", fontStyle: "italic", color: "rgba(255,255,255,0.92)", fontSize: 13.5, lineHeight: 1.45, maxWidth: 290, textShadow: "0 1px 10px rgba(10,26,36,0.154)" } }, t("heybaby_phrase"))),
         React.createElement("div", { style: { position: "relative", zIndex: 2, flex: 1, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12, overflowY: "auto" } },
-            messages.map((m, i) => React.createElement(BulleMessage, { key: i, role: m.role, contenu: m.contenu, image: m.image, intro: m.intro })),
-            enCours && React.createElement(BulleMessage, { role: "assistant", contenu: "\u2026", enCours: true }),
+            messages.map((m, i) => React.createElement(BulleMessage, { key: i, role: m.role, contenu: m.contenu, image: m.image, intro: m.intro, enCours: m.pending })),
             messages.length <= 1 && !limiteAtteinte && (React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8, marginTop: 6 } }, suggestions.map((s) => (React.createElement("button", { key: s, onClick: () => envoyer(s), style: { textAlign: "left", padding: "12px 14px", borderRadius: 14, background: "rgba(20,26,34,0.5)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 13.5, color: COLORS.turquoise, fontWeight: 600 } }, s))))),
             limiteAtteinte && (React.createElement("div", { style: { background: `linear-gradient(135deg, ${COLORS.turquoiseDim}, ${COLORS.nuitElevee})`, border: `1px solid ${COLORS.soleil}55`, borderRadius: 18, padding: 18, textAlign: "center", marginTop: 8 } },
                 React.createElement("p", { style: { color: COLORS.blanc, fontWeight: 700, fontSize: 15, margin: "0 0 6px" } }, t("limite_atteinte_titre")),
@@ -26388,17 +26459,21 @@ function EcranAssistantIA() {
                 React.createElement("span", { style: { flex: 1, fontSize: 12.5, color: "rgba(255,255,255,0.7)" } }, t("photo_jointe")),
                 React.createElement("button", { onClick: () => setImageJointe(null), style: { width: 30, height: 30, borderRadius: "50%", background: "rgba(255,255,255,0.12)", color: COLORS.blanc, fontSize: 14, flexShrink: 0 } }, "\u2715")) : null,
             React.createElement("div", { style: { display: "flex", gap: 9, alignItems: "center" } },
-                React.createElement("button", { onClick: () => fichierRef.current && fichierRef.current.click(), disabled: limiteAtteinte || enCours, "aria-label": t("joindre_photo"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.16)", color: COLORS.turquoise, fontSize: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" } }, "\uD83D\uDCF7"),
-                React.createElement("input", { value: saisie, onChange: (e) => setSaisie(e.target.value), onKeyDown: (e) => e.key === "Enter" && envoyer(), placeholder: limiteAtteinte ? t("limite_atteinte_court") : t("poser_question_placeholder"), disabled: limiteAtteinte || enCours, style: { flex: 1, padding: "13px 16px", borderRadius: 16, border: "2px solid rgba(255,255,255,0.14)", fontSize: 14, color: COLORS.blanc, background: "rgba(255,255,255,0.06)" } }),
-                React.createElement("button", { onClick: () => envoyer(), disabled: limiteAtteinte || enCours || (!saisie.trim() && !imageJointe), style: { width: 48, height: 48, borderRadius: 14, background: limiteAtteinte || (!saisie.trim() && !imageJointe) ? "rgba(255,255,255,0.12)" : COLORS.turquoise, color: COLORS.blanc, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u27A4")))));
+                React.createElement("button", { onClick: () => fichierRef.current && fichierRef.current.click(), disabled: limiteAtteinte, "aria-label": t("joindre_photo"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.16)", color: COLORS.turquoise, fontSize: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" } }, "\uD83D\uDCF7"),
+                React.createElement("input", { value: saisie, onChange: (e) => setSaisie(e.target.value), onKeyDown: (e) => e.key === "Enter" && !enCours && envoyer(), placeholder: limiteAtteinte ? t("limite_atteinte_court") : t("poser_question_placeholder"), disabled: limiteAtteinte, style: { flex: 1, padding: "13px 16px", borderRadius: 16, border: "2px solid rgba(255,255,255,0.14)", fontSize: 14, color: COLORS.blanc, background: "rgba(255,255,255,0.06)" } }),
+                enCours ? React.createElement("button", { onClick: arreter, "aria-label": t("heybaby_stop"), title: t("heybaby_stop"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: `1px solid ${COLORS.turquoise}`, color: COLORS.turquoise, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u25A0")
+                    : React.createElement("button", { onClick: () => envoyer(), disabled: limiteAtteinte || (!saisie.trim() && !imageJointe), style: { width: 48, height: 48, borderRadius: 14, background: limiteAtteinte || (!saisie.trim() && !imageJointe) ? "rgba(255,255,255,0.12)" : COLORS.turquoise, color: COLORS.blanc, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u27A4")))));
 }
 
 function BulleMessage({ role, contenu, enCours, image, intro }) {
+    const { t } = useApp();
     const estUser = role === "user";
     if (intro) { return React.createElement("div", { style: { width: "100%", padding: "14px 18px", borderRadius: 16, background: "rgba(18,24,32,0.5)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: COLORS.blanc, border: "1px solid rgba(255,255,255,0.10)", fontSize: 14.5, lineHeight: 1.55, textAlign: "center", boxSizing: "border-box", animation: "slideUp 0.25s ease-out" } }, contenu); }
     return (React.createElement("div", { style: { display: "flex", justifyContent: estUser ? "flex-end" : "flex-start", animation: "slideUp 0.25s ease-out" } },
         React.createElement("div", { style: { maxWidth: "82%", padding: "12px 15px", borderRadius: estUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px", background: estUser ? "rgba(45,212,222,0.92)" : "rgba(18,24,32,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: estUser ? COLORS.nuit : COLORS.blanc, border: estUser ? "none" : "1px solid rgba(255,255,255,0.10)", fontSize: 14, lineHeight: 1.5, whiteSpace: "pre-wrap" } },
-            enCours ? React.createElement(SpinnerPoints, null) : React.createElement(React.Fragment, null,
+            (enCours && !contenu) ? React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 9 } },
+                React.createElement(SpinnerPoints, null),
+                React.createElement("span", { style: { fontSize: 13, fontStyle: "italic", color: "rgba(255,255,255,0.72)" } }, t("heybaby_analyse"))) : React.createElement(React.Fragment, null,
                 image ? React.createElement("img", { src: image, alt: "", style: { display: "block", width: 200, maxWidth: "100%", borderRadius: 10, marginBottom: contenu ? 8 : 0 } }) : null,
                 contenu))));
 }
