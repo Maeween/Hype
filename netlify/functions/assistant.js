@@ -1,13 +1,13 @@
-// netlify/functions/assistant.js — Relais Hey Baby v2
-// Streaming + routage automatique des modèles + logs horodatés + timeout.
+// netlify/functions/assistant.js — Relais Hey Baby v3
+// v2 + compatibilité GPT-5.x : budget de tokens élargi (les modèles GPT-5
+// consomment des tokens de raisonnement internes) + effort de raisonnement
+// réglable via la variable d'environnement OPENAI_REASONING (défaut "low").
 //
-// Variables d'environnement Netlify (Site settings → Environment variables) :
+// Variables d'environnement Netlify :
 //   OPENAI_API_KEY      (obligatoire)
-//   OPENAI_TEXT_MODEL   (ex. "gpt-4o-mini" — utilisé pour le texte seul)
-//   OPENAI_VISION_MODEL (ex. "gpt-4o" — utilisé dès qu'une image est envoyée)
-//
-// Rétrocompatible : si le client n'envoie pas { stream: true }, la réponse
-// revient au format JSON historique { content: [{ type: "text", text }] }.
+//   OPENAI_TEXT_MODEL   (ex. "gpt-5.5")
+//   OPENAI_VISION_MODEL (ex. "gpt-5.5")
+//   OPENAI_REASONING    (optionnel : "none" | "low" | "medium" | "high")
 
 const CORS = {
     "Access-Control-Allow-Origin": "*",
@@ -75,7 +75,20 @@ export default async (req) => {
     for (const m of messages) messagesOpenAI.push(m);
 
     const streaming = corps.stream === true;
-    log("requête reçue", { modele, image: uneImage, streaming, nbMessages: messages.length });
+
+    // Charge utile OpenAI. Les modèles GPT-5.x raisonnent en interne :
+    // budget large + effort de raisonnement contrôlé pour des réponses rapides et complètes.
+    const charge = {
+        model: modele,
+        max_completion_tokens: 4096,
+        stream: streaming,
+        messages: messagesOpenAI,
+    };
+    if (modele.indexOf("gpt-5") === 0) {
+        charge.reasoning_effort = process.env.OPENAI_REASONING || "low";
+    }
+
+    log("requête reçue", { modele, image: uneImage, streaming, raisonnement: charge.reasoning_effort || "n/a", nbMessages: messages.length });
 
     const ctrl = new AbortController();
     const minuteur = setTimeout(() => { log("timeout OpenAI (55 s) — abandon"); try { ctrl.abort(); } catch (e) { } }, 55000);
@@ -86,12 +99,7 @@ export default async (req) => {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: "Bearer " + cle },
             signal: ctrl.signal,
-            body: JSON.stringify({
-                model: modele,
-                max_completion_tokens: 1024,
-                stream: streaming,
-                messages: messagesOpenAI,
-            }),
+            body: JSON.stringify(charge),
         });
     } catch (e) {
         clearTimeout(minuteur);
@@ -106,7 +114,7 @@ export default async (req) => {
         return reponseJSON({ error: "OpenAI " + amont.status }, 502);
     }
 
-    // ----- Mode non-streaming (rétrocompatibilité avec l'ancienne app déployée) -----
+    // ----- Mode non-streaming (rétrocompatibilité) -----
     if (!streaming) {
         const data = await amont.json().catch(() => null);
         clearTimeout(minuteur);
@@ -132,10 +140,10 @@ export default async (req) => {
                     for (const brute of lignes) {
                         const ligne = brute.trim();
                         if (!ligne.startsWith("data:")) continue;
-                        const charge = ligne.slice(5).trim();
-                        if (!charge || charge === "[DONE]") continue;
+                        const charge2 = ligne.slice(5).trim();
+                        if (!charge2 || charge2 === "[DONE]") continue;
                         try {
-                            const j = JSON.parse(charge);
+                            const j = JSON.parse(charge2);
                             const delta = j && j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content;
                             if (delta) {
                                 if (premier) { log("premier token en", Date.now() - t0, "ms"); premier = false; }
