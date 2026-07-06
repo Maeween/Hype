@@ -162,6 +162,55 @@ async function modifierResultat(id, { concours, classement, media_url } = {}) {
   return await supa.from("resultats").update({ concours, classement, media_url: media_url || null }).eq("id", id).eq("user_id", user.id).select().single();
 }
 
+/* --- 6bis. Hey Baby : historique & conseils \u00e9pingl\u00e9s -------- */
+
+async function chargerConversationHB(limite = 30) {
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return { data: [], error: null };
+    const { data, error } = await supa.from("conversations_heybaby").select("role, contenu, avec_image, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(limite);
+    return { data: (data || []).reverse(), error };
+  } catch (e) { return { data: [], error: String(e) }; }
+}
+async function sauverMessageHB(role, contenu, avecImage) {
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return { error: "Pas connect\u00e9" };
+    return await supa.from("conversations_heybaby").insert({ user_id: user.id, role: role, contenu: String(contenu || "").slice(0, 12000), avec_image: !!avecImage });
+  } catch (e) { return { error: String(e) }; }
+}
+async function chargerEpinglesHB(chevalId) {
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return { data: [], error: null };
+    let req = supa.from("echanges_heybaby_epingles").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20);
+    req = chevalId ? req.eq("cheval_id", chevalId) : req.is("cheval_id", null);
+    return await req;
+  } catch (e) { return { data: [], error: String(e) }; }
+}
+async function compterEpinglesHB() {
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return { count: 0 };
+    const { count } = await supa.from("echanges_heybaby_epingles").select("id", { count: "exact", head: true }).eq("user_id", user.id);
+    return { count: count || 0 };
+  } catch (e) { return { count: 0 }; }
+}
+async function epinglerEchangeHB({ question, reponse, chevalId, chevalNom } = {}) {
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return { error: "Pas connect\u00e9" };
+    return await supa.from("echanges_heybaby_epingles").insert({ user_id: user.id, cheval_id: chevalId || null, cheval_nom: chevalNom || null, question: String(question || "").slice(0, 2000), reponse: String(reponse || "").slice(0, 12000) });
+  } catch (e) { return { error: String(e) }; }
+}
+async function retirerEpingleHB(id) {
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return { error: "Pas connect\u00e9" };
+    return await supa.from("echanges_heybaby_epingles").delete().eq("id", id).eq("user_id", user.id);
+  } catch (e) { return { error: String(e) }; }
+}
+
 async function chargerMurEvenement(evId) {
   return await supa.from("mur_evenement").select("*").eq("evenement", evId).order("created_at", { ascending: false }).limit(40);
 }
@@ -26389,7 +26438,7 @@ function getSystemPrompt(langue, ctx) {
     return consignes[langue] || consignes.fr;
 }
 function EcranAssistantIA() {
-    const { premium, planAbo, setEcran, t, langue, profil, chevaux, xp, serie, galopOuvert, coursOuvert } = useApp();
+    const { premium, planAbo, setEcran, t, tr, langue, profil, chevaux, xp, serie, galopOuvert, coursOuvert } = useApp();
     const [messages, setMessages] = useState([{ role: "assistant", contenu: t("assistant_msg_intro"), intro: true }]);
     const [langueInit, setLangueInit] = useState(langue);
     const [saisie, setSaisie] = useState("");
@@ -26412,6 +26461,8 @@ function EcranAssistantIA() {
     const abortRef = useRef(null);
     const [imageJointe, setImageJointe] = useState(null);
     const [histoOuvert, setHistoOuvert] = useState(false);
+    const [epingleCible, setEpingleCible] = useState(null);
+    const [toastHB, setToastHB] = useState(null);
     const fichierRef = useRef(null);
     const choisirImage = (e) => { const f = e.target.files && e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => setImageJointe(r.result); r.readAsDataURL(f); e.target.value = ""; };
     // Réinitialise le message d'intro si la langue change avant toute question posée
@@ -26423,10 +26474,43 @@ function EcranAssistantIA() {
     }, [langue]);
     // Coupe proprement la requête en cours si on quitte l'écran
     useEffect(() => { return () => { try { if (abortRef.current) abortRef.current.abort("unmount"); } catch (e) { } }; }, []);
+    // Historique : recharge la conversation depuis Supabase \u00e0 l'ouverture
+    useEffect(() => {
+        let actif = true;
+        try {
+            chargerConversationHB(30).then((r) => {
+                if (!actif || !r || !r.data || !r.data.length) return;
+                const anciens = r.data.map((m) => ({ role: m.role, contenu: m.contenu || "", imageMarque: !!m.avec_image }));
+                setMessages((prev) => (prev.length <= 1 ? [prev[0], ...anciens] : prev));
+            }).catch(() => { });
+        } catch (e) { }
+        return () => { actif = false; };
+    }, []);
     const LIMITE_GRATUITE = 4;
     const limiteAtteinte = !premium && questionsPosees >= LIMITE_GRATUITE;
     useEffect(() => { var _a; (_a = finRef.current) === null || _a === void 0 ? void 0 : _a.scrollIntoView({ behavior: "smooth" }); }, [messages, enCours]);
     const arreter = () => { try { if (abortRef.current) { hbLog("arrêt demandé par le cavalier"); abortRef.current.abort("stop"); } } catch (e) { } };
+    const TXT = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
+    const LIMITE_EPINGLES_PREMIUM = 4;
+    const ouvrirEpingle = (i) => {
+        if (!premium && planAbo !== "ai") { setEpingleCible({ paywall: true }); return; }
+        let q = "";
+        for (let j = i - 1; j >= 0; j--) { if (messages[j] && messages[j].role === "user") { q = messages[j].contenu || ""; break; } }
+        setEpingleCible({ question: q, reponse: messages[i].contenu || "" });
+    };
+    const validerEpingle = async (chevalId, chevalNom) => {
+        try {
+            if (planAbo !== "ai") {
+                const r0 = await compterEpinglesHB();
+                if ((r0.count || 0) >= LIMITE_EPINGLES_PREMIUM) { setEpingleCible({ limite: true }); return; }
+            }
+            const cible = epingleCible || {};
+            const r = await epinglerEchangeHB({ question: cible.question, reponse: cible.reponse, chevalId: chevalId, chevalNom: chevalNom });
+            setEpingleCible(null);
+            setToastHB(r && r.error ? TXT("Connecte-toi pour \u00e9pingler", "Sign in to pin", "Con\u00e9ctate para fijar", "Accedi per fissare", "\u30d4\u30f3\u7559\u3081\u306b\u306f\u30ed\u30b0\u30a4\u30f3\u304c\u5fc5\u8981\u3067\u3059") : TXT("Conseil \u00e9pingl\u00e9 \u2713", "Advice pinned \u2713", "Consejo fijado \u2713", "Consiglio fissato \u2713", "\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30d4\u30f3\u7559\u3081\u3057\u307e\u3057\u305f \u2713"));
+            setTimeout(() => setToastHB(null), 2400);
+        } catch (e) { setEpingleCible(null); }
+    };
     const envoyer = async (texte) => {
         var _a;
         const question = (texte !== null && texte !== void 0 ? texte : saisie).trim();
@@ -26440,6 +26524,7 @@ function EcranAssistantIA() {
         setImageJointe(null);
         setEnCours(true);
         compterQuestion();
+        try { sauverMessageHB("user", question, !!imgEnvoyee); } catch (e) { }
         const t0 = Date.now();
         hbLog("envoi", { image: !!imgEnvoyee, caracteres: question.length, langue: langue });
         const ctrl = new AbortController();
@@ -26454,7 +26539,7 @@ function EcranAssistantIA() {
                 body: JSON.stringify({
                     stream: true,
                     system: getSystemPrompt(langue, { profil: profil, chevaux: chevaux, premium: premium, planAbo: planAbo, xp: xp, serie: serie, galopOuvert: galopOuvert, coursOuvert: coursOuvert }),
-                    messages: nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).map((m) => ({ role: m.role, content: m.image ? (function () { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return blocs; })() : m.contenu })),
+                    messages: nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).slice(-10).map((m) => ({ role: m.role, content: m.image ? (function () { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return blocs; })() : m.contenu })),
                 }),
             };
             let response;
@@ -26478,6 +26563,7 @@ function EcranAssistantIA() {
                 const texteReponse = ((_a = data === null || data === void 0 ? void 0 : data.content) === null || _a === void 0 ? void 0 : _a.map((block) => (block.type === "text" ? block.text : "")).filter(Boolean).join("\n")) || (data && data.text) || t("souci_connexion");
                 hbLog("réponse JSON complète en " + (Date.now() - t0) + " ms — " + texteReponse.length + " caractères");
                 majDerniere((d) => { d.contenu = texteReponse; d.pending = false; });
+                try { if (texteReponse) sauverMessageHB("assistant", texteReponse, false); } catch (e) { }
             }
             else {
                 // Streaming : la réponse s'affiche mot à mot
@@ -26494,7 +26580,7 @@ function EcranAssistantIA() {
                     majDerniere((d) => { d.contenu = total; d.pending = false; });
                 }
                 if (!total) { majDerniere((d) => { d.contenu = t("souci_connexion"); d.pending = false; }); hbLog("stream vide en " + (Date.now() - t0) + " ms"); }
-                else hbLog("réponse complète en " + (Date.now() - t0) + " ms — " + total.length + " caractères");
+                else { hbLog("réponse complète en " + (Date.now() - t0) + " ms — " + total.length + " caractères"); try { sauverMessageHB("assistant", total, false); } catch (e) { } }
             }
         }
         catch (err) {
@@ -26527,7 +26613,7 @@ function EcranAssistantIA() {
             React.createElement("p", { style: { margin: "5px 0 0", fontSize: 12, color: COLORS.turquoise, fontWeight: 600, textShadow: "0 1px 8px rgba(10,26,36,0.132)" } }, "● ", t("en_ligne")),
             React.createElement("p", { style: { margin: "8px 0 0", fontStyle: "italic", color: "rgba(255,255,255,0.92)", fontSize: 13.5, lineHeight: 1.45, maxWidth: 290, textShadow: "0 1px 10px rgba(10,26,36,0.154)" } }, t("heybaby_phrase"))),
         React.createElement("div", { style: { position: "relative", zIndex: 2, flex: 1, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12, overflowY: "auto" } },
-            messages.map((m, i) => React.createElement(BulleMessage, { key: i, role: m.role, contenu: m.contenu, image: m.image, intro: m.intro, enCours: m.pending })),
+            messages.map((m, i) => React.createElement(BulleMessage, { key: i, role: m.role, contenu: m.contenu, image: m.image, imageMarque: m.imageMarque, intro: m.intro, enCours: m.pending, onEpingler: (m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirEpingle(i)) : null })),
             messages.length <= 1 && !limiteAtteinte && (React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8, marginTop: 6 } }, suggestions.map((s) => (React.createElement("button", { key: s, onClick: () => envoyer(s), style: { textAlign: "left", padding: "12px 14px", borderRadius: 14, background: "rgba(20,26,34,0.5)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 13.5, color: COLORS.turquoise, fontWeight: 600 } }, s))))),
             limiteAtteinte && (React.createElement("div", { style: { background: `linear-gradient(135deg, ${COLORS.turquoiseDim}, ${COLORS.nuitElevee})`, border: `1px solid ${COLORS.soleil}55`, borderRadius: 18, padding: 18, textAlign: "center", marginTop: 8 } },
                 React.createElement("p", { style: { color: COLORS.blanc, fontWeight: 700, fontSize: 15, margin: "0 0 6px" } }, t("limite_atteinte_titre")),
@@ -26544,11 +26630,29 @@ function EcranAssistantIA() {
                 React.createElement("button", { onClick: () => fichierRef.current && fichierRef.current.click(), disabled: limiteAtteinte, "aria-label": t("joindre_photo"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.16)", color: COLORS.turquoise, fontSize: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" } }, "\uD83D\uDCF7"),
                 React.createElement("input", { value: saisie, onChange: (e) => setSaisie(e.target.value), onKeyDown: (e) => e.key === "Enter" && !enCours && envoyer(), placeholder: limiteAtteinte ? t("limite_atteinte_court") : t("poser_question_placeholder"), disabled: limiteAtteinte, style: { flex: 1, padding: "13px 16px", borderRadius: 16, border: "2px solid rgba(255,255,255,0.14)", fontSize: 14, color: COLORS.blanc, background: "rgba(255,255,255,0.06)" } }),
                 enCours ? React.createElement("button", { onClick: arreter, "aria-label": t("heybaby_stop"), title: t("heybaby_stop"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: `1px solid ${COLORS.turquoise}`, color: COLORS.turquoise, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u25A0")
-                    : React.createElement("button", { onClick: () => envoyer(), disabled: limiteAtteinte || (!saisie.trim() && !imageJointe), style: { width: 48, height: 48, borderRadius: 14, background: limiteAtteinte || (!saisie.trim() && !imageJointe) ? "rgba(255,255,255,0.12)" : COLORS.turquoise, color: COLORS.blanc, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u27A4")))));
+                    : React.createElement("button", { onClick: () => envoyer(), disabled: limiteAtteinte || (!saisie.trim() && !imageJointe), style: { width: 48, height: 48, borderRadius: 14, background: limiteAtteinte || (!saisie.trim() && !imageJointe) ? "rgba(255,255,255,0.12)" : COLORS.turquoise, color: COLORS.blanc, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u27A4"))),
+        epingleCible ? React.createElement("div", { onClick: () => setEpingleCible(null), "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 90, background: "rgba(8,10,13,0.78)", display: "flex", alignItems: "center", justifyContent: "center", padding: 22, animation: "fadeIn 0.2s ease-out" } },
+            React.createElement("div", { onClick: (e) => e.stopPropagation(), style: { width: "100%", maxWidth: 360, background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 20, padding: "20px 18px" } },
+                epingleCible.paywall ? React.createElement(React.Fragment, null,
+                    React.createElement("p", { style: { margin: "0 0 6px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("\u00c9pingler ce conseil", "Pin this advice", "Fijar este consejo", "Fissa questo consiglio", "\u3053\u306e\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30d4\u30f3\u7559\u3081")),
+                    React.createElement("p", { style: { margin: "0 0 14px", fontSize: 13, color: COLORS.encreDoux, textAlign: "center", lineHeight: 1.5 } }, TXT("R\u00e9serv\u00e9 aux membres du Cercle Crystal : garde tes meilleurs conseils sur ta page cavalier et tes fiches chevaux.", "Reserved for Crystal Circle members: keep your best advice on your rider page and horse profiles.", "Reservado a los miembros del C\u00edrculo Crystal: guarda tus mejores consejos en tu p\u00e1gina y tus fichas de caballos.", "Riservato ai membri del Cerchio Crystal: conserva i migliori consigli sulla tua pagina e sulle schede dei tuoi cavalli.", "Crystal\u30b5\u30fc\u30af\u30eb\u4f1a\u54e1\u9650\u5b9a\uff1a\u304a\u6c17\u306b\u5165\u308a\u306e\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30da\u30fc\u30b8\u306b\u4fdd\u5b58\u3067\u304d\u307e\u3059\u3002")),
+                    React.createElement(BoutonPrincipal, { texte: t("decouvrir_premium"), couleur: COLORS.turquoise, onClick: () => { setEpingleCible(null); setEcran("premium"); } }))
+                : epingleCible.limite ? React.createElement(React.Fragment, null,
+                    React.createElement("p", { style: { margin: "0 0 6px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("Limite atteinte", "Limit reached", "L\u00edmite alcanzado", "Limite raggiunto", "\u4e0a\u9650\u306b\u9054\u3057\u307e\u3057\u305f")),
+                    React.createElement("p", { style: { margin: "0 0 4px", fontSize: 13, color: COLORS.encreDoux, textAlign: "center", lineHeight: 1.5 } }, TXT("Tu as d\u00e9j\u00e0 4 conseils \u00e9pingl\u00e9s, le maximum du Cercle Crystal.", "You already have 4 pinned pieces of advice, the Crystal Circle maximum.", "Ya tienes 4 consejos fijados, el m\u00e1ximo del C\u00edrculo Crystal.", "Hai gi\u00e0 4 consigli fissati, il massimo del Cerchio Crystal.", "Crystal\u30b5\u30fc\u30af\u30eb\u306e\u4e0a\u9650\u3067\u3042\u308b4\u4ef6\u3092\u3059\u3067\u306b\u30d4\u30f3\u7559\u3081\u3057\u3066\u3044\u307e\u3059\u3002")),
+                    React.createElement("p", { style: { margin: "0 0 14px", fontSize: 12.5, color: COLORS.turquoise, textAlign: "center", fontWeight: 700 } }, TXT("L'abonnement AI illimit\u00e9 arrive bient\u00f4t \u2728", "The unlimited AI plan is coming soon \u2728", "La suscripci\u00f3n AI ilimitada llega pronto \u2728", "L'abbonamento AI illimitato arriva presto \u2728", "\u7121\u5236\u9650\u306eAI\u30d7\u30e9\u30f3\u304c\u307e\u3082\u306a\u304f\u767b\u5834\u3057\u307e\u3059 \u2728")),
+                    React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", padding: "12px 0", borderRadius: 14, background: COLORS.creme, color: COLORS.encre, fontWeight: 700, fontSize: 14, border: "none" } }, TXT("Compris", "Got it", "Entendido", "Capito", "\u4e86\u89e3")))
+                : React.createElement(React.Fragment, null,
+                    React.createElement("p", { style: { margin: "0 0 12px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("\u00c9pingler sur\u2026", "Pin to\u2026", "Fijar en\u2026", "Fissa su\u2026", "\u30d4\u30f3\u7559\u3081\u5148\u2026")),
+                    React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 9 } },
+                        React.createElement("button", { onClick: () => validerEpingle(null, null), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: `${COLORS.turquoise}14`, border: `1px solid ${COLORS.turquoise}55`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83C\uDFC7 " + TXT("Ma page cavalier", "My rider page", "Mi p\u00e1gina de jinete", "La mia pagina cavaliere", "\u30de\u30a4\u9a0e\u624b\u30da\u30fc\u30b8")),
+                        (chevaux || []).map((cv) => React.createElement("button", { key: cv.id, onClick: () => validerEpingle(cv.id, cv.nom), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: COLORS.nuit, border: `1px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83D\uDC34 " + cv.nom))),
+                    React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", marginTop: 12, padding: "11px 0", borderRadius: 14, background: "transparent", color: COLORS.encreDoux, fontWeight: 700, fontSize: 13, border: "none" } }, TXT("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb"))))) : null,
+        toastHB ? React.createElement("div", { style: { position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)", zIndex: 99, background: "rgba(18,24,32,0.92)", border: `1px solid ${COLORS.turquoise}66`, color: COLORS.blanc, borderRadius: 999, padding: "9px 18px", fontSize: 13, fontWeight: 600, whiteSpace: "nowrap" } }, toastHB) : null));
 }
 
-function BulleMessage({ role, contenu, enCours, image, intro }) {
-    const { t } = useApp();
+function BulleMessage({ role, contenu, enCours, image, imageMarque, intro, onEpingler }) {
+    const { t, tr } = useApp();
     const estUser = role === "user";
     if (intro) { return React.createElement("div", { style: { width: "100%", padding: "14px 18px", borderRadius: 16, background: "rgba(18,24,32,0.5)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: COLORS.blanc, border: "1px solid rgba(255,255,255,0.10)", fontSize: 14.5, lineHeight: 1.55, textAlign: "center", boxSizing: "border-box", animation: "slideUp 0.25s ease-out" } }, contenu); }
     return (React.createElement("div", { style: { display: "flex", justifyContent: estUser ? "flex-end" : "flex-start", animation: "slideUp 0.25s ease-out" } },
@@ -26557,10 +26661,37 @@ function BulleMessage({ role, contenu, enCours, image, intro }) {
                 React.createElement(SpinnerPoints, null),
                 React.createElement("span", { style: { fontSize: 13, fontStyle: "italic", color: "rgba(255,255,255,0.72)" } }, t("heybaby_analyse"))) : React.createElement(React.Fragment, null,
                 image ? React.createElement("img", { src: image, alt: "", style: { display: "block", width: 200, maxWidth: "100%", borderRadius: 10, marginBottom: contenu ? 8 : 0 } }) : null,
-                contenu))));
+                (!image && imageMarque) ? React.createElement("div", { style: { fontSize: 12, opacity: 0.8, marginBottom: contenu ? 6 : 0 } }, "\uD83D\uDCF7 " + tr({ fr: "Photo envoy\u00e9e", en: "Photo sent", es: "Foto enviada", it: "Foto inviata", ja: "\u5199\u771f\u3092\u9001\u4fe1\u3057\u307e\u3057\u305f" })) : null,
+                contenu,
+                onEpingler ? React.createElement("div", { style: { marginTop: 9 } },
+                    React.createElement("button", { onClick: onEpingler, style: { fontSize: 12, fontWeight: 700, color: COLORS.turquoise, background: "rgba(45,212,222,0.10)", border: "1px solid rgba(45,212,222,0.4)", borderRadius: 999, padding: "5px 12px" } }, "\uD83D\uDCCC " + tr({ fr: "\u00c9pingler", en: "Pin", es: "Fijar", it: "Fissa", ja: "\u30d4\u30f3\u7559\u3081" }))) : null))));
 }
 function SpinnerPoints() {
     return (React.createElement("div", { style: { display: "flex", gap: 4 } }, [0, 1, 2].map((i) => React.createElement("div", { key: i, style: { width: 7, height: 7, borderRadius: "50%", background: COLORS.encreDoux, animation: `bounce 1s ${i * 0.15}s infinite` } }))));
+}
+function EncartConseilsHB({ chevalId }) {
+    const { tr } = useApp();
+    const L = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
+    const [liste, setListe] = useState(null);
+    const [ouvert, setOuvert] = useState(null);
+    const recharger = () => { try { chargerEpinglesHB(chevalId || null).then((r) => setListe((r && r.data) || [])).catch(() => setListe([])); } catch (e) { setListe([]); } };
+    useEffect(() => { recharger(); }, [chevalId]);
+    const retirer = (id) => { try { retirerEpingleHB(id).then(() => recharger()); } catch (e) { } };
+    return (React.createElement("div", { style: { marginTop: 20, marginBottom: 8 } },
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, margin: "0 0 10px" } },
+            React.createElement("span", { style: { fontSize: 16 } }, "\uD83D\uDCAC"),
+            React.createElement("p", { style: { margin: 0, fontSize: 15, fontWeight: 700, color: COLORS.encre } }, L("Conseils de Hey Baby", "Hey Baby's advice", "Consejos de Hey Baby", "Consigli di Hey Baby", "Hey Baby\u306e\u30a2\u30c9\u30d0\u30a4\u30b9"))),
+        (liste === null) ? React.createElement("p", { style: { margin: 0, fontSize: 12.5, color: COLORS.encreDoux } }, "\u2026")
+            : (liste.length === 0) ? React.createElement("div", { style: { border: `1px dashed ${COLORS.turquoise}66`, background: `${COLORS.turquoise}0A`, borderRadius: 14, padding: "13px 15px" } },
+                React.createElement("p", { style: { margin: 0, fontSize: 12.5, lineHeight: 1.55, color: COLORS.encreDoux, fontStyle: "italic" } }, L("\u00c9pingle tes meilleurs \u00e9changes avec Hey Baby depuis la conversation \uD83D\uDCCC : ils appara\u00eetront ici.", "Pin your best Hey Baby exchanges from the chat \uD83D\uDCCC: they will appear here.", "Fija tus mejores intercambios con Hey Baby desde la conversaci\u00f3n \uD83D\uDCCC: aparecer\u00e1n aqu\u00ed.", "Fissa i tuoi migliori scambi con Hey Baby dalla conversazione \uD83D\uDCCC: appariranno qui.", "\u4f1a\u8a71\u753b\u9762\u3067Hey Baby\u3068\u306e\u304a\u6c17\u306b\u5165\u308a\u306e\u3084\u308a\u53d6\u308a\u3092\u30d4\u30f3\u7559\u3081\uD83D\uDCCC\u3059\u308b\u3068\u3001\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002")))
+            : React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8 } }, liste.map((e2) => (React.createElement("div", { key: e2.id, style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 14, padding: "12px 14px" } },
+                React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 8 } },
+                    React.createElement("div", { onClick: () => setOuvert(ouvert === e2.id ? null : e2.id), style: { flex: 1, cursor: "pointer", minWidth: 0 } },
+                        (!chevalId && e2.cheval_nom) ? React.createElement("p", { style: { margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, color: COLORS.turquoiseDark, letterSpacing: 0.4 } }, "\uD83D\uDC34 " + e2.cheval_nom) : null,
+                        e2.question ? React.createElement("p", { style: { margin: "0 0 5px", fontSize: 12.5, fontWeight: 700, color: COLORS.turquoiseDark, lineHeight: 1.35 } }, "\u00ab " + ((ouvert === e2.id || e2.question.length <= 80) ? e2.question : e2.question.slice(0, 80) + "\u2026") + " \u00bb") : null,
+                        React.createElement("p", { style: { margin: 0, fontSize: 12.5, color: COLORS.encre, lineHeight: 1.55, whiteSpace: "pre-wrap" } }, (ouvert === e2.id || String(e2.reponse || "").length <= 150) ? e2.reponse : String(e2.reponse).slice(0, 150) + "\u2026"),
+                        String(e2.reponse || "").length > 150 ? React.createElement("p", { style: { margin: "5px 0 0", fontSize: 11, color: COLORS.turquoiseDark, fontWeight: 700 } }, ouvert === e2.id ? L("R\u00e9duire \u25b2", "Collapse \u25b2", "Reducir \u25b2", "Riduci \u25b2", "\u6298\u308a\u305f\u305f\u3080 \u25b2") : L("Lire la suite \u25bc", "Read more \u25bc", "Leer m\u00e1s \u25bc", "Leggi tutto \u25bc", "\u7d9a\u304d\u3092\u8aad\u3080 \u25bc")) : null),
+                    React.createElement("button", { onClick: () => retirer(e2.id), "aria-label": "Retirer", style: { width: 26, height: 26, borderRadius: "50%", background: "rgba(127,127,127,0.14)", color: COLORS.encreDoux, fontSize: 12, flexShrink: 0, border: "none" } }, "\u2715"))))))));
 }
 /* ============== 09_profil_premium_badges.jsx ============== */
 /* ---------- PROFIL ---------- */
@@ -26608,7 +26739,8 @@ function ModaleFicheCheval({ cheval, onClose }) {
                     c.robe ? React.createElement("span", { style: { fontSize: 13.5, color: COLORS.encreDoux } }, c.robe) : null),
                 c.aussiMontePar ? React.createElement("p", { style: { margin: "14px 0 0", fontSize: 13.5, color: COLORS.encreDoux } }, "👥 " + t("cheval_aussi_monte") + " " + c.aussiMontePar) : null,
                 c.note ? React.createElement("div", { style: { marginTop: 18, padding: "16px 18px", background: COLORS.nuit, borderRadius: 16, border: `1px solid ${COLORS.ligne}` } },
-                    React.createElement("p", { style: { margin: 0, fontSize: 15, lineHeight: 1.6, color: COLORS.encre } }, c.note)) : null))));
+                    React.createElement("p", { style: { margin: 0, fontSize: 15, lineHeight: 1.6, color: COLORS.encre } }, c.note)) : null,
+                React.createElement(EncartConseilsHB, { chevalId: c.id })))));
 }
 function Rosette({ couleur, actif }) {
     const c = actif ? couleur : "#3b414a";
@@ -26868,6 +27000,7 @@ function EcranProfil() {
                 React.createElement("span", { style: { display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(8,10,13,0.82)", border: `1px solid ${COLORS.soleil}66`, borderRadius: 999, padding: "9px 16px", fontSize: 12.5, fontWeight: 800, color: COLORS.blanc, textAlign: "center", lineHeight: 1.3 } },
                     "\uD83D\uDD12 ",
                     t("chevaux_premium"))))),
+        React.createElement(EncartConseilsHB, { chevalId: null }),
         React.createElement(MenuLigne, { icone: "\uD83C\uDFC5", texte: t("mes_badges"), onClick: () => setEcran("badges") }),
         React.createElement(MenuLigne, { icone: "\uD83D\uDDA8\uFE0F", texte: t("impr_bouton"), onClick: () => setImpression(true) }),
         premium ? (React.createElement(MenuLigne, { icone: "\u2605", texte: t("gerer_abonnement"), onClick: () => setEcran("premium") })) : (React.createElement("button", { onClick: () => setEcran("premium"), style: { width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 13, padding: "15px 15px", borderRadius: 18, margin: "6px 0 12px", background: `linear-gradient(135deg, ${COLORS.turquoiseDim}, ${COLORS.nuitElevee})`, border: `1px solid ${COLORS.turquoise}55`, boxShadow: `0 4px 18px ${COLORS.turquoise}22` } },
