@@ -26544,7 +26544,7 @@ function EcranAssistantIA() {
                 body: JSON.stringify({
                     stream: true,
                     system: getSystemPrompt(langue, { profil: profil, chevaux: chevaux, premium: premium, planAbo: planAbo, xp: xp, serie: serie, galopOuvert: galopOuvert, coursOuvert: coursOuvert }),
-                    messages: nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).slice(-10).map((m) => ({ role: m.role, content: m.image ? (function () { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return blocs; })() : m.contenu })),
+                    messages: nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).slice(imgEnvoyee ? -1 : -10).map((m) => ({ role: m.role, content: m.image ? (function () { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return blocs; })() : m.contenu })),
                 }),
             };
             let response;
