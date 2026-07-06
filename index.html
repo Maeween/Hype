@@ -24625,7 +24625,7 @@ function MurHype(props) {
     setEnvoi(true);
     try {
       var r = await posterCommentaire({ cible: cibleR, texte: texte.trim() || null, fichierPhoto: photo ? photo.fichier : null });
-      if (!r || !r.error) { setTexte(""); setPhoto(null); await recharger(); }
+      if (!r || !r.error) { setTexte(""); setPhoto(null); await recharger(); try { window.dispatchEvent(new Event("hype-souvenirs-maj")); } catch (eM) { } }
     } catch (e) { }
     setEnvoi(false);
   }
@@ -24665,7 +24665,7 @@ function MurHype(props) {
           h("div", { style: { fontSize: 10.5, color: "#5B646E", fontFamily: M2 } }, datePost(p.created_at))),
         (moi && p.user_id === moi.id) ? h("button", { onClick: function () { suppr(p.id); }, "aria-label": "Supprimer", style: { background: "none", border: "none", color: "#5B646E", fontSize: 14, cursor: "pointer", padding: 4 } }, "\uD83D\uDDD1") : null),
       p.texte ? h("div", { style: { fontSize: 13.5, color: "#DCE3E8", lineHeight: 1.5, fontFamily: M2, whiteSpace: "pre-wrap" } }, p.texte) : null,
-      p.photo_url ? h("img", { src: p.photo_url, alt: "", style: { width: "100%", marginTop: 8, borderRadius: 12, display: "block" } }) : null));
+      p.photo_url ? h("img", { src: p.photo_url, alt: "", style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block" } }) : null));
   });
   if (props.compact && liste.length > 2 && props.onVoirTout) enfants.push(h("button", { key: "vt", onClick: props.onVoirTout, style: { display: "block", margin: "2px auto 0", background: "rgba(45,212,222,0.07)", border: "1px solid rgba(45,212,222,0.35)", color: "#2DD4DE", fontSize: 12, fontWeight: 700, fontFamily: M2, padding: "9px 20px", borderRadius: 999 } }, T("Voir tout le fil", "See the full feed", "Ver todo el hilo", "Vedi tutto il filo", "すべて見る") + " →"));
   if (!charge && dispo && !liste.length) enfants.push(h("div", { key: "vide", style: { color: "#5B646E", fontSize: 12.5, textAlign: "center", padding: "6px 0 2px", fontStyle: "italic", fontFamily: M2 } }, T("Sois le premier \u00e0 publier ici.", "Be the first to post here.", "S\u00e9 el primero en publicar.", "Sii il primo a pubblicare.", "\u6700\u521d\u306e\u6295\u7a3f\u3092\u3057\u3088\u3046\u3002")));
@@ -24743,6 +24743,11 @@ function GalerieSouvenirs(props) {
     } catch (e) { setPhotos([]); }
     return function () { actif = false; };
   }, [props.cible]);
+  React.useEffect(function () {
+    function maj() { try { listerCommentaires(props.cible).then(function (r) { var ph = ((r && r.data) || []).filter(function (p) { return p.photo_url; }).map(function (p) { return p.photo_url; }); setPhotos(ph.slice(-3).reverse()); }).catch(function () { }); } catch (e) { } }
+    window.addEventListener("hype-souvenirs-maj", maj);
+    return function () { window.removeEventListener("hype-souvenirs-maj", maj); };
+  }, [props.cible]);
   var liste = (props.vedettes && props.vedettes.length) ? props.vedettes : (photos || []);
   if (!liste.length && props.photoDefaut) liste = [props.photoDefaut];
   function cell(src, grande, cle) {
@@ -24764,28 +24769,34 @@ function GrilleSouvenirs(props) {
   var ctx = useApp(); var tr = ctx.tr;
   function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
   var st = React.useState(null); var photos = st[0], setPhotos = st[1];
-  React.useEffect(function () {
-    var actif = true;
+  function charger() {
     try {
       if (typeof listerCommentaires === "function" && typeof supa !== "undefined") {
         listerCommentaires(props.cible).then(function (r) {
-          if (!actif) return;
           var ph = ((r && r.data) || []).filter(function (p) { return p.photo_url; }).map(function (p) { return p.photo_url; }).reverse();
           setPhotos(ph);
-        }).catch(function () { if (actif) setPhotos([]); });
+        }).catch(function () { setPhotos([]); });
       } else { setPhotos([]); }
     } catch (e) { setPhotos([]); }
-    return function () { actif = false; };
+  }
+  React.useEffect(function () { charger(); }, [props.cible]);
+  React.useEffect(function () {
+    function maj() { charger(); }
+    window.addEventListener("hype-souvenirs-maj", maj);
+    return function () { window.removeEventListener("hype-souvenirs-maj", maj); };
   }, [props.cible]);
   if (photos === null) return h("div", { style: { textAlign: "center", color: "#5B646E", fontSize: 13, padding: "14px 0" } }, "\u2026");
-  if (!photos.length) return h("div", { style: { margin: "0 16px", borderRadius: 16, border: "1px dashed rgba(255,255,255,0.18)", padding: "20px 16px", textAlign: "center", color: "rgba(237,242,245,0.5)", fontSize: 12.5, fontStyle: "italic" } }, T("Publie tes premi\u00e8res photos dans le fil ci-dessous \u2014 elles appara\u00eetront ici.", "Post your first photos in the feed below \u2014 they will appear here.", "Publica tus primeras fotos en el hilo de abajo.", "Pubblica le tue prime foto nel filo qui sotto.", "\u4e0b\u306e\u30d5\u30a3\u30fc\u30c9\u306b\u5199\u771f\u3092\u6295\u7a3f\u3059\u308b\u3068\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002"));
-  return h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "0 16px" } },
-    photos.map(function (u, i9) {
-      var enVedette = (props.vedettes || []).indexOf(u) >= 0;
-      return h("div", { key: i9, style: { aspectRatio: "1 / 1", borderRadius: 16, overflow: "hidden", position: "relative", border: enVedette ? "1.5px solid rgba(45,212,222,0.75)" : "1px solid rgba(255,255,255,0.08)", cursor: "pointer" } },
-        h("img", { src: u, alt: "", onClick: function () { if (props.onOuvrir) props.onOuvrir(u); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
-        props.onToggleVedette ? h("button", { onClick: function (e9) { if (e9 && e9.stopPropagation) e9.stopPropagation(); props.onToggleVedette(u); }, "aria-label": "Vedette", style: { position: "absolute", top: 7, right: 7, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.3)", background: enVedette ? "rgba(45,212,222,0.9)" : "rgba(7,8,10,0.55)", color: enVedette ? "#04252a" : "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u2605") : null);
-    }));
+  var cellules = [];
+  cellules.push(h("div", { key: "plus", onClick: props.onAjouter, style: { aspectRatio: "1 / 1", borderRadius: 16, border: "1.5px dashed rgba(45,212,222,0.5)", background: "rgba(45,212,222,0.05)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer", animation: "souvPop .5s cubic-bezier(.2,.7,.3,1) both" } },
+    h("span", { style: { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(45,212,222,0.6)", background: "rgba(45,212,222,0.12)", display: "flex", alignItems: "center", justifyContent: "center", color: "#5FE9F0", fontSize: 20, fontWeight: 700 } }, "+"),
+    h("span", { style: { fontSize: 10.5, letterSpacing: "0.1em", color: "#5FE9F0", fontWeight: 700, textTransform: "uppercase" } }, T("Ajouter", "Add", "Añadir", "Aggiungi", "追加"))));
+  photos.forEach(function (u, i9) {
+    var enVedette = (props.vedettes || []).indexOf(u) >= 0;
+    cellules.push(h("div", { key: "p" + i9, style: { aspectRatio: "1 / 1", borderRadius: 16, overflow: "hidden", position: "relative", border: enVedette ? "1.5px solid rgba(45,212,222,0.75)" : "1px solid rgba(255,255,255,0.08)", cursor: "pointer", boxShadow: enVedette ? "0 0 18px rgba(45,212,222,0.25)" : "none", animation: "souvPop .5s cubic-bezier(.2,.7,.3,1) both", animationDelay: (0.05 + i9 * 0.05) + "s" } },
+      h("img", { src: u, alt: "", onClick: function () { if (props.onOuvrir) props.onOuvrir(u); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+      props.onToggleVedette ? h("button", { onClick: function (e9) { if (e9 && e9.stopPropagation) e9.stopPropagation(); props.onToggleVedette(u); }, "aria-label": "Vedette", style: { position: "absolute", top: 7, right: 7, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.3)", background: enVedette ? "rgba(45,212,222,0.9)" : "rgba(7,8,10,0.55)", color: enVedette ? "#04252a" : "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u2605") : null));
+  });
+  return h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "0 16px" } }, cellules);
 }
 
 function EcranCheval() {
@@ -24846,6 +24857,30 @@ function EcranCheval() {
   var panSt = React.useState(null); var panneau = panSt[0], setPanneau = panSt[1];
   var vedSt = React.useState(null); var vedettes = vedSt[0], setVedettes = vedSt[1];
   var visSt = React.useState(null); var visionneuse = visSt[0], setVisionneuse = visSt[1];
+  var refPhotoCh = React.useRef(null);
+  var phSt = React.useState(function () { try { return localStorage.getItem("hype_cheval_photo_" + id) || ""; } catch (e) { return ""; } });
+  var photoPerso = phSt[0], setPhotoPerso = phSt[1];
+  var photoCh = photoPerso || c.photo;
+  function choisirPhotoCheval(ev) {
+    var f = ev.target.files && ev.target.files[0]; ev.target.value = "";
+    if (!f) return;
+    hypeRecadrer(f, 3 / 2).then(function (res) {
+      if (!res || !res.dataUrl) return;
+      var im2 = new Image();
+      im2.onload = function () {
+        var cv = document.createElement("canvas");
+        var w2 = Math.min(900, im2.width); var h2 = Math.round(w2 * im2.height / im2.width);
+        cv.width = w2; cv.height = h2;
+        cv.getContext("2d").drawImage(im2, 0, 0, w2, h2);
+        var d2 = cv.toDataURL("image/jpeg", 0.8);
+        setPhotoPerso(d2);
+        try { localStorage.setItem("hype_cheval_photo_" + id, d2); } catch (eq) { }
+        setToast(T("Photo du cheval mise à jour ✓", "Horse photo updated ✓", "Foto del caballo actualizada ✓", "Foto del cavallo aggiornata ✓", "馬の写真を更新しました ✓"));
+        setTimeout(function () { setToast(null); }, 2000);
+      };
+      im2.src = res.dataUrl;
+    });
+  }
   React.useEffect(function () {
     var aV = true;
     try { chargerVedettesSouvenirs("cheval:" + id).then(function (r) { if (aV) setVedettes((r && r.data && r.data.urls) || []); }).catch(function () { if (aV) setVedettes([]); }); } catch (eV) { setVedettes([]); }
@@ -24890,13 +24925,13 @@ function EcranCheval() {
     h("div", { className: "app" },
 
       h("header", { className: "hero" },
-        h("img", { src: c.photo, alt: c.nom }),
+        h("img", { src: photoCh, alt: c.nom }),
         h("div", { className: "hh" }), h("div", { className: "hv" }),
         h("div", { className: "htop" },
           h("div", { className: "ic", onClick: function () { setEcran("ecurie"); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "m15 18-6-6 6-6" }))),
           h("div", { className: "r" },
             h(SelecteurLangue, { compact: true }),
-            h("div", { className: "ic", onClick: bientot }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" }))),
+            h("div", { className: "ic", onClick: function () { if (refPhotoCh.current) refPhotoCh.current.click(); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" }))),
             h("div", { className: "ic", onClick: bientot }, h("svg", { viewBox: "0 0 24 24" }, h("g", null, h("circle", { cx: 12, cy: 5, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 12, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 19, r: 1.4, fill: "#EAF2F4", stroke: "none" })))))),
         h("div", { className: "badge" }, h("svg", { viewBox: "0 0 24 24" }, diamond), h("b", null, race), disc ? h("span", null, disc) : null),
         h("div", { className: "hg" },
@@ -24961,7 +24996,7 @@ function EcranCheval() {
           h("span", { style: { color: "#2DD4DE", fontSize: 17 } }, "›")),
 
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".14s" } }, T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出")),
-        h(GalerieSouvenirs, { cible: "cheval:" + id, photoDefaut: c.photo, vedettes: vedettes || [], onTout: function () { setPanneau("souvenirs"); } }),
+        h(GalerieSouvenirs, { cible: "cheval:" + id, photoDefaut: photoCh, vedettes: vedettes || [], onTout: function () { setPanneau("souvenirs"); } }),
 
         h(MurHype, { cible: "cheval:" + id, compact: true, onVoirTout: function () { setPanneau("souvenirs"); } }),
 
@@ -24988,7 +25023,7 @@ function EcranCheval() {
 
         h("div", { style: { height: "40px" } }))),
 
-    panneau ? h("div", { "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 6500, background: "#07080A", overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 130 } },
+    panneau ? h("div", { id: "panneauCheval", "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 6500, background: "#07080A", overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 130 } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(14px + env(safe-area-inset-top)) 16px 8px" } },
         h("button", { onClick: function () { setPanneau(null); }, style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, flexShrink: 0 } }, "‹"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: "#F4F6F7" } },
@@ -25004,29 +25039,44 @@ function EcranCheval() {
         (c.palmares && c.palmares.length) ? h("div", { className: "panel" }, c.palmares.map(prow)) : h("div", { className: "empty" }, T("Le palmarès commence ici.", "The record starts here.", "El palmarés empieza aquí.", "Il palmarès inizia qui.", "戦績はここから始まります。")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加"))) : null,
       panneau === "souvenirs" ? h("div", null,
-        h("div", { style: { position: "relative", height: 150, margin: "4px 16px 12px", borderRadius: 20, overflow: "hidden", border: "1px solid rgba(255,255,255,0.09)" } },
-          h("img", { src: c.photo, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.75)" } }),
-          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0.15), rgba(7,8,10,0.85))" } }),
+        h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg,#2DD4DE 30%,#C9F6F9 50%,#2DD4DE 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite}"),
+        h("div", { className: "souvin", style: { position: "relative", height: 172, margin: "4px 16px 14px", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", boxShadow: "0 12px 44px rgba(0,0,0,0.5)" } },
+          h("img", { src: photoCh, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.78)", animation: "souvKen 14s ease-in-out infinite alternate" } }),
+          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0.12), rgba(7,8,10,0.88))" } }),
+          h("button", { onClick: function (eP) { if (eP && eP.stopPropagation) eP.stopPropagation(); if (refPhotoCh.current) refPhotoCh.current.click(); }, "aria-label": "Changer la photo", style: { position: "absolute", top: 10, right: 10, width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u270E"),
           h("div", { style: { position: "absolute", left: 16, bottom: 12 } },
-            h("div", { style: { fontSize: 9, letterSpacing: "0.26em", color: "#2DD4DE", textTransform: "uppercase", fontWeight: 700 } }, T("Carnet de vie", "Life journal", "Diario de vida", "Diario di vita", "ライフジャーナル")),
-            h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F6F7", marginTop: 3 } }, c.nom))),
-        h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, margin: "0 16px 10px" } },
-          h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 600 } }, T("Photos", "Photos", "Fotos", "Foto", "写真")),
-          h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("★ = en vedette sur la fiche (3 max)", "★ = featured on the profile (3 max)", "★ = destacada en la ficha (3 máx.)", "★ = in evidenza sulla scheda (max 3)", "★ = プロフィール掲載（3枚まで）"))),
-        h(GrilleSouvenirs, { cible: "cheval:" + id, vedettes: vedettes || [], onToggleVedette: basculerVedette, onOuvrir: function (uV) { setVisionneuse(uV); } }),
-        h("div", { style: { margin: "26px 16px 10px" } },
-          h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 600 } }, T("Vidéos", "Videos", "Vídeos", "Video", "動画"))),
-        h("div", { style: { margin: "0 16px", borderRadius: 18, border: "1px dashed rgba(45,212,222,0.35)", background: "rgba(45,212,222,0.04)", padding: "22px 16px", display: "flex", alignItems: "center", gap: 12 } },
+            h("div", { className: "souvshim", style: { fontSize: 9, letterSpacing: "0.26em", textTransform: "uppercase", fontWeight: 800 } }, T("Carnet de vie", "Life journal", "Diario de vida", "Diario di vita", "ライフジャーナル")),
+            h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 23, fontWeight: 700, color: "#F4F6F7", marginTop: 3, textShadow: "0 2px 14px rgba(0,0,0,0.6)" } }, c.nom))),
+        h("div", { className: "souvin", style: { display: "flex", alignItems: "center", gap: 9, margin: "0 16px 10px", animationDelay: ".08s" } },
+          h("span", { style: { width: 7, height: 7, background: "#2DD4DE", transform: "rotate(45deg)", boxShadow: "0 0 10px rgba(45,212,222,0.8)", flexShrink: 0 } }),
+          h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 700, letterSpacing: 1 } }, T("Photos", "Photos", "Fotos", "Foto", "写真")),
+          h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("★ = en vedette sur la fiche (3 max)", "★ = featured on the profile (3 max)", "★ = destacada en la ficha (3 máx.)", "★ = in evidenza sulla scheda (max 3)", "★ = プロフィール掲載（3枚まで）")),
+          h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(45,212,222,0.5), transparent)" } })),
+        h("div", { className: "souvin", style: { animationDelay: ".12s" } },
+          h(GrilleSouvenirs, { cible: "cheval:" + id, vedettes: vedettes || [], onToggleVedette: basculerVedette, onOuvrir: function (uV) { setVisionneuse(uV); }, onAjouter: function () {
+            var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir["cheval:" + id];
+            if (fA) { fA(); }
+            setTimeout(function () { try { var pan = document.getElementById("panneauCheval"); if (pan) pan.scrollTo({ top: pan.scrollHeight, behavior: "smooth" }); } catch (eS) { } }, 900);
+          } })),
+        h("div", { className: "souvin", style: { display: "flex", alignItems: "center", gap: 9, margin: "26px 16px 10px", animationDelay: ".18s" } },
+          h("span", { style: { width: 7, height: 7, background: "#2DD4DE", transform: "rotate(45deg)", boxShadow: "0 0 10px rgba(45,212,222,0.8)", flexShrink: 0 } }),
+          h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 700, letterSpacing: 1 } }, T("Vidéos", "Videos", "Vídeos", "Video", "動画")),
+          h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(45,212,222,0.5), transparent)" } })),
+        h("div", { className: "souvin", style: { margin: "0 16px", borderRadius: 18, border: "1px dashed rgba(45,212,222,0.35)", background: "rgba(45,212,222,0.04)", padding: "22px 16px", display: "flex", alignItems: "center", gap: 12, animationDelay: ".22s" } },
           h("span", { style: { width: 40, height: 40, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 13, flexShrink: 0, paddingLeft: 2 } }, "▶"),
           h("span", { style: { fontSize: 12, color: "rgba(237,242,245,0.6)", lineHeight: 1.5 } }, T("Les vidéos arrivent bientôt : elles s'afficheront ici en pleine largeur, une par ligne.", "Videos are coming soon: they will appear here full-width, one per row.", "Los vídeos llegan pronto: se mostrarán aquí a ancho completo.", "I video arrivano presto: appariranno qui a tutta larghezza.", "動画機能はまもなく登場。ここに1行1本の大きなサイズで表示されます。"))),
-        h("div", { style: { margin: "26px 16px 2px" } },
-          h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 600 } }, T("Le fil", "The feed", "El hilo", "Il filo", "フィード"))),
-        h(MurHype, { cible: "cheval:" + id, sansTitre: true })) : null,
+        h("div", { className: "souvin", style: { display: "flex", alignItems: "center", gap: 9, margin: "26px 16px 2px", animationDelay: ".26s" } },
+          h("span", { style: { width: 7, height: 7, background: "#2DD4DE", transform: "rotate(45deg)", boxShadow: "0 0 10px rgba(45,212,222,0.8)", flexShrink: 0 } }),
+          h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 700, letterSpacing: 1 } }, T("Le fil", "The feed", "El hilo", "Il filo", "フィード")),
+          h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(45,212,222,0.5), transparent)" } })),
+        h("div", { className: "souvin", style: { animationDelay: ".3s" } },
+          h(MurHype, { cible: "cheval:" + id, sansTitre: true }))) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
         h("div", { style: { fontSize: 42, marginTop: 26 } }, "🩺"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F6F7", marginTop: 14 } }, T("Le passeport arrive", "The passport is coming", "El pasaporte llega pronto", "Il passaporto sta arrivando", "パスポートは準備中")),
         h("p", { style: { fontSize: 13, lineHeight: 1.65, color: "rgba(237,242,245,0.6)", margin: "12px auto 0", maxWidth: 300 } }, T("Bientôt, chaque cheval aura ici sa carte d'identité vivante : vaccins, soins, consignes permanentes, habitudes — et Hey Baby s'en souviendra à chaque analyse.", "Soon, every horse will have its living identity card here: vaccines, care, standing instructions, habits — and Hey Baby will remember it in every analysis.", "Pronto, cada caballo tendrá aquí su carné de identidad vivo: vacunas, cuidados, consignas, hábitos — y Hey Baby lo recordará en cada análisis.", "Presto ogni cavallo avrà qui la sua carta d'identità viva: vaccini, cure, consegne, abitudini — e Hey Baby se ne ricorderà a ogni analisi.", "まもなく、それぞれの馬の「生きたカルテ」がここに。ワクチン・ケア・注意事項・習慣をHey Babyが記憶し、すべての分析に活かします。"))) : null) : null,
 
+    h("input", { ref: refPhotoCh, type: "file", accept: "image/*", onChange: choisirPhotoCheval, style: { display: "none" } }),
     visionneuse ? h("div", { onClick: function () { setVisionneuse(null); }, "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 8800, background: "rgba(4,6,9,0.96)", display: "flex", alignItems: "center", justifyContent: "center", padding: 10 } },
       h("img", { src: visionneuse, alt: "", style: { maxWidth: "100%", maxHeight: "90%", borderRadius: 10, boxShadow: "0 20px 80px rgba(0,0,0,0.6)" } }),
       h("button", { onClick: function (eX) { eX.stopPropagation(); setVisionneuse(null); }, style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", right: 16, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.25)", color: "#EDF2F5", fontSize: 16 } }, "✕"),
