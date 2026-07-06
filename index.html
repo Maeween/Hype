@@ -23567,6 +23567,7 @@ function EcranMonCavalier() {
             coeur ? h("div", { style: { position: "absolute", top: 8, right: 8, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" } }, coeurIco) : null),
           h("div", { style: { fontFamily: C, fontSize: 15, fontWeight: 600, marginTop: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, x.ch.nom),
           h("div", { style: { fontSize: 11, color: "#8A929C", fontFamily: M, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, x.ch.info || "")); }))) : null,
+    h("div", { style: { padding: "26px 16px 0" } }, h(EncartConseilsHB, { chevalId: null })),
     sectionBientot(T("Passeport \u00e9questre", "Equestrian passport", "Pasaporte ecuestre", "Passaporto equestre", "\u99ac\u8853\u30d1\u30b9\u30dd\u30fc\u30c8")),
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
@@ -24756,7 +24757,8 @@ function EcranCheval() {
               h("div", { className: "gvid rise" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M8 5v14l11-7z" })), h("span", null, T("Aucune vid\u00e9o pour l'instant.", "No videos yet.", "A\u00fan sin v\u00eddeos.", "Ancora nessun video.", "\u307e\u3060\u52d5\u753b\u306f\u3042\u308a\u307e\u305b\u3093\u3002"))),
               h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter une vid\u00e9o", "Add a video", "A\u00f1adir v\u00eddeo", "Aggiungi video", "\u52d5\u753b\u3092\u8ffd\u52a0"))),
 
-        h(MurHype, { cible: "cheval:" + id }),
+        h("div", { style: { padding: "26px 16px 0" } }, h(EncartConseilsHB, { chevalId: id })),
+    h(MurHype, { cible: "cheval:" + id }),
 
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".16s" } }, T("R\u00e9compenses", "Awards", "Recompensas", "Riconoscimenti", "\u8cde")),
         h("div", { className: "awards rise", style: { animationDelay: ".16s" } },
@@ -26492,6 +26494,9 @@ function EcranAssistantIA() {
     const arreter = () => { try { if (abortRef.current) { hbLog("arrêt demandé par le cavalier"); abortRef.current.abort("stop"); } } catch (e) { } };
     const TXT = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
     const LIMITE_EPINGLES_PREMIUM = 4;
+    const chevauxCibles = (typeof CHEVAUX_FICHE !== "undefined" && CHEVAUX_FICHE)
+        ? Object.keys(CHEVAUX_FICHE).map((cid) => ({ id: cid, nom: (CHEVAUX_FICHE[cid] && CHEVAUX_FICHE[cid].nom) || cid }))
+        : (chevaux || []);
     const ouvrirEpingle = (i) => {
         if (!premium && planAbo !== "ai") { setEpingleCible({ paywall: true }); return; }
         let q = "";
@@ -26646,7 +26651,7 @@ function EcranAssistantIA() {
                     React.createElement("p", { style: { margin: "0 0 12px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("\u00c9pingler sur\u2026", "Pin to\u2026", "Fijar en\u2026", "Fissa su\u2026", "\u30d4\u30f3\u7559\u3081\u5148\u2026")),
                     React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 9 } },
                         React.createElement("button", { onClick: () => validerEpingle(null, null), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: `${COLORS.turquoise}14`, border: `1px solid ${COLORS.turquoise}55`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83C\uDFC7 " + TXT("Ma page cavalier", "My rider page", "Mi p\u00e1gina de jinete", "La mia pagina cavaliere", "\u30de\u30a4\u9a0e\u624b\u30da\u30fc\u30b8")),
-                        (chevaux || []).map((cv) => React.createElement("button", { key: cv.id, onClick: () => validerEpingle(cv.id, cv.nom), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: COLORS.nuit, border: `1px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83D\uDC34 " + cv.nom))),
+                        chevauxCibles.map((cv) => React.createElement("button", { key: cv.id, onClick: () => validerEpingle(cv.id, cv.nom), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: COLORS.nuit, border: `1px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83D\uDC34 " + cv.nom))),
                     React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", marginTop: 12, padding: "11px 0", borderRadius: 14, background: "transparent", color: COLORS.encreDoux, fontWeight: 700, fontSize: 13, border: "none" } }, TXT("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb"))))) : null,
         toastHB ? React.createElement("div", { style: { position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)", zIndex: 99, background: "rgba(18,24,32,0.92)", border: `1px solid ${COLORS.turquoise}66`, color: COLORS.blanc, borderRadius: 999, padding: "9px 18px", fontSize: 13, fontWeight: 600, whiteSpace: "nowrap" } }, toastHB) : null));
 }
