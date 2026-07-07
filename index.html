@@ -136,6 +136,9 @@ async function envoyerPhoto(fichier) {
 
 // Publie un résultat de concours.
 // fichierPhoto = un File (optionnel) ; media_url = lien YouTube/Insta/TikTok/Facebook (optionnel)
+const HYPE_MODERATEURS = ["feinn@live.fr", "malicia2008@hotmail.fr"];
+function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
+async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
 async function supprimerResultat(id) {
   const user = await utilisateurActuel();
   if (!user) return { error: "Pas connect\u00e9" };
@@ -19259,7 +19262,7 @@ function EcranCommunaute() {
     var ofS = React.useState("tous"), ongletFil = ofS[0], setOngletFil = ofS[1];
     var mfS = React.useState(null), moiFil = mfS[0], setMoiFil = mfS[1];
     React.useEffect(function(){ var ac = true; try { if (typeof utilisateurActuel === "function") utilisateurActuel().then(function(u){ if (ac) setMoiFil(u); }).catch(function(){}); } catch(e){} return function(){ ac = false; }; }, []);
-    function supprimerMonPost(id){ (async function(){ try { var r = await supprimerResultat(id); if (r && r.error) { alert(T("Suppression impossible : ","Could not delete: ","No se pudo borrar: ","Impossibile eliminare: ","\u524a\u9664\u3067\u304d\u307e\u305b\u3093\uff1a") + (r.error.message || r.error)); return; } chargerFil(); } catch(e){ alert(String(e)); } })(); }
+    function supprimerMonPost(post){ var id = (post && post.id) || post; (async function(){ try { var r = (moiFil && post && post.user_id === moiFil.id) ? await supprimerResultat(id) : await supprimerPostModeration("resultats", id); if (r && r.error) { alert(T("Suppression impossible : ","Could not delete: ","No se pudo borrar: ","Impossibile eliminare: ","\u524a\u9664\u3067\u304d\u307e\u305b\u3093\uff1a") + (r.error.message || r.error)); return; } chargerFil(); } catch(e){ alert(String(e)); } })(); }
     var edS = React.useState(null), editionId = edS[0], setEditionId = edS[1];
     function ouvrirEdition(post){ setEditionId(post.id); setConcoursTxt(post.concours || ""); setClassementTxt(post.classement || ""); setMediaUrlTxt(post.media_url || ""); setPhotoFichier(null); setFormOuvert(true); }
     var flC = React.useState(true), filChargement = flC[0], setFilChargement = flC[1];
@@ -19314,7 +19317,7 @@ function EcranCommunaute() {
     }
     function carteResultat(post){
       var meta = h("div", { style:{ padding:"12px 14px 0", position:"relative" } },
-        (moiFil && post.user_id === moiFil.id) ? h("button", { onClick:function(e){ e.stopPropagation(); if (confirm(T("Supprimer ce post ?","Delete this post?","\u00bfBorrar esta publicaci\u00f3n?","Eliminare questo post?","\u3053\u306e\u6295\u7a3f\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f"))) supprimerMonPost(post.id); }, "aria-label":"Supprimer", style:{ position:"absolute", right:10, top:10, background:"none", border:"none", color:"#5B646E", fontSize:14, cursor:"pointer", padding:4 } }, "\uD83D\uDDD1") : null,
+        (moiFil && (post.user_id === moiFil.id || estModerateurHype(moiFil))) ? h("button", { onClick:function(e){ e.stopPropagation(); if (confirm(T("Supprimer ce post ?","Delete this post?","\u00bfBorrar esta publicaci\u00f3n?","Eliminare questo post?","\u3053\u306e\u6295\u7a3f\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f"))) supprimerMonPost(post); }, "aria-label":"Supprimer", style:{ position:"absolute", right:10, top:10, background:"none", border:"none", color:"#5B646E", fontSize:14, cursor:"pointer", padding:4 } }, "\uD83D\uDDD1") : null,
         (moiFil && post.user_id === moiFil.id) ? h("button", { onClick:function(e){ e.stopPropagation(); ouvrirEdition(post); }, "aria-label":"Modifier", style:{ position:"absolute", right:40, top:10, background:"none", border:"none", color:"#5B646E", fontSize:13, cursor:"pointer", padding:4 } }, "\u270E") : null,
         h("div", { style:{ fontSize:13, fontWeight:700, color:"#EDF2F5", fontFamily:M } }, (post.auteur && post.auteur.pseudo) || "Cavalier"),
         h("div", { style:{ fontSize:11.5, color:"#8A929C", fontFamily:M, marginTop:2 } }, (post.concours||"") + (post.classement ? (" \u00b7 " + post.classement) : "")));
@@ -24845,7 +24848,7 @@ function MurHype(props) {
     } catch (e) { }
     setEnvoi(false);
   }
-  async function suppr(id) { try { await supprimerCommentaire(id); await recharger(); } catch (e) { } }
+  async function suppr(p) { try { var id = (p && p.id) || p; if (moi && p && p.user_id === moi.id) { await supprimerCommentaire(id); } else { await supprimerPostModeration("mur_evenement", id); } await recharger(); } catch (e) { } }
   var M2 = "'Montserrat',system-ui,sans-serif";
   var carte = { borderRadius: 16, border: "1px solid rgba(255,255,255,0.09)", background: "rgba(12,15,20,0.75)", padding: "13px 14px" };
   function datePost(d) { try { return new Date(d).toLocaleDateString(langue === "en" ? "en-GB" : langue, { day: "numeric", month: "short" }); } catch (e) { return ""; } }
@@ -24879,7 +24882,7 @@ function MurHype(props) {
         h("div", { style: { flex: 1, minWidth: 0 } },
           h("div", { style: { fontSize: 13, fontWeight: 700, color: "#EDF2F5", fontFamily: M2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, a.pseudo || "Cavalier"),
           h("div", { style: { fontSize: 10.5, color: "#5B646E", fontFamily: M2 } }, datePost(p.created_at))),
-        (moi && p.user_id === moi.id) ? h("button", { onClick: function () { suppr(p.id); }, "aria-label": "Supprimer", style: { background: "none", border: "none", color: "#5B646E", fontSize: 14, cursor: "pointer", padding: 4 } }, "\uD83D\uDDD1") : null),
+        (moi && (p.user_id === moi.id || estModerateurHype(moi))) ? h("button", { onClick: function () { suppr(p); }, "aria-label": "Supprimer", style: { background: "none", border: "none", color: "#5B646E", fontSize: 14, cursor: "pointer", padding: 4 } }, "\uD83D\uDDD1") : null),
       p.texte ? h("div", { style: { fontSize: 13.5, color: "#DCE3E8", lineHeight: 1.5, fontFamily: M2, whiteSpace: "pre-wrap" } }, p.texte) : null,
       p.photo_url ? h("img", { src: p.photo_url, alt: "", style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block" } }) : null));
   });
