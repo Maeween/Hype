@@ -143,6 +143,19 @@ const TEINTES_HYPE = {
 };
 function teinteHypeActive() { try { var t = localStorage.getItem("hype_teinte"); return TEINTES_HYPE[t] || TEINTES_HYPE.turquoise; } catch (e) { return TEINTES_HYPE.turquoise; } }
 const HYPE_MODERATEURS = ["feinn@live.fr", "malicia2008@hotmail.fr"];
+function dernierVuHype(last, tr) {
+  try {
+    if (!last) return null;
+    var d = Date.now() - new Date(last).getTime();
+    if (isNaN(d)) return null;
+    var T = function (fr, en, es, it, ja) { return tr ? tr({ fr: fr, en: en, es: es, it: it, ja: ja }) : fr; };
+    if (d < 5 * 60000) return { txt: T("En ligne", "Online", "En l\u00ednea", "Online", "\u30aa\u30f3\u30e9\u30a4\u30f3"), enLigne: true };
+    if (d < 60 * 60000) return { txt: T("Il y a ", "", "Hace ", "", "") + Math.round(d / 60000) + T(" min", " min ago", " min", " min fa", "\u5206\u524d"), enLigne: false };
+    if (d < 24 * 3600000) return { txt: T("Il y a ", "", "Hace ", "", "") + Math.round(d / 3600000) + T(" h", " h ago", " h", " h fa", "\u6642\u9593\u524d"), enLigne: false };
+    if (d < 48 * 3600000) return { txt: T("Hier", "Yesterday", "Ayer", "Ieri", "\u6628\u65e5"), enLigne: false };
+    return null;
+  } catch (e) { return null; }
+}
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
 async function supprimerResultat(id) {
@@ -18837,7 +18850,7 @@ var EVENEMENTS = [
     desc:"Salon du cheval de Lyon : \u00e9tapes de Coupe du monde, spectacle \u00e9questre et village exposants \u00e0 Eurexpo." }
 ];
 function EcranEvenement(){
-  var app = useApp(); var setEcran = app.setEcran; var lg = app.langue || "fr"; var h = React.createElement;
+  var app = useApp(); var setEcran = app.setEcran; var lg = app.langue || "fr"; var tr = app.tr; var h = React.createElement;
   var appRef = React.useRef(app); appRef.current = app;
   function T(fr,en,es,it,ja){ return lg==="en"?en : lg==="es"?(es||en) : lg==="it"?(it||en) : lg==="ja"?(ja||en) : fr; }
   var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif";
@@ -19127,7 +19140,7 @@ function EcranEvenement(){
       h("button", { onClick:function(e){ e.stopPropagation(); setZoomImg(null); }, "aria-label":"Fermer", style:{ position:"absolute", top:"calc(env(safe-area-inset-top) + 12px)", right:14, width:38, height:38, borderRadius:"50%", background:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.22)", color:"#fff", fontSize:15, cursor:"pointer" } }, "\u2715")) : null));
 }
 function EcranCommunaute() {
-    var app = useApp(); var setEcran = app.setEcran; var lg = app.langue || "fr";
+    var app = useApp(); var setEcran = app.setEcran; var lg = app.langue || "fr"; var tr = app.tr;
     var h = React.createElement;
     function T(fr,en,es,it,ja){ return lg==="en"?en : lg==="es"?(es||en) : lg==="it"?(it||en) : lg==="ja"?(ja||en) : fr; }
     var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif";
@@ -19411,12 +19424,16 @@ function EcranCommunaute() {
           return h("div", { style:{ display:"flex", gap:14, overflowX:"auto", padding:"12px 2px 6px", WebkitOverflowScrolling:"touch" } },
             suivis.map(function(cav){
               return h("div", { key:cav.id, onClick:function(){ ouvrirProfilPublic(cav); }, role:"button", style:{ flex:"0 0 auto", width:82, textAlign:"center", cursor:"pointer" } },
-                h("div", { style:{ width:70, height:70, borderRadius:"50%", margin:"0 auto", padding:2, background:"linear-gradient(135deg,#20D9F5,#7FF0F2)" } },
+                h("div", { style:{ position:"relative", width:70, height:70, borderRadius:"50%", margin:"0 auto", padding:2, background:"linear-gradient(135deg,#20D9F5,#7FF0F2)" } },
+                  (function(){ var vu = (typeof dernierVuHype === "function") ? dernierVuHype(cav.last_seen_at, tr) : null;
+                    return (vu && vu.enLigne) ? h("span", { style:{ position:"absolute", right:2, bottom:2, width:14, height:14, borderRadius:"50%", background:"#20D9F5", border:"2.5px solid #060709", zIndex:2, boxShadow:"0 0 8px rgba(32,217,245,0.8)" } }) : null; })(),
                   (function(){ var src = avSrc(cav.avatar_url);
                     return src ? h("div", { style:{ width:"100%", height:"100%", borderRadius:"50%", backgroundImage:"url("+src+")", backgroundSize:"cover", backgroundPosition:"center", border:"2px solid #060709" } })
                       : h("div", { style:{ width:"100%", height:"100%", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", background:"linear-gradient(135deg,#17A8B3,#20D9F5)", color:"#04121a", fontWeight:800, fontFamily:M, fontSize:22, border:"2px solid #060709" } }, (cav.pseudo||"C").charAt(0).toUpperCase()); })()),
                 h("div", { style:{ fontSize:12, fontWeight:700, color:"#EDF2F5", fontFamily:M, marginTop:7, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" } }, cav.pseudo || "Cavalier"),
-                h("div", { style:{ fontSize:10, color:"#8A929C", fontFamily:M, marginTop:1, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" } }, cav.ville || cav.ecurie || "\u00a0"));
+                h("div", { style:{ fontSize:10, color:"#8A929C", fontFamily:M, marginTop:1, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" } }, cav.ville || cav.ecurie || "\u00a0"),
+                (function(){ var vu = (typeof dernierVuHype === "function") ? dernierVuHype(cav.last_seen_at, tr) : null;
+                  return vu ? h("div", { style:{ fontSize:9.5, marginTop:2, fontFamily:M, fontWeight: vu.enLigne ? 700 : 500, color: vu.enLigne ? "#5FE9F0" : "#5B646E" } }, vu.txt) : null; })());
             }));
         })(),
         voirTousCav ? h("div", { style:{ marginTop:14 } },
@@ -19476,6 +19493,11 @@ function HypeApp() {
                     }
                     localStorage.setItem("hype_uid", u.id);
                 } catch (eU) { }
+                try {
+                    var tamponner = function () { try { supa.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("id", u.id).then(function () { }); } catch (eH) { } };
+                    tamponner();
+                    if (!window.__hypePresence) { window.__hypePresence = setInterval(tamponner, 240000); }
+                } catch (eP) { }
                 monProfil().then((r) => {
                     if (!actif || !r || !r.data) return;
                     const d = r.data;
