@@ -23849,11 +23849,11 @@ function EcranMonCavalier() {
           h("div", { style: { fontFamily: C, fontSize: 17, fontWeight: 600, color: ms[2] || "#EDF2F5" } }, ms[0]),
           h("div", { style: { fontSize: 8.5, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: "#8A99A1", marginTop: 3, fontFamily: M } }, ms[1]));
       })),
-    h("div", { onClick: function () { if (profil.club) { setEcran("guilde"); } else { setClubLocal({ club: "" }); setEditClub(true); } }, style: { position: "relative", margin: "14px 16px 0", borderRadius: 20, overflow: "hidden", border: "1px solid " + __ta(0.28) + "", background: ((__thh && __thh.id === "crimson" && typeof IMG_SAUT_CRIMSON !== "undefined") ? ("linear-gradient(90deg, rgba(6,7,9,0.86) 32%, rgba(6,7,9,0.3) 100%), url(" + IMG_SAUT_CRIMSON + ")") : ("radial-gradient(120% 140% at 85% 20%, " + __ta(0.16) + ", transparent 55%), linear-gradient(160deg,#101820,#080B0F)")), backgroundSize: "cover", backgroundPosition: "center 42%", padding: "20px 42px 20px 20px", cursor: "pointer" } },
+    h("div", { onClick: function () { if (profil.club || profil.ecurie) { setEcran("guilde"); } else { setClubLocal({ club: "" }); setEditClub(true); } }, style: { position: "relative", margin: "14px 16px 0", borderRadius: 20, overflow: "hidden", border: "1px solid " + __ta(0.28) + "", background: ((__thh && __thh.id === "crimson" && typeof IMG_SAUT_CRIMSON !== "undefined") ? ("linear-gradient(90deg, rgba(6,7,9,0.86) 32%, rgba(6,7,9,0.3) 100%), url(" + IMG_SAUT_CRIMSON + ")") : ("radial-gradient(120% 140% at 85% 20%, " + __ta(0.16) + ", transparent 55%), linear-gradient(160deg,#101820,#080B0F)")), backgroundSize: "cover", backgroundPosition: "center 42%", padding: "20px 42px 20px 20px", cursor: "pointer" } },
       h("div", { style: { position: "absolute", top: 0, left: "10%", right: "10%", height: 1, background: "linear-gradient(90deg,transparent,#20D9F5,transparent)", opacity: 0.6 } }),
       h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: 2.4, color: TURQL, textTransform: "uppercase", fontFamily: M } }, T("Mon club", "My club", "Mi club", "Il mio club", "\u30de\u30a4\u30af\u30e9\u30d6")),
-      h("div", { style: { fontFamily: C, fontSize: 21, fontWeight: 600, marginTop: 7, letterSpacing: 0.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, profil.club || ("+ " + T("Ajouter mon club", "Add my club", "A\u00f1adir mi club", "Aggiungi il mio club", "\u30af\u30e9\u30d6\u3092\u8ffd\u52a0"))),
-      h("div", { style: { fontSize: 11.5, color: "#8A99A1", marginTop: 5, fontFamily: M } }, profil.club ? T("Voir la page du club, ses membres et son classement", "View the club page, members and ranking", "Ver la p\u00e1gina del club", "Vedi la pagina del club", "\u30af\u30e9\u30d6\u30da\u30fc\u30b8\u3092\u898b\u308b") : T("Renseigne ton \u00e9curie pour rejoindre sa page", "Add your stable to join its page", "Indica tu club", "Indica il tuo club", "\u30af\u30e9\u30d6\u3092\u767b\u9332")),
+      h("div", { style: { fontFamily: C, fontSize: 21, fontWeight: 600, marginTop: 7, letterSpacing: 0.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, profil.club || profil.ecurie || ("+ " + T("Ajouter mon club", "Add my club", "A\u00f1adir mi club", "Aggiungi il mio club", "\u30af\u30e9\u30d6\u3092\u8ffd\u52a0"))),
+      h("div", { style: { fontSize: 11.5, color: "#8A99A1", marginTop: 5, fontFamily: M } }, (profil.club || profil.ecurie) ? T("Voir la page du club, ses membres et son classement", "View the club page, members and ranking", "Ver la p\u00e1gina del club", "Vedi la pagina del club", "\u30af\u30e9\u30d6\u30da\u30fc\u30b8\u3092\u898b\u308b") : T("Renseigne ton \u00e9curie pour rejoindre sa page", "Add your stable to join its page", "Indica tu club", "Indica il tuo club", "\u30af\u30e9\u30d6\u3092\u767b\u9332")),
       h("div", { style: { position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", color: TURQ, fontSize: 22 } }, "\u203a")),
     h("button", { onClick: function () { setEcran("profil"); }, style: { margin: "10px 16px 0", width: "calc(100% - 32px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px", borderRadius: 14, background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "#AEB8C0", fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
       "\u2699\ufe0e " + T("Modifier mes informations", "Edit my info", "Editar mi informaci\u00f3n", "Modifica le mie info", "\u60c5\u5831\u3092\u7de8\u96c6") + " \u203a"),
@@ -23941,7 +23941,7 @@ function EcranGuilde() {
     { nom: "UCPA Bois de Vincennes", membres: 24, hf: 40, res: 27, pod: 13 },
     { nom: "Poney Club de Rambouillet", membres: 14, hf: 28, res: 19, pod: 9 }
   ];
-  var monClub = ((profil.club || "").trim()) || "\u00c9curie Feinn";
+  var monClub = ((profil.club || profil.ecurie || "").trim()) || "\u00c9curie Feinn";
   var _mb = React.useState(null), membres = _mb[0], setMembres = _mb[1];
   var _pc = React.useState(null), photosClub = _pc[0], setPhotosClub = _pc[1];
   var _cvc = React.useState(null), chevauxClub = _cvc[0], setChevauxClub = _cvc[1];
@@ -23966,9 +23966,12 @@ function EcranGuilde() {
     { pseudo: "Th\u00e9o", ville: "Baulne" },
     { pseudo: "Jade", ville: "Vert-le-Petit" }
   ];
-  var CLUBS_REVENDIQUES = { "ecurie feinn": { email: "feinn@live.fr" } };
+  var CLUBS_REVENDIQUES = { "ecurie feinn": { email: "feinn@live.fr", ville: "Itteville (Essonne)" } };
   function clefClub(n) { try { return (n || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim(); } catch (eK) { return (n || "").toLowerCase().trim(); } }
   var revendique = CLUBS_REVENDIQUES[clefClub(monClub)] || null;
+  var infosClub = null;
+  try { var _bdC = (typeof window !== "undefined" && window.HYPE_CLUBS && window.HYPE_CLUBS.length) ? window.HYPE_CLUBS : null; if (_bdC) { var _kC = clefClub(monClub); for (var _iC = 0; _iC < _bdC.length; _iC++) { if (clefClub(_bdC[_iC].nom) === _kC) { infosClub = _bdC[_iC]; break; } } } } catch (eIC) { }
+  var villeClub = (revendique && revendique.ville) || (infosClub && (infosClub.ville ? (infosClub.ville + (infosClub.departement ? " (" + infosClub.departement + ")" : "")) : infosClub.departement)) || "";
   var CAVALIERS_FEINN = [
     { pseudo: "Liam", ville: "Itteville" },
     { pseudo: "Evan", ville: "Itteville" },
@@ -24007,6 +24010,7 @@ function EcranGuilde() {
       h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0.25) 0%, rgba(7,8,10,0.05) 45%, rgba(7,8,10,0.92) 100%)" } }),
       h("div", { style: { position: "absolute", left: 18, right: 18, bottom: 14 } },
         h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9", textShadow: "0 2px 14px rgba(0,0,0,0.7)" } }, monClub),
+        villeClub ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 600, letterSpacing: 0.8, color: "rgba(234,247,250,0.82)", marginTop: 3, textShadow: "0 1px 8px rgba(0,0,0,0.7)" } }, "\uD83D\uDCCD " + villeClub) : null,
         revendique ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 7, padding: "4px 12px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.5)", background: "rgba(9,13,17,0.6)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)" } },
           h("span", { style: { width: 13, height: 13, borderRadius: "50%", background: TURQ, color: "#04252B", fontSize: 9, fontWeight: 900, display: "inline-flex", alignItems: "center", justifyContent: "center", lineHeight: 1 } }, "\u2713"),
           h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6"))) : null),
@@ -24497,7 +24501,7 @@ function EcranUnivers() {
               React.createElement("div", { className: "pf-loc" },
                 React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
                   React.createElement("path", { d: "M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z" }),
-                  React.createElement("circle", { cx: 12, cy: 10, r: 2.4 })), ((ctx.profil && ctx.profil.club) || (lg === "en" ? "My club" : lg === "es" ? "Mi club" : lg === "it" ? "Il mio club" : lg === "ja" ? "\u30de\u30a4\u30af\u30e9\u30d6" : "Mon club")))),
+                  React.createElement("circle", { cx: 12, cy: 10, r: 2.4 })), ((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || (lg === "en" ? "My club" : lg === "es" ? "Mi club" : lg === "it" ? "Il mio club" : lg === "ja" ? "\u30de\u30a4\u30af\u30e9\u30d6" : "Mon club")))),
             React.createElement("span", { className: "pf-chev" }, "›"))),
 
         React.createElement("button", { onClick: nav("premium"), style: { position: "relative", width: "100%", height: 172, margin: "22px 0 22px", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", boxShadow: "0 14px 40px rgba(0,0,0,0.55), 0 0 30px rgba(32,217,245,0.12)", cursor: "pointer", textAlign: "left", padding: 0, display: "block", background: "#04070d" } },
