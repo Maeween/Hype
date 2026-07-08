@@ -25471,6 +25471,7 @@ function EcranMonde(){
   const [__sortie, __setSortie] = useState(false);
   const __ecurieConnue = (GLOBE_ONBOARDING && __app.profil && (__app.profil.ecurie || __app.profil.club)) || "";
   const __clubValide = useRef(false);
+  const __swipeMonde = useRef(null);
   const __ty = useRef(null);
   function declencherSortie(){ if(__sortie) return; __setSortie(true);
     try{ var f=document.querySelector('iframe[title="Hype Universe"]'); if(f&&f.contentWindow){ f.contentWindow.postMessage({ t:"hype-exit" }, "*"); } }catch(e){}
@@ -25480,11 +25481,12 @@ function EcranMonde(){
     catch(e){ aller("dashboard"); }
   }, __clubValide.current ? 3950 : 950); }
   useEffect(function(){
-    function onMsg(e){ if(e && e.data && e.data.t === "hype-mon-club" && e.data.nom){ __clubValide.current = true; try{ var aC=__appRef.current; if(aC && aC.setProfil){ aC.setProfil(function(p){ return Object.assign({}, p, { ecurie: e.data.nom, club: e.data.nom }); }); } }catch(x){} try{ if(typeof majProfil === "function" && typeof supa !== "undefined"){ majProfil({ ecurie: e.data.nom }).catch(function(){}); } }catch(x){} return; } if(e && e.data && e.data.t === "globe-exit"){ declencherSortie(); return; } if(e && e.data && e.data.t === "globe-back"){ if (GLOBE_ONBOARDING) return; var a=__appRef.current; if(a && a.histLen && a.histLen>0 && a.retourEcran){ a.retourEcran(); } else { a.setEcran("dashboard"); } } }
+    function onMsg(e){ if(e && e.data && e.data.t === "hype-mon-club" && e.data.nom){ __clubValide.current = true; try{ var aC=__appRef.current; if(aC && aC.setProfil){ aC.setProfil(function(p){ return Object.assign({}, p, { ecurie: e.data.nom, club: e.data.nom }); }); } }catch(x){} try{ if(typeof majProfil === "function" && typeof supa !== "undefined"){ majProfil({ ecurie: e.data.nom }).catch(function(){}); } }catch(x){} return; } if(e && e.data && e.data.t === "globe-exit"){ declencherSortie(); return; } if(e && e.data && e.data.t === "globe-back"){ if (GLOBE_ONBOARDING) { try { __appRef.current.setEcran("intro"); } catch(eB) { } return; } var a=__appRef.current; if(a && a.histLen && a.histLen>0 && a.retourEcran){ a.retourEcran(); } else { a.setEcran("dashboard"); } } }
     window.addEventListener("message", onMsg);
     return function(){ window.removeEventListener("message", onMsg); };
   }, []);
   return React.createElement("div", { style: { position:"relative", width:"100%", height: GLOBE_ONBOARDING ? "100vh" : "calc(100vh - 84px)", overflow:"hidden", background:"#04070d" } },
+    React.createElement("div", { onTouchStart: function(ev){ var t0 = ev.touches && ev.touches[0]; __swipeMonde.current = t0 ? { x: t0.clientX, y: t0.clientY } : null; }, onTouchEnd: function(ev){ var s = __swipeMonde.current; __swipeMonde.current = null; if (!s) return; var t1 = ev.changedTouches && ev.changedTouches[0]; if (t1 && (t1.clientX - s.x) > 60 && Math.abs(t1.clientY - s.y) < 80) { var a2 = __appRef.current; if (GLOBE_ONBOARDING) { a2.setEcran("intro"); } else if (a2.histLen && a2.histLen > 0 && a2.retourEcran) { a2.retourEcran(); } else { a2.setEcran("dashboard"); } } }, style: { position:"absolute", left:0, top:0, bottom:0, width:26, zIndex:7, background:"transparent" } }),
     React.createElement("iframe", { srcDoc: GLOBE_HTML_HYPE, title: "Hype Universe", onLoad: function(ev){ try{ ev.target.contentWindow.postMessage({ t: "hype-lang", l: (__appRef.current && __appRef.current.langue) || "fr" }, "*");
       if (__ecurieConnue) { var trM = __appRef.current.tr; ev.target.contentWindow.postMessage({ t: "hype-club-connu", nom: __ecurieConnue,
         lTon: trM({ fr:"TON \u00c9CURIE", en:"YOUR STABLE", es:"TU CLUB", it:"IL TUO CLUB", ja:"\u30de\u30a4\u30af\u30e9\u30d6" }),
