@@ -23944,9 +23944,16 @@ function EcranGuilde() {
   var monClub = ((profil.club || "").trim()) || "\u00c9curie Feinn";
   var _mb = React.useState(null), membres = _mb[0], setMembres = _mb[1];
   var _pc = React.useState(null), photosClub = _pc[0], setPhotosClub = _pc[1];
+  var _cvc = React.useState(null), chevauxClub = _cvc[0], setChevauxClub = _cvc[1];
+  var _rsc = React.useState(null), resultatsClub = _rsc[0], setResultatsClub = _rsc[1];
   React.useEffect(function () { (async function () {
-    try { if (typeof supa !== "undefined" && supa) { var r = await supa.from("profiles").select("id, pseudo, avatar_url, ville").eq("ecurie", monClub).limit(40); if (r && r.data && r.data.length) setMembres(r.data); } } catch (eM) { }
+    var idsMembres = [];
+    try { if (typeof supa !== "undefined" && supa) { var r = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie", monClub).limit(40); if (r && r.data && r.data.length) { setMembres(r.data); idsMembres = r.data.map(function (p) { return p.id; }); } } } catch (eM) { }
     try { if (typeof supa !== "undefined" && supa) { var m = await supa.from("mur_evenement").select("photo_url, auteur, created_at").eq("evenement", "club:" + monClub).order("created_at", { ascending: false }).limit(60); if (m && m.data) { var ph = m.data.filter(function (p) { return p && p.photo_url; }).slice(0, 12); if (ph.length) setPhotosClub(ph); } } } catch (eP) { }
+    if (idsMembres.length) {
+      try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url").in("user_id", idsMembres).order("created_at", { ascending: false }).limit(24); if (cv && cv.data && cv.data.length) setChevauxClub(cv.data); } catch (eCv) { }
+      try { var rs = await supa.from("resultats").select("id, user_id, concours, classement, photo_url, created_at").in("user_id", idsMembres).order("created_at", { ascending: false }).limit(8); if (rs && rs.data && rs.data.length) setResultatsClub(rs.data); } catch (eRs) { }
+    }
   })(); }, [monClub]);
   function ouvrirCavalierClub(p) { try { window.__cavalierPublic = { pseudo: p.pseudo || "Cavalier", photo: p.avatar_url || null, ecurie: monClub, ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (eC) { } setEcran("cavalier"); }
   var FIGURANTS_CLUB = [
@@ -23959,10 +23966,20 @@ function EcranGuilde() {
     { pseudo: "Th\u00e9o", ville: "Baulne" },
     { pseudo: "Jade", ville: "Vert-le-Petit" }
   ];
-  var cavaliersAff = (membres || []).concat(FIGURANTS_CLUB.slice(0, Math.max(0, 8 - ((membres || []).length))));
   var CLUBS_REVENDIQUES = { "ecurie feinn": { email: "feinn@live.fr" } };
   function clefClub(n) { try { return (n || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim(); } catch (eK) { return (n || "").toLowerCase().trim(); } }
   var revendique = CLUBS_REVENDIQUES[clefClub(monClub)] || null;
+  var CAVALIERS_FEINN = [
+    { pseudo: "Liam", ville: "Itteville" },
+    { pseudo: "Evan", ville: "Itteville" },
+    { pseudo: "El\u00e9a", ville: "Itteville" },
+    { pseudo: "Filou", ville: "Itteville" }
+  ];
+  var figurantsBase = (clefClub(monClub) === "ecurie feinn") ? CAVALIERS_FEINN : FIGURANTS_CLUB;
+  var pseudosReels = {};
+  (membres || []).forEach(function (p) { pseudosReels[clefClub(p.pseudo)] = true; });
+  var figurantsFiltres = figurantsBase.filter(function (f) { return !pseudosReels[clefClub(f.pseudo)]; });
+  var cavaliersAff = (membres || []).concat(figurantsFiltres.slice(0, Math.max(0, 8 - ((membres || []).length))));
   var monRes = 0, monPod = 0;
   for (var hid in CHEVAUX_FICHE) { var ch = CHEVAUX_FICHE[hid]; if (ch && ch.palmares) { for (var k = 0; k < ch.palmares.length; k++) { monRes++; if (/^(1|2|3)/.test(ch.palmares[k].rang)) monPod++; } } }
   var liste;
@@ -24029,6 +24046,37 @@ function EcranGuilde() {
             h("div", { style: { marginTop: 6, fontSize: 10.5, fontFamily: M, fontWeight: 600, color: "#DDE6EA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, p.pseudo || "Cavalier"));
         }))
         : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Les cavaliers inscrits avec ce club appara\u00eetront ici.", "Riders registered with this club will appear here.", "Los jinetes inscritos con este club aparecer\u00e1n aqu\u00ed.", "I cavalieri iscritti con questo club appariranno qui.", "\u3053\u306e\u30af\u30e9\u30d6\u306b\u767b\u9332\u3057\u305f\u30e9\u30a4\u30c0\u30fc\u304c\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002"))),
+    h("div", { style: { padding: "26px 16px 0" } },
+      h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 } },
+        h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase" } }, T("Chevaux du club", "Club horses", "Caballos del club", "Cavalli del club", "\u30af\u30e9\u30d6\u306e\u99ac")),
+        (chevauxClub && chevauxClub.length) ? h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, color: TURQL } }, chevauxClub.length) : null),
+      (chevauxClub && chevauxClub.length) ? h("div", { style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 6, scrollbarWidth: "none" } },
+        chevauxClub.map(function (cv, i) {
+          return h("div", { key: cv.id || i, style: { flex: "0 0 auto", width: 108 } },
+            h("div", { style: { width: 108, height: 108, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
+              cv.photo_url ? h("img", { src: cv.photo_url, alt: cv.nom || "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : h("div", { style: { fontSize: 30, opacity: 0.5 } }, "\uD83D\uDC0E")),
+            h("div", { style: { marginTop: 6, fontSize: 11.5, fontFamily: C, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom || "Cheval"),
+            (cv.race || cv.discipline) ? h("div", { style: { fontSize: 9.5, fontFamily: M, color: "#8A929C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 } }, cv.race || cv.discipline) : null);
+        }))
+        : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Les chevaux des cavaliers du club appara\u00eetront ici.", "Horses of the club's riders will appear here.", "Los caballos de los jinetes del club aparecer\u00e1n aqu\u00ed.", "I cavalli dei cavalieri del club appariranno qui.", "\u30af\u30e9\u30d6\u306e\u30e9\u30a4\u30c0\u30fc\u306e\u99ac\u304c\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002"))),
+    h("div", { style: { padding: "26px 16px 0" } },
+      h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 } },
+        h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase" } }, T("Palmar\u00e8s du club", "Club record", "Palmar\u00e9s del club", "Palmar\u00e8s del club", "\u30af\u30e9\u30d6\u306e\u6226\u7e3e")),
+        (resultatsClub && resultatsClub.length) ? h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, color: TURQL } }, resultatsClub.length) : null),
+      (resultatsClub && resultatsClub.length) ? h("div", { style: { borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)" } },
+        resultatsClub.map(function (rs, i) {
+          var aut = (membres || []).filter(function (p) { return p.id === rs.user_id; })[0];
+          var pod = /^\s*(1|2|3)/.test(rs.classement || "");
+          var dte = ""; try { dte = new Date(rs.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }); } catch (eD) { }
+          return h("div", { key: rs.id || i, style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderBottom: (i < resultatsClub.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none"), background: "#0c0e12" } },
+            h("div", { style: { width: 34, height: 34, borderRadius: 10, overflow: "hidden", flexShrink: 0, background: "rgba(32,217,245,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 } },
+              rs.photo_url ? h("img", { src: rs.photo_url, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : (pod ? "\uD83C\uDFC6" : "\uD83C\uDF80")),
+            h("div", { style: { flex: 1, minWidth: 0 } },
+              h("div", { style: { fontSize: 12.5, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rs.concours || T("Concours", "Show", "Concurso", "Concorso", "\u5927\u4f1a")),
+              h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, (aut ? aut.pseudo : "") + (aut && dte ? " \u00b7 " : "") + dte)),
+            rs.classement ? h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 800, color: pod ? "#E8C887" : TURQL, flexShrink: 0 } }, rs.classement) : null);
+        }))
+        : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Les r\u00e9sultats des cavaliers du club appara\u00eetront ici.", "Results from the club's riders will appear here.", "Los resultados de los jinetes del club aparecer\u00e1n aqu\u00ed.", "I risultati dei cavalieri del club appariranno qui.", "\u30af\u30e9\u30d6\u306e\u30e9\u30a4\u30c0\u30fc\u306e\u6210\u7e3e\u304c\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002"))),
     h("div", { style: { padding: "26px 16px 0" } },
       h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 } },
         h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase" } }, T("Souvenirs du club", "Club memories", "Recuerdos del club", "Ricordi del club", "\u30af\u30e9\u30d6\u306e\u601d\u3044\u51fa")),
@@ -25382,6 +25430,16 @@ function EcranCheval() {
               [1,2,3,4,5,6,7,8,9,10].map(function(n){ var actifN = statsCh[editStat.cle] === n; return h("button", { key: n, onClick: function(){ fixerStat(n); }, style: { width: 40, height: 40, borderRadius: "50%", border: actifN ? "1.5px solid " + teinte + "" : "1px solid rgba(255,255,255,0.15)", background: actifN ? "" + tA(0.2) + "" : "transparent", color: actifN ? teinteCl : "#C9D3D8", fontSize: 14.5, fontWeight: 700, cursor: "pointer" } }, n); })),
             statsCh[editStat.cle] ? h("button", { onClick: function(){ fixerStat(null); }, style: { display: "block", margin: "14px auto 0", background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, T("Effacer", "Clear", "Borrar", "Cancella", "クリア")) : null)) : null,
 
+        h("div", { className: "rise", style: { animationDelay: ".06s", margin: "14px 16px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 } },
+          [{ cle: "flots", ico: "🎀", titre: T("Flots", "Rosettes", "Escarapelas", "Coccarde", "ロゼット"), compte: (c.flots && c.flots.length) ? (c.flots.length + " " + T("gagnés", "won", "ganadas", "vinte", "個")) : "—" },
+           { cle: "palmares", ico: "🏆", titre: T("Palmarès", "Record", "Palmarés", "Palmarès", "戦績"), compte: (c.palmares && c.palmares.length) ? (c.palmares.length + " " + T("résultats", "results", "resultados", "risultati", "件")) : "—" }].map(function (cd) {
+            return h("div", { key: cd.cle, onClick: function () { setPanneau(cd.cle); }, style: { borderRadius: 16, background: "linear-gradient(135deg, " + tA(0.08) + ", rgba(255,255,255,0.02))", border: "1px solid " + tA(0.24) + "", padding: "11px 12px", display: "flex", alignItems: "center", gap: 9, cursor: "pointer", minWidth: 0 } },
+              h("span", { style: { fontSize: 17, flexShrink: 0 } }, cd.ico),
+              h("div", { style: { flex: 1, minWidth: 0 } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13.5, fontWeight: 600, color: "#F4F6F7", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cd.titre),
+                h("div", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.55)", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cd.compte)),
+              h("span", { style: { color: teinte, opacity: 0.7, fontSize: 14, flexShrink: 0 } }, "›"));
+          })),
         h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Informations", "Details", "Información", "Informazioni", "詳細")),
         h("div", { className: "rise", style: { animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: "11px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 18, rowGap: 9 } },
           [[T("Race", "Breed", "Raza", "Razza", "品種"), race], [T("Sexe", "Sex", "Sexo", "Sesso", "性別"), ""], [T("Robe", "Coat", "Capa", "Mantello", "毛色"), ""], [T("Né(e) le", "Born", "Nacido", "Nato il", "生年月日"), ""], [T("Taille", "Height", "Altura", "Altezza", "体高"), ""], [T("Père", "Sire", "Padre", "Padre", "父"), "Sire"], [T("Mère", "Dam", "Madre", "Madre", "母"), "Dam"], [T("Père de mère", "Damsire", "Abuelo materno", "Padre della madre", "母の父"), ""], [T("Éleveur", "Breeder", "Criador", "Allevatore", "生産者"), ""]].map(function (pi) {
@@ -25389,15 +25447,6 @@ function EcranCheval() {
             return h("div", { key: pi[0], style: { minWidth: 0 } },
               h("div", { style: { fontSize: 8, letterSpacing: "0.16em", color: "#8A929C", textTransform: "uppercase", fontWeight: 600 } }, pi[0]),
               h("div", { style: { fontSize: 12, fontWeight: 600, color: vide ? "rgba(237,242,245,0.28)" : "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 } }, pi[1] || "—"));
-          })),
-
-        h("div", { className: "rise", style: { animationDelay: ".1s", margin: "18px 16px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 } },
-          [{ cle: "flots", ico: "🎀", titre: T("Flots", "Rosettes", "Escarapelas", "Coccarde", "ロゼット"), compte: (c.flots && c.flots.length) ? (c.flots.length + " " + T("flots gagnés", "rosettes won", "escarapelas ganadas", "coccarde vinte", "個のロゼット")) : T("Aucun flot pour l'instant", "No rosettes yet", "Aún sin escarapelas", "Ancora nessuna coccarda", "まだありません") },
-           { cle: "palmares", ico: "🏆", titre: T("Palmarès", "Record", "Palmarés", "Palmarès", "戦績"), compte: (c.palmares && c.palmares.length) ? (c.palmares.length + " " + T("résultats", "results", "resultados", "risultati", "件の結果")) : T("Le palmarès commence ici", "The record starts here", "El palmarés empieza aquí", "Il palmarès inizia qui", "戦績はここから") }].map(function (cd) {
-            return h("div", { key: cd.cle, onClick: function () { setPanneau(cd.cle); }, style: { aspectRatio: "1 / 1", borderRadius: 20, background: "linear-gradient(160deg, " + tA(0.06) + ", rgba(255,255,255,0.02))", border: "1px solid " + tA(0.22) + "", padding: "16px 14px", display: "flex", flexDirection: "column", position: "relative", cursor: "pointer" } },
-              h("span", { style: { position: "absolute", top: 14, right: 14, color: teinte, opacity: 0.7, fontSize: 15 } }, "›"),
-              h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 600, color: "#F4F6F7", marginTop: "auto" } }, cd.titre),
-              h("div", { style: { fontSize: 11, color: "rgba(237,242,245,0.55)", marginTop: 4, lineHeight: 1.4 } }, cd.compte));
           })),
 
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".14s" } }, T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出")),
