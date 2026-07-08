@@ -25704,6 +25704,7 @@ const GV2_CSS = `
 .gv2 .gic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;
  background:radial-gradient(120% 120% at 50% 0%, rgba(32,217,245,.16), rgba(8,13,19,.6) 75%);
  border:1px solid rgba(143,230,239,.26);box-shadow:0 0 16px rgba(32,217,245,.12), inset 0 0 12px rgba(32,217,245,.06)}
+.gv2 .gsoon{position:absolute;top:9px;right:9px;font-size:7px;letter-spacing:1.6px;font-weight:800;text-transform:uppercase;color:#7DDDE8;border:1px solid rgba(95,233,240,.4);background:rgba(32,217,245,.07);padding:3.5px 7px;border-radius:999px;font-family:'Montserrat',sans-serif;white-space:nowrap}
 .gv2 .gct{font-size:14.5px;font-weight:800;color:#F4F6F7;font-family:'Montserrat',sans-serif}
 .gv2 .gcs{font-size:11px;color:#8A95A1;margin-top:3px;font-family:'Montserrat',sans-serif;line-height:1.45}
 /* ---- Hey Baby ---- */
@@ -25811,11 +25812,11 @@ function EcranBibliothequeGalops() {
     var TITRES = { fr: ["LES ", "GALOPS"], en: ["THE ", "LEVELS"], es: ["LOS ", "GALOPS"], it: ["I ", "GALOPS"], ja: ["", "ギャロップ"] };
     var titreH = TITRES[langue] || TITRES.fr;
     var CARTES = [
-        { cle: "videos", ic: "play", titre: { fr: "Vidéos", en: "Videos", es: "Vídeos", it: "Video", ja: "動画" }, sub: { fr: "Cours en images", en: "Lessons on video", es: "Clases en vídeo", it: "Lezioni in video", ja: "映像レッスン" }, go: function () { vib(); setEcran("videos"); } },
-        { cle: "quiz", ic: "quiz", titre: { fr: "Quiz", en: "Quiz", es: "Quiz", it: "Quiz", ja: "クイズ" }, sub: { fr: "Teste tes acquis", en: "Test yourself", es: "Ponte a prueba", it: "Mettiti alla prova", ja: "腕試し" }, go: function () { vib(); setGalopOuvert(gAct); setEcran("galop-detail"); } },
-        { cle: "fiches", ic: "fiche", titre: { fr: "Fiches", en: "Study cards", es: "Fichas", it: "Schede", ja: "要点カード" }, sub: { fr: "L'essentiel à retenir", en: "The essentials", es: "Lo esencial", it: "L'essenziale", ja: "要点まとめ" }, go: function () { setMsgAVenir(tr({ fr: "Fiches", en: "Study cards", es: "Fichas", it: "Schede", ja: "要点カード" })); } },
+        { cle: "videos", ic: "play", soon: true, titre: { fr: "Vidéos", en: "Videos", es: "Vídeos", it: "Video", ja: "動画" }, sub: { fr: "Cours en images", en: "Lessons on video", es: "Clases en vídeo", it: "Lezioni in video", ja: "映像レッスン" }, go: function () { setMsgAVenir(tr({ fr: "Vidéos", en: "Videos", es: "Vídeos", it: "Video", ja: "動画" })); } },
+        { cle: "quiz", ic: "quiz", titre: { fr: "Quiz", en: "Quiz", es: "Quiz", it: "Quiz", ja: "クイズ" }, sub: { fr: "Teste tes acquis", en: "Test yourself", es: "Ponte a prueba", it: "Mettiti alla prova", ja: "腕試し" }, go: function () { vib(); try { window.__HYPE_ONGLET_GALOP = "quiz"; } catch (eQ) { } setGalopOuvert(gAct); setEcran("galop-detail"); } },
+        { cle: "fiches", ic: "fiche", soon: true, titre: { fr: "Fiches", en: "Study cards", es: "Fichas", it: "Schede", ja: "要点カード" }, sub: { fr: "L'essentiel à retenir", en: "The essentials", es: "Lo esencial", it: "L'essenziale", ja: "要点まとめ" }, go: function () { setMsgAVenir(tr({ fr: "Fiches", en: "Study cards", es: "Fichas", it: "Schede", ja: "要点カード" })); } },
         { cle: "examens", ic: "cible", titre: { fr: "Examens", en: "Mock exams", es: "Exámenes", it: "Esami", ja: "模擬試験" }, sub: { fr: "Examens blancs", en: "Practice exams", es: "Exámenes de prueba", it: "Esami di prova", ja: "本番前の練習" }, go: function () { vib(); setEcran("examen"); } },
-        { cle: "carnet", ic: "carnet", titre: { fr: "Carnet", en: "Journal", es: "Cuaderno", it: "Diario", ja: "ノート" }, sub: { fr: "Ta progression", en: "Your progress", es: "Tu progreso", it: "I tuoi progressi", ja: "あなたの歩み" }, go: function () { setMsgAVenir(tr({ fr: "Carnet", en: "Journal", es: "Cuaderno", it: "Diario", ja: "ノート" })); } }
+        { cle: "carnet", ic: "carnet", soon: true, titre: { fr: "Carnet", en: "Journal", es: "Cuaderno", it: "Diario", ja: "ノート" }, sub: { fr: "Ta progression", en: "Your progress", es: "Tu progreso", it: "I tuoi progressi", ja: "あなたの歩み" }, go: function () { setMsgAVenir(tr({ fr: "Carnet", en: "Journal", es: "Cuaderno", it: "Diario", ja: "ノート" })); } }
     ];
     var pctChemin = Math.max(0, Math.min(100, ((gAct - 1) + pctG / 100) / 6 * 100));
     var avatarHB = (typeof IMG_HEYBABY_AVATAR !== "undefined" && IMG_HEYBABY_AVATAR) ? IMG_HEYBABY_AVATAR : null;
@@ -25867,7 +25868,8 @@ function EcranBibliothequeGalops() {
         React.createElement("div", { className: "sect ain", style: { animationDelay: ".75s" } }, React.createElement("i", null), React.createElement("span", { className: "slab" }, tr({ fr: "Explorer", en: "Explore", es: "Explorar", it: "Esplora", ja: "見つける" })), React.createElement("i", null)),
         React.createElement("div", { className: "cards" },
             CARTES.map(function (c, i) {
-                return React.createElement("button", { key: c.cle, className: "gcard ain", style: { animationDelay: (0.8 + i * 0.07) + "s" }, onClick: c.go },
+                return React.createElement("button", { key: c.cle, className: "gcard ain", style: { animationDelay: (0.8 + i * 0.07) + "s", opacity: c.soon ? 0.86 : undefined }, onClick: c.go },
+                    c.soon ? React.createElement("span", { className: "gsoon" }, tr({ fr: "Prochainement", en: "Coming soon", es: "Próximamente", it: "Prossimamente", ja: "近日公開" })) : null,
                     React.createElement("div", { className: "gic" }, React.createElement(IconeGV2, { nom: c.ic })),
                     React.createElement("div", { className: "gct" }, tr(c.titre)),
                     React.createElement("div", { className: "gcs" }, tr(c.sub)));
@@ -25914,7 +25916,7 @@ function EcranGalopDetail() {
     const { galopOuvert, setEcran, coursTermines, setCoursOuvert, quizResultats, premium, t, tr, langue, setImpression } = useApp();
     const galop = GALOPS_I18N.find((g) => g.id === galopOuvert);
     const coursListe = obtenirCoursParGalop(galopOuvert, langue);
-    const [tab, setTab] = useState("cours");
+    const [tab, setTab] = useState(function () { try { var t0 = window.__HYPE_ONGLET_GALOP; window.__HYPE_ONGLET_GALOP = null; return (t0 === "quiz" || t0 === "examen") ? t0 : "cours"; } catch (eT) { return "cours"; } });
     const CATEGORIES_COURS = [
         { cle: "connaissance", couleur: "#20D9F5", titre: { fr: "Connaissance du cheval", en: "Knowing the horse", ja: "馬を知る", es: "Conocer al caballo", it: "Conoscere il cavallo" } },
         { cle: "technique", couleur: "#5B8DEF", titre: { fr: "Technique équestre", en: "Riding technique", ja: "騎乗技術", es: "Técnica ecuestre", it: "Tecnica equestre" } },
