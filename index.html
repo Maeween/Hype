@@ -120,17 +120,35 @@ async function majProfil({ pseudo, avatar_url, ecurie, ville, teinte } = {}) {
 
 /* --- 4. Photos (upload dans le bucket "photos") ------------ */
 
-// Envoie un fichier photo, renvoie { url, error }
+// ---- Médias (photos ET vidéos) : détection + limites --------
+// Taille max d'un média envoyé. À aligner sur la limite du bucket "photos" côté Supabase.
+var HYPE_MAX_MEDIA_MO = 50;
+function estFichierVideo(f) { try { return !!f && ((f.type && f.type.toLowerCase().indexOf("video") === 0) || /\.(mp4|mov|m4v|webm|ogv|3gp|quicktime)$/i.test(f.name || "")); } catch (e) { return false; } }
+function estVideoUrl(u) { try { return /\.(mp4|mov|m4v|webm|ogv|3gp|quicktime)(\?|#|$)/i.test(String(u || "")); } catch (e) { return false; } }
+// Renvoie la taille en Mo si le fichier dépasse la limite (sinon null).
+function mediaTropLourd(f) { try { if (f && f.size && f.size > HYPE_MAX_MEDIA_MO * 1024 * 1024) return Math.round(f.size / 1048576); return null; } catch (e) { return null; } }
+
+// Envoie un fichier (photo ou vidéo) dans le bucket "photos", renvoie { url, error }
 async function envoyerPhoto(fichier) {
   const user = await utilisateurActuel();
   if (!user) return { url: null, error: "Pas connecté" };
-  const extension = (fichier.name.split(".").pop() || "jpg").toLowerCase();
-  const chemin = user.id + "/" + Date.now() + "." + extension;
-  const { error } = await supa.storage.from("photos").upload(chemin, fichier);
+  let extension = (fichier.name && fichier.name.indexOf(".") >= 0) ? String(fichier.name.split(".").pop()).toLowerCase() : "";
+  if (!extension) {
+    const t = (fichier.type || "").toLowerCase();
+    if (t.indexOf("quicktime") >= 0) extension = "mov";
+    else if (t.indexOf("video") === 0) extension = (t.split("/")[1] || "mp4");
+    else if (t.indexOf("image") === 0) extension = (t.split("/")[1] || "jpg");
+    else extension = "jpg";
+  }
+  extension = (String(extension).match(/[a-z0-9]+/) || ["jpg"])[0];
+  const chemin = user.id + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "." + extension;
+  const { error } = await supa.storage.from("photos").upload(chemin, fichier, { contentType: fichier.type || undefined, cacheControl: "3600", upsert: false });
   if (error) return { url: null, error };
   const { data } = supa.storage.from("photos").getPublicUrl(chemin);
   return { url: data.publicUrl, error: null };
 }
+// Alias sémantique : accepte photo OU vidéo (même pipeline)
+var envoyerMedia = envoyerPhoto;
 
 
 /* --- 5. Publier un résultat -------------------------------- */
@@ -24240,7 +24258,7 @@ function EcranGererEcurie() {
   React.useEffect(function () { charger(); }, []);
   async function soumettreCheval() { if (!champsCh.nom.trim()) return; setBusy(true); try { await ajouterCheval({ nom: champsCh.nom, race: champsCh.race, age: champsCh.age, discipline: champsCh.discipline, fichierPhoto: chFile.current && chFile.current.files[0] }); } catch (e) {} setBusy(false); setFormOuvert(null); setChampsCh({ nom: "", race: "", age: "", discipline: "" }); if (chFile.current) chFile.current.value = ""; charger(); }
   async function soumettreCavalier() { if (!champsCv.nom.trim()) return; setBusy(true); try { await ajouterCavalier({ nom: champsCv.nom, niveau: champsCv.niveau, fichierPhoto: cvFile.current && cvFile.current.files[0] }); } catch (e) {} setBusy(false); setFormOuvert(null); setChampsCv({ nom: "", niveau: "" }); if (cvFile.current) cvFile.current.value = ""; charger(); }
-  async function soumettreSouvenir(e) { var f = e.target.files && e.target.files[0]; if (!f) return; setBusy(true); try { await ajouterSouvenir(f); } catch (er) {} setBusy(false); if (svFile.current) svFile.current.value = ""; charger(); }
+  async function soumettreSouvenir(e) { var f = e.target.files && e.target.files[0]; if (svFile.current) svFile.current.value = ""; if (!f) return; var mo = mediaTropLourd(f); if (mo) { alert(T("Vidéo trop lourde (" + mo + " Mo). Filme plus court ou réduis la qualité (max " + HYPE_MAX_MEDIA_MO + " Mo).", "Video too heavy (" + mo + " MB). Film shorter or lower the quality (max " + HYPE_MAX_MEDIA_MO + " MB).", "Vídeo demasiado pesado (" + mo + " MB). Graba más corto o baja la calidad (máx " + HYPE_MAX_MEDIA_MO + " MB).", "Video troppo pesante (" + mo + " MB). Filma più corto o riduci la qualità (max " + HYPE_MAX_MEDIA_MO + " MB).", "動画が重すぎます（" + mo + " MB）。短く撮るか画質を下げてください（最大 " + HYPE_MAX_MEDIA_MO + " MB）。")); return; } setBusy(true); try { await ajouterSouvenir(f); } catch (er) {} setBusy(false); charger(); }
   async function suppr(type, id) { try { if (type === "cheval") await supprimerCheval(id); else await supprimerCavalier(id); } catch (e) {} charger(); }
   function eyb(label, action, actLabel) { return h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0 0 12px" } }, h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase" } }, label), action ? h("button", { onClick: action, style: { background: "none", border: "none", color: TURQL, fontSize: 12, fontWeight: 700, fontFamily: M, cursor: "pointer", padding: 0 } }, actLabel) : null); }
   function champ(val, onCh, ph) { return h("input", { value: val, onChange: onCh, placeholder: ph, style: { width: "100%", padding: "11px 14px", borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 14, fontFamily: M, outline: "none", marginBottom: 9, boxSizing: "border-box" } }); }
@@ -24253,7 +24271,7 @@ function EcranGererEcurie() {
   if (user === null) return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } }, head, h("div", { style: { padding: "56px 30px", textAlign: "center" } }, h("div", { style: { fontSize: 14, color: "#B9C6CC", fontFamily: M, lineHeight: 1.5, marginBottom: 22 } }, T("Connecte-toi pour ajouter tes chevaux, tes cavaliers et tes photos.", "Sign in to add your horses, riders and photos.", "", "", "")), h("button", { onClick: function () { setEcran("auth"); }, style: { padding: "13px 26px", borderRadius: 14, background: TURQ, border: "none", color: "#04252a", fontWeight: 800, fontSize: 14, fontFamily: M, cursor: "pointer" } }, T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3"))));
   function ligne(item, type, sub) { return h("div", { key: item.id, style: { display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: "#0c0e12", border: "1px solid rgba(255,255,255,0.06)" } }, h("div", { style: { width: 44, height: 44, borderRadius: 10, flex: "0 0 auto", backgroundImage: item.photo_url ? ("url(" + item.photo_url + ")") : "none", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#12242b" } }), h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontSize: 14, fontWeight: 600 } }, item.nom), sub ? h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, sub) : null), h("button", { onClick: function () { suppr(type, item.id); }, style: { background: "none", border: "none", color: "#6B7580", fontSize: 20, cursor: "pointer", lineHeight: 1 } }, "\u00d7")); }
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } },
-    h("input", { ref: svFile, type: "file", accept: "image/*", onChange: soumettreSouvenir, style: { display: "none" } }),
+    h("input", { ref: svFile, type: "file", accept: "image/*,video/*", onChange: soumettreSouvenir, style: { display: "none" } }),
     head,
     h("div", { style: { padding: "16px 16px 0" } },
       eyb(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), function () { setFormOuvert(formOuvert === "cheval" ? null : "cheval"); }, formOuvert === "cheval" ? T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b") : "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0")),
@@ -24274,7 +24292,7 @@ function EcranGererEcurie() {
       cavaliers.length ? h("div", { style: { display: "flex", flexDirection: "column", gap: 9 } }, cavaliers.map(function (c) { return ligne(c, "cavalier", c.niveau || ""); })) : (formOuvert !== "cavalier" ? h("div", { style: { fontSize: 12.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Aucun cavalier ajout\u00e9.", "No rider yet.", "", "", "")) : null)),
     h("div", { style: { padding: "26px 16px 0" } },
       eyb(T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa"), function () { svFile.current && svFile.current.click(); }, "+ " + T("Photo", "Photo", "Foto", "Foto", "\u5199\u771f")),
-      souvenirs.length ? h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 } }, souvenirs.map(function (s) { return h("div", { key: s.id, style: { paddingBottom: "100%", position: "relative", borderRadius: 12, backgroundImage: "url(" + s.photo_url + ")", backgroundSize: "cover", backgroundPosition: "center" } }); })) : h("div", { style: { fontSize: 12.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Aucune photo ajout\u00e9e.", "No photo yet.", "", "", ""))),
+      souvenirs.length ? h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 } }, souvenirs.map(function (s) { var estV = estVideoUrl(s.photo_url); return h("div", { key: s.id, style: { paddingBottom: "100%", position: "relative", borderRadius: 12, overflow: "hidden", backgroundColor: "#0d141a", backgroundImage: estV ? "none" : ("url(" + s.photo_url + ")"), backgroundSize: "cover", backgroundPosition: "center" } }, estV ? hypeMediaEl(s.photo_url, { position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }, { controls: true }) : null); })) : h("div", { style: { fontSize: 12.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Aucune photo ajout\u00e9e.", "No photo yet.", "", "", ""))),
     h("div", { style: { padding: "26px 16px 0" } },
       h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 } }, T("Palmar\u00e8s de l'\u00e9curie", "Stable's record", "Palmar\u00e9s", "Palmar\u00e8s", "\u6210\u7e3e")),
       h("div", { style: { fontSize: 11, color: "#6B7580", fontFamily: M, fontStyle: "italic", marginBottom: 12 } }, T("Les r\u00e9sultats publi\u00e9s par les membres du club.", "Results published by club members.", "", "", "")),
@@ -24817,6 +24835,31 @@ var CHEVAUX_FICHE = {
 function teinteRGBA(hex, aT) { try { var h9 = String(hex).replace("#", ""); return "rgba(" + parseInt(h9.substr(0, 2), 16) + "," + parseInt(h9.substr(2, 2), 16) + "," + parseInt(h9.substr(4, 2), 16) + "," + aT + ")"; } catch (e) { return "rgba(32,217,245," + aT + ")"; } }
 function teinteClaire(hex) { try { var h9 = String(hex).replace("#", ""); function mx(i9) { var v9 = Math.round(parseInt(h9.substr(i9, 2), 16) * 0.7 + 255 * 0.3); return ("0" + v9.toString(16)).slice(-2); } return "#" + mx(0) + mx(2) + mx(4); } catch (e) { return "#5FE9F0"; } }
 
+/* ===== Média (image OU vidéo) : rendu unifié ===== */
+// Renvoie un <img> ou un <video> selon l'URL. opts : { className, onClick, controls, autoPlay, preload, refVid }
+function hypeMediaEl(src, style, opts) {
+  opts = opts || {}; var h = React.createElement;
+  if (estVideoUrl(src)) {
+    var p = { src: src, style: style, playsInline: true, "webkit-playsinline": "true", preload: opts.preload || "metadata" };
+    if (opts.className) p.className = opts.className;
+    if (opts.controls) p.controls = true;
+    if (opts.autoPlay) { p.autoPlay = true; p.loop = true; p.muted = true; }
+    if (opts.onClick) p.onClick = opts.onClick;
+    if (opts.refVid) p.ref = opts.refVid;
+    return h("video", p);
+  }
+  var pi = { src: src, alt: "", style: style };
+  if (opts.className) pi.className = opts.className;
+  if (opts.onClick) pi.onClick = opts.onClick;
+  return h("img", pi);
+}
+// Petite pastille ▶ (indique une vidéo). teinte : couleur d'accent.
+function hypePastilleLecture(teinte, taille) {
+  var h = React.createElement; var T9 = teinte || "#20D9F5"; var s = taille || 38;
+  return h("span", { "aria-hidden": "true", style: { position: "absolute", left: "50%", top: "50%", transform: "translate(-50%,-50%)", width: s, height: s, borderRadius: "50%", background: "rgba(7,8,10,0.5)", border: "1px solid " + teinteRGBA(T9, 0.85), WebkitBackdropFilter: "blur(4px)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
+    h("span", { style: { width: 0, height: 0, borderLeft: Math.round(s * 0.28) + "px solid " + T9, borderTop: Math.round(s * 0.18) + "px solid transparent", borderBottom: Math.round(s * 0.18) + "px solid transparent", marginLeft: Math.round(s * 0.08) } }));
+}
+
 /* ===== FICHE CHEVAL — teinte spectrale + devise (éditables) ===== */
 var CHEVAUX_SPECTRAL = {
   mydream: { teinte: "#20D9F5" },
@@ -25061,6 +25104,9 @@ function MurHype(props) {
   function choisir(e) {
     var f = e.target.files && e.target.files[0]; e.target.value = "";
     if (!f) return;
+    var mo = mediaTropLourd(f);
+    if (mo) { alert(T("Vidéo trop lourde (" + mo + " Mo). Filme plus court ou réduis la qualité (max " + HYPE_MAX_MEDIA_MO + " Mo).", "Video too heavy (" + mo + " MB). Film shorter or lower the quality (max " + HYPE_MAX_MEDIA_MO + " MB).", "Vídeo demasiado pesado (" + mo + " MB). Graba más corto o baja la calidad (máx " + HYPE_MAX_MEDIA_MO + " MB).", "Video troppo pesante (" + mo + " MB). Filma più corto o riduci la qualità (max " + HYPE_MAX_MEDIA_MO + " MB).", "動画が重すぎます（" + mo + " MB）。短く撮るか画質を下げてください（最大 " + HYPE_MAX_MEDIA_MO + " MB）。")); return; }
+    if (estFichierVideo(f)) { try { setPhoto({ fichier: f, dataUrl: null, video: true, apercu: (window.URL || window.webkitURL).createObjectURL(f) }); } catch (eV) { setPhoto({ fichier: f, dataUrl: null, video: true, apercu: null }); } return; }
     hypeRecadrer(f, 4 / 5).then(function (res) { if (res) setPhoto(res); });
   }
   async function publier() {
@@ -25088,13 +25134,15 @@ function MurHype(props) {
     enfants.push(h("div", { key: "comp", style: Object.assign({}, carte, { marginBottom: 12 }) },
       h("textarea", { value: texte, onChange: function (e) { setTexte(e.target.value); }, rows: 2, placeholder: T("Partage un moment\u2026", "Share a moment\u2026", "Comparte un momento\u2026", "Condividi un momento\u2026", "\u77ac\u9593\u3092\u30b7\u30a7\u30a2\u2026"), style: { width: "100%", background: "transparent", border: "none", outline: "none", resize: "none", color: "#EDF2F5", fontSize: 14, fontFamily: M2, lineHeight: 1.45 } }),
       photo ? h("div", { style: { position: "relative", marginTop: 8, width: 96 } },
-        h("img", { src: photo.dataUrl, alt: "", style: { width: 96, height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid rgba(32,217,245,0.4)" } }),
+        photo.video
+          ? h("video", { src: photo.apercu || undefined, style: { width: 96, height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid rgba(32,217,245,0.4)", background: "#0d141a" }, muted: true, playsInline: true, controls: true, preload: "metadata" })
+          : h("img", { src: photo.dataUrl, alt: "", style: { width: 96, height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid rgba(32,217,245,0.4)" } }),
         h("button", { onClick: function () { setPhoto(null); }, style: { position: "absolute", top: -7, right: -7, width: 22, height: 22, borderRadius: "50%", border: "none", background: "#1B222B", color: "#C9D3D8", fontSize: 12, cursor: "pointer" } }, "\u2715")) : null,
       h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10 } },
         h("button", { onClick: function () { if (fRef.current) fRef.current.click(); }, style: { background: "none", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 999, padding: "7px 13px", color: "#C9D3D8", fontSize: 12.5, fontFamily: M2, cursor: "pointer" } }, "\uD83D\uDCF7 " + T("Photo", "Photo", "Foto", "Foto", "\u5199\u771f")),
         h("button", { onClick: publier, disabled: envoi || (!texte.trim() && !photo), style: { border: "none", borderRadius: 999, padding: "8px 20px", fontSize: 13, fontWeight: 800, fontFamily: M2, cursor: "pointer", background: (texte.trim() || photo) ? "linear-gradient(90deg,#1FB8C4,#5FE9F0)" : "rgba(255,255,255,0.08)", color: (texte.trim() || photo) ? "#04252A" : "#5B646E" } }, envoi ? "\u2026" : T("Publier", "Post", "Publicar", "Pubblica", "\u6295\u7a3f")))));
   }
-  enfants.push(h("input", { key: "fi", ref: fRef, type: "file", accept: "image/*", onChange: choisir, style: { display: "none" } }));
+  enfants.push(h("input", { key: "fi", ref: fRef, type: "file", accept: "image/*,video/*", onChange: choisir, style: { display: "none" } }));
   if (charge) enfants.push(h("div", { key: "ld", style: { color: "#5B646E", fontSize: 12.5, textAlign: "center", padding: "10px 0", fontFamily: M2 } }, "\u2026"));
   var liste = (posts || []).slice().reverse();
   var listeAffichee = props.compact ? liste.slice(0, 2) : liste;
@@ -25108,7 +25156,7 @@ function MurHype(props) {
           h("div", { style: { fontSize: 10.5, color: "#5B646E", fontFamily: M2 } }, datePost(p.created_at))),
         (moi && (p.user_id === moi.id || estModerateurHype(moi))) ? h("button", { onClick: function () { suppr(p); }, "aria-label": "Supprimer", style: { background: "none", border: "none", color: "#5B646E", fontSize: 14, cursor: "pointer", padding: 4 } }, "\uD83D\uDDD1") : null),
       p.texte ? h("div", { style: { fontSize: 13.5, color: "#DCE3E8", lineHeight: 1.5, fontFamily: M2, whiteSpace: "pre-wrap" } }, p.texte) : null,
-      p.photo_url ? h("img", { src: p.photo_url, alt: "", style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block" } }) : null));
+      p.photo_url ? hypeMediaEl(p.photo_url, { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", backgroundColor: "#0d141a" }, { controls: estVideoUrl(p.photo_url), preload: "metadata" }) : null));
   });
   if (props.compact && liste.length > 2 && props.onVoirTout) enfants.push(h("button", { key: "vt", onClick: props.onVoirTout, style: { display: "block", margin: "2px auto 0", background: "rgba(32,217,245,0.07)", border: "1px solid rgba(32,217,245,0.35)", color: "#20D9F5", fontSize: 12, fontWeight: 700, fontFamily: M2, padding: "9px 20px", borderRadius: 999 } }, T("Voir tout le fil", "See the full feed", "Ver todo el hilo", "Vedi tutto il filo", "すべて見る") + " →"));
   if (!charge && dispo && !liste.length) enfants.push(h("div", { key: "vide", style: { color: "#5B646E", fontSize: 12.5, textAlign: "center", padding: "6px 0 2px", fontStyle: "italic", fontFamily: M2 } }, T("Sois le premier \u00e0 publier ici.", "Be the first to post here.", "S\u00e9 el primero en publicar.", "Sii il primo a pubblicare.", "\u6700\u521d\u306e\u6295\u7a3f\u3092\u3057\u3088\u3046\u3002")));
@@ -25198,9 +25246,11 @@ function GalerieSouvenirs(props) {
   var liste = (props.vedettes && props.vedettes.length) ? props.vedettes : (photos || []);
   if (!liste.length && props.photoDefaut) liste = [props.photoDefaut];
   function cell(src, grande, cle) {
+    var estV = estVideoUrl(src);
     return h("div", { key: cle, onClick: props.onTout, style: { gridRow: grande ? "1 / span 2" : "auto", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)", position: "relative", cursor: "pointer" } },
-      src ? h("img", { src: src, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
-        : h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(237,242,245,0.22)", fontSize: 22 } }, "+"));
+      src ? hypeMediaEl(src, { width: "100%", height: "100%", objectFit: "cover", display: "block" }, { preload: "metadata" })
+        : h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(237,242,245,0.22)", fontSize: 22 } }, "+"),
+      (src && estV) ? hypePastilleLecture(tnT, 34) : null);
   }
   return h("div", { className: "rise", style: { padding: "0 16px" } },
     h("div", { style: { display: "grid", gridTemplateColumns: "2fr 1fr", gridTemplateRows: "1fr 1fr", gap: 8, height: 236 } },
@@ -25288,7 +25338,8 @@ function GrilleSouvenirs(props) {
       : "none";
     cellules.push(h("div", { key: "p" + i9, className: "souvCell", style: { aspectRatio: "1 / 1", animation: entree } },
       h("div", { className: "souvFlot", style: { "--fx": fx + "px", "--fy": fy + "px", animationDuration: duree + "s", animationDelay: depart + "s", border: enVedette ? "1.5px solid " + tA(0.75) + "" : "1px solid rgba(255,255,255,0.08)", boxShadow: enVedette ? "0 0 18px " + tA(0.25) + "" : "none", cursor: "pointer" } },
-        h("img", { className: "souvImg", src: u, alt: "", onClick: function () { if (props.onOuvrir) props.onOuvrir(u); } }),
+        hypeMediaEl(u, null, { className: "souvImg", preload: "metadata", onClick: function () { if (props.onOuvrir) props.onOuvrir(u); } }),
+        estVideoUrl(u) ? hypePastilleLecture(tnT, 34) : null,
         h("span", { className: "souvHaloCell", style: { animationDelay: ((i9 % 5) * 1.4) + "s" } }),
         props.onToggleVedette ? h("button", { onClick: function (e9) { if (e9 && e9.stopPropagation) e9.stopPropagation(); props.onToggleVedette(u); }, "aria-label": "Vedette", style: { position: "absolute", top: 7, right: 7, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.3)", background: enVedette ? "" + tA(0.9) + "" : "rgba(7,8,10,0.55)", color: enVedette ? "#04252a" : "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u2605") : null)));
   });
@@ -25599,7 +25650,7 @@ function EcranCheval() {
     h("input", { ref: refPhotoCh, type: "file", accept: "image/*", onChange: choisirPhotoCheval, style: { display: "none" } }),
     visionneuse ? h("div", { onClick: fermerVisionneuse, "data-noswipe": "true", className: "souvVoile" + (visFerme ? " souvQuitte" : ""), style: { position: "fixed", inset: 0, zIndex: 8800, background: "rgba(4,6,9,0.96)", display: "flex", alignItems: "center", justifyContent: "center", padding: 10 } },
       h("div", { className: "souvGrandHalo" }),
-      h("img", { src: visionneuse, alt: "", className: "souvVue" + (visFerme ? " souvQuitte" : ""), style: { maxWidth: "100%", maxHeight: "90%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)" } }),
+      hypeMediaEl(visionneuse, { maxWidth: "100%", maxHeight: "90%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)", background: estVideoUrl(visionneuse) ? "#0d141a" : undefined }, { className: "souvVue" + (visFerme ? " souvQuitte" : ""), controls: estVideoUrl(visionneuse), preload: "metadata", onClick: estVideoUrl(visionneuse) ? function (eV9) { if (eV9 && eV9.stopPropagation) eV9.stopPropagation(); } : undefined }),
       h("button", { onClick: function (eX) { eX.stopPropagation(); fermerVisionneuse(); }, style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", right: 16, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.25)", color: "#EDF2F5", fontSize: 16, zIndex: 3 } }, "✕"),
       h("button", { onClick: function (eY) { eY.stopPropagation(); basculerVedette(visionneuse); }, style: { position: "absolute", bottom: "calc(24px + env(safe-area-inset-bottom))", left: "50%", transform: "translateX(-50%)", padding: "10px 20px", borderRadius: 999, border: "1px solid " + tA(0.6) + "", background: (vedettes || []).indexOf(visionneuse) >= 0 ? "" + tA(0.9) + "" : "rgba(7,8,10,0.7)", color: (vedettes || []).indexOf(visionneuse) >= 0 ? "#04252a" : "#EDF2F5", fontSize: 12.5, fontWeight: 700, whiteSpace: "nowrap" } }, "★ " + ((vedettes || []).indexOf(visionneuse) >= 0 ? T("En vedette", "Featured", "Destacada", "In evidenza", "お気に入り") : T("Mettre en vedette", "Feature this photo", "Destacar", "Metti in evidenza", "お気に入りに追加")))) : null,
     selRuban ? h("div", { className: "rubanFS", onClick: function () { setSelRuban(null); } },
