@@ -27443,7 +27443,7 @@ function hbLog() { try { var args = Array.prototype.slice.call(arguments); conso
 // pour permettre à Hey Baby d'analyser le mouvement sans envoyer la vidéo entière.
 function extraireFramesVideo(fichier, options) {
     const opts = options || {};
-    const nbFrames = opts.nb || 4, maxCote = opts.maxCote || 768, qualite = opts.qualite || 0.6;
+    const nbDemande = opts.nb || 0, maxCote = opts.maxCote || 768, qualite = opts.qualite || 0.6;
     return new Promise(function (resoudre, rejeter) {
         let url = null;
         try { url = URL.createObjectURL(fichier); } catch (e) { rejeter(e); return; }
@@ -27458,6 +27458,8 @@ function extraireFramesVideo(fichier, options) {
             try {
                 const duree = video.duration;
                 if (!isFinite(duree) || duree <= 0) { echec("durée de vidéo inconnue"); return; }
+                // Nombre d'images adaptatif : courte vidéo = 4, moyenne = 6, longue = 8
+                const nbFrames = nbDemande || (duree <= 10 ? 4 : duree <= 30 ? 6 : 8);
                 const grand = Math.max(video.videoWidth || 1, video.videoHeight || 1);
                 const echelle = Math.min(1, maxCote / grand);
                 const w = Math.max(1, Math.round((video.videoWidth || 640) * echelle));
@@ -27570,7 +27572,7 @@ function EcranAssistantIA() {
         if (typeof estFichierVideo === "function" && estFichierVideo(f)) {
             setImageJointe(null); setFramesVideo(null); setExtractionVideo(true);
             hbLog("vidéo choisie", { nom: f.name, taille: f.size, type: f.type });
-            extraireFramesVideo(f, { nb: 4, maxCote: 768, qualite: 0.6 })
+            extraireFramesVideo(f, { maxCote: 1024, qualite: 0.65 })
                 .then((frames) => { setFramesVideo(frames); setImageJointe(frames[0]); hbLog("images extraites de la vidéo :", frames.length); })
                 .catch((err) => { hbLog("échec extraction vidéo :", err && err.message); setToastHB(tr({ fr: "Impossible de lire cette vidéo 😕", en: "Couldn't read this video 😕", es: "No se pudo leer este vídeo 😕", it: "Impossibile leggere questo video 😕", ja: "この動画を読み込めませんでした 😕" })); setTimeout(() => setToastHB(null), 2600); })
                 .finally(() => setExtractionVideo(false));
@@ -27657,7 +27659,7 @@ function EcranAssistantIA() {
                 body: JSON.stringify({
                     stream: true,
                     system: getSystemPrompt(langue, { profil: profil, chevaux: chevaux, premium: premium, planAbo: planAbo, xp: xp, serie: serie, galopOuvert: galopOuvert, coursOuvert: coursOuvert }),
-                    messages: nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).slice(imgEnvoyee ? -1 : -10).map((m) => ({ role: m.role, content: (m.frames && m.frames.length) ? (function () { const blocs = m.frames.map(function (fr) { const v = fr.indexOf(","); const mt = fr.slice(5, fr.indexOf(";")) || "image/jpeg"; return { type: "image", source: { type: "base64", media_type: mt, data: fr.slice(v + 1) } }; }); blocs.push({ type: "text", text: "Ces " + m.frames.length + " images sont extraites d'une même vidéo, dans l'ordre chronologique (de la première à la dernière). Analyse le mouvement et l'évolution dans leur ensemble, comme une séquence." + (m.contenu ? "\n\nQuestion du cavalier : " + m.contenu : "") }); return blocs; })() : m.image ? (function () { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return blocs; })() : m.contenu })),
+                    messages: nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).slice(imgEnvoyee ? -1 : -10).map((m) => ({ role: m.role, content: (m.frames && m.frames.length) ? (function () { const blocs = m.frames.map(function (fr) { const v = fr.indexOf(","); const mt = fr.slice(5, fr.indexOf(";")) || "image/jpeg"; return { type: "image", source: { type: "base64", media_type: mt, data: fr.slice(v + 1) } }; }); blocs.push({ type: "text", text: "Ces " + m.frames.length + " images sont extraites d'une m\u00eame vid\u00e9o, dans l'ordre chronologique. Tu es un coach d'\u00e9quitation : concentre-toi UNIQUEMENT sur le couple cavalier/cheval principal (le plus proche ou le plus central), ignore le d\u00e9cor et les autres chevaux. Ne d\u00e9cris pas la sc\u00e8ne. R\u00e9ponds de fa\u00e7on courte et structur\u00e9e, dans la langue du cavalier : 1) \u2705 2 points forts observ\u00e9s (position, \u00e9quilibre, trajectoire, attitude du cheval), 2) \uD83C\uDFAF 2 axes de travail concrets, 3) \uD83D\uDCAA 1 exercice simple \u00e0 faire \u00e0 la prochaine s\u00e9ance. Si la vid\u00e9o est film\u00e9e de trop loin pour bien juger, dis-le en UNE phrase et donne quand m\u00eame ton meilleur avis, puis conseille de filmer plus pr\u00e8s." + (m.contenu ? "\n\nQuestion du cavalier : " + m.contenu : "") }); return blocs; })() : m.image ? (function () { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return blocs; })() : m.contenu })),
                 }),
             };
             let response;
