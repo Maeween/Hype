@@ -27458,8 +27458,10 @@ function extraireFramesVideo(fichier, options) {
             try {
                 const duree = video.duration;
                 if (!isFinite(duree) || duree <= 0) { echec("durée de vidéo inconnue"); return; }
-                // Nombre d'images adaptatif : courte vidéo = 4, moyenne = 6, longue = 8
-                const nbFrames = nbDemande || (duree <= 10 ? 4 : duree <= 30 ? 6 : 8);
+                // Nombre d'images adaptatif : plus la vidéo est longue, plus on lit d'images
+                const nbFrames = nbDemande || (duree <= 8 ? 6 : duree <= 20 ? 8 : duree <= 45 ? 10 : 12);
+                // Au-delà de 10 images, compression un peu plus forte pour rester léger
+                const qual = nbFrames >= 10 ? Math.min(qualite, 0.55) : qualite;
                 const grand = Math.max(video.videoWidth || 1, video.videoHeight || 1);
                 const echelle = Math.min(1, maxCote / grand);
                 const w = Math.max(1, Math.round((video.videoWidth || 640) * echelle));
@@ -27478,12 +27480,27 @@ function extraireFramesVideo(fichier, options) {
                         try { video.currentTime = cible; } catch (e) { suite(); }
                         setTimeout(suite, 3500);
                     });
-                    try { ctx.drawImage(video, 0, 0, w, h); const d = canvas.toDataURL("image/jpeg", qualite); if (d && d.length > 100) frames.push(d); } catch (e) { }
+                    try { ctx.drawImage(video, 0, 0, w, h); const d = canvas.toDataURL("image/jpeg", qual); if (d && d.length > 100) frames.push(d); } catch (e) { }
                 }
                 if (fini) return;
                 fini = true; clearTimeout(gardeFou); nettoyer();
                 if (!frames.length) { rejeter(new Error("aucune image extraite")); return; }
-                resoudre(frames);
+                // Garde-fou : si le total dépasse ~4,2 Mo de base64, on garde une sélection
+                // espacée régulièrement (début → fin) pour rester sous la limite d'envoi.
+                const LIMITE_TOTAL = 4200000;
+                let liste = frames;
+                let total = liste.reduce(function (s, fr) { return s + fr.length; }, 0);
+                while (liste.length > 4 && total > LIMITE_TOTAL) {
+                    const k = liste.length - 2;
+                    const sub = [];
+                    for (let j = 0; j < k; j++) {
+                        const idx = Math.round(j * (liste.length - 1) / (k - 1));
+                        if (sub.indexOf(liste[idx]) === -1) sub.push(liste[idx]);
+                    }
+                    liste = sub;
+                    total = liste.reduce(function (s, fr) { return s + fr.length; }, 0);
+                }
+                resoudre(liste);
             } catch (e) { echec(e && e.message); }
         };
         video.src = url;
