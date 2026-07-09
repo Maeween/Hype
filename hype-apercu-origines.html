@@ -24393,8 +24393,8 @@ function SectionCommentaires({ cible }) {
             h("div", { style: { fontSize: 12, fontWeight: 700, color: "#EDF2F5", fontFamily: M } }, (c.auteur && c.auteur.pseudo) || "Cavalier"),
             c.texte ? h("div", { style: { fontSize: 12.5, color: "#C7D0D6", fontFamily: M, marginTop: 1, wordBreak: "break-word" } }, c.texte) : null,
             c.photo_url ? (estUrlVideo(c.photo_url)
-              ? h("video", { src: c.photo_url, controls: true, playsInline: true, style: { maxWidth: "70%", borderRadius: 10, marginTop: 6, display: "block" } })
-              : h("img", { src: c.photo_url, style: { maxWidth: "70%", borderRadius: 10, marginTop: 6, display: "block" } })) : null)); }),
+              ? h("video", { src: c.photo_url, controls: true, playsInline: true, style: { maxWidth: "70%", borderRadius: 10, marginTop: 6, display: "block", border: "1px solid rgba(32,217,245,0.3)" } })
+              : h("img", { src: c.photo_url, style: { maxWidth: "70%", borderRadius: 10, marginTop: 6, display: "block", border: "1px solid rgba(32,217,245,0.3)" } })) : null)); }),
         (coms.length === 0) ? h("div", { style: { color: "#6B7580", fontSize: 12, fontFamily: M, marginBottom: 8 } }, T("Sois le premier \u00e0 commenter.", "Be the first to comment.", "S\u00e9 el primero.", "Sii il primo.", "\u6700\u521d\u306e\u30b3\u30e1\u30f3\u30c8\u3092")) : null,
         (user === null) ? h("button", { onClick: function () { setEcran("auth"); }, style: { background: "none", border: "none", color: TURQL, fontSize: 12.5, fontFamily: M, cursor: "pointer", padding: 0 } }, T("Connecte-toi pour commenter", "Sign in to comment", "Inicia sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3")) :
         h("div", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 4 } },
@@ -25200,7 +25200,21 @@ var CHEVAUX_FICHE = {
     palmares: []
   },
   rizotto: {
-    nom: "Rizotto d'Emery", photo: UV3_H3, info: "Poney Français · 12 ans · CSO",
+    nom: "Rizotto d'Emery", photo: UV3_H3, info: "Poney Français de Selle · 21 ans · CSO",
+    origines: {
+      sire: "05012137Z",
+      naissance: "07/05/2005 · France",
+      studbook: "Stud-book du Poney Français de Selle",
+      indices: [["IPO", "161", "0.87 · 2021"], ["BPO", "+13", "0.62"]],
+      apt: "Finale jeunes chevaux poney · obstacle 4 ans",
+      pere: { nom: "Kantje's Admiraal", detail: "Origine Étrangère Poney · NLD" },
+      mere: { nom: "Moyra de Karyann", detail: "Poney Français de Selle" },
+      arbre: [
+        { gen: { fr: "Père de mère", en: "Damsire", es: "Padre de madre", it: "Padre della madre", ja: "\u6bcd\u306e\u7236" }, lignes: [["Rotherwood Ambassador", "Welsh Pony · GBR"]] }
+      ],
+      naisseur: "Mme Rachel Triqueneaux · Le Clos Emery, Épieds",
+      note: "Non consanguin · principal ancêtre : Coed Coch Glyndwr (2,4 %)"
+    },
     flots: [
       { img: IMG_COUPE_OPEN, auth: "officiel", cav: "liam", lab: "Open de France · P1 D", liens: [{ type: "instagram", url: "https://instagram.com" }, { type: "video", url: "https://youtube.com" }] },
       { img: IMG_FLOT_BX1, auth: "officiel", lab: "Salon de Bordeaux · P1 Grand Prix" },
@@ -25219,13 +25233,16 @@ var CHEVAUX_FICHE = {
     palmares: []
   },
   venus: { nom: "Cooltax", photo: ECURIE_H4, tag: "Élite", info: "Selle Français · 7 ans · Gris", flots: [], palmares: [] },
-  idao: { nom: "Boréalis de Feinn", photo: ECURIE_H5, tag: "Élite", info: "Selle Français · 6 ans · Bai",
+  idao: { nom: "Boréalis de Feinn", photo: ECURIE_H5, tag: "Élite", info: "Selle Français · 15 ans · Bai",
     origines: {
-      mere: { nom: "Feinn", detail: "Selle Français · Bai · 165 cm", sire: "11524741G",
-        indices: [["ISO", "104", "0.87 · 2025"], ["BCC", "1", "0.30"], ["BSO", "\u22123", "0.64"], ["BDR", "\u22126", "0.29"]] },
+      sire: "11524741G",
+      studbook: "Selle Français · Jument · 165 cm",
+      indices: [["ISO", "104", "0.87 · 2025"], ["BCC", "1", "0.30"], ["BSO", "\u22123", "0.64"], ["BDR", "\u22126", "0.29"]],
+      pere: { nom: "Lando", detail: "DWB · Bai" },
+      mere: { nom: "Chouane Pironnière", detail: "Selle Français · Bai" },
       arbre: [
-        { gen: { fr: "Grands-parents", en: "Grandparents", es: "Abuelos", it: "Nonni", ja: "\u7956\u7236\u6bcd" }, lignes: [["Lando", "M · DWB · Bai"], ["Chouane Pironnière", "F · SF · Bai"]] },
-        { gen: { fr: "Arrière-grands-parents", en: "Great-grandparents", es: "Bisabuelos", it: "Bisnonni", ja: "\u66fd\u7956\u7236\u6bcd" }, lignes: [["Lancier", "M · Holsteiner"], ["Silvia", "F · SE · Bai"], ["Double Espoir", "M · SF · Alezan"], ["Opéra IV", "F · SF · Bai"]] }
+        { gen: { fr: "Grands-parents", en: "Grandparents", es: "Abuelos", it: "Nonni", ja: "\u7956\u7236\u6bcd" }, lignes: [["Lancier", "M · Holsteiner"], ["Silvia", "F · SE · Bai"], ["Double Espoir", "M · SF · Alezan"], ["Opéra IV", "F · SF · Bai"]] },
+        { gen: { fr: "Arrière-grands-parents", en: "Great-grandparents", es: "Bisabuelos", it: "Bisnonni", ja: "\u66fd\u7956\u7236\u6bcd" }, lignes: [["Landgraf", "M · Holsteiner"], ["Esmarin", "F · SE"], ["Raimondo", "M · SE"], ["Sonita", "F · SE"], ["Ibrahim", "M · DS · Bai"], ["Quatrième Espoir", "F · SF · Alezan"], ["Vidoc", "M · AA · Bai"], ["Gourmande", "F · SF · Alezan"]] }
       ]
     },
     flots: [], palmares: [] },
@@ -25243,7 +25260,7 @@ var CHEVAUX_SPECTRAL = {
   elfe:    { teinte: "#9B8CFF" },
   rizotto: { teinte: "#EAC77A" },
   venus:   { teinte: "#F2A6C2" },
-  idao:    { teinte: "#5FE9B0" }
+  idao:    { teinte: "#20D9F5" }
 };
 const ECHV_R_CSS = `
 .chvr .hero{position:relative;width:100%;height:70vh;min-height:500px;max-height:720px;overflow:hidden;background:#04070A;isolation:isolate}
@@ -25536,8 +25553,8 @@ function MurHype(props) {
         (moi && (p.user_id === moi.id || estModerateurHype(moi))) ? h("button", { onClick: function () { suppr(p); }, "aria-label": "Supprimer", style: { background: "none", border: "none", color: "#5B646E", fontSize: 14, cursor: "pointer", padding: 4 } }, "\uD83D\uDDD1") : null),
       p.texte ? h("div", { style: { fontSize: 13.5, color: "#DCE3E8", lineHeight: 1.5, fontFamily: M2, whiteSpace: "pre-wrap" } }, p.texte) : null,
       p.photo_url ? (estUrlVideo(p.photo_url)
-        ? h("video", { src: p.photo_url, controls: true, playsInline: true, style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block" } })
-        : h("img", { src: p.photo_url, alt: "", style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block" } })) : null));
+        ? h("video", { src: p.photo_url, controls: true, playsInline: true, style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid rgba(32,217,245,0.35)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px rgba(32,217,245,0.08)" } })
+        : h("img", { src: p.photo_url, alt: "", style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid rgba(32,217,245,0.35)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px rgba(32,217,245,0.08)" } })) : null));
   });
   if (props.compact && liste.length > 2 && props.onVoirTout) enfants.push(h("button", { key: "vt", onClick: props.onVoirTout, style: { display: "block", margin: "2px auto 0", background: "rgba(32,217,245,0.07)", border: "1px solid rgba(32,217,245,0.35)", color: "#20D9F5", fontSize: 12, fontWeight: 700, fontFamily: M2, padding: "9px 20px", borderRadius: 999 } }, T("Voir tout le fil", "See the full feed", "Ver todo el hilo", "Vedi tutto il filo", "すべて見る") + " →"));
   if (!charge && dispo && !liste.length) enfants.push(h("div", { key: "vide", style: { color: "#5B646E", fontSize: 12.5, textAlign: "center", padding: "6px 0 2px", fontStyle: "italic", fontFamily: M2 } }, props.momentsSeuls ? T("Raconte le premier moment ici \u2014 les photos seules vivent dans la galerie.", "Tell the first moment here \u2014 photos alone live in the gallery.", "Cuenta el primer momento aqu\u00ed \u2014 las fotos solas viven en la galer\u00eda.", "Racconta il primo momento qui \u2014 le foto da sole vivono nella galleria.", "\u6700\u521d\u306e\u77ac\u9593\u3092\u3053\u3053\u3067\u8a9e\u308d\u3046\u3002\u5199\u771f\u3060\u3051\u306f\u30ae\u30e3\u30e9\u30ea\u30fc\u3078\u3002") : T("Sois le premier \u00e0 publier ici.", "Be the first to post here.", "S\u00e9 el primero en publicar.", "Sii il primo a pubblicare.", "\u6700\u521d\u306e\u6295\u7a3f\u3092\u3057\u3088\u3046\u3002")));
@@ -25679,7 +25696,7 @@ function GalerieSouvenirs(props) {
   if (!liste.length && props.photoDefaut) liste = [props.photoDefaut];
   function cell(src, grande, cle) {
     var estVid = !!(src && typeof estUrlVideo === "function" && estUrlVideo(src));
-    return h("div", { key: cle, onClick: props.onTout, style: { gridRow: grande ? "1 / span 2" : "auto", borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.03)", position: "relative", cursor: "pointer" } },
+    return h("div", { key: cle, onClick: props.onTout, style: { gridRow: grande ? "1 / span 2" : "auto", borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.38) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06), 0 0 10px " + tA(0.08) + "", background: "rgba(255,255,255,0.03)", position: "relative", cursor: "pointer" } },
       src ? (estVid
           ? h("video", { src: src, muted: true, autoPlay: true, loop: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" } })
           : h("img", { src: src, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }))
@@ -25774,7 +25791,7 @@ function GrilleSouvenirs(props) {
       : premierePose ? ("souvPose .9s var(--cm-ease-out) " + (0.06 + i9 * 0.06).toFixed(2) + "s both")
       : "none";
     cellules.push(h("div", { key: "p" + i9, className: "souvCell", style: { aspectRatio: "1 / 1", animation: entree } },
-      h("div", { className: "souvFlot", style: { "--fx": fx + "px", "--fy": fy + "px", animationDuration: duree + "s", animationDelay: depart + "s", border: enVedette ? "1.5px solid " + tA(0.75) + "" : "1px solid rgba(255,255,255,0.08)", boxShadow: enVedette ? "0 0 18px " + tA(0.25) + "" : "none", cursor: "pointer" } },
+      h("div", { className: "souvFlot", style: { "--fx": fx + "px", "--fy": fy + "px", animationDuration: duree + "s", animationDelay: depart + "s", border: enVedette ? "1.5px solid " + tA(0.75) + "" : "1px solid " + tA(0.38) + "", boxShadow: enVedette ? "0 0 18px " + tA(0.25) + ", inset 0 0 0 1px rgba(255,255,255,0.06)" : "inset 0 0 0 1px rgba(255,255,255,0.06), 0 0 10px " + tA(0.08) + "", cursor: "pointer" } },
         estVid
           ? h("video", { className: "souvImg", src: u + "#t=0.01", muted: true, playsInline: true, preload: "metadata", onClick: function () { if (props.onOuvrir) props.onOuvrir(u); }, style: { objectFit: "cover", background: "#000" } })
           : h("img", { className: "souvImg", src: u, alt: "", onClick: function () { if (props.onOuvrir) props.onOuvrir(u); } }),
@@ -26011,40 +26028,60 @@ function EcranCheval() {
                 h("div", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.55)", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cd.compte)),
               h("span", { style: { color: teinte, opacity: 0.7, fontSize: 14, flexShrink: 0 } }, "›"));
           })),
-        h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Informations", "Details", "Información", "Informazioni", "詳細")),
-        h("div", { className: "rise", style: { animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: "11px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 18, rowGap: 9 } },
-          [[T("Race", "Breed", "Raza", "Razza", "品種"), race], [T("Sexe", "Sex", "Sexo", "Sesso", "性別"), ""], [T("Robe", "Coat", "Capa", "Mantello", "毛色"), ""], [T("Né(e) le", "Born", "Nacido", "Nato il", "生年月日"), ""], [T("Taille", "Height", "Altura", "Altezza", "体高"), ""], [T("Père", "Sire", "Padre", "Padre", "父"), "Sire"], [T("Mère", "Dam", "Madre", "Madre", "母"), "Dam"], [T("Père de mère", "Damsire", "Abuelo materno", "Padre della madre", "母の父"), ""], [T("Éleveur", "Breeder", "Criador", "Allevatore", "生産者"), ""]].map(function (pi) {
-            var vide = !pi[1];
-            return h("div", { key: pi[0], style: { minWidth: 0 } },
-              h("div", { style: { fontSize: 8, letterSpacing: "0.16em", color: "#8A929C", textTransform: "uppercase", fontWeight: 600 } }, pi[0]),
-              h("div", { style: { fontSize: 12, fontWeight: 600, color: vide ? "rgba(237,242,245,0.28)" : "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 } }, pi[1] || "—"));
-          })),
 
-        c.origines ? h("div", { className: "eyebrow2 rise", style: { animationDelay: ".11s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統")) : null,
-        c.origines ? h("div", { className: "rise", style: { animationDelay: ".11s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
-          c.origines.mere ? h("div", { style: { padding: "13px 14px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
+        h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統")),
+        (function () { var og = c.origines || {};
+        return h("div", { className: "rise", style: { animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
+          h("div", { style: { padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
+            h("div", { style: { fontSize: 9.5, color: "#C3CDD3", fontWeight: 700, letterSpacing: "0.04em" } }, (c.info || race || "—")),
+            (og.sire || og.naissance) ? h("div", { style: { fontSize: 9, color: "#9AA5AD", fontWeight: 600, marginTop: 3, letterSpacing: "0.04em" } }, [og.sire ? ("SIRE " + og.sire) : null, og.naissance ? (T("né(e) le ", "born ", "nacido el ", "nato il ", "生年月日 ") + og.naissance) : null].filter(Boolean).join("  ·  ")) : null,
+            og.studbook ? h("div", { style: { fontSize: 8.5, color: "#5B646E", marginTop: 2, fontStyle: "italic" } }, og.studbook) : null),
+          (og.indices && og.indices.length) ? h("div", { style: { padding: "11px 14px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
+            h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700, marginBottom: 8 } }, T("Aptitude", "Performance", "Aptitud", "Attitudine", "能力")),
+            h("div", { style: { display: "flex", gap: 7 } },
+              og.indices.map(function (ix, ii) {
+                return h("div", { key: "ixp" + ii, style: { flex: 1, minWidth: 0, textAlign: "center", padding: "7px 2px 6px", borderRadius: 11, background: ii === 0 ? tA(0.09) : "rgba(255,255,255,0.03)", border: "1px solid " + (ii === 0 ? tA(0.45) : "rgba(255,255,255,0.07)") } },
+                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: ii === 0 ? teinteCl : "#EDF2F5", lineHeight: 1 } }, ix[1]),
+                  h("div", { style: { fontSize: 7.5, letterSpacing: "0.16em", color: ii === 0 ? teinteCl : "#8A929C", fontWeight: 700, marginTop: 3 } }, ix[0]),
+                  ix[2] ? h("div", { style: { fontSize: 7, color: "#5B646E", marginTop: 1 } }, ix[2]) : null);
+              })),
+            c.origines.apt ? h("div", { style: { fontSize: 9.5, color: "#8A929C", fontStyle: "italic", marginTop: 8, textAlign: "center" } }, "\u2727 " + c.origines.apt) : null) : null,
+          h("div", { style: { padding: "12px 14px 11px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
+            h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700 } }, T("Père", "Sire", "Padre", "Padre", "父")),
+            og.pere ? h("div", null,
+              h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, marginTop: 3, flexWrap: "wrap" } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F6F8", letterSpacing: 0.5 } }, og.pere.nom),
+                og.pere.sire ? h("div", { style: { fontSize: 9, color: "#6B7580", fontWeight: 600, letterSpacing: "0.08em" } }, "SIRE " + og.pere.sire) : null),
+              og.pere.detail ? h("div", { style: { fontSize: 11, color: "#9AA5AD", marginTop: 2 } }, og.pere.detail) : null)
+            : h("div", { style: { fontSize: 13, fontWeight: 600, color: "rgba(237,242,245,0.28)", marginTop: 3 } }, "—")),
+          h("div", { style: { padding: "12px 14px", borderBottom: (og.arbre || og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
             h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700 } }, T("Mère", "Dam", "Madre", "Madre", "母")),
-            h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, marginTop: 3, flexWrap: "wrap" } },
-              h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 18, fontWeight: 700, color: "#F2F6F8", letterSpacing: 0.5 } }, c.origines.mere.nom),
-              c.origines.mere.sire ? h("div", { style: { fontSize: 9, color: "#6B7580", fontWeight: 600, letterSpacing: "0.08em" } }, "SIRE " + c.origines.mere.sire) : null),
-            c.origines.mere.detail ? h("div", { style: { fontSize: 11, color: "#9AA5AD", marginTop: 2 } }, c.origines.mere.detail) : null,
-            (c.origines.mere.indices && c.origines.mere.indices.length) ? h("div", { style: { display: "flex", gap: 7, marginTop: 10 } },
-              c.origines.mere.indices.map(function (ix, ii) {
+            og.mere ? h("div", null,
+              h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, marginTop: 3, flexWrap: "wrap" } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: og.pere ? 16.5 : 18, fontWeight: 700, color: "#F2F6F8", letterSpacing: 0.5 } }, og.mere.nom),
+                og.mere.sire ? h("div", { style: { fontSize: 9, color: "#6B7580", fontWeight: 600, letterSpacing: "0.08em" } }, "SIRE " + og.mere.sire) : null),
+              og.mere.detail ? h("div", { style: { fontSize: 11, color: "#9AA5AD", marginTop: 2 } }, og.mere.detail) : null)
+            : h("div", { style: { fontSize: 13, fontWeight: 600, color: "rgba(237,242,245,0.28)", marginTop: 3 } }, "—"),
+            (og.mere && og.mere.indices && og.mere.indices.length) ? h("div", { style: { display: "flex", gap: 7, marginTop: 10 } },
+              og.mere.indices.map(function (ix, ii) {
                 return h("div", { key: "ix" + ii, style: { flex: 1, minWidth: 0, textAlign: "center", padding: "7px 2px 6px", borderRadius: 11, background: ii === 0 ? tA(0.09) : "rgba(255,255,255,0.03)", border: "1px solid " + (ii === 0 ? tA(0.45) : "rgba(255,255,255,0.07)") } },
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: ii === 0 ? teinteCl : "#EDF2F5", lineHeight: 1 } }, ix[1]),
                   h("div", { style: { fontSize: 7.5, letterSpacing: "0.16em", color: ii === 0 ? teinteCl : "#8A929C", fontWeight: 700, marginTop: 3 } }, ix[0]),
                   ix[2] ? h("div", { style: { fontSize: 7, color: "#5B646E", marginTop: 1 } }, ix[2]) : null);
-              })) : null) : null,
-          (c.origines.arbre || []).map(function (gn, gi) {
-            return h("div", { key: "gen" + gi, style: { padding: "10px 14px " + (gi === c.origines.arbre.length - 1 ? "12px" : "10px"), borderBottom: gi === c.origines.arbre.length - 1 ? "none" : "1px solid rgba(255,255,255,0.05)" } },
+              })) : null),
+          (og.arbre || []).map(function (gn, gi) {
+            return h("div", { key: "gen" + gi, style: { padding: "10px 14px", borderBottom: (gi === og.arbre.length - 1 && !og.naisseur && !og.note) ? "none" : "1px solid rgba(255,255,255,0.05)" } },
               h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: "#8A929C", textTransform: "uppercase", fontWeight: 700, marginBottom: 7 } }, tr(gn.gen)),
-              h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 14, rowGap: 7 } },
+              h("div", { style: { display: "grid", gridTemplateColumns: gn.lignes.length > 1 ? "1fr 1fr" : "1fr", columnGap: 14, rowGap: 7 } },
                 gn.lignes.map(function (ln, li) {
                   return h("div", { key: "ln" + li, style: { minWidth: 0, paddingLeft: 9, borderLeft: "2px solid " + tA(0.35) } },
                     h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 12.5, fontWeight: 600, color: "#E6ECEF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ln[0]),
                     h("div", { style: { fontSize: 9, color: "#7B858E", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ln[1]));
                 })));
-          })) : null,
+          }),
+          (og.naisseur || og.note) ? h("div", { style: { padding: "9px 14px 11px" } },
+            og.naisseur ? h("div", { style: { fontSize: 9, color: "#7B858E" } }, h("span", { style: { letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, fontSize: 7.5, color: "#8A929C" } }, T("Naisseur", "Breeder", "Criador", "Allevatore", "生産者") + "  "), og.naisseur) : null,
+            og.note ? h("div", { style: { fontSize: 8.5, color: "#5B646E", fontStyle: "italic", marginTop: og.naisseur ? 4 : 0 } }, og.note) : null) : null); })(),
 
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".14s" } }, T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出")),
         h(GalerieSouvenirs, { teinte: teinte, teinteCl: teinteCl, cible: "cheval:" + id, photoDefaut: photoCh, vedettes: vedettes || [], onTout: function () { setPanneau("souvenirs"); } }),
