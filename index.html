@@ -239,12 +239,13 @@ async function cavaliersChoisisEcurie() {
     return { data: data.map(function (r) { var p = parId[r.membre_id]; return p ? Object.assign({}, p, { statut: r.statut || "en_attente" }) : null; }).filter(Boolean), error: null };
   } catch (e) { return { data: [], error: String(e) }; }
 }
-async function ajouterCavalierChoisi(membreId) {
+async function ajouterCavalierChoisi(membreId, nomEcurie) {
   try {
     const user = await utilisateurActuel();
     if (!user) return { error: "Pas connect\u00e9" };
-    let nomEcurie = null; try { nomEcurie = await monEcurieNom(); } catch (eN) { }
-    return await supa.from("ecurie_cavaliers_choisis").upsert({ user_id: user.id, membre_id: membreId, statut: "en_attente", ecurie: nomEcurie || null }, { onConflict: "user_id,membre_id" });
+    let nomEc = (nomEcurie || "").trim();
+    if (!nomEc) { try { nomEc = await monEcurieNom(); } catch (eN) { } }
+    return await supa.from("ecurie_cavaliers_choisis").upsert({ user_id: user.id, membre_id: membreId, statut: "en_attente", ecurie: nomEc || null }, { onConflict: "user_id,membre_id" });
   } catch (e) { return { error: String(e) }; }
 }
 async function retirerCavalierChoisi(membreId) {
@@ -280,8 +281,10 @@ async function estMembreEcurie(nomEcurie) {
     const norm = function (s) { try { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim(); } catch (eN) { return String(s || "").toLowerCase().trim(); } };
     const cle = norm(nomEcurie);
     try {
-      const { data: p } = await supa.from("profiles").select("ecurie").eq("id", user.id).maybeSingle();
-      if (p && norm(p.ecurie) === cle) return true;
+      let p = null;
+      try { const r1 = await supa.from("profiles").select("ecurie, ecurie2").eq("id", user.id).maybeSingle(); p = r1 && r1.data; }
+      catch (e0) { const r1b = await supa.from("profiles").select("ecurie").eq("id", user.id).maybeSingle(); p = r1b && r1b.data; }
+      if (p && (norm(p.ecurie) === cle || norm(p.ecurie2) === cle)) return true;
     } catch (e1) { }
     try {
       const { data: inv } = await supa.from("ecurie_cavaliers_choisis").select("id, ecurie").eq("membre_id", user.id).eq("statut", "accepte").limit(30);
@@ -24035,7 +24038,16 @@ function EcranMonCavalier() {
         React.createElement(SelecteurClub, { local: clubLocal, setLocal: setClubLocal }),
         h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
           h("button", { onClick: function(){ setEditClub(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
-          h("button", { onClick: sauverClub, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58"))))) : null);
+          h("button", { onClick: sauverClub, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58"))))) : null,
+    editClub2 ? h("div", { onClick: function () { setEditClub2(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "16vh" } },
+      h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
+        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Ma deuxi\u00e8me \u00e9curie", "My second stable", "Mi segunda cuadra", "La mia seconda scuderia", "\u30bb\u30ab\u30f3\u30c9\u53a9\u820e")),
+        h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("Pour les cavaliers qui montent dans plusieurs \u00e9curies.", "For riders who ride at several stables.", "Para jinetes que montan en varias cuadras.", "Per i cavalieri che montano in pi\u00f9 scuderie.", "\u8907\u6570\u306e\u53a9\u820e\u3067\u4e57\u308b\u30e9\u30a4\u30c0\u30fc\u5411\u3051")),
+        React.createElement(SelecteurClub, { local: club2Local, setLocal: setClub2Local }),
+        h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
+          h("button", { onClick: function () { setEditClub2(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
+          h("button", { onClick: function () { sauverClub2(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58"))),
+        (profil.club2 || profil.ecurie2) ? h("button", { onClick: function () { sauverClub2(""); }, style: { marginTop: 12, width: "100%", padding: "10px 0", borderRadius: 999, border: "none", background: "transparent", color: "rgba(226,138,146,0.85)", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, T("Retirer cette \u00e9curie", "Remove this stable", "Quitar esta cuadra", "Rimuovi questa scuderia", "\u3053\u306e\u53a9\u820e\u3092\u524a\u9664")) : null)) : null);
 }
 function EcranGuilde() {
   var h = React.createElement;
@@ -24069,14 +24081,24 @@ function EcranGuilde() {
     { nom: "UCPA Bois de Vincennes", membres: 24, hf: 40, res: 27, pod: 13 },
     { nom: "Poney Club de Rambouillet", membres: 14, hf: 28, res: 19, pod: 9 }
   ];
-  var monClub = ((profil.club || profil.ecurie || "").trim()) || "\u00c9curie Feinn";
+  var ecuriePrincipale = ((profil.club || profil.ecurie || "").trim()) || "\u00c9curie Feinn";
+  var ecurieSecondaire = ((profil.club2 || profil.ecurie2 || "").trim());
+  var _mcG = React.useState(function () { try { var o = (typeof window !== "undefined") && window.__guildeEcurie; if (o) { window.__guildeEcurie = null; return String(o).trim(); } } catch (eO) { } return null; });
+  var clubForce = _mcG[0], setClubForce = _mcG[1];
+  var monClub = clubForce || ecuriePrincipale;
   var _mb = React.useState(null), membres = _mb[0], setMembres = _mb[1];
   var _pc = React.useState(null), photosClub = _pc[0], setPhotosClub = _pc[1];
   var _cvc = React.useState(null), chevauxClub = _cvc[0], setChevauxClub = _cvc[1];
   var _rsc = React.useState(null), resultatsClub = _rsc[0], setResultatsClub = _rsc[1];
   React.useEffect(function () { (async function () {
     var idsMembres = [];
-    try { if (typeof supa !== "undefined" && supa) { var r = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie", monClub).limit(40); if (r && r.data && r.data.length) { setMembres(r.data); idsMembres = r.data.map(function (p) { return p.id; }); } } } catch (eM) { }
+    try { if (typeof supa !== "undefined" && supa) {
+      var mm = [];
+      try { var r = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie", monClub).limit(40); if (r && r.data) mm = mm.concat(r.data); } catch (eM1) { }
+      try { var r2b = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie2", monClub).limit(40); if (r2b && r2b.data) mm = mm.concat(r2b.data); } catch (eM2) { }
+      var vusM = {}; mm = mm.filter(function (p) { if (!p || !p.id || vusM[p.id]) return false; vusM[p.id] = true; return true; });
+      if (mm.length) { setMembres(mm); idsMembres = mm.map(function (p) { return p.id; }); }
+    } } catch (eM) { }
     try { if (typeof supa !== "undefined" && supa) { var m = await supa.from("mur_evenement").select("photo_url, auteur, created_at").eq("evenement", "club:" + monClub).order("created_at", { ascending: false }).limit(60); if (m && m.data) { var ph = m.data.filter(function (p) { return p && p.photo_url; }).slice(0, 12); if (ph.length) setPhotosClub(ph); } } } catch (eP) { }
     if (idsMembres.length) {
       try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url").in("user_id", idsMembres).order("created_at", { ascending: false }).limit(24); if (cv && cv.data && cv.data.length) setChevauxClub(cv.data); } catch (eCv) { }
@@ -24114,7 +24136,7 @@ function EcranGuilde() {
   function basculerChoisi(p) {
     var deja = (choisis || []).some(function (x) { return x.id === p.id; });
     if (deja) { setChoisis((choisis || []).filter(function (x) { return x.id !== p.id; })); try { retirerCavalierChoisi(p.id); } catch (e1) { } }
-    else { setChoisis((choisis || []).concat([{ id: p.id, pseudo: p.pseudo, avatar_url: p.avatar_url || null, ville: p.ville || "", ecurie: p.ecurie || "", statut: "en_attente" }])); try { ajouterCavalierChoisi(p.id); } catch (e2) { } }
+    else { setChoisis((choisis || []).concat([{ id: p.id, pseudo: p.pseudo, avatar_url: p.avatar_url || null, ville: p.ville || "", ecurie: p.ecurie || "", statut: "en_attente" }])); try { ajouterCavalierChoisi(p.id, monClub); } catch (e2) { } }
   }
   var FIGURANTS_CLUB = [
     { pseudo: "Camille", ville: "Itteville" },
@@ -24181,6 +24203,11 @@ function EcranGuilde() {
           h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6"))) : null),
       h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", right: 12, width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.28)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" } }, "\uD83D\uDCF7"),
       h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } })),
+    (ecurieSecondaire && clefClub(ecurieSecondaire) !== clefClub(ecuriePrincipale)) ? h("div", { style: { display: "flex", justifyContent: "center", gap: 8, padding: "12px 16px 0" } },
+      [ecuriePrincipale, ecurieSecondaire].map(function (nomE, iE) {
+        var actifE = clefClub(monClub) === clefClub(nomE);
+        return h("button", { key: "ecw" + iE, onClick: function () { setClubForce(iE === 0 ? null : nomE); }, style: { maxWidth: "46%", padding: "8px 15px", borderRadius: 999, border: "1px solid " + (actifE ? "rgba(32,217,245,0.65)" : "rgba(255,255,255,0.14)"), background: actifE ? "rgba(32,217,245,0.1)" : "rgba(255,255,255,0.035)", color: actifE ? TURQL : "#9AA5AD", fontSize: 11.5, fontWeight: 700, fontFamily: M, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", cursor: "pointer", boxShadow: actifE ? "0 0 14px rgba(32,217,245,0.15)" : "none" } }, nomE);
+      })) : null,
     h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top) + 54px) 18px 8px", textAlign: "center" } },
       h("button", { onClick: function () { setEcran("ecurie"); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039"),
       h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.4, textTransform: "uppercase", color: TURQL, fontFamily: M } }, T("Mon club", "My club", "Mi club", "Il mio club", "\u30de\u30a4\u30af\u30e9\u30d6")),
@@ -24913,7 +24940,12 @@ function EcranEcurie() {
   var monClubEc = (((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || "").trim()) || "\u00c9curie Feinn";
   React.useEffect(function () { (async function () {
     try { if (typeof cavaliersChoisisEcurie === "function" && typeof supa !== "undefined") { var rx = await cavaliersChoisisEcurie(); setChoisisEc((rx && rx.data) || []); } else setChoisisEc([]); } catch (e1) { setChoisisEc([]); }
-    try { if (typeof supa !== "undefined" && supa) { var rm = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie", monClubEc).limit(24); setMembresEc((rm && rm.data) || []); } else setMembresEc([]); } catch (e2) { setMembresEc([]); }
+    try { if (typeof supa !== "undefined" && supa) {
+      var mmEc = [];
+      try { var rm = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie", monClubEc).limit(24); if (rm && rm.data) mmEc = mmEc.concat(rm.data); } catch (eQ1) { }
+      try { var rm2 = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie2", monClubEc).limit(24); if (rm2 && rm2.data) mmEc = mmEc.concat(rm2.data); } catch (eQ2) { }
+      var vusEc = {}; setMembresEc(mmEc.filter(function (p) { if (!p || !p.id || vusEc[p.id]) return false; vusEc[p.id] = true; return true; }));
+    } else setMembresEc([]); } catch (e2) { setMembresEc([]); }
   })(); }, [monClubEc]);
   function ouvrirSelecteurCavEc() {
     setSelCavEc(true);
@@ -24930,7 +24962,7 @@ function EcranEcurie() {
   function basculerChoisiEc(p) {
     var deja = (choisisEc || []).some(function (x) { return x.id === p.id; });
     if (deja) { setChoisisEc((choisisEc || []).filter(function (x) { return x.id !== p.id; })); try { retirerCavalierChoisi(p.id); } catch (e1) { } }
-    else { setChoisisEc((choisisEc || []).concat([{ id: p.id, pseudo: p.pseudo, avatar_url: p.avatar_url || null, ville: p.ville || "", ecurie: p.ecurie || "", statut: "en_attente" }])); try { ajouterCavalierChoisi(p.id); } catch (e2) { } }
+    else { setChoisisEc((choisisEc || []).concat([{ id: p.id, pseudo: p.pseudo, avatar_url: p.avatar_url || null, ville: p.ville || "", ecurie: p.ecurie || "", statut: "en_attente" }])); try { ajouterCavalierChoisi(p.id, monClubEc); } catch (e2) { } }
   }
   function ouvrirCavEc(p) { try { window.__cavalierPublic = { pseudo: p.pseudo || "Cavalier", photo: p.avatar_url || null, ecurie: monClubEc, ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (eC) { } setEcran("cavalier"); }
 
@@ -25187,7 +25219,16 @@ var CHEVAUX_FICHE = {
     palmares: []
   },
   venus: { nom: "Cooltax", photo: ECURIE_H4, tag: "Élite", info: "Selle Français · 7 ans · Gris", flots: [], palmares: [] },
-  idao: { nom: "Boréalis de Feinn", photo: ECURIE_H5, tag: "Élite", info: "Selle Français · 6 ans · Bai", flots: [], palmares: [] },
+  idao: { nom: "Boréalis de Feinn", photo: ECURIE_H5, tag: "Élite", info: "Selle Français · 6 ans · Bai",
+    origines: {
+      mere: { nom: "Feinn", detail: "Selle Français · Bai · 165 cm", sire: "11524741G",
+        indices: [["ISO", "104", "0.87 · 2025"], ["BCC", "1", "0.30"], ["BSO", "\u22123", "0.64"], ["BDR", "\u22126", "0.29"]] },
+      arbre: [
+        { gen: { fr: "Grands-parents", en: "Grandparents", es: "Abuelos", it: "Nonni", ja: "\u7956\u7236\u6bcd" }, lignes: [["Lando", "M · DWB · Bai"], ["Chouane Pironnière", "F · SF · Bai"]] },
+        { gen: { fr: "Arrière-grands-parents", en: "Great-grandparents", es: "Bisabuelos", it: "Bisnonni", ja: "\u66fd\u7956\u7236\u6bcd" }, lignes: [["Lancier", "M · Holsteiner"], ["Silvia", "F · SE · Bai"], ["Double Espoir", "M · SF · Alezan"], ["Opéra IV", "F · SF · Bai"]] }
+      ]
+    },
+    flots: [], palmares: [] },
   tully: { nom: "Tully Blue Moon", photo: IMG_TULLY, tag: "Champion", info: "Selle Français · 15 ans", flots: [], palmares: [] },
   heybaby: { nom: "Hey Baby", photo: IMG_HEYBABY_CHEVAL, tag: "Élite", info: "Jument · CSO", flots: [], palmares: [] }
 };
@@ -25749,7 +25790,7 @@ function EcranCheval() {
   var ctx = useApp();
   var setEcran = ctx.setEcran, tr = ctx.tr;
   function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
-  var id = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : ((typeof location !== "undefined" && (location.hash.match(/cheval-(\w+)/) || [])[1]) || "mydream");
+  var id = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : ((typeof location !== "undefined" && (location.hash.match(/cheval-(\w+)/) || [])[1]) || (typeof DEV_OUVRIR_PAGE !== "undefined" && (String(DEV_OUVRIR_PAGE).match(/^cheval-(\w+)$/) || [])[1]) || "mydream");
   var chDynSt = React.useState(null); var chevalDyn = chDynSt[0], setChevalDyn = chDynSt[1];
   React.useEffect(function () {
     if (CHEVAUX_FICHE[id]) { setChevalDyn(null); return; }
@@ -25978,6 +26019,32 @@ function EcranCheval() {
               h("div", { style: { fontSize: 8, letterSpacing: "0.16em", color: "#8A929C", textTransform: "uppercase", fontWeight: 600 } }, pi[0]),
               h("div", { style: { fontSize: 12, fontWeight: 600, color: vide ? "rgba(237,242,245,0.28)" : "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 } }, pi[1] || "—"));
           })),
+
+        c.origines ? h("div", { className: "eyebrow2 rise", style: { animationDelay: ".11s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統")) : null,
+        c.origines ? h("div", { className: "rise", style: { animationDelay: ".11s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
+          c.origines.mere ? h("div", { style: { padding: "13px 14px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
+            h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700 } }, T("Mère", "Dam", "Madre", "Madre", "母")),
+            h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, marginTop: 3, flexWrap: "wrap" } },
+              h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 18, fontWeight: 700, color: "#F2F6F8", letterSpacing: 0.5 } }, c.origines.mere.nom),
+              c.origines.mere.sire ? h("div", { style: { fontSize: 9, color: "#6B7580", fontWeight: 600, letterSpacing: "0.08em" } }, "SIRE " + c.origines.mere.sire) : null),
+            c.origines.mere.detail ? h("div", { style: { fontSize: 11, color: "#9AA5AD", marginTop: 2 } }, c.origines.mere.detail) : null,
+            (c.origines.mere.indices && c.origines.mere.indices.length) ? h("div", { style: { display: "flex", gap: 7, marginTop: 10 } },
+              c.origines.mere.indices.map(function (ix, ii) {
+                return h("div", { key: "ix" + ii, style: { flex: 1, minWidth: 0, textAlign: "center", padding: "7px 2px 6px", borderRadius: 11, background: ii === 0 ? tA(0.09) : "rgba(255,255,255,0.03)", border: "1px solid " + (ii === 0 ? tA(0.45) : "rgba(255,255,255,0.07)") } },
+                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: ii === 0 ? teinteCl : "#EDF2F5", lineHeight: 1 } }, ix[1]),
+                  h("div", { style: { fontSize: 7.5, letterSpacing: "0.16em", color: ii === 0 ? teinteCl : "#8A929C", fontWeight: 700, marginTop: 3 } }, ix[0]),
+                  ix[2] ? h("div", { style: { fontSize: 7, color: "#5B646E", marginTop: 1 } }, ix[2]) : null);
+              })) : null) : null,
+          (c.origines.arbre || []).map(function (gn, gi) {
+            return h("div", { key: "gen" + gi, style: { padding: "10px 14px " + (gi === c.origines.arbre.length - 1 ? "12px" : "10px"), borderBottom: gi === c.origines.arbre.length - 1 ? "none" : "1px solid rgba(255,255,255,0.05)" } },
+              h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: "#8A929C", textTransform: "uppercase", fontWeight: 700, marginBottom: 7 } }, tr(gn.gen)),
+              h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 14, rowGap: 7 } },
+                gn.lignes.map(function (ln, li) {
+                  return h("div", { key: "ln" + li, style: { minWidth: 0, paddingLeft: 9, borderLeft: "2px solid " + tA(0.35) } },
+                    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 12.5, fontWeight: 600, color: "#E6ECEF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ln[0]),
+                    h("div", { style: { fontSize: 9, color: "#7B858E", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ln[1]));
+                })));
+          })) : null,
 
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".14s" } }, T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出")),
         h(GalerieSouvenirs, { teinte: teinte, teinteCl: teinteCl, cible: "cheval:" + id, photoDefaut: photoCh, vedettes: vedettes || [], onTout: function () { setPanneau("souvenirs"); } }),
