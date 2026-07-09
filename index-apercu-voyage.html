@@ -18779,7 +18779,7 @@ const COURS_GALOP1_I18N = [{"id": "g1-c15", "icone": "🛡️", "type": "fondame
 /* ---------- CONTEXTE APPLICATIF + FONCTION DE TRADUCTION ---------- */
 const AppContext = createContext(null);
 const useApp = () => useContext(AppContext);
-const DEV_OUVRIR_PAGE = ""; // raccourci : "" = app normale | "compte" | "parcours" | "licence" | "parc" | ...
+const DEV_OUVRIR_PAGE = "bienvenue"; // raccourci : "" = app normale | "compte" | "parcours" | "licence" | "parc" | ...
 const LIEN_APP = "https://majestic-melba-997a68.netlify.app"; // lien public de l'appli — vide pour l'instant. Le bouton Partager ET le QR code le lisent.
 const CIBLE_DIRECTE = (function () {
     try {
@@ -22049,7 +22049,7 @@ function EcranIntro() {
     const validerSetup = () => { setProfil(setup); try { if (setup && setup.prenom && typeof majProfil === "function" && typeof supa !== "undefined") majProfil({ pseudo: String(setup.prenom).slice(0, 30) }).catch(() => { }); } catch (e) { } LMAG_WELCOME = true; GLOBE_ONBOARDING = true; setEcran("monde"); };
     const dejaLa = !!(profil && profil.prenom);
     const finRetour = () => { LMAG_WELCOME = true; GLOBE_ONBOARDING = true; setEcran("monde"); };
-    const [entre, setEntre] = useState(false);
+    const [entre, setEntre] = useState(true);
     const [sortie, setSortie] = useState(false);
     useEffect(function(){
         function onMsg(e){ if (e && e.data && e.data.t === "anim-done") { setSortie(true); setTimeout(function(){ setEntre(true); }, 3100); } }
