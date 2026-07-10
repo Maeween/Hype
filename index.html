@@ -25990,8 +25990,12 @@ function EcranCheval() {
           h("div", { className: "micro" }, (function () {
             var ptsH = (c.info || race || "").split("\u00b7").map(function (xI) { return xI.trim(); }).filter(Boolean);
             var ixH = ((c.origines && c.origines.indices) || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; })[0];
-            if (ixH) ptsH.push(ixH[0] + " " + ixH[1]);
-            return ptsH.join("  \u00b7  ");
+            var txtH = ptsH.join("  \u00b7  ");
+            if (!ixH) return txtH;
+            var vH = parseFloat(String(ixH[1]).replace("\u2212", "-").replace("+", ""));
+            var tH = vH >= 120 ? Math.min(5, Math.floor((vH - 110) / 10)) : 0;
+            return h("span", null, txtH + (txtH ? "  \u00b7  " : ""),
+              h("b", { style: { fontWeight: tH >= 2 ? 800 : (tH ? 700 : 600), fontSize: (11 + tH) + "px", color: tH >= 2 ? "var(--teinte)" : "#F4F7FA", textShadow: tH >= 3 ? "0 0 10px var(--teinte)" : "none", letterSpacing: "0.08em" } }, ixH[0] + " " + ixH[1]));
           })()),
           h("div", { className: "prism" }),
           h("div", { className: "qnav" },
