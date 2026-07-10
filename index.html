@@ -23917,9 +23917,9 @@ function EcranMonCavalier() {
     return h("div", { style: { padding: "26px 16px 0" } },
       h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 11 } },
         h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase", color: "#6B7580" } }, titre),
-        h("span", { style: { fontSize: 9.5, fontWeight: 700, letterSpacing: 1.1, textTransform: "uppercase", color: "#5B646E", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 999, padding: "3px 9px", fontFamily: M } }, T("Bient\u00f4t", "Soon", "Pronto", "Presto", "\u8fd1\u65e5"))),
+        h("span", { style: { fontSize: 9.5, fontWeight: 700, letterSpacing: 1.1, textTransform: "uppercase", color: "#5B646E", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 999, padding: "3px 9px", fontFamily: M } }, T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b"))),
       h("div", { style: { height: 74, borderRadius: 16, background: "rgba(255,255,255,0.02)", border: "1px dashed rgba(255,255,255,0.09)", display: "flex", alignItems: "center", justifyContent: "center" } },
-        h("div", { style: { fontSize: 11.5, color: "#5B646E", fontFamily: M } }, T("Disponible avec les comptes", "Available with accounts", "Disponible con las cuentas", "Disponibile con gli account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u3067\u5229\u7528\u53ef"))));
+        h("div", { style: { fontSize: 11.5, color: "#5B646E", fontFamily: M } }, T("\u2727 En pr\u00e9paration dans l'\u00e9curie Hype", "\u2727 In preparation at the Hype stable", "\u2727 En preparaci\u00f3n", "\u2727 In preparazione", "\u2727 \u6e96\u5099\u4e2d"))));
   }
   var prenom = ((profil.prenom || "").trim()) || T("Cavalier", "Rider", "Jinete", "Cavaliere", "\u9a0e\u624b");
   var ecSt = React.useState(false); var editClub = ecSt[0], setEditClub = ecSt[1];
@@ -24019,14 +24019,8 @@ function EcranMonCavalier() {
         h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, color: TURQL, minWidth: 30, textAlign: "center" } }, amis != null ? amis : "\u2014"),
         h("div", { style: { flex: 1, fontSize: 12.5, color: "#C7D0D6", fontFamily: M, lineHeight: 1.45 } }, T("cavaliers dans ta team \u2014 retrouve-les et suis-en de nouveaux dans la Communaut\u00e9", "riders in your team \u2014 find them in the Community", "jinetes en tu equipo", "cavalieri nella tua squadra", "\u30c1\u30fc\u30e0\u306e\u4ef2\u9593")),
         h("div", { style: { color: TURQL, fontSize: 19 } }, "\u203a"))),
-    h("div", { style: { padding: "26px 16px 0" } },
-      eyebrow(T("Derni\u00e8res performances", "Latest results", "\u00daltimos resultados", "Ultimi risultati", "\u6700\u65b0\u306e\u6210\u7e3e"), pal.length > 5 ? T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066") : null, function () { setEcran("ecurie"); }),
-      pal.length ? h("div", { style: { display: "flex", flexDirection: "column", gap: 10 } }, pal.slice(0, 5).map(function (r, i) { return h("button", { key: i, onClick: (r.chevalId ? ouvrirCheval(r.chevalId) : function () {}), style: { display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 14, background: "#0c0e12", border: "1px solid rgba(255,255,255,0.06)", cursor: "pointer", textAlign: "left", width: "100%" } },
-        (r.chevalId && CHEVAUX_FICHE[r.chevalId] ? h("div", { style: { width: 46, height: 46, borderRadius: 10, flex: "0 0 auto", backgroundImage: "url(" + CHEVAUX_FICHE[r.chevalId].photo + ")", backgroundSize: "cover", backgroundPosition: "center 28%" } }) : h("div", { style: { width: 46, height: 46, borderRadius: 10, flex: "0 0 auto", background: "radial-gradient(80% 80% at 30% 20%, " + __ta(0.2) + ", transparent), linear-gradient(160deg,#15202B,#0A0F14)" } })),
-        h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontSize: 13.5, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, r.event), h("div", { style: { fontSize: 11, color: "#8A929C", fontFamily: M, marginTop: 2 } }, r.disc + " \u00b7 " + r.chevalNom)),
-        h("div", { style: { textAlign: "right", flex: "0 0 auto" } }, h("div", { style: { fontSize: 14, fontWeight: 800, color: (/^1/.test(r.rang) ? "#E8C887" : "#DDE6EA"), fontFamily: M } }, r.rang), h("div", { style: { fontSize: 10.5, color: "#6B7580", fontFamily: M, marginTop: 1 } }, r.annee))); }))
-        : h("div", { style: { color: "#8A929C", fontSize: 13, fontFamily: M, fontStyle: "italic" } }, T("Aucune performance pour l'instant.", "No results yet.", "", "", ""))),
-    
+    sectionBientot(T("Derni\u00e8res performances", "Latest results", "\u00daltimos resultados", "Ultimi risultati", "\u6700\u65b0\u306e\u6210\u7e3e")),
+
     sectionBientot(T("Passeport \u00e9questre", "Equestrian passport", "Pasaporte ecuestre", "Passaporto equestre", "\u99ac\u8853\u30d1\u30b9\u30dd\u30fc\u30c8")),
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
