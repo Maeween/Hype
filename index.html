@@ -25232,12 +25232,14 @@ var CHEVAUX_FICHE = {
       sire: "11524741G",
       studbook: "Selle Français · Jument · 165 cm",
       indices: [["ISO", "104", "0.87 · 2025"], ["BCC", "1", "0.30"], ["BSO", "\u22123", "0.64"], ["BDR", "\u22126", "0.29"]],
-      pere: { nom: "Lando", detail: "DWB · Bai" },
-      mere: { nom: "Chouane Pironnière", detail: "Selle Français · Bai" },
-      arbre: [
-        { gen: { fr: "Grands-parents", en: "Grandparents", es: "Abuelos", it: "Nonni", ja: "\u7956\u7236\u6bcd" }, lignes: [["Lancier", "M · Holsteiner"], ["Silvia", "F · SE · Bai"], ["Double Espoir", "M · SF · Alezan"], ["Opéra IV", "F · SF · Bai"]] },
-        { gen: { fr: "Arrière-grands-parents", en: "Great-grandparents", es: "Bisabuelos", it: "Bisnonni", ja: "\u66fd\u7956\u7236\u6bcd" }, lignes: [["Landgraf", "M · Holsteiner"], ["Esmarin", "F · SE"], ["Raimondo", "M · SE"], ["Sonita", "F · SE"], ["Ibrahim", "M · DS · Bai"], ["Quatrième Espoir", "F · SF · Alezan"], ["Vidoc", "M · AA · Bai"], ["Gourmande", "F · SF · Alezan"]] }
-      ]
+      pedigree: {
+        pere: { nom: "Lando", detail: "M · DWB · Bai",
+          pere: { nom: "Lancier", detail: "M · Holst", pere: { nom: "Landgraf", detail: "M · Holst" }, mere: { nom: "Esmarin", detail: "F · SE" } },
+          mere: { nom: "Silvia", detail: "F · SE · Bai", pere: { nom: "Raimondo", detail: "M · SE" }, mere: { nom: "Sonita", detail: "F · SE" } } },
+        mere: { nom: "Chouane Pironnière", detail: "F · SFA · Bai",
+          pere: { nom: "Double Espoir", detail: "M · SFA · Alezan", pere: { nom: "Ibrahim", detail: "M · DS · Bai" }, mere: { nom: "Quatrième Espoir", detail: "F · SFA · Alezan" } },
+          mere: { nom: "Opéra IV", detail: "F · SFA · Bai", pere: { nom: "Vidoc", detail: "M · AA · Bai" }, mere: { nom: "Gourmande", detail: "F · SFA · Alezan" } } }
+      }
     },
     flots: [], palmares: [] },
   tully: { nom: "Tully Blue Moon", photo: IMG_TULLY, tag: "Champion", info: "Selle Français · 15 ans", flots: [], palmares: [] },
@@ -25257,10 +25259,10 @@ var CHEVAUX_SPECTRAL = {
   idao:    { teinte: "#20D9F5" }
 };
 const ECHV_R_CSS = `
-.chvr .hero{position:relative;width:100%;height:70vh;min-height:500px;max-height:720px;overflow:hidden;background:#04070A;isolation:isolate}
+.chvr .hero{position:relative;width:100%;height:100svh;min-height:560px;overflow:hidden;background:#04070A;isolation:isolate}.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:14px;z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
 .chvr .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 26%;filter:contrast(1.04) saturate(1.05)}
-.chvr .hh{position:absolute;inset:0;z-index:2;background:radial-gradient(56% 40% at 50% 20%,var(--teinte),transparent 70%);opacity:.24;mix-blend-mode:screen;filter:blur(14px);pointer-events:none}
-.chvr .hv{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(10,26,36,0.11),rgba(4,7,10,0) 20% ,rgba(4,7,10,0) 46%,rgba(10,26,36,0.121) 66%,#04070A 98%);pointer-events:none}
+.chvr .hh{position:absolute;inset:0;z-index:2;background:radial-gradient(60% 44% at 50% 26%,var(--teinte),transparent 68%);opacity:.22;mix-blend-mode:screen;filter:blur(16px);pointer-events:none;animation:chvHalo 8s ease-in-out infinite}@keyframes chvHalo{0%,100%{opacity:.18}50%{opacity:.3}}
+.chvr .hv{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(6,7,9,.4) 0%,rgba(6,7,9,0) 28%,rgba(6,7,9,.06) 52%,rgba(6,7,9,.97) 100%);pointer-events:none}
 .chvr .htop{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:14px;right:14px;z-index:8;display:flex;align-items:center;justify-content:space-between}
 .chvr .ic{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:rgba(8,12,16,.42);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);cursor:pointer}
 .chvr .ic svg{width:19px;height:19px;stroke:#EAF2F4;fill:none;stroke-width:2}
@@ -25269,7 +25271,7 @@ const ECHV_R_CSS = `
 .chvr .badge svg{width:18px;height:18px;fill:var(--teinte);margin-bottom:2px}
 .chvr .badge b{font-family:'Cinzel',serif;font-size:12px;color:#EAF2F4;letter-spacing:.5px;line-height:1.15;text-align:center}
 .chvr .badge span{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,242,244,.6)}
-.chvr .hg{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:0 20px 20px;text-align:left}
+.chvr .hg{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:0 22px 46px;text-align:left}
 .chvr .eyb{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--teinte);font-weight:600;margin-bottom:9px}
 .chvr .nm{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(34px,11.5vw,50px);line-height:.98;color:#fff;letter-spacing:.5px;text-shadow:0 2px 20px rgba(10,26,36,0.132)}
 .chvr .prism{height:2.5px;width:120px;margin:13px 0 0;border-radius:3px;background:linear-gradient(90deg,rgba(255,255,255,0),var(--teinte),#8FA7FF,#F2A6C2,#FFD79A,rgba(255,255,255,0));background-size:220% 100%;filter:drop-shadow(0 0 7px var(--teinte));animation:sp-sweep 6.5s linear infinite}
@@ -25976,20 +25978,26 @@ function EcranCheval() {
             h(SelecteurLangue, { compact: true }),
             h("div", { className: "ic", onClick: function () { if (refPhotoCh.current) refPhotoCh.current.click(); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" }))),
             h("div", { className: "ic", onClick: bientot }, h("svg", { viewBox: "0 0 24 24" }, h("g", null, h("circle", { cx: 12, cy: 5, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 12, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 19, r: 1.4, fill: "#EAF2F4", stroke: "none" })))))),
-        h("div", { className: "badge" }, h("svg", { viewBox: "0 0 24 24" }, diamond), h("b", null, race), disc ? h("span", null, disc) : null),
         h("div", { className: "hg" },
-          h("div", { className: "eyb" }, T("Ton cheval", "Your horse", "Tu caballo", "Il tuo cavallo", "\u3042\u306a\u305f\u306e\u99ac")),
-          h("h1", { className: "nm" }, c.nom),
+          h("div", { className: "eyb" }, (((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || "").trim()) || "\u00c9curie Feinn"),
+          (function () {
+            var nmC = String(c.nom || "");
+            var mSp = nmC.match(/^(.*?)\s+(de\s.+|d'.+|du\s.+|des\s.+)$/i);
+            return h("div", null,
+              h("h1", { className: "nm" }, (mSp ? mSp[1] : nmC).toUpperCase()),
+              mSp ? h("div", { className: "nm2" }, mSp[2]) : null);
+          })(),
+          h("div", { className: "micro" }, (c.info || race || "").split("\u00b7").map(function (xI) { return xI.trim(); }).filter(Boolean).join("  \u00b7  ")),
           h("div", { className: "prism" }),
-          h("div", { className: "dev" }, T("\u00ab Chaque parcours est une nouvelle histoire. \u00bb", "\u00ab Every round is a new story. \u00bb", "\u00ab Cada recorrido es una nueva historia. \u00bb", "\u00ab Ogni percorso \u00e8 una nuova storia. \u00bb", "\u300c\u3059\u3079\u3066\u306e\u30e9\u30a6\u30f3\u30c9\u306f\u65b0\u3057\u3044\u7269\u8a9e\u3002\u300d")))),
+          null),
+        h("div", { className: "chvfleche" })),
 
       h("div", { className: "scroll" },
 
         h("div", { className: "qnav rise" },
-          qn(h("path", { d: "M12 8v4m0 4h.01M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" }), T("Infos", "Info", "Info", "Info", "\u60c5\u5831"), function () { try { var eI = document.getElementById("chvInfos"); if (eI) eI.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e0) { } }),
-          qn(etoile, T("Palmar\u00e8s", "Record", "Palmar\u00e9s", "Palmar\u00e8s", "\u6226\u7e3e"), function () { setPanneau("palmares"); }),
+          qn(h("path", { d: "M12 8v4m0 4h.01M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" }), T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71"), function () { try { var eI = document.getElementById("chvInfos"); if (eI) eI.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e0) { } }),
+          qn(etoile, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e"), function () { setPanneau("palmares"); }),
           qn(h("g", null, h("rect", { x: 3, y: 5, width: 18, height: 14, rx: 2 }), h("path", { d: "m3 15 5-4 4 3 4-4 5 4" })), T("Galerie", "Gallery", "Galer\u00eda", "Galleria", "\u30ae\u30e3\u30e9\u30ea\u30fc"), function () { setPanneau("souvenirs"); }),
-          qn(h("path", { d: "M8 21V9l4-3 4 3v12M6 21h12" }), T("Flots", "Rosettes", "Escarapelas", "Coccarde", "\u30ed\u30bc\u30c3\u30c8"), function () { setPanneau("flots"); }),
           qn(h("path", { d: "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13" }), T("Partage", "Share", "Compartir", "Condividi", "\u5171\u6709"), partagerFiche)),
 
         h("div", { className: "rise", style: { animationDelay: ".05s", display: "flex", gap: 7, overflowX: "auto", padding: "2px 0 8px", WebkitOverflowScrolling: "touch" } },
@@ -26012,16 +26020,15 @@ function EcranCheval() {
               [1,2,3,4,5,6,7,8,9,10].map(function(n){ var actifN = statsCh[editStat.cle] === n; return h("button", { key: n, onClick: function(){ fixerStat(n); }, style: { width: 40, height: 40, borderRadius: "50%", border: actifN ? "1.5px solid " + teinte + "" : "1px solid rgba(255,255,255,0.15)", background: actifN ? "" + tA(0.2) + "" : "transparent", color: actifN ? teinteCl : "#C9D3D8", fontSize: 14.5, fontWeight: 700, cursor: "pointer" } }, n); })),
             statsCh[editStat.cle] ? h("button", { onClick: function(){ fixerStat(null); }, style: { display: "block", margin: "14px auto 0", background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, T("Effacer", "Clear", "Borrar", "Cancella", "クリア")) : null)) : null,
 
-        h("div", { className: "rise", style: { animationDelay: ".06s", margin: "14px 16px 0", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 } },
-          [{ cle: "flots", ico: "🎀", titre: T("Flots", "Rosettes", "Escarapelas", "Coccarde", "ロゼット"), compte: (c.flots && c.flots.length) ? (c.flots.length + " " + T("gagnés", "won", "ganadas", "vinte", "個")) : "—" },
-           { cle: "palmares", ico: "🏆", titre: T("Palmarès", "Record", "Palmarés", "Palmarès", "戦績"), compte: (c.palmares && c.palmares.length) ? (c.palmares.length + " " + T("résultats", "results", "resultados", "risultati", "件")) : "—" }].map(function (cd) {
-            return h("div", { key: cd.cle, onClick: function () { setPanneau(cd.cle); }, style: { borderRadius: 16, background: "linear-gradient(135deg, " + tA(0.08) + ", rgba(255,255,255,0.02))", border: "1px solid " + tA(0.24) + "", padding: "11px 12px", display: "flex", alignItems: "center", gap: 9, cursor: "pointer", minWidth: 0 } },
-              h("span", { style: { fontSize: 17, flexShrink: 0 } }, cd.ico),
+        h("div", { className: "rise", style: { animationDelay: ".06s", margin: "14px 16px 0" } },
+          (function () {
+            var nbP = ((c.palmares && c.palmares.length) || 0) + ((c.flots && c.flots.length) || 0);
+            return h("div", { onClick: function () { setPanneau("palmares"); }, style: { borderRadius: 16, background: "linear-gradient(135deg, " + tA(0.08) + ", rgba(255,255,255,0.02))", border: "1px solid " + tA(0.24) + "", padding: "13px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" } },
               h("div", { style: { flex: 1, minWidth: 0 } },
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13.5, fontWeight: 600, color: "#F4F6F7", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cd.titre),
-                h("div", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.55)", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cd.compte)),
-              h("span", { style: { color: teinte, opacity: 0.7, fontSize: 14, flexShrink: 0 } }, "›"));
-          })),
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 600, color: "#F4F6F7", letterSpacing: 0.6 } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績")),
+                h("div", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.55)", marginTop: 2 } }, nbP ? (nbP + " " + T("résultats & flots", "results & rosettes", "resultados y escarapelas", "risultati e coccarde", "件")) : T("Le palmarès commence ici.", "The record starts here.", "El palmarés empieza aquí.", "Il palmarès inizia qui.", "戦績はここから"))),
+              h("span", { style: { color: teinte, opacity: 0.7, fontSize: 16, flexShrink: 0 } }, "›"));
+          })()),
 
         h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統")),
         (function () { var og = c.origines || {};
@@ -26040,15 +26047,40 @@ function EcranCheval() {
                   ix[2] ? h("div", { style: { fontSize: 7, color: "#5B646E", marginTop: 1 } }, ix[2]) : null);
               })),
             c.origines.apt ? h("div", { style: { fontSize: 9.5, color: "#8A929C", fontStyle: "italic", marginTop: 8, textAlign: "center" } }, "\u2727 " + c.origines.apt) : null) : null,
-          h("div", { style: { padding: "12px 14px 11px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
+          og.pedigree ? (function (pg) {
+            function celPed(n, opts) {
+              opts = opts || {};
+              return h("div", { style: { gridColumn: opts.col, gridRow: opts.row, padding: "9px 8px 9px 10px", display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, borderLeft: opts.col > 1 ? "1px solid rgba(32,217,245,0.2)" : "none", borderBottom: opts.bb === "fort" ? "1px solid rgba(32,217,245,0.25)" : (opts.bb ? "1px solid rgba(255,255,255,0.05)" : "none") } },
+                opts.label ? h("div", { style: { fontSize: 7.5, letterSpacing: "0.22em", color: teinteCl, textTransform: "uppercase", fontWeight: 700, marginBottom: 4 } }, opts.label) : null,
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: opts.grand ? 14 : (opts.moyen ? 11.5 : 10), fontWeight: 700, color: "#EAF0F3", lineHeight: 1.28, overflowWrap: "break-word" } }, n ? n.nom : "\u2014"),
+                (n && n.detail) ? h("div", { style: { fontSize: 7.8, color: "#7B858E", marginTop: 2, lineHeight: 1.3 } }, n.detail) : null);
+            }
+            var lp = T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236"), lm = T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd");
+            return h("div", { style: { display: "grid", gridTemplateColumns: "1.18fr 1fr 1fr", gridAutoRows: "minmax(42px, auto)", borderBottom: (og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
+              celPed(pg.pere, { col: 1, row: "1 / span 4", label: lp, grand: true, bb: "fort" }),
+              celPed(pg.mere, { col: 1, row: "5 / span 4", label: lm, grand: true }),
+              celPed(pg.pere && pg.pere.pere, { col: 2, row: "1 / span 2", moyen: true, bb: true }),
+              celPed(pg.pere && pg.pere.mere, { col: 2, row: "3 / span 2", moyen: true, bb: "fort" }),
+              celPed(pg.mere && pg.mere.pere, { col: 2, row: "5 / span 2", moyen: true, bb: true }),
+              celPed(pg.mere && pg.mere.mere, { col: 2, row: "7 / span 2", moyen: true }),
+              celPed(pg.pere && pg.pere.pere && pg.pere.pere.pere, { col: 3, row: "1", bb: true }),
+              celPed(pg.pere && pg.pere.pere && pg.pere.pere.mere, { col: 3, row: "2", bb: true }),
+              celPed(pg.pere && pg.pere.mere && pg.pere.mere.pere, { col: 3, row: "3", bb: true }),
+              celPed(pg.pere && pg.pere.mere && pg.pere.mere.mere, { col: 3, row: "4", bb: "fort" }),
+              celPed(pg.mere && pg.mere.pere && pg.mere.pere.pere, { col: 3, row: "5", bb: true }),
+              celPed(pg.mere && pg.mere.pere && pg.mere.pere.mere, { col: 3, row: "6", bb: true }),
+              celPed(pg.mere && pg.mere.mere && pg.mere.mere.pere, { col: 3, row: "7", bb: true }),
+              celPed(pg.mere && pg.mere.mere && pg.mere.mere.mere, { col: 3, row: "8" }));
+          })(og.pedigree) : null,
+          !og.pedigree ? h("div", { style: { padding: "12px 14px 11px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
             h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700 } }, T("Père", "Sire", "Padre", "Padre", "父")),
             og.pere ? h("div", null,
               h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, marginTop: 3, flexWrap: "wrap" } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F6F8", letterSpacing: 0.5 } }, og.pere.nom),
                 og.pere.sire ? h("div", { style: { fontSize: 9, color: "#6B7580", fontWeight: 600, letterSpacing: "0.08em" } }, "SIRE " + og.pere.sire) : null),
               og.pere.detail ? h("div", { style: { fontSize: 11, color: "#9AA5AD", marginTop: 2 } }, og.pere.detail) : null)
-            : h("div", { style: { fontSize: 13, fontWeight: 600, color: "rgba(237,242,245,0.28)", marginTop: 3 } }, "—")),
-          h("div", { style: { padding: "12px 14px", borderBottom: (og.arbre || og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
+            : h("div", { style: { fontSize: 13, fontWeight: 600, color: "rgba(237,242,245,0.28)", marginTop: 3 } }, "—")) : null,
+          !og.pedigree ? h("div", { style: { padding: "12px 14px", borderBottom: (og.arbre || og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
             h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700 } }, T("Mère", "Dam", "Madre", "Madre", "母")),
             og.mere ? h("div", null,
               h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, marginTop: 3, flexWrap: "wrap" } },
@@ -26062,7 +26094,7 @@ function EcranCheval() {
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: ii === 0 ? teinteCl : "#EDF2F5", lineHeight: 1 } }, ix[1]),
                   h("div", { style: { fontSize: 7.5, letterSpacing: "0.16em", color: ii === 0 ? teinteCl : "#8A929C", fontWeight: 700, marginTop: 3 } }, ix[0]),
                   ix[2] ? h("div", { style: { fontSize: 7, color: "#5B646E", marginTop: 1 } }, ix[2]) : null);
-              })) : null),
+              })) : null) : null,
           (og.arbre || []).map(function (gn, gi) {
             return h("div", { key: "gen" + gi, style: { padding: "10px 14px", borderBottom: (gi === og.arbre.length - 1 && !og.naisseur && !og.note) ? "none" : "1px solid rgba(255,255,255,0.05)" } },
               h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: "#8A929C", textTransform: "uppercase", fontWeight: 700, marginBottom: 7 } }, tr(gn.gen)),
@@ -26118,7 +26150,7 @@ function EcranCheval() {
         h("button", { onClick: function () { setPanneau(null); }, style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, flexShrink: 0 } }, "‹"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: "#F4F6F7" } },
           panneau === "flots" ? T("Flots", "Rosettes", "Escarapelas", "Coccarde", "ロゼット")
-          : panneau === "palmares" ? T("Palmarès", "Record", "Palmarés", "Palmarès", "戦績")
+          : panneau === "palmares" ? T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績")
           : panneau === "souvenirs" ? (T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出") + " · " + c.nom)
           : T("Passeport Santé", "Health Passport", "Pasaporte de salud", "Passaporto salute", "健康パスポート")),
         h("div", { style: { marginLeft: "auto" } }, h(SelecteurLangue, { compact: true }))),
@@ -26126,6 +26158,7 @@ function EcranCheval() {
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加"))) : null,
       panneau === "palmares" ? h("div", { style: { padding: "8px 16px 0" } },
+        (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : null,
         (c.palmares && c.palmares.length) ? h("div", { className: "panel" }, c.palmares.map(prow)) : h("div", { className: "empty" }, T("Le palmarès commence ici.", "The record starts here.", "El palmarés empieza aquí.", "Il palmarès inizia qui.", "戦績はここから始まります。")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加"))) : null,
       panneau === "souvenirs" ? h("div", null,
