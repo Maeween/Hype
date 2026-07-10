@@ -25259,7 +25259,7 @@ var CHEVAUX_SPECTRAL = {
   idao:    { teinte: "#20D9F5" }
 };
 const ECHV_R_CSS = `
-.chvr .hero{position:relative;width:100%;height:100svh;min-height:560px;overflow:hidden;background:#04070A;isolation:isolate}.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:14px;z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
+.chvr .hero{position:relative;width:100%;height:100svh;min-height:560px;overflow:hidden;background:#04070A;isolation:isolate}.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
 .chvr .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 26%;filter:contrast(1.04) saturate(1.05)}
 .chvr .hh{position:absolute;inset:0;z-index:2;background:radial-gradient(60% 44% at 50% 26%,var(--teinte),transparent 68%);opacity:.22;mix-blend-mode:screen;filter:blur(16px);pointer-events:none;animation:chvHalo 8s ease-in-out infinite}@keyframes chvHalo{0%,100%{opacity:.18}50%{opacity:.3}}
 .chvr .hv{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(6,7,9,.4) 0%,rgba(6,7,9,0) 28%,rgba(6,7,9,.06) 52%,rgba(6,7,9,.97) 100%);pointer-events:none}
@@ -25271,12 +25271,12 @@ const ECHV_R_CSS = `
 .chvr .badge svg{width:18px;height:18px;fill:var(--teinte);margin-bottom:2px}
 .chvr .badge b{font-family:'Cinzel',serif;font-size:12px;color:#EAF2F4;letter-spacing:.5px;line-height:1.15;text-align:center}
 .chvr .badge span{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,242,244,.6)}
-.chvr .hg{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:0 22px 46px;text-align:left}
+.chvr .hg{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:0 22px calc(96px + env(safe-area-inset-bottom,0px));text-align:left}
 .chvr .eyb{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--teinte);font-weight:600;margin-bottom:9px}
 .chvr .nm{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(34px,11.5vw,50px);line-height:.98;color:#fff;letter-spacing:.5px;text-shadow:0 2px 20px rgba(10,26,36,0.132)}
 .chvr .prism{height:2.5px;width:120px;margin:13px 0 0;border-radius:3px;background:linear-gradient(90deg,rgba(255,255,255,0),var(--teinte),#8FA7FF,#F2A6C2,#FFD79A,rgba(255,255,255,0));background-size:220% 100%;filter:drop-shadow(0 0 7px var(--teinte));animation:sp-sweep 6.5s linear infinite}
 .chvr .dev{margin-top:11px;font-family:'Montserrat',sans-serif;font-style:italic;font-weight:400;font-size:13.5px;color:rgba(234,242,244,.8)}
-.chvr .qnav{display:flex;justify-content:space-between;gap:6px;margin:18px 0 4px}
+.chvr .qnav{display:flex;justify-content:space-between;gap:6px;margin:18px 0 4px}.chvr .hero .qnav{position:relative;margin:16px 0 0;z-index:7}.chvr .hero .qn{background:rgba(8,13,18,.42);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:9px 3px;border-radius:13px}
 .chvr .qn{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:11px 4px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)}
 .chvr .qn svg{width:18px;height:18px;stroke:var(--teinte);fill:none;stroke-width:1.8}
 .chvr .qn span{font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(234,242,244,.66);font-weight:600}
@@ -25987,18 +25987,22 @@ function EcranCheval() {
               h("h1", { className: "nm" }, (mSp ? mSp[1] : nmC).toUpperCase()),
               mSp ? h("div", { className: "nm2" }, mSp[2]) : null);
           })(),
-          h("div", { className: "micro" }, (c.info || race || "").split("\u00b7").map(function (xI) { return xI.trim(); }).filter(Boolean).join("  \u00b7  ")),
+          h("div", { className: "micro" }, (function () {
+            var ptsH = (c.info || race || "").split("\u00b7").map(function (xI) { return xI.trim(); }).filter(Boolean);
+            var ixH = ((c.origines && c.origines.indices) || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; })[0];
+            if (ixH) ptsH.push(ixH[0] + " " + ixH[1]);
+            return ptsH.join("  \u00b7  ");
+          })()),
           h("div", { className: "prism" }),
-          null),
-        h("div", { className: "chvfleche" })),
-
-      h("div", { className: "scroll" },
-
-        h("div", { className: "qnav rise" },
+          h("div", { className: "qnav" },
           qn(h("path", { d: "M12 8v4m0 4h.01M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" }), T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71"), function () { try { var eI = document.getElementById("chvInfos"); if (eI) eI.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e0) { } }),
           qn(etoile, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e"), function () { setPanneau("palmares"); }),
           qn(h("g", null, h("rect", { x: 3, y: 5, width: 18, height: 14, rx: 2 }), h("path", { d: "m3 15 5-4 4 3 4-4 5 4" })), T("Galerie", "Gallery", "Galer\u00eda", "Galleria", "\u30ae\u30e3\u30e9\u30ea\u30fc"), function () { setPanneau("souvenirs"); }),
           qn(h("path", { d: "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13" }), T("Partage", "Share", "Compartir", "Condividi", "\u5171\u6709"), partagerFiche)),
+          null),
+        h("div", { className: "chvfleche" })),
+
+      h("div", { className: "scroll" },
 
         h("div", { className: "rise", style: { animationDelay: ".05s", display: "flex", gap: 7, overflowX: "auto", padding: "2px 0 8px", WebkitOverflowScrolling: "touch" } },
           [["confiance", T("Confiance", "Trust", "Confianza", "Fiducia", "信頼")], ["complicite", T("Complicité", "Bond", "Complicidad", "Intesa", "絆")], ["respect", T("Respect", "Respect", "Respeto", "Rispetto", "尊重")], ["franchise", T("Franchise", "Boldness", "Franqueza", "Franchezza", "率直さ")], ["sante", T("Santé", "Health", "Salud", "Salute", "健康")], ["moyens", T("Moyens", "Ability", "Medios", "Mezzi", "能力")]].map(function (pr) {
@@ -26032,15 +26036,14 @@ function EcranCheval() {
 
         h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統")),
         (function () { var og = c.origines || {};
+        var filtreIx = function (li) { return (li || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; }); };
+        var ixOK = filtreIx(og.indices), ixMereOK = og.mere ? filtreIx(og.mere.indices) : [];
         return h("div", { className: "rise", style: { animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
-          h("div", { style: { padding: "10px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
-            h("div", { style: { fontSize: 9.5, color: "#C3CDD3", fontWeight: 700, letterSpacing: "0.04em" } }, (c.info || race || "—")),
-            (og.sire || og.naissance) ? h("div", { style: { fontSize: 9, color: "#9AA5AD", fontWeight: 600, marginTop: 3, letterSpacing: "0.04em" } }, [og.sire ? ("SIRE " + og.sire) : null, og.naissance ? (T("né(e) le ", "born ", "nacido el ", "nato il ", "生年月日 ") + og.naissance) : null].filter(Boolean).join("  ·  ")) : null,
-            og.studbook ? h("div", { style: { fontSize: 8.5, color: "#5B646E", marginTop: 2, fontStyle: "italic" } }, og.studbook) : null),
-          (og.indices && og.indices.length) ? h("div", { style: { padding: "11px 14px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
+
+          ixOK.length ? h("div", { style: { padding: "11px 14px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
             h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700, marginBottom: 8 } }, T("Aptitude", "Performance", "Aptitud", "Attitudine", "能力")),
             h("div", { style: { display: "flex", gap: 7 } },
-              og.indices.map(function (ix, ii) {
+              ixOK.map(function (ix, ii) {
                 return h("div", { key: "ixp" + ii, style: { flex: 1, minWidth: 0, textAlign: "center", padding: "7px 2px 6px", borderRadius: 11, background: ii === 0 ? tA(0.09) : "rgba(255,255,255,0.03)", border: "1px solid " + (ii === 0 ? tA(0.45) : "rgba(255,255,255,0.07)") } },
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: ii === 0 ? teinteCl : "#EDF2F5", lineHeight: 1 } }, ix[1]),
                   h("div", { style: { fontSize: 7.5, letterSpacing: "0.16em", color: ii === 0 ? teinteCl : "#8A929C", fontWeight: 700, marginTop: 3 } }, ix[0]),
@@ -26088,8 +26091,8 @@ function EcranCheval() {
                 og.mere.sire ? h("div", { style: { fontSize: 9, color: "#6B7580", fontWeight: 600, letterSpacing: "0.08em" } }, "SIRE " + og.mere.sire) : null),
               og.mere.detail ? h("div", { style: { fontSize: 11, color: "#9AA5AD", marginTop: 2 } }, og.mere.detail) : null)
             : h("div", { style: { fontSize: 13, fontWeight: 600, color: "rgba(237,242,245,0.28)", marginTop: 3 } }, "—"),
-            (og.mere && og.mere.indices && og.mere.indices.length) ? h("div", { style: { display: "flex", gap: 7, marginTop: 10 } },
-              og.mere.indices.map(function (ix, ii) {
+            ixMereOK.length ? h("div", { style: { display: "flex", gap: 7, marginTop: 10 } },
+              ixMereOK.map(function (ix, ii) {
                 return h("div", { key: "ix" + ii, style: { flex: 1, minWidth: 0, textAlign: "center", padding: "7px 2px 6px", borderRadius: 11, background: ii === 0 ? tA(0.09) : "rgba(255,255,255,0.03)", border: "1px solid " + (ii === 0 ? tA(0.45) : "rgba(255,255,255,0.07)") } },
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: ii === 0 ? teinteCl : "#EDF2F5", lineHeight: 1 } }, ix[1]),
                   h("div", { style: { fontSize: 7.5, letterSpacing: "0.16em", color: ii === 0 ? teinteCl : "#8A929C", fontWeight: 700, marginTop: 3 } }, ix[0]),
