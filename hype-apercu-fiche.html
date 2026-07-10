@@ -24112,9 +24112,10 @@ function EcranGuilde() {
       var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
       setMoiG(u || null);
       if (u && typeof cavaliersChoisisEcurie === "function") { var rc = await cavaliersChoisisEcurie(); setChoisis((rc && rc.data) || []); }
+      else if (!u) { setTimeout(async function () { try { var u2 = await utilisateurActuel(); if (u2) { var rc2 = await cavaliersChoisisEcurie(); setChoisis((rc2 && rc2.data) || []); } } catch (eG2) { } }, 2500); }
       else setChoisis([]);
     } catch (eG) { setChoisis([]); }
-  })(); }, []);
+  })(); }, [(ctx.profil && ctx.profil.id) || ""]);
   function ouvrirSelecteurCav() {
     setSelCav(true);
     if (suggestions === null) {
@@ -24130,7 +24131,10 @@ function EcranGuilde() {
   function basculerChoisi(p) {
     var deja = (choisis || []).some(function (x) { return x.id === p.id; });
     if (deja) { setChoisis((choisis || []).filter(function (x) { return x.id !== p.id; })); try { retirerCavalierChoisi(p.id); } catch (e1) { } }
-    else { setChoisis((choisis || []).concat([{ id: p.id, pseudo: p.pseudo, avatar_url: p.avatar_url || null, ville: p.ville || "", ecurie: p.ecurie || "", statut: "en_attente" }])); try { ajouterCavalierChoisi(p.id, monClub); } catch (e2) { } }
+    else {
+      setChoisis((choisis || []).concat([{ id: p.id, pseudo: p.pseudo, avatar_url: p.avatar_url || null, ville: p.ville || "", ecurie: p.ecurie || "", statut: "en_attente" }]));
+      try { ajouterCavalierChoisi(p.id).then(function (rA) { if (rA && rA.error) { setChoisis(function (cs) { return (cs || []).filter(function (x) { return x.id !== p.id; }); }); try { alert(T("Invitation non enregistr\u00e9e \u2014 v\u00e9rifie ta connexion.", "Invitation not saved \u2014 check your connection.", "Invitaci\u00f3n no guardada.", "Invito non salvato.", "\u62db\u5f85\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); } catch (eT) { } } }); } catch (e2) { }
+    }
   }
   var FIGURANTS_CLUB = [
     { pseudo: "Camille", ville: "Itteville" },
@@ -24933,14 +24937,14 @@ function EcranEcurie() {
   var _ecSg = React.useState(null), suggestionsEc = _ecSg[0], setSuggestionsEc = _ecSg[1];
   var monClubEc = (((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || "").trim()) || "\u00c9curie Feinn";
   React.useEffect(function () { (async function () {
-    try { if (typeof cavaliersChoisisEcurie === "function" && typeof supa !== "undefined") { var rx = await cavaliersChoisisEcurie(); setChoisisEc((rx && rx.data) || []); } else setChoisisEc([]); } catch (e1) { setChoisisEc([]); }
+    try { if (typeof cavaliersChoisisEcurie === "function" && typeof supa !== "undefined") { var rx = await cavaliersChoisisEcurie(); if (rx && rx.data && rx.data.length) setChoisisEc(rx.data); else { setChoisisEc([]); setTimeout(async function () { try { var rx2 = await cavaliersChoisisEcurie(); if (rx2 && rx2.data && rx2.data.length) setChoisisEc(rx2.data); } catch (eC2) { } }, 2500); } } else setChoisisEc([]); } catch (eC) { setChoisisEc([]); }
     try { if (typeof supa !== "undefined" && supa) {
       var mmEc = [];
       try { var rm = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie", monClubEc).limit(24); if (rm && rm.data) mmEc = mmEc.concat(rm.data); } catch (eQ1) { }
       try { var rm2 = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie2", monClubEc).limit(24); if (rm2 && rm2.data) mmEc = mmEc.concat(rm2.data); } catch (eQ2) { }
       var vusEc = {}; setMembresEc(mmEc.filter(function (p) { if (!p || !p.id || vusEc[p.id]) return false; vusEc[p.id] = true; return true; }));
     } else setMembresEc([]); } catch (e2) { setMembresEc([]); }
-  })(); }, [monClubEc]);
+  })(); }, [monClubEc, (ctx.profil && ctx.profil.id) || ""]);
   function ouvrirSelecteurCavEc() {
     setSelCavEc(true);
     if (suggestionsEc === null) {
@@ -24956,7 +24960,10 @@ function EcranEcurie() {
   function basculerChoisiEc(p) {
     var deja = (choisisEc || []).some(function (x) { return x.id === p.id; });
     if (deja) { setChoisisEc((choisisEc || []).filter(function (x) { return x.id !== p.id; })); try { retirerCavalierChoisi(p.id); } catch (e1) { } }
-    else { setChoisisEc((choisisEc || []).concat([{ id: p.id, pseudo: p.pseudo, avatar_url: p.avatar_url || null, ville: p.ville || "", ecurie: p.ecurie || "", statut: "en_attente" }])); try { ajouterCavalierChoisi(p.id, monClubEc); } catch (e2) { } }
+    else {
+      setChoisisEc((choisisEc || []).concat([{ id: p.id, pseudo: p.pseudo, avatar_url: p.avatar_url || null, ville: p.ville || "", ecurie: p.ecurie || "", statut: "en_attente" }]));
+      try { ajouterCavalierChoisi(p.id, monClubEc).then(function (rA) { if (rA && rA.error) { setChoisisEc(function (cs) { return (cs || []).filter(function (x) { return x.id !== p.id; }); }); setToast(T("Invitation non enregistr\u00e9e \u2014 v\u00e9rifie ta connexion.", "Invitation not saved \u2014 check your connection.", "Invitaci\u00f3n no guardada.", "Invito non salvato.", "\u62db\u5f85\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); setTimeout(function () { setToast(null); }, 2600); } }); } catch (e2) { }
+    }
   }
   function ouvrirCavEc(p) { try { window.__cavalierPublic = { pseudo: p.pseudo || "Cavalier", photo: p.avatar_url || null, ecurie: monClubEc, ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (eC) { } setEcran("cavalier"); }
 
@@ -25195,17 +25202,19 @@ var CHEVAUX_FICHE = {
   },
   rizotto: {
     nom: "Rizotto d'Emery", photo: UV3_H3, info: "Poney Français de Selle · 21 ans · CSO",
+    histoire: "Révélé très jeune sur le circuit SHF, Rizotto s'est illustré par sa régularité en CSO et accompagne aujourd'hui une nouvelle génération de cavaliers.",
     origines: {
       sire: "05012137Z",
       naissance: "07/05/2005 · France",
+      robe: "Bai foncé",
       studbook: "Stud-book du Poney Français de Selle",
       indices: [["IPO", "161", "0.87 · 2021"], ["BPO", "+13", "0.62"]],
       apt: "Finale jeunes chevaux poney · obstacle 4 ans",
-      pere: { nom: "Kantje's Admiraal", detail: "Origine Étrangère Poney · NLD" },
-      mere: { nom: "Moyra de Karyann", detail: "Poney Français de Selle" },
-      arbre: [
-        { gen: { fr: "Père de mère", en: "Damsire", es: "Padre de madre", it: "Padre della madre", ja: "\u6bcd\u306e\u7236" }, lignes: [["Rotherwood Ambassador", "Welsh Pony · GBR"]] }
-      ],
+      pedigree: {
+        pere: { nom: "Kantje's Admiraal", detail: "Origine Étrangère Poney · NLD" },
+        mere: { nom: "Moyra de Karyann", detail: "Poney Français de Selle",
+          pere: { nom: "Rotherwood Ambassador", detail: "Welsh Pony · GBR" } }
+      },
       naisseur: "Mme Rachel Triqueneaux · Le Clos Emery, Épieds",
       note: "Non consanguin · principal ancêtre : Coed Coch Glyndwr (2,4 %)"
     },
@@ -25228,8 +25237,10 @@ var CHEVAUX_FICHE = {
   },
   venus: { nom: "Cooltax", photo: ECURIE_H4, tag: "Élite", info: "Selle Français · 7 ans · Gris", flots: [], palmares: [] },
   idao: { nom: "Boréalis de Feinn", photo: ECURIE_H5, tag: "Élite", info: "Selle Français · 15 ans · Bai",
+    histoire: "Fille de Lando et de Chouane Pironnière, Boréalis porte les couleurs de l'Écurie Feinn sur les pistes de CSO.",
     origines: {
       sire: "11524741G",
+      robe: "Bai", taille: "165 cm",
       studbook: "Selle Français · Jument · 165 cm",
       indices: [["ISO", "104", "0.87 · 2025"], ["BCC", "1", "0.30"], ["BSO", "\u22123", "0.64"], ["BDR", "\u22126", "0.29"]],
       pedigree: {
@@ -25259,10 +25270,10 @@ var CHEVAUX_SPECTRAL = {
   idao:    { teinte: "#20D9F5" }
 };
 const ECHV_R_CSS = `
-.chvr .hero{position:relative;width:100%;height:100svh;min-height:560px;overflow:hidden;background:#04070A;isolation:isolate}.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
-.chvr .hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 24%;filter:contrast(1.04) saturate(1.05)}
-.chvr .hh{position:absolute;inset:0;z-index:2;background:radial-gradient(60% 44% at 50% 26%,var(--teinte),transparent 68%);opacity:.22;mix-blend-mode:screen;filter:blur(16px);pointer-events:none;animation:chvHalo 8s ease-in-out infinite}@keyframes chvHalo{0%,100%{opacity:.18}50%{opacity:.3}}
-.chvr .hv{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(6,7,9,.4) 0%,rgba(6,7,9,0) 28%,rgba(6,7,9,.06) 52%,rgba(6,7,9,.97) 100%);pointer-events:none}
+.chvr .hero{position:relative;width:100%;height:58svh;min-height:500px;overflow:hidden;background:#04070A;isolation:isolate}.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
+.chvr .hero>img{position:absolute;top:0;right:-5%;left:auto;bottom:0;width:80%;height:100%;object-fit:cover;object-position:62% 16%;filter:contrast(1.05) saturate(1.02)}
+.chvr .hh{position:absolute;inset:0;z-index:2;background:radial-gradient(48% 52% at 70% 32%,var(--teinte),transparent 66%);opacity:.16;mix-blend-mode:screen;filter:blur(18px);pointer-events:none;animation:chvHalo 8s ease-in-out infinite}@keyframes chvHalo{0%,100%{opacity:.18}50%{opacity:.3}}
+.chvr .hv{position:absolute;inset:0;z-index:3;background:linear-gradient(90deg,#04070A 20%,rgba(4,7,10,.84) 40%,rgba(4,7,10,.14) 64%,rgba(4,7,10,.02) 100%),linear-gradient(180deg,rgba(4,7,10,.5) 0%,rgba(4,7,10,0) 16%,rgba(4,7,10,0) 74%,#04070A 100%);pointer-events:none}
 .chvr .htop{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:14px;right:14px;z-index:8;display:flex;align-items:center;justify-content:space-between}
 .chvr .ic{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:rgba(8,12,16,.42);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);cursor:pointer}
 .chvr .ic svg{width:19px;height:19px;stroke:#EAF2F4;fill:none;stroke-width:2}
@@ -25271,7 +25282,7 @@ const ECHV_R_CSS = `
 .chvr .badge svg{width:18px;height:18px;fill:var(--teinte);margin-bottom:2px}
 .chvr .badge b{font-family:'Cinzel',serif;font-size:12px;color:#EAF2F4;letter-spacing:.5px;line-height:1.15;text-align:center}
 .chvr .badge span{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,242,244,.6)}
-.chvr .hg{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:0 22px calc(160px + env(safe-area-inset-bottom,0px));text-align:left}
+.chvr .hg{position:absolute;left:0;top:0;bottom:0;width:72%;z-index:6;padding:calc(env(safe-area-inset-top,0px) + 66px) 8px 16px 20px;display:flex;flex-direction:column;justify-content:flex-end;text-align:left}.chvr .hg .nm{font-size:clamp(28px,8.6vw,38px)}.chvr .hg .nm2{font-size:12.5px;letter-spacing:.28em;margin-top:6px}.chvr .hdiv{display:flex;align-items:center;gap:8px;margin:13px 0 12px}.chvr .hdiv i{height:1px;width:56px;background:linear-gradient(90deg,rgba(255,255,255,.5),transparent)}.chvr .hdiv s{width:6px;height:6px;background:var(--teinte);transform:rotate(45deg);box-shadow:0 0 8px var(--teinte)}.chvr .hleg{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:11px;border:1px solid color-mix(in srgb,var(--teinte) 55%,transparent);background:color-mix(in srgb,var(--teinte) 8%,transparent);white-space:nowrap;align-self:flex-start;max-width:100%;overflow:hidden}.chvr .hleg b{font-size:8.5px;letter-spacing:.13em;color:var(--teinte);font-weight:800;text-transform:uppercase}.chvr .hleg span{font-size:8.5px;font-weight:800;letter-spacing:.05em;border-left:1px solid color-mix(in srgb,var(--teinte) 40%,transparent);padding-left:8px;color:#F4F7FA}.chvr .hstats{display:flex;gap:12px;margin-top:14px}.chvr .hstats .l{font-size:9px;letter-spacing:.22em;color:var(--teinte);font-weight:800;text-transform:uppercase}.chvr .hstats .s1 .v{font-family:'Cinzel',serif;font-size:33px;font-weight:700;color:#fff;text-shadow:0 0 16px color-mix(in srgb,var(--teinte) 45%,transparent);line-height:1;margin-top:3px}.chvr .hstats .sep{width:1px;background:linear-gradient(180deg,color-mix(in srgb,var(--teinte) 50%,transparent),transparent)}.chvr .hstats .s2 .v{font-size:12.5px;font-weight:800;margin-top:7px;letter-spacing:.05em;color:#F4F7FA}.chvr .hstats .s2 .s{font-size:9.5px;color:#8A929C;margin-top:2px}.chvr .hbio{margin:13px 0 0;font-size:10.5px;line-height:1.65;color:#B9C2C9;max-width:255px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.chvr .hcta{margin-top:12px;font-size:9.5px;letter-spacing:.16em;font-weight:800;color:var(--teinte);text-transform:uppercase;cursor:pointer}.chvr .minifiche{position:absolute;right:0;top:calc(env(safe-area-inset-top,0px) + 66px);z-index:6;background:rgba(10,14,18,.55);border:1px solid rgba(255,255,255,.12);border-right:none;border-radius:14px 0 0 14px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:9px 12px 9px 11px;display:flex;flex-direction:column;gap:7px;max-width:132px}.chvr .minifiche .mt{font-size:6.8px;letter-spacing:.18em;color:#8A929C;font-weight:700;text-transform:uppercase;display:block}.chvr .minifiche .mv{font-size:9.5px;font-weight:700;color:#EDF2F5;white-space:nowrap;display:block;margin-top:1px;overflow:hidden;text-overflow:ellipsis;max-width:108px}
 .chvr .eyb{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--teinte);font-weight:600;margin-bottom:9px}
 .chvr .nm{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(34px,11.5vw,50px);line-height:.98;color:#fff;letter-spacing:.5px;text-shadow:0 2px 20px rgba(10,26,36,0.132)}
 .chvr .prism{height:2.5px;width:120px;margin:13px 0 0;border-radius:3px;background:linear-gradient(90deg,rgba(255,255,255,0),var(--teinte),#8FA7FF,#F2A6C2,#FFD79A,rgba(255,255,255,0));background-size:220% 100%;filter:drop-shadow(0 0 7px var(--teinte));animation:sp-sweep 6.5s linear infinite}
@@ -25452,6 +25463,9 @@ function MurHype(props) {
   var h = React.createElement;
   var ctx = useApp(); var tr = ctx.tr; var langue = ctx.langue || "fr";
   function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
+  var TQm = props.teinte || TQm;
+  var TQmCl = props.teinte || TQmCl;
+  function tAm(aM) { var hM = TQm.replace("#", ""); return "rgba(" + parseInt(hM.substr(0, 2), 16) + "," + parseInt(hM.substr(2, 2), 16) + "," + parseInt(hM.substr(4, 2), 16) + "," + aM + ")"; }
   var dispo = false; try { dispo = (typeof supa !== "undefined") && (typeof listerCommentaires === "function"); } catch (eD) { dispo = false; }
   function cibleInitiale() {
     if (props.cible) return props.cible;
@@ -25517,9 +25531,9 @@ function MurHype(props) {
   if (!dispo) {
     enfants.push(h("div", { key: "off", style: Object.assign({}, carte, { color: "#8A929C", fontSize: 12.5, fontFamily: M2 }) }, T("Le fil arrive d\u00e8s que la connexion au serveur est active.", "The feed appears once the server connection is active.", "El muro llega cuando el servidor est\u00e9 activo.", "Il muro arriva quando il server \u00e8 attivo.", "\u30b5\u30fc\u30d0\u30fc\u63a5\u7d9a\u5f8c\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002")));
   } else if (!moi && !charge) {
-    enfants.push(h("button", { key: "co", onClick: function () { ctx.setEcran("moncompte"); }, style: Object.assign({}, carte, { width: "100%", textAlign: "center", color: "#5FE9F0", fontSize: 13, fontWeight: 700, fontFamily: M2, cursor: "pointer" }) }, T("Connecte-toi pour publier", "Sign in to post", "Con\u00e9ctate para publicar", "Accedi per pubblicare", "\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u6295\u7a3f")));
+    enfants.push(h("button", { key: "co", onClick: function () { ctx.setEcran("moncompte"); }, style: Object.assign({}, carte, { width: "100%", textAlign: "center", color: TQmCl, fontSize: 13, fontWeight: 700, fontFamily: M2, cursor: "pointer" }) }, T("Connecte-toi pour publier", "Sign in to post", "Con\u00e9ctate para publicar", "Accedi per pubblicare", "\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u6295\u7a3f")));
   } else if (moi && props.membresSeuls && membre === false) {
-    enfants.push(h("div", { key: "verrou", style: Object.assign({}, carte, { marginBottom: 12, display: "flex", alignItems: "center", gap: 12, border: "1px dashed rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.04)" }) },
+    enfants.push(h("div", { key: "verrou", style: Object.assign({}, carte, { marginBottom: 12, display: "flex", alignItems: "center", gap: 12, border: "1px dashed " + tAm(0.35) + "", background: "" + tAm(0.04) + "" }) },
       h("span", { style: { fontSize: 20, flexShrink: 0 } }, "\uD83D\uDD12"),
       h("div", { style: { flex: 1, minWidth: 0 } },
         h("div", { style: { fontSize: 12.5, fontWeight: 700, color: "#DCE3E8", fontFamily: M2 } }, T("Un fil r\u00e9serv\u00e9 aux membres", "A feed reserved for members", "Un hilo reservado a los miembros", "Un feed riservato ai membri", "\u30e1\u30f3\u30d0\u30fc\u9650\u5b9a\u306e\u30d5\u30a3\u30fc\u30c9")),
@@ -25529,8 +25543,8 @@ function MurHype(props) {
       h("textarea", { value: texte, onChange: function (e) { setTexte(e.target.value); }, rows: 2, placeholder: T("Partage un moment\u2026", "Share a moment\u2026", "Comparte un momento\u2026", "Condividi un momento\u2026", "\u77ac\u9593\u3092\u30b7\u30a7\u30a2\u2026"), style: { width: "100%", background: "transparent", border: "none", outline: "none", resize: "none", color: "#EDF2F5", fontSize: 14, fontFamily: M2, lineHeight: 1.45 } }),
       photo ? h("div", { style: { position: "relative", marginTop: 8, width: 96 } },
         photo.video
-          ? h("video", { src: photo.dataUrl, muted: true, playsInline: true, style: { width: 96, height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid rgba(32,217,245,0.4)" } })
-          : h("img", { src: photo.dataUrl, alt: "", style: { width: 96, height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid rgba(32,217,245,0.4)" } }),
+          ? h("video", { src: photo.dataUrl, muted: true, playsInline: true, style: { width: 96, height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid " + tAm(0.4) + "" } })
+          : h("img", { src: photo.dataUrl, alt: "", style: { width: 96, height: 120, objectFit: "cover", borderRadius: 12, border: "1px solid " + tAm(0.4) + "" } }),
         h("button", { onClick: function () { setPhoto(null); }, style: { position: "absolute", top: -7, right: -7, width: 22, height: 22, borderRadius: "50%", border: "none", background: "#1B222B", color: "#C9D3D8", fontSize: 12, cursor: "pointer" } }, "\u2715")) : null,
       h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10 } },
         h("button", { onClick: function () { if (fRef.current) fRef.current.click(); }, style: { background: "none", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 999, padding: "7px 13px", color: "#C9D3D8", fontSize: 12.5, fontFamily: M2, cursor: "pointer" } }, "\uD83D\uDCF7 " + T("Photo", "Photo", "Foto", "Foto", "\u5199\u771f")),
@@ -25545,17 +25559,17 @@ function MurHype(props) {
     var a = p.auteur || {};
     enfants.push(h("div", { key: p.id, style: Object.assign({}, carte, { marginBottom: 10 }) },
       h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: (p.texte || p.photo_url) ? 8 : 0 } },
-        h("div", { style: { width: 32, height: 32, borderRadius: "50%", flexShrink: 0, background: a.avatar_url ? ("url(" + a.avatar_url + ") center/cover") : "rgba(32,217,245,0.14)", border: "1px solid rgba(32,217,245,0.35)", display: "flex", alignItems: "center", justifyContent: "center", color: "#5FE9F0", fontSize: 13, fontWeight: 800, fontFamily: M2 } }, a.avatar_url ? "" : ((a.pseudo || "C").charAt(0).toUpperCase())),
+        h("div", { style: { width: 32, height: 32, borderRadius: "50%", flexShrink: 0, background: a.avatar_url ? ("url(" + a.avatar_url + ") center/cover") : "" + tAm(0.14) + "", border: "1px solid " + tAm(0.35) + "", display: "flex", alignItems: "center", justifyContent: "center", color: TQmCl, fontSize: 13, fontWeight: 800, fontFamily: M2 } }, a.avatar_url ? "" : ((a.pseudo || "C").charAt(0).toUpperCase())),
         h("div", { style: { flex: 1, minWidth: 0 } },
           h("div", { style: { fontSize: 13, fontWeight: 700, color: "#EDF2F5", fontFamily: M2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, a.pseudo || "Cavalier"),
           h("div", { style: { fontSize: 10.5, color: "#5B646E", fontFamily: M2 } }, datePost(p.created_at))),
         (moi && (p.user_id === moi.id || estModerateurHype(moi))) ? h("button", { onClick: function () { suppr(p); }, "aria-label": "Supprimer", style: { background: "none", border: "none", color: "#5B646E", fontSize: 14, cursor: "pointer", padding: 4 } }, "\uD83D\uDDD1") : null),
       p.texte ? h("div", { style: { fontSize: 13.5, color: "#DCE3E8", lineHeight: 1.5, fontFamily: M2, whiteSpace: "pre-wrap" } }, p.texte) : null,
       p.photo_url ? (estUrlVideo(p.photo_url)
-        ? h("video", { src: p.photo_url, controls: true, playsInline: true, style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid rgba(32,217,245,0.35)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px rgba(32,217,245,0.08)" } })
-        : h("img", { src: p.photo_url, alt: "", style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid rgba(32,217,245,0.35)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px rgba(32,217,245,0.08)" } })) : null));
+        ? h("video", { src: p.photo_url, controls: true, playsInline: true, style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid " + tAm(0.35) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px " + tAm(0.08) + "" } })
+        : h("img", { src: p.photo_url, alt: "", style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid " + tAm(0.35) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px " + tAm(0.08) + "" } })) : null));
   });
-  if (props.compact && liste.length > 2 && props.onVoirTout) enfants.push(h("button", { key: "vt", onClick: props.onVoirTout, style: { display: "block", margin: "2px auto 0", background: "rgba(32,217,245,0.07)", border: "1px solid rgba(32,217,245,0.35)", color: "#20D9F5", fontSize: 12, fontWeight: 700, fontFamily: M2, padding: "9px 20px", borderRadius: 999 } }, T("Voir tout le fil", "See the full feed", "Ver todo el hilo", "Vedi tutto il filo", "すべて見る") + " →"));
+  if (props.compact && liste.length > 2 && props.onVoirTout) enfants.push(h("button", { key: "vt", onClick: props.onVoirTout, style: { display: "block", margin: "2px auto 0", background: "" + tAm(0.07) + "", border: "1px solid " + tAm(0.35) + "", color: TQm, fontSize: 12, fontWeight: 700, fontFamily: M2, padding: "9px 20px", borderRadius: 999 } }, T("Voir tout le fil", "See the full feed", "Ver todo el hilo", "Vedi tutto il filo", "すべて見る") + " →"));
   if (!charge && dispo && !liste.length) enfants.push(h("div", { key: "vide", style: { color: "#5B646E", fontSize: 12.5, textAlign: "center", padding: "6px 0 2px", fontStyle: "italic", fontFamily: M2 } }, props.momentsSeuls ? T("Raconte le premier moment ici \u2014 les photos seules vivent dans la galerie.", "Tell the first moment here \u2014 photos alone live in the gallery.", "Cuenta el primer momento aqu\u00ed \u2014 las fotos solas viven en la galer\u00eda.", "Racconta il primo momento qui \u2014 le foto da sole vivono nella galleria.", "\u6700\u521d\u306e\u77ac\u9593\u3092\u3053\u3053\u3067\u8a9e\u308d\u3046\u3002\u5199\u771f\u3060\u3051\u306f\u30ae\u30e3\u30e9\u30ea\u30fc\u3078\u3002") : T("Sois le premier \u00e0 publier ici.", "Be the first to post here.", "S\u00e9 el primero en publicar.", "Sii il primo a pubblicare.", "\u6700\u521d\u306e\u6295\u7a3f\u3092\u3057\u3088\u3046\u3002")));
   return h("div", { style: { padding: "0 16px" } }, enfants);
 }
@@ -25802,6 +25816,20 @@ function GrilleSouvenirs(props) {
 }
 
 function EcranCheval() {
+  function rareteIndice(v) {
+    if (!(v >= 120)) return null;
+    if (v >= 165) return T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d");
+    if (v >= 160) return T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d");
+    if (v >= 155) return T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d");
+    if (v >= 150) return T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d");
+    if (v >= 145) return T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d");
+    if (v >= 140) return T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d");
+    if (v >= 135) return "Top 1 %";
+    if (v >= 130) return "Top 2 %";
+    if (v >= 125) return "Top 4 %";
+    return "Top 8 %";
+  }
+
   var h = React.createElement;
   var ctx = useApp();
   var setEcran = ctx.setEcran, tr = ctx.tr;
@@ -25981,46 +26009,73 @@ function EcranCheval() {
             h(SelecteurLangue, { compact: true }),
             h("div", { className: "ic", onClick: function () { if (refPhotoCh.current) refPhotoCh.current.click(); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" }))),
             h("div", { className: "ic", onClick: bientot }, h("svg", { viewBox: "0 0 24 24" }, h("g", null, h("circle", { cx: 12, cy: 5, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 12, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 19, r: 1.4, fill: "#EAF2F4", stroke: "none" })))))),
-        h("div", { className: "hg" },
-          h("div", { className: "eyb" }, (((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || "").trim()) || "\u00c9curie Feinn"),
-          (function () {
-            var nmC = String(c.nom || "");
-            var mSp = nmC.match(/^(.*?)\s+(de\s.+|d'.+|du\s.+|des\s.+)$/i);
-            return h("div", null,
-              h("h1", { className: "nm" }, (mSp ? mSp[1] : nmC).toUpperCase()),
-              mSp ? h("div", { className: "nm2" }, mSp[2]) : null);
-          })(),
-          (function () {
-            var ptsH = (c.info || race || "").split("\u00b7").map(function (xI) { return xI.trim(); }).filter(Boolean);
-            var ixH = ((c.origines && c.origines.indices) || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; })[0];
-            var txtH = ptsH.join("  \u00b7  ");
-            var vH = ixH ? parseFloat(String(ixH[1]).replace("\u2212", "-").replace("+", "")) : 0;
-            var tH = vH >= 120 ? Math.min(5, Math.floor((vH - 110) / 10)) : 0;
-            var lblH = null;
-            if (vH >= 165) lblH = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d");
-            else if (vH >= 160) lblH = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d");
-            else if (vH >= 155) lblH = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d");
-            else if (vH >= 150) lblH = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d");
-            else if (vH >= 145) lblH = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d");
-            else if (vH >= 140) lblH = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d");
-            else if (vH >= 135) lblH = "Top 1 %";
-            else if (vH >= 130) lblH = "Top 2 %";
-            else if (vH >= 125) lblH = "Top 4 %";
-            else if (vH >= 120) lblH = "Top 8 %";
-            return h("div", null,
-              h("div", { className: "micro" }, !ixH ? txtH : h("span", null, txtH + (txtH ? "  \u00b7  " : ""),
-                h("b", { style: { whiteSpace: "nowrap", fontWeight: tH >= 2 ? 800 : (tH ? 700 : 600), fontSize: (11 + tH) + "px", color: tH >= 2 ? "var(--teinte)" : (vH >= 110 ? "#F4F7FA" : "inherit"), textShadow: tH >= 3 ? "0 0 10px var(--teinte)" : "none", letterSpacing: "0.08em" } }, ixH[0] + " " + ixH[1]))),
-              lblH ? h("div", { style: { display: "inline-flex", alignItems: "center", marginTop: 10, padding: "5px 12px", borderRadius: 999, background: "rgba(8,13,18,0.5)", border: "1px solid " + tA(0.5) + "", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", fontSize: 9.5, letterSpacing: "0.14em", fontWeight: 800, color: teinteCl, textTransform: "uppercase" } }, "\u2727 " + lblH + " \u00b7 " + ixH[0]) : null);
-          })(),
-          h("div", { className: "prism" }),
-          h("div", { className: "qnav" },
-          qn(h("path", { d: "M12 8v4m0 4h.01M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" }), T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71"), function () { try { var eI = document.getElementById("chvInfos"); if (eI) eI.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e0) { } }),
-          qn(etoile, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e"), function () { setPanneau("palmares"); }),
-          qn(h("g", null, h("rect", { x: 3, y: 5, width: 18, height: 14, rx: 2 }), h("path", { d: "m3 15 5-4 4 3 4-4 5 4" })), T("Galerie", "Gallery", "Galer\u00eda", "Galleria", "\u30ae\u30e3\u30e9\u30ea\u30fc"), function () { setPanneau("souvenirs"); }),
-          qn(h("path", { d: "M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v13" }), T("Partage", "Share", "Compartir", "Condividi", "\u5171\u6709"), partagerFiche)),
-          null)),
+        (function () {
+          var ogH = c.origines || {};
+          var infoP = (c.info || "").split("\u00b7").map(function (x) { return x.trim(); }).filter(Boolean);
+          var ixH = (ogH.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; })[0];
+          var vH = ixH ? parseFloat(String(ixH[1]).replace("\u2212", "-").replace("+", "")) : 0;
+          var lblH = rareteIndice(vH);
+          var nmC = String(c.nom || "");
+          var mSp = nmC.match(/^(.*?)\s+(de\s.+|d'.+|du\s.+|des\s.+)$/i);
+          var raceTxt = infoP[0] || race || "";
+          var abrv = raceTxt.split(/[\s-]+/).filter(function (w) { return w.length > 2; }).map(function (w) { return w[0]; }).join("").toUpperCase() || raceTxt.slice(0, 3).toUpperCase();
+          var ageTxt = infoP.filter(function (x) { return /^\d+\s*ans?\b/i.test(x); })[0] || "";
+          var recit = c.histoire || (T("Un ", "A ", "Un ", "Un ", "") + (raceTxt || T("cheval", "horse", "caballo", "cavallo", "\u99ac")) + T(" au c\u0153ur de l'\u00e9curie Hype. Sa fiche raconte ses origines, ses performances et ses plus beaux souvenirs.", " at the heart of the Hype stable. This page tells its bloodline, its performances and its finest memories.", " en el coraz\u00f3n de la cuadra Hype. Su ficha cuenta sus or\u00edgenes, sus resultados y sus mejores recuerdos.", " nel cuore della scuderia Hype. La sua scheda racconta origini, prestazioni e ricordi pi\u00f9 belli.", "Hype\u5395\u820e\u306e\u4e2d\u5fc3\u306b\u3044\u308b\u99ac\u3002\u8840\u7d71\u3068\u6210\u7e3e\u3001\u601d\u3044\u51fa\u3092\u7d39\u4ecb\u3057\u307e\u3059\u3002"));
+          return h("div", { className: "hg" },
+            h("h1", { className: "nm" }, (mSp ? mSp[1] : nmC).toUpperCase()),
+            mSp ? h("div", { className: "nm2" }, mSp[2]) : null,
+            h("div", { className: "hdiv" }, h("i", null), h("s", null)),
+            lblH ? h("div", { className: "hleg" }, h("b", null, "\u2726 " + T("L\u00e9gende Hype", "Hype Legend", "Leyenda Hype", "Leggenda Hype", "\u4f1d\u8aac")), h("span", null, lblH)) : null,
+            h("div", { className: "hstats" },
+              h("div", { className: "s1" },
+                h("div", { className: "l" }, ixH ? ixH[0] : T("\u00c2ge", "Age", "Edad", "Et\u00e0", "\u5e74\u9f62")),
+                h("div", { className: "v" }, ixH ? ixH[1] : (ageTxt.split(" ")[0] || "\u2014"))),
+              h("div", { className: "sep" }),
+              h("div", { className: "s2" },
+                h("div", { className: "l" }, abrv || "\u2014"),
+                h("div", { className: "v" }, (ageTxt || disc || "\u2014").toUpperCase()),
+                h("div", { className: "s" }, [ogH.robe, (disc && disc !== ogH.robe) ? disc : null].filter(Boolean).join(" \u00b7 ")),
+                ogH.naissance ? h("div", { className: "s" }, T("N\u00e9(e) le ", "Born ", "Nacido el ", "Nato il ", "\u751f\u5e74\u6708\u65e5 ") + ogH.naissance.split("\u00b7")[0].trim()) : null),
+              null),
+            h("p", { className: "hbio" }, recit),
+            h("div", { className: "hcta", onClick: function () { setPanneau("souvenirs"); } }, "\u2728 " + T("D\u00e9couvrir son histoire", "Discover its story", "Descubrir su historia", "Scopri la sua storia", "\u7269\u8a9e\u3092\u898b\u308b")));
+        })(),
+        null),
 
       h("div", { className: "scroll" },
+
+        (function () {
+          var ogK = c.origines || {};
+          var nbP = ((c.palmares && c.palmares.length) || 0) + ((c.flots && c.flots.length) || 0);
+          function carteK(img2, ic2, ti2, st2, cta2, act2, kk) {
+            return h("div", { key: kk, onClick: act2, style: { position: "relative", borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.3) + "", background: "linear-gradient(170deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))", cursor: "pointer", height: 158, maxHeight: 158, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "16px 4px 11px", boxShadow: "0 8px 22px rgba(0,0,0,0.35)" } },
+              img2 ? h("img", { src: img2, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 24%", filter: "brightness(0.34) saturate(0.85)" } }) : h("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(90% 90% at 50% 0%, " + tA(0.13) + ", transparent 70%)" } }),
+              h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.25), rgba(6,7,9,0.72))" } }),
+              h("div", { style: { position: "relative", zIndex: 2, width: 46, height: 46, borderRadius: "50%", border: "1.5px solid " + tA(0.7) + "", background: "rgba(8,12,16,0.6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 13px " + tA(0.3) + "" } },
+                h("svg", { viewBox: "0 0 24 24", style: { width: 21, height: 21, stroke: teinteCl, fill: "none", strokeWidth: 1.6 } }, ic2)),
+              h("div", { style: { position: "relative", zIndex: 2, fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.6, color: "#F4F6F7", marginTop: 11, whiteSpace: "nowrap" } }, ti2),
+              h("div", { style: { position: "relative", zIndex: 2, marginTop: "auto", paddingTop: 6, borderTop: "1px solid " + tA(0.22) + "", width: "88%", textAlign: "center", fontSize: 8.5, letterSpacing: "0.1em", fontWeight: 800, color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cta2 + " \u2192"));
+          }
+          return h("div", { className: "rise", style: { animationDelay: ".04s", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, margin: "4px 0 14px" } },
+            carteK(photoCh,
+              h("path", { d: "M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.7-6 2 0 3.4 1.2 4.3 2.6C12 6.2 13.4 5 15.4 5c3.1 0 4.9 3.2 3.7 6-2 4.5-9 9-9 9z", strokeLinejoin: "round" }),
+              T("Histoire", "Story", "Historia", "Storia", "\u7269\u8a9e"),
+              T("Souvenirs, albums et moments forts", "Memories, albums and highlights", "Recuerdos, \u00e1lbumes y momentos", "Ricordi, album e momenti", "\u601d\u3044\u51fa\u3068\u30a2\u30eb\u30d0\u30e0"),
+              T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa"),
+              function () { setPanneau("souvenirs"); }, "kh"),
+            carteK(IMG_LABAULE,
+              h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 13v4m-3 3h6" }),
+              T("Carri\u00e8re", "Career", "Carrera", "Carriera", "\u30ad\u30e3\u30ea\u30a2"),
+              T("R\u00e9sultats, flots et performances", "Results, rosettes and performances", "Resultados, escarapelas y rendimiento", "Risultati, coccarde e prestazioni", "\u6210\u7e3e\u3068\u30ed\u30bc\u30c3\u30c8"),
+              nbP ? (nbP + " " + T("r\u00e9s.", "res.", "res.", "ris.", "\u4ef6")) : T("Ouvrir", "Open", "Abrir", "Apri", "\u958b\u304f"),
+              function () { setPanneau("palmares"); }, "kc"),
+            carteK(null,
+              h("g", null, h("path", { d: "M6 3v6a4 4 0 0 0 8 0V3M10 13v3.5a4.5 4.5 0 0 0 9 0V14" }), h("circle", { cx: 19, cy: 11.5, r: 2.2 })),
+              T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7"),
+              T("Suivi, soins, vaccins et bien-\u00eatre", "Care, vaccines and wellbeing", "Cuidados, vacunas y bienestar", "Cure, vaccini e benessere", "\u30b1\u30a2\u3068\u5065\u5eb7"),
+              T("Passeport", "Passport", "Pasaporte", "Passaporto", "\u30d1\u30b9\u30dd\u30fc\u30c8"),
+              function () { setPanneau("passeport"); }, "ks"));
+        })(),
 
         h("div", { className: "rise", style: { animationDelay: ".05s", display: "flex", gap: 7, overflowX: "auto", padding: "2px 0 8px", WebkitOverflowScrolling: "touch" } },
           [["confiance", T("Confiance", "Trust", "Confianza", "Fiducia", "信頼")], ["complicite", T("Complicité", "Bond", "Complicidad", "Intesa", "絆")], ["respect", T("Respect", "Respect", "Respeto", "Rispetto", "尊重")], ["franchise", T("Franchise", "Boldness", "Franqueza", "Franchezza", "率直さ")], ["sante", T("Santé", "Health", "Salud", "Salute", "健康")], ["moyens", T("Moyens", "Ability", "Medios", "Mezzi", "能力")]].map(function (pr) {
@@ -26042,46 +26097,53 @@ function EcranCheval() {
               [1,2,3,4,5,6,7,8,9,10].map(function(n){ var actifN = statsCh[editStat.cle] === n; return h("button", { key: n, onClick: function(){ fixerStat(n); }, style: { width: 40, height: 40, borderRadius: "50%", border: actifN ? "1.5px solid " + teinte + "" : "1px solid rgba(255,255,255,0.15)", background: actifN ? "" + tA(0.2) + "" : "transparent", color: actifN ? teinteCl : "#C9D3D8", fontSize: 14.5, fontWeight: 700, cursor: "pointer" } }, n); })),
             statsCh[editStat.cle] ? h("button", { onClick: function(){ fixerStat(null); }, style: { display: "block", margin: "14px auto 0", background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, T("Effacer", "Clear", "Borrar", "Cancella", "クリア")) : null)) : null,
 
-        h("div", { className: "rise", style: { animationDelay: ".06s", margin: "14px 16px 0" } },
-          (function () {
-            var nbP = ((c.palmares && c.palmares.length) || 0) + ((c.flots && c.flots.length) || 0);
-            return h("div", { onClick: function () { setPanneau("palmares"); }, style: { borderRadius: 16, background: "linear-gradient(135deg, " + tA(0.08) + ", rgba(255,255,255,0.02))", border: "1px solid " + tA(0.24) + "", padding: "13px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" } },
+
+        (function () {
+          var ogA = c.origines || {};
+          var ixA = (ogA.indices || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; });
+          if (!ixA.length) return null;
+          var vA = parseFloat(String(ixA[0][1]).replace("\u2212", "-").replace("+", ""));
+          var pA = vA >= 120 ? Math.min(5, Math.floor((vA - 110) / 10)) : 0;
+          var lblA = null;
+          if (vA >= 165) lblA = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d");
+          else if (vA >= 160) lblA = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d");
+          else if (vA >= 155) lblA = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d");
+          else if (vA >= 150) lblA = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d");
+          else if (vA >= 145) lblA = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d");
+          else if (vA >= 140) lblA = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d");
+          else if (vA >= 135) lblA = "Top 1 %";
+          else if (vA >= 130) lblA = "Top 2 %";
+          else if (vA >= 125) lblA = "Top 4 %";
+          else if (vA >= 120) lblA = "Top 8 %";
+          var discA = String(disc || "").toUpperCase();
+          var imgDisc = (discA.indexOf("CSO") >= 0 || discA.indexOf("SAUT") >= 0 || discA.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
+          var tPhoto = 56 + pA * 7;
+          return h("div", null,
+            h("div", { className: "eyebrow2 rise", style: { animationDelay: ".075s" } }, T("Aptitude", "Performance index", "Aptitud", "Attitudine", "\u80fd\u529b")),
+            h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 26px", borderRadius: 18, position: "relative", border: "1px solid " + tA(0.3 + pA * 0.09) + "", background: "linear-gradient(135deg, " + tA(0.06 + pA * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pA >= 3 ? "0 0 " + (12 + pA * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (12 + pA * 2) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
+              imgDisc ? h("div", { style: { width: tPhoto, height: tPhoto, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
+                h("img", { src: imgDisc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
               h("div", { style: { flex: 1, minWidth: 0 } },
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 600, color: "#F4F6F7", letterSpacing: 0.6 } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績")),
-                h("div", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.55)", marginTop: 2 } }, nbP ? (nbP + " " + T("résultats & flots", "results & rosettes", "resultados y escarapelas", "risultati e coccarde", "件")) : T("Le palmarès commence ici.", "The record starts here.", "El palmarés empieza aquí.", "Il palmarès inizia qui.", "戦績はここから"))),
-              h("span", { style: { color: teinte, opacity: 0.7, fontSize: 16, flexShrink: 0 } }, "›"));
-          })()),
+                h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
+                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 25 + pA * 3.5, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
+                  h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
+                ixA[0][2] ? h("div", { style: { fontSize: 8.5, color: "#7B858E", marginTop: 4 } }, ixA[0][2]) : null,
+                ogA.apt ? h("div", { style: { fontSize: 9, color: "#8A929C", fontStyle: "italic", marginTop: 3 } }, ogA.apt) : null),
+              lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
+                h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac"))) : null));
+        })(),
 
         h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統")),
         (function () { var og = c.origines || {};
         var filtreIx = function (li) { return (li || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; }); };
         var ixOK = filtreIx(og.indices), ixMereOK = og.mere ? filtreIx(og.mere.indices) : [];
         var vApt = ixOK.length ? parseFloat(String(ixOK[0][1]).replace("\u2212", "-").replace("+", "")) : 0;
-        var lblApt = null;
-        if (vApt >= 165) lblApt = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d");
-        else if (vApt >= 160) lblApt = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d");
-        else if (vApt >= 155) lblApt = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d");
-        else if (vApt >= 150) lblApt = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d");
-        else if (vApt >= 145) lblApt = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d");
-        else if (vApt >= 140) lblApt = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d");
-        else if (vApt >= 135) lblApt = "Top 1 %";
-        else if (vApt >= 130) lblApt = "Top 2 %";
-        else if (vApt >= 125) lblApt = "Top 4 %";
-        else if (vApt >= 120) lblApt = "Top 8 %";
+        var lblApt = rareteIndice(vApt);
         return h("div", { className: "rise", style: { animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
 
-          ixOK.length ? h("div", { style: { padding: "11px 14px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
-            h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700, marginBottom: 8 } }, T("Aptitude", "Performance", "Aptitud", "Attitudine", "能力")),
-            h("div", { style: { display: "flex", gap: 7 } },
-              ixOK.map(function (ix, ii) {
-                return h("div", { key: "ixp" + ii, style: { flex: 1, minWidth: 0, textAlign: "center", padding: "7px 2px 6px", borderRadius: 11, background: ii === 0 ? tA(0.09) : "rgba(255,255,255,0.03)", border: "1px solid " + (ii === 0 ? tA(0.45) : "rgba(255,255,255,0.07)") } },
-                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: ii === 0 ? teinteCl : "#EDF2F5", lineHeight: 1 } }, ix[1]),
-                  h("div", { style: { fontSize: 7.5, letterSpacing: "0.16em", color: ii === 0 ? teinteCl : "#8A929C", fontWeight: 700, marginTop: 3 } }, ix[0]),
-                  ix[2] ? h("div", { style: { fontSize: 7, color: "#5B646E", marginTop: 1 } }, ix[2]) : null);
-              })),
-            lblApt ? h("div", { style: { fontSize: 9.5, color: teinteCl, fontWeight: 700, letterSpacing: "0.05em", marginTop: 9, textAlign: "center" } }, "\u2727 " + lblApt + " " + (String(lblApt).indexOf("Top") === 0 ? T("des chevaux de sport", "of sport horses", "de los caballos de deporte", "dei cavalli sportivi", "\u306e\u30b9\u30dd\u30fc\u30c4\u99ac") : T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u306e\u30b9\u30dd\u30fc\u30c4\u99ac"))) : null,
-            c.origines.apt ? h("div", { style: { fontSize: 9.5, color: "#8A929C", fontStyle: "italic", marginTop: 8, textAlign: "center" } }, "\u2727 " + c.origines.apt) : null) : null,
-          og.pedigree ? (function (pg) {
+
+          (function (pg) {
             function celPed(n, opts) {
               opts = opts || {};
               return h("div", { style: { gridColumn: opts.col, gridRow: opts.row, padding: "9px 8px 9px 10px", display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, borderLeft: opts.col > 1 ? "1px solid rgba(32,217,245,0.2)" : "none", borderBottom: opts.bb === "fort" ? "1px solid rgba(32,217,245,0.25)" : (opts.bb ? "1px solid rgba(255,255,255,0.05)" : "none") } },
@@ -26090,45 +26152,26 @@ function EcranCheval() {
                 (n && n.detail) ? h("div", { style: { fontSize: 7.8, color: "#7B858E", marginTop: 2, lineHeight: 1.3 } }, n.detail) : null);
             }
             var lp = T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236"), lm = T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd");
-            return h("div", { style: { display: "grid", gridTemplateColumns: "1.18fr 1fr 1fr", gridAutoRows: "minmax(42px, auto)", borderBottom: (og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
+            var aG2 = !!((pg.pere && (pg.pere.pere || pg.pere.mere)) || (pg.mere && (pg.mere.pere || pg.mere.mere)));
+            var aG3 = false;
+            [pg.pere, pg.mere].forEach(function (pN) { if (pN) [pN.pere, pN.mere].forEach(function (gN) { if (gN && (gN.pere || gN.mere)) aG3 = true; }); });
+            return h("div", { style: { display: "grid", gridTemplateColumns: aG3 ? "1.18fr 1fr 1fr" : (aG2 ? "1.25fr 1fr" : "1fr"), gridAutoRows: "minmax(42px, auto)", borderBottom: (og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
               celPed(pg.pere, { col: 1, row: "1 / span 4", label: lp, grand: true, bb: "fort" }),
               celPed(pg.mere, { col: 1, row: "5 / span 4", label: lm, grand: true }),
-              celPed(pg.pere && pg.pere.pere, { col: 2, row: "1 / span 2", moyen: true, bb: true }),
-              celPed(pg.pere && pg.pere.mere, { col: 2, row: "3 / span 2", moyen: true, bb: "fort" }),
-              celPed(pg.mere && pg.mere.pere, { col: 2, row: "5 / span 2", moyen: true, bb: true }),
-              celPed(pg.mere && pg.mere.mere, { col: 2, row: "7 / span 2", moyen: true }),
-              celPed(pg.pere && pg.pere.pere && pg.pere.pere.pere, { col: 3, row: "1", bb: true }),
-              celPed(pg.pere && pg.pere.pere && pg.pere.pere.mere, { col: 3, row: "2", bb: true }),
-              celPed(pg.pere && pg.pere.mere && pg.pere.mere.pere, { col: 3, row: "3", bb: true }),
-              celPed(pg.pere && pg.pere.mere && pg.pere.mere.mere, { col: 3, row: "4", bb: "fort" }),
-              celPed(pg.mere && pg.mere.pere && pg.mere.pere.pere, { col: 3, row: "5", bb: true }),
-              celPed(pg.mere && pg.mere.pere && pg.mere.pere.mere, { col: 3, row: "6", bb: true }),
-              celPed(pg.mere && pg.mere.mere && pg.mere.mere.pere, { col: 3, row: "7", bb: true }),
-              celPed(pg.mere && pg.mere.mere && pg.mere.mere.mere, { col: 3, row: "8" }));
-          })(og.pedigree) : null,
-          !og.pedigree ? h("div", { style: { padding: "12px 14px 11px", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
-            h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700 } }, T("Père", "Sire", "Padre", "Padre", "父")),
-            og.pere ? h("div", null,
-              h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, marginTop: 3, flexWrap: "wrap" } },
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F6F8", letterSpacing: 0.5 } }, og.pere.nom),
-                og.pere.sire ? h("div", { style: { fontSize: 9, color: "#6B7580", fontWeight: 600, letterSpacing: "0.08em" } }, "SIRE " + og.pere.sire) : null),
-              og.pere.detail ? h("div", { style: { fontSize: 11, color: "#9AA5AD", marginTop: 2 } }, og.pere.detail) : null)
-            : h("div", { style: { fontSize: 13, fontWeight: 600, color: "rgba(237,242,245,0.28)", marginTop: 3 } }, "—")) : null,
-          !og.pedigree ? h("div", { style: { padding: "12px 14px", borderBottom: (og.arbre || og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
-            h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: teinteCl, textTransform: "uppercase", fontWeight: 700 } }, T("Mère", "Dam", "Madre", "Madre", "母")),
-            og.mere ? h("div", null,
-              h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, marginTop: 3, flexWrap: "wrap" } },
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: og.pere ? 16.5 : 18, fontWeight: 700, color: "#F2F6F8", letterSpacing: 0.5 } }, og.mere.nom),
-                og.mere.sire ? h("div", { style: { fontSize: 9, color: "#6B7580", fontWeight: 600, letterSpacing: "0.08em" } }, "SIRE " + og.mere.sire) : null),
-              og.mere.detail ? h("div", { style: { fontSize: 11, color: "#9AA5AD", marginTop: 2 } }, og.mere.detail) : null)
-            : h("div", { style: { fontSize: 13, fontWeight: 600, color: "rgba(237,242,245,0.28)", marginTop: 3 } }, "—"),
-            ixMereOK.length ? h("div", { style: { display: "flex", gap: 7, marginTop: 10 } },
-              ixMereOK.map(function (ix, ii) {
-                return h("div", { key: "ix" + ii, style: { flex: 1, minWidth: 0, textAlign: "center", padding: "7px 2px 6px", borderRadius: 11, background: ii === 0 ? tA(0.09) : "rgba(255,255,255,0.03)", border: "1px solid " + (ii === 0 ? tA(0.45) : "rgba(255,255,255,0.07)") } },
-                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: ii === 0 ? teinteCl : "#EDF2F5", lineHeight: 1 } }, ix[1]),
-                  h("div", { style: { fontSize: 7.5, letterSpacing: "0.16em", color: ii === 0 ? teinteCl : "#8A929C", fontWeight: 700, marginTop: 3 } }, ix[0]),
-                  ix[2] ? h("div", { style: { fontSize: 7, color: "#5B646E", marginTop: 1 } }, ix[2]) : null);
-              })) : null) : null,
+              aG2 ? celPed(pg.pere && pg.pere.pere, { col: 2, row: "1 / span 2", moyen: true, bb: true }) : null,
+              aG2 ? celPed(pg.pere && pg.pere.mere, { col: 2, row: "3 / span 2", moyen: true, bb: "fort" }) : null,
+              aG2 ? celPed(pg.mere && pg.mere.pere, { col: 2, row: "5 / span 2", moyen: true, bb: true }) : null,
+              aG2 ? celPed(pg.mere && pg.mere.mere, { col: 2, row: "7 / span 2", moyen: true }) : null,
+              aG3 ? celPed(pg.pere && pg.pere.pere && pg.pere.pere.pere, { col: 3, row: "1", bb: true }) : null,
+              aG3 ? celPed(pg.pere && pg.pere.pere && pg.pere.pere.mere, { col: 3, row: "2", bb: true }) : null,
+              aG3 ? celPed(pg.pere && pg.pere.mere && pg.pere.mere.pere, { col: 3, row: "3", bb: true }) : null,
+              aG3 ? celPed(pg.pere && pg.pere.mere && pg.pere.mere.mere, { col: 3, row: "4", bb: "fort" }) : null,
+              aG3 ? celPed(pg.mere && pg.mere.pere && pg.mere.pere.pere, { col: 3, row: "5", bb: true }) : null,
+              aG3 ? celPed(pg.mere && pg.mere.pere && pg.mere.pere.mere, { col: 3, row: "6", bb: true }) : null,
+              aG3 ? celPed(pg.mere && pg.mere.mere && pg.mere.mere.pere, { col: 3, row: "7", bb: true }) : null,
+              aG3 ? celPed(pg.mere && pg.mere.mere && pg.mere.mere.mere, { col: 3, row: "8" }) : null);
+          })(og.pedigree || { pere: og.pere || null, mere: og.mere || null }),
+
           (og.arbre || []).map(function (gn, gi) {
             return h("div", { key: "gen" + gi, style: { padding: "10px 14px", borderBottom: (gi === og.arbre.length - 1 && !og.naisseur && !og.note) ? "none" : "1px solid rgba(255,255,255,0.05)" } },
               h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: "#8A929C", textTransform: "uppercase", fontWeight: 700, marginBottom: 7 } }, tr(gn.gen)),
@@ -26146,7 +26189,7 @@ function EcranCheval() {
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".14s" } }, T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出")),
         h(GalerieSouvenirs, { teinte: teinte, teinteCl: teinteCl, cible: "cheval:" + id, photoDefaut: photoCh, vedettes: vedettes || [], onTout: function () { setPanneau("souvenirs"); } }),
 
-        h("div", { style: { padding: "18px 16px 0" } }, h(EncartConseilsHB, { chevalId: id })),
+        h("div", { style: { padding: "18px 16px 0" } }, h(EncartConseilsHB, { chevalId: id, teinte: teinte })),
 
         h("div", { className: "rise", onClick: function () { setPanneau("passeport"); }, style: { animationDelay: ".12s", margin: "12px 16px 0", borderRadius: 20, border: "1px solid " + tA(0.28) + "", background: "linear-gradient(135deg, " + tA(0.09) + ", rgba(255,255,255,0.02))", padding: "16px", display: "flex", alignItems: "center", gap: 13, cursor: "pointer" } },
           h("div", { style: { fontSize: 26 } }, "🩺"),
@@ -26155,7 +26198,7 @@ function EcranCheval() {
             h("div", { style: { fontSize: 11, color: "rgba(237,242,245,0.55)", marginTop: 2 } }, T("Vaccins · Soins · Suivi · À savoir", "Vaccines · Care · Follow-up · Key facts", "Vacunas · Cuidados · Seguimiento", "Vaccini · Cure · Follow-up", "ワクチン · ケア · 記録"))),
           h("span", { style: { color: teinte, fontSize: 17 } }, "›")),
 
-        h(MurHype, { cible: "cheval:" + id, compact: true, momentsSeuls: true, onVoirTout: function () { setPanneau("souvenirs"); } }),
+        h(MurHype, { cible: "cheval:" + id, compact: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
 
 
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".16s" } }, T("R\u00e9compenses", "Awards", "Recompensas", "Riconoscimenti", "\u8cde")),
@@ -26225,7 +26268,7 @@ function EcranCheval() {
           h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("les moments racontés", "the moments you tell", "los momentos contados", "i momenti raccontati", "語られた瞬間")),
           h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
         h("div", { className: "souvin", style: { animationDelay: ".3s" } },
-          h(MurHype, { cible: "cheval:" + id, sansTitre: true, momentsSeuls: true }))) : null,
+          h(MurHype, { cible: "cheval:" + id, sansTitre: true, momentsSeuls: true, teinte: teinte }))) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
         h("div", { style: { fontSize: 42, marginTop: 26 } }, "🩺"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F6F7", marginTop: 14 } }, T("Le passeport arrive", "The passport is coming", "El pasaporte llega pronto", "Il passaporto sta arrivando", "パスポートは準備中")),
@@ -28745,7 +28788,8 @@ function EcranSante() {
 }
 
 
-function EncartConseilsHB({ chevalId }) {
+function EncartConseilsHB({ chevalId, teinte }) {
+  const TQe = teinte || COLORS.turquoise; const TQeD = teinte || TQeD;
     const { tr } = useApp();
     const L = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
     const [liste, setListe] = useState(null);
@@ -28758,15 +28802,15 @@ function EncartConseilsHB({ chevalId }) {
             React.createElement("span", { style: { fontSize: 16 } }, "\uD83D\uDCAC"),
             React.createElement("p", { style: { margin: 0, fontSize: 15, fontWeight: 700, color: COLORS.encre } }, L("Conseils de Hey Baby", "Hey Baby's advice", "Consejos de Hey Baby", "Consigli di Hey Baby", "Hey Baby\u306e\u30a2\u30c9\u30d0\u30a4\u30b9"))),
         (liste === null) ? React.createElement("p", { style: { margin: 0, fontSize: 12.5, color: COLORS.encreDoux } }, "\u2026")
-            : (liste.length === 0) ? React.createElement("div", { style: { border: `1px dashed ${COLORS.turquoise}66`, background: `${COLORS.turquoise}0A`, borderRadius: 14, padding: "13px 15px" } },
+            : (liste.length === 0) ? React.createElement("div", { style: { border: `1px dashed ${TQe}66`, background: `${TQe}0A`, borderRadius: 14, padding: "13px 15px" } },
                 React.createElement("p", { style: { margin: 0, fontSize: 12.5, lineHeight: 1.55, color: COLORS.encreDoux, fontStyle: "italic" } }, L("\u00c9pingle tes meilleurs \u00e9changes avec Hey Baby depuis la conversation \uD83D\uDCCC : ils appara\u00eetront ici.", "Pin your best Hey Baby exchanges from the chat \uD83D\uDCCC: they will appear here.", "Fija tus mejores intercambios con Hey Baby desde la conversaci\u00f3n \uD83D\uDCCC: aparecer\u00e1n aqu\u00ed.", "Fissa i tuoi migliori scambi con Hey Baby dalla conversazione \uD83D\uDCCC: appariranno qui.", "\u4f1a\u8a71\u753b\u9762\u3067Hey Baby\u3068\u306e\u304a\u6c17\u306b\u5165\u308a\u306e\u3084\u308a\u53d6\u308a\u3092\u30d4\u30f3\u7559\u3081\uD83D\uDCCC\u3059\u308b\u3068\u3001\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002")))
             : React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8 } }, liste.map((e2) => (React.createElement("div", { key: e2.id, style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 14, padding: "12px 14px" } },
                 React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 8 } },
                     React.createElement("div", { onClick: () => setOuvert(ouvert === e2.id ? null : e2.id), style: { flex: 1, cursor: "pointer", minWidth: 0 } },
-                        (!chevalId && e2.cheval_nom) ? React.createElement("p", { style: { margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, color: COLORS.turquoiseDark, letterSpacing: 0.4 } }, "\uD83D\uDC34 " + e2.cheval_nom) : null,
-                        e2.question ? React.createElement("p", { style: { margin: "0 0 5px", fontSize: 12.5, fontWeight: 700, color: COLORS.turquoiseDark, lineHeight: 1.35 } }, "\u00ab " + ((ouvert === e2.id || e2.question.length <= 80) ? e2.question : e2.question.slice(0, 80) + "\u2026") + " \u00bb") : null,
+                        (!chevalId && e2.cheval_nom) ? React.createElement("p", { style: { margin: "0 0 4px", fontSize: 10.5, fontWeight: 800, color: TQeD, letterSpacing: 0.4 } }, "\uD83D\uDC34 " + e2.cheval_nom) : null,
+                        e2.question ? React.createElement("p", { style: { margin: "0 0 5px", fontSize: 12.5, fontWeight: 700, color: TQeD, lineHeight: 1.35 } }, "\u00ab " + ((ouvert === e2.id || e2.question.length <= 80) ? e2.question : e2.question.slice(0, 80) + "\u2026") + " \u00bb") : null,
                         React.createElement("p", { style: { margin: 0, fontSize: 12.5, color: COLORS.encre, lineHeight: 1.55, whiteSpace: "pre-wrap" } }, (ouvert === e2.id || String(e2.reponse || "").length <= 150) ? e2.reponse : String(e2.reponse).slice(0, 150) + "\u2026"),
-                        String(e2.reponse || "").length > 150 ? React.createElement("p", { style: { margin: "5px 0 0", fontSize: 11, color: COLORS.turquoiseDark, fontWeight: 700 } }, ouvert === e2.id ? L("R\u00e9duire \u25b2", "Collapse \u25b2", "Reducir \u25b2", "Riduci \u25b2", "\u6298\u308a\u305f\u305f\u3080 \u25b2") : L("Lire la suite \u25bc", "Read more \u25bc", "Leer m\u00e1s \u25bc", "Leggi tutto \u25bc", "\u7d9a\u304d\u3092\u8aad\u3080 \u25bc")) : null),
+                        String(e2.reponse || "").length > 150 ? React.createElement("p", { style: { margin: "5px 0 0", fontSize: 11, color: TQeD, fontWeight: 700 } }, ouvert === e2.id ? L("R\u00e9duire \u25b2", "Collapse \u25b2", "Reducir \u25b2", "Riduci \u25b2", "\u6298\u308a\u305f\u305f\u3080 \u25b2") : L("Lire la suite \u25bc", "Read more \u25bc", "Leer m\u00e1s \u25bc", "Leggi tutto \u25bc", "\u7d9a\u304d\u3092\u8aad\u3080 \u25bc")) : null),
                     React.createElement("button", { onClick: () => retirer(e2.id), "aria-label": "Retirer", style: { width: 26, height: 26, borderRadius: "50%", background: "rgba(127,127,127,0.14)", color: COLORS.encreDoux, fontSize: 12, flexShrink: 0, border: "none" } }, "\u2715"))))))));
 }
 /* ============== 09_profil_premium_badges.jsx ============== */
