@@ -19083,11 +19083,11 @@ function EcranEvenement(){
       var im = new Image();
       im.onload = function(){
         try{
-          var MAX = 1000, sc = Math.min(1, MAX / Math.max(im.width, im.height));
+          var MAX = 1600, sc = Math.min(1, MAX / Math.max(im.width, im.height));
           var cv = document.createElement("canvas");
           cv.width = Math.max(1, Math.round(im.width * sc)); cv.height = Math.max(1, Math.round(im.height * sc));
           cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
-          setPhoto(cv.toDataURL("image/jpeg", 0.78));
+          setPhoto(cv.toDataURL("image/jpeg", 0.9));
         }catch(err){ setPhoto(rd.result); }
       };
       im.src = rd.result;
@@ -25250,7 +25250,7 @@ var CHEVAUX_FICHE = {
   },
   rizotto: {
     nom: "Rizotto d'Emery", photo: UV3_H3, info: "Poney Français de Selle · 21 ans · CSO",
-    histoire: "Révélé très jeune sur le circuit SHF, Rizotto s'est illustré par sa régularité en CSO et accompagne aujourd'hui une nouvelle génération de cavaliers.",
+    histoire: "Rizotto est un poney d'exception, l'un des meilleurs de sa génération avec plus de 200 victoires et un indice de 161 sous la selle de Liam Roux en 2021. Il remporte notamment l'Open de France cette année-là. Son histoire est aussi marquée par un geste rare de générosité de sa propriétaire, Julie Benoit, qui a permis à cette belle aventure sportive et familiale de se poursuivre, en faisant don de son poney à Liam.\n\nImpossible d'évoquer Rizotto sans citer Webster, son compagnon d'écurie : un IPO de 170 obtenu la même année, toujours sous la selle de Liam, et une place dans le top 5 des poneys français aux résultats. Engagés dans la même épreuve, les deux formaient une combinaison fatale — il n'était pas rare de les voir signer de véritables grands chelems, premières et deuxièmes places, ou des trios de tête.",
     origines: {
       sire: "05012137Z",
       naissance: "07/05/2005 · France",
@@ -25455,7 +25455,7 @@ function RecadrageHype() {
   function valider() {
     if (!img) return;
     var out = document.createElement("canvas");
-    var OW = Math.min(1400, Math.round(FW * 3)); var OH = Math.round(OW / job.aspect);
+    var OW = Math.min(1800, Math.round(FW * 4)); var OH = Math.round(OW / job.aspect);
     out.width = OW; out.height = OH;
     var cx2 = out.getContext("2d");
     var kOut = OW / FW;
@@ -25474,7 +25474,7 @@ function RecadrageHype() {
         cx2.strokeStyle = "rgba(32,217,245,0.35)"; cx2.lineWidth = eB;
         cx2.strokeRect(mB, mB, OW - mB * 2, OH - mB * 2);
       }
-      var dataUrl = out.toDataURL("image/jpeg", 0.88);
+      var dataUrl = out.toDataURL("image/jpeg", 0.92);
       var fichierOut = null;
       try {
         var bin = atob(dataUrl.split(",")[1]); var arr = new Uint8Array(bin.length);
@@ -25972,10 +25972,10 @@ function EcranCheval() {
       var im2 = new Image();
       im2.onload = function () {
         var cv = document.createElement("canvas");
-        var w2 = Math.min(900, im2.width); var h2 = Math.round(w2 * im2.height / im2.width);
+        var w2 = Math.min(1400, im2.width); var h2 = Math.round(w2 * im2.height / im2.width);
         cv.width = w2; cv.height = h2;
         cv.getContext("2d").drawImage(im2, 0, 0, w2, h2);
-        var d2 = cv.toDataURL("image/jpeg", 0.8);
+        var d2 = cv.toDataURL("image/jpeg", 0.9);
         setPhotoPerso(d2);
         try { localStorage.setItem("hype_cheval_photo_" + id, d2); } catch (eq) { }
         setToast(T("Photo du cheval mise à jour ✓", "Horse photo updated ✓", "Foto del caballo actualizada ✓", "Foto del cavallo aggiornata ✓", "馬の写真を更新しました ✓"));
@@ -26096,7 +26096,7 @@ function EcranCheval() {
           var nbP = ((c.palmares && c.palmares.length) || 0) + ((c.flots && c.flots.length) || 0);
           function carteK(img2, ic2, ti2, st2, cta2, act2, kk) {
             return h("div", { key: kk, onClick: act2, style: { position: "relative", borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.3) + "", background: "linear-gradient(170deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))", cursor: "pointer", height: 158, maxHeight: 158, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "16px 4px 11px", boxShadow: "0 8px 22px rgba(0,0,0,0.35)" } },
-              img2 ? h("img", { src: img2, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 24%", filter: "brightness(0.34) saturate(0.85)" } }) : h("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(90% 90% at 50% 0%, " + tA(0.13) + ", transparent 70%)" } }),
+              img2 ? h("img", { src: img2, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 24%", filter: "brightness(0.42) saturate(0.92)" } }) : h("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(90% 90% at 50% 0%, " + tA(0.13) + ", transparent 70%)" } }),
               h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.25), rgba(6,7,9,0.72))" } }),
               h("div", { style: { position: "relative", zIndex: 2, width: 46, height: 46, borderRadius: "50%", border: "1.5px solid " + tA(0.7) + "", background: "rgba(8,12,16,0.6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 13px " + tA(0.3) + "" } },
                 h("svg", { viewBox: "0 0 24 24", style: { width: 21, height: 21, stroke: teinteCl, fill: "none", strokeWidth: 1.6 } }, ic2)),
@@ -26238,12 +26238,6 @@ function EcranCheval() {
 
         h("div", { style: { padding: "18px 16px 0" } }, h(EncartConseilsHB, { chevalId: id, teinte: teinte })),
 
-        h("div", { className: "rise", onClick: function () { setPanneau("passeport"); }, style: { animationDelay: ".12s", margin: "12px 16px 0", borderRadius: 20, border: "1px solid " + tA(0.28) + "", background: "linear-gradient(135deg, " + tA(0.09) + ", rgba(255,255,255,0.02))", padding: "16px", display: "flex", alignItems: "center", gap: 13, cursor: "pointer" } },
-          h("div", { style: { fontSize: 26 } }, "🩺"),
-          h("div", { style: { flex: 1, minWidth: 0 } },
-            h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17, fontWeight: 700, color: "#F4F6F7" } }, T("Passeport Santé", "Health Passport", "Pasaporte de salud", "Passaporto salute", "健康パスポート")),
-            h("div", { style: { fontSize: 11, color: "rgba(237,242,245,0.55)", marginTop: 2 } }, T("Vaccins · Soins · Suivi · À savoir", "Vaccines · Care · Follow-up · Key facts", "Vacunas · Cuidados · Seguimiento", "Vaccini · Cure · Follow-up", "ワクチン · ケア · 記録"))),
-          h("span", { style: { color: teinte, fontSize: 17 } }, "›")),
 
         h(MurHype, { cible: "cheval:" + id, compact: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
 
@@ -26287,11 +26281,14 @@ function EcranCheval() {
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加"))) : null,
       panneau === "souvenirs" ? h("div", null,
         h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
-        h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),
+        c.histoire ? h("div", { style: { position: "relative", zIndex: 2, margin: "4px 0 18px", padding: "15px 16px", borderRadius: 16, border: "1px solid " + tA(0.3) + "", background: "linear-gradient(160deg, " + tA(0.06) + ", rgba(255,255,255,0.02))" } },
+          h("div", { style: { fontSize: 8.5, letterSpacing: "0.22em", color: teinteCl, textTransform: "uppercase", fontWeight: 800, marginBottom: 8 } }, T("Son histoire", "The story", "Su historia", "La sua storia", "\u7269\u8a9e")),
+          h("div", { style: { fontSize: 12, lineHeight: 1.75, color: "#C9D2D8", whiteSpace: "pre-line" } }, c.histoire)) : null,
+        h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),        h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),
         h("i", { className: "souvLuciole", style: { left: "66%", top: "50%", animationDelay: "9s" } }),
         h("i", { className: "souvLuciole", style: { left: "40%", top: "72%", animationDelay: "17s" } }),
         h("div", { className: "souvin", style: { position: "relative", height: 172, margin: "4px 16px 14px", borderRadius: 22, overflow: "hidden", border: "1px solid " + tA(0.28) + "", boxShadow: "0 12px 44px rgba(0,0,0,0.5)" } },
-          h("img", { src: photoCh, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.78)", animation: "souvKen 14s ease-in-out infinite alternate" } }),
+          h("img", { src: photoCh, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.95)", animation: "souvKen 14s ease-in-out infinite alternate" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(70% 60% at 50% 30%, " + tA(0.16) + ", transparent 70%)", mixBlendMode: "screen", pointerEvents: "none" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0.12), rgba(7,8,10,0.88))" } }),
           h("button", { onClick: function (eP) { if (eP && eP.stopPropagation) eP.stopPropagation(); if (refPhotoCh.current) refPhotoCh.current.click(); }, "aria-label": "Changer la photo", style: { position: "absolute", top: 10, right: 10, width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u270E"),
@@ -28836,8 +28833,8 @@ function EcranSante() {
 
 
 function EncartConseilsHB({ chevalId, teinte }) {
-  const TQe = teinte || COLORS.turquoise; const TQeD = teinte || TQeD;
-    const { tr } = useApp();
+  const TQe = teinte || COLORS.turquoise; const TQeD = teinte || COLORS.turquoiseDark;
+    const { tr, setEcran } = useApp();
     const L = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
     const [liste, setListe] = useState(null);
     const [ouvert, setOuvert] = useState(null);
@@ -28849,8 +28846,10 @@ function EncartConseilsHB({ chevalId, teinte }) {
             React.createElement("span", { style: { fontSize: 16 } }, "\uD83D\uDCAC"),
             React.createElement("p", { style: { margin: 0, fontSize: 15, fontWeight: 700, color: COLORS.encre } }, L("Conseils de Hey Baby", "Hey Baby's advice", "Consejos de Hey Baby", "Consigli di Hey Baby", "Hey Baby\u306e\u30a2\u30c9\u30d0\u30a4\u30b9"))),
         (liste === null) ? React.createElement("p", { style: { margin: 0, fontSize: 12.5, color: COLORS.encreDoux } }, "\u2026")
-            : (liste.length === 0) ? React.createElement("div", { style: { border: `1px dashed ${TQe}66`, background: `${TQe}0A`, borderRadius: 14, padding: "13px 15px" } },
-                React.createElement("p", { style: { margin: 0, fontSize: 12.5, lineHeight: 1.55, color: COLORS.encreDoux, fontStyle: "italic" } }, L("\u00c9pingle tes meilleurs \u00e9changes avec Hey Baby depuis la conversation \uD83D\uDCCC : ils appara\u00eetront ici.", "Pin your best Hey Baby exchanges from the chat \uD83D\uDCCC: they will appear here.", "Fija tus mejores intercambios con Hey Baby desde la conversaci\u00f3n \uD83D\uDCCC: aparecer\u00e1n aqu\u00ed.", "Fissa i tuoi migliori scambi con Hey Baby dalla conversazione \uD83D\uDCCC: appariranno qui.", "\u4f1a\u8a71\u753b\u9762\u3067Hey Baby\u3068\u306e\u304a\u6c17\u306b\u5165\u308a\u306e\u3084\u308a\u53d6\u308a\u3092\u30d4\u30f3\u7559\u3081\uD83D\uDCCC\u3059\u308b\u3068\u3001\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002")))
+            : (liste.length === 0) ? React.createElement("div", { style: { border: `1px solid ${TQe}55`, background: `linear-gradient(160deg, ${TQe}12, rgba(255,255,255,0.02))`, borderRadius: 18, padding: "18px 16px 16px", textAlign: "center", boxShadow: `0 0 18px ${TQe}12` } },
+                React.createElement("p", { style: { margin: 0, fontSize: 13.5, fontWeight: 800, color: COLORS.encre, lineHeight: 1.45 } }, L("Ton coach conna\u00eet ce cheval.", "Your coach knows this horse.", "Tu coach conoce a este caballo.", "Il tuo coach conosce questo cavallo.", "\u30b3\u30fc\u30c1\u306f\u3053\u306e\u99ac\u3092\u77e5\u3063\u3066\u3044\u307e\u3059\u3002")),
+                React.createElement("p", { style: { margin: "8px 0 0", fontSize: 12, lineHeight: 1.65, color: COLORS.encreDoux } }, L("Pose tes questions \u00e0 Hey Baby, puis \u00e9pingle \uD83D\uDCCC ses meilleurs conseils : ils vivront ici, sur sa fiche.", "Ask Hey Baby your questions, then pin \uD83D\uDCCC the best advice: it will live here on this page.", "Haz tus preguntas a Hey Baby y fija \uD83D\uDCCC los mejores consejos: vivir\u00e1n aqu\u00ed.", "Fai le tue domande a Hey Baby e fissa \uD83D\uDCCC i migliori consigli: vivranno qui.", "Hey Baby\u306b\u8cea\u554f\u3057\u3066\u3001\u30d9\u30b9\u30c8\u306a\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30d4\u30f3\u7559\u3081\uD83D\uDCCC\u3057\u307e\u3057\u3087\u3046\u3002")),
+                React.createElement("button", { onClick: () => { try { if (setEcran) setEcran("assistant"); } catch (eN) { } }, style: { marginTop: 14, padding: "11px 22px", borderRadius: 999, border: `1px solid ${TQe}88`, background: `${TQe}16`, color: TQeD, fontSize: 12, fontWeight: 800, letterSpacing: "0.04em", cursor: "pointer", fontFamily: "inherit" } }, L("Demander un conseil \u2192", "Ask for advice \u2192", "Pedir un consejo \u2192", "Chiedi un consiglio \u2192", "\u76f8\u8ac7\u3059\u308b \u2192")))
             : React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8 } }, liste.map((e2) => (React.createElement("div", { key: e2.id, style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 14, padding: "12px 14px" } },
                 React.createElement("div", { style: { display: "flex", alignItems: "flex-start", gap: 8 } },
                     React.createElement("div", { onClick: () => setOuvert(ouvert === e2.id ? null : e2.id), style: { flex: 1, cursor: "pointer", minWidth: 0 } },
