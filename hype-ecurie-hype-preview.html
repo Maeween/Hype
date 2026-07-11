@@ -25673,7 +25673,7 @@ function MurHype(props) {
     var f = e.target.files && e.target.files[0]; e.target.value = "";
     if (!f) return;
     if (estFichierVideo(f)) { setPhoto({ fichier: f, dataUrl: URL.createObjectURL(f), video: true }); return; }
-    hypeRecadrer(f, 4 / 5).then(function (res) { if (res) setPhoto(res); });
+    hypeRecadrer(f, 4 / 5, { ratios: true }).then(function (res) { if (res) setPhoto(res); });
   }
   async function publier() {
     if (envoi || !cibleR || (!texte.trim() && !photo)) return;
