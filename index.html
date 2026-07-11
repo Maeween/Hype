@@ -25397,7 +25397,7 @@ var CHEVAUX_SPECTRAL = {
 };
 const ECHV_R_CSS = `
 .chvr .hero{position:relative;width:100%;overflow:hidden;background:#04070A;isolation:isolate}.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
-.chvr .hero>img{position:relative;display:block;width:100%;height:auto;min-height:44svh;max-height:80svh;object-fit:cover;object-position:center 24%;z-index:1}
+.chvr .hero>img{position:relative;display:block;width:100%;height:auto;max-height:80svh;object-fit:cover;object-position:center 24%;z-index:1}
 .chvr .hh{position:absolute;inset:0;z-index:0;background:radial-gradient(48% 52% at 70% 32%,var(--teinte),transparent 66%);opacity:.14;mix-blend-mode:screen;filter:blur(18px);pointer-events:none;animation:chvHalo 8s ease-in-out infinite}@keyframes chvHalo{0%,100%{opacity:.18}50%{opacity:.3}}
 .chvr .hv{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(4,7,10,.34) 0%,rgba(4,7,10,0) 16%,rgba(4,7,10,0) 58%,rgba(4,7,10,.55) 82%,rgba(4,7,10,.96) 100%);pointer-events:none}
 .chvr .htop{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:14px;right:14px;z-index:8;display:flex;align-items:center;justify-content:space-between}
@@ -25474,10 +25474,10 @@ const ECHV_R_CSS = `
 
 /* ===== RECADRAGE PHOTO (Hype) ===== */
 var __recadrageOuvrir = null;
-function hypeRecadrer(fichier, aspect) {
+function hypeRecadrer(fichier, aspect, opts) {
   return new Promise(function (res) {
     if (!__recadrageOuvrir || !fichier) { res(null); return; }
-    __recadrageOuvrir({ fichier: fichier, aspect: aspect || 1, fin: res });
+    __recadrageOuvrir({ fichier: fichier, aspect: aspect || 1, ratios: !!(opts && opts.ratios), fin: res });
   });
 }
 function RecadrageHype() {
@@ -25487,6 +25487,8 @@ function RecadrageHype() {
   var iSt = React.useState(null); var img = iSt[0], setImg = iSt[1];
   var pSt = React.useState({ x: 0, y: 0, z: 1 }); var pos = pSt[0], setPos = pSt[1];
   var fSt = React.useState("aucun"); var filtre = fSt[0], setFiltre = fSt[1];
+  var rSt = React.useState(0); var rot = rSt[0], setRot = rSt[1];
+  var aSt = React.useState(null); var aspSel = aSt[0], setAspSel = aSt[1];
   var drag = React.useRef(null);
   React.useEffect(function () { __recadrageOuvrir = setJob; return function () { __recadrageOuvrir = null; }; }, []);
   React.useEffect(function () {
@@ -25494,21 +25496,25 @@ function RecadrageHype() {
     var l = new FileReader();
     l.onload = function () {
       var im = new Image();
-      im.onload = function () { setImg({ url: l.result, w: im.naturalWidth, h: im.naturalHeight }); setPos({ x: 0, y: 0, z: 1 }); setFiltre("aucun"); };
+      im.onload = function () { setImg({ url: l.result, w: im.naturalWidth, h: im.naturalHeight }); setPos({ x: 0, y: 0, z: 1 }); setFiltre("aucun"); setRot(0); setAspSel(null); };
       im.src = l.result;
     };
     l.readAsDataURL(job.fichier);
   }, [job]);
   if (!job) return null;
   var FW = Math.min((typeof window !== "undefined" ? window.innerWidth : 390) * 0.86, 340);
-  var FH = Math.round(FW / job.aspect);
+  var aspC = aspSel || job.aspect;
+  var FH = Math.round(FW / aspC);
   var base = img ? Math.max(FW / img.w, FH / img.h) : 1;
-  var ZMIN = img ? Math.min(1, Math.min(FW / img.w, FH / img.h) / base) : 1;
+  var ZMIN = img ? Math.min(1, Math.min(FW / img.w, FH / img.h) / base) * 0.55 : 0.55;
   var sc = base * pos.z;
   var dw = img ? img.w * sc : 0, dh = img ? img.h * sc : 0;
-  function clampP(x, y, z) {
+  function clampP(x, y, z, rotD) {
     var s2 = base * z, dw2 = img ? img.w * s2 : 0, dh2 = img ? img.h * s2 : 0;
-    var mx = Math.max(0, (dw2 - FW) / 2), my = Math.max(0, (dh2 - FH) / 2);
+    var rr = ((typeof rotD === "number") ? rotD : rot) * Math.PI / 180;
+    var cR = Math.abs(Math.cos(rr)), sR = Math.abs(Math.sin(rr));
+    var bw = dw2 * cR + dh2 * sR, bh = dw2 * sR + dh2 * cR;
+    var mx = Math.abs(bw - FW) / 2, my = Math.abs(bh - FH) / 2;
     return { x: Math.max(-mx, Math.min(mx, x)), y: Math.max(-my, Math.min(my, y)), z: z };
   }
   function pStart(e) {
@@ -25533,15 +25539,25 @@ function RecadrageHype() {
   function pEnd() { drag.current = null; }
   function valider() {
     if (!img) return;
+    var rrV = rot * Math.PI / 180;
+    var cV = Math.abs(Math.cos(rrV)), sV = Math.abs(Math.sin(rrV));
+    var bwV = dw * cV + dh * sV, bhV = dw * sV + dh * cV;
+    var vx0 = Math.max(0, FW / 2 + pos.x - bwV / 2), vy0 = Math.max(0, FH / 2 + pos.y - bhV / 2);
+    var vx1 = Math.min(FW, FW / 2 + pos.x + bwV / 2), vy1 = Math.min(FH, FH / 2 + pos.y + bhV / 2);
+    var VW = Math.max(40, vx1 - vx0), VH = Math.max(40, vy1 - vy0);
     var out = document.createElement("canvas");
-    var OW = Math.min(1800, Math.round(FW * 4)); var OH = Math.round(OW / job.aspect);
+    var OW = Math.min(1800, Math.round(VW * 4)); var OH = Math.max(40, Math.round(OW * VH / VW));
     out.width = OW; out.height = OH;
     var cx2 = out.getContext("2d");
-    var kOut = OW / FW;
+    var kOut = OW / VW;
     var im = new Image();
     im.onload = function () {
       cx2.fillStyle = "#06070A"; cx2.fillRect(0, 0, OW, OH);
-      cx2.drawImage(im, (FW / 2 + pos.x - dw / 2) * kOut, (FH / 2 + pos.y - dh / 2) * kOut, dw * kOut, dh * kOut);
+      cx2.save();
+      cx2.translate((FW / 2 + pos.x - vx0) * kOut, (FH / 2 + pos.y - vy0) * kOut);
+      cx2.rotate(rot * Math.PI / 180);
+      cx2.drawImage(im, -dw * kOut / 2, -dh * kOut / 2, dw * kOut, dh * kOut);
+      cx2.restore();
       if (filtre === "spectral") {
         var gr = cx2.createRadialGradient(OW / 2, OH / 2, Math.min(OW, OH) * 0.42, OW / 2, OH / 2, Math.max(OW, OH) * 0.75);
         gr.addColorStop(0, "rgba(7,8,10,0)"); gr.addColorStop(1, "rgba(7,8,10,0.6)");
@@ -25552,6 +25568,18 @@ function RecadrageHype() {
         var mB = Math.round(OW * 0.036), eB = Math.max(1.5, OW * 0.002);
         cx2.strokeStyle = "rgba(32,217,245,0.35)"; cx2.lineWidth = eB;
         cx2.strokeRect(mB, mB, OW - mB * 2, OH - mB * 2);
+      }
+      if (filtre === "halo") {
+        var grH = cx2.createRadialGradient(OW / 2, OH / 2, Math.min(OW, OH) * 0.34, OW / 2, OH / 2, Math.max(OW, OH) * 0.72);
+        grH.addColorStop(0, "rgba(7,8,10,0)"); grH.addColorStop(1, "rgba(7,8,10,0.68)");
+        cx2.fillStyle = grH; cx2.fillRect(0, 0, OW, OH);
+        cx2.save();
+        cx2.shadowColor = "rgba(32,217,245,0.85)"; cx2.shadowBlur = OW * 0.045;
+        cx2.strokeStyle = "rgba(32,217,245,0.4)"; cx2.lineWidth = Math.max(2, OW * 0.006);
+        var mH = Math.round(OW * 0.012);
+        cx2.strokeRect(mH, mH, OW - mH * 2, OH - mH * 2);
+        cx2.strokeRect(mH, mH, OW - mH * 2, OH - mH * 2);
+        cx2.restore();
       }
       var dataUrl = out.toDataURL("image/jpeg", 0.92);
       var fichierOut = null;
@@ -25568,10 +25596,16 @@ function RecadrageHype() {
   return React.createElement("div", { style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.93)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18, padding: 20 } },
     React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 3, color: "#EDF2F5", textTransform: "uppercase" } }, TR("Recadrer", "Crop", "Recortar", "Ritaglia", "トリミング")),
     React.createElement("div", { onTouchStart: pStart, onTouchMove: pMove, onTouchEnd: pEnd, onMouseDown: pStart, onMouseMove: pMove, onMouseUp: pEnd, onMouseLeave: pEnd, style: { background: "#06070A", width: FW, height: FH, overflow: "hidden", position: "relative", borderRadius: 18, border: "1.5px solid rgba(32,217,245,0.7)", touchAction: "none", background: "#0a0e12" } },
-      img ? React.createElement("img", { src: img.url, alt: "", draggable: false, style: { position: "absolute", left: "50%", top: "50%", width: dw, height: dh, maxWidth: "none", transform: "translate(calc(-50% + " + pos.x + "px), calc(-50% + " + pos.y + "px))", userSelect: "none", pointerEvents: "none" } }) : React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#5B646E", fontSize: 13 } }, "\u2026"),
-      filtre === "spectral" ? React.createElement("div", { style: { position: "absolute", inset: 0, pointerEvents: "none", boxShadow: "inset 0 0 54px 20px rgba(7,8,10,0.6)", border: "5px double rgba(32,217,245,0.75)", borderRadius: 16 } }) : null),
+      img ? React.createElement("img", { src: img.url, alt: "", draggable: false, style: { position: "absolute", left: "50%", top: "50%", width: dw, height: dh, maxWidth: "none", transform: "translate(calc(-50% + " + pos.x + "px), calc(-50% + " + pos.y + "px)) rotate(" + rot + "deg)", userSelect: "none", pointerEvents: "none" } }) : React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#5B646E", fontSize: 13 } }, "\u2026"),
+      filtre === "spectral" ? React.createElement("div", { style: { position: "absolute", inset: 0, pointerEvents: "none", boxShadow: "inset 0 0 54px 20px rgba(7,8,10,0.6)", border: "5px double rgba(32,217,245,0.75)", borderRadius: 16 } }) : null,
+      filtre === "halo" ? React.createElement("div", { style: { position: "absolute", inset: 0, pointerEvents: "none", boxShadow: "inset 0 0 70px 26px rgba(7,8,10,0.62), inset 0 0 34px 4px rgba(32,217,245,0.5)", borderRadius: 16 } }) : null),
+    job.ratios ? React.createElement("div", { style: { display: "flex", gap: 8 } },
+      [[4 / 5, TR("Portrait", "Portrait", "Retrato", "Ritratto", "\u7e26")], [3 / 2, TR("Paysage", "Landscape", "Paisaje", "Paesaggio", "\u6a2a")], [1, TR("Carr\u00e9", "Square", "Cuadrado", "Quadrato", "\u6b63\u65b9\u5f62")]].map(function (ro) {
+        var onR = Math.abs(aspC - ro[0]) < 0.01;
+        return React.createElement("button", { key: ro[1], onClick: function () { setAspSel(ro[0]); setPos({ x: 0, y: 0, z: 1 }); }, style: { padding: "6px 13px", borderRadius: 999, fontSize: 11, fontWeight: 700, border: "1px solid " + (onR ? "rgba(32,217,245,0.8)" : "rgba(255,255,255,0.2)"), background: onR ? "rgba(32,217,245,0.15)" : "transparent", color: onR ? "#5FE9F0" : "rgba(237,242,245,0.7)", cursor: "pointer" } }, ro[1]);
+      })) : null,
     React.createElement("div", { style: { display: "flex", gap: 8 } },
-      [["aucun", TR("Aucun", "None", "Ninguno", "Nessuno", "なし")], ["spectral", TR("Cadre Spectral", "Spectral Frame", "Marco Spectral", "Cornice Spectral", "スペクトラル枠") + " \u2727"]].map(function (fo) {
+      [["aucun", TR("Aucun", "None", "Ninguno", "Nessuno", "なし")], ["spectral", TR("Cadre Spectral", "Spectral Frame", "Marco Spectral", "Cornice Spectral", "スペクトラル枠") + " \u2727"], ["halo", TR("Halo Spectral", "Spectral Halo", "Halo Spectral", "Alone Spectral", "スペクトラルハロ") + " \u2727"]].map(function (fo) {
         var on = filtre === fo[0];
         return React.createElement("button", { key: fo[0], onClick: function () { setFiltre(fo[0]); }, style: { padding: "7px 14px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, border: "1px solid " + (on ? "rgba(32,217,245,0.8)" : "rgba(255,255,255,0.2)"), background: on ? "rgba(32,217,245,0.15)" : "transparent", color: on ? "#5FE9F0" : "rgba(237,242,245,0.7)" } }, fo[1]);
       })),
@@ -25579,6 +25613,10 @@ function RecadrageHype() {
       React.createElement("button", { onClick: function () { setPos(clampP(pos.x, pos.y, Math.max(ZMIN, pos.z / 1.18))); }, style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 18, fontWeight: 700, cursor: "pointer", flexShrink: 0, lineHeight: 1 } }, "\u2212"),
       React.createElement("input", { type: "range", min: ZMIN, max: 3, step: 0.01, value: pos.z, onChange: function (e) { setPos(clampP(pos.x, pos.y, parseFloat(e.target.value))); }, style: { flex: 1, accentColor: "#20D9F5" } }),
       React.createElement("button", { onClick: function () { setPos(clampP(pos.x, pos.y, Math.min(3, pos.z * 1.18))); }, style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 18, fontWeight: 700, cursor: "pointer", flexShrink: 0, lineHeight: 1 } }, "+")),
+    React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, width: FW } },
+      React.createElement("button", { onClick: function () { setRot(0); setPos(function (pp) { return clampP(pp.x, pp.y, pp.z, 0); }); }, style: { minWidth: 44, height: 30, borderRadius: 999, border: "1px solid rgba(32,217,245,0.35)", background: "transparent", color: "#5FE9F0", fontSize: 10.5, fontWeight: 700, cursor: "pointer", flexShrink: 0 } }, Math.round(rot) + "\u00b0"),
+      React.createElement("input", { type: "range", min: -45, max: 45, step: 0.5, value: rot, onChange: function (e) { var rv = parseFloat(e.target.value); setRot(rv); setPos(function (pp) { return clampP(pp.x, pp.y, pp.z, rv); }); }, style: { flex: 1, accentColor: "#20D9F5" } }),
+      React.createElement("span", { style: { fontSize: 15, color: "#5FE9F0", flexShrink: 0 } }, "\u21bb")),
     React.createElement("div", { style: { display: "flex", gap: 12 } },
       React.createElement("button", { onClick: annuler, style: { padding: "11px 22px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.25)", background: "transparent", color: "#C9D3D8", fontSize: 13.5, fontWeight: 700, cursor: "pointer" } }, TR("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル")),
       React.createElement("button", { onClick: valider, style: { padding: "11px 26px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, TR("Valider", "Confirm", "Validar", "Conferma", "確定"))));
@@ -26071,7 +26109,7 @@ function EcranCheval() {
   function choisirPhotoCheval(ev) {
     var f = ev.target.files && ev.target.files[0]; ev.target.value = "";
     if (!f) return;
-    hypeRecadrer(f, 3 / 2).then(function (res) {
+    hypeRecadrer(f, 4 / 5, { ratios: true }).then(function (res) {
       if (!res || !res.dataUrl) return;
       var im2 = new Image();
       im2.onload = function () {
@@ -26082,6 +26120,15 @@ function EcranCheval() {
         var d2 = cv.toDataURL("image/jpeg", 0.9);
         setPhotoPerso(d2);
         try { localStorage.setItem("hype_cheval_photo_" + id, d2); } catch (eq) { }
+        try {
+          if (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id && typeof envoyerPhoto === "function" && res.fichier) {
+            envoyerPhoto(res.fichier).then(function (rU) {
+              if (rU && rU.url && typeof supa !== "undefined" && supa) {
+                supa.from("chevaux").update({ photo_url: rU.url }).eq("id", chevalDyn.dbId).then(function () { }, function () { });
+              }
+            }).catch(function () { });
+          }
+        } catch (eU) { }
         setToast(T("Photo du cheval mise à jour ✓", "Horse photo updated ✓", "Foto del caballo actualizada ✓", "Foto del cavallo aggiornata ✓", "馬の写真を更新しました ✓"));
         setTimeout(function () { setToast(null); }, 2000);
       };
