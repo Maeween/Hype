@@ -25027,13 +25027,13 @@ function EncartCliniqueVeto() {
   var setEcran = ctx.setEcran, tr = ctx.tr;
   function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
   var img = (typeof HYPE_IMGS !== "undefined" && (HYPE_IMGS.encartVeto || HYPE_IMGS.cliniqueEncart)) ? (HYPE_IMGS.encartVeto || HYPE_IMGS.cliniqueEncart) : "";
-  return h("button", { onClick: function () { setEcran("clinique"); }, style: { display: "block", width: "100%", textAlign: "left", padding: 0, borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.3)", background: "#0B1013", cursor: "pointer", boxShadow: "0 0 30px rgba(32,217,245,0.08)" } },
-    img ? h("img", { src: img, alt: "", style: { display: "block", width: "100%", height: "auto" } }) : null,
-    h("div", { style: { padding: "18px 18px 20px", fontFamily: "'Montserrat',sans-serif" } },
-      h("div", { style: { fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 700 } }, "\u2014 " + T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7")),
-      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 21, fontWeight: 600, color: "#F4F7FA", marginTop: 7, letterSpacing: 0.5 } }, T("Clinique v\u00e9t\u00e9rinaire", "Veterinary clinic", "Cl\u00ednica veterinaria", "Clinica veterinaria", "\u7363\u533b\u30af\u30ea\u30cb\u30c3\u30af")),
-      h("div", { style: { fontSize: 12, fontWeight: 300, color: "rgba(234,242,244,0.62)", marginTop: 5 } }, T("Soins & conseils", "Care & advice", "Cuidados y consejos", "Cure e consigli", "\u30b1\u30a2\u3068\u30a2\u30c9\u30d0\u30a4\u30b9")),
-      h("div", { style: { marginTop: 15, display: "inline-flex", alignItems: "center", padding: "10px 18px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.5)", color: "#5FE9F0", fontSize: 11, fontWeight: 700, letterSpacing: "0.18em" } }, "\u2726 " + T("D\u00c9COUVRIR", "DISCOVER", "DESCUBRIR", "SCOPRI", "\u898b\u308b"))));
+  return h("button", { onClick: function () { setEcran("clinique"); }, style: { display: "block", position: "relative", width: "100%", aspectRatio: "1.15", textAlign: "left", padding: 0, borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.3)", background: "#0B1013", cursor: "pointer", boxShadow: "0 0 30px rgba(32,217,245,0.08)" } },
+    img ? h("img", { src: img, alt: "", style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" } }) : null,
+    h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 18px 18px", fontFamily: "'Montserrat',sans-serif" } },
+      h("div", { style: { fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 700, textShadow: "0 1px 10px rgba(0,0,0,0.85)" } }, "\u2014 " + T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7")),
+      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 600, color: "#F4F7FA", marginTop: 5, letterSpacing: 0.5, textShadow: "0 2px 16px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.6)" } }, T("Clinique v\u00e9t\u00e9rinaire", "Veterinary clinic", "Cl\u00ednica veterinaria", "Clinica veterinaria", "\u7363\u533b\u30af\u30ea\u30cb\u30c3\u30af")),
+      h("div", { style: { fontSize: 12, fontWeight: 300, color: "rgba(240,245,248,0.9)", marginTop: 3, textShadow: "0 1px 10px rgba(0,0,0,0.85)" } }, T("Soins & conseils", "Care & advice", "Cuidados y consejos", "Cure e consigli", "\u30b1\u30a2\u3068\u30a2\u30c9\u30d0\u30a4\u30b9")),
+      h("div", { style: { marginTop: 11, display: "inline-flex", alignItems: "center", padding: "9px 16px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.55)", background: "rgba(7,8,10,0.45)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", color: "#5FE9F0", fontSize: 11, fontWeight: 700, letterSpacing: "0.18em" } }, "\u2726 " + T("D\u00c9COUVRIR", "DISCOVER", "DESCUBRIR", "SCOPRI", "\u898b\u308b"))));
 }
 
 function EcranCliniqueEquine() {
