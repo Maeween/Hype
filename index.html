@@ -25869,7 +25869,6 @@ function GalerieSouvenirs(props) {
     window.addEventListener("hype-souvenirs-maj", maj);
     return function () { window.removeEventListener("hype-souvenirs-maj", maj); };
   }, [props.cible]);
-  /* liste complete : vedettes d abord, puis le reste */
   var base = photos || [];
   var ved = props.vedettes || [];
   var liste = ved.concat(base.filter(function (u) { return ved.indexOf(u) < 0; }));
@@ -25880,33 +25879,11 @@ function GalerieSouvenirs(props) {
   var glisseRecent = React.useRef(0);
   var vidRefs = React.useRef({});
   React.useEffect(function () { if (n > 0 && idx > n - 1) setIdx(0); }, [n]);
-
-  /* ---- geometrie fixe de la mosaique (ne change jamais) ---- */
-  var W = Math.min((typeof window !== "undefined" ? window.innerWidth : 390), 520) - 32;
-  var GAP = 8;
-  var unit = (W - 2 * GAP) / 3.9;
-  var sideW = Math.round(unit), cenW = Math.round(unit * 1.9);
-  var cenH = Math.round(cenW * 1.32);
-  var sideH = Math.round((cenH - GAP) / 2);
-  var panoH = Math.round(W * 0.32);
-  var totalH = cenH + GAP + panoH;
-  var slots = [
-    { x: 0, y: 0, w: sideW, h: sideH, off: -2, tilt: 6 },
-    { x: 0, y: sideH + GAP, w: sideW, h: sideH, off: -1, tilt: 6 },
-    { x: sideW + GAP, y: 0, w: cenW, h: cenH, off: 0, hero: true },
-    { x: sideW + GAP + cenW + GAP, y: 0, w: sideW, h: sideH, off: 1, tilt: -6 },
-    { x: sideW + GAP + cenW + GAP, y: sideH + GAP, w: sideW, h: sideH, off: 2, tilt: -6 },
-    { x: 0, y: cenH + GAP, w: W, h: panoH, off: 3, pano: true }
-  ];
-  function itemPour(off) {
-    if (n === 0) return -1;
-    if (n >= 6) return ((idx + off) % n + n) % n;
-    var v = idx + off;
-    return (v >= 0 && v < n) ? v : -1;
-  }
-  var heroItem = itemPour(0);
-
-  /* ---- video du heros : lecture auto apres 1,5 s, arret immediat sinon ---- */
+  var FWc = Math.min((typeof window !== "undefined" ? window.innerWidth : 390) * 0.52, 230);
+  var FHc = Math.round(FWc * 1.25);
+  var PAS = FWc * 0.82;
+  var heroItem = n > 0 ? ((idx % n) + n) % n : -1;
+  /* video du heros : lecture auto silencieuse apres 1,5 s ; arret immediat au changement */
   React.useEffect(function () {
     var vs = vidRefs.current;
     Object.keys(vs).forEach(function (k) { try { if (vs[k] && Number(k) !== heroItem) vs[k].pause(); } catch (eP) { } });
@@ -25916,13 +25893,12 @@ function GalerieSouvenirs(props) {
     }, 1500);
     return function () { clearTimeout(t); };
   }, [heroItem, n]);
-
   function finGlisse() {
     if (!dragRef.current) return;
     var d = dragRef.current.dx || 0;
     if (dragRef.current.bouge) glisseRecent.current = Date.now();
     dragRef.current = null;
-    if (n > 1 && Math.abs(d) > 42) setIdx(((idx + (d < 0 ? 1 : -1)) % n + n) % n);
+    if (n > 1 && Math.abs(d) > 42) setIdx(idx + (d < 0 ? 1 : -1));
   }
   function debGlisse(x) { dragRef.current = { x0: x, dx: 0, bouge: false }; }
   function mvGlisse(x) {
@@ -25930,50 +25906,68 @@ function GalerieSouvenirs(props) {
     dragRef.current.dx = x - dragRef.current.x0;
     if (Math.abs(dragRef.current.dx) > 6) dragRef.current.bouge = true;
   }
-
-  function carte(sl, si) {
-    var it = itemPour(sl.off);
-    if (it < 0) {
-      return h("div", { key: "gh" + si, style: { position: "absolute", left: sl.x, top: sl.y, width: sl.w, height: sl.h, borderRadius: sl.hero ? 22 : 16, border: "1.5px dashed " + tA(n === 0 && sl.hero ? 0.4 : 0.14), background: "rgba(255,255,255,0.015)", display: "flex", alignItems: "center", justifyContent: "center", cursor: n === 0 && sl.hero ? "pointer" : "default" }, onClick: n === 0 && sl.hero ? props.onTout : undefined },
-        n === 0 && sl.hero ? h("span", { style: { width: 42, height: 42, borderRadius: "50%", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, color: tnT, boxShadow: "0 0 16px " + tA(0.22) } }, "+") : null);
-    }
-    var src = liste[it];
+  function carte(src, i) {
+    /* distance circulaire signee la plus courte : swipe infini dans les deux sens */
+    var rel = ((i - (((idx % n) + n) % n)) % n + n) % n;
+    if (rel > n / 2) rel -= n;
+    var dv = rel;
+    var absD = Math.abs(dv);
+    if (n > 6 && absD > 3.2) return null;
+    var centre = absD < 0.5;
+    var x = dv * PAS;
+    var sc = Math.max(0.45, 1 - absD * 0.17);
+    var ry = Math.max(-8, Math.min(8, -dv * 4));
+    var fl = centre ? "none" : "blur(" + Math.min(absD * 0.7, 1.8).toFixed(2) + "px) brightness(" + Math.max(0.55, 1 - absD * 0.15).toFixed(2) + ")";
     var estVid = !!(src && typeof estUrlVideo === "function" && estUrlVideo(src));
     var enVed = ved.indexOf(src) >= 0;
-    var fl = sl.hero ? "none" : (sl.pano ? "brightness(0.8)" : "brightness(0.72)");
     return h("div", {
-      key: "it" + it,
+      key: "c" + i,
       onClick: function () {
         if (Date.now() - glisseRecent.current < 350) return;
-        if (props.onOuvrir) props.onOuvrir(src); else if (props.onTout) props.onTout();
+        if (centre) { if (props.onOuvrir) props.onOuvrir(src); else if (props.onTout) props.onTout(); }
+        else setIdx(idx + dv);
       },
       style: {
-        position: "absolute", left: sl.x, top: sl.y, width: sl.w, height: sl.h,
-        borderRadius: sl.hero ? 22 : 16, overflow: "hidden", cursor: "pointer",
-        transform: sl.hero ? "scale(1.03)" : (sl.tilt ? "rotateY(" + sl.tilt + "deg)" : "none"),
-        WebkitTransform: sl.hero ? "scale(1.03)" : (sl.tilt ? "rotateY(" + sl.tilt + "deg)" : "none"),
-        zIndex: sl.hero ? 5 : (sl.pano ? 2 : 3),
-        transition: "left .35s cubic-bezier(0.25,0.1,0.25,1), top .35s cubic-bezier(0.25,0.1,0.25,1), width .35s cubic-bezier(0.25,0.1,0.25,1), height .35s cubic-bezier(0.25,0.1,0.25,1), box-shadow .35s ease, border-radius .35s ease",
-        animation: "galIn .4s ease both",
+        position: "absolute", left: "50%", top: "50%", width: FWc, height: FHc,
+        marginLeft: -FWc / 2, marginTop: -FHc / 2, borderRadius: 22, cursor: "pointer",
+        transform: "translateX(" + x.toFixed(1) + "px) scale(" + sc.toFixed(3) + ") rotateY(" + ry.toFixed(1) + "deg)",
+        WebkitTransform: "translateX(" + x.toFixed(1) + "px) scale(" + sc.toFixed(3) + ") rotateY(" + ry.toFixed(1) + "deg)",
+        zIndex: 100 - Math.round(absD * 10),
+        opacity: (n > 6 && absD > 2.8) ? 0 : 1,
+        transition: "transform .35s cubic-bezier(0.25,0.1,0.25,1), opacity .35s ease, box-shadow .35s ease",
         background: "#0A0D10",
-        boxShadow: sl.hero
-          ? "0 14px 38px rgba(0,0,0,0.55), 0 0 0 1.5px " + tA(0.85) + ", 0 0 26px " + tA(0.34) + ""
-          : "0 8px 22px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)"
+        boxShadow: centre
+          ? "0 16px 44px rgba(0,0,0,0.55), 0 0 0 1.5px " + tA(0.85) + ", 0 0 30px " + tA(0.38) + ""
+          : "0 10px 26px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)"
       }
     },
-      h("div", { style: { position: "absolute", inset: 0, filter: fl, WebkitFilter: fl, transition: "filter .35s ease" } },
+      h("div", { style: { position: "absolute", inset: 0, borderRadius: 22, overflow: "hidden", filter: fl, WebkitFilter: fl, transition: "filter .35s ease" } },
         estVid
-          ? h("video", { ref: function (el) { if (el) vidRefs.current[it] = el; }, src: src, muted: true, loop: true, playsInline: true, preload: "auto", onLoadedMetadata: function (eM) { try { if (eM.target.paused && eM.target.currentTime < 0.01) eM.target.currentTime = 0.01; } catch (eT) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", animation: sl.hero ? "galVie 12s ease-in-out infinite alternate" : "galVieS 18s ease-in-out infinite alternate" } })
-          : h("img", { src: src, alt: "", draggable: false, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", animation: sl.hero ? "galVie 12s ease-in-out infinite alternate" : "galVieS 18s ease-in-out infinite alternate" } })),
-      estVid ? h("span", { style: { position: "absolute", right: 8, bottom: 8, width: 21, height: 21, borderRadius: "50%", background: "rgba(7,8,10,0.5)", border: "1px solid rgba(255,255,255,0.28)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, color: "#EAF2F4" } }, "\u25b6") : null,
-      sl.hero && enVed ? h("span", { style: { position: "absolute", right: 10, top: 10, width: 27, height: 27, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(234,199,122,0.65)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EAC77A", fontSize: 11.5 } }, "\u2605") : null);
+          ? h("video", { ref: function (el) { if (el) vidRefs.current[i] = el; }, src: src, muted: true, loop: true, playsInline: true, preload: "auto", onLoadedMetadata: function (eM) { try { if (eM.target.paused && eM.target.currentTime < 0.01) eM.target.currentTime = 0.01; } catch (eT) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", animation: centre ? "galVie 12s ease-in-out infinite alternate" : "none" } })
+          : h("img", { src: src, alt: "", draggable: false, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", animation: centre ? "galVie 12s ease-in-out infinite alternate" : "none" } }),
+        estVid ? h("span", { style: { position: "absolute", right: 9, bottom: 9, width: 21, height: 21, borderRadius: "50%", background: "rgba(7,8,10,0.5)", border: "1px solid rgba(255,255,255,0.28)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, color: "#EAF2F4" } }, "\u25b6") : null),
+      centre && enVed ? h("span", { style: { position: "absolute", right: 11, top: 11, width: 30, height: 30, borderRadius: "50%", background: "rgba(7,8,10,0.5)", border: "1.5px solid " + tA(0.85), display: "flex", alignItems: "center", justifyContent: "center", color: tnT, fontSize: 13 } }, "\u2605") : null);
   }
-
-  return h("div", { className: "rise", style: { position: "relative" } },
-    h("style", null, "@keyframes galVie{from{transform:scale(1.03) translateX(-0.8%)}to{transform:scale(1.06) translateX(0.8%)}} @keyframes galVieS{from{transform:scale(1)}to{transform:scale(1.035)}} @keyframes galIn{from{opacity:0}to{opacity:1}} @keyframes galDrift{0%{transform:translate(0,0);opacity:0}12%{opacity:.6}88%{opacity:.4}100%{transform:translate(24px,-50px);opacity:0}}"),
-    h("div", { className: "eyebrow2" }, T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa")),
-    h("i", { style: { position: "absolute", left: "8%", top: "40%", width: 3, height: 3, borderRadius: "50%", background: tA(0.5), filter: "blur(0.5px)", animation: "galDrift 16s linear infinite", pointerEvents: "none", zIndex: 6 } }),
-    h("i", { style: { position: "absolute", left: "88%", top: "66%", width: 2, height: 2, borderRadius: "50%", background: tA(0.4), filter: "blur(0.5px)", animation: "galDrift 21s linear infinite", animationDelay: "8s", pointerEvents: "none", zIndex: 6 } }),
+  /* barrettes d indicateur (5 max) */
+  var nbB = Math.min(5, Math.max(1, n));
+  var posB = n > 1 ? Math.round((((idx % n) + n) % n) / (n - 1) * (nbB - 1)) : 0;
+  return h("div", { className: "rise", style: { position: "relative", overflow: "hidden" } },
+    h("style", null, "@keyframes galVie{from{transform:scale(1.02) translateX(-0.7%)}to{transform:scale(1.05) translateX(0.7%)}} @keyframes galDrift{0%{transform:translate(0,0);opacity:0}12%{opacity:.6}88%{opacity:.4}100%{transform:translate(24px,-50px);opacity:0}}"),
+    h("i", { style: { position: "absolute", left: "9%", top: "58%", width: 3, height: 3, borderRadius: "50%", background: tA(0.5), filter: "blur(0.5px)", animation: "galDrift 16s linear infinite", pointerEvents: "none", zIndex: 1 } }),
+    h("i", { style: { position: "absolute", left: "86%", top: "70%", width: 2, height: 2, borderRadius: "50%", background: tA(0.4), filter: "blur(0.5px)", animation: "galDrift 21s linear infinite", animationDelay: "8s", pointerEvents: "none", zIndex: 1 } }),
+    h("div", { style: { padding: "0 20px 4px" } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 9 } },
+        h("i", { style: { width: 16, height: 1, background: tnT, display: "inline-block" } }),
+        h("span", { style: { fontSize: 10, letterSpacing: "0.32em", color: tnT, fontWeight: 700, textTransform: "uppercase" } }, T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa"))),
+      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 28, fontWeight: 700, color: "#FFFFFF", letterSpacing: 1.2, lineHeight: 1.22, margin: "10px 0 0", maxWidth: 240 } }, T("Album de L\u00e9gende", "Legend Album", "\u00c1lbum de Leyenda", "Album di Leggenda", "\u4f1d\u8aac\u306e\u30a2\u30eb\u30d0\u30e0")),
+      h("div", { style: { display: "flex", alignItems: "center", gap: 0, margin: "12px 0 14px" } },
+        h("i", { style: { width: 44, height: 1, background: "linear-gradient(90deg, rgba(234,199,122,0.85), rgba(234,199,122,0.25))", display: "inline-block" } }),
+        h("span", { style: { color: "#EAC77A", fontSize: 10, margin: "0 2px", transform: "rotate(45deg)", display: "inline-block", width: 7, height: 7, border: "1px solid rgba(234,199,122,0.85)" } }),
+        h("i", { style: { width: 20, height: 1, background: "linear-gradient(90deg, rgba(234,199,122,0.25), transparent)", display: "inline-block" } })),
+      h("p", { style: { fontSize: 13, lineHeight: 1.8, color: "rgba(220,227,232,0.82)", maxWidth: 250, margin: 0 } },
+        T("Chaque souvenir raconte un morceau de son histoire. Des instants pr\u00e9cieux, grav\u00e9s \u00e0 jamais.", "Every memory tells a piece of the story. Precious moments, engraved forever.", "Cada recuerdo cuenta un pedazo de su historia. Instantes preciosos, grabados para siempre.", "Ogni ricordo racconta un pezzo della sua storia. Istanti preziosi, incisi per sempre.", "\u3072\u3068\u3064\u3072\u3068\u3064\u306e\u601d\u3044\u51fa\u304c\u7269\u8a9e\u3092\u7d21\u3050\u3002\u6c38\u9060\u306b\u523b\u307e\u308c\u305f\u77ac\u9593\u3002")),
+      h("div", { onClick: props.onTout, style: { marginTop: 15, fontSize: 10.5, letterSpacing: "0.2em", fontWeight: 700, color: tnT, textTransform: "uppercase", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 } },
+        h("span", { style: { fontSize: 12 } }, "\u2727"), T("D\u00e9couvrir son histoire", "Discover the story", "Descubre su historia", "Scopri la sua storia", "\u7269\u8a9e\u3092\u898b\u308b"))),
     h("div", {
       onTouchStart: function (e) { if (e.touches && e.touches[0]) debGlisse(e.touches[0].clientX); },
       onTouchMove: function (e) { if (e.touches && e.touches[0]) mvGlisse(e.touches[0].clientX); },
@@ -25982,10 +25976,17 @@ function GalerieSouvenirs(props) {
       onMouseMove: function (e) { if (dragRef.current) mvGlisse(e.clientX); },
       onMouseUp: function () { finGlisse(); },
       onMouseLeave: function () { finGlisse(); },
-      style: { position: "relative", height: totalH, margin: "2px 16px 0", perspective: "900px", touchAction: "pan-y" }
-    }, slots.map(carte)),
-    n > 0 ? h("div", { style: { textAlign: "center", marginTop: 10, fontSize: 11.5, color: "rgba(237,242,245,0.55)", letterSpacing: "0.04em" } },
-      String(((idx % n) + n) % n + 1) + " / ", h("span", { style: { color: "#EAC77A", fontWeight: 700 } }, String(n)), " " + T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa")) : null);
+      style: { position: "relative", height: FHc + 24, marginTop: 2, perspective: "1100px", touchAction: "pan-y" }
+    }, n === 0 ? [h("div", { key: "vide", onClick: props.onTout, style: { position: "absolute", left: "50%", top: "50%", width: FWc, height: FHc, marginLeft: -FWc / 2, marginTop: -FHc / 2, borderRadius: 22, cursor: "pointer", border: "1.5px dashed " + tA(0.45), background: "rgba(255,255,255,0.015)", display: "flex", alignItems: "center", justifyContent: "center" } },
+      h("span", { style: { width: 44, height: 44, borderRadius: "50%", border: "1px solid " + tA(0.55), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 21, color: tnT, boxShadow: "0 0 16px " + tA(0.22) } }, "+"))] : liste.map(carte)),
+    n > 0 ? h("div", { style: { textAlign: "center", marginTop: 6 } },
+      h("div", { style: { fontSize: 12, color: "rgba(237,242,245,0.55)", letterSpacing: "0.03em" } },
+        h("span", { style: { color: tnT, fontWeight: 700 } }, String(heroItem + 1)), " / " + String(n) + " " + T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa")),
+      h("div", { style: { display: "flex", justifyContent: "center", gap: 5, marginTop: 7 } },
+        Array.apply(null, Array(nbB)).map(function (u2, i2) {
+          return h("i", { key: "b" + i2, style: { display: "inline-block", height: 3, borderRadius: 2, width: 18, background: i2 === posB ? tnT : "rgba(244,247,250,0.14)", boxShadow: i2 === posB ? "0 0 8px " + tA(0.55) : "none", transition: "all .35s ease" } });
+        })),
+      h("div", { onClick: function () { try { window.scrollBy({ top: 320, behavior: "smooth" }); } catch (eS) { window.scrollBy(0, 320); } }, style: { margin: "12px auto 0", width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "rgba(237,242,245,0.6)", fontSize: 13 } }, "\u2304")) : null);
 }
 
 function GrilleSouvenirs(props) {

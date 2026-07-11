@@ -25846,6 +25846,8 @@ function NouveauxCavaliers() {
 
 function GalerieSouvenirs(props) {
   var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr;
+  function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
   var tnT = props.teinte || "#20D9F5";
   var tA = function (aT) { return teinteRGBA(tnT, aT); };
   var st = React.useState(null); var photos = st[0], setPhotos = st[1];
@@ -25856,107 +25858,116 @@ function GalerieSouvenirs(props) {
         listerCommentaires(props.cible).then(function (r) {
           if (!actif) return;
           var ph = ((r && r.data) || []).filter(function (p) { return p.photo_url; }).map(function (p) { return p.photo_url; });
-          setPhotos(ph.slice(-6).reverse());
+          setPhotos(ph.slice(-48).reverse());
         }).catch(function () { if (actif) setPhotos([]); });
       } else { setPhotos([]); }
     } catch (e) { setPhotos([]); }
     return function () { actif = false; };
   }, [props.cible]);
   React.useEffect(function () {
-    function maj() { try { listerCommentaires(props.cible).then(function (r) { var ph = ((r && r.data) || []).filter(function (p) { return p.photo_url; }).map(function (p) { return p.photo_url; }); setPhotos(ph.slice(-6).reverse()); }).catch(function () { }); } catch (e) { } }
+    function maj() { try { listerCommentaires(props.cible).then(function (r) { var ph = ((r && r.data) || []).filter(function (p) { return p.photo_url; }).map(function (p) { return p.photo_url; }); setPhotos(ph.slice(-48).reverse()); }).catch(function () { }); } catch (e) { } }
     window.addEventListener("hype-souvenirs-maj", maj);
     return function () { window.removeEventListener("hype-souvenirs-maj", maj); };
   }, [props.cible]);
-  var liste = (props.vedettes && props.vedettes.length) ? props.vedettes : (photos || []);
+  var base = photos || [];
+  var ved = props.vedettes || [];
+  var liste = ved.concat(base.filter(function (u) { return ved.indexOf(u) < 0; }));
   if (!liste.length && props.photoDefaut) liste = [props.photoDefaut];
   var n = liste.length;
-  var FWc = Math.min((typeof window !== "undefined" ? window.innerWidth : 390) * 0.5, 205);
-  var FHc = Math.round(FWc * 1.24);
-  var PAS = FWc * 0.63;
   var ixSt = React.useState(0); var idx = ixSt[0], setIdx = ixSt[1];
-  var dpSt = React.useState(0); var dragPx = dpSt[0], setDragPx = dpSt[1];
   var dragRef = React.useRef(null);
-  var vidRefs = React.useRef({});
   var glisseRecent = React.useRef(0);
-  var toucheRef = React.useRef(false);
-  React.useEffect(function () { if (!toucheRef.current && n > 1) setIdx(Math.floor((n - 1) / 2)); }, [n]);
-  React.useEffect(function () { if (idx > n - 1) setIdx(Math.max(0, n - 1)); }, [n]);
-  /* video centrale : lecture auto silencieuse apres 1,5 s ; arret immediat au changement */
+  var vidRefs = React.useRef({});
+  React.useEffect(function () { if (n > 0 && idx > n - 1) setIdx(0); }, [n]);
+  var FWc = Math.min((typeof window !== "undefined" ? window.innerWidth : 390) * 0.52, 230);
+  var FHc = Math.round(FWc * 1.25);
+  var PAS = FWc * 0.82;
+  var heroItem = n > 0 ? ((idx % n) + n) % n : -1;
+  /* video du heros : lecture auto silencieuse apres 1,5 s ; arret immediat au changement */
   React.useEffect(function () {
     var vs = vidRefs.current;
-    Object.keys(vs).forEach(function (k) { try { if (vs[k] && Number(k) !== idx) vs[k].pause(); } catch (eP) { } });
+    Object.keys(vs).forEach(function (k) { try { if (vs[k] && Number(k) !== heroItem) vs[k].pause(); } catch (eP) { } });
     var t = setTimeout(function () {
-      var v = vidRefs.current[idx];
+      var v = vidRefs.current[heroItem];
       if (v) { try { var pr = v.play(); if (pr && pr.catch) pr.catch(function () { }); } catch (eV) { } }
     }, 1500);
     return function () { clearTimeout(t); };
-  }, [idx, n]);
+  }, [heroItem, n]);
   function finGlisse() {
     if (!dragRef.current) return;
     var d = dragRef.current.dx || 0;
     if (dragRef.current.bouge) glisseRecent.current = Date.now();
     dragRef.current = null;
-    var delta = Math.abs(d) > 42 ? (d < 0 ? 1 : -1) : 0;
-    setIdx(Math.max(0, Math.min(n - 1, idx + delta)));
-    setDragPx(0);
+    if (n > 1 && Math.abs(d) > 42) setIdx(idx + (d < 0 ? 1 : -1));
   }
-  function debGlisse(x) { toucheRef.current = true; dragRef.current = { x0: x, dx: 0, bouge: false }; }
+  function debGlisse(x) { dragRef.current = { x0: x, dx: 0, bouge: false }; }
   function mvGlisse(x) {
     if (!dragRef.current) return;
-    var d = x - dragRef.current.x0;
-    dragRef.current.dx = d;
-    if (Math.abs(d) > 6) dragRef.current.bouge = true;
-    setDragPx(d);
+    dragRef.current.dx = x - dragRef.current.x0;
+    if (Math.abs(dragRef.current.dx) > 6) dragRef.current.bouge = true;
   }
   function carte(src, i) {
-    var estVid = !!(src && typeof estUrlVideo === "function" && estUrlVideo(src));
-    var enVed = (props.vedettes || []).indexOf(src) >= 0;
-    var dv = (i - idx) + (dragPx / PAS);
+    /* distance circulaire signee la plus courte : swipe infini dans les deux sens */
+    var rel = ((i - (((idx % n) + n) % n)) % n + n) % n;
+    if (rel > n / 2) rel -= n;
+    var dv = rel;
     var absD = Math.abs(dv);
+    if (n > 6 && absD > 3.2) return null;
     var centre = absD < 0.5;
     var x = dv * PAS;
-    var sc = 1 - Math.min(absD * 0.09, 0.3);
-    var ry = Math.max(-14, Math.min(14, -dv * 6));
-    var fl = centre ? "none" : "blur(" + Math.min(absD * 0.9, 2.2).toFixed(2) + "px) brightness(" + Math.max(0.55, 1 - absD * 0.13).toFixed(2) + ")";
-    var enTrain = !!dragRef.current;
+    var sc = Math.max(0.45, 1 - absD * 0.17);
+    var ry = Math.max(-8, Math.min(8, -dv * 4));
+    var fl = centre ? "none" : "blur(" + Math.min(absD * 0.7, 1.8).toFixed(2) + "px) brightness(" + Math.max(0.55, 1 - absD * 0.15).toFixed(2) + ")";
+    var estVid = !!(src && typeof estUrlVideo === "function" && estUrlVideo(src));
+    var enVed = ved.indexOf(src) >= 0;
     return h("div", {
       key: "c" + i,
       onClick: function () {
         if (Date.now() - glisseRecent.current < 350) return;
-        if (i === idx) { if (props.onOuvrir) props.onOuvrir(src); else if (props.onTout) props.onTout(); }
-        else setIdx(i);
+        if (centre) { if (props.onOuvrir) props.onOuvrir(src); else if (props.onTout) props.onTout(); }
+        else setIdx(idx + dv);
       },
       style: {
         position: "absolute", left: "50%", top: "50%", width: FWc, height: FHc,
-        marginLeft: -FWc / 2, marginTop: -FHc / 2, borderRadius: 26, cursor: "pointer",
+        marginLeft: -FWc / 2, marginTop: -FHc / 2, borderRadius: 22, cursor: "pointer",
         transform: "translateX(" + x.toFixed(1) + "px) scale(" + sc.toFixed(3) + ") rotateY(" + ry.toFixed(1) + "deg)",
         WebkitTransform: "translateX(" + x.toFixed(1) + "px) scale(" + sc.toFixed(3) + ") rotateY(" + ry.toFixed(1) + "deg)",
         zIndex: 100 - Math.round(absD * 10),
-        opacity: absD > 3.4 ? 0 : 1,
-        transition: enTrain ? "none" : "transform .35s cubic-bezier(0.25,0.1,0.25,1), opacity .35s ease, box-shadow .35s ease",
+        opacity: (n > 6 && absD > 2.8) ? 0 : 1,
+        transition: "transform .35s cubic-bezier(0.25,0.1,0.25,1), opacity .35s ease, box-shadow .35s ease",
+        background: "#0A0D10",
         boxShadow: centre
-          ? "0 16px 44px rgba(0,0,0,0.5), 0 0 0 1px " + tA(0.7) + ", 0 0 22px " + tA(0.26) + ""
-          : "0 10px 28px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)"
+          ? "0 16px 44px rgba(0,0,0,0.55), 0 0 0 1.5px " + tA(0.85) + ", 0 0 30px " + tA(0.38) + ""
+          : "0 10px 26px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)"
       }
     },
-      h("div", { style: { position: "absolute", inset: 0, borderRadius: 26, overflow: "hidden", animation: "galFlot 8s ease-in-out infinite alternate", animationDelay: (i * 1.4) + "s", background: "#0A0D10", filter: fl, WebkitFilter: fl, transition: enTrain ? "none" : "filter .35s ease, -webkit-filter .35s ease" } },
-        src ? (estVid
-          ? h("video", { ref: function (el) { if (el) vidRefs.current[i] = el; }, src: src, muted: true, loop: true, playsInline: true, preload: "auto", onLoadedMetadata: function (eM) { try { if (eM.target.paused && eM.target.currentTime < 0.01) eM.target.currentTime = 0.01; } catch (eT) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", background: "#0A0D10", animation: centre ? "galZoom 10s ease-in-out infinite alternate" : "none" } })
-          : h("img", { src: src, alt: "", draggable: false, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", animation: centre ? "galZoom 10s ease-in-out infinite alternate" : "none" } }))
-          : h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(237,242,245,0.22)", fontSize: 26 } }, "+"),
-        estVid ? h("span", { style: { position: "absolute", right: 10, bottom: 10, width: 22, height: 22, borderRadius: "50%", background: "rgba(7,8,10,0.5)", border: "1px solid rgba(255,255,255,0.28)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, color: "#EAF2F4", WebkitBackdropFilter: "blur(3px)", backdropFilter: "blur(3px)" } }, "\u25b6") : null),
-      centre && enVed ? h("span", { style: { position: "absolute", right: 11, top: 11, width: 28, height: 28, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(234,199,122,0.65)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EAC77A", fontSize: 12, WebkitBackdropFilter: "blur(4px)", backdropFilter: "blur(4px)", zIndex: 3 } }, "\u2605") : null);
+      h("div", { style: { position: "absolute", inset: 0, borderRadius: 22, overflow: "hidden", filter: fl, WebkitFilter: fl, transition: "filter .35s ease" } },
+        estVid
+          ? h("video", { ref: function (el) { if (el) vidRefs.current[i] = el; }, src: src, muted: true, loop: true, playsInline: true, preload: "auto", onLoadedMetadata: function (eM) { try { if (eM.target.paused && eM.target.currentTime < 0.01) eM.target.currentTime = 0.01; } catch (eT) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", animation: centre ? "galVie 12s ease-in-out infinite alternate" : "none" } })
+          : h("img", { src: src, alt: "", draggable: false, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", animation: centre ? "galVie 12s ease-in-out infinite alternate" : "none" } }),
+        estVid ? h("span", { style: { position: "absolute", right: 9, bottom: 9, width: 21, height: 21, borderRadius: "50%", background: "rgba(7,8,10,0.5)", border: "1px solid rgba(255,255,255,0.28)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, color: "#EAF2F4" } }, "\u25b6") : null),
+      centre && enVed ? h("span", { style: { position: "absolute", right: 11, top: 11, width: 30, height: 30, borderRadius: "50%", background: "rgba(7,8,10,0.5)", border: "1.5px solid " + tA(0.85), display: "flex", alignItems: "center", justifyContent: "center", color: tnT, fontSize: 13 } }, "\u2605") : null);
   }
-  var ctxG = useApp(); var trG = ctxG.tr;
-  function TG(fr, en, es, it, ja) { return trG({ fr: fr, en: en, es: es, it: it, ja: ja }); }
+  /* barrettes d indicateur (5 max) */
+  var nbB = Math.min(5, Math.max(1, n));
+  var posB = n > 1 ? Math.round((((idx % n) + n) % n) / (n - 1) * (nbB - 1)) : 0;
   return h("div", { className: "rise", style: { position: "relative", overflow: "hidden" } },
-    h("style", null, "@keyframes galFlot{from{transform:translateY(0)}to{transform:translateY(-3px)}} @keyframes galZoom{from{transform:scale(1)}to{transform:scale(1.02)}} @keyframes galDrift{0%{transform:translate(0,0);opacity:0}12%{opacity:.65}88%{opacity:.45}100%{transform:translate(24px,-50px);opacity:0}}"),
-    h("div", { style: { padding: "0 20px 12px" } },
-      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 25, fontWeight: 700, color: "#FFFFFF", letterSpacing: 0.8, lineHeight: 1.18, textShadow: "0 0 22px " + tA(0.4) } }, TG("Album de L\u00e9gende", "Legend Album", "\u00c1lbum de Leyenda", "Album di Leggenda", "\u4f1d\u8aac\u306e\u30a2\u30eb\u30d0\u30e0")),
-      h("div", { style: { fontSize: 11.5, lineHeight: 1.6, color: "rgba(220,227,232,0.7)", marginTop: 5 } }, TG("Chaque souvenir raconte une partie de sa vie.", "Every memory tells a part of the story.", "Cada recuerdo cuenta una parte de su vida.", "Ogni ricordo racconta una parte della sua vita.", "\u3072\u3068\u3064\u3072\u3068\u3064\u306e\u601d\u3044\u51fa\u304c\u3001\u305d\u306e\u751f\u304d\u305f\u8a3c\u3002"))),
-    h("i", { style: { position: "absolute", left: "10%", top: "62%", width: 3, height: 3, borderRadius: "50%", background: tA(0.5), filter: "blur(0.5px)", animation: "galDrift 16s linear infinite", pointerEvents: "none", zIndex: 1 } }),
-    h("i", { style: { position: "absolute", left: "84%", top: "72%", width: 2, height: 2, borderRadius: "50%", background: tA(0.42), filter: "blur(0.5px)", animation: "galDrift 20s linear infinite", animationDelay: "7s", pointerEvents: "none", zIndex: 1 } }),
-    h("i", { style: { position: "absolute", left: "48%", top: "84%", width: 2.5, height: 2.5, borderRadius: "50%", background: "rgba(244,247,250,0.32)", filter: "blur(0.5px)", animation: "galDrift 24s linear infinite", animationDelay: "12s", pointerEvents: "none", zIndex: 1 } }),
+    h("style", null, "@keyframes galVie{from{transform:scale(1.02) translateX(-0.7%)}to{transform:scale(1.05) translateX(0.7%)}} @keyframes galDrift{0%{transform:translate(0,0);opacity:0}12%{opacity:.6}88%{opacity:.4}100%{transform:translate(24px,-50px);opacity:0}}"),
+    h("i", { style: { position: "absolute", left: "9%", top: "58%", width: 3, height: 3, borderRadius: "50%", background: tA(0.5), filter: "blur(0.5px)", animation: "galDrift 16s linear infinite", pointerEvents: "none", zIndex: 1 } }),
+    h("i", { style: { position: "absolute", left: "86%", top: "70%", width: 2, height: 2, borderRadius: "50%", background: tA(0.4), filter: "blur(0.5px)", animation: "galDrift 21s linear infinite", animationDelay: "8s", pointerEvents: "none", zIndex: 1 } }),
+    h("div", { style: { padding: "0 20px 4px" } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 9 } },
+        h("i", { style: { width: 16, height: 1, background: tnT, display: "inline-block" } }),
+        h("span", { style: { fontSize: 10, letterSpacing: "0.32em", color: tnT, fontWeight: 700, textTransform: "uppercase" } }, T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa"))),
+      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 28, fontWeight: 700, color: "#FFFFFF", letterSpacing: 1.2, lineHeight: 1.22, margin: "10px 0 0", maxWidth: 240 } }, T("Album de L\u00e9gende", "Legend Album", "\u00c1lbum de Leyenda", "Album di Leggenda", "\u4f1d\u8aac\u306e\u30a2\u30eb\u30d0\u30e0")),
+      h("div", { style: { display: "flex", alignItems: "center", gap: 0, margin: "12px 0 14px" } },
+        h("i", { style: { width: 44, height: 1, background: "linear-gradient(90deg, rgba(234,199,122,0.85), rgba(234,199,122,0.25))", display: "inline-block" } }),
+        h("span", { style: { color: "#EAC77A", fontSize: 10, margin: "0 2px", transform: "rotate(45deg)", display: "inline-block", width: 7, height: 7, border: "1px solid rgba(234,199,122,0.85)" } }),
+        h("i", { style: { width: 20, height: 1, background: "linear-gradient(90deg, rgba(234,199,122,0.25), transparent)", display: "inline-block" } })),
+      h("p", { style: { fontSize: 13, lineHeight: 1.8, color: "rgba(220,227,232,0.82)", maxWidth: 250, margin: 0 } },
+        T("Chaque souvenir raconte un morceau de son histoire. Des instants pr\u00e9cieux, grav\u00e9s \u00e0 jamais.", "Every memory tells a piece of the story. Precious moments, engraved forever.", "Cada recuerdo cuenta un pedazo de su historia. Instantes preciosos, grabados para siempre.", "Ogni ricordo racconta un pezzo della sua storia. Istanti preziosi, incisi per sempre.", "\u3072\u3068\u3064\u3072\u3068\u3064\u306e\u601d\u3044\u51fa\u304c\u7269\u8a9e\u3092\u7d21\u3050\u3002\u6c38\u9060\u306b\u523b\u307e\u308c\u305f\u77ac\u9593\u3002")),
+      h("div", { onClick: props.onTout, style: { marginTop: 15, fontSize: 10.5, letterSpacing: "0.2em", fontWeight: 700, color: tnT, textTransform: "uppercase", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 } },
+        h("span", { style: { fontSize: 12 } }, "\u2727"), T("D\u00e9couvrir son histoire", "Discover the story", "Descubre su historia", "Scopri la sua storia", "\u7269\u8a9e\u3092\u898b\u308b"))),
     h("div", {
       onTouchStart: function (e) { if (e.touches && e.touches[0]) debGlisse(e.touches[0].clientX); },
       onTouchMove: function (e) { if (e.touches && e.touches[0]) mvGlisse(e.touches[0].clientX); },
@@ -25965,13 +25976,17 @@ function GalerieSouvenirs(props) {
       onMouseMove: function (e) { if (dragRef.current) mvGlisse(e.clientX); },
       onMouseUp: function () { finGlisse(); },
       onMouseLeave: function () { finGlisse(); },
-      style: { position: "relative", height: FHc + 22, perspective: "1100px", touchAction: "pan-y" }
-    }, n === 0 ? [h("div", { key: "vide", onClick: props.onTout, style: { position: "absolute", left: "50%", top: "50%", width: FWc, height: FHc, marginLeft: -FWc / 2, marginTop: -FHc / 2, borderRadius: 26, cursor: "pointer", border: "1.5px dashed " + tA(0.45), background: "linear-gradient(160deg, " + tA(0.05) + ", rgba(255,255,255,0.015))", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10 } },
-      h("span", { style: { width: 46, height: 46, borderRadius: "50%", border: "1px solid " + tA(0.55) + "", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: tnT, boxShadow: "0 0 18px " + tA(0.25) } }, "+"))] : liste.map(carte)),
-    n > 1 ? h("div", { style: { display: "flex", justifyContent: "center", gap: 5, marginTop: 0 } },
-      liste.map(function (u2, i2) {
-        return h("i", { key: "d" + i2, onClick: function () { setIdx(i2); }, style: { display: "inline-block", height: 3, borderRadius: 2, width: i2 === idx ? 20 : 8, background: i2 === idx ? tnT : "rgba(244,247,250,0.16)", boxShadow: i2 === idx ? "0 0 8px " + tA(0.55) : "none", transition: "all .35s ease", cursor: "pointer" } });
-      })) : null);
+      style: { position: "relative", height: FHc + 24, marginTop: 2, perspective: "1100px", touchAction: "pan-y" }
+    }, n === 0 ? [h("div", { key: "vide", onClick: props.onTout, style: { position: "absolute", left: "50%", top: "50%", width: FWc, height: FHc, marginLeft: -FWc / 2, marginTop: -FHc / 2, borderRadius: 22, cursor: "pointer", border: "1.5px dashed " + tA(0.45), background: "rgba(255,255,255,0.015)", display: "flex", alignItems: "center", justifyContent: "center" } },
+      h("span", { style: { width: 44, height: 44, borderRadius: "50%", border: "1px solid " + tA(0.55), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 21, color: tnT, boxShadow: "0 0 16px " + tA(0.22) } }, "+"))] : liste.map(carte)),
+    n > 0 ? h("div", { style: { textAlign: "center", marginTop: 6 } },
+      h("div", { style: { fontSize: 12, color: "rgba(237,242,245,0.55)", letterSpacing: "0.03em" } },
+        h("span", { style: { color: tnT, fontWeight: 700 } }, String(heroItem + 1)), " / " + String(n) + " " + T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa")),
+      h("div", { style: { display: "flex", justifyContent: "center", gap: 5, marginTop: 7 } },
+        Array.apply(null, Array(nbB)).map(function (u2, i2) {
+          return h("i", { key: "b" + i2, style: { display: "inline-block", height: 3, borderRadius: 2, width: 18, background: i2 === posB ? tnT : "rgba(244,247,250,0.14)", boxShadow: i2 === posB ? "0 0 8px " + tA(0.55) : "none", transition: "all .35s ease" } });
+        })),
+      h("div", { onClick: function () { try { window.scrollBy({ top: 320, behavior: "smooth" }); } catch (eS) { window.scrollBy(0, 320); } }, style: { margin: "12px auto 0", width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "rgba(237,242,245,0.6)", fontSize: 13 } }, "\u2304")) : null);
 }
 
 function GrilleSouvenirs(props) {
