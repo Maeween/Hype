@@ -25164,7 +25164,7 @@ function EcranEcurie() {
   var chevron = h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "m9 18 6-6-6-6" }));
   function eyebrow(label, voirTout) {
     return h("div", { className: "sec" }, h("div", { className: "eyebrow" }, label,
-      voirTout ? h("a", { className: "all", onClick: bientot }, tr({ fr: "Voir tout", en: "See all", es: "Ver todo", it: "Vedi tutto", ja: "すべて見る" }), chevron) : null));
+      voirTout ? h("a", { className: "all", onClick: (typeof voirTout === "function" ? voirTout : bientot) }, tr({ fr: "Voir tout", en: "See all", es: "Ver todo", it: "Vedi tutto", ja: "すべて見る" }), chevron) : null));
   }
   function chcard(img, nom, disc, opts) {
     opts = opts || {};
@@ -25362,22 +25362,8 @@ function EcranEcurie() {
           fcell(null, T("Salon de Bordeaux · P1 Grand Prix", "Bordeaux Show · P1 Grand Prix", "Salón de Burdeos · P1 Grand Prix", "Salone di Bordeaux · P1 Grand Prix", "ボルドーサロン · P1グランプリ"), "Rizotto d'Emery", IMG_FLOT_BX1),
           fcell("3", T("Salon de Bordeaux · P1 Vitesse", "Bordeaux Show · P1 Speed", "Salón de Burdeos · P1 Velocidad", "Salone di Bordeaux · P1 Velocità", "ボルドーサロン · P1スピード"), "Rizotto d'Emery")),
 
-        eyebrow(T("Le palmarès de l'écurie", "The stable's record", "El palmarés de la cuadra", "Il palmarès della scuderia", "厩舎の成績")),
-        h("div", { className: "stats" },
-          h("div", { className: "stat" }, h("div", { className: "n" }, "2"), h("div", { className: "l" }, T("Titres", "Titles", "Títulos", "Titoli", "タイトル"))),
-          h("div", { className: "stat" }, h("div", { className: "n" }, "7"), h("div", { className: "l" }, T("Podiums", "Podiums", "Podios", "Podi", "表彰台"))),
-          h("div", { className: "stat" }, h("div", { className: "n" }, "14"), h("div", { className: "l" }, T("Victoires", "Wins", "Victorias", "Vittorie", "勝利")))),
-        h("div", { className: "biggest" }, h("svg", { viewBox: "0 0 24 24" }, etoilePath),
-          h("span", null, T("Plus grand flot : ", "Greatest rosette: ", "Mayor escarapela: ", "Coccarda più grande: ", "最大のロゼット："), h("b", null, T("Champion de France", "France Champion", "Campeón de Francia", "Campione di Francia", "フランス王者")), " · My Dream")),
-
-        eyebrow(T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出"), true),
-        h("div", { className: "souv", onClick: bientot },
-          h("img", { src: LEMANS_PHOTO, alt: "" }),
-          h("div", { className: "ov" },
-            h("div", { className: "e" }, T("Dernier souvenir · ce week-end", "Latest memory · this weekend", "Último recuerdo · este finde", "Ultimo ricordo · questo weekend", "最新の思い出 · 今週末")),
-            h("div", { className: "t" }, "Concours à Maisons-Laffitte"))),
-
-        h("div", { style: { padding: "26px 16px 0" } }, h(EncartAlbumEcurie, null)),
+        eyebrow(T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出"), function () { setEcran("album-ecurie"); }),
+        h("div", { style: { padding: "4px 16px 0" } }, h(EncartAlbumEcurie, null)),
 
         eyebrow(T("Ton assistant", "Your assistant", "Tu asistente", "Il tuo assistente", "あなたのアシスタント")),
         h("div", { className: "heybaby", onClick: function () { setEcran("assistant"); } },
