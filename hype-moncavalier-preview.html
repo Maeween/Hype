@@ -24060,7 +24060,7 @@ function EcranMonCavalier() {
         }))),
     h("div", { style: { padding: "26px 0 0" } },
       h("div", { style: { padding: "0 16px" } }, eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), T("G\u00e9rer mon \u00e9curie", "Manage stable", "Gestionar", "Gestisci", "\u7ba1\u7406"), function () { setEcran("ecurie"); })),
-      h("div", { style: { display: "flex", gap: 13, overflowX: "auto", padding: "2px 16px 4px" } }, (function () {
+      h("div", { "data-hscroll": "1", style: { display: "flex", gap: 13, overflowX: "auto", padding: "2px 16px 4px" } }, (function () {
         var slots = premium ? chevaux.slice() : chevaux.slice(0, 6);
         while (slots.length < 6) slots.push(null);
         if (premium && slots[slots.length - 1] !== null) slots.push(null);
@@ -24999,7 +24999,7 @@ function EcranUnivers() {
         chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e\u4e16\u754c"), "d2"),
 
         React.createElement("div", { className: "manwrap rv d2" },
-          React.createElement("div", { className: "manege", ref: manegeRef },
+          React.createElement("div", { className: "manege", ref: manegeRef, "data-hscroll": "1" },
             React.createElement("div", { className: "mtrack" },
               manegeCartesAcc("a"),
               manegeCartesAcc("b")))),
@@ -27359,14 +27359,14 @@ function NavBar() {
     const items = [
         { id: "dashboard", icone: "🏠", label: t("nav_accueil") },
         { id: "galops", icone: "📖", label: t("nav_galops") },
-        { id: "monde", icone: "🌍", label: "Monde" },
+        { id: "moncavalier", icone: "🏇", label: ({ fr: "Cavalier", en: "Rider", es: "Jinete", it: "Cavaliere", ja: "騎手" }[langue] || "Cavalier") },
         { id: "communaute", icone: "✨", label: t("nav_communaute") },
         { id: "ecurie", icone: "🐴", label: t("nav_ecurie") },
-        { id: "premium", icone: "\ud83d\udc8e", label: (langue === "ja" ? "\u30d7\u30ec\u30df\u30a2\u30e0" : "Premium") },
         { id: "assistant", icone: "💬", label: t("nav_assistant") },
+        { id: "premium", icone: "\ud83d\udc8e", label: (langue === "ja" ? "\u30d7\u30ec\u30df\u30a2\u30e0" : "Premium") },
     ];
     return (React.createElement("div", { style: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, background: COLORS.nuitClaire, borderTop: `1px solid ${COLORS.ligne}`, display: "flex", padding: "8px 4px calc(8px + env(safe-area-inset-bottom))", zIndex: 50 } }, items.map((item) => {
-        const actif = ecran === item.id || (item.id === "galops" && ["galop-detail", "cours", "quiz", "examen"].includes(ecran)) || (item.id === "communaute" && ecran === "evenement") || (item.id === "ecurie" && ["cheval", "cavalier", "ecurie-hype", "album-ecurie", "sellerie"].includes(ecran));
+        const actif = ecran === item.id || (item.id === "galops" && ["galop-detail", "cours", "quiz", "examen"].includes(ecran)) || (item.id === "communaute" && ecran === "evenement") || (item.id === "moncavalier" && ecran === "profil") || (item.id === "ecurie" && ["cheval", "cavalier", "ecurie-hype", "album-ecurie", "sellerie"].includes(ecran));
         return (React.createElement("button", { key: item.id, onClick: () => setEcran(item.id), style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "6px 0" } },
             React.createElement("span", { style: { fontSize: 18, filter: actif ? "none" : "grayscale(0.6) opacity(0.6)" } }, item.icone),
             React.createElement("span", { style: { fontSize: 9, fontWeight: actif ? 700 : 500, color: actif ? COLORS.turquoise : COLORS.encreDoux, whiteSpace: "nowrap" } }, item.label)));
