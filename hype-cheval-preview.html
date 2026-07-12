@@ -24149,7 +24149,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
-    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 19h00"),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 19h20"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
@@ -25953,8 +25953,8 @@ function MurHype(props) {
   var h = React.createElement;
   var ctx = useApp(); var tr = ctx.tr; var langue = ctx.langue || "fr";
   function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
-  var TQm = props.teinte || TQm;
-  var TQmCl = props.teinte || TQmCl;
+  var TQm = props.teinte || "#20D9F5";
+  var TQmCl = props.teinte || "#5FE9F0";
   function tAm(aM) { var hM = TQm.replace("#", ""); return "rgba(" + parseInt(hM.substr(0, 2), 16) + "," + parseInt(hM.substr(2, 2), 16) + "," + parseInt(hM.substr(4, 2), 16) + "," + aM + ")"; }
   var dispo = false; try { dispo = (typeof supa !== "undefined") && (typeof listerCommentaires === "function"); } catch (eD) { dispo = false; }
   function cibleInitiale() {
@@ -26277,7 +26277,7 @@ function AlbumsCheval(props) {
     editNom ? portail(h("div", { onClick: function () { setEditNom(null); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 90px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: C9, fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 12 } }, editNom === "nouveau" ? T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0") : T("Renommer l'album", "Rename album", "Renombrar", "Rinomina", "\u540d\u524d\u3092\u5909\u66f4")),
-        h("input", { value: nomLocal, onChange: function (eI) { setNomLocal(eI.target.value); }, maxLength: 30, placeholder: T("Nom de l'album\u2026", "Album name\u2026", "Nombre\u2026", "Nome\u2026", "\u30a2\u30eb\u30d0\u30e0\u540d\u2026"), style: { width: "100%", boxSizing: "border-box", padding: "13px 14px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14.5, fontFamily: M9, outline: "none" } }),
+        h("input", { value: nomLocal, onChange: function (eI) { setNomLocal(eI.target.value); }, maxLength: 33, placeholder: T("Nom de l'album\u2026", "Album name\u2026", "Nombre\u2026", "Nome\u2026", "\u30a2\u30eb\u30d0\u30e0\u540d\u2026"), style: { width: "100%", boxSizing: "border-box", padding: "13px 14px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14.5, fontFamily: M9, outline: "none" } }),
         h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
           h("button", { onClick: function () { setEditNom(null); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
           h("button", { onClick: function () { sauverNom(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58")))))) : null,
