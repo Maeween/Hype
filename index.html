@@ -24069,27 +24069,23 @@ function EcranMonCavalier() {
             T("Ajouter une \u00e9curie", "Add a stable", "A\u00f1adir una cuadra", "Aggiungi una scuderia", "\u53a9\u820e\u3092\u8ffd\u52a0"))),
     h("div", { style: { padding: "26px 0 0" } },
       h("div", { style: { padding: "0 16px" } }, eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), T("G\u00e9rer mon \u00e9curie", "Manage stable", "Gestionar", "Gestisci", "\u7ba1\u7406"), function () { setEcran("ecurie"); })),
-      h("div", { "data-hscroll": "1", style: { display: "flex", gap: 13, overflowX: "auto", padding: "2px 16px 4px" } }, (function () {
+      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "2px 16px 4px" } }, (function () {
         var slots = premium ? chevaux.slice() : chevaux.slice(0, 6);
-        while (slots.length < 6) slots.push(null);
-        if (premium && slots[slots.length - 1] !== null) slots.push(null);
-        return slots.map(function (x, i) {
+        var cartes = slots.map(function (x, i) {
           var verrouille = i >= 2 && !premium;
-          if (x) {
-            var coeur = (x.ch.flots || []).some(function (fl) { return fl.coeur; });
-            return h("button", { key: i, onClick: verrouille ? function () { setEcran("premium"); } : ouvrirCheval(x.id), style: { flex: "0 0 auto", width: 152, background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", opacity: verrouille ? 0.4 : 1 } },
-              h("div", { style: { position: "relative", width: 152, height: 108, borderRadius: 14, backgroundImage: x.ch.photo ? ("url(" + x.ch.photo + ")") : "none", backgroundColor: "#12242b", backgroundSize: "cover", backgroundPosition: "center 26%", border: "1px solid " + __ta(0.37) + "", filter: verrouille ? "grayscale(1)" : "none" } },
-                coeur && !verrouille ? h("div", { style: { position: "absolute", top: 8, right: 8, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" } }, coeurIco) : null,
-                verrouille ? h("div", { style: { position: "absolute", inset: 0, borderRadius: 14, background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 } }, "\ud83d\udd12") : null),
-              h("div", { style: { fontFamily: C, fontSize: 15, fontWeight: 600, marginTop: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: ((typeof CHEVAUX_SPECTRAL !== "undefined" && CHEVAUX_SPECTRAL[x.id] && CHEVAUX_SPECTRAL[x.id].teinte) || "#EDF2F5") } }, x.ch.nom),
-              h("div", { style: { fontSize: 11, color: "#8A929C", fontFamily: M, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, verrouille ? T("Premium", "Premium", "Premium", "Premium", "\u30d7\u30ec\u30df\u30a2\u30e0") : (x.ch.info || "")));
-          }
-          return h("button", { key: i, onClick: function () { setEcran(verrouille ? "premium" : "ecurie"); }, style: { flex: "0 0 auto", width: 152, background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" } },
-            h("div", { style: { width: 152, height: 108, borderRadius: 14, border: "1.5px dashed " + __ta(verrouille ? 0.2 : 0.5) + "", background: __ta(0.04), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, opacity: verrouille ? 0.5 : 1 } },
-              h("span", { style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid " + __ta(0.6) + "", background: __ta(0.12), display: "flex", alignItems: "center", justifyContent: "center", color: TURQL, fontSize: 16, fontWeight: 700 } }, verrouille ? "\ud83d\udd12" : "+"),
-              h("span", { style: { fontSize: 10.5, letterSpacing: "0.06em", color: TURQL, fontWeight: 700, textTransform: "uppercase" } }, verrouille ? T("Premium", "Premium", "Premium", "Premium", "\u30d7\u30ec\u30df\u30a2\u30e0") : T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0"))),
-            h("div", { style: { fontFamily: C, fontSize: 13, fontWeight: 600, marginTop: 8, color: "#8A929C", textAlign: "center" } }, verrouille ? "" : T("Ton cheval", "Your horse", "Tu caballo", "Il tuo cavallo", "\u3042\u306a\u305f\u306e\u99ac")));
+          var coeur = (x.ch.flots || []).some(function (fl) { return fl.coeur; });
+          return h("button", { key: "cg" + i, onClick: verrouille ? function () { setEcran("premium"); } : ouvrirCheval(x.id), style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
+            h("div", { style: { position: "relative", width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", backgroundImage: x.ch.photo ? ("url(" + x.ch.photo + ")") : "none", backgroundColor: "#12242b", backgroundSize: "cover", backgroundPosition: "center", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 14px 26px -20px rgba(0,0,0,0.9)" } },
+              coeur && !verrouille ? h("div", { style: { position: "absolute", top: 7, right: 7, width: 24, height: 24, borderRadius: "50%", background: "rgba(7,8,10,0.55)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 } }, "\u2764\ufe0f") : null,
+              verrouille ? h("div", { style: { position: "absolute", inset: 0, background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 } }, "\ud83d\udd12") : null),
+            h("div", { style: { fontFamily: C, fontSize: 13.5, fontWeight: 600, marginTop: 7, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: ((typeof CHEVAUX_SPECTRAL !== "undefined" && CHEVAUX_SPECTRAL[x.id] && CHEVAUX_SPECTRAL[x.id].teinte) || "#EDF2F5") } }, x.ch.nom),
+            h("div", { style: { fontSize: 10, color: "#8A929C", fontFamily: M, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, verrouille ? "Premium \u2726" : (x.ch.info || "")));
         });
+        cartes.push(h("button", { key: "ajout", onClick: function () { setEcran((!premium && chevaux.length >= 2) ? "premium" : "ecurie"); }, style: { background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, textAlign: "center" } },
+          h("div", { style: { width: "100%", aspectRatio: "4 / 5", borderRadius: 14, border: "1.5px dashed " + __ta(0.5) + "", background: __ta(0.04), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 } },
+            h("span", { style: { width: 34, height: 34, borderRadius: "50%", border: "1.5px solid #5FE9F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#5FE9F0" } }, "+"),
+            h("span", { style: { fontSize: 9.5, color: "#5FE9F0", fontFamily: M, fontWeight: 600, letterSpacing: 0.4, padding: "0 6px", lineHeight: 1.3 } }, T("Ajouter un cheval", "Add a horse", "A\u00f1adir un caballo", "Aggiungi un cavallo", "\u99ac\u3092\u8ffd\u52a0")))));
+        return cartes;
       })())),
     (chevauxEcurieP && chevauxEcurieP.length) ? h("div", { style: { padding: "26px 0 0" } },
       h("div", { style: { padding: "0 16px" } }, eyebrow(T("Les chevaux de l'\u00e9curie", "The stable's horses", "Los caballos de la cuadra", "I cavalli della scuderia", "\u5395\u820e\u306e\u99ac"))),
@@ -24122,7 +24118,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
-    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 17h00"),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 17h15"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
