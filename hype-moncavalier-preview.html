@@ -17916,7 +17916,7 @@ exports.hydrateRoot = function (container, initialChildren, options) {
 };
 exports.version = "19.2.5";
 
-});</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-3.js"></script><script src="hype-images-4.js"></script><script src="hype-images-5.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
+});</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-3.js"></script><script src="hype-images-4.js"></script><script src="hype-images-5.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -24114,7 +24114,15 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
-    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 15h00"),
+    h("button", { onClick: function () { setEcran("assistant"); }, style: { position: "relative", display: "block", width: "calc(100% - 32px)", height: 188, margin: "26px 16px 0", padding: 0, borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", background: "#0B1013", cursor: "pointer", textAlign: "left", boxSizing: "border-box" } },
+      (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.heyBabyCavalier) ? h("img", { src: HYPE_IMGS.heyBabyCavalier, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 26%", display: "block" } }) : null,
+      h("div", { style: { position: "absolute", left: 18, bottom: 16, right: 78 } },
+        h("div", { style: { fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 700, fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 10px rgba(0,0,0,0.9)" } }, "HEY BABY"),
+        h("div", { style: { marginTop: 5, fontFamily: "'Cinzel',serif", fontSize: 21, fontWeight: 600, color: "#F4F7FA", lineHeight: 1.12, letterSpacing: "0.04em", textTransform: "uppercase", textShadow: "0 2px 16px rgba(0,0,0,0.9)" } }, T("Continue ta progression", "Keep progressing", "Contin\u00faa tu progresi\u00f3n", "Continua i tuoi progressi", "\u4e0a\u9054\u3092\u7d9a\u3051\u3088\u3046")),
+        h("div", { style: { marginTop: 5, fontSize: 11.5, fontWeight: 500, color: "rgba(244,247,250,0.88)", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.4, textShadow: "0 1px 10px rgba(0,0,0,0.9)" } }, T("Partage tes photos et vid\u00e9os pour avoir ses conseils", "Share your photos and videos to get its advice", "Comparte tus fotos y v\u00eddeos para recibir sus consejos", "Condividi le tue foto e i tuoi video per ricevere i suoi consigli", "\u5199\u771f\u3084\u52d5\u753b\u3092\u5171\u6709\u3057\u3066\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u3082\u3089\u304a\u3046"))),
+      h("div", { style: { position: "absolute", right: 16, bottom: 16, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.6)", background: "rgba(7,8,10,0.45)", display: "flex", alignItems: "center", justifyContent: "center" } },
+        h("span", { style: { color: "#5FE9F0", fontSize: 17, fontWeight: 700 } }, "\u203a"))),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 16h10"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
@@ -25142,7 +25150,7 @@ function EncartCliniqueVeto() {
   var setEcran = ctx.setEcran, tr = ctx.tr;
   function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
   var img = (typeof HYPE_IMGS !== "undefined" && (HYPE_IMGS.encartVeto || HYPE_IMGS.cliniqueEncart)) ? (HYPE_IMGS.encartVeto || HYPE_IMGS.cliniqueEncart) : "";
-  return h("button", { onClick: function () { setEcran("clinique"); }, style: { display: "block", position: "relative", width: "100%", aspectRatio: "1.15", textAlign: "left", padding: 0, borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.3)", background: "#0B1013", cursor: "pointer", boxShadow: "0 0 30px rgba(32,217,245,0.08)" } },
+  return h("button", { onClick: function () { setEcran("clinique"); }, style: { display: "block", position: "relative", width: "100%", height: 188, boxSizing: "border-box", textAlign: "left", padding: 0, borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", background: "#0B1013", cursor: "pointer", boxShadow: "0 0 30px rgba(32,217,245,0.08)" } },
     img ? h("img", { src: img, alt: "", style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", display: "block" } }) : null,
     h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 18px 18px", fontFamily: "'Montserrat',sans-serif" } },
       h("div", { style: { fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 700, textShadow: "0 1px 10px rgba(0,0,0,0.85)" } }, "\u2014 " + T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7")),
@@ -25178,7 +25186,7 @@ function EncartSellerie(props) {
   var titre = accueil
     ? T("Nos partenaires", "Our partners", "Nuestros socios", "I nostri partner", "\u30d1\u30fc\u30c8\u30ca\u30fc\u7d39\u4ecb")
     : T("Ma Sellerie", "My Tack Room", "Mi guadarn\u00e9s", "La mia selleria", "\u79c1\u306e\u99ac\u5177\u5ba4");
-  return h("div", { onClick: function () { setEcran("sellerie"); }, role: "button", style: { position: "relative", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.25)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", aspectRatio: img ? "4 / 3" : undefined, padding: img ? 0 : "22px 58px 22px 18px" } },
+  return h("div", { onClick: function () { setEcran("sellerie"); }, role: "button", style: { position: "relative", height: 188, boxSizing: "border-box", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", padding: img ? 0 : "22px 58px 22px 18px" } },
     img ? h("img", { src: img, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
     h("div", { style: img ? { position: "absolute", left: 18, bottom: 16, right: 78 } : {} },
       h("div", { style: { fontSize: 10.5, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 600, marginBottom: 7, fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, T("Partenaires", "Partners", "Socios", "Partner", "\u30d1\u30fc\u30c8\u30ca\u30fc")),
@@ -25215,7 +25223,7 @@ function EncartAlbumEcurie() {
   var ctx = useApp(); var tr = ctx.tr, setEcran = ctx.setEcran;
   function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
   var img = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.albumEcurieEncart) ? HYPE_IMGS.albumEcurieEncart : "";
-  return h("div", { onClick: function () { setEcran("album-ecurie"); }, role: "button", style: { position: "relative", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.25)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", aspectRatio: img ? "16 / 10" : undefined, padding: img ? 0 : "22px 58px 22px 18px" } },
+  return h("div", { onClick: function () { setEcran("album-ecurie"); }, role: "button", style: { position: "relative", height: 188, boxSizing: "border-box", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", padding: img ? 0 : "22px 58px 22px 18px" } },
     img ? h("img", { src: img, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
     h("div", { style: img ? { position: "absolute", left: 18, bottom: 16, right: 78 } : {} },
       h("div", { style: { fontSize: 10.5, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 600, marginBottom: 7, fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa")),
@@ -25533,10 +25541,10 @@ function EcranEcurie() {
               })()),
             h("button", { onClick: function () { setSelCavEc(false); }, style: { marginTop: 12, width: "100%", padding: "13px 0", borderRadius: 14, border: "1px solid rgba(32,217,245,0.4)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 13.5, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Termin\u00e9", "Done", "Hecho", "Fatto", "\u5b8c\u4e86")))) : null,
 
-        h("div", { style: { padding: "30px 16px 0" } }, h(EncartCliniqueVeto, null)),
+        h("div", { style: { padding: "26px 16px 0" } }, h(EncartCliniqueVeto, null)),
 
         eyebrow(T("Ton assistant", "Your assistant", "Tu asistente", "Il tuo assistente", "あなたのアシスタント")),
-        h("button", { onClick: function () { setEcran("assistant"); }, style: { position: "relative", display: "flex", alignItems: "flex-end", width: "calc(100% - 32px)", height: 188, margin: "0 16px", padding: "20px 18px", borderRadius: 20, overflow: "hidden", border: "none", background: "transparent", cursor: "pointer", textAlign: "left", boxSizing: "border-box" } },
+        h("button", { onClick: function () { setEcran("assistant"); }, style: { position: "relative", display: "flex", alignItems: "flex-end", width: "calc(100% - 32px)", height: 188, margin: "0 16px", padding: "20px 18px", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", boxSizing: "border-box", background: "transparent", cursor: "pointer", textAlign: "left", boxSizing: "border-box" } },
           h("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_HEYBABY_BANNIERE + ")", backgroundSize: "cover", backgroundPosition: "center 36%" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(7,8,10,0.93) 0%, rgba(7,8,10,0.58) 38%, rgba(7,8,10,0.1) 66%, transparent 100%)" } }),
           h("div", { style: { position: "relative", zIndex: 2, maxWidth: "70%" } },
@@ -25546,11 +25554,11 @@ function EcranEcurie() {
               h("br", null),
               h("span", { style: { display: "inline-block", marginLeft: 34, color: "#20D9F5" } }, T("virtuel", "coach", "virtual", "virtuale", "\u30b3\u30fc\u30c1"))))),
 
-        h("div", { style: { padding: "8px 16px 0" } }, h(EncartSellerie, null)),
+        h("div", { style: { padding: "14px 16px 0" } }, h(EncartSellerie, null)),
 
         (function () {
           var imgEH = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.encartEcurieHype) ? HYPE_IMGS.encartEcurieHype : "";
-          return h("div", { onClick: function () { setEcran("ecurie-hype"); }, role: "button", style: { position: "relative", margin: "22px 16px 4px", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.25)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", aspectRatio: imgEH ? "4 / 3" : undefined, padding: imgEH ? 0 : "22px 58px 22px 18px" } },
+          return h("div", { onClick: function () { setEcran("ecurie-hype"); }, role: "button", style: { position: "relative", margin: "14px 16px 4px", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", height: 188, boxSizing: "border-box", padding: imgEH ? 0 : "22px 58px 22px 18px" } },
             imgEH ? h("img", { src: imgEH, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
             h("div", { style: imgEH ? { position: "absolute", left: 18, bottom: 16, right: 78 } : {} },
               h("div", { style: { fontSize: 10.5, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 600, marginBottom: 7, fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, T("Nouveau", "New", "Nuevo", "Novità", "新着")),
@@ -26430,7 +26438,7 @@ function EcranCheval() {
         if (typeof supa !== "undefined" && supa) {
           var r = await supa.from("chevaux").select("*").eq("id", id).single();
           if (actif && r && r.data) {
-            setChevalDyn({ nom: r.data.nom || "Cheval", photo: r.data.photo_url || UV3_H1, info: [r.data.race, r.data.age, r.data.discipline].filter(Boolean).join(" · "), flots: [], palmares: [], histoire: r.data.histoire || null, dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, origines: r.data.origines || null });
+            setChevalDyn({ nom: r.data.nom || "Cheval", photo: r.data.photo_url || UV3_H1, info: [r.data.race, r.data.age, r.data.discipline].filter(Boolean).join(" · "), flots: [], palmares: [], histoire: r.data.histoire || null, dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, origines: r.data.origines || null, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
           }
         }
       } catch (eD) { }
@@ -26472,6 +26480,8 @@ function EcranCheval() {
   function ouvrirEditOrigines() {
     var ogE = (c && c.origines) || {};
     setOrigLocal({
+      race: (chevalDyn && chevalDyn.race) || "",
+      age: (chevalDyn && chevalDyn.age) || "",
       pere: (ogE.pere && (ogE.pere.nom || ogE.pere)) || "",
       mere: (ogE.mere && (ogE.mere.nom || ogE.mere)) || "",
       naisseur: ogE.naisseur || ""
@@ -26487,9 +26497,12 @@ function EcranCheval() {
       if (na) ogN.naisseur = na; else delete ogN.naisseur;
       setEditOrig(false);
       if (chevalDyn && chevalDyn.dbId && typeof supa !== "undefined" && supa) {
-        var rO = await supa.from("chevaux").update({ origines: ogN }).eq("id", chevalDyn.dbId);
+        var raceV = (origLocal.race || "").trim();
+        var ageV = (String(origLocal.age || "").match(/\d+/) || [null])[0];
+        var payl = { origines: ogN, race: raceV || null, age: ageV ? Number(ageV) : null };
+        var rO = await supa.from("chevaux").update(payl).eq("id", chevalDyn.dbId);
         if (rO && rO.error) { setToast(T("Enregistrement indisponible \u2014 colonne \u00e0 ajouter c\u00f4t\u00e9 base", "Could not save \u2014 column missing in database", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); setTimeout(function () { setToast(null); }, 2600); return; }
-        setChevalDyn(Object.assign({}, chevalDyn, { origines: ogN }));
+        setChevalDyn(Object.assign({}, chevalDyn, { origines: ogN, race: raceV, age: ageV || "", info: [raceV, ageV ? ageV + " ans" : null, chevalDyn.discipline].filter(Boolean).join(" \u00b7 ") }));
         setToast(T("Origines mises \u00e0 jour \u2728", "Bloodline updated \u2728", "Or\u00edgenes actualizados \u2728", "Origini aggiornate \u2728", "\u8840\u7d71\u3092\u66f4\u65b0\u3057\u307e\u3057\u305f \u2728"));
         setTimeout(function () { setToast(null); }, 2400);
       }
@@ -26980,9 +26993,9 @@ function EcranCheval() {
 
     editOrig ? h("div", { onClick: function () { setEditOrig(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
-        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71")),
-        h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("Renseigne les origines de ton cheval.", "Fill in your horse's bloodline.", "Completa los or\u00edgenes de tu caballo.", "Inserisci le origini del tuo cavallo.", "\u99ac\u306e\u8840\u7d71\u3092\u5165\u529b\u3057\u3088\u3046\u3002")),
-        [["pere", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236")], ["mere", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd")], ["naisseur", T("Naisseur / \u00e9leveur", "Breeder", "Criador", "Allevatore", "\u751f\u7523\u8005")]].map(function (chp) {
+        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon cheval", "My horse", "Mi caballo", "Il mio cavallo", "\u79c1\u306e\u99ac")),
+        h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("Renseigne sa race, son \u00e2ge et ses origines.", "Fill in your horse's bloodline.", "Completa los or\u00edgenes de tu caballo.", "Inserisci le origini del tuo cavallo.", "\u99ac\u306e\u8840\u7d71\u3092\u5165\u529b\u3057\u3088\u3046\u3002")),
+        [["race", T("Race", "Breed", "Raza", "Razza", "\u54c1\u7a2e")], ["age", T("\u00c2ge (ans)", "Age (years)", "Edad (a\u00f1os)", "Et\u00e0 (anni)", "\u5e74\u9f62")], ["pere", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236")], ["mere", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd")], ["naisseur", T("Naisseur / \u00e9leveur", "Breeder", "Criador", "Allevatore", "\u751f\u7523\u8005")]].map(function (chp) {
           return h("div", { key: chp[0], style: { marginBottom: 10 } },
             h("div", { style: { fontSize: 8.5, letterSpacing: "0.2em", color: "#7DDDE8", textTransform: "uppercase", fontWeight: 700, marginBottom: 5, fontFamily: "'Montserrat',sans-serif" } }, chp[1]),
             h("input", { value: origLocal[chp[0]] || "", onChange: function (eI) { var v = eI.target.value; setOrigLocal(function (oo) { var nn = Object.assign({}, oo); nn[chp[0]] = v; return nn; }); }, maxLength: 60, placeholder: "\u2014", style: { width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none" } }));
