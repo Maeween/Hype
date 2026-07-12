@@ -25468,16 +25468,8 @@ function EcranEcurie() {
                   h("span", { style: { width: 20, height: 20, borderRadius: "50%", border: "1.5px solid #5FE9F0", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, color: "#5FE9F0" } }, "+"),
                   T("Ajouter un cavalier", "Add a rider", "A\u00f1adir un jinete", "Aggiungi un cavaliere", "\u9a0e\u624b\u3092\u8ffd\u52a0"))) : null));
         })(),
-        (function () {
-          var imgEH = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.encartEcurieHype) ? HYPE_IMGS.encartEcurieHype : "";
-          return h("div", { onClick: function () { setEcran("ecurie-hype"); }, role: "button", style: { position: "relative", margin: "22px 16px 4px", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.25)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", aspectRatio: imgEH ? "4 / 3" : undefined, padding: imgEH ? 0 : "22px 58px 22px 18px" } },
-            imgEH ? h("img", { src: imgEH, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
-            h("div", { style: imgEH ? { position: "absolute", left: 18, bottom: 16, right: 78 } : {} },
-              h("div", { style: { fontSize: 10.5, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 600, marginBottom: 7, fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, T("Nouveau", "New", "Nuevo", "Novità", "新着")),
-              h("h3", { style: { margin: "0 0 6px", fontFamily: "'Cinzel',serif", fontSize: 25, fontWeight: 600, color: "#F4F7FA", lineHeight: 1.15, letterSpacing: "0.03em", textShadow: "0 2px 14px rgba(0,0,0,0.95), 0 0 26px rgba(0,0,0,0.7)" } }, "L'Écurie Hype"),
-              h("p", { style: { margin: 0, fontSize: 12.5, fontWeight: 500, color: "rgba(244,247,250,0.85)", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.45, textShadow: "0 1px 10px rgba(0,0,0,0.95), 0 0 18px rgba(0,0,0,0.8)" } }, T("Les Légendes et les chevaux de la communauté", "The Legends and the community's horses", "Las Leyendas y los caballos de la comunidad", "Le Leggende e i cavalli della comunità", "レジェンドとコミュニティの馬たち"))),
-            h("div", { style: { position: "absolute", right: 16, bottom: imgEH ? 20 : "50%", transform: imgEH ? "none" : "translateY(50%)", width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.6)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(7,8,10,0.45)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", boxShadow: "0 0 18px rgba(32,217,245,0.2)", animation: "glowPulse 3.2s ease-in-out infinite" } },
-              h("svg", { viewBox: "0 0 24 24", style: { width: 16, height: 16, stroke: "#20D9F5", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M9 6l6 6-6 6" })))); })(),
+        eyebrow(T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出"), function () { setEcran("album-ecurie"); }),
+        h("div", { style: { padding: "4px 16px 0" } }, h(EncartAlbumEcurie, null)),
         selCavEc ? h("div", { style: { position: "fixed", inset: 0, zIndex: 8200, background: "rgba(4,6,9,0.72)", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }, onClick: function () { setSelCavEc(false); } },
           h("div", { onClick: function (eSh) { eSh.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid rgba(32,217,245,0.3)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
             h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 15, letterSpacing: 1.8, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase" } }, T("Compose ton \u00e9curie", "Build your stable", "Compone tu cuadra", "Componi la tua scuderia", "\u53a9\u820e\u3092\u30c7\u30b6\u30a4\u30f3")),
@@ -25508,15 +25500,6 @@ function EcranEcurie() {
 
         h("div", { style: { padding: "30px 16px 0" } }, h(EncartCliniqueVeto, null)),
 
-        eyebrow(T("Ton palmarès", "Your record", "Tu palmarés", "Il tuo palmarès", "あなたの成績"), true),
-        h("div", { className: "fstrip" },
-          fcell(null, T("Open de France · P1 D", "France Open · P1 D", "Open de Francia · P1 D", "Open di Francia · P1 D", "フランスオープン · P1 D"), "Rizotto d'Emery", IMG_COUPE_OPEN),
-          fcell(null, T("Salon de Bordeaux · P1 Grand Prix", "Bordeaux Show · P1 Grand Prix", "Salón de Burdeos · P1 Grand Prix", "Salone di Bordeaux · P1 Grand Prix", "ボルドーサロン · P1グランプリ"), "Rizotto d'Emery", IMG_FLOT_BX1),
-          fcell("3", T("Salon de Bordeaux · P1 Vitesse", "Bordeaux Show · P1 Speed", "Salón de Burdeos · P1 Velocidad", "Salone di Bordeaux · P1 Velocità", "ボルドーサロン · P1スピード"), "Rizotto d'Emery")),
-
-        eyebrow(T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出"), function () { setEcran("album-ecurie"); }),
-        h("div", { style: { padding: "4px 16px 0" } }, h(EncartAlbumEcurie, null)),
-
         eyebrow(T("Ton assistant", "Your assistant", "Tu asistente", "Il tuo assistente", "あなたのアシスタント")),
         h("button", { onClick: function () { setEcran("assistant"); }, style: { position: "relative", display: "flex", alignItems: "flex-end", width: "calc(100% - 32px)", height: 188, margin: "0 16px", padding: "20px 18px", borderRadius: 20, overflow: "hidden", border: "none", background: "transparent", cursor: "pointer", textAlign: "left", boxSizing: "border-box" } },
           h("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_HEYBABY_BANNIERE + ")", backgroundSize: "cover", backgroundPosition: "center 36%" } }),
@@ -25530,8 +25513,25 @@ function EcranEcurie() {
 
         h("div", { style: { padding: "8px 16px 0" } }, h(EncartSellerie, null)),
 
+        eyebrow(T("Ton palmarès", "Your record", "Tu palmarés", "Il tuo palmarès", "あなたの成績"), true),
+        h("div", { className: "fstrip" },
+          fcell(null, T("Open de France · P1 D", "France Open · P1 D", "Open de Francia · P1 D", "Open di Francia · P1 D", "フランスオープン · P1 D"), "Rizotto d'Emery", IMG_COUPE_OPEN),
+          fcell(null, T("Salon de Bordeaux · P1 Grand Prix", "Bordeaux Show · P1 Grand Prix", "Salón de Burdeos · P1 Grand Prix", "Salone di Bordeaux · P1 Grand Prix", "ボルドーサロン · P1グランプリ"), "Rizotto d'Emery", IMG_FLOT_BX1),
+          fcell("3", T("Salon de Bordeaux · P1 Vitesse", "Bordeaux Show · P1 Speed", "Salón de Burdeos · P1 Velocidad", "Salone di Bordeaux · P1 Velocità", "ボルドーサロン · P1スピード"), "Rizotto d'Emery")),
+
+
         )),
 
+    (function () {
+          var imgEH = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.encartEcurieHype) ? HYPE_IMGS.encartEcurieHype : "";
+          return h("div", { onClick: function () { setEcran("ecurie-hype"); }, role: "button", style: { position: "relative", margin: "22px 16px 4px", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.25)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", aspectRatio: imgEH ? "4 / 3" : undefined, padding: imgEH ? 0 : "22px 58px 22px 18px" } },
+            imgEH ? h("img", { src: imgEH, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
+            h("div", { style: imgEH ? { position: "absolute", left: 18, bottom: 16, right: 78 } : {} },
+              h("div", { style: { fontSize: 10.5, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 600, marginBottom: 7, fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, T("Nouveau", "New", "Nuevo", "Novità", "新着")),
+              h("h3", { style: { margin: "0 0 6px", fontFamily: "'Cinzel',serif", fontSize: 25, fontWeight: 600, color: "#F4F7FA", lineHeight: 1.15, letterSpacing: "0.03em", textShadow: "0 2px 14px rgba(0,0,0,0.95), 0 0 26px rgba(0,0,0,0.7)" } }, "L'Écurie Hype"),
+              h("p", { style: { margin: 0, fontSize: 12.5, fontWeight: 500, color: "rgba(244,247,250,0.85)", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.45, textShadow: "0 1px 10px rgba(0,0,0,0.95), 0 0 18px rgba(0,0,0,0.8)" } }, T("Les Légendes et les chevaux de la communauté", "The Legends and the community's horses", "Las Leyendas y los caballos de la comunidad", "Le Leggende e i cavalli della comunità", "レジェンドとコミュニティの馬たち"))),
+            h("div", { style: { position: "absolute", right: 16, bottom: imgEH ? 20 : "50%", transform: imgEH ? "none" : "translateY(50%)", width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.6)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(7,8,10,0.45)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", boxShadow: "0 0 18px rgba(32,217,245,0.2)", animation: "glowPulse 3.2s ease-in-out infinite" } },
+              h("svg", { viewBox: "0 0 24 24", style: { width: 16, height: 16, stroke: "#20D9F5", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M9 6l6 6-6 6" })))); })(),
     h(MurHype, { cibleEcurie: true, membresSeuls: true }),
     
 
