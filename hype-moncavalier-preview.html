@@ -24036,15 +24036,22 @@ function EcranMonCavalier() {
           h("div", { style: { fontFamily: C, fontSize: 30, fontWeight: 700, letterSpacing: 1, lineHeight: 1.02, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, prenom),
           h("button", { onClick: function (ePs) { if (ePs && ePs.stopPropagation) ePs.stopPropagation(); setPseudoLocal((profil.prenom || profil.pseudo || "").trim()); setEditPseudo(true); }, "aria-label": "Modifier mon pseudo", style: { flexShrink: 0, width: 30, height: 30, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 12, cursor: "pointer", backdropFilter: "blur(6px)" } }, "\u270E")),
         h("div", { style: { marginTop: 7, fontSize: 12.5, color: "#AEB8C0", fontStyle: "italic", fontFamily: "Georgia, serif", maxWidth: "88%", lineHeight: 1.35 } }, "\u201c" + citation + "\u201d"))),
-    h("div", { style: { display: "flex", gap: 8, padding: "16px 16px 0" } },
-      [[pal.length, T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u6210\u7e3e"), null, null],
-       [podiums, T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0"), "#E8C887", null],
-       [serie, T("S\u00e9rie", "Streak", "Racha", "Serie", "\u9023\u7d9a"), null, null],
-       [amis != null ? amis : "\u2014", T("Amis", "Friends", "Amigos", "Amici", "\u53cb\u9054"), null, function(){ setEcran("communaute"); }]].map(function (ms, mi) {
-        return h("div", { key: mi, onClick: ms[3] || undefined, style: { flex: 1, textAlign: "center", padding: "11px 4px", borderRadius: 13, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", cursor: ms[3] ? "pointer" : "default", minWidth: 0 } },
-          h("div", { style: { fontFamily: C, fontSize: 17, fontWeight: 600, color: ms[2] || "#EDF2F5" } }, ms[0]),
-          h("div", { style: { fontSize: 8.5, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", color: "#8A99A1", marginTop: 3, fontFamily: M } }, ms[1]));
-      })),
+    h("div", { style: { display: "flex", gap: 10, margin: "16px 16px 0", alignItems: "stretch" } },
+      h("button", { onClick: function () { setEcran("profil"); }, style: { flex: 1, margin: 0, width: "auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px", borderRadius: 14, background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "#AEB8C0", fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
+      "\u2699\ufe0e " + T("Modifier mes informations", "Edit my info", "Editar mi informaci\u00f3n", "Modifica le mie info", "\u60c5\u5831\u3092\u7de8\u96c6") + " \u203a"),
+      h("div", { style: { display: "flex", gap: 8, alignItems: "center", padding: "0 10px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" } },
+        [TEINTES_HYPE.turquoise, TEINTES_HYPE.crimson].map(function (te) {
+          var actif = (typeof teinteHypeActive === "function") && teinteHypeActive().id === te.id;
+          var verrou = (te.id !== "turquoise") && !premium;
+          return h("button", { key: te.id, onClick: function () {
+              if (verrou) { setEcran("premium"); return; }
+              try { localStorage.setItem("hype_teinte", te.id); } catch (eL) { }
+              try { if (typeof majProfil === "function" && typeof supa !== "undefined") majProfil({ teinte: te.id }).catch(function () { }); } catch (eM) { }
+              setProfil(function (pp) { return Object.assign({}, pp, { __teinteTick: Date.now() }); });
+            }, "aria-label": "Teinte " + te.id, style: { position: "relative", width: 32, height: 32, borderRadius: "50%", border: "2px solid " + (actif ? te.principal : "rgba(255,255,255,0.14)"), background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, cursor: "pointer" } },
+            h("span", { style: { width: 17, height: 17, borderRadius: "50%", background: te.principal, boxShadow: "0 0 10px " + te.principal + "66", opacity: verrou ? 0.45 : 1, display: "block" } }),
+            verrou ? h("span", { style: { position: "absolute", right: -4, top: -5, fontSize: 9, color: "#E8C887" } }, "\u2726") : null);
+        }))),
     h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, margin: "14px 16px 0", alignItems: "stretch" } },
       h("div", { onClick: function () { if (profil.club || profil.ecurie) { setEcran("guilde"); } else { setClubLocal({ club: "" }); setEditClub(true); } }, role: "button", style: { position: "relative", minHeight: 118, padding: "13px 34px 13px 13px", borderRadius: 18, cursor: "pointer", overflow: "hidden", border: "1px solid rgba(32,217,245,0.42)", background: "linear-gradient(180deg, rgba(32,217,245,0.10), rgba(10,14,18,0.65))" } },
         h("div", { style: { fontSize: 8.5, fontWeight: 600, letterSpacing: 2, color: TURQL, textTransform: "uppercase", fontFamily: M } }, T("Mon club", "My club", "Mi club", "Il mio club", "\u30de\u30a4\u30af\u30e9\u30d6")),
@@ -24060,24 +24067,6 @@ function EcranMonCavalier() {
         : h("button", { onClick: function () { setClub2Local({ club: "" }); setEditClub2(true); }, style: { minHeight: 118, borderRadius: 18, border: "1.5px dashed rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.05)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", color: "#5FE9F0", fontFamily: M, fontSize: 10.5, fontWeight: 600, padding: 10, textAlign: "center" } },
             h("span", { style: { width: 28, height: 28, borderRadius: "50%", border: "1.5px solid #5FE9F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 } }, "+"),
             T("Ajouter une \u00e9curie", "Add a stable", "A\u00f1adir una cuadra", "Aggiungi una scuderia", "\u53a9\u820e\u3092\u8ffd\u52a0"))),
-    h("button", { onClick: function () { setEcran("profil"); }, style: { margin: "10px 16px 0", width: "calc(100% - 32px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px", borderRadius: 14, background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "#AEB8C0", fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
-      "\u2699\ufe0e " + T("Modifier mes informations", "Edit my info", "Editar mi informaci\u00f3n", "Modifica le mie info", "\u60c5\u5831\u3092\u7de8\u96c6") + " \u203a"),
-    h("div", { style: { margin: "16px 16px 0" } },
-      h("div", { style: { fontSize: 9.5, fontWeight: 600, letterSpacing: 2.2, textTransform: "uppercase", color: "#8A99A1", fontFamily: M, marginBottom: 9 } },
-        T("Teinte de mes pages", "My pages tint", "Tinte de mis p\u00e1ginas", "Tinta delle mie pagine", "\u30da\u30fc\u30b8\u306e\u8272") + (premium ? "" : "  \u2726 Premium")),
-      h("div", { style: { display: "flex", gap: 14 } },
-        [TEINTES_HYPE.turquoise, TEINTES_HYPE.crimson].map(function (te) {
-          var actif = (typeof teinteHypeActive === "function") && teinteHypeActive().id === te.id;
-          var verrou = (te.id !== "turquoise") && !premium;
-          return h("button", { key: te.id, onClick: function () {
-              if (verrou) { setEcran("premium"); return; }
-              try { localStorage.setItem("hype_teinte", te.id); } catch (eL) { }
-              try { if (typeof majProfil === "function" && typeof supa !== "undefined") majProfil({ teinte: te.id }).catch(function () { }); } catch (eM) { }
-              setProfil(function (pp) { return Object.assign({}, pp, { __teinteTick: Date.now() }); });
-            }, style: { width: 46, height: 46, borderRadius: "50%", border: "2px solid " + (actif ? te.principal : "rgba(255,255,255,0.14)"), background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", position: "relative" } },
-            h("span", { style: { width: 26, height: 26, borderRadius: "50%", background: te.principal, boxShadow: "0 0 14px " + te.principal + "66", opacity: verrou ? 0.45 : 1, display: "block" } }),
-            verrou ? h("span", { style: { position: "absolute", right: -3, top: -3, fontSize: 11, color: "#E8C887" } }, "\u2726") : null);
-        }))),
     h("div", { style: { padding: "26px 0 0" } },
       h("div", { style: { padding: "0 16px" } }, eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), T("G\u00e9rer mon \u00e9curie", "Manage stable", "Gestionar", "Gestisci", "\u7ba1\u7406"), function () { setEcran("ecurie"); })),
       h("div", { "data-hscroll": "1", style: { display: "flex", gap: 13, overflowX: "auto", padding: "2px 16px 4px" } }, (function () {
@@ -24125,6 +24114,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 15h00"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
@@ -26440,7 +26430,7 @@ function EcranCheval() {
         if (typeof supa !== "undefined" && supa) {
           var r = await supa.from("chevaux").select("*").eq("id", id).single();
           if (actif && r && r.data) {
-            setChevalDyn({ nom: r.data.nom || "Cheval", photo: r.data.photo_url || UV3_H1, info: [r.data.race, r.data.age, r.data.discipline].filter(Boolean).join(" · "), flots: [], palmares: [], histoire: r.data.histoire || null, dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype });
+            setChevalDyn({ nom: r.data.nom || "Cheval", photo: r.data.photo_url || UV3_H1, info: [r.data.race, r.data.age, r.data.discipline].filter(Boolean).join(" · "), flots: [], palmares: [], histoire: r.data.histoire || null, dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, origines: r.data.origines || null });
           }
         }
       } catch (eD) { }
@@ -26476,6 +26466,34 @@ function EcranCheval() {
       else { setChevalDyn(Object.assign({}, chevalDyn, { histoire: txtH })); setToast(T("Histoire mise \u00e0 jour \u2728", "Story updated \u2728", "Historia actualizada \u2728", "Storia aggiornata \u2728", "\u7269\u8a9e\u3092\u66f4\u65b0 \u2728")); }
       setTimeout(function () { setToast(null); }, 2400);
     } catch (eH) { }
+  }
+  var eoSt = React.useState(false); var editOrig = eoSt[0], setEditOrig = eoSt[1];
+  var olSt = React.useState({ pere: "", mere: "", naisseur: "" }); var origLocal = olSt[0], setOrigLocal = olSt[1];
+  function ouvrirEditOrigines() {
+    var ogE = (c && c.origines) || {};
+    setOrigLocal({
+      pere: (ogE.pere && (ogE.pere.nom || ogE.pere)) || "",
+      mere: (ogE.mere && (ogE.mere.nom || ogE.mere)) || "",
+      naisseur: ogE.naisseur || ""
+    });
+    setEditOrig(true);
+  }
+  async function sauverOrigines() {
+    try {
+      var pe = (origLocal.pere || "").trim(), me = (origLocal.mere || "").trim(), na = (origLocal.naisseur || "").trim();
+      var ogN = Object.assign({}, (c && c.origines) || {});
+      ogN.pere = pe ? { nom: pe } : null;
+      ogN.mere = me ? { nom: me } : null;
+      if (na) ogN.naisseur = na; else delete ogN.naisseur;
+      setEditOrig(false);
+      if (chevalDyn && chevalDyn.dbId && typeof supa !== "undefined" && supa) {
+        var rO = await supa.from("chevaux").update({ origines: ogN }).eq("id", chevalDyn.dbId);
+        if (rO && rO.error) { setToast(T("Enregistrement indisponible \u2014 colonne \u00e0 ajouter c\u00f4t\u00e9 base", "Could not save \u2014 column missing in database", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); setTimeout(function () { setToast(null); }, 2600); return; }
+        setChevalDyn(Object.assign({}, chevalDyn, { origines: ogN }));
+        setToast(T("Origines mises \u00e0 jour \u2728", "Bloodline updated \u2728", "Or\u00edgenes actualizados \u2728", "Origini aggiornate \u2728", "\u8840\u7d71\u3092\u66f4\u65b0\u3057\u307e\u3057\u305f \u2728"));
+        setTimeout(function () { setToast(null); }, 2400);
+      }
+    } catch (eO) { }
   }
   React.useEffect(function () { var aU = true; (async function () { try { var u = await utilisateurActuel(); if (aU) setMoi(u || null); } catch (eU) { if (aU) setMoi(null); } })(); return function () { aU = false; }; }, []);
   var stVs = React.useState(function () { try { return JSON.parse(localStorage.getItem("hype_cheval_stats_" + id) || "{}"); } catch (e) { return {}; } });
@@ -26785,9 +26803,10 @@ function EcranCheval() {
         var ixOK = filtreIx(og.indices), ixMereOK = og.mere ? filtreIx(og.mere.indices) : [];
         var vApt = ixOK.length ? parseFloat(String(ixOK[0][1]).replace("\u2212", "-").replace("+", "")) : 0;
         var lblApt = rareteIndice(vApt);
-        return h("div", { className: "rise", style: { animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
+        return h("div", { className: "rise", style: { position: "relative", animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
 
 
+          (!CHEVAUX_FICHE[id] && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: ouvrirEditOrigines, "aria-label": "Modifier les origines", style: { position: "absolute", top: 8, right: 8, zIndex: 3, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.22)", color: "#C9D3D8", fontSize: 11, cursor: "pointer" } }, "\u270E") : null,
           (function (pg) {
             function celPed(n, opts) {
               opts = opts || {};
@@ -26801,8 +26820,8 @@ function EcranCheval() {
             var aG3 = false;
             [pg.pere, pg.mere].forEach(function (pN) { if (pN) [pN.pere, pN.mere].forEach(function (gN) { if (gN && (gN.pere || gN.mere)) aG3 = true; }); });
             return h("div", { style: { display: "grid", gridTemplateColumns: aG3 ? "1.18fr 1fr 1fr" : (aG2 ? "1.25fr 1fr" : "1fr"), gridAutoRows: "minmax(42px, auto)", borderBottom: (og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
-              celPed(pg.pere, { col: 1, row: "1 / span 4", label: lp, grand: true, bb: "fort" }),
-              celPed(pg.mere, { col: 1, row: "5 / span 4", label: lm, grand: true }),
+              celPed(pg.pere, { col: 1, row: aG2 ? "1 / span 4" : "1 / span 2", label: lp, grand: true, bb: "fort" }),
+              celPed(pg.mere, { col: 1, row: aG2 ? "5 / span 4" : "3 / span 2", label: lm, grand: true }),
               aG2 ? celPed(pg.pere && pg.pere.pere, { col: 2, row: "1 / span 2", moyen: true, bb: true }) : null,
               aG2 ? celPed(pg.pere && pg.pere.mere, { col: 2, row: "3 / span 2", moyen: true, bb: "fort" }) : null,
               aG2 ? celPed(pg.mere && pg.mere.pere, { col: 2, row: "5 / span 2", moyen: true, bb: true }) : null,
@@ -26959,6 +26978,18 @@ function EcranCheval() {
       })) : null,
       h("div", { className: "story empty" }, T("Ajoute ici l'histoire de cette victoire \u2014 le lieu, la date, ce que tu as ressenti.", "Add the story of this win here \u2014 place, date, how it felt.", "A\u00f1ade aqu\u00ed la historia de esta victoria.", "Aggiungi qui la storia di questa vittoria.", "\u3053\u3053\u306b\u3053\u306e\u52dd\u5229\u306e\u7269\u8a9e\u3092\u8ffd\u52a0\u3002"))) : null,
 
+    editOrig ? h("div", { onClick: function () { setEditOrig(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } },
+      h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
+        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71")),
+        h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("Renseigne les origines de ton cheval.", "Fill in your horse's bloodline.", "Completa los or\u00edgenes de tu caballo.", "Inserisci le origini del tuo cavallo.", "\u99ac\u306e\u8840\u7d71\u3092\u5165\u529b\u3057\u3088\u3046\u3002")),
+        [["pere", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236")], ["mere", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd")], ["naisseur", T("Naisseur / \u00e9leveur", "Breeder", "Criador", "Allevatore", "\u751f\u7523\u8005")]].map(function (chp) {
+          return h("div", { key: chp[0], style: { marginBottom: 10 } },
+            h("div", { style: { fontSize: 8.5, letterSpacing: "0.2em", color: "#7DDDE8", textTransform: "uppercase", fontWeight: 700, marginBottom: 5, fontFamily: "'Montserrat',sans-serif" } }, chp[1]),
+            h("input", { value: origLocal[chp[0]] || "", onChange: function (eI) { var v = eI.target.value; setOrigLocal(function (oo) { var nn = Object.assign({}, oo); nn[chp[0]] = v; return nn; }); }, maxLength: 60, placeholder: "\u2014", style: { width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none" } }));
+        }),
+        h("div", { style: { display: "flex", gap: 10, marginTop: 14 } },
+          h("button", { onClick: function () { setEditOrig(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
+          h("button", { onClick: function () { sauverOrigines(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58"))))) : null,
     toast ? h("div", { style: { position: "fixed", left: "50%", bottom: "calc(40px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", zIndex: 90, background: "rgba(20,26,33,0.96)", color: "#EDF2F5", border: "1px solid " + tA(0.74) + "", borderRadius: 999, padding: "10px 18px", fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", boxShadow: "0 10px 30px rgba(10,26,36,0.11)" } }, toast) : null);
 }
 
