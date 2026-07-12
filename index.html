@@ -19878,9 +19878,20 @@ function Router() {
     const toucheNavRef = useRef(null);
     const ecransSansNav = ["intro", "splash", "onboarding-1", "onboarding-2", "auth", "connexion", "profil-setup", "voyage", "monde", "partager", "moncompte", "installer"];
     const showNav = !ecransSansNav.includes(ecran) || (ecran === "monde" && !GLOBE_ONBOARDING);
+    const dansScrollHorizontal = (el) => {
+        try {
+            for (let n = el; n && n !== document.body && n.nodeType === 1; n = n.parentElement) {
+                if (n.scrollWidth > n.clientWidth + 4) {
+                    const ov = getComputedStyle(n).overflowX;
+                    if (ov === "auto" || ov === "scroll") return true;
+                }
+            }
+        } catch (e2) { }
+        return false;
+    };
     const onNavTouchStart = (e) => {
         const cible = e.target;
-        const bloque = !showNav || !!(cible && cible.closest && (cible.closest("[data-hscroll]") || cible.closest("[data-noswipe]") || cible.closest("input, textarea, select")));
+        const bloque = !showNav || !!(cible && cible.closest && (cible.closest("[data-hscroll]") || cible.closest("[data-noswipe]") || cible.closest("input, textarea, select"))) || dansScrollHorizontal(cible);
         if (bloque) {
             toucheNavRef.current = null;
             return;
