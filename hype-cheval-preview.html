@@ -24149,7 +24149,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
-    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 20h40"),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 21h00"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
@@ -26188,6 +26188,8 @@ function AlbumsCheval(props) {
   var pSt = React.useState(false); var selPhotos = pSt[0], setSelPhotos = pSt[1];
   var dSt = React.useState(null); var dispo = dSt[0], setDispo = dSt[1];
   var eSt = React.useState(false); var envoiCours = eSt[0], setEnvoiCours = eSt[1];
+  var xSt = React.useState(false); var albDeplie = xSt[0], setAlbDeplie = xSt[1];
+  var rSt = React.useState(null); var confRetrait = rSt[0], setConfRetrait = rSt[1];
   var cSt = React.useState({}); var coches = cSt[0], setCoches = cSt[1];
   var tSt = React.useState(null); var toastA = tSt[0], setToastA = tSt[1];
   var sSt = React.useState(null); var confSupA = sSt[0], setConfSupA = sSt[1];
@@ -26236,8 +26238,8 @@ function AlbumsCheval(props) {
     if (!(rM && rM.error)) charger();
   }
   async function definirCouverture(alb, u) {
-    var nouv = [u].concat((alb.photos || []).filter(function (x) { return x !== u; }));
-    var r = await majAlbumCheval(alb.id, { photos: nouv });
+    var r = await majAlbumCheval(alb.id, { couverture: u });
+    if (r && r.error) { var nouv = [u].concat((alb.photos || []).filter(function (x) { return x !== u; })); r = await majAlbumCheval(alb.id, { photos: nouv }); }
     if (!(r && r.error)) { bip(T("Couverture d\u00e9finie", "Cover set", "Portada definida", "Copertina impostata", "\u8868\u7d19\u3092\u8a2d\u5b9a")); charger(); }
   }
   async function basculerPromu(alb) {
@@ -26259,9 +26261,9 @@ function AlbumsCheval(props) {
   }
   var albOuvert = (albums || []).filter(function (x) { return x.id === ouvert; })[0] || null;
   function carteAlbum(alb) {
-    var cov = (alb.photos || [])[0];
+    var cov = alb.couverture || (alb.photos || [])[0];
     var estVid = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
-    return h("div", { key: alb.id, onClick: function () { setOuvert(ouvert === alb.id ? null : alb.id); }, role: "button", style: { flex: "0 0 auto", width: 112, cursor: "pointer" } },
+    return h("div", { key: alb.id, onClick: function () { setOuvert(ouvert === alb.id ? null : alb.id); setAlbDeplie(false); setConfRetrait(null); }, role: "button", style: { flex: "0 0 auto", width: 112, cursor: "pointer" } },
       h("div", { style: { position: "relative", width: 112, height: 112, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(alb.promu ? 0.65 : 0.25), background: "#0B1116", boxShadow: alb.promu ? "0 0 18px " + tA(0.22) : "none" } },
         cov ? (estVid ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, color: tA(0.6) } }, "\ud83d\udcf7"),
         estVid && cov ? h("span", { style: { position: "absolute", bottom: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#EDF2F5", zIndex: 2 } }, "\u25b6") : null,
@@ -26287,15 +26289,28 @@ function AlbumsCheval(props) {
         h("button", { onClick: function () { setNomLocal(albOuvert.nom); setEditNom(albOuvert.id); }, "aria-label": "Renommer", style: { width: 27, height: 27, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.25)", color: "#C9D3D8", fontSize: 11, cursor: "pointer", padding: 0 } }, "\u270E"),
         h("button", { onClick: function () { setConfSupA(albOuvert.id); }, "aria-label": "Supprimer", style: { width: 27, height: 27, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(226,138,146,0.5)", color: "rgba(226,138,146,0.9)", fontSize: 12, cursor: "pointer", padding: 0 } }, "\ud83d\uddd1"),
         h("button", { onClick: function () { setOuvert(null); }, "aria-label": "Fermer", style: { width: 27, height: 27, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.25)", color: "#C9D3D8", fontSize: 12, cursor: "pointer", padding: 0 } }, "\u00d7")),
-      (albOuvert.photos || []).length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 7 } },
-        (albOuvert.photos || []).map(function (u, iU) {
+      (albOuvert.photos || []).length ? h("div", null,
+        h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 7 } }, (function () {
+        var lPh = albOuvert.photos || [];
+        var couvAct = albOuvert.couverture || lPh[0];
+        var visibles = albDeplie ? lPh : (lPh.length > 6 ? lPh.slice(0, 5) : lPh);
+        var cel = visibles.map(function (u, iU) {
           var estV = !!(typeof estUrlVideo === "function" && estUrlVideo(u));
+          var estCouv = (u === couvAct);
           return h("div", { key: iU, style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", border: "1px solid rgba(255,255,255,0.09)", background: "#0B1116" } },
             estV ? h("video", { src: u + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: u, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
             estV ? h("span", { style: { position: "absolute", top: 4, left: 4, width: 19, height: 19, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8.5, color: "#EDF2F5" } }, "\u25b6") : null,
-            h("button", { onClick: function () { retirerPhoto(albOuvert, u); }, "aria-label": "Retirer", style: { position: "absolute", top: 4, right: 4, width: 21, height: 21, borderRadius: "50%", background: "rgba(7,8,10,0.65)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 10, cursor: "pointer", padding: 0 } }, "\u00d7"),
-            h("button", { onClick: function () { if (iU !== 0) definirCouverture(albOuvert, u); }, "aria-label": "Couverture", style: { position: "absolute", bottom: 4, right: 4, height: 20, padding: "0 8px", borderRadius: 999, background: "rgba(7,8,10,0.7)", border: "1px solid " + tA(iU === 0 ? 0.85 : 0.4), color: iU === 0 ? tnT : "rgba(237,242,245,0.75)", fontSize: 8.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3 } }, (iU === 0 ? "\u2713 " : "") + T("Couv.", "Cover", "Portada", "Cover", "\u8868\u7d19")));
-        })) : h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#8A99A1", textAlign: "center", padding: "14px 0", lineHeight: 1.5 } }, T("Album vide \u2014 ajoute des souvenirs ci-dessous.", "Empty album \u2014 add memories below.", "\u00c1lbum vac\u00edo.", "Album vuoto.", "\u30a2\u30eb\u30d0\u30e0\u306f\u7a7a\u3067\u3059")),
+            h("button", { onClick: function () { setConfRetrait(u); }, "aria-label": "Retirer", style: { position: "absolute", top: 4, right: 4, width: 21, height: 21, borderRadius: "50%", background: "rgba(7,8,10,0.65)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 10, cursor: "pointer", padding: 0 } }, "\u00d7"),
+            h("button", { onClick: function () { if (!estCouv) definirCouverture(albOuvert, u); }, "aria-label": "Couverture", style: { position: "absolute", bottom: 4, right: 4, height: 20, padding: "0 8px", borderRadius: 999, background: "rgba(7,8,10,0.7)", border: "1px solid " + tA(estCouv ? 0.85 : 0.4), color: estCouv ? tnT : "rgba(237,242,245,0.75)", fontSize: 8.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3 } }, (estCouv ? "\u2713 " : "") + T("Couv.", "Cover", "Portada", "Cover", "\u8868\u7d19")));
+        });
+        if (!albDeplie && lPh.length > 6) {
+          cel.push(h("div", { key: "plus", onClick: function () { setAlbDeplie(true); }, role: "button", style: { aspectRatio: "1 / 1", borderRadius: 11, border: "1.5px dashed " + tA(0.5), background: tA(0.05), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, cursor: "pointer" } },
+            h("span", { style: { fontFamily: M9, fontSize: 17, fontWeight: 800, color: tnT } }, "+" + (lPh.length - 5)),
+            h("span", { style: { fontFamily: M9, fontSize: 8.5, fontWeight: 700, color: tA(0.9), letterSpacing: 0.4, textTransform: "uppercase" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066"))));
+        }
+        return cel;
+      })()),
+        (albDeplie && (albOuvert.photos || []).length > 6) ? h("button", { onClick: function () { setAlbDeplie(false); }, style: { display: "block", margin: "10px auto 0", padding: "8px 20px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("R\u00e9duire l'album", "Collapse album", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null) : h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#8A99A1", textAlign: "center", padding: "14px 0", lineHeight: 1.5 } }, T("Album vide \u2014 ajoute des souvenirs ci-dessous.", "Empty album \u2014 add memories below.", "\u00c1lbum vac\u00edo.", "Album vuoto.", "\u30a2\u30eb\u30d0\u30e0\u306f\u7a7a\u3067\u3059")),
       h("div", { style: { display: "flex", gap: 9, marginTop: 11 } },
         h("button", { onClick: function () { ouvrirSelection(albOuvert); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, whiteSpace: "nowrap" } }, "+ " + T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f")),
         h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
@@ -26325,6 +26340,13 @@ function AlbumsCheval(props) {
         h("div", { style: { display: "flex", gap: 10, marginTop: 14 } },
           h("button", { onClick: function () { setSelPhotos(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
           h("button", { onClick: function () { validerSelection(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0")))))) : null,
+    confRetrait ? portail(h("div", { onClick: function () { setConfRetrait(null); }, style: { position: "fixed", inset: 0, zIndex: 8750, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "center", justifyContent: "center" } },
+      h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "82%", maxWidth: 330, borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(180deg, rgba(12,18,24,0.98), rgba(7,10,13,0.99))", padding: "20px 18px", textAlign: "center" } },
+        h("div", { style: { fontFamily: C9, fontSize: 15, color: "#F4F7FA", marginBottom: 8 } }, T("Retirer ce souvenir de l'album ?", "Remove from album?", "\u00bfQuitar del \u00e1lbum?", "Rimuovere dall'album?", "\u30a2\u30eb\u30d0\u30e0\u304b\u3089\u5916\u3059\uff1f")),
+        h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#9AA5AC", marginBottom: 14, lineHeight: 1.5 } }, T("Il restera dans la galerie et les autres albums.", "It will stay in the gallery and other albums.", "Permanecer\u00e1 en la galer\u00eda.", "Rester\u00e0 nella galleria.", "\u30ae\u30e3\u30e9\u30ea\u30fc\u306b\u306f\u6b8b\u308a\u307e\u3059")),
+        h("div", { style: { display: "flex", gap: 10 } },
+          h("button", { onClick: function () { setConfRetrait(null); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
+          h("button", { onClick: function () { var uR = confRetrait; setConfRetrait(null); if (albOuvert) retirerPhoto(albOuvert, uR); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 12.5, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Retirer", "Remove", "Quitar", "Rimuovi", "\u5916\u3059")))))) : null,
     confSupA ? portail(h("div", { onClick: function () { setConfSupA(null); }, style: { position: "fixed", inset: 0, zIndex: 8750, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "center", justifyContent: "center" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "82%", maxWidth: 330, borderRadius: 20, border: "1px solid rgba(226,138,146,0.4)", background: "linear-gradient(180deg, rgba(20,12,14,0.98), rgba(10,7,8,0.99))", padding: "20px 18px", textAlign: "center" } },
         h("div", { style: { fontFamily: C9, fontSize: 15, color: "#F4F7FA", marginBottom: 8 } }, T("Supprimer cet album ?", "Delete this album?", "\u00bfEliminar?", "Eliminare?", "\u524a\u9664\u3057\u307e\u3059\u304b\uff1f")),
@@ -26352,7 +26374,7 @@ function AlbumsPromus(props) {
     h("div", { style: { fontSize: 9.5, letterSpacing: "0.3em", textTransform: "uppercase", color: tnT, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", marginBottom: 9 } }, T("Ses albums", "Albums", "Sus \u00e1lbumes", "I suoi album", "\u30a2\u30eb\u30d0\u30e0")),
     h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + Math.min(3, albums.length) + ", 1fr)", gap: 9 } },
       albums.map(function (alb) {
-        var cov = (alb.photos || [])[0];
+        var cov = alb.couverture || (alb.photos || [])[0];
         var estV = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
         return h("div", { key: alb.id, onClick: function () { if (props.onOuvrir) props.onOuvrir(alb.id); }, role: "button", style: { cursor: "pointer" } },
           h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 15, overflow: "hidden", border: "1px solid " + tA(0.4), background: "#0B1116", boxShadow: "0 12px 24px -18px rgba(0,0,0,0.9)" } },
