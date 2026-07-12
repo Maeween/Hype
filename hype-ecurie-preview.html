@@ -312,6 +312,24 @@ async function repondreIdentification(id, accepter) {
     return await supa.from("identifications").delete().eq("id", id);
   } catch (e) { return { error: String(e) }; }
 }
+async function identifierAlbum(albumId, albumNom, type, cibleId, cibleNom) {
+  try { const user = await utilisateurActuel(); if (!user) return { error: "Pas connecté" };
+    return await supa.from("identifications").insert({ photo_url: "album:" + albumId, album_id: albumId, cible_nom: cibleNom || albumNom || null, type: type, cible_id: String(cibleId), auteur_id: user.id, statut: "attente" }).select().single();
+  } catch (e) { return { error: String(e) }; }
+}
+async function albumsIdentifiesPour(type, cibleId, statut) {
+  try { var q = supa.from("identifications").select("*").eq("type", type).eq("cible_id", String(cibleId)).not("album_id", "is", null);
+    if (statut) q = q.eq("statut", statut);
+    var r = await q.order("created_at", { ascending: false });
+    var lignes = (r && r.data) || [];
+    if (!lignes.length) return { data: [], error: null };
+    var ids = lignes.map(function (x) { return x.album_id; });
+    var ra = await supa.from("albums_cheval").select("*").in("id", ids);
+    var parId = {}; ((ra && ra.data) || []).forEach(function (a) { parId[a.id] = a; });
+    var out = lignes.map(function (x) { return { ident: x, album: parId[x.album_id] || null }; }).filter(function (o) { return o.album; });
+    return { data: out, error: null };
+  } catch (e) { return { data: [], error: String(e) }; }
+}
 
 /* --- Écurie : communauté idéale (invitations de cavaliers) -- */
 function noyauEcurie(nom) {
@@ -18002,7 +18020,7 @@ exports.hydrateRoot = function (container, initialChildren, options) {
 };
 exports.version = "19.2.5";
 
-});</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-3.js"></script><script src="hype-images-4.js"></script><script src="hype-images-5.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
+});</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-3.js"></script><script src="hype-images-4.js"></script><script src="hype-images-5.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -18966,7 +18984,7 @@ const COURS_GALOP1_I18N = [{"id": "g1-c15", "icone": "🛡️", "type": "fondame
 /* ---------- CONTEXTE APPLICATIF + FONCTION DE TRADUCTION ---------- */
 const AppContext = createContext(null);
 const useApp = () => useContext(AppContext);
-const DEV_OUVRIR_PAGE = "ecurie"; // raccourci : "" = app normale | "compte" | "parcours" | "licence" | "parc" | ...
+const DEV_OUVRIR_PAGE = "album-ecurie"; // raccourci : "" = app normale | "compte" | "parcours" | "licence" | "parc" | ...
 const LIEN_APP = "https://majestic-melba-997a68.netlify.app"; // lien public de l'appli — vide pour l'instant. Le bouton Partager ET le QR code le lisent.
 const CIBLE_DIRECTE = (function () {
     try {
@@ -24322,7 +24340,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
-    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 23h20"),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 13.07 \u00b7 09h30"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
@@ -25438,6 +25456,7 @@ function EcranAlbumEcurie() {
   var ctx = useApp();
   var tr = ctx.tr, setEcran = ctx.setEcran, retourEcran = ctx.retourEcran, peutReculer = ctx.peutReculer;
   function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
+  var nomEcurieAl = (((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || "") + "").trim();
   var img = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.albumEcurieApercu) ? HYPE_IMGS.albumEcurieApercu : "";
   function retourAl() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("ecurie"); } }
   return h("div", { style: { minHeight: "100vh", background: "#060709", paddingBottom: 120 } },
@@ -25448,7 +25467,8 @@ function EcranAlbumEcurie() {
     h("div", { style: { padding: "6px 14px 0", maxWidth: 520, margin: "0 auto" } },
       img
         ? h("img", { src: img, alt: "", style: { display: "block", width: "100%", height: "auto", borderRadius: 24, border: "1px solid rgba(32,217,245,0.22)", boxShadow: "0 24px 60px rgba(0,0,0,0.55)" } })
-        : h("div", { style: { padding: "60px 20px", textAlign: "center", color: "#7E8A96", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5 } }, "hype-images-14.js manquant")));
+        : h("div", { style: { padding: "60px 20px", textAlign: "center", color: "#7E8A96", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5 } }, "hype-images-14.js manquant")),
+    nomEcurieAl ? h("div", { style: { maxWidth: 560, margin: "22px auto 0" } }, h(AlbumsCheval, { cible: "ecurie:" + nomEcurieAl, teinte: "#20D9F5" })) : h("div", { style: { maxWidth: 520, margin: "22px auto 0", padding: "18px", textAlign: "center", color: "#7E8A96", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, lineHeight: 1.5 } }, T("Renseigne le nom de ton \u00e9curie dans ton profil pour cr\u00e9er des albums.", "Set your stable name in your profile to create albums.", "", "", "")));
 }
 
 function EcranEcurie() {
@@ -26371,12 +26391,43 @@ function AlbumsCheval(props) {
   var memSt = React.useState(null); var membres = memSt[0], setMembres = memSt[1];
   var lnSt = React.useState(false); var lienCopie = lnSt[0], setLienCopie = lnSt[1];
   var pdSt = React.useState(null); var propositions = pdSt[0], setPropositions = pdSt[1];
+  var viSt = React.useState(null); var visu = viSt[0], setVisu = viSt[1];
+  var viLSt = React.useState([]); var visuListe = viLSt[0], setVisuListe = viLSt[1];
+  var tgSt = React.useState(false); var tagVisu = tgSt[0], setTagVisu = tgSt[1];
+  var tgCSt = React.useState(null); var tagCiblesA = tgCSt[0], setTagCiblesA = tgCSt[1];
+  var tgMode = React.useState("photo"); var tagMode = tgMode[0], setTagMode = tgMode[1];
+  var propAlbSt = React.useState(null); var propAlbums = propAlbSt[0], setPropAlbums = propAlbSt[1];
+  function ouvrirVisu(liste, u) { setVisuListe((liste || []).slice()); setVisu(u); }
+  function naviguerVisu(pas) {
+    var l = visuListe || []; if (l.length < 2) return; var ix = l.indexOf(visu); if (ix < 0) return;
+    setVisu(l[((ix + pas) % l.length + l.length) % l.length]);
+  }
+  async function chargerTagCiblesA() {
+    var out = { chevaux: [], amis: [], ecuries: [] };
+    try {
+      try { if (typeof CHEVAUX_FICHE !== "undefined") { for (var hid in CHEVAUX_FICHE) { var cf = CHEVAUX_FICHE[hid]; if (cf) out.chevaux.push({ id: hid, nom: cf.nom }); } } } catch (eC) { }
+      try { var rc = await supa.from("chevaux").select("id, nom").limit(50); ((rc && rc.data) || []).forEach(function (c) { out.chevaux.push({ id: "db:" + c.id, nom: c.nom }); }); } catch (eD) { }
+      try { if (typeof mesAmis === "function") { var ra = await mesAmis(); ((ra && ra.data) || []).forEach(function (a) { out.amis.push({ id: a.id, nom: a.pseudo }); }); } } catch (eA) { }
+      try { var u2 = await utilisateurActuel(); if (u2) { var pr = await supa.from("profiles").select("ecurie, ecurie2").eq("id", u2.id).single(); if (pr && pr.data) { if (pr.data.ecurie) out.ecuries.push({ id: pr.data.ecurie, nom: pr.data.ecurie }); if (pr.data.ecurie2) out.ecuries.push({ id: pr.data.ecurie2, nom: pr.data.ecurie2 }); } } } catch (eE) { }
+    } catch (e) { }
+    setTagCiblesA(out);
+  }
+  function ouvrirTagA() { setTagVisu(true); if (!tagCiblesA) chargerTagCiblesA(); }
+  async function poserTagA(type, cid, cnom) {
+    try {
+      if (tagMode === "album" && albOuvert) { await identifierAlbum(albOuvert.id, albOuvert.nom, type, cid, cnom); bip(T("Album propos\u00e9", "Album suggested", "\u00c1lbum propuesto", "Album proposto", "\u30a2\u30eb\u30d0\u30e0\u3092\u63d0\u6848")); }
+      else { await identifierSouvenir(visu, type, cid, cnom); bip((type === "ecurie") ? T("Ajout\u00e9 \u00e0 l'\u00e9curie", "Added to stable", "A\u00f1adido", "Aggiunto", "\u8ffd\u52a0") : T("Proposition envoy\u00e9e", "Request sent", "Enviado", "Inviato", "\u9001\u4fe1")); }
+    } catch (e) { }
+    setTagVisu(false); setTagMode("photo");
+  }
+  function ouvrirTagAlbum() { setTagMode("album"); setTagVisu(true); if (!tagCiblesA) chargerTagCiblesA(); }
   function chargerPropositions() {
     try {
       var c = String(props.cible || "");
       var ct = (c.indexOf("cavalier:") === 0) ? { type: "cavalier", id: c.slice(9) } : (c.indexOf("cheval:") === 0 ? { type: "cheval", id: c.slice(7) } : null);
       if (!ct || typeof identificationsPour !== "function") { setPropositions([]); return; }
-      identificationsPour(ct.type, ct.id, "attente").then(function (r) { setPropositions((r && r.data) || []); }).catch(function () { setPropositions([]); });
+      identificationsPour(ct.type, ct.id, "attente").then(function (r) { setPropositions(((r && r.data) || []).filter(function (x) { return !x.album_id; })); }).catch(function () { setPropositions([]); });
+      try { if (typeof albumsIdentifiesPour === "function") albumsIdentifiesPour(ct.type, ct.id, "attente").then(function (ra) { setPropAlbums((ra && ra.data) || []); }).catch(function () { setPropAlbums([]); }); } catch (ePA) { setPropAlbums([]); }
     } catch (e) { setPropositions([]); }
   }
   async function repondreProp(id, ok) {
@@ -26410,6 +26461,17 @@ function AlbumsCheval(props) {
     if (tagPhotos && tagPhotos.length) {
       liste.push({ id: "__autres", nom: T("Autres moments", "Other moments", "Otros momentos", "Altri momenti", "\u305d\u306e\u4ed6"), photos: tagPhotos, __auto: true });
     }
+    try {
+      var ct = cibleTag();
+      if (ct && typeof albumsIdentifiesPour === "function") {
+        albumsIdentifiesPour(ct.type, ct.id, "accepte").then(function (ra) {
+          var vus = {}; liste.forEach(function (a) { vus[a.id] = 1; });
+          ((ra && ra.data) || []).forEach(function (o) { if (o.album && !vus[o.album.id]) liste.push(Object.assign({}, o.album, { __lecture: true, __identId: o.ident.id })); });
+          setAlbums(liste.slice());
+        }).catch(function () { setAlbums(liste); });
+        return;
+      }
+    } catch (e) { }
     setAlbums(liste);
   }
   function charger() {
@@ -26448,6 +26510,7 @@ function AlbumsCheval(props) {
     charger();
   }
   async function retirerPhoto(alb, u) {
+    if (alb && alb.__lecture) { return; }
     if (alb && alb.__auto) {
       try { var ct = cibleTag(); if (ct) { var ri = await identificationsPour(ct.type, ct.id, "accepte"); var found = ((ri && ri.data) || []).filter(function (x) { return x.photo_url === u; })[0]; if (found && typeof repondreIdentification === "function") { await repondreIdentification(found.id, false); } } } catch (e) { }
       charger(); return;
@@ -26536,6 +26599,20 @@ function AlbumsCheval(props) {
           h("button", { onClick: function () { repondreProp(p.id, true); }, "aria-label": "Accepter", style: { width: 34, height: 34, borderRadius: "50%", border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 15, fontWeight: 800, cursor: "pointer", flexShrink: 0 } }, "\u2713"),
           h("button", { onClick: function () { repondreProp(p.id, false); }, "aria-label": "Refuser", style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(226,138,146,0.5)", background: "rgba(7,8,10,0.5)", color: "rgba(226,138,146,0.9)", fontSize: 14, cursor: "pointer", flexShrink: 0 } }, "\u00d7"));
       })) : null,
+    (propAlbums && propAlbums.length) ? h("div", { style: { margin: "0 16px 14px", padding: "12px 13px", borderRadius: 14, border: "1px solid " + tA(0.4), background: tA(0.06) } },
+      h("div", { style: { fontFamily: M9, fontSize: 10, letterSpacing: "0.16em", textTransform: "uppercase", color: tnT, fontWeight: 700, marginBottom: 10 } }, T("Albums propos\u00e9s", "Album requests", "\u00c1lbumes propuestos", "Album proposti", "\u63d0\u6848\u30a2\u30eb\u30d0\u30e0") + " (" + propAlbums.length + ")"),
+      propAlbums.map(function (o, iA) {
+        var alb = o.album; var cov = alb.couverture || (alb.photos || [])[0];
+        var estV = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
+        return h("div", { key: o.ident.id || iA, style: { display: "flex", alignItems: "center", gap: 10, marginBottom: iA < propAlbums.length - 1 ? 9 : 0 } },
+          h("div", { style: { width: 46, height: 46, borderRadius: 10, overflow: "hidden", flexShrink: 0, background: "#0B1116", border: "1px solid rgba(255,255,255,0.1)" } },
+            cov ? (estV ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: tA(0.6) } }, "\ud83d\udcc1")),
+          h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { fontFamily: C9, fontSize: 12.5, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, alb.nom),
+            h("div", { style: { fontFamily: M9, fontSize: 10, color: "#8A99A1" } }, ((alb.photos || []).length) + " " + T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa"))),
+          h("button", { onClick: function () { repondreProp(o.ident.id, true); }, "aria-label": "Accepter", style: { width: 34, height: 34, borderRadius: "50%", border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 15, fontWeight: 800, cursor: "pointer", flexShrink: 0 } }, "\u2713"),
+          h("button", { onClick: function () { repondreProp(o.ident.id, false); }, "aria-label": "Refuser", style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(226,138,146,0.5)", background: "rgba(7,8,10,0.5)", color: "rgba(226,138,146,0.9)", fontSize: 14, cursor: "pointer", flexShrink: 0 } }, "\u00d7"));
+      })) : null,
     h("div", { style: { display: "flex", alignItems: "center", gap: 9, margin: "0 16px 10px" } },
       h("span", { style: { width: 7, height: 7, background: tnT, transform: "rotate(45deg)", boxShadow: "0 0 10px " + tA(0.8), flexShrink: 0 } }),
       h("span", { style: { fontFamily: C9, fontSize: 16, color: "#EAF2F4", fontWeight: 700, letterSpacing: 1 } }, T("Albums", "Albums", "\u00c1lbumes", "Album", "\u30a2\u30eb\u30d0\u30e0")),
@@ -26548,12 +26625,24 @@ function AlbumsCheval(props) {
           h("span", { style: { width: 30, height: 30, borderRadius: "50%", border: "1.5px solid " + tnT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: tnT } }, "+"),
           h("span", { style: { fontFamily: M9, fontSize: 9, fontWeight: 700, color: tnT, letterSpacing: 0.5, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0"))))),
     albOuvert ? h("div", { style: { margin: "12px 16px 0", padding: "13px 12px", borderRadius: 18, border: "1px solid " + tA(0.3), background: "rgba(255,255,255,0.02)" } },
-      h("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 10 } },
-        h("div", { style: { fontFamily: C9, fontSize: 15.5, fontWeight: 700, color: "#F4F7FA", flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, albOuvert.nom),
-        albOuvert.__auto ? null : h("button", { onClick: function () { setNomLocal(albOuvert.nom); setEditNom(albOuvert.id); }, "aria-label": "Renommer", style: { width: 27, height: 27, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.25)", color: "#C9D3D8", fontSize: 11, cursor: "pointer", padding: 0 } }, "\u270E"),
-        albOuvert.__auto ? null : h("button", { onClick: function () { var v = !reglagesA; setReglagesA(v); if (v) chargerMembres(albOuvert.id); }, "aria-label": "Partage", style: { width: 27, height: 27, borderRadius: "50%", background: (albOuvert.visibilite && albOuvert.visibilite !== "prive") ? tA(0.9) : "rgba(7,8,10,0.55)", border: "1px solid " + ((albOuvert.visibilite && albOuvert.visibilite !== "prive") ? tnT : "rgba(255,255,255,0.25)"), color: (albOuvert.visibilite && albOuvert.visibilite !== "prive") ? "#04252A" : "#C9D3D8", fontSize: 12, cursor: "pointer", padding: 0 } }, (albOuvert.visibilite === "public") ? "\ud83c\udf10" : (albOuvert.visibilite === "partage" ? "\ud83d\udc65" : "\ud83d\udd12")),
-        albOuvert.__auto ? null : h("button", { onClick: function () { setConfSupA(albOuvert.id); }, "aria-label": "Supprimer", style: { width: 27, height: 27, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(226,138,146,0.5)", color: "rgba(226,138,146,0.9)", fontSize: 12, cursor: "pointer", padding: 0 } }, "\ud83d\uddd1"),
-        h("button", { onClick: function () { setOuvert(null); }, "aria-label": "Fermer", style: { width: 27, height: 27, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.25)", color: "#C9D3D8", fontSize: 12, cursor: "pointer", padding: 0 } }, "\u00d7")),
+      (function () {
+        var estGere = !(albOuvert.__auto || albOuvert.__lecture);
+        function boutonE(contenu, libelle, onClick, opts) {
+          opts = opts || {};
+          return h("button", { onClick: onClick, "aria-label": libelle, style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0 } },
+            h("span", { style: { width: 34, height: 34, borderRadius: "50%", background: opts.actif ? tA(0.9) : "rgba(7,8,10,0.55)", border: "1px solid " + (opts.actif ? tnT : (opts.danger ? "rgba(226,138,146,0.5)" : "rgba(255,255,255,0.22)")), color: opts.actif ? "#04252A" : (opts.danger ? "rgba(226,138,146,0.95)" : "#C9D3D8"), fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" } }, contenu),
+            h("span", { style: { fontFamily: M9, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.04em", color: opts.danger ? "rgba(226,138,146,0.85)" : "#9AA5AC" } }, libelle));
+        }
+        var iconeTag = h("svg", { viewBox: "0 0 24 24", style: { width: 15, height: 15, stroke: "currentColor", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" }), h("line", { x1: "7", y1: "7", x2: "7.01", y2: "7" }));
+        var iconePartage = (albOuvert.visibilite === "public") ? "\ud83c\udf10" : (albOuvert.visibilite === "partage" ? "\ud83d\udc65" : "\ud83d\udd12");
+        var libPartage = (albOuvert.visibilite === "public") ? T("Public", "Public", "P\u00fablico", "Pubblico", "\u516c\u958b") : (albOuvert.visibilite === "partage" ? T("Partag\u00e9", "Shared", "Compartido", "Condiviso", "\u5171\u6709") : T("Priv\u00e9", "Private", "Privado", "Privato", "\u975e\u516c\u958b"));
+        return h("div", { style: { display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 } },
+          h("div", { style: { fontFamily: C9, fontSize: 15.5, fontWeight: 700, color: "#F4F7FA", flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingTop: 6 } }, albOuvert.nom),
+          estGere ? boutonE("\u270E", T("Renommer", "Rename", "Renombrar", "Rinomina", "\u540d\u524d"), function () { setNomLocal(albOuvert.nom); setEditNom(albOuvert.id); }) : null,
+          estGere ? boutonE(iconePartage, libPartage, function () { var v = !reglagesA; setReglagesA(v); if (v) chargerMembres(albOuvert.id); }, { actif: (albOuvert.visibilite && albOuvert.visibilite !== "prive") }) : null,
+          estGere ? boutonE("\ud83d\uddd1", T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664"), function () { setConfSupA(albOuvert.id); }, { danger: true }) : null,
+          boutonE("\u00d7", T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b"), function () { setOuvert(null); }));
+      })(),
       reglagesA ? h("div", { style: { margin: "0 0 14px", padding: "13px 12px", borderRadius: 14, border: "1px solid " + tA(0.28), background: "rgba(255,255,255,0.02)" } },
         h("div", { style: { fontFamily: M9, fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: tnT, fontWeight: 700, marginBottom: 10 } }, T("Visibilit\u00e9 de l'album", "Album visibility", "Visibilidad", "Visibilit\u00e0", "\u516c\u958b\u7bc4\u56f2")),
         h("div", { style: { display: "flex", gap: 7, marginBottom: 4 } }, [
@@ -26583,11 +26672,11 @@ function AlbumsCheval(props) {
         var cel = visibles.map(function (u, iU) {
           var estV = !!(typeof estUrlVideo === "function" && estUrlVideo(u));
           var estCouv = (u === couvAct);
-          return h("div", { key: iU, style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", border: "1px solid rgba(255,255,255,0.09)", background: "#0B1116" } },
-            estV ? h("video", { src: u + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: u, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
-            estV ? h("span", { style: { position: "absolute", top: 4, left: 4, width: 19, height: 19, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8.5, color: "#EDF2F5" } }, "\u25b6") : null,
-            h("button", { onClick: function () { setConfRetrait(u); }, "aria-label": "Retirer", style: { position: "absolute", top: 4, right: 4, width: 21, height: 21, borderRadius: "50%", background: "rgba(7,8,10,0.65)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 10, cursor: "pointer", padding: 0 } }, "\u00d7"),
-            h("button", { onClick: function () { if (!estCouv) definirCouverture(albOuvert, u); }, "aria-label": "Couverture", style: { position: "absolute", bottom: 4, right: 4, height: 20, padding: "0 8px", borderRadius: 999, background: "rgba(7,8,10,0.7)", border: "1px solid " + tA(estCouv ? 0.85 : 0.4), color: estCouv ? tnT : "rgba(237,242,245,0.75)", fontSize: 8.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3 } }, (estCouv ? "\u2713 " : "") + T("Couv.", "Cover", "Portada", "Cover", "\u8868\u7d19")));
+          return h("div", { key: iU, onClick: function () { ouvrirVisu(lPh, u); }, style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", border: "1px solid rgba(255,255,255,0.09)", background: "#0B1116", cursor: "pointer" } },
+            estV ? h("video", { src: u + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" } }) : h("img", { src: u, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" } }),
+            estV ? h("span", { style: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.55)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#FFFFFF", zIndex: 1 } }, "\u25b6") : null,
+            h("button", { onClick: function (eRc) { if (eRc && eRc.stopPropagation) eRc.stopPropagation(); setConfRetrait(u); }, "aria-label": "Retirer", style: { position: "absolute", top: 4, right: 4, width: 21, height: 21, borderRadius: "50%", background: "rgba(7,8,10,0.65)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 10, cursor: "pointer", padding: 0, zIndex: 2 } }, "\u00d7"),
+            h("button", { onClick: function (eCv) { if (eCv && eCv.stopPropagation) eCv.stopPropagation(); if (!estCouv) definirCouverture(albOuvert, u); }, "aria-label": "Couverture", style: { position: "absolute", bottom: 4, right: 4, height: 20, padding: "0 8px", borderRadius: 999, background: "rgba(7,8,10,0.7)", border: "1px solid " + tA(estCouv ? 0.85 : 0.4), color: estCouv ? tnT : "rgba(237,242,245,0.75)", fontSize: 8.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3 } }, (estCouv ? "\u2713 " : "") + T("Couv.", "Cover", "Portada", "Cover", "\u8868\u7d19")));
         });
         if (!albDeplie && lPh.length > 6) {
           cel.push(h("div", { key: "plus", onClick: function () { setAlbDeplie(true); }, role: "button", style: { aspectRatio: "1 / 1", borderRadius: 11, border: "1.5px dashed " + tA(0.5), background: tA(0.05), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, cursor: "pointer" } },
@@ -26597,11 +26686,14 @@ function AlbumsCheval(props) {
         return cel;
       })()),
         (albDeplie && (albOuvert.photos || []).length > 6) ? h("button", { onClick: function () { setAlbDeplie(false); }, style: { display: "block", margin: "10px auto 0", padding: "8px 20px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("R\u00e9duire l'album", "Collapse album", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null) : h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#8A99A1", textAlign: "center", padding: "14px 0", lineHeight: 1.5 } }, T("Album vide \u2014 ajoute des souvenirs ci-dessous.", "Empty album \u2014 add memories below.", "\u00c1lbum vac\u00edo.", "Album vuoto.", "\u30a2\u30eb\u30d0\u30e0\u306f\u7a7a\u3067\u3059")),
-      albOuvert.__auto ? h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", textAlign: "center", marginTop: 10, lineHeight: 1.5 } }, T("Photos o\u00f9 il/elle est identifi\u00e9(e).", "Photos where tagged.", "Fotos etiquetadas.", "Foto taggate.", "\u30bf\u30b0\u3055\u308c\u305f\u5199\u771f")) : h("div", { style: { display: "flex", gap: 9, marginTop: 11 } },
+      albOuvert.__lecture ? null : (albOuvert.__auto ? h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", textAlign: "center", marginTop: 10, lineHeight: 1.5 } }, T("Photos o\u00f9 il/elle est identifi\u00e9(e).", "Photos where tagged.", "Fotos etiquetadas.", "Foto taggate.", "\u30bf\u30b0\u3055\u308c\u305f\u5199\u771f")) : h("div", { style: { display: "flex", gap: 9, marginTop: 11 } },
         h("button", { onClick: function () { ouvrirSelection(albOuvert); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, whiteSpace: "nowrap" } }, "+ " + T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f")),
         h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
           envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea"),
-          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length) importerFichiers(albOuvert.id, fs); } })))) : null,
+          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length) importerFichiers(albOuvert.id, fs); } }))))) : null,
+      (albOuvert.__auto || albOuvert.__lecture) ? null : h("button", { onClick: function () { ouvrirTagAlbum(); }, style: { marginTop: 9, marginLeft: "auto", display: "flex", alignItems: "center", gap: 7, padding: "9px 16px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: M9 } },
+        h("svg", { viewBox: "0 0 24 24", style: { width: 15, height: 15, stroke: tnT, strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" }), h("line", { x1: "7", y1: "7", x2: "7.01", y2: "7" })),
+        T("Identifier l'album", "Tag album", "Etiquetar \u00e1lbum", "Tagga l'album", "\u30a2\u30eb\u30d0\u30e0\u3092\u30bf\u30b0")),
     editNom ? portail(h("div", { onClick: function () { setEditNom(null); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 90px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: C9, fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 12 } }, editNom === "nouveau" ? T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0") : T("Renommer l'album", "Rename album", "Renombrar", "Rinomina", "\u540d\u524d\u3092\u5909\u66f4")),
@@ -26640,6 +26732,42 @@ function AlbumsCheval(props) {
         h("div", { style: { display: "flex", gap: 10 } },
           h("button", { onClick: function () { setConfSupA(null); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
           h("button", { onClick: function () { var idS = confSupA; setConfSupA(null); setOuvert(null); supprimerAlbumCheval(idS).then(function () { charger(); }); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "none", background: "rgba(226,138,146,0.9)", color: "#1A0B0E", fontSize: 12.5, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664")))))) : null,
+    visu ? portail(h("div", { onClick: function () { setVisu(null); setTagVisu(false); }, style: { position: "fixed", inset: 0, zIndex: 9100, background: "rgba(4,5,7,0.95)", display: "flex", alignItems: "center", justifyContent: "center" } },
+      (function () { var estVv = !!(typeof estUrlVideo === "function" && estUrlVideo(visu));
+        return estVv ? h("video", { src: visu, controls: true, autoPlay: true, playsInline: true, "webkit-playsinline": "true", "x-webkit-airplay": "deny", controlsList: "nofullscreen nodownload", disablePictureInPicture: true, onClick: function (eV) { eV.stopPropagation(); }, style: { maxWidth: "100%", maxHeight: "88%", borderRadius: 10 } })
+          : h("img", { src: visu, alt: "", onClick: function (eI) { eI.stopPropagation(); }, style: { maxWidth: "100%", maxHeight: "88%", borderRadius: 10, boxShadow: "0 20px 80px rgba(0,0,0,0.7)" } }); })(),
+      (visuListe && visuListe.length > 1) ? h("div", null,
+        h("button", { onClick: function (eP) { eP.stopPropagation(); naviguerVisu(-1); }, "aria-label": "Pr\u00e9c\u00e9dent", style: { position: "absolute", top: "50%", left: 10, transform: "translateY(-50%)", width: 44, height: 44, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 20, cursor: "pointer", zIndex: 3 } }, "\u2039"),
+        h("button", { onClick: function (eN) { eN.stopPropagation(); naviguerVisu(1); }, "aria-label": "Suivant", style: { position: "absolute", top: "50%", right: 10, transform: "translateY(-50%)", width: 44, height: 44, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 20, cursor: "pointer", zIndex: 3 } }, "\u203a"),
+        h("div", { style: { position: "absolute", top: "calc(22px + env(safe-area-inset-top))", left: "50%", transform: "translateX(-50%)", fontFamily: M9, fontSize: 11, letterSpacing: "0.12em", color: "rgba(237,242,245,0.75)", background: "rgba(7,8,10,0.45)", padding: "5px 12px", borderRadius: 999, zIndex: 3 } }, (visuListe.indexOf(visu) + 1) + " / " + visuListe.length)) : null,
+      h("button", { onClick: function (eX) { eX.stopPropagation(); setVisu(null); setTagVisu(false); }, "aria-label": "Fermer", style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", right: 16, width: 40, height: 40, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 18, cursor: "pointer", zIndex: 4 } }, "\u00d7"),
+      h("div", { style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", left: 16, zIndex: 10 } },
+        h("button", { onClick: function (eT) { eT.stopPropagation(); ouvrirTagA(); }, style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px 9px 12px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, fontFamily: M9, cursor: "pointer", boxShadow: "0 4px 18px rgba(0,0,0,0.45)" } },
+          h("svg", { viewBox: "0 0 24 24", style: { width: 17, height: 17, stroke: "#04252A", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" }), h("line", { x1: "7", y1: "7", x2: "7.01", y2: "7" })),
+          T("Identifier", "Tag", "Etiquetar", "Tagga", "\u30bf\u30b0"))),
+      tagVisu ? h("div", { onClick: function (eB) { eB.stopPropagation(); setTagVisu(false); }, style: { position: "absolute", inset: 0, background: "rgba(4,6,9,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 5 } },
+        h("div", { onClick: function (eS) { eS.stopPropagation(); }, style: { width: "100%", maxWidth: 560, maxHeight: "76vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.4), borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" } },
+          h("div", { style: { fontFamily: C9, fontSize: 15, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, (tagMode === "album") ? T("Identifier l'album", "Tag album", "Etiquetar \u00e1lbum", "Tagga l'album", "\u30a2\u30eb\u30d0\u30e0\u3092\u30bf\u30b0") : T("Identifier dans la photo", "Tag in photo", "Etiquetar", "Tagga nella foto", "\u5199\u771f\u306b\u30bf\u30b0")),
+          h("div", { style: { fontFamily: M9, fontSize: 11, color: "#8A99A1", textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, T("L'\u00e9curie l'ajoute directement. Un cheval ou un cavalier re\u00e7oit une proposition \u00e0 accepter.", "Stable added directly; horses and riders get a request.", "", "", "")),
+          (tagCiblesA === null) ? h("div", { style: { textAlign: "center", color: "#8A99A1", fontSize: 12, padding: "16px 0" } }, "\u2026")
+            : h("div", null,
+              (tagCiblesA.ecuries && tagCiblesA.ecuries.length) ? h("div", { style: { marginBottom: 14 } },
+                h("div", { style: { fontFamily: M9, fontSize: 9.5, letterSpacing: "0.16em", textTransform: "uppercase", color: tA(0.9), fontWeight: 700, marginBottom: 8 } }, T("\u00c9curies", "Stables", "Establos", "Scuderie", "\u99ac\u5c4b")),
+                h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } }, tagCiblesA.ecuries.map(function (e, iE) {
+                  return h("button", { key: "e" + iE, onClick: function () { poserTagA("ecurie", e.id, e.nom); }, style: { padding: "9px 14px", borderRadius: 999, border: "1px solid " + tA(0.5), background: tA(0.08), color: "#EDF2F5", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: M9 } }, "\ud83c\udfe0 " + e.nom);
+                }))) : null,
+              (tagCiblesA.chevaux && tagCiblesA.chevaux.length) ? h("div", { style: { marginBottom: 14 } },
+                h("div", { style: { fontFamily: M9, fontSize: 9.5, letterSpacing: "0.16em", textTransform: "uppercase", color: tA(0.9), fontWeight: 700, marginBottom: 8 } }, T("Chevaux", "Horses", "Caballos", "Cavalli", "\u99ac")),
+                h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } }, tagCiblesA.chevaux.slice(0, 30).map(function (c, iC) {
+                  return h("button", { key: "c" + iC, onClick: function () { poserTagA("cheval", c.id, c.nom); }, style: { padding: "9px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.04)", color: "#EDF2F5", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: M9 } }, "\ud83d\udc0e " + c.nom);
+                }))) : null,
+              (tagCiblesA.amis && tagCiblesA.amis.length) ? h("div", { style: { marginBottom: 6 } },
+                h("div", { style: { fontFamily: M9, fontSize: 9.5, letterSpacing: "0.16em", textTransform: "uppercase", color: tA(0.9), fontWeight: 700, marginBottom: 8 } }, T("Cavaliers", "Riders", "Jinetes", "Cavalieri", "\u30e9\u30a4\u30c0\u30fc")),
+                h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } }, tagCiblesA.amis.map(function (a, iA) {
+                  return h("button", { key: "a" + iA, onClick: function () { poserTagA("cavalier", a.id, a.nom); }, style: { padding: "9px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.04)", color: "#EDF2F5", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: M9 } }, "\ud83d\udc64 " + a.nom);
+                }))) : null,
+              (!(tagCiblesA.ecuries || []).length && !(tagCiblesA.chevaux || []).length && !(tagCiblesA.amis || []).length) ? h("div", { style: { textAlign: "center", color: "#8A99A1", fontSize: 11.5, padding: "10px 0", lineHeight: 1.5 } }, T("Aucune cible disponible.", "Nothing to tag yet.", "", "", "")) : null),
+          h("button", { onClick: function () { setTagVisu(false); }, style: { marginTop: 16, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b")))) : null), document.body) : null,
     toastA ? portail(h("div", { style: { position: "fixed", left: "50%", bottom: "calc(env(safe-area-inset-bottom) + 96px)", transform: "translateX(-50%)", zIndex: 8800, padding: "10px 18px", borderRadius: 999, background: "rgba(10,14,18,0.95)", border: "1px solid " + tA(0.5), color: "#EDF2F5", fontFamily: M9, fontSize: 12, whiteSpace: "nowrap" } }, toastA)) : null);
 }
 
@@ -27439,7 +27567,6 @@ function EcranCheval() {
             h("p", { style: { margin: 0, fontSize: 12.5, fontWeight: 500, color: "rgba(244,247,250,0.85)", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.45, textShadow: "0 1px 10px rgba(0,0,0,0.95), 0 0 18px rgba(0,0,0,0.8)" } }, T("Partage ses photos et vid\u00e9os pour avoir ses conseils", "Share photos and videos to get advice", "Comparte fotos y v\u00eddeos para recibir consejos", "Condividi foto e video per avere consigli", "\u5199\u771f\u3084\u52d5\u753b\u3067\u30a2\u30c9\u30d0\u30a4\u30b9"))),
           h("div", { style: { position: "absolute", right: 16, bottom: 20, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.6)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(7,8,10,0.45)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", boxShadow: "0 0 18px rgba(32,217,245,0.2)", animation: "glowPulse 3.2s ease-in-out infinite" } },
             h("svg", { viewBox: "0 0 24 24", style: { width: 16, height: 16, stroke: "#20D9F5", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M9 6l6 6-6 6" })))),
-        h("div", { style: { padding: "18px 16px 0" } }, h(EncartConseilsHB, { chevalId: id, teinte: teinte })),
 
 
         h(MurHype, { cible: "cheval:" + id, compact: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
@@ -27548,7 +27675,7 @@ function EcranCheval() {
     visionneuse ? h("div", { onClick: fermerVisionneuse, "data-noswipe": "true", className: "souvVoile" + (visFerme ? " souvQuitte" : ""), style: { position: "fixed", inset: 0, zIndex: 8800, background: "rgba(4,6,9,0.96)", display: "flex", alignItems: "center", justifyContent: "center", padding: 10 } },
       h("div", { className: "souvGrandHalo" }),
       estUrlVideo(visionneuse)
-        ? h("video", { src: visionneuse, controls: true, autoPlay: true, playsInline: true, className: "souvVue" + (visFerme ? " souvQuitte" : ""), onClick: function (eV) { eV.stopPropagation(); }, style: { maxWidth: "100%", maxHeight: "82%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)", background: "#000" } })
+        ? h("video", { src: visionneuse, controls: true, autoPlay: true, playsInline: true, "webkit-playsinline": "true", "x-webkit-airplay": "deny", controlsList: "nofullscreen nodownload", disablePictureInPicture: true, className: "souvVue" + (visFerme ? " souvQuitte" : ""), onClick: function (eV) { eV.stopPropagation(); }, style: { maxWidth: "100%", maxHeight: "82%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)", background: "#000" } })
         : h("img", { src: visionneuse, alt: "", className: "souvVue" + (visFerme ? " souvQuitte" : ""), style: { maxWidth: "100%", maxHeight: "90%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)" } }),
       h("button", { onClick: function (eX) { eX.stopPropagation(); fermerVisionneuse(); }, style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", right: 16, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.25)", color: "#EDF2F5", fontSize: 16, zIndex: 3 } }, "✕"),
       (function () {
@@ -27568,7 +27695,10 @@ function EcranCheval() {
         ? h("button", { onClick: function (eS) { eS.stopPropagation(); if (!confSuppr) { setConfSuppr(true); return; } supprimerSouvenirOuvert(); }, "aria-label": "Supprimer", style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", left: 16, height: 40, minWidth: 40, padding: confSuppr ? "0 16px" : 0, borderRadius: confSuppr ? 999 : "50%", background: confSuppr ? "rgba(178,44,54,0.92)" : "rgba(7,8,10,0.6)", border: "1px solid " + (confSuppr ? "rgba(255,120,128,0.9)" : "rgba(255,255,255,0.25)"), color: "#F6E9EA", fontSize: confSuppr ? 12.5 : 15, fontWeight: 700, zIndex: 3, whiteSpace: "nowrap", transition: "all .25s ease" } }, confSuppr ? T("Confirmer la suppression", "Confirm deletion", "Confirmar eliminación", "Conferma eliminazione", "削除を確認") : "🗑")
         : null,
       h("button", { onClick: function (eY) { eY.stopPropagation(); basculerVedette(visionneuse); }, style: { position: "absolute", bottom: "calc(24px + env(safe-area-inset-bottom))", left: "50%", transform: "translateX(-50%)", padding: "10px 20px", borderRadius: 999, border: "1px solid " + tA(0.6) + "", background: (vedettes || []).indexOf(visionneuse) >= 0 ? "" + tA(0.9) + "" : "rgba(7,8,10,0.7)", color: (vedettes || []).indexOf(visionneuse) >= 0 ? "#04252a" : "#EDF2F5", fontSize: 12.5, fontWeight: 700, whiteSpace: "nowrap" } }, "★ " + ((vedettes || []).indexOf(visionneuse) >= 0 ? T("En vedette", "Featured", "Destacada", "In evidenza", "お気に入り") : T("Mettre en vedette", "Feature this photo", "Destacar", "Metti in evidenza", "お気に入りに追加")))) : null,
-      h("button", { onClick: function (eT) { eT.stopPropagation(); ouvrirTag(visionneuse); }, style: { position: "absolute", bottom: "calc(24px + env(safe-area-inset-bottom))", right: 16, padding: "10px 16px", borderRadius: 999, border: "1px solid " + tA(0.6) + "", background: "rgba(7,8,10,0.55)", color: "#EDF2F5", fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, "\ud83c\udff7\ufe0f " + T("Identifier", "Tag", "Etiquetar", "Tagga", "\u30bf\u30b0")),
+      h("div", { style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", left: 16, zIndex: 10 } },
+        h("button", { onClick: function (eT) { eT.stopPropagation(); ouvrirTag(visionneuse); }, style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px 9px 12px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", boxShadow: "0 4px 18px rgba(0,0,0,0.45)" } },
+          h("svg", { viewBox: "0 0 24 24", style: { width: 17, height: 17, stroke: "#04252A", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" }), h("line", { x1: "7", y1: "7", x2: "7.01", y2: "7" })),
+          T("Identifier", "Tag", "Etiquetar", "Tagga", "\u30bf\u30b0"))),
     tagOuvert ? ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; })(h("div", { onClick: function () { setTagOuvert(null); }, style: { position: "fixed", inset: 0, zIndex: 9200, background: "rgba(4,6,9,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxWidth: 560, maxHeight: "80vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.4) + "", borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Identifier dans la photo", "Tag in photo", "Etiquetar", "Tagga nella foto", "\u5199\u771f\u306b\u30bf\u30b0")),
