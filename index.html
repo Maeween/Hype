@@ -24114,7 +24114,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
-    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 15h00"),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 15h20"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
@@ -26430,7 +26430,7 @@ function EcranCheval() {
         if (typeof supa !== "undefined" && supa) {
           var r = await supa.from("chevaux").select("*").eq("id", id).single();
           if (actif && r && r.data) {
-            setChevalDyn({ nom: r.data.nom || "Cheval", photo: r.data.photo_url || UV3_H1, info: [r.data.race, r.data.age, r.data.discipline].filter(Boolean).join(" · "), flots: [], palmares: [], histoire: r.data.histoire || null, dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, origines: r.data.origines || null });
+            setChevalDyn({ nom: r.data.nom || "Cheval", photo: r.data.photo_url || UV3_H1, info: [r.data.race, r.data.age, r.data.discipline].filter(Boolean).join(" · "), flots: [], palmares: [], histoire: r.data.histoire || null, dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, origines: r.data.origines || null, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
           }
         }
       } catch (eD) { }
@@ -26472,6 +26472,8 @@ function EcranCheval() {
   function ouvrirEditOrigines() {
     var ogE = (c && c.origines) || {};
     setOrigLocal({
+      race: (chevalDyn && chevalDyn.race) || "",
+      age: (chevalDyn && chevalDyn.age) || "",
       pere: (ogE.pere && (ogE.pere.nom || ogE.pere)) || "",
       mere: (ogE.mere && (ogE.mere.nom || ogE.mere)) || "",
       naisseur: ogE.naisseur || ""
@@ -26487,9 +26489,12 @@ function EcranCheval() {
       if (na) ogN.naisseur = na; else delete ogN.naisseur;
       setEditOrig(false);
       if (chevalDyn && chevalDyn.dbId && typeof supa !== "undefined" && supa) {
-        var rO = await supa.from("chevaux").update({ origines: ogN }).eq("id", chevalDyn.dbId);
+        var raceV = (origLocal.race || "").trim();
+        var ageV = (String(origLocal.age || "").match(/\d+/) || [null])[0];
+        var payl = { origines: ogN, race: raceV || null, age: ageV ? Number(ageV) : null };
+        var rO = await supa.from("chevaux").update(payl).eq("id", chevalDyn.dbId);
         if (rO && rO.error) { setToast(T("Enregistrement indisponible \u2014 colonne \u00e0 ajouter c\u00f4t\u00e9 base", "Could not save \u2014 column missing in database", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); setTimeout(function () { setToast(null); }, 2600); return; }
-        setChevalDyn(Object.assign({}, chevalDyn, { origines: ogN }));
+        setChevalDyn(Object.assign({}, chevalDyn, { origines: ogN, race: raceV, age: ageV || "", info: [raceV, ageV ? ageV + " ans" : null, chevalDyn.discipline].filter(Boolean).join(" \u00b7 ") }));
         setToast(T("Origines mises \u00e0 jour \u2728", "Bloodline updated \u2728", "Or\u00edgenes actualizados \u2728", "Origini aggiornate \u2728", "\u8840\u7d71\u3092\u66f4\u65b0\u3057\u307e\u3057\u305f \u2728"));
         setTimeout(function () { setToast(null); }, 2400);
       }
@@ -26980,9 +26985,9 @@ function EcranCheval() {
 
     editOrig ? h("div", { onClick: function () { setEditOrig(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
-        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71")),
-        h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("Renseigne les origines de ton cheval.", "Fill in your horse's bloodline.", "Completa los or\u00edgenes de tu caballo.", "Inserisci le origini del tuo cavallo.", "\u99ac\u306e\u8840\u7d71\u3092\u5165\u529b\u3057\u3088\u3046\u3002")),
-        [["pere", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236")], ["mere", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd")], ["naisseur", T("Naisseur / \u00e9leveur", "Breeder", "Criador", "Allevatore", "\u751f\u7523\u8005")]].map(function (chp) {
+        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon cheval", "My horse", "Mi caballo", "Il mio cavallo", "\u79c1\u306e\u99ac")),
+        h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("Renseigne sa race, son \u00e2ge et ses origines.", "Fill in your horse's bloodline.", "Completa los or\u00edgenes de tu caballo.", "Inserisci le origini del tuo cavallo.", "\u99ac\u306e\u8840\u7d71\u3092\u5165\u529b\u3057\u3088\u3046\u3002")),
+        [["race", T("Race", "Breed", "Raza", "Razza", "\u54c1\u7a2e")], ["age", T("\u00c2ge (ans)", "Age (years)", "Edad (a\u00f1os)", "Et\u00e0 (anni)", "\u5e74\u9f62")], ["pere", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236")], ["mere", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd")], ["naisseur", T("Naisseur / \u00e9leveur", "Breeder", "Criador", "Allevatore", "\u751f\u7523\u8005")]].map(function (chp) {
           return h("div", { key: chp[0], style: { marginBottom: 10 } },
             h("div", { style: { fontSize: 8.5, letterSpacing: "0.2em", color: "#7DDDE8", textTransform: "uppercase", fontWeight: 700, marginBottom: 5, fontFamily: "'Montserrat',sans-serif" } }, chp[1]),
             h("input", { value: origLocal[chp[0]] || "", onChange: function (eI) { var v = eI.target.value; setOrigLocal(function (oo) { var nn = Object.assign({}, oo); nn[chp[0]] = v; return nn; }); }, maxLength: 60, placeholder: "\u2014", style: { width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none" } }));
