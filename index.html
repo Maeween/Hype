@@ -24125,6 +24125,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 12.07 \u00b7 14h30"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
