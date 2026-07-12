@@ -25143,7 +25143,7 @@ function EncartSellerie(props) {
   var titre = accueil
     ? T("Nos partenaires", "Our partners", "Nuestros socios", "I nostri partner", "\u30d1\u30fc\u30c8\u30ca\u30fc\u7d39\u4ecb")
     : T("Ma Sellerie", "My Tack Room", "Mi guadarn\u00e9s", "La mia selleria", "\u79c1\u306e\u99ac\u5177\u5ba4");
-  return h("div", { onClick: function () { setEcran("sellerie"); }, role: "button", style: { position: "relative", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.25)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", aspectRatio: img ? "16 / 9" : undefined, padding: img ? 0 : "22px 58px 22px 18px" } },
+  return h("div", { onClick: function () { setEcran("sellerie"); }, role: "button", style: { position: "relative", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.25)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)", aspectRatio: img ? "4 / 3" : undefined, padding: img ? 0 : "22px 58px 22px 18px" } },
     img ? h("img", { src: img, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
     h("div", { style: img ? { position: "absolute", left: 18, bottom: 16, right: 78 } : {} },
       h("div", { style: { fontSize: 10.5, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 600, marginBottom: 7, fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, T("Partenaires", "Partners", "Socios", "Partner", "\u30d1\u30fc\u30c8\u30ca\u30fc")),
