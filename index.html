@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#060709"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><!-- HYPE ▸ SUPABASE : module hype-supabase.js intégré inline (03/07/2026) --><!-- HYPE ▸ LIVRAISON : install bureau + héros Galops + carte France + flux ajout cheval réparé (13/07/2026) --><script>window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); window.__hypeInstallPrompt = e; });
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#060709"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><!-- HYPE ▸ SUPABASE : module hype-supabase.js intégré inline (03/07/2026) --><!-- HYPE ▸ LIVRAISON : création cheval unifiée -> fiche cheval directe (13/07/2026) --><script>window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); window.__hypeInstallPrompt = e; });
 /* ============================================================
    HYPE — Pont vers Supabase (comptes + communauté)
    ------------------------------------------------------------
@@ -19717,6 +19717,8 @@ function HypeApp() {
     const [langue, setLangue] = useState(sauve && sauve.langue ? sauve.langue : "fr");
     const [planAbo, setPlanAbo] = useState(sauve && typeof sauve.planAbo === "string" ? sauve.planAbo : ""); // "" | "mensuel" | "annuel"
     const estAbonne = planAbo !== "";
+    const [creationCheval, setCreationCheval] = useState(false);
+    useEffect(() => { try { window.__ouvrirCreationCheval = () => setCreationCheval(true); } catch (e) { } return () => { try { delete window.__ouvrirCreationCheval; } catch (e) { } }; }, []);
     const [profil, setProfil] = useState(sauve && sauve.profil ? sauve.profil : {
         prenom: "",
         age: "",
@@ -20084,6 +20086,7 @@ function Router() {
                 ecran === "partager" && React.createElement(EcranPartager, null),
                 ecran === "installer" && React.createElement(EcranInstaller, null),
                 React.createElement(InvitationsEcurieHype, null),
+                creationCheval && React.createElement(ModaleCreationCheval, { onClose: () => setCreationCheval(false), tr, premium: planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!profil.vip, allerPremium: () => { setCreationCheval(false); setEcran("premium"); }, ouvrirFiche: (id) => { setCreationCheval(false); try { window.__chevalOuvert = id; } catch (e) { } setEcran("cheval"); } }),
                 showNav && React.createElement(NavBar, null)))));
 }
 /* ---------- STYLES GLOBAUX ---------- */
@@ -24291,7 +24294,7 @@ function EcranMonCavalier() {
             h("div", { style: { fontFamily: C, fontSize: 13.5, fontWeight: 600, marginTop: 7, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: ((typeof CHEVAUX_SPECTRAL !== "undefined" && CHEVAUX_SPECTRAL[x.id] && CHEVAUX_SPECTRAL[x.id].teinte) || "#EDF2F5") } }, x.ch.nom),
             h("div", { style: { fontSize: 10, color: "#8A929C", fontFamily: M, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, verrouille ? "Premium \u2726" : (x.ch.info || "")));
         });
-        cartes.push(h("button", { key: "ajout", onClick: function () { setEcran((!premium && chevaux.length >= 2) ? "premium" : "gerer-ecurie"); }, style: { background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, textAlign: "center" } },
+        cartes.push(h("button", { key: "ajout", onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, textAlign: "center" } },
           h("div", { style: { width: "100%", aspectRatio: "4 / 5", borderRadius: 14, border: "1.5px dashed " + __ta(0.5) + "", background: __ta(0.04), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 } },
             h("span", { style: { width: 34, height: 34, borderRadius: "50%", border: "1.5px solid #5FE9F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#5FE9F0" } }, "+"),
             h("span", { style: { fontSize: 9.5, color: "#5FE9F0", fontFamily: M, fontWeight: 600, letterSpacing: 0.4, padding: "0 6px", lineHeight: 1.3 } }, T("Ajouter un cheval", "Add a horse", "A\u00f1adir un caballo", "Aggiungi un cavallo", "\u99ac\u3092\u8ffd\u52a0")))));
@@ -24736,6 +24739,37 @@ function SectionCommentaires({ cible }) {
           h("input", { value: texte, onChange: function (e) { setTexte(e.target.value); }, placeholder: T("\u00c9crire un commentaire\u2026", "Write a comment\u2026", "Escribe\u2026", "Scrivi\u2026", "\u30b3\u30e1\u30f3\u30c8\u2026"), style: { flex: 1, minWidth: 0, padding: "9px 12px", borderRadius: 10, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 13, fontFamily: M, outline: "none" } }),
           h("button", { onClick: envoyer, disabled: busy, style: { background: busy ? "rgba(32,217,245,0.555)" : TURQ, border: "none", borderRadius: 10, color: "#04252a", fontWeight: 800, fontSize: 13, fontFamily: M, padding: "9px 14px", cursor: "pointer", flex: "0 0 auto" } }, busy ? "\u2026" : T("Envoyer", "Send", "Enviar", "Invia", "\u9001\u4fe1")))) ) : null);
 }
+function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche }) {
+  var h = React.createElement;
+  var _n = React.useState(""), nom = _n[0], setNom = _n[1];
+  var _b = React.useState(false), busy = _b[0], setBusy = _b[1];
+  var _e = React.useState(null), err = _e[0], setErr = _e[1];
+  async function creer() {
+    var n = (nom || "").trim();
+    if (!n || busy) return;
+    setBusy(true); setErr(null);
+    try {
+      if (!premium && typeof mesChevaux === "function") {
+        var rq = await mesChevaux();
+        if (rq && rq.data && rq.data.length >= 1) { setBusy(false); allerPremium(); return; }
+      }
+      var r = await ajouterCheval({ nom: n });
+      if (r && r.error) { setBusy(false); setErr(typeof r.error === "string" ? r.error : (r.error.message || String(r.error))); return; }
+      var idNv = r && r.data && r.data.id;
+      setBusy(false);
+      if (idNv) { ouvrirFiche(idNv); } else { onClose(); }
+    } catch (e) { setBusy(false); setErr(String(e)); }
+  }
+  return h("div", { onClick: onClose, style: { position: "fixed", inset: 0, zIndex: 9200, background: "rgba(4,6,9,0.78)", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 } },
+    h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxWidth: 350, borderRadius: 24, border: "1px solid rgba(32,217,245,0.45)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(7,10,14,0.99))", padding: "28px 22px 24px", textAlign: "center", boxShadow: "0 0 48px rgba(32,217,245,0.14), 0 24px 60px rgba(0,0,0,0.6)" } },
+      h("div", { style: { fontSize: 9.5, letterSpacing: "3.4px", fontWeight: 800, color: "#5FE9F0", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif" } }, tr({ fr: "Mon \u00e9curie", en: "My stable", es: "Mi cuadra", it: "La mia scuderia", ja: "\u79c1\u306e\u53a9\u820e" })),
+      h("div", { style: { marginTop: 9, fontFamily: "'Cinzel',Georgia,serif", fontSize: 20, fontWeight: 700, letterSpacing: "1.5px", color: "#F4FEFF", textShadow: "0 0 24px rgba(32,217,245,0.35)" } }, tr({ fr: "UN NOUVEAU CHEVAL", en: "A NEW HORSE", es: "UN NUEVO CABALLO", it: "UN NUOVO CAVALLO", ja: "\u65b0\u3057\u3044\u99ac" })),
+      h("p", { style: { margin: "10px 0 18px", fontSize: 12.5, lineHeight: 1.55, color: "rgba(234,241,244,0.68)", fontFamily: "'Montserrat',sans-serif" } }, tr({ fr: "Donne-lui son nom \u2014 sa fiche t\u2019attend, pr\u00eate \u00e0 recevoir sa photo et son histoire.", en: "Give it a name \u2014 its page awaits, ready for its photo and story.", es: "Dale su nombre \u2014 su ficha te espera, lista para su foto y su historia.", it: "Dagli il suo nome \u2014 la sua scheda ti aspetta, pronta per foto e storia.", ja: "\u540d\u524d\u3092\u4ed8\u3051\u3066\u304f\u3060\u3055\u3044 \u2014 \u5c02\u7528\u30da\u30fc\u30b8\u304c\u5f85\u3063\u3066\u3044\u307e\u3059\u3002" })),
+      h("input", { value: nom, onChange: function (e) { setNom(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") creer(); }, placeholder: tr({ fr: "Son nom\u2026", en: "Its name\u2026", es: "Su nombre\u2026", it: "Il suo nome\u2026", ja: "\u540d\u524d\u2026" }), autoFocus: true, style: { width: "100%", boxSizing: "border-box", padding: "13px 16px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(32,217,245,0.4)", color: "#F4FEFF", fontSize: 16, fontFamily: "'Cinzel',Georgia,serif", letterSpacing: "0.5px", textAlign: "center", outline: "none" } }),
+      err ? h("p", { style: { margin: "12px 0 0", fontSize: 11.5, color: "#F2A0B0", lineHeight: 1.5 } }, tr({ fr: "Impossible de cr\u00e9er la fiche : ", en: "Could not create the page: ", es: "No se pudo crear la ficha: ", it: "Impossibile creare la scheda: ", ja: "\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a" }) + err) : null,
+      h("button", { onClick: creer, disabled: busy || !(nom || "").trim(), style: { width: "100%", marginTop: 18, border: "none", borderRadius: 999, padding: "14px 0", fontSize: 14, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", letterSpacing: "0.4px", background: busy ? "rgba(32,217,245,0.4)" : "linear-gradient(90deg,#0C5763,#38E2F8)", color: "#04252A", cursor: "pointer", boxShadow: "0 0 26px rgba(32,217,245,0.35)" } }, busy ? tr({ fr: "Cr\u00e9ation\u2026", en: "Creating\u2026", es: "Creando\u2026", it: "Creazione\u2026", ja: "\u4f5c\u6210\u4e2d\u2026" }) : tr({ fr: "Cr\u00e9er sa fiche \u2726", en: "Create its page \u2726", es: "Crear su ficha \u2726", it: "Crea la scheda \u2726", ja: "\u30da\u30fc\u30b8\u3092\u4f5c\u6210 \u2726" })),
+      h("button", { onClick: onClose, style: { marginTop: 13, background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline", fontFamily: "'Montserrat',sans-serif" } }, tr({ fr: "Plus tard", en: "Later", es: "M\u00e1s tarde", it: "Pi\u00f9 tardi", ja: "\u5f8c\u3067" }))));
+}
 function EcranGererEcurie() {
   var h = React.createElement;
   var ctx = useApp();
@@ -24782,7 +24816,7 @@ function EcranGererEcurie() {
     h("input", { ref: svFile, type: "file", accept: "image/*,video/*", onChange: soumettreSouvenir, style: { display: "none" } }),
     head,
     h("div", { style: { padding: "16px 16px 0" } },
-      eyb(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), function () { if (!premium && chevaux.length >= 1 && formOuvert !== "cheval") { setEcran("premium"); return; } setFormOuvert(formOuvert === "cheval" ? null : "cheval"); }, formOuvert === "cheval" ? T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b") : "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0")),
+      eyb(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), function () { if (!premium && chevaux.length >= 1) { setEcran("premium"); return; } if (window.__ouvrirCreationCheval) { window.__ouvrirCreationCheval(); return; } setFormOuvert(formOuvert === "cheval" ? null : "cheval"); }, formOuvert === "cheval" ? T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b") : "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0")),
       formOuvert === "cheval" ? h("div", { style: { padding: "14px", borderRadius: 16, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(32,217,245,0.37)", marginBottom: 12 } },
         champ(champsCh.nom, function (e) { setChampsCh(Object.assign({}, champsCh, { nom: e.target.value })); }, T("Nom du cheval", "Horse name", "Nombre", "Nome", "\u99ac\u306e\u540d\u524d")),
         h("div", { style: { display: "flex", gap: 9 } }, h("div", { style: { flex: 1 } }, champ(champsCh.race, function (e) { setChampsCh(Object.assign({}, champsCh, { race: e.target.value })); }, T("Race", "Breed", "Raza", "Razza", "\u54c1\u7a2e"))), h("div", { style: { flex: 1 } }, champ(champsCh.age, function (e) { setChampsCh(Object.assign({}, champsCh, { age: e.target.value })); }, T("\u00c2ge", "Age", "Edad", "Et\u00e0", "\u5e74\u9f62")))),
@@ -25201,7 +25235,7 @@ function EcranUnivers() {
       carteCheval(UV3_H1, "My Dream", "Selle Fran\u00e7ais \u00b7 4 ans", "mydream"),
       carteCheval(UV3_H2, "Elfe de Feinn", "Selle Fran\u00e7ais \u00b7 6 ans", "elfe"),
       carteCheval(UV3_H3, "Rizotto", "Poney \u00b7 12 ans", "rizotto"),
-      React.createElement("button", { className: "hcard hcard-add", onClick: function () { setEcran("gerer-ecurie"); }, style: { flex: "0 0 auto" } },
+      React.createElement("button", { className: "hcard hcard-add", onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { flex: "0 0 auto" } },
         React.createElement("div", { className: "hadd-circle" }, "+"),
         React.createElement("span", null, t.madd)));
   }
@@ -25664,7 +25698,7 @@ function EcranEcurie() {
           if (premium || slots.length < 6) {
             var iAjout = slots.length;
             var ajoutLocked = iAjout >= 2 && !premium;
-            cartes.push(h("article", { className: "chcard add", key: "add", onClick: function () { setEcran(ajoutLocked ? "premium" : "ecurie"); } },
+            cartes.push(h("article", { className: "chcard add", key: "add", onClick: function () { if (ajoutLocked) { setEcran("premium"); } else if (window.__ouvrirCreationCheval) { window.__ouvrirCreationCheval(); } } },
               h("svg", { viewBox: "0 0 24 24", fill: "none" }, ajoutLocked ? h("path", { d: "M12 2a5 5 0 0 1 5 5v3h1a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h1V7a5 5 0 0 1 5-5z" }) : h("path", { d: "M12 5v14M5 12h14" })),
               h("span", null, ajoutLocked ? T("Premium", "Premium", "Premium", "Premium", "\u30d7\u30ec\u30df\u30a2\u30e0") : tr({ fr: "Ajouter", en: "Add", es: "Añadir", it: "Aggiungi", ja: "追加" }))));
           }
@@ -28139,7 +28173,7 @@ function EcranEcurieHype() {
               h("div", { className: "l2" }, s.l2),
               s.l3 ? h("div", { className: "l3" }, s.l3) : null));
         }).concat([
-          h("article", { className: "ec2card add", key: "add", style: { animationDelay: "1.52s" }, onClick: function () { setEcran("gerer-ecurie"); } },
+          h("article", { className: "ec2card add", key: "add", style: { animationDelay: "1.52s" }, onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); } },
             h("div", { className: "art", style: { backgroundImage: "url(" + ECURIE_ADD_ART + ")" } }),
             h("div", { className: "pl" }, "+"),
             h("div", { className: "lb" }, T("Ajouter un cheval", "Add a horse", "Añadir un caballo", "Aggiungi un cavallo", "馬を追加")))
@@ -30970,7 +31004,7 @@ function EcranProfil() {
                     t("cheval_aussi_monte"),
                     " ",
                     c.aussiMontePar) : null))),
-            chevaux.filter((c) => c.id !== "ch-demo").length < 3 && (React.createElement("button", { onClick: () => { if (!premium && chevaux.filter((c) => c.id !== "ch-demo").length >= 1) { setLimiteCheval(true); } else { setAjoutCheval(true); } }, style: { background: `${COLORS.turquoise}0D`, border: `1px dashed ${COLORS.turquoise}77`, borderRadius: 16, padding: "12px 8px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, minHeight: 132, color: COLORS.turquoiseDark } },
+            chevaux.filter((c) => c.id !== "ch-demo").length < 3 && (React.createElement("button", { onClick: () => { if (!premium && chevaux.filter((c) => c.id !== "ch-demo").length >= 1) { setLimiteCheval(true); } else if (window.__ouvrirCreationCheval) { window.__ouvrirCreationCheval(); } else { setAjoutCheval(true); } }, style: { background: `${COLORS.turquoise}0D`, border: `1px dashed ${COLORS.turquoise}77`, borderRadius: 16, padding: "12px 8px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, minHeight: 132, color: COLORS.turquoiseDark } },
                 React.createElement("span", { style: { fontSize: 26 } }, "\uFF0B"),
                 React.createElement("span", { style: { fontSize: 11, fontWeight: 700, textAlign: "center", lineHeight: 1.2 } }, t("cheval_ajouter")))))) : (React.createElement("div", { onClick: () => setEcran("premium"), style: { position: "relative", marginBottom: 22, cursor: "pointer" } },
             React.createElement("div", { style: { filter: "grayscale(1)", opacity: 0.4, pointerEvents: "none", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 } },
