@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#060709"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><!-- HYPE ▸ VERSION 13/07/2026 · 22h05 ▸ (1) Hero Premium abonne : bandeau dore retire, titre "TU FAIS PARTIE DU CERCLE CRYSTAL" 21px + phrase de formule (5 langues), visiteurs inchanges. (2) Correctif crash : ModaleCreationCheval rendue dans HypeApp. (2) PortraitChevalSpectral sur cartes/vignettes/lignes sans photo : image par defaut de la fiche (UV3_H1, repli CHEVAL_DEFAUT, puis silhouette) + invitation "Personnalise son portrait" pour le proprietaire --><!-- HYPE ▸ SUPABASE : module hype-supabase.js intégré inline (03/07/2026) --><!-- HYPE ▸ LIVRAISON : création cheval unifiée -> fiche cheval directe (13/07/2026) --><script>window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); window.__hypeInstallPrompt = e; });
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#060709"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><!-- HYPE ▸ VERSION 13/07/2026 · 23h30 ▸ Rattachement ecurie : table chevaux_liens (SQL rattachement-albums.sql A EXECUTER), modale creation = seconde voie "ou choisis un cheval de l ecurie", bouton dore de fiche = vrai rattachement (plus de "Bientot" pour les chevaux reels), chevaux rattaches visibles dans Mes chevaux avec mention, hors quota gratuit. Ajouts Prive/Public sur fiche partagee : pastille dans le composeur (non-proprietaires), colonne commentaires.prive, filtrage galerie + fil. --><!-- HYPE ▸ VERSION 13/07/2026 · 22h05 ▸ (1) Hero Premium abonne : bandeau dore retire, titre "TU FAIS PARTIE DU CERCLE CRYSTAL" 21px + phrase de formule (5 langues), visiteurs inchanges. (2) Correctif crash : ModaleCreationCheval rendue dans HypeApp. (2) PortraitChevalSpectral sur cartes/vignettes/lignes sans photo : image par defaut de la fiche (UV3_H1, repli CHEVAL_DEFAUT, puis silhouette) + invitation "Personnalise son portrait" pour le proprietaire --><!-- HYPE ▸ SUPABASE : module hype-supabase.js intégré inline (03/07/2026) --><!-- HYPE ▸ LIVRAISON : création cheval unifiée -> fiche cheval directe (13/07/2026) --><script>window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); window.__hypeInstallPrompt = e; });
 /* ============================================================
    HYPE — Pont vers Supabase (comptes + communauté)
    ------------------------------------------------------------
@@ -690,6 +690,28 @@ async function mesChevaux() {
   if (!user) return { data: [], error: "Pas connecté" };
   return await supa.from("chevaux").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
 }
+/* --- Chevaux rattaches (liens ecurie) ---------------------- */
+async function lierCheval(chevalId) {
+  const user = await utilisateurActuel();
+  if (!user) return { data: null, error: { message: "Pas connect\u00e9" } };
+  return await supa.from("chevaux_liens").insert({ cheval_id: chevalId, user_id: user.id }).select().single();
+}
+async function delierCheval(chevalId) {
+  const user = await utilisateurActuel();
+  if (!user) return { error: { message: "Pas connect\u00e9" } };
+  return await supa.from("chevaux_liens").delete().eq("cheval_id", chevalId).eq("user_id", user.id);
+}
+async function mesChevauxLies() {
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return { data: [], error: null };
+    var rl = await supa.from("chevaux_liens").select("cheval_id").eq("user_id", user.id);
+    var idsL = ((rl && rl.data) || []).map(function (l) { return l.cheval_id; });
+    if (!idsL.length) return { data: [], error: null };
+    var rc = await supa.from("chevaux").select("*").in("id", idsL).order("created_at", { ascending: false });
+    return { data: ((rc && rc.data) || []).map(function (ch) { return Object.assign({}, ch, { __lien: true }); }), error: (rc && rc.error) || null };
+  } catch (e) { return { data: [], error: String(e) }; }
+}
 async function supprimerCheval(id) {
   const user = await utilisateurActuel();
   if (!user) return { error: "Pas connecté" };
@@ -744,12 +766,14 @@ async function palmaresEcurie() {
 
 /* --- 11. Commentaires (fils + pages perso) ----------------- */
 
-async function posterCommentaire({ cible, texte, fichierPhoto } = {}) {
+async function posterCommentaire({ cible, texte, fichierPhoto, prive } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
   let photo_url = null;
   if (fichierPhoto) { const r = await envoyerPhoto(fichierPhoto); if (r.error) return { data: null, error: r.error }; photo_url = r.url; }
-  return await supa.from("commentaires").insert({ user_id: user.id, cible: String(cible), texte: texte || null, photo_url }).select().single();
+  const ligneC = { user_id: user.id, cible: String(cible), texte: texte || null, photo_url };
+  if (typeof prive === "boolean") ligneC.prive = prive;
+  return await supa.from("commentaires").insert(ligneC).select().single();
 }
 async function listerCommentaires(cible) {
   const { data, error } = await supa.from("commentaires").select("*").eq("cible", String(cible)).order("created_at", { ascending: true });
@@ -24179,12 +24203,12 @@ function EcranMonCavalier() {
   React.useEffect(function () { (async function () {
     try {
       var u = await utilisateurActuel(); setMoiCav(u || null);
-      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); if (rc && rc.data) setChevauxReels(rc.data); }
+      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); var tousCh = (rc && rc.data) ? rc.data.slice() : []; try { if (typeof mesChevauxLies === "function") { var rln = await mesChevauxLies(); if (rln && rln.data && rln.data.length) tousCh = tousCh.concat(rln.data); } } catch (eLn) { } setChevauxReels(tousCh); }
     } catch (e) {}
   })(); }, []);
   var estCompteFeinn = estModerateurHype(moiCav);
   var chevauxDemo = estCompteFeinn ? Object.keys(CHEVAUX_FICHE).map(function (id) { return { id: id, ch: CHEVAUX_FICHE[id] }; }).filter(function (x) { return x.ch; }) : [];
-  var chevauxPerso = (chevauxReels || []).map(function (r) { return { id: r.id, ch: { nom: r.nom, photo: r.photo_url, info: [r.race, r.age, r.discipline].filter(Boolean).join(" \u00b7 "), flots: [] } }; });
+  var chevauxPerso = (chevauxReels || []).map(function (r) { return { id: r.id, lien: !!r.__lien, ch: { nom: r.nom, photo: r.photo_url, info: [r.race, r.age, r.discipline].filter(Boolean).join(" \u00b7 "), flots: [] } }; });
   var chevaux = chevauxDemo.concat(chevauxPerso);
   var serie = (ctx.serie != null) ? ctx.serie : 0;
   function ouvrirCheval(id) { return function () { if (typeof window !== "undefined") { window.__chevalOuvert = id; } setEcran("cheval"); }; }
@@ -24285,7 +24309,7 @@ function EcranMonCavalier() {
       h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "2px 16px 4px" } }, (function () {
         var slots = premium ? chevaux.slice() : chevaux.slice(0, 6);
         var cartes = slots.map(function (x, i) {
-          var verrouille = i >= 2 && !premium;
+          var verrouille = !x.lien && i >= 2 && !premium;
           var coeur = (x.ch.flots || []).some(function (fl) { return fl.coeur; });
           return h("button", { key: "cg" + i, onClick: verrouille ? function () { setEcran("premium"); } : ouvrirCheval(x.id), style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
             h("div", { style: { position: "relative", width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", backgroundImage: x.ch.photo ? ("url(" + x.ch.photo + ")") : "none", backgroundColor: "#12242b", backgroundSize: "cover", backgroundPosition: "center", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 14px 26px -20px rgba(0,0,0,0.9)" } },
@@ -24293,7 +24317,7 @@ function EcranMonCavalier() {
               coeur && !verrouille ? h("div", { style: { position: "absolute", top: 7, right: 7, width: 24, height: 24, borderRadius: "50%", background: "rgba(7,8,10,0.55)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 } }, "\u2764\ufe0f") : null,
               verrouille ? h("div", { style: { position: "absolute", inset: 0, background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 } }, "\ud83d\udd12") : null),
             h("div", { style: { fontFamily: C, fontSize: 13.5, fontWeight: 600, marginTop: 7, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: ((typeof CHEVAUX_SPECTRAL !== "undefined" && CHEVAUX_SPECTRAL[x.id] && CHEVAUX_SPECTRAL[x.id].teinte) || "#EDF2F5") } }, x.ch.nom),
-            h("div", { style: { fontSize: 10, color: "#8A929C", fontFamily: M, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, verrouille ? "Premium \u2726" : (x.ch.info || "")));
+            h("div", { style: { fontSize: 10, color: "#8A929C", fontFamily: M, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, verrouille ? "Premium \u2726" : (x.lien ? ("\u25C7 " + T("Cheval de l\u2019\u00e9curie", "Stable horse", "Caballo de la cuadra", "Cavallo della scuderia", "\u53a9\u820e\u306e\u99ac")) : (x.ch.info || ""))));
         });
         cartes.push(h("button", { key: "ajout", onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, textAlign: "center" } },
           h("div", { style: { width: "100%", aspectRatio: "4 / 5", borderRadius: 14, border: "1.5px dashed " + __ta(0.5) + "", background: __ta(0.04), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 } },
@@ -24745,6 +24769,33 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
   var _n = React.useState(""), nom = _n[0], setNom = _n[1];
   var _b = React.useState(false), busy = _b[0], setBusy = _b[1];
   var _e = React.useState(null), err = _e[0], setErr = _e[1];
+  var ctxM = useApp(); var profilM = (ctxM && ctxM.profil) || {};
+  var _le = React.useState(null), listeEc = _le[0], setListeEc = _le[1];
+  var _lb = React.useState(null), lienBusy = _lb[0], setLienBusy = _lb[1];
+  React.useEffect(function () {
+    var actifM = true;
+    (async function () {
+      try {
+        var clubM = ((profilM.club || profilM.ecurie) || "").trim();
+        if (!clubM || typeof chevauxDeLEcurie !== "function") { if (actifM) setListeEc([]); return; }
+        var rE = await chevauxDeLEcurie(clubM, profilM.id || null);
+        var lstE = (rE && rE.data) || [];
+        try { if (typeof mesChevauxLies === "function") { var rMl = await mesChevauxLies(); var dejaE = {}; ((rMl && rMl.data) || []).forEach(function (cD) { dejaE[cD.id] = true; }); lstE = lstE.filter(function (cF) { return !dejaE[cF.id]; }); } } catch (eM2) { }
+        if (actifM) setListeEc(lstE);
+      } catch (eM) { if (actifM) setListeEc([]); }
+    })();
+    return function () { actifM = false; };
+  }, []);
+  async function rattacher(chR) {
+    if (lienBusy) return;
+    setLienBusy(chR.id); setErr(null);
+    try {
+      var rL = await lierCheval(chR.id);
+      var msgL = rL && rL.error ? String((rL.error && rL.error.message) || rL.error) : "";
+      if (rL && rL.error && !/duplicate|23505|unique/i.test(msgL)) { setLienBusy(null); setErr(msgL); return; }
+      setLienBusy(null); ouvrirFiche(chR.id);
+    } catch (eR) { setLienBusy(null); setErr(String(eR)); }
+  }
   async function creer() {
     var n = (nom || "").trim();
     if (!n || busy) return;
@@ -24769,6 +24820,21 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
       h("input", { value: nom, onChange: function (e) { setNom(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") creer(); }, placeholder: tr({ fr: "Son nom\u2026", en: "Its name\u2026", es: "Su nombre\u2026", it: "Il suo nome\u2026", ja: "\u540d\u524d\u2026" }), autoFocus: true, style: { width: "100%", boxSizing: "border-box", padding: "13px 16px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(32,217,245,0.4)", color: "#F4FEFF", fontSize: 16, fontFamily: "'Cinzel',Georgia,serif", letterSpacing: "0.5px", textAlign: "center", outline: "none" } }),
       err ? h("p", { style: { margin: "12px 0 0", fontSize: 11.5, color: "#F2A0B0", lineHeight: 1.5 } }, tr({ fr: "Impossible de cr\u00e9er la fiche : ", en: "Could not create the page: ", es: "No se pudo crear la ficha: ", it: "Impossibile creare la scheda: ", ja: "\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a" }) + err) : null,
       h("button", { onClick: creer, disabled: busy || !(nom || "").trim(), style: { width: "100%", marginTop: 18, border: "none", borderRadius: 999, padding: "14px 0", fontSize: 14, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", letterSpacing: "0.4px", background: busy ? "rgba(32,217,245,0.4)" : "linear-gradient(90deg,#0C5763,#38E2F8)", color: "#04252A", cursor: "pointer", boxShadow: "0 0 26px rgba(32,217,245,0.35)" } }, busy ? tr({ fr: "Cr\u00e9ation\u2026", en: "Creating\u2026", es: "Creando\u2026", it: "Creazione\u2026", ja: "\u4f5c\u6210\u4e2d\u2026" }) : tr({ fr: "Cr\u00e9er sa fiche \u2726", en: "Create its page \u2726", es: "Crear su ficha \u2726", it: "Crea la scheda \u2726", ja: "\u30da\u30fc\u30b8\u3092\u4f5c\u6210 \u2726" })),
+      (listeEc && listeEc.length) ? h("div", { style: { marginTop: 20, textAlign: "left" } },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 10px" } },
+          h("span", { style: { flex: 1, height: 1, background: "rgba(255,255,255,0.1)" } }),
+          h("span", { style: { fontSize: 10, letterSpacing: "2px", color: "#8A99A1", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif", fontWeight: 700 } }, tr({ fr: "ou", en: "or", es: "o", it: "o", ja: "\u307e\u305f\u306f" })),
+          h("span", { style: { flex: 1, height: 1, background: "rgba(255,255,255,0.1)" } })),
+        h("div", { style: { fontSize: 12, fontWeight: 700, color: "#DCE3E8", fontFamily: "'Montserrat',sans-serif", margin: "0 0 9px" } }, tr({ fr: "Choisis un cheval de l\u2019\u00e9curie", en: "Choose a stable horse", es: "Elige un caballo de la cuadra", it: "Scegli un cavallo della scuderia", ja: "\u53a9\u820e\u306e\u99ac\u3092\u9078\u3076" })),
+        h("div", { style: { maxHeight: 168, overflowY: "auto", display: "flex", flexDirection: "column", gap: 7, WebkitOverflowScrolling: "touch" } },
+          listeEc.map(function (chE) {
+            return h("button", { key: chE.id, onClick: function () { rattacher(chE); }, disabled: !!lienBusy, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 12, border: "1px solid rgba(32,217,245,0.25)", background: "rgba(255,255,255,0.03)", cursor: "pointer", textAlign: "left", width: "100%", boxSizing: "border-box" } },
+              h("div", { style: { width: 36, height: 36, borderRadius: 9, flex: "0 0 auto", overflow: "hidden", background: chE.photo_url ? ("url(" + chE.photo_url + ") center/cover") : "#12242b" } }),
+              h("div", { style: { flex: 1, minWidth: 0 } },
+                h("div", { style: { fontSize: 13.5, fontWeight: 600, color: "#F4FEFF", fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, chE.nom),
+                chE.__prop ? h("div", { style: { fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } }, chE.__prop) : null),
+              h("span", { style: { color: "#5FE9F0", fontSize: 16, fontWeight: 700, flexShrink: 0 } }, lienBusy === chE.id ? "\u2026" : "+"));
+          }))) : null,
       h("button", { onClick: onClose, style: { marginTop: 13, background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline", fontFamily: "'Montserrat',sans-serif" } }, tr({ fr: "Plus tard", en: "Later", es: "M\u00e1s tarde", it: "Pi\u00f9 tardi", ja: "\u5f8c\u3067" }))));
 }
 function PortraitChevalSpectral({ mien, compact }) {
@@ -26241,6 +26307,8 @@ function MurHype(props) {
   var stE = React.useState(false); var envoi = stE[0], setEnvoi = stE[1];
   var stM = React.useState(null); var moi = stM[0], setMoi = stM[1];
   var stMb = React.useState(props.membresSeuls ? null : true); var membre = stMb[0], setMembre = stMb[1];
+  var stPv = React.useState(true); var postePrive = stPv[0], setPostePrive = stPv[1];
+  function filtrerPrivesM(listeP, uP) { return (listeP || []).filter(function (p) { return !p.prive || (uP && p.user_id === uP.id); }); }
   var fRef = React.useRef(null);
   React.useEffect(function () {
     var actif = true;
@@ -26253,7 +26321,7 @@ function MurHype(props) {
         if (props.membresSeuls && c && /^(ecurie|club):/.test(c) && u) {
           try { var mem = await estMembreEcurie(c.replace(/^(ecurie|club):/, "")); if (actif) setMembre(!!mem); } catch (eMb) { if (actif) setMembre(false); }
         } else if (props.membresSeuls && actif) setMembre(true);
-        if (c) { var r = await listerCommentaires(c); if (actif) setPosts((r && r.data) || []); }
+        if (c) { var r = await listerCommentaires(c); if (actif) setPosts(filtrerPrivesM((r && r.data) || [], u)); }
       } catch (e) { }
       if (actif) setCharge(false);
     })();
@@ -26264,7 +26332,7 @@ function MurHype(props) {
     __murPhotoOuvrir[cibleR] = function () { if (fRef.current) fRef.current.click(); };
     return function () { delete __murPhotoOuvrir[cibleR]; };
   }, [cibleR]);
-  async function recharger() { try { var r = await listerCommentaires(cibleR); setPosts((r && r.data) || []); } catch (e) { } }
+  async function recharger() { try { var r = await listerCommentaires(cibleR); setPosts(filtrerPrivesM((r && r.data) || [], moi)); } catch (e) { } }
   function choisir(e) {
     var f = e.target.files && e.target.files[0]; e.target.value = "";
     if (!f) return;
@@ -26276,7 +26344,7 @@ function MurHype(props) {
     if (props.membresSeuls && membre !== true) return;
     setEnvoi(true);
     try {
-      var r = await posterCommentaire({ cible: cibleR, texte: texte.trim() || null, fichierPhoto: photo ? photo.fichier : null });
+      var r = await posterCommentaire({ cible: cibleR, texte: texte.trim() || null, fichierPhoto: photo ? photo.fichier : null, prive: props.choixPrive ? postePrive : undefined });
       if (!r || !r.error) { setTexte(""); setPhoto(null); await recharger(); try { window.dispatchEvent(new Event("hype-souvenirs-maj")); } catch (eM) { } }
     } catch (e) { }
     setEnvoi(false);
@@ -26309,6 +26377,7 @@ function MurHype(props) {
         h("button", { onClick: function () { setPhoto(null); }, style: { position: "absolute", top: -7, right: -7, width: 22, height: 22, borderRadius: "50%", border: "none", background: "#1B222B", color: "#C9D3D8", fontSize: 12, cursor: "pointer" } }, "\u2715")) : null,
       h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10 } },
         h("button", { onClick: function () { if (fRef.current) fRef.current.click(); }, style: { background: "none", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 999, padding: "7px 13px", color: "#C9D3D8", fontSize: 12.5, fontFamily: M2, cursor: "pointer" } }, "\uD83D\uDCF7 " + T("Photo", "Photo", "Foto", "Foto", "\u5199\u771f")),
+        (props.choixPrive ? h("button", { onClick: function () { setPostePrive(!postePrive); }, title: "Visibilit\u00e9", style: { background: postePrive ? "rgba(234,199,122,0.1)" : "rgba(32,217,245,0.1)", border: "1px solid " + (postePrive ? "rgba(234,199,122,0.5)" : "rgba(32,217,245,0.5)"), borderRadius: 999, padding: "7px 12px", color: postePrive ? "#F6E3B4" : "#5FE9F0", fontSize: 11.5, fontWeight: 700, fontFamily: M2, cursor: "pointer", marginRight: 8 } }, postePrive ? ("\uD83D\uDD12 " + T("Priv\u00e9", "Private", "Privado", "Privato", "\u975e\u516c\u958b")) : ("\uD83C\uDF0D " + T("Public", "Public", "P\u00fablico", "Pubblico", "\u516c\u958b"))) : null),
         h("button", { onClick: publier, disabled: envoi || (!texte.trim() && !photo), style: { border: "none", borderRadius: 999, padding: "8px 20px", fontSize: 13, fontWeight: 800, fontFamily: M2, cursor: "pointer", background: (texte.trim() || photo) ? "linear-gradient(90deg,#1FB8C4,#5FE9F0)" : "rgba(255,255,255,0.08)", color: (texte.trim() || photo) ? "#04252A" : "#5B646E" } }, envoi ? "\u2026" : T("Publier", "Post", "Publicar", "Pubblica", "\u6295\u7a3f")))));
   }
   enfants.push(h("input", { key: "fi", ref: fRef, type: "file", accept: "image/*,video/*", onChange: choisir, style: { display: "none" } }));
@@ -27056,7 +27125,7 @@ function GrilleSouvenirs(props) {
     try {
       if (typeof listerCommentaires === "function" && typeof supa !== "undefined") {
         listerCommentaires(props.cible).then(function (r) {
-          var posts = ((r && r.data) || []).filter(function (p) { return p.photo_url; }).reverse();
+          var monIdG = null; try { monIdG = ctx.profil && ctx.profil.id; } catch (eIg) { } var posts = ((r && r.data) || []).filter(function (p) { return p.photo_url && (!p.prive || (monIdG && p.user_id === monIdG)); }).reverse();
           var tous = posts.map(function (p) { return p.photo_url; });
           if (props.onMedias) { var infos = {}; posts.forEach(function (p) { infos[p.photo_url] = { id: p.id, user_id: p.user_id }; }); props.onMedias(infos); }
           setPhotos(tous);
@@ -27723,14 +27792,25 @@ function EcranCheval() {
           h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("les moments racontés", "the moments you tell", "los momentos contados", "i momenti raccontati", "語られた瞬間")),
           h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
         h("div", { className: "souvin", style: { animationDelay: ".3s" } },
-          h(MurHype, { cible: "cheval:" + id, sansTitre: true, momentsSeuls: true, teinte: teinte }))) : null,
+          h(MurHype, { cible: "cheval:" + id, sansTitre: true, momentsSeuls: true, teinte: teinte, choixPrive: !!(moi && chevalDyn && chevalDyn.dbId && chevalDyn.ownerId !== moi.id) }))) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
         h("div", { style: { fontSize: 42, marginTop: 26 } }, "🩺"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F6F7", marginTop: 14 } }, T("Le passeport arrive", "The passport is coming", "El pasaporte llega pronto", "Il passaporto sta arrivando", "パスポートは準備中")),
         h("p", { style: { fontSize: 13, lineHeight: 1.65, color: "rgba(237,242,245,0.6)", margin: "12px auto 0", maxWidth: 300 } }, T("Bientôt, chaque cheval aura ici sa carte d'identité vivante : vaccins, soins, consignes permanentes, habitudes — et Hey Baby s'en souviendra à chaque analyse.", "Soon, every horse will have its living identity card here: vaccines, care, standing instructions, habits — and Hey Baby will remember it in every analysis.", "Pronto, cada caballo tendrá aquí su carné de identidad vivo: vacunas, cuidados, consignas, hábitos — y Hey Baby lo recordará en cada análisis.", "Presto ogni cavallo avrà qui la sua carta d'identità viva: vaccini, cure, consegne, abitudini — e Hey Baby se ne ricorderà a ogni analisi.", "まもなく、それぞれの馬の「生きたカルテ」がここに。ワクチン・ケア・注意事項・習慣をHey Babyが記憶し、すべての分析に活かします。"))) : null) : null,
 
     h("style", { dangerouslySetInnerHTML: { __html: "@keyframes haloPlusFiche{0%{box-shadow:0 0 0 0 rgba(234,199,122,0.35);}55%{box-shadow:0 0 0 9px rgba(234,199,122,0);}100%{box-shadow:0 0 0 0 rgba(234,199,122,0);}}" } }),
-    (!moi || (chevalDyn && chevalDyn.dbId && chevalDyn.ownerId === moi.id) || (CHEVAUX_FICHE[id] && typeof estModerateurHype === "function" && estModerateurHype(moi))) ? null : h("div", { onClick: function () { setToast(T("Bientôt — ajoute ce cheval à ton écurie 💎", "Soon — add this horse to your stable 💎", "Pronto — añade este caballo a tu cuadra 💎", "Presto — aggiungi questo cavallo alla tua scuderia 💎", "近日公開 — この馬を厩舎に追加 💎")); setTimeout(function () { setToast(null); }, 2400); }, role: "button", "aria-label": "Ajouter à mon écurie", style: { position: "fixed", left: 16, right: 16, bottom: "calc(104px + env(safe-area-inset-bottom))", zIndex: 60, height: 46, borderRadius: 999, border: "1px solid rgba(234,199,122,0.6)", background: "linear-gradient(90deg, rgba(234,199,122,0.16), rgba(234,199,122,0.06))", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 9, fontSize: 12.5, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "#F6E3B4", animation: "haloPlusFiche 3.2s ease-out infinite", cursor: "pointer", boxShadow: "0 10px 28px rgba(0,0,0,0.5)" } }, h("span", { style: { fontSize: 17, fontWeight: 600, lineHeight: 1, marginTop: -1 } }, "+"), T("Ajouter à mon écurie", "Add to my stable", "Añadir a mi cuadra", "Aggiungi alla scuderia", "厩舎に追加") + " 💎"),
+    (!moi || (chevalDyn && chevalDyn.dbId && chevalDyn.ownerId === moi.id) || (CHEVAUX_FICHE[id] && typeof estModerateurHype === "function" && estModerateurHype(moi))) ? null : h("div", { onClick: async function () {
+      var dbIdL = chevalDyn && chevalDyn.dbId;
+      if (!dbIdL || !moi || typeof lierCheval !== "function") { setToast(T("Bientôt — ajoute ce cheval à ton écurie 💎", "Soon — add this horse to your stable 💎", "Pronto — añade este caballo a tu cuadra 💎", "Presto — aggiungi questo cavallo alla tua scuderia 💎", "近日公開 — この馬を厩舎に追加 💎")); setTimeout(function () { setToast(null); }, 2400); return; }
+      try {
+        var rLf = await lierCheval(dbIdL);
+        var msgLf = rLf && rLf.error ? String((rLf.error && rLf.error.message) || rLf.error) : "";
+        var dejaLf = rLf && rLf.error && /duplicate|23505|unique/i.test(msgLf);
+        if (rLf && rLf.error && !dejaLf) { setToast(T("Impossible pour l’instant — réessaie 💎", "Not possible right now — try again 💎", "No es posible ahora — reinténtalo 💎", "Impossibile per ora — riprova 💎", "今はできません — もう一度 💎")); }
+        else { setToast(dejaLf ? T("Déjà dans ton écurie ✓", "Already in your stable ✓", "Ya en tu cuadra ✓", "Già nella tua scuderia ✓", "すでに厩舎にいます ✓") : T("Dans ton écurie ✓ — retrouve-le dans « Mes chevaux »", "In your stable ✓ — see “My horses”", "En tu cuadra ✓ — míralo en « Mis caballos »", "Nella tua scuderia ✓ — vedi « I miei cavalli »", "厩舎に追加 ✓ —「私の馬」でチェック")); }
+      } catch (eLf) { setToast(T("Impossible pour l’instant — réessaie 💎", "Not possible right now — try again 💎", "No es posible ahora — reinténtalo 💎", "Impossibile per ora — riprova 💎", "今はできません — もう一度 💎")); }
+      setTimeout(function () { setToast(null); }, 2600);
+    }, role: "button", "aria-label": "Ajouter à mon écurie", style: { position: "fixed", left: 16, right: 16, bottom: "calc(104px + env(safe-area-inset-bottom))", zIndex: 60, height: 46, borderRadius: 999, border: "1px solid rgba(234,199,122,0.6)", background: "linear-gradient(90deg, rgba(234,199,122,0.16), rgba(234,199,122,0.06))", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 9, fontSize: 12.5, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "#F6E3B4", animation: "haloPlusFiche 3.2s ease-out infinite", cursor: "pointer", boxShadow: "0 10px 28px rgba(0,0,0,0.5)" } }, h("span", { style: { fontSize: 17, fontWeight: 600, lineHeight: 1, marginTop: -1 } }, "+"), T("Ajouter à mon écurie", "Add to my stable", "Añadir a mi cuadra", "Aggiungi alla scuderia", "厩舎に追加") + " 💎"),
 
     (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) ? h("div", { style: { margin: "26px 16px 8px", borderRadius: 20, border: "1px solid " + (partageEH ? "rgba(32,217,245,0.55)" : "rgba(255,255,255,0.09)"), background: "rgba(17,20,23,0.72)", backdropFilter: "blur(10px)", padding: "16px 16px", display: "flex", alignItems: "center", gap: 14, boxShadow: partageEH ? "0 0 26px rgba(32,217,245,0.18)" : "none", transition: "all .4s ease" } },
       h("div", { style: { flex: 1, minWidth: 0 } },
