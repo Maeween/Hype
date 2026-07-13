@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aperçu — Encarts unifiés</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:#060709;color:#EDF2F5;font-family:'Montserrat',system-ui,sans-serif}
+  .titre{padding:calc(env(safe-area-inset-top) + 26px) 20px 6px;text-align:center}
+  .titre .k{font-size:9.5px;letter-spacing:3.4px;font-weight:800;color:#5FE9F0;text-transform:uppercase}
+  .titre h1{font-family:'Cinzel',serif;font-size:20px;font-weight:700;letter-spacing:1.5px;margin:8px 0 4px;text-shadow:0 0 24px rgba(32,217,245,.35)}
+  .titre p{font-size:12px;color:rgba(234,241,244,.6);margin:0 auto;max-width:330px;line-height:1.55}
+  .sec{padding:24px 16px 0}
+  .badge{display:inline-block;font-size:9px;letter-spacing:.18em;font-weight:800;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-bottom:10px;background:rgba(32,217,245,.1);border:1px solid rgba(32,217,245,.4);color:#5FE9F0}
+  /* Encart cavaliers */
+  .enc{position:relative;border-radius:26px;overflow:hidden;border:1px solid rgba(32,217,245,.26);box-shadow:0 24px 60px rgba(0,0,0,.55)}
+  .enc .fond{position:absolute;inset:0;background:radial-gradient(120% 90% at 80% 10%,rgba(32,217,245,.2),transparent 55%),radial-gradient(90% 70% at 10% 90%,rgba(14,122,133,.28),transparent 55%),#080D11}
+  .enc .in{position:relative;z-index:2;padding:18px 12px 16px}
+  .enc .head{display:flex;align-items:center;gap:12px}
+  .enc .ic{flex:0 0 auto;width:42px;height:42px;border-radius:13px;border:1px solid rgba(32,217,245,.55);display:flex;align-items:center;justify-content:center;background:rgba(8,14,18,.55)}
+  .enc .ic svg{width:22px;height:22px;stroke:#5FE9F0;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .enc .t1{font-family:'Cinzel',serif;font-size:16px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#F4F7FA;text-shadow:0 2px 18px rgba(0,0,0,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .enc .t2{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:#5FE9F0;font-weight:600;margin-top:4px}
+  .enc .rang{display:flex;gap:10px;overflow-x:auto;margin-top:18px;padding:4px 2px 6px}
+  .med{flex:0 0 auto;width:104px;border-radius:17px;padding:10px 8px 12px;text-align:center;position:relative;background:rgba(8,13,17,.52);border:1px solid rgba(32,217,245,.2)}
+  .med .an{position:relative;width:66px;height:66px;margin:0 auto;border-radius:50%;padding:2px;background:linear-gradient(160deg,rgba(32,217,245,.85),rgba(32,217,245,.15));box-sizing:border-box}
+  .med .ph{width:100%;height:100%;border-radius:50%;border:2px solid rgba(6,8,10,.9);overflow:hidden;display:flex;align-items:center;justify-content:center;background:radial-gradient(80% 60% at 50% 28%,rgba(32,217,245,.32),transparent 70%),#0A0F14}
+  .med .x{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(7,10,13,.85);color:#C7D0D6;font-size:11px;line-height:18px}
+  .med .nm{font-family:'Cinzel',serif;font-size:12px;font-weight:600;color:#F4F7FA;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pil{display:flex;justify-content:center;margin-top:18px}
+  .pil button{display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:999px;border:1px solid rgba(32,217,245,.5);background:rgba(8,14,18,.55);color:#7FF0F2;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;font-family:'Montserrat',sans-serif}
+  .pil .rond{width:20px;height:20px;border-radius:50%;border:1.5px solid #5FE9F0;display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:#5FE9F0}
+  /* Bannière profil */
+  .ban{position:relative;width:100%;height:188px;border-radius:20px;border:1px solid rgba(32,217,245,.25);box-sizing:border-box;background:radial-gradient(90% 70% at 78% 30%,rgba(32,217,245,.14),transparent 62%),linear-gradient(150deg,#0C1218,#080B0F);overflow:hidden}
+  .ban .txt{position:absolute;left:16px;right:14px;bottom:13px;line-height:1.3;text-align:left}
+  .ban .k2{font-size:8.5px;letter-spacing:.3em;font-weight:800;color:#7DDDE8;text-transform:uppercase}
+  .ban .t3{margin-top:5px;font-family:'Cinzel',serif;font-size:18px;font-weight:700;letter-spacing:.06em;color:#F4FEFF;text-transform:uppercase}
+  .ban .ch{position:absolute;right:15px;bottom:13px;color:#7DDDE8;font-size:17px;font-weight:700}
+  .note{font-size:10.5px;color:#8A99A1;line-height:1.6;margin:12px 4px 0;text-align:center}
+</style></head><body>
+<div class="titre">
+  <div class="k">Aperçu · 14/07/2026 · 00h10</div>
+  <h1>ENCARTS UNIFIÉS</h1>
+  <p>Le même encart cavaliers partout, et la bannière Mon Écurie de l'Accueil désormais aussi sur ta page profil.</p>
+</div>
+
+<div class="sec">
+  <span class="badge">1 · Page Mon Club — nouvel encart cavaliers</span>
+  <div class="enc"><div class="fond"></div><div class="in">
+    <div class="head">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="16.8" cy="9.2" r="2.4"/><path d="M15.4 14.6c2.6-.4 4.6 1 5.1 3.6"/></svg></div>
+      <div style="min-width:0"><div class="t1">Cavaliers de l'écurie</div><div class="t2">La Team Ecurie Feinn</div></div>
+    </div>
+    <div class="rang">
+      <div class="med"><div class="an"><div class="ph"><span style="font-family:'Cinzel',serif;font-size:23px;color:#BFEFF6;text-shadow:0 0 22px rgba(32,217,245,.55)">L</span></div></div><div class="x">×</div><div class="nm">Liam</div></div>
+      <div class="med"><div class="an"><div class="ph"><span style="font-family:'Cinzel',serif;font-size:23px;color:#BFEFF6;text-shadow:0 0 22px rgba(32,217,245,.55)">E</span></div></div><div class="nm">Evan</div></div>
+      <div class="med"><div class="an" style="background:linear-gradient(160deg,rgba(234,199,122,.9),rgba(234,199,122,.18))"><div class="ph"><span style="font-family:'Cinzel',serif;font-size:23px;color:#F2DCA8;text-shadow:0 0 22px rgba(234,199,122,.5)">B</span></div></div><div class="nm">Blandine</div></div>
+    </div>
+    <div class="pil"><button><span class="rond">+</span>Ajouter un cavalier</button></div>
+  </div></div>
+  <div class="note">Médaillons vitrés, anneau lumineux, couronne dorée Feinn, × de retrait pour les invités, pilule « + Ajouter un cavalier » — en production les cercles sans avatar reçoivent les <b style="color:#BFEFF6">images spectrales par défaut variées</b> (mondes, chevaux au soleil…), les mêmes que sur la page Écurie.</div>
+</div>
+
+<div class="sec" style="padding-bottom:40px">
+  <span class="badge" style="border-color:rgba(234,199,122,.4);color:#F6E3B4;background:rgba(234,199,122,.08)">2 · Page profil — bannière Mon Écurie</span>
+  <div class="ban">
+    <div class="txt"><div class="k2">Ton univers</div><div class="t3">Mon Écurie</div></div>
+    <span class="ch">›</span>
+  </div>
+  <div class="note">Posée au-dessus de « Mes chevaux », un toucher ouvre l'onglet Écurie. En production elle affiche l'image <b style="color:#F4FEFF">UV3_EC</b> de l'Accueil (version FR ou EN selon la langue) — ici sa version de secours.</div>
+</div>
+</body></html>
