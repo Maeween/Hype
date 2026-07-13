@@ -18989,7 +18989,7 @@ const COURS_GALOP1_I18N = [{"id": "g1-c15", "icone": "🛡️", "type": "fondame
 /* ---------- CONTEXTE APPLICATIF + FONCTION DE TRADUCTION ---------- */
 const AppContext = createContext(null);
 const useApp = () => useContext(AppContext);
-const DEV_OUVRIR_PAGE = ""; // raccourci : "" = app normale | "compte" | "parcours" | "licence" | "parc" | ...
+const DEV_OUVRIR_PAGE = "communaute"; // raccourci : "" = app normale | "compte" | "parcours" | "licence" | "parc" | ...
 const LIEN_APP = "https://majestic-melba-997a68.netlify.app"; // lien public de l'appli — vide pour l'instant. Le bouton Partager ET le QR code le lisent.
 const CIBLE_DIRECTE = (function () {
     try {
@@ -28210,7 +28210,7 @@ function EcranBibliothequeGalops() {
     return (React.createElement("div", null,
         (msgAVenir ? React.createElement("div", { style: { position: "fixed", left: "50%", bottom: 92, transform: "translateX(-50%)", background: "rgba(13,20,28,0.94)", border: `1px solid ${COLORS.turquoise}66`, color: COLORS.blanc, padding: "11px 17px", borderRadius: 14, fontSize: 13, fontWeight: 600, zIndex: 60, maxWidth: "86%", textAlign: "center", boxShadow: "0 8px 30px rgba(10,26,36,0.099)" } }, "« " + msgAVenir + " » " + tr({ fr: "arrive très bientôt", en: "is coming very soon", ja: "は近日公開", es: "llega muy pronto", it: "arriva prestissimo" }) + " 🐴") : null),
         React.createElement("div", { style: { position: "relative", width: "100%", height: "46vh", minHeight: 330, maxHeight: 500, overflow: "hidden" } },
-            React.createElement("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(images/galops-hero.jpeg)", backgroundSize: "cover", backgroundPosition: "center 30%" } }),
+            React.createElement("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(images/galops-hero.jpg)", backgroundSize: "cover", backgroundPosition: "center 30%" } }),
             React.createElement("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0) 0%, rgba(6,7,9,0) 44%, rgba(6,7,9,0.62) 74%, #060709 100%)" } }),
             React.createElement("div", { style: { position: "absolute", left: 20, right: 20, bottom: 12 } },
                 React.createElement("p", { style: { margin: "0 0 8px", fontSize: 10.5, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: COLORS.turquoise } }, tr({ fr: "Parcours fédéral", en: "Federal pathway", es: "Itinerario federal", it: "Percorso federale", ja: "連盟公式カリキュラム" })),
