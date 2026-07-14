@@ -196,6 +196,14 @@ async function mesResultats() {
   if (!user) return { data: [], error: null };
   return await supa.from("resultats").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30);
 }
+async function chevauxDe(userId) {
+  if (!userId || typeof supa === "undefined") return { data: [], error: null };
+  return await supa.from("chevaux").select("*").eq("user_id", userId).eq("ecurie", "__perso__").order("created_at", { ascending: false });
+}
+async function resultatsDe(userId) {
+  if (!userId || typeof supa === "undefined") return { data: [], error: null };
+  return await supa.from("resultats").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(30);
+}
 async function modifierResultat(id, { concours, classement, media_url } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { error: "Pas connect\u00e9" };
@@ -19075,7 +19083,7 @@ function EcranCavalier(){
       h("div", { style:{ display:"flex", gap:14, overflowX:"auto", padding:"0 16px 4px" } },
         chevaux.map(function(x,i){ return h("button", { key:i, onClick:ouvrirCheval(x.id), style:{ flex:"0 0 auto", textAlign:"center", width:82, background:"none", border:"none", cursor:"pointer", padding:0 } },
           h("div", { style:{ width:72, height:72, borderRadius:"50%", margin:"0 auto", backgroundImage:"url("+x.ch.photo+")", backgroundSize:"cover", backgroundPosition:"center 28%", border:"1px solid rgba(32,217,245,0.555)" } }),
-          h("div", { style:{ fontSize:11.5, marginTop:6, color:"#C7D0D6", fontFamily:M, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth:82 } }, x.ch.nom)); }))) : null,
+          h("div", { style:{ fontSize:11.5, marginTop:6, color:"#C7D0D6", fontFamily:M, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", maxWidth:82 } }, x.ch.nom)); }))) : h("div", { style:{ padding:"24px 16px 0" } },   h("div", { style:{ padding:"0 0 12px", fontFamily:C, fontSize:15, letterSpacing:1, textTransform:"uppercase" } }, T("Ses chevaux","Their horses","Sus caballos","I suoi cavalli","\u5f7c\u306e\u99ac")),   h("div", { style:{ borderRadius:16, padding:"22px 18px", textAlign:"center", background:"linear-gradient(160deg, rgba(32,217,245,0.06), rgba(11,16,19,0.4))", border:"1px solid rgba(95,233,240,0.14)" } },     h("div", { style:{ fontSize:26, marginBottom:8, opacity:0.9 } }, "\ud83d\udc0e"),     h("div", { style:{ fontSize:14.5, fontWeight:700, color:"#EAF1F4", fontFamily:C, letterSpacing:0.3 } }, T("Aucun cheval pour l\u2019instant","No horse yet","Ning\u00fan caballo todav\u00eda","Nessun cavallo per ora","\u307e\u3060\u99ac\u304c\u3044\u307e\u305b\u3093")),     h("div", { style:{ fontSize:12.5, color:"#8A929C", fontFamily:M, marginTop:5, lineHeight:1.5 } }, T("Ajoute tes chevaux pour construire ton \u00e9curie et tes souvenirs.","Add your horses to build your stable and memories.","","","")))),
     h("div", { style: { padding: "26px 16px 0" } }, h(EncartAlbumEcurie, null)),
     h("div", { style:{ padding:"26px 16px 0" } },
       h("div", { style:{ fontFamily:C, fontSize:15, letterSpacing:1, textTransform:"uppercase", marginBottom:12 } }, T("Palmar\u00e8s","Achievements","Palmar\u00e9s","Palmar\u00e8s","\u6226\u7e3e")),
@@ -19083,7 +19091,7 @@ function EcranCavalier(){
         h("div", { style:{ fontSize:13, fontWeight:700, color:"#5FE9F0", fontFamily:M, minWidth:38 } }, r.annee),
         h("div", { style:{ flex:1 } }, h("div",{style:{fontSize:13.5,fontWeight:600}}, r.event), h("div",{style:{fontSize:11.5,color:"#8A929C",fontFamily:M,marginTop:2}}, r.disc + " \u00b7 " + r.chevalNom)),
         h("div", { style:{ fontSize:14, fontWeight:800, color:(/^1/.test(r.rang)?"#E8C887":"#DDE6EA"), fontFamily:M } }, r.rang)); }))
-        : h("div", { style:{ color:"#8A929C", fontSize:13, fontFamily:M, fontStyle:"italic" } }, T("Palmar\u00e8s \u00e0 venir.","Coming soon.","","",""))), h("div", { style: { padding: "0 16px 26px" } }, h(SectionCommentaires, { cible: "cavalier:" + id })));
+        : h("div", { style:{ borderRadius:16, padding:"22px 18px", textAlign:"center", background:"linear-gradient(160deg, rgba(32,217,245,0.06), rgba(11,16,19,0.4))", border:"1px solid rgba(95,233,240,0.14)" } }, h("div", { style:{ fontSize:26, marginBottom:8, opacity:0.9 } }, "\ud83c\udfc6"), h("div", { style:{ fontSize:14.5, fontWeight:700, color:"#EAF1F4", fontFamily:C, letterSpacing:0.3 } }, T("Ton palmar\u00e8s commence ici","Your achievements start here","Tu palmar\u00e9s empieza aqu\u00ed","Il tuo palmar\u00e8s inizia qui","\u3042\u306a\u305f\u306e\u6210\u7e3e\u306f\u3053\u3053\u304b\u3089")), h("div", { style:{ fontSize:12.5, color:"#8A929C", fontFamily:M, marginTop:5, lineHeight:1.5 } }, T("Ajoute tes concours et tes classements pour les voir appara\u00eetre.","Add your competitions and rankings to see them here.","","","")))), h("div", { style: { padding: "0 16px 26px" } }, h(SectionCommentaires, { cible: "cavalier:" + id })));
 }
 const PHOTO_PARC_ENTREE = HYPE_IMGS["k232"];
 const NUMEROS_LAMOTTE = { fr: HYPE_IMGS["k233"], en: HYPE_IMGS["k234"], it: HYPE_IMGS["k235"], ja: HYPE_IMGS["k236"], es: HYPE_IMGS["k237"] };
@@ -19512,7 +19520,7 @@ function EcranCommunaute() {
     var surPlace = CAVALIERS.filter(function(c){ return c.surPlace; });
     function ouvrirProfilPublic(cav){
       try { if (typeof window !== "undefined") {
-        window.__cavalierPublic = { pseudo: cav.pseudo, photo: (typeof avSrc === "function" ? avSrc(cav.avatar_url) : null) || null, ecurie: cav.ecurie || "", ville: cav.ville || "" };
+        window.__cavalierPublic = { id: (cav.id || cav.user_id || null), pseudo: cav.pseudo, photo: (typeof avSrc === "function" ? avSrc(cav.avatar_url) : null) || null, ecurie: cav.ecurie || "", club: (cav.club || cav.ecurie || ""), ville: cav.ville || "" };
         window.__cavalierOuvert = "__public";
       } } catch(e){}
       setEcran("cavalier");
@@ -20101,7 +20109,7 @@ function Router() {
                 ecran === "monde" && React.createElement(EcranMonde, null),
                 ecran === "communaute" && React.createElement(EcranCommunaute, null),
                 ecran === "evenement" && React.createElement(EcranEvenement, null),
-          ecran === "cavalier" && React.createElement(EcranCavalier, null),
+          ecran === "cavalier" && React.createElement(EcranMonCavalier, null),
                 ecran === "moncavalier" && React.createElement(EcranMonCavalier, null),
                 ecran === "memoirescavalier" && React.createElement(EcranMemoiresCavalier, null),
                 ecran === "album-invite" && React.createElement(EcranAlbumInvite, null),
@@ -24169,8 +24177,61 @@ function EcranMonCavalier() {
   React.useEffect(function () { (async function () { try { if (typeof mesAmis === "function") { var ra = await mesAmis(); if (ra) { setAmisListe(ra.data || []); setAmis((ra.data || []).length); } } } catch (e) { setAmisListe([]); } })(); }, []);
   var h = React.createElement;
   var ctx = useApp();
-  var profil = ctx.profil, setProfil = ctx.setProfil, setEcran = ctx.setEcran, tr = ctx.tr, premium = ctx.premium;
+  var setEcran = ctx.setEcran, tr = ctx.tr, premium = ctx.premium;
+  // --- Mode visite : profil d'un autre cavalier ---
+  var __visitePub = (typeof window !== "undefined" && window.__cavalierOuvert === "__public" && window.__cavalierPublic) ? window.__cavalierPublic : null;
+  var __estVisite = !!__visitePub;
+  var _vP = React.useState(null), visiteChevaux = _vP[0], setVisiteChevaux = _vP[1];
+  var _vR = React.useState(null), visiteResultats = _vR[0], setVisiteResultats = _vR[1];
+  React.useEffect(function () {
+    if (!__estVisite) return;
+    (async function () {
+      try {
+        var uid = __visitePub && __visitePub.id;
+        if (uid && typeof chevauxDe === "function") { var rc = await chevauxDe(uid); setVisiteChevaux((rc && rc.data) || []); } else { setVisiteChevaux([]); }
+        if (uid && typeof resultatsDe === "function") { var rr = await resultatsDe(uid); setVisiteResultats((rr && rr.data) || []); } else { setVisiteResultats([]); }
+      } catch (eV) { setVisiteChevaux([]); setVisiteResultats([]); }
+    })();
+  }, [__estVisite, (__visitePub && __visitePub.id) || ""]);
+  // profil affiche : le visite si en visite, sinon le mien
+  var profil = __estVisite ? {
+    pseudo: __visitePub.pseudo || "Cavalier",
+    prenom: __visitePub.pseudo || "Cavalier",
+    nom: __visitePub.pseudo || "Cavalier",
+    avatar_url: __visitePub.photo || null,
+    photo: __visitePub.photo || null,
+    club: __visitePub.club || __visitePub.ecurie || "",
+    ecurie: __visitePub.ecurie || "",
+    ville: __visitePub.ville || ""
+  } : ctx.profil;
+  var setProfil = __estVisite ? function () {} : ctx.setProfil;
+  var _sug = React.useState([]), suggestions = _sug[0], setSuggestions = _sug[1];
+  React.useEffect(function () { (async function () {
+    try {
+      if (__estVisite || typeof listerCavaliers !== "function") { setSuggestions([]); return; }
+      var rs = await listerCavaliers({ limite: 24 });
+      var liste = (rs && rs.data) || [];
+      var monClubS = (((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || "").trim().toLowerCase());
+      if (monClubS) {
+        liste.sort(function (a, b) {
+          var ca = String((a.ecurie || "")).trim().toLowerCase() === monClubS ? 0 : 1;
+          var cb = String((b.ecurie || "")).trim().toLowerCase() === monClubS ? 0 : 1;
+          return ca - cb;
+        });
+      }
+      setSuggestions(liste.slice(0, 12));
+    } catch (eS) { setSuggestions([]); }
+  })(); }, [__estVisite, (ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || ""]);
   function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
+  // Voile "priv\u00e9" : grise + floute + cadenas, non cliquable (mode visite uniquement)
+  function __verrou(contenu, label) {
+    if (!__estVisite) return contenu;
+    return h("div", { style: { position: "relative" } },
+      h("div", { style: { pointerEvents: "none" }, "aria-hidden": "true" }, contenu),
+      h("div", { style: { position: "absolute", top: 12, right: 12, display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 999, background: "rgba(6,7,9,0.6)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.14)", zIndex: 4 } },
+        h("span", { style: { fontSize: 12 } }, "\ud83d\udd12"),
+        h("span", { style: { fontSize: 11, fontWeight: 700, color: "#EAF1F4", fontFamily: M, letterSpacing: 0.5 } }, label || T("Priv\u00e9", "Private", "Privado", "Privato", "\u975e\u516c\u958b"))));
+  }
   var _chEcP = React.useState([]); var chevauxEcurieP = _chEcP[0], setChevauxEcurieP = _chEcP[1];
   React.useEffect(function () { (async function () {
     try {
@@ -24189,12 +24250,13 @@ function EcranMonCavalier() {
   function choisirPhoto(e) { var f = e.target.files && e.target.files[0]; if (!f) return; var lr = new FileReader(); lr.onload = function () { setProfil(function (pp) { return Object.assign({}, pp, { avatar: lr.result }); }); }; lr.readAsDataURL(f); }
   var _mr = React.useState([]), resReels = _mr[0], setResReels = _mr[1];
   React.useEffect(function () { (async function () { try { if (typeof mesResultats === "function" && typeof supa !== "undefined") { var r = await mesResultats(); if (r && r.data && r.data.length) setResReels(r.data); } } catch (e) {} })(); }, []);
+  var resActifs = __estVisite ? (visiteResultats || []) : resReels;
   var _pn = String((profil.prenom || profil.pseudo || "")).trim().toLowerCase();
   var pal = [];
   for (var hid in CHEVAUX_FICHE) { var ch = CHEVAUX_FICHE[hid]; if (ch && ch.palmares) { for (var kk = 0; kk < ch.palmares.length; kk++) { var r = ch.palmares[kk]; var _rc = String(r.cav || "").toLowerCase(); var _nomCav = (typeof CAVALIERS !== "undefined" && CAVALIERS[r.cav] && CAVALIERS[r.cav].nom) ? String(CAVALIERS[r.cav].nom).toLowerCase() : ""; if (_pn && (_rc === _pn || (_nomCav && _nomCav.indexOf(_pn) === 0))) { pal.push({ annee: r.annee, event: r.event, rang: r.rang, disc: (r.ds || "").split(" \u00b7 ")[0], chevalNom: ch.nom, chevalId: hid }); } } } }
   pal.sort(function (a, b) { return (parseInt(b.annee) || 0) - (parseInt(a.annee) || 0); });
-  if (resReels.length) {
-    var reels = resReels.filter(function (r) { return String(r.classement || "").trim() !== "" && String(r.concours || "").trim() !== ""; }).map(function (r) { var d = new Date(r.created_at); return { annee: String(d.getFullYear()), event: r.concours || "", rang: r.classement || "", auth: true, disc: "", chevalNom: "", chevalId: null, reel: true }; });
+  if (resActifs.length) {
+    var reels = resActifs.filter(function (r) { return String(r.classement || "").trim() !== "" && String(r.concours || "").trim() !== ""; }).map(function (r) { var d = new Date(r.created_at); return { annee: String(d.getFullYear()), event: r.concours || "", rang: r.classement || "", auth: true, disc: "", chevalNom: "", chevalId: null, reel: true }; });
     pal = reels.concat(pal.filter(function (p) { return !p.reel; }));
   }
   var podiums = pal.filter(function (r) { return /^(1|2|3)/.test(r.rang); }).length;
@@ -24232,7 +24294,7 @@ function EcranMonCavalier() {
       h("div", { style: { height: 74, borderRadius: 16, background: "rgba(255,255,255,0.02)", border: "1px dashed rgba(255,255,255,0.09)", display: "flex", alignItems: "center", justifyContent: "center" } },
         h("div", { style: { fontSize: 11.5, color: "#5B646E", fontFamily: M } }, T("\u2727 En pr\u00e9paration dans l'\u00e9curie Hype", "\u2727 In preparation at the Hype stable", "\u2727 En preparaci\u00f3n", "\u2727 In preparazione", "\u2727 \u6e96\u5099\u4e2d"))));
   }
-  var prenom = ((profil.prenom || "").trim()) || T("Cavalier", "Rider", "Jinete", "Cavaliere", "\u9a0e\u624b");
+  var prenom = ((profil.prenom || profil.pseudo || "").trim()) || T("Cavalier", "Rider", "Jinete", "Cavaliere", "\u9a0e\u624b");
   var ecSt = React.useState(false); var editClub = ecSt[0], setEditClub = ecSt[1];
   var psSt = React.useState(false); var editPseudo = psSt[0], setEditPseudo = psSt[1];
   var plSt = React.useState(""); var pseudoLocal = plSt[0], setPseudoLocal = plSt[1];
@@ -24271,10 +24333,10 @@ function EcranMonCavalier() {
       h("div", { style: { position: "absolute", bottom: 16, left: 18, right: 18 } },
         h("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
           h("div", { style: { fontFamily: C, fontSize: 30, fontWeight: 700, letterSpacing: 1, lineHeight: 1.02, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, prenom),
-          h("button", { onClick: function (ePs) { if (ePs && ePs.stopPropagation) ePs.stopPropagation(); setPseudoLocal((profil.prenom || profil.pseudo || "").trim()); setEditPseudo(true); }, "aria-label": "Modifier mon pseudo", style: { flexShrink: 0, width: 30, height: 30, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 12, cursor: "pointer", backdropFilter: "blur(6px)" } }, "\u270E")),
+          h("button", { onClick: function (ePs) { if (ePs && ePs.stopPropagation) ePs.stopPropagation(); setPseudoLocal((profil.prenom || profil.pseudo || "").trim()); if (__estVisite) return; setEditPseudo(true); }, "aria-label": "Modifier mon pseudo", style: { flexShrink: 0, width: 30, height: 30, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 12, cursor: "pointer", backdropFilter: "blur(6px)" } }, "\u270E")),
         h("div", { style: { marginTop: 7, fontSize: 12.5, color: "#AEB8C0", fontStyle: "italic", fontFamily: "Georgia, serif", maxWidth: "88%", lineHeight: 1.35 } }, "\u201c" + citation + "\u201d"))),
     h("div", { style: { display: "flex", gap: 10, margin: "16px 16px 0", alignItems: "stretch" } },
-      h("button", { onClick: function () { setEcran("profil"); }, style: { flex: 1, margin: 0, width: "auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px", borderRadius: 14, background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "#AEB8C0", fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
+      h("button", { onClick: function () { if (__estVisite) return; setEcran("profil"); }, style: { flex: 1, margin: 0, width: "auto", display: "flex", alignItems: "center", justifyContent: "center", gap: 7, padding: "12px", borderRadius: 14, background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "#AEB8C0", fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
       "\u2699\ufe0e " + T("Modifier mes informations", "Edit my info", "Editar mi informaci\u00f3n", "Modifica le mie info", "\u60c5\u5831\u3092\u7de8\u96c6") + " \u203a"),
       h("div", { style: { display: "flex", gap: 8, alignItems: "center", padding: "0 10px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" } },
         [TEINTES_HYPE.turquoise, TEINTES_HYPE.crimson].map(function (te) {
@@ -24294,13 +24356,13 @@ function EcranMonCavalier() {
         h("div", { style: { fontSize: 8.5, fontWeight: 600, letterSpacing: 2, color: TURQL, textTransform: "uppercase", fontFamily: M } }, T("Mon club", "My club", "Mi club", "Il mio club", "\u30de\u30a4\u30af\u30e9\u30d6")),
         h("div", { style: { fontFamily: C, fontSize: 15.5, fontWeight: 600, marginTop: 6, lineHeight: 1.22, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } }, (profil.club || profil.ecurie) || T("Choisir mon club", "Choose my club", "Elegir mi club", "Scegli il mio club", "\u30af\u30e9\u30d6\u3092\u9078\u3076")),
         (profil.club || profil.ecurie) ? h("div", { style: { fontSize: 9.5, color: "#8A99A1", marginTop: 5, fontFamily: M, lineHeight: 1.35 } }, T("Voir la page du club", "View the club page", "Ver la p\u00e1gina del club", "Vedi la pagina del club", "\u30af\u30e9\u30d6\u30da\u30fc\u30b8\u3092\u898b\u308b")) : null,
-        h("button", { onClick: function (eE1) { if (eE1 && eE1.stopPropagation) eE1.stopPropagation(); setClubLocal({ club: profil.club || profil.ecurie || "" }); setEditClub(true); }, "aria-label": "Modifier mon club", style: { position: "absolute", top: 9, right: 9, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.25)", color: "#C9D3D8", fontSize: 11, cursor: "pointer" } }, "\u270E")),
+        h("button", { onClick: function (eE1) { if (eE1 && eE1.stopPropagation) eE1.stopPropagation(); setClubLocal({ club: profil.club || profil.ecurie || "" }); if (__estVisite) return; setEditClub(true); }, "aria-label": "Modifier mon club", style: { position: "absolute", top: 9, right: 9, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.25)", color: "#C9D3D8", fontSize: 11, cursor: "pointer" } }, "\u270E")),
       (profil.club2 || profil.ecurie2)
         ? h("div", { onClick: function () { try { window.__guildeEcurie = (profil.club2 || profil.ecurie2 || "").trim(); } catch (eG2) { } setEcran("guilde"); }, role: "button", style: { position: "relative", minHeight: 118, padding: "13px 34px 13px 13px", borderRadius: 18, cursor: "pointer", overflow: "hidden", border: "1px solid rgba(255,255,255,0.13)", background: "rgba(255,255,255,0.03)" } },
             h("div", { style: { fontSize: 8.5, fontWeight: 600, letterSpacing: 2, color: "#8A99A1", textTransform: "uppercase", fontFamily: M } }, T("Ma deuxi\u00e8me \u00e9curie", "My second stable", "Mi segunda cuadra", "La mia seconda scuderia", "2\u3064\u76ee\u306e\u53a9\u820e")),
             h("div", { style: { fontFamily: C, fontSize: 15.5, fontWeight: 600, marginTop: 6, lineHeight: 1.22, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } }, profil.club2 || profil.ecurie2),
             h("div", { style: { fontSize: 9.5, color: "#8A99A1", marginTop: 5, fontFamily: M, lineHeight: 1.35 } }, T("Voir la page de l'\u00e9curie", "View the stable page", "Ver la p\u00e1gina", "Vedi la pagina", "\u53a9\u820e\u30da\u30fc\u30b8\u3092\u898b\u308b")),
-            h("button", { onClick: function (eE2) { if (eE2 && eE2.stopPropagation) eE2.stopPropagation(); setClub2Local({ club: profil.club2 || profil.ecurie2 || "" }); setEditClub2(true); }, "aria-label": "Modifier ma deuxi\u00e8me \u00e9curie", style: { position: "absolute", top: 9, right: 9, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.25)", color: "#C9D3D8", fontSize: 11, cursor: "pointer" } }, "\u270E"))
+            h("button", { onClick: function (eE2) { if (eE2 && eE2.stopPropagation) eE2.stopPropagation(); setClub2Local({ club: profil.club2 || profil.ecurie2 || "" }); if (__estVisite) return; setEditClub2(true); }, "aria-label": "Modifier ma deuxi\u00e8me \u00e9curie", style: { position: "absolute", top: 9, right: 9, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.25)", color: "#C9D3D8", fontSize: 11, cursor: "pointer" } }, "\u270E"))
         : h("button", { onClick: function () { setClub2Local({ club: "" }); setEditClub2(true); }, style: { minHeight: 118, borderRadius: 18, border: "1.5px dashed rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.05)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", color: "#5FE9F0", fontFamily: M, fontSize: 10.5, fontWeight: 600, padding: 10, textAlign: "center" } },
             h("span", { style: { width: 28, height: 28, borderRadius: "50%", border: "1.5px solid #5FE9F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 } }, "+"),
             T("Ajouter une \u00e9curie", "Add a stable", "A\u00f1adir una cuadra", "Aggiungi una scuderia", "\u53a9\u820e\u3092\u8ffd\u52a0"))),
@@ -24356,9 +24418,10 @@ function EcranMonCavalier() {
         h("p", { style: { margin: 0, fontSize: 12.5, fontWeight: 500, color: "rgba(244,247,250,0.85)", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.45, textShadow: "0 1px 10px rgba(0,0,0,0.95), 0 0 18px rgba(0,0,0,0.8)" } }, T("Ton r\u00e9cit, tes albums, tes conseils \u00e9pingl\u00e9s", "Your story, albums and pinned advice", "Tu relato, \u00e1lbumes y consejos", "Il tuo racconto, album e consigli", "\u3042\u306a\u305f\u306e\u7269\u8a9e\u3068\u30a2\u30eb\u30d0\u30e0"))),
       h("div", { style: { position: "absolute", right: 16, bottom: 20, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.6)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(7,8,10,0.45)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", boxShadow: "0 0 18px rgba(32,217,245,0.2)", animation: "glowPulse 3.2s ease-in-out infinite" } },
         h("svg", { viewBox: "0 0 24 24", style: { width: 16, height: 16, stroke: "#20D9F5", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M9 6l6 6-6 6" })))),
-    h("div", { style: { padding: "26px 16px 0" } }, h(EncartAlbumEcurie, null)),
-    h("button", { onClick: function () { setEcran("assistant"); }, style: { position: "relative", display: "block", width: "calc(100% - 32px)", height: 188, margin: "26px 16px 0", padding: 0, borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", background: "#0B1013", cursor: "pointer", textAlign: "left", boxSizing: "border-box" } },
+    h("div", { style: { padding: "26px 16px 0" } }, __verrou(h(EncartAlbumEcurie, null), T("Albums priv\u00e9s", "Private albums", "\u00c1lbumes privados", "Album privati", "\u975e\u516c\u958b\u30a2\u30eb\u30d0\u30e0"))),
+    h("button", { onClick: function () { if (!__estVisite) setEcran("assistant"); }, disabled: __estVisite, style: { position: "relative", display: "block", width: "calc(100% - 32px)", height: 188, margin: "26px 16px 0", padding: 0, borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", background: "#0B1013", cursor: __estVisite ? "default" : "pointer", textAlign: "left", boxSizing: "border-box" } },
       (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.heyBabyCavalier) ? h("img", { src: HYPE_IMGS.heyBabyCavalier, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 26%", display: "block" } }) : null,
+      (__estVisite ? h("div", { style: { position: "absolute", top: 12, right: 12, display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 999, background: "rgba(6,7,9,0.6)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.14)", zIndex: 4 } }, h("span", { style: { fontSize: 12 } }, "\ud83d\udd12"), h("span", { style: { fontSize: 11, fontWeight: 700, color: "#EAF1F4", fontFamily: M, letterSpacing: 0.5 } }, T("Priv\u00e9", "Private", "Privado", "Privato", "\u975e\u516c\u958b"))) : null),
       h("div", { style: { position: "absolute", left: 18, bottom: 16, right: 78 } },
         h("div", { style: { fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 700, fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 10px rgba(0,0,0,0.9)" } }, "HEY BABY \u00b7 " + T("Ton coach virtuel", "Your virtual coach", "Tu coach virtual", "Il tuo coach virtuale", "\u30de\u30a4\u30d0\u30fc\u30c1\u30e3\u30eb\u30b3\u30fc\u30c1")),
         h("div", { style: { marginTop: 5, fontFamily: "'Cinzel',serif", fontSize: 21, fontWeight: 600, color: "#F4F7FA", lineHeight: 1.12, letterSpacing: "0.04em", textTransform: "uppercase", textShadow: "0 2px 16px rgba(0,0,0,0.9)" } }, T("Continue ta progression", "Keep progressing", "Contin\u00faa tu progresi\u00f3n", "Continua i tuoi progressi", "\u4e0a\u9054\u3092\u7d9a\u3051\u3088\u3046")),
@@ -24369,14 +24432,14 @@ function EcranMonCavalier() {
       eyebrow(T("Mes amis", "My friends", "Mis amigos", "I miei amici", "\u53cb\u9054"), T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066"), function () { setEcran("communaute"); }),
       (amisListe && amisListe.length) ? h("div", { "data-hscroll": "1", style: { display: "flex", gap: 12, overflowX: "auto", padding: "2px 2px 12px", marginTop: 2 } },
         amisListe.map(function (ami, iA) {
-          return h("div", { key: ami.id || iA, onClick: function () { try { if (typeof window !== "undefined") { window.__cavalierPublic = { pseudo: ami.pseudo, photo: (typeof avSrc === "function" ? avSrc(ami.avatar_url) : null) || null, ecurie: ami.ecurie || "", ville: ami.ville || "" }; window.__cavalierOuvert = "__public"; } } catch (eA) { } setEcran("cavalier"); }, role: "button", style: { flex: "0 0 auto", width: 78, textAlign: "center", cursor: "pointer" } },
+          return h("div", { key: ami.id || iA, onClick: function () { try { if (typeof window !== "undefined") { window.__cavalierPublic = { id: (ami.id || ami.user_id || null), pseudo: ami.pseudo, photo: (typeof avSrc === "function" ? avSrc(ami.avatar_url) : null) || null, ecurie: ami.ecurie || "", club: (ami.club || ami.ecurie || ""), ville: ami.ville || "" }; window.__cavalierOuvert = "__public"; } } catch (eA) { } setEcran("cavalier"); }, role: "button", style: { flex: "0 0 auto", width: 78, textAlign: "center", cursor: "pointer" } },
             h("div", { style: { position: "relative", width: 66, height: 66, borderRadius: "50%", margin: "0 auto", padding: 2, background: "linear-gradient(135deg,#20D9F5,#7FF0F2)" } },
               (function () { var srcA = ((typeof avSrc === "function" ? avSrc(ami.avatar_url) : ami.avatar_url) || (typeof avatarHypeDefaut === "function" ? avatarHypeDefaut(ami.id || ami.pseudo) : null));
                 return srcA ? h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", backgroundImage: "url(" + srcA + ")", backgroundSize: "cover", backgroundPosition: "center", border: "2.5px solid #060709" } })
                   : h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", background: "#0E1B22", border: "2.5px solid #060709", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: C, fontSize: 22, color: "#7FF0F2" } }, String(ami.pseudo || "?").charAt(0).toUpperCase()); })()),
             h("div", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 600, color: "#EDF2F5", marginTop: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ami.pseudo || "\u2014"),
             ami.ecurie ? h("div", { style: { fontSize: 8.5, color: "#8A929C", fontFamily: M, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ami.ecurie) : null);
-        })) : null,
+        })) : ((!__estVisite && suggestions && suggestions.length) ? h("div", null,     h("div", { style: { fontSize: 12, color: "#8A929C", fontFamily: M, padding: "0 2px 8px", marginTop: 2 } }, T("Cavaliers \u00e0 suivre", "Riders to follow", "Jinetes a seguir", "Cavalieri da seguire", "\u30d5\u30a9\u30ed\u30fc\u3059\u308b\u4e57\u624b")),     h("div", { "data-hscroll": "1", style: { display: "flex", gap: 12, overflowX: "auto", padding: "2px 2px 12px" } },       suggestions.map(function (sg, iS) {         return h("div", { key: sg.id || iS, onClick: function () { try { if (typeof window !== "undefined") { window.__cavalierPublic = { id: (sg.id || sg.user_id || null), pseudo: sg.pseudo, photo: (typeof avSrc === "function" ? avSrc(sg.avatar_url) : null) || null, ecurie: sg.ecurie || "", club: (sg.club || sg.ecurie || ""), ville: sg.ville || "" }; window.__cavalierOuvert = "__public"; } } catch (eSg) { } setEcran("cavalier"); }, role: "button", style: { flex: "0 0 auto", width: 78, textAlign: "center", cursor: "pointer" } },           h("div", { style: { position: "relative", width: 66, height: 66, borderRadius: "50%", margin: "0 auto", overflow: "hidden", background: "linear-gradient(135deg,#12303A,#0B1013)", border: "1px solid rgba(95,233,240,0.25)", display: "flex", alignItems: "center", justifyContent: "center" } },             (typeof avSrc === "function" && sg.avatar_url) ? h("img", { src: avSrc(sg.avatar_url), alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : h("span", { style: { fontFamily: C, fontSize: 22, color: "#5FE9F0" } }, String(sg.pseudo || "?").charAt(0).toUpperCase())),           h("div", { style: { fontSize: 11, fontWeight: 700, color: "#DDE6EA", fontFamily: M, marginTop: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, sg.pseudo || "\u2014"),           sg.ecurie ? h("div", { style: { fontSize: 8.5, color: "#8A929C", fontFamily: M, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, sg.ecurie) : null);       }))) : null),
       h("div", { onClick: function () { setEcran("communaute"); }, style: { display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderRadius: 16, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", cursor: "pointer" } },
         h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, color: TURQL, minWidth: 30, textAlign: "center" } }, amis != null ? amis : "\u2014"),
         h("div", { style: { flex: 1, fontSize: 12.5, color: "#C7D0D6", fontFamily: M, lineHeight: 1.45 } }, T("cavaliers dans ta team \u2014 retrouve-les et suis-en de nouveaux dans la Communaut\u00e9", "riders in your team \u2014 find them in the Community", "jinetes en tu equipo", "cavalieri nella tua squadra", "\u30c1\u30fc\u30e0\u306e\u4ef2\u9593")),
@@ -24387,7 +24450,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
-    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 14.07 \u00b7 13h00"),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 14.07 \u00b7 15h40"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
@@ -24471,7 +24534,7 @@ function EcranGuilde() {
       try { var rs = await supa.from("resultats").select("id, user_id, concours, classement, photo_url, created_at").in("user_id", idsMembres).order("created_at", { ascending: false }).limit(8); if (rs && rs.data && rs.data.length) setResultatsClub(rs.data); } catch (eRs) { }
     }
   })(); }, [monClub]);
-  function ouvrirCavalierClub(p) { try { window.__cavalierPublic = { pseudo: p.pseudo || "Cavalier", photo: p.avatar_url || null, ecurie: monClub, ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (eC) { } setEcran("cavalier"); }
+  function ouvrirCavalierClub(p) { try { window.__cavalierPublic = { id: (p.id || p.user_id || null), pseudo: p.pseudo || "Cavalier", photo: p.avatar_url || null, ecurie: monClub, club: (p.club || monClub || ""), ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (eC) { } setEcran("cavalier"); }
   /* --- Communauté idéale : cavaliers choisis par le propriétaire de l'écurie --- */
   var _mo = React.useState(null), moiG = _mo[0], setMoiG = _mo[1];
   var _cx = React.useState(null), choisis = _cx[0], setChoisis = _cx[1];
@@ -25736,7 +25799,7 @@ function EcranEcurie() {
       try { ajouterCavalierChoisi(p.id, monClubEc).then(function (rA) { if (rA && rA.error) { setChoisisEc(function (cs) { return (cs || []).filter(function (x) { return x.id !== p.id; }); }); setToast(T("Invitation non enregistr\u00e9e \u2014 v\u00e9rifie ta connexion.", "Invitation not saved \u2014 check your connection.", "Invitaci\u00f3n no guardada.", "Invito non salvato.", "\u62db\u5f85\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); setTimeout(function () { setToast(null); }, 2600); } }); } catch (e2) { }
     }
   }
-  function ouvrirCavEc(p) { try { window.__cavalierPublic = { pseudo: p.pseudo || "Cavalier", photo: p.avatar_url || null, ecurie: monClubEc, ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (eC) { } setEcran("cavalier"); }
+  function ouvrirCavEc(p) { try { window.__cavalierPublic = { id: (p.id || p.user_id || null), pseudo: p.pseudo || "Cavalier", photo: p.avatar_url || null, ecurie: monClubEc, club: (p.club || monClubEc || ""), ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (eC) { } setEcran("cavalier"); }
 
   var toastSt = React.useState(null); var toast = toastSt[0], setToast = toastSt[1];
   function bientot() { setToast(T("Bientôt disponible", "Coming soon", "Próximamente", "Presto disponibile", "近日公開")); setTimeout(function () { setToast(null); }, 2000); }
@@ -26572,7 +26635,7 @@ function NouveauxCavaliers() {
         var av = avatarPour(p);
         var sousTexte = [p.ecurie || p.club, p.ville].filter(Boolean).join(" · ");
         return h("div", { key: p.id, style: { flex: "0 0 150px", borderRadius: 22, background: "#0B1013", border: "1px solid rgba(255,255,255,0.09)", textAlign: "center", position: "relative", paddingBottom: 12 } },
-          h("div", { onClick: function () { try { window.__cavalierPublic = { pseudo: p.pseudo, photo: av || null, ecurie: p.ecurie || p.club || "", ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (e) { } ctx.setEcran("cavalier"); }, role: "button", style: { cursor: "pointer" } },
+          h("div", { onClick: function () { try { window.__cavalierPublic = { id: (p.id || p.user_id || null), pseudo: p.pseudo, photo: av || null, ecurie: p.ecurie || p.club || "", club: (p.club || p.ecurie || ""), ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (e) { } ctx.setEcran("cavalier"); }, role: "button", style: { cursor: "pointer" } },
             h("div", { style: { height: 128, borderRadius: "22px 22px 16px 16px", backgroundImage: "url(" + (av || ((typeof teinteHypeActive === "function" && teinteHypeActive().id === "crimson" && typeof IMG_CAVALIER_DEFAUT_CRIMSON !== "undefined") ? IMG_CAVALIER_DEFAUT_CRIMSON : (typeof IMG_CAVALIER_DEFAUT !== "undefined" ? IMG_CAVALIER_DEFAUT : ""))) + ")", backgroundSize: "cover", backgroundPosition: "center 25%", backgroundColor: "#0d141a" } }),
             recent(p) ? h("span", { style: { position: "absolute", top: 115, left: "50%", transform: "translateX(-50%)", fontSize: 8.5, letterSpacing: "0.16em", color: "#5FE9F0", border: "1px solid rgba(32,217,245,0.6)", background: "rgba(7,10,13,0.92)", borderRadius: 999, padding: "4px 12px", fontWeight: 800, whiteSpace: "nowrap", zIndex: 2 } }, T("NOUVEAU", "NEW", "NUEVO", "NUOVO", "NEW")) : null,
             h("div", { style: { fontSize: 13.5, fontWeight: 800, color: "#EDF2F5", marginTop: recent(p) ? 17 : 10, padding: "0 10px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: "'Montserrat',system-ui,sans-serif" } }, p.pseudo || T("Cavalier", "Rider", "Jinete", "Cavaliere", "騎手")),
