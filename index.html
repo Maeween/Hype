@@ -24430,28 +24430,26 @@ function EcranMonCavalier() {
         h("span", { style: { color: "#5FE9F0", fontSize: 17, fontWeight: 700 } }, "\u203a"))),
     h("div", { style: { padding: "26px 16px 0" } },
       (function () {
-        var listeAmis = (amisListe && amisListe.length) ? amisListe : [];
-        var listeSug = (!__estVisite && suggestions && suggestions.length) ? suggestions : [];
-        var pourEncart = listeAmis.length ? listeAmis : listeSug;
-        var titreEncart = listeAmis.length
-          ? T("Mes amis", "My friends", "Mis amigos", "I miei amici", "\u53cb\u9054")
-          : T("Cavaliers \u00e0 suivre", "Riders to follow", "Jinetes a seguir", "Cavalieri da seguire", "\u30d5\u30a9\u30ed\u30fc\u3059\u308b\u4e57\u624b");
-        var sousTitreEncart = (profil && (profil.club || profil.ecurie)) || T("La communaut\u00e9 Hype", "The Hype community", "La comunidad", "La communit\u00e0", "\u30b3\u30df\u30e5\u30cb\u30c6\u30a3");
-        return h(EncartCavaliersSpectral, {
-          titre: titreEncart,
-          nomTeam: sousTitreEncart,
-          cavaliers: pourEncart,
-          onOuvrir: function (p) {
-            try {
-              if (typeof window !== "undefined") {
-                window.__cavalierPublic = { id: (p.id || p.user_id || null), pseudo: p.pseudo, photo: (typeof avSrc === "function" ? avSrc(p.avatar_url) : null) || null, ecurie: p.ecurie || "", club: (p.club || p.ecurie || ""), ville: p.ville || "" };
-                window.__cavalierOuvert = "__public";
-              }
-            } catch (eO) {}
-            setEcran("cavalier");
-          },
-          onAjouter: function () { setEcran("communaute"); }
-        });
+        var fondEnc = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.cavaliersClubFond) ? HYPE_IMGS.cavaliersClubFond : "";
+        var listeAmis = (amisListe && amisListe.length) ? amisListe.map(function (a) { return Object.assign({}, a, { __suggere: false }); }) : [];
+        var listeSug = (!__estVisite && suggestions && suggestions.length) ? suggestions.map(function (sg) { return Object.assign({}, sg, { __suggere: true }); }) : [];
+        // fusion : amis puis suggestions, min 6 medaillons pour remplir la ligne
+        var fusion = listeAmis.concat(listeSug).slice(0, 12);
+        if (!fusion.length) return null;
+        return h("div", { style: { position: "relative", margin: "6px 16px 0", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.22)", backgroundImage: fondEnc ? ("url(" + fondEnc + ")") : "none", backgroundColor: "#080D11", backgroundSize: "cover", backgroundPosition: "center" } },
+          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.55), rgba(6,7,9,0.78))" } }),
+          h("div", { style: { position: "relative", padding: "16px 4px 16px 14px" } },
+            h("div", { "data-hscroll": "1", style: { display: "flex", gap: 12, overflowX: "auto", paddingBottom: 2 } },
+              fusion.map(function (p, iP) {
+                var estSug = !!p.__suggere;
+                var srcP = ((typeof avSrc === "function" ? avSrc(p.avatar_url) : p.avatar_url) || (typeof avatarHypeDefaut === "function" ? avatarHypeDefaut(p.id || p.pseudo) : null));
+                return h("div", { key: (p.id || iP), style: { flex: "0 0 auto", width: 74, textAlign: "center", position: "relative" } },
+                  h("div", { onClick: function () { try { if (typeof window !== "undefined") { window.__cavalierPublic = { id: (p.id || p.user_id || null), pseudo: p.pseudo, photo: (typeof avSrc === "function" ? avSrc(p.avatar_url) : null) || null, ecurie: p.ecurie || "", club: (p.club || p.ecurie || ""), ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } } catch (eP) {} setEcran("cavalier"); }, role: "button", style: { position: "relative", width: 62, height: 62, borderRadius: "50%", margin: "0 auto", padding: 2, background: estSug ? "linear-gradient(135deg,rgba(32,217,245,0.5),rgba(127,240,242,0.2))" : "linear-gradient(135deg,#20D9F5,#7FF0F2)", cursor: "pointer" } },
+                    srcP ? h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", backgroundImage: "url(" + srcP + ")", backgroundSize: "cover", backgroundPosition: "center" } }) : h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", background: "#0B1013", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: C, fontSize: 20, color: "#5FE9F0" } }, String(p.pseudo || "?").charAt(0).toUpperCase()),
+                    estSug ? h("button", { onClick: function (ev) { ev.stopPropagation(); try { if (typeof suivre === "function" && p.id) { suivre(p.id).catch(function () {}); } } catch (eS) {} try { ev.currentTarget.textContent = "\u2713"; } catch (e2) {} }, "aria-label": "Suivre", style: { position: "absolute", right: -2, bottom: -2, width: 22, height: 22, borderRadius: "50%", border: "2px solid #060709", background: "linear-gradient(135deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 14, fontWeight: 800, lineHeight: "18px", padding: 0, cursor: "pointer", zIndex: 3 } }, "+") : null),
+                  h("div", { style: { fontSize: 11, fontWeight: 700, color: "#DDE6EA", fontFamily: M, marginTop: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 74 } }, p.pseudo || "\u2014"),
+                  h("div", { style: { fontSize: 8.5, color: estSug ? "#5FE9F0" : "#8A929C", fontFamily: M, marginTop: 1 } }, estSug ? T("Sugg\u00e9r\u00e9", "Suggested", "Sugerido", "Suggerito", "\u63d0\u6848") : (p.ville || "")));
+              }))));
       })(),
       h("div", { onClick: function () { setEcran("communaute"); }, style: { display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderRadius: 16, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", cursor: "pointer" } },
         h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, color: TURQL, minWidth: 30, textAlign: "center" } }, amis != null ? amis : "\u2014"),
@@ -24463,7 +24461,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
-    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 14.07 \u00b7 16h20"),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 14.07 \u00b7 16h40"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
