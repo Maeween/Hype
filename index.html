@@ -24429,17 +24429,30 @@ function EcranMonCavalier() {
       h("div", { style: { position: "absolute", right: 16, bottom: 16, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.6)", background: "rgba(7,8,10,0.45)", display: "flex", alignItems: "center", justifyContent: "center" } },
         h("span", { style: { color: "#5FE9F0", fontSize: 17, fontWeight: 700 } }, "\u203a"))),
     h("div", { style: { padding: "26px 16px 0" } },
-      eyebrow(T("Mes amis", "My friends", "Mis amigos", "I miei amici", "\u53cb\u9054"), T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066"), function () { setEcran("communaute"); }),
-      (amisListe && amisListe.length) ? h("div", { "data-hscroll": "1", style: { display: "flex", gap: 12, overflowX: "auto", padding: "2px 2px 12px", marginTop: 2 } },
-        amisListe.map(function (ami, iA) {
-          return h("div", { key: ami.id || iA, onClick: function () { try { if (typeof window !== "undefined") { window.__cavalierPublic = { id: (ami.id || ami.user_id || null), pseudo: ami.pseudo, photo: (typeof avSrc === "function" ? avSrc(ami.avatar_url) : null) || null, ecurie: ami.ecurie || "", club: (ami.club || ami.ecurie || ""), ville: ami.ville || "" }; window.__cavalierOuvert = "__public"; } } catch (eA) { } setEcran("cavalier"); }, role: "button", style: { flex: "0 0 auto", width: 78, textAlign: "center", cursor: "pointer" } },
-            h("div", { style: { position: "relative", width: 66, height: 66, borderRadius: "50%", margin: "0 auto", padding: 2, background: "linear-gradient(135deg,#20D9F5,#7FF0F2)" } },
-              (function () { var srcA = ((typeof avSrc === "function" ? avSrc(ami.avatar_url) : ami.avatar_url) || (typeof avatarHypeDefaut === "function" ? avatarHypeDefaut(ami.id || ami.pseudo) : null));
-                return srcA ? h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", backgroundImage: "url(" + srcA + ")", backgroundSize: "cover", backgroundPosition: "center", border: "2.5px solid #060709" } })
-                  : h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", background: "#0E1B22", border: "2.5px solid #060709", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: C, fontSize: 22, color: "#7FF0F2" } }, String(ami.pseudo || "?").charAt(0).toUpperCase()); })()),
-            h("div", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 600, color: "#EDF2F5", marginTop: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ami.pseudo || "\u2014"),
-            ami.ecurie ? h("div", { style: { fontSize: 8.5, color: "#8A929C", fontFamily: M, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ami.ecurie) : null);
-        })) : ((!__estVisite && suggestions && suggestions.length) ? h("div", null,     h("div", { style: { fontSize: 12, color: "#8A929C", fontFamily: M, padding: "0 2px 8px", marginTop: 2 } }, T("Cavaliers \u00e0 suivre", "Riders to follow", "Jinetes a seguir", "Cavalieri da seguire", "\u30d5\u30a9\u30ed\u30fc\u3059\u308b\u4e57\u624b")),     h("div", { "data-hscroll": "1", style: { display: "flex", gap: 12, overflowX: "auto", padding: "2px 2px 12px" } },       suggestions.map(function (sg, iS) {         return h("div", { key: sg.id || iS, onClick: function () { try { if (typeof window !== "undefined") { window.__cavalierPublic = { id: (sg.id || sg.user_id || null), pseudo: sg.pseudo, photo: (typeof avSrc === "function" ? avSrc(sg.avatar_url) : null) || null, ecurie: sg.ecurie || "", club: (sg.club || sg.ecurie || ""), ville: sg.ville || "" }; window.__cavalierOuvert = "__public"; } } catch (eSg) { } setEcran("cavalier"); }, role: "button", style: { flex: "0 0 auto", width: 78, textAlign: "center", cursor: "pointer" } },           h("div", { style: { position: "relative", width: 66, height: 66, borderRadius: "50%", margin: "0 auto", overflow: "hidden", background: "linear-gradient(135deg,#12303A,#0B1013)", border: "1px solid rgba(95,233,240,0.25)", display: "flex", alignItems: "center", justifyContent: "center" } },             (typeof avSrc === "function" && sg.avatar_url) ? h("img", { src: avSrc(sg.avatar_url), alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : h("span", { style: { fontFamily: C, fontSize: 22, color: "#5FE9F0" } }, String(sg.pseudo || "?").charAt(0).toUpperCase())),           h("div", { style: { fontSize: 11, fontWeight: 700, color: "#DDE6EA", fontFamily: M, marginTop: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, sg.pseudo || "\u2014"),           sg.ecurie ? h("div", { style: { fontSize: 8.5, color: "#8A929C", fontFamily: M, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, sg.ecurie) : null);       }))) : null),
+      (function () {
+        var listeAmis = (amisListe && amisListe.length) ? amisListe : [];
+        var listeSug = (!__estVisite && suggestions && suggestions.length) ? suggestions : [];
+        var pourEncart = listeAmis.length ? listeAmis : listeSug;
+        var titreEncart = listeAmis.length
+          ? T("Mes amis", "My friends", "Mis amigos", "I miei amici", "\u53cb\u9054")
+          : T("Cavaliers \u00e0 suivre", "Riders to follow", "Jinetes a seguir", "Cavalieri da seguire", "\u30d5\u30a9\u30ed\u30fc\u3059\u308b\u4e57\u624b");
+        var sousTitreEncart = (profil && (profil.club || profil.ecurie)) || T("La communaut\u00e9 Hype", "The Hype community", "La comunidad", "La communit\u00e0", "\u30b3\u30df\u30e5\u30cb\u30c6\u30a3");
+        return h(EncartCavaliersSpectral, {
+          titre: titreEncart,
+          nomTeam: sousTitreEncart,
+          cavaliers: pourEncart,
+          onOuvrir: function (p) {
+            try {
+              if (typeof window !== "undefined") {
+                window.__cavalierPublic = { id: (p.id || p.user_id || null), pseudo: p.pseudo, photo: (typeof avSrc === "function" ? avSrc(p.avatar_url) : null) || null, ecurie: p.ecurie || "", club: (p.club || p.ecurie || ""), ville: p.ville || "" };
+                window.__cavalierOuvert = "__public";
+              }
+            } catch (eO) {}
+            setEcran("cavalier");
+          },
+          onAjouter: function () { setEcran("communaute"); }
+        });
+      })(),
       h("div", { onClick: function () { setEcran("communaute"); }, style: { display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderRadius: 16, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", cursor: "pointer" } },
         h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, color: TURQL, minWidth: 30, textAlign: "center" } }, amis != null ? amis : "\u2014"),
         h("div", { style: { flex: 1, fontSize: 12.5, color: "#C7D0D6", fontFamily: M, lineHeight: 1.45 } }, T("cavaliers dans ta team \u2014 retrouve-les et suis-en de nouveaux dans la Communaut\u00e9", "riders in your team \u2014 find them in the Community", "jinetes en tu equipo", "cavalieri nella tua squadra", "\u30c1\u30fc\u30e0\u306e\u4ef2\u9593")),
@@ -24450,7 +24463,7 @@ function EcranMonCavalier() {
     sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")),
     sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")),
     h(MurHype, { cibleMoi: true }),
-    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 14.07 \u00b7 15h40"),
+    h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 14.07 \u00b7 16h20"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
