@@ -172,7 +172,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Chapitres prêts hors Galop 1 (badge NEW + ouverts aux Premium). Les autres chapitres de ces galops = "Prochainement".
-const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-saut": true };
+const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true };
 // Un chapitre est "prêt" si tout le Galop 1 (déjà en ligne) ou s'il figure explicitement dans HYPE_COURS_PRETS.
 function coursEstPret(galopId, coursId) { try { return galopId === 1 || !!HYPE_COURS_PRETS[coursId]; } catch (e) { return true; } }
 async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
