@@ -18098,7 +18098,7 @@ exports.version = "19.2.5";
 });</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-images-25.js"></script><script src="hype-images-26.js"></script><script src="hype-images-27.js"></script>
 <script src="hype-images-28.js"></script>
 <script src="hype-images-29.js"></script><script src="hype-images-30.js"></script><script src="hype-images-31.js"></script><script src="hype-images-32.js"></script><script src="hype-images-33.js"></script><script src="hype-images-34.js"></script><script src="hype-images-35.js"></script><script src="hype-images-36.js"></script><script src="hype-images-37.js"></script><script src="hype-images-38.js"></script><script src="hype-images-39.js"></script><script src="hype-images-40.js"></script><script src="hype-images-41.js"></script><script src="hype-images-42.js"></script><script src="hype-images-43.js"></script><script src="hype-images-44.js"></script><script src="hype-images-45.js"></script><script src="hype-images-46.js"></script><script src="hype-images-47.js"></script><script src="hype-images-48.js"></script><script src="hype-images-49.js"></script><script src="hype-images-50.js"></script><script src="hype-images-51.js"></script><script src="hype-images-52.js"></script><script src="hype-images-53.js"></script><script src="hype-images-54.js"></script><script src="hype-images-55.js"></script><script src="hype-images-56.js"></script>
-<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
+<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-images-62.js"></script><script src="hype-images-63.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -18728,7 +18728,7 @@ const GALOPS_I18N = [
     },
     {
         id: 4,
-        couleur: "#FF8B6B", disponible: true, nouveau: true,
+        couleur: "#FF8B6B", disponible: false,
         icone: "🌳",
         debloque: false,
         titre: { fr: "Galop 4", en: "Level 4", ja: "ギャロップ4", es: "Nivel 4", it: "Livello 4" },
@@ -19076,7 +19076,7 @@ const CIBLE_DIRECTE = (function () {
         const h = ((typeof window !== "undefined" && window.location && window.location.hash) || "").replace(/^#/, "").trim();
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
         if (h) cle = h;
-        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
+        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, abordobstacle: { galop: 3, cours: "g3-c3", page: 0 }, trotenleve: { galop: 3, cours: "g3-c1", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
         return MAP[cle] || null;
     } catch (e) { return null; }
 })();
@@ -20805,25 +20805,88 @@ const COURS_GALOP2_FR = [
 const COURS_GALOP3_FR = [
     {
         id: "g3-c1", icone: "↔️", type: "pratique", duree: "10 min",
-        titre: "Le trot enlevé et le bon diagonal",
+        titre: "Le trot enlevé sur le bon diagonal",
         blocs: [
-            { type: "intro", texte: "Au Galop 3, on trotte enlevé sur un diagonal défini et on en change à volonté. Comprendre les diagonaux, c'est mieux équilibrer le cheval, surtout sur les cercles." },
-            { type: "schema", emoji: "🦓", titre: "Qu'est-ce qu'un diagonal ?", description: "Au trot, les membres fonctionnent par paires diagonales : un antérieur et le postérieur opposé se posent ensemble. Quand on trotte enlevé, on se lève sur un diagonal et on s'assoit sur l'autre." },
-            { type: "liste", titre: "Le bon diagonal sur un cercle", items: [
-                    "Sur un cercle, on s'assoit quand l'antérieur intérieur est au sol",
-                    "On se relève donc quand l'antérieur extérieur avance",
-                    "Cela aide le cheval à s'équilibrer dans la courbe",
-                    "Pour changer de diagonal, on reste assis un temps de trot supplémentaire"
+            { type: "couv-affiche", src: GALOPS_HERO, couv: { titre1: "LE TROT ENLEVÉ", titre2: "SUR LE BON DIAGONAL", accent: "#1FA9C9", citation: "L'harmonie naît lorsque le cavalier accompagne le mouvement au lieu de le subir.", auteur: "Nuno Oliveira" } },
+            { type: "texte-riche", aere: true, titre: "Comprendre les diagonaux", contenu: [
+                    { k: "para", texte: "Le trot est une allure à deux temps où les membres se déplacent par diagonaux." },
+                    { k: "para", texte: "Lorsque tu trottes enlevé, tu te lèves et tu te rassieds au rythme du trot. Mais il ne suffit pas de se lever : il faut accompagner le bon diagonal." },
+                    { k: "para", texte: "Être sur le bon diagonal permet au cheval de rester plus équilibré dans les courbes et rend l'équitation plus confortable pour lui comme pour son cavalier." },
+                    { k: "section", titre: "🦓 Comprendre les diagonaux", sous: "Au trot, les membres avancent par paires diagonales.", puces: [
+                            { texte: "Lorsque l'antérieur droit avance, il est accompagné du postérieur gauche." },
+                            { texte: "Lorsque l'antérieur gauche avance, il est accompagné du postérieur droit." },
+                            { texte: "Le cavalier se lève un temps sur deux en suivant ce mouvement." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le trot devient plus fluide et ton bassin accompagne naturellement le mouvement." },
+                    { k: "section", titre: "🔄 Le bon diagonal", sous: "En manège, la règle est simple : lorsque tu tournes, tu te lèves lorsque l'épaule extérieure avance.", puces: [
+                            { texte: "Cette façon de trotter aide le cheval à mieux s'équilibrer dans la courbe." },
+                            { texte: "Au Galop 3, il suffit de savoir reconnaître si tu es sur le bon diagonal et de changer si nécessaire." },
+                            { texte: "Tu découvriras dans les Galops suivants pourquoi ce choix influence davantage encore l'équilibre du cheval." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Dans le virage, ton cheval paraît plus stable et le trot reste régulier." }
                 ] },
-            { type: "astuce", texte: "Pour vérifier son diagonal, jetez un bref coup d'œil à l'épaule extérieure : on doit se lever quand elle avance. Avec l'habitude, on le sent sans regarder." },
+            { type: "texte-riche", aere: true, titre: "Vérifier et changer de diagonal", contenu: [
+                    { k: "section", titre: "👀 Comment vérifier son diagonal ?", sous: "Inutile de regarder constamment.", puces: [
+                            { texte: "Jette simplement un rapide coup d'œil vers l'épaule extérieure de ton cheval." },
+                            { texte: "Si tu te lèves lorsqu'elle avance, tu es sur le bon diagonal." },
+                            { texte: "Puis relève aussitôt ton regard." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Un simple coup d'œil suffit ; tu retrouves rapidement ton regard loin devant." },
+                    { k: "section", titre: "🔁 Changer de diagonal", sous: "Si tu es sur le mauvais diagonal, inutile de tout recommencer.", puces: [
+                            { texte: "Reste simplement assis une foulée de plus." },
+                            { texte: "En te relevant à la foulée suivante, tu changes automatiquement de diagonal." },
+                            { texte: "Le changement doit être discret et ne pas perturber ton cheval." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le changement est presque invisible et le rythme du trot ne varie pas." },
+                    { k: "section", titre: "🧍 Garder une bonne position", sous: "Pendant tout le trot enlevé :", puces: [
+                            { texte: "regarde loin devant ;" },
+                            { texte: "garde ton dos tonique ;" },
+                            { texte: "ouvre tes épaules ;" },
+                            { texte: "laisse tes jambes au contact ;" },
+                            { texte: "accompagne le mouvement sans pousser sur les rênes." },
+                            { texte: "Ce sont ton équilibre et la souplesse de ton bassin qui te permettent de te lever, pas la force de tes bras." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Tu te lèves facilement, sans tirer sur les rênes ni perdre ton équilibre." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "À retenir", contenu: [
+                    { k: "encadre", emoji: "💡", titre: "Le savais-tu ?", texte: "En extérieur ou sur une ligne droite, il n'y a pas toujours de « bon » ou de « mauvais » diagonal. C'est surtout dans les courbes que le choix du diagonal aide le cheval à rester équilibré." },
+                    { k: "encadre", emoji: "🏇", titre: "Le conseil du coach", texte: "Ne passe pas tout ton temps à regarder l'épaule de ton cheval. Vérifie ton diagonal d'un rapide coup d'œil, puis relève immédiatement les yeux. Ton regard doit toujours guider ton équilibre." },
+                    { k: "section", titre: "❌ Les erreurs à éviter", puces: [
+                            { texte: "Regarder constamment l'épaule du cheval." },
+                            { texte: "Tirer sur les rênes pour se lever." },
+                            { texte: "Se pencher vers l'avant." },
+                            { texte: "Monter les épaules." },
+                            { texte: "Changer de diagonal en cassant le rythme." },
+                            { texte: "Oublier de vérifier son diagonal dans les courbes." },
+                            { texte: "Se crisper dans le bassin." }
+                        ] },
+                    { k: "encadre", emoji: "🎯", titre: "Le défi du cavalier", texte: "Lors de ta prochaine séance : vérifie ton diagonal à chaque changement de main, corrige-le si nécessaire en restant assis une foulée, essaie de garder le même rythme avant, pendant et après la correction. À la fin de la séance, demande-toi : ai-je reconnu rapidement mon diagonal ? Mon changement était-il discret ? Mon cheval est-il resté régulier ?" },
+                    { k: "section", titre: "💬 Demande à Hey Baby", sous: "Quelques idées de questions :", puces: [
+                            { texte: "Pourquoi faut-il changer de diagonal ?" },
+                            { texte: "Comment reconnaître plus vite le bon diagonal ?" },
+                            { texte: "Peux-tu analyser ma position au trot enlevé ?" },
+                            { texte: "Pourquoi ai-je du mal à rester en rythme ?" },
+                            { texte: "Comment rendre mon trot enlevé plus souple ?" }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Un cavalier en équilibre aide naturellement son cheval à trouver le sien." }
+                ] },
         ],
         quiz: [
-            { type: "qcm", question: "Pour changer de diagonal au trot enlevé, on…", options: ["Saute d'un coup", "Reste assis un temps de trot supplémentaire", "Tire sur les rênes", "Change de main"], correct: 1, explication: "Rester assis un temps de plus décale le rythme et fait basculer sur l'autre diagonal." },
-            { type: "vrai-faux", question: "Sur un cercle, le bon diagonal aide le cheval à s'équilibrer dans la courbe.", correct: true, explication: "Se lever sur le diagonal extérieur libère le membre intérieur au moment où il porte le cheval, ce qui facilite l'équilibre en courbe." },
+            { type: "qcm", question: "Au trot, les membres du cheval se déplacent…", options: ["Un par un", "Par diagonaux", "Les antérieurs puis les postérieurs", "Tous ensemble"], correct: 1, explication: "Au trot, les membres se déplacent par paires diagonales." },
+            { type: "qcm", question: "En manège, sur quel diagonal faut-il trotter enlevé ?", options: ["Lorsque l'épaule intérieure avance.", "Lorsque l'épaule extérieure avance.", "Peu importe.", "Lorsque les deux épaules sont alignées."], correct: 1, explication: "On se lève lorsque l'épaule extérieure avance." },
+            { type: "qcm", question: "Pourquoi utilise-t-on le bon diagonal ?", options: ["Pour aller plus vite.", "Pour aider le cheval à rester équilibré dans les courbes.", "Pour raccourcir le trot.", "Pour faciliter le galop."], correct: 1, explication: "Le bon diagonal aide le cheval à rester équilibré dans les courbes." },
+            { type: "qcm", question: "Comment vérifier rapidement son diagonal ?", options: ["En regardant le sol.", "En observant brièvement l'épaule extérieure.", "En regardant les oreilles.", "En regardant les postérieurs."], correct: 1, explication: "Un bref coup d'œil vers l'épaule extérieure suffit à vérifier son diagonal." },
+            { type: "qcm", question: "Que faut-il faire après avoir vérifié son diagonal ?", options: ["Continuer à regarder l'épaule.", "Relever le regard.", "Regarder les rênes.", "Regarder le sol."], correct: 1, explication: "Il faut relever aussitôt le regard après avoir vérifié son diagonal." },
+            { type: "qcm", question: "Comment change-t-on de diagonal ?", options: ["En changeant de main.", "En restant assis une foulée supplémentaire.", "En ralentissant.", "En arrêtant le cheval."], correct: 1, explication: "Rester assis une foulée supplémentaire permet de changer automatiquement de diagonal." },
+            { type: "qcm", question: "Pendant le trot enlevé, il faut se lever grâce…", options: ["Aux bras.", "Aux rênes.", "À son équilibre et à la souplesse de son bassin.", "Aux épaules."], correct: 2, explication: "C'est l'équilibre et la souplesse du bassin qui permettent de se lever, pas la force des bras." },
+            { type: "qcm", question: "Quelle erreur est fréquente ?", options: ["Regarder loin.", "Tirer sur les rênes pour se lever.", "Garder un rythme régulier.", "Avoir les jambes au contact."], correct: 1, explication: "Tirer sur les rênes pour se lever est une erreur fréquente à éviter." },
+            { type: "qcm", question: "Quand vérifie-t-on généralement son diagonal ?", options: ["À chaque changement de main.", "Seulement au début de la séance.", "À l'arrêt.", "Jamais."], correct: 0, explication: "On vérifie généralement son diagonal à chaque changement de main." },
+            { type: "qcm", question: "Quelle phrase résume le mieux ce chapitre ?", options: ["Le bon diagonal aide le cheval à rester équilibré.", "Le bon diagonal permet d'aller plus vite.", "Le diagonal ne sert qu'en concours.", "Il faut toujours regarder l'épaule du cheval."], correct: 0, explication: "Le bon diagonal aide avant tout le cheval à rester équilibré, notamment dans les courbes." },
         ],
     },
     {
-        id: "g3-c2", icone: "🏇", type: "pratique", duree: "9 min",
+        
+id: "g3-c2", icone: "🏇", type: "pratique", duree: "9 min",
         titre: "Le départ sur le bon pied",
         blocs: [
             { type: "couv-affiche", src: HYPE_IMGS["k333"], couv: { titre1: "LE DÉPART", titre2: "SUR LE BON PIED", accent: "#1FA9C9", citation: "Le cheval trouve son équilibre lorsque le cavalier lui en laisse la possibilité.", auteur: "Nuno Oliveira" } },
@@ -20881,25 +20944,79 @@ const COURS_GALOP3_FR = [
         ]
     },
     {
-        id: "g3-c3", icone: "🚧", type: "pratique", duree: "10 min",
-        titre: "Bien aborder l'obstacle",
+        id: "g3-c3", icone: "🚧", type: "pratique", duree: "11 min",
+        titre: "Aborder un obstacle avec justesse",
         blocs: [
-            { type: "intro", texte: "Au Galop 3, on saute des obstacles isolés d'environ 50 à 60 cm et des dispositifs rapprochés. Le bon abord repose sur trois conditions : le tracé, la vitesse et l'équilibre." },
-            { type: "schema", emoji: "📐", titre: "Les 3 conditions du bon abord", description: "Le TRACÉ : aborder l'obstacle bien droit, perpendiculaire à la barre. La VITESSE : régulière, ni précipitée ni molle. L'ÉQUILIBRE : un cheval équilibré peut se détendre librement au-dessus de la barre." },
-            { type: "liste", titre: "Au-dessus de l'obstacle", items: [
-                    "Buste qui se ferme vers l'avant en accompagnant le mouvement",
-                    "Mains qui avancent le long de l'encolure (le geste descente de main)",
-                    "Jambes en place, talons bas, équilibre sur les étriers",
-                    "Regard porté vers la sortie, déjà sur l'obstacle ou la direction suivante"
+            { type: "couv-affiche", src: HYPE_IMGS["k362"], couv: { titre1: "L'ABORD", titre2: "À L'OBSTACLE", accent: "#1FA9C9", citation: "Le cheval saute l'obstacle. Le cavalier accompagne le mouvement.", auteur: "Nuno Oliveira" } },
+            { type: "texte-riche", aere: true, titre: "L'abord commence loin avant la barre", contenu: [
+                    { k: "para", texte: "Sauter un obstacle ne consiste pas seulement à franchir une barre. Tout se joue dans les mètres qui précèdent." },
+                    { k: "para", texte: "Un bon abord permet au cheval de comprendre ce qu'on lui demande, de conserver son équilibre et de produire un saut régulier. À l'inverse, un abord précipité ou déséquilibré rend le saut plus difficile, même sur un petit obstacle." },
+                    { k: "para", texte: "Avant même que le cheval quitte le sol, le cavalier prépare déjà la qualité du saut." },
+                    { k: "section", titre: "🐎 Un galop régulier", sous: "L'abord commence par un galop calme, actif et régulier. Le but n'est pas d'aller plus vite pour « passer » l'obstacle, mais de conserver le même rythme jusqu'à la barre.", puces: [
+                            { texte: "Un cheval qui accélère perd souvent son équilibre." },
+                            { texte: "Un cheval qui ralentit manque d'impulsion." },
+                            { texte: "Le meilleur abord est celui où le rythme ne change presque pas." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Ton cheval avance avec énergie mais sans précipitation. Chaque foulée ressemble à la précédente." },
+                    { k: "section", titre: "👀 Regarder loin", texte: "Le regard prépare le saut. Regarde au-delà de l'obstacle, vers l'endroit où tu souhaites aller après la réception. En regardant loin, ton dos reste redressé, tes épaules restent ouvertes et ton équilibre est meilleur. Regarder la barre pousse souvent le cavalier à se pencher trop tôt vers l'avant." },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "En regardant loin, tu restes naturellement plus stable dans la selle." }
                 ] },
-            { type: "astuce", texte: "Un cheval saute mieux quand le cavalier reste discret : on prépare l'abord, puis on laisse le cheval faire son effort sans le gêner." },
+            { type: "texte-riche", aere: true, titre: "Position, mains et jambes", contenu: [
+                    { k: "section", titre: "🧍 Une position équilibrée", sous: "Pendant l'abord, reste bien au milieu de ta selle.", puces: [
+                            { texte: "Ton dos est tonique." },
+                            { texte: "Tes épaules restent ouvertes." },
+                            { texte: "Tes jambes descendent naturellement." },
+                            { texte: "Tes talons sont orientés vers le bas." },
+                            { texte: "Ne cherche pas à te mettre en équilibre trop tôt : laisse ton cheval venir jusqu'à l'obstacle." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Tu accompagnes le galop sans avoir besoin d'avancer ton buste." },
+                    { k: "section", titre: "✋ Les mains", texte: "Tes mains restent fixes et suivent naturellement les mouvements de l'encolure en dépliant les coudes pour accompagner le geste du cheval. Elles gardent un contact léger et régulier. Ne tire jamais sur les rênes pour placer ton cheval devant l'obstacle. Un contact discret permet au cheval de conserver son équilibre." },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Tes mains restent calmes et souples pendant que le cheval avance." },
+                    { k: "section", titre: "🦵 Les jambes", texte: "Tes jambes restent présentes tout au long de l'abord. Elles entretiennent l'impulsion sans pousser à chaque foulée. Si le cheval manque légèrement d'activité, une action discrète des mollets suffit. Il ne s'agit pas de précipiter le cheval mais de conserver son énergie jusqu'à la battue d'appel." },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Ton cheval garde le même galop jusqu'à la barre." },
+                    { k: "section", titre: "⏳ Attendre le saut", texte: "Lorsque le cheval arrive devant l'obstacle, laisse-le organiser son saut. Ne te jette pas en avant. Ne cherche pas à « faire sauter » ton cheval. Le cheval sait où poser ses pieds. Ton rôle est de rester équilibré et de l'accompagner." },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Tu attends tranquillement que le cheval t'emmène au-dessus de l'obstacle." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "À retenir", contenu: [
+                    { k: "encadre", emoji: "💡", titre: "Le savais-tu ?", texte: "Les meilleurs cavaliers semblent souvent ne presque rien faire à l'abord. En réalité, ils ont simplement tout préparé plusieurs foulées avant l'obstacle." },
+                    { k: "encadre", emoji: "🏇", titre: "Le conseil du coach", texte: "Cherche la qualité de ton galop avant la hauteur de l'obstacle. Un petit obstacle bien abordé fait davantage progresser qu'un gros obstacle mal préparé." },
+                    { k: "section", titre: "❌ Les erreurs à éviter", puces: [
+                            { texte: "Regarder la barre." },
+                            { texte: "Se jeter en avant avant le saut." },
+                            { texte: "Accélérer dans les dernières foulées." },
+                            { texte: "Ralentir juste avant l'obstacle." },
+                            { texte: "Tirer sur les rênes." },
+                            { texte: "Monter les talons." },
+                            { texte: "Vouloir « faire sauter » son cheval." },
+                            { texte: "Se crisper dans les épaules." }
+                        ] },
+                    { k: "encadre", emoji: "🎯", titre: "Le défi du cavalier", texte: "Lors de ta prochaine séance, concentre-toi uniquement sur ton abord. Avant chaque obstacle, demande-toi : Mon galop est-il régulier ? Est-ce que je regarde déjà après l'obstacle ? Suis-je resté bien au milieu de ma selle ? Ai-je attendu que mon cheval saute ?" },
+                    { k: "section", titre: "💬 Demande à Hey Baby", sous: "Quelques idées de questions :", puces: [
+                            { texte: "Pourquoi mon cheval accélère-t-il avant l'obstacle ?" },
+                            { texte: "Comment savoir si je me jette en avant ?" },
+                            { texte: "Mon galop est-il suffisamment régulier ?" },
+                            { texte: "Peux-tu analyser mon abord sur cette photo ?" },
+                            { texte: "Comment améliorer ma position avant le saut ?" }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Un beau saut se construit bien avant l'obstacle." }
+                ] },
         ],
         quiz: [
-            { type: "qcm", question: "Quelles sont les trois conditions d'un bon abord d'obstacle ?", options: ["Force, vitesse, cri", "Tracé, vitesse, équilibre", "Hauteur, largeur, couleur", "Mains, voix, cravache"], correct: 1, explication: "Tracé droit, vitesse régulière et bon équilibre permettent au cheval de sauter sereinement." },
+            { type: "qcm", question: "Quel est l'objectif principal de l'abord ?", options: ["Aller le plus vite possible.", "Préparer un saut équilibré.", "Freiner juste avant la barre.", "Se mettre immédiatement en suspension."], correct: 1, explication: "L'abord prépare le cheval à produire un saut équilibré et serein." },
+            { type: "qcm", question: "Pendant l'abord, ton galop doit être…", options: ["De plus en plus rapide.", "Régulier.", "Très lent.", "Variable."], correct: 1, explication: "Un rythme constant aide le cheval à conserver son équilibre." },
+            { type: "qcm", question: "Où faut-il regarder ?", options: ["Les oreilles du cheval.", "La barre.", "Après l'obstacle.", "Le sol."], correct: 2, explication: "Le regard guide naturellement la posture et prépare déjà la réception." },
+            { type: "qcm", question: "Pourquoi faut-il éviter de regarder la barre ?", options: ["Parce qu'elle est trop proche.", "Parce que cela pousse souvent le cavalier à se pencher en avant.", "Parce que le cheval ne la voit plus.", "Parce que c'est interdit."], correct: 1, explication: "Regarder la barre pousse souvent le cavalier à se pencher trop tôt vers l'avant." },
+            { type: "qcm", question: "Pendant l'abord, les mains doivent être…", options: ["Très hautes.", "Fixes et légères.", "Tirées vers soi.", "Complètement relâchées."], correct: 1, explication: "Les mains restent fixes et légères, avec un contact discret et régulier." },
+            { type: "qcm", question: "Que doivent faire les jambes ?", options: ["Pousser à chaque foulée.", "Entretenir l'impulsion sans précipiter.", "Quitter les flancs.", "Se tendre vers l'avant."], correct: 1, explication: "Les jambes entretiennent l'impulsion sans pousser à chaque foulée." },
+            { type: "qcm", question: "Que faut-il éviter juste avant le saut ?", options: ["Attendre.", "Se jeter en avant.", "Garder les talons bas.", "Regarder loin."], correct: 1, explication: "Se jeter en avant avant le saut est une erreur à éviter absolument." },
+            { type: "qcm", question: "Qui décide du moment où le cheval quitte le sol ?", options: ["Le cavalier.", "Le moniteur.", "Le cheval.", "Le chronomètre."], correct: 2, explication: "Le cavalier prépare le saut, mais c'est le cheval qui choisit sa battue d'appel." },
+            { type: "qcm", question: "Un bon abord donne au cheval…", options: ["Plus de vitesse.", "Plus d'équilibre.", "Plus de fatigue.", "Plus de force dans les mains."], correct: 1, explication: "Un bon abord donne au cheval davantage d'équilibre pour sauter sereinement." },
+            { type: "qcm", question: "Quelle phrase résume le mieux ce chapitre ?", options: ["Plus on accélère, mieux le cheval saute.", "Le cheval saute l'obstacle, le cavalier accompagne le mouvement.", "Il faut toujours se pencher avant la barre.", "Les mains dirigent entièrement le saut."], correct: 1, explication: "Toute la philosophie de l'abord repose sur cette idée : préparer le saut avec justesse, puis laisser le cheval s'exprimer." },
         ],
     },
     {
-        id: "g3-saut", icone: "🐎", type: "pratique", duree: "12 min",
+        
+id: "g3-saut", icone: "🐎", type: "pratique", duree: "12 min",
         titre: "Les 6 phases du saut",
         blocs: [
             { type: "couv-affiche", src: GALOPS_HERO, couv: { titre1: "LE SAUT", titre2: "D’OBSTACLES", accent: "#1FA9C9", citation: "Le bon cavalier n’impose pas le mouvement, il le suit.", auteur: "Nuno Oliveira" } },
@@ -21232,7 +21349,7 @@ id: "g3-c5", icone: "🧽", type: "soins", duree: "11 min",
 id: "g3-c6", icone: "🐎", type: "théorie", duree: "10 min",
         titre: "Le comportement naturel du cheval",
         blocs: [
-            { type: "couv-affiche", src: HYPE_IMGS["k359"], couv: { titre1: "LE COMPORTEMENT", titre2: "NATUREL DU CHEVAL", accent: "#1FA9C9", citation: "Le cheval ne pense pas comme un humain. Plus tu comprends sa nature, plus il devient facile de communiquer avec lui.", auteur: "" } },
+            { type: "couv-affiche", src: HYPE_IMGS["k361"], couv: { titre1: "LE COMPORTEMENT", titre2: "NATUREL DU CHEVAL", accent: "#1FA9C9", citation: "Le cheval ne pense pas comme un humain. Plus tu comprends sa nature, plus il devient facile de communiquer avec lui.", auteur: "" } },
             { type: "texte-riche", aere: true, titre: "Pourquoi apprendre cela ?", contenu: [
                     { k: "para", texte: "Au Galop 2, tu as découvert les besoins essentiels du cheval." },
                     { k: "para", texte: "Au Galop 3, tu vas plus loin : tu apprends à comprendre pourquoi il agit comme il le fait." },
