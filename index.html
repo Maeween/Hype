@@ -172,7 +172,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Chapitres prêts hors Galop 1 (badge NEW + ouverts aux Premium). Les autres chapitres de ces galops = "Prochainement".
-const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true, "g3-c7": true, "g3-c8": true };
+const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true, "g3-c7": true, "g3-c8": true, "g3-c9": true };
 // Un chapitre est "prêt" si tout le Galop 1 (déjà en ligne) ou s'il figure explicitement dans HYPE_COURS_PRETS.
 function coursEstPret(galopId, coursId) { try { return galopId === 1 || !!HYPE_COURS_PRETS[coursId]; } catch (e) { return true; } }
 async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
@@ -18098,7 +18098,7 @@ exports.version = "19.2.5";
 });</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-images-25.js"></script><script src="hype-images-26.js"></script><script src="hype-images-27.js"></script>
 <script src="hype-images-28.js"></script>
 <script src="hype-images-29.js"></script><script src="hype-images-30.js"></script><script src="hype-images-31.js"></script><script src="hype-images-32.js"></script><script src="hype-images-33.js"></script><script src="hype-images-34.js"></script><script src="hype-images-35.js"></script><script src="hype-images-36.js"></script><script src="hype-images-37.js"></script><script src="hype-images-38.js"></script><script src="hype-images-39.js"></script><script src="hype-images-40.js"></script><script src="hype-images-41.js"></script><script src="hype-images-42.js"></script><script src="hype-images-43.js"></script><script src="hype-images-44.js"></script><script src="hype-images-45.js"></script><script src="hype-images-46.js"></script><script src="hype-images-47.js"></script><script src="hype-images-48.js"></script><script src="hype-images-49.js"></script><script src="hype-images-50.js"></script><script src="hype-images-51.js"></script><script src="hype-images-52.js"></script><script src="hype-images-53.js"></script><script src="hype-images-54.js"></script><script src="hype-images-55.js"></script><script src="hype-images-56.js"></script>
-<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-images-62.js"></script><script src="hype-images-63.js"></script><script src="hype-images-64.js"></script><script src="hype-images-65.js"></script><script src="hype-images-66.js"></script><script src="hype-images-67.js"></script><script src="hype-images-68.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
+<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-images-62.js"></script><script src="hype-images-63.js"></script><script src="hype-images-64.js"></script><script src="hype-images-65.js"></script><script src="hype-images-66.js"></script><script src="hype-images-67.js"></script><script src="hype-images-68.js"></script><script src="hype-images-69.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -21564,6 +21564,69 @@ id: "g3-c7", icone: "🦴", type: "théorie", duree: "10 min",
             { type: "qcm", question: "Quelle erreur faut-il éviter en observant les allures ?", options: ["Observer les diagonaux", "Croire que le trot est à quatre temps", "Compter les temps du pas", "Observer les épaules et les hanches"], correct: 1, explication: "Le trot est à deux temps, pas à quatre : c'est une erreur fréquente à éviter." },
             { type: "qcm", question: "Pourquoi comprendre le mécanisme des allures aide le cavalier ?", options: ["Pour aller plus vite uniquement", "Pour mieux sentir et ajuster sa position", "Pour éviter de monter à cheval", "Pour remplacer les aides naturelles"], correct: 1, explication: "Connaître les allures aide à mieux observer, mieux sentir et devenir plus précis dans ses demandes." },
             { type: "qcm", question: "Qu'est-ce qui distingue principalement le pas du trot ?", options: ["Le nombre de membres du cheval", "La présence ou non d'un temps de projection", "La couleur de la robe", "La taille du cavalier"], correct: 1, explication: "Le pas n'a pas de temps de projection (toujours un pied au sol), contrairement au trot." }
+        ],
+    },
+    {
+        id: "g3-c9", icone: "🌾", type: "pratique", duree: "8 min",
+        titre: "Les différentes litières",
+        blocs: [
+            { type: "couv-affiche", src: HYPE_IMGS["k368"], couv: { titre1: "LES DIFFÉRENTES", titre2: "LITIÈRES", accent: "#1FA9C9", citation: "Un box propre et confortable, c'est déjà prendre soin de son cheval.", auteur: "" } },
+            { type: "texte-riche", aere: true, titre: "À quoi sert la litière ?", contenu: [
+                    { k: "para", texte: "La litière tapisse le sol du box. Elle absorbe l'humidité, garde le cheval confortable et contribue à l'hygiène de son environnement. Bien la choisir et bien l'entretenir fait partie des gestes essentiels du cavalier." },
+                    { k: "section", titre: "🌾 La paille", puces: [
+                            { gras: "Atouts :", texte: "confortable, économique, naturelle. Le cheval peut parfois en grignoter." },
+                            { gras: "Limites :", texte: "moins absorbante, plus volumineuse, à éviter chez certains chevaux trop gourmands." }
+                        ] },
+                    { k: "section", titre: "🪵 Les copeaux", puces: [
+                            { gras: "Atouts :", texte: "absorbants, propres, souvent moins poussiéreux." },
+                            { gras: "Limites :", texte: "plus coûteux, demandent un bon stockage." }
+                        ] },
+                    { k: "section", titre: "🌸 Le lin", puces: [
+                            { gras: "Atouts :", texte: "très absorbant, peu poussiéreux, confortable." },
+                            { gras: "Limites :", texte: "prix plus élevé, disponibilité variable." }
+                        ] },
+                    { k: "section", titre: "🟤 Les granulés de bois", puces: [
+                            { gras: "Atouts :", texte: "très absorbants, faciles à stocker, bonne tenue du box." },
+                            { gras: "Limites :", texte: "doivent être bien préparés (mouillés avant usage), moins moelleux utilisés seuls." }
+                        ] }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Comment choisir et entretenir", contenu: [
+                    { k: "section", titre: "⚖️ Comment choisir ?", sous: "4 critères à prendre en compte :", puces: [
+                            { texte: "1. Le confort du cheval." },
+                            { texte: "2. L'absorption." },
+                            { texte: "3. La poussière." },
+                            { texte: "4. Le coût et l'entretien." }
+                        ] },
+                    { k: "encadre", emoji: "👨‍🏫", titre: "Le conseil du coach", texte: "Surveiller l'état du box chaque jour, enlever les crottins et les parties humides, garder une litière propre et sèche." },
+                    { k: "section", titre: "⚠️ Les erreurs à éviter", puces: [
+                            { texte: "Laisser une litière humide." },
+                            { texte: "Choisir une litière trop poussiéreuse." },
+                            { texte: "Manquer d'entretien." },
+                            { texte: "Oublier d'adapter la litière au cheval." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À retenir", texte: "Une bonne litière doit être propre, sèche, confortable et adaptée au cheval." },
+                    { k: "encadre", emoji: "💡", titre: "Le savais-tu ?", texte: "La qualité de la litière influence aussi le confort de repos et la santé respiratoire du cheval." },
+                    { k: "section", titre: "🤖 Demande à Hey Baby", sous: "Tu veux aller plus loin ? Tu peux demander à Hey Baby :", puces: [
+                            { texte: "Quelle litière choisir pour un cheval allergique à la poussière ?" },
+                            { texte: "Comment bien entretenir un box au quotidien ?" },
+                            { texte: "Pourquoi certains chevaux mangent leur litière ?" },
+                            { texte: "Comment reconnaître une litière trop humide ?" }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Un box propre et confortable, c'est déjà prendre soin de son cheval." }
+                ] },
+            { type: "image", immersif: true, src: HYPE_IMGS["k369"], legende: "Les différentes litières : confort, hygiène et entretien du box." },
+        ],
+        quiz: [
+            { type: "qcm", question: "Quel est le principal atout de la paille ?", options: ["Elle est très chère", "Elle est confortable, économique et naturelle", "Elle n'absorbe rien du tout", "Elle est interdite en écurie"], correct: 1, explication: "La paille est confortable, économique et naturelle, et le cheval peut parfois en grignoter." },
+            { type: "qcm", question: "Quelle est une limite de la paille ?", options: ["Elle est trop absorbante", "Elle est moins absorbante et plus volumineuse", "Elle coûte très cher", "Elle est toujours interdite"], correct: 1, explication: "La paille est moins absorbante que d'autres litières et prend plus de place." },
+            { type: "qcm", question: "Quel est l'atout principal des copeaux de bois ?", options: ["Ils sont absorbants et souvent moins poussiéreux", "Ils sont toujours gratuits", "Ils se mangent facilement", "Ils n'ont aucune limite"], correct: 0, explication: "Les copeaux sont absorbants, propres et souvent moins poussiéreux que la paille." },
+            { type: "qcm", question: "Quelle litière est réputée très absorbante et peu poussiéreuse ?", options: ["La paille", "Le lin", "Le sable", "Le carton"], correct: 1, explication: "Le lin est très absorbant, peu poussiéreux et confortable, mais plus coûteux." },
+            { type: "qcm", question: "Quelle est une limite des granulés de bois ?", options: ["Ils doivent être bien préparés avant usage", "Ils sont impossibles à stocker", "Ils ne sont jamais absorbants", "Ils coûtent toujours moins cher que la paille"], correct: 0, explication: "Les granulés de bois doivent être mouillés/préparés avant usage et sont moins moelleux utilisés seuls." },
+            { type: "qcm", question: "Parmi ces critères, lequel ne fait PAS partie des 4 critères de choix d'une litière ?", options: ["Le confort du cheval", "L'absorption", "La couleur de la robe du cheval", "Le coût et l'entretien"], correct: 2, explication: "Les 4 critères sont : confort, absorption, poussière, coût et entretien. La couleur de la robe n'a aucun rapport." },
+            { type: "qcm", question: "Que faut-il faire chaque jour pour bien entretenir un box ?", options: ["Ne rien faire", "Enlever les crottins et les parties humides", "Ajouter de l'eau sur toute la litière", "Retirer toute la litière chaque jour"], correct: 1, explication: "Le conseil du coach : surveiller l'état du box chaque jour, enlever les crottins et les parties humides." },
+            { type: "vrai-faux", question: "Une bonne litière doit être humide en permanence.", correct: false, explication: "Faux : une bonne litière doit être propre, sèche, confortable et adaptée au cheval." },
+            { type: "vrai-faux", question: "La qualité de la litière peut influencer la santé respiratoire du cheval.", correct: true, explication: "Vrai : une litière trop poussiéreuse ou mal entretenue peut affecter les voies respiratoires du cheval." },
+            { type: "qcm", question: "Quelle erreur est à éviter avec la litière ?", options: ["L'adapter au cheval", "La garder propre", "Laisser une litière humide", "Vérifier son état chaque jour"], correct: 2, explication: "Laisser une litière humide est une erreur à éviter : cela nuit au confort et à la santé du cheval." }
         ],
     },
 ];
@@ -29427,7 +29490,8 @@ function EcranGalopDetail() {
         "g2-c1": "vie", "g2-pansage": "vie", "g2-filet-selle": "vie", "g2-heberger": "vie", "g2-c5": "vie",
         "g2-robes": "connaissance", "g2-sens": "connaissance", "g2-vie-sociale": "connaissance", "g2-anatomie": "connaissance",
         "g2-familles": "culture",
-        "g3-c8": "connaissance" };
+        "g3-c8": "connaissance",
+        "g3-c9": "vie" };
     if (!galop)
         return null;
     const photoKey = `galop_${galop.id}`;
