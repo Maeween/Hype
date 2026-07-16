@@ -172,7 +172,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Chapitres prêts hors Galop 1 (badge NEW + ouverts aux Premium). Les autres chapitres de ces galops = "Prochainement".
-const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true, "g3-c7": true, "g3-c8": true, "g3-c9": true, "g3-c10": true };
+const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true, "g3-c7": true, "g3-c8": true, "g3-c9": true, "g3-c10": true, "g3-c11": true };
 // Un chapitre est "prêt" si tout le Galop 1 (déjà en ligne) ou s'il figure explicitement dans HYPE_COURS_PRETS.
 function coursEstPret(galopId, coursId) { try { return galopId === 1 || !!HYPE_COURS_PRETS[coursId]; } catch (e) { return true; } }
 async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
@@ -21763,6 +21763,135 @@ id: "g3-c7", icone: "🦴", type: "théorie", duree: "10 min",
             { type: "qcm", question: "Que demande le programme du Galop 3 concernant les disciplines ?", options: ["Connaître tous les règlements de compétition.", "Savoir pratiquer toutes les disciplines.", "Identifier quelques disciplines sportives et leurs caractéristiques, notamment celles du club.", "Choisir définitivement une discipline."], correct: 2, explication: "Le cavalier doit reconnaître plusieurs disciplines et être capable d'en expliquer les caractéristiques principales." }
         ],
     },
+    {
+        id: "g3-c11", icone: "🦶", type: "théorie", duree: "12 min",
+        titre: "Le sabot, l'entretien des pieds et la ferrure",
+        blocs: [
+            { type: "couv-affiche", src: GALOPS_HERO, couv: { titre1: "LE SABOT ET", titre2: "L'ENTRETIEN DES PIEDS", accent: "#1FA9C9", citation: "Pas de pied, pas de cheval.", auteur: "" } },
+            { type: "texte-riche", aere: true, titre: "Observer le pied", contenu: [
+                    { k: "para", texte: "Le sabot supporte le poids du cheval, amortit une partie des chocs et participe à chacun de ses déplacements. Un pied douloureux ou mal entretenu peut rapidement modifier sa locomotion et limiter son travail." },
+                    { k: "para", texte: "Au Galop 3, le cavalier doit savoir nommer et situer les principales parties du sabot, puis expliquer le rôle de l'entretien des pieds et de la ferrure. Observer les pieds doit donc devenir un réflexe avant et après chaque séance." },
+                    { k: "section", titre: "👁️ Observer le pied", sous: "Vu de l'extérieur, on distingue notamment :", puces: [
+                            { gras: "La paroi :", texte: "elle forme la partie visible et résistante du sabot." },
+                            { gras: "La couronne :", texte: "elle se situe à la jonction entre la peau et la corne. C'est depuis cette zone que la corne pousse." },
+                            { texte: "La pince, les mamelles, les quartiers et les talons complètent le tour du sabot." }
+                        ] },
+                    { k: "encadre", emoji: "👀", titre: "À observer", texte: "La paroi doit paraître régulière, sans grande fissure ni morceau arraché." },
+                    { k: "section", titre: "🔻 Sous le sabot", sous: "Lorsque le pied est levé, on peut observer :", puces: [
+                            { gras: "La sole :", texte: "elle forme une grande partie du dessous du pied et protège les structures internes. Elle ne doit pas être creusée ou grattée avec force lors du curage." },
+                            { gras: "La fourchette :", texte: "partie souple, en forme de triangle, située vers l'arrière du pied. Elle participe au fonctionnement du pied et au contact avec le sol." },
+                            { gras: "Les lacunes :", texte: "les creux qui entourent et séparent les différentes parties de la fourchette, où terre, fumier et petits cailloux peuvent s'accumuler." },
+                            { gras: "Les barres :", texte: "des prolongements de la paroi vers l'intérieur du sabot." },
+                            { gras: "La ligne blanche :", texte: "elle se trouve à la jonction entre la paroi et la sole. Sur un pied ferré, les clous du fer sont placés dans la paroi, à l'extérieur des structures sensibles." }
+                        ] }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Curer les pieds", contenu: [
+                    { k: "section", titre: "🌱 La corne pousse en permanence", puces: [
+                            { texte: "La corne du sabot pousse continuellement, comme les ongles chez l'être humain." },
+                            { texte: "Elle s'use naturellement lorsque le cheval se déplace, mais cette usure n'est pas toujours régulière ou suffisante." },
+                            { texte: "Un cheval vivant sur un sol souple et travaillant peu n'use pas ses pieds de la même manière qu'un cheval évoluant souvent sur des sols durs." },
+                            { texte: "C'est pourquoi les pieds doivent être contrôlés et entretenus régulièrement par un professionnel." }
+                        ] },
+                    { k: "section", titre: "🧹 Curer les pieds", sous: "Le curage permet de retirer les éléments accumulés sous le sabot (terre, crottins, litière, boue, petits cailloux) et d'observer l'état du pied.", puces: [
+                            { gras: "Pour curer correctement :", texte: "se placer près du cheval, tourné vers l'arrière ; demander calmement le pied ; garder le membre sans le tirer sur le côté ; utiliser le cure-pied du talon vers la pince ; dégager soigneusement les lacunes ; éviter d'appuyer fortement sur la fourchette ou la sole." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le cheval donne son pied sans perdre son équilibre et garde le membre détendu dans la main du cavalier." },
+                    { k: "section", titre: "🕐 Quand vérifier les pieds ?", sous: "Les pieds doivent être vérifiés :", puces: [
+                            { texte: "avant le travail ;" },
+                            { texte: "après le travail ;" },
+                            { texte: "après une sortie sur un terrain caillouteux ou boueux ;" },
+                            { texte: "lorsqu'un cheval semble irrégulier ou gêné ;" },
+                            { texte: "avant et après le transport." }
+                        ] },
+                    { k: "para", texte: "Avant la séance, le curage évite qu'un caillou ou un corps étranger reste coincé sous le pied. Après la séance, il permet de contrôler qu'aucune blessure ou anomalie n'est apparue." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Parage et ferrure", contenu: [
+                    { k: "section", titre: "✂️ Le parage", sous: "Le parage consiste à retirer l'excès de corne et à rééquilibrer le sabot. Il est réalisé par un maréchal-ferrant ou un professionnel qualifié.", puces: [
+                            { gras: "Il permet notamment :", texte: "de conserver une forme correcte, d'éviter une pousse excessive ou irrégulière, de maintenir un appui aussi équilibré que possible, de limiter certaines fissures ou déformations." },
+                            { texte: "Même un cheval non ferré doit être paré régulièrement." }
+                        ] },
+                    { k: "section", titre: "🧲 La ferrure", sous: "La ferrure consiste à fixer un fer sous le sabot après avoir préparé et paré le pied. Elle peut servir à :", puces: [
+                            { texte: "limiter l'usure excessive de la corne ;" },
+                            { texte: "protéger le pied sur certains sols ;" },
+                            { texte: "améliorer l'adhérence selon le travail réalisé ;" },
+                            { texte: "accompagner certains besoins particuliers sur conseil professionnel." }
+                        ] },
+                    { k: "para", texte: "Tous les chevaux ne sont pas obligatoirement ferrés. Le choix dépend notamment de la qualité de leurs pieds, du terrain, de leur activité, de leur locomotion, des recommandations du maréchal-ferrant et, si nécessaire, du vétérinaire." },
+                    { k: "section", titre: "🔍 Reconnaître un fer correctement en place", sous: "Sur un pied ferré, observer si :", puces: [
+                            { texte: "le fer semble bien ajusté au sabot ;" },
+                            { texte: "aucun clou ne dépasse anormalement ;" },
+                            { texte: "le fer ne bouge pas ;" },
+                            { texte: "la paroi n'est pas fortement cassée autour des clous ;" },
+                            { texte: "aucun côté du fer ne s'est déplacé sous le pied." }
+                        ] },
+                    { k: "encadre", emoji: "⚠️", titre: "Important", texte: "Un fer qui bouge, sonne différemment ou semble décalé doit être signalé. Ne jamais tenter de retirer ou de replacer soi-même un fer." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Pieds nus et signaux d'alerte", contenu: [
+                    { k: "section", titre: "🐴 Les chevaux pieds nus", puces: [
+                            { texte: "Un cheval pieds nus ne porte pas de fers, mais ses pieds nécessitent tout de même un suivi régulier." },
+                            { texte: "La corne doit être parée et son usure surveillée." },
+                            { texte: "L'absence de fers ne signifie donc jamais l'absence d'entretien." },
+                            { texte: "Certains chevaux vivent et travaillent parfaitement pieds nus, tandis que d'autres ont besoin d'une protection adaptée à leur activité ou à la sensibilité de leurs pieds." }
+                        ] },
+                    { k: "section", titre: "🚨 Ce qu'il faut signaler", sous: "Prévenir l'enseignant ou le responsable de l'écurie en cas de :", puces: [
+                            { texte: "fer qui bouge ou qui manque ;" },
+                            { texte: "grande fissure ;" },
+                            { texte: "morceau de paroi arraché ;" },
+                            { texte: "forte chaleur du pied ;" },
+                            { texte: "mauvaise odeur inhabituelle ;" },
+                            { texte: "fourchette très noire, molle ou abîmée ;" },
+                            { texte: "objet planté dans le sabot ;" },
+                            { texte: "douleur lors de la manipulation du pied ;" },
+                            { texte: "boiterie ou irrégularité." }
+                        ] },
+                    { k: "encadre", emoji: "⚠️", titre: "Important", texte: "Si un objet est planté dans le sabot, ne pas le retirer soi-même. Sa position peut aider le vétérinaire à évaluer la blessure." },
+                    { k: "encadre", emoji: "💡", titre: "Le savais-tu ?", texte: "Le sabot n'est pas une structure complètement rigide. Lorsqu'il prend appui au sol, il se déforme très légèrement. Ce fonctionnement participe à l'amortissement et à la circulation du sang dans le pied. Cette mécanique sera approfondie dans les niveaux suivants." },
+                    { k: "encadre", emoji: "👨‍🏫", titre: "Le conseil du coach", texte: "Ne pas curer les pieds machinalement. Profiter de chaque curage pour comparer les quatre sabots : leur température, leur odeur, l'état de la fourchette, la présence éventuelle d'un caillou, la tenue des fers. Le cavalier apprend ainsi à reconnaître rapidement ce qui est habituel chez son cheval." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "À toi de jouer", contenu: [
+                    { k: "section", titre: "⚠️ Les erreurs à éviter", puces: [
+                            { gras: "Se placer directement derrière le cheval.", texte: "Le cavalier s'expose davantage à un coup de pied. Il doit rester près du corps et légèrement sur le côté." },
+                            { gras: "Tirer fortement le membre vers l'extérieur.", texte: "Cela peut gêner l'équilibre du cheval et rendre la position inconfortable pour ses articulations." },
+                            { gras: "Creuser la sole avec le cure-pied.", texte: "La sole protège l'intérieur du pied. Le curage doit retirer les saletés, pas enlever de la corne." },
+                            { gras: "Oublier les lacunes de la fourchette.", texte: "La boue et la litière humide peuvent y rester coincées et empêcher une bonne observation du pied." },
+                            { gras: "Penser qu'un cheval non ferré n'a pas besoin du maréchal.", texte: "Même pieds nus, le cheval a besoin d'un parage régulier." },
+                            { gras: "Continuer à monter avec un fer déplacé.", texte: "Un fer mal placé peut blesser le pied ou se détacher pendant le travail." },
+                            { gras: "Retirer un objet planté dans le sabot.", texte: "L'objet peut limiter temporairement le saignement et indiquer le trajet de la blessure. Il faut sécuriser le cheval et prévenir immédiatement un professionnel." }
+                        ] },
+                    { k: "encadre", emoji: "🏇", titre: "Le défi du cavalier", texte: "Lors de la prochaine séance, observe les quatre pieds avant de monter. Pour chacun, vérifie : la propreté de la sole, l'état de la fourchette, l'absence de caillou, l'état de la paroi, la tenue du fer s'il y en a un. Essaie ensuite de nommer au moins cinq parties visibles du sabot." },
+                    { k: "section", titre: "🤖 Demande à Hey Baby", sous: "Tu veux aller plus loin ? Tu peux demander à Hey Baby :", puces: [
+                            { texte: "Peux-tu m'aider à retenir les parties du sabot ?" },
+                            { texte: "Quelle est la différence entre la sole et la fourchette ?" },
+                            { texte: "Quelle différence y a-t-il entre le parage et la ferrure ?" },
+                            { texte: "Un cheval peut-il travailler sans fers ?" },
+                            { texte: "Quels signes doivent être signalés rapidement ?" }
+                        ] },
+                    { k: "section", titre: "⏱️ La synthèse en 10 secondes", puces: [
+                            { texte: "La paroi forme l'extérieur visible du sabot." },
+                            { texte: "Sous le pied se trouvent notamment la sole, la fourchette, les lacunes, les barres et la ligne blanche." },
+                            { texte: "La corne pousse continuellement." },
+                            { texte: "Les pieds doivent être curés et observés avant et après le travail." },
+                            { texte: "Le parage rééquilibre et raccourcit la corne." },
+                            { texte: "La ferrure protège certains pieds selon les besoins du cheval." },
+                            { texte: "Un cheval pieds nus a tout de même besoin d'un entretien régulier." },
+                            { texte: "Toute douleur, forte chaleur, fissure importante ou anomalie doit être signalée." }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Prendre soin des pieds, c'est préserver chaque pas du cheval." }
+                ] },
+        ],
+        quiz: [
+            { type: "qcm", question: "Quelle partie forme l'extérieur visible du sabot ?", options: ["La sole", "La paroi", "La fourchette", "La lacune médiane"], correct: 1, explication: "La paroi est la partie externe et résistante du sabot." },
+            { type: "qcm", question: "Où se situe la fourchette ?", options: ["Sur le dessus du pied", "Sous le sabot, vers l'arrière", "Sur le canon", "Autour de la couronne"], correct: 1, explication: "La fourchette est une structure souple et triangulaire située sous le pied, entre les talons." },
+            { type: "qcm", question: "À quoi sert principalement le cure-pied ?", options: ["À raccourcir la corne", "À retirer les saletés et observer le dessous du pied", "À enlever un fer", "À limer la paroi"], correct: 1, explication: "Le curage retire la terre, le fumier et les cailloux tout en permettant de contrôler l'état du sabot." },
+            { type: "qcm", question: "Dans quel sens utilise-t-on généralement le cure-pied ?", options: ["De la pince vers le talon", "Du talon vers la pince", "De droite à gauche uniquement", "Directement sur la sole avec force"], correct: 1, explication: "On dégage le pied du talon vers la pince, avec précaution autour de la fourchette." },
+            { type: "qcm", question: "Qu'est-ce que le parage ?", options: ["Le nettoyage quotidien du sabot", "La pose d'un fer", "L'entretien et le rééquilibrage de la corne", "Le lavage du membre"], correct: 2, explication: "Le professionnel retire l'excès de corne et redonne au sabot une forme adaptée." },
+            { type: "qcm", question: "Pourquoi certains chevaux sont-ils ferrés ?", options: ["Pour changer leur robe", "Pour protéger leurs pieds selon leur activité et leur terrain", "Parce que tous les chevaux doivent obligatoirement porter des fers", "Pour éviter de curer leurs pieds"], correct: 1, explication: "La ferrure peut limiter l'usure ou protéger le pied, mais elle n'est pas indispensable pour tous les chevaux." },
+            { type: "qcm", question: "Un cheval pieds nus doit-il être suivi par un professionnel ?", options: ["Non, sa corne s'entretient toujours seule", "Oui, il doit être paré régulièrement", "Seulement s'il participe à des concours", "Uniquement en hiver"], correct: 1, explication: "La corne continue de pousser, même lorsque le cheval ne porte pas de fers." },
+            { type: "qcm", question: "Que faire si un objet est planté dans le sabot ?", options: ["Le retirer immédiatement", "Le pousser plus profondément", "Ne pas le retirer et prévenir rapidement un professionnel", "Faire marcher le cheval pour qu'il tombe"], correct: 2, explication: "Le trajet de l'objet est important pour l'évaluation vétérinaire. Le cheval doit être immobilisé et pris en charge." },
+            { type: "qcm", question: "Quel signe doit être signalé ?", options: ["Une sole propre", "Un fer qui bouge", "Une fourchette normalement souple", "Une paroi régulière"], correct: 1, explication: "Un fer mobile ou déplacé peut blesser le pied et se détacher pendant le travail." },
+            { type: "qcm", question: "Pourquoi faut-il curer les pieds après le travail ?", options: ["Pour faire pousser la corne plus vite", "Pour vérifier qu'aucun caillou, corps étranger ou problème n'est apparu", "Pour retirer systématiquement la fourchette", "Pour refroidir le cheval"], correct: 1, explication: "Le contrôle après la séance permet de repérer rapidement une anomalie ou un élément coincé sous le sabot." }
+        ],
+    },
 ];
 const COURS_GALOP4_FR = [
     {
@@ -29674,7 +29803,8 @@ function EcranGalopDetail() {
         "g2-familles": "culture",
         "g3-c8": "connaissance",
         "g3-c9": "vie",
-        "g3-c10": "culture" };
+        "g3-c10": "culture",
+        "g3-c11": "vie" };
     if (!galop)
         return null;
     const photoKey = `galop_${galop.id}`;
