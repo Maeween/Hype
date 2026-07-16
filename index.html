@@ -172,7 +172,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Chapitres prêts hors Galop 1 (badge NEW + ouverts aux Premium). Les autres chapitres de ces galops = "Prochainement".
-const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true, "g3-c7": true, "g3-c8": true, "g3-c9": true, "g3-c10": true, "g3-c11": true };
+const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true, "g3-c7": true, "g3-c8": true, "g3-c9": true, "g3-c10": true, "g3-c11": true, "g3-c12": true };
 // Un chapitre est "prêt" si tout le Galop 1 (déjà en ligne) ou s'il figure explicitement dans HYPE_COURS_PRETS.
 function coursEstPret(galopId, coursId) { try { return galopId === 1 || !!HYPE_COURS_PRETS[coursId]; } catch (e) { return true; } }
 async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
@@ -21892,6 +21892,172 @@ id: "g3-c7", icone: "🦴", type: "théorie", duree: "10 min",
             { type: "qcm", question: "Pourquoi faut-il curer les pieds après le travail ?", options: ["Pour faire pousser la corne plus vite", "Pour vérifier qu'aucun caillou, corps étranger ou problème n'est apparu", "Pour retirer systématiquement la fourchette", "Pour refroidir le cheval"], correct: 1, explication: "Le contrôle après la séance permet de repérer rapidement une anomalie ou un élément coincé sous le sabot." }
         ],
     },
+    {
+        id: "g3-c12", icone: "🧘", type: "pratique", duree: "12 min",
+        titre: "L'assiette et la posture assise",
+        blocs: [
+            { type: "couv-affiche", src: GALOPS_HERO, couv: { titre1: "L'ASSIETTE ET", titre2: "LA POSTURE ASSISE", accent: "#1FA9C9", citation: "Une bonne position ne consiste pas à rester immobile, mais à accompagner le cheval sans perdre son équilibre.", auteur: "" } },
+            { type: "texte-riche", aere: true, titre: "Qu'est-ce que l'assiette ?", contenu: [
+                    { k: "para", texte: "L'assiette correspond à la manière dont le cavalier prend appui sur la selle et accompagne les mouvements du cheval avec son bassin. Elle constitue la base de l'équilibre à cheval." },
+                    { k: "para", texte: "Une assiette stable et souple permet au cavalier de rester avec son cheval, d'utiliser ses aides plus discrètement et d'éviter de le gêner. Au Galop 3, le cavalier apprend à stabiliser sa posture au pas, au trot et au galop, notamment lorsqu'il est assis dans la selle. L'objectif n'est pas de se raidir pour ne plus bouger : il faut au contraire apprendre à absorber et à accompagner les mouvements du cheval." },
+                    { k: "section", titre: "🪑 Qu'est-ce que l'assiette ?", sous: "Elle repose principalement sur les deux ischions, le bassin et le haut de l'intérieur des cuisses. Les ischions sont les deux os situés sous le bassin. Lorsque le cavalier est assis correctement, son poids est réparti de manière équilibrée entre eux.", puces: [
+                            { gras: "Une bonne assiette doit être :", texte: "stable, équilibrée, souple, symétrique, adaptée au mouvement du cheval." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le poids se répartit sur les deux côtés de la selle sans que le cavalier glisse vers l'avant, vers l'arrière ou sur un côté." },
+                    { k: "section", titre: "📐 La posture du cavalier assis", sous: "Lorsque le cavalier est assis dans la selle, son corps doit rester organisé autour d'un axe vertical. Vu de profil, on recherche approximativement l'alignement de l'oreille, de l'épaule, de la hanche et du talon.", puces: [
+                            { texte: "Cet alignement n'est pas une position rigide à reproduire au millimètre. Il constitue un repère pour vérifier que le cavalier ne bascule ni vers l'avant ni vers l'arrière." },
+                            { texte: "La posture doit permettre au cavalier de rester équilibré sans se tenir aux rênes." }
+                        ] }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Regard, épaules et dos", contenu: [
+                    { k: "section", titre: "👁️ La tête et le regard", sous: "La tête reste droite et naturelle. Le regard se porte loin, dans la direction où le cavalier souhaite aller.", puces: [
+                            { gras: "Regarder le sol entraîne souvent :", texte: "un arrondissement du dos, une fermeture des épaules, une perte d'équilibre vers l'avant, des trajectoires moins précises." },
+                            { texte: "Le regard aide également à anticiper les figures, les transitions et les changements de direction." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le menton reste naturel et les yeux cherchent déjà le prochain point du tracé." },
+                    { k: "section", titre: "🎽 Les épaules et le haut du corps", sous: "Les épaules restent relâchées, ouvertes, à la même hauteur, orientées dans la direction du mouvement. Le buste est redressé, mais il ne doit pas être raide.", puces: [
+                            { gras: "Le cavalier évite :", texte: "de creuser exagérément le dos, de s'arrondir, de pousser la poitrine vers l'avant, de rejeter les épaules derrière les hanches." }
+                        ] },
+                    { k: "section", titre: "🔙 Le dos", sous: "Le dos doit rester tonique et souple. Être tonique signifie que le cavalier maintient sa posture sans s'effondrer. Être souple signifie qu'il peut absorber les mouvements du cheval sans se bloquer.", puces: [
+                            { texte: "Un dos trop relâché devient rond et instable." },
+                            { texte: "Un dos trop contracté transmet des secousses et empêche le bassin d'accompagner correctement." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le cavalier se grandit vers le haut sans serrer les épaules ni retenir sa respiration." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Bassin, jambes et talons", contenu: [
+                    { k: "section", titre: "⚖️ Le bassin", sous: "Le bassin joue un rôle essentiel dans l'assiette. Il doit pouvoir suivre le mouvement du dos du cheval : le balancement du pas, le rebond du trot, le mouvement en trois temps du galop.", puces: [
+                            { gras: "Le bassin ne doit pas être :", texte: "bloqué, exagérément basculé vers l'avant, exagérément basculé vers l'arrière." },
+                            { texte: "Une position naturelle du bassin permet au cavalier de rester assis sur ses deux ischions et d'accompagner l'allure." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le bassin suit le mouvement sans pousser volontairement dans la selle ni résister contre elle." },
+                    { k: "section", titre: "🦵 Les jambes", sous: "Les jambes descendent naturellement de chaque côté du cheval. Elles restent proches du cheval, souples, stables, sans crispation.", puces: [
+                            { texte: "Les cuisses sont posées sur la selle sans serrer fortement." },
+                            { texte: "Les genoux restent au contact, mais ne doivent pas agripper la selle." },
+                            { texte: "Les mollets peuvent agir lorsqu'une aide est nécessaire, puis redevenir calmes." },
+                            { texte: "La jambe ne doit pas remonter ni partir vers l'avant à chaque mouvement." }
+                        ] },
+                    { k: "section", titre: "👟 Les talons", sous: "Les talons sont légèrement descendus, sans être forcés vers le bas. Ils constituent le point bas de la jambe. Pour que le talon puisse descendre naturellement, les articulations de la hanche, du genou et de la cheville doivent rester souples.", puces: [
+                            { gras: "Forcer les talons vers le bas peut :", texte: "raidir la cheville, pousser la jambe vers l'avant, crisper le bassin, perturber l'équilibre." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le poids descend dans la jambe jusqu'au talon sans que le cavalier appuie volontairement sur l'étrier." },
+                    { k: "section", titre: "🦶 Les pieds dans les étriers", sous: "L'étrier repose sur la partie la plus large du pied, derrière les orteils. Le pied n'est ni trop enfoncé dans l'étrier ni posé uniquement sur la pointe. La semelle reste presque parallèle au sol.", puces: [
+                            { texte: "La pointe du pied est orientée naturellement vers l'avant, sans être rentrée de force ni exagérément tournée vers l'extérieur." },
+                            { gras: "Une bonne position du pied aide à conserver :", texte: "une cheville souple, une jambe stable, un étrier correctement chaussé, un talon légèrement descendu." }
+                        ] }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Bras, mains et respiration", contenu: [
+                    { k: "section", titre: "🤲 Les bras et les mains", sous: "Les bras tombent naturellement le long du corps. Les coudes restent légèrement fléchis et proches du buste. Ils peuvent ainsi accompagner les mouvements de l'encolure du cheval, particulièrement au pas.", puces: [
+                            { gras: "Les mains restent :", texte: "proches l'une de l'autre, au-dessus du garrot, stables, dans le prolongement des avant-bras, avec les pouces orientés vers le haut." },
+                            { texte: "Une main stable ne signifie pas une main figée. Elle suit les mouvements du cheval tout en conservant un contact régulier." }
+                        ] },
+                    { k: "section", titre: "🌬️ Respirer pour rester souple", sous: "La respiration influence directement la posture.", puces: [
+                            { gras: "Lorsque le cavalier retient son souffle, il a tendance à :", texte: "contracter ses épaules, serrer ses genoux, bloquer son bassin, devenir moins disponible." },
+                            { texte: "Respirer régulièrement aide à relâcher les tensions inutiles. Une longue expiration peut être particulièrement utile lorsque le cavalier sent qu'il commence à se crisper." }
+                        ] },
+                    { k: "section", titre: "🚶 L'assiette au pas", sous: "Au pas, le dos du cheval effectue un mouvement de balancement. Le bassin du cavalier accompagne ce mouvement de manière souple et régulière. Les épaules restent calmes tandis que les hanches suivent légèrement le déplacement du cheval.", puces: [
+                            { gras: "Pour améliorer son assiette au pas, le cavalier peut :", texte: "respirer profondément, relâcher les hanches, sentir le déplacement alternatif des deux côtés du bassin, vérifier qu'il ne pousse pas volontairement avec son bassin." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Chaque hanche avance légèrement à son tour avec le mouvement du cheval." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "L'assiette au trot et au galop", contenu: [
+                    { k: "section", titre: "🏃 L'assiette au trot assis", sous: "Au trot, le cheval avance par mouvements diagonaux qui créent un rebond régulier. Au trot assis, le cavalier doit absorber ce rebond grâce à la souplesse de son bassin, ses hanches, son dos, ses genoux, ses chevilles.", puces: [
+                            { texte: "Il ne doit ni se laisser projeter ni chercher à se coller à la selle en contractant tout son corps." },
+                            { texte: "Pour apprendre, il est préférable de travailler sur de courtes périodes de trot assis de qualité. Lorsque la posture se dégrade, le cavalier peut reprendre le trot enlevé, retrouver son équilibre, puis recommencer." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le bassin absorbe le mouvement tandis que les épaules restent relativement stables." },
+                    { k: "section", titre: "🚀 L'assiette au galop", sous: "Au galop, le cheval produit un mouvement de bascule plus ample qu'au trot. Le bassin du cavalier suit ce mouvement sans exagération. Le cavalier reste assis dans la selle sans pousser à chaque foulée. Son buste reste redressé et ses jambes descendent autour du cheval.", puces: [
+                            { gras: "Il évite :", texte: "de se jeter en arrière, de pomper avec le haut du corps, de pousser fortement la selle avec le bassin, de serrer les genoux, de remonter les talons." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le bassin suit un mouvement souple et arrondi tandis que le haut du corps reste calme." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Indépendance des aides et symétrie", contenu: [
+                    { k: "section", titre: "🔗 L'assiette et l'indépendance des aides", sous: "Une bonne assiette aide le cavalier à utiliser séparément ses jambes, ses mains, son poids du corps, son regard, son buste. Cette capacité est appelée indépendance des aides.", puces: [
+                            { texte: "Le cavalier doit pouvoir agir avec ses jambes sans tirer sur les rênes, ou tourner la tête sans laisser ses mains partir du même côté." },
+                            { texte: "Plus l'assiette devient stable, plus les aides peuvent devenir discrètes et précises." }
+                        ] },
+                    { k: "section", titre: "⚖️ La symétrie du cavalier", sous: "Le cavalier doit chercher à répartir son poids de manière égale sur ses deux ischions. Il vérifie notamment que :", puces: [
+                            { texte: "ses épaules sont à la même hauteur ;" },
+                            { texte: "ses étriers ont la même longueur ;" },
+                            { texte: "ses jambes descendent de façon comparable ;" },
+                            { texte: "il ne s'appuie pas davantage sur une rêne ;" },
+                            { texte: "il ne glisse pas toujours du même côté." }
+                        ] },
+                    { k: "para", texte: "Il est normal d'avoir un côté plus facile que l'autre. L'objectif est d'en prendre conscience pour améliorer progressivement sa symétrie." },
+                    { k: "section", titre: "📏 Trouver la bonne longueur d'étriers", puces: [
+                            { gras: "Des étriers trop courts peuvent :", texte: "faire remonter les genoux, crisper les hanches, repousser le cavalier vers l'arrière." },
+                            { gras: "Des étriers trop longs peuvent :", texte: "rendre les étriers difficiles à conserver, empêcher un appui stable, faire chercher les étriers avec la pointe des pieds." },
+                            { texte: "Pour le travail sur le plat, la longueur doit permettre au cavalier de garder les genoux légèrement fléchis et les jambes descendues naturellement. La longueur exacte dépend de la morphologie du cavalier, de la selle et de l'exercice réalisé." }
+                        ] },
+                    { k: "section", titre: "🐴 Le rôle de la selle", sous: "Une selle adaptée aide le cavalier à trouver sa position, mais elle ne remplace pas son équilibre. Une selle inadaptée peut gêner la descente de jambe, la position du bassin, la stabilité du cavalier, le confort du cheval.", puces: [
+                            { gras: "Avant de monter, il faut vérifier que :", texte: "la selle est correctement placée, le tapis ne forme pas de pli, la sangle est ajustée progressivement, les étrivières sont réglées à la même longueur." }
+                        ] }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Exercices et repères", contenu: [
+                    { k: "section", titre: "🏋️ Les exercices pour améliorer l'assiette", sous: "Les exercices doivent être réalisés avec l'accord et sous la surveillance de l'enseignant.", puces: [
+                            { gras: "Sans étriers :", texte: "le travail sans étriers peut aider à relâcher les jambes, sentir les mouvements du cheval, améliorer la stabilité du bassin, limiter l'appui excessif sur les étriers. Il doit être réalisé progressivement, sans chercher à tenir longtemps au prix d'une mauvaise position." },
+                            { gras: "Mobiliser les articulations :", texte: "au pas, le cavalier peut tourner les chevilles, décoller légèrement un genou puis l'autre, lever un bras, toucher la pointe des oreilles ou la croupe selon l'exercice demandé, effectuer des rotations d'épaules." },
+                            { gras: "Alterner trot enlevé et trot assis :", texte: "le cavalier peut effectuer quelques foulées au trot assis, puis reprendre le trot enlevé. Cette alternance permet de conserver la qualité de la posture sans accumuler trop de crispation." }
+                        ] },
+                    { k: "section", titre: "✅ Les signes d'une posture équilibrée", sous: "Une posture équilibrée se reconnaît lorsque le cavalier :", puces: [
+                            { texte: "semble suivre les mouvements du cheval ;" },
+                            { texte: "reste stable sans se tenir aux rênes ;" },
+                            { texte: "garde ses jambes calmes ;" },
+                            { texte: "conserve ses épaules relâchées ;" },
+                            { texte: "regarde dans la direction du déplacement ;" },
+                            { texte: "peut agir puis relâcher ses aides ;" },
+                            { texte: "ne rebondit pas excessivement ;" },
+                            { texte: "ne gêne pas le mouvement du cheval." }
+                        ] },
+                    { k: "para", texte: "La position peut évoluer légèrement selon l'allure, la vitesse, le terrain et l'exercice réalisé." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "À toi de jouer", contenu: [
+                    { k: "section", titre: "⚠️ Les erreurs à éviter", puces: [
+                            { gras: "Se raidir pour rester droit.", texte: "Une posture rigide empêche le bassin d'accompagner le cheval. Le cavalier paraît droit, mais il rebondit davantage et devient moins stable." },
+                            { gras: "S'accrocher avec les genoux.", texte: "Serrer les genoux peut faire remonter les jambes et repousser le bassin hors de la selle. Les cuisses et les genoux restent posés sans agripper." },
+                            { gras: "Creuser exagérément le dos.", texte: "Chercher à se redresser en creusant fortement les reins bloque le bassin et provoque des tensions. Le cavalier doit se grandir tout en conservant une position naturelle du dos." },
+                            { gras: "Arrondir les épaules.", texte: "Des épaules fermées entraînent souvent le regard vers le sol et déplacent le poids vers l'avant." },
+                            { gras: "Rejeter le buste en arrière.", texte: "Se pencher en arrière ne permet pas de mieux rester assis. Cela peut pousser les jambes vers l'avant et gêner le dos du cheval." },
+                            { gras: "Forcer les talons vers le bas.", texte: "Le talon descend grâce au relâchement des articulations et non grâce à une poussée volontaire excessive." },
+                            { gras: "Se tenir aux rênes.", texte: "Les rênes servent à communiquer avec le cheval, pas à maintenir l'équilibre du cavalier." },
+                            { gras: "Pousser avec le bassin.", texte: "Accompagner le mouvement ne signifie pas pousser fortement la selle à chaque foulée. Un mouvement excessif du bassin peut gêner le cheval et déséquilibrer le cavalier." },
+                            { gras: "Vouloir rester longtemps au trot assis.", texte: "Quelques foulées correctes sont plus utiles qu'un long exercice réalisé dans la crispation et le déséquilibre." }
+                        ] },
+                    { k: "encadre", emoji: "💡", titre: "Le savais-tu ?", texte: "L'assiette ne dépend pas uniquement de la force musculaire. Elle repose surtout sur l'équilibre, la coordination, la mobilité des articulations, la capacité à relâcher les tensions inutiles, la répétition des bonnes sensations. Un cavalier très contracté peut donc être moins stable qu'un cavalier souple et détendu." },
+                    { k: "encadre", emoji: "👨‍🏫", titre: "Le conseil du coach", texte: "Au lieu de penser uniquement « Tiens-toi droit », pense plutôt « Grandis-toi, respire et laisse ton bassin suivre le cheval ». Une bonne posture se construit en combinant tonicité et décontraction." },
+                    { k: "encadre", emoji: "🏇", titre: "Le défi du cavalier", texte: "Lors de la prochaine séance, choisis trois points à vérifier parmi : le regard, les épaules, le bassin, les genoux, les talons, les mains. Au trot, réalise quelques foulées assises sans chercher à les prolonger, et reprends le trot enlevé dès que la crispation apparaît." },
+                    { k: "section", titre: "🤖 Demande à Hey Baby", sous: "Tu veux aller plus loin ? Tu peux demander à Hey Baby :", puces: [
+                            { texte: "Comment savoir si je suis assis sur mes deux ischions ?" },
+                            { texte: "Pourquoi est-ce que je rebondis au trot assis ?" },
+                            { texte: "Comment éviter de serrer les genoux ?" },
+                            { texte: "Comment trouver la bonne longueur d'étriers ?" },
+                            { texte: "Comment rester droit sans devenir raide ?" }
+                        ] },
+                    { k: "section", titre: "⏱️ La synthèse en 10 secondes", puces: [
+                            { texte: "L'assiette correspond à la manière dont le cavalier s'installe et accompagne le cheval dans la selle." },
+                            { texte: "Le poids doit être réparti sur les deux ischions." },
+                            { texte: "Le cavalier se grandit sans se raidir." },
+                            { texte: "Le bassin accompagne les mouvements du cheval." },
+                            { texte: "Les jambes descendent naturellement sans serrer les genoux." },
+                            { texte: "Les talons sont légèrement descendus grâce à la souplesse des articulations." },
+                            { texte: "Les mains restent stables sans servir de point d'appui." },
+                            { texte: "Une bonne assiette permet d'utiliser les aides de manière plus discrète et indépendante." }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "L'équilibre naît lorsque le cavalier cesse de lutter contre le mouvement et apprend à l'accompagner." }
+                ] },
+        ],
+        quiz: [
+            { type: "qcm", question: "Qu'est-ce que l'assiette du cavalier ?", options: ["La forme de la selle.", "La manière dont le cavalier prend appui dans la selle et accompagne le cheval.", "La longueur des rênes.", "La vitesse du cheval."], correct: 1, explication: "L'assiette correspond à la position du bassin et aux appuis du cavalier dans la selle." },
+            { type: "qcm", question: "Sur quoi le poids du cavalier assis doit-il principalement être réparti ?", options: ["Sur ses mains.", "Sur ses genoux uniquement.", "Sur ses deux ischions.", "Sur la pointe des pieds."], correct: 2, explication: "Les ischions sont les deux os du bassin qui prennent appui dans la selle." },
+            { type: "qcm", question: "Quel alignement constitue un repère lorsque le cavalier est vu de profil ?", options: ["Oreille, épaule, hanche et talon.", "Main, genou, tête et étrier.", "Épaule, coude, genou et pointe du pied.", "Oreille, main, selle et talon."], correct: 0, explication: "Cet alignement aide à vérifier que le cavalier ne bascule pas trop vers l'avant ou vers l'arrière." },
+            { type: "qcm", question: "Pourquoi faut-il regarder dans la direction où l'on souhaite aller ?", options: ["Pour faire avancer le cheval plus vite.", "Pour anticiper le tracé et conserver une meilleure posture.", "Pour raccourcir les rênes.", "Pour descendre les talons."], correct: 1, explication: "Le regard aide à organiser le corps, à anticiper les figures et à suivre une trajectoire précise." },
+            { type: "qcm", question: "Comment le bassin doit-il fonctionner au pas, au trot et au galop ?", options: ["Il doit rester totalement bloqué.", "Il doit pousser fortement la selle.", "Il doit accompagner souplement les mouvements du cheval.", "Il doit toujours être déplacé vers l'avant."], correct: 2, explication: "Un bassin souple absorbe et accompagne le mouvement sans exagération." },
+            { type: "qcm", question: "Que provoque souvent le fait de serrer fortement les genoux ?", options: ["Les jambes descendent davantage.", "Les jambes remontent et le bassin devient moins stable.", "Le cheval ralentit toujours.", "Les mains deviennent plus légères."], correct: 1, explication: "Lorsque le cavalier s'agrippe avec les genoux, ses jambes peuvent remonter et son assiette devient plus instable." },
+            { type: "qcm", question: "Comment les talons doivent-ils être placés ?", options: ["Fortement poussés vers le bas.", "Plus hauts que les orteils.", "Légèrement descendus grâce à la souplesse de la jambe.", "Complètement sortis des étriers."], correct: 2, explication: "Le talon descend naturellement lorsque la hanche, le genou et la cheville restent souples." },
+            { type: "qcm", question: "Pourquoi les rênes ne doivent-elles pas servir à maintenir l'équilibre ?", options: ["Parce qu'elles sont trop courtes.", "Parce que cela gêne la bouche du cheval et empêche une main indépendante.", "Parce que le cheval pourrait accélérer.", "Parce qu'elles ne servent qu'au pansage."], correct: 1, explication: "Le cavalier doit rester équilibré grâce à son assiette et non en s'accrochant à la bouche du cheval." },
+            { type: "qcm", question: "Que faut-il faire lorsque la posture se dégrade au trot assis ?", options: ["Continuer le plus longtemps possible.", "Serrer davantage les genoux.", "Reprendre le trot enlevé, retrouver son équilibre puis recommencer.", "Tirer sur les rênes."], correct: 2, explication: "Quelques foulées de qualité sont plus utiles qu'une longue période de trot assis dans la crispation." },
+            { type: "qcm", question: "Quelle phrase décrit le mieux une bonne posture ?", options: ["Le cavalier reste parfaitement immobile et rigide.", "Le cavalier se tient avec les rênes.", "Le cavalier reste tonique, souple et accompagne les mouvements du cheval.", "Le cavalier pousse la selle à chaque foulée."], correct: 2, explication: "Une bonne posture associe stabilité, souplesse et accompagnement du mouvement." }
+        ],
+    },
 ];
 const COURS_GALOP4_FR = [
     {
@@ -29804,7 +29970,8 @@ function EcranGalopDetail() {
         "g3-c8": "connaissance",
         "g3-c9": "vie",
         "g3-c10": "culture",
-        "g3-c11": "vie" };
+        "g3-c11": "vie",
+        "g3-c12": "technique" };
     if (!galop)
         return null;
     const photoKey = `galop_${galop.id}`;
