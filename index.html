@@ -172,7 +172,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Chapitres prêts hors Galop 1 (badge NEW + ouverts aux Premium). Les autres chapitres de ces galops = "Prochainement".
-const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true, "g3-c7": true };
+const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true, "g3-c7": true, "g3-c8": true };
 // Un chapitre est "prêt" si tout le Galop 1 (déjà en ligne) ou s'il figure explicitement dans HYPE_COURS_PRETS.
 function coursEstPret(galopId, coursId) { try { return galopId === 1 || !!HYPE_COURS_PRETS[coursId]; } catch (e) { return true; } }
 async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
@@ -18098,7 +18098,7 @@ exports.version = "19.2.5";
 });</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-images-25.js"></script><script src="hype-images-26.js"></script><script src="hype-images-27.js"></script>
 <script src="hype-images-28.js"></script>
 <script src="hype-images-29.js"></script><script src="hype-images-30.js"></script><script src="hype-images-31.js"></script><script src="hype-images-32.js"></script><script src="hype-images-33.js"></script><script src="hype-images-34.js"></script><script src="hype-images-35.js"></script><script src="hype-images-36.js"></script><script src="hype-images-37.js"></script><script src="hype-images-38.js"></script><script src="hype-images-39.js"></script><script src="hype-images-40.js"></script><script src="hype-images-41.js"></script><script src="hype-images-42.js"></script><script src="hype-images-43.js"></script><script src="hype-images-44.js"></script><script src="hype-images-45.js"></script><script src="hype-images-46.js"></script><script src="hype-images-47.js"></script><script src="hype-images-48.js"></script><script src="hype-images-49.js"></script><script src="hype-images-50.js"></script><script src="hype-images-51.js"></script><script src="hype-images-52.js"></script><script src="hype-images-53.js"></script><script src="hype-images-54.js"></script><script src="hype-images-55.js"></script><script src="hype-images-56.js"></script>
-<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-images-62.js"></script><script src="hype-images-63.js"></script><script src="hype-images-64.js"></script><script src="hype-images-65.js"></script><script src="hype-images-66.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
+<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-images-62.js"></script><script src="hype-images-63.js"></script><script src="hype-images-64.js"></script><script src="hype-images-65.js"></script><script src="hype-images-66.js"></script><script src="hype-images-67.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -21470,6 +21470,100 @@ id: "g3-c7", icone: "🦴", type: "théorie", duree: "10 min",
             { type: "qcm", question: "Pourquoi est-il important de connaître les parties du corps du cheval ?", options: ["Pour monter plus vite.", "Pour communiquer précisément avec les professionnels.", "Pour choisir une selle.", "Pour apprendre les concours."], correct: 1, explication: "Connaître le vocabulaire équestre permet de communiquer clairement avec un vétérinaire, un maréchal ou un enseignant." },
             { type: "qcm", question: "Laquelle de ces affirmations est correcte ?", options: ["Tous les chevaux bais sont identiques.", "Les épis permettent aussi d'identifier un cheval.", "Les balzanes se trouvent sur les oreilles.", "Les marques blanches changent chaque année."], correct: 1, explication: "Les épis, comme les marques blanches, participent à l'identification précise d'un cheval." },
             { type: "qcm", question: "Quelle description est correcte ?", options: ["« Alezan brûlé avec une liste et deux balzanes. »", "« Marron avec des pattes blanches. »", "« Noir clair avec une tache. »", "« Rouge foncé avec une chaussette. »"], correct: 0, explication: "Le vocabulaire équestre précis utilise robe, liste et balzanes plutôt que des termes approximatifs comme « pattes » ou « chaussette »." },
+        ],
+    },
+    {
+        id: "g3-c8", icone: "🐴", type: "théorie", duree: "8 min",
+        titre: "Le mécanisme du pas et du trot",
+        blocs: [
+            { type: "couv-affiche", src: GALOPS_HERO, couv: { titre1: "LE MÉCANISME", titre2: "DU PAS ET DU TROT", accent: "#1FA9C9", citation: "Observer les allures, c'est commencer à comprendre le cheval.", auteur: "" } },
+            { type: "texte-riche", aere: true, titre: "Le pas, une allure marchée", contenu: [
+                    { k: "para", texte: "Le cheval ne se déplace jamais au hasard. Chaque allure possède un rythme précis, un ordre d'appui, une organisation du corps. Comprendre le mécanisme du pas et du trot permet de mieux observer son cheval, de mieux sentir ce qui se passe sous la selle, mais aussi de mieux monter." },
+                    { k: "para", texte: "Le pas et le trot sont deux allures fondamentales. Les connaître, c'est poser des bases solides pour toute la suite de la progression." },
+                    { k: "section", titre: "🚶 Le pas", sous: "Le pas est une allure marchée, symétrique, régulière, à quatre temps.", puces: [
+                            { texte: "Les membres se posent l'un après l'autre, en produisant quatre battues bien distinctes." },
+                            { gras: "Un ordre possible :", texte: "postérieur gauche, antérieur gauche, postérieur droit, antérieur droit, puis le cycle recommence." },
+                            { texte: "Au pas, le cheval garde toujours au moins un pied au sol : il n'y a donc pas de temps de projection." },
+                            { texte: "C'est une allure calme, progressive, dans laquelle le cheval peut facilement conserver son équilibre." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le mouvement du pas est souple, ample, et accompagne naturellement le bassin du cavalier de gauche à droite." },
+                    { k: "section", titre: "👀 Ce qu'il faut observer au pas", puces: [
+                            { texte: "On doit voir un cheval qui avance franchement, sans se presser, avec une allure régulière." },
+                            { texte: "Un bon pas n'est ni traînant, ni précipité. Le cheval doit engager ses membres avec souplesse et rester disponible." },
+                            { texte: "Le cavalier peut entendre quatre temps réguliers et sentir un mouvement balancé dans son bassin." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Tu sens ton cheval marcher, avec un mouvement stable et continu, sans rebond." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Le trot et ses diagonaux", contenu: [
+                    { k: "section", titre: "🏃 Le trot", sous: "Le trot est une allure sautée, symétrique, régulière, à deux temps.", puces: [
+                            { gras: "Les membres se déplacent par diagonaux :", texte: "antérieur gauche avec postérieur droit ; antérieur droit avec postérieur gauche." },
+                            { texte: "Chaque diagonal se pose ensemble, ce qui produit deux temps." },
+                            { texte: "Entre ces deux temps, il existe un moment très bref où aucun pied ne touche le sol : c'est le temps de projection. C'est ce qui distingue le trot du pas." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le trot crée un rebond plus marqué que le pas. On sent une poussée plus tonique et un mouvement plus énergique." },
+                    { k: "section", titre: "↔️ Les diagonaux du trot", sous: "Au trot, il est important de reconnaître les diagonaux.", puces: [
+                            { texte: "Quand l'antérieur gauche et le postérieur droit avancent ensemble, on parle du diagonal gauche." },
+                            { texte: "Quand l'antérieur droit et le postérieur gauche avancent ensemble, on parle du diagonal droit." },
+                            { texte: "Cette notion est essentielle pour la suite, notamment pour le trot enlevé sur le bon diagonal." },
+                            { texte: "Observer les diagonaux permet de mieux comprendre le fonctionnement du trot et d'améliorer sa justesse à cheval." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Le trot alterne deux poussées régulières, comme un rythme « un-deux, un-deux »." },
+                    { k: "section", titre: "🕊️ La projection", puces: [
+                            { texte: "Le trot comporte une phase de projection. Pendant ce très court instant, le cheval n'a plus aucun membre au sol." },
+                            { texte: "Cette projection donne au trot son caractère plus rebondissant, plus dynamique, plus sautant que le pas." },
+                            { texte: "Le cavalier doit apprendre à accompagner ce mouvement sans se crisper." }
+                        ] },
+                    { k: "encadre", emoji: "💎", titre: "À ressentir", texte: "Tu perçois une légère suspension entre deux appuis, comme un petit temps d'envol." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Comparer les deux allures", contenu: [
+                    { k: "section", titre: "⚖️ Différence entre le pas et le trot", puces: [
+                            { gras: "Le pas :", texte: "allure marchée, quatre temps, pas de projection, mouvement souple et continu." },
+                            { gras: "Le trot :", texte: "allure sautée, deux temps, avec projection, mouvement plus tonique et plus rebondi." },
+                            { texte: "Comprendre cette différence aide à mieux sentir les allures et à mieux adapter sa position." }
+                        ] },
+                    { k: "section", titre: "🎯 Pourquoi c'est important pour le cavalier", sous: "Connaître le mécanisme des allures ne sert pas seulement en théorie. Cela permet de :", puces: [
+                            { texte: "mieux observer son cheval ;" },
+                            { texte: "mieux reconnaître la régularité d'une allure ;" },
+                            { texte: "mieux sentir ce qui se passe sous la selle ;" },
+                            { texte: "préparer le travail du trot enlevé ;" },
+                            { texte: "améliorer son équilibre et sa justesse." },
+                            { texte: "Un cavalier qui comprend les allures devient plus précis dans ses demandes et plus fin dans ses sensations." }
+                        ] },
+                    { k: "encadre", emoji: "💡", titre: "Le savais-tu ?", texte: "Même à l'arrêt, un bon observateur peut souvent deviner comment un cheval se déplacera ensuite, simplement en regardant son équilibre, sa décontraction et sa manière de se tenir." },
+                    { k: "encadre", emoji: "👨‍🏫", titre: "Le conseil du coach", texte: "Quand tu regardes un cheval marcher ou trotter, n'observe pas seulement sa tête. Regarde aussi ses épaules, ses hanches, ses diagonaux et le rythme de ses appuis. C'est en apprenant à vraiment voir le mouvement que l'on progresse le plus vite." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "À toi de jouer", contenu: [
+                    { k: "section", titre: "⚠️ Les erreurs à éviter", puces: [
+                            { texte: "Confondre le pas et le trot uniquement en fonction de la vitesse." },
+                            { texte: "Penser que le trot est à quatre temps." },
+                            { texte: "Oublier que le trot fonctionne par diagonaux." },
+                            { texte: "Ne pas repérer le temps de projection au trot." },
+                            { texte: "Observer seulement l'avant-main du cheval." },
+                            { texte: "Croire qu'un pas lent est forcément un bon pas." },
+                            { texte: "Négliger les sensations du cavalier." }
+                        ] },
+                    { k: "encadre", emoji: "🏇", titre: "Le défi du cavalier", texte: "Lors de ta prochaine séance, ou en regardant un cheval évoluer : écoute le rythme du pas, compte les quatre temps, observe ensuite le trot, essaie de repérer les diagonaux, et sens la différence entre mouvement continu et mouvement rebondi." },
+                    { k: "section", titre: "🤖 Demande à Hey Baby", sous: "Tu veux aller plus loin ? Tu peux demander à Hey Baby :", puces: [
+                            { texte: "Comment reconnaître les caractéristiques du pas et du trot ?" },
+                            { texte: "Peux-tu m'expliquer la différence entre allure marchée et allure sautée ?" },
+                            { texte: "Comment sentir la différence de rebond entre le pas et le trot ?" },
+                            { texte: "Peux-tu me résumer les points clés en 30 secondes ?" }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Observer les allures, c'est commencer à comprendre le cheval." }
+                ] },
+            { type: "image", immersif: true, src: HYPE_IMGS["k366"], legende: "Le pas (à gauche) et le trot (à droite) : une allure marchée à quatre temps, une allure sautée à deux temps avec projection." },
+        ],
+        quiz: [
+            { type: "qcm", question: "Combien de temps compte l'allure du pas ?", options: ["2 temps", "3 temps", "4 temps", "1 temps"], correct: 2, explication: "Le pas est une allure marchée à quatre temps : les membres se posent l'un après l'autre." },
+            { type: "qcm", question: "Combien de temps compte le trot ?", options: ["4 temps", "3 temps", "2 temps", "1 temps"], correct: 2, explication: "Le trot est une allure sautée à deux temps : les membres se déplacent par diagonaux." },
+            { type: "qcm", question: "Au pas, combien de pieds le cheval garde-t-il toujours au sol au minimum ?", options: ["Aucun", "Un", "Deux", "Trois"], correct: 1, explication: "Au pas, le cheval garde toujours au moins un pied au sol : il n'y a donc pas de temps de projection." },
+            { type: "qcm", question: "Au trot, les membres se déplacent par :", options: ["Membres latéraux", "Diagonaux", "Un seul membre à la fois", "Quatre membres ensemble"], correct: 1, explication: "Au trot, l'antérieur gauche se pose avec le postérieur droit, et inversement : ce sont les diagonaux." },
+            { type: "qcm", question: "Qu'est-ce que le temps de projection ?", options: ["Un moment où le cheval accélère", "Un instant où aucun pied ne touche le sol", "Un moment où le cheval trotte plus vite", "Le moment où le cavalier se lève"], correct: 1, explication: "La projection est ce très court instant, au trot, où le cheval n'a plus aucun membre au sol." },
+            { type: "qcm", question: "Quand l'antérieur gauche et le postérieur droit avancent ensemble, on parle de :", options: ["Diagonal droit", "Diagonal gauche", "Bipède latéral", "Temps de suspension"], correct: 1, explication: "C'est le diagonal gauche. Le diagonal droit associe l'antérieur droit et le postérieur gauche." },
+            { type: "qcm", question: "Pourquoi le trot semble-t-il plus rebondissant que le pas ?", options: ["Parce qu'il est plus lent", "Grâce au temps de projection", "Parce que le cheval lève plus la tête", "Parce qu'il y a quatre temps"], correct: 1, explication: "C'est la phase de projection, absente au pas, qui donne au trot son caractère plus rebondissant." },
+            { type: "qcm", question: "Quelle erreur faut-il éviter en observant les allures ?", options: ["Observer les diagonaux", "Croire que le trot est à quatre temps", "Compter les temps du pas", "Observer les épaules et les hanches"], correct: 1, explication: "Le trot est à deux temps, pas à quatre : c'est une erreur fréquente à éviter." },
+            { type: "qcm", question: "Pourquoi comprendre le mécanisme des allures aide le cavalier ?", options: ["Pour aller plus vite uniquement", "Pour mieux sentir et ajuster sa position", "Pour éviter de monter à cheval", "Pour remplacer les aides naturelles"], correct: 1, explication: "Connaître les allures aide à mieux observer, mieux sentir et devenir plus précis dans ses demandes." },
+            { type: "qcm", question: "Qu'est-ce qui distingue principalement le pas du trot ?", options: ["Le nombre de membres du cheval", "La présence ou non d'un temps de projection", "La couleur de la robe", "La taille du cavalier"], correct: 1, explication: "Le pas n'a pas de temps de projection (toujours un pied au sol), contrairement au trot." }
         ],
     },
 ];
@@ -29323,7 +29417,8 @@ function EcranGalopDetail() {
         "g2-aides": "technique", "g2-depart": "technique", "g2-c3": "technique", "g2-c4": "technique", "g3-c2": "technique",
         "g2-c1": "vie", "g2-pansage": "vie", "g2-filet-selle": "vie", "g2-heberger": "vie", "g2-c5": "vie",
         "g2-robes": "connaissance", "g2-sens": "connaissance", "g2-vie-sociale": "connaissance", "g2-anatomie": "connaissance",
-        "g2-familles": "culture" };
+        "g2-familles": "culture",
+        "g3-c8": "connaissance" };
     if (!galop)
         return null;
     const photoKey = `galop_${galop.id}`;
