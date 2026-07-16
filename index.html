@@ -172,7 +172,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Chapitres prêts hors Galop 1 (badge NEW + ouverts aux Premium). Les autres chapitres de ces galops = "Prochainement".
-const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true };
+const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true };
 // Un chapitre est "prêt" si tout le Galop 1 (déjà en ligne) ou s'il figure explicitement dans HYPE_COURS_PRETS.
 function coursEstPret(galopId, coursId) { try { return galopId === 1 || !!HYPE_COURS_PRETS[coursId]; } catch (e) { return true; } }
 async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
@@ -18098,7 +18098,7 @@ exports.version = "19.2.5";
 });</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-images-25.js"></script><script src="hype-images-26.js"></script><script src="hype-images-27.js"></script>
 <script src="hype-images-28.js"></script>
 <script src="hype-images-29.js"></script><script src="hype-images-30.js"></script><script src="hype-images-31.js"></script><script src="hype-images-32.js"></script><script src="hype-images-33.js"></script><script src="hype-images-34.js"></script><script src="hype-images-35.js"></script><script src="hype-images-36.js"></script><script src="hype-images-37.js"></script><script src="hype-images-38.js"></script><script src="hype-images-39.js"></script><script src="hype-images-40.js"></script><script src="hype-images-41.js"></script><script src="hype-images-42.js"></script><script src="hype-images-43.js"></script><script src="hype-images-44.js"></script><script src="hype-images-45.js"></script><script src="hype-images-46.js"></script><script src="hype-images-47.js"></script><script src="hype-images-48.js"></script><script src="hype-images-49.js"></script><script src="hype-images-50.js"></script><script src="hype-images-51.js"></script><script src="hype-images-52.js"></script><script src="hype-images-53.js"></script><script src="hype-images-54.js"></script><script src="hype-images-55.js"></script><script src="hype-images-56.js"></script>
-<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
+<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -19076,7 +19076,7 @@ const CIBLE_DIRECTE = (function () {
         const h = ((typeof window !== "undefined" && window.location && window.location.hash) || "").replace(/^#/, "").trim();
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
         if (h) cle = h;
-        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
+        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
         return MAP[cle] || null;
     } catch (e) { return null; }
 })();
@@ -21131,25 +21131,123 @@ id: "g3-c5", icone: "🧽", type: "soins", duree: "11 min",
         ],
     },
     {
-        id: "g3-c6", icone: "🐎", type: "théorie", duree: "9 min",
-        titre: "Le cheval à l'état naturel",
+        id: "g3-c6", icone: "🐎", type: "théorie", duree: "10 min",
+        titre: "Le comportement naturel du cheval",
         blocs: [
-            { type: "intro", texte: "Comprendre la vie du cheval à l'état naturel aide à respecter ses besoins. Le cheval est un herbivore grégaire qui vit en groupe organisé." },
-            { type: "liste", titre: "La vie en groupe", items: [
-                    "Le troupeau : le cheval vit en groupe, c'est un besoin vital de sécurité",
-                    "La hiérarchie et la dominance : un ordre social existe entre les individus",
-                    "Les affinités : des chevaux nouent des liens préférentiels",
-                    "L'instinct grégaire : isolé, le cheval se sent en danger et peut paniquer"
+            { type: "couv-affiche", src: HYPE_IMGS["k359"], couv: { titre1: "LE COMPORTEMENT", titre2: "NATUREL DU CHEVAL", accent: "#1FA9C9", citation: "Le cheval ne pense pas comme un humain. Plus tu comprends sa nature, plus il devient facile de communiquer avec lui.", auteur: "" } },
+            { type: "texte-riche", aere: true, titre: "Pourquoi apprendre cela ?", contenu: [
+                    { k: "para", texte: "Au Galop 2, tu as découvert les besoins essentiels du cheval." },
+                    { k: "para", texte: "Au Galop 3, tu vas plus loin : tu apprends à comprendre pourquoi il agit comme il le fait." },
+                    { k: "para", texte: "Le cheval reste avant tout un animal de proie qui vit en groupe. Ses réactions sont guidées par des millions d'années d'évolution." },
+                    { k: "section", titre: "🎯 Comprendre son comportement permet :", puces: [
+                            { texte: "d'améliorer la relation avec lui ;" },
+                            { texte: "d'anticiper ses réactions ;" },
+                            { texte: "de monter avec davantage de justesse ;" },
+                            { texte: "de respecter son bien-être." }
+                        ] },
+                    { k: "section", titre: "🏃 Le cheval est une proie", sous: "Contrairement aux prédateurs, le cheval survit grâce à sa vigilance. Son premier réflexe face au danger est généralement la fuite. C'est pourquoi un cheval peut parfois :", puces: [
+                            { texte: "faire un écart ;" },
+                            { texte: "sursauter ;" },
+                            { texte: "regarder longtemps un objet ;" },
+                            { texte: "accélérer lorsqu'il a peur." },
+                            { texte: "Il ne cherche pas à désobéir : il réagit selon son instinct." }
+                        ] }
                 ] },
-            { type: "schema", emoji: "⏰", titre: "La répartition de ses activités", description: "À l'état naturel, le cheval passe la majeure partie de la journée à se déplacer en mangeant (de longues heures de pâturage), un temps plus court à se reposer, et reste en éveil pour surveiller son environnement." },
-            { type: "astuce", texte: "Ces besoins naturels expliquent nos soins : foin réparti dans la journée, contacts avec d'autres chevaux et sorties au pré contribuent à un cheval équilibré." },
+            { type: "texte-riche", aere: true, titre: "La vie en troupeau", contenu: [
+                    { k: "section", titre: "🐴 Le cheval vit en troupeau", sous: "Le cheval est un animal grégaire. Cela signifie qu'il préfère vivre avec d'autres chevaux. Le troupeau lui apporte :", puces: [
+                            { texte: "✅ la sécurité ;" },
+                            { texte: "✅ des compagnons ;" },
+                            { texte: "✅ une meilleure surveillance des dangers ;" },
+                            { texte: "✅ des interactions sociales." },
+                            { texte: "Un cheval isolé peut devenir plus inquiet ou stressé." }
+                        ] },
+                    { k: "section", titre: "👑 La hiérarchie", sous: "Dans chaque groupe existe une organisation. Chaque cheval connaît progressivement sa place. Cette hiérarchie permet :", puces: [
+                            { texte: "de limiter les conflits ;" },
+                            { texte: "de partager les ressources ;" },
+                            { texte: "de maintenir le calme dans le troupeau." },
+                            { texte: "Le cheval dominant n'est pas forcément le plus fort. Il est souvent le plus calme, le plus expérimenté ou celui que les autres suivent naturellement." }
+                        ] },
+                    { k: "section", titre: "❤️ Les affinités", sous: "Tous les chevaux ne deviennent pas amis. Certains créent de véritables liens. On les observe lorsqu'ils :", puces: [
+                            { texte: "❤️ broutent ensemble ;" },
+                            { texte: "❤️ se grattent mutuellement ;" },
+                            { texte: "❤️ restent souvent côte à côte." },
+                            { texte: "Ces affinités participent à leur équilibre." }
+                        ] },
+                    { k: "section", titre: "🐎 L'instinct grégaire", sous: "Le cheval aime suivre les autres. Cet instinct explique pourquoi certains chevaux :", puces: [
+                            { texte: "hésitent à quitter le groupe ;" },
+                            { texte: "accélèrent pour rejoindre leurs compagnons ;" },
+                            { texte: "sont plus rassurés avec un cheval expérimenté." },
+                            { texte: "Même les chevaux de sport conservent cet instinct." }
+                        ] }
+                ] },
+            { type: "texte-riche", aere: true, titre: "Communication et ce que cela change pour toi", contenu: [
+                    { k: "section", titre: "🗣️ Comment les chevaux communiquent-ils ?", sous: "Les chevaux parlent surtout avec leur corps. Ils utilisent :", puces: [
+                            { texte: "👂 les oreilles ;" },
+                            { texte: "👀 le regard ;" },
+                            { texte: "🐴 la position de l'encolure ;" },
+                            { texte: "🐎 la queue ;" },
+                            { texte: "🚶 leur attitude générale." },
+                            { texte: "Apprendre à observer ces signaux permet de mieux comprendre leurs émotions." }
+                        ] },
+                    { k: "section", titre: "✅ Ce que cela change pour le cavalier", sous: "Comprendre le comportement naturel du cheval aide à mieux monter. Par exemple :", puces: [
+                            { texte: "✔️ Un cheval inquiet a besoin d'être rassuré." },
+                            { texte: "✔️ Un cheval qui vit au pré est souvent plus détendu." },
+                            { texte: "✔️ Marcher en début de séance respecte son besoin naturel de mouvement." },
+                            { texte: "✔️ La patience est souvent plus efficace que la contrainte." },
+                            { texte: "Un bon cavalier cherche toujours à comprendre avant de corriger." }
+                        ] },
+                    { k: "encadre", emoji: "💡", titre: "Le conseil du coach", texte: "Demande-toi toujours : « Pourquoi mon cheval agit-il ainsi ? » Avant de chercher à le corriger. Très souvent, son comportement est une réponse logique à ce qu'il ressent." },
+                    { k: "section", titre: "❤️ À ressentir", puces: [
+                            { texte: "Un cheval détendu souffle régulièrement." },
+                            { texte: "Son pas devient ample et régulier." },
+                            { texte: "Ses mouvements sont plus fluides." },
+                            { texte: "Tu sens davantage de confiance dans les rênes." },
+                            { texte: "Son attention reste tournée vers toi sans tension." }
+                        ] },
+                    { k: "section", titre: "❌ Les erreurs à éviter", puces: [
+                            { texte: "Penser qu'un cheval agit « par méchanceté »." },
+                            { texte: "Punir une réaction liée à la peur." },
+                            { texte: "Ignorer ses besoins sociaux." },
+                            { texte: "Vouloir aller trop vite." },
+                            { texte: "Oublier d'observer son langage corporel." }
+                        ] },
+                    { k: "encadre", emoji: "🏆", titre: "Le défi du coach", texte: "Pendant une détente ou au pré, observe un groupe de chevaux pendant 10 minutes. Essaie d'identifier : le cheval le plus suivi, deux chevaux qui semblent avoir des affinités, un comportement de dominance, un moment où tout le groupe change d'activité ensemble. Tu découvriras que les chevaux communiquent énormément… sans presque aucun bruit." },
+                    { k: "encadre", emoji: "💎", titre: "Le savais-tu ?", texte: "Un cheval possède un champ de vision d'environ 350°. Il voit presque tout autour de lui, mais possède deux petits angles morts : juste devant son nez, et directement derrière lui. C'est pour cette raison qu'il est préférable de lui parler lorsqu'on s'approche." },
+                    { k: "section", titre: "🤖 Demande à Hey Baby", sous: "Quelques idées de questions :", puces: [
+                            { texte: "Mon cheval est-il stressé ou simplement attentif ?" },
+                            { texte: "Comment reconnaître un cheval dominant ?" },
+                            { texte: "Pourquoi mon cheval hennit-il quand ses copains s'éloignent ?" },
+                            { texte: "Que signifient les oreilles de mon cheval ?" },
+                            { texte: "Comment savoir si mon cheval est détendu ?" },
+                            { texte: "Mon cheval vit-il dans de bonnes conditions par rapport à ses besoins naturels ?" }
+                        ] },
+                    { k: "section", titre: "⭐ Ce qu'il faut retenir", puces: [
+                            { texte: "Le cheval est une proie." },
+                            { texte: "Il vit naturellement en troupeau." },
+                            { texte: "La hiérarchie permet d'organiser la vie du groupe." },
+                            { texte: "Les affinités sont importantes pour son bien-être." },
+                            { texte: "Les chevaux communiquent principalement avec leur langage corporel." },
+                            { texte: "Comprendre le comportement naturel permet de devenir un cavalier plus juste." }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Le meilleur cavalier n'est pas celui qui commande le plus fort, mais celui que son cheval choisit de suivre." }
+                ] },
         ],
         quiz: [
-            { type: "qcm", question: "Que signifie que le cheval est un animal grégaire ?", options: ["Qu'il est solitaire", "Qu'il a besoin de vivre en groupe", "Qu'il est carnivore", "Qu'il dort debout"], correct: 1, explication: "Grégaire signifie qu'il vit naturellement en groupe ; l'isolement est une source de stress importante." },
+            { type: "qcm", question: "Le cheval est avant tout :", options: ["Un carnivore solitaire", "Un omnivore territorial", "Un herbivore grégaire", "Un prédateur"], correct: 2, explication: "Le cheval est un herbivore vivant naturellement en groupe." },
+            { type: "qcm", question: "Pourquoi les chevaux vivent-ils en troupeau ?", options: ["Pour courir plus vite", "Pour se protéger des prédateurs", "Pour trouver des obstacles", "Pour dormir davantage"], correct: 1, explication: "Le groupe augmente la sécurité de chaque individu." },
+            { type: "qcm", question: "Que signifie le mot grégaire ?", options: ["Aimer vivre seul", "Aimer vivre en groupe", "Aimer courir", "Aimer être monté"], correct: 1, explication: "Grégaire signifie qu'il aime vivre en groupe." },
+            { type: "qcm", question: "Dans un troupeau, la hiérarchie sert principalement à :", options: ["Organiser la vie du groupe et limiter les conflits", "Choisir le cheval le plus rapide", "Désigner le plus beau cheval", "Décider qui saute le mieux"], correct: 0, explication: "La hiérarchie organise la vie du groupe et limite les conflits." },
+            { type: "qcm", question: "Le cheval dominant est toujours :", options: ["Le plus grand", "Le plus fort", "Le plus agressif", "Pas forcément : il est souvent le plus expérimenté ou le plus respecté."], correct: 3, explication: "Le cheval dominant n'est pas forcément le plus fort : c'est souvent le plus expérimenté ou le plus respecté." },
+            { type: "qcm", question: "Que sont les affinités entre chevaux ?", options: ["Les chevaux qui mangent le plus", "Les liens privilégiés entre certains chevaux", "Les chevaux qui gagnent les concours", "Les chevaux qui vivent seuls"], correct: 1, explication: "Les affinités sont les liens privilégiés que certains chevaux développent entre eux." },
+            { type: "qcm", question: "Pourquoi un cheval peut-il être inquiet lorsqu'il reste seul ?", options: ["Parce qu'il est paresseux", "À cause de son instinct grégaire", "Parce qu'il a froid", "Parce qu'il n'aime pas son cavalier"], correct: 1, explication: "L'instinct grégaire pousse le cheval à rechercher la compagnie de ses congénères." },
+            { type: "qcm", question: "Le cheval est considéré comme :", options: ["Un prédateur", "Une proie", "Un omnivore", "Un carnivore"], correct: 1, explication: "Le cheval est une proie : son premier réflexe face au danger est la fuite." },
+            { type: "qcm", question: "Que doit faire un bon cavalier face à un cheval inquiet ?", options: ["Le punir immédiatement", "Chercher à comprendre la cause de son comportement", "Tirer plus fort sur les rênes", "Le faire courir jusqu'à ce qu'il se calme"], correct: 1, explication: "Comprendre la cause du comportement est toujours la première étape avant d'agir." },
+            { type: "qcm", question: "Lequel de ces comportements montre souvent une bonne relation entre deux chevaux ?", options: ["Ils se poussent constamment.", "Ils se grattent mutuellement et restent souvent ensemble.", "Ils se mordent à chaque repas.", "Ils s'ignorent toujours."], correct: 1, explication: "Se gratter mutuellement et rester ensemble sont des signes d'affinité entre deux chevaux." },
         ],
     },
     {
-        id: "g3-c7", icone: "🦴", type: "théorie", duree: "9 min",
+        
+id: "g3-c7", icone: "🦴", type: "théorie", duree: "9 min",
         titre: "Parties du corps, marques et robes",
         blocs: [
             { type: "intro", texte: "Le Galop 3 demande de situer les parties extérieures du cheval, de reconnaître les marques blanches et les épis, et de nommer les déclinaisons du bai et de l'alezan." },
