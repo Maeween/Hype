@@ -172,7 +172,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Chapitres prêts hors Galop 1 (badge NEW + ouverts aux Premium). Les autres chapitres de ces galops = "Prochainement".
-const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true };
+const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true };
 // Un chapitre est "prêt" si tout le Galop 1 (déjà en ligne) ou s'il figure explicitement dans HYPE_COURS_PRETS.
 function coursEstPret(galopId, coursId) { try { return galopId === 1 || !!HYPE_COURS_PRETS[coursId]; } catch (e) { return true; } }
 async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
@@ -19076,7 +19076,7 @@ const CIBLE_DIRECTE = (function () {
         const h = ((typeof window !== "undefined" && window.location && window.location.hash) || "").replace(/^#/, "").trim();
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
         if (h) cle = h;
-        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
+        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
         return MAP[cle] || null;
     } catch (e) { return null; }
 })();
@@ -21110,28 +21110,126 @@ const COURS_GALOP3_FR = [
 id: "g3-c5", icone: "🧽", type: "soins", duree: "11 min",
         titre: "Le pansage complet et le soin des pieds",
         blocs: [
-            { type: "intro", texte: "Au Galop 3, on réalise un pansage complet, on cure les quatre pieds, on douche les membres, on graisse les pieds et on entretient la litière et l'abreuvement." },
-            { type: "liste", titre: "Le pansage complet", items: [
-                    "Curer les quatre pieds, y compris les postérieurs",
-                    "Étrille en cercles, puis bouchon dans le sens du poil",
-                    "Brosse douce sur tout le corps et la tête, démêlage crinière et queue",
-                    "Éponge ou chiffon humide pour les yeux, les naseaux et le passage de sangle"
+            { type: "couv-affiche", src: GALOPS_HERO, couv: { titre1: "LE PANSAGE", titre2: "COMPLET", accent: "#1FA9C9", citation: "Prendre soin de son cheval avant de lui demander un effort est la première marque de respect.", auteur: "" } },
+            { type: "texte-riche", aere: true, titre: "Pourquoi un pansage complet ?", contenu: [
+                    { k: "para", texte: "Au Galop 3, tu dois être capable de préparer ton cheval seul avant et après le travail." },
+                    { k: "para", texte: "Le pansage ne sert pas seulement à le rendre propre. Il permet aussi de :" },
+                    { k: "section", titre: "🎯 À quoi sert le pansage", puces: [
+                            { texte: "vérifier son état de santé ;" },
+                            { texte: "prévenir les blessures ;" },
+                            { texte: "améliorer son confort ;" },
+                            { texte: "créer une relation de confiance." }
+                        ] },
+                    { k: "para", texte: "Un cavalier attentif remarque souvent un problème avant qu'il ne devienne important." },
+                    { k: "section", titre: "1️⃣ Étrille", sous: "À utiliser uniquement sur les parties charnues :", puces: [
+                            { texte: "encolure" },
+                            { texte: "épaules" },
+                            { texte: "ventre" },
+                            { texte: "croupe" },
+                            { texte: "Elle décolle la boue et la poussière. ❌ Jamais sur les membres ni sur la tête." }
+                        ] },
+                    { k: "section", titre: "2️⃣ Bouchon", sous: "Le bouchon retire la saleté décollée. Toujours dans le sens du poil. Il est particulièrement utile sur :", puces: [
+                            { texte: "le corps" },
+                            { texte: "les membres" }
+                        ] },
+                    { k: "section", titre: "3️⃣ Brosse douce", sous: "Elle enlève les dernières poussières. Elle peut être utilisée sur :", puces: [
+                            { texte: "la tête" },
+                            { texte: "les membres" },
+                            { texte: "les zones sensibles" },
+                            { texte: "Elle fait également briller le poil." }
+                        ] }
                 ] },
-            { type: "schema", emoji: "🦶", titre: "Les parties du sabot", description: "Sous le pied : la sole (la grande surface), la fourchette (le triangle souple central qui amortit), les lacunes de chaque côté de la fourchette, et la paroi (le mur de corne extérieur). Curer va de l'arrière vers la pince, en évitant la fourchette." },
-            { type: "liste", titre: "Pourquoi entretenir les pieds", items: [
-                    "Évacuer terre et cailloux qui pourraient blesser ou faire boiter",
-                    "Repérer tôt un caillou coincé, une odeur, une plaie ou une pourriture de fourchette",
-                    "Graisser pour protéger la corne selon les conseils du club",
-                    "Pas de pied, pas de cheval : le pied conditionne toute la locomotion"
+            { type: "texte-riche", aere: true, titre: "Les pieds et les crins", contenu: [
+                    { k: "section", titre: "4️⃣ Cure-pieds", sous: "Les quatre pieds doivent être curés. Tu vérifies :", puces: [
+                            { texte: "qu'aucun caillou n'est coincé ;" },
+                            { texte: "que la fourchette est propre ;" },
+                            { texte: "qu'il n'y a ni mauvaise odeur ni blessure." },
+                            { texte: "On cure toujours du talon vers la pince sans toucher la fourchette avec la pointe du cure-pied." }
+                        ] },
+                    { k: "section", titre: "5️⃣ Les crins", sous: "On démêle :", puces: [
+                            { texte: "la crinière ;" },
+                            { texte: "la queue." },
+                            { texte: "Toujours progressivement pour éviter de casser les crins." }
+                        ] },
+                    { k: "section", titre: "6️⃣ Vérification générale", sous: "Avant de seller, observe :", puces: [
+                            { texte: "les yeux ;" },
+                            { texte: "les naseaux ;" },
+                            { texte: "les membres ;" },
+                            { texte: "les sabots ;" },
+                            { texte: "les ferrures si le cheval est ferré." }
+                        ] },
+                    { k: "section", titre: "🔎 Cherche", puces: [
+                            { texte: "chaleur ;" },
+                            { texte: "gonflement ;" },
+                            { texte: "plaie ;" },
+                            { texte: "sensibilité." }
+                        ] },
+                    { k: "section", titre: "🚿 Les soins après le travail", sous: "Au Galop 3, tu apprends également à prendre soin du cheval après l'effort. Selon les besoins :", puces: [
+                            { texte: "doucher les membres ;" },
+                            { texte: "curer à nouveau les pieds ;" },
+                            { texte: "graisser les sabots si nécessaire ;" },
+                            { texte: "sécher les plis du paturon si le cheval a été douché." }
+                        ] },
+                    { k: "section", titre: "🏠 Entretenir le box et l'environnement", sous: "Tu dois aussi savoir :", puces: [
+                            { texte: "vérifier que le cheval dispose d'eau propre ;" },
+                            { texte: "contrôler la propreté de la litière ;" },
+                            { texte: "retirer les crottins si nécessaire ;" },
+                            { texte: "maintenir un environnement propre et sécurisé." },
+                            { texte: "Le confort du cheval fait partie de ses soins quotidiens." }
+                        ] }
+                ] },
+            { type: "texte-riche", aere: true, titre: "À ressentir et à retenir", contenu: [
+                    { k: "encadre", emoji: "💡", titre: "Le conseil du coach", texte: "Ne réalise jamais un pansage machinalement. Chaque coup de brosse est une occasion d'observer ton cheval. Les meilleurs cavaliers détectent souvent une petite anomalie avant tout le monde." },
+                    { k: "section", titre: "❤️ À ressentir", sous: "Pendant le pansage, cherche à ressentir :", puces: [
+                            { texte: "un cheval détendu ;" },
+                            { texte: "une peau souple ;" },
+                            { texte: "des membres froids et secs ;" },
+                            { texte: "un contact calme ;" },
+                            { texte: "une respiration régulière." }
+                        ] },
+                    { k: "section", titre: "❌ Les erreurs à éviter", puces: [
+                            { texte: "Oublier un pied." },
+                            { texte: "Utiliser l'étrille sur les membres." },
+                            { texte: "Brosser à contre-poil." },
+                            { texte: "Seller un cheval sale." },
+                            { texte: "Curer les pieds sans observer leur état." },
+                            { texte: "Ne pas vérifier l'eau ou la litière." }
+                        ] },
+                    { k: "encadre", emoji: "🏆", titre: "Le défi du coach", texte: "Pendant une semaine : réalise chaque jour un pansage complet, trouve trois détails différents sur ton cheval (petite croûte, épi, chaleur, gonflement, sensibilité…), note-les avant même de seller. Tu développeras rapidement ton œil de cavalier." },
+                    { k: "encadre", emoji: "💎", titre: "Le savais-tu ?", texte: "Un cheval passe naturellement plusieurs heures par jour à se faire toiletter avec ses congénères. Le pansage reproduit en partie ce comportement social et renforce la confiance entre le cheval et son cavalier." },
+                    { k: "section", titre: "🤖 Demande à Hey Baby", sous: "Quelques idées de questions :", puces: [
+                            { texte: "Mon pansage est-il complet sur cette photo ?" },
+                            { texte: "Est-ce que je cure correctement les pieds ?" },
+                            { texte: "Vois-tu une anomalie sur les membres de mon cheval ?" },
+                            { texte: "Cette fourchette te paraît-elle saine ?" },
+                            { texte: "Quels soins conseillerais-tu après cette séance ?" },
+                            { texte: "Comment rendre mon pansage plus efficace ?" }
+                        ] },
+                    { k: "section", titre: "⭐ Ce qu'il faut retenir", puces: [
+                            { texte: "Un pansage complet sert autant à observer qu'à nettoyer." },
+                            { texte: "Les quatre pieds doivent toujours être contrôlés." },
+                            { texte: "Après le travail, les soins sont aussi importants qu'avant." },
+                            { texte: "Un bon cavalier détecte les petits problèmes avant qu'ils ne deviennent de gros problèmes." }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Le cheval te confie son corps avant de te confier son mouvement. Prends soin du premier, et le second viendra naturellement." }
                 ] },
         ],
         quiz: [
-            { type: "qcm", question: "Comment s'appelle le triangle souple sous le pied qui amortit les chocs ?", options: ["La sole", "La fourchette", "La paroi", "La couronne"], correct: 1, explication: "La fourchette est la partie souple centrale ; elle amortit et participe à la circulation du sang dans le pied." },
-            { type: "qcm", question: "Au Galop 3, combien de pieds cure-t-on ?", options: ["Seulement les antérieurs", "Les quatre pieds", "Aucun", "Seulement les postérieurs"], correct: 1, explication: "Le Galop 3 introduit le curage des postérieurs : on cure les quatre pieds." },
+            { type: "qcm", question: "Quel est l'objectif principal d'un pansage complet ?", options: ["Faire uniquement briller le cheval.", "Préparer le cheval, vérifier son état de santé et assurer son confort.", "Le fatiguer avant le travail.", "Nettoyer uniquement la selle."], correct: 1, explication: "Le pansage sert à préparer le cheval, vérifier sa santé et assurer son confort, pas seulement à le rendre propre." },
+            { type: "qcm", question: "Sur quelles parties du corps utilise-t-on l'étrille ?", options: ["Les membres.", "La tête.", "Les parties charnues du corps.", "Les sabots."], correct: 2, explication: "L'étrille s'utilise uniquement sur les parties charnues (encolure, épaules, ventre, croupe), jamais sur les membres ni la tête." },
+            { type: "qcm", question: "Dans quel sens cure-t-on un pied ?", options: ["De la pince vers le talon.", "Dans n'importe quel sens.", "Du talon vers la pince.", "En tournant autour de la fourchette."], correct: 2, explication: "On cure toujours du talon vers la pince, sans toucher la fourchette avec la pointe du cure-pied." },
+            { type: "qcm", question: "Que faut-il éviter avec le cure-pied ?", options: ["Nettoyer la sole.", "Toucher la fourchette avec la pointe du cure-pied.", "Enlever les cailloux.", "Observer le sabot."], correct: 1, explication: "Il ne faut jamais toucher la fourchette avec la pointe du cure-pied, car c'est une zone sensible." },
+            { type: "qcm", question: "Après une séance de travail, quel soin est souvent recommandé ?", options: ["Brosser uniquement la queue.", "Doucher les membres si nécessaire.", "Donner immédiatement des friandises.", "Retirer le filet sans desseller."], correct: 1, explication: "Doucher les membres après l'effort fait partie des soins recommandés selon les besoins du cheval." },
+            { type: "qcm", question: "Pourquoi entretient-on la litière et l'abreuvement ?", options: ["Pour que le box soit joli.", "Pour le confort, l'hygiène et la santé du cheval.", "Pour gagner du temps le lendemain.", "Ce n'est pas utile."], correct: 1, explication: "La litière propre et l'eau propre sont essentielles au confort, à l'hygiène et à la santé du cheval." },
+            { type: "qcm", question: "Quel outil retire la poussière après l'étrille ?", options: ["Le cure-pied.", "Le bouchon.", "L'éponge.", "Le peigne."], correct: 1, explication: "Le bouchon retire la saleté décollée par l'étrille, toujours dans le sens du poil." },
+            { type: "qcm", question: "Pendant le pansage, que faut-il observer ?", options: ["Seulement si le cheval est propre.", "Les blessures, chaleurs, gonflements ou anomalies.", "La couleur de la selle.", "La météo."], correct: 1, explication: "Le pansage est aussi un moment d'observation : blessures, chaleurs, gonflements ou anomalies doivent être repérés." },
+            { type: "qcm", question: "Pourquoi démêle-t-on les crins avec précaution ?", options: ["Pour gagner du temps.", "Pour éviter de casser les crins et respecter le cheval.", "Pour les rendre plus courts.", "Ce n'est pas important."], correct: 1, explication: "On démêle progressivement crinière et queue pour éviter de casser les crins." },
+            { type: "qcm", question: "Quelle est la bonne attitude d'un cavalier au pansage ?", options: ["Aller le plus vite possible.", "Observer attentivement son cheval tout au long des soins.", "Nettoyer uniquement les parties visibles.", "Seller dès que le cheval semble propre."], correct: 1, explication: "Un bon cavalier observe attentivement son cheval tout au long du pansage, sans le faire machinalement." },
         ],
     },
     {
-        id: "g3-c6", icone: "🐎", type: "théorie", duree: "10 min",
+        
+id: "g3-c6", icone: "🐎", type: "théorie", duree: "10 min",
         titre: "Le comportement naturel du cheval",
         blocs: [
             { type: "couv-affiche", src: HYPE_IMGS["k359"], couv: { titre1: "LE COMPORTEMENT", titre2: "NATUREL DU CHEVAL", accent: "#1FA9C9", citation: "Le cheval ne pense pas comme un humain. Plus tu comprends sa nature, plus il devient facile de communiquer avec lui.", auteur: "" } },
