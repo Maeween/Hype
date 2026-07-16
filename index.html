@@ -172,7 +172,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Chapitres prêts hors Galop 1 (badge NEW + ouverts aux Premium). Les autres chapitres de ces galops = "Prochainement".
-const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true };
+const HYPE_COURS_PRETS = { "g2-c3": true, "g2-aides": true, "g2-depart": true, "g2-c4": true, "g3-c2": true, "g3-saut": true, "g3-c4": true, "g3-c6": true, "g3-c1": true, "g3-c3": true, "g3-c5": true, "g3-c7": true };
 // Un chapitre est "prêt" si tout le Galop 1 (déjà en ligne) ou s'il figure explicitement dans HYPE_COURS_PRETS.
 function coursEstPret(galopId, coursId) { try { return galopId === 1 || !!HYPE_COURS_PRETS[coursId]; } catch (e) { return true; } }
 async function supprimerPostModeration(table, id) { const { error } = await supa.from(table).delete().eq("id", id); return { error }; }
@@ -18098,7 +18098,7 @@ exports.version = "19.2.5";
 });</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-images-25.js"></script><script src="hype-images-26.js"></script><script src="hype-images-27.js"></script>
 <script src="hype-images-28.js"></script>
 <script src="hype-images-29.js"></script><script src="hype-images-30.js"></script><script src="hype-images-31.js"></script><script src="hype-images-32.js"></script><script src="hype-images-33.js"></script><script src="hype-images-34.js"></script><script src="hype-images-35.js"></script><script src="hype-images-36.js"></script><script src="hype-images-37.js"></script><script src="hype-images-38.js"></script><script src="hype-images-39.js"></script><script src="hype-images-40.js"></script><script src="hype-images-41.js"></script><script src="hype-images-42.js"></script><script src="hype-images-43.js"></script><script src="hype-images-44.js"></script><script src="hype-images-45.js"></script><script src="hype-images-46.js"></script><script src="hype-images-47.js"></script><script src="hype-images-48.js"></script><script src="hype-images-49.js"></script><script src="hype-images-50.js"></script><script src="hype-images-51.js"></script><script src="hype-images-52.js"></script><script src="hype-images-53.js"></script><script src="hype-images-54.js"></script><script src="hype-images-55.js"></script><script src="hype-images-56.js"></script>
-<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
+<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -19076,7 +19076,7 @@ const CIBLE_DIRECTE = (function () {
         const h = ((typeof window !== "undefined" && window.location && window.location.hash) || "").replace(/^#/, "").trim();
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
         if (h) cle = h;
-        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
+        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
         return MAP[cle] || null;
     } catch (e) { return null; }
 })();
@@ -21110,7 +21110,7 @@ const COURS_GALOP3_FR = [
 id: "g3-c5", icone: "🧽", type: "soins", duree: "11 min",
         titre: "Le pansage complet et le soin des pieds",
         blocs: [
-            { type: "couv-affiche", src: GALOPS_HERO, couv: { titre1: "LE PANSAGE", titre2: "COMPLET", accent: "#1FA9C9", citation: "Prendre soin de son cheval avant de lui demander un effort est la première marque de respect.", auteur: "" } },
+            { type: "couv-affiche", src: HYPE_IMGS["k360"], couv: { titre1: "LE PANSAGE", titre2: "COMPLET", accent: "#1FA9C9", citation: "Prendre soin de son cheval avant de lui demander un effort est la première marque de respect.", auteur: "" } },
             { type: "texte-riche", aere: true, titre: "Pourquoi un pansage complet ?", contenu: [
                     { k: "para", texte: "Au Galop 3, tu dois être capable de préparer ton cheval seul avant et après le travail." },
                     { k: "para", texte: "Le pansage ne sert pas seulement à le rendre propre. Il permet aussi de :" },
@@ -21345,34 +21345,100 @@ id: "g3-c6", icone: "🐎", type: "théorie", duree: "10 min",
     },
     {
         
-id: "g3-c7", icone: "🦴", type: "théorie", duree: "9 min",
-        titre: "Parties du corps, marques et robes",
+id: "g3-c7", icone: "🦴", type: "théorie", duree: "10 min",
+        titre: "Les parties du corps, les marques et les robes",
         blocs: [
-            { type: "intro", texte: "Le Galop 3 demande de situer les parties extérieures du cheval, de reconnaître les marques blanches et les épis, et de nommer les déclinaisons du bai et de l'alezan." },
-            { type: "liste", titre: "Les marques blanches de la tête", items: [
-                    "La liste : bande blanche verticale qui descend le long du chanfrein",
-                    "En tête : tache blanche sur le front",
-                    "On parle aussi de pelote, de ladre… selon la taille et la forme"
+            { type: "couv-affiche", src: GALOPS_HERO, couv: { titre1: "PARTIES DU CORPS,", titre2: "MARQUES ET ROBES", accent: "#1FA9C9", citation: "Observer un cheval, c'est déjà commencer à le comprendre.", auteur: "" } },
+            { type: "texte-riche", aere: true, titre: "Les objectifs et les parties extérieures", contenu: [
+                    { k: "para", texte: "Le Galop 3 ne consiste plus seulement à reconnaître un cheval. Tu apprends à décrire précisément son apparence grâce au vocabulaire équestre. Cela permet de communiquer clairement avec un vétérinaire, un maréchal, un enseignant ou tout autre cavalier." },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Celui qui apprend à regarder un cheval découvre bien plus que son apparence." },
+                    { k: "section", titre: "🎯 Les objectifs du Galop 3", sous: "À la fin de ce chapitre tu dois savoir :", puces: [
+                            { texte: "✅ Situer les principales parties extérieures du cheval." },
+                            { texte: "✅ Reconnaître les marques blanches." },
+                            { texte: "✅ Identifier les épis." },
+                            { texte: "✅ Nommer les principales déclinaisons du bai et de l'alezan." }
+                        ] },
+                    { k: "section", titre: "1️⃣ Les parties extérieures du cheval", sous: "Tu dois être capable de montrer et nommer :", puces: [
+                            { gras: "La tête :", texte: "front, chanfrein, ganache, auge, bouche, lèvres, naseaux, oreilles." },
+                            { gras: "Le tronc :", texte: "encolure, garrot, épaule, dos, reins, croupe, queue, poitrail, ventre." },
+                            { gras: "L'avant-main :", texte: "bras, avant-bras, genou, canon, boulet, paturon, sabot." },
+                            { gras: "L'arrière-main :", texte: "cuisse, grasset, jarret, canon, boulet, sabot." }
+                        ] },
+                    { k: "para", texte: "⭐ Tu n'as pas besoin d'apprendre toute l'anatomie, mais tu dois savoir situer ces grandes régions." }
                 ] },
-            { type: "liste", titre: "Les marques des membres et les épis", items: [
-                    "La balzane : marque blanche en bas d'un membre, plus ou moins haute",
-                    "Les épis : tourbillons de poils, repères d'identification (épi de tête, épi de crinière)"
+            { type: "texte-riche", aere: true, titre: "Marques blanches et épis", contenu: [
+                    { k: "section", titre: "2️⃣ Les marques blanches", sous: "Les marques servent à identifier un cheval.", puces: [
+                            { gras: "Sur la tête :", texte: "pelote, liste, belle-face, en-tête." },
+                            { gras: "Sur les membres :", texte: "les balzanes, qui peuvent être petite, mi-canon, haute ou irrégulière." },
+                            { texte: "Chaque cheval possède une combinaison unique." }
+                        ] },
+                    { k: "section", titre: "3️⃣ Les épis", sous: "Un épi est une zone où les poils changent naturellement de direction. Ils permettent aussi d'identifier un cheval. On les retrouve souvent :", puces: [
+                            { texte: "sur le front ;" },
+                            { texte: "sous l'encolure ;" },
+                            { texte: "au poitrail ;" },
+                            { texte: "à l'épaule ;" },
+                            { texte: "sur différentes parties du corps." },
+                            { texte: "Deux chevaux ayant exactement la même robe peuvent être différenciés grâce à leurs épis." }
+                        ] },
+                    { k: "section", titre: "4️⃣ Les déclinaisons des robes", sous: "Au Galop 3, tu approfondis les robes déjà étudiées.", puces: [
+                            { gras: "Le bai :", texte: "bai clair, bai, bai brun, bai foncé." },
+                            { gras: "L'alezan :", texte: "alezan clair, alezan, alezan foncé, alezan brûlé." },
+                            { texte: "Il n'est pas encore demandé de connaître toutes les robes complexes." }
+                        ] }
                 ] },
-            { type: "liste", titre: "Les déclinaisons des robes", items: [
-                    "Déclinaisons du bai : l'isabelle (robe café-au-lait, crins noirs) et le souris",
-                    "Déclinaisons de l'alezan : l'alezan brûlé (très foncé), le café-au-lait, le palomino (robe dorée, crins clairs)"
+            { type: "texte-riche", aere: true, titre: "À retenir", contenu: [
+                    { k: "encadre", emoji: "💡", titre: "Le conseil du coach", texte: "Ne cherche pas seulement à apprendre une liste de mots. À chaque cheval que tu rencontres, entraîne-toi à décrire sa robe, ses marques, ses épis, les principales parties de son corps. Tu progresseras très rapidement." },
+                    { k: "section", titre: "❤️ À ressentir", puces: [
+                            { texte: "Observer avec précision." },
+                            { texte: "Développer son regard." },
+                            { texte: "Employer le bon vocabulaire." },
+                            { texte: "Décrire un cheval clairement." },
+                            { texte: "Être attentif aux détails." }
+                        ] },
+                    { k: "encadre", emoji: "🏆", titre: "Le défi du coach", texte: "Observe cinq chevaux différents. Pour chacun, note sa robe, ses marques blanches, la présence éventuelle d'épis, une particularité physique. Le lendemain, essaie de les reconnaître uniquement grâce à tes observations." },
+                    { k: "encadre", emoji: "💎", titre: "Le savais-tu ?", texte: "Les Haras nationaux utilisent les marques blanches, les épis et les caractéristiques physiques pour établir le signalement officiel de chaque cheval. Même deux chevaux ayant la même robe peuvent ainsi être distingués avec précision." },
+                    { k: "section", titre: "❌ Les erreurs à éviter", puces: [
+                            { texte: "Confondre une pelote avec une liste." },
+                            { texte: "Dire « patte » au lieu de « membre »." },
+                            { texte: "Oublier les épis." },
+                            { texte: "Confondre bai brun et alezan brûlé." },
+                            { texte: "Penser que deux chevaux bais sont forcément identiques." }
+                        ] },
+                    { k: "section", titre: "🤖 Demande à Hey Baby", sous: "Quelques idées de questions :", puces: [
+                            { texte: "🐴 Quelle est exactement la robe de ce cheval ?" },
+                            { texte: "📸 Peux-tu identifier ses marques blanches ?" },
+                            { texte: "👀 Où se trouvent les épis sur cette photo ?" },
+                            { texte: "🩺 Est-ce que je situe correctement les différentes parties du corps ?" },
+                            { texte: "🎓 Fais-moi réviser les robes du Galop 3." },
+                            { texte: "🧠 Interroge-moi comme lors de l'examen fédéral." }
+                        ] },
+                    { k: "section", titre: "⭐ Ce qu'il faut retenir", puces: [
+                            { texte: "Tu sais situer les principales parties du corps." },
+                            { texte: "Tu reconnais les principales marques blanches." },
+                            { texte: "Tu sais identifier les épis." },
+                            { texte: "Tu distingues les principales nuances du bai et de l'alezan." }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Mieux on observe un cheval, mieux on apprend à le comprendre." }
                 ] },
-            { type: "astuce", texte: "Liste, en tête, balzanes et épis servent à identifier précisément un cheval : ce sont des repères notés sur son signalement officiel." },
         ],
         quiz: [
-            { type: "qcm", question: "Comment appelle-t-on une marque blanche en bas d'un membre ?", options: ["Une liste", "Une balzane", "Un épi", "Une pelote"], correct: 1, explication: "La balzane est la marque blanche du bas du membre. La liste et l'en tête sont des marques de la tête." },
-            { type: "qcm", question: "Le palomino est une déclinaison de quelle robe ?", options: ["Du bai", "Du noir", "De l'alezan", "Du gris"], correct: 2, explication: "Le palomino (robe dorée à crins clairs) est une déclinaison de l'alezan." },
+            { type: "qcm", question: "À quoi servent principalement les marques blanches et les épis ?", options: ["À connaître l'âge du cheval.", "À identifier un cheval.", "À savoir s'il est ferré.", "À reconnaître son caractère."], correct: 1, explication: "Les marques blanches et les épis servent avant tout à identifier précisément un cheval." },
+            { type: "qcm", question: "Comment appelle-t-on une marque blanche située sur le chanfrein ?", options: ["Une balzane.", "Une liste.", "Un épi.", "Une croupe."], correct: 1, explication: "La liste est la bande blanche verticale qui descend le long du chanfrein." },
+            { type: "qcm", question: "Les balzanes se trouvent :", options: ["Sur les oreilles.", "Sur la tête.", "Sur les membres.", "Sur la queue."], correct: 2, explication: "Les balzanes sont des marques blanches situées en bas des membres." },
+            { type: "qcm", question: "Qu'est-ce qu'un épi ?", options: ["Une tache blanche.", "Une blessure.", "Une zone où les poils changent de direction.", "Une partie du sabot."], correct: 2, explication: "Un épi est une zone où les poils changent naturellement de direction, utile pour identifier un cheval." },
+            { type: "qcm", question: "Parmi ces propositions, laquelle est une déclinaison du bai ?", options: ["Bai brun.", "Gris pommelé.", "Isabelle.", "Pie tobiano."], correct: 0, explication: "Le bai brun est l'une des déclinaisons du bai, avec le bai clair et le bai foncé." },
+            { type: "qcm", question: "Au Galop 3, quelles déclinaisons de l'alezan dois-tu connaître ?", options: ["Clair, alezan, foncé et brûlé.", "Pie, rouan et isabelle.", "Blanc et crème.", "Gris clair et gris foncé."], correct: 0, explication: "Les déclinaisons de l'alezan à connaître au Galop 3 sont clair, alezan, foncé et brûlé." },
+            { type: "qcm", question: "Quelle partie du cheval se situe entre le dos et la croupe ?", options: ["Le garrot.", "Les reins.", "Le poitrail.", "Le chanfrein."], correct: 1, explication: "Les reins se situent entre le dos et la croupe." },
+            { type: "qcm", question: "Pourquoi est-il important de connaître les parties du corps du cheval ?", options: ["Pour monter plus vite.", "Pour communiquer précisément avec les professionnels.", "Pour choisir une selle.", "Pour apprendre les concours."], correct: 1, explication: "Connaître le vocabulaire équestre permet de communiquer clairement avec un vétérinaire, un maréchal ou un enseignant." },
+            { type: "qcm", question: "Laquelle de ces affirmations est correcte ?", options: ["Tous les chevaux bais sont identiques.", "Les épis permettent aussi d'identifier un cheval.", "Les balzanes se trouvent sur les oreilles.", "Les marques blanches changent chaque année."], correct: 1, explication: "Les épis, comme les marques blanches, participent à l'identification précise d'un cheval." },
+            { type: "qcm", question: "Quelle description est correcte ?", options: ["« Alezan brûlé avec une liste et deux balzanes. »", "« Marron avec des pattes blanches. »", "« Noir clair avec une tache. »", "« Rouge foncé avec une chaussette. »"], correct: 0, explication: "Le vocabulaire équestre précis utilise robe, liste et balzanes plutôt que des termes approximatifs comme « pattes » ou « chaussette »." },
         ],
     },
 ];
 const COURS_GALOP4_FR = [
     {
-        id: "g4-c1", icone: "🤝", type: "pratique", duree: "11 min",
+        
+id: "g4-c1", icone: "🤝", type: "pratique", duree: "11 min",
         titre: "Le contact et l'accord des aides",
         blocs: [
             { type: "intro", texte: "Le Galop 4, brevet de cavalier, marque l'arrivée d'un contact permanent et moelleux avec la bouche du cheval aux trois allures, et la capacité d'évoluer aussi sans contact." },
