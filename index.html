@@ -29315,11 +29315,15 @@ function EcranGalopDetail() {
     const [tab, setTab] = useState("cours");
     const CATEGORIES_COURS = [
         { cle: "connaissance", couleur: "#20D9F5", titre: { fr: "Connaissance du cheval", en: "Knowing the horse", ja: "馬を知る", es: "Conocer al caballo", it: "Conoscere il cavallo" } },
-        { cle: "technique", couleur: "#5B8DEF", titre: { fr: "Technique équestre", en: "Riding technique", ja: "騎乗技術", es: "Técnica ecuestre", it: "Tecnica equestre" } },
+        { cle: "technique", couleur: "#5B8DEF", titre: { fr: "Équitation", en: "Equitation", ja: "騎乗", es: "Equitación", it: "Equitazione" } },
         { cle: "culture", couleur: "#A78BDB", titre: { fr: "Culture équestre", en: "Equestrian culture", ja: "馬術文化", es: "Cultura ecuestre", it: "Cultura equestre" } },
         { cle: "vie", couleur: "#E0A85A", titre: { fr: "Vie équestre", en: "Equestrian life", ja: "馬術ライフ", es: "Vida ecuestre", it: "Vita equestre" } }
     ];
-    const CATEGORIE_PAR_COURS = { "g1-c3": "connaissance", "g1-c6": "connaissance", "g1-c7": "connaissance", "g1-c15": "vie", "g1-c2": "vie", "g1-c4": "connaissance", "g1-c5": "technique", "g1-c9": "technique", "g1-c12": "culture", "g1-c13": "culture", "g1-c8": "vie", "g1-c10": "vie", "g1-c11": "culture", "g1-c16": "culture" };
+    const CATEGORIE_PAR_COURS = { "g1-c3": "connaissance", "g1-c6": "connaissance", "g1-c7": "connaissance", "g1-c15": "vie", "g1-c2": "vie", "g1-c4": "connaissance", "g1-c5": "technique", "g1-c9": "technique", "g1-c12": "culture", "g1-c13": "culture", "g1-c8": "vie", "g1-c10": "vie", "g1-c11": "culture", "g1-c16": "culture",
+        "g2-aides": "technique", "g2-depart": "technique", "g2-c3": "technique", "g2-c4": "technique", "g3-c2": "technique",
+        "g2-c1": "vie", "g2-pansage": "vie", "g2-filet-selle": "vie", "g2-heberger": "vie", "g2-c5": "vie",
+        "g2-robes": "connaissance", "g2-sens": "connaissance", "g2-vie-sociale": "connaissance", "g2-anatomie": "connaissance",
+        "g2-familles": "culture" };
     if (!galop)
         return null;
     const photoKey = `galop_${galop.id}`;
