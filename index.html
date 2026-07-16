@@ -24159,6 +24159,7 @@ function EcranDashboard() {
         React.createElement(CarteAssistantHero, null),
         
         React.createElement(SommaireGalops, null),
+        React.createElement(MurHype, { cible: "annonces-hype", sansComposer: true, titrePerso: "Nouveautés" }),
         React.createElement("p", { style: { fontSize: 15, fontWeight: 700, color: COLORS.encre, margin: "20px 0 10px" } }, t("acces_rapides")),
         React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 6, marginBottom: 18 } },
             React.createElement(RaccourciCarte, { icone: "\uD83C\uDFAF", img: NAV_IMG.examen, titre: t("examen_blanc"), couleur: COLORS.corail, onClick: () => setEcran("examen") }),
@@ -25494,7 +25495,7 @@ function EcranGuilde() {
             h("div", { style: { width: 26, textAlign: "center", fontFamily: C, fontSize: 15, fontWeight: 700, color: (i === 0 ? "#E8C887" : (moi ? TURQL : "#8A929C")) } }, i + 1),
             h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontSize: 13.5, fontWeight: moi ? 700 : 600, color: moi ? "#EAFBFD" : "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, g.nom), h("div", { style: { fontSize: 10.5, color: "#8A929C", fontFamily: M, marginTop: 1 } }, T("Niv.", "Lvl", "Niv.", "Liv.", "Lv") + " " + nv.niveau + " \u00b7 " + g.membres + " " + T("membres", "members", "miembros", "membri", "\u4eba"))),
             h("div", { style: { fontFamily: M, fontSize: 13, fontWeight: 800, color: moi ? TURQL : "#DDE6EA" } }, g.xp + " XP")); }))),
-    h(MurHype, { cible: "club:" + monClub, membresSeuls: true }),
+    h(MurHype, { cible: "club:" + monClub, membresSeuls: true, avecAnnonces: true }),
     h("div", { style: { padding: "18px 20px 0", fontSize: 11, color: "#5B646E", fontFamily: M, fontStyle: "italic", textAlign: "center" } }, ((reel && reel.length) ? T("Classement en temps r\u00e9el.", "Live ranking.", "Clasificaci\u00f3n en vivo.", "Classifica live.", "\u30e9\u30a4\u30d6\u30e9\u30f3\u30ad\u30f3\u30b0") : T("Donn\u00e9es de d\u00e9monstration \u2014 connect\u00e9es \u00e0 Supabase avec les comptes.", "Demo data \u2014 connected to Supabase with accounts.", "", "", ""))),
     revendique
       ? h("div", { style: { textAlign: "center", padding: "18px 20px 0", fontSize: 10.5, color: "#5B646E", fontFamily: M, fontStyle: "italic" } }, T("Page officielle g\u00e9r\u00e9e par le club.", "Official page managed by the club.", "P\u00e1gina oficial gestionada por el club.", "Pagina ufficiale gestita dal club.", "\u30af\u30e9\u30d6\u304c\u7ba1\u7406\u3059\u308b\u516c\u5f0f\u30da\u30fc\u30b8"))
@@ -26813,7 +26814,7 @@ function EcranEcurie() {
 
         )),
 
-    h(MurHype, { cibleEcurie: true, membresSeuls: true }),
+    h(MurHype, { cibleEcurie: true, membresSeuls: true, avecAnnonces: true }),
     
 
 
@@ -27194,7 +27195,7 @@ function MurHype(props) {
           try { var mem = await estMembreEcurie(c.replace(/^(ecurie|club):/, "")); if (actif) setMembre(!!mem); } catch (eMb) { if (actif) setMembre(false); }
         } else if (props.membresSeuls && actif) setMembre(true);
         if (c) { var r = await listerCommentaires(c); var postsC = (r && r.data) || [];
-          if (props.cibleMoi) {
+          if (props.avecAnnonces) {
             try { var rA = await listerCommentaires("annonces-hype"); var postsA = ((rA && rA.data) || []).map(function (x) { return Object.assign({}, x, { estAnnonce: true }); }); postsC = postsC.concat(postsA); } catch (eA) { }
             postsC.sort(function (a, b) { return new Date(a.created_at) - new Date(b.created_at); });
           }
@@ -27234,7 +27235,7 @@ function MurHype(props) {
   var enfants = [];
   if (!props.sansTitre) enfants.push(h("div", { key: "tt", style: { fontSize: 11, fontWeight: 800, letterSpacing: 2.6, color: "#EAC77A", textTransform: "uppercase", fontFamily: M2, margin: "26px 0 12px", display: "flex", alignItems: "center", gap: 10 } },
     h("span", { style: { display: "inline-block", width: 26, height: 1, background: "rgba(234,199,122,0.55)" } }),
-    props.compact ? T("Le fil", "The feed", "El hilo", "Il filo", "フィード") : T("Publications", "Posts", "Publicaciones", "Pubblicazioni", "\u6295\u7a3f")));
+    props.titrePerso ? props.titrePerso : (props.compact ? T("Le fil", "The feed", "El hilo", "Il filo", "フィード") : T("Publications", "Posts", "Publicaciones", "Pubblicazioni", "\u6295\u7a3f"))));
   if (!dispo) {
     enfants.push(h("div", { key: "off", style: Object.assign({}, carte, { color: "#8A929C", fontSize: 12.5, fontFamily: M2 }) }, T("Le fil arrive d\u00e8s que la connexion au serveur est active.", "The feed appears once the server connection is active.", "El muro llega cuando el servidor est\u00e9 activo.", "Il muro arriva quando il server \u00e8 attivo.", "\u30b5\u30fc\u30d0\u30fc\u63a5\u7d9a\u5f8c\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002")));
   } else if (!moi && !charge) {
@@ -27245,7 +27246,7 @@ function MurHype(props) {
       h("div", { style: { flex: 1, minWidth: 0 } },
         h("div", { style: { fontSize: 12.5, fontWeight: 700, color: "#DCE3E8", fontFamily: M2 } }, T("Un fil r\u00e9serv\u00e9 aux membres", "A feed reserved for members", "Un hilo reservado a los miembros", "Un feed riservato ai membri", "\u30e1\u30f3\u30d0\u30fc\u9650\u5b9a\u306e\u30d5\u30a3\u30fc\u30c9")),
         h("div", { style: { fontSize: 11, color: "#8A929C", fontFamily: M2, marginTop: 2, lineHeight: 1.5 } }, T("Rejoins cette \u00e9curie \u2014 ou attends son invitation \u2014 pour publier ici.", "Join this stable \u2014 or await its invitation \u2014 to post here.", "\u00danete a esta cuadra para publicar aqu\u00ed.", "Unisciti a questa scuderia per pubblicare qui.", "\u3053\u306e\u53a9\u820e\u306b\u53c2\u52a0\u3059\u308b\u3068\u6295\u7a3f\u3067\u304d\u307e\u3059")))));
-  } else if (moi) {
+  } else if (moi && !props.sansComposer) {
     enfants.push(h("div", { key: "comp", style: Object.assign({}, carte, { marginBottom: 12 }) },
       h("textarea", { value: texte, onChange: function (e) { setTexte(e.target.value); }, rows: 2, placeholder: T("Partage un moment\u2026", "Share a moment\u2026", "Comparte un momento\u2026", "Condividi un momento\u2026", "\u77ac\u9593\u3092\u30b7\u30a7\u30a2\u2026"), style: { width: "100%", background: "transparent", border: "none", outline: "none", resize: "none", color: "#EDF2F5", fontSize: 14, fontFamily: M2, lineHeight: 1.45 } }),
       photo ? h("div", { style: { position: "relative", marginTop: 8, width: 96 } },
@@ -27282,6 +27283,7 @@ function MurHype(props) {
   });
   if (props.compact && liste.length > 2 && props.onVoirTout) enfants.push(h("button", { key: "vt", onClick: props.onVoirTout, style: { display: "block", margin: "2px auto 0", background: "" + tAm(0.07) + "", border: "1px solid " + tAm(0.35) + "", color: TQm, fontSize: 12, fontWeight: 700, fontFamily: M2, padding: "9px 20px", borderRadius: 999 } }, T("Voir tout le fil", "See the full feed", "Ver todo el hilo", "Vedi tutto il filo", "すべて見る") + " →"));
   if (!charge && dispo && !liste.length) enfants.push(h("div", { key: "vide", style: { color: "#5B646E", fontSize: 12.5, textAlign: "center", padding: "6px 0 2px", fontStyle: "italic", fontFamily: M2 } }, props.momentsSeuls ? T("Raconte le premier moment ici \u2014 les photos seules vivent dans la galerie.", "Tell the first moment here \u2014 photos alone live in the gallery.", "Cuenta el primer momento aqu\u00ed \u2014 las fotos solas viven en la galer\u00eda.", "Racconta il primo momento qui \u2014 le foto da sole vivono nella galleria.", "\u6700\u521d\u306e\u77ac\u9593\u3092\u3053\u3053\u3067\u8a9e\u308d\u3046\u3002\u5199\u771f\u3060\u3051\u306f\u30ae\u30e3\u30e9\u30ea\u30fc\u3078\u3002") : T("Sois le premier \u00e0 publier ici.", "Be the first to post here.", "S\u00e9 el primero en publicar.", "Sii il primo a pubblicare.", "\u6700\u521d\u306e\u6295\u7a3f\u3092\u3057\u3088\u3046\u3002")));
+  if (props.sansComposer && !charge && !posts.length) return null;
   return h("div", { style: { padding: "0 16px" } }, enfants);
 }
 
