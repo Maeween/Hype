@@ -18098,7 +18098,7 @@ exports.version = "19.2.5";
 });</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(r&&!r.firstChild){r.innerHTML="<pre class=\"err\">"+String((err&&err.stack)||m).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</pre>";}return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-images-25.js"></script><script src="hype-images-26.js"></script><script src="hype-images-27.js"></script>
 <script src="hype-images-28.js"></script>
 <script src="hype-images-29.js"></script><script src="hype-images-30.js"></script><script src="hype-images-31.js"></script><script src="hype-images-32.js"></script><script src="hype-images-33.js"></script><script src="hype-images-34.js"></script><script src="hype-images-35.js"></script><script src="hype-images-36.js"></script><script src="hype-images-37.js"></script><script src="hype-images-38.js"></script><script src="hype-images-39.js"></script><script src="hype-images-40.js"></script><script src="hype-images-41.js"></script><script src="hype-images-42.js"></script><script src="hype-images-43.js"></script><script src="hype-images-44.js"></script><script src="hype-images-45.js"></script><script src="hype-images-46.js"></script><script src="hype-images-47.js"></script><script src="hype-images-48.js"></script><script src="hype-images-49.js"></script><script src="hype-images-50.js"></script><script src="hype-images-51.js"></script><script src="hype-images-52.js"></script><script src="hype-images-53.js"></script><script src="hype-images-54.js"></script><script src="hype-images-55.js"></script><script src="hype-images-56.js"></script>
-<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
+<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -19076,7 +19076,7 @@ const CIBLE_DIRECTE = (function () {
         const h = ((typeof window !== "undefined" && window.location && window.location.hash) || "").replace(/^#/, "").trim();
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
         if (h) cle = h;
-        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
+        const MAP = { "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, accueil: { ecran: "dashboard" } };
         return MAP[cle] || null;
     } catch (e) { return null; }
 })();
@@ -21011,24 +21011,103 @@ const COURS_GALOP3_FR = [
         ],
     },
     {
-        id: "g3-c4", icone: "🚶", type: "à pied", duree: "8 min",
-        titre: "Le travail à pied du Galop 3",
+        id: "g3-c4", icone: "🚶", type: "à pied", duree: "9 min",
+        titre: "Le travail à pied : guider son cheval avec précision",
         blocs: [
-            { type: "intro", texte: "Le travail à pied gagne en précision : on mène sur des courbes serrées au pas, on fait reculer droit, on déplace épaules et hanches sur plusieurs pas." },
-            { type: "liste", titre: "Les exercices attendus", items: [
-                    "Enchaîner des courbes serrées en main, au pas, des deux côtés",
-                    "Reculer droit sur quelques foulées, sans que les hanches se déportent",
-                    "Déplacer les épaules ou les hanches sur plusieurs pas",
-                    "Garder le cheval calme, attentif et respectueux de la distance"
+            { type: "couv-affiche", src: HYPE_IMGS["k358"], couv: { titre1: "LE TRAVAIL", titre2: "À PIED", accent: "#1FA9C9", citation: "Avant d'obtenir la confiance du cheval en selle, il faut d'abord la gagner depuis le sol.", auteur: "" } },
+            { type: "texte-riche", aere: true, titre: "Pourquoi travailler à pied ?", contenu: [
+                    { k: "para", texte: "Le travail à pied permet de développer la communication entre le cavalier et son cheval." },
+                    { k: "para", texte: "Au Galop 3, il ne s'agit plus seulement de conduire son cheval en main : tu apprends à déplacer précisément les différentes parties de son corps et à obtenir une réponse calme, légère et respectueuse." },
+                    { k: "para", texte: "Un bon travail à pied rend également le travail monté plus simple et plus harmonieux." },
+                    { k: "section", titre: "🐴 Mener son cheval avec précision", sous: "Le cavalier doit être capable de mener son cheval :", puces: [
+                            { texte: "au pas ;" },
+                            { texte: "en restant à hauteur de son épaule ;" },
+                            { texte: "sans se faire dépasser ;" },
+                            { texte: "sans tirer en permanence sur la longe ou les rênes ;" },
+                            { texte: "en effectuant des courbes et des changements de direction." },
+                            { texte: "Le cheval doit suivre calmement son cavalier." }
+                        ] },
+                    { k: "section", titre: "↩️ Faire reculer droit", sous: "Le cheval doit pouvoir effectuer plusieurs pas en arrière :", puces: [
+                            { texte: "calmement ;" },
+                            { texte: "en restant droit ;" },
+                            { texte: "sans précipitation." },
+                            { texte: "Le cavalier demande le reculer progressivement, puis récompense dès que le cheval répond correctement." }
+                        ] }
                 ] },
-            { type: "astuce", texte: "Pour reculer droit, regardez où vous voulez aller et corrigez tôt : un petit écart se rattrape facilement au début, beaucoup moins après plusieurs pas." },
+            { type: "texte-riche", aere: true, titre: "Déplacer les épaules et les hanches", contenu: [
+                    { k: "section", titre: "🔄 Déplacer les épaules", sous: "Le cavalier apprend à demander au cheval de déplacer uniquement ses épaules.", puces: [
+                            { texte: "Le cheval croise légèrement les antérieurs tout en gardant ses hanches relativement fixes." },
+                            { texte: "Cet exercice améliore la précision des aides et la souplesse du cheval." }
+                        ] },
+                    { k: "section", titre: "🔄 Déplacer les hanches", sous: "Le cavalier demande cette fois au cheval de déplacer ses postérieurs autour de ses épaules.", puces: [
+                            { texte: "Le cheval croise les postérieurs tout en restant calme et attentif." },
+                            { texte: "C'est une excellente préparation au travail monté." }
+                        ] },
+                    { k: "section", titre: "🎯 Pourquoi ces exercices sont-ils importants ?", sous: "Ils permettent de :", puces: [
+                            { texte: "🐴 améliorer le respect mutuel ;" },
+                            { texte: "🐴 développer la confiance ;" },
+                            { texte: "🐴 rendre le cheval plus attentif ;" },
+                            { texte: "🐴 préparer les déplacements latéraux montés ;" },
+                            { texte: "🐴 améliorer la sécurité du cavalier." },
+                            { texte: "Le travail à pied est une véritable conversation avec son cheval." }
+                        ] },
+                    { k: "encadre", emoji: "💡", titre: "Le conseil du coach", texte: "Ne cherche jamais à déplacer ton cheval avec la force. Demande peu... Attends sa réponse... Puis récompense immédiatement. La légèreté est toujours plus efficace que la contrainte." }
+                ] },
+            { type: "texte-riche", aere: true, titre: "À ressentir et à éviter", contenu: [
+                    { k: "section", titre: "❤️ À ressentir", puces: [
+                            { texte: "Un cheval calme." },
+                            { texte: "Une connexion naturelle." },
+                            { texte: "Une réponse légère." },
+                            { texte: "Des déplacements fluides." },
+                            { texte: "Un cheval attentif." },
+                            { texte: "Une communication silencieuse." }
+                        ] },
+                    { k: "section", titre: "❌ Les erreurs à éviter", puces: [
+                            { texte: "Tirer continuellement sur la longe." },
+                            { texte: "Marcher devant son cheval." },
+                            { texte: "Se placer trop près des épaules ou des postérieurs." },
+                            { texte: "Vouloir aller trop vite." },
+                            { texte: "Répéter les demandes sans laisser le temps au cheval de répondre." },
+                            { texte: "Oublier de récompenser." }
+                        ] },
+                    { k: "encadre", emoji: "🏆", titre: "Le défi du coach", texte: "Réalise l'enchaînement suivant sans tension dans la longe : départ au pas, un cercle, un arrêt, trois pas de reculer, déplacement des épaules, déplacement des hanches, repartir au pas. L'objectif est d'obtenir un cheval calme qui répond avec le minimum de pression." },
+                    { k: "encadre", emoji: "💎", titre: "Le savais-tu ?", texte: "Les meilleurs cavaliers passent énormément de temps à travailler à pied. Même les cavaliers internationaux utilisent régulièrement ces exercices pour améliorer la confiance, la précision et la communication avec leurs chevaux. Le travail à pied n'est pas réservé aux jeunes chevaux : il fait partie de l'entraînement des meilleurs." },
+                    { k: "section", titre: "🤖 Demande à Hey Baby", sous: "Quelques idées de questions :", puces: [
+                            { texte: "Est-ce que je suis bien placé pour mener mon cheval ?" },
+                            { texte: "Mon cheval respecte-t-il correctement mon espace ?" },
+                            { texte: "Mon reculer est-il droit et fluide ?" },
+                            { texte: "Est-ce que mon cheval croise correctement ses épaules ?" },
+                            { texte: "Déplace-t-il correctement ses hanches ?" },
+                            { texte: "Quel exercice me conseilles-tu pour améliorer notre communication à pied ?" },
+                            { texte: "Que puis-je faire pour obtenir davantage de légèreté ?" }
+                        ] },
+                    { k: "section", titre: "✅ Ce qu'il faut retenir", puces: [
+                            { texte: "Le travail à pied développe la communication entre le cavalier et son cheval." },
+                            { texte: "Au Galop 3, tu dois savoir mener ton cheval avec précision." },
+                            { texte: "Tu dois être capable de faire reculer ton cheval droit." },
+                            { texte: "Tu dois commencer à déplacer séparément ses épaules et ses hanches." },
+                            { texte: "La qualité des réponses est plus importante que la force des demandes." },
+                            { texte: "Un cheval calme et attentif est toujours le signe d'une bonne communication." }
+                        ] },
+                    { k: "encadre", variante: "citation", titre: "", texte: "Un cheval ne suit pas celui qui le pousse. Il suit celui qu'il comprend." }
+                ] },
         ],
         quiz: [
-            { type: "vrai-faux", question: "Au Galop 3, faire reculer le cheval droit fait partie du travail à pied.", correct: true, explication: "Reculer droit sur quelques foulées, sans déport des hanches, est l'un des objectifs à pied du Galop 3." },
+            { type: "qcm", question: "Quel est le premier objectif du travail à pied ?", options: ["Fatiguer le cheval", "Développer la communication et le respect", "Lui apprendre à galoper", "Le préparer à sauter"], correct: 1, explication: "Le travail à pied développe avant tout la communication et le respect mutuel entre le cavalier et son cheval." },
+            { type: "qcm", question: "Lorsque tu mènes ton cheval, tu te places généralement :", options: ["Derrière lui", "Devant lui", "À hauteur de son épaule", "À côté de sa croupe"], correct: 2, explication: "Le cavalier reste à hauteur de l'épaule du cheval, sans se faire dépasser ni tirer sur la longe." },
+            { type: "qcm", question: "Pour demander un reculer correct, il faut :", options: ["Tirer fort sur la longe", "Demander progressivement puis relâcher dès que le cheval répond", "Pousser le cheval avec les mains", "Aller vite"], correct: 1, explication: "Le reculer se demande progressivement, puis on récompense dès que le cheval répond correctement." },
+            { type: "qcm", question: "Lors d'un déplacement des épaules, le cheval doit :", options: ["Croiser ses antérieurs", "Croiser uniquement ses postérieurs", "Galoper", "Reculer"], correct: 0, explication: "Le cheval croise légèrement les antérieurs tout en gardant ses hanches relativement fixes." },
+            { type: "qcm", question: "Lors d'un déplacement des hanches, le cheval doit :", options: ["Déplacer ses épaules", "Croiser ses postérieurs autour des épaules", "Lever la tête", "Partir au trot"], correct: 1, explication: "Le cheval croise les postérieurs autour de ses épaules tout en restant calme et attentif." },
+            { type: "qcm", question: "Quelle attitude doit avoir le cavalier ?", options: ["Être calme, précis et patient", "Être rapide", "Être très énergique", "Être toujours en tension sur la longe"], correct: 0, explication: "Le cavalier doit rester calme, précis et patient pour obtenir une réponse légère et respectueuse." },
+            { type: "qcm", question: "Quelle est une erreur fréquente ?", options: ["Récompenser rapidement", "Oublier de relâcher la pression après une bonne réponse", "Tirer continuellement sur la longe", "Attendre calmement"], correct: 2, explication: "Tirer continuellement sur la longe est une erreur classique à éviter dans le travail à pied." },
+            { type: "qcm", question: "Pourquoi travaille-t-on les épaules et les hanches séparément ?", options: ["Pour fatiguer le cheval", "Pour améliorer sa précision, sa souplesse et la qualité des aides", "Pour lui apprendre le galop", "Pour gagner du temps"], correct: 1, explication: "Travailler séparément les épaules et les hanches améliore la précision, la souplesse et la qualité des aides." },
+            { type: "qcm", question: "Quel est le meilleur moyen de faire progresser son cheval ?", options: ["Demandes fortes", "Pression constante", "Demandes légères suivies d'une récompense immédiate", "Beaucoup parler"], correct: 2, explication: "Des demandes légères suivies d'une récompense immédiate sont la clé d'une bonne progression." },
+            { type: "qcm", question: "Lequel de ces principes résume le mieux le travail à pied ?", options: ["La force donne de meilleurs résultats.", "Plus on tire sur la longe, mieux le cheval comprend.", "La qualité des réponses est plus importante que la force des demandes.", "Il faut toujours marcher devant le cheval."], correct: 2, explication: "C'est la qualité des réponses, et non la force des demandes, qui définit un bon travail à pied." },
         ],
     },
     {
-        id: "g3-c5", icone: "🧽", type: "soins", duree: "11 min",
+        
+id: "g3-c5", icone: "🧽", type: "soins", duree: "11 min",
         titre: "Le pansage complet et le soin des pieds",
         blocs: [
             { type: "intro", texte: "Au Galop 3, on réalise un pansage complet, on cure les quatre pieds, on douche les membres, on graisse les pieds et on entretient la litière et l'abreuvement." },
