@@ -24756,7 +24756,9 @@ function EcranMonCavalier() {
   React.useEffect(function () { (async function () { try { if (typeof mesAmis === "function") { var ra = await mesAmis(); if (ra) { setAmisListe(ra.data || []); setAmis((ra.data || []).length); } } } catch (e) { setAmisListe([]); } })(); }, []);
   var h = React.createElement;
   var ctx = useApp();
-  var setEcran = ctx.setEcran, tr = ctx.tr, premium = ctx.premium;
+  var setEcran = ctx.setEcran, tr = ctx.tr, premium = ctx.premium, setPremium = ctx.setPremium;
+  var _emAdm = React.useState(false), estModAdm = _emAdm[0], setEstModAdm = _emAdm[1];
+  React.useEffect(function () { (async function () { try { var uAdm = await utilisateurActuel(); if (uAdm && typeof estModerateurHype === "function" && estModerateurHype(uAdm)) setEstModAdm(true); } catch (eAdm) { } })(); }, []);
   // --- Mode visite : profil d'un autre cavalier ---
   var __visitePub = (typeof window !== "undefined" && window.__cavalierOuvert === "__public" && window.__cavalierPublic) ? window.__cavalierPublic : null;
   var __estVisite = !!__visitePub;
@@ -25063,7 +25065,10 @@ function EcranMonCavalier() {
         h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
           h("button", { onClick: function () { setEditClub2(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
           h("button", { onClick: function () { sauverClub2(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58"))),
-        (profil.club2 || profil.ecurie2) ? h("button", { onClick: function () { sauverClub2(""); }, style: { marginTop: 12, width: "100%", padding: "10px 0", borderRadius: 999, border: "none", background: "transparent", color: "rgba(226,138,146,0.85)", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, T("Retirer cette \u00e9curie", "Remove this stable", "Quitar esta cuadra", "Rimuovi questa scuderia", "\u3053\u306e\u53a9\u820e\u3092\u524a\u9664")) : null)) : null);
+        (profil.club2 || profil.ecurie2) ? h("button", { onClick: function () { sauverClub2(""); }, style: { marginTop: 12, width: "100%", padding: "10px 0", borderRadius: 999, border: "none", background: "transparent", color: "rgba(226,138,146,0.85)", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, T("Retirer cette \u00e9curie", "Remove this stable", "Quitar esta cuadra", "Rimuovi questa scuderia", "\u3053\u306e\u53a9\u820e\u3092\u524a\u9664")) : null)) : null,
+    estModAdm ? h("button", { onClick: function () { setPremium(!premium); }, style: { position: "fixed", right: 14, bottom: "calc(84px + env(safe-area-inset-bottom))", zIndex: 7000, display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", borderRadius: 999, border: "1px solid " + (premium ? "rgba(232,200,135,0.55)" : "rgba(32,217,245,0.5)"), background: premium ? "linear-gradient(90deg,#7A5C1E,#E8C887)" : "rgba(10,14,18,0.9)", color: premium ? "#231A05" : "#20D9F5", fontSize: 12, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", boxShadow: "0 8px 24px rgba(0,0,0,0.5)" } },
+      h("span", { style: { width: 8, height: 8, borderRadius: "50%", background: premium ? "#231A05" : "#20D9F5", flexShrink: 0 } }),
+      premium ? "Mode Premium (admin)" : "Mode Gratuit (admin)") : null);
 }
 function EcranGuilde() {
   var h = React.createElement;
