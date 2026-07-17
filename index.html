@@ -29595,6 +29595,7 @@ function RecadrageHype() {
   var fSt = React.useState("aucun"); var filtre = fSt[0], setFiltre = fSt[1];
   var rSt = React.useState(0); var rot = rSt[0], setRot = rSt[1];
   var aSt = React.useState(null); var aspSel = aSt[0], setAspSel = aSt[1];
+  var mcSt = React.useState("remplir"); var modeCadre = mcSt[0], setModeCadre = mcSt[1];
   var drag = React.useRef(null);
   // --- Fond Studio (filtre Premium) ---
   var fsPanSt = React.useState(false); var fsOuvert = fsPanSt[0], setFsOuvert = fsPanSt[1];
@@ -29608,7 +29609,7 @@ function RecadrageHype() {
     var l = new FileReader();
     l.onload = function () {
       var im = new Image();
-      im.onload = function () { setImg({ url: l.result, w: im.naturalWidth, h: im.naturalHeight }); setPos({ x: 0, y: 0, z: 1 }); setFiltre("aucun"); setRot(0); setAspSel(null); setFsParams(null); };
+      im.onload = function () { setImg({ url: l.result, w: im.naturalWidth, h: im.naturalHeight }); setPos({ x: 0, y: 0, z: 1 }); setFiltre("aucun"); setRot(0); setAspSel(null); setFsParams(null); setModeCadre("remplir"); };
       im.src = l.result;
     };
     l.readAsDataURL(job.fichier);
@@ -29617,8 +29618,8 @@ function RecadrageHype() {
   var FW = Math.min((typeof window !== "undefined" ? window.innerWidth : 390) * 0.86, 340);
   var aspC = aspSel || job.aspect;
   var FH = Math.round(FW / aspC);
-  var base = img ? Math.max(FW / img.w, FH / img.h) : 1;
-  var ZMIN = img ? Math.min(1, Math.min(FW / img.w, FH / img.h) / base) * 0.55 : 0.55;
+  var base = img ? (modeCadre === "entier" ? Math.min(FW / img.w, FH / img.h) : Math.max(FW / img.w, FH / img.h)) : 1;
+  var ZMIN = img ? (modeCadre === "entier" ? 0.5 : Math.min(1, Math.min(FW / img.w, FH / img.h) / base) * 0.55) : 0.55;
   var sc = base * pos.z;
   var dw = img ? img.w * sc : 0, dh = img ? img.h * sc : 0;
   function clampP(x, y, z, rotD) {
@@ -29626,7 +29627,9 @@ function RecadrageHype() {
     var rr = ((typeof rotD === "number") ? rotD : rot) * Math.PI / 180;
     var cR = Math.abs(Math.cos(rr)), sR = Math.abs(Math.sin(rr));
     var bw = dw2 * cR + dh2 * sR, bh = dw2 * sR + dh2 * cR;
-    var mx = Math.abs(bw - FW) / 2, my = Math.abs(bh - FH) / 2;
+    var mx, my;
+    if (modeCadre === "entier") { mx = FW * 0.42; my = FH * 0.42; }
+    else { mx = Math.abs(bw - FW) / 2; my = Math.abs(bh - FH) / 2; }
     return { x: Math.max(-mx, Math.min(mx, x)), y: Math.max(-my, Math.min(my, y)), z: z };
   }
   function pStart(e) {
@@ -29651,25 +29654,46 @@ function RecadrageHype() {
   function pEnd() { drag.current = null; }
   function valider() {
     if (!img) return;
-    var rrV = rot * Math.PI / 180;
-    var cV = Math.abs(Math.cos(rrV)), sV = Math.abs(Math.sin(rrV));
-    var bwV = dw * cV + dh * sV, bhV = dw * sV + dh * cV;
-    var vx0 = Math.max(0, FW / 2 + pos.x - bwV / 2), vy0 = Math.max(0, FH / 2 + pos.y - bhV / 2);
-    var vx1 = Math.min(FW, FW / 2 + pos.x + bwV / 2), vy1 = Math.min(FH, FH / 2 + pos.y + bhV / 2);
-    var VW = Math.max(40, vx1 - vx0), VH = Math.max(40, vy1 - vy0);
+    var OW, OH, kOut, vx0, vy0;
+    if (modeCadre === "entier") {
+      OW = 1200; OH = Math.round(OW / aspC); kOut = OW / FW;
+    } else {
+      var rrV = rot * Math.PI / 180;
+      var cV = Math.abs(Math.cos(rrV)), sV = Math.abs(Math.sin(rrV));
+      var bwV = dw * cV + dh * sV, bhV = dw * sV + dh * cV;
+      vx0 = Math.max(0, FW / 2 + pos.x - bwV / 2); vy0 = Math.max(0, FH / 2 + pos.y - bhV / 2);
+      var vx1 = Math.min(FW, FW / 2 + pos.x + bwV / 2), vy1 = Math.min(FH, FH / 2 + pos.y + bhV / 2);
+      var VW = Math.max(40, vx1 - vx0), VH = Math.max(40, vy1 - vy0);
+      OW = Math.min(1800, Math.round(VW * 4)); OH = Math.max(40, Math.round(OW * VH / VW));
+      kOut = OW / VW;
+    }
     var out = document.createElement("canvas");
-    var OW = Math.min(1800, Math.round(VW * 4)); var OH = Math.max(40, Math.round(OW * VH / VW));
     out.width = OW; out.height = OH;
     var cx2 = out.getContext("2d");
-    var kOut = OW / VW;
     var im = new Image();
     im.onload = function () {
       cx2.fillStyle = "#06070A"; cx2.fillRect(0, 0, OW, OH);
-      cx2.save();
-      cx2.translate((FW / 2 + pos.x - vx0) * kOut, (FH / 2 + pos.y - vy0) * kOut);
-      cx2.rotate(rot * Math.PI / 180);
-      cx2.drawImage(im, -dw * kOut / 2, -dh * kOut / 2, dw * kOut, dh * kOut);
-      cx2.restore();
+      if (modeCadre === "entier") {
+        try {
+          cx2.save();
+          cx2.filter = "blur(" + Math.round(OW * 0.045) + "px) brightness(0.42) saturate(1.05)";
+          var coverS = Math.max(OW / im.width, OH / im.height) * 1.18;
+          var cw2 = im.width * coverS, ch2 = im.height * coverS;
+          cx2.drawImage(im, (OW - cw2) / 2, (OH - ch2) / 2, cw2, ch2);
+          cx2.restore();
+        } catch (eBg) { }
+        cx2.save();
+        cx2.translate(OW / 2 + pos.x * kOut, OH / 2 + pos.y * kOut);
+        cx2.rotate(rot * Math.PI / 180);
+        cx2.drawImage(im, -dw * kOut / 2, -dh * kOut / 2, dw * kOut, dh * kOut);
+        cx2.restore();
+      } else {
+        cx2.save();
+        cx2.translate((FW / 2 + pos.x - vx0) * kOut, (FH / 2 + pos.y - vy0) * kOut);
+        cx2.rotate(rot * Math.PI / 180);
+        cx2.drawImage(im, -dw * kOut / 2, -dh * kOut / 2, dw * kOut, dh * kOut);
+        cx2.restore();
+      }
       if (filtre === "spectral") {
         var gr = cx2.createRadialGradient(OW / 2, OH / 2, Math.min(OW, OH) * 0.42, OW / 2, OH / 2, Math.max(OW, OH) * 0.75);
         gr.addColorStop(0, "rgba(7,8,10,0)"); gr.addColorStop(1, "rgba(7,8,10,0.6)");
@@ -29723,6 +29747,11 @@ function RecadrageHype() {
   function annuler() { var fin = job.fin; setJob(null); fin(null); }
   return React.createElement("div", { style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.93)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18, padding: 20 } },
     React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 3, color: "#EDF2F5", textTransform: "uppercase" } }, TR("Recadrer", "Crop", "Recortar", "Ritaglia", "トリミング")),
+    React.createElement("div", { style: { display: "flex", gap: 8 } },
+      [["remplir", TR("Remplir", "Fill", "Rellenar", "Riempi", "埋める")], ["entier", TR("Photo enti\u00e8re", "Whole photo", "Foto completa", "Foto intera", "写真全体")]].map(function (mo) {
+        var on = modeCadre === mo[0];
+        return React.createElement("button", { key: mo[0], onClick: function () { setModeCadre(mo[0]); setPos({ x: 0, y: 0, z: 1 }); }, style: { padding: "7px 14px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, border: "1px solid " + (on ? "rgba(32,217,245,0.8)" : "rgba(255,255,255,0.2)"), background: on ? "rgba(32,217,245,0.15)" : "transparent", color: on ? "#5FE9F0" : "rgba(237,242,245,0.7)", cursor: "pointer" } }, mo[1]);
+      })),
     React.createElement("div", { onTouchStart: pStart, onTouchMove: pMove, onTouchEnd: pEnd, onMouseDown: pStart, onMouseMove: pMove, onMouseUp: pEnd, onMouseLeave: pEnd, style: { background: "#06070A", width: FW, height: FH, overflow: "hidden", position: "relative", borderRadius: 18, border: "1.5px solid rgba(32,217,245,0.7)", touchAction: "none", background: "#0a0e12" } },
       img ? React.createElement("img", { src: img.url, alt: "", draggable: false, style: { position: "absolute", left: "50%", top: "50%", width: dw, height: dh, maxWidth: "none", transform: "translate(calc(-50% + " + pos.x + "px), calc(-50% + " + pos.y + "px)) rotate(" + rot + "deg)", userSelect: "none", pointerEvents: "none" } }) : React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#5B646E", fontSize: 13 } }, "\u2026"),
       filtre === "spectral" ? React.createElement("div", { style: { position: "absolute", inset: 0, pointerEvents: "none", boxShadow: "inset 0 0 54px 20px rgba(7,8,10,0.6)", border: "5px double rgba(32,217,245,0.75)", borderRadius: 16 } }) : null,
