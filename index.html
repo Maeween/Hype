@@ -26937,17 +26937,26 @@ function EcranMemoiresCavalier() {
   var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
   var tn = th.principal, tnL = th.lumineux;
   function tA(aV) { return teinteRGBA(tn, aV); }
+  var __visitePub = (typeof window !== "undefined" && window.__cavalierOuvert === "__public" && window.__cavalierPublic) ? window.__cavalierPublic : null;
+  var __estVisite = !!__visitePub;
   var pSt = React.useState(null); var prof = pSt[0], setProf = pSt[1];
   var mSt = React.useState(null); var moiId = mSt[0], setMoiId = mSt[1];
   var eSt = React.useState(false); var editRecit = eSt[0], setEditRecit = eSt[1];
   var vSt = React.useState(""); var recitLocal = vSt[0], setRecitLocal = vSt[1];
   React.useEffect(function () { (async function () {
-    try { var user = await utilisateurActuel(); if (!user) return;
+    try {
+      if (__estVisite && __visitePub.id) {
+        setMoiId(__visitePub.id);
+        var rV = await supa.from("profiles").select("*").eq("id", __visitePub.id).single();
+        if (rV && rV.data) setProf(rV.data); else setProf({ pseudo: __visitePub.pseudo || "", avatar_url: __visitePub.photo || null });
+        return;
+      }
+      var user = await utilisateurActuel(); if (!user) return;
       setMoiId(user.id);
       var r = await supa.from("profiles").select("*").eq("id", user.id).single();
       if (r && r.data) setProf(r.data);
     } catch (e9) { }
-  })(); }, []);
+  })(); }, [__estVisite, (__visitePub && __visitePub.id) || ""]);
   async function sauverRecit() {
     var txt = (recitLocal || "").trim();
     setEditRecit(false);
@@ -26961,7 +26970,7 @@ function EcranMemoiresCavalier() {
       photoV ? h("img", { src: photoV, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", animation: "hmKen 14s ease-in-out infinite alternate" } })
         : h("div", { style: { width: "100%", height: "100%", background: "linear-gradient(160deg, #0B141B, #06090C)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: C, fontSize: 52, color: tA(0.55) } }, (pseudoV || "?").charAt(0).toUpperCase()),
       h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0) 52%, rgba(7,8,10,0.76) 100%)" } }),
-      h("button", { onClick: function () { setEcran("moncavalier"); }, "aria-label": "Retour", style: { position: "absolute", top: 12, left: 12, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, "\u2039"),
+      h("button", { onClick: function () { setEcran(__estVisite ? "cavalier" : "moncavalier"); }, "aria-label": "Retour", style: { position: "absolute", top: 12, left: 12, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, "\u2039"),
       h("div", { style: { position: "absolute", left: 16, bottom: 12 } },
         h("div", { style: { fontSize: 9, letterSpacing: "0.26em", textTransform: "uppercase", fontWeight: 800, color: tnL, fontFamily: M } }, "Hype Memories"),
         h("div", { style: { fontFamily: C, fontSize: 23, fontWeight: 700, color: "#F4F6F7", marginTop: 3, textShadow: "0 2px 14px rgba(0,0,0,0.6)" } }, pseudoV))),
@@ -26970,7 +26979,7 @@ function EcranMemoiresCavalier() {
       h("div", { style: { height: 1, width: 64, background: "linear-gradient(90deg, " + tA(0.7) + ", transparent)", margin: "10px 0 12px" } }),
       (prof && prof.histoire) ? h("div", { style: { fontSize: 14, lineHeight: 1.85, color: "#DCE3E8", whiteSpace: "pre-line", fontFamily: M } }, prof.histoire)
         : h("div", { style: { fontSize: 12.5, lineHeight: 1.6, color: "rgba(234,242,244,.45)", fontStyle: "italic", fontFamily: M } }, T("Raconte ton histoire de cavalier \u2014 tes d\u00e9buts, tes chevaux, tes r\u00eaves.", "Tell your rider story.", "Cuenta tu historia.", "Racconta la tua storia.", "\u3042\u306a\u305f\u306e\u7269\u8a9e\u3092")),
-      h("button", { onClick: function () { setRecitLocal((prof && prof.histoire) || ""); setEditRecit(true); }, style: { marginTop: 13, padding: "9px 16px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tn, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M } }, "\u270E " + ((prof && prof.histoire) ? T("Modifier mon r\u00e9cit", "Edit my story", "Editar", "Modifica", "\u7de8\u96c6") : T("\u00c9crire mon r\u00e9cit", "Write my story", "Escribir", "Scrivi", "\u66f8\u304f"))))),
+      !__estVisite ? h("button", { onClick: function () { setRecitLocal((prof && prof.histoire) || ""); setEditRecit(true); }, style: { marginTop: 13, padding: "9px 16px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tn, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M } }, "\u270E " + ((prof && prof.histoire) ? T("Modifier mon r\u00e9cit", "Edit my story", "Editar", "Modifica", "\u7de8\u96c6") : T("\u00c9crire mon r\u00e9cit", "Write my story", "Escribir", "Scrivi", "\u66f8\u304f"))) : null)),
     moiId ? h(AlbumsCheval, { cible: "cavalier:" + moiId, teinte: tn }) : null,
     h("div", { style: { padding: "6px 16px 0" } }, h(EncartConseilsHB, { chevalId: null, teinte: tn })),
     editRecit ? ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; })(h("div", { onClick: function () { setEditRecit(false); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } },
@@ -27173,7 +27182,7 @@ function EcranMonCavalier() {
   var estLogo = !profil.avatar;
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } },
     h("input", { ref: fileRef, type: "file", accept: "image/*", onChange: choisirPhoto, style: { display: "none" } }),
-    h("div", { style: { position: "relative", width: "100%", height: 360, backgroundColor: "#060709", backgroundImage: "url(" + heroImg + ")", backgroundSize: estLogo ? "auto 96%" : "cover", backgroundRepeat: "no-repeat", backgroundPosition: estLogo ? "center 30%" : "center top" } },
+    h("div", { style: { position: "relative", width: "100%", height: 430, backgroundColor: "#060709", backgroundImage: "url(" + heroImg + ")", backgroundSize: estLogo ? "auto 96%" : "cover", backgroundRepeat: "no-repeat", backgroundPosition: estLogo ? "center 30%" : "center top" } },
       h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0.4) 0%, rgba(7,8,10,0) 38%, rgba(7,8,10,0.98) 100%)" } }),
       h("button", { onClick: function () { setEcran("dashboard"); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 14, zIndex: 5, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: 20, cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, "\u2039"),
       h("button", { onClick: function () { fileRef.current && fileRef.current.click(); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", right: 14, zIndex: 5, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, fill: "none", stroke: "#fff", strokeWidth: 1.7 }, h("path", { d: "M4 8 h3 l1.4-2 h7.2 L17 8 h3 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H4 a1 1 0 0 1-1-1 V9 a1 1 0 0 1 1-1 z" }), h("circle", { cx: 12, cy: 13, r: 3.1 }))),
