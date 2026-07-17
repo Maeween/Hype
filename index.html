@@ -29792,7 +29792,7 @@ function FondStudioPanel(props) {
   var wrapRef = React.useRef(null);
   var manipRef = React.useRef(false);
   var tkSt = React.useState(0); var tick = tkSt[0], setTick = tkSt[1];
-  var PW = Math.min((typeof window !== "undefined" ? window.innerWidth : 390) * 0.86, 340);
+  var PW = Math.round(Math.min((typeof window !== "undefined" ? window.innerWidth : 390) * 0.86, 340));
   React.useEffect(function () {
     if (!props.imgUrl) return;
     var im = new Image();
@@ -29903,20 +29903,15 @@ function FondStudioPanel(props) {
   }
   function onPointerUp(e) { delete pointersActifs.current[e.pointerId]; var n = Object.keys(pointersActifs.current).length; if (n < 2) gDrag.current = null; if (n === 0) { manipRef.current = false; setTick(function (t) { return t + 1; }); } }
   var teinte = props.tr;
-  return h("div", { style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(3,4,6,0.97)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", overflowY: "auto", padding: "calc(env(safe-area-inset-top) + 18px) 20px 30px" } },
+  return h("div", { style: { position: "fixed", inset: 0, zIndex: 9500, background: "#060709", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", overflowY: "auto", padding: "calc(env(safe-area-inset-top) + 18px) 20px 30px" } },
     h("div", { style: { display: "flex", alignItems: "center", width: PW, marginBottom: 14 } },
       h("button", { onClick: props.onClose, style: { width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.18)", color: "#EDF2F5", fontSize: 16, cursor: "pointer" } }, "\u2715"),
       h("div", { style: { flex: 1, textAlign: "center", fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 3, color: "#EDF2F5" } }, TR("FOND STUDIO", "STUDIO BACKGROUND", "FONDO STUDIO", "SFONDO STUDIO", "スタジオ背景")),
       h("div", { style: { width: 32 } })),
-    h("div", { style: { display: "flex", gap: 8, marginBottom: 14 } },
-      [["auto", TR("D\u00e9tourage auto \u2728", "Auto cutout \u2728", "Recorte autom\u00e1tico \u2728", "Ritaglio auto \u2728", "自動切り抜き \u2728")], ["libre", TR("Zone libre \u2728", "Free zone \u2728", "Zona libre \u2728", "Zona libera \u2728", "自由ゾーン \u2728")]].map(function (mo) {
-        var on = mode === mo[0];
-        return h("button", { key: mo[0], onClick: function () { choisirMode(mo[0]); }, style: { padding: "8px 16px", borderRadius: 999, fontSize: 12, fontWeight: 700, border: "1px solid " + (on ? "rgba(32,217,245,0.8)" : "rgba(255,255,255,0.2)"), background: on ? "rgba(32,217,245,0.15)" : "transparent", color: on ? "#5FE9F0" : "rgba(237,242,245,0.7)" } }, mo[1]);
-      })),
+    h("div", { style: { width: PW, marginBottom: 4, textAlign: "center", fontSize: 10.5, fontWeight: 700, color: "#5FE9F0", letterSpacing: 1, textTransform: "uppercase" } }, TR("Zone libre \u2728", "Free zone \u2728", "Zona libre \u2728", "Zona libera \u2728", "自由ゾーン \u2728")),
     h("div", { ref: wrapRef, onPointerDown: onPointerDown, onPointerMove: onPointerMove, onPointerUp: onPointerUp, onPointerCancel: onPointerUp, style: { width: PW, height: PH, borderRadius: 16, overflow: "hidden", position: "relative", background: "#0a0e12", touchAction: "none", border: "1.5px solid rgba(32,217,245,0.5)" } },
       h("canvas", { ref: cvRef, width: PW, height: PH, style: { width: PW, height: PH, display: "block" } }),
       busy ? h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(4,6,9,0.6)", color: "#5FE9F0", fontSize: 12.5, fontWeight: 700, textAlign: "center", padding: 20 } }, "\u2728 " + TR("D\u00e9tourage en cours\u2026", "Cutting out\u2026", "Recortando\u2026", "Ritaglio in corso\u2026", "切り抜き中…")) : null),
-    erreurFs ? h("div", { style: { width: PW, marginTop: 10, fontSize: 11.5, color: "#F0A05F", textAlign: "center" } }, TR("Le d\u00e9tourage n'a pas fonctionn\u00e9 sur cette photo. Essaie \u00ab Zone libre \u00bb.", "The cutout did not work on this photo. Try \u00ab Free zone \u00bb.", "El recorte no funcion\u00f3 en esta foto. Prueba \u00ab Zona libre \u00bb.", "Il ritaglio non ha funzionato su questa foto. Prova \u00ab Zona libera \u00bb.", "この写真では切り抜きがうまくいきませんでした。「自由ゾーン」を試してください。")) : null,
     mode === "libre" ? h("div", { style: { width: PW, marginTop: 14, display: "flex", flexDirection: "column", gap: 8 } },
       h("div", { style: { fontSize: 10.5, fontWeight: 700, color: "#8A929C", textTransform: "uppercase", letterSpacing: 0.6 } }, TR("Largeur", "Width", "Ancho", "Larghezza", "幅")),
       h("input", { type: "range", min: 0.10, max: 1.30, step: 0.01, value: ellipse.sw, onChange: function (e) { var v = parseFloat(e.target.value); setEllipse(function (el) { return Object.assign({}, el, { sw: v }); }); }, style: { accentColor: "#20D9F5" } }),
