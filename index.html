@@ -28424,7 +28424,7 @@ function EcranUnivers() {
     return function () { actifM = false; try { cancelAnimationFrame(raf); el.removeEventListener("touchstart", surTouche); el.removeEventListener("touchmove", surTouche); } catch (eN) { } };
   }, []);
 
-  function nav(id) { return function () { setEcran(id); }; }
+  function nav(id) { return function () { try { window.__cavalierOuvert = null; window.__cavalierPublic = null; } catch (eNv) { } setEcran(id); }; }
   function bientot() { setToast(t.soon); setTimeout(function () { setToast(null); }, 2200); }
 
   var pills = [["fr", "\uD83C\uDDEB\uD83C\uDDF7"], ["en", "\uD83C\uDDEC\uD83C\uDDE7"], ["es", "\uD83C\uDDEA\uD83C\uDDF8"], ["it", "\uD83C\uDDEE\uD83C\uDDF9"], ["ja", "\uD83C\uDDEF\uD83C\uDDF5"]].map(function (p) {
@@ -32020,7 +32020,38 @@ function EcranMessagerie() {
   var stMenu = React.useState(false); var menuOuvert = stMenu[0], setMenuOuvert = stMenu[1];
   var stConfBloc = React.useState(false); var confBlocage = stConfBloc[0], setConfBlocage = stConfBloc[1];
   var stEnvoi = React.useState(false); var envoiEnCours = stEnvoi[0], setEnvoiEnCours = stEnvoi[1];
+  var stNouveau = React.useState(false); var nouveauOuvert = stNouveau[0], setNouveauOuvert = stNouveau[1];
+  var stRech = React.useState(""); var recherche = stRech[0], setRecherche = stRech[1];
+  var stResRech = React.useState([]); var resultatsRech = stResRech[0], setResultatsRech = stResRech[1];
+  var stRechEnCours = React.useState(false); var rechEnCours = stRechEnCours[0], setRechEnCours = stRechEnCours[1];
   var refFin = React.useRef(null);
+
+  React.useEffect(function () {
+    if (!nouveauOuvert) return;
+    var q = recherche.trim();
+    if (q.length < 2) { setResultatsRech([]); return; }
+    setRechEnCours(true);
+    var actif = true;
+    var t = setTimeout(function () {
+      utilisateurActuel().then(function (moi) {
+        supa.from("profiles").select("id, pseudo, avatar_url").ilike("pseudo", "%" + q + "%").neq("id", moi ? moi.id : "").limit(20).then(function (r) {
+          if (actif) { setResultatsRech((r && r.data) || []); setRechEnCours(false); }
+        });
+      });
+    }, 350);
+    return function () { actif = false; clearTimeout(t); };
+  }, [recherche, nouveauOuvert]);
+
+  function demarrerAvec(p) {
+    if (!p || !p.id) return;
+    demarrerConversationDM(p.id).then(function (r) {
+      if (r && r.error) { alert(r.error); return; }
+      if (r && r.data) {
+        setNouveauOuvert(false); setRecherche(""); setResultatsRech([]);
+        ouvrirConversation({ id: r.data, type: "dm", autreId: p.id, autrePseudo: p.pseudo, autreAvatar: p.avatar_url });
+      }
+    });
+  }
 
   function rafraichirListe() {
     setChargement(true);
@@ -32094,10 +32125,9 @@ function EcranMessagerie() {
       h("div", { style: { padding: "calc(env(safe-area-inset-top) + 20px) 20px 8px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
         h("button", { onClick: function () { setEcran("dashboard"); }, "aria-label": "Retour", style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.05)", border: "1px solid " + MSG_COL.carteBord, color: MSG_COL.blanc, fontSize: 20, cursor: "pointer" } }, "\u2039"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 20, color: MSG_COL.blanc, letterSpacing: 0.3 } }, T("Messages", "Messages", "Mensajes", "Messaggi", "メッセージ")),
-        h("div", { style: { width: 38 } })),
-      h("div", { style: { display: "flex", gap: 8, padding: "8px 20px 14px" } },
+        h("button", { onClick: function () { setNouveauOuvert(true); }, "aria-label": "Nouveau message", style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(32,217,245,0.14)", border: "1px solid rgba(32,217,245,0.4)", color: MSG_COL.turquoise, fontSize: 17, cursor: "pointer" } }, "\u270E")),
         h("div", { onClick: function () { setOnglet("dm"); }, style: { flex: 1, textAlign: "center", padding: "9px 0", borderRadius: 14, fontSize: 12.5, letterSpacing: 0.4, cursor: "pointer", color: onglet === "dm" ? MSG_COL.fond : MSG_COL.gris, background: onglet === "dm" ? MSG_COL.turquoise : MSG_COL.carte, border: "1px solid " + (onglet === "dm" ? "transparent" : MSG_COL.carteBord), fontWeight: onglet === "dm" ? 700 : 500 } }, T("Messages", "Messages", "Mensajes", "Messaggi", "メッセージ")),
-        h("div", { onClick: function () { setOnglet("groupes"); }, style: { flex: 1, textAlign: "center", padding: "9px 0", borderRadius: 14, fontSize: 12.5, letterSpacing: 0.4, cursor: "pointer", color: onglet === "groupes" ? MSG_COL.fond : MSG_COL.gris, background: onglet === "groupes" ? MSG_COL.turquoise : MSG_COL.carte, border: "1px solid " + (onglet === "groupes" ? "transparent" : MSG_COL.carteBord), fontWeight: onglet === "groupes" ? 700 : 500 } }, T("Écuries & clubs", "Stables & clubs", "Cuadras y clubes", "Scuderie e club", "厩舎とクラブ"))),
+        h("div", { onClick: function () { setOnglet("groupes"); }, style: { flex: 1, textAlign: "center", padding: "9px 0", borderRadius: 14, fontSize: 12.5, letterSpacing: 0.4, cursor: "pointer", color: onglet === "groupes" ? MSG_COL.fond : MSG_COL.gris, background: onglet === "groupes" ? MSG_COL.turquoise : MSG_COL.carte, border: "1px solid " + (onglet === "groupes" ? "transparent" : MSG_COL.carteBord), fontWeight: onglet === "groupes" ? 700 : 500 } }, T("Écuries & clubs", "Stables & clubs", "Cuadras y clubes", "Scuderie e club", "厩舎とクラブ")),
       h("div", { style: { flex: 1, overflowY: "auto", padding: "2px 14px" } },
         chargement ? h("div", { style: { textAlign: "center", padding: "60px 10px", color: MSG_COL.gris, fontSize: 13 } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…")) :
         !convsFiltrees.length ? h("div", { style: { textAlign: "center", padding: "60px 10px", color: MSG_COL.gris, fontSize: 13, fontStyle: "italic" } }, onglet === "dm" ? T("Aucune conversation pour le moment.", "No conversations yet.", "Aún no hay conversaciones.", "Ancora nessuna conversazione.", "まだ会話はありません。") : T("Aucun groupe pour le moment.", "No groups yet.", "Aún no hay grupos.", "Ancora nessun gruppo.", "まだグループはありません。")) :
@@ -32112,7 +32142,20 @@ function EcranMessagerie() {
                 h("div", { style: { fontSize: 10.5, color: MSG_COL.gris, flexShrink: 0, marginLeft: 8 } }, tempsRelatifMsg(c.dernierLe, lg))),
               h("div", { style: { fontSize: 12.5, color: c.nonLus ? MSG_COL.blanc : MSG_COL.gris, fontWeight: c.nonLus ? 500 : 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, c.dernierMessage || T("Dites bonjour \u{1F44B}", "Say hello \u{1F44B}", "Saluda \u{1F44B}", "Saluta \u{1F44B}", "挨拶しよう \u{1F44B}"))),
             c.nonLus ? h("div", { style: { minWidth: 19, height: 19, borderRadius: 10, background: MSG_COL.turquoise, color: MSG_COL.fond, fontSize: 10.5, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 5px", flexShrink: 0, marginLeft: 8 } }, c.nonLus) : null);
-        })));
+        })),
+      nouveauOuvert ? h("div", { onClick: function () { setNouveauOuvert(false); setRecherche(""); setResultatsRech([]); }, style: { position: "fixed", inset: 0, zIndex: 90, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-end" } },
+        h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxHeight: "72vh", display: "flex", flexDirection: "column", background: "linear-gradient(180deg, rgba(20,24,28,0.98), rgba(9,11,15,0.99))", borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "18px 18px calc(18px + env(safe-area-inset-bottom))", border: "1px solid " + MSG_COL.carteBord } },
+          h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, color: MSG_COL.blanc, textAlign: "center", marginBottom: 14 } }, T("Nouveau message", "New message", "Nuevo mensaje", "Nuovo messaggio", "新規メッセージ")),
+          h("input", { autoFocus: true, value: recherche, onChange: function (e) { setRecherche(e.target.value); }, placeholder: T("Chercher un cavalier par pseudo…", "Search a rider by name…", "Buscar un jinete por nombre…", "Cerca un cavaliere per nome…", "騎手の名前で検索…"), style: { width: "100%", background: MSG_COL.carte, border: "1px solid " + MSG_COL.carteBord, borderRadius: 16, padding: "12px 16px", color: MSG_COL.blanc, fontSize: 14, outline: "none", marginBottom: 12 } }),
+          h("div", { style: { overflowY: "auto", flex: 1 } },
+            rechEnCours ? h("div", { style: { textAlign: "center", padding: "20px 10px", color: MSG_COL.gris, fontSize: 13 } }, T("Recherche…", "Searching…", "Buscando…", "Ricerca…", "検索中…")) :
+            (recherche.trim().length >= 2 && !resultatsRech.length) ? h("div", { style: { textAlign: "center", padding: "20px 10px", color: MSG_COL.gris, fontSize: 13, fontStyle: "italic" } }, T("Aucun cavalier trouvé.", "No rider found.", "Ningún jinete encontrado.", "Nessun cavaliere trovato.", "見つかりませんでした。")) :
+            resultatsRech.map(function (p) {
+              return h("div", { key: p.id, onClick: function () { demarrerAvec(p); }, style: { display: "flex", alignItems: "center", gap: 12, padding: 10, marginBottom: 6, background: MSG_COL.carte, border: "1px solid " + MSG_COL.carteBord, borderRadius: 16, cursor: "pointer" } },
+                h("img", { src: (typeof avSrc === "function" ? avSrc(p.avatar_url) : p.avatar_url) || "", style: { width: 40, height: 40, borderRadius: "50%", objectFit: "cover", background: "#20262B" }, onError: function (e) { e.target.style.visibility = "hidden"; } }),
+                h("div", { style: { fontSize: 14, color: MSG_COL.blanc, fontWeight: 600 } }, p.pseudo || "?"));
+            })))) : null
+      );
   }
 
   // ---------- VUE FIL ----------
