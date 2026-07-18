@@ -26935,6 +26935,7 @@ function EcranMonCavalier() {
   var __estVisite = !!__visitePub;
   var _vP = React.useState(null), visiteChevaux = _vP[0], setVisiteChevaux = _vP[1];
   var _vR = React.useState(null), visiteResultats = _vR[0], setVisiteResultats = _vR[1];
+  var _vF = React.useState(null), visiteProfilFull = _vF[0], setVisiteProfilFull = _vF[1];
   React.useEffect(function () {
     if (!__estVisite) return;
     (async function () {
@@ -26942,11 +26943,12 @@ function EcranMonCavalier() {
         var uid = __visitePub && __visitePub.id;
         if (uid && typeof chevauxDe === "function") { var rc = await chevauxDe(uid); setVisiteChevaux((rc && rc.data) || []); } else { setVisiteChevaux([]); }
         if (uid && typeof resultatsDe === "function") { var rr = await resultatsDe(uid); setVisiteResultats((rr && rr.data) || []); } else { setVisiteResultats([]); }
+        if (uid) { try { var rp = await supa.from("profiles").select("*").eq("id", uid).single(); if (rp && rp.data) setVisiteProfilFull(rp.data); } catch (eVP) { } }
       } catch (eV) { setVisiteChevaux([]); setVisiteResultats([]); }
     })();
   }, [__estVisite, (__visitePub && __visitePub.id) || ""]);
-  // profil affiche : le visite si en visite, sinon le mien
-  var profil = __estVisite ? {
+  // profil affiche : le visite (fiche complete recuperee en base, avec repli sur les infos minimales le temps du chargement) si en visite, sinon le mien
+  var profil = __estVisite ? Object.assign({
     pseudo: __visitePub.pseudo || "Cavalier",
     prenom: __visitePub.pseudo || "Cavalier",
     nom: __visitePub.pseudo || "Cavalier",
@@ -26956,7 +26958,7 @@ function EcranMonCavalier() {
     club: __visitePub.club || __visitePub.ecurie || "",
     ecurie: __visitePub.ecurie || "",
     ville: __visitePub.ville || ""
-  } : ctx.profil;
+  }, visiteProfilFull || {}, { avatar: __visitePub.photo || null }) : ctx.profil;
   var setProfil = __estVisite ? function () {} : ctx.setProfil;
   var _sug = React.useState([]), suggestions = _sug[0], setSuggestions = _sug[1];
   React.useEffect(function () { (async function () {
