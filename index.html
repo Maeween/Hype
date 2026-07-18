@@ -26692,7 +26692,7 @@ function EcranMonCavalier() {
     demarrerConversationDM(__visitePub.id).then(function (r) {
       setMessageEnCours(false);
       if (r && r.error) { alert(r.error); return; }
-      if (r && r.data) { try { window.__conversationOuverte = r.data; } catch (e) { } setEcran("messagerie"); }
+      if (r && r.data) { try { window.__conversationOuverte = { id: r.data, type: "dm", autreId: __visitePub.id, autrePseudo: __visitePub.pseudo, autreAvatar: __visitePub.photo }; } catch (e) { } setEcran("messagerie"); }
     });
   }
   var _vP = React.useState(null), visiteChevaux = _vP[0], setVisiteChevaux = _vP[1];
@@ -32127,7 +32127,7 @@ function EcranMessagerie() {
         return h("div", { key: m.id, style: { maxWidth: "75%", alignSelf: mien ? "flex-end" : "flex-start", padding: "11px 14px", borderRadius: 20, borderBottomRightRadius: mien ? 6 : 20, borderBottomLeftRadius: mien ? 20 : 6, fontSize: 13.5, lineHeight: 1.4, color: MSG_COL.blanc, background: mien ? MSG_COL.bulleMoi : MSG_COL.bulleEux } }, m.contenu);
       }),
       h("div", { ref: refFin })),
-    h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "10px 14px 22px", borderTop: "1px solid rgba(244,247,250,0.05)" } },
+    h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "10px 14px calc(22px + 84px)", borderTop: "1px solid rgba(244,247,250,0.05)" } },
       h("input", { value: saisie, onChange: function (e) { setSaisie(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") envoyer(); }, placeholder: T("Écrire un message…", "Write a message…", "Escribe un mensaje…", "Scrivi un messaggio…", "メッセージを書く…"), style: { flex: 1, background: MSG_COL.carte, border: "1px solid " + MSG_COL.carteBord, borderRadius: 22, padding: "11px 16px", color: MSG_COL.blanc, fontSize: 13.5, outline: "none" } }),
       h("button", { onClick: envoyer, disabled: envoiEnCours || !saisie.trim(), "aria-label": "Envoyer", style: { width: 40, height: 40, borderRadius: "50%", background: MSG_COL.turquoise, display: "flex", alignItems: "center", justifyContent: "center", color: MSG_COL.fond, fontSize: 16, flexShrink: 0, border: "none", cursor: "pointer", opacity: (envoiEnCours || !saisie.trim()) ? 0.5 : 1 } }, "\u27A4")),
     confBlocage ? h("div", { onClick: function () { setConfBlocage(false); }, style: { position: "fixed", inset: 0, zIndex: 90, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-end" } },
