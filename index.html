@@ -1050,8 +1050,12 @@ async function supprimerCommentaire(id) {
 async function mesAmis() {
   const user = await utilisateurActuel();
   if (!user) return { data: [], error: "Pas connecté" };
-  const { data: jeSuis } = await supa.from("follows").select("followed_id").eq("follower_id", user.id);
-  const { data: meSuivent } = await supa.from("follows").select("follower_id").eq("followed_id", user.id);
+  return await amisDe(user.id);
+}
+async function amisDe(userId) {
+  if (!userId) return { data: [], error: null };
+  const { data: jeSuis } = await supa.from("follows").select("followed_id").eq("follower_id", userId);
+  const { data: meSuivent } = await supa.from("follows").select("follower_id").eq("followed_id", userId);
   const ceuxQueJeSuis = new Set((jeSuis || []).map(f => f.followed_id));
   const idsAmis = (meSuivent || []).map(f => f.follower_id).filter(id => ceuxQueJeSuis.has(id));
   if (!idsAmis.length) return { data: [], error: null };
@@ -26929,7 +26933,16 @@ function EncreLumineuse(props) {
 function EcranMonCavalier() {
   var _am = React.useState(null), amis = _am[0], setAmis = _am[1];
   var _al = React.useState(null), amisListe = _al[0], setAmisListe = _al[1];
-  React.useEffect(function () { (async function () { try { if (typeof mesAmis === "function") { var ra = await mesAmis(); if (ra) { setAmisListe(ra.data || []); setAmis((ra.data || []).length); } } } catch (e) { setAmisListe([]); } })(); }, []);
+  React.useEffect(function () { (async function () {
+    try {
+      var __vp = (typeof window !== "undefined" && window.__cavalierOuvert === "__public" && window.__cavalierPublic) ? window.__cavalierPublic : null;
+      if (__vp && __vp.id) {
+        if (typeof amisDe === "function") { var rv = await amisDe(__vp.id); if (rv) { setAmisListe(rv.data || []); setAmis((rv.data || []).length); } }
+        return;
+      }
+      if (typeof mesAmis === "function") { var ra = await mesAmis(); if (ra) { setAmisListe(ra.data || []); setAmis((ra.data || []).length); } }
+    } catch (e) { setAmisListe([]); }
+  })(); }, []);
   var _pr = React.useState(null), profRecit = _pr[0], setProfRecit = _pr[1];
   var _ev = React.useState(false), editVoix = _ev[0], setEditVoix = _ev[1];
   var _vl = React.useState(""), voixLocal = _vl[0], setVoixLocal = _vl[1];
@@ -27126,7 +27139,7 @@ function EcranMonCavalier() {
     ((function () {
       var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
       function rgb(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thC.principal, a) : thC.principal; }
-      var recitTxt = ((profRecit && profRecit.histoire) || (profil && profil.histoire) || "");
+      var recitTxt = __estVisite ? ((profil && profil.histoire) || "") : ((profRecit && profRecit.histoire) || (profil && profil.histoire) || "");
       var voixTxt = __estVisite ? ((profil && profil.ma_voix) || "") : ((profRecit && profRecit.ma_voix) || "");
       function sauverVoix() { var txt = (voixLocal || "").trim(); setEditVoix(false); try { majProfil({ ma_voix: txt || null }).then(function (r) { if (r && !r.error && r.data) setProfRecit(r.data); }).catch(function () { }); } catch (eSV) { } }
       var dark = { border: "1px solid " + rgb(0.24), background: "rgba(7,26,31,.6)", color: thC.principal, boxShadow: "inset 0 0 14px " + rgb(0.05) };
@@ -27157,7 +27170,7 @@ function EcranMonCavalier() {
     ((function () {
       var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
       function rgb(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thC.principal, a) : thC.principal; }
-      var recitTxt = ((profRecit && profRecit.histoire) || (profil && profil.histoire) || "");
+      var recitTxt = __estVisite ? ((profil && profil.histoire) || "") : ((profRecit && profRecit.histoire) || (profil && profil.histoire) || "");
       var dark = { border: "1px solid " + rgb(0.24), background: "rgba(7,26,31,.6)", color: thC.principal, boxShadow: "inset 0 0 14px " + rgb(0.05) };
       return h("div", { className: "hyc-cristal", style: { margin: "22px 16px 0" } },
           h("div", { className: "hyc-cristal-cc", style: { padding: "18px 17px 16px", background: "linear-gradient(180deg,#0b1219,#080c11)" } },
@@ -32145,7 +32158,7 @@ function NavBar() {
     return (React.createElement("div", { style: { position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, background: COLORS.nuitClaire, borderTop: `1px solid ${COLORS.ligne}`, display: "flex", padding: "10px 2px calc(10px + env(safe-area-inset-bottom))", zIndex: 50 } }, items.map((item) => {
         const actif = ecran === item.id || (item.id === "galops" && ["galop-detail", "cours", "quiz", "examen"].includes(ecran)) || (item.id === "communaute" && ecran === "evenement") || (item.id === "moncavalier" && ecran === "profil") || (item.id === "ecurie" && ["cheval", "cavalier", "ecurie-hype", "album-ecurie", "sellerie"].includes(ecran));
         const petits = String(item.label || "").length >= 9;
-        return (React.createElement("button", { key: item.id, onClick: () => setEcran(item.id), style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "7px 0" } },
+        return (React.createElement("button", { key: item.id, onClick: () => { try { if (typeof window !== "undefined") { window.__cavalierOuvert = null; window.__cavalierPublic = null; } } catch (eNb) { } setEcran(item.id); }, style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "7px 0" } },
             React.createElement("span", { style: { fontSize: 26, lineHeight: 1, filter: actif ? "none" : "grayscale(0.6) opacity(0.6)" } }, item.icone),
             React.createElement("span", { style: { fontSize: petits ? 10.5 : 12, fontWeight: actif ? 700 : 500, color: actif ? COLORS.turquoise : COLORS.encreDoux, whiteSpace: "nowrap", maxWidth: "100%", overflow: "hidden", textOverflow: "clip" } }, item.label)));
     })));
