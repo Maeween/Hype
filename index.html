@@ -32082,7 +32082,7 @@ function EcranMessagerie() {
     var canal = null;
     try {
       canal = supa.channel("msgconv_" + convActive.id).on("postgres_changes", { event: "INSERT", schema: "public", table: "messages_prives", filter: "conversation_id=eq." + convActive.id }, function (payload) {
-        setMessages(function (m) { return m.concat([payload.new]); });
+        setMessages(function (m) { return m.some(function (x) { return x.id === payload.new.id; }) ? m : m.concat([payload.new]); });
         setTimeout(function () { try { refFin.current && refFin.current.scrollIntoView({ block: "end" }); } catch (e) { } }, 60);
       }).subscribe();
     } catch (e) { }
@@ -32168,11 +32168,11 @@ function EcranMessagerie() {
   // ---------- VUE FIL ----------
   var titreFil = convActive ? (convActive.type === "dm" ? (convActive.autrePseudo || T("Cavalier", "Rider", "Jinete", "Cavaliere", "騎手")) : (convActive.ecurie || convActive.club || T("Groupe", "Group", "Grupo", "Gruppo", "グループ"))) : "";
 
-  return h("div", { style: { height: "100dvh", maxHeight: "100dvh", width: "100%", maxWidth: "100%", background: MSG_COL.fond, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" } },
+  return h("div", { style: { height: "100dvh", maxHeight: "100dvh", width: "100%", maxWidth: "100vw", boxSizing: "border-box", background: MSG_COL.fond, display: "flex", flexDirection: "column", overflowX: "hidden", overflowY: "hidden", position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 40 } },
 
     /* ---- 1. En-tête fixe ---- */
-    h("div", { style: { flexShrink: 0, padding: "calc(env(safe-area-inset-top) + 16px) 16px 14px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(244,247,250,0.05)" } },
-      h("button", { onClick: retourListe, "aria-label": "Retour", style: { width: 40, height: 40, marginLeft: -8, display: "flex", alignItems: "center", justifyContent: "center", color: MSG_COL.turquoise, fontSize: 24, background: "none", border: "none", cursor: "pointer", flexShrink: 0, padding: 0 } }, "\u2039"),
+    h("div", { style: { flexShrink: 0, boxSizing: "border-box", width: "100%", maxWidth: "100%", padding: "calc(env(safe-area-inset-top) + 16px) 16px 14px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(244,247,250,0.05)" } },
+      h("button", { onClick: retourListe, "aria-label": "Retour", style: { width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", color: MSG_COL.turquoise, fontSize: 24, background: "none", border: "none", cursor: "pointer", flexShrink: 0, padding: 0, WebkitTapHighlightColor: "transparent" } }, "\u2039"),
       convActive && convActive.type === "dm" ? h("img", { src: (typeof avSrc === "function" ? avSrc(convActive.autreAvatar) : convActive.autreAvatar) || "", style: { width: 38, height: 38, borderRadius: "50%", objectFit: "cover", background: "#20262B", flexShrink: 0 } }) :
         h("div", { style: { width: 38, height: 38, borderRadius: 12, background: "#20262B", border: "1.5px solid rgba(32,217,245,0.22)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", color: MSG_COL.turquoise, fontSize: 15, flexShrink: 0 } }, (titreFil || "?").charAt(0).toUpperCase()),
       h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, color: MSG_COL.blanc, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titreFil)),
@@ -32183,7 +32183,7 @@ function EcranMessagerie() {
           h("button", { onClick: function () { setMenuOuvert(false); setConfBlocage(true); }, style: { display: "block", width: "100%", textAlign: "left", padding: "10px 12px", background: "none", border: "none", color: "#FF8A93", fontSize: 13, borderRadius: 10, cursor: "pointer" } }, T("Bloquer", "Block", "Bloquear", "Blocca", "ブロック"))) : null) : null),
 
     /* ---- 2. Zone des messages : seule zone qui défile ---- */
-    h("div", { style: { flex: "1 1 auto", minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "16px 14px 10px", display: "flex", flexDirection: "column", gap: 10 } },
+    h("div", { style: { flex: "1 1 auto", minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "16px 14px 10px", display: "flex", flexDirection: "column", justifyContent: "flex-end", gap: 10 } },
       !messages.length ? h("div", { style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "0 30px", gap: 10 } },
         h("div", { style: { width: 56, height: 56, borderRadius: "50%", background: "rgba(32,217,245,0.08)", border: "1px solid rgba(32,217,245,0.22)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, marginBottom: 4 } }, "\uD83D\uDCAC"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, color: MSG_COL.blanc, fontWeight: 600 } }, T("Commence la conversation", "Start the conversation", "Empieza la conversación", "Inizia la conversazione", "会話をはじめよう")),
@@ -32195,7 +32195,7 @@ function EcranMessagerie() {
       h("div", { ref: refFin })),
 
     /* ---- 3. Barre de rédaction fixe ---- */
-    h("div", { style: { flexShrink: 0, display: "flex", alignItems: "center", gap: 8, padding: "10px 12px calc(10px + env(safe-area-inset-bottom))", borderTop: "1px solid rgba(244,247,250,0.05)", boxSizing: "border-box", width: "100%", background: MSG_COL.fond } },
+    h("div", { style: { flexShrink: 0, display: "flex", alignItems: "center", gap: 8, padding: "10px 12px calc(10px + env(safe-area-inset-bottom))", borderTop: "1px solid rgba(244,247,250,0.05)", boxSizing: "border-box", width: "100%", maxWidth: "100%", background: MSG_COL.fond } },
       h("button", { onClick: function () { try { alert(T("Bientôt disponible", "Coming soon", "Próximamente", "Presto disponibile", "近日公開")); } catch (eT) { } }, "aria-label": "Ajouter une photo", style: { width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.05)", border: "1px solid " + MSG_COL.carteBord, color: MSG_COL.gris, fontSize: 17, flexShrink: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" } }, "+"),
       h("input", { value: saisie, onChange: function (e) { setSaisie(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") envoyer(); }, placeholder: T("Écrire un message…", "Write a message…", "Escribe un mensaje…", "Scrivi un messaggio…", "メッセージを書く…"), style: { flex: "1 1 auto", minWidth: 0, boxSizing: "border-box", background: MSG_COL.carte, border: "1px solid " + MSG_COL.carteBord, borderRadius: 22, padding: "11px 16px", color: MSG_COL.blanc, fontSize: 13.5, outline: "none" } }),
       h("button", { onClick: envoyer, disabled: envoiEnCours || !saisie.trim(), "aria-label": "Envoyer", style: { width: 40, height: 40, borderRadius: "50%", background: MSG_COL.turquoise, display: "flex", alignItems: "center", justifyContent: "center", color: MSG_COL.fond, fontSize: 16, flexShrink: 0, border: "none", cursor: "pointer", opacity: (envoiEnCours || !saisie.trim()) ? 0.4 : 1, transition: "opacity .15s ease" } }, "\u27A4")),
