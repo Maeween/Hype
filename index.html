@@ -387,7 +387,13 @@ async function membresAlbum(albumId) {
 }
 async function albumsPartagesRejoints() {
   try { const user = await utilisateurActuel(); if (!user) return { data: [], error: null };
-    var r = await supa.from("albums_membres").select("album_id, role").eq("user_id", user.id);
+    return await albumsPartagesRejointsDe(user.id);
+  } catch (e) { return { data: [], error: String(e) }; }
+}
+async function albumsPartagesRejointsDe(userId) {
+  try {
+    if (!userId) return { data: [], error: null };
+    var r = await supa.from("albums_membres").select("album_id, role").eq("user_id", userId);
     var ids = ((r && r.data) || []).map(function (m) { return m.album_id; });
     if (!ids.length) return { data: [], error: null };
     var a = await supa.from("albums_cheval").select("*").in("id", ids);
@@ -30390,7 +30396,8 @@ function AlbumsCheval(props) {
       listerAlbumsCheval(props.cible).then(function (r) {
         var base = (r && r.data) || [];
         if (!estCav) { chargerTags(base); return; }
-        albumsPartagesRejoints().then(function (rr) {
+        var cibleUid = String(props.cible || "").slice(9);
+        (typeof albumsPartagesRejointsDe === "function" ? albumsPartagesRejointsDe(cibleUid) : albumsPartagesRejoints()).then(function (rr) {
           var rej = (rr && rr.data) || [];
           var vus = {}; base.forEach(function (a) { vus[a.id] = 1; });
           var extra = rej.filter(function (a) { return !vus[a.id]; }).map(function (a) { return Object.assign({}, a, { __rejoint: true }); });
