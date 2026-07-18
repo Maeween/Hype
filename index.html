@@ -27387,7 +27387,15 @@ function TableauxSpectralHype(props) {
       ? h("div", { style: { fontSize: 13.5, lineHeight: 1.8, color: "#B7C2C7", whiteSpace: "pre-line", fontFamily: M } }, defH)
       : (editable ? h("div", { style: { fontSize: 12.5, lineHeight: 1.6, color: "rgba(234,242,244,.4)", fontStyle: "italic", fontFamily: M } }, phHist) : null));
 
+  var coachTableaux = (editable && !voixTxt && !histTxt) ? h(CoachmarkHype, {
+    id: "tableaux-spectraux-" + (estClub ? ("club-" + clef) : (champVoix || "ecurie")),
+    emoji: "\u270D\uFE0F",
+    fait: !!(voixTxt || histTxt),
+    titre: { fr: "\u00c9cris quelques mots ici", en: "Write a few words here", es: "Escribe unas palabras aqu\u00ed", it: "Scrivi qualche parola qui", ja: "\u3053\u3053\u306b\u4e00\u8a00\u66f8\u3044\u3066\u307f\u307e\u3057\u3087\u3046" },
+    texte: { fr: "Tape sur le crayon pour raconter la philosophie et l'histoire de ce lieu. Ce texte sera visible par tout le monde.", en: "Tap the pencil to tell the philosophy and story of this place. This text will be visible to everyone.", es: "Toca el l\u00e1piz para contar la filosof\u00eda y la historia de este lugar. Este texto ser\u00e1 visible para todos.", it: "Tocca la matita per raccontare la filosofia e la storia di questo luogo. Questo testo sar\u00e0 visibile a tutti.", ja: "\u9271\u7b46\u30a2\u30a4\u30b3\u30f3\u3092\u30bf\u30c3\u30d7\u3057\u3066\u3001\u3053\u306e\u5834\u6240\u306e\u7406\u5ff5\u3068\u7269\u8a9e\u3092\u66f8\u304d\u307e\u3057\u3087\u3046\u3002\u5168\u54e1\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002" }
+  }) : null;
   return h("div", { style: { margin: "18px 0 0" } },
+    coachTableaux,
     h("style", null, "@keyframes hycSpin{to{transform:rotate(1turn)}}.hyc-cristal{position:relative;border-radius:20px;padding:1.6px;overflow:hidden;isolation:isolate}.hyc-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + thC.principal + " 82%,#BFF4F8 90%,transparent 100%);animation:hycSpin 4.5s linear infinite}.hyc-cristal>.hyc-cristal-cc{position:relative;z-index:1;border-radius:18px;overflow:hidden}@keyframes hycBlink{50%{opacity:0}}.hyc-caret{display:inline-block;width:2px;height:1.05em;background:" + thC.principal + ";box-shadow:0 0 8px " + thC.principal + ";vertical-align:-2px;margin-left:1px;animation:hycBlink 1s step-end infinite}"),
     h("div", { style: { position: "relative", margin: "0 16px 14px", padding: "20px 18px 18px", borderRadius: 20, background: "linear-gradient(180deg,#0b1219,#080c11)", border: "1px solid rgba(255,255,255,0.08)", overflow: "hidden" } },
       h("div", { style: { position: "absolute", right: 14, top: -8, fontFamily: "Georgia, serif", fontSize: 110, color: rgb(0.08), lineHeight: 1, pointerEvents: "none" } }, "\u201c"),
@@ -27448,6 +27456,44 @@ function FicheEvenementClub(props) {
         h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "rgba(244,247,250,0.7)", strokeWidth: 1.8 }, h("path", { d: "M12 21s-7-5.7-7-11a7 7 0 0 1 14 0c0 5.3-7 11-7 11z" }), h("circle", { cx: 12, cy: 10, r: 2.5 })), ev.lieu) : null),
     ev.image_url ? h("div", { style: { padding: "20px 20px 0" } }, h(PhotoZoomable, { src: ev.image_url, alt: ev.titre, style: { display: "block", width: "100%", height: "auto", borderRadius: 18, border: "1px solid rgba(255,255,255,0.1)" } })) : null,
     ev.description ? h("div", { style: { padding: "22px 22px 40px", fontSize: 14.5, lineHeight: 1.7, color: "rgba(244,247,250,0.88)", fontFamily: "'Montserrat',sans-serif", whiteSpace: "pre-wrap" } }, ev.description) : h("div", { style: { padding: "22px 22px 40px" } }));
+}
+
+/* ---------- COACHMARK (tuto contextuel léger, sans bouton) ---------- */
+function coachmarkVu(id) {
+    try { return localStorage.getItem("hype_coach_" + id) === "1"; } catch (e) { return false; }
+}
+function coachmarkMarquerVu(id) {
+    try { localStorage.setItem("hype_coach_" + id, "1"); } catch (e) { }
+}
+// fait : passe à true dès que l'action décrite a été réalisée -> masque et mémorise
+// automatiquement, sans que la personne ait besoin de taper sur la carte.
+// Sinon, un tap n'importe où sur la carte la ferme définitivement.
+function CoachmarkHype(props) {
+    var h = React.createElement;
+    var id = props.id, titre = props.titre, texte = props.texte, emoji = props.emoji || "\uD83D\uDCA1", fait = !!props.fait;
+    var ctxCm = useApp(); var tr = ctxCm.tr;
+    var stV = React.useState(function () { return !coachmarkVu(id); }); var visible = stV[0], setVisible = stV[1];
+    React.useEffect(function () {
+        if (fait && visible) { coachmarkMarquerVu(id); setVisible(false); }
+    }, [fait]);
+    if (!visible) return null;
+    function fermer() { coachmarkMarquerVu(id); setVisible(false); }
+    return h("div", {
+        onClick: fermer, role: "button", "aria-label": "Fermer ce conseil",
+        style: {
+            background: "linear-gradient(160deg, " + COLORS.nuitClaire + " 0%, " + COLORS.nuit + " 100%)",
+            border: "1px solid rgba(32,217,245,0.4)", borderRadius: 18, padding: "18px 18px 16px",
+            marginBottom: 16, boxShadow: "0 8px 28px rgba(0,0,0,0.35)", cursor: "pointer"
+        }
+    },
+        h("div", { style: { display: "flex", alignItems: "flex-start", gap: 12 } },
+            h("span", { style: { fontSize: 26, flex: "0 0 auto", lineHeight: 1 } }, emoji),
+            h("div", { style: { flex: 1 } },
+                h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 15.5, fontWeight: 700, color: COLORS.turquoise, marginBottom: 6, lineHeight: 1.25 } }, tr(titre)),
+                h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 14.5, lineHeight: 1.55, color: COLORS.blanc } }, tr(texte))
+            )
+        )
+    );
 }
 
 function AgendaClubHype(props) {
@@ -27568,6 +27614,13 @@ function AgendaClubHype(props) {
   return h(React.Fragment, null,
    h("div", { className: "agc-wrap" },
     h("style", { dangerouslySetInnerHTML: { __html: AGENDA_CSS } }),
+    (estProprio && !chargement) ? h(CoachmarkHype, {
+      id: "club-agenda",
+      emoji: "\uD83D\uDCC5",
+      fait: evs.length > 0,
+      titre: { fr: "Nouveau : l'agenda du club", en: "New: the club's agenda", es: "Nuevo: la agenda del club", it: "Novit\u00e0: l'agenda del club", ja: "\u65b0\u6a5f\u80fd\uff1a\u30af\u30e9\u30d6\u306e\u4e88\u5b9a" },
+      texte: { fr: "Tape sur le + pour ajouter un stage, un concours ou une sortie. Les cavaliers du club le verront tout de suite.", en: "Tap the + to add a clinic, a show or an outing. Club riders will see it right away.", es: "Toca el + para a\u00f1adir un cursillo, un concurso o una salida. Los jinetes del club lo ver\u00e1n enseguida.", it: "Tocca il + per aggiungere uno stage, un concorso o un'uscita. I cavalieri del club lo vedranno subito.", ja: "\uff0b\u3092\u30bf\u30c3\u30d7\u3057\u3066\u8b1b\u7fd2\u30fb\u7af6\u6280\u4f1a\u30fb\u5916\u51fa\u3092\u8ffd\u52a0\u3067\u304d\u307e\u3059\u3002\u30af\u30e9\u30d6\u306e\u9a0e\u624b\u306b\u3059\u3050\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002" }
+    }) : null,
     h("p", { className: "agc-kicker" }, T("L'agenda du club", "The club's agenda", "La agenda del club", "L'agenda del club", "\u30af\u30e9\u30d6\u306e\u4e88\u5b9a")),
     h("h2", { className: "agc-h" }, T("Prochains rendez-vous", "Upcoming events", "Pr\u00f3ximas citas", "Prossimi eventi", "\u6b21\u306e\u4e88\u5b9a")),
     vide ? h("p", { className: "agc-vide" }, T("Aucun rendez-vous pour l'instant. Ajoute le premier !", "No events yet. Add the first one!", "A\u00fan no hay citas. \u00a1A\u00f1ade la primera!", "Ancora nessun evento. Aggiungi il primo!", "\u307e\u3060\u4e88\u5b9a\u304c\u3042\u308a\u307e\u305b\u3093\u3002\u6700\u521d\u306e\u4e88\u5b9a\u3092\u8ffd\u52a0\u3057\u307e\u3057\u3087\u3046\uff01")) : null,
@@ -27985,6 +28038,12 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
       err ? h("p", { style: { margin: "12px 0 0", fontSize: 11.5, color: "#F2A0B0", lineHeight: 1.5 } }, tr({ fr: "Impossible de cr\u00e9er la fiche : ", en: "Could not create the page: ", es: "No se pudo crear la ficha: ", it: "Impossibile creare la scheda: ", ja: "\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a" }) + err) : null,
       h("button", { onClick: creer, disabled: busy || !(nom || "").trim(), style: { width: "100%", marginTop: 18, border: "none", borderRadius: 999, padding: "14px 0", fontSize: 14, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", letterSpacing: "0.4px", background: busy ? "rgba(32,217,245,0.4)" : "linear-gradient(90deg,#0C5763,#38E2F8)", color: "#04252A", cursor: "pointer", boxShadow: "0 0 26px rgba(32,217,245,0.35)" } }, busy ? tr({ fr: "Cr\u00e9ation\u2026", en: "Creating\u2026", es: "Creando\u2026", it: "Creazione\u2026", ja: "\u4f5c\u6210\u4e2d\u2026" }) : tr({ fr: "Cr\u00e9er sa fiche \u2726", en: "Create its page \u2726", es: "Crear su ficha \u2726", it: "Crea la scheda \u2726", ja: "\u30da\u30fc\u30b8\u3092\u4f5c\u6210 \u2726" })),
       (listeEc && listeEc.length) ? h("div", { style: { marginTop: 20, textAlign: "left" } },
+        h(CoachmarkHype, {
+          id: "rattachement-cheval",
+          emoji: "\uD83D\uDD17",
+          titre: { fr: "Ton cheval est peut-\u00eatre d\u00e9j\u00e0 dans l'\u00e9curie", en: "Your horse might already be in the stable", es: "Puede que tu caballo ya est\u00e9 en la cuadra", it: "Il tuo cavallo potrebbe essere gi\u00e0 nella scuderia", ja: "\u3042\u306a\u305f\u306e\u99ac\u306f\u3059\u3067\u306b\u5395\u820e\u306b\u3044\u308b\u304b\u3082\u3057\u308c\u307e\u305b\u3093" },
+          texte: { fr: "Si un autre cavalier l'a d\u00e9j\u00e0 cr\u00e9\u00e9, tape sur son nom ci-dessous au lieu d'en refaire un nouveau.", en: "If another rider already created it, tap its name below instead of making a new one.", es: "Si otro jinete ya lo cre\u00f3, toca su nombre abajo en lugar de crear uno nuevo.", it: "Se un altro cavaliere l'ha gi\u00e0 creato, tocca il suo nome qui sotto invece di crearne uno nuovo.", ja: "\u4ed6\u306e\u9a0e\u624b\u304c\u3059\u3067\u306b\u4f5c\u6210\u6e08\u307f\u306e\u5834\u5408\u306f\u3001\u65b0\u898f\u4f5c\u6210\u305b\u305a\u4e0b\u306e\u540d\u524d\u3092\u30bf\u30c3\u30d7\u3057\u3066\u304f\u3060\u3055\u3044\u3002" }
+        }),
         h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 10px" } },
           h("span", { style: { flex: 1, height: 1, background: "rgba(255,255,255,0.1)" } }),
           h("span", { style: { fontSize: 10, letterSpacing: "2px", color: "#8A99A1", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif", fontWeight: 700 } }, tr({ fr: "ou", en: "or", es: "o", it: "o", ja: "\u307e\u305f\u306f" })),
@@ -28605,7 +28664,15 @@ function ClocheNotifs() {
     h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: "#CFE8ED", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" }, h("path", { d: "M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" }), h("path", { d: "M13.7 21a2 2 0 0 1-3.4 0" })),
     total > 0 ? h("span", { style: { position: "absolute", top: -3, right: -3, minWidth: 17, height: 17, padding: "0 4px", borderRadius: 9, background: "#20D9F5", color: "#04252A", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 10px rgba(32,217,245,0.8)", border: "2px solid #060709" } }, total > 99 ? "99+" : String(total)) : null);
 
-  return h(React.Fragment, null, cloche, panneau);
+  var coachCloche = (!ouvert) ? h("div", { style: { position: "fixed", top: "calc(58px + env(safe-area-inset-top))", right: 14, left: 14, zIndex: 6, maxWidth: 340, marginLeft: "auto" } },
+    h(CoachmarkHype, {
+      id: "cloche-notifs",
+      emoji: "\uD83D\uDD14",
+      fait: ouvert,
+      titre: { fr: "Tes notifications sont ici", en: "Your notifications are here", es: "Tus notificaciones est\u00e1n aqu\u00ed", it: "Le tue notifiche sono qui", ja: "\u901a\u77e5\u306f\u3053\u3053\u3067\u78ba\u8a8d\u3067\u304d\u307e\u3059" },
+      texte: { fr: "Tape sur la cloche pour voir les likes, commentaires et nouveaut\u00e9s de ton \u00e9curie.", en: "Tap the bell to see likes, comments and news from your stable.", es: "Toca la campana para ver los me gusta, comentarios y novedades de tu cuadra.", it: "Tocca la campanella per vedere mi piace, commenti e novit\u00e0 della tua scuderia.", ja: "\u30d9\u30eb\u3092\u30bf\u30c3\u30d7\u3059\u308b\u3068\u3001\u3044\u3044\u306d\u3084\u30b3\u30e1\u30f3\u30c8\u3001\u5395\u820e\u306e\u65b0\u60c5\u5831\u3092\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002" }
+    })) : null;
+  return h(React.Fragment, null, cloche, coachCloche, panneau);
 }
 
 function EcranUnivers() {
