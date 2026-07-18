@@ -32172,7 +32172,7 @@ function EcranMessagerie() {
 
     /* ---- 1. En-tête fixe ---- */
     h("div", { style: { flexShrink: 0, padding: "calc(env(safe-area-inset-top) + 16px) 16px 14px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(244,247,250,0.05)" } },
-      h("button", { onClick: retourListe, "aria-label": "Retour", style: { color: MSG_COL.turquoise, fontSize: 22, background: "none", border: "none", cursor: "pointer", flexShrink: 0, padding: 0, lineHeight: 1 } }, "\u2039"),
+      h("button", { onClick: retourListe, "aria-label": "Retour", style: { width: 40, height: 40, marginLeft: -8, display: "flex", alignItems: "center", justifyContent: "center", color: MSG_COL.turquoise, fontSize: 24, background: "none", border: "none", cursor: "pointer", flexShrink: 0, padding: 0 } }, "\u2039"),
       convActive && convActive.type === "dm" ? h("img", { src: (typeof avSrc === "function" ? avSrc(convActive.autreAvatar) : convActive.autreAvatar) || "", style: { width: 38, height: 38, borderRadius: "50%", objectFit: "cover", background: "#20262B", flexShrink: 0 } }) :
         h("div", { style: { width: 38, height: 38, borderRadius: 12, background: "#20262B", border: "1.5px solid rgba(32,217,245,0.22)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", color: MSG_COL.turquoise, fontSize: 15, flexShrink: 0 } }, (titreFil || "?").charAt(0).toUpperCase()),
       h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, color: MSG_COL.blanc, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titreFil)),
