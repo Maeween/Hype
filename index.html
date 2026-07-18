@@ -26701,17 +26701,21 @@ function EcranMonCavalier() {
   React.useEffect(function () {
     if (!__estVisite) return;
     (async function () {
+      var uid = __visitePub && __visitePub.id;
       try {
-        var uid = __visitePub && __visitePub.id;
         if (uid && typeof chevauxDe === "function") {
           var rc = await chevauxDe(uid);
           var tousChV = (rc && rc.data) ? rc.data.slice() : [];
           try { if (uid && typeof chevauxLiesDe === "function") { var rln = await chevauxLiesDe(uid); if (rln && rln.data && rln.data.length) tousChV = tousChV.concat(rln.data); } } catch (eLnV) { }
           setVisiteChevaux(tousChV);
         } else { setVisiteChevaux([]); }
+      } catch (eCh) { setVisiteChevaux([]); }
+      try {
         if (uid && typeof resultatsDe === "function") { var rr = await resultatsDe(uid); setVisiteResultats((rr && rr.data) || []); } else { setVisiteResultats([]); }
-        if (uid) { try { var rp = await supa.from("profiles").select("*").eq("id", uid).single(); if (rp && rp.data) setVisiteProfilFull(rp.data); } catch (eVP) { } }
-      } catch (eV) { setVisiteChevaux([]); setVisiteResultats([]); }
+      } catch (eRe) { setVisiteResultats([]); }
+      try {
+        if (uid) { var rp = await supa.from("profiles").select("*").eq("id", uid).single(); if (rp && rp.data) setVisiteProfilFull(rp.data); }
+      } catch (eVP) { }
     })();
   }, [__estVisite, (__visitePub && __visitePub.id) || ""]);
   // profil affiche : le visite (fiche complete recuperee en base, avec repli sur les infos minimales le temps du chargement) si en visite, sinon le mien
