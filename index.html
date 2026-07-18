@@ -28334,6 +28334,7 @@ function ClocheNotifs() {
 function EcranUnivers() {
   var ctx = useApp();
   var retourDepuisAccueil = ctx.retourDepuisAccueil; var __swipeU = React.useRef(null);
+  var __montageU = React.useRef(Date.now());
   var langue = ctx.langue, setLangue = ctx.setLangue, setEcran = ctx.setEcran;
   var _ldS = React.useState(false); var langOuvert = _ldS[0], setLangOuvert = _ldS[1];
   var profilAcc = ctx.profil || {}, setProfilAcc = ctx.setProfil;
@@ -28498,7 +28499,7 @@ function EcranUnivers() {
         React.createElement("div", { className: "hadd-circle" }, "+"),
         React.createElement("span", null, t.madd)));
   }
-  return React.createElement("div", { onTouchStart: function (e) { var t0 = e.touches[0]; __swipeU.current = (t0 && t0.clientX < 30) ? { x: t0.clientX, y: t0.clientY } : null; }, onTouchEnd: function (e) { var s = __swipeU.current; __swipeU.current = null; if (!s) return; var t1 = e.changedTouches[0]; if (t1 && (t1.clientX - s.x) > 70 && Math.abs(t1.clientY - s.y) < 80 && retourDepuisAccueil) retourDepuisAccueil(); }, className: "uv3" },
+  return React.createElement("div", { onTouchStart: function (e) { var t0 = e.touches[0]; __swipeU.current = (t0 && t0.clientX < 30) ? { x: t0.clientX, y: t0.clientY } : null; }, onTouchEnd: function (e) { var s = __swipeU.current; __swipeU.current = null; if (!s) return; if (Date.now() - __montageU.current < 400) return; var t1 = e.changedTouches[0]; if (t1 && (t1.clientX - s.x) > 70 && Math.abs(t1.clientY - s.y) < 80 && retourDepuisAccueil) retourDepuisAccueil(); }, className: "uv3" },
     React.createElement("style", { dangerouslySetInnerHTML: { __html: UV3_CSS } }),
     React.createElement("div", { className: "app" },
 
