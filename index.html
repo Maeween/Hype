@@ -106,7 +106,7 @@ async function monProfil() {
 }
 
 // Mettre à jour mon profil (n'envoie que les champs à changer)
-async function majProfil({ pseudo, avatar_url, ecurie, ecurie2, ville, teinte, histoire, ma_voix, ecurie_voix, ecurie_histoire, club_voix, club_histoire, ecurie_photo } = {}) {
+async function majProfil({ pseudo, avatar_url, ecurie, ecurie2, ville, teinte, histoire, ma_voix, ecurie_voix, ecurie_histoire, club_voix, club_histoire, ecurie_photo, est_mineur } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
   const champs = {};
@@ -123,6 +123,7 @@ async function majProfil({ pseudo, avatar_url, ecurie, ecurie2, ville, teinte, h
   if (club_voix       !== undefined) champs.club_voix       = club_voix;
   if (club_histoire   !== undefined) champs.club_histoire   = club_histoire;
   if (ecurie_photo    !== undefined) champs.ecurie_photo    = ecurie_photo;
+  if (est_mineur       !== undefined) champs.est_mineur     = est_mineur;
 
   // Detection « nouveau cavalier » : ecurie renseignee OU changee -> diffusion a la NOUVELLE ecurie
   let ancienneEcurie;
@@ -138,6 +139,157 @@ async function majProfil({ pseudo, avatar_url, ecurie, ecurie2, ville, teinte, h
     }
   } catch (eN) { }
   return rMaj;
+}
+
+
+/* --- 3bis. Messagerie (DM + groupes écurie/club) ------------
+   Tables : conversations / conversations_participants / messages_prives
+            / blocages / signalements (voir messagerie-hype.sql)
+   ------------------------------------------------------------ */
+
+// Démarre (ou retrouve) une conversation DM avec `cible` (uuid).
+// Gère blocage + restriction mineurs côté base (fonction SQL demarrer_conversation_dm).
+async function demarrerConversationDM(cible) {
+  try {
+    const { data, error } = await supa.rpc("demarrer_conversation_dm", { cible });
+    if (error) return { data: null, error: error.message || String(error) };
+    return { data, error: null };
+  } catch (e) { return { data: null, error: String(e) }; }
+}
+
+// Liste mes conversations (DM + groupes), avec aperçu du dernier message,
+// profil de l'interlocuteur (DM) et compteur de non-lus.
+async function listerMesConversations() {
+  const user = await utilisateurActuel();
+  if (!user) return { data: [], error: "Pas connecté" };
+  try {
+    const { data: mesParticipations, error: eP } = await supa
+      .from("conversations_participants")
+      .select("conversation_id, historique_masque, dernier_lu")
+      .eq("utilisateur_id", user.id);
+    if (eP) return { data: [], error: eP.message };
+    const lignes = (mesParticipations || []).filter(function (p) { return !p.historique_masque; });
+    if (!lignes.length) return { data: [], error: null };
+    const convIds = lignes.map(function (l) { return l.conversation_id; });
+
+    const { data: convs } = await supa.from("conversations").select("*").in("id", convIds);
+    const { data: tousParticipants } = await supa.from("conversations_participants").select("conversation_id, utilisateur_id").in("conversation_id", convIds);
+
+    // profils des autres participants (pour les DM)
+    const autresIds = (tousParticipants || []).map(function (p) { return p.utilisateur_id; }).filter(function (id) { return id !== user.id; });
+    const { data: profils } = autresIds.length ? await supa.from("profiles").select("id, pseudo, avatar_url").in("id", autresIds) : { data: [] };
+    const profilParId = {}; (profils || []).forEach(function (p) { profilParId[p.id] = p; });
+
+    const out = [];
+    for (const conv of (convs || [])) {
+      const maLigne = lignes.find(function (l) { return l.conversation_id === conv.id; });
+      const participantsConv = (tousParticipants || []).filter(function (p) { return p.conversation_id === conv.id; });
+      const autre = participantsConv.find(function (p) { return p.utilisateur_id !== user.id; });
+      const autreProfil = autre ? profilParId[autre.utilisateur_id] : null;
+
+      const { data: dernierMsg } = await supa
+        .from("messages_prives").select("contenu, envoye_le, expediteur_id")
+        .eq("conversation_id", conv.id).order("envoye_le", { ascending: false }).limit(1).maybeSingle();
+
+      let nonLus = 0;
+      if (maLigne && maLigne.dernier_lu) {
+        const { count } = await supa.from("messages_prives").select("id", { count: "exact", head: true })
+          .eq("conversation_id", conv.id).neq("expediteur_id", user.id).gt("envoye_le", maLigne.dernier_lu);
+        nonLus = count || 0;
+      } else if (dernierMsg) {
+        const { count } = await supa.from("messages_prives").select("id", { count: "exact", head: true })
+          .eq("conversation_id", conv.id).neq("expediteur_id", user.id);
+        nonLus = count || 0;
+      }
+
+      out.push({
+        id: conv.id, type: conv.type, ecurie: conv.ecurie, club: conv.club,
+        autreId: autre ? autre.utilisateur_id : null,
+        autrePseudo: autreProfil ? autreProfil.pseudo : null,
+        autreAvatar: autreProfil ? autreProfil.avatar_url : null,
+        dernierMessage: dernierMsg ? dernierMsg.contenu : null,
+        dernierLe: dernierMsg ? dernierMsg.envoye_le : conv.created_at,
+        nonLus: nonLus
+      });
+    }
+    out.sort(function (a, b) { return new Date(b.dernierLe) - new Date(a.dernierLe); });
+    return { data: out, error: null };
+  } catch (e) { return { data: [], error: String(e) }; }
+}
+
+// Charge les messages d'une conversation (ordre chronologique)
+async function chargerMessagesConversation(conversationId) {
+  try {
+    const { data, error } = await supa.from("messages_prives").select("*").eq("conversation_id", conversationId).order("envoye_le", { ascending: true });
+    return { data: data || [], error: error ? error.message : null };
+  } catch (e) { return { data: [], error: String(e) }; }
+}
+
+// Envoie un message (RLS vérifie blocage + appartenance à la conversation)
+async function envoyerMessagePrive(conversationId, contenu) {
+  const user = await utilisateurActuel();
+  if (!user) return { data: null, error: "Pas connecté" };
+  const texte = String(contenu || "").trim();
+  if (!texte) return { data: null, error: "Message vide" };
+  try {
+    const { data, error } = await supa.from("messages_prives").insert({ conversation_id: conversationId, expediteur_id: user.id, contenu: texte.slice(0, 2000) }).select().single();
+    return { data, error: error ? error.message : null };
+  } catch (e) { return { data: null, error: String(e) }; }
+}
+
+// Marque une conversation comme lue (maintenant)
+async function marquerConversationLue(conversationId) {
+  const user = await utilisateurActuel();
+  if (!user) return { error: "Pas connecté" };
+  try {
+    return await supa.from("conversations_participants").update({ dernier_lu: new Date().toISOString() }).eq("conversation_id", conversationId).eq("utilisateur_id", user.id);
+  } catch (e) { return { error: String(e) }; }
+}
+
+// Masque l'historique d'une conversation, seulement pour moi
+async function masquerConversation(conversationId) {
+  const user = await utilisateurActuel();
+  if (!user) return { error: "Pas connecté" };
+  try {
+    return await supa.from("conversations_participants").update({ historique_masque: true }).eq("conversation_id", conversationId).eq("utilisateur_id", user.id);
+  } catch (e) { return { error: String(e) }; }
+}
+
+// Bloque un utilisateur (option : masquer aussi l'historique de la conversation en cours)
+async function bloquerUtilisateur(utilisateurId, masquerHistorique, conversationIdEnCours) {
+  const user = await utilisateurActuel();
+  if (!user) return { error: "Pas connecté" };
+  try {
+    const r = await supa.from("blocages").upsert({ bloque_par: user.id, utilisateur_bloque: utilisateurId, masquer_historique: !!masquerHistorique }, { onConflict: "bloque_par,utilisateur_bloque" });
+    if (masquerHistorique && conversationIdEnCours) { try { await masquerConversation(conversationIdEnCours); } catch (eM) { } }
+    return r;
+  } catch (e) { return { error: String(e) }; }
+}
+
+async function debloquerUtilisateur(utilisateurId) {
+  const user = await utilisateurActuel();
+  if (!user) return { error: "Pas connecté" };
+  try {
+    return await supa.from("blocages").delete().eq("bloque_par", user.id).eq("utilisateur_bloque", utilisateurId);
+  } catch (e) { return { error: String(e) }; }
+}
+
+async function jaiBloqueOuSuisBloque(utilisateurId) {
+  const user = await utilisateurActuel();
+  if (!user) return { bloque: false };
+  try {
+    const { data: a } = await supa.from("blocages").select("id").eq("bloque_par", user.id).eq("utilisateur_bloque", utilisateurId).maybeSingle();
+    const { data: b } = await supa.from("blocages").select("id").eq("bloque_par", utilisateurId).eq("utilisateur_bloque", user.id).maybeSingle();
+    return { bloque: !!(a || b), jaiBloque: !!a };
+  } catch (e) { return { bloque: false }; }
+}
+
+async function signalerMessage(messageId, motif) {
+  const user = await utilisateurActuel();
+  if (!user) return { error: "Pas connecté" };
+  try {
+    return await supa.from("signalements").insert({ message_id: messageId, signale_par: user.id, motif: String(motif || "").slice(0, 500) });
+  } catch (e) { return { error: String(e) }; }
 }
 
 
@@ -20428,6 +20580,7 @@ function Router() {
                 ecran === "moncompte" && React.createElement(EcranMonCompte, null),
                 ecran === "partager" && React.createElement(EcranPartager, null),
                 ecran === "installer" && React.createElement(EcranInstaller, null),
+                ecran === "messagerie" && React.createElement(EcranMessagerie, null),
                 React.createElement(InvitationsEcurieHype, null),
                 showNav && React.createElement(NavBar, null)))));
 }
@@ -26532,6 +26685,16 @@ function EcranMonCavalier() {
   // --- Mode visite : profil d'un autre cavalier ---
   var __visitePub = (typeof window !== "undefined" && window.__cavalierOuvert === "__public" && window.__cavalierPublic) ? window.__cavalierPublic : null;
   var __estVisite = !!__visitePub;
+  var _msgEnCours = React.useState(false), messageEnCours = _msgEnCours[0], setMessageEnCours = _msgEnCours[1];
+  function ouvrirMessageAvecVisite() {
+    if (!__visitePub || !__visitePub.id || messageEnCours) return;
+    setMessageEnCours(true);
+    demarrerConversationDM(__visitePub.id).then(function (r) {
+      setMessageEnCours(false);
+      if (r && r.error) { alert(r.error); return; }
+      if (r && r.data) { try { window.__conversationOuverte = r.data; } catch (e) { } setEcran("messagerie"); }
+    });
+  }
   var _vP = React.useState(null), visiteChevaux = _vP[0], setVisiteChevaux = _vP[1];
   var _vR = React.useState(null), visiteResultats = _vR[0], setVisiteResultats = _vR[1];
   var _vF = React.useState(null), visiteProfilFull = _vF[0], setVisiteProfilFull = _vF[1];
@@ -26712,7 +26875,8 @@ function EcranMonCavalier() {
         h("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
           h("div", { style: { fontFamily: C, fontSize: 30, fontWeight: 700, letterSpacing: 1, lineHeight: 1.02, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, prenom),
           h("button", { onClick: function (ePs) { if (ePs && ePs.stopPropagation) ePs.stopPropagation(); setPseudoLocal((profil.prenom || profil.pseudo || "").trim()); if (__estVisite) return; setEditPseudo(true); }, "aria-label": "Modifier mon pseudo", style: { flexShrink: 0, width: 30, height: 30, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 12, cursor: "pointer", backdropFilter: "blur(6px)" } }, "\u270E")),
-        h("div", { style: { marginTop: 7, fontSize: 12.5, color: "#AEB8C0", fontStyle: "italic", fontFamily: "Georgia, serif", maxWidth: "88%", lineHeight: 1.35 } }, "\u201c" + citation + "\u201d"))),
+        h("div", { style: { marginTop: 7, fontSize: 12.5, color: "#AEB8C0", fontStyle: "italic", fontFamily: "Georgia, serif", maxWidth: "88%", lineHeight: 1.35 } }, "\u201c" + citation + "\u201d"),
+        __estVisite ? h("button", { onClick: ouvrirMessageAvecVisite, disabled: messageEnCours, style: { marginTop: 12, padding: "9px 18px", borderRadius: 999, background: "rgba(32,217,245,0.16)", border: "1px solid rgba(32,217,245,0.5)", color: "#20D9F5", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif", opacity: messageEnCours ? 0.6 : 1 } }, "\uD83D\uDCAC " + T("Message", "Message", "Mensaje", "Messaggio", "メッセージ")) : null)),
     ((function () {
       var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
       function rgb(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thC.principal, a) : thC.principal; }
@@ -28427,6 +28591,7 @@ function EcranUnivers() {
             React.createElement("path", { d: "M16 17l5-5-5-5" }),
             React.createElement("path", { d: "M21 12H9" }))),
         React.createElement(ClocheNotifs, null),
+        React.createElement("button", { onClick: function () { setEcran("messagerie"); }, "aria-label": "Messages", style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 146, zIndex: 7, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 4px 18px rgba(0,0,0,0.35)", fontSize: 16 } }, "\uD83D\uDCAC"),
         React.createElement("div", { style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 14, zIndex: 6 } },
           React.createElement("button", { onClick: function(){ setLangOuvert(!langOuvert); }, "aria-label": "Langue", style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 18px rgba(0,0,0,0.35)" } }, ({ fr: "\ud83c\uddeb\ud83c\uddf7", en: "\ud83c\uddec\ud83c\udde7", es: "\ud83c\uddea\ud83c\uddf8", it: "\ud83c\uddee\ud83c\uddf9", ja: "\ud83c\uddef\ud83c\uddf5" })[lg] || "\ud83c\uddeb\ud83c\uddf7"),
           langOuvert ? React.createElement("div", { style: { position: "absolute", top: 44, right: 0, display: "flex", flexDirection: "column", gap: 6, padding: 8, borderRadius: 16, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(8,11,15,0.86)", WebkitBackdropFilter: "blur(14px)", backdropFilter: "blur(14px)", boxShadow: "0 14px 34px rgba(0,0,0,0.5)" } },
@@ -31807,6 +31972,166 @@ function NavBar() {
             React.createElement("span", { style: { fontSize: 26, lineHeight: 1, filter: actif ? "none" : "grayscale(0.6) opacity(0.6)" } }, item.icone),
             React.createElement("span", { style: { fontSize: petits ? 10.5 : 12, fontWeight: actif ? 700 : 500, color: actif ? COLORS.turquoise : COLORS.encreDoux, whiteSpace: "nowrap", maxWidth: "100%", overflow: "hidden", textOverflow: "clip" } }, item.label)));
     })));
+}
+/* ============== MESSAGERIE (DM + groupes écurie/club) ============== */
+var MSG_COL = {
+  fond: "#14181C", carte: "#1B2126", carteBord: "rgba(244,247,250,0.06)",
+  bulleEux: "#232B31", bulleMoi: "#1D4A56", turquoise: "#20D9F5",
+  blanc: "#F4F7FA", gris: "#A9B2BC"
+};
+function tempsRelatifMsg(iso, langue) {
+  try {
+    var d = new Date(iso); var maintenant = new Date();
+    var ms = maintenant - d; var min = Math.floor(ms / 60000);
+    if (min < 1) return { fr: "À l'instant", en: "Just now", es: "Ahora mismo", it: "Adesso", ja: "たった今" }[langue] || "À l'instant";
+    if (min < 60) return min + " min";
+    var h = Math.floor(min / 60);
+    if (h < 24 && d.toDateString() === maintenant.toDateString()) return d.toLocaleTimeString(langue, { hour: "2-digit", minute: "2-digit" });
+    var hier = new Date(maintenant); hier.setDate(hier.getDate() - 1);
+    if (d.toDateString() === hier.toDateString()) return { fr: "Hier", en: "Yesterday", es: "Ayer", it: "Ieri", ja: "昨日" }[langue] || "Hier";
+    return d.toLocaleDateString(langue, { day: "2-digit", month: "2-digit" });
+  } catch (e) { return ""; }
+}
+
+function EcranMessagerie() {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr; var lg = ctx.langue || "fr"; var setEcran = ctx.setEcran;
+  function T(fr, en, es, it, ja) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja }); }
+
+  var stVue = React.useState("liste"); var vue = stVue[0], setVue = stVue[1];
+  var stOnglet = React.useState("dm"); var onglet = stOnglet[0], setOnglet = stOnglet[1];
+  var stConvs = React.useState([]); var convs = stConvs[0], setConvs = stConvs[1];
+  var stChargement = React.useState(true); var chargement = stChargement[0], setChargement = stChargement[1];
+  var stConvActive = React.useState(null); var convActive = stConvActive[0], setConvActive = stConvActive[1];
+  var stMessages = React.useState([]); var messages = stMessages[0], setMessages = stMessages[1];
+  var stSaisie = React.useState(""); var saisie = stSaisie[0], setSaisie = stSaisie[1];
+  var stMoi = React.useState(null); var moiId = stMoi[0], setMoiId = stMoi[1];
+  var stMenu = React.useState(false); var menuOuvert = stMenu[0], setMenuOuvert = stMenu[1];
+  var stConfBloc = React.useState(false); var confBlocage = stConfBloc[0], setConfBlocage = stConfBloc[1];
+  var stEnvoi = React.useState(false); var envoiEnCours = stEnvoi[0], setEnvoiEnCours = stEnvoi[1];
+  var refFin = React.useRef(null);
+
+  function rafraichirListe() {
+    setChargement(true);
+    listerMesConversations().then(function (r) { setConvs(r.data || []); setChargement(false); });
+  }
+
+  React.useEffect(function () {
+    utilisateurActuel().then(function (u) { setMoiId(u ? u.id : null); });
+    rafraichirListe();
+    var cibleDirecte = null;
+    try { cibleDirecte = window.__conversationOuverte || null; window.__conversationOuverte = null; } catch (e) { }
+    if (cibleDirecte) { ouvrirConversation(cibleDirecte); }
+  }, []);
+
+  function ouvrirConversation(convResume) {
+    var conv = (typeof convResume === "string") ? { id: convResume } : convResume;
+    setConvActive(conv);
+    setVue("fil");
+    setMessages([]);
+    chargerMessagesConversation(conv.id).then(function (r) { setMessages(r.data || []); setTimeout(function () { try { refFin.current && refFin.current.scrollIntoView({ block: "end" }); } catch (e) { } }, 60); });
+    marquerConversationLue(conv.id).catch(function () { });
+  }
+
+  // Abonnement temps réel sur la conversation ouverte
+  React.useEffect(function () {
+    if (vue !== "fil" || !convActive || typeof supa === "undefined") return;
+    var canal = null;
+    try {
+      canal = supa.channel("msgconv_" + convActive.id).on("postgres_changes", { event: "INSERT", schema: "public", table: "messages_prives", filter: "conversation_id=eq." + convActive.id }, function (payload) {
+        setMessages(function (m) { return m.concat([payload.new]); });
+        setTimeout(function () { try { refFin.current && refFin.current.scrollIntoView({ block: "end" }); } catch (e) { } }, 60);
+      }).subscribe();
+    } catch (e) { }
+    return function () { try { canal && supa.removeChannel(canal); } catch (e) { } };
+  }, [vue, convActive && convActive.id]);
+
+  function envoyer() {
+    var texte = saisie.trim();
+    if (!texte || !convActive || envoiEnCours) return;
+    setEnvoiEnCours(true); setSaisie("");
+    envoyerMessagePrive(convActive.id, texte).then(function (r) {
+      setEnvoiEnCours(false);
+      if (r && !r.error && r.data) {
+        setMessages(function (m) { return m.some(function (x) { return x.id === r.data.id; }) ? m : m.concat([r.data]); });
+        setTimeout(function () { try { refFin.current && refFin.current.scrollIntoView({ block: "end" }); } catch (e) { } }, 60);
+      }
+    });
+  }
+
+  function retourListe() { setVue("liste"); setConvActive(null); setMenuOuvert(false); setConfBlocage(false); rafraichirListe(); }
+
+  function confirmerBlocage(masquerHistorique) {
+    if (!convActive || !convActive.autreId) return;
+    bloquerUtilisateur(convActive.autreId, masquerHistorique, convActive.id).then(function () { retourListe(); });
+  }
+
+  function signaler() {
+    if (!messages.length) return;
+    var dernier = messages[messages.length - 1];
+    signalerMessage(dernier.id, "signalement depuis la messagerie").then(function () {
+      setMenuOuvert(false);
+      alert(T("Signalement envoyé aux modérateurs. Merci.", "Report sent to moderators. Thank you.", "Denuncia enviada a los moderadores. Gracias.", "Segnalazione inviata ai moderatori. Grazie.", "モデレーターに報告しました。ありがとうございます。"));
+    });
+  }
+
+  var convsFiltrees = convs.filter(function (c) { return onglet === "dm" ? c.type === "dm" : c.type !== "dm"; });
+
+  // ---------- VUE LISTE ----------
+  if (vue === "liste") {
+    return h("div", { style: { minHeight: "100vh", background: MSG_COL.fond, display: "flex", flexDirection: "column", paddingBottom: 100 } },
+      h("div", { style: { padding: "calc(env(safe-area-inset-top) + 20px) 20px 8px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
+        h("button", { onClick: function () { setEcran("dashboard"); }, "aria-label": "Retour", style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.05)", border: "1px solid " + MSG_COL.carteBord, color: MSG_COL.blanc, fontSize: 20, cursor: "pointer" } }, "\u2039"),
+        h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 20, color: MSG_COL.blanc, letterSpacing: 0.3 } }, T("Messages", "Messages", "Mensajes", "Messaggi", "メッセージ")),
+        h("div", { style: { width: 38 } })),
+      h("div", { style: { display: "flex", gap: 8, padding: "8px 20px 14px" } },
+        h("div", { onClick: function () { setOnglet("dm"); }, style: { flex: 1, textAlign: "center", padding: "9px 0", borderRadius: 14, fontSize: 12.5, letterSpacing: 0.4, cursor: "pointer", color: onglet === "dm" ? MSG_COL.fond : MSG_COL.gris, background: onglet === "dm" ? MSG_COL.turquoise : MSG_COL.carte, border: "1px solid " + (onglet === "dm" ? "transparent" : MSG_COL.carteBord), fontWeight: onglet === "dm" ? 700 : 500 } }, T("Messages", "Messages", "Mensajes", "Messaggi", "メッセージ")),
+        h("div", { onClick: function () { setOnglet("groupes"); }, style: { flex: 1, textAlign: "center", padding: "9px 0", borderRadius: 14, fontSize: 12.5, letterSpacing: 0.4, cursor: "pointer", color: onglet === "groupes" ? MSG_COL.fond : MSG_COL.gris, background: onglet === "groupes" ? MSG_COL.turquoise : MSG_COL.carte, border: "1px solid " + (onglet === "groupes" ? "transparent" : MSG_COL.carteBord), fontWeight: onglet === "groupes" ? 700 : 500 } }, T("Écuries & clubs", "Stables & clubs", "Cuadras y clubes", "Scuderie e club", "厩舎とクラブ"))),
+      h("div", { style: { flex: 1, overflowY: "auto", padding: "2px 14px" } },
+        chargement ? h("div", { style: { textAlign: "center", padding: "60px 10px", color: MSG_COL.gris, fontSize: 13 } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…")) :
+        !convsFiltrees.length ? h("div", { style: { textAlign: "center", padding: "60px 10px", color: MSG_COL.gris, fontSize: 13, fontStyle: "italic" } }, onglet === "dm" ? T("Aucune conversation pour le moment.", "No conversations yet.", "Aún no hay conversaciones.", "Ancora nessuna conversazione.", "まだ会話はありません。") : T("Aucun groupe pour le moment.", "No groups yet.", "Aún no hay grupos.", "Ancora nessun gruppo.", "まだグループはありません。")) :
+        convsFiltrees.map(function (c) {
+          var titre = c.type === "dm" ? (c.autrePseudo || T("Cavalier", "Rider", "Jinete", "Cavaliere", "騎手")) : (c.ecurie || c.club || T("Groupe", "Group", "Grupo", "Gruppo", "グループ"));
+          return h("div", { key: c.id, onClick: function () { ouvrirConversation(c); }, style: { display: "flex", alignItems: "center", gap: 12, padding: 12, marginBottom: 8, background: MSG_COL.carte, border: "1px solid " + (c.nonLus ? "rgba(32,217,245,0.28)" : MSG_COL.carteBord), borderRadius: 20, cursor: "pointer" } },
+            c.type === "dm" ? h("img", { src: (typeof avSrc === "function" ? avSrc(c.autreAvatar) : c.autreAvatar) || "", style: { width: 52, height: 52, borderRadius: "50%", objectFit: "cover", border: "1.5px solid rgba(244,247,250,0.10)", background: "#20262B" }, onError: function (e) { e.target.style.visibility = "hidden"; } }) :
+              h("div", { style: { width: 52, height: 52, borderRadius: 16, background: "#20262B", border: "1.5px solid rgba(32,217,245,0.22)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", color: MSG_COL.turquoise, fontSize: 18, flexShrink: 0 } }, (titre || "?").charAt(0).toUpperCase()),
+            h("div", { style: { flex: 1, minWidth: 0 } },
+              h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 } },
+                h("div", { style: { fontSize: 14.5, fontWeight: 600, color: MSG_COL.blanc, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titre),
+                h("div", { style: { fontSize: 10.5, color: MSG_COL.gris, flexShrink: 0, marginLeft: 8 } }, tempsRelatifMsg(c.dernierLe, lg))),
+              h("div", { style: { fontSize: 12.5, color: c.nonLus ? MSG_COL.blanc : MSG_COL.gris, fontWeight: c.nonLus ? 500 : 400, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, c.dernierMessage || T("Dites bonjour \u{1F44B}", "Say hello \u{1F44B}", "Saluda \u{1F44B}", "Saluta \u{1F44B}", "挨拶しよう \u{1F44B}"))),
+            c.nonLus ? h("div", { style: { minWidth: 19, height: 19, borderRadius: 10, background: MSG_COL.turquoise, color: MSG_COL.fond, fontSize: 10.5, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 5px", flexShrink: 0, marginLeft: 8 } }, c.nonLus) : null);
+        })));
+  }
+
+  // ---------- VUE FIL ----------
+  var titreFil = convActive ? (convActive.type === "dm" ? (convActive.autrePseudo || T("Cavalier", "Rider", "Jinete", "Cavaliere", "騎手")) : (convActive.ecurie || convActive.club || T("Groupe", "Group", "Grupo", "Gruppo", "グループ"))) : "";
+  return h("div", { style: { minHeight: "100vh", background: MSG_COL.fond, display: "flex", flexDirection: "column" } },
+    h("div", { style: { padding: "calc(env(safe-area-inset-top) + 20px) 16px 14px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(244,247,250,0.05)" } },
+      h("button", { onClick: retourListe, "aria-label": "Retour", style: { color: MSG_COL.turquoise, fontSize: 22, background: "none", cursor: "pointer", flexShrink: 0 } }, "\u2039"),
+      convActive && convActive.type === "dm" ? h("img", { src: (typeof avSrc === "function" ? avSrc(convActive.autreAvatar) : convActive.autreAvatar) || "", style: { width: 38, height: 38, borderRadius: "50%", objectFit: "cover", background: "#20262B" } }) :
+        h("div", { style: { width: 38, height: 38, borderRadius: 12, background: "#20262B", border: "1.5px solid rgba(32,217,245,0.22)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", color: MSG_COL.turquoise, fontSize: 15 } }, (titreFil || "?").charAt(0).toUpperCase()),
+      h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, color: MSG_COL.blanc, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titreFil)),
+      convActive && convActive.type === "dm" ? h("div", { style: { position: "relative" } },
+        h("button", { onClick: function () { setMenuOuvert(!menuOuvert); }, "aria-label": "Options", style: { width: 34, height: 34, borderRadius: "50%", background: "rgba(255,255,255,0.05)", border: "1px solid " + MSG_COL.carteBord, color: MSG_COL.blanc, fontSize: 16, cursor: "pointer" } }, "\u22EF"),
+        menuOuvert ? h("div", { style: { position: "absolute", top: 40, right: 0, minWidth: 200, background: "#1B2126", border: "1px solid " + MSG_COL.carteBord, borderRadius: 14, padding: 6, zIndex: 20, boxShadow: "0 14px 34px rgba(0,0,0,0.5)" } },
+          h("button", { onClick: signaler, style: { display: "block", width: "100%", textAlign: "left", padding: "10px 12px", background: "none", color: MSG_COL.blanc, fontSize: 13, borderRadius: 10, cursor: "pointer" } }, T("Signaler", "Report", "Denunciar", "Segnala", "報告する")),
+          h("button", { onClick: function () { setMenuOuvert(false); setConfBlocage(true); }, style: { display: "block", width: "100%", textAlign: "left", padding: "10px 12px", background: "none", color: "#FF8A93", fontSize: 13, borderRadius: 10, cursor: "pointer" } }, T("Bloquer", "Block", "Bloquear", "Blocca", "ブロック"))) : null) : null),
+    h("div", { style: { flex: 1, overflowY: "auto", padding: "18px 14px 14px", display: "flex", flexDirection: "column", gap: 10 } },
+      messages.map(function (m) {
+        var mien = m.expediteur_id === moiId;
+        return h("div", { key: m.id, style: { maxWidth: "75%", alignSelf: mien ? "flex-end" : "flex-start", padding: "11px 14px", borderRadius: 20, borderBottomRightRadius: mien ? 6 : 20, borderBottomLeftRadius: mien ? 20 : 6, fontSize: 13.5, lineHeight: 1.4, color: MSG_COL.blanc, background: mien ? MSG_COL.bulleMoi : MSG_COL.bulleEux } }, m.contenu);
+      }),
+      h("div", { ref: refFin })),
+    h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "10px 14px 22px", borderTop: "1px solid rgba(244,247,250,0.05)" } },
+      h("input", { value: saisie, onChange: function (e) { setSaisie(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") envoyer(); }, placeholder: T("Écrire un message…", "Write a message…", "Escribe un mensaje…", "Scrivi un messaggio…", "メッセージを書く…"), style: { flex: 1, background: MSG_COL.carte, border: "1px solid " + MSG_COL.carteBord, borderRadius: 22, padding: "11px 16px", color: MSG_COL.blanc, fontSize: 13.5, outline: "none" } }),
+      h("button", { onClick: envoyer, disabled: envoiEnCours || !saisie.trim(), "aria-label": "Envoyer", style: { width: 40, height: 40, borderRadius: "50%", background: MSG_COL.turquoise, display: "flex", alignItems: "center", justifyContent: "center", color: MSG_COL.fond, fontSize: 16, flexShrink: 0, border: "none", cursor: "pointer", opacity: (envoiEnCours || !saisie.trim()) ? 0.5 : 1 } }, "\u27A4")),
+    confBlocage ? h("div", { onClick: function () { setConfBlocage(false); }, style: { position: "fixed", inset: 0, zIndex: 90, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-end" } },
+      h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", background: "linear-gradient(180deg, rgba(20,24,28,0.98), rgba(9,11,15,0.99))", borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: "20px 20px calc(20px + env(safe-area-inset-bottom))", border: "1px solid " + MSG_COL.carteBord } },
+        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, color: MSG_COL.blanc, textAlign: "center", marginBottom: 16 } }, T("Bloquer " + titreFil, "Block " + titreFil, "Bloquear a " + titreFil, "Blocca " + titreFil, titreFil + "\u3092\u30d6\u30ed\u30c3\u30af")),
+        h("button", { onClick: function () { confirmerBlocage(false); }, style: { display: "block", width: "100%", textAlign: "center", padding: "13px", borderRadius: 14, background: "rgba(255,255,255,0.06)", color: MSG_COL.blanc, fontSize: 13.5, fontWeight: 600, marginBottom: 10, border: "none", cursor: "pointer" } }, T("Bloquer et garder l'historique", "Block and keep history", "Bloquear y conservar el historial", "Blocca e mantieni la cronologia", "ブロックして履歴を残す")),
+        h("button", { onClick: function () { confirmerBlocage(true); }, style: { display: "block", width: "100%", textAlign: "center", padding: "13px", borderRadius: 14, background: "rgba(255,138,147,0.12)", color: "#FF8A93", fontSize: 13.5, fontWeight: 600, marginBottom: 10, border: "1px solid rgba(255,138,147,0.3)", cursor: "pointer" } }, T("Bloquer et masquer la conversation", "Block and hide conversation", "Bloquear y ocultar la conversación", "Blocca e nascondi la conversazione", "ブロックして会話を非表示")),
+        h("button", { onClick: function () { setConfBlocage(false); }, style: { display: "block", width: "100%", textAlign: "center", padding: "12px", background: "none", color: MSG_COL.gris, fontSize: 13, border: "none", cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル")))) : null);
 }
 /* ============== 05_ecrans_galops.jsx ============== */
 /* ---------- BIBLIOTHÈQUE DES GALOPS ---------- */
