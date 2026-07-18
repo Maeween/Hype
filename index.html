@@ -26958,7 +26958,7 @@ function EcranMonCavalier() {
     club: __visitePub.club || __visitePub.ecurie || "",
     ecurie: __visitePub.ecurie || "",
     ville: __visitePub.ville || ""
-  }, visiteProfilFull || {}, { avatar: __visitePub.photo || null }) : ctx.profil;
+  }, visiteProfilFull || {}, { avatar: (visiteProfilFull && visiteProfilFull.avatar_url && typeof avSrc === "function") ? avSrc(visiteProfilFull.avatar_url) : (__visitePub.photo || null) }) : ctx.profil;
   var setProfil = __estVisite ? function () {} : ctx.setProfil;
   var _sug = React.useState([]), suggestions = _sug[0], setSuggestions = _sug[1];
   React.useEffect(function () { (async function () {
@@ -27146,7 +27146,7 @@ function EcranMonCavalier() {
         : h("button", { onClick: function () { setClub2Local({ club: "" }); setEditClub2(true); }, style: { minHeight: 118, borderRadius: 18, border: "1.5px dashed rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.05)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", color: "#5FE9F0", fontFamily: M, fontSize: 10.5, fontWeight: 600, padding: 10, textAlign: "center" } },
             h("span", { style: { width: 28, height: 28, borderRadius: "50%", border: "1.5px solid #5FE9F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 } }, "+"),
             T("Ajouter une \u00e9curie", "Add a stable", "A\u00f1adir una cuadra", "Aggiungi una scuderia", "\u53a9\u820e\u3092\u8ffd\u52a0"))),
-    h("div", { style: { padding: "26px 16px 0" } },
+    !__estVisite ? (h("div", { style: { padding: "26px 16px 0" } },
       h("button", { onClick: function () { setEcran("ecurie"); }, "aria-label": "Mon \u00e9curie", style: { position: "relative", display: "block", width: "100%", padding: 0, border: "none", background: "transparent", cursor: "pointer", lineHeight: 0, borderRadius: 20, overflow: "hidden" } },
         (function () {
           var ecImgP = null;
@@ -27158,7 +27158,7 @@ function EcranMonCavalier() {
                   h("div", { style: { fontSize: 8.5, letterSpacing: "0.3em", fontWeight: 800, color: "#7DDDE8", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif" } }, T("Ton univers", "Your world", "Tu universo", "Il tuo universo", "\u3042\u306a\u305f\u306e\u4e16\u754c")),
                   h("div", { style: { marginTop: 5, fontFamily: "'Cinzel',serif", fontSize: 18, fontWeight: 700, letterSpacing: "0.06em", color: "#F4FEFF", textTransform: "uppercase" } }, T("Mon \u00c9curie", "My Stable", "Mi cuadra", "La mia scuderia", "\u30de\u30a4\u53a9\u820e"))),
                 h("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a"));
-        })())),
+        })()))) : null,
     h("div", { style: { padding: "26px 0 0" } },
       h("div", { style: { padding: "0 16px" } }, (__estVisite ? eyebrow(T("Ses chevaux", "Their horses", "Sus caballos", "I suoi cavalli", "彼の馬")) : eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), T("G\u00e9rer mon \u00e9curie", "Manage stable", "Gestionar", "Gestisci", "\u7ba1\u7406"), function () { setEcran("ecurie"); }))),
       h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "2px 16px 4px" } }, (function () {
