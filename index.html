@@ -33179,7 +33179,9 @@ function EcranBibliothequeGalops() {
                 (function () { var titreG = t("galops_titre"); var iG = titreG.lastIndexOf(" "); return React.createElement("h1", { style: { margin: 0, fontFamily: "'Cinzel', serif", fontSize: 34, fontWeight: 600, letterSpacing: 1.5, lineHeight: 1.12, color: COLORS.blanc, textTransform: "uppercase", textShadow: "0 3px 18px rgba(4,8,12,0.6)" } }, iG > 0 ? [titreG.slice(0, iG + 1), React.createElement("span", { key: "tq", style: { color: COLORS.turquoise } }, titreG.slice(iG + 1))] : titreG); })(),
                 React.createElement("p", { style: { margin: "9px 0 0", fontSize: 13, color: COLORS.grisDoux, lineHeight: 1.5, maxWidth: 320 } }, t("galops_sous_titre")))),
         (function(){
-            var gAct = (profil && typeof profil.galopActuel === "number" && profil.galopActuel >= 1 && profil.galopActuel <= 7) ? profil.galopActuel : 1;
+            var gActBrut = (profil && typeof profil.galopActuel === "number" && profil.galopActuel >= 1 && profil.galopActuel <= 7) ? profil.galopActuel : 1;
+            var galopActObj = GALOPS_I18N.find(function(g){ return g.id === gActBrut; });
+            var gAct = (galopActObj && (galopActObj.disponible || estModGal)) ? gActBrut : 1;
             var coursG = [];
             try { coursG = obtenirCoursParGalop(gAct, langue) || []; } catch (ePB) { coursG = []; }
             var finis = coursG.filter(function(c){ return coursTermines.includes(c.id); }).length;
@@ -33187,7 +33189,7 @@ function EcranBibliothequeGalops() {
             var prochainC = coursG.find(function(c){ return !coursTermines.includes(c.id); });
             var titreP = prochainC ? (typeof prochainC.titre === "string" ? prochainC.titre : ((prochainC.titre || {})[langue] || (prochainC.titre || {}).fr || "")) : "";
             return React.createElement("div", { style: { padding: "0 20px 14px" } },
-                React.createElement("button", { onClick: function(){ setGalopOuvert(gAct); setEcran("galop-detail"); }, style: { width: "100%", textAlign: "left", borderRadius: 18, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(16,24,32,0.92), rgba(9,13,18,0.96))", padding: "15px 16px 14px", cursor: "pointer" } },
+                React.createElement("button", { onClick: function(){ if (!(galopActObj && (galopActObj.disponible || estModGal))) { return; } setGalopOuvert(gAct); setEcran("galop-detail"); }, style: { width: "100%", textAlign: "left", borderRadius: 18, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(16,24,32,0.92), rgba(9,13,18,0.96))", padding: "15px 16px 14px", cursor: "pointer" } },
                     React.createElement("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 } },
                         React.createElement("div", { style: { fontFamily: "Cinzel, serif", fontSize: 17, fontWeight: 700, letterSpacing: 1.2, color: "#EDF2F5" } }, "Galop ", React.createElement("span", { style: { color: COLORS.turquoise } }, String(gAct)), " \u00b7 " + tr({ fr: "en cours", en: "in progress", es: "en curso", it: "in corso", ja: "\u9032\u884c\u4e2d" })),
                         React.createElement("div", { style: { fontFamily: "Cinzel, serif", fontSize: 19, fontWeight: 700, color: COLORS.turquoise } }, pctG + "%")),
