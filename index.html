@@ -33446,8 +33446,9 @@ function EcranGalopDetail() {
         return null;
     const photoKey = `galop_${galop.id}`;
     const url = PHOTOS[photoKey];
-    return (React.createElement("div", null,
-        React.createElement("div", { style: { height: 220, position: "relative", overflow: "hidden", background: url ? `url(${url}) center 20%/cover no-repeat` : `linear-gradient(135deg, ${galop.couleur}40, ${COLORS.nuit})` } },
+    return (React.createElement("div", { style: { position: "relative", zIndex: 0 } },
+        galop.id === "baby" && HYPE_IMGS["k449"] && React.createElement("div", { style: { position: "fixed", top: 0, left: "50%", transform: "translateX(-50%)", width: "100%", maxWidth: 480, height: "100vh", backgroundImage: `url(${HYPE_IMGS["k449"]})`, backgroundSize: "cover", backgroundPosition: "center 25%", backgroundRepeat: "no-repeat", opacity: 0.4, zIndex: -1, pointerEvents: "none" } }),
+        React.createElement("div", { style: { height: galop.id === "baby" ? 460 : 220, position: "relative", overflow: "hidden", background: url ? `url(${url}) center ${galop.id === "baby" ? "12%" : "20%"}/cover no-repeat` : `linear-gradient(135deg, ${galop.couleur}40, ${COLORS.nuit})` } },
             React.createElement("div", { style: { position: "absolute", inset: 0, background: `linear-gradient(to bottom, ${COLORS.nuit}0C 0%, ${COLORS.nuit}3C 94%)` } }),
             !url && React.createElement("div", { style: { position: "absolute", right: -6, top: 10, fontSize: 130, opacity: 0.14 } }, galop.icone),
             React.createElement("div", { style: { position: "relative", padding: "20px 20px 18px", height: "100%", display: "flex", flexDirection: "column" } },
