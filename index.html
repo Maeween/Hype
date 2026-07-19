@@ -34870,7 +34870,10 @@ function PalierBabyCarte({ level, niveauSuivant, verrouille, fait, coursNiveau, 
     }
     const questions = PALIERS_BABY_QUIZ[level] || [];
     return React.createElement("div", { style: { margin: "18px 20px", padding: "22px 18px", borderRadius: 22, background: `linear-gradient(160deg, ${meta.cadre}22, ${COLORS.nuitClaire})`, border: `1.5px solid ${meta.cadre}`, textAlign: "center" } },
-        React.createElement("div", { style: { fontSize: 46, marginBottom: 6 } }, meta.medaille),
+        React.createElement("div", { style: { position: "relative", width: 84, height: 84, margin: "0 auto 10px" } },
+            HYPE_IMGS["k452"] && React.createElement("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", boxShadow: `0 0 0 3px ${COLORS.nuit}, 0 0 0 5px ${meta.cadre}, 0 0 24px ${meta.halo}` } },
+                React.createElement("img", { src: HYPE_IMGS["k452"], alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", objectPosition: "center 20%" } })),
+            React.createElement("span", { style: { position: "absolute", bottom: -4, right: -4, fontSize: 26, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))" } }, meta.medaille)),
         React.createElement("h3", { style: { fontFamily: "'Cinzel', serif", fontSize: 16.5, color: COLORS.blanc, margin: "0 0 4px" } }, tr({ fr: "Bravo, tu as terminé le chemin du ", en: "Well done, you finished the ", es: "¡Bien hecho, terminaste el camino del ", it: "Bravo, hai terminato il percorso del ", de: "Bravo, du hast den Weg des ", ja: "やったね、この道を歩き終えたよ、" }) + tr(meta.nom) + " !"),
         React.createElement("p", { style: { margin: "0 0 14px", fontSize: 12, color: COLORS.encreDoux } }, tr({ fr: "Apy est très fier de toi.", en: "Apy is very proud of you.", es: "Apy está muy orgulloso de ti.", it: "Apy è molto fiero di te.", de: "Apy ist sehr stolz auf dich.", ja: "アピーはとってもうれしいよ。" })),
         coursNiveau.length > 0 && React.createElement("div", { style: { textAlign: "left", background: COLORS.nuitElevee, borderRadius: 14, padding: "10px 14px", marginBottom: 14 } },
