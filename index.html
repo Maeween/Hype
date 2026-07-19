@@ -19503,7 +19503,7 @@ const INFOG_SECURITE_G1 = { fr: HYPE_IMGS["k406"], en: HYPE_IMGS["k407"], ja: HY
 const COURS_BABY_I18N = [
 {"id":"baby-c1","icone":"🐴","level":"poney_bronze","type":{"fr":"théorie","en":"theory","es":"teoría","it":"teoria","de":"Theorie","ja":"理論"},"duree":{"fr":"5 min","en":"5 min","es":"5 min","it":"5 min","de":"5 Min.","ja":"5分"},"titre":{"fr":"Bonjour Poney !","en":"Hello Pony!","es":"¡Hola Poni!","it":"Ciao Pony!","de":"Hallo Pony!","ja":"こんにちはポニー！"},
 "blocs":[
-{"type":"couv-affiche","src":HYPE_IMGS["k449"],"logo":null,"couv":{"titre1":{"fr":"BONJOUR","en":"HELLO","es":"HOLA","it":"CIAO","de":"HALLO","ja":"こんにちは"},"titre2":{"fr":"PONEY !","en":"PONY!","es":"¡PONI!","it":"PONY!","de":"PONY!","ja":"ポニー！"},"citation":{"fr":"Un poney heureux, c'est un poney qu'on approche doucement.","en":"A happy pony is a pony you approach gently.","es":"Un poni feliz es un poni al que te acercas con suavidad.","it":"Un pony felice è un pony a cui ti avvicini con dolcezza.","de":"Ein glückliches Pony ist ein Pony, dem man sich sanft nähert.","ja":"幸せなポニーとは、やさしく近づいてもらえるポニーのこと。"},"auteur":{"fr":"","en":"","es":"","it":"","de":"","ja":""},"cta":{"fr":"Commencer","en":"Start","es":"Empezar","it":"Iniziare","de":"Beginnen","ja":"始める"}}},
+{"type":"couv-affiche","src":HYPE_IMGS["k467"],"logo":null,"couv":{"titre1":{"fr":"BONJOUR","en":"HELLO","es":"HOLA","it":"CIAO","de":"HALLO","ja":"こんにちは"},"titre2":{"fr":"PONEY !","en":"PONY!","es":"¡PONI!","it":"PONY!","de":"PONY!","ja":"ポニー！"},"citation":{"fr":"Un poney heureux, c'est un poney qu'on approche doucement.","en":"A happy pony is a pony you approach gently.","es":"Un poni feliz es un poni al que te acercas con suavidad.","it":"Un pony felice è un pony a cui ti avvicini con dolcezza.","de":"Ein glückliches Pony ist ein Pony, dem man sich sanft nähert.","ja":"幸せなポニーとは、やさしく近づいてもらえるポニーのこと。"},"auteur":{"fr":"","en":"","es":"","it":"","de":"","ja":""},"cta":{"fr":"Commencer","en":"Start","es":"Empezar","it":"Iniziare","de":"Beginnen","ja":"始める"}}},
 {"type":"texte-riche","aere":true,"titre":{"fr":"Comment dire bonjour à un poney","en":"How to say hello to a pony","es":"Cómo saludar a un poni","it":"Come salutare un pony","de":"Wie man ein Pony begrüßt","ja":"ポニーへの挨拶のしかた"},
 "contenu":{
 "fr":[
@@ -34895,36 +34895,32 @@ function CheminPoneyBaby({ coursListe, quizResultats, coursTermines, tr, onOuvri
     const totalEtoiles = coursListe.reduce((acc, c) => acc + nbEtoilesPourScore(quizResultats[c.id], coursTermines.includes(c.id)), 0);
     const nbTermines = coursListe.filter((c) => coursTermines.includes(c.id)).length;
     const groupes = NIVEAUX_BABY_ORDRE.map((lvl) => ({ level: lvl, cours: coursListe.filter((c) => c.level === lvl) })).filter((g) => g.cours.length > 0);
-    let cheminOuvert = true;
     let suggereTrouve = false;
     let indexGlobal = 0;
     const elements = [];
     groupes.forEach((g, gi) => {
         elements.push(React.createElement(EnTeteNiveauBaby, { key: "entete-" + g.level, level: g.level, tr: tr }));
         g.cours.forEach((cours) => {
-            const verrouille = !cheminOuvert;
             const termine = coursTermines.includes(cours.id);
-            const suggere = !verrouille && !termine && !suggereTrouve;
+            const suggere = !termine && !suggereTrouve;
             if (suggere) suggereTrouve = true;
             elements.push(React.createElement(NoeudCheminPoney, {
                 key: cours.id, cours: cours, index: indexGlobal++,
-                termine: termine, verrouille: verrouille, suggere: suggere,
+                termine: termine, verrouille: false, suggere: suggere,
                 couleurCadre: NIVEAUX_BABY_META[g.level].cadre,
                 etoiles: nbEtoilesPourScore(quizResultats[cours.id], termine),
                 tr: tr, onClick: () => onOuvrir(cours.id),
             }));
-            cheminOuvert = cheminOuvert && termine;
         });
         const niveauSuivant = groupes[gi + 1] ? groupes[gi + 1].level : null;
         if (niveauSuivant) {
-            const palierVerrouille = !cheminOuvert;
+            const tousTermines = g.cours.every((c) => coursTermines.includes(c.id));
             const palierFait = !!paliers[g.level];
             elements.push(React.createElement(PalierBabyCarte, {
                 key: "palier-" + g.level, level: g.level, niveauSuivant: niveauSuivant,
-                verrouille: palierVerrouille, fait: palierFait, coursNiveau: g.cours,
+                verrouille: !tousTermines, fait: palierFait, coursNiveau: g.cours,
                 onValider: () => validerPalier(g.level), tr: tr,
             }));
-            cheminOuvert = cheminOuvert && palierFait;
         }
     });
     return React.createElement("div", null,
@@ -35231,6 +35227,7 @@ function EcranQuiz() {
     const MODE_PAGE_UNIQUE = true;
     const [reponsesPage, setReponsesPage] = useState({});
     const [confirmQuit, setConfirmQuit] = useState(false);
+    const __swipeQuiz = React.useRef(null);
     useEffect(() => {
         if (quizPreview != null) { return; }
         setQuestions(melangerQuiz((cours === null || cours === void 0 ? void 0 : cours.quiz) || []));
@@ -35368,12 +35365,20 @@ function EcranQuiz() {
         const dernier = idx >= total - 1;
         const progPct = (valide ? (idx + 1) : idx) / total * 100;
         const verifier = () => { if (reponse == null || valide) return; setValide(true); if (estCorrect(reponse)) setBonnesReponses((b) => b + 1); };
-        return (React.createElement("div", { "data-noswipe": "true", style: { minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", isolation: "isolate", background: "#060709" } },
+        const onQuizTouchStart = (e) => { const t0 = e.touches[0]; __swipeQuiz.current = t0 ? { x: t0.clientX, y: t0.clientY } : null; };
+        const onQuizTouchEnd = (e) => {
+            const d = __swipeQuiz.current; __swipeQuiz.current = null;
+            if (!d) return;
+            const t1 = e.changedTouches[0];
+            const dx = t1.clientX - d.x, dy = t1.clientY - d.y;
+            if (dx > 65 && Math.abs(dx) > Math.abs(dy) * 1.6) setConfirmQuit(true);
+        };
+        return (React.createElement("div", { "data-noswipe": "true", onTouchStart: onQuizTouchStart, onTouchEnd: onQuizTouchEnd, style: { minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", isolation: "isolate", background: "#060709" } },
             React.createElement("div", { style: { position: "relative", height: "37vh", flex: "none", overflow: "hidden" } },
                 React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundImage: "url(" + fondQuizChapitre + ")", backgroundSize: "cover", backgroundPosition: "center" } }),
                 React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0.12) 42%, rgba(6,7,9,0.72) 78%, #060709 100%)" } }),
                 React.createElement("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 16, fontFamily: "'Cinzel',serif", fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: TQ, background: "rgba(6,9,12,0.4)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 99, padding: "6px 12px", backdropFilter: "blur(8px)" } }, T("Quiz", "Quiz", "Quiz", "Quiz", "\u30af\u30a4\u30ba")),
-                React.createElement("button", { onClick: () => setConfirmQuit(true), "aria-label": "Quitter", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", right: 16, width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.16)", color: "#aab2bd", fontSize: 15, background: "rgba(6,9,12,0.4)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, "\u2715"),
+                React.createElement("button", { onClick: () => setConfirmQuit(true), "aria-label": "Quitter", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 22px)", right: 16, width: 40, height: 40, borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.32)", color: "#F4F7FA", fontSize: 17, background: "rgba(6,9,12,0.72)", backdropFilter: "blur(10px)", boxShadow: "0 4px 14px rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, "\u2715"),
                 React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, background: "linear-gradient(90deg,transparent,rgba(34,218,245,0.6),transparent)" } }),
                 React.createElement("div", { style: { position: "absolute", left: 16, right: 16, bottom: 0, transform: "translateY(50%)" } },
                     React.createElement("div", { style: { height: 5, borderRadius: 99, background: "rgba(10,14,18,0.7)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.06)" } },
@@ -35406,8 +35411,8 @@ function EcranQuiz() {
                     React.createElement("p", { style: { margin: 0, fontSize: 13, lineHeight: 1.55, color: "#aab2bd" } }, question.explication || "")) : null,
                 React.createElement("button", { onClick: valide ? suivant : verifier, disabled: !valide && reponse == null, style: { position: "relative", width: "100%", padding: 16, border: "none", borderRadius: 15, overflow: "hidden", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: "0.03em", color: "#032329", background: "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)", boxShadow: "0 10px 28px rgba(34,218,245,0.3)", opacity: (!valide && reponse == null) ? 0.45 : 1, filter: (!valide && reponse == null) ? "grayscale(.5) brightness(.7)" : "none", transition: "opacity .25s, filter .25s" } },
                     valide ? (dernier ? T("Voir mon r\u00e9sultat", "See my result", "Ver mi resultado", "Vedi il risultato", "\u7d50\u679c\u3092\u898b\u308b") : T("Continuer", "Continue", "Continuar", "Continua", "\u7d9a\u3051\u308b")) : T("V\u00e9rifier", "Check", "Verificar", "Verifica", "\u78ba\u8a8d"))),
-            confirmQuit ? React.createElement("div", { style: { position: "fixed", inset: 0, zIndex: 40, display: "flex", alignItems: "flex-end", background: "rgba(4,6,8,0.6)", backdropFilter: "blur(6px)" }, onClick: function (e) { if (e.target === e.currentTarget) setConfirmQuit(false); } },
-                React.createElement("div", { style: { width: "100%", padding: "24px 24px calc(env(safe-area-inset-bottom) + 20px)", background: "linear-gradient(180deg,#14181d,#0a0d10)", borderTop: "1px solid rgba(255,255,255,0.16)", borderRadius: "26px 26px 0 0" } },
+            confirmQuit ? React.createElement("div", { style: { position: "fixed", inset: 0, zIndex: 60, display: "flex", alignItems: "flex-end", background: "rgba(4,6,8,0.6)", backdropFilter: "blur(6px)" }, onClick: function (e) { if (e.target === e.currentTarget) setConfirmQuit(false); } },
+                React.createElement("div", { style: { width: "100%", maxWidth: 480, margin: "0 auto", padding: "24px 24px calc(env(safe-area-inset-bottom) + 28px)", background: "linear-gradient(180deg,#14181d,#0a0d10)", borderTop: "1px solid rgba(255,255,255,0.16)", borderRadius: "26px 26px 0 0" } },
                     React.createElement("div", { style: { width: 40, height: 4, borderRadius: 99, background: "rgba(255,255,255,0.18)", margin: "0 auto 18px" } }),
                     React.createElement("h3", { style: { margin: "0 0 8px", fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 20, color: "#F4F7FA" } }, T("Quitter le quiz ?", "Leave the quiz?", "\u00bfSalir del quiz?", "Uscire dal quiz?", "\u30af\u30a4\u30ba\u3092\u3084\u3081\u308b\uff1f")),
                     React.createElement("p", { style: { margin: "0 0 18px", fontSize: 13, color: "#7f8894" } }, T("Ta progression ne sera pas enregistr\u00e9e.", "Your progress won't be saved.", "Tu progreso no se guardar\u00e1.", "I tuoi progressi non verranno salvati.", "\u9032\u6357\u306f\u4fdd\u5b58\u3055\u308c\u307e\u305b\u3093\u3002")),
