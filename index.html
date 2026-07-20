@@ -25450,7 +25450,7 @@ function EcranIntro() {
         let s = setup;
         if (setup && (setup.galop === "Professionnel / Autre" || setup.galop === "Enseignant")) {
             const nom = window.prompt(tr({ fr: "Nom de ton école/club d'équitation :", en: "Name of your riding school/club:", es: "Nombre de tu escuela/club hípico:", it: "Nome della tua scuola/club ippico:", de: "Name deiner Reitschule/deines Vereins:", ja: "乗馬クラブ・学校名：" })) || "";
-            s = { ...setup, demandePro: true, demandeProType: setup.galop, demandeProInfos: { nom: nom, date: new Date().toISOString() } };
+            s = { ...setup, demandePro: true, estPro: HYPE_PRO_AUTODEBLOQUE, demandeProType: setup.galop, demandeProInfos: { nom: nom, date: new Date().toISOString() } };
             try { window.hypeOuvrirLien("mailto:contact@hypequestrian.app?subject=" + encodeURIComponent("Demande Hype Pro - " + nom) + "&body=" + encodeURIComponent("Type : " + setup.galop + "\nStructure : " + nom + "\nCavalier : " + (setup.prenom || ""))); } catch (e) { }
         }
         setProfil(s); try { if (s && s.prenom && typeof majProfil === "function" && typeof supa !== "undefined") majProfil({ pseudo: String(s.prenom).slice(0, 30) }).catch(() => { }); } catch (e) { } LMAG_WELCOME = true; GLOBE_ONBOARDING = true; setEcran("monde");
@@ -26410,6 +26410,8 @@ window.hypeOuvrirPaiement = async function (url) {
     try { var wPay = window.open(lien, "_blank"); if (!wPay) { window.location.href = lien; } } catch (eO) { window.location.href = lien; }
 };
 window.hypeOuvrirLien = function (u) { try { var w = window.open(u, "_blank", "noopener"); if (!w) { window.location.href = u; } } catch (e) { window.location.href = u; } };
+// HYPE ▸ Hype Pro — déblocage automatique TEMPORAIRE des demandes (décision Blandine, ~2 mois à partir du 20/07/2026). Repasser à false pour revenir à la vérification manuelle.
+const HYPE_PRO_AUTODEBLOQUE = true;
 // HYPE ▸ Liens Stripe Hype Pro (professionnels/enseignants) — À REMPLACER par tes vrais liens de paiement une fois créés dans le Dashboard Stripe (Payment Links, abonnement mensuel récurrent).
 const HYPE_STRIPE_PRO_SANS_IA = "https://buy.stripe.com/REMPLACER_PRO_SANS_IA";
 const HYPE_STRIPE_PRO_AVEC_IA = "https://buy.stripe.com/REMPLACER_PRO_AVEC_IA";
@@ -27225,7 +27227,7 @@ function EcranMonCompte() {
       React.createElement("button", { onClick: function () {
               var nomClub = window.prompt(tr({ fr: "Nom de ton école/club d'équitation :", en: "Name of your riding school/club:", es: "Nombre de tu escuela/club hípico:", it: "Nome della tua scuola/club ippico:", de: "Name deiner Reitschule/deines Vereins:", ja: "乗馬クラブ・学校名：" }));
               if (!nomClub) return;
-              try { setProfilApp(Object.assign({}, profilApp, { demandePro: true, demandeProInfos: { nom: nomClub, date: new Date().toISOString() } })); } catch (e) {}
+              try { setProfilApp(Object.assign({}, profilApp, { demandePro: true, estPro: HYPE_PRO_AUTODEBLOQUE, demandeProInfos: { nom: nomClub, date: new Date().toISOString() } })); } catch (e) {}
               try { window.hypeOuvrirLien("mailto:contact@hypequestrian.app?subject=" + encodeURIComponent("Demande Hype Pro - " + nomClub) + "&body=" + encodeURIComponent("Structure : " + nomClub + "\nCavalier : " + nom)); } catch (e) {}
           }, style: { marginTop: 14, background: "none", border: "1px solid rgba(201,164,74,0.55)", color: "#F0D48A", fontSize: 12, fontWeight: 700, padding: "8px 16px", borderRadius: 999, cursor: "pointer" } }, "\uD83C\uDF93 " + tr({ fr: "Je suis professionnel ou enseignant", en: "I'm a professional or instructor", es: "Soy profesional o profesor", it: "Sono un professionista o istruttore", de: "Ich bin Profi oder Ausbilder", ja: "プロ・指導者です" })),
       React.createElement("button", { onClick: function () { setEcran("dashboard"); }, style: { marginTop: 28, padding: "13px 34px", borderRadius: 999, background: COLORS.turquoise, border: "none", color: "#04252A", fontSize: 14.5, fontWeight: 800, cursor: "pointer" } }, T.retourAccueil),
@@ -37574,10 +37576,9 @@ function EcranProfil() {
                     React.createElement("p", { style: { margin: "2px 0 0", fontSize: 11, color: COLORS.encreDoux } }, profil.estPro ? tr({ fr: "Statut vérifié \u2713 \u2014 l'offre Hype Pro est débloquée", en: "Verified status \u2713 \u2014 Hype Pro is unlocked", es: "Estado verificado \u2713 \u2014 Hype Pro está desbloqueado", it: "Stato verificato \u2713 \u2014 Hype Pro è sbloccato", de: "Status verifiziert \u2713 \u2014 Hype Pro ist freigeschaltet", ja: "確認済み \u2713 \u2014 Hype Pro が利用できます" }) : profil.demandePro ? tr({ fr: "Demande envoyée, en attente de vérification", en: "Request sent, awaiting verification", es: "Solicitud enviada, pendiente de verificación", it: "Richiesta inviata, in attesa di verifica", de: "Anfrage gesendet, Prüfung ausstehend", ja: "申請済み、確認をお待ちください" }) : tr({ fr: "Accès à l'offre Hype Pro sur vérification (club, SIRET...)", en: "Access to Hype Pro after verification (club, business ID...)", es: "Acceso a Hype Pro tras verificación (club, NIF...)", it: "Accesso a Hype Pro dopo verifica (club, P.IVA...)", de: "Zugang zu Hype Pro nach Prüfung (Verein, Gewerbe...)", ja: "確認後にHype Proへアクセス可能（クラブ・登録番号など）" }))),
             !profil.estPro && !profil.demandePro && React.createElement("button", { onClick: () => {
                     const nom = window.prompt(tr({ fr: "Nom de ton école/club d'équitation :", en: "Name of your riding school/club:", es: "Nombre de tu escuela/club hípico:", it: "Nome della tua scuola/club ippico:", de: "Name deiner Reitschule/deines Vereins:", ja: "乗馬クラブ・学校名：" })); if (!nom) return;
-                    const ref = window.prompt(tr({ fr: "Numéro SIRET, carte professionnelle ou tout justificatif :", en: "Business ID, professional card, or any proof:", es: "NIF, carné profesional o justificante:", it: "P.IVA, tessera professionale o giustificativo:", de: "Gewerbenummer, Ausbilderausweis oder Nachweis:", ja: "登録番号・指導者証など：" })) || "";
-                    setProfil({ ...profil, demandePro: true, demandeProInfos: { nom: nom, ref: ref, date: new Date().toISOString() } });
+                    setProfil({ ...profil, demandePro: true, estPro: HYPE_PRO_AUTODEBLOQUE, demandeProInfos: { nom: nom, date: new Date().toISOString() } });
                     try { localStorage.setItem("augalop_demandePro", "1"); } catch (e) { }
-                    try { window.hypeOuvrirLien("mailto:contact@hypequestrian.app?subject=" + encodeURIComponent("Demande Hype Pro - " + nom) + "&body=" + encodeURIComponent("Structure : " + nom + "\nJustificatif : " + ref + "\nCavalier : " + (profil.prenom || "") + "\nEmail : " + (profil.email || ""))); } catch (e) { }
+                    try { window.hypeOuvrirLien("mailto:contact@hypequestrian.app?subject=" + encodeURIComponent("Demande Hype Pro - " + nom) + "&body=" + encodeURIComponent("Structure : " + nom + "\nCavalier : " + (profil.prenom || "") + "\nEmail : " + (profil.email || ""))); } catch (e) { }
                 }, style: { marginTop: 10, width: "100%", textAlign: "center", padding: "10px 0", borderRadius: 12, background: `${COLORS.turquoise}18`, border: `1px solid ${COLORS.turquoise}55`, color: COLORS.turquoise, fontSize: 12.5, fontWeight: 700 } }, tr({ fr: "Faire ma demande", en: "Send my request", es: "Enviar mi solicitud", it: "Invia la mia richiesta", de: "Anfrage senden", ja: "申請する" })))),
         React.createElement(MenuLigne, { icone: "\uD83D\uDD14", texte: t("notifs_revision"), sousTexte: t("notifs_actives") }),
         React.createElement(MenuLigne, { icone: "\u2699", texte: t("acces_admin"), onClick: () => setEcran("admin") }),
