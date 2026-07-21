@@ -35951,6 +35951,29 @@ function _hbAnalyseFrame(canvasSrc) {
     } catch (e) { return { nettete: 1e9, empreinte: "" }; }
 }
 function _hbHashDistance(a, b) { if (!a || !b || a.length !== b.length) return 99; let d = 0; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) d++; return d; }
+// Ré-encode une frame déjà capturée (dataURL JPEG) à une résolution/qualité réduite, sans repasser
+// par la vidéo. Utilisé par le garde-fou de poids pour alléger le paquet envoyé au serveur tout en
+// conservant le maximum de frames possible (on réduit la qualité avant de sacrifier des frames).
+function _hbReencoderFrame(dataUrl, maxCote, qualite) {
+    return new Promise(function (resoudre) {
+        try {
+            const img = new Image();
+            img.onload = function () {
+                try {
+                    const grand = Math.max(img.width, img.height);
+                    const echelle = Math.min(1, maxCote / grand);
+                    const w = Math.max(1, Math.round(img.width * echelle));
+                    const h = Math.max(1, Math.round(img.height * echelle));
+                    const c = document.createElement("canvas"); c.width = w; c.height = h;
+                    c.getContext("2d").drawImage(img, 0, 0, w, h);
+                    resoudre(c.toDataURL("image/jpeg", qualite));
+                } catch (e) { resoudre(dataUrl); }
+            };
+            img.onerror = function () { resoudre(dataUrl); };
+            img.src = dataUrl;
+        } catch (e) { resoudre(dataUrl); }
+    });
+}
 // Extrait des images clés d'une vidéo (début → fin), avec leur timestamp, en écartant les frames
 // franchement floues et les quasi-doublons, pour permettre à Hey Baby d'analyser le mouvement sans
 // envoyer la vidéo entière. Conserve toujours au moins la première et la dernière frame captées.
@@ -35965,16 +35988,21 @@ function extraireFramesVideo(fichier, options) {
         let fini = false;
         const nettoyer = function () { try { video.removeAttribute("src"); video.load(); } catch (e) { } try { URL.revokeObjectURL(url); } catch (e) { } };
         const echec = function (msg) { if (fini) return; fini = true; clearTimeout(gardeFou); nettoyer(); rejeter(new Error(msg || "vidéo illisible")); };
-        const gardeFou = setTimeout(function () { echec("délai de lecture dépassé"); }, 20000);
+        let gardeFou = setTimeout(function () { echec("délai de lecture dépassé"); }, 20000);
         video.onerror = function () { echec("format vidéo non pris en charge"); };
         video.onloadedmetadata = async function () {
             try {
                 const duree = video.duration;
                 if (!isFinite(duree) || duree <= 0) { echec("durée de vidéo inconnue"); return; }
-                // Nombre de captures adaptatif : on capture ~50% de plus que le nombre final visé,
-                // pour pouvoir écarter les frames floues/doublons tout en gardant assez d'images utiles.
-                const nbFinal = nbDemande || (duree <= 8 ? 6 : duree <= 20 ? 8 : duree <= 45 ? 10 : 12);
-                const nbCaptures = Math.min(20, Math.round(nbFinal * 1.5));
+                // Nombre de captures cible, augmenté pour privilégier la qualité d'analyse (demande Blandine) :
+                // le garde-fou de poids ci-dessous réduit résolution/qualité avant de sacrifier des frames,
+                // donc on peut viser plus haut sans reproduire le bug de paquet trop lourd.
+                const nbFinal = nbDemande || (duree <= 8 ? 10 : duree <= 20 ? 14 : duree <= 45 ? 18 : 24);
+                const nbCaptures = Math.min(36, Math.round(nbFinal * 1.5));
+                // Le délai de sécurité global doit couvrir toutes les captures (chaque seek peut retomber
+                // sur son repli de 3,5s dans le pire cas) : on l'élargit avec le nombre de captures visées.
+                clearTimeout(gardeFou);
+                gardeFou = setTimeout(function () { echec("délai de lecture dépassé"); }, Math.min(90000, 20000 + nbCaptures * 3000));
                 const grand = Math.max(video.videoWidth || 1, video.videoHeight || 1);
                 const echelle = Math.min(1, maxCote / grand);
                 const w = Math.max(1, Math.round((video.videoWidth || 640) * echelle));
@@ -36024,9 +36052,27 @@ function extraireFramesVideo(fichier, options) {
                     for (let j = 0; j < k; j++) { const idx = Math.round(j * (gardees.length - 1) / Math.max(1, k - 1)); if (sub.indexOf(gardees[idx]) === -1) sub.push(gardees[idx]); }
                     gardees = sub;
                 }
-                // Garde-fou poids total (~4,2 Mo de base64) : ré-échantillonne si nécessaire, en gardant début/fin.
-                const LIMITE_TOTAL = 4200000;
+                // Garde-fou de poids total du paquet envoyé au serveur (cause probable du bug "Petit souci
+                // de connexion" en production : requête trop lourde pour la fonction Netlify). Au lieu de
+                // sacrifier des frames en premier (comme avant), on réduit d'abord qualité puis résolution,
+                // pour garder le maximum de frames possible — sacrifier des frames reste le tout dernier recours.
+                const LIMITE_TOTAL = 4000000;
+                const PALIERS = [
+                    { maxCote: maxCote, qualite: qualite },
+                    { maxCote: maxCote, qualite: Math.min(qualite, 0.6) },
+                    { maxCote: Math.min(maxCote, 960), qualite: 0.6 },
+                    { maxCote: Math.min(maxCote, 768), qualite: 0.5 },
+                    { maxCote: Math.min(maxCote, 640), qualite: 0.4 }
+                ];
                 let total = gardees.reduce(function (s, c) { return s + c.data.length; }, 0);
+                for (let p = 1; p < PALIERS.length && total > LIMITE_TOTAL; p++) {
+                    const palier = PALIERS[p];
+                    const reencodees = await Promise.all(gardees.map(function (c) { return _hbReencoderFrame(c.data, palier.maxCote, palier.qualite); }));
+                    for (let i = 0; i < gardees.length; i++) gardees[i] = Object.assign({}, gardees[i], { data: reencodees[i] });
+                    total = gardees.reduce(function (s, c) { return s + c.data.length; }, 0);
+                }
+                // Dernier recours seulement : si même en qualité/résolution minimales le paquet reste trop
+                // lourd, on réduit le nombre de frames (toujours en gardant début/fin).
                 while (gardees.length > 4 && total > LIMITE_TOTAL) {
                     const k = gardees.length - 2, sub = [];
                     for (let j = 0; j < k; j++) { const idx = Math.round(j * (gardees.length - 1) / (k - 1)); if (sub.indexOf(gardees[idx]) === -1) sub.push(gardees[idx]); }
