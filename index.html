@@ -36086,7 +36086,7 @@ function extraireFramesVideo(fichier, options) {
         try { video.load(); } catch (e) { }
     });
 }
-const HEYBABY_TIMEOUT_MS = 60000;
+const HEYBABY_TIMEOUT_MS = 65000;
 function getContexteHeyBaby(ctx) {
     var L = [];
     try {
@@ -36466,13 +36466,25 @@ function EcranAssistantIA() {
                     response = await fetch(API_ASSISTANT, optionsFetch);
                 } else { throw ePremier; }
             }
-            if (!response.ok) throw new Error("HTTP " + response.status);
+            if (!response.ok) {
+                let detailErr = null;
+                try { detailErr = await response.clone().json(); } catch (e) { }
+                const err = new Error("HTTP " + response.status);
+                if (detailErr && detailErr.code) { err.hbCode = detailErr.code; err.hbReqId = detailErr.reqId; err.hbMessage = detailErr.message; }
+                throw err;
+            }
             const ctype = (response.headers.get("content-type") || "");
             if (ctype.indexOf("application/json") !== -1 || !response.body || !response.body.getReader) {
                 // Compatibilité : ancien relais Netlify non-streaming (format JSON { content: [...] })
+                // ou nouveau format d'erreur structurée { ok:false, code, message, reqId }.
                 const data = await response.json();
+                if (data && data.ok === false) {
+                    hbLog("erreur structurée reçue", { code: data.code, reqId: data.reqId, message: data.message, apres_ms: Date.now() - t0 });
+                    majDerniere((d) => { d.pending = false; d.contenu = t("souci_connexion"); });
+                    return;
+                }
                 const texteReponse = ((_a = data === null || data === void 0 ? void 0 : data.content) === null || _a === void 0 ? void 0 : _a.map((block) => (block.type === "text" ? block.text : "")).filter(Boolean).join("\n")) || (data && data.text) || t("souci_connexion");
-                hbLog("réponse JSON complète en " + (Date.now() - t0) + " ms — " + texteReponse.length + " caractères");
+                hbLog("réponse JSON complète en " + (Date.now() - t0) + " ms — " + texteReponse.length + " caractères" + (data && data.reqId ? " — reqId " + data.reqId : ""));
                 majDerniere((d) => { d.contenu = texteReponse; d.pending = false; });
                 try { if (texteReponse) sauverMessageHB("assistant", texteReponse, false, conversationId); } catch (e) { }
                 try { memoriserAnalyse(texteReponse); } catch (e) { }
@@ -36489,6 +36501,16 @@ function EcranAssistantIA() {
                     if (!morceau) continue;
                     if (premier) { hbLog("premier fragment en " + (Date.now() - t0) + " ms"); premier = false; }
                     total += morceau;
+                    majDerniere((d) => { d.contenu = total.replace(/\u0000HEYBABY_ERROR:[^\u0000]*\u0000/, ""); d.pending = false; });
+                }
+                // Le serveur signale une coupure en cours de flux par un marqueur invisible en fin
+                // de texte (voir assistant.js) : on le détecte, on le retire de l'affichage, et on
+                // journalise le code/reqId pour le diagnostic — le cavalier voit juste la réponse
+                // (tronquée) sans le marqueur technique.
+                const marqueur = total.match(/\u0000HEYBABY_ERROR:([A-Z_]+):([^\u0000]*)\u0000/);
+                if (marqueur) {
+                    total = total.replace(marqueur[0], "");
+                    hbLog("flux interrompu côté serveur — code " + marqueur[1] + " — reqId " + marqueur[2] + " — après " + (Date.now() - t0) + " ms — " + total.length + " caractères reçus avant coupure");
                     majDerniere((d) => { d.contenu = total; d.pending = false; });
                 }
                 if (!total) { majDerniere((d) => { d.contenu = t("souci_connexion"); d.pending = false; }); hbLog("stream vide en " + (Date.now() - t0) + " ms"); }
@@ -36497,7 +36519,8 @@ function EcranAssistantIA() {
         }
         catch (err) {
             const interrompu = ctrl.signal.aborted;
-            hbLog(interrompu ? "requête interrompue" : "erreur", (err && err.message) ? err.message : String(err), "après " + (Date.now() - t0) + " ms");
+            const detailTech = err && err.hbCode ? (" — code " + err.hbCode + (err.hbReqId ? " — reqId " + err.hbReqId : "")) : "";
+            hbLog(interrompu ? "requête interrompue" : "erreur", (err && err.message) ? err.message : String(err), "après " + (Date.now() - t0) + " ms" + detailTech);
             majDerniere((d) => { d.pending = false; if (!d.contenu) d.contenu = interrompu ? t("heybaby_interrompu") : t("souci_connexion"); });
         }
         finally {
