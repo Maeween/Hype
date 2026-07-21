@@ -2,6 +2,8 @@
 // v2 + compatibilité GPT-5.x : budget de tokens élargi (les modèles GPT-5
 // consomment des tokens de raisonnement internes) + effort de raisonnement
 // réglable via la variable d'environnement OPENAI_REASONING (défaut "low").
+// v3.1 : detail:"high" explicite sur les images envoyées à OpenAI, pour une
+// analyse visuelle plus fine (position du cavalier, détails techniques, etc.).
 //
 // Variables d'environnement Netlify :
 //   OPENAI_API_KEY      (obligatoire)
@@ -38,7 +40,10 @@ function versOpenAI(messages) {
             const parties = m.content.map((b) => {
                 if (b && b.type === "image" && b.source && b.source.type === "base64") {
                     uneImage = true;
-                    return { type: "image_url", image_url: { url: "data:" + (b.source.media_type || "image/jpeg") + ";base64," + b.source.data } };
+                    // detail:"high" -> OpenAI analyse l'image à pleine résolution (tuiles 512px)
+                    // au lieu du mode "auto" qui peut la sous-échantillonner. Coût en tokens plus
+                    // élevé, mais nécessaire pour juger finement une position ou un détail technique.
+                    return { type: "image_url", image_url: { url: "data:" + (b.source.media_type || "image/jpeg") + ";base64," + b.source.data, detail: "high" } };
                 }
                 if (b && b.type === "image_url") { uneImage = true; return b; }
                 return { type: "text", text: (b && b.text) || "" };
