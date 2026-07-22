@@ -36087,6 +36087,10 @@ function extraireFramesVideo(fichier, options) {
     });
 }
 const HEYBABY_TIMEOUT_MS = 65000;
+// Analyse photo/vidéo de Hey Baby : temporairement DÉSACTIVÉE (décision Blandine 22/07/2026)
+// le temps de reconstruire la méthode d'analyse (repères géométriques, lexique, appel isolé).
+// Repasser à true pour réactiver le bouton photo et l'envoi de médias — une seule ligne.
+const HEYBABY_ANALYSE_VISUELLE = false;
 function getContexteHeyBaby(ctx) {
     var L = [];
     try {
@@ -36340,6 +36344,11 @@ function EcranAssistantIA() {
         const f = e.target.files && e.target.files[0];
         e.target.value = "";
         if (!f) return;
+        if (!HEYBABY_ANALYSE_VISUELLE) {
+            // Analyse photo/vidéo temporairement désactivée : message honnête, aucun envoi.
+            setMessages((prev) => [...prev, { role: "assistant", contenu: tr({ fr: "L'analyse photo et vidéo est en cours d'amélioration — elle revient bientôt, encore plus précise ! En attendant, pose-moi toutes tes questions sur les Galops, le matériel, les soins ou la théorie. 🐴", en: "Photo and video analysis is being improved — it'll be back soon, even more accurate! In the meantime, ask me anything about the Galops, tack, horse care or theory. 🐴", es: "El análisis de fotos y vídeos está en proceso de mejora — ¡volverá pronto, aún más preciso! Mientras tanto, pregúntame lo que quieras sobre los Galopes, el material, los cuidados o la teoría. 🐴", it: "L'analisi di foto e video è in fase di miglioramento — tornerà presto, ancora più precisa! Nel frattempo, chiedimi tutto quello che vuoi sui Galoppi, l'attrezzatura, le cure o la teoria. 🐴", ja: "写真・動画分析は現在改善中です——まもなく、より正確になって戻ってきます！それまでは、ギャロップ、馬具、お手入れ、理論について何でも聞いてください。🐴", de: "Die Foto- und Videoanalyse wird gerade verbessert — sie kommt bald zurück, noch präziser! Frag mich in der Zwischenzeit alles über die Galops, die Ausrüstung, die Pflege oder die Theorie. 🐴" }) }]);
+            return;
+        }
         if (typeof estFichierVideo === "function" && estFichierVideo(f)) {
             setImageJointe(null); setFramesVideo(null); setExtractionVideo(true);
             hbLog("vidéo choisie", { nom: f.name, taille: f.size, type: f.type });
@@ -36574,7 +36583,7 @@ function EcranAssistantIA() {
                 React.createElement("span", { style: { flex: 1, fontSize: 12.5, color: "rgba(255,255,255,0.7)" } }, framesVideo ? TXT("Vid\u00e9o jointe \u00b7 " + framesVideo.length + " images cl\u00e9s", "Video attached \u00b7 " + framesVideo.length + " key frames", "V\u00eddeo adjunto \u00b7 " + framesVideo.length + " fotogramas", "Video allegato \u00b7 " + framesVideo.length + " fotogrammi", "\u52d5\u753b\u3092\u6dfb\u4ed8 \u00b7 \u30ad\u30fc\u30d5\u30ec\u30fc\u30e0" + framesVideo.length + "\u679a") : t("photo_jointe")),
                 React.createElement("button", { onClick: () => { setImageJointe(null); setFramesVideo(null); }, style: { width: 30, height: 30, borderRadius: "50%", background: "rgba(255,255,255,0.12)", color: COLORS.blanc, fontSize: 14, flexShrink: 0 } }, "\u2715")) : null,
             React.createElement("div", { style: { display: "flex", gap: 9, alignItems: "center" } },
-                React.createElement("button", { onClick: () => fichierRef.current && fichierRef.current.click(), disabled: limiteAtteinte || extractionVideo, "aria-label": t("joindre_photo"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.16)", color: COLORS.turquoise, fontSize: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", opacity: extractionVideo ? 0.5 : 1 } }, "\uD83D\uDCF7"),
+                HEYBABY_ANALYSE_VISUELLE ? React.createElement("button", { onClick: () => fichierRef.current && fichierRef.current.click(), disabled: limiteAtteinte || extractionVideo, "aria-label": t("joindre_photo"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.16)", color: COLORS.turquoise, fontSize: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", opacity: extractionVideo ? 0.5 : 1 } }, "\uD83D\uDCF7") : null,
                 React.createElement("input", { value: saisie, onChange: (e) => setSaisie(e.target.value), onKeyDown: (e) => e.key === "Enter" && !enCours && envoyer(), placeholder: limiteAtteinte ? t("limite_atteinte_court") : t("poser_question_placeholder"), disabled: limiteAtteinte, style: { flex: 1, padding: "13px 16px", borderRadius: 16, border: "2px solid rgba(255,255,255,0.14)", fontSize: 14, color: COLORS.blanc, background: "rgba(255,255,255,0.06)" } }),
                 enCours ? React.createElement("button", { onClick: arreter, "aria-label": t("heybaby_stop"), title: t("heybaby_stop"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: `1px solid ${COLORS.turquoise}`, color: COLORS.turquoise, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u25A0")
                     : React.createElement("button", { onClick: () => envoyer(), disabled: limiteAtteinte || (!saisie.trim() && !imageJointe), style: { width: 48, height: 48, borderRadius: 14, background: limiteAtteinte || (!saisie.trim() && !imageJointe) ? "rgba(255,255,255,0.12)" : COLORS.turquoise, color: COLORS.blanc, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u27A4"))),
