@@ -1,26 +1,24 @@
-// netlify/functions/assistant.js — Relais Hey Baby v4
-// v4 (21/07/2026) — ÉTAPE 1 du correctif timeouts/diagnostic (voir SUIVI.md côté app) :
-//   - Timeout OpenAI ramené à 51s (au lieu de 85s) pour rester sous la limite d'exécution
-//     Netlify (~60s) et pouvoir répondre proprement AVANT que Netlify ne tue la fonction.
-//   - Erreurs JSON structurées avec code + statut HTTP cohérent (au lieu d'un message générique).
-//   - Identifiant de requête (reqId) sur chaque log et chaque réponse, pour recouper facilement
-//     un appel entre les logs Netlify et la console du navigateur.
-//   - Logs de diagnostic non sensibles (modèle, detail image, nb frames, taille body, durées...).
-//   - Mesure et garde-fou sur le poids du payload envoyé à OpenAI (rejet avant l'appel si
-//     anormalement lourd) — la RÉDUCTION AUTOMATIQUE de qualité/frames n'est PAS faite ici,
-//     volontairement, pour isoler la cause réelle avant d'ajuster quoi que ce soit d'autre
-//     (étape 2, après les tests en conditions réelles).
-//   - Le streaming SSE existant est conservé tel quel dans son principe (relit le flux OpenAI
-//     token par token et le retransmet), mais signale désormais une interruption par un marqueur
-//     de fin de flux plutôt que de couper silencieusement (voir MARQUEUR_ERREUR ci-dessous ;
-//     le frontend doit être adapté pour le détecter — pas encore fait à ce stade, index.html
-//     pas encore fourni pour cette étape).
+// netlify/functions/assistant.js — Relais Hey Baby v5
+// v5 (22/07/2026) — Passage contrôlé à GPT-5.6 Sol pour l'analyse photo (spec Blandine) :
+//   - Nouveau mode "perception" : appel d'observation visuelle isolé, non-streamé, sortie JSON
+//     structurée (response_format json_object), budget de sortie réduit (1200 tokens).
+//   - Réglages VISION séparés du texte : OPENAI_VISION_MODEL (obligatoire en mode perception,
+//     AUCUN repli silencieux vers un autre modèle), OPENAI_VISION_REASONING (repli :
+//     OPENAI_REASONING), OPENAI_VISION_DETAIL (défaut "original", transmis tel quel à OpenAI).
+//   - Le mode standard (texte, vidéos, anciens appels photo) reste STRICTEMENT identique à la
+//     v4 : detail "high", modèles/repli inchangés (repli gpt-4o journalisé désormais), streaming.
+//   - Erreurs distinctes : OPENAI_MODEL_NOT_FOUND (modèle indisponible/non autorisé),
+//     OPENAI_REASONING_PARAM, OPENAI_DETAIL_PARAM (paramètre refusé par OpenAI).
+//   - Retour arrière : remettre les anciennes valeurs de variables Netlify suffit (aucun ancien
+//     réglage supprimé).
 //
-// Variables d'environnement Netlify (inchangées) :
-//   OPENAI_API_KEY      (obligatoire)
-//   OPENAI_TEXT_MODEL   (ex. "gpt-5.5")
-//   OPENAI_VISION_MODEL (ex. "gpt-5.5")
-//   OPENAI_REASONING    (optionnel : "none" | "low" | "medium" | "high")
+// Variables d'environnement Netlify :
+//   OPENAI_API_KEY           (obligatoire)
+//   OPENAI_TEXT_MODEL        (texte/théorie — inchangé)
+//   OPENAI_VISION_MODEL      (vision — ex. "gpt-5.6-sol")
+//   OPENAI_REASONING         (raisonnement par défaut, texte inclus)
+//   OPENAI_VISION_REASONING  (raisonnement des appels perception ; repli : OPENAI_REASONING)
+//   OPENAI_VISION_DETAIL     (détail image des appels perception ; défaut "original")
 
 const CORS = {
     "Access-Control-Allow-Origin": "*",
@@ -28,34 +26,24 @@ const CORS = {
     "Access-Control-Allow-Headers": "Content-Type",
 };
 
-// Timeout de l'appel OpenAI : 51s, sous la limite synchrone Netlify (~60s) pour laisser
-// le temps au serveur de traiter l'abandon et de répondre proprement (point 1 et 3 de la demande).
 const TIMEOUT_OPENAI_MS = 51000;
+const LIMITE_PAYLOAD_OCTETS = 8 * 1024 * 1024;
 
-// Garde-fou de poids du payload envoyé à OpenAI (mesure + rejet, PAS de réduction automatique
-// à ce stade — voir note de version ci-dessus). Marge de sécurité sous les limites usuelles
-// des fonctions Netlify (généralement autour de 6 Mo pour le corps de la requête ENTRANTE ;
-// ici on mesure le corps SORTANT vers OpenAI, qui inclut le payload reçu, remis en forme).
-const LIMITE_PAYLOAD_OCTETS = 8 * 1024 * 1024; // 8 Mo
-
-// Table des codes d'erreur -> statut HTTP, telle que demandée.
 const STATUTS_ERREUR = {
-    INVALID_REQUEST: 400,       // requête client malformée (hors liste demandée, ajouté pour couvrir ce cas — signalé dans la livraison)
+    INVALID_REQUEST: 400,
     PAYLOAD_TOO_LARGE: 413,
     OPENAI_RATE_LIMIT: 429,
     OPENAI_AUTH_ERROR: 502,
     OPENAI_BAD_REQUEST: 502,
     OPENAI_SERVER_ERROR: 502,
+    OPENAI_MODEL_NOT_FOUND: 502,
+    OPENAI_REASONING_PARAM: 502,
+    OPENAI_DETAIL_PARAM: 502,
     INVALID_RESPONSE: 502,
     AI_TIMEOUT: 504,
     INTERNAL_ERROR: 500,
 };
 
-// Marqueur de fin de flux en cas d'interruption pendant le streaming (timeout, erreur réseau
-// amont, etc.). Comme les en-têtes HTTP sont déjà envoyés (200 + text/plain) au moment où une
-// interruption peut survenir, on ne peut plus changer le statut HTTP à ce stade : on signale
-// donc l'échec par un marqueur improbable en fin de texte, à détecter côté frontend.
-// Format : \u0000HEYBABY_ERROR:<CODE>:<reqId>\u0000
 function marqueurErreur(code, reqId) {
     return "\u0000HEYBABY_ERROR:" + code + ":" + reqId + "\u0000";
 }
@@ -79,27 +67,22 @@ function reponseJSON(objet, statut, reqId) {
     });
 }
 
-// Réponse d'erreur structurée : { ok:false, code, message, reqId } + statut HTTP cohérent.
-// message = texte lisible non technique (le frontend peut l'afficher ou non) ; le code sert
-// à la logique/diagnostic, jamais de détail sensible (clé, contenu du prompt, etc.) dedans.
 function erreurJSON(code, message, reqId, extra) {
     const statut = STATUTS_ERREUR[code] || 500;
     return reponseJSON(Object.assign({ ok: false, code: code, message: message, reqId: reqId }, extra || {}), statut, reqId);
 }
 
-// Convertit le format envoyé par l'app (blocs texte / image base64, style Anthropic)
-// vers le format OpenAI chat, et détecte la présence d'une image + compte les images.
-function versOpenAI(messages) {
+// Convertit le format app (blocs texte / image base64) vers le format OpenAI chat.
+// detailImage : niveau de détail appliqué aux images ("high" en mode standard — comportement
+// historique inchangé — ou la valeur d'OPENAI_VISION_DETAIL en mode perception).
+function versOpenAI(messages, detailImage) {
     let uneImage = false, nbImages = 0;
     const sortie = (Array.isArray(messages) ? messages : []).map((m) => {
         if (Array.isArray(m.content)) {
             const parties = m.content.map((b) => {
                 if (b && b.type === "image" && b.source && b.source.type === "base64") {
                     uneImage = true; nbImages++;
-                    // detail:"high" -> OpenAI analyse l'image à pleine résolution (tuiles 512px)
-                    // au lieu du mode "auto" qui peut la sous-échantillonner. Coût en tokens plus
-                    // élevé. Conservé tel quel à cette étape (pas de changement de réglage ici).
-                    return { type: "image_url", image_url: { url: "data:" + (b.source.media_type || "image/jpeg") + ";base64," + b.source.data, detail: "high" } };
+                    return { type: "image_url", image_url: { url: "data:" + (b.source.media_type || "image/jpeg") + ";base64," + b.source.data, detail: detailImage } };
                 }
                 if (b && b.type === "image_url") { uneImage = true; nbImages++; return b; }
                 return { type: "text", text: (b && b.text) || "" };
@@ -130,45 +113,63 @@ export default async (req) => {
         return erreurJSON("INTERNAL_ERROR", "Configuration serveur incomplète.", reqId);
     }
 
-    const { messages, uneImage, nbImages } = versOpenAI(corps.messages);
+    // ----- Mode de la requête -----
+    // "perception" : observation visuelle isolée (photo unique, JSON structuré, non streamé).
+    // "standard"   : comportement historique (texte, vidéos, rétrocompatibilité totale).
+    const mode = corps.mode === "perception" ? "perception" : "standard";
+    const detailImage = mode === "perception" ? (process.env.OPENAI_VISION_DETAIL || "original") : "high";
+
+    const { messages, uneImage, nbImages } = versOpenAI(corps.messages, detailImage);
     if (!messages.length) {
         log(reqId, "aucun message dans la requête");
         return erreurJSON("INVALID_REQUEST", "Aucun message à traiter.", reqId);
     }
 
-    // Routage automatique : jamais de nom de modèle en dur côté app.
-    const modele = uneImage
-        ? (process.env.OPENAI_VISION_MODEL || "gpt-4o")
-        : (process.env.OPENAI_TEXT_MODEL || "gpt-4o-mini");
+    // ----- Choix du modèle -----
+    let modele;
+    if (mode === "perception") {
+        // Spec : jamais de remplacement silencieux du modèle vision.
+        modele = process.env.OPENAI_VISION_MODEL;
+        if (!modele) {
+            log(reqId, "mode perception refusé : OPENAI_VISION_MODEL non définie");
+            return erreurJSON("INTERNAL_ERROR", "Modèle vision non configuré côté serveur.", reqId);
+        }
+    } else {
+        modele = uneImage
+            ? (process.env.OPENAI_VISION_MODEL || "gpt-4o")
+            : (process.env.OPENAI_TEXT_MODEL || "gpt-4o-mini");
+        if (uneImage && !process.env.OPENAI_VISION_MODEL) log(reqId, "⚠ repli silencieux vision → gpt-4o (OPENAI_VISION_MODEL absente)");
+        if (!uneImage && !process.env.OPENAI_TEXT_MODEL) log(reqId, "⚠ repli silencieux texte → gpt-4o-mini (OPENAI_TEXT_MODEL absente)");
+    }
 
     const messagesOpenAI = [];
     if (corps.system) messagesOpenAI.push({ role: "system", content: String(corps.system) });
     for (const m of messages) messagesOpenAI.push(m);
 
-    const streaming = corps.stream === true;
+    const streaming = mode === "perception" ? false : corps.stream === true;
 
-    // Charge utile OpenAI. Réglages (max_completion_tokens, reasoning_effort, detail image)
-    // volontairement inchangés à cette étape — seule la gestion des délais/erreurs change.
     const charge = {
         model: modele,
-        max_completion_tokens: 4096,
+        max_completion_tokens: mode === "perception" ? 1200 : 4096,
         stream: streaming,
         messages: messagesOpenAI,
     };
+    if (mode === "perception") charge.response_format = { type: "json_object" };
     if (modele.indexOf("gpt-5") === 0) {
-        charge.reasoning_effort = process.env.OPENAI_REASONING || "low";
+        charge.reasoning_effort = mode === "perception"
+            ? (process.env.OPENAI_VISION_REASONING || process.env.OPENAI_REASONING || "low")
+            : (process.env.OPENAI_REASONING || "low");
     }
 
-    // Mesure du poids réel du payload envoyé à OpenAI (point 7 et 11 : mesurer + garde-fou,
-    // sans réduction automatique de qualité/frames à ce stade).
     const chargeSerialisee = JSON.stringify(charge);
     const poidsOctets = chargeSerialisee.length;
     const longueurSystemPrompt = corps.system ? String(corps.system).length : 0;
 
     log(reqId, "requête reçue", {
+        mode: mode,
         type: uneImage ? (nbImages > 1 ? "vidéo/plusieurs images" : "photo") : "texte",
         modele: modele,
-        detailImage: uneImage ? "high" : "n/a",
+        detailImage: uneImage ? detailImage : "n/a",
         nbImages: nbImages,
         streaming: streaming,
         raisonnement: charge.reasoning_effort || "n/a",
@@ -213,18 +214,24 @@ export default async (req) => {
     if (!amont.ok) {
         clearTimeout(minuteur);
         const dureeMs = Date.now() - t0;
-        const detail = await amont.text().catch(() => "");
-        log(reqId, "OpenAI HTTP", amont.status, "après", dureeMs, "ms —", detail.slice(0, 400));
+        const detailTxt = await amont.text().catch(() => "");
+        log(reqId, "OpenAI HTTP", amont.status, "après", dureeMs, "ms —", detailTxt.slice(0, 400));
         let code = "OPENAI_SERVER_ERROR";
-        if (amont.status === 401 || amont.status === 403) code = "OPENAI_AUTH_ERROR";
-        else if (amont.status === 400) code = "OPENAI_BAD_REQUEST";
-        else if (amont.status === 429) code = "OPENAI_RATE_LIMIT";
-        else if (amont.status >= 500) code = "OPENAI_SERVER_ERROR";
-        else code = "INVALID_RESPONSE";
-        return erreurJSON(code, "Le fournisseur IA a renvoyé une erreur.", reqId, { statutAmont: amont.status, dureeMs: dureeMs });
+        let messageLisible = "Le fournisseur IA a renvoyé une erreur.";
+        if (amont.status === 401 || amont.status === 403) { code = "OPENAI_AUTH_ERROR"; }
+        else if (amont.status === 404 || /model/i.test(detailTxt) && /not.?found|does not exist|access/i.test(detailTxt)) {
+            code = "OPENAI_MODEL_NOT_FOUND"; messageLisible = "Modèle indisponible ou non autorisé pour ce compte.";
+        }
+        else if (amont.status === 400 && /reasoning/i.test(detailTxt)) { code = "OPENAI_REASONING_PARAM"; messageLisible = "Paramètre de raisonnement refusé par le fournisseur."; }
+        else if (amont.status === 400 && /detail/i.test(detailTxt)) { code = "OPENAI_DETAIL_PARAM"; messageLisible = "Niveau de détail d'image refusé par le fournisseur."; }
+        else if (amont.status === 400) { code = "OPENAI_BAD_REQUEST"; }
+        else if (amont.status === 429) { code = "OPENAI_RATE_LIMIT"; }
+        else if (amont.status >= 500) { code = "OPENAI_SERVER_ERROR"; }
+        else { code = "INVALID_RESPONSE"; }
+        return erreurJSON(code, messageLisible, reqId, { statutAmont: amont.status, dureeMs: dureeMs });
     }
 
-    // ----- Mode non-streaming (rétrocompatibilité) -----
+    // ----- Mode non-streaming (perception + rétrocompatibilité) -----
     if (!streaming) {
         const data = await amont.json().catch(() => null);
         clearTimeout(minuteur);
@@ -234,14 +241,14 @@ export default async (req) => {
             return erreurJSON("INVALID_RESPONSE", "Réponse du fournisseur IA illisible.", reqId, { dureeMs: dureeMs });
         }
         const texte = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
-        log(reqId, "réponse complète en", dureeMs, "ms —", texte.length, "caractères — statut ok");
-        return new Response(JSON.stringify({ ok: true, reqId: reqId, content: [{ type: "text", text: texte }] }), {
+        log(reqId, "réponse complète (" + mode + ") en", dureeMs, "ms —", texte.length, "caractères — statut ok");
+        return new Response(JSON.stringify({ ok: true, reqId: reqId, mode: mode, content: [{ type: "text", text: texte }] }), {
             status: 200,
             headers: { ...CORS, "Content-Type": "application/json", "X-Request-Id": reqId },
         });
     }
 
-    // ----- Mode streaming : on relit le SSE d'OpenAI et on renvoie du texte brut -----
+    // ----- Mode streaming (inchangé depuis la v4) -----
     const flux = new ReadableStream({
         async start(controller) {
             const lecteur = amont.body.getReader();
