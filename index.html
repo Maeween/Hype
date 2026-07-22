@@ -33142,12 +33142,19 @@ function memoryPoneyChargerProfil() {
 }
 function memoryPoneySauverProfil(p) { try { localStorage.setItem("hypeMemoryPoneyProfil", JSON.stringify(p)); } catch (e) { } }
 function MemoryPoneyGrille({ paires, onTermine, tr }) {
+    const MEMORY_TIRAGE_MAX = 6;
+    const pairesJeu = React.useMemo(() => {
+        if (paires.length <= MEMORY_TIRAGE_MAX) return paires;
+        const copie = [...paires];
+        for (let i = copie.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[copie[i], copie[j]] = [copie[j], copie[i]]; }
+        return copie.slice(0, MEMORY_TIRAGE_MAX);
+    }, [paires]);
     const cartesInit = React.useMemo(() => {
         const doubles = [];
-        paires.forEach((p, i) => { doubles.push({ id: i + "a", cle: p.cle, src: p.src, emoji: p.emoji, label: p.label }); doubles.push({ id: i + "b", cle: p.cle, src: p.src, emoji: p.emoji, label: p.label }); });
+        pairesJeu.forEach((p, i) => { doubles.push({ id: i + "a", cle: p.cle, src: p.src, emoji: p.emoji, label: p.label }); doubles.push({ id: i + "b", cle: p.cle, src: p.src, emoji: p.emoji, label: p.label }); });
         for (let i = doubles.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[doubles[i], doubles[j]] = [doubles[j], doubles[i]]; }
         return doubles;
-    }, [paires]);
+    }, [pairesJeu]);
     const [retournees, setRetournees] = React.useState([]);
     const [trouvees, setTrouvees] = React.useState([]);
     const [bloque, setBloque] = React.useState(false);
@@ -33168,7 +33175,7 @@ function MemoryPoneyGrille({ paires, onTermine, tr }) {
             }, 650);
         }
     };
-    const paireCount = paires.length;
+    const paireCount = pairesJeu.length;
     const trouveesPaires = Math.floor(trouvees.length / 2);
     React.useEffect(() => {
         if (trouveesPaires === paireCount && !finAppelee.current) {
@@ -33273,7 +33280,7 @@ function MemoryPoneyJeu({ tr }) {
                         : React.createElement("span", { style: { fontSize: 22 } }, n.emoji),
                     React.createElement("div", { style: { flex: 1 } },
                         React.createElement("p", { style: { margin: 0, fontSize: 14, fontWeight: 700, color: COLORS.encre } }, tr(n.titre)),
-                        React.createElement("p", { style: { margin: "2px 0 0", fontSize: 11, color: COLORS.encreDoux } }, n.paires.length + " " + tr({ fr: "paires", en: "pairs", es: "parejas", it: "coppie", de: "Paare", ja: "ペア" }))),
+                        React.createElement("p", { style: { margin: "2px 0 0", fontSize: 11, color: COLORS.encreDoux } }, Math.min(6, n.paires.length) + " " + tr({ fr: "paires", en: "pairs", es: "parejas", it: "coppie", de: "Paare", ja: "ペア" }))),
                     !complet && React.createElement("span", { style: { fontSize: 9.5, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", color: COLORS.encreDoux, background: COLORS.nuitElevee, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 999, padding: "4px 9px", flexShrink: 0 } }, tr({ fr: "Prochainement", en: "Coming soon", es: "Próximamente", it: "Prossimamente", de: "Demnächst", ja: "近日公開" })),
                     fait && React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 15 } }, "✓"));
             })),
