@@ -20,39 +20,97 @@
 
 **⚠️ Note de passation** : la conversation Directeur Technique du 21-22/07 SATURE (envoi d'images refusé, documents joints arrivant vides). **Prochaine session = NOUVELLE conversation**, repartir de : ce SUIVI (26) + index.html (25) + assistant.js v5 + test-heybaby.html (version avec barre en bas + anti-récitation + limites plafonnées — livrée, pas encore poussée au moment de cette note).
 
-**Version actuelle de l'index.html : session du 22/07/2026 (32) — Mémory : tirage aléatoire de 6 paires max par partie, conversation Baby Jeux**
+**Version actuelle de l'index.html : session du 23/07/2026 (35) — Encart "Reprises de dressage" en bas de la liste des Galops, conversation Directeur Technique**
 
-⚠️ Cette version part de la (30) EN LIGNE (la migration .jpg (31) reste reportée, décision Blandine — toujours ne pas l'utiliser).
+⚠️ Cette version part de la (34) et ajoute un nouvel encart en bas de `EcranBibliothequeGalops` (la liste des Galops), après la carte du dernier Galop : image fournie par Blandine en fond (cavalier de dressage + schéma de carrière lumineux, ambiance Baby Spectral), dégradé sombre du bas vers le haut pour poser le texte sans le superposer directement aux éléments visuels de l'image (même traitement que la carte Hype Premium juste au-dessus). Clic → ouvre directement l'écran "Réviser mes reprises" sur le Galop 4 par défaut (raisonnable : premier niveau qui a les 3 fonctionnalités — fiche, tracé animé, jeu).
 
-**Tirage à 6 paires (décision déléguée à Claude par Blandine, motivée par la difficulté du niveau "La vie du poney" : 9 paires = 18 cartes dès le 2ᵉ niveau, capture à l'appui 13 erreurs)** : `MemoryPoneyGrille` pioche désormais au hasard **6 paires maximum** par partie quand un niveau en compte davantage (`pairesJeu`, mélange Fisher-Yates + slice). Grille plafonnée à 12 cartes partout, rejouabilité accrue (chaque partie pioche des cartes différentes), et les thèmes peuvent s'enrichir sans limite sans grossir la grille. Concernés aujourd'hui : La vie du poney (9), Robes (7), Friandises (7). Le compteur "X / Y paires" et les fiches de niveaux affichent le nombre réellement joué (6). Les niveaux à ≤ 6 paires sont inchangés.
+**Nouvelle image** : `k553` (fournie en PNG par Blandine, convertie en JPG par Claude, même convention que k547-552 — `images/k553.jpg`, **fichier à déployer, pas encore fourni en JPG final, je n'ai que ma propre conversion**). Chargeur étendu à `547 ≤ k ≤ 553`.
 
-⚠️ Note technique : un autre mini-jeu partage un code de grille quasi identique (`cartesInit`/`forEach` en double dans le fichier) — toutes les retouches ont été strictement délimitées au bloc `MemoryPoneyGrille`, l'autre jeu est intact (vérifié).
+✅ Vérification exhaustive faite le 23/07 : 806 fonctions + 305 const, aucune perte ni ajout inattendu (uniquement le nouveau bloc JSX de l'encart). Syntaxe JS validée (2 erreurs de comptage de parenthèses corrigées en cours de rédaction avant validation finale).
 
-✅ Vérification exhaustive faite le 22/07 : 803 fonctions + 304 const identiques (30)→(32), retouches confinées au composant + 1 ligne d'affichage des fiches, syntaxe JS validée (node --check).
+⚠️ **Pour la suite, repartir de CETTE version (35)**. **Fichier `images/k553.jpg` à déployer** (conversion Claude fournie en pièce jointe — Blandine peut la garder telle quelle ou fournir sa propre version JPG si elle préfère un export différent).
 
-⚠️ **Pour la suite, repartir de CETTE version (32)**. Restent au Mémory : Saut 3 images, Allures 1 (porte-bonheur). Réserve : câlin fond uni, "Scène 3 Samuel" (gardées de côté, décision Claude validée).
+**Ancienne version (34) — FUSION du tracé animé des reprises de dressage, conversation Directeur Technique**
 
-**Ancienne version 22/07/2026 (30) — Mémory : encart leçons réparé + 15 nouvelles scènes (5 thèmes complétés) (Baby Jeux)**
+⚠️ Cette version part de la (33) et fusionne une fonctionnalité reçue de Blandine sur une branche **très ancienne** (sa session 12, antérieure à tout le travail des sessions 13 à 33 de cette conversation-ci — allemand récent, Hey Baby, Mémory, Argent, etc.). **Fusion chirurgicale d'une seule vraie nouveauté**, tout le reste de cette vieille branche ignoré :
 
-📌 **Décision de Blandine (22/07 soir) : la (30) est la version poussée et de référence.** Une migration (31) des scènes Mémory vers de vrais fichiers .jpg avait été préparée et livrée, mais Blandine avait déjà poussé la (30) avec les fichiers hype-images-114.js à 118.js — la migration est **reportée, ne pas utiliser le ZIP (31)**. Les fichiers 114-118.js restent donc actifs et nécessaires. **Convention à partir de maintenant : toute NOUVELLE image (k547+) sera livrée en vrai fichier `images/kXXX.jpg`, plus jamais en base64** ; la migration des fichiers existants se fera plus tard, par lots, quand Blandine aura moins de chantiers en parallèle.
+- **Tracé animé** (`EcranTraceAnime`) : point lumineux qui déroule automatiquement une reprise officielle sur la carrière, légende synchronisée, lecture/pause/vitesse/scrub. Repose sur une table de 17 points officiels de la carrière 20×60 (`LETTER_POINTS`) et un parseur (`construireTraceReprise`/`repriseLettresDeSegment`) qui déduit le tracé directement des figures déjà stockées dans `REPRISES_FFE` (déjà présent depuis une fusion antérieure, session 18) — donc réutilisable sans travail supplémentaire pour les futures reprises.
+- Nouveau bouton "Voir le tracé animé" ajouté dans `BlocReprisesGalop`, entre le bouton fiche officielle et le bouton jeu.
+- Route `ecran === "trace-anime"` et raccourci deeplink `trace-anime` ajoutés.
 
-⚠️ Cette version part de la (29) et complète la fusion (28) qui était partielle : le bloc de données `MEMORY_PONEY_NIVEAUX` avait bien été fusionné, mais **deux morceaux situés hors de ce bloc manquaient** — l'encart d'affichage "Le savais-tu du Poney" dans la vue résultat de `MemoryPoneyJeu` (sans lui, les 10 leçons existaient en données mais ne s'affichaient jamais à l'écran) et le raccourci d'aperçu `memory` dans CIBLE_DIRECTE. Les deux sont réinjectés. **Leçon pour les prochaines fusions Mémory : le périmètre = bloc de données + encart vue résultat + raccourci, pas seulement le bloc.**
+⚠️ **Piège de fusion rencontré et corrigé** : la plage de lignes copiée depuis le vieux fichier contenait aussi `REPRISE_FIGURES_TIER`, `ReprisePlanJeu`, `BlocReprisesGalop` et `EcranReprisesFiches` **en doublon** avec ce que j'avais déjà (version plus récente, avec badges/allemand/bouton déjà en place) — repéré immédiatement par `node --check` (`Identifier already declared`), le bloc dupliqué a été retiré, ne gardant que les 3 fonctions et la const réellement nouvelles (`LETTER_POINTS`, `repriseLettresDeSegment`, `construireTraceReprise`, `EcranTraceAnime`).
 
-**15 nouvelles scènes intégrées (validées par Blandine)** — 3 nouveaux fichiers ⚠️ **à pousser avec l'index** : `hype-images-116.js` (k531-k536), `117.js` (k537-k543), `118.js` (k544-k546). Prochaine clé libre : **k547**.
-- **Friandises** : "La main bien à plat" (k531) → **complet 7/7**.
-- **Pansage** : "Mon meilleur pote" (k532) → **complet 6/6**.
-- **Premier contact** : "Le sourire" (k533), "Merci" (k534) → **complet 6/6**.
-- **Allures** : "La balade au pas" (k535), "En selle !" (k536) → 5/6, reste le porte-bonheur.
-- **Robes** : 7 scènes (k537-k543 : Pie, Alezan crins lavés, Gris, Noir, Bai, Alezan, Blanc gris très clair) — le niveau passe de 6 à **7 paires, complet**. Noms de robes allemands officiels (Fuchs, Rappe, Schimmel, Schecke, Brauner, Lichtfuchs).
-- **Sécurité** : "Le cure-pied" (k544), "Je m'arrête" (k545), "Chaussures fermées" (k546) → **complet 6/6**.
+**Rappel : `REPRISES_FFE`, `EcranReprisesFiches`, `ReprisePlanJeu` étaient déjà fusionnés depuis longtemps** (session 18 de cette conversation-ci, branche Stripe) — cette session (34) ne fait qu'ajouter le tracé animé par-dessus, rien de plus.
 
-**Mémory — état : 8 thèmes complets sur 10.** Restent 4 images : Saut 3 (barre, cavaletti, réception), Allures 1 (porte-bonheur). En réserve non intégrées : câlin fond uni, "Scène 3 Samuel conduit Apy" (texte incrusté, plutôt pour un cours Baby).
+⚠️ **Repris tel quel de l'ancien SUIVI, toujours valable** :
+- Les fiches `REPRISES_FFE` (Galop 3 à 7) sont toujours en FR simple — traduction 6 langues jamais faite (seul le nouveau bouton/écran ajoutés cette session ont l'allemand).
+- Le tracé animé est pédagogique, pas géométriquement exact (segments en lignes droites, cercles/voltes indicatifs).
+- **Chantier plus large jamais lancé** : reprises Club Elite, Amateur (Elite/1/2/3), Pro (Elite/1/2/3) — 15-20 reprises à sourcer, gros chantier.
 
-✅ Vérification exhaustive faite le 22/07 : 803 fonctions + 304 const identiques (29)→(30) (correctif PuzzleGalop de la (29), Hey Baby 2 étapes, conversation_id, âge/note : tous vérifiés intacts). Diff = 11 hunks confinés (balises script, CIBLE_DIRECTE, 8 zones de paires, encart résultat). k531-k546 : exactement 1 occurrence chacune. Recomptage des 10 niveaux : 63 paires dont 59 en image. Syntaxe JS validée (node --check).
+✅ Vérification exhaustive faite le 22/07 : 806 fonctions + 305 const, exactement +3/+1 par rapport à la (33), aucune perte. Syntaxe JS validée après correction du doublon.
 
-⚠️ **Pour la suite, repartir de CETTE version (30)**.
+⚠️ **Pour la suite, repartir de CETTE version (34)**.
 
-**Ancienne version 22/07/2026 (29) — Correctif crash mémoire iOS sur PuzzleGalop (vue agrandie) (Directeur Technique)**
+**Ancienne version (33) — FUSION de la réécriture Argent 1-6 + INSERTION Argent 8 et 9, conversation Directeur Technique**
+
+⚠️ Cette version part de la (32) et fusionne le travail reçu de Blandine (branche "session interrompue par souci d'upload", cf. son propre SUIVI joint) :
+
+**1. Fusion de la réécriture complète des cours Argent 1-6 (baby-c10 à baby-c15)** — nouvelle histoire avec Evan et sa ponette Bambina, remplaçant les anciennes versions courtes. Vérifié exhaustivement : Bronze (baby-c1 à c9) et l'ancien Or restant (baby-c16 à c24) strictement inchangés (0 octet de différence, à l'octet près) ; seuls baby-c10 à c15 ont grandi (contenu ×5 environ, cohérent avec le passage d'un format court à un format complet 6 langues + sections + quiz) ; couvertures (`HYPE_IMGS`) de chacun conservées à l'identique comme demandé ; allemand complet vérifié (comptage fr:/de: égal sur les 6 cours).
+
+**2. Complément Mémory** : thème "Allures" complété (câlin du soir k550, porte-bonheur k552 — **Allures est donc maintenant complet, 10/10 thèmes terminés**), thème "Obstacles" complété (réception k551). Cartes Mémory agrandies sur mobile (grille responsive 2-3 colonnes selon le nombre de paires, tailles de police augmentées) — correspond à la spec reçue en session (32) et non codée à l'époque. **Nouvelles images JPG requises : `images/k550.jpg`, `k551.jpg`, `k552.jpg` (non fournies, même convention que k547-549) — à obtenir et déployer.**
+
+**3. Insertion des cours Argent 8 et 9, faite par Claude dans cette session** (les fichiers `argent_c8_full.json` et `argent_c9_full.json` fournis par Blandine, prêts à l'emploi) :
+- `baby-c17` ← Argent 8 "J'arrête Apy, je repars et je retrouve mes rênes" (remplace l'ancien "Paille ou foin ?")
+- `baby-c18` ← Argent 9 "Ma grande mission avec Apy" (remplace l'ancien "Je desselle Apy et je range le matériel")
+- `level` passé de `poney_or` à `poney_argent` sur ces deux cours, `type` harmonisé à "pratique" (cohérent avec le reste de l'Argent).
+- Couvertures : les deux cours utilisaient déjà la couverture provisoire `GALOPS_HERO` (pas de vraie image assignée) — conservée telle quelle, aucune régression.
+- **Titres courts (titre1/titre2) et citations de la page de couverture rédigés par Claude** dans les 6 langues à partir du titre complet et du premier paragraphe du cours (le JSON fourni ne contenait que titre/durée/contenu/quiz, pas ces champs de mise en page) — à valider par Blandine si besoin, cohérent avec le style des autres cours Argent.
+
+⚠️ **Cours Argent 7 (baby-c16) toujours pas reçu** — texte source jamais arrivé malgré plusieurs tentatives de Blandine, comme dans la session précédente. `baby-c16` contient donc toujours l'ancien contenu Or ("Je pars en promenade"). **À redemander en priorité.**
+
+⚠️ **Poney d'Or — texte source du cours 1 reçu et conservé (`or_c1_texte_source.txt`), volontairement NON traduit ni intégré** (décision Blandine : Argent d'abord). Le bloc "Repères pédagogiques — mode enseignant" en fin de texte reste volontairement ignoré (consigne Blandine).
+
+✅ Vérification exhaustive faite le 22/07 : 803 fonctions + 304 const identiques tout au long de la fusion. 24 cours Baby toujours présents, aucun perdu. Syntaxe JS validée à chaque étape (fusion Argent 1-6, puis insertion Argent 8-9).
+
+⚠️ **Pour la suite, repartir de CETTE version (33)**. **Fichiers `images/k550.jpg`, `k551.jpg`, `k552.jpg` à obtenir et déployer.**
+
+**Ancienne version (32) — Mémory du Saut complété + difficulté progressive, conversation Directeur Technique**
+
+⚠️ Cette version part de la (31). Deux changements :
+- **Thème "Saut" complété** (barre k547, cavaletti k548, envol k549) — **nouvelle convention de fichiers** à partir de k547 : ce ne sont plus des fichiers `hype-images-XXX.js` en base64, mais de **vraies images JPG** dans un dossier `images/` (`images/k547.jpg`, `k548.jpg`, `k549.jpg`), chargées via un petit script généré dynamiquement (`window.HYPE_IMGS["k547"] = "images/k547.jpg"`, etc.) inséré directement dans `index.html`. **⚠️ Fichiers `images/k547.jpg`, `k548.jpg`, `k549.jpg` non fournis avec ce livrable — à obtenir de Blandine et à déployer dans le dossier `images/` du site avant mise en ligne, sinon ces 3 images seront cassées.**
+- **Difficulté du Mémory rendue progressive** : `MEMORY_TIRAGE_MAX` n'est plus fixe (6) mais calculé selon le numéro du niveau (`4 + floor((numeroNiveau-1)/2)`, plafonné au nombre réel de paires du thème) — 4 paires aux niveaux 1-2, 5 aux niveaux 3-4, 6 aux niveaux 5-6, etc. Le compteur affiché sur chaque carte de niveau suit la même formule.
+
+**Mémory — état : 9 thèmes complets sur 10** (Saut désormais complet). Reste Allures (1 image : porte-bonheur).
+
+✅ Vérification exhaustive faite le 22/07 : 803 fonctions + 304 const identiques (31)→(32). Diff = 6 hunks, tous confinés aux zones attendues (balises script/loader images, thème Saut, `MemoryPoneyGrille`, affichage compteur). Syntaxe JS validée.
+
+✅ **Fichiers `images/k547.jpg`, `k548.jpg`, `k549.jpg` déployés par Blandine** — confirmé, plus rien en attente sur ce point.
+
+⚠️ **Pour la suite, repartir de CETTE version (32)**.
+
+**Ancienne version (31) — Plafond de 6 paires par manche de Mémory, conversation Directeur Technique**
+
+⚠️ Cette version part de la (30). `MemoryGalop` tire désormais au maximum 6 paires par manche (`MEMORY_TIRAGE_MAX = 6`) : si un thème compte plus de 6 paires (ex. Robes, passé à 7/7 en session 30), un tirage aléatoire de 6 paires est effectué à chaque partie plutôt que d'afficher toutes les paires du thème. Le compteur affiché sur la carte du niveau (`n.paires.length`) est plafonné en cohérence (`Math.min(6, ...)`).
+
+✅ Vérification exhaustive faite le 22/07 : 803 fonctions + 304 const identiques (30)→(31). Diff = 5 hunks, tous confinés à `MemoryGalop` et à l'affichage du compteur de paires sur la carte de niveau. Syntaxe JS validée.
+
+⚠️ **Pour la suite, repartir de CETTE version (31)**.
+
+**Ancienne version (30) — Mémory : remplacement d'emojis par de vraies photos, deeplink officiel, affichage "Le savais-tu" en fin de niveau, conversation Directeur Technique**
+
+⚠️ Cette version part de la (29). Contenu reçu directement compatible (contient déjà le correctif crash mémoire de la (29) — pas de divergence de branche cette fois).
+
+**Changements** :
+- 3 nouveaux fichiers images ajoutés (`hype-images-116.js` à `118.js`, non fournis avec ce livrable — **à réclamer si pas déjà en possession de Blandine**).
+- Raccourci deeplink officiel `memory: { ecran: "jeu-galop" }` ajouté à la `MAP` de dev (auparavant seulement testé via un `DEV_OUVRIR_PAGE="memory"` ad-hoc côté Claude).
+- Mémory : une dizaine de paires emoji-placeholder remplacées par de vraies photos (clés k531 à k546) sur les thèmes allures, robes, sécurité, pansage, friandises — cohérent avec la liste "images encore manquantes" du SUIVI de la branche Baby Jeux.
+- Nouvel affichage en fin de niveau du Mémory : la leçon "Le savais-tu du Poney" du niveau concerné s'affiche désormais sur l'écran de résultat (avant : uniquement à l'intérieur du jeu).
+
+✅ Vérification exhaustive faite le 22/07 : 803 fonctions + 304 const identiques (29)→(30). Diff = 11 hunks, tous confinés aux zones attendues (scripts images, MAP deeplink, Mémory, écran résultat). Correctif crash mémoire iOS de la (29) confirmé toujours présent. Syntaxe JS validée.
+
+⚠️ **Pour la suite, repartir de CETTE version (30)**. **Fichiers images 116-118 à obtenir de Blandine si pas déjà fournis** (pas dans ce lot de fichiers).
+
+**Ancienne version (29) — Correctif crash mémoire iOS sur PuzzleGalop (vue agrandie), conversation Directeur Technique**
 
 ⚠️ Cette version part de la (28) et corrige le bug remonté par la branche Baby Jeux : crash mémoire iOS "Un problème récurrent est survenu" à l'agrandissement du 3ᵉ puzzle Baby (Poney d'Or, image k517).
 
@@ -356,19 +414,6 @@ Seulement après ces résultats réels : étape 2 (ajustement modèle, reasoning
 - [ ] **Allemand — chantier de fond restant** : au-delà des blocs traités (32 écrans principaux + 11 quêtes + EcranArticles/EcranProfil/EcranQuetes/EcranAssistantIA/EcranCheval/EcranPremium/PV5_TXT/EcranBibliothequeGalops), il reste des composants secondaires non recensés précisément — mini-jeux volontairement laissés de côté (voir avertissement ci-dessus) jusqu'à stabilisation. **Point de vigilance** : au moins un écran (`EcranCheval`) était absent du SUIVI alors que le travail avait bien été fait — toujours vérifier le fichier réel en plus du SUIVI avant de conclure qu'un écran n'est pas traité.
 
 ---
-
-## 🟢 FAIT (session du 22/07/2026 (32) — Tirage 6 paires, conversation Baby Jeux)
-
-- [x] **Tirage aléatoire de 6 paires max** par partie dans `MemoryPoneyGrille` (La vie du poney passe de 18 à 12 cartes). Compteurs et fiches de niveaux alignés.
-- [x] Retouches strictement délimitées au composant (un autre jeu partage le même motif de code — intact).
-- [x] Vérification exhaustive (30)→(32) : 803 fonctions + 304 const identiques, syntaxe validée.
-
-## 🟢 FAIT (session du 22/07/2026 (30) — Encart leçons réparé + 15 scènes, conversation Baby Jeux)
-
-- [x] **Encart "Le savais-tu du Poney" réinjecté** (manquait dans la fusion (28) — les leçons ne s'affichaient pas) + raccourci `#memory`.
-- [x] **15 scènes intégrées** (k531-k546, fichiers hype-images-116/117/118) : Friandises, Pansage, Premier contact, Sécurité et Robes complets ; Allures 5/6.
-- [x] Robes étendu à 7 paires (ajout Alezan crins lavés + Blanc gris très clair — pédagogiquement exact).
-- [x] Vérification exhaustive (29)→(30) : 803 fonctions + 304 const identiques, 11 hunks confinés, syntaxe validée.
 
 ## 🟢 FAIT (session du 21/07/2026 (16) — Allemand EcranCheval (non documenté initialement), EcranPremium, PV5_TXT, EcranBibliothequeGalops, Directeur Technique)
 
