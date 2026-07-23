@@ -33726,17 +33726,32 @@ function arcPoints(centre, rayon, angleDepartDeg, balayageDeg, n) {
     }
     return pts;
 }
+// Choisit le sens de rotation (horaire ou antihoraire) qui prolonge la direction d'arrivée du cheval :
+// un cercle doit toujours continuer dans le mouvement en avant, jamais repartir en arrière (impossible
+// physiquement pour le cheval). Sans point précédent connu, on garde le sens par défaut.
+function balayageCoherent(angleDepartDeg, dernierPoint, p0, balayageAbs) {
+    if (!dernierPoint) return balayageAbs;
+    const dx = p0.x - dernierPoint.x, dy = p0.y - dernierPoint.y;
+    const norme = Math.hypot(dx, dy);
+    if (norme < 0.5) return balayageAbs;
+    const dirX = dx / norme, dirY = dy / norme;
+    const rad = (angleDepartDeg * Math.PI) / 180;
+    const tangentPosX = -Math.sin(rad), tangentPosY = Math.cos(rad);
+    const dot = tangentPosX * dirX + tangentPosY * dirY;
+    return dot >= 0 ? balayageAbs : -balayageAbs;
+}
 // Cercle/demi-cercle défini par deux lettres diamétralement opposées (ex: V et P, S et R) : le texte des
 // reprises FFE donne toujours comme diamètre la distance réelle entre les deux lettres citées.
-function arcDeuxPoints(p0, p1, angleBalayage) {
+function arcDeuxPoints(p0, p1, angleBalayage, dernierPoint) {
     const centre = { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 };
     const rayon = Math.hypot(p1.x - p0.x, p1.y - p0.y) / 2;
     const angleDepart = (Math.atan2(p0.y - centre.y, p0.x - centre.x) * 180) / Math.PI;
-    return arcPoints(centre, rayon, angleDepart, angleBalayage, angleBalayage >= 350 ? 40 : 20);
+    const balayage = balayageCoherent(angleDepart, dernierPoint, p0, angleBalayage);
+    return arcPoints(centre, rayon, angleDepart, balayage, Math.abs(angleBalayage) >= 350 ? 40 : 20);
 }
 // Cercle défini par une seule lettre (ex: "S — cercle à gauche de 12 m") : le centre est décalé depuis la
 // lettre vers l'intérieur de la carrière (rail gauche → +x, rail droit → -x, ligne du milieu → selon le texte).
-function arcUnPoint(p0, lettre, diametreM, texte) {
+function arcUnPoint(p0, lettre, diametreM, texte, dernierPoint) {
     const rayon = diametreM * 4;
     let dir = 1;
     if (LETTRES_RAIL_GAUCHE.includes(lettre)) dir = 1;
@@ -33744,7 +33759,8 @@ function arcUnPoint(p0, lettre, diametreM, texte) {
     else dir = /gauche/i.test(texte) ? -1 : 1;
     const centre = { x: p0.x + dir * rayon, y: p0.y };
     const angleDepart = (Math.atan2(p0.y - centre.y, p0.x - centre.x) * 180) / Math.PI;
-    return arcPoints(centre, rayon, angleDepart, 360, 40);
+    const balayage = balayageCoherent(angleDepart, dernierPoint, p0, 360);
+    return arcPoints(centre, rayon, angleDepart, balayage, 40);
 }
 // Vitesse relative du point lumineux selon l'allure/le mouvement décrit dans le texte de la figure
 // (1 = trot de travail, référence). "pause" ajoute un vrai temps d'arrêt visuel, pas juste un ralenti.
@@ -33765,6 +33781,15 @@ function vitesseDepuisTexte(seg) {
 }
 function construireTraceReprise(fiche) {
     const pts = [];
+    // Le point juste avant un cercle a souvent les mêmes coordonnées que son point de départ (ex: la lettre S
+    // apparaît deux fois d'affilée) : impossible d'en déduire une direction. On remonte jusqu'au dernier point
+    // aux coordonnées réellement différentes pour connaître la vraie direction d'arrivée du cheval.
+    function dernierPointDistinct(p0) {
+        for (let i = pts.length - 1; i >= 0; i--) {
+            if (Math.hypot(pts[i].x - p0.x, pts[i].y - p0.y) > 0.5) return pts[i];
+        }
+        return null;
+    }
     fiche.figures.forEach((figureObj, figIndex) => {
         figureObj.fr.split(" · ").forEach((segBrut) => {
             const seg = segBrut.trim();
@@ -33787,14 +33812,14 @@ function construireTraceReprise(fiche) {
             if ((estCercle || estDemiCercle) && lettres.length >= 2) {
                 const p0 = LETTER_POINTS[lettres[0]], p1 = LETTER_POINTS[lettres[1]];
                 if (p0 && p1) {
-                    arcDeuxPoints(p0, p1, estCercle ? 360 : 180).forEach((pt) => pts.push({ x: pt.x, y: pt.y, lettre: lettres[0], figIndex: figIndex, cercle: true, diametre: diametre, vitesse: vitesse, pause: false }));
+                    arcDeuxPoints(p0, p1, estCercle ? 360 : 180, dernierPointDistinct(p0)).forEach((pt) => pts.push({ x: pt.x, y: pt.y, lettre: lettres[0], figIndex: figIndex, cercle: true, diametre: diametre, vitesse: vitesse, pause: false }));
                     return;
                 }
             }
             if ((estCercle || estDemiCercle) && lettres.length === 1) {
                 const p0 = LETTER_POINTS[lettres[0]];
                 if (p0) {
-                    arcUnPoint(p0, lettres[0], diametre, seg).forEach((pt) => pts.push({ x: pt.x, y: pt.y, lettre: lettres[0], figIndex: figIndex, cercle: true, diametre: diametre, vitesse: vitesse, pause: false }));
+                    arcUnPoint(p0, lettres[0], diametre, seg, dernierPointDistinct(p0)).forEach((pt) => pts.push({ x: pt.x, y: pt.y, lettre: lettres[0], figIndex: figIndex, cercle: true, diametre: diametre, vitesse: vitesse, pause: false }));
                     return;
                 }
             }
@@ -33810,13 +33835,34 @@ function construireTraceReprise(fiche) {
         });
     });
     // La carrière est rectangulaire : le passage entre A ou C et une lettre latérale (K/F pour A, H/M pour C)
-    // doit prendre le coin à angle droit, jamais couper tout droit en diagonale (c'est un critère de notation).
+    // doit prendre le coin, jamais couper tout droit en diagonale (c'est un critère de notation) — avec un
+    // très léger arrondi (petit rayon) pour rester crédible, un cheval ne tourne pas sur un angle parfaitement vif.
     const COINS = { "A-K": { x: 20, y: 500 }, "K-A": { x: 20, y: 500 }, "A-F": { x: 180, y: 500 }, "F-A": { x: 180, y: 500 }, "C-H": { x: 20, y: 20 }, "H-C": { x: 20, y: 20 }, "C-M": { x: 180, y: 20 }, "M-C": { x: 180, y: 20 } };
+    const RAYON_COIN = 9;
+    function pointsCoinArrondi(prevPoint, coin, nextPoint, rayon) {
+        const din0 = { x: coin.x - prevPoint.x, y: coin.y - prevPoint.y };
+        const dinN = Math.hypot(din0.x, din0.y) || 1;
+        const din = { x: din0.x / dinN, y: din0.y / dinN };
+        const dout0 = { x: nextPoint.x - coin.x, y: nextPoint.y - coin.y };
+        const doutN = Math.hypot(dout0.x, dout0.y) || 1;
+        const dout = { x: dout0.x / doutN, y: dout0.y / doutN };
+        const pointAvant = { x: coin.x - din.x * rayon, y: coin.y - din.y * rayon };
+        const pointApres = { x: coin.x + dout.x * rayon, y: coin.y + dout.y * rayon };
+        const centre = { x: pointAvant.x + dout.x * rayon, y: pointAvant.y + dout.y * rayon };
+        const angleDepart = (Math.atan2(pointAvant.y - centre.y, pointAvant.x - centre.x) * 180) / Math.PI;
+        let angleArrivee = (Math.atan2(pointApres.y - centre.y, pointApres.x - centre.x) * 180) / Math.PI;
+        let diff = angleArrivee - angleDepart;
+        while (diff > 180) diff -= 360;
+        while (diff <= -180) diff += 360;
+        return arcPoints(centre, rayon, angleDepart, diff, 6);
+    }
     const ptsAvecCoins = [];
     pts.forEach((p, i) => {
         if (i > 0) {
             const coin = COINS[pts[i - 1].lettre + "-" + p.lettre];
-            if (coin) ptsAvecCoins.push({ x: coin.x, y: coin.y, lettre: pts[i - 1].lettre, figIndex: pts[i - 1].figIndex, cercle: false, diametre: 0, vitesse: pts[i - 1].vitesse, pause: false });
+            if (coin) {
+                pointsCoinArrondi(pts[i - 1], coin, p, RAYON_COIN).forEach((fp) => ptsAvecCoins.push({ x: fp.x, y: fp.y, lettre: pts[i - 1].lettre, figIndex: pts[i - 1].figIndex, cercle: false, diametre: 0, vitesse: pts[i - 1].vitesse, pause: false }));
+            }
         }
         ptsAvecCoins.push(p);
     });
@@ -33859,20 +33905,52 @@ const LANGUE_VOIX = { fr: "fr-FR", en: "en-US", es: "es-ES", it: "it-IT", de: "d
 // Un cercle "aller-retour" (ex: SRS, VPV, EBE, BEB) revient au point de départ : la lettre du milieu
 // n'est que le point diamétralement opposé (largeur de la carrière), pas une étape à énoncer à part.
 // À l'oral, "en S, cercle de 20 mètres" suffit, pas besoin d'épeler S, R, S.
-function simplifierCerclesPourVoix(texte) {
-    return texte.split(" · ").map((seg) => {
-        const m = seg.match(/^([A-Z]{2,4})\s*—\s*(.+)$/);
-        if (m && /cercle/i.test(m[2]) && m[1].length > 1 && m[1][0] === m[1][m[1].length - 1]) {
-            return "en " + m[1][0] + ", " + m[2];
+// À la dictée réelle d'une reprise, on n'épelle jamais lettre par lettre : deux lettres ou plus d'affilée
+// (ex: FAK) veulent dire "le mouvement se fait entre F et K" ; un cercle qui revient à son point de départ
+// (ex: SRS, ou une seule lettre suivie de "cercle") se dit "en S". On ne répète pas non plus l'allure en
+// cours à chaque figure : elle est implicite tant qu'un changement n'est pas annoncé.
+const ALLURE_NOMS = [
+    { re: /trot allongé/i, nom: "trot allongé" },
+    { re: /trot moyen/i, nom: "trot moyen" },
+    { re: /trot assis/i, nom: "trot assis" },
+    { re: /trot enlevé/i, nom: "trot enlevé" },
+    { re: /trot de travail/i, nom: "trot de travail" },
+    { re: /galop moyen/i, nom: "galop moyen" },
+    { re: /galop allongé/i, nom: "galop allongé" },
+    { re: /contre-galop/i, nom: "contre-galop" },
+    { re: /galop de travail/i, nom: "galop de travail" },
+    { re: /pas allongé/i, nom: "pas allongé" },
+    { re: /pas moyen/i, nom: "pas moyen" },
+    { re: /pas libre/i, nom: "pas libre" },
+];
+function allureDeSegment(texte) {
+    for (const a of ALLURE_NOMS) if (a.re.test(texte)) return a.nom;
+    return null;
+}
+function texteFigurePourVoix(texte, dernierAllureRef) {
+    return texte.split(" · ").map((segBrut) => {
+        let seg = segBrut.trim();
+        // blocs de 2 lettres ou plus : "entre X et Y", ou "en X" si c'est un cercle qui revient au départ
+        seg = seg.replace(/\b[A-Z]{2,}\b/g, (bloc) => (bloc[0] === bloc[bloc.length - 1] ? "en " + bloc[0] : "entre " + bloc[0] + " et " + bloc[bloc.length - 1]));
+        // cercle à une seule lettre (ex: "K — Cercle de 12 m") : "en K", jamais "à K"
+        const mSeule = seg.match(/^([A-Z])\s*—\s*(.+)$/);
+        if (mSeule && /cercle/i.test(mSeule[2])) seg = "en " + mSeule[1] + ", " + mSeule[2];
+        // allure déjà annoncée : implicite, on ne la répète pas
+        const nomAllure = allureDeSegment(seg);
+        if (nomAllure) {
+            if (nomAllure === dernierAllureRef.current) {
+                seg = seg.replace(new RegExp(nomAllure, "i"), "").replace(/\s{2,}/g, " ").trim();
+                seg = seg.replace(/^[,–—-]\s*/, "").replace(/[,–—-]\s*$/, "").trim();
+                seg = seg.replace(/\s+(au|à|du|de|en)\s*$/i, "").trim();
+                // s'il ne reste plus qu'une simple référence de lettres (rien de nouveau à annoncer), on tait
+                // le segment entièrement plutôt que de dire "entre K et V" pour ne rien dire de plus.
+                if (/^(en [A-Z]|entre [A-Z] et [A-Z]|[A-Z])$/.test(seg)) seg = "";
+            } else {
+                dernierAllureRef.current = nomAllure;
+            }
         }
         return seg;
-    }).join(" · ");
-}
-// À la dictée, une reprise énonce chaque lettre séparément (F, A, K — jamais "FAK" comme un mot ; "IL" doit
-// s'entendre I, L et pas comme le mot français "il"). On épelle donc les blocs de 2 lettres majuscules ou
-// plus avant de les donner à la synthèse vocale, sans toucher au texte affiché à l'écran.
-function texteEnParoleLettreParLettre(texte) {
-    return texte.replace(/\b[A-Z]{2,}\b/g, (bloc) => bloc.split("").join(", "));
+    }).filter((s) => s.length > 0).join(" · ");
 }
 // Nappe ambiante "Hype Spectral" — entièrement générée (Web Audio API), aucun fichier audio, donc aucun
 // souci de droits. Accord doux (Do2/Sol2/Do3/Mi3), léger shimmer par vibrato lent sur chaque voix.
@@ -33937,13 +34015,21 @@ function EcranTraceAnime() {
     const rafRef = React.useRef(null);
     const dernierTsRef = React.useRef(null);
     const dernierFigParleRef = React.useRef(-1);
-    const VITESSE_BASE_PX_S = 46; // px/seconde de tracé à x1, calibré pour rester lisible sur les grandes reprises (G6/G7)
+    const dernierAllureRef = React.useRef(null);
+    const enTrainDeParlerRef = React.useRef(false);
+    const VITESSE_BASE_PX_S = 30; // px/seconde de tracé à x1 — ralenti pour rester suivable, y compris sur les grandes reprises (G6/G7)
+    const PAUSE_APRES_VOIX_MS = 380; // petit temps de respiration entre deux figures quand la voix est activée
     React.useEffect(() => {
         if (!lecture) { dernierTsRef.current = null; return; }
         const step = (ts) => {
             if (dernierTsRef.current == null) dernierTsRef.current = ts;
             const dt = (ts - dernierTsRef.current) / 1000;
             dernierTsRef.current = ts;
+            if (vocal && enTrainDeParlerRef.current) {
+                // la voix n'a pas fini d'annoncer la figure en cours : le tracé attend avant de continuer
+                rafRef.current = requestAnimationFrame(step);
+                return;
+            }
             setT((prevT) => {
                 const avance = (VITESSE_BASE_PX_S * vitesse * dt) / (trace.longueur || 1);
                 const nv = prevT + avance;
@@ -33954,9 +34040,9 @@ function EcranTraceAnime() {
         };
         rafRef.current = requestAnimationFrame(step);
         return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-    }, [lecture, vitesse, trace]);
-    React.useEffect(() => { setT(0); setLecture(false); setMusique(false); dernierFigParleRef.current = -1; if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); }, [niveau]);
-    React.useEffect(() => { if (!lecture && typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); }, [lecture]);
+    }, [lecture, vitesse, trace, vocal]);
+    React.useEffect(() => { setT(0); setLecture(false); setMusique(false); dernierFigParleRef.current = -1; dernierAllureRef.current = null; enTrainDeParlerRef.current = false; if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); }, [niveau]);
+    React.useEffect(() => { if (!lecture) { enTrainDeParlerRef.current = false; if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); } }, [lecture]);
     React.useEffect(() => () => { if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); arreterNappeAmbiante(audioCtxRef, gainMasterRef, oscsRef); }, []);
     React.useEffect(() => { if (musique) demarrerNappeAmbiante(audioCtxRef, gainMasterRef, oscsRef); else arreterNappeAmbiante(audioCtxRef, gainMasterRef, oscsRef); }, [musique]);
     const cibleLen = t * trace.longueur;
@@ -33968,22 +34054,31 @@ function EcranTraceAnime() {
         if (typeof window === "undefined" || !window.speechSynthesis) return;
         if (dernierFigParleRef.current === figIndexCourant) return;
         dernierFigParleRef.current = figIndexCourant;
-        const texte = texteEnParoleLettreParLettre(simplifierCerclesPourVoix(tr(fiche.figures[figIndexCourant])));
+        const texte = texteFigurePourVoix(tr(fiche.figures[figIndexCourant]), dernierAllureRef);
         window.speechSynthesis.cancel();
+        if (!texte || texte.trim().length === 0) { enTrainDeParlerRef.current = false; return; }
         const utt = new SpeechSynthesisUtterance(texte);
         utt.lang = LANGUE_VOIX[langue] || "fr-FR";
-        utt.rate = 0.95;
+        utt.rate = 0.92;
+        enTrainDeParlerRef.current = true;
+        const finDeParole = () => { setTimeout(() => { enTrainDeParlerRef.current = false; }, PAUSE_APRES_VOIX_MS); };
+        utt.onend = finDeParole;
+        utt.onerror = finDeParole;
         window.speechSynthesis.speak(utt);
     }, [figIndexCourant, vocal, lecture, langue, fiche]);
     const dFull = "M " + trace.points.map((p) => p.x + " " + p.y).join(" L ");
-    const parcourus = trace.points.slice(0, idxCourant + 1);
-    const dProgress = "M " + parcourus.map((p) => p.x + " " + p.y).join(" L ") + " L " + posX + " " + posY;
+    // Le "déjà parcouru" reste allumé seulement sur une fenêtre récente (~1-2 figures) : sur toute une
+    // reprise, garder tout allumé depuis le départ finit par illuminer toute la carrière et on perd le repère.
+    const FENETRE_RECENTE = 340;
+    const debutFenetre = Math.max(cibleLen - FENETRE_RECENTE, 0);
+    const parcourus = trace.points.filter((p, i) => i <= idxCourant && p.dist >= debutFenetre);
+    const dProgress = "M " + (parcourus.length ? parcourus.map((p) => p.x + " " + p.y).join(" L ") + " L " : "") + posX + " " + posY;
     const cerclesMarques = [];
     const vus = {};
     trace.points.forEach((p) => { if (p.cercle) { const k = p.lettre + "-" + p.figIndex; if (!vus[k]) { vus[k] = true; cerclesMarques.push(p); } } });
     // Traînée spectrale : points fantômes derrière le point principal, opacité/taille décroissantes,
     // couleur selon l'allure à cet endroit du tracé (turquoise trot / chaud galop / terne pas-arrêt).
-    const OFFSETS_TRAINEE = [16, 34, 54, 76, 100, 128];
+    const OFFSETS_TRAINEE = [22, 48, 80, 118, 162, 212];
     const traineePoints = OFFSETS_TRAINEE.map((off) => pointADistance(trace, Math.max(cibleLen - off, 0)));
     return React.createElement("div", { style: { minHeight: "100dvh", background: COLORS.nuit, paddingBottom: 30 } },
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "18px 20px 14px", borderBottom: `1px solid ${COLORS.nuitBordure}` } },
@@ -33994,15 +34089,15 @@ function EcranTraceAnime() {
         React.createElement("div", { style: { padding: "16px 20px" } },
             React.createElement("p", { style: { margin: "0 0 4px", fontFamily: "'Cinzel',serif", fontSize: 16, color: COLORS.blanc } }, fiche.titre),
             React.createElement("p", { style: { margin: "0 0 14px", fontSize: 11.5, color: COLORS.turquoise, fontWeight: 700 } }, fiche.niveauFFE),
-            React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, padding: 10 } },
-                React.createElement("svg", { viewBox: "0 0 200 520", style: { width: "100%", display: "block" } },
+            React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, padding: 10, display: "flex", justifyContent: "center" } },
+                React.createElement("svg", { viewBox: "0 0 200 520", style: { height: "min(62vh, 560px)", width: "auto", maxWidth: "100%", display: "block" } },
                     React.createElement("rect", { x: 20, y: 20, width: 160, height: 480, rx: 3, fill: "none", stroke: "rgba(244,247,250,0.16)", strokeWidth: 1.2 }),
                     React.createElement("line", { x1: 100, y1: 20, x2: 100, y2: 500, stroke: "rgba(244,247,250,0.08)", strokeWidth: 1 }),
                     Object.keys(LETTER_POINTS).map((l) => React.createElement("text", { key: l, x: LETTER_POINTS[l].x + (LETTER_POINTS[l].x === 100 ? 0 : (LETTER_POINTS[l].x < 100 ? -9 : 9)), y: LETTER_POINTS[l].y + 3, textAnchor: "middle", style: { fontSize: 8.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fill: COLORS.encreDoux } }, l)),
                     cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: "rgba(32,217,245,0.22)", strokeWidth: 1, strokeDasharray: "3 3" })),
                     React.createElement("path", { d: dFull, fill: "none", stroke: "rgba(244,247,250,0.14)", strokeWidth: 1.6 }),
                     React.createElement("path", { d: dProgress, fill: "none", stroke: COLORS.turquoise, strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 5px rgba(32,217,245,0.6))" } }),
-                    traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 4.4 - i * 0.55, fill: couleurSelonAllure(p.vitesse), opacity: 0.42 - i * 0.06 })),
+                    traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 4.6 - i * 0.55, fill: couleurSelonAllure(p.vitesse), opacity: 0.55 - i * 0.075 })),
                     React.createElement("circle", { cx: posX, cy: posY, r: 5, fill: couleurSelonAllure(posActuelle.vitesse), style: { filter: "drop-shadow(0 0 7px rgba(32,217,245,0.9))" } })))),
         React.createElement("div", { style: { padding: "0 20px" } },
             React.createElement("div", { style: { background: `${COLORS.turquoise}0F`, border: `1px solid ${COLORS.turquoise}38`, borderRadius: 14, padding: "12px 14px", marginBottom: 14, minHeight: 42 } },
@@ -34010,7 +34105,7 @@ function EcranTraceAnime() {
                 React.createElement("p", { style: { margin: 0, fontSize: 12.5, color: COLORS.encre, lineHeight: 1.5 } }, tr(fiche.figures[figIndexCourant]))),
             React.createElement("input", { type: "range", min: 0, max: 1000, value: Math.round(t * 1000), onChange: (e) => { setLecture(false); setT(Number(e.target.value) / 1000); }, style: { width: "100%", accentColor: COLORS.turquoise, marginBottom: 14 } }),
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 } },
-                React.createElement("button", { onClick: () => { if (t >= 1) { setT(0); dernierFigParleRef.current = -1; } setLecture((v) => !v); }, style: { flex: 1, padding: 13, borderRadius: 14, background: COLORS.turquoise, border: "none", color: COLORS.nuit, fontSize: 13, fontWeight: 800 } }, lecture ? tr({ fr: "⏸ Pause", en: "⏸ Pause", es: "⏸ Pausa", it: "⏸ Pausa", de: "⏸ Pause", ja: "⏸ 一時停止" }) : (t >= 1 ? tr({ fr: "↻ Rejouer", en: "↻ Replay", es: "↻ Repetir", it: "↻ Riproduci", de: "↻ Wiederholen", ja: "↻ もう一度" }) : tr({ fr: "▶ Lecture", en: "▶ Play", es: "▶ Reproducir", it: "▶ Riproduci", de: "▶ Abspielen", ja: "▶ 再生" }))),
+                React.createElement("button", { onClick: () => { if (t >= 1) { setT(0); dernierFigParleRef.current = -1; dernierAllureRef.current = null; } setLecture((v) => !v); }, style: { flex: 1, padding: 13, borderRadius: 14, background: COLORS.turquoise, border: "none", color: COLORS.nuit, fontSize: 13, fontWeight: 800 } }, lecture ? tr({ fr: "⏸ Pause", en: "⏸ Pause", es: "⏸ Pausa", it: "⏸ Pausa", de: "⏸ Pause", ja: "⏸ 一時停止" }) : (t >= 1 ? tr({ fr: "↻ Rejouer", en: "↻ Replay", es: "↻ Repetir", it: "↻ Riproduci", de: "↻ Wiederholen", ja: "↻ もう一度" }) : tr({ fr: "▶ Lecture", en: "▶ Play", es: "▶ Reproducir", it: "▶ Riproduci", de: "▶ Abspielen", ja: "▶ 再生" }))),
                 [0.5, 1, 2].map((v) => React.createElement("button", { key: v, onClick: () => setVitesse(v), style: { padding: "13px 14px", borderRadius: 14, background: vitesse === v ? COLORS.nuitElevee : "transparent", border: `1px solid ${vitesse === v ? COLORS.turquoise : COLORS.nuitBordure}`, color: vitesse === v ? COLORS.turquoise : COLORS.encreDoux, fontSize: 12.5, fontWeight: 700 } }, "x" + v)),
                 React.createElement("button", { onClick: () => setVocal((v) => !v), style: { padding: "13px 14px", borderRadius: 14, background: vocal ? COLORS.nuitElevee : "transparent", border: `1px solid ${vocal ? COLORS.turquoise : COLORS.nuitBordure}`, color: vocal ? COLORS.turquoise : COLORS.encreDoux, fontSize: 15 } }, vocal ? "🔊" : "🔇"),
                 React.createElement("button", { onClick: () => setMusique((v) => !v), style: { padding: "13px 14px", borderRadius: 14, background: musique ? COLORS.nuitElevee : "transparent", border: `1px solid ${musique ? COLORS.turquoise : COLORS.nuitBordure}`, color: musique ? COLORS.turquoise : COLORS.encreDoux, fontSize: 15 } }, musique ? "🎵" : "🎶")),
