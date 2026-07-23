@@ -33856,6 +33856,18 @@ function couleurSelonAllure(v) {
     return "#20D9F5"; // trot : turquoise de référence
 }
 const LANGUE_VOIX = { fr: "fr-FR", en: "en-US", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP" };
+// Un cercle "aller-retour" (ex: SRS, VPV, EBE, BEB) revient au point de départ : la lettre du milieu
+// n'est que le point diamétralement opposé (largeur de la carrière), pas une étape à énoncer à part.
+// À l'oral, "en S, cercle de 20 mètres" suffit, pas besoin d'épeler S, R, S.
+function simplifierCerclesPourVoix(texte) {
+    return texte.split(" · ").map((seg) => {
+        const m = seg.match(/^([A-Z]{2,4})\s*—\s*(.+)$/);
+        if (m && /cercle/i.test(m[2]) && m[1].length > 1 && m[1][0] === m[1][m[1].length - 1]) {
+            return "en " + m[1][0] + ", " + m[2];
+        }
+        return seg;
+    }).join(" · ");
+}
 // À la dictée, une reprise énonce chaque lettre séparément (F, A, K — jamais "FAK" comme un mot ; "IL" doit
 // s'entendre I, L et pas comme le mot français "il"). On épelle donc les blocs de 2 lettres majuscules ou
 // plus avant de les donner à la synthèse vocale, sans toucher au texte affiché à l'écran.
@@ -33956,7 +33968,7 @@ function EcranTraceAnime() {
         if (typeof window === "undefined" || !window.speechSynthesis) return;
         if (dernierFigParleRef.current === figIndexCourant) return;
         dernierFigParleRef.current = figIndexCourant;
-        const texte = texteEnParoleLettreParLettre(tr(fiche.figures[figIndexCourant]));
+        const texte = texteEnParoleLettreParLettre(simplifierCerclesPourVoix(tr(fiche.figures[figIndexCourant])));
         window.speechSynthesis.cancel();
         const utt = new SpeechSynthesisUtterance(texte);
         utt.lang = LANGUE_VOIX[langue] || "fr-FR";
