@@ -33838,17 +33838,93 @@ function construireTraceReprise(fiche) {
     return { points: ptsAvecCoins, longueur: cum };
 }
 // Palettes du jeu "Plan de Reprise" (construction libre), différenciées par niveau. Tracés indicatifs (svg 300x150), pas un géomètre officiel.
+// Position (x,y) + vitesse/figure sur le tracé à une distance pondérée donnée — réutilisé pour le point
+// principal ET pour les points fantômes de la traînée.
+function pointADistance(trace, cible) {
+    const pts = trace.points;
+    let idx = 0;
+    for (let i = 0; i < pts.length; i++) { if (pts[i].dist <= cible) idx = i; else break; }
+    const pA = pts[idx] || pts[0];
+    const pB = pts[idx + 1] || pA;
+    const segLen = Math.max(pB.dist - pA.dist, 0.0001);
+    const frac = Math.min(Math.max((cible - pA.dist) / segLen, 0), 1);
+    return { x: pA.x + (pB.x - pA.x) * frac, y: pA.y + (pB.y - pA.y) * frac, vitesse: pB.vitesse, figIndex: pB.figIndex, idx: idx };
+}
+function couleurSelonAllure(v) {
+    if (v >= 1.4) return "#F5A623"; // galop : teinte chaude
+    if (v <= 0.65) return "#8A929C"; // pas / arrêt : plus terne
+    return "#20D9F5"; // trot : turquoise de référence
+}
+const LANGUE_VOIX = { fr: "fr-FR", en: "en-US", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP" };
+// À la dictée, une reprise énonce chaque lettre séparément (F, A, K — jamais "FAK" comme un mot ; "IL" doit
+// s'entendre I, L et pas comme le mot français "il"). On épelle donc les blocs de 2 lettres majuscules ou
+// plus avant de les donner à la synthèse vocale, sans toucher au texte affiché à l'écran.
+function texteEnParoleLettreParLettre(texte) {
+    return texte.replace(/\b[A-Z]{2,}\b/g, (bloc) => bloc.split("").join(", "));
+}
+// Nappe ambiante "Hype Spectral" — entièrement générée (Web Audio API), aucun fichier audio, donc aucun
+// souci de droits. Accord doux (Do2/Sol2/Do3/Mi3), léger shimmer par vibrato lent sur chaque voix.
+function demarrerNappeAmbiante(ctxRef, gainMasterRef, oscsRef) {
+    if (typeof window === "undefined" || !(window.AudioContext || window.webkitAudioContext)) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!ctxRef.current) ctxRef.current = new AC();
+    const ctx = ctxRef.current;
+    if (ctx.state === "suspended") ctx.resume();
+    const master = ctx.createGain();
+    master.gain.value = 0;
+    master.connect(ctx.destination);
+    const freqs = [130.81, 196.0, 261.63, 329.63];
+    const oscs = freqs.map((f, i) => {
+        const osc = ctx.createOscillator();
+        osc.type = i % 2 === 0 ? "sine" : "triangle";
+        osc.frequency.value = f;
+        const g = ctx.createGain();
+        g.gain.value = 0.22;
+        const lfo = ctx.createOscillator();
+        lfo.frequency.value = 0.06 + i * 0.015;
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 1.4;
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.detune);
+        osc.connect(g);
+        g.connect(master);
+        osc.start();
+        lfo.start();
+        return { osc: osc, lfo: lfo, g: g };
+    });
+    master.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 2.2);
+    gainMasterRef.current = master;
+    oscsRef.current = oscs;
+}
+function arreterNappeAmbiante(ctxRef, gainMasterRef, oscsRef) {
+    const ctx = ctxRef.current;
+    if (!ctx || !gainMasterRef.current) return;
+    const master = gainMasterRef.current;
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
+    const oscsASupprimer = oscsRef.current || [];
+    setTimeout(() => { oscsASupprimer.forEach((o) => { try { o.osc.stop(); o.lfo.stop(); } catch (e) { } }); }, 900);
+    gainMasterRef.current = null;
+    oscsRef.current = [];
+}
 function EcranTraceAnime() {
-    const { galopOuvert, setEcran, tr } = useApp();
+    const { galopOuvert, setEcran, tr, langue } = useApp();
     const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
     const [niveau, setNiveau] = React.useState(initial);
     const [t, setT] = React.useState(0);
     const [lecture, setLecture] = React.useState(false);
     const [vitesse, setVitesse] = React.useState(1);
+    const [vocal, setVocal] = React.useState(false);
+    const [musique, setMusique] = React.useState(false);
+    const audioCtxRef = React.useRef(null);
+    const gainMasterRef = React.useRef(null);
+    const oscsRef = React.useRef([]);
     const fiche = REPRISES_FFE[niveau];
     const trace = React.useMemo(() => construireTraceReprise(fiche), [niveau]);
     const rafRef = React.useRef(null);
     const dernierTsRef = React.useRef(null);
+    const dernierFigParleRef = React.useRef(-1);
     const VITESSE_BASE_PX_S = 46; // px/seconde de tracé à x1, calibré pour rester lisible sur les grandes reprises (G6/G7)
     React.useEffect(() => {
         if (!lecture) { dernierTsRef.current = null; return; }
@@ -33867,23 +33943,36 @@ function EcranTraceAnime() {
         rafRef.current = requestAnimationFrame(step);
         return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
     }, [lecture, vitesse, trace]);
-    React.useEffect(() => { setT(0); setLecture(false); }, [niveau]);
+    React.useEffect(() => { setT(0); setLecture(false); setMusique(false); dernierFigParleRef.current = -1; if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); }, [niveau]);
+    React.useEffect(() => { if (!lecture && typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); }, [lecture]);
+    React.useEffect(() => () => { if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); arreterNappeAmbiante(audioCtxRef, gainMasterRef, oscsRef); }, []);
+    React.useEffect(() => { if (musique) demarrerNappeAmbiante(audioCtxRef, gainMasterRef, oscsRef); else arreterNappeAmbiante(audioCtxRef, gainMasterRef, oscsRef); }, [musique]);
     const cibleLen = t * trace.longueur;
-    let idxCourant = 0;
-    for (let i = 0; i < trace.points.length; i++) { if (trace.points[i].dist <= cibleLen) idxCourant = i; else break; }
-    const pA = trace.points[idxCourant] || trace.points[0];
-    const pB = trace.points[idxCourant + 1] || pA;
-    const segLen = Math.max(pB.dist - pA.dist, 0.0001);
-    const frac = Math.min(Math.max((cibleLen - pA.dist) / segLen, 0), 1);
-    const posX = pA.x + (pB.x - pA.x) * frac;
-    const posY = pA.y + (pB.y - pA.y) * frac;
-    const figIndexCourant = (t >= 1 ? trace.points[trace.points.length - 1] : pB).figIndex;
+    const posActuelle = pointADistance(trace, cibleLen);
+    const posX = posActuelle.x, posY = posActuelle.y, idxCourant = posActuelle.idx;
+    const figIndexCourant = t >= 1 ? trace.points[trace.points.length - 1].figIndex : posActuelle.figIndex;
+    React.useEffect(() => {
+        if (!vocal || !lecture) return;
+        if (typeof window === "undefined" || !window.speechSynthesis) return;
+        if (dernierFigParleRef.current === figIndexCourant) return;
+        dernierFigParleRef.current = figIndexCourant;
+        const texte = texteEnParoleLettreParLettre(tr(fiche.figures[figIndexCourant]));
+        window.speechSynthesis.cancel();
+        const utt = new SpeechSynthesisUtterance(texte);
+        utt.lang = LANGUE_VOIX[langue] || "fr-FR";
+        utt.rate = 0.95;
+        window.speechSynthesis.speak(utt);
+    }, [figIndexCourant, vocal, lecture, langue, fiche]);
     const dFull = "M " + trace.points.map((p) => p.x + " " + p.y).join(" L ");
     const parcourus = trace.points.slice(0, idxCourant + 1);
     const dProgress = "M " + parcourus.map((p) => p.x + " " + p.y).join(" L ") + " L " + posX + " " + posY;
     const cerclesMarques = [];
     const vus = {};
     trace.points.forEach((p) => { if (p.cercle) { const k = p.lettre + "-" + p.figIndex; if (!vus[k]) { vus[k] = true; cerclesMarques.push(p); } } });
+    // Traînée spectrale : points fantômes derrière le point principal, opacité/taille décroissantes,
+    // couleur selon l'allure à cet endroit du tracé (turquoise trot / chaud galop / terne pas-arrêt).
+    const OFFSETS_TRAINEE = [16, 34, 54, 76, 100, 128];
+    const traineePoints = OFFSETS_TRAINEE.map((off) => pointADistance(trace, Math.max(cibleLen - off, 0)));
     return React.createElement("div", { style: { minHeight: "100dvh", background: COLORS.nuit, paddingBottom: 30 } },
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "18px 20px 14px", borderBottom: `1px solid ${COLORS.nuitBordure}` } },
             React.createElement("button", { onClick: () => setEcran(galopOuvert ? "galop-detail" : "dashboard"), style: { width: 38, height: 38, borderRadius: 12, background: COLORS.nuitClaire, color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 } }, "\u2190"),
@@ -33901,15 +33990,18 @@ function EcranTraceAnime() {
                     cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: "rgba(32,217,245,0.22)", strokeWidth: 1, strokeDasharray: "3 3" })),
                     React.createElement("path", { d: dFull, fill: "none", stroke: "rgba(244,247,250,0.14)", strokeWidth: 1.6 }),
                     React.createElement("path", { d: dProgress, fill: "none", stroke: COLORS.turquoise, strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 5px rgba(32,217,245,0.6))" } }),
-                    React.createElement("circle", { cx: posX, cy: posY, r: 5, fill: COLORS.turquoise, style: { filter: "drop-shadow(0 0 7px rgba(32,217,245,0.9))" } })))),
+                    traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 4.4 - i * 0.55, fill: couleurSelonAllure(p.vitesse), opacity: 0.42 - i * 0.06 })),
+                    React.createElement("circle", { cx: posX, cy: posY, r: 5, fill: couleurSelonAllure(posActuelle.vitesse), style: { filter: "drop-shadow(0 0 7px rgba(32,217,245,0.9))" } })))),
         React.createElement("div", { style: { padding: "0 20px" } },
             React.createElement("div", { style: { background: `${COLORS.turquoise}0F`, border: `1px solid ${COLORS.turquoise}38`, borderRadius: 14, padding: "12px 14px", marginBottom: 14, minHeight: 42 } },
                 React.createElement("p", { style: { margin: "0 0 3px", fontSize: 10, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: COLORS.turquoise } }, tr({ fr: "Figure " + (figIndexCourant + 1) + " / " + fiche.figures.length, en: "Figure " + (figIndexCourant + 1) + " / " + fiche.figures.length, es: "Figura " + (figIndexCourant + 1) + " / " + fiche.figures.length, it: "Figura " + (figIndexCourant + 1) + " / " + fiche.figures.length, de: "Lektion " + (figIndexCourant + 1) + " / " + fiche.figures.length, ja: "図形 " + (figIndexCourant + 1) + " / " + fiche.figures.length })),
                 React.createElement("p", { style: { margin: 0, fontSize: 12.5, color: COLORS.encre, lineHeight: 1.5 } }, tr(fiche.figures[figIndexCourant]))),
             React.createElement("input", { type: "range", min: 0, max: 1000, value: Math.round(t * 1000), onChange: (e) => { setLecture(false); setT(Number(e.target.value) / 1000); }, style: { width: "100%", accentColor: COLORS.turquoise, marginBottom: 14 } }),
-            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
-                React.createElement("button", { onClick: () => { if (t >= 1) setT(0); setLecture((v) => !v); }, style: { flex: 1, padding: 13, borderRadius: 14, background: COLORS.turquoise, border: "none", color: COLORS.nuit, fontSize: 13, fontWeight: 800 } }, lecture ? tr({ fr: "⏸ Pause", en: "⏸ Pause", es: "⏸ Pausa", it: "⏸ Pausa", de: "⏸ Pause", ja: "⏸ 一時停止" }) : (t >= 1 ? tr({ fr: "↻ Rejouer", en: "↻ Replay", es: "↻ Repetir", it: "↻ Riproduci", de: "↻ Wiederholen", ja: "↻ もう一度" }) : tr({ fr: "▶ Lecture", en: "▶ Play", es: "▶ Reproducir", it: "▶ Riproduci", de: "▶ Abspielen", ja: "▶ 再生" }))),
-                [0.5, 1, 2].map((v) => React.createElement("button", { key: v, onClick: () => setVitesse(v), style: { padding: "13px 14px", borderRadius: 14, background: vitesse === v ? COLORS.nuitElevee : "transparent", border: `1px solid ${vitesse === v ? COLORS.turquoise : COLORS.nuitBordure}`, color: vitesse === v ? COLORS.turquoise : COLORS.encreDoux, fontSize: 12.5, fontWeight: 700 } }, "x" + v))),
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 } },
+                React.createElement("button", { onClick: () => { if (t >= 1) { setT(0); dernierFigParleRef.current = -1; } setLecture((v) => !v); }, style: { flex: 1, padding: 13, borderRadius: 14, background: COLORS.turquoise, border: "none", color: COLORS.nuit, fontSize: 13, fontWeight: 800 } }, lecture ? tr({ fr: "⏸ Pause", en: "⏸ Pause", es: "⏸ Pausa", it: "⏸ Pausa", de: "⏸ Pause", ja: "⏸ 一時停止" }) : (t >= 1 ? tr({ fr: "↻ Rejouer", en: "↻ Replay", es: "↻ Repetir", it: "↻ Riproduci", de: "↻ Wiederholen", ja: "↻ もう一度" }) : tr({ fr: "▶ Lecture", en: "▶ Play", es: "▶ Reproducir", it: "▶ Riproduci", de: "▶ Abspielen", ja: "▶ 再生" }))),
+                [0.5, 1, 2].map((v) => React.createElement("button", { key: v, onClick: () => setVitesse(v), style: { padding: "13px 14px", borderRadius: 14, background: vitesse === v ? COLORS.nuitElevee : "transparent", border: `1px solid ${vitesse === v ? COLORS.turquoise : COLORS.nuitBordure}`, color: vitesse === v ? COLORS.turquoise : COLORS.encreDoux, fontSize: 12.5, fontWeight: 700 } }, "x" + v)),
+                React.createElement("button", { onClick: () => setVocal((v) => !v), style: { padding: "13px 14px", borderRadius: 14, background: vocal ? COLORS.nuitElevee : "transparent", border: `1px solid ${vocal ? COLORS.turquoise : COLORS.nuitBordure}`, color: vocal ? COLORS.turquoise : COLORS.encreDoux, fontSize: 15 } }, vocal ? "🔊" : "🔇"),
+                React.createElement("button", { onClick: () => setMusique((v) => !v), style: { padding: "13px 14px", borderRadius: 14, background: musique ? COLORS.nuitElevee : "transparent", border: `1px solid ${musique ? COLORS.turquoise : COLORS.nuitBordure}`, color: musique ? COLORS.turquoise : COLORS.encreDoux, fontSize: 15 } }, musique ? "🎵" : "🎶")),
             React.createElement("p", { style: { marginTop: 16, fontSize: 10.5, color: COLORS.encreDoux, lineHeight: 1.5 } },
                 tr({ fr: "Tracé pédagogique construit à partir des lettres officielles de la reprise. Les cercles et voltes sont signalés par un pointillé indicatif ; leur forme exacte n'est pas garantie au mètre près.", en: "Learning track built from the test's official letters. Circles and voltes are shown with an indicative dotted ring; their exact shape isn't guaranteed to the metre.", es: "Trazado pedagógico construido a partir de las letras oficiales de la reprise. Los círculos y voltas se muestran con un anillo punteado indicativo; su forma exacta no está garantizada al metro.", it: "Tracciato didattico costruito dalle lettere ufficiali della ripresa. Cerchi e volte sono indicati con un anello tratteggiato indicativo; la forma esatta non è garantita al metro.", de: "Lernspur auf Basis der offiziellen Buchstaben der Aufgabe. Zirkel und Volten werden mit einem gepunkteten Hinweisring dargestellt; die exakte Form ist nicht metergenau garantiert.", ja: "メニューの公式文字をもとに作成した学習用の動線です。サークルやボルトは目安の点線で示しており、正確な形状を保証するものではありません。" }))));
 }
