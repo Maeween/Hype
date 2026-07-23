@@ -31646,7 +31646,7 @@ function EcranBibliothequeGalops() {
     useEffect(() => { let actif = true; (async () => { try { const u = await utilisateurActuel(); if (actif) setMoiGal(u || null); } catch (e) { } })(); return () => { actif = false; }; }, []);
     const estModGal = (typeof estModerateurHype === "function") && estModerateurHype(moiGal);
     useEffect(() => { if (msgAVenir) { const _id = setTimeout(() => setMsgAVenir(null), 2600); return () => clearTimeout(_id); } }, [msgAVenir]);
-    return (React.createElement("div", null,
+    return (React.createElement("div", { style: { paddingBottom: 96 } },
         (msgAVenir ? React.createElement("div", { style: { position: "fixed", left: "50%", bottom: 92, transform: "translateX(-50%)", background: "rgba(13,20,28,0.94)", border: `1px solid ${COLORS.turquoise}66`, color: COLORS.blanc, padding: "11px 17px", borderRadius: 14, fontSize: 13, fontWeight: 600, zIndex: 60, maxWidth: "86%", textAlign: "center", boxShadow: "0 8px 30px rgba(10,26,36,0.099)" } }, "« " + msgAVenir + " » " + tr({ fr: "arrive très bientôt", en: "is coming very soon", ja: "は近日公開", es: "llega muy pronto", it: "arriva prestissimo", de: "kommt sehr bald" }) + " 🐴") : null),
         React.createElement("div", { style: { position: "relative", width: "100%", height: "46vh", minHeight: 330, maxHeight: 500, overflow: "hidden" } },
             React.createElement("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(images/galops-hero.jpeg)", backgroundSize: "cover", backgroundPosition: "center 30%" } }),
