@@ -31972,13 +31972,21 @@ function EcranBibliothequeGalops() {
             var prochainC = coursG.find(function(c){ return !coursTermines.includes(c.id); });
             var titreP = prochainC ? (typeof prochainC.titre === "string" ? prochainC.titre : ((prochainC.titre || {})[langue] || (prochainC.titre || {}).fr || "")) : "";
             var allerAuGalop = function(){ if (!(galopActObj && (galopActObj.disponible || estModGal))) { return; } setGalopOuvert(gAct); setEcran("galop-detail"); };
+            var allerVersGalop = function(id){
+                var g = GALOPS_I18N.find(function(gg){ return gg.id === id; });
+                var aVenirG = g && !g.disponible && !estModGal;
+                var verrouilleG = g && !g.debloque && !premium && !estModGal;
+                if (aVenirG) { return; }
+                if (verrouilleG) { setEcran("premium"); return; }
+                setGalopOuvert(id); setEcran("galop-detail");
+            };
             var POS_MEVO = [
                 { id: 1, left: 8, top: 88 }, { id: 2, left: 13.7, top: 47 }, { id: 3, left: 29.2, top: 17 },
                 { id: 4, left: 50.5, top: 6 }, { id: 5, left: 71.7, top: 17 }, { id: 6, left: 87.3, top: 47 }, { id: 7, left: 93, top: 88 }
             ];
             var medaillons = POS_MEVO.map(function(p){
                 var etat = p.id < gAct ? "done" : (p.id === gAct ? "current" : "locked");
-                return React.createElement("div", { key: "mevo-niv-" + p.id, className: "mevo-niv mevo-" + etat, style: { left: p.left + "%", top: p.top + "%" } },
+                return React.createElement("div", { key: "mevo-niv-" + p.id, className: "mevo-niv mevo-" + etat, style: { left: p.left + "%", top: p.top + "%", cursor: "pointer" }, onClick: function(){ allerVersGalop(p.id); } },
                     React.createElement("div", { className: "mevo-dot" },
                         etat === "locked"
                             ? [React.createElement("span", { key: "gl", className: "glabel" }, "GALOP"), String(p.id), React.createElement("span", { key: "l", className: "mevo-lock" }, "\uD83D\uDD12")]
