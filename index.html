@@ -26041,6 +26041,7 @@ function EcranMonCavalier() {
             (!__estVisite) ? h("button", { onClick: function () { setEcran("messagerie"); }, title: T("Messages", "Messages", "Mensajes", "Messaggi", "メッセージ"), style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "#C7CFD6", strokeWidth: 1.7 }, h("path", { d: "M4 5.5 h16 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H9 l-4 3.5 v-3.5 H4 a1 1 0 0 1-1-1 v-9 a1 1 0 0 1 1-1 z" }))) : null,
             __estVisite ? h("button", { onClick: ouvrirMessageAvecVisite, disabled: messageEnCours, style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(32,217,245,0.2)", border: "1px solid rgba(32,217,245,0.4)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", opacity: messageEnCours ? 0.6 : 1 } }, h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "#20D9F5", strokeWidth: 1.9 }, h("path", { d: "M4 5.5 h16 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H9 l-4 3.5 v-3.5 H4 a1 1 0 0 1-1-1 v-9 a1 1 0 0 1 1-1 z" }))) : null)),
         h("div", { style: { marginTop: 7, fontSize: 13, color: "#AEB8C0", fontStyle: "italic", fontFamily: "Georgia, serif", lineHeight: 1.4 } }, "\u201c" + citation + "\u201d"))),
+    !__estVisite ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "inline-flex", alignItems: "center", gap: 6, margin: "12px 16px 0", padding: "6px 12px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 11, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83c\udfc6 " + T("Voir mes qu\u00eates", "See my quests", "Ver mis misiones", "Vedi le mie missioni", "\u30ad\u30fc\u30af\u30b9\u3092\u898b\u308b") + " \u203a") : null,
     ((function () {
       var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
       function rgb(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thC.principal, a) : thC.principal; }
@@ -26798,6 +26799,7 @@ function EcranGuilde() {
           h("div", { style: { height: 10, borderRadius: 6, background: "rgba(255,255,255,0.08)", overflow: "hidden", margin: "9px 0 6px" } },
             h("div", { style: { height: "100%", width: niv.pct + "%", background: "linear-gradient(90deg,#4DEAD8,#20D9F5)", borderRadius: 6 } })),
           h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, maG.xp + " XP \u00b7 " + niv.reste + "/" + niv.besoin + " " + T("vers niv.", "to lvl", "a niv.", "a liv.", "\u6b21") + " " + (niv.niveau + 1))))),
+    h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "flex", alignItems: "center", gap: 6, margin: "10px 16px 0", padding: "7px 13px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 11, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, "\ud83c\udfc6 " + T("Voir les qu\u00eates du club", "See club quests", "Ver misiones del club", "Vedi le missioni del club", "\u30ad\u30fc\u30af\u30b9\u3092\u898b\u308b") + " \u203a"),
     h("div", { style: { padding: "14px 16px 0" } },
       h("div", { style: { display: "flex", gap: 6, padding: "14px 8px", borderRadius: 16, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" } },
         statMini(maG.membres, T("Membres", "Members", "Miembros", "Membri", "\u30e1\u30f3\u30d0\u30fc")),
@@ -27882,25 +27884,11 @@ function EcranUnivers() {
                 React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
                   React.createElement("path", { d: "M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z" }),
                   React.createElement("circle", { cx: 12, cy: 10, r: 2.4 })), ((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || (lg === "en" ? "My club" : lg === "es" ? "Mi club" : lg === "it" ? "Il mio club" : lg === "ja" ? "\u30de\u30a4\u30af\u30e9\u30d6" : "Mon club")))),
-            React.createElement("span", { className: "pf-chev" }, "›")),
-          React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginTop: 14, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.08)", cursor: "pointer" }, onClick: function (e) { e.stopPropagation(); e.preventDefault(); setEcran("quetes"); } },
-            React.createElement("img", { src: hypeBadgeNiveau(Math.floor((ctx.xp || 0) / 200) + 1), alt: "", style: { height: 40, width: "auto", flex: "0 0 auto", filter: "drop-shadow(0 0 6px rgba(32,217,245,.55))" } }),
-            React.createElement("div", { style: { flex: 1, minWidth: 0 } },
-              React.createElement("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 12, color: "#F4F6F7", fontWeight: 700 } }, (lg === "en" ? "Level " : lg === "es" ? "Nivel " : lg === "it" ? "Livello " : lg === "ja" ? "\u30ec\u30d9\u30eb " : "Niveau ") + (Math.floor((ctx.xp || 0) / 200) + 1)),
-              React.createElement("div", { style: { height: 5, borderRadius: 99, background: "rgba(255,255,255,0.08)", overflow: "hidden", marginTop: 5 } },
-                React.createElement("div", { style: { height: "100%", width: (((ctx.xp || 0) % 200) / 200 * 100) + "%", borderRadius: 99, background: "linear-gradient(90deg,#17A8B3,#20D9F5)" } })),
-              React.createElement("div", { style: { fontSize: 9.5, color: "#8A95A1", marginTop: 4 } }, ((ctx.xp || 0) % 200) + " / 200 XP")))),
+            React.createElement("div", { style: { width: 34, height: 34, background: "linear-gradient(160deg,#12313A,#0B1B20)", border: "1.5px solid #20D9F5", transform: "rotate(45deg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginLeft: 8, boxShadow: "0 0 10px rgba(32,217,245,0.25)" } },
+              React.createElement("span", { style: { transform: "rotate(-45deg)", fontFamily: "'Cinzel',serif", fontWeight: 700, color: "#EAF7FA", fontSize: 13 } }, String(Math.floor((ctx.xp || 0) / 200) + 1))),
+            React.createElement("span", { className: "pf-chev" }, "›"))),
 
-        chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e\u4e16\u754c"), "d2"),
-
-        React.createElement("div", { className: "manwrap rv d2" },
-          React.createElement(FilAnnoncesB, null),
-          React.createElement("div", { className: "manege", ref: manegeRef, "data-hscroll": "1" },
-            React.createElement("div", { className: "mtrack" },
-              manegeCartesAcc("a"),
-              manegeCartesAcc("b")))),
-
-        React.createElement("button", { className: "prem-shine", onClick: nav("premium"), style: { position: "relative", width: "100%", height: 188, margin: "26px 0 0", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", boxShadow: "0 14px 40px rgba(0,0,0,0.55), 0 0 30px rgba(32,217,245,0.12)", cursor: "pointer", textAlign: "left", padding: 0, display: "block", background: "#04070d" } },
+                React.createElement("button", { className: "prem-shine", onClick: nav("premium"), style: { position: "relative", width: "100%", height: 188, margin: "26px 0 0", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", boxShadow: "0 14px 40px rgba(0,0,0,0.55), 0 0 30px rgba(32,217,245,0.12)", cursor: "pointer", textAlign: "left", padding: 0, display: "block", background: "#04070d" } },
           React.createElement("div", { style: { position: "absolute", inset: 0, background: "url(" + HYPE_PREMIUM_CARD + ") center 36%/cover no-repeat" } }),
           React.createElement("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(2,5,9,0.93) 6%, rgba(2,5,9,0.38) 46%, rgba(2,5,9,0.04) 78%)" } }),
           React.createElement("div", { style: { position: "absolute", left: 16, right: 14, bottom: 12 } },
@@ -27925,6 +27913,15 @@ function EcranUnivers() {
                     React.createElement("div", { style: { fontSize: 8.5, letterSpacing: "0.3em", fontWeight: 800, color: "#7DDDE8", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif" } }, L5acc("Ton univers", "Your world", "Tu universo", "Il tuo universo", "\u3042\u306a\u305f\u306e\u4e16\u754c")),
                     React.createElement("div", { style: { marginTop: 5, fontFamily: "'Cinzel',serif", fontSize: 18, fontWeight: 700, letterSpacing: "0.06em", color: "#F4FEFF", textTransform: "uppercase" } }, L5acc("Mon \u00c9curie", "My Stable", "Mi cuadra", "La mia scuderia", "\u30de\u30a4\u53a9\u820e"))),
                   React.createElement("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a"))),
+
+        chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e\u4e16\u754c"), "d2"),
+
+        React.createElement("div", { className: "manwrap rv d2" },
+          React.createElement(FilAnnoncesB, null),
+          React.createElement("div", { className: "manege", ref: manegeRef, "data-hscroll": "1" },
+            React.createElement("div", { className: "mtrack" },
+              manegeCartesAcc("a"),
+              manegeCartesAcc("b")))),
 
         chapAcc(L5acc("L'\u00e9v\u00e8nement", "The event", "El evento", "L'evento", "\u30a4\u30d9\u30f3\u30c8"), "d4"),
 
@@ -31568,7 +31565,7 @@ function EcranMessagerie() {
    FilAnnoncesB = ticker une ligne | FilAnnoncesC = carte a la une
    ============================================================ */
 var FIL_ANN_CSS = ""
-+ ".filann-b{position:relative;overflow:hidden;padding:18px 0;margin:10px 0}"
++ ".filann-b{position:relative;overflow:hidden;padding:18px 0;margin:22px 0 26px}"
 + ".filann-b::before,.filann-b::after{content:'';position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#BFD0DA 22%,#20D9F5 50%,#BFD0DA 78%,transparent);background-size:200% auto;animation:filann-reflet 4.5s linear infinite;box-shadow:0 0 10px rgba(32,217,245,.35)}"
 + ".filann-b::before{top:0}.filann-b::after{bottom:0}"
 + "@keyframes filann-reflet{0%{background-position:200% center}100%{background-position:-200% center}}"
