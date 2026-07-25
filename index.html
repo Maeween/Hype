@@ -29363,7 +29363,7 @@ function NouveauxCavaliers() {
 /* ===== Albums nommes des chevaux ===== */
 function AlbumsCheval(props) {
   var h = React.createElement;
-  var ctx = useApp(); var tr = ctx.tr;
+  var ctx = useApp(); var tr = ctx.tr; var premium = ctx.premium; var setEcranAC = ctx.setEcran;
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
   var tnT = props.teinte || "#20D9F5";
   var tA = function (aT) { return teinteRGBA(tnT, aT); };
@@ -29538,7 +29538,12 @@ function AlbumsCheval(props) {
     var alb = (albums || []).filter(function (x) { return x.id === selPhotos; })[0];
     if (!alb) { setSelPhotos(false); return; }
     var nouv = (alb.photos || []).slice();
-    Object.keys(coches).forEach(function (u) { if (coches[u] && nouv.indexOf(u) < 0) nouv.push(u); });
+    var aAjouter = Object.keys(coches).filter(function (u) { return coches[u] && nouv.indexOf(u) < 0; });
+    if (!premium) {
+      var placesRestantes2 = Math.max(0, 20 - nouv.length);
+      if (aAjouter.length > placesRestantes2) { aAjouter = aAjouter.slice(0, placesRestantes2); bip(T("Limite de 20 photos/vid\u00e9os par album en gratuit \u2014 passe Premium pour aller plus loin", "20 photos/videos max per album on the free plan \u2014 go Premium for more", "M\u00e1ximo 20 por \u00e1lbum en el plan gratuito", "Massimo 20 per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u306e\u4e0a\u9650\u306820\u3067\u3059")); }
+    }
+    aAjouter.forEach(function (u) { nouv.push(u); });
     setSelPhotos(false);
     var r = await majAlbumCheval(alb.id, { photos: nouv });
     if (r && r.error) { bip(T("Enregistrement impossible", "Could not save", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); return; }
@@ -29557,11 +29562,18 @@ function AlbumsCheval(props) {
   async function importerFichiers(albId, fichiers) {
     var alb = (albums || []).filter(function (x) { return x.id === albId; })[0];
     if (!alb || !fichiers || !fichiers.length) return;
+    var dejaLa = (alb.photos || []).length;
+    var fichiersUtiles = fichiers;
+    if (!premium) {
+      var placesRestantes = Math.max(0, 20 - dejaLa);
+      if (placesRestantes <= 0) { bip(T("20 photos/vid\u00e9os max par album en gratuit \u2014 passe Premium pour aller plus loin", "20 photos/videos max per album on the free plan \u2014 go Premium for more", "M\u00e1x. 20 fotos/v\u00eddeos por \u00e1lbum en el plan gratuito", "Massimo 20 foto/video per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u30a2\u30eb\u30d0\u30e0\u306520\u679a\u307e\u3067")); return; }
+      if (fichiers.length > placesRestantes) { fichiersUtiles = Array.prototype.slice.call(fichiers, 0, placesRestantes); bip(T("Seules " + placesRestantes + " photo(s)/vid\u00e9o(s) ajout\u00e9e(s) \u2014 limite de 20 en gratuit", "Only " + placesRestantes + " added \u2014 free plan limit is 20", "Solo " + placesRestantes + " a\u00f1adida(s) \u2014 l\u00edmite gratuito 20", "Solo " + placesRestantes + " aggiunta/e \u2014 limite gratuito 20", "\u7121\u6599\u30d7\u30e9\u30f3\u306e\u4e0a\u9650\u306820\u3067\u3059\u3002" + placesRestantes + "\u4ef6\u306e\u307f\u8ffd\u52a0")); }
+    }
     setEnvoiCours(true);
     var urls = (alb.photos || []).slice();
     var rate = 0;
-    for (var iF = 0; iF < fichiers.length; iF++) {
-      try { var rF = await envoyerPhoto(fichiers[iF]); if (rF && rF.url) urls.push(rF.url); else rate++; } catch (eF) { rate++; }
+    for (var iF = 0; iF < fichiersUtiles.length; iF++) {
+      try { var rF = await envoyerPhoto(fichiersUtiles[iF]); if (rF && rF.url) urls.push(rF.url); else rate++; } catch (eF) { rate++; }
     }
     var rM = await majAlbumCheval(albId, { photos: urls });
     setEnvoiCours(false);
@@ -29655,7 +29667,7 @@ function AlbumsCheval(props) {
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
     h("div", { "data-hscroll": "1", style: { display: "flex", gap: 11, overflowX: "auto", padding: "2px 16px 4px" } },
       (albums || []).map(carteAlbum),
-      h("div", { onClick: function () { setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { flex: "0 0 auto", width: 112, cursor: "pointer" } },
+      h("div", { onClick: function () { var estCheval = String(props.cible || "").indexOf("cheval:") === 0; if (estCheval && !premium && (albums || []).filter(function (a) { return !a.__auto && !a.__lecture; }).length >= 1) { bip(T("1 album par cheval en gratuit \u2014 passe Premium pour en cr\u00e9er plus", "1 album per horse on the free plan \u2014 go Premium to create more", "1 \u00e1lbum por caballo en el plan gratuito", "1 album per cavallo nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u99ac1\u30a2\u30eb\u30d0\u30e0\u307e\u3067")); return; } setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { flex: "0 0 auto", width: 112, cursor: "pointer" } },
         h("div", { style: { width: 112, height: 112, borderRadius: 16, border: "1.5px dashed " + tA(0.5), background: tA(0.05), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6 } },
           h("span", { style: { width: 30, height: 30, borderRadius: "50%", border: "1.5px solid " + tnT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: tnT } }, "+"),
           h("span", { style: { fontFamily: M9, fontSize: 9, fontWeight: 700, color: tnT, letterSpacing: 0.5, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0"))))),
