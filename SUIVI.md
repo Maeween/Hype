@@ -4,32 +4,89 @@
 
 **Règle d'or : une seule page "codeuse" à la fois.** Les autres pages peuvent réfléchir, lister, préparer des maquettes — mais ne livrent pas de fichier index.html tant que ce n'est pas leur tour, pour éviter d'écraser le travail d'une autre page.
 
-**Version actuelle de l'index.html : 25/07 — « Mon Évolution » finalisée (argent lunaire) + page Galops réorganisée**
-Dernier index livré. Contient tout l'historique précédent **plus** : la page "Mon Évolution" aboutie (voir Fait récemment du 24-25/07), les badges Prochainement/Réservé Premium redessinés, l'encart Chemin des poneys avec l'image d'Apy, les catégories de cours complétées, et la palette argent lunaire. 👉 **C'est cette version qu'il faut reprendre comme base pour la prochaine page codeuse.**
+**Version actuelle de l'index.html : 25/07 (nuit) — « Mon Évolution » + Poney d'Or refait (Or 1-9, Evan/Samuel/Elea) + 13 couvertures + baby-c16 supprimé**
+Dernier index livré. Contient "Mon Évolution" (inchangée) **plus** : les 9 cours du Poney d'Or (baby-c19 à baby-c27) avec Evan, Samuel et Elea intégrés comme personnages, le renommage de baby-c18, 13 images de couverture insérées directement en base64, et la suppression de l'ancien `baby-c16` ("Je pars en promenade") qui faisait doublon avec Or 1. 👉 **C'est cette version qu'il faut reprendre comme base pour la prochaine page codeuse.**
 
 ---
 
 ## ⚙️ État technique (à jour)
 
-- **Index le plus récent** : celui du 24/07 (Mon Évolution). Base à reprendre.
-- **⚠️ Fichier supplémentaire obligatoire avec cet index** : `hype-images-119.js` — contient désormais 3 clés : `k555` (cheval sauteur, fond de Mon Évolution), `k556` (paysage Apy, fond de l'encart Chemin des poneys), `k557` (Apy au livre, vignette de la carte Baby dans la liste des Galops). Sans lui, ces images ne s'affichent pas. Le `<script src="hype-images-119.js">` est déjà dans le `<head>` de l'index.
-- **À pousser** : GitHub (Maeween/Hype) → Netlify — index.html **+** hype-images-119.js ensemble.
-- **SQL déjà exécutés côté Supabase** ✅ :
-  - `notifications-hype.sql` — **FAIT**
-  - `club-agenda.sql` — **FAIT**
-  - `ALTER TABLE club_agenda ADD COLUMN IF NOT EXISTS image_url text;` — **FAIT** (confirmé par Blandine le 23/07)
-- **SQL en attente** : aucun.
-- **⚠️ Point de vigilance pour la prochaine session** : la courbe de "Mon Évolution" est calée en pourcentages sur la photo fournie par Blandine, mais pas encore vérifiée sur un vrai rendu en ligne. Dès que c'est poussé, demander une capture réelle à Blandine et ajuster finement les % si la courbe ne tombe pas exactement sur la trajectoire du cheval.
+- **Index le plus récent** : celui du 25/07 (nuit). Base à reprendre.
+- **⚠️ Fichiers supplémentaires obligatoires avec cet index** :
+  - `hype-images-119.js` — 3 clés (`k555`, `k556`, `k557`) pour "Mon Évolution". Inchangé.
+  - `hype-images-120.js` — 13 clés (`k558` à `k570`), images de couverture en base64 pour baby-c10, c17-c27 (voir tableau ci-dessous). Le `<script src="hype-images-120.js">` est dans le `<head>`, juste après `hype-images-119.js`.
+- **À pousser** : GitHub (Maeween/Hype) → Netlify — index.html **+** hype-images-119.js **+** hype-images-120.js, tous les trois ensemble.
+- **⚠️ Point de vigilance sur hype-images-120.js** : images encodées en base64 directement dans ce fichier JS (~6,9 Mo), pas de fichiers image séparés à uploader. Méthode utilisée sur demande explicite de Blandine ("c'est toi qui les insères") — écart au fonctionnement habituel où Blandine gérait seule les visuels. À garder en tête si on veut revenir à des fichiers image séparés plus tard.
+- **SQL déjà exécutés côté Supabase** ✅ : `notifications-hype.sql`, `club-agenda.sql`, `image_url` sur `club_agenda`. Aucun SQL en attente.
+- **⚠️ Point de vigilance reporté** : alignement réel de la courbe "Mon Évolution" sur la photo, à vérifier une fois en ligne.
+
+---
+
+## 🐴 Poney d'Or — état des lieux complet
+
+Structure finale : baby-c1 à c9 = Bronze (inchangé) ; baby-c10 à c18 = Argent (9 cours, avec renommage de c18) ; baby-c19 à c27 = Or (9 cours, nouveaux, Evan/Samuel/Elea intégrés).
+
+⚠️ **`baby-c16` (ancien "Je pars en promenade", doublon avec Or 1) a été supprimé** — retiré du bloc de cours, de `HYPE_COURS_PRETS`, et du raccourci de navigation `babypromenade` qui devenait orphelin.
+
+### Couvertures insérées (13 images, clés `k558` à `k570`)
+
+| Cours | Clé image | Personnage | Contenu |
+|---|---|---|---|
+| baby-c10 | `k558` | Evan | Câlin encolure, cœur (aquarelle) |
+| baby-c17 | `k560` | Evan | Câlin, peluche-poney blottie (photoréaliste) |
+| baby-c18 | `k561` | Liam | Bain moussant, rires |
+| baby-c19 | `k562` | Evan | Bras ouverts au galop, monogramme (aquarelle) |
+| baby-c20 | `k563` | Elea | Friandise cœur, panneau |
+| baby-c21 | `k564` | Elea | Brossage, cristaux/lanternes |
+| baby-c22 | `k565` | Samuel | Sur tabouret, brossage toupet |
+| baby-c23 | `k566` | Liam | Cure-pied, accroupi |
+| baby-c24 | `k567` | Samuel | Carnet, constellation cheval |
+| baby-c25 | `k568` | Samuel | Tête contre tête, yeux bleus |
+| baby-c26 | `k569` | Samuel | Galop, poing levé, victoire |
+| baby-c27 | `k570` | Liam | Rosette, fierté |
+
+⚠️ `k559` avait été prévue pour l'ancien `baby-c16` (désormais supprimé) — cette clé existe toujours dans `hype-images-120.js` mais n'est plus référencée par aucun cours. Sans impact (juste un peu de poids mort dans le fichier JS).
+
+**Répartition finale des personnages sur les couvertures** : Evan ×3, Samuel ×4, Elea ×2, Liam ×3.
+
+---
+
+## 🖼️ Réserve d'images (64 reçues de Blandine, 15 utilisées, ~49 disponibles)
+
+Toutes converties en JPG par Claude au fil de la session. Formats mélangés : portrait 1122×1402 (façon couverture de cours) et carré 1254×1254 (façon carte Memory).
+
+**Toujours en réserve, non utilisées** — notamment :
+- Un gros lot **Elea** non utilisé (câlins, friandises, brossage — `elea-calin-carotte-pomme`, `elea-calin-seau-brosses`, `elea-rire-sac-friandises`, `elea-seau-apy-friandises-fleurs`, `elea-tresors-apy-friandises`...)
+- Un gros lot **Samuel** en pyjama (ambiance coucher, hors contexte écurie — `samuel-pyjama-*`)
+- Plusieurs **Apy générique** (sauts d'obstacles, câlins variés, lecture, couverture hiver...)
+- Quelques images **"groupe"** (plusieurs enfants ensemble) et 2 **photoréalistes** avec la maman de Blandine
+- 2 essais **Evan style aquarelle/photoréaliste alternatif** non retenus pour une couverture
+
+**Pistes pour la suite** : ces images carrées (1254×1254) sont un bon format pour le Memory du Poney ou le puzzle. Aucun cours n'a plus de slot vide pour l'instant — toute nouvelle utilisation d'image nécessiterait soit un nouveau cours, soit le remplacement d'une image déjà en place.
+
+---
+
+## 🎨 Bible visuelle Baby Spectral — mises à jour
+
+- **Fiche Bambina créée** (section à ajouter au document Word) : Shetland baie, crins/queue noirs, liste blanche étroite (pas large comme Apy), corps rond. Prompt court fourni.
+- **Repères de la maman de Blandine notés** (pas encore en fiche officielle) : cheveux blond doré mi-longs ondulés, tenue décontractée soignée. Sert de base si une fiche "Enseignante" est créée plus tard.
+- **Elea** : toujours pas de prompt court dédié dans la Bible (contrairement à Liam/Samuel/Evan/Apy/Bambina).
+- **Evan** : difficulté connue et actée — c'est le seul personnage devant ressembler à un enfant réel (photos de référence), donc structurellement plus dur à générer de façon cohérente que les personnages inventés. Deux essais "style alternatif" (aquarelle/anneaux lumineux, photoréaliste) ont été gardés en réserve plutôt que rejetés, faute de mieux pour l'instant.
 
 ---
 
 ## 🔴 À FAIRE
 
-- [ ] **Bouton "Vidéos" (cours et démonstrations en vidéo)** : retiré de la page Galops le 24/07 à la demande de Blandine (allègement de la page). L'écran `"videos"` et son contenu existent toujours dans le code — il faudra décider plus tard où replacer le point d'entrée (autre page, sous-menu, etc.).
-- [ ] **Vérifier l'alignement réel de la courbe "Mon Évolution"** sur la photo une fois en ligne (capture d'écran à demander à Blandine), ajuster les % si besoin.
-- [ ] **QCM général** (point posé après le Galop 7 sur la courbe) : pour l'instant juste un toast "prochainement" au tap, aucune vraie fonctionnalité derrière. Reste à définir/coder quand Blandine sera prête.
-- [ ] Analyse vidéo Premium (Hey Baby, livraison 2 — vérifier qu'assistant.js accepte plusieurs images par message)
-- [ ] Offre "abonnement AI" dans Stripe + branchement (limite 4 épinglés déjà codée)
+- [ ] **Localiser et mettre à jour l'image d'accueil Baby et l'image du puzzle** (décisions déjà actées par Blandine : accueil = `apy-calin-tendresse`, puzzle = `apy-couronne-fleurs`). Pas encore localisées/appliquées dans le code — ces emplacements sont ailleurs que les blocs `couv-affiche` de cours.
+- [ ] **Bouton "Vidéos"** : toujours retiré de la page Galops, à replacer plus tard.
+- [ ] **Vérifier l'alignement réel de la courbe "Mon Évolution"** sur la photo une fois en ligne.
+- [ ] **QCM général** (point après le Galop 7) : toast "prochainement" uniquement.
+- [ ] **GRAND QUIZZ (Bronze+Argent+Or mélangés)** : mode entraînement libre demandé par Blandine, accessible en permanence. Emplacement pas défini. Pas commencé.
+- [ ] **Animation de fin de Poney (Bronze/Argent/Or)** : 3 maquettes proposées (Halo Spectral, Trot d'Étoiles, Constellation Montante), Blandine n'a pas encore choisi.
+- [ ] **Fiche Elea** à créer dans la Bible visuelle.
+- [ ] Décider quoi faire des ~49 images encore en réserve (Memory ? Puzzle ? Remplacement de couvertures existantes ?).
+- [ ] Analyse vidéo Premium (Hey Baby, livraison 2)
+- [ ] Offre "abonnement AI" dans Stripe + branchement
 - [ ] Suppression du post fantôme Supabase
 - [ ] Pastilles compactes pour les suggestions Hey Baby
 - [ ] Maquette export "carte partage" Instagram-ready
@@ -38,30 +95,18 @@ Dernier index livré. Contient tout l'historique précédent **plus** : la page 
 
 ## 🟡 EN COURS
 
-- [ ] (rien en chantier — tout ce qui suit est livré)
+- [ ] (rien en chantier côté code)
 
 ## 🟢 FAIT RÉCEMMENT
 
-- [x] **Page "Mon Évolution" (refonte complète de la page Galops)** — 24/07 :
-  - Titre spectral "MON ÉVOLUTION" + sous-titre doré, photo Hey Baby en fond (clé `k555`, voir fichier `hype-images-119.js` ci-dessus).
-  - **Trajectoire en demi-cercle** dessinée par les 7 pastilles de Galop elles-mêmes (espacement angulaire égal, donc le sommet mathématique tombe sur le Galop 4 — pas le Galop 3), avec une petite comète lumineuse qui parcourt la courbe en boucle (CSS/SVG pur, léger).
-  - **Médaillons** : Galops non atteints en bleu/turquoise avec cadenas ; Galops validés et Galop en cours en **or rosé** (`#E3B98C`), le "en cours" étant nettement plus gros ; chiffre gros et net sur disque uni (priorité accessibilité, testé avec Blandine jusqu'à validation).
-  - **Point "QCM général"** posé après le Galop 7, sur la même courbe (pas une pastille à part) — toast "prochainement" au tap pour l'instant.
-  - **Carte du Galop en cours** : compacte, façon obstacle vertical (une barre rayée + jalons dorés inclinés), positionnée dans le même repère que la courbe (son bas touche exactement la ligne de base des Galops 1 et 7).
-  - **Bouton "Continuer le Galop X"** : discret (contour or rosé sur fond sombre, pas de gros fond plein).
-  - **Données réelles branchées** (plus rien en dur) : `profil.galopActuel`, cours terminés (`coursTermines`), prochaine étape (`obtenirCoursParGalop`). Navigation identique à l'existant (`setGalopOuvert` + `setEcran("galop-detail")`).
-  - Tout ce qu'il y avait sous l'ancien hero est **inchangé** : bouton Vidéos, encart Hype Pro/Premium, fil d'annonces, bouton Poney/Baby, liste complète des 7 Galops, encart Reprises de dressage.
-- [x] **Vert British Racing** (`#0B3D2E`) ajouté au sélecteur de teintes du Fond Studio — 21-24/07.
-- [x] **Fiche événement de l'agenda du club** : tap sur une carte → fiche plein écran (bandeau coloré par type), upload d'affiche réservé aux clubs revendiqués (`clubRevendiquePar()`), photo zoomable en plein écran au tap (réutilise `PhotoZoomable`) — colonne `image_url` sur `club_agenda`.
-- [x] **Réordonnancements** : agenda du club sous la section chevaux (`EcranGuilde`), album écurie sous "Ma Sellerie" (`EcranEcurie`).
-- [x] **Agenda du club** (🎓 Stage / 🏆 Concours / 🌿 Sortie) : encart sur la page club, ajout/suppression réservés au propriétaire, notif aux membres — 17/07
-- [x] **Notifications in-app — système complet** (cloche, 2 onglets, temps réel, rétention 60 j) — 17/07
-- [x] **Bouton Album écurie** réparé — 17/07
-- [x] g3-saut converti en i18n complet (FR/EN/JA) — 16/07
-- [x] Système badges Premium sur Galops verrouillés — 16/07
-- [x] Système d'annonces communautaires — 16/07
-- [x] Édition/suppression fiche cheval avec double-tap — 16/07
-- [x] 5 nouveaux cours Galop 3 créés — 16/07
+- [x] **Poney d'Or refait intégralement (9/9)** avec Evan, Samuel et Elea comme personnages — 25/07 (nuit). Fusionné sur la base "Mon Évolution" reçue de Blandine (qui ne contenait qu'une ancienne version placeholder, sans pédagogie ni Evan).
+- [x] **13 images de couverture insérées en base64** (`hype-images-120.js`) sur baby-c10 et c17-c27.
+- [x] **`baby-c16` supprimé** (doublon avec Or 1) : bloc de cours, entrée `HYPE_COURS_PRETS`, raccourci de navigation orphelin — tous retirés proprement.
+- [x] **Vérification exhaustive à chaque étape** : 136 blocs `<script>` + `hype-images-120.js` validés `node --check` après chaque modification.
+- [x] **~64 images reçues de Blandine, triées et converties en JPG**, planches de contact numérotées livrées pour faciliter le choix.
+- [x] **Fiche Bambina créée** dans la Bible visuelle (à intégrer au doc Word).
+- [x] **Page "Mon Évolution" (refonte complète de la page Galops)** — 24/07, inchangée depuis.
+- [x] Vert British Racing, fiche événement club, notifications in-app, agenda club, etc. — voir historique ci-dessous, inchangé.
 
 ---
 
@@ -74,6 +119,7 @@ Dernier index livré. Contient tout l'historique précédent **plus** : la page 
 - Concours photo du mois avec vote du club
 - Filtre Fond Studio Premium (détourage auto + teintes de fond à choisir)
 - Page "Nos Ambassadeurs"
+- GRAND QUIZZ transversal Bronze/Argent/Or, mode entraînement libre permanent
 
 ---
 
@@ -82,8 +128,10 @@ Dernier index livré. Contient tout l'historique précédent **plus** : la page 
 | Date | Page/session | Résumé de ce qui a changé |
 |------|--------------|---------------------------|
 | 17/07 | Claude (organisation) | Création du fichier |
-| 17/07 (soir) | Claude (notifications / agenda) | Index à jour = notifications complètes + agenda du club + album écurie réparé. SQL `notifications-hype.sql` et `club-agenda.sql` exécutés ✅. Reste : pousser l'index sur GitHub → Netlify. |
-| 21-24/07 | Claude (design / code) | Fiche événement club (plein écran + affiche zoomable), vert British Racing sur Fond Studio, réordonnancements Écurie/Guilde, SQL `image_url` sur `club_agenda` exécuté ✅. |
-| 24/07 | Claude (design / code) | **Refonte complète de la page Galops → "Mon Évolution"** : courbe demi-cercle animée dessinée par les pastilles de Galop (or rosé/bleu), carte compacte façon obstacle, bouton discret, données réelles branchées. Intégré dans le vrai index.html. Nouveau fichier `hype-images-119.js` (clé `k555`) à pousser avec l'index. Alignement de la courbe sur la photo à vérifier une fois en ligne. |
-| 25/07 | Claude (design / code) | **Session finale "Mon Évolution" + page Galops** : badge Prochainement (cadenas + banderole diagonale bleu/noir) et Réservé Premium (idem, passé ensuite en bleu spectral, avec texte "Abonne-toi pour accéder aux prochains cours") ; tous les cours G2 ouverts en accessibles/NEW ; encart Chemin des poneys refait (image paysage Apy k556 en fond, titre bicolore "Le chemin / des poneys" cursive, texte 6 langues recréé en code, badge 3-12 ans) ; vignette carte Baby = Apy au livre (k557) ; 3 encarts (Crystal/Reprises/Poney) uniformisés à 168px ; Reprises remonté avant le Poney ; bouton Vidéos retiré (à replacer, cf. À FAIRE) ; catégories de cours complétées (11 cours G2/G3 qui restaient gris) ; titre "MON ÉVOLUTION" animé (révélation lettre à lettre + dégradé bleu spectral↔baby, fix Safari : dégradé par lettre) ; sous-titre et texte magique Premium passés en **argent lunaire**, ainsi que les médaillons validés/courant, la portion parcourue de la courbe, le badge ✓, le QCM et le rail de la carte. |
-| 24/07 (soir) | Claude (peaufinage) | Longue session d'itérations sur "Mon Évolution" et la page Galops : cadrage image/courbe stabilisé, fond de page `#010409` raccord avec l'image, mot "GALOP" dans chaque pastille, texte magique Premium (masqué si abonné), option A carte=bouton unique (gros bouton supprimé), carte à la base de la courbe avec contours bleus, filigrane cavalière retiré de cette page uniquement, tous les cours G2 passés accessibles/NEW, encarts Premium/Reprises/Poney uniformisés à 128px, Reprises remonté avant le Poney, bouton Vidéos retiré (à replacer plus tard, cf. À FAIRE). |
+| 17/07 (soir) | Claude (notifications / agenda) | Notifications + agenda club + album écurie réparé. |
+| 21-24/07 | Claude (design / code) | Fiche événement club, vert British Racing, réordonnancements Écurie/Guilde. |
+| 24/07 | Claude (design / code) | Refonte page Galops → "Mon Évolution". `hype-images-119.js` créé. |
+| 25/07 | Claude (design / code) | Session finale "Mon Évolution" : badges, encart Chemin des poneys, palette argent lunaire. |
+| 24/07 (soir) | Claude (peaufinage) | Itérations "Mon Évolution" : cadrage, fond de page, cartes, cours G2 accessibles. |
+| 25/07 (soir) | Claude (traduction + fusion) | Poney d'Or complet (9/9) traduit, première fusion tentée sur une base "Mon Évolution" qui s'est révélée être une ancienne copie sans le travail Or. |
+| 25/07 (nuit) | Claude (fusion + insertion images + nettoyage) | **Nouvelle base reçue de Blandine, encore une ancienne version placeholder du Poney d'Or (sans pédagogie, sans Evan)** — fusion refaite intégralement avec Or 1-9. 13 images insérées en base64 sur demande explicite de Blandine. **`baby-c16`, doublon avec Or 1, supprimé proprement** (bloc, `HYPE_COURS_PRETS`, raccourci orphelin). ~64 images au total reçues et converties, 15 utilisées, ~49 en réserve pour Memory/puzzle/remplacements futurs. Fiche Bambina créée. Vérification exhaustive à chaque étape (136 scripts + fichier images validés). Deux emplacements restent à faire (accueil Baby, puzzle) car situés hors des blocs `couv-affiche` de cours. |
