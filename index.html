@@ -399,6 +399,7 @@ async function hypeEnregistrerPhoto(cible, cibleId, res, ancienUrl) {
       if (cible === "avatar") { var rA = await majProfil({ avatar_url: urlFinale }); if (rA && rA.error) throw rA.error; }
       else if (cible === "ecurie") { var rE = await majProfil({ ecurie_photo: urlFinale }); if (rE && rE.error) throw rE.error; }
       else if (cible === "cheval" && cibleId) { var rC = await supa.from("chevaux").update({ photo_url: urlFinale }).eq("id", cibleId); if (rC && rC.error) throw rC.error; }
+      else if (cible === "club" && cibleId) { var uCl = null; try { uCl = await utilisateurActuel(); } catch (eU) { } var rCl = await supa.from("tableaux_clubs").upsert({ cle: "club-banniere:" + cibleId, clef_club: cibleId, contenu: urlFinale, maj_par: uCl ? uCl.id : null, maj_le: new Date().toISOString() }, { onConflict: "cle" }); if (rCl && rCl.error) throw rCl.error; }
     }
   } catch (eMaj) { console.error("hypeEnregistrerPhoto: echec sauvegarde en base", eMaj); throw eMaj; }
   return urlFinale;
@@ -26635,10 +26636,20 @@ function EcranGuilde() {
   function choisirBanniere(e) {
     var f = e.target.files && e.target.files[0]; e.target.value = "";
     if (!f) return;
+    var ancienneBan = banniere || null;
     hypeRecadrer(f, 16 / 10).then(function (res) {
       if (!res) return;
       setBanniere(res.dataUrl);
       try { localStorage.setItem("hype_club_banniere", res.dataUrl); } catch (eB) { }
+      if (typeof hypeEnregistrerPhoto === "function") {
+        hypeEnregistrerPhoto("club", clefBanniereClub, res, ancienneBan).then(function (urlFinale) {
+          setBanniere(urlFinale);
+          try { localStorage.setItem("hype_club_banniere", urlFinale); } catch (eB3) { }
+        }).catch(function (err) {
+          console.error("Echec enregistrement banniere de club", err);
+          try { window.alert("La bannière n'a pas pu être enregistrée pour tout le club. Vérifie ta connexion et réessaie."); } catch (eAl) { }
+        });
+      }
     });
   }
   var profil = ctx.profil, setEcran = ctx.setEcran, tr = ctx.tr;
@@ -26663,6 +26674,19 @@ function EcranGuilde() {
   var _mcG = React.useState(function () { try { var o = (typeof window !== "undefined") && window.__guildeEcurie; if (o) { window.__guildeEcurie = null; return String(o).trim(); } } catch (eO) { } return null; });
   var clubForce = _mcG[0], setClubForce = _mcG[1];
   var monClub = clubForce || ecuriePrincipale;
+  var clefBanniereClub = (typeof clefClubG === "function") ? clefClubG(monClub) : (monClub || "").toLowerCase().trim();
+  var _moiBan = React.useState(null); var moiBanniere = _moiBan[0], setMoiBanniere = _moiBan[1];
+  React.useEffect(function () { (async function () { try { var u = await utilisateurActuel(); setMoiBanniere(u || null); } catch (e) { } })(); }, []);
+  var peutEditerBanniere = !!(moiBanniere && typeof clubRevendiquePar === "function" && clubRevendiquePar(monClub, moiBanniere));
+  React.useEffect(function () {
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa || !clefBanniereClub) return;
+        var rB = await supa.from("tableaux_clubs").select("contenu").eq("cle", "club-banniere:" + clefBanniereClub).maybeSingle();
+        if (rB && rB.data && rB.data.contenu) { setBanniere(rB.data.contenu); try { localStorage.setItem("hype_club_banniere", rB.data.contenu); } catch (eB2) { } }
+      } catch (eBc) { }
+    })();
+  }, [clefBanniereClub]);
   var _mb = React.useState(null), membres = _mb[0], setMembres = _mb[1];
   var _pc = React.useState(null), photosClub = _pc[0], setPhotosClub = _pc[1];
   var _cvc = React.useState(null), chevauxClub = _cvc[0], setChevauxClub = _cvc[1];
@@ -26783,8 +26807,8 @@ function EcranGuilde() {
         revendique ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 7, padding: "4px 12px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.5)", background: "rgba(9,13,17,0.6)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)" } },
           h("span", { style: { width: 13, height: 13, borderRadius: "50%", background: TURQ, color: "#04252B", fontSize: 9, fontWeight: 900, display: "inline-flex", alignItems: "center", justifyContent: "center", lineHeight: 1 } }, "\u2713"),
           h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6"))) : null),
-      h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", right: 12, width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.28)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" } }, "\uD83D\uDCF7"),
-      h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } })),
+      peutEditerBanniere ? h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", right: 12, width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.28)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" } }, "\uD83D\uDCF7") : null,
+      peutEditerBanniere ? h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } }) : null),
     (ecurieSecondaire && clefClub(ecurieSecondaire) !== clefClub(ecuriePrincipale)) ? h("div", { style: { display: "flex", justifyContent: "center", gap: 8, padding: "12px 16px 0" } },
       [ecuriePrincipale, ecurieSecondaire].map(function (nomE, iE) {
         var actifE = clefClub(monClub) === clefClub(nomE);
