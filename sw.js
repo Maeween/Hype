@@ -1,121 +1,45 @@
-// sw.js — Hype · Service worker "réseau d'abord, mais jamais bloquant"
+// sw.js — Hype · Service worker de retrait (26/07/2026)
 //
-// v5 (26/07/2026) — deux corrections par rapport à la v4 :
+// POURQUOI CE FICHIER EXISTE
+// Deux mecanismes livres le 26/07 se sont averes destructeurs, et l'un aggravait
+// l'autre :
+//   - un "chien de garde" dans index.html vidait tous les caches et rechargeait
+//     la page a chaque lancement, donc l'app repartait de zero chaque fois ;
+//   - la version 5 de ce service worker abandonnait toute requete depassant
+//     7 secondes, puis se rabattait sur un cache que le chien de garde venait
+//     precisement d'effacer, et renvoyait donc une erreur reseau. Page blanche.
+// Un index.html de 8 Mo depasse regulierement 7 secondes : le delai etait
+// absurde.
 //
-// 1. DÉLAI MAXIMUM SUR CHAQUE REQUÊTE. En v4, `fetch` n'avait aucune limite de
-//    temps. Sur une connexion instable, une seule requête suspendue suffisait à
-//    ne jamais résoudre `respondWith` : le script correspondant n'aboutissait
-//    jamais et l'app restait sur son écran de chargement, indéfiniment, sans
-//    aucune erreur. Désormais chaque requête réseau est abandonnée au bout de
-//    quelques secondes et on répond avec le cache.
+// CE QUE FAIT CE FICHIER
+// Il se retire. Il vide ses caches, se desinscrit, et n'installe AUCUN
+// gestionnaire fetch : plus une seule requete n'est interceptee. Le navigateur
+// reprend entierement la main et se comporte comme sur un site normal, avec son
+// propre cache HTTP.
 //
-// 2. LES FICHIERS LOURDS NE SONT PLUS RETÉLÉCHARGÉS À CHAQUE VISITE. En v4, le
-//    `cache: "no-store"` s'appliquait à tout, y compris aux 118 fichiers
-//    `hype-images-*.js` et aux photos de `images/`. Chaque ouverture de l'app
-//    rapatriait donc plusieurs mégaoctets, même inchangés. Ces fichiers-là sont
-//    maintenant servis depuis le cache immédiatement, puis rafraîchis en tâche
-//    de fond pour la visite suivante. Une image peut donc avoir une visite de
-//    retard — sans conséquence, une image manquante ne casse rien — alors qu'un
-//    index.html périmé, lui, serait grave : le HTML et le code restent en
-//    réseau d'abord.
+// CE QU'ON PERD : le fonctionnement hors ligne. C'etait l'interet du service
+// worker, mais il coute aujourd'hui bien plus qu'il ne rapporte.
 //
-// Le comportement voulu est préservé : une nouvelle mise en ligne arrive
-// immédiatement, le cache ne sert qu'en secours.
+// IMPORTANT : ce fichier ne recharge RIEN tout seul. Aucun rechargement
+// automatique, aucune purge repetee. Il agit une fois, puis disparait.
+// Il devra rester en place plusieurs semaines, le temps que tous les appareils
+// deja equipes de l'ancien service worker passent par ici et s'en debarrassent.
 
-const CACHE = "hype-v5";
-const DELAI_HTML = 7000;   // pages : on attend un peu plus, c'est le fichier vital
-const DELAI_AUTRE = 5000;  // scripts, images : au-delà, le cache fait l'affaire
-
-self.addEventListener("install", () => { self.skipWaiting(); });
-
-self.addEventListener("activate", (e) => {
-  e.waitUntil((async () => {
-    const cles = await caches.keys();
-    await Promise.all(cles.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
-    await self.clients.claim();
-  })());
+self.addEventListener("install", function () {
+  self.skipWaiting();
 });
 
-// Requête réseau qui contourne le cache HTTP du navigateur ET qui s'abandonne
-// au bout de `delai` millisecondes, pour ne jamais rester suspendue.
-async function reseauLimite(req, delai) {
-  const ctrl = new AbortController();
-  const minuteur = setTimeout(() => ctrl.abort(), delai);
-  try {
-    return await fetch(new Request(req, { cache: "no-store", signal: ctrl.signal }));
-  } finally {
-    clearTimeout(minuteur);
-  }
-}
-
-// Fichiers volumineux et stables : bundles d'images et photos.
-function estFichierLourd(url) {
-  return /\/hype-images-\d+\.js$/.test(url.pathname)
-      || /^\/images\//.test(url.pathname)
-      || /\.(jpg|jpeg|png|webp|gif|mp4|webm)$/i.test(url.pathname);
-}
-
-self.addEventListener("fetch", (e) => {
-  const req = e.request;
-  if (req.method !== "GET") return;
-
-  let url;
-  try { url = new URL(req.url); } catch (err) { return; }
-  if (url.origin !== self.location.origin) return; // jamais toucher aux API externes
-
-  const estHTML = req.mode === "navigate"
-    || (req.headers.get("accept") || "").includes("text/html");
-
-  // --- Fichiers lourds : cache d'abord, rafraîchissement en tâche de fond ---
-  if (!estHTML && estFichierLourd(url)) {
-    e.respondWith((async () => {
-      const c = await caches.open(CACHE);
-      const enCache = await c.match(req);
-      if (enCache) {
-        // On ne l'attend pas : la réponse partant du cache est déjà renvoyée.
-        e.waitUntil((async () => {
-          try {
-            const frais = await reseauLimite(req, DELAI_AUTRE);
-            if (frais && frais.ok) await c.put(req, frais.clone());
-          } catch (err) { /* hors ligne ou trop lent : on garde le cache */ }
-        })());
-        return enCache;
-      }
-      try {
-        const frais = await reseauLimite(req, DELAI_AUTRE);
-        if (frais && frais.ok) c.put(req, frais.clone());
-        return frais;
-      } catch (err) {
-        return Response.error();
-      }
-    })());
-    return;
-  }
-
-  // --- Pages HTML : réseau d'abord (avec délai), cache en secours ---
-  if (estHTML) {
-    e.respondWith((async () => {
-      const c = await caches.open(CACHE);
-      try {
-        const frais = await reseauLimite(req, DELAI_HTML);
-        if (frais && frais.ok) c.put(req, frais.clone());
-        return frais;
-      } catch (err) {
-        return (await c.match(req)) || (await c.match("/index.html")) || Response.error();
-      }
-    })());
-    return;
-  }
-
-  // --- Le reste (code de l'app, manifeste, polices locales) : réseau d'abord ---
-  e.respondWith((async () => {
-    const c = await caches.open(CACHE);
+self.addEventListener("activate", function (e) {
+  e.waitUntil((async function () {
     try {
-      const frais = await reseauLimite(req, DELAI_AUTRE);
-      if (frais && frais.ok) c.put(req, frais.clone());
-      return frais;
-    } catch (err) {
-      return (await c.match(req)) || Response.error();
-    }
+      var cles = await caches.keys();
+      await Promise.all(cles.map(function (k) { return caches.delete(k); }));
+    } catch (err) { /* rien a nettoyer */ }
+    try {
+      await self.registration.unregister();
+    } catch (err) { /* deja parti */ }
   })());
 });
+
+// Volontairement aucun addEventListener("fetch") : sans lui, le service worker
+// ne touche a aucune requete. C'est la garantie qu'il ne peut plus rien casser.
