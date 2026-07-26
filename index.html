@@ -28224,11 +28224,13 @@ function EcranEcurie() {
   function choisirPhotoEcurie(ev) {
     var f = ev.target.files && ev.target.files[0]; try { ev.target.value = ""; } catch (eEv) { }
     if (!f) return;
-    hypeRecadrer(f, 16 / 9).then(appliquerNouvellePhotoEcurie);
+    var lecteurEc = new FileReader();
+    lecteurEc.onload = function () { appliquerNouvellePhotoEcurie({ dataUrl: lecteurEc.result, fichier: f, original: null }); };
+    lecteurEc.readAsDataURL(f);
   }
   function modifierPhotoEcurie() {
-    if (!ecuriePhoto || typeof hypeRecadrerDepuisSource !== "function") return;
-    hypeRecadrerDepuisSource(ecuriePhoto, 16 / 9).then(function (res) { if (res) appliquerNouvellePhotoEcurie(res); });
+    if (!ecuriePhoto) return;
+    if (refPhotoEc.current) refPhotoEc.current.click();
   }
   React.useEffect(function () { (async function () {
     try {
