@@ -25948,7 +25948,8 @@ function EcranMonCavalier() {
   }
   function choisirPhoto(e) { var f = e.target.files && e.target.files[0]; try { e.target.value = ""; } catch (eV) { } if (!f) return; if (typeof hypeRecadrer === "function") { hypeRecadrer(f, 1).then(appliquerNouvelAvatar); } else { var lr = new FileReader(); lr.onload = function () { setProfil(function (pp) { return Object.assign({}, pp, { avatar: lr.result }); }); }; lr.readAsDataURL(f); } }
   function modifierPhoto() {
-    var src = (ctx.profil && ctx.profil.avatar_url) || (ctx.profil && ctx.profil.avatar);
+    var origSauve = null; try { origSauve = localStorage.getItem("hype_avatar_original"); } catch (eO2) { }
+    var src = origSauve || (ctx.profil && ctx.profil.avatar_url) || (ctx.profil && ctx.profil.avatar);
     if (!src || typeof hypeRecadrerDepuisSource !== "function") return;
     hypeRecadrerDepuisSource(src, 1).then(function (res) { if (res) appliquerNouvelAvatar(res); });
   }
@@ -28253,8 +28254,9 @@ function EcranEcurie() {
     lecteurEc.readAsDataURL(f);
   }
   function modifierPhotoEcurie() {
-    if (!ecuriePhoto) return;
-    if (refPhotoEc.current) refPhotoEc.current.click();
+    if (!ecuriePhoto || typeof hypeRecadrerDepuisSource !== "function") return;
+    var origSauveEc = null; try { origSauveEc = localStorage.getItem("hype_ecurie_photo_orig"); } catch (eOe) { }
+    hypeRecadrerDepuisSource(origSauveEc || ecuriePhoto, 16 / 9).then(function (res) { if (res) appliquerNouvellePhotoEcurie(res); });
   }
   React.useEffect(function () { (async function () {
     try {
@@ -30463,7 +30465,8 @@ function EcranCheval() {
   }
   function ajusterPhotoCheval() {
     if (!photoCh) return;
-    hypeRecadrerDepuisSource(photoCh, 4 / 5).then(appliquerPhotoCheval);
+    var origSauveCh = null; try { origSauveCh = localStorage.getItem("hype_cheval_photo_orig_" + id); } catch (eOc) { }
+    hypeRecadrerDepuisSource(origSauveCh || photoCh, 4 / 5).then(appliquerPhotoCheval);
   }
   React.useEffect(function () {
     var aV = true;
