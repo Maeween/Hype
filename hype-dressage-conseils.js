@@ -8,7 +8,7 @@
    Traductions en/es/it/de/ja à ajouter dans les mêmes objets {fr:...}.
    ──────────────────────────────────────────────────────────────────────────── */
 window.HYPE_DRESSAGE = window.HYPE_DRESSAGE || {};
-window.HYPE_DRESSAGE.version = "1.2";
+window.HYPE_DRESSAGE.version = "1.3";
 window.HYPE_DRESSAGE.fiches = {
  "entry_centerline": {
   "id": "entry_centerline",
@@ -740,9 +740,9 @@ window.HYPE_DRESSAGE.fiches = {
    }
   ],
   "relatedFigures": [
+   "change_diagonal",
    "trot_rising",
-   "trot_sitting",
-   "trot_medium"
+   "stirrups_out_in"
   ],
   "video": null,
   "illustration": null,
@@ -822,9 +822,9 @@ window.HYPE_DRESSAGE.fiches = {
    }
   ],
   "relatedFigures": [
+   "lengthen_few_strides",
    "trot_sitting",
-   "trot_extended",
-   "trot_working"
+   "trot_extended"
   ],
   "video": null,
   "illustration": null,
@@ -905,8 +905,8 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "relatedFigures": [
    "trot_medium",
-   "trot_sitting",
-   "trot_working"
+   "lengthen_few_strides",
+   "trot_sitting"
   ],
   "video": null,
   "illustration": null,
@@ -987,8 +987,8 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "relatedFigures": [
    "trot_medium",
-   "trot_extended",
-   "trot_working"
+   "lengthen_few_strides",
+   "stirrups_out_in"
   ],
   "video": null,
   "illustration": null,
@@ -1069,8 +1069,8 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "relatedFigures": [
    "trot_working",
-   "trot_sitting",
-   "trot_medium"
+   "change_diagonal",
+   "stirrups_out_in"
   ],
   "video": null,
   "illustration": null,
@@ -2710,7 +2710,7 @@ window.HYPE_DRESSAGE.fiches = {
   "relatedFigures": [
    "serpentine_4",
    "spiral_in_out",
-   "circle_15m"
+   "half_circle_20m"
   ],
   "video": null,
   "illustration": null,
@@ -2791,8 +2791,8 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "relatedFigures": [
    "counter_change_loop",
-   "circle_6m",
-   "circle_10m"
+   "circle_12m",
+   "circle_6m"
   ],
   "video": null,
   "illustration": null,
@@ -2872,9 +2872,9 @@ window.HYPE_DRESSAGE.fiches = {
    }
   ],
   "relatedFigures": [
+   "half_circle_10m",
    "circle_8m",
-   "counter_change_loop",
-   "circle_10m"
+   "counter_change_loop"
   ],
   "video": null,
   "illustration": null,
@@ -3284,7 +3284,7 @@ window.HYPE_DRESSAGE.fiches = {
   "relatedFigures": [
    "circle_10m",
    "spiral_in_out",
-   "circle_15m"
+   "half_circle_20m"
   ],
   "video": null,
   "illustration": null,
@@ -3446,9 +3446,9 @@ window.HYPE_DRESSAGE.fiches = {
    }
   ],
   "relatedFigures": [
+   "circle_12m",
    "circle_10m",
-   "serpentine_4",
-   "spiral_in_out"
+   "serpentine_4"
   ],
   "video": null,
   "illustration": null,
@@ -4924,7 +4924,7 @@ window.HYPE_DRESSAGE.fiches = {
   "relatedFigures": [
    "circle_10m",
    "serpentine_4",
-   "circle_15m"
+   "half_circle_20m"
   ],
   "video": null,
   "illustration": null,
@@ -5503,6 +5503,670 @@ window.HYPE_DRESSAGE.fiches = {
   "video": null,
   "illustration": null,
   "courseId": null
+ },
+ "circle_12m": {
+  "id": "circle_12m",
+  "label": {
+   "fr": "Cercle de 12 mètres"
+  },
+  "phase": "Cercle",
+  "galopMin": 6,
+  "difficulty": 5,
+  "timing": {
+   "trigger": "debut",
+   "duree": 5200
+  },
+  "obs": [
+   {
+    "fr": "la précision du diamètre"
+   },
+   {
+    "fr": "la régularité de l'incurvation"
+   },
+   {
+    "fr": "l'équilibre dans la courbe"
+   }
+  ],
+  "tips": [
+   {
+    "txt": {
+     "fr": "Prépare ton cercle avant d'arriver à la lettre."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Garde un diamètre parfaitement constant du début à la fin."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Conserve une incurvation régulière sans plier uniquement l'encolure."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Garde les épaules devant les hanches pour préserver l'équilibre."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Évite de rétrécir progressivement ton cercle ou de sortir trop tôt."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 7
+   },
+   {
+    "txt": {
+     "fr": "Prépare la sortie plusieurs foulées avant de retrouver la piste."
+    },
+    "type": "faire",
+    "prio": 3,
+    "galopMin": 7
+   }
+  ],
+  "relatedFigures": [
+   "counter_change_loop",
+   "circle_10m",
+   "serpentine_4"
+  ],
+  "source": "Blandine",
+  "video": null,
+  "illustration": null,
+  "courseId": null
+ },
+ "curved_line_x": {
+  "id": "curved_line_x",
+  "label": {
+   "fr": "Ligne courbe passant par X"
+  },
+  "phase": "Ligne",
+  "galopMin": 6,
+  "difficulty": 5,
+  "timing": {
+   "trigger": "debut",
+   "duree": 5200
+  },
+  "obs": [
+   {
+    "fr": "le passage exact par X"
+   },
+   {
+    "fr": "la fluidité de la courbe"
+   },
+   {
+    "fr": "le changement d'incurvation au centre"
+   }
+  ],
+  "tips": [
+   {
+    "txt": {
+     "fr": "Vise X, puis seulement ensuite la lettre d'arrivée."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Dessine une seule courbe continue, sans partie droite au milieu."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Change d'incurvation progressivement en passant sur X."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Garde la même cadence du début à la fin de la ligne."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Évite de couper en deux diagonales avec un angle sur X."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 7
+   },
+   {
+    "txt": {
+     "fr": "Ne laisse pas les épaules glisser vers l'extérieur dans la seconde moitié."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 7
+   }
+  ],
+  "relatedFigures": [
+   "diagonal_change_rein",
+   "centerline",
+   "across_short_side"
+  ],
+  "source": "Claude",
+  "video": null,
+  "illustration": null,
+  "courseId": null
+ },
+ "half_circle_20m": {
+  "id": "half_circle_20m",
+  "label": {
+   "fr": "Demi-cercle de 20 m"
+  },
+  "phase": "Cercle",
+  "galopMin": 5,
+  "difficulty": 4,
+  "timing": {
+   "trigger": "debut",
+   "duree": 5200
+  },
+  "obs": [
+   {
+    "fr": "la rondeur du demi-cercle"
+   },
+   {
+    "fr": "les points de départ et d'arrivée respectés"
+   },
+   {
+    "fr": "la régularité de l'allure"
+   }
+  ],
+  "tips": [
+   {
+    "txt": {
+     "fr": "Pars exactement à la lettre et vise déjà la lettre de sortie."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 5
+   },
+   {
+    "txt": {
+     "fr": "Garde le même rayon sur toute la demi-courbe."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 5
+   },
+   {
+    "txt": {
+     "fr": "Conserve une incurvation régulière jusqu'au retour sur la piste."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 5
+   },
+   {
+    "txt": {
+     "fr": "Prépare la transition ou la suite avant la fin du demi-cercle."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 5
+   },
+   {
+    "txt": {
+     "fr": "Évite d'aplatir la première moitié puis de resserrer la seconde."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Ne reviens pas à la piste en diagonale, termine ta courbe."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 6
+   }
+  ],
+  "relatedFigures": [
+   "circle_10m",
+   "serpentine_4",
+   "spiral_in_out"
+  ],
+  "source": "Claude",
+  "video": null,
+  "illustration": null,
+  "courseId": null
+ },
+ "half_circle_10m": {
+  "id": "half_circle_10m",
+  "label": {
+   "fr": "Demi-cercle de 10 m"
+  },
+  "phase": "Cercle",
+  "galopMin": 8,
+  "difficulty": 5,
+  "timing": {
+   "trigger": "debut",
+   "duree": 5200
+  },
+  "obs": [
+   {
+    "fr": "la taille réelle du demi-cercle"
+   },
+   {
+    "fr": "l'engagement de l'arrière-main"
+   },
+   {
+    "fr": "l'équilibre dans une courbe serrée"
+   }
+  ],
+  "tips": [
+   {
+    "txt": {
+     "fr": "Rassemble un peu avant d'entrer dans la courbe."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 8
+   },
+   {
+    "txt": {
+     "fr": "Garde la jambe intérieure à la sangle pour tenir le rayon."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 8
+   },
+   {
+    "txt": {
+     "fr": "Contrôle l'épaule extérieure du début à la fin."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 8
+   },
+   {
+    "txt": {
+     "fr": "Regarde le point de sortie dès le premier quart."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 8
+   },
+   {
+    "txt": {
+     "fr": "Évite de ralentir pour tourner : garde l'activité."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 9
+   },
+   {
+    "txt": {
+     "fr": "Ne laisse pas les hanches s'échapper vers l'extérieur."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 9
+   }
+  ],
+  "relatedFigures": [
+   "circle_6m",
+   "circle_8m",
+   "counter_change_loop"
+  ],
+  "source": "Claude",
+  "video": null,
+  "illustration": null,
+  "courseId": null
+ },
+ "release_contact": {
+  "id": "release_contact",
+  "label": {
+   "fr": "Rênes longues, rupture de contact"
+  },
+  "phase": "Fond",
+  "galopMin": 8,
+  "difficulty": 5,
+  "timing": {
+   "trigger": "anticipe",
+   "duree": 5200
+  },
+  "obs": [
+   {
+    "fr": "un cheval qui reste dans le même équilibre"
+   },
+   {
+    "fr": "l'allure et la trajectoire conservées"
+   },
+   {
+    "fr": "la reprise du contact en douceur"
+   }
+  ],
+  "tips": [
+   {
+    "txt": {
+     "fr": "Avance les mains franchement, sans les jeter."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 8
+   },
+   {
+    "txt": {
+     "fr": "Le cheval doit garder la même allure et le même tracé sans la main."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 8
+   },
+   {
+    "txt": {
+     "fr": "Continue à conduire avec l'assiette et les jambes."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 8
+   },
+   {
+    "txt": {
+     "fr": "Reprends le contact progressivement, pas d'un coup."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 8
+   },
+   {
+    "txt": {
+     "fr": "Évite de laisser le cheval accélérer ou tomber sur les épaules."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 9
+   },
+   {
+    "txt": {
+     "fr": "Ne rends que ce que tu peux reprendre proprement."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 9
+   }
+  ],
+  "relatedFigures": [
+   "straightness",
+   "bend",
+   "balance"
+  ],
+  "source": "Claude",
+  "video": null,
+  "illustration": null,
+  "courseId": null
+ },
+ "change_diagonal": {
+  "id": "change_diagonal",
+  "label": {
+   "fr": "Changer de diagonal"
+  },
+  "phase": "Trot",
+  "galopMin": 2,
+  "difficulty": 1,
+  "timing": {
+   "trigger": "anticipe",
+   "duree": 5200
+  },
+  "obs": [
+   {
+    "fr": "le changement effectué à l'endroit demandé"
+   },
+   {
+    "fr": "le rythme conservé"
+   },
+   {
+    "fr": "l'assiette qui reste liante"
+   }
+  ],
+  "tips": [
+   {
+    "txt": {
+     "fr": "Assieds-toi une seule foulée, puis repars sur l'autre diagonal."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 2
+   },
+   {
+    "txt": {
+     "fr": "Change au point demandé, pas quand ça t'arrange."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 2
+   },
+   {
+    "txt": {
+     "fr": "Garde le buste droit pendant la foulée assise."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 2
+   },
+   {
+    "txt": {
+     "fr": "Vérifie ton diagonal sans baisser les yeux sur l'épaule."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 2
+   },
+   {
+    "txt": {
+     "fr": "Évite de casser le rythme du trot pour changer."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 3
+   },
+   {
+    "txt": {
+     "fr": "Ne t'aide pas des rênes pour te rasseoir."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 3
+   }
+  ],
+  "relatedFigures": [
+   "trot_working",
+   "trot_rising",
+   "stirrups_out_in"
+  ],
+  "source": "Claude",
+  "video": null,
+  "illustration": null,
+  "courseId": null
+ },
+ "stirrups_out_in": {
+  "id": "stirrups_out_in",
+  "label": {
+   "fr": "Déchausser et rechausser les étriers"
+  },
+  "phase": "Trot",
+  "galopMin": 3,
+  "difficulty": 2,
+  "timing": {
+   "trigger": "anticipe",
+   "duree": 5600
+  },
+  "obs": [
+   {
+    "fr": "la fixité de la jambe pieds hors des étriers"
+   },
+   {
+    "fr": "l'allure et le tracé conservés"
+   },
+   {
+    "fr": "des étriers repris sans regarder"
+   }
+  ],
+  "tips": [
+   {
+    "txt": {
+     "fr": "Garde les jambes longues et descendues, sans chercher l'étrier avec le pied."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 3
+   },
+   {
+    "txt": {
+     "fr": "Continue à conduire : le tracé et l'allure sont notés autant que l'exercice."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 3
+   },
+   {
+    "txt": {
+     "fr": "Retrouve l'étrier par le sens du pied, la tête haute."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 3
+   },
+   {
+    "txt": {
+     "fr": "Reste liant du bassin, sans te crisper sur les genoux."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 3
+   },
+   {
+    "txt": {
+     "fr": "Évite de regarder tes pieds ou de te pencher."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 4
+   },
+   {
+    "txt": {
+     "fr": "Ne laisse pas le cheval ralentir pendant l'exercice."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 4
+   }
+  ],
+  "relatedFigures": [
+   "trot_working",
+   "change_diagonal",
+   "trot_rising"
+  ],
+  "source": "Claude",
+  "video": null,
+  "illustration": null,
+  "courseId": null
+ },
+ "lengthen_few_strides": {
+  "id": "lengthen_few_strides",
+  "label": {
+   "fr": "Quelques foulées de développement"
+  },
+  "phase": "Trot",
+  "galopMin": 6,
+  "difficulty": 5,
+  "timing": {
+   "trigger": "anticipe",
+   "duree": 5200
+  },
+  "obs": [
+   {
+    "fr": "une différence visible sur quelques foulées"
+   },
+   {
+    "fr": "la cadence inchangée"
+   },
+   {
+    "fr": "le retour au cadre net"
+   }
+  ],
+  "tips": [
+   {
+    "txt": {
+     "fr": "Demande de l'amplitude, pas de la vitesse."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Développe franchement puis reviens avant la fin de la ligne."
+    },
+    "type": "faire",
+    "prio": 1,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Garde le cheval droit pendant tout le développement."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Compte tes foulées pour que le retour soit préparé."
+    },
+    "type": "faire",
+    "prio": 2,
+    "galopMin": 6
+   },
+   {
+    "txt": {
+     "fr": "Évite de précipiter la cadence pour paraître plus rapide."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 7
+   },
+   {
+    "txt": {
+     "fr": "Ne reviens pas en tirant : referme avec le dos et les jambes."
+    },
+    "type": "eviter",
+    "prio": 3,
+    "galopMin": 7
+   }
+  ],
+  "relatedFigures": [
+   "trot_medium",
+   "trot_sitting",
+   "trot_extended"
+  ],
+  "source": "Claude",
+  "video": null,
+  "illustration": null,
+  "courseId": null
  }
 };
 window.HYPE_DRESSAGE.figuresIds = {
@@ -5513,13 +6177,14 @@ window.HYPE_DRESSAGE.figuresIds = {
   ],
   [
    "circle_20m",
+   "change_diagonal",
    "diagonal_change_rein",
    "trot_rising"
   ],
   [
    "circle_20m",
-   "diagonal_change_rein",
-   "trot_sitting"
+   "stirrups_out_in",
+   "diagonal_change_rein"
   ],
   [
    "reverse_half_volte",
@@ -5649,7 +6314,7 @@ window.HYPE_DRESSAGE.figuresIds = {
    "corner"
   ],
   [
-   "diagonal_change_rein",
+   "across_short_side",
    "trot_working"
   ],
   [
@@ -5684,7 +6349,7 @@ window.HYPE_DRESSAGE.figuresIds = {
    "canter_working"
   ],
   [
-   "half_volte",
+   "half_circle_20m",
    "transition_canter_trot"
   ],
   [
@@ -5704,7 +6369,7 @@ window.HYPE_DRESSAGE.figuresIds = {
    "canter_working"
   ],
   [
-   "half_volte",
+   "half_circle_20m",
    "transition_canter_trot"
   ],
   [
@@ -5728,12 +6393,12 @@ window.HYPE_DRESSAGE.figuresIds = {
    "salute"
   ],
   [
-   "volte",
-   "circle_10m",
+   "circle_12m",
    "trot_working"
   ],
   [
    "diagonal_change_rein",
+   "lengthen_few_strides",
    "trot_medium"
   ],
   [
@@ -5741,12 +6406,12 @@ window.HYPE_DRESSAGE.figuresIds = {
    "centerline"
   ],
   [
-   "volte",
-   "circle_10m",
+   "circle_12m",
    "trot_working"
   ],
   [
    "diagonal_change_rein",
+   "lengthen_few_strides",
    "trot_medium"
   ],
   [
@@ -5767,7 +6432,7 @@ window.HYPE_DRESSAGE.figuresIds = {
    "canter_working"
   ],
   [
-   "shallow_loop",
+   "curved_line_x",
    "canter_working"
   ],
   [
@@ -5787,7 +6452,7 @@ window.HYPE_DRESSAGE.figuresIds = {
    "canter_working"
   ],
   [
-   "shallow_loop",
+   "curved_line_x",
    "canter_working"
   ],
   [
@@ -5856,8 +6521,7 @@ window.HYPE_DRESSAGE.figuresIds = {
    "canter_working"
   ],
   [
-   "volte",
-   "circle_10m",
+   "circle_12m",
    "canter_working"
   ],
   [
@@ -5866,8 +6530,8 @@ window.HYPE_DRESSAGE.figuresIds = {
   ],
   [
    "counter_canter",
-   "diagonal_change_rein",
-   "half_volte"
+   "half_circle_20m",
+   "diagonal_change_rein"
   ],
   [
    "transition_canter_trot",
@@ -5879,12 +6543,12 @@ window.HYPE_DRESSAGE.figuresIds = {
    "canter_working"
   ],
   [
-   "half_volte",
+   "half_circle_20m",
+   "release_contact",
    "canter_working"
   ],
   [
-   "volte",
-   "circle_10m",
+   "circle_12m",
    "canter_working"
   ],
   [
@@ -5893,8 +6557,8 @@ window.HYPE_DRESSAGE.figuresIds = {
   ],
   [
    "counter_canter",
-   "diagonal_change_rein",
-   "half_volte"
+   "half_circle_20m",
+   "diagonal_change_rein"
   ],
   [
    "transition_canter_trot",
@@ -5929,8 +6593,7 @@ window.HYPE_DRESSAGE.figuresIds = {
    "trot_working"
   ],
   [
-   "half_volte",
-   "circle_10m",
+   "half_circle_10m",
    "trot_working"
   ],
   [
@@ -5939,9 +6602,9 @@ window.HYPE_DRESSAGE.figuresIds = {
    "trot_working"
   ],
   [
-   "half_volte",
-   "trot_working",
-   "balance"
+   "half_circle_20m",
+   "release_contact",
+   "trot_working"
   ],
   [
    "halt_reinback_forward",
@@ -5962,16 +6625,16 @@ window.HYPE_DRESSAGE.figuresIds = {
    "transition_within_canter"
   ],
   [
-   "half_volte",
-   "canter_working",
-   "balance"
+   "half_circle_20m",
+   "release_contact",
+   "canter_working"
   ],
   [
    "canter_working",
    "straightness"
   ],
   [
-   "half_volte",
+   "half_circle_10m",
    "transition_canter_walk",
    "walk_medium"
   ],
@@ -5985,7 +6648,7 @@ window.HYPE_DRESSAGE.figuresIds = {
    "straightness"
   ],
   [
-   "half_volte",
+   "half_circle_10m",
    "transition_canter_walk",
    "walk_medium"
   ],
