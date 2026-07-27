@@ -34369,7 +34369,7 @@ function EncartVivreLaReprise({ niveau, tr, onModes }) {
         } else demarrer();
         return () => { visible = false; if (obs) obs.disconnect(); if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; } };
     }, [donnees]);
-    const cheval = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.chevalDessus) ? HYPE_IMGS.chevalDessus : "images/cheval-dessus.png";
+    const cheval = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.chevalDessus) ? HYPE_IMGS.chevalDessus : "cheval-dessus.png";
     return React.createElement("div", { style: { margin: "18px 20px 0", borderRadius: 22, overflow: "hidden", position: "relative", background: "radial-gradient(130% 90% at 50% 0%, #17202B 0%, #0D1319 55%, #080B10 100%)", boxShadow: "inset 0 0 0 1px rgba(32,217,245,0.12), 0 14px 34px rgba(0,0,0,0.45)" } },
         React.createElement("div", { style: { height: 176, display: "flex", alignItems: "center", justifyContent: "center", opacity: ouvert ? 1 : 0, transition: "opacity .5s ease" } },
             React.createElement("svg", { ref: svgRef, viewBox: donnees.vue, preserveAspectRatio: "xMidYMid meet", style: { height: "100%", width: "100%", display: "block" } },
@@ -34454,7 +34454,12 @@ function ConseilsCoachReprise({ niveau, tr, galop }) {
 }
 
 function EcranReprisesFiches() {
-    const { galopOuvert, setEcran, tr, profil } = useApp();
+    const { galopOuvert, setEcran, tr, profil, retourEcran, peutReculer } = useApp();
+    /* 27/07 (bug signale par Blandine) : la fleche renvoyait TOUJOURS sur la page du Galop
+       ouvert (setEcran("galop-detail")), meme quand on arrivait d ailleurs — depuis la
+       bibliotheque, l accueil ou un raccourci. On utilise desormais l historique reel de
+       l appli (retourEcran), et on ne retombe sur galop-detail que s il n y a pas d historique. */
+    const revenir = () => { if (peutReculer) retourEcran(); else setEcran(galopOuvert ? "galop-detail" : "dashboard"); };
     const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g3";
     const [niveau, setNiveau] = React.useState(initial);
     /* 27/07 : panneau de choix des modes (« Vivre la reprise »), en surimpression pour ne
@@ -34471,7 +34476,7 @@ function EcranReprisesFiches() {
     const galopConseils = Math.max(galopCavalier, niveauReprise);
     return React.createElement("div", { style: { minHeight: "100dvh", background: COLORS.nuit, paddingBottom: 40 } },
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(env(safe-area-inset-top) + 18px) 20px 14px", borderBottom: `1px solid ${COLORS.nuitBordure}` } },
-            React.createElement("button", { onClick: () => setEcran(galopOuvert ? "galop-detail" : "dashboard"), style: { width: 38, height: 38, borderRadius: 12, background: COLORS.nuitClaire, color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 } }, "\u2190"),
+            React.createElement("button", { onClick: revenir, style: { width: 38, height: 38, borderRadius: 12, background: COLORS.nuitClaire, color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 } }, "\u2190"),
             React.createElement("h1", { style: { margin: 0, fontSize: 17, fontWeight: 800, color: COLORS.blanc, fontFamily: "'Cinzel', serif" } }, tr({ fr: "Réviser mes reprises", en: "Review my tests", es: "Repasar mis reprises", it: "Rivedere le mie riprese", de: "Meine Aufgaben wiederholen", ja: "課目を復習する" }))),
         React.createElement("div", { style: { display: "flex", gap: 6, padding: "14px 20px 0", overflowX: "auto" } },
             ORDRE_REPRISES_FFE.map((n) => React.createElement("button", { key: n, onClick: () => setNiveau(n), style: { flex: "0 0 auto", padding: "8px 16px", borderRadius: 999, background: niveau === n ? COLORS.turquoise : COLORS.nuitClaire, color: niveau === n ? COLORS.nuit : COLORS.grisDoux, border: `1px solid ${niveau === n ? COLORS.turquoise : COLORS.nuitBordure}`, fontSize: 12.5, fontWeight: 700 } }, (n === "clubelite" ? "Club Elite" : "Galop " + n.replace("g", ""))))),
@@ -34479,7 +34484,7 @@ function EcranReprisesFiches() {
            cavalier et l entree de carriere, WebP 900x811, 88 Ko contre 2,5 Mo en PNG).
            Le bas de l image est deja sombre (luminance 38) : le degrade ne couvre que le
            tiers bas, la ou se pose le texte, et ne touche jamais le cheval. */
-        React.createElement("div", { style: { position: "relative", margin: "16px 20px 0", borderRadius: 20, overflow: "hidden", aspectRatio: "900 / 811", backgroundColor: "#070A0E", backgroundImage: "url(images/hero-reprises.webp)", backgroundSize: "cover", backgroundPosition: "center top", boxShadow: "inset 0 0 0 1px rgba(32,217,245,0.14), 0 12px 30px rgba(0,0,0,0.42)" } },
+        React.createElement("div", { style: { position: "relative", margin: "16px 20px 0", borderRadius: 20, overflow: "hidden", aspectRatio: "900 / 811", backgroundColor: "#070A0E", backgroundImage: "url(hero-reprises.webp)", backgroundSize: "cover", backgroundPosition: "center top", boxShadow: "inset 0 0 0 1px rgba(32,217,245,0.14), 0 12px 30px rgba(0,0,0,0.42)" } },
             React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: "42%", background: "linear-gradient(to top, rgba(4,7,11,0.90) 0%, rgba(4,7,11,0.55) 45%, transparent 100%)" } }),
             React.createElement("div", { style: { position: "absolute", left: 18, right: 18, bottom: 15 } },
                 React.createElement("h2", { style: { margin: "0 0 3px", fontFamily: "'Cinzel',serif", fontSize: 21, color: "#F4FEFF", lineHeight: 1.15, textShadow: "0 2px 14px rgba(2,5,9,0.9)" } }, fiche.titre),
@@ -34934,11 +34939,13 @@ const TRACE_PHASES_TR = {
 /* Cheval vu du dessus : photo fournie par Blandine, traitee (fond retire, eclaircie car un
    cheval noir disparait sur l anthracite, reduite a 54x240 px, 25,7 Ko). A POUSSER dans
    images/. Repli sur HYPE_IMGS.chevalDessus si la cle existe un jour. */
-const CHEVAL_DESSUS_SRC = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.chevalDessus) ? HYPE_IMGS.chevalDessus : "images/cheval-dessus.png";
+const CHEVAL_DESSUS_SRC = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.chevalDessus) ? HYPE_IMGS.chevalDessus : "cheval-dessus.png";
 const CHEVAL_DESSUS_RATIO = 0.225;   /* largeur / longueur de la photo */
 const CHEVAL_DESSUS_PX = 58;         /* longueur visee a l ecran, en pixels reels */
 /* ── DECORS DE CARRIERE ──────────────────────────────────────────────────────
-   Images fournies par Blandine, converties en WebP 900 px (a pousser dans images/).
+   Images fournies par Blandine, converties en WebP 900 px. 27/07 : les visuels de cette
+   fonctionnalite sont A LA RACINE du depot, pas dans images/ (choix de Blandine pour
+   simplifier ses uploads depuis l iPhone : rien a taper dans le champ de dossier).
    Un decor declare `clair: true` fait basculer TOUTE la carriere en palette jour :
    sur le sable blanc (luminance mesuree 171/255) le turquoise tombe a un contraste de
    x1,14 et le vert du pas a x1,13 — invisibles. Les teintes de la palette jour ont
@@ -34946,15 +34953,15 @@ const CHEVAL_DESSUS_PX = 58;         /* longueur visee a l ecran, en pixels reel
    fois (la balise <img> de prechargement ne concerne que celui qui est selectionne). */
 const HYPE_DECORS = {
     spectral: { nom: { fr: "Cercle Crystal", en: "Crystal Circle", es: "Círculo Crystal", it: "Cerchio Crystal", de: "Crystal-Kreis", ja: "クリスタル・サークル" },
-        image: "images/decor-spectral.webp", clair: false,
+        image: "decor-spectral.webp", clair: false,
         vignette: "linear-gradient(160deg,#0E1A24,#0A0E14 60%,#071019)",
         fond: "radial-gradient(120% 70% at 50% 0%, #14202B 0%, #0B1118 55%, #070A0E 100%)" },
     mer: { nom: { fr: "Îles de nuit", en: "Night Isles", es: "Islas de noche", it: "Isole di notte", de: "Nachtinseln", ja: "夜の島" },
-        image: "images/decor-mer.webp", clair: false,
+        image: "decor-mer.webp", clair: false,
         vignette: "linear-gradient(160deg,#0B1B2A,#08131F 60%,#050A11)",
         fond: "radial-gradient(120% 80% at 50% 100%, #0F2136 0%, #08111C 45%, #05080F 100%)" },
     sable: { nom: { fr: "Sable clair", en: "Pale Sand", es: "Arena clara", it: "Sabbia chiara", de: "Heller Sand", ja: "明るい砂" },
-        image: "images/decor-sable.webp", clair: true,
+        image: "decor-sable.webp", clair: true,
         vignette: "linear-gradient(160deg,#DCE4E8,#B9C6CE 60%,#8FA0AC)",
         fond: "radial-gradient(120% 80% at 50% 40%, #D7E0E5 0%, #A9B8C2 60%, #7C8E9B 100%)" },
     classique: { nom: { fr: "Fond classique", en: "Plain background", es: "Fondo clásico", it: "Sfondo classico", de: "Klassischer Hintergrund", ja: "クラシック背景" },
@@ -35023,7 +35030,9 @@ function DeroulementReprise({ niveau, tr, galop, figIndexCourant }) {
         }));
 }
 function EcranTraceAnime() {
-    const { galopOuvert, setEcran, tr, langue, profil } = useApp();
+    const { galopOuvert, setEcran, tr, langue, profil, retourEcran, peutReculer } = useApp();
+    /* meme correction que sur l ecran des reprises : on revient d ou l on vient */
+    const revenirTrace = () => { if (peutReculer) retourEcran(); else setEcran(galopOuvert ? "galop-detail" : "dashboard"); };
     const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
     const [niveau, setNiveau] = React.useState(initial);
     const [t, setT] = React.useState(0);
@@ -35249,7 +35258,7 @@ function EcranTraceAnime() {
     const lettreAllumee = (l) => Math.hypot(LETTER_POINTS[l].x - posX, LETTER_POINTS[l].y - posY) < 13;
     return React.createElement("div", { style: { minHeight: "100dvh", background: COLORS.nuit, paddingBottom: 30 } },
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(env(safe-area-inset-top) + 18px) 20px 14px", borderBottom: `1px solid ${COLORS.nuitBordure}` } },
-            React.createElement("button", { onClick: () => setEcran(galopOuvert ? "galop-detail" : "dashboard"), style: { width: 38, height: 38, borderRadius: 12, background: COLORS.nuitClaire, color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 } }, "\u2190"),
+            React.createElement("button", { onClick: revenirTrace, style: { width: 38, height: 38, borderRadius: 12, background: COLORS.nuitClaire, color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 } }, "\u2190"),
             React.createElement("h1", { style: { margin: 0, fontSize: 16, fontWeight: 800, color: COLORS.blanc, fontFamily: "'Cinzel', serif" } }, tr({ fr: "Le tracé animé", en: "The animated track", es: "El trazado animado", it: "Il tracciato animato", de: "Die animierte Spur", ja: "アニメーション動線" }))),
         React.createElement("div", { style: { display: "flex", gap: 6, padding: "14px 20px 0", overflowX: "auto" } },
             ORDRE_REPRISES_FFE.map((n) => React.createElement("button", { key: n, onClick: () => setNiveau(n), style: { flex: "0 0 auto", padding: "8px 16px", borderRadius: 999, background: niveau === n ? COLORS.turquoise : COLORS.nuitClaire, color: niveau === n ? COLORS.nuit : COLORS.grisDoux, border: `1px solid ${niveau === n ? COLORS.turquoise : COLORS.nuitBordure}`, fontSize: 12.5, fontWeight: 700 } }, (n === "clubelite" ? "Club Elite" : "Galop " + n.replace("g", ""))))),
@@ -35289,7 +35298,7 @@ function EcranTraceAnime() {
                             troncons.map((tr2, i) => React.createElement("path", { key: "tc" + i, d: "M " + tr2.pts.map((p) => p.x + " " + p.y).join(" L "), fill: "none", stroke: tr2.couleur, strokeWidth: 2.8, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 6px " + tr2.couleur + "99)" } })),
                             traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 3.4 - i * 0.42, fill: couleurAllure(p.vitesse), opacity: 0.4 - i * 0.055 })),
                             /* 27/07 : le cheval est desormais la PHOTO vue du dessus fournie par Blandine
-                               (images/cheval-dessus.png, recadree, fond retire, eclaircie, 54x240).
+                               (cheval-dessus.png, recadree, fond retire, eclaircie, 54x240).
                                Ma silhouette dessinee a la main ressemblait a une souris, et la couleur
                                d allure appliquee dessus la rendait VERTE au pas : le halo mangeait la
                                forme. Plus aucune couleur d allure sur le cheval, elle reste sur le trace
