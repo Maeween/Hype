@@ -1153,7 +1153,7 @@ async function listerPresents(evenement) {
 
 async function monEcurieNom() {
   const p = await monProfil();
-  return (p.data && p.data.ecurie) || null;
+  return (p.data && (p.data.club || p.data.ecurie)) || null;
 }
 
 // CHEVAUX de l'ecurie
@@ -20200,7 +20200,8 @@ function EcranCommunaute() {
         return h("div", { key:post.id, style:{ display:"flex", gap:11, marginBottom:2 } }, av,
           h("div", { style:{ flex:1, minWidth:0, position:"relative", background:"linear-gradient(180deg, rgba(232,200,135,0.10), rgba(255,255,255,0.02))", border:"1px solid rgba(232,200,135,0.30)", borderRadius:"5px 16px 16px 16px", padding:"11px 13px" } },
             ctrls, enTete,
-            h("div", { style:{ marginTop:5, fontSize:12.5, color:"#E8C887", fontFamily:M, display:"flex", alignItems:"center", gap:7 } }, h("span", null, "\uD83C\uDFC5"), T("Haut fait d\u00e9bloqu\u00e9","Achievement unlocked","Logro desbloqueado","Traguardo","\u5b9f\u7e3e\u89e3\u9664","Erfolg freigeschaltet") + (post.badge_id ? (" \u00b7 " + post.badge_id) : ""))));
+            h("div", { style:{ marginTop:5, fontSize:12.5, color:"#E8C887", fontFamily:M, display:"flex", alignItems:"center", gap:7 } }, h("span", null, "\uD83C\uDFC5"), T("Haut fait d\u00e9bloqu\u00e9","Achievement unlocked","Logro desbloqueado","Traguardo","\u5b9f\u7e3e\u89e3\u9664","Erfolg freigeschaltet") + (post.badge_id ? (" \u00b7 " + post.badge_id) : "")),
+            h("div", { style:{ marginTop:9 } }, h(SectionCommentaires, { cible: "resultat:" + post.id }))));
       }
       var titreLigne = (post.concours||"") + (post.classement ? (" \u00b7 " + post.classement) : "");
       var photo = post.photo_url ? h("img", { src:post.photo_url, style:{ width:"100%", display:"block", marginTop:10, borderRadius:12 } }) : null;
@@ -20212,7 +20213,8 @@ function EcranCommunaute() {
           photo,
           h("div", { style:{ marginTop:9, display:"flex", alignItems:"center", gap:12 } },
             h("button", { onClick:function(e){ e.stopPropagation(); togglerLike(post); }, style:{ background:"rgba(32,217,245,0.09)", border:"1px solid rgba(32,217,245,0.35)", borderRadius:14, color: post.jeLike ? "#E8C887" : "#7FEAF2", fontFamily:M, fontSize:11.5, fontWeight:700, cursor:"pointer", padding:"3px 10px" } }, (post.jeLike ? "\u2665 " : "\u2661 ") + (post.nbLikes||0)),
-            lien)));
+            lien),
+          h("div", { style:{ marginTop:9 } }, h(SectionCommentaires, { cible: "resultat:" + post.id }))));
     }
     function afficherFil(){
       if (filChargement) {
@@ -28536,17 +28538,6 @@ function EcranEcurie() {
 
         h("div", { style: { padding: "26px 16px 0" } }, h(EncartCliniqueVeto, null)),
 
-        eyebrow(T("Ton assistant", "Your assistant", "Tu asistente", "Il tuo assistente", "あなたのアシスタント")),
-        h("button", { onClick: function () { setEcran("assistant"); }, style: { position: "relative", display: "flex", alignItems: "flex-end", width: "calc(100% - 32px)", height: 188, margin: "0 16px", padding: "20px 18px", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", boxSizing: "border-box", background: "transparent", cursor: "pointer", textAlign: "left", boxSizing: "border-box" } },
-          h("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_HEYBABY_BANNIERE + ")", backgroundSize: "cover", backgroundPosition: "center 36%" } }),
-          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(7,8,10,0.93) 0%, rgba(7,8,10,0.58) 38%, rgba(7,8,10,0.1) 66%, transparent 100%)" } }),
-          h("div", { style: { position: "relative", zIndex: 2, maxWidth: "70%" } },
-            h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: "#93A6AE", fontFamily: "'Montserrat',sans-serif" } }, "Hey Baby"),
-            h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 22, letterSpacing: 1, lineHeight: 1.08, color: "#fff", textTransform: "uppercase", marginTop: 8 } },
-              T("Mon coach", "My virtual", "Mi coach", "Il mio coach", "\u79c1\u306e\u30d0\u30fc\u30c1\u30e3\u30eb"),
-              h("br", null),
-              h("span", { style: { display: "inline-block", marginLeft: 34, color: "#20D9F5" } }, T("virtuel", "coach", "virtual", "virtuale", "\u30b3\u30fc\u30c1"))))),
-
         h("div", { style: { padding: "14px 16px 0" } }, h(EncartSellerie, null)),
 
         (function () {
@@ -30784,16 +30775,6 @@ function EcranCheval() {
             h("div", { style: { marginTop: 5, fontSize: 11.5, fontWeight: 500, color: "rgba(244,247,250,0.88)", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.4, textShadow: "0 1px 10px rgba(0,0,0,0.9)" } }, T("Son r\u00e9cit, ses albums, ses souvenirs", "Its story, albums and memories", "Su relato, sus \u00e1lbumes, sus recuerdos", "Il suo racconto, i suoi album, i suoi ricordi", "\u7269\u8a9e\u3068\u30a2\u30eb\u30d0\u30e0\u3068\u601d\u3044\u51fa", "Seine Geschichte, seine Alben, seine Erinnerungen"))),
           h("div", { style: { position: "absolute", right: 16, bottom: 16, width: 44, height: 44, borderRadius: "50%", border: "1px solid " + tA(0.6), background: "rgba(7,8,10,0.45)", display: "flex", alignItems: "center", justifyContent: "center" } },
             h("span", { style: { color: teinteCl, fontSize: 17, fontWeight: 700 } }, "\u203a"))),
-
-        h("div", { className: "rise", onClick: function () { setEcran("assistant"); }, role: "button", style: { position: "relative", height: 188, boxSizing: "border-box", margin: "18px 16px 0", borderRadius: 24, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)" } },
-          (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.heyBabyCavalier) ? h("img", { src: HYPE_IMGS.heyBabyCavalier, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
-          h("div", { style: { position: "absolute", left: 18, bottom: 16, right: 78 } },
-            h("div", { style: { fontSize: 10.5, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 600, marginBottom: 7, fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, "Hey Baby"),
-            h("h3", { style: { margin: "0 0 6px", fontFamily: "'Cinzel',serif", fontSize: 24, fontWeight: 600, color: "#F4F7FA", lineHeight: 1.15, letterSpacing: "0.03em", textShadow: "0 2px 14px rgba(0,0,0,0.95), 0 0 26px rgba(0,0,0,0.7)" } }, T("Ton coach virtuel", "Your virtual coach", "Tu coach virtual", "Il tuo coach virtuale", "\u30d0\u30fc\u30c1\u30e3\u30eb\u30b3\u30fc\u30c1", "Dein virtueller Coach")),
-            h("p", { style: { margin: 0, fontSize: 12.5, fontWeight: 500, color: "rgba(244,247,250,0.85)", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.45, textShadow: "0 1px 10px rgba(0,0,0,0.95), 0 0 18px rgba(0,0,0,0.8)" } }, T("Partage ses photos et vid\u00e9os pour avoir ses conseils", "Share photos and videos to get advice", "Comparte fotos y v\u00eddeos para recibir consejos", "Condividi foto e video per avere consigli", "\u5199\u771f\u3084\u52d5\u753b\u3067\u30a2\u30c9\u30d0\u30a4\u30b9", "Teile seine Fotos und Videos, um Tipps zu erhalten"))),
-          h("div", { style: { position: "absolute", right: 16, bottom: 20, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.6)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(7,8,10,0.45)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", boxShadow: "0 0 18px rgba(32,217,245,0.2)", animation: "glowPulse 3.2s ease-in-out infinite" } },
-            h("svg", { viewBox: "0 0 24 24", style: { width: 16, height: 16, stroke: "#20D9F5", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M9 6l6 6-6 6" })))),
-
 
         h("div", { style: { margin: "18px 16px 0" } }, h(EncartCliniqueVeto, null)),
 
