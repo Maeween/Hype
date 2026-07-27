@@ -34582,7 +34582,10 @@ const VITESSE_ALLURES = [
     { re: /reculer/i, v: 0.3, pause: false },
     { re: /pas allongé|pas moyen|pas libre|^pas\b|\bpas\b/i, v: 0.55, pause: false },
     { re: /galop moyen|galop allongé/i, v: 1.9, pause: false },
-    { re: /contre-galop/i, v: 1.35, pause: false },
+    /* 27/07 : 1.35 -> 1.5. A 1.35 le contre-galop tombait sous le seuil du galop de
+       couleurSelonAllure (1.4) et s affichait en BLEU, donc au trot (G7 figures 14 et 20,
+       demi-cercles de 20 m au contre-galop). Meme famille de defaut que le travail lateral. */
+    { re: /contre-galop/i, v: 1.5, pause: false },
     { re: /galop de travail|départ au galop|galoper/i, v: 1.55, pause: false },
     { re: /trot allongé|trot moyen/i, v: 1.35, pause: false },
     /* 27/07 : 0.85 -> 0.95. A 0.85 le travail lateral passait sous le seuil du PAS et
@@ -34594,10 +34597,20 @@ const VITESSE_ALLURES = [
 ];
 function vitesseDepuisTexte(seg) {
     for (const m of VITESSE_ALLURES) if (m.re.test(seg)) return { v: m.v, pause: m.pause };
-    return { v: 1, pause: false };
+    /* 27/07 (bug signale par Blandine : « des figures en bleu au lieu de rouge ») :
+       ce cas renvoyait { v: 1 }, c est-a-dire LE TROT par defaut. Or un segment sans mot
+       d allure ne veut pas dire « au trot », il veut dire « on continue dans l allure en
+       cours ». Ex. G4 figure 13 : « KV — galop de travail · VPV — cercle de 20 m » : le
+       second segment n a pas de mot d allure, le cercle etait donc dessine en bleu (trot)
+       au milieu d une figure au galop. On renvoie desormais v: null et l appelant conserve
+       l allure courante. */
+    return { v: null, pause: false };
 }
 function construireTraceReprise(fiche) {
     const pts = [];
+    /* allure en cours : elle PERSISTE d un segment a l autre et d une figure a l autre,
+       jusqu a ce qu un texte annonce explicitement autre chose. 1 = trot de travail au depart. */
+    let allureCourante = 1;
     // Le point juste avant un cercle a souvent les mêmes coordonnées que son point de départ (ex: la lettre S
     // apparaît deux fois d'affilée) : impossible d'en déduire une direction. On remonte jusqu'au dernier point
     // aux coordonnées réellement différentes pour connaître la vraie direction d'arrivée du cheval.
@@ -34615,8 +34628,9 @@ function construireTraceReprise(fiche) {
                 // segment sans lettre propre (ex: "arrêt, immobilité, salut" juste après "Avant R") :
                 // applique quand même l'allure/la pause décrite au dernier point déjà posé.
                 const infoRetro = vitesseDepuisTexte(seg);
-                if (pts.length && (infoRetro.pause || infoRetro.v !== 1)) {
-                    pts[pts.length - 1].vitesse = infoRetro.v;
+                if (infoRetro.v !== null) allureCourante = infoRetro.v;
+                if (pts.length && (infoRetro.pause || infoRetro.v !== null)) {
+                    pts[pts.length - 1].vitesse = allureCourante;
                     /* 27/07 : la pause n est conservee que pour un ARRET REEL (pause:true = arret/immobilite/salut),
                        plus de temps mort ajoute sur les simples changements d allure. */
                     pts[pts.length - 1].pause = pts[pts.length - 1].pause || infoRetro.pause;
@@ -34627,7 +34641,9 @@ function construireTraceReprise(fiche) {
             const estCercle = !estDemiCercle && /cercle/i.test(seg);
             const diamMatch = seg.match(/(\d+)\s*m/);
             const diametre = diamMatch ? parseInt(diamMatch[1], 10) : 15;
-            const { v: vitesse, pause } = vitesseDepuisTexte(seg);
+            const infoAllure = vitesseDepuisTexte(seg);
+            if (infoAllure.v !== null) allureCourante = infoAllure.v;
+            const vitesse = allureCourante, pause = infoAllure.pause;
             if ((estCercle || estDemiCercle) && lettres.length >= 2) {
                 const p0 = LETTER_POINTS[lettres[0]], p1 = LETTER_POINTS[lettres[1]];
                 if (p0 && p1) {
