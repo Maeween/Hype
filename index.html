@@ -34475,11 +34475,16 @@ function EcranReprisesFiches() {
             React.createElement("h1", { style: { margin: 0, fontSize: 17, fontWeight: 800, color: COLORS.blanc, fontFamily: "'Cinzel', serif" } }, tr({ fr: "Réviser mes reprises", en: "Review my tests", es: "Repasar mis reprises", it: "Rivedere le mie riprese", de: "Meine Aufgaben wiederholen", ja: "課目を復習する" }))),
         React.createElement("div", { style: { display: "flex", gap: 6, padding: "14px 20px 0", overflowX: "auto" } },
             ORDRE_REPRISES_FFE.map((n) => React.createElement("button", { key: n, onClick: () => setNiveau(n), style: { flex: "0 0 auto", padding: "8px 16px", borderRadius: 999, background: niveau === n ? COLORS.turquoise : COLORS.nuitClaire, color: niveau === n ? COLORS.nuit : COLORS.grisDoux, border: `1px solid ${niveau === n ? COLORS.turquoise : COLORS.nuitBordure}`, fontSize: 12.5, fontWeight: 700 } }, (n === "clubelite" ? "Club Elite" : "Galop " + n.replace("g", ""))))),
-        /* presentation generale de la reprise */
-        React.createElement("div", { style: { padding: "18px 20px 0" } },
-            React.createElement("h2", { style: { margin: "0 0 2px", fontFamily: "'Cinzel',serif", fontSize: 19, color: COLORS.blanc } }, fiche.titre),
-            React.createElement("p", { style: { margin: "0 0 4px", fontSize: 12.5, color: COLORS.turquoise, fontWeight: 700 } }, fiche.niveauFFE),
-            React.createElement("p", { style: { margin: 0, fontSize: 11.5, color: COLORS.encreDoux } }, fiche.note)),
+        /* 27/07 : ENCART DE TITRE illustre (image fournie par Blandine, recadree sur le
+           cavalier et l entree de carriere, WebP 900x811, 88 Ko contre 2,5 Mo en PNG).
+           Le bas de l image est deja sombre (luminance 38) : le degrade ne couvre que le
+           tiers bas, la ou se pose le texte, et ne touche jamais le cheval. */
+        React.createElement("div", { style: { position: "relative", margin: "16px 20px 0", borderRadius: 20, overflow: "hidden", aspectRatio: "900 / 811", backgroundColor: "#070A0E", backgroundImage: "url(images/hero-reprises.webp)", backgroundSize: "cover", backgroundPosition: "center top", boxShadow: "inset 0 0 0 1px rgba(32,217,245,0.14), 0 12px 30px rgba(0,0,0,0.42)" } },
+            React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: "42%", background: "linear-gradient(to top, rgba(4,7,11,0.90) 0%, rgba(4,7,11,0.55) 45%, transparent 100%)" } }),
+            React.createElement("div", { style: { position: "absolute", left: 18, right: 18, bottom: 15 } },
+                React.createElement("h2", { style: { margin: "0 0 3px", fontFamily: "'Cinzel',serif", fontSize: 21, color: "#F4FEFF", lineHeight: 1.15, textShadow: "0 2px 14px rgba(2,5,9,0.9)" } }, fiche.titre),
+                React.createElement("p", { style: { margin: "0 0 3px", fontSize: 12, color: COLORS.turquoise, fontWeight: 700, textShadow: "0 1px 10px rgba(2,5,9,0.9)" } }, fiche.niveauFFE),
+                React.createElement("p", { style: { margin: 0, fontSize: 11, color: "rgba(234,241,244,0.82)", textShadow: "0 1px 10px rgba(2,5,9,0.9)" } }, fiche.note))),
         /* encart « Vivre la reprise » : juste apres la presentation, avant le detail des figures */
         React.createElement(EncartVivreLaReprise, { niveau: niveau, tr: tr, onModes: () => setModes(true) }),
         /* detail des figures */
