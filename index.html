@@ -27846,7 +27846,7 @@ function EcranUnivers() {
 
     function L5acc(fr, en, es, it, ja) { return lg === "en" ? en : lg === "es" ? es : lg === "it" ? it : lg === "ja" ? ja : fr; }
   function chapAcc(label, d) {
-    return React.createElement("div", { className: "rv " + (d || ""), style: { display: "flex", alignItems: "center", gap: 11, margin: "30px 0 14px", fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", color: "#20D9F5", fontFamily: "'Montserrat',sans-serif" } },
+    return React.createElement("div", { className: "rv " + (d || ""), style: { display: "flex", alignItems: "center", gap: 11, margin: "34px 0 20px", fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", color: "#20D9F5", fontFamily: "'Montserrat',sans-serif" } },
       React.createElement("span", { style: { width: 24, height: 2, background: "#20D9F5", borderRadius: 2, flex: "0 0 auto" } }), label);
   }
   function carteVertAcc(o) {
@@ -27949,17 +27949,7 @@ function EcranUnivers() {
         /* Annonces : tout en haut de l accueil, avec de l espace avant et apres (demande de Blandine). */
         React.createElement("div", { style: { margin: "24px 0 26px" } }, React.createElement(FilAnnoncesB, null)),
 
-                React.createElement("button", { className: "prem-shine", onClick: nav("premium"), style: { position: "relative", width: "100%", height: 188, margin: "26px 0 0", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", boxShadow: "0 14px 40px rgba(0,0,0,0.55), 0 0 30px rgba(32,217,245,0.12)", cursor: "pointer", textAlign: "left", padding: 0, display: "block", background: "#04070d" } },
-          React.createElement("div", { style: { position: "absolute", inset: 0, background: "url(" + HYPE_PREMIUM_CARD + ") center 36%/cover no-repeat" } }),
-          React.createElement("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(2,5,9,0.93) 6%, rgba(2,5,9,0.38) 46%, rgba(2,5,9,0.04) 78%)" } }),
-          React.createElement("div", { style: { position: "absolute", left: 16, right: 14, bottom: 12 } },
-            React.createElement("div", { style: { fontSize: 8.5, letterSpacing: 3, fontWeight: 800, color: "#7DDDE8", fontFamily: "'Montserrat',sans-serif", textTransform: "uppercase", textShadow: "0 0 10px rgba(32,217,245,0.6)" } }, "HYPE PREMIUM"),
-            React.createElement("div", { style: { marginTop: 5, fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, letterSpacing: 2.5, color: "#F4FEFF", textShadow: "0 2px 14px rgba(2,5,9,0.85)" } }, "CERCLE CRYSTAL"),
-            React.createElement("div", { style: { marginTop: 4, fontSize: 11, fontFamily: "'Montserrat',sans-serif", color: "rgba(234,241,244,0.75)", display: "flex", alignItems: "center", justifyContent: "space-between" } },
-              React.createElement("span", null, (lg === "en" ? "All Galops \u00b7 Founder price" : lg === "es" ? "Todos los Galops \u00b7 Tarifa fundador" : lg === "it" ? "Tutti i Galoppi \u00b7 Tariffa fondatore" : lg === "ja" ? "\u5168\u30ae\u30e3\u30ed\u30c3\u30d7 \u00b7 \u5275\u8a2d\u30e1\u30f3\u30d0\u30fc\u4fa1\u683c" : "Tous les Galops \u00b7 Tarif Fondateur")),
-              React.createElement("span", { style: { color: "#7DDDE8", fontSize: 16, fontWeight: 700 } }, "\u203a")))),
-
-        React.createElement("button", { className: "banner heyb glass rv d3", style: { marginTop: 13 }, onClick: nav("assistant") },
+        React.createElement("button", { className: "banner heyb glass rv d3", style: { marginTop: 18 }, onClick: nav("assistant") },
           React.createElement("div", { className: "heyimg" }),
           React.createElement("div", { className: "bn-veil" }),
           React.createElement("div", { className: "bn-info" },
@@ -27970,8 +27960,8 @@ function EcranUnivers() {
         chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e\u4e16\u754c"), "d2"),
         /* 26/07 : ordre demande par Blandine -> titre « Mon monde », puis MON ECURIE bien espace, puis les chevaux juste
            en dessous (aucun titre entre les deux). L annonce est remontee tout en haut de l accueil. */
-        React.createElement("div", { style: { marginTop: 22 } },
-          React.createElement("button", { className: "banner ecurieb rv d3", style: { marginTop: 13 }, onClick: nav("ecurie") },
+        React.createElement("div", { style: { marginTop: 26 } },
+          React.createElement("button", { className: "banner ecurieb rv d3", style: { marginTop: 18 }, onClick: nav("ecurie") },
               ecImg
                 ? React.createElement("div", { className: "ecurie-img", role: "img", "aria-label": "Mon \u00c9curie", style: { backgroundImage: "url(" + ecImg + ")" } })
                 : React.createElement("div", { className: "ecurie-img", style: { position: "relative", background: "radial-gradient(90% 70% at 78% 30%, rgba(32,217,245,0.14), transparent 62%), linear-gradient(150deg,#0C1218,#080B0F)" } },
@@ -27998,33 +27988,39 @@ function EcranUnivers() {
           React.createElement("div", { className: "lm-loc" }, t.ll)),
           React.createElement("span", { className: "lm-chev" }, "\u203a")),
 
-        /* 26/07 : « Ma communaute equestre » remontee sur l accueil, juste sous l encart Lamotte. Bande horizontale
-           qui reutilise EncartCavaliersSpectral (le meme composant que Mon Club et Ma page Ecurie) pour rester
-           coherent visuellement. Les cavaliers de son ecurie/club sont cherches avec le motif TOLERANT
-           (noyauEcurie + jokers), pas avec une comparaison stricte ; repli sur les derniers inscrits. */
-        (commAcc && commAcc.length) ? React.createElement("div", { style: { margin: "26px 0 4px" } },
-          React.createElement(EncartCavaliersSpectral, {
-            titre: L5acc("Ma communaut\u00e9 \u00e9questre", "My riding community", "Mi comunidad ecuestre", "La mia comunit\u00e0 equestre", "\u99ac\u306e\u4ef2\u9593"),
-            compact: true,
-            nomTeam: ((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || ""),
-            cavaliers: commAcc,
-            onOuvrir: function (pC) { try { window.__cavalierPublic = { id: (pC.id || null), pseudo: pC.nom || pC.pseudo || "Cavalier", photo: pC.photo || pC.avatar_url || null, ecurie: pC.sousTitre || "", club: pC.sousTitre || "", ville: "" }; window.__cavalierOuvert = "__public"; } catch (eOc) { } setEcran("moncavalier"); }
-          })) : null,
+        /* 27/07 : Culture equestre remontee dans Actualite (grande carte, style Lamotte) — l'actualite compte
+           desormais 2 cartes (Open de France + Culture equestre). */
+        React.createElement("button", { className: "banner culture glass rv d4", style: { marginTop: 18 }, onClick: nav("articles") },
+          React.createElement("div", { className: "cu-img" }),
+          React.createElement("div", { className: "bn-veil" }),
+          React.createElement("div", { className: "bn-info", style: { maxWidth: "100%" } },
+            React.createElement("div", { className: "bn-k" }, L5acc("Histoire & traditions", "History & traditions", "Historia y tradiciones", "Storia e tradizioni", "歴史と伝統")),
+            React.createElement("div", { className: "bn-t" }, L5acc("Culture équestre", "Equestrian culture", "Cultura ecuestre", "Cultura equestre", "馬術文化"))),
+          React.createElement("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "›")),
+
         chapAcc(L5acc("D\u00e9couvrir", "Discover", "Descubrir", "Scoprire", "\u767a\u898b"), "d5"),
 
-        React.createElement("div", { className: "rv d5", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 13 } },
+        React.createElement("div", { className: "rv d5", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 } },
           carteVertAcc({ onClick: nav("sante"), img: ((typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.santeEncart) ? HYPE_IMGS.santeEncart : ((typeof PHOTO_PANSAGE_GESTES !== "undefined") ? PHOTO_PANSAGE_GESTES : "")), pos: "24% center", k: L5acc("Bien-\u00eatre", "Wellbeing", "Bienestar", "Benessere", "\u5065\u5eb7"), t: L5acc("Sant\u00e9 \u00e9quine", "Equine health", "Salud equina", "Salute equina", "\u99ac\u306e\u5065\u5eb7") }),
-          carteVertAcc({ onClick: nav("articles"), classe: "cu-img", k: L5acc("Histoire & traditions", "History & traditions", "Historia y tradiciones", "Storia e tradizioni", "\u6b74\u53f2\u3068\u4f1d\u7d71"), t: L5acc("Culture \u00e9questre", "Equestrian culture", "Cultura ecuestre", "Cultura equestre", "\u99ac\u8853\u6587\u5316") }),
-          carteVertAcc({ onClick: nav("communaute"), img: ((typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.duoCommunaute) ? HYPE_IMGS.duoCommunaute : ""), k: L5acc("Ensemble", "Together", "Juntos", "Insieme", "\u4e00\u7dd2\u306b"), t: L5acc("Communaut\u00e9 \u00e9questre", "Equestrian community", "Comunidad ecuestre", "Community equestre", "\u99ac\u8853\u30b3\u30df\u30e5\u30cb\u30c6\u30a3") }),
           carteVertAcc({ onClick: nav("sellerie"), img: ((typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.duoPartenaires) ? HYPE_IMGS.duoPartenaires : ""), k: L5acc("S\u00e9lection", "Selection", "Selecci\u00f3n", "Selezione", "\u30bb\u30ec\u30af\u30b7\u30e7\u30f3"), t: L5acc("Nos partenaires", "Our partners", "Nuestros socios", "I nostri partner", "\u30d1\u30fc\u30c8\u30ca\u30fc") })),
 
-        React.createElement("button", { className: "rv d6", onClick: nav("galops"), style: { position: "relative", width: "100%", height: 188, marginTop: 13, borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.24)", background: "#0A0F14", cursor: "pointer", padding: 0, textAlign: "left", display: "block" } },
+        React.createElement("button", { className: "rv d6", onClick: nav("galops"), style: { position: "relative", width: "100%", height: 188, marginTop: 20, borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.24)", background: "#0A0F14", cursor: "pointer", padding: 0, textAlign: "left", display: "block" } },
           React.createElement("div", { style: { position: "absolute", inset: 0, backgroundImage: (typeof IMG_GALOPS_FOND !== "undefined") ? ("url(" + IMG_GALOPS_FOND + ")") : "none", backgroundSize: "cover", backgroundPosition: "center" } }),
           React.createElement("div", { style: { position: "absolute", left: 16, right: 14, bottom: 13 } },
             React.createElement("div", { style: { fontSize: 8.5, letterSpacing: "0.3em", fontWeight: 800, color: "#7DDDE8", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, "La Voie de Cristal"),
             React.createElement("div", { style: { marginTop: 5, fontFamily: "'Cinzel',serif", fontSize: 18, fontWeight: 700, letterSpacing: "0.06em", color: "#F4FEFF", textShadow: "0 2px 14px rgba(2,5,9,0.9), 0 1px 3px rgba(0,0,0,0.7)", textTransform: "uppercase" } }, L5acc("Th\u00e9orie des Galops", "Galops theory", "Teor\u00eda de los Galops", "Teoria dei Galoppi", "\u30ae\u30e3\u30ed\u30c3\u30d7\u7406\u8ad6")),
             React.createElement("div", { style: { marginTop: 4, fontSize: 11, fontFamily: "'Montserrat',sans-serif", color: "rgba(234,241,244,0.8)", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, L5acc("Du Galop 1 au Galop 7, \u00e0 ton rythme.", "From Galop 1 to Galop 7, at your pace.", "Del Galop 1 al Galop 7, a tu ritmo.", "Dal Galoppo 1 al Galoppo 7, al tuo ritmo.", "\u30ae\u30e3\u30ed\u30c3\u30d71\u304b\u30897\u307e\u3067\u3001\u81ea\u5206\u306e\u30da\u30fc\u30b9\u3067\u3002"))),
           React.createElement("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a")))),
+                        React.createElement("button", { className: "prem-shine", onClick: nav("premium"), style: { position: "relative", width: "100%", height: 188, margin: "34px 0 0", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", boxShadow: "0 14px 40px rgba(0,0,0,0.55), 0 0 30px rgba(32,217,245,0.12)", cursor: "pointer", textAlign: "left", padding: 0, display: "block", background: "#04070d" } },
+          React.createElement("div", { style: { position: "absolute", inset: 0, background: "url(" + HYPE_PREMIUM_CARD + ") center 36%/cover no-repeat" } }),
+          React.createElement("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(2,5,9,0.93) 6%, rgba(2,5,9,0.38) 46%, rgba(2,5,9,0.04) 78%)" } }),
+          React.createElement("div", { style: { position: "absolute", left: 16, right: 14, bottom: 12 } },
+            React.createElement("div", { style: { fontSize: 8.5, letterSpacing: 3, fontWeight: 800, color: "#7DDDE8", fontFamily: "'Montserrat',sans-serif", textTransform: "uppercase", textShadow: "0 0 10px rgba(32,217,245,0.6)" } }, "HYPE PREMIUM"),
+            React.createElement("div", { style: { marginTop: 5, fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, letterSpacing: 2.5, color: "#F4FEFF", textShadow: "0 2px 14px rgba(2,5,9,0.85)" } }, "CERCLE CRYSTAL"),
+            React.createElement("div", { style: { marginTop: 4, fontSize: 11, fontFamily: "'Montserrat',sans-serif", color: "rgba(234,241,244,0.75)", display: "flex", alignItems: "center", justifyContent: "space-between" } },
+              React.createElement("span", null, (lg === "en" ? "All Galops \u00b7 Founder price" : lg === "es" ? "Todos los Galops \u00b7 Tarifa fundador" : lg === "it" ? "Tutti i Galoppi \u00b7 Tariffa fondatore" : lg === "ja" ? "\u5168\u30ae\u30e3\u30ed\u30c3\u30d7 \u00b7 \u5275\u8a2d\u30e1\u30f3\u30d0\u30fc\u4fa1\u683c" : "Tous les Galops \u00b7 Tarif Fondateur")),
+              React.createElement("span", { style: { color: "#7DDDE8", fontSize: 16, fontWeight: 700 } }, "\u203a")))),
+
         React.createElement(LienQuoiDeNeuf, null),
 
     toast && React.createElement("div", { style: { position: "fixed", left: "50%", bottom: "calc(86px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", zIndex: 60, background: "rgba(20,26,33,0.96)", color: "#EDF2F5", border: "1px solid rgba(32,217,245,0.74)", borderRadius: 999, padding: "10px 18px", fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", boxShadow: "0 10px 30px rgba(10,26,36,0.11)" } }, toast));
