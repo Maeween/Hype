@@ -34260,11 +34260,26 @@ function EcranReprisesFiches() {
             React.createElement("h1", { style: { margin: 0, fontSize: 17, fontWeight: 800, color: COLORS.blanc, fontFamily: "'Cinzel', serif" } }, tr({ fr: "Réviser mes reprises", en: "Review my tests", es: "Repasar mis reprises", it: "Ripassa le mie riprese", de: "Meine Aufgaben wiederholen", ja: "メニューを復習する" }))),
         React.createElement("div", { style: { display: "flex", gap: 6, padding: "14px 20px 0", overflowX: "auto" } },
             ORDRE_REPRISES_FFE.map((n) => React.createElement("button", { key: n, onClick: () => setNiveau(n), style: { flex: "0 0 auto", padding: "8px 16px", borderRadius: 999, background: niveau === n ? COLORS.turquoise : COLORS.nuitClaire, color: niveau === n ? COLORS.nuit : COLORS.grisDoux, border: `1px solid ${niveau === n ? COLORS.turquoise : COLORS.nuitBordure}`, fontSize: 12.5, fontWeight: 700 } }, (n === "clubelite" ? "Club Elite" : "Galop " + n.replace("g", ""))))),
-        React.createElement("div", { style: { padding: "14px 20px 0" } },
-            React.createElement("button", { onClick: () => setEcran("trace-anime"), style: { width: "100%", display: "flex", alignItems: "center", gap: 10, background: COLORS.nuitElevee, border: `1px solid ${COLORS.turquoise}44`, borderRadius: 16, padding: "11px 13px" } },
-                React.createElement("span", { style: { fontSize: 20 } }, "✨"),
-                React.createElement("span", { style: { flex: 1, textAlign: "left", fontSize: 13, fontWeight: 700, color: COLORS.encre } }, tr({ fr: "Voir le tracé animé de cette reprise", en: "Watch this test's animated track", es: "Ver el trazado animado de esta reprise", it: "Guarda il tracciato animato di questa ripresa", de: "Animierte Spur dieser Aufgabe ansehen", ja: "このメニューのアニメーション動線を見る" })),
-                React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 15 } }, "\u203a"))),
+        /* 27/07 : la petite barre « Voir le tracé animé » devient un VRAI GROS ENCART CARRE (demande Blandine) :
+           mini-aperçu de la carrière avec les 3 couleurs d allures, titre, et bouton de lecture. */
+        React.createElement("div", { style: { padding: "16px 20px 0" } },
+            React.createElement("button", { onClick: () => setEcran("trace-anime"), style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 24, overflow: "hidden", cursor: "pointer", padding: 0, display: "block", textAlign: "left", border: `1px solid ${COLORS.turquoise}55`, background: "radial-gradient(120% 100% at 50% 0%, #0d1a22 0%, #05080d 68%)", boxShadow: `0 16px 40px rgba(0,0,0,0.5), 0 0 34px ${COLORS.turquoise}1A` } },
+                React.createElement("svg", { viewBox: "0 0 200 300", style: { position: "absolute", left: "50%", top: "44%", transform: "translate(-50%,-50%)", width: "60%", height: "auto" } },
+                    React.createElement("rect", { x: 14, y: 14, width: 172, height: 272, rx: 4, fill: "none", stroke: "rgba(244,247,250,0.16)", strokeWidth: 1.6 }),
+                    React.createElement("line", { x1: 100, y1: 14, x2: 100, y2: 286, stroke: "rgba(244,247,250,0.07)", strokeWidth: 1 }),
+                    React.createElement("path", { d: "M 100 272 L 100 200", fill: "none", stroke: "#4ADE80", strokeWidth: 3.2, strokeLinecap: "round", style: { filter: "drop-shadow(0 0 6px #4ADE80)" } }),
+                    React.createElement("path", { d: "M 100 200 C 100 150, 46 150, 46 110 C 46 74, 100 74, 100 40", fill: "none", stroke: "#3B9DFF", strokeWidth: 3.2, strokeLinecap: "round", style: { filter: "drop-shadow(0 0 6px #3B9DFF)" } }),
+                    React.createElement("path", { d: "M 100 40 C 100 74, 154 74, 154 112 C 154 152, 100 156, 100 196", fill: "none", stroke: "#FF5A5F", strokeWidth: 3.2, strokeLinecap: "round", style: { filter: "drop-shadow(0 0 6px #FF5A5F)" } }),
+                    React.createElement("circle", { cx: 100, cy: 196, r: 6, fill: "#FF5A5F", style: { filter: "drop-shadow(0 0 9px #FF5A5F)" } }),
+                    React.createElement("text", { x: 100, y: 26, textAnchor: "middle", fontSize: 11, fontWeight: 700, fill: "rgba(244,247,250,0.4)" }, "A"),
+                    React.createElement("text", { x: 100, y: 282, textAnchor: "middle", fontSize: 11, fontWeight: 700, fill: "rgba(244,247,250,0.4)" }, "C")),
+                React.createElement("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(2,5,9,0.94) 12%, rgba(2,5,9,0.30) 46%, transparent 68%)" } }),
+                React.createElement("div", { style: { position: "absolute", left: 20, right: 74, bottom: 18 } },
+                    React.createElement("div", { style: { fontSize: 8.5, letterSpacing: "0.3em", fontWeight: 800, textTransform: "uppercase", color: COLORS.turquoise, fontFamily: "'Montserrat',sans-serif" } }, tr({ fr: "R\u00e9viser en mouvement", en: "Revise in motion", es: "Repasar en movimiento", it: "Rivedere in movimento", de: "In Bewegung wiederholen", ja: "\u52d5\u304d\u3067\u5fa9\u7fd2" })),
+                    React.createElement("div", { style: { marginTop: 6, fontFamily: "'Cinzel',serif", fontSize: 21, fontWeight: 700, letterSpacing: 1, color: "#F4FEFF", lineHeight: 1.15, textShadow: "0 2px 14px rgba(2,5,9,0.9)" } }, tr({ fr: "Le trac\u00e9 anim\u00e9", en: "The animated track", es: "El trazado animado", it: "Il tracciato animato", de: "Die animierte Spur", ja: "\u30a2\u30cb\u30e1\u30fc\u30b7\u30e7\u30f3\u52d5\u7dda" })),
+                    React.createElement("div", { style: { marginTop: 5, fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", color: "rgba(234,241,244,0.78)", lineHeight: 1.45 } }, tr({ fr: "Regarde cette reprise se d\u00e9rouler figure par figure.", en: "Watch this test unfold movement by movement.", es: "Mira esta reprise desarrollarse figura por figura.", it: "Guarda questa ripresa svolgersi figura per figura.", de: "Sieh diese Aufgabe Figur f\u00fcr Figur ablaufen.", ja: "\u3053\u306e\u30e1\u30cb\u30e5\u30fc\u3092\u4e00\u3064\u305a\u3064\u898b\u3066\u307f\u3088\u3046\u3002" }))),
+                React.createElement("div", { style: { position: "absolute", right: 18, bottom: 18, width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${COLORS.turquoise}, #5FE9F0)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 18px ${COLORS.turquoise}88` } },
+                    React.createElement("span", { style: { color: "#04141A", fontSize: 17, fontWeight: 800, marginLeft: 3 } }, "\u25B6")))),
         React.createElement("div", { style: { padding: "18px 20px" } },
             React.createElement("h2", { style: { margin: "0 0 2px", fontFamily: "'Cinzel',serif", fontSize: 19, color: COLORS.blanc } }, fiche.titre),
             React.createElement("p", { style: { margin: "0 0 4px", fontSize: 12.5, color: COLORS.turquoise, fontWeight: 700 } }, fiche.niveauFFE),
@@ -34356,6 +34371,8 @@ function arcUnPoint(p0, lettre, diametreM, texte, dernierPoint) {
 // Vitesse relative du point lumineux selon l'allure/le mouvement décrit dans le texte de la figure
 // (1 = trot de travail, référence). "pause" ajoute un vrai temps d'arrêt visuel, pas juste un ralenti.
 const VITESSE_ALLURES = [
+    /* 27/07 : SEUL un arrêt réel de la reprise (arrêt / immobilité / salut) marque une pause du tracé.
+       Toutes les autres figures s enchaînent sans temps mort (demande Blandine). */
     { re: /arrêt|immobilit|salut/i, v: 0.12, pause: true },
     { re: /reculer/i, v: 0.3, pause: false },
     { re: /pas allongé|pas moyen|pas libre|^pas\b|\bpas\b/i, v: 0.55, pause: false },
@@ -34391,6 +34408,8 @@ function construireTraceReprise(fiche) {
                 const infoRetro = vitesseDepuisTexte(seg);
                 if (pts.length && (infoRetro.pause || infoRetro.v !== 1)) {
                     pts[pts.length - 1].vitesse = infoRetro.v;
+                    /* 27/07 : la pause n est conservee que pour un ARRET REEL (pause:true = arret/immobilite/salut),
+                       plus de temps mort ajoute sur les simples changements d allure. */
                     pts[pts.length - 1].pause = pts[pts.length - 1].pause || infoRetro.pause;
                 }
                 return;
@@ -34460,7 +34479,7 @@ function construireTraceReprise(fiche) {
     // "dist" représente ici une distance pondérée par la vitesse de l'allure (pas une distance physique brute) :
     // un même nombre de mètres réels prend plus ou moins de "temps" selon l'allure, et un arrêt ajoute une vraie
     // pause (le point lumineux reste immobile un instant) plutôt qu'un simple ralentissement.
-    const PAUSE_TEMPS = 26;
+    const PAUSE_TEMPS = 14; /* 27/07 : 26 -> 14, l arrêt reste lisible sans casser le rythme. */
     let cum = 0;
     ptsAvecCoins.forEach((p, i) => {
         if (i > 0) {
@@ -34488,9 +34507,12 @@ function pointADistance(trace, cible) {
     return { x: pA.x + (pB.x - pA.x) * frac, y: pA.y + (pB.y - pA.y) * frac, vitesse: pB.vitesse, figIndex: pB.figIndex, idx: idx };
 }
 function couleurSelonAllure(v) {
-    if (v >= 1.4) return "#F5A623"; // galop : teinte chaude
-    if (v <= 0.65) return "#8A929C"; // pas / arrêt : plus terne
-    return "#20D9F5"; // trot : turquoise de référence
+    /* 27/07 (demande Blandine) : code couleur des allures — pas = VERT, trot = BLEU, galop = ROUGE.
+       L arrêt/reculer reste gris pour se distinguer du pas (mouvement nul vs allure lente). */
+    if (v <= 0.35) return "#8A929C"; // arrêt / reculer : terne
+    if (v >= 1.4) return "#FF5A5F"; // galop : rouge
+    if (v <= 0.9) return "#4ADE80"; // pas (et travail lateral lent) : vert
+    return "#3B9DFF"; // trot : bleu
 }
 const LANGUE_VOIX = { fr: "fr-FR", en: "en-US", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP" };
 // Un cercle "aller-retour" (ex: SRS, VPV, EBE, BEB) revient au point de départ : la lettre du milieu
@@ -34608,8 +34630,8 @@ function EcranTraceAnime() {
     const dernierFigParleRef = React.useRef(-1);
     const dernierAllureRef = React.useRef(null);
     const enTrainDeParlerRef = React.useRef(false);
-    const VITESSE_BASE_PX_S = 60; // px/seconde de tracé à x1 (doublé le 26/07 : x1 = ancien x2, et x0,5 redonne l ancienne vitesse) — ralenti pour rester suivable, y compris sur les grandes reprises (G6/G7)
-    const PAUSE_APRES_VOIX_MS = 380; // petit temps de respiration entre deux figures quand la voix est activée
+    const VITESSE_BASE_PX_S = 105; // px/seconde de tracé à x1 (27/07 : 60 -> 105 sur demande de Blandine, le déroulement était trop lent ; x0,5 redonne à peu près l ancien rythme)
+    const PAUSE_APRES_VOIX_MS = 140; // petit temps de respiration entre deux figures quand la voix est activée
     React.useEffect(() => {
         if (!lecture) { dernierTsRef.current = null; return; }
         const step = (ts) => {
@@ -34687,10 +34709,20 @@ function EcranTraceAnime() {
                     Object.keys(LETTER_POINTS).map((l) => React.createElement("text", { key: l, x: LETTER_POINTS[l].x + (LETTER_POINTS[l].x === 100 ? 0 : (LETTER_POINTS[l].x < 100 ? -9 : 9)), y: LETTER_POINTS[l].y + 3, textAnchor: "middle", style: { fontSize: 8.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fill: COLORS.encreDoux } }, l)),
                     cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: "rgba(32,217,245,0.22)", strokeWidth: 1, strokeDasharray: "3 3" })),
                     React.createElement("path", { d: dFull, fill: "none", stroke: "rgba(244,247,250,0.14)", strokeWidth: 1.6 }),
-                    React.createElement("path", { d: dProgress, fill: "none", stroke: COLORS.turquoise, strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 5px rgba(32,217,245,0.6))" } }),
+                    React.createElement("path", { d: dProgress, fill: "none", stroke: couleurSelonAllure(posActuelle.vitesse), strokeWidth: 2.8, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 6px " + couleurSelonAllure(posActuelle.vitesse) + "99)" } }),
                     traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 4.6 - i * 0.55, fill: couleurSelonAllure(p.vitesse), opacity: 0.55 - i * 0.075 })),
-                    React.createElement("circle", { cx: posX, cy: posY, r: 5, fill: couleurSelonAllure(posActuelle.vitesse), style: { filter: "drop-shadow(0 0 7px rgba(32,217,245,0.9))" } })))),
+                    React.createElement("circle", { cx: posX, cy: posY, r: 5.4, fill: couleurSelonAllure(posActuelle.vitesse), style: { filter: "drop-shadow(0 0 8px " + couleurSelonAllure(posActuelle.vitesse) + ")" } })))),
         React.createElement("div", { style: { padding: "0 20px" } },
+            /* 27/07 : legende du code couleur des allures (pas vert / trot bleu / galop rouge). */
+            React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 16, margin: "12px 0 14px", flexWrap: "wrap" } },
+                [{ c: "#4ADE80", l: tr({ fr: "Pas", en: "Walk", es: "Paso", it: "Passo", ja: "\u5e38\u6b69", de: "Schritt" }) },
+                 { c: "#3B9DFF", l: tr({ fr: "Trot", en: "Trot", es: "Trote", it: "Trotto", ja: "\u901f\u6b69", de: "Trab" }) },
+                 { c: "#FF5A5F", l: tr({ fr: "Galop", en: "Canter", es: "Galope", it: "Galoppo", ja: "\u99c6\u6b69", de: "Galopp" }) },
+                 { c: "#8A929C", l: tr({ fr: "Arr\u00eat", en: "Halt", es: "Parada", it: "Alt", ja: "\u505c\u6b62", de: "Halt" }) }
+                ].map(function (a, i) {
+                    return React.createElement("span", { key: i, style: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 10.5, fontWeight: 700, color: "rgba(234,241,244,0.75)", fontFamily: "'Montserrat',sans-serif" } },
+                        React.createElement("span", { style: { width: 9, height: 9, borderRadius: "50%", background: a.c, boxShadow: "0 0 7px " + a.c } }), a.l);
+                })),
             React.createElement("div", { style: { background: `${COLORS.turquoise}0F`, border: `1px solid ${COLORS.turquoise}38`, borderRadius: 14, padding: "12px 14px", marginBottom: 14, minHeight: 42 } },
                 React.createElement("p", { style: { margin: "0 0 3px", fontSize: 10, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: COLORS.turquoise } }, tr({ fr: "Figure " + (figIndexCourant + 1) + " / " + fiche.figures.length, en: "Figure " + (figIndexCourant + 1) + " / " + fiche.figures.length, es: "Figura " + (figIndexCourant + 1) + " / " + fiche.figures.length, it: "Figura " + (figIndexCourant + 1) + " / " + fiche.figures.length, de: "Lektion " + (figIndexCourant + 1) + " / " + fiche.figures.length, ja: "図形 " + (figIndexCourant + 1) + " / " + fiche.figures.length })),
                 React.createElement("p", { style: { margin: 0, fontSize: 12.5, color: COLORS.encre, lineHeight: 1.5 } }, tr(fiche.figures[figIndexCourant]))),
