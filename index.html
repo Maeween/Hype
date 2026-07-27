@@ -35859,9 +35859,6 @@ function EcranCadreNoir() {
         ".cnx-foot{padding:44px 20px 20px;text-align:center;color:#5c6a73;font-size:11px;line-height:1.7}" +
         ".cnx-sep{width:60px;height:1px;background:linear-gradient(90deg,transparent,#20D9F5,transparent);margin:0 auto 20px}" +
         ".cnx-retour{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:14px;z-index:5;width:38px;height:38px;border-radius:50%;background:rgba(7,8,10,.6);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}" +
-        ".cnx-langbar{position:absolute;top:calc(env(safe-area-inset-top) + 12px);right:14px;z-index:5;display:flex;gap:5px}" +
-        ".cnx-lang{width:32px;height:32px;border-radius:9px;background:rgba(7,8,10,.6);border:1px solid rgba(255,255,255,.15);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:.62}" +
-        ".cnx-lang-on{border-color:#20D9F5;background:rgba(32,217,245,.18);opacity:1}" +
         "@media(min-width:700px){.cnx-id{grid-template-columns:repeat(6,1fr)}.cnx-philos{grid-template-columns:1fr 1fr}.cnx-races{grid-template-columns:repeat(4,1fr)}.cnx-grille{grid-template-columns:1fr 1fr}}";
     /* ---- rendu ---- */
     return h("div", { className: "cnx" },
@@ -35870,9 +35867,7 @@ function EcranCadreNoir() {
         h("header", { className: "cnx-hero" },
             h("div", { className: "cnx-hero-bg", style: { backgroundImage: "url(" + IMG_CN_HERO + ")" } }),
             h("button", { className: "cnx-retour", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück") }, "\u2039"),
-            h("div", { className: "cnx-langbar" }, LANGUES.map(function (l) {
-                return h("button", { key: l.code, className: "cnx-lang" + (l.code === langue ? " cnx-lang-on" : ""), title: l.label, onClick: function () { setLangue(l.code); } }, l.drapeau);
-            })),
+            h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", right: 14, zIndex: 5 } }, h(SelecteurLangue, { compact: true })),
             h("div", { className: "cnx-hero-in" },
                 h("div", { className: "cnx-eyebrow" }, h("span", { className: "cnx-fil-or" }), T("Les grandes écoles · France", "The great schools · France", "Las grandes escuelas · Francia", "Le grandi scuole · Francia", "偉大な馬術学校 · フランス", "Die großen Reitschulen · Frankreich")),
                 h("h1", null, "Le Cadre Noir", h("br", null), "de Saumur"),
