@@ -34392,7 +34392,7 @@ function EncartVivreLaReprise({ niveau, tr, onModes }) {
                 React.createElement("path", { ref: haloRef, fill: "none", stroke: COLORS.turquoise, strokeWidth: 6, opacity: 0.16, filter: "url(#vlrh)", strokeLinecap: "round" }),
                 React.createElement("path", { ref: traceRef, fill: "none", stroke: COLORS.turquoise, strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" }),
                 React.createElement("g", { ref: chevalRef, opacity: 0 },
-                    React.createElement("image", { href: cheval, xlinkHref: cheval, width: 7.9, height: 35, x: -3.95, y: -17.5, preserveAspectRatio: "xMidYMid meet" })))),
+                    React.createElement("image", { href: cheval, xlinkHref: cheval, onError: hypeImageSecours, width: 7.9, height: 35, x: -3.95, y: -17.5, preserveAspectRatio: "xMidYMid meet" })))),
         React.createElement("div", { style: { padding: "0 18px 18px" } },
             React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, color: COLORS.blanc, letterSpacing: .5, opacity: ouvert ? 1 : 0, transform: ouvert ? "translateY(0)" : "translateY(6px)", transition: "opacity .5s ease .55s, transform .5s ease .55s" } }, tr(VLR_TXT.titre)),
             React.createElement("div", { style: { marginTop: 5, fontSize: 12, lineHeight: 1.5, color: COLORS.grisDoux, opacity: ouvert ? 1 : 0, transition: "opacity .5s ease .75s" } }, tr(VLR_TXT.sous)),
@@ -34484,7 +34484,7 @@ function EcranReprisesFiches() {
            cavalier et l entree de carriere, WebP 900x811, 88 Ko contre 2,5 Mo en PNG).
            Le bas de l image est deja sombre (luminance 38) : le degrade ne couvre que le
            tiers bas, la ou se pose le texte, et ne touche jamais le cheval. */
-        React.createElement("div", { style: { position: "relative", margin: "16px 20px 0", borderRadius: 20, overflow: "hidden", aspectRatio: "900 / 811", backgroundColor: "#070A0E", backgroundImage: "url(hero-reprises.webp)", backgroundSize: "cover", backgroundPosition: "center top", boxShadow: "inset 0 0 0 1px rgba(32,217,245,0.14), 0 12px 30px rgba(0,0,0,0.42)" } },
+        React.createElement("div", { style: { position: "relative", margin: "16px 20px 0", borderRadius: 20, overflow: "hidden", aspectRatio: "900 / 811", backgroundColor: "#070A0E", backgroundImage: hypeFondDouble("hero-reprises.webp"), backgroundSize: "cover", backgroundPosition: "center top", boxShadow: "inset 0 0 0 1px rgba(32,217,245,0.14), 0 12px 30px rgba(0,0,0,0.42)" } },
             React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: "42%", background: "linear-gradient(to top, rgba(4,7,11,0.90) 0%, rgba(4,7,11,0.55) 45%, transparent 100%)" } }),
             React.createElement("div", { style: { position: "absolute", left: 18, right: 18, bottom: 15 } },
                 React.createElement("h2", { style: { margin: "0 0 3px", fontFamily: "'Cinzel',serif", fontSize: 21, color: "#F4FEFF", lineHeight: 1.15, textShadow: "0 2px 14px rgba(2,5,9,0.9)" } }, fiche.titre),
@@ -34979,6 +34979,25 @@ const HYPE_PALETTES = {
             piste: "rgba(12,18,24,0.34)", froid: "rgba(12,18,24,0.22)", milieu: "rgba(12,18,24,0.16)",
             cercle: "rgba(10,95,110,0.30)", sol: "#C9D5DC", texteLegende: "rgba(18,26,34,0.80)" },
 };
+/* 27/07 : TOLERANCE D EMPLACEMENT des visuels. Ils ont d abord ete annonces dans images/,
+   puis deplaces a la racine — d ou des visuels manquants selon ce qui avait ete pousse. Chaque
+   visuel accepte desormais LES DEUX emplacements :
+   - en fond CSS, on empile les deux url() : une couche qui echoue n est pas peinte, la suivante
+     prend le relais, et le navigateur ne telecharge que ce qui existe ;
+   - en <image> SVG, un gestionnaire onError bascule vers l autre chemin. */
+function hypeFondDouble(nom) {
+    return "url(" + nom + "), url(images/" + nom + ")";
+}
+function hypeImageSecours(e) {
+    try {
+        const n = e.currentTarget || e.target;
+        const actuel = n.getAttribute("href") || "";
+        if (!actuel || actuel.indexOf("images/") === 0) return;   /* deja le repli */
+        const repli = "images/" + actuel;
+        n.setAttribute("href", repli);
+        n.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", repli);
+    } catch (err) { }
+}
 function hypeDecorMemorise() {
     try { const m = localStorage.getItem("hype_trace_decor"); if (m && HYPE_DECORS[m]) return m; } catch (e) { }
     return "spectral";
@@ -35279,7 +35298,7 @@ function EcranTraceAnime() {
             React.createElement("p", { style: { margin: "0 0 14px", fontSize: 11.5, color: COLORS.turquoise, fontWeight: 700 } }, fiche.niveauFFE),
             React.createElement("div", { style: { position: "relative", background: infoDecor.image ? "#070A0E" : COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, padding: 10, display: "flex", justifyContent: "center", overflow: "hidden" } },
                 /* decor : image de fond + voile de verre fume. Un seul decor charge a la fois. */
-                React.createElement("div", { style: { position: "absolute", inset: 0, zIndex: 0, background: infoDecor.image ? undefined : infoDecor.fond, backgroundImage: infoDecor.image ? "url(" + infoDecor.image + ")" : undefined, backgroundSize: "cover", backgroundPosition: "center" } }),
+                React.createElement("div", { style: { position: "absolute", inset: 0, zIndex: 0, background: infoDecor.image ? undefined : infoDecor.fond, backgroundImage: infoDecor.image ? hypeFondDouble(infoDecor.image) : undefined, backgroundSize: "cover", backgroundPosition: "center" } }),
                 React.createElement("div", { style: { position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", backdropFilter: infoDecor.image ? "blur(2px)" : "none", WebkitBackdropFilter: infoDecor.image ? "blur(2px)" : "none", background: infoDecor.image ? (infoDecor.clair ? "radial-gradient(80% 64% at 50% 50%, rgba(240,246,248,0.34) 0%, rgba(240,246,248,0.16) 64%, rgba(240,246,248,0.04) 100%)" : "radial-gradient(80% 64% at 50% 50%, rgba(6,9,13,0.30) 0%, rgba(6,9,13,0.16) 64%, rgba(6,9,13,0.04) 100%)") : "none" } }),
                 React.createElement("div", { style: { position: "relative", zIndex: 2, width: "100%", display: "flex", justifyContent: "center", perspective: immersion ? "820px" : "none", maskImage: immersion ? "linear-gradient(to bottom, transparent 0, #000 16%, #000 100%)" : "none", WebkitMaskImage: immersion ? "linear-gradient(to bottom, transparent 0, #000 16%, #000 100%)" : "none" } },
                     React.createElement("div", { style: { transformOrigin: "50% 68%", willChange: immersion ? "transform" : "auto", transform: immersion ? "rotateX(54deg) scale(1.38) translate(" + (((100 - posX) / 200) * 100).toFixed(2) + "%," + (((338 - posY) / 520) * 100).toFixed(2) + "%)" : "none" } },
@@ -35306,7 +35325,7 @@ function EcranTraceAnime() {
                                en PIXELS REELS (CHEVAL_PX) pour faire la meme taille sur tous les ecrans. */
                             React.createElement("g", { transform: "translate(" + posX.toFixed(2) + "," + posY.toFixed(2) + ") rotate(" + cap.toFixed(1) + ")", style: { filter: "drop-shadow(0 0 3px rgba(6,9,13,0.9)) drop-shadow(0 0 6px rgba(32,217,245,0.30))" } },
                                 React.createElement("ellipse", { cx: 1.2, cy: 1.8, rx: longueurCheval * 0.095, ry: longueurCheval * 0.36, fill: "#04070A", opacity: 0.42 }),
-                                React.createElement("image", { href: CHEVAL_DESSUS_SRC, xlinkHref: CHEVAL_DESSUS_SRC, preserveAspectRatio: "xMidYMid meet",
+                                React.createElement("image", { href: CHEVAL_DESSUS_SRC, xlinkHref: CHEVAL_DESSUS_SRC, onError: hypeImageSecours, preserveAspectRatio: "xMidYMid meet",
                                     width: (longueurCheval * CHEVAL_DESSUS_RATIO).toFixed(2), height: longueurCheval.toFixed(2),
                                     x: (-longueurCheval * CHEVAL_DESSUS_RATIO / 2).toFixed(2), y: (-longueurCheval / 2).toFixed(2) })))))),
             /* carte flottante du coach : HORS du rectangle, réserve de hauteur fixe
