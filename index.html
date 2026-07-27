@@ -34783,6 +34783,31 @@ function texteFigurePourVoix(texte, dernierAllureRef) {
 }
 // Nappe ambiante "Hype Spectral" — entièrement générée (Web Audio API), aucun fichier audio, donc aucun
 // souci de droits. Accord doux (Do2/Sol2/Do3/Mi3), léger shimmer par vibrato lent sur chaque voix.
+/* 27/07 : la nappe ambiante etait un simple accord tenu (4 oscillateurs sur un Do mineur
+   fige). Elle devient une VRAIE PROGRESSION : 4 accords qui s enchainent lentement en
+   boucle (i - VI - III - VII en la mineur, la couleur « spectrale » qu on cherche), avec
+   un filtre passe-bas qui respire et une reverberation par convolution generee au vol.
+   Toujours ZERO fichier audio : tout est synthetise. Ce n est pas du classique ni des
+   Caraibes — pour ca il faudra de vrais morceaux libres de droits. */
+const NAPPE_ACCORDS = [
+    [110.00, 164.81, 261.63, 329.63], /* la mineur   */
+    [ 87.31, 130.81, 207.65, 261.63], /* fa majeur 7 */
+    [ 98.00, 146.83, 246.94, 293.66], /* sol majeur  */
+    [130.81, 196.00, 246.94, 329.63], /* do majeur   */
+];
+const NAPPE_DUREE_ACCORD = 7.5; /* secondes par accord : assez lent pour ne pas distraire */
+function nappeReverb(ctx, secondes) {
+    /* impulsion synthetique : bruit qui decroit. Donne de la profondeur sans fichier. */
+    const n = Math.floor(ctx.sampleRate * secondes);
+    const buf = ctx.createBuffer(2, n, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+        const d = buf.getChannelData(c);
+        for (let k = 0; k < n; k++) d[k] = (Math.random() * 2 - 1) * Math.pow(1 - k / n, 2.6);
+    }
+    const conv = ctx.createConvolver();
+    conv.buffer = buf;
+    return conv;
+}
 function demarrerNappeAmbiante(ctxRef, gainMasterRef, oscsRef) {
     if (typeof window === "undefined" || !(window.AudioContext || window.webkitAudioContext)) return;
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -34791,30 +34816,70 @@ function demarrerNappeAmbiante(ctxRef, gainMasterRef, oscsRef) {
     if (ctx.state === "suspended") ctx.resume();
     const master = ctx.createGain();
     master.gain.value = 0;
+    /* filtre passe-bas qui s ouvre et se referme tres lentement : la nappe « respire » */
+    const filtre = ctx.createBiquadFilter();
+    filtre.type = "lowpass";
+    filtre.frequency.value = 900;
+    filtre.Q.value = 0.7;
+    const lfoFiltre = ctx.createOscillator();
+    lfoFiltre.frequency.value = 0.035;
+    const lfoFiltreGain = ctx.createGain();
+    lfoFiltreGain.gain.value = 420;
+    lfoFiltre.connect(lfoFiltreGain);
+    lfoFiltreGain.connect(filtre.frequency);
+    lfoFiltre.start();
+    const reverb = nappeReverb(ctx, 3.2);
+    const gainReverb = ctx.createGain();
+    gainReverb.gain.value = 0.5;
+    filtre.connect(master);
+    filtre.connect(reverb);
+    reverb.connect(gainReverb);
+    gainReverb.connect(master);
     master.connect(ctx.destination);
-    const freqs = [130.81, 196.0, 261.63, 329.63];
-    const oscs = freqs.map((f, i) => {
+    /* 4 voix : chacune suit sa note dans la progression d accords */
+    const oscs = [0, 1, 2, 3].map((voix) => {
         const osc = ctx.createOscillator();
-        osc.type = i % 2 === 0 ? "sine" : "triangle";
-        osc.frequency.value = f;
+        osc.type = voix === 0 ? "sine" : (voix === 3 ? "triangle" : "sine");
+        osc.frequency.value = NAPPE_ACCORDS[0][voix];
         const g = ctx.createGain();
-        g.gain.value = 0.22;
+        g.gain.value = voix === 0 ? 0.30 : (voix === 3 ? 0.14 : 0.20);
+        /* leger battement entre les voix : evite le son « orgue electronique » */
         const lfo = ctx.createOscillator();
-        lfo.frequency.value = 0.06 + i * 0.015;
+        lfo.frequency.value = 0.05 + voix * 0.017;
         const lfoGain = ctx.createGain();
-        lfoGain.gain.value = 1.4;
+        lfoGain.gain.value = 2.2;
         lfo.connect(lfoGain);
         lfoGain.connect(osc.detune);
         osc.connect(g);
-        g.connect(master);
+        g.connect(filtre);
         osc.start();
         lfo.start();
         return { osc: osc, lfo: lfo, g: g };
     });
-    master.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 2.2);
+    /* programmation de la boucle d accords : 6 tours d avance, reprogrammes ensuite */
+    const t0 = ctx.currentTime;
+    const programmer = (depart, tours) => {
+        for (let tour = 0; tour < tours; tour++) {
+            NAPPE_ACCORDS.forEach((accord, a) => {
+                const t = depart + (tour * NAPPE_ACCORDS.length + a) * NAPPE_DUREE_ACCORD;
+                accord.forEach((f, voix) => {
+                    const o = oscs[voix].osc;
+                    o.frequency.setTargetAtTime(f, t, 1.6); /* glissando doux entre accords */
+                });
+            });
+        }
+        return depart + tours * NAPPE_ACCORDS.length * NAPPE_DUREE_ACCORD;
+    };
+    let fin = programmer(t0 + 0.2, 6);
+    const relance = setInterval(() => {
+        if (!gainMasterRef.current) { clearInterval(relance); return; }
+        if (ctx.currentTime > fin - NAPPE_DUREE_ACCORD * 4) fin = programmer(fin, 6);
+    }, 8000);
+    master.gain.linearRampToValueAtTime(0.055, ctx.currentTime + 2.6);
     gainMasterRef.current = master;
-    oscsRef.current = oscs;
+    oscsRef.current = oscs.concat([{ osc: lfoFiltre, lfo: lfoFiltre, g: gainReverb, minuteur: relance }]);
 }
+
 function arreterNappeAmbiante(ctxRef, gainMasterRef, oscsRef) {
     const ctx = ctxRef.current;
     if (!ctx || !gainMasterRef.current) return;
@@ -34823,7 +34888,8 @@ function arreterNappeAmbiante(ctxRef, gainMasterRef, oscsRef) {
     master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
     master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
     const oscsASupprimer = oscsRef.current || [];
-    setTimeout(() => { oscsASupprimer.forEach((o) => { try { o.osc.stop(); o.lfo.stop(); } catch (e) { } }); }, 900);
+    oscsASupprimer.forEach((o) => { if (o && o.minuteur) { try { clearInterval(o.minuteur); } catch (e) { } } });
+    setTimeout(() => { oscsASupprimer.forEach((o) => { try { o.osc.stop(); } catch (e) { } try { if (o.lfo && o.lfo !== o.osc) o.lfo.stop(); } catch (e) { } }); }, 900);
     gainMasterRef.current = null;
     oscsRef.current = [];
 }
@@ -34844,6 +34910,51 @@ const TRACE_PHASES_TR = {
     "Fond": { fr: "Fondamentaux", en: "Fundamentals", es: "Fundamentos", it: "Fondamentali", de: "Grundlagen", ja: "基本" },
 };
 /* Distances (en unités du tracé) et seuils du déclenchement temporel des cartes. */
+/* Cheval vu du dessus : photo fournie par Blandine, traitee (fond retire, eclaircie car un
+   cheval noir disparait sur l anthracite, reduite a 54x240 px, 25,7 Ko). A POUSSER dans
+   images/. Repli sur HYPE_IMGS.chevalDessus si la cle existe un jour. */
+const CHEVAL_DESSUS_SRC = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.chevalDessus) ? HYPE_IMGS.chevalDessus : "images/cheval-dessus.png";
+const CHEVAL_DESSUS_RATIO = 0.225;   /* largeur / longueur de la photo */
+const CHEVAL_DESSUS_PX = 58;         /* longueur visee a l ecran, en pixels reels */
+/* ── DECORS DE CARRIERE ──────────────────────────────────────────────────────
+   Images fournies par Blandine, converties en WebP 900 px (a pousser dans images/).
+   Un decor declare `clair: true` fait basculer TOUTE la carriere en palette jour :
+   sur le sable blanc (luminance mesuree 171/255) le turquoise tombe a un contraste de
+   x1,14 et le vert du pas a x1,13 — invisibles. Les teintes de la palette jour ont
+   toutes ete verifiees au-dessus de x2,2 de contraste. Un seul decor est charge a la
+   fois (la balise <img> de prechargement ne concerne que celui qui est selectionne). */
+const HYPE_DECORS = {
+    spectral: { nom: { fr: "Cercle Crystal", en: "Crystal Circle", es: "Círculo Crystal", it: "Cerchio Crystal", de: "Crystal-Kreis", ja: "クリスタル・サークル" },
+        image: "images/decor-spectral.webp", clair: false,
+        vignette: "linear-gradient(160deg,#0E1A24,#0A0E14 60%,#071019)",
+        fond: "radial-gradient(120% 70% at 50% 0%, #14202B 0%, #0B1118 55%, #070A0E 100%)" },
+    mer: { nom: { fr: "Îles de nuit", en: "Night Isles", es: "Islas de noche", it: "Isole di notte", de: "Nachtinseln", ja: "夜の島" },
+        image: "images/decor-mer.webp", clair: false,
+        vignette: "linear-gradient(160deg,#0B1B2A,#08131F 60%,#050A11)",
+        fond: "radial-gradient(120% 80% at 50% 100%, #0F2136 0%, #08111C 45%, #05080F 100%)" },
+    sable: { nom: { fr: "Sable clair", en: "Pale Sand", es: "Arena clara", it: "Sabbia chiara", de: "Heller Sand", ja: "明るい砂" },
+        image: "images/decor-sable.webp", clair: true,
+        vignette: "linear-gradient(160deg,#DCE4E8,#B9C6CE 60%,#8FA0AC)",
+        fond: "radial-gradient(120% 80% at 50% 40%, #D7E0E5 0%, #A9B8C2 60%, #7C8E9B 100%)" },
+    classique: { nom: { fr: "Fond classique", en: "Plain background", es: "Fondo clásico", it: "Sfondo classico", de: "Klassischer Hintergrund", ja: "クラシック背景" },
+        image: null, clair: false, vignette: "none",
+        fond: "radial-gradient(120% 78% at 50% 0%, #151C25 0%, #0D1218 58%, #090C11 100%)" },
+};
+const ORDRE_DECORS = ["spectral", "mer", "sable", "classique"];
+const HYPE_PALETTES = {
+    nuit: { accent: "#20D9F5", accentVif: "#20D9F5", lettre: "#6B7784", lettreAxe: "#9AA6AE",
+            pas: "#4ADE80", trot: "#3B9DFF", galop: "#FF5A5F", arret: "#8A929C",
+            piste: "rgba(244,247,250,0.20)", froid: "rgba(244,247,250,0.14)", milieu: "rgba(244,247,250,0.08)",
+            cercle: "rgba(32,217,245,0.22)", sol: "#1B242F", texteLegende: "rgba(234,241,244,0.75)" },
+    jour: { accent: "#0A5F6E", accentVif: "#08454F", lettre: "#23303C", lettreAxe: "#101922",
+            pas: "#14612F", trot: "#123F73", galop: "#9B2226", arret: "#3A4550",
+            piste: "rgba(12,18,24,0.34)", froid: "rgba(12,18,24,0.22)", milieu: "rgba(12,18,24,0.16)",
+            cercle: "rgba(10,95,110,0.30)", sol: "#C9D5DC", texteLegende: "rgba(18,26,34,0.80)" },
+};
+function hypeDecorMemorise() {
+    try { const m = localStorage.getItem("hype_trace_decor"); if (m && HYPE_DECORS[m]) return m; } catch (e) { }
+    return "spectral";
+}
 const TRACE_ANTICIPE_UNITES = 95;
 const TRACE_SEUILS = { anticipe: 0.02, debut: 0.04, milieu: 0.35, fin: 0.7 };
 function traceBornesFigures(trace) {
@@ -34854,6 +34965,41 @@ function traceBornesFigures(trace) {
         else b[f].fin = p.dist;
     });
     return b;
+}
+/* 27/07 (demande Blandine) : le DEROULEMENT COMPLET de la reprise sous le trace anime.
+   Les conseils du coach de la page « Reviser mes reprises » ne suffisaient pas : quand on
+   regarde le trace, on veut aussi pouvoir derouler l ensemble sans changer d ecran.
+   Chaque figure est listee dans l ordre (pas de dedoublonnage ici, contrairement a la page
+   de la reprise : l interet est justement de suivre le deroule), la figure en cours est
+   mise en evidence. */
+function DeroulementReprise({ niveau, tr, galop, figIndexCourant }) {
+    const BIBLIO = (typeof window !== "undefined" && window.HYPE_DRESSAGE) ? window.HYPE_DRESSAGE : null;
+    const fiche = REPRISES_FFE[niveau];
+    return React.createElement("div", { style: { padding: "26px 20px 0" } },
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 4 } },
+            React.createElement("div", { style: { fontSize: 16, lineHeight: 1 } }, "\uD83C\uDF93"),
+            React.createElement("h2", { style: { margin: 0, fontFamily: "'Cinzel',serif", fontSize: 17, color: COLORS.blanc } },
+                tr({ fr: "Le déroulement, figure par figure", en: "The test, figure by figure", es: "El desarrollo, figura por figura", it: "Lo svolgimento, figura per figura", de: "Der Ablauf, Figur für Figur", ja: "図ごとの流れ" }))),
+        React.createElement("p", { style: { margin: "0 0 14px", fontSize: 11.5, lineHeight: 1.55, color: COLORS.grisDoux } },
+            tr({ fr: "La figure en cours de lecture est surlignée. Les conseils sont adaptés à ton niveau.", en: "The figure being played is highlighted. Tips are matched to your level.", es: "La figura en reproducción está resaltada. Los consejos se adaptan a tu nivel.", it: "La figura in riproduzione è evidenziata. I consigli sono adattati al tuo livello.", de: "Die gerade laufende Figur ist hervorgehoben. Die Tipps passen zu deinem Niveau.", ja: "再生中の図が強調されます。アドバイスはレベルに合わせて表示されます。" })),
+        fiche.figures.map((f, i) => {
+            const fig = BIBLIO ? BIBLIO.ficheFigure(niveau, i) : { principale: null, ids: [] };
+            const actif = i === figIndexCourant;
+            const tips = (fig.principale ? fig.principale.tips : [])
+                .filter((t) => (t.galopMin || 1) <= galop)
+                .sort((a, b) => (a.prio || 2) - (b.prio || 2))
+                .slice(0, 3);
+            return React.createElement("div", { key: i, style: { padding: "11px 12px", marginBottom: 8, borderRadius: 14, transition: "background .3s ease, border-color .3s ease", background: actif ? `${COLORS.turquoise}12` : "transparent", border: `1px solid ${actif ? COLORS.turquoise + "44" : "rgba(42,50,61,0.55)"}` } },
+                React.createElement("div", { style: { display: "flex", alignItems: "baseline", gap: 9 } },
+                    React.createElement("div", { style: { flexShrink: 0, fontFamily: "'Cinzel',serif", fontSize: 12, fontWeight: 700, color: actif ? COLORS.turquoise : COLORS.grisTresDoux } }, i + 1),
+                    React.createElement("div", { style: { flex: 1 } },
+                        fig.principale ? React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13.5, color: actif ? COLORS.turquoise : COLORS.blanc, marginBottom: 3 } }, tr(fig.principale.label)) : null,
+                        React.createElement("div", { style: { fontSize: 12, lineHeight: 1.5, color: COLORS.encreDoux } }, tr(f)))),
+                tips.length ? React.createElement("div", { style: { marginTop: 8, paddingTop: 7, borderTop: "1px solid rgba(42,50,61,0.5)" } },
+                    tips.map((t, j) => React.createElement("div", { key: j, style: { display: "flex", gap: 8, padding: "2px 0" } },
+                        React.createElement("div", { style: { flexShrink: 0, fontSize: 10.5, lineHeight: 1.55, color: t.type === "eviter" ? COLORS.alerte : COLORS.turquoise } }, t.type === "eviter" ? "\u2717" : "\u2022"),
+                        React.createElement("div", { style: { fontSize: 12, lineHeight: 1.55, color: "rgba(244,246,247,0.88)" } }, tr(t.txt))))) : null);
+        }));
 }
 function EcranTraceAnime() {
     const { galopOuvert, setEcran, tr, langue, profil } = useApp();
@@ -34867,12 +35013,30 @@ function EcranTraceAnime() {
     /* 27/07 : conseils du coach (bibliothèque centralisée) + mode immersion */
     const [conseils, setConseils] = React.useState(true);
     const [immersion, setImmersion] = React.useState(false);
+    /* 27/07 : decor de carriere (« Ambiance »), memorise d une session a l autre */
+    const [decor, setDecor] = React.useState(hypeDecorMemorise);
+    const [panneauDecor, setPanneauDecor] = React.useState(false);
     const [figCarte, setFigCarte] = React.useState(-1);
     const [carteVue, setCarteVue] = React.useState(false);
     const audioCtxRef = React.useRef(null);
     const gainMasterRef = React.useRef(null);
     const oscsRef = React.useRef([]);
     const capRef = React.useRef(0);
+    /* la carriere s adapte a la hauteur de l ecran : un cheval defini en unites de viewBox
+       rétrécirait avec elle. On mesure le svg et on vise une longueur en pixels constante. */
+    const svgRef = React.useRef(null);
+    const [longueurCheval, setLongueurCheval] = React.useState(26);
+    React.useEffect(() => {
+        const mesurer = () => {
+            const h = svgRef.current ? svgRef.current.getBoundingClientRect().height : 0;
+            if (!h) return;
+            const l = Math.max(14, Math.min(95, CHEVAL_DESSUS_PX * (520 / h)));
+            setLongueurCheval((p) => (Math.abs(p - l) > 0.5 ? l : p));
+        };
+        mesurer();
+        window.addEventListener("resize", mesurer);
+        return () => window.removeEventListener("resize", mesurer);
+    }, [immersion]);
     const fiche = REPRISES_FFE[niveau];
     const trace = React.useMemo(() => construireTraceReprise(fiche), [niveau]);
     const bornes = React.useMemo(() => traceBornesFigures(trace), [trace]);
@@ -34881,9 +35045,20 @@ function EcranTraceAnime() {
     const dernierFigParleRef = React.useRef(-1);
     const dernierAllureRef = React.useRef(null);
     const enTrainDeParlerRef = React.useRef(false);
-    const VITESSE_BASE_PX_S = 105; // px/seconde de tracé à x1 (27/07 : 60 -> 105 sur demande de Blandine, le déroulement était trop lent ; x0,5 redonne à peu près l ancien rythme)
+    /* 27/07 : la vitesse depend maintenant de la VOIX. 105 px/s convenait en lecture muette
+       mais la voix n avait pas le temps d annoncer une figure avant la suivante (le trace
+       n attend plus la fin de l annonce depuis la session 9). Muet : 78 px/s. Voix activee :
+       52 px/s, ce qui laisse le temps d enoncer une figure complete. x0,5 et x2 s appliquent
+       par-dessus. */
+    const VITESSE_MUET_PX_S = 78, VITESSE_VOIX_PX_S = 52;
+    const VITESSE_BASE_PX_S = vocal ? VITESSE_VOIX_PX_S : VITESSE_MUET_PX_S;
     const PAUSE_APRES_VOIX_MS = 140; // petit temps de respiration entre deux figures quand la voix est activée
     const BIBLIO = (typeof window !== "undefined" && window.HYPE_DRESSAGE) ? window.HYPE_DRESSAGE : null;
+    const infoDecor = HYPE_DECORS[decor] || HYPE_DECORS.spectral;
+    const P = infoDecor.clair ? HYPE_PALETTES.jour : HYPE_PALETTES.nuit;
+    /* memes seuils que couleurSelonAllure, mais dans la palette du decor actif */
+    const couleurAllure = (v) => (v <= 0.35 ? P.arret : (v >= 1.4 ? P.galop : (v <= 0.9 ? P.pas : P.trot)));
+    React.useEffect(() => { try { localStorage.setItem("hype_trace_decor", decor); } catch (e) { } }, [decor]);
     /* Niveau du cavalier : sert à filtrer les conseils trop avancés (point 10). */
     const galopCavalier = (profil && typeof profil.galopActuel === "number" && profil.galopActuel >= 1) ? profil.galopActuel : 1;
     React.useEffect(() => {
@@ -35013,7 +35188,7 @@ function EcranTraceAnime() {
         return { x: p.x, y: p.y, vitesse: allureAtteinte(p) };
     });
     const vitesseCourante = allureAtteinte(posActuelle);
-    const couleur = couleurSelonAllure(vitesseCourante);
+    const couleur = couleurAllure(vitesseCourante);
     /* 27/07 : LA VRAIE CAUSE du « rouge avant la lettre ». Le tracé récent était dessiné
        comme UN SEUL trait d'une SEULE couleur sur une fenêtre de 340 unités : au moment du
        départ au galop, tout le trait déjà parcouru derrière le cheval repassait en rouge d'un
@@ -35023,7 +35198,7 @@ function EcranTraceAnime() {
        cette lettre, jamais ce qui la précède. */
     const troncons = [];
     for (let i = 1; i < parcourus.length; i++) {
-        const c = couleurSelonAllure(parcourus[i - 1].vitesse);
+        const c = couleurAllure(parcourus[i - 1].vitesse);
         const dernier = troncons[troncons.length - 1];
         if (dernier && dernier.couleur === c) dernier.pts.push(parcourus[i]);
         else troncons.push({ couleur: c, pts: [parcourus[i - 1], parcourus[i]] });
@@ -35031,7 +35206,7 @@ function EcranTraceAnime() {
     /* la portion entre le dernier point atteint et le cheval prend l'allure de ce point */
     if (parcourus.length) {
         const tete = { x: posX, y: posY };
-        const cTete = couleurSelonAllure(vitesseCourante);
+        const cTete = couleurAllure(vitesseCourante);
         const dernier = troncons[troncons.length - 1];
         if (dernier && dernier.couleur === cTete) dernier.pts.push(tete);
         else troncons.push({ couleur: cTete, pts: [parcourus[parcourus.length - 1], tete] });
@@ -35072,26 +35247,38 @@ function EcranTraceAnime() {
         React.createElement("div", { style: { padding: "16px 20px" } },
             React.createElement("p", { style: { margin: "0 0 4px", fontFamily: "'Cinzel',serif", fontSize: 16, color: COLORS.blanc } }, fiche.titre),
             React.createElement("p", { style: { margin: "0 0 14px", fontSize: 11.5, color: COLORS.turquoise, fontWeight: 700 } }, fiche.niveauFFE),
-            React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, padding: 10, display: "flex", justifyContent: "center", overflow: "hidden" } },
-                React.createElement("div", { style: { width: "100%", display: "flex", justifyContent: "center", perspective: immersion ? "820px" : "none", maskImage: immersion ? "linear-gradient(to bottom, transparent 0, #000 16%, #000 100%)" : "none", WebkitMaskImage: immersion ? "linear-gradient(to bottom, transparent 0, #000 16%, #000 100%)" : "none" } },
+            React.createElement("div", { style: { position: "relative", background: infoDecor.image ? "#070A0E" : COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, padding: 10, display: "flex", justifyContent: "center", overflow: "hidden" } },
+                /* decor : image de fond + voile de verre fume. Un seul decor charge a la fois. */
+                React.createElement("div", { style: { position: "absolute", inset: 0, zIndex: 0, background: infoDecor.image ? undefined : infoDecor.fond, backgroundImage: infoDecor.image ? "url(" + infoDecor.image + ")" : undefined, backgroundSize: "cover", backgroundPosition: "center" } }),
+                React.createElement("div", { style: { position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", backdropFilter: infoDecor.image ? "blur(2px)" : "none", WebkitBackdropFilter: infoDecor.image ? "blur(2px)" : "none", background: infoDecor.image ? (infoDecor.clair ? "radial-gradient(80% 64% at 50% 50%, rgba(240,246,248,0.34) 0%, rgba(240,246,248,0.16) 64%, rgba(240,246,248,0.04) 100%)" : "radial-gradient(80% 64% at 50% 50%, rgba(6,9,13,0.30) 0%, rgba(6,9,13,0.16) 64%, rgba(6,9,13,0.04) 100%)") : "none" } }),
+                React.createElement("div", { style: { position: "relative", zIndex: 2, width: "100%", display: "flex", justifyContent: "center", perspective: immersion ? "820px" : "none", maskImage: immersion ? "linear-gradient(to bottom, transparent 0, #000 16%, #000 100%)" : "none", WebkitMaskImage: immersion ? "linear-gradient(to bottom, transparent 0, #000 16%, #000 100%)" : "none" } },
                     React.createElement("div", { style: { transformOrigin: "50% 68%", willChange: immersion ? "transform" : "auto", transform: immersion ? "rotateX(54deg) scale(1.38) translate(" + (((100 - posX) / 200) * 100).toFixed(2) + "%," + (((338 - posY) / 520) * 100).toFixed(2) + "%)" : "none" } },
-                        React.createElement("svg", { viewBox: "0 0 200 520", style: { height: "min(62vh, 560px)", width: "auto", maxWidth: "100%", display: "block" } },
-                            React.createElement("rect", { x: 20, y: 20, width: 160, height: 480, rx: 3, fill: "none", stroke: "rgba(244,247,250,0.16)", strokeWidth: 1.2 }),
-                            React.createElement("line", { x1: 100, y1: 20, x2: 100, y2: 500, stroke: "rgba(244,247,250,0.08)", strokeWidth: 1 }),
+                        React.createElement("svg", { ref: svgRef, viewBox: "0 0 200 520", style: { height: "min(62vh, 560px)", width: "auto", maxWidth: "100%", display: "block" } },
+                            React.createElement("rect", { x: 14, y: 14, width: 172, height: 492, rx: 8, fill: P.sol, opacity: infoDecor.image ? 0.34 : 0.55 }),
+                            React.createElement("rect", { x: 20, y: 20, width: 160, height: 480, rx: 3, fill: "none", stroke: P.accent, strokeWidth: 2.4, opacity: 0.20, style: { filter: "blur(2.4px)" } }),
+                            React.createElement("rect", { x: 20, y: 20, width: 160, height: 480, rx: 3, fill: "none", stroke: P.piste, strokeWidth: 1.1 }),
+                            React.createElement("line", { x1: 100, y1: 22, x2: 100, y2: 498, stroke: P.milieu, strokeWidth: 0.9, strokeDasharray: "2 6" }),
                             Object.keys(LETTER_POINTS).map((l) => {
                                 const on = lettreAllumee(l);
-                                return React.createElement("text", { key: l, x: LETTER_POINTS[l].x + (LETTER_POINTS[l].x === 100 ? 0 : (LETTER_POINTS[l].x < 100 ? -9 : 9)), y: LETTER_POINTS[l].y + 3, textAnchor: "middle", style: { fontSize: on ? 11 : 8.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fill: on ? COLORS.turquoise : COLORS.encreDoux, filter: on ? "drop-shadow(0 0 5px " + COLORS.turquoise + ")" : "none", transition: "fill 1.1s ease, font-size 1.1s ease" } }, l);
+                                return React.createElement("text", { key: l, x: LETTER_POINTS[l].x + (LETTER_POINTS[l].x === 100 ? 0 : (LETTER_POINTS[l].x < 100 ? -9 : 9)), y: LETTER_POINTS[l].y + 3, textAnchor: "middle", style: { fontSize: on ? 11 : 8.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fill: on ? P.accentVif : (LETTER_POINTS[l].x === 100 ? P.lettreAxe : P.lettre), filter: on ? "drop-shadow(0 0 5px " + P.accent + ")" : "none", transition: "fill 1.1s ease, font-size 1.1s ease" } }, l);
                             }),
-                            cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: "rgba(32,217,245,0.22)", strokeWidth: 1, strokeDasharray: "3 3" })),
-                            React.createElement("path", { d: dFull, fill: "none", stroke: "rgba(244,247,250,0.14)", strokeWidth: 1.6 }),
-                            React.createElement("path", { d: dVus, fill: "none", stroke: COLORS.turquoise, strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round", opacity: 0.42, style: { filter: "drop-shadow(0 0 3px " + COLORS.turquoise + "55)" } }),
+                            cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: P.cercle, strokeWidth: 1, strokeDasharray: "3 3" })),
+                            React.createElement("path", { d: dFull, fill: "none", stroke: P.froid, strokeWidth: 1.6 }),
+                            React.createElement("path", { d: dVus, fill: "none", stroke: P.accent, strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round", opacity: infoDecor.clair ? 0.5 : 0.42 }),
                             troncons.map((tr2, i) => React.createElement("path", { key: "tc" + i, d: "M " + tr2.pts.map((p) => p.x + " " + p.y).join(" L "), fill: "none", stroke: tr2.couleur, strokeWidth: 2.8, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 6px " + tr2.couleur + "99)" } })),
-                            traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 3.4 - i * 0.42, fill: couleurSelonAllure(p.vitesse), opacity: 0.4 - i * 0.055 })),
-                            React.createElement("g", { transform: "translate(" + posX.toFixed(2) + "," + posY.toFixed(2) + ") rotate(" + cap.toFixed(1) + ")", style: { filter: "drop-shadow(0 0 6px " + couleur + "AA)" } },
-                                React.createElement("path", { d: "M0,6.6 C0.7,8.2 0.5,9.6 0,10.6 C-0.5,9.6 -0.7,8.2 0,6.6 Z", fill: couleur }),
-                                React.createElement("path", { d: "M0,-7.4 C1.7,-6.9 2.3,-5.2 2.1,-3.4 C3.3,-2.3 3.9,0.2 3.2,3.1 C2.7,5.4 1.5,7 0,7 C-1.5,7 -2.7,5.4 -3.2,3.1 C-3.9,0.2 -3.3,-2.3 -2.1,-3.4 C-2.3,-5.2 -1.7,-6.9 0,-7.4 Z", fill: couleur }),
-                                React.createElement("path", { d: "M-1.5,-7 L-2.5,-8.6 L-0.7,-8 Z", fill: couleur }),
-                                React.createElement("path", { d: "M1.5,-7 L2.5,-8.6 L0.7,-8 Z", fill: couleur })))))),
+                            traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 3.4 - i * 0.42, fill: couleurAllure(p.vitesse), opacity: 0.4 - i * 0.055 })),
+                            /* 27/07 : le cheval est desormais la PHOTO vue du dessus fournie par Blandine
+                               (images/cheval-dessus.png, recadree, fond retire, eclaircie, 54x240).
+                               Ma silhouette dessinee a la main ressemblait a une souris, et la couleur
+                               d allure appliquee dessus la rendait VERTE au pas : le halo mangeait la
+                               forme. Plus aucune couleur d allure sur le cheval, elle reste sur le trace
+                               ou elle est utile ; le halo est neutre et discret. La photo est dimensionnee
+                               en PIXELS REELS (CHEVAL_PX) pour faire la meme taille sur tous les ecrans. */
+                            React.createElement("g", { transform: "translate(" + posX.toFixed(2) + "," + posY.toFixed(2) + ") rotate(" + cap.toFixed(1) + ")", style: { filter: "drop-shadow(0 0 3px rgba(6,9,13,0.9)) drop-shadow(0 0 6px rgba(32,217,245,0.30))" } },
+                                React.createElement("ellipse", { cx: 1.2, cy: 1.8, rx: longueurCheval * 0.095, ry: longueurCheval * 0.36, fill: "#04070A", opacity: 0.42 }),
+                                React.createElement("image", { href: CHEVAL_DESSUS_SRC, xlinkHref: CHEVAL_DESSUS_SRC, preserveAspectRatio: "xMidYMid meet",
+                                    width: (longueurCheval * CHEVAL_DESSUS_RATIO).toFixed(2), height: longueurCheval.toFixed(2),
+                                    x: (-longueurCheval * CHEVAL_DESSUS_RATIO / 2).toFixed(2), y: (-longueurCheval / 2).toFixed(2) })))))),
             /* carte flottante du coach : HORS du rectangle, réserve de hauteur fixe
                pour que son apparition ne décale jamais la page */
             React.createElement("div", { style: { minHeight: 104, paddingTop: 12 } },
@@ -35108,10 +35295,10 @@ function EcranTraceAnime() {
         React.createElement("div", { style: { padding: "0 20px" } },
             /* 27/07 : legende du code couleur des allures (pas vert / trot bleu / galop rouge). */
             React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 16, margin: "12px 0 14px", flexWrap: "wrap" } },
-                [{ c: "#4ADE80", l: tr({ fr: "Pas", en: "Walk", es: "Paso", it: "Passo", ja: "\u5e38\u6b69", de: "Schritt" }) },
-                 { c: "#3B9DFF", l: tr({ fr: "Trot", en: "Trot", es: "Trote", it: "Trotto", ja: "\u901f\u6b69", de: "Trab" }) },
-                 { c: "#FF5A5F", l: tr({ fr: "Galop", en: "Canter", es: "Galope", it: "Galoppo", ja: "\u99c6\u6b69", de: "Galopp" }) },
-                 { c: "#8A929C", l: tr({ fr: "Arr\u00eat", en: "Halt", es: "Parada", it: "Alt", ja: "\u505c\u6b62", de: "Halt" }) }
+                [{ c: P.pas, l: tr({ fr: "Pas", en: "Walk", es: "Paso", it: "Passo", ja: "\u5e38\u6b69", de: "Schritt" }) },
+                 { c: P.trot, l: tr({ fr: "Trot", en: "Trot", es: "Trote", it: "Trotto", ja: "\u901f\u6b69", de: "Trab" }) },
+                 { c: P.galop, l: tr({ fr: "Galop", en: "Canter", es: "Galope", it: "Galoppo", ja: "\u99c6\u6b69", de: "Galopp" }) },
+                 { c: P.arret, l: tr({ fr: "Arr\u00eat", en: "Halt", es: "Parada", it: "Alt", ja: "\u505c\u6b62", de: "Halt" }) }
                 ].map(function (a, i) {
                     return React.createElement("span", { key: i, style: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 10.5, fontWeight: 700, color: "rgba(234,241,244,0.75)", fontFamily: "'Montserrat',sans-serif" } },
                         React.createElement("span", { style: { width: 9, height: 9, borderRadius: "50%", background: a.c, boxShadow: "0 0 7px " + a.c } }), a.l);
@@ -35127,13 +35314,24 @@ function EcranTraceAnime() {
                 React.createElement("button", { onClick: () => setMusique((v) => !v), style: { padding: "13px 14px", borderRadius: 14, background: musique ? COLORS.nuitElevee : "transparent", border: `1px solid ${musique ? COLORS.turquoise : COLORS.nuitBordure}`, color: musique ? COLORS.turquoise : COLORS.encreDoux, fontSize: 15 } }, musique ? "🎵" : "🎶")),
             /* seconde rangée : vue immersive + interrupteur des conseils */
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 4 } },
+                React.createElement("button", { onClick: () => setPanneauDecor((v) => !v), style: { padding: "11px 13px", borderRadius: 14, background: panneauDecor ? COLORS.nuitElevee : "transparent", border: `1px solid ${panneauDecor ? COLORS.turquoise : COLORS.nuitBordure}`, color: panneauDecor ? COLORS.turquoise : COLORS.encreDoux, fontSize: 12, fontWeight: 700 } }, "🌄 " + tr({ fr: "Ambiance", en: "Scenery", es: "Ambiente", it: "Ambiente", de: "Kulisse", ja: "背景" })),
                 React.createElement("button", { onClick: () => setImmersion((v) => !v), style: { padding: "11px 14px", borderRadius: 14, background: immersion ? COLORS.nuitElevee : "transparent", border: `1px solid ${immersion ? COLORS.turquoise : COLORS.nuitBordure}`, color: immersion ? COLORS.turquoise : COLORS.encreDoux, fontSize: 12, fontWeight: 700 } }, "🏇 " + tr({ fr: "Immersion", en: "Immersion", es: "Inmersión", it: "Immersione", de: "Immersion", ja: "没入モード" })),
                 React.createElement("button", { onClick: () => setConseils((v) => !v), style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 9, padding: "11px 2px", background: "transparent", border: "none", color: conseils ? COLORS.encre : COLORS.encreDoux, fontSize: 11.5, fontWeight: 600 } },
                     tr({ fr: "Afficher les conseils", en: "Show tips", es: "Mostrar los consejos", it: "Mostra i consigli", de: "Tipps anzeigen", ja: "アドバイスを表示" }),
                     React.createElement("span", { style: { width: 38, height: 22, borderRadius: 999, background: conseils ? COLORS.turquoise : COLORS.nuitElevee, border: `1px solid ${conseils ? COLORS.turquoise : COLORS.nuitBordure}`, position: "relative", flexShrink: 0, transition: "background .2s ease" } },
                         React.createElement("span", { style: { position: "absolute", top: 2, left: conseils ? 18 : 2, width: 16, height: 16, borderRadius: "50%", background: conseils ? COLORS.nuit : COLORS.grisDoux, transition: "left .2s ease" } })))),
+            /* panneau « Ambiance » : miniatures des decors, choix memorise */
+            panneauDecor ? React.createElement("div", { style: { display: "flex", gap: 7, marginTop: 12, padding: 9, borderRadius: 15, background: "rgba(6,9,13,0.9)", border: `1px solid ${COLORS.turquoise}47` } },
+                ORDRE_DECORS.map((k) => {
+                    const d = HYPE_DECORS[k];
+                    const actif = decor === k;
+                    return React.createElement("button", { key: k, onClick: () => { setDecor(k); setPanneauDecor(false); }, style: { flex: "1 1 0", minWidth: 0, padding: 0, border: "none", background: "transparent", display: "flex", flexDirection: "column", gap: 5 } },
+                        React.createElement("div", { style: { height: 36, borderRadius: 9, background: d.vignette === "none" ? COLORS.nuitClaire : d.vignette, border: `1px solid ${actif ? COLORS.turquoise : "rgba(244,246,247,0.10)"}` } }),
+                        React.createElement("div", { style: { fontSize: 8.5, fontWeight: 700, color: actif ? COLORS.turquoise : COLORS.grisDoux, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, tr(d.nom)));
+                })) : null,
             React.createElement("p", { style: { marginTop: 16, fontSize: 10.5, color: COLORS.encreDoux, lineHeight: 1.5 } },
                 tr({ fr: "Tracé pédagogique construit à partir des lettres officielles de la reprise. Les cercles et voltes sont signalés par un pointillé indicatif ; leur forme exacte n'est pas garantie au mètre près.", en: "Learning track built from the test's official letters. Circles and voltes are shown with an indicative dotted ring; their exact shape isn't guaranteed to the metre.", es: "Trazado pedagógico construido a partir de las letras oficiales de la reprise. Los círculos y voltas se indican con un punteado orientativo; su forma exacta no está garantizada al metro.", it: "Tracciato didattico costruito dalle lettere ufficiali della ripresa. Cerchi e volte sono indicati con un tratteggio indicativo; la forma esatta non è garantita al metro.", de: "Lehrspur aus den offiziellen Buchstaben der Aufgabe. Zirkel und Volten sind mit einer gepunkteten Hilfslinie dargestellt; ihre genaue Form ist nicht metergenau garantiert.", ja: "馬場馬術課目の公式な標示文字から作成した学習用の動線です。サークルやボルトは点線で目安を示しており、正確な形状を保証するものではありません。" })),
+            React.createElement(DeroulementReprise, { niveau: niveau, tr: tr, galop: Math.max(galopCavalier, niveau === "clubelite" ? 8 : (parseInt(niveau.replace("g", ""), 10) || 3)), figIndexCourant: figIndexCourant }),
             (BIBLIO && !BIBLIO.figuresIds[niveau]) ? React.createElement("p", { style: { marginTop: 10, fontSize: 10.5, color: COLORS.turquoise, lineHeight: 1.5 } },
                 tr({ fr: "L'œil du juge et les conseils du coach arrivent bientôt sur cette reprise.", en: "The judge's eye and coach's tips are coming soon for this test.", es: "La mirada del juez y los consejos del entrenador llegarán pronto a esta reprise.", it: "L'occhio del giudice e i consigli del coach arriveranno presto su questa ripresa.", de: "Das Auge des Richters und die Trainertipps folgen bald für diese Aufgabe.", ja: "この課目の「審判員の視点」とコーチのアドバイスは近日追加されます。" })) : null));
 }
