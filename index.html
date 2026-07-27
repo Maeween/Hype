@@ -36,10 +36,14 @@ const SUPABASE_URL   = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE_PUBLISHABLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK"; // ⚠️ REMPLACE par ta vraie clé Publishable
 
 const { createClient } = window.supabase;              // fourni par le <script> CDN
-// "Se rappeler de moi" : coché -> session durable (localStorage), décoché -> session de l'onglet (sessionStorage)
+// "Se rappeler de moi" : conservé dans l'interface, mais la connexion est
+// désormais TOUJOURS mémorisée durablement (localStorage), quelle que soit
+// la case — le mode "session de l'onglet" causait trop de déconnexions
+// intempestives (fermeture d'app, plantage, verrouillage d'écran) pour un
+// usage mobile.
 const stockageHype = {
-  getItem: (k) => { try { return (localStorage.getItem("hype_rappeler") === "0" ? sessionStorage : localStorage).getItem(k); } catch (e) { return null; } },
-  setItem: (k, v) => { try { (localStorage.getItem("hype_rappeler") === "0" ? sessionStorage : localStorage).setItem(k, v); } catch (e) { } },
+  getItem: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  setItem: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } },
   removeItem: (k) => { try { sessionStorage.removeItem(k); localStorage.removeItem(k); } catch (e) { } }
 };
 const supa = createClient(SUPABASE_URL, CLE_PUBLISHABLE, { auth: { storage: stockageHype, persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
@@ -94,6 +98,18 @@ try {
 function surChangementConnexion(callback) {
   return supa.auth.onAuthStateChange((_event, session) => callback(session?.user ?? null));
 }
+
+// Quand l'appli revient au premier plan (retour d'arrière-plan, verrouillage
+// d'écran, changement d'onglet), on revérifie/rafraîchit activement la
+// session : le rafraîchissement automatique peut rater son heure si le
+// téléphone a mis l'appli en pause pendant un moment.
+try {
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible") {
+      try { supa.auth.getSession().catch(function () { }); } catch (eVis) { }
+    }
+  });
+} catch (eVisReg) { }
 
 
 /* --- 3. Profil --------------------------------------------- */
