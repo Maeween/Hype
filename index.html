@@ -29746,8 +29746,9 @@ function AlbumsCheval(props) {
   function carteAlbum(alb) {
     var cov = alb.couverture || (alb.photos || [])[0];
     var estVid = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
-    return h("div", { key: alb.id, onClick: function () { var v = (ouvert === alb.id ? null : alb.id); setOuvert(v); setAlbDeplie(false); setConfRetrait(null); setReglagesA(false); if (v) chargerMembres(v); }, role: "button", style: { flex: "0 0 auto", width: 112, cursor: "pointer" } },
-      h("div", { style: { position: "relative", width: 112, height: 112, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(alb.promu ? 0.65 : 0.25), background: "#0B1116", boxShadow: alb.promu ? "0 0 18px " + tA(0.22) : "none" } },
+    return h("div", { key: alb.id, onClick: function () { var v = (ouvert === alb.id ? null : alb.id); setOuvert(v); setAlbDeplie(false); setConfRetrait(null); setReglagesA(false); if (v) chargerMembres(v); }, role: "button", style: { flex: "0 0 auto", width: 168, cursor: "pointer" } },
+      /* 27/07 : couvertures d album nettement agrandies (112 -> 168 px) pour bien voir les images (demande Blandine). */
+      h("div", { style: { position: "relative", width: 168, height: 168, borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(alb.promu ? 0.65 : 0.25), background: "#0B1116", boxShadow: alb.promu ? "0 0 18px " + tA(0.22) : "none" } },
         cov ? (estVid ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, color: tA(0.6) } }, "\ud83d\udcf7"),
         estVid && cov ? h("span", { style: { position: "absolute", bottom: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#EDF2F5", zIndex: 2 } }, "\u25b6") : null,
         (alb.__auto ? null : h("button", { onClick: function (eP) { if (eP && eP.stopPropagation) eP.stopPropagation(); basculerPromu(alb); }, "aria-label": "\u00c0 la une", style: { position: "absolute", top: 6, right: 6, width: 25, height: 25, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid " + tA(alb.promu ? 0.9 : 0.35), color: alb.promu ? tnT : "rgba(234,242,244,0.55)", fontSize: 11, cursor: "pointer", padding: 0, zIndex: 2 } }, alb.promu ? "\u2605" : "\u2606"))),
@@ -29981,12 +29982,13 @@ function AlbumsPromus(props) {
   if (!albums || !albums.length) return null;
   return h("div", { className: "rise", style: { margin: "16px 16px 0" } },
     h("div", { style: { fontSize: 9.5, letterSpacing: "0.3em", textTransform: "uppercase", color: tnT, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", marginBottom: 9 } }, T("Ses albums", "Albums", "Sus \u00e1lbumes", "I suoi album", "\u30a2\u30eb\u30d0\u30e0")),
-    h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + Math.min(3, albums.length) + ", 1fr)", gap: 9 } },
+    /* 27/07 : 3 colonnes -> 2 (couvertures environ 1,6x plus grandes, demande Blandine). */
+    h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + Math.min(2, albums.length) + ", 1fr)", gap: 11 } },
       albums.map(function (alb) {
         var cov = alb.couverture || (alb.photos || [])[0];
         var estV = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
         return h("div", { key: alb.id, onClick: function () { if (props.onOuvrir) props.onOuvrir(alb.id); }, role: "button", style: { cursor: "pointer" } },
-          h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 15, overflow: "hidden", border: "1px solid " + tA(0.4), background: "#0B1116", boxShadow: "0 12px 24px -18px rgba(0,0,0,0.9)" } },
+          h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(0.4), background: "#0B1116", boxShadow: "0 14px 28px -18px rgba(0,0,0,0.9)" } },
             cov ? (estV ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
             estV && cov ? h("span", { style: { position: "absolute", bottom: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#EDF2F5", zIndex: 2 } }, "\u25b6") : null,
             h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
