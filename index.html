@@ -1055,6 +1055,27 @@ async function hypeNotifierCommentaire(cible, texte, user) {
 }
 
 /* --- 8ter. Diffusion communauté (écurie de l'auteur) ------- */
+async function annoncerVisiteEcole(articleId, nomEcole) {
+  /* 27/07 (demande Blandine) : quand un cavalier indique qu il a visité une grande école,
+     la visite reste mémorisée dans visites_articles (utile plus tard pour le Passeport Cavalier)
+     ET une annonce part sur le FIL DE LA COMMUNAUTE (table resultats, comme un haut-fait),
+     avec notification aux cavaliers de son écurie. Aucune nouvelle table. */
+  try {
+    if (typeof supa === "undefined" || !supa) return { error: "pas de connexion" };
+    const user = await utilisateurActuel();
+    if (!user) return { error: "Pas connecté" };
+    const rRes = await supa.from("resultats").insert({
+      user_id: user.id,
+      concours: "\uD83C\uDFDB\uFE0F " + String(nomEcole || "").slice(0, 90),
+      classement: "Visite \u00b7 " + String(articleId || "").slice(0, 40),
+      photo_url: null,
+      media_url: null
+    }).select().single();
+    if (rRes && rRes.error) return { error: rRes.error };
+    try { hypeDiffusionEcurie("visite_ecole", nomEcole, (rRes.data && rRes.data.id) ? ("resultat:" + rRes.data.id) : null); } catch (eN) { }
+    return { data: (rRes && rRes.data) || null };
+  } catch (e) { return { error: String(e) }; }
+}
 async function hypeDiffusionEcurie(type, extrait, cible) {
   try {
     if (typeof supa === "undefined" || !supa) return;
@@ -27658,7 +27679,9 @@ function ClocheNotifs() {
       rejoint: { txt: T("a rejoint l'écurie", "joined the stable", "se unió a la cuadra", "è entrato nella scuderia", "厩舎に参加しました"), icon: h("path", { d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM6 21v-1a6 6 0 0 1 12 0v1" }) },
       cheval: { txt: T("a ajouté un cheval", "added a horse", "añadió un caballo", "ha aggiunto un cavallo", "が馬を追加しました"), icon: h("path", { d: "M12 3l2.4 5.9L21 11l-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1z" }) },
       resultat: { txt: T("a publié un résultat", "posted a result", "publicó un resultado", "ha pubblicato un risultato", "が成績を投稿しました"), icon: h("path", { d: "M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4z" }) },
-      souvenir: { txt: T("a ajouté un souvenir", "added a memory", "añadió un recuerdo", "ha aggiunto un ricordo", "が思い出を追加しました"), icon: h("path", { d: "M3 5h18v14H3zM3 15l5-5 4 4 3-3 6 6" }) }
+      souvenir: { txt: T("a ajouté un souvenir", "added a memory", "añadió un recuerdo", "ha aggiunto un ricordo", "が思い出を追加しました"), icon: h("path", { d: "M3 5h18v14H3zM3 15l5-5 4 4 3-3 6 6" }) },
+      /* 27/07 : visite d une grande ecole annoncee sur le fil (icone colonne/temple). */
+      visite_ecole: { txt: T("a visité une grande école", "visited a great school", "visitó una gran escuela", "ha visitato una grande scuola", "名門馬術学校を訪れました"), icon: h("path", { d: "M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-6 10 6" }) }
     })[n.type] || { txt: T("a publié dans ta communauté", "posted in your community", "publicó en tu comunidad", "ha pubblicato nella tua comunità", "があなたのコミュニティに投稿しました"), icon: h("path", { d: "M3.5 4.5h17v11a2 2 0 0 1-2 2H8l-4.5 4z" }) };
     var icone = iconCercle(conf.icon, false);
     var txt = h("span", null, h("b", null, nom), " " + conf.txt);
@@ -35753,6 +35776,120 @@ function EcranExamen() {
 const IMG_GALOPS_FOND = "images/IMG_GALOPS_FOND.jpg";
 const IMG_MAG_HERO = "images/IMG_MAG_HERO.jpg";
 /* ===== ARTICLE PREMIUM — LE CADRE NOIR DE SAUMUR (maquette v6 validee le 27/07) ===== */
+function AlbumEcoleHype(props) {
+    /* 27/07 : album PARTICIPATIF des grandes écoles (demande Blandine) — permet enfin de partager
+       une photo/vidéo au bas des articles (Saumur, Vienne, Lisbonne, Jerez).
+       REUTILISE la table generique mur_evenement avec la cle "ecole:<slug>" (comme "club:<nom>" ailleurs) :
+       AUCUN SQL a executer. Suppression possible par l auteur, et par les moderateurs via
+       supprimerPostModeration (deja en place). */
+    var h = React.createElement;
+    var app = (typeof useApp === "function") ? useApp() : null;
+    var T = props.T;
+    var cle = "ecole:" + props.slug;
+    var sList = React.useState([]), liste = sList[0], setListe = sList[1];
+    var sMoi = React.useState(null), moi = sMoi[0], setMoi = sMoi[1];
+    var sPhoto = React.useState(null), photo = sPhoto[0], setPhoto = sPhoto[1];
+    var sTexte = React.useState(""), texte = sTexte[0], setTexte = sTexte[1];
+    var sEnvoi = React.useState(false), envoi = sEnvoi[0], setEnvoi = sEnvoi[1];
+    var sErr = React.useState(null), err = sErr[0], setErr = sErr[1];
+    var sZoom = React.useState(null), zoom = sZoom[0], setZoom = sZoom[1];
+    var fRef = React.useRef(null);
+    function recharger() {
+        try {
+            if (typeof chargerMurEvenement !== "function" || typeof supa === "undefined") return;
+            chargerMurEvenement(cle).then(function (r) {
+                if (!r || r.error || !r.data) return;
+                setListe(r.data.filter(function (p) { return p && p.photo_url; }));
+            }).catch(function () { });
+        } catch (e) { }
+    }
+    React.useEffect(function () {
+        var actif = true;
+        try { if (typeof utilisateurActuel === "function") utilisateurActuel().then(function (u) { if (actif) setMoi(u || null); }).catch(function () { }); } catch (e) { }
+        recharger();
+        return function () { actif = false; };
+    }, [props.slug]);
+    function choisirPhoto(e) {
+        var f = e.target.files && e.target.files[0]; if (!f) return;
+        setErr(null);
+        var rd = new FileReader();
+        rd.onload = function () {
+            var im = new Image();
+            im.onload = function () {
+                try {
+                    var MAX = 1600, sc = Math.min(1, MAX / Math.max(im.width, im.height));
+                    var cv = document.createElement("canvas");
+                    cv.width = Math.max(1, Math.round(im.width * sc)); cv.height = Math.max(1, Math.round(im.height * sc));
+                    cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+                    setPhoto(cv.toDataURL("image/jpeg", 0.9));
+                } catch (x) { setPhoto(rd.result); }
+            };
+            im.onerror = function () { setErr(T("Cette image n a pas pu etre lue.", "This image could not be read.", "No se pudo leer esta imagen.", "Impossibile leggere questa immagine.", "この画像を読み込めませんでした。", "Dieses Bild konnte nicht gelesen werden.")); };
+            im.src = rd.result;
+        };
+        rd.onerror = function () { setErr(T("Cette image n a pas pu etre lue.", "This image could not be read.", "No se pudo leer esta imagen.", "Impossibile leggere questa immagine.", "この画像を読み込めませんでした。", "Dieses Bild konnte nicht gelesen werden.")); };
+        rd.readAsDataURL(f); e.target.value = "";
+    }
+    function publier() {
+        if (!photo || envoi) return;
+        if (!moi) { setErr(T("Connecte-toi pour partager une photo.", "Log in to share a photo.", "Inicia sesion para compartir una foto.", "Accedi per condividere una foto.", "写真を共有するにはログインしてください。", "Melde dich an, um ein Foto zu teilen.")); return; }
+        setEnvoi(true); setErr(null);
+        var auteur = (app && app.profil && (app.profil.pseudo || app.profil.prenom)) || "Cavalier Hype";
+        try {
+            publierMurEvenement(cle, auteur, (texte || "").slice(0, 240), photo).then(function (res) {
+                setEnvoi(false);
+                /* Les erreurs ne sont JAMAIS avalees en silence (regle du projet). */
+                if (!res || res.error) { setErr(T("L envoi a echoue. Reessaie dans un instant.", "Upload failed. Try again in a moment.", "El envio ha fallado. Intentalo de nuevo.", "Invio non riuscito. Riprova tra poco.", "送信に失敗しました。もう一度お試しください。", "Senden fehlgeschlagen. Versuche es erneut.")); return; }
+                setPhoto(null); setTexte(""); recharger();
+            }).catch(function () { setEnvoi(false); setErr(T("L envoi a echoue. Reessaie dans un instant.", "Upload failed. Try again in a moment.", "El envio ha fallado. Intentalo de nuevo.", "Invio non riuscito. Riprova tra poco.", "送信に失敗しました。もう一度お試しください。", "Senden fehlgeschlagen. Versuche es erneut.")); });
+        } catch (e) { setEnvoi(false); setErr(String(e)); }
+    }
+    function supprimer(p) {
+        if (!p || !moi) return;
+        var estMien = p.user_id === moi.id;
+        var estMod = (typeof estModerateurHype === "function") && estModerateurHype(moi);
+        if (!estMien && !estMod) return;
+        if (!window.confirm(T("Retirer cette photo de l album ?", "Remove this photo from the album?", "¿Quitar esta foto del album?", "Rimuovere questa foto dall album?", "この写真をアルバムから削除しますか？", "Dieses Foto aus dem Album entfernen?"))) return;
+        try {
+            var pr = estMien ? supprimerMurEvenement(p.id) : supprimerPostModeration("mur_evenement", p.id);
+            Promise.resolve(pr).then(function () { setZoom(null); recharger(); }).catch(function () { });
+        } catch (e) { }
+    }
+    var peutSupprimer = function (p) {
+        if (!moi) return false;
+        return p.user_id === moi.id || ((typeof estModerateurHype === "function") && estModerateurHype(moi));
+    };
+    return h("div", { className: "cnx-album" },
+        h("div", { className: "cnx-album-glow" }),
+        h("div", { className: "cnx-kick" }, T("Album de la communauté", "Community album", "Álbum de la comunidad", "Album della comunità", "コミュニティアルバム", "Album der Community")),
+        h("h3", { className: "cnx-album-t" }, "\uD83D\uDCF8 " + T("Vos plus belles photos", "Your finest photos", "Vuestras mejores fotos", "Le vostre più belle foto", "みんなの写真", "Eure schönsten Fotos")),
+        h("p", { className: "cnx-lead" }, props.intro),
+        /* photos deja partagees */
+        liste.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, margin: "16px 0 6px" } },
+            liste.slice(0, 12).map(function (p) {
+                return h("button", { key: p.id, onClick: function () { setZoom(p); }, style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(255,255,255,0.12)", padding: 0, cursor: "pointer", background: "#0A0F14" } },
+                    h("img", { src: p.photo_url, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+            })) : null,
+        /* zone de partage */
+        h("input", { ref: fRef, type: "file", accept: "image/*", onChange: choisirPhoto, style: { display: "none" } }),
+        photo ? h("div", { style: { margin: "14px 0 0" } },
+            h("img", { src: photo, alt: "", style: { width: "100%", maxHeight: 240, objectFit: "cover", borderRadius: 14, display: "block", border: "1px solid rgba(32,217,245,0.3)" } }),
+            h("input", { value: texte, onChange: function (e) { setTexte(e.target.value); }, placeholder: T("Une légende ? (facultatif)", "A caption? (optional)", "¿Un pie de foto? (opcional)", "Una didascalia? (facoltativo)", "ひとこと（任意）", "Eine Bildunterschrift? (optional)"), style: { width: "100%", boxSizing: "border-box", marginTop: 10, padding: "11px 13px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.14)", color: "#F4F7FA", fontSize: 13, fontFamily: "'Montserrat',sans-serif" } }),
+            h("div", { style: { display: "flex", gap: 9, marginTop: 10 } },
+                h("button", { onClick: publier, disabled: envoi, style: { flex: 1, padding: "12px", borderRadius: 12, border: "none", cursor: envoi ? "default" : "pointer", background: "linear-gradient(90deg,#20D9F5,#5FE9F0)", color: "#04141A", fontSize: 12.5, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", opacity: envoi ? 0.6 : 1 } },
+                    envoi ? T("Envoi…", "Sending…", "Enviando…", "Invio…", "送信中…", "Senden…") : T("Partager avec la communauté", "Share with the community", "Compartir con la comunidad", "Condividi con la comunità", "コミュニティに共有", "Mit der Community teilen")),
+                h("button", { onClick: function () { setPhoto(null); setTexte(""); setErr(null); }, style: { padding: "12px 16px", borderRadius: 12, background: "transparent", border: "1px solid rgba(255,255,255,0.18)", color: "rgba(244,247,250,0.7)", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen")))
+        ) : h("button", { onClick: function () { if (fRef.current) fRef.current.click(); }, style: { width: "100%", marginTop: 16, padding: "14px", borderRadius: 14, cursor: "pointer", border: "1px dashed rgba(32,217,245,0.5)", background: "rgba(32,217,245,0.07)", color: "#7FE8F2", fontSize: 12.5, fontWeight: 800, letterSpacing: 0.3, fontFamily: "'Montserrat',sans-serif" } },
+            "\uFF0B  " + T("Partager ma photo", "Share my photo", "Compartir mi foto", "Condividi la mia foto", "写真を共有する", "Mein Foto teilen")),
+        err ? h("p", { style: { margin: "10px 0 0", fontSize: 11.5, color: "#FFB4A8", fontFamily: "'Montserrat',sans-serif" } }, err) : null,
+        /* visionneuse plein ecran */
+        zoom ? h("div", { onClick: function () { setZoom(null); }, style: { position: "fixed", inset: 0, zIndex: 90, background: "rgba(2,5,9,0.95)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 50px) 18px 30px" } },
+            h("img", { src: zoom.photo_url, alt: "", style: { maxWidth: "100%", maxHeight: "72vh", borderRadius: 14, display: "block" } }),
+            h("p", { style: { margin: "14px 0 0", fontSize: 12.5, color: "#F4F7FA", textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }, (zoom.auteur || "") + (zoom.texte ? " \u00b7 " + zoom.texte : "")),
+            peutSupprimer(zoom) ? h("button", { onClick: function (e) { e.stopPropagation(); supprimer(zoom); }, style: { marginTop: 16, padding: "10px 18px", borderRadius: 999, background: "rgba(255,120,120,0.14)", border: "1px solid rgba(255,120,120,0.45)", color: "#FFB4A8", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Retirer", "Remove", "Quitar", "Rimuovi", "削除", "Entfernen")) : null,
+            h("button", { onClick: function () { setZoom(null); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 16, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.1)", border: "none", color: "#F4F7FA", fontSize: 18, cursor: "pointer" } }, "\u2715")) : null
+    );
+}
 function EcranCadreNoir() {
     var h = React.createElement;
     var ctx = useApp(); var setEcran = ctx.setEcran, tr = ctx.tr, langue = ctx.langue, setLangue = ctx.setLangue;
@@ -35837,7 +35974,11 @@ function EcranCadreNoir() {
         var monId = null; try { monId = (appRef.current.profil && appRef.current.profil.id) || null; } catch (eId2) { monId = null; }
         if (!monId) return;
         setCheckin(function (c) { return { total: (typeof c.total === "number" ? c.total + 1 : c.total), visite: true, charge: c.charge }; });
-        (async function () { try { await supa.from("visites_articles").insert({ user_id: monId, article_id: "cadre-noir" }); } catch (eIns) { } })();
+        (async function () {
+            try { await supa.from("visites_articles").insert({ user_id: monId, article_id: "cadre-noir" }); } catch (eIns) { }
+            /* 27/07 : la visite est aussi annoncee sur le fil de la communaute. */
+            try { if (typeof annoncerVisiteEcole === "function") await annoncerVisiteEcole("cadre-noir", "Le Cadre Noir de Saumur"); } catch (eAnn) { }
+        })();
     }
     function texteCompteurVisites(n) {
         switch (langue) {
@@ -36102,16 +36243,7 @@ function EcranCadreNoir() {
         /* ALBUM (remonte apres les galas — 27/07) */
         h("section", null, h("div", { className: "cnx-wrap" },
             /* ALBUM PARTICIPATIF (1 par ecole — decision Blandine 27/07 ; publication en attente moderation) */
-            h("div", { className: "cnx-album" },
-                h("div", { className: "cnx-album-glow" }),
-                kick(T("Album de la communauté", "Community album", "Álbum de la comunidad", "Album della comunità", "コミュニティアルバム", "Album der Community")),
-                h("h3", { className: "cnx-album-t" }, "\uD83D\uDCF8 " + T("Vos plus belles photos & vidéos", "Your finest photos & videos", "Vuestras mejores fotos y vídeos", "Le vostre più belle foto e video", "みんなの写真とビデオ", "Eure schönsten Fotos & Videos")),
-                h("p", { className: "cnx-lead" }, T("Tu as visité le Cadre Noir ? Partage tes souvenirs avec la communauté Hype — une photo du Grand Manège, une vidéo de gala, un moment volé aux écuries…", "Have you visited the Cadre Noir? Share your memories with the Hype community — a photo of the Grand Manège, a gala video, a stolen moment in the stables…", "¿Has visitado el Cadre Noir? Comparte tus recuerdos con la comunidad Hype: una foto del Grand Manège, un vídeo de gala, un momento robado en las caballerizas…", "Hai visitato il Cadre Noir? Condividi i tuoi ricordi con la comunità Hype — una foto del Grand Manège, un video di gala, un momento rubato nelle scuderie…", "カードル・ノワールを訪れましたか？Hypeのコミュニティと思い出を分かち合いましょう。グラン・マネージュの写真、ガラのビデオ、厩舎でのひとコマ…", "Warst du beim Cadre Noir? Teile deine Erinnerungen mit der Hype-Community — ein Foto der Grand Manège, ein Gala-Video, ein Moment aus den Stallungen…")),
-                h("div", { className: "cnx-slots" },
-                    h("div", { className: "cnx-slot", key: "s1" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ta photo ici", "Your photo here", "Tu foto aquí", "La tua foto qui", "あなたの写真", "Dein Foto hier"))),
-                    h("div", { className: "cnx-slot", key: "s2" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ta vidéo ici", "Your video here", "Tu vídeo aquí", "Il tuo video qui", "あなたのビデオ", "Dein Video hier"))),
-                    h("div", { className: "cnx-slot", key: "s3" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ton souvenir ici", "Your memory here", "Tu recuerdo aquí", "Il tuo ricordo qui", "あなたの思い出", "Deine Erinnerung hier")))),
-                h("span", { className: "cnx-procha" }, PROCHAINEMENT)))),
+            h(AlbumEcoleHype, { slug: "saumur", T: T, intro: T("Tu as visité le Cadre Noir ? Partage tes souvenirs avec la communauté Hype — une photo du Grand Manège, une vidéo de gala, un moment volé aux écuries…", "Have you visited the Cadre Noir? Share your memories with the Hype community — a photo of the Grand Manège, a gala video, a stolen moment in the stables…", "¿Has visitado el Cadre Noir? Comparte tus recuerdos con la comunidad Hype: una foto del Grand Manège, un vídeo de gala, un momento robado en las caballerizas…", "Hai visitato il Cadre Noir? Condividi i tuoi ricordi con la comunità Hype — una foto del Grand Manège, un video di gala, un momento rubato nelle scuderie…", "カードル・ノワールを訪れましたか？Hypeのコミュニティと思い出を分かち合いましょう。グラン・マネージュの写真、ガラのビデオ、厩舎でのひとコマ…", "Warst du beim Cadre Noir? Teile deine Erinnerungen mit der Hype-Community — ein Foto der Grand Manège, ein Gala-Video, ein Moment aus den Stallungen…") }))),
         /* VISITER */
         h("section", { id: "cnx-visite" }, h("div", { className: "cnx-wrap" },
             kick(T("Sur place", "On site", "Sobre el terreno", "Sul posto", "現地で", "Vor Ort")),
@@ -36292,7 +36424,11 @@ function EcranEcolePortugaise() {
         var monId = null; try { monId = (appRef.current.profil && appRef.current.profil.id) || null; } catch (eId2) { monId = null; }
         if (!monId) return;
         setCheckin(function (c) { return { total: (typeof c.total === "number" ? c.total + 1 : c.total), visite: true, charge: c.charge }; });
-        (async function () { try { await supa.from("visites_articles").insert({ user_id: monId, article_id: "ecole-portugaise" }); } catch (eIns) { } })();
+        (async function () {
+            try { await supa.from("visites_articles").insert({ user_id: monId, article_id: "ecole-portugaise" }); } catch (eIns) { }
+            /* 27/07 : la visite est aussi annoncee sur le fil de la communaute. */
+            try { if (typeof annoncerVisiteEcole === "function") await annoncerVisiteEcole("ecole-portugaise", "L'\u00c9cole Portugaise d'Art \u00c9questre"); } catch (eAnn) { }
+        })();
     }
     function texteCompteurVisitesEPA(n) {
         switch (langue) {
@@ -36593,16 +36729,7 @@ function EcranEcolePortugaise() {
                     lienCopieEPA ? ("\u2713 " + T("Lien copié !", "Link copied!", "¡Enlace copiado!", "Link copiato!", "リンクをコピーしました！", "Link kopiert!")) : ("\uD83D\uDD17\u00A0 " + T("Partager", "Share", "Compartir", "Condividi", "シェアする", "Teilen")))))),
         /* ALBUM PARTICIPATIF (prochainement, meme decision que les autres articles : sans moderation + 5/personne, pas encore code) */
         h("section", null, h("div", { className: "cnx-wrap" },
-            h("div", { className: "cnx-album" },
-                h("div", { className: "cnx-album-glow" }),
-                kick(T("Album de la communauté", "Community album", "Álbum de la comunidad", "Album della comunità", "コミュニティアルバム", "Album der Community")),
-                h("h3", { className: "cnx-album-t" }, "\uD83D\uDCF8 " + T("Vos plus belles photos & vidéos", "Your finest photos & videos", "Vuestras mejores fotos y vídeos", "Le vostre più belle foto e video", "みんなの写真とビデオ", "Eure schönsten Fotos & Videos")),
-                h("p", { className: "cnx-lead" }, T("Tu as visité l'École Portugaise ? Partage tes souvenirs avec la communauté Hype.", "Have you visited the Portuguese School? Share your memories with the Hype community.", "¿Has visitado la Escuela Portuguesa? Comparte tus recuerdos con la comunidad Hype.", "Hai visitato la Scuola Portoghese? Condividi i tuoi ricordi con la comunità Hype.", "ポルトガル馬術学校を訪れましたか？Hypeのコミュニティと思い出を分かち合いましょう。", "Warst du bei der Portugiesischen Schule? Teile deine Erinnerungen mit der Hype-Community.")),
-                h("div", { className: "cnx-slots" },
-                    h("div", { className: "cnx-slot", key: "s1" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ta photo ici", "Your photo here", "Tu foto aquí", "La tua foto qui", "あなたの写真", "Dein Foto hier"))),
-                    h("div", { className: "cnx-slot", key: "s2" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ta vidéo ici", "Your video here", "Tu vídeo aquí", "Il tuo video qui", "あなたのビデオ", "Dein Video hier"))),
-                    h("div", { className: "cnx-slot", key: "s3" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ton souvenir ici", "Your memory here", "Tu recuerdo aquí", "Il tuo ricordo qui", "あなたの思い出", "Deine Erinnerung hier")))),
-                h("span", { className: "cnx-procha" }, PROCHAINEMENT)))),
+            h(AlbumEcoleHype, { slug: "lisbonne", T: T, intro: T("Tu as visité l'École Portugaise ? Partage tes souvenirs avec la communauté Hype.", "Have you visited the Portuguese School? Share your memories with the Hype community.", "¿Has visitado la Escuela Portuguesa? Comparte tus recuerdos con la comunidad Hype.", "Hai visitato la Scuola Portoghese? Condividi i tuoi ricordi con la comunità Hype.", "ポルトガル馬術学校を訪れましたか？Hypeのコミュニティと思い出を分かち合いましょう。", "Warst du bei der Portugiesischen Schule? Teile deine Erinnerungen mit der Hype-Community.") }))),
         /* PIED */
         h("div", { className: "cnx-foot" },
             h("div", { className: "cnx-sep" }),
@@ -36696,7 +36823,11 @@ function EcranEcoleJerez() {
         var monId = null; try { monId = (appRef.current.profil && appRef.current.profil.id) || null; } catch (eId2) { monId = null; }
         if (!monId) return;
         setCheckin(function (c) { return { total: (typeof c.total === "number" ? c.total + 1 : c.total), visite: true, charge: c.charge }; });
-        (async function () { try { await supa.from("visites_articles").insert({ user_id: monId, article_id: "ecole-jerez" }); } catch (eIns) { } })();
+        (async function () {
+            try { await supa.from("visites_articles").insert({ user_id: monId, article_id: "ecole-jerez" }); } catch (eIns) { }
+            /* 27/07 : la visite est aussi annoncee sur le fil de la communaute. */
+            try { if (typeof annoncerVisiteEcole === "function") await annoncerVisiteEcole("ecole-jerez", "L'\u00c9cole Royale Andalouse de J\u00e9rez"); } catch (eAnn) { }
+        })();
     }
     function texteCompteurVisitesEJ(n) {
         switch (langue) {
@@ -36987,16 +37118,7 @@ function EcranEcoleJerez() {
                     lienCopieEJ ? ("\u2713 " + T("Lien copié !", "Link copied!", "¡Enlace copiado!", "Link copiato!", "リンクをコピーしました！", "Link kopiert!")) : ("\uD83D\uDD17\u00A0 " + T("Partager", "Share", "Compartir", "Condividi", "シェアする", "Teilen")))))),
         /* ALBUM PARTICIPATIF (prochainement, meme decision que les autres articles : sans moderation + 5/personne, pas encore code) */
         h("section", null, h("div", { className: "cnx-wrap" },
-            h("div", { className: "cnx-album" },
-                h("div", { className: "cnx-album-glow" }),
-                kick(T("Album de la communauté", "Community album", "Álbum de la comunidad", "Album della comunità", "コミュニティアルバム", "Album der Community")),
-                h("h3", { className: "cnx-album-t" }, "\uD83D\uDCF8 " + T("Vos plus belles photos & vidéos", "Your finest photos & videos", "Vuestras mejores fotos y vídeos", "Le vostre più belle foto e video", "みんなの写真とビデオ", "Eure schönsten Fotos & Videos")),
-                h("p", { className: "cnx-lead" }, T("Tu as visité l'École Royale Andalouse ? Partage tes souvenirs avec la communauté Hype.", "Have you visited the Royal Andalusian School? Share your memories with the Hype community.", "¿Has visitado la Real Escuela Andaluza? Comparte tus recuerdos con la comunidad Hype.", "Hai visitato la Scuola Reale Andalusa? Condividi i tuoi ricordi con la comunità Hype.", "アンダルシア王立馬術学校を訪れましたか？Hypeのコミュニティと思い出を分かち合いましょう。", "Warst du bei der Königlich-Andalusischen Reitschule? Teile deine Erinnerungen mit der Hype-Community.")),
-                h("div", { className: "cnx-slots" },
-                    h("div", { className: "cnx-slot", key: "s1" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ta photo ici", "Your photo here", "Tu foto aquí", "La tua foto qui", "あなたの写真", "Dein Foto hier"))),
-                    h("div", { className: "cnx-slot", key: "s2" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ta vidéo ici", "Your video here", "Tu vídeo aquí", "Il tuo video qui", "あなたのビデオ", "Dein Video hier"))),
-                    h("div", { className: "cnx-slot", key: "s3" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ton souvenir ici", "Your memory here", "Tu recuerdo aquí", "Il tuo ricordo qui", "あなたの思い出", "Deine Erinnerung hier")))),
-                h("span", { className: "cnx-procha" }, PROCHAINEMENT)))),
+            h(AlbumEcoleHype, { slug: "jerez", T: T, intro: T("Tu as visité l'École Royale Andalouse ? Partage tes souvenirs avec la communauté Hype.", "Have you visited the Royal Andalusian School? Share your memories with the Hype community.", "¿Has visitado la Real Escuela Andaluza? Comparte tus recuerdos con la comunidad Hype.", "Hai visitato la Scuola Reale Andalusa? Condividi i tuoi ricordi con la comunità Hype.", "アンダルシア王立馬術学校を訪れましたか？Hypeのコミュニティと思い出を分かち合いましょう。", "Warst du bei der Königlich-Andalusischen Reitschule? Teile deine Erinnerungen mit der Hype-Community.") }))),
         /* PIED */
         h("div", { className: "cnx-foot" },
             h("div", { className: "cnx-sep" }),
@@ -37094,7 +37216,11 @@ function EcranEcoleVienne() {
         var monId = null; try { monId = (appRef.current.profil && appRef.current.profil.id) || null; } catch (eId2) { monId = null; }
         if (!monId) return;
         setCheckin(function (c) { return { total: (typeof c.total === "number" ? c.total + 1 : c.total), visite: true, charge: c.charge }; });
-        (async function () { try { await supa.from("visites_articles").insert({ user_id: monId, article_id: "ecole-vienne" }); } catch (eIns) { } })();
+        (async function () {
+            try { await supa.from("visites_articles").insert({ user_id: monId, article_id: "ecole-vienne" }); } catch (eIns) { }
+            /* 27/07 : la visite est aussi annoncee sur le fil de la communaute. */
+            try { if (typeof annoncerVisiteEcole === "function") await annoncerVisiteEcole("ecole-vienne", "L'\u00c9cole Espagnole de Vienne"); } catch (eAnn) { }
+        })();
     }
     function texteCompteurVisitesEV(n) {
         switch (langue) {
@@ -37414,16 +37540,7 @@ function EcranEcoleVienne() {
                     lienCopieEV ? ("\u2713 " + T("Lien copié !", "Link copied!", "¡Enlace copiado!", "Link copiato!", "リンクをコピーしました！", "Link kopiert!")) : ("\uD83D\uDD17\u00A0 " + T("Partager", "Share", "Compartir", "Condividi", "シェアする", "Teilen")))))),
         /* ALBUM PARTICIPATIF (prochainement, meme decision que les autres articles : sans moderation + 5/personne, pas encore code) */
         h("section", null, h("div", { className: "cnx-wrap" },
-            h("div", { className: "cnx-album" },
-                h("div", { className: "cnx-album-glow" }),
-                kick(T("Album de la communauté", "Community album", "Álbum de la comunidad", "Album della comunità", "コミュニティアルバム", "Album der Community")),
-                h("h3", { className: "cnx-album-t" }, "\uD83D\uDCF8 " + T("Vos plus belles photos & vidéos", "Your finest photos & videos", "Vuestras mejores fotos y vídeos", "Le vostre più belle foto e video", "みんなの写真とビデオ", "Eure schönsten Fotos & Videos")),
-                h("p", { className: "cnx-lead" }, T("Tu as visité l'École Espagnole de Vienne ? Partage tes souvenirs avec la communauté Hype.", "Have you visited the Spanish Riding School? Share your memories with the Hype community.", "¿Has visitado la Escuela Española de Viena? Comparte tus recuerdos con la comunidad Hype.", "Hai visitato la Scuola Spagnola di Vienna? Condividi i tuoi ricordi con la comunità Hype.", "ウィーンのスペイン乗馬学校を訪れましたか？Hypeのコミュニティと思い出を分かち合いましょう。", "Warst du bei der Spanischen Hofreitschule Wien? Teile deine Erinnerungen mit der Hype-Community.")),
-                h("div", { className: "cnx-slots" },
-                    h("div", { className: "cnx-slot", key: "s1" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ta photo ici", "Your photo here", "Tu foto aquí", "La tua foto qui", "あなたの写真", "Dein Foto hier"))),
-                    h("div", { className: "cnx-slot", key: "s2" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ta vidéo ici", "Your video here", "Tu vídeo aquí", "Il tuo video qui", "あなたのビデオ", "Dein Video hier"))),
-                    h("div", { className: "cnx-slot", key: "s3" }, h("span", { className: "cnx-slot-plus" }, "+"), h("span", { className: "cnx-slot-txt" }, T("Ton souvenir ici", "Your memory here", "Tu recuerdo aquí", "Il tuo ricordo qui", "あなたの思い出", "Deine Erinnerung hier")))),
-                h("span", { className: "cnx-procha" }, PROCHAINEMENT)))),
+            h(AlbumEcoleHype, { slug: "vienne", T: T, intro: T("Tu as visité l'École Espagnole de Vienne ? Partage tes souvenirs avec la communauté Hype.", "Have you visited the Spanish Riding School? Share your memories with the Hype community.", "¿Has visitado la Escuela Española de Viena? Comparte tus recuerdos con la comunidad Hype.", "Hai visitato la Scuola Spagnola di Vienna? Condividi i tuoi ricordi con la comunità Hype.", "ウィーンのスペイン乗馬学校を訪れましたか？Hypeのコミュニティと思い出を分かち合いましょう。", "Warst du bei der Spanischen Hofreitschule Wien? Teile deine Erinnerungen mit der Hype-Community.") }))),
         /* PIED */
         h("div", { className: "cnx-foot" },
             h("div", { className: "cnx-sep" }),
