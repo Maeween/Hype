@@ -27979,7 +27979,7 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
             React.createElement("div", { style: { marginTop: 5, fontFamily: "'Cinzel',serif", fontSize: 18, fontWeight: 700, letterSpacing: "0.06em", color: "#F4FEFF", textTransform: "uppercase" } }, L5acc("Communaut\u00e9 \u00e9questre", "Equestrian community", "Comunidad ecuestre", "Comunit\u00e0 equestre", "\u99ac\u8853\u30b3\u30df\u30e5\u30cb\u30c6\u30a3"))),
           React.createElement("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a")),
 
-        chapAcc(L5acc("Découvrir", "Discover", "Descubrir", "Scoprire", "発見"), "d3"),
+        chapAcc(L5acc("Mon apprentissage", "My learning", "Mi aprendizaje", "Il mio apprendimento", "私の学び"), "d3"),
         /* 27/07 : Decouvrir remonte au-dessus de l'actualite (demande Blandine), contenu redefini : IA -> Galops -> Culture equestre -> Sante. */
         React.createElement("button", { className: "banner heyb glass rv d3", style: { marginTop: 18 }, onClick: nav("assistant") },
           React.createElement("div", { className: "heyimg" }),
@@ -28006,8 +28006,9 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
             React.createElement("div", { className: "bn-t" }, L5acc("Culture équestre", "Equestrian culture", "Cultura ecuestre", "Cultura equestre", "馬術文化"))),
           React.createElement("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a")),
 
-        React.createElement("div", { className: "rv d5", style: { marginTop: 18 } },
-          carteVertAcc({ onClick: nav("sante"), img: ((typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.santeEncart) ? HYPE_IMGS.santeEncart : ((typeof PHOTO_PANSAGE_GESTES !== "undefined") ? PHOTO_PANSAGE_GESTES : "")), pos: "24% center", k: L5acc("Bien-\u00eatre", "Wellbeing", "Bienestar", "Benessere", "\u5065\u5eb7"), t: L5acc("Sant\u00e9 \u00e9quine", "Equine health", "Salud equina", "Salute equina", "\u99ac\u306e\u5065\u5eb7") })),
+        /* 27/07 : Sante equine (Bien-etre) retiree pour l'instant — restee seule apres le depart de Nos partenaires,
+           elle s etirait en pleine largeur avec un aspect-ratio 4/5 (carteVertAcc pensee pour une grille 2 colonnes)
+           et devenait enorme, creant un grand vide entre Galops et Culture equestre. Ecran "sante" toujours routé. */
 
         chapAcc(L5acc("L'actualit\u00e9", "The news", "La actualidad", "L'attualit\u00e0", "\u6700\u65b0\u60c5\u5831"), "d4"),
 
