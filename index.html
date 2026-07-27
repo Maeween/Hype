@@ -18550,7 +18550,7 @@ exports.version = "19.2.5";
 <script src="hype-images-29.js"></script><script src="hype-images-30.js"></script><script src="hype-images-31.js"></script><script src="hype-images-32.js"></script><script src="hype-images-33.js"></script><script src="hype-images-34.js"></script><script src="hype-images-35.js"></script><script src="hype-images-36.js"></script><script src="hype-images-37.js"></script><script src="hype-images-38.js"></script><script src="hype-images-39.js"></script><script src="hype-images-40.js"></script><script src="hype-images-41.js"></script><script src="hype-images-42.js"></script><script src="hype-images-43.js"></script><script src="hype-images-44.js"></script><script src="hype-images-45.js"></script><script src="hype-images-46.js"></script><script src="hype-images-47.js"></script><script src="hype-images-48.js"></script><script src="hype-images-49.js"></script><script src="hype-images-50.js"></script><script src="hype-images-51.js"></script><script src="hype-images-52.js"></script><script src="hype-images-53.js"></script><script src="hype-images-54.js"></script><script src="hype-images-55.js"></script><script src="hype-images-56.js"></script>
 <script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-images-62.js"></script><script src="hype-images-63.js"></script><script src="hype-images-64.js"></script><script src="hype-images-65.js"></script><script src="hype-images-66.js"></script><script src="hype-images-67.js"></script><script src="hype-images-68.js"></script><script src="hype-images-69.js"></script><script src="hype-images-70.js"></script><script src="hype-images-71.js"></script><script src="hype-images-72.js"></script><script src="hype-images-73.js"></script><script src="hype-images-74.js"></script><script src="hype-images-75.js"></script><script src="hype-images-76.js"></script><script src="hype-images-77.js"></script><script src="hype-images-78.js"></script><script src="hype-images-79.js"></script><script src="hype-images-80.js"></script><script src="hype-images-81.js"></script><script src="hype-images-82.js"></script><script src="hype-images-83.js"></script><script src="hype-images-84.js"></script><script src="hype-images-85.js"></script><script src="hype-images-86.js"></script><script src="hype-images-87.js"></script><script src="hype-images-88.js"></script><script src="hype-images-89.js"></script><script src="hype-images-90.js"></script><script src="hype-images-91.js"></script><script src="hype-images-92.js"></script><script src="hype-images-93.js"></script><script src="hype-images-94.js"></script><script src="hype-images-95.js"></script><script src="hype-images-96.js"></script><script src="hype-images-97.js"></script><script src="hype-images-98.js"></script><script src="hype-images-99.js"></script><script src="hype-images-100.js"></script><script src="hype-images-101.js"></script><script src="hype-images-102.js"></script><script src="hype-images-103.js"></script><script src="hype-images-104.js"></script><script src="hype-images-105.js"></script><script src="hype-images-106.js"></script><script src="hype-images-107.js"></script><script src="hype-images-108.js"></script><script src="hype-images-109.js"></script><script src="hype-images-110.js"></script><script src="hype-images-111.js"></script><script src="hype-images-112.js"></script><script src="hype-images-113.js"></script><script>/* Convention à partir de k547 : nouvelles images en vrais fichiers .jpg (dossier images/), plus de base64. */for(var _hk=547;_hk<=554;_hk++){window.HYPE_IMGS["k"+_hk]="images/k"+_hk+".jpg";}</script><script src="hype-images-114.js"></script><script src="hype-images-115.js"></script><script src="hype-images-116.js"></script><script src="hype-images-117.js"></script><script src="hype-images-118.js"></script><script src="hype-images-119.js"></script><script>/* Correctif : les fichiers réels sur GitHub sont en .jpeg (k555/k556/k557/k603), pas .jpg comme hype-images-119.js le déclare. On force les bons chemins ici plutôt que d'éditer ce fichier séparé. */window.HYPE_IMGS["k555"]="images/k555.jpeg";window.HYPE_IMGS["k556"]="images/k556.jpeg";window.HYPE_IMGS["k557"]="images/k557.jpeg";window.HYPE_IMGS["k603"]="images/k603.jpeg";</script>
 <script src="hype-images-120.js"></script>
-<script src="hype-images-121.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script src="hype-pedagogie.js"></script><script>
+<script src="hype-images-121.js"></script><script src="hype-dressage-conseils.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script src="hype-pedagogie.js"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -19570,7 +19570,7 @@ const CIBLE_DIRECTE = (function () {
         const h = ((typeof window !== "undefined" && window.location && window.location.hash) || "").replace(/^#/, "").trim();
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
         if (h) cle = h;
-        const MAP = { "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, babypaille: { galop: "baby", cours: "baby-c17", page: 0 }, babydesselle: { galop: "baby", cours: "baby-c18", page: 0 }, babypansage2: { galop: "baby", cours: "baby-c19", page: 0 }, babysabots: { galop: "baby", cours: "baby-c20", page: 0 }, babycorps: { galop: "baby", cours: "baby-c21", page: 0 }, babyparcours: { galop: "baby", cours: "baby-c22", page: 0 }, babyrenes: { galop: "baby", cours: "baby-c23", page: 0 }, babytrot2: { galop: "baby", cours: "baby-c24", page: 0 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, abordobstacle: { galop: 3, cours: "g3-c3", page: 0 }, trotenleve: { galop: 3, cours: "g3-c1", page: 0 }, agirceder: { galop: 3, cours: "g3-c13", page: 0 }, tourner: { galop: 3, cours: "g3-c14", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, examenblanc: { ecran: "examen-blanc", galop: 3 }, examenblancg5: { ecran: "examen-blanc", galop: 5 }, accueil: { ecran: "dashboard" }, reprises: { ecran: "reprises" }, "trace-anime": { ecran: "trace-anime" } };
+        const MAP = { "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, babypaille: { galop: "baby", cours: "baby-c17", page: 0 }, babydesselle: { galop: "baby", cours: "baby-c18", page: 0 }, babypansage2: { galop: "baby", cours: "baby-c19", page: 0 }, babysabots: { galop: "baby", cours: "baby-c20", page: 0 }, babycorps: { galop: "baby", cours: "baby-c21", page: 0 }, babyparcours: { galop: "baby", cours: "baby-c22", page: 0 }, babyrenes: { galop: "baby", cours: "baby-c23", page: 0 }, babytrot2: { galop: "baby", cours: "baby-c24", page: 0 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, abordobstacle: { galop: 3, cours: "g3-c3", page: 0 }, trotenleve: { galop: 3, cours: "g3-c1", page: 0 }, agirceder: { galop: 3, cours: "g3-c13", page: 0 }, tourner: { galop: 3, cours: "g3-c14", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, examenblanc: { ecran: "examen-blanc", galop: 3 }, examenblancg5: { ecran: "examen-blanc", galop: 5 }, accueil: { ecran: "dashboard" }, reprises: { ecran: "reprises" }, "trace-anime": { ecran: "trace-anime" } };
         return MAP[cle] || null;
     } catch (e) { return null; }
 })();
@@ -34636,8 +34636,36 @@ function arreterNappeAmbiante(ctxRef, gainMasterRef, oscsRef) {
     gainMasterRef.current = null;
     oscsRef.current = [];
 }
+/* 27/07 ▸ Libellés des familles de figures (la bibliothèque hype-dressage-conseils.js
+   ne porte que le français pour l'instant : la traduction du contenu des fiches est
+   le lot suivant, l'interface elle-même est bien dans les 6 langues). */
+const TRACE_PHASES_TR = {
+    "Entrée": { fr: "Entrée", en: "Entry", es: "Entrada", it: "Ingresso", de: "Einreiten", ja: "入場" },
+    "Arrêt": { fr: "Arrêt", en: "Halt", es: "Parada", it: "Alt", de: "Halt", ja: "停止" },
+    "Pas": { fr: "Pas", en: "Walk", es: "Paso", it: "Passo", de: "Schritt", ja: "常歩" },
+    "Trot": { fr: "Trot", en: "Trot", es: "Trote", it: "Trotto", de: "Trab", ja: "速歩" },
+    "Galop": { fr: "Galop", en: "Canter", es: "Galope", it: "Galoppo", de: "Galopp", ja: "駈歩" },
+    "Transition": { fr: "Transition", en: "Transition", es: "Transición", it: "Transizione", de: "Übergang", ja: "移行" },
+    "Ligne": { fr: "Ligne", en: "Line", es: "Línea", it: "Linea", de: "Linie", ja: "直線" },
+    "Cercle": { fr: "Cercle", en: "Circle", es: "Círculo", it: "Cerchio", de: "Zirkel", ja: "サークル" },
+    "Latéral": { fr: "Latéral", en: "Lateral work", es: "Lateral", it: "Laterale", de: "Seitengang", ja: "横運動" },
+    "Rassembler": { fr: "Rassembler", en: "Collection", es: "Reunión", it: "Raccolta", de: "Versammlung", ja: "収縮" },
+    "Fond": { fr: "Fondamentaux", en: "Fundamentals", es: "Fundamentos", it: "Fondamentali", de: "Grundlagen", ja: "基本" },
+};
+/* Distances (en unités du tracé) et seuils du déclenchement temporel des cartes. */
+const TRACE_ANTICIPE_UNITES = 95;
+const TRACE_SEUILS = { anticipe: 0.02, debut: 0.04, milieu: 0.35, fin: 0.7 };
+function traceBornesFigures(trace) {
+    const b = {};
+    trace.points.forEach(function (p) {
+        const f = p.figIndex;
+        if (b[f] === undefined) b[f] = { debut: p.dist, fin: p.dist };
+        else b[f].fin = p.dist;
+    });
+    return b;
+}
 function EcranTraceAnime() {
-    const { galopOuvert, setEcran, tr, langue } = useApp();
+    const { galopOuvert, setEcran, tr, langue, profil } = useApp();
     const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
     const [niveau, setNiveau] = React.useState(initial);
     const [t, setT] = React.useState(0);
@@ -34645,11 +34673,18 @@ function EcranTraceAnime() {
     const [vitesse, setVitesse] = React.useState(1);
     const [vocal, setVocal] = React.useState(false);
     const [musique, setMusique] = React.useState(false);
+    /* 27/07 : conseils du coach (bibliothèque centralisée) + mode immersion */
+    const [conseils, setConseils] = React.useState(true);
+    const [immersion, setImmersion] = React.useState(false);
+    const [figCarte, setFigCarte] = React.useState(-1);
+    const [carteVue, setCarteVue] = React.useState(false);
     const audioCtxRef = React.useRef(null);
     const gainMasterRef = React.useRef(null);
     const oscsRef = React.useRef([]);
+    const capRef = React.useRef(0);
     const fiche = REPRISES_FFE[niveau];
     const trace = React.useMemo(() => construireTraceReprise(fiche), [niveau]);
+    const bornes = React.useMemo(() => traceBornesFigures(trace), [trace]);
     const rafRef = React.useRef(null);
     const dernierTsRef = React.useRef(null);
     const dernierFigParleRef = React.useRef(-1);
@@ -34657,6 +34692,9 @@ function EcranTraceAnime() {
     const enTrainDeParlerRef = React.useRef(false);
     const VITESSE_BASE_PX_S = 105; // px/seconde de tracé à x1 (27/07 : 60 -> 105 sur demande de Blandine, le déroulement était trop lent ; x0,5 redonne à peu près l ancien rythme)
     const PAUSE_APRES_VOIX_MS = 140; // petit temps de respiration entre deux figures quand la voix est activée
+    const BIBLIO = (typeof window !== "undefined" && window.HYPE_DRESSAGE) ? window.HYPE_DRESSAGE : null;
+    /* Niveau du cavalier : sert à filtrer les conseils trop avancés (point 10). */
+    const galopCavalier = (profil && typeof profil.galopActuel === "number" && profil.galopActuel >= 1) ? profil.galopActuel : 1;
     React.useEffect(() => {
         if (!lecture) { dernierTsRef.current = null; return; }
         const step = (ts) => {
@@ -34679,14 +34717,20 @@ function EcranTraceAnime() {
         rafRef.current = requestAnimationFrame(step);
         return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
     }, [lecture, vitesse, trace, vocal]);
-    React.useEffect(() => { setT(0); setLecture(false); setMusique(false); dernierFigParleRef.current = -1; dernierAllureRef.current = null; enTrainDeParlerRef.current = false; if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); }, [niveau]);
+    React.useEffect(() => { setT(0); setLecture(false); setMusique(false); setFigCarte(-1); setCarteVue(false); capRef.current = 0; dernierFigParleRef.current = -1; dernierAllureRef.current = null; enTrainDeParlerRef.current = false; if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); }, [niveau]);
     React.useEffect(() => { if (!lecture) { enTrainDeParlerRef.current = false; if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); } }, [lecture]);
     React.useEffect(() => () => { if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel(); arreterNappeAmbiante(audioCtxRef, gainMasterRef, oscsRef); }, []);
     React.useEffect(() => { if (musique) demarrerNappeAmbiante(audioCtxRef, gainMasterRef, oscsRef); else arreterNappeAmbiante(audioCtxRef, gainMasterRef, oscsRef); }, [musique]);
     const cibleLen = t * trace.longueur;
     const posActuelle = pointADistance(trace, cibleLen);
     const posX = posActuelle.x, posY = posActuelle.y, idxCourant = posActuelle.idx;
-    const figIndexCourant = t >= 1 ? trace.points[trace.points.length - 1].figIndex : posActuelle.figIndex;
+    /* 27/07 : la figure courante est celle du point DEJA ATTEINT, pas celle du point
+       suivant. pointADistance renvoie le figIndex de pB (le point d arrivee) : sur une
+       figure qui ne pose qu un seul point (ex. G4 figure 1, « Avant R — entree · arret ·
+       salut »), la figure etait comptee comme terminee des le depart et n a jamais ete
+       affichee ni annoncee. On lit donc pA, ce qui donne aussi le bon libelle a l arret. */
+    const figIndexCourant = t >= 1 ? trace.points[trace.points.length - 1].figIndex
+        : ((trace.points[idxCourant] && trace.points[idxCourant].figIndex !== undefined) ? trace.points[idxCourant].figIndex : posActuelle.figIndex);
     React.useEffect(() => {
         if (!vocal || !lecture) return;
         if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -34704,39 +34748,141 @@ function EcranTraceAnime() {
         utt.onerror = finDeParole;
         window.speechSynthesis.speak(utt);
     }, [figIndexCourant, vocal, lecture, langue, fiche]);
+    /* ── Bibliothèque : la reprise ne connaît que des identifiants, tout le texte
+       des conseils vient de window.HYPE_DRESSAGE (fichier séparé). ────────────── */
+    const ficheDe = (idx) => (BIBLIO && idx >= 0) ? BIBLIO.ficheFigure(niveau, idx) : { ids: [], principale: null, timing: null };
+    const fCourante = ficheDe(figIndexCourant);
+    const bornesFig = bornes[figIndexCourant] || { debut: 0, fin: 1 };
+    const longueurFig = Math.max(bornesFig.fin - bornesFig.debut, 0.001);
+    const fractionFig = Math.min(Math.max((cibleLen - bornesFig.debut) / longueurFig, 0), 1);
+    const resteFig = Math.max(bornesFig.fin - cibleLen, 0);
+    /* Déclenchement temporel : une figure annoncée « anticipe » (arrêt, départ au
+       galop, salut) sort sa carte avant de commencer, pour laisser le temps de préparer. */
+    let figACharger = -1;
+    if (BIBLIO && conseils) {
+        const fSuivante = ficheDe(figIndexCourant + 1);
+        const anticipe = fSuivante.principale && fSuivante.timing && fSuivante.timing.trigger === "anticipe";
+        if (anticipe && resteFig < TRACE_ANTICIPE_UNITES) figACharger = figIndexCourant + 1;
+        else if (fCourante.principale) {
+            const trig = (fCourante.timing && fCourante.timing.trigger) || "debut";
+            const seuil = TRACE_SEUILS[trig] !== undefined ? TRACE_SEUILS[trig] : TRACE_SEUILS.debut;
+            if (fractionFig >= seuil) figACharger = figIndexCourant;
+        }
+    }
+    React.useEffect(() => {
+        if (figACharger < 0 || figACharger === figCarte) return;
+        setFigCarte(figACharger);
+    }, [figACharger, figCarte]);
+    React.useEffect(() => {
+        if (!conseils) { setCarteVue(false); return; }
+        if (figCarte < 0) { setCarteVue(false); return; }
+        setCarteVue(false);
+        const f = ficheDe(figCarte);
+        const duree = (f.timing && f.timing.duree) || 4800;
+        const ouvre = setTimeout(() => setCarteVue(true), 40); /* laisse le fondu partir de 0 */
+        const ferme = setTimeout(() => setCarteVue(false), duree);
+        return () => { clearTimeout(ouvre); clearTimeout(ferme); };
+    }, [figCarte, conseils, niveau]);
+    const fCarte = ficheDe(figCarte);
+    const conseilsCarte = (BIBLIO && fCarte.ids.length) ? BIBLIO.conseilsPour(fCarte.ids, galopCavalier, 0) : [];
+    /* ── Barre de progression par familles de figures ─────────────────────────── */
+    const segments = React.useMemo(() => {
+        if (!BIBLIO || !BIBLIO.figuresIds[niveau]) return [];
+        const out = [];
+        fiche.figures.forEach((_, i) => {
+            const f = BIBLIO.ficheFigure(niveau, i);
+            const ph = f.principale ? f.principale.phase : "Fond";
+            const dernier = out[out.length - 1];
+            if (dernier && dernier.phase === ph) dernier.fin = i;
+            else out.push({ phase: ph, debut: i, fin: i });
+        });
+        return out;
+    }, [niveau, fiche]);
     const dFull = "M " + trace.points.map((p) => p.x + " " + p.y).join(" L ");
-    // Le "déjà parcouru" reste allumé seulement sur une fenêtre récente (~1-2 figures) : sur toute une
-    // reprise, garder tout allumé depuis le départ finit par illuminer toute la carrière et on perd le repère.
+    /* 27/07 : le tracé déjà parcouru RESTE allumé en turquoise sobre jusqu'à la fin
+       de la reprise (« tracé vivant ») ; la fenêtre récente garde, elle, la couleur
+       de l'allure en cours, plus vive, pour rester le repère de lecture. */
     const FENETRE_RECENTE = 340;
     const debutFenetre = Math.max(cibleLen - FENETRE_RECENTE, 0);
-    const parcourus = trace.points.filter((p, i) => i <= idxCourant && p.dist >= debutFenetre);
+    const vus = trace.points.filter((p, i) => i <= idxCourant);
+    const dVus = "M " + (vus.length ? vus.map((p) => p.x + " " + p.y).join(" L ") + " L " : "") + posX + " " + posY;
+    const parcourus = vus.filter((p) => p.dist >= debutFenetre);
     const dProgress = "M " + (parcourus.length ? parcourus.map((p) => p.x + " " + p.y).join(" L ") + " L " : "") + posX + " " + posY;
     const cerclesMarques = [];
-    const vus = {};
-    trace.points.forEach((p) => { if (p.cercle) { const k = p.lettre + "-" + p.figIndex; if (!vus[k]) { vus[k] = true; cerclesMarques.push(p); } } });
-    // Traînée spectrale : points fantômes derrière le point principal, opacité/taille décroissantes,
-    // couleur selon l'allure à cet endroit du tracé (turquoise trot / chaud galop / terne pas-arrêt).
+    const dejaVus = {};
+    trace.points.forEach((p) => { if (p.cercle) { const k = p.lettre + "-" + p.figIndex; if (!dejaVus[k]) { dejaVus[k] = true; cerclesMarques.push(p); } } });
     const OFFSETS_TRAINEE = [22, 48, 80, 118, 162, 212];
     const traineePoints = OFFSETS_TRAINEE.map((off) => pointADistance(trace, Math.max(cibleLen - off, 0)));
+    const couleur = couleurSelonAllure(posActuelle.vitesse);
+    /* 27/07 : le point lumineux devient une silhouette de cheval vue du dessus,
+       orientée par la direction réelle de marche et lissée (elle ne pivote jamais
+       d'un coup, ce qui serait impossible pour un cheval). */
+    const arriere = pointADistance(trace, Math.max(cibleLen - 9, 0));
+    let cap = capRef.current;
+    if (Math.hypot(posX - arriere.x, posY - arriere.y) > 0.4) {
+        const viseur = (Math.atan2(posY - arriere.y, posX - arriere.x) * 180) / Math.PI + 90;
+        let ecart = viseur - capRef.current;
+        while (ecart > 180) ecart -= 360;
+        while (ecart <= -180) ecart += 360;
+        cap = capRef.current + ecart * 0.25;
+    }
+    capRef.current = cap;
+    /* 27/07 : les lettres s'allument au passage du cheval puis retombent en 1,1 s. */
+    const lettreAllumee = (l) => Math.hypot(LETTER_POINTS[l].x - posX, LETTER_POINTS[l].y - posY) < 13;
     return React.createElement("div", { style: { minHeight: "100dvh", background: COLORS.nuit, paddingBottom: 30 } },
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(env(safe-area-inset-top) + 18px) 20px 14px", borderBottom: `1px solid ${COLORS.nuitBordure}` } },
             React.createElement("button", { onClick: () => setEcran(galopOuvert ? "galop-detail" : "dashboard"), style: { width: 38, height: 38, borderRadius: 12, background: COLORS.nuitClaire, color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 } }, "\u2190"),
             React.createElement("h1", { style: { margin: 0, fontSize: 16, fontWeight: 800, color: COLORS.blanc, fontFamily: "'Cinzel', serif" } }, tr({ fr: "Le tracé animé", en: "The animated track", es: "El trazado animado", it: "Il tracciato animato", de: "Die animierte Spur", ja: "アニメーション動線" }))),
         React.createElement("div", { style: { display: "flex", gap: 6, padding: "14px 20px 0", overflowX: "auto" } },
             ORDRE_REPRISES_FFE.map((n) => React.createElement("button", { key: n, onClick: () => setNiveau(n), style: { flex: "0 0 auto", padding: "8px 16px", borderRadius: 999, background: niveau === n ? COLORS.turquoise : COLORS.nuitClaire, color: niveau === n ? COLORS.nuit : COLORS.grisDoux, border: `1px solid ${niveau === n ? COLORS.turquoise : COLORS.nuitBordure}`, fontSize: 12.5, fontWeight: 700 } }, (n === "clubelite" ? "Club Elite" : "Galop " + n.replace("g", ""))))),
+        /* barre de progression : une pastille par famille de figures traversée */
+        segments.length ? React.createElement("div", { style: { display: "flex", alignItems: "center", padding: "16px 20px 0", overflowX: "auto" } },
+            segments.map((sg, i) => {
+                const actif = figIndexCourant >= sg.debut && figIndexCourant <= sg.fin;
+                return React.createElement(React.Fragment, { key: i },
+                    i > 0 ? React.createElement("span", { style: { flex: "0 0 auto", color: COLORS.nuitBordure, fontSize: 10, padding: "0 5px" } }, "\u2192") : null,
+                    React.createElement("span", { style: { flex: "0 0 auto", fontSize: 10.5, fontWeight: 700, letterSpacing: .4, padding: "5px 10px", borderRadius: 999, transition: "all .25s ease", background: actif ? `${COLORS.turquoise}1F` : "transparent", border: `1px solid ${actif ? COLORS.turquoise + "66" : "transparent"}`, color: actif ? COLORS.turquoise : COLORS.grisTresDoux } }, tr(TRACE_PHASES_TR[sg.phase] || { fr: sg.phase })));
+            })) : null,
+        /* nom court de la figure en cours, tiré de la bibliothèque */
+        fCourante.principale ? React.createElement("div", { style: { padding: "12px 20px 0" } },
+            React.createElement("p", { style: { margin: "0 0 2px", fontSize: 9, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase", color: COLORS.encreDoux } }, tr({ fr: "Figure actuelle", en: "Current figure", es: "Figura actual", it: "Figura attuale", de: "Aktuelle Figur", ja: "現在の課目" })),
+            React.createElement("p", { style: { margin: 0, fontFamily: "'Cinzel',serif", fontSize: 15, color: COLORS.blanc } }, tr(fCourante.principale.label))) : null,
         React.createElement("div", { style: { padding: "16px 20px" } },
             React.createElement("p", { style: { margin: "0 0 4px", fontFamily: "'Cinzel',serif", fontSize: 16, color: COLORS.blanc } }, fiche.titre),
             React.createElement("p", { style: { margin: "0 0 14px", fontSize: 11.5, color: COLORS.turquoise, fontWeight: 700 } }, fiche.niveauFFE),
-            React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, padding: 10, display: "flex", justifyContent: "center" } },
-                React.createElement("svg", { viewBox: "0 0 200 520", style: { height: "min(62vh, 560px)", width: "auto", maxWidth: "100%", display: "block" } },
-                    React.createElement("rect", { x: 20, y: 20, width: 160, height: 480, rx: 3, fill: "none", stroke: "rgba(244,247,250,0.16)", strokeWidth: 1.2 }),
-                    React.createElement("line", { x1: 100, y1: 20, x2: 100, y2: 500, stroke: "rgba(244,247,250,0.08)", strokeWidth: 1 }),
-                    Object.keys(LETTER_POINTS).map((l) => React.createElement("text", { key: l, x: LETTER_POINTS[l].x + (LETTER_POINTS[l].x === 100 ? 0 : (LETTER_POINTS[l].x < 100 ? -9 : 9)), y: LETTER_POINTS[l].y + 3, textAnchor: "middle", style: { fontSize: 8.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fill: COLORS.encreDoux } }, l)),
-                    cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: "rgba(32,217,245,0.22)", strokeWidth: 1, strokeDasharray: "3 3" })),
-                    React.createElement("path", { d: dFull, fill: "none", stroke: "rgba(244,247,250,0.14)", strokeWidth: 1.6 }),
-                    React.createElement("path", { d: dProgress, fill: "none", stroke: couleurSelonAllure(posActuelle.vitesse), strokeWidth: 2.8, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 6px " + couleurSelonAllure(posActuelle.vitesse) + "99)" } }),
-                    traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 4.6 - i * 0.55, fill: couleurSelonAllure(p.vitesse), opacity: 0.55 - i * 0.075 })),
-                    React.createElement("circle", { cx: posX, cy: posY, r: 5.4, fill: couleurSelonAllure(posActuelle.vitesse), style: { filter: "drop-shadow(0 0 8px " + couleurSelonAllure(posActuelle.vitesse) + ")" } })))),
+            React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, padding: 10, display: "flex", justifyContent: "center", overflow: "hidden" } },
+                React.createElement("div", { style: { width: "100%", display: "flex", justifyContent: "center", perspective: immersion ? "820px" : "none", maskImage: immersion ? "linear-gradient(to bottom, transparent 0, #000 16%, #000 100%)" : "none", WebkitMaskImage: immersion ? "linear-gradient(to bottom, transparent 0, #000 16%, #000 100%)" : "none" } },
+                    React.createElement("div", { style: { transformOrigin: "50% 68%", willChange: immersion ? "transform" : "auto", transform: immersion ? "rotateX(54deg) scale(1.38) translate(" + (((100 - posX) / 200) * 100).toFixed(2) + "%," + (((338 - posY) / 520) * 100).toFixed(2) + "%)" : "none" } },
+                        React.createElement("svg", { viewBox: "0 0 200 520", style: { height: "min(62vh, 560px)", width: "auto", maxWidth: "100%", display: "block" } },
+                            React.createElement("rect", { x: 20, y: 20, width: 160, height: 480, rx: 3, fill: "none", stroke: "rgba(244,247,250,0.16)", strokeWidth: 1.2 }),
+                            React.createElement("line", { x1: 100, y1: 20, x2: 100, y2: 500, stroke: "rgba(244,247,250,0.08)", strokeWidth: 1 }),
+                            Object.keys(LETTER_POINTS).map((l) => {
+                                const on = lettreAllumee(l);
+                                return React.createElement("text", { key: l, x: LETTER_POINTS[l].x + (LETTER_POINTS[l].x === 100 ? 0 : (LETTER_POINTS[l].x < 100 ? -9 : 9)), y: LETTER_POINTS[l].y + 3, textAnchor: "middle", style: { fontSize: on ? 11 : 8.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fill: on ? COLORS.turquoise : COLORS.encreDoux, filter: on ? "drop-shadow(0 0 5px " + COLORS.turquoise + ")" : "none", transition: "fill 1.1s ease, font-size 1.1s ease" } }, l);
+                            }),
+                            cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: "rgba(32,217,245,0.22)", strokeWidth: 1, strokeDasharray: "3 3" })),
+                            React.createElement("path", { d: dFull, fill: "none", stroke: "rgba(244,247,250,0.14)", strokeWidth: 1.6 }),
+                            React.createElement("path", { d: dVus, fill: "none", stroke: COLORS.turquoise, strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round", opacity: 0.42, style: { filter: "drop-shadow(0 0 3px " + COLORS.turquoise + "55)" } }),
+                            React.createElement("path", { d: dProgress, fill: "none", stroke: couleur, strokeWidth: 2.8, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 6px " + couleur + "99)" } }),
+                            traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 3.4 - i * 0.42, fill: couleurSelonAllure(p.vitesse), opacity: 0.4 - i * 0.055 })),
+                            React.createElement("g", { transform: "translate(" + posX.toFixed(2) + "," + posY.toFixed(2) + ") rotate(" + cap.toFixed(1) + ")", style: { filter: "drop-shadow(0 0 6px " + couleur + "AA)" } },
+                                React.createElement("path", { d: "M0,6.6 C0.7,8.2 0.5,9.6 0,10.6 C-0.5,9.6 -0.7,8.2 0,6.6 Z", fill: couleur }),
+                                React.createElement("path", { d: "M0,-7.4 C1.7,-6.9 2.3,-5.2 2.1,-3.4 C3.3,-2.3 3.9,0.2 3.2,3.1 C2.7,5.4 1.5,7 0,7 C-1.5,7 -2.7,5.4 -3.2,3.1 C-3.9,0.2 -3.3,-2.3 -2.1,-3.4 C-2.3,-5.2 -1.7,-6.9 0,-7.4 Z", fill: couleur }),
+                                React.createElement("path", { d: "M-1.5,-7 L-2.5,-8.6 L-0.7,-8 Z", fill: couleur }),
+                                React.createElement("path", { d: "M1.5,-7 L2.5,-8.6 L0.7,-8 Z", fill: couleur })))))),
+            /* carte flottante du coach : HORS du rectangle, réserve de hauteur fixe
+               pour que son apparition ne décale jamais la page */
+            React.createElement("div", { style: { minHeight: 104, paddingTop: 12 } },
+                (conseils && fCarte.principale) ? React.createElement("div", { style: { background: "rgba(8,11,15,0.72)", backdropFilter: "blur(14px) saturate(140%)", WebkitBackdropFilter: "blur(14px) saturate(140%)", border: `1px solid ${COLORS.turquoise}40`, borderRadius: 16, padding: "12px 14px 13px", boxShadow: "0 10px 30px rgba(0,0,0,0.38)", opacity: carteVue ? 1 : 0, transform: carteVue ? "translateY(0)" : "translateY(8px)", transition: "opacity .26s ease, transform .26s ease", pointerEvents: "none" } },
+                    React.createElement("p", { style: { margin: "0 0 5px", fontSize: 9.5, fontWeight: 800, letterSpacing: 1.1, textTransform: "uppercase", color: COLORS.turquoise } }, "\uD83D\uDC41 " + tr({ fr: "L'œil du juge", en: "The judge's eye", es: "La mirada del juez", it: "L'occhio del giudice", de: "Das Auge des Richters", ja: "審判員の視点" })),
+                    React.createElement("div", { style: { fontSize: 11.5, lineHeight: 1.55, color: COLORS.encre } },
+                        fCarte.principale.obs.slice(0, 2).map((o, i) => React.createElement("div", { key: i, style: { position: "relative", paddingLeft: 13 } },
+                            React.createElement("span", { style: { position: "absolute", left: 0, color: COLORS.turquoise } }, "\u2022"), tr(o)))),
+                    React.createElement("div", { style: { height: 1, background: `linear-gradient(90deg,${COLORS.turquoise}26,transparent)` } }),
+                    React.createElement("p", { style: { margin: "10px 0 4px", fontSize: 9.5, fontWeight: 800, letterSpacing: 1.1, textTransform: "uppercase", color: COLORS.turquoise } }, "\uD83D\uDCA1 " + tr({ fr: "Conseil du coach", en: "Coach's tip", es: "Consejo del entrenador", it: "Il consiglio del coach", de: "Tipp des Trainers", ja: "コーチのアドバイス" })),
+                    React.createElement("div", { style: { fontSize: 11.5, lineHeight: 1.55, color: COLORS.encre } },
+                        conseilsCarte.map((c, i) => React.createElement("div", { key: i, style: { position: "relative", paddingLeft: 13, marginBottom: 2 } },
+                            React.createElement("span", { style: { position: "absolute", left: 0, color: c.type === "eviter" ? COLORS.alerte : COLORS.turquoise } }, c.type === "eviter" ? "\u2717" : "\u2713"), tr(c.txt))))) : null)),
         React.createElement("div", { style: { padding: "0 20px" } },
             /* 27/07 : legende du code couleur des allures (pas vert / trot bleu / galop rouge). */
             React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 16, margin: "12px 0 14px", flexWrap: "wrap" } },
@@ -34749,16 +34895,25 @@ function EcranTraceAnime() {
                         React.createElement("span", { style: { width: 9, height: 9, borderRadius: "50%", background: a.c, boxShadow: "0 0 7px " + a.c } }), a.l);
                 })),
             React.createElement("div", { style: { background: `${COLORS.turquoise}0F`, border: `1px solid ${COLORS.turquoise}38`, borderRadius: 14, padding: "12px 14px", marginBottom: 14, minHeight: 42 } },
-                React.createElement("p", { style: { margin: "0 0 3px", fontSize: 10, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: COLORS.turquoise } }, tr({ fr: "Figure " + (figIndexCourant + 1) + " / " + fiche.figures.length, en: "Figure " + (figIndexCourant + 1) + " / " + fiche.figures.length, es: "Figura " + (figIndexCourant + 1) + " / " + fiche.figures.length, it: "Figura " + (figIndexCourant + 1) + " / " + fiche.figures.length, de: "Lektion " + (figIndexCourant + 1) + " / " + fiche.figures.length, ja: "図形 " + (figIndexCourant + 1) + " / " + fiche.figures.length })),
+                React.createElement("p", { style: { margin: "0 0 3px", fontSize: 10, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: COLORS.turquoise } }, tr({ fr: "Figure " + (figIndexCourant + 1) + " / " + fiche.figures.length, en: "Figure " + (figIndexCourant + 1) + " / " + fiche.figures.length, es: "Figura " + (figIndexCourant + 1) + " / " + fiche.figures.length, it: "Figura " + (figIndexCourant + 1) + " / " + fiche.figures.length, de: "Figur " + (figIndexCourant + 1) + " / " + fiche.figures.length, ja: (figIndexCourant + 1) + " / " + fiche.figures.length + " 課目" })),
                 React.createElement("p", { style: { margin: 0, fontSize: 12.5, color: COLORS.encre, lineHeight: 1.5 } }, tr(fiche.figures[figIndexCourant]))),
             React.createElement("input", { type: "range", min: 0, max: 1000, value: Math.round(t * 1000), onChange: (e) => { setLecture(false); setT(Number(e.target.value) / 1000); }, style: { width: "100%", accentColor: COLORS.turquoise, marginBottom: 14 } }),
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 } },
-                React.createElement("button", { onClick: () => { if (t >= 1) { setT(0); dernierFigParleRef.current = -1; dernierAllureRef.current = null; } setLecture((v) => !v); }, style: { flex: 1, padding: 13, borderRadius: 14, background: COLORS.turquoise, border: "none", color: COLORS.nuit, fontSize: 13, fontWeight: 800 } }, lecture ? tr({ fr: "⏸ Pause", en: "⏸ Pause", es: "⏸ Pausa", it: "⏸ Pausa", de: "⏸ Pause", ja: "⏸ 一時停止" }) : (t >= 1 ? tr({ fr: "↻ Rejouer", en: "↻ Replay", es: "↻ Repetir", it: "↻ Riproduci", de: "↻ Wiederholen", ja: "↻ もう一度" }) : tr({ fr: "▶ Lecture", en: "▶ Play", es: "▶ Reproducir", it: "▶ Riproduci", de: "▶ Abspielen", ja: "▶ 再生" }))),
-                [0.5, 1, 2].map((v) => React.createElement("button", { key: v, onClick: () => setVitesse(v), style: { padding: "13px 14px", borderRadius: 14, background: vitesse === v ? COLORS.nuitElevee : "transparent", border: `1px solid ${vitesse === v ? COLORS.turquoise : COLORS.nuitBordure}`, color: vitesse === v ? COLORS.turquoise : COLORS.encreDoux, fontSize: 12.5, fontWeight: 700 } }, "x" + v)),
+                React.createElement("button", { onClick: () => { if (t >= 1) { setT(0); dernierFigParleRef.current = -1; dernierAllureRef.current = null; } setLecture((v) => !v); }, style: { flex: 1, padding: 13, borderRadius: 14, background: COLORS.turquoise, border: "none", color: COLORS.nuit, fontSize: 13, fontWeight: 800 } }, lecture ? tr({ fr: "⏸ Pause", en: "⏸ Pause", es: "⏸ Pausa", it: "⏸ Pausa", de: "⏸ Pause", ja: "⏸ 一時停止" }) : tr({ fr: "▶ Lecture", en: "▶ Play", es: "▶ Reproducir", it: "▶ Riproduci", de: "▶ Abspielen", ja: "▶ 再生" })),
+                [0.5, 1, 2].map((v) => React.createElement("button", { key: v, onClick: () => setVitesse(v), style: { padding: "13px 14px", borderRadius: 14, background: vitesse === v ? COLORS.nuitElevee : "transparent", border: `1px solid ${vitesse === v ? COLORS.turquoise : COLORS.nuitBordure}`, color: vitesse === v ? COLORS.turquoise : COLORS.encreDoux, fontSize: 12.5, fontWeight: 700 } }, "x" + String(v).replace(".", ","))),
                 React.createElement("button", { onClick: () => setVocal((v) => !v), style: { padding: "13px 14px", borderRadius: 14, background: vocal ? COLORS.nuitElevee : "transparent", border: `1px solid ${vocal ? COLORS.turquoise : COLORS.nuitBordure}`, color: vocal ? COLORS.turquoise : COLORS.encreDoux, fontSize: 15 } }, vocal ? "🔊" : "🔇"),
                 React.createElement("button", { onClick: () => setMusique((v) => !v), style: { padding: "13px 14px", borderRadius: 14, background: musique ? COLORS.nuitElevee : "transparent", border: `1px solid ${musique ? COLORS.turquoise : COLORS.nuitBordure}`, color: musique ? COLORS.turquoise : COLORS.encreDoux, fontSize: 15 } }, musique ? "🎵" : "🎶")),
+            /* seconde rangée : vue immersive + interrupteur des conseils */
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 4 } },
+                React.createElement("button", { onClick: () => setImmersion((v) => !v), style: { padding: "11px 14px", borderRadius: 14, background: immersion ? COLORS.nuitElevee : "transparent", border: `1px solid ${immersion ? COLORS.turquoise : COLORS.nuitBordure}`, color: immersion ? COLORS.turquoise : COLORS.encreDoux, fontSize: 12, fontWeight: 700 } }, "🏇 " + tr({ fr: "Immersion", en: "Immersion", es: "Inmersión", it: "Immersione", de: "Immersion", ja: "没入モード" })),
+                React.createElement("button", { onClick: () => setConseils((v) => !v), style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 9, padding: "11px 2px", background: "transparent", border: "none", color: conseils ? COLORS.encre : COLORS.encreDoux, fontSize: 11.5, fontWeight: 600 } },
+                    tr({ fr: "Afficher les conseils", en: "Show tips", es: "Mostrar los consejos", it: "Mostra i consigli", de: "Tipps anzeigen", ja: "アドバイスを表示" }),
+                    React.createElement("span", { style: { width: 38, height: 22, borderRadius: 999, background: conseils ? COLORS.turquoise : COLORS.nuitElevee, border: `1px solid ${conseils ? COLORS.turquoise : COLORS.nuitBordure}`, position: "relative", flexShrink: 0, transition: "background .2s ease" } },
+                        React.createElement("span", { style: { position: "absolute", top: 2, left: conseils ? 18 : 2, width: 16, height: 16, borderRadius: "50%", background: conseils ? COLORS.nuit : COLORS.grisDoux, transition: "left .2s ease" } })))),
             React.createElement("p", { style: { marginTop: 16, fontSize: 10.5, color: COLORS.encreDoux, lineHeight: 1.5 } },
-                tr({ fr: "Tracé pédagogique construit à partir des lettres officielles de la reprise. Les cercles et voltes sont signalés par un pointillé indicatif ; leur forme exacte n'est pas garantie au mètre près.", en: "Learning track built from the test's official letters. Circles and voltes are shown with an indicative dotted ring; their exact shape isn't guaranteed to the metre.", es: "Trazado pedagógico construido a partir de las letras oficiales de la reprise. Los círculos y voltas se muestran con un anillo punteado indicativo; su forma exacta no está garantizada al metro.", it: "Tracciato didattico costruito dalle lettere ufficiali della ripresa. Cerchi e volte sono indicati con un anello tratteggiato indicativo; la forma esatta non è garantita al metro.", de: "Lernspur auf Basis der offiziellen Buchstaben der Aufgabe. Zirkel und Volten werden mit einem gepunkteten Hinweisring dargestellt; die exakte Form ist nicht metergenau garantiert.", ja: "メニューの公式文字をもとに作成した学習用の動線です。サークルやボルトは目安の点線で示しており、正確な形状を保証するものではありません。" }))));
+                tr({ fr: "Tracé pédagogique construit à partir des lettres officielles de la reprise. Les cercles et voltes sont signalés par un pointillé indicatif ; leur forme exacte n'est pas garantie au mètre près.", en: "Learning track built from the test's official letters. Circles and voltes are shown with an indicative dotted ring; their exact shape isn't guaranteed to the metre.", es: "Trazado pedagógico construido a partir de las letras oficiales de la reprise. Los círculos y voltas se indican con un punteado orientativo; su forma exacta no está garantizada al metro.", it: "Tracciato didattico costruito dalle lettere ufficiali della ripresa. Cerchi e volte sono indicati con un tratteggio indicativo; la forma esatta non è garantita al metro.", de: "Lehrspur aus den offiziellen Buchstaben der Aufgabe. Zirkel und Volten sind mit einer gepunkteten Hilfslinie dargestellt; ihre genaue Form ist nicht metergenau garantiert.", ja: "馬場馬術課目の公式な標示文字から作成した学習用の動線です。サークルやボルトは点線で目安を示しており、正確な形状を保証するものではありません。" })),
+            (BIBLIO && !BIBLIO.figuresIds[niveau]) ? React.createElement("p", { style: { marginTop: 10, fontSize: 10.5, color: COLORS.turquoise, lineHeight: 1.5 } },
+                tr({ fr: "L'œil du juge et les conseils du coach arrivent bientôt sur cette reprise.", en: "The judge's eye and coach's tips are coming soon for this test.", es: "La mirada del juez y los consejos del entrenador llegarán pronto a esta reprise.", it: "L'occhio del giudice e i consigli del coach arriveranno presto su questa ripresa.", de: "Das Auge des Richters und die Trainertipps folgen bald für diese Aufgabe.", ja: "この課目の「審判員の視点」とコーチのアドバイスは近日追加されます。" })) : null));
 }
 
 function nbFlotsPourScore(score) {
