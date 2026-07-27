@@ -35685,6 +35685,57 @@ function EcranCadreNoir() {
         setLecture(true); lireSuivantCN();
     }
     React.useEffect(function () { return function () { try { if (vocal) window.speechSynthesis.cancel(); } catch (eC) { } }; }, []);
+    /* ---- "Marquer ma visite" : compteur permanent, visible par tous (version simple validee le 27/07) ---- */
+    var ciSt = React.useState({ total: null, visite: false, charge: true });
+    var checkin = ciSt[0], setCheckin = ciSt[1];
+    React.useEffect(function () {
+        var actif = true;
+        (async function () {
+            try {
+                var monId = null; try { monId = (appRef.current.profil && appRef.current.profil.id) || null; } catch (eId) { monId = null; }
+                var rTot = await supa.from("visites_articles").select("id", { count: "exact", head: true }).eq("article_id", "cadre-noir");
+                var total = (rTot && typeof rTot.count === "number") ? rTot.count : null;
+                var dejaVisite = false;
+                if (monId) {
+                    var rMoi = await supa.from("visites_articles").select("id").eq("article_id", "cadre-noir").eq("user_id", monId).maybeSingle();
+                    dejaVisite = !!(rMoi && rMoi.data);
+                }
+                if (actif) setCheckin({ total: total, visite: dejaVisite, charge: false });
+            } catch (eCi) { if (actif) setCheckin({ total: null, visite: false, charge: false }); }
+        })();
+        return function () { actif = false; };
+    }, []);
+    function marquerVisite() {
+        if (checkin.visite || checkin.charge) return;
+        var monId = null; try { monId = (appRef.current.profil && appRef.current.profil.id) || null; } catch (eId2) { monId = null; }
+        if (!monId) return;
+        setCheckin(function (c) { return { total: (typeof c.total === "number" ? c.total + 1 : c.total), visite: true, charge: c.charge }; });
+        (async function () { try { await supa.from("visites_articles").insert({ user_id: monId, article_id: "cadre-noir" }); } catch (eIns) { } })();
+    }
+    function texteCompteurVisites(n) {
+        switch (langue) {
+            case "en": return (n === 1 ? "1 Hype rider has" : (n + " Hype riders have")) + " already visited the Cadre Noir.";
+            case "es": return (n === 1 ? "1 jinete de Hype ha" : (n + " jinetes de Hype han")) + " visitado ya el Cadre Noir.";
+            case "it": return (n === 1 ? "1 cavaliere Hype ha" : (n + " cavalieri Hype hanno")) + " già visitato il Cadre Noir.";
+            case "ja": return n + "人のHypeの騎手がすでにカードル・ノワールを訪れました。";
+            case "de": return (n === 1 ? "1 Hype-Reiter hat" : (n + " Hype-Reiter haben")) + " das Cadre Noir bereits besucht.";
+            default: return n === 1 ? "1 cavalier Hype a déjà visité le Cadre Noir." : (n + " cavaliers Hype ont déjà visité le Cadre Noir.");
+        }
+    }
+    /* ---- Partager l'article ---- */
+    var paSt = React.useState(false); var lienCopieCN = paSt[0], setLienCopieCN = paSt[1];
+    function partagerArticleCN() {
+        var base = (typeof LIEN_APP === "string") ? LIEN_APP.trim() : "";
+        var lien = base ? (base + "#cadrenoir") : "";
+        var texte = T("Découvre l'article sur le Cadre Noir de Saumur, sur Hype.", "Check out the article on the Cadre Noir of Saumur, on Hype.", "Descubre el artículo sobre el Cadre Noir de Saumur, en Hype.", "Scopri l'articolo sul Cadre Noir di Saumur, su Hype.", "Hypeでソミュールのカードル・ノワールの記事を見てみよう。", "Entdecke den Artikel über das Cadre Noir von Saumur auf Hype.");
+        try { if (navigator.share) { navigator.share({ title: "Hype — Le Cadre Noir de Saumur", text: texte, url: lien || undefined }).catch(function () { }); return; } } catch (ePa) { }
+        try {
+            if (lien && navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(lien).then(function () { setLienCopieCN(true); setTimeout(function () { setLienCopieCN(false); }, 2200); }).catch(function () { });
+                return;
+            }
+        } catch (eCo) { }
+    }
     /* ---- petits constructeurs ---- */
     var PROCHAINEMENT = T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst");
     function kick(txt) { return h("div", { className: "cnx-kick" }, txt); }
@@ -35720,7 +35771,7 @@ function EcranCadreNoir() {
             h("span", { className: "cnx-aller" }, T("Bientôt : son article →", "Coming soon: his article →", "Próximamente: su artículo →", "Prossimamente: il suo articolo →", "近日公開：特集記事 →", "Demnächst: sein Artikel →")));
     }
     function coche(txt) { return h("li", { key: txt }, txt); }
-    var CNX_CSS = ".cnx-philo-tete{list-style:none;cursor:default;padding:18px 18px;display:flex;align-items:center;gap:12px;font-family:'Cinzel',serif;font-size:17px;font-weight:600;letter-spacing:.06em;list-style:none}.cnx-philo-ouvert .cnx-philo-c{display:block!important}.cnx-visite-rail{display:flex;gap:12px;margin-top:24px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:6px}.cnx-visite-rail::-webkit-scrollbar{display:none}.cnx-visite-rail>*{flex:0 0 210px;scroll-snap-align:start}.cnx{min-height:100vh;background:#060709;color:#F4F7FA;font-family:'Montserrat',sans-serif;padding-bottom:96px;overflow-x:hidden}" +
+    var CNX_CSS = ".cnx-philo-tete{list-style:none;cursor:default;padding:18px 18px;display:flex;align-items:center;gap:12px;font-family:'Cinzel',serif;font-size:17px;font-weight:600;letter-spacing:.06em;list-style:none}.cnx-philo-ouvert .cnx-philo-c{display:block!important}.cnx-visite-rail{display:flex;gap:12px;margin-top:24px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:6px}.cnx-visite-rail::-webkit-scrollbar{display:none}.cnx-visite-rail>*{flex:0 0 210px;scroll-snap-align:start}.cnx{min-height:100vh;background:#060709;color:#F4F7FA;font-family:'Montserrat',sans-serif;padding-bottom:96px;overflow-x:hidden}.cnx-checkin{padding:22px 20px;margin-top:20px;text-align:center}.cnx-checkin-emo{font-size:26px;margin-bottom:8px}.cnx-checkin-count{color:#9aa7b0;font-size:13.5px;line-height:1.6;margin:0 0 16px;min-height:20px}.cnx-share{padding:26px 20px;margin:0 0 8px;text-align:center;background:linear-gradient(150deg,rgba(32,217,245,.10),rgba(17,20,23,.9) 60%);border:1px solid rgba(32,217,245,.3);border-radius:20px}.cnx-share-t{font-family:'Cinzel',serif;font-size:18px;font-weight:600;margin:8px 0 6px}.cnx-share p{color:#9aa7b0;font-size:13px;line-height:1.6;margin:0 0 16px}" +
         ".cnx section{padding:52px 0 0}.cnx .cnx-wrap{padding:0 20px}" +
         ".cnx-kick{display:inline-flex;align-items:center;gap:10px;font-size:10.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:#20D9F5;margin-bottom:14px}" +
         ".cnx-kick::before{content:'';width:30px;height:1px;background:linear-gradient(90deg,#20D9F5,transparent)}" +
@@ -35942,7 +35993,13 @@ function EcranCadreNoir() {
                     coche(T("Musée", "Museum", "Museo", "Museo", "博物館", "Museum")),
                     coche(T("Boutique", "Shop", "Tienda", "Negozio", "ショップ", "Shop"))),
                 h("a", { className: "cnx-btn cnx-btn-p", href: "https://maps.google.com/?q=Cadre+Noir+Saumur", onClick: function (e) { e.preventDefault(); try { window.hypeOuvrirLien("https://maps.google.com/?q=Cadre+Noir+Saumur"); } catch (eM) { try { window.location.href = "https://maps.google.com/?q=Cadre+Noir+Saumur"; } catch (eM2) { } } } }, "\uD83D\uDCCD\u00A0 " + T("Ouvrir dans Google Maps", "Open in Google Maps", "Abrir en Google Maps", "Apri in Google Maps", "Googleマップで開く", "In Google Maps öffnen"))),
-            h("div", { className: "cnx-photo" }, h("img", { loading: "lazy", src: IMG_CN_ACCUEIL, alt: "Accueil du Cadre noir" })))),
+            h("div", { className: "cnx-photo" }, h("img", { loading: "lazy", src: IMG_CN_ACCUEIL, alt: "Accueil du Cadre noir" }))),
+            h("div", { className: "cnx-glass cnx-checkin" },
+                h("div", { className: "cnx-checkin-emo" }, "\u2705"),
+                h("h3", { className: "cnx-h2", style: { fontSize: 17, marginBottom: 6 } }, T("Tu y es déjà allé ?", "Already been there?", "¿Ya has estado?", "Ci sei già stato?", "もう訪れた？", "Warst du schon dort?")),
+                h("p", { className: "cnx-checkin-count" }, (checkin.total === null) ? "" : texteCompteurVisites(checkin.total)),
+                h("button", { className: "cnx-btn " + (checkin.visite ? "cnx-btn-v" : "cnx-btn-p"), disabled: checkin.visite || checkin.charge, onClick: marquerVisite, style: { opacity: checkin.charge ? 0.55 : 1, cursor: checkin.visite ? "default" : "pointer", margin: "0 auto" } },
+                    checkin.visite ? ("\u2713 " + T("Visité", "Visited", "Visitado", "Visitato", "訪問済み", "Besucht")) : T("J'ai visité le Cadre Noir", "I've visited the Cadre Noir", "He visitado el Cadre Noir", "Ho visitato il Cadre Noir", "カードル・ノワールを訪れた", "Ich habe das Cadre Noir besucht")))),
         /* MEILLEURES VIDEOS */
         h("section", null, h("div", { className: "cnx-wrap" },
             kick(T("À regarder", "To watch", "Para ver", "Da guardare", "映像で見る", "Zum Anschauen")),
@@ -35981,15 +36038,10 @@ function EcranCadreNoir() {
         h("section", null, h("div", { className: "cnx-wrap" },
             kick(T("Continuer l'exploration", "Continue exploring", "Seguir explorando", "Continua l'esplorazione", "旅を続ける", "Weiter entdecken")),
             titreSec(T("Les autres grandes écoles", "The other great schools", "Las otras grandes escuelas", "Le altre grandi scuole", "その他の偉大な学校", "Die anderen großen Schulen")),
-            h("div", { className: "cnx-grille-2" },
+            h("div", { className: "cnx-visite-rail", "data-hscroll": "1" },
                 carteLien("\uD83C\uDDE6\uD83C\uDDF9", T("École Espagnole de Vienne", "Spanish Riding School of Vienna", "Escuela Española de Viena", "Scuola Spagnola di Vienna", "ウィーン・スペイン乗馬学校", "Spanische Hofreitschule Wien"), T("Les Lipizzans blancs et quatre siècles de tradition impériale.", "The white Lipizzaners and four centuries of imperial tradition.", "Los lipizanos blancos y cuatro siglos de tradición imperial.", "I Lipizzani bianchi e quattro secoli di tradizione imperiale.", "白いリピッツァナーと4世紀にわたる帝国の伝統。", "Die weißen Lipizzaner und vier Jahrhunderte kaiserlicher Tradition."), null, T("Bientôt sur Hype →", "Soon on Hype →", "Pronto en Hype →", "Presto su Hype →", "近日Hypeに登場 →", "Bald auf Hype →"), "x1"),
                 carteLien("\uD83C\uDDF5\uD83C\uDDF9", T("École Portugaise d'Art Équestre", "Portuguese School of Equestrian Art", "Escuela Portuguesa de Arte Ecuestre", "Scuola Portoghese d'Arte Equestre", "ポルトガル馬術芸術学校", "Portugiesische Schule der Reitkunst"), T("Les Lusitaniens dorés de Lisbonne, héritiers de la cour royale.", "The golden Lusitanos of Lisbon, heirs of the royal court.", "Los lusitanos dorados de Lisboa, herederos de la corte real.", "I Lusitani dorati di Lisbona, eredi della corte reale.", "リスボンの黄金のルシタノ、王宮の後継者たち。", "Die goldenen Lusitanos von Lissabon, Erben des Königshofs."), null, T("Bientôt sur Hype →", "Soon on Hype →", "Pronto en Hype →", "Presto su Hype →", "近日Hypeに登場 →", "Bald auf Hype →"), "x2"),
-                carteLien("\uD83C\uDDEA\uD83C\uDDF8", T("École Royale Andalouse", "Royal Andalusian School", "Real Escuela Andaluza", "Reale Scuola Andalusa", "アンダルシア王立馬術学校", "Königlich-Andalusische Schule"), T("À Jerez, l'équitation espagnole entre flamenco et tradition.", "In Jerez, Spanish horsemanship between flamenco and tradition.", "En Jerez, la equitación española entre flamenco y tradición.", "A Jerez, l'equitazione spagnola tra flamenco e tradizione.", "ヘレスで、フラメンコと伝統の間に息づくスペイン馬術。", "In Jerez: spanische Reitkunst zwischen Flamenco und Tradition."), null, T("Bientôt sur Hype →", "Soon on Hype →", "Pronto en Hype →", "Presto su Hype →", "近日Hypeに登場 →", "Bald auf Hype →"), "x3"),
-                carteLien("\uD83D\uDC64", "Nuno Oliveira", T("Le maître portugais nourri des écuyers français.", "The Portuguese master nourished by the French écuyers.", "El maestro portugués nutrido por los écuyers franceses.", "Il maestro portoghese nutrito dagli écuyer francesi.", "フランスのエキュイエに学んだポルトガルの師範。", "Der portugiesische Meister, geprägt von den französischen Écuyers."), null, T("Bientôt →", "Soon →", "Pronto →", "Presto →", "近日 →", "Bald →"), "x4"),
-                carteLien("\uD83D\uDC64", "François Baucher", T("Le révolutionnaire du dressage.", "The revolutionary of dressage.", "El revolucionario de la doma.", "Il rivoluzionario del dressage.", "馬場馬術の革命家。", "Der Revolutionär der Dressur."), null, T("Bientôt →", "Soon →", "Pronto →", "Presto →", "近日 →", "Bald →"), "x5"),
-                carteLien("\uD83D\uDC64", "La Guérinière", T("Le père de l'équitation française.", "The father of French horsemanship.", "El padre de la equitación francesa.", "Il padre dell'equitazione francese.", "フランス馬術の父。", "Der Vater der französischen Reitkunst."), null, T("Bientôt →", "Soon →", "Pronto →", "Presto →", "近日 →", "Bald →"), "x6"),
-                carteLien("\uD83D\uDC34", T("Le Lusitanien", "The Lusitano", "El Lusitano", "Il Lusitano", "ルシタノ", "Der Lusitano"), T("Race phare de l'art équestre.", "Flagship breed of equestrian art.", "Raza emblemática del arte ecuestre.", "Razza simbolo dell'arte equestre.", "馬術芸術を代表する品種。", "Vorzeigerasse der Reitkunst."), null, T("Bientôt →", "Soon →", "Pronto →", "Presto →", "近日 →", "Bald →"), "x7"),
-                carteLien("\uD83D\uDC34", T("Le Lipizzan", "The Lipizzaner", "El Lipizzano", "Il Lipizzano", "リピッツァナー", "Der Lipizzaner"), T("La perle blanche de Vienne.", "The white pearl of Vienna.", "La perla blanca de Viena.", "La perla bianca di Vienna.", "ウィーンの白い真珠。", "Die weiße Perle Wiens."), null, T("Bientôt →", "Soon →", "Pronto →", "Presto →", "近日 →", "Bald →"), "x8")))),
+                carteLien("\uD83C\uDDEA\uD83C\uDDF8", T("École Royale Andalouse", "Royal Andalusian School", "Real Escuela Andaluza", "Reale Scuola Andalusa", "アンダルシア王立馬術学校", "Königlich-Andalusische Schule"), T("À Jerez, l'équitation espagnole entre flamenco et tradition.", "In Jerez, Spanish horsemanship between flamenco and tradition.", "En Jerez, la equitación española entre flamenco y tradición.", "A Jerez, l'equitazione spagnola tra flamenco e tradizione.", "ヘレスで、フラメンコと伝統の間に息づくスペイン馬術。", "In Jerez: spanische Reitkunst zwischen Flamenco und Tradition."), null, T("Bientôt sur Hype →", "Soon on Hype →", "Pronto en Hype →", "Presto su Hype →", "近日Hypeに登場 →", "Bald auf Hype →"), "x3")))),
         /* BONUS HYPE */
         h("section", null, h("div", { className: "cnx-wrap" },
             h("span", { className: "cnx-badge-or" }, "\u2726 Bonus Hype"),
@@ -36002,6 +36054,14 @@ function EcranCadreNoir() {
                 carteLien("\uD83D\uDE86", T("Venir en train", "Coming by train", "Venir en tren", "Arrivare in treno", "電車でのアクセス", "Anreise mit dem Zug"), T("Gare de Saumur (ligne Tours ↔ Angers), puis ~10 min jusqu'au site.", "Saumur station (Tours ↔ Angers line), then ~10 min to the site.", "Estación de Saumur (línea Tours ↔ Angers), luego ~10 min hasta el sitio.", "Stazione di Saumur (linea Tours ↔ Angers), poi ~10 min fino al sito.", "ソミュール駅（トゥール↔アンジェ線）から施設まで約10分。", "Bahnhof Saumur (Linie Tours ↔ Angers), dann ~10 Min. bis zum Gelände."), null, null, "b5"),
                 carteLien("\uD83C\uDF9F\uFE0F", T("Réserver un gala", "Booking a gala", "Reservar una gala", "Prenotare un gala", "ガラ公演を予約", "Eine Gala buchen"), T("Billetterie officielle des visites et galas.", "Official ticketing for visits and galas.", "Taquilla oficial de visitas y galas.", "Biglietteria ufficiale di visite e gala.", "見学とガラ公演の公式チケット窓口。", "Offizieller Ticketverkauf für Besuche und Galas."), "https://www.ifce.fr/cadre-noir/visites-et-galas/", T("Réserver →", "Book →", "Reservar →", "Prenota →", "予約する →", "Buchen →"), "b6"),
                 carteLien("\uD83C\uDF26\uFE0F", T("Météo", "Weather", "El tiempo", "Meteo", "天気", "Wetter"), T("Vérifier le ciel de Saumur avant de partir.", "Check the Saumur sky before you leave.", "Comprueba el cielo de Saumur antes de salir.", "Controlla il cielo di Saumur prima di partire.", "出発前にソミュールの空模様を確認。", "Vor der Abfahrt den Himmel über Saumur prüfen."), "https://www.google.com/search?q=m%C3%A9t%C3%A9o+Saumur", T("Consulter →", "Check →", "Consultar →", "Consulta →", "確認する →", "Prüfen →"), "b7")))),
+        /* PARTAGER */
+        h("section", null, h("div", { className: "cnx-wrap" },
+            h("div", { className: "cnx-share" },
+                h("div", { style: { fontSize: 26 } }, "\uD83D\uDD17"),
+                h("div", { className: "cnx-share-t" }, T("Partager cet article", "Share this article", "Compartir este artículo", "Condividi questo articolo", "この記事をシェア", "Diesen Artikel teilen")),
+                h("p", null, T("Fais découvrir le Cadre Noir à un autre cavalier.", "Introduce another rider to the Cadre Noir.", "Da a conocer el Cadre Noir a otro jinete.", "Fai scoprire il Cadre Noir a un altro cavaliere.", "他の騎手にもカードル・ノワールを紹介しよう。", "Zeig einem anderen Reiter das Cadre Noir.")),
+                h("button", { className: "cnx-btn cnx-btn-p", onClick: partagerArticleCN, style: { margin: "0 auto" } },
+                    lienCopieCN ? ("\u2713 " + T("Lien copié !", "Link copied!", "¡Enlace copiado!", "Link copiato!", "リンクをコピーしました！", "Link kopiert!")) : ("\uD83D\uDD17\u00A0 " + T("Partager", "Share", "Compartir", "Condividi", "シェアする", "Teilen")))))),
         /* PIED */
         h("div", { className: "cnx-foot" },
             h("div", { className: "cnx-sep" }),
