@@ -34255,47 +34255,246 @@ function BlocReprisesGalop({ tr, setEcran, setJeuOuvert, galopId }) {
             React.createElement("span", { style: { flex: 1, textAlign: "left", fontSize: 13, fontWeight: 700, color: COLORS.encre } }, tr({ fr: "Jouer : Le Plan de Reprise", en: "Play: Build Your Test", es: "Jugar: Construye tu Reprise", it: "Gioca: Costruisci la tua Ripresa", de: "Spielen: Baue deine Dressuraufgabe", ja: "遊ぶ：馬場馬術メニューを作ろう" })),
             React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 15 } }, "\u203a")));
 }
+/* 27/07 ▸ « VIVRE LA REPRISE » — encart d'accès aux modes, panneau de choix des modes,
+   et conseils du coach en bas de la reprise. Les textes des conseils viennent de la
+   bibliothèque centralisée (hype-dressage-conseils.js) : rien n'est écrit en dur ici. */
+const VLR_TXT = {
+    titre: { fr: "Vivre la reprise", en: "Ride the test", es: "Vive la reprise", it: "Vivi la ripresa", de: "Die Aufgabe erleben", ja: "課目を体験する" },
+    sous: { fr: "Observe, mémorise et entraîne-toi comme en concours.", en: "Watch it, learn it, train like in competition.", es: "Observa, memoriza y entrénate como en concurso.", it: "Osserva, memorizza e allenati come in gara.", de: "Beobachte, lerne und trainiere wie im Turnier.", ja: "見て、覚えて、試合のように練習しよう。" },
+    decouvrir: { fr: "Découvrir les modes", en: "Explore the modes", es: "Descubrir los modos", it: "Scopri le modalità", de: "Modi entdecken", ja: "モードを見る" },
+    lancer: { fr: "Lancer", en: "Start", es: "Empezar", it: "Avvia", de: "Starten", ja: "開始" },
+    bientot: { fr: "Prochainement", en: "Coming soon", es: "Próximamente", it: "Prossimamente", de: "Demnächst", ja: "近日公開" },
+    ici: { fr: "À commencer ici", en: "Start here", es: "Empieza aquí", it: "Inizia qui", de: "Hier starten", ja: "ここから" },
+    coach: { fr: "Conseils du coach", en: "Coach's tips", es: "Consejos del entrenador", it: "Consigli del coach", de: "Tipps des Trainers", ja: "コーチのアドバイス" },
+    coachSous: { fr: "Ce qu'un enseignant te dirait sur chaque figure de cette reprise, adapté à ton niveau.", en: "What an instructor would tell you on each figure of this test, matched to your level.", es: "Lo que un profesor te diría en cada figura de esta reprise, según tu nivel.", it: "Ciò che un istruttore ti direbbe su ogni figura di questa ripresa, in base al tuo livello.", de: "Was ein Reitlehrer dir zu jeder Figur dieser Aufgabe sagen würde, passend zu deinem Niveau.", ja: "この課目の各図について指導者が伝えることを、あなたのレベルに合わせて。" },
+    apres: { fr: "Certaines figures de cette reprise sont au-delà de ton niveau actuel : leurs conseils apparaîtront quand tu progresseras.", en: "Some figures of this test are beyond your current level: their tips will appear as you progress.", es: "Algunas figuras de esta reprise superan tu nivel actual: sus consejos aparecerán cuando progreses.", it: "Alcune figure di questa ripresa sono oltre il tuo livello attuale: i consigli appariranno con i tuoi progressi.", de: "Einige Figuren dieser Aufgabe liegen über deinem aktuellen Niveau: ihre Tipps erscheinen, wenn du weiterkommst.", ja: "この課目の一部は現在のレベルより上です。上達するとアドバイスが表示されます。" },
+    modes: { fr: "Quatre façons de travailler cette reprise. Commence par la voir, puis entraîne-toi.", en: "Four ways to work on this test. Start by watching it, then train.", es: "Cuatro formas de trabajar esta reprise. Empieza por verla y luego entrena.", it: "Quattro modi per lavorare questa ripresa. Inizia guardandola, poi allenati.", de: "Vier Wege, diese Aufgabe zu erarbeiten. Sieh sie zuerst an, dann trainiere.", ja: "この課目に取り組む4つの方法。まず見て、それから練習しよう。" },
+};
+const VLR_MODES = [
+    { id: "voir", icone: "\uD83D\uDC41", pret: true, phare: true,
+      titre: { fr: "Voir la reprise", en: "Watch the test", es: "Ver la reprise", it: "Guarda la ripresa", de: "Aufgabe ansehen", ja: "課目を見る" },
+      texte: { fr: "Observer le tracé animé, figure après figure.", en: "Watch the animated track, figure by figure.", es: "Observa el trazado animado, figura por figura.", it: "Osserva il tracciato animato, figura per figura.", de: "Die animierte Spur Figur für Figur ansehen.", ja: "動線のアニメーションを図ごとに見る。" } },
+    { id: "tracer", icone: "\u270D\uFE0F", pret: false,
+      titre: { fr: "M'entraîner à tracer", en: "Practise drawing", es: "Practicar el trazado", it: "Allenarmi a tracciare", de: "Spur zeichnen üben", ja: "動線を描く練習" },
+      texte: { fr: "Dessiner la reprise de mémoire sur une carrière vide.", en: "Draw the test from memory on an empty arena.", es: "Dibujar la reprise de memoria en una pista vacía.", it: "Disegnare la ripresa a memoria su un campo vuoto.", de: "Die Aufgabe aus dem Gedächtnis auf einer leeren Bahn zeichnen.", ja: "空の馬場に記憶で動線を描く。" } },
+    { id: "challenge", icone: "\uD83C\uDFC1", pret: false,
+      titre: { fr: "Challenge", en: "Challenge", es: "Desafío", it: "Sfida", de: "Challenge", ja: "チャレンジ" },
+      texte: { fr: "Tester sa connaissance des lettres, des figures et de leur ordre.", en: "Test your knowledge of the letters, the figures and their order.", es: "Pon a prueba tu conocimiento de las letras, las figuras y su orden.", it: "Metti alla prova lettere, figure e il loro ordine.", de: "Buchstaben, Figuren und ihre Reihenfolge testen.", ja: "標示文字・図・順序の知識を試す。" } },
+    { id: "immersion", icone: "\uD83C\uDFC7", pret: true,
+      titre: { fr: "Immersion", en: "Immersion", es: "Inmersión", it: "Immersione", de: "Immersion", ja: "没入モード" },
+      texte: { fr: "Vivre la reprise avec une vue plus proche du cavalier et des conseils synchronisés.", en: "Ride the test with a closer view and synced tips.", es: "Vive la reprise con una vista más cercana y consejos sincronizados.", it: "Vivi la ripresa con una vista più ravvicinata e consigli sincronizzati.", de: "Die Aufgabe aus näherer Sicht mit synchronen Tipps erleben.", ja: "騎手に近い視点と同期したアドバイスで体験する。" } },
+];
+/* Projection paysage : l'encart est large et bas. On garde la géométrie officielle de la
+   carrière (20x60, viewBox 200x520) mais on la couche — (x,y) devient (y, 200-x). Les
+   lettres et le cheval passent par la même projection, donc rien n'est déformé. */
+function vlrProj(p) { return { x: p.y, y: 200 - p.x }; }
+const VLR_FIG_MAX = 3;      /* les 4 premières figures : c'est le début de SA reprise */
+const VLR_BOUCLE_MS = 6500;
+
+function EncartVivreLaReprise({ niveau, tr, onModes }) {
+    const svgRef = React.useRef(null);
+    const traceRef = React.useRef(null);
+    const haloRef = React.useRef(null);
+    const chevalRef = React.useRef(null);
+    const lettresRef = React.useRef({});
+    const rafRef = React.useRef(null);
+    const [ouvert, setOuvert] = React.useState(false);
+    const fiche = REPRISES_FFE[niveau];
+    const donnees = React.useMemo(() => {
+        const t = construireTraceReprise(fiche);
+        const pts = t.points.filter((p) => p.figIndex <= VLR_FIG_MAX).map((p) => {
+            const q = vlrProj(p);
+            return { x: q.x, y: q.y, d: p.dist, lettre: p.lettre };
+        });
+        const lettres = { A: true, X: true, C: true };
+        pts.forEach((p) => { if (p.lettre) lettres[p.lettre] = true; });
+        /* Les arcs des cercles peuvent SORTIR du rectangle (un cercle de 20 m tracé en C
+           dépasse largement la carrière). Le cadrage de l'encart est donc calculé sur le
+           contenu réel — carrière + tracé — sinon le tracé est coupé par le bord. */
+        let x0 = 14, x1 = 506, y0 = 14, y1 = 186;
+        pts.forEach((p) => { x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); });
+        const marge = 16;
+        const vue = (x0 - marge) + " " + (y0 - marge) + " " + (x1 - x0 + marge * 2) + " " + (y1 - y0 + marge * 2);
+        return { pts: pts, long: pts.length ? pts[pts.length - 1].d : 1, vue: vue, lettres: Object.keys(lettres).filter((l) => LETTER_POINTS[l]) };
+    }, [niveau]);
+    /* ouverture : carrière, tracé, cheval, titre, puis bouton actif — 1,5 s au total */
+    React.useEffect(() => { const t = setTimeout(() => setOuvert(true), 60); return () => clearTimeout(t); }, [niveau]);
+    /* boucle : une seule requestAnimationFrame, arrêtée dès que l'encart sort de l'écran */
+    React.useEffect(() => {
+        let visible = true, debut = null, obs = null;
+        const pas = (ts) => {
+            if (!visible) { rafRef.current = null; return; }
+            if (debut == null) debut = ts;
+            const prog = ((ts - debut) % VLR_BOUCLE_MS) / VLR_BOUCLE_MS;
+            const av = Math.min(prog / 0.86, 1); /* les 14 % restants laissent voir le tracé complet */
+            const cible = av * donnees.long;
+            const pts = donnees.pts;
+            let i = 0;
+            for (let k = 0; k < pts.length; k++) { if (pts[k].d <= cible) i = k; else break; }
+            const a = pts[i], b = pts[Math.min(i + 1, pts.length - 1)];
+            const f = (cible - a.d) / Math.max(b.d - a.d, 0.001);
+            const x = a.x + (b.x - a.x) * f, y = a.y + (b.y - a.y) * f;
+            const d = "M " + pts.slice(0, i + 1).map((q) => q.x + " " + q.y).join(" L ") + " L " + x + " " + y;
+            if (traceRef.current) traceRef.current.setAttribute("d", d);
+            if (haloRef.current) haloRef.current.setAttribute("d", d);
+            let k2 = i;
+            while (k2 > 0 && Math.hypot(x - pts[k2].x, y - pts[k2].y) < 4) k2--;
+            const cap = (Math.atan2(y - pts[k2].y, x - pts[k2].x) * 180) / Math.PI + 90;
+            if (chevalRef.current) {
+                chevalRef.current.setAttribute("transform", "translate(" + x.toFixed(2) + "," + y.toFixed(2) + ") rotate(" + (isFinite(cap) ? cap.toFixed(1) : 0) + ")");
+                chevalRef.current.setAttribute("opacity", av > 0.015 ? "1" : "0");
+            }
+            donnees.lettres.forEach((l) => {
+                const n = lettresRef.current[l];
+                if (!n) return;
+                const q = vlrProj(LETTER_POINTS[l]);
+                const on = Math.hypot(q.x - x, q.y - y) < 16;
+                if (n.dataset.on === (on ? "1" : "0")) return;
+                n.dataset.on = on ? "1" : "0";
+                n.style.fill = on ? COLORS.turquoise : "#6B7784";
+                n.style.fontSize = on ? "17px" : "13px";
+            });
+            rafRef.current = requestAnimationFrame(pas);
+        };
+        const demarrer = () => { if (!rafRef.current) { debut = null; rafRef.current = requestAnimationFrame(pas); } };
+        if (typeof IntersectionObserver !== "undefined" && svgRef.current) {
+            obs = new IntersectionObserver((es) => {
+                es.forEach((e) => {
+                    visible = e.isIntersecting;
+                    if (visible) demarrer();
+                    else if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+                });
+            }, { threshold: 0.25 });
+            obs.observe(svgRef.current);
+        } else demarrer();
+        return () => { visible = false; if (obs) obs.disconnect(); if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; } };
+    }, [donnees]);
+    const cheval = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.chevalDessus) ? HYPE_IMGS.chevalDessus : "images/cheval-dessus.png";
+    return React.createElement("div", { style: { margin: "18px 20px 0", borderRadius: 22, overflow: "hidden", position: "relative", background: "radial-gradient(130% 90% at 50% 0%, #17202B 0%, #0D1319 55%, #080B10 100%)", boxShadow: "inset 0 0 0 1px rgba(32,217,245,0.12), 0 14px 34px rgba(0,0,0,0.45)" } },
+        React.createElement("div", { style: { height: 176, display: "flex", alignItems: "center", justifyContent: "center", opacity: ouvert ? 1 : 0, transition: "opacity .5s ease" } },
+            React.createElement("svg", { ref: svgRef, viewBox: donnees.vue, preserveAspectRatio: "xMidYMid meet", style: { height: "100%", width: "100%", display: "block" } },
+                React.createElement("defs", null,
+                    React.createElement("filter", { id: "vlrh", x: "-40%", y: "-40%", width: "180%", height: "180%" }, React.createElement("feGaussianBlur", { stdDeviation: 2.6 })),
+                    React.createElement("radialGradient", { id: "vlrsol", cx: "50%", cy: "50%", r: "62%" },
+                        React.createElement("stop", { offset: "0%", stopColor: "#1B242F", stopOpacity: 0.8 }),
+                        React.createElement("stop", { offset: "100%", stopColor: "#0A0E13", stopOpacity: 0 }))),
+                React.createElement("rect", { x: 14, y: 14, width: 492, height: 172, rx: 8, fill: "url(#vlrsol)" }),
+                React.createElement("rect", { x: 20, y: 20, width: 480, height: 160, rx: 4, fill: "none", stroke: COLORS.turquoise, strokeWidth: 2.2, opacity: 0.2, filter: "url(#vlrh)" }),
+                React.createElement("rect", { x: 20, y: 20, width: 480, height: 160, rx: 4, fill: "none", stroke: "rgba(244,247,250,0.20)", strokeWidth: 1 }),
+                React.createElement("line", { x1: 22, y1: 100, x2: 498, y2: 100, stroke: "rgba(244,247,250,0.07)", strokeWidth: 0.9, strokeDasharray: "3 8" }),
+                donnees.lettres.map((l) => {
+                    const src = LETTER_POINTS[l], q = vlrProj(src);
+                    const dy = src.x === 100 ? -13 : (src.x < 100 ? 15 : -11);
+                    return React.createElement("text", { key: l, ref: (n) => { lettresRef.current[l] = n; }, x: q.x, y: q.y + dy, textAnchor: "middle",
+                        style: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: "13px", fill: "#6B7784", transition: "fill .8s ease, font-size .8s ease" } }, l);
+                }),
+                React.createElement("path", { d: "M " + donnees.pts.map((p) => p.x + " " + p.y).join(" L "), fill: "none", stroke: "rgba(244,247,250,0.10)", strokeWidth: 1.4, strokeDasharray: "2 5" }),
+                React.createElement("path", { ref: haloRef, fill: "none", stroke: COLORS.turquoise, strokeWidth: 6, opacity: 0.16, filter: "url(#vlrh)", strokeLinecap: "round" }),
+                React.createElement("path", { ref: traceRef, fill: "none", stroke: COLORS.turquoise, strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round" }),
+                React.createElement("g", { ref: chevalRef, opacity: 0 },
+                    React.createElement("image", { href: cheval, xlinkHref: cheval, width: 7.9, height: 35, x: -3.95, y: -17.5, preserveAspectRatio: "xMidYMid meet" })))),
+        React.createElement("div", { style: { padding: "0 18px 18px" } },
+            React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, color: COLORS.blanc, letterSpacing: .5, opacity: ouvert ? 1 : 0, transform: ouvert ? "translateY(0)" : "translateY(6px)", transition: "opacity .5s ease .55s, transform .5s ease .55s" } }, tr(VLR_TXT.titre)),
+            React.createElement("div", { style: { marginTop: 5, fontSize: 12, lineHeight: 1.5, color: COLORS.grisDoux, opacity: ouvert ? 1 : 0, transition: "opacity .5s ease .75s" } }, tr(VLR_TXT.sous)),
+            React.createElement("button", { onClick: onModes, style: { marginTop: 14, width: "100%", padding: 13, borderRadius: 14, border: "none", fontSize: 13, fontWeight: 800, background: ouvert ? COLORS.turquoise : "rgba(32,217,245,0.25)", color: ouvert ? COLORS.nuit : "rgba(11,15,20,0.6)", transition: "background .4s ease 1.1s, color .4s ease 1.1s" } }, tr(VLR_TXT.decouvrir))));
+}
+
+function PanneauModesReprise({ tr, onFermer, setEcran }) {
+    return React.createElement("div", { style: { position: "fixed", inset: 0, zIndex: 60, background: COLORS.nuit, overflowY: "auto", WebkitOverflowScrolling: "touch" } },
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(env(safe-area-inset-top) + 18px) 20px 14px", borderBottom: `1px solid ${COLORS.nuitBordure}` } },
+            React.createElement("button", { onClick: onFermer, style: { width: 38, height: 38, borderRadius: 12, background: COLORS.nuitClaire, color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0, border: "none" } }, "\u2190"),
+            React.createElement("h1", { style: { margin: 0, fontSize: 17, fontWeight: 800, color: COLORS.blanc, fontFamily: "'Cinzel', serif" } }, tr(VLR_TXT.titre))),
+        React.createElement("p", { style: { margin: 0, padding: "16px 20px 4px", fontSize: 12.5, lineHeight: 1.6, color: COLORS.grisDoux } }, tr(VLR_TXT.modes)),
+        VLR_MODES.map((m) => React.createElement("div", { key: m.id, style: { margin: "14px 16px 0", padding: 16, borderRadius: 18, background: m.phare ? "radial-gradient(130% 100% at 0% 0%, #17222D 0%, #10161D 60%, #0B0F14 100%)" : COLORS.nuitClaire, border: `1px solid ${m.phare ? "rgba(32,217,245,0.28)" : COLORS.nuitBordure}`, opacity: m.pret ? 1 : 0.72 } },
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 7 } },
+                React.createElement("div", { style: { width: 34, height: 34, flexShrink: 0, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, background: m.phare ? "rgba(32,217,245,0.14)" : "rgba(244,246,247,0.05)" } }, m.icone),
+                React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: COLORS.blanc } }, tr(m.titre)),
+                m.phare ? React.createElement("div", { style: { marginLeft: "auto", fontSize: 8.5, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase", color: COLORS.turquoise, border: "1px solid rgba(32,217,245,0.4)", borderRadius: 999, padding: "3px 8px" } }, tr(VLR_TXT.ici)) : null),
+            React.createElement("p", { style: { margin: "0 0 12px", fontSize: 12, lineHeight: 1.55, color: COLORS.grisDoux } }, tr(m.texte)),
+            React.createElement("button", { disabled: !m.pret, onClick: () => { if (!m.pret) return; if (m.id === "immersion") { try { window.__traceImmersion = true; } catch (e) { } } onFermer(); setEcran("trace-anime"); },
+                style: { width: "100%", padding: 12, borderRadius: 13, fontSize: 12.5, fontWeight: 800, border: m.pret ? "none" : `1px solid ${COLORS.nuitBordure}`, background: m.pret ? (m.phare ? COLORS.turquoise : "rgba(32,217,245,0.14)") : "transparent", color: m.pret ? (m.phare ? COLORS.nuit : COLORS.turquoise) : COLORS.grisTresDoux } },
+                tr(m.pret ? VLR_TXT.lancer : VLR_TXT.bientot)))),
+        React.createElement("div", { style: { height: "calc(env(safe-area-inset-bottom) + 40px)" } }));
+}
+
+function ConseilsCoachReprise({ niveau, tr, galop }) {
+    const BIBLIO = (typeof window !== "undefined" && window.HYPE_DRESSAGE) ? window.HYPE_DRESSAGE : null;
+    if (!BIBLIO || !BIBLIO.figuresIds[niveau]) return null;
+    const fiche = REPRISES_FFE[niveau];
+    /* Une même figure revient souvent dans une reprise (le trot de travail du G4 revient
+       six fois) : on ne répète pas ses conseils, chaque figure n'apparaît qu'une fois,
+       dans l'ordre de sa première apparition. */
+    const vues = {}, blocs = [];
+    let masquees = 0;
+    fiche.figures.forEach((_, i) => {
+        const f = BIBLIO.ficheFigure(niveau, i);
+        if (!f.principale || vues[f.principale.id]) return;
+        vues[f.principale.id] = true;
+        const tips = f.principale.tips
+            .filter((t) => (t.galopMin || 1) <= galop)
+            .sort((a, b) => (a.prio || 2) - (b.prio || 2))
+            .slice(0, 5);
+        if (!tips.length) { masquees++; return; }
+        blocs.push({ n: i + 1, fiche: f.principale, tips: tips });
+    });
+    if (!blocs.length) return null;
+    return React.createElement("div", { style: { padding: "26px 20px 0" } },
+        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 4 } },
+            React.createElement("div", { style: { fontSize: 17, lineHeight: 1 } }, "\uD83C\uDF93"),
+            React.createElement("h2", { style: { margin: 0, fontFamily: "'Cinzel',serif", fontSize: 18, color: COLORS.blanc } }, tr(VLR_TXT.coach))),
+        React.createElement("p", { style: { margin: "0 0 16px", fontSize: 11.5, lineHeight: 1.55, color: COLORS.grisDoux } }, tr(VLR_TXT.coachSous)),
+        blocs.map((b, k) => React.createElement("div", { key: b.fiche.id, style: { padding: k === blocs.length - 1 ? "13px 0 4px" : "13px 0", borderBottom: k === blocs.length - 1 ? "none" : "1px solid rgba(42,50,61,0.45)" } },
+            React.createElement("div", { style: { display: "flex", alignItems: "baseline", gap: 8, marginBottom: 7 } },
+                React.createElement("div", { style: { flexShrink: 0, fontSize: 9.5, fontWeight: 800, color: COLORS.grisTresDoux } }, "FIG. " + b.n),
+                React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, color: COLORS.blanc } }, tr(b.fiche.label))),
+            b.tips.map((t, j) => React.createElement("div", { key: j, style: { display: "flex", gap: 9, padding: "3px 0" } },
+                React.createElement("div", { style: { flexShrink: 0, fontSize: 11, lineHeight: 1.55, color: t.type === "eviter" ? COLORS.alerte : COLORS.turquoise } }, t.type === "eviter" ? "\u2717" : "\u2022"),
+                React.createElement("div", { style: { fontSize: 12.5, lineHeight: 1.55, color: "rgba(244,246,247,0.90)" } }, tr(t.txt)))))),
+        masquees ? React.createElement("p", { style: { margin: "16px 0 0", fontSize: 11, lineHeight: 1.5, color: COLORS.grisTresDoux } }, tr(VLR_TXT.apres)) : null);
+}
+
 function EcranReprisesFiches() {
-    const { galopOuvert, setEcran, tr } = useApp();
+    const { galopOuvert, setEcran, tr, profil } = useApp();
     const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g3";
     const [niveau, setNiveau] = React.useState(initial);
+    /* 27/07 : panneau de choix des modes (« Vivre la reprise »), en surimpression pour ne
+       pas toucher au routeur. L ancien gros encart carre « Voir le trace anime » est
+       REMPLACE par le nouvel encart : il faisait doublon, meme place, meme role. */
+    const [modes, setModes] = React.useState(false);
     const fiche = REPRISES_FFE[niveau];
+    const galopCavalier = (profil && typeof profil.galopActuel === "number" && profil.galopActuel >= 1) ? profil.galopActuel : 1;
+    /* Niveau retenu pour filtrer les conseils : celui du cavalier, MAIS jamais inferieur a
+       celui de la reprise consultee. Sinon un Galop 1 qui ouvre la reprise du Galop 5 ne voit
+       aucun conseil : le filtre est la pour ecarter les notions trop avancees d une figure,
+       pas pour vider la page qu il a choisi d ouvrir. */
+    const niveauReprise = niveau === "clubelite" ? 8 : (parseInt(niveau.replace("g", ""), 10) || 3);
+    const galopConseils = Math.max(galopCavalier, niveauReprise);
     return React.createElement("div", { style: { minHeight: "100dvh", background: COLORS.nuit, paddingBottom: 40 } },
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(env(safe-area-inset-top) + 18px) 20px 14px", borderBottom: `1px solid ${COLORS.nuitBordure}` } },
             React.createElement("button", { onClick: () => setEcran(galopOuvert ? "galop-detail" : "dashboard"), style: { width: 38, height: 38, borderRadius: 12, background: COLORS.nuitClaire, color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 } }, "\u2190"),
-            React.createElement("h1", { style: { margin: 0, fontSize: 17, fontWeight: 800, color: COLORS.blanc, fontFamily: "'Cinzel', serif" } }, tr({ fr: "Réviser mes reprises", en: "Review my tests", es: "Repasar mis reprises", it: "Ripassa le mie riprese", de: "Meine Aufgaben wiederholen", ja: "メニューを復習する" }))),
+            React.createElement("h1", { style: { margin: 0, fontSize: 17, fontWeight: 800, color: COLORS.blanc, fontFamily: "'Cinzel', serif" } }, tr({ fr: "Réviser mes reprises", en: "Review my tests", es: "Repasar mis reprises", it: "Rivedere le mie riprese", de: "Meine Aufgaben wiederholen", ja: "課目を復習する" }))),
         React.createElement("div", { style: { display: "flex", gap: 6, padding: "14px 20px 0", overflowX: "auto" } },
             ORDRE_REPRISES_FFE.map((n) => React.createElement("button", { key: n, onClick: () => setNiveau(n), style: { flex: "0 0 auto", padding: "8px 16px", borderRadius: 999, background: niveau === n ? COLORS.turquoise : COLORS.nuitClaire, color: niveau === n ? COLORS.nuit : COLORS.grisDoux, border: `1px solid ${niveau === n ? COLORS.turquoise : COLORS.nuitBordure}`, fontSize: 12.5, fontWeight: 700 } }, (n === "clubelite" ? "Club Elite" : "Galop " + n.replace("g", ""))))),
-        /* 27/07 : la petite barre « Voir le tracé animé » devient un VRAI GROS ENCART CARRE (demande Blandine) :
-           mini-aperçu de la carrière avec les 3 couleurs d allures, titre, et bouton de lecture. */
-        React.createElement("div", { style: { padding: "16px 20px 0" } },
-            React.createElement("button", { onClick: () => setEcran("trace-anime"), style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 24, overflow: "hidden", cursor: "pointer", padding: 0, display: "block", textAlign: "left", border: `1px solid ${COLORS.turquoise}55`, background: "radial-gradient(120% 100% at 50% 0%, #0d1a22 0%, #05080d 68%)", boxShadow: `0 16px 40px rgba(0,0,0,0.5), 0 0 34px ${COLORS.turquoise}1A` } },
-                React.createElement("svg", { viewBox: "0 0 200 300", style: { position: "absolute", left: "50%", top: "44%", transform: "translate(-50%,-50%)", width: "60%", height: "auto" } },
-                    React.createElement("rect", { x: 14, y: 14, width: 172, height: 272, rx: 4, fill: "none", stroke: "rgba(244,247,250,0.16)", strokeWidth: 1.6 }),
-                    React.createElement("line", { x1: 100, y1: 14, x2: 100, y2: 286, stroke: "rgba(244,247,250,0.07)", strokeWidth: 1 }),
-                    React.createElement("path", { d: "M 100 272 L 100 200", fill: "none", stroke: "#4ADE80", strokeWidth: 3.2, strokeLinecap: "round", style: { filter: "drop-shadow(0 0 6px #4ADE80)" } }),
-                    React.createElement("path", { d: "M 100 200 C 100 150, 46 150, 46 110 C 46 74, 100 74, 100 40", fill: "none", stroke: "#3B9DFF", strokeWidth: 3.2, strokeLinecap: "round", style: { filter: "drop-shadow(0 0 6px #3B9DFF)" } }),
-                    React.createElement("path", { d: "M 100 40 C 100 74, 154 74, 154 112 C 154 152, 100 156, 100 196", fill: "none", stroke: "#FF5A5F", strokeWidth: 3.2, strokeLinecap: "round", style: { filter: "drop-shadow(0 0 6px #FF5A5F)" } }),
-                    React.createElement("circle", { cx: 100, cy: 196, r: 6, fill: "#FF5A5F", style: { filter: "drop-shadow(0 0 9px #FF5A5F)" } }),
-                    React.createElement("text", { x: 100, y: 26, textAnchor: "middle", fontSize: 11, fontWeight: 700, fill: "rgba(244,247,250,0.4)" }, "A"),
-                    React.createElement("text", { x: 100, y: 282, textAnchor: "middle", fontSize: 11, fontWeight: 700, fill: "rgba(244,247,250,0.4)" }, "C")),
-                React.createElement("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(2,5,9,0.94) 12%, rgba(2,5,9,0.30) 46%, transparent 68%)" } }),
-                React.createElement("div", { style: { position: "absolute", left: 20, right: 74, bottom: 18 } },
-                    React.createElement("div", { style: { fontSize: 8.5, letterSpacing: "0.3em", fontWeight: 800, textTransform: "uppercase", color: COLORS.turquoise, fontFamily: "'Montserrat',sans-serif" } }, tr({ fr: "R\u00e9viser en mouvement", en: "Revise in motion", es: "Repasar en movimiento", it: "Rivedere in movimento", de: "In Bewegung wiederholen", ja: "\u52d5\u304d\u3067\u5fa9\u7fd2" })),
-                    React.createElement("div", { style: { marginTop: 6, fontFamily: "'Cinzel',serif", fontSize: 21, fontWeight: 700, letterSpacing: 1, color: "#F4FEFF", lineHeight: 1.15, textShadow: "0 2px 14px rgba(2,5,9,0.9)" } }, tr({ fr: "Le trac\u00e9 anim\u00e9", en: "The animated track", es: "El trazado animado", it: "Il tracciato animato", de: "Die animierte Spur", ja: "\u30a2\u30cb\u30e1\u30fc\u30b7\u30e7\u30f3\u52d5\u7dda" })),
-                    React.createElement("div", { style: { marginTop: 5, fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", color: "rgba(234,241,244,0.78)", lineHeight: 1.45 } }, tr({ fr: "Regarde cette reprise se d\u00e9rouler figure par figure.", en: "Watch this test unfold movement by movement.", es: "Mira esta reprise desarrollarse figura por figura.", it: "Guarda questa ripresa svolgersi figura per figura.", de: "Sieh diese Aufgabe Figur f\u00fcr Figur ablaufen.", ja: "\u3053\u306e\u30e1\u30cb\u30e5\u30fc\u3092\u4e00\u3064\u305a\u3064\u898b\u3066\u307f\u3088\u3046\u3002" }))),
-                React.createElement("div", { style: { position: "absolute", right: 18, bottom: 18, width: 46, height: 46, borderRadius: "50%", background: `linear-gradient(135deg, ${COLORS.turquoise}, #5FE9F0)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 18px ${COLORS.turquoise}88` } },
-                    React.createElement("span", { style: { color: "#04141A", fontSize: 17, fontWeight: 800, marginLeft: 3 } }, "\u25B6")))),
-        React.createElement("div", { style: { padding: "18px 20px" } },
+        /* presentation generale de la reprise */
+        React.createElement("div", { style: { padding: "18px 20px 0" } },
             React.createElement("h2", { style: { margin: "0 0 2px", fontFamily: "'Cinzel',serif", fontSize: 19, color: COLORS.blanc } }, fiche.titre),
             React.createElement("p", { style: { margin: "0 0 4px", fontSize: 12.5, color: COLORS.turquoise, fontWeight: 700 } }, fiche.niveauFFE),
-            React.createElement("p", { style: { margin: "0 0 18px", fontSize: 11.5, color: COLORS.encreDoux } }, fiche.note),
+            React.createElement("p", { style: { margin: 0, fontSize: 11.5, color: COLORS.encreDoux } }, fiche.note)),
+        /* encart « Vivre la reprise » : juste apres la presentation, avant le detail des figures */
+        React.createElement(EncartVivreLaReprise, { niveau: niveau, tr: tr, onModes: () => setModes(true) }),
+        /* detail des figures */
+        React.createElement("div", { style: { padding: "22px 20px 0" } },
+            React.createElement("p", { style: { margin: "0 0 8px", fontSize: 10, fontWeight: 800, letterSpacing: 1.6, textTransform: "uppercase", color: COLORS.grisTresDoux } }, tr({ fr: "Le détail des figures", en: "The figures in detail", es: "El detalle de las figuras", it: "Il dettaglio delle figure", de: "Die Figuren im Detail", ja: "図の詳細" })),
             fiche.figures.map((f, i) => React.createElement("div", { key: i, style: { display: "flex", gap: 12, padding: "10px 0", borderBottom: i < fiche.figures.length - 1 ? `1px solid ${COLORS.ligne}` : "none" } },
                 React.createElement("span", { style: { width: 22, flexShrink: 0, fontFamily: "'Cinzel',serif", fontSize: 12, color: COLORS.turquoise, fontWeight: 700 } }, i + 1),
-                React.createElement("span", { style: { fontSize: 12.5, color: COLORS.encre, lineHeight: 1.5 } }, tr(f)))),
-            React.createElement("p", { style: { marginTop: 18, fontSize: 10.5, color: COLORS.encreDoux, lineHeight: 1.5 } },
-                tr({ fr: "Reprise officielle FFE, mise en forme pour la révision. Les reprises évoluent parfois d'une saison à l'autre : en cas de doute avant un examen, vérifie la dernière version sur ffe.com ou avec ton club.", en: "Official FFE test, formatted for review. Tests can change from one season to the next: if in doubt before an exam, check the latest version on ffe.com or with your club.", es: "Reprise oficial de la FFE, adaptada para repasar. Las reprises pueden cambiar de una temporada a otra: si tienes dudas antes de un examen, comprueba la última versión en ffe.com o con tu club.", it: "Ripresa ufficiale FFE, adattata per il ripasso. Le riprese possono cambiare da una stagione all'altra: in caso di dubbio prima di un esame, verifica l'ultima versione su ffe.com o con il tuo club.", de: "Offizielle FFE-Dressuraufgabe, zum Wiederholen aufbereitet. Die Aufgaben können sich von Saison zu Saison ändern: Bei Unsicherheit vor einer Prüfung die neueste Version auf ffe.com oder mit deinem Verein prüfen.", ja: "FFE公式メニューを復習用にまとめたものです。メニューはシーズンごとに変わることがあります。試験前に不安な場合は、ffe.comまたは所属クラブで最新版を確認してください。" }))));
+                React.createElement("span", { style: { fontSize: 12.5, color: COLORS.encre, lineHeight: 1.5 } }, tr(f))))),
+        /* conseils du coach, alimentes par la bibliotheque centralisee */
+        React.createElement(ConseilsCoachReprise, { niveau: niveau, tr: tr, galop: galopConseils }),
+        React.createElement("p", { style: { margin: "22px 20px 0", fontSize: 10.5, color: COLORS.encreDoux, lineHeight: 1.5 } },
+            tr({ fr: "Reprise officielle FFE, mise en forme pour la révision. Les reprises évoluent parfois d'une saison à l'autre : en cas de doute avant un examen, vérifie la dernière version sur ffe.com ou avec ton club.", en: "Official FFE test, laid out for revision. Tests can change from one season to the next: before an exam, check the latest version on ffe.com or with your club.", es: "Reprise oficial de la FFE, presentada para repasar. Las reprises cambian a veces de una temporada a otra: antes de un examen, comprueba la última versión en ffe.com o con tu club.", it: "Ripresa ufficiale FFE, impaginata per la revisione. Le riprese cambiano a volte da una stagione all'altra: prima di un esame, verifica l'ultima versione su ffe.com o con il tuo club.", de: "Offizielle FFE-Aufgabe, für die Wiederholung aufbereitet. Aufgaben ändern sich manchmal von Saison zu Saison: prüfe vor einer Prüfung die aktuelle Fassung auf ffe.com oder im Verein.", ja: "FFE公式の課目を復習用に整えたものです。課目は年度によって変わることがあります。試験前にffe.comまたはクラブで最新版を確認してください。" })),
+        modes ? React.createElement(PanneauModesReprise, { tr: tr, onFermer: () => setModes(false), setEcran: setEcran }) : null);
 }
+
 const LETTER_POINTS = {
     A: { x: 100, y: 500 }, K: { x: 20, y: 452 }, D: { x: 100, y: 452 }, F: { x: 180, y: 452 },
     V: { x: 20, y: 356 }, L: { x: 100, y: 356 }, P: { x: 180, y: 356 },
@@ -34386,7 +34585,11 @@ const VITESSE_ALLURES = [
     { re: /contre-galop/i, v: 1.35, pause: false },
     { re: /galop de travail|départ au galop|galoper/i, v: 1.55, pause: false },
     { re: /trot allongé|trot moyen/i, v: 1.35, pause: false },
-    { re: /épaule en dedans|cession à la jambe/i, v: 0.85, pause: false },
+    /* 27/07 : 0.85 -> 0.95. A 0.85 le travail lateral passait sous le seuil du PAS et
+       s affichait en VERT alors qu il se fait au trot (cession a la jambe du G6, epaule en
+       dedans du Club Elite). A 0.95 il reste plus lent que le trot de travail mais garde
+       la couleur bleue du trot. Aucun autre effet : la vitesse ne sert qu au rythme et a la couleur. */
+    { re: /épaule en dedans|cession à la jambe/i, v: 0.95, pause: false },
     { re: /trot assis|trot enlevé|trot de travail|\btrot\b/i, v: 1, pause: false },
 ];
 function vitesseDepuisTexte(seg) {
@@ -34443,7 +34646,14 @@ function construireTraceReprise(fiche) {
             if (entreMatch) {
                 const chemin = cheminPiste(entreMatch[1], entreMatch[2]);
                 if (chemin) {
-                    chemin.forEach((l) => { const p = LETTER_POINTS[l]; if (p) pts.push({ x: p.x, y: p.y, lettre: l, figIndex: figIndex, cercle: false, diametre: diametre, vitesse: vitesse, pause: false }); });
+                    /* 27/07 (bug signale par Blandine) : « entre F et K — depart au galop » decrit un
+                       point SITUE ENTRE ces deux lettres. On donnait l allure demandee a TOUT le chemin
+                       F -> A -> K, donc la couleur passait au galop des F, deux lettres trop tot. La
+                       nouvelle allure ne commence plus qu a partir de la MOITIE du chemin : les
+                       premieres lettres gardent l allure precedente. */
+                    const vAvant = pts.length ? (pts[pts.length - 1].vitesse || 1) : vitesse;
+                    const bascule = Math.max(1, Math.floor(chemin.length / 2));
+                    chemin.forEach((l, rang) => { const p = LETTER_POINTS[l]; if (p) pts.push({ x: p.x, y: p.y, lettre: l, figIndex: figIndex, cercle: false, diametre: diametre, vitesse: rang < bascule ? vAvant : vitesse, pause: false }); });
                     return;
                 }
             }
@@ -34682,11 +34892,9 @@ function EcranTraceAnime() {
             if (dernierTsRef.current == null) dernierTsRef.current = ts;
             const dt = (ts - dernierTsRef.current) / 1000;
             dernierTsRef.current = ts;
-            if (vocal && enTrainDeParlerRef.current) {
-                // la voix n'a pas fini d'annoncer la figure en cours : le tracé attend avant de continuer
-                rafRef.current = requestAnimationFrame(step);
-                return;
-            }
+            /* 27/07 : le tracé N'ATTEND PLUS la fin de l'annonce vocale. Avant, chaque figure
+               figeait le cheval le temps de la phrase, ce qui hachait complètement la lecture.
+               La voix parle désormais par-dessus le mouvement, qui reste continu. */
             setT((prevT) => {
                 const avance = (VITESSE_BASE_PX_S * vitesse * dt) / (trace.longueur || 1);
                 const nv = prevT + avance;
@@ -34788,13 +34996,46 @@ function EcranTraceAnime() {
     const vus = trace.points.filter((p, i) => i <= idxCourant);
     const dVus = "M " + (vus.length ? vus.map((p) => p.x + " " + p.y).join(" L ") + " L " : "") + posX + " " + posY;
     const parcourus = vus.filter((p) => p.dist >= debutFenetre);
-    const dProgress = "M " + (parcourus.length ? parcourus.map((p) => p.x + " " + p.y).join(" L ") + " L " : "") + posX + " " + posY;
     const cerclesMarques = [];
     const dejaVus = {};
     trace.points.forEach((p) => { if (p.cercle) { const k = p.lettre + "-" + p.figIndex; if (!dejaVus[k]) { dejaVus[k] = true; cerclesMarques.push(p); } } });
     const OFFSETS_TRAINEE = [22, 48, 80, 118, 162, 212];
-    const traineePoints = OFFSETS_TRAINEE.map((off) => pointADistance(trace, Math.max(cibleLen - off, 0)));
-    const couleur = couleurSelonAllure(posActuelle.vitesse);
+    /* 27/07 : MEME CAUSE que le bug de la figure courante. pointADistance renvoie la vitesse
+       de pB (le point d'arrivée) : la couleur passait donc au rouge (galop) ou revenait au bleu
+       (trot) dès qu'on QUITTAIT la lettre précédente, soit tout un segment trop tôt. On lit
+       l'allure du point déjà atteint : la couleur change désormais A la lettre concernée. */
+    const allureAtteinte = (p) => {
+        const pt = trace.points[p.idx];
+        return (pt && pt.vitesse !== undefined) ? pt.vitesse : p.vitesse;
+    };
+    const traineePoints = OFFSETS_TRAINEE.map((off) => {
+        const p = pointADistance(trace, Math.max(cibleLen - off, 0));
+        return { x: p.x, y: p.y, vitesse: allureAtteinte(p) };
+    });
+    const vitesseCourante = allureAtteinte(posActuelle);
+    const couleur = couleurSelonAllure(vitesseCourante);
+    /* 27/07 : LA VRAIE CAUSE du « rouge avant la lettre ». Le tracé récent était dessiné
+       comme UN SEUL trait d'une SEULE couleur sur une fenêtre de 340 unités : au moment du
+       départ au galop, tout le trait déjà parcouru derrière le cheval repassait en rouge d'un
+       coup, donc bien avant la lettre concernée (et inversement au retour au trot). Le trait
+       est désormais découpé en tronçons monochromes. La couleur d'un tronçon est celle du
+       point de DEPART du segment : l'allure demandée à une lettre ne colore que ce qui suit
+       cette lettre, jamais ce qui la précède. */
+    const troncons = [];
+    for (let i = 1; i < parcourus.length; i++) {
+        const c = couleurSelonAllure(parcourus[i - 1].vitesse);
+        const dernier = troncons[troncons.length - 1];
+        if (dernier && dernier.couleur === c) dernier.pts.push(parcourus[i]);
+        else troncons.push({ couleur: c, pts: [parcourus[i - 1], parcourus[i]] });
+    }
+    /* la portion entre le dernier point atteint et le cheval prend l'allure de ce point */
+    if (parcourus.length) {
+        const tete = { x: posX, y: posY };
+        const cTete = couleurSelonAllure(vitesseCourante);
+        const dernier = troncons[troncons.length - 1];
+        if (dernier && dernier.couleur === cTete) dernier.pts.push(tete);
+        else troncons.push({ couleur: cTete, pts: [parcourus[parcourus.length - 1], tete] });
+    }
     /* 27/07 : le point lumineux devient une silhouette de cheval vue du dessus,
        orientée par la direction réelle de marche et lissée (elle ne pivote jamais
        d'un coup, ce qui serait impossible pour un cheval). */
@@ -34844,7 +35085,7 @@ function EcranTraceAnime() {
                             cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: "rgba(32,217,245,0.22)", strokeWidth: 1, strokeDasharray: "3 3" })),
                             React.createElement("path", { d: dFull, fill: "none", stroke: "rgba(244,247,250,0.14)", strokeWidth: 1.6 }),
                             React.createElement("path", { d: dVus, fill: "none", stroke: COLORS.turquoise, strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round", opacity: 0.42, style: { filter: "drop-shadow(0 0 3px " + COLORS.turquoise + "55)" } }),
-                            React.createElement("path", { d: dProgress, fill: "none", stroke: couleur, strokeWidth: 2.8, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 6px " + couleur + "99)" } }),
+                            troncons.map((tr2, i) => React.createElement("path", { key: "tc" + i, d: "M " + tr2.pts.map((p) => p.x + " " + p.y).join(" L "), fill: "none", stroke: tr2.couleur, strokeWidth: 2.8, strokeLinecap: "round", strokeLinejoin: "round", style: { filter: "drop-shadow(0 0 6px " + tr2.couleur + "99)" } })),
                             traineePoints.map((p, i) => React.createElement("circle", { key: "tr" + i, cx: p.x, cy: p.y, r: 3.4 - i * 0.42, fill: couleurSelonAllure(p.vitesse), opacity: 0.4 - i * 0.055 })),
                             React.createElement("g", { transform: "translate(" + posX.toFixed(2) + "," + posY.toFixed(2) + ") rotate(" + cap.toFixed(1) + ")", style: { filter: "drop-shadow(0 0 6px " + couleur + "AA)" } },
                                 React.createElement("path", { d: "M0,6.6 C0.7,8.2 0.5,9.6 0,10.6 C-0.5,9.6 -0.7,8.2 0,6.6 Z", fill: couleur }),
