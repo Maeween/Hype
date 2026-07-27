@@ -1,0 +1,687 @@
+DOSSIER ÉDITORIAL HYPE — ACADÉMIE
+ARTICLE IMMERSIF : L’ÉCOLE PORTUGAISE D’ART ÉQUESTRE
+
+OBJECTIF DE LA PAGE
+Créer un article-documentaire immersif, lumineux, élégant et premium, construit sur le même modèle que l’article consacré au Cadre Noir de Saumur.
+
+La page ne doit jamais présenter un long mur de texte.
+Alterner en permanence :
+- grandes images ;
+- paragraphes courts ;
+- cartes interactives ;
+- galerie ;
+- vidéo ;
+- citation ;
+- frise chronologique ;
+- encarts « Le savais-tu ? » ;
+- informations pratiques ;
+- liens vers d’autres articles.
+
+Conserver la future identité visuelle commune de l’Académie Hype :
+lumineuse, éditoriale, contemporaine, précieuse, avec un turquoise Hype discret, des transparences, des halos subtils et quelques effets cristallins légers.
+
+==================================================
+1. HERO
+==================================================
+
+SURTITRE
+GRANDES ÉCOLES D’ÉQUITATION
+
+TITRE
+L’École Portugaise d’Art Équestre
+
+SOUS-TITRE
+L’élégance du Lusitanien, l’héritage de la cour et la mémoire vivante de l’équitation portugaise.
+
+TEXTE D’INTRODUCTION
+À Lisbonne, l’École Portugaise d’Art Équestre fait revivre l’univers de la cour portugaise du XVIIIᵉ siècle. Ses cavaliers, vêtus de costumes historiques, présentent des chevaux Lusitaniens de la lignée Alter Real dans des exercices de haute école, des airs relevés et des jeux équestres autrefois admirés par la famille royale.
+
+Plus qu’un spectacle, l’École est la gardienne d’un patrimoine vivant. Elle perpétue une équitation fondée sur l’équilibre, la précision, l’élégance et la collaboration volontaire du cheval.
+
+BOUTONS
+▶ Découvrir l’École
+📍 Préparer ma visite
+
+IMAGE HERO À RECHERCHER
+Privilégier une photo officielle :
+- cavalier en tenue bordeaux et or ;
+- Lusitanien gris ;
+- Picadeiro Henrique Calado ;
+- lumière chaude mais page générale lumineuse.
+
+SOURCE OFFICIELLE PRINCIPALE
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/
+
+==================================================
+2. CARTE D’IDENTITÉ
+==================================================
+
+Créer une carte horizontale avec six informations illustrées.
+
+🇵🇹 PAYS
+Portugal
+
+📍 LIEUX
+Queluz et Lisbonne
+
+🏛 ORIGINES
+Picaria Real du XVIIIᵉ siècle
+
+📅 ÉCOLE ACTUELLE
+Fondée en 1979
+
+🐴 CHEVAUX
+Lusitaniens Alter Real
+
+🏆 RECONNAISSANCE
+Art équestre portugais inscrit par l’UNESCO en 2024
+
+NOTE IMPORTANTE POUR CLAUDE
+Ne pas écrire que l’École elle-même a été inscrite individuellement par l’UNESCO.
+C’est « l’art équestre au Portugal » qui a été inscrit en 2024 sur la Liste représentative du patrimoine culturel immatériel de l’humanité.
+
+LIEN UNESCO
+https://ich.unesco.org/en/RL/equestrian-art-in-portugal-02079
+
+==================================================
+3. UNE ÉCOLE QUI FAIT REVIVRE LA COUR PORTUGAISE
+==================================================
+
+TITRE
+Quand l’histoire remonte en selle
+
+TEXTE
+L’histoire de l’École Portugaise d’Art Équestre commence bien avant sa création officielle.
+
+Au XVIIIᵉ siècle, la cour portugaise possède sa propre académie équestre : la Picaria Real. Fondée sous le règne de D. João V, elle forme les cavaliers de la cour et organise des présentations dans le Picadeiro Real de Belém, bâtiment qui accueille aujourd’hui une partie du Musée National des Carrosses.
+
+L’équitation y est à la fois un art, une démonstration de maîtrise et un élément essentiel de la culture aristocratique. Les chevaux évoluent dans des carrousels, des exercices de haute école, des airs relevés et des jeux de cour organisés à l’occasion de cérémonies ou de festivités.
+
+La Picaria Real disparaît au XIXᵉ siècle, mais son héritage ne s’efface pas. Ses traditions survivent dans l’équitation portugaise, les traités, les familles de cavaliers, le travail du cheval Lusitanien et la transmission de maître à élève.
+
+IMAGE
+Ancienne gravure ou illustration du Picadeiro Real de Belém.
+
+SOURCE HISTORIQUE OFFICIELLE
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/historia/
+
+==================================================
+4. FRISE CHRONOLOGIQUE
+==================================================
+
+Créer une frise horizontale ou verticale animée.
+
+XVIIIᵉ SIÈCLE
+La Picaria Real devient l’académie équestre de la cour portugaise.
+
+1748
+Création de la Coudelaria de Alter Real pour fournir à la Maison royale des chevaux de selle et de haute école.
+
+XIXᵉ SIÈCLE
+Fermeture de la Picaria Real, mais maintien de son influence dans l’équitation portugaise.
+
+1979
+Fondation de l’École Portugaise d’Art Équestre par le ministère portugais de l’Agriculture.
+
+1979–1996
+L’École travaille à la Sociedade Hípica Portuguesa, à Campo Grande.
+
+1996
+Installation de l’École dans les jardins du Palais National de Queluz.
+
+2012
+La gestion de l’École est confiée à Parques de Sintra.
+
+2015
+Le Picadeiro Henrique Calado, à Belém, devient le principal lieu des présentations publiques régulières.
+Création à Queluz de la Bibliothèque d’Art Équestre D. Diogo de Bragança.
+
+2024
+L’art équestre au Portugal est inscrit par l’UNESCO au patrimoine culturel immatériel de l’humanité.
+
+AUJOURD’HUI
+L’École présente ses chevaux au Portugal et à l’étranger, forme des cavaliers et transmet l’art équestre traditionnel portugais.
+
+==================================================
+5. LA RENAISSANCE DE L’ÉCOLE EN 1979
+==================================================
+
+TITRE
+Faire renaître une tradition disparue
+
+TEXTE
+L’École Portugaise d’Art Équestre est officiellement fondée en 1979, à l’initiative du ministère de l’Agriculture.
+
+Sa création doit beaucoup à João Costa Ferreira ainsi qu’à un groupe de cavaliers liés à l’enseignement de Nuno Oliveira : Guilherme Borba, José de Athayde, Filipe Figueiredo Graciosa et Francisco Cancella de Abreu.
+
+Leur ambition n’est pas d’inventer une nouvelle école, mais de retrouver, préserver et transmettre l’équitation traditionnelle portugaise dans la continuité de la Picaria Real.
+
+L’École reprend donc :
+- les exercices historiques ;
+- l’utilisation exclusive du cheval Lusitanien Alter Real ;
+- les costumes ;
+- les selles ;
+- les harnachements ;
+- les jeux de cour ;
+- les principes de l’équitation classique et baroque.
+
+ENCART PERSONNALITÉ
+Nuno Oliveira
+Maître portugais majeur du XXᵉ siècle, il a profondément marqué l’équitation classique moderne. Plusieurs fondateurs de l’École furent ses élèves.
+
+BOUTON INTERNE
+Découvrir Nuno Oliveira →
+
+SOURCE OFFICIELLE
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/missao/
+
+==================================================
+6. UNE PHILOSOPHIE FONDÉE SUR L’HARMONIE
+==================================================
+
+Créer quatre cartes interactives.
+
+CARTE 1 — HARMONIE
+Le cavalier cherche une communication précise avec le cheval afin d’obtenir sa collaboration volontaire.
+
+CARTE 2 — ÉQUILIBRE
+Le cheval doit conserver sa disponibilité, sa souplesse et son équilibre dans chaque mouvement.
+
+CARTE 3 — LÉGÈRETÉ
+Les aides doivent devenir discrètes. La beauté naît lorsque l’effort semble disparaître.
+
+CARTE 4 — RESPECT
+L’art équestre portugais place au centre la relation entre le cavalier, le cheval et son bien-être.
+
+TEXTE COURT SOUS LES CARTES
+L’UNESCO décrit l’art équestre portugais comme une alliance entre fonctionnalité et esthétique. Il repose sur une communication qui encourage la collaboration du cheval sans recourir à la force.
+
+SOURCE UNESCO
+https://ich.unesco.org/en/RL/equestrian-art-in-portugal-02079
+
+==================================================
+7. LE CHEVAL LUSITANIEN ALTER REAL
+==================================================
+
+TITRE
+Le cheval royal devenu ambassadeur
+
+TEXTE
+Tous les chevaux de l’École Portugaise d’Art Équestre sont des Lusitaniens issus de la lignée Alter Real.
+
+Ils naissent à la Coudelaria de Alter, fondée en 1748. Le projet royal était alors de produire au Portugal des chevaux de selle capables de servir la Maison royale et son académie équestre.
+
+La lignée Alter Real a traversé les siècles malgré les guerres, les changements de régime et les difficultés rencontrées par l’élevage. Elle reste aujourd’hui l’un des plus précieux patrimoines génétiques et équestres du Portugal.
+
+Les chevaux destinés à l’École sont évalués vers l’âge de quatre ans. Les cavaliers recherchent notamment :
+- l’équilibre ;
+- la souplesse ;
+- l’intelligence ;
+- la disponibilité ;
+- l’aptitude au rassembler ;
+- la capacité à apprendre ;
+- un tempérament compatible avec le travail collectif et les spectacles.
+
+Chaque cheval est ensuite confié à un picador qui l’accompagne progressivement dans son éducation.
+
+SOURCE
+https://www.parquesdesintra.pt/pt/sobre-nos/blog/epae-alter/
+
+SOURCE SUR LA COUDELARIA
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/coudelaria-de-alter/
+
+BOUTON INTERNE
+Découvrir le Lusitanien →
+
+==================================================
+8. COMMENT SONT FORMÉS LES CHEVAUX ?
+==================================================
+
+Créer une progression visuelle en cinq étapes.
+
+1. NAISSANCE À ALTER REAL
+Le cheval naît et grandit à la Coudelaria de Alter.
+
+2. PREMIÈRE ÉDUCATION
+Il apprend les bases du contact humain et du travail.
+
+3. SÉLECTION VERS QUATRE ANS
+Une équipe de l’École évalue les jeunes chevaux présentant le plus de potentiel.
+
+4. BASSE ÉCOLE
+Le cheval développe les trois allures, l’équilibre, les figures de manège, les mouvements latéraux et les changements de pied.
+
+5. HAUTE ÉCOLE
+Selon ses qualités, il peut apprendre le piaffer, le passage, les pirouettes, les changements de pied rapprochés et certains airs relevés.
+
+TEXTE
+Tous les chevaux ne suivent pas exactement le même parcours. L’enseignement s’adapte à leurs aptitudes. Certains deviennent des chevaux de carrousel, d’autres se spécialisent dans les exercices de haute école ou les airs relevés.
+
+CARTE « LE SAVAIS-TU ? »
+Les jeunes chevaux confirmés dans la basse école peuvent faire leurs débuts en présentation dans le carrousel des chevaux nouveaux.
+
+==================================================
+9. LES EXERCICES DE L’ÉCOLE
+==================================================
+
+Créer une galerie de cartes avec courtes animations ou vidéos.
+
+BASSE ÉCOLE
+Travail des trois allures, transitions, figures, équilibre et mouvements latéraux.
+
+ÉPAULE EN DEDANS
+Exercice fondamental de souplesse et d’engagement.
+
+APPUYERS
+Déplacements latéraux dans lesquels le cheval se déplace vers l’avant et sur le côté.
+
+PIAFFER
+Trot très rassemblé exécuté presque sur place.
+
+PASSAGE
+Trot élevé, cadencé et suspendu.
+
+PIROUETTES
+Rotation contrôlée autour des postérieurs au galop rassemblé.
+
+CHANGEMENTS DE PIED
+Enchaînement de changements de pied au galop.
+
+CARROUSELS
+Figures collectives qui exigent précision, rythme et harmonie entre plusieurs chevaux.
+
+JEUX DE COUR
+Épreuves équestres historiques inspirées des divertissements de la cour.
+
+AIRS RELEVÉS
+Figures de haute école comme la levade, la courbette, la ballotade ou la cabriole, selon les aptitudes des chevaux.
+
+NOTE POUR CLAUDE
+Ne pas présenter les airs relevés comme des figures exécutées par tous les chevaux.
+Ils sont réservés à certains chevaux particulièrement aptes.
+
+==================================================
+10. LES CAVALIERS DE L’ÉCOLE
+==================================================
+
+TITRE
+Devenir picador
+
+TEXTE
+À l’École Portugaise d’Art Équestre, les cavaliers appartiennent à une hiérarchie qui traduit leur expérience et leur progression.
+
+La structure officielle comprend :
+- le Mestre-Picador-Chefe ;
+- les Picadores ;
+- les Picadores Ajudantes ;
+- les Aspirantes.
+
+Créer une progression verticale :
+
+ASPIRANT
+↓
+PICADOR-AJUDANTE
+↓
+PICADOR
+↓
+MESTRE-PICADOR-CHEFE
+
+TEXTE COMPLÉMENTAIRE
+Devenir cavalier de l’École ne consiste pas seulement à monter à haut niveau. Il faut apprendre une tradition complète : l’éducation du jeune cheval, les exercices de basse et de haute école, le travail collectif, les usages historiques, les costumes, les harnachements et la présentation au public.
+
+Le cavalier construit aussi une relation durable avec les chevaux qui lui sont confiés. Il accompagne leur progression, identifie leurs aptitudes et adapte le travail à leur personnalité.
+
+SOURCE
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/missao/
+
+==================================================
+11. LES COSTUMES ET LES HARNACHEMENTS
+==================================================
+
+TITRE
+Quand chaque détail raconte le XVIIIᵉ siècle
+
+TEXTE
+Les costumes et les équipements ne sont pas de simples décors. Ils participent pleinement à la transmission de la tradition de la Picaria Real.
+
+Lors des galas, les cavaliers portent notamment :
+- un tricorne de feutre noir ;
+- une longue veste de velours bordeaux ;
+- un col noir ;
+- des galons noirs et dorés ;
+- des guêtres ou protections de cuir noir.
+
+Les chevaux sont présentés avec :
+- une tresse portugaise à trois branches ;
+- des rubans de soie ;
+- une selle portugaise ;
+- des éléments de harnachement inspirés des usages historiques.
+
+Créer une galerie de détails :
+1. tricorne ;
+2. boutons et galons ;
+3. selle ;
+4. tressage ;
+5. rênes et bride ;
+6. costume complet.
+
+SOURCE
+https://www.parquesdesintra.pt/pt/programacao/galas-da-escola-portuguesa-de-arte-equestre/
+
+==================================================
+12. LES GALAS
+==================================================
+
+TITRE
+Une soirée à la cour du Portugal
+
+TEXTE
+Les galas recréent l’atmosphère de la cour portugaise du XVIIIᵉ et du début du XIXᵉ siècle.
+
+La musique baroque, préclassique ou classique accompagne les carrousels, les exercices de haute école, les airs relevés et les jeux de cour.
+
+Les costumes bordeaux et or, les chevaux gris, les tresses de soie et l’architecture du Picadeiro Henrique Calado transforment la présentation en véritable voyage dans le temps.
+
+Le public peut également découvrir, une heure avant certains événements, le Páteo da Nora : les chevaux y sont préparés, soignés et échauffés avant d’entrer en piste.
+
+BOUTON
+Voir le calendrier officiel des galas
+
+LIEN
+https://www.parquesdesintra.pt/pt/programacao/galas-da-escola-portuguesa-de-arte-equestre/
+
+==================================================
+13. LES MATINÉES D’ART ÉQUESTRE
+==================================================
+
+TITRE
+Observer le travail, pas seulement le spectacle
+
+TEXTE
+Les « Manhãs da Arte Equestre » permettent au public de découvrir le travail régulier de l’École dans une atmosphère plus pédagogique.
+
+Selon le programme, le visiteur peut observer différents chevaux à des étapes variées de leur formation. C’est l’occasion de comprendre que la haute école est le résultat d’un enseignement progressif, patient et adapté à chaque cheval.
+
+Avant certains événements, l’accès au Páteo da Nora permet également d’observer les soins, la préparation et l’échauffement.
+
+LIEN DES ACTIVITÉS
+https://www.parquesdesintra.pt/pt/feito-para-si/arte-equestre/
+
+==================================================
+14. LE SAVAIS-TU ?
+==================================================
+
+Créer plusieurs cartes courtes à faire défiler.
+
+CARTE 1
+L’École a été fondée en 1979, mais elle revendique l’héritage direct de la Picaria Real du XVIIIᵉ siècle.
+
+CARTE 2
+Tous les chevaux de l’École sont des Lusitaniens de la lignée Alter Real.
+
+CARTE 3
+La Coudelaria de Alter a été créée en 1748 pour fournir des chevaux à la Maison royale et à son académie équestre.
+
+CARTE 4
+La Bibliothèque d’Art Équestre D. Diogo de Bragança, créée à Queluz en 2015, rassemble environ 1 400 titres, dont certains ouvrages rares.
+
+CARTE 5
+L’art équestre au Portugal a été inscrit par l’UNESCO en 2024.
+
+CARTE 6
+La tradition portugaise se distingue notamment par le Lusitanien, les costumes, les harnachements et l’influence historique de l’équitation de travail et du toureio équestre.
+
+==================================================
+15. LA BIBLIOTHÈQUE D’ART ÉQUESTRE
+==================================================
+
+TITRE
+1 400 ouvrages consacrés au cheval et à l’équitation
+
+TEXTE
+En 2015, Parques de Sintra a créé au Palais National de Queluz la Bibliothèque d’Art Équestre D. Diogo de Bragança, VIIIᵉ marquis de Marialva.
+
+Cette bibliothèque est présentée comme la seule bibliothèque nationale portugaise exclusivement consacrée à l’art équestre. Elle réunit environ 1 400 titres, parmi lesquels des éditions rares.
+
+Cette collection témoigne d’un aspect essentiel de l’équitation classique : elle ne se transmet pas uniquement dans le manège. Elle se conserve aussi dans les traités, les dessins, les archives et les témoignages des maîtres.
+
+BOUTON INTERNE
+Explorer les grands auteurs →
+
+==================================================
+16. L’ART ÉQUESTRE PORTUGAIS ET L’UNESCO
+==================================================
+
+TITRE
+Un patrimoine vivant reconnu par le monde
+
+TEXTE
+En décembre 2024, l’art équestre au Portugal a été inscrit sur la Liste représentative du patrimoine culturel immatériel de l’humanité.
+
+L’UNESCO met en avant :
+- l’harmonie entre le cavalier et le cheval ;
+- une communication fondée sur la collaboration volontaire ;
+- le respect de l’animal et de son bien-être ;
+- la transmission par les maîtres, les écoles, les familles et les centres équestres ;
+- le rôle des éleveurs, artisans, vétérinaires et autres professionnels ;
+- l’importance du Lusitanien ;
+- les costumes et harnachements traditionnels.
+
+La reconnaissance ne concerne donc pas seulement une institution. Elle célèbre tout un écosystème culturel vivant.
+
+LIEN OFFICIEL
+https://ich.unesco.org/en/RL/equestrian-art-in-portugal-02079
+
+==================================================
+17. PEUT-ON VISITER ?
+==================================================
+
+TITRE
+Préparer sa visite
+
+LIEU PRINCIPAL DES PRÉSENTATIONS
+Picadeiro Henrique Calado
+Calçada da Ajuda, Belém
+Lisbonne, Portugal
+
+COORDONNÉES FOURNIES PAR LE SITE OFFICIEL
+38º 42’ 00.98” N
+9º 12’ 00.08” W
+
+CARTE GOOGLE MAPS
+https://www.google.com/maps/search/?api=1&query=Picadeiro+Henrique+Calado+Lisboa
+
+ACTIVITÉS POSSIBLES SELON LA PROGRAMMATION
+- galas ;
+- matinées d’art équestre ;
+- présentations publiques ;
+- visites du Páteo da Nora ;
+- activités pédagogiques ;
+- événements spéciaux ;
+- découverte des coulisses.
+
+NOTE PRATIQUE
+Les horaires, tarifs, langues proposées et conditions d’accès peuvent évoluer.
+Toujours afficher les informations actualisées depuis le site officiel au moment de la réservation.
+
+SITE OFFICIEL
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/
+
+CONTACT OFFICIEL
+info@parquesdesintra.pt
++351 21 923 73 00
+
+==================================================
+18. PHOTOS ET VIDÉOS
+==================================================
+
+SECTION VIDÉO PRINCIPALE
+Intégrer de préférence une vidéo officielle provenant de Parques de Sintra, de l’UNESCO ou d’un organisme public portugais.
+
+SOURCE UNESCO AVEC VIDÉO
+https://ich.unesco.org/en/RL/equestrian-art-in-portugal-02079
+
+RECHERCHE YOUTUBE CIBLÉE
+https://www.youtube.com/results?search_query=Escola+Portuguesa+de+Arte+Equestre+Parques+de+Sintra
+
+AUTRE RECHERCHE
+https://www.youtube.com/results?search_query=Portuguese+School+of+Equestrian+Art+official
+
+GALERIE PHOTO OFFICIELLE
+Utiliser en priorité les photos disponibles sur les pages officielles de Parques de Sintra, en vérifiant les droits et crédits avant réutilisation.
+
+PAGE PRINCIPALE
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/
+
+PHOTOS UNESCO
+https://ich.unesco.org/en/01370?call=slideshow&id=02079&include=slideshow_inc.php&mode=scroll&width=620
+
+IMPORTANT
+Ne pas télécharger ni réutiliser automatiquement une photographie sans vérifier :
+- la licence ;
+- le crédit ;
+- les conditions d’utilisation ;
+- l’autorisation éventuelle du détenteur des droits.
+
+Pour les couvertures Hype, créer de préférence des illustrations originales inspirées de l’ambiance générale, sans reproduire une photographie existante.
+
+==================================================
+19. CITATION ÉDITORIALE
+==================================================
+
+Créer une grande carte citation, mais ne pas attribuer une phrase historique sans source certaine.
+
+TEXTE HYPE NON ATTRIBUÉ
+« Ici, le cheval ne rejoue pas seulement l’histoire : il la maintient vivante. »
+
+Mention sous la citation
+Le regard de Hype
+
+==================================================
+20. LE REGARD DE HYPE
+==================================================
+
+TITRE
+Ce qui rend cette école unique
+
+TEXTE
+L’École Portugaise d’Art Équestre possède une identité immédiatement reconnaissable.
+
+Il y a d’abord le Lusitanien Alter Real : compact, expressif, agile et profondément lié à l’histoire du Portugal.
+
+Il y a ensuite les costumes bordeaux et or, les selles portugaises, les tresses de soie et la musique qui donnent aux présentations une atmosphère de cour royale.
+
+Mais l’essentiel est ailleurs. Derrière la splendeur du spectacle se trouve un travail quotidien de transmission. Chaque cavalier, chaque cheval, chaque artisan et chaque geste contribue à maintenir vivant un langage équestre plusieurs fois centenaire.
+
+L’École ne cherche donc pas seulement à montrer le passé. Elle démontre qu’une tradition peut continuer à évoluer tant qu’elle reste pratiquée, comprise et partagée.
+
+==================================================
+21. CONTINUER L’EXPLORATION
+==================================================
+
+Créer de grandes cartes illustrées.
+
+🏛 Le Cadre Noir de Saumur
+Une autre vision de l’équitation de tradition.
+
+🏛 L’École Espagnole de Vienne
+Les Lipizzans et l’héritage impérial.
+
+🏛 L’École Royale Andalouse
+L’art équestre de Jerez.
+
+👤 Nuno Oliveira
+Le maître portugais de la légèreté.
+
+🐴 Le cheval Lusitanien
+Histoire, morphologie, qualités et disciplines.
+
+🏛 La Coudelaria de Alter Real
+Le berceau des chevaux de l’École.
+
+📖 Le marquis de Marialva
+L’une des grandes figures de la tradition équestre portugaise.
+
+🎭 Les jeux équestres de cour
+Entre exercice, adresse et cérémonie.
+
+==================================================
+22. CONSIGNES DE MISE EN PAGE POUR CLAUDE
+==================================================
+
+1. Ne jamais afficher plus de deux courts paragraphes consécutifs sur mobile.
+
+2. Après chaque bloc de texte, insérer au moins un élément visuel :
+- image ;
+- galerie ;
+- carte ;
+- citation ;
+- frise ;
+- vidéo ;
+- schéma.
+
+3. Conserver les mêmes composants que pour l’article du Cadre Noir :
+- hero ;
+- carte d’identité ;
+- galerie ;
+- vidéo principale ;
+- frise ;
+- cartes de principes ;
+- progression des chevaux ;
+- progression des cavaliers ;
+- encarts « Le savais-tu ? » ;
+- visite ;
+- vidéos ;
+- sources ;
+- exploration liée.
+
+4. Prévoir un sommaire horizontal flottant :
+Histoire | Chevaux | Cavaliers | Exercices | Spectacles | Visiter
+
+5. Prévoir une barre de progression de lecture.
+
+6. Prévoir les boutons :
+- écouter l’article ;
+- enregistrer ;
+- partager ;
+- ouvrir les liens officiels ;
+- continuer l’exploration.
+
+7. Ne pas utiliser de faux liens ni de fausses vidéos.
+Quand aucun lien direct vérifié n’est fourni, afficher un emplacement clairement identifié « média à sélectionner ».
+
+8. Les liens externes doivent s’ouvrir dans un nouvel onglet.
+
+9. Prévoir une mention de source discrète au bas de chaque section documentaire.
+
+10. La page doit rester lumineuse, premium et cohérente avec l’univers Hype.
+
+==================================================
+23. SOURCES OFFICIELLES À CONSERVER
+==================================================
+
+École Portugaise d’Art Équestre
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/
+
+Histoire
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/historia/
+
+Mission et organisation
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/missao/
+
+Chevaux et sélection
+https://www.parquesdesintra.pt/pt/sobre-nos/blog/epae-alter/
+
+Coudelaria de Alter
+https://www.parquesdesintra.pt/pt/parques-monumentos/escola-portuguesa-de-arte-equestre/coudelaria-de-alter/
+
+Galas
+https://www.parquesdesintra.pt/pt/programacao/galas-da-escola-portuguesa-de-arte-equestre/
+
+Activités et visites
+https://www.parquesdesintra.pt/pt/feito-para-si/arte-equestre/
+
+UNESCO
+https://ich.unesco.org/en/RL/equestrian-art-in-portugal-02079
+
+FIN DU DOSSIER
