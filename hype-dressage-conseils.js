@@ -8,12 +8,17 @@
    Traductions en/es/it/de/ja à ajouter dans les mêmes objets {fr:...}.
    ──────────────────────────────────────────────────────────────────────────── */
 window.HYPE_DRESSAGE = window.HYPE_DRESSAGE || {};
-window.HYPE_DRESSAGE.version = "1.3";
+window.HYPE_DRESSAGE.version = "1.5";
 window.HYPE_DRESSAGE.fiches = {
  "entry_centerline": {
   "id": "entry_centerline",
   "label": {
-   "fr": "Entrée sur la ligne du milieu"
+   "fr": "Entrée sur la ligne du milieu",
+   "en": "Entry on the centre line",
+   "es": "Entrada por la línea media",
+   "it": "Ingresso sulla linea di mezzo",
+   "de": "Einreiten auf der Mittellinie",
+   "ja": "中央線での入場"
   },
   "phase": "Entrée",
   "galopMin": 3,
@@ -24,19 +29,39 @@ window.HYPE_DRESSAGE.fiches = {
   },
   "obs": [
    {
-    "fr": "la rectitude sur l'axe"
+    "fr": "la rectitude sur l'axe",
+    "en": "straightness on the centre line",
+    "es": "la rectitud sobre el eje",
+    "it": "la rettitudine sull'asse",
+    "de": "die Geraderichtung auf der Linie",
+    "ja": "中央線上の直進性"
    },
    {
-    "fr": "la régularité de l'allure"
+    "fr": "la régularité de l'allure",
+    "en": "the regularity of the gait",
+    "es": "la regularidad del aire",
+    "it": "la regolarità dell'andatura",
+    "de": "die Gleichmäßigkeit der Gangart",
+    "ja": "歩様の規則正しさ"
    },
    {
-    "fr": "la tenue du cavalier"
+    "fr": "la tenue du cavalier",
+    "en": "the rider's position",
+    "es": "la posición del jinete",
+    "it": "l'assetto del cavaliere",
+    "de": "die Haltung des Reiters",
+    "ja": "騎乗者の姿勢"
    }
   ],
   "tips": [
    {
     "txt": {
-     "fr": "Entre bien droit entre les deux lices."
+     "fr": "Entre bien droit entre les deux lices.",
+     "en": "Enter perfectly straight between the two boards.",
+     "es": "Entra bien recto entre las dos vallas.",
+     "it": "Entra ben diritto tra le due staccionate.",
+     "de": "Reite ganz gerade zwischen den beiden Banden ein.",
+     "ja": "二本の柵の間をまっすぐ入場しよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -44,7 +69,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Regarde X dès l’entrée."
+     "fr": "Regarde X dès l’entrée.",
+     "en": "Look at X from the moment you enter.",
+     "es": "Mira a X desde la entrada.",
+     "it": "Guarda X già dall'ingresso.",
+     "de": "Blicke vom Einreiten an auf X.",
+     "ja": "入場した瞬間からXを見よう。"
     },
     "type": "faire",
     "prio": 1,
@@ -52,7 +82,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Garde les deux jambes présentes pour éviter les zigzags."
+     "fr": "Garde les deux jambes présentes pour éviter les zigzags.",
+     "en": "Keep both legs active to avoid weaving.",
+     "es": "Mantén las dos piernas presentes para evitar los zigzags.",
+     "it": "Tieni entrambe le gambe presenti per evitare gli zigzag.",
+     "de": "Halte beide Beine anliegend, um Schlangenlinien zu vermeiden.",
+     "ja": "蛇行しないよう両脚を効かせ続けよう。"
     },
     "type": "faire",
     "prio": 2,
@@ -60,7 +95,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Ne regarde pas le jury au détriment de la rectitude."
+     "fr": "Ne regarde pas le jury au détriment de la rectitude.",
+     "en": "Don't look at the judges at the cost of your straightness.",
+     "es": "No mires al jurado a costa de la rectitud.",
+     "it": "Non guardare la giuria a scapito della rettitudine.",
+     "de": "Schau nicht zum Richter, wenn du dafür die Geradheit verlierst.",
+     "ja": "直進性を犠牲にして審判を見ないこと。"
     },
     "type": "eviter",
     "prio": 2,
@@ -68,7 +108,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Stabilise l’allure avant d’entrer."
+     "fr": "Stabilise l’allure avant d’entrer.",
+     "en": "Settle the gait before you enter.",
+     "es": "Estabiliza el aire antes de entrar.",
+     "it": "Stabilizza l'andatura prima di entrare.",
+     "de": "Stabilisiere die Gangart vor dem Einreiten.",
+     "ja": "入場前に歩様を安定させよう。"
     },
     "type": "faire",
     "prio": 3,
@@ -76,7 +121,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Évite de corriger trop tard avec les mains."
+     "fr": "Évite de corriger trop tard avec les mains.",
+     "en": "Avoid correcting too late with your hands.",
+     "es": "Evita corregir demasiado tarde con las manos.",
+     "it": "Evita di correggere troppo tardi con le mani.",
+     "de": "Vermeide zu späte Korrekturen mit der Hand.",
+     "ja": "手綱での修正が遅れないようにしよう。"
     },
     "type": "eviter",
     "prio": 3,
@@ -90,12 +140,20 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Entre bien droit"
+  }
  },
  "halt_at_x": {
   "id": "halt_at_x",
   "label": {
-   "fr": "Arrêt en X"
+   "fr": "Arrêt en X",
+   "en": "Halt at X",
+   "es": "Parada en X",
+   "it": "Alt a X",
+   "de": "Halt bei X",
+   "ja": "Xでの停止"
   },
   "phase": "Arrêt",
   "galopMin": 3,
@@ -106,19 +164,39 @@ window.HYPE_DRESSAGE.fiches = {
   },
   "obs": [
    {
-    "fr": "la précision de l'arrêt sur la lettre"
+    "fr": "la précision de l'arrêt sur la lettre",
+    "en": "the accuracy of the halt on the letter",
+    "es": "la precisión de la parada sobre la letra",
+    "it": "la precisione dell'alt sulla lettera",
+    "de": "die Genauigkeit des Halts am Buchstaben",
+    "ja": "標示文字上での停止の正確さ"
    },
    {
-    "fr": "l'immobilité"
+    "fr": "l'immobilité",
+    "en": "immobility",
+    "es": "la inmovilidad",
+    "it": "l'immobilità",
+    "de": "das Stillstehen",
+    "ja": "静止"
    },
    {
-    "fr": "un cheval carré et droit"
+    "fr": "un cheval carré et droit",
+    "en": "a square and straight horse",
+    "es": "un caballo cuadrado y recto",
+    "it": "un cavallo quadrato e diritto",
+    "de": "ein geschlossen und gerade stehendes Pferd",
+    "ja": "四肢がそろい真っすぐな馬"
    }
   ],
   "tips": [
    {
     "txt": {
-     "fr": "Prépare l’arrêt plusieurs foulées avant X."
+     "fr": "Prépare l’arrêt plusieurs foulées avant X.",
+     "en": "Prepare the halt several strides before X.",
+     "es": "Prepara la parada varias zancadas antes de X.",
+     "it": "Prepara l'alt diverse falcate prima di X.",
+     "de": "Bereite den Halt mehrere Tritte vor X vor.",
+     "ja": "Xの数歩手前から停止を準備しよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -126,7 +204,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Garde le cheval droit entre les jambes et les rênes."
+     "fr": "Garde le cheval droit entre les jambes et les rênes.",
+     "en": "Keep the horse straight between legs and reins.",
+     "es": "Mantén el caballo recto entre las piernas y las riendas.",
+     "it": "Mantieni il cavallo diritto tra gambe e redini.",
+     "de": "Halte das Pferd gerade zwischen Bein und Hand.",
+     "ja": "脚と手綱の間で馬をまっすぐ保とう。"
     },
     "type": "faire",
     "prio": 1,
@@ -134,7 +217,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Cherche un arrêt net mais sans tirer brutalement."
+     "fr": "Cherche un arrêt net mais sans tirer brutalement.",
+     "en": "Aim for a clear halt without pulling abruptly.",
+     "es": "Busca una parada nítida sin tirar bruscamente.",
+     "it": "Cerca un alt netto senza tirare bruscamente.",
+     "de": "Suche einen klaren Halt, ohne hart zu ziehen.",
+     "ja": "急に引かず、はっきりとした停止を目指そう。"
     },
     "type": "faire",
     "prio": 2,
@@ -142,7 +230,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Évite de t’arrêter avant ou après X."
+     "fr": "Évite de t’arrêter avant ou après X.",
+     "en": "Avoid halting before or after X.",
+     "es": "Evita pararte antes o después de X.",
+     "it": "Evita di fermarti prima o dopo X.",
+     "de": "Vermeide es, vor oder hinter X zu halten.",
+     "ja": "Xの前後で停止しないようにしよう。"
     },
     "type": "eviter",
     "prio": 2,
@@ -150,7 +243,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Reste immobile quelques secondes."
+     "fr": "Reste immobile quelques secondes.",
+     "en": "Stay immobile for a few seconds.",
+     "es": "Permanece inmóvil unos segundos.",
+     "it": "Resta immobile per alcuni secondi.",
+     "de": "Bleibe einige Sekunden stehen.",
+     "ja": "数秒間静止しよう。"
     },
     "type": "faire",
     "prio": 3,
@@ -158,7 +256,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Ne relâche pas tout avant que l’arrêt soit réellement stabilisé."
+     "fr": "Ne relâche pas tout avant que l’arrêt soit réellement stabilisé.",
+     "en": "Don't release everything before the halt is really settled.",
+     "es": "No lo sueltes todo antes de que la parada esté realmente estabilizada.",
+     "it": "Non lasciare tutto prima che l'alt sia davvero stabile.",
+     "de": "Gib nicht alles auf, bevor der Halt wirklich steht.",
+     "ja": "停止が本当に安定するまで気を緩めないこと。"
     },
     "type": "eviter",
     "prio": 3,
@@ -172,12 +275,20 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Prépare ton arrêt"
+  }
  },
  "salute": {
   "id": "salute",
   "label": {
-   "fr": "Salut"
+   "fr": "Salut",
+   "en": "Salute",
+   "es": "Saludo",
+   "it": "Saluto",
+   "de": "Gruß",
+   "ja": "あいさつ"
   },
   "phase": "Arrêt",
   "galopMin": 3,
@@ -188,19 +299,39 @@ window.HYPE_DRESSAGE.fiches = {
   },
   "obs": [
    {
-    "fr": "l'immobilité pendant le salut"
+    "fr": "l'immobilité pendant le salut",
+    "en": "immobility during the salute",
+    "es": "la inmovilidad durante el saludo",
+    "it": "l'immobilità durante il saluto",
+    "de": "das Stillstehen während des Grußes",
+    "ja": "あいさつ中の静止"
    },
    {
-    "fr": "le calme du cheval"
+    "fr": "le calme du cheval",
+    "en": "the horse's calmness",
+    "es": "la calma del caballo",
+    "it": "la calma del cavallo",
+    "de": "die Ruhe des Pferdes",
+    "ja": "馬の落ち着き"
    },
    {
-    "fr": "la reprise des rênes sans geste brusque"
+    "fr": "la reprise des rênes sans geste brusque",
+    "en": "taking the reins back without an abrupt movement",
+    "es": "recoger las riendas sin gestos bruscos",
+    "it": "la ripresa delle redini senza gesti bruschi",
+    "de": "das Aufnehmen der Zügel ohne ruckartige Bewegung",
+    "ja": "急な動作なく手綱を取り直すこと"
    }
   ],
   "tips": [
    {
     "txt": {
-     "fr": "Stabilise d’abord l’arrêt avant de saluer."
+     "fr": "Stabilise d’abord l’arrêt avant de saluer.",
+     "en": "Settle the halt first, then salute.",
+     "es": "Estabiliza primero la parada antes de saludar.",
+     "it": "Stabilizza prima l'alt, poi saluta.",
+     "de": "Stabilisiere erst den Halt, dann grüße.",
+     "ja": "まず停止を安定させてからあいさつしよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -208,7 +339,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Garde le buste droit et le regard calme."
+     "fr": "Garde le buste droit et le regard calme.",
+     "en": "Keep your upper body straight and your eyes calm.",
+     "es": "Mantén el torso recto y la mirada tranquila.",
+     "it": "Tieni il busto diritto e lo sguardo calmo.",
+     "de": "Halte den Oberkörper gerade und den Blick ruhig.",
+     "ja": "上体をまっすぐ、視線は落ち着かせよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -216,7 +352,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Salue sans précipitation."
+     "fr": "Salue sans précipitation.",
+     "en": "Salute without rushing.",
+     "es": "Saluda sin precipitación.",
+     "it": "Saluta senza fretta.",
+     "de": "Grüße ohne Eile.",
+     "ja": "慌てずにあいさつしよう。"
     },
     "type": "faire",
     "prio": 2,
@@ -224,7 +365,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Évite de laisser le cheval repartir pendant le salut."
+     "fr": "Évite de laisser le cheval repartir pendant le salut.",
+     "en": "Avoid letting the horse move off during the salute.",
+     "es": "Evita que el caballo se ponga en marcha durante el saludo.",
+     "it": "Evita che il cavallo riparta durante il saluto.",
+     "de": "Vermeide, dass das Pferd während des Grußes antritt.",
+     "ja": "あいさつ中に馬が動き出さないようにしよう。"
     },
     "type": "eviter",
     "prio": 2,
@@ -232,7 +378,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Reprends tes rênes sans geste brusque."
+     "fr": "Reprends tes rênes sans geste brusque.",
+     "en": "Pick your reins back up without an abrupt movement.",
+     "es": "Recoge las riendas sin gestos bruscos.",
+     "it": "Riprendi le redini senza gesti bruschi.",
+     "de": "Nimm die Zügel ohne ruckartige Bewegung auf.",
+     "ja": "急な動作をせず手綱を取り直そう。"
     },
     "type": "faire",
     "prio": 3,
@@ -240,7 +391,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Prépare déjà le départ qui suit."
+     "fr": "Prépare déjà le départ qui suit.",
+     "en": "Already prepare the move-off that follows.",
+     "es": "Prepara ya la partida que sigue.",
+     "it": "Prepara già la partenza successiva.",
+     "de": "Bereite schon das folgende Anreiten vor.",
+     "ja": "次の発進をすでに準備しておこう。"
     },
     "type": "faire",
     "prio": 3,
@@ -254,12 +410,20 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Immobile, puis salue"
+  }
  },
  "final_halt": {
   "id": "final_halt",
   "label": {
-   "fr": "Arrêt final"
+   "fr": "Arrêt final",
+   "en": "Final halt",
+   "es": "Parada final",
+   "it": "Alt finale",
+   "de": "Schlusshalt",
+   "ja": "最後の停止"
   },
   "phase": "Arrêt",
   "galopMin": 3,
@@ -270,19 +434,39 @@ window.HYPE_DRESSAGE.fiches = {
   },
   "obs": [
    {
-    "fr": "la précision de l'arrêt"
+    "fr": "la précision de l'arrêt",
+    "en": "the accuracy of the halt",
+    "es": "la precisión de la parada",
+    "it": "la precisione dell'alt",
+    "de": "die Genauigkeit des Halts",
+    "ja": "停止の正確さ"
    },
    {
-    "fr": "l'immobilité"
+    "fr": "l'immobilité",
+    "en": "immobility",
+    "es": "la inmovilidad",
+    "it": "l'immobilità",
+    "de": "das Stillstehen",
+    "ja": "静止"
    },
    {
-    "fr": "la qualité de la dernière transition"
+    "fr": "la qualité de la dernière transition",
+    "en": "the quality of the last transition",
+    "es": "la calidad de la última transición",
+    "it": "la qualità dell'ultima transizione",
+    "de": "die Qualität des letzten Übergangs",
+    "ja": "最後の移行の質"
    }
   ],
   "tips": [
    {
     "txt": {
-     "fr": "Termine la reprise avec la même précision qu’au début."
+     "fr": "Termine la reprise avec la même précision qu’au début.",
+     "en": "Finish the test with the same accuracy as you started.",
+     "es": "Termina la reprise con la misma precisión que al principio.",
+     "it": "Concludi la ripresa con la stessa precisione dell'inizio.",
+     "de": "Beende die Aufgabe mit derselben Genauigkeit wie am Anfang.",
+     "ja": "最初と同じ正確さで課目を終えよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -290,7 +474,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Prépare l’arrêt avant X."
+     "fr": "Prépare l’arrêt avant X.",
+     "en": "Prepare the halt before X.",
+     "es": "Prepara la parada antes de X.",
+     "it": "Prepara l'alt prima di X.",
+     "de": "Bereite den Halt vor X vor.",
+     "ja": "Xの手前で停止を準備しよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -298,7 +487,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Garde le cheval droit jusqu’à l’immobilité."
+     "fr": "Garde le cheval droit jusqu’à l’immobilité.",
+     "en": "Keep the horse straight until it is fully immobile.",
+     "es": "Mantén el caballo recto hasta la inmovilidad.",
+     "it": "Mantieni il cavallo diritto fino all'immobilità.",
+     "de": "Halte das Pferd gerade bis zum Stillstand.",
+     "ja": "完全に静止するまで馬をまっすぐ保とう。"
     },
     "type": "faire",
     "prio": 2,
@@ -306,7 +500,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Ne relâche pas ton attention trop tôt."
+     "fr": "Ne relâche pas ton attention trop tôt.",
+     "en": "Don't drop your concentration too early.",
+     "es": "No relajes la atención demasiado pronto.",
+     "it": "Non allentare l'attenzione troppo presto.",
+     "de": "Lass deine Aufmerksamkeit nicht zu früh nach.",
+     "ja": "早すぎる気の緩みは避けよう。"
     },
     "type": "eviter",
     "prio": 2,
@@ -314,7 +513,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Évite un arrêt précipité."
+     "fr": "Évite un arrêt précipité.",
+     "en": "Avoid a rushed halt.",
+     "es": "Evita una parada precipitada.",
+     "it": "Evita un alt affrettato.",
+     "de": "Vermeide einen überstürzten Halt.",
+     "ja": "慌てた停止は避けよう。"
     },
     "type": "eviter",
     "prio": 3,
@@ -322,7 +526,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Soigne le salut final."
+     "fr": "Soigne le salut final.",
+     "en": "Take care over the final salute.",
+     "es": "Cuida el saludo final.",
+     "it": "Cura il saluto finale.",
+     "de": "Achte auf den Schlussgruß.",
+     "ja": "最後のあいさつを丁寧に。"
     },
     "type": "faire",
     "prio": 3,
@@ -336,12 +545,20 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Droit jusqu'à l'arrêt"
+  }
  },
  "walk_working": {
   "id": "walk_working",
   "label": {
-   "fr": "Pas de travail"
+   "fr": "Pas de travail",
+   "en": "Working walk",
+   "es": "Paso de trabajo",
+   "it": "Passo di lavoro",
+   "de": "Arbeitsschritt",
+   "ja": "ワーキングウォーク"
   },
   "phase": "Pas",
   "galopMin": 2,
@@ -352,19 +569,39 @@ window.HYPE_DRESSAGE.fiches = {
   },
   "obs": [
    {
-    "fr": "la régularité du pas à quatre temps"
+    "fr": "la régularité du pas à quatre temps",
+    "en": "the regularity of the four-beat walk",
+    "es": "la regularidad del paso a cuatro tiempos",
+    "it": "la regolarità del passo a quattro tempi",
+    "de": "die Gleichmäßigkeit des Viertakts",
+    "ja": "四節の常歩の規則正しさ"
    },
    {
-    "fr": "l'activité"
+    "fr": "l'activité",
+    "en": "activity",
+    "es": "la actividad",
+    "it": "l'attività",
+    "de": "die Aktivität",
+    "ja": "活発さ"
    },
    {
-    "fr": "la souplesse du contact"
+    "fr": "la souplesse du contact",
+    "en": "the softness of the contact",
+    "es": "la suavidad del contacto",
+    "it": "la morbidezza del contatto",
+    "de": "die Weichheit der Anlehnung",
+    "ja": "コンタクトの柔らかさ"
    }
   ],
   "tips": [
    {
     "txt": {
-     "fr": "Laisse le cheval avancer avec une cadence régulière."
+     "fr": "Laisse le cheval avancer avec une cadence régulière.",
+     "en": "Let the horse move forward in a regular rhythm.",
+     "es": "Deja que el caballo avance con una cadencia regular.",
+     "it": "Lascia il cavallo avanzare con una cadenza regolare.",
+     "de": "Lass das Pferd in gleichmäßigem Takt vorwärtsgehen.",
+     "ja": "一定のリズムで馬を前進させよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -372,7 +609,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Accompagne le mouvement avec ton bassin."
+     "fr": "Accompagne le mouvement avec ton bassin.",
+     "en": "Follow the movement with your pelvis.",
+     "es": "Acompaña el movimiento con la pelvis.",
+     "it": "Accompagna il movimento con il bacino.",
+     "de": "Begleite die Bewegung mit dem Becken.",
+     "ja": "骨盤で動きに合わせよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -380,7 +622,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Garde un contact souple."
+     "fr": "Garde un contact souple.",
+     "en": "Keep a soft contact.",
+     "es": "Mantén un contacto suave.",
+     "it": "Mantieni un contatto morbido.",
+     "de": "Halte eine weiche Anlehnung.",
+     "ja": "柔らかいコンタクトを保とう。"
     },
     "type": "faire",
     "prio": 2,
@@ -388,7 +635,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Évite de raccourcir l’encolure avec les mains."
+     "fr": "Évite de raccourcir l’encolure avec les mains.",
+     "en": "Avoid shortening the neck with your hands.",
+     "es": "Evita acortar el cuello con las manos.",
+     "it": "Evita di accorciare l'incollatura con le mani.",
+     "de": "Vermeide, den Hals mit der Hand zu verkürzen.",
+     "ja": "手綱で首を縮めないようにしよう。"
     },
     "type": "eviter",
     "prio": 2,
@@ -396,7 +648,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Ne pousse pas à chaque foulée."
+     "fr": "Ne pousse pas à chaque foulée.",
+     "en": "Don't push with every stride.",
+     "es": "No empujes en cada zancada.",
+     "it": "Non spingere a ogni falcata.",
+     "de": "Treibe nicht bei jedem Tritt.",
+     "ja": "一歩ごとに押し続けないこと。"
     },
     "type": "eviter",
     "prio": 3,
@@ -404,7 +661,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Recherche un pas actif sans précipitation."
+     "fr": "Recherche un pas actif sans précipitation.",
+     "en": "Look for an active walk without hurrying.",
+     "es": "Busca un paso activo sin precipitación.",
+     "it": "Cerca un passo attivo senza fretta.",
+     "de": "Suche einen aktiven Schritt ohne Eile.",
+     "ja": "慌てずに活発な常歩を求めよう。"
     },
     "type": "faire",
     "prio": 3,
@@ -418,12 +680,20 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Pas actif, sans presser"
+  }
  },
  "walk_medium": {
   "id": "walk_medium",
   "label": {
-   "fr": "Pas moyen"
+   "fr": "Pas moyen",
+   "en": "Medium walk",
+   "es": "Paso medio",
+   "it": "Passo medio",
+   "de": "Mittelschritt",
+   "ja": "中間常歩"
   },
   "phase": "Pas",
   "galopMin": 4,
@@ -434,19 +704,39 @@ window.HYPE_DRESSAGE.fiches = {
   },
   "obs": [
    {
-    "fr": "l'amplitude des foulées"
+    "fr": "l'amplitude des foulées",
+    "en": "the length of the strides",
+    "es": "la amplitud de las zancadas",
+    "it": "l'ampiezza delle falcate",
+    "de": "die Länge der Tritte",
+    "ja": "歩幅の大きさ"
    },
    {
-    "fr": "l'activité des postérieurs"
+    "fr": "l'activité des postérieurs",
+    "en": "the activity of the hind legs",
+    "es": "la actividad de los posteriores",
+    "it": "l'attività dei posteriori",
+    "de": "die Aktivität der Hinterbeine",
+    "ja": "後肢の活発さ"
    },
    {
-    "fr": "la rectitude"
+    "fr": "la rectitude",
+    "en": "straightness",
+    "es": "la rectitud",
+    "it": "la rettitudine",
+    "de": "die Geradheit",
+    "ja": "直進性"
    }
   ],
   "tips": [
    {
     "txt": {
-     "fr": "Laisse le cheval couvrir du terrain."
+     "fr": "Laisse le cheval couvrir du terrain.",
+     "en": "Let the horse cover ground.",
+     "es": "Deja que el caballo cubra terreno.",
+     "it": "Lascia che il cavallo copra terreno.",
+     "de": "Lass das Pferd Boden gewinnen.",
+     "ja": "馬に地面を大きくカバーさせよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -454,7 +744,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Garde une activité régulière des postérieurs."
+     "fr": "Garde une activité régulière des postérieurs.",
+     "en": "Keep the hind legs regularly active.",
+     "es": "Mantén una actividad regular de los posteriores.",
+     "it": "Mantieni un'attività regolare dei posteriori.",
+     "de": "Halte die Hinterbeine gleichmäßig aktiv.",
+     "ja": "後肢の活発さを一定に保とう。"
     },
     "type": "faire",
     "prio": 1,
@@ -462,7 +757,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Autorise l’encolure à s’étendre sans perdre le contact."
+     "fr": "Autorise l’encolure à s’étendre sans perdre le contact.",
+     "en": "Allow the neck to stretch without losing the contact.",
+     "es": "Permite que el cuello se extienda sin perder el contacto.",
+     "it": "Permetti all'incollatura di allungarsi senza perdere il contatto.",
+     "de": "Erlaube dem Hals, sich zu dehnen, ohne die Anlehnung zu verlieren.",
+     "ja": "コンタクトを失わずに首を伸ばさせよう。"
     },
     "type": "faire",
     "prio": 2,
@@ -470,7 +770,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Évite de bloquer le mouvement avec les mains."
+     "fr": "Évite de bloquer le mouvement avec les mains.",
+     "en": "Avoid blocking the movement with your hands.",
+     "es": "Evita bloquear el movimiento con las manos.",
+     "it": "Evita di bloccare il movimento con le mani.",
+     "de": "Vermeide, die Bewegung mit der Hand zu blockieren.",
+     "ja": "手綱で動きを止めないようにしよう。"
     },
     "type": "eviter",
     "prio": 2,
@@ -478,7 +783,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Ne confonds pas amplitude et vitesse."
+     "fr": "Ne confonds pas amplitude et vitesse.",
+     "en": "Don't confuse length of stride with speed.",
+     "es": "No confundas amplitud con velocidad.",
+     "it": "Non confondere ampiezza e velocità.",
+     "de": "Verwechsle Raumgriff nicht mit Geschwindigkeit.",
+     "ja": "歩幅と速さを混同しないこと。"
     },
     "type": "eviter",
     "prio": 3,
@@ -486,7 +796,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Garde une trajectoire précise."
+     "fr": "Garde une trajectoire précise.",
+     "en": "Keep an accurate line.",
+     "es": "Mantén una trayectoria precisa.",
+     "it": "Mantieni una traiettoria precisa.",
+     "de": "Halte eine genaue Linie.",
+     "ja": "正確な線を保とう。"
     },
     "type": "faire",
     "prio": 3,
@@ -500,12 +815,20 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Couvre du terrain"
+  }
  },
  "walk_free": {
   "id": "walk_free",
   "label": {
-   "fr": "Pas libre"
+   "fr": "Pas libre",
+   "en": "Free walk",
+   "es": "Paso libre",
+   "it": "Passo libero",
+   "de": "Schritt am langen Zügel",
+   "ja": "自由常歩"
   },
   "phase": "Pas",
   "galopMin": 3,
@@ -516,19 +839,39 @@ window.HYPE_DRESSAGE.fiches = {
   },
   "obs": [
    {
-    "fr": "la descente d'encolure"
+    "fr": "la descente d'encolure",
+    "en": "the lowering of the neck",
+    "es": "el descenso del cuello",
+    "it": "la discesa dell'incollatura",
+    "de": "das Vorwärts-Abwärts des Halses",
+    "ja": "首の下げ"
    },
    {
-    "fr": "l'activité du pas"
+    "fr": "l'activité du pas",
+    "en": "the activity of the walk",
+    "es": "la actividad del paso",
+    "it": "l'attività del passo",
+    "de": "die Aktivität im Schritt",
+    "ja": "常歩の活発さ"
    },
    {
-    "fr": "un tracé maîtrisé"
+    "fr": "un tracé maîtrisé",
+    "en": "a controlled line",
+    "es": "un trazado controlado",
+    "it": "una traiettoria controllata",
+    "de": "eine kontrollierte Linie",
+    "ja": "制御された動線"
    }
   ],
   "tips": [
    {
     "txt": {
-     "fr": "Laisse le cheval descendre son encolure."
+     "fr": "Laisse le cheval descendre son encolure.",
+     "en": "Let the horse lower its neck.",
+     "es": "Deja que el caballo baje el cuello.",
+     "it": "Lascia che il cavallo abbassi l'incollatura.",
+     "de": "Lass das Pferd den Hals fallen lassen.",
+     "ja": "馬に首を下げさせよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -536,7 +879,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Garde les rênes suffisamment longues."
+     "fr": "Garde les rênes suffisamment longues.",
+     "en": "Keep the reins long enough.",
+     "es": "Mantén las riendas suficientemente largas.",
+     "it": "Tieni le redini abbastanza lunghe.",
+     "de": "Halte die Zügel ausreichend lang.",
+     "ja": "手綱を十分に長く保とう。"
     },
     "type": "faire",
     "prio": 1,
@@ -544,7 +892,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Conserve une marche active et régulière."
+     "fr": "Conserve une marche active et régulière.",
+     "en": "Keep the walk active and regular.",
+     "es": "Conserva una marcha activa y regular.",
+     "it": "Mantieni un'andatura attiva e regolare.",
+     "de": "Erhalte einen aktiven, gleichmäßigen Schritt.",
+     "ja": "活発で規則的な歩みを保とう。"
     },
     "type": "faire",
     "prio": 2,
@@ -552,7 +905,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Évite de jeter complètement les rênes."
+     "fr": "Évite de jeter complètement les rênes.",
+     "en": "Avoid throwing the reins away completely.",
+     "es": "Evita soltar completamente las riendas.",
+     "it": "Evita di abbandonare completamente le redini.",
+     "de": "Vermeide, die Zügel völlig hinzugeben.",
+     "ja": "手綱を完全に放り出さないこと。"
     },
     "type": "eviter",
     "prio": 2,
@@ -560,7 +918,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Ne laisse pas le cheval zigzaguer."
+     "fr": "Ne laisse pas le cheval zigzaguer.",
+     "en": "Don't let the horse weave.",
+     "es": "No dejes que el caballo zigzaguee.",
+     "it": "Non lasciare che il cavallo zigzaghi.",
+     "de": "Lass das Pferd nicht schlängeln.",
+     "ja": "馬を蛇行させないこと。"
     },
     "type": "eviter",
     "prio": 3,
@@ -568,7 +931,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Reprends le contact progressivement avant la transition suivante."
+     "fr": "Reprends le contact progressivement avant la transition suivante.",
+     "en": "Take the contact back progressively before the next transition.",
+     "es": "Recupera el contacto progresivamente antes de la siguiente transición.",
+     "it": "Riprendi il contatto gradualmente prima della transizione successiva.",
+     "de": "Nimm die Anlehnung vor dem nächsten Übergang allmählich wieder auf.",
+     "ja": "次の移行の前に徐々にコンタクトを取り戻そう。"
     },
     "type": "faire",
     "prio": 3,
@@ -582,12 +950,20 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Laisse descendre l'encolure"
+  }
  },
  "walk_extended": {
   "id": "walk_extended",
   "label": {
-   "fr": "Pas allongé"
+   "fr": "Pas allongé",
+   "en": "Extended walk",
+   "es": "Paso alargado",
+   "it": "Passo allungato",
+   "de": "Starker Schritt",
+   "ja": "伸長常歩"
   },
   "phase": "Pas",
   "galopMin": 6,
@@ -598,19 +974,39 @@ window.HYPE_DRESSAGE.fiches = {
   },
   "obs": [
    {
-    "fr": "l'amplitude maximale"
+    "fr": "l'amplitude maximale",
+    "en": "maximum length of stride",
+    "es": "la amplitud máxima",
+    "it": "l'ampiezza massima",
+    "de": "der größte Raumgriff",
+    "ja": "最大の歩幅"
    },
    {
-    "fr": "l'extension de l'encolure"
+    "fr": "l'extension de l'encolure",
+    "en": "the stretch of the neck",
+    "es": "la extensión del cuello",
+    "it": "l'estensione dell'incollatura",
+    "de": "die Dehnung des Halses",
+    "ja": "首の伸展"
    },
    {
-    "fr": "la régularité des quatre temps"
+    "fr": "la régularité des quatre temps",
+    "en": "the regularity of the four beats",
+    "es": "la regularidad de los cuatro tiempos",
+    "it": "la regolarità dei quattro tempi",
+    "de": "die Gleichmäßigkeit des Viertakts",
+    "ja": "四節の規則正しさ"
    }
   ],
   "tips": [
    {
     "txt": {
-     "fr": "Recherche davantage d’amplitude sans accélérer."
+     "fr": "Recherche davantage d’amplitude sans accélérer.",
+     "en": "Look for more length of stride without speeding up.",
+     "es": "Busca más amplitud sin acelerar.",
+     "it": "Cerca più ampiezza senza accelerare.",
+     "de": "Suche mehr Raumgriff, ohne schneller zu werden.",
+     "ja": "速くならずに歩幅を大きくしよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -618,7 +1014,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Laisse l’encolure s’étendre."
+     "fr": "Laisse l’encolure s’étendre.",
+     "en": "Let the neck stretch out.",
+     "es": "Deja que el cuello se extienda.",
+     "it": "Lascia estendere l'incollatura.",
+     "de": "Lass den Hals sich dehnen.",
+     "ja": "首を伸ばさせよう。"
     },
     "type": "faire",
     "prio": 1,
@@ -626,7 +1027,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Garde le cheval droit."
+     "fr": "Garde le cheval droit.",
+     "en": "Keep the horse straight.",
+     "es": "Mantén el caballo recto.",
+     "it": "Mantieni il cavallo diritto.",
+     "de": "Halte das Pferd gerade.",
+     "ja": "馬をまっすぐ保とう。"
     },
     "type": "faire",
     "prio": 2,
@@ -634,7 +1040,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Évite de pousser trop fort avec les jambes."
+     "fr": "Évite de pousser trop fort avec les jambes.",
+     "en": "Avoid pushing too hard with your legs.",
+     "es": "Evita empujar demasiado con las piernas.",
+     "it": "Evita di spingere troppo con le gambe.",
+     "de": "Vermeide zu starkes Treiben mit den Beinen.",
+     "ja": "脚で押しすぎないようにしよう。"
     },
     "type": "eviter",
     "prio": 2,
@@ -642,7 +1053,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Ne perds pas le rythme à quatre temps."
+     "fr": "Ne perds pas le rythme à quatre temps.",
+     "en": "Don't lose the four-beat rhythm.",
+     "es": "No pierdas el ritmo de cuatro tiempos.",
+     "it": "Non perdere il ritmo a quattro tempi.",
+     "de": "Verliere den Viertakt nicht.",
+     "ja": "四節のリズムを失わないこと。"
     },
     "type": "eviter",
     "prio": 3,
@@ -650,7 +1066,12 @@ window.HYPE_DRESSAGE.fiches = {
    },
    {
     "txt": {
-     "fr": "Prépare la reprise des rênes sans casser l’activité."
+     "fr": "Prépare la reprise des rênes sans casser l’activité.",
+     "en": "Prepare to take the reins back without killing the activity.",
+     "es": "Prepara la recuperación de las riendas sin romper la actividad.",
+     "it": "Prepara la ripresa delle redini senza spezzare l'attività.",
+     "de": "Bereite das Aufnehmen der Zügel vor, ohne die Aktivität zu verlieren.",
+     "ja": "活発さを損なわずに手綱を取り直す準備をしよう。"
     },
     "type": "faire",
     "prio": 3,
@@ -664,7 +1085,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Plus d'amplitude, pas plus vite"
+  }
  },
  "trot_working": {
   "id": "trot_working",
@@ -746,7 +1170,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Garde le rythme"
+  }
  },
  "trot_medium": {
   "id": "trot_medium",
@@ -828,7 +1255,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Allonge, ne précipite pas"
+  }
  },
  "trot_extended": {
   "id": "trot_extended",
@@ -910,7 +1340,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Amplitude maximale"
+  }
  },
  "trot_sitting": {
   "id": "trot_sitting",
@@ -992,7 +1425,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Assieds-toi, reste liant"
+  }
  },
  "trot_rising": {
   "id": "trot_rising",
@@ -1074,7 +1510,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Bon diagonal"
+  }
  },
  "canter_working": {
   "id": "canter_working",
@@ -1156,7 +1595,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Galop régulier, cheval droit"
+  }
  },
  "canter_medium": {
   "id": "canter_medium",
@@ -1238,7 +1680,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Allonge la foulée"
+  }
  },
  "canter_extended": {
   "id": "canter_extended",
@@ -1320,7 +1765,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Ouvre, puis referme"
+  }
  },
  "transition_walk_trot": {
   "id": "transition_walk_trot",
@@ -1402,7 +1850,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Départ franc au trot"
+  }
  },
  "transition_trot_walk": {
   "id": "transition_trot_walk",
@@ -1484,7 +1935,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Descends dans le pas"
+  }
  },
  "transition_trot_canter": {
   "id": "transition_trot_canter",
@@ -1566,7 +2020,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Prépare le pli"
+  }
  },
  "transition_canter_trot": {
   "id": "transition_canter_trot",
@@ -1648,7 +2105,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Redresse avant de trotter"
+  }
  },
  "transition_walk_canter": {
   "id": "transition_walk_canter",
@@ -1730,7 +2190,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Pas de foulée de trot"
+  }
  },
  "transition_canter_walk": {
   "id": "transition_canter_walk",
@@ -1812,7 +2275,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Équilibre, puis le pas"
+  }
  },
  "simple_change": {
   "id": "simple_change",
@@ -1894,7 +2360,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Compte tes foulées de pas"
+  }
  },
  "transition_within_trot": {
   "id": "transition_within_trot",
@@ -1976,7 +2445,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Montre la différence"
+  }
  },
  "transition_within_canter": {
   "id": "transition_within_canter",
@@ -2058,7 +2530,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Même cadence"
+  }
  },
  "diagonal_change_rein": {
   "id": "diagonal_change_rein",
@@ -2140,7 +2615,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Termine ta ligne droite"
+  }
  },
  "centerline": {
   "id": "centerline",
@@ -2222,7 +2700,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Vise le point d'arrivée"
+  }
  },
  "across_short_side": {
   "id": "across_short_side",
@@ -2304,7 +2785,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Pars à la lettre"
+  }
  },
  "long_side": {
   "id": "long_side",
@@ -2386,7 +2870,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Parallèle à la piste"
+  }
  },
  "corner": {
   "id": "corner",
@@ -2468,7 +2955,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Passe ton coin en entier"
+  }
  },
  "circle_20m": {
   "id": "circle_20m",
@@ -2550,7 +3040,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Garde ton diamètre"
+  }
  },
  "circle_15m": {
   "id": "circle_15m",
@@ -2632,7 +3125,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Regarde la sortie"
+  }
  },
  "circle_10m": {
   "id": "circle_10m",
@@ -2714,7 +3210,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Engage l'arrière-main"
+  }
  },
  "circle_8m": {
   "id": "circle_8m",
@@ -2796,7 +3295,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Incurvation soutenue"
+  }
  },
  "circle_6m": {
   "id": "circle_6m",
@@ -2878,7 +3380,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Contrôle les épaules"
+  }
  },
  "volte": {
   "id": "volte",
@@ -2960,7 +3465,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Ronde et régulière"
+  }
  },
  "half_volte": {
   "id": "half_volte",
@@ -3042,7 +3550,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Prépare le retour"
+  }
  },
  "reverse_half_volte": {
   "id": "reverse_half_volte",
@@ -3124,7 +3635,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Entre droit, puis tourne"
+  }
  },
  "serpentine_3": {
   "id": "serpentine_3",
@@ -3206,7 +3720,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Boucles égales"
+  }
  },
  "serpentine_4": {
   "id": "serpentine_4",
@@ -3288,7 +3805,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Même taille à chaque boucle"
+  }
  },
  "shallow_loop": {
   "id": "shallow_loop",
@@ -3370,7 +3890,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Courbe fluide"
+  }
  },
  "counter_change_loop": {
   "id": "counter_change_loop",
@@ -3452,7 +3975,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Symétrie des boucles"
+  }
  },
  "rein_back": {
   "id": "rein_back",
@@ -3534,7 +4060,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Diagonaux nets"
+  }
  },
  "halt_reinback_forward": {
   "id": "halt_reinback_forward",
@@ -3616,7 +4145,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Compte tes pas en arrière"
+  }
  },
  "leg_yield": {
   "id": "leg_yield",
@@ -3698,7 +4230,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Croise, reste droit"
+  }
  },
  "shoulder_in": {
   "id": "shoulder_in",
@@ -3780,7 +4315,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Angle constant"
+  }
  },
  "counter_shoulder_in": {
   "id": "counter_shoulder_in",
@@ -3862,7 +4400,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Tiens tes épaules"
+  }
  },
  "travers": {
   "id": "travers",
@@ -3944,7 +4485,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Hanches dedans, cadence"
+  }
  },
  "renvers": {
   "id": "renvers",
@@ -4026,7 +4570,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Garde l'angle"
+  }
  },
  "half_pass_trot": {
   "id": "half_pass_trot",
@@ -4108,7 +4655,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Parallèle au grand côté"
+  }
  },
  "half_pass_canter": {
   "id": "half_pass_canter",
@@ -4190,7 +4740,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Croise sans perdre le galop"
+  }
  },
  "counter_canter": {
   "id": "counter_canter",
@@ -4272,7 +4825,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Garde ton pied"
+  }
  },
  "counter_canter_loop": {
   "id": "counter_canter_loop",
@@ -4354,7 +4910,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Reste au contre-galop"
+  }
  },
  "flying_change": {
   "id": "flying_change",
@@ -4436,7 +4995,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Devant et derrière ensemble"
+  }
  },
  "flying_changes_line": {
   "id": "flying_changes_line",
@@ -4518,7 +5080,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Compte les foulées"
+  }
  },
  "collected_trot": {
   "id": "collected_trot",
@@ -4600,7 +5165,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Engage, relève"
+  }
  },
  "collected_canter": {
   "id": "collected_canter",
@@ -4682,7 +5250,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Équilibre montant"
+  }
  },
  "walk_pirouette_half": {
   "id": "walk_pirouette_half",
@@ -4764,7 +5335,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Garde les pas"
+  }
  },
  "canter_half_pirouette": {
   "id": "canter_half_pirouette",
@@ -4846,7 +5420,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Engage et tourne"
+  }
  },
  "spiral_in_out": {
   "id": "spiral_in_out",
@@ -4928,7 +5505,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Spirale régulière"
+  }
  },
  "enlarge_circle": {
   "id": "enlarge_circle",
@@ -5010,7 +5590,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Agrandis progressivement"
+  }
  },
  "reduce_circle": {
   "id": "reduce_circle",
@@ -5092,7 +5675,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Rétrécis sans ralentir"
+  }
  },
  "precision_letter": {
   "id": "precision_letter",
@@ -5174,7 +5760,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "À la lettre"
+  }
  },
  "rhythm_regularity": {
   "id": "rhythm_regularity",
@@ -5256,7 +5845,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Garde le rythme"
+  }
  },
  "straightness": {
   "id": "straightness",
@@ -5338,7 +5930,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Reste bien droit"
+  }
  },
  "bend": {
   "id": "bend",
@@ -5420,7 +6015,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Contrôle l'épaule extérieure"
+  }
  },
  "balance": {
   "id": "balance",
@@ -5502,7 +6100,10 @@ window.HYPE_DRESSAGE.fiches = {
   ],
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Cheval devant les jambes"
+  }
  },
  "circle_12m": {
   "id": "circle_12m",
@@ -5585,7 +6186,10 @@ window.HYPE_DRESSAGE.fiches = {
   "source": "Blandine",
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Diamètre constant"
+  }
  },
  "curved_line_x": {
   "id": "curved_line_x",
@@ -5668,7 +6272,10 @@ window.HYPE_DRESSAGE.fiches = {
   "source": "Claude",
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Passe exactement par X"
+  }
  },
  "half_circle_20m": {
   "id": "half_circle_20m",
@@ -5751,7 +6358,10 @@ window.HYPE_DRESSAGE.fiches = {
   "source": "Claude",
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Termine ta courbe"
+  }
  },
  "half_circle_10m": {
   "id": "half_circle_10m",
@@ -5834,7 +6444,10 @@ window.HYPE_DRESSAGE.fiches = {
   "source": "Claude",
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Engage dans la courbe"
+  }
  },
  "release_contact": {
   "id": "release_contact",
@@ -5917,7 +6530,10 @@ window.HYPE_DRESSAGE.fiches = {
   "source": "Claude",
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Avance les mains"
+  }
  },
  "change_diagonal": {
   "id": "change_diagonal",
@@ -6000,7 +6616,10 @@ window.HYPE_DRESSAGE.fiches = {
   "source": "Claude",
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Change de diagonal à X"
+  }
  },
  "stirrups_out_in": {
   "id": "stirrups_out_in",
@@ -6083,7 +6702,10 @@ window.HYPE_DRESSAGE.fiches = {
   "source": "Claude",
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Jambes longues, tête haute"
+  }
  },
  "lengthen_few_strides": {
   "id": "lengthen_few_strides",
@@ -6166,7 +6788,10 @@ window.HYPE_DRESSAGE.fiches = {
   "source": "Claude",
   "video": null,
   "illustration": null,
-  "courseId": null
+  "courseId": null,
+  "micro": {
+   "fr": "Quelques foulées, puis reviens"
+  }
  }
 };
 window.HYPE_DRESSAGE.figuresIds = {
