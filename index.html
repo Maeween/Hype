@@ -19639,7 +19639,7 @@ const CIBLE_DIRECTE = (function () {
         const h = ((typeof window !== "undefined" && window.location && window.location.hash) || "").replace(/^#/, "").trim();
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
         if (h) cle = h;
-        const MAP = { "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, "entrainer-tracer": { ecran: "entrainer-tracer" }, tracer: { ecran: "entrainer-tracer" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, babypaille: { galop: "baby", cours: "baby-c17", page: 0 }, babydesselle: { galop: "baby", cours: "baby-c18", page: 0 }, babypansage2: { galop: "baby", cours: "baby-c19", page: 0 }, babysabots: { galop: "baby", cours: "baby-c20", page: 0 }, babycorps: { galop: "baby", cours: "baby-c21", page: 0 }, babyparcours: { galop: "baby", cours: "baby-c22", page: 0 }, babyrenes: { galop: "baby", cours: "baby-c23", page: 0 }, babytrot2: { galop: "baby", cours: "baby-c24", page: 0 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, abordobstacle: { galop: 3, cours: "g3-c3", page: 0 }, trotenleve: { galop: 3, cours: "g3-c1", page: 0 }, agirceder: { galop: 3, cours: "g3-c13", page: 0 }, tourner: { galop: 3, cours: "g3-c14", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, biomeca: { ecran: "cours", galop: 4, cours: "g4-biomeca" }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, examenblanc: { ecran: "examen-blanc", galop: 3 }, examenblancg5: { ecran: "examen-blanc", galop: 5 }, accueil: { ecran: "dashboard" }, reprises: { ecran: "reprises" }, "trace-anime": { ecran: "trace-anime" } };
+        const MAP = { "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, "entrainer-tracer": { ecran: "entrainer-tracer" }, tracer: { ecran: "entrainer-tracer" }, "challenge-reprise": { ecran: "challenge-reprise" }, challenge: { ecran: "challenge-reprise" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, babypaille: { galop: "baby", cours: "baby-c17", page: 0 }, babydesselle: { galop: "baby", cours: "baby-c18", page: 0 }, babypansage2: { galop: "baby", cours: "baby-c19", page: 0 }, babysabots: { galop: "baby", cours: "baby-c20", page: 0 }, babycorps: { galop: "baby", cours: "baby-c21", page: 0 }, babyparcours: { galop: "baby", cours: "baby-c22", page: 0 }, babyrenes: { galop: "baby", cours: "baby-c23", page: 0 }, babytrot2: { galop: "baby", cours: "baby-c24", page: 0 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, abordobstacle: { galop: 3, cours: "g3-c3", page: 0 }, trotenleve: { galop: 3, cours: "g3-c1", page: 0 }, agirceder: { galop: 3, cours: "g3-c13", page: 0 }, tourner: { galop: 3, cours: "g3-c14", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, biomeca: { ecran: "cours", galop: 4, cours: "g4-biomeca" }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, examenblanc: { ecran: "examen-blanc", galop: 3 }, examenblancg5: { ecran: "examen-blanc", galop: 5 }, accueil: { ecran: "dashboard" }, reprises: { ecran: "reprises" }, "trace-anime": { ecran: "trace-anime" } };
         return MAP[cle] || null;
     } catch (e) { return null; }
 })();
@@ -20995,6 +20995,7 @@ function Router() {
                 ecran === "reprises" && React.createElement(EcranReprisesFiches, null),
                 ecran === "trace-anime" && React.createElement(EcranTraceAnime, null),
                 ecran === "entrainer-tracer" && React.createElement(EcranEntrainerTracer, null),
+                ecran === "challenge-reprise" && React.createElement(EcranChallengeReprise, null),
                 ecran === "quiz" && React.createElement(EcranQuiz, null),
                 ecran === "examen-blanc" && React.createElement(EcranExamenBlanc, null),
                 ecran === "examen" && React.createElement(EcranExamen, null),
@@ -35326,7 +35327,7 @@ const VLR_MODES = [
     { id: "tracer", icone: "\u270D\uFE0F", pret: true,
       titre: { fr: "M'entraîner à tracer", en: "Practise drawing", es: "Practicar el trazado", it: "Allenarmi a tracciare", de: "Spur zeichnen üben", ja: "動線を描く練習" },
       texte: { fr: "Dessiner la reprise de mémoire sur une carrière vide.", en: "Draw the test from memory on an empty arena.", es: "Dibujar la reprise de memoria en una pista vacía.", it: "Disegnare la ripresa a memoria su un campo vuoto.", de: "Die Aufgabe aus dem Gedächtnis auf einer leeren Bahn zeichnen.", ja: "空の馬場に記憶で動線を描く。" } },
-    { id: "challenge", icone: "\uD83C\uDFC1", pret: false,
+    { id: "challenge", icone: "\uD83C\uDFC1", pret: true,
       titre: { fr: "Challenge", en: "Challenge", es: "Desafío", it: "Sfida", de: "Challenge", ja: "チャレンジ" },
       texte: { fr: "Tester sa connaissance des lettres, des figures et de leur ordre.", en: "Test your knowledge of the letters, the figures and their order.", es: "Pon a prueba tu conocimiento de las letras, las figuras y su orden.", it: "Metti alla prova lettere, figure e il loro ordine.", de: "Buchstaben, Figuren und ihre Reihenfolge testen.", ja: "標示文字・図・順序の知識を試す。" } },
     { id: "immersion", icone: "\uD83C\uDFC7", pret: true,
@@ -35400,8 +35401,11 @@ function EncartVivreLaReprise({ niveau, tr, onModes }) {
                 const on = Math.hypot(q.x - x, q.y - y) < 16;
                 if (n.dataset.on === (on ? "1" : "0")) return;
                 n.dataset.on = on ? "1" : "0";
-                n.style.fill = on ? COLORS.turquoise : "#6B7784";
-                n.style.fontSize = on ? "17px" : "13px";
+                /* 28/07 : cette boucle réécrit fill et fontSize à chaque image — le style initial des
+                   lettres (blanc cassé, 14 px) était donc écrasé par l ancien gris dès que le cheval
+                   bougeait. Les deux valeurs doivent rester alignées sur celles du rendu initial. */
+                n.style.fill = on ? COLORS.turquoise : "#F4F7FA";
+                n.style.fontSize = on ? "28px" : "24px";
             });
             rafRef.current = requestAnimationFrame(pas);
         };
@@ -35435,7 +35439,7 @@ function EncartVivreLaReprise({ niveau, tr, onModes }) {
                     const src = LETTER_POINTS[l], q = vlrProj(src);
                     const dy = src.x === 100 ? -13 : (src.x < 100 ? 15 : -11);
                     return React.createElement("text", { key: l, ref: (n) => { lettresRef.current[l] = n; }, x: q.x, y: q.y + dy, textAnchor: "middle",
-                        style: { fontFamily: "'Montserrat',sans-serif", fontWeight: 700, fontSize: "13px", fill: "#6B7784", transition: "fill .8s ease, font-size .8s ease" } }, l);
+                        style: { fontFamily: "'Montserrat',sans-serif", fontWeight: 800, fontSize: "24px", fill: "#F4F7FA", paintOrder: "stroke", stroke: "#060709", strokeWidth: 7, strokeLinejoin: "round", transition: "fill .8s ease, font-size .8s ease" } }, l);
                 }),
                 React.createElement("path", { d: "M " + donnees.pts.map((p) => p.x + " " + p.y).join(" L "), fill: "none", stroke: "rgba(244,247,250,0.10)", strokeWidth: 1.4, strokeDasharray: "2 5" }),
                 React.createElement("path", { ref: haloRef, fill: "none", stroke: COLORS.turquoise, strokeWidth: 6, opacity: 0.16, filter: "url(#vlrh)", strokeLinecap: "round" }),
@@ -35460,7 +35464,7 @@ function PanneauModesReprise({ tr, onFermer, setEcran }) {
                 React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: COLORS.blanc } }, tr(m.titre)),
                 m.phare ? React.createElement("div", { style: { marginLeft: "auto", fontSize: 8.5, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase", color: COLORS.turquoise, border: "1px solid rgba(32,217,245,0.4)", borderRadius: 999, padding: "3px 8px" } }, tr(VLR_TXT.ici)) : null),
             React.createElement("p", { style: { margin: "0 0 12px", fontSize: 12, lineHeight: 1.55, color: COLORS.grisDoux } }, tr(m.texte)),
-            React.createElement("button", { disabled: !m.pret, onClick: () => { if (!m.pret) return; if (m.id === "immersion") { try { window.__traceImmersion = true; } catch (e) { } } onFermer(); setEcran(m.id === "tracer" ? "entrainer-tracer" : "trace-anime"); },
+            React.createElement("button", { disabled: !m.pret, onClick: () => { if (!m.pret) return; if (m.id === "immersion") { try { window.__traceImmersion = true; } catch (e) { } } onFermer(); setEcran(m.id === "tracer" ? "entrainer-tracer" : m.id === "challenge" ? "challenge-reprise" : "trace-anime"); },
                 style: { width: "100%", padding: 12, borderRadius: 13, fontSize: 12.5, fontWeight: 800, border: m.pret ? "none" : `1px solid ${COLORS.nuitBordure}`, background: m.pret ? (m.phare ? COLORS.turquoise : "rgba(32,217,245,0.14)") : "transparent", color: m.pret ? (m.phare ? COLORS.nuit : COLORS.turquoise) : COLORS.grisTresDoux } },
                 tr(m.pret ? VLR_TXT.lancer : VLR_TXT.bientot)))),
         React.createElement("div", { style: { height: "calc(env(safe-area-inset-bottom) + 40px)" } }));
@@ -36004,11 +36008,11 @@ const HYPE_DECORS = {
 };
 const ORDRE_DECORS = ["spectral", "mer", "sable", "classique"];
 const HYPE_PALETTES = {
-    nuit: { accent: "#20D9F5", accentVif: "#20D9F5", lettre: "#6B7784", lettreAxe: "#9AA6AE",
+    nuit: { accent: "#20D9F5", accentVif: "#20D9F5", lettre: "#F4F7FA", lettreAxe: "#FFFFFF", contourLettre: "#060709",
             pas: "#4ADE80", trot: "#3B9DFF", galop: "#FF5A5F", arret: "#8A929C",
             piste: "rgba(244,247,250,0.20)", froid: "rgba(244,247,250,0.14)", milieu: "rgba(244,247,250,0.08)",
             cercle: "rgba(32,217,245,0.22)", sol: "#1B242F", texteLegende: "rgba(234,241,244,0.75)" },
-    jour: { accent: "#0A5F6E", accentVif: "#08454F", lettre: "#23303C", lettreAxe: "#101922",
+    jour: { accent: "#0A5F6E", accentVif: "#08454F", lettre: "#16212B", lettreAxe: "#070D13", contourLettre: "rgba(248,250,252,0.92)",
             pas: "#14612F", trot: "#123F73", galop: "#9B2226", arret: "#3A4550",
             piste: "rgba(12,18,24,0.34)", froid: "rgba(12,18,24,0.22)", milieu: "rgba(12,18,24,0.16)",
             cercle: "rgba(10,95,110,0.30)", sol: "#C9D5DC", texteLegende: "rgba(18,26,34,0.80)" },
@@ -36039,6 +36043,13 @@ function hypeDecorMemorise() {
 /* Vue cavalier : bascule de la carriere et compensation du cheval. A 54 degres la carriere
    devenait un trapeze ecrase et le cheval se couchait a plat : illisible (constat Blandine). */
 const IMMERSION_ANGLE = 28;
+/* 28/07 (« mode immersif complètement déconnant », Blandine) : la vue cavalier recentrait le cheval
+   avec un translate allant jusqu'à 65 % de la hauteur du contenu, pour un zoom de 1,1 seulement.
+   La carrière quittait donc le cadre et laissait du vide sur les bords. Deux réglages qui vont
+   ensemble : IMMERSION_ZOOM doit valoir au moins 1 + 2 x amplitude, et IMMERSION_SUIVI atténue le
+   recentrage. Amplitude max 65 % x 0,55 = 36 % -> zoom minimum 1,72, d'où 1,75. */
+const IMMERSION_ZOOM = 1.75;
+const IMMERSION_SUIVI = 0.55;
 const IMMERSION_ETIRE_CHEVAL = (1 / Math.cos((IMMERSION_ANGLE * Math.PI) / 180)).toFixed(3);
 const TRACE_ANTICIPE_UNITES = 95;
 const TRACE_SEUILS = { anticipe: 0.02, debut: 0.04, milieu: 0.35, fin: 0.7 };
@@ -36523,7 +36534,7 @@ function EcranEntrainerTracer() {
                 React.createElement("line", { x1: 100, y1: 20, x2: 100, y2: 500, stroke: `${COLORS.turquoise}1F`, strokeWidth: 0.7, strokeDasharray: "4 6" }),
                 Object.keys(LETTER_POINTS).map((nom) => {
                     const p = LETTER_POINTS[nom], dec = entrDecalageLettre(p);
-                    return React.createElement("text", { key: nom, x: p.x + dec.dx, y: p.y + dec.dy, textAnchor: "middle", style: { fill: COLORS.blanc, fontFamily: "Montserrat, sans-serif", fontSize: 13, fontWeight: 700, paintOrder: "stroke", stroke: COLORS.nuit, strokeWidth: 4, strokeLinejoin: "round", letterSpacing: 0.5 } }, nom);
+                    return React.createElement("text", { key: nom, x: p.x + dec.dx, y: p.y + dec.dy, textAnchor: "middle", style: { fill: COLORS.blanc, fontFamily: "Montserrat, sans-serif", fontSize: 24, fontWeight: 800, paintOrder: "stroke", stroke: COLORS.nuit, strokeWidth: 7, strokeLinejoin: "round", letterSpacing: 0.5 } }, nom);
                 }),
                 React.createElement("path", { ref: pModeleRef, style: { display: "none" }, fill: "none", stroke: COLORS.turquoise, strokeWidth: 3.4, strokeLinecap: "round", strokeLinejoin: "round", strokeDasharray: "7 7", opacity: 0.55, d: entrChemin(trace.points) }),
                 React.createElement("path", { ref: pIndiceRef, style: { display: "none" }, fill: "none", stroke: "#FFC53D", strokeWidth: 3.6, strokeLinecap: "round", strokeLinejoin: "round", strokeDasharray: "9 6", markerEnd: "url(#entrFleche)" }),
@@ -36552,6 +36563,431 @@ function EcranEntrainerTracer() {
                     + (indices === 0 ? "" : " · " + (indices === 1 ? T("unIndiceDemande") : indices + " " + T("nIndicesDemandes")))),
                 React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 9 } },
                     btn(T("recommencer"), toutEffacer, true, true))) : null));
+}
+
+/* ▸ CHALLENGE — 4ᵉ mode du panneau des reprises (maquette v2 validée le 28/07).
+   Quatre épreuves solo, hors ligne, sur les vraies reprises : placer les lettres, remettre les
+   figures dans l'ordre, reconnaître une figure à son tracé, et deviner à quelle reprise appartient
+   un enchaînement. Aucun duel en direct (décision de Blandine).
+   Les conseils du coach n'apparaissent QU'APRÈS validation — seule spec écrite reçue sur ce mode.
+   Décors, palettes et helpers repris de l'écran du tracé animé : rien n'est dupliqué. */
+const CHAL_NB_LETTRES = 10;   /* questions de « Les lettres » */
+const CHAL_TOL_M = 2.5;       /* tolérance de placement, en mètres réels (20 m = 160 unités svg) */
+const CHAL_NB_ORDRE = 5;      /* figures à remettre dans l'ordre — 5 et pas 20 : injouable sur un téléphone */
+const CHAL_NB_RECO = 6;       /* questions de « Reconnais la figure » */
+const CHAL_NB_REPRISE = 5;    /* questions de « De quelle reprise ? » */
+const CHAL_ENCHAINEMENT = 3;  /* figures montrées par question dans cette épreuve */
+const CHAL_U_PAR_M = 8;
+const CHAL_TXT = {
+    titre: { fr: "Challenge", en: "Challenge", es: "Desafío", it: "Sfida", de: "Challenge", ja: "チャレンジ" },
+    intro: { fr: "Quatre épreuves pour vérifier que tu connais ta reprise par cœur. Les conseils du coach n'arrivent qu'après validation.", en: "Four tests to check you know your dressage test by heart. The coach's tips only come after you validate.", es: "Cuatro pruebas para comprobar que te sabes la reprise de memoria. Los consejos del entrenador solo llegan después de validar.", it: "Quattro prove per verificare che conosci la ripresa a memoria. I consigli del coach arrivano solo dopo la validazione.", de: "Vier Prüfungen, um zu sehen, ob du deine Aufgabe im Kopf hast. Die Tipps des Trainers kommen erst nach der Auswertung.", ja: "課目を覚えているか確かめる4つの挑戦。コーチの助言は採点のあとにだけ表示されます。" },
+    epLettres: { fr: "Les lettres", en: "The letters", es: "Las letras", it: "Le lettere", de: "Die Buchstaben", ja: "標示文字" },
+    epLettresS: { fr: "Place la lettre demandée sur une carrière vide.", en: "Place the letter you are asked for on an empty arena.", es: "Coloca la letra pedida en una pista vacía.", it: "Posiziona la lettera richiesta su un campo vuoto.", de: "Setze den genannten Buchstaben auf eine leere Bahn.", ja: "空の馬場に指定された文字を置きましょう。" },
+    epOrdre: { fr: "Dans l'ordre", en: "In order", es: "En orden", it: "In ordine", de: "In der Reihenfolge", ja: "順番に" },
+    epOrdreS: { fr: "Remets des figures consécutives dans le bon ordre.", en: "Put consecutive figures back in the right order.", es: "Vuelve a poner figuras consecutivas en el orden correcto.", it: "Rimetti in ordine figure consecutive.", de: "Bringe aufeinanderfolgende Figuren in die richtige Reihenfolge.", ja: "連続する図を正しい順に並べましょう。" },
+    epReco: { fr: "Reconnais la figure", en: "Name the figure", es: "Reconoce la figura", it: "Riconosci la figura", de: "Erkenne die Figur", ja: "図を見分ける" },
+    epRecoS: { fr: "Le tracé s'anime, retrouve de quelle figure il s'agit.", en: "The track is drawn, work out which figure it is.", es: "El trazado se anima, descubre de qué figura se trata.", it: "Il tracciato si anima, scopri di quale figura si tratta.", de: "Die Spur wird gezeichnet, finde die Figur heraus.", ja: "動線が描かれます。どの図か当てましょう。" },
+    epReprise: { fr: "De quelle reprise ?", en: "Which test is it?", es: "¿De qué reprise?", it: "Di quale ripresa?", de: "Welche Aufgabe ist das?", ja: "どの課目？" },
+    epRepriseS: { fr: "Un enchaînement de figures, tiré dans toutes les reprises. Le niveau concours.", en: "A sequence of figures, drawn from every test. Competition level.", es: "Una secuencia de figuras, tomada de todas las reprises. Nivel concurso.", it: "Una sequenza di figure, presa da tutte le riprese. Livello concorso.", de: "Eine Figurenfolge aus allen Aufgaben. Turnierniveau.", ja: "すべての課目から抽出した図の連続。競技レベルです。" },
+    ou: { fr: "Où se trouve la lettre", en: "Where is the letter", es: "¿Dónde está la letra", it: "Dov'è la lettera", de: "Wo liegt der Buchstabe", ja: "この文字はどこ：" },
+    juste: { fr: "Juste", en: "Correct", es: "Correcto", it: "Giusto", de: "Richtig", ja: "正解" },
+    rate: { fr: "Raté", en: "Missed", es: "Fallado", it: "Sbagliato", de: "Daneben", ja: "はずれ" },
+    ecart: { fr: "d'écart", en: "off", es: "de desvío", it: "di scarto", de: "daneben", ja: "の誤差" },
+    lettresPlacees: { fr: "lettres placées", en: "letters placed", es: "letras colocadas", it: "lettere posizionate", de: "Buchstaben gesetzt", ja: "文字を配置" },
+    tolerance: { fr: "Tolérance", en: "Tolerance", es: "Tolerancia", it: "Tolleranza", de: "Toleranz", ja: "許容範囲" },
+    toucheOrdre: { fr: "Touche ces figures dans l'ordre de la reprise.", en: "Tap these figures in the order of the test.", es: "Toca estas figuras en el orden de la reprise.", it: "Tocca queste figure nell'ordine della ripresa.", de: "Tippe diese Figuren in der Reihenfolge der Aufgabe an.", ja: "課目の順番どおりに図をタップしてください。" },
+    effacer: { fr: "Effacer", en: "Clear", es: "Borrar", it: "Cancella", de: "Löschen", ja: "消す" },
+    valider: { fr: "Valider", en: "Check", es: "Validar", it: "Valida", de: "Prüfen", ja: "採点する" },
+    bonnePlace: { fr: "à la bonne place", en: "in the right place", es: "en el lugar correcto", it: "al posto giusto", de: "an der richtigen Stelle", ja: "正しい位置" },
+    quelleFigure: { fr: "Quelle figure vient d'être tracée ?", en: "Which figure was just drawn?", es: "¿Qué figura se acaba de trazar?", it: "Quale figura è stata appena tracciata?", de: "Welche Figur wurde gerade gezeichnet?", ja: "いま描かれたのはどの図でしょう？" },
+    cetait: { fr: "C'était", en: "It was", es: "Era", it: "Era", de: "Es war", ja: "正解は" },
+    figuresReconnues: { fr: "figures reconnues", en: "figures named", es: "figuras reconocidas", it: "figure riconosciute", de: "Figuren erkannt", ja: "図を正解" },
+    quelleReprise: { fr: "À quelle reprise appartient cet enchaînement ?", en: "Which test does this sequence belong to?", es: "¿A qué reprise pertenece esta secuencia?", it: "A quale ripresa appartiene questa sequenza?", de: "Zu welcher Aufgabe gehört diese Folge?", ja: "この連続はどの課目のものでしょう？" },
+    reprisesReconnues: { fr: "reprises reconnues", en: "tests identified", es: "reprises reconocidas", it: "riprese riconosciute", de: "Aufgaben erkannt", ja: "課目を正解" },
+    tirage: { fr: "Tirage effectué dans", en: "Drawn from", es: "Sorteo entre", it: "Estrazione fra", de: "Gezogen aus", ja: "抽出元：" },
+    reprisesMot: { fr: "reprises", en: "tests", es: "reprises", it: "riprese", de: "Aufgaben", ja: "課目" },
+    rejouer: { fr: "Rejouer", en: "Play again", es: "Jugar otra vez", it: "Rigioca", de: "Nochmal", ja: "もう一度" },
+    retour: { fr: "Retour", en: "Back", es: "Volver", it: "Indietro", de: "Zurück", ja: "戻る" },
+    coach: { fr: "Le conseil du coach", en: "The coach's tip", es: "El consejo del entrenador", it: "Il consiglio del coach", de: "Der Tipp des Trainers", ja: "コーチの助言" },
+    termine: { fr: "Challenge terminé", en: "Challenge complete", es: "Desafío terminado", it: "Sfida completata", de: "Challenge beendet", ja: "チャレンジ終了" },
+    pasAssez: { fr: "Cette reprise n'a pas assez de figures dessinables.", en: "This test has too few drawable figures.", es: "Esta reprise no tiene suficientes figuras dibujables.", it: "Questa ripresa non ha abbastanza figure disegnabili.", de: "Diese Aufgabe hat zu wenige zeichenbare Figuren.", ja: "この課目には描ける図が足りません。" },
+};
+function chalChemin(pts) {
+    if (!pts || !pts.length) return "";
+    return "M " + pts.map((p) => p.x.toFixed(1) + " " + p.y.toFixed(1)).join(" L ");
+}
+function chalMelange(a) {
+    const t = a.slice();
+    for (let i = t.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const x = t[i]; t[i] = t[j]; t[j] = x; }
+    return t;
+}
+function chalReprisesDispo() {
+    return ORDRE_REPRISES_FFE.filter((k) => REPRISES_FFE[k]);
+}
+function chalNoteCls(pct) { return pct >= 80 ? "#4ADE80" : pct >= 50 ? "#FFC53D" : COLORS.alerte; }
+/* Carrière posée sur le décor choisi, comme dans « Voir la reprise » et « Immersion ». La palette
+   suit le décor : sur « Sable clair » la carrière est blanche, les lettres doivent rester sombres. */
+function ChalScene({ decor, avecLettres, enfants, hauteur, onPointer }) {
+    const info = HYPE_DECORS[decor] || HYPE_DECORS.spectral;
+    const P = info.clair ? HYPE_PALETTES.jour : HYPE_PALETTES.nuit;
+    return React.createElement("div", { style: { position: "relative", borderRadius: 20, overflow: "hidden", border: `1px solid ${COLORS.ligne}`, marginBottom: 9, background: info.image ? "#070A0E" : info.fond, backgroundImage: info.image ? hypeFondDouble(info.image) : undefined, backgroundSize: "cover", backgroundPosition: "center" } },
+        React.createElement("svg", { viewBox: "-11 -11 222 542", preserveAspectRatio: "xMidYMid meet", onPointerDown: onPointer, style: { position: "relative", width: "100%", height: hauteur || "60vh", display: "block", touchAction: "none" } },
+            React.createElement("rect", { x: 20, y: 20, width: 160, height: 480, rx: 4, fill: "none", stroke: P.piste, strokeWidth: 1.6 }),
+            React.createElement("line", { x1: 100, y1: 20, x2: 100, y2: 500, stroke: P.milieu, strokeWidth: 0.7, strokeDasharray: "4 6" }),
+            avecLettres ? Object.keys(LETTER_POINTS).map((nom) => {
+                const p = LETTER_POINTS[nom];
+                let dx = 0, dy = 4;
+                if (p.x === 20) dx = -12; else if (p.x === 180) dx = 12;
+                if (p.y === 20) dy = -8; else if (p.y === 500) dy = 15;
+                return React.createElement("text", { key: nom, x: p.x + dx, y: p.y + dy, textAnchor: "middle", style: { fill: P.lettre, fontFamily: "Montserrat, sans-serif", fontSize: 24, fontWeight: 800, paintOrder: "stroke", stroke: P.contourLettre, strokeWidth: 7, strokeLinejoin: "round", letterSpacing: 0.5, filter: "drop-shadow(0 0 4px rgba(6,7,9,0.85))" } }, nom);
+            }) : null,
+            enfants),
+        React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: info.clair ? "linear-gradient(180deg,rgba(248,250,252,0.22) 0%,rgba(248,250,252,0) 30%,rgba(248,250,252,0.28) 100%)" : "linear-gradient(180deg,rgba(6,7,9,0.34) 0%,rgba(6,7,9,0.06) 26%,rgba(6,7,9,0.06) 72%,rgba(6,7,9,0.42) 100%)" } }));
+}
+function ChalPastilles({ decor, setDecor, tr }) {
+    return React.createElement("div", { style: { display: "flex", gap: 7, justifyContent: "center", marginBottom: 9 } },
+        ORDRE_DECORS.map((k) => {
+            const d = HYPE_DECORS[k];
+            return React.createElement("button", { key: k, onClick: () => setDecor(k), title: tr(d.nom),
+                style: { width: 30, height: 30, borderRadius: "50%", padding: 0, border: `1.5px solid ${k === decor ? COLORS.turquoise : "#2A343E"}`, boxShadow: k === decor ? `0 0 10px ${COLORS.turquoise}66` : "none", backgroundColor: "#0E141A", backgroundImage: d.image ? hypeFondDouble(d.image) : undefined, backgroundSize: "cover", backgroundPosition: "center" } });
+        }));
+}
+function ChalEnTete({ kick, question, fait, total }) {
+    return React.createElement("div", { style: { padding: "9px 11px", borderRadius: 14, background: COLORS.nuitClaire, border: `1px solid ${COLORS.turquoise}26`, marginBottom: 8 } },
+        React.createElement("div", { style: { fontSize: 9.5, letterSpacing: 1.4, fontWeight: 800, textTransform: "uppercase", color: COLORS.turquoise } }, kick),
+        React.createElement("div", { style: { fontSize: 15, fontWeight: 700, marginTop: 4, lineHeight: 1.35, color: COLORS.encre } }, question),
+        React.createElement("div", { style: { height: 3, borderRadius: 3, background: "#1B2429", overflow: "hidden", marginTop: 8 } },
+            React.createElement("div", { style: { height: "100%", width: Math.round((fait / total) * 100) + "%", background: `linear-gradient(90deg,${COLORS.turquoise},#7BE8FF)`, transition: "width .3s" } })));
+}
+/* Conseils du coach : uniquement après validation, et seulement sur les figures manquées. */
+function ChalCoach({ cle, rates, tr }) {
+    const BIB = (typeof window !== "undefined" && window.HYPE_DRESSAGE) ? window.HYPE_DRESSAGE : null;
+    if (!BIB || !rates || !rates.length) return null;
+    const blocs = [];
+    const vus = {};
+    rates.forEach((fi) => {
+        if (blocs.length >= 2) return;
+        const f = BIB.ficheFigure(cle, fi);
+        if (!f || !f.principale || vus[f.principale.id]) return;
+        vus[f.principale.id] = true;
+        blocs.push(f.principale);
+    });
+    if (!blocs.length) return null;
+    return React.createElement("div", { style: { marginTop: 10, padding: "12px 13px", borderRadius: 15, border: `1px solid ${COLORS.turquoise}33`, background: `${COLORS.turquoise}0D` } },
+        React.createElement("div", { style: { fontSize: 9.5, letterSpacing: 1.4, fontWeight: 800, textTransform: "uppercase", color: COLORS.turquoise, marginBottom: 7 } }, "\uD83C\uDF93 " + tr(CHAL_TXT.coach)),
+        blocs.map((f) => React.createElement("div", { key: f.id },
+            React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14, color: COLORS.encre, margin: "9px 0 4px" } }, tr(f.label)),
+            (f.tips || []).slice(0, 2).map((t, j) => React.createElement("div", { key: j, style: { display: "flex", gap: 8, fontSize: 12.5, lineHeight: 1.5, color: "#D2DFE6", margin: "3px 0" } },
+                React.createElement("span", { style: { flexShrink: 0, color: t.type === "eviter" ? COLORS.alerte : COLORS.turquoise } }, t.type === "eviter" ? "\u2717" : "\u2022"),
+                React.createElement("span", null, tr(t.txt)))))));
+}
+function ChalBoutons({ onRejouer, onRetour, tr }) {
+    const b = (txt, onClick, pri) => React.createElement("button", { onClick: onClick, style: { flex: 1, padding: "12px 10px", borderRadius: 14, fontSize: 12, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", border: pri ? "none" : `1px solid ${COLORS.ligne}`, background: pri ? COLORS.turquoise : COLORS.nuitClaire, color: pri ? COLORS.nuit : COLORS.grisDoux } }, txt);
+    return React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
+        b(tr(CHAL_TXT.rejouer), onRejouer, false), b(tr(CHAL_TXT.retour), onRetour, true));
+}
+function ChalResultat({ pct, detail, tr }) {
+    return React.createElement("div", { style: { marginTop: 10, padding: "12px 13px", borderRadius: 15, border: `1px solid ${COLORS.ligne}`, background: COLORS.nuitClaire } },
+        React.createElement("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 26, lineHeight: 1, color: chalNoteCls(pct) } }, pct + " %"),
+        React.createElement("span", { style: { fontSize: 12, fontWeight: 700, marginLeft: 8, color: chalNoteCls(pct) } }, detail));
+}
+
+/* ══ ÉPREUVE 1 — LES LETTRES ══ */
+function ChalEpreuveLettres({ decor, setDecor, tr, onFin, onRetour }) {
+    const [noms] = React.useState(() => chalMelange(Object.keys(LETTER_POINTS)).slice(0, CHAL_NB_LETTRES));
+    const [i, setI] = React.useState(0);
+    const [justes, setJustes] = React.useState(0);
+    const [essai, setEssai] = React.useState(null);
+    const fini = i >= noms.length;
+    React.useEffect(() => { if (fini) onFin(Math.round((justes / noms.length) * 100)); }, [fini]);
+    const toucher = (e) => {
+        if (essai) return;
+        const svg = e.currentTarget;   /* le <svg> : ChalScene attache onPointerDown dessus */
+        const pt = svg.createSVGPoint();
+        pt.x = e.clientX; pt.y = e.clientY;
+        const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+        const c = LETTER_POINTS[noms[i]];
+        const d = Math.hypot(p.x - c.x, p.y - c.y) / CHAL_U_PAR_M;
+        const ok = d <= CHAL_TOL_M;
+        if (ok) setJustes((n) => n + 1);
+        setEssai({ x: p.x, y: p.y, ok: ok, d: d });
+        setTimeout(() => { setEssai(null); setI((n) => n + 1); }, 1200);
+    };
+    if (fini) {
+        const pct = Math.round((justes / noms.length) * 100);
+        return React.createElement("div", null,
+            React.createElement(ChalResultat, { pct: pct, detail: justes + " / " + noms.length + " " + tr(CHAL_TXT.lettresPlacees), tr: tr }),
+            React.createElement("p", { style: { fontSize: 12, color: COLORS.grisTresDoux, margin: "10px 0 0" } }, tr(CHAL_TXT.tolerance) + " : " + CHAL_TOL_M + " m"),
+            React.createElement(ChalBoutons, { onRejouer: () => { setI(0); setJustes(0); }, onRetour: onRetour, tr: tr }));
+    }
+    const c = LETTER_POINTS[noms[i]];
+    const P = (HYPE_DECORS[decor] && HYPE_DECORS[decor].clair) ? HYPE_PALETTES.jour : HYPE_PALETTES.nuit;
+    return React.createElement("div", null,
+        React.createElement(ChalEnTete, { kick: tr(CHAL_TXT.epLettres) + " — " + (i + 1) + "/" + noms.length, question: tr(CHAL_TXT.ou) + " " + noms[i] + " ?", fait: i, total: noms.length }),
+        React.createElement(ChalScene, { decor: decor, avecLettres: false, hauteur: "60vh", onPointer: toucher,
+            enfants: React.createElement("g", null,
+                essai ? React.createElement(React.Fragment, null,
+                    React.createElement("circle", { cx: c.x, cy: c.y, r: 10, fill: "none", stroke: "#4ADE80", strokeWidth: 2.4 }),
+                    React.createElement("text", { x: c.x + (c.x === 20 ? -12 : c.x === 180 ? 12 : 0), y: c.y + (c.y === 20 ? -8 : c.y === 500 ? 15 : 4), textAnchor: "middle", style: { fill: P.lettre, fontFamily: "Montserrat, sans-serif", fontSize: 24, fontWeight: 800, paintOrder: "stroke", stroke: P.contourLettre, strokeWidth: 7, filter: "drop-shadow(0 0 4px rgba(6,7,9,0.85))" } }, noms[i]),
+                    React.createElement("circle", { cx: essai.x, cy: essai.y, r: 3.6, fill: essai.ok ? "#4ADE80" : COLORS.alerte })) : null) }),
+        React.createElement(ChalPastilles, { decor: decor, setDecor: setDecor, tr: tr }),
+        React.createElement("div", { style: { textAlign: "center", minHeight: 20, fontSize: 13, fontWeight: 700, color: essai ? (essai.ok ? "#4ADE80" : COLORS.alerte) : "transparent" } },
+            essai ? (essai.ok ? tr(CHAL_TXT.juste) : tr(CHAL_TXT.rate)) + " — " + essai.d.toFixed(1) + " m " + tr(CHAL_TXT.ecart) : "\u00A0"));
+}
+
+/* ══ ÉPREUVE 2 — DANS L'ORDRE ══ */
+function ChalEpreuveOrdre({ cle, tr, onFin, onRetour }) {
+    const figs = REPRISES_FFE[cle].figures;
+    const [tour, setTour] = React.useState(0);
+    const bloc = React.useMemo(() => {
+        const n = Math.min(CHAL_NB_ORDRE, figs.length);
+        const d = Math.max(0, Math.floor(Math.random() * Math.max(1, figs.length - n)));
+        const out = [];
+        for (let k = 0; k < n; k++) out.push({ i: d + k, txt: tr(figs[d + k]) });
+        return out;
+    }, [cle, tour]);
+    const propos = React.useMemo(() => chalMelange(bloc), [bloc]);
+    const [choix, setChoix] = React.useState([]);
+    const [valide, setValide] = React.useState(false);
+    const justes = bloc.filter((b, k) => choix[k] === b.i).length;
+    const rates = bloc.filter((b, k) => choix[k] !== b.i).map((b) => b.i);
+    const pct = Math.round((justes / bloc.length) * 100);
+    React.useEffect(() => { if (valide) onFin(pct); }, [valide]);
+    const basculer = (i) => {
+        if (valide) return;
+        setChoix((c) => {
+            const at = c.indexOf(i);
+            if (at >= 0) { const n = c.slice(); n.splice(at, 1); return n; }
+            return c.length < bloc.length ? c.concat([i]) : c;
+        });
+    };
+    return React.createElement("div", null,
+        React.createElement(ChalEnTete, { kick: tr(CHAL_TXT.epOrdre), question: tr(CHAL_TXT.toucheOrdre), fait: choix.length, total: bloc.length }),
+        propos.map((p) => {
+            const rang = choix.indexOf(p.i);
+            const bonRang = bloc.findIndex((x) => x.i === p.i);
+            const etat = valide ? (rang === bonRang ? "bon" : "faux") : (rang >= 0 ? "pris" : "");
+            const bord = etat === "bon" ? "#4ADE8088" : etat === "faux" ? COLORS.alerte + "88" : etat === "pris" ? COLORS.turquoise + "88" : COLORS.ligne;
+            const fond = etat === "bon" ? "#4ADE801A" : etat === "faux" ? COLORS.alerte + "1A" : etat === "pris" ? COLORS.turquoise + "14" : "rgba(255,255,255,0.02)";
+            return React.createElement("button", { key: p.i, onClick: () => basculer(p.i),
+                style: { width: "100%", display: "flex", gap: 11, alignItems: "flex-start", textAlign: "left", padding: "12px 13px", marginBottom: 8, borderRadius: 14, border: `1px solid ${bord}`, background: fond, color: etat ? COLORS.encre : COLORS.grisDoux, fontSize: 13.5, lineHeight: 1.45, fontWeight: etat ? 600 : 500 } },
+                React.createElement("span", { style: { width: 22, height: 22, flexShrink: 0, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, border: `1.5px solid ${rang >= 0 ? COLORS.turquoise : "#4A5560"}`, background: rang >= 0 ? COLORS.turquoise : "transparent", color: rang >= 0 ? COLORS.nuit : "#4A5560" } }, rang >= 0 ? String(rang + 1) : ""),
+                React.createElement("span", null, p.txt));
+        }),
+        !valide ? React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 2 } },
+            React.createElement("button", { onClick: () => setChoix([]), style: { flex: 1, padding: "12px 10px", borderRadius: 14, fontSize: 12, fontWeight: 800, textTransform: "uppercase", border: `1px solid ${COLORS.ligne}`, background: COLORS.nuitClaire, color: COLORS.grisDoux } }, tr(CHAL_TXT.effacer)),
+            React.createElement("button", { disabled: choix.length !== bloc.length, onClick: () => setValide(true), style: { flex: 1, padding: "12px 10px", borderRadius: 14, fontSize: 12, fontWeight: 800, textTransform: "uppercase", border: "none", background: COLORS.turquoise, color: COLORS.nuit, opacity: choix.length === bloc.length ? 1 : 0.35 } }, tr(CHAL_TXT.valider))) : null,
+        valide ? React.createElement(React.Fragment, null,
+            React.createElement(ChalResultat, { pct: pct, detail: justes + " / " + bloc.length + " " + tr(CHAL_TXT.bonnePlace), tr: tr }),
+            React.createElement(ChalCoach, { cle: cle, rates: rates, tr: tr }),
+            React.createElement(ChalBoutons, { onRejouer: () => { setChoix([]); setValide(false); setTour((t) => t + 1); }, onRetour: onRetour, tr: tr })) : null);
+}
+
+/* ══ ÉPREUVE 3 — RECONNAIS LA FIGURE ══ */
+function ChalEpreuveReco({ cle, decor, setDecor, tr, onFin, onRetour }) {
+    const figs = REPRISES_FFE[cle].figures;
+    const [tour, setTour] = React.useState(0);
+    const donnees = React.useMemo(() => {
+        const tr2 = construireTraceReprise(REPRISES_FFE[cle]);
+        const parFig = {};
+        tr2.points.forEach((p) => { (parFig[p.figIndex] = parFig[p.figIndex] || []).push(p); });
+        /* une transition ponctuelle ne donne qu'un ou deux points : impossible à reconnaître au tracé */
+        const jouables = Object.keys(parFig).map(Number).filter((f) => {
+            const pts = parFig[f];
+            if (pts.length < 4) return false;
+            let l = 0;
+            for (let q = 1; q < pts.length; q++) l += Math.hypot(pts[q].x - pts[q - 1].x, pts[q].y - pts[q - 1].y);
+            return l >= 60;
+        });
+        return { parFig: parFig, jouables: jouables };
+    }, [cle]);
+    const tirage = React.useMemo(() => chalMelange(donnees.jouables).slice(0, Math.min(CHAL_NB_RECO, donnees.jouables.length)), [donnees, tour]);
+    const [i, setI] = React.useState(0);
+    const [justes, setJustes] = React.useState(0);
+    const [rates, setRates] = React.useState([]);
+    const [repondu, setRepondu] = React.useState(null);
+    const pathRef = React.useRef(null);
+    const fini = i >= tirage.length;
+    React.useEffect(() => { if (fini && tirage.length) onFin(Math.round((justes / tirage.length) * 100)); }, [fini]);
+    const fi = tirage[i];
+    const options = React.useMemo(() => {
+        if (fi === undefined) return [];
+        return chalMelange([fi].concat(chalMelange(donnees.jouables.filter((f) => f !== fi)).slice(0, 3)));
+    }, [fi, tour]);
+    React.useEffect(() => {
+        const p = pathRef.current;
+        if (!p || fi === undefined) return;
+        p.style.strokeDasharray = "2400"; p.style.strokeDashoffset = "2400"; p.style.transition = "none";
+        const t = setTimeout(() => { p.style.transition = "stroke-dashoffset 2.2s linear"; p.style.strokeDashoffset = "0"; }, 40);
+        return () => clearTimeout(t);
+    }, [i, fi, decor]);
+    if (!tirage.length) return React.createElement("p", { style: { fontSize: 12.5, color: COLORS.grisDoux } }, tr(CHAL_TXT.pasAssez));
+    if (fini) {
+        const pct = Math.round((justes / tirage.length) * 100);
+        return React.createElement("div", null,
+            React.createElement(ChalResultat, { pct: pct, detail: justes + " / " + tirage.length + " " + tr(CHAL_TXT.figuresReconnues), tr: tr }),
+            React.createElement(ChalCoach, { cle: cle, rates: rates, tr: tr }),
+            React.createElement(ChalBoutons, { onRejouer: () => { setI(0); setJustes(0); setRates([]); setRepondu(null); setTour((t) => t + 1); }, onRetour: onRetour, tr: tr }));
+    }
+    const repondre = (f) => {
+        if (repondu) return;
+        const ok = f === fi;
+        if (ok) setJustes((n) => n + 1); else setRates((r) => r.concat([fi]));
+        setRepondu({ f: f, ok: ok });
+        setTimeout(() => { setRepondu(null); setI((n) => n + 1); }, 1600);
+    };
+    return React.createElement("div", null,
+        React.createElement(ChalEnTete, { kick: tr(CHAL_TXT.epReco) + " — " + (i + 1) + "/" + tirage.length, question: tr(CHAL_TXT.quelleFigure), fait: i, total: tirage.length }),
+        React.createElement(ChalScene, { decor: decor, avecLettres: true, hauteur: "46vh",
+            enfants: React.createElement("path", { ref: pathRef, d: chalChemin(donnees.parFig[fi]), fill: "none", stroke: COLORS.turquoise, strokeWidth: 3.4, strokeLinecap: "round", strokeLinejoin: "round" }) }),
+        React.createElement(ChalPastilles, { decor: decor, setDecor: setDecor, tr: tr }),
+        options.map((f) => {
+            const etat = repondu ? (f === fi ? "bon" : (f === repondu.f ? "faux" : "")) : "";
+            const bord = etat === "bon" ? "#4ADE8088" : etat === "faux" ? COLORS.alerte + "88" : COLORS.ligne;
+            const fond = etat === "bon" ? "#4ADE801A" : etat === "faux" ? COLORS.alerte + "1A" : "rgba(255,255,255,0.02)";
+            return React.createElement("button", { key: f, onClick: () => repondre(f),
+                style: { width: "100%", textAlign: "left", padding: "12px 13px", marginBottom: 8, borderRadius: 14, border: `1px solid ${bord}`, background: fond, color: etat ? COLORS.encre : COLORS.grisDoux, fontSize: 13.5, lineHeight: 1.45 } }, tr(figs[f]));
+        }),
+        React.createElement("div", { style: { textAlign: "center", minHeight: 20, fontSize: 13, fontWeight: 700, color: repondu ? (repondu.ok ? "#4ADE80" : COLORS.alerte) : "transparent" } },
+            repondu ? (repondu.ok ? tr(CHAL_TXT.juste) : tr(CHAL_TXT.cetait) + " : " + tr(figs[fi])) : "\u00A0"));
+}
+
+/* ══ ÉPREUVE 4 — DE QUELLE REPRISE ? ══
+   Le tirage puise dans TOUTES les reprises en ligne, pas seulement celle du sélecteur : c'est le
+   principe de l'épreuve. Aujourd'hui les reprises Club ; les Amateur et Pro entreront d'elles-mêmes
+   dans le tirage dès qu'elles seront dans REPRISES_FFE, sans rien recoder. */
+function ChalEpreuveReprise({ decor, setDecor, tr, onFin, onRetour }) {
+    const dispo = chalReprisesDispo();
+    const [i, setI] = React.useState(0);
+    const [justes, setJustes] = React.useState(0);
+    const [repondu, setRepondu] = React.useState(null);
+    const [tour, setTour] = React.useState(0);
+    const pathRef = React.useRef(null);
+    const fini = i >= CHAL_NB_REPRISE;
+    React.useEffect(() => { if (fini) onFin(Math.round((justes / CHAL_NB_REPRISE) * 100)); }, [fini]);
+    /* on n'accepte qu'un enchaînement DISCRIMINANT : si la même suite de libellés existe à
+       l'identique dans une autre reprise, la question n'a pas de réponse unique. */
+    const q = React.useMemo(() => {
+        for (let n = 0; n < 60; n++) {
+            const k = dispo[Math.floor(Math.random() * dispo.length)];
+            const figs = REPRISES_FFE[k].figures;
+            if (figs.length <= CHAL_ENCHAINEMENT) continue;
+            const d = Math.floor(Math.random() * (figs.length - CHAL_ENCHAINEMENT));
+            const suite = [];
+            for (let j = 0; j < CHAL_ENCHAINEMENT; j++) suite.push(figs[d + j].fr);
+            const sig = suite.join(" || ");
+            const ailleurs = dispo.some((autre) => {
+                if (autre === k) return false;
+                const f2 = REPRISES_FFE[autre].figures.map((f) => f.fr);
+                for (let p = 0; p + CHAL_ENCHAINEMENT <= f2.length; p++) {
+                    if (f2.slice(p, p + CHAL_ENCHAINEMENT).join(" || ") === sig) return true;
+                }
+                return false;
+            });
+            if (!ailleurs) return { cle: k, depart: d };
+        }
+        return null;
+    }, [i, tour]);
+    const options = React.useMemo(() => {
+        if (!q) return [];
+        return chalMelange([q.cle].concat(chalMelange(dispo.filter((k) => k !== q.cle)).slice(0, Math.min(3, dispo.length - 1))));
+    }, [q]);
+    const pts = React.useMemo(() => {
+        if (!q) return [];
+        const t = construireTraceReprise(REPRISES_FFE[q.cle]);
+        return t.points.filter((p) => p.figIndex >= q.depart && p.figIndex < q.depart + CHAL_ENCHAINEMENT);
+    }, [q]);
+    React.useEffect(() => {
+        const p = pathRef.current;
+        if (!p) return;
+        p.style.strokeDasharray = "2800"; p.style.strokeDashoffset = "2800"; p.style.transition = "none";
+        const t = setTimeout(() => { p.style.transition = "stroke-dashoffset 2.6s linear"; p.style.strokeDashoffset = "0"; }, 40);
+        return () => clearTimeout(t);
+    }, [q, decor]);
+    if (fini) {
+        const pct = Math.round((justes / CHAL_NB_REPRISE) * 100);
+        return React.createElement("div", null,
+            React.createElement(ChalResultat, { pct: pct, detail: justes + " / " + CHAL_NB_REPRISE + " " + tr(CHAL_TXT.reprisesReconnues), tr: tr }),
+            React.createElement("p", { style: { fontSize: 12, color: COLORS.grisTresDoux, margin: "10px 0 0" } }, tr(CHAL_TXT.tirage) + " " + dispo.length + " " + tr(CHAL_TXT.reprisesMot)),
+            React.createElement(ChalBoutons, { onRejouer: () => { setI(0); setJustes(0); setRepondu(null); setTour((t) => t + 1); }, onRetour: onRetour, tr: tr }));
+    }
+    if (!q) return React.createElement("p", { style: { fontSize: 12.5, color: COLORS.grisDoux } }, tr(CHAL_TXT.pasAssez));
+    const figs = REPRISES_FFE[q.cle].figures;
+    const repondre = (k) => {
+        if (repondu) return;
+        const ok = k === q.cle;
+        if (ok) setJustes((n) => n + 1);
+        setRepondu({ k: k, ok: ok });
+        setTimeout(() => { setRepondu(null); setI((n) => n + 1); }, 1700);
+    };
+    return React.createElement("div", null,
+        React.createElement(ChalEnTete, { kick: tr(CHAL_TXT.epReprise) + " — " + (i + 1) + "/" + CHAL_NB_REPRISE, question: tr(CHAL_TXT.quelleReprise), fait: i, total: CHAL_NB_REPRISE }),
+        /* la feuille de reprise, comme au concours : les figures numérotées, dans l'ordre */
+        React.createElement("div", { style: { padding: "11px 13px", borderRadius: 15, border: `1px solid ${COLORS.ligne}`, background: COLORS.nuitClaire, marginBottom: 9 } },
+            Array.from({ length: CHAL_ENCHAINEMENT }).map((_, n) => React.createElement("div", { key: n, style: { display: "flex", gap: 9, fontSize: 13.5, lineHeight: 1.5, color: "#D2DFE6", margin: "4px 0" } },
+                React.createElement("span", { style: { color: COLORS.turquoise, fontWeight: 800, flexShrink: 0 } }, String(q.depart + n + 1)),
+                React.createElement("span", null, tr(figs[q.depart + n]))))),
+        React.createElement(ChalScene, { decor: decor, avecLettres: true, hauteur: "42vh",
+            enfants: React.createElement("path", { ref: pathRef, d: chalChemin(pts), fill: "none", stroke: COLORS.turquoise, strokeWidth: 3.4, strokeLinecap: "round", strokeLinejoin: "round" }) }),
+        React.createElement(ChalPastilles, { decor: decor, setDecor: setDecor, tr: tr }),
+        options.map((k) => {
+            const etat = repondu ? (k === q.cle ? "bon" : (k === repondu.k ? "faux" : "")) : "";
+            const bord = etat === "bon" ? "#4ADE8088" : etat === "faux" ? COLORS.alerte + "88" : COLORS.ligne;
+            const fond = etat === "bon" ? "#4ADE801A" : etat === "faux" ? COLORS.alerte + "1A" : "rgba(255,255,255,0.02)";
+            return React.createElement("button", { key: k, onClick: () => repondre(k),
+                style: { width: "100%", textAlign: "left", padding: "12px 13px", marginBottom: 8, borderRadius: 14, border: `1px solid ${bord}`, background: fond, color: etat ? COLORS.encre : COLORS.grisDoux, fontSize: 13.5 } }, REPRISES_FFE[k].titre);
+        }),
+        React.createElement("div", { style: { textAlign: "center", minHeight: 20, fontSize: 13, fontWeight: 700, color: repondu ? (repondu.ok ? "#4ADE80" : COLORS.alerte) : "transparent" } },
+            repondu ? (repondu.ok ? tr(CHAL_TXT.juste) : tr(CHAL_TXT.cetait) + " : " + REPRISES_FFE[q.cle].titre) : "\u00A0"));
+}
+
+function EcranChallengeReprise() {
+    const { galopOuvert, setEcran, tr, retourEcran, peutReculer } = useApp();
+    /* la coquille ajoute paddingBottom 84 pour la barre de navigation */
+    const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
+    const [cle, setCle] = React.useState(initial);
+    const [epreuve, setEpreuve] = React.useState("");
+    const [decor, setDecor] = React.useState(hypeDecorMemorise);
+    const [scores, setScores] = React.useState({});
+    const majDecor = (k) => { setDecor(k); try { localStorage.setItem("hype_trace_decor", k); } catch (e) { } };
+    const revenir = () => {
+        if (epreuve) { setEpreuve(""); return; }
+        if (peutReculer) retourEcran(); else setEcran("reprises");
+    };
+    const finir = (k) => (pct) => setScores((s) => (s[k] === pct ? s : Object.assign({}, s, { [k]: pct })));
+    const EPREUVES = [
+        { k: "lettres", ic: "\uD83C\uDD70\uFE0F", ti: CHAL_TXT.epLettres, ss: CHAL_TXT.epLettresS },
+        { k: "ordre", ic: "\uD83D\uDD22", ti: CHAL_TXT.epOrdre, ss: CHAL_TXT.epOrdreS },
+        { k: "reco", ic: "\uD83D\uDC41\uFE0F", ti: CHAL_TXT.epReco, ss: CHAL_TXT.epRecoS },
+        { k: "reprise", ic: "\uD83C\uDFC5", ti: CHAL_TXT.epReprise, ss: CHAL_TXT.epRepriseS },
+    ];
+    const faits = Object.keys(scores);
+    const total = faits.length ? Math.round(faits.reduce((s, k) => s + scores[k], 0) / faits.length) : 0;
+    let contenu;
+    if (epreuve === "lettres") contenu = React.createElement(ChalEpreuveLettres, { decor: decor, setDecor: majDecor, tr: tr, onFin: finir("lettres"), onRetour: () => setEpreuve("") });
+    else if (epreuve === "ordre") contenu = React.createElement(ChalEpreuveOrdre, { cle: cle, tr: tr, onFin: finir("ordre"), onRetour: () => setEpreuve("") });
+    else if (epreuve === "reco") contenu = React.createElement(ChalEpreuveReco, { cle: cle, decor: decor, setDecor: majDecor, tr: tr, onFin: finir("reco"), onRetour: () => setEpreuve("") });
+    else if (epreuve === "reprise") contenu = React.createElement(ChalEpreuveReprise, { decor: decor, setDecor: majDecor, tr: tr, onFin: finir("reprise"), onRetour: () => setEpreuve("") });
+    else contenu = React.createElement("div", null,
+        React.createElement("p", { style: { fontSize: 12, lineHeight: 1.55, color: COLORS.grisDoux, margin: "2px 0 14px" } }, tr(CHAL_TXT.intro)),
+        EPREUVES.map((e) => React.createElement("button", { key: e.k, onClick: () => setEpreuve(e.k),
+            style: { width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 13, padding: "15px 14px", marginBottom: 11, borderRadius: 18, border: `1px solid ${COLORS.ligne}`, background: "radial-gradient(130% 100% at 0% 0%, #13222B 0%, #0C141A 60%, #080C11 100%)", color: COLORS.encre } },
+            React.createElement("div", { style: { width: 44, height: 44, flexShrink: 0, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, border: `1px solid ${COLORS.turquoise}40`, background: `${COLORS.turquoise}14` } }, e.ic),
+            React.createElement("div", { style: { flex: 1 } },
+                React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16 } }, tr(e.ti)),
+                React.createElement("div", { style: { fontSize: 11.5, color: COLORS.grisDoux, marginTop: 3, lineHeight: 1.4 } }, tr(e.ss))),
+            scores[e.k] !== undefined ? React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, color: chalNoteCls(scores[e.k]), flexShrink: 0 } }, scores[e.k] + " %") : null)),
+        faits.length === 4 ? React.createElement(ChalResultat, { pct: total, detail: tr(CHAL_TXT.termine), tr: tr }) : null);
+
+    return React.createElement("div", { style: { height: "calc(100dvh - 84px)", display: "flex", flexDirection: "column", background: COLORS.nuit, overflow: "hidden" } },
+        React.createElement("div", { style: { flex: "0 0 auto", padding: "calc(env(safe-area-inset-top) + 12px) 12px 6px" } },
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
+                React.createElement("button", { onClick: revenir, style: { width: 32, height: 32, borderRadius: 11, background: COLORS.nuitClaire, color: COLORS.turquoise, border: `1px solid ${COLORS.turquoise}33`, fontSize: 15, flexShrink: 0 } }, "\u2190"),
+                React.createElement("h1", { style: { margin: 0, flex: 1, fontFamily: "'Cinzel', serif", fontSize: 14, fontWeight: 700, color: COLORS.blanc, textTransform: "uppercase", letterSpacing: 0.9 } }, tr(CHAL_TXT.titre)),
+                React.createElement("select", { value: cle, onChange: (e) => { setCle(e.target.value); setScores({}); setEpreuve(""); },
+                    style: { background: COLORS.nuitClaire, color: COLORS.blanc, border: `1px solid ${COLORS.ligne}`, borderRadius: 9, padding: "5px 6px", fontSize: 11, fontWeight: 700 } },
+                    ORDRE_REPRISES_FFE.map((n) => React.createElement("option", { key: n, value: n }, REPRISES_FFE[n].titre))))),
+        React.createElement("div", { style: { flex: "1 1 auto", minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "0 12px calc(env(safe-area-inset-bottom) + 14px)" } }, contenu));
 }
 
 function EcranTraceAnime() {
@@ -36755,7 +37191,7 @@ function EcranTraceAnime() {
             /* la carrière */
             React.createElement("div", { style: { position: "relative", zIndex: 2, flex: "1 1 auto", minHeight: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: "6px 0" } },
                 React.createElement("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", perspective: vueCavalier ? "1100px" : "none" } },
-                    React.createElement("div", { style: { height: "100%", display: "flex", alignItems: "center", transformOrigin: "50% 62%", transform: vueCavalier ? "rotateX(" + IMMERSION_ANGLE + "deg) scale(1.1) translate(" + (((100 - pos.x) / 200) * 100).toFixed(2) + "%," + (((360 - pos.y) / 520) * 100).toFixed(2) + "%)" : "none" } },
+                    React.createElement("div", { style: { height: "100%", display: "flex", alignItems: "center", transformOrigin: "50% 62%", transform: vueCavalier ? "rotateX(" + IMMERSION_ANGLE + "deg) scale(" + IMMERSION_ZOOM + ") translate(" + (((100 - pos.x) / 200) * 100 * IMMERSION_SUIVI).toFixed(2) + "%," + (((360 - pos.y) / 520) * 100 * IMMERSION_SUIVI).toFixed(2) + "%)" : "none" } },
                         React.createElement("svg", { ref: svgRef, viewBox: "0 0 200 520", preserveAspectRatio: "xMidYMid meet", style: { height: "100%", width: "100%", display: "block" } },
                             React.createElement("defs", null,
                                 React.createElement("filter", { id: "trh", x: "-30%", y: "-30%", width: "160%", height: "160%" }, React.createElement("feGaussianBlur", { stdDeviation: 3 })),
@@ -36771,7 +37207,7 @@ function EcranTraceAnime() {
                                 const p = LETTER_POINTS[l], axe = (l === "A" || l === "C" || l === "X");
                                 const on = Math.hypot(p.x - pos.x, p.y - pos.y) < 13;
                                 return React.createElement("text", { key: l, x: p.x + (p.x === 100 ? 0 : (p.x < 100 ? -10 : 10)), y: p.y + 3.2, textAnchor: "middle",
-                                    style: { fontFamily: "'Montserrat',sans-serif", fontWeight: axe ? 800 : 600, fontSize: (on ? (axe ? 12.5 : 11) : (axe ? 9.5 : 8)) + "px", fill: on ? P.accent : (axe ? P.lettreAxe : P.lettre), filter: on ? "drop-shadow(0 0 4px " + P.accent + ")" : "none", transition: "fill .9s ease, font-size .9s ease" } }, l);
+                                    style: { fontFamily: "'Montserrat',sans-serif", fontWeight: 800, fontSize: (on ? (axe ? 27 : 25) : (axe ? 24 : 22)) + "px", fill: on ? P.accent : (axe ? P.lettreAxe : P.lettre), paintOrder: "stroke", stroke: P.contourLettre, strokeWidth: 6.5, strokeLinejoin: "round", filter: on ? "drop-shadow(0 0 5px " + P.accent + ")" : "drop-shadow(0 0 4px rgba(6,7,9,0.85))", transition: "fill .9s ease, font-size .9s ease" } }, l);
                             }),
                             cerclesMarques.map((p, i) => React.createElement("circle", { key: "c" + i, cx: p.x, cy: p.y, r: Math.min(p.diametre * 4, 78), fill: "none", stroke: P.cercle, strokeWidth: 0.8, strokeDasharray: "2 5" })),
                             React.createElement("path", { d: dFull, fill: "none", stroke: P.froid, strokeWidth: 1.2, strokeDasharray: "1.5 4" }),
