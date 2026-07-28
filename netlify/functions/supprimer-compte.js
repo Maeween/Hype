@@ -15,7 +15,9 @@
 //  ⚠️ À FAIRE UNE SEULE FOIS DANS NETLIFY :
 //  Site settings → Environment variables → Add a variable
 //    SUPABASE_URL          = https://xxxx.supabase.co  (Supabase → Settings → API)
-//    SUPABASE_SERVICE_ROLE = la clé "service_role"      (même page)
+//    SUPABASE_SERVICE_ROLE_KEY = la clé "service_role"  (même page)
+//        → si cette variable existe déjà dans ton Netlify, ne la recrée pas :
+//          la fonction accepte aussi SUPABASE_SERVICE_ROLE.
 //    HYPE_CLE_PURGE        = un mot de passe que tu inventes (ex. 8-10 caractères)
 //  Ne jamais mettre la clé service_role dans index.html.
 // ============================================================
@@ -102,9 +104,11 @@ exports.handler = async (event) => {
   if (event.httpMethod !== "POST") return reponse(405, { erreur: "Méthode non autorisée" }, entetes);
 
   const url = process.env.SUPABASE_URL;
-  const cleService = process.env.SUPABASE_SERVICE_ROLE;
+  // Accepte les deux noms possibles : SUPABASE_SERVICE_ROLE_KEY (deja present
+  // dans Netlify pour Hype) ou SUPABASE_SERVICE_ROLE.
+  const cleService = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE;
   if (!url || !cleService) {
-    return reponse(500, { erreur: "Configuration manquante : SUPABASE_URL ou SUPABASE_SERVICE_ROLE absente dans Netlify." }, entetes);
+    return reponse(500, { erreur: "Configuration manquante : SUPABASE_URL ou la cle service_role absente dans Netlify." }, entetes);
   }
 
   const admin = createClient(url, cleService, { auth: { persistSession: false } });
