@@ -10,7 +10,58 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : session du 28/07/2026 (34) — NOUVELLE ARCHITECTURE DES FINS DE CHAPITRE (modèle pour tous les futurs cours)**
+**Version actuelle de l'index.html : session du 28/07/2026 (36) — SUPPRESSION DE COMPTE avec délai de réflexion de 60 jours**
+
+🔴 **3 CHOSES À FAIRE PAR BLANDINE, DANS CET ORDRE** :
+1. **Supabase** → SQL Editor → exécuter `suppression-compte.sql`. ⚠️ **Version révisée** : à relancer même si tu as déjà exécuté le premier script ce soir (il ajoute les colonnes de délai ; il est idempotent, aucun risque).
+2. **GitHub** → déposer `supprimer-compte.js` dans **`netlify/functions/`** (sur GitHub, nommer le fichier `netlify/functions/supprimer-compte.js` crée les dossiers tout seuls), puis pousser `index.html` + `SUIVI.md`.
+3. **Netlify** → Site configuration → Environment variables :
+   - ✅ `SUPABASE_URL` — **créée le 28/07** (valeur : `https://ldpjebgtskzdokrublfg.supabase.co`, retrouvée dans l'index)
+   - ✅ `SUPABASE_SERVICE_ROLE_KEY` — **existait déjà** dans le Netlify de Hype. La fonction accepte les deux noms (`SUPABASE_SERVICE_ROLE_KEY || SUPABASE_SERVICE_ROLE`), donc **rien à recréer**.
+   - ⬜ `HYPE_CLE_PURGE` = un mot de passe inventé par Blandine (protège l'appel de purge) — **reste à créer**
+   ⚠️ Piège repéré : l'écran de création propose « Different value for each deploy context », qui oblige à remplir 4 champs. Choisir **« Same value in all deploy contexts »**.
+   ⚠️ Autre piège : sur mobile, le menu Netlify de **l'équipe** (Builds, Members, Team settings) n'a pas d'« Environment variables » — il faut d'abord **entrer dans le site** majestic-melba-997a68, puis Site configuration.
+
+**Session 36 — le parcours complet** (nouveau composant `EcranSupprimerCompte`, 885 fonctions)
+
+⚠️ **DÉCISION MAJEURE (Blandine) : suppression DIFFÉRÉE de 60 jours, pas immédiate.** Motif : par expérience, les gens changent souvent d'avis. Discussion tenue sur le cadre légal : conserver les données « au cas où » sans consentement serait contraire au RGPD, mais un **délai de grâce annoncé** est parfaitement conforme (c'est ce que font Discord, Instagram et la plupart des jeux). 30 jours est la norme, 60 reste défendable — Blandine a choisi **60**.
+- **Au clic** : le compte est désactivé immédiatement, `compte_supprime = true`, `suppression_prevue_le = maintenant + 60 jours`. **AUCUNE donnée n'est effacée.** Seules `augalop_etat_v1` et `hype_uid` sont retirées de l'appareil, pour que l'appli reparte propre.
+- **Écran final** : « Ton compte est désactivé · Il sera définitivement supprimé le [date en clair, formatée dans la langue] · D'ici là, reconnecte-toi simplement pour tout retrouver. »
+- **Réactivation automatique** : nouvelle fonction `hypeReactiverSiSuppressionEnCours()`, appelée dans `apresConnexion()`. Si le cavalier se reconnecte pendant les 60 jours, les 3 colonnes sont remises à zéro et il retrouve son compte intact. Elle refuse de réactiver si le délai est déjà écoulé (la purge doit primer). Émet l'événement `hype-compte-reactive` + `window.__hypeReactive` pour permettre d'afficher un bandeau plus tard.
+- **Purge** : la fonction Netlify accepte `action: "purger"` (protégée par `HYPE_CLE_PURGE`, sans utilisateur connecté) : elle liste les profils échus et les supprime réellement — 17 tables, dossier de photos dans le bucket Storage, puis `auth.admin.deleteUser`. ⚠️ **RESTE À BRANCHER** : il faut un appel planifié (Netlify scheduled function, `pg_cron` Supabase, ou un simple appel manuel de temps en temps). En attendant, la requête de contrôle est dans le SQL : `select id, pseudo, suppression_prevue_le from public.profiles where compte_supprime = true and suppression_prevue_le <= now();`
+- **Suppression immédiate à la demande** (obligation RGPD si quelqu'un l'exige) : à faire à la main, requête fournie en commentaire dans le SQL.
+
+**Le parcours, en 3 écrans**
+- **Accès** : lien discret souligné en gris dans « Mon compte », **sous « Se déconnecter »**. Écran atteint depuis Profil → Mon compte, ou l'icône en haut à droite de l'accueil.
+- **Écran 1** : deux blocs — *SUPPRIMÉ APRÈS 60 JOURS* (corail) / *CONSERVÉ* (turquoise) — puis le **motif de départ facultatif** (6 choix), puis l'avertissement doré expliquant le délai et la réversibilité.
+- **Écran 2** : confirmation par **saisie de l'adresse email**, bouton désactivé tant que ça ne correspond pas exactement (testé : désactivé → actif → redésactivé).
+
+**Motif de départ** — facultatif, aucun motif requis :
+- « Il manque des choses » / « Un problème avec un autre cavalier » / « Autre » → **champ texte** (celui du problème relationnel précise *nous sommes les seuls à le lire*)
+- « C'est trop cher » → **proposition de rétention**, avec « Nous écrire » **et** « Non merci, je supprime » également accessibles. ⚠️ Rendre la sortie plus difficile que l'entrée serait un *dark pattern* sanctionné par le RGPD.
+- Enregistrés dans `departs_motifs` **sans aucun user_id**. Lecture : `select motif, count(*) from public.departs_motifs group by motif order by 2 desc;`
+
+⚠️ **DÉCISIONS DE FOND (Blandine), à ne pas rouvrir sans elle** :
+- Les **commentaires laissés chez d'autres cavaliers sont conservés** même après la purge, pour ne pas casser leurs conversations. Le `profiles` est vidé mais **pas supprimé**.
+- **Seuls le pseudo et l'avatar sont grisés** ; le texte du commentaire reste normalement lisible (pour ne pas attirer l'œil dessus). Le pseudo n'est plus cliquable.
+- **Aucune mention « compte supprimé »** affichée aux autres : effet de désertion, et ça donne de mauvaises idées.
+- **Pas de case d'anonymisation du pseudo** : dans le milieu équestre, ce serait une porte de sortie pour ceux qui postent n'importe quoi puis disparaissent. Demandes RGPD sincères traitées **à la main en SQL**.
+- **Pendant les 60 jours, le profil disparaît des listes et des recherches** — la personne qui veut partir doit vraiment sembler partie (discussion tenue : un profil grisé serait remarqué et commenté, exactement ce qu'on veut éviter).
+
+⚠️ **RESTE À FAIRE (2 points d'affichage, non bloquants)** :
+1. **Griser le pseudo et l'avatar** sous les anciens commentaires quand `compte_supprime = true` (la colonne existe et est renseignée, l'affichage ne la lit pas encore). Point d'entrée repéré : `listerCommentairesPhoto()` sélectionne déjà `profiles(id, pseudo, avatar_url)` — il suffit d'y ajouter `compte_supprime` et de styler le rendu (vers l'offset ~6406621, `commentairesVisu.map`).
+2. **Masquer les profils désactivés** des listes de cavaliers et des recherches.
+3. **Bandeau de réactivation** à la reconnexion (l'événement `hype-compte-reactive` et le texte `T.reactive` existent déjà en 6 langues, il reste à l'afficher).
+
+✅ **6 langues** (`SUPPR_I18N`, 34 clés) : fr/en/es/it/ja/de — vérifié au test que les 6 sont complètes.
+
+✅ Vérifs : 884 → **885 fonctions**, 14 blocs script `node --check` OK, `supprimer-compte.js` validé `node --check`, **28 dictionnaires tous déclarés**, `CAVALIER_I18N` présent. **Rendu Playwright réel** : parcours complet écran par écran, champs conditionnels, offre de rétention et sa sortie, activation/désactivation du bouton final, nouveaux textes du délai, 6 langues, fonction de réactivation exposée — **0 erreur JS**. Non-régression vérifiée : **les 6 blocs de `g4-biomeca` rendent tous du contenu**.
+
+**Maquette de référence** : `maquette-suppression-compte.html` (antérieure à la décision des 60 jours : les textes de l'écran 1 et de l'écran final ont évolué depuis).
+
+---
+
+**Version précédente : session du 28/07/2026 (35) — 🔴 CORRECTIF URGENT : crash du chapitre Galop 4 (module cavalier)**
 
 ⚠️ **Collision de numéros à noter** : cette refonte avait été livrée une première fois sous le numéro 33, mais Blandine ne l'a pas poussée et une autre page a utilisé 33 entre-temps (correctifs photos de profil). La refonte a donc été **réappliquée par-dessus l'index contenant ces correctifs** (vérifié présents : `photo_url`, bucket Storage) et renumérotée 34. Rien de perdu des deux côtés.
 
