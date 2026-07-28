@@ -24377,6 +24377,10 @@ function EcranConnexionSpectral() {
         if (pr.ecurie || pr.club) maj.ecurie = pr.ecurie || pr.club;
         if (pr.ville) maj.ville = pr.ville;
         if (Object.keys(maj).length && typeof majProfil === "function") majProfil(maj).catch(function () { }); } catch (e) { }
+      try {
+        var reactive = await hypeReactiverSiSuppressionEnCours();
+        if (reactive) { try { window.__hypeReactive = true; window.dispatchEvent(new Event("hype-compte-reactive")); } catch (eEv) { } }
+      } catch (eRe) { }
       try { var r3 = await monProfil(); if (r3 && r3.data) { var d3 = r3.data; setProfil(function (pp) { return Object.assign({}, pp, { pseudo: d3.pseudo || pp.pseudo, prenom: d3.pseudo || pp.prenom, ecurie: d3.ecurie || pp.ecurie, club: d3.ecurie || pp.club, ecurie2: d3.ecurie2 || pp.ecurie2, club2: d3.ecurie2 || pp.club2, email: email, avatar: d3.avatar_url || pp.avatar, avatar_url: d3.avatar_url || pp.avatar_url, histoire: d3.histoire || pp.histoire, ville: d3.ville || pp.ville }); }); } } catch (e) { }
     } catch (e) { } setEcran("dashboard"); })(); }
   function valider() { if (enCours) return; setErreur("");
@@ -25902,10 +25906,167 @@ function qrHype(texte) {
   return { taille:size, ver:ver, masque:bestK, matrice:best };
 }
 
+
+/* Reactivation automatique : si le cavalier se reconnecte pendant les 60 jours,
+   sa demande de suppression est annulee et il retrouve son compte intact.
+   Renvoie true si une reactivation a bien eu lieu (pour afficher le message). */
+async function hypeReactiverSiSuppressionEnCours() {
+    try {
+        if (typeof supa === "undefined") return false;
+        const u = await utilisateurActuel();
+        if (!u) return false;
+        const r = await supa.from("profiles").select("compte_supprime, suppression_prevue_le").eq("id", u.id).maybeSingle();
+        if (r && r.error) return false;
+        const p = r && r.data;
+        if (!p || !p.compte_supprime) return false;
+        // Le delai est-il deja ecoule ? Dans ce cas on ne reactive pas :
+        // la purge doit faire son travail.
+        try {
+            if (p.suppression_prevue_le && new Date(p.suppression_prevue_le).getTime() <= Date.now()) return false;
+        } catch (e) { }
+        const maj = await supa.from("profiles").update({
+            compte_supprime: false,
+            suppression_demandee_le: null,
+            suppression_prevue_le: null
+        }).eq("id", u.id);
+        if (maj && maj.error) return false;
+        return true;
+    } catch (e) { return false; }
+}
+
+/* ===== HYPE - Suppression de compte (RGPD + exigence des stores) =====
+   3 etapes : explication -> motif facultatif -> confirmation par saisie de l'email.
+   Les commentaires laisses chez d'autres cavaliers sont CONSERVES : seuls le pseudo
+   et l'avatar sont grises (decision Blandine : pas de sortie anonyme dans le milieu
+   equestre). Aucune mention "compte supprime" n'est affichee aux autres.
+   La suppression du compte de connexion passe par netlify/functions/supprimer-compte.js */
+const SUPPR_I18N = {"fr": {"lien": "Supprimer mon compte", "titre": "Supprimer mon compte", "supTitre": "SUPPRIMÉ APRÈS 60 JOURS", "supItems": ["Tes chevaux et leurs photos", "Tes albums et tes souvenirs", "Ta progression : XP, cours terminés, étoiles", "Tes conversations avec Hey Baby", "Tes résultats et ton compte de connexion"], "gardTitre": "CONSERVÉ", "gardItems": ["Tes commentaires sous les photos des autres cavaliers, pour ne pas casser leurs conversations", "Ton pseudo y restera visible, simplement grisé et sans lien vers un profil"], "avert": "Ton compte sera désactivé immédiatement. Tes données sont conservées 60 jours : si tu te reconnectes d'ici là, tu retrouves tout. Passé ce délai, la suppression est définitive.", "motifTitre": "Tu veux nous dire pourquoi ?", "fac": "facultatif", "motifSub": "Ça nous aide à améliorer Hype.", "motifs": ["Je n'utilise plus l'appli", "J'ai arrêté l'équitation", "Il manque des choses dont j'ai besoin", "C'est trop cher", "Un problème avec un autre cavalier", "Autre"], "qManque": "Qu'est-ce qui te manquait ?", "phManque": "Ce que tu aurais aimé trouver dans Hype…", "qSocial": "Tu peux nous en dire un mot ?", "phSocial": "Ce qui s'est passé (nous sommes les seuls à le lire)…", "qAutre": "On t'écoute", "phAutre": "Dis-nous en quelques mots…", "offreTitre": "On peut sûrement s'arranger", "offreTxt": "Si c'est une question de budget, écris-nous : on peut te proposer une formule adaptée, ou mettre ton compte en pause plutôt que de le supprimer.", "offreBtn": "Nous écrire", "offreNon": "Non merci, je supprime", "continuer": "Continuer", "annuler": "Annuler", "confTitre": "Dernière étape", "confTxt": "Pour confirmer, saisis ton adresse :", "confPh": "Ton adresse email", "btnFinal": "Supprimer définitivement mon compte", "enCours": "Suppression en cours…", "fait": "Ton compte a été supprimé. Merci d'avoir fait un bout de chemin avec Hype.", "err": "La suppression n'a pas abouti. Vérifie ta connexion et réessaie.", "faitTitre": "Ton compte est désactivé", "faitDelai": "Il sera définitivement supprimé le", "faitRetour": "D'ici là, reconnecte-toi simplement pour tout retrouver.", "reactive": "Bon retour ! Ta suppression est annulée et ton compte est réactivé."}, "en": {"lien": "Delete my account", "titre": "Delete my account", "supTitre": "DELETED AFTER 60 DAYS", "supItems": ["Your horses and their photos", "Your albums and memories", "Your progress: XP, completed lessons, stars", "Your conversations with Hey Baby", "Your results and your login account"], "gardTitre": "KEPT", "gardItems": ["Your comments under other riders' photos, so their conversations aren't broken", "Your username stays visible there, simply greyed out and no longer linked to a profile"], "avert": "Your account will be deactivated right away. Your data is kept for 60 days: if you log back in before then, you get everything back. After that, the deletion is permanent.", "motifTitre": "Would you like to tell us why?", "fac": "optional", "motifSub": "It helps us improve Hype.", "motifs": ["I no longer use the app", "I've stopped riding", "Things I need are missing", "It's too expensive", "A problem with another rider", "Other"], "qManque": "What was missing for you?", "phManque": "What you'd have liked to find in Hype…", "qSocial": "Can you tell us a little more?", "phSocial": "What happened (we're the only ones who read this)…", "qAutre": "We're listening", "phAutre": "Tell us in a few words…", "offreTitre": "We can probably work something out", "offreTxt": "If it's a budget question, write to us: we can offer a suitable plan, or pause your account instead of deleting it.", "offreBtn": "Write to us", "offreNon": "No thanks, delete it", "continuer": "Continue", "annuler": "Cancel", "confTitre": "Last step", "confTxt": "To confirm, type your email address:", "confPh": "Your email address", "btnFinal": "Permanently delete my account", "enCours": "Deleting…", "fait": "Your account has been deleted. Thank you for riding with Hype for a while.", "err": "The deletion didn't go through. Check your connection and try again.", "faitTitre": "Your account is deactivated", "faitDelai": "It will be permanently deleted on", "faitRetour": "Until then, just log back in to get everything back.", "reactive": "Welcome back! Your deletion is cancelled and your account is reactivated."}, "es": {"lien": "Eliminar mi cuenta", "titre": "Eliminar mi cuenta", "supTitre": "ELIMINADO TRAS 60 DÍAS", "supItems": ["Tus caballos y sus fotos", "Tus álbumes y tus recuerdos", "Tu progreso: XP, cursos terminados, estrellas", "Tus conversaciones con Hey Baby", "Tus resultados y tu cuenta de acceso"], "gardTitre": "CONSERVADO", "gardItems": ["Tus comentarios bajo las fotos de otros jinetes, para no romper sus conversaciones", "Tu apodo seguirá visible, simplemente en gris y sin enlace a un perfil"], "avert": "Tu cuenta se desactivará de inmediato. Tus datos se conservan 60 días: si vuelves a iniciar sesión antes, lo recuperas todo. Pasado ese plazo, la eliminación es definitiva.", "motifTitre": "¿Quieres decirnos por qué?", "fac": "opcional", "motifSub": "Nos ayuda a mejorar Hype.", "motifs": ["Ya no uso la aplicación", "He dejado de montar", "Faltan cosas que necesito", "Es demasiado caro", "Un problema con otro jinete", "Otro"], "qManque": "¿Qué te faltaba?", "phManque": "Lo que te habría gustado encontrar en Hype…", "qSocial": "¿Puedes contarnos un poco más?", "phSocial": "Lo que pasó (solo nosotros lo leemos)…", "qAutre": "Te escuchamos", "phAutre": "Cuéntanos en pocas palabras…", "offreTitre": "Seguro que podemos arreglarlo", "offreTxt": "Si es una cuestión de presupuesto, escríbenos: podemos ofrecerte una fórmula adaptada o pausar tu cuenta en lugar de eliminarla.", "offreBtn": "Escríbenos", "offreNon": "No gracias, eliminar", "continuer": "Continuar", "annuler": "Cancelar", "confTitre": "Último paso", "confTxt": "Para confirmar, escribe tu dirección:", "confPh": "Tu dirección de email", "btnFinal": "Eliminar definitivamente mi cuenta", "enCours": "Eliminando…", "fait": "Tu cuenta ha sido eliminada. Gracias por haber recorrido un tramo con Hype.", "err": "La eliminación no se completó. Comprueba tu conexión e inténtalo de nuevo.", "faitTitre": "Tu cuenta está desactivada", "faitDelai": "Se eliminará definitivamente el", "faitRetour": "Hasta entonces, solo tienes que volver a iniciar sesión para recuperarlo todo.", "reactive": "¡Bienvenido de nuevo! Tu eliminación se ha cancelado y tu cuenta está reactivada."}, "it": {"lien": "Elimina il mio account", "titre": "Elimina il mio account", "supTitre": "ELIMINATO DOPO 60 GIORNI", "supItems": ["I tuoi cavalli e le loro foto", "I tuoi album e i tuoi ricordi", "I tuoi progressi: XP, corsi completati, stelle", "Le tue conversazioni con Hey Baby", "I tuoi risultati e il tuo account di accesso"], "gardTitre": "CONSERVATO", "gardItems": ["I tuoi commenti sotto le foto degli altri cavalieri, per non interrompere le loro conversazioni", "Il tuo nickname resterà visibile, semplicemente in grigio e senza collegamento a un profilo"], "avert": "Il tuo account sarà disattivato subito. I tuoi dati sono conservati 60 giorni: se torni ad accedere entro questo termine, ritrovi tutto. Dopo, l'eliminazione è definitiva.", "motifTitre": "Vuoi dirci perché?", "fac": "facoltativo", "motifSub": "Ci aiuta a migliorare Hype.", "motifs": ["Non uso più l'app", "Ho smesso di andare a cavallo", "Mancano cose di cui ho bisogno", "È troppo caro", "Un problema con un altro cavaliere", "Altro"], "qManque": "Cosa ti mancava?", "phManque": "Ciò che avresti voluto trovare in Hype…", "qSocial": "Puoi dirci qualcosa di più?", "phSocial": "Cosa è successo (siamo i soli a leggerlo)…", "qAutre": "Ti ascoltiamo", "phAutre": "Dicci in poche parole…", "offreTitre": "Possiamo sicuramente trovare una soluzione", "offreTxt": "Se è una questione di budget, scrivici: possiamo proporti una formula adatta o mettere in pausa il tuo account invece di eliminarlo.", "offreBtn": "Scrivici", "offreNon": "No grazie, elimino", "continuer": "Continua", "annuler": "Annulla", "confTitre": "Ultimo passaggio", "confTxt": "Per confermare, scrivi il tuo indirizzo:", "confPh": "Il tuo indirizzo email", "btnFinal": "Elimina definitivamente il mio account", "enCours": "Eliminazione in corso…", "fait": "Il tuo account è stato eliminato. Grazie per aver fatto un pezzo di strada con Hype.", "err": "L'eliminazione non è andata a buon fine. Controlla la connessione e riprova.", "faitTitre": "Il tuo account è disattivato", "faitDelai": "Sarà eliminato definitivamente il", "faitRetour": "Fino ad allora, ti basta riaccedere per ritrovare tutto.", "reactive": "Bentornato! La tua eliminazione è annullata e il tuo account è riattivato."}, "ja": {"lien": "アカウントを削除", "titre": "アカウントの削除", "supTitre": "60日後に削除されるもの", "supItems": ["あなたの馬とその写真", "アルバムと思い出", "進捗：XP、修了した課程、星", "Hey Baby との会話", "結果とログインアカウント"], "gardTitre": "残されるもの", "gardItems": ["ほかの乗り手の写真に書いたコメント（会話を壊さないため）", "あなたのニックネームは表示されたままですが、灰色になり、プロフィールへのリンクはなくなります"], "avert": "アカウントはすぐに無効になります。データは60日間保存されるため、その間に再ログインすればすべて元に戻ります。期間を過ぎると完全に削除されます。", "motifTitre": "理由を教えてもらえますか？", "fac": "任意", "motifSub": "Hype をより良くするために役立ちます。", "motifs": ["もうアプリを使っていない", "乗馬をやめた", "必要なものが足りない", "料金が高すぎる", "ほかの乗り手との問題", "その他"], "qManque": "何が足りませんでしたか？", "phManque": "Hype にあってほしかったこと…", "qSocial": "少し詳しく教えてもらえますか？", "phSocial": "何があったか（読むのは私たちだけです）…", "qAutre": "お聞かせください", "phAutre": "ひとことでどうぞ…", "offreTitre": "きっと方法があります", "offreTxt": "予算の問題であれば、ご連絡ください。適したプランをご提案したり、削除ではなくアカウントを一時停止することもできます。", "offreBtn": "メールする", "offreNon": "いいえ、削除します", "continuer": "次へ", "annuler": "キャンセル", "confTitre": "最後の確認", "confTxt": "確認のため、メールアドレスを入力してください：", "confPh": "メールアドレス", "btnFinal": "アカウントを完全に削除する", "enCours": "削除中…", "fait": "アカウントを削除しました。Hype とともに歩んでくださり、ありがとうございました。", "err": "削除できませんでした。通信状況を確認して、もう一度お試しください。", "faitTitre": "アカウントを無効にしました", "faitDelai": "完全に削除される日：", "faitRetour": "それまでは、再ログインするだけですべて元に戻ります。", "reactive": "おかえりなさい！削除は取り消され、アカウントが再有効化されました。"}, "de": {"lien": "Mein Konto löschen", "titre": "Mein Konto löschen", "supTitre": "NACH 60 TAGEN GELÖSCHT", "supItems": ["Deine Pferde und ihre Fotos", "Deine Alben und Erinnerungen", "Dein Fortschritt: XP, abgeschlossene Kurse, Sterne", "Deine Gespräche mit Hey Baby", "Deine Ergebnisse und dein Anmeldekonto"], "gardTitre": "BEHALTEN", "gardItems": ["Deine Kommentare unter Fotos anderer Reiter, damit ihre Unterhaltungen erhalten bleiben", "Dein Benutzername bleibt dort sichtbar, nur ausgegraut und ohne Link zu einem Profil"], "avert": "Dein Konto wird sofort deaktiviert. Deine Daten bleiben 60 Tage erhalten: wenn du dich vorher wieder anmeldest, bekommst du alles zurück. Danach ist die Löschung endgültig.", "motifTitre": "Möchtest du uns sagen, warum?", "fac": "freiwillig", "motifSub": "Es hilft uns, Hype zu verbessern.", "motifs": ["Ich nutze die App nicht mehr", "Ich habe mit dem Reiten aufgehört", "Es fehlen Dinge, die ich brauche", "Es ist zu teuer", "Ein Problem mit einem anderen Reiter", "Anderes"], "qManque": "Was hat dir gefehlt?", "phManque": "Was du in Hype gerne gefunden hättest…", "qSocial": "Kannst du uns etwas dazu sagen?", "phSocial": "Was passiert ist (nur wir lesen das)…", "qAutre": "Wir hören zu", "phAutre": "Sag es uns in ein paar Worten…", "offreTitre": "Wir finden sicher eine Lösung", "offreTxt": "Wenn es ums Budget geht, schreib uns: wir können dir ein passendes Angebot machen oder dein Konto pausieren statt löschen.", "offreBtn": "Schreib uns", "offreNon": "Nein danke, löschen", "continuer": "Weiter", "annuler": "Abbrechen", "confTitre": "Letzter Schritt", "confTxt": "Gib zur Bestätigung deine Adresse ein:", "confPh": "Deine E-Mail-Adresse", "btnFinal": "Mein Konto endgültig löschen", "enCours": "Wird gelöscht…", "fait": "Dein Konto wurde gelöscht. Danke, dass du ein Stück des Weges mit Hype gegangen bist.", "err": "Die Löschung ist nicht durchgegangen. Prüfe deine Verbindung und versuche es erneut.", "faitTitre": "Dein Konto ist deaktiviert", "faitDelai": "Es wird endgültig gelöscht am", "faitRetour": "Bis dahin genügt eine erneute Anmeldung, um alles zurückzubekommen.", "reactive": "Willkommen zurück! Deine Löschung ist abgebrochen und dein Konto ist wieder aktiv."}};
+function EcranSupprimerCompte({ email, onAnnuler }) {
+    const app = useApp() || {};
+    const langue = app.langue || "fr";
+    const T = SUPPR_I18N[langue] || SUPPR_I18N.fr;
+    const turq = COLORS.turquoise, corail = COLORS.corail;
+    const [etape, setEtape] = useState(1);
+    const [motif, setMotif] = useState(null);
+    const [message, setMessage] = useState("");
+    const [saisie, setSaisie] = useState("");
+    const [busy, setBusy] = useState(false);
+    const [erreur, setErreur] = useState("");
+    const [fini, setFini] = useState(false);
+    const [datePrevue, setDatePrevue] = useState("");
+    const mailRef = String(email || "").trim().toLowerCase();
+    const correspond = mailRef && saisie.trim().toLowerCase() === mailRef;
+
+    const choisirMotif = (i) => { setMotif(motif === i ? null : i); setMessage(""); };
+
+    async function supprimer() {
+        if (busy) return;
+        setBusy(true); setErreur("");
+        try {
+            let jeton = null;
+            try { const s = await supa.auth.getSession(); jeton = s && s.data && s.data.session && s.data.session.access_token; } catch (e) { }
+            if (!jeton) { setBusy(false); setErreur(T.err); return; }
+            const cles = ["usage", "arret", "manque", "tarif", "social", "autre"];
+            const r = await fetch("/.netlify/functions/supprimer-compte", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": "Bearer " + jeton },
+                body: JSON.stringify({ motif: (motif !== null ? cles[motif] : ""), message: message })
+            });
+            const rep = await r.json().catch(function () { return {}; });
+            if (!r.ok || !rep.ok) { setBusy(false); setErreur(rep.erreur || T.err); return; }
+            // Les donnees sont CONSERVEES 60 jours : on ne vide que ce qui
+            // identifie l'appareil, pour que l'appli reparte propre.
+            try {
+                ["augalop_etat_v1", "hype_uid"].forEach(function (k) { localStorage.removeItem(k); });
+            } catch (e) { }
+            try { await deconnexion(); } catch (e) { }
+            setBusy(false);
+            setDatePrevue(rep.prevue_le || "");
+            setFini(true);
+        } catch (e) { setBusy(false); setErreur(T.err); }
+    }
+
+    const stCarte = { border: `1px solid ${COLORS.ligne}`, borderRadius: 18, background: COLORS.nuitClaire, padding: "20px 18px", marginBottom: 16 };
+    const stBloc = (coul) => ({ borderLeft: `2px solid ${coul}`, padding: "2px 0 2px 13px", marginBottom: 18 });
+    const stLab = (coul) => ({ fontSize: 11.5, letterSpacing: "0.14em", fontWeight: 700, color: coul, marginBottom: 10 });
+    const puce = (txt, coul, k) => React.createElement("li", { key: k, style: { position: "relative", paddingLeft: 16, fontSize: 13.5, color: COLORS.encre, lineHeight: 1.65, marginBottom: 9, listStyle: "none" } },
+        React.createElement("span", { style: { position: "absolute", left: 0, top: 8, width: 5, height: 5, borderRadius: "50%", background: coul } }), txt);
+    const stBtnPlein = { width: "100%", padding: 14, borderRadius: 999, border: "none", background: corail, color: "#160409", fontFamily: "'Montserrat', sans-serif", fontSize: 13.5, fontWeight: 700, cursor: "pointer" };
+    const stBtnVide = { width: "100%", marginTop: 10, padding: 13, borderRadius: 999, border: `1px solid ${COLORS.ligne}`, background: "transparent", color: COLORS.encre, fontFamily: "'Montserrat', sans-serif", fontSize: 13.5, fontWeight: 600, cursor: "pointer" };
+    const stZone = { width: "100%", minHeight: 76, marginTop: 8, padding: "12px 13px", borderRadius: 12, border: `1px solid ${COLORS.ligne}`, background: COLORS.nuit, color: COLORS.encre, fontFamily: "'Montserrat', sans-serif", fontSize: 13.5, lineHeight: 1.6, boxSizing: "border-box" };
+
+    /* ---------- Ecran final ---------- */
+    if (fini) {
+        return React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, padding: "60px 22px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" } },
+            React.createElement("div", { style: { fontSize: 34, marginBottom: 18 } }, "\uD83D\uDC0E"),
+            React.createElement("p", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontSize: 21, lineHeight: 1.5, color: COLORS.encre, maxWidth: 340, margin: "0 0 14px" } }, T.faitTitre),
+            datePrevue ? React.createElement("p", { style: { fontSize: 13.5, lineHeight: 1.65, color: COLORS.grisDoux, maxWidth: 330, margin: "0 0 8px" } },
+                T.faitDelai, " ",
+                React.createElement("b", { style: { color: COLORS.encre } }, (function () { try { return new Date(datePrevue).toLocaleDateString(langue === "fr" ? "fr-FR" : langue, { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return datePrevue.slice(0, 10); } })()),
+                ".") : null,
+            React.createElement("p", { style: { fontSize: 13.5, lineHeight: 1.65, color: turq, maxWidth: 330, margin: "0 0 26px" } }, T.faitRetour),
+            React.createElement("button", { onClick: function () { try { location.replace(location.pathname); } catch (e) { } }, style: { padding: "13px 34px", borderRadius: 999, background: turq, border: "none", color: "#04252A", fontSize: 14, fontWeight: 800, cursor: "pointer" } }, "Hype"));
+    }
+
+    /* ---------- Etape 2 : confirmation ---------- */
+    if (etape === 2) {
+        return React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, padding: "26px 18px 60px" } },
+            React.createElement("h2", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontSize: 24, fontWeight: 600, margin: "0 0 18px", color: COLORS.encre, textAlign: "center" } }, T.confTitre),
+            React.createElement("div", { style: stCarte },
+                React.createElement("p", { style: { fontSize: 13.5, color: COLORS.encre, lineHeight: 1.65, margin: "0 0 12px" } }, T.confTxt,
+                    React.createElement("b", { style: { display: "block", marginTop: 6, color: COLORS.grisDoux } }, mailRef)),
+                React.createElement("input", { type: "email", value: saisie, onChange: (e) => setSaisie(e.target.value), placeholder: T.confPh, autoCapitalize: "none", autoCorrect: "off", spellCheck: false,
+                    style: { width: "100%", padding: "13px 14px", borderRadius: 12, border: `1px solid ${COLORS.ligne}`, background: COLORS.nuit, color: COLORS.encre, fontFamily: "'Montserrat', sans-serif", fontSize: 14, boxSizing: "border-box" } }),
+                erreur ? React.createElement("div", { style: { marginTop: 12, fontSize: 13, color: corail, lineHeight: 1.55 } }, erreur) : null,
+                React.createElement("button", { onClick: supprimer, disabled: !correspond || busy,
+                    style: Object.assign({}, stBtnPlein, { marginTop: 16, opacity: (!correspond || busy) ? 0.45 : 1, cursor: (!correspond || busy) ? "default" : "pointer" }) }, busy ? T.enCours : T.btnFinal),
+                React.createElement("button", { onClick: function () { setEtape(1); setSaisie(""); setErreur(""); }, style: stBtnVide }, T.annuler)));
+    }
+
+    /* ---------- Etape 1 : explication + motif ---------- */
+    return React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, padding: "26px 18px 60px" } },
+        React.createElement("h2", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontSize: 24, fontWeight: 600, margin: "0 0 18px", color: COLORS.encre, textAlign: "center" } }, T.titre),
+        React.createElement("div", { style: stCarte },
+            React.createElement("div", { style: stBloc(corail) },
+                React.createElement("div", { style: stLab(corail) }, T.supTitre),
+                React.createElement("ul", { style: { padding: 0, margin: 0 } }, T.supItems.map((x, i) => puce(x, corail, i)))),
+            React.createElement("div", { style: stBloc(turq) },
+                React.createElement("div", { style: stLab(turq) }, T.gardTitre),
+                React.createElement("ul", { style: { padding: 0, margin: 0 } }, T.gardItems.map((x, i) => puce(x, turq, i)))),
+
+            /* --- motif facultatif --- */
+            React.createElement("div", { style: { borderTop: `1px solid ${COLORS.ligne}`, paddingTop: 18, marginBottom: 18 } },
+                React.createElement("div", { style: { fontSize: 13.5, fontWeight: 700, color: COLORS.encre, marginBottom: 3 } }, T.motifTitre,
+                    React.createElement("span", { style: { fontSize: 11, fontStyle: "italic", fontWeight: 400, color: COLORS.grisTresDoux, marginLeft: 6 } }, T.fac)),
+                React.createElement("div", { style: { fontSize: 12.5, color: COLORS.grisDoux, margin: "0 0 13px" } }, T.motifSub),
+                React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 7 } },
+                    T.motifs.map((m, i) => React.createElement("button", { key: i, onClick: () => choisirMotif(i),
+                        style: { textAlign: "left", padding: "11px 14px", borderRadius: 12, border: `1px solid ${motif === i ? turq : COLORS.ligne}`, background: motif === i ? turq + "12" : COLORS.nuit, color: motif === i ? COLORS.encre : COLORS.grisDoux, fontFamily: "'Montserrat', sans-serif", fontSize: 13, fontWeight: motif === i ? 600 : 400, cursor: "pointer", transition: "all .2s" } }, m))),
+
+                /* champ libre selon le motif */
+                (motif === 2 || motif === 4 || motif === 5) ? React.createElement("div", null,
+                    React.createElement("div", { style: { fontSize: 12.5, color: COLORS.grisDoux, margin: "14px 0 0" } }, motif === 2 ? T.qManque : (motif === 4 ? T.qSocial : T.qAutre)),
+                    React.createElement("textarea", { value: message, onChange: (e) => setMessage(e.target.value), placeholder: motif === 2 ? T.phManque : (motif === 4 ? T.phSocial : T.phAutre), style: stZone })) : null,
+
+                /* proposition de retention sur le tarif : la sortie reste aussi visible que l'offre */
+                motif === 3 ? React.createElement("div", { style: { marginTop: 14, border: `1px solid ${turq}59`, borderRadius: 14, padding: 15, background: turq + "0D" } },
+                    React.createElement("div", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontSize: 17, fontWeight: 600, color: COLORS.encre, marginBottom: 6 } }, T.offreTitre),
+                    React.createElement("p", { style: { fontSize: 13, color: COLORS.encre, lineHeight: 1.65, margin: "0 0 13px" } }, T.offreTxt),
+                    React.createElement("button", { onClick: function () { try { window.open("mailto:contact@hypequestrian.app?subject=" + encodeURIComponent("Hype - formule adaptee"), "_blank"); } catch (e) { } },
+                        style: { width: "100%", padding: 12, borderRadius: 999, border: `1px solid ${turq}`, background: turq, color: "#04141a", fontFamily: "'Montserrat', sans-serif", fontSize: 13.5, fontWeight: 700, cursor: "pointer" } }, T.offreBtn),
+                    React.createElement("button", { onClick: () => setEtape(2),
+                        style: { width: "100%", marginTop: 8, padding: 12, borderRadius: 999, border: `1px solid ${COLORS.ligne}`, background: "transparent", color: COLORS.gris, fontFamily: "'Montserrat', sans-serif", fontSize: 13.5, fontWeight: 600, cursor: "pointer" } }, T.offreNon)) : null),
+
+            React.createElement("div", { style: { border: `1px solid ${COLORS.or}66`, background: COLORS.or + "0D", borderRadius: 12, padding: "13px 15px", fontSize: 13, color: COLORS.encre, lineHeight: 1.65, marginBottom: 14 } }, T.avert),
+            React.createElement("button", { onClick: () => setEtape(2), style: stBtnPlein }, T.continuer),
+            React.createElement("button", { onClick: onAnnuler, style: stBtnVide }, T.annuler)));
+}
+
 /* ===== ECRAN MON COMPTE — comptes Supabase (inscription / connexion) ===== */
 function EcranMonCompte() {
   var ctx = useApp();
   var setEcran = ctx.setEcran, langue = ctx.langue, profilApp = ctx.profil, setProfilApp = ctx.setProfil, tr = ctx.tr;
+  var svSt = React.useState(false); var voirSuppr = svSt[0], setVoirSuppr = svSt[1];
 
   var DICT = {
     fr: { titre:"Mon compte", label:"COMPTE CAVALIER", titreIns:"REJOINS HYPE", titreCon:"BON RETOUR", phraseIns:"Ton profil te suit dans tout l'univers Hype.", phraseCon:"Heureux de te revoir en selle.", pseudo:"Pseudo", email:"Email", mdp:"Mot de passe", creer:"Créer mon compte", connecter:"Se connecter", dejaCompte:"Déjà un compte ?", pasCompte:"Pas encore de compte ?", lienCon:"Se connecter", lienIns:"S'inscrire", deconnexion:"Se déconnecter", mdpOublie:"Mot de passe oublié ?", resetEnvoye:"Email de réinitialisation envoyé ! Regarde ta boîte mail.", resetEmail:"Entre d'abord ton email ci-dessus.", retourAccueil:"Retour à l'accueil", confirme:"Compte créé ! Vérifie tes emails pour activer ton compte.", errIdent:"Email ou mot de passe incorrect.", errDeja:"Un compte existe déjà avec cet email.", errCourt:"Mot de passe : 6 caractères minimum.", errEmail:"Adresse email invalide.", errConfirm:"Confirme d'abord ton email (regarde ta boîte mail).", errGen:"Un souci est survenu. Réessaie.", indispo:"Connexion à la base indisponible.", champs:"Remplis tous les champs.", ecurie:"Écurie", ville:"Ville", connecteA:"Connecté à Hype Universe", patiente:"Un instant…" },
@@ -26019,6 +26180,7 @@ function EcranMonCompte() {
           }, style: { marginTop: 14, background: "none", border: "1px solid rgba(201,164,74,0.55)", color: "#F0D48A", fontSize: 12, fontWeight: 700, padding: "8px 16px", borderRadius: 999, cursor: "pointer" } }, "\uD83C\uDF93 " + tr({ fr: "Je suis professionnel ou enseignant", en: "I'm a professional or instructor", es: "Soy profesional o profesor", it: "Sono un professionista o istruttore", de: "Ich bin Profi oder Ausbilder", ja: "プロ・指導者です" })),
       React.createElement("button", { onClick: function () { setEcran("dashboard"); }, style: { marginTop: 28, padding: "13px 34px", borderRadius: 999, background: COLORS.turquoise, border: "none", color: "#04252A", fontSize: 14.5, fontWeight: 800, cursor: "pointer" } }, T.retourAccueil),
       React.createElement("button", { onClick: sortir, style: { marginTop: 12, padding: "12px 30px", borderRadius: 999, background: "none", border: "1px solid rgba(255,255,255,0.18)", color: COLORS.grisDoux, fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: busy ? 0.55 : 1 } }, T.deconnexion),
+      React.createElement("button", { onClick: function () { setVoirSuppr(true); }, style: { marginTop: 18, background: "none", border: "none", color: COLORS.grisTresDoux, fontSize: 12.5, fontFamily: "'Montserrat', sans-serif", textDecoration: "underline", cursor: "pointer", padding: 8 } }, (SUPPR_I18N[langue] || SUPPR_I18N.fr).lien),
       React.createElement(LienQuoiDeNeuf, { compte: true }));
   } else {
     var ins = (mode === "inscription");
@@ -26040,6 +26202,9 @@ function EcranMonCompte() {
         React.createElement("button", { onClick: function () { setMode(ins ? "connexion" : "inscription"); setMsg(null); }, style: { background: "none", border: "none", color: COLORS.turquoise, fontSize: 13.5, fontWeight: 700, cursor: "pointer", padding: 0 } }, ins ? T.lienCon : T.lienIns)));
   }
 
+  if (voirSuppr) {
+    return React.createElement(EcranSupprimerCompte, { email: (moi && moi.email) || (profilApp && profilApp.email) || "", onAnnuler: function () { setVoirSuppr(false); } });
+  }
   return React.createElement("div", { style: { position: "relative", minHeight: "100vh", background: COLORS.nuit, display: "flex", flexDirection: "column", overflowX: "hidden", overflowY: "auto" } },
     React.createElement("div", { style: { position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 380, height: 300, background: "radial-gradient(ellipse at top, " + COLORS.turquoise + "1F 0%, transparent 68%)", pointerEvents: "none" } }),
     React.createElement("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 6, padding: "calc(14px + env(safe-area-inset-top)) 14px 2px", flexShrink: 0 } },
