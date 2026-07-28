@@ -10,7 +10,30 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : session du 28/07/2026 (36) — SUPPRESSION DE COMPTE avec délai de réflexion de 60 jours**
+**Version actuelle de l'index.html : session du 28/07/2026 (37) — Chapitre biomécanique : lisibilité 14,5 px, ouverture aux Premium, partage, questions Hey Baby**
+
+🔴 **À pousser** : `index.html` + `SUIVI.md` + **`k610.jpeg`** dans `images/` (nouvelle image, voir plus bas — pas encore utilisée par le code, elle attend la validation de la maquette d'accueil).
+
+**Session 37 — quatre changements sur le chapitre `g4-biomeca`**
+
+1. **Lisibilité : contenu passé de 13,5 à 14,5 px** (interlignes 1,65 → 1,70) dans `ComplementsBiomeca` (7 occurrences) et `CavalierEquilibre` (5). Décidé après comparaison sur maquette dédiée (`maquette-tailles-police.html`, les 3 tailles côte à côte sur l'encart le plus dense). ⚠️ **Discussion à retenir** : Blandine s'inquiétait de l'allongement des pages. Réponse : +7 % de hauteur seulement, et le vrai levier pour raccourcir n'est pas la police mais le **volume de texte** — si un écran paraît trop long, on resserre les phrases plutôt que de rogner la taille.
+2. **5 questions Hey Baby** remises en pastilles dans la carte de fin de chapitre (Blandine les regrettait après la refonte 34). Indices 0/1/2/5/6 de `hbQuestions` : lourd dans la main · sentir les postérieurs actifs · accélère quand on veut ralentir · tombe sur l'épaule intérieure · est-ce que je me penche trop. Les 5 autres restent dans le dictionnaire, réutilisables. ⚠️ 10 pastilles faisaient un pavé, 5 est le bon compte.
+3. **Chapitre ouvert** : `"g4-biomeca": true` ajouté à `HYPE_COURS_PRETS` → il perd le badge « Prochainement », gagne le **ruban NEW**, et devient accessible. Le Galop 4 étant sous cadenas Premium (`debloque: false` dans `GALOPS_I18N`), il est donc **accessible aux Premium**.
+4. **Bouton « Partager ce cours » sur la couverture** : nouvelle fonction `hypePartagerCours()` + dictionnaire `PARTAGE_COURS_I18N` (6 langues). Elle tente d'abord la **feuille de partage native** (`navigator.share` → WhatsApp, Messages…) et **retombe sur la copie du lien** dans le presse-papier si le téléphone ne la propose pas, avec un message « Lien copié ! » pendant 2,2 s. Le lien pointe sur la couverture via un **nouveau raccourci `#biomeca`** ajouté à la table `MAP` de `CIBLE_DIRECTE` (`{ galop: 4, cours: "g4-biomeca", page: 0 }`). Activation par bloc : il suffit d'ajouter `"partage": "cle"` dans l'objet `couv` d'un `couv-affiche` pour que le bouton apparaisse — **réutilisable sur n'importe quel cours**.
+
+✅ Vérifs : **885 fonctions** (inchangé), 14 blocs script `node --check` OK, 28 dictionnaires tous déclarés, `CAVALIER_I18N`/`allerVersGalop` (3×) intacts. **Rendu Playwright réel** : les 6 blocs du cours rendent du contenu, taille des puces mesurée à **14,5 px**, les 5 bonnes questions présentes et la 6ᵉ absente, `coursEstPret(4,'g4-biomeca')` renvoie true, bouton de partage affiché et **clic testé → lien copié**. 0 erreur JS.
+⚠️ **Note de méthode** : `CouvAffiche` rend 0 caractère si on le monte hors du contexte de l'app (`AppContext.Provider`) — ce n'est pas un bug, c'était juste mon test isolé. Il faut fournir un contexte minimal pour le tester.
+
+⚠️ **EN ATTENTE DE VALIDATION — maquette d'accueil** : `maquette-accueil-propositions.html`, 6 façons de présenter les rubriques de l'accueil (`EcranUnivers`), toutes en Hype Spectral et navigables :
+- **A · Tuile illustrée** (visuel plein cadre + titre posé dessus) — utilise **k610** (image de bulles de conversation fournie par Blandine le 28/07, à mettre derrière « Mes messages »)
+- **B · Dépliant** (replié par défaut, c'est ce que Blandine demandait pour raccourcir l'accueil)
+- **C · Bandeau compact** · **D · Duo côte à côte** · **E · Carrousel horizontal** · **F · Onglets**
+- Recommandation faite : tuile illustrée pour Mes messages, dépliant pour les rubriques à sous-entrées, bandeau compact pour le reste. Carrousel déconseillé sur un menu (ce qui sort de l'écran ne se voit jamais).
+- ⚠️ **Rien n'est codé dans l'index** : `k610.jpeg` doit être poussée mais n'est pas encore référencée.
+
+---
+
+**Version précédente : session du 28/07/2026 (36) — SUPPRESSION DE COMPTE avec délai de réflexion de 60 jours**
 
 🔴 **3 CHOSES À FAIRE PAR BLANDINE, DANS CET ORDRE** :
 1. **Supabase** → SQL Editor → exécuter `suppression-compte.sql`. ⚠️ **Version révisée** : à relancer même si tu as déjà exécuté le premier script ce soir (il ajoute les colonnes de délai ; il est idempotent, aucun risque).
