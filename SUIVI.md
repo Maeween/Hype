@@ -10,7 +10,46 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : session du 28/07/2026 (33) — Photos de profil : dernier chemin local supprimé, échecs plus jamais silencieux, album réparé, photo de cheval envoyée dans le bucket**
+**Version actuelle de l'index.html : session du 28/07/2026 (34) — NOUVELLE ARCHITECTURE DES FINS DE CHAPITRE (modèle pour tous les futurs cours)**
+
+⚠️ **Collision de numéros à noter** : cette refonte avait été livrée une première fois sous le numéro 33, mais Blandine ne l'a pas poussée et une autre page a utilisé 33 entre-temps (correctifs photos de profil). La refonte a donc été **réappliquée par-dessus l'index contenant ces correctifs** (vérifié présents : `photo_url`, bucket Storage) et renumérotée 34. Rien de perdu des deux côtés.
+
+🔴 **À pousser** : `index.html` + `SUIVI.md`. Aucune image, aucun SQL.
+
+**Session 34 — refonte UX validée par Blandine** (brief « ÉVOLUTION DE L'ARCHITECTURE DES COURS HYPE »)
+Constat de départ : à force d'enrichir le chapitre biomécanique, le rythme de lecture était cassé et on ne distinguait plus l'obligatoire du facultatif. **Cette architecture devient le modèle de tous les futurs chapitres.**
+
+**Nouvelle structure du dernier écran du cours** (composant `ComplementsBiomeca` entièrement réécrit) :
+1. **📝 « À retenir en 20 secondes »** — la synthèse reste dans le cours (décision Blandine : c'est le résumé, il aide à réussir)
+2. **📚 Glossaire** en accordéon replié — reste aussi dans le cours (utile pendant la lecture)
+3. **🤖 Carte Hey Baby** « Une question avant le QCM ? » — mise en avant (bordure et fond turquoise), bouton « Poser une question »
+4. **✨ « Tu souhaites aller plus loin ? »** avec la mention *Facultatif — tu peux passer le QCM directement*, puis 3 cartes bonus
+5. **✅ Bouton « Passer le QCM »** en bas
+
+**Les 3 bonus s'ouvrent en pages séparées** (état interne `vue`, barre de retour « ‹ BONUS · … », scroll remis à zéro) — la page principale reste courte, on revient exactement où on était :
+- **👁 Défi du cavalier** : les 5 cases + bouton de validation + phrase de fin
+- **🎥 Observer en vidéo** : **absorbe le composant `ObserverEnMouvement`** de la session 28 (le bloc `observer-mouvement` a été retiré du tableau `blocs` du cours ; la fonction est conservée intacte et simplement appelée depuis ce bonus, plus de doublon). ⚠️ Reste en attente des liens IFCE de Blandine.
+- **🎓 Approfondir** : Le savais-tu · La science explique (+ panneau dépliant) · Pour aller plus loin
+
+⚠️ **Décisions de vocabulaire et d'UX (Blandine)** :
+- Libellé **« Approfondir »** retenu à la place de « Pour les plus curieux » (plus universel, marche pour un enfant comme pour un adulte). ⚠️ **À harmoniser** : les boutons « 🎓 M'expliquer plus en détail » des cartes de cours (`CARTE_LABELS`) portent encore l'ancienne formulation.
+- **OPTION A retenue : le moteur n'est pas touché.** XP, validation, `coursTermines`, synchro Supabase inchangés — pour ne rien casser sur les 100+ autres cours. Le bouton « Passer le QCM » appelle les mêmes fonctions (`setCoursTermines` + `setXp` +25 si le cours n'est pas déjà terminé) puis `setEcran("quiz")`, en sautant l'ancienne page de transition `PageCoursTermine` pour ce cours.
+- ⚠️ **Conséquence assumée** : la célébration « +25 XP » de `PageCoursTermine` ne s'affiche plus à cet endroit pour ce chapitre. `PageCoursTermine` reste en place et intacte pour tous les autres cours.
+- Bonus en **pages séparées** plutôt qu'en accordéons dépliants (sinon la page redevenait longue, ce qu'on cherchait à corriger).
+
+✅ **6 langues** : nouveau dictionnaire `COMPL_NAV` (titres Hey Baby, invitation, noms et sous-titres des 3 bonus, bouton QCM, retour). Titre de la synthèse retraduit dans les 6 langues (« À retenir en 20 secondes » au lieu de « La synthèse en 20 secondes »).
+
+✅ Vérifs : **884 fonctions** (inchangé — réécriture, pas d'ajout), 14 blocs script `node --check` OK, `allerVersGalop` (3×)/`MEVO_CSS`/`EcranTraceAnime`/`ObserverEnMouvement` intacts, correctifs photos de la session 33 préservés. **Rendu Playwright réel** : écran principal complet (les 8 sections attendues), ouverture et retour testés sur les 3 pages bonus, 0 erreur JS.
+
+**Maquette de référence validée** : `maquette-fin-chapitre.html`.
+
+⚠️ **Ce chapitre biomécanique est considéré comme TERMINÉ** (décision Blandine). Prochaine étape : appliquer ce modèle aux 8 autres chapitres du Galop 4 (g4-c1, g4-galop-qualite, g4-c2 à g4-c7), encore en français seul pour la plupart.
+
+⚠️ **Chantier en attente, maquette validée mais NON codée** : le **parcours de suppression de compte** (`maquette-suppression-compte.html`). Décisions déjà prises : lien discret souligné dans « Mon compte » sous la déconnexion · 3 écrans (explication → motif facultatif → confirmation par saisie de l'email) · les commentaires chez les autres sont conservés, **seuls le pseudo et l'avatar sont grisés**, le texte reste normal, **aucune mention « compte supprimé »** · **pas de case d'anonymisation du pseudo** (décision ferme Blandine : dans le milieu équestre, ce serait une porte de sortie pour ceux qui postent puis disparaissent ; les demandes RGPD sincères seront traitées à la main en SQL) · motif de départ facultatif en 6 choix, avec champ texte sur « il manque des choses » / « problème avec un autre cavalier » / « autre », et **proposition de rétention sur « c'est trop cher »** avec sortie aussi visible que l'offre (pas de dark pattern). **Nécessitera une fonction Netlify + une clé secrète Supabase à ajouter une fois dans Netlify.**
+
+---
+
+**Version précédente : session du 28/07/2026 (33) — Photos de profil : dernier chemin local supprimé, échecs plus jamais silencieux, album réparé, photo de cheval envoyée dans le bucket**
 
 **Audit demandé par Blandine : quels chemins gardaient encore la photo en local ?** Réponse exhaustive après inventaire de tous les `setProfil` touchant une photo — **4 chemins sur 5 avaient bien été corrigés** par l'autre conversation (`EcranProfil`, chemin principal de `EcranMonCavalier`, avatars illustrés via `hypeSyncAvatarChoisi`, photo d'écurie). **Un seul perdurait**, plus deux défauts voisins.
 
