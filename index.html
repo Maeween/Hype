@@ -19605,7 +19605,7 @@ const CIBLE_DIRECTE = (function () {
         const h = ((typeof window !== "undefined" && window.location && window.location.hash) || "").replace(/^#/, "").trim();
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
         if (h) cle = h;
-        const MAP = { "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, babypaille: { galop: "baby", cours: "baby-c17", page: 0 }, babydesselle: { galop: "baby", cours: "baby-c18", page: 0 }, babypansage2: { galop: "baby", cours: "baby-c19", page: 0 }, babysabots: { galop: "baby", cours: "baby-c20", page: 0 }, babycorps: { galop: "baby", cours: "baby-c21", page: 0 }, babyparcours: { galop: "baby", cours: "baby-c22", page: 0 }, babyrenes: { galop: "baby", cours: "baby-c23", page: 0 }, babytrot2: { galop: "baby", cours: "baby-c24", page: 0 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, abordobstacle: { galop: 3, cours: "g3-c3", page: 0 }, trotenleve: { galop: 3, cours: "g3-c1", page: 0 }, agirceder: { galop: 3, cours: "g3-c13", page: 0 }, tourner: { galop: 3, cours: "g3-c14", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, examenblanc: { ecran: "examen-blanc", galop: 3 }, examenblancg5: { ecran: "examen-blanc", galop: 5 }, accueil: { ecran: "dashboard" }, reprises: { ecran: "reprises" }, "trace-anime": { ecran: "trace-anime" } };
+        const MAP = { "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, "entrainer-tracer": { ecran: "entrainer-tracer" }, tracer: { ecran: "entrainer-tracer" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, babypaille: { galop: "baby", cours: "baby-c17", page: 0 }, babydesselle: { galop: "baby", cours: "baby-c18", page: 0 }, babypansage2: { galop: "baby", cours: "baby-c19", page: 0 }, babysabots: { galop: "baby", cours: "baby-c20", page: 0 }, babycorps: { galop: "baby", cours: "baby-c21", page: 0 }, babyparcours: { galop: "baby", cours: "baby-c22", page: 0 }, babyrenes: { galop: "baby", cours: "baby-c23", page: 0 }, babytrot2: { galop: "baby", cours: "baby-c24", page: 0 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, abordobstacle: { galop: 3, cours: "g3-c3", page: 0 }, trotenleve: { galop: 3, cours: "g3-c1", page: 0 }, agirceder: { galop: 3, cours: "g3-c13", page: 0 }, tourner: { galop: 3, cours: "g3-c14", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, examenblanc: { ecran: "examen-blanc", galop: 3 }, examenblancg5: { ecran: "examen-blanc", galop: 5 }, accueil: { ecran: "dashboard" }, reprises: { ecran: "reprises" }, "trace-anime": { ecran: "trace-anime" } };
         return MAP[cle] || null;
     } catch (e) { return null; }
 })();
@@ -20719,6 +20719,7 @@ function Router() {
                 ecran === "jeu-galop" && React.createElement(EcranJeuGalop, null),
                 ecran === "reprises" && React.createElement(EcranReprisesFiches, null),
                 ecran === "trace-anime" && React.createElement(EcranTraceAnime, null),
+                ecran === "entrainer-tracer" && React.createElement(EcranEntrainerTracer, null),
                 ecran === "quiz" && React.createElement(EcranQuiz, null),
                 ecran === "examen-blanc" && React.createElement(EcranExamenBlanc, null),
                 ecran === "examen" && React.createElement(EcranExamen, null),
@@ -34592,7 +34593,7 @@ const VLR_MODES = [
     { id: "voir", icone: "\uD83D\uDC41", pret: true, phare: true,
       titre: { fr: "Voir la reprise", en: "Watch the test", es: "Ver la reprise", it: "Guarda la ripresa", de: "Aufgabe ansehen", ja: "課目を見る" },
       texte: { fr: "Observer le tracé animé, figure après figure.", en: "Watch the animated track, figure by figure.", es: "Observa el trazado animado, figura por figura.", it: "Osserva il tracciato animato, figura per figura.", de: "Die animierte Spur Figur für Figur ansehen.", ja: "動線のアニメーションを図ごとに見る。" } },
-    { id: "tracer", icone: "\u270D\uFE0F", pret: false,
+    { id: "tracer", icone: "\u270D\uFE0F", pret: true,
       titre: { fr: "M'entraîner à tracer", en: "Practise drawing", es: "Practicar el trazado", it: "Allenarmi a tracciare", de: "Spur zeichnen üben", ja: "動線を描く練習" },
       texte: { fr: "Dessiner la reprise de mémoire sur une carrière vide.", en: "Draw the test from memory on an empty arena.", es: "Dibujar la reprise de memoria en una pista vacía.", it: "Disegnare la ripresa a memoria su un campo vuoto.", de: "Die Aufgabe aus dem Gedächtnis auf einer leeren Bahn zeichnen.", ja: "空の馬場に記憶で動線を描く。" } },
     { id: "challenge", icone: "\uD83C\uDFC1", pret: false,
@@ -34729,7 +34730,7 @@ function PanneauModesReprise({ tr, onFermer, setEcran }) {
                 React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: COLORS.blanc } }, tr(m.titre)),
                 m.phare ? React.createElement("div", { style: { marginLeft: "auto", fontSize: 8.5, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase", color: COLORS.turquoise, border: "1px solid rgba(32,217,245,0.4)", borderRadius: 999, padding: "3px 8px" } }, tr(VLR_TXT.ici)) : null),
             React.createElement("p", { style: { margin: "0 0 12px", fontSize: 12, lineHeight: 1.55, color: COLORS.grisDoux } }, tr(m.texte)),
-            React.createElement("button", { disabled: !m.pret, onClick: () => { if (!m.pret) return; if (m.id === "immersion") { try { window.__traceImmersion = true; } catch (e) { } } onFermer(); setEcran("trace-anime"); },
+            React.createElement("button", { disabled: !m.pret, onClick: () => { if (!m.pret) return; if (m.id === "immersion") { try { window.__traceImmersion = true; } catch (e) { } } onFermer(); setEcran(m.id === "tracer" ? "entrainer-tracer" : "trace-anime"); },
                 style: { width: "100%", padding: 12, borderRadius: 13, fontSize: 12.5, fontWeight: 800, border: m.pret ? "none" : `1px solid ${COLORS.nuitBordure}`, background: m.pret ? (m.phare ? COLORS.turquoise : "rgba(32,217,245,0.14)") : "transparent", color: m.pret ? (m.phare ? COLORS.nuit : COLORS.turquoise) : COLORS.grisTresDoux } },
                 tr(m.pret ? VLR_TXT.lancer : VLR_TXT.bientot)))),
         React.createElement("div", { style: { height: "calc(env(safe-area-inset-bottom) + 40px)" } }));
@@ -35104,7 +35105,12 @@ function texteFigurePourVoix(texte, dernierAllureRef) {
     return texte.split(" · ").map((segBrut) => {
         let seg = segBrut.trim();
         // blocs de 2 lettres ou plus : "entre X et Y", ou "en X" si c'est un cercle qui revient au départ
-        seg = seg.replace(/\b[A-Z]{2,}\b/g, (bloc) => (bloc[0] === bloc[bloc.length - 1] ? "en " + bloc[0] : "entre " + bloc[0] + " et " + bloc[bloc.length - 1]));
+        seg = seg.replace(/\b[A-Z]{2,}\b/g, (bloc) => (bloc[0] === bloc[bloc.length - 1] ? "en " + bloc[0] : bloc[0] + " " + bloc[bloc.length - 1]));
+        /* 28/07 (demande Blandine) : a l oral on ne dit pas « entre R et M » mais « R M ». La voix
+           n avait pas le temps de tout dire et chevauchait la figure suivante : 12 % de mots en moins
+           sur la reprise du Galop 4 (185 -> 163). Vaut aussi pour les « entre X et Y » ecrits en clair
+           dans les fiches FFE, qui passaient tels quels. */
+        seg = seg.replace(/\b(?:entre|Entre)\s+([A-Z])\s+et\s+([A-Z])\b/g, "$1 $2");
         // cercle à une seule lettre (ex: "K — Cercle de 12 m") : "en K", jamais "à K"
         const mSeule = seg.match(/^([A-Z])\s*—\s*(.+)$/);
         if (mSeule && /cercle/i.test(mSeule[2])) seg = "en " + mSeule[1] + ", " + mSeule[2];
@@ -35117,7 +35123,7 @@ function texteFigurePourVoix(texte, dernierAllureRef) {
                 seg = seg.replace(/\s+(au|à|du|de|en)\s*$/i, "").trim();
                 // s'il ne reste plus qu'une simple référence de lettres (rien de nouveau à annoncer), on tait
                 // le segment entièrement plutôt que de dire "entre K et V" pour ne rien dire de plus.
-                if (/^(en [A-Z]|entre [A-Z] et [A-Z]|[A-Z])$/.test(seg)) seg = "";
+                if (/^(en [A-Z]|[A-Z] [A-Z]|[A-Z])$/.test(seg)) seg = "";
             } else {
                 dernierAllureRef.current = nomAllure;
             }
@@ -35368,6 +35374,456 @@ function traceSouffle(ctxRef) {
         src.start();
     } catch (e) { }
 }
+/* ▸ M'ENTRAÎNER À TRACER — mode « tracer » du panneau des reprises (maquette v11 validée le 28/07).
+   La reprise se dessine d'un bout à l'autre au doigt, sans validation intermédiaire : le trait
+   s'efface derrière la main pour ne pas finir en gribouillis, et la note ne vient qu'à la fin.
+   Le tracé officiel n'est jamais affiché d'office, il se demande figure par figure. */
+const ENTR_U_PAR_M = 8;      /* 20 m de large = 160 unités svg */
+const ENTR_TOL_M = 1.5;      /* tolérance de justesse, en mètres réels */
+const ENTR_PAS_ECH = 4;      /* pas de rééchantillonnage, en unités svg */
+const ENTR_PLEIN_MS = 5000;  /* le trait reste net 5 s… */
+const ENTR_FONDU_MS = 2000;  /* … puis s'efface en 2 s */
+const ENTR_TRANCHE_MS = 260; /* un morceau de trait par 260 ms : c'est ce qui permet le fondu progressif */
+const ENTR_INDICE_MS = 5000; /* durée d'affichage d'un indice */
+const ENTR_TXT = {
+    figures: { fr: "figures", en: "figures", es: "figuras", it: "figure", de: "Figuren", ja: "図" },
+    depart: { fr: "départ en", en: "start at", es: "salida en", it: "partenza in", de: "Start bei", ja: "スタート地点" },
+    lesFigures: { fr: "Les figures", en: "The figures", es: "Las figuras", it: "Le figure", de: "Die Figuren", ja: "図の一覧" },
+    masquer: { fr: "Masquer", en: "Hide", es: "Ocultar", it: "Nascondi", de: "Ausblenden", ja: "隠す" },
+    toutEffacer: { fr: "Tout effacer", en: "Clear all", es: "Borrar todo", it: "Cancella tutto", de: "Alles löschen", ja: "すべて消す" },
+    valider: { fr: "Valider la reprise", en: "Check the test", es: "Validar la reprise", it: "Valida la ripresa", de: "Aufgabe prüfen", ja: "課目を採点する" },
+    recommencer: { fr: "Recommencer", en: "Start again", es: "Empezar de nuevo", it: "Ricomincia", de: "Neu beginnen", ja: "やり直す" },
+    indice: { fr: "Un indice", en: "A hint", es: "Una pista", it: "Un indizio", de: "Ein Hinweis", ja: "ヒント" },
+    aucunIndice: { fr: "Aucun indice utilisé", en: "No hint used", es: "Ninguna pista usada", it: "Nessun indizio usato", de: "Kein Hinweis genutzt", ja: "ヒント未使用" },
+    unIndice: { fr: "1 indice utilisé", en: "1 hint used", es: "1 pista usada", it: "1 indizio usato", de: "1 Hinweis genutzt", ja: "ヒント1回" },
+    nIndices: { fr: "indices utilisés", en: "hints used", es: "pistas usadas", it: "indizi usati", de: "Hinweise genutzt", ja: "回のヒント" },
+    verdictBien: { fr: "Reprise bien tracée", en: "Test well drawn", es: "Reprise bien trazada", it: "Ripresa ben tracciata", de: "Aufgabe gut gezeichnet", ja: "よく描けています" },
+    verdictMoyen: { fr: "Reprise à retravailler", en: "Test needs work", es: "Reprise por mejorar", it: "Ripresa da rivedere", de: "Aufgabe überarbeiten", ja: "もう少し練習しましょう" },
+    verdictFaible: { fr: "Reprise à reprendre", en: "Test to redo", es: "Reprise para repetir", it: "Ripresa da rifare", de: "Aufgabe wiederholen", ja: "やり直しましょう" },
+    ecart: { fr: "Écart moyen au tracé officiel", en: "Average gap to the official track", es: "Desvío medio del trazado oficial", it: "Scarto medio dal tracciato ufficiale", de: "Mittlere Abweichung von der offiziellen Spur", ja: "公式動線との平均誤差" },
+    couverte: { fr: "Reprise couverte à", en: "Test covered at", es: "Reprise cubierta al", it: "Ripresa coperta al", de: "Aufgabe abgedeckt zu", ja: "課目の再現率" },
+    departLoin: { fr: "Départ trop loin du point indiqué", en: "Start too far from the marked point", es: "Salida demasiado lejos del punto indicado", it: "Partenza troppo lontana dal punto indicato", de: "Start zu weit vom angegebenen Punkt", ja: "スタート位置が指定点から離れすぎています" },
+    retravailler: { fr: "À retravailler : figures", en: "To work on: figures", es: "Para trabajar: figuras", it: "Da rivedere: figure", de: "Zu üben: Figuren", ja: "復習する図" },
+    rouges: { fr: "Les points rouges sont les endroits manqués", en: "The red dots show what you missed", es: "Los puntos rojos son lo que faltó", it: "I punti rossi sono ciò che manca", de: "Die roten Punkte zeigen, was fehlt", ja: "赤い点は抜けた箇所です" },
+    unIndiceDemande: { fr: "1 indice demandé", en: "1 hint requested", es: "1 pista pedida", it: "1 indizio richiesto", de: "1 Hinweis angefordert", ja: "ヒント1回" },
+    nIndicesDemandes: { fr: "indices demandés", en: "hints requested", es: "pistas pedidas", it: "indizi richiesti", de: "Hinweise angefordert", ja: "回のヒント" },
+    figure: { fr: "Figure", en: "Figure", es: "Figura", it: "Figura", de: "Figur", ja: "図" },
+};
+/* Les lettres sont le repère principal du cavalier : blanc cassé de la charte, contour sombre épais
+   pour rester lisibles quand un tracé leur passe dessus (contraste mesuré 18,7:1). */
+function entrDecalageLettre(p) {
+    let dx = 0, dy = 3;
+    if (p.x === 20) dx = -10; else if (p.x === 180) dx = 10;
+    if (p.y === 20) dy = -7; else if (p.y === 500) dy = 12;
+    return { dx: dx, dy: dy };
+}
+function entrChemin(pts) {
+    if (!pts || !pts.length) return "";
+    return "M " + pts.map(function (p) { return p.x.toFixed(1) + " " + p.y.toFixed(1); }).join(" L ");
+}
+function entrReechantillonner(pts, pas) {
+    if (pts.length < 2) return pts.slice();
+    const out = [pts[0]];
+    let reste = pas;
+    for (let i = 1; i < pts.length; i++) {
+        let a = out[out.length - 1], b = pts[i];
+        let dist = Math.hypot(b.x - a.x, b.y - a.y);
+        while (dist >= reste) {
+            const t = reste / dist;
+            /* le numéro de figure doit survivre au rééchantillonnage, sinon le diagnostic
+               « à retravailler : figure 6 » ne remonte jamais rien */
+            const np = { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, figIndex: b.figIndex };
+            out.push(np); a = np;
+            dist = Math.hypot(b.x - a.x, b.y - a.y); reste = pas;
+        }
+        reste -= dist;
+    }
+    return out;
+}
+function entrDistAuChemin(p, chemin) {
+    let min = Infinity;
+    for (let i = 1; i < chemin.length; i++) {
+        const a = chemin[i - 1], b = chemin[i];
+        const dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy;
+        let t = l2 ? ((p.x - a.x) * dx + (p.y - a.y) * dy) / l2 : 0;
+        t = Math.max(0, Math.min(1, t));
+        const dd = Math.hypot(p.x - (a.x + dx * t), p.y - (a.y + dy * t));
+        if (dd < min) min = dd;
+    }
+    return min;
+}
+/* Chercher simplement le point le plus proche ne suffit pas : sauter une figure entière passait
+   inaperçu dès que la piste était repassée ailleurs (mesuré : 84/100 en oubliant deux figures).
+   On aligne donc les deux tracés dans l'ORDRE où ils sont parcourus, avec une bande de tolérance,
+   de sorte qu'un raccourci ou une inversion coûte vraiment des points. */
+function entrAligner(mod, main) {
+    const n = mod.length, m = main.length;
+    const bande = Math.max(Math.abs(n - m), Math.round(0.25 * Math.max(n, m)));
+    const INF = 1e15, larg = m + 1;
+    let prec = new Float64Array(larg).fill(INF), cour = new Float64Array(larg);
+    const ptr = new Uint8Array((n + 1) * larg); /* 1 = diagonale, 2 = modèle seul, 3 = doigt seul */
+    prec[0] = 0;
+    for (let i = 1; i <= n; i++) {
+        cour.fill(INF);
+        const j0 = Math.max(1, i - bande), j1 = Math.min(m, i + bande);
+        for (let j = j0; j <= j1; j++) {
+            const c = Math.hypot(mod[i - 1].x - main[j - 1].x, mod[i - 1].y - main[j - 1].y);
+            let meilleur = prec[j - 1], k = 1;
+            if (prec[j] < meilleur) { meilleur = prec[j]; k = 2; }
+            if (cour[j - 1] < meilleur) { meilleur = cour[j - 1]; k = 3; }
+            cour[j] = c + meilleur;
+            ptr[i * larg + j] = k;
+        }
+        const t = prec; prec = cour; cour = t;
+    }
+    const ecarts = new Float64Array(n).fill(Infinity);
+    let i = n, j = m;
+    while (i > 0 && j > 0) {
+        const k = ptr[i * larg + j];
+        const dd = Math.hypot(mod[i - 1].x - main[j - 1].x, mod[i - 1].y - main[j - 1].y);
+        if (dd < ecarts[i - 1]) ecarts[i - 1] = dd;
+        if (k === 1) { i--; j--; } else if (k === 2) { i--; } else if (k === 3) { j--; } else break;
+    }
+    for (let q = 0; q < n; q++) if (!isFinite(ecarts[q])) ecarts[q] = bande;
+    return ecarts;
+}
+function EcranEntrainerTracer() {
+    const { galopOuvert, setEcran, tr, retourEcran, peutReculer } = useApp();
+    const T = (cle) => tr(ENTR_TXT[cle]);
+    /* La coquille de l'appli ajoute paddingBottom 84 pour la barre de navigation : un écran plein
+       doit donc faire 100dvh MOINS ces 84 px, sinon la page scrolle. */
+    const HAUTEUR_ECRAN = "calc(100dvh - 84px)";
+    const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
+    const [niveau, setNiveau] = React.useState(initial);
+    const [liste, setListe] = React.useState(false);
+    const [indices, setIndices] = React.useState(0);
+    const [libelleIndice, setLibelleIndice] = React.useState(null);
+    const [peutValider, setPeutValider] = React.useState(false);
+    const [resultat, setResultat] = React.useState(null);
+
+    const svgRef = React.useRef(null);
+    const gTraitsRef = React.useRef(null);
+    const gRatesRef = React.useRef(null);
+    const pModeleRef = React.useRef(null);
+    const pIndiceRef = React.useRef(null);
+    const cIndiceRef = React.useRef(null);
+    const traceRef = React.useRef(null);
+    const cumRef = React.useRef([]);
+    const tranchesRef = React.useRef([]);
+    const enCoursRef = React.useRef(false);
+    const valideRef = React.useRef(false);
+    const minuteurRef = React.useRef(null);
+    const apiRef = React.useRef({});
+
+    const fiche = REPRISES_FFE[niveau];
+    const revenir = () => { if (peutReculer) retourEcran(); else setEcran("reprises"); };
+
+    /* Tracé officiel de la reprise + longueurs cumulées (pour situer où en est le cavalier). */
+    if (!traceRef.current || traceRef.current.__cle !== niveau) {
+        const t = construireTraceReprise(fiche);
+        t.__cle = niveau;
+        traceRef.current = t;
+        const cum = [0];
+        for (let i = 1; i < t.points.length; i++) {
+            cum[i] = cum[i - 1] + Math.hypot(t.points[i].x - t.points[i - 1].x, t.points[i].y - t.points[i - 1].y);
+        }
+        cumRef.current = cum;
+    }
+    const trace = traceRef.current;
+    const depart = trace.points[0];
+
+    const cacherIndice = () => {
+        if (pIndiceRef.current) pIndiceRef.current.style.display = "none";
+        if (cIndiceRef.current) cIndiceRef.current.style.display = "none";
+    };
+    const toutEffacer = () => {
+        tranchesRef.current = [];
+        valideRef.current = false;
+        enCoursRef.current = false;
+        if (gTraitsRef.current) gTraitsRef.current.innerHTML = "";
+        if (gRatesRef.current) gRatesRef.current.innerHTML = "";
+        if (pModeleRef.current) pModeleRef.current.style.display = "none";
+        clearTimeout(minuteurRef.current);
+        cacherIndice();
+        setIndices(0); setLibelleIndice(null); setPeutValider(false); setResultat(null);
+    };
+
+    const tousLesPoints = () => {
+        const out = [];
+        tranchesRef.current.forEach((tra) => tra.pts.forEach((p, k) => {
+            if (!(k === 0 && out.length)) out.push({ x: p.x, y: p.y });
+        }));
+        return out;
+    };
+    const nbPoints = () => tranchesRef.current.reduce((n, t) => n + t.pts.length, 0);
+
+    /* ── Tracé au doigt. Sur iOS un glissement vertical est capté par le navigateur (scroll,
+       rubber-band) avant d'arriver au SVG : il faut preventDefault() sur touchmove en
+       { passive: false }, touch-action ne suffit pas. Le mouvement est écouté sur window, le
+       doigt sortant souvent du cadre en fin de figure. ── */
+    const versSvg = (cx, cy) => {
+        const svg = svgRef.current;
+        if (!svg || !svg.getScreenCTM) return { x: 0, y: 0 };
+        const pt = svg.createSVGPoint();
+        pt.x = cx; pt.y = cy;
+        return pt.matrixTransform(svg.getScreenCTM().inverse());
+    };
+    const nouvelleTranche = (premier) => {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        el.setAttribute("fill", "none");
+        el.setAttribute("stroke", COLORS.turquoise);
+        el.setAttribute("stroke-width", "3.6");
+        el.setAttribute("stroke-linecap", "round");
+        el.setAttribute("stroke-linejoin", "round");
+        if (gTraitsRef.current) gTraitsRef.current.appendChild(el);
+        const tra = { pts: premier ? [premier] : [], t: performance.now(), el: el, op: 1 };
+        tranchesRef.current.push(tra);
+        return tra;
+    };
+    const ajouter = (p) => {
+        const liste2 = tranchesRef.current;
+        let tra = liste2[liste2.length - 1];
+        if (!tra || performance.now() - tra.t > ENTR_TRANCHE_MS) {
+            const dernier = tra && tra.pts.length ? tra.pts[tra.pts.length - 1] : null;
+            tra = nouvelleTranche(dernier); /* on répète le point de raccord, sinon le trait est troué */
+        }
+        tra.pts.push(p);
+        if (tra.el) tra.el.setAttribute("d", entrChemin(tra.pts));
+    };
+    apiRef.current = {
+        debut: (cx, cy) => {
+            if (valideRef.current) return;
+            enCoursRef.current = true;
+            nouvelleTranche(null);
+            ajouter(versSvg(cx, cy));
+        },
+        suite: (cx, cy) => {
+            if (!enCoursRef.current) return;
+            const p = versSvg(cx, cy);
+            const liste2 = tranchesRef.current;
+            const tra = liste2[liste2.length - 1];
+            const q = tra && tra.pts.length ? tra.pts[tra.pts.length - 1] : null;
+            if (q && Math.hypot(p.x - q.x, p.y - q.y) < 1.5) return;
+            ajouter(p);
+        },
+        fin: () => {
+            if (!enCoursRef.current) return;
+            enCoursRef.current = false;
+            setPeutValider(nbPoints() >= 20);
+        },
+    };
+
+    React.useEffect(() => {
+        const svg = svgRef.current;
+        if (!svg) return;
+        const tStart = (e) => { e.preventDefault(); const t = e.changedTouches[0]; apiRef.current.debut(t.clientX, t.clientY); };
+        const tMove = (e) => { e.preventDefault(); const t = e.changedTouches[0]; apiRef.current.suite(t.clientX, t.clientY); };
+        const tEnd = (e) => { e.preventDefault(); apiRef.current.fin(); };
+        const pDown = (e) => { if (e.pointerType === "touch") return; apiRef.current.debut(e.clientX, e.clientY); };
+        const pMove = (e) => { if (e.pointerType === "touch") return; apiRef.current.suite(e.clientX, e.clientY); };
+        const pUp = (e) => { if (e.pointerType === "touch") return; apiRef.current.fin(); };
+        svg.addEventListener("touchstart", tStart, { passive: false });
+        svg.addEventListener("touchmove", tMove, { passive: false });
+        svg.addEventListener("touchend", tEnd, { passive: false });
+        svg.addEventListener("touchcancel", tEnd, { passive: false });
+        svg.addEventListener("pointerdown", pDown);
+        window.addEventListener("pointermove", pMove);
+        window.addEventListener("pointerup", pUp);
+        return () => {
+            svg.removeEventListener("touchstart", tStart);
+            svg.removeEventListener("touchmove", tMove);
+            svg.removeEventListener("touchend", tEnd);
+            svg.removeEventListener("touchcancel", tEnd);
+            svg.removeEventListener("pointerdown", pDown);
+            window.removeEventListener("pointermove", pMove);
+            window.removeEventListener("pointerup", pUp);
+        };
+    }, []);
+
+    /* Le trait s'efface derrière la main, sinon la carrière finit en plat de spaghettis. Les points
+       restent en mémoire pour la note : ce qui disparaît, c'est l'affichage, pas le tracé. */
+    React.useEffect(() => {
+        let vivant = true, raf = null;
+        const boucle = () => {
+            if (!vivant) return;
+            const maintenant = performance.now();
+            tranchesRef.current.forEach((tra) => {
+                if (!tra.el) return;
+                const age = maintenant - tra.t;
+                if (age <= ENTR_PLEIN_MS) {
+                    if (tra.op !== 1) { tra.el.setAttribute("opacity", 1); tra.op = 1; }
+                    return;
+                }
+                const op = Math.max(0, 1 - (age - ENTR_PLEIN_MS) / ENTR_FONDU_MS);
+                if (op === 0) { tra.el.remove(); tra.el = null; return; }
+                tra.el.setAttribute("opacity", op.toFixed(2));
+                tra.op = op;
+            });
+            raf = requestAnimationFrame(boucle);
+        };
+        raf = requestAnimationFrame(boucle);
+        return () => { vivant = false; if (raf) cancelAnimationFrame(raf); clearTimeout(minuteurRef.current); };
+    }, []);
+
+    React.useEffect(() => { toutEffacer(); }, [niveau]);
+
+    /* L'indice ne dévoile que la suite : toute la reprise d'un coup était un gribouillis dont on ne
+       savait plus dire quelle portion venait avant ou après. On situe le cavalier en comparant la
+       longueur déjà tracée à la longueur cumulée du tracé officiel — plus fiable que de chercher le
+       point le plus proche, puisque la piste est repassée plusieurs fois. */
+    const portionSuivante = () => {
+        const P = trace.points, cum = cumRef.current;
+        const pts = tousLesPoints();
+        let faite = 0;
+        for (let i = 1; i < pts.length; i++) faite += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+        let i0 = 0;
+        while (i0 < P.length - 1 && cum[i0] < faite) i0++;
+        if (i0 >= P.length - 1) i0 = P.length - 2;
+        const figDepart = P[i0].figIndex;
+        let i1 = i0;
+        while (i1 < P.length - 1 && P[i1 + 1].figIndex === figDepart) i1++;
+        while (i1 < P.length - 1 && cum[i1] - cum[i0] < 70) i1++;
+        return { pts: P.slice(i0, i1 + 1), fig: figDepart };
+    };
+    const demanderIndice = () => {
+        if (valideRef.current) return;
+        const po = portionSuivante();
+        if (pIndiceRef.current) {
+            pIndiceRef.current.setAttribute("d", entrChemin(po.pts));
+            pIndiceRef.current.style.display = "";
+        }
+        if (cIndiceRef.current) {
+            cIndiceRef.current.setAttribute("cx", po.pts[0].x);
+            cIndiceRef.current.setAttribute("cy", po.pts[0].y);
+            cIndiceRef.current.style.display = "";
+        }
+        setIndices((n) => n + 1);
+        const txt = fiche.figures[po.fig];
+        setLibelleIndice(T("figure") + " " + (po.fig + 1) + " · " + (txt ? tr(txt) : ""));
+        clearTimeout(minuteurRef.current);
+        minuteurRef.current = setTimeout(() => { cacherIndice(); setLibelleIndice(null); }, ENTR_INDICE_MS);
+    };
+
+    const valider = () => {
+        const modele = entrReechantillonner(trace.points, ENTR_PAS_ECH);
+        const main = entrReechantillonner(tousLesPoints(), ENTR_PAS_ECH);
+        if (main.length < 2 || modele.length < 2) return;
+        const tolU = ENTR_TOL_M * ENTR_U_PAR_M;
+        const ecarts = entrAligner(modele, main);
+        let somme = 0, couverts = 0;
+        const rates = [], parFigure = {};
+        modele.forEach((p, i) => {
+            const e = ecarts[i];
+            somme += e;
+            if (e <= tolU) couverts++; else rates.push(p);
+            const f = p.figIndex;
+            if (f !== undefined) {
+                parFigure[f] = parFigure[f] || { ok: 0, tot: 0 };
+                parFigure[f].tot++;
+                /* L'alignement note juste mais répartit l'erreur : il ne sait pas dire « tu as
+                   oublié la figure 6 ». Pour ce diagnostic-là, on regarde sans tenir compte de
+                   l'ordre si le tracé de la figure a été dessiné quelque part. */
+                if (entrDistAuChemin(p, main) <= tolU) parFigure[f].ok++;
+            }
+        });
+        const ecartMoy = (somme / modele.length) / ENTR_U_PAR_M;
+        const couverture = couverts / modele.length;
+        const faibles = Object.keys(parFigure)
+            .map((f) => ({ f: (+f) + 1, taux: parFigure[f].ok / parFigure[f].tot }))
+            .filter((x) => x.taux < 0.6)
+            .sort((a, b) => a.taux - b.taux)
+            .slice(0, 4).map((x) => x.f).sort((a, b) => a - b);
+        const dDebut = Math.hypot(main[0].x - modele[0].x, main[0].y - modele[0].y);
+        const departOk = dDebut <= tolU * 2;
+        let score = 100 * (0.55 * couverture + 0.45 * Math.max(0, 1 - ecartMoy / 2.5));
+        if (!departOk) score -= 8;
+        score = Math.max(0, Math.min(100, Math.round(score)));
+
+        valideRef.current = true;
+        clearTimeout(minuteurRef.current);
+        cacherIndice(); setLibelleIndice(null);
+        /* au moment de la note, le tracé officiel est révélé et les manques piqués en rouge */
+        if (pModeleRef.current) pModeleRef.current.style.display = "";
+        if (gRatesRef.current) {
+            gRatesRef.current.innerHTML = "";
+            rates.forEach((p) => {
+                const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                c.setAttribute("cx", p.x); c.setAttribute("cy", p.y); c.setAttribute("r", "2.6");
+                c.setAttribute("fill", COLORS.alerte); c.setAttribute("opacity", "0.85");
+                gRatesRef.current.appendChild(c);
+            });
+        }
+        setPeutValider(false);
+        setResultat({ score: score, ecartMoy: ecartMoy, couverture: couverture, departOk: departOk, faibles: faibles, rates: rates.length });
+    };
+
+    const couleurNote = (s) => (s >= 80 ? "#4ADE80" : s >= 55 ? "#FFC53D" : COLORS.alerte);
+    const btn = (label, onClick, actif, primaire) => React.createElement("button", {
+        onClick: onClick, disabled: !actif,
+        style: { flex: 1, padding: 11, borderRadius: 14, fontSize: 12, fontWeight: 800, letterSpacing: 0.6, textTransform: "uppercase", border: primaire ? "none" : `1px solid ${COLORS.nuitBordure}`, background: primaire ? COLORS.turquoise : COLORS.nuitClaire, color: primaire ? COLORS.nuit : COLORS.grisDoux, opacity: actif ? 1 : 0.35 },
+    }, label);
+
+    return React.createElement("div", { style: { height: HAUTEUR_ECRAN, display: "flex", flexDirection: "column", background: COLORS.nuit, overflow: "hidden" } },
+        React.createElement("div", { style: { flex: "0 0 auto", padding: "calc(env(safe-area-inset-top) + 12px) 14px 6px" } },
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
+                React.createElement("button", { onClick: revenir, style: { width: 34, height: 34, borderRadius: 11, background: COLORS.nuitClaire, color: COLORS.blanc, border: "none", fontSize: 15, flexShrink: 0 } }, "\u2190"),
+                React.createElement("h1", { style: { margin: 0, flex: 1, fontFamily: "'Cinzel', serif", fontSize: 14, fontWeight: 800, color: COLORS.blanc, textTransform: "uppercase", letterSpacing: 0.8 } }, tr(VLR_MODES[1].titre)),
+                React.createElement("select", {
+                    value: niveau, onChange: (e) => setNiveau(e.target.value),
+                    style: { background: COLORS.nuitClaire, color: COLORS.blanc, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 9, padding: "5px 6px", fontSize: 11, fontWeight: 700 },
+                }, ORDRE_REPRISES_FFE.map((n) => React.createElement("option", { key: n, value: n }, REPRISES_FFE[n].titre)))),
+            React.createElement("div", { style: { marginTop: 7, padding: "7px 10px", borderRadius: 13, background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, display: "flex", alignItems: "center", gap: 9 } },
+                React.createElement("div", { style: { flex: 1, fontSize: 11, lineHeight: 1.35, color: COLORS.grisDoux } },
+                    React.createElement("b", { style: { color: COLORS.turquoise } }, fiche.titre),
+                    " · " + fiche.figures.length + " " + T("figures") + " · " + T("depart") + " " + (depart.lettre || "A")),
+                React.createElement("button", { onClick: () => setListe(!liste), style: { background: "none", border: `1px solid ${COLORS.turquoise}66`, borderRadius: 9, color: COLORS.turquoise, fontSize: 9.5, fontWeight: 800, letterSpacing: 0.8, padding: "6px 8px", textTransform: "uppercase", whiteSpace: "nowrap" } }, liste ? T("masquer") : T("lesFigures"))),
+            liste ? React.createElement("div", { style: { marginTop: 7, padding: "8px 10px", borderRadius: 13, background: "#0A0F13", border: `1px solid ${COLORS.nuitBordure}`, maxHeight: "32vh", overflowY: "auto", WebkitOverflowScrolling: "touch" } },
+                React.createElement("ol", { style: { margin: 0, paddingLeft: 20 } },
+                    fiche.figures.map((f, i) => React.createElement("li", { key: i, style: { fontSize: 11, lineHeight: 1.4, color: "rgba(244,246,247,0.82)", marginBottom: 5 } }, tr(f))))) : null),
+
+        React.createElement("div", { style: { flex: "1 1 auto", minHeight: "50%", position: "relative", display: "grid", placeItems: "center", padding: "2px 4px", touchAction: "none" } },
+            React.createElement("button", { onClick: demanderIndice, style: { position: "absolute", right: 2, top: "50%", transform: "translateY(-50%)", width: 52, padding: "9px 4px", borderRadius: "14px 4px 4px 14px", border: `1px solid ${COLORS.turquoise}55`, borderRight: "none", background: COLORS.nuitClaire, color: COLORS.grisDoux, fontSize: 9, fontWeight: 800, lineHeight: 1.25, letterSpacing: 0.4, textTransform: "uppercase", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, zIndex: 2 } },
+                React.createElement("span", { style: { fontSize: 13 } }, "\uD83D\uDC41"),
+                React.createElement("span", null, T("indice"))),
+            React.createElement("svg", { ref: svgRef, viewBox: "-13 -13 226 546", preserveAspectRatio: "xMidYMid meet", style: { width: "100%", height: "100%", display: "block" } },
+                React.createElement("defs", null,
+                    React.createElement("marker", { id: "entrFleche", viewBox: "0 0 10 10", refX: "7", refY: "5", markerWidth: "5", markerHeight: "5", orient: "auto" },
+                        React.createElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: "#FFC53D" }))),
+                React.createElement("rect", { x: 20, y: 20, width: 160, height: 480, rx: 4, fill: "none", stroke: `${COLORS.turquoise}3A`, strokeWidth: 1.6 }),
+                React.createElement("line", { x1: 100, y1: 20, x2: 100, y2: 500, stroke: `${COLORS.turquoise}1F`, strokeWidth: 0.7, strokeDasharray: "4 6" }),
+                Object.keys(LETTER_POINTS).map((nom) => {
+                    const p = LETTER_POINTS[nom], dec = entrDecalageLettre(p);
+                    return React.createElement("text", { key: nom, x: p.x + dec.dx, y: p.y + dec.dy, textAnchor: "middle", style: { fill: COLORS.blanc, fontFamily: "Montserrat, sans-serif", fontSize: 13, fontWeight: 700, paintOrder: "stroke", stroke: COLORS.nuit, strokeWidth: 4, strokeLinejoin: "round", letterSpacing: 0.5 } }, nom);
+                }),
+                React.createElement("path", { ref: pModeleRef, style: { display: "none" }, fill: "none", stroke: COLORS.turquoise, strokeWidth: 3.4, strokeLinecap: "round", strokeLinejoin: "round", strokeDasharray: "7 7", opacity: 0.55, d: entrChemin(trace.points) }),
+                React.createElement("path", { ref: pIndiceRef, style: { display: "none" }, fill: "none", stroke: "#FFC53D", strokeWidth: 3.6, strokeLinecap: "round", strokeLinejoin: "round", strokeDasharray: "9 6", markerEnd: "url(#entrFleche)" }),
+                React.createElement("circle", { ref: cIndiceRef, style: { display: "none" }, r: 3.5, fill: "#FFC53D", stroke: COLORS.nuit, strokeWidth: 1.5 }),
+                React.createElement("g", { ref: gRatesRef }),
+                React.createElement("circle", { cx: depart.x, cy: depart.y, r: 4.5, fill: COLORS.nuit, stroke: COLORS.turquoise, strokeWidth: 2 }),
+                React.createElement("g", { ref: gTraitsRef }))),
+
+        React.createElement("div", { style: { flex: "0 0 auto", padding: "6px 12px calc(env(safe-area-inset-bottom) + 8px)", maxHeight: "52%", overflowY: "auto", WebkitOverflowScrolling: "touch" } },
+            React.createElement("div", { style: { display: "flex", gap: 8 } },
+                btn(T("toutEffacer"), toutEffacer, true, false),
+                btn(T("valider"), valider, peutValider, true)),
+            React.createElement("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, letterSpacing: 0.5, color: libelleIndice || indices ? "#FFC53D" : COLORS.grisTresDoux } },
+                libelleIndice ? libelleIndice
+                    : indices === 0 ? T("aucunIndice")
+                        : indices === 1 ? T("unIndice") : indices + " " + T("nIndices")),
+            resultat ? React.createElement("div", { style: { marginTop: 9, padding: "11px 12px", borderRadius: 16, background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}` } },
+                React.createElement("div", { style: { display: "flex", alignItems: "baseline", gap: 9 } },
+                    React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 27, fontWeight: 800, lineHeight: 1, color: couleurNote(resultat.score) } }, resultat.score),
+                    React.createElement("div", { style: { fontSize: 12, fontWeight: 800, color: couleurNote(resultat.score) } }, resultat.score >= 80 ? T("verdictBien") : resultat.score >= 55 ? T("verdictMoyen") : T("verdictFaible"))),
+                React.createElement("div", { style: { marginTop: 6, fontSize: 11, lineHeight: 1.55, color: COLORS.grisDoux } },
+                    T("ecart") + " : " + resultat.ecartMoy.toFixed(1) + " m · " + T("couverte") + " " + Math.round(resultat.couverture * 100) + " %"
+                    + (resultat.departOk ? "" : " · " + T("departLoin"))
+                    + (resultat.faibles.length ? " · " + T("retravailler") + " " + resultat.faibles.join(", ") : "")
+                    + (resultat.rates ? " · " + T("rouges") : "")
+                    + (indices === 0 ? "" : " · " + (indices === 1 ? T("unIndiceDemande") : indices + " " + T("nIndicesDemandes")))),
+                React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 9 } },
+                    btn(T("recommencer"), toutEffacer, true, true))) : null));
+}
+
 function EcranTraceAnime() {
     const { galopOuvert, setEcran, tr, langue, profil, retourEcran, peutReculer } = useApp();
     const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
