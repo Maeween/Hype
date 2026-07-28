@@ -410,6 +410,10 @@ function estUrlVideo(u) { try { return /\.(mp4|mov|webm|m4v|ogv)(\?|$)/i.test(St
 async function archiverPhotoHistorique(cible, cibleId, photoUrl) {
   try {
     if (!photoUrl || typeof supa === "undefined") return { data: null, error: "rien à archiver" };
+    /* 28/07 : une photo restee locale est une dataUrl base64. L archiver reviendrait a stocker
+       l image entiere dans une colonne texte : quota Supabase gaspille et album inutilisable
+       depuis un autre appareil. On n archive que ce qui est reellement en ligne. */
+    if (String(photoUrl).indexOf("data:") === 0) { console.warn("archiverPhotoHistorique: photo locale ignoree (jamais envoyee en ligne)"); return { data: null, error: "photo locale" }; }
     const user = await utilisateurActuel();
     if (!user) return { data: null, error: "Pas connecté" };
     return await supa.from("photos_historique").insert({ user_id: user.id, cible: cible, cible_id: cibleId != null ? String(cibleId) : null, photo_url: photoUrl }).select().single();
@@ -20664,7 +20668,14 @@ function HypeApp() {
                     setProfil((p) => ({ ...p,
                         pseudo: d.pseudo || p.pseudo, prenom: d.pseudo || p.prenom,
                         ecurie: d.ecurie || p.ecurie, club: d.ecurie || p.club, ecurie2: d.ecurie2 || p.ecurie2, club2: d.ecurie2 || p.club2, ville: d.ville || p.ville,
-                        avatar: d.avatar || p.avatar, chevalPhoto: d.cheval_photo || p.chevalPhoto }));
+                        /* 28/07 (bug signale par Blandine : photo de profil absente sur le 2e telephone) :
+                           on lisait d.avatar, colonne qui N EXISTE PAS dans profiles — la vraie colonne est
+                           avatar_url, c est celle que majProfil ecrit. d.avatar valait donc toujours undefined
+                           et on retombait sur la valeur locale : sur un appareil neuf, aucune photo. L histoire
+                           (Mur des songes) et la voix n etaient pas restaurees non plus. */
+                        avatar: d.avatar_url || p.avatar, avatar_url: d.avatar_url || p.avatar_url,
+                        histoire: d.histoire || p.histoire, ma_voix: d.ma_voix || p.ma_voix,
+                        chevalPhoto: d.cheval_photo || p.chevalPhoto }));
                 }).catch(() => { });
                 if (typeof mesChevauxPerso === "function") {
                     mesChevauxPerso().then((rc) => {
@@ -24366,7 +24377,7 @@ function EcranConnexionSpectral() {
         if (pr.ecurie || pr.club) maj.ecurie = pr.ecurie || pr.club;
         if (pr.ville) maj.ville = pr.ville;
         if (Object.keys(maj).length && typeof majProfil === "function") majProfil(maj).catch(function () { }); } catch (e) { }
-      try { var r3 = await monProfil(); if (r3 && r3.data) { var d3 = r3.data; setProfil(function (pp) { return Object.assign({}, pp, { pseudo: d3.pseudo || pp.pseudo, prenom: d3.pseudo || pp.prenom, ecurie: d3.ecurie || pp.ecurie, club: d3.ecurie || pp.club, ecurie2: d3.ecurie2 || pp.ecurie2, club2: d3.ecurie2 || pp.club2, email: email }); }); } } catch (e) { }
+      try { var r3 = await monProfil(); if (r3 && r3.data) { var d3 = r3.data; setProfil(function (pp) { return Object.assign({}, pp, { pseudo: d3.pseudo || pp.pseudo, prenom: d3.pseudo || pp.prenom, ecurie: d3.ecurie || pp.ecurie, club: d3.ecurie || pp.club, ecurie2: d3.ecurie2 || pp.ecurie2, club2: d3.ecurie2 || pp.club2, email: email, avatar: d3.avatar_url || pp.avatar, avatar_url: d3.avatar_url || pp.avatar_url, histoire: d3.histoire || pp.histoire, ville: d3.ville || pp.ville }); }); } } catch (e) { }
     } catch (e) { } setEcran("dashboard"); })(); }
   function valider() { if (enCours) return; setErreur("");
     var em = email.trim();
@@ -26324,7 +26335,10 @@ function EcranMonCavalier() {
   var _albO = React.useState(false); var albumOuvert = _albO[0], setAlbumOuvert = _albO[1];
   function appliquerNouvelAvatar(res) {
     if (!res) return;
-    var ancien = (ctx.profil && ctx.profil.avatar_url) || null;
+    /* 28/07 : on lisait seulement avatar_url — or il n etait jamais restaure depuis la base (colonne
+       lue sous le mauvais nom, corrige le meme jour), donc « ancien » valait null et l ancienne photo
+       n arrivait JAMAIS dans l album. On prend desormais la meilleure valeur disponible. */
+    var ancien = (ctx.profil && (ctx.profil.avatar_url || ctx.profil.avatar)) || null;
     setProfil(function (pp) { return Object.assign({}, pp, { avatar: res.dataUrl }); });
     try { if (res.original) localStorage.setItem("hype_avatar_original", res.original); } catch (eO) { }
     hypeEnregistrerPhoto("avatar", null, res, ancien).then(function (urlFinale) {
@@ -26334,7 +26348,24 @@ function EcranMonCavalier() {
       try { window.alert(tr({ fr: "La photo n'a pas pu être enregistrée. Vérifie ta connexion et réessaie.", en: "The photo could not be saved. Check your connection and try again.", es: "No se pudo guardar la foto. Comprueba tu conexión e inténtalo de nuevo.", it: "Impossibile salvare la foto. Controlla la connessione e riprova.", ja: "写真を保存できませんでした。接続を確認して再試行してください。" })); } catch (eAl) { }
     });
   }
-  function choisirPhoto(e) { var f = e.target.files && e.target.files[0]; try { e.target.value = ""; } catch (eV) { } if (!f) return; if (typeof hypeRecadrer === "function") { hypeRecadrer(f, 1).then(appliquerNouvelAvatar); } else { var lr = new FileReader(); lr.onload = function () { setProfil(function (pp) { return Object.assign({}, pp, { avatar: lr.result }); }); }; lr.readAsDataURL(f); } }
+  /* 28/07 : l ancien repli FileReader posait la photo EN LOCAL seulement (jamais envoyee en base).
+     Il etait de fait inatteignable — hypeRecadrer est une fonction globale, la condition etait
+     toujours vraie — mais il ressemblait a un chemin valide : supprime.
+     hypeRecadrer resout null si le recadreur n est pas pret (ou si l utilisateur annule) : dans le
+     premier cas la photo etait perdue SANS AUCUN MESSAGE. On le dit maintenant. */
+  function choisirPhoto(e) {
+    var f = e.target.files && e.target.files[0];
+    try { e.target.value = ""; } catch (eV) { }
+    if (!f) return;
+    if (typeof hypeRecadrer !== "function" || typeof __recadrageOuvrir === "undefined" || !__recadrageOuvrir) {
+      try { window.alert(tr(HYPE_TXT_RECADREUR)); } catch (eA) { }
+      return;
+    }
+    hypeRecadrer(f, 1).then(function (res) {
+      if (!res) return;                 /* annulation volontaire : rien a dire */
+      appliquerNouvelAvatar(res);
+    });
+  }
   function modifierPhoto() {
     var origSauve = null; try { origSauve = localStorage.getItem("hype_avatar_original"); } catch (eO2) { }
     var src = origSauve || (ctx.profil && ctx.profil.avatar_url) || (ctx.profil && ctx.profil.avatar);
@@ -29136,6 +29167,8 @@ const ECHV_R_CSS = `
 .chvr .gtabs{display:flex;gap:8px;margin-bottom:12px}.chvr .gtab{flex:1;padding:9px;border-radius:12px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(234,242,244,.55);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}.chvr .gtab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}.chvr .gtab.on{color:var(--teinte);background:color-mix(in srgb, var(--teinte) 15%, transparent);border-color:var(--teinte)}.chvr .gvid{border-radius:16px;border:1px dashed rgba(255,255,255,.16);background:color-mix(in srgb, var(--teinte) 4%, transparent);aspect-ratio:16/10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:rgba(234,242,244,.6);text-align:center;padding:0 20px}.chvr .gvid svg{width:34px;height:34px;fill:var(--teinte)}.chvr .gvid span{font-size:12.5px}.chvr .rband .rimg{width:100%;height:104px;object-fit:contain;border-radius:11px;display:block;box-shadow:0 6px 18px -8px rgba(0,0,0,.85)}.chvr .rfsimg{max-width:min(80vw,300px);max-height:72vh;border-radius:14px;display:block;box-shadow:0 20px 50px -12px rgba(10,26,36,0.154)}.chvr .rflinks{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:16px}.chvr .rflink{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:999px;font-size:13px;font-weight:600;text-decoration:none;color:#EAF2F4;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);-webkit-tap-highlight-color:transparent}.chvr .rflink .rfico{width:8px;height:8px;border-radius:2px;background:currentColor;opacity:.9}.chvr .rflink.instagram{color:#F6A5C0;border-color:rgba(246,165,192,.42)}.chvr .rflink.tiktok{color:#6FE9F0;border-color:rgba(111,233,240,.42)}.chvr .rflink.youtube{color:#FF7A7A;border-color:rgba(255,122,122,.42)}.chvr .rflink.video{color:#EAC77A;border-color:rgba(234,199,122,.42)}@media (prefers-reduced-motion:reduce){.chvr .prism{animation:none}}
 `;
 
+const HYPE_TXT_PHOTO_NON_ENVOYEE = { fr: "La photo n'a pas pu être envoyée : elle reste visible sur ce téléphone mais pas sur tes autres appareils. Réessaie avec une meilleure connexion.", en: "The photo could not be uploaded: it stays on this phone but not on your other devices. Try again with a better connection.", es: "No se pudo subir la foto: se queda en este teléfono pero no en tus otros dispositivos. Inténtalo con mejor conexión.", it: "La foto non è stata caricata: resta su questo telefono ma non sugli altri dispositivi. Riprova con una connessione migliore.", de: "Das Foto konnte nicht hochgeladen werden: es bleibt auf diesem Handy, aber nicht auf deinen anderen Geräten. Versuche es mit besserer Verbindung.", ja: "写真を送信できませんでした。この端末には残りますが、ほかの端末には表示されません。通信状況のよいところで再度お試しください。" };
+const HYPE_TXT_RECADREUR = { fr: "L'outil de recadrage n'est pas disponible pour le moment. Ferme et rouvre l'application, puis réessaie.", en: "The cropping tool is not available right now. Close and reopen the app, then try again.", es: "La herramienta de recorte no está disponible ahora. Cierra y vuelve a abrir la aplicación e inténtalo de nuevo.", it: "Lo strumento di ritaglio non è disponibile in questo momento. Chiudi e riapri l'app, poi riprova.", de: "Das Zuschneide-Werkzeug ist gerade nicht verfügbar. Schließe die App, öffne sie neu und versuche es erneut.", ja: "切り抜きツールが今は使えません。アプリを一度閉じて開き直してから、もう一度お試しください。" };
 /* ===== RECADRAGE PHOTO (Hype) ===== */
 var __recadrageOuvrir = null;
 function hypeRecadrer(fichier, aspect, opts) {
@@ -41864,7 +41897,7 @@ function EcranProfil() {
                dans le bucket puis ecrit avatar_url. Les echecs sont remontes a l ecran. */
             try {
                 if (typeof hypeEnregistrerPhoto === "function" && typeof supa !== "undefined") {
-                    hypeEnregistrerPhoto("avatar", null, { fichier: f, dataUrl: lecteur.result }, (profil && profil.avatar) || null)
+                    hypeEnregistrerPhoto("avatar", null, { fichier: f, dataUrl: lecteur.result }, (profil && (profil.avatar_url || profil.avatar)) || null)
                         .then(function (r) {
                             if (r && r.url) setProfil((p) => ({ ...p, avatar: r.url, avatar_url: r.url }));
                         })
@@ -41883,7 +41916,29 @@ function EcranProfil() {
         if (!f)
             return;
         const lecteur = new FileReader();
-        lecteur.onload = () => { setProfil((p) => ({ ...p, chevalPhoto: lecteur.result })); try { if (typeof syncProfilDistant === "function" && typeof supa !== "undefined") syncProfilDistant({ cheval_photo: lecteur.result }); } catch (e) { } };
+        /* 28/07 : on ecrivait la dataUrl base64 directement dans la colonne cheval_photo — seule
+           photo du projet a ne pas passer par le bucket. Une image de 2 Mo devenait ~2,7 Mo de texte
+           dans la ligne de profil, rechargee a chaque lecture. On envoie desormais le fichier et on
+           ne stocke que son URL, comme toutes les autres photos. */
+        lecteur.onload = () => {
+            setProfil((p) => ({ ...p, chevalPhoto: lecteur.result }));   /* affichage immediat */
+            try {
+                if (typeof envoyerPhoto === "function" && typeof supa !== "undefined") {
+                    envoyerPhoto(f).then(function (up) {
+                        if (up && up.url) {
+                            setProfil((p) => ({ ...p, chevalPhoto: up.url }));
+                            if (typeof syncProfilDistant === "function") syncProfilDistant({ cheval_photo: up.url });
+                        } else {
+                            console.error("choisirCheval: echec envoi", up && up.error);
+                            try { alert(tr(HYPE_TXT_PHOTO_NON_ENVOYEE)); } catch (eA) { }
+                        }
+                    }).catch(function (err) {
+                        console.error("choisirCheval: echec envoi", err);
+                        try { alert(tr(HYPE_TXT_PHOTO_NON_ENVOYEE)); } catch (eA2) { }
+                    });
+                }
+            } catch (e) { }
+        };
         lecteur.readAsDataURL(f);
     };
     const fondCheval = profil.chevalPhoto || (typeof CHEVAL_DEFAUT !== "undefined" ? CHEVAL_DEFAUT : PHOTOS.hero_dashboard);
