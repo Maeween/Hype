@@ -10,6 +10,44 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
+**Version actuelle de l'index.html : session du 29/07/2026 (42) — Nouveau chapitre Galop 4 « Le contact » (6 langues)**
+
+🔴 **À pousser** : `index.html` + `SUIVI.md` + l'image **`k629.jpg`** dans `images/`.
+
+**Session 42 — le chapitre « Le contact »**
+
+Nouveau chapitre `g4-contact`, inséré dans `COURS_GALOP4_FR` **juste après `g4-c1`**, au gabarit `g4-biomeca`. Contenu fourni par Blandine (document « LE CONTACT »), découpage validé par elle.
+
+- **Structure** : couverture (k629, partage activé) → 3 cartes « Le contact, un dialogue » → 3 cartes « Accompagner, agir, céder » → écran final → QCM 10 questions. **6 langues complètes** (fr/en/es/it/ja/de), aucun repli sur le français.
+- **Les 6 cartes** : un dialogue pas une prise · trop fort ou pas assez · il commence loin des mains · les coudes amortissent · mains placées rênes ajustées · venir au contact puis céder. Chacune a son panneau « Approfondir ».
+- **Écran final réutilisé, pas dupliqué.** `ComplementsBiomeca` accepte désormais une prop **`dico`** : `function ComplementsBiomeca(props)` → `const __DICO = (props && props.dico) || COMPL_I18N;`. Sans prop, comportement **identique** à avant (le pilote n'est pas touché). Nouveau dictionnaire `COMPL_CONTACT_I18N` + nouveau type de bloc `complements-contact`. Ça évite 130 lignes de composant copiées.
+- **Bonus** : défi « sens tes coudes » (5 points d'observation), vidéo en « Prochainement » (attend les liens IFCE), Approfondir (l'action du mors sur les barres/langue/commissures, l'apprentissage par la disparition de la pression).
+- **Ouvert** : `"g4-contact": true` dans `HYPE_COURS_PRETS`. **Partage** : `"contact"` ajouté à la table `MAP` de `CIBLE_DIRECTE`, lien `LIEN_APP + "#contact"`.
+- **Image** : `window.HYPE_IMGS["k629"]="images/k629.jpg"` déclarée. Le visuel fourni était une **capture d'écran** : recadrée (croix, trois points et bandes noires retirées), 1024×1756, qualité 84, **170 Ko**. **Prochaine clé libre : k630.**
+- 📌 **Nouvelle convention d'extension, décidée le 29/07 par Blandine : les images livrées sont désormais renommées en `.jpg` avant livraison**, pour éviter la confusion `.jpeg` / `.jpg` qui a rendu les cartes du Memory invisibles. Elle n'a plus rien à renommer : le fichier fourni porte déjà le bon nom. Les clés k555 à k628 restent en `.jpeg`, on ne touche à rien.
+- ⚠️ **`g4-c1` « Le contact et l'accord des aides » est toujours en place** et fait maintenant doublon partiel. Il doit disparaître quand le chapitre « L'accord des aides » sera livré — c'est le plan validé avec Blandine (deux chapitres séparés au lieu d'un).
+
+✅ Vérifs : 14 blocs script `node --check` OK · **1514 fonctions, inchangé** · 30 dictionnaires tous déclarés · les 4 blocs du chapitre montés un par un **dans les 6 langues**, aucun ne rend du vide (texte-riche ~8,4 K car., compléments ~18 K car.) · `couv-affiche` rend 0 via `BlocCours` **comme le pilote** (c'est `EcranCours` qui l'affiche : testé via `CouvAffiche`, 3 634 car., titre et citation corrects) · marqueurs antérieurs préservés (`allerVersGalop` 3, `MEVO_CSS`, `EcranTraceAnime`, biomeca, cartes, partage, annonces, Memory, k615-k628) · aucune erreur JS nouvelle par rapport à l'index d'origine.
+
+⏳ **En attente** : le module interactif du chapitre (la maquette « les coudes amortissent » a été rejetée par Blandine, à refaire). Le chapitre tient debout sans lui ; il s'insérera comme 4ᵉ bloc, avant l'écran final.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (41) — Déclarations d'images du Memory (réappliquées) + document de passation pour les cours**
+
+🔴 **À pousser** : `index.html` + `SUIVI.md` + `PASSATION-cours.md` + `netlify.toml` (racine) + les **14 images allégées** `k615.jpeg`…`k628.jpeg` dans `images/` (elles **remplacent** celles en ligne).
+
+**Session 41 — deux choses**
+
+1. **Déclarations d'images réappliquées.** L'index fourni par Blandine avait le bandeau d'annonces par page (session 39) mais **pas** les déclarations d'images de la session 40. Réappliquées : `window.HYPE_IMGS["kNNN"]="images/kNNN.jpeg"` pour **k610 et k615 à k628** (15 clés). Vérifié : 25 images sont désormais de vrais fichiers, k615-k628 toutes présentes.
+   ⚠️ **C'était la cause des cartes Memory invisibles** : les fichiers étaient bien en ligne sur GitHub en `.jpeg`, mais aucune déclaration ne disait à l'appli où les chercher. **Une image demande deux gestes : la pousser ET la déclarer.**
+
+2. **📄 `PASSATION-cours.md` livré** — document destiné à toute session qui reprendra le travail sur les cours des Galops. Il contient : le principe (distinguer l'indispensable du facultatif), le gabarit complet d'un chapitre, les composants réutilisables et comment les appeler (`CarteCours`, `SectionCollapse`, `hypePartagerCours`), **les décisions de fond à ne pas rouvrir** (14,5 px, « Approfondir », les chiffres non sourçables qu'on n'affiche pas, le moteur de progression qu'on ne touche pas), **les pièges techniques vécus** (le bornage de réécriture qui avale un `const`, le `<li>` en flex, `CouvAffiche` hors contexte), la règle des deux gestes pour les images, ce qui reste à faire, et la méthode de travail avec Blandine.
+
+✅ Vérifs : **885 fonctions**, 14 blocs script `node --check` OK, 25 images en fichiers dont k615-k628, tout le travail antérieur préservé (biomeca, cavalier, cartes, compléments, partage, suppression de compte, synchro, annonces par page).
+
+---
+
 **Version actuelle de l'index.html : session du 29/07/2026 (39) — Bandeau d'annonces par page (réappliqué) + fusion avec le travail Memory**
 
 🔴🔴 **URGENT — SITE HORS LIGNE : QUOTA NETLIFY DÉPASSÉ (29/07)** 🔴🔴
