@@ -49,14 +49,9 @@ const CLE_PUBLISHABLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK"; // ⚠
 
 const { createClient } = window.supabase;              // fourni par le <script> CDN
 // "Se rappeler de moi" : coché -> session durable (localStorage), décoché -> session de l'onglet (sessionStorage)
-// "Se rappeler de moi" : conservé dans l'interface, mais la connexion est
-// désormais TOUJOURS mémorisée durablement (localStorage), quelle que soit
-// la case — le mode "session de l'onglet" causait trop de déconnexions
-// intempestives (fermeture d'app, plantage, verrouillage d'écran) pour un
-// usage mobile.
 const stockageHype = {
-  getItem: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } },
-  setItem: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { } },
+  getItem: (k) => { try { return (localStorage.getItem("hype_rappeler") === "0" ? sessionStorage : localStorage).getItem(k); } catch (e) { return null; } },
+  setItem: (k, v) => { try { (localStorage.getItem("hype_rappeler") === "0" ? sessionStorage : localStorage).setItem(k, v); } catch (e) { } },
   removeItem: (k) => { try { sessionStorage.removeItem(k); localStorage.removeItem(k); } catch (e) { } }
 };
 const supa = createClient(SUPABASE_URL, CLE_PUBLISHABLE, { auth: { storage: stockageHype, persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
@@ -111,18 +106,6 @@ try {
 function surChangementConnexion(callback) {
   return supa.auth.onAuthStateChange((_event, session) => callback(session?.user ?? null));
 }
-
-// Quand l'appli revient au premier plan (retour d'arrière-plan, verrouillage
-// d'écran, changement d'onglet), on revérifie/rafraîchit activement la
-// session : le rafraîchissement automatique peut rater son heure si le
-// téléphone a mis l'appli en pause pendant un moment.
-try {
-  document.addEventListener("visibilitychange", function () {
-    if (document.visibilityState === "visible") {
-      try { supa.auth.getSession().catch(function () { }); } catch (eVis) { }
-    }
-  });
-} catch (eVisReg) { }
 
 
 /* --- 3. Profil --------------------------------------------- */
@@ -18638,7 +18621,7 @@ exports.version = "19.2.5";
 });</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(!r||r.firstChild)return false;var lg="fr";try{var e=JSON.parse(localStorage.getItem("augalop_etat_v1")||"null");if(e&&e.langue)lg=e.langue;}catch(x){}var T={fr:["Un caillou dans le sabot","Hype s'est arr\u00eat\u00e9 net. Rien n'est perdu : ta progression est enregistr\u00e9e.","Revenir \u00e0 l'accueil","D\u00e9tails techniques"],en:["A stone in the hoof","Hype stopped short. Nothing is lost \u2014 your progress is saved.","Back to home","Technical details"],es:["Una piedra en el casco","Hype se ha detenido. No se pierde nada: tu progreso est\u00e1 guardado.","Volver al inicio","Detalles t\u00e9cnicos"],it:["Un sassolino nello zoccolo","Hype si \u00e8 fermato. Non \u00e8 perso nulla: i tuoi progressi sono salvati.","Torna alla home","Dettagli tecnici"],de:["Ein Stein im Huf","Hype ist stehen geblieben. Nichts ist verloren: Dein Fortschritt ist gespeichert.","Zur\u00fcck zur Startseite","Technische Details"],ja:["\u3072\u3065\u3081\u306b\u5c0f\u77f3\u304c","Hype \u304c\u3068\u307e\u3063\u3066\u3057\u307e\u3044\u307e\u3057\u305f\u3002\u304d\u308d\u304f\u306f\u306e\u3053\u3063\u3066\u3044\u307e\u3059\u3002","\u30db\u30fc\u30e0\u306b\u3082\u3069\u308b","\u304f\u308f\u3057\u3044\u3058\u3087\u3046\u307b\u3046"]};var w=T[lg]||T.fr;var im=(window.HYPE_IMGS&&window.HYPE_IMGS["k554"])||"";var st=String((err&&err.stack)||m||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");r.innerHTML='<div class="hyperr">'+(im?'<img src="'+im+'" alt="">':'<div class="hyperr-apy">\ud83d\udc34</div>')+'<h1>'+w[0]+'</h1><p>'+w[1]+'</p>'+'<button type="button" id="hyperr-go">'+w[2]+'</button>'+'<button type="button" id="hyperr-det">'+w[3]+'</button>'+'<pre class="err" id="hyperr-pre" hidden>'+st+'</pre></div>';var g=document.getElementById("hyperr-go");if(g)g.onclick=function(){try{location.replace(location.pathname);}catch(x){location.reload();}};var d=document.getElementById("hyperr-det");if(d)d.onclick=function(){var p=document.getElementById("hyperr-pre");if(p)p.hidden=!p.hidden;};return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-images-25.js"></script><script src="hype-images-26.js"></script><script src="hype-images-27.js"></script>
 <script src="hype-images-28.js"></script>
 <script src="hype-images-29.js"></script><script src="hype-images-30.js"></script><script src="hype-images-31.js"></script><script src="hype-images-32.js"></script><script src="hype-images-33.js"></script><script src="hype-images-34.js"></script><script src="hype-images-35.js"></script><script src="hype-images-36.js"></script><script src="hype-images-37.js"></script><script src="hype-images-38.js"></script><script src="hype-images-39.js"></script><script src="hype-images-40.js"></script><script src="hype-images-41.js"></script><script src="hype-images-42.js"></script><script src="hype-images-43.js"></script><script src="hype-images-44.js"></script><script src="hype-images-45.js"></script><script src="hype-images-46.js"></script><script src="hype-images-47.js"></script><script src="hype-images-48.js"></script><script src="hype-images-49.js"></script><script src="hype-images-50.js"></script><script src="hype-images-51.js"></script><script src="hype-images-52.js"></script><script src="hype-images-53.js"></script><script src="hype-images-54.js"></script><script src="hype-images-55.js"></script><script src="hype-images-56.js"></script>
-<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-images-62.js"></script><script src="hype-images-63.js"></script><script src="hype-images-64.js"></script><script src="hype-images-65.js"></script><script src="hype-images-66.js"></script><script src="hype-images-67.js"></script><script src="hype-images-68.js"></script><script src="hype-images-69.js"></script><script src="hype-images-70.js"></script><script src="hype-images-71.js"></script><script src="hype-images-72.js"></script><script src="hype-images-73.js"></script><script src="hype-images-74.js"></script><script src="hype-images-75.js"></script><script src="hype-images-76.js"></script><script src="hype-images-77.js"></script><script src="hype-images-78.js"></script><script src="hype-images-79.js"></script><script src="hype-images-80.js"></script><script src="hype-images-81.js"></script><script src="hype-images-82.js"></script><script src="hype-images-83.js"></script><script src="hype-images-84.js"></script><script src="hype-images-85.js"></script><script src="hype-images-86.js"></script><script src="hype-images-87.js"></script><script src="hype-images-88.js"></script><script src="hype-images-89.js"></script><script src="hype-images-90.js"></script><script src="hype-images-91.js"></script><script src="hype-images-92.js"></script><script src="hype-images-93.js"></script><script src="hype-images-94.js"></script><script src="hype-images-95.js"></script><script src="hype-images-96.js"></script><script src="hype-images-97.js"></script><script src="hype-images-98.js"></script><script src="hype-images-99.js"></script><script src="hype-images-100.js"></script><script src="hype-images-101.js"></script><script src="hype-images-102.js"></script><script src="hype-images-103.js"></script><script src="hype-images-104.js"></script><script src="hype-images-105.js"></script><script src="hype-images-106.js"></script><script src="hype-images-107.js"></script><script src="hype-images-108.js"></script><script src="hype-images-109.js"></script><script src="hype-images-110.js"></script><script src="hype-images-111.js"></script><script src="hype-images-112.js"></script><script src="hype-images-113.js"></script><script>/* Convention à partir de k547 : nouvelles images en vrais fichiers .jpg (dossier images/), plus de base64. */for(var _hk=547;_hk<=554;_hk++){window.HYPE_IMGS["k"+_hk]="images/k"+_hk+".jpg";}for(var _hk3=615;_hk3<=628;_hk3++){window.HYPE_IMGS["k"+_hk3]="images/k"+_hk3+".jpg";}</script><script src="hype-images-114.js"></script><script src="hype-images-115.js"></script><script src="hype-images-116.js"></script><script src="hype-images-117.js"></script><script src="hype-images-118.js"></script><script src="hype-images-119.js"></script><script>/* Correctif : les fichiers réels sur GitHub sont en .jpeg (k555/k556/k557/k603), pas .jpg comme hype-images-119.js le déclare. On force les bons chemins ici plutôt que d'éditer ce fichier séparé. */window.HYPE_IMGS["k555"]="images/k555.jpeg";window.HYPE_IMGS["k556"]="images/k556.jpeg";window.HYPE_IMGS["k557"]="images/k557.jpeg";window.HYPE_IMGS["k603"]="images/k603.jpeg";window.HYPE_IMGS["k604"]="images/k604.jpeg";window.HYPE_IMGS["k605"]="images/k605.jpeg";window.HYPE_IMGS["k606"]="images/k606.jpeg";window.HYPE_IMGS["k607"]="images/k607.jpeg";window.HYPE_IMGS["k608"]="images/k608.jpeg";window.HYPE_IMGS["k609"]="images/k609.jpeg";</script>
+<script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-images-62.js"></script><script src="hype-images-63.js"></script><script src="hype-images-64.js"></script><script src="hype-images-65.js"></script><script src="hype-images-66.js"></script><script src="hype-images-67.js"></script><script src="hype-images-68.js"></script><script src="hype-images-69.js"></script><script src="hype-images-70.js"></script><script src="hype-images-71.js"></script><script src="hype-images-72.js"></script><script src="hype-images-73.js"></script><script src="hype-images-74.js"></script><script src="hype-images-75.js"></script><script src="hype-images-76.js"></script><script src="hype-images-77.js"></script><script src="hype-images-78.js"></script><script src="hype-images-79.js"></script><script src="hype-images-80.js"></script><script src="hype-images-81.js"></script><script src="hype-images-82.js"></script><script src="hype-images-83.js"></script><script src="hype-images-84.js"></script><script src="hype-images-85.js"></script><script src="hype-images-86.js"></script><script src="hype-images-87.js"></script><script src="hype-images-88.js"></script><script src="hype-images-89.js"></script><script src="hype-images-90.js"></script><script src="hype-images-91.js"></script><script src="hype-images-92.js"></script><script src="hype-images-93.js"></script><script src="hype-images-94.js"></script><script src="hype-images-95.js"></script><script src="hype-images-96.js"></script><script src="hype-images-97.js"></script><script src="hype-images-98.js"></script><script src="hype-images-99.js"></script><script src="hype-images-100.js"></script><script src="hype-images-101.js"></script><script src="hype-images-102.js"></script><script src="hype-images-103.js"></script><script src="hype-images-104.js"></script><script src="hype-images-105.js"></script><script src="hype-images-106.js"></script><script src="hype-images-107.js"></script><script src="hype-images-108.js"></script><script src="hype-images-109.js"></script><script src="hype-images-110.js"></script><script src="hype-images-111.js"></script><script src="hype-images-112.js"></script><script src="hype-images-113.js"></script><script>/* Convention à partir de k547 : nouvelles images en vrais fichiers .jpg (dossier images/), plus de base64. */for(var _hk=547;_hk<=554;_hk++){window.HYPE_IMGS["k"+_hk]="images/k"+_hk+".jpg";}for(var _hk3=615;_hk3<=628;_hk3++){window.HYPE_IMGS["k"+_hk3]="images/k"+_hk3+".jpeg";}</script><script src="hype-images-114.js"></script><script src="hype-images-115.js"></script><script src="hype-images-116.js"></script><script src="hype-images-117.js"></script><script src="hype-images-118.js"></script><script src="hype-images-119.js"></script><script>/* Correctif : les fichiers réels sur GitHub sont en .jpeg (k555/k556/k557/k603), pas .jpg comme hype-images-119.js le déclare. On force les bons chemins ici plutôt que d'éditer ce fichier séparé. */window.HYPE_IMGS["k555"]="images/k555.jpeg";window.HYPE_IMGS["k556"]="images/k556.jpeg";window.HYPE_IMGS["k557"]="images/k557.jpeg";window.HYPE_IMGS["k603"]="images/k603.jpeg";window.HYPE_IMGS["k604"]="images/k604.jpeg";window.HYPE_IMGS["k605"]="images/k605.jpeg";window.HYPE_IMGS["k606"]="images/k606.jpeg";window.HYPE_IMGS["k607"]="images/k607.jpeg";window.HYPE_IMGS["k608"]="images/k608.jpeg";window.HYPE_IMGS["k609"]="images/k609.jpeg";</script>
 <script src="hype-images-120.js"></script>
 <script src="hype-images-121.js"></script><script src="hype-images-122.js"></script><script src="hype-dressage-conseils.js"></script><script src="hype-clubs-db-1.js"></script><script src="hype-clubs-db-2.js"></script><script src="hype-clubs-db-3.js"></script><script src="hype-clubs-loader.js"></script><script src="hype-pedagogie.js"></script><script>
 "use strict";
@@ -32398,32 +32381,39 @@ function parseAnnonce(texte, langue){
   var gm = reste.match(/Galop\s*\d+/i);
   return { emo:emo, titre:titre, g:(gm?gm[0]:""), brut:s };
 }
-function useAnnonces(langue){
+function useAnnonces(langue, cible){
+  var cle = cible || "annonces-hype";
   var st=React.useState(null); var ann=st[0], setAnn=st[1];
   React.useEffect(function(){
     var vivant=true;
     if(typeof listerCommentaires!=="function"){ setAnn([]); return; }
-    listerCommentaires("annonces-hype").then(function(r){
+    listerCommentaires(cle).then(function(r){
       if(!vivant) return;
       var liste=((r&&r.data)||[]).slice();
       liste.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
       setAnn(liste.map(function(c){ return parseAnnonce(c.texte, langue); }));
     }).catch(function(){ if(vivant) setAnn([]); });
     return function(){ vivant=false; };
-  },[langue]);
+  },[langue, cle]);
   return ann;
 }
 function ouvrirDepuisAnnonce(ctx){ try{ if(ctx&&ctx.setEcran) ctx.setEcran("galops"); }catch(e){} }
 
-function FilAnnoncesB(){
-  var ctx=useApp(); var ann=useAnnonces((ctx&&ctx.langue)||"fr"); var h=React.createElement;
+function FilAnnoncesB(props){
+  /* cible : permet a chaque page d'avoir SES annonces.
+     Par defaut "annonces-hype" (accueil). Ma Sellerie utilise "annonces-sellerie" :
+     Blandine y publie ses nouveautes partenaires, sans rapport avec l'accueil.
+     Si aucune annonce n'existe pour la cible, le bandeau ne s'affiche pas du tout. */
+  var cible = (props && props.cible) || "annonces-hype";
+  var libelle = (props && props.libelle) || null;
+  var ctx=useApp(); var ann=useAnnonces((ctx&&ctx.langue)||"fr", cible); var h=React.createElement;
   if(!ann||!ann.length) return null;
   function item(a,key){ return h("span",{className:"it",key:key,onClick:function(){ ouvrirDepuisAnnonce(ctx); }},
       a.emo?h("span",{className:"emo",key:"e"},a.emo):null, h("span",{key:"t"},a.titre), a.g?h("span",{className:"g",key:"g"},a.g):null); }
   function seq(p){ var o=[]; ann.forEach(function(a,i){ o.push(item(a,p+i)); o.push(h("span",{className:"sep",key:p+"s"+i},"\u25C6")); }); return o; }
   return h("div",{className:"filann-b"},
     h("div",{className:"fl"}), h("div",{className:"fr"}),
-    h("div",{className:"lbl"}, h("span",{className:"dia"}), "Nouveau"),
+    h("div",{className:"lbl"}, h("span",{className:"dia"}), libelle || "Nouveau"),
     h("div",{className:"mask"}, h("div",{className:"trk"}, seq("a").concat(seq("b")))));
 }
 function FilAnnoncesC(){
@@ -32833,7 +32823,7 @@ function EcranBibliothequeGalops() {
                         tr({ fr: "Deviens membre Premium pour découvrir la théorie à partir du Galop 2", en: "Become a Premium member to discover theory from Galop 2 onwards", es: "Hazte miembro Premium para descubrir la teoría a partir del Galop 2", it: "Diventa membro Premium per scoprire la teoria dal Galop 2", ja: "プレミアム会員になって、Galop 2からの理論を学ぼう", de: "Werde Premium-Mitglied und entdecke die Theorie ab Galop 2" }),
                         " ", React.createElement("span", { className: "etoile", style: { animationDelay: "1.2s" } }, "\u2726")) : null)));
         })(),
-        React.createElement("div", { style: { margin: "18px 0 22px" } }, React.createElement(FilAnnoncesB, null)),
+        React.createElement("div", { style: { margin: "18px 0 22px" } }, React.createElement(FilAnnoncesB, { cible: "annonces-sellerie", libelle: "Partenaires" })),
         React.createElement("div", { style: { padding: "14px 20px 26px" } },
             React.createElement("style", null, "@keyframes galPremShine{0%,72%{left:-90px}88%,100%{left:130%}}.galprem::after{content:\"\";position:absolute;top:-30%;bottom:-30%;width:46px;left:-90px;transform:rotate(18deg);background:linear-gradient(90deg,transparent,rgba(240,252,255,0.15),transparent);animation:galPremShine 9s ease-in-out infinite;pointer-events:none}"),
             React.createElement("button", { className: "galprem", onClick: function () { setEcran("premium"); }, style: { position: "relative", width: "100%", height: 168, borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", boxShadow: "0 14px 40px rgba(0,0,0,0.55), 0 0 30px rgba(32,217,245,0.12)", cursor: "pointer", textAlign: "left", padding: 0, display: "block", background: "#04070d" } },
@@ -35296,7 +35286,7 @@ function MemoryPoneyJeu({ tr }) {
                 const bossVerrouille = n.estBoss && !autresNiveaux.every((m) => profil && (profil.niveaux || {})[m.id]);
                 const premiumVerrouille = idx >= 2 && !premium;
                 const verrouille = bossVerrouille || premiumVerrouille;
-                return React.createElement("button", { key: n.id, onClick: () => { if (premiumVerrouille) { setEcranApp("premium"); return; } if (bossVerrouille) return; try { history.pushState({ memoryPoney: "jeu" }, ""); } catch (ePh) { } setNiveauActif(n.id); setVue("jeu"); }, style: { display: "flex", alignItems: "center", gap: 12, background: n.estBoss ? `linear-gradient(135deg, ${COLORS.or}14, ${COLORS.nuitClaire})` : COLORS.nuitClaire, border: `1.5px solid ${n.estBoss ? COLORS.or : (fait ? COLORS.turquoise : COLORS.nuitBordure)}`, borderRadius: 16, padding: "13px 16px", textAlign: "left", overflow: "hidden", opacity: (complet && !verrouille) ? 1 : 0.55, cursor: bossVerrouille ? "default" : "pointer" } },
+                return React.createElement("button", { key: n.id, onClick: () => { if (premiumVerrouille) { setEcranApp("premium"); return; } if (bossVerrouille) return; setNiveauActif(n.id); setVue("jeu"); }, style: { display: "flex", alignItems: "center", gap: 12, background: n.estBoss ? `linear-gradient(135deg, ${COLORS.or}14, ${COLORS.nuitClaire})` : COLORS.nuitClaire, border: `1.5px solid ${n.estBoss ? COLORS.or : (fait ? COLORS.turquoise : COLORS.nuitBordure)}`, borderRadius: 16, padding: "13px 16px", textAlign: "left", overflow: "hidden", opacity: (complet && !verrouille) ? 1 : 0.55, cursor: bossVerrouille ? "default" : "pointer" } },
                     n.couverture
                         ? React.createElement("div", { style: { width: 46, height: 46, borderRadius: 12, overflow: "hidden", flexShrink: 0, filter: (complet && !verrouille) ? "none" : "grayscale(0.6)" } }, React.createElement("img", { src: n.couverture, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" } }))
                         : React.createElement("span", { style: { fontSize: 22 } }, n.emoji),
