@@ -26191,7 +26191,7 @@ function EcranMonCompte() {
   }
 
   if (voirSuppr) {
-    return React.createElement(EcranSupprimerCompte, { email: (moi && moi.email) || (profilApp && profilApp.email) || "", onAnnuler: function () { setVoirSuppr(false); } });
+    return React.createElement(EcranSupprimerCompte, { email: (user && user.email) || (profilApp && profilApp.email) || "", onAnnuler: function () { setVoirSuppr(false); } });
   }
   return React.createElement("div", { style: { position: "relative", minHeight: "100vh", background: COLORS.nuit, display: "flex", flexDirection: "column", overflowX: "hidden", overflowY: "auto" } },
     React.createElement("div", { style: { position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 380, height: 300, background: "radial-gradient(ellipse at top, " + COLORS.turquoise + "1F 0%, transparent 68%)", pointerEvents: "none" } }),
