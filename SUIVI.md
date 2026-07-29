@@ -10,6 +10,107 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
+**Version actuelle de l'index.html : session du 29/07/2026 (52) — Chapitre « Varier la vitesse » + redistribution des bonnes réponses QCM (Impulsion et Vitesse)**
+
+🔴 **À pousser** : `index.html`. Il manque `images/k634.jpg` (couverture) — déjà fournie par Blandine, à pousser avec.
+
+**1. Chapitre `g4-vitesse` « Varier la vitesse sans perdre le rythme »**, Galop 4, 6 langues complètes (même circuit que L'impulsion : FR écrit ici, EN/ES/IT/JA/DE reçus traduits, fusionnés après vérification structurelle complète). Couverture « PLUS DE / TERRAIN » (k634, partage `#vitesse`), **sans citation** — confirmé par la passation de traduction, aucune n'a été fournie pour ce chapitre, aucune inventée. Distingue rythme (organisation des temps) / cadence (fréquence des foulées) / **amplitude** (longueur de la foulée, terme officiel FFE ajouté à la demande de Blandine) / vitesse = cadence × amplitude. Relié au chapitre L'impulsion (Galop 6) dans « La science explique » : sans impulsion, pas d'amplitude possible.
+
+**2. Bonnes réponses du QCM redistribuées — Impulsion (déjà en ligne) et Vitesse (ce chapitre).** Les deux chapitres avaient été écrits avec la quasi-totalité des bonnes réponses en position B (10/10 pour Impulsion, 9/10 pour Vitesse). Blandine a validé la correction. Nouvelle répartition appliquée aux deux, identique sur les 6 langues à chaque fois : A,C,B,A,C,B,A,C,B,A (Impulsion) et B,A,C,B,A,C,A,B,C,A (Vitesse) — jamais deux fois de suite la même lettre.
+- **Impulsion** : édité directement dans l'index déjà en ligne. Extraction précise du bloc `g4-c2`... pardon, `g6-c2` par comptage d'accolades, permutation des textes d'options pour que le sens suive le déplacement (jamais juste le champ `correct` changé seul), réinjection, revérifié par relecture du fichier réel après coup — pas seulement supposé correct.
+- **Vitesse** : les traductions reçues avaient été faites sur l'ancienne répartition (la passation le précisait). Régénéré le FR d'origine pour valider correctement les traductions contre la bonne référence, puis appliqué la même transformation aux 6 langues à la fois avant l'injection — aucune des deux versions (ancienne/nouvelle) n'a été mélangée par erreur.
+
+✅ Vérifs : traductions Vitesse contrôlées par script avant fusion (cardinalités, emojis, absence de citation comme annoncé, indices de bonnes réponses conformes à l'ancienne répartition) · redistribution vérifiée par relecture post-écriture, pas seulement en mémoire · `node --check` OK · **rendu React réel des 6 langues** de `g4-vitesse` : aucun bloc vide · **non-régression vérifiée sur les 5 autres chapitres touchés cette session** (Le contact, L'accord des aides, Les transitions, L'incurvation, L'impulsion) : tous présents, titres résolus correctement.
+
+⏳ **En attente** : les vidéos des deux chapitres (Impulsion et Vitesse) — aucune fournie à ce jour malgré les ressources IFCE/Ingrid Klimke évoquées, à transmettre pour intégration dans la bibliothèque vidéo.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (51) — Chapitre « L'impulsion » en ligne, Galop 6 déverrouillé**
+
+🔴 **À pousser** : `index.html`. Il manque `images/k633.jpg` (couverture) — Blandine l'a déjà fournie, à pousser avec.
+
+**Ce qui a été livré**
+
+**1. Chapitre `g6-c2` « L'impulsion »**, 6 langues complètes (FR écrit ici, EN/ES/IT/JA/DE reçus traduits d'une autre conversation, fusionnés après vérification structurelle complète — cardinalités, index de bonne réponse du QCM, emojis, tout contrôlé par script avant intégration). Couverture « LE VENT / DANS LE DOS » (k633), citation attribuée à la Fédération Française d'Équitation (définition officielle citée telle quelle, pas une invention). Même gabarit que les chapitres Galop 4 récents : couverture, 2 blocs de 3 cartes, **bloc Cartes premium** (le composant construit pour L'incurvation, réutilisé ici tel quel), écran final complet, QCM 10 questions.
+
+**2. 🔓 Le Galop 6 est déverrouillé** (`disponible: true, nouveau: true`, `debloque` inchangé — le cadenas Premium reste). `g6-c2` ajouté à `HYPE_COURS_PRETS`. `g6-c1` (déjà présent, ancien format) reste en l'état, non ouvert.
+
+**3. ⚠️ Bug de structure trouvé et corrigé avant livraison — important pour la suite du Galop 6.** `obtenirCoursParGalop(6, langue)` renvoyait `COURS_GALOP6_FR` **brut**, sans jamais passer par `convertirCoursI18nVersInterne` (contrairement à Baby/G1/G2/G3/G4). Résultat : le nouveau chapitre au format multilingue se serait affiché avec des objets `{fr, en, es...}` à la place du texte. **Corrigé à la source** : `if (galopId === 6) return convertirCoursI18nVersInterne(COURS_GALOP6_FR, langue);` — un seul endroit changé.
+- Vérifié que `convertirCoursI18nVersInterne` est **rétrocompatible par construction** : son `tr()` interne accepte aussi bien une chaîne simple (le cas de l'ancien `g6-c1`, jamais traduit) qu'un objet multilingue — passthrough silencieux dans le premier cas, résolution de langue dans le second. **`g6-c1` a été revérifié après coup dans les 6 langues : toujours une chaîne correcte, aucune régression.**
+- Cette correction s'applique à **tout futur chapitre G6**, pas seulement à celui-ci — la porte est maintenant ouverte pour moderniser progressivement le reste du Galop 6 comme on l'a fait pour le Galop 4.
+
+✅ Vérifs : fusion des traductions contrôlée par script (6 cartes, 10 QCM × 3 options avec le bon index partout, 5 questions Hey Baby, 8 points de synthèse, 4 phrases, 4 liens, 7 termes de glossaire, 5 cartes premium — cardinalités et emojis revérifiés un par un) · `node --check` OK · **rendu React réel des 6 langues** : couverture + 2 blocs de cartes + cartes premium (mode verrouillé ET mode Premium) + écran final, aucun bloc vide · `g6-c1` re-testé après le correctif de routage, toujours intact dans les 6 langues.
+
+⏳ **En attente** : la vidéo du chapitre (aucune fournie), et la vidéo + couverture (k634) de « Varier la vitesse » (Galop 4, traductions pas encore reçues).
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (49) — Accès « Mon compte » en bas de l'accueil**
+
+🔴 À pousser : `index.html` seulement (pas de nouvelle image, pas de SQL, `hype-video.js` inchangé depuis la session 48).
+
+**Ce qui manquait.** Une note laissée dans une ancienne version du fichier disait : « un onglet "Mon compte" sera créé ailleurs plus tard (EcranProfil n'est donc plus atteignable en attendant) » — la rangée « Modifier mes informations » avait été retirée de la page cavalier sans qu'un accès de remplacement soit jamais ajouté. Blandine a confirmé ne toujours rien voir en bas de l'accueil.
+
+**Ce qui a été vérifié avant de coder** : `EcranProfil` (édition du profil, chevaux, score, plan d'abonnement) existe et fonctionne déjà — il est atteignable depuis 3 endroits (avatar de la page d'intro, en-tête d'un panneau admin) via `setEcran("profil")`. Rien à reconstruire, juste un point d'entrée à ajouter.
+
+**Ce qui a été fait** : nouvelle rangée tout en bas de l'écran d'accueil (`EcranUnivers`), après le lien de version. Icône ⚙️ dans un halo turquoise, libellé « Mon compte » (5 langues, l'allemand n'existe pas encore dans cette partie du fichier — repli français comme le reste du composant), chevron ›. Carte verre fumé cohérente avec l'identité Hype Spectral. Ouvre `EcranProfil` au tap.
+
+✅ Vérifs : fin exacte du composant `EcranUnivers` localisée par comptage d'accolades · `node --check` OK · rendu React réel de l'accueil complet, bouton retrouvé et cliqué : `setEcran` reçoit bien `"profil"` · styles calculés relus directement dans le DOM rendu.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (50) — Correctif critique : suppression de compte cassée**
+
+🔴 **À pousser en urgence** : `index.html`. Un cavalier (Liam) a signalé un écran de plantage (« Un caillou dans le sabot ») en essayant de supprimer son compte.
+
+**Le bug.** Dans `EcranMonCompte`, au clic sur « Supprimer mon compte » :
+```
+React.createElement(EcranSupprimerCompte, { email: (moi && moi.email) || ... })
+```
+`moi` n'existe nulle part dans ce composant — la variable qui contient l'utilisateur connecté s'appelle `user` (`var stU = useState(undefined); var user = stU[0]...`). Résultat : `ReferenceError: moi is not defined`, l'app plante intégralement dès qu'on tente de supprimer son compte. **Personne ne pouvait supprimer son compte depuis l'app.**
+
+**Le correctif** : `moi` → `user`, une seule occurrence, tout le reste du composant utilisait déjà `user` correctement (12 occurrences).
+
+✅ Vérifs : `node --check` OK · confirmé qu'aucune trace de `moi` ne subsiste dans `EcranMonCompte` (0 occurrence, `user` en compte 12) · expression testée isolément hors navigateur avec les 3 cas réels (email direct, email de secours via `profilApp`, aucun des deux) — tous corrects · **la reproduction exacte du bug original a été testée** : l'ancienne ligne (`moi` non défini) relance bien la même `ReferenceError` que dans la capture d'écran de Liam, confirmant qu'il s'agissait précisément de cette ligne. ⚠️ Impossible de tester le clic en conditions de navigateur réelles dans cette session : le SDK Supabase (chargé depuis un CDN) ne peut pas s'initialiser sans réseau dans l'environnement de vérification, ce qui fait planter la page avant d'atteindre le bouton, indépendamment de ce correctif — **un vrai test sur le téléphone reste nécessaire pour confirmer en conditions réelles.**
+
+⏳ **En parallèle, non résolu** : la ligne « Mon compte » à l'intérieur d'`EcranProfil` (qui mène à cet écran) affiche toujours « Se connecter ou créer un compte » même pour quelqu'un de déjà connecté — texte à corriger, proposé mais pas encore fait.
+
+⏳ **Aussi en attente (discussion en cours)** : chapitre « L'impulsion » confirmé pour le Galop 6 (pas le Galop 4 — vérifié sur 3 sources FFE officielles, le module théorique est « Définir la mise sur la main et l'impulsion », Galop 6). Le Galop 6 existant (`COURS_GALOP4_FR`... pardon, `COURS_GALOP6_FR`) est dans un format ANCIEN et différent (français seul, blocs `intro`/`schema`/`liste`, pas le format riche 6-langues des chapitres Galop 4 récents) — à trancher avec Blandine avant d'écrire le contenu : garder le format historique du Galop 6, ou l'moderniser avec ce chapitre. Pas encore commencé.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (48) — Chapitre « L'incurvation » + nouveau bloc Cartes premium + touche exceptionnelle à hype-video.js**
+
+🔴 **À pousser** : `index.html` + **`hype-video.js` (modifié, voir plus bas)** + `SUIVI.md`. ⚠️ **Il manque l'image `k632.jpg`** (couverture) — Blandine doit la fournir.
+
+⚠️ **NOTE DE MÉTHODE — pourquoi `hype-video.js` est touché ici.** Jusqu'ici la page « Directeur Technique » ne codait rien sur les vidéos, pour ne pas entrer en collision avec la page qui construit la Bibliothèque vidéo. Blandine a explicitement demandé cette fois d'insérer directement la vidéo du nouveau chapitre plutôt que de repasser par une note de passation. **Modification volontaire, ponctuelle, sur demande directe — pas un changement de règle.** Si la page Bibliothèque vidéo retravaille ce fichier en parallèle, vérifier qu'aucun push ne vient écraser l'autre.
+
+**Session 48 — quatre choses**
+
+**1. Nouveau chapitre `g4-incurvation` « L'incurvation »**, 6 langues complètes. Couverture « LE CHEVAL / S'ENROULE » (k632, partage `#incurvation`), citation sans auteur (fournie sans attribution, aucune inventée). 6 cartes : le cheval s'enroule autour de la jambe · une aide crée l'autre reçoit · la main intérieure ne tire jamais · plier l'encolure n'est pas incurver · la jambe extérieure encadre les hanches · comment savoir si c'est réussi. Écran final classique (à retenir 8 points, glossaire 7 termes, Hey Baby 5 questions fournies par Blandine, défi, Approfondir), QCM 10 questions, 3 options — cohérent avec les trois chapitres précédents.
+- **Niveau vérifié** : le programme officiel FFE place bien « pli et incurvation » dans le tronc commun du Galop 4, aux côtés de l'accord des aides déjà traité. Le Galop 5 passe d'« expliquer » à « rechercher » l'incurvation en pratique — le chapitre reste donc théorique, sans empiéter sur le niveau suivant.
+
+**2. Nouveau type de bloc `cartes-premium`, premier du genre.** Composant `BlocCartesPremium`, inséré comme 4ᵉ bloc du cours (après les deux séries de cartes, avant l'écran final). Reprend l'identité Premium déjà en place ailleurs (`COLORS.or`, doré) :
+- **Non Premium** : encart verrouillé, cadenas, texte d'accroche, bouton dégradé doré « Découvrir Premium » → `setEcran("premium")`.
+- **Premium** : 5 fiches courtes (emoji + label + valeur) — la phrase clé, la sensation à rechercher, le rôle de la main intérieure, le rôle de la rêne extérieure, l'erreur à éviter. Contenu fourni par Blandine, traduit en 6 langues.
+- Testé dans les deux états via rendu React réel (voir vérifs). **Un bug trouvé et corrigé avant livraison** : la version verrouillée appelait une fonction `T()` non globale → bloc entièrement vide en silence. Remplacée par le même objet `tr({fr:…, en:…, …})` utilisé partout ailleurs dans le fichier.
+
+**3. « Pour aller plus loin » devient cliquable — rétrocompatible.** Découverte en travaillant sur ce chapitre : les trois premières cartes de cette section, dans **les quatre chapitres existants**, n'ont jamais été cliquables ; le code affichait toujours « Prochainement » sur les trois premières quel que soit leur contenu (seule la 4ᵉ, Hey Baby, était fonctionnelle). Corrigé pour ce chapitre avec un vrai lien : l'article IFCE Equipedia *« Les aides du cercle »* (Patrick Galloux) est maintenant cliquable et ouvre `equipedia.ifce.fr` dans un nouvel onglet. **Comportement des trois autres chapitres inchangé** : une carte n'est cliquable que si une URL est fournie en 3ᵉ élément du tuple `[titre, source, url]` ; sans URL, comportement identique à avant (badge « Prochainement »).
+- Deux ressources proposées par Blandine ont été écartées après vérification : une vidéo YouTube confirmée (`yloDh58eMQk`, « L'incurvation - Séance montée ») → intégrée en vidéo principale (voir ci-dessous). Un lien Horse Academy → **écarté** : ce n'est pas une vidéo accessible, la page dit littéralement *« Abonnez-vous pour découvrir la vidéo »* — un deuxième paywall tiers derrière l'abonnement Hype Premium aurait été une mauvaise expérience.
+
+**4. `hype-video.js` : une vidéo ajoutée, une référence croisée créée.**
+- Nouvelle entrée `v-incurvation-01` (`yloDh58eMQk`, vérifiée le 29/07), rang principal pour `g4-incurvation`, 6 langues (titre, résumé, 4 points à observer).
+- `v-aides-01` (`do-xy3MlB08`, déjà en ligne pour `g4-aides`) s'est révélée aussi couvrir l'incurvation — son titre réel est *« Galop 4-5 : l'incurvation et l'utilisation des aides »*. Ajoutée à son tableau `cours` : elle apparaît maintenant aussi comme vidéo complémentaire de `g4-incurvation`, sans rien changer à son rôle principal pour `g4-aides`.
+- **Piège rencontré et corrigé** : l'ordre des entrées dans `HYPE_VIDEOS` détermine quelle vidéo sort en principale pour un chapitre partagé par plusieurs vidéos (`parCours` ne trie pas par `rang`, il respecte l'ordre du tableau). `v-incurvation-01` a dû être positionnée **avant** `v-aides-01` dans le fichier pour que la vidéo dédiée sorte bien en premier sur `g4-incurvation`, sans toucher à l'ordre de `g4-aides` (`v-aides-01/02/03`, inchangé). Vérifié par exécution réelle du fichier, pas seulement relu.
+- Total : 7 vidéos dans le catalogue (6 précédentes + 1). `g4-transitions` reste sans vidéo, aucun lien fourni à ce jour.
+
+✅ Vérifs : reconstruction directe sur la version déjà en ligne, chaque ajout appliqué une seule fois avec assertion stricte de comptage · 14 blocs script `node --check` OK sur `index.html`, `node --check` OK sur `hype-video.js` · **6 langues × 5 blocs rendus réellement** (couverture, 2 séries de cartes, cartes premium en mode verrouillé ET en mode Premium, écran final) : un seul bloc vide trouvé (cartes-premium non-Premium, bug `T()`), corrigé et revérifié, plus aucun bloc vide · `hype-video.js` exécuté hors navigateur : 7 vidéos, ordre de `g4-incurvation` et `g4-aides` vérifiés, `g4-contact` et `g4-transitions` non affectés.
+
+⏳ **Toujours en attente** : le visuel `k632.jpg`, le module interactif du chapitre « Le contact », les 3 liens vidéo « aides » non vérifiés (signalés depuis la session 44), `bibliotheque_video.sql` à exécuter dans Supabase si ce n'est pas déjà fait.
+
+---
+
 **Version actuelle de l'index.html : session du 29/07/2026 (46) — Consolidation après confusion de versions**
 
 ⚠️ **CONTEXTE À COMPRENDRE — plusieurs versions se sont croisées le 29/07.** Blandine a poussé par erreur un index plus ancien sur GitHub, et les fichiers échangés dans les conversations ne se conservent pas d'un message à l'autre. Cette version 46 repart de la base la plus complète dont on disposait et y réinjecte ce qui manquait.
