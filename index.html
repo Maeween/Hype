@@ -20775,6 +20775,8 @@ function HypeApp() {
                 s.setImpression(false);
             else if (s.merciVIP)
                 s.setMerciVIP(false);
+            else if (window.__memoryPoneyVue && window.__memoryPoneyRetour && window.__memoryPoneyRetour())
+                { }
             else if (s.histLen > 0)
                 s.retourEcran();
             armer();
@@ -35174,6 +35176,14 @@ function MemoryPoneyJeu({ tr }) {
     const [avatarTmp, setAvatarTmp] = React.useState(MEMORY_PONEY_AVATARS[0]);
     const [niveauActif, setNiveauActif] = React.useState(null);
     const [resultat, setResultat] = React.useState(null);
+    React.useEffect(() => {
+        window.__memoryPoneyVue = vue;
+        window.__memoryPoneyRetour = () => {
+            if (vue === "jeu" || vue === "resultat") { setNiveauActif(null); setResultat(null); setVue("niveaux"); return true; }
+            return false;
+        };
+        return () => { window.__memoryPoneyVue = null; window.__memoryPoneyRetour = null; };
+    }, [vue]);
     const validerProfil = () => {
         if (!prenomTmp.trim()) return;
         const p = { prenom: prenomTmp.trim(), avatar: avatarTmp, xp: 0, niveaux: {} };
