@@ -151,10 +151,41 @@
       }
     },
     {
+      id: "v-incurvation-01", yt: "yloDh58eMQk",
+      source: "", intervenant: "",
+      titreSource: "L'incurvation - Séance montée",
+      langueVideo: "fr", cours: ["g4-incurvation"], galop: 4, theme: "position-du-cavalier",
+      rang: "principal", dureeTranche: "", verifie: "2026-07-29",
+      titre: {
+        fr: "Comprendre l'incurvation en selle",
+        en: "Understanding bend in the saddle",
+        es: "Comprender la incurvación a caballo",
+        it: "Capire l'incurvamento in sella",
+        ja: "騎乗しての内方姿勢を理解する",
+        de: "Stellung und Biegung im Sattel verstehen"
+      },
+      resume: {
+        fr: "Une séance montée pour voir quand, pourquoi et comment demander l'incurvation : la vidéo la plus accessible sur ce sujet.",
+        en: "A ridden session showing when, why and how to ask for bend: the most accessible video on this topic.",
+        es: "Una sesión montada para ver cuándo, por qué y cómo pedir la incurvación: el vídeo más accesible sobre este tema.",
+        it: "Una sessione montata per vedere quando, perché e come chiedere l'incurvamento: il video più accessibile su questo tema.",
+        ja: "内方姿勢をいつ、なぜ、どのように求めるかを見る実技セッション。このテーマでもっとも分かりやすい映像。",
+        de: "Eine gerittene Einheit, die zeigt, wann, warum und wie man Biegung verlangt: das zugänglichste Video zu diesem Thema."
+      },
+      observer: {
+        fr: ["Le moment où le cavalier demande l'incurvation", "La coordination entre la jambe intérieure et la rêne extérieure", "La légèreté de la main intérieure", "La réaction du cheval sur la courbe"],
+        en: ["The moment the rider asks for bend", "The coordination between the inside leg and the outside rein", "The lightness of the inside hand", "The horse's reaction on the curve"],
+        es: ["El momento en que el jinete pide la incurvación", "La coordinación entre la pierna interior y la rienda exterior", "La ligereza de la mano interior", "La reacción del caballo en la curva"],
+        it: ["Il momento in cui il cavaliere chiede l'incurvamento", "La coordinazione tra la gamba interna e la redine esterna", "La leggerezza della mano interna", "La reazione del cavallo sulla curva"],
+        ja: ["乗り手が内方姿勢を求める瞬間", "内方の脚と外方の手綱の連係", "内方の手の軽さ", "曲線上での馬の反応"],
+        de: ["Der Moment, in dem der Reiter Biegung verlangt", "Das Zusammenspiel von innerem Bein und äußerem Zügel", "Die Leichtigkeit der inneren Hand", "Die Reaktion des Pferdes auf der Kurve"]
+      }
+    },
+    {
       id: "v-aides-01", yt: "do-xy3MlB08",
       source: "", intervenant: "",
       titreSource: "Galop 4-5 : l'incurvation et l'utilisation des aides",
-      langueVideo: "fr", cours: ["g4-aides"], galop: 4, theme: "position-du-cavalier",
+      langueVideo: "fr", cours: ["g4-aides", "g4-incurvation"], galop: 4, theme: "position-du-cavalier",
       rang: "principal", dureeTranche: "", verifie: "",
       titre: {
         fr: "Comprendre comment coordonner ses aides",
