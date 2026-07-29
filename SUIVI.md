@@ -10,63 +10,43 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : session du 28/07/2026 (38) — Bannière du club agrandie + bandeau d'annonces propre à chaque page**
+**Version actuelle de l'index.html : session du 29/07/2026 (39) — Bandeau d'annonces par page (réappliqué) + fusion avec le travail Memory**
 
-🔴🔴 **URGENT — SITE HORS LIGNE LE 29/07 : QUOTA NETLIFY DÉPASSÉ** 🔴🔴
-Message Netlify : « **This team has exceeded the credit limit. All projects and deploys have been paused to prevent overages.** » Le site affiche « Site not available » aux visiteurs.
+🔴🔴 **URGENT — SITE HORS LIGNE : QUOTA NETLIFY DÉPASSÉ (29/07)** 🔴🔴
+Message Netlify : « **This team has exceeded the credit limit. All projects and deploys have been paused.** » Les visiteurs voient « Site not available ».
 
-**Ce que la page Usage de Netlify montre (relevé du 29/07 à 9h13)** :
-| Poste | Crédits |
-|---|---|
-| **Bande passante** | **1 750,5** |
-| Requêtes web (158 608) | 31,7 |
-| Compute | 9,5 |
-| **Total consommé** | **11 076,7** |
-→ **C'est la bande passante, et elle seule.** Le calcul et les requêtes sont négligeables.
+**Relevé Usage du 29/07 à 9h13** : bande passante **1 750,5 crédits** · requêtes web (158 608) 31,7 · compute 9,5 · **total 11 076,7**. → **C'est la bande passante, et elle seule.**
 
-**Cause structurelle** : `index.html` pèse **8,9 Mo**, et chaque visite charge en plus **118 fichiers `hype-images-*.js`** + une cinquantaine d'images du dossier `images/`. Aucun en-tête de cache n'était configuré → **tout était retéléchargé intégralement à chaque visite**.
+**Cause** : `index.html` pèse **8,9 Mo**, et chaque visite charge en plus **118 fichiers `hype-images-*.js`** + une cinquantaine d'images de `images/`. Aucun en-tête de cache n'était configuré → tout était retéléchargé intégralement à chaque visite.
 
-**🔴 DEUX ACTIONS POUR BLANDINE, dans cet ordre**
-1. **Remettre le site en ligne** : soit « Get more credits » sur Netlify (immédiat, payant), soit attendre le prochain cycle de facturation (gratuit, mais le site reste éteint jusque-là).
-2. **Pousser `netlify.toml` à la racine du repo** (à côté de `index.html`) — livré en session 38. C'est ce qui empêchera que ça recommence.
+**Actions**
+1. ⏳ **Blandine a payé mais le site est toujours hors ligne.** Pistes : (a) les crédits achetés ne couvrent peut-être pas le dépassement — vérifier si le bandeau rouge a disparu ; (b) les projets sont « paused », il faut sans doute **relancer un déploiement** (site → Deploys → « Resume » ou « Trigger deploy ») ; (c) simple délai de réévaluation. Si rien ne bouge, contacter le support Netlify (réactif quand on vient de payer).
+2. 🔴 **Pousser `netlify.toml` à la racine du repo** (livré session 38-39). `index.html` et `/` restent non mis en cache (pour que les mises à jour soient vues) ; `images/*`, `hype-images-*.js`, `hype-*.js`, `complement-*.js` et toutes les extensions d'images/polices passent en **`max-age=31536000, immutable`** (un an). Ces fichiers ne changent jamais : une image modifiée reçoit une nouvelle clé (k629…), donc le navigateur va chercher le nouveau nom. **Gain attendu : 80-90 % de bande passante en moins pour tout visiteur qui revient.**
 
-**Ce que fait `netlify.toml`** (nouveau fichier, à la racine) :
-- `index.html` et `/` → `max-age=0, must-revalidate` : jamais mis en cache, pour que les mises à jour soient vues immédiatement.
-- `images/*`, `hype-images-*.js`, `hype-*.js`, `complement-*.js`, et toutes les extensions d'images/polices → **`max-age=31536000, immutable`** (un an). Ces fichiers ne changent jamais : quand une image évolue, elle reçoit une nouvelle clé (k610, k611…), donc le navigateur va chercher le nouveau nom.
-- `manifest.json` et `sw.js` → non mis en cache.
-→ **Gain attendu : 80 à 90 % de bande passante en moins pour tout visiteur qui revient.** Le premier chargement reste lourd, les suivants deviennent quasi gratuits.
+⚠️ **Le chantier de fond reste entier** : les **~550 images en base64** dans `hype-images-1.js` à `122.js`. Le base64 gonfle chaque image d'environ 33 %, et ces 118 fichiers sont chargés dès l'ouverture même si les images ne s'affichent pas. Deux étapes : (1) migration vers `images/` — déjà commencée, tout ce qui est ≥ k547 est un vrai fichier ; (2) chargement à la demande écran par écran.
 
-⚠️ **Ça ne règle pas tout — le vrai chantier de fond reste à faire** : les **~550 images encore en base64** dans `hype-images-1.js` à `121.js`. Le base64 gonfle chaque image d'environ 33 %, et ces 118 fichiers sont chargés dès l'ouverture, même quand les images ne sont pas affichées. Deux étapes identifiées :
-1. **Migration vers `images/`** (déjà commencée : tout ce qui est ≥ k547 est un vrai fichier). Gain de poids immédiat + cache individuel par image.
-2. **Chargement à la demande écran par écran** plutôt que tout au démarrage.
-⚠️ Rappel : le **quota Supabase** est un problème distinct, avec sa propre échéance au **14 août 2026** (voir plus bas). Ne pas confondre les deux.
+⚠️ **Ne pas confondre avec le quota Supabase**, problème distinct avec sa propre échéance au **14 août 2026**. Première action de ce côté : ouvrir « Review usage » pour identifier la jauge en cause.
 
 ---
 
-**Session 38 — deux corrections repérées par Blandine sur des captures**
+**Session 39 — bandeau d'annonces par page (réappliqué)**
+⚠️ **Pourquoi « réappliqué »** : la session 38 livrait deux choses (bannière du club + bandeau paramétrable). Blandine a poussé une version intermédiaire où seule la bannière était présente. Vérification faite sur l'index du 29/07 : tout le reste du travail Directeur Technique est bien là, **seul le bandeau manquait**. Réappliqué proprement.
+- `FilAnnoncesB` accepte désormais **`cible`** (source des annonces, défaut `annonces-hype`) et **`libelle`** (mot affiché à gauche, défaut « Nouveau »). `useAnnonces(langue, cible)` étendue, cible dans les dépendances.
+- **Ma Sellerie : `cible: "annonces-sellerie"`, `libelle: "Partenaires"`.** Accueil et Bibliothèque des Galops inchangés.
+- ✅ Blandine gère ces annonces elle-même via Supabase (commentaires de cible `annonces-sellerie`). **Tant qu'aucune annonce n'y est publiée, le bandeau ne s'affiche pas** — le problème du bandeau hors sujet sur Ma Sellerie est donc réglé immédiatement.
+- 💡 Y mettre des nouveautés partenaires, **pas** les codes promo (déjà affichés en dessous, ce serait de la redite).
 
-1. **Bannière du club trop petite et mal cadrée** (`EcranGuilde`) : hauteur passée de `clamp(360px, 58vh, 500px)` à **`clamp(430px, 70vh, 620px)`**, cadrage de `center` à **`center 28%`** pour que le sujet remonte au lieu d'être rogné.
-
-2. **Le bandeau d'annonces sur « Ma Sellerie » n'avait aucun rapport avec la page** (il affichait les annonces générales de l'accueil). **Blandine a choisi de lui rattacher un autre texte plutôt que de le retirer.**
-   - `FilAnnoncesB` accepte désormais **`cible`** (source des annonces, défaut `annonces-hype`) et **`libelle`** (mot affiché à gauche, défaut « Nouveau »). `useAnnonces(langue, cible)` étendue, cible dans les dépendances.
-   - **Ma Sellerie : `cible: "annonces-sellerie"`, `libelle: "Partenaires"`.** Accueil et Bibliothèque des Galops inchangés.
-   - ✅ Blandine gère ces annonces elle-même via Supabase (commentaires de cible `annonces-sellerie`, même mécanisme que l'accueil). **Tant qu'aucune annonce n'y est publiée, le bandeau ne s'affiche pas** — le problème est donc réglé immédiatement, même sans contenu.
-   - 💡 Y mettre des nouveautés partenaires, **pas** les codes promo (déjà affichés en dessous, ce serait de la redite).
-   - Composant réutilisable : n'importe quelle page peut avoir son fil.
-
-⚠️ **Reste en suspens sur Ma Sellerie** : le **doublon de titre** « MA SELLERIE » (en-tête de page + carte juste en dessous). Signalé, pas tranché.
-
-✅ Vérifs : **885 fonctions** (inchangé), 14 blocs script `node --check` OK, 28 dictionnaires tous déclarés. **Rendu Playwright réel** : `FilAnnoncesB` monté avec `cible` et `libelle` sans erreur, signatures vérifiées, 0 erreur JS.
-
-⚠️ **MAQUETTES D'ACCUEIL EN ATTENTE — 26 propositions, aucune codée** (Blandine explore) :
-- `maquette-accueil-propositions.html` — **A** tuile illustrée (utilise k610) · **B** dépliant · **C** bandeau compact · **D** duo · **E** carrousel · **F** onglets
-- `maquette-accueil-propositions-2.html` — **G** verre dépoli · **H** liseré animé · **I** chiffre en vedette · **J** progression intégrée · **K** mosaïque · **L** ligne de temps · **M** grille de 3 · **N** ruban d'angle · **O** cartes empilées · **P** mise en avant unique
-- `maquette-accueil-propositions-3.html` — **Q** volets plein cadre · **R** sommaire typographique · **S** pilules · **T** tableau de chiffres · **U** bord gauche coloré · **V** aperçu des messages · **W** bloc du jour (⚠️ suppose météo + position) · **X** vignettes photo · **Y** sélecteur unique · **Z** citation
-- Recommandations : **U**, **V**, **R** (3ᵉ série) ; **J**, **I**, **G** (2ᵉ) ; tuile illustrée + dépliant (1ʳᵉ). Déconseillés : carrousel sur un menu, **H** sur plusieurs cartes, **Z** au quotidien.
+✅ Vérifs : **885 fonctions**, 14 blocs script `node --check` OK, 28 dictionnaires tous déclarés, les 6 blocs de `g4-biomeca` rendent tous du contenu, 0 erreur JS. Travail des autres pages préservé (**niveau Memory « Evan » et images k615-k628 confirmés présents**).
 
 ---
 
-**Version précédente : session du 28/07/2026 (37) — Chapitre biomécanique : lisibilité 14,5 px, ouverture aux Premium, partage, questions Hey Baby**
+**🧩 TRAVAIL DE LA PAGE MEMORY (29/07) — à ne pas perdre**
+Cette page a livré en parallèle : **nouveau niveau Memory « Evan et sa ponette »** (10 paires, `images/k615.jpg` à `k624.jpg`) qui comblait le seul personnage sans niveau dédié ; **4 cartes de « La vie du poney » remplacées** (Copains k628 · La balade k627 · La couverture k625 · Le repos k626) ; **bug du retour natif corrigé** (le Memory reste dans son propre écran au lieu de sauter aux Galops, via `window.__memoryPoneyVue`/`__memoryPoneyRetour`).
+- 🔴 **Les 14 fichiers `k615.jpg` à `k628.jpg` doivent être poussés dans `images/`** en même temps que l'index.
+- ⚠️ **Plage de clés : prochaine libre = k629.** k554 est prise (icône d'erreur), k555-k614 aussi, **k610 est l'image de bulles pour « Mes messages »** (maquettes d'accueil).
+- Reste à faire côté Memory : identifier les cartes cassées du niveau **« Les allures »** (capture à demander) · bug de superposition au scroll sur **« La sécurité »** (à recapturer au bon moment) · 3 cartes de « La vie du poney » encore à l'ancien style (L'eau, Le foin, La balade de nuit) · coder le Memory multijoueur (3 maquettes prêtes : duo même téléphone, duo à distance, cartes vivantes).
+
+---
 
 🔴 **À pousser** : `index.html` + `SUIVI.md` + **`k610.jpeg`** dans `images/` (nouvelle image, voir plus bas — pas encore utilisée par le code, elle attend la validation de la maquette d'accueil).
 
