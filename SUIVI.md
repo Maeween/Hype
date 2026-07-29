@@ -10,6 +10,65 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
+**Version actuelle de l'index.html : session du 29/07/2026 (46) — Consolidation après confusion de versions**
+
+⚠️ **CONTEXTE À COMPRENDRE — plusieurs versions se sont croisées le 29/07.** Blandine a poussé par erreur un index plus ancien sur GitHub, et les fichiers échangés dans les conversations ne se conservent pas d'un message à l'autre. Cette version 46 repart de la base la plus complète dont on disposait et y réinjecte ce qui manquait.
+
+**🔴 CE QUI A ÉTÉ PERDU et doit être refait par les pages concernées** :
+- **Chapitre « Les transitions »** (Galop 4) — annoncé en session 45, absent de cette base.
+- **Mémorisation des identifiants à la déconnexion** — annoncée en session 45, absente (aucun marqueur trouvé).
+- ✅ La **correction des libellés des cartes du Memory** et la **bibliothèque vidéo** (`EcranVideos`) sont bien présentes.
+
+**Session 46 — réinjecté sur cette base**
+1. **Déclarations d'images** : `window.HYPE_IMGS["kNNN"]="images/kNNN.jpeg"` pour **k610 et k615 à k628** (15 clés). ⚠️ **C'est ce qui empêchait les cartes du Memory de s'afficher** : les fichiers étaient en ligne, mais rien ne disait à l'appli où les chercher. **Une image demande deux gestes : la pousser ET la déclarer.**
+2. **Bandeau d'annonces propre à chaque page** : `FilAnnoncesB` accepte `cible` et `libelle`, `useAnnonces(langue, cible)` étendue. Ma Sellerie utilise `annonces-sellerie` / « Partenaires » et **le bandeau disparaît tant qu'aucune annonce n'y est publiée**.
+
+✅ **État vérifié de cette version** : 885 fonctions · 14 blocs script `node --check` OK · 25 images en fichiers dont k615-k628 · 28 dictionnaires tous déclarés · `allerVersGalop` (3×), `MEVO_CSS`, `EcranTraceAnime` intacts · **les 6 blocs de `g4-biomeca` rendent tous du contenu, 0 erreur JS**.
+
+✅ **Les 9 cours du Galop 4 sont présents** : `g4-c1` (Le contact et l'accord des aides), `g4-galop-qualite`, `g4-c2` à `g4-c7`, et `g4-biomeca`. **Seul `g4-biomeca` est ouvert** (dans `HYPE_COURS_PRETS`) ; les 8 autres affichent « Prochainement ».
+
+✅ **Tout le travail « Directeur Technique » est présent** : synchro de la progression (8 fonctions + extras), chapitre biomécanique (`BiomecaInteractif`, `CavalierEquilibre`, `CarteCours`, `ComplementsBiomeca`, `SectionCollapse` + leurs 5 dictionnaires), suppression de compte avec réactivation à 60 jours, partage de cours, bannière du club agrandie, 14,5 px, sélection ciblée des 5 questions Hey Baby, QCM 10 questions.
+
+⚠️ **LEÇON DE MÉTHODE (importante)** : les fichiers envoyés dans une conversation **ne sont pas conservés** d'un message à l'autre — chaque envoi remplace le précédent. **Toujours retélécharger `index.html` depuis GitHub** au début d'une session plutôt que de chercher dans les fichiers du téléphone. Et en cas de mauvais push : **GitHub garde tout l'historique** (fichier → icône History → choisir le commit précédent → Browse files → télécharger).
+
+🔴 **À POUSSER** : `index.html` + `SUIVI.md` + **`netlify.toml` à la racine** (toujours pas en ligne, c'est le plus urgent : il évite un nouveau dépassement Netlify) + les **14 images allégées** `k615.jpeg`…`k628.jpeg` dans `images/`.
+
+---
+**Version actuelle de l'index.html : session du 29/07/2026 (45) — Chapitre « Les transitions » + branchement des cours sur la Bibliothèque vidéo + corrections**
+
+🔴 **À pousser** : `index.html`. ⚠️ **Il manque l'image `k631.jpg`** (couverture du nouveau chapitre) — Blandine doit la fournir. `hype-video.js` et `bibliotheque_video.sql` restent ceux de la session 44, inchangés.
+
+**Session 45 — cinq choses**
+
+**1. Nouveau chapitre `g4-transitions` « Les transitions »**, même gabarit que les deux précédents. Contenu fourni par Blandine, **6 langues complètes**.
+- Couverture « PRESQUE / INVISIBLE » (k631, partage `#transitions`), citation sans auteur (le texte fourni n'en indiquait pas — pas d'attribution inventée).
+- 6 cartes : monter et descendre · pourquoi on les travaille · elle commence avant · vers l'allure supérieure · **le ralentissement commence par le bassin** (carte centrale) · préparer-demander-accompagner.
+- Écran final classique (à retenir, glossaire, Hey Baby, défi, Approfondir), QCM 10 questions. Les 5 questions Hey Baby fournies par Blandine verbatim.
+- `COMPL_TRANSITIONS_I18N` + type de bloc `complements-transitions`, même composant partagé `ComplementsBiomeca`. **Quatre chapitres partagent désormais le même écran final.**
+
+**2. Le bonus vidéo des cours est branché sur `HYPE_VIDEO.parCours()` de la Bibliothèque (session 44), plus sur `ObserverEnMouvement`.** C'était le bug signalé par Blandine : Le contact et L'accord des aides affichaient l'activité d'observation de la biomécanique (« la liberté des épaules », etc.) au lieu de leurs propres vidéos.
+- `ComplementsBiomeca` reçoit désormais `cours: "g4-contact"` / `"g4-aides"` / `"g4-transitions"` / `"g4-biomeca"` (nouvelle prop).
+- La page bonus vidéo demande `window.HYPE_VIDEO.parCours(coursId)` : 1ʳᵉ vidéo en carte principale (bordure turquoise, résumé, intervenant), les suivantes sous « Pour approfondir », bouton « Ouvrir la vidéo » → `__hypeVideoOuverte` + `setEcran("video-lecture")` (contrat de hype-video.js), lien « Voir toute la bibliothèque » → `setEcran("videos")`.
+- **`ObserverEnMouvement` réservée à `coursId === "g4-biomeca"`** : elle ne s'affiche plus ailleurs. Repli « Prochainement » si un chapitre n'a ni vidéo ni activité (aucun cas aujourd'hui : les 4 chapitres ont l'un ou l'autre).
+- Nouveau dico `VIDCOURS_I18N` (6 langues : à voir en premier / pour approfondir / ouvrir / bibliothèque / vidéo en français / vide).
+- Testé en conditions réelles (mock de `HYPE_VIDEO.parCours`) : clic sur le bouton, la bonne vidéo s'affiche avec résumé et intervenant, la seconde en dessous sans le superflu, lien bibliothèque présent.
+
+**3. Encart « Qu'as-tu réussi à observer ? » compacté et déplacé.** Demande de Blandine : il s'affichait au milieu de la liste des ressources et prenait toute la largeur en grandes cases. Désormais **après toutes les vidéos**, pastilles compactes en `inline-flex` (deux par ligne), sans changer le contenu (mêmes 6 réponses).
+
+**4. Deux corrections visuelles sur `g4-contact` :**
+- Couverture renommée **LE / CONTACT** (au lieu de « LA MAIN QUI PARLE ») — Blandine voulait garder ce titre.
+- Texte des cartes de cours et des panneaux Approfondir remonté de **13,5 px à 14,5 px** (interligne 1,7), conforme à la règle de taille minimale validée. Seul `CarteSegmentRiche` était resté à l'ancienne taille ; l'écran final l'appliquait déjà.
+
+**5. Extensions d'image.** `k629` corrigée en **`.jpeg`** (c'est ce que Blandine a réellement poussé sur GitHub — la livraison précédente disait `.jpg` par erreur). `k630.jpg` inchangée. `k631.jpg` déclarée mais **le fichier n'existe pas encore**.
+
+⚠️ **Note pour la prochaine session : compteur `function` passé de 3004 à 3003, EXPLIQUÉ.** Ce n'est plus une anomalie ouverte (voir session 44). La réduction des questions Hey Baby à 5 partout a remplacé `[0,1,2,5,6].map(function (k) {...})` par `.slice(0, 5)` : une fonction anonyme de moins, volontairement. Vérifié par comparaison directe avec l'original.
+
+✅ Vérifs : reconstruction faite **à partir de zéro sur le fichier de Blandine**, chaque modification appliquée une seule fois avec assertion stricte de comptage (leçon tirée d'un double-collage accidentel en cours de session, corrigé avant livraison) · 14 blocs script `node --check` OK · **1514 fonctions, écart de -1 expliqué ci-dessus** · marqueurs antérieurs tous préservés (`allerVersGalop` 3, `FilAnnoncesB` 5, `hypePartagerCours` 2, `ObserverEnMouvement` 4, `EcranVideos` 2, `MEVO_CSS` 2, `HYPE_AMBASSADEURS` 2) · **18 combinaisons rendues réellement** (3 chapitres × 6 langues, couverture + 2 blocs de cartes + écran final) : aucun bloc vide · Galop 4 vérifié en direct (`disponible: true, nouveau: true, debloque: false`) · bonus vidéo testé par clic réel : bonne vidéo affichée, hiérarchie respectée · aucune erreur JS nouvelle par rapport à l'index d'origine.
+
+⏳ **Toujours en attente** : le visuel `k631.jpg`, le module interactif du chapitre « Le contact » (maquette à refaire), et côté Bibliothèque vidéo — faire vérifier les 3 liens « aides » non confirmés, choisir entre lien externe simple et lecteur intégré pour une future progression, exécuter `bibliotheque_video.sql` dans Supabase.
+
+---
+
 **Version actuelle de l'index.html : session du 29/07/2026 (44) — Bibliothèque vidéo (nouvel écran + page de lecture, fichier séparé)**
 
 🔴 **À pousser** : `index.html` + **`hype-video.js` (NOUVEAU FICHIER)** + `SUIVI.md`. ⚠️ Le SQL `bibliotheque_video.sql` doit être exécuté dans Supabase (pas encore fait).
