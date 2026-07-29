@@ -1,0 +1,98 @@
+# ============================================================
+#  HYPE — En-têtes de cache
+#  Fichier à placer À LA RACINE du repo, à côté de index.html
+#
+#  À QUOI ÇA SERT
+#  Aujourd'hui, chaque visite retélécharge TOUS les fichiers du site,
+#  y compris les images et les paquets d'images qui ne changent jamais.
+#  Avec ces règles, le navigateur les garde en mémoire et ne les
+#  redemande plus. La bande passante consommée chute fortement pour
+#  tous les visiteurs qui reviennent.
+#
+#  PRINCIPE
+#  - index.html : jamais mis en cache (sinon tes mises à jour ne
+#    seraient pas vues). C'est un petit fichier au regard du reste.
+#  - Tout le reste (images, paquets d'images, scripts) : mis en cache
+#    très longtemps, car ces fichiers ne changent pas. Quand tu en
+#    modifies un, tu changes son nom (k610, k611...) et le navigateur
+#    va chercher le nouveau.
+# ============================================================
+
+# ---------- Le document principal : toujours frais ----------
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# ---------- Les images : un an de cache ----------
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ---------- Les paquets d'images en base64 (hype-images-NN.js) ----------
+[[headers]]
+  for = "/hype-images-*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ---------- Les autres scripts de contenu ----------
+[[headers]]
+  for = "/hype-*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/complement-*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ---------- Icônes, manifeste, polices ----------
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpeg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ---------- Le manifeste et le service worker : frais ----------
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# ---------- Compression : Netlify le fait déjà, mais on s'assure ----------
+# (rien à configurer, Netlify sert automatiquement en Brotli/gzip)
