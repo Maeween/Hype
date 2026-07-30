@@ -1282,7 +1282,7 @@ async function supprimerCheval(id) {
   if (!user) return { error: "Pas connecté" };
   return await supa.from("chevaux").delete().eq("id", id).eq("user_id", user.id);
 }
-async function modifierCheval(id, { nom, race, age, discipline, fichierPhoto } = {}) {
+async function modifierCheval(id, { nom, race, age, discipline, teinte, fichierPhoto } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
   const maj = {};
@@ -1290,6 +1290,7 @@ async function modifierCheval(id, { nom, race, age, discipline, fichierPhoto } =
   if (race !== undefined) maj.race = race || null;
   if (age !== undefined) maj.age = age || null;
   if (discipline !== undefined) maj.discipline = discipline || null;
+  if (teinte !== undefined) maj.teinte = teinte || null; /* 30/07: teinte de la fiche, colonne chevaux.teinte */
   if (fichierPhoto) { const r = await envoyerPhoto(fichierPhoto); if (r.error) return { data: null, error: r.error }; maj.photo_url = r.url; }
   return await supa.from("chevaux").update(maj).eq("id", id).eq("user_id", user.id).select().single();
 }
@@ -30871,7 +30872,7 @@ function EcranCheval() {
         if (typeof supa !== "undefined" && supa) {
           var r = await supa.from("chevaux").select("*").eq("id", id).single();
           if (actif && r && r.data) {
-            setChevalDyn({ nom: r.data.nom || "Cheval", photo: r.data.photo_url || UV3_H1, info: [r.data.race, r.data.age, r.data.discipline].filter(Boolean).join(" · "), flots: [], palmares: [], histoire: r.data.histoire || null, dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, origines: r.data.origines || null, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
+            setChevalDyn({ teinte: r.data.teinte || null, nom: r.data.nom || "Cheval", photo: r.data.photo_url || UV3_H1, info: [r.data.race, r.data.age, r.data.discipline].filter(Boolean).join(" · "), flots: [], palmares: [], histoire: r.data.histoire || null, dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, origines: r.data.origines || null, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
           }
         }
       } catch (eD) { }
@@ -30888,14 +30889,14 @@ function EcranCheval() {
   var confSupprFicheSt = React.useState(false); var confSupprFiche = confSupprFicheSt[0], setConfSupprFiche = confSupprFicheSt[1];
   var busyFicheSt = React.useState(false); var busyFiche = busyFicheSt[0], setBusyFiche = busyFicheSt[1];
   var champsFicheSt = React.useState(null); var champsFiche = champsFicheSt[0], setChampsFiche = champsFicheSt[1];
-  function ouvrirEditFiche() { setChampsFiche({ nom: c.nom || "", race: c.race || "", age: c.age || "", discipline: c.discipline || "" }); setEditFiche(true); setMenuFiche(false); }
+  function ouvrirEditFiche() { setChampsFiche({ nom: c.nom || "", race: c.race || "", age: c.age || "", discipline: c.discipline || "", teinte: (chevalDyn && chevalDyn.teinte) || "" }); setEditFiche(true); setMenuFiche(false); }
   async function soumettreEditFiche() {
     if (!champsFiche || !c.dbId || busyFiche) return;
     setBusyFiche(true);
     try {
-      var rEd = await modifierCheval(c.dbId, { nom: champsFiche.nom, race: champsFiche.race, age: champsFiche.age, discipline: champsFiche.discipline });
+      var rEd = await modifierCheval(c.dbId, { nom: champsFiche.nom, race: champsFiche.race, age: champsFiche.age, discipline: champsFiche.discipline, teinte: champsFiche.teinte || null });
       if (!rEd || !rEd.error) {
-        setChevalDyn(Object.assign({}, chevalDyn, { nom: champsFiche.nom, race: champsFiche.race, age: champsFiche.age, discipline: champsFiche.discipline, info: [champsFiche.race, champsFiche.age, champsFiche.discipline].filter(Boolean).join(" · ") }));
+        setChevalDyn(Object.assign({}, chevalDyn, { teinte: champsFiche.teinte || null, nom: champsFiche.nom, race: champsFiche.race, age: champsFiche.age, discipline: champsFiche.discipline, info: [champsFiche.race, champsFiche.age, champsFiche.discipline].filter(Boolean).join(" · ") }));
         setEditFiche(false);
       }
     } catch (eEd) { }
@@ -31030,7 +31031,7 @@ function EcranCheval() {
 
   var aPalmares = c.flots.length > 0;
   var sp = (typeof CHEVAUX_SPECTRAL !== "undefined" && CHEVAUX_SPECTRAL[id]) ? CHEVAUX_SPECTRAL[id] : {};
-  var teinte = sp.teinte || "#20D9F5";
+  var teinte = (chevalDyn && chevalDyn.teinte) || sp.teinte || "#20D9F5";
   var teinteCl = teinteClaire(teinte);
   var tA = function (aT) { return teinteRGBA(teinte, aT); };
   var tACl = function (aT) { return teinteRGBA(teinteCl, aT); };
@@ -31514,6 +31515,13 @@ function EcranCheval() {
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.4, color: "#EDF2F5", textTransform: "uppercase", marginBottom: 16, textAlign: "center" } }, T("Modifier la fiche", "Edit horse", "Editar ficha", "Modifica scheda", "編集", "Profil bearbeiten")),
         champsFiche ? h(React.Fragment, null,
           h("input", { value: champsFiche.nom, onChange: function (eN) { setChampsFiche(Object.assign({}, champsFiche, { nom: eN.target.value })); }, placeholder: T("Nom du cheval", "Horse name", "Nombre", "Nome", "馬の名前", "Name des Pferdes"), style: { width: "100%", padding: "11px 14px", borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none", marginBottom: 9, boxSizing: "border-box" } }),
+          h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 9, padding: "2px 2px" } },
+            h("div", { style: { fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: "#9AA2AC", fontWeight: 700 } }, T("Teinte de la fiche", "Profile tint", "Tinte de la ficha", "Tinta della scheda", "\u30c6\u30fc\u30de\u30ab\u30e9\u30fc", "Farbton des Profils")),
+            h("div", { style: { marginLeft: "auto", display: "flex", gap: 8 } },
+              [["", "#20D9F5"], ["#D9B56C", "#D9B56C"], ["#C64B5C", "#C64B5C"], ["#5C7A5E", "#5C7A5E"]].map(function (tC) {
+                var actifT = (champsFiche.teinte || "") === tC[0];
+                return h("div", { key: "tt" + tC[1], role: "button", onClick: function () { setChampsFiche(Object.assign({}, champsFiche, { teinte: tC[0] })); }, style: { width: 22, height: 22, borderRadius: "50%", background: tC[1], cursor: "pointer", border: actifT ? "2px solid rgba(255,255,255,0.85)" : "2px solid rgba(255,255,255,0.15)", boxSizing: "border-box" } });
+              }))),
           h("div", { style: { display: "flex", gap: 9 } },
             h("input", { value: champsFiche.race, onChange: function (eR) { setChampsFiche(Object.assign({}, champsFiche, { race: eR.target.value })); }, placeholder: T("Race", "Breed", "Raza", "Razza", "品種", "Rasse"), style: { flex: 1, padding: "11px 14px", borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none", marginBottom: 9, boxSizing: "border-box" } }),
             h("input", { value: champsFiche.age, onChange: function (eA) { setChampsFiche(Object.assign({}, champsFiche, { age: eA.target.value })); }, placeholder: T("Âge", "Age", "Edad", "Età", "年齢", "Alter"), style: { flex: 1, padding: "11px 14px", borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none", marginBottom: 9, boxSizing: "border-box" } })),
