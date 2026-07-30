@@ -28997,16 +28997,10 @@ function EcranEcurie() {
 
         eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬")),
         h("div", { className: "chgrid" }, (function () {
-          var demo = estCompteFeinnEc ? [
-            { img: UV3_H1, nom: "My Dream", disc: "CSO", id: "mydream" },
-            { img: UV3_H2, nom: "Elfe de Feinn", disc: "Dressage", id: "elfe" },
-            { img: UV3_H3, nom: "Rizotto", disc: "CSO", id: "rizotto" },
-            { img: ECURIE_H4, nom: "Cooltax", disc: "CSO", id: "venus" },
-            { img: ECURIE_H5, nom: "Bor\u00e9alis de Feinn", disc: "CSO", id: "idao" },
-            { img: IMG_TULLY, nom: "Tully Blue Moon", disc: "CSO", id: "tully" }
-          ] : [];
-          var reels = (chevauxEc || []).map(function (r) { return { img: r.photo_url || UV3_H1, nom: r.nom, disc: r.race || r.discipline || "", id: r.id }; });
-          var tousCh = demo.concat(reels);
+          /* 30/07 bascule migration : plus de liste demo ; les chevaux base heritent des affiches du code en secours. */
+          var AFFICHES_SECOURS = { "My Dream": UV3_H1, "Elfe de Feinn": UV3_H2, "Rizotto d'Emery": UV3_H3, "Cooltax": ECURIE_H4, "Bor\u00e9alis de Feinn": ECURIE_H5, "Tully Blue moon": IMG_TULLY, "Hey Baby Please": IMG_HEYBABY_CHEVAL };
+          var reels = (chevauxEc || []).map(function (r) { return { img: r.photo_url || AFFICHES_SECOURS[r.nom] || UV3_H1, nom: r.nom, disc: r.race || r.discipline || "", id: r.id }; });
+          var tousCh = reels;
           var slots = premium ? tousCh : tousCh.slice(0, 6);
           var cartes = slots.map(function (s, i) { return chcard(s.img, s.nom, s.disc, { id: s.id, locked: i >= 2 && !premium }); });
           if (premium || slots.length < 6) {
@@ -30534,7 +30528,7 @@ function AlbumsPromus(props) {
       h("div", { role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, title: "Nouvel album", style: { marginLeft: "auto", width: 24, height: 24, borderRadius: "50%", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 13, fontWeight: 300, cursor: "pointer" } }, "+")),
     /* 27/07 : 3 colonnes -> 2 (couvertures environ 1,6x plus grandes, demande Blandine). */
     h("div", { style: { display: "flex", overflowX: "auto", WebkitOverflowScrolling: "touch", gap: 11, paddingBottom: 4, scrollSnapType: "x proximity" } /* 30/07: albums en rail 220px, meme taille que les vignettes photos (demande Blandine) */ },
-      [h("div", { key: "tout", onClick: function () { if (props.onTout) props.onTout(); }, role: "button", style: { cursor: "pointer" } },
+      [h("div", { key: "tout", onClick: function () { if (props.onTout) props.onTout(); }, role: "button", style: { cursor: "pointer", flex: "0 0 auto", width: 220 } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(0.5), background: "#0B1116", boxShadow: "0 14px 28px -18px rgba(0,0,0,0.9)" } },
           props.photoDefaut ? h("img", { src: props.photoDefaut, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", objectPosition: "center 30%" } }) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
           h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
@@ -30542,13 +30536,13 @@ function AlbumsPromus(props) {
       ].concat(albums.slice(0, 5).map(function (alb) {
         var cov = alb.couverture || (alb.photos || [])[0];
         var estV = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
-        return h("div", { key: alb.id, onClick: function () { if (props.onOuvrir) props.onOuvrir(alb.id); }, role: "button", style: { cursor: "pointer" } },
+        return h("div", { key: alb.id, onClick: function () { if (props.onOuvrir) props.onOuvrir(alb.id); }, role: "button", style: { cursor: "pointer", flex: "0 0 auto", width: 220 } },
           h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(0.4), background: "#0B1116", boxShadow: "0 14px 28px -18px rgba(0,0,0,0.9)" } },
             cov ? (estV ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
             estV && cov ? h("span", { style: { position: "absolute", bottom: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#EDF2F5", zIndex: 2 } }, "\u25b6") : null,
             h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
               h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11.5, fontWeight: 700, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, alb.nom))));
-      })).concat(albums.length === 0 ? [h("div", { key: "vide", role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, style: { cursor: "pointer" } },
+      })).concat(albums.length === 0 ? [h("div", { key: "vide", role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, style: { cursor: "pointer", flex: "0 0 auto", width: 220 } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, border: "1.5px dashed " + tA(0.45), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 9, boxSizing: "border-box" } },
           h("div", { style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid " + tA(0.55), display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 16, fontWeight: 300 } }, "+"),
           h("div", { style: { fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: "#EDF2F5", fontWeight: 700, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u3057\u3044\u30a2\u30eb\u30d0\u30e0", "Neues Album"))))] : []).concat(albums.length > 5 ? [h("button", { key: "vplus", onClick: function () { if (props.onTout) props.onTout(); }, style: { gridColumn: "span 2", border: "1px solid " + tA(0.4), borderRadius: 999, background: "none", padding: "11px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#EDF2F5", cursor: "pointer" } }, T("Voir tous ses albums", "See all albums", "Ver todos los \u00e1lbumes", "Vedi tutti gli album", "\u3059\u3079\u3066\u306e\u30a2\u30eb\u30d0\u30e0", "Alle Alben ansehen") + " (" + albums.length + ")")] : [])),
@@ -30936,6 +30930,7 @@ function EcranCheval() {
     return function () { actif = false; };
   }, [id]);
   var c = chevalDyn || CHEVAUX_FICHE[id] || { nom: "\u2026", photo: UV3_H1, info: "", flots: [], palmares: [] }; /* 30/07 bascule : la base prime, le code en dur n'est qu'un secours */
+  var cibleCh = "cheval:" + ((c && c.dbId) || id); /* 30/07 : les souvenirs suivent l identifiant base apres migration */
   var toastSt = React.useState(null); var toast = toastSt[0], setToast = toastSt[1];
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
   var medSt = React.useState({}); var mediasInfo = medSt[0], setMediasInfo = medSt[1];
@@ -31142,7 +31137,7 @@ function EcranCheval() {
   }
   React.useEffect(function () {
     var aV = true;
-    try { chargerVedettesSouvenirs("cheval:" + id).then(function (r) { if (aV) setVedettes((r && r.data && r.data.urls) || []); }).catch(function () { if (aV) setVedettes([]); }); } catch (eV) { setVedettes([]); }
+    try { chargerVedettesSouvenirs(cibleCh).then(function (r) { if (aV) setVedettes((r && r.data && r.data.urls) || []); }).catch(function () { if (aV) setVedettes([]); }); } catch (eV) { setVedettes([]); }
     return function () { aV = false; };
   }, [id]);
   function basculerVedette(url) {
@@ -31154,7 +31149,7 @@ function EcranCheval() {
       lV.push(url);
     }
     setVedettes(lV);
-    try { definirVedettesSouvenirs("cheval:" + id, lV); } catch (eV2) { }
+    try { definirVedettesSouvenirs(cibleCh, lV); } catch (eV2) { }
   }
   async function supprimerSouvenirOuvert() {
     var url = visionneuse; if (!url) return;
@@ -31164,7 +31159,7 @@ function EcranCheval() {
       else if (typeof estModerateurHype === "function" && estModerateurHype(moi)) { await supprimerPostModeration("commentaires", info.id); }
       else { return; }
       var lV = (vedettes || []).slice(); var iV = lV.indexOf(url);
-      if (iV >= 0) { lV.splice(iV, 1); setVedettes(lV); try { definirVedettesSouvenirs("cheval:" + id, lV); } catch (eV3) { } }
+      if (iV >= 0) { lV.splice(iV, 1); setVedettes(lV); try { definirVedettesSouvenirs(cibleCh, lV); } catch (eV3) { } }
       setConfSuppr(false); fermerVisionneuse();
       try { window.dispatchEvent(new Event("hype-souvenirs-maj")); } catch (eM) { }
       setToast(T("Souvenir supprim\u00e9", "Memory deleted", "Recuerdo eliminado", "Ricordo eliminato", "\u601d\u3044\u51fa\u3092\u524a\u9664\u3057\u307e\u3057\u305f", "Erinnerung gelöscht"));
@@ -31430,7 +31425,7 @@ function EcranCheval() {
             og.note ? h("div", { style: { fontSize: 8.5, color: "#5B646E", fontStyle: "italic", marginTop: og.naisseur ? 4 : 0 } }, og.note) : null) : null); })(),
 
         /* 30/07: encart Souvenirs (GalerieSouvenirs) retire de la fiche — remplace par la grille Ses photos ; la visionneuse/vedettes vivent desormais via le panneau souvenirs */
-        h(AlbumsPromus, { cible: "cheval:" + id, teinte: teinte, photoDefaut: photoCh, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } }),
+        h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } }),
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */
@@ -31450,7 +31445,7 @@ function EcranCheval() {
             h("div", { style: { marginTop: 10, fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: teinteCl, fontWeight: 700 } }, "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ein Ergebnis hinzuf\u00fcgen"))),
 
         
-        h(MurHype, { cible: "cheval:" + id, compact: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
+        h(MurHype, { cible: cibleCh, compact: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
 
 
         /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
@@ -31529,15 +31524,15 @@ function EcranCheval() {
               h("svg", { viewBox: "0 0 24 24", style: { width: 15, height: 15, stroke: teinteCl, fill: "none", strokeWidth: 2 } }, h("path", { d: "M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" }), h("rect", { x: 8, y: 2, width: 8, height: 4, rx: 1 })),
               T("Coller l'histoire", "Paste the story", "Pegar la historia", "Incolla la storia", "\u8cbc\u308a\u4ed8\u3051", "Geschichte einfügen")) : null);
         })(),
-        h("div", null, h(AlbumsCheval, { cible: "cheval:" + id, teinte: teinte })),
+        h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte })),
         h("div", { className: "souvin", style: { display: "flex", alignItems: "center", gap: 9, margin: "0 16px 10px", animationDelay: ".08s" } },
           h("span", { style: { width: 7, height: 7, background: teinte, transform: "rotate(45deg)", boxShadow: "0 0 10px " + tA(0.8) + "", flexShrink: 0 } }),
           h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 700, letterSpacing: 1 } }, T("Galerie", "Gallery", "Galería", "Galleria", "ギャラリー", "Galerie")),
           h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("★ = en vedette sur la fiche (6 max)", "★ = featured on the profile (6 max)", "★ = destacada en la ficha (6 máx.)", "★ = in evidenza sulla scheda (max 6)", "★ = プロフィール掲載（6枚まで）", "★ = auf dem Profil hervorgehoben (max. 6)")),
           h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
         h("div", { className: "souvin", style: { animationDelay: ".12s" } },
-          h(GrilleSouvenirs, { teinte: teinte, teinteCl: teinteCl, cible: "cheval:" + id, vedettes: vedettes || [], onToggleVedette: basculerVedette, onOuvrir: function (uV) { setVisionneuse(uV); }, onMedias: setMediasInfo, onAjouter: function () {
-            var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir["cheval:" + id];
+          h(GrilleSouvenirs, { teinte: teinte, teinteCl: teinteCl, cible: cibleCh, vedettes: vedettes || [], onToggleVedette: basculerVedette, onOuvrir: function (uV) { setVisionneuse(uV); }, onMedias: setMediasInfo, onAjouter: function () {
+            var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
             if (fA) { fA(); }
             setTimeout(function () { try { var pan = document.getElementById("panneauCheval"); if (pan) pan.scrollTo({ top: pan.scrollHeight, behavior: "smooth" }); } catch (eS) { } }, 900);
           } })),
@@ -31547,7 +31542,7 @@ function EcranCheval() {
           h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("les moments racontés", "the moments you tell", "los momentos contados", "i momenti raccontati", "語られた瞬間", "die erzählten Momente")),
           h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
         h("div", { className: "souvin", style: { animationDelay: ".3s" } },
-          h(MurHype, { cible: "cheval:" + id, sansTitre: true, momentsSeuls: true, teinte: teinte, choixPrive: !!(moi && chevalDyn && chevalDyn.dbId && chevalDyn.ownerId !== moi.id) }))) : null,
+          h(MurHype, { cible: cibleCh, sansTitre: true, momentsSeuls: true, teinte: teinte, choixPrive: !!(moi && chevalDyn && chevalDyn.dbId && chevalDyn.ownerId !== moi.id) }))) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
         h("div", { style: { fontSize: 42, marginTop: 26 } }, "🩺"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F6F7", marginTop: 14 } }, T("Le passeport arrive", "The passport is coming", "El pasaporte llega pronto", "Il passaporto sta arrivando", "パスポートは準備中", "Der Pass kommt bald")),
