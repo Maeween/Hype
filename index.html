@@ -30549,7 +30549,19 @@ function AlbumsPromus(props) {
       })).concat(albums.length === 0 ? [h("div", { key: "vide", role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, style: { cursor: "pointer" } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, border: "1.5px dashed " + tA(0.45), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 9, boxSizing: "border-box" } },
           h("div", { style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid " + tA(0.55), display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 16, fontWeight: 300 } }, "+"),
-          h("div", { style: { fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: "#EDF2F5", fontWeight: 700, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u3057\u3044\u30a2\u30eb\u30d0\u30e0", "Neues Album"))))] : []).concat(albums.length > 5 ? [h("button", { key: "vplus", onClick: function () { if (props.onTout) props.onTout(); }, style: { gridColumn: "span 2", border: "1px solid " + tA(0.4), borderRadius: 999, background: "none", padding: "11px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#EDF2F5", cursor: "pointer" } }, T("Voir tous ses albums", "See all albums", "Ver todos los \u00e1lbumes", "Vedi tutti gli album", "\u3059\u3079\u3066\u306e\u30a2\u30eb\u30d0\u30e0", "Alle Alben ansehen") + " (" + albums.length + ")")] : [])));
+          h("div", { style: { fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: "#EDF2F5", fontWeight: 700, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u3057\u3044\u30a2\u30eb\u30d0\u30e0", "Neues Album"))))] : []).concat(albums.length > 5 ? [h("button", { key: "vplus", onClick: function () { if (props.onTout) props.onTout(); }, style: { gridColumn: "span 2", border: "1px solid " + tA(0.4), borderRadius: 999, background: "none", padding: "11px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#EDF2F5", cursor: "pointer" } }, T("Voir tous ses albums", "See all albums", "Ver todos los \u00e1lbumes", "Vedi tutti gli album", "\u3059\u3079\u3066\u306e\u30a2\u30eb\u30d0\u30e0", "Alle Alben ansehen") + " (" + albums.length + ")")] : [])),
+    (function () {
+      var phsA = [];
+      (albums || []).forEach(function (aA) { ((aA && aA.photos) || []).forEach(function (uA) { if (uA && phsA.length < 14 && phsA.indexOf(uA) < 0) phsA.push(uA); }); });
+      if (!phsA.length) return null;
+      return h("div", { style: { display: "flex", gap: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 11, paddingBottom: 2 } },
+        phsA.map(function (uP, iP) {
+          var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
+          return h("div", { key: "strip" + iP, onClick: function () { if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 72, height: 72, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.35), cursor: "pointer" } },
+            vP ? h("video", { src: uP + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+               : h("img", { src: uP, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+        }));
+    })());
 }
 
 /* 27/07 : jusque-la, GalerieSouvenirs (le carrousel "Souvenirs" en tete de fiche cheval) ne lisait que
@@ -31187,7 +31199,15 @@ function EcranCheval() {
           var raceTxt = infoP[0] || race || "";
           var abrv = raceTxt.split(/[\s-]+/).filter(function (w) { return w.length > 2; }).map(function (w) { return w[0]; }).join("").toUpperCase() || raceTxt.slice(0, 3).toUpperCase();
           var ageTxt = infoP.filter(function (x) { return /^\d+\s*ans?\b/i.test(x); })[0] || "";
-          var recit = c.histoire || (T("Un ", "A ", "Un ", "Un ", "", "Ein ") + (raceTxt || T("cheval", "horse", "caballo", "cavallo", "\u99ac", "Pferd")) + T(" au c\u0153ur de l'\u00e9curie Hype. Sa fiche raconte ses origines, ses performances et ses plus beaux souvenirs.", " at the heart of the Hype stable. This page tells its bloodline, its performances and its finest memories.", " en el coraz\u00f3n de la cuadra Hype. Su ficha cuenta sus or\u00edgenes, sus resultados y sus mejores recuerdos.", " nel cuore della scuderia Hype. La sua scheda racconta origini, prestazioni e ricordi pi\u00f9 belli.", "Hype\u5395\u820e\u306e\u4e2d\u5fc3\u306b\u3044\u308b\u99ac\u3002\u8840\u7d71\u3068\u6210\u7e3e\u3001\u601d\u3044\u51fa\u3092\u7d39\u4ecb\u3057\u307e\u3059\u3002", " im Herzen des Hype-Stalls. Sein Profil erzählt seine Herkunft, seine Erfolge und seine schönsten Erinnerungen."));
+          var recit = c.histoire || (function () {
+            var ecu = (typeof profil !== "undefined" && profil && profil.ecurie) ? String(profil.ecurie).trim() : "";
+            var cav = (typeof profil !== "undefined" && profil && (profil.prenom || profil.pseudo)) ? String(profil.prenom || profil.pseudo).trim() : "";
+            var rc = String(c.nom || "") + T(" est un ", " is a ", " es un ", " \u00e8 un ", "\u306f", " ist ein ") + (raceTxt || T("cheval", "horse", "caballo", "cavallo", "\u99ac", "Pferd"));
+            if (ecu) rc += T(" de l'\u00e9curie ", " from the ", " de la cuadra ", " della scuderia ", "\u3001\u6240\u5c5e\uff1a", " aus dem Stall ") + ecu + (T("", " stable", "", "", "", "") || "");
+            if (cav) rc += T(", mont\u00e9(e) par ", ", ridden by ", ", montado por ", ", montato da ", "\u3001\u9a0e\u624b\uff1a", ", geritten von ") + cav;
+            rc += T(". Touche le crayon pour \u00e9crire son histoire.", ". Tap the pencil to write its story.", ". Toca el l\u00e1piz para escribir su historia.", ". Tocca la matita per scrivere la sua storia.", "\u3002\u925b\u7b46\u3067\u7269\u8a9e\u3092\u66f8\u3053\u3046\u3002", ". Tippe auf den Stift, um seine Geschichte zu schreiben.");
+            return rc;
+          })();
           return h("div", { className: "hginfo rise" },
             h("div", { className: "hdiv" }, h("i", null), h("s", null)),
             h("div", { className: "hstats" },
@@ -31200,7 +31220,11 @@ function EcranCheval() {
                 h("div", { className: "v" }, ((ageTxt || disc || "\u2014") + (ogH.naissance ? " \u00b7 " + T("N\u00e9(e) ", "Born ", "Nac. ", "Nato ", "\u751f ", "Geboren ") + ogH.naissance.split("\u00b7")[0].trim() : "")).toUpperCase()),
                 h("div", { className: "s" }, [ogH.robe, (disc && disc !== ogH.robe) ? disc : null].filter(Boolean).join(" \u00b7 "))),
               null),
-            h("p", { className: "hbio" }, recit),
+            h("div", { className: "hype-cristal", style: { margin: "4px 0 6px" } },
+              h("style", null, "@keyframes hypeSpin{to{transform:rotate(1turn)}}.hype-cristal{position:relative;border-radius:18px;padding:1.6px;overflow:hidden;isolation:isolate}.hype-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + teinte + " 82%," + teinteCl + " 90%,transparent 100%);animation:hypeSpin 4.5s linear infinite}.hype-cristal>.hype-cristal-cc{position:relative;z-index:1;border-radius:16.5px;background:#070B10}"),
+              h("div", { className: "hype-cristal-cc", style: { padding: "12px 14px" } },
+            h("p", { className: "hbio", style: { margin: 0 } }, recit,
+              (c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id) ? h("span", { role: "button", onClick: collerHistoire, title: "Modifier l'histoire", style: { marginLeft: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + tA(0.5), fontSize: 11, color: teinteCl, cursor: "pointer", verticalAlign: "middle" } }, "\u270e") : null))),
             h("div", { className: "hcta", onClick: function () { setPanneau("souvenirs"); } }, "\u2728 " + T("D\u00e9couvrir son histoire", "Discover its story", "Descubrir su historia", "Scopri la sua storia", "\u7269\u8a9e\u3092\u898b\u308b", "Seine Geschichte entdecken")));
         })(),
 
@@ -31209,10 +31233,10 @@ function EcranCheval() {
           var ogK = c.origines || {};
           var nbP = ((c.palmares && c.palmares.length) || 0) + ((c.flots && c.flots.length) || 0);
           function carteK(img2, ic2, ti2, st2, cta2, act2, kk) {
-            return h("div", { key: kk, onClick: act2, style: { flex: "0 0 37%", maxWidth: 146, scrollSnapAlign: "start", position: "relative", borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.3) + "", background: "linear-gradient(170deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))", cursor: "pointer", height: 142, maxHeight: 142, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "16px 4px 11px", boxShadow: "0 8px 22px rgba(0,0,0,0.35)" } },
+            return h("div", { key: kk, onClick: act2, style: { flex: "0 0 30%", maxWidth: 118, scrollSnapAlign: "start", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid " + tA(0.3) + "", background: "linear-gradient(170deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))", cursor: "pointer", height: 108, maxHeight: 108, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "10px 4px 8px", boxShadow: "0 8px 22px rgba(0,0,0,0.35)" } },
               img2 ? h("img", { src: img2, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 24%", filter: "brightness(0.42) saturate(0.92)" } }) : h("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(90% 90% at 50% 0%, " + tA(0.13) + ", transparent 70%)" } }),
               h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.25), rgba(6,7,9,0.72))" } }),
-              h("div", { style: { position: "relative", zIndex: 2, width: 46, height: 46, borderRadius: "50%", border: "1.5px solid " + tA(0.7) + "", background: "rgba(8,12,16,0.6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 13px " + tA(0.3) + "" } },
+              h("div", { style: { position: "relative", zIndex: 2, width: 38, height: 38, borderRadius: "50%", border: "1.5px solid " + tA(0.7) + "", background: "rgba(8,12,16,0.6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 13px " + tA(0.3) + "" } },
                 h("svg", { viewBox: "0 0 24 24", style: { width: 21, height: 21, stroke: teinteCl, fill: "none", strokeWidth: 1.6 } }, ic2)),
               h("div", { style: { position: "relative", zIndex: 2, fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.6, color: "#F4F6F7", marginTop: 11, whiteSpace: "nowrap" } }, ti2),
               h("div", { style: { position: "relative", zIndex: 2, marginTop: "auto", paddingTop: 6, borderTop: "1px solid " + tA(0.22) + "", width: "88%", textAlign: "center", fontSize: 8.5, letterSpacing: "0.1em", fontWeight: 800, color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cta2 + " \u2192"));
@@ -31354,10 +31378,6 @@ function EcranCheval() {
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */
 
-        h(MurHype, { cible: "cheval:" + id, compact: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
-
-
-        /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".17s" } }, T("Son palmar\u00e8s", "Career highlights", "Su palmar\u00e9s", "Il suo palmar\u00e8s", "\u5b9f\u7e3e", "Seine Erfolge")),
         (c.palmares && c.palmares.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
           c.palmares.slice(0, 6).map(function (rP, iR) {
@@ -31372,6 +31392,11 @@ function EcranCheval() {
             h("div", { style: { fontStyle: "italic", fontSize: 12.5, color: "#C9CFD4", lineHeight: 1.55 } }, T("Ses premiers r\u00e9sultats l'attendent. Ajoute son premier concours, sa premi\u00e8re sortie\u2026 ou ses exploits.", "Their first results are waiting. Add a first show, a first outing\u2026 or their feats.", "Sus primeros resultados le esperan. A\u00f1ade su primer concurso, su primera salida\u2026 o sus haza\u00f1as.", "I suoi primi risultati lo aspettano. Aggiungi il primo concorso, la prima uscita\u2026 o le sue imprese.", "\u521d\u3081\u3066\u306e\u7d50\u679c\u304c\u5f85\u3063\u3066\u3044\u307e\u3059\u3002\u521d\u3081\u3066\u306e\u5927\u4f1a\u3084\u304a\u51fa\u304b\u3051\u3092\u8ffd\u52a0\u3057\u3088\u3046\u3002", "Seine ersten Ergebnisse warten. F\u00fcge den ersten Wettkampf, den ersten Ausritt\u2026 oder seine Heldentaten hinzu.")),
             h("div", { style: { marginTop: 10, fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: teinteCl, fontWeight: 700 } }, "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ein Ergebnis hinzuf\u00fcgen"))),
 
+        
+        h(MurHype, { cible: "cheval:" + id, compact: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
+
+
+        /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
         /* 30/07: encart Sellerie retire a la demande de Blandine */
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".18s" } }, T("Liens & partage", "Links & sharing", "Enlaces", "Link e condivisione", "\u30ea\u30f3\u30af\u3068\u5171\u6709", "Links & Teilen")),
         h("div", { className: "share rise", style: { animationDelay: ".18s" } },
