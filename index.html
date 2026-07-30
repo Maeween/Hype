@@ -26449,7 +26449,7 @@ function EcranMonCavalier() {
     });
   }
   function modifierPhoto() {
-    var origSauve = null; try { origSauve = localStorage.getItem("hype_avatar_original"); var avAct = (ctx.profil && (ctx.profil.avatar_url || ctx.profil.avatar)) || ""; var pourAv = localStorage.getItem("hype_avatar_original_pour"); if (origSauve && (!pourAv || String(avAct).slice(0, 100) !== pourAv)) { localStorage.removeItem("hype_avatar_original"); localStorage.removeItem("hype_avatar_original_pour"); origSauve = null; } } catch (eO2) { } /* 30/07 : plus de photo fantome */
+    var origSauve = null; try { origSauve = localStorage.getItem("hype_avatar_original"); var avAct = (ctx.profil && (ctx.profil.avatar_url || ctx.profil.avatar)) || ""; var pourAv = localStorage.getItem("hype_avatar_original_pour"); if (origSauve && pourAv && String(avAct).slice(0, 100) !== pourAv) { localStorage.removeItem("hype_avatar_original"); localStorage.removeItem("hype_avatar_original_pour"); origSauve = null; } } catch (eO2) { } /* 30/07 : plus de photo fantome */
     var src = origSauve || (ctx.profil && ctx.profil.avatar_url) || (ctx.profil && ctx.profil.avatar);
     if (!src || typeof hypeRecadrerDepuisSource !== "function") return;
     hypeRecadrerDepuisSource(src, 1).then(function (res) { if (res) appliquerNouvelAvatar(res); });
@@ -28827,9 +28827,9 @@ function EcranEcurie() {
   }
   function modifierPhotoEcurie() {
     if (!ecuriePhoto || typeof hypeRecadrerDepuisSource !== "function") return;
-    var origSauveEc = null; try { origSauveEc = localStorage.getItem("hype_ecurie_photo_orig"); var pourEc = localStorage.getItem("hype_ecurie_photo_orig_pour"); if (origSauveEc && (!pourEc || String(ecuriePhoto || "").slice(0, 100) !== pourEc)) { localStorage.removeItem("hype_ecurie_photo_orig"); localStorage.removeItem("hype_ecurie_photo_orig_pour"); origSauveEc = null; } } catch (eOe) { } /* 30/07 : plus de photo fantome (bug signale par Blandine) */
+    var origSauveEc = null; try { origSauveEc = localStorage.getItem("hype_ecurie_photo_orig"); var pourEc = localStorage.getItem("hype_ecurie_photo_orig_pour"); if (origSauveEc && pourEc && String(ecuriePhoto || "").slice(0, 100) !== pourEc) { localStorage.removeItem("hype_ecurie_photo_orig"); localStorage.removeItem("hype_ecurie_photo_orig_pour"); origSauveEc = null; } } catch (eOe) { } /* 30/07 : plus de photo fantome (bug signale par Blandine) */
     var ratioEc = 16 / 9; /* 30/07 : le cadre du recadreur epouse le bandeau reel — fini le zoom surprise (bug signale par Blandine) */
-    try { var elH = document.querySelector(".hero"); if (elH && elH.clientWidth && elH.clientHeight) ratioEc = elH.clientWidth / elH.clientHeight; } catch (eRh) { }
+    try { var elH = document.querySelector(".hero"); if (elH && elH.clientWidth > 0 && elH.clientHeight > 0) { var rMes = elH.clientWidth / elH.clientHeight; if (isFinite(rMes) && rMes > 0.35 && rMes < 4) ratioEc = rMes; } } catch (eRh) { }
     hypeRecadrerDepuisSource(origSauveEc || ecuriePhoto, ratioEc).then(function (res) { if (res) appliquerNouvellePhotoEcurie(res); });
   }
   React.useEffect(function () { (async function () {
@@ -31154,7 +31154,7 @@ function EcranCheval() {
   }
   function ajusterPhotoCheval() {
     if (!photoCh) return;
-    var origSauveCh = null; try { origSauveCh = localStorage.getItem("hype_cheval_photo_orig_" + id); var pourCh = localStorage.getItem("hype_cheval_photo_orig_pour_" + id); if (origSauveCh && (!pourCh || String(photoCh || "").slice(0, 100) !== pourCh)) { localStorage.removeItem("hype_cheval_photo_orig_" + id); localStorage.removeItem("hype_cheval_photo_orig_pour_" + id); origSauveCh = null; } } catch (eOc) { } /* 30/07 : plus de photo fantome */
+    var origSauveCh = null; try { origSauveCh = localStorage.getItem("hype_cheval_photo_orig_" + id); var pourCh = localStorage.getItem("hype_cheval_photo_orig_pour_" + id); if (origSauveCh && pourCh && String(photoCh || "").slice(0, 100) !== pourCh) { localStorage.removeItem("hype_cheval_photo_orig_" + id); localStorage.removeItem("hype_cheval_photo_orig_pour_" + id); origSauveCh = null; } } catch (eOc) { } /* 30/07 : plus de photo fantome */
     hypeRecadrerDepuisSource(origSauveCh || photoCh, 4 / 5).then(appliquerPhotoCheval);
   }
   React.useEffect(function () {
@@ -31468,11 +31468,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
                     h("div", { style: { fontSize: 9, color: "#7B858E", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ln[1]));
                 })));
           }),
-          og.sire ? h("div", { style: { padding: "9px 14px 0" } },
-            h("a", { href: "https://infochevaux.ifce.fr/fr/info-chevaux", target: "_blank", rel: "noopener", style: { display: "inline-flex", alignItems: "center", gap: 7, textDecoration: "none" } },
-              h("span", { style: { letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, fontSize: 7.5, color: "#8A929C" } }, "SIRE"),
-              h("span", { style: { fontSize: 10.5, color: "#8ADFEF", fontWeight: 600, letterSpacing: "0.06em" } }, og.sire),
-              h("span", { style: { fontSize: 8, color: "#5B646E" } }, T("Voir sur Info Chevaux (IFCE) \u2197", "View on Info Chevaux (IFCE) \u2197", "Ver en Info Chevaux (IFCE) \u2197", "Vedi su Info Chevaux (IFCE) \u2197", "Info Chevaux (IFCE) \u3067\u898b\u308b \u2197", "Auf Info Chevaux (IFCE) ansehen \u2197")))) : null,
+          /* 30/07 : doublon SIRE retire — la pilule SIRE existante (thematisee) suffit */
           (og.naisseur || og.note) ? h("div", { style: { padding: "9px 14px 11px" } },
             og.naisseur ? h("div", { style: { fontSize: 9, color: "#7B858E" } }, h("span", { style: { letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, fontSize: 7.5, color: "#8A929C" } }, T("Naisseur", "Breeder", "Criador", "Allevatore", "生産者", "Züchter") + "  "), og.naisseur) : null,
             og.note ? h("div", { style: { fontSize: 8.5, color: "#5B646E", fontStyle: "italic", marginTop: og.naisseur ? 4 : 0 } }, og.note) : null) : null,
@@ -31515,11 +31511,11 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
               h("div", { className: "s" }, T("Avec ton entra\u00eeneur, ton \u00e9curie ou tes proches.", "With your coach, stable or family.", "Con tu entrenador, cuadra o familia.", "Con il tuo istruttore, la scuderia o i tuoi cari.", "\u30b3\u30fc\u30c1\u3084\u5bb6\u65cf\u3068\u5171\u6709\u3002", "Mit deinem Trainer, deinem Stall oder deinen Nahestehenden."))),
             h("div", { className: "qr" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM19 14v6M17 19h3" })))),
           h("button", { className: "btnGhost", onClick: partagerFiche }, T("G\u00e9n\u00e9rer un lien", "Generate a link", "Generar enlace", "Genera un link", "\u30ea\u30f3\u30af\u3092\u751f\u6210", "Link erstellen")),
-          (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) ? h("div", { style: { margin: "14px 0 0", borderRadius: 20, border: "1px solid " + (partageEH ? "rgba(32,217,245,0.55)" : "rgba(255,255,255,0.09)"), background: "rgba(17,20,23,0.72)", backdropFilter: "blur(10px)", padding: "16px 16px", display: "flex", alignItems: "center", gap: 14, boxShadow: partageEH ? "0 0 26px rgba(32,217,245,0.18)" : "none", transition: "all .4s ease" } },
+          (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) ? h("div", { style: { margin: "14px 0 0", borderRadius: 20, border: "1px solid " + (partageEH ? tA(0.55) : "rgba(255,255,255,0.09)"), background: "rgba(17,20,23,0.72)", backdropFilter: "blur(10px)", padding: "16px 16px", display: "flex", alignItems: "center", gap: 14, boxShadow: partageEH ? ("0 0 26px " + tA(0.18)) : "none", transition: "all .4s ease" } },
       h("div", { style: { flex: 1, minWidth: 0 } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, color: "#F4F7FA", letterSpacing: "0.02em" } }, T("Partager sur l'Écurie Hype", "Share on the Écurie Hype", "Compartir en la Écurie Hype", "Condividi sull'Écurie Hype", "Écurie Hype に共有", "Im Hype-Stall teilen")),
         h("div", { style: { marginTop: 4, fontSize: 11, fontWeight: 300, color: "#8A96A2", lineHeight: 1.5 } }, T("Ton cheval apparaîtra dans la galerie de la communauté.", "Your horse will appear in the community gallery.", "Tu caballo aparecerá en la galería de la comunidad.", "Il tuo cavallo apparirà nella galleria della comunità.", "コミュニティのギャラリーに表示されます。", "Dein Pferd erscheint in der Community-Galerie."))),
-      h("div", { role: "switch", "aria-checked": partageEH ? "true" : "false", onClick: basculerPartageEH, style: { flex: "0 0 auto", width: 52, height: 30, borderRadius: 999, cursor: "pointer", position: "relative", background: partageEH ? "linear-gradient(120deg,#0C5763,#20D9F5)" : "rgba(255,255,255,0.1)", border: "1px solid " + (partageEH ? "rgba(95,233,240,0.8)" : "rgba(255,255,255,0.15)"), boxShadow: partageEH ? "0 0 18px rgba(32,217,245,0.55)" : "none", transition: "all .35s ease" } },
+      h("div", { role: "switch", "aria-checked": partageEH ? "true" : "false", onClick: basculerPartageEH, style: { flex: "0 0 auto", width: 52, height: 30, borderRadius: 999, cursor: "pointer", position: "relative", background: partageEH ? ("linear-gradient(120deg," + tA(0.85) + "," + (teinteCl || "#5FE9F0") + ")") : "rgba(255,255,255,0.1)", border: "1px solid " + (partageEH ? "rgba(95,233,240,0.8)" : "rgba(255,255,255,0.15)"), boxShadow: partageEH ? ("0 0 18px " + tA(0.55)) : "none", transition: "all .35s ease" } },
         h("div", { style: { position: "absolute", top: 3, left: partageEH ? 25 : 3, width: 22, height: 22, borderRadius: "50%", background: "#F4F7FA", boxShadow: "0 2px 8px rgba(0,0,0,0.4)", transition: "left .35s cubic-bezier(.2,.8,.2,1)" } }))) : null, /* 30/07 : encart Ecurie Hype remonte dans Liens & partage (maquette validee) */
           null /* 30/07 : ligne FFE retiree (promesse sans backend — decision Blandine ; lien SIRE dans Origines a la place) */),
 
