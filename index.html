@@ -30520,9 +30520,11 @@ function AlbumsPromus(props) {
   var tnT = props.teinte || "#20D9F5";
   var tA = function (aT) { return teinteRGBA(tnT, aT); };
   var aSt = React.useState(null); var albums = aSt[0], setAlbums = aSt[1];
+  var gSt = React.useState(null); var galeriePh = gSt[0], setGaleriePh = gSt[1];
   React.useEffect(function () {
     var actif = true;
     try { listerAlbumsCheval(props.cible).then(function (r) { if (actif) setAlbums(((r && r.data) || [])); /* 30/07 fusion: tous les albums, plus seulement les promus */ }).catch(function () { if (actif) setAlbums([]); }); } catch (e) { setAlbums([]); }
+    try { if (typeof chargerPhotosSouvenirs === "function") { chargerPhotosSouvenirs(props.cible).then(function (ph) { if (actif) setGaleriePh(ph || []); }).catch(function () { if (actif) setGaleriePh([]); }); } else { setGaleriePh([]); } } catch (e2) { setGaleriePh([]); }
     return function () { actif = false; };
   }, [props.cible]);
   if (albums === null) return null; /* 30/07: en chargement seulement; a vide, la carte "Toutes ses photos" reste */
@@ -30552,7 +30554,8 @@ function AlbumsPromus(props) {
           h("div", { style: { fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: "#EDF2F5", fontWeight: 700, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u3057\u3044\u30a2\u30eb\u30d0\u30e0", "Neues Album"))))] : []).concat(albums.length > 5 ? [h("button", { key: "vplus", onClick: function () { if (props.onTout) props.onTout(); }, style: { gridColumn: "span 2", border: "1px solid " + tA(0.4), borderRadius: 999, background: "none", padding: "11px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#EDF2F5", cursor: "pointer" } }, T("Voir tous ses albums", "See all albums", "Ver todos los \u00e1lbumes", "Vedi tutti gli album", "\u3059\u3079\u3066\u306e\u30a2\u30eb\u30d0\u30e0", "Alle Alben ansehen") + " (" + albums.length + ")")] : [])),
     (function () {
       var phsA = [];
-      (albums || []).forEach(function (aA) { ((aA && aA.photos) || []).forEach(function (uA) { if (uA && phsA.length < 14 && phsA.indexOf(uA) < 0) phsA.push(uA); }); });
+      ((galeriePh && galeriePh.length) ? galeriePh : []).forEach(function (uG) { if (uG && phsA.length < 14 && phsA.indexOf(uG) < 0) phsA.push(uG); });
+      if (!phsA.length) (albums || []).forEach(function (aA) { ((aA && aA.photos) || []).forEach(function (uA) { if (uA && phsA.length < 14 && phsA.indexOf(uA) < 0) phsA.push(uA); }); });
       if (!phsA.length) return null;
       return h("div", { style: { display: "flex", gap: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 11, paddingBottom: 2 } },
         phsA.map(function (uP, iP) {
