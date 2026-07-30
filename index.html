@@ -26422,7 +26422,7 @@ function EcranMonCavalier() {
        n arrivait JAMAIS dans l album. On prend desormais la meilleure valeur disponible. */
     var ancien = (ctx.profil && (ctx.profil.avatar_url || ctx.profil.avatar)) || null;
     setProfil(function (pp) { return Object.assign({}, pp, { avatar: res.dataUrl }); });
-    try { if (res.original) localStorage.setItem("hype_avatar_original", res.original); } catch (eO) { }
+    try { if (res.original) localStorage.setItem("hype_avatar_original", res.original); if (res.dataUrl) localStorage.setItem("hype_avatar_original_pour", String(res.dataUrl).slice(0, 100)); } catch (eO) { }
     hypeEnregistrerPhoto("avatar", null, res, ancien).then(function (urlFinale) {
       setProfil(function (pp) { return Object.assign({}, pp, { avatar_url: urlFinale }); });
     }).catch(function (err) {
@@ -26449,7 +26449,7 @@ function EcranMonCavalier() {
     });
   }
   function modifierPhoto() {
-    var origSauve = null; try { origSauve = localStorage.getItem("hype_avatar_original"); } catch (eO2) { }
+    var origSauve = null; try { origSauve = localStorage.getItem("hype_avatar_original"); var avAct = (ctx.profil && (ctx.profil.avatar_url || ctx.profil.avatar)) || ""; var pourAv = localStorage.getItem("hype_avatar_original_pour"); if (origSauve && (!pourAv || String(avAct).slice(0, 100) !== pourAv)) { localStorage.removeItem("hype_avatar_original"); localStorage.removeItem("hype_avatar_original_pour"); origSauve = null; } } catch (eO2) { } /* 30/07 : plus de photo fantome */
     var src = origSauve || (ctx.profil && ctx.profil.avatar_url) || (ctx.profil && ctx.profil.avatar);
     if (!src || typeof hypeRecadrerDepuisSource !== "function") return;
     hypeRecadrerDepuisSource(src, 1).then(function (res) { if (res) appliquerNouvelAvatar(res); });
@@ -28808,7 +28808,7 @@ function EcranEcurie() {
     var ancien = ecuriePhoto || null;
     setEcuriePhoto(res.dataUrl);
     try { localStorage.setItem("hype_ecurie_photo", res.dataUrl); } catch (eq) { }
-    try { if (res.original) localStorage.setItem("hype_ecurie_photo_orig", res.original); } catch (eqO) { }
+    try { if (res.original) localStorage.setItem("hype_ecurie_photo_orig", res.original); if (res.dataUrl) localStorage.setItem("hype_ecurie_photo_orig_pour", String(res.dataUrl).slice(0, 100)); } catch (eqO) { }
     try { setProfil && setProfil(function (pp) { return Object.assign({}, pp, { ecurie_photo: res.dataUrl }); }); } catch (eSp) { }
     hypeEnregistrerPhoto("ecurie", null, res, ancien).then(function (urlFinale) {
       setEcuriePhoto(urlFinale);
@@ -28827,7 +28827,7 @@ function EcranEcurie() {
   }
   function modifierPhotoEcurie() {
     if (!ecuriePhoto || typeof hypeRecadrerDepuisSource !== "function") return;
-    var origSauveEc = null; try { origSauveEc = localStorage.getItem("hype_ecurie_photo_orig"); } catch (eOe) { }
+    var origSauveEc = null; try { origSauveEc = localStorage.getItem("hype_ecurie_photo_orig"); var pourEc = localStorage.getItem("hype_ecurie_photo_orig_pour"); if (origSauveEc && (!pourEc || String(ecuriePhoto || "").slice(0, 100) !== pourEc)) { localStorage.removeItem("hype_ecurie_photo_orig"); localStorage.removeItem("hype_ecurie_photo_orig_pour"); origSauveEc = null; } } catch (eOe) { } /* 30/07 : plus de photo fantome (bug signale par Blandine) */
     hypeRecadrerDepuisSource(origSauveEc || ecuriePhoto, 16 / 9).then(function (res) { if (res) appliquerNouvellePhotoEcurie(res); });
   }
   React.useEffect(function () { (async function () {
@@ -31116,7 +31116,7 @@ function EcranCheval() {
         var d2 = cv.toDataURL("image/jpeg", 0.9);
         setPhotoPerso(d2);
         try { localStorage.setItem("hype_cheval_photo_" + id, d2); } catch (eq) { }
-        try { if (res.original) localStorage.setItem("hype_cheval_photo_orig_" + id, res.original); } catch (eqO) { }
+        try { if (res.original) localStorage.setItem("hype_cheval_photo_orig_" + id, res.original); if (res.dataUrl) localStorage.setItem("hype_cheval_photo_orig_pour_" + id, String(res.dataUrl).slice(0, 100)); } catch (eqO) { }
         try {
           if (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) {
             hypeEnregistrerPhoto("cheval", chevalDyn.dbId, res, ancienUrl).catch(function (err) {
@@ -31132,7 +31132,7 @@ function EcranCheval() {
   }
   function ajusterPhotoCheval() {
     if (!photoCh) return;
-    var origSauveCh = null; try { origSauveCh = localStorage.getItem("hype_cheval_photo_orig_" + id); } catch (eOc) { }
+    var origSauveCh = null; try { origSauveCh = localStorage.getItem("hype_cheval_photo_orig_" + id); var pourCh = localStorage.getItem("hype_cheval_photo_orig_pour_" + id); if (origSauveCh && (!pourCh || String(photoCh || "").slice(0, 100) !== pourCh)) { localStorage.removeItem("hype_cheval_photo_orig_" + id); localStorage.removeItem("hype_cheval_photo_orig_pour_" + id); origSauveCh = null; } } catch (eOc) { } /* 30/07 : plus de photo fantome */
     hypeRecadrerDepuisSource(origSauveCh || photoCh, 4 / 5).then(appliquerPhotoCheval);
   }
   React.useEffect(function () {
@@ -31203,7 +31203,7 @@ function EcranCheval() {
         h("img", { src: photoCh, alt: c.nom }),
         h("div", { className: "hh" }), h("div", { className: "hv" }),
         h("div", { className: "htop" },
-          h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, h("div", { className: "ic", onClick: function () { setEcran("ecurie"); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "m15 18-6-6 6-6" }))), h("button", { title: "Identifier", onClick: function (eT) { eT.stopPropagation(); ouvrirTag(photoCh); }, style: { display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 14px 8px 11px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 12.5, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", boxShadow: "0 4px 18px rgba(0,0,0,0.45)" } }, h("svg", { viewBox: "0 0 24 24", style: { width: 16, height: 16, stroke: "#04252A", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" }), h("line", { x1: "7", y1: "7", x2: "7.01", y2: "7" })), T("Identifier", "Tag", "Etiquetar", "Tagga", "\u30bf\u30b0", "Identifizieren"))),
+          h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, h("div", { className: "ic", onClick: function () { setEcran("ecurie"); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "m15 18-6-6 6-6" })))),
           h("div", { className: "r" },
             h(SelecteurLangue, { compact: true }))),
         h("div", { style: { position: "absolute", right: 14, bottom: "calc(14px + env(safe-area-inset-bottom, 0px) * 0)", zIndex: 8, display: "flex", gap: 8 } },
@@ -31473,6 +31473,12 @@ function EcranCheval() {
               h("div", { className: "s" }, T("Avec ton entra\u00eeneur, ton \u00e9curie ou tes proches.", "With your coach, stable or family.", "Con tu entrenador, cuadra o familia.", "Con il tuo istruttore, la scuderia o i tuoi cari.", "\u30b3\u30fc\u30c1\u3084\u5bb6\u65cf\u3068\u5171\u6709\u3002", "Mit deinem Trainer, deinem Stall oder deinen Nahestehenden."))),
             h("div", { className: "qr" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM19 14v6M17 19h3" })))),
           h("button", { className: "btnGhost", onClick: partagerFiche }, T("G\u00e9n\u00e9rer un lien", "Generate a link", "Generar enlace", "Genera un link", "\u30ea\u30f3\u30af\u3092\u751f\u6210", "Link erstellen")),
+          (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) ? h("div", { style: { margin: "14px 0 0", borderRadius: 20, border: "1px solid " + (partageEH ? "rgba(32,217,245,0.55)" : "rgba(255,255,255,0.09)"), background: "rgba(17,20,23,0.72)", backdropFilter: "blur(10px)", padding: "16px 16px", display: "flex", alignItems: "center", gap: 14, boxShadow: partageEH ? "0 0 26px rgba(32,217,245,0.18)" : "none", transition: "all .4s ease" } },
+      h("div", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, color: "#F4F7FA", letterSpacing: "0.02em" } }, T("Partager sur l'Écurie Hype", "Share on the Écurie Hype", "Compartir en la Écurie Hype", "Condividi sull'Écurie Hype", "Écurie Hype に共有", "Im Hype-Stall teilen")),
+        h("div", { style: { marginTop: 4, fontSize: 11, fontWeight: 300, color: "#8A96A2", lineHeight: 1.5 } }, T("Ton cheval apparaîtra dans la galerie de la communauté.", "Your horse will appear in the community gallery.", "Tu caballo aparecerá en la galería de la comunidad.", "Il tuo cavallo apparirà nella galleria della comunità.", "コミュニティのギャラリーに表示されます。", "Dein Pferd erscheint in der Community-Galerie."))),
+      h("div", { role: "switch", "aria-checked": partageEH ? "true" : "false", onClick: basculerPartageEH, style: { flex: "0 0 auto", width: 52, height: 30, borderRadius: 999, cursor: "pointer", position: "relative", background: partageEH ? "linear-gradient(120deg,#0C5763,#20D9F5)" : "rgba(255,255,255,0.1)", border: "1px solid " + (partageEH ? "rgba(95,233,240,0.8)" : "rgba(255,255,255,0.15)"), boxShadow: partageEH ? "0 0 18px rgba(32,217,245,0.55)" : "none", transition: "all .35s ease" } },
+        h("div", { style: { position: "absolute", top: 3, left: partageEH ? 25 : 3, width: 22, height: 22, borderRadius: "50%", background: "#F4F7FA", boxShadow: "0 2px 8px rgba(0,0,0,0.4)", transition: "left .35s cubic-bezier(.2,.8,.2,1)" } }))) : null, /* 30/07 : encart Ecurie Hype remonte dans Liens & partage (maquette validee) */
           h("div", { className: "ffe" },
             h("div", { className: "st" }, "FFE \u00b7 ", h("b", null, T("Non connect\u00e9", "Not connected", "No conectado", "Non collegato", "\u672a\u63a5\u7d9a", "Nicht verbunden"))),
             h("div", { className: "lk", onClick: bientot }, T("Connecter", "Connect", "Conectar", "Collega", "\u63a5\u7d9a", "Verbinden")))),
@@ -31494,6 +31500,9 @@ function EcranCheval() {
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。", "Noch kein Flot vorhanden.")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen"))) : null,
       panneau === "palmares" ? h("div", { style: { padding: "8px 16px 0" } },
+        h("div", { style: { position: "relative", borderRadius: 18, overflow: "hidden", marginBottom: 16, aspectRatio: "966/720", maxHeight: "44svh", background: "#04070A" } }, /* 30/07 : coin competition — la video suit la teinte de la fiche (maquette validee) */
+          h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
+          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.15) 0%, rgba(6,7,9,0) 35%, rgba(6,7,9,0.55) 78%, #060709 100%)" } })),
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : null,
         (c.palmares && c.palmares.length) ? h("div", { className: "panel" }, c.palmares.map(prow)) : h("div", { className: "empty" }, T("Le palmarès commence ici.", "The record starts here.", "El palmarés empieza aquí.", "Il palmarès inizia qui.", "戦績はここから始まります。", "Die Erfolge beginnen hier.")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加", "Ein Ergebnis hinzufügen"))) : null,
@@ -31562,18 +31571,18 @@ function EcranCheval() {
       setTimeout(function () { setToast(null); }, 2600);
     }, role: "button", "aria-label": "Ajouter à mon écurie", style: { position: "fixed", left: 16, right: 16, bottom: "calc(104px + env(safe-area-inset-bottom))", zIndex: 60, height: 46, borderRadius: 999, border: "1px solid rgba(234,199,122,0.6)", background: "linear-gradient(90deg, rgba(234,199,122,0.16), rgba(234,199,122,0.06))", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 9, fontSize: 12.5, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "#F6E3B4", animation: "haloPlusFiche 3.2s ease-out infinite", cursor: "pointer", boxShadow: "0 10px 28px rgba(0,0,0,0.5)" } }, h("span", { style: { fontSize: 17, fontWeight: 600, lineHeight: 1, marginTop: -1 } }, "+"), T("Ajouter à mon écurie", "Add to my stable", "Añadir a mi cuadra", "Aggiungi alla scuderia", "厩舎に追加", "Zu meinem Stall hinzufügen") + " 💎"),
 
-    (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) ? h("div", { style: { margin: "26px 16px 8px", borderRadius: 20, border: "1px solid " + (partageEH ? "rgba(32,217,245,0.55)" : "rgba(255,255,255,0.09)"), background: "rgba(17,20,23,0.72)", backdropFilter: "blur(10px)", padding: "16px 16px", display: "flex", alignItems: "center", gap: 14, boxShadow: partageEH ? "0 0 26px rgba(32,217,245,0.18)" : "none", transition: "all .4s ease" } },
-      h("div", { style: { flex: 1, minWidth: 0 } },
-        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, color: "#F4F7FA", letterSpacing: "0.02em" } }, T("Partager sur l'Écurie Hype", "Share on the Écurie Hype", "Compartir en la Écurie Hype", "Condividi sull'Écurie Hype", "Écurie Hype に共有", "Im Hype-Stall teilen")),
-        h("div", { style: { marginTop: 4, fontSize: 11, fontWeight: 300, color: "#8A96A2", lineHeight: 1.5 } }, T("Ton cheval apparaîtra dans la galerie de la communauté.", "Your horse will appear in the community gallery.", "Tu caballo aparecerá en la galería de la comunidad.", "Il tuo cavallo apparirà nella galleria della comunità.", "コミュニティのギャラリーに表示されます。", "Dein Pferd erscheint in der Community-Galerie."))),
-      h("div", { role: "switch", "aria-checked": partageEH ? "true" : "false", onClick: basculerPartageEH, style: { flex: "0 0 auto", width: 52, height: 30, borderRadius: 999, cursor: "pointer", position: "relative", background: partageEH ? "linear-gradient(120deg,#0C5763,#20D9F5)" : "rgba(255,255,255,0.1)", border: "1px solid " + (partageEH ? "rgba(95,233,240,0.8)" : "rgba(255,255,255,0.15)"), boxShadow: partageEH ? "0 0 18px rgba(32,217,245,0.55)" : "none", transition: "all .35s ease" } },
-        h("div", { style: { position: "absolute", top: 3, left: partageEH ? 25 : 3, width: 22, height: 22, borderRadius: "50%", background: "#F4F7FA", boxShadow: "0 2px 8px rgba(0,0,0,0.4)", transition: "left .35s cubic-bezier(.2,.8,.2,1)" } }))) : null,
-
     h("input", { ref: refPhotoCh, type: "file", accept: "image/*", onChange: choisirPhotoCheval, style: { display: "none" } }),
     menuFiche ? h("div", { onClick: function () { setMenuFiche(false); setConfSupprFiche(false); }, style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.72)", display: "flex", alignItems: "flex-end" } },
       h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", background: "linear-gradient(180deg, rgba(16,20,26,0.98), rgba(9,11,15,0.99))", borderTop: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px 20px 0 0", padding: "10px 16px calc(20px + env(safe-area-inset-bottom))" } },
         h("div", { style: { width: 36, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.2)", margin: "6px auto 16px" } }),
-        h("button", { onClick: function () { setMenuFiche(false); ajusterPhotoCheval(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\u2702\ufe0f " + T("Ajuster / recadrer la photo", "Adjust / crop photo", "Ajustar / recortar la foto", "Regola / ritaglia la foto", "\u5199\u771f\u3092\u8abf\u6574", "Foto anpassen / zuschneiden")), /* 30/07: recadreur accessible depuis le menu de la fiche (demande Blandine) */
+        h("button", { onClick: function () { setMenuFiche(false); ajusterPhotoCheval(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\u2702\ufe0f " + T("Ajuster / recadrer la photo", "Adjust / crop photo", "Ajustar / recortar la foto", "Regola / ritaglia la foto", "\u5199\u771f\u3092\u8abf\u6574", "Foto anpassen / zuschneiden")),
+          h("button", { onClick: function () { setMenuFiche(false); ouvrirTag(photoCh); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83c\udff7\ufe0f " + T("Identifier dans la photo", "Tag in the photo", "Etiquetar en la foto", "Tagga nella foto", "\u5199\u771f\u306b\u30bf\u30b0", "Im Foto identifizieren")),
+          (c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id) ? h("div", { style: { padding: "13px 8px", borderBottom: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", gap: 12 } },
+            h("span", { style: { color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif" } }, "\ud83c\udfa8 " + T("Teinte", "Tint", "Tinte", "Tinta", "\u8272\u5408\u3044", "Farbton")),
+            h("div", { style: { display: "flex", gap: 10, marginLeft: "auto" } }, [["", "#20D9F5"], ["#D9B56C", "#D9B56C"], ["#C64B5C", "#C64B5C"], ["#5C7A5E", "#5C7A5E"]].map(function (tD) {
+              var actT = (chevalDyn.teinte || "") === tD[0];
+              return h("button", { key: "td" + tD[1], onClick: async function () { try { await supa.from("chevaux").update({ teinte: tD[0] || null }).eq("id", c.dbId); setChevalDyn(function (pC) { return Object.assign({}, pC || {}, { teinte: tD[0] || null }); }); } catch (eTd) { } }, style: { width: 26, height: 26, borderRadius: "50%", border: actT ? "2px solid #FFFFFF" : "1px solid rgba(255,255,255,0.25)", background: tD[1], cursor: "pointer", padding: 0 } });
+            }))) : null /* 30/07 : teinte accessible en un tap depuis le menu (demande Blandine) */, /* 30/07: recadreur accessible depuis le menu de la fiche (demande Blandine) */
         c.dbId ? h(React.Fragment, null,
           h("button", { onClick: ouvrirEditFiche, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 12 } }, "✏️", T("Modifier la fiche", "Edit horse", "Editar ficha", "Modifica scheda", "編集", "Profil bearbeiten")),
           h("button", { onClick: confirmerSupprFiche, disabled: busyFiche, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", color: confSupprFiche ? "#FF8A93" : "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 12 } }, "🗑", busyFiche ? "…" : (confSupprFiche ? T("Confirmer la suppression", "Confirm deletion", "Confirmar", "Conferma", "削除を確認", "Löschen bestätigen") : T("Supprimer la fiche", "Delete horse", "Eliminar ficha", "Elimina scheda", "削除", "Profil löschen")))
@@ -31605,6 +31614,7 @@ function EcranCheval() {
         ? h("video", { src: visionneuse, controls: true, autoPlay: true, playsInline: true, "webkit-playsinline": "true", "x-webkit-airplay": "deny", controlsList: "nofullscreen nodownload", disablePictureInPicture: true, className: "souvVue" + (visFerme ? " souvQuitte" : ""), onClick: function (eV) { eV.stopPropagation(); }, style: { maxWidth: "100%", maxHeight: "82%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)", background: "#000" } })
         : h("img", { src: visionneuse, alt: "", className: "souvVue" + (visFerme ? " souvQuitte" : ""), style: { maxWidth: "100%", maxHeight: "90%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)" } }),
       h("button", { onClick: function (eX) { eX.stopPropagation(); fermerVisionneuse(); }, style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", right: 16, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.25)", color: "#EDF2F5", fontSize: 16, zIndex: 3 } }, "✕"),
+          h("button", { onClick: function (eI) { eI.stopPropagation(); ouvrirTag(visionneuse); }, style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", left: 16, zIndex: 3, display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 14px 8px 11px", borderRadius: 999, border: "1px solid rgba(45,212,222,0.55)", background: "rgba(10,40,46,0.55)", color: "#CFF6FA", fontSize: 12.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", backdropFilter: "blur(6px)" } }, "\ud83c\udff7\ufe0f ", T("Identifier", "Tag", "Etiquetar", "Tagga", "\u30bf\u30b0", "Identifizieren")) /* 30/07 : Identifier revient dans la visionneuse (demande Blandine) */,
       (function () {
         var lV = []; try { lV = (window.__visListe || []).slice(); } catch (eN0) { }
         if (lV.length < 2) return null;
