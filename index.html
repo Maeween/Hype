@@ -30546,7 +30546,10 @@ function AlbumsPromus(props) {
             estV && cov ? h("span", { style: { position: "absolute", bottom: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#EDF2F5", zIndex: 2 } }, "\u25b6") : null,
             h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
               h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11.5, fontWeight: 700, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, alb.nom))));
-      })).concat(albums.length > 5 ? [h("button", { key: "vplus", onClick: function () { if (props.onTout) props.onTout(); }, style: { gridColumn: "span 2", border: "1px solid " + tA(0.4), borderRadius: 999, background: "none", padding: "11px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#EDF2F5", cursor: "pointer" } }, T("Voir tous ses albums", "See all albums", "Ver todos los \u00e1lbumes", "Vedi tutti gli album", "\u3059\u3079\u3066\u306e\u30a2\u30eb\u30d0\u30e0", "Alle Alben ansehen") + " (" + albums.length + ")")] : [])));
+      })).concat(albums.length === 0 ? [h("div", { key: "vide", role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, style: { cursor: "pointer" } },
+        h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, border: "1.5px dashed " + tA(0.45), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 9, boxSizing: "border-box" } },
+          h("div", { style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid " + tA(0.55), display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 16, fontWeight: 300 } }, "+"),
+          h("div", { style: { fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: "#EDF2F5", fontWeight: 700, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u3057\u3044\u30a2\u30eb\u30d0\u30e0", "Neues Album"))))] : []).concat(albums.length > 5 ? [h("button", { key: "vplus", onClick: function () { if (props.onTout) props.onTout(); }, style: { gridColumn: "span 2", border: "1px solid " + tA(0.4), borderRadius: 999, background: "none", padding: "11px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#EDF2F5", cursor: "pointer" } }, T("Voir tous ses albums", "See all albums", "Ver todos los \u00e1lbumes", "Vedi tutti gli album", "\u3059\u3079\u3066\u306e\u30a2\u30eb\u30d0\u30e0", "Alle Alben ansehen") + " (" + albums.length + ")")] : [])));
 }
 
 /* 27/07 : jusque-la, GalerieSouvenirs (le carrousel "Souvenirs" en tete de fiche cheval) ne lisait que
@@ -31206,7 +31209,7 @@ function EcranCheval() {
           var ogK = c.origines || {};
           var nbP = ((c.palmares && c.palmares.length) || 0) + ((c.flots && c.flots.length) || 0);
           function carteK(img2, ic2, ti2, st2, cta2, act2, kk) {
-            return h("div", { key: kk, onClick: act2, style: { flex: "0 0 46%", maxWidth: 180, scrollSnapAlign: "start", position: "relative", borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.3) + "", background: "linear-gradient(170deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))", cursor: "pointer", height: 158, maxHeight: 158, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "16px 4px 11px", boxShadow: "0 8px 22px rgba(0,0,0,0.35)" } },
+            return h("div", { key: kk, onClick: act2, style: { flex: "0 0 37%", maxWidth: 146, scrollSnapAlign: "start", position: "relative", borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.3) + "", background: "linear-gradient(170deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))", cursor: "pointer", height: 142, maxHeight: 142, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "16px 4px 11px", boxShadow: "0 8px 22px rgba(0,0,0,0.35)" } },
               img2 ? h("img", { src: img2, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 24%", filter: "brightness(0.42) saturate(0.92)" } }) : h("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(90% 90% at 50% 0%, " + tA(0.13) + ", transparent 70%)" } }),
               h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.25), rgba(6,7,9,0.72))" } }),
               h("div", { style: { position: "relative", zIndex: 2, width: 46, height: 46, borderRadius: "50%", border: "1.5px solid " + tA(0.7) + "", background: "rgba(8,12,16,0.6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 13px " + tA(0.3) + "" } },
@@ -31214,7 +31217,7 @@ function EcranCheval() {
               h("div", { style: { position: "relative", zIndex: 2, fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.6, color: "#F4F6F7", marginTop: 11, whiteSpace: "nowrap" } }, ti2),
               h("div", { style: { position: "relative", zIndex: 2, marginTop: "auto", paddingTop: 6, borderTop: "1px solid " + tA(0.22) + "", width: "88%", textAlign: "center", fontSize: 8.5, letterSpacing: "0.1em", fontWeight: 800, color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cta2 + " \u2192"));
           }
-          return h("div", { className: "rise", style: { animationDelay: ".04s", display: "flex", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity", gap: 10, margin: "22px -8px 14px", paddingBottom: 4 } }, /* 30/07: cartes en carrousel (decision Blandine), la 3e depasse pour inviter au geste */
+          return h("div", { className: "rise", style: { animationDelay: ".04s", display: "flex", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity", touchAction: "pan-x pan-y", gap: 10, margin: "22px -8px 14px", paddingBottom: 4 } }, /* 30/07: cartes en carrousel (decision Blandine), la 3e depasse pour inviter au geste */
             carteK(photoCh,
               h("path", { d: "M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.7-6 2 0 3.4 1.2 4.3 2.6C12 6.2 13.4 5 15.4 5c3.1 0 4.9 3.2 3.7 6-2 4.5-9 9-9 9z", strokeLinejoin: "round" }),
               T("Histoire", "Story", "Historia", "Storia", "\u7269\u8a9e", "Geschichte"),
@@ -31349,18 +31352,12 @@ function EcranCheval() {
         h(AlbumsPromus, { cible: "cheval:" + id, teinte: teinte, photoDefaut: photoCh, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } }),
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
-        h("div", { style: { margin: "18px 16px 0" } }, h(EncartCliniqueVeto, null)),
+        /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */
 
         h(MurHype, { cible: "cheval:" + id, compact: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
 
 
-        h("div", { className: "eyebrow2 rise", style: { animationDelay: ".16s" } }, T("R\u00e9compenses", "Awards", "Recompensas", "Riconoscimenti", "\u8cde", "Auszeichnungen")),
-        h("div", { className: "awards rise", style: { animationDelay: ".16s" } },
-          h("div", { className: "aw" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M8 21h8M12 17v4M6 4h12v4a6 6 0 0 1-12 0z" })), h("div", { className: "l" }, T("\u00c9lite", "Elite", "\u00c9lite", "\u00c9lite", "\u30a8\u30ea\u30fc\u30c8", "Elite"))),
-          h("div", { className: "aw" }, h("svg", { viewBox: "0 0 24 24" }, etoile), h("div", { className: "l" }, T("Exception", "Exception", "Excepci\u00f3n", "Eccezione", "\u7279\u5225", "Ausnahme"))),
-          h("div", { className: "aw" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 2 15 9l7 .5-5.5 4.5L18 21l-6-3.5L6 21l1.5-7L2 9.5 9 9z" })), h("div", { className: "l" }, T("Ambassadeur", "Ambassador", "Embajador", "Ambasciatore", "\u30a2\u30f3\u30d0\u30b5\u30c0\u30fc", "Botschafter"))),
-          h("div", { className: "aw" }, h("svg", { viewBox: "0 0 24 24" }, diamond), h("div", { className: "l" }, T("Crystal", "Crystal", "Crystal", "Crystal", "\u30af\u30ea\u30b9\u30bf\u30eb", "Crystal")))),
-
+        /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".17s" } }, T("Son palmar\u00e8s", "Career highlights", "Su palmar\u00e9s", "Il suo palmar\u00e8s", "\u5b9f\u7e3e", "Seine Erfolge")),
         (c.palmares && c.palmares.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
           c.palmares.slice(0, 6).map(function (rP, iR) {
@@ -31375,21 +31372,7 @@ function EcranCheval() {
             h("div", { style: { fontStyle: "italic", fontSize: 12.5, color: "#C9CFD4", lineHeight: 1.55 } }, T("Ses premiers r\u00e9sultats l'attendent. Ajoute son premier concours, sa premi\u00e8re sortie\u2026 ou ses exploits.", "Their first results are waiting. Add a first show, a first outing\u2026 or their feats.", "Sus primeros resultados le esperan. A\u00f1ade su primer concurso, su primera salida\u2026 o sus haza\u00f1as.", "I suoi primi risultati lo aspettano. Aggiungi il primo concorso, la prima uscita\u2026 o le sue imprese.", "\u521d\u3081\u3066\u306e\u7d50\u679c\u304c\u5f85\u3063\u3066\u3044\u307e\u3059\u3002\u521d\u3081\u3066\u306e\u5927\u4f1a\u3084\u304a\u51fa\u304b\u3051\u3092\u8ffd\u52a0\u3057\u3088\u3046\u3002", "Seine ersten Ergebnisse warten. F\u00fcge den ersten Wettkampf, den ersten Ausritt\u2026 oder seine Heldentaten hinzu.")),
             h("div", { style: { marginTop: 10, fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: teinteCl, fontWeight: 700 } }, "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ein Ergebnis hinzuf\u00fcgen"))),
 
-        h("div", { className: "eyebrow2 rise", style: { animationDelay: ".175s" } }, T("Sellerie", "Tack room", "Guadarn\u00e9s", "Selleria", "\u99ac\u5177", "Sattelkammer")),
-        h("div", { className: "rise", role: "button", onClick: function () { setEcran("sellerie"); }, style: { display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 18, border: "1px solid " + tA(0.3), background: "rgba(0,0,0,0.35)", cursor: "pointer", animationDelay: ".175s", marginBottom: 18 } },
-          h("div", { style: { width: 42, height: 42, borderRadius: "50%", border: "1px solid " + tA(0.5), overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" } },
-            (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.sellerieEncart)
-              ? h("img", { src: HYPE_IMGS.sellerieEncart, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
-              : h("svg", { viewBox: "0 0 24 24", style: { width: 20, height: 20, stroke: teinteCl, fill: "none", strokeWidth: 1.7 } }, h("path", { d: "M5 8c0-3 3-5 7-5s7 2 7 5v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8zM5 12h14M12 12v7" }))),
-          h("div", { style: { flex: 1, minWidth: 0 } },
-            h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14, fontWeight: 600, color: "#F0F4F6" } }, (function () {
-              var nm = String((c && c.nom) || "").trim() || T("ce cheval", "this horse", "este caballo", "questo cavallo", "\u3053\u306e\u99ac", "dieses Pferd");
-              var el = /^[aeiouyAEIOUY\u00c0\u00c2\u00c9\u00c8\u00ca\u00cb\u00ce\u00cf\u00d4\u00d9\u00db\u00e0\u00e2\u00e9\u00e8\u00ea\u00eb\u00ee\u00ef\u00f4\u00f9\u00fb]/.test(nm);
-              return T("La sellerie " + (el ? "d'" : "de ") + nm, nm + "'s tack room", "El guadarn\u00e9s de " + nm, "La selleria di " + nm, nm + "\u306e\u99ac\u5177", "Die Sattelkammer von " + nm);
-            })()),
-            h("div", { style: { marginTop: 3, fontSize: 10.5, color: "#9AA2AC" } }, T("Son \u00e9quipement, et les codes promo de nos partenaires", "Their gear, plus partner promo codes", "Su equipo y los c\u00f3digos promo de nuestros socios", "La sua attrezzatura e i codici promo dei partner", "\u88c5\u5099\u3068\u30d1\u30fc\u30c8\u30ca\u30fc\u306e\u30af\u30fc\u30dd\u30f3", "Ausr\u00fcstung und Partner-Promocodes"))),
-          h("div", { style: { color: "#9AA2AC", fontSize: 16, flex: "0 0 auto" } }, "\u203a")),
-
+        /* 30/07: encart Sellerie retire a la demande de Blandine */
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".18s" } }, T("Liens & partage", "Links & sharing", "Enlaces", "Link e condivisione", "\u30ea\u30f3\u30af\u3068\u5171\u6709", "Links & Teilen")),
         h("div", { className: "share rise", style: { animationDelay: ".18s" } },
           h("div", { className: "row" },
