@@ -30533,7 +30533,7 @@ function AlbumsPromus(props) {
       h("div", { style: { fontSize: 9.5, letterSpacing: "0.3em", textTransform: "uppercase", color: tnT, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } }, T("Ses photos", "Photos", "Sus fotos", "Le sue foto", "\u5199\u771f", "Fotos")),
       h("div", { role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, title: "Nouvel album", style: { marginLeft: "auto", width: 24, height: 24, borderRadius: "50%", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 13, fontWeight: 300, cursor: "pointer" } }, "+")),
     /* 27/07 : 3 colonnes -> 2 (couvertures environ 1,6x plus grandes, demande Blandine). */
-    h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 11 } },
+    h("div", { style: { display: "flex", overflowX: "auto", WebkitOverflowScrolling: "touch", gap: 11, paddingBottom: 4, scrollSnapType: "x proximity" } /* 30/07: albums en rail 220px, meme taille que les vignettes photos (demande Blandine) */ },
       [h("div", { key: "tout", onClick: function () { if (props.onTout) props.onTout(); }, role: "button", style: { cursor: "pointer" } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(0.5), background: "#0B1116", boxShadow: "0 14px 28px -18px rgba(0,0,0,0.9)" } },
           props.photoDefaut ? h("img", { src: props.photoDefaut, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", objectPosition: "center 30%" } }) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
@@ -30909,14 +30909,18 @@ function EcranCheval() {
   var id = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : ((typeof location !== "undefined" && (location.hash.match(/cheval-(\w+)/) || [])[1]) || (typeof DEV_OUVRIR_PAGE !== "undefined" && (String(DEV_OUVRIR_PAGE).match(/^cheval-(\w+)$/) || [])[1]) || "mydream");
   var chDynSt = React.useState(null); var chevalDyn = chDynSt[0], setChevalDyn = chDynSt[1];
   React.useEffect(function () {
-    if (CHEVAUX_FICHE[id]) { setChevalDyn(null); return; }
     var actif = true;
+    /* 30/07 bascule migration : les 7 fiches demo vivent desormais en base ; le code n'est plus qu'un secours. */
+    var NOMS_MIGRES = { mydream: "My Dream", rizotto: "Rizotto d'Emery", elfe: "Elfe de Feinn", venus: "Cooltax", idao: "Bor\u00e9alis de Feinn", tully: "Tully Blue moon", heybaby: "Hey Baby Please" }; /* noms reels des chevaux de Liam en base */
+    if (CHEVAUX_FICHE[id] && !NOMS_MIGRES[id]) { setChevalDyn(null); return; }
     (async function () {
       try {
         if (typeof supa !== "undefined" && supa) {
-          var r = await supa.from("chevaux").select("*").eq("id", id).single();
+          var r = NOMS_MIGRES[id]
+            ? await supa.from("chevaux").select("*").eq("nom", NOMS_MIGRES[id]).order("created_at", { ascending: true }).limit(1).maybeSingle()
+            : await supa.from("chevaux").select("*").eq("id", id).single();
           if (actif && r && r.data) {
-            setChevalDyn({ teinte: r.data.teinte || null, nom: r.data.nom || "Cheval", photo: r.data.photo_url || UV3_H1, info: [r.data.race, r.data.age, r.data.discipline].filter(Boolean).join(" · "), flots: [], palmares: [], histoire: r.data.histoire || null, dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, origines: r.data.origines || null, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
+            var secours = (NOMS_MIGRES[id] && CHEVAUX_FICHE[id]) ? CHEVAUX_FICHE[id] : {}; var palmDb = null; try { palmDb = (typeof r.data.palmares === "string") ? JSON.parse(r.data.palmares) : r.data.palmares; } catch (ePj) { } var origDb = null; try { origDb = (typeof r.data.origines === "string") ? JSON.parse(r.data.origines) : r.data.origines; } catch (eOj) { } setChevalDyn({ teinte: r.data.teinte || null, nom: r.data.nom || "Cheval", photo: r.data.photo_url || secours.photo || UV3_H1, tag: secours.tag || null, info: [r.data.race, r.data.age ? (String(r.data.age) + " ans") : null, r.data.discipline].filter(Boolean).join(" · "), flots: (secours.flots || []), palmares: (palmDb && palmDb.length ? palmDb : (secours.palmares || [])), origines: (origDb || secours.origines || null), histoire: r.data.histoire || (secours.histoire || null), dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, origines: r.data.origines || null, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
             try {
               if (r.data.user_id && typeof supa !== "undefined" && supa) {
                 var rPro = await supa.from("profiles").select("pseudo, ecurie").eq("id", r.data.user_id).maybeSingle();
@@ -30931,7 +30935,7 @@ function EcranCheval() {
     })();
     return function () { actif = false; };
   }, [id]);
-  var c = CHEVAUX_FICHE[id] || chevalDyn || { nom: "…", photo: UV3_H1, info: "", flots: [], palmares: [] };
+  var c = chevalDyn || CHEVAUX_FICHE[id] || { nom: "\u2026", photo: UV3_H1, info: "", flots: [], palmares: [] }; /* 30/07 bascule : la base prime, le code en dur n'est qu'un secours */
   var toastSt = React.useState(null); var toast = toastSt[0], setToast = toastSt[1];
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
   var medSt = React.useState({}); var mediasInfo = medSt[0], setMediasInfo = medSt[1];
