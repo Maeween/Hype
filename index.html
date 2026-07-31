@@ -31358,7 +31358,7 @@ function EcranCheval() {
 
 
         h("div", { className: "eyebrow2 rise", style: { animationDelay: ".075s" } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen")),
-        h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 14px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
+        h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 30px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
 
@@ -31368,8 +31368,8 @@ function EcranCheval() {
               fl.img ? h("img", { src: fl.img, alt: fl.lab || "", style: { width: 108, height: 132, objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
                 : h("div", { style: { width: 108, height: 132, borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "\ud83c\udfc6" : "\ud83c\udfc5"),
               fl.lab ? h("div", { style: { marginTop: 6, fontSize: 8.5, lineHeight: 1.3, color: "rgba(244,247,250,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
-          })) : null, /* 30/07 : les coupes/flots de Blandine en vitrine sur la fiche (tap = zoom), avant les medailles */
-        (c.palmares && c.palmares.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
+          }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres2", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 56, height: 132, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : [])) : null, /* 30/07 : les coupes/flots de Blandine en vitrine sur la fiche (tap = zoom), avant les medailles */
+        (!(c.flots && c.flots.length) && c.palmares && c.palmares.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
           c.palmares.slice(0, 6).map(function (rP, iR) {
             var rgP = parseInt(rP.rang, 10);
             var medP = rgP === 1 ? ["linear-gradient(140deg,#F0CE8E,#B8975A)", "#141005"] : rgP === 2 ? ["linear-gradient(140deg,#E8ECEF,#9AA4AC)", "#101214"] : rgP === 3 ? ["linear-gradient(140deg,#D9A375,#8A5A38)", "#170D06"] : [tA(0.25), teinteCl];
@@ -31523,7 +31523,10 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
 
         h("div", { style: { height: "40px" } }))),
 
-    panneau ? h("div", { id: "panneauCheval", "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 6500, background: "#060709", overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 130 } },
+    panneau ? h("div", { id: "panneauCheval", "data-noswipe": "true",
+      onTouchStart: function (eTs) { try { var t0 = eTs.touches && eTs.touches[0]; window.__panSwipe = (t0 && t0.clientX <= 28) ? { x: t0.clientX, y: t0.clientY } : null; } catch (eS1) { window.__panSwipe = null; } },
+      onTouchEnd: function (eTe) { try { var d0 = window.__panSwipe; if (!d0) return; var t1 = eTe.changedTouches && eTe.changedTouches[0]; if (!t1) return; var dx = t1.clientX - d0.x, dy = Math.abs(t1.clientY - d0.y); if (dx > 70 && dy < 60) setPanneau(null); } catch (eS2) { } window.__panSwipe = null; }, /* 30/07 : swipe droit depuis le bord gauche = retour (bug signale par Blandine) */
+      style: { position: "fixed", inset: 0, zIndex: 6500, background: "#060709", overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 130 } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(14px + env(safe-area-inset-top)) 16px 8px" } },
         h("button", { onClick: function () { setPanneau(null); }, style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, flexShrink: 0 } }, "‹"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: "#F4F6F7" } },
