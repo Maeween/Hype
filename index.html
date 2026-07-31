@@ -29205,7 +29205,7 @@ var CHEVAUX_SPECTRAL = {
 };
 const ECHV_R_CSS = `
 .chvr .hero{position:relative;width:100%;overflow:hidden;background:#04070A;isolation:isolate;margin-bottom:26px}
-.chvr .scroll{padding:0 0 0}.chvr .app{min-height:0;padding-bottom:0}.chv.chvr{padding-bottom:calc(120px + env(safe-area-inset-bottom))} /* 31/07 : la photo se termine et respire avant le titre */.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
+.chvr .scroll{padding:0 0 0}.chvr .app{min-height:0;padding-bottom:0}.chv.chvr{padding-bottom:calc(96px + env(safe-area-inset-bottom))} /* 31/07 : la photo se termine et respire avant le titre */.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
 .chvr .hero>img{position:relative;display:block;width:100%;height:50svh;object-fit:contain;object-position:center;background:#04070A;z-index:1}
 .chvr .hh{position:absolute;inset:0;z-index:0;background:radial-gradient(48% 52% at 70% 32%,var(--teinte),transparent 66%);opacity:.14;mix-blend-mode:screen;filter:blur(18px);pointer-events:none;animation:chvHalo 8s ease-in-out infinite}@keyframes chvHalo{0%,100%{opacity:.18}50%{opacity:.3}}
 .chvr .hv{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(4,7,10,.34) 0%,rgba(4,7,10,0) 16%,rgba(4,7,10,0) 58%,rgba(4,7,10,.55) 82%,rgba(4,7,10,.96) 100%);pointer-events:none}
@@ -31377,11 +31377,7 @@ function EcranCheval() {
 
         /* 31/07 : ligne de cles retiree — elle doublonnait l encart IPO/PFS juste dessous (constat Blandine) */
 
-        h("div", { ref: function (elS) { try { if (elS && !elS.__initS) { elS.__initS = 1; elS.scrollLeft = 0; } } catch (eS) { } }, style: { position: "fixed", left: 0, right: 0, bottom: "calc(62px + env(safe-area-inset-bottom))", zIndex: 20, display: "flex", gap: 7, padding: "9px 14px", scrollPaddingLeft: 14, borderTop: "1px solid " + tA(0.25), background: "rgba(6,7,9,0.94)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderBottom: "1px solid rgba(255,255,255,0.06)", overflowX: "auto", scrollbarWidth: "none" } },
-          [["chvInfos", T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71", "Herkunft")], ["chapPerf", T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen")], ["chapMedias", T("M\u00e9dias", "Media", "Medios", "Media", "\u30e1\u30c7\u30a3\u30a2", "Medien")], ["chapFil", T("Le fil", "The feed", "El hilo", "Il filo", "\u30d5\u30a3\u30fc\u30c9", "Der Feed")], ["chapSante", T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit")], ["chapPartage", T("Partage", "Sharing", "Compartir", "Condivisione", "\u5171\u6709", "Teilen")]].map(function (nv) {
-            return h("button", { key: "nv" + nv[0], onClick: function () { try { var elN = document.getElementById(nv[0]); if (elN) elN.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eN) { } }, style: { flex: "0 0 auto", padding: "7px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.04)", color: "rgba(237,242,245,0.66)", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, nv[1]);
-          })),
-
+        null, /* 31/07 soir : barre de chapitres RETIREE (remplacee par les 3 cartes du haut, demande Blandine) */
         h("div", { id: "chvInfos", style: { perspective: 1200, margin: "22px 16px 0" } }, /* 31/07 : espace sous le badge */ /* 31/07 : carte Origines qui se retourne (maquette validee) */
           h("div", { role: "button", onClick: function () { setOrigOuv(!origOuv); }, style: { position: "relative", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", transition: "transform .62s cubic-bezier(.2,.75,.25,1)", transform: origOuv ? "rotateY(180deg)" : "none", cursor: "pointer", height: origOuv ? "min(58svh, 520px)" : "auto" } }, /* 31/07 soir : overflow:hidden RETIRE — il aplatissait le preserve-3d (dos jamais affiche, face avant vue en miroir) */
             h("div", { style: { backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", border: "1px solid " + tA(0.42), borderRadius: 18, background: "linear-gradient(165deg, rgba(18,22,27,0.95), rgba(7,9,12,0.98))", padding: "16px 17px" } },
@@ -31589,6 +31585,29 @@ function EcranCheval() {
                 : h("div", { style: { width: 108, height: 132, borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "\ud83c\udfc6" : "\ud83c\udfc5"),
               fl.lab ? h("div", { style: { marginTop: 6, fontSize: 8.5, lineHeight: 1.3, color: "rgba(244,247,250,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
           }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres2", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 56, height: 132, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : [])) : null, /* 30/07 : les coupes/flots de Blandine en vitrine sur la fiche (tap = zoom), avant les medailles */
+        (ongletPerf === "coupes") ? (function () { /* 31/07 soir : carte IPO REMISE sous les coupes — elle etait piegee dans l etat vide, donc jamais affichee pour un cheval ayant coupes ou resultats */
+          var ogI = c.origines || {};
+          var ixI = (ogI.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; });
+          if (!ixI.length) return null;
+          var vI = parseFloat(String(ixI[0][1]).replace("\u2212", "-").replace("+", ""));
+          var pI = vI >= 120 ? Math.min(5, Math.floor((vI - 110) / 10)) : 0;
+          var lblI = (typeof rareteIndice === "function") ? rareteIndice(vI) : null;
+          var discI = String(disc || "").toUpperCase();
+          var imgI = (discI.indexOf("CSO") >= 0 || discI.indexOf("SAUT") >= 0 || discI.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
+          var tI = 40 + pI * 3;
+          return h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 18px", borderRadius: 16, border: "1px solid " + tA(0.3 + pI * 0.09), background: "linear-gradient(135deg, " + tA(0.06 + pI * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pI >= 3 ? "0 0 " + (12 + pI * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pI * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
+            imgI ? h("div", { style: { width: tI, height: tI, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42), boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
+              h("img", { src: imgI, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
+            h("div", { style: { minWidth: 0 } },
+              h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pI, fontWeight: 700, lineHeight: 1, color: pI >= 2 ? teinteCl : "#F2F6F8", textShadow: pI >= 3 ? "0 0 14px " + tA(0.55) : "none" } }, ixI[0][1]),
+                h("div", { style: { fontSize: 10 + pI, letterSpacing: "0.2em", fontWeight: 800, color: pI >= 2 ? teinteCl : "#9AA5AD" } }, ixI[0][0])),
+              ixI[0][2] ? h("div", { style: { fontSize: 9.5, color: "#8A929C", marginTop: 4 } }, abrEpreuve(ixI[0][2])) : null,
+              ogI.apt ? h("div", { style: { fontSize: 9.5, color: "#9AA5AD", fontStyle: "italic", marginTop: 3 } }, abrEpreuve(ogI.apt)) : null),
+            lblI ? h("div", { style: { flexShrink: 0, marginLeft: "auto", textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3), maxWidth: 120 } },
+              h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pI, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblI),
+              h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null);
+        })() : null,
         (ongletPerf === "resultats" && c.palmares && c.palmares.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
           ((c.flots && c.flots.length) ? c.palmares.filter(function (pF) { return pF && pF.auth === "perso"; }) : c.palmares).slice(0, 6).map(function (rP, iR) {
             var rgP = parseInt(rP.rang, 10);
@@ -31600,41 +31619,7 @@ function EcranCheval() {
           }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 64, border: "1.5px dashed " + tA(0.45), borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : []))
         : ((c.palmares && c.palmares.length) || (c.flots && c.flots.length)) ? null : h("div", { className: "rise", role: "button", onClick: function () { if (chevalDyn && moi && chevalDyn.ownerId === moi.id) ouvrirAjoutResultat(); else setPanneau("palmares"); }, style: { border: "1.5px dashed " + tA(0.4), borderRadius: 16, padding: "20px 16px", textAlign: "center", cursor: "pointer", animationDelay: ".17s", marginBottom: 16 } },
             h("div", { style: { fontStyle: "italic", fontSize: 12.5, color: "#C9CFD4", lineHeight: 1.55 } }, T("Ses premiers r\u00e9sultats l'attendent. Ajoute son premier concours, sa premi\u00e8re sortie\u2026 ou ses exploits.", "Their first results are waiting. Add a first show, a first outing\u2026 or their feats.", "Sus primeros resultados le esperan. A\u00f1ade su primer concurso, su primera salida\u2026 o sus haza\u00f1as.", "I suoi primi risultati lo aspettano. Aggiungi il primo concorso, la prima uscita\u2026 o le sue imprese.", "\u521d\u3081\u3066\u306e\u7d50\u679c\u304c\u5f85\u3063\u3066\u3044\u307e\u3059\u3002\u521d\u3081\u3066\u306e\u5927\u4f1a\u3084\u304a\u51fa\u304b\u3051\u3092\u8ffd\u52a0\u3057\u3088\u3046\u3002", "Seine ersten Ergebnisse warten. F\u00fcge den ersten Wettkampf, den ersten Ausritt\u2026 oder seine Heldentaten hinzu.")),
-            h("div", { style: { marginTop: 10, fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: teinteCl, fontWeight: 700 } }, "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ein Ergebnis hinzuf\u00fcgen"), (function () {
-          var ogA = c.origines || {};
-          var ixA = (ogA.indices || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; });
-          if (!ixA.length) return null;
-          var vA = parseFloat(String(ixA[0][1]).replace("\u2212", "-").replace("+", ""));
-          var pA = vA >= 120 ? Math.min(5, Math.floor((vA - 110) / 10)) : 0;
-          var lblA = null;
-          if (vA >= 165) lblA = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d", "1 von 500.000");
-          else if (vA >= 160) lblA = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d", "1 von 100.000");
-          else if (vA >= 155) lblA = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d", "1 von 25.000");
-          else if (vA >= 150) lblA = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d", "1 von 5.000");
-          else if (vA >= 145) lblA = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d", "1 von 1.500");
-          else if (vA >= 140) lblA = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d", "1 von 500");
-          else if (vA >= 135) lblA = "Top 1 %";
-          else if (vA >= 130) lblA = "Top 2 %";
-          else if (vA >= 125) lblA = "Top 4 %";
-          else if (vA >= 120) lblA = "Top 8 %";
-          var discA = String(disc || "").toUpperCase();
-          var imgDisc = (discA.indexOf("CSO") >= 0 || discA.indexOf("SAUT") >= 0 || discA.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
-          var tPhoto = 40 + pA * 3; /* carte IPO plus discrete (demande Blandine) */
-          return h("div", null,
-null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances */,
-            h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 20px", borderRadius: 16, position: "relative", border: "1px solid " + tA(0.3 + pA * 0.09) + "", background: "linear-gradient(135deg, " + tA(0.06 + pA * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pA >= 3 ? "0 0 " + (12 + pA * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pA * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
-              imgDisc ? h("div", { style: { width: tPhoto, height: tPhoto, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
-                h("img", { src: imgDisc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
-              h("div", { style: { minWidth: 0 } },
-                h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
-                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pA, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
-                  h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
-                ixA[0][2] ? h("div", { style: { fontSize: 9.5, color: "#8A929C", marginTop: 4 } }, abrEpreuve(ixA[0][2])) : null,
-                ogA.apt ? h("div", { style: { fontSize: 9.5, color: "#9AA5AD", fontStyle: "italic", marginTop: 3 } }, abrEpreuve(ogA.apt)) : null),
-              lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
-                h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
-        })())),
+            h("div", { style: { marginTop: 10, fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: teinteCl, fontWeight: 700 } }, "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ein Ergebnis hinzuf\u00fcgen"))),
 
         /* 31/07 : l IPO vit dans le chapitre Performances (decision Blandine) */
         cristal("medias"),
