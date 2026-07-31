@@ -19672,6 +19672,7 @@ const CIBLE_DIRECTE = (function () {
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
         if (h) cle = h;
         const MAP = { "contact": { galop: 4, cours: "g4-contact", page: 0 }, "aides": { galop: 4, cours: "g4-aides", page: 0 }, "transitions": { galop: 4, cours: "g4-transitions", page: 0 }, "incurvation": { galop: 4, cours: "g4-incurvation", page: 0 }, "vitesse": { galop: 4, cours: "g4-vitesse", page: 0 }, "epaules-hanches": { galop: 4, cours: "g4-epaules-hanches", page: 0 }, "protections": { galop: 4, cours: "g4-protections", page: 0 }, "obstacles-equilibre": { galop: 4, cours: "g4-obstacles-equilibre", page: 0 }, "soins-travail": { galop: 4, cours: "g4-soins-travail", page: 0 }, "identite": { galop: 4, cours: "g4-identite", page: 0 }, "nourrir": { galop: 4, cours: "g4-nourrir", page: 0 }, "exterieur": { galop: 4, cours: "g4-exterieur", page: 0 }, "abord": { galop: 3, cours: "g3-c3", page: 0 }, "phases": { galop: 3, cours: "g3-saut", page: 0 }, "sante": { galop: 4, cours: "g4-c5", page: 0 }, "impulsion": { galop: 6, cours: "g6-c2", page: 0 }, "biomeca": { galop: 4, cours: "g4-biomeca", page: 0 }, "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, "phases-saut": { ecran: "phases-saut" }, phasessaut: { ecran: "phases-saut" }, "entrainer-tracer": { ecran: "entrainer-tracer" }, tracer: { ecran: "entrainer-tracer" }, "challenge-reprise": { ecran: "challenge-reprise" }, challenge: { ecran: "challenge-reprise" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, babypaille: { galop: "baby", cours: "baby-c17", page: 0 }, babydesselle: { galop: "baby", cours: "baby-c18", page: 0 }, babypansage2: { galop: "baby", cours: "baby-c19", page: 0 }, babysabots: { galop: "baby", cours: "baby-c20", page: 0 }, babycorps: { galop: "baby", cours: "baby-c21", page: 0 }, babyparcours: { galop: "baby", cours: "baby-c22", page: 0 }, babyrenes: { galop: "baby", cours: "baby-c23", page: 0 }, babytrot2: { galop: "baby", cours: "baby-c24", page: 0 }, aidesg2: { galop: 2, cours: "g2-aides", page: 0 }, bonpied: { galop: 3, cours: "g3-c2", page: 0 }, travailapied: { galop: 3, cours: "g3-c4", page: 0 }, chevalnaturel: { galop: 3, cours: "g3-c6", page: 0 }, pansageg3: { galop: 3, cours: "g3-c5", page: 0 }, partiescorpsg3: { galop: 3, cours: "g3-c7", page: 0 }, abordobstacle: { galop: 3, cours: "g3-c3", page: 0 }, trotenleve: { galop: 3, cours: "g3-c1", page: 0 }, agirceder: { galop: 3, cours: "g3-c13", page: 0 }, tourner: { galop: 3, cours: "g3-c14", page: 0 }, departg2: { galop: 2, cours: "g2-depart", page: 0 }, sautg2: { galop: 2, cours: "g2-c4", page: 0 }, g4qualite: { galop: 4, cours: "g4-galop-qualite", page: 0 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, resultatquiz: { ecran: "quiz", galop: 1, cours: "g1-c9", quizPreview: 80 }, quizdepart: { ecran: "quiz", galop: 2, cours: "g2-depart" }, courstermine: { ecran: "cours", galop: 2, cours: "g2-aides", coursTerminePreview: true }, biomeca: { ecran: "cours", galop: 4, cours: "g4-biomeca" }, compte: { ecran: "intro", introPage: 2 }, parcours: { ecran: "intro", introPage: 3 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, assistantia: { galop: 1, ecran: "assistant" }, passeportcheval: { galop: 1, cours: "g1-c16", page: 0 }, passeportchevalimg: { galop: 1, cours: "g1-c16", page: 2 }, passeporttexte: { galop: 1, cours: "g1-c16", page: 1 }, savaistu: { galop: 1, cours: "g1-c11", page: 2 }, galop1: { galop: 1, ecran: "galop-detail" }, galop2: { galop: 2, ecran: "galop-detail" }, galop6: { galop: 6, ecran: "galop-detail" }, galop4: { galop: 4, ecran: "galop-detail" }, noeud: { galop: 1, cours: "g1-c10", page: 0 }, licence: { galop: 1, cours: "g1-c11", page: 0 }, federation: { galop: 1, cours: "g1-c12", page: 0 }, parc: { galop: 1, cours: "g1-c13", page: 0 }, aides: { galop: 1, cours: "g1-c9", page: 0 }, robes: { galop: 1, cours: "g1-c7", page: 0 }, comprendre: { galop: 1, cours: "g1-c6", page: 0 }, materiel: { galop: 1, cours: "g1-c8", page: 0 }, position: { galop: 1, cours: "g1-c5", page: 0 }, secu: { galop: 1, cours: "g1-c15", page: 0 }, securite: { galop: 1, cours: "g1-c15", page: 0 }, sommaire: { galop: 1, cours: "g1-c15", page: 1 }, regles: { galop: 1, cours: "g1-c15", page: 2 }, approche: { galop: 1, cours: "g1-c15", page: 4 }, zone: { galop: 1, cours: "g1-c15", page: 3 }, distances: { galop: 1, cours: "g1-c15", page: 5 }, coderoute: { galop: 1, cours: "g1-c15", page: 6 }, priorites: { galop: 1, cours: "g1-c15", page: 6 }, pansage: { galop: 1, cours: "g1-c2", page: 0 }, chevalcours: { galop: 1, cours: "g1-c3", page: 0 }, heritage: { galop: 1, cours: "g1-c3", page: 2 }, allures: { galop: 1, cours: "g1-c4", page: 0 }, partager: { ecran: "partager" }, heybaby: { ecran: "assistant" }, moncompte: { ecran: "moncompte" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, classement: { ecran: "classement" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, communaute: { ecran: "communaute", galop: null, cours: null, page: null }, cavalier: { ecran: "cavalier", galop: null, cours: null, page: null }, evenement: { ecran: "evenement", galop: null, cours: null, page: null }, bienvenue: { ecran: "intro" }, connexion: { ecran: "connexion" }, installer: { ecran: "installer" }, examenblanc: { ecran: "examen-blanc", galop: 3 }, examenblancg5: { ecran: "examen-blanc", galop: 5 }, accueil: { ecran: "dashboard" }, reprises: { ecran: "reprises" }, "trace-anime": { ecran: "trace-anime" } };
+        if (cle && cle.indexOf("cheval-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(7); } catch (eCO) { } return { ecran: "cheval" }; } /* 31/07 : les liens partages ouvrent TOUTES les fiches, pas seulement la vitrine */
         return MAP[cle] || null;
     } catch (e) { return null; }
 })();
@@ -30902,7 +30903,7 @@ function EcranCheval() {
   var ctx = useApp();
   var setEcran = ctx.setEcran, tr = ctx.tr;
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
-  var id = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : ((typeof location !== "undefined" && (location.hash.match(/cheval-(\w+)/) || [])[1]) || (typeof DEV_OUVRIR_PAGE !== "undefined" && (String(DEV_OUVRIR_PAGE).match(/^cheval-(\w+)$/) || [])[1]) || "mydream");
+  var id = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : ((typeof location !== "undefined" && (location.hash.match(/cheval-([\w-]+)/) || [])[1]) || (typeof DEV_OUVRIR_PAGE !== "undefined" && (String(DEV_OUVRIR_PAGE).match(/^cheval-([\w-]+)$/) || [])[1]) || "mydream");
   var chDynSt = React.useState(null); var chevalDyn = chDynSt[0], setChevalDyn = chDynSt[1];
   React.useEffect(function () {
     var actif = true;
@@ -31229,8 +31230,7 @@ function EcranCheval() {
           h("div", { className: "r" },
             h(SelecteurLangue, { compact: true }))),
         h("div", { style: { position: "absolute", right: 14, bottom: "calc(14px + env(safe-area-inset-bottom, 0px) * 0)", zIndex: 8, display: "flex", gap: 8 } },
-            h("div", { className: "ic", title: "Modifier la photo", onClick: function () { if (refPhotoCh.current) refPhotoCh.current.click(); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" }))),
-            h("div", { className: "ic", onClick: function () { setMenuFiche(true); } }, h("svg", { viewBox: "0 0 24 24" }, h("g", null, h("circle", { cx: 12, cy: 5, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 12, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 19, r: 1.4, fill: "#EAF2F4", stroke: "none" }))))),
+            /* 31/07 : crayon fondu dans le menu unique (decision Blandine) */ h("div", { className: "ic", onClick: function () { setMenuFiche(true); } }, h("svg", { viewBox: "0 0 24 24" }, h("g", null, h("circle", { cx: 12, cy: 5, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 12, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 19, r: 1.4, fill: "#EAF2F4", stroke: "none" }))))),
         (function () {
           var ogT = c.origines || {};
           var ixT = (ogT.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; })[0];
@@ -31383,41 +31383,7 @@ function EcranCheval() {
             h("div", { style: { marginTop: 10, fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: teinteCl, fontWeight: 700 } }, "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ein Ergebnis hinzuf\u00fcgen"))),
 
         
-                (function () {
-          var ogA = c.origines || {};
-          var ixA = (ogA.indices || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; });
-          if (!ixA.length) return null;
-          var vA = parseFloat(String(ixA[0][1]).replace("\u2212", "-").replace("+", ""));
-          var pA = vA >= 120 ? Math.min(5, Math.floor((vA - 110) / 10)) : 0;
-          var lblA = null;
-          if (vA >= 165) lblA = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d", "1 von 500.000");
-          else if (vA >= 160) lblA = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d", "1 von 100.000");
-          else if (vA >= 155) lblA = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d", "1 von 25.000");
-          else if (vA >= 150) lblA = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d", "1 von 5.000");
-          else if (vA >= 145) lblA = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d", "1 von 1.500");
-          else if (vA >= 140) lblA = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d", "1 von 500");
-          else if (vA >= 135) lblA = "Top 1 %";
-          else if (vA >= 130) lblA = "Top 2 %";
-          else if (vA >= 125) lblA = "Top 4 %";
-          else if (vA >= 120) lblA = "Top 8 %";
-          var discA = String(disc || "").toUpperCase();
-          var imgDisc = (discA.indexOf("CSO") >= 0 || discA.indexOf("SAUT") >= 0 || discA.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
-          var tPhoto = 40 + pA * 3; /* carte IPO plus discrete (demande Blandine) */
-          return h("div", null,
-null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances */,
-            h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 20px", borderRadius: 16, position: "relative", border: "1px solid " + tA(0.3 + pA * 0.09) + "", background: "linear-gradient(135deg, " + tA(0.06 + pA * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pA >= 3 ? "0 0 " + (12 + pA * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pA * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
-              imgDisc ? h("div", { style: { width: tPhoto, height: tPhoto, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
-                h("img", { src: imgDisc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
-              h("div", { style: { flex: 1, minWidth: 0 } },
-                h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
-                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pA, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
-                  h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
-                ixA[0][2] ? h("div", { style: { fontSize: 8.5, color: "#7B858E", marginTop: 4 } }, ixA[0][2]) : null,
-                ogA.apt ? h("div", { style: { fontSize: 9, color: "#8A929C", fontStyle: "italic", marginTop: 3 } }, ogA.apt) : null),
-              lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
-                h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
-        })(),
+        /* 31/07 : carte IPO deplacee pres des Origines (decision Blandine) */
 
         h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統", "Herkunft")),
         (function () { var og = c.origines || {};
@@ -31495,7 +31461,43 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
             var imgSq = "";
             try { if (typeof HYPE_IMGS !== "undefined") imgSq = (cS[0] === "clinique") ? (HYPE_IMGS.encartVeto || HYPE_IMGS.cliniqueEncart || "") : (HYPE_IMGS.sellerieEncart || ""); } catch (eIS) { }
             return h("div", { key: "sq" + cS[0], role: "button", onClick: function () { setEcran(cS[0]); }, style: { position: "relative", overflow: "hidden", border: "1px solid " + tA(0.35), borderRadius: 18, background: "rgba(0,0,0,0.35)", minHeight: 132, padding: "18px 10px 15px", textAlign: "center", cursor: "pointer" } },
-              imgSq ? h("img", { src: imgSq, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 32%", display: "block" } }) : null, /* 30/07: retour des images de couverture (demande Blandine), memes cles que les anciens encarts pleine largeur */
+              imgSq ? h("img", { src: imgSq, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 32%", display: "block" } }) : null,
+        (function () {
+          var ogA = c.origines || {};
+          var ixA = (ogA.indices || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; });
+          if (!ixA.length) return null;
+          var vA = parseFloat(String(ixA[0][1]).replace("\u2212", "-").replace("+", ""));
+          var pA = vA >= 120 ? Math.min(5, Math.floor((vA - 110) / 10)) : 0;
+          var lblA = null;
+          if (vA >= 165) lblA = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d", "1 von 500.000");
+          else if (vA >= 160) lblA = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d", "1 von 100.000");
+          else if (vA >= 155) lblA = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d", "1 von 25.000");
+          else if (vA >= 150) lblA = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d", "1 von 5.000");
+          else if (vA >= 145) lblA = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d", "1 von 1.500");
+          else if (vA >= 140) lblA = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d", "1 von 500");
+          else if (vA >= 135) lblA = "Top 1 %";
+          else if (vA >= 130) lblA = "Top 2 %";
+          else if (vA >= 125) lblA = "Top 4 %";
+          else if (vA >= 120) lblA = "Top 8 %";
+          var discA = String(disc || "").toUpperCase();
+          var imgDisc = (discA.indexOf("CSO") >= 0 || discA.indexOf("SAUT") >= 0 || discA.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
+          var tPhoto = 40 + pA * 3; /* carte IPO plus discrete (demande Blandine) */
+          return h("div", null,
+null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances */,
+            h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 20px", borderRadius: 16, position: "relative", border: "1px solid " + tA(0.3 + pA * 0.09) + "", background: "linear-gradient(135deg, " + tA(0.06 + pA * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pA >= 3 ? "0 0 " + (12 + pA * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pA * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
+              imgDisc ? h("div", { style: { width: tPhoto, height: tPhoto, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
+                h("img", { src: imgDisc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
+              h("div", { style: { flex: 1, minWidth: 0 } },
+                h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
+                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pA, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
+                  h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
+                ixA[0][2] ? h("div", { style: { fontSize: 8.5, color: "#7B858E", marginTop: 4 } }, ixA[0][2]) : null,
+                ogA.apt ? h("div", { style: { fontSize: 9, color: "#8A929C", fontStyle: "italic", marginTop: 3 } }, ogA.apt) : null),
+              lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
+                h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
+        })(),
+ /* 30/07: retour des images de couverture (demande Blandine), memes cles que les anciens encarts pleine largeur */
               imgSq ? h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0.06) 30%, rgba(4,6,9,0.82) 100%)" } }) : null,
               h("div", { style: { position: "relative", zIndex: 2 } },
                 imgSq ? null : h("div", { style: { width: 44, height: 44, borderRadius: "50%", margin: "0 auto", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19 } }, cS[1]),
@@ -31523,7 +31525,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
 
         h("div", { style: { height: "40px" } }))),
 
-    panneau ? h("div", { id: "panneauCheval", "data-noswipe": "true",
+    panneau ? h("div", { id: "panneauCheval", "data-noswipe": "true", onTouchStart: function (eTs) { try { var t0 = eTs.touches && eTs.touches[0]; window.__panSwX = (t0 && t0.clientX <= 28) ? t0.clientX : null; window.__panSwY = t0 ? t0.clientY : null; } catch (eS1) { } }, onTouchEnd: function (eTe) { try { if (window.__panSwX == null) return; var t1 = eTe.changedTouches && eTe.changedTouches[0]; if (!t1) return; var dx = t1.clientX - window.__panSwX, dy = Math.abs(t1.clientY - (window.__panSwY || 0)); window.__panSwX = null; if (dx > 70 && dy < 60) setPanneau(null); } catch (eS2) { } }, /* 31/07 : fermeture au geste depuis le bord gauche (bug signale par Blandine) */
       onTouchStart: function (eTs) { try { var t0 = eTs.touches && eTs.touches[0]; window.__panSwipe = (t0 && t0.clientX <= 28) ? { x: t0.clientX, y: t0.clientY } : null; } catch (eS1) { window.__panSwipe = null; } },
       onTouchEnd: function (eTe) { try { var d0 = window.__panSwipe; if (!d0) return; var t1 = eTe.changedTouches && eTe.changedTouches[0]; if (!t1) return; var dx = t1.clientX - d0.x, dy = Math.abs(t1.clientY - d0.y); if (dx > 70 && dy < 60) setPanneau(null); } catch (eS2) { } window.__panSwipe = null; }, /* 30/07 : swipe droit depuis le bord gauche = retour (bug signale par Blandine) */
       style: { position: "fixed", inset: 0, zIndex: 6500, background: "#060709", overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 130 } },
@@ -31614,7 +31616,8 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
     menuFiche ? h("div", { onClick: function () { setMenuFiche(false); setConfSupprFiche(false); }, style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.72)", display: "flex", alignItems: "flex-end" } },
       h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", background: "linear-gradient(180deg, rgba(16,20,26,0.98), rgba(9,11,15,0.99))", borderTop: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px 20px 0 0", padding: "10px 16px calc(20px + env(safe-area-inset-bottom))" } },
         h("div", { style: { width: 36, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.2)", margin: "6px auto 16px" } }),
-        h("button", { onClick: function () { setMenuFiche(false); ajusterPhotoCheval(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\u2702\ufe0f " + T("Ajuster / recadrer la photo", "Adjust / crop photo", "Ajustar / recortar la foto", "Regola / ritaglia la foto", "\u5199\u771f\u3092\u8abf\u6574", "Foto anpassen / zuschneiden")),
+        h("button", { onClick: function () { setMenuFiche(false); if (refPhotoCh.current) refPhotoCh.current.click(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83d\udcf7 " + T("Changer la photo", "Change photo", "Cambiar foto", "Cambia foto", "\u5199\u771f\u3092\u5909\u66f4", "Foto \u00e4ndern")),
+          h("button", { onClick: function () { setMenuFiche(false); ajusterPhotoCheval(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\u2702\ufe0f " + T("Ajuster / recadrer la photo", "Adjust / crop photo", "Ajustar / recortar la foto", "Regola / ritaglia la foto", "\u5199\u771f\u3092\u8abf\u6574", "Foto anpassen / zuschneiden")),
           h("button", { onClick: function () { setMenuFiche(false); ouvrirTag(photoCh); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83c\udff7\ufe0f " + T("Identifier dans la photo", "Tag in the photo", "Etiquetar en la foto", "Tagga nella foto", "\u5199\u771f\u306b\u30bf\u30b0", "Im Foto identifizieren")),
           (c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id) ? h("div", { style: { padding: "13px 8px", borderBottom: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", gap: 12 } },
             h("span", { style: { color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif" } }, "\ud83c\udfa8 " + T("Teinte", "Tint", "Tinte", "Tinta", "\u8272\u5408\u3044", "Farbton")),
