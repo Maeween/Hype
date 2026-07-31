@@ -29460,6 +29460,8 @@ function RecadrageHype() {
         cx2.drawImage(im, -dw * kOut / 2, -dh * kOut / 2, dw * kOut, dh * kOut);
         cx2.restore();
       }
+      var srcNue = null; /* 31/07 : image recadree NUE, avant tout habillage — sert d original pour ne jamais cuire deux fois le cadre */
+      try { srcNue = out.toDataURL("image/jpeg", 0.92); } catch (eSn) { }
       if (filtre === "spectral") {
         var gr = cx2.createRadialGradient(OW / 2, OH / 2, Math.min(OW, OH) * 0.42, OW / 2, OH / 2, Math.max(OW, OH) * 0.75);
         gr.addColorStop(0, "rgba(7,8,10,0)"); gr.addColorStop(1, "rgba(7,8,10,0.6)");
@@ -29484,6 +29486,8 @@ function RecadrageHype() {
         cx2.restore();
       }
       var avantFsUrl = (filtre === "fondstudio" && fsParams) ? out.toDataURL("image/jpeg", 0.92) : null;
+      /* 31/07 : l original conserve est la SOURCE NUE (jamais la version cadree) — sinon le cadre reste cuit et se rempile (bug signale par Blandine) */
+      try { if (!avantFsUrl && typeof srcNue !== "undefined" && srcNue) avantFsUrl = srcNue; } catch (eSrc) { }
       function finaliser() {
         var dataUrl = out.toDataURL("image/jpeg", 0.92);
         var fichierOut = null;
@@ -31307,6 +31311,7 @@ function EcranCheval() {
 
       h("header", { className: "hero" },
         h("img", { src: photoCh, alt: c.nom }),
+        h("div", { style: { position: "absolute", top: 12, left: 12, right: 12, bottom: 12, borderRadius: 18, border: "1px solid " + tA(0.55), boxShadow: "inset 0 0 0 3px rgba(6,7,9,0.75), inset 0 0 0 4px " + tA(0.22), pointerEvents: "none", zIndex: 3 } }), /* 31/07 : cadre spectral en overlay — il suit la teinte (demande Blandine) */
         h("div", { className: "hh" }), h("div", { className: "hv" }),
         h("div", { className: "htop" },
           h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, h("div", { className: "ic", onClick: function () { setEcran("ecurie"); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "m15 18-6-6 6-6" })))),
