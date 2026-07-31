@@ -28439,7 +28439,7 @@ function EcranUnivers() {
               }
             } catch (e3) { }
           },
-          style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 22%", display: "block", pointerEvents: "none", background: "transparent" } }),
+          style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "39% center", display: "block", pointerEvents: "none", background: "transparent" /* 39% = la tete du cheval recentree dans la fenetre du hero (source 16/9) */ } }),
         React.createElement("div", { className: "hero-pulse" }),
         React.createElement("div", { className: "hero-side" }),
         React.createElement("div", { className: "hero-grad" }),
@@ -30616,7 +30616,10 @@ function AlbumsPromus(props) {
       if (!toutesV.length) return null;
       return h("div", { role: "button", onClick: function () { if (props.onVoirVideos) props.onVoirVideos(); else if (props.onTout) props.onTout(); }, style: { marginTop: 26, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.4), cursor: "pointer", background: "#07080A" } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "16 / 9", background: "#04070A" } }, /* 31/07 soir : la video reprend ses proportions, plus rien d ecrase (demande Blandine) */
-        h("video", { src: toutesV[0] + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.92 } }), /* 31/07 : on voit enfin la video (demande Blandine) */
+        h("video", { src: "hype-anim-cheval.mp4", muted: true, loop: true, autoPlay: true, playsInline: true, preload: "metadata", "aria-hidden": "true", /* 01/08 : l animation Hype remplace l image figee de GrandPrix (la carte est une porte, pas un lecteur) */
+          onError: function (eE2) { try { eE2.target.style.display = "none"; } catch (e9) { } },
+          ref: function (elA) { try { if (!elA || elA.__animCard) return; elA.__animCard = 1; var jouer = function () { try { var pj = elA.play(); if (pj && pj.catch) pj.catch(function () { }); } catch (e8) { } }; jouer(); if (typeof IntersectionObserver === "function") { var io2 = new IntersectionObserver(function (es) { es.forEach(function (en2) { if (en2.isIntersecting) jouer(); else { try { elA.pause(); } catch (e7) { } } }); }, { threshold: 0.05 }); io2.observe(elA); } } catch (e6) { } },
+          style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.92 } }),
         h("div", { style: { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, borderRadius: "50%", border: "1px solid " + tA(0.6), background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 16 } }, "\u25b6")),
         h("div", { style: { padding: "10px 14px 11px" } }, /* 31/07 soir : les libelles sortent de l image, fini le chevauchement */
           h("div", { style: { fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: tnT, fontWeight: 700 } }, T("Ses vid\u00e9os", "Videos", "Sus v\u00eddeos", "I suoi video", "\u52d5\u753b", "Videos") + " (" + toutesV.length + ")"),
