@@ -29223,7 +29223,7 @@ const ECHV_R_CSS = `
 .chvr .st{padding:13px 6px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.09);text-align:center}
 .chvr .st .v{font-family:'Cinzel',serif;font-weight:700;font-size:18px;color:#fff}
 .chvr .st .l{font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,242,244,.55);margin-top:4px}
-.chvr .eyebrow2{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--teinte);font-weight:600;display:flex;align-items:center;gap:9px;margin:46px 0 16px} /* 31/07 : respiration entre chapitres (maquette validee) */
+.chvr .eyebrow2{font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--teinte);font-weight:800;display:flex;align-items:center;gap:9px;margin:46px 0 16px;text-shadow:0 1px 0 rgba(0,0,0,.9),0 0 12px rgba(255,255,255,.12);filter:brightness(1.18)} /* 31/07 : respiration entre chapitres (maquette validee) */
 .chvr .eyebrow2::before{content:"";width:20px;height:1px;background:linear-gradient(90deg,var(--teinte),transparent)}
 .chvr .eyebrow2 .all{margin-left:auto;color:var(--teinte);font-weight:600;text-transform:none;letter-spacing:.02em;font-size:11.5px}
 .chvr .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08)}
@@ -31272,6 +31272,15 @@ function EcranCheval() {
     try { if (navigator.share) { navigator.share({ title: tx, text: tx, url: u }); return; } } catch (e) { }
     try { navigator.clipboard.writeText(u).then(function () { setToast(T("Lien copi\u00e9 !", "Link copied!", "\u00a1Enlace copiado!", "Link copiato!", "\u30ea\u30f3\u30af\u3092\u30b3\u30d4\u30fc\uff01", "Link kopiert!")); setTimeout(function () { setToast(null); }, 2200); }); } catch (e) { setToast(u); setTimeout(function () { setToast(null); }, 3500); }
   }
+  function abrEpreuve(txt) { /* 31/07 : libelles d epreuve compactes (demande Blandine) — "Finale jeunes chevaux poney . obstacle 4 ans" -> "Finale JC 4 ans" */
+    var t = String(txt || "");
+    if (!t) return t;
+    var age = (t.match(/(\d+)\s*ans/i) || [])[1];
+    var estF = /finale/i.test(t);
+    var estJC = /jeunes?\s+chevaux/i.test(t);
+    if (estJC) return (estF ? "Finale " : "") + "JC" + (age ? " " + age + " ans" : "");
+    return t.replace(/jeunes?\s+chevaux/gi, "JC").replace(/\s*\u00b7\s*obstacle/i, " \u00b7 obst.");
+  }
   function cristal(kC) { /* 31/07 : separateur cristal entre chapitres (maquette 5 validee) */
     return h("div", { key: "cr" + kC, style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 8px" } },
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, transparent, " + tA(0.4) + ")" } }),
@@ -31455,7 +31464,7 @@ function EcranCheval() {
         cristal("perf"),
         h("div", { id: "chapPerf", style: { display: "flex", gap: 12, alignItems: "flex-start" } }, /* 31/07 : titre de chapitre a la verticale (maquette 5) */
           h("div", { style: { width: 30, flex: "0 0 30px", display: "flex", justifyContent: "center", paddingTop: 6 } },
-            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 8.5, letterSpacing: "0.3em", color: tA(0.9), fontWeight: 700, whiteSpace: "nowrap", textTransform: "uppercase" } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen"))),
+            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10.5, letterSpacing: "0.32em", color: teinteCl, fontWeight: 800, whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.9), 0 0 12px " + tA(0.45) } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen"))),
           h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 52px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
@@ -31572,8 +31581,8 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
                 h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pA, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
                   h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
-                ixA[0][2] ? h("div", { style: { fontSize: 8.5, color: "#7B858E", marginTop: 4 } }, ixA[0][2]) : null,
-                ogA.apt ? h("div", { style: { fontSize: 9, color: "#8A929C", fontStyle: "italic", marginTop: 3 } }, ogA.apt) : null),
+                ixA[0][2] ? h("div", { style: { fontSize: 9.5, color: "#8A929C", marginTop: 4 } }, abrEpreuve(ixA[0][2])) : null,
+                ogA.apt ? h("div", { style: { fontSize: 9.5, color: "#9AA5AD", fontStyle: "italic", marginTop: 3 } }, abrEpreuve(ogA.apt)) : null),
               lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
                 h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
@@ -31581,7 +31590,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
         cristal("medias"),
         h("div", { id: "chapMedias", style: { display: "flex", gap: 12, alignItems: "flex-start" } },
           h("div", { style: { width: 30, flex: "0 0 30px", display: "flex", justifyContent: "center", paddingTop: 6 } },
-            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 8.5, letterSpacing: "0.3em", color: tA(0.9), fontWeight: 700, whiteSpace: "nowrap", textTransform: "uppercase" } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien"))),
+            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10.5, letterSpacing: "0.32em", color: teinteCl, fontWeight: 800, whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.9), 0 0 12px " + tA(0.45) } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien"))),
           h("div", { style: { flex: 1, minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } })),
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
@@ -31589,7 +31598,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
         cristal("fil"),
         h("div", { id: "chapFil", style: { display: "flex", gap: 12, alignItems: "flex-start" } },
           h("div", { style: { width: 30, flex: "0 0 30px", display: "flex", justifyContent: "center", paddingTop: 6 } },
-            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 8.5, letterSpacing: "0.3em", color: tA(0.9), fontWeight: 700, whiteSpace: "nowrap", textTransform: "uppercase" } }, T("Le fil", "The feed", "El hilo", "Il filo", "フィード", "Der Feed"))),
+            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10.5, letterSpacing: "0.32em", color: teinteCl, fontWeight: 800, whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.9), 0 0 12px " + tA(0.45) } }, T("Le fil", "The feed", "El hilo", "Il filo", "フィード", "Der Feed"))),
           h("div", { style: { flex: 1, minWidth: 0 } },  h("div", { id: "chapFil" }, h(MurHype, { cible: cibleCh, compact: true, rail: true, momentsSeuls: true, teinte: teinte, onOuvrirMedia: function (uM2) { try { setVisionneuse(uM2); } catch (eOm2) { } }, onVoirTout: function () { setPanneau("souvenirs"); } })),
 
 
@@ -31598,7 +31607,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
         cristal("sante"),
         h("div", { id: "chapSante", style: { display: "flex", gap: 12, alignItems: "flex-start" } },
           h("div", { style: { width: 30, flex: "0 0 30px", display: "flex", justifyContent: "center", paddingTop: 6 } },
-            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 8.5, letterSpacing: "0.3em", color: tA(0.9), fontWeight: 700, whiteSpace: "nowrap", textTransform: "uppercase" } }, T("Santé & sellerie", "Health & tack", "Salud", "Salute", "健康", "Gesundheit"))),
+            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10.5, letterSpacing: "0.32em", color: teinteCl, fontWeight: 800, whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.9), 0 0 12px " + tA(0.45) } }, T("Santé & sellerie", "Health & tack", "Salud", "Salute", "健康", "Gesundheit"))),
           h("div", { style: { flex: 1, minWidth: 0 } },  h("div", { className: "rise", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, animationDelay: ".175s", marginBottom: 18 } },
           [["clinique", "\ud83e\ude7a", T("Clinique v\u00e9t\u00e9rinaire", "Vet clinic", "Cl\u00ednica veterinaria", "Clinica veterinaria", "\u52d5\u7269\u75c5\u9662", "Tierklinik"), T("Soins & conseils", "Care & advice", "Cuidados y consejos", "Cure e consigli", "\u30b1\u30a2\u3068\u52a9\u8a00", "Pflege & Beratung")],
            ["sellerie", "\ud83e\uddf5", T("Sellerie", "Tack room", "Guadarn\u00e9s", "Selleria", "\u99ac\u5177", "Sattelkammer"), T("\u00c9quipement & codes promo", "Gear & promo codes", "Equipo y c\u00f3digos promo", "Attrezzatura e codici promo", "\u88c5\u5099\u3068\u30af\u30fc\u30dd\u30f3", "Ausr\u00fcstung & Promocodes")]].map(function (cS) {
