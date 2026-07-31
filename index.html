@@ -29280,7 +29280,7 @@ var __recadrageOuvrir = null;
 function hypeRecadrer(fichier, aspect, opts) {
   return new Promise(function (res) {
     if (!__recadrageOuvrir || !fichier) { res(null); return; }
-    __recadrageOuvrir({ fichier: fichier, aspect: aspect || 1, ratios: !!(opts && opts.ratios), fin: res });
+    __recadrageOuvrir({ fichier: fichier, aspect: aspect || 1, ratios: !!(opts && opts.ratios), teinte: (opts && opts.teinte) || null, fin: res }); /* 31/07 : le cadre/halo suivent la teinte de la fiche */
   });
 }
 function hypeRecadrerDepuisSource(src, aspect, opts) {
@@ -29460,6 +29460,8 @@ function RecadrageHype() {
         cx2.drawImage(im, -dw * kOut / 2, -dh * kOut / 2, dw * kOut, dh * kOut);
         cx2.restore();
       }
+            var HB = (job && job.teinte) ? String(job.teinte) : "#20D9F5"; /* 31/07 : couleur d habillage = teinte de la fiche */
+      var hbA = function (aH) { var hh = HB.replace("#", ""); return "rgba(" + parseInt(hh.substr(0, 2), 16) + "," + parseInt(hh.substr(2, 2), 16) + "," + parseInt(hh.substr(4, 2), 16) + "," + aH + ")"; };
       var srcNue = null; /* 31/07 : image recadree NUE, avant tout habillage — sert d original pour ne jamais cuire deux fois le cadre */
       try { srcNue = out.toDataURL("image/jpeg", 0.92); } catch (eSn) { }
       if (filtre === "spectral") {
@@ -29467,10 +29469,10 @@ function RecadrageHype() {
         gr.addColorStop(0, "rgba(7,8,10,0)"); gr.addColorStop(1, "rgba(7,8,10,0.6)");
         cx2.fillStyle = gr; cx2.fillRect(0, 0, OW, OH);
         var mA = Math.round(OW * 0.022), eA = Math.max(3, Math.round(OW * 0.005));
-        cx2.strokeStyle = "rgba(32,217,245,0.85)"; cx2.lineWidth = eA;
+        cx2.strokeStyle = hbA(0.85); cx2.lineWidth = eA;
         cx2.strokeRect(mA, mA, OW - mA * 2, OH - mA * 2);
         var mB = Math.round(OW * 0.036), eB = Math.max(1.5, OW * 0.002);
-        cx2.strokeStyle = "rgba(32,217,245,0.35)"; cx2.lineWidth = eB;
+        cx2.strokeStyle = hbA(0.35); cx2.lineWidth = eB;
         cx2.strokeRect(mB, mB, OW - mB * 2, OH - mB * 2);
       }
       if (filtre === "halo") {
@@ -29478,8 +29480,8 @@ function RecadrageHype() {
         grH.addColorStop(0, "rgba(7,8,10,0)"); grH.addColorStop(1, "rgba(7,8,10,0.68)");
         cx2.fillStyle = grH; cx2.fillRect(0, 0, OW, OH);
         cx2.save();
-        cx2.shadowColor = "rgba(32,217,245,0.85)"; cx2.shadowBlur = OW * 0.045;
-        cx2.strokeStyle = "rgba(32,217,245,0.4)"; cx2.lineWidth = Math.max(2, OW * 0.006);
+        cx2.shadowColor = hbA(0.85); cx2.shadowBlur = OW * 0.045;
+        cx2.strokeStyle = hbA(0.4); cx2.lineWidth = Math.max(2, OW * 0.006);
         var mH = Math.round(OW * 0.012);
         cx2.strokeRect(mH, mH, OW - mH * 2, OH - mH * 2);
         cx2.strokeRect(mH, mH, OW - mH * 2, OH - mH * 2);
@@ -31218,7 +31220,7 @@ function EcranCheval() {
   function ajusterPhotoCheval() {
     if (!photoCh) return;
     var origSauveCh = null; try { origSauveCh = localStorage.getItem("hype_cheval_photo_orig_" + id); var pourCh = localStorage.getItem("hype_cheval_photo_orig_pour_" + id); if (origSauveCh && pourCh && String(photoCh || "").slice(0, 100) !== pourCh) { localStorage.removeItem("hype_cheval_photo_orig_" + id); localStorage.removeItem("hype_cheval_photo_orig_pour_" + id); origSauveCh = null; } } catch (eOc) { } /* 30/07 : plus de photo fantome */
-    hypeRecadrerDepuisSource(origSauveCh || photoCh, 4 / 5).then(appliquerPhotoCheval);
+    hypeRecadrerDepuisSource(origSauveCh || photoCh, 4 / 5, { teinte: teinte }).then(appliquerPhotoCheval);
   }
   React.useEffect(function () {
     var aV = true;
