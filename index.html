@@ -31376,60 +31376,7 @@ function EcranCheval() {
             return h("button", { key: "nv" + nv[0], onClick: function () { try { var elN = document.getElementById(nv[0]); if (elN) elN.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eN) { } }, style: { flex: "0 0 auto", padding: "7px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.04)", color: "rgba(237,242,245,0.66)", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, nv[1]);
           })),
 
-        (function () {
-          var ogH = c.origines || {};
-          var infoP = (c.info || "").split("\u00b7").map(function (x) { return x.trim(); }).filter(Boolean);
-          var ixH = (ogH.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; })[0];
-          var vH = ixH ? parseFloat(String(ixH[1]).replace("\u2212", "-").replace("+", "")) : 0;
-          var lblH = rareteIndice(vH);
-          var nmC = String(c.nom || "");
-          var mSp = nmC.match(/^(.*?)\s+(de\s.+|d'.+|du\s.+|des\s.+)$/i);
-          var raceTxt = infoP[0] || race || "";
-          var abrv = raceTxt.split(/[\s-]+/).filter(function (w) { return w.length > 2; }).map(function (w) { return w[0]; }).join("").toUpperCase() || raceTxt.slice(0, 3).toUpperCase();
-          var ageTxt = infoP.filter(function (x) { return /^\d+\s*ans?\b/i.test(x); })[0] || "";
-          var recit = c.histoire || (function () {
-            var estMien = !!(c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id);
-            var ecu = (chevalDyn && chevalDyn.proprioEcurie) || ((estMien && typeof profil !== "undefined" && profil && profil.ecurie) ? String(profil.ecurie).trim() : "");
-            var cav = (chevalDyn && chevalDyn.proprioNom) || ((estMien && typeof profil !== "undefined" && profil && (profil.prenom || profil.pseudo)) ? String(profil.prenom || profil.pseudo).trim() : "");
-            var rc = String(c.nom || "") + T(" est un ", " is a ", " es un ", " \u00e8 un ", "\u306f", " ist ein ") + (raceTxt || T("cheval", "horse", "caballo", "cavallo", "\u99ac", "Pferd"));
-            if (ecu) rc += T(" de l'\u00e9curie ", " from the ", " de la cuadra ", " della scuderia ", "\u3001\u6240\u5c5e\uff1a", " aus dem Stall ") + ecu + (T("", " stable", "", "", "", "") || "");
-            if (cav) rc += T(", mont\u00e9(e) par ", ", ridden by ", ", montado por ", ", montato da ", "\u3001\u9a0e\u624b\uff1a", ", geritten von ") + cav;
-            if (estMien) { rc += T(". Touche le crayon pour \u00e9crire son histoire.", ". Tap the pencil to write its story.", ". Toca el l\u00e1piz para escribir su historia.", ". Tocca la matita per scrivere la sua storia.", "\u3002\u925b\u7b46\u3067\u7269\u8a9e\u3092\u66f8\u3053\u3046\u3002", ". Tippe auf den Stift, um seine Geschichte zu schreiben."); } else { rc += "."; }
-            return rc;
-          })();
-          return h("div", { className: "hginfo rise" },
-            h("div", { className: "hdiv" }, h("i", null), h("s", null)),
-            h("div", { className: "hstats" },
-              h("div", { className: "s1" },
-                h("div", { className: "l", style: ixH ? null : { color: "#6A737D" } }, ixH ? ixH[0] : "IPO"),
-                h("div", { className: "v", style: ixH ? null : { color: "#6A737D", display: "flex", alignItems: "center", gap: 7 } }, ixH ? ixH[1] : "\u2014",
-                  (!ixH && c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id) ? h("span", { role: "button", title: "Renseigner l'indice", onClick: function () {
-                    var vIx = window.prompt(T("Indice IPO du poney (laisser vide pour annuler) :", "Pony IPO index (leave empty to cancel):", "\u00cdndice IPO del poni:", "Indice IPO del pony:", "\u30dd\u30cb\u30fc\u306eIPO\u6307\u6570\uff1a", "IPO-Index des Ponys:"), "");
-                    if (!vIx || !String(vIx).trim()) return;
-                    vIx = String(vIx).trim();
-                    try {
-                      var ogN = Object.assign({}, (chevalDyn && chevalDyn.origines) || {}, { indices: [["IPO", vIx, ""]] });
-                      if (typeof supa !== "undefined" && supa && chevalDyn && chevalDyn.dbId) {
-                        supa.from("chevaux").update({ origines: ogN }).eq("id", chevalDyn.dbId).then(function (rIx) {
-                          if (rIx && rIx.error) { setToast(T("Enregistrement impossible", "Could not save", "No se pudo guardar", "Impossibile salvare", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern nicht m\u00f6glich")); }
-                          else { setChevalDyn(Object.assign({}, chevalDyn, { origines: ogN })); setToast(T("Indice enregistr\u00e9 \u2728", "Index saved \u2728", "\u00cdndice guardado \u2728", "Indice salvato \u2728", "\u4fdd\u5b58\u3057\u307e\u3057\u305f \u2728", "Index gespeichert \u2728")); }
-                        });
-                      }
-                    } catch (eIx) { }
-                  }, style: { display: "inline-flex", alignItems: "center", justifyContent: "center", width: 20, height: 20, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.3)", fontSize: 10, color: "#C9D3D8", cursor: "pointer" } }, "\u270e") : null)),
-              h("div", { className: "sep" }),
-              h("div", { className: "s2" },
-                h("div", { className: "l" }, abrv || "\u2014"),
-                h("div", { className: "v" }, ((ageTxt || disc || "\u2014") + (ogH.naissance ? " \u00b7 " + T("N\u00e9(e) ", "Born ", "Nac. ", "Nato ", "\u751f ", "Geboren ") + ogH.naissance.split("\u00b7")[0].trim() : "")).toUpperCase()),
-                h("div", { className: "s" }, [ogH.robe, (disc && disc !== ogH.robe) ? disc : null].filter(Boolean).join(" \u00b7 "))),
-              null),
-            h("div", { className: "hype-cristal", style: { margin: "18px 0 20px" } },
-              h("style", null, "@keyframes hypeSpin{to{transform:rotate(1turn)}}.hype-cristal{position:relative;border-radius:18px;padding:1.6px;overflow:hidden;isolation:isolate}.hype-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + teinte + " 82%," + teinteCl + " 90%,transparent 100%);animation:hypeSpin 4.5s linear infinite}.hype-cristal>.hype-cristal-cc{position:relative;z-index:1;border-radius:16.5px;background:#070B10}"),
-              h("div", { className: "hype-cristal-cc", style: { padding: "12px 14px" } },
-            h("p", { className: "hbio", style: { margin: 0 } }, recit,
-              (c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id) ? h("span", { role: "button", onClick: collerHistoire, title: "Modifier l'histoire", style: { marginLeft: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + tA(0.5), fontSize: 11, color: teinteCl, cursor: "pointer", verticalAlign: "middle" } }, "\u270e") : null))),
-            h("div", { className: "hcta", onClick: function () { setPanneau("souvenirs"); } }, "\u2728 " + T("D\u00e9couvrir son histoire", "Discover its story", "Descubrir su historia", "Scopri la sua storia", "\u7269\u8a9e\u3092\u898b\u308b", "Seine Geschichte entdecken")));
-        })(),
+        /* 31/07 : bandeau IPO/PFS retire — reproduit dans la carte des origines (idee Blandine) */
 
 
         (function () {
@@ -31496,6 +31443,21 @@ function EcranCheval() {
                 var pmN = (ogB.mere && ogB.mere.pere && (ogB.mere.pere.nom || ogB.mere.pere)) || "";
                 return h("div", null,
                   h("div", { style: { position: "absolute", right: 13, top: 13, width: 26, height: 26, borderRadius: "50%", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", color: teinteCl, fontSize: 12 } }, "\u21bb"),
+                  (function () { /* 31/07 : IPO + PFS reproduits ici (idee Blandine) — le bandeau separe a ete retire */
+                    var ogI = c.origines || {};
+                    var ixI = (ogI.indices || []).filter(function (ix) { var vv = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vv) && vv >= 80; })[0];
+                    var pI = (c.info || "").split("\u00b7").map(function (x) { return x.trim(); }).filter(Boolean);
+                    var raceI = pI[0] || "", resteI = pI.slice(1).join(" \u00b7 ");
+                    if (!ixI && !raceI && !resteI) return null;
+                    return h("div", { style: { display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 12, paddingBottom: 12, paddingRight: 34, borderBottom: "1px solid rgba(255,255,255,0.09)" } },
+                      ixI ? h("div", null,
+                        h("div", { style: { fontSize: 9, letterSpacing: "0.22em", color: teinteCl, fontWeight: 700 } }, String(ixI[0] || "IPO")),
+                        h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 25, lineHeight: 1, color: "#F4F7FA", marginTop: 2 } }, String(ixI[1]))) : null,
+                      ixI ? h("div", { style: { width: 1, alignSelf: "stretch", background: "rgba(255,255,255,0.14)" } }) : null,
+                      h("div", { style: { minWidth: 0 } },
+                        raceI ? h("div", { style: { fontSize: 9, letterSpacing: "0.22em", color: teinteCl, fontWeight: 700 } }, raceI) : null,
+                        resteI ? h("div", { style: { fontSize: 12.5, fontWeight: 600, color: "#EAF0F3", marginTop: 3, lineHeight: 1.35 } }, resteI) : null));
+                  })(),
                   h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 15, lineHeight: 1.32, color: "#F4F7FA", paddingRight: 34 } }, pN ? [pN, h("span", { key: "x", style: { color: tA(0.9) } }, "  \u00d7  "), pmN || "\u2014"] : T("Origines \u00e0 renseigner", "Bloodline to fill in", "Or\u00edgenes por completar", "Origini da inserire", "\u8840\u7d71\u672a\u8a18\u5165", "Herkunft erg\u00e4nzen")),
                   h("div", { style: { marginTop: 6, fontSize: 8.5, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(244,247,250,0.42)" } }, T("P\u00e8re \u00d7 p\u00e8re de m\u00e8re \u00b7 toucher pour retourner", "Sire \u00d7 damsire \u00b7 tap to flip", "Padre \u00d7 padre de madre \u00b7 tocar para girar", "Padre \u00d7 padre della madre", "\u7236\u00d7\u6bcd\u306e\u7236 \u00b7 \u30bf\u30c3\u30d7\u3067\u88cf\u9762", "Vater \u00d7 Muttervater \u00b7 zum Umdrehen tippen")));
               })()),
