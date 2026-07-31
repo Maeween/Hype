@@ -30597,13 +30597,25 @@ function AlbumsPromus(props) {
       ((galeriePh && galeriePh.length) ? galeriePh : []).forEach(function (uG) { if (uG && phsA.length < 14 && phsA.indexOf(uG) < 0) phsA.push(uG); });
       if (!phsA.length) (albums || []).forEach(function (aA) { ((aA && aA.photos) || []).forEach(function (uA) { if (uA && phsA.length < 14 && phsA.indexOf(uA) < 0) phsA.push(uA); }); });
       if (!phsA.length) return null;
+      var phsD = [];
       return h("div", null, /* 31/07 : proposition 1 — vedette large + rail qui defile (choix Blandine) */
-        (function () {
-          var u0 = phsA[0]; if (!u0) return null;
-          var v0 = (typeof estUrlVideo === "function" && estUrlVideo(u0));
-          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(u0); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, height: 218, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.4), cursor: "pointer", position: "relative" } },
-            v0 ? h("video", { src: u0 + "#t=0.01", muted: true, loop: true, autoPlay: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
-               : h("img", { src: u0, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+        (function () { /* 31/07 : diptyque photo + video (idee Blandine) — une video toujours visible */
+          var estV = function (uX) { return (typeof estUrlVideo === "function" && estUrlVideo(uX)); };
+          var ph0 = null, vd0 = null;
+          phsA.forEach(function (uX) { if (!ph0 && !estV(uX)) ph0 = uX; if (!vd0 && estV(uX)) vd0 = uX; });
+          if (!ph0 && !vd0) return null;
+          var vign = function (uX, estVid, plein) {
+            return h("div", { key: "dpt" + (estVid ? "v" : "p"), role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uX); else if (props.onTout) props.onTout(); }, style: { flex: plein ? "1 1 100%" : "1 1 0", minWidth: 0, height: plein ? 218 : 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(estVid ? 0.5 : 0.35), cursor: "pointer", position: "relative", background: "#04070A" } },
+              estVid ? h("video", { src: uX + "#t=0.01", muted: true, loop: true, autoPlay: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+                     : h("img", { src: uX, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+              estVid ? h("div", { style: { position: "absolute", left: 9, bottom: 8, fontSize: 8, letterSpacing: "0.2em", color: "rgba(244,247,250,0.85)", textShadow: "0 1px 6px rgba(0,0,0,0.8)" } }, "\u25b6\ufe0e " + T("VID\u00c9O", "VIDEO", "V\u00cdDEO", "VIDEO", "\u52d5\u753b", "VIDEO")) : null);
+          };
+          var duo = [];
+          if (ph0 && vd0) { duo = [vign(ph0, false, false), vign(vd0, true, false)]; }
+          else if (ph0) { duo = [vign(ph0, false, true)]; }
+          else { duo = [vign(vd0, true, true)]; }
+          phsD = [ph0, vd0].filter(Boolean);
+          return h("div", { style: { display: "flex", gap: 10, marginTop: 12 } }, duo);
         })(),
         h("div", { ref: function (elC) {
           if (!elC || elC.__autoDefile) return; elC.__autoDefile = true;
@@ -30619,7 +30631,7 @@ function AlbumsPromus(props) {
             else { elC.scrollLeft += 0.6; }
           }, 30);
         }, style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 12, paddingBottom: 2 } },
-        phsA.slice(1).map(function (uP, iP) {
+        phsA.filter(function (uR) { return phsD.indexOf(uR) < 0; }).map(function (uP, iP) {
           var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
           return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 104, height: 126, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.3), cursor: "pointer" } },
             vP ? h("video", { src: uP + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
