@@ -31439,8 +31439,11 @@ function EcranCheval() {
             statsCh[editStat.cle] ? h("button", { onClick: function(){ fixerStat(null); }, style: { display: "block", margin: "14px auto 0", background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, T("Effacer", "Clear", "Borrar", "Cancella", "クリア", "Löschen")) : null)) : null,
 
 
-        cristal("perf"), h("div", { id: "chapPerf", className: "eyebrow2 rise", style: { animationDelay: ".075s" } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen")),
-        h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 52px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
+        cristal("perf"),
+        h("div", { id: "chapPerf", style: { display: "flex", gap: 12, alignItems: "flex-start" } }, /* 31/07 : titre de chapitre a la verticale (maquette 5) */
+          h("div", { style: { width: 30, flex: "0 0 30px", display: "flex", justifyContent: "center", paddingTop: 6 } },
+            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 8.5, letterSpacing: "0.3em", color: tA(0.9), fontWeight: 700, whiteSpace: "nowrap", textTransform: "uppercase" } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen"))),
+          h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 52px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
 
@@ -31561,7 +31564,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
             h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl || "#5FE9F0" } }, T("Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197"))) : null); })(),
 
         /* 30/07: encart Souvenirs (GalerieSouvenirs) retire de la fiche — remplace par la grille Ses photos ; la visionneuse/vedettes vivent desormais via le panneau souvenirs */
-        null,
+        null)),
         cristal("medias"), h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } })),
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
