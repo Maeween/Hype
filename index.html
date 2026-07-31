@@ -30597,7 +30597,15 @@ function AlbumsPromus(props) {
       ((galeriePh && galeriePh.length) ? galeriePh : []).forEach(function (uG) { if (uG && phsA.length < 14 && phsA.indexOf(uG) < 0) phsA.push(uG); });
       if (!phsA.length) (albums || []).forEach(function (aA) { ((aA && aA.photos) || []).forEach(function (uA) { if (uA && phsA.length < 14 && phsA.indexOf(uA) < 0) phsA.push(uA); }); });
       if (!phsA.length) return null;
-      return h("div", { ref: function (elC) {
+      return h("div", null, /* 31/07 : proposition 1 — vedette large + rail qui defile (choix Blandine) */
+        (function () {
+          var u0 = phsA[0]; if (!u0) return null;
+          var v0 = (typeof estUrlVideo === "function" && estUrlVideo(u0));
+          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(u0); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, height: 218, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.4), cursor: "pointer", position: "relative" } },
+            v0 ? h("video", { src: u0 + "#t=0.01", muted: true, loop: true, autoPlay: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+               : h("img", { src: u0, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+        })(),
+        h("div", { ref: function (elC) {
           if (!elC || elC.__autoDefile) return; elC.__autoDefile = true;
           var pauseD = false;
           elC.addEventListener("touchstart", function () { pauseD = true; }, { passive: true });
@@ -30611,12 +30619,12 @@ function AlbumsPromus(props) {
             else { elC.scrollLeft += 0.6; }
           }, 30);
         }, style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 12, paddingBottom: 2 } },
-        phsA.map(function (uP, iP) {
+        phsA.slice(1).map(function (uP, iP) {
           var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
-          return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 220, height: 220, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.35), cursor: "pointer" } },
+          return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 104, height: 126, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.3), cursor: "pointer" } },
             vP ? h("video", { src: uP + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
                : h("img", { src: uP, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
-        }));
+        })));
     })());
 }
 
@@ -31437,6 +31445,41 @@ function EcranCheval() {
         
         /* 31/07 : carte IPO deplacee pres des Origines (decision Blandine) */
 
+        (function () {
+          var ogA = c.origines || {};
+          var ixA = (ogA.indices || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; });
+          if (!ixA.length) return null;
+          var vA = parseFloat(String(ixA[0][1]).replace("\u2212", "-").replace("+", ""));
+          var pA = vA >= 120 ? Math.min(5, Math.floor((vA - 110) / 10)) : 0;
+          var lblA = null;
+          if (vA >= 165) lblA = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d", "1 von 500.000");
+          else if (vA >= 160) lblA = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d", "1 von 100.000");
+          else if (vA >= 155) lblA = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d", "1 von 25.000");
+          else if (vA >= 150) lblA = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d", "1 von 5.000");
+          else if (vA >= 145) lblA = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d", "1 von 1.500");
+          else if (vA >= 140) lblA = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d", "1 von 500");
+          else if (vA >= 135) lblA = "Top 1 %";
+          else if (vA >= 130) lblA = "Top 2 %";
+          else if (vA >= 125) lblA = "Top 4 %";
+          else if (vA >= 120) lblA = "Top 8 %";
+          var discA = String(disc || "").toUpperCase();
+          var imgDisc = (discA.indexOf("CSO") >= 0 || discA.indexOf("SAUT") >= 0 || discA.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
+          var tPhoto = 40 + pA * 3; /* carte IPO plus discrete (demande Blandine) */
+          return h("div", null,
+null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances */,
+            h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 20px", borderRadius: 16, position: "relative", border: "1px solid " + tA(0.3 + pA * 0.09) + "", background: "linear-gradient(135deg, " + tA(0.06 + pA * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pA >= 3 ? "0 0 " + (12 + pA * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pA * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
+              imgDisc ? h("div", { style: { width: tPhoto, height: tPhoto, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
+                h("img", { src: imgDisc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
+              h("div", { style: { flex: 1, minWidth: 0 } },
+                h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
+                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pA, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
+                  h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
+                ixA[0][2] ? h("div", { style: { fontSize: 8.5, color: "#7B858E", marginTop: 4 } }, ixA[0][2]) : null,
+                ogA.apt ? h("div", { style: { fontSize: 9, color: "#8A929C", fontStyle: "italic", marginTop: 3 } }, ogA.apt) : null),
+              lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
+                h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
+        })(), /* 31/07 : IPO AU-DESSUS des Origines (demande Blandine) */
         h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統", "Herkunft")),
         (function () { var og = c.origines || {};
         var filtreIx = function (li) { return (li || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; }); };
@@ -31496,41 +31539,7 @@ function EcranCheval() {
             h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl || "#5FE9F0" } }, T("Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197"))) : null); })(),
 
         /* 30/07: encart Souvenirs (GalerieSouvenirs) retire de la fiche — remplace par la grille Ses photos ; la visionneuse/vedettes vivent desormais via le panneau souvenirs */
-        (function () {
-          var ogA = c.origines || {};
-          var ixA = (ogA.indices || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; });
-          if (!ixA.length) return null;
-          var vA = parseFloat(String(ixA[0][1]).replace("\u2212", "-").replace("+", ""));
-          var pA = vA >= 120 ? Math.min(5, Math.floor((vA - 110) / 10)) : 0;
-          var lblA = null;
-          if (vA >= 165) lblA = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d", "1 von 500.000");
-          else if (vA >= 160) lblA = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d", "1 von 100.000");
-          else if (vA >= 155) lblA = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d", "1 von 25.000");
-          else if (vA >= 150) lblA = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d", "1 von 5.000");
-          else if (vA >= 145) lblA = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d", "1 von 1.500");
-          else if (vA >= 140) lblA = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d", "1 von 500");
-          else if (vA >= 135) lblA = "Top 1 %";
-          else if (vA >= 130) lblA = "Top 2 %";
-          else if (vA >= 125) lblA = "Top 4 %";
-          else if (vA >= 120) lblA = "Top 8 %";
-          var discA = String(disc || "").toUpperCase();
-          var imgDisc = (discA.indexOf("CSO") >= 0 || discA.indexOf("SAUT") >= 0 || discA.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
-          var tPhoto = 40 + pA * 3; /* carte IPO plus discrete (demande Blandine) */
-          return h("div", null,
-null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances */,
-            h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 20px", borderRadius: 16, position: "relative", border: "1px solid " + tA(0.3 + pA * 0.09) + "", background: "linear-gradient(135deg, " + tA(0.06 + pA * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pA >= 3 ? "0 0 " + (12 + pA * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pA * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
-              imgDisc ? h("div", { style: { width: tPhoto, height: tPhoto, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
-                h("img", { src: imgDisc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
-              h("div", { style: { flex: 1, minWidth: 0 } },
-                h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
-                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pA, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
-                  h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
-                ixA[0][2] ? h("div", { style: { fontSize: 8.5, color: "#7B858E", marginTop: 4 } }, ixA[0][2]) : null,
-                ogA.apt ? h("div", { style: { fontSize: 9, color: "#8A929C", fontStyle: "italic", marginTop: 3 } }, ogA.apt) : null),
-              lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
-                h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
-        })(), /* 31/07 : carte IPO sous les Origines (emplacement corrige) */
+        null,
         h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } }),
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
