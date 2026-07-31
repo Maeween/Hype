@@ -28424,6 +28424,22 @@ function EcranUnivers() {
 
       React.createElement("header", { className: "hero rv" },
         React.createElement("div", { className: "hero-img" }),
+        React.createElement("video", { src: "hype-anim-cheval.mp4", muted: true, loop: true, playsInline: true, autoPlay: true, preload: "metadata", "aria-hidden": "true", /* 31/07 soir : ANIMATION DU HERO (fichier separe, meme nom = remplacable sans toucher a l index). L image hero-img reste dessous en filet de securite. */
+          onError: function (eEr) { try { eEr.target.style.display = "none"; } catch (e0) { } },
+          ref: function (elV) {
+            try {
+              if (!elV || elV.__animAcc) return; elV.__animAcc = 1;
+              var lire = function () { try { var pr = elV.play(); if (pr && pr.catch) pr.catch(function () { }); } catch (e1) { } };
+              lire();
+              if (typeof IntersectionObserver === "function") {
+                var io = new IntersectionObserver(function (ents) {
+                  ents.forEach(function (en) { if (en.isIntersecting) lire(); else { try { elV.pause(); } catch (e2) { } } });
+                }, { threshold: 0.05 });
+                io.observe(elV);
+              }
+            } catch (e3) { }
+          },
+          style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 22%", display: "block", pointerEvents: "none", background: "transparent" } }),
         React.createElement("div", { className: "hero-pulse" }),
         React.createElement("div", { className: "hero-side" }),
         React.createElement("div", { className: "hero-grad" }),
@@ -30574,7 +30590,7 @@ function AlbumsPromus(props) {
       h("div", { style: { fontSize: 9.5, letterSpacing: "0.3em", textTransform: "uppercase", color: tnT, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } }, T("Ses photos", "Photos", "Sus fotos", "Le sue foto", "\u5199\u771f", "Fotos")),
       h("div", { role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, title: "Nouvel album", style: { marginLeft: "auto", width: 24, height: 24, borderRadius: "50%", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 13, fontWeight: 300, cursor: "pointer" } }, "+")),
     /* 27/07 : 3 colonnes -> 2 (couvertures environ 1,6x plus grandes, demande Blandine). */
-    h("div", { "data-hscroll": "1", style: { display: "flex", gap: 11, overflowX: "auto", WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity", touchAction: "pan-x pan-y", paddingBottom: 4 } /* 31/07 soir : deux albums visibles sur un rail qui defile vers les autres (demande Blandine) */ },
+    h("div", { "data-hscroll": "1", style: { display: "flex", gap: 11, overflowX: "auto", WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity", touchAction: "pan-x pan-y", paddingBottom: 0 } /* 31/07 soir : deux albums visibles sur un rail qui defile vers les autres (demande Blandine) */ },
       [h("div", { key: "tout", onClick: function () { if (props.onTout) props.onTout(); }, role: "button", style: { cursor: "pointer", flex: "0 0 calc(50% - 5.5px)", scrollSnapAlign: "start" } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(0.5), background: "#0B1116", boxShadow: "0 14px 28px -18px rgba(0,0,0,0.9)" } },
           props.photoDefaut ? h("img", { src: props.photoDefaut, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", objectPosition: "center 30%" } }) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
@@ -30619,7 +30635,7 @@ function AlbumsPromus(props) {
           phsA.forEach(function (uX) { if (!vd0 && estV(uX)) vd0 = uX; });
           phsD = vd0 ? [vd0] : [];
           if (!vd0) return null;
-          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(vd0); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, height: 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.5), cursor: "pointer", position: "relative", background: "#04070A" } },
+          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(vd0); else if (props.onTout) props.onTout(); }, style: { marginTop: 26, height: 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.5), cursor: "pointer", position: "relative", background: "#04070A" } },
             h("video", { src: vd0 + "#t=0.01", muted: true, loop: true, controls: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
             h("div", { style: { position: "absolute", left: 10, bottom: 8, fontSize: 8, letterSpacing: "0.2em", color: "rgba(244,247,250,0.85)", textShadow: "0 1px 6px rgba(0,0,0,0.8)" } }, "\u25b6\ufe0e " + T("VID\u00c9O", "VIDEO", "V\u00cdDEO", "VIDEO", "\u52d5\u753b", "VIDEO")));
         })(),
@@ -31596,7 +31612,7 @@ function EcranCheval() {
           var discI = String(disc || "").toUpperCase();
           var imgI = (discI.indexOf("CSO") >= 0 || discI.indexOf("SAUT") >= 0 || discI.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
           var tI = 40 + pI * 3;
-          return h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 18px", borderRadius: 16, border: "1px solid " + tA(0.3 + pI * 0.09), background: "linear-gradient(135deg, " + tA(0.06 + pI * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pI >= 3 ? "0 0 " + (12 + pI * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pI * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
+          return h("div", { className: "rise", style: { animationDelay: ".075s", margin: "30px 16px 18px", borderRadius: 16, border: "1px solid " + tA(0.3 + pI * 0.09), background: "linear-gradient(135deg, " + tA(0.06 + pI * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pI >= 3 ? "0 0 " + (12 + pI * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pI * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
             imgI ? h("div", { style: { width: tI, height: tI, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42), boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
               h("img", { src: imgI, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
             h("div", { style: { minWidth: 0 } },
