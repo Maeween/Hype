@@ -30631,9 +30631,12 @@ function AlbumsPromus(props) {
             if (!elC.isConnected) { clearInterval(tick); return; }
             if (pauseD) return;
             var maxD = elC.scrollWidth - elC.clientWidth;
-            if (maxD <= 0) return;
-            if (elC.scrollLeft >= maxD - 1) { elC.scrollTo({ left: 0, behavior: "smooth" }); }
-            else { elC.scrollLeft += 1.4; } /* 31/07 : defilement plus franc (il ne tournait pas assez pour se voir) */
+            if (maxD <= 2) return;
+            /* 31/07 : va-et-vient continu — fini le retour brusque au debut (bug signale par Blandine) */
+            if (typeof elC.__dirD !== "number") elC.__dirD = 1;
+            if (elC.__dirD > 0 && elC.scrollLeft >= maxD - 1) elC.__dirD = -1;
+            else if (elC.__dirD < 0 && elC.scrollLeft <= 1) elC.__dirD = 1;
+            elC.scrollLeft += 1.1 * elC.__dirD;
           }, 28);
         }, style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 12, paddingBottom: 2 } },
         phsA.filter(function (uR) { return phsD.indexOf(uR) < 0; }).map(function (uP, iP) {
@@ -31311,7 +31314,7 @@ function EcranCheval() {
     return t.replace(/jeunes?\s+chevaux/gi, "JC").replace(/\s*\u00b7\s*obstacle/i, " \u00b7 obst.");
   }
   function cristal(kC) { /* 31/07 : separateur cristal entre chapitres (maquette 5 validee) */
-    return h("div", { key: "cr" + kC, style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 8px" } },
+    return h("div", { key: "cr" + kC, style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 28px" } }, /* 31/07 : plus d air sous le cristal */
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, transparent, " + tA(0.4) + ")" } }),
       h("span", { style: { color: teinteCl, fontSize: 10 } }, "\u25c6"),
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.4) + ", transparent)" } }));
@@ -31372,6 +31375,85 @@ function EcranCheval() {
           [["chvInfos", T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71", "Herkunft")], ["chapPerf", T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen")], ["chapMedias", T("M\u00e9dias", "Media", "Medios", "Media", "\u30e1\u30c7\u30a3\u30a2", "Medien")], ["chapFil", T("Le fil", "The feed", "El hilo", "Il filo", "\u30d5\u30a3\u30fc\u30c9", "Der Feed")], ["chapSante", T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit")], ["chapPartage", T("Partage", "Sharing", "Compartir", "Condivisione", "\u5171\u6709", "Teilen")]].map(function (nv) {
             return h("button", { key: "nv" + nv[0], onClick: function () { try { var elN = document.getElementById(nv[0]); if (elN) elN.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eN) { } }, style: { flex: "0 0 auto", padding: "7px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.04)", color: "rgba(237,242,245,0.66)", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, nv[1]);
           })),
+
+        h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統", "Herkunft")),
+        h("div", { style: { perspective: 1200, margin: "0 16px" } }, /* 31/07 : carte Origines qui se retourne (maquette validee) */
+          h("div", { role: "button", onClick: function () { setOrigOuv(!origOuv); }, style: { position: "relative", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", transition: "transform .62s cubic-bezier(.2,.75,.25,1)", transform: origOuv ? "rotateY(180deg)" : "none", cursor: "pointer", minHeight: origOuv ? "min(58svh, 520px)" : 0 } },
+            h("div", { style: { backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", border: "1px solid " + tA(0.42), borderRadius: 18, background: "linear-gradient(165deg, rgba(18,22,27,0.95), rgba(7,9,12,0.98))", padding: "16px 17px" } },
+              (function () {
+                var ogB = c.origines || {};
+                var pdB = ogB.pedigree || { pere: ogB.pere || null, mere: ogB.mere || null }; /* 31/07 : meme source que le tableau (bug "a renseigner" alors qu elles existent) */
+                var nomDe = function (x) { if (!x) return ""; if (typeof x === "string") return x; return String(x.nom || ""); };
+                var pN = nomDe(pdB.pere);
+                var pmN = nomDe(pdB.mere && pdB.mere.pere) || nomDe(ogB.mere && ogB.mere.pere);
+                return h("div", null,
+                  h("div", { style: { position: "absolute", right: 13, top: 13, width: 26, height: 26, borderRadius: "50%", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", color: teinteCl, fontSize: 12 } }, "\u21bb"),
+                  h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 15, lineHeight: 1.32, color: "#F4F7FA", paddingRight: 34 } }, pN ? [pN, h("span", { key: "x", style: { color: tA(0.9) } }, "  \u00d7  "), pmN || "\u2014"] : T("Origines \u00e0 renseigner", "Bloodline to fill in", "Or\u00edgenes por completar", "Origini da inserire", "\u8840\u7d71\u672a\u8a18\u5165", "Herkunft erg\u00e4nzen")),
+                  h("div", { style: { marginTop: 6, fontSize: 8.5, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(244,247,250,0.42)" } }, T("P\u00e8re \u00d7 p\u00e8re de m\u00e8re \u00b7 toucher pour retourner", "Sire \u00d7 damsire \u00b7 tap to flip", "Padre \u00d7 padre de madre \u00b7 tocar para girar", "Padre \u00d7 padre della madre", "\u7236\u00d7\u6bcd\u306e\u7236 \u00b7 \u30bf\u30c3\u30d7\u3067\u88cf\u9762", "Vater \u00d7 Muttervater \u00b7 zum Umdrehen tippen")));
+              })()),
+            h("div", { style: { position: "absolute", inset: 0, transform: "rotateY(180deg)", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", border: "1px solid " + tA(0.42), borderRadius: 18, background: "linear-gradient(165deg, rgba(18,22,27,0.97), rgba(7,9,12,0.99))", padding: "12px 12px", overflowY: "auto" } },
+
+        (function () { var og = c.origines || {};
+        var filtreIx = function (li) { return (li || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; }); };
+        var ixOK = filtreIx(og.indices), ixMereOK = og.mere ? filtreIx(og.mere.indices) : [];
+        var vApt = ixOK.length ? parseFloat(String(ixOK[0][1]).replace("\u2212", "-").replace("+", "")) : 0;
+        var lblApt = rareteIndice(vApt);
+        return h("div", { className: "rise", style: { position: "relative", animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
+
+
+          (!CHEVAUX_FICHE[id] && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: ouvrirEditOrigines, "aria-label": "Modifier les origines", style: { position: "absolute", top: 8, right: 8, zIndex: 3, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.22)", color: "#C9D3D8", fontSize: 11, cursor: "pointer" } }, "\u270E") : null,
+          (function (pg) {
+            function celPed(n, opts) {
+              opts = opts || {};
+              return h("div", { style: { gridColumn: opts.col, gridRow: opts.row, padding: "9px 8px 9px 10px", display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, borderLeft: opts.col > 1 ? "1px solid rgba(32,217,245,0.2)" : "none", borderBottom: opts.bb === "fort" ? "1px solid rgba(32,217,245,0.25)" : (opts.bb ? "1px solid rgba(255,255,255,0.05)" : "none") } },
+                opts.label ? h("div", { style: { fontSize: 7.5, letterSpacing: "0.22em", color: teinteCl, textTransform: "uppercase", fontWeight: 700, marginBottom: 4 } }, opts.label) : null,
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: opts.grand ? 14 : (opts.moyen ? 11.5 : 10), fontWeight: 700, color: "#EAF0F3", lineHeight: 1.28, overflowWrap: "break-word" } }, n ? n.nom : "\u2014"),
+                (n && n.detail) ? h("div", { style: { fontSize: 7.8, color: "#7B858E", marginTop: 2, lineHeight: 1.3 } }, n.detail) : null);
+            }
+            var lp = T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater"), lm = T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter");
+            var aG2 = !!((pg.pere && (pg.pere.pere || pg.pere.mere)) || (pg.mere && (pg.mere.pere || pg.mere.mere)));
+            var aG3 = false;
+            [pg.pere, pg.mere].forEach(function (pN) { if (pN) [pN.pere, pN.mere].forEach(function (gN) { if (gN && (gN.pere || gN.mere)) aG3 = true; }); });
+            return h("div", { style: { display: "grid", gridTemplateColumns: aG3 ? "1.18fr 1fr 1fr" : (aG2 ? "1.25fr 1fr" : "1fr"), gridAutoRows: "minmax(21px, auto)", borderBottom: (og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
+              celPed(pg.pere, { col: 1, row: aG2 ? "1 / span 4" : "1 / span 2", label: lp, grand: true, bb: "fort" }),
+              celPed(pg.mere, { col: 1, row: aG2 ? "5 / span 4" : "3 / span 2", label: lm, grand: true }),
+              aG2 ? celPed(pg.pere && pg.pere.pere, { col: 2, row: "1 / span 2", moyen: true, bb: true }) : null,
+              aG2 ? celPed(pg.pere && pg.pere.mere, { col: 2, row: "3 / span 2", moyen: true, bb: "fort" }) : null,
+              aG2 ? celPed(pg.mere && pg.mere.pere, { col: 2, row: "5 / span 2", moyen: true, bb: true }) : null,
+              aG2 ? celPed(pg.mere && pg.mere.mere, { col: 2, row: "7 / span 2", moyen: true }) : null,
+              aG3 ? celPed(pg.pere && pg.pere.pere && pg.pere.pere.pere, { col: 3, row: "1", bb: true }) : null,
+              aG3 ? celPed(pg.pere && pg.pere.pere && pg.pere.pere.mere, { col: 3, row: "2", bb: true }) : null,
+              aG3 ? celPed(pg.pere && pg.pere.mere && pg.pere.mere.pere, { col: 3, row: "3", bb: true }) : null,
+              aG3 ? celPed(pg.pere && pg.pere.mere && pg.pere.mere.mere, { col: 3, row: "4", bb: "fort" }) : null,
+              aG3 ? celPed(pg.mere && pg.mere.pere && pg.mere.pere.pere, { col: 3, row: "5", bb: true }) : null,
+              aG3 ? celPed(pg.mere && pg.mere.pere && pg.mere.pere.mere, { col: 3, row: "6", bb: true }) : null,
+              aG3 ? celPed(pg.mere && pg.mere.mere && pg.mere.mere.pere, { col: 3, row: "7", bb: true }) : null,
+              aG3 ? celPed(pg.mere && pg.mere.mere && pg.mere.mere.mere, { col: 3, row: "8" }) : null);
+          })(og.pedigree || { pere: og.pere || null, mere: og.mere || null }),
+
+          (og.arbre || []).map(function (gn, gi) {
+            return h("div", { key: "gen" + gi, style: { padding: "10px 14px", borderBottom: (gi === og.arbre.length - 1 && !og.naisseur && !og.note) ? "none" : "1px solid rgba(255,255,255,0.05)" } },
+              h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: "#8A929C", textTransform: "uppercase", fontWeight: 700, marginBottom: 7 } }, tr(gn.gen)),
+              h("div", { style: { display: "grid", gridTemplateColumns: gn.lignes.length > 1 ? "1fr 1fr" : "1fr", columnGap: 14, rowGap: 7 } },
+                gn.lignes.map(function (ln, li) {
+                  return h("div", { key: "ln" + li, style: { minWidth: 0, paddingLeft: 9, borderLeft: "2px solid " + tA(0.35) } },
+                    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 12.5, fontWeight: 600, color: "#E6ECEF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ln[0]),
+                    h("div", { style: { fontSize: 9, color: "#7B858E", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ln[1]));
+                })));
+          }),
+          /* 30/07 : doublon SIRE retire — la pilule SIRE existante (thematisee) suffit */
+          (og.naisseur || og.note) ? h("div", { style: { padding: "9px 14px 11px" } },
+            og.naisseur ? h("div", { style: { fontSize: 9, color: "#7B858E" } }, h("span", { style: { letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, fontSize: 7.5, color: "#8A929C" } }, T("Naisseur", "Breeder", "Criador", "Allevatore", "生産者", "Züchter") + "  "), og.naisseur) : null,
+            og.note ? h("div", { style: { fontSize: 8.5, color: "#5B646E", fontStyle: "italic", marginTop: og.naisseur ? 4 : 0 } }, og.note) : null) : null,
+          og.sire ? h("div", { role: "button", onClick: function () { try { window.open("https://infochevaux.ifce.fr/fr/info-chevaux", "_blank"); } catch (eSi) { } }, style: { margin: "0 14px 12px", padding: "9px 12px", borderRadius: 12, border: "1px solid " + tA(0.35), display: "flex", alignItems: "center", gap: 8, cursor: "pointer" } }, /* 30/07 : lien SIRE -> Info Chevaux IFCE (remplace la fausse ligne FFE — decision Blandine) */
+            h("span", { style: { letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, fontSize: 8, color: "#8A929C" } }, "SIRE"),
+            h("span", { style: { fontSize: 11.5, color: "#DCE7EA", fontWeight: 600, letterSpacing: "0.06em" } }, og.sire),
+            h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl || "#5FE9F0" } }, T("Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197"))) : null); })(),
+
+        /* 30/07: encart Souvenirs (GalerieSouvenirs) retire de la fiche — remplace par la grille Ses photos ; la visionneuse/vedettes vivent desormais via le panneau souvenirs */
+        null, null))))),
+        
+        
 
         (function () {
           var ogH = c.origines || {};
@@ -31483,81 +31565,6 @@ function EcranCheval() {
             statsCh[editStat.cle] ? h("button", { onClick: function(){ fixerStat(null); }, style: { display: "block", margin: "14px auto 0", background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, T("Effacer", "Clear", "Borrar", "Cancella", "クリア", "Löschen")) : null)) : null,
 
 
-        h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統", "Herkunft")),
-        h("div", { style: { perspective: 1200, margin: "0 16px" } }, /* 31/07 : carte Origines qui se retourne (maquette validee) */
-          h("div", { role: "button", onClick: function () { setOrigOuv(!origOuv); }, style: { position: "relative", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", transition: "transform .62s cubic-bezier(.2,.75,.25,1)", transform: origOuv ? "rotateY(180deg)" : "none", cursor: "pointer", minHeight: origOuv ? "min(58svh, 520px)" : 0 } },
-            h("div", { style: { backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", border: "1px solid " + tA(0.42), borderRadius: 18, background: "linear-gradient(165deg, rgba(18,22,27,0.95), rgba(7,9,12,0.98))", padding: "16px 17px" } },
-              (function () {
-                var ogB = c.origines || {};
-                var pN = (ogB.pere && (ogB.pere.nom || ogB.pere)) || "";
-                var pmN = (ogB.mere && ogB.mere.pere && (ogB.mere.pere.nom || ogB.mere.pere)) || "";
-                return h("div", null,
-                  h("div", { style: { position: "absolute", right: 13, top: 13, width: 26, height: 26, borderRadius: "50%", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", color: teinteCl, fontSize: 12 } }, "\u21bb"),
-                  h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 15, lineHeight: 1.32, color: "#F4F7FA", paddingRight: 34 } }, pN ? [pN, h("span", { key: "x", style: { color: tA(0.9) } }, "  \u00d7  "), pmN || "\u2014"] : T("Origines \u00e0 renseigner", "Bloodline to fill in", "Or\u00edgenes por completar", "Origini da inserire", "\u8840\u7d71\u672a\u8a18\u5165", "Herkunft erg\u00e4nzen")),
-                  h("div", { style: { marginTop: 6, fontSize: 8.5, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(244,247,250,0.42)" } }, T("P\u00e8re \u00d7 p\u00e8re de m\u00e8re \u00b7 toucher pour retourner", "Sire \u00d7 damsire \u00b7 tap to flip", "Padre \u00d7 padre de madre \u00b7 tocar para girar", "Padre \u00d7 padre della madre", "\u7236\u00d7\u6bcd\u306e\u7236 \u00b7 \u30bf\u30c3\u30d7\u3067\u88cf\u9762", "Vater \u00d7 Muttervater \u00b7 zum Umdrehen tippen")));
-              })()),
-            h("div", { style: { position: "absolute", inset: 0, transform: "rotateY(180deg)", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", border: "1px solid " + tA(0.42), borderRadius: 18, background: "linear-gradient(165deg, rgba(18,22,27,0.97), rgba(7,9,12,0.99))", padding: "12px 12px", overflowY: "auto" } },
-
-        (function () { var og = c.origines || {};
-        var filtreIx = function (li) { return (li || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; }); };
-        var ixOK = filtreIx(og.indices), ixMereOK = og.mere ? filtreIx(og.mere.indices) : [];
-        var vApt = ixOK.length ? parseFloat(String(ixOK[0][1]).replace("\u2212", "-").replace("+", "")) : 0;
-        var lblApt = rareteIndice(vApt);
-        return h("div", { className: "rise", style: { position: "relative", animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
-
-
-          (!CHEVAUX_FICHE[id] && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: ouvrirEditOrigines, "aria-label": "Modifier les origines", style: { position: "absolute", top: 8, right: 8, zIndex: 3, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.22)", color: "#C9D3D8", fontSize: 11, cursor: "pointer" } }, "\u270E") : null,
-          (function (pg) {
-            function celPed(n, opts) {
-              opts = opts || {};
-              return h("div", { style: { gridColumn: opts.col, gridRow: opts.row, padding: "9px 8px 9px 10px", display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, borderLeft: opts.col > 1 ? "1px solid rgba(32,217,245,0.2)" : "none", borderBottom: opts.bb === "fort" ? "1px solid rgba(32,217,245,0.25)" : (opts.bb ? "1px solid rgba(255,255,255,0.05)" : "none") } },
-                opts.label ? h("div", { style: { fontSize: 7.5, letterSpacing: "0.22em", color: teinteCl, textTransform: "uppercase", fontWeight: 700, marginBottom: 4 } }, opts.label) : null,
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: opts.grand ? 14 : (opts.moyen ? 11.5 : 10), fontWeight: 700, color: "#EAF0F3", lineHeight: 1.28, overflowWrap: "break-word" } }, n ? n.nom : "\u2014"),
-                (n && n.detail) ? h("div", { style: { fontSize: 7.8, color: "#7B858E", marginTop: 2, lineHeight: 1.3 } }, n.detail) : null);
-            }
-            var lp = T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater"), lm = T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter");
-            var aG2 = !!((pg.pere && (pg.pere.pere || pg.pere.mere)) || (pg.mere && (pg.mere.pere || pg.mere.mere)));
-            var aG3 = false;
-            [pg.pere, pg.mere].forEach(function (pN) { if (pN) [pN.pere, pN.mere].forEach(function (gN) { if (gN && (gN.pere || gN.mere)) aG3 = true; }); });
-            return h("div", { style: { display: "grid", gridTemplateColumns: aG3 ? "1.18fr 1fr 1fr" : (aG2 ? "1.25fr 1fr" : "1fr"), gridAutoRows: "minmax(21px, auto)", borderBottom: (og.naisseur || og.note) ? "1px solid rgba(255,255,255,0.06)" : "none" } },
-              celPed(pg.pere, { col: 1, row: aG2 ? "1 / span 4" : "1 / span 2", label: lp, grand: true, bb: "fort" }),
-              celPed(pg.mere, { col: 1, row: aG2 ? "5 / span 4" : "3 / span 2", label: lm, grand: true }),
-              aG2 ? celPed(pg.pere && pg.pere.pere, { col: 2, row: "1 / span 2", moyen: true, bb: true }) : null,
-              aG2 ? celPed(pg.pere && pg.pere.mere, { col: 2, row: "3 / span 2", moyen: true, bb: "fort" }) : null,
-              aG2 ? celPed(pg.mere && pg.mere.pere, { col: 2, row: "5 / span 2", moyen: true, bb: true }) : null,
-              aG2 ? celPed(pg.mere && pg.mere.mere, { col: 2, row: "7 / span 2", moyen: true }) : null,
-              aG3 ? celPed(pg.pere && pg.pere.pere && pg.pere.pere.pere, { col: 3, row: "1", bb: true }) : null,
-              aG3 ? celPed(pg.pere && pg.pere.pere && pg.pere.pere.mere, { col: 3, row: "2", bb: true }) : null,
-              aG3 ? celPed(pg.pere && pg.pere.mere && pg.pere.mere.pere, { col: 3, row: "3", bb: true }) : null,
-              aG3 ? celPed(pg.pere && pg.pere.mere && pg.pere.mere.mere, { col: 3, row: "4", bb: "fort" }) : null,
-              aG3 ? celPed(pg.mere && pg.mere.pere && pg.mere.pere.pere, { col: 3, row: "5", bb: true }) : null,
-              aG3 ? celPed(pg.mere && pg.mere.pere && pg.mere.pere.mere, { col: 3, row: "6", bb: true }) : null,
-              aG3 ? celPed(pg.mere && pg.mere.mere && pg.mere.mere.pere, { col: 3, row: "7", bb: true }) : null,
-              aG3 ? celPed(pg.mere && pg.mere.mere && pg.mere.mere.mere, { col: 3, row: "8" }) : null);
-          })(og.pedigree || { pere: og.pere || null, mere: og.mere || null }),
-
-          (og.arbre || []).map(function (gn, gi) {
-            return h("div", { key: "gen" + gi, style: { padding: "10px 14px", borderBottom: (gi === og.arbre.length - 1 && !og.naisseur && !og.note) ? "none" : "1px solid rgba(255,255,255,0.05)" } },
-              h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: "#8A929C", textTransform: "uppercase", fontWeight: 700, marginBottom: 7 } }, tr(gn.gen)),
-              h("div", { style: { display: "grid", gridTemplateColumns: gn.lignes.length > 1 ? "1fr 1fr" : "1fr", columnGap: 14, rowGap: 7 } },
-                gn.lignes.map(function (ln, li) {
-                  return h("div", { key: "ln" + li, style: { minWidth: 0, paddingLeft: 9, borderLeft: "2px solid " + tA(0.35) } },
-                    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 12.5, fontWeight: 600, color: "#E6ECEF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ln[0]),
-                    h("div", { style: { fontSize: 9, color: "#7B858E", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ln[1]));
-                })));
-          }),
-          /* 30/07 : doublon SIRE retire — la pilule SIRE existante (thematisee) suffit */
-          (og.naisseur || og.note) ? h("div", { style: { padding: "9px 14px 11px" } },
-            og.naisseur ? h("div", { style: { fontSize: 9, color: "#7B858E" } }, h("span", { style: { letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, fontSize: 7.5, color: "#8A929C" } }, T("Naisseur", "Breeder", "Criador", "Allevatore", "生産者", "Züchter") + "  "), og.naisseur) : null,
-            og.note ? h("div", { style: { fontSize: 8.5, color: "#5B646E", fontStyle: "italic", marginTop: og.naisseur ? 4 : 0 } }, og.note) : null) : null,
-          og.sire ? h("div", { role: "button", onClick: function () { try { window.open("https://infochevaux.ifce.fr/fr/info-chevaux", "_blank"); } catch (eSi) { } }, style: { margin: "0 14px 12px", padding: "9px 12px", borderRadius: 12, border: "1px solid " + tA(0.35), display: "flex", alignItems: "center", gap: 8, cursor: "pointer" } }, /* 30/07 : lien SIRE -> Info Chevaux IFCE (remplace la fausse ligne FFE — decision Blandine) */
-            h("span", { style: { letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, fontSize: 8, color: "#8A929C" } }, "SIRE"),
-            h("span", { style: { fontSize: 11.5, color: "#DCE7EA", fontWeight: 600, letterSpacing: "0.06em" } }, og.sire),
-            h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl || "#5FE9F0" } }, T("Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197"))) : null); })(),
-
-        /* 30/07: encart Souvenirs (GalerieSouvenirs) retire de la fiche — remplace par la grille Ses photos ; la visionneuse/vedettes vivent desormais via le panneau souvenirs */
-        null, null))))),
-        
         cristal("perf"),
         h("div", { id: "chapPerf", style: { position: "relative" } }, /* 31/07 : titre en surimpression, plus de decalage */
           h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
