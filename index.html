@@ -31493,6 +31493,20 @@ function EcranCheval() {
 
         null,
         h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統", "Herkunft")),
+        h("div", { style: { perspective: 1200, margin: "0 16px" } }, /* 31/07 : carte Origines qui se retourne (maquette validee) */
+          h("div", { role: "button", onClick: function () { setOrigOuv(!origOuv); }, style: { position: "relative", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", transition: "transform .62s cubic-bezier(.2,.75,.25,1)", transform: origOuv ? "rotateY(180deg)" : "none", cursor: "pointer", minHeight: origOuv ? "min(58svh, 520px)" : 0 } },
+            h("div", { style: { backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", border: "1px solid " + tA(0.42), borderRadius: 18, background: "linear-gradient(165deg, rgba(18,22,27,0.95), rgba(7,9,12,0.98))", padding: "16px 17px" } },
+              (function () {
+                var ogB = c.origines || {};
+                var pN = (ogB.pere && (ogB.pere.nom || ogB.pere)) || "";
+                var pmN = (ogB.mere && ogB.mere.pere && (ogB.mere.pere.nom || ogB.mere.pere)) || "";
+                return h("div", null,
+                  h("div", { style: { position: "absolute", right: 13, top: 13, width: 26, height: 26, borderRadius: "50%", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", color: teinteCl, fontSize: 12 } }, "\u21bb"),
+                  h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 15, lineHeight: 1.32, color: "#F4F7FA", paddingRight: 34 } }, pN ? [pN, h("span", { key: "x", style: { color: tA(0.9) } }, "  \u00d7  "), pmN || "\u2014"] : T("Origines \u00e0 renseigner", "Bloodline to fill in", "Or\u00edgenes por completar", "Origini da inserire", "\u8840\u7d71\u672a\u8a18\u5165", "Herkunft erg\u00e4nzen")),
+                  h("div", { style: { marginTop: 6, fontSize: 8.5, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(244,247,250,0.42)" } }, T("P\u00e8re \u00d7 p\u00e8re de m\u00e8re \u00b7 toucher pour retourner", "Sire \u00d7 damsire \u00b7 tap to flip", "Padre \u00d7 padre de madre \u00b7 tocar para girar", "Padre \u00d7 padre della madre", "\u7236\u00d7\u6bcd\u306e\u7236 \u00b7 \u30bf\u30c3\u30d7\u3067\u88cf\u9762", "Vater \u00d7 Muttervater \u00b7 zum Umdrehen tippen")));
+              })()),
+            h("div", { style: { position: "absolute", inset: 0, transform: "rotateY(180deg)", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", border: "1px solid " + tA(0.42), borderRadius: 18, background: "linear-gradient(165deg, rgba(18,22,27,0.97), rgba(7,9,12,0.99))", padding: "12px 12px", overflowY: "auto" } },
+
         (function () { var og = c.origines || {};
         var filtreIx = function (li) { return (li || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; }); };
         var ixOK = filtreIx(og.indices), ixMereOK = og.mere ? filtreIx(og.mere.indices) : [];
@@ -31585,7 +31599,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
               lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
                 h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
-        })())),
+        })()))))),
         cristal("medias"),
         h("div", { id: "chapMedias", style: { position: "relative" } },
           h("div", { style: { position: "absolute", left: 1, top: 4, width: 14, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
