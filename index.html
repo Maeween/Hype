@@ -20347,7 +20347,7 @@ function EcranCommunaute() {
       h(CarteEvenementsC, null),
       h("div", { style:{ padding:"22px 16px 0" } },
          
-        h("button", { onClick: function () { setEcran("guilde"); }, style: { width: "100%", textAlign: "left", padding: "16px", borderRadius: 20, border: "1px solid rgba(32,217,245,0.407)", background: "radial-gradient(130% 95% at 50% 0%, rgba(32,217,245,0.185), rgba(7,9,12,0.94) 62%)", cursor: "pointer", marginBottom: 26, display: "flex", alignItems: "center", gap: 13 }, key: "guildeEntree" }, h("div", { style: { width: 44, height: 44, borderRadius: 12, flex: "0 0 auto", background: "rgba(32,217,245,0.259)", border: "1px solid rgba(32,217,245,0.647)", display: "flex", alignItems: "center", justifyContent: "center" } }, h("svg", { viewBox: "0 0 24 24", width: 23, height: 23, fill: "none", stroke: "#5FE9F0", strokeWidth: 1.5 }, h("path", { d: "M12 3 L20 7 V12 C20 17 16 20.5 12 21.5 C8 20.5 4 17 4 12 V7 Z" }), h("path", { d: "M9 12 l2 2 l4 -4", strokeLinecap: "round", strokeLinejoin: "round" }))), h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 16, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "#EDF2F5" } }, trh({ fr: "Mon club", en: "My club", es: "Mi club", it: "Il mio club", ja: "\u30de\u30a4\u30af\u30e9\u30d6", de: "Mein Verein" })), h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M, marginTop: 2 } }, trh({ fr: "XP, niveau & classement des clubs", en: "XP, level & club ranking", es: "XP, nivel y ranking", it: "XP, livello e classifica", ja: "XP\u30fb\u30ec\u30d9\u30eb\u30fb\u30e9\u30f3\u30ad\u30f3\u30b0", de: "XP, Level & Vereinsrangliste" }))), h("div", { style: { color: "#5FE9F0", fontSize: 20, flex: "0 0 auto" } }, "\u203a")),
+        h("button", { onClick: function () { setEcran("guilde"); }, style: { width: "100%", textAlign: "left", padding: "16px", borderRadius: 20, border: "1px solid rgba(32,217,245,0.407)", background: "radial-gradient(130% 95% at 50% 0%, rgba(32,217,245,0.185), rgba(7,9,12,0.94) 62%)", cursor: "pointer", marginBottom: 26, display: "flex", alignItems: "center", gap: 13 }, key: "guildeEntree" }, h("div", { style: { width: 44, height: 44, borderRadius: 12, flex: "0 0 auto", background: "rgba(32,217,245,0.259)", border: "1px solid rgba(32,217,245,0.647)", display: "flex", alignItems: "center", justifyContent: "center" } }, h("svg", { viewBox: "0 0 24 24", width: 23, height: 23, fill: "none", stroke: "#5FE9F0", strokeWidth: 1.5 }, h("path", { d: "M12 3 L20 7 V12 C20 17 16 20.5 12 21.5 C8 20.5 4 17 4 12 V7 Z" }), h("path", { d: "M9 12 l2 2 l4 -4", strokeLinecap: "round", strokeLinejoin: "round" }))), h("div", { style: { minWidth: 0 } }, h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 16, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "#EDF2F5" } }, trh({ fr: "Mon club", en: "My club", es: "Mi club", it: "Il mio club", ja: "\u30de\u30a4\u30af\u30e9\u30d6", de: "Mein Verein" })), h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M, marginTop: 2 } }, trh({ fr: "XP, niveau & classement des clubs", en: "XP, level & club ranking", es: "XP, nivel y ranking", it: "XP, livello e classifica", ja: "XP\u30fb\u30ec\u30d9\u30eb\u30fb\u30e9\u30f3\u30ad\u30f3\u30b0", de: "XP, Level & Vereinsrangliste" }))), h("div", { style: { color: "#5FE9F0", fontSize: 20, flex: "0 0 auto" } }, "\u203a")),
         titreSec(T("Carte des clubs","Clubs map","Mapa de clubs","Mappa dei club","\u30af\u30e9\u30d6\u5730\u56f3","Vereinskarte")),
         h("div", { style:{ borderRadius:20, overflow:"hidden", border:"1px solid rgba(32,217,245,0.407)", background:"#05070c" } }, h("iframe", { srcDoc:FRANCE_MAP_HTML, title:"Carte des clubs", style:{ width:"100%", height:"350px", border:"none", display:"block" } })),
         h("button", { onClick:function(){ setEcran("monde"); }, style:{ position:"relative", marginTop:12, width:"100%", height:150, borderRadius:20, overflow:"hidden", border:"1px solid rgba(32,217,245,0.4)", background:"#070B10", cursor:"pointer", textAlign:"left", padding:0 } },
@@ -24281,7 +24281,7 @@ function EcranConnexionSpectral() {
     h("span", { "aria-hidden": true, style: { position: "absolute", top: 0, bottom: 0, left: 0, width: "46%", pointerEvents: "none", background: "linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.13) 45%, rgba(174,240,248,0.10) 55%, transparent 100%)", animation: "hypeRefletPoche 6.5s ease-in-out infinite" } }),
     h("div", { style: { width: 38, height: 54, borderRadius: 9, flexShrink: 0, border: "1px solid rgba(32,217,245,0.5)", background: "radial-gradient(circle at 50% 38%, rgba(32,217,245,0.28), rgba(6,7,9,0.9) 70%)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 16px rgba(32,217,245,0.25)" } },
       h("span", { style: { fontFamily: C, fontSize: 7, letterSpacing: 1.5, color: "#20D9F5" } }, "HYPE")),
-    h("div", { style: { flex: 1, minWidth: 0 } },
+    h("div", { style: { minWidth: 0 } },
       h("div", { style: { fontFamily: C, fontSize: 13.5, letterSpacing: 1, color: "#F4F7FA" } },
         "HYPE ", h("span", { style: { color: "#20D9F5" } }, T("dans ta poche", "in your pocket", "en tu bolsillo", "in tasca", "\u30dd\u30b1\u30c3\u30c8\u306e\u4e2d\u306b", "in deiner Tasche"))),
       h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#8C99A6", marginTop: 3, lineHeight: 1.45 } },
@@ -26585,7 +26585,7 @@ function EcranMonCavalier() {
     (!__estVisite ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "block", width: "calc(100% - 32px)", textAlign: "left", margin: "18px 16px 0", padding: "15px 16px", borderRadius: 20, border: "1px solid rgba(32,217,245,0.42)", background: "linear-gradient(120deg, rgba(32,217,245,0.10), rgba(10,14,18,0.75))", cursor: "pointer" } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 13 } },
         h("img", { src: hypeBadgeNiveau(Math.floor((ctx.xp || 0) / 200) + 1), alt: "", style: { height: 44, width: "auto", flex: "0 0 auto", filter: "drop-shadow(0 0 6px rgba(32,217,245,.55))" } }),
-        h("div", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { minWidth: 0 } },
           h("div", { style: { fontFamily: C, fontSize: 15.5, fontWeight: 600, color: "#EDF2F5" } }, tr({ fr: "Tes qu\u00eates", en: "Your quests", es: "Tus misiones", it: "Le tue missioni", ja: "\u30af\u30a8\u30b9\u30c8", de: "Deine Quests" })),
           h("div", { style: { height: 5, borderRadius: 99, background: "rgba(255,255,255,0.08)", overflow: "hidden", marginTop: 7 } },
             h("div", { style: { height: "100%", width: (((ctx.xp || 0) % 200) / 200 * 100) + "%", borderRadius: 99, background: "linear-gradient(90deg,#17A8B3,#20D9F5)" } })),
@@ -26906,7 +26906,7 @@ function CoachmarkHype(props) {
     },
         h("div", { style: { display: "flex", alignItems: "center", gap: 9 } },
             h("span", { style: { fontSize: 15, flex: "0 0 auto", lineHeight: 1, opacity: 0.9 } }, emoji),
-            h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { minWidth: 0 } },
                 h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 700, letterSpacing: 0.3, color: "#7FE8F2", lineHeight: 1.3 } }, tr(titre)),
                 h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, lineHeight: 1.45, color: "rgba(234,241,244,0.72)", marginTop: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } }, tr(texte))
             ),
@@ -27325,7 +27325,7 @@ function EcranGuilde() {
     h("div", { style: { padding: "12px 16px 0" } },
       h("div", { style: { background: "linear-gradient(135deg, rgba(32,217,245,0.222), rgba(7,9,12,0.92))", border: "1px solid rgba(32,217,245,0.555)", borderRadius: 20, padding: "18px", display: "flex", alignItems: "center", gap: 16 } },
         cristal(niv.niveau),
-        h("div", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { minWidth: 0 } },
           h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between" } },
             h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "#B9C6CC" } }, T("Niveau", "Level", "Nivel", "Livello", "\u30ec\u30d9\u30eb") + " " + niv.niveau),
             h("div", { style: { fontFamily: M, fontSize: 12, color: TURQL, fontWeight: 700 } }, "#" + monRang + " / " + liste.length)),
@@ -27360,7 +27360,7 @@ function EcranGuilde() {
                 return h("div", { key: p.id, style: { display: "flex", alignItems: "center", gap: 11, padding: "10px 2px", borderBottom: "1px solid rgba(255,255,255,0.05)" } },
                   h("div", { style: { width: 40, height: 40, borderRadius: "50%", flexShrink: 0, overflow: "hidden", border: "1px solid rgba(32,217,245,0.35)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
                     p.avatar_url ? h("img", { src: p.avatar_url, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : h("span", { style: { fontFamily: C, fontSize: 16, fontWeight: 700, color: TURQL } }, iniP)),
-                  h("div", { style: { flex: 1, minWidth: 0 } },
+                  h("div", { style: { minWidth: 0 } },
                     h("div", { style: { fontSize: 13, fontWeight: 700, color: "#EDF2F5", fontFamily: M, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, p.pseudo || "Cavalier"),
                     h("div", { style: { fontSize: 10.5, color: "#6B7580", fontFamily: M, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [p.ecurie, p.ville].filter(Boolean).join(" \u00b7 ") || "\u00a0")),
                   h("button", { onClick: function () { basculerChoisi(p); }, style: deja
@@ -27401,7 +27401,7 @@ function EcranGuilde() {
           return h("div", { key: rs.id || i, style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderBottom: (i < resultatsClub.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none"), background: "#0c0e12" } },
             h("div", { style: { width: 34, height: 34, borderRadius: 10, overflow: "hidden", flexShrink: 0, background: "rgba(32,217,245,0.12)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 } },
               rs.photo_url ? h("img", { src: rs.photo_url, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : (pod ? "\uD83C\uDFC6" : "\uD83C\uDF80")),
-            h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { minWidth: 0 } },
               h("div", { style: { fontSize: 12.5, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rs.concours || T("Concours", "Show", "Concurso", "Concorso", "\u5927\u4f1a")),
               h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, (aut ? aut.pseudo : "") + (aut && dte ? " \u00b7 " : "") + dte)),
             rs.classement ? h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 800, color: pod ? "#E8C887" : TURQL, flexShrink: 0 } }, rs.classement) : null);
@@ -27424,7 +27424,7 @@ function EcranGuilde() {
           var moi = g.nom === monClub; var nv = niveauGuilde(g.xp);
           return h("div", { key: i, style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderBottom: (i < liste.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none"), background: moi ? "rgba(32,217,245,0.148)" : "#0c0e12" } },
             h("div", { style: { width: 26, textAlign: "center", fontFamily: C, fontSize: 15, fontWeight: 700, color: (i === 0 ? "#E8C887" : (moi ? TURQL : "#8A929C")) } }, i + 1),
-            h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontSize: 13.5, fontWeight: moi ? 700 : 600, color: moi ? "#EAFBFD" : "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, g.nom), h("div", { style: { fontSize: 10.5, color: "#8A929C", fontFamily: M, marginTop: 1 } }, T("Niv.", "Lvl", "Niv.", "Liv.", "Lv") + " " + nv.niveau + " \u00b7 " + g.membres + " " + T("membres", "members", "miembros", "membri", "\u4eba"))),
+            h("div", { style: { minWidth: 0 } }, h("div", { style: { fontSize: 13.5, fontWeight: moi ? 700 : 600, color: moi ? "#EAFBFD" : "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, g.nom), h("div", { style: { fontSize: 10.5, color: "#8A929C", fontFamily: M, marginTop: 1 } }, T("Niv.", "Lvl", "Niv.", "Liv.", "Lv") + " " + nv.niveau + " \u00b7 " + g.membres + " " + T("membres", "members", "miembros", "membri", "\u4eba"))),
             h("div", { style: { fontFamily: M, fontSize: 13, fontWeight: 800, color: moi ? TURQL : "#DDE6EA" } }, g.xp + " XP")); }))),
     h(MurHype, { cible: "club:" + monClub, membresSeuls: true }),
     h("div", { style: { padding: "18px 20px 0", fontSize: 11, color: "#5B646E", fontFamily: M, fontStyle: "italic", textAlign: "center" } }, ((reel && reel.length) ? T("Classement en temps r\u00e9el.", "Live ranking.", "Clasificaci\u00f3n en vivo.", "Classifica live.", "\u30e9\u30a4\u30d6\u30e9\u30f3\u30ad\u30f3\u30b0") : T("Donn\u00e9es de d\u00e9monstration \u2014 connect\u00e9es \u00e0 Supabase avec les comptes.", "Demo data \u2014 connected to Supabase with accounts.", "", "", ""))),
@@ -27490,7 +27490,7 @@ function SectionCommentaires({ cible }) {
       h("div", null,
         coms.map(function (c) { return h("div", { key: c.id, style: { display: "flex", gap: 9, marginBottom: 10 } },
           h("div", { style: { width: 30, height: 30, borderRadius: "50%", flex: "0 0 auto", backgroundImage: c.auteur && c.auteur.avatar_url ? ("url(" + c.auteur.avatar_url + ")") : "none", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#1a2a30" } }),
-          h("div", { style: { flex: 1, minWidth: 0 } },
+          h("div", { style: { minWidth: 0 } },
             h("div", { style: { fontSize: 12, fontWeight: 700, color: "#EDF2F5", fontFamily: M } }, (c.auteur && c.auteur.pseudo) || "Cavalier"),
             c.texte ? h("div", { style: { fontSize: 12.5, color: "#C7D0D6", fontFamily: M, marginTop: 1, wordBreak: "break-word" } }, c.texte) : null,
             c.photo_url ? (estUrlVideo(c.photo_url)
@@ -27581,7 +27581,7 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
           listeEc.map(function (chE) {
             return h("button", { key: chE.id, onClick: function () { rattacher(chE); }, disabled: !!lienBusy, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 12, border: "1px solid rgba(32,217,245,0.25)", background: "rgba(255,255,255,0.03)", cursor: "pointer", textAlign: "left", width: "100%", boxSizing: "border-box" } },
               h("div", { style: { width: 36, height: 36, borderRadius: 9, flex: "0 0 auto", overflow: "hidden", background: chE.photo_url ? ("url(" + chE.photo_url + ") center/cover") : "#12242b" } }),
-              h("div", { style: { flex: 1, minWidth: 0 } },
+              h("div", { style: { minWidth: 0 } },
                 h("div", { style: { fontSize: 13.5, fontWeight: 600, color: "#F4FEFF", fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, chE.nom),
                 chE.__prop ? h("div", { style: { fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } }, chE.__prop) : null),
               h("span", { style: { color: "#5FE9F0", fontSize: 16, fontWeight: 700, flexShrink: 0 } }, lienBusy === chE.id ? "\u2026" : "+"));
@@ -27738,7 +27738,7 @@ function EcranGererEcurie() {
     h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, letterSpacing: 1, marginTop: 4, textTransform: "uppercase" } }, ((profil.club || "").trim()) || "Mon \u00e9curie"));
   if (user === undefined) return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#8A929C", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026"));
   if (user === null) return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } }, head, h("div", { style: { padding: "56px 30px", textAlign: "center" } }, h("div", { style: { fontSize: 14, color: "#B9C6CC", fontFamily: M, lineHeight: 1.5, marginBottom: 22 } }, T("Connecte-toi pour ajouter tes chevaux, tes cavaliers et tes photos.", "Sign in to add your horses, riders and photos.", "", "", "")), h("button", { onClick: function () { setEcran("auth"); }, style: { padding: "13px 26px", borderRadius: 14, background: TURQ, border: "none", color: "#04252a", fontWeight: 800, fontSize: 14, fontFamily: M, cursor: "pointer" } }, T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3"))));
-  function ligne(item, type, sub) { return h("div", { key: item.id, onClick: function () { if (type === "cheval") { window.__chevalOuvert = item.id; setEcran("cheval"); } }, style: { display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: "#0c0e12", border: "1px solid rgba(255,255,255,0.06)", cursor: type === "cheval" ? "pointer" : "default" } }, h("div", { style: { width: 44, height: 44, borderRadius: 10, flex: "0 0 auto", overflow: "hidden", backgroundImage: item.photo_url ? ("url(" + item.photo_url + ")") : "none", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#12242b" } }, item.photo_url ? null : h(PortraitChevalSpectral, { compact: true })), h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontSize: 14, fontWeight: 600 } }, item.nom), sub ? h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, sub) : null), h("button", { onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); suppr(type, item.id); }, style: { background: "none", border: "none", color: "#6B7580", fontSize: 20, cursor: "pointer", lineHeight: 1 } }, "\u00d7")); }
+  function ligne(item, type, sub) { return h("div", { key: item.id, onClick: function () { if (type === "cheval") { window.__chevalOuvert = item.id; setEcran("cheval"); } }, style: { display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: "#0c0e12", border: "1px solid rgba(255,255,255,0.06)", cursor: type === "cheval" ? "pointer" : "default" } }, h("div", { style: { width: 44, height: 44, borderRadius: 10, flex: "0 0 auto", overflow: "hidden", backgroundImage: item.photo_url ? ("url(" + item.photo_url + ")") : "none", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#12242b" } }, item.photo_url ? null : h(PortraitChevalSpectral, { compact: true })), h("div", { style: { minWidth: 0 } }, h("div", { style: { fontSize: 14, fontWeight: 600 } }, item.nom), sub ? h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, sub) : null), h("button", { onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); suppr(type, item.id); }, style: { background: "none", border: "none", color: "#6B7580", fontSize: 20, cursor: "pointer", lineHeight: 1 } }, "\u00d7")); }
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } },
     h("input", { ref: svFile, type: "file", accept: "image/*,video/*", onChange: soumettreSouvenir, style: { display: "none" } }),
     head,
@@ -27765,7 +27765,7 @@ function EcranGererEcurie() {
     h("div", { style: { padding: "26px 16px 0" } },
       h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase", marginBottom: 4 } }, T("Palmar\u00e8s de l'\u00e9curie", "Stable's record", "Palmar\u00e9s", "Palmar\u00e8s", "\u6210\u7e3e")),
       h("div", { style: { fontSize: 11, color: "#6B7580", fontFamily: M, fontStyle: "italic", marginBottom: 12 } }, T("Les r\u00e9sultats publi\u00e9s par les membres du club.", "Results published by club members.", "", "", "")),
-      palmares.length ? h("div", { style: { borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)" } }, palmares.map(function (r, i) { return h("div", { key: r.id || i, style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderBottom: (i < palmares.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none"), background: "#0c0e12" } }, h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontSize: 13.5, fontWeight: 600 } }, r.concours || "\u2014")), h("div", { style: { fontSize: 14, fontWeight: 800, color: (/^\s*1/.test(r.classement || "") ? "#E8C887" : "#DDE6EA"), fontFamily: M } }, r.classement || "")); })) : h("div", { style: { fontSize: 12.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Aucun r\u00e9sultat encore d\u00e9clar\u00e9.", "No result declared yet.", "", "", ""))));
+      palmares.length ? h("div", { style: { borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)" } }, palmares.map(function (r, i) { return h("div", { key: r.id || i, style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderBottom: (i < palmares.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none"), background: "#0c0e12" } }, h("div", { style: { minWidth: 0 } }, h("div", { style: { fontSize: 13.5, fontWeight: 600 } }, r.concours || "\u2014")), h("div", { style: { fontSize: 14, fontWeight: 800, color: (/^\s*1/.test(r.classement || "") ? "#E8C887" : "#DDE6EA"), fontFamily: M } }, r.classement || "")); })) : h("div", { style: { fontSize: 12.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Aucun r\u00e9sultat encore d\u00e9clar\u00e9.", "No result declared yet.", "", "", ""))));
 }
 function EcranPartager() {
   var ctx = useApp();
@@ -29067,7 +29067,7 @@ function EcranEcurie() {
                   return h("div", { key: p.id, style: { display: "flex", alignItems: "center", gap: 11, padding: "10px 2px", borderBottom: "1px solid rgba(255,255,255,0.05)" } },
                     h("div", { style: { width: 40, height: 40, borderRadius: "50%", flexShrink: 0, overflow: "hidden", border: "1px solid rgba(32,217,245,0.35)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
                       p.avatar_url ? h("img", { src: p.avatar_url, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, fontWeight: 700, color: "#5FE9F0" } }, iniP)),
-                    h("div", { style: { flex: 1, minWidth: 0 } },
+                    h("div", { style: { minWidth: 0 } },
                       h("div", { style: { fontSize: 13, fontWeight: 700, color: "#EDF2F5", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, p.pseudo || "Cavalier"),
                       h("div", { style: { fontSize: 10.5, color: "#6B7580", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [p.ecurie, p.ville].filter(Boolean).join(" \u00b7 ") || "\u00a0")),
                     h("button", { onClick: function () { basculerChoisiEc(p); }, style: deja
@@ -29876,7 +29876,7 @@ function MurHype(props) {
   } else if (moi && props.membresSeuls && membre === false) {
     enfants.push(h("div", { key: "verrou", style: Object.assign({}, carte, { marginBottom: 12, display: "flex", alignItems: "center", gap: 12, border: "1px dashed " + tAm(0.35) + "", background: "" + tAm(0.04) + "" }) },
       h("span", { style: { fontSize: 20, flexShrink: 0 } }, "\uD83D\uDD12"),
-      h("div", { style: { flex: 1, minWidth: 0 } },
+      h("div", { style: { minWidth: 0 } },
         h("div", { style: { fontSize: 12.5, fontWeight: 700, color: "#DCE3E8", fontFamily: M2 } }, T("Un fil r\u00e9serv\u00e9 aux membres", "A feed reserved for members", "Un hilo reservado a los miembros", "Un feed riservato ai membri", "\u30e1\u30f3\u30d0\u30fc\u9650\u5b9a\u306e\u30d5\u30a3\u30fc\u30c9")),
         h("div", { style: { fontSize: 11, color: "#8A929C", fontFamily: M2, marginTop: 2, lineHeight: 1.5 } }, T("Rejoins cette \u00e9curie \u2014 ou attends son invitation \u2014 pour publier ici.", "Join this stable \u2014 or await its invitation \u2014 to post here.", "\u00danete a esta cuadra para publicar aqu\u00ed.", "Unisciti a questa scuderia per pubblicare qui.", "\u3053\u306e\u53a9\u820e\u306b\u53c2\u52a0\u3059\u308b\u3068\u6295\u7a3f\u3067\u304d\u307e\u3059")))));
   } else if (moi && !props.sansComposer) {
@@ -29926,7 +29926,7 @@ function MurHype(props) {
         estAnn
           ? h("div", { style: { width: 32, height: 32, borderRadius: "50%", flexShrink: 0, background: "rgba(232,200,135,0.16)", border: "1px solid rgba(232,200,135,0.55)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 } }, "\uD83D\uDCE2")
           : h("div", { style: { width: 32, height: 32, borderRadius: "50%", flexShrink: 0, background: a.avatar_url ? ("url(" + a.avatar_url + ") center/cover") : "" + tAm(0.14) + "", border: "1px solid " + tAm(0.35) + "", display: "flex", alignItems: "center", justifyContent: "center", color: TQmCl, fontSize: 13, fontWeight: 800, fontFamily: M2 } }, a.avatar_url ? "" : ((a.pseudo || "C").charAt(0).toUpperCase())),
-        h("div", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { minWidth: 0 } },
           h("div", { style: { fontSize: 13, fontWeight: 700, color: estAnn ? "#F0DBA2" : "#EDF2F5", fontFamily: M2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", letterSpacing: estAnn ? 0.8 : 0 } }, estAnn ? T("Nouveaut\u00e9 Hype", "Hype News", "Novedad Hype", "Novit\u00e0 Hype", "Hype\u306e\u65b0\u7740") : (a.pseudo || "Cavalier")),
           h("div", { style: { fontSize: 10.5, color: "#5B646E", fontFamily: M2 } }, datePost(p.created_at))),
         (moi && !estAnn && (p.user_id === moi.id || estModerateurHype(moi))) ? h("button", { onClick: function () { suppr(p); }, "aria-label": "Supprimer", style: { background: "none", border: "none", color: "#5B646E", fontSize: 14, cursor: "pointer", padding: 4 } }, "\uD83D\uDDD1") : null),
@@ -29984,7 +29984,7 @@ function InvitationsEcurieHype() {
       h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
         h("div", { style: { width: 46, height: 46, borderRadius: "50%", flexShrink: 0, overflow: "hidden", border: "1.5px solid rgba(32,217,245,0.55)", boxShadow: "0 0 14px rgba(32,217,245,0.25)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
           inv.avatar_url ? h("img", { src: inv.avatar_url, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: TURQL } }, ini)),
-        h("div", { style: { flex: 1, minWidth: 0, paddingRight: 16 } },
+        h("div", { style: { minWidth: 0 } },
           h("div", { style: { fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", fontWeight: 800, color: TURQL, fontFamily: M2 } }, T("\u00c9curie", "Stable", "Cuadra", "Scuderia", "\u53a9\u820e")),
           h("div", { style: { fontSize: 13, color: "#DCE3E8", fontFamily: M2, marginTop: 3, lineHeight: 1.45 } },
             h("b", { style: { color: "#F4F6F7" } }, inv.pseudo),
@@ -30345,7 +30345,7 @@ function AlbumsCheval(props) {
         return h("div", { key: o.ident.id || iA, style: { display: "flex", alignItems: "center", gap: 10, marginBottom: iA < propAlbums.length - 1 ? 9 : 0 } },
           h("div", { style: { width: 46, height: 46, borderRadius: 10, overflow: "hidden", flexShrink: 0, background: "#0B1116", border: "1px solid rgba(255,255,255,0.1)" } },
             cov ? (estV ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: tA(0.6) } }, "\ud83d\udcc1")),
-          h("div", { style: { flex: 1, minWidth: 0 } },
+          h("div", { style: { minWidth: 0 } },
             h("div", { style: { fontFamily: C9, fontSize: 12.5, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, alb.nom),
             h("div", { style: { fontFamily: M9, fontSize: 10, color: "#8A99A1" } }, ((alb.photos || []).length) + " " + T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa"))),
           h("button", { onClick: function () { repondreProp(o.ident.id, true); }, "aria-label": "Accepter", style: { width: 34, height: 34, borderRadius: "50%", border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 15, fontWeight: 800, cursor: "pointer", flexShrink: 0 } }, "\u2713"),
@@ -30501,7 +30501,7 @@ function AlbumsCheval(props) {
                 var pv = c.profil || {}; var estMoi = !!(moi && c.user_id === moi.id);
                 return h("div", { key: c.id, style: { display: "flex", gap: 9, padding: "9px 0", borderBottom: "1px solid rgba(255,255,255,0.06)" } },
                   h("div", { style: { width: 30, height: 30, borderRadius: "50%", flexShrink: 0, background: tA(0.18), backgroundImage: pv.avatar_url ? "url(" + pv.avatar_url + ")" : "none", backgroundSize: "cover", backgroundPosition: "center", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: C9, fontSize: 12, color: tnT } }, pv.avatar_url ? null : String(pv.pseudo || "?").charAt(0).toUpperCase()),
-                  h("div", { style: { flex: 1, minWidth: 0 } },
+                  h("div", { style: { minWidth: 0 } },
                     h("div", { style: { fontFamily: M9, fontSize: 11.5, fontWeight: 700, color: "#EDF2F5" } }, pv.pseudo || "\u2014"),
                     h("div", { style: { fontFamily: M9, fontSize: 12.5, color: "#C9D3D8", marginTop: 2, wordBreak: "break-word" } }, c.texte)),
                   h("div", { style: { display: "flex", flexDirection: "column", gap: 4, flexShrink: 0 } },
@@ -30605,23 +30605,15 @@ function AlbumsPromus(props) {
       if (!phsA.length) return null;
       var phsD = [];
       return h("div", null, /* 31/07 : proposition 1 — vedette large + rail qui defile (choix Blandine) */
-        (function () { /* 31/07 : diptyque photo + video (idee Blandine) — une video toujours visible */
+        (function () { /* 31/07 : plus de grande photo a la une — seule la video reste en grand (demande Blandine) */
           var estV = function (uX) { return (typeof estUrlVideo === "function" && estUrlVideo(uX)); };
-          var ph0 = null, vd0 = null;
-          phsA.forEach(function (uX) { if (!ph0 && !estV(uX)) ph0 = uX; if (!vd0 && estV(uX)) vd0 = uX; });
-          if (!ph0 && !vd0) return null;
-          var vign = function (uX, estVid, plein) {
-            return h("div", { key: "dpt" + (estVid ? "v" : "p"), role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uX); else if (props.onTout) props.onTout(); }, style: { flex: plein ? "1 1 100%" : "1 1 0", minWidth: 0, height: plein ? 218 : 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(estVid ? 0.5 : 0.35), cursor: "pointer", position: "relative", background: "#04070A" } },
-              estVid ? h("video", { src: uX + "#t=0.01", muted: true, loop: true, autoPlay: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
-                     : h("img", { src: uX, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
-              estVid ? h("div", { style: { position: "absolute", left: 9, bottom: 8, fontSize: 8, letterSpacing: "0.2em", color: "rgba(244,247,250,0.85)", textShadow: "0 1px 6px rgba(0,0,0,0.8)" } }, "\u25b6\ufe0e " + T("VID\u00c9O", "VIDEO", "V\u00cdDEO", "VIDEO", "\u52d5\u753b", "VIDEO")) : null);
-          };
-          var duo = [];
-          if (ph0 && vd0) { duo = [vign(ph0, false, false), vign(vd0, true, false)]; }
-          else if (ph0) { duo = [vign(ph0, false, true)]; }
-          else { duo = [vign(vd0, true, true)]; }
-          phsD = [ph0, vd0].filter(Boolean);
-          return h("div", { style: { display: "flex", gap: 10, marginTop: 12 } }, duo);
+          var vd0 = null;
+          phsA.forEach(function (uX) { if (!vd0 && estV(uX)) vd0 = uX; });
+          phsD = vd0 ? [vd0] : [];
+          if (!vd0) return null;
+          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(vd0); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, height: 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.5), cursor: "pointer", position: "relative", background: "#04070A" } },
+            h("video", { src: vd0 + "#t=0.01", muted: true, loop: true, autoPlay: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+            h("div", { style: { position: "absolute", left: 10, bottom: 8, fontSize: 8, letterSpacing: "0.2em", color: "rgba(244,247,250,0.85)", textShadow: "0 1px 6px rgba(0,0,0,0.8)" } }, "\u25b6\ufe0e " + T("VID\u00c9O", "VIDEO", "V\u00cdDEO", "VIDEO", "\u52d5\u753b", "VIDEO")));
         })(),
         h("div", { ref: function (elC) {
           if (!elC || elC.__autoDefile) return; elC.__autoDefile = true;
@@ -30634,8 +30626,8 @@ function AlbumsPromus(props) {
             var maxD = elC.scrollWidth - elC.clientWidth;
             if (maxD <= 0) return;
             if (elC.scrollLeft >= maxD - 1) { elC.scrollTo({ left: 0, behavior: "smooth" }); }
-            else { elC.scrollLeft += 0.6; }
-          }, 30);
+            else { elC.scrollLeft += 1.4; } /* 31/07 : defilement plus franc (il ne tournait pas assez pour se voir) */
+          }, 28);
         }, style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 12, paddingBottom: 2 } },
         phsA.filter(function (uR) { return phsD.indexOf(uR) < 0; }).map(function (uP, iP) {
           var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
@@ -31333,7 +31325,7 @@ function EcranCheval() {
             var lblT2 = rareteIndice(vT2);
             var nmC2 = String(c.nom || "");
             var mSp2 = nmC2.match(/^(.*?)\s+(de\s.+|d\'.+|du\s.+|des\s.+)$/i);
-            return h("div", { style: { flex: 1, minWidth: 0 } },
+            return h("div", { style: { minWidth: 0 } },
               h("h1", { style: { margin: 0, fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 31, lineHeight: 1.06, letterSpacing: 1, background: "linear-gradient(180deg,#FFFFFF,#C3CDD2)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" } }, (mSp2 ? mSp2[1] : nmC2).toUpperCase()),
               mSp2 ? h("div", { style: { marginTop: 3, fontFamily: "'Cinzel',serif", fontSize: 13.5, letterSpacing: "0.2em", textTransform: "uppercase", color: teinteCl } }, mSp2[2]) : null,
               lblT2 ? h("div", { style: { marginTop: 9, display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 13px", borderRadius: 999, border: "1px solid " + tA(0.45) } },
@@ -31469,10 +31461,10 @@ function EcranCheval() {
 
 
         cristal("perf"),
-        h("div", { id: "chapPerf", style: { display: "flex", gap: 12, alignItems: "flex-start" } }, /* 31/07 : titre de chapitre a la verticale (maquette 5) */
-          h("div", { style: { width: 30, flex: "0 0 30px", display: "flex", justifyContent: "center", paddingTop: 6 } },
+        h("div", { id: "chapPerf", style: { position: "relative" } }, /* 31/07 : titre en surimpression, plus de decalage */
+          h("div", { style: { position: "absolute", left: 1, top: 4, width: 14, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
             h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10.5, letterSpacing: "0.32em", color: teinteCl, fontWeight: 800, whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.9), 0 0 12px " + tA(0.45) } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen"))),
-          h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 52px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
+          h("div", { style: { minWidth: 0 } }, h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 52px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
 
@@ -31584,7 +31576,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
             h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 20px", borderRadius: 16, position: "relative", border: "1px solid " + tA(0.3 + pA * 0.09) + "", background: "linear-gradient(135deg, " + tA(0.06 + pA * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pA >= 3 ? "0 0 " + (12 + pA * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pA * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
               imgDisc ? h("div", { style: { width: tPhoto, height: tPhoto, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
                 h("img", { src: imgDisc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
-              h("div", { style: { flex: 1, minWidth: 0 } },
+              h("div", { style: { minWidth: 0 } },
                 h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pA, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
                   h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
@@ -31595,27 +31587,27 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
                 h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
         })())),
         cristal("medias"),
-        h("div", { id: "chapMedias", style: { display: "flex", gap: 12, alignItems: "flex-start" } },
-          h("div", { style: { width: 30, flex: "0 0 30px", display: "flex", justifyContent: "center", paddingTop: 6 } },
+        h("div", { id: "chapMedias", style: { position: "relative" } },
+          h("div", { style: { position: "absolute", left: 1, top: 4, width: 14, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
             h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10.5, letterSpacing: "0.32em", color: teinteCl, fontWeight: 800, whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.9), 0 0 12px " + tA(0.45) } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien"))),
-          h("div", { style: { flex: 1, minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } })),
+          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } })),
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */)),
         cristal("fil"),
-        h("div", { id: "chapFil", style: { display: "flex", gap: 12, alignItems: "flex-start" } },
-          h("div", { style: { width: 30, flex: "0 0 30px", display: "flex", justifyContent: "center", paddingTop: 6 } },
+        h("div", { id: "chapFil", style: { position: "relative" } },
+          h("div", { style: { position: "absolute", left: 1, top: 4, width: 14, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
             h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10.5, letterSpacing: "0.32em", color: teinteCl, fontWeight: 800, whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.9), 0 0 12px " + tA(0.45) } }, T("Le fil", "The feed", "El hilo", "Il filo", "フィード", "Der Feed"))),
-          h("div", { style: { flex: 1, minWidth: 0 } },  h("div", { id: "chapFil" }, h(MurHype, { cible: cibleCh, compact: true, rail: true, momentsSeuls: true, teinte: teinte, onOuvrirMedia: function (uM2) { try { setVisionneuse(uM2); } catch (eOm2) { } }, onVoirTout: function () { setPanneau("souvenirs"); } })),
+          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapFil" }, h(MurHype, { cible: cibleCh, compact: true, rail: true, momentsSeuls: true, teinte: teinte, onOuvrirMedia: function (uM2) { try { setVisionneuse(uM2); } catch (eOm2) { } }, onVoirTout: function () { setPanneau("souvenirs"); } })),
 
 
         /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
         /* 30/07: encart Sellerie retire a la demande de Blandine */)),
         cristal("sante"),
-        h("div", { id: "chapSante", style: { display: "flex", gap: 12, alignItems: "flex-start" } },
-          h("div", { style: { width: 30, flex: "0 0 30px", display: "flex", justifyContent: "center", paddingTop: 6 } },
+        h("div", { id: "chapSante", style: { position: "relative" } },
+          h("div", { style: { position: "absolute", left: 1, top: 4, width: 14, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
             h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 10.5, letterSpacing: "0.32em", color: teinteCl, fontWeight: 800, whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.9), 0 0 12px " + tA(0.45) } }, T("Santé & sellerie", "Health & tack", "Salud", "Salute", "健康", "Gesundheit"))),
-          h("div", { style: { flex: 1, minWidth: 0 } },  h("div", { className: "rise", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, animationDelay: ".175s", marginBottom: 18 } },
+          h("div", { style: { minWidth: 0 } },  h("div", { className: "rise", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, animationDelay: ".175s", marginBottom: 18 } },
           [["clinique", "\ud83e\ude7a", T("Clinique v\u00e9t\u00e9rinaire", "Vet clinic", "Cl\u00ednica veterinaria", "Clinica veterinaria", "\u52d5\u7269\u75c5\u9662", "Tierklinik"), T("Soins & conseils", "Care & advice", "Cuidados y consejos", "Cure e consigli", "\u30b1\u30a2\u3068\u52a9\u8a00", "Pflege & Beratung")],
            ["sellerie", "\ud83e\uddf5", T("Sellerie", "Tack room", "Guadarn\u00e9s", "Selleria", "\u99ac\u5177", "Sattelkammer"), T("\u00c9quipement & codes promo", "Gear & promo codes", "Equipo y c\u00f3digos promo", "Attrezzatura e codici promo", "\u88c5\u5099\u3068\u30af\u30fc\u30dd\u30f3", "Ausr\u00fcstung & Promocodes")]].map(function (cS) {
             var imgSq = "";
@@ -31638,7 +31630,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
             h("div", { className: "qr" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM19 14v6M17 19h3" })))),
           h("button", { className: "btnGhost", onClick: partagerFiche }, T("G\u00e9n\u00e9rer un lien", "Generate a link", "Generar enlace", "Genera un link", "\u30ea\u30f3\u30af\u3092\u751f\u6210", "Link erstellen")),
           (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) ? h("div", { style: { margin: "14px 0 0", borderRadius: 20, border: "1px solid " + (partageEH ? tA(0.55) : "rgba(255,255,255,0.09)"), background: "rgba(17,20,23,0.72)", backdropFilter: "blur(10px)", padding: "16px 16px", display: "flex", alignItems: "center", gap: 14, boxShadow: partageEH ? ("0 0 26px " + tA(0.18)) : "none", transition: "all .4s ease" } },
-      h("div", { style: { flex: 1, minWidth: 0 } },
+      h("div", { style: { minWidth: 0 } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, color: "#F4F7FA", letterSpacing: "0.02em" } }, T("Partager sur l'Écurie Hype", "Share on the Écurie Hype", "Compartir en la Écurie Hype", "Condividi sull'Écurie Hype", "Écurie Hype に共有", "Im Hype-Stall teilen")),
         h("div", { style: { marginTop: 4, fontSize: 11, fontWeight: 300, color: "#8A96A2", lineHeight: 1.5 } }, T("Ton cheval apparaîtra dans la galerie de la communauté.", "Your horse will appear in the community gallery.", "Tu caballo aparecerá en la galería de la comunidad.", "Il tuo cavallo apparirà nella galleria della comunità.", "コミュニティのギャラリーに表示されます。", "Dein Pferd erscheint in der Community-Galerie."))),
       h("div", { role: "switch", "aria-checked": partageEH ? "true" : "false", onClick: basculerPartageEH, style: { flex: "0 0 auto", width: 52, height: 30, borderRadius: 999, cursor: "pointer", position: "relative", background: partageEH ? ("linear-gradient(120deg," + tA(0.85) + "," + (teinteCl || "#5FE9F0") + ")") : "rgba(255,255,255,0.1)", border: "1px solid " + (partageEH ? "rgba(95,233,240,0.8)" : "rgba(255,255,255,0.15)"), boxShadow: partageEH ? ("0 0 18px " + tA(0.55)) : "none", transition: "all .35s ease" } },
@@ -32532,7 +32524,7 @@ function EcranMessagerie() {
           return h("div", { key: c.id, onClick: function () { ouvrirConversation(c); }, style: { display: "flex", alignItems: "center", gap: 12, padding: 12, marginBottom: 8, background: MSG_COL.carte, border: "1px solid " + (c.nonLus ? "rgba(32,217,245,0.28)" : MSG_COL.carteBord), borderRadius: 20, cursor: "pointer" } },
             c.type === "dm" ? h("img", { src: (typeof avSrc === "function" ? avSrc(c.autreAvatar) : c.autreAvatar) || "", style: { width: 52, height: 52, borderRadius: "50%", objectFit: "cover", border: "1.5px solid rgba(244,247,250,0.10)", background: "#20262B" }, onError: function (e) { e.target.style.visibility = "hidden"; } }) :
               h("div", { style: { width: 52, height: 52, borderRadius: 16, background: "#20262B", border: "1.5px solid rgba(32,217,245,0.22)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", color: MSG_COL.turquoise, fontSize: 18, flexShrink: 0 } }, (titre || "?").charAt(0).toUpperCase()),
-            h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { minWidth: 0 } },
               h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 } },
                 h("div", { style: { fontSize: 14.5, fontWeight: 600, color: MSG_COL.blanc, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titre),
                 h("div", { style: { fontSize: 10.5, color: MSG_COL.gris, flexShrink: 0, marginLeft: 8 } }, tempsRelatifMsg(c.dernierLe, lg))),
@@ -32587,7 +32579,7 @@ function EcranMessagerie() {
       h("button", { onClick: retourListe, "aria-label": "Retour", style: { width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", color: MSG_COL.turquoise, fontSize: 24, background: "none", border: "none", cursor: "pointer", flexShrink: 0, padding: 0, WebkitTapHighlightColor: "transparent" } }, "\u2039"),
       convActive && convActive.type === "dm" ? h("img", { src: (typeof avSrc === "function" ? avSrc(convActive.autreAvatar) : convActive.autreAvatar) || "", style: { width: 38, height: 38, borderRadius: "50%", objectFit: "cover", background: "#20262B", flexShrink: 0 } }) :
         h("div", { style: { width: 38, height: 38, borderRadius: 12, background: "#20262B", border: "1.5px solid rgba(32,217,245,0.22)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", color: MSG_COL.turquoise, fontSize: 15, flexShrink: 0 } }, (titreFil || "?").charAt(0).toUpperCase()),
-      h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, color: MSG_COL.blanc, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titreFil)),
+      h("div", { style: { minWidth: 0 } }, h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, color: MSG_COL.blanc, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titreFil)),
       convActive && convActive.type === "dm" ? h("div", { style: { position: "relative", flexShrink: 0 } },
         h("button", { onClick: function () { setMenuOuvert(!menuOuvert); }, "aria-label": "Options", style: { width: 34, height: 34, borderRadius: "50%", background: "rgba(255,255,255,0.05)", border: "1px solid " + MSG_COL.carteBord, color: MSG_COL.blanc, fontSize: 16, cursor: "pointer" } }, "\u22EF"),
         menuOuvert ? h("div", { style: { position: "absolute", top: 40, right: 0, minWidth: 200, background: "#1B2126", border: "1px solid " + MSG_COL.carteBord, borderRadius: 14, padding: 6, zIndex: 20, boxShadow: "0 14px 34px rgba(0,0,0,0.5)" } },
@@ -33247,7 +33239,7 @@ function GalopDepliant({ galop, tr, chapitres, coursTermines, etoiles, verrouill
         /* en-tete tapable */
         h("button", { onClick: onToggle, style: { width: "100%", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 13, padding: "13px 15px 13px 16px", textAlign: "left" } },
             h("div", { style: { position: "relative", width: 56, height: 56, borderRadius: 14, flexShrink: 0, overflow: "hidden", boxShadow: "0 0 0 1.5px " + brd + ", 0 0 16px " + halo, background: url ? ("url(" + url + ") center/cover no-repeat") : "#0E1A20", filter: inerte ? "grayscale(1) brightness(0.45)" : "none", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 } }, url ? null : (galop.icone || "")),
-            h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { minWidth: 0 } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 15, letterSpacing: 0.4, color: "#fff" } }, tr(galop.titre)),
                 h("div", { style: { fontSize: 10.5, color: "rgba(234,241,244,0.72)", marginTop: 2 } }, tr(galop.sousTitre)),
                 inerte
@@ -43187,7 +43179,7 @@ function EcranQuetes() {
         faites.map(function (q) {
             return h("div", { key: q.id, className: "qte-faite" },
                 h("div", { className: "qte-hex or" }, qIcone(q.icone)),
-                h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontSize: 13, fontWeight: 700, color: "#F4F6F7" } }, tr(q.titre))),
+                h("div", { style: { minWidth: 0 } }, h("div", { style: { fontSize: 13, fontWeight: 700, color: "#F4F6F7" } }, tr(q.titre))),
                 h("div", { className: "qte-fxp" }, "+" + q.xp + " XP"),
                 h("div", { className: "qte-fcheck" }, qIcone("check")));
         })
