@@ -30620,7 +30620,7 @@ function AlbumsPromus(props) {
           phsD = vd0 ? [vd0] : [];
           if (!vd0) return null;
           return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(vd0); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, height: 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.5), cursor: "pointer", position: "relative", background: "#04070A" } },
-            h("video", { src: vd0 + "#t=0.01", muted: true, loop: true, autoPlay: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+            h("video", { src: vd0 + "#t=0.01", muted: true, loop: true, controls: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
             h("div", { style: { position: "absolute", left: 10, bottom: 8, fontSize: 8, letterSpacing: "0.2em", color: "rgba(244,247,250,0.85)", textShadow: "0 1px 6px rgba(0,0,0,0.8)" } }, "\u25b6\ufe0e " + T("VID\u00c9O", "VIDEO", "V\u00cdDEO", "VIDEO", "\u52d5\u753b", "VIDEO")));
         })(),
         h("div", { ref: function (elC) {
@@ -31187,6 +31187,13 @@ function EcranCheval() {
     try { listerCommentairesPhoto(uV).then(function (r) { setCmV((r && r.data) || []); }).catch(function () { setCmV([]); }); } catch (e2) { setCmV([]); }
   }
   React.useEffect(function () { if (visionneuse) chargerLkCm(visionneuse); else { setCmPanneau(false); setCmTexte(""); } }, [visionneuse]);
+  React.useEffect(function () { /* 31/07 : iOS tue la page quand trop de videos tournent — on met tout en pause a l ouverture d un media (bug signale par Blandine) */
+    try {
+      var vids = document.querySelectorAll("video");
+      if (visionneuse) { for (var iv = 0; iv < vids.length; iv++) { try { if (!vids[iv].closest(".souvVoile")) vids[iv].pause(); } catch (e1) { } } }
+      else { for (var jv = 0; jv < vids.length; jv++) { try { if (vids[jv].autoplay) vids[jv].play().catch(function () { }); } catch (e2) { } } }
+    } catch (e3) { }
+  }, [visionneuse]);
   async function basculerLk() {
     if (!visionneuse) return;
     var av = lkV.jaiLike;
@@ -31719,7 +31726,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
         : h("div", { className: "empty" }, T("Aucune vidéo pour l'instant — ajoute-en une depuis Souvenirs.", "No videos yet — add one from Memories.", "Aún sin vídeos.", "Ancora nessun video.", "まだ動画はありません。", "Noch keine Videos."))) : null,
       panneau === "palmares" ? h("div", { style: { padding: "8px 16px 0" } },
         h("div", { style: { position: "relative", borderRadius: 18, overflow: "hidden", marginBottom: 16, aspectRatio: "966/720", maxHeight: "44svh", background: "#04070A" } }, /* 30/07 : coin competition — la video suit la teinte de la fiche (maquette validee) */
-          h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
+          h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, controls: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.15) 0%, rgba(6,7,9,0) 35%, rgba(6,7,9,0.55) 78%, #060709 100%)" } })),
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : null,
         (c.palmares && c.palmares.length) ? h("div", { className: "panel" }, c.palmares.map(prow)) : h("div", { className: "empty" }, T("Le palmarès commence ici.", "The record starts here.", "El palmarés empieza aquí.", "Il palmarès inizia qui.", "戦績はここから始まります。", "Die Erfolge beginnen hier.")),
