@@ -31320,7 +31320,7 @@ function EcranCheval() {
     return t.replace(/jeunes?\s+chevaux/gi, "JC").replace(/\s*\u00b7\s*obstacle/i, " \u00b7 obst.");
   }
   function cristal(kC) { /* 31/07 : separateur cristal entre chapitres (maquette 5 validee) */
-    return h("div", { key: "cr" + kC, style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 28px" } }, /* 31/07 : plus d air sous le cristal */
+    return h("div", { key: "cr" + kC, style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 48px" } }, /* 31/07 soir : ecart PLUS GRAND et SYMETRIQUE de part et d autre du cristal (demande Blandine) */
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, transparent, " + tA(0.4) + ")" } }),
       h("span", { style: { color: teinteCl, fontSize: 10 } }, "\u25c6"),
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.4) + ", transparent)" } }));
@@ -31634,7 +31634,7 @@ function EcranCheval() {
         h("div", { id: "chapFil", style: { position: "relative" } },
           h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
             h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Le fil", "The feed", "El hilo", "Il filo", "フィード", "Der Feed"))),
-          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapFil" }, h(MurHype, { cible: cibleCh, compact: true, rail: true, sansTitre: true, momentsSeuls: true, teinte: teinte, onOuvrirMedia: function (uM2) { try { setVisionneuse(uM2); } catch (eOm2) { } }, onVoirTout: function () { setPanneau("souvenirs"); } })),
+          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapFil" }, h(MurHype, { cible: cibleCh, compact: true, rail: true, sansTitre: true, teinte: teinte, onOuvrirMedia: function (uM2) /* 31/07 soir : momentsSeuls RETIRE — les moments s affichent aussi SANS texte (decision Blandine) */ { try { setVisionneuse(uM2); } catch (eOm2) { } }, onVoirTout: function () { setPanneau("souvenirs"); } })),
 
 
         /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
@@ -31648,17 +31648,18 @@ function EcranCheval() {
            ["sellerie", "\ud83e\uddf5", T("Sellerie", "Tack room", "Guadarn\u00e9s", "Selleria", "\u99ac\u5177", "Sattelkammer"), T("\u00c9quipement & codes promo", "Gear & promo codes", "Equipo y c\u00f3digos promo", "Attrezzatura e codici promo", "\u88c5\u5099\u3068\u30af\u30fc\u30dd\u30f3", "Ausr\u00fcstung & Promocodes")]].map(function (cS) {
             var imgSq = "";
             try { if (typeof HYPE_IMGS !== "undefined") imgSq = (cS[0] === "clinique") ? (HYPE_IMGS.encartVeto || HYPE_IMGS.cliniqueEncart || "") : (HYPE_IMGS.sellerieEncart || ""); } catch (eIS) { }
-            return h("div", { key: "sq" + cS[0], role: "button", onClick: function () { setEcran(cS[0]); }, style: { position: "relative", overflow: "hidden", border: "1px solid " + tA(0.35), borderRadius: 18, background: "rgba(0,0,0,0.35)", minHeight: 132, padding: "18px 10px 15px", textAlign: "center", cursor: "pointer" } },
+            return h("div", { key: "sq" + cS[0], role: "button", onClick: function () { setEcran(cS[0]); }, style: { position: "relative", overflow: "hidden", border: "1px solid " + tA(0.35), borderRadius: 20, background: "rgba(0,0,0,0.35)", minHeight: 172, padding: "18px 10px 16px", textAlign: "center", cursor: "pointer" } }, /* 31/07 soir : les deux cartes agrandies (demande Blandine) */
               imgSq ? h("img", { src: imgSq, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 32%", display: "block" } }) : null,
         null, /* 30/07: retour des images de couverture (demande Blandine), memes cles que les anciens encarts pleine largeur */
               imgSq ? h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0.06) 30%, rgba(4,6,9,0.82) 100%)" } }) : null,
               h("div", { style: { position: "relative", zIndex: 2 } },
                 imgSq ? null : h("div", { style: { width: 44, height: 44, borderRadius: "50%", margin: "0 auto", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19 } }, cS[1]),
-                h("div", { style: { marginTop: imgSq ? 58 : 10, fontFamily: "'Cinzel',serif", fontSize: 12.5, fontWeight: 600, color: "#F0F4F6", lineHeight: 1.2, textShadow: imgSq ? "0 2px 12px rgba(0,0,0,0.85)" : "none" } }, cS[2]),
-                h("div", { style: { marginTop: 4, fontSize: 9, color: imgSq ? "rgba(240,245,248,0.85)" : "#9AA2AC", textShadow: imgSq ? "0 1px 8px rgba(0,0,0,0.85)" : "none" } }, cS[3])));
+                h("div", { style: { marginTop: imgSq ? 98 : 14, fontFamily: "'Cinzel',serif", fontSize: 14, fontWeight: 600, color: "#F0F4F6", lineHeight: 1.2, textShadow: imgSq ? "0 2px 12px rgba(0,0,0,0.85)" : "none" } }, cS[2]),
+                h("div", { style: { marginTop: 5, fontSize: 10, color: imgSq ? "rgba(240,245,248,0.85)" : "#9AA2AC", textShadow: imgSq ? "0 1px 8px rgba(0,0,0,0.85)" : "none" } }, cS[3])));
           })))),
-        cristal("partage"), h("div", { id: "chapPartage", className: "eyebrow2 rise", style: { animationDelay: ".18s" } }, T("Liens & partage", "Links & sharing", "Enlaces", "Link e condivisione", "\u30ea\u30f3\u30af\u3068\u5171\u6709", "Links & Teilen")),
-        h("div", { className: "share rise", style: { animationDelay: ".18s" } },
+        cristal("partage"), h("div", { id: "chapPartage", style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } }, /* 31/07 soir : dernier titre horizontal passe a la verticale dans la marge, comme les autres chapitres */
+          h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Liens & partage", "Links & sharing", "Enlaces", "Link e condivisione", "\u30ea\u30f3\u30af\u3068\u5171\u6709", "Links & Teilen"))),
+        h("div", { className: "share rise", style: { position: "relative", animationDelay: ".18s" } },
           h("div", { className: "row" },
             h("div", { className: "txt" },
               h("div", { className: "t" }, T("Partager sa fiche", "Share this profile", "Compartir ficha", "Condividi la scheda", "\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u5171\u6709", "Profil teilen")),
