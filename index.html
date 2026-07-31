@@ -30597,7 +30597,7 @@ function AlbumsPromus(props) {
       ((galeriePh || [])).forEach(function (uV) { if (uV && typeof estUrlVideo === "function" && estUrlVideo(uV)) toutesV.push(uV); });
       (albums || []).forEach(function (aV) { ((aV && aV.photos) || []).forEach(function (uV2) { if (uV2 && typeof estUrlVideo === "function" && estUrlVideo(uV2) && toutesV.indexOf(uV2) < 0) toutesV.push(uV2); }); });
       if (!toutesV.length) return null;
-      return h("div", { role: "button", onClick: function () { if (props.onVoirVideos) props.onVoirVideos(); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, position: "relative", height: 150, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.4), cursor: "pointer", background: "#07080A" } },
+      return h("div", { role: "button", onClick: function () { if (props.onVoirVideos) props.onVoirVideos(); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, marginLeft: -6, marginRight: -6, position: "relative", height: 196, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.4), cursor: "pointer", background: "#07080A" } },
         h("video", { src: toutesV[0] + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.92 } }), /* 31/07 : on voit enfin la video (demande Blandine) */
         h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 45%, rgba(4,6,9,0.72) 100%)" } }),
         h("div", { style: { position: "absolute", left: 14, bottom: 10 } },
@@ -30618,7 +30618,7 @@ function AlbumsPromus(props) {
           phsA.forEach(function (uX) { if (!vd0 && estV(uX)) vd0 = uX; });
           phsD = vd0 ? [vd0] : [];
           if (!vd0) return null;
-          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(vd0); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, height: 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.5), cursor: "pointer", position: "relative", background: "#04070A" } },
+          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(vd0); else if (props.onTout) props.onTout(); }, style: { marginTop: 26, height: 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.5), cursor: "pointer", position: "relative", background: "#04070A" } },
             h("video", { src: vd0 + "#t=0.01", muted: true, loop: true, autoPlay: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
             h("div", { style: { position: "absolute", left: 10, bottom: 8, fontSize: 8, letterSpacing: "0.2em", color: "rgba(244,247,250,0.85)", textShadow: "0 1px 6px rgba(0,0,0,0.8)" } }, "\u25b6\ufe0e " + T("VID\u00c9O", "VIDEO", "V\u00cdDEO", "VIDEO", "\u52d5\u753b", "VIDEO")));
         })(),
@@ -30638,7 +30638,7 @@ function AlbumsPromus(props) {
             else if (elC.__dirD < 0 && elC.scrollLeft <= 1) elC.__dirD = 1;
             elC.scrollLeft += 1.1 * elC.__dirD;
           }, 28);
-        }, style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 12, paddingBottom: 2 } },
+        }, style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 26, paddingBottom: 2 } },
         phsA.filter(function (uR) { return phsD.indexOf(uR) < 0; }).map(function (uP, iP) {
           var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
           return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 104, height: 126, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.3), cursor: "pointer" } },
@@ -31766,13 +31766,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
             if (fA) { fA(); }
             setTimeout(function () { try { var pan = document.getElementById("panneauCheval"); if (pan) pan.scrollTo({ top: pan.scrollHeight, behavior: "smooth" }); } catch (eS) { } }, 900);
           } })),
-        h("div", { className: "souvin", style: { display: "flex", alignItems: "center", gap: 9, margin: "26px 16px 2px", animationDelay: ".26s" } },
-          h("span", { style: { width: 7, height: 7, background: teinte, transform: "rotate(45deg)", boxShadow: "0 0 10px " + tA(0.8) + "", flexShrink: 0 } }),
-          h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 700, letterSpacing: 1 } }, T("Le fil", "The feed", "El hilo", "Il filo", "フィード", "Der Feed")),
-          h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("les moments racontés", "the moments you tell", "los momentos contados", "i momenti raccontati", "語られた瞬間", "die erzählten Momente")),
-          h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
-        h("div", { className: "souvin", style: { animationDelay: ".3s" } },
-          null /* 31/07 : fil doublon retire du panneau souvenirs (le fil vit sur la fiche, la page seconde aura sa grille) */)) : null,
+        null /* 31/07 : titre + encart vide du fil retires du panneau (le fil vit sur la fiche) */) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
         h("div", { style: { fontSize: 42, marginTop: 26 } }, "🩺"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F6F7", marginTop: 14 } }, T("Le passeport arrive", "The passport is coming", "El pasaporte llega pronto", "Il passaporto sta arrivando", "パスポートは準備中", "Der Pass kommt bald")),
