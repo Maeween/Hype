@@ -31307,6 +31307,22 @@ function EcranCheval() {
           })(),
           h("div", { className: "ic", onClick: function () { setMenuFiche(true); }, style: { flex: "0 0 auto" } }, h("svg", { viewBox: "0 0 24 24" }, h("g", null, h("circle", { cx: 12, cy: 5, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 12, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 19, r: 1.4, fill: "#EAF2F4", stroke: "none" }))))),
 
+        (function () { /* 31/07 : ligne de cles discrete + sommaire collant (maquette 5+6 validee) */
+          var infoL = (c.info || "").split("\u00b7").map(function (x) { return x.trim(); }).filter(Boolean).join(" \u00b7 ");
+          var ogL = c.origines || {};
+          var ixL = (ogL.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; })[0];
+          var bout = [];
+          if (ixL) bout.push(String(ixL[0] || "IPO") + " " + String(ixL[1]));
+          if (infoL) bout.push(infoL);
+          if (!bout.length) return null;
+          return h("div", { style: { padding: "0 16px 6px", fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 13.5, lineHeight: 1.45, color: "rgba(244,247,250,0.5)" } }, bout.join(" \u00b7 "));
+        })(),
+
+        h("div", { style: { position: "sticky", top: 0, zIndex: 9, display: "flex", gap: 7, padding: "12px 16px", marginTop: 12, background: "rgba(6,7,9,0.94)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderBottom: "1px solid rgba(255,255,255,0.06)", overflowX: "auto", scrollbarWidth: "none" } },
+          [["chvInfos", T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71", "Herkunft")], ["chapPerf", T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen")], ["chapMedias", T("M\u00e9dias", "Media", "Medios", "Media", "\u30e1\u30c7\u30a3\u30a2", "Medien")], ["chapFil", T("Le fil", "The feed", "El hilo", "Il filo", "\u30d5\u30a3\u30fc\u30c9", "Der Feed")], ["chapSante", T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit")], ["chapPartage", T("Partage", "Sharing", "Compartir", "Condivisione", "\u5171\u6709", "Teilen")]].map(function (nv) {
+            return h("button", { key: "nv" + nv[0], onClick: function () { try { var elN = document.getElementById(nv[0]); if (elN) elN.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eN) { } }, style: { flex: "0 0 auto", padding: "7px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.04)", color: "rgba(237,242,245,0.66)", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.08em", fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, nv[1]);
+          })),
+
         (function () {
           var ogH = c.origines || {};
           var infoP = (c.info || "").split("\u00b7").map(function (x) { return x.trim(); }).filter(Boolean);
@@ -31417,7 +31433,7 @@ function EcranCheval() {
             statsCh[editStat.cle] ? h("button", { onClick: function(){ fixerStat(null); }, style: { display: "block", margin: "14px auto 0", background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, T("Effacer", "Clear", "Borrar", "Cancella", "クリア", "Löschen")) : null)) : null,
 
 
-        h("div", { className: "eyebrow2 rise", style: { animationDelay: ".075s" } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen")),
+        h("div", { id: "chapPerf", className: "eyebrow2 rise", style: { animationDelay: ".075s" } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen")),
         h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 52px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
@@ -31540,17 +31556,17 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
 
         /* 30/07: encart Souvenirs (GalerieSouvenirs) retire de la fiche — remplace par la grille Ses photos ; la visionneuse/vedettes vivent desormais via le panneau souvenirs */
         null,
-        h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } }),
+        h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } })),
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */
 
-        h(MurHype, { cible: cibleCh, compact: true, rail: true, momentsSeuls: true, teinte: teinte, onOuvrirMedia: function (uM2) { try { setVisionneuse(uM2); } catch (eOm2) { } }, onVoirTout: function () { setPanneau("souvenirs"); } }),
+        h("div", { id: "chapFil" }, h(MurHype, { cible: cibleCh, compact: true, rail: true, momentsSeuls: true, teinte: teinte, onOuvrirMedia: function (uM2) { try { setVisionneuse(uM2); } catch (eOm2) { } }, onVoirTout: function () { setPanneau("souvenirs"); } })),
 
 
         /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
         /* 30/07: encart Sellerie retire a la demande de Blandine */
-        h("div", { className: "eyebrow2 rise", style: { animationDelay: ".175s" } }, T("Sant\u00e9 & sellerie", "Health & tack room", "Salud y guadarn\u00e9s", "Salute e selleria", "\u5065\u5eb7\u3068\u99ac\u5177", "Gesundheit & Sattelkammer")),
+        h("div", { id: "chapSante", className: "eyebrow2 rise", style: { animationDelay: ".175s" } }, T("Sant\u00e9 & sellerie", "Health & tack room", "Salud y guadarn\u00e9s", "Salute e selleria", "\u5065\u5eb7\u3068\u99ac\u5177", "Gesundheit & Sattelkammer")),
         h("div", { className: "rise", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, animationDelay: ".175s", marginBottom: 18 } },
           [["clinique", "\ud83e\ude7a", T("Clinique v\u00e9t\u00e9rinaire", "Vet clinic", "Cl\u00ednica veterinaria", "Clinica veterinaria", "\u52d5\u7269\u75c5\u9662", "Tierklinik"), T("Soins & conseils", "Care & advice", "Cuidados y consejos", "Cure e consigli", "\u30b1\u30a2\u3068\u52a9\u8a00", "Pflege & Beratung")],
            ["sellerie", "\ud83e\uddf5", T("Sellerie", "Tack room", "Guadarn\u00e9s", "Selleria", "\u99ac\u5177", "Sattelkammer"), T("\u00c9quipement & codes promo", "Gear & promo codes", "Equipo y c\u00f3digos promo", "Attrezzatura e codici promo", "\u88c5\u5099\u3068\u30af\u30fc\u30dd\u30f3", "Ausr\u00fcstung & Promocodes")]].map(function (cS) {
@@ -31566,7 +31582,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
                 h("div", { style: { marginTop: 4, fontSize: 9, color: imgSq ? "rgba(240,245,248,0.85)" : "#9AA2AC", textShadow: imgSq ? "0 1px 8px rgba(0,0,0,0.85)" : "none" } }, cS[3])));
           })),
 
-        h("div", { className: "eyebrow2 rise", style: { animationDelay: ".18s" } }, T("Liens & partage", "Links & sharing", "Enlaces", "Link e condivisione", "\u30ea\u30f3\u30af\u3068\u5171\u6709", "Links & Teilen")),
+        h("div", { id: "chapPartage", className: "eyebrow2 rise", style: { animationDelay: ".18s" } }, T("Liens & partage", "Links & sharing", "Enlaces", "Link e condivisione", "\u30ea\u30f3\u30af\u3068\u5171\u6709", "Links & Teilen")),
         h("div", { className: "share rise", style: { animationDelay: ".18s" } },
           h("div", { className: "row" },
             h("div", { className: "txt" },
