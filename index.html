@@ -30574,37 +30574,37 @@ function AlbumsPromus(props) {
       h("div", { style: { fontSize: 9.5, letterSpacing: "0.3em", textTransform: "uppercase", color: tnT, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } }, T("Ses photos", "Photos", "Sus fotos", "Le sue foto", "\u5199\u771f", "Fotos")),
       h("div", { role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, title: "Nouvel album", style: { marginLeft: "auto", width: 24, height: 24, borderRadius: "50%", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 13, fontWeight: 300, cursor: "pointer" } }, "+")),
     /* 27/07 : 3 colonnes -> 2 (couvertures environ 1,6x plus grandes, demande Blandine). */
-    h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, paddingBottom: 4 } /* 31/07 : deux albums de meme taille par ligne (demande Blandine) */ },
-      [h("div", { key: "tout", onClick: function () { if (props.onTout) props.onTout(); }, role: "button", style: { cursor: "pointer", width: "100%" } },
+    h("div", { "data-hscroll": "1", style: { display: "flex", gap: 11, overflowX: "auto", WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity", touchAction: "pan-x pan-y", paddingBottom: 4 } /* 31/07 soir : deux albums visibles sur un rail qui defile vers les autres (demande Blandine) */ },
+      [h("div", { key: "tout", onClick: function () { if (props.onTout) props.onTout(); }, role: "button", style: { cursor: "pointer", flex: "0 0 calc(50% - 5.5px)", scrollSnapAlign: "start" } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(0.5), background: "#0B1116", boxShadow: "0 14px 28px -18px rgba(0,0,0,0.9)" } },
           props.photoDefaut ? h("img", { src: props.photoDefaut, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", objectPosition: "center 30%" } }) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
           h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
             h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11.5, fontWeight: 700, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, T("Toutes ses photos", "All his photos", "Todas sus fotos", "Tutte le sue foto", "\u3059\u3079\u3066\u306e\u5199\u771f", "Alle Fotos")))))
-      ].concat(albums.slice(0, 5).map(function (alb) {
+      ].concat(albums.slice(0, 10).map(function (alb) {
         var cov = alb.couverture || (alb.photos || [])[0];
         var estV = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
-        return h("div", { key: alb.id, onClick: function () { if (props.onOuvrir) props.onOuvrir(alb.id); }, role: "button", style: { cursor: "pointer", width: "100%" } },
+        return h("div", { key: alb.id, onClick: function () { if (props.onOuvrir) props.onOuvrir(alb.id); }, role: "button", style: { cursor: "pointer", flex: "0 0 calc(50% - 5.5px)", scrollSnapAlign: "start" } },
           h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(0.4), background: "#0B1116", boxShadow: "0 14px 28px -18px rgba(0,0,0,0.9)" } },
             cov ? (estV ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
             estV && cov ? h("span", { style: { position: "absolute", bottom: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#EDF2F5", zIndex: 2 } }, "\u25b6") : null,
             h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
               h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11.5, fontWeight: 700, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, alb.nom))));
-      })).concat(albums.length === 0 ? [h("div", { key: "vide", role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, style: { cursor: "pointer", width: "100%" } },
+      })).concat(albums.length === 0 ? [h("div", { key: "vide", role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, style: { cursor: "pointer", flex: "0 0 calc(50% - 5.5px)", scrollSnapAlign: "start" } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, border: "1.5px dashed " + tA(0.45), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 9, boxSizing: "border-box" } },
           h("div", { style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid " + tA(0.55), display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 16, fontWeight: 300 } }, "+"),
-          h("div", { style: { fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: "#EDF2F5", fontWeight: 700, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u3057\u3044\u30a2\u30eb\u30d0\u30e0", "Neues Album"))))] : []).concat(albums.length > 5 ? [h("button", { key: "vplus", onClick: function () { if (props.onTout) props.onTout(); }, style: { gridColumn: "span 2", border: "1px solid " + tA(0.4), borderRadius: 999, background: "none", padding: "11px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#EDF2F5", cursor: "pointer" } }, T("Voir tous ses albums", "See all albums", "Ver todos los \u00e1lbumes", "Vedi tutti gli album", "\u3059\u3079\u3066\u306e\u30a2\u30eb\u30d0\u30e0", "Alle Alben ansehen") + " (" + albums.length + ")")] : [])),
+          h("div", { style: { fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: "#EDF2F5", fontWeight: 700, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u3057\u3044\u30a2\u30eb\u30d0\u30e0", "Neues Album"))))] : []).concat(albums.length > 10 ? [h("button", { key: "vplus", onClick: function () { if (props.onTout) props.onTout(); }, style: { flex: "0 0 calc(50% - 5.5px)", scrollSnapAlign: "start", aspectRatio: "1 / 1", border: "1px solid " + tA(0.4), borderRadius: 20, background: "none", padding: "11px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#EDF2F5", cursor: "pointer" } }, T("Voir tous ses albums", "See all albums", "Ver todos los \u00e1lbumes", "Vedi tutti gli album", "\u3059\u3079\u3066\u306e\u30a2\u30eb\u30d0\u30e0", "Alle Alben ansehen") + " (" + albums.length + ")")] : [])),
     (function () {
       var toutesV = [];
       ((galeriePh || [])).forEach(function (uV) { if (uV && typeof estUrlVideo === "function" && estUrlVideo(uV)) toutesV.push(uV); });
       (albums || []).forEach(function (aV) { ((aV && aV.photos) || []).forEach(function (uV2) { if (uV2 && typeof estUrlVideo === "function" && estUrlVideo(uV2) && toutesV.indexOf(uV2) < 0) toutesV.push(uV2); }); });
       if (!toutesV.length) return null;
-      return h("div", { role: "button", onClick: function () { if (props.onVoirVideos) props.onVoirVideos(); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, position: "relative", height: 150, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.4), cursor: "pointer", background: "#07080A" } },
+      return h("div", { role: "button", onClick: function () { if (props.onVoirVideos) props.onVoirVideos(); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.4), cursor: "pointer", background: "#07080A" } },
+        h("div", { style: { position: "relative", width: "100%", aspectRatio: "16 / 9", background: "#04070A" } }, /* 31/07 soir : la video reprend ses proportions, plus rien d ecrase (demande Blandine) */
         h("video", { src: toutesV[0] + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.92 } }), /* 31/07 : on voit enfin la video (demande Blandine) */
-        h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 45%, rgba(4,6,9,0.72) 100%)" } }),
-        h("div", { style: { position: "absolute", left: 14, bottom: 10 } },
+        h("div", { style: { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 44, height: 44, borderRadius: "50%", border: "1px solid " + tA(0.6), background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 16 } }, "\u25b6")),
+        h("div", { style: { padding: "10px 14px 11px" } }, /* 31/07 soir : les libelles sortent de l image, fini le chevauchement */
           h("div", { style: { fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: tnT, fontWeight: 700 } }, T("Ses vid\u00e9os", "Videos", "Sus v\u00eddeos", "I suoi video", "\u52d5\u753b", "Videos") + " (" + toutesV.length + ")"),
-          h("div", { style: { marginTop: 4, fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 600, color: "#F4F7FA" } }, T("Le voir en mouvement", "Watch it move", "Verlo en movimiento", "Guardalo in movimento", "\u52d5\u304f\u59ff\u3092\u898b\u308b", "In Bewegung sehen"))),
-        h("div", { style: { position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", width: 40, height: 40, borderRadius: "50%", border: "1px solid " + tA(0.6), background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 15 } }, "\u25b6"));
+          h("div", { style: { marginTop: 4, fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 600, color: "#F4F7FA" } }, T("Le voir en mouvement", "Watch it move", "Verlo en movimiento", "Guardalo in movimento", "\u52d5\u304f\u59ff\u3092\u898b\u308b", "In Bewegung sehen"))));
     })(),
     (function () {
       var phsA = [];
@@ -30633,11 +30633,12 @@ function AlbumsPromus(props) {
             if (pauseD) return;
             var maxD = elC.scrollWidth - elC.clientWidth;
             if (maxD <= 0) return;
-            if (elC.scrollLeft >= maxD - 1) { elC.scrollTo({ left: 0, behavior: "smooth" }); }
-            else { elC.scrollLeft += 1.4; } /* 31/07 : defilement plus franc (il ne tournait pas assez pour se voir) */
+            elC.scrollLeft += 1.4; /* 31/07 : defilement plus franc */
+            if (elC.getAttribute("data-boucle") === "1") { var moitR = elC.scrollWidth / 2; if (elC.scrollLeft >= moitR) elC.scrollLeft -= moitR; } /* 31/07 soir : liste doublee -> retour au point identique, aucun saut visible */
+            else if (elC.scrollLeft >= maxD - 1) { elC.scrollLeft = 0; }
           }, 28);
-        }, style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 12, paddingBottom: 2 } },
-        phsA.filter(function (uR) { return phsD.indexOf(uR) < 0; }).map(function (uP, iP) {
+        }, "data-hscroll": "1", "data-boucle": (phsA.filter(function (uB) { return phsD.indexOf(uB) < 0; }).length >= 4 ? "1" : "0"), style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 12, paddingBottom: 2 } },
+        (function () { var lR = phsA.filter(function (uR) { return phsD.indexOf(uR) < 0; }); return lR.length >= 4 ? lR.concat(lR) : lR; })().map(function (uP, iP) {
           var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
           return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 104, height: 126, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.3), cursor: "pointer" } },
             vP ? h("video", { src: uP + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
@@ -31382,7 +31383,7 @@ function EcranCheval() {
           })),
 
         h("div", { id: "chvInfos", style: { perspective: 1200, margin: "22px 16px 0" } }, /* 31/07 : espace sous le badge */ /* 31/07 : carte Origines qui se retourne (maquette validee) */
-          h("div", { role: "button", onClick: function () { setOrigOuv(!origOuv); }, style: { position: "relative", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", transition: "transform .62s cubic-bezier(.2,.75,.25,1)", transform: origOuv ? "rotateY(180deg)" : "none", cursor: "pointer", height: origOuv ? "min(58svh, 520px)" : "auto", overflow: "hidden" } },
+          h("div", { role: "button", onClick: function () { setOrigOuv(!origOuv); }, style: { position: "relative", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", transition: "transform .62s cubic-bezier(.2,.75,.25,1)", transform: origOuv ? "rotateY(180deg)" : "none", cursor: "pointer", height: origOuv ? "min(58svh, 520px)" : "auto" } }, /* 31/07 soir : overflow:hidden RETIRE — il aplatissait le preserve-3d (dos jamais affiche, face avant vue en miroir) */
             h("div", { style: { backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", border: "1px solid " + tA(0.42), borderRadius: 18, background: "linear-gradient(165deg, rgba(18,22,27,0.95), rgba(7,9,12,0.98))", padding: "16px 17px" } },
               (function () {
                 var ogB = c.origines || {};
