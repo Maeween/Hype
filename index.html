@@ -29891,7 +29891,28 @@ function MurHype(props) {
   var liste = (posts || []).slice().reverse();
   if (props.momentsSeuls) liste = liste.filter(function (p) { return p.texte && String(p.texte).trim(); });
   var listeAffichee = props.compact ? liste.slice(0, 2) : liste;
-  listeAffichee.forEach(function (p) {
+  if (props.rail && liste.length) { /* 31/07 : fil direction 3 « Moments encadres » (choix definitif Blandine) */
+    var listeR = liste.slice(0, 6);
+    enfants.push(h("div", { key: "rail3", ref: function (elR) { try { if (elR && !elR.__r3init) { elR.__r3init = 1; if (listeR.length > 3) elR.scrollLeft = [0, 118, 236][Math.floor(Math.random() * 3)]; } } catch (eR3) { } }, style: { display: "flex", gap: 13, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 2px 10px", scrollbarWidth: "none" } },
+      listeR.map(function (pR) {
+        var aR = pR.auteur || {}; var annR = !!pR.estAnnonce;
+        var media = pR.photo_url
+          ? (estUrlVideo(pR.photo_url)
+            ? h("div", { style: { position: "relative", height: 178, borderRadius: 10, overflow: "hidden" } },
+                h("video", { src: pR.photo_url + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover" } }),
+                h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, color: "rgba(255,255,255,0.85)", textShadow: "0 2px 10px rgba(0,0,0,0.6)" } }, "\u25b6\ufe0e"))
+            : h("img", { src: pR.photo_url, alt: "", style: { width: "100%", height: 178, objectFit: "cover", borderRadius: 10, display: "block" } }))
+          : h("div", { style: { height: 178, borderRadius: 10, background: "linear-gradient(160deg, " + tAm(0.14) + ", rgba(7,9,12,0.9))", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 14px" } },
+              h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 15.5, lineHeight: 1.45, color: "rgba(244,247,250,0.9)", textAlign: "center", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 6, WebkitBoxOrient: "vertical" } }, pR.texte || ""));
+        return h("div", { key: "r3" + pR.id, role: "button", onClick: function () { if (props.onVoirTout) props.onVoirTout(); }, style: { flex: "0 0 208px", width: 208, borderRadius: 16, border: "1px solid " + (annR ? "rgba(232,200,135,0.5)" : "rgba(255,255,255,0.13)"), background: "linear-gradient(170deg, rgba(16,21,25,0.95), rgba(7,9,12,0.98))", padding: "9px 9px 12px", cursor: "pointer" } },
+          media,
+          pR.texte && pR.photo_url ? h("div", { style: { marginTop: 9, fontSize: 11.5, lineHeight: 1.45, color: "rgba(244,247,250,0.82)", fontFamily: M2, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, pR.texte) : null,
+          h("div", { style: { marginTop: 7, fontSize: 9.5, letterSpacing: "0.12em", textTransform: "uppercase", color: annR ? "#F0DBA2" : "rgba(138,223,239,0.85)", fontFamily: M2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, (annR ? "\ud83d\udce2 Hype" : (aR.pseudo || "Cavalier")) + " \u00b7 " + datePost(pR.created_at)));
+      }).concat(props.onVoirTout ? [h("div", { key: "r3tout", role: "button", onClick: props.onVoirTout, style: { flex: "0 0 116px", width: 116, borderRadius: 16, border: "1.5px dashed " + tAm(0.45), display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
+        h("div", { style: { textAlign: "center", fontFamily: M2 } },
+          h("div", { style: { fontSize: 12, fontWeight: 700, color: TQmCl } }, T("Tout le fil", "Full feed", "Todo el hilo", "Tutto il filo", "\u3059\u3079\u3066") + " \u2192"),
+          h("div", { style: { marginTop: 4, fontSize: 9.5, color: "rgba(244,247,250,0.5)" } }, liste.length + " " + T("moments", "moments", "momentos", "momenti", "\u30e2\u30fc\u30e1\u30f3\u30c8"))))] : [])));
+  } else listeAffichee.forEach(function (p) {
     var a = p.auteur || {};
     var estAnn = !!p.estAnnonce;
     enfants.push(h("div", { key: p.id, style: Object.assign({}, carte, { marginBottom: 10 }, estAnn ? { border: "1px solid rgba(232,200,135,0.45)", background: "linear-gradient(180deg, rgba(232,200,135,0.08), rgba(12,15,20,0.75))" } : {}) },
@@ -29908,7 +29929,7 @@ function MurHype(props) {
         ? h("video", { src: p.photo_url, controls: true, playsInline: true, style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid " + tAm(0.35) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px " + tAm(0.08) + "" } })
         : h("img", { src: p.photo_url, alt: "", style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid " + tAm(0.35) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px " + tAm(0.08) + "" } })) : null));
   });
-  if (props.compact && liste.length > 2 && props.onVoirTout) enfants.push(h("button", { key: "vt", onClick: props.onVoirTout, style: { display: "block", margin: "2px auto 0", background: "" + tAm(0.07) + "", border: "1px solid " + tAm(0.35) + "", color: TQm, fontSize: 12, fontWeight: 700, fontFamily: M2, padding: "9px 20px", borderRadius: 999 } }, T("Voir tout le fil", "See the full feed", "Ver todo el hilo", "Vedi tutto il filo", "すべて見る") + " →"));
+  if (props.compact && !props.rail && liste.length > 2 && props.onVoirTout) enfants.push(h("button", { key: "vt", onClick: props.onVoirTout, style: { display: "block", margin: "2px auto 0", background: "" + tAm(0.07) + "", border: "1px solid " + tAm(0.35) + "", color: TQm, fontSize: 12, fontWeight: 700, fontFamily: M2, padding: "9px 20px", borderRadius: 999 } }, T("Voir tout le fil", "See the full feed", "Ver todo el hilo", "Vedi tutto il filo", "すべて見る") + " →"));
   if (!charge && dispo && !liste.length) enfants.push(h("div", { key: "vide", style: { color: "#5B646E", fontSize: 12.5, textAlign: "center", padding: "6px 0 2px", fontStyle: "italic", fontFamily: M2 } }, props.momentsSeuls ? T("Raconte le premier moment ici \u2014 les photos seules vivent dans la galerie.", "Tell the first moment here \u2014 photos alone live in the gallery.", "Cuenta el primer momento aqu\u00ed \u2014 las fotos solas viven en la galer\u00eda.", "Racconta il primo momento qui \u2014 le foto da sole vivono nella galleria.", "\u6700\u521d\u306e\u77ac\u9593\u3092\u3053\u3053\u3067\u8a9e\u308d\u3046\u3002\u5199\u771f\u3060\u3051\u306f\u30ae\u30e3\u30e9\u30ea\u30fc\u3078\u3002") : T("Sois le premier \u00e0 publier ici.", "Be the first to post here.", "S\u00e9 el primero en publicar.", "Sii il primo a pubblicare.", "\u6700\u521d\u306e\u6295\u7a3f\u3092\u3057\u3088\u3046\u3002")));
   if (props.sansComposer && !charge && !posts.length) return null;
   return h("div", { style: { padding: props.compact ? "0 10px" : "0 16px" } }, enfants); /* 30/07: fil elargi sur la fiche cheval (mode compact), les autres murs inchanges */
@@ -31454,7 +31475,7 @@ function EcranCheval() {
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */
 
-        h(MurHype, { cible: cibleCh, compact: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
+        h(MurHype, { cible: cibleCh, compact: true, rail: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
 
 
         /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
@@ -31597,7 +31618,7 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
           h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("les moments racontés", "the moments you tell", "los momentos contados", "i momenti raccontati", "語られた瞬間", "die erzählten Momente")),
           h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
         h("div", { className: "souvin", style: { animationDelay: ".3s" } },
-          h(MurHype, { cible: cibleCh, sansTitre: true, momentsSeuls: true, teinte: teinte, choixPrive: !!(moi && chevalDyn && chevalDyn.dbId && chevalDyn.ownerId !== moi.id) }))) : null,
+          null /* 31/07 : fil doublon retire du panneau souvenirs (le fil vit sur la fiche, la page seconde aura sa grille) */)) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
         h("div", { style: { fontSize: 42, marginTop: 26 } }, "🩺"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F6F7", marginTop: 14 } }, T("Le passeport arrive", "The passport is coming", "El pasaporte llega pronto", "Il passaporto sta arrivando", "パスポートは準備中", "Der Pass kommt bald")),
