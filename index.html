@@ -29904,7 +29904,7 @@ function MurHype(props) {
             : h("img", { src: pR.photo_url, alt: "", style: { width: "100%", height: 178, objectFit: "cover", borderRadius: 10, display: "block" } }))
           : h("div", { style: { height: 178, borderRadius: 10, background: "linear-gradient(160deg, " + tAm(0.14) + ", rgba(7,9,12,0.9))", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 14px" } },
               h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 15.5, lineHeight: 1.45, color: "rgba(244,247,250,0.9)", textAlign: "center", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 6, WebkitBoxOrient: "vertical" } }, pR.texte || ""));
-        return h("div", { key: "r3" + pR.id, role: "button", onClick: function () { if (props.onVoirTout) props.onVoirTout(); }, style: { flex: "0 0 208px", width: 208, borderRadius: 16, border: "1px solid " + (annR ? "rgba(232,200,135,0.5)" : "rgba(255,255,255,0.13)"), background: "linear-gradient(170deg, rgba(16,21,25,0.95), rgba(7,9,12,0.98))", padding: "9px 9px 12px", cursor: "pointer" } },
+        return h("div", { key: "r3" + pR.id, role: "button", onClick: function () { if (pR.photo_url && props.onOuvrirMedia) props.onOuvrirMedia(pR.photo_url); else if (props.onVoirTout) props.onVoirTout(); }, style: { flex: "0 0 208px", width: 208, borderRadius: 16, border: "1px solid " + (annR ? "rgba(232,200,135,0.5)" : "rgba(255,255,255,0.13)"), background: "linear-gradient(170deg, rgba(16,21,25,0.95), rgba(7,9,12,0.98))", padding: "9px 9px 12px", cursor: "pointer" } },
           media,
           pR.texte && pR.photo_url ? h("div", { style: { marginTop: 9, fontSize: 11.5, lineHeight: 1.45, color: "rgba(244,247,250,0.82)", fontFamily: M2, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, pR.texte) : null,
           h("div", { style: { marginTop: 7, fontSize: 9.5, letterSpacing: "0.12em", textTransform: "uppercase", color: annR ? "#F0DBA2" : "rgba(138,223,239,0.85)", fontFamily: M2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, (annR ? "\ud83d\udce2 Hype" : (aR.pseudo || "Cavalier")) + " \u00b7 " + datePost(pR.created_at)));
@@ -30545,6 +30545,15 @@ function AlbumsPromus(props) {
     try { if (typeof chargerPhotosSouvenirs === "function") { chargerPhotosSouvenirs(props.cible).then(function (ph) { if (actif) setGaleriePh(ph || []); }).catch(function () { if (actif) setGaleriePh([]); }); } else { setGaleriePh([]); } } catch (e2) { setGaleriePh([]); }
     return function () { actif = false; };
   }, [props.cible]);
+  React.useEffect(function () { /* 31/07 : remonter les videos pour l onglet Videos de la page seconde */
+    try {
+      if (!props.onVideosTrouvees) return;
+      var vids = [];
+      ((galeriePh || [])).forEach(function (uV) { if (uV && typeof estUrlVideo === "function" && estUrlVideo(uV)) vids.push(uV); });
+      (albums || []).forEach(function (aV) { ((aV && aV.photos) || []).forEach(function (uV2) { if (uV2 && typeof estUrlVideo === "function" && estUrlVideo(uV2) && vids.indexOf(uV2) < 0) vids.push(uV2); }); });
+      props.onVideosTrouvees(vids);
+    } catch (eVt) { }
+  }, [galeriePh, albums]);
   if (albums === null) return null; /* 30/07: en chargement seulement; a vide, la carte "Toutes ses photos" reste */
   return h("div", { className: "rise", style: { margin: "16px 16px 0" } },
     h("div", { style: { display: "flex", alignItems: "center", marginBottom: 9 } },
@@ -30575,10 +30584,10 @@ function AlbumsPromus(props) {
       ((galeriePh || [])).forEach(function (uV) { if (uV && typeof estUrlVideo === "function" && estUrlVideo(uV)) toutesV.push(uV); });
       (albums || []).forEach(function (aV) { ((aV && aV.photos) || []).forEach(function (uV2) { if (uV2 && typeof estUrlVideo === "function" && estUrlVideo(uV2) && toutesV.indexOf(uV2) < 0) toutesV.push(uV2); }); });
       if (!toutesV.length) return null;
-      return h("div", { role: "button", onClick: function () { if (props.onTout) props.onTout(); }, style: { marginTop: 12, position: "relative", height: 150, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.4), cursor: "pointer", background: "#07080A" } },
-        h("video", { src: toutesV[0] + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.5 } }),
-        h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,6,9,0.85), rgba(4,6,9,0.25))" } }),
-        h("div", { style: { position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)" } },
+      return h("div", { role: "button", onClick: function () { if (props.onVoirVideos) props.onVoirVideos(); else if (props.onTout) props.onTout(); }, style: { marginTop: 12, position: "relative", height: 150, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.4), cursor: "pointer", background: "#07080A" } },
+        h("video", { src: toutesV[0] + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.92 } }), /* 31/07 : on voit enfin la video (demande Blandine) */
+        h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 45%, rgba(4,6,9,0.72) 100%)" } }),
+        h("div", { style: { position: "absolute", left: 14, bottom: 10 } },
           h("div", { style: { fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: tnT, fontWeight: 700 } }, T("Ses vid\u00e9os", "Videos", "Sus v\u00eddeos", "I suoi video", "\u52d5\u753b", "Videos") + " (" + toutesV.length + ")"),
           h("div", { style: { marginTop: 4, fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 600, color: "#F4F7FA" } }, T("Le voir en mouvement", "Watch it move", "Verlo en movimiento", "Guardalo in movimento", "\u52d5\u304f\u59ff\u3092\u898b\u308b", "In Bewegung sehen"))),
         h("div", { style: { position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", width: 40, height: 40, borderRadius: "50%", border: "1px solid " + tA(0.6), background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 15 } }, "\u25b6"));
@@ -30604,7 +30613,7 @@ function AlbumsPromus(props) {
         }, style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 12, paddingBottom: 2 } },
         phsA.map(function (uP, iP) {
           var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
-          return h("div", { key: "strip" + iP, onClick: function () { if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 220, height: 220, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.35), cursor: "pointer" } },
+          return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 220, height: 220, borderRadius: 18, overflow: "hidden", border: "1px solid " + tA(0.35), cursor: "pointer" } },
             vP ? h("video", { src: uP + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
                : h("img", { src: uP, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
         }));
@@ -30617,6 +30626,12 @@ function AlbumsPromus(props) {
    visuellement proches mais sur deux sources totalement disjointes. Cette fonction fusionne les deux. */
 async function chargerPhotosSouvenirs(cible) {
   var ph = [];
+  try { /* 31/07 : les photos mises en avant (vedettes) ouvrent la bande (demande Blandine) */
+    if (typeof chargerVedettesSouvenirs === "function") {
+      var rV = await chargerVedettesSouvenirs(cible);
+      (((rV && rV.data) && rV.data.urls) || []).forEach(function (uVed) { if (uVed && ph.indexOf(uVed) < 0) ph.push(uVed); });
+    }
+  } catch (eVd) { }
   try {
     if (typeof listerCommentaires === "function" && typeof supa !== "undefined") {
       var rC = await listerCommentaires(cible);
@@ -31135,6 +31150,7 @@ function EcranCheval() {
   var galSt = React.useState(0); var galTab = galSt[0], setGalTab = galSt[1];
   var panSt = React.useState(function () { try { var cD = (typeof DEV_OUVRIR_PAGE !== "undefined" && DEV_OUVRIR_PAGE === "souvenirs"); var cH = (typeof location !== "undefined" && (location.hash || "").indexOf("souvenirs") >= 0); return (cD || cH) ? "souvenirs" : null; } catch (eP0) { return null; } }); var panneau = panSt[0], setPanneau = panSt[1];
   var vedSt = React.useState(null); var vedettes = vedSt[0], setVedettes = vedSt[1];
+  var cvSt = React.useState([]); var chVids = cvSt[0], setChVids = cvSt[1]; /* 31/07 : videos pour l onglet Videos */
   var visSt = React.useState(null); var visionneuse = visSt[0], setVisionneuse = visSt[1];
   var visFmSt = React.useState(false); var visFerme = visFmSt[0], setVisFerme = visFmSt[1];
   function fermerVisionneuse() { if (visFerme) return; setVisFerme(true); setConfSuppr(false); setTimeout(function () { setVisionneuse(null); setVisFerme(false); }, 620); }
@@ -31219,9 +31235,19 @@ function EcranCheval() {
   var diamond = h("path", { d: "M12 2 22 12 12 22 2 12z" });
 
   function statCell(l) { return h("div", { className: "st", key: l }, h("div", { className: "v" }, "\u2014"), h("div", { className: "l" }, l)); }
-  function partagerFiche() {
+  async function partagerFiche() {
     var u = location.origin + location.pathname + "#cheval-" + id;
     var tx = ((c && c.nom) ? c.nom : "Mon cheval") + " \u2014 Hype \uD83D\uDC0E";
+    /* 31/07 : la fiche se partage avec sa photo quand le systeme le permet (demande Blandine) */
+    try {
+      if (navigator.share && navigator.canShare && photoCh) {
+        var rIm = await fetch(photoCh); var bIm = await rIm.blob();
+        if (bIm && bIm.size > 0 && bIm.size < 8000000) {
+          var fIm = new File([bIm], ((c && c.nom) || "cheval").replace(/[^\w-]+/g, "-") + (bIm.type.indexOf("png") >= 0 ? ".png" : ".jpg"), { type: bIm.type || "image/jpeg" });
+          if (navigator.canShare({ files: [fIm] })) { await navigator.share({ files: [fIm], title: tx, text: tx + "\n" + u }); return; }
+        }
+      }
+    } catch (eShI) { }
     try { if (navigator.share) { navigator.share({ title: tx, text: tx, url: u }); return; } } catch (e) { }
     try { navigator.clipboard.writeText(u).then(function () { setToast(T("Lien copi\u00e9 !", "Link copied!", "\u00a1Enlace copiado!", "Link copiato!", "\u30ea\u30f3\u30af\u3092\u30b3\u30d4\u30fc\uff01", "Link kopiert!")); setTimeout(function () { setToast(null); }, 2200); }); } catch (e) { setToast(u); setTimeout(function () { setToast(null); }, 3500); }
   }
@@ -31470,24 +31496,6 @@ function EcranCheval() {
             h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl || "#5FE9F0" } }, T("Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197"))) : null); })(),
 
         /* 30/07: encart Souvenirs (GalerieSouvenirs) retire de la fiche — remplace par la grille Ses photos ; la visionneuse/vedettes vivent desormais via le panneau souvenirs */
-        h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } }),
-        /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
-
-        /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */
-
-        h(MurHype, { cible: cibleCh, compact: true, rail: true, momentsSeuls: true, teinte: teinte, onVoirTout: function () { setPanneau("souvenirs"); } }),
-
-
-        /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
-        /* 30/07: encart Sellerie retire a la demande de Blandine */
-        h("div", { className: "eyebrow2 rise", style: { animationDelay: ".175s" } }, T("Sant\u00e9 & sellerie", "Health & tack room", "Salud y guadarn\u00e9s", "Salute e selleria", "\u5065\u5eb7\u3068\u99ac\u5177", "Gesundheit & Sattelkammer")),
-        h("div", { className: "rise", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, animationDelay: ".175s", marginBottom: 18 } },
-          [["clinique", "\ud83e\ude7a", T("Clinique v\u00e9t\u00e9rinaire", "Vet clinic", "Cl\u00ednica veterinaria", "Clinica veterinaria", "\u52d5\u7269\u75c5\u9662", "Tierklinik"), T("Soins & conseils", "Care & advice", "Cuidados y consejos", "Cure e consigli", "\u30b1\u30a2\u3068\u52a9\u8a00", "Pflege & Beratung")],
-           ["sellerie", "\ud83e\uddf5", T("Sellerie", "Tack room", "Guadarn\u00e9s", "Selleria", "\u99ac\u5177", "Sattelkammer"), T("\u00c9quipement & codes promo", "Gear & promo codes", "Equipo y c\u00f3digos promo", "Attrezzatura e codici promo", "\u88c5\u5099\u3068\u30af\u30fc\u30dd\u30f3", "Ausr\u00fcstung & Promocodes")]].map(function (cS) {
-            var imgSq = "";
-            try { if (typeof HYPE_IMGS !== "undefined") imgSq = (cS[0] === "clinique") ? (HYPE_IMGS.encartVeto || HYPE_IMGS.cliniqueEncart || "") : (HYPE_IMGS.sellerieEncart || ""); } catch (eIS) { }
-            return h("div", { key: "sq" + cS[0], role: "button", onClick: function () { setEcran(cS[0]); }, style: { position: "relative", overflow: "hidden", border: "1px solid " + tA(0.35), borderRadius: 18, background: "rgba(0,0,0,0.35)", minHeight: 132, padding: "18px 10px 15px", textAlign: "center", cursor: "pointer" } },
-              imgSq ? h("img", { src: imgSq, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 32%", display: "block" } }) : null,
         (function () {
           var ogA = c.origines || {};
           var ixA = (ogA.indices || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; });
@@ -31522,8 +31530,26 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
               lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
                 h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
-        })(),
- /* 30/07: retour des images de couverture (demande Blandine), memes cles que les anciens encarts pleine largeur */
+        })(), /* 31/07 : carte IPO sous les Origines (emplacement corrige) */
+        h(AlbumsPromus, { cible: cibleCh, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } }),
+        /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
+
+        /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */
+
+        h(MurHype, { cible: cibleCh, compact: true, rail: true, momentsSeuls: true, teinte: teinte, onOuvrirMedia: function (uM2) { try { setVisionneuse(uM2); } catch (eOm2) { } }, onVoirTout: function () { setPanneau("souvenirs"); } }),
+
+
+        /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
+        /* 30/07: encart Sellerie retire a la demande de Blandine */
+        h("div", { className: "eyebrow2 rise", style: { animationDelay: ".175s" } }, T("Sant\u00e9 & sellerie", "Health & tack room", "Salud y guadarn\u00e9s", "Salute e selleria", "\u5065\u5eb7\u3068\u99ac\u5177", "Gesundheit & Sattelkammer")),
+        h("div", { className: "rise", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, animationDelay: ".175s", marginBottom: 18 } },
+          [["clinique", "\ud83e\ude7a", T("Clinique v\u00e9t\u00e9rinaire", "Vet clinic", "Cl\u00ednica veterinaria", "Clinica veterinaria", "\u52d5\u7269\u75c5\u9662", "Tierklinik"), T("Soins & conseils", "Care & advice", "Cuidados y consejos", "Cure e consigli", "\u30b1\u30a2\u3068\u52a9\u8a00", "Pflege & Beratung")],
+           ["sellerie", "\ud83e\uddf5", T("Sellerie", "Tack room", "Guadarn\u00e9s", "Selleria", "\u99ac\u5177", "Sattelkammer"), T("\u00c9quipement & codes promo", "Gear & promo codes", "Equipo y c\u00f3digos promo", "Attrezzatura e codici promo", "\u88c5\u5099\u3068\u30af\u30fc\u30dd\u30f3", "Ausr\u00fcstung & Promocodes")]].map(function (cS) {
+            var imgSq = "";
+            try { if (typeof HYPE_IMGS !== "undefined") imgSq = (cS[0] === "clinique") ? (HYPE_IMGS.encartVeto || HYPE_IMGS.cliniqueEncart || "") : (HYPE_IMGS.sellerieEncart || ""); } catch (eIS) { }
+            return h("div", { key: "sq" + cS[0], role: "button", onClick: function () { setEcran(cS[0]); }, style: { position: "relative", overflow: "hidden", border: "1px solid " + tA(0.35), borderRadius: 18, background: "rgba(0,0,0,0.35)", minHeight: 132, padding: "18px 10px 15px", textAlign: "center", cursor: "pointer" } },
+              imgSq ? h("img", { src: imgSq, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 32%", display: "block" } }) : null,
+        null, /* 30/07: retour des images de couverture (demande Blandine), memes cles que les anciens encarts pleine largeur */
               imgSq ? h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0.06) 30%, rgba(4,6,9,0.82) 100%)" } }) : null,
               h("div", { style: { position: "relative", zIndex: 2 } },
                 imgSq ? null : h("div", { style: { width: 44, height: 44, borderRadius: "50%", margin: "0 auto", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19 } }, cS[1]),
@@ -31560,12 +31586,23 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: "#F4F6F7" } },
           panneau === "flots" ? T("Flots", "Rosettes", "Escarapelas", "Coccarde", "ロゼット", "Flots")
           : panneau === "palmares" ? T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen")
-          : panneau === "souvenirs" ? (T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen") + " · " + c.nom)
+          : panneau === "videos" ? (T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos") + " · " + c.nom) : panneau === "souvenirs" ? (T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen") + " · " + c.nom)
           : T("Passeport Santé", "Health Passport", "Pasaporte de salud", "Passaporto salute", "健康パスポート", "Gesundheitspass")),
         h("div", { style: { marginLeft: "auto" } }, h(SelecteurLangue, { compact: true }))),
+      (["souvenirs", "palmares", "videos"].indexOf(panneau) >= 0) ? h("div", { style: { display: "flex", gap: 8, padding: "2px 16px 12px" } }, /* 31/07 : page seconde a onglets (architecture Blandine) */
+        [["souvenirs", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen")], ["palmares", T("Performances", "Performances", "Rendimiento", "Prestazioni", "実績", "Leistungen")], ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos")]].map(function (tb) {
+          var onTb = panneau === tb[0];
+          return h("button", { key: "tb" + tb[0], onClick: function () { setPanneau(tb[0]); }, style: { padding: "8px 15px", borderRadius: 999, border: "1px solid " + (onTb ? tA(0.7) : "rgba(255,255,255,0.14)"), background: onTb ? tA(0.14) : "rgba(255,255,255,0.04)", color: onTb ? teinteCl : "rgba(237,242,245,0.65)", fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, tb[1]);
+        })) : null,
       panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。", "Noch kein Flot vorhanden.")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen"))) : null,
+      panneau === "videos" ? h("div", { style: { padding: "8px 16px 24px" } },
+        (chVids && chVids.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 } },
+          chVids.map(function (vU, iV) {
+            return h("video", { key: "vtab" + iV, src: vU + "#t=0.01", controls: true, playsInline: true, preload: "metadata", style: { width: "100%", aspectRatio: "3 / 4", objectFit: "cover", borderRadius: 14, border: "1px solid " + tA(0.3), background: "#04070A" } });
+          }))
+        : h("div", { className: "empty" }, T("Aucune vidéo pour l'instant — ajoute-en une depuis Souvenirs.", "No videos yet — add one from Memories.", "Aún sin vídeos.", "Ancora nessun video.", "まだ動画はありません。", "Noch keine Videos."))) : null,
       panneau === "palmares" ? h("div", { style: { padding: "8px 16px 0" } },
         h("div", { style: { position: "relative", borderRadius: 18, overflow: "hidden", marginBottom: 16, aspectRatio: "966/720", maxHeight: "44svh", background: "#04070A" } }, /* 30/07 : coin competition — la video suit la teinte de la fiche (maquette validee) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
