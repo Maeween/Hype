@@ -31198,6 +31198,7 @@ function EcranCheval() {
     try { var r = await ajouterCommentairePhoto(visionneuse, cibleCh, t); if (r && r.error) { setToast(T("Envoi impossible", "Could not send", "Env\u00edo imposible", "Invio impossibile", "\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093", "Senden nicht m\u00f6glich")); setTimeout(function () { setToast(null); }, 2200); } } catch (eE) { }
     chargerLkCm(visionneuse);
   }
+  var opSt = React.useState("coupes"); var ongletPerf = opSt[0], setOngletPerf = opSt[1]; /* 31/07 : declaration retablie DANS EcranCheval (son absence faisait planter la fiche) */
   var ooSt = React.useState(false); var origOuv = ooSt[0], setOrigOuv = ooSt[1]; /* 31/07 : volet Origines */
   var cvSt = React.useState([]); var chVids = cvSt[0], setChVids = cvSt[1]; /* 31/07 : videos pour l onglet Videos */
   var visSt = React.useState(null); var visionneuse = visSt[0], setVisionneuse = visSt[1];
