@@ -28799,6 +28799,11 @@ function EcranEcurie() {
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
   var _ecCh = React.useState(null), chevauxEc = _ecCh[0], setChevauxEc = _ecCh[1];
   var _ecU = React.useState(null), moiEc = _ecU[0], setMoiEc = _ecU[1];
+  var tEcSt = React.useState(function () { try { return localStorage.getItem("hype_teinte_ecurie") || ""; } catch (e) { return ""; } }); /* 31/07 : teinte de la page ecurie (demande Blandine) */
+  var teinteEc = tEcSt[0], setTeinteEc = tEcSt[1];
+  var TQe = teinteEc || "#20D9F5";
+  function tAe(aE) { var hE = TQe.replace("#", ""); return "rgba(" + parseInt(hE.substr(0, 2), 16) + "," + parseInt(hE.substr(2, 2), 16) + "," + parseInt(hE.substr(4, 2), 16) + "," + aE + ")"; }
+  function choisirTeinteEc(vT) { setTeinteEc(vT); try { if (vT) localStorage.setItem("hype_teinte_ecurie", vT); else localStorage.removeItem("hype_teinte_ecurie"); } catch (eT) { } }
   var _ecPh = React.useState(function () { try { return (profil && profil.ecurie_photo) || localStorage.getItem("hype_ecurie_photo") || ""; } catch (eEp) { return ""; } }), ecuriePhoto = _ecPh[0], setEcuriePhoto = _ecPh[1];
   var refPhotoEc = React.useRef(null);
   var albEcSt = React.useState(false); var albumEcOuvert = albEcSt[0], setAlbumEcOuvert = albEcSt[1];
@@ -28831,7 +28836,7 @@ function EcranEcurie() {
     var origSauveEc = null; try { origSauveEc = localStorage.getItem("hype_ecurie_photo_orig"); var pourEc = localStorage.getItem("hype_ecurie_photo_orig_pour"); if (origSauveEc && pourEc && String(ecuriePhoto || "").slice(0, 100) !== pourEc) { localStorage.removeItem("hype_ecurie_photo_orig"); localStorage.removeItem("hype_ecurie_photo_orig_pour"); origSauveEc = null; } } catch (eOe) { } /* 30/07 : plus de photo fantome (bug signale par Blandine) */
     var ratioEc = 16 / 9; /* 30/07 : le cadre du recadreur epouse le bandeau reel — fini le zoom surprise (bug signale par Blandine) */
     try { var elH = document.querySelector(".hero"); if (elH && elH.clientWidth > 0 && elH.clientHeight > 0) { var rMes = elH.clientWidth / elH.clientHeight; if (isFinite(rMes) && rMes > 0.35 && rMes < 4) ratioEc = rMes; } } catch (eRh) { }
-    hypeRecadrerDepuisSource(origSauveEc || ecuriePhoto, ratioEc).then(function (res) { if (res) appliquerNouvellePhotoEcurie(res); });
+    hypeRecadrerDepuisSource(origSauveEc || ecuriePhoto, ratioEc, { teinte: TQe }).then(function (res) { if (res) appliquerNouvellePhotoEcurie(res); });
   }
   React.useEffect(function () { (async function () {
     try {
@@ -28955,11 +28960,17 @@ function EcranEcurie() {
 
   return h("div", { className: "ecv" },
     h("style", { dangerouslySetInnerHTML: { __html: ECV_CSS } }),
-    h("div", { className: "app" },
+    h("div", { className: "app", style: { "--teinte": TQe } },
       h("div", { className: "scroll" },
 
         h("header", { className: "hero" },
           h("img", { src: ecuriePhoto || ECURIE_HERO, alt: "Écurie" }),
+          h("div", { style: { position: "absolute", top: 12, left: 12, right: 12, bottom: 12, borderRadius: 18, border: "1px solid " + tAe(0.5), boxShadow: "inset 0 0 0 3px rgba(6,7,9,0.7), inset 0 0 0 4px " + tAe(0.2), pointerEvents: "none", zIndex: 3 } }),
+          moiEc ? h("div", { style: { position: "absolute", left: 14, bottom: 14, zIndex: 9, display: "flex", gap: 8 } },
+            [["", "#20D9F5"], ["#D9B56C", "#D9B56C"], ["#C64B5C", "#C64B5C"], ["#5C7A5E", "#5C7A5E"]].map(function (tE) {
+              var actE = (teinteEc || "") === tE[0];
+              return h("button", { key: "te" + tE[1], onClick: function (eT2) { eT2.stopPropagation(); choisirTeinteEc(tE[0]); }, title: "Teinte", style: { width: 22, height: 22, borderRadius: "50%", border: actE ? "2px solid #FFFFFF" : "1px solid rgba(255,255,255,0.3)", background: tE[1], cursor: "pointer", padding: 0 } });
+            })) : null,
           h("div", { className: "halo" }), h("div", { className: "grad" }),
           moiEc ? h("input", { ref: refPhotoEc, type: "file", accept: "image/*", onChange: choisirPhotoEcurie, style: { display: "none" } }) : null,
           moiEc ? h("button", { onClick: function () { refPhotoEc.current && refPhotoEc.current.click(); }, title: T("Changer la photo", "Change photo", "Cambiar foto", "Cambia foto", "写真を変更"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", right: 14, zIndex: 5, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, fill: "none", stroke: "#fff", strokeWidth: 1.7 }, h("path", { d: "M4 8 h3 l1.4-2 h7.2 L17 8 h3 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H4 a1 1 0 0 1-1-1 V9 a1 1 0 0 1 1-1 z" }), h("circle", { cx: 12, cy: 13, r: 3.1 }))) : null,
@@ -29197,7 +29208,7 @@ var CHEVAUX_SPECTRAL = {
   tully:   { teinte: "#EAC77A" }
 };
 const ECHV_R_CSS = `
-.chvr .hero{position:relative;width:100%;overflow:hidden;background:#04070A;isolation:isolate}.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
+.chvr .hero{position:relative;width:100%;overflow:hidden;background:#04070A;isolation:isolate;margin-bottom:26px} /* 31/07 : la photo se termine et respire avant le titre */.chvr .nm2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;letter-spacing:.3em;color:var(--teinte);margin-top:9px}.chvr .micro{margin-top:13px;font-size:11px;letter-spacing:.13em;font-weight:600;color:rgba(244,247,250,.74);font-family:'Montserrat',sans-serif;text-transform:uppercase}.chvr .chvfleche{position:absolute;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:7;width:20px;height:20px;border-right:1.5px solid var(--teinte);border-bottom:1.5px solid var(--teinte);transform:translateX(-50%) rotate(45deg);filter:drop-shadow(0 0 6px var(--teinte));animation:chvDesc 2.4s ease-in-out infinite;pointer-events:none}@keyframes chvDesc{0%,100%{transform:translateX(-50%) rotate(45deg) translate(0,0);opacity:.85}50%{transform:translateX(-50%) rotate(45deg) translate(5px,5px);opacity:1}}
 .chvr .hero>img{position:relative;display:block;width:100%;height:50svh;object-fit:contain;object-position:center;background:#04070A;z-index:1}
 .chvr .hh{position:absolute;inset:0;z-index:0;background:radial-gradient(48% 52% at 70% 32%,var(--teinte),transparent 66%);opacity:.14;mix-blend-mode:screen;filter:blur(18px);pointer-events:none;animation:chvHalo 8s ease-in-out infinite}@keyframes chvHalo{0%,100%{opacity:.18}50%{opacity:.3}}
 .chvr .hv{position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(4,7,10,.34) 0%,rgba(4,7,10,0) 16%,rgba(4,7,10,0) 58%,rgba(4,7,10,.55) 82%,rgba(4,7,10,.96) 100%);pointer-events:none}
@@ -31349,24 +31360,16 @@ function EcranCheval() {
             var nmC2 = String(c.nom || "");
             var mSp2 = nmC2.match(/^(.*?)\s+(de\s.+|d\'.+|du\s.+|des\s.+)$/i);
             return h("div", { style: { minWidth: 0 } },
-              h("h1", { style: { margin: 0, fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 31, lineHeight: 1.06, letterSpacing: 1, background: "linear-gradient(180deg,#FFFFFF,#C3CDD2)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" } }, (mSp2 ? mSp2[1] : nmC2).toUpperCase()),
-              mSp2 ? h("div", { style: { marginTop: 3, fontFamily: "'Cinzel',serif", fontSize: 13.5, letterSpacing: "0.2em", textTransform: "uppercase", color: teinteCl } }, mSp2[2]) : null,
+              h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" } }, /* 31/07 : nom + affixe sur la meme ligne (demande Blandine) */
+                h("h1", { style: { margin: 0, fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 31, lineHeight: 1.06, letterSpacing: 1, background: "linear-gradient(180deg,#FFFFFF,#C3CDD2)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" } }, (mSp2 ? mSp2[1] : nmC2).toUpperCase()),
+                mSp2 ? h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, letterSpacing: "0.18em", textTransform: "uppercase", color: teinteCl, whiteSpace: "nowrap" } }, mSp2[2]) : null),
               lblT2 ? h("div", { style: { marginTop: 9, display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 13px", borderRadius: 999, border: "1px solid " + tA(0.45) } },
                 h("b", { style: { color: teinteCl, fontWeight: 700, fontSize: 10.5, letterSpacing: "0.14em" } }, "\u2726 " + T("L\u00c9GENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "\u4f1d\u8aac", "HYPE-LEGENDE")),
                 h("span", { style: { color: "rgba(244,247,250,0.75)", fontSize: 10.5, letterSpacing: "0.06em", borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: 8 } }, lblT2)) : null);
           })(),
           h("div", { className: "ic", onClick: function () { setMenuFiche(true); }, style: { flex: "0 0 auto" } }, h("svg", { viewBox: "0 0 24 24" }, h("g", null, h("circle", { cx: 12, cy: 5, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 12, r: 1.4, fill: "#EAF2F4", stroke: "none" }), h("circle", { cx: 12, cy: 19, r: 1.4, fill: "#EAF2F4", stroke: "none" }))))),
 
-        (function () { /* 31/07 : ligne de cles discrete + sommaire collant (maquette 5+6 validee) */
-          var infoL = (c.info || "").split("\u00b7").map(function (x) { return x.trim(); }).filter(Boolean).join(" \u00b7 ");
-          var ogL = c.origines || {};
-          var ixL = (ogL.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; })[0];
-          var bout = [];
-          /* 31/07 : l IPO n est plus repete ici (il vit dans son encart juste dessous) */
-          if (infoL) bout.push(infoL);
-          if (!bout.length) return null;
-          return h("div", { style: { padding: "0 16px 6px", fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 13.5, lineHeight: 1.45, color: "rgba(244,247,250,0.5)" } }, bout.join(" \u00b7 "));
-        })(),
+        /* 31/07 : ligne de cles retiree — elle doublonnait l encart IPO/PFS juste dessous (constat Blandine) */
 
         h("div", { ref: function (elS) { try { if (elS && !elS.__initS) { elS.__initS = 1; elS.scrollLeft = 0; } } catch (eS) { } }, style: { position: "sticky", top: 0, zIndex: 9, display: "flex", gap: 7, padding: "12px 16px", marginTop: 12, scrollPaddingLeft: 16, background: "rgba(6,7,9,0.94)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderBottom: "1px solid rgba(255,255,255,0.06)", overflowX: "auto", scrollbarWidth: "none" } },
           [["chvInfos", T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71", "Herkunft")], ["chapPerf", T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen")], ["chapMedias", T("M\u00e9dias", "Media", "Medios", "Media", "\u30e1\u30c7\u30a3\u30a2", "Medien")], ["chapFil", T("Le fil", "The feed", "El hilo", "Il filo", "\u30d5\u30a3\u30fc\u30c9", "Der Feed")], ["chapSante", T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit")], ["chapPartage", T("Partage", "Sharing", "Compartir", "Condivisione", "\u5171\u6709", "Teilen")]].map(function (nv) {
@@ -31483,69 +31486,6 @@ function EcranCheval() {
             statsCh[editStat.cle] ? h("button", { onClick: function(){ fixerStat(null); }, style: { display: "block", margin: "14px auto 0", background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, T("Effacer", "Clear", "Borrar", "Cancella", "クリア", "Löschen")) : null)) : null,
 
 
-        cristal("perf"),
-        h("div", { id: "chapPerf", style: { position: "relative" } }, /* 31/07 : titre en surimpression, plus de decalage */
-          h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
-            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen"))),
-          h("div", { style: { minWidth: 0 } }, h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 52px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
-          h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
-          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
-
-        (c.flots && c.flots.length) ? h("div", { className: "rise", style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 6px", marginBottom: 10 } },
-          c.flots.filter(function (fFl) { return fFl && fFl.img; }).map(function (fl, iF) {
-            return h("div", { key: "flf" + iF, role: "button", onClick: function () { try { if (fl.img && typeof setVisionneuse === "function") setVisionneuse(fl.img); else setPanneau("palmares"); } catch (eFz) { setPanneau("palmares"); } }, style: { flex: "0 0 auto", width: 108, cursor: "pointer", textAlign: "center" } },
-              fl.img ? h("img", { src: fl.img, alt: fl.lab || "", style: { width: 108, height: 132, objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
-                : h("div", { style: { width: 108, height: 132, borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "\ud83c\udfc6" : "\ud83c\udfc5"),
-              fl.lab ? h("div", { style: { marginTop: 6, fontSize: 8.5, lineHeight: 1.3, color: "rgba(244,247,250,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
-          }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres2", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 56, height: 132, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : [])) : null, /* 30/07 : les coupes/flots de Blandine en vitrine sur la fiche (tap = zoom), avant les medailles */
-        (c.palmares && c.palmares.length && (!(c.flots && c.flots.length) || c.palmares.some(function (pR) { return pR && pR.auth === "perso"; }))) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
-          ((c.flots && c.flots.length) ? c.palmares.filter(function (pF) { return pF && pF.auth === "perso"; }) : c.palmares).slice(0, 6).map(function (rP, iR) {
-            var rgP = parseInt(rP.rang, 10);
-            var medP = rgP === 1 ? ["linear-gradient(140deg,#F0CE8E,#B8975A)", "#141005"] : rgP === 2 ? ["linear-gradient(140deg,#E8ECEF,#9AA4AC)", "#101214"] : rgP === 3 ? ["linear-gradient(140deg,#D9A375,#8A5A38)", "#170D06"] : [tA(0.25), teinteCl];
-            return h("div", { key: "pmed" + iR, role: "button", onClick: function () { setPanneau("palmares"); }, style: { flex: "0 0 auto", width: 118, border: "1px solid " + tA(0.3), borderRadius: 16, padding: "13px 10px 11px", background: "rgba(0,0,0,0.35)", textAlign: "center", cursor: "pointer" } },
-              h("div", { style: { width: 40, height: 40, borderRadius: "50%", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, background: medP[0], color: medP[1] } }, String(rP.rang)),
-              h("div", { style: { marginTop: 8, fontFamily: "'Cinzel',serif", fontSize: 10.5, color: "#EEF3F5", lineHeight: 1.25, height: 27, overflow: "hidden" } }, rP.event),
-              h("div", { style: { marginTop: 3, fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9AA2AC", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rP.ds + " \u00b7 " + rP.annee));
-          }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 64, border: "1.5px dashed " + tA(0.45), borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : []))
-        : ((c.palmares && c.palmares.length) || (c.flots && c.flots.length)) ? null : h("div", { className: "rise", role: "button", onClick: function () { if (chevalDyn && moi && chevalDyn.ownerId === moi.id) ouvrirAjoutResultat(); else setPanneau("palmares"); }, style: { border: "1.5px dashed " + tA(0.4), borderRadius: 16, padding: "20px 16px", textAlign: "center", cursor: "pointer", animationDelay: ".17s", marginBottom: 16 } },
-            h("div", { style: { fontStyle: "italic", fontSize: 12.5, color: "#C9CFD4", lineHeight: 1.55 } }, T("Ses premiers r\u00e9sultats l'attendent. Ajoute son premier concours, sa premi\u00e8re sortie\u2026 ou ses exploits.", "Their first results are waiting. Add a first show, a first outing\u2026 or their feats.", "Sus primeros resultados le esperan. A\u00f1ade su primer concurso, su primera salida\u2026 o sus haza\u00f1as.", "I suoi primi risultati lo aspettano. Aggiungi il primo concorso, la prima uscita\u2026 o le sue imprese.", "\u521d\u3081\u3066\u306e\u7d50\u679c\u304c\u5f85\u3063\u3066\u3044\u307e\u3059\u3002\u521d\u3081\u3066\u306e\u5927\u4f1a\u3084\u304a\u51fa\u304b\u3051\u3092\u8ffd\u52a0\u3057\u3088\u3046\u3002", "Seine ersten Ergebnisse warten. F\u00fcge den ersten Wettkampf, den ersten Ausritt\u2026 oder seine Heldentaten hinzu.")),
-            h("div", { style: { marginTop: 10, fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: teinteCl, fontWeight: 700 } }, "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ein Ergebnis hinzuf\u00fcgen"), (function () {
-          var ogA = c.origines || {};
-          var ixA = (ogA.indices || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; });
-          if (!ixA.length) return null;
-          var vA = parseFloat(String(ixA[0][1]).replace("\u2212", "-").replace("+", ""));
-          var pA = vA >= 120 ? Math.min(5, Math.floor((vA - 110) / 10)) : 0;
-          var lblA = null;
-          if (vA >= 165) lblA = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d", "1 von 500.000");
-          else if (vA >= 160) lblA = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d", "1 von 100.000");
-          else if (vA >= 155) lblA = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d", "1 von 25.000");
-          else if (vA >= 150) lblA = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d", "1 von 5.000");
-          else if (vA >= 145) lblA = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d", "1 von 1.500");
-          else if (vA >= 140) lblA = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d", "1 von 500");
-          else if (vA >= 135) lblA = "Top 1 %";
-          else if (vA >= 130) lblA = "Top 2 %";
-          else if (vA >= 125) lblA = "Top 4 %";
-          else if (vA >= 120) lblA = "Top 8 %";
-          var discA = String(disc || "").toUpperCase();
-          var imgDisc = (discA.indexOf("CSO") >= 0 || discA.indexOf("SAUT") >= 0 || discA.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
-          var tPhoto = 40 + pA * 3; /* carte IPO plus discrete (demande Blandine) */
-          return h("div", null,
-null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances */,
-            h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 20px", borderRadius: 16, position: "relative", border: "1px solid " + tA(0.3 + pA * 0.09) + "", background: "linear-gradient(135deg, " + tA(0.06 + pA * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pA >= 3 ? "0 0 " + (12 + pA * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pA * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
-              imgDisc ? h("div", { style: { width: tPhoto, height: tPhoto, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
-                h("img", { src: imgDisc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
-              h("div", { style: { minWidth: 0 } },
-                h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
-                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pA, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
-                  h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
-                ixA[0][2] ? h("div", { style: { fontSize: 9.5, color: "#8A929C", marginTop: 4 } }, abrEpreuve(ixA[0][2])) : null,
-                ogA.apt ? h("div", { style: { fontSize: 9.5, color: "#9AA5AD", fontStyle: "italic", marginTop: 3 } }, abrEpreuve(ogA.apt)) : null),
-              lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
-                h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
-        })())),
-
-        /* 31/07 : l IPO vit dans le chapitre Performances (decision Blandine) */
         h("div", { id: "chvInfos", className: "eyebrow2 rise", style: { animationDelay: ".08s" } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統", "Herkunft")),
         h("div", { style: { perspective: 1200, margin: "0 16px" } }, /* 31/07 : carte Origines qui se retourne (maquette validee) */
           h("div", { role: "button", onClick: function () { setOrigOuv(!origOuv); }, style: { position: "relative", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", transition: "transform .62s cubic-bezier(.2,.75,.25,1)", transform: origOuv ? "rotateY(180deg)" : "none", cursor: "pointer", minHeight: origOuv ? "min(58svh, 520px)" : 0 } },
@@ -31620,6 +31560,81 @@ null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances
 
         /* 30/07: encart Souvenirs (GalerieSouvenirs) retire de la fiche — remplace par la grille Ses photos ; la visionneuse/vedettes vivent desormais via le panneau souvenirs */
         null, null))))),
+        
+        cristal("perf"),
+        h("div", { id: "chapPerf", style: { position: "relative" } }, /* 31/07 : titre en surimpression, plus de decalage */
+          h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
+            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen"))),
+          h("div", { style: { minWidth: 0 } }, h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 52px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
+          h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
+          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
+
+        (function () { /* 31/07 : pilules Coupes / Resultats */
+          var nbC = ((c.flots || []).filter(function (fP) { return fP && fP.img; })).length;
+          var nbR = ((c.palmares || [])).length;
+          if (!nbC && !nbR) return null;
+          return h("div", { style: { display: "flex", gap: 7, margin: "12px 16px 2px" } },
+            [["coupes", T("Coupes", "Cups", "Copas", "Coppe", "\u30ab\u30c3\u30d7", "Pokale"), nbC], ["resultats", T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse"), nbR]].map(function (pl) {
+              if (!pl[2]) return null;
+              var onP = ongletPerf === pl[0];
+              return h("button", { key: "pl" + pl[0], onClick: function () { setOngletPerf(pl[0]); }, style: { padding: "7px 14px", borderRadius: 999, border: "1px solid " + (onP ? tA(0.75) : "rgba(255,255,255,0.14)"), background: onP ? tA(0.14) : "rgba(255,255,255,0.04)", color: onP ? teinteCl : "rgba(237,242,245,0.62)", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, pl[1] + " " + pl[2]);
+            }));
+        })(),
+        (ongletPerf === "coupes") && (c.flots && c.flots.length) ? h("div", { className: "rise", style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 6px", marginBottom: 10 } },
+          c.flots.filter(function (fFl) { return fFl && fFl.img; }).map(function (fl, iF) {
+            return h("div", { key: "flf" + iF, role: "button", onClick: function () { try { if (fl.img && typeof setVisionneuse === "function") setVisionneuse(fl.img); else setPanneau("palmares"); } catch (eFz) { setPanneau("palmares"); } }, style: { flex: "0 0 auto", width: 108, cursor: "pointer", textAlign: "center" } },
+              fl.img ? h("img", { src: fl.img, alt: fl.lab || "", style: { width: 108, height: 132, objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
+                : h("div", { style: { width: 108, height: 132, borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "\ud83c\udfc6" : "\ud83c\udfc5"),
+              fl.lab ? h("div", { style: { marginTop: 6, fontSize: 8.5, lineHeight: 1.3, color: "rgba(244,247,250,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
+          }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres2", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 56, height: 132, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : [])) : null, /* 30/07 : les coupes/flots de Blandine en vitrine sur la fiche (tap = zoom), avant les medailles */
+        (ongletPerf === "resultats" && c.palmares && c.palmares.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
+          ((c.flots && c.flots.length) ? c.palmares.filter(function (pF) { return pF && pF.auth === "perso"; }) : c.palmares).slice(0, 6).map(function (rP, iR) {
+            var rgP = parseInt(rP.rang, 10);
+            var medP = rgP === 1 ? ["linear-gradient(140deg,#F0CE8E,#B8975A)", "#141005"] : rgP === 2 ? ["linear-gradient(140deg,#E8ECEF,#9AA4AC)", "#101214"] : rgP === 3 ? ["linear-gradient(140deg,#D9A375,#8A5A38)", "#170D06"] : [tA(0.25), teinteCl];
+            return h("div", { key: "pmed" + iR, role: "button", onClick: function () { setPanneau("palmares"); }, style: { flex: "0 0 auto", width: 118, border: "1px solid " + tA(0.3), borderRadius: 16, padding: "13px 10px 11px", background: "rgba(0,0,0,0.35)", textAlign: "center", cursor: "pointer" } },
+              h("div", { style: { width: 40, height: 40, borderRadius: "50%", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, background: medP[0], color: medP[1] } }, String(rP.rang)),
+              h("div", { style: { marginTop: 8, fontFamily: "'Cinzel',serif", fontSize: 10.5, color: "#EEF3F5", lineHeight: 1.25, height: 27, overflow: "hidden" } }, rP.event),
+              h("div", { style: { marginTop: 3, fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9AA2AC", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rP.ds + " \u00b7 " + rP.annee));
+          }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 64, border: "1.5px dashed " + tA(0.45), borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : []))
+        : ((c.palmares && c.palmares.length) || (c.flots && c.flots.length)) ? null : h("div", { className: "rise", role: "button", onClick: function () { if (chevalDyn && moi && chevalDyn.ownerId === moi.id) ouvrirAjoutResultat(); else setPanneau("palmares"); }, style: { border: "1.5px dashed " + tA(0.4), borderRadius: 16, padding: "20px 16px", textAlign: "center", cursor: "pointer", animationDelay: ".17s", marginBottom: 16 } },
+            h("div", { style: { fontStyle: "italic", fontSize: 12.5, color: "#C9CFD4", lineHeight: 1.55 } }, T("Ses premiers r\u00e9sultats l'attendent. Ajoute son premier concours, sa premi\u00e8re sortie\u2026 ou ses exploits.", "Their first results are waiting. Add a first show, a first outing\u2026 or their feats.", "Sus primeros resultados le esperan. A\u00f1ade su primer concurso, su primera salida\u2026 o sus haza\u00f1as.", "I suoi primi risultati lo aspettano. Aggiungi il primo concorso, la prima uscita\u2026 o le sue imprese.", "\u521d\u3081\u3066\u306e\u7d50\u679c\u304c\u5f85\u3063\u3066\u3044\u307e\u3059\u3002\u521d\u3081\u3066\u306e\u5927\u4f1a\u3084\u304a\u51fa\u304b\u3051\u3092\u8ffd\u52a0\u3057\u3088\u3046\u3002", "Seine ersten Ergebnisse warten. F\u00fcge den ersten Wettkampf, den ersten Ausritt\u2026 oder seine Heldentaten hinzu.")),
+            h("div", { style: { marginTop: 10, fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: teinteCl, fontWeight: 700 } }, "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ein Ergebnis hinzuf\u00fcgen"), (function () {
+          var ogA = c.origines || {};
+          var ixA = (ogA.indices || []).filter(function (ix) { var vI = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(vI) && vI >= 80; });
+          if (!ixA.length) return null;
+          var vA = parseFloat(String(ixA[0][1]).replace("\u2212", "-").replace("+", ""));
+          var pA = vA >= 120 ? Math.min(5, Math.floor((vA - 110) / 10)) : 0;
+          var lblA = null;
+          if (vA >= 165) lblA = T("1 sur 500 000", "1 in 500,000", "1 de 500 000", "1 su 500 000", "50\u4e07\u982d\u306b1\u982d", "1 von 500.000");
+          else if (vA >= 160) lblA = T("1 sur 100 000", "1 in 100,000", "1 de 100 000", "1 su 100 000", "10\u4e07\u982d\u306b1\u982d", "1 von 100.000");
+          else if (vA >= 155) lblA = T("1 sur 25 000", "1 in 25,000", "1 de 25 000", "1 su 25 000", "2.5\u4e07\u982d\u306b1\u982d", "1 von 25.000");
+          else if (vA >= 150) lblA = T("1 sur 5 000", "1 in 5,000", "1 de 5 000", "1 su 5 000", "5000\u982d\u306b1\u982d", "1 von 5.000");
+          else if (vA >= 145) lblA = T("1 sur 1 500", "1 in 1,500", "1 de 1 500", "1 su 1 500", "1500\u982d\u306b1\u982d", "1 von 1.500");
+          else if (vA >= 140) lblA = T("1 sur 500", "1 in 500", "1 de 500", "1 su 500", "500\u982d\u306b1\u982d", "1 von 500");
+          else if (vA >= 135) lblA = "Top 1 %";
+          else if (vA >= 130) lblA = "Top 2 %";
+          else if (vA >= 125) lblA = "Top 4 %";
+          else if (vA >= 120) lblA = "Top 8 %";
+          var discA = String(disc || "").toUpperCase();
+          var imgDisc = (discA.indexOf("CSO") >= 0 || discA.indexOf("SAUT") >= 0 || discA.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
+          var tPhoto = 40 + pA * 3; /* carte IPO plus discrete (demande Blandine) */
+          return h("div", null,
+null /* eyebrow Aptitude retire : la carte IPO vit sous le chapitre Performances */,
+            h("div", { className: "rise", style: { animationDelay: ".075s", margin: "0 16px 20px", borderRadius: 16, position: "relative", border: "1px solid " + tA(0.3 + pA * 0.09) + "", background: "linear-gradient(135deg, " + tA(0.06 + pA * 0.018) + ", rgba(255,255,255,0.02))", boxShadow: pA >= 3 ? "0 0 " + (12 + pA * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pA * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
+              imgDisc ? h("div", { style: { width: tPhoto, height: tPhoto, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
+                h("img", { src: imgDisc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
+              h("div", { style: { minWidth: 0 } },
+                h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" } },
+                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17 + pA, fontWeight: 700, lineHeight: 1, color: pA >= 2 ? teinteCl : "#F2F6F8", textShadow: pA >= 3 ? "0 0 14px " + tA(0.55) + "" : "none" } }, ixA[0][1]),
+                  h("div", { style: { fontSize: 10 + pA, letterSpacing: "0.2em", fontWeight: 800, color: pA >= 2 ? teinteCl : "#9AA5AD" } }, ixA[0][0])),
+                ixA[0][2] ? h("div", { style: { fontSize: 9.5, color: "#8A929C", marginTop: 4 } }, abrEpreuve(ixA[0][2])) : null,
+                ogA.apt ? h("div", { style: { fontSize: 9.5, color: "#9AA5AD", fontStyle: "italic", marginTop: 3 } }, abrEpreuve(ogA.apt)) : null),
+              lblA ? h("div", { style: { flexShrink: 0, textAlign: "center", paddingLeft: 13, borderLeft: "1px solid " + tA(0.3) + "", maxWidth: 120 } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pA, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblA),
+                h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null));
+        })())),
+
+        /* 31/07 : l IPO vit dans le chapitre Performances (decision Blandine) */
         cristal("medias"),
         h("div", { id: "chapMedias", style: { position: "relative" } },
           h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
