@@ -10,6 +10,885 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
+**Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
+
+## 🎬 SESSION 73 (02/08) — LA BIBLIOTHÈQUE VIDÉO EST ENFIN ATTEIGNABLE
+
+🔴 **À pousser** : `index.html` · `hype-video.js` · `SUIVI.md` · **`images/hype-encart-video.jpg`** (nouveau, 139 Ko) · et pour la Réserve : `images/hype-anim-rideaux.mp4` + `.webm` + `-poster.jpg`, `images/hype-anim-cheval.*`, `images/hype-accueil-01..12.mp4` + leurs 12 affiches.
+
+⚠️ **DÉFAUT MAJEUR TROUVÉ ET CORRIGÉ : la Bibliothèque vidéo n'était atteignable par AUCUN bouton.** La route `ecran === "videos"` existait, l'écran était monté, mais la seule carte 🎬 qui y menait vivait dans `EcranDashboard` — un composant **jamais appelé** (code mort, comme `EcranParcours`/`EcranProfilSetup`). La page était donc invisible depuis sa création.
+- **Correctif** : nouveau composant `EncartBibliothequeVideo({ compact })`, déclaré juste avant `EcranBibliothequeGalops`, **appelé à deux endroits** (choix de Blandine) : bas de la page Galops, après les dépliants ; bas de Culture équestre (`EcranArticles`), après l'encart Hey Baby.
+- **Aucun 8ᵉ onglet dans la NavBar** : elle en a déjà 7, un huitième écraserait les libellés.
+- Visuel : cheval blanc dans les cristaux, `images/hype-encart-video.jpg` (fourni par Blandine, PNG 2,2 Mo → JPG 139 Ko). **La gauche de l'image est volontairement sombre et vide** pour recevoir le texte — règle 18 de la Bible. Dégradé horizontal par-dessus pour garantir la lisibilité.
+- Le compteur de vidéos est lu dynamiquement dans `window.HYPE_VIDEO` ; si `hype-video.js` n'est pas chargé, l'encart s'affiche sans compteur au lieu de planter.
+
+## ⚠️ `hype-video.js` — FUSION AVEC LA VERSION EN LIGNE, À POUSSER AUSSI
+Le fichier livré **repart de la version en ligne (7 vidéos, `v-incurvation-01`)** et n'écrase rien :
+- Les 7 vidéos conservées **dans leur ordre exact**, `v-incurvation-01` avant `v-aides-01` — cet ordre décide de la vidéo principale d'un chapitre (`parCours` respecte l'ordre du tableau). Vérifié : `parCours("g4-incurvation")` → `v-incurvation-01` en premier.
+- 🐛 **Bug corrigé** : `"g4-incurvation"` était absent de la table `CHAPITRES` → la bibliothèque affichait l'identifiant brut « g4-incurvation » sous les vignettes au lieu du titre. Ajouté dans les 6 langues.
+- ➕ **RÉSERVE D'ANIMATIONS** (visible **uniquement** pour `HYPE_MODERATEURS` via `estModerateurHype`) : 20 animations en 4 familles (Accueil, Bibliothèque, Palmarès ×4, Mascotte ×2, + 12 scènes « à trier »). Vignette, destination, durée, poids, état réel. Boutons **Télécharger**, **Écarter**, **Réafficher tout**.
+  - ⚠️ « Écarter » masque la ligne en **localStorage**, il ne supprime PAS le fichier : un bouton dans l'app n'a aucun droit d'écriture sur GitHub. La suppression réelle se fera au push suivant.
+- ➕ **Lecteur de fichiers locaux** (`src.type === "fichier"`) : `<video controls>` WebM + MP4, pour lire les animations depuis `images/`.
+- ➕ **Animation des portes en fond de l'en-tête** de la bibliothèque (provisoire, « on peaufinera plus tard »). Lue **une seule fois, sans boucle**, muette (sinon iOS refuse la lecture auto), `playsInline`, voile assombri. `prefers-reduced-motion` → image fixe. Replis : affiche JPG puis dégradés.
+
+## 🎞️ ANIMATIONS — RÉENCODAGE ET DÉFAUTS TROUVÉS
+- **Tous les fichiers fournis étaient en HEVC (H.265) dans des `.mov` avec piste audio** : Safari les lit, Chrome et Firefox souvent pas. Réencodés en **H.264 profil Main + faststart, audio retiré** (obligatoire pour la lecture auto) : les 12 scènes passent de **31 Mo à 4 Mo**, la tête de cheval de 1,88 Mo à 202 Ko, les portes de 1,46 Mo à 388 Ko.
+- ✅ **`palmares-vert/dore/bordeaux/crystal.mp4` et `heybaby-dodo/messagerie.mp4` étaient DÉJÀ propres** (H.264, sans audio). ⚠️ **Correction d'une affirmation fausse de ma part** : j'ai prétendu plusieurs fois que la verte en ligne était en HEVC et invisible sur Android — **c'était faux**, seule la source `.mov` l'était. Rien à réparer.
+- ✅ **FAUTE D'ORTHOGRAPHE INCRUSTÉE — RÉGLÉE PAR MASQUAGE** (02/08). Les deux animations finissaient sur le logo HYPE suivi d'un slogan fauté : « TON UNIVERS **ÉQUESREE** » (cheval) et « TON UNIVERS **ÉQUESTIEE** » (portes). Les portes étant en fond de l'en-tête, la faute allait être visible en ligne.
+  - **Méthode retenue, meilleure qu'une coupe** : le slogan apparaît sur fond noir en fin d'animation → `drawbox` noir sur la seule ligne du slogan, activé à partir de l'image où le fond devient noir (`enable='gte(n,112)'` pour les portes, `gte(n,130)` pour le cheval). **Le mot HYPE et le monogramme sont conservés** (Blandine : « le H ou Hype seul ne me dérangent pas ») et **la durée complète de 5,1 s est gardée** — aucune seconde perdue.
+  - **Contrôlé par mesure de luminosité, pas à l'œil** (les images extraites ne sont pas relisibles ici) : portes → bande du slogan 219 → **16**, bande du mot HYPE **255** (intacte), rien de modifié avant l'image 112. Cheval → slogan 196 → **37**, HYPE **245**. ⚠️ Le premier cache posé sur le cheval laissait dépasser du texte (mesure à 231 sur la bande élargie) : coordonnées corrigées à `x=470 y=318 w=370 h=58`, deuxième essai validé. Affiches JPG refaites depuis les versions nettoyées.
+  - Coordonnées du cache, si un réexport oblige à refaire : portes (864×496) `x=240 y=334 w=390 h=36` ; cheval (854×480) `x=470 y=318 w=370 h=58`.
+- 🟡 **RESTE À CORRIGER : le filigrane « Ai » / « 03 »** de l'outil de génération, en haut à gauche des deux animations. **Volontairement PAS masqué** : contrairement au slogan, il se trouve sur la scène elle-même et non sur du noir, donc un cache se verrait. **Blandine refera les animations plus tard** (décision du 02/08 : « laisse-le avec sa faute, on verra plus tard, je la referai »).
+  - Fichiers concernés : **`hype-anim-rideaux`** (les portes qui s'ouvrent — celle EN USAGE, en fond de l'en-tête de la Bibliothèque vidéo) et **`hype-anim-cheval`** (tête de cheval sur ciel étoilé — en réserve, pas encore placée). Chacune en `.mp4` + `.webm` + `-poster.jpg`.
+  - ⚠️ Au réexport : demander l'animation **sans aucun texte incrusté**, ni slogan ni filigrane. Le titre et le slogan seront posés en HTML par-dessus — c'est la règle 18 de la Bible, et c'est indispensable sur une app en 6 langues (un slogan gravé en français s'afficherait tel quel pour un cavalier japonais ou allemand).
+- Les 12 scènes sont nommées `hype-accueil-01..12` **provisoirement** : toutes dans le même registre turquoise sombre (mesuré), ce ne sont pas des variantes d'un même visuel mais des scènes différentes (silhouettes, saut, dressage, jambes, pansage). **Blandine doit les visualiser et les renommer** ; celles qui relèvent du saut partiront ailleurs.
+
+✅ **Vérifs session 73** : `node --check` sur les 14 blocs script inline + sur `hype-video.js` · **diff exhaustif des fonctions ET des const top-level dans les deux sens** : aucune perdue, une seule ajoutée (`EncartBibliothequeVideo`) · **`allerVersGalop` = exactement 3 occurrences** (régression historique n°1) · rendu simulé de l'encart **dans les 6 langues**, variantes normale et compacte, aucun `undefined` · repli testé sans `hype-video.js` chargé (pas de plantage, compteur masqué) · rendu simulé des 2 écrans de la bibliothèque dans les 6 langues (258 nœuds) · `parCours` vérifié sur les 4 chapitres.
+
+⚠️ **Pas de rendu Playwright** : il faudrait les 120+ fichiers `hype-images-*.js`. **À ouvrir sur iPhone après le push.**
+
+⚠️ **Pour la suite, repartir de CETTE version (73)**.
+
+---
+
+**Version actuelle de l'index.html : 02/08/2026 (session 72) — md5 be04e691. Fichier livré déjà nommé `index.html` dans le dossier `a-pousser/`. Saine : 14 blocs script sur 14 valides. 22 correctifs cumulés. ⚠️ QUOTA SUPABASE : projet restreint le 04/08 si l'organisation reste au-dessus du quota.**
+
+**Version précédente : 31/07/2026 (nuit, session 71) — md5 7ce45f5d, 10 361 735 octets. Saine : 14 blocs script sur 14 valides, 1 525 fonctions, 0 erreur JS au rendu.**
+
+## 🟠 SESSION 72 (02/08) — VISIONNEUSE ZOOMABLE + TITRES DE CHAPITRE + PLAN DE DÉCOUPAGE
+
+**Livré, à pousser :** `index-lot2.html` — md5 `63c9d591`, 10 370 942 octets. 14 blocs script sur 14 valides.
+Sur GitHub, le fichier doit s'appeler **`index.html`** : les noms `index-lot2`, `index-visionneuse` ne servent qu'à distinguer les versions dans le fil de discussion.
+
+**Chaîne des livraisons de la session (chacune contient la précédente) :**
+| Fichier | md5 | Contenu |
+|---|---|---|
+| index.html | `31a55258` | Vidéo Performances seule — filet de sécurité |
+| index-visionneuse.html | `93c64486` | + zoom des photos |
+| index-lot2.html | `63c9d591` | + titre « Liens & partage » — **version à pousser** |
+
+### Corrigé
+1. **Vidéo de cérémonie figée** sur la page Performances (panneau `palmares`). `autoPlay` était absent sur ce panneau alors qu'il était présent sur la fiche : la vidéo restait sur sa première image avec les contrôles natifs par-dessus. Ajout `autoPlay` + `preload: "auto"` + `ref` de secours relançant `.play()` (2e tentative à 120 ms si iOS refuse au montage) ; `controls` retiré pour rester sur une boucle pure identique à la fiche.
+2. **Plantage au zoom sur photo** (sortie complète de l'appli). Cause trouvée : il n'y avait **aucun zoom** — un simple `<img>` sans gestionnaire. Le calque de balayage posé par-dessus lisait `changedTouches` **sans compter les doigts** : un pincement passait pour un balayage et déclenchait le chargement d'une AUTRE photo pleine résolution pendant que la première se décodait encore → pic mémoire → iOS tue l'onglet. Nouveau composant `PhotoZoomHype`, **sans état React** (transform écrit directement sur l'élément, zéro re-rendu pendant le geste) : pincement, double-tap, déplacement à un doigt, bornage à l'écran, verrou multi-touch (plus aucun balayage dès qu'un 2e doigt touche, jusqu'à ce que tous soient levés). Ancien calque supprimé. **À l'échelle 1, rendu identique au pixel.**
+3. **Titre vertical « Liens & partage » superposé à un autre chapitre.** Son bloc était en `position: absolute` sans conteneur `position: relative`, contrairement à Performances / Médias / Le fil / Santé : il s'ancrait à un ancêtre lointain et remontait en haut de page. Conteneur manquant ajouté, une ligne.
+
+### Diagnostiqué, PAS corrigé (bloqué sur décision)
+- **Mise en page des vidéos / vignettes à moitié noires.** Ce n'est pas du CSS : ce sont des images en cours de téléchargement, rendues progressivement. Le rail charge **chaque photo en résolution d'origine** dans une case de 108 × 132 px, et **double la liste** (`lR.concat(lR)`) dès 4 médias pour boucler le défilement. Plusieurs dizaines de Mo tirés d'un coup. Même famille de cause que le plantage au zoom. Correctif retenu : vignettes redimensionnées côté serveur Supabase (~320 px), avec repli automatique sur l'original — donc sans risque si le plan n'est pas encore Pro.
+
+### ⚠️ EN ATTENTE CÔTÉ BLANDINE
+- **Passer Supabase en plan Pro — 25 $/mois** par organisation (1er projet inclus, crédit compute 10 $ = instance Micro ; **laisser le Spend Cap activé**). Elle a validé le principe le 02/08 mais n'était pas disponible pour le faire. **À lui rappeler en début de session tant que ce n'est pas fait.** Nécessaire pour les transformations d'image, et de toute façon inévitable : le Free plafonne à 1 Go de stockage de fichiers, 5 Go d'egress/mois, et met le projet en pause après 7 jours sans requête. Vigilance long terme : l'egress est le compteur qui surprend (0,09 $/Go au-delà de 250 Go) — servir des originaux de 4 Mo dans des cases de 108 px est exactement ce qui le fera exploser.
+- **Bug « virer onglet vidéo »** : formulation mangée par l'autocorrect. Supprimer l'onglet Vidéos de la seconde page, ou l'encart « Ses vidéos » de la fiche ? Non tranché, donc non touché.
+- **Bugs Boréalis (lecture vidéo, agrandissement, image en ligne)** : savoir si ça touche d'autres chevaux. Cas isolé = donnée en base ; général = code.
+
+### 🔴 LES 16 BUGS DE BLANDINE — ÉTAT
+**Fiche cheval :** 1 titres verticaux ✅ · 2 mise en page vidéos ⏸ (attend Pro) · 3 onglet vidéo en doublon ⏸ (attend formulation) · 4 masquer « Toutes ses photos » dès 2 albums ⬜ · 5 choisir les photos/vidéos mises en avant ⬜ *(fonctionnalité, maquette à faire)* · 6 plantage au zoom ✅ · 7 résultats qui ne s'affichent pas ⬜ · 8 lecture vidéo Boréalis ⏸ · 9 agrandissement vidéo Boréalis ⏸ · 10 image en ligne Boréalis ⏸
+**Écurie :** 11 chevaux fantômes ⬜ · 12 publication sur le fil ⬜
+**Club :** 13 palmarès pas à jour ⬜ · 14 cadre photo persistant ⬜ · 15 image validée ≠ image affichée ⬜ · 16 carré jaune non fonctionnel ⬜
+
+### 🏗️ CHANTIER ARCHITECTURE (préparation Flutter) — ÉTAPE 1 FAITE, RESTE EN ATTENTE
+Décision prise avec Blandine le 02/08 : **les bugs d'abord, l'extraction ensuite.** Raison : chaque extraction déplace des blocs ; corriger des bugs par-dessus rendrait impossible d'attribuer une régression.
+
+Inventaire mesuré de l'index (9,21 Mo) :
+| Section | Poids |
+|---|---|
+| contenu_galop1_i18n | 2,34 Mo |
+| 02_donnees_complementaires | 2,05 Mo |
+| 04_dashboard | 1,65 Mo |
+| 05_ecrans_galops | 0,75 Mo |
+| 06_quiz_examen | 0,57 Mo |
+| 07_articles_videos_stats | 0,40 Mo |
+| 08_assistant_ia | 0,20 Mo |
+| 01_contexte | 0,18 Mo |
+| 09_profil + 03_auth + 00_core + 10_admin | 0,35 Mo |
+
+**Constat : plus de la moitié du monolithe n'est pas du code, c'est du contenu** (cours, QCM, traductions). C'est là qu'il faut commencer, et c'est **la seule partie dont une future migration Flutter héritera vraiment** — découper les composants React en `/features` n'apporterait rien à un portage Dart, où tout serait réécrit. Ce qui traverse la migration : le contenu, le schéma Supabase, les tokens de design.
+
+Argument concret supplémentaire : à 9,21 Mo, **GitHub refuse d'ouvrir l'index dans son éditeur web**. Chaque sortie de contenu rend une part du projet réellement éditable depuis l'iPhone.
+
+**Première extraction prête à lancer :** `contenu_galop1_i18n` → `/content/hype-contenu-galop1.js`. 2,34 Mo qui sortent d'un coup. Même motif que les 129 `<script src>` déjà en place (variable globale, chargée avant usage) : aucun bundler, rien à installer, déplacement pur, rollback en recollant le bloc. **En attente de la fin des bugs.**
+
+### Règle de travail adoptée le 02/08
+Jamais un correctif et une extraction dans le même fichier. Sinon on ne peut plus attribuer une casse à l'un ou à l'autre, et on perd la sécurité qui justifie le chantier. Les deux fronts avancent en alternance, chaque livraison isolée.
+
+---
+
+### 🔄 SUITE DE LA SESSION 72 — 7 BUGS CORRIGÉS
+
+**Fichier à pousser : md5 `79dcd33f`** (dossier `a-pousser/index.html`, déjà nommé correctement).
+Chaîne cumulative : chaque livraison contient les précédentes.
+
+| # | Bug | Cause trouvée |
+|---|---|---|
+| — | Vidéo Performances figée | `autoPlay` absent sur le panneau `palmares` |
+| 1 | Titres verticaux superposés | `chapPartage` en `absolute` sans conteneur `relative` |
+| 2 | Vignettes à moitié noires | photos chargées en résolution d'origine dans des cases 108×132, liste doublée pour la boucle |
+| 6 | Plantage au zoom | **aucun zoom n'existait** ; le calque de balayage lisait `changedTouches` sans compter les doigts → un pincement chargeait une autre photo pleine résolution pendant le décodage de la première → OOM, iOS tue l'onglet |
+| 11 | Chevaux fantômes Écurie | 7 fiches démo `CHEVAUX_FICHE` affichées alors qu'elles sont migrées en base → doublons ; + `mesChevaux` ∪ `mesChevauxLies` sans dédoublonnage |
+| 12 | Publication fil Écurie figée | cible passée à `ecurie:<profil.id>` le 27/07, mais `estMembreEcurie()` compare des NOMS → toujours faux → `publier()` sortait en silence |
+| 13 | Palmarès club périmé | la page ne lisait que la table `resultats`, jamais `chevaux.palmares` |
+| 17 | Histoire du cheval inécrivable | `window.prompt` natif d'une ligne ; Safari a durci l'accès au presse-papiers ; 3 sorties silencieuses |
+
+**Nouveaux éléments dans l'index :** `PhotoZoomHype` (zoom sans état React), `vignetteHype` + `replierVignette` (transformations Supabase avec repli), `ouvrirEditHistoire` / `sauverHistoireCheval` / `collerDansHistoire` (éditeur d'histoire).
+
+### 🔴 BLOQUÉ SUR DÉCISION DE BLANDINE
+1. **Supabase Pro (25 $/mois)** — validé sur le principe, pas encore fait. Le code des vignettes fonctionne quand même (repli sur l'original). **À redemander chaque session.**
+2. **SQL `cheval_id` sur `resultats`** — sans cette colonne, impossible d'afficher sur la fiche d'un cheval un résultat de la table. C'est le bug 7. Script à préparer avant tout code.
+3. **Bug 3** — formulation mangée par l'autocorrect : supprimer l'onglet Vidéos de la seconde page, ou l'encart « Ses vidéos » de la fiche ?
+4. **Bugs 8/9/10 (Boréalis)** — cas isolé (donnée en base) ou général (code) ?
+5. **Bugs 14/15 (club)** — recherche à l'aveugle abandonnée, il faut une repro précise.
+
+### 📌 DÉCISIONS D'ARCHITECTURE PRISES LE 02/08
+- **Un seul point d'écriture par donnée.** L'histoire du cheval s'édite depuis la fiche Cheval uniquement ; les autres pages l'affichent sans jamais l'écrire. Motif : les bugs 7/13 et 12 viennent tous d'une donnée à deux chemins d'écriture désynchronisés.
+- **Jamais un correctif et une extraction dans le même fichier.**
+- **Les bugs d'abord, l'extraction ensuite.**
+
+### ⚠️ DETTE REPÉRÉE, NON TRAITÉE (hors périmètre des 16 bugs)
+- **`window.prompt` subsiste 9 fois** ailleurs dans l'index. Même piège qu'au bug 17 : champ natif d'une ligne, inutilisable pour de la saisie longue. À auditer.
+- **Les flots et coupes sont écrits EN DUR** dans `CHEVAUX_FICHE`, récupérés par un secours qui cherche **par nom**. C'est ce qui les avait fait disparaître le 31/07. Ils s'évanouiront à nouveau si un nom change d'une lettre, et aucun cavalier autre que Blandine ne peut en ajouter. **Méritent leur propre table**, comme le palmarès.
+- **Le rail double la liste des médias** (`lR.concat(lR)`) dès 4 éléments pour boucler le défilement : le coût réseau est doublé. Les vignettes réduites atténuent, ne suppriment pas.
+- **Les grilles Souvenirs / club / Écurie** chargent probablement encore des originaux. `vignetteHype` n'a été appliqué qu'au rail de la fiche, un endroit à la fois.
+
+---
+
+### 🚨 URGENT — QUOTA SUPABASE, ÉCHÉANCE 04/08/2026
+Bannière constatée le 02/08 à 12h07 : *« Organization exceeded its quota in the previous billing cycle. Projects will be restricted from 04 Aug, 2026 if your organization remains over quota. »*
+**Un projet restreint = API muette = Hype à l'arrêt** (connexion, photos, résultats, fil). Le passage en Pro (25 $/mois) n'est plus une optimisation, c'est une échéance : il fait passer le stockage de 1 Go à 100 Go et l'egress de 5 Go à 250 Go.
+**En attente :** le détail de « Review usage » pour savoir quel compteur est en cause. Si c'est l'egress, c'est bien le diagnostic des vignettes — mais le correctif ne réduit que la consommation À VENIR, pas celle déjà comptée sur le cycle écoulé.
+
+### ✅ BASE DE DONNÉES — MIGRATIONS PASSÉES LE 02/08
+`resultats` compte désormais **11 colonnes** (vérifié) :
+`id`, `user_id`, `concours`, `classement`, `photo_url`, `media_url`, `created_at`, **`cheval_id`** (uuid, FK chevaux, on delete set null), **`cavalier_id`** (uuid, FK profiles, on delete set null), **`cavalier_statut`** (text, default `attente`), **`annee`** (text).
+`albums_cheval` a reçu **`visibilite`** (text, default `public`).
+Index créés : `resultats_cheval_id_idx`, `resultats_cavalier_idx`.
+
+### ✅ BUG 7 CORRIGÉ — LE SCHISME DES RÉSULTATS EST REFERMÉ
+Fichier md5 `fe46ce63` (10 correctifs cumulés).
+- La fiche cheval **lit** les deux sources : table `resultats` filtrée sur `cheval_id`, + anciennes entrées `chevaux.palmares`. Rien n'est perdu.
+- Elle **n'écrit plus que dans la table**. On arrête d'alimenter la colonne JSON, sinon le schisme se recrée.
+- Conséquence : un résultat saisi sur une fiche apparaît maintenant aussi sur la page club et dans le fil.
+- 3 sorties silencieuses remplacées par des messages explicites (fiche non en base, pas connecté, échec).
+- `annee` écrite avec repli automatique sur `created_at` si la colonne manque.
+- Nouveaux éléments : état `resDb`, liste fusionnée `palmTous`, `sauverResultat()` réécrit. `prow()` inchangé (même forme d'objet).
+
+### 📋 MODÈLE DE CONSENTEMENT ARRÊTÉ LE 02/08
+Après discussion : **opt-in pour désigner quelqu'un, opt-out pour ses propres albums.**
+Règle retenue : *ton contenu, ton choix — le nom de quelqu'un d'autre, son accord.*
+- **Albums** : publics par défaut, l'auteur peut basculer en privé. Colonne `visibilite`.
+- **Désignation d'un cavalier sur un résultat** : `cavalier_statut = 'attente'` jusqu'à acceptation. Réutilise le mécanisme `identifications` existant (déjà en opt-in) — **aucune bascule, donc zéro régression sur les tags photo déjà posés**.
+- Piste ouverte par Blandine, à exploiter plus tard : les résultats portent déjà un champ `auth` (`officiel` / `confirme` / `declare` / `perso`). Un résultat `officiel` venu de la FFE est un fait public vérifié et pourrait s'afficher sans accord ; un résultat saisi à la main reste `perso` et demande l'accord. Le vrai critère est la **provenance**, pas le consentement.
+
+### ⏭️ LIVRAISONS PRÉVUES (dans cet ordre)
+1. **Finir les bugs** — 3, 8, 9, 10, 14, 15, 16 (tous bloqués sur une info de Blandine, cf. plus haut).
+2. **Désigner le cavalier monté** — opt-in, notification, acceptation.
+3. **Visibilité des albums** — public par défaut, bascule en privé.
+4. **Bug 5** — choisir les photos/vidéos mises en avant (fonctionnalité, maquette d'abord).
+5. **Extraction `/content/hype-contenu-galop1.js`** — 2,34 Mo.
+
+Recommandation donnée à Blandine : finir les bugs avant les fonctionnalités. Le SQL est en place et ne se périme pas ; un bug se voit tous les jours par les ambassadeurs.
+
+---
+
+### 🔄 FIN DE SESSION 72 — 13 CORRECTIFS · md5 `c3e0eae0`
+
+| # | Bug | Cause / décision |
+|---|---|---|
+| 3 | Onglet vidéo « en doublon » | **Faux doublon.** L'encart « Ses vidéos / Le voir en mouvement » est une carte-porte dont la destination EST l'onglet Vidéos. Ce n'était pas une redondance mais un chemin incomplet : les vidéos ne pouvaient pas s'agrandir à l'arrivée. Rien supprimé. |
+| 8·9 | Vidéos Boréalis : lecture et agrandissement | Le plein écran était **désactivé volontairement** dans les DEUX visionneuses (`controlsList: "nofullscreen"` + `disablePictureInPicture`). Retiré. Et l'onglet Vidéos lisait les vidéos dans leur petite case sans jamais ouvrir la visionneuse : la vignette devient un bouton qui l'ouvre en plein écran, avec navigation. |
+| 18 | Animation mal cadrée sur la bannière d'accueil | *(nouveau, signalé le 02/08)* En `cover` elle était rognée à droite ; passée en `contain` le 01/08 elle flottait dans une boîte de 432 px qui n'a pas son format. **La bannière prend désormais la forme de la vidéo** : format lu au chargement des métadonnées, hauteur de l'en-tête ajustée, recalculée à chaque rotation. Repli sur la hauteur CSS + `hero-img` si le fichier ne charge pas. |
+| — | Wordmark HYPE en doublon sur l'accueil | L'animation de Blandine contient déjà le mot. Wordmark retiré (Design Bible : le texte ne répète pas l'image). La baseline « Bienvenue dans l'univers **de** » restait en suspens sans lui → remplacée par **TON UNIVERS ÉQUESTRE**, baseline autonome déjà validée sur la page de connexion, 6 langues, interlettrage ouvert à 3,4. |
+
+**À savoir sur l'animation :** `hype-anim-cheval.mp4` est un fichier **créé par Blandine** (ChatGPT + CapCut). Ce n'est PAS un placeholder à remplacer — c'est un élément de sa direction artistique. Utilisée à deux endroits : bannière d'accueil et carte-porte « Ses vidéos » de la fiche cheval.
+
+**Trace laissée volontairement :** l'animation CSS `hypeGlow` (halo turquoise pulsant) était attachée au mot HYPE retiré. Elle est encore déclarée mais plus utilisée — 3 lignes inoffensives, non supprimées faute de demande.
+
+### 🎯 RÈGLE PRODUIT FIXÉE LE 02/08
+**Toute photo et toute vidéo chargée par un utilisateur doit pouvoir s'afficher en grand.** C'est le minimum exigé par Blandine.
+État réel : tenu sur la fiche cheval et les albums nommés. **PAS tenu** ailleurs — le fil, l'Écurie, le club, la communauté utilisent trois mécanismes distincts (`PhotoZoomHype`, `PhotoZoomable`, `setZoomImg` × 18 sites) ou aucun.
+**Obstacle identifié :** la visionneuse est écrite À L'INTÉRIEUR de `FicheCheval`. Les autres écrans ne peuvent pas l'appeler. Pour appliquer la règle partout il faut **l'extraire en composant autonome** — c'est le premier morceau vraiment utile du chantier d'architecture, et le même remède que pour les résultats, l'histoire et le mur : un seul chemin par besoin.
+
+### 🔴 ENCORE OUVERT
+1. **Quota Supabase — 04/08.** Toujours en attente du détail de « Review usage ».
+2. **Bugs 14 et 15 (club)** — cadre photo persistant, image validée ≠ image affichée. Recherche à l'aveugle abandonnée deux fois : **il faut une repro précise**.
+3. **Bug 10** — image en ligne de Boréalis anormale. Isolé ou général ?
+4. **Bug 16** — carré jaune. Recommandation : le supprimer. En attente de validation.
+5. **Bug 5** — photos/vidéos mises en avant. Fonctionnalité, maquette d'abord.
+6. **Désignation du cavalier** (opt-in) et **visibilité des albums** (opt-out) — SQL en place, code à écrire.
+7. **Extraction de la visionneuse**, puis `/content/hype-contenu-galop1.js`.
+
+---
+
+### 🔄 SUITE SESSION 72 — 22 CORRECTIFS · md5 `be04e691`
+
+| Sujet | Cause / décision |
+|---|---|
+| Résultats repliés au chargement | L'onglet par défaut était figé sur `coupes`, même pour un cheval sans coupe — la pilule n'était alors pas affichée et la bande restait vide jusqu'au premier tap. S'ouvre désormais sur ce que le cheval possède : coupes s'il en a, sinon résultats. Bascule unique si les coupes arrivent de la base après le 1er rendu. |
+| Mise en page de l'histoire perdue | Sans règle `white-space`, les retours à la ligne du textarea sont repliés par le navigateur → pavé. `pre-wrap` les conserve. |
+| Histoire tronquée | `-webkit-line-clamp: 12` coupait les textes longs sans moyen de les dérouler. Affichage complet dans le panneau Souvenirs. |
+| Texte coupé à droite + page décalée latéralement | Même cause : un élément dépassait la largeur de l'écran, rendant la fiche scrollable horizontalement. Garde-fous de confinement (`overflow-x`, `min-width:0`, coupure des mots longs — une URL collée dans l'histoire suffisait). **L'élément fautif n'a pas été identifié nommément.** |
+| Bloc IPO / race / âge | Déplacé dans la carte Origines, une ligne discrète sous le pedigree. Bloc dédié supprimé (2 710 octets) → l'histoire remonte. Le crayon de l'indice n'ouvre plus un `window.prompt` mais un panneau à deux champs (sigle + valeur). **Un `window.prompt` de moins, il en reste 8.** |
+| Bannière d'accueil entassée | Hauteur fixe de 432 px retirée : la vidéo passe dans le flux (`width:100%` + `height:auto`), le navigateur applique son format natif — **le calcul JS ajouté plus tôt dans la session a pu être supprimé**. 30 px en haut, 30 px avant Mon profil. |
+| Ancienne photo aperçue au chargement | L'image de secours `hero-img` était visible par défaut alors que son seul rôle est de couvrir un échec. Opacité 0, révélée uniquement sur `onError` (où la hauteur 432 px revient aussi). |
+
+### 🔒 TROUVAILLE IMPORTANTE — LES ALBUMS PRIVÉS N'ÉTAIENT PAS PRIVÉS
+Le système de visibilité existait **déjà** (`public` / `partage` / `prive`, icône, libellé, panneau de membres dans l'en-tête de l'album ouvert). Mais `listerAlbumsCheval` **ne regardait pas la visibilité** : un album passé en privé restait visible par tout le monde. Le réglage existait et ne servait à rien.
+Filtrage ajouté **à la source** (seul point de lecture des albums → toutes les surfaces en héritent). Un album privé n'est visible que par son auteur.
+**⚠️ Reste ouvert :** le statut `partage` n'est toujours pas appliqué — les règles d'appartenance ne sont pas connues, elles n'ont pas été devinées. Un album « partagé » reste visible par tous, comme avant. **Question à Blandine : qui doit voir un album partagé ?**
+
+### ⚠️ INCIDENT DE MÉTHODE — DOUBLON ÉVITÉ DE JUSTESSE
+Une bascule public/privé a été écrite puis **retirée** : le système existait déjà. Un commentaire a été laissé à sa place dans le code pour éviter qu'une prochaine session recrée le doublon. **Leçon : chercher l'existant avant d'ajouter, y compris quand la fonctionnalité semble absente à l'usage — elle peut exister mais ne pas être appliquée.**
+
+### 🔍 BUG 19 (nouveau, non corrigé)
+Verso de la carte Origines : grand vide sous les informations. Le verso est en `position: absolute; inset: 0` dans une carte dont la hauteur ne suit pas son contenu. **Confirmé par Blandine comme antérieur à cette session.** Le verso lui-même est correct : la grille passe à une colonne quand il n'y a aucun grand-parent, donc « PÈRE — / MÈRE — » signifie simplement que le cheval n'a pas d'origines renseignées.
+
+### 🔍 PISTE NON VÉRIFIÉE
+Le crayon « Modifier les origines » n'apparaît que si `!CHEVAUX_FICHE[id]`. Les 7 chevaux de démonstration étant **migrés en base** depuis le 30/07, la condition pourrait bloquer l'édition sur de vrais chevaux possédés. Même famille que les chevaux fantômes. **À vérifier avant de corriger** — le crayon était bien visible sur une capture de My Dream, donc la condition n'est peut-être pas celle qui s'applique.
+
+---
+## 🟢 SESSION 71 (31/07, nuit) — FICHE CHEVAL : les vides et les blocs fantômes, trouvés PAR MESURE
+
+### 🔬 LA MÉTHODE QUI A TOUT DÉBLOQUÉ (à réutiliser systématiquement)
+Le banc d'essai réclamé par le SUIVI a été monté et il fonctionne : **Playwright + faux client Supabase**.
+- Faux client injecté par `addInitScript` **avant** les scripts de l'app : un `Proxy` où toute propriété renvoie le proxy et où `then` résout `{data:[],error:null}` (couvre `from().select().eq()...`), plus `auth`, `channel`, `storage`, `functions`. Supprime le « Cannot destructure createClient ».
+- `page.route('**/*')` : le document passe, tout le reste est servi vide (les `hype-images-*.js` n'existent pas hors ligne).
+- `DEV_OUVRIR_PAGE` réglé sur la page à mesurer (`cheval-rizotto`). Pour l'accueil, ajouter dans le fichier de TEST une clé `"accueil": { ecran: "dashboard" }` dans `MAP` (elle n'existe pas dans `CIBLE_DIRECTE`).
+- Données factices injectées dans le fichier de test uniquement, en préfixant `chargerPhotosSouvenirs`, `listerAlbumsCheval`, `listerCommentaires` par un `return` — **jamais dans le fichier livré** (vérifier `grep -c faux.test` = 0 avant livraison).
+- On mesure ensuite avec `getBoundingClientRect()` + `getComputedStyle()`. Plus une seule estimation à l'œil.
+
+### ✅ CORRIGÉ, AVEC LA PREUVE CHIFFRÉE
+1. **LE GRAND VIDE (5 échecs précédents) — 171 px mesurés, ramenés à 0.** Ce n'était pas une marge. `.app` portait `min-height:100dvh` + `padding-bottom:92px` et `.chvr .scroll` un `padding-bottom:120px` ajouté pour la barre de chapitres — or **tout le contenu à partir de l'IPO est en dehors de `.scroll`** (parenthèse fermée trop tôt, jamais corrigée). Ces réserves prévues pour le bas de page tombaient donc en plein milieu. Correctif : `.chvr .app{min-height:0;padding-bottom:0}` + `.chvr .scroll{padding:0}` + garde reportée sur `.chv.chvr` (96 px). **Effet secondaire gratuit** : la carte des origines était rentrée de 34 px au lieu de 16, elle est maintenant alignée sur le reste.
+2. **CARTE IPO — elle n'avait jamais disparu, elle était ENFERMÉE.** Analyse syntaxique : le bloc se trouvait **à l'intérieur de la branche « état vide »** (celle qui ne s'affiche que si le cheval n'a ni coupe ni résultat, sinon `null`). Pour Rizotto elle n'était donc jamais évaluée. Sortie de là et réécrite **sous les coupes** (`ongletPerf === "coupes"`), marge haute 30 px. Vérifié : « 1 sur 100 000 » apparaît maintenant 2 fois (badge + carte), « 161 » 2 fois. Avant : 0.
+3. **CARTE ORIGINES qui « lisait les origines à l'envers ».** Le conteneur du flip portait `transform-style:preserve-3d` **et** `overflow:hidden` : un `overflow` autre que `visible` **aplatit le contexte 3D**, donc le dos n'était jamais composité et on voyait la face avant en miroir. `overflow` retiré. Vérifié après clic : rotation appliquée, le dos passe devant, SIRE + naisseur + mère présents, hauteur dépliée 490 px.
+4. **LE FIL ne montrait pas les publications.** `momentsSeuls: true` ne gardait **que** les posts AYANT un texte : toutes les publications photo seule étaient écartées, d'où l'état vide. Filtre retiré (décision Blandine : afficher aussi sans texte). Vérifié avec 3 posts de test (photo seule / texte seul / les deux) : les trois s'affichent.
+5. **Carte « Tout le fil → » (porte vers les souvenirs).** Elle existait et était bien câblée sur `setPanneau("souvenirs")`, mais le rail entier ne se dessinait que `if (props.rail && liste.length)` : sans aucun moment, la porte disparaissait. Condition passée à `(liste.length || props.onVoirTout)` et libellé sans « 0 ».
+
+### ✅ MAQUETTE ET MISE EN PAGE
+6. **3 cartes raccourcis remontées sous le badge**, en grille de 3 colonnes égales (113 px chacune) ; le carrousel qui débordait est supprimé. Destinations inchangées : Histoire → Souvenirs, Carrière → Palmarès, Santé → Passeport.
+7. **Barre de chapitres fixée en bas RETIRÉE** (remplacée par les 3 cartes du haut, comme prévu). Vérifié : plus aucun élément `position:fixed` contenant Origines/Performances.
+8. **Albums en rail** : 2 visibles (174 px), aimantation, `data-hscroll`, jusqu'à 10 albums de la page souvenirs.
+9. **Carte vidéo dés-écrasée** : `aspect-ratio 16/9` (356 × 200 mesuré) au lieu de 150 px fixes ; les libellés « Ses vidéos » / « Le voir en mouvement » **sortis de l'image** (fini le télescopage avec le texte incrusté de GrandPrix) ; voile sombre retiré de la vidéo.
+10. **Rail de photos** : le retour en arrière visible (`scrollTo` fluide vers 0) est remplacé par une **boucle invisible** — liste doublée dès 4 photos, retour au point identique à mi-course. `data-hscroll` ajouté. **3 vignettes par écran** (108 px, écart 15). Écart de **26 px partout dans Médias**, et `paddingBottom` du rail albums passé de 4 à 0 : c'était l'asymétrie de 4 px repérée à l'œil par Blandine (30 au-dessus de la carte vidéo contre 26 en dessous).
+11. **Cristaux 48 px symétriques** de part et d'autre + **un cristal ajouté avant le bloc IPO/histoire** (vérifié entre les 3 cartes à y=662 et le bloc IPO à y=873). Titre **« Liens & partage » passé à la verticale** dans la marge comme les autres chapitres. **Encarts Clinique / Sellerie à 200 px** avec zone de titre de hauteur fixe alignée sur le bas, pour que les deux titres partent de la même ligne.
+12. **Bandeau de verre derrière le fil** (`panFil` : fond #0D1013, coins 26 px, marge haute 0 pour que ce soit le cristal qui donne l'écart).
+
+### 🎬 ANIMATION DU HÉRO DE L'ACCUEIL
+- Fichier **`hype-anim-cheval.mp4`** fourni par Blandine (CapCut) : H.264, **854 × 480, 5,1 s, 200 Ko**. Plus léger qu'une seule affiche de cours.
+- Posé **en couche de fond du héros de l'accueil** (`.uv3 .hero`, 432 px), **sous** `hero-pulse` / `hero-side` / `hero-grad` : le nom, la cloche et les boutons restent lisibles. Cadrage `cover` / `center 22%`, identique à l'image fixe.
+- **`hero-img` conservée dessous en filet de sécurité** + `onError` qui masque la vidéo : si le fichier manque ou ne décode pas, on voit l'image, jamais un rectangle noir.
+- Muette, `loop`, `playsInline`, `preload="metadata"`, et **`IntersectionObserver` qui met en pause dès que le héros sort de l'écran**.
+- **CONVENTION À RETENIR** : l'index ne contient que le **nom du fichier**. Pour changer l'animation, pousser un autre fichier **sous le même nom** — aucune modification de l'index. Inversement l'index peut évoluer sans toucher la vidéo. Si CapCut exporte sous un autre nom, **renommer avant de pousser**.
+- Vérifié en rendu : lecture au chargement, **pause au défilement**, reprise au retour en haut, 0 erreur JS. Et le repli `onError` validé au passage.
+
+### ⚠️ PIÈGES APPRIS CETTE NUIT
+- **Le Chromium de Playwright ne décode pas le H.264** (build Chromium, pas Chrome). Pour valider la logique d'une vidéo, convertir une copie en WebM (`ffmpeg -c:v libvpx-vp9`) et pointer le test dessus. Le mp4 reste inchangé côté livraison.
+- **Ne jamais conclure d'une mesure faite avec un jeu de test qui ne colle pas à la configuration réelle.** Les « 234 px sous la vidéo » annoncés à Blandine venaient d'une vidéo injectée dans mon stub, absente de sa fiche. Recaler le stub sur sa configuration avant d'affirmer quoi que ce soit.
+- **L'arbre des chapitres est EMBOÎTÉ** : `chapMedias`, `chapFil` et `chapSante` sont tous **à l'intérieur de `chapPerf`**, et `chapMedias` / `chapFil` existent **en double**. Tout traitement « un panneau par chapitre » doit en tenir compte : donner un panneau à Performances envelopperait toute la page.
+- **Vérifier l'état du fichier avant de patcher.** Plusieurs correctifs demandés étaient déjà en place (cristaux 48 px, titre vertical, encarts agrandis) : les assertions « 1 seule occurrence attendue » ont évité de les appliquer deux fois. Toujours faire échouer le script plutôt que d'écrire à l'aveugle.
+
+### 🧪 FICHIER D'ESSAI `c.html` (à pousser À CÔTÉ de l'index, pas à la place)
+Version **A + C** : les 6 cristaux **et** trois bandeaux de verre (Médias, Le fil, Santé & sellerie). Se consulte sur `/c.html`, invisible pour les cavalières puisque ce n'est pas `index.html`. Sert à trancher la question posée par Blandine : le heurt entre le rail léger du fil et les gros posters Clinique/Sellerie. Si A+C est retenu, il faudra dénouer l'emboîtement des chapitres (voir pièges) pour que Performances ait aussi son panneau.
+
+### 🎨 MAQUETTES LIVRÉES, CHOIX EN ATTENTE
+- **`maquette-fil-fiche.html`** — 3 directions pour le fil : **A Moments encadrés** (rail de rectangles verticaux + carte « Tout le fil »), **B La colonne** (moments en grand empilés), **C Le carnet** (date verticale dans la marge, moments alternés). **Blandine penche pour A**, en signalant que le fil « détonne » avec ce qui suit — d'où le bandeau (point 12).
+- **`maquette-separations-chapitres.html`** — 3 façons de départager les parties : **A Cristal respiré**, **B Le seuil nommé** (la partie s'annonce par son nom + compteur, le titre vertical devient inutile), **C Le panneau**.
+
+### 🔴 RESTE À FAIRE (ordre inchangé, moins ce qui est fait)
+1. **Photo d'écurie** : le choix d'une nouvelle image ne passe pas par le recadreur (appliquée brute) — seul « Ajuster » l'ouvre. À aligner sur la fiche cheval.
+2. **Accueil** : carrousel « Mon monde » encore sur `CHEVAUX_FICHE` (Rizotto y affiche « 12 ans » au lieu de 21) → charger depuis la base, âge calculé, photo réelle.
+3. Teinte du **profil cavalier** + **stockage des teintes en base** (aujourd'hui localStorage → invisible pour les visiteurs).
+4. **Compression des photos à l'upload** (fond du crash mémoire iOS + quota Supabase avant le 14 août).
+5. Dénouer l'emboîtement des chapitres **si A+C est retenu**.
+6. Trancher la direction du fil (maquettes livrées).
+
+## 🆕 AJOUTS DE FIN DE SESSION 31/07 (tous validés 141/141, aucune fonction perdue)
+## 🔵 ÉTAT FIN DE JOURNÉE 31/07 (dernier index livré : md5 dcd4ff37)
+## 🔵 FIN DE SESSION 31/07 — ÉTAT RÉEL (md5 8900dff3)
+**En ligne et vérifié** : carte d'identité en tête de fiche — « Origines » écrit DANS la carte, elle **se retourne** (flip 3D) pour pedigree + naisseur + consanguinité + SIRE · **barre de chapitres FIXÉE EN BAS** de l'écran (au-dessus de la NavBar, marge basse 120px ajoutée au scroll) · titres de chapitres **verticaux en surimpression** (Performances, Médias, Le fil, Santé) — aucune largeur prise · cristaux 34px symétriques · **pilules Coupes/Résultats** · **carte IPO autonome** en fin de Performances · **albums en 2 colonnes égales** (grille, plus de rail 220px) · likes + commentaires dans la visionneuse de la fiche · **une seule vidéo en autoplay** + pause de toutes les vidéos à l'ouverture d'un média · formulaire de résultats complet (1-2-3 + 4-8 + « Classé ») · épreuves abrégées « Finale JC 4 ans » · espaces 22px badge↔carte↔chiffres.
+
+## 🔴 RESTE À FAIRE — ORDRE DE PRIORITÉ
+1. **Remonter les 3 cartes raccourcis** (Histoire/Carrière/Santé + Sellerie + Vidéos) sous le badge, en **grille compacte de 3**, chacune cliquable vers SA page. Déplacement structurel → à faire seul, en début de session. Maquette de référence : `maquette-plan-fiche.html` (zone 3).
+2. **LE GRAND VIDE** entre la carte des origines et les chiffres IPO/PFS : cause NON identifiée après 5 tentatives à l'estime. **Méthode imposée** : monter un rendu Playwright avec un **faux client Supabase** (sinon l'app ne démarre pas hors ligne : « Cannot destructure createClient ») et **mesurer** les boîtes. Ne plus deviner.
+3. **Photo d'écurie** : le choix d'une nouvelle image ne passe PAS par le recadreur (appliquée brute) — seul « Ajuster » l'ouvre. À aligner sur la fiche cheval.
+4. **Accueil** : carrousel « Mon monde » encore sur CHEVAUX_FICHE (Rizotto y affiche « 12 ans » au lieu de 21) → charger depuis la base, âge calculé, photo réelle.
+5. Teinte du **profil cavalier** + **stockage des teintes en base** (aujourd'hui localStorage → invisible pour les visiteurs).
+6. Compression des photos à l'upload (fond du crash mémoire iOS + quota Supabase avant le 14 août).
+
+## ⚠️ PIÈGES APPRIS À LA DURE (31/07) — À RESPECTER
+- **Ne JAMAIS déplacer un bloc par équilibrage de parenthèses** : une apostrophe dans une regex (`d'.+`) fait dériver le scanner → 1 M de caractères et 80 fonctions emportés (2 incidents). Supprimer par **bornes textuelles** puis **réécrire** une version courte au bon endroit (méthode suggérée par Blandine, seule qui a marché).
+- **Après tout retour en arrière, relister les correctifs perdus** : l'extraction de l'IPO et l'espacement Médias ont disparu DEUX fois par rollback silencieux.
+- **`node --check` ne prouve pas que la page s'affiche** : vérifier aussi que chaque état est déclaré DANS le bon composant (un `ongletPerf` orphelin a planté toute la fiche ; une insertion dans AlbumsCheval au lieu d'EcranCheval a failli recommencer).
+- **Crash sans écran d'erreur = mémoire iOS**, pas un bug de code (5 vidéos en autoplay + image pleine résolution).
+- Le SUIVI est **cumulatif multi-branches** : il ne prouve pas qu'un index est « en retard ».
+
+- **CARTE D'IDENTITÉ UNIQUE** en tête de fiche (maquette A validée) : IPO en grand + race/âge/robe/discipline, filet, puis « père × père de mère ». **Elle se retourne** (flip 3D) pour livrer pedigree complet, naisseur, consanguinité, SIRE. L'ancien bandeau IPO/PFS séparé et l'ancien chapitre Origines plus bas ont disparu.
+- ⚠️ **MÉTHODE QUI MARCHE** (3 échecs aujourd'hui avant de trouver) : pour fusionner deux blocs, **ne pas déplacer** le code existant — supprimer l'ancien avec des **bornes textuelles** (jamais l'équilibrage de parenthèses : une apostrophe dans une regex `d'.+` fait dériver le scanner et a emporté 1 M de caractères / 80 fonctions) puis **réécrire** une version neuve courte au bon endroit. Idée de Blandine, à appliquer systématiquement.
+- Autres ajouts du jour : likes ❤ + commentaires dans la visionneuse de la fiche (les fonctions existaient mais n'étaient câblées que dans l'ancienne visionneuse des albums) · pilules **Coupes/Résultats** dans Performances · **teinte de la page écurie** (4 pastilles en bas du bandeau, cadre + accents + recadreur, stockée en localStorage) · titres verticaux en surimpression (plus de décalage) et agrandis à 15px Cinzel · titres en double supprimés (`sansTitre` transmis à MurHype et AlbumsPromus) · diptyque Médias réduit à la seule vidéo en grand · carrousel accéléré · espace de 26px sous la photo · nom + affixe sur la même ligne · ligne italique retirée (doublonnait) · libellés d'épreuve abrégés (« Finale JC 4 ans ») · cadre overlay thématisé + `srcNue` (fin des cadres cuits qui s'empilent).
+
+## 🔴 PRIORITÉS IMMÉDIATES (préparées, à appliquer sur le prochain index)
+1. **ACCUEIL — carrousel « Mon monde » NON MIGRÉ** (repéré par Blandine 31/07) : il lit encore les fiches en dur (Rizotto y affiche « Poney · 12 ans » au lieu de 21 ans / 2005). À faire : charger les chevaux **depuis la base** filtrés sur le compte, vraie photo avec repli sur l'affiche de secours, **âge calculé** depuis la date de naissance, navigation par identifiant base, « + Ajouter » conservé.
+2. **Teinte pour le PROFIL CAVALIER** + héritage de la teinte par les **pages secondes** (souvenirs / performances / vidéos / albums) pour supprimer tout turquoise orphelin.
+3. **Rendre les teintes publiques** : aujourd'hui en localStorage (donc invisibles pour les visiteurs et non synchronisées entre appareils). Nécessite une colonne Supabase + requête SQL à préparer.
+4. Reste de la maquette fiche : pilules Photos/Vidéos/Albums dans Médias, titre vertical pour Liens & partage, cristaux solidaires des chapitres.
+5. Vidéo sur bandeau écurie/club : **bibliothèque de 3-4 vidéos au choix** (solution retenue avec Blandine, remplace l'upload libre).
+
+- **Diptyque Médias** : photo vedette + **vidéo vedette côte à côte** (autoplay muet, badge ▶ VIDÉO) ; replis gérés (pas de vidéo → photo pleine largeur, et inversement) ; les deux médias promus sont retirés du rail.
+- **Titres de chapitres** agrandis (8.5→10.5px vertical, 10.5→11.5px horizontal), passés en **relief** (textShadow noir + halo teinte, brightness 1.18) car illisibles sur fond sombre.
+- **Libellés d'épreuve abrégés** : helper `abrEpreuve()` — « Finale jeunes chevaux poney · obstacle 4 ans » → « **Finale JC 4 ans** » (règle générique tous âges ; sinon « obstacle » → « obst. »).
+- **Cadre spectral en OVERLAY sur le héro** : double trait fin posé par-dessus la photo, **suit la teinte en direct**, photo jamais modifiée.
+- **Cadre/Halo du recadreur aux couleurs du thème** : la teinte de la fiche est transmise au recadreur (`job.teinte`, helper `hbA()`), le cadre et le halo se dessinent dans cette couleur.
+- ⚠️ **BUG DU CADRE CUIT — CORRIGÉ** : le recadreur conservait comme « original » la version **déjà habillée** → « Aucun » ne retirait rien et les cadres s'empilaient. Désormais `srcNue` (image recadrée NUE, capturée avant tout habillage) sert d'original. **Motif connu à surveiller partout** (cf. règle des filtres empilés). Les photos dont l'original stocké contient déjà un cadre doivent être re-choisies une fois depuis la pellicule.
+- Décalage du contenu par les titres verticaux : **maquette-titres-sans-decalage** livrée (A surimpression dans la marge = recommandé / B colonne 14px / C horizontal minuscule) — **choix de Blandine en attente**.
+
+## ✅ VALIDÉ PAR BLANDINE, À CONSTRUIRE EN PRIORITÉ (session suivante)
+1. **Carte Origines qui SE RETOURNE** (flip 3D validé sur maquette-origines-flip) : face avant = « père × père de mère » seul ; dos = pedigree complet, naisseur, consanguinité, SIRE. ⚠️ Nécessite l'extraction du gros bloc pedigree — **échec précédent sur équilibre de parenthèses, découper en morceaux**. État `origOuv/setOrigOuv` déjà en place.
+2. **Teinte pour le profil CAVALIER et la page ÉCURIE/CLUB** (validé 31/07) : aujourd'hui elles n'ont aucune teinte, donc leur recadreur reste turquoise. À faire : stockage (JSON profil), pastilles dans le menu, application aux couleurs de la page + transmission au recadreur.
+3. Sommaire collant : **coupé à gauche** sur certains écrans (premières pilules tronquées) — à corriger.
+4. Ligne italique sous le titre : l'**IPO y apparaît en double** avec l'encart PFS juste dessous — arbitrer.
+5. Reste de la maquette : pilules Coupes/Résultats et Photos/Vidéos/Albums, titre vertical pour Liens & partage, cristaux solidaires des chapitres (éviter les orphelins).
+
+---
+## ✅ SESSION 70 (31/07) — CE QUI EST DÉSORMAIS CODÉ ET EN LIGNE
+## 🚧 REFONTE FICHE (maquette 5+6+volets) — ÉTAT AU 31/07 FIN DE SESSION
+**FAIT et validé (141/141, aucune fonction perdue)** : ligne de clés italique sous le titre · **sommaire collant** 6 pilules avec ancrages (chvInfos, chapPerf, chapMedias, chapFil, chapSante, chapPartage) et défilement doux · **cristaux séparateurs** (helper `cristal(k)`, 5 appels) · respiration `.eyebrow2` 30→46px · **titres verticaux** (writingMode vertical-rl, colonne 30px) sur Performances, Médias, Le fil, Santé & sellerie · **IPO rapatrié dans Performances** (sous coupes/résultats).
+
+**RESTE À FAIRE sur la fiche** :
+1. ⚠️ **Volet Origines** (père × père de mère en une ligne, tout au déroulé) — TENTÉ puis ANNULÉ : l'extraction du bloc pedigree (11 730 caractères) casse l'équilibre des parenthèses. **Méthode à suivre** : découper le pedigree en morceaux plutôt qu'en un seul bloc, état `origOuv/setOrigOuv` DÉJÀ posé dans le code (prêt à l'emploi).
+2. Titre vertical pour **Liens & partage** (borne de fin = fin du scroll, à délimiter à la main).
+3. **Pilules Coupes/Résultats** (Performances) et **Photos/Vidéos/Albums** (Médias) avec compteurs + « + ».
+4. **Diptyque photo + vidéo** dans Médias (garantit une vidéo visible ; repli en photo pleine largeur si aucune vidéo).
+5. Durcir les cristaux : les rendre solidaires du chapitre pour qu'ils disparaissent avec une section vide (risque de cristal orphelin sur fiche peu remplie).
+6. **Santé = passeport + clinique fusionnés** (info Blandine 31/07) : faire converger les deux entrées actuelles du code vers une seule destination.
+
+## ⚠️ VIDÉO SUR PROFIL CLUB/ÉCURIE — N'EXISTE PAS ENCORE (question Blandine 31/07)
+Le sélecteur de la photo d'écurie n'accepte que des images et le bandeau ne sait afficher qu'une `<img>` : rien n'est cassé, la fonctionnalité n'a jamais été construite. À faire : accepter `video/*` dans le sélecteur, compresser à l'upload (3-5 s, sans son, ~300-500 Ko), stocker dans le bucket, et rendre `<video>` (boucle, muet, pause en arrière-plan) quand l'URL est une vidéo. Même chantier que les profils vidéo Premium (E.6) — à traiter ensemble.
+
+- **Menu unique** : crayon fondu dans le ⋮ (📷 Changer photo · ✂️ Ajuster · 🏷️ Identifier · 🎨 Teinte propriétaire · ✏️ Modifier · 🗑️ Supprimer). Plus aucun bouton flottant sur la photo.
+- **Titres SORTIS de la photo héro** : héro = photo pure (chevron + drapeau seulement) ; bloc titre dédié dessous (nom Cinzel dégradé, affixe en teinte, badge Légende en pilule, ⋮ aligné à droite).
+- **FIL direction 3** : rail de 6 encadrés verticaux 208px (média dominant, légende 2 lignes, auteur·date, citation Cormorant si texte seul), départ varié, carte « Tout le fil → (n) ». Fil doublon retiré du panneau souvenirs.
+- **Page seconde à ONGLETS** : Souvenirs | Performances | **Vidéos** (pilules sous le titre). Onglet Vidéos = grille de toutes les vidéos du cheval → l'encart « Le voir en mouvement » a enfin une destination.
+- **Swipe retour** sur le panneau : geste depuis le bord gauche (≤28px, dx>70, dy<60) ferme le panneau sans gêner les rails.
+- **IPO** : déplacé, puis **remonté AU-DESSUS des Origines** (demande du 31/07).
+- **Bande « Ses photos » = proposition 1** : vedette large (218px, pleine largeur, vidéo en autoplay muet) + rail de vignettes 104×126 qui **défile seul** (pause au doigt). Les **vedettes choisies ouvrent la séquence** (chargerPhotosSouvenirs lit souvenirs_vedette en premier).
+- **Tap = plein écran** : photos de la bande ET cartes du fil ouvrent la visionneuse au lieu de renvoyer en haut des souvenirs.
+- **Encart « Ses vidéos » lisible** : vidéo à 92% d'opacité, voile réduit à un dégradé bas, textes petits en bas à gauche.
+- **Partage de fiche avec image** : navigator.share embarque la photo du cheval (fetch→blob→File, canShare) ; repli lien seul puis presse-papiers. Routage `#cheval-<id>` générique (identifiants base ET vitrine).
+- **Formulaire de résultats complet** : 1/2/3 + champ 4-8 + « Classé » ; sauvegarde qui ne ferme que sur succès ; médaillons masqués si coupes SAUF entrées perso ; coupes sans image masquées ; état vide seulement si rien.
+
+## 🎨 MAQUETTES EN ATTENTE DE TON CHOIX
+1. **maquette-respiration-chapitres** : 1 grands blancs / 2 filet lumineux / 3 chapitres en cartes / 4 numérotés + fond alterné (combinables 2+4, 1+4).
+2. **maquette-cadre-photos** : A liseré / B coins / C double trait (toujours en attente).
+3. **Cadre Spectral 4 teintes en overlay** : à maquetter (auto + pastilles + « Auto »).
+
+## 🔴 RESTE À CONSTRUIRE (inchangé)
+Chapitre Performances + carte « Partager sa fiche » sur la page CAVALIER · encart Résultats du CLUB (spécifier qui publie/validation/saisons) · bouton « Faire découvrir Hype » en Communauté · grille ordonnée des posts dans l'onglet Souvenirs · vidéos à fournir (bandeau Écurie Feinn, accueil « cheval en liberté », couverture g3-saut, profils vidéo Premium, poulain messagerie déjà dans le bucket) · décision « + Ajouter un flot » (construire l'upload ou retirer) · albums collaborateurs · quota Supabase avant le 14 août · déplacer les vidéos hors de « Untitled folder » · « Six instants » à harmoniser dans les 5 autres langues.
+
+
+## 🎯 PILE SESSION 70 — RÉCAP EXÉCUTABLE (consolidé 31/07 matin, tout le reste de la 69 est FAIT et en ligne)
+
+**Maquette n°1 (un seul écran, tout ensemble) — LA GRANDE FICHE CHEVAL :**
+1. Titres (nom/affixe/badge) SORTIS de la photo héro → bloc titre dessous.
+2. Menu UNIQUE : crayon fondu dans ⋮ (📷 Changer photo · ✂️ Ajuster · 🏷️ Identifier · 🎨 Teinte · ✏️ Modifier · 🗑️ Supprimer).
+3. Cadre Spectral 4 TEINTES en OVERLAY (auto = suit la teinte ; pastilles + « Auto » pour forcer). Le cadre actuel est cuit dans l'image → à re-recadrer pour nettoyer.
+4. FIL direction 3 : rail 6 encadrés verticaux + carte « Tout le fil », départ varié.
+5. IPO déplacé sous/avec Origines.
+6. ⚠️ Choix Blandine EN ATTENTE : variante du cadre photo simple (A liseré / B coins / C double trait — maquette-cadre-photos livrée).
+
+**Maquette n°2 — PAGE SECONDE UNIQUE À ONGLETS (Souvenirs | Performances | Vidéos ?)** : fusionne les panneaux, grille ordonnée des posts (onglet Souvenirs), règle le swipe-retour mort (#panneauCheval data-noswipe) et l'encart « Ses vidéos » sans destination. Retrait du fil doublon.
+
+**Cavalier & Club** : chapitre Performances sur la page cavalier + carte « Partager sa fiche » cavalier (n'existe pas) ; encart Résultats du club (spécifier : qui publie, validation modérateur, saisons).
+
+**Communauté** : bouton « Faire découvrir Hype » (partage de l'app — n'existe pas).
+
+**Vidéos en attente de fichiers/maquettes** : bandeau Écurie Feinn (vidéo à fournir) ; accueil « cheval en liberté » (Blandine génère) ; couverture vidéo du cours g3-saut ; profils vidéo Premium (compression auto à l'upload, vignette fixe en liste) ; poulain messagerie dodo→galop (vidéos déjà dans le bucket).
+
+**Décisions à prendre** : « + Ajouter un flot » (construire l'upload d'image de flot OU retirer le bouton) ; albums collaborateurs (table + policy).
+
+**Ménage/technique** : quota Supabase AVANT le 14 août ; déplacer les 6 vidéos hors de « Untitled folder » (+ 1 ligne d'index) ; « Six instants » à harmoniser dans les 5 autres langues de la scène ; chasse aux « Bientôt disponible » restants ; purge de CHEVAUX_FICHE dans quelques semaines.
+
+**Fond ancien (inchangé, mémoire longue)** : Chemin Baby Poney d'Or à valider ; titre baby-c18 doublon ; vidéo Premium Hey Baby (livraison 2) ; offre Stripe « abonnement IA » ; Fond Studio (intégration + teintes) ; Hype Lingo (en attente réf. page poneys) ; idées validées à maquetter (export Instagram, certificat Galop, rétrospective annuelle, anniversaire cheval, question du jour, révision Premium, concours photo mensuel).
+
+
+---
+
+## SESSION 69 · 30/07/2026 (journée marathon — migration + scène + vidéos)
+
+🔴 **À pousser** : `index.html` (10 318 504 octets, md5 52edeac2) — contient TOUT ce qui suit. Les 6 vidéos sont DÉJÀ uploadées dans Supabase Storage.
+
+### A. MIGRATION DES 7 CHEVAUX DÉMO → BASE (fait, en ligne, vérifié)
+Les fiches codées en dur (CHEVAUX_FICHE) ne sont plus que des SECOURS. Chaque cheval vit en base sous son vrai propriétaire :
+- **Blandine (feinn@live.fr)** : My Dream, Rizotto d'Emery, Elfe de Feinn, Cooltax, Boréalis de Feinn.
+- **Liam (liamroux0@gmail.com)** : ses fiches réelles préexistantes **« Tully Blue moon »** (m minuscule !) et **« Hey Baby Please »** — créées par lui le 26/07. Les coquilles vides créées par erreur lors de la migration ont été supprimées (delete ciblé date+photo null).
+- SQL passés par Blandine : colonne `chevaux.palmares jsonb` ajoutée ; INSERT des 5 ; raccord des cibles `commentaires`, `souvenirs_vedette` ET `albums_cheval` de `cheval:<slug>` vers `cheval:<uuid>` (par jointure sur nom). Contrôle 0 rows sur les anciens slugs : OK.
+- Index : `NOMS_MIGRES` (slug→nom réel) dans EcranCheval — un slug démo déclenche la recherche base par nom ; `var c = chevalDyn || CHEVAUX_FICHE[id]` (la base PRIME) ; `cibleCh = "cheval:" + (c.dbId || id)` sur les 9 accès souvenirs/albums/mur ; palmarès/origines lus depuis la base (JSON) avec secours code ; photos du code en secours si `photo_url` vide (personne n'a rien recréé) ; liste écurie : liste démo supprimée, `AFFICHES_SECOURS` par nom (fin du doublon Tully).
+- ⚠️ La vitrine EcranEcurieHype garde ses cartes en dur (slugs) → elles ouvrent désormais les fiches base. CHEVAUX_FICHE pourra être purgé dans quelques semaines une fois la bascule éprouvée.
+
+### B. SCÈNE « LES PHASES DU SAUT » → 6 PHASES OFFICIELLES FFE (fait)
+Vérifié sur sources (dont PDF ffe.com) : battue des antérieurs, battue des postérieurs, ascendante, planer, DESCENDANTE, réception. L'abord/l'appel = noms familiers des deux battues.
+- PHASES passe de 5 à 6 (phase descendante insérée, textes cheval/cavalier écrits, glyphe SVG) ; « sur 06 » ; sous-titre « Six instants » (FR seulement, autres langues à harmoniser un jour).
+- **Rail compact** : les 6 cartes tiennent à l'écran (flex 1 1 0, nom en 7.5px 2 lignes, scrollTo neutralisé — attention au `if (f) { }` réparé).
+- Carte « À retenir » RETIRÉE de la fin de la scène → elle vit sur la page du cours.
+- **Page scène repensée (maquette validée)** : BlocLienPhasesSaut = carte « ⭐ À retenir » (3 points, 6 langues) + encart scène compact + bouton pilule discret. Réinséré dans g3-saut ET g4-obstacles-equilibre.
+- **Vocabulaire d'examen (FR uniquement)** : cartes du cours « 1. La battue des antérieurs (l'abord) »… « 5. La phase descendante » ; bonne réponse + explication du quiz alignées. Autres langues : noms naturels conservés (l'examen est français).
+- **Flèche ← sur toutes les pages de cours** (pied du lecteur EcranCours) + boutons Suivant/← passés en style discret (maquette validée : verre fumé liseré, fini le pavé fluo).
+
+### C. COIN COMPÉTITION — VIDÉOS PAR TEINTE (fait, câblé)
+- Panneau Performances : bandeau vidéo en tête (ratio 966/720, max 44svh, dégradé, onError→masqué). La vidéo suit `teinte` : #D9B56C→dorée, #5C7A5E→verte, #C64B5C→bordeaux, sinon Crystal.
+- **6 vidéos optimisées** (delogo du filigrane « Ai » sans recadrage, son retiré, H.264 ~200-370 Ko) et **UPLOADÉES** par Blandine dans Storage. ⚠️ CHEMIN RÉEL : bucket `photos`, dossier **`Untitled folder/Ui/`** (dossier Untitled créé par accident, assumé pour l'instant — l'index pointe sur `.../public/photos/Untitled%20folder/Ui/`). Fichiers : heybaby-dodo.mp4, heybaby-messagerie.mp4, palmares-crystal.mp4, palmares-dore.mp4, palmares-vert.mp4, palmares-bordeaux.mp4.
+- 📌 Ménage futur : déplacer vers un vrai dossier propre + rebasculer le préfixe (1 ligne).
+
+### D. CORRECTIFS FICHE CHEVAL (faits)
+- **Identifier** : retiré du haut du héro ; réinséré dans la **visionneuse** (pilule discrète) + entrée menu ⋮ « 🏷️ Identifier dans la photo ». (Historique : le bouton était un bloc visionneuse tombé hors condition, réparé en début de session.)
+- **Teinte en un tap** : rangée « 🎨 Teinte » avec 4 pastilles directement dans le menu ⋮ (propriétaire, update `chevaux.teinte` + setChevalDyn immédiat).
+- **Photo fantôme** (bug signalé : recadreur proposait un vieil original — profil/cheval/écurie-club) : empreinte `*_orig_pour*` (100 premiers caractères de la photo produite) enregistrée à côté de chaque original ; à l'ouverture, original servi SEULEMENT si l'empreinte correspond à la photo en place, sinon purge. 3 chemins corrigés.
+- **« Partager sur l'Écurie Hype »** remonté DANS la carte Liens & partage (entre Générer un lien et FFE).
+- **Héro** : photo entière (contain) sur hauteur fixe 50svh ; recadrage accessible via ⋮ « ✂️ Ajuster / recadrer » (toutes fiches). Carrés Clinique/Sellerie : images de couverture remises (clés encartVeto/cliniqueEncart/sellerieEncart, dégradé, icône en repli). Albums : rail 220px aligné sur les vignettes photos.
+
+### E. VALIDÉ, PAS ENCORE CODÉ (prochaine session — maquettes d'abord)
+1. **FIL DIRECTION 3 (« Moments encadrés »)** — CHOIX DÉFINITIF (31/07 au matin, confirmé face à l'option Cinéma sur maquette-fil-finalistes) : rail horizontal de **6** encadrés max (média dominant, légende 2 lignes, auteur) + carte « Tout le fil → (n) » ; **supprimer le fil doublon du panneau souvenirs** (fiche = vitrine + fil, souvenirs = photos/albums purs, décision actée). Plan proposé, maquette d'intégration sur vraie fiche À FAIRE avant code.
+2. **Poulain messagerie** : dodo (94 Ko) en boucle près de l'entrée quand rien, galop (219 Ko) + pastille à l'arrivée d'un message. Vidéos prêtes et uploadées. Maquette de l'enchaînement à faire.
+3. **Couverture vidéo du cours g3-saut** (boucle lente, fondu au raccord) — vidéo à choisir (Blandine veut regénérer mieux).
+4. **Accueil** : bandeau vidéo — Blandine veut un sujet UNIVERSEL (cheval en liberté, pas de compétition pour ne pas exclure dresseurs etc.) ; elle génère. Maquette technique prête (blob iOS, poster, voile).
+5. **Bandeau vidéo Écurie Feinn** (club en dur) : accepté, vidéo à fournir.
+6. **Profils vidéo Premium** (écurie/cheval/cavalier) : accepté dans le principe — compression AUTO à l'upload (3-5 s, sans son, ~300-500 Ko), vignette fixe dans les listes, lecture uniquement sur la page ouverte, réservé Premium.
+7. **Albums collaboratifs** : table `albums_collaborateurs` + policy, à maquetter avec le redécoupage Ses albums / Ses photos.
+8. **Question ouverte** : sur la fiche, section Son palmarès — médaillons (actuels) vs flots de Blandine en direct. Ses flots sont INTACTS dans le panneau Performances (rubanCard/rbstrip).
+
+### G. FIN DE SESSION — CHAPITRE PERFORMANCES & SIRE (faits, dans l'index final 0650450a)
+- **Chapitre « Performances » sur la fiche** (remplace Aptitude + Son palmarès, plus de doublon) : eyebrow Performances → **vidéo cérémonie** (suit la teinte, tap → panneau détail) → **rail de médaillons** → carte **IPO rendue discrète** (police/photo réduites, sans titre de section). L'ancien « Son palmarès » du bas est supprimé. Blandine a VU les vidéos en ligne : tout fonctionne.
+- **« + Ajouter un résultat » FONCTIONNEL** (propriétaire uniquement) : état vide → modale (année préremplie, pastilles or/argent/bronze, épreuve, discipline·cavalier) → append dans `chevaux.palmares` (jsonb) + toast ; pastille **+** en fin de rail quand des résultats existent. Visiteurs : lecture seule.
+- **Champ SIRE** : saisi dans « Modifier » de la carte Origines (stocké dans le JSON `origines.sire`, AUCUNE colonne SQL à ajouter) ; affiché tappable sur la carte → ouvre https://infochevaux.ifce.fr/fr/info-chevaux (page officielle de recherche — PAS de lien profond par numéro, format non documenté/fragile).
+- **Ligne FFE « Connecter » RETIRÉE** (promesse sans backend — décision Blandine : « ça sert à rien de promettre des trucs qu'on peut pas faire »). ⚠️ RÈGLE PRODUIT ACTÉE : plus aucune promesse d'interface sans backend. Chasse aux autres « Bientôt disponible » à faire (tâche ouverte).
+- **⚠️ PAS DE REMPLISSAGE AUTOMATIQUE via SIRE** : pas d'API publique IFCE/FFE. Formule de communication validée : « Renseigne le SIRE de ton cheval et retrouve sa fiche officielle IFCE en un tap. » Rien de plus. Le vrai automatique = dossier partenariat IFCE/FFE (chantier fondatrice ; trame à préparer si Blandine le demande).
+- **Recadreur écurie : ratio réel** — le cadre proposé épouse désormais les dimensions mesurées du bandeau (`.hero` clientWidth/Height) au lieu d'un 16/9 arbitraire → fini le zoom surprise entre ce qu'on cadre et ce qui s'affiche. (À généraliser un jour aux autres recadrages si même symptôme.)
+
+### H. ARCHITECTURE CIBLE ACTÉE (Blandine, fin de session — MAQUETTES À FAIRE avant code)
+**« La vitrine sur les pages principales, le détail sur une seule page seconde. »**
+- Fiche CHEVAL : chapitre Performances (FAIT ce soir).
+- Page CAVALIER : même chapitre Performances (vidéo + résultats principaux) — à maquetter.
+- **Page seconde unique avec onglets « Souvenirs | Performances »** : le panneau souvenirs et le panneau palmarès fusionnent en UNE page à onglets (fin de la multiplication des panneaux) — à maquetter.
+- Page CLUB : encart renvoyant vers les résultats collectifs (cf. maquette-resultats-club) — à maquetter/spécifier (qui publie, validation modérateur, saisons).
+- Maquette « cadre des photos » livrée (3 variantes A liseré / B coins passe-partout / C double trait) — **choix de Blandine en attente**.
+
+### I. DERNIERS AJOUTS (index final 7fe7e4bc)
+- **Coupes/flots en vitrine sur la fiche** (demande Blandine : « les coupes que je m'étais fait chier à faire ») : rail des `c.flots` (cartes image 108×132, bord doré) AVANT les médaillons ; **tap = zoom dans la visionneuse** (ce que les médailles ne faisaient pas). Les médaillons restent à la suite pour les résultats sans image (saisis au formulaire). Fallback trophée/médaille emoji si flot sans image.
+- **« + Ajouter un résultat » du PANNEAU Performances branché** (était un bientot()) : ferme le panneau et ouvre la modale (propriétaire), bientot() sinon.
+- ⚠️ **« + Ajouter un flot » du panneau = encore un bientot()** — l'upload d'image de flot n'existe pas. DÉCISION À PRENDRE (règle anti-promesse) : construire le vrai upload de flots (photo du flot de concours par le cavalier — serait très Hype) OU retirer le bouton. Blandine tranchera.
+
+### J. TÊTE DE PILE PROCHAINE SESSION (décisions de fin de soirée)
+1. **SORTIR LES TITRES DE LA PHOTO HÉRO** (fiche cheval) — « ça casse tout » sur les vraies photos : RIZOTTO/affixe/badge écrasent l'image. Cible : photo entière intouchée en haut → bloc titre dédié DESSOUS (nom Cinzel, affixe, badge, crayon + ⋮ alignés) → IPO → histoire. À maquetter AVEC le fil direction 3 (même écran, une seule maquette de fiche).
+2. **Fil direction 3** (rail 6 encadrés + carte Tout le fil, retrait du doublon souvenirs) — déjà spécifié en E.1.
+3. **Cadre Spectral en 4 teintes autour de la photo de profil** — DÉCISION ACTÉE : il **suit la teinte de la fiche automatiquement** par défaut, MAIS le recadreur garde les 4 pastilles + une option « Auto » (choix manuel respecté tant qu'on ne revient pas sur Auto). Maquette des 4 déclinaisons sur le même portrait d'abord (vigilance : le doré ne doit pas virer clinquant). Vérifier d'abord comment le Cadre Spectral actuel est construit (dessiné dans l'image au recadrage vs overlay). **CONFIRMÉ 31/07 (capture Blandine : cadre bleu figé sur fiche dorée)** : le cadre actuel est DESSINÉ DANS L'IMAGE au recadrage → la version 4 teintes devra être un OVERLAY UI posé par-dessus la photo (photo intacte, couleur qui suit la teinte en direct, conforme à la règle « jamais de filtre dans les photos »). Les photos au cadre bleu cuit dedans se nettoient en re-recadrant une fois (original conservé). Rappel lié : menu unique crayon+⋮ (section K) reconfirmé par Blandine le 31/07.
+4. Architecture cible (section H) : page seconde à onglets, chapitre Performances cavalier, encart club.
+
+### K. NOTES DE TOUTE FIN DE SOIRÉE (23h30 — à intégrer aux maquettes de la 70)
+- **IPO déplacé SOUS/AVEC la carte Origines** (décision Blandine, affine la G) : le chapitre Performances = vidéo + coupes + résultats ; les indices rejoignent le pedigree.
+- **Fil direction 3, specs enrichies** : cartes VERTICALES (confirmé), photos plus petites, défilement carrousel, et **ne pas toujours ouvrir sur le premier moment** (départ varié).
+- **Consolidation crayon + ⋮ de la fiche cheval en UN seul menu** (décision Blandine) : 📷 Changer la photo · ✂️ Ajuster · 🏷️ Identifier · 🎨 Teinte · ✏️ Modifier · 🗑️ Supprimer. Coût assumé : changer la photo passe à 2 taps. À intégrer à la maquette tête de fiche.
+- **Édition d'un post du fil** : impossible aujourd'hui (supprimer + republier). À considérer dans la refonte du fil.
+- **Bug dézoom écurie** : cause = la purge anti-fantôme effaçait aussi les originaux légitimes sans empreinte → CORRIGÉ dans 65b08bab (purge seulement si l'empreinte CONTREDIT ; sans empreinte on garde) + garde-fou ratio (0.35–4). Limite résiduelle : originaux déjà purgés ce soir = perdus localement, remède = rechoisir la photo une fois.
+- **Vidéo sur bandeau écurie : PAS ENCORE CONSTRUIT** (E.5) — le sélecteur photo n'accepte que des images, c'est normal ; le câblage vidéo viendra du bucket comme accueil/palmarès.
+
+### L. BUGS SIGNALÉS 23h40 (diagnostiqués, PAS corrigés — pour la page seconde à onglets)
+- **Swipe droit "retour" mort sur le panneau souvenirs** : le conteneur `#panneauCheval` porte `data-noswipe="true"` (bloque volontairement le swipe global). Remède : swipe de fermeture PROPRE au panneau, déclenché depuis le bord gauche uniquement (~24px) pour ne pas entrer en conflit avec les rails horizontaux internes.
+- **Encart « Ses vidéos / Le voir en mouvement » perçu comme mort** : il appelle `props.onTout` → ouvre le panneau souvenirs… qui n'a AUCUNE section vidéos. Destination manquante, pas bouton cassé. À résoudre dans la page seconde à onglets (Souvenirs | Performances | Vidéos ?).
+- Dernières retouches livrées dans l'index final **d4e83ad1** : marge 30px entre la vidéo cérémonie et le rail des coupes ; **médaillons masqués quand des coupes existent** (double emploi signalé par Blandine) ; le bouton **+** d'ajout migré en fin de rail des coupes ; doublon SIRE retiré (la pilule thématisée préexistante reste seule) ; toggle Écurie Hype entièrement thématisé (bordure/halo/curseur suivent la teinte).
+- ⚠️ MÉTHODE (2 incidents ce soir) : écrire le fichier AVANT toute assertion risquée dans les scripts d'édition, sinon l'édit est perdu silencieusement ; et TOUJOURS chercher l'existant avant de construire (le doublon SIRE venait d'une pilule déjà présente non repérée).
+
+### M. SPEC FINALE DU FIL (verrouillée 31/07 matin)
+- **Fiche cheval** : rail horizontal direction 3 — max **6 encadrés verticaux** (média dominant, légende 2 lignes, auteur·date), départ **varié** (pas toujours le 1er), carte pointillée « Tout le fil → (n) » en bout de rail. Composer « Partage un moment… » compact au-dessus.
+- **Page seconde, onglet Souvenirs** : la destination « Tout le fil » y présente **tous les posts en grille ordonnée de carrés** (idée Blandine 31/07), remplaçant la liste verticale actuelle.
+- **Panneau souvenirs actuel** : son fil doublon disparaît (déjà acté).
+- Option Cinéma (pleine largeur) : écartée pour le fil, mais notée comme langage possible ailleurs (couvertures, moments exceptionnels).
+
+### F. À SAVOIR / DIVERS
+- Quota Supabase : bandeau « restriction au 14 août » — chantier ménage/bande passante à ouvrir AVANT l'échéance.
+- My Dream « de Blandine » n'a jamais existé en base (0 rows) : c'était la fiche démo ; désormais réel via migration.
+- Génération vidéo : brief qui marche = cadrage large avec air autour du sujet, mouvement lent, boucle propre, zone basse calme, univers noir+cristaux ; filigrane « Ai » en haut-gauche → delogo x=18:y=22:w=78:h=52 (format 966x720).
+- Blandine a demandé (mémorisé) : ne JAMAIS dire bonsoir/bonne nuit/bon matin ni aucune formule liée à l'heure.
+- Petits posters : la maquette scène 6 phases, page scène v2, bas de fiche, accueil v3, palmarès/résultats club, fil 7 directions sont dans les livraisons du 30/07.
+
+
+🔴 **À pousser** : `index.html` (livré directement sous ce nom).
+
+**1. Qualité photos enfin livrée** (validée le 30/07, jamais poussée) : les deux `choisirPhoto` qui plafonnaient à 1600px/JPEG 0.9 passent à **2048px/0.92** (valeur Hey Baby, cohérence). Le 3e chemin (`hypeRecadrer`, avatars) reste à auditer.
+**2. Carte Santé de la fiche cheval** : ne bascule plus le panneau passeport — **`setEcran("clinique")`** (décision Blandine : la santé renvoie vers la fiche vétérinaire). Le panneau passeport reste dans le code, simplement plus atteint par cette carte.
+**3. Encart « La sellerie de [cheval] »** inséré sur la fiche, avant « Liens & partage » : titre 6 langues construit sur `c.nom` avec élision d'/de en FR, image `HYPE_IMGS.sellerieEncart` (repli SVG), → `setEcran("sellerie")`. Sellerie rattachée au cavalier (décision 30/07), matériel par cheval à trancher plus tard.
+**4. Cartes Histoire/Carrière/Santé en carrousel** : le conteneur grille 3 colonnes devient un rail à glissement avec accroche (cartes 46%/max 180px, la 3e dépasse du bord). **5. Encart Aptitude réduit** : chiffre 25+3.5·pA → 23+2·pA, padding 12+2·pA → 10+1.5·pA, vignette 56+7·pA → 50+5·pA. **6. Fusion « Ses photos »** : `AlbumsPromus` transformé — charge TOUS les albums (plus seulement les promus), en-tête « Ses photos » avec bouton **+** (→ panneau souvenirs où vit la création), carte **« Toutes ses photos »** en tête (couverture = photo du cheval, → panneau souvenirs), **5 albums max** affichés puis bouton « Voir tous ses albums (n) » ; la section reste visible même sans album. Site d'appel enrichi (`photoDefaut`, `onTout`). Le composant garde son nom (1 seul site d'appel). La bannière « Hype Memories » (188px) et `GalerieSouvenirs` (vedettes) sont volontairement conservées — à réévaluer quand le panneau souvenirs sera retiré.
+
+**7. Palmarès en médaillons inline** sur la fiche (avant la Sellerie) : jusqu'à 6 médaillons or/argent/bronze selon le rang (`c.palmares` : rang, épreuve, discipline · année), toucher → panneau Performances ; **état vide** = encart pointillé « Ses premiers résultats l'attendent… ou ses exploits » + « Ajouter un résultat » (6 langues), qui ouvre aussi le panneau. Le panneau Performances existant est conservé (c'est lui le détail complet).
+
+**17. Quatre retouches (retour Rizotto en ligne)** : (a) **bleu par défaut pour TOUS les chevaux** — `sp.teinte` (CHEVAUX_SPECTRAL) retiré de la chaîne : `teinte = chevalDyn.teinte || "#20D9F5"` ; Rizotto passe au bleu, seule la teinte choisie via Modifier la fiche colore la page ; (b) encadré de l'histoire aéré (marges 18/20px) ; (c) écart IPO/PFS élargi (`.hstats` gap 12→22px) ; (d) **IPO grisé + crayon** quand aucun indice : chevaux réels, propriétaire seulement — saisie par prompt, **sauvée dans `chevaux.origines.indices` (JSON existant, AUCUN SQL requis)**, affichage immédiat + toast.
+
+🔜 **PROCHAIN CHANTIER (page fraîche, maquette d'abord — spec Blandine 30/07)** : **bandeau Origines à retournement**. Recto : « Ses origines : [Père] x [Père de mère] » (notation d'élevage standard, ex. « Lando x Double Espoir »). Tap → le bandeau se retourne (flip) et révèle le détail complet (père/mère/naisseur/naissance, pedigree si rempli) avec un **petit crayon** pour développer/modifier. Données déjà disponibles dans `c.origines` (pedigree.pere.nom, pedigree.mere.pere.nom pour le recto). Livrer une maquette HTML du flip avant de coder.
+
+**20. Photo de profil du cheval doublée + commandes réorganisées** : `.hero>img` reçoit `min-height:64svh` (max 88svh) — la photo occupe environ le double, recadrée cover ; en haut à droite ne reste QUE le drapeau des langues ; le crayon (= modifier la photo, `refPhotoCh` existant) et le menu ⋮ descendent **en bas à droite de la photo**. ⏳ **À faire (page fraîche)** : bouton **supprimer** la photo (passer `photo_url` à null) dans le menu ⋮, et **« Définir comme photo de profil » sur chaque photo d'album** (action à ajouter dans la visionneuse/les albums, écrit `chevaux.photo_url`). Fichier : **10 307 519 octets, md5 52e819d7…**
+
+**19. L'histoire respire** : le récit sur la fiche passe de 5 à **12 lignes visibles** (`-webkit-line-clamp`), corps 13px, interligne 1,8 — l'encart au liseré animé (livraison précédente, à pousser) l'enveloppe déjà de haut en bas. « Découvrir son histoire » reste le chemin vers le récit complet.
+
+**18. Encarts photo/vidéo « très gros »** (demande Blandine, comme l'ancienne page) : vignettes de la bande défilante **220×220** (au lieu de 150), encart Vidéos **150px de haut** (au lieu de 96). Présence vérifiée par grep. Fichier : **10 307 296 octets.
+
+**17. Reconstruction après audit honnête.** ⚠️ **Correctif de SUIVI : deux modifications annoncées en (15) n'avaient JAMAIS été sauvegardées** (un échec d'assertion en fin de script annulait l'écriture entière, y compris les parties déjà « ok » — leçon : **une écriture par modification, et vérifier la PRÉSENCE dans le fichier, pas le message de succès**). Étaient perdus : le garde-fou propriétaire du pré-remplissage, et la requête profil du propriétaire. **Refait et vérifié présent cette fois** : (a) **carrés Clinique vétérinaire | Sellerie côte à côte** avant Liens & partage (6 langues, → `setEcran("clinique")`/`setEcran("sellerie")`) — décision Blandine, remplace l'encart sellerie pleine largeur et la bannière clinique disparue ; (b) **bande de photos 150px** (au lieu de 72) avec **défilement automatique doux** (0,6px/30ms, pause 2,6s au toucher, retour au début en douceur) ; (c) **encart Vidéos pleine largeur** sous les albums (aperçu vidéo en fond, compteur, → panneau souvenirs), rendu **seulement s'il existe au moins une vidéo** ; (d) **pré-remplissage de l'histoire au nom du PROPRIÉTAIRE du cheval** (requête `profiles` pseudo+ecurie sur `user_id`) visible par tous les visiteurs (« [Nom] est un [race] de l'écurie [du proprio], monté(e) par [proprio] »), phrase-crayon réservée au propriétaire. Fichier : **10 307 295 octets, md5 05674af8…** — présence des 4 chantiers vérifiée par grep avant livraison.
+
+**16. La bande de photos puise dans la galerie fusionnée** : `AlbumsPromus` charge désormais aussi `chargerPhotosSouvenirs` (commentaires + albums) — les photos de galerie d'un cheval sans album (cas Elfe) apparaissent enfin sur la fiche, sous la grille. Repli sur les seuls albums si la fonction manque. ⚠️ **Point de confusion résolu avec Blandine : elle avait poussé une version deux livraisons en retard** (repère : texte générique encore visible + carré Nouvel album présent) — le pré-remplissage encadré (liseré animé + crayon), les cartes réduites et le palmarès remonté étaient déjà dans les livraisons non poussées. **Fichier final de la session : 10 299 972 octets, md5 d7c0fba9…**
+
+**15. Cinq retouches d'affinage (session continue)** : (a) **pré-remplissage de l'histoire gaté sur le propriétaire** — pour un cheval visité (ex. Vallieres), plus de mention de l'écurie/cavalier du visiteur ni d'invitation au crayon : juste « [Nom] est un [race]. » ; (b) cartes Histoire/Carrière/Santé **réduites franchement** (30 % / 118px / h108, cercle 38) — les 3 tiennent à l'écran ; (c) **palmarès remonté au-dessus du fil** ; (d) **bande de photos défilante** (72px, photos+vidéos des albums, 14 max) sous la grille d'albums — **rendue uniquement s'il y a des photos** ; (e) **liseré animé `hype-cristal`** (dégradé conique tournant, couleur = teinte du cheval) autour de la description/histoire, repris de la page cavalier. ⚠️ Une parenthèse en trop détectée par `node --check` (bloc 11) pendant (d) — corrigée avant livraison, batterie repassée intégralement.
+
+**14. Histoire pré-remplie + crayon** : pour un cheval sans histoire, le texte générique (« Un Selle Français au cœur de l'écurie Hype… ») est remplacé par un pré-remplissage personnalisé : « [Nom] est un [race] de l'écurie [profil.ecurie], monté(e) par [prénom]. Touche le crayon pour écrire son histoire. » (6 langues, morceaux conditionnels si écurie/cavalier absents). Un **crayon ✎** inline à côté de la description — visible uniquement pour le propriétaire (`chevalDyn.ownerId === moi.id`, chevaux réels) — ouvre l'éditeur `collerHistoire` existant (coller/saisir → `chevaux.histoire`).
+
+**13. État vide de « Ses photos »** : pour un cheval sans album, un carré pointillé « Nouvel album + » (6 langues) s'affiche à côté de « Toutes ses photos » — paire équilibrée, invitation à remplir (→ panneau souvenirs où vit la création).
+
+**12. Deuxième passe de nettoyage (décisions Blandine au fil des captures)** : le bloc **Récompenses** (Élite/Exception/Ambassadeur/Crystal) retiré de la fiche ; l'**encart Sellerie** retiré (elle n'en veut plus sur la fiche — la sellerie reste accessible depuis sa page). L'**encart Clinique vétérinaire de la fiche est conservé** à sa place (entre Ses photos et le fil) — note technique : c'est un bloc propre à `EcranCheval`, PAS le composant `EncartCliniqueVeto` (qui vit sur EcranEcurie/EcranGuilde) — piège de recherche documenté. La page se lit désormais : photo · nom · IPO/description · carrousel Histoire-Carrière-Santé · pastilles · Aptitude · Origines · Ses photos · Clinique · fil · Son palmarès · Liens & partage. **Idée en attente (pas d'accord ferme)** : un encart Vidéos, et le cadre à liseré reflet autour de « son histoire » comme la page cavalier ; photo du haut à passer bord à bord (immense, style écurie) — demandé, pas encore fait.
+
+**11. Nettoyage du « mélange » ancien/nouveau sur la fiche** (constat Blandine après push) : les insertions étaient additives, deux blocs anciens devenus redondants sont maintenant retirés — **l'encart Souvenirs** (`GalerieSouvenirs` : « Conserve précieusement chaque moment » + photo vedette géante ; ⚠️ retire l'accès direct visionneuse/vedettes/ajout photo depuis la fiche — tout passe par le panneau souvenirs via « Toutes ses photos ») et **la bannière Hype Memories** (188px, redondante avec la carte « Toutes ses photos »). `EncartCliniqueVeto` et le bloc moments conservés. Le composant `GalerieSouvenirs` reste défini dans le code (plus appelé par la fiche).
+
+**10. Bandeau de l'écran Écurie jusqu'en haut** : `ECV_CSS` — le `padding-top` de `.ecv .scroll` (safe-area + 12vh de vide) passe à 0, le `.hero` passe de `40vh/min 300px` à `calc(52vh + safe-area)/min calc(360px + safe-area)` : la photo monte sous l'encoche et est nettement plus grande. Les boutons posés sur la photo étaient déjà calés sur `safe-area-inset-top` — rien à ajuster.
+
+**9. Fil élargi sur la fiche** : le padding racine de `MurHype` passe de `0 16px` à `0 10px` **uniquement en mode compact** (le bloc moments de la fiche cheval) — tous les autres murs de l'app inchangés.
+
+**8. Teinte de la fiche, de bout en bout** : pastilles (bleu défaut / doré / crimson / vert) dans le formulaire « Modifier la fiche » → `modifierCheval` étendu (champ `teinte`, whitelist) → colonne `chevaux.teinte` → relue au chargement (`chevalDyn.teinte`) et **prioritaire sur `CHEVAUX_SPECTRAL`** dans `var teinte`. Toute la fiche suit déjà cette variable (bordures, cartes, jauges). ⚠️ **SQL à exécuter par Blandine AVANT de pousser** : `alter table chevaux add column if not exists teinte text;` (sans la colonne, la sauvegarde de la fiche échouerait). Chevaux démo (`CHEVAUX_FICHE`, sans dbId) : teinte non éditable, ils gardent leur teinte SPECTRAL.
+
+**Découvertes utiles** : « Partager sa fiche » existe déjà sur la fiche (bloc Liens & partage) — rien ajouté ; **la teinte par cheval existe déjà** (`CHEVAUX_SPECTRAL[id].teinte`, défaut #20D9F5, helpers `teinteClaire`/`teinteRGBA`).
+
+✅ Vérifs : base = fichier fourni par Blandine (identique octet à octet à la base du matin, chapitres 66/67 dedans) · `node --check` 14/14 · 887 fonctions identiques (diff complet) · `allerVersGalop` ×3 · rendu Playwright : les 2 seules erreurs (supabase CDN absent hors ligne, TEINTES_HYPE) sont **identiques sur le fichier d'origine** — préexistantes, pas liées aux modifications.
+
+✅ **LA MAQUETTE EST INTÉGRALEMENT INSÉRÉE** (10 points, session 68 — SQL `chevaux.teinte` exécuté par Blandine le 30/07 ✔). Reste hors maquette : **Point ouvert : le panneau Passeport n'a plus aucun point d'entrée** (la carte Santé va désormais à la clinique ; `setPanneau("passeport")` ×0). Son code est intact — à trancher : absorber son contenu dans la page vétérinaire puis le retirer, ou lui redonner une porte. (le bloc moments compact existe, `momentsSeuls: true`) ; palmarès en médaillons inline avec état vide (« Ses premiers résultats l'attendent… ou ses exploits ») ; **sélecteur de teinte 🎨** branché sur `CHEVAUX_SPECTRAL[id].teinte` (défaut #20D9F5) + **persistance à créer** : colonne `chevaux.teinte` (SQL : `alter table chevaux add column if not exists teinte text;`) et lecture au chargement ; retrait éventuel de la bannière Memories et du panneau souvenirs une fois tout rapatrié ; partage public = lecture seule sans interaction. **Maquette de référence : `cheval-souvenirs-fusion.html`** (validée intégralement par Blandine le 30/07).
+
+---
+
+**Version actuelle de l'index.html : session du 30/07/2026 (67) — Chapitre « La santé du cheval » (g4-c5) construit à partir des traductions fournies, et OUVERT**
+
+🔴 **À pousser** : `index.html` (+ `images/k643.jpg` si pas encore poussée avec la session 66 ; la couverture Santé k641 est déjà en ligne).
+
+**1. Sources.** Le cours a été traduit en EN/ES/IT/JA/DE par une autre page (fichier `traductions-sante-cheval-g4.md`, 17 sections strictement parallèles par langue, vérifié par comptage). **Les 5 langues du chapitre viennent de ce fichier, extraites par programme** (aucune retraduction) ; le **français a été rédigé ici** (le fichier ne contenait que les traductions), fidèle au brief. **Décision de Blandine actée : température « 37,5 à 38 °C » conservée** (la référence FFE/IFCE monte à 38,5 — recommandation faite, choix respecté ; cohérent car la section Fièvre ne cite aucun chiffre). Décimales locales respectées : `37.5` en EN/JA, `37,5` ailleurs.
+
+**2. Le chapitre** remplace le placeholder `g4-c5` (2 312 car, ancien format) en gardant son id — **et il est OUVERT** (`HYPE_COURS_PRETS`), couverture **k641 déjà déclarée et en ligne**. 3 pages de 3 cartes : « L'œil du soigneur » (cheval en bonne santé · constantes · signes d'alerte) · « Réagir sans soigner » (colique+boiterie · plaies+fièvre · bons réflexes) · « Prévenir plutôt que guérir » (soins qui protègent · l'œil du cavalier chaque jour · le savais-tu : il masque sa douleur). Citation de couverture : la phrase d'ouverture du brief (« Un cheval ne peut pas dire qu'il a mal… »), sans auteur. Cartes premium « La santé en 5 réflexes » = le résumé animé du brief (Observer→Comparer→Détecter→Prévenir→Protéger). Écran final nouveau format 2 pages : défi/questions Hey Baby/synthèse **extraits du fichier de trad** ; science (fièvre-défense, cœur à l'effort, inflammation), savais-tu (crottins/eau), glossaire 7 termes et raccourcis **rédigés en 6 langues**. QCM 10 questions sur les 6 thèmes du brief ; bonnes réponses rééquilibrées par permutation d'options : 0,1,2,1,0,1,2,1,2,0 (3/4/3).
+
+**3. Limites annoncées à Blandine (déjà validées en amont)** : la scène interactive « repérer les signes sur un cheval » et les animations des constantes sont de vrais développements à part — traités ici en cartes + « Prochainement » ; à programmer comme la scène des phases du saut si souhaité.
+
+✅ Vérifs : `node --check` 14/14 · aucun champ vide, cardinalités 6 langues égales · **convertisseur réel** : titre, 7 blocs, 10 questions, 3 sections résolus dans les 6 langues, 4 résidus i18n/langue attendus · dico aligné clé à clé sur le chapitre Soins · `g4-c5` unique · aucun doublon nouveau · « 37,5 à 38 » présent en FR, `37.5` en EN/JA.
+
+⏳ **Points ouverts** : (a) couverture **k642** (extérieur) ; (b) infographie INFOG_SAUT_G3 à rebrancher (type de bloc à recréer) ; (c) doublons baby-c1…c6 ; (d) migration base64 ; (e) liens vidéos ; (f) scène interactive Santé (« Les yeux du cavalier ») si Blandine la veut.
+
+---
+
+**Version actuelle de l'index.html : session du 30/07/2026 (66) — Le chapitre perdu « Les 6 phases du saut » est reconstruit, en 6 langues, et OUVERT**
+
+🔴 **À pousser** : `index.html` + **`images/k643.jpg`** (couverture cheval en pleine bascule, fournie par Blandine, 1122×1402 JPEG q90).
+
+**1. `g3-saut` renaît.** Le chapitre disparu dans les croisements de versions (constat session 62) est réécrit d'après le nouveau brief de Blandine, inséré APRÈS `g3-c3` comme l'original. **Les deux références orphelines (`HYPE_COURS_PRETS`, `CATEGORIE_PAR_COURS`) pointent à nouveau sur du réel — le chapitre est donc immédiatement ouvert aux cavaliers**, sa couverture arrivant avec lui.
+- Terminologie tranchée par Blandine : **« La suspension, aussi dite bascule »** — cohérent avec l'infographie k347/348/349 et la scène interactive.
+- Couverture « LES 6 PHASES / DU SAUT » (k643, partage `#phases`), citation originale Hype sans auteur : *« Le saut commence bien avant la barre, et finit bien après. »*
+- 2 pages de 3 cartes : « Avant de quitter le sol » (le saut commence dans la tête · l'abord · l'appel-ressort) · « Au-dessus de l'obstacle » (la montée et l'encolure-balancier · la suspension/bascule · la descente et la réception qui prépare déjà la suite). La frise du brief (observer→préparer→pousser→monter→basculer→recevoir→se rééquilibrer) clôt la dernière carte.
+- **L'encart de la scène interactive** (`lien-phases-saut`) est inséré en page 4 — l'« activité interactive » du brief existait déjà, c'est elle.
+- Cartes premium : **« Les 6 phases, dans l'ordre »** — l'aide-mémoire de l'examen.
+- Écran final `complements-saut` **directement au nouveau format 2 pages** (Synthèse+Glossaire+« Poste tes questions à Hey Baby », puis bonus+QCM). Défi 5 points, science (la mécanique du ressort et de la bascule), glossaire 7 termes.
+- QCM 10 questions. **Les bonnes réponses du brouillon retrouvé présentaient des répétitions (0,1,2,0,0,1,1,1,1,0) : les OPTIONS de 4 questions ont été permutées** (contenu inchangé) pour obtenir 0,1,2,0,1,2,0,1,2,0 — jamais deux fois de suite, répartition 4/3/3.
+- Vidéos : « Prochainement », Blandine fera tous les liens plus tard.
+- Raccourci d'aperçu **`phases`** ajouté (→ le cours ; `phases-saut` reste le raccourci de la scène).
+
+**2. Note honnête sur les fichiers retrouvés.** `quiz_s.py` et `compl_s.py` existaient déjà dans mon espace de travail (écrits avant une compaction de session) ; ils ont été **revérifiés champ par champ** avant usage (cardinalités 6 langues, aucun vide) plutôt que refaits — seul l'ordre des bonnes réponses a dû être corrigé.
+
+**3. Doublons `baby-c1`…`baby-c6` signalés mais NON touchés** : la recherche de doublons les remonte, mais vérification faite, **ils préexistaient dans le fichier de Blandine** (structure du Chemin Baby, vraisemblablement voulue par la page qui l'a construit). Rien modifié — à regarder un jour à part, pas en pièce jointe d'une autre livraison.
+
+✅ Vérifs : `node --check` 14/14 après insertion · contrôle 6 langues : aucun champ vide, cardinalités égales · **convertisseur réel exécuté** : titre, 7 blocs, 10 questions, 2 titres de section résolus dans les 6 langues, et 4 résidus i18n par langue (`titre1`, `titre2`, `citation`, `donnees` premium) — attendus, identiques aux chapitres en ligne · dico : clés strictement identiques au chapitre Soins · `g3-saut` unique dans le fichier · k643 déclarée une fois, utilisée une fois.
+
+⏳ **Points ouverts** : (a) chapitre **Santé** (`g4-c5`) — brief reçu, à écrire au format riche, couverture k641 prête ; (b) couverture **k642** (extérieur) toujours manquante ; (c) l'infographie INFOG_SAUT_G3 (k347/348/349) n'est PAS réinsérée dans le chapitre : le type de bloc `image` n'existe plus dans le lecteur — à discuter (nouveau type de bloc, ou onglet dans la scène interactive ?) ; (d) doublons baby-c1…c6 à examiner ; (e) migration base64 ; (f) liens vidéos.
+
+---
+
+**Version actuelle de l'index.html : session du 30/07/2026 (65) — Vérification de l'index de Blandine + patch couvertures/citations + découpe de l'écran final en 2 pages**
+
+🔴 **À pousser** : `index.html`.
+
+**0. Vérification de l'index reçu (« Vérifie »).** Comparé caractère par caractère à ma dernière version : **tout le travail des sessions 56-64 est présent** (chapitres identité/nourrir/extérieur, abord réécrit, g6-c7, encarts phases du saut, filet jpg/jpeg, correctif scroll, correctif session localStorage). En plus chez Blandine : **le correctif des albums d'écurie d'une autre page** (la cible utilise désormais l'id du cavalier `ecurie:<id>` au lieu du nom affiché — le repli « Écurie Feinn » faisait partager le même album à tous les cavaliers sans écurie ; migration `migration_albums_ecurie.sql`). **Conservé intact, revérifié après mes modifications.**
+
+**1. Patch maître appliqué** (préparé en session précédente, idempotent, chaque cible comptée) :
+- **Citation vide** : `CouvAffiche` n'affiche plus «""» quand un cours n'a pas de citation.
+- **Nom du chapitre sur la couverture** (demande de Blandine : « on s'y perd ») : petit label Montserrat espacé, majuscules, au-dessus du grand titre Cinzel — hiérarchie de la bible Hype (petit label → grand titre → petite phrase). Le call site passe `cours.titre`, le composant ne le rend que s'il est fourni : aucune autre entrée de `CouvAffiche` n'est affectée.
+- **Citations ajoutées** aux 3 chapitres qui n'en avaient pas (identité, nourrir, extérieur) — **originales Hype, sans auteur** : on n'attribue jamais une phrase inventée à une personne réelle.
+- Filet jpg/jpeg : déjà présent dans son index, rien à refaire.
+
+**2. Découpe de l'écran final en 2 pages** (validée en conversation) :
+- `COMPL_NAV.hbTitre` : « Une question avant le QCM ? » → **« Poste tes questions à Hey Baby »** dans les 6 langues (l'ancien libellé que Blandine préférait).
+- `ComplementsBiomeca` accepte une prop **`partie`** : `1` = Synthèse + Glossaire + Hey Baby · `2` = invitation aux bonus + Défi/Vidéo/Approfondir + bouton QCM · absente = tout (compatibilité).
+- **Les 15 chapitres** à écran final passent à deux blocs `{"partie": 1}, {"partie": 2}` — soit **une page de plus par chapitre**, le QCM arrivant après la page bonus.
+- **Détail important attrapé en vérification** : la `key` React devient `"compl-x" + partie`, sinon React réutiliserait le même état de composant entre les deux pages (le hub interne defi/video/plus garderait sa vue en passant d'une page à l'autre).
+- **15e routage rattrapé** : `complements-biomeca` n'a pas de paramètre `dico:` (il utilise le dictionnaire par défaut), la première passe l'avait manqué — repéré parce que le compte ne tombait pas juste (14/15), corrigé, recompté 15/15.
+
+**3. ⚠️ CORRECTION sur la Santé (je m'étais trompé).** Le chapitre Santé visible sur la capture de Blandine est **l'ANCIEN placeholder `g4-c5`** (2 312 caractères, ancien format intro/liste/qcm) — visible par elle **parce qu'elle est modératrice**. **Le chapitre riche 6 langues n'existe pas encore** ; j'avais affirmé à tort qu'une autre page l'avait écrit. Le document du cours est donc à (re)fournir — ou je l'écris — la couverture k641 est prête. `g4-c5` volontairement laissé HORS de `HYPE_COURS_PRETS` : ouvrir l'ancien format léger serait un contresens.
+
+✅ Vérifs : `node --check` OK sur les **14 blocs script** après chaque étape · patch idempotent (relancé à blanc : 0 octet de différence) · 15/15 routages recomptés · `COMPL_NAV` relu en JSON réel après écriture (6 langues) · correctif albums d'écurie revérifié présent après toutes mes passes.
+
+⏳ **Points ouverts** : (a) chapitre **Santé** à écrire au format riche (document à fournir, k641 prête) ; (b) couverture **k642** (extérieur) ; (c) `g3-saut` manquant ; (d) migration hors base64 ; (e) liens vidéos (après, pour tous les chapitres) ; (f) après déploiement, si des couvertures manquent encore : clés + capture du dossier `images/` GitHub.
+
+---
+
+**Version actuelle de l'index.html : session du 30/07/2026 (64) — Filet de sécurité jpg/jpeg : les couvertures ne peuvent plus disparaître pour une histoire d'extension**
+
+🔴 **À pousser** : `index.html`. (⚠️ Cet index contient aussi la session 63, le chapitre abord réécrit — c'est le même fichier.)
+
+**1. 🐛 Couvertures G4 invisibles (signalé par Blandine).** Cause la plus probable identifiée : l'app attend un **mélange historique d'extensions** — `k603` à `k629` en `.jpeg`, `k630` et suivantes en `.jpg` — alors que l'iPhone exporte en `.jpeg` et que les renommages manuels se mélangent facilement. Un seul caractère d'écart et Netlify répond « Page not found ».
+
+**2. Correctif : un filet de sécurité global, plutôt que 40 noms exacts à deviner.** Écouteur `error` **en capture** (l'événement `error` des `<img>` ne remonte pas en bulle) : si une image `images/kNNN.jpg` ou `.jpeg` ne charge pas, on retente **une seule fois** avec l'autre extension (marqueur `data-hypeSwap`, aucune boucle possible). Ne touche que les chemins `images/kNNN.*` : les logos, les `data:` base64 et tout le reste sont ignorés (regex testée hors navigateur sur les 5 cas). Résultat : **quel que soit le nom réellement poussé** (`.jpg` ou `.jpeg`), la couverture s'affiche — dans les deux sens du mélange.
+- Ça ne répare pas un fichier **absent** ou mal numéroté : si une couverture manque encore après déploiement, c'est que le fichier n'est pas sur GitHub du tout, et le test reste `https://majestic-melba-997a68.netlify.app/images/kNNN.jpg` (puis `.jpeg`) dans Safari.
+- À terme, la règle documentée en session 60 reste la bonne (tout en `.jpg` à partir de k630) — le filet est là pour que la règle ne soit plus un point de défaillance unique.
+
+**3. Découpe de l'écran final : préparée, PAS appliquée.** L'analyse du composant `ComplementsBiomeca` est faite : c'est un **hub** (Synthèse · Glossaire · Hey Baby « Une question avant le QCM ? » · invitation aux bonus Défi/Vidéo/Approfondir · bouton QCM), partagé par 12 chapitres via `COMPL_NAV`. Le plan validé dans la conversation : **page 1** = Synthèse + Glossaire + Hey Baby (avec retour du libellé **« Poste tes questions à Hey Baby »** dans `COMPL_NAV`, 6 langues) · **page 2** = l'envie d'approfondir (les cartes bonus + bouton QCM). Implémentation prévue par une prop `partie` sur le bloc (`{ type: "complements-x", partie: 1|2 }`), l'absence de `partie` rendant tout comme aujourd'hui — donc migration chapitre par chapitre sans big bang. **En attente du prochain index de Blandine pour coder ça proprement dessus.**
+
+✅ Vérifs : `node --check` OK sur les **14 blocs script** · regex du filet testée hors navigateur (swap dans les deux sens, `.png` et `data:` ignorés) · marqueur anti-boucle vérifié dans le code inséré.
+
+⏳ **Points ouverts** : (a) la **découpe de l'écran final** ci-dessus, à coder sur le prochain index ; (b) couverture **k642** ; (c) chapitre **Santé** `g4-c5` ; (d) `g3-saut` manquant ; (e) migration hors base64 ; (f) si des couvertures restent invisibles **après** ce déploiement, m'envoyer la liste des clés et une capture du dossier `images/` sur GitHub.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (63) — Chapitre `g3-c3` réécrit en version enrichie « Préparer un bon abord à l'obstacle »**
+
+🔴 **À pousser** : `index.html`.
+
+**Base** : le fichier renvoyé par Blandine, qui contenait **un correctif d'une autre page absent de ma copie** : `stockageHype` écrit désormais **toujours** dans `localStorage`. Avant, dès que la case « Se rappeler de moi » avait été décochée une seule fois, la clé `hype_rappeler` restait à « 0 » indéfiniment et la session partait dans `sessionStorage` — d'où les demandes de reconnexion incessantes signalées par les cavaliers. **Vérifié présent après mon intervention.** Rappel : toujours partir du fichier de Blandine, jamais d'une copie gardée.
+
+**1. `g3-c3` remplacé, pas dupliqué.** Blandine a envoyé un brief nettement plus riche sur le même sujet que le chapitre existant « Aborder un obstacle avec justesse ». Plutôt que créer un doublon (on vient d'en retirer trois au Galop 4), le chapitre a été **réécrit à la place de l'ancien**, en conservant son `id` — donc `HYPE_COURS_PRETS`, `CATEGORIE_PAR_COURS`, l'encart des phases du saut et les raccourcis continuent de fonctionner sans rien toucher.
+- **Conservés à l'identique** : la couverture (k362), la citation **et son attribution à Nuno Oliveira**. Le brief proposait une version rallongée de cette phrase : **refusé de l'utiliser**, on ne rallonge pas une citation attribuée à une personne réelle. Blandine a confirmé qu'on gardait celle de Nuno.
+- **Nouveau titre** : « Préparer un bon abord à l'obstacle ». Durée 11 → **14 min**.
+- **3 pages de 3 cartes** (9 cartes, contre 6 pour les chapitres récents) : « Tout commence dans le virage » (le saut est déjà joué · le virage précédent · un galop qui ne change pas) · « Ne change plus rien » (de la tête aux talons, avec le poids qui se répartit et non qui se force · les dernières foulées et la liste de ce qui se dérègle · le cheval ressent tout, plus la respiration) · « Faire confiance » (l'astuce du coach : compter · attendre son cheval · les erreurs fréquentes).
+- Cartes premium : « Les 5 questions avant l'obstacle » (équilibré · actif · droit · sur sa ligne · galop régulier) — c'est le conseil du coach du brief transformé en aide-mémoire.
+- Écran final `complements-abord` : nouveau dictionnaire `COMPL_ABORD_I18N`, 16 libellés génériques repris par programme du chapitre Soins. Glossaire complet des **8 termes** demandés. Défi à **6 points de contrôle** (le seul chapitre à en avoir 6).
+- « La science explique » : le cheval a besoin de ses **deux yeux** pour évaluer une distance, ce qui n'est possible que droit devant lui — d'où l'importance de la rectitude — et il a un **angle mort sous le nez** dans les dernières foulées, donc il saute en partie de mémoire. C'est l'argument qui donne sa force à tout le chapitre.
+- QCM : bonnes réponses **A,C,B,A,B,C,A,B,C,A** (0,2,1,0,1,2,0,1,2,0), jamais deux fois de suite la même lettre, répartition 4/3/3.
+- **Vidéos** : aucun lien inventé. Le bloc reste en « Prochainement », Blandine fera les liens plus tard (sa décision).
+- Raccourci d'aperçu **`abord`** ajouté à `CIBLE_DIRECTE` (il n'en existait aucun vers `g3-c3`).
+
+**2. Coquilles attrapées en relecture** (toutes trouvées en relisant le fichier produit, pas en me relisant de mémoire) : *scegle* → *sceglie* ×3 en italien, *supersticion* → *superstición* en espagnol, et un **kanji inexistant** dans le japonais de « Pour aller plus loin » (鍉える au lieu de 鍛える). À noter aussi une **erreur de ma part corrigée dans la foulée** : en passant les coquilles, j'ai retiré l'accent de *jóvenes*, qui était correct. Remis.
+
+✅ Vérifs : `node --check` OK sur les **14 blocs script** · contrôle programmatique des 6 langues : aucun champ vide, cardinalités strictement égales · dictionnaire : jeu de clés identique à celui du chapitre Soins · **convertisseur réel sur les 6 langues** : titre, 6 blocs, 10 questions et les 3 titres de page résolus partout ; 5 résidus i18n par langue (`titre1`, `titre2`, `citation`, `auteur`, `donnees` premium) — **l'ancien chapitre en donnait exactement les 4 mêmes** (il n'avait pas de cartes premium), donc comportement normal · doublons relancés sur les 8 Galops : aucun id en doublon · correctif `localStorage` de l'autre page revérifié présent.
+
+⏳ **Points ouverts** : (a) **la découpe de l'écran final** — Blandine trouve les chapitres trop longs et propose de scinder l'écran final en deux pages, avec le retour de l'ancien intitulé « Poste tes questions à Hey Baby » et la partie « approfondir » en fin de parcours. **Rien codé, proposition en cours de discussion** ; ça touche le composant partagé par 12 chapitres, donc une seule décision à prendre puis une passe mécanique. (b) couverture **k642** (cours extérieur) ; (c) chapitre **Santé** `g4-c5`, couverture k641 prête ; (d) `g3-saut` (« Les 6 phases du saut ») toujours manquant, deux références orphelines ; (e) migration hors base64.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (62) — La maquette « Les phases du saut » est enfin accessible + un chapitre du Galop 3 découvert manquant**
+
+🔴 **À pousser** : `index.html`.
+
+**1. La maquette existait mais n'avait aucun point d'entrée.** L'écran `EcranPhasesSaut` (scène demi-cercle, cheval spectral, 5 pastilles cliquables) était bien dans le fichier, enregistré dans le routeur, avec ses raccourcis `#phases-saut` / `#phasessaut` — mais **la page qui l'a construit avait volontairement laissé le bouton de côté** (« aucun point d'entrée utilisateur branché pour l'instant, emplacement à valider avec Blandine »). D'où l'impression qu'elle avait disparu.
+
+**2. Nouveau bloc de cours `lien-phases-saut`**, composant `BlocLienPhasesSaut` : encart-affiche (halo turquoise, titre Cinzel « LES PHASES / DU SAUT », phrase en Cormorant italique, bouton dégradé turquoise) qui ouvre l'écran interactif. 6 langues. Rendu comme un bloc, donc **une page du cours** — un seul composant, réutilisable partout où on ajoutera `{ type: "lien-phases-saut" }`.
+- **Galop 4** — `g4-obstacles-equilibre` « L'équilibre sur un parcours d'obstacles » : inséré **après les deux séries de cartes, avant les cartes premium**. Ordre final : couverture · cartes · cartes · **scène** · cartes premium · écran final.
+- **Galop 3** — `g3-c3` « Aborder un obstacle avec justesse » : inséré **en dernière page** du chapitre (il n'a pas d'écran final ni de cartes premium).
+- Formulation vérifiée contre la maquette : elle compte **5 pastilles**, la phrase dit donc « cinq instants du saut » et non six.
+
+**3. 🔴 DÉCOUVERTE IMPORTANTE — le chapitre `g3-saut` « Les 6 phases du saut » n'existe plus dans le fichier.** Cherché pour y placer l'encart : les 5 occurrences de « 6 phases du saut » sont **toutes dans des commentaires HTML**, aucune définition de cours. Vérifié exhaustivement : `COURS_GALOP3_FR` contient `g3-c1` à `g3-c15` + `g3-qcm-global`, **pas `g3-saut`**.
+- Il reste **deux références orphelines** qui pointent dans le vide : `"g3-saut": "2026-01-01"` dans `HYPE_COURS_PRETS` et `"g3-saut": "technique"` dans `CATEGORIE_PAR_COURS`. Sans effet visible (aucune carte ne s'affiche pour un cours inexistant), mais à nettoyer ou à réutiliser selon la décision.
+- Vraisemblablement perdu dans les croisements de versions du 29/07 (voir session 46, qui documente déjà deux pertes du même genre).
+- **Rien n'a été supprimé ni recréé** : décision à prendre avec Blandine. Le contenu de ce chapitre est bien documenté dans les commentaires (6 phases : abord/appel/montante/suspension/descendante/réception, affiche multilingue k347/k348/k349, QCM de 10 questions dont les bonnes réponses sont notées) — il est **reconstructible**, et au format 6 langues cette fois.
+- ⚠️ Les autres chapitres G3 annoncés dans `HYPE_COURS_PRETS` ont tous été vérifiés un par un : **tous présents**. `g3-saut` est le seul manquant.
+
+**4. Coquille japonaise attrapée avant livraison.** La phrase de l'encart contenait ヘース au lieu de ペース (« à ton rythme »). Trois tentatives de correction ont été nécessaires — les katakana ヘ/ベ/ペ/パ ne diffèrent que d'un point de code (\u30d8 / \u30d9 / \u30da / \u30d1) — et le caractère final a été **vérifié par affichage réel**, pas supposé.
+
+✅ Vérifs : `node --check` OK sur les **14 blocs script** · les deux chapitres relus après insertion (ordre des blocs affiché et contrôlé) · **le composant exécuté hors navigateur dans les 6 langues** avec un faux React : les 6 textes sortent non vides à chaque fois et le clic sur le bouton appelle bien `setEcran("phases-saut")` · inventaire complet des ids `g3-` du fichier croisé avec `HYPE_COURS_PRETS`, `CATEGORIE_PAR_COURS` et les raccourcis d'aperçu (résultat au point 3).
+
+⏳ **Points ouverts** : (a) **`g3-saut` à trancher** : je le réécris en 6 langues, ou on nettoie les deux références orphelines ; (b) la couverture **k642** du cours extérieur ; (c) le chapitre **Santé** (`g4-c5`), couverture k641 prête ; (d) la migration hors base64 (voir la note de la session 61 : déplacer le bloc de déclarations `images/` après la dernière balise `hype-images`).
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (61) — Chapitre « Sortir en extérieur et franchir les embûches » + correctif scroll de la fiche de reprise**
+
+🔴 **À pousser** : `index.html`. ⚠️ **Il manque la couverture `images/k642.jpg`** — pas encore fournie.
+
+**1. 🐛 Correctif : la fiche de reprise s'ouvrait au milieu de la page.** Signalé par Blandine : depuis le bas de la page du Galop 4, « Réviser cette reprise (fiche officielle) » atterrissait en plein milieu de la fiche. **Cause trouvée : `EcranReprisesFiches` n'avait aucun `useEffect`** — donc aucune remise du scroll à zéro au montage. Le bouton fait un simple `setEcran("reprises")`, et comme il n'existe **aucune remise en haut globale** au changement d'écran dans l'app (chaque écran s'en charge lui-même : `EcranPremium` le fait, `EcranCours` le fait à chaque bloc), la fenêtre gardait la position de scroll de la page du Galop — qui est longue, et dont le bouton est tout en bas.
+- Correctif : `React.useEffect(function () { window.scrollTo(0, 0); }, []);` ajouté au montage du composant, exactement le même motif que celui déjà utilisé ailleurs dans le fichier.
+- **Le bouton principal « Reprise de dressage » (grande carte) mène au même écran** : il est corrigé du même coup.
+- ⚠️ **À tester en vrai sur le téléphone** : le bug ne se reproduit qu'en arrivant depuis le bas d'une page longue, donc un aperçu direct ne le montre pas. La correction est vérifiée dans le code, pas au doigt.
+- Point voisin, **non corrigé** : au retour vers la page du Galop, la restauration du scroll (`window.__scrollGalopDetail`) dépend d'un `useEffect` dont la dépendance est `[galopOuvert]`, qui ne change pas dans ce va-et-vient — le retour risque donc de se faire en haut de la page plutôt qu'à l'endroit quitté. Comportement antérieur, à trancher séparément.
+
+**2. Nouveau chapitre `g4-exterieur` « Sortir en extérieur et franchir les embûches »**, Galop 4, 6 langues écrites ici. Couverture « DEHORS, / TOUT S'ANTICIPE » (k642, partage `#exterieur`), pas de citation. Catégorie **technique**. Durée 12 min.
+- Bloc 1 « Avant de partir » : préparer la sortie (matériel, sanglage revérifié à cheval, santé, consignes) · pourquoi il a peur dehors (les 5 déclencheurs, les 4 réactions, animal de fuite — il ne désobéit pas) · monter en groupe (sa place, pas de dépassement, distances, le groupe comme sécurité).
+- Bloc 2 « Sur le terrain » : le terrain et l'allure (le pas pour les passages difficiles, montée/descente, et les trois réactions du cheval) · franchir les embûches (flaque, gué, pont, passage étroit, branches, barrière — un principe unique) · croiser, traverser, ne rien forcer (véhicules, vélo/piéton/chien, route sur consigne, pied à terre, puis les 6 erreurs à éviter).
+- Cartes premium : « La sortie en 5 réflexes » (anticiper · adapter l'allure · garder les distances · observer le terrain · rester calme). **La sécurité elle-même reste hors Premium** — les cartes premium ne servent que de moyen mnémotechnique, aucune consigne de sécurité n'y est enfermée.
+- Écran final `complements-exterieur` : nouveau dictionnaire `COMPL_EXTERIEUR_I18N`, les 16 libellés génériques repris par programme du chapitre Soins.
+- « La science explique » : la vision du cheval (yeux latéraux, mauvaise évaluation des distances devant lui, angle mort sous le nez, adaptation lente à la lumière) — c'est ce qui justifie le « laisser le cheval observer » qui revient dans presque toutes les consignes, et le « Le savais-tu ? » du document sur la flaque qui change selon la lumière.
+- QCM : bonnes réponses **B,C,A,B,A,C,B,A,C,B** (indices 1,2,0,1,0,2,1,0,2,1), jamais deux fois de suite la même lettre, répartition 3/4/3.
+
+**3. ✅ Doublon retiré : `g4-c4` « Sortir en extérieur et franchir les embûches »** — ancien placeholder verrouillé, même titre. Troisième de la série après `g4-c7` et `g4-c6`, même méthode : vérification qu'aucune autre référence n'existait (0 occurrence restante). Le Galop 4 reste à **15 chapitres** ; il ne reste plus qu'un seul placeholder ancien format, `g4-c5` (Santé), dont la couverture k641 est déjà prête.
+
+**4. ⚠️ Chapitre pas ouvert aux cavaliers, volontairement** — `g4-exterieur` n'est **pas** dans `HYPE_COURS_PRETS` faute de couverture (même raison que Nourrir avant réception de k640). Une ligne à ajouter dès que k642 arrive.
+
+✅ Vérifs : `node --check` OK sur les **14 blocs script** · contrôle programmatique des 6 langues : aucun champ vide, cardinalités strictement égales, indices de bonnes réponses identiques partout · dictionnaire : jeu de clés strictement identique à celui du chapitre Soins, cardinalités vérifiées · **convertisseur réel exécuté sur les 6 langues** : titre, 5 blocs, 10 questions, 2 titres de section résolus partout, et exactement **3 résidus i18n par langue** (`couv/titre1`, `couv/titre2`, `donnees` premium) — les mêmes que les chapitres déjà en ligne, donc comportement normal · recherche de doublons relancée sur les 8 Galops : **aucun id en doublon** · correctif scroll relu dans le fichier réel après écriture (présent une fois, bien à l'intérieur de `EcranReprisesFiches`).
+
+⏳ **Points ouverts** : (a) **la couverture k642** ; (b) le chapitre **Santé** (`g4-c5`) à écrire, couverture k641 prête ; (c) **la migration hors base64** — voir la note ci-dessous, c'est le sujet à trancher ; (d) la phrase « Un cheval trempé refroidit plus difficilement » (session 55).
+
+**📌 Note pour la migration hors base64 (à trancher avec Blandine).** Découverte en auditant les images : le bloc de déclarations `images/` se trouve dans le fichier **AVANT** `hype-images-120.js`, `-121.js` et `-122.js`. Or la dernière déclaration exécutée gagne. **Toute clé migrée vers `images/` qui serait aussi définie dans l'un de ces trois derniers fichiers se ferait donc réécraser en base64.** Quand on lancera la migration, le bloc de déclarations `images/` devra être **déplacé après la dernière balise `hype-images`**. À faire une fois, proprement, avant de migrer quoi que ce soit. Également repéré : les numéros **3, 4 et 5 ne sont pas chargés** (119 balises pour des numéros allant de 1 à 122) — à vérifier sur GitHub.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (60) — Couverture de Nourrir remplacée (image seule, index inchangé)**
+
+🔴 **À pousser** : **`images/k640.jpg`** uniquement, en écrasant la version précédente. **L'`index.html` de la session 59 reste valable, il n'a pas été modifié** — la clé k640 et le chemin `images/k640.jpg` ne changent pas, donc aucune ligne de code à toucher. (Restent à pousser si ce n'est pas fait : k638, k639, k641 + l'index de la session 59.)
+
+**1. Nouvelle couverture pour « Nourrir son cheval »** à la demande de Blandine : cavalière donnant à manger dans le creux de la main, cheval noir tête basse, cercle de lumière et cristaux. 941 × 1672, JPEG q90. Remplace le visuel filet à foin / bac de granulés / seau d'eau de la session 59.
+
+**2. ⚠️ Point d'art direction signalé à Blandine, pas tranché.** Le nouveau visuel montre un geste de **friandise donnée à la main**, alors que le chapitre dit explicitement l'inverse dans sa carte « Les friandises » : *« Une friandise reste une friandise : elle récompense, elle ne nourrit pas »*, et *« jamais sans l'autorisation du propriétaire ou de l'enseignant »*. La couverture porte donc le seul geste que le cours encadre. Ce n'est pas bloquant — la photo est superbe et l'image d'un cavalier qui nourrit son cheval reste juste — mais **le visuel précédent illustrait les trois éléments du cours d'un seul coup d'œil** (fourrage, concentrés, eau). Décision laissée à Blandine ; l'ancien visuel est conservé de côté sous le nom `k640-precedente-filet-a-foin.jpg` au cas où elle voudrait le réutiliser ailleurs (prochaine clé libre : **k642**).
+
+✅ Vérifs : aucune modification de l'index, donc aucun contrôle de code nécessaire — vérifié que la clé k640 est bien déclarée une fois et utilisée une fois (la couverture du chapitre), et que le nom de fichier attendu est exactement `images/k640.jpg`.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (59) — Couverture de Nourrir livrée, chapitre ouvert + k641 réservée pour le futur chapitre Santé**
+
+🔴 **À pousser** : `index.html` + **`images/k640.jpg`** + **`images/k641.jpg`**. (Rappel : `k638.jpg` et `k639.jpg` de la session 56 aussi, si ce n'est pas déjà fait.)
+
+**1. `k640.jpg` reçue — le chapitre « Nourrir son cheval » est ouvert.** Visuel parfaitement dans le sujet : cheval noir mangeant dans un bac de granulés, **filet à foin** à gauche et **seau d'eau** à droite — les trois éléments essentiels du chapitre (fourrage, concentrés, eau) sont dans la même image, sans une ligne de texte. 941 × 1672, JPEG q90, 356 Ko. `"g4-nourrir": "2026-07-29"` ajouté à `HYPE_COURS_PRETS` : le chapitre passe de « Prochainement » à ouvert **avec son badge NEW** (qui expirera tout seul dans 7 jours, mécanisme de la session 55). Le Galop 4 compte désormais **12 chapitres ouverts** sur 15.
+
+**2. `k641.jpg` réservée pour le chapitre Santé.** La seconde image (cheval en transparence avec points lumineux sur les articulations, stéthoscope, cristaux) correspond au placeholder `g4-c5` « Santé : normes, signes de maladie, premiers gestes », **pas encore écrit au format riche**. La clé est **déclarée mais pas encore utilisée** : rien ne s'affiche nulle part, aucun risque, et le jour où le chapitre sera écrit il n'y aura plus qu'à pointer sa couverture dessus. 941 × 1672, JPEG q90, 254 Ko.
+
+✅ Vérifs : `node --check` OK sur les **14 blocs script** · `HYPE_COURS_PRETS` **relu dans le fichier réel** après écriture : 76 clés, aucun doublon, 12 chapitres du Galop 4 ouverts dont Nourrir à la bonne date · **contrôle systématique des clés orphelines** : toutes les clés k630 et suivantes utilisées dans le fichier sont bien déclarées (c'était précisément le bug de k638 en session 56 — le contrôle est désormais fait à chaque livraison d'image).
+
+⏳ **Points ouverts** : (a) la 3ᵉ image du premier lot (cheval aux longues rênes) reste réservée au futur chapitre riche `g6-c3` « Travail à la longe et aux longues rênes » — prochaine clé libre **k642** ; (b) le chapitre **Santé** (`g4-c5`) à écrire au format riche 6 langues, sa couverture est prête ; (c) la phrase FR « Un cheval trempé refroidit plus difficilement » (session 55), toujours en attente d'arbitrage.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (58) — Chapitre « Nourrir son cheval » en 6 langues + doublon `g4-c6` retiré**
+
+🔴 **À pousser** : `index.html`. ⚠️ **Il manque la couverture `images/k640.jpg` — aucun visuel reçu pour ce sujet.**
+
+**1. Nouveau chapitre `g4-nourrir` « Nourrir son cheval »**, Galop 4, 6 langues écrites ici. Couverture « NOURRIR / SON CHEVAL » (k640, partage `#nourrir`), pas de citation. Catégorie **vie**, comme les protections et les soins.
+- Gabarit identique aux chapitres G4 récents : couverture, 2 blocs de 3 cartes, Cartes premium, écran final, QCM 10 questions × 3 options.
+- Bloc 1 « Fait pour manger toute la journée » : un estomac fait pour brouter (petit estomac, digestion presque continue, petites quantités) · le fourrage la base (herbe/foin/enrubanné, fibres, salive, on ajoute les granulés au foin, on ne remplace pas) · l'eau jamais négociable (propre, fraîche, à volonté ; besoins accrus par la chaleur, l'effort **et le foin** — le piège de l'hiver).
+- Bloc 2 « Ajuster la ration » : les concentrés un complément (seulement si le fourrage ne suffit plus, beaucoup de chevaux n'en ont pas besoin) · les friandises (occasionnelles, **jamais sans autorisation** — régimes et maladies invisibles de l'extérieur ; une friandise récompense, elle ne nourrit pas) · les erreurs à éviter (les 6 du document, le changement brutal développé comme le plus sous-estimé).
+- Cartes premium : « La ration en 5 règles » (fourrage d'abord · eau à volonté · petites prises · changer lentement · à chacun sa ration).
+- Écran final `complements-nourrir` : nouveau dictionnaire `COMPL_NOURRIR_I18N` + une ligne de routage, même méthode que pour l'Identité — les **16 libellés d'interface génériques sont repris par programme** du dictionnaire du chapitre Soins, pas retapés.
+- QCM : bonnes réponses **C,A,B,C,B,A,C,B,A,C** (indices 2,0,1,2,1,0,2,1,0,2), jamais deux fois de suite la même lettre, répartition 3/3/4.
+- Terminologie contrôlée : fourrage → forage / forraje / foraggio / 粗飼料 / Raufutter · enrubanné → haylage / hierba encintada / fieno fasciato / ラップサイレージ / Anwelksilage · concentrés → concentrates / concentrados / concentrati / 濃厚飼料 / Kraftfutter · ration → ration / ración / razione / Ration.
+- **Titre japonais retouché après relecture** : « 馬を養う » (littéraire, plutôt « entretenir ») remplacé par « 馬の食事 », plus naturel et lisible sur une couverture. Corrigé aux 3 endroits (titre du chapitre, titre1 et titre2 de la couverture).
+
+**2. ✅ Doublon retiré : `g4-c6` « Nourrir son cheval »** — ancien placeholder verrouillé, format ancien, français seul, exactement le même titre. Retiré comme `g4-c7` la session précédente, après vérification qu'aucune autre référence n'existait (0 occurrence restante). Le Galop 4 reste à **15 chapitres**.
+
+**3. ⚠️ Le chapitre n'est PAS ouvert aux cavaliers, volontairement.** Il n'est **pas** dans `HYPE_COURS_PRETS` : il s'affiche donc en « Prochainement » pour les cavaliers (les modérateurs y accèdent déjà, comme toujours). Raison : sans `k640.jpg`, la couverture serait vide — un chapitre ouvert avec une affiche manquante, ça se voit tout de suite. **Dès que le visuel arrive, une seule ligne à ajouter pour l'ouvrir** (`"g4-nourrir": "<date du jour>"` dans `HYPE_COURS_PRETS`). La clé k640 est déjà déclarée : il suffira de déposer le fichier dans `images/`.
+
+✅ Vérifs : `node --check` OK sur les **14 blocs script** · contrôle programmatique des 6 langues : aucun champ vide, cardinalités strictement égales entre langues, indices de bonnes réponses identiques partout · dictionnaire des compléments : jeu de clés strictement identique à celui du chapitre Soins, aucun champ vide, cardinalités vérifiées (5 défis, 5 questions Hey Baby, 8 points de synthèse, 4 phrases, 4 cartes, 7 termes de glossaire) · **le vrai convertisseur `convertirCoursI18nVersInterne` exécuté hors navigateur sur les 6 langues** : titre, 5 blocs, 10 questions et les 2 titres de section résolus à chaque fois, et les seuls résidus i18n sont les 3 attendus (`couv/titre1`, `couv/titre2`, `donnees` des cartes premium) — **identiques à ceux du chapitre Soins déjà en ligne**, donc comportement normal · recherche de doublons relancée sur les 8 Galops : **aucun id en doublon** (le renommage `g6-c7` de la session 57 tient), seul reste le doublon de titre ancien et volontaire « Les aides naturelles et artificielles » (g1-c9 / g2-aides) · travail de l'autre page (`EcranPhasesSaut`, `PSAUT_CSS`, `PSAUT_HTML`) recompté à l'identique, intact.
+
+⏳ **Points ouverts** : (a) **la couverture k640** du chapitre Nourrir — à fournir ; (b) la 3ᵉ image reçue (longues rênes) reste réservée au futur chapitre riche `g6-c3` « Travail à la longe et aux longues rênes » ; (c) la phrase FR « Un cheval trempé refroidit plus difficilement » (session 55) toujours en attente d'arbitrage.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (57) — Chapitre « Nourrir son cheval » en 6 langues + doublon d'identifiant du Galop 6 corrigé**
+
+🔴 **À pousser** : `index.html`. ⚠️ **Il manque `images/k640.jpg`** (couverture du chapitre Nourrir) — **aucun visuel n'a été fourni pour ce sujet**, à envoyer. Les images `k638.jpg` et `k639.jpg` de la session 56 restent à pousser si ce n'est pas déjà fait.
+
+**Base de travail** : le fichier fourni par Blandine, pas ma copie de la session 56. Vérifié avant toute écriture qu'il contenait déjà **tout** le travail de la session 56 (chapitre `g4-identite` **identique octet pour octet**, 43 616 caractères ; `COMPL_IDENTITE_I18N` ; déclarations k638 et k639 ; `g4-c7` bien absent) **plus** la maquette d'une autre page : un écran `EcranPhasesSaut` avec `PSAUT_CSS` / `PSAUT_HTML` (+63 857 caractères). **Rien de cet ajout n'a été touché** — recompté après intervention : `EcranPhasesSaut` ×3, inchangé.
+
+**1. Nouveau chapitre `g4-nourrir` « Nourrir son cheval »**, Galop 4, **6 langues écrites ici**. Couverture « NOURRIR / SON CHEVAL » (k640, partage `#nourrir`), pas de citation. Catégorie **vie** (soins et entretien, comme le pansage, les protections et les soins avant/après le travail).
+- Gabarit identique aux chapitres G4 récents : couverture, 2 blocs de 3 cartes, Cartes premium, écran final, QCM 10 questions × 3 options.
+- Bloc 1 « Fait pour manger toute la journée » : un estomac de brouteur · le fourrage, la base · l'eau n'est jamais une option. Bloc 2 « Ajuster la ration » : les concentrés · les friandises · les erreurs à éviter (les 6 du document).
+- Cartes premium : « La ration en 5 règles » (fourrage d'abord, eau en permanence, plusieurs petites prises, changer lentement, à chaque cheval sa ration).
+- Écran final `complements-nourrir` : nouveau dictionnaire `COMPL_NOURRIR_I18N` + une ligne de routage, composant `ComplementsBiomeca` réutilisé tel quel. Comme pour Identité, les **16 libellés d'interface génériques** sont **repris par programme** du dictionnaire du chapitre Soins plutôt que retapés.
+- QCM : bonnes réponses **C,A,B,C,B,A,C,B,A,C** (indices 2,0,1,2,1,0,2,1,0,2) — jamais deux fois de suite la même lettre, répartition 3/3/4.
+- **Deux ajouts pédagogiques au-delà du document**, cohérents avec le niveau Galop 4 : la règle « on n'enlève jamais du foin pour donner plus de grain, on ajoute du grain à une base de foin déjà suffisante », et la précision que le foin sec ne contient presque pas d'eau (ce qui explique pourquoi les besoins en eau montent quand un cheval mange beaucoup de foin). Rien d'inventé côté chiffres : seul le 12–16 h/jour du document est repris.
+- « La science explique » reste au bon niveau : sécrétion acide continue de l'estomac tamponnée par la salive, et flore du gros intestin qui met du temps à s'adapter — ce qui donne enfin la *raison* des deux règles « fourrage d'abord » et « changer lentement ». Aucun dosage, aucune notion vétérinaire complexe.
+- « Pour aller plus loin » : 4 cartes **sans URL** (IFCE ×3, Hey Baby) → affichage « Prochainement », comportement voulu. Aucun lien inventé.
+- Terminologie contrôlée langue par langue : fourrage → forage / forraje / foraggio / 粗飼料 / Raufutter · enrubanné → haylage / heno encintado / fieno fasciato / ラップサイレージ / Anwelksilage · concentrés → concentrates / concentrados / concentrati / 濃厚飼料 / Kraftfutter · colique → colic / cólico / colica / 疝痛 / Kolik.
+
+**2. ✅ Doublon retiré : `g4-c6` « Nourrir son cheval »** — ancien placeholder verrouillé, même titre exact que le nouveau chapitre. Retiré comme `g4-c1`, `c2`, `c3` et `c7` avant lui, après vérification qu'aucune autre référence n'existait (1 seule occurrence avant, 0 après). Le Galop 4 compte désormais **15 chapitres**, dont 12 ouverts.
+
+**3. ⚠️ Le renommage demandé en `g6-c3` était impossible : cet identifiant est déjà pris.** `g6-c3` existe déjà — c'est « Travail à la longe et aux longues rênes ». Renommer en c3 aurait **recréé exactement le doublon qu'on venait de corriger**. Le placeholder « Cession à la jambe au trot et transitions » a donc reçu **`g6-c7`**, premier numéro réellement libre du Galop 6 (c1 à c6 tous occupés).
+- **Une seule ligne changée**, sur la définition repérée par son titre et non par sa position. **Les 4 références restantes à `g6-c2` visent toutes « L'impulsion »**, vérifié une par une : `HYPE_COURS_PRETS`, raccourci `impulsion`, définition du chapitre, routage `compl-impulsion`.
+- **L'ordre d'affichage ne change pas** : la liste suit l'ordre du tableau, pas les numéros. La page du Galop 6 se présente comme avant, mais le chapitre ouvre enfin son propre contenu.
+
+**4. Raccourcis d'aperçu ajoutés** à `CIBLE_DIRECTE` : `galop6` (liste des chapitres du Galop 6) et `nourrir`, sur le modèle de ceux qui existaient déjà.
+
+✅ Vérifs : `node --check` OK sur les **14 blocs script** · **contrôle programmatique des 6 langues** du chapitre Nourrir : aucun champ vide, cardinalités strictement égales entre langues (3 + 3 cartes, 2 détails par carte, 5 cartes premium × 3 champs, 10 questions × 3 options), indices de bonnes réponses identiques partout · dictionnaire des compléments : jeu de clés strictement identique à celui du chapitre Soins, aucun champ vide, cardinalités vérifiées (5 / 5 / 8 / 4 / 4 / 7 / 2) · **convertisseur réel `convertirCoursI18nVersInterne` exécuté hors navigateur sur les 6 langues** : titre, 5 blocs, 10 questions, deux titres de section résolus à chaque fois ; seuls résidus i18n = `couv/titre1`, `couv/titre2` et `donnees` des cartes premium, **exactement les mêmes que sur le chapitre Soins déjà en ligne** (résolus par `CouvAffiche` et `BlocCartesPremium`) · **doublons relancés sur les 8 Galops** : plus aucun identifiant en doublon dans tout le fichier ; seul doublon de titre restant = « Les aides naturelles et artificielles » en `g1-c9` et `g2-aides`, deux niveaux du même sujet, ancien et volontaire · marqueurs du travail de l'autre page recomptés à l'identique.
+
+⏳ **Points ouverts** : (a) **la couverture k640 du chapitre Nourrir** — visuel à fournir (foin, eau, ration ; ni les mors, ni les longues rênes) ; en attendant, la couverture s'affichera vide. (b) La **3ᵉ image reçue** (cheval aux longues rênes avec surfaix) a une destination naturelle : `g6-c3` « Travail à la longe et aux longues rênes », le jour où ce chapitre passera au format riche 6 langues ; elle prendra une clé ultérieure (k641). (c) La phrase FR « Un cheval trempé refroidit plus difficilement » (session 55), physiologiquement ambiguë, toujours en attente d'un retour. (d) Placeholders G4 restants : `g4-c4` (extérieur) et `g4-c5` (santé).
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (56) — Couverture du chapitre Soins (k638) + nouveau chapitre « L'identité du cheval » en 6 langues**
+
+🔴 **À pousser** : `index.html` + **`images/k638.jpg`** + **`images/k639.jpg`** (les deux fournies dans cette session).
+
+**1. `k638` était utilisée mais jamais déclarée.** La session 55 avait branché la couverture du chapitre « Les soins avant et après le travail » sur `HYPE_IMGS["k638"]`, mais la ligne `window.HYPE_IMGS["k638"]="images/k638.jpg"` n'existait pas — vérifié par comptage avant correction : une seule occurrence de `k638` dans tout le fichier, l'usage dans le cours, aucune déclaration. **Rappel : une image demande deux gestes, la pousser ET la déclarer.** Extension `.jpg`, conforme à la règle en vigueur depuis k630. Image livrée : 941 × 1672, JPEG q90, 284 Ko (pansage au bouchon + pose d'une bande, tapis et serviette au premier plan).
+
+**2. Nouveau chapitre `g4-identite` « L'identité du cheval »**, Galop 4, **6 langues écrites ici** (pas de circuit de traduction externe cette fois). Couverture « L'IDENTITÉ / DU CHEVAL » (k639, portrait de tête, partage `#identite`), pas de citation (aucune fournie, aucune inventée). Catégorie **connaissance** (« Connaissance du cheval »), comme `g4-biomeca` — c'est de la connaissance du cheval, pas de l'équitation.
+- Gabarit identique aux chapitres G4 récents : couverture, 2 blocs de 3 cartes, bloc Cartes premium, écran final, QCM 10 questions × 3 options.
+- Bloc 1 « Ce que l'œil voit » : une identité pas une couleur · le sexe et la robe · marques, balzanes, épis. Bloc 2 « Ce que les papiers prouvent » : la puce et le numéro SIRE · le livret signalétique · les pièges à éviter (les 5 erreurs fréquentes du document, dont la confusion livret/carnet de santé).
+- Cartes premium : « Le signalement en 5 regards » (sexe, robe, marques en tête, balzanes, épis).
+- Écran final `complements-identite` : nouveau dictionnaire `COMPL_IDENTITE_I18N` + une ligne de routage dans `BlocCours`, sur le modèle exact des 9 chapitres précédents (composant `ComplementsBiomeca` réutilisé tel quel, rien de nouveau à maintenir). Les **libellés d'interface génériques** (16 champs : soon, plusDetail, curieux, vidTitre, yeuxTitre, defiBtn, defiFait, hbTitre, hbIntro, hbBtn, stTitre, sciTitre, synTitre, loinTitre, loinIntro, gloTitre) sont **repris par programme** du dictionnaire du chapitre Soins plutôt que retapés : zéro risque de divergence de libellé entre chapitres dans les 6 langues.
+- QCM : bonnes réponses **B,A,C,B,C,A,B,C,A,B** (indices 1,0,2,1,2,0,1,2,0,1) — jamais deux fois de suite la même lettre, répartition 3/4/3.
+- « Pour aller plus loin » : 4 cartes **sans URL** (IFCE ×2, FFE, Hey Baby) → elles s'affichent en « Prochainement », comportement voulu. Aucun lien inventé ; à brancher quand les ressources seront vérifiées.
+- Terminologie contrôlée langue par langue : hongre/gelding/castrado/castrone/せん馬/Wallach · robes bai-alezan-noir-gris → bay-chestnut-black-grey / castaño-alazán-negro-tordo / baio-sauro-morello-grigio / 鹿毛-栗毛-青毛-芦毛 / Brauner-Fuchs-Rappe-Schimmel · balzanes → leg markings / calzados / balzane / 肢の白 / Beinabzeichen · épis → whorls / remolinos / vortici / 旋毛 / Haarwirbel. Le **numéro SIRE étant propre à la France**, il est présenté comme tel dans les 5 autres langues (« le numéro national français d'identification ») plutôt que traduit comme s'il était universel.
+
+**3. ✅ Doublon retiré : `g4-c7` « Identifier un cheval »** — ancien placeholder verrouillé (format ancien, français seul, jamais ouvert), même sujet que le nouveau chapitre. Retiré comme `g4-c1`, `g4-c2` et `g4-c3` avant lui. **Vérifié avant suppression** qu'aucune autre référence à `g4-c7` n'existait dans le fichier (`HYPE_COURS_PRETS`, `CATEGORIE_PAR_COURS`, `CIBLE_DIRECTE`, partage) : 1 seule occurrence, sa définition. Après suppression : 0. Le Galop 4 compte désormais **15 chapitres**, dont 11 ouverts.
+
+**4. ⚠️ Doublon trouvé sur le GALOP 6, pas touché — à trancher avec toi.** La recherche de doublons sur les 8 Galops a remonté un vrai conflit d'identifiant : **`g6-c2` est défini deux fois** dans `COURS_GALOP6_FR`, une fois pour « L'impulsion » (livré en session 51) et une fois pour un ancien placeholder « Cession à la jambe au trot et transitions ». Comme les recherches par id s'arrêtent au premier trouvé, c'est « L'impulsion » qui gagne : le second chapitre s'affiche probablement dans la liste sous son titre mais ouvre le mauvais contenu. **Correction non appliquée** (c'est un chapitre du Galop 6, hors périmètre demandé) — dis-moi si je renomme le placeholder en `g6-c3` ou si je le retire.
+- Autre point signalé, sans gravité : « Les aides naturelles et artificielles » porte le même titre en `g1-c9` et `g2-aides`. Deux niveaux différents du même sujet, situation ancienne et volontaire.
+
+✅ Vérifs : `node --check` OK sur les **14 blocs script** (même compte qu'avant intervention) · **contrôle programmatique des 6 langues** du chapitre : aucun champ vide, cardinalités strictement égales entre langues (3 cartes + 3 cartes, 2 détails par carte, 5 cartes premium × 3 champs, 10 questions × 3 options), indices de bonnes réponses identiques dans les 6 langues · dictionnaire des compléments : **jeu de clés strictement identique** à celui du chapitre Soins, aucun champ vide, cardinalités vérifiées (5 défis, 5 questions Hey Baby, 8 points de synthèse, 4 phrases, 4 cartes, 7 termes de glossaire, 2 détails « science ») · **le vrai convertisseur `convertirCoursI18nVersInterne` exécuté hors navigateur sur les 6 langues** : titre, 5 blocs, 10 questions et les deux titres de section résolus correctement à chaque fois. Les seuls objets i18n qui subsistent après conversion sont `couv/titre1`, `couv/titre2` et `donnees` des cartes premium — **le même test lancé sur le chapitre Soins déjà en ligne donne exactement les trois mêmes**, c'est donc le fonctionnement normal (`CouvAffiche` et `BlocCartesPremium` résolvent eux-mêmes leur langue), pas un oubli · recherche de doublons de titres et d'ids relancée sur les 8 Galops après insertion (résultat au point 4).
+
+⏳ **Points ouverts** : (a) le doublon `g6-c2` ci-dessus ; (b) la phrase FR « Un cheval trempé refroidit plus difficilement » héritée de la session 55, physiologiquement ambiguë, présente aussi dans le QCM et la synthèse — toujours en attente de ton retour avant correction dans les 6 langues ; (c) la **3ᵉ image reçue** (cheval aux longues rênes avec surfaix) n'est toujours affectée à aucun chapitre — prochaine clé libre : **k640**.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (55) — Badge NEW à durée de vie + chapitre « Les soins avant et après le travail »**
+
+🔴 **À pousser** : `index.html`. Il manque `images/k638.jpg` (couverture Soins) — pas encore fournie.
+
+**1. 🆕 Le badge NEW expire maintenant après 7 jours.** Avant : un simple booléen dans `HYPE_COURS_PRETS`, jamais réévalué — un chapitre marquait NEW indéfiniment une fois ajouté. **73 entrées concernées**, certaines vieilles de plusieurs mois. Changement :
+- `HYPE_COURS_PRETS` stocke désormais une **date** (`"2026-07-29"`) plutôt que `true`. Les 9 chapitres livrés aujourd'hui dans cette conversation ont la vraie date du jour ; les 64 entrées plus anciennes reçoivent une date passée (`"2026-01-01"`) — leur date exacte d'origine n'est pas connue précisément, mais toutes sont de toute façon largement au-delà de 7 jours, donc le résultat visible est correct.
+- Nouvelle fonction `estCoursNouveau(coursId)` : compare la date à aujourd'hui, retourne vrai seulement si moins de 7 jours. Utilisée à la place de l'ancien test booléen dans les deux endroits où le badge s'affiche.
+- **L'accessibilité des chapitres n'est pas touchée** : `coursEstPret` fait toujours un simple test de vérité, et une chaîne de date reste "vraie" — vérifié explicitement que rien ne s'est reverrouillé.
+- Vérifié par calcul direct (hors navigateur) et par rendu réel : un chapitre d'aujourd'hui affiche NEW, un chapitre ancien ne l'affiche plus mais reste cliquable, un chapitre jamais ouvert reste verrouillé. Simulation à J+8 : le badge disparaît bien tout seul.
+
+**2. Chapitre `g4-soins-travail` « Les soins avant et après le travail »**, 6 langues. Couverture « AVANT ET / APRÈS L'EFFORT » (k638, pas encore reçue), pas de citation. Renvoie vers le pansage/cure-pieds (Galop 3) et vers Les protections du cheval plutôt que de réexpliquer. Catégorie **vie**.
+
+**3. ⚠️ Sept erreurs de traduction trouvées et corrigées avant intégration.** Mêmes vérifications systématiques que d'habitude sur les deux renvois inter-chapitres :
+- Vers « Le pansage complet et le soin des pieds » : EN, ES, IT et JA ne correspondaient pas au titre réel (seul l'allemand était juste). Corrigés un par un après comparaison avec le titre stocké dans l'index.
+- Vers « Les protections du cheval » : EN, JA et DE ne correspondaient pas (espagnol et italien étaient bons cette fois). Corrigés de la même façon.
+- Point signalé par la passation elle-même, à trancher avec Blandine : la phrase FR « Un cheval trempé refroidit plus difficilement » est physiologiquement ambiguë (un cheval mouillé perd sa chaleur *plus vite*, pas plus difficilement) — présente aussi dans le QCM et la synthèse. Non corrigée pour l'instant, en attente d'un retour.
+
+✅ Vérifs : traductions Soins contrôlées par script (cardinalités, emojis, citation absente comme prévu, sous-titre Premium spécifique bien présent dans les 5 langues, index de bonnes réponses conformes) · sept renvois corrigés après comparaison avec les vrais titres · `node --check` OK · rendu React réel des 6 langues, aucun bloc vide · non-régression vérifiée sur les 9 chapitres précédents · recherche de doublons relancée sur les 8 Galops : toujours aucun.
+
+⏳ **Point ouvert** : la phrase sur le refroidissement du cheval mouillé (voir ci-dessus) — à confirmer avant de la corriger dans les 6 langues.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (54) — Deux chapitres en ligne : « Les protections du cheval » et « L'équilibre sur un parcours d'obstacles »**
+
+🔴 **À pousser** : `index.html`. Il manque `images/k636.jpg` (Obstacles) et `images/k637.jpg` (Protections) — les deux déjà fournies par Blandine.
+
+⚠️ **Erreur de numérotation repérée et corrigée en cours de session** : la clé `k636` avait été mentionnée à voix haute pour Protections avant que son image ne soit réellement traitée, puis réutilisée pour de vrai sur Obstacles. Comme rien n'était encore injecté à ce moment, aucun conflit dans le code — mais Protections a dû recevoir `k637` à la place. Vérifié que les deux clés étaient bien libres avant d'écrire quoi que ce soit.
+
+**1. `g4-protections` « Les protections du cheval »**, 6 langues. Couverture « LES PROTECTIONS / DU CHEVAL » (k637), pas de citation (aucune fournie). Renvoie vers le pansage/cure-pieds du Galop 3 plutôt que de le redétailler. Catégorie **vie** (matériel/soins, comme le pansage et le filet en G1-G3).
+
+**2. `g4-obstacles-equilibre` « L'équilibre sur un parcours d'obstacles »**, 6 langues. Couverture « CHAQUE RÉCEPTION / PRÉPARE LE SAUT » (k636), citation « Chaque réception prépare déjà le saut d'après. » (formule du cours, sans auteur). Renvoie vers « Aborder un obstacle avec justesse » (Galop 3), L'impulsion et Varier la vitesse plutôt que de réexpliquer. Remplace le placeholder verrouillé `g4-c3` (même sujet, jamais rempli) — retiré proprement, aucune autre référence trouvée avant suppression. Catégorie **technique**.
+
+**3. ⚠️ Six erreurs de traduction trouvées et corrigées avant intégration (chapitre Obstacles).** Les renvois vers « Aborder un obstacle avec justesse » et « Varier la vitesse sans perdre le rythme » ne correspondaient pas exactement aux titres réels stockés dans l'app, en anglais, japonais et allemand (espagnol et italien étaient parfaits) :
+- EN : *« Approaching a fence accurately »* → corrigé en *« Approaching an obstacle with precision »* (le vrai titre) ; *« Varying the speed... »* → *« Varying speed... »*.
+- JA : renvoi vers l'obstacle entièrement reformulé (「障害に正しく入る」→「正確にアプローチする」) ; renvoi vers la vitesse aussi (スピード→速さ, 崩さずに→保ちながら).
+- DE : *„Ein Hindernis richtig anreiten"* → *„Ein Hindernis präzise anreiten"* (le vrai titre) ; *„Die Geschwindigkeit..."* → *„Das Tempo..."*.
+- Même méthode que pour L'incurvation/Épaules-hanches : comparaison systématique avec le titre réellement stocké dans l'index avant d'injecter, jamais une confiance aveugle dans la traduction reçue.
+
+✅ Vérifs : les deux fichiers de traduction contrôlés par script (cardinalités, emojis, citation présente/absente selon le cas, sous-titres Premium bien différenciés par chapitre, index de bonnes réponses conformes à la passation) · six renvois inter-chapitres corrigés après comparaison avec les vrais titres · `node --check` OK · **rendu React réel des 6 langues, pour les deux chapitres** : aucun bloc vide · **recherche de doublons relancée sur les 8 Galops après injection** : aucun trouvé · non-régression vérifiée sur les 7 chapitres déjà en ligne cette session.
+
+---
+
+**Version actuelle de l'index.html : session du 29/07/2026 (53) — Chapitre « Déplacer les épaules et les hanches » + catégorisation par thème du Galop 4 + doublon retiré**
+
+🔴 **À pousser** : `index.html`. Il manque `images/k635.jpg` (couverture) — déjà fournie par Blandine.
+
+**1. Chapitre `g4-epaules-hanches`**, 6 langues, même circuit que les précédents (FR ici, 5 langues reçues traduites, vérifiées et fusionnées). Couverture **LES ÉPAULES / LES HANCHES** (k635, partage `#epaules-hanches`), citation sans auteur (« Les meilleurs cavaliers ne déplacent pas leur cheval davantage. Ils le déplacent plus précisément. » — une formule du cours, pas une citation attribuée).
+- **Deux erreurs de traduction trouvées et corrigées avant intégration** : le renvoi de la carte 3 vers le chapitre « L'incurvation » ne correspondait pas au titre réel utilisé dans l'app en japonais (「馬体の屈曲」au lieu de「内方姿勢」) ni en allemand (*Die Biegung* au lieu de *Stellung und Biegung*, le titre complet). Corrigé en relisant le vrai titre stocké dans l'index avant d'injecter, pas seulement en faisant confiance à la traduction reçue.
+
+**2. 🎨 Catégorisation par thème du Galop 4 — système repris tel quel des Galops 1 à 3.** Découverte en creusant la demande de Blandine : un système de catégories avec couleur (`CATEGORIES_COURS` : connaissance / technique / culture / vie / bilan, chacune sa couleur) existe déjà et regroupe les chapitres des Galops 1-3 avec un en-tête coloré. **Aucun chapitre du Galop 4 n'y était inscrit** : ils tombaient tous dans un groupe gris par défaut (`#566273`), sans en-tête, en bas de la liste — pas un bug de visibilité, mais une organisation manquante.
+- Ajoutés à `CATEGORIE_PAR_COURS` : les 6 chapitres de pratique montée (contact, aides, transitions, incurvation, vitesse, épaules-hanches) → **technique** (« Équitation »), et `g4-biomeca` → **connaissance** (« Connaissance du cheval ») — cohérent avec la façon dont G1-G3 classent déjà anatomie/comportement dans cette même catégorie.
+- **Vérifié par un vrai rendu de la page de détail du Galop 4** (pas seulement relu) : les deux en-têtes de catégorie apparaissent avec leur couleur, les bons chapitres dessous, dans le bon ordre.
+
+**3. ⚠️ Doublon trouvé et retiré : `g4-c2`.** En vérifiant le rendu réel de la liste, « Déplacer les épaules et les hanches » apparaissait **deux fois** : le nouveau chapitre, et un ancien placeholder verrouillé (`g4-c2`, format ancien, jamais ouvert) portant exactement le même titre. Retiré — même traitement que `g4-c1` lors de la création de Le contact / L'accord des aides. Aucune autre référence à `g4-c2` trouvée dans le fichier (`HYPE_COURS_PRETS`, partage) avant suppression.
+
+✅ Vérifs : traductions Épaules/Hanches contrôlées par script (cardinalités, emojis, citation présente/auteur absent, indices de bonnes réponses conformes) · deux renvois vers L'incurvation corrigés après comparaison avec le titre réel dans l'index · `node --check` OK · **rendu React réel des 6 langues** du nouveau chapitre, aucun bloc vide · **rendu réel de la page de détail du Galop 4** après ajout des catégories : deux en-têtes colorés corrects, plus aucun doublon de titre · non-régression vérifiée sur les 6 autres chapitres déjà en ligne.
+
+⏳ **En attente** : les vidéos (Impulsion, Vitesse, Épaules/Hanches — aucune fournie à ce jour), le contenu du chapitre « Les protections du cheval » (reçu, pas encore mis en forme Hype ni traduit), et l'application de la même catégorisation par thème aux Galops 5, 6 et 7 quand leurs contenus seront prêts.
+
+---
+
 **Version actuelle de l'index.html : session du 29/07/2026 (52) — Chapitre « Varier la vitesse » + redistribution des bonnes réponses QCM (Impulsion et Vitesse)**
 
 🔴 **À pousser** : `index.html`. Il manque `images/k634.jpg` (couverture) — déjà fournie par Blandine, à pousser avec.
@@ -1089,3 +1968,4 @@ Fichier `maquette-trace-V4.html` (autonome, aucun script distant, moteur et bibl
 | 27/07 (2) | Autre page | Accueil : carte Communauté équestre remise dans Mon monde, section Découvrir réordonnée, carte Culture équestre remontée dans Actualité. Article Cadre Noir : philosophie dépliée en permanence, bonus Hype passé en carrousel, album participatif remonté avant "Visiter". |
 | 27/07 (3) | Claude (page "Articles 4 écoles") | **Article Cadre Noir** : carrousel des 3 écoles restantes (retrait des 5 cartes stub), encart "Marquer ma visite" (compteur permanent + SQL), encart "Partager cet article". |
 | 29/07 (44) | **Bibliothèque vidéo.** Nouvel écran + page de lecture dans un fichier séparé `hype-video.js` ; ancien écran vidéo factice retiré ; catalogue de 6 vraies vidéos (3 IFCE confirmées + 3 à vérifier) en 6 langues ; pas de pourcentage de lecture (lecteur externe) ; miniatures YouTube distantes (0 bande passante Netlify). Lien cours → vidéo (étape D) volontairement non fait. |
+| 02/08 (72) | Claude (Directeur Technique) | **Visionneuse zoomable** (`PhotoZoomHype`, sans état React) corrigeant la sortie de l'appli au zoom ; vidéo de cérémonie figée sur la page Performances ; titre vertical « Liens & partage » désuperposé. Inventaire architectural de l'index (étape 1) : le contenu pèse plus que le code, extraction de `contenu_galop1_i18n` prête mais volontairement reportée après les bugs. En attente : passage Supabase en Pro. |

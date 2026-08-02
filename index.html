@@ -33556,6 +33556,62 @@ function LienQuoiDeNeuf(props) {
 
 var MEVO_PATH = "M 8.0,88.0 L 8.1,83.7 L 8.2,79.4 L 8.5,75.2 L 8.9,71.0 L 9.4,66.8 L 10.1,62.7 L 10.8,58.6 L 11.7,54.6 L 12.6,50.8 L 13.7,47.0 L 14.9,43.3 L 16.1,39.8 L 17.5,36.4 L 18.9,33.1 L 20.4,30.0 L 22.1,27.1 L 23.8,24.3 L 25.5,21.7 L 27.4,19.2 L 29.2,17.0 L 31.2,14.9 L 33.2,13.1 L 35.3,11.4 L 37.4,10.0 L 39.5,8.8 L 41.7,7.8 L 43.9,7.0 L 46.1,6.4 L 48.3,6.1 L 50.5,6.0 L 52.7,6.1 L 54.9,6.4 L 57.1,7.0 L 59.3,7.8 L 61.5,8.8 L 63.6,10.0 L 65.7,11.4 L 67.8,13.1 L 69.8,14.9 L 71.7,17.0 L 73.6,19.2 L 75.5,21.7 L 77.2,24.3 L 78.9,27.1 L 80.6,30.0 L 82.1,33.1 L 83.5,36.4 L 84.9,39.8 L 86.1,43.3 L 87.3,47.0 L 88.4,50.8 L 89.3,54.6 L 90.2,58.6 L 90.9,62.7 L 91.6,66.8 L 92.1,71.0 L 92.5,75.2 L 92.8,79.4 L 92.9,83.7 L 93.0,88.0 C 93.0,96 96,98 99,95";
 var MEVO_CSS = ".mevo-wrap{position:relative;}.mevo-head{padding:calc(env(safe-area-inset-top) + 10px) 20px 0;text-align:center;position:relative;z-index:5;}.mevo-titre{display:inline-block;font-family:'Cinzel',serif;font-size:26px;font-weight:600;letter-spacing:2.5px;filter:drop-shadow(0 0 14px rgba(32,217,245,0.35));}.mevo-titre .ltr{display:inline-block;opacity:0;background:linear-gradient(90deg,#F4FEFF,#7FE8F2 28%,#6C9BD1 50%,#7FE8F2 72%,#F4FEFF);background-size:600% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:mevoLtr 0.55s ease forwards,mevoTitreGrad 6s linear infinite;}@keyframes mevoTitreGrad{0%{background-position:250% center;}100%{background-position:-250% center;}}@keyframes mevoLtr{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}.mevo-sub{margin-top:8px;font-size:15px;font-weight:500;letter-spacing:0.5px;opacity:0.92;position:relative;display:inline-block;padding:0 14px;background:linear-gradient(90deg,#7E8F9B,#EFF7FC 35%,#BFD0DA 50%,#EFF7FC 65%,#7E8F9B);background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:mevoMagieShimmer 9s linear infinite;filter:drop-shadow(0 0 9px rgba(191,208,218,0.3));}.mevo-sub::before,.mevo-sub::after{content:'';position:absolute;top:50%;width:26px;height:1px;background:rgba(191,208,218,0.5);}.mevo-sub::before{left:-26px;}.mevo-sub::after{right:-26px;}.mevo-hero{position:relative;width:100%;height:540px;margin-top:2px;overflow:hidden;background:#010409;}.mevo-hero-img{width:100%;height:auto;display:block;position:relative;top:-85px;}/* 26/07 : cheval redescendu de 30px pour laisser respirer la phrase au-dessus. La courbe (.mevo-traj) est descendue EXACTEMENT du meme nombre de pixels (262 -> 292) et le bloc a ete rallonge de 30px (512 -> 542), pour que l alignement cheval/courbe reste identique. Ne jamais bouger l un sans l autre. */.mevo-hero-fade{position:absolute;left:0;right:0;bottom:0;height:14%;background:linear-gradient(180deg,transparent,#060709);pointer-events:none;}.mevo-traj{position:absolute;left:0;top:290px;width:100%;height:236px;padding:0 8px;box-sizing:border-box;}.mevo-svg{position:absolute;inset:0;width:100%;height:100%;display:block;}.mevo-comete{opacity:0.9;animation:mevoFiler 3.2s linear infinite;}@keyframes mevoFiler{0%{stroke-dashoffset:100;opacity:0;}6%{opacity:.95;}92%{opacity:.95;}100%{stroke-dashoffset:-8;opacity:0;}}.mevo-niveaux{position:absolute;top:0;left:0;width:100%;height:100%;}.mevo-niv{position:absolute;transform:translate(-50%,-50%);width:86px;height:86px;display:flex;align-items:center;justify-content:center;}/* 26/07 : zone tapable encore agrandie (64 -> 86px) ; les pastilles .mevo-dot gardent leur taille, seule la surface du doigt grandit. */.mevo-dot{border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;}.mevo-done .mevo-dot,.mevo-current .mevo-dot{background:conic-gradient(from 220deg,#39434B,#BFD0DA,#EFF7FC,#39434B,#93A8B6,#39434B);box-shadow:0 0 0 1px rgba(239,247,252,0.5) inset,0 0 14px rgba(191,208,218,0.5);}.mevo-done .mevo-dot{width:50px;height:50px;}.mevo-current .mevo-dot{width:74px;height:74px;box-shadow:0 0 0 1px rgba(239,247,252,0.6) inset,0 0 0 4px rgba(191,208,218,0.2),0 0 30px rgba(191,208,218,0.8);}.mevo-num{border-radius:50%;background:#0D1114;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-weight:800;color:#FBFEFF;line-height:1;}.mevo-num .glabel{font-size:6px;font-weight:700;letter-spacing:1px;color:#B9C5CC;margin-bottom:1px;font-family:'Montserrat',sans-serif;}.mevo-locked .mevo-dot{flex-direction:column;line-height:1;}.mevo-locked .glabel{font-size:6px;font-weight:700;letter-spacing:1px;color:#8FA6B0;margin-bottom:1px;font-family:'Montserrat',sans-serif;}.mevo-done .mevo-num{width:38px;height:38px;font-size:19px;}.mevo-current .mevo-num{width:58px;height:58px;font-size:30px;}.mevo-check{position:absolute;bottom:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:#0A0F13;border:2px solid #BFD0DA;display:flex;align-items:center;justify-content:center;}.mevo-check svg{width:8px;height:8px;}.mevo-locked .mevo-dot{width:46px;height:46px;background:#0E1A20;color:#8FA6B0;font-size:19px;border:2px solid rgba(32,217,245,0.65);box-shadow:0 0 10px rgba(32,217,245,0.25);font-family:'Cinzel',serif;font-weight:700;}.mevo-lock{position:absolute;bottom:-4px;right:-4px;width:19px;height:19px;border-radius:50%;background:#0A0F13;border:1.5px solid #333D46;display:flex;align-items:center;justify-content:center;font-size:10px;}.mevo-qcm{position:absolute;left:96%;top:95%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}.mevo-qcm-dot{width:26px;height:26px;border-radius:8px;background:#171D23;border:1.5px dashed rgba(163,178,188,0.6);display:flex;align-items:center;justify-content:center;}.mevo-qcm-lbl{font-size:8px;color:#B9C5CC;text-align:center;line-height:1.2;font-weight:700;letter-spacing:0.3px;}.mevo-carte{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);width:22%;border-radius:7px;background:linear-gradient(180deg,#0D1319,#080B0F);border:1px solid rgba(32,217,245,0.45);padding:8px 5px 6px;text-align:center;box-shadow:0 0 14px rgba(32,217,245,0.08),inset 0 1px 0 rgba(255,255,255,0.04);z-index:3;cursor:pointer;}.mevo-wing{position:absolute;top:-3px;bottom:-3px;width:6px;background:linear-gradient(180deg,#7FE8F2,#0F5E6B);}.mevo-wing-l{left:-4px;clip-path:polygon(0 20%,100% 0,100% 100%,0 80%);}.mevo-wing-r{right:-4px;clip-path:polygon(0 0,100% 20%,100% 80%,0 100%);}.mevo-rail{position:absolute;top:5px;left:8px;right:8px;height:5px;display:flex;gap:2px;border-radius:3px;overflow:hidden;}.mevo-rail span{flex:1;background:#E6EDF1;}.mevo-rail span:nth-child(2){background:#20222A;}.mevo-num-g{font-family:'Cinzel',serif;font-size:10px;font-weight:700;color:#F4FEFF;letter-spacing:0.3px;margin-top:5px;}.mevo-sep{width:14px;height:1px;background:rgba(32,217,245,0.4);margin:4px auto;}.mevo-sstitre{font-size:7.5px;color:#DCE6EA;font-weight:600;line-height:1.2;}.mevo-count{display:inline-block;margin-top:5px;padding:2px 6px;border-radius:999px;background:rgba(32,217,245,0.1);border:1px solid rgba(32,217,245,0.3);font-family:'Cinzel',serif;font-size:8px;font-weight:700;color:#7FE8F2;}.mevo-below{padding:0 20px;}.mevo-continuer{margin-top:7px;padding-top:6px;border-top:1px solid rgba(32,217,245,0.3);font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:800;letter-spacing:0.8px;color:#7FE8F2;text-transform:uppercase;}";
+/* ---------- ENCART D'ACCÈS À LA BIBLIOTHÈQUE VIDÉO (02/08/2026) ----------
+   Seul point d'entrée vers l'écran "videos" : la carte de l'ancien
+   EcranDashboard etait du code mort (composant jamais appele), donc la
+   bibliotheque n'etait atteignable par aucun bouton.
+   Place sur la page Galops ET dans Culture equestre.
+   L'image laisse volontairement la gauche sombre pour recevoir le texte
+   (regle 18 de la Bible : ne jamais incruster le texte dans l'image). */
+function EncartBibliothequeVideo(props) {
+    const { tr, setEcran } = useApp();
+    const compact = !!(props && props.compact);
+    let nbVideos = 0;
+    try { nbVideos = (window.HYPE_VIDEO && window.HYPE_VIDEO.videos ? window.HYPE_VIDEO.videos.length : 0); } catch (eEB) { nbVideos = 0; }
+    return React.createElement("button", {
+        onClick: function () { setEcran("videos"); },
+        style: {
+            position: "relative", display: "block", width: "100%", overflow: "hidden",
+            border: "1px solid rgba(32,217,245,0.26)", borderRadius: 20, padding: 0,
+            background: "#020609", cursor: "pointer", textAlign: "left",
+            margin: compact ? "0 0 18px" : "22px 0 4px",
+            boxShadow: "0 18px 46px -20px rgba(0,0,0,0.9)"
+        }
+    },
+        React.createElement("div", {
+            style: {
+                position: "absolute", inset: 0,
+                backgroundImage: "url(images/hype-encart-video.jpg)",
+                backgroundSize: "cover", backgroundPosition: "right center"
+            }
+        }),
+        React.createElement("div", {
+            style: {
+                position: "absolute", inset: 0,
+                background: "linear-gradient(90deg, rgba(2,6,9,0.94) 0%, rgba(2,6,9,0.80) 42%, rgba(2,6,9,0.18) 78%, rgba(2,6,9,0) 100%)"
+            }
+        }),
+        React.createElement("div", { style: { position: "relative", padding: compact ? "20px 18px" : "24px 20px", minHeight: compact ? 132 : 150, display: "flex", flexDirection: "column", justifyContent: "center" } },
+            React.createElement("div", { style: { fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: COLORS.turquoise, fontWeight: 600 } },
+                tr({ fr: "Hype · Académie", en: "Hype · Academy", es: "Hype · Academia", it: "Hype · Accademia", ja: "Hype・アカデミー", de: "Hype · Akademie" })),
+            React.createElement("div", { style: { fontFamily: "'Cinzel', Georgia, serif", fontSize: compact ? 19 : 21, fontWeight: 500, color: COLORS.blanc, lineHeight: 1.16, margin: "8px 0 0", maxWidth: "72%", letterSpacing: "0.02em" } },
+                tr({ fr: "Bibliothèque vidéo", en: "Video library", es: "Biblioteca de vídeo", it: "Videoteca", ja: "動画ライブラリ", de: "Videobibliothek" })),
+            React.createElement("div", { style: { fontSize: 11.5, color: "#AAB6C2", lineHeight: 1.5, margin: "9px 0 0", maxWidth: "66%", fontWeight: 300 } },
+                tr({
+                    fr: "Observe, comprends, progresse. Des interventions de juges, vétérinaires et ergonomes, reliées à tes chapitres.",
+                    en: "Watch, understand, progress. Talks by judges, vets and ergonomists, linked to your chapters.",
+                    es: "Observa, comprende, progresa. Intervenciones de jueces, veterinarios y ergónomos, vinculadas a tus capítulos.",
+                    it: "Osserva, capisci, progredisci. Interventi di giudici, veterinari ed ergonomi, collegati ai tuoi capitoli.",
+                    ja: "見て、理解して、上達する。審判員・獣医師・エルゴノミストの講演を、章ごとに。",
+                    de: "Beobachten, verstehen, vorankommen. Vorträge von Richtern, Tierärzten und Ergonomen, mit deinen Kapiteln verknüpft."
+                })),
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 9, margin: "14px 0 0" } },
+                React.createElement("span", { style: { fontSize: 10.5, letterSpacing: "0.14em", textTransform: "uppercase", color: COLORS.turquoise, fontWeight: 600 } },
+                    tr({ fr: "Explorer", en: "Explore", es: "Explorar", it: "Esplora", ja: "見てみる", de: "Entdecken" })),
+                React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 13 } }, "\u203A"),
+                nbVideos ? React.createElement("span", { style: { marginLeft: 4, fontSize: 9.5, letterSpacing: "0.1em", color: "#7C8894" } },
+                    nbVideos + " " + tr({ fr: "vidéos", en: "videos", es: "vídeos", it: "video", ja: "本", de: "Videos" })) : null)));
+}
 function EcranBibliothequeGalops() {
     const { setEcran, setGalopOuvert, premium, coursTermines, quizResultats, profil, t, tr, langue } = useApp();
     const [msgAVenir, setMsgAVenir] = useState(null);
@@ -33736,7 +33792,8 @@ function EcranBibliothequeGalops() {
                 onOuvrirGalop: function () { marquerGalopVu(galop.id); setVusGal(galopsVus()); setGalopOuvert(galop.id); setEcran("galop-detail"); },
                 onPremium: function () { setEcran("premium"); }
             });
-        }))));
+        })),
+        React.createElement("div", { style: { padding: "0 16px 26px" } }, React.createElement(EncartBibliothequeVideo, null))));
 }
 function galopsVus() {
     /* 27/07 : le ruban « Nouveau » disparait une fois que le cavalier a ouvert le Galop (demande Blandine).
@@ -41756,6 +41813,7 @@ function EcranArticles() {
             React.createElement("p", { style: { fontSize: 12.5, color: "rgba(237,242,245,0.65)", lineHeight: 1.55, margin: "8px auto 14px", maxWidth: 270 } }, tr({ fr: "Ton assistant équestre IA : pose tes questions, envoie tes photos, reçois des conseils de pro.", en: "Your AI equestrian assistant: ask questions, send photos, get pro advice.", es: "Tu asistente ecuestre IA: preguntas, fotos y consejos de pro.", it: "Il tuo assistente equestre IA: domande, foto e consigli da pro.", ja: "AI乗馬アシスタント：質問・写真・プロのアドバイス。", de: "Dein KI-Reitassistent: stelle Fragen, sende Fotos, erhalte Profi-Tipps." })),
             React.createElement("button", { onClick: function () { setEcran("assistant"); }, style: { padding: "12px 26px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13.5, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, tr({ fr: "Ouvrir Hey Baby", en: "Open Hey Baby", es: "Abrir Hey Baby", it: "Apri Hey Baby", ja: "Hey Babyを開く", de: "Hey Baby öffnen" }) + " \u2192"))),
 
+        React.createElement("div", { className: "artin", style: { padding: "0 20px 8px" } }, React.createElement(EncartBibliothequeVideo, { compact: true }))
         ));
 }
 

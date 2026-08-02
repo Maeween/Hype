@@ -10,10 +10,15 @@
    DÉPENDANCES (globales de index.html, résolues à l'exécution) :
    React, useApp, COLORS, supa, utilisateurActuel.
 
-   ÉTAT DES VIDÉOS : aucune vidéo n'est encore tournée/liée.
-   Chaque entrée a src:null => état « Prochainement ». Dès qu'un lien
-   existe, remplacer src par { type:"youtube"|"vimeo", ref:"IDENTIFIANT" }
-   et la vidéo devient lisible sans autre changement de code.
+   ÉTAT AU 31/07/2026 : 6 vidéos réelles, toutes sur YouTube, vérifiées.
+   3 interventions IFCE sur le contact + 3 vidéos sur les aides.
+   Une entrée sans source (yt vide) est automatiquement exclue de la
+   bibliothèque : jamais de carte morte. Pour ajouter une vidéo, remplir
+   yt dans HYPE_VIDEOS ; pour migrer vers Vimeo plus tard, le champ dérivé
+   src devient { type:"vimeo", ref } sans autre changement de code.
+
+   La RÉSERVE D'ANIMATIONS (22 entrées, fichiers locaux servis depuis
+   images/) n'est visible que par les comptes de HYPE_MODERATEURS.
    ============================================================ */
 (function () {
   "use strict";
@@ -52,6 +57,7 @@
   var CHAPITRES = {
     "g4-contact": { fr: "Le contact", en: "Contact", es: "El contacto", it: "Il contatto", ja: "コンタクト", de: "Die Anlehnung" },
     "g4-aides":   { fr: "L'accord des aides", en: "Coordination of the aids", es: "El acuerdo de las ayudas", it: "L'accordo degli aiuti", ja: "扶助の連携", de: "Das Zusammenspiel der Hilfen" },
+    "g4-incurvation": { fr: "L'incurvation", en: "Bend and flexion", es: "La incurvación", it: "L'incurvamento", ja: "内方姿勢", de: "Stellung und Biegung" },
     "g4-biomeca": { fr: "La biomécanique du cheval", en: "The horse's biomechanics", es: "La biomecánica del caballo", it: "La biomeccanica del cavallo", ja: "馬のバイオメカニクス", de: "Die Biomechanik des Pferdes" }
   };
 
@@ -184,9 +190,9 @@
     {
       id: "v-aides-01", yt: "do-xy3MlB08",
       source: "", intervenant: "",
-      titreSource: "Galop 4-5 : l'incurvation et l'utilisation des aides",
+      titreSource: "Galop 4, 5 l'incurvation et l'utilisation des aides",
       langueVideo: "fr", cours: ["g4-aides", "g4-incurvation"], galop: 4, theme: "position-du-cavalier",
-      rang: "principal", dureeTranche: "", verifie: "",
+      rang: "principal", dureeTranche: "", verifie: "2026-07-29",
       titre: {
         fr: "Comprendre comment coordonner ses aides",
         en: "Understanding how to coordinate your aids",
@@ -214,10 +220,10 @@
     },
     {
       id: "v-aides-02", yt: "liF7Odcx6F8",
-      source: "", intervenant: "",
+      source: "Horseman Club", intervenant: "",
       titreSource: "Les secrets de l'indépendance des aides",
       langueVideo: "fr", cours: ["g4-aides"], galop: 4, theme: "position-du-cavalier",
-      rang: "approfondir", dureeTranche: "", verifie: "",
+      rang: "approfondir", dureeTranche: "", verifie: "2026-07-29",
       titre: {
         fr: "L'indépendance des aides",
         en: "Independence of the aids",
@@ -240,7 +246,7 @@
       source: "", intervenant: "",
       titreSource: "Le dosage des aides pour mieux se faire comprendre de son cheval",
       langueVideo: "fr", cours: ["g4-aides"], galop: 4, theme: "position-du-cavalier",
-      rang: "approfondir", dureeTranche: "", verifie: "",
+      rang: "approfondir", dureeTranche: "", verifie: "2026-07-29",
       note: "Aborde aussi la voix, le stick et la cravache — hors sujet du chapitre, à ne pas mettre en vidéo principale.",
       titre: {
         fr: "Le dosage des aides",
@@ -287,6 +293,63 @@
         i18nTitre: v.titre, i18nResume: v.resume, i18nObserver: v.observer || null
       };
     });
+
+  /* ---------------- RÉSERVE D'ANIMATIONS (MODÉRATEURS UNIQUEMENT) ----------------
+     Les animations produites pour Hype, rangées ici pour qu'on sache où elles
+     sont et dans quel état elles sont. Cette section n'apparaît QUE pour les
+     comptes de HYPE_MODERATEURS : ce n'est pas du contenu pédagogique.
+     Fichiers servis par Netlify depuis images/ — pas de YouTube, pas de tiers.
+     Toute animation livrée doit être ajoutée ici. */
+  var ANIMS = [
+    /* --- Déjà placées nulle part, destination pressentie : accueil --- */
+    { id: "anim-cheval", fichier: "images/hype-anim-cheval", dossier: "Accueil", duree: "5,1 s", poids: "202 Ko",
+      titre: "Tête de cheval sur ciel étoilé",
+      resume: "Réencodée depuis le HEVC d'origine (1,88 Mo). ⚠️ Finit sur le logo HYPE suivi de « TON UNIVERS ÉQUESREE » — faute incrustée dans l'image. Fin à couper vers 3,8 s." },
+    { id: "anim-rideaux", fichier: "images/hype-anim-rideaux", dossier: "Bibliothèque vidéo", duree: "5,1 s", poids: "388 Ko",
+      titre: "Portes qui s'ouvrent sur la lumière",
+      resume: "Réencodée depuis le HEVC d'origine (1,46 Mo). ⚠️ Finit sur « TON UNIVERS ÉQUESTIEE » — faute incrustée. Fin à couper vers 4,3 s." },
+
+    /* --- Palmarès : quatre variantes de couleur, déjà encodées proprement --- */
+    { id: "palmares-dore", fichier: "images/palmares-dore", dossier: "Palmarès", duree: "6,3 s", poids: "359 Ko",
+      titre: "Palmarès — doré", resume: "H.264, sans audio, 644×480. Prête à l'emploi." },
+    { id: "palmares-vert", fichier: "images/palmares-vert", dossier: "Palmarès", duree: "6,8 s", poids: "292 Ko",
+      titre: "Palmarès — vert", resume: "H.264, sans audio, 644×480. Déjà en ligne. Lisible partout, y compris Android." },
+    { id: "palmares-bordeaux", fichier: "images/palmares-bordeaux", dossier: "Palmarès", duree: "4,5 s", poids: "210 Ko",
+      titre: "Palmarès — bordeaux", resume: "H.264, sans audio, 644×480. Prête à l'emploi." },
+    { id: "palmares-crystal", fichier: "images/palmares-crystal", dossier: "Palmarès", duree: "5,7 s", poids: "345 Ko",
+      titre: "Palmarès — crystal", resume: "H.264, sans audio, 644×480. Prête à l'emploi." },
+
+    /* --- Mascotte --- */
+    { id: "mascotte-dodo", fichier: "images/heybaby-dodo", dossier: "Mascotte", duree: "5,1 s", poids: "92 Ko",
+      titre: "Mascotte — dodo", resume: "H.264, 560×240 : format bandeau large, pas interchangeable avec la messagerie." },
+    { id: "mascotte-messagerie", fichier: "images/heybaby-messagerie", dossier: "Mascotte", duree: "5,1 s", poids: "214 Ko",
+      titre: "Mascotte — messagerie", resume: "H.264, 560×416 : format presque carré." },
+
+    /* --- Lot de 12 scènes, réencodées le 31/07, à trier (accueil ou saut) --- */
+    { id: "accueil-01", fichier: "images/hype-accueil-01", dossier: "Accueil · à trier", duree: "3,3 s", poids: "" , titre: "Scène 01", resume: "À trier : accueil ou saut." },
+    { id: "accueil-02", fichier: "images/hype-accueil-02", dossier: "Accueil · à trier", duree: "3,0 s", poids: "", titre: "Scène 02", resume: "À trier : accueil ou saut." },
+    { id: "accueil-03", fichier: "images/hype-accueil-03", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 03", resume: "À trier : accueil ou saut." },
+    { id: "accueil-04", fichier: "images/hype-accueil-04", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 04", resume: "À trier : accueil ou saut." },
+    { id: "accueil-05", fichier: "images/hype-accueil-05", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 05", resume: "À trier : accueil ou saut." },
+    { id: "accueil-06", fichier: "images/hype-accueil-06", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 06", resume: "À trier : accueil ou saut." },
+    { id: "accueil-07", fichier: "images/hype-accueil-07", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 07", resume: "À trier : accueil ou saut." },
+    { id: "accueil-08", fichier: "images/hype-accueil-08", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 08", resume: "À trier : accueil ou saut." },
+    { id: "accueil-09", fichier: "images/hype-accueil-09", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 09", resume: "À trier : accueil ou saut." },
+    { id: "accueil-10", fichier: "images/hype-accueil-10", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 10", resume: "À trier : accueil ou saut." },
+    { id: "accueil-11", fichier: "images/hype-accueil-11", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 11", resume: "À trier : accueil ou saut." },
+    { id: "accueil-12", fichier: "images/hype-accueil-12", dossier: "Accueil · à trier", duree: "5,1 s", poids: "", titre: "Scène 12", resume: "À trier : accueil ou saut." }
+  ].map(function (a2) {
+    return {
+      id: a2.id, estAnim: true,
+      src: a2.fichier ? { type: "fichier", ref: a2.fichier } : null,
+      vignetteUrl: a2.fichier ? (a2.fichier + "-poster.jpg") : null,
+      coursId: "", coursTous: [], galop: null, theme: "cheval",
+      rang: "approfondir", dureeTranche: "", premium: false, langueVideo: "fr",
+      source: a2.dossier, intervenant: "", intervenantRole: null, doc: "",
+      titreSource: a2.duree + (a2.poids ? (" · " + a2.poids) : ""), verifie: "2026-07-31",
+      i18nTitre: { fr: a2.titre }, i18nResume: { fr: a2.resume }, i18nObserver: null
+    };
+  });
 
   /* ---------------- COLLECTIONS ÉDITORIALES ---------------- */
   var COLLS = [
@@ -378,6 +441,21 @@
     } catch (e) { }
   }
 
+  /* Animations écartées. Choix assumé : stockage LOCAL (localStorage), pas
+     Supabase. C'est un outil de tri interne, réversible, et un bouton dans
+     l'app ne peut de toute façon PAS supprimer un fichier du dépôt GitHub —
+     seul un push le peut. « Écarter » masque donc la ligne pour que Blandine
+     fasse son tri ; la suppression réelle des fichiers se fait au push
+     suivant, sur la liste qu'elle aura constituée. */
+  function ecartees() {
+    var l = lireLocal(); return l.ecart || {};
+  }
+  function ecarter(id, actif) {
+    var l = lireLocal(); l.ecart = l.ecart || {};
+    if (actif) { l.ecart[id] = true; } else { delete l.ecart[id]; }
+    ecrireLocal(l);
+  }
+
   function enregistrerFavori(id, actif) {
     var l = lireLocal();
     l.fav = l.fav || {};
@@ -405,7 +483,11 @@
   function catalogue() { return VIDS.filter(disponible); }
 
   /* ---------------- OUTILS ---------------- */
-  function vidDe(id) { for (var i = 0; i < VIDS.length; i++) { if (VIDS[i].id === id) return VIDS[i]; } return null; }
+  function vidDe(id) {
+    for (var i = 0; i < VIDS.length; i++) { if (VIDS[i].id === id) return VIDS[i]; }
+    for (var j = 0; j < ANIMS.length; j++) { if (ANIMS[j].id === id) return ANIMS[j]; }
+    return null;
+  }
   function L(obj, langue) { if (!obj) return ""; return obj[langue] || obj.fr || ""; }
 
   /* Couverture procédurale : tenir lieu d'image tant qu'aucun visuel
@@ -440,6 +522,10 @@
     "background:radial-gradient(120% 90% at 78% 8%,rgba(32,217,245,.20) 0%,transparent 55%),",
     "radial-gradient(90% 70% at 12% 30%,rgba(20,80,140,.28) 0%,transparent 60%),",
     "linear-gradient(180deg,#07111F 0%,#080B10 62%,#12161C 100%)}",
+    ".hv-hero-anim{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.60;pointer-events:none}",
+    ".hv-hero-voile{position:absolute;inset:0;pointer-events:none;",
+    "background:linear-gradient(180deg,rgba(7,17,31,.34) 0%,rgba(7,17,31,.64) 55%,rgba(18,22,28,.94) 100%)}",
+    ".hv-hero-in{position:relative}",
     ".hv-hero h1{font-family:'Cinzel',Georgia,serif;font-weight:500;font-size:29px;line-height:1.12;margin:10px 0 0;letter-spacing:.05em;color:#F4F6F7}",
     ".hv-hero h1 span{display:block;color:#20D9F5;text-shadow:0 0 26px rgba(32,217,245,.45)}",
     ".hv-kick{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:#20D9F5;font-weight:500}",
@@ -617,6 +703,20 @@
     var o = React.useState("fav"); var onglet = o[0], setOnglet = o[1];
     var f = React.useState({ duree: [], etat: [] }); var filtres = f[0], setFiltres = f[1];
     var fo = React.useState(false); var feuille = fo[0], setFeuille = fo[1];
+    var mo = React.useState(false); var estModo = mo[0], setEstModo = mo[1];
+
+    /* Réserve d'animations : réservée aux comptes de HYPE_MODERATEURS. */
+    React.useEffect(function () {
+      var vivant = true;
+      try {
+        if (typeof utilisateurActuel === "function" && typeof estModerateurHype === "function") {
+          utilisateurActuel().then(function (u) {
+            if (vivant) setEstModo(estModerateurHype(u));
+          }).catch(function () { });
+        }
+      } catch (e) { }
+      return function () { vivant = false; };
+    }, []);
 
     /* fusion de l'état distant au montage */
     React.useEffect(function () {
@@ -733,7 +833,9 @@
           couv(v, { galop: false }),
           h("span", { style: { flex: 1, minWidth: 0 } },
             h("h4", null, titreDe(v)),
-            h("span", { className: "hv-meta", style: { display: "block" } }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + v.galop + " · " + etatTxt))),
+            h("span", { className: "hv-meta", style: { display: "block" } },
+              v.estAnim ? (v.source + " · " + v.titreSource)
+                        : (T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + v.galop + " · " + etatTxt)))),
         h("button", {
           className: "hv-fav" + (estFav(v.id) ? " on" : ""),
           "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit"),
@@ -748,7 +850,35 @@
       if (v.intervenant) expertSet[v.intervenant] = 1;
     });
 
+    /* Animation des portes en fond d'en-tête (provisoire, à peaufiner).
+       Lue UNE SEULE FOIS, sans boucle : les portes s'ouvrent à l'arrivée
+       et restent ouvertes. Des portes qui claquent en boucle seraient
+       agitées. Muette, sinon iOS refuse la lecture automatique.
+       ⚠️ Cette animation finit sur le logo HYPE suivi d'un slogan fauté
+       (« ÉQUESTIEE ») incrusté dans l'image : fin à couper vers 4,3 s,
+       ou à réexporter sans texte.
+       Replis en cascade : affiche JPG, puis dégradés. Rien ne casse si les
+       fichiers ne sont pas encore poussés dans images/. */
+    var animOk = true;
+    try {
+      animOk = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    } catch (eAn) { }
+
     var hero = h("div", { className: "hv-hero" },
+      animOk ? h("video", {
+        key: "anim", className: "hv-hero-anim",
+        autoPlay: true, muted: true, loop: false, playsInline: true,
+        preload: "metadata", poster: "images/hype-anim-rideaux-poster.jpg",
+        "aria-hidden": "true", tabIndex: -1,
+        ref: function (el) { if (el) { el.muted = true; } }
+      },
+        h("source", { key: "w", src: "images/hype-anim-rideaux.webm", type: "video/webm" }),
+        h("source", { key: "m", src: "images/hype-anim-rideaux.mp4", type: "video/mp4" })
+      ) : h("div", {
+        key: "anim", className: "hv-hero-anim",
+        style: { backgroundImage: "url(images/hype-anim-rideaux-poster.jpg)", backgroundSize: "cover", backgroundPosition: "center" }
+      }),
+      h("div", { key: "voile", className: "hv-hero-voile" }),
       h("span", { className: "hv-kick" }, T("Hype · Académie", "Hype · Academy", "Hype · Academia", "Hype · Accademia", "Hype・アカデミー", "Hype · Akademie")),
       h("h1", null,
         T("Bibliothèque", "Video", "Biblioteca", "Videoteca", "動画", "Video"),
@@ -974,7 +1104,54 @@
         h("div", { style: { marginTop: 14 } }, blocUne),
         blocGalops,
         blocColls,
-        blocMes),
+        blocMes,
+        /* Réserve d'animations — modérateurs uniquement. Sert à rassembler
+           les animations produites et à savoir où elles en sont. */
+        estModo ? h("div", { key: "reserve" },
+          h("div", { className: "hv-sec", style: { marginTop: 42 } },
+            h("h2", null, "Réserve d'animations"),
+            h("p", null, (function () {
+              var ec = 0; ANIMS.forEach(function (x) { if (ecartees()[x.id]) ec++; });
+              return "Visible par toi seule. " + (ANIMS.length - ec) + " animations sur " + ANIMS.length
+                + (ec ? (" · " + ec + " écartée" + (ec > 1 ? "s" : "")) : "") + ".";
+            })()),
+            (function () {
+              var ec = 0; ANIMS.forEach(function (x) { if (ecartees()[x.id]) ec++; });
+              return ec ? h("button", {
+                onClick: function () { ANIMS.forEach(function (x) { ecarter(x.id, false); }); setEtat(lireLocal()); },
+                style: { marginTop: 8, fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "#20D9F5", background: "none", border: "1px solid rgba(32,217,245,.35)", borderRadius: 8, padding: "7px 12px", fontFamily: "inherit" }
+              }, "Réafficher tout") : null;
+            })()),
+          h("div", { className: "hv-fil", style: { margin: "12px 18px 4px" } }),
+          h("div", { style: { padding: "0 18px" } }, ANIMS.filter(function (a4) { return !ecartees()[a4.id]; }).map(function (a3) {
+            return h("div", { key: a3.id, style: { padding: "12px 0", borderBottom: "1px solid rgba(255,255,255,.06)" } },
+              h("button", {
+                style: { display: "flex", gap: 12, alignItems: "center", width: "100%", textAlign: "left", background: "none", border: "none", padding: 0, color: "inherit" },
+                onClick: function () { if (a3.src) { ouvrir(a3); } }
+              },
+                h("span", {
+                  className: "hv-cov",
+                  style: {
+                    width: 86, flex: "0 0 86px", aspectRatio: "16/9", borderRadius: 10, border: "1px solid #2A323D",
+                    backgroundImage: a3.vignetteUrl ? ("url(" + a3.vignetteUrl + ")") : "none",
+                    backgroundSize: "cover", backgroundPosition: "center",
+                    background: a3.vignetteUrl ? undefined : fondCouv(a3)
+                  }
+                }),
+                h("span", { style: { flex: 1, minWidth: 0 } },
+                  h("span", { style: { display: "block", fontSize: 12.5, fontWeight: 500, color: "#F4F6F7", lineHeight: 1.35 } }, L(a3.i18nTitre, "fr")),
+                  h("span", { style: { display: "block", fontSize: 9.5, color: "#20D9F5", marginTop: 4, letterSpacing: ".08em", textTransform: "uppercase" } }, a3.source + " · " + a3.titreSource),
+                  h("span", { style: { display: "block", fontSize: 11, color: "#8A95A1", marginTop: 6, lineHeight: 1.5 } }, L(a3.i18nResume, "fr")))),
+              h("span", { style: { display: "flex", gap: 8, marginTop: 10 } },
+                a3.src ? h("a", {
+                  href: a3.src.ref + ".mp4", download: "",
+                  style: { fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "#20D9F5", textDecoration: "none", fontWeight: 600, border: "1px solid rgba(32,217,245,.35)", borderRadius: 8, padding: "7px 12px" }
+                }, "Télécharger") : null,
+                h("button", {
+                  onClick: function () { ecarter(a3.id, true); setEtat(lireLocal()); },
+                  style: { fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "#8A95A1", fontWeight: 600, background: "none", border: "1px solid #2A323D", borderRadius: 8, padding: "7px 12px", fontFamily: "inherit" }
+                }, "Écarter")));
+          }))) : null),
       blocFeuille);
   };
 
@@ -1033,7 +1210,15 @@
     var lecteur = h("div", { className: "hv-lecteur" },
       h("div", { style: { position: "absolute", inset: 0, background: fondCouv(v) } }),
       h("button", { className: "hv-retour", onClick: function () { setEcran("videos"); } }, "‹"),
-      v.src
+      (v.src && v.src.type === "fichier")
+        ? h("video", {
+            controls: true, playsInline: true, preload: "metadata",
+            poster: v.vignetteUrl || undefined,
+            style: { position: "absolute", inset: 0, width: "100%", height: "100%", background: "#000" }
+          },
+            h("source", { key: "w", src: v.src.ref + ".webm", type: "video/webm" }),
+            h("source", { key: "m", src: v.src.ref + ".mp4", type: "video/mp4" }))
+      : v.src
         ? h("iframe", {
             title: titreDe(v), src: (v.src.type === "vimeo" ? "https://player.vimeo.com/video/" : "https://www.youtube-nocookie.com/embed/") + v.src.ref,
             style: { position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" },
