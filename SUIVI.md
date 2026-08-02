@@ -250,6 +250,199 @@ Le crayon « Modifier les origines » n'apparaît que si `!CHEVAUX_FICHE[id]`. L
 
 ## 🏗️ PRÉPARATION FLUTTER — SESSION 72 (02/08/2026)
 
+
+### 🔄 SESSION 72 — DERNIÈRE SÉRIE · md5 `15c20971` (27 correctifs)
+
+| Sujet | Cause / décision |
+|---|---|
+| **Décalage latéral au retour sur l'appli** | Indice décisif : la barre de navigation du bas se décalait aussi — elle est fixée à l'écran, donc c'était **la page entière** qui glissait, pas un conteneur intérieur. Deux causes cumulées, deux correctifs : **ceinture** (`overflow-x:hidden` + `max-width:100%` sur `html`/`body`) et **bretelle** (remise à zéro du défilement horizontal à chaque fois que la page redevient visible — Safari **mémorise** cette position et la rejoue au réveil, il suffit d'avoir glissé une fois pour que le décalage revienne indéfiniment). Défilement vertical volontairement intact : la position de lecture est préservée. |
+| **Bouton retour de Mon Club au milieu de l'écran** | Il était en `position: absolute` dans un conteneur placé APRÈS la bannière et les onglets — donc en plein milieu de page — alors que son décalage `env(safe-area-inset-top)` supposait qu'il soit en haut. Passé en `position: fixed`, coin haut-gauche, verre fumé de la fiche cheval. **Un second bouton au code identique (écran de gestion de l'écurie) volontairement NON touché : son conteneur est bien en haut de page.** |
+| **Sections « Prochainement » de la page Cavalier** | Masquées à la demande de Blandine (« je ne veux plus que ça pourrisse les pages »). Elles n'étaient visibles que par les modérateurs, d'où le fait qu'elle les voyait et pas les cavaliers. Constante unique `AFFICHER_SECTIONS_BIENTOT = false` — **rien n'est supprimé**, une ligne à repasser à `true`. **L'XP et la montée de niveau ne sont PAS touchés**, ils continuent en arrière-plan comme demandé. |
+| **Baseline d'accueil superposée à la vidéo** | Sortie du bandeau, placée SOUS la bannière. Motif de Blandine : superposée, sa position dépendait du contenu de la vidéo — au prochain changement d'animation elle tomberait sur l'encolure ou par-dessus un texte du fichier. Ombre portée retirée (inutile hors image), opacité 0,78 → 0,72. **Le bandeau superposé a entièrement disparu de l'accueil.** |
+
+---
+
+### 🔎 TROUVAILLE — LES POINTS DE LA PAGE ÉCURIE N'EXISTENT PAS
+Blandine : « pourquoi Mon Club a si peu de points comparé à Mon Écurie ? »
+**Réponse : « 1 560 POINTS HYPE », « 18 VICTOIRES », « 27 CLASSEMENTS », « NIVEAU ÉLITE » ne sont nulle part dans le code.** Chaque libellé a été cherché, aucun n'y figure. **Ces chiffres sont imprimés dans l'image elle-même** (poster spectral du cheval). Ce sont des pixels, pas des données.
+
+**Conséquences :**
+1. **Risque réel :** un cavalier va les croire vrais. Il verra « 18 victoires » et pensera que l'appli les compte ; le jour où il en gagne une et que rien ne bouge, il croira à un bug. Pire, **ces chiffres sont identiques pour tous les chevaux qui utilisent ce visuel.**
+2. **Il n'y a donc qu'UN seul système de points réel** : l'XP de Mon Club (130/200, niveau 1). La question des deux systèmes concurrents ne se pose pas.
+3. **Les vrais chiffres sont désormais calculables** : depuis le correctif du bug 7, les résultats sont reliés aux chevaux via `resultats.cheval_id`. On peut compter pour de vrai victoires et classements.
+**À proposer avec maquette :** remplacer les chiffres peints par les chiffres calculés.
+
+---
+
+### 📄 INVENTAIRE LIVRÉ — `INVENTAIRE-portes-ecurie-club.md`
+11 portes recensées vers `ecurie` et `guilde`. **Seules 3 posent problème** ; les 8 autres ne nomment même pas leur destination et ne doivent pas être touchées.
+
+🔴 **La collision principale, trouvée :** sur la page Écurie, le badge **« Club officiel » n'est pas un badge, c'est un lien vers Mon Club.** Pilule turquoise, coche, libellé descriptif — rien n'indique qu'il change de page, et il porte le même texte que le badge de Mon Club. **C'est la cause directe de la confusion**, pas seulement la ressemblance des deux pages. À trancher : vrai bouton assumé (« Voir le club → ») ou badge non cliquable.
+
+Les deux autres : les libellés « Mon écurie » / « Gérer mon écurie » de l'écran Partager, et l'encart d'accueil (titre + sous-ligne « Ton univers », qui reste le doublon avec la baseline).
+
+**⏸️ Tout est en pause à la demande de Blandine** : « touche à rien, j'ai encore du mal avec ces deux pages, j'ai l'impression d'avoir tout en double ». Elle a raison, et l'inventaire le confirme.
+
+---
+
+### 💡 FONCTIONNALITÉS CONÇUES AVEC BLANDINE — MAQUETTE AVANT CODE
+
+**1. « Passeport équestre » → une page « Mon parcours ».**
+Idée de Blandine : le bloc vide devient une page à part, avec **le retour du globe** (3 100 clubs OSM déjà en base) et, en dessous, le parcours décrit. Son exemple : *« 6 mois cavalière chez France Sloothaak, Dortmund »*.
+**Ce n'est pas une carte d'épingles, c'est un CV équestre** — ça se montre à un employeur, à un propriétaire, à un club. Probablement la fonctionnalité la plus concrètement utile évoquée ce jour.
+Structure : durée · rôle · écurie · lieu · catégorie. **Catégories retenues : travail, concours, vacances** (Blandine a maintenu « travail » malgré son ambiguïté possible — « ils comprendront »).
+**Résumé sur la page Cavalier, sous le titre :** une ligne de drapeaux des pays + nombre d'écuries, façon `🇫🇷 🇩🇪 🇧🇪 · 7 écuries`, avec dépassement `+2`. La page Cavalier montre **où**, la page Parcours raconte **quoi**.
+**Confidentialité — solution trouvée par Blandine, meilleure que les 3 que j'avais proposées :** ne pas arbitrer un défaut, **poser la question au moment où le cavalier remplit sa carte**. Le consentement est demandé quand il a du sens, personne ne subit un réglage qu'il n'a pas compris, et **le problème de l'âge disparaît** (l'appli ne connaît pas l'âge de façon fiable — champ déclaratif souvent vide). Le libellé devra dire ce qui est visible, pas être une formule vague, et la réponse devra être modifiable à tout moment depuis la carte.
+**Réserve maintenue :** le nom « Passeport » désigne déjà le document du cheval (onglet Santé de la fiche cheval). Deux passeports pour deux choses sans rapport, c'est le mécanisme exact qui a fait perdre ses repères à Blandine entre Écurie et Club. Proposition : **« Mon parcours »**. Non tranché.
+**Point sensible à prévoir :** écrire « 6 mois chez France Sloothaak » engage le nom d'un tiers qui n'a rien validé. À terme, distinguer les passages confirmés par l'écurie des passages déclarés — comme le champ `auth` le fait déjà pour les résultats.
+
+**2. « Dernières performances » avec choix du cavalier.**
+Blandine : « certains cavaliers n'aiment pas la compétition ». La section revient, mais chacun choisit de la remplir ou de la masquer de sa page. Masquée pour l'instant avec les autres.
+
+---
+
+
+## 🧊 À FAIRE À FROID — DISSOLUTION DE LA PAGE ÉCURIE
+> Décidé par Blandine le 02/08 en fin de session, **volontairement remis à plus tard**.
+> Rien n'a été codé. Ne pas entamer sans relire cette section en entier.
+
+### La décision
+Blandine, après avoir fait elle-même l'inventaire : *« En vrai on a déjà tout sur le profil et sur les pages chevaux, non ? Qu'est-ce qu'elle apporte de plus ? »*
+**Réponse : rien.** Chaque élément de la page Écurie a déjà une maison ailleurs — bannière et philosophie → la structure ; chevaux → leurs fiches ; fil → le cavalier ; badge « Club officiel » → Mon Club. **La page se dissout.** Plus besoin de la renommer « Ma vie équestre », plus besoin de trancher le badge : les deux problèmes disparaissent avec elle.
+
+### 🔴 LA PREUVE QUE LE PROBLÈME ÉTAIT RÉEL
+Blandine a écrit la devise du club **en croyant être sur la page du club**. Elle était sur la page Écurie.
+Ce n'est pas une étourderie : c'est la démonstration que les deux pages sont indiscernables, et que la confusion **produit déjà des données mal rangées**. Si ça arrive à celle qui a conçu l'appli, ça arrivera à tous les cavaliers.
+
+### ⚠️ PIÈGE TROUVÉ AVANT DE SUPPRIMER — À NE PAS OUBLIER
+Blandine pensait avoir déjà remis sa philosophie sur Mon Club. **Ce n'est probablement pas le cas.** Un commentaire du code dit textuellement :
+> « Colonnes profil `club_voix` / `club_histoire` **inutilisées désormais** (laissées en place) » · la page Club affiche « une PHRASE PAR DÉFAUT visible par tous ».
+
+Donc : le texte de Blandine est dans **`ecurie_voix` / `ecurie_histoire`**, et Mon Club affiche une **devise générique**, pas la sienne. Les colonnes `club_voix` / `club_histoire` existent mais ne sont plus lues.
+
+**Retirer l'onglet maintenant rendrait son texte inaccessible** — pas supprimé, il reste en base, mais plus affiché et plus modifiable.
+
+### L'ORDRE OBLIGATOIRE
+1. **Vérifier** : ouvrir Mon Club et regarder si la philosophie affichée est bien « Faites du cheval un compagnon et non un esclave ». Si c'est un autre texte, le piège est confirmé.
+2. **Brancher** Mon Club sur les bons champs (`club_voix` / `club_histoire`), ou faire lire `ecurie_*` par la page Club. Trois lignes, pas un chantier.
+3. **Migrer** le texte existant de `ecurie_voix` → `club_voix` (SQL court, à préparer et à lire avant de lancer).
+4. **Vérifier à l'écran** que le texte de Blandine s'affiche bien sur Mon Club.
+5. **Alors seulement** retirer l'onglet Écurie de la barre du bas.
+
+> **On branche, on vérifie, on migre, puis on retire. Jamais dans un autre ordre.**
+
+### Ce qui devient inutile une fois la page dissoute
+- Le renommage « Ma vie équestre » / « Ma vie » (6 langues) — annulé.
+- L'arbitrage du badge « Club officiel » (information ou porte) — annulé, il ne reste que sur Mon Club.
+- Le télescopage avec la baseline d'accueil « TON UNIVERS ÉQUESTRE » — annulé.
+- La question « l'écurie privée compte-t-elle ? » reste ouverte, **mais** la réponse retenue est : si oui, ce sera **la même page que Mon Club avec un état « privée »**, jamais une seconde page.
+- Un onglet de moins dans une barre où « Communauté » est déjà tronqué en « Communaut ».
+
+### Restent à reloger avant suppression
+| Contenu | Destination |
+|---|---|
+| Bannière de l'écurie (`ecurie_photo`) | Mon Club |
+| Philosophie (`ecurie_voix`) | Mon Club (`club_voix`) |
+| Histoire (`ecurie_histoire`) | Mon Club (`club_histoire`) |
+| Chevaux | déjà sur leurs fiches — rien à faire |
+| Fil (`ecurie:<profil.id>`, mur **personnel**) | page Cavalier — **à trancher**, c'est le seul point non résolu |
+| Bouton « Anciennes bannières » | suit la bannière |
+
+---
+
+## 🧭 LA GRANDE CLARIFICATION DU 02/08 — À REPRENDRE À FROID
+
+> **Décision de Blandine : « je veux faire ça à froid ».** Rien n'a été codé. Tout est ici.
+
+### Ce qui s'est passé, et c'est la clé de tout
+> *« En vrai j'ai peaufiné ma page Écurie en croyant que c'était ma page Club. »*
+> *« Dans le cas précis c'est la devise du club, car je croyais être dessus. »*
+
+**Blandine a écrit la devise du club sur la page Écurie, en croyant être sur Mon Club.** Ce n'est pas une étourderie : c'est la démonstration que les deux pages sont indiscernables, et que la confusion produit déjà **des données mal rangées**. Si ça arrive à celle qui a conçu l'appli, ça arrivera à tous les cavaliers.
+
+### La décision qui en découle
+**La page Écurie se dissout. Mon Club reprend sa mise en page.**
+Une page, une identité, zéro doublon. Plus besoin du renommage « Ma vie équestre », plus besoin d'arbitrer le badge « Club officiel », plus besoin de trancher l'écurie privée.
+
+**Et il n'y a rien à concevoir :** la page Écurie *est* la maquette validée de ce que Mon Club doit être. Blandine l'a peaufinée, elle lui plaît. C'est du déplacement, pas de la création.
+
+### 🔴 PIÈGE TROUVÉ — NE PAS SUPPRIMER AVANT D'AVOIR BRANCHÉ
+Un commentaire du code dit textuellement : **« Colonnes profil `club_voix`/`club_histoire` inutilisées désormais (laissées en place) »**, et *« la page Club affiche une PHRASE PAR DÉFAUT visible par tous »*.
+
+**Conséquence :** Mon Club affiche une devise **générique**, pas celle de Blandine. Son texte est stocké dans `ecurie_voix` / `ecurie_histoire` — les champs de la page Écurie. **Retirer l'onglet maintenant rendrait son texte inaccessible** : non supprimé (il reste en base), mais plus affiché et plus modifiable.
+
+**⚠️ Blandine croyait avoir déjà mis ces textes sur Mon Club. À vérifier :** ouvrir Mon Club et regarder si la philosophie affichée est bien « Faites du cheval un compagnon et non un esclave ». Si c'est un autre texte, c'est la phrase par défaut et le branchement est nécessaire.
+
+### ORDRE IMPÉRATIF DES OPÉRATIONS
+1. **Vérifier** ce que Mon Club affiche réellement (texte de Blandine ou phrase par défaut).
+2. **Brancher** Mon Club sur les bons champs. Probablement **aucun SQL** : les 4 colonnes existent déjà (`ecurie_voix`, `ecurie_histoire`, `club_voix`, `club_histoire`), elles sont juste inutilisées. Décider si on lit `ecurie_*` (le texte existe déjà) ou si on recopie vers `club_*`.
+3. **Reprendre la mise en page** de Mon Club sur le modèle de la page Écurie.
+4. **Vérifier** que tout s'affiche.
+5. **Retirer l'onglet Écurie en dernier.**
+
+**On ne supprime pas une page avant d'avoir relogé ce qu'elle contient.**
+
+### Ce qui devient inutile grâce à cette décision
+- ~~Renommage « Ma vie équestre » / « Ma vie »~~ — la page disparaît.
+- ~~Arbitrage du badge « Club officiel »~~ — il n'y a plus qu'une page à qualifier.
+- ~~Question de l'écurie privée~~ — sans objet.
+- ~~Encart d'accueil « MON ÉCURIE »~~ — à repointer vers Mon Club.
+- L'inventaire `INVENTAIRE-portes-ecurie-club.md` reste utile : il liste les 11 portes à repointer.
+
+### Rappel du cadre qui a permis de trancher (`ARCHITECTURE-pages-hype.md`)
+Trois sujets seulement : **le cavalier** (une personne), **le cheval** (un animal), **la structure** (un lieu collectif). Une page = un sujet. Une donnée = un seul propriétaire, un seul lieu d'écriture.
+La page Écurie n'avait **aucun sujet propre** — chacun de ses contenus avait déjà une maison ailleurs. D'où l'impression de Blandine d'« avoir tout en double » : elle était mathématiquement exacte.
+**Test appliqué à la devise :** « Faites du cheval un compagnon » resterait vraie si Blandine ne montait plus → elle appartient au lieu, pas à la personne. Donc à Mon Club, pas au profil.
+
+---
+### ✅ BUG 16 FERMÉ — le « carré jaune » · md5 `e8d7131c` (28 correctifs)
+« Des fois ça amène vers rien, et quand ça y amène il est vide. »
+**Le bouton n'était pas cassé** — il faisait exactement ce pour quoi il avait été écrit, mais pas ce qu'on en attendait. Deux causes distinctes :
+1. **« Ça n'amène vers rien »** — l'écran s'ouvrait avec `userId: moiIdEc2`, chargé de façon asynchrone au montage. Le toucher avant la fin du chargement ouvrait l'album sans identifiant, donc sans rien interroger. Une course entre le doigt et la base.
+2. **« Il est vide »** — ce n'est **pas** un bug. L'album lit `photos_historique`, alimentée uniquement quand une photo est **remplacée** : c'est un album des **anciennes** bannières, pas de la bannière actuelle. Légitimement vide tant qu'on n'en a jamais changé, et vide pour tout nouveau cavalier.
+
+**Choix de Blandine :** le bouton ne s'affiche que si l'identifiant est chargé **et** que l'historique contient au moins une photo. Il se révèle de lui-même le jour où il a du sens.
+**Libellé corrigé :** « Album » → **« Anciennes bannières »** (6 langues). « Album » laissait croire à une galerie de la bannière actuelle — c'est ce malentendu qui a produit le signalement.
+
+---
+
+### 💡 « MON PARCOURS » — CONCEPTION ÉTENDUE AU CHEVAL (02/08)
+Blandine : *« Le passeport équestre, en vrai on pourrait l'appliquer pareillement à un cheval comme à un cavalier, non ? Juste que ça ramène sur la map monde en ondulant les endroits déjà visités. »*
+
+**Un seul mécanisme, deux cibles.** La table porte un type et un identifiant — `cavalier` ou `cheval` — exactement comme le font déjà les albums, les identifications et les souvenirs. Une écriture, une lecture, un composant. **C'est la bonne architecture au sens de la doctrine** : pas deux systèmes qui divergeront dans six mois.
+
+**Nature différente selon la cible :**
+- Pour un **cavalier** : un CV équestre. Ça se montre à un employeur, à un propriétaire, à un club.
+- Pour un **cheval** : une biographie. Trois écuries, deux pays, quelques concours — sa carte raconte sa vie mieux qu'un texte, et un acheteur y lit quelque chose d'utile.
+
+**⚠️ Question de fond à trancher — la propriété de l'écriture.**
+Le parcours d'un cavalier lui appartient : il le remplit, il en est responsable. Le parcours d'un **cheval** est écrit par son **propriétaire actuel** — donc il décrit aussi des périodes où le cheval était chez quelqu'un d'autre. Deux décisions en découlent :
+- Qui peut écrire quoi ?
+- Que devient l'historique quand le cheval change de mains ? **Recommandation : le nouveau propriétaire en hérite** — c'est l'histoire du cheval, pas celle du propriétaire — **mais l'auteur de chaque étape est conservé**, sur le modèle du champ `auth` des résultats.
+
+**Rendu visuel :** le globe existe déjà avec ses halos turquoise ; une **pulsation lente** sur les lieux du parcours est dans la Design Bible (la lumière guide le regard, rien n'est parfaitement statique). **Vigilance :** éviter que trois épingles voisines ne fassent clignoter la moitié de la France.
+
+**Reste à faire : la maquette** — globe avec lieux pulsants + liste en dessous, la même page servant au cavalier comme au cheval. À valider avant toute ligne de code.
+
+---
+### 🧱 DOCTRINE AFFINÉE APRÈS ARBITRAGE (02/08, fin de session)
+Un second avis a été confronté au mien. Trois points en sont ressortis, tous adoptés.
+
+**1. Correction que je devais faire.** J'avais dit « le découpage React ne se portera pas en Flutter ». Vrai du **code**, faux de l'**architecture métier**. Les frontières entre domaines (Horse / Academy / Community…), leurs noms, ce qui appartient à qui : ce travail de pensée traverse la migration **intact**, même si chaque ligne est réécrite en Dart.
+> **Règle du projet :** on ne prépare pas Flutter en préparant les composants React, on le prépare en préparant l'architecture métier. Les Repository fixent les contrats de données que Flutter réimplémentera à l'identique.
+
+**2. Ordre des chantiers révisé — remplace l'ordre initial :**
+1. Finir les bugs.
+2. **Créer les Repository** — meilleur retour sur investissement, et ils traversent la migration.
+3. **Design System** — réutilisable à 100 %.
+4. Extraire les Services progressivement.
+5. **Découper les modules SEULEMENT quand on touche déjà au code pour une autre raison.** Jamais de chantier dédié à cela.
+
+**3. Réserve assumée : pas d'indicateur « Préparation Flutter (%) ».**
+Un pourcentage serait un chiffre inventé — impossible à calculer honnêtement (40 %, ça voudrait dire quoi ?), et il deviendrait un objectif qu'on gonflerait en créant des couches inutiles, exactement ce que la doctrine interdit. **À la place : la liste nommée de ce qui reste à moderniser**, qui se vérifie et ne se gonfle pas. Dans six mois, la liste aura raccourci — c'est mesurable, un score ne l'est pas.
+
+---
+
 ### Doctrine posée par Blandine ce jour
 Modernisation **progressive**, jamais de réécriture. Toute nouvelle fonctionnalité s'écrit plus propre que l'existant ; toute correction de bug est l'occasion de simplifier **si et seulement si** le risque est nul. Aucun refactoring massif, aucun changement visuel ou de comportement sans demande explicite, aucun code nouveau qui augmente la dette.
 **Priorités :** modules métiers → Services → Repository Supabase → NavigationService → composants mutualisés → Design System → réduction des dépendances.
