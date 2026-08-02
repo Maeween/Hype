@@ -247,6 +247,53 @@ Le crayon « Modifier les origines » n'apparaît que si `!CHEVAUX_FICHE[id]`. L
 
 
 
+
+## 🏗️ PRÉPARATION FLUTTER — SESSION 72 (02/08/2026)
+
+### Doctrine posée par Blandine ce jour
+Modernisation **progressive**, jamais de réécriture. Toute nouvelle fonctionnalité s'écrit plus propre que l'existant ; toute correction de bug est l'occasion de simplifier **si et seulement si** le risque est nul. Aucun refactoring massif, aucun changement visuel ou de comportement sans demande explicite, aucun code nouveau qui augmente la dette.
+**Priorités :** modules métiers → Services → Repository Supabase → NavigationService → composants mutualisés → Design System → réduction des dépendances.
+**Interdits :** lancer la migration Flutter ; refaire Horse, Academy, Community, Hey Baby ; déplacer du code sans bénéfice réel ; casser une fonctionnalité pour « faire plus propre ».
+
+### Améliorations d'architecture réalisées
+- **`PhotoZoomHype`** — composant isolé, **sans état React** (transform écrit directement sur l'élément, zéro re-rendu pendant le geste). Remplace un bloc écrit en ligne dans `FicheCheval`. Premier pas vers une visionneuse autonome.
+- **`vignetteHype` / `replierVignette`** — première brique de service média : une seule fonction décide de la taille servie, avec repli automatique. Appliquée au rail de la fiche uniquement (un endroit à la fois, volontairement).
+- **`marquerCadre` / `cadreDeUrl` / `urlNue`** — trio de helpers isolant la convention de marquage du cadre. Le reste du code n'a plus à connaître le format.
+- **Filtrage de visibilité des albums centralisé dans `listerAlbumsCheval`** — seul point de lecture des albums, donc toutes les surfaces en héritent. Exemple exact de ce que doit être un Repository.
+- **Suppression de calcul JS devenu inutile** : la hauteur de la bannière d'accueil était calculée en JavaScript ; `width:100%` + `height:auto` suffit. Du code retiré, pas ajouté.
+- **`ouvrirEditIndice` / `sauverIndice`** — remplacement d'un `window.prompt` par un vrai panneau. Un de moins, **il en reste 8**.
+
+### Services créés
+Aucun Service formel. Les helpers ci-dessus en sont les prémices, mais aucun n'a encore été promu en couche nommée.
+
+### Repository créés
+Aucun Repository formel. **`listerAlbumsCheval` est le meilleur candidat** : il est déjà le point de lecture unique des albums et porte désormais la règle de visibilité. À promouvoir en premier.
+
+### Composants mutualisés
+Aucun encore. **Décidé, non commencé : `EnteteHype`**, sur le modèle de la fiche cheval (préférence explicite de Blandine). Méthode imposée : **un écran par livraison, inventaire des boutons avant de toucher.** Refus assumé de faire les 7 écrans d'un coup.
+
+### Dépendances supprimées
+- L'ancien calque de balayage de la visionneuse, qui couplait navigation et gestes : supprimé, son rôle repris par `PhotoZoomHype`.
+- La fiche cheval n'écrit plus dans `chevaux.palmares` : un seul chemin d'écriture des résultats (la table `resultats`).
+- Une bascule public/privé d'album a été écrite puis **retirée** : le système existait déjà. Commentaire laissé dans le code pour éviter la récidive.
+
+### Éléments restant à moderniser
+1. **Extraction du contenu** — `contenu_galop1_i18n` (2,34 Mo) vers `/content/`. Plus de la moitié du monolithe n'est pas du code mais du contenu, **et c'est la seule partie dont Flutter héritera vraiment**. À faire en premier.
+2. **Visionneuse enfermée dans `FicheCheval`** — le fil, l'Écurie, le club, la communauté ne peuvent pas l'appeler. Trois mécanismes de zoom coexistent (`PhotoZoomHype`, `PhotoZoomable`, `setZoomImg` × 18 sites).
+3. **En-têtes écrits sur place sur chaque écran** — aucun composant commun.
+4. **8 `window.prompt` restants**.
+5. **Flots et coupes codés en dur** dans `CHEVAUX_FICHE`, retrouvés **par nom de cheval**. Ils ont déjà disparu une fois le 31/07. Aucun cavalier autre que Blandine ne peut en ajouter. Méritent leur propre table.
+6. **Dessin du cadre à l'affichage** — non branché : les cadres ne sont temporairement plus visibles.
+7. **Statut `partage` des albums** non appliqué à la lecture.
+8. **Confinement de la largeur au niveau racine** (`html`/`body`), et remise à zéro du défilement horizontal au réveil.
+
+### Risques
+- **Le point aveugle du jour :** un calque parasite affiche la photo une seconde fois dans l'en-tête de la fiche cheval. **Sa source n'a pas été identifiée** — ni dans le balisage, ni dans les deux feuilles de style. Le symptôme a été supprimé en retirant l'espace vide où il se voyait. S'il réapparaît ailleurs, il faudra une inspection du DOM en direct.
+- **L'authentification reste intouchée, volontairement.** Code vérifié ligne par ligne et sain. Un jeton longue durée serait la vraie solution mais c'est le seul endroit où une erreur verrouille l'accès pour tous. **Chantier isolé, avec version de secours prête à repousser avant d'y toucher.**
+- **23 correctifs livrés et non vérifiés en ligne.** Tant qu'ils ne sont pas poussés et observés, chaque livraison supplémentaire allonge la chaîne à démêler en cas de régression.
+- **Quota Supabase** — restriction annoncée au 04/08. Un projet restreint, c'est l'appli à l'arrêt : ce risque domine tous les autres.
+
+---
 ### 🏷️ RENOMMAGE ARRÊTÉ — 02/08 (à appliquer, pas encore fait)
 Blandine : le problème n'était pas la page mais **son nom**. « Mon Écurie » et « Mon Club » désignent la même chose dans la tête d'un cavalier — un lieu, avec des boxes et des gens. D'où la collision, dans laquelle Blandine s'est elle-même perdue.
 
