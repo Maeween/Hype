@@ -244,6 +244,120 @@ Verso de la carte Origines : grand vide sous les informations. Le verso est en `
 Le crayon « Modifier les origines » n'apparaît que si `!CHEVAUX_FICHE[id]`. Les 7 chevaux de démonstration étant **migrés en base** depuis le 30/07, la condition pourrait bloquer l'édition sur de vrais chevaux possédés. Même famille que les chevaux fantômes. **À vérifier avant de corriger** — le crayon était bien visible sur une capture de My Dream, donc la condition n'est peut-être pas celle qui s'applique.
 
 ---
+
+
+
+### 🏷️ RENOMMAGE ARRÊTÉ — 02/08 (à appliquer, pas encore fait)
+Blandine : le problème n'était pas la page mais **son nom**. « Mon Écurie » et « Mon Club » désignent la même chose dans la tête d'un cavalier — un lieu, avec des boxes et des gens. D'où la collision, dans laquelle Blandine s'est elle-même perdue.
+
+**DÉCISION FINALE : « Mon Écurie » → « MA VIE ÉQUESTRE ».**
+- **Titre de la page :** « Ma vie équestre »
+- **Libellé dans la barre du bas :** « Ma vie » — trois mots n'y tiendraient pas, « Communauté » y est déjà tronqué en « Communaut ». « Ma vie » seul, en petites capitales, est court et intime.
+- **« Mon Club » garde son nom** : c'est la source de vérité, celle que les cavaliers rejoignent, elle doit conserver le vocabulaire le plus attendu.
+
+**Pourquoi ce nom :** « vie » porte une émotion qu'« univers » et « domaine » n'ont pas — il parle de ce qu'on vit, pas de ce qu'on possède. Et c'est ce que la page contient réellement : philosophie, histoire, fil, chevaux. Pas un inventaire, un récit. Le nom est plus large que le contenu actuel, ce qui laisse de la place pour demain.
+
+**Traductions (6 langues) :** FR « Ma vie équestre » · EN « My equestrian life » · ES « Mi vida ecuestre » · IT « La mia vita equestre » · JA « 私の馬術ライフ » · DE « Mein Reitleben ». Barre du bas : variante courte à décliner de la même façon.
+
+**Alternatives écartées et pourquoi :**
+- « Mon univers équestre » → télescopage avec la baseline d'accueil « TON UNIVERS ÉQUESTRE », qui désigne l'appli **entière**. Utiliser la même formule pour un onglet réduirait la promesse globale.
+- « Mon environnement équestre » → écarté par Blandine, mot d'administration, froid et technique. Contraire à la Design Bible (*luxueux, silencieux, apaisant*).
+- « Mes chevaux » → précis mais plus étroit que le contenu réel.
+- « Mon domaine », « Chez moi », « Mon écrin » → proposés, non retenus.
+- Renommer « Mon Club » → mauvais candidat, c'est la page de référence.
+
+**PÉRIMÈTRE, à inventorier avant de toucher :**
+1. Libellé de l'onglet dans la barre du bas (variante courte).
+2. Titre de la page.
+3. **Encart de l'accueil** « MON ÉCURIE / Ton univers. Tes chevaux. Ta passion. » — porte l'ancien nom, à reprendre. ⚠️ Sa sous-ligne commence par « Ton univers », qui entrait déjà en concurrence avec la baseline : à revoir en même temps.
+4. **Badge « Club officiel » à retirer de cette page** — il n'a de sens que sur Mon Club, et c'est lui qui rendait les deux pages indiscernables.
+5. Les 6 langues.
+
+**Ouvert :** faire tester le nom à Mégane, Evan et Liam. Leur hésitation dira plus que le raisonnement.
+
+---
+
+### 🧭 DÉCISION PRODUIT MAJEURE — 02/08 : QUI EST LA SOURCE DE VÉRITÉ
+Blandine a tranché : **« Mon Club » est la page de référence.** C'est celle que les cavaliers rejoignent à l'inscription comme étant leur club — elle rattache à une structure réelle.
+**La page « Écurie » est autre chose** : l'espace personnel d'écurie (bannière, philosophie, histoire, ses chevaux, son fil). **Ce ne sont pas des doublons, ce sont deux rôles distincts.**
+
+**Le problème n'est pas laquelle garder, c'est que rien ne les distingue.** Les deux affichent le badge « Club officiel », aucun titre ne dit où l'on se trouve. Blandine elle-même s'y est perdue — un cavalier qui arrive n'a aucune chance.
+
+**Ce que cette décision éclaire rétrospectivement :** le mur Écurie cible `ecurie:<profil.id>` (mur PERSONNEL), le mur Club cible `club:<nom>` (partagé par tous les membres). Deux murs, deux portées — cohérent avec la décision, mais l'interface ne l'exprime nulle part. C'est ce qui rendait le bug 12 si difficile à lire.
+
+**À faire, dans cet ordre :**
+1. **Nommer chaque page** — un titre distinct en haut. Le badge « Club officiel » n'a de sens que sur Mon Club ; sur la page Écurie il induit en erreur.
+2. **Réparer Mon Club** — le bouton retour flotte au milieu de l'écran, très bas, au-dessus de la carte de niveau. Aucun en-tête. C'est la page de référence pour tous les cavaliers, elle doit être la mieux tenue.
+3. **En-tête unique** (modèle fiche cheval) — réglera les deux d'un coup.
+
+---
+
+### 🐛 DEUX BUGS DE MISE EN PAGE DIAGNOSTIQUÉS, NON CORRIGÉS
+**Décalage latéral au retour sur l'appli.** Indice décisif : **la barre de navigation du bas est décalée aussi.** Elle est fixée à l'écran, donc elle ne suit pas le défilement d'un conteneur intérieur — c'est **la page entière** qui glisse, pas la fiche cheval. Les garde-fous posés plus tôt confinaient la fiche, pas la racine du document. Et Safari **restaure la position de défilement horizontale** à la reprise : il suffit qu'un élément ait dépassé une fois pour que la position soit mémorisée puis rejouée à chaque retour, même après correction de l'élément fautif.
+**Correctif préparé, non livré :** (1) interdire le défilement horizontal sur `html` et `body`, pas seulement sur la fiche ; (2) forcer la position horizontale à zéro à chaque fois que l'appli redevient visible. Aucune logique touchée, uniquement du confinement.
+
+**Bouton retour perdu au milieu de Mon Club.** Voir le chantier en-tête unique.
+
+---
+
+### ⏸️ DÉCISION DE MÉTHODE — FIN DE SESSION 72
+23 correctifs livrés et **non encore vérifiés en ligne**. Recommandation donnée à Blandine, et assumée : **arrêter d'empiler.**
+1. Pousser `5ab5655b`.
+2. Régler le quota Supabase (échéance 04/08).
+3. Retéléverser la bannière de l'Écurie Feinn depuis l'original (liseré rouge gravé dans les pixels).
+4. Observer ce qui tient réellement en ligne.
+Puis reprendre à froid sur trois sujets : décalage latéral, en-tête unique, distinction Écurie / Mon Club.
+
+---
+### 🔄 FIN DE SESSION 72 (suite) — md5 `5ab5655b`
+Base : index rapporté par Blandine après le passage d'une autre page sur la partie média.
+**141 blocs script vérifiés, tous valides** — le travail de l'autre page est intact.
+
+#### Le cadre n'est plus cuit dans le fichier
+Le recadreur calculait déjà **deux** versions — l'image nue (`srcNue`) et l'image habillée — et renvoyait les deux. Mais les écrans appelants n'envoyaient que l'habillée et **jetaient la nue** : le cadre était gravé dans le fichier stocké, définitivement.
+Conséquences constatées : la bannière de l'Écurie Feinn porte un liseré **rouge Crimson indélébile** (cadre appliqué alors que la teinte Crimson était active), impossible à retirer ou changer de teinte, et recuit à chaque recadrage.
+**Correctif :** c'est l'image NUE qui part sur le serveur ; le choix voyage dans le fragment de l'URL (`#cadre=spectral|halo`), jamais transmis au serveur → aucune migration sur les 4 tables. Helpers `marquerCadre` / `cadreDeUrl` / `urlNue`. `vignetteHype` travaille désormais sur l'URL nue.
+**Fond Studio reste cuit** : transformation réelle (détourage + fond), pas une décoration.
+**⚠️ RESTE À FAIRE : le dessin du cadre à l'affichage n'est pas branché — les cadres ne sont donc temporairement plus visibles.** Le choix est enregistré, rien n'est perdu.
+**⚠️ Action Blandine :** retéléverser la bannière de l'Écurie Feinn depuis l'original. Aucun code ne peut retirer un liseré déjà gravé dans les pixels.
+
+#### Hypothèse écartée en cours de route
+J'ai d'abord annoncé que l'option de cadre « persistait d'une photo à l'autre ». **Faux, vérifié :** `setFiltre("aucun")` est bien appelé à chaque nouvelle photo. La cause était uniquement la cuisson dans le fichier.
+
+---
+
+### 🔐 ENQUÊTE SESSION / « SE RAPPELER DE MOI » — CODE INNOCENTÉ
+Blandine signale rester déconnectée. **Avertissement de sa part : un gros rollback a déjà eu lieu sur ce sujet.** Aucun code touché.
+
+**Vérifié, tout est sain :**
+- `stockageHype` écrit dans `localStorage`, relit `sessionStorage` en secours. `persistSession: true`, `autoRefreshToken: true`.
+- La purge du `localStorage` à la connexion n'efface que `hype_*`, `hypeBaby*`, `hypeMemory*`, `augalop_*` — **jamais** le jeton `sb-…-auth-token`.
+- Le service worker est hors de cause **par nature** : un SW n'a aucun accès au `localStorage`.
+
+**Trouvaille :** la case « Se rappeler de moi » est **décorative depuis le 27/07**. Elle écrit `hype_rappeler`, mais une ligne au démarrage remet la valeur à `"1"` de force. C'était le prix du correctif qui a suivi le rollback. Une case qui promet ce qu'elle ne fait pas est pire qu'une case absente → **proposition de la retirer, en attente de décision.**
+
+**Hypothèses testées et écartées :**
+- Plafond iOS de 7 jours sur le stockage écrit par script → **ne s'applique pas** : Blandine ouvre l'appli depuis l'icône de l'écran d'accueil, pas un onglet Safari.
+- Premier test proposé (langue + teinte comme témoins) → **invalide**, relevé par Blandine : le français est sa langue par défaut et une seule teinte est disponible. Aucun des deux ne mesure quoi que ce soit.
+
+**➡️ OBSERVATION À FAIRE PAR BLANDINE la prochaine fois qu'elle est déconnectée, AVANT de se reconnecter :**
+**l'écran « Quoi de neuf » se réaffiche-t-il ?**
+C'est le seul témoin binaire fiable : il ne s'affiche qu'une fois par version via `hype_maj_vue`, clé volontairement exclue de la purge.
+- Il réapparaît → le stockage a été vidé, c'est iOS, le code n'y peut rien.
+- Il ne réapparaît pas → le stockage est intact, le jeton a été refusé ou a expiré côté Supabase. **Réparable**, avec un plan de retour arrière écrit avant de commencer.
+
+**Piste non explorée volontairement :** jeton de reconnexion longue durée côté Supabase. C'est la vraie solution, mais elle touche l'authentification — le seul endroit où une erreur ne casse pas une page mais verrouille l'accès pour tous. **Chantier isolé, avec version de secours prête à repousser avant d'y toucher.**
+
+---
+
+### 🎯 CHANTIER VALIDÉ, PAS COMMENCÉ — EN-TÊTE UNIQUE
+Constat de Blandine : chaque écran a son propre en-tête, écrit sur place. Aucun composant commun n'a jamais existé. Visible sur l'Écurie : le bouton appareil photo **recouvre la fin de « MEMBRE PREMIUM »**, trois boutons ronds s'empilent à droite sans hiérarchie.
+**Modèle retenu : celui de la fiche cheval** (préférence explicite de Blandine) — retour rond à gauche, langue à droite, actions derrière les trois points.
+**Méthode imposée : un écran par livraison, avec inventaire des boutons AVANT de toucher.** Refus explicite de faire les 7 écrans d'un coup : c'est le scénario du rollback.
+**Garantie donnée :** aucune fonctionnalité perdue — les actions sont déplacées, pas supprimées. Le seul coût est **un tap** sur les actions aujourd'hui visibles. À signaler avant, pas après, sur tout écran où l'action est fréquente.
+**Prochaine étape : inventaire de l'en-tête Écurie, à montrer à Blandine avant de coder.**
+
+---
 ## 🟢 SESSION 71 (31/07, nuit) — FICHE CHEVAL : les vides et les blocs fantômes, trouvés PAR MESURE
 
 ### 🔬 LA MÉTHODE QUI A TOUT DÉBLOQUÉ (à réutiliser systématiquement)
