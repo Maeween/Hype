@@ -660,9 +660,25 @@ async function definirVedettesSouvenirs(cible, urls) {
 
 /* --- Albums nommés des chevaux --- */
 async function listerAlbumsCheval(cible) {
+  /* 02/08 : visibilite des albums (decision Blandine du 02/08). Modele OPT-OUT : un album est
+     PUBLIC par defaut, son auteur peut le passer en prive. Colonne albums_cheval.visibilite
+     (text, default 'public'). Le filtrage est fait ICI, a la source : c est le seul point de
+     lecture des albums, donc toutes les surfaces en heritent d un coup (bande de la fiche,
+     albums nommes, fusion des souvenirs). Un album prive reste visible par son auteur, qui doit
+     pouvoir le relire et le rebasculer.
+     Rappel du raisonnement : opt-out pour SON contenu, opt-in pour designer quelqu un d autre. */
   try { if (typeof supa === "undefined" || !supa) return { data: [], error: null };
     var r = await supa.from("albums_cheval").select("*").eq("cible", cible).order("created_at", { ascending: true });
-    return { data: r.data || [], error: r.error };
+    var liste = r.data || [];
+    var moiA = null; try { moiA = await utilisateurActuel(); } catch (eUa) { moiA = null; }
+    liste = liste.filter(function (aL) {
+      try {
+        if (!aL) return false;
+        if (String(aL.visibilite || "public").toLowerCase() !== "prive") return true;   /* public, ou colonne absente */
+        return !!(moiA && aL.user_id === moiA.id);                                      /* prive : auteur seulement */
+      } catch (eFl) { return true; }
+    });
+    return { data: liste, error: r.error };
   } catch (e) { return { data: [], error: String(e) }; }
 }
 async function creerAlbumCheval(cible, nom) {
@@ -30553,6 +30569,10 @@ function AlbumsCheval(props) {
     if (rate) bip(rate + " " + T("envoi(s) impossible(s)", "upload(s) failed", "env\u00edo(s) fallido(s)", "invio non riuscito", "\u9001\u4fe1\u5931\u6557"));
     if (!(rM && rM.error)) charger();
   }
+  /* 02/08 : une bascule public/prive avait ete ecrite ici puis RETIREE — le systeme existait
+     deja (visibilite public / partage / prive, avec icone, libelle et panneau de membres dans
+     l en-tete de l album ouvert). Seul le FILTRAGE A LA LECTURE manquait : voir
+     listerAlbumsCheval. Note laissee pour eviter qu une prochaine session recree le doublon. */
   async function definirCouverture(alb, u) {
     var r = await majAlbumCheval(alb.id, { couverture: u });
     if (r && r.error) { var nouv = [u].concat((alb.photos || []).filter(function (x) { return x !== u; })); r = await majAlbumCheval(alb.id, { photos: nouv }); }
