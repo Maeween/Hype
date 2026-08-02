@@ -578,10 +578,13 @@
     ".hv-fav{flex:0 0 auto;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#5C6573;background:none;border:none}",
     ".hv-fav.on{color:#20D9F5}",
     ".hv-une{position:relative;margin:0 18px;border-radius:22px;overflow:hidden;border:1px solid #2A323D;box-shadow:0 24px 60px -22px rgba(0,0,0,.95)}",
-    ".hv-une .hv-cov{aspect-ratio:16/13}",
-    ".hv-une-txt{position:absolute;left:0;right:0;bottom:0;padding:18px}",
-    ".hv-une-txt h3{font-family:'Cinzel',serif;font-weight:500;font-size:20px;line-height:1.2;margin:8px 0 0;color:#F4F6F7}",
-    ".hv-une-txt .hv-desc{font-size:11.5px;color:#AAB6C2;line-height:1.55;margin:9px 0 0}",
+    ".hv-une{background:linear-gradient(180deg,#0C1420,#080B10)}",
+    ".hv-une .hv-cov{aspect-ratio:16/9}",
+    ".hv-une-txt{position:relative;padding:16px 18px 18px}",
+    ".hv-une-txt h3{font-family:'Cinzel',serif;font-weight:500;font-size:19px;line-height:1.22;margin:8px 0 0;color:#F4F6F7;",
+    "overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}",
+    ".hv-une-txt .hv-desc{font-size:11.5px;color:#AAB6C2;line-height:1.55;margin:9px 0 0;",
+    "overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}",
     ".hv-minis{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:12px}",
     ".hv-mini{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#C3CBD5;border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:3px 8px;background:rgba(255,255,255,.03)}",
     ".hv-act{display:flex;gap:10px;margin-top:16px}",
@@ -628,6 +631,9 @@
     ".hv-grille .hv-carte{flex:none;width:100%}",
     ".hv-compte{padding:0 18px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#8A95A1;margin-bottom:14px}",
     ".hv-compte b{color:#20D9F5}",
+    ".hv-retourmenu{display:flex;align-items:center;gap:8px;margin:0 18px 14px;padding:11px 15px;border-radius:12px;",
+    "border:1px solid rgba(32,217,245,.30);background:rgba(32,217,245,.08);color:#20D9F5;font-family:inherit;",
+    "font-size:11px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;width:calc(100% - 36px)}",
     ".hv-voile-m{position:fixed;inset:0;background:rgba(3,4,6,.72);z-index:80}",
     ".hv-feuille{position:fixed;left:0;right:0;bottom:0;z-index:90;max-width:520px;margin:0 auto;background:linear-gradient(180deg,#111720,#080B10);",
     "border-top:1px solid rgba(32,217,245,.35);border-radius:22px 22px 0 0;padding:8px 18px calc(24px + env(safe-area-inset-bottom));max-height:82vh;overflow-y:auto}",
@@ -798,7 +804,7 @@
         h("svg", { key: "a", className: "hv-arc", viewBox: "0 0 200 200", preserveAspectRatio: "none" },
           h("path", { d: "M-20 150 C 60 150 70 40 210 55", fill: "none", stroke: "hsla(" + h2 + ",95%,72%,.5)", strokeWidth: 1 }),
           h("path", { d: "M-20 178 C 80 178 100 80 210 92", fill: "none", stroke: "hsla(" + h2 + ",95%,80%,.22)", strokeWidth: .7 })),
-        h("div", { key: "v", className: "hv-voile" })
+        opts.sansVoile ? null : h("div", { key: "v", className: "hv-voile" })
       ];
       if (opts.galop !== false) enfants.push(h("div", { key: "g", className: "hv-gal" }, T("Galop " + v.galop, "Level " + v.galop, "Galop " + v.galop, "Galop " + v.galop, "ガロー " + v.galop, "Galopp " + v.galop)));
       if (opts.duree !== false && dureeDe(v)) enfants.push(h("div", { key: "d", className: "hv-duree" }, dureeDe(v)));
@@ -950,7 +956,7 @@
     var une = dispo[0];
     for (var iu = 0; iu < dispo.length; iu++) { var pu = prog(dispo[iu].id); if (!pu && !verrou(dispo[iu])) { une = dispo[iu]; break; } }
     var blocUne = h("div", { className: "hv-une" },
-      couv(une, { galop: false }),
+      couv(une, { galop: false, sansVoile: true }),
       h("div", { className: "hv-une-txt" },
         h("span", { className: "hv-kick" }, T("Recommandée pour toi", "Recommended for you", "Recomendada para ti", "Consigliata per te", "あなたへのおすすめ", "Für dich empfohlen")),
         h("h3", null, titreDe(une)),
@@ -1045,6 +1051,10 @@
       if (galop !== null) lib.push(T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + galop);
       if (nbFiltres) lib.push(nbFiltres + " " + T("filtres", "filters", "filtros", "filtri", "絞り込み", "Filter"));
       blocResultats = h("div", { style: { marginTop: 18 } },
+        h("button", {
+          className: "hv-retourmenu",
+          onClick: function () { setRq(""); setUniv("tous"); setGalop(null); setFiltres({ duree: [], etat: [] }); }
+        }, "\u2039 " + T("Retour au menu", "Back to menu", "Volver al menú", "Torna al menu", "メニューに戻る", "Zurück zum Menü")),
         h("div", { className: "hv-compte" }, h("b", null, res.length), " " + (res.length > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos") : T("vidéo", "video", "vídeo", "video", "本", "Video")) + " · " + lib.join(" · ")),
         res.length
           ? h("div", { className: "hv-grille" }, res.map(carteAffiche))
