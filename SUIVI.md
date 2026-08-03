@@ -12,6 +12,76 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🌍 SESSION 81 (03/08) — HYPE LINGO, PREMIÈRE LEÇON JOUABLE (application séparée)
+
+⚠️ **L'`index.html` de Hype n'a PAS été touché.** Rien à pousser côté app. Livraison = un dossier `/lingo/` autonome.
+
+### Décision d'architecture : Lingo est une application à part
+Blandine : « constitue Hype Lingo comme si c'était une appli à part qu'on puisse lancer indépendamment, on la reliera ensuite ». Livré tel quel :
+```
+/lingo/index.html                coquille + CSS + le pont HYPE_LINGO_HOST
+/lingo/hype-lingo.js             moteur, écrans, 5 mini-jeux (vanilla JS, pas de React)
+/lingo/hype-lingo-lex-ecurie.js  12 concepts × 6 langues + définitions
+/lingo/img/apy.webp              107 Ko
+```
+Testable sur `…netlify.app/lingo/` sans aucun risque pour l'app. **Le pont `HYPE_LINGO_HOST` est le SEUL point de contact** (6 fonctions : `langue` `charger` `sauver` `xpAjouter` `estPremium` `quitter`). Vérifiable au grep : aucun appel de Lingo vers une fonction de l'index. Au branchement, l'index remplace ces 6 fonctions, rien d'autre ne bouge dans Lingo.
+⚠️ **Piste de branchement privilégiée : une iframe**, exactement comme `GLOBE_HTML_HYPE` et `FRANCE_MAP_HTML` déjà en place (pattern validé chez Blandine, passage de la langue par `postMessage`). C'est pour ça que Lingo est en JS natif et pas en React.
+
+### Le lexique est stocké par CONCEPT, jamais par paire de langues
+Une entrée = un objet équestre avec ses 6 langues côte à côte (`m` mot, `p` prononciation simplifiée, `var` variante régionale, `def` définition). Conséquences acquises :
+- **Bidirectionnel gratuit** : un cavalier japonais apprend le français avec le même fichier. La France est donc un pays du globe, il y en a 6.
+- Une paire FR→EN aurait imposé **30 combinaisons** à produire.
+- La `def` sert trois fois : mode Lexique, verso de carte, indice de jeu.
+- `var` traite structurellement le problème `headcollar` (GB) / `halter` (US), `trot enlevé` = *rising* (BHS) / *posting* (US).
+
+### Deux modes décidés, un seul moteur
+- **Le Voyage** : globe, pays, chapitres, tampons de passeport. Apprendre une langue.
+- **Le Lexique** : pas de drapeau, pas de traduction. Un francophone apprend le jargon FFE (paturon, incurvation, garrot). Jeux différents : mot↔définition, pointer sur un schéma, intrus. **C'est le vestibule des Galops** : un cavalier bloqué sur un cours a un endroit où chercher les mots.
+⚠️ **Le mode Lexique ne doit PAS écrire de vue `langue` dans `hype_vues`** — sinon le badge Polyglotte se gagne sans une seule langue étrangère. Il lui faut son propre type `lexique`.
+
+### Ce qui est jouable dans cette livraison
+Choix du pays (5 destinations, la même leçon se joue dans les 5 langues instantanément) · chapitre « L'écurie » · 13 étapes : 6 cartes de découverte + 6 exercices + 1 phrase à remettre en ordre · 5 types de mini-jeux (découverte, choix dans les deux sens, écoute, écriture, ordre de phrase) · tampon animé sur la page de passeport · collection de 12 cartes qui se retournent sur leur définition · maîtrise en 5 points par mot.
+- Voix par `speechSynthesis` (aucun fichier audio, zéro bande passante). **Amorçage au premier tap** pour contourner le blocage iOS.
+- **L'exercice d'écriture bascule en choix quand la cible est le japonais** (clavier latin). À terme : tuiles kana.
+- Progression en `localStorage` (`hype_lingo_v1`). Pas de compte, pas de social, pas de premium en autonome — tout ça arrive au branchement.
+
+### Décisions produit prises et à ne pas réouvrir sans raison
+- **Nom : Hype Lingo.** Apy reste le guide et **n'est pas renommé** : « Apy » apparaît 3 381 fois dans l'index, y compris **comme sous-chaîne de blocs base64** (`UAJmlzSYoxQAUopKWgApyt`) — un remplacement global corromprait des images.
+- ⚠️ **Contradiction de continuité non tranchée** : la Bible Baby v1.3 décrit Apy **alezan à grande liste blanche**, les visuels fournis pour Lingo montrent le **poney spectral turquoise**. Blandine : « on garde Apy ». À écrire dans la Bible (v1.4) pour que les sessions futures ne produisent pas le mauvais Apy.
+- **Chapitre Urgences gratuit à vie, pour tout le monde** (dire « il boite », « colique », « appelez le vétérinaire » n'est pas du contenu premium).
+- **Une seule série/flamme pour tout Hype**, jamais une propre à Lingo (conflit avec la question du jour + l'assiduité des Quêtes). Prévoir des jours de pardon.
+- **Mode « on m'accueille »** : des exercices où le cavalier *répond* à un étranger qui débarque au club, au lieu de traduire. N'existe chez personne.
+- Images de Lingo : **vrais fichiers WebP 512 px, 25 Ko, jamais de base64.** Illustrations réservées aux ~300 objets concrets ; « incurvation » ou « impulsion » ne s'illustrent pas, elles se définissent.
+
+### ⚠️ Relecture native obligatoire avant publication
+Le lexique technique n'est pas du vocabulaire courant. Deux points marqués `// ??` dans le fichier : **`longhina`** (it, longe) et **`ハルター / 無口`** (ja, licol). Le reste des 12 mots × 6 langues demande une relecture par un cavalier natif — on ne peut pas enseigner du faux à quelqu'un qui va s'en servir en concours.
+
+### Reste à faire sur Lingo
+Globe spectral (remplacera la liste de destinations, l'écran ne changera pas) · passeport feuilletable complet · packs spéciaux · mode trilingue Premium · social (au branchement) · production du contenu : ~1 250 concepts × 6 langues, **c'est le vrai chantier, des mois, pas le code**.
+
+---
+
+## 🐌 SESSION 81 (03/08) — DIAGNOSTIC DU DÉMARRAGE À 15-20 SECONDES (mesuré, non corrigé)
+
+Blandine : « des fois 15/20 secondes » avant l'écran d'accueil. Cause trouvée, **rien n'a été modifié**.
+
+### Ce qui a été mesuré
+- L'`index.html` fait **10 476 370 octets**, dont **4,4 Mo de cours** (`COURS_BABY_I18N` 1 603 Ko · `COURS_GALOP3_FR` 838 · `COURS_GALOP1_I18N` 764 · `COURS_GALOP4_FR` 634 · `COURS_GALOP2_FR` 479) + `HYPE_NIVEAU_BADGES` 477 Ko. **Le détachement des cours n'a jamais abouti.**
+- L'index charge **119 fichiers `hype-images-*.js` d'un coup, en scripts bloquants**, plus 10 autres fichiers.
+- Poids réel mesuré : **580 Ko par image en base64** (k359 · k610→k614), en résolution **1 024×1 536 à 1 122×1 402**, affichées dans des cartes de 300-400 px → **9 fois plus de pixels que l'écran**. Le base64 seul coûte **+33 %**.
+- **`sw.js` est un service worker de RETRAIT** (26/07) : il vide les caches, se désinscrit, n'installe aucun `fetch`. **Il n'y a donc aucun hors-ligne aujourd'hui**, et le cache HTTP d'iOS Safari se vide seul → le démarrage lent **revient régulièrement**, ce n'est pas un coût de premier lancement.
+
+### 🎁 La bonne nouvelle : le bon pattern existe déjà
+`hype-images-1.js` ne contient **pas** de base64 : les clés **k0 à k191 sont de vrais fichiers** (`images/k12.png`). Le navigateur ne les charge qu'à l'affichage. C'est le pattern d'origine, abandonné en route. Et le code sait déjà afficher un repli quand un fichier manque (`"hype-images-6.js manquant"`).
+
+### Ordre d'intervention proposé (aucun geste posé)
+1. Réencoder en WebP 1 024 px q82 → **60-80 Ko** au lieu de 580, soit **-85 %**. Livrer un avant/après côte à côte avant de toucher à quoi que ce soit.
+2. Revenir aux vrais fichiers pour les clés en base64 → chargement à la demande.
+3. Seulement ensuite : un service worker **sobre** (le sujet a déjà coûté des pages blanches ; le fichier de retrait doit rester en place plusieurs semaines).
+4. Le détachement des cours : chantier **seul**, jamais mêlé à une livraison de fonctionnalité.
+
+---
+
 ## 👁️ SESSION 80 (03/08) — LA TABLE DES VUES : CINQ FAMILLES DE PLUS
 
 **Deux fichiers à pousser ensemble : `index.html` ET `hype-video.js`.** Plus `hype-vues.sql` à exécuter avant.
