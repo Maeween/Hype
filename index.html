@@ -44146,17 +44146,43 @@ function CeremonieHautFait(props) {
   return Portal(el, document.body);
 }
 
+/* ============ l ecran de bienvenue : l XP deja gagnee compte ============ */
+function CeremonieRattrapage(props) {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr;
+  var Portal = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
+  var el = h("div", { className: "cer-bg", onClick: props.onFermer },
+    h("div", { className: "cer-in", onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); } },
+      h("div", { className: "cer-halo" }),
+      h("div", { className: "cer-eb" }, tr({ fr: "Ton pass\u00e9 compte", en: "Your past counts", es: "Tu pasado cuenta", it: "Il tuo passato conta", ja: "\u3053\u308c\u307e\u3067\u306e\u6210\u679c", de: "Deine Vergangenheit z\u00e4hlt" })),
+      h("div", { className: "cer-sc" }, (typeof qIcone === "function") ? qIcone("gem") : null),
+      h("div", { className: "cer-t" }, tr({ fr: "Tes qu\u00eates\nont chang\u00e9", en: "Your quests\nhave changed", es: "Tus misiones\nhan cambiado", it: "Le tue missioni\nsono cambiate", ja: "\u30af\u30a8\u30b9\u30c8\u304c\n\u65b0\u3057\u304f\u306a\u308a\u307e\u3057\u305f", de: "Deine Quests\nhaben sich ge\u00e4ndert" }).split("\n").map(function (l, i) { return h(React.Fragment, { key: i }, i > 0 ? h("br", null) : null, l); })),
+      h("div", { className: "cer-s" }, tr({
+        fr: "Tout ce que tu avais d\u00e9j\u00e0 accompli a \u00e9t\u00e9 compt\u00e9. Tu ne recommences rien.",
+        en: "Everything you had already done has been counted. You start nothing over.",
+        es: "Todo lo que ya hab\u00edas hecho ha sido contado. No empiezas de nuevo.",
+        it: "Tutto ci\u00f2 che avevi gi\u00e0 fatto \u00e8 stato contato. Non ricominci nulla.",
+        ja: "\u3053\u308c\u307e\u3067\u306e\u9054\u6210\u306f\u3059\u3079\u3066\u6570\u3048\u3089\u308c\u3066\u3044\u307e\u3059\u3002\u3084\u308a\u76f4\u3057\u306f\u3042\u308a\u307e\u305b\u3093\u3002",
+        de: "Alles, was du bereits geleistet hast, wurde gez\u00e4hlt. Du beginnst nichts neu."
+      })),
+      h("div", { className: "cer-x" }, "+ " + props.xp + " XP"),
+      h("div", { className: "cer-d" }, props.marches + " " + tr({ fr: "marches d\u00e9j\u00e0 franchies.", en: "steps already cleared.", es: "peldanos ya logrados.", it: "gradini gi\u00e0 superati.", ja: "\u6bb5\u968e\u3092\u9054\u6210\u6e08\u307f\u3002", de: "Stufen bereits geschafft." })),
+      h("div", { className: "cer-ok", onClick: props.onFermer }, tr({ fr: "D\u00e9couvrir mes familles", en: "Discover my families", es: "Descubrir mis familias", it: "Scopri le mie famiglie", ja: "\u5bb6\u7cfb\u3092\u898b\u308b", de: "Meine Familien entdecken" }))));
+  return Portal(el, document.body);
+}
+
 /* ============ L'ÉCRAN DES QUÊTES ============ */
 function EcranQuetes() {
   var h = React.createElement;
   var ctx = useApp();
-  var setEcran = ctx.setEcran, tr = ctx.tr, xp = ctx.xp;
+  var setEcran = ctx.setEcran, tr = ctx.tr, xp = ctx.xp, setXp = ctx.setXp;
 
   var _v = React.useState(null), valeurs = _v[0], setValeurs = _v[1];
   var _r = React.useState(0), rayon = _r[0], setRayon = _r[1];
   var _t = React.useState({}), tournees = _t[0], setTournees = _t[1];
   var _c = React.useState(null), fete = _c[0], setFete = _c[1];
   var _p = React.useState(null), paliers = _p[0], setPaliers = _p[1];
+  var _rt = React.useState(null), rattrapage = _rt[0], setRattrapage = _rt[1];
 
   /* 1. On calcule les compteurs, 2. on compare aux paliers enregistres,
      3. on annonce UNIQUEMENT ce qui vient d etre franchi.
@@ -44170,20 +44196,36 @@ function EcranQuetes() {
       setValeurs(val);
       var dejaLa = await hypeChargerPaliers();
       if (!actif) return;
-      var premierPassage = (dejaLa === null) || (Object.keys(dejaLa).length === 0);
-      var etat = dejaLa || {};
+      /* dejaLa === null = table injoignable (hors ligne, RLS, SQL pas passe).
+         On ne seme RIEN et on ne verse RIEN dans ce cas : sinon le rattrapage
+         d XP se rejouerait a chaque ouverture. Le verrou, c est la base. */
+      if (dejaLa === null) { setPaliers({}); return; }
+      var premierPassage = (Object.keys(dejaLa).length === 0);
+      var etat = dejaLa;
       var aFeter = null;
+      var xpRattrape = 0, marchesRattrapees = 0;
       for (var i = 0; i < HYPE_FAMILLES.length; i++) {
         var f = HYPE_FAMILLES[i];
         var m = hypeMarcheAtteinte(f, val[f.id] || 0);
-        var ancien = (typeof etat[f.id] === "number") ? etat[f.id] : 0;
-        if (m > ancien) {
+        var avant = (typeof etat[f.id] === "number") ? etat[f.id] : 0;
+        if (m > avant) {
           etat[f.id] = m;
           hypeEnregistrerPalier(f.id, m);
-          if (!premierPassage && !aFeter) aFeter = { famille: f, marche: m };
+          if (premierPassage) {
+            /* Rattrapage : les marches deja acquises avant l existence du systeme
+               comptent. Decision de Blandine : ce n est pas fair-play de repartir
+               de zero pour ceux qui etaient la avant. Verse UNE SEULE FOIS. */
+            for (var j = avant; j < m; j++) { xpRattrape += ((f.xp && f.xp[j]) || 0); marchesRattrapees++; }
+          } else if (!aFeter) { aFeter = { famille: f, marche: m }; }
         }
       }
       setPaliers(etat);
+      if (premierPassage && xpRattrape > 0) {
+        try { if (typeof setXp === "function") setXp(function (x) { return (Number(x) || 0) + xpRattrape; }); } catch (e) { }
+        setRattrapage({ xp: xpRattrape, marches: marchesRattrapees });
+        /* Volontairement AUCUNE diffusion dans le fil pour le rattrapage
+           (decision de Blandine) : onze annonces d un coup tueraient l effet. */
+      }
       if (aFeter) {
         setFete(aFeter);
         try {
@@ -44294,7 +44336,9 @@ function EcranQuetes() {
     h("p", { style: { fontSize: 10.5, color: "#5B6670", lineHeight: 1.6, margin: "18px 2px 0" } },
       tr({ fr: "Touche une carte pour voir ses marches. D'autres familles arrivent.", en: "Tap a card to see its steps. More families are coming.", es: "Toca una tarjeta para ver sus peldanos. Llegar\u00e1n m\u00e1s familias.", it: "Tocca una carta per vedere i gradini. Altre famiglie arriveranno.", ja: "\u30ab\u30fc\u30c9\u3092\u30bf\u30c3\u30d7\u3059\u308b\u3068\u6bb5\u968e\u304c\u898b\u3048\u307e\u3059\u3002\u4ed6\u306e\u5bb6\u7cfb\u3082\u6e96\u5099\u4e2d\u3002", de: "Tippe auf eine Karte, um ihre Stufen zu sehen. Weitere Familien folgen." })),
 
-    fete ? h(CeremonieHautFait, { famille: fete.famille, marche: fete.marche, onFermer: function () { setFete(null); } }) : null
+    fete ? h(CeremonieHautFait, { famille: fete.famille, marche: fete.marche, onFermer: function () { setFete(null); } }) : null,
+
+    rattrapage ? h(CeremonieRattrapage, { xp: rattrapage.xp, marches: rattrapage.marches, onFermer: function () { setRattrapage(null); } }) : null
   );
 }
 
