@@ -44010,6 +44010,196 @@ function hypeFicheComplete(c) {
 /* ---------- les familles ----------
    rayon : 0 Mon cavalier · 1 Mes chevaux · 2 Ma communauté · 3 Mon savoir
    seuils : les marches, dans l'ordre. xp : par marche.                     */
+/* ============================================================
+   HYPE · 03/08/2026 · PARRAINAGE
+   Un code personnel par cavalier. Le filleul le saisit une fois.
+   Il ne compte QU APRES avoir fait quelque chose dans l appli
+   (un cheval ou un cours) : c est ce qui elimine les faux comptes
+   sans policer personne (decision de Blandine).
+   Tables : hype_parrain_codes + hype_filleuls (voir hype-parrainage.sql).
+   Recompenses : codes promo Stripe, remis a la main par Blandine.
+   ============================================================ */
+
+/* Code lisible, sans caracteres ambigus (ni 0/O ni 1/I/L). */
+var HYPE_ALPHABET_CODE = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function hypeFabriquerCode() {
+  var s = "";
+  for (var i = 0; i < 6; i++) { s += HYPE_ALPHABET_CODE.charAt(Math.floor(Math.random() * HYPE_ALPHABET_CODE.length)); }
+  return "HYPE-" + s;
+}
+
+/* Mon code : lu s il existe, cree sinon. Une seule ligne par cavalier. */
+async function hypeMonCodeParrain() {
+  try {
+    if (typeof supa === "undefined" || !supa) return null;
+    var u = await utilisateurActuel(); if (!u) return null;
+    var r = await supa.from("hype_parrain_codes").select("code").eq("user_id", u.id).maybeSingle();
+    if (r && !r.error && r.data && r.data.code) return r.data.code;
+    /* Creation, avec quelques essais en cas de collision de code. */
+    for (var essai = 0; essai < 5; essai++) {
+      var code = hypeFabriquerCode();
+      var ins = await supa.from("hype_parrain_codes").insert({ user_id: u.id, code: code });
+      if (ins && !ins.error) return code;
+      /* Si la ligne existe deja (course entre deux appareils), on la relit. */
+      var r2 = await supa.from("hype_parrain_codes").select("code").eq("user_id", u.id).maybeSingle();
+      if (r2 && !r2.error && r2.data && r2.data.code) return r2.data.code;
+    }
+    return null;
+  } catch (e) { return null; }
+}
+
+/* Saisie d un code par le filleul. Renvoie un motif de refus explicite,
+   jamais un echec muet : c est un geste ou l on veut savoir pourquoi. */
+async function hypeUtiliserCodeParrain(code) {
+  try {
+    if (typeof supa === "undefined" || !supa) return { erreur: "hors-ligne" };
+    var u = await utilisateurActuel(); if (!u) return { erreur: "hors-ligne" };
+    var propre = String(code || "").trim().toUpperCase();
+    if (propre.length < 4) return { erreur: "vide" };
+    if (propre.indexOf("HYPE-") !== 0) propre = "HYPE-" + propre;
+
+    var deja = await supa.from("hype_filleuls").select("parrain_id").eq("filleul_id", u.id).maybeSingle();
+    if (deja && !deja.error && deja.data) return { erreur: "deja" };
+
+    var p = await supa.from("hype_parrain_codes").select("user_id").eq("code", propre).maybeSingle();
+    if (!p || p.error || !p.data) return { erreur: "inconnu" };
+    if (p.data.user_id === u.id) return { erreur: "soi" };
+
+    var ins = await supa.from("hype_filleuls").insert({ filleul_id: u.id, parrain_id: p.data.user_id, code: propre, valide: false });
+    if (!ins || ins.error) return { erreur: "refus" };
+    return { ok: true };
+  } catch (e) { return { erreur: "refus" }; }
+}
+
+/* Le filleul valide LUI-MEME son parrainage quand il a fait quelque chose.
+   C est le seul moyen propre : le parrain n a pas le droit de lire les
+   donnees de son filleul (et c est tant mieux). */
+async function hypeValiderMonParrainage(ctx) {
+  try {
+    if (typeof supa === "undefined" || !supa) return;
+    var u = await utilisateurActuel(); if (!u) return;
+    var aFait = ((ctx.chevaux || []).filter(function (c) { return c && c.id !== "ch-demo"; }).length > 0)
+      || ((ctx.coursTermines || []).length > 0);
+    if (!aFait) return;
+    var l = await supa.from("hype_filleuls").select("valide").eq("filleul_id", u.id).maybeSingle();
+    if (!l || l.error || !l.data || l.data.valide) return;
+    await supa.from("hype_filleuls").update({ valide: true }).eq("filleul_id", u.id);
+  } catch (e) { }
+}
+
+/* Mes filleuls qui comptent vraiment. */
+async function hypeCompterFilleuls() {
+  try {
+    if (typeof supa === "undefined" || !supa) return 0;
+    var u = await utilisateurActuel(); if (!u) return 0;
+    var r = await supa.from("hype_filleuls").select("filleul_id", { count: "exact", head: true }).eq("parrain_id", u.id).eq("valide", true);
+    return (r && typeof r.count === "number") ? r.count : 0;
+  } catch (e) { return 0; }
+}
+
+/* ---------- le bloc visible, sous la grille du rayon Communaute ---------- */
+function BlocParrainage() {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr;
+  var _c = React.useState(null), code = _c[0], setCode = _c[1];
+  var _s = React.useState(""), saisie = _s[0], setSaisie = _s[1];
+  var _m = React.useState(null), message = _m[0], setMessage = _m[1];
+  var _d = React.useState(false), envoi = _d[0], setEnvoi = _d[1];
+  var _f = React.useState(null), monParrain = _f[0], setMonParrain = _f[1];
+
+  React.useEffect(function () {
+    var actif = true;
+    (async function () {
+      var c = await hypeMonCodeParrain();
+      if (actif) setCode(c);
+      try {
+        var u = await utilisateurActuel();
+        if (u && typeof supa !== "undefined" && supa) {
+          var l = await supa.from("hype_filleuls").select("code").eq("filleul_id", u.id).maybeSingle();
+          if (actif && l && !l.error && l.data) setMonParrain(l.data.code);
+        }
+      } catch (e) { }
+    })();
+    return function () { actif = false; };
+  }, []);
+
+  var MOTIFS = {
+    vide: { fr: "Il manque le code.", en: "The code is missing.", es: "Falta el c\u00f3digo.", it: "Manca il codice.", ja: "\u30b3\u30fc\u30c9\u304c\u3042\u308a\u307e\u305b\u3093\u3002", de: "Der Code fehlt." },
+    deja: { fr: "Tu as d\u00e9j\u00e0 un parrain.", en: "You already have a sponsor.", es: "Ya tienes padrino.", it: "Hai gi\u00e0 un padrino.", ja: "\u3059\u3067\u306b\u7d39\u4ecb\u8005\u304c\u3044\u307e\u3059\u3002", de: "Du hast schon einen Paten." },
+    inconnu: { fr: "Ce code n'existe pas.", en: "This code doesn't exist.", es: "Este c\u00f3digo no existe.", it: "Questo codice non esiste.", ja: "\u3053\u306e\u30b3\u30fc\u30c9\u306f\u3042\u308a\u307e\u305b\u3093\u3002", de: "Dieser Code existiert nicht." },
+    soi: { fr: "C'est ton propre code.", en: "That's your own code.", es: "Es tu propio c\u00f3digo.", it: "\u00c8 il tuo codice.", ja: "\u81ea\u5206\u306e\u30b3\u30fc\u30c9\u3067\u3059\u3002", de: "Das ist dein eigener Code." },
+    "hors-ligne": { fr: "Pas de connexion.", en: "No connection.", es: "Sin conexi\u00f3n.", it: "Nessuna connessione.", ja: "\u63a5\u7d9a\u3067\u304d\u307e\u305b\u3093\u3002", de: "Keine Verbindung." },
+    refus: { fr: "\u00c7a n'a pas fonctionn\u00e9.", en: "That didn't work.", es: "No ha funcionado.", it: "Non ha funzionato.", ja: "\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", de: "Das hat nicht funktioniert." }
+  };
+
+  async function envoyer() {
+    if (envoi) return;
+    setEnvoi(true); setMessage(null);
+    var r = await hypeUtiliserCodeParrain(saisie);
+    setEnvoi(false);
+    if (r && r.ok) {
+      setMonParrain(String(saisie || "").trim().toUpperCase());
+      setMessage({ bon: true, txt: tr({ fr: "C'est not\u00e9, merci !", en: "All set, thank you!", es: "\u00a1Hecho, gracias!", it: "Fatto, grazie!", ja: "\u767b\u9332\u3057\u307e\u3057\u305f\u3001\u3042\u308a\u304c\u3068\u3046\uff01", de: "Notiert, danke!" }) });
+    } else {
+      setMessage({ bon: false, txt: tr(MOTIFS[(r && r.erreur) || "refus"] || MOTIFS.refus) });
+    }
+  }
+
+  function copier() {
+    try {
+      if (navigator.clipboard && code) navigator.clipboard.writeText(code);
+      setMessage({ bon: true, txt: tr({ fr: "Code copi\u00e9.", en: "Code copied.", es: "C\u00f3digo copiado.", it: "Codice copiato.", ja: "\u30b3\u30d4\u30fc\u3057\u307e\u3057\u305f\u3002", de: "Code kopiert." }) });
+    } catch (e) { }
+  }
+
+  var C = "'Cinzel',Georgia,serif";
+  return h("div", { style: { marginTop: 16, padding: 16, borderRadius: 19, background: "linear-gradient(155deg, rgba(32,217,245,.08), rgba(14,18,25,.95) 70%)", border: "1px solid rgba(32,217,245,.28)" } },
+    h("div", { style: { fontFamily: C, fontSize: 13, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "#F4F7FA" } },
+      tr({ fr: "Ram\u00e8ne tes amis", en: "Bring your friends", es: "Trae a tus amigos", it: "Porta i tuoi amici", ja: "\u53cb\u9054\u3092\u8a98\u3046", de: "Bring deine Freunde mit" })),
+    h("div", { style: { fontSize: 11.5, color: "#8A95A1", lineHeight: 1.6, marginTop: 7 } },
+      tr({
+        fr: "Partage ton code. Un filleul compte d\u00e8s qu'il a ajout\u00e9 un cheval ou termin\u00e9 un cours.",
+        en: "Share your code. A friend counts once they've added a horse or completed a lesson.",
+        es: "Comparte tu c\u00f3digo. Un ahijado cuenta cuando ha a\u00f1adido un caballo o terminado un curso.",
+        it: "Condividi il codice. Un figlioccio conta quando ha aggiunto un cavallo o completato un corso.",
+        ja: "\u30b3\u30fc\u30c9\u3092\u5171\u6709\u3057\u307e\u3057\u3087\u3046\u3002\u99ac\u3092\u767b\u9332\u3057\u305f\u304b\u8ac2\u5ea7\u3092\u4fee\u4e86\u3057\u305f\u6642\u70b9\u3067\u30ab\u30a6\u30f3\u30c8\u3055\u308c\u307e\u3059\u3002",
+        de: "Teile deinen Code. Ein Patenkind z\u00e4hlt, sobald es ein Pferd hinzugef\u00fcgt oder einen Kurs beendet hat."
+      })),
+
+    h("div", { onClick: copier, role: "button", style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 14, padding: "13px 15px", borderRadius: 14, background: "rgba(6,7,9,.55)", border: "1px dashed rgba(32,217,245,.45)", cursor: "pointer" } },
+      h("span", { style: { fontFamily: C, fontSize: 18, fontWeight: 800, letterSpacing: 2, color: "#8FE6EF" } }, code || "\u2026"),
+      h("span", { style: { fontSize: 10, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: "#8A95A1" } },
+        tr({ fr: "Copier", en: "Copy", es: "Copiar", it: "Copia", ja: "\u30b3\u30d4\u30fc", de: "Kopieren" }))),
+
+    monParrain
+      ? h("div", { style: { fontSize: 11, color: "#8A95A1", marginTop: 13, lineHeight: 1.5 } },
+        tr({ fr: "Tu as \u00e9t\u00e9 parrain\u00e9 avec le code ", en: "You were referred with code ", es: "Te apadrinaron con el c\u00f3digo ", it: "Sei stato presentato col codice ", ja: "\u7d39\u4ecb\u30b3\u30fc\u30c9\uff1a", de: "Du wurdest mit dem Code eingeladen: " }) + monParrain)
+      : h("div", { style: { marginTop: 13 } },
+        h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: .6, textTransform: "uppercase", color: "#8A95A1", marginBottom: 7 } },
+          tr({ fr: "On t'a donn\u00e9 un code ?", en: "Were you given a code?", es: "\u00bfTe han dado un c\u00f3digo?", it: "Ti hanno dato un codice?", ja: "\u30b3\u30fc\u30c9\u3092\u3082\u3089\u3044\u307e\u3057\u305f\u304b\uff1f", de: "Hast du einen Code bekommen?" })),
+        h("div", { style: { display: "flex", gap: 8 } },
+          h("input", {
+            value: saisie, inputMode: "text", autoCapitalize: "characters", spellCheck: false,
+            onChange: function (e) { setSaisie(e.target.value); },
+            placeholder: "HYPE-XXXXXX",
+            style: { flex: 1, minWidth: 0, padding: "11px 12px", borderRadius: 12, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.12)", color: "#F4F7FA", fontSize: 13, letterSpacing: 1 }
+          }),
+          h("button", { onClick: envoyer, disabled: envoi, style: { flex: "0 0 auto", padding: "11px 16px", borderRadius: 12, fontSize: 11.5, fontWeight: 800, letterSpacing: .8, textTransform: "uppercase", color: "#04121A", background: "linear-gradient(135deg,#20D9F5,#8FE6EF)", opacity: envoi ? .6 : 1 } },
+            tr({ fr: "Valider", en: "Confirm", es: "Validar", it: "Conferma", ja: "\u9001\u4fe1", de: "Best\u00e4tigen" })))),
+
+    message ? h("div", { style: { fontSize: 11, marginTop: 10, color: message.bon ? "#8FE6EF" : "#E8A0A0" } }, message.txt) : null,
+
+    h("div", { style: { fontSize: 10, color: "#5B6670", marginTop: 12, lineHeight: 1.5 } },
+      tr({
+        fr: "\u00c0 3 filleuls, un mois offert. Ton code cadeau t'est envoy\u00e9 \u00e0 la main.",
+        en: "At 3 friends, one month free. Your gift code is sent to you by hand.",
+        es: "Con 3 ahijados, un mes gratis. Tu c\u00f3digo regalo se env\u00eda a mano.",
+        it: "Con 3 figliocci, un mese in regalo. Il codice ti viene inviato a mano.",
+        ja: "\uff13\u4eba\u3067\uff11\u30f6\u6708\u7121\u6599\u3002\u30ae\u30d5\u30c8\u30b3\u30fc\u30c9\u306f\u5f8c\u304b\u3089\u304a\u9001\u308a\u3057\u307e\u3059\u3002",
+        de: "Bei 3 Patenkindern ein Gratismonat. Deinen Geschenkcode erh\u00e4ltst du pers\u00f6nlich."
+      })));
+}
+
 var HYPE_FAM_XP = [10, 20, 40, 70, 120];
 var HYPE_FAM_XP7 = [40, 70, 110, 160, 200, 240, 300];
 
@@ -44153,6 +44343,13 @@ function hypeMinuteDeVue(type, ref) {
 /* ---------- les familles alimentées par les vues ---------- */
 var HYPE_FAMILLES_VUES = [
   {
+    id: "parrainage", rayon: 2, icone: "cristal", seuils: [1, 3, 5, 10, 25], xp: HYPE_FAM_XP,
+    nom: { fr: "Parrainage", en: "Referrals", es: "Padrinazgo", it: "Presentazioni", ja: "\u7d39\u4ecb", de: "Empfehlungen" },
+    badge: { fr: "B\u00e2tisseur", en: "Builder", es: "Constructor", it: "Costruttore", ja: "\u958b\u62d3\u8005", de: "Erbauer" },
+    unite: { fr: "filleuls", en: "friends", es: "ahijados", it: "figliocci", ja: "\u4eba", de: "Patenkinder" },
+    note: { fr: "Un filleul compte quand il a ajout\u00e9 un cheval ou termin\u00e9 un cours.", en: "A friend counts once they've added a horse or completed a lesson.", es: "Cuenta cuando ha a\u00f1adido un caballo o terminado un curso.", it: "Conta quando ha aggiunto un cavallo o completato un corso.", ja: "\u99ac\u767b\u9332\u307e\u305f\u306f\u8ac2\u5ea7\u4fee\u4e86\u3067\u30ab\u30a6\u30f3\u30c8\u3002", de: "Z\u00e4hlt, sobald ein Pferd oder ein Kurs erledigt ist." }
+  },
+  {
     id: "jyetais", rayon: 2, icone: "carte", seuils: [1, 3, 5, 10, 20], xp: HYPE_FAM_XP,
     nom: { fr: "J'y \u00e9tais", en: "I was there", es: "Yo estuve", it: "C'ero anch'io", ja: "\u884c\u3063\u305f\u5834\u6240", de: "Ich war da" },
     badge: { fr: "Grand voyageur", en: "Great traveller", es: "Gran viajero", it: "Grande viaggiatore", ja: "\u5927\u65c5\u4eba", de: "Grosser Reisender" },
@@ -44255,6 +44452,8 @@ async function hypeCalculerFamilles(ctx) {
        Sans ce filtre, visiter Saumur comptait comme un resultat de concours. */
     val.palmares = await hypeCompterPalmares(u.id);
     val.jyetais = await hypeCompter("visites_articles", "user_id", u.id);
+    try { await hypeValiderMonParrainage(ctx); } catch (e) { }
+    val.parrainage = await hypeCompterFilleuls();
     val.messages = await hypeCompter("messages_prives", "expediteur_id", u.id);
     /* Les j aime ne portent QUE sur les resultats (table likes) ; les
        commentaires sont une autre table. La famille compte les deux gestes. */
@@ -44264,6 +44463,7 @@ async function hypeCalculerFamilles(ctx) {
     val.amis = 0; val.souvenirs = 0; val.palmares = 0; val.messages = 0; val.likes = 0; val.heybaby = 0;
     HYPE_FAMILLES.forEach(function (f) { if (f.vue) val[f.id] = 0; });
     val.jyetais = 0;
+    val.parrainage = 0;
   }
   return val;
 }
@@ -44496,6 +44696,8 @@ function EcranQuetes() {
     chargement
       ? h("div", { className: "qte-vide" }, tr({ fr: "On compte tes exploits\u2026", en: "Counting your feats\u2026", es: "Contando tus haza\u00f1as\u2026", it: "Conto le tue imprese\u2026", ja: "\u96c6\u8a08\u4e2d\u2026", de: "Deine Taten werden gez\u00e4hlt\u2026" }))
       : h("div", { className: "fam-grille" }, listeRayon.map(carte)),
+
+    (!chargement && rayon === 2) ? h(BlocParrainage, null) : null,
 
     h("p", { style: { fontSize: 10.5, color: "#5B6670", lineHeight: 1.6, margin: "18px 2px 0" } },
       tr({ fr: "Touche une carte pour voir ses marches. D'autres familles arrivent.", en: "Tap a card to see its steps. More families are coming.", es: "Toca una tarjeta para ver sus peldanos. Llegar\u00e1n m\u00e1s familias.", it: "Tocca una carta per vedere i gradini. Altre famiglie arriveranno.", ja: "\u30ab\u30fc\u30c9\u3092\u30bf\u30c3\u30d7\u3059\u308b\u3068\u6bb5\u968e\u304c\u898b\u3048\u307e\u3059\u3002\u4ed6\u306e\u5bb6\u7cfb\u3082\u6e96\u5099\u4e2d\u3002", de: "Tippe auf eine Karte, um ihre Stufen zu sehen. Weitere Familien folgen." })),

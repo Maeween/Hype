@@ -12,6 +12,80 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🤝 SESSION 83 (03/08) — LE PARRAINAGE EST CODÉ (18 familles)
+
+**Part de la 82.** Livré : 10 494 529 octets, md5 `7143bc1c`. ⚠️ **`hype-parrainage.sql` à exécuter.** `allerVersGalop` = 3 · 388 const · 6 nouvelles fonctions + 1 composant, 0 perdue · chaque identifiant défini une fois · toutes les icônes de familles existent · 15 blocs inline valides · rendu Playwright sans nouvelle erreur.
+
+### Deux tables, et une règle de confiance
+- `hype_parrain_codes` : le code personnel, **une ligne par cavalier**, créé à la première ouverture du bloc. Format lisible `HYPE-XXXXXX`, alphabet **sans caractères ambigus** (ni `0/O`, ni `1/I/L`) — un code se dicte à l'écurie.
+- `hype_filleuls` : **une ligne par filleul maximum** (clé primaire sur `filleul_id`), contrainte `filleul_id <> parrain_id` en base.
+
+⚠️ **Le champ `valide` et pourquoi c'est le FILLEUL qui le bascule** : un filleul ne compte qu'après avoir ajouté un cheval ou terminé un cours (décision de Blandine, pour éliminer les faux comptes sans policer personne). Or **le parrain n'a aucun droit de lecture sur les données de son filleul** — et c'est très bien ainsi. C'est donc le filleul lui-même qui écrit `valide = true` depuis son appareil, à l'ouverture des Quêtes (`hypeValiderMonParrainage`). Seule solution propre sans fonction serveur.
+
+⚠️ **Choix de confidentialité assumé** : `hype_parrain_codes` est **lisible par tout cavalier connecté**. Sans ça, personne ne pourrait retrouver le parrain à partir d'un code saisi. Ça n'expose qu'une correspondance code → uuid, aucun nom, aucun email.
+
+### Ce que voit le cavalier
+Bloc **« Ramène tes amis »** sous la grille du rayon **Ma communauté** uniquement : son code en gros (tap = copié), un champ pour saisir un code reçu, et la mention « à 3 filleuls, un mois offert ».
+**Refus explicites**, jamais d'échec muet : code vide · tu as déjà un parrain · ce code n'existe pas · c'est ton propre code · pas de connexion. Traduits en 6 langues.
+Famille **Parrainage** : 1 · 3 · 5 · 10 · 25 filleuls → badge **Bâtisseur**.
+
+### ⚠️ CE QUI RESTE À LA MAIN — POUR BLANDINE
+Les récompenses sont des **codes promo Stripe remis à la main** (décision du 03/08). Rien ne les envoie automatiquement. **Requête à exécuter de temps en temps** :
+```sql
+SELECT parrain_id, count(*) AS filleuls FROM hype_filleuls WHERE valide
+GROUP BY parrain_id HAVING count(*) >= 3 ORDER BY filleuls DESC;
+```
+Puis créer un code promotionnel à usage unique dans Stripe et le transmettre. ⚠️ **Vérifier dans Stripe qu'un coupon « 1 mois » ne devienne pas « 1 an » sur l'abonnement annuel.**
+Automatiser demanderait une fonction Netlify avec la clé secrète Stripe — la même qu'il faudra pour la suppression de compte. À faire seulement si le volume arrive.
+
+### 🐛 INCIDENT DU JOUR — À RETENIR ABSOLUMENT
+L'`index.html` de **Hype Lingo** (application autonome, 13,6 Ko) a été poussé **par-dessus l'index de l'app** sur GitHub : site hors service. Rien n'était perdu (Netlify garde les déploiements, GitHub garde l'historique), mais **la cause reste ouverte** :
+➡️ **Le fichier autonome de Lingo NE DOIT PAS s'appeler `index.html`.** À renommer `lingo.html` ou à placer dans un dossier `lingo/`. **À dire à la conversation qui travaille sur Lingo**, sinon l'accident se reproduira au prochain envoi.
+➡️ Rappel : sur GitHub, **se fier à la TAILLE affichée, jamais à l'horodatage**. C'est la taille (13,6 Ko au lieu de 9,99 Mo) qui a révélé l'écrasement.
+
+### Reste sur les quêtes
+Assiduité (**semaines vs jours, toujours non tranché**) · Fidélité (date d'abonnement inexistante) · déclaratifs (concours, sellerie ×2, lieux élargis aux événements) · Passeport · jeux Baby (**clé de stockage du Mémory introuvable dans l'index**) · Distinctions (fondateur numéroté, Premier Cercle, Bienfaiteur) · rebrancher `EcranBadges` sur `hype_paliers`.
+
+### Préparation Flutter
+`hypeFabriquerCode`, `hypeUtiliserCodeParrain` et `hypeCompterFilleuls` sont indépendants de React (sauf le composant d'affichage) : transposables tels quels. La règle « c'est le filleul qui valide » restera vraie en Flutter, elle découle des politiques RLS, pas du client.
+
+---
+
+## 🩹 SESSION 82 (03/08) — LES QUÊTES : ICÔNES MANQUANTES, COMPTEUR ILLISIBLE, DEUX BUGS DE COMPTAGE
+
+**Part de l'index en ligne (10 476 370 octets — celui-là même que la session « démarrage lent » a mesuré, donc bien le fichier réel).** Livré : 10 480 736 octets. Aucun SQL. `allerVersGalop` = 3 · 388 const · 15 blocs inline valides · rendu Playwright sans nouvelle erreur.
+⚠️ **Note d'aiguillage** : l'`index.html` déposé dans cette conversation à 14 h 59 était celui de **Hype Lingo** (application autonome, 10 Ko), pas l'index de l'app. Vérifié par la taille avant de travailler.
+
+### 1 · Cinq icônes n'existaient pas → hexagones vides (bug introduit en session 77)
+`qIcone` ne connaissait que 18 noms. J'avais demandé `coupe`, `message`, `coeur`, `piste`, `main`, `video` — inexistants, donc **hexagones vides** sur « Messages envoyés » et « Encouragements » (et bientôt Palmarès, Reprises, Vidéothèque). **12 icônes ajoutées** à `qIcone` : `coupe`, `flot`, `message`, `coeur`, `piste`, `main`, `video`, `carte`, `flamme`, `cristal`, `panier`, `jeu` — les six dernières par avance pour les familles à venir.
+✅ **Contrôle automatisé ajouté au protocole** : comparer l'ensemble des `icone: "…"` demandés à l'ensemble des `case "…"` de `qIcone`. (Restent `user` et `ville`, qui appartiennent à `ChampOr`, pas aux quêtes.)
+
+### 2 · Le compteur se lisait à l'envers
+« Prochaine marche : 25 amis · 11 » → devenu **« 11 / 25 amis »** en gras, puis « prochaine marche : … » en dessous. La valeur d'abord, l'objectif ensuite.
+
+### 3 · 🐛 Les visites de grandes écoles comptaient comme des résultats de concours
+`annoncerVisiteEcole` écrit la visite dans la table **`resultats`** (classement « Visite · … ») pour la faire apparaître dans le fil. La famille **Palmarès** comptait donc Saumur comme un résultat de compétition. Nouveau compteur `hypeCompterPalmares()` avec `.not("classement","ilike","Visite%")`.
+
+### 4 · 🐛 « Encouragements » restait à 0
+La table `likes` ne porte **que sur les résultats** (`resultat_id`) — pas sur les publications du fil — et les **commentaires sont une autre table**. La famille compte désormais **les deux gestes** (`likes` + `commentaires`).
+
+### 5 · Famille « J'y étais » ajoutée (17 familles)
+Elle était **déjà calculable** : `annoncerVisiteEcole` mémorise les visites dans `visites_articles` depuis le 27/07. Marches 1 · 3 · 5 · 10 · 20 lieux → badge **Grand voyageur**. Aucune table, aucun SQL.
+
+### ⛔ Ce que je n'ai PAS fait, et pourquoi (malgré « fais tout »)
+Livrer ces familles aurait produit des **cartes mortes**, que Blandine a explicitement refusées le 02/08 :
+- **Assiduité** — décision semaines vs jours **toujours non tranchée** ; rien ne peut être compté avant.
+- **Fidélité** — la date de début d'abonnement n'existe pas côté Hype ; seule la marche 1 serait atteignable.
+- **Concours (participation)**, **J'y étais élargi aux événements**, **Achats en sellerie**, **Produits identifiés** — tous **déclaratifs** : ils demandent un formulaire de saisie, pas un compteur. C'est un vrai lot d'interface.
+- **Parrainage** — aucun code de parrainage n'existe ; dépend aussi de la décision Stripe (codes promo).
+- **Passeport de cavalier** — chantier à part, reporté par Blandine.
+- **Jeux Hype Baby** — la clé de stockage de la progression du Mémory **est introuvable** dans l'index (aucun `hype_memory*`, aucun `MEMORY_CLE`). Je n'ai pas voulu deviner. **À retrouver avant de coder cette famille.**
+
+### Préparation Flutter
+Rien de neuf. `hypeCompterPalmares` reste une fonction pure au-dessus du client Supabase, transposable.
+
+---
+
 ## 🌍 SESSION 81 (03/08) — HYPE LINGO, PREMIÈRE LEÇON JOUABLE (application séparée)
 
 ⚠️ **L'`index.html` de Hype n'a PAS été touché.** Rien à pousser côté app. Livraison = un dossier `/lingo/` autonome.
