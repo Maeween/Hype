@@ -43951,99 +43951,351 @@ function ModaleHautFait({ badge, onClose }) {
 /* CSS injecte via style tag dans EcranQuetes */
 const QUETES_CSS = "\n.qte-wrap{padding:calc(18px + env(safe-area-inset-top)) 16px 90px;position:relative;}\n.qte-top{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 2px;}\n.qte-back{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:#8A95A1;font-size:15px;cursor:pointer;}\n.qte-titre{font-family:'Cinzel',Georgia,serif;font-size:19px;font-weight:800;letter-spacing:2px;color:#F4F6F7;text-transform:uppercase;}\n.qte-troph{width:34px;height:34px;border-radius:50%;background:rgba(232,200,135,0.12);border:1px solid rgba(232,200,135,0.4);display:flex;align-items:center;justify-content:center;color:#E8C887;font-size:15px;}\n.qte-sep{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0 18px;opacity:.5;}\n.qte-sep .l{width:46px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5));}\n.qte-sep .l.r{background:linear-gradient(90deg,rgba(255,255,255,.5),transparent);}\n.qte-hero{position:relative;border-radius:24px;overflow:hidden;padding:22px 18px 20px;background:linear-gradient(120deg, rgba(20,25,34,0.97) 40%, rgba(10,13,18,0.85) 100%);border:1px solid rgba(32,217,245,0.22);min-height:260px;}\n.qte-hero-img{position:absolute;top:0;right:-8%;bottom:0;width:78%;z-index:0;-webkit-mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.5) 30%, black 55%);mask-image:linear-gradient(90deg, transparent 0%, rgba(0,0,0,.5) 30%, black 55%);}\n.qte-hero-img img{width:100%;height:100%;object-fit:cover;object-position:70% 25%;}\n.qte-hero-img .fade{position:absolute;inset:0;background:linear-gradient(180deg, transparent 35%, #0A0D12 96%);}\n.qte-hero-in{position:relative;z-index:2;}\n.qte-hero-top{display:flex;align-items:center;gap:16px;}\n.qte-ring{position:relative;width:104px;height:104px;flex:0 0 auto;}\n.qte-ring svg{transform:rotate(-90deg);}\n.qte-ring-bg{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:6;}\n.qte-ring-fill{fill:none;stroke:#20D9F5;stroke-width:6;stroke-linecap:round;filter:drop-shadow(0 0 8px rgba(32,217,245,.8));transition:stroke-dashoffset 1s cubic-bezier(.22,1,.36,1);}\n.qte-crist{position:absolute;inset:12px;display:flex;align-items:center;justify-content:center;animation:qteCristSpin 14s linear infinite;}\n@keyframes qteCristSpin{to{transform:rotate(360deg);}}\n.qte-ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',Georgia,serif;font-weight:800;font-size:28px;color:#EFFCFE;text-shadow:0 0 12px rgba(32,217,245,.9);}\n.qte-txts{flex:1;min-width:0;}\n.qte-kicker{font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#8FE6EF;}\n.qte-titre-h{font-family:'Cinzel',Georgia,serif;font-size:22px;font-weight:800;line-height:1.15;color:#fff;margin:4px 0 10px;text-shadow:0 2px 12px rgba(0,0,0,.6);}\n.qte-xpbar{height:8px;border-radius:99px;background:rgba(255,255,255,0.08);overflow:hidden;border:1px solid rgba(32,217,245,0.2);}\n.qte-xpfill{height:100%;border-radius:99px;background:linear-gradient(90deg,#17A8B3,#20D9F5);box-shadow:0 0 10px rgba(32,217,245,.7);transition:width 1s cubic-bezier(.22,1,.36,1);}\n.qte-xptxt{font-size:12px;font-weight:700;color:#8FE6EF;margin-top:7px;}\n.qte-tag{font-size:11.5px;font-style:italic;color:#8A95A1;line-height:1.5;margin-top:12px;max-width:230px;position:relative;z-index:2;}\n.qte-stats{display:flex;margin-top:18px;background:rgba(0,0,0,0.28);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:14px 6px;position:relative;z-index:2;}\n.qte-stat{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;}\n.qte-stat+.qte-stat{border-left:1px solid rgba(255,255,255,0.08);}\n.qte-stat-ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;}\n.qte-stat-ic svg{width:15px;height:15px;}\n.qte-stat-ic.or{background:rgba(232,200,135,0.14);border:1px solid rgba(232,200,135,0.45);color:#E8C887;}\n.qte-stat-ic.tur{background:rgba(32,217,245,0.14);border:1px solid rgba(32,217,245,0.45);color:#8FE6EF;}\n.qte-stat .v{font-family:'Cinzel',Georgia,serif;font-size:16px;font-weight:800;color:#F4F6F7;}\n.qte-stat .l{font-size:8.3px;color:#8A95A1;text-transform:uppercase;letter-spacing:.4px;line-height:1.3;}\n.qte-shead{display:flex;align-items:baseline;gap:8px;margin:28px 0 14px;}\n.qte-shead .pt{color:#8FE6EF;font-size:11px;}\n.qte-shead .txt{font-family:'Cinzel',Georgia,serif;font-size:13.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#F4F6F7;}\n.qte-shead .ligne{flex:1;height:1px;background:linear-gradient(90deg, rgba(255,255,255,.18), transparent);}\n.qte-shead .voirtout{font-size:10.5px;font-weight:700;color:#8A95A1;letter-spacing:.4px;white-space:nowrap;cursor:pointer;}\n.qte-grille{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:11px;margin-bottom:8px;}\n.qte-vedette{position:relative;border-radius:20px;overflow:hidden;grid-row:1/3;height:auto;cursor:pointer;border:1px solid rgba(232,200,135,0.4);min-height:210px;}\n.qte-vedette img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:65% 20%;}\n.qte-vedette .fade{position:absolute;inset:0;background:linear-gradient(180deg, rgba(6,9,13,.2) 0%, rgba(6,9,13,.5) 55%, rgba(6,9,13,.96) 100%);}\n.qte-vedette-in{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;}\n.qte-vbadge{position:absolute;top:14px;left:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);background:rgba(10,13,18,0.75);border:1px solid rgba(232,200,135,.6);}\n.qte-vbadge svg{width:20px;height:20px;color:#E8C887;filter:drop-shadow(0 0 6px rgba(232,200,135,.8));}\n.qte-vtitre{font-family:'Cinzel',Georgia,serif;font-size:15.5px;font-weight:800;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.7);letter-spacing:.3px;line-height:1.25;}\n.qte-vsous{font-size:10.5px;color:rgba(244,246,247,.75);margin-top:2px;}\n.qte-vxp{margin-top:9px;display:inline-block;font-size:10px;font-weight:900;color:#04121A;background:linear-gradient(135deg,#20D9F5,#8FE6EF);padding:5px 10px;border-radius:99px;}\n.qte-mini{position:relative;border-radius:17px;overflow:hidden;cursor:pointer;min-height:150px;border:1px solid rgba(32,217,245,.35);}\n.qte-mini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}\n.qte-mini .fade{position:absolute;inset:0;background:linear-gradient(180deg, rgba(6,9,13,.15) 0%, rgba(6,9,13,.55) 55%, rgba(6,9,13,.96) 100%);}\n.qte-mini-in{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;}\n.qte-mtop{position:absolute;top:10px;left:10px;z-index:2;}\n.qte-hex{width:36px;height:36px;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);background:rgba(10,13,18,0.75);border:1px solid rgba(32,217,245,.55);flex:0 0 auto;}\n.qte-hex svg{width:16px;height:16px;color:#8FE6EF;filter:drop-shadow(0 0 5px rgba(32,217,245,.7));}\n.qte-hex.or{background:rgba(10,13,18,0.75);border-color:rgba(232,200,135,.65);}\n.qte-hex.or svg{color:#FFEBB8;filter:drop-shadow(0 0 5px rgba(232,200,135,.8));}\n.qte-mtitre{font-size:12.5px;font-weight:800;color:#fff;line-height:1.3;text-shadow:0 2px 8px rgba(0,0,0,.75);}\n.qte-msous{font-size:9.5px;color:rgba(244,246,247,.75);margin-top:2px;}\n.qte-mxp{display:inline-flex;margin-top:8px;font-size:10px;font-weight:900;color:#04121A;background:linear-gradient(135deg,#20D9F5,#8FE6EF);padding:5px 9px;border-radius:99px;}\n.qte-faite{position:relative;display:flex;align-items:center;gap:13px;border-radius:16px;padding:13px 14px;margin-bottom:10px;background:linear-gradient(120deg, rgba(232,200,135,0.16) 0%, rgba(20,25,34,0.9) 65%);border:1px solid rgba(232,200,135,0.45);}\n.qte-fxp{flex:0 0 auto;font-size:10.5px;font-weight:900;color:#3A2C0B;background:linear-gradient(135deg,#E8C887,#FFEBB8);padding:5px 10px;border-radius:99px;}\n.qte-fcheck{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#E8C887,#FFEBB8);display:flex;align-items:center;justify-content:center;color:#3A2C0B;box-shadow:0 0 12px rgba(232,200,135,.6);}\n.qte-fcheck svg{width:14px;height:14px;}\n.qte-vide{text-align:center;padding:28px 16px;color:#8A95A1;font-size:12.5px;line-height:1.6;}\n";
 
+/* ============================================================
+   HYPE · 03/08/2026 · QUÊTES EN FAMILLES À PALIERS (lot 2)
+   Une famille = un badge à marches. Les 11 quêtes de découverte
+   restent la marche 1 de leur famille (aucune n'est jetée).
+   Persistance : table hype_paliers (voir hype-paliers.sql).
+   ============================================================ */
+
+/* ---------- petit utilitaire de comptage tolérant ---------- */
+async function hypeCompter(table, colonne, valeur, extra) {
+  try {
+    if (typeof supa === "undefined" || !supa) return 0;
+    var q = supa.from(table).select("id", { count: "exact", head: true }).eq(colonne, valeur);
+    if (extra) { for (var k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) q = q.eq(k, extra[k]); } }
+    var r = await q;
+    return (r && typeof r.count === "number") ? r.count : 0;
+  } catch (e) { return 0; }
+}
+
+/* Une fiche de cheval est « complète » quand on peut vraiment la lire :
+   une photo, une robe, un âge et au moins un parent. */
+function hypeFicheComplete(c) {
+  if (!c) return false;
+  var photo = !!(c.photo_url || c.photo);
+  var robe = !!(c.robe && String(c.robe).trim());
+  var age = !!(c.age || c.annee_naissance || c.naissance);
+  var parent = !!((c.pere && String(c.pere).trim()) || (c.mere && String(c.mere).trim()));
+  return photo && robe && age && parent;
+}
+
+/* ---------- les familles ----------
+   rayon : 0 Mon cavalier · 1 Mes chevaux · 2 Ma communauté · 3 Mon savoir
+   seuils : les marches, dans l'ordre. xp : par marche.                     */
+var HYPE_FAM_XP = [10, 20, 40, 70, 120];
+var HYPE_FAM_XP7 = [40, 70, 110, 160, 200, 240, 300];
+
+var HYPE_FAMILLES = [
+  {
+    id: "galops", rayon: 0, icone: "cheval", seuils: [1, 2, 3, 4, 5, 6, 7], xp: HYPE_FAM_XP7, marcheGalop: true,
+    nom: { fr: "Les 7 Galops", en: "The 7 Galops", es: "Los 7 Galops", it: "I 7 Galop", ja: "\u4e03\u3064\u306e\u30ac\u30ed\u30c3\u30d7", de: "Die 7 Galopps" },
+    badge: { fr: "Un badge par Galop", en: "One badge per Galop", es: "Una insignia por Galop", it: "Un distintivo per Galop", ja: "\u30ac\u30ed\u30c3\u30d7\u3054\u3068\u306b\u30d0\u30c3\u30b8", de: "Ein Abzeichen pro Galopp" },
+    unite: { fr: "", en: "", es: "", it: "", ja: "", de: "" },
+    note: { fr: "Se d\u00e9clenche quand tu mets \u00e0 jour ton niveau dans ton profil.", en: "Triggered when you update your level in your profile.", es: "Se activa al actualizar tu nivel en tu perfil.", it: "Si attiva quando aggiorni il tuo livello nel profilo.", ja: "\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u306e\u30ec\u30d9\u30eb\u3092\u66f4\u65b0\u3059\u308b\u3068\u9054\u6210\u3002", de: "Wird ausgel\u00f6st, wenn du dein Level im Profil aktualisierst." }
+  },
+  {
+    id: "ecurie", rayon: 1, icone: "cheval", seuils: [1, 2, 3, 5, 10], xp: HYPE_FAM_XP,
+    nom: { fr: "Mon \u00e9curie", en: "My stable", es: "Mi cuadra", it: "La mia scuderia", ja: "\u79c1\u306e\u53a9\u820e", de: "Mein Stall" },
+    badge: { fr: "Grande \u00e9curie", en: "Great stable", es: "Gran cuadra", it: "Grande scuderia", ja: "\u5927\u304d\u306a\u53a9\u820e", de: "Gro\u00dfer Stall" },
+    unite: { fr: "chevaux", en: "horses", es: "caballos", it: "cavalli", ja: "\u982d", de: "Pferde" }
+  },
+  {
+    id: "fiches", rayon: 1, icone: "plume", seuils: [1, 2, 3, 5, 10], xp: HYPE_FAM_XP,
+    nom: { fr: "Fiches compl\u00e8tes", en: "Complete profiles", es: "Fichas completas", it: "Schede complete", ja: "\u5b8c\u6210\u3057\u305f\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb", de: "Vollst\u00e4ndige Steckbriefe" },
+    badge: { fr: "G\u00e9n\u00e9alogiste", en: "Genealogist", es: "Geneal\u00f3gista", it: "Genealogista", ja: "\u8840\u7d71\u306e\u8a9e\u308a\u90e8", de: "Genealoge" },
+    unite: { fr: "fiches", en: "profiles", es: "fichas", it: "schede", ja: "\u4ef6", de: "Steckbriefe" },
+    note: { fr: "Compl\u00e8te = photo, robe, \u00e2ge et au moins un parent.", en: "Complete = photo, coat, age and at least one parent.", es: "Completa = foto, capa, edad y al menos un progenitor.", it: "Completa = foto, mantello, et\u00e0 e almeno un genitore.", ja: "\u5199\u771f\u30fb\u6bdb\u8272\u30fb\u5e74\u9f62\u30fb\u7247\u89aa\u4ee5\u4e0a\u3002", de: "Vollst\u00e4ndig = Foto, Fellfarbe, Alter und ein Elternteil." }
+  },
+  {
+    id: "souvenirs", rayon: 1, icone: "camera", seuils: [1, 5, 15, 30, 60], xp: HYPE_FAM_XP,
+    nom: { fr: "Souvenirs", en: "Memories", es: "Recuerdos", it: "Ricordi", ja: "\u601d\u3044\u51fa", de: "Erinnerungen" },
+    badge: { fr: "Gardien des souvenirs", en: "Keeper of memories", es: "Guardi\u00e1n de los recuerdos", it: "Custode dei ricordi", ja: "\u601d\u3044\u51fa\u306e\u5b88\u308a\u4eba", de: "H\u00fcter der Erinnerungen" },
+    unite: { fr: "photos", en: "photos", es: "fotos", it: "foto", ja: "\u679a", de: "Fotos" }
+  },
+  {
+    id: "palmares", rayon: 1, icone: "coupe", seuils: [1, 3, 5, 10, 25], xp: HYPE_FAM_XP,
+    nom: { fr: "Palmar\u00e8s", en: "Results", es: "Palmar\u00e9s", it: "Palmar\u00e8s", ja: "\u6210\u7e3e", de: "Erfolge" },
+    badge: { fr: "Collectionneur de flots", en: "Rosette collector", es: "Coleccionista de escarapelas", it: "Collezionista di coccarde", ja: "\u30ea\u30dc\u30f3\u30b3\u30ec\u30af\u30bf\u30fc", de: "Schleifensammler" },
+    unite: { fr: "r\u00e9sultats", en: "results", es: "resultados", it: "risultati", ja: "\u4ef6", de: "Ergebnisse" }
+  },
+  {
+    id: "amis", rayon: 2, icone: "ami", seuils: [1, 5, 10, 25, 50], xp: HYPE_FAM_XP,
+    nom: { fr: "Amis", en: "Friends", es: "Amigos", it: "Amici", ja: "\u53cb\u9054", de: "Freunde" },
+    badge: { fr: "Populaire", en: "Popular", es: "Popular", it: "Popolare", ja: "\u4eba\u6c17\u8005", de: "Beliebt" },
+    unite: { fr: "amis", en: "friends", es: "amigos", it: "amici", ja: "\u4eba", de: "Freunde" }
+  },
+  {
+    id: "messages", rayon: 2, icone: "message", seuils: [1, 10, 30, 100, 250], xp: HYPE_FAM_XP,
+    nom: { fr: "Messages envoy\u00e9s", en: "Messages sent", es: "Mensajes enviados", it: "Messaggi inviati", ja: "\u9001\u3063\u305f\u30e1\u30c3\u30bb\u30fc\u30b8", de: "Gesendete Nachrichten" },
+    badge: { fr: "Toujours un mot", en: "Always a word", es: "Siempre una palabra", it: "Sempre una parola", ja: "\u3044\u3064\u3082\u4e00\u8a00", de: "Immer ein Wort" },
+    unite: { fr: "messages", en: "messages", es: "mensajes", it: "messaggi", ja: "\u4ef6", de: "Nachrichten" }
+  },
+  {
+    id: "likes", rayon: 2, icone: "coeur", seuils: [1, 10, 50, 150, 400], xp: HYPE_FAM_XP,
+    nom: { fr: "Encouragements", en: "Encouragements", es: "\u00c1nimos", it: "Incoraggiamenti", ja: "\u5fdc\u63f4", de: "Ermutigungen" },
+    badge: { fr: "Bonne compagnie", en: "Good company", es: "Buena compa\u00f1\u00eda", it: "Buona compagnia", ja: "\u826f\u304d\u4ef2\u9593", de: "Gute Gesellschaft" },
+    unite: { fr: "j'aime", en: "likes", es: "me gusta", it: "mi piace", ja: "\u3044\u3044\u306d", de: "Likes" }
+  },
+  {
+    id: "cours", rayon: 3, icone: "livre", seuils: [1, 5, 15, 30, 60], xp: HYPE_FAM_XP,
+    nom: { fr: "Cours termin\u00e9s", en: "Lessons completed", es: "Cursos terminados", it: "Corsi completati", ja: "\u4fee\u4e86\u3057\u305f\u8ac2\u5ea7", de: "Abgeschlossene Kurse" },
+    badge: { fr: "\u00c9l\u00e8ve studieux", en: "Diligent student", es: "Alumno aplicado", it: "Allievo diligente", ja: "\u52c9\u5b66\u306a\u751f\u5f92", de: "Fleissiger Sch\u00fcler" },
+    unite: { fr: "cours", en: "lessons", es: "cursos", it: "corsi", ja: "\u8ac2\u5ea7", de: "Kurse" }
+  },
+  {
+    id: "quiz", rayon: 3, icone: "cible", seuils: [1, 5, 10, 25, 50], xp: HYPE_FAM_XP,
+    nom: { fr: "Quiz sans faute", en: "Flawless quizzes", es: "Quiz sin fallos", it: "Quiz senza errori", ja: "\u6e80\u70b9\u306e\u30af\u30a4\u30ba", de: "Fehlerfreie Quiz" },
+    badge: { fr: "Sans faute", en: "Flawless", es: "Sin errores", it: "Senza errori", ja: "\u6e80\u70b9", de: "Fehlerfrei" },
+    unite: { fr: "quiz", en: "quizzes", es: "quiz", it: "quiz", ja: "\u56de", de: "Quiz" }
+  },
+  {
+    id: "heybaby", rayon: 3, icone: "robot", seuils: [1, 10, 30, 50, 100], xp: HYPE_FAM_XP,
+    nom: { fr: "Hey Baby", en: "Hey Baby", es: "Hey Baby", it: "Hey Baby", ja: "Hey Baby", de: "Hey Baby" },
+    badge: { fr: "Esprit curieux", en: "Curious mind", es: "Mente curiosa", it: "Mente curiosa", ja: "\u63a2\u7a76\u5fc3", de: "Neugieriger Geist" },
+    unite: { fr: "questions", en: "questions", es: "preguntas", it: "domande", ja: "\u56de", de: "Fragen" }
+  }
+];
+
+var HYPE_RAYONS = [
+  { fr: "Mon cavalier", en: "My rider", es: "Mi jinete", it: "Il mio cavaliere", ja: "\u30e9\u30a4\u30c0\u30fc", de: "Mein Reiter" },
+  { fr: "Mes chevaux", en: "My horses", es: "Mis caballos", it: "I miei cavalli", ja: "\u79c1\u306e\u99ac", de: "Meine Pferde" },
+  { fr: "Ma communaut\u00e9", en: "My community", es: "Mi comunidad", it: "La mia comunit\u00e0", ja: "\u30b3\u30df\u30e5\u30cb\u30c6\u30a3", de: "Meine Community" },
+  { fr: "Mon savoir", en: "My knowledge", es: "Mi saber", it: "Il mio sapere", ja: "\u77e5\u8b58", de: "Mein Wissen" }
+];
+
+/* Nombre de marches franchies pour une valeur donnée. */
+function hypeMarcheAtteinte(fam, valeur) {
+  var n = 0;
+  for (var i = 0; i < fam.seuils.length; i++) { if (valeur >= fam.seuils[i]) n = i + 1; }
+  return n;
+}
+
+/* ---------- persistance des paliers ---------- */
+async function hypeChargerPaliers() {
+  try {
+    if (typeof supa === "undefined" || !supa) return null;
+    var u = await utilisateurActuel(); if (!u) return null;
+    var r = await supa.from("hype_paliers").select("famille, palier").eq("user_id", u.id);
+    if (!r || r.error) return null;
+    var out = {}; (r.data || []).forEach(function (l) { out[l.famille] = l.palier; });
+    return out;
+  } catch (e) { return null; }
+}
+async function hypeEnregistrerPalier(famille, palier) {
+  try {
+    if (typeof supa === "undefined" || !supa) return;
+    var u = await utilisateurActuel(); if (!u) return;
+    await supa.from("hype_paliers").upsert({ user_id: u.id, famille: famille, palier: palier, atteint_le: new Date().toISOString() }, { onConflict: "user_id,famille" });
+  } catch (e) { }
+}
+
+/* ---------- calcul de tous les compteurs ---------- */
+async function hypeCalculerFamilles(ctx) {
+  var val = {};
+  var chevaux = ctx.chevaux || [];
+  val.ecurie = chevaux.filter(function (c) { return c && c.id !== "ch-demo"; }).length;
+  val.fiches = chevaux.filter(hypeFicheComplete).length;
+  val.cours = (ctx.coursTermines || []).length;
+  try { val.quiz = Object.keys(ctx.quizResultats || {}).filter(function (k) { return (ctx.quizResultats[k] || 0) >= 100; }).length; } catch (e) { val.quiz = 0; }
+  try { val.galops = parseInt((ctx.profil && (ctx.profil.galop || ctx.profil.galopActuel)) || 0, 10) || 0; } catch (e) { val.galops = 0; }
+
+  var u = null; try { u = await utilisateurActuel(); } catch (e) { u = null; }
+  if (u) {
+    try { var ra = (typeof mesAmis === "function") ? await mesAmis() : null; val.amis = (ra && ra.data) ? ra.data.length : 0; } catch (e) { val.amis = 0; }
+    val.souvenirs = await hypeCompter("souvenirs", "user_id", u.id);
+    val.palmares = await hypeCompter("resultats", "user_id", u.id);
+    val.messages = await hypeCompter("messages_prives", "expediteur_id", u.id);
+    val.likes = await hypeCompter("likes", "user_id", u.id);
+    val.heybaby = await hypeCompter("conversations_heybaby", "user_id", u.id, { role: "user" });
+  } else {
+    val.amis = 0; val.souvenirs = 0; val.palmares = 0; val.messages = 0; val.likes = 0; val.heybaby = 0;
+  }
+  return val;
+}
+
+/* ============ CSS de la grille des familles ============ */
+var FAM_CSS = "\n.fam-rayons{display:flex;gap:7px;margin:22px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;}\n.fam-rayons::-webkit-scrollbar{display:none;}\n.fam-rayon{flex:0 0 auto;padding:9px 14px;border-radius:99px;font-size:11.5px;font-weight:700;color:#8A95A1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);cursor:pointer;white-space:nowrap;}\n.fam-rayon.on{color:#04121A;background:linear-gradient(135deg,#20D9F5,#8FE6EF);border-color:transparent;font-weight:900;}\n.fam-grille{display:grid;grid-template-columns:1fr 1fr;gap:11px;}\n.fam-c{perspective:1000px;height:200px;animation:famLeve .5s cubic-bezier(.22,1,.36,1) both;}\n@keyframes famLeve{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}\n.fam-in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .62s cubic-bezier(.22,1,.36,1);}\n.fam-c.tourne .fam-in{transform:rotateY(180deg);}\n.fam-f{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:19px;padding:13px;display:flex;flex-direction:column;overflow:hidden;background:linear-gradient(155deg,rgba(20,25,34,.95),rgba(10,13,18,.95));border:1px solid rgba(32,217,245,.28);}\n.fam-f.v{transform:rotateY(180deg);background:linear-gradient(155deg,rgba(12,28,34,.97),rgba(8,11,16,.97));}\n.fam-c.fini .fam-f{border-color:rgba(232,200,135,.5);background:linear-gradient(155deg,rgba(232,200,135,.13),rgba(14,18,25,.96) 62%);}\n.fam-hx{width:36px;height:36px;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:rgba(10,13,18,.8);border:1px solid rgba(32,217,245,.55);flex:0 0 auto;}\n.fam-hx svg{width:16px;height:16px;color:#8FE6EF;}\n.fam-c.fini .fam-hx{border-color:rgba(232,200,135,.65);}\n.fam-c.fini .fam-hx svg{color:#FFEBB8;}\n.fam-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}\n.fam-cnt{font-family:'Cinzel',Georgia,serif;font-size:12.5px;font-weight:800;color:#8FE6EF;}\n.fam-c.fini .fam-cnt{color:#E8C887;}\n.fam-nom{font-size:12.8px;font-weight:800;line-height:1.28;margin-top:11px;color:#F4F7FA;}\n.fam-obj{font-size:9.8px;color:#8A95A1;line-height:1.45;margin-top:5px;flex:1;}\n.fam-obj b{color:#F4F7FA;}\n.fam-ech{display:flex;gap:4px;align-items:flex-end;margin-top:auto;}\n.fam-m{flex:1;height:19px;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);font-size:7.5px;font-weight:900;color:#5B6670;}\n.fam-m.ok{background:linear-gradient(135deg,#E8C887,#FFEBB8);border-color:transparent;color:#3A2C0B;box-shadow:0 0 9px rgba(232,200,135,.45);}\n.fam-m.nx{border-color:rgba(32,217,245,.75);color:#8FE6EF;background:rgba(32,217,245,.09);}\n.fam-bd{font-size:8.4px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#8A95A1;margin-top:8px;}\n.fam-c.fini .fam-bd{color:#E8C887;}\n.fam-vt{font-family:'Cinzel',Georgia,serif;font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:#8FE6EF;}\n.fam-li{display:flex;align-items:center;gap:7px;font-size:9.6px;line-height:1.2;margin-top:5px;}\n.fam-li .p{flex:0 0 auto;width:13px;height:13px;border-radius:50%;border:1px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;font-size:6.6px;font-weight:900;color:#5B6670;}\n.fam-li.ok .p{background:linear-gradient(135deg,#E8C887,#FFEBB8);border-color:transparent;color:#3A2C0B;}\n.fam-li.nx .p{border-color:#20D9F5;color:#20D9F5;}\n.fam-li .t{flex:1;color:#8A95A1;}\n.fam-li.ok .t{color:#F4F7FA;}\n.fam-li.nx .t{color:#8FE6EF;font-weight:700;}\n.fam-li .x{font-size:8.2px;font-weight:800;color:#5B6670;}\n.fam-li.ok .x{color:#E8C887;}\n.fam-vp{font-size:8.4px;color:#8A95A1;border-top:1px solid rgba(255,255,255,.08);padding-top:7px;margin-top:auto;line-height:1.4;}\n.fam-vp b{color:#FFEBB8;}\n.cer-bg{position:fixed;inset:0;z-index:99;display:flex;align-items:center;justify-content:center;background:rgba(3,5,8,.92);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);}\n.cer-in{position:relative;text-align:center;padding:0 30px;}\n.cer-halo{position:absolute;left:50%;top:-79px;width:340px;height:340px;margin-left:-170px;border-radius:50%;background:radial-gradient(circle,rgba(232,200,135,.34),transparent 68%);animation:cerSouffle 3s ease-in-out infinite;}\n@keyframes cerSouffle{0%,100%{transform:scale(.92);opacity:.65;}50%{transform:scale(1.06);opacity:1;}}\n.cer-eb{position:relative;font-size:9.5px;font-weight:800;letter-spacing:4.5px;text-transform:uppercase;color:#8FE6EF;opacity:0;animation:cerApp .6s .15s both;}\n.cer-sc{position:relative;width:120px;height:120px;margin:20px auto 18px;display:flex;align-items:center;justify-content:center;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:linear-gradient(150deg,#FFEBB8,#E8C887 55%,#B8912F);box-shadow:0 0 44px rgba(232,200,135,.6);opacity:0;animation:cerFrappe .75s .28s cubic-bezier(.2,1.5,.4,1) both;}\n.cer-sc svg{width:52px;height:52px;color:#2A1F06;}\n@keyframes cerFrappe{0%{opacity:0;transform:scale(2.4) rotate(-16deg);}60%{opacity:1;}100%{opacity:1;transform:none;}}\n.cer-t{position:relative;font-family:'Cinzel',Georgia,serif;font-size:26px;font-weight:800;line-height:1.12;color:#FFF6E2;text-shadow:0 2px 22px rgba(232,200,135,.6);opacity:0;animation:cerApp .6s .6s both;}\n.cer-s{position:relative;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:15px;color:#8FE6EF;margin-top:11px;opacity:0;animation:cerApp .6s .78s both;}\n.cer-x{position:relative;display:inline-block;margin-top:20px;font-size:12px;font-weight:900;letter-spacing:1px;color:#3A2C0B;background:linear-gradient(135deg,#E8C887,#FFEBB8);padding:9px 18px;border-radius:99px;opacity:0;animation:cerApp .6s .95s both;}\n.cer-d{position:relative;font-size:10.5px;color:#8A95A1;margin-top:22px;line-height:1.5;opacity:0;animation:cerApp .6s 1.15s both;}\n.cer-ok{position:relative;margin-top:16px;padding:12px 26px;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#8FE6EF;background:rgba(32,217,245,.08);border:1px solid rgba(32,217,245,.45);opacity:0;animation:cerApp .6s 1.3s both;cursor:pointer;}\n@keyframes cerApp{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}\n@media (prefers-reduced-motion:reduce){.fam-c,.fam-in,.cer-halo,.cer-sc,.cer-eb,.cer-t,.cer-s,.cer-x,.cer-d,.cer-ok{animation-duration:.01ms!important;transition-duration:.01ms!important;}}\n";
+
+/* ============ la cérémonie du haut fait ============ */
+function CeremonieHautFait(props) {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr;
+  var fam = props.famille, marche = props.marche;
+  if (!fam) return null;
+  var derniere = (marche >= fam.seuils.length);
+  var titre = derniere ? tr(fam.badge) : tr(fam.nom);
+  var xp = (fam.xp && fam.xp[marche - 1]) || 0;
+  var Portal = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
+  var seuil = fam.seuils[marche - 1];
+  var uni = tr(fam.unite);
+  var el = h("div", { className: "cer-bg", onClick: props.onFermer },
+    h("div", { className: "cer-in", onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); } },
+      h("div", { className: "cer-halo" }),
+      h("div", { className: "cer-eb" }, derniere
+        ? tr({ fr: "Haut fait accompli", en: "Achievement unlocked", es: "Haza\u00f1a conseguida", it: "Impresa compiuta", ja: "\u5049\u696d\u9054\u6210", de: "Grosse Tat vollbracht" })
+        : tr({ fr: "Nouvelle marche", en: "New step", es: "Nuevo peldano", it: "Nuovo gradino", ja: "\u65b0\u3057\u3044\u6bb5\u9636", de: "Neue Stufe" })),
+      h("div", { className: "cer-sc" }, (typeof qIcone === "function") ? qIcone(fam.icone) : null),
+      h("div", { className: "cer-t" }, titre),
+      h("div", { className: "cer-s" }, fam.marcheGalop
+        ? "Galop " + seuil
+        : (seuil + (uni ? " " + uni : ""))),
+      xp ? h("div", { className: "cer-x" }, "+ " + xp + " XP") : null,
+      h("div", { className: "cer-d" }, tr({ fr: "Tes amis le verront dans leur fil.", en: "Your friends will see it in their feed.", es: "Tus amigos lo ver\u00e1n en su muro.", it: "I tuoi amici lo vedranno nel loro feed.", ja: "\u53cb\u9054\u306e\u30d5\u30a3\u30fc\u30c9\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002", de: "Deine Freunde sehen es in ihrem Feed." })),
+      h("div", { className: "cer-ok", onClick: props.onFermer }, tr({ fr: "Continuer", en: "Continue", es: "Continuar", it: "Continua", ja: "\u7d9a\u3051\u308b", de: "Weiter" }))));
+  return Portal(el, document.body);
+}
+
+/* ============ L'ÉCRAN DES QUÊTES ============ */
 function EcranQuetes() {
-    const h = React.createElement;
-    const ctx = useApp();
-    const { setEcran, tr, profil, chevaux, coursTermines, quizResultats, xp } = ctx;
-    const [amisCount, setAmisCount] = React.useState(null);
+  var h = React.createElement;
+  var ctx = useApp();
+  var setEcran = ctx.setEcran, tr = ctx.tr, xp = ctx.xp;
 
-    React.useEffect(function () {
-        var actif = true;
-        (async function () {
-            try {
-                if (typeof mesAmis === "function") {
-                    var r = await mesAmis();
-                    if (actif) setAmisCount((r && r.data ? r.data.length : 0));
-                }
-            } catch (e) { if (actif) setAmisCount(0); }
-        })();
-        return function () { actif = false; };
-    }, []);
+  var _v = React.useState(null), valeurs = _v[0], setValeurs = _v[1];
+  var _r = React.useState(0), rayon = _r[0], setRayon = _r[1];
+  var _t = React.useState({}), tournees = _t[0], setTournees = _t[1];
+  var _c = React.useState(null), fete = _c[0], setFete = _c[1];
+  var _p = React.useState(null), paliers = _p[0], setPaliers = _p[1];
 
-    const ctxQuetes = Object.assign({}, ctx, { amisCount: amisCount === null ? 0 : amisCount });
-    const listeAvecEtat = HYPE_QUETES_DECOUVERTE.map(function (q) { return Object.assign({}, q, { faite: !!q.fait(ctxQuetes) }); });
-    const faites = listeAvecEtat.filter(function (q) { return q.faite; });
-    const enCours = listeAvecEtat.filter(function (q) { return !q.faite; });
+  /* 1. On calcule les compteurs, 2. on compare aux paliers enregistres,
+     3. on annonce UNIQUEMENT ce qui vient d etre franchi.
+     Premier passage d un cavalier (aucune ligne en base) : on enregistre en
+     silence, sans ceremonie — sinon 12 hauts faits partiraient d un coup. */
+  React.useEffect(function () {
+    var actif = true;
+    (async function () {
+      var val = await hypeCalculerFamilles(ctx);
+      if (!actif) return;
+      setValeurs(val);
+      var dejaLa = await hypeChargerPaliers();
+      if (!actif) return;
+      var premierPassage = (dejaLa === null) || (Object.keys(dejaLa).length === 0);
+      var etat = dejaLa || {};
+      var aFeter = null;
+      for (var i = 0; i < HYPE_FAMILLES.length; i++) {
+        var f = HYPE_FAMILLES[i];
+        var m = hypeMarcheAtteinte(f, val[f.id] || 0);
+        var ancien = (typeof etat[f.id] === "number") ? etat[f.id] : 0;
+        if (m > ancien) {
+          etat[f.id] = m;
+          hypeEnregistrerPalier(f.id, m);
+          if (!premierPassage && !aFeter) aFeter = { famille: f, marche: m };
+        }
+      }
+      setPaliers(etat);
+      if (aFeter) {
+        setFete(aFeter);
+        try {
+          if (typeof hypeDiffusionEcurie === "function") {
+            var nomFait = (aFeter.marche >= aFeter.famille.seuils.length) ? tr(aFeter.famille.badge) : tr(aFeter.famille.nom);
+            hypeDiffusionEcurie("haut_fait", nomFait, null);
+          }
+        } catch (e) { }
+      }
+    })();
+    return function () { actif = false; };
+  }, []);
 
-    const niveau = Math.floor((xp || 0) / 200) + 1;
-    const xpDansNiveau = (xp || 0) % 200;
-    const pct = xpDansNiveau / 200;
-    const RING_CIRC = 2 * Math.PI * 46;
+  var niveau = Math.floor((xp || 0) / 200) + 1;
+  var xpDansNiveau = (xp || 0) % 200;
+  var pct = xpDansNiveau / 200;
+  var RING = 2 * Math.PI * 46;
 
-    const vedette = enCours[0] || null;
-    const minis = enCours.slice(1, 3);
+  var chargement = (valeurs === null);
+  var listeRayon = HYPE_FAMILLES.filter(function (f) { return f.rayon === rayon; });
+  var totalMarches = 0, famCommencees = 0;
+  if (valeurs) {
+    HYPE_FAMILLES.forEach(function (f) {
+      var m = hypeMarcheAtteinte(f, valeurs[f.id] || 0);
+      totalMarches += m; if (m > 0) famCommencees++;
+    });
+  }
 
-    return h("div", { className: "qte-wrap" },
-        h("style", { dangerouslySetInnerHTML: { __html: QUETES_CSS } }),
+  function carte(f) {
+    var v = (valeurs && valeurs[f.id]) || 0;
+    var m = hypeMarcheAtteinte(f, v);
+    var fini = (m >= f.seuils.length);
+    var uni = tr(f.unite);
+    var suivant = fini ? "" : (f.marcheGalop ? ("Galop " + f.seuils[m]) : (f.seuils[m] + (uni ? " " + uni : "")));
+    var ech = f.seuils.map(function (s, i) {
+      var cl = (i < m) ? "ok" : (i === m ? "nx" : "");
+      return h("div", { key: i, className: "fam-m " + cl }, i + 1);
+    });
+    var lignes = f.seuils.map(function (s, i) {
+      var cl = (i < m) ? "ok" : (i === m ? "nx" : "");
+      return h("div", { key: i, className: "fam-li " + cl },
+        h("div", { className: "p" }, i + 1),
+        h("div", { className: "t" }, f.marcheGalop ? ("Galop " + s) : (s + (uni ? " " + uni : ""))),
+        h("div", { className: "x" }, "+" + ((f.xp && f.xp[i]) || 0)));
+    });
+    return h("div", {
+      key: f.id, className: "fam-c" + (fini ? " fini" : "") + (tournees[f.id] ? " tourne" : ""),
+      onClick: function () { var t2 = Object.assign({}, tournees); t2[f.id] = !t2[f.id]; setTournees(t2); }
+    },
+      h("div", { className: "fam-in" },
+        h("div", { className: "fam-f" },
+          h("div", { className: "fam-row" },
+            h("div", { className: "fam-hx" }, (typeof qIcone === "function") ? qIcone(f.icone) : null),
+            h("div", { className: "fam-cnt" }, m + "/" + f.seuils.length)),
+          h("div", { className: "fam-nom" }, tr(f.nom)),
+          h("div", { className: "fam-obj" }, fini
+            ? tr({ fr: "Famille compl\u00e8te.", en: "Family complete.", es: "Familia completa.", it: "Famiglia completa.", ja: "\u3059\u3079\u3066\u9054\u6210\u3002", de: "Familie vollst\u00e4ndig." })
+            : h(React.Fragment, null,
+              tr({ fr: "Prochaine marche : ", en: "Next step: ", es: "Siguiente peldano: ", it: "Prossimo gradino: ", ja: "\u6b21\u306e\u6bb5\u9636\uff1a", de: "N\u00e4chste Stufe: " }),
+              h("b", null, suivant),
+              h("span", null, "  \u00b7  " + v))),
+          h("div", { className: "fam-ech" }, ech),
+          h("div", { className: "fam-bd" }, tr(f.badge))),
+        h("div", { className: "fam-f v" },
+          h("div", { className: "fam-vt" }, tr({ fr: "Les marches", en: "The steps", es: "Los peldanos", it: "I gradini", ja: "\u6bb5\u968e", de: "Die Stufen" })),
+          lignes,
+          h("div", { className: "fam-vp" }, (f.note ? tr(f.note) + " " : ""),
+            tr({ fr: "Au bout : ", en: "At the end: ", es: "Al final: ", it: "Alla fine: ", ja: "\u6700\u5f8c\u306b\uff1a", de: "Am Ende: " }),
+            h("b", null, tr(f.badge))))));
+  }
 
-        h("div", { className: "qte-top" },
-            h("button", { className: "qte-back", onClick: function () { setEcran("dashboard"); } }, "\u2039"),
-            h("div", { className: "qte-titre" }, tr({ fr: "Tes Qu\u00eates", en: "Your Quests", es: "Tus Misiones", it: "Le tue Missioni", ja: "\u30af\u30a8\u30b9\u30c8", de: "Deine Quests" })),
-            h("div", { className: "qte-troph" }, "\uD83C\uDFC6")),
-        h("div", { className: "qte-sep" }, h("div", { className: "l" }), h("span", { style: { color: "#8FE6EF", fontSize: 10 } }, "\u2726"), h("div", { className: "l r" })),
+  return h("div", { className: "qte-wrap" },
+    h("style", { dangerouslySetInnerHTML: { __html: QUETES_CSS + FAM_CSS } }),
 
-        h("div", { className: "qte-hero" },
-            h("div", { className: "qte-hero-img" }, h("img", { src: IMG_QUETES_HERO, alt: "" }), h("div", { className: "fade" })),
-            h("div", { className: "qte-hero-in" },
-                h("div", { className: "qte-hero-top" },
-                    h("div", { className: "qte-ring" },
-                        h("svg", { width: 104, height: 104, viewBox: "0 0 104 104" },
-                            h("circle", { className: "qte-ring-bg", cx: 52, cy: 52, r: 46 }),
-                            h("circle", { className: "qte-ring-fill", cx: 52, cy: 52, r: 46, strokeDasharray: RING_CIRC, strokeDashoffset: RING_CIRC * (1 - pct) })),
-                        h("div", { className: "qte-crist" }, h("img", { src: hypeBadgeNiveau(niveau), alt: "Niveau " + niveau, style: { height: 84, width: "auto", filter: "drop-shadow(0 0 10px rgba(32,217,245,.6))" } }))),
-                    h("div", { className: "qte-txts" },
-                        h("div", { className: "qte-kicker" }, tr({ fr: "Niveau " + niveau, en: "Level " + niveau, es: "Nivel " + niveau, it: "Livello " + niveau, ja: "\u30ec\u30d9\u30eb " + niveau, de: "Level " + niveau })),
-                        h("div", { className: "qte-titre-h" }, tr({ fr: "Cavalier\nTurquoise", en: "Turquoise\nRider", es: "Jinete\nTurquesa", it: "Cavaliere\nTurchese", ja: "\u30bf\u30fc\u30b3\u30a4\u30ba\n\u30e9\u30a4\u30c0\u30fc", de: "T\u00fcrkiser\nReiter" }).split("\n").map(function (l, i) { return h(React.Fragment, { key: i }, i > 0 ? h("br", null) : null, l); })),
-                        h("div", { className: "qte-xpbar" }, h("div", { className: "qte-xpfill", style: { width: (pct * 100) + "%" } })),
-                        h("div", { className: "qte-xptxt" }, xpDansNiveau + " / 200 XP"))),
-                h("p", { className: "qte-tag" }, tr({ fr: "Chaque qu\u00eate te rapproche de la l\u00e9gende.", en: "Every quest brings you closer to legend.", es: "Cada misi\u00f3n te acerca a la leyenda.", it: "Ogni missione ti avvicina alla leggenda.", ja: "\u30af\u30a8\u30b9\u30c8\u3054\u3068\u306b\u4f1d\u8aac\u306b\u8fd1\u3065\u304f\u3002", de: "Jede Quest bringt dich der Legende n\u00e4her." })),
-                h("div", { className: "qte-stats" },
-                    h("div", { className: "qte-stat" }, h("div", { className: "qte-stat-ic or" }, qIcone("check")), h("div", { className: "v" }, faites.length), h("div", { className: "l" }, tr({ fr: "Qu\u00eates\nterming\u00e9es", en: "Quests\ndone", es: "Misiones\nterminadas", it: "Missioni\ncompletate", ja: "\u5b8c\u4e86\n\u30af\u30a8\u30b9\u30c8", de: "Quests\nerledigt" }).split("\n").map(function (l, i) { return h(React.Fragment, { key: i }, i > 0 ? h("br", null) : null, l); }))),
-                    h("div", { className: "qte-stat" }, h("div", { className: "qte-stat-ic tur" }, qIcone("star")), h("div", { className: "v" }, enCours.length), h("div", { className: "l" }, tr({ fr: "Qu\u00eates\nen cours", en: "Quests\nactive", es: "Misiones\nactivas", it: "Missioni\nattive", ja: "\u9032\u884c\u4e2d\n\u306e\u30af\u30a8\u30b9\u30c8", de: "Quests\naktiv" }).split("\n").map(function (l, i) { return h(React.Fragment, { key: i }, i > 0 ? h("br", null) : null, l); }))),
-                    h("div", { className: "qte-stat" }, h("div", { className: "qte-stat-ic or" }, qIcone("gem")), h("div", { className: "v" }, (200 - xpDansNiveau) + " XP"), h("div", { className: "l" }, tr({ fr: "Jusqu'au\nniveau " + (niveau + 1), en: "Until\nlevel " + (niveau + 1), es: "Hasta el\nnivel " + (niveau + 1), it: "Al\nlivello " + (niveau + 1), ja: "\u30ec\u30d9\u30eb" + (niveau + 1) + "\n\u307e\u3067", de: "Bis\nLevel " + (niveau + 1) }).split("\n").map(function (l, i) { return h(React.Fragment, { key: i }, i > 0 ? h("br", null) : null, l); })))))),
+    h("div", { className: "qte-top" },
+      h("button", { className: "qte-back", onClick: function () { setEcran("dashboard"); } }, "\u2039"),
+      h("div", { className: "qte-titre" }, tr({ fr: "Tes Qu\u00eates", en: "Your Quests", es: "Tus Misiones", it: "Le tue Missioni", ja: "\u30af\u30a8\u30b9\u30c8", de: "Deine Quests" })),
+      h("div", { className: "qte-troph" }, "\uD83C\uDFC6")),
+    h("div", { className: "qte-sep" }, h("div", { className: "l" }), h("span", { style: { color: "#8FE6EF", fontSize: 10 } }, "\u2726"), h("div", { className: "l r" })),
 
-        h("div", { className: "qte-shead" }, h("span", { className: "pt" }, "\u2726"), h("span", { className: "txt" }, tr({ fr: "Qu\u00eates en cours", en: "Active quests", es: "Misiones activas", it: "Missioni attive", ja: "\u9032\u884c\u4e2d\u306e\u30af\u30a8\u30b9\u30c8", de: "Aktive Quests" })), h("div", { className: "ligne" })),
+    h("div", { className: "qte-hero" },
+      h("div", { className: "qte-hero-img" }, h("img", { src: IMG_QUETES_HERO, alt: "" }), h("div", { className: "fade" })),
+      h("div", { className: "qte-hero-in" },
+        h("div", { className: "qte-hero-top" },
+          h("div", { className: "qte-ring" },
+            h("svg", { width: 104, height: 104, viewBox: "0 0 104 104" },
+              h("circle", { className: "qte-ring-bg", cx: 52, cy: 52, r: 46 }),
+              h("circle", { className: "qte-ring-fill", cx: 52, cy: 52, r: 46, strokeDasharray: RING, strokeDashoffset: RING * (1 - pct) })),
+            h("div", { className: "qte-crist" }, h("img", { src: hypeBadgeNiveau(niveau), alt: "", style: { height: 84, width: "auto", filter: "drop-shadow(0 0 10px rgba(32,217,245,.6))" } }))),
+          h("div", { className: "qte-txts" },
+            h("div", { className: "qte-kicker" }, tr({ fr: "Niveau " + niveau, en: "Level " + niveau, es: "Nivel " + niveau, it: "Livello " + niveau, ja: "\u30ec\u30d9\u30eb " + niveau, de: "Level " + niveau })),
+            h("div", { className: "qte-titre-h" }, tr({ fr: "Cavalier\nTurquoise", en: "Turquoise\nRider", es: "Jinete\nTurquesa", it: "Cavaliere\nTurchese", ja: "\u30bf\u30fc\u30b3\u30a4\u30ba\n\u30e9\u30a4\u30c0\u30fc", de: "T\u00fcrkiser\nReiter" }).split("\n").map(function (l, i) { return h(React.Fragment, { key: i }, i > 0 ? h("br", null) : null, l); })),
+            h("div", { className: "qte-xpbar" }, h("div", { className: "qte-xpfill", style: { width: (pct * 100) + "%" } })),
+            h("div", { className: "qte-xptxt" }, xpDansNiveau + " / 200 XP"))),
+        h("div", { className: "qte-stats" },
+          h("div", { className: "qte-stat" }, h("div", { className: "qte-stat-ic or" }, qIcone("check")), h("div", { className: "v" }, chargement ? "\u2026" : totalMarches), h("div", { className: "l" }, tr({ fr: "Marches\nfranchies", en: "Steps\ncleared", es: "Peldanos\nlogrados", it: "Gradini\nsuperati", ja: "\u9054\u6210\n\u6bb5\u968e", de: "Stufen\ngeschafft" }).split("\n").map(function (l, i) { return h(React.Fragment, { key: i }, i > 0 ? h("br", null) : null, l); }))),
+          h("div", { className: "qte-stat" }, h("div", { className: "qte-stat-ic tur" }, qIcone("star")), h("div", { className: "v" }, chargement ? "\u2026" : (famCommencees + "/" + HYPE_FAMILLES.length)), h("div", { className: "l" }, tr({ fr: "Familles\ncommenc\u00e9es", en: "Families\nstarted", es: "Familias\nempezadas", it: "Famiglie\niniziate", ja: "\u958b\u59cb\u3057\u305f\n\u5bb6\u7cfb", de: "Begonnene\nFamilien" }).split("\n").map(function (l, i) { return h(React.Fragment, { key: i }, i > 0 ? h("br", null) : null, l); }))),
+          h("div", { className: "qte-stat" }, h("div", { className: "qte-stat-ic or" }, qIcone("gem")), h("div", { className: "v" }, (200 - xpDansNiveau) + " XP"), h("div", { className: "l" }, tr({ fr: "Jusqu'au\nniveau " + (niveau + 1), en: "Until\nlevel " + (niveau + 1), es: "Hasta el\nnivel " + (niveau + 1), it: "Al\nlivello " + (niveau + 1), ja: "\u30ec\u30d9\u30eb" + (niveau + 1) + "\n\u307e\u3067", de: "Bis\nLevel " + (niveau + 1) }).split("\n").map(function (l, i) { return h(React.Fragment, { key: i }, i > 0 ? h("br", null) : null, l); })))))),
 
-        !vedette ? h("div", { className: "qte-vide" }, tr({ fr: "Bravo, tu as termin\u00e9 toutes les qu\u00eates de d\u00e9couverte \u2728", en: "Amazing, you've completed every discovery quest \u2728", es: "\u00a1Genial, has completado todas las misiones de descubrimiento! \u2728", it: "Fantastico, hai completato tutte le missioni di scoperta \u2728", ja: "\u3059\u3079\u3066\u306e\u30af\u30a8\u30b9\u30c8\u3092\u30af\u30ea\u30a2\u3057\u307e\u3057\u305f \u2728", de: "Super, du hast alle Entdeckungs-Quests abgeschlossen \u2728" })) :
-        h("div", { className: "qte-grille" },
-            h("div", { className: "qte-vedette", onClick: function () { if (vedette.cible) setEcran(vedette.cible); } },
-                h("img", { src: IMG_QUETES_HERO, alt: "" }),
-                h("div", { className: "fade" }),
-                h("div", { className: "qte-vbadge" }, qIcone(vedette.icone)),
-                h("div", { className: "qte-vedette-in" },
-                    h("div", { className: "qte-vtitre" }, tr(vedette.titre)),
-                    h("div", { className: "qte-vsous" }, tr(vedette.texte)),
-                    h("div", { className: "qte-vxp" }, "+" + vedette.xp + " XP"))),
-            minis.map(function (q) {
-                return h("div", { key: q.id, className: "qte-mini", onClick: function () { if (q.cible) setEcran(q.cible); } },
-                    h("img", { src: IMG_QUETES_HERO, alt: "" }),
-                    h("div", { className: "fade" }),
-                    h("div", { className: "qte-mtop" }, h("div", { className: "qte-hex" }, qIcone(q.icone))),
-                    h("div", { className: "qte-mini-in" }, h("div", { className: "qte-mtitre" }, tr(q.titre)), h("div", { className: "qte-msous" }, tr(q.texte)), h("div", { className: "qte-mxp" }, "+" + q.xp + " XP")));
-            })),
+    h("div", { className: "fam-rayons" }, HYPE_RAYONS.map(function (r, i) {
+      return h("div", { key: i, className: "fam-rayon" + (i === rayon ? " on" : ""), onClick: function () { setRayon(i); } }, tr(r));
+    })),
 
-        enCours.length > 3 ? h("p", { style: { fontSize: 11, color: "#8A95A1", margin: "10px 2px 0" } }, "+" + (enCours.length - 3) + " " + tr({ fr: "autre(s) qu\u00eate(s) \u00e0 d\u00e9couvrir en avan\u00e7ant dans l'app.", en: "more quest(s) to discover as you use the app.", es: "misi\u00f3n(es) m\u00e1s por descubrir.", it: "altre missioni da scoprire.", ja: "\u4ed6\u306e\u30af\u30a8\u30b9\u30c8\u3082\u3042\u308a\u307e\u3059\u3002", de: "weitere Quest(s), die du beim Nutzen der App entdeckst." })) : null,
+    chargement
+      ? h("div", { className: "qte-vide" }, tr({ fr: "On compte tes exploits\u2026", en: "Counting your feats\u2026", es: "Contando tus haza\u00f1as\u2026", it: "Conto le tue imprese\u2026", ja: "\u96c6\u8a08\u4e2d\u2026", de: "Deine Taten werden gez\u00e4hlt\u2026" }))
+      : h("div", { className: "fam-grille" }, listeRayon.map(carte)),
 
-        faites.length ? h("div", { className: "qte-shead" }, h("span", { className: "pt" }, "\u2726"), h("span", { className: "txt" }, tr({ fr: "Qu\u00eates termin\u00e9es", en: "Completed quests", es: "Misiones terminadas", it: "Missioni completate", ja: "\u5b8c\u4e86\u3057\u305f\u30af\u30a8\u30b9\u30c8", de: "Erledigte Quests" })), h("div", { className: "ligne" })) : null,
+    h("p", { style: { fontSize: 10.5, color: "#5B6670", lineHeight: 1.6, margin: "18px 2px 0" } },
+      tr({ fr: "Touche une carte pour voir ses marches. D'autres familles arrivent.", en: "Tap a card to see its steps. More families are coming.", es: "Toca una tarjeta para ver sus peldanos. Llegar\u00e1n m\u00e1s familias.", it: "Tocca una carta per vedere i gradini. Altre famiglie arriveranno.", ja: "\u30ab\u30fc\u30c9\u3092\u30bf\u30c3\u30d7\u3059\u308b\u3068\u6bb5\u968e\u304c\u898b\u3048\u307e\u3059\u3002\u4ed6\u306e\u5bb6\u7cfb\u3082\u6e96\u5099\u4e2d\u3002", de: "Tippe auf eine Karte, um ihre Stufen zu sehen. Weitere Familien folgen." })),
 
-        faites.map(function (q) {
-            return h("div", { key: q.id, className: "qte-faite" },
-                h("div", { className: "qte-hex or" }, qIcone(q.icone)),
-                h("div", { style: { minWidth: 0 } }, h("div", { style: { fontSize: 13, fontWeight: 700, color: "#F4F6F7" } }, tr(q.titre))),
-                h("div", { className: "qte-fxp" }, "+" + q.xp + " XP"),
-                h("div", { className: "qte-fcheck" }, qIcone("check")));
-        })
-    );
+    fete ? h(CeremonieHautFait, { famille: fete.famille, marche: fete.marche, onFermer: function () { setFete(null); } }) : null
+  );
 }
 
 function EcranBadges() {
