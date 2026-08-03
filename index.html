@@ -700,7 +700,7 @@ async function listerAlbumsCheval(cible) {
 }
 async function creerAlbumCheval(cible, nom) {
   try { const user = await utilisateurActuel(); if (!user) return { error: "Pas connecté" };
-    return await supa.from("albums_cheval").insert({ user_id: user.id, cible: cible, nom: nom, photos: [], promu: false }).select().single();
+    return await supa.from("albums_cheval").insert({ user_id: user.id, cible: cible, nom: nom, photos: [], promu: false, visibilite: "public" }).select().single();
   } catch (e) { return { error: String(e) }; }
 }
 async function majAlbumCheval(id, champs) {
@@ -24365,7 +24365,7 @@ function EcranConnexionSpectral() {
         var reactive = await hypeReactiverSiSuppressionEnCours();
         if (reactive) { try { window.__hypeReactive = true; window.dispatchEvent(new Event("hype-compte-reactive")); } catch (eEv) { } }
       } catch (eRe) { }
-      try { var r3 = await monProfil(); if (r3 && r3.data) { var d3 = r3.data; setProfil(function (pp) { return Object.assign({}, pp, { pseudo: d3.pseudo || pp.pseudo, prenom: d3.pseudo || pp.prenom, ecurie: d3.ecurie || pp.ecurie, club: d3.ecurie || pp.club, ecurie2: d3.ecurie2 || pp.ecurie2, club2: d3.ecurie2 || pp.club2, email: email, avatar: d3.avatar_url || pp.avatar, avatar_url: d3.avatar_url || pp.avatar_url, histoire: d3.histoire || pp.histoire, ville: d3.ville || pp.ville }); }); } } catch (e) { }
+      try { var r3 = await monProfil(); if (r3 && r3.data) { var d3 = r3.data; setProfil(function (pp) { return Object.assign({}, pp, { pseudo: d3.pseudo || pp.pseudo, prenom: d3.pseudo || pp.prenom, ecurie: d3.ecurie || pp.ecurie, club: d3.ecurie || pp.club, ecurie2: d3.ecurie2 || pp.ecurie2, club2: d3.ecurie2 || pp.club2, email: email, avatar: d3.avatar_url || pp.avatar, avatar_url: d3.avatar_url || pp.avatar_url, histoire: d3.histoire || pp.histoire, ville: d3.ville || pp.ville, ecurie_voix: d3.ecurie_voix || pp.ecurie_voix, ecurie_histoire: d3.ecurie_histoire || pp.ecurie_histoire }); }); } } catch (e) { }
     } catch (e) { } setEcran("dashboard"); })(); }
   function valider() { if (enCours) return; setErreur("");
     var em = email.trim();
@@ -27055,7 +27055,7 @@ const HYPE_QUETES_DECOUVERTE = [
     { id: "photo-cheval", xp: 15, icone: "image", cible: "ecurie",
       titre: { fr: "Mets une photo sur un de tes chevaux", en: "Add a photo to one of your horses", es: "Pon una foto a uno de tus caballos", it: "Metti una foto a uno dei tuoi cavalli", ja: "\u99ac\u306e\u5199\u771f\u3092\u8ffd\u52a0" , de: "Füge ein Foto zu einem deiner Pferde hinzu"},
       texte: { fr: "Ouvre la fiche d'un cheval et ajoute sa premi\u00e8re photo.", en: "Open a horse's page and add its first photo.", es: "Abre la ficha de un caballo y a\u00f1ade su primera foto.", it: "Apri la scheda di un cavallo e aggiungi la sua prima foto.", ja: "\u99ac\u306e\u30da\u30fc\u30b8\u3092\u958b\u3044\u3066\u6700\u521d\u306e\u5199\u771f\u3092\u8ffd\u52a0\u3057\u307e\u3057\u3087\u3046\u3002" , de: "Öffne die Seite eines Pferdes und füge sein erstes Foto hinzu."},
-      fait: function (ctx) { return (ctx.chevaux || []).some(function (c) { return c && c.photo_url; }); } },
+      fait: function (ctx) { return (ctx.chevaux || []).some(function (c) { return c && (c.photo_url || c.photo); }); } },
     { id: "ami", xp: 10, icone: "ami", cible: "communaute",
       titre: { fr: "Ajoute ton premier ami", en: "Add your first friend", es: "A\u00f1ade a tu primer amigo", it: "Aggiungi il tuo primo amico", ja: "\u6700\u521d\u306e\u53cb\u9054\u3092\u8ffd\u52a0" , de: "Füge deinen ersten Freund hinzu"},
       texte: { fr: "Dans la communaut\u00e9, tape sur un profil puis sur Suivre.", en: "In the community, tap a profile then Follow.", es: "En la comunidad, toca un perfil y luego Seguir.", it: "Nella comunit\u00e0, tocca un profilo e poi Segui.", ja: "\u30b3\u30df\u30e5\u30cb\u30c6\u30a3\u3067\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u30bf\u30c3\u30d7\u3057\u3066\u30d5\u30a9\u30ed\u30fc\u3057\u307e\u3057\u3087\u3046\u3002" , de: "Tippe in der Community auf ein Profil und dann auf Folgen."},
@@ -30794,7 +30794,7 @@ function AlbumsCheval(props) {
           { k: "partage", ic: "\ud83d\udc65", nom: T("Partag\u00e9", "Shared", "Compartido", "Condiviso", "\u5171\u6709") },
           { k: "public", ic: "\ud83c\udf10", nom: T("Public", "Public", "P\u00fablico", "Pubblico", "\u516c\u958b") }
         ].map(function (opt) {
-          var actif = (albOuvert.visibilite || "prive") === opt.k;
+          var actif = (albOuvert.visibilite || "public") === opt.k;
           return h("button", { key: opt.k, onClick: function () { definirVisibilite(albOuvert, opt.k); }, style: { flex: 1, padding: "9px 2px", borderRadius: 11, border: "1px solid " + (actif ? tnT : "rgba(255,255,255,0.15)"), background: actif ? tA(0.14) : "transparent", color: actif ? "#F4F7FA" : "#9AA5AC", fontSize: 10.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, display: "flex", flexDirection: "column", alignItems: "center", gap: 3 } },
             h("span", { style: { fontSize: 15 } }, opt.ic), h("span", null, opt.nom));
         })),
