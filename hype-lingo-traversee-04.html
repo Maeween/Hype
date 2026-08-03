@@ -245,7 +245,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <div id="vue">
     <div id="emplacement"><i></i>
       <b id="empNom">ARRIVÉE À NEWMARKET</b>
-      <span id="empTxt">Emplacement de l'animation<br><code>arrivee-newmarket.mp4</code><br>3 s · muette · sans texte · 720 px</span>
+      <span id="empTxt">Emplacement de l'animation<br><code>anim/arrivee-newmarket.mp4</code><br>3 s · muette · sans texte · 720 px</span>
     </div>
     <div id="arrTete">
       <p class="pays" id="arrChap">Chapitre 1 · L'écurie</p>
@@ -595,7 +595,7 @@ function ouvrirArrivee(i){
   S("arrVille").textContent=e.v;
   S("arrNation").textContent=e.nat;
   S("empNom").textContent="ARRIVÉE À "+e.v.toUpperCase();
-  S("empTxt").innerHTML="Emplacement de l'animation<br><code>arrivee-"+e.ref+".mp4</code><br>3 s · muette · sans texte · 720 px";
+  S("empTxt").innerHTML="Emplacement de l'animation<br><code>anim/arrivee-"+e.ref+".mp4</code><br>3 s · muette · sans texte · 720 px";
   S("souvT").textContent="Souvenir de "+e.v;
   S("souvN").textContent=e.souv;
   S("souvSvg").innerHTML=ICONES[e.ic]||"";
@@ -612,7 +612,7 @@ function ouvrirArrivee(i){
   videoEl.setAttribute("webkit-playsinline","");
   videoEl.preload="auto";
   /* Newmarket est déjà montrée dans la séquence d'ouverture */
-  videoEl.src = (e.ref==="newmarket") ? "ouverture.mp4" : ("arrivee-"+e.ref+".mp4");
+  videoEl.src = (e.ref==="newmarket") ? "anim/ouverture.mp4" : ("anim/arrivee-"+e.ref+".mp4");
   videoEl.addEventListener("error",function(){ S("emplacement").style.display="flex"; });
   videoEl.addEventListener("playing",function(){ S("emplacement").style.display="none"; });
   S("vue").insertBefore(videoEl, S("vue").firstChild);
@@ -644,7 +644,7 @@ var DEJA_VU = "hype_lingo_ouverture_vue";
   if(vue){ S("ouverture").classList.add("parti"); return; }
   var v=S("ouvVid");
   S("ouvPartir").addEventListener("click",function(){
-    v.src="ouverture.mp4";
+    v.src="anim/ouverture.mp4";
     v.addEventListener("error",terminerOuverture);
     v.addEventListener("ended",function(){ S("ouverture").classList.add("fini"); });
     S("ouverture").classList.add("joue");
@@ -676,7 +676,7 @@ function lancerDepart(){
   vidDepart=document.createElement("video");
   vidDepart.muted=true; vidDepart.loop=true; vidDepart.autoplay=true;
   vidDepart.setAttribute("playsinline",""); vidDepart.setAttribute("webkit-playsinline","");
-  vidDepart.src="depart.mp4";
+  vidDepart.src="anim/depart.mp4";
   vidDepart.addEventListener("error",function(){ if(vidDepart&&vidDepart.parentNode)
     vidDepart.parentNode.removeChild(vidDepart); });
   S("depart").insertBefore(vidDepart, S("depart").firstChild);
