@@ -44083,11 +44083,15 @@ async function hypeChargerPaliers() {
   } catch (e) { return null; }
 }
 async function hypeEnregistrerPalier(famille, palier) {
+  /* Renvoie true UNIQUEMENT si la base a bien accepte l ecriture.
+     L XP ne doit jamais etre versee sur une ecriture qui a echoue :
+     sinon elle serait reversee a la prochaine ouverture. */
   try {
-    if (typeof supa === "undefined" || !supa) return;
-    var u = await utilisateurActuel(); if (!u) return;
-    await supa.from("hype_paliers").upsert({ user_id: u.id, famille: famille, palier: palier, atteint_le: new Date().toISOString() }, { onConflict: "user_id,famille" });
-  } catch (e) { }
+    if (typeof supa === "undefined" || !supa) return false;
+    var u = await utilisateurActuel(); if (!u) return false;
+    var r = await supa.from("hype_paliers").upsert({ user_id: u.id, famille: famille, palier: palier, atteint_le: new Date().toISOString() }, { onConflict: "user_id,famille" });
+    return !!(r && !r.error);
+  } catch (e) { return false; }
 }
 
 /* ---------- calcul de tous les compteurs ---------- */
@@ -44204,22 +44208,32 @@ function EcranQuetes() {
       var etat = dejaLa;
       var aFeter = null;
       var xpRattrape = 0, marchesRattrapees = 0;
+      var xpGagne = 0;
       for (var i = 0; i < HYPE_FAMILLES.length; i++) {
         var f = HYPE_FAMILLES[i];
         var m = hypeMarcheAtteinte(f, val[f.id] || 0);
         var avant = (typeof etat[f.id] === "number") ? etat[f.id] : 0;
         if (m > avant) {
           etat[f.id] = m;
-          hypeEnregistrerPalier(f.id, m);
+          var enregistre = await hypeEnregistrerPalier(f.id, m);
+          if (!actif) return;
+          if (!premierPassage && enregistre) {
+            /* Marche franchie en cours de route : on verse son XP, une fois,
+               et seulement si la base a bien memorise le palier. */
+            for (var k = avant; k < m; k++) { xpGagne += ((f.xp && f.xp[k]) || 0); }
+          }
           if (premierPassage) {
             /* Rattrapage : les marches deja acquises avant l existence du systeme
                comptent. Decision de Blandine : ce n est pas fair-play de repartir
                de zero pour ceux qui etaient la avant. Verse UNE SEULE FOIS. */
             for (var j = avant; j < m; j++) { xpRattrape += ((f.xp && f.xp[j]) || 0); marchesRattrapees++; }
-          } else if (!aFeter) { aFeter = { famille: f, marche: m }; }
+          } else if (!aFeter && enregistre) { aFeter = { famille: f, marche: m }; }
         }
       }
       setPaliers(etat);
+      if (!premierPassage && xpGagne > 0) {
+        try { if (typeof setXp === "function") setXp(function (x) { return (Number(x) || 0) + xpGagne; }); } catch (e) { }
+      }
       if (premierPassage && xpRattrape > 0) {
         try { if (typeof setXp === "function") setXp(function (x) { return (Number(x) || 0) + xpRattrape; }); } catch (e) { }
         setRattrapage({ xp: xpRattrape, marches: marchesRattrapees });
