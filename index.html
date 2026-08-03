@@ -37872,6 +37872,8 @@ function entrAligner(mod, main) {
 }
 function EcranEntrainerTracer() {
     const { galopOuvert, setEcran, tr, retourEcran, peutReculer } = useApp();
+    /* Famille « Reprises tracées » : marquée après une minute passée à tracer. */
+    hypeMinuteDeVue("reprise-tracer", ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? ("g" + galopOuvert) : "g4");
     const T = (cle) => tr(ENTR_TXT[cle]);
     /* La coquille de l'appli ajoute paddingBottom 84 pour la barre de navigation : un écran plein
        doit donc faire 100dvh MOINS ces 84 px, sinon la page scrolle. */
@@ -38797,6 +38799,8 @@ function EcranTraceAnime() {
     const initial = ORDRE_REPRISES_FFE.includes("g" + galopOuvert) ? "g" + galopOuvert : "g4";
     const [onglet, setOnglet] = React.useState("immersion");
     const [niveau, setNiveau] = React.useState(initial);
+    /* Famille « Reprises visualisées » : une minute d écran actif sur cette reprise. */
+    hypeMinuteDeVue("reprise-voir", niveau);
     const [t, setT] = React.useState(0);
     const [lecture, setLecture] = React.useState(false);
     const [vitesse, setVitesse] = React.useState(1);
@@ -42193,7 +42197,8 @@ function EcranArticleDetail() {
     const article = ARTICLES.find((a) => a.id === window.__articleOuvert) || ARTICLES[0];
     const riche = Array.isArray(article.contenu) && article.contenu.length > 0;
     const langueInitiale = React.useRef(langue);
-    React.useEffect(() => { hypeQueteMarquer("article"); }, []);
+    React.useEffect(() => { hypeQueteMarquer("article"); try { hypeMarquerVue("article", article.id); } catch (e) { } }, []);
+    React.useEffect(() => { try { hypeMarquerVue("langue", langue); } catch (e) { } }, [langue]);
     const changerLangueArticle = (code) => { if (code !== langueInitiale.current) hypeQueteMarquer("langue"); setLangue(code); };
     return (React.createElement("div", { style: { minHeight: "100vh" } },
         React.createElement("div", { style: { padding: "20px 20px 0", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 } },
@@ -44057,6 +44062,112 @@ var HYPE_FAMILLES = [
   }
 ];
 
+/* ============================================================
+   HYPE · 03/08/2026 · LA TABLE DES VUES (générique)
+   Une ligne = « ce cavalier a vu ceci, de ce type ».
+   Types utilisés : article · langue · reprise-voir · reprise-tracer · video
+   Demain Hype Lingo entrera dedans sans une ligne de code de plus.
+   Remplace les marqueurs localStorage, qui disparaissaient au changement
+   de téléphone.
+   ============================================================ */
+
+/* Écrit une vue, une seule fois (la clé unique en base fait le tri).
+   Ne bloque jamais l'interface : échoue en silence. */
+async function hypeMarquerVue(type, ref) {
+  try {
+    if (typeof supa === "undefined" || !supa || !type || !ref) return false;
+    var u = await utilisateurActuel(); if (!u) return false;
+    var r = await supa.from("hype_vues").upsert(
+      { user_id: u.id, type: String(type), ref: String(ref).slice(0, 120), vu_le: new Date().toISOString() },
+      { onConflict: "user_id,type,ref" }
+    );
+    return !!(r && !r.error);
+  } catch (e) { return false; }
+}
+
+/* Toutes les vues du cavalier, comptées par type. Une seule requête. */
+async function hypeCompterVues() {
+  var out = {};
+  try {
+    if (typeof supa === "undefined" || !supa) return out;
+    var u = await utilisateurActuel(); if (!u) return out;
+    var r = await supa.from("hype_vues").select("type, ref").eq("user_id", u.id).limit(2000);
+    if (!r || r.error || !r.data) return out;
+    r.data.forEach(function (l) { out[l.type] = (out[l.type] || 0) + 1; });
+  } catch (e) { }
+  return out;
+}
+
+/* ---------- le minuteur d'une minute ----------
+   Marque la vue après 60 secondes d'écran ACTIF. Le décompte s'arrête si
+   l'app passe en arrière-plan ou si le téléphone se verrouille : poser son
+   iPhone sur la table ne compte pas. Rien ne s'affiche à l'écran — un
+   chronomètre visible transformerait l'apprentissage en épreuve.
+   YouTube ne dit pas à Hype si la vidéo tourne : on mesure le temps de
+   présence sur la page, pas la lecture. Choix assumé (03/08). */
+/* hype-video.js vit dans un IIFE separe : il atteint la fonction par window. */
+try { if (typeof window !== "undefined") window.hypeMarquerVue = hypeMarquerVue; } catch (e) { }
+
+var HYPE_SECONDES_DE_VUE = 60;
+function hypeMinuteDeVue(type, ref) {
+  React.useEffect(function () {
+    if (!type || !ref) return;
+    var ecoule = 0, fini = false, minuteur = null;
+    function battre() {
+      if (fini) return;
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      ecoule += 1;
+      if (ecoule >= HYPE_SECONDES_DE_VUE) {
+        fini = true;
+        try { hypeMarquerVue(type, ref); } catch (e) { }
+        if (minuteur) { clearInterval(minuteur); minuteur = null; }
+      }
+    }
+    minuteur = setInterval(battre, 1000);
+    return function () { if (minuteur) clearInterval(minuteur); };
+  }, [type, ref]);
+}
+
+/* ---------- les familles alimentées par les vues ---------- */
+var HYPE_FAMILLES_VUES = [
+  {
+    id: "articles", rayon: 3, icone: "document", seuils: [1, 5, 15, 30, 50], xp: HYPE_FAM_XP, vue: "article",
+    nom: { fr: "Articles lus", en: "Articles read", es: "Art\u00edculos le\u00eddos", it: "Articoli letti", ja: "\u8aad\u3093\u3060\u8a18\u4e8b", de: "Gelesene Artikel" },
+    badge: { fr: "Grand lecteur", en: "Avid reader", es: "Gran lector", it: "Grande lettore", ja: "\u8aad\u66f8\u5bb6", de: "Grosser Leser" },
+    unite: { fr: "articles", en: "articles", es: "art\u00edculos", it: "articoli", ja: "\u672c", de: "Artikel" }
+  },
+  {
+    id: "polyglotte", rayon: 3, icone: "globe", seuils: [2, 3, 4, 5, 6], xp: HYPE_FAM_XP, vue: "langue",
+    nom: { fr: "Polyglotte", en: "Polyglot", es: "Pol\u00edglota", it: "Poliglotta", ja: "\u591a\u8a00\u8a9e", de: "Polyglott" },
+    badge: { fr: "Polyglotte", en: "Polyglot", es: "Pol\u00edglota", it: "Poliglotta", ja: "\u591a\u8a00\u8a9e\u8a71\u8005", de: "Polyglott" },
+    unite: { fr: "langues", en: "languages", es: "idiomas", it: "lingue", ja: "\u8a00\u8a9e", de: "Sprachen" },
+    note: { fr: "Les langues dans lesquelles tu as lu au moins un contenu.", en: "The languages you've read at least one piece of content in.", es: "Los idiomas en los que has le\u00eddo algo.", it: "Le lingue in cui hai letto almeno un contenuto.", ja: "\u4e00\u3064\u4ee5\u4e0a\u8aad\u3093\u3060\u8a00\u8a9e\u306e\u6570\u3002", de: "Die Sprachen, in denen du mindestens einen Inhalt gelesen hast." }
+  },
+  {
+    id: "reprises-vues", rayon: 3, icone: "piste", seuils: [1, 2, 3, 4, 6], xp: HYPE_FAM_XP, vue: "reprise-voir",
+    nom: { fr: "Reprises visualis\u00e9es", en: "Tests watched", es: "Reprises vistas", it: "Riprese guardate", ja: "\u898b\u305f\u6f14\u6b66", de: "Angesehene Aufgaben" },
+    badge: { fr: "L'\u0153il du juge", en: "The judge's eye", es: "El ojo del juez", it: "L'occhio del giudice", ja: "\u5be9\u5224\u306e\u76ee", de: "Das Auge des Richters" },
+    unite: { fr: "reprises", en: "tests", es: "reprises", it: "riprese", ja: "\u672c", de: "Aufgaben" },
+    note: { fr: "Une minute de visionnage suffit \u00e0 la compter.", en: "One minute of watching is enough to count it.", es: "Un minuto de visualizaci\u00f3n basta.", it: "Un minuto di visione \u00e8 sufficiente.", ja: "\uff11\u5206\u898b\u308c\u3070\u30ab\u30a6\u30f3\u30c8\u3055\u308c\u307e\u3059\u3002", de: "Eine Minute Ansehen gen\u00fcgt." }
+  },
+  {
+    id: "reprises-tracees", rayon: 3, icone: "main", seuils: [1, 2, 3, 4, 6], xp: HYPE_FAM_XP, vue: "reprise-tracer",
+    nom: { fr: "Reprises trac\u00e9es", en: "Tests traced", es: "Reprises trazadas", it: "Riprese tracciate", ja: "\u63cf\u3044\u305f\u6f14\u6b66", de: "Nachgezeichnete Aufgaben" },
+    badge: { fr: "Par c\u0153ur", en: "By heart", es: "De memoria", it: "A memoria", ja: "\u6697\u8a18", de: "Auswendig" },
+    unite: { fr: "reprises", en: "tests", es: "reprises", it: "riprese", ja: "\u672c", de: "Aufgaben" },
+    note: { fr: "Trac\u00e9e \u00e0 la main, dans le mode Tracer.", en: "Traced by hand, in Trace mode.", es: "Trazada a mano, en modo Trazar.", it: "Tracciata a mano, in modalit\u00e0 Traccia.", ja: "\u300c\u63cf\u304f\u300d\u30e2\u30fc\u30c9\u3067\u624b\u3067\u63cf\u304f\u3002", de: "Von Hand im Zeichnen-Modus." }
+  },
+  {
+    id: "videos", rayon: 3, icone: "video", seuils: [1, 3, 5, 10, 20], xp: HYPE_FAM_XP, vue: "video",
+    nom: { fr: "Vid\u00e9oth\u00e8que", en: "Video library", es: "Videoteca", it: "Videoteca", ja: "\u30d3\u30c7\u30aa\u30e9\u30a4\u30d6\u30e9\u30ea", de: "Videothek" },
+    badge: { fr: "L'\u0153il exerc\u00e9", en: "The trained eye", es: "El ojo entrenado", it: "L'occhio allenato", ja: "\u935b\u3048\u3089\u308c\u305f\u76ee", de: "Das ge\u00fcbte Auge" },
+    unite: { fr: "vid\u00e9os", en: "videos", es: "v\u00eddeos", it: "video", ja: "\u672c", de: "Videos" },
+    note: { fr: "Une minute de visionnage suffit. Le catalogue s'agrandit.", en: "One minute of watching is enough. The catalogue keeps growing.", es: "Un minuto basta. El cat\u00e1logo sigue creciendo.", it: "Un minuto \u00e8 sufficiente. Il catalogo cresce.", ja: "\uff11\u5206\u3067\u30ab\u30a6\u30f3\u30c8\u3002\u30ab\u30bf\u30ed\u30b0\u306f\u5897\u3048\u3066\u3044\u304d\u307e\u3059\u3002", de: "Eine Minute gen\u00fcgt. Der Katalog w\u00e4chst weiter." }
+  }
+];
+
+HYPE_FAMILLES = HYPE_FAMILLES.concat(HYPE_FAMILLES_VUES);
+
 var HYPE_RAYONS = [
   { fr: "Mon cavalier", en: "My rider", es: "Mi jinete", it: "Il mio cavaliere", ja: "\u30e9\u30a4\u30c0\u30fc", de: "Mein Reiter" },
   { fr: "Mes chevaux", en: "My horses", es: "Mis caballos", it: "I miei cavalli", ja: "\u79c1\u306e\u99ac", de: "Meine Pferde" },
@@ -44106,6 +44217,8 @@ async function hypeCalculerFamilles(ctx) {
 
   var u = null; try { u = await utilisateurActuel(); } catch (e) { u = null; }
   if (u) {
+    var vues = await hypeCompterVues();
+    HYPE_FAMILLES.forEach(function (f) { if (f.vue) val[f.id] = vues[f.vue] || 0; });
     try { var ra = (typeof mesAmis === "function") ? await mesAmis() : null; val.amis = (ra && ra.data) ? ra.data.length : 0; } catch (e) { val.amis = 0; }
     val.souvenirs = await hypeCompter("souvenirs", "user_id", u.id);
     val.palmares = await hypeCompter("resultats", "user_id", u.id);
@@ -44114,6 +44227,7 @@ async function hypeCalculerFamilles(ctx) {
     val.heybaby = await hypeCompter("conversations_heybaby", "user_id", u.id, { role: "user" });
   } else {
     val.amis = 0; val.souvenirs = 0; val.palmares = 0; val.messages = 0; val.likes = 0; val.heybaby = 0;
+    HYPE_FAMILLES.forEach(function (f) { if (f.vue) val[f.id] = 0; });
   }
   return val;
 }

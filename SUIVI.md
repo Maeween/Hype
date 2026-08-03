@@ -12,6 +12,290 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 👁️ SESSION 80 (03/08) — LA TABLE DES VUES : CINQ FAMILLES DE PLUS
+
+**Deux fichiers à pousser ensemble : `index.html` ET `hype-video.js`.** Plus `hype-vues.sql` à exécuter avant.
+**16 familles au total** désormais (11 + 5).
+
+### La table `hype_vues`, volontairement générique
+Une ligne = « ce cavalier a vu ceci, de ce type ». Types actuels : `article` · `langue` · `reprise-voir` · `reprise-tracer` · `video`. **Hype Lingo entrera dedans sans migration ni ligne de code supplémentaire.**
+Elle **remplace les marqueurs `localStorage`** (`hypeQueteVue`), qui disparaissaient quand le cavalier changeait de téléphone. Les anciens marqueurs sont conservés en parallèle : rien n'est cassé pour les quêtes de découverte.
+
+### Les 5 nouvelles familles (rayon Mon savoir)
+| Famille | Marches | Badge |
+|---|---|---|
+| Articles lus | 1·5·15·30·50 | Grand lecteur |
+| Polyglotte | 2·3·4·5·6 langues | Polyglotte |
+| Reprises visualisées | 1·2·3·4·6 | L'œil du juge |
+| Reprises tracées | 1·2·3·4·6 | Par cœur |
+| Vidéothèque | 1·3·5·10·20 | L'œil exercé |
+
+⚠️ **Vidéothèque en nombres absolus, JAMAIS « toutes les vidéos ».** Blandine : « il y aura beaucoup plus de vidéos par la suite ». Un palier « les 7 » se serait dévalué à chaque ajout et aurait **rendu incomplet un badge déjà gagné**. Même raison pour les jeux Baby. Règle à tenir pour toute famille adossée à un catalogue qui grandit.
+Catalogue actuel vérifié dans `hype-video.js` : **7 vidéos pédagogiques** (3 contact IFCE + incurvation + 3 aides), plus la réserve d'animations réservée aux modérateurs, exclue du compte.
+
+### Le minuteur d'une minute (décision de Blandine)
+`hypeMinuteDeVue(type, ref)` : la vue s'écrit après **60 secondes d'écran ACTIF**. Le décompte **s'arrête** si l'app passe en arrière-plan ou si le téléphone se verrouille (`document.visibilityState`) — poser son iPhone sur la table ne compte pas.
+⚠️ **Limite assumée et documentée** : YouTube ne dit pas à Hype si la lecture tourne vraiment (il faudrait leur API, une dépendance externe pour un badge). **On mesure le temps de présence sur la page, pas la lecture.** Rien n'est affiché à l'écran : un chronomètre visible transformerait l'apprentissage en épreuve.
+
+### Où c'est branché
+- **Articles** : `EcranArticleDetail` → vue `article` (id de l'article) + vue `langue` à chaque changement de langue, immédiat (lire n'a pas besoin de minuteur).
+- **Reprises visualisées** : `EcranTraceAnime`, une minute, ref = le niveau (`g3`…`g7`, `clubelite`).
+- **Reprises tracées** : `EcranEntrainerTracer`, une minute.
+- **Vidéos** : `hype-video.js` → `window.EcranVideoLecture`, une minute. ⚠️ Ce fichier vit dans un **IIFE séparé** : `hypeMarquerVue` est donc **exposée sur `window`** par l'index (`window.hypeMarquerVue = hypeMarquerVue`). Si un jour la fonction est renommée, **les deux fichiers doivent bouger ensemble**.
+
+### Vérifications
+`allerVersGalop` = 3 · 388 const · 3 fonctions nouvelles, 0 perdue · chaque identifiant défini exactement une fois · fusion `HYPE_FAMILLES.concat(HYPE_FAMILLES_VUES)` présente une seule fois · 15 blocs inline valides + `hype-video.js` validé séparément · rendu Playwright sans nouvelle erreur.
+
+### Décisions produit arrêtées ce jour (non codées)
+- **Parrainage → récompense par CODE PROMO Stripe**, pas par un mois offert géré par Hype. Raison : un mois maison exigerait une colonne de date et un accès Premium hors Stripe, donc **deux sources de vérité sur qui est abonné** — le schisme du 02/08 à nouveau. Avec un coupon Stripe, le cavalier reste un abonné normal dont la première période est gratuite, et le code se garde dans la poche. Paliers proposés : 1 filleul = badge, 3 = 1 mois, 5 = 1 mois, 10 = 1 mois Duo. ⚠️ **Vérifier dans Stripe qu'un coupon « 1 mois » ne devienne pas « 1 an » sur l'abonnement annuel.** Génération des codes **à la main** au début (2-3 cas), automatisation seulement si le volume arrive.
+- **Un filleul ne doit compter qu'une fois qu'il a FAIT quelque chose** (cheval ajouté, cours terminé), jamais à l'inscription : élimine les faux comptes sans policer personne.
+- **Vérification d'email à l'inscription : décidée, REPORTÉE.** ⚠️ **Ne pas activer l'interrupteur Supabase (Authentication → Email → Confirm email) avant que le code d'inscription soit adapté** : un nouveau compte ne pourrait plus se connecter avant d'avoir cliqué dans le mail, et l'enchaînement inscription→connexion actuel se casserait sans message. À faire dans l'ordre : adapter le code (écran « Vérifie ta boîte mail » + renvoi du lien), pousser, PUIS activer. Vérifier aussi que les comptes existants sont marqués confirmés dans `auth.users`, et prévoir un vrai service d'envoi (le domaine Supabase par défaut est limité à quelques mails/heure) — ce qui réglera au passage le `feinn@live.fr` temporaire.
+
+### Reste à faire sur les quêtes
+Déclaratifs (J'y étais / concours / sellerie) · parrainage · fidélité · **assiduité (semaines vs jours, toujours non tranché)** · passeport · jeux Baby (clé de stockage du Mémory non vérifiée) · Distinctions · rebrancher `EcranBadges` sur `hype_paliers`.
+
+---
+
+## ⚡ SESSION 79 (03/08) — L'XP DES MARCHES SE VERSE ENFIN AU FIL DE L'EAU
+
+Dernière pièce manquante de la refonte : jusqu'ici seul le **rattrapage initial** versait de l'XP. Désormais **chaque marche franchie verse la sienne** (10 · 20 · 40 · 70 · 120 ; Galops 40 → 300), au même moment que la cérémonie.
+
+### La règle de sûreté appliquée partout
+`hypeEnregistrerPalier` **renvoie maintenant `true`/`false`** selon que la base a réellement accepté l'écriture. L'XP n'est versée **que si le palier a été mémorisé**, et la cérémonie ne se déclenche **que dans ce cas** aussi. Une écriture qui échoue (réseau coupé en plein geste, RLS) ne donne donc ni XP ni annonce — elle sera simplement rejouée à la prochaine ouverture, une seule fois.
+⚠️ **Règle générale du projet, désormais explicite** : *une récompense ne se verse jamais avant que sa trace soit écrite en base.* Sans ça, une même marche paie deux fois.
+
+### Détail technique
+La boucle de l'effet **attend** (`await`) chaque enregistrement avant de compter l'XP — l'effet était déjà `async`, la garde `if (!actif) return;` est reposée après chaque attente pour ne rien écrire sur un écran démonté.
+
+### Vérifications
+`allerVersGalop` = 3 · 388 const · aucune fonction nouvelle ni perdue · 15 blocs inline valides · rendu Playwright sans nouvelle erreur.
+
+### État de la refonte des quêtes après ce lot
+✅ 11 familles branchées sur de vrais compteurs · ✅ paliers persistés en base · ✅ cérémonie du haut fait · ✅ annonce dans le fil de la communauté · ✅ rattrapage d'XP initial · ✅ XP au fil de l'eau · ✅ « La suite pour toi » + « Tes prochaines quêtes » sur l'accueil.
+❌ Restent : la table des vues (articles, reprises, vidéothèque, Polyglotte) · les déclaratifs (J'y étais, concours, sellerie) · parrainage · fidélité · assiduité (**décision semaines/jours toujours non tranchée**) · passeport · jeux Baby (clé de stockage du Mémory non vérifiée) · les Distinctions (fondateur numéroté, Premier Cercle, Bienfaiteur) · rebrancher l'ancien `EcranBadges` sur `hype_paliers`.
+
+---
+
+## 💎 SESSION 78 (03/08) — RATTRAPAGE D'XP POUR LES CAVALIERS DÉJÀ AVANCÉS
+
+**Décision de Blandine**, et elle est juste : « ce n'est pas très fair-play pour ceux qui étaient là en premier ». Dominique a lu beaucoup de cours avant que le système de familles existe — il ne doit ni les relire, ni y perdre.
+
+**Rien n'avait été remis à zéro** (le moteur d'XP n'a jamais été touché, et `coursTermines` garde tout l'historique). Ce qui manquait, c'était l'inverse : **verser l'XP des marches déjà acquises**.
+
+### Comment c'est fait
+Au **premier passage** d'un cavalier (aucune ligne dans `hype_paliers`), l'app additionne l'XP de toutes les marches déjà franchies, la verse **une seule fois** via `setXp`, et affiche `CeremonieRattrapage` : « Tes quêtes ont changé · Tout ce que tu avais déjà accompli a été compté. Tu ne recommences rien. » + le total d'XP + le nombre de marches.
+**Aucune diffusion dans le fil pour le rattrapage** (décision de Blandine) : onze annonces d'un coup tueraient l'effet des vraies cérémonies.
+
+### ⚠️ CORRECTIF D'UN BUG QUE J'AVAIS INTRODUIT EN SESSION 77
+`premierPassage` valait `true` quand `hypeChargerPaliers()` renvoyait `null` — c'est-à-dire **table injoignable** (hors ligne, RLS, SQL pas encore passé). Sans XP en jeu c'était inoffensif ; **avec le rattrapage, l'XP aurait été reversée à chaque ouverture hors ligne.** Corrigé : si la lecture échoue, l'app ne sème rien et ne verse rien. **Le verrou d'unicité, c'est la base — jamais le téléphone.** Vaut comme règle générale : toute récompense unique doit être gardée par une ligne en base, pas par un état local.
+
+### Conséquence attendue
+Un cavalier avancé va **prendre plusieurs niveaux d'un coup** à sa première ouverture des Quêtes. C'est voulu, et l'écran de bienvenue l'explique au lieu de le laisser deviner.
+
+### Vérifications
+`allerVersGalop` = 3 · 388 const · 1 fonction nouvelle (`CeremonieRattrapage`), 0 perdue · 15 blocs inline valides · rendu Playwright sans nouvelle erreur.
+
+### Reste ouvert sur l'XP
+L'XP des marches **futures** n'est toujours pas versée automatiquement à chaque franchissement — seul le rattrapage initial l'est. À brancher dans un lot dédié (au même endroit que la cérémonie), une fois l'écran validé en ligne.
+
+---
+
+## 🏅 SESSION 77 (03/08) — LES FAMILLES À PALIERS SONT EN PLACE (11 familles + cérémonie + annonce)
+
+**Part de la 76.** L'ancien `EcranQuetes` (9 344 caractères) est **supprimé et réécrit** à sa place — méthode par ancres de texte, jamais de déplacement de bloc. `allerVersGalop` = 3, 388 const, **aucune fonction perdue**, 15 blocs inline valides, chaque nouvel identifiant défini **exactement une fois** (vérifié un par un). Rendu Playwright : mêmes 2 erreurs hors ligne qu'avant, aucune nouvelle.
+⚠️ **`hype-paliers.sql` À EXÉCUTER AVANT DE POUSSER** (ou juste après) : sans la table, l'écran s'affiche et compte correctement, mais **aucune cérémonie ne se déclenche et rien ne part dans le fil**.
+
+### Ce qui remplace les 11 quêtes plates
+**11 familles, 4 rayons en onglets** (Mon cavalier · Mes chevaux · Ma communauté · Mon savoir). Chaque carte **se retourne** au toucher sur ses marches, avec l'XP de chacune et le badge au bout. Marche franchie en or, suivante cerclée de turquoise.
+
+| Rayon | Famille | Marches | Compteur réel |
+|---|---|---|---|
+| Cavalier | Les 7 Galops | 1→7, un badge par Galop | `profil.galop` |
+| Chevaux | Mon écurie | 1·2·3·5·10 | `ctx.chevaux` (hors `ch-demo`) |
+| Chevaux | Fiches complètes | 1·2·3·5·10 | photo + robe + âge + un parent |
+| Chevaux | Souvenirs | 1·5·15·30·60 | table `souvenirs` |
+| Chevaux | Palmarès | 1·3·5·10·25 | table `resultats` |
+| Communauté | Amis | 1·5·10·25·50 | `mesAmis()` |
+| Communauté | Messages envoyés | 1·10·30·100·250 | `messages_prives.expediteur_id` |
+| Communauté | Encouragements | 1·10·50·150·400 | table `likes` |
+| Savoir | Cours terminés | 1·5·15·30·60 | `ctx.coursTermines` |
+| Savoir | Quiz sans faute | 1·5·10·25·50 | `quizResultats` ≥ 100 |
+| Savoir | Hey Baby | 1·10·30·50·100 | `conversations_heybaby` (role user) |
+
+XP affiché par marche : **10 · 20 · 40 · 70 · 120** (Galops : 40 → 300).
+
+### La cérémonie et l'annonce
+`CeremonieHautFait` : sceau doré qui tombe, halo qui respire, nom du haut fait, XP, « tes amis le verront dans leur fil », bouton Continuer. Elle se déclenche **au moment exact** où une marche est franchie, jamais avant.
+Diffusion via `hypeDiffusionEcurie("haut_fait", nom, null)` → onglet « Ta communauté » de la cloche pour les cavaliers de l'écurie.
+
+⚠️ **GARDE-FOU IMPORTANT — le premier passage est SILENCIEUX.** Un cavalier existant a déjà des dizaines de marches acquises : si on comparait à zéro, **11 hauts faits partiraient d'un coup dans le fil**. Donc à la première ouverture (aucune ligne en base pour ce cavalier), tous les paliers sont enregistrés **sans cérémonie ni annonce**. Les suivants seuls sont fêtés. Une seule cérémonie à la fois, même si deux marches tombent ensemble.
+
+### ⚠️ Ce que ce lot ne fait PAS
+- **L'XP n'est pas encore versée.** Les valeurs sont affichées, mais le moteur d'XP n'est **pas** touché — y brancher 11 familles d'un coup pouvait dérégler les niveaux existants. À faire dans un lot dédié, avec une décision : est-ce qu'on rattrape l'XP des marches déjà acquises, ou seulement les futures ?
+- **14 familles de la spec (session 74) ne sont pas là** : celles qui demandent la table des vues (articles, reprises vues/tracées, vidéothèque, Polyglotte), les déclaratifs (J'y étais, concours, sellerie), le parrainage, la fidélité, l'assiduité, le passeport, les jeux Baby. Une ligne discrète en bas de l'écran annonce que d'autres familles arrivent — **pas de cartes grises « Bientôt »**, conformément à la décision du 02/08 (« je ne veux plus que ça pourrisse les pages »).
+- **Assiduité toujours non tranchée** (semaines vs jours) : rien codé.
+- **Distinctions** (Membre fondateur numéroté, Premier Cercle, Bienfaiteur) : maquettées, pas codées.
+
+### Points de vigilance pour la suite
+- Les compteurs passent par `hypeCompter()` qui fait un `count exact head` et **renvoie 0 en cas d'erreur** : une famille qui resterait à 0 sans raison = nom de colonne à revérifier, pas un bug d'affichage.
+- **Les jeux Hype Baby ont été volontairement écartés** de ce lot : la clé de stockage de la progression du Mémory n'a pas été vérifiée, et j'ai refusé de deviner.
+- L'ancien `EcranBadges` est **intact** et toujours masqué. Ses `palierAtteint` restent écrits en dur : à rebrancher sur `hype_paliers` quand cet écran-ci sera validé en ligne.
+
+### Préparation Flutter
+`hypeMarcheAtteinte`, `hypeFicheComplete` et `HYPE_FAMILLES` sont des données et des fonctions **pures** — transposables en Dart sans réécriture. La persistance en base (et non en `localStorage`) était de toute façon un prérequis Flutter.
+
+---
+
+## 🧭 SESSION 76 (03/08) — « LA SUITE POUR TOI » + « TES PROCHAINES QUÊTES » SUR L'ACCUEIL
+
+**Part de la 75 (les 4 correctifs).** Diff = **3 hunks, purement additifs** : +149 lignes de code neuf avant `EcranUnivers`, +1 ligne d'appel en haut de l'accueil, +1 ligne d'appel en bas. **Aucune ligne existante modifiée. Aucun SQL. Aucune image.**
+✅ 5 nouvelles fonctions (`BandeauSuiteHype`, `BlocProchainesQuetes`, `hypeQuetesASuivre`, `hypeJourIndex`, `hypeUtiliserAmis`), **0 fonction perdue**, 388 const inchangés, `allerVersGalop` = 3, 15 blocs inline valides. Rendu Playwright : mêmes 2 erreurs hors ligne qu'avant (fichiers images absents + réseau coupé), aucune nouvelle.
+
+### Le manque comblé
+Blandine : « quand ils se connectent, voir quoi faire après ». L'accueil ne donnait **aucune direction** — il fallait ouvrir les Quêtes et chercher soi-même. Et l'écran des Quêtes n'affichait de toute façon que 3 quêtes en cours sur les restantes.
+
+### Ce qui est ajouté
+1. **En haut de l'accueil, sous les annonces** : une **seule ligne** « La suite pour toi » = hexagone + la quête la plus pertinente + son XP + chevron. Un tap mène à l'écran exact où l'accomplir (`q.cible`).
+2. **En bas de l'accueil, avant What's up** : « Tes prochaines quêtes » = 3 lignes cliquables + **« Voir toutes tes quêtes »**, qui est désormais le **deuxième chemin vers l'écran Quêtes** depuis l'accueil (il n'y avait que le bandeau de niveau de la page Cavalier).
+
+### Les deux règles de tri (décidées avec Blandine)
+- **Uniquement les quêtes faisables depuis le canapé.** Constante `HYPE_QUETES_MAISON`. Les familles qui dépendent de la vraie vie (concours, lieux, Galop passé) ne proposeront **jamais** rien : elles se rempliront quand ça arrivera, et le haut fait tombera avec sa cérémonie. Blandine : « quelqu'un va pas en concours tous les jours ».
+- **Rotation quotidienne.** `hypeJourIndex()` (numéro du jour) fait tourner la liste : la proposition change chaque jour et **jamais deux jours de suite la même**. Vérifié par test : `cours → notifs → ami → cours → notifs → ami`.
+- **Écran vide traité** : si tout est accompli, le bloc ne se vide pas, il invite à ouvrir un chapitre non lu.
+
+### Notes techniques
+- **Lecture seule, zéro base** : tout est calculé depuis `HYPE_QUETES_DECOUVERTE` (déjà traduit en 6 langues, donc **3 chaînes nouvelles seulement** : le kicker, le titre du bloc, le lien). Une seule requête réseau ajoutée, `mesAmis()`, via `hypeUtiliserAmis()`.
+- Les composants sont définis **juste avant `EcranUnivers`** (disponibles au rendu) et **n'écrasent rien**.
+- Teinte respectée (`teinteHypeActive` / `teinteRGBA`), icônes réutilisées de `qIcone`, hexagones cohérents avec l'écran Quêtes.
+
+### ⚠️ Ce que ce lot ne fait PAS (et pourquoi)
+La **refonte en 25 familles à 5 marches** (spec complète en session 74) n'est **pas** dans cette livraison. Elle demande les deux tables (`hype_paliers`, `hype_vues`), la cérémonie du haut fait, l'annonce dans le fil et ~300 chaînes de traduction. Livrer les deux ensemble aurait mélangé un ajout sûr et un gros chantier dans le même fichier — la règle de Blandine. **Prochaine livraison = ce chantier, avec son SQL.**
+⚠️ **Point de vigilance pour cette suite** : le déclencheur de l'annonce (« Blandine vient d'accomplir le haut fait X ») **exige** de persister les paliers en base. Les quêtes sont recalculées à chaque rendu : sans persistance, le haut fait serait réannoncé à chaque affichage.
+
+### Préparation Flutter
+Rien de spécifique. `hypeQuetesASuivre(ctx, amisCount)` est une fonction **pure** (aucun accès DOM, aucun React) : elle se transpose telle quelle en Dart, et c'est volontaire.
+
+---
+
+## 🔧 SESSION 75 (03/08) — QUATRE CORRECTIFS CIBLÉS (albums + 2 quêtes) · md5 à relever après push
+
+**Part de l'index en ligne fourni par Blandine : md5 `c7ecb4f2`, 10 432 470 octets.** Diff final = **exactement 4 lignes modifiées, 4 hunks**, aucune ligne ajoutée ni supprimée. 895 fonctions + 388 const identiques avant/après. `allerVersGalop` = 3. Les 15 blocs script inline valides (`node --check`). Rendu Playwright : erreurs identiques au fichier d'origine (⚠️ le rendu hors ligne échoue de la même façon avant ET après — fichiers `hype-images-*.js` absents du bac à sable et réseau coupé, donc le test ne prouve que l'absence de régression, pas que la page s'affiche).
+
+**Livraison volontairement SANS aperçu** : la modifier aurait ajouté un 5ᵉ hunk (`DEV_OUVRIR_PAGE`) et cassé la propriété « diff de 4 lignes exactement ». Test direct dans l'app.
+
+### 1 · Albums de chevaux : la visibilité mentait (signalé par Blandine — « le mien est en privé par défaut »)
+Ce n'était **pas** un désaccord avec la décision du 02/08, mais une **incohérence entre deux lectures de la même donnée** :
+- `creerAlbumCheval` (ligne 703) n'écrivait **pas** la colonne `visibilite` → l'album naissait à `NULL`.
+- Le **filtrage en lecture** (ligne 694) traite `NULL` comme **public** → la règle opt-out était respectée.
+- Le **panneau de réglages** (ligne 30797) traitait `NULL` comme **privé** (`albOuvert.visibilite || "prive"`) → Blandine voyait « Privé » allumé.
+
+➡️ **L'album était donc réellement public alors que l'interface affichait Privé** — plus dangereux qu'un bug de visibilité franc. Deux correctifs : `visibilite: "public"` écrit explicitement à la création, et le panneau aligné sur `|| "public"`.
+⚠️ **Les albums déjà créés restent à `NULL` en base** : ils s'afficheront correctement, mais `albums-visibilite.sql` (livré, non destructif, idempotent) les aligne sur `public` et pose la valeur par défaut de la colonne. **Pas encore exécuté par Blandine.**
+
+### 2 · Quête « Mets une photo sur un de tes chevaux » ne se validait jamais
+Elle testait `c.photo_url`. Or les chevaux du **contexte applicatif** portent le champ **`photo`** — `photo_url` est le nom de la **colonne en base**, pas celui de l'objet côté app. La propriété testée n'existait jamais. Corrigé en `(c.photo_url || c.photo)` pour couvrir les deux formes.
+
+### 3 · Quête « Écris la philosophie de ton écurie » ne se validait jamais
+Elle teste `ctx.profil.ecurie_voix`. Mais l'hydratation du profil du contexte à la connexion (ligne 24368) recopie une **liste blanche de champs** — pseudo, ecurie, ecurie2, email, avatar, histoire, ville — et **`ecurie_voix` n'y était pas**. Le texte était bien en base (`TableauxSpectralHype` relit son propre profil), simplement invisible du contexte. `ecurie_voix` et `ecurie_histoire` ajoutés à la liste blanche.
+⚠️ **Leçon générale** : toute quête / tout compteur qui lira un champ du profil doit vérifier que ce champ est bien dans cette liste blanche, sinon il restera éteint pour toujours sans erreur visible.
+
+### Préparation Flutter
+Rien fait. Note utile quand même : les trois bugs de cette session viennent de la **même famille de causes** que ceux du 02/08 — une donnée lue par deux chemins qui ne l'interprètent pas pareil, ou un champ renommé entre la base et l'objet client. Un modèle de données typé (Flutter/Dart) rendrait ces trois bugs impossibles à écrire.
+
+### Prochaine livraison
+**Lot 1 de la refonte des quêtes** (spécification complète en session 74) : les 13 familles calculables, les paliers persistés en base, la cérémonie du haut fait, l'annonce dans le fil, « La suite pour toi » sur l'accueil + « Tes prochaines quêtes » en bas de l'accueil. Nécessite le SQL des deux tables (`hype_paliers`, `hype_vues`) — **feu vert de Blandine pas encore donné**. Découpé exprès en deux livraisons pour ne jamais mélanger un correctif et un gros chantier dans le même fichier (règle de Blandine).
+
+---
+
+## 🏅 SESSION 74 (03/08) — REFONTE DES QUÊTES EN FAMILLES À 5 MARCHES · SPÉCIFICATION VALIDÉE + MAQUETTE
+
+**Aucun code livré. Aucune modification de `index.html`.** Session de conception avec Blandine : la spécification ci-dessous est arrêtée avec elle, la maquette autonome `maquette-quetes-familles.html` est livrée pour validation visuelle. Rien n'est intégré avant son accord.
+
+### Le constat de départ
+Blandine : « on ne voit s'afficher que celles déjà réalisées, ça ne donne pas d'objectifs ». Vérifié dans l'index :
+- `HYPE_QUETES_DECOUVERTE` contient **11 quêtes plates**, booléennes, non répétables. Blandine en a 9 sur 11.
+- `EcranQuetes` n'affiche **jamais plus de 3 quêtes en cours** (1 vedette + 2 minis) — le reste est résumé par une ligne « +N autres ». Avec 2 quêtes restantes, la section est minuscule et les 9 cartes dorées mangent l'écran.
+- **Total des 11 quêtes = 150 XP, alors qu'un niveau coûte 200 XP.** Le système ne peut structurellement pas faire monter d'un niveau.
+- ⚠️ **Bug à vérifier** : les 2 quêtes non validées chez elle (`photo-cheval`, `philosophie-ecurie`) devraient probablement l'être — ses chevaux ont des photos et elle a écrit la devise de l'écurie. Soit `ctx.profil` n'est pas rafraîchi après écriture, soit la photo est rangée ailleurs que `photo_url`. **Non diagnostiqué, à reprendre.**
+
+### Découverte majeure : le système existe déjà à moitié
+`BADGES_I18N` (ligne ~19457) contient 13 badges dont **10 déjà construits en paliers** avec exactement la mécanique demandée (« Sans faute » 1/10/25 quiz, « Grand lecteur » 5/15/30 articles, « Esprit curieux » 10/30/100 questions), chaque palier ayant ses points. **Mais `palierAtteint` est écrit EN DUR dans la table (`-1` ou `0`) et jamais recalculé : ces badges sont décoratifs.** Et l'écran `EcranBadges` est masqué depuis le 02/08 avec les 4 sections « Prochainement » (`AFFICHER_SECTIONS_BIENTOT = false`).
+
+➡️ **Décision d'architecture : on ne crée pas un troisième système, on marie les deux existants.** Une famille de quête = un badge à paliers. Les 11 quêtes actuelles deviennent la **marche 1** de leur famille. Rien n'est jeté, rien ne fait doublon.
+
+### La structure arrêtée
+- **5 marches par famille**, XP **10 · 20 · 40 · 70 · 120** (une famille complète = 260 XP, un peu plus d'un niveau).
+- **Un badge nommé au bout de chaque famille.**
+- **25 familles rangées en 4 rayons** (onglets) : Mon cavalier · Mes chevaux · Ma communauté · Mon savoir. Le rangement est nécessaire : 25 cartes à plat sur iPhone = un mur illisible.
+- **La carte se retourne** (flip) pour montrer ses 5 marches, la marche atteinte allumée en or, la suivante cerclée de turquoise.
+- **Les 7 Galops = 7 badges, un par Galop**, déclenchés sur le changement de `profil.galop` (le champ existe, et `majProfil` sait déjà comparer l'ancienne et la nouvelle valeur — c'est le mécanisme de « a rejoint l'écurie »). 150 à 250 XP par Galop. Idée d'une famille « % du Galop en cours » **abandonnée** par Blandine : doublon avec « Cours terminés ».
+- **Distinctions hors familles, non progressives, non rattrapables** : Membre fondateur numéroté (rang calculable depuis `created_at`, **à figer** une fois attribué), Premier Cercle (seuil à annoncer publiquement), Bienfaiteur (le libellé « membre d'honneur » existe déjà en 6 langues dans `EcranPremium`).
+
+### Les 25 familles
+| Rayon | Famille | Marches | Badge |
+|---|---|---|---|
+| Cavalier | Les 7 Galops | un par Galop | 7 badges |
+| Cavalier | Fidélité | 1 mois · 3 · 6 · 1 an · 2 ans | Pilier du Cercle |
+| Cavalier | Assiduité | 2 · 4 · 12 · 50 · 100 **semaines** | Flamme cristal |
+| Cavalier | Passeport de cavalier | par section | Mémoire vive |
+| Chevaux | Mon écurie | 1 · 2 · 3 · 5 · 10 chevaux | Grande écurie |
+| Chevaux | Fiches complètes | 1 · 2 · 3 · 5 · 10 | Généalogiste |
+| Chevaux | Souvenirs | 1 · 5 · 15 · 30 · 60 | Gardien des souvenirs |
+| Chevaux | Concours (participation) | 1 · 3 · 5 · 10 · 25 | Grand compétiteur |
+| Chevaux | Palmarès (classements) | 1 · 3 · 5 · 10 · 25 | Collectionneur de flots |
+| Chevaux | Achats en sellerie | 1 · 3 · 5 · 10 · 20 | Ambassadeur de la sellerie |
+| Chevaux | Produits identifiés | 1 · 3 · 5 · 10 · 20 | Fan de mode |
+| Communauté | Amis | 1 · 5 · 10 · 25 · 50 | Populaire |
+| Communauté | Messages | 1 · 10 · 30 · 100 · 250 **cavaliers différents** | Toujours un mot |
+| Communauté | Likes & commentaires | 1 · 10 · 50 · 150 · 400 **publications différentes** | Bonne compagnie |
+| Communauté | J'y étais | 1 · 3 · 5 · 10 · 20 lieux | Grand voyageur |
+| Communauté | Cavalier sans frontières | 1 · 2 · 3 · 5 · 10 pays | Sans frontières |
+| Communauté | Parrainage | 1 · 3 · 5 · 10 · 25 filleuls | Bâtisseur |
+| Savoir | Cours terminés | 1 · 5 · 15 · 30 · 60 | Élève studieux |
+| Savoir | Quiz sans faute | 1 · 5 · 10 · 25 · 50 | Sans faute |
+| Savoir | Articles lus | 1 · 5 · 15 · 30 · 50 | Grand lecteur |
+| Savoir | Hey Baby | 1 · 10 · 30 · 50 · 100 | Esprit curieux |
+| Savoir | Polyglotte | 2 · 3 · 4 · 5 · 6 langues | Polyglotte |
+| Savoir | Reprises visualisées | 1 · 2 · 3 · 4 · les 6 | L'œil du juge |
+| Savoir | Reprises tracées à la main | 1 · 2 · 3 · 4 · les 6 | Par cœur |
+| Savoir | Jeux Hype Baby | 1 · 5 · 15 · 30 · 60 parties | Le compagnon d'Apy |
+
+### Ce qui est calculable AUJOURD'HUI sans rien créer
+`amis` (mesAmis) · chevaux · fiches complètes · souvenirs · palmarès (`resultats`) · messages (`messages_prives`) · likes (`likes`) · commentaires (`commentaires`) · cours terminés · quiz 100 % · Hey Baby (`conversations_heybaby`) · jeux Baby (progression Mémory déjà sauvegardée et synchronisée) · Galops (`profil.galop`).
+
+### Ce qui demande un compteur qui n'existe pas
+- **Articles lus** : aujourd'hui un simple booléen `localStorage` (`hypeQueteVue`), pas un compteur.
+- **Polyglotte** : idem, booléen local.
+- **Assiduité** : rien n'est stocké. Compter en **semaines de présence**, pas en jours d'affilée (un cavalier monte le samedi, une série en jours se casse et décourage).
+- **Reprises vues / tracées** : les 4 modes existent (`voir`, `tracer`, `challenge`, `immersion`) et le catalogue fait **6 reprises** (g3, g4, g5, g6, g7, clubelite), mais aucune trace n'est enregistrée. ➡️ Réutiliser la forme de `visites_articles` : une ligne par « reprise + mode ».
+- **J'y étais / pays / événements** : `annoncerVisiteEcole` fait déjà exactement ce geste (mémorise + diffuse un haut fait dans le fil). À étendre avec un champ lieu/pays et un bouton « J'y étais » sur les fiches `EVENEMENTS` (Lamotte).
+- **Fidélité** : la date de début d'abonnement n'est pas enregistrée côté Hype (statut Stripe sans historique). Version 1 : n'allumer que la marche 1.
+- **Passeport de cavalier** : n'existe pas, chantier à part. Blandine : « on le fera après ».
+- **Parrainage + Achats en sellerie** : voir ci-dessous.
+
+### Annonce dans le fil (demande explicite de Blandine)
+« Blandine vient d'accomplir le haut fait Populaire », visible par ses amis. **La plomberie existe** : `hypeDiffusionEcurie(type, extrait, cible)` + table `notifications` + onglet « Ta communauté » de la cloche + les bulles dorées « haut-fait » du fil. ⚠️ **Mais le déclencheur manque** : les quêtes sont recalculées à chaque rendu (`fait(ctx)`), il n'existe aucun *moment* de complétion. ➡️ **Il faut persister l'état de chaque famille/palier** (table ou colonne Supabase) pour détecter la transition une seule fois et ne pas re-annoncer à chaque affichage. C'est la même brique que les paliers : à faire une fois, elle sert aux deux.
+
+### Décisions produit encore ouvertes
+- **Le Galop est déclaratif** : on annonce le Galop déclaré tel quel (un enfant peut cocher Galop 7 le premier jour), ou seulement ce que l'app a vraiment vu ? **Non tranché.**
+- **« J'y étais » est déclaratif** : recommandation = demander une photo pour valider (crédible sans police, et ça nourrit les albums). **Non tranché.**
+- **Parrainage** : n'existe pas du tout. Demande un **code unique par compte** + attribution à l'inscription + une règle anti-abus (le filleul doit avoir fait quelque chose). Récompense à décider — attention, offrir du Premium a un coût Stripe réel.
+- **Sellerie / Demi Volte** : Hype ne verra **jamais** un code promo utilisé sur un site tiers. Deux chemins : déclaratif (version 1), ou **code personnel par cavalier** chez Demi Volte, qui rend le badge vérifié et permet de savoir qui rapporte quoi. ➡️ **Question posée à Blandine, sans réponse : Demi Volte accepte-t-il plusieurs codes, et y a-t-il un tableau de bord d'affiliation ?** Même plomberie que le parrainage, à construire d'un coup.
+- **Un seul champ** sur la photo en version 1 (« acheté chez », liste fermée). **Jamais de champ libre** — c'est exactement comme ça qu'est né le problème d'identification des écuries.
+- **Dons** : encaisser via Stripe est simple, mais un versement à une société n'est pas un don au sens fiscal en France, aucun reçu. À vérifier avec la comptable avant d'employer le mot « don ».
+
+### Règle à ne pas oublier à l'implémentation
+**Les objectifs des jeux et des vidéos doivent être écrits en RELATIF** (« tous les niveaux disponibles », « toutes les vidéos »), jamais en absolu (« les 10 niveaux »). Le Mémory a des niveaux incomplets, le Poney d'Or est vide, la bibliothèque vidéo grandit : un badge déjà gagné redeviendrait incomplet chez tous les enfants le jour d'un ajout.
+
+### Livré cette session
+- `maquette-quetes-familles.html` — maquette autonome : hero de niveau, rail des Distinctions, 4 rayons en onglets, grille des 25 familles, **carte qui se retourne** sur ses 5 marches, exemple de la phrase du fil. Interrupteur « seules les familles calculables aujourd'hui » pour voir d'un coup ce qui marcherait sans plomberie. Design Hype Spectral, échelle de marches en hexagones (reprise de `.qte-hex`).
+- ⚠️ `hype-video.js` **non fourni** cette session : la famille « Vidéos de démonstration » n'a pas pu être chiffrée et n'est pas dans la maquette.
+
+### Préparation Flutter
+Rien fait cette session (aucun code produit). À noter pour plus tard : la structure « une famille = une ligne de données (nom, badge, 5 seuils, source du compteur) » est portable telle quelle, et le fait de persister les paliers en base plutôt qu'en `localStorage` est un prérequis Flutter de toute façon.
+
+---
+
 ## 🎬 SESSION 73 (02/08) — LA BIBLIOTHÈQUE VIDÉO EST ENFIN ATTEIGNABLE
 
 🔴 **À pousser** : `index.html` · `hype-video.js` · `SUIVI.md` · **`images/hype-encart-video.jpg`** (nouveau, 139 Ko) · et pour la Réserve : `images/hype-anim-rideaux.mp4` + `.webm` + `-poster.jpg`, `images/hype-anim-cheval.*`, `images/hype-accueil-01..12.mp4` + leurs 12 affiches.
@@ -51,7 +335,7 @@ Le fichier livré **repart de la version en ligne (7 vidéos, `v-incurvation-01`
 
 ---
 
-**Version actuelle de l'index.html : 02/08/2026 (session 72) — md5 be04e691. Fichier livré déjà nommé `index.html` dans le dossier `a-pousser/`. Saine : 14 blocs script sur 14 valides. 22 correctifs cumulés. ⚠️ QUOTA SUPABASE : projet restreint le 04/08 si l'organisation reste au-dessus du quota.**
+**Version actuelle de l'index.html : 02/08/2026 (session 72) — md5 c7ecb4f2 — 9,28 Mo, UN SEUL FICHIER (le découpage des Galops a été annulé, voir INCIDENT). Saine : 142 blocs script sur 142 valides. 29 correctifs cumulés. **En ligne et fonctionnelle.** ⚠️ QUOTA SUPABASE : projet restreint le 04/08 si l'organisation reste au-dessus du quota.**
 
 **Version précédente : 31/07/2026 (nuit, session 71) — md5 7ce45f5d, 10 361 735 octets. Saine : 14 blocs script sur 14 valides, 1 525 fonctions, 0 erreur JS au rendu.**
 
@@ -350,6 +634,91 @@ Donc : le texte de Blandine est dans **`ecurie_voix` / `ecurie_histoire`**, et M
 
 ---
 
+
+## 🚨 INCIDENT DU 02/08 — PANNE DE L'APPLI, ~30 MINUTES · CAUSE : MOI
+
+**Ce qui s'est passé.** L'extraction du contenu des Galops vers `hype-galops.js` a mis l'application hors service. Erreur remontée par l'écran maison « Un caillou dans le sabot » :
+```
+global code@.../hype-galops.js:195:532
+```
+Ligne 195, colonne 532 : `"src": GALOPS_HERO`.
+
+**La cause, et c'est une erreur de conception de ma part.** J'ai traité le contenu des Galops comme des **données pures**. Il ne l'est pas : il référence des constantes définies **dans l'index**, qui se charge APRÈS le fichier extrait. La variable n'existait donc pas au moment de l'exécution → arrêt net.
+
+**Ampleur mesurée après coup — 17 constantes externes référencées :**
+`HYPE_IMGS` **159 fois**, `GALOPS_HERO` 10 fois, `GALOPS_I18N` 2 fois, plus 14 constantes d'infographies et de couvertures (`INFOG_*`, `COUV_*`, `PHOTO_ROBES_G2`).
+
+**Pourquoi mes contrôles ne l'ont pas vu.** `node --check` valide la **grammaire** d'un fichier, pas l'**existence** des variables qu'il appelle. Les 142 blocs étaient syntaxiquement parfaits. **À AJOUTER AUX CONTRÔLES : avant toute extraction, vérifier que le code déplacé ne référence aucun identifiant défini ailleurs.**
+
+**Déroulé, pour mémoire.** Fausses pistes explorées avant de trouver : nom/emplacement du fichier (il était bon), fichier tronqué (3,06 Mo, complet), service worker (il n'intercepte AUCUNE requête et se désinscrit — innocent). Ce qui a fait perdre du temps : le premier envoi de l'index de secours n'a pas remplacé le fichier (GitHub affichait encore 6,89 Mo). **Repère fiable retenu : la TAILLE du fichier sur GitHub, pas l'horodatage.** Version à un seul fichier ≈ 9,95 Mo · version découpée ≈ 6,89 Mo.
+
+**Résolution.** Retour à l'index à un seul fichier, md5 `e8d7131c`, 28 correctifs. **L'appli remarche.** `hype-galops.js` reste sur GitHub, ignoré.
+
+**Le découpage reste faisable, mais autrement :** sortir les constantes d'images en même temps, OU charger le fichier après elles, OU remplacer les références par des chaînes résolues au rendu. **À reprendre à froid, jamais en fin de session.**
+
+**Point révélé au passage :** Blandine n'a **aucun moyen de forcer une mise à jour** chez ses utilisateurs. Le service worker actuel (`sw.js`, dit « de retrait ») n'intercepte rien — c'était volontaire après un incident du 26/07 — mais du coup, si une version casse, on ne peut rien pousser à distance. À traiter un jour.
+
+---
+
+## 💡 PARTAGE & PARRAINAGE — état réel et pistes
+
+### Ce qui existe
+- **Écran `partager`** complet : lien public `LIEN_APP`, bouton de partage natif, et **QR code généré dans l'appli** (`qrHype`, encodeur autonome, aucun appel externe). Bien fait.
+- Accessible depuis **deux endroits** : un bouton d'en-tête à côté du profil, et une cellule de raccourcis de l'accueil (aux côtés de Classement, Hauts faits, Installer).
+- Cet écran masque la barre de navigation du bas (il figure dans `ecransSansNav`).
+
+### ❌ Ce qui n'existe PAS : le parrainage
+Les deux seules occurrences du mot « parrainage » dans tout le code concernent le **patronage royal de l'École Andalouse**. Aucun mécanisme de filleul, aucun lien nominatif, aucune récompense.
+
+**La différence, et elle compte :** un lien de partage est le même pour tous — on ne sait pas qui a amené qui. Un lien de parrainage porte l'identifiant du parrain : l'appli sait qui a amené ce cavalier et peut le récompenser.
+
+**Levier de croissance réel avec les ambassadeurs.** Mégane, Evan et Liam amenant chacun cinq cavaliers, ça change l'échelle.
+**À construire :** une colonne notant qui a parrainé qui, un lien de la forme `#p=<identifiant>`, et la règle de récompense — **décision produit, pas technique** (mois de Premium ? badge ? classement ?).
+
+### 🎯 DEMANDE DE BLANDINE — accès au partage depuis la Communauté
+« C'était prévu mais un rollback l'a retiré. » Le code a disparu, il faut le **reconstruire**, pas le retrouver.
+**Décision : les deux formes**, elles ne servent pas au même moment.
+1. **Ligne discrète** — « Inviter des cavaliers », mène à l'écran `partager` existant. Une ligne, aucun risque, aucune image. **À faire en premier.** Pour celui qui a déjà décidé d'inviter.
+2. **Encart image façon affiche** — celui qui donne envie, vu en défilant. **Bloqué sur deux éléments :**
+   - **✅ L'IMAGE EST VALIDÉE (02/08).** Blandine a fourni **deux versions d'un QR code cristal** (turquoise néon dans un cristal taillé, étoile centrale) :
+     · **fond noir avec socle de pierre, fumée et éclats de cristal en suspension** → **c'est celle-ci pour l'encart Communauté.** Elle a un décor, une profondeur, une mise en scène : elle tient seule dans une carte et passe le test Porsche.
+     · **fond transparent** → outil pratique, se pose sur n'importe quel fond (bannière, story). Contraste légèrement plus faible entre les modules et le fond du code : **à revérifier après compression Instagram** si elle est mise en story.
+     · QR code testé et fonctionnel par Blandine. **Garder `qrHype` (générateur intégré) en parallèle** : il produit un code toujours lisible, sans habillage — secours si le lien change ou si un cavalier n'arrive pas à scanner la version cristal.
+   - **✅ LE TEXTE EST ARRÊTÉ (02/08).** Deux formulations distinctes, parce que les deux supports ne s'adressent pas à la même personne :
+     · **Le lien qu'on envoie → « REJOINS HYPE »** — s'adresse à celui qui REÇOIT. Même formule que sur les fiches chevaux partagées : cohérence entre les deux.
+     · **L'encart à scanner → « PARTAGE HYPE »** — s'adresse à celui qui MONTRE. Avec une courte ligne en dessous : *« Ils scannent, ils te rejoignent. »*
+     · Hiérarchie habituelle respectée : petit label → grand titre → courte phrase.
+     · **Écartées :** « Partage Hype à tes amis » (on partage AVEC en français, et « à tes amis » alourdit un titre qui doit tenir en 2-5 mots) ; « Montre, ils scannent » ; « Fais entrer les tiens » (joli et très équestre — à garder en réserve).
+   - **Maquette avant code**, comme l'exige la règle de travail — et à juger à l'œil frais.
+
+### 🐛 Nouveau bug relevé le 02/08 (non corrigé)
+**Carte « À la une » de la page vidéos** : le titre se superpose au texte **gravé dans la vignette IFCE** (« WEBCONFÉRENCE », « LE CONTACT : ÉLÉMENT PHYSIQUE… »). Ce n'est pas un doublon de code — ces vignettes contiennent déjà leur titre en pixels. Assombrir ne suffirait pas : on aurait deux titres lisibles au lieu de deux illisibles.
+**Correctif : la carte adopte la disposition des rails** — vignette entière en haut sans rien dessus, puis titre, description, étiquettes et bouton en dessous. Les cartes des rails sont déjà impeccables, le modèle existe.
+**⚠️ Cette page ne vit PAS dans l'index : elle est dans `hype-video.js`.** Fichier à demander à Blandine.
+
+---
+
+### 🔇 MON CLUB — GAMIFICATION MASQUÉE (02/08) · md5 `c7ecb4f2`
+Constante unique `AFFICHER_GAMIF_CLUB = false`. **Rien n'est supprimé, l'XP continue de se calculer en arrière-plan.**
+
+**Masqué :** carte Niveau/XP · bouton « Voir les quêtes du club » · compteurs Hauts faits / Résultats / Podiums · ligne de formule XP · **rangée d'onglets entre les deux clubs**.
+**Conservé à sa demande explicite :** le compteur **MEMBRES** — seule donnée vraie de la bande (13, les trois autres à zéro) et cohérent avec son souhait de montrer davantage les cavaliers.
+
+**Raisonnement de Blandine sur les onglets, à conserver :**
+> *« Elle a du sens sur mon profil perso car je suis dans deux clubs, mais aucun sens sur la page club elle-même. »*
+
+C'est juste, et c'est le principe « une page, un sujet » appliqué : choisir entre ses clubs appartient au **cavalier**. Une fois sur la page d'un club, celui-ci ne connaît qu'un seul sujet — lui-même. Un club ne propose pas de basculer vers un autre club, pas plus qu'une fiche cheval ne propose de basculer vers un autre cheval. **Le choix du club devra remonter sur le profil.**
+
+### 🎯 LES TROIS DEMANDES À TRAITER ENSEMBLE, DANS UNE SEULE PASSE
+Blandine, 02/08 : *« Garde le compteur oui et ça serait juste d'afficher en fonction de leur XP les cavaliers les plus haut en premier, et d'afficher beaucoup plus de chevaux, ne pas les laisser sur le rail défilant mais plutôt copier la présentation de ma vie équestre pour les chevaux. »*
+
+1. **Mon Club reprend la mise en page de la page Écurie.** Décision confirmée : *« j'ai peaufiné ma page Écurie en croyant que c'était ma page Club »* → la page Écurie **est** la maquette validée. Du déplacement, pas de la création.
+2. **Cavaliers classés par XP décroissant.** À vérifier : la page charge les membres, mais récupère-t-elle leur XP ? Peut-être une requête de plus.
+3. **Chevaux en grille au lieu du rail défilant**, sur le modèle de la page Écurie.
+
+**⚠️ LES TROIS DANS LA MÊME PASSE.** Poser une grille maintenant puis déplacer la mise en page plus tard = deux fois le même travail.
+
+---
 ## 🧭 LA GRANDE CLARIFICATION DU 02/08 — À REPRENDRE À FROID
 
 > **Décision de Blandine : « je veux faire ça à froid ».** Rien n'a été codé. Tout est ici.
@@ -366,12 +735,17 @@ Une page, une identité, zéro doublon. Plus besoin du renommage « Ma vie éque
 
 **Et il n'y a rien à concevoir :** la page Écurie *est* la maquette validée de ce que Mon Club doit être. Blandine l'a peaufinée, elle lui plaît. C'est du déplacement, pas de la création.
 
-### 🔴 PIÈGE TROUVÉ — NE PAS SUPPRIMER AVANT D'AVOIR BRANCHÉ
-Un commentaire du code dit textuellement : **« Colonnes profil `club_voix`/`club_histoire` inutilisées désormais (laissées en place) »**, et *« la page Club affiche une PHRASE PAR DÉFAUT visible par tous »*.
+### ✅ RECTIFICATION (02/08, fin de soirée) — LE PIÈGE N'EXISTE PAS
+J'avais alerté sur un risque de perte du texte de Blandine, en me fiant à un **commentaire du code** disant que `club_voix`/`club_histoire` étaient « inutilisées désormais ». **Vérification faite dans le code réel :**
 
-**Conséquence :** Mon Club affiche une devise **générique**, pas celle de Blandine. Son texte est stocké dans `ecurie_voix` / `ecurie_histoire` — les champs de la page Écurie. **Retirer l'onglet maintenant rendrait son texte inaccessible** : non supprimé (il reste en base), mais plus affiché et plus modifiable.
+- `club_voix` et `club_histoire` ne sont effectivement **jamais lues** — elles n'apparaissent que dans `majProfil` (l'enregistrement), jamais dans un affichage. Le commentaire disait vrai sur ce point.
+- **MAIS** ce que Blandine voit sur Mon Club, c'est **`ecurie_voix`** : le composant partagé `TableauxSpectralHype` est appelé avec les champs de l'écurie, avec seulement un titre différent (« la philosophie de l'écurie » / « du club »).
 
-**⚠️ Blandine croyait avoir déjà mis ces textes sur Mon Club. À vérifier :** ouvrir Mon Club et regarder si la philosophie affichée est bien « Faites du cheval un compagnon et non un esclave ». Si c'est un autre texte, c'est la phrase par défaut et le branchement est nécessaire.
+**Conséquence : les deux pages affichent le même texte, tiré du même champ.** Ce n'est pas un doublon de contenu mais un doublon d'affichage. Blandine avait raison de croire l'avoir mis sur Mon Club — dans un sens, c'est vrai.
+
+**➡️ IL N'Y A DONC RIEN À REBRANCHER.** Quand la page Écurie disparaîtra, Mon Club continuera d'afficher le texte sans qu'on touche à quoi que ce soit. Le chantier est plus simple que prévu : seule la mise en page est à déplacer.
+
+**Leçon de méthode :** un commentaire décrit le passé, pas le présent. Vérifier le code, pas les commentaires.
 
 ### ORDRE IMPÉRATIF DES OPÉRATIONS
 1. **Vérifier** ce que Mon Club affiche réellement (texte de Blandine ou phrase par défaut).
