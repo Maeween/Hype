@@ -133,7 +133,7 @@
 
     var vue = e("div", { class: "lg-ecran lg-depart" },
       e("div", { class: "lg-ciel" }),
-      e("img", { class: "lg-apy-grand", src: "img/apy.webp", alt: "Apy", width: "180" }),
+      e("img", { class: "lg-apy-grand", src: "apy.webp", alt: "Apy", width: "180" }),
       e("p", { class: "lg-sur", text: "Hype Lingo" }),
       e("h1", { class: "lg-h1", text: t("ou") }),
       e("div", { class: "lg-pays" },
@@ -404,7 +404,7 @@
 
     var vue = e("div", { class: "lg-ecran lg-fin" },
       e("div", { class: "lg-ciel" }),
-      e("img", { class: "lg-apy-fete", src: "img/apy.webp", alt: "Apy", width: "120" }),
+      e("img", { class: "lg-apy-fete", src: "apy.webp", alt: "Apy", width: "120" }),
       e("h1", { class: "lg-h1", text: t("fini") }),
       e("p", { class: "lg-score", text: "+ " + (L.justes * 10) + " XP" }),
       page,
