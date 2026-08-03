@@ -28350,6 +28350,155 @@ function ClocheNotifs() {
   return h(React.Fragment, null, cloche, coachCloche, panneau);
 }
 
+/* ============================================================
+   HYPE · 03/08/2026 · « LA SUITE POUR TOI » + « TES PROCHAINES QUÊTES »
+   Deux points d'entrée sur l'accueil, alimentés par HYPE_QUETES_DECOUVERTE.
+   - Ne proposent QUE des quêtes faisables depuis le canapé (champ maison:true).
+   - Tournent chaque jour : l'ordre dépend du jour, une proposition vue hier
+     passe derrière aujourd'hui. Aucune ne se répète deux jours de suite.
+   - Aucune écriture en base, aucun nouveau champ : lecture seule.
+   ============================================================ */
+
+/* Quêtes réalisables sans aller à l'écurie (les autres attendent la vraie vie). */
+var HYPE_QUETES_MAISON = { "photo-profil": 1, "cours": 1, "quiz-parfait": 1, "article": 1, "langue": 1, "notifs": 1, "hey-baby": 1, "philosophie-ecurie": 1, "ami": 1, "photo-cheval": 1, "cheval": 1 };
+
+/* Numéro du jour : sert de graine de rotation (change à minuit, stable dans la journée). */
+function hypeJourIndex() {
+  try { return Math.floor(Date.now() / 86400000); } catch (e) { return 0; }
+}
+
+/* Liste ordonnée des quêtes restantes, faisables à la maison, tournée selon le jour. */
+function hypeQuetesASuivre(ctx, amisCount) {
+  try {
+    if (typeof HYPE_QUETES_DECOUVERTE === "undefined") return [];
+    var ctx2 = Object.assign({}, ctx, { amisCount: (typeof amisCount === "number" ? amisCount : 0) });
+    var restantes = HYPE_QUETES_DECOUVERTE.filter(function (q) {
+      if (!HYPE_QUETES_MAISON[q.id]) return false;
+      try { return !q.fait(ctx2); } catch (e) { return false; }
+    });
+    if (restantes.length <= 1) return restantes;
+    var d = hypeJourIndex() % restantes.length;
+    return restantes.slice(d).concat(restantes.slice(0, d));
+  } catch (e) { return []; }
+}
+
+/* Petit crochet partagé : récupère le nombre d'amis une seule fois. */
+function hypeUtiliserAmis() {
+  var st = React.useState(null); var n = st[0], setN = st[1];
+  React.useEffect(function () {
+    var actif = true;
+    (async function () {
+      try {
+        if (typeof mesAmis === "function") { var r = await mesAmis(); if (actif) setN((r && r.data) ? r.data.length : 0); }
+        else if (actif) setN(0);
+      } catch (e) { if (actif) setN(0); }
+    })();
+    return function () { actif = false; };
+  }, []);
+  return n;
+}
+
+/* ------------------------------------------------------------
+   1. LA SUITE POUR TOI — une seule ligne, tout en haut de l accueil
+   ------------------------------------------------------------ */
+function BandeauSuiteHype() {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr; var setEcran = ctx.setEcran;
+  var amis = hypeUtiliserAmis();
+  var liste = hypeQuetesASuivre(ctx, amis);
+  var q = liste[0] || null;
+  if (!q) return null;
+
+  var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#8FE6EF" };
+  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thC.principal, a) : "rgba(32,217,245," + a + ")"; }
+
+  return h("div", {
+    onClick: function () { if (q.cible) setEcran(q.cible); },
+    role: "button",
+    style: {
+      display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left",
+      margin: "0 0 22px", padding: "13px 14px", borderRadius: 16, cursor: "pointer",
+      background: "linear-gradient(120deg," + tA(0.10) + ", rgba(17,20,23,0.92) 72%)",
+      border: "1px solid " + tA(0.30), boxShadow: "inset 0 0 18px " + tA(0.05)
+    }
+  },
+    h("div", {
+      style: {
+        width: 36, height: 36, flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center",
+        clipPath: "polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%)",
+        background: "rgba(6,7,9,0.75)", border: "1px solid " + tA(0.5), color: thC.lumineux
+      }
+    }, (typeof qIcone === "function") ? qIcone(q.icone) : "\u2726"),
+    h("div", { style: { flex: 1, minWidth: 0 } },
+      h("div", { style: { fontSize: 9, fontWeight: 800, letterSpacing: 2.4, textTransform: "uppercase", color: thC.lumineux, fontFamily: "'Montserrat',sans-serif" } },
+        tr({ fr: "La suite pour toi", en: "What's next for you", es: "Lo siguiente para ti", it: "Il tuo prossimo passo", ja: "\u6b21\u306e\u4e00\u6b69", de: "Dein n\u00e4chster Schritt" })),
+      h("div", { style: { fontSize: 13.5, fontWeight: 700, color: "#F4F7FA", lineHeight: 1.35, marginTop: 3 } }, tr(q.titre))),
+    h("div", { style: { flex: "0 0 auto", display: "flex", alignItems: "center", gap: 8 } },
+      h("span", { style: { fontSize: 9.5, fontWeight: 900, color: "#04121A", background: "linear-gradient(135deg," + thC.principal + "," + thC.lumineux + ")", padding: "4px 8px", borderRadius: 99 } }, "+" + q.xp + " XP"),
+      h("span", { style: { fontSize: 16, color: thC.lumineux } }, "\u203A")));
+}
+
+/* ------------------------------------------------------------
+   2. TES PROCHAINES QUÊTES — petite liste, en bas de l accueil
+   ------------------------------------------------------------ */
+function BlocProchainesQuetes() {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr; var setEcran = ctx.setEcran;
+  var amis = hypeUtiliserAmis();
+  var liste = hypeQuetesASuivre(ctx, amis).slice(0, 3);
+
+  var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#8FE6EF" };
+  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thC.principal, a) : "rgba(32,217,245," + a + ")"; }
+  var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif";
+
+  /* Tout est accompli : on ne laisse pas un vide, on renvoie vers la collection. */
+  var vide = (liste.length === 0);
+
+  return h("div", { style: { margin: "26px 0 4px" } },
+    h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, marginBottom: 12 } },
+      h("span", { style: { color: thC.lumineux, fontSize: 11 } }, "\u2726"),
+      h("span", { style: { fontFamily: C, fontSize: 13, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "#F4F7FA" } },
+        tr({ fr: "Tes prochaines qu\u00eates", en: "Your next quests", es: "Tus pr\u00f3ximas misiones", it: "Le tue prossime missioni", ja: "\u6b21\u306e\u30af\u30a8\u30b9\u30c8", de: "Deine n\u00e4chsten Quests" })),
+      h("div", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,255,255,.18), transparent)" } })),
+
+    vide ? h("div", { style: { fontSize: 12, color: "#8A95A1", fontFamily: M, lineHeight: 1.6, padding: "2px 2px 10px" } },
+      tr({
+        fr: "Tu as accompli toutes les qu\u00eates de d\u00e9couverte. Ouvre un chapitre que tu n'as pas encore lu.",
+        en: "You've completed every discovery quest. Open a chapter you haven't read yet.",
+        es: "Has completado todas las misiones de descubrimiento. Abre un cap\u00edtulo que no hayas le\u00eddo.",
+        it: "Hai completato tutte le missioni di scoperta. Apri un capitolo che non hai ancora letto.",
+        ja: "\u3059\u3079\u3066\u306e\u30af\u30a8\u30b9\u30c8\u3092\u9054\u6210\u3057\u307e\u3057\u305f\u3002\u307e\u3060\u8aad\u3093\u3067\u3044\u306a\u3044\u7ae0\u3092\u958b\u3044\u3066\u307f\u307e\u3057\u3087\u3046\u3002",
+        de: "Du hast alle Entdeckungs-Quests abgeschlossen. \u00d6ffne ein Kapitel, das du noch nicht gelesen hast."
+      })) : null,
+
+    liste.map(function (q) {
+      return h("div", {
+        key: q.id,
+        onClick: function () { if (q.cible) setEcran(q.cible); },
+        role: "button",
+        style: {
+          display: "flex", alignItems: "center", gap: 11, width: "100%", textAlign: "left", cursor: "pointer",
+          padding: "11px 13px", marginBottom: 8, borderRadius: 14,
+          background: "rgba(17,20,23,0.9)", border: "1px solid rgba(255,255,255,0.09)"
+        }
+      },
+        h("span", { style: { width: 28, height: 28, flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", clipPath: "polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%)", background: "rgba(6,7,9,0.8)", border: "1px solid " + tA(0.42), color: thC.lumineux } },
+          (typeof qIcone === "function") ? qIcone(q.icone) : "\u2726"),
+        h("span", { style: { flex: 1, minWidth: 0, fontSize: 12.5, fontWeight: 600, color: "#F4F7FA", fontFamily: M, lineHeight: 1.35 } }, tr(q.titre)),
+        h("span", { style: { flex: "0 0 auto", fontSize: 9.5, fontWeight: 900, color: thC.lumineux, fontFamily: M } }, "+" + q.xp + " XP"),
+        h("span", { style: { flex: "0 0 auto", fontSize: 14, color: "#8A95A1" } }, "\u203A"));
+    }),
+
+    h("div", {
+      onClick: function () { setEcran("quetes"); },
+      role: "button",
+      style: { display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", cursor: "pointer", padding: "12px 13px", borderRadius: 14, background: "transparent", border: "1px solid " + tA(0.30) }
+    },
+      h("span", { style: { fontSize: 12, fontWeight: 700, color: thC.lumineux, fontFamily: M } },
+        tr({ fr: "Voir toutes tes qu\u00eates", en: "See all your quests", es: "Ver todas tus misiones", it: "Vedi tutte le tue missioni", ja: "\u3059\u3079\u3066\u306e\u30af\u30a8\u30b9\u30c8\u3092\u898b\u308b", de: "Alle deine Quests ansehen" })),
+      h("span", { style: { fontSize: 16, color: thC.lumineux } }, "\u203A")));
+}
+
 function EcranUnivers() {
   const [nonLusMsg, setNonLusMsg] = useState(0); /* 28/07 : badge messagerie. */
   useEffect(function () {
@@ -28668,6 +28817,7 @@ function EcranUnivers() {
 
         /* Annonces : tout en haut de l accueil, avec de l espace avant et apres (demande de Blandine). */
         React.createElement("div", { style: { margin: "24px 0 26px" } }, React.createElement(FilAnnoncesB, null)),
+        React.createElement(BandeauSuiteHype, null),
 
 chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e\u4e16\u754c"), "d2"),
         /* 26/07 : ordre demande par Blandine -> titre « Mon monde », puis MON ECURIE bien espace, puis les chevaux juste
@@ -28776,6 +28926,7 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
               React.createElement("span", null, (lg === "en" ? "All Galops \u00b7 Founder price" : lg === "es" ? "Todos los Galops \u00b7 Tarifa fundador" : lg === "it" ? "Tutti i Galoppi \u00b7 Tariffa fondatore" : lg === "ja" ? "\u5168\u30ae\u30e3\u30ed\u30c3\u30d7 \u00b7 \u5275\u8a2d\u30e1\u30f3\u30d0\u30fc\u4fa1\u683c" : "Tous les Galops \u00b7 Tarif Fondateur")),
               React.createElement("span", { style: { color: "#7DDDE8", fontSize: 16, fontWeight: 700 } }, "\u203a")))),
 
+        React.createElement(BlocProchainesQuetes, null),
         React.createElement(LienQuoiDeNeuf, null),
         React.createElement("button", { onClick: function () { setEcran("profil"); }, style: { display: "flex", alignItems: "center", gap: 13, width: "100%", textAlign: "left", border: "1px solid " + COLORS.ligne, borderRadius: 16, background: COLORS.nuitClaire, padding: "14px 16px", margin: "16px 0 6px", cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
           React.createElement("span", { style: { width: 34, height: 34, borderRadius: 11, flexShrink: 0, background: COLORS.turquoise + "1A", border: "1px solid " + COLORS.turquoise + "52", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 } }, "\u2699\uFE0F"),
