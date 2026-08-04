@@ -292,6 +292,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .ptampon b{font-family:'Cinzel',serif;font-size:9px;text-align:center;padding:0 8px;line-height:1.15}
 .ptampon i{font-style:normal;font-size:5.5px;letter-spacing:.16em;text-transform:uppercase}
 
+/* Montrer sans donner : l'aperçu est assombri, non cliquable, et
+   n'entre pas dans le passeport. */
+#postal.apercu .pcarte{pointer-events:none;filter:brightness(.52) saturate(.72)}
+#postal.apercu .pface{border-color:rgba(212,175,55,.45)}
+#postal .note{font-size:11px;letter-spacing:.02em;color:var(--or);text-align:center;
+ margin:11px 0 0;opacity:.9}
+#souvenir.apercu .carte{opacity:.5;filter:saturate(.6)}
+
 /* le souvenir */
 #souvenir{max-width:520px;margin:22px auto 0;padding:0 22px}
 #souvenir .carte{display:flex;align-items:center;gap:15px;padding:16px 18px;border-radius:16px;
@@ -410,6 +418,32 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .lcNm i{font-style:normal;color:var(--turquoise);font-size:12px;letter-spacing:.1em}
 .lcNm span{color:var(--gris)}
 .lcNv{margin:7px 0 0;font-size:12.5px;line-height:1.65;color:#A9B7C3}
+.lcAcc{font-size:13.5px;line-height:1.7;color:#C7D3DD;text-align:center;margin:0 0 10px}
+.lcAv{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--or);
+ text-align:center;margin:0 0 24px}
+.lcL.on{background:linear-gradient(160deg,rgba(32,217,245,.20),rgba(10,14,18,.8));
+ border-color:rgba(32,217,245,.5);box-shadow:0 16px 40px -26px rgba(32,217,245,.9)}
+.lcL .d u{display:block;text-decoration:none;font-size:10px;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--or);margin-top:6px;opacity:.85}
+.lcL .go{flex:0 0 auto;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--turquoise);align-self:center}
+.lcL.on .go{font-weight:600}
+.lcRec{margin-top:26px;padding:16px 17px 14px;border-radius:16px;
+ background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08)}
+.lcRt{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gris);margin:0 0 12px}
+.lcRl{display:flex;align-items:baseline;gap:10px;padding:7px 0;font-size:13px;color:#93A3B0}
+.lcRl.ok{color:var(--blanc)}
+.lcRl .p{color:var(--gris);font-size:12px}
+.lcRl.ok .p{color:var(--or)}
+.lcRl .q{flex:1;min-width:0}
+.lcRl .e{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris);
+ white-space:nowrap}
+.lcRl.ok .e{color:var(--or)}
+.lcHp.ecoute{animation:lcPulse 1.1s ease-in-out infinite;border-color:rgba(32,217,245,.8)}
+@keyframes lcPulse{0%,100%{box-shadow:0 0 30px -10px rgba(32,217,245,.6)}
+ 50%{box-shadow:0 0 54px -6px rgba(32,217,245,1)}}
+.lcEviter{display:block;margin:22px auto 0;font-size:11px;letter-spacing:.1em;color:var(--gris);
+ text-decoration:underline;text-underline-offset:3px}
 .lcScore{font-family:'Cinzel',serif;font-size:34px;color:var(--turquoise);text-align:center;margin:0}
 
 /* ---------------- LE DÉPART ---------------- */
@@ -500,6 +534,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
   <div id="postal">
     <p class="kick" id="postalKick">Carte postale débloquée</p>
+    <p class="note" id="postalNote"></p>
     <div class="pcarte" id="pcarte">
       <div class="pface">
         <img id="pimg" alt="">
@@ -846,7 +881,16 @@ function rendu(){
     S("hHeure").textContent=e.nat+" · en route, "+e.h;
     var ouvert=i<=FAITS;
     S("cta").className=ouvert?"":"verrou";
-    S("ctaTxt").textContent=(i<FAITS)?("Revoir "+e.v):(i===FAITS?("Arriver à "+e.v):("Termine "+ETAPES[FAITS].v));
+    /* le bouton dit ce qu'on va y trouver, pas seulement où on va :
+       les testeurs ne comprenaient pas où était le vocabulaire. */
+    var ec=etatChapitre(e.ref);
+    var libelle;
+    if(i>FAITS) libelle="Termine "+ETAPES[FAITS].v;
+    else if(ec.total===0) libelle=(i<FAITS?"Revoir ":"Arriver à ")+e.v;
+    else if(ec.acquis===0) libelle=e.v+" · "+ec.total+" mots";
+    else if(ec.tout) libelle=e.v+" · chapitre terminé";
+    else libelle=e.v+" · "+ec.acquis+" / "+ec.total+" mots";
+    S("ctaTxt").textContent=libelle;
     Array.prototype.forEach.call(S("points").children,function(n,k){
       n.className=(k<FAITS)?"f":(k===i?"a":""); });
   }
@@ -911,8 +955,19 @@ function garnirVille(e){
   document.getElementById("fvImg").style.backgroundImage = 'url("fond-'+e.ref+'.webp")';
 
   /* la carte postale : seulement si son image existe */
+  var etc = etatChapitre(e.ref);
   S("postal").style.display = (v && v.carte) ? "block" : "none";
   if (v && v.carte){
+    /* On MONTRE la récompense sans la donner : la carte s'affiche en aperçu,
+       assombrie, elle ne se retourne pas et n'entre pas dans le passeport
+       tant que le chapitre n'est pas terminé. */
+    S("postal").classList.toggle("apercu", !etc.fini);
+    S("postalKick").textContent = etc.fini ? "Carte postale débloquée" : "Ta récompense";
+    var reste = Math.max(0, Math.ceil(etc.total*0.6) - etc.acquis);
+    S("postalNote").textContent = etc.fini ? ""
+      : (reste>0 ? ("Encore "+reste+" mots pour la recevoir")
+                 : "Termine le chapitre pour la recevoir");
+    S("ptourne").textContent = etc.fini ? "Touche pour lire" : "";
     S("pcarte").classList.remove("dos");
     S("pimg").src = "carte-"+e.ref+".webp";
     S("pimg").alt = e.v;
@@ -966,9 +1021,15 @@ function ouvrirArrivee(i){
   S("arrNation").textContent=e.nat+" · à l'aube";
   S("empNom").textContent="ARRIVÉE À "+e.v.toUpperCase();
   S("empTxt").innerHTML="Vidéo introuvable<br><code>arrivee-"+e.ref+".mp4</code><br>à déposer à la racine du dépôt";
-  S("souvT").textContent="Souvenir de "+e.v;
-  S("souvN").textContent=e.souv;
+  /* le souvenir ne s'obtient qu'avec TOUS les mots du chapitre : c'est
+     l'objet de collection, il doit se mériter. Tant qu'il manque un mot,
+     on l'annonce sans le donner. */
+  var so=etatChapitre(e.ref);
+  S("souvT").textContent = so.tout ? ("Souvenir de "+e.v) : "Souvenir à mériter";
+  S("souvN").textContent = so.tout ? e.souv
+    : (e.souv + " — les " + so.total + " mots du chapitre");
   S("souvSvg").innerHTML=ICONES[e.ic]||"";
+  S("souvenir").classList.toggle("apercu", !so.tout);
   garnirVille(e);
   ecrire();
 
@@ -1089,6 +1150,86 @@ function sauverMaitrise(){
 /* ---------- état de la leçon en cours ---------- */
 var LC = null;
 
+
+/* ==================================================================
+   NOMS DES LEÇONS ET MOT D'ACCUEIL
+   Les familles (`coll`) sont déjà rangées dans les lexiques : on ne fait
+   que les afficher. « Leçon 2 · 11 mots » ne disait rien ; « La litière
+   et les outils » dit ce qu'on va apprendre.
+   ================================================================== */
+var COLL_NOM = {
+  lieu:"Le lieu", litiere:"La litière", outils:"Les outils", nourriture:"L'eau et la nourriture",
+  materiel:"Tenir et attacher", gestes:"Les gestes",
+  robes:"Les robes", marques:"Les marques", morpho:"Le corps", identite:"L'identité",
+  selle:"La selle", filet:"Le filet", cavalier:"Le cavalier", protections:"Les protections",
+  allures:"Les allures", position:"La position", figures:"La piste et les figures",
+  deroule:"Le déroulé du cours",
+  rectangle:"Le rectangle", mouvements:"Les mouvements", qualites:"Les qualités",
+  notation:"La notation",
+  obstacles:"Les obstacles", parcours:"Le parcours", fautes:"Les fautes", saut:"Le saut",
+  engager:"S'engager", complet:"Le concours complet", "jour-j":"Le jour J", gens:"Les gens",
+  alerte:"Donner l'alerte", "cheval-urg":"Sur le cheval", mots:"Les mots qui sauvent"
+};
+var ACCUEIL_CHAP = {
+  ecurie:{ fr:"Les mots de l'écurie : le lieu, la litière, la nourriture, les gestes du matin.",
+           en:"The words of the yard: the place, the bedding, the feed, the morning jobs." },
+  pansage:{ fr:"Le pansage, outil par outil, geste par geste.",
+            en:"Grooming, tool by tool, job by job." },
+  cheval:{ fr:"Décrire un cheval : sa robe, ses marques, son corps, son identité.",
+           en:"Describing a horse: colour, markings, body, identity." },
+  materiel:{ fr:"Tout ce qu'on met sur le cheval — et sur soi.",
+             en:"Everything you put on the horse — and on yourself." },
+  cours:{ fr:"Les ordres qu'on entend en reprise, et ceux qu'on donne quand on enseigne.",
+          en:"The commands you hear in a lesson, and the ones you give when you teach." },
+  dressage:{ fr:"Le travail sur le plat : le rectangle, les mouvements, ce qu'un juge regarde.",
+             en:"Flatwork: the arena, the movements, what a judge looks for." },
+  obstacle:{ fr:"Le saut : les obstacles, le parcours, les fautes, les phases du saut.",
+             en:"Jumping: the fences, the course, the faults, the phases of the jump." },
+  concours:{ fr:"S'engager, arriver, passer, comprendre son classement.",
+             en:"Entering, arriving, competing, reading your result." },
+  urgences:{ fr:"Ce qu'on ne veut jamais avoir à dire — et qu'il faut savoir dire vite.",
+             en:"What you never want to say — and must be able to say fast." },
+  dialogues:{ fr:"Parler à quelqu'un : demander, réserver, comprendre une réponse.",
+              en:"Talking to someone: asking, booking, understanding the answer." }
+};
+/* Le nom d'une leçon : la ou les familles qu'elle contient. */
+function nomLecon(L){
+  var vus=[], n;
+  L.concepts.forEach(function(c){ n=COLL_NOM[c.coll]; if(n && vus.indexOf(n)<0) vus.push(n); });
+  if(!vus.length) return "Leçon "+L.n;
+  if(vus.length===1) return vus[0];
+  /* la seconde famille perd sa majuscule : « La litière et les outils » */
+  var b=vus[1].charAt(0).toLowerCase()+vus[1].slice(1);
+  return vus[0]+" et "+b;
+}
+function apercuMots(L, n){
+  return L.concepts.slice(0,n||4).map(function(c){ return c.mots[cible()].m; }).join(" · ");
+}
+function acquisDe(L){ return L.concepts.filter(function(c){ return (MAITRISE[c.ref]||0)>=3; }).length; }
+
+/* ---------- les récompenses d'un chapitre ---------- */
+function etatChapitre(refVille){
+  /* Appelée par le chemin, qui s'exécute AVANT que ces tables soient
+     initialisées (déclarées plus bas dans le même script : `var` est hissé
+     mais pas sa valeur). On répond prudemment plutôt que de planter. */
+  if(typeof CHAPITRE_DE==="undefined" || typeof MAITRISE==="undefined")
+    return { total:0, acquis:0, fini:false, tout:false };
+  var cle=CHAPITRE_DE[refVille], chap=(window.HYPE_LINGO_LEX||{})[cle];
+  if(!chap) return { total:0, acquis:0, fini:false, tout:false };
+  var t=(chap.concepts||[]).length;
+  var a=(chap.concepts||[]).filter(function(c){ return (MAITRISE[c.ref]||0)>=3; }).length;
+  var lecs=lecons(chap);
+  var fini=lecs.length>0 && lecs.every(function(L){ return acquisDe(L) >= Math.ceil(L.concepts.length*0.6); });
+  return { total:t, acquis:a, fini:fini, tout:(t>0 && a===t) };
+}
+
+/* ---------- l'XP part vers Hype, jamais vers un compteur à part ---------- */
+function donnerXP(n, raison){
+  try{
+    if(window.HYPE_LINGO_HOST && HYPE_LINGO_HOST.xpAjouter) HYPE_LINGO_HOST.xpAjouter(n, raison);
+  }catch(e){}
+}
+
 function ouvrirLecon(refVille){
   var cle = CHAPITRE_DE[refVille];
   var chap = (window.HYPE_LINGO_LEX || {})[cle];
@@ -1106,7 +1247,7 @@ function ouvrirLecon(refVille){
       text:"Le fichier hype-lingo-lex-"+cle+".js n'est pas chargé. Les autres chapitres sont jouables."}));
     return;
   }
-  LC = { cle:cle, chap:chap, ville:refVille, ch:(e?e.ch:"") };
+  LC = { cle:cle, chap:chap, ville:refVille, ch:(e?e.ch:""), villeNom:(e?e.v:"") };
   choisirLecon();
 }
 function fermerLecon(){
@@ -1123,47 +1264,107 @@ function lecons(chap){
   });
 }
 function choisirLecon(){
-  var ui=langueUI();
-  S("lcTitre").textContent = LC.ch + " · " + (LC.chap.concepts||[]).length + " mots";
+  var ui=langueUI(), et=etatChapitre(LC.ville);
+  S("lcTitre").textContent = LC.ch;
   videEl(S("lcJauge")); videEl(S("lcCorps"));
-  S("lcCorps").appendChild(el("p",{class:"lcCons",
-    text: ui==="en" ? "Choose a lesson" : "Choisis ta leçon"}));
-  lecons(LC.chap).forEach(function(L){
-    var acquis = L.concepts.filter(function(c){ return (MAITRISE[c.ref]||0)>=3; }).length;
-    var pc = el("span",{class:"pc"});
-    L.concepts.forEach(function(c){
-      pc.appendChild(el("s",{class:((MAITRISE[c.ref]||0)>=3)?"f":""}));
-    });
-    S("lcCorps").appendChild(el("button",{class:"lcL", onclick:function(){ lancer(L); }},
+
+  /* un mot d'accueil : on dit ce qu'on va apprendre avant de faire choisir */
+  var acc=ACCUEIL_CHAP[LC.cle];
+  if(acc) S("lcCorps").appendChild(el("p",{class:"lcAcc", text:(acc[ui]||acc.fr)}));
+  S("lcCorps").appendChild(el("p",{class:"lcAv",
+    text: et.acquis+" / "+et.total+(ui==="en"?" words learned":" mots acquis")}));
+
+  /* une seule leçon est mise en avant : celle où reprendre */
+  var Ls=lecons(LC.chap), suivante=null;
+  Ls.forEach(function(L){ if(!suivante && acquisDe(L) < L.concepts.length) suivante=L; });
+
+  Ls.forEach(function(L){
+    var a=acquisDe(L), n=L.concepts.length, active=(L===suivante);
+    var pc=el("span",{class:"pc"});
+    L.concepts.forEach(function(c){ pc.appendChild(el("s",{class:((MAITRISE[c.ref]||0)>=3)?"f":""})); });
+    S("lcCorps").appendChild(el("button",{class:"lcL"+(active?" on":""), onclick:function(){ lancer(L); }},
       el("span",{class:"num", text:String(L.n)}),
       el("span",{class:"d"},
-        el("b",{text:(ui==="en"?"Lesson ":"Leçon ")+L.n}),
-        el("i",{text:L.concepts.length+(ui==="en"?" words · ":" mots · ")+acquis+" acquis"}),
-        pc)
+        el("b",{text:nomLecon(L)}),
+        el("i",{text:apercuMots(L,4)+" \u2026"}),
+        el("u",{text:(a===n ? (ui==="en"?"complete":"termin\u00e9e")
+                            : a+" / "+n+(ui==="en"?" learned":" acquis"))}),
+        pc),
+      el("span",{class:"go", text: active ? (ui==="en"?"Start":"Commencer") : "\u203a"})
     ));
   });
+
+  /* ce que le chapitre débloque, et ce qu'il reste à faire */
+  var reste=Math.max(0, Math.ceil(et.total*0.6)-et.acquis);
+  var boite=el("div",{class:"lcRec"});
+  boite.appendChild(el("p",{class:"lcRt", text: ui==="en"?"What this chapter unlocks":"Ce que ce chapitre d\u00e9bloque"}));
+  boite.appendChild(ligneRec(et.fini,
+    (ui==="en"?"The postcard of ":"La carte postale de ")+LC.villeNom,
+    et.fini ? (ui==="en"?"yours":"obtenue")
+            : (reste>0 ? (ui==="en"?(reste+" more words"):("encore "+reste+" mots"))
+                       : (ui==="en"?"almost there":"presque"))));
+  boite.appendChild(ligneRec(et.tout,
+    (ui==="en"?"The keepsake of ":"Le souvenir de ")+LC.villeNom,
+    et.tout ? (ui==="en"?"yours":"obtenu")
+            : (ui==="en"?("all "+et.total+" words"):("les "+et.total+" mots"))));
+  S("lcCorps").appendChild(boite);
+}
+function ligneRec(obtenu, quoi, etat){
+  return el("div",{class:"lcRl"+(obtenu?" ok":"")},
+    el("span",{class:"p", text: obtenu ? "\u2726" : "\u25CB"}),
+    el("span",{class:"q", text:quoi}),
+    el("span",{class:"e", text:etat}));
 }
 
 /* ---------- construction du parcours d'exercices ---------- */
 function lancer(L){
-  var mots=L.concepts, plan=[];
-  mots.forEach(function(c){ plan.push({t:"decouverte", c:c}); });
-  var types=["choix","ecoute","ecrire"];
-  brasser(mots).forEach(function(c,i){
-    var t=types[i%3];
-    /* on ne demande pas d'écrire en japonais depuis un clavier latin */
-    if(t==="ecrire" && cible()==="ja") t="ecoute";
-    /* ni un mot qui s'écrit pareil dans les deux langues : « le paddock »
-       -> « paddock » n'apprend rien. Le chapitre Écurie en compte huit. */
-    if(t==="ecrire" && motNu(c.mots[cible()].m)===motNu(c.mots[langueUI()].m)) t="ecoute";
-    plan.push({t:t, c:c});
+  /* VAGUES DE TROIS.
+     Avant : dix découvertes d'affilée, puis dix exercices — au premier
+     exercice on avait déjà oublié le premier mot. Le principe de la
+     répétition espacée est de faire revenir un mot AVANT l'oubli, pas
+     après. On découvre donc trois mots, on les teste tout de suite, une
+     phrase les emploie, et on passe aux trois suivants.
+     Et la leçon commence par une révision : les mots du chapitre déjà vus
+     dont la maîtrise est la plus basse — l'équivalent de leur séance de
+     révision, qui ne tire que les mots dus. */
+  var plan=[];
+
+  var ailleurs=(LC.chap.concepts||[]).filter(function(c){
+    var m=MAITRISE[c.ref]||0;
+    return m>0 && m<4 && L.concepts.indexOf(c)<0;
+  }).sort(function(a,b){ return (MAITRISE[a.ref]||0)-(MAITRISE[b.ref]||0); }).slice(0,3);
+  ailleurs.forEach(function(c){ plan.push({t:exercicePour(c), c:c, rev:true}); });
+
+  /* d'abord les phrases de cette leçon, puis les autres du chapitre :
+     chaque vague de trois mots doit se terminer par une phrase. */
+  var propres=brasser((LC.chap.phrases||[]).filter(function(x){ return x.lecon===L.n; }));
+  var autres=brasser((LC.chap.phrases||[]).filter(function(x){ return x.lecon!==L.n; }));
+  var phrases=propres.concat(autres);
+  var vague=[], nph=0;
+  L.concepts.forEach(function(c,idx){
+    vague.push(c);
+    if(vague.length===3 || idx===L.concepts.length-1){
+      vague.forEach(function(x){ plan.push({t:"decouverte", c:x}); });
+      brasser(vague).forEach(function(x){ plan.push({t:exercicePour(x), c:x}); });
+      if(phrases[nph]){ plan.push({t:"phrase", p:phrases[nph]}); nph++; }
+      vague=[];
+    }
   });
-  var ph=(LC.chap.phrases||[]).filter(function(p){ return !p.lecon || p.lecon===L.n; });
-  if(!ph.length) ph=(LC.chap.phrases||[]);
-  if(ph.length) plan.push({t:"phrase", p:ph[Math.floor(Math.random()*ph.length)]});
   LC.L=L; LC.plan=plan; LC.i=0; LC.justes=0; LC.nouveaux=[];
+  LC.aTester=plan.filter(function(x){ return x.t!=="decouverte"; }).length;
   etape();
 }
+/* quel exercice pour ce mot, selon ce qu'on sait déjà de lui */
+function exercicePour(c){
+  var m=MAITRISE[c.ref]||0, lg=cible(), ui=langueUI();
+  var pool = (m===0) ? ["choix"] : (m===1 ? ["choix","ecoute"] : ["ecoute","ecrire","dire","choix"]);
+  var t=pool[Math.floor(Math.random()*pool.length)];
+  if(t==="ecrire" && lg==="ja") t="ecoute";
+  if(t==="ecrire" && motNu(c.mots[lg].m)===motNu(c.mots[ui].m)) t="ecoute";
+  if(t==="dire" && !vocalPossible()) t="ecoute";
+  return t;
+}
+
 /* la langue qu'on apprend, jamais celle qu'on parle déjà */
 function cible(){ return VOYAGE_LANGUE; }
 
@@ -1180,7 +1381,7 @@ function etape(){
   S("lcTitre").textContent = LC.ch + " · " + (langueUI()==="en"?"Lesson ":"Leçon ") + LC.L.n;
   videEl(S("lcCorps"));
   S("lcCorps").appendChild({decouverte:exDecouverte, choix:exChoix, ecoute:exEcoute,
-                            ecrire:exEcrire, phrase:exPhrase}[x.t](x));
+                            ecrire:exEcrire, dire:exDire, phrase:exPhrase}[x.t](x));
   S("lecon").scrollTop=0;
 }
 function suivant(juste, ref){
@@ -1360,11 +1561,81 @@ function exPhrase(x){
   );
 }
 
+
+/* ==================================================================
+   L'EXERCICE VOCAL — toujours facultatif.
+   Deux niveaux. Si le navigateur sait écouter, il écoute et valide.
+   Sinon (et hors ligne, c'est toujours le cas : la reconnaissance passe
+   par les serveurs d'Apple ou de Google), on garde la méthode Pimsleur :
+   on entend, on répète à voix haute, on se juge soi-même. Cet exercice-là
+   marche partout, sans permission, sans réseau.
+   ⚠️ On ne note JAMAIS l'accent. On vérifie que le bon mot a été dit.
+   Une débutante recalée sur sa prononciation abandonne.
+   ================================================================== */
+function vocalPossible(){
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+function exDire(x){
+  var c=x.c, ui=langueUI(), lg=cible();
+  var attendu=c.mots[lg].m;
+  var zone=el("div",{class:"lcVerdict"});
+  var etat=el("p",{class:"lcRej", text: ui==="en"?"Tap and say it":"Touche et dis-le"});
+  var reco=null, fini=false;
+
+  function conclure(juste, entendu){
+    if(fini) return; fini=true;
+    micro.classList.remove("ecoute");
+    if(entendu) etat.textContent=(ui==="en"?"Heard: ":"Entendu : ")+entendu;
+    verdict(zone, juste, attendu, function(){ suivant(juste, c.ref); }, c);
+  }
+  var micro=el("button",{class:"lcHp", onclick:function(){
+    if(fini) return;
+    if(!vocalPossible()){ conclure(true, null); return; }
+    try{
+      var R=window.SpeechRecognition||window.webkitSpeechRecognition;
+      reco=new R(); reco.lang=VOIX[lg]||"en-GB"; reco.interimResults=false; reco.maxAlternatives=4;
+      micro.classList.add("ecoute");
+      etat.textContent=(ui==="en"?"Listening\u2026":"J'\u00e9coute\u2026");
+      reco.onresult=function(ev){
+        var dits=[], k;
+        for(k=0;k<ev.results[0].length;k++) dits.push(ev.results[0][k].transcript);
+        /* indulgent : il suffit qu'une des propositions contienne le mot */
+        var att=motNu(attendu);
+        var ok=dits.some(function(d){ var m=motNu(d); return m===att || m.indexOf(att)>=0 || att.indexOf(m)>=0; });
+        conclure(ok, dits[0]);
+      };
+      reco.onerror=function(){ conclure(true, null); };   /* jamais de sanction technique */
+      reco.onend=function(){ micro.classList.remove("ecoute"); };
+      reco.start();
+    }catch(e){ conclure(true, null); }
+  }}, "\u25CF");
+
+  return el("div",{},
+    el("p",{class:"lcCons", text: ui==="en"?"Say it out loud":"Dis-le \u00e0 voix haute"}),
+    el("p",{class:"lcInvite", text:attendu}),
+    c.mots[lg].p ? el("p",{class:"lcPhon", style:"text-align:center;margin:-14px 0 20px",
+      text:"[ "+c.mots[lg].p+" ]"}) : null,
+    el("button",{class:"lcSon", style:"display:block;margin:0 auto 18px",
+      onclick:function(){ dire(attendu, lg); }}, "\u266a  "+(ui==="en"?"Listen first":"L'entendre d'abord")),
+    micro, etat,
+    el("button",{class:"lcEviter", onclick:function(){
+      if(fini) return; fini=true;
+      LC.plan[LC.i]={t:"ecoute", c:c}; etape();     /* on remplace, on ne saute pas */
+    }}, ui==="en"?"I'd rather not speak":"Je pr\u00e9f\u00e8re ne pas parler"),
+    zone
+  );
+}
+
 /* ---------- fin de leçon ---------- */
 function finLecon(){
   var ui=langueUI();
   jauge(); videEl(S("lcCorps"));
-  var sur=LC.plan.filter(function(x){ return x.t!=="decouverte"; }).length;
+  var sur=LC.aTester || LC.plan.filter(function(x){ return x.t!=="decouverte"; }).length;
+  /* l'XP part vers Hype : 2 par mot nouvellement acquis, 10 si le chapitre
+     se termine. Valeurs provisoires — le barème de Hype n'est pas validé. */
+  var et=etatChapitre(LC.ville);
+  if(LC.nouveaux.length) donnerXP(LC.nouveaux.length*2, "lingua-mots");
+  if(et.fini && !LC.dejaFini){ LC.dejaFini=true; donnerXP(10, "lingua-chapitre"); }
   S("lcCorps").appendChild(el("div",{},
     el("p",{class:"lcCons", text: ui==="en"?"Lesson complete":"Leçon terminée"}),
     el("p",{class:"lcScore", text:LC.justes+" / "+sur}),
@@ -1378,6 +1649,11 @@ function finLecon(){
 }
 
 S("lcFermer").addEventListener("click", fermerLecon);
+
+/* Tout est défini : on redemande un rendu du chemin pour que le bouton
+   affiche le décompte de mots (au premier passage, les tables du moteur
+   de leçon n'existaient pas encore). */
+lastI=-1;
 
 /* ---------- revenir en arrière ----------
    Il n'y avait aucune sortie : une fois sur le chemin, on était coincé.
