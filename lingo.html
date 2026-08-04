@@ -974,12 +974,10 @@ function ouvrirArrivee(i){
   videoEl.setAttribute("playsinline","");
   videoEl.setAttribute("webkit-playsinline","");
   videoEl.preload="auto";
-  if (dejaVue) {
-    videoEl.src = "reprise-"+e.ref+".mp4";
-  } else {
-    /* Newmarket : sa grande arrivée est déjà dans la séquence d'ouverture */
-    videoEl.src = (e.ref==="newmarket") ? "reprise-newmarket.mp4" : ("arrivee-"+e.ref+".mp4");
-  }
+  /* Les dix villes sont traitées pareil : grande arrivée la première fois,
+     reprise courte au retour. Newmarket n'est plus une exception — sa
+     séquence a été extraite de l'ouverture en un fichier à part. */
+  videoEl.src = dejaVue ? ("reprise-"+e.ref+".mp4") : ("arrivee-"+e.ref+".mp4");
   /* si la longue manque, on retombe sur la courte plutôt que sur un trou */
   videoEl.addEventListener("error", function(){
     if (videoEl && videoEl.src.indexOf("arrivee-") >= 0) {
