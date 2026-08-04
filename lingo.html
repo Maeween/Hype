@@ -83,21 +83,61 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
 /* ---------------- L'OUVERTURE ---------------- */
 #ouverture{position:fixed;inset:0;z-index:40;background:#04060A;display:flex;
- align-items:center;justify-content:center;flex-direction:column}
+ align-items:center;justify-content:flex-start;flex-direction:column;overflow-y:auto;
+ -webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 30px) 0
+ calc(env(safe-area-inset-bottom) + 40px)}
+#ouverture.joue{overflow:hidden;padding:0;justify-content:center}
 #ouverture.parti{display:none}
-#ouvVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
+/* le carnet de route respire : la carte de Newmarket, floutée, en fond */
+#ouvFond{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+ transition:opacity .6s}
+#ouverture.joue #ouvFond{opacity:0}
+#ouvFondImg{position:absolute;inset:-12%;width:124%;height:124%;
+ background-image:url("fond-newmarket.webp");background-size:cover;background-position:center;
+ animation:fvKen 18s ease-in-out infinite alternate, fvSouffle 14s ease-in-out infinite;
+ will-change:transform,filter}
+#ouvFondBrume{position:absolute;top:-20%;left:-60%;width:220%;height:140%;
+ background:radial-gradient(50% 40% at 50% 50%, rgba(190,215,225,.07), transparent 70%);
+ animation:fvBrume 52s linear infinite;will-change:transform}
+#ouvFondBas{position:absolute;inset:0;
+ background:linear-gradient(to bottom,rgba(4,6,10,.6) 0%,rgba(4,6,10,.86) 40%,#04060A 100%)}
+#ouvDebut{position:relative;z-index:1}
+#ouvVid{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;z-index:1;
  transition:opacity .8s ease}
 #ouverture.joue #ouvVid{opacity:1}
 #ouvVoile{position:absolute;inset:0;pointer-events:none;
  background:radial-gradient(80% 55% at 50% 42%,rgba(32,217,245,.10),transparent 74%),
             linear-gradient(to top,rgba(4,6,10,.9) 0%,transparent 44%)}
-#ouvDebut{position:relative;text-align:center;padding:0 30px;transition:opacity .5s}
+#ouvDebut{position:relative;text-align:center;padding:0 24px;max-width:520px;
+ transition:opacity .5s}
 #ouverture.joue #ouvDebut{opacity:0;pointer-events:none}
 #ouvDebut .sur{font-size:10px;letter-spacing:.36em;text-transform:uppercase;
  color:var(--turquoise);margin:0 0 14px}
 #ouvDebut h1{font-family:'Cinzel',serif;font-weight:600;font-size:40px;margin:0;line-height:1.05}
-#ouvDebut .sous{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gris);
- margin:14px 0 34px}
+#ouvDebut .sous{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris);
+ margin:14px 0 0}
+#ouvDebut .langue{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
+ font-size:14px;color:var(--turquoise);opacity:.8;margin:12px 0 30px;letter-spacing:.06em}
+#ouvDebut .intro{font-size:13.5px;line-height:1.75;color:#C3D0DA;margin:0 0 26px;
+ text-align:left}
+#ouvDebut .intro b{color:var(--blanc);font-weight:600}
+.carnet{text-align:left;margin:0 0 28px}
+.carnet .ct{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);
+ margin:0 0 12px}
+.cv{display:flex;align-items:baseline;gap:10px;padding:9px 0;
+ border-bottom:1px solid rgba(255,255,255,.06)}
+.cv:last-child{border-bottom:0}
+.cv .n{font-family:'Cinzel',serif;font-size:11px;color:var(--turquoise);width:16px;flex:0 0 16px}
+.cv .d{flex:1;min-width:0}
+.cv .d b{display:block;font-family:'Cinzel',serif;font-weight:500;font-size:14px;line-height:1.25}
+.cv .d i{display:block;font-style:normal;font-size:10.5px;color:var(--gris);margin-top:3px;
+ line-height:1.5}
+.cv .ch{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#6E7C88;
+ white-space:nowrap;flex:0 0 auto}
+.regles{text-align:left;padding:16px 16px 4px;border-radius:14px;margin:0 0 30px;
+ background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+.regles p{font-size:12px;line-height:1.7;color:var(--gris);margin:0 0 12px}
+.regles b{color:#DCE5EC;font-weight:600}
 #ouvPartir{padding:16px 44px;border-radius:15px;background:var(--turquoise);color:#060709;
  font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
  box-shadow:0 16px 42px -18px rgba(32,217,245,.95)}
@@ -385,12 +425,30 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 </div>
 
 <div id="ouverture">
+  <div id="ouvFond"><div id="ouvFondImg"></div><div id="ouvFondBrume"></div><div id="ouvFondBas"></div></div>
   <video id="ouvVid" muted playsinline webkit-playsinline preload="auto"></video>
   <div id="ouvVoile"></div>
   <div id="ouvDebut">
-    <p class="sur">Hype Lingo</p>
-    <h1>Anglais</h1>
-    <p class="sous">Îles Britanniques et Irlande</p>
+    <p class="sur">Hype Lingo · Voyage 1</p>
+    <h1>Les Îles</h1>
+    <p class="sous">Angleterre · Irlande · Pays de Galles · Écosse</p>
+    <p class="langue">— anglais —</p>
+
+    <p class="intro">Dix chapitres, dix villes. <b>Pas les capitales politiques — les capitales
+    du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
+    et où le vocabulaire que tu vas apprendre s'entend vraiment.</p>
+
+    <div class="carnet" id="carnet"></div>
+
+    <div class="regles">
+      <p><b>On voyage la nuit, on arrive à l'aube.</b> Le chemin se fait au doigt, d'une ville
+      à la suivante.</p>
+      <p><b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale
+      à retourner, un souvenir, et une étoile de plus dans ton ciel.</p>
+      <p><b>Le chapitre des urgences est offert</b> — savoir dire « il boite » ou « appelez le
+      vétérinaire » à l'étranger ne se monnaie pas.</p>
+    </div>
+
     <button id="ouvPartir">Partir</button>
   </div>
   <button id="ouvPasser">Passer</button>
@@ -564,6 +622,34 @@ var FORMES = {
 };
 
 var S = document.getElementById.bind(document);
+
+/* Pourquoi ces dix villes — affiché sur le carnet de route, avant le départ. */
+var POURQUOI = {
+ newmarket:"Capitale mondiale du pur-sang. Les chevaux y ont la priorité sur les voitures.",
+ lambourn:"La vallée du cheval de course : un village entier qui ne vit que de ça.",
+ connemara:"La seule race de poney native d'Irlande, née de la pierre et du vent.",
+ walsall:"La ville du cuir. C'est ici qu'on coud encore les selles à la main.",
+ aberystwyth:"Le pays du Welsh cob — et une plage où les randonnées finissent au galop dans la mer.",
+ windsor:"Neuf siècles de tradition équestre au pied d'un château habité.",
+ hickstead:"Le Derby Bank : la plus haute butte de compétition au monde.",
+ badminton:"L'un des concours complets les plus relevés de la planète.",
+ kildare:"Le haras national irlandais, à deux pas des pistes du Curragh.",
+ edimbourg:"Fin du voyage. Une capitale, un accent, et tout ce que tu sais déjà dire."
+};
+(function(){
+  var b=document.getElementById("carnet");
+  if(!b) return;
+  var t=document.createElement("p"); t.className="ct"; t.textContent="L'itinéraire";
+  b.appendChild(t);
+  ETAPES.forEach(function(e,i){
+    var d=document.createElement("div"); d.className="cv";
+    d.innerHTML='<span class="n">'+(i+1)+'</span>'+
+      '<span class="d"><b>'+e.v+'</b><i>'+e.nat+' · '+(POURQUOI[e.ref]||"")+'</i></span>'+
+      '<span class="ch">'+e.ch+'</span>';
+    b.appendChild(d);
+  });
+})();
+
 var rail = S("rail"), W;
 ETAPES.forEach(function(){ var d=document.createElement("div"); d.className="station"; rail.appendChild(d); });
 var marge=document.createElement("div"); marge.style.cssText="flex:0 0 11vw;height:100%";
@@ -775,6 +861,20 @@ function ecrireLettre(v){
     (manque ? '<p class="sign" style="font-size:12px;opacity:.6">(lettre non encore traduite)</p>' : "");
 }
 
+
+/* Une vidéo verticale remplit l'écran sans perte ; une vidéo en paysage
+   serait massivement rognée. On laisse donc le format du fichier décider :
+   portrait -> cover, paysage -> contain (bandes noires, fond déjà noir). */
+function ajusterCadrage(v){
+  if(!v) return;
+  function poser(){
+    if(!v.videoWidth || !v.videoHeight) return;
+    v.style.objectFit = (v.videoWidth > v.videoHeight) ? "contain" : "cover";
+  }
+  v.addEventListener("loadedmetadata", poser);
+  poser();
+}
+
 function ouvrirArrivee(i){
   courant=i; var e=ETAPES[i];
   S("arrChap").textContent="Chapitre "+(i+1)+" · "+e.ch;
@@ -817,6 +917,7 @@ function ouvrirArrivee(i){
   videoEl.addEventListener("error",function(){ S("emplacement").style.display="flex"; });
   videoEl.addEventListener("playing",function(){ S("emplacement").style.display="none"; });
   S("vue").insertBefore(videoEl, S("vue").firstChild);
+  ajusterCadrage(videoEl);
   S("emplacement").style.display="flex";
   var j=videoEl.play(); if(j&&j.catch) j.catch(function(){});
   S("arrivee").classList.add("ouvert");
@@ -856,6 +957,7 @@ var DEJA_VU = "hype_lingo_ouverture_vue";
     v.src="ouverture.mp4";
     v.addEventListener("error",terminerOuverture);
     v.addEventListener("ended",function(){ S("ouverture").classList.add("fini"); });
+    ajusterCadrage(v);
     S("ouverture").classList.add("joue");
     var j=v.play(); if(j&&j.catch) j.catch(terminerOuverture);
     /* filet de sécurité : si la vidéo manque, on n'enferme personne */
@@ -889,6 +991,7 @@ function lancerDepart(){
   vidDepart.addEventListener("error",function(){ if(vidDepart&&vidDepart.parentNode)
     vidDepart.parentNode.removeChild(vidDepart); });
   S("depart").insertBefore(vidDepart, S("depart").firstChild);
+  ajusterCadrage(vidDepart);
   var j=vidDepart.play(); if(j&&j.catch) j.catch(function(){});
   S("depart").classList.add("on");
 }
