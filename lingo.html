@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#060709">
-<title>Hype Lingua · Anglais · La Traversée</title>
+<title>Hype Linguae · Anglais · La Traversée</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Cinzel:wght@500;600&family=Klee+One&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--turquoise:#20D9F5;--blanc:#F4F7FA;--gris:#8996A2;--or:#D4AF37}
@@ -500,7 +500,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .lcHp.ecoute{animation:lcPulse 1.1s ease-in-out infinite;border-color:rgba(32,217,245,.8)}
 @keyframes lcPulse{0%,100%{box-shadow:0 0 30px -10px rgba(32,217,245,.6)}
  50%{box-shadow:0 0 54px -6px rgba(32,217,245,1)}}
-.lcEviter{display:block;margin:22px auto 0;font-size:11px;letter-spacing:.1em;color:var(--gris);
+.lcMicro{display:block;width:100%;margin-top:11px;padding:14px 18px;font-size:11.5px;
+ letter-spacing:.12em;text-transform:uppercase;color:var(--turquoise);border-radius:14px;
+ background:rgba(32,217,245,.07);border:1px solid var(--bord)}
+.lcMicro.ecoute{animation:lcPulse 1.1s ease-in-out infinite;border-color:rgba(32,217,245,.85)}
+.lcEviter{display:block;margin:18px auto 0;font-size:11px;letter-spacing:.1em;color:var(--gris);
  text-decoration:underline;text-underline-offset:3px}
 .lcScore{font-family:'Cinzel',serif;font-size:34px;color:var(--turquoise);text-align:center;margin:0}
 
@@ -720,7 +724,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="intro">
   <div id="inFond"><div id="inFondImg"></div><div id="inBas"></div></div>
   <div id="inPage">
-    <p class="sur">Hype Lingua</p>
+    <p class="sur">Hype Linguae</p>
     <h1>Échanger avec<br>les cavaliers<br>du monde entier</h1>
     <p class="cit">Chaque cavalier a une histoire.<br>Voici le début de la nôtre.</p>
     <div class="pts">
@@ -737,7 +741,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="dest">
   <div id="dsPage">
     <button id="dsRetour" aria-label="Retour">‹</button>
-    <p class="sur">Hype Lingua</p>
+    <p class="sur">Hype Linguae</p>
     <h1>Où veux-tu aller ?</h1>
     <p class="sous">Une destination, une langue. Le premier chapitre est offert partout.</p>
     <div id="dsListe"></div>
@@ -748,7 +752,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="ouverture">
   <div id="ouvFond"><div id="ouvFondImg"></div><div id="ouvFondBrume"></div><div id="ouvFondBas"></div></div>
   <div id="ouvDebut">
-    <p class="sur">Hype Lingua · Voyage 1</p>
+    <p class="sur">Hype Linguae · Voyage 1</p>
     <h1>Les Îles</h1>
     <p class="sous">Angleterre · Irlande · Pays de Galles · Écosse</p>
     <p class="langue">— anglais —</p>
@@ -1777,49 +1781,89 @@ function exDire(x){
   var c=x.c, ui=langueUI(), lg=cible();
   var attendu=c.mots[lg].m;
   var zone=el("div",{class:"lcVerdict"});
-  var etat=el("p",{class:"lcRej", text: ui==="en"?"Tap and say it":"Touche et dis-le"});
-  var reco=null, fini=false;
+  var sorti=false;          /* uniquement pour ne pas valider deux fois */
+  var reco=null, montre=null;
 
-  function conclure(juste, entendu){
-    if(fini) return; fini=true;
-    micro.classList.remove("ecoute");
-    if(entendu) etat.textContent=(ui==="en"?"Heard: ":"Entendu : ")+entendu;
+  function terminer(juste){
+    if(sorti) return; sorti=true;
+    if(montre){ clearTimeout(montre); montre=null; }
+    arreter();
     verdict(zone, juste, attendu, function(){ suivant(juste, c.ref); }, c);
   }
-  var micro=el("button",{class:"lcHp", onclick:function(){
-    if(fini) return;
-    if(!vocalPossible()){ conclure(true, null); return; }
+  function arreter(){
+    micro.classList.remove("ecoute");
+    if(reco){ try{ reco.abort(); }catch(e){} try{ reco.stop(); }catch(e){} reco=null; }
+  }
+
+  /* LE MODE PAR DÉFAUT NE DEMANDE RIEN À PERSONNE.
+     On entend le mot, on le répète, on se juge — méthode Pimsleur. Ça marche
+     hors ligne, sans permission, sur tous les appareils. La reconnaissance
+     vocale est un bonus, pas le chemin normal : sur iPhone elle peut ne
+     jamais répondre, et la page restait bloquée. */
+  var bJuste=el("button",{class:"lcCta", onclick:function(){ terminer(true); }},
+    ui==="en"?"I said it":"Je l'ai dit");
+  var bRate=el("button",{class:"lcEviter", onclick:function(){ terminer(false); }},
+    ui==="en"?"I couldn't":"Je n'ai pas réussi");
+
+  var etat=el("p",{class:"lcRej", text: ui==="en"?"Repeat it out loud":"Répète-le à voix haute"});
+
+  var micro=el("button",{class:"lcMicro", onclick:function(){
+    if(sorti) return;
+    if(!vocalPossible()){
+      etat.textContent = ui==="en" ? "Not available on this device"
+                                   : "Indisponible sur cet appareil";
+      return;
+    }
     try{
       var R=window.SpeechRecognition||window.webkitSpeechRecognition;
-      reco=new R(); reco.lang=VOIX[lg]||"en-GB"; reco.interimResults=false; reco.maxAlternatives=4;
+      reco=new R(); reco.lang=VOIX[lg]||"en-GB";
+      reco.interimResults=false; reco.maxAlternatives=4;
       micro.classList.add("ecoute");
-      etat.textContent=(ui==="en"?"Listening\u2026":"J'\u00e9coute\u2026");
+      etat.textContent = ui==="en" ? "Listening\u2026" : "J'\u00e9coute\u2026";
+      /* ⚠️ FILET INDISPENSABLE : sur iOS la reconnaissance peut ne jamais
+         rendre de réponse. Sans ce délai, la page restait bloquée. */
+      montre=setTimeout(function(){
+        arreter();
+        etat.textContent = ui==="en" ? "Didn't hear \u2014 judge yourself"
+                                     : "Rien entendu \u2014 juge par toi-m\u00eame";
+      }, 6000);
       reco.onresult=function(ev){
+        if(montre){ clearTimeout(montre); montre=null; }
         var dits=[], k;
         for(k=0;k<ev.results[0].length;k++) dits.push(ev.results[0][k].transcript);
-        /* indulgent : il suffit qu'une des propositions contienne le mot */
         var att=motNu(attendu);
-        var ok=dits.some(function(d){ var m=motNu(d); return m===att || m.indexOf(att)>=0 || att.indexOf(m)>=0; });
-        conclure(ok, dits[0]);
+        /* indulgent : on ne juge jamais l'accent, seulement le mot */
+        var ok=dits.some(function(d){ var m=motNu(d);
+          return m===att || m.indexOf(att)>=0 || att.indexOf(m)>=0; });
+        etat.textContent=(ui==="en"?"Heard: ":"Entendu : ")+dits[0];
+        terminer(ok);
       };
-      reco.onerror=function(){ conclure(true, null); };   /* jamais de sanction technique */
+      reco.onerror=function(){
+        if(montre){ clearTimeout(montre); montre=null; }
+        arreter();
+        etat.textContent = ui==="en" ? "Microphone unavailable \u2014 judge yourself"
+                                     : "Micro indisponible \u2014 juge par toi-m\u00eame";
+      };
       reco.onend=function(){ micro.classList.remove("ecoute"); };
       reco.start();
-    }catch(e){ conclure(true, null); }
-  }}, "\u25CF");
+    }catch(e){
+      arreter();
+      etat.textContent = ui==="en" ? "Microphone unavailable" : "Micro indisponible";
+    }
+  }}, "\u25CF  "+(ui==="en"?"Let it listen":"Le faire écouter"));
 
   return el("div",{},
-    el("p",{class:"lcCons", text: ui==="en"?"Say it out loud":"Dis-le \u00e0 voix haute"}),
+    el("p",{class:"lcCons", text: ui==="en"?"Say it out loud":"Dis-le à voix haute"}),
     el("p",{class:"lcInvite", text:attendu}),
-    c.mots[lg].p ? el("p",{class:"lcPhon", style:"text-align:center;margin:-14px 0 20px",
+    c.mots[lg].p ? el("p",{class:"lcPhon", style:"text-align:center;margin:-14px 0 22px",
       text:"[ "+c.mots[lg].p+" ]"}) : null,
-    el("button",{class:"lcSon", style:"display:block;margin:0 auto 18px",
-      onclick:function(){ dire(attendu, lg); }}, "\u266a  "+(ui==="en"?"Listen first":"L'entendre d'abord")),
-    micro, etat,
-    el("button",{class:"lcEviter", onclick:function(){
-      if(fini) return; fini=true;
-      LC.plan[LC.i]={t:"ecoute", c:c}; etape();     /* on remplace, on ne saute pas */
-    }}, ui==="en"?"I'd rather not speak":"Je pr\u00e9f\u00e8re ne pas parler"),
+    el("button",{class:"lcSon", style:"display:block;margin:0 auto 20px",
+      onclick:function(){ dire(attendu, lg); }},
+      "\u266a  "+(ui==="en"?"Listen":"L'entendre")),
+    etat,
+    bJuste,
+    micro,
+    bRate,
     zone
   );
 }
@@ -1886,7 +1930,7 @@ function accueilSprint(){
   S("spScore").textContent="0"; S("spCombo").className="";
   videEl(S("spCorps"));
   S("spCorps").appendChild(el("div",{id:"spAccueil"},
-    el("p",{class:"sur", text:"Hype Lingua"}),
+    el("p",{class:"sur", text:"Hype Linguae"}),
     el("h1",{text:"Le Sprint"}),
     el("p",{text: ui==="en"
       ? "Sixty seconds. As many words as you can. Three in a row and the combo climbs."
@@ -1993,16 +2037,205 @@ function finSprint(){
       el("div",{}, el("em",{text:String(SP_REC.total)}), el("span",{text:ui==="en"?"words":"mots"}))
     ),
     el("button",{id:"spGo", onclick:demarrerSprint}, ui==="en"?"Again":"Encore"),
+    el("button",{id:"spGo", class:"encore", onclick:function(){ ouvrirDuel(grainePropre(), null); }},
+      ui==="en"?"Challenge someone":"Défier quelqu'un"),
     el("button",{id:"spGo", class:"encore", onclick:fermerSprint},
       ui==="en"?"Back to the journey":"Revenir au voyage")
   ));
 }
+
+/* ==================================================================
+   LE DUEL — sans serveur, sans compte, sans temps réel.
+   Une graine dans un lien : les deux joueurs reçoivent LES MÊMES dix
+   mots dans le MÊME ordre, chacun joue quand il veut. Le lien porte le
+   score de celui qui défie ; le défié voit le score à battre en face du
+   sien et peut renvoyer le résultat.
+   Aucune table Supabase, rien à exécuter en base : ça marche par
+   WhatsApp, que tout le monde a déjà.
+   ================================================================== */
+var DUEL = null;
+
+/* un générateur pseudo-aléatoire reproductible à partir d'une graine */
+function semeur(graine){
+  var h=1779033703^graine.length, i;
+  for(i=0;i<graine.length;i++){
+    h=Math.imul(h^graine.charCodeAt(i),3432918353);
+    h=(h<<13)|(h>>>19);
+  }
+  var a=h>>>0;
+  return function(){
+    a+=0x6D2B79F5; var t=a;
+    t=Math.imul(t^(t>>>15),t|1);
+    t^=t+Math.imul(t^(t>>>7),t|61);
+    return ((t^(t>>>14))>>>0)/4294967296;
+  };
+}
+function grainePropre(){
+  return Math.random().toString(36).slice(2,8);
+}
+/* la même graine donne toujours la même liste de dix mots */
+function motsDuDuel(graine){
+  var LEX=window.HYPE_LINGO_LEX||{}, tous=[];
+  Object.keys(LEX).sort().forEach(function(k){
+    (LEX[k].concepts||[]).forEach(function(c){ tous.push(c); });
+  });
+  var r=semeur(graine), pris={}, liste=[], essais=0;
+  while(liste.length<10 && essais<500){
+    essais++;
+    var i=Math.floor(r()*tous.length);
+    if(!pris[i]){ pris[i]=1; liste.push(tous[i]); }
+  }
+  return liste;
+}
+function lienDuel(graine, score){
+  var base=location.href.split("#")[0];
+  return base+"#duel="+graine+(score!==null&&score!==undefined ? ("-"+score) : "");
+}
+
+function ouvrirDuel(graine, aBattre){
+  DUEL={ graine:graine, aBattre:(aBattre===null?null:aBattre), mots:motsDuDuel(graine),
+         i:0, score:0, combo:0 };
+  if(DUEL.mots.length<4){ DUEL=null; return; }
+  S("sprint").classList.add("on");
+  amorcerVoix();
+  accueilDuel();
+}
+function accueilDuel(){
+  var ui=langueUI(), d=DUEL;
+  S("spSec").textContent="\u2694"; S("spChrono").firstElementChild.style.width="100%";
+  S("spScore").textContent="0"; S("spCombo").className="";
+  videEl(S("spCorps"));
+  S("spCorps").appendChild(el("div",{id:"spAccueil"},
+    el("p",{class:"sur", text:"Hype Linguae"}),
+    el("h1",{text: ui==="en"?"The Duel":"Le Duel"}),
+    el("p",{text: d.aBattre===null
+      ? (ui==="en"?"Ten words. Play, then challenge someone with your score."
+                 : "Dix mots. Tu joues, puis tu défies quelqu'un avec ton score.")
+      : (ui==="en"?("Ten words, the same as your challenger. Score to beat: "+d.aBattre+".")
+                 : ("Dix mots, les mêmes que ton adversaire. Score à battre : "+d.aBattre+"."))}),
+    d.aBattre!==null ? el("div",{id:"spRec"},
+      el("div",{}, el("em",{text:String(d.aBattre)}), el("span",{text:ui==="en"?"to beat":"à battre"}))
+    ) : null,
+    el("button",{id:"spGo", onclick:questionDuel}, ui==="en"?"Start":"C'est parti")
+  ));
+}
+function questionDuel(){
+  var d=DUEL; if(!d) return;
+  if(d.i>=d.mots.length) return finDuel();
+  var ui=langueUI(), lg=cible(), c=d.mots[d.i];
+  /* le sens est fixé par la graine : les deux joueurs ont la même épreuve */
+  var r=semeur(d.graine+"-"+d.i);
+  var versCible = r()<0.5;
+  var src=versCible?ui:lg, dst=versCible?lg:ui;
+  var bonne=c.mots[dst].m;
+  var pool=d.mots.filter(function(y){ return y!==c; });
+  var leurres=[], vus={}; vus[bonne]=1;
+  pool.forEach(function(y){ var m=y.mots[dst].m; if(!vus[m] && leurres.length<3){ vus[m]=1; leurres.push(m); } });
+  var ordre=[bonne].concat(leurres);
+  /* mélange reproductible : même disposition pour les deux joueurs */
+  var k, j, tmp;
+  for(k=ordre.length-1;k>0;k--){ j=Math.floor(r()*(k+1)); tmp=ordre[k]; ordre[k]=ordre[j]; ordre[j]=tmp; }
+
+  S("spSec").textContent=(d.i+1)+"/"+d.mots.length;
+  videEl(S("spCorps"));
+  S("spChrono").firstElementChild.style.width=((d.i)/d.mots.length*100)+"%";
+  S("spCorps").appendChild(el("div",{},
+    el("p",{class:"spMot", text:c.mots[src].m}),
+    el("div",{class:"spOpts"},
+      ordre.map(function(o){
+        return el("button",{class:"spOpt", onclick:function(){
+          if(!DUEL) return;
+          var juste=(o===bonne);
+          this.classList.add(juste?"ok":"ko");
+          flash(juste);
+          if(juste){
+            d.combo++;
+            var mult=d.combo>=6?3:(d.combo>=3?2:1);
+            d.score+=mult;
+            MAITRISE[c.ref]=Math.min(5,(MAITRISE[c.ref]||0)+1);
+            S("spScore").textContent=String(d.score);
+            if(mult>1){ S("spCombo").className="on";
+              S("spCombo").innerHTML="combo <b>\u00d7"+mult+"</b>"; }
+          } else { d.combo=0; S("spCombo").className=""; }
+          d.i++;
+          setTimeout(function(){ if(DUEL) questionDuel(); }, juste?200:560);
+        }}, o);
+      })
+    )
+  ));
+}
+function finDuel(){
+  var d=DUEL, ui=langueUI();
+  sauverMaitrise();
+  donnerXP(Math.round(d.score/2), "linguae-duel");
+  var gagne = (d.aBattre!==null && d.score>d.aBattre);
+  var egal  = (d.aBattre!==null && d.score===d.aBattre);
+  var lien=lienDuel(d.graine, d.score);
+  DUEL=null;
+  S("spCombo").className="";
+  videEl(S("spCorps"));
+  S("spCorps").appendChild(el("div",{id:"spAccueil"},
+    el("p",{class:"sur", text: gagne ? (ui==="en"?"You win":"Tu gagnes")
+      : (egal ? (ui==="en"?"Draw":"Match nul")
+      : (d.aBattre!==null ? (ui==="en"?"Beaten":"Battu") : (ui==="en"?"Your score":"Ton score")))}),
+    el("h1",{text: d.aBattre!==null ? (d.score+" \u2013 "+d.aBattre) : String(d.score)}),
+    el("p",{text: d.aBattre!==null
+      ? (ui==="en"?"Send the link back so they can see.":"Renvoie le lien pour qu'il voie le résultat.")
+      : (ui==="en"?"Send this link. Same ten words, same order.":"Envoie ce lien. Les mêmes dix mots, dans le même ordre.")}),
+    el("button",{id:"spGo", onclick:function(){ partagerDuel(lien, d.score); }},
+      ui==="en"?"Challenge someone":"Défier quelqu'un"),
+    el("button",{id:"spGo", class:"encore", onclick:function(){ ouvrirDuel(grainePropre(), null); }},
+      ui==="en"?"New duel":"Nouveau duel"),
+    el("button",{id:"spGo", class:"encore", onclick:fermerSprint},
+      ui==="en"?"Back":"Revenir")
+  ));
+}
+function partagerDuel(lien, score){
+  var ui=langueUI();
+  var txt=(ui==="en" ? ("I scored "+score+" on Hype Linguae. Same ten words, beat me: ")
+                     : ("J'ai fait "+score+" sur Hype Linguae. Mêmes dix mots, bats-moi : "))+lien;
+  if(navigator.share){
+    navigator.share({ title:"Hype Linguae", text:txt }).catch(function(){});
+    return;
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+      alert(ui==="en"?"Link copied.":"Lien copié.");
+    }).catch(function(){ alert(txt); });
+    return;
+  }
+  alert(txt);
+}
+
 S("spFermer").addEventListener("click", fermerSprint);
 S("bSprint").addEventListener("click", ouvrirSprint);
 
 /* lingo.html#sprint ouvre directement le jeu : c'est le raccourci depuis
    l'accueil de Hype, pour tomber sur un exercice en deux taps. */
-if(location.hash==="#sprint"){
+/* #duel=graine ou #duel=graine-score : on entre directement dans le duel.
+   ⚠️ Écouté aussi sur hashchange : quand on est DÉJÀ sur la page, ouvrir un
+   lien de duel ne change que l'ancre et le script ne se relance pas — sans
+   ça, un frère qui clique le lien depuis Linguae ne voyait rien se passer. */
+function lireAncre(){
+  var m=/^#duel=([a-z0-9]+)(?:-(\d+))?$/.exec(location.hash||"");
+  if(m){
+    S("intro").classList.remove("on"); S("dest").classList.remove("on");
+    S("ouverture").classList.add("parti");
+    if(SP){ fermerSprint(); }
+    ouvrirDuel(m[1], m[2]!==undefined ? parseInt(m[2],10) : null);
+    return true;
+  }
+  if(location.hash==="#sprint"){
+    S("intro").classList.remove("on"); S("dest").classList.remove("on");
+    S("ouverture").classList.add("parti");
+    ouvrirSprint(); return true;
+  }
+  return false;
+}
+window.addEventListener("hashchange", lireAncre);
+if(lireAncre()){
+  /* rien de plus : l'écran de jeu est ouvert */
+} else if(false){
   S("intro").classList.remove("on");
   S("dest").classList.remove("on");
   S("ouverture").classList.add("parti");
@@ -2058,8 +2291,11 @@ S("dsRetour").addEventListener("click", function(){
 /* La présentation ne se voit qu'une fois. Le choix de destination reste
    accessible par le bouton de retour du carnet de route. */
 (function(){
-  /* le raccourci #sprint passe devant tout : on vient jouer, pas lire */
-  if(location.hash==="#sprint") return;
+  /* tout raccourci de jeu passe devant : on vient jouer, pas lire.
+     Le garde-fou ne testait que #sprint — avec #duel=… la présentation
+     se réaffichait PAR-DESSUS le duel et interceptait les taps. */
+  var h=location.hash||"";
+  if(h==="#sprint" || h.indexOf("#duel=")===0) return;
   var vu=false;
   try{ vu = localStorage.getItem("hype_lingua_intro")==="1"; }catch(e){}
   if(!vu){
