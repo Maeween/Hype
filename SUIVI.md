@@ -12,6 +12,79 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🎮 SESSION 85 (04/08, soir) — HYPE LINGUAE : LE JEU
+
+⚠️ **Le module s'appelle désormais HYPE LINGUAE.** Troisième nom en une soirée : Lingo → Lingua → **Linguae** (pluriel latin de *lingua*, les langues). C'est le nom retenu. Ne pas le réécrire en Lingo.
+
+⚠️ **Le fichier reste `lingo.html`** à la racine — renommer le fichier casserait les liens déjà poussés et le raccourci depuis l'app. Seul le nom affiché change.
+
+### Ce qui a été fait
+
+**La leçon est branchée** (elle n'existait pas avant cette session) : cinq exercices — carte de découverte, choix dans les deux sens, écoute, écriture, phrase à remettre en ordre — plus un sixième, le vocal. Réponses en **plaques de verre 2×2** sur la carte postale de la ville ; jamais de liste verticale de pilules.
+
+**Vagues de trois**, sur les conseils d'un retour extérieur et vérification de la méthode Duolingo : trois mots découverts, trois exercices, une phrase, puis les trois suivants. Avant : dix découvertes d'affilée puis dix exercices — au premier exercice on avait oublié le premier mot. La leçon commence par jusqu'à **trois exercices de révision** tirés des mots du chapitre dont la maîtrise est la plus basse.
+
+**LE SPRINT** — soixante secondes, le plus de mots possible, combo ×2 à trois bonnes d'affilée, ×3 à six, ×4 à neuf. Puise dans les 336 mots des huit chapitres, en priorité ceux déjà croisés. Record, parties et mots gardés en local. **Accessible en deux taps depuis l'accueil de Hype** via `lingo.html#sprint`.
+
+**LE DUEL, sans serveur.** Une graine de six caractères dans le lien détermine les dix mots, leur ordre, le sens de chaque question et la disposition des quatre réponses : les deux joueurs jouent exactement la même partie. Le lien porte le score du défiant (`#duel=abc123-23`). Aucune table Supabase, ça passe par WhatsApp. Testé entre deux onglets.
+
+**Trois écrans en amont** : présentation (« Échanger avec les cavaliers du monde entier »), choix de la destination — Les Îles ouvert, La Péninsule / La Botte / Le Rhin / L'Archipel / Le Lexique français annoncés —, puis le carnet de route avec les dix villes en dépliants.
+
+**Le chemin ne contient plus aucun dessin.** Montagnes en triangles, cabanes géométriques, mer en traits, lune grise, herbes : tout supprimé, remplacé par les dix cartes postales en plein écran avec parallaxe. La bibliothèque `FORMES` a été retirée.
+
+**Récompenses conditionnées** : la carte postale s'affiche en **aperçu assombri** avec « encore N mots », ne se retourne pas et n'entre pas au passeport tant que le chapitre n'est pas fait. Le souvenir demande **tous** les mots. Le tampon reste acquis à l'arrivée.
+
+**Entrée dans l'app** : carte HYPE LINGUAE dans « Mon apprentissage » de l'accueil, image tirée de la vidéo d'arrivée de Newmarket, plus un bouton « Le Sprint · 60 secondes ». ⚠️ **L'`index.html` n'avait toujours pas été déployé au moment d'écrire ces lignes** — c'est pourquoi la carte n'apparaissait pas.
+
+**Doublon de quêtes corrigé** : `.slice(0, 3)` → `.slice(1, 4)`.
+
+### ⚠️ Bugs corrigés — à ne pas réintroduire
+
+**PLANTAGE MÉMOIRE iOS.** Le chemin chargeait la carte 900×1200 de chaque ville approchée et **ne la déchargeait jamais** : après dix villes, une quarantaine de mégaoctets décodés, et un pincement pour zoomer tuait l'onglet. Maintenant **trois cartes nettes au maximum**, les autres repassent au fond de 1 Ko.
+
+**VOCAL QUI BLOQUE TOUT.** La reconnaissance ne répondait jamais sur iPhone et le verrou anti-double-validation bloquait **aussi** le bouton de sortie : session perdue. Corrigé par un délai de 6 s, un bouton de sortie sans verrou, et surtout **le vocal n'est plus le mode par défaut** — on écoute, on répète, on se juge (méthode Pimsleur). Le micro est un bouton secondaire. **Ne jamais noter l'accent** : on vérifie que le bon mot a été dit.
+
+**COLLISION DE NOMS `melange`.** Ma fonction de brassage de tableau écrasait celle qui mélangeait deux couleurs : le ciel du chemin restait figé sur sa première teinte. Renommée `brasser`.
+
+**COLLISION DE CLASSE `.cv`.** Les cartes du chemin et les lignes du carnet partageaient la classe : l'itinéraire disparaissait et le titre s'empilait. Les cartes sont passées à `.chc`.
+
+**BOUTON VERROUILLÉ QUI ENFERME.** Sur une ville non atteinte, le bouton ne faisait rien et le seul recours était un glissement horizontal, que Safari interprète comme son geste de retour. Il **ramène désormais à l'étape en cours**. Les points du bas sont devenus une navigation, avec une zone tactile de 26 px (un point de 5 px est inatteignable au doigt).
+
+**VIDÉO DANS UN CONTENEUR DÉFILANT.** L'ouverture se positionnait par rapport à la hauteur du carnet et non de l'écran, et son `z-index` la faisait passer par-dessus les boutons : le tap n'atteignait jamais « Entrer ». Elle a son propre calque fixe `#ouvFilm`.
+
+**RACCOURCI D'ANCRE IGNORÉ.** Ouvrir un lien de duel quand on est **déjà** sur la page ne changeait que l'ancre : le script ne se relançait pas. Écouté sur `hashchange`.
+
+**PRÉSENTATION PAR-DESSUS LE JEU.** Le garde-fou ne testait que `#sprint` ; avec `#duel=…` la présentation se réaffichait et interceptait les taps.
+
+**ÉTAT DES CHAPITRES LU TROP TÔT.** `etatChapitre` était appelée par le chemin avant l'initialisation des tables du moteur de leçon (`var` hissé mais pas sa valeur) : plantage silencieux. La fonction répond prudemment et l'affichage se rafraîchit après chargement.
+
+**CADRAGE DES VIDÉOS.** Choisi par le code selon les dimensions réelles : portrait → `cover`, paysage → `contain`.
+
+**RECADRAGE DU FILIGRANE.** Couper à gauche mange la première lettre des noms longs (« ABERYSTWYT »). **Recadrer par le haut uniquement.**
+
+### Décisions à ne pas défaire
+
+- **Une ville, une vidéo**, qui rejoue à chaque passage. Le système à deux niveaux (arrivée longue puis reprise courte) est supprimé : il répondait à des vidéos de 15 s, elles font moins de 5 s.
+- **L'ouverture rejoue à chaque lancement** (constellations, tracé, Îles). Bouton « Passer » toujours présent.
+- **`VOYAGE_LANGUE` ≠ `langue`** : la première est la langue enseignée, la seconde celle dans laquelle on lit les cartes postales. Bug corrigé : la leçon apprenait le français à une francophone.
+- **Le flou des fonds est cuit dans l'image** (1 à 2 Ko), jamais calculé en direct.
+- **Aucun mur d'énergie, jamais.** Duolingo en a un ; près de la moitié de plus de onze mille utilisateurs sondés le détestent. Sur une communauté de club, ça se retourne contre nous. On crée de la tension par le combo et le duel, pas par le blocage.
+- **XP via le pont `HYPE_LINGO_HOST.xpAjouter`**, jamais un compteur à part. 2 par mot, 10 par chapitre, score/3 au sprint — provisoire, le barème de Hype n'est pas validé.
+
+### 🔴 À FAIRE ensuite
+
+- [ ] **Grille de vignettes** à la place du carnet en liste : dix cartes postales en petit, trois par ligne, un écran sans défilement. Demandé, pas fait.
+- [ ] **Sprint par ville** (record par chapitre) + garder le sprint général comme épreuve finale, façon grand quiz.
+- [ ] **Records visibles ailleurs que dans le sprint** : sur la carte de l'accueil et dans le carnet.
+- [ ] **Classement du club** : table Supabase `linguae_scores` (pseudo, chapitre, score, date), top 3. À maquetter en faux d'abord. SQL à fournir.
+- [ ] **`hype-lingo-lex-pansage.js`** : appelé par `lingo.html`, absent du dépôt. Le chapitre 2 affiche un message explicite.
+- [ ] **Chapitre 10 « Les dialogues »** : pas écrit.
+- [ ] **220 mots à faire vérifier** par des natifs — voir `hype-linguae-doutes.md`. Allemand 90, japonais 88, espagnol 21, italien 21.
+- [ ] **Traduction des textes de ville** (lettres et volets) : confiée à une conversation parallèle.
+- [ ] Passeport, globe, collection, mode Lexique : décidés, pas construits.
+
+---
+
 ## 🗺️ SESSION 84 (04/08) — HYPE LINGO : LE VOYAGE 1 EST JOUABLE
 
 ⚠️ **L'`index.html` de Hype n'a PAS été touché.** Tout se passe dans `lingo.html` et ses fichiers, à la racine. Seule exception de la journée : un correctif d'une ligne sur l'accueil (voir plus bas).
