@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#060709">
-<title>Hype Lingo · Anglais · La Traversée</title>
+<title>Hype Lingua · Anglais · La Traversée</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Cinzel:wght@500;600&family=Klee+One&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--turquoise:#20D9F5;--blanc:#F4F7FA;--gris:#8996A2;--or:#D4AF37}
@@ -120,10 +120,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvFondBas{position:absolute;inset:0;
  background:linear-gradient(to bottom,rgba(4,6,10,.6) 0%,rgba(4,6,10,.86) 40%,#04060A 100%)}
 #ouvDebut{position:relative;z-index:1}
-#ouvVid{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;z-index:1;
- transition:opacity .8s ease}
-#ouverture.joue #ouvVid{opacity:1}
-#ouvVoile{position:absolute;inset:0;pointer-events:none;
+#ouvFilm{position:fixed;inset:0;z-index:42;background:#04060A;display:none}
+#ouvFilm.joue{display:block}
+#ouvVid{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;
+ pointer-events:none;transition:opacity .8s ease}
+#ouvFilm.joue #ouvVid{opacity:1}
+
+#ouvVoile{position:absolute;inset:0;pointer-events:none;z-index:2;
  background:radial-gradient(80% 55% at 50% 42%,rgba(32,217,245,.10),transparent 74%),
             linear-gradient(to top,rgba(4,6,10,.9) 0%,transparent 44%)}
 #ouvDebut{position:relative;text-align:center;padding:0 22px;width:100%;max-width:520px;
@@ -159,15 +162,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvPartir{padding:16px 44px;border-radius:15px;background:var(--turquoise);color:#060709;
  font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
  box-shadow:0 16px 42px -18px rgba(32,217,245,.95)}
-#ouvPasser,#ouvSuite{position:absolute;opacity:0;transition:opacity .4s}
-#ouverture.joue #ouvPasser{opacity:1}
+#ouvPasser,#ouvSuite{position:absolute;z-index:3;opacity:0;transition:opacity .4s}
+#ouvFilm.joue #ouvPasser{opacity:1}
 #ouvPasser{top:calc(env(safe-area-inset-top) + 16px);right:18px;font-size:10px;
  letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
 #ouvSuite{bottom:calc(env(safe-area-inset-bottom) + 34px);left:50%;transform:translateX(-50%);
  padding:15px 30px;border-radius:14px;background:var(--turquoise);color:#060709;
  font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
  pointer-events:none}
-#ouverture.fini #ouvSuite{opacity:1;pointer-events:auto}
+#ouvFilm.fini #ouvSuite{opacity:1;pointer-events:auto}
 
 
 /* ==================================================================
@@ -540,12 +543,21 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   </div>
 </div>
 
-<div id="ouverture">
-  <div id="ouvFond"><div id="ouvFondImg"></div><div id="ouvFondBrume"></div><div id="ouvFondBas"></div></div>
+<!-- Le film est un calque à part, en position fixe. Il était auparavant
+     dans #ouverture, qui défile : la vidéo se plaçait par rapport à la
+     hauteur totale du carnet au lieu de l'écran, et son z-index la faisait
+     passer par-dessus les boutons — le tap n'atteignait jamais « Entrer ». -->
+<div id="ouvFilm">
   <video id="ouvVid" muted playsinline webkit-playsinline preload="auto"></video>
   <div id="ouvVoile"></div>
+  <button id="ouvPasser">Passer</button>
+  <button id="ouvSuite">Entrer à Newmarket</button>
+</div>
+
+<div id="ouverture">
+  <div id="ouvFond"><div id="ouvFondImg"></div><div id="ouvFondBrume"></div><div id="ouvFondBas"></div></div>
   <div id="ouvDebut">
-    <p class="sur">Hype Lingo · Voyage 1</p>
+    <p class="sur">Hype Lingua · Voyage 1</p>
     <h1>Les Îles</h1>
     <p class="sous">Angleterre · Irlande · Pays de Galles · Écosse</p>
     <p class="langue">— anglais —</p>
@@ -567,8 +579,6 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
     <button id="ouvPartir">Partir</button>
   </div>
-  <button id="ouvPasser">Passer</button>
-  <button id="ouvSuite">Entrer à Newmarket</button>
 </div>
 
 <div id="lecon">
@@ -1376,9 +1386,8 @@ S("lcFermer").addEventListener("click", fermerLecon);
 S("retour").addEventListener("click", function(){
   if(S("lecon").classList.contains("on")){ fermerLecon(); return; }
   if(S("arrivee").classList.contains("ouvert")){ fermerArrivee(); return; }
-  S("ouverture").classList.remove("joue","fini");
-  S("ouverture").classList.add("parti");   /* on ne rejoue pas la vidéo */
-  S("ouverture").classList.remove("parti");
+  S("ouvFilm").classList.remove("joue","fini");
+  S("ouverture").classList.remove("joue","parti");
   S("ouverture").scrollTop=0;
 });
 
@@ -1412,12 +1421,14 @@ S("arrPartir").addEventListener("click",function(){ fermerArrivee(); setTimeout(
   S("ouvPartir").addEventListener("click",function(){
     v.src="ouverture.mp4";
     v.addEventListener("error",terminerOuverture);
-    v.addEventListener("ended",function(){ S("ouverture").classList.add("fini"); });
+    v.addEventListener("ended",function(){ S("ouvFilm").classList.add("fini"); });
     ajusterCadrage(v);
+    S("ouvFilm").classList.add("joue");
     S("ouverture").classList.add("joue");
     var j=v.play(); if(j&&j.catch) j.catch(terminerOuverture);
-    /* filet de sécurité : si la vidéo manque, on n'enferme personne */
-    setTimeout(function(){ S("ouverture").classList.add("fini"); }, 13500);
+    /* filet de sécurité : si la vidéo manque, on n'enferme personne.
+       Le bouton de sortie apparaît au bout de 2 s quoi qu'il arrive. */
+    setTimeout(function(){ S("ouvFilm").classList.add("fini"); }, 2000);
   });
   S("ouvPasser").addEventListener("click",terminerOuverture);
   S("ouvSuite").addEventListener("click",terminerOuverture);
@@ -1425,6 +1436,7 @@ S("arrPartir").addEventListener("click",function(){ fermerArrivee(); setTimeout(
 function terminerOuverture(){
   var v=S("ouvVid");
   try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){}
+  S("ouvFilm").classList.remove("joue","fini");
   S("ouverture").classList.add("parti");
 }
 
