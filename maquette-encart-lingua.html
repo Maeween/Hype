@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maquette · encart Hype Lingua</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --noir:#060709; --turq:#20D9F5; --turqDoux:#7DDDE8; --encre:#F4FEFF; }
+  *{box-sizing:border-box}
+  body{
+    margin:0; padding:26px 16px 70px; background:var(--noir); color:var(--encre);
+    font-family:'Montserrat',-apple-system,system-ui,sans-serif; font-weight:300;
+    -webkit-font-smoothing:antialiased;
+  }
+  .note{
+    border:1px solid rgba(32,217,245,.22); background:rgba(32,217,245,.05);
+    border-radius:12px; padding:13px 15px; font-size:12.5px; line-height:1.6;
+    color:#C8DDE6; margin:0 0 28px;
+  }
+  .note b{color:var(--turqDoux); font-weight:700}
+
+  /* --- titre de section, repris de chapAcc --- */
+  .chap{display:flex; align-items:center; gap:12px; margin:34px 0 0}
+  .chap i{width:34px; height:2px; background:var(--turq); flex:0 0 34px; border-radius:2px}
+  .chap span{
+    font-family:'Montserrat',sans-serif; font-size:11.5px; font-weight:800;
+    letter-spacing:.34em; text-transform:uppercase; color:var(--turq);
+  }
+
+  /* --- bannière, même gabarit que Théorie des Galops (188px) --- */
+  .banner{
+    position:relative; display:block; width:100%; height:188px; margin-top:20px;
+    border-radius:22px; overflow:hidden; border:1px solid rgba(32,217,245,.24);
+    background:#0A0F14; cursor:pointer; padding:0; text-align:left;
+    -webkit-appearance:none; color:inherit; font:inherit;
+  }
+  .banner .fond{position:absolute; inset:0}
+  .banner .voile{
+    position:absolute; inset:0;
+    background:linear-gradient(0deg, rgba(2,5,9,.94) 8%, rgba(2,5,9,.34) 52%, rgba(2,5,9,.04) 80%);
+  }
+  .banner .txt{position:absolute; left:16px; right:44px; bottom:13px}
+  .banner .k{
+    font-size:8.5px; letter-spacing:.3em; font-weight:800; color:var(--turqDoux);
+    text-transform:uppercase; text-shadow:0 1px 8px rgba(0,0,0,.9);
+  }
+  .banner .t{
+    margin-top:5px; font-family:'Cinzel',serif; font-size:18px; font-weight:700;
+    letter-spacing:.06em; color:var(--encre); text-transform:uppercase;
+    text-shadow:0 2px 14px rgba(2,5,9,.9), 0 1px 3px rgba(0,0,0,.7);
+  }
+  .banner .s{
+    margin-top:4px; font-size:11px; color:rgba(234,241,244,.8);
+    text-shadow:0 1px 8px rgba(0,0,0,.9);
+  }
+  .banner .chev{
+    position:absolute; right:15px; bottom:13px; color:var(--turqDoux);
+    font-size:17px; font-weight:700;
+  }
+  .banner .neuf{
+    position:absolute; top:13px; left:16px; font-size:8.5px; font-weight:800;
+    letter-spacing:.22em; text-transform:uppercase; color:#04121A;
+    background:linear-gradient(135deg,var(--turq),#8FE6EF);
+    padding:4px 9px; border-radius:999px;
+  }
+
+  /* --- fonds simulés : dans l'app ce sera une image de hype-images --- */
+  .fond-lingua{
+    background:
+      radial-gradient(60% 90% at 78% 22%, rgba(32,217,245,.30), transparent 62%),
+      radial-gradient(70% 80% at 18% 78%, rgba(20,90,120,.42), transparent 66%),
+      linear-gradient(155deg,#08131F 0%,#0A1826 48%,#060B12 100%);
+  }
+  .fond-lingua::after{
+    content:''; position:absolute; inset:0; opacity:.5;
+    background-image:
+      radial-gradient(1.4px 1.4px at 12% 26%, #CFF6FC 40%, transparent 42%),
+      radial-gradient(1.6px 1.6px at 34% 62%, #9FE8F2 40%, transparent 42%),
+      radial-gradient(1.2px 1.2px at 58% 18%, #E6FBFF 40%, transparent 42%),
+      radial-gradient(1.8px 1.8px at 71% 48%, #7FE0EE 40%, transparent 42%),
+      radial-gradient(1.3px 1.3px at 86% 72%, #CFF6FC 40%, transparent 42%),
+      radial-gradient(1.5px 1.5px at 46% 84%, #A9ECF5 40%, transparent 42%),
+      radial-gradient(1.1px 1.1px at 24% 44%, #E6FBFF 40%, transparent 42%);
+  }
+  .fond-lingua .courbe{
+    position:absolute; left:-6%; right:-6%; top:38%; height:2px;
+    background:linear-gradient(90deg,transparent,rgba(32,217,245,.75),transparent);
+    transform:rotate(-7deg); filter:blur(.4px);
+  }
+  .fond-voisin{
+    background:linear-gradient(150deg,#101A20 0%,#0A1116 60%,#070A0D 100%);
+  }
+  .fond-voisin .ph{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+    color:rgba(255,255,255,.16); font-weight:700;
+  }
+
+  h2.v{
+    font-family:'Cinzel',serif; font-size:13px; letter-spacing:.14em; font-weight:600;
+    text-transform:uppercase; color:var(--turq); margin:44px 0 2px;
+  }
+  p.vs{font-size:12px; color:#8FA6B4; margin:0 0 4px; line-height:1.55}
+</style>
+</head>
+<body>
+
+<div class="note">
+  <b>Maquette autonome</b> — rien n'est branché, c'est une image fixe de ce que donnerait l'encart.
+  Les deux bannières grises simulent tes cartes existantes (leurs images vivent dans <b>hype-images</b>).
+  Le fond turquoise de la carte Lingua est <b>dessiné en CSS</b> : dans l'app il sera remplacé par une
+  vraie image, idéalement une frame extraite de <b>arrivee-*.mp4</b>.
+</div>
+
+<div class="chap"><i></i><span>Mon apprentissage</span></div>
+
+<button class="banner">
+  <div class="fond fond-voisin"><div class="ph">Hey Baby · mon coach virtuel</div></div>
+  <div class="voile"></div>
+  <div class="txt"><div class="k">Hey Baby</div><div class="t">Mon coach virtuel</div></div>
+  <span class="chev">›</span>
+</button>
+
+<button class="banner">
+  <div class="fond fond-voisin"><div class="ph">Théorie des Galops</div></div>
+  <div class="voile"></div>
+  <div class="txt"><div class="k">La Voie de Cristal</div><div class="t">Théorie des Galops</div>
+    <div class="s">Du Galop 1 au Galop 7, à ton rythme.</div></div>
+  <span class="chev">›</span>
+</button>
+
+<!-- ============ LA NOUVELLE CARTE ============ -->
+<button class="banner">
+  <div class="fond fond-lingua"><div class="courbe"></div></div>
+  <div class="voile"></div>
+  <span class="neuf">Nouveau</span>
+  <div class="txt">
+    <div class="k">Six langues à cheval</div>
+    <div class="t">Hype Lingua</div>
+    <div class="s">Le vocabulaire équestre, de Newmarket à Kildare.</div>
+  </div>
+  <span class="chev">›</span>
+</button>
+
+<button class="banner">
+  <div class="fond fond-voisin"><div class="ph">Culture équestre</div></div>
+  <div class="voile"></div>
+  <div class="txt"><div class="k">Histoire &amp; traditions</div><div class="t">Culture équestre</div></div>
+  <span class="chev">›</span>
+</button>
+
+<h2 class="v">Variantes de texte</h2>
+<p class="vs">Même carte, trois écritures. Dis-moi le numéro que tu gardes.</p>
+
+<button class="banner">
+  <div class="fond fond-lingua"><div class="courbe"></div></div>
+  <div class="voile"></div>
+  <span class="neuf">1</span>
+  <div class="txt">
+    <div class="k">Six langues à cheval</div>
+    <div class="t">Hype Lingua</div>
+    <div class="s">Le vocabulaire équestre, de Newmarket à Kildare.</div>
+  </div>
+  <span class="chev">›</span>
+</button>
+
+<button class="banner">
+  <div class="fond fond-lingua"><div class="courbe"></div></div>
+  <div class="voile"></div>
+  <span class="neuf">2</span>
+  <div class="txt">
+    <div class="k">Hype Lingua</div>
+    <div class="t">La Traversée</div>
+    <div class="s">Dix villes, six langues, un carnet à remplir.</div>
+  </div>
+  <span class="chev">›</span>
+</button>
+
+<button class="banner">
+  <div class="fond fond-lingua"><div class="courbe"></div></div>
+  <div class="voile"></div>
+  <span class="neuf">3</span>
+  <div class="txt">
+    <div class="k">Hype Lingua</div>
+    <div class="t">Parler cheval partout</div>
+    <div class="s">Monter à l'étranger sans chercher ses mots.</div>
+  </div>
+  <span class="chev">›</span>
+</button>
+
+<h2 class="v">Ce que je te propose par défaut</h2>
+<p class="vs">
+  Placement : <b style="color:#7DDDE8">quatrième et dernière carte</b> de « Mon apprentissage »,
+  après Culture équestre — un nouveau venu ne passe pas devant la Théorie des Galops.
+  Le badge <b style="color:#7DDDE8">Nouveau</b> se retire d'une ligne quand tu voudras.
+  Ouverture dans le même onglet Safari, avec retour par le geste arrière ; je peux aussi
+  l'ouvrir dans un nouvel onglet si tu préfères ne pas quitter Hype.
+</p>
+
+</body>
+</html>
