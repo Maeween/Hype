@@ -17,42 +17,60 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #scene{position:fixed;inset:0;overflow:hidden}
 .couche{position:absolute;left:0;bottom:0;pointer-events:none;will-change:transform}
 #ciel{position:absolute;inset:0}
-#etoiles{top:0;height:46%;width:170%}
-#capitale{bottom:35%;height:9%;width:100%}
-#promont{bottom:30%;height:17%;width:250%;opacity:.55}
-#mer{bottom:18.5%;height:13%;width:400%}
-#villes{bottom:28%;height:26%;width:100%}
-#falaise{bottom:0;height:21%;width:820%}
-#jalons{bottom:16%;height:20%;width:100%}
-#herbes{bottom:0;height:12%;width:220%;opacity:.9}
+
+
+
+
+
+
+
+
 .couche svg{display:block;width:100%;height:100%;overflow:visible}
-.ville,.jalon{position:absolute;bottom:0;left:50%;will-change:transform}
-#lune{position:absolute;width:44px;height:44px;border-radius:50%;pointer-events:none;
- background:radial-gradient(circle at 36% 32%,#FBF3DF,#E0CFA6 58%,#A79772);
- box-shadow:0 0 56px 14px rgba(250,240,214,.14);will-change:transform,opacity}
-#reflet{position:absolute;bottom:18.5%;height:13%;width:70px;margin-left:-35px;pointer-events:none;
- background:linear-gradient(to bottom,rgba(250,240,214,.30),rgba(250,240,214,.04));
- -webkit-mask-image:radial-gradient(60% 100% at 50% 0%,#000 20%,transparent 78%);
- mask-image:radial-gradient(60% 100% at 50% 0%,#000 20%,transparent 78%);will-change:transform,opacity}
-#apy{position:fixed;left:17%;bottom:14.5%;width:36vw;max-width:172px;z-index:6;
- transform-origin:50% 100%;animation:pas 2.9s ease-in-out infinite;
- filter:drop-shadow(0 0 16px rgba(32,217,245,.30))}
-#apy img{width:100%;display:block}
-@keyframes pas{0%,100%{transform:translateY(0) rotate(-.6deg)}50%{transform:translateY(-7px) rotate(.6deg)}}
+
+
+
+
+
+
 #rail{position:fixed;inset:0;z-index:8;display:flex;overflow-x:auto;overflow-y:hidden;
  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 #rail::-webkit-scrollbar{display:none}
 .station{flex:0 0 78vw;height:100%;scroll-snap-align:center}
 
-#voyage{position:fixed;left:0;right:0;top:0;z-index:9;pointer-events:none;
- padding:calc(env(safe-area-inset-top) + 12px) 76px 0;text-align:center}
-#voyage b{font-family:'Cinzel',serif;font-size:11px;font-weight:500;letter-spacing:.34em;
- color:var(--turquoise);display:block}
-#voyage span{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris);
- display:block;margin-top:4px}
 
+
+
+
+/* ==================================================================
+   LE CHEMIN — les dix cartes postales, plus aucun dessin.
+   L'étape en cours est nette et plein écran ; celles d'avant et d'après
+   sont floutées et sombres sur les côtés (les fichiers fond-*.webp de
+   1 Ko). On fait glisser, les villes défilent comme des souvenirs.
+   Supprimé le 4 août : montagnes en triangles, cabanes géométriques,
+   mer en traits, lune grise, herbes — c'était un bouchon de travail,
+   et à côté des vraies cartes ça faisait brouillon.
+   ================================================================== */
+#cartes{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.chc{position:absolute;top:0;bottom:0;left:0;width:100%;
+ background-size:cover;background-position:center;will-change:transform,opacity,filter}
+.chc.loin{filter:brightness(.42) saturate(.7)}
+#voile{position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(to bottom,rgba(4,6,10,.62) 0%,rgba(4,6,10,.12) 34%,
+   rgba(4,6,10,.30) 62%,rgba(4,6,10,.9) 100%)}
+#etoiles{top:0;height:46%;width:170%;opacity:.85}
+#jalons{bottom:19%;height:20%;width:100%}
+.jalon{position:absolute;bottom:0;left:50%;will-change:transform}
+#voyage{position:fixed;left:0;right:0;top:0;z-index:9;pointer-events:none;
+ padding:calc(env(safe-area-inset-top) + 13px) 88px 0;text-align:center}
+#voyage b{font-family:'Cinzel',serif;font-size:12px;font-weight:500;letter-spacing:.3em;
+ color:var(--turquoise);display:block}
+#voyage span{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:12px;
+ color:var(--gris);display:block;margin-top:2px}
+#retour{position:fixed;left:10px;top:calc(env(safe-area-inset-top) + 8px);z-index:12;
+ width:38px;height:38px;font-size:26px;line-height:1;color:var(--blanc);opacity:.7;
+ border-radius:50%;background:rgba(6,7,9,.5);backdrop-filter:blur(8px)}
 #hud{position:fixed;left:0;right:0;top:0;z-index:10;pointer-events:none;
- padding:calc(env(safe-area-inset-top) + 60px) 30px 0;text-align:center}
+ padding:calc(env(safe-area-inset-top) + 76px) 30px 0;text-align:center}
 #hud .num{font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--turquoise);margin:0 0 7px}
 #hud h1{font-family:'Cinzel',serif;font-weight:500;font-size:24px;margin:0;line-height:1.2;
  text-shadow:0 2px 26px rgba(0,0,0,.95)}
@@ -383,6 +401,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .lcVerdict.f{background:rgba(230,120,130,.07);border:1px solid rgba(230,120,130,.3)}
 .lcVerdict b{font-family:'Cinzel',serif;font-size:16px;display:block}
 .lcVerdict span{display:block;font-size:13px;color:var(--gris);margin-top:6px}
+.lcNote{margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.09)}
+.lcNm{margin:0;font-size:14px;line-height:1.5}
+.lcNm b{font-family:'Cinzel',serif;font-weight:600;color:var(--blanc)}
+.lcNm i{font-style:normal;color:var(--turquoise);font-size:12px;letter-spacing:.1em}
+.lcNm span{color:var(--gris)}
+.lcNv{margin:7px 0 0;font-size:12.5px;line-height:1.65;color:#A9B7C3}
 .lcScore{font-family:'Cinzel',serif;font-size:34px;color:var(--turquoise);text-align:center;margin:0}
 
 /* ---------------- LE DÉPART ---------------- */
@@ -424,21 +448,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
 <div id="scene">
   <div id="ciel"></div>
+  <div id="cartes"></div>
   <div class="couche" id="etoiles"></div>
-  <div id="lune"></div>
-  <div class="couche" id="capitale"></div>
-  <div class="couche" id="promont"></div>
-  <div class="couche" id="mer"></div>
-  <div id="reflet"></div>
-  <div class="couche" id="villes"></div>
-  <div class="couche" id="falaise"></div>
   <div class="couche" id="jalons"></div>
-  <div class="couche" id="herbes"></div>
+  <div id="voile"></div>
 </div>
 
-<div id="apy"><img alt="Cheval" src="cheval.webp" width="300"></div>
-
-<div id="voyage"><b>ANGLAIS</b><span>Îles Britanniques et Irlande</span></div>
+<button id="retour" aria-label="Revenir au carnet de route">‹</button>
+<div id="voyage"><b>Les Îles</b><span>anglais</span></div>
 
 <div id="hud"><div id="titre">
   <p class="num" id="hNum">Chapitre 1 sur 10</p>
@@ -687,47 +704,6 @@ var ICONES = {
 /* ---------- silhouettes ---------- */
 function toits(n,x0,w,h){ var d="",i; for(i=0;i<n;i++){ var x=x0+i*w;
   d+="M"+x+" 150 V"+(150-h)+" L"+(x+w/2)+" "+(150-h-13)+" L"+(x+w)+" "+(150-h)+" V150 Z"; } return d; }
-function fen(n,x0,y,w,pas){ var d="",i; for(i=0;i<n;i++){ var x=x0+i*pas;
-  d+="M"+x+" "+y+" h"+w+" v"+(w*1.3)+" h-"+w+" Z"; } return d; }
-var FORMES = {
- ecuries:function(){return{corps:toits(4,40,52,44)+"M118 93 h22 v-14 h-22 Z M119 79 l11 -11 l11 11",
-   rail:"M10 150 V130 M62 150 V130 M114 150 V130 M166 150 V130 M218 150 V130 M266 150 V130 M0 134 H300 M0 143 H300",
-   lum:fen(6,52,112,7,52)}},
- village:function(){return{corps:"M30 150 V108 L58 88 L86 108 V150 Z M96 150 V118 L120 100 L144 118 V150 Z"+
-   "M156 150 V96 L188 74 L220 96 V150 Z M232 150 V116 L256 98 L280 116 V150 Z M184 74 v-16 h8 v13",
-   lum:fen(4,44,120,8,46)+fen(2,176,112,9,26)}},
- lande:function(){return{corps:"M0 150 Q40 122 84 133 Q130 145 168 120 Q210 94 250 114 Q276 127 300 120 V150 Z"+
-   "M118 133 l-3 -20 h7 l-3 20 M140 136 l-2 -14 h5 l-3 14",
-   poneys:"M196 114 q6 -9 15 -8 q4 -6 9 -1 q7 0 8 8 l1 12 h-4 l-1 -8 h-9 l-1 8 h-4 l-1 -9 q-8 1 -12 -2 Z"+
-          "M232 118 q5 -7 12 -6 q3 -5 7 -1 q6 0 6 7 l1 9 h-3 l-1 -6 h-7 l-1 6 h-3 l-1 -7 q-6 1 -10 -2 Z"}},
- ateliers:function(){return{corps:"M20 150 V104 h84 v46 Z M104 150 V116 h60 v34 Z M176 150 V98 h72 v52 Z"+
-   "M42 104 v-50 h9 v50 M66 104 v-38 h8 v38 M206 98 v-56 h10 v56",
-   fumee:"M46 54 q-9 -14 2 -22 q9 -7 3 -18 M210 42 q-10 -15 1 -24",
-   lum:fen(5,30,116,9,17)+fen(4,186,112,10,17)}},
- cote:function(){return{corps:"M0 150 Q54 112 120 126 V150 Z M182 150 V118 h40 v32 Z M222 150 V104 h34 v46 Z"+
-   "M234 104 v-16 h10 v16",
-   vagues:"M120 138 q22 -6 44 0 t44 0 M108 146 q26 -6 52 0 t52 0",
-   lum:fen(4,190,126,8,10)+fen(3,230,116,8,11)}},
- chateau:function(){return{corps:"M28 150 V96 h44 v54 Z M72 150 V112 h72 v38 Z M144 150 V78 h56 v72 Z"+
-   "M200 150 V110 h58 v40 Z M28 96 v-10 h8 v10 M44 86 h8 v10 M60 86 h8 v10"+
-   "M144 78 v-12 h9 v12 M162 66 h9 v12 M180 66 h9 v12 M168 66 v-20 h6 v20",
-   lum:fen(3,40,110,8,14)+fen(4,154,94,9,13)+fen(4,212,124,8,14)}},
- obstacles:function(){return{corps:"M0 150 Q60 140 130 145 Q210 150 300 142 V150 Z",
-   jumps:"M40 150 V104 M96 150 V104 M40 112 H96 M40 124 H96 M40 136 H96"+
-         "M150 150 V112 M196 150 V112 M150 118 H196 M150 132 H196 M232 150 q0 -28 24 -28 q24 0 24 28",
-   drap:"M96 104 h16 l-4 6 h-12 Z M196 112 h14 l-4 6 h-10 Z"}},
- manoir:function(){return{corps:"M40 150 V100 h68 v50 Z M108 150 V84 h84 v66 Z M192 150 V100 h64 v50 Z"+
-   "M108 84 L150 62 L192 84 M124 62 v-14 h7 v13 M168 62 v-14 h7 v13",
-   lum:fen(4,50,112,9,15)+fen(5,120,96,9,15)+fen(4,202,112,9,15)}},
- haras:function(){return{corps:"M36 150 V108 h72 v42 Z M108 150 V92 h40 v58 Z M148 150 V112 h96 v38 Z"+
-   "M122 92 v-18 h12 v18 M126 74 l6 -12 l6 12",
-   arbres:"M266 150 q-10 -16 0 -26 q10 10 0 26 M286 150 q-8 -13 0 -22 q8 9 0 22",
-   lum:fen(5,46,120,8,14)+fen(3,116,104,9,11)+fen(6,160,124,8,13)}},
- edim:function(){return{corps:"M22 150 V96 h34 v54 Z M56 150 V78 h26 v72 Z M82 150 V110 h44 v40 Z"+
-   "M126 150 V84 h30 v66 Z M156 150 V116 h48 v34 Z M204 150 V70 h26 v80 Z M230 150 V104 h44 v46 Z"+
-   "M62 78 v-14 h14 v14 M132 84 v-18 h18 v18 M136 66 l5 -14 l5 14 M210 70 v-16 h14 v16",
-   lum:fen(4,30,110,7,10)+fen(3,62,92,7,9)+fen(5,90,124,8,10)+fen(4,132,98,8,9)+fen(6,238,118,7,9)}}
-};
 
 var S = document.getElementById.bind(document);
 
@@ -782,35 +758,30 @@ function dessinerTrace(){ var P=window.__P,g=S("gTrace"),d="",i; if(!g) return;
        '" opacity="'+(f?".9":".5")+'"/>'; }
   g.innerHTML=d; }
 
-S("promont").innerHTML=svg(
- '<path d="M0 150 Q70 84 150 104 Q220 122 300 92 Q380 62 460 100 Q540 136 620 106 Q700 78 790 108 Q880 136 960 100 V150 Z" fill="#12222F"/>'+
- '<path d="M0 150 Q90 112 180 126 Q280 142 360 120 Q450 96 540 124 Q630 150 720 126 Q810 104 900 128 Q940 138 960 132 V150 Z" fill="#0C1721"/>',"0 0 960 150");
-(function(){ var inner='<rect x="0" y="0" width="1200" height="150" fill="#070E15"/>',i;
-  for(i=0;i<26;i++){ var y=(i*i)*0.21+2, o=(0.16-i*0.004).toFixed(3); if(y>150) break;
-    inner+='<path d="M0 '+y.toFixed(1)+' q30 -1.6 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" fill="none" stroke="#7FC6D8" stroke-width="1" opacity="'+o+'"/>'; }
-  S("mer").innerHTML=svg(inner,"0 0 1200 150"); })();
-S("falaise").innerHTML=svg(
- '<path d="M0 150 H1200 V30 Q1020 46 860 34 Q700 22 540 38 Q380 52 220 34 Q110 22 0 32 Z" fill="#060A0E"/>'+
- '<path d="M0 32 Q110 22 220 34 Q380 52 540 38 Q700 22 860 34 Q1020 46 1200 30" fill="none" stroke="rgba(32,217,245,.16)" stroke-width="1.4"/>'+
- '<path d="M0 66 Q200 56 400 68 Q600 80 800 66 Q1000 52 1200 64" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1.2" stroke-dasharray="7 11"/>',"0 0 1200 150");
-(function(){ var d="",i; for(i=0;i<90;i++){ var x=i*14+(Math.random()*8|0), h=14+Math.random()*28, c=(Math.random()-.5)*11;
-    d+='M'+x+' 150 Q'+(x+c)+' '+(150-h/2)+' '+(x+c*1.7)+' '+(150-h)+' '; }
-  S("herbes").innerHTML=svg('<path d="'+d+'" fill="none" stroke="#050A0D" stroke-width="2.6" stroke-linecap="round"/>',"0 0 1260 150"); })();
+/* ---------- les dix cartes postales composent le décor ---------- */
+var elCartes=[], elJalons=[];
+ETAPES.forEach(function(e,idx){
+  var c=document.createElement("div");
+  c.className="chc loin";
+  /* on part du fond de 1 Ko ; la carte nette n'est chargée que pour l'étape voisine */
+  c.style.backgroundImage='url("fond-'+e.ref+'.webp")';
+  c.dataset.ref=e.ref; c.dataset.net="0";
+  S("cartes").appendChild(c); elCartes.push(c);
 
-var elVilles=[], elJalons=[];
-ETAPES.forEach(function(e){
-  var f=FORMES[e.forme](), inner="";
-  Object.keys(f).forEach(function(k){ if(k==="lum") return;
-    var creux=(k==="fumee"||k==="rail"||k==="jumps"||k==="vagues"||k==="arbres");
-    inner+='<path d="'+f[k]+'" fill="'+(creux?"none":"#060A0E")+'" stroke="#0D1823" stroke-width="1.6" stroke-linejoin="round"/>'; });
-  if(f.lum) inner+='<path d="'+f.lum+'" fill="#D4AF37" opacity=".6"/>';
-  var v=document.createElement("div");
-  v.className="ville"; v.style.width="92vw"; v.style.marginLeft="-46vw"; v.style.height="100%";
-  v.innerHTML=svg(inner); S("villes").appendChild(v); elVilles.push(v);
   var j=document.createElement("div");
   j.className="jalon"; j.style.width="30vw"; j.style.marginLeft="-15vw"; j.style.height="100%";
   j.innerHTML=svg('<g></g>',"0 0 120 150"); S("jalons").appendChild(j); elJalons.push(j);
 });
+/* la carte nette (~100 Ko) arrive à l'approche, et une seule à la fois */
+function affiner(i){
+  elCartes.forEach(function(c,k){
+    var proche=Math.abs(k-i)<=1;
+    if(proche && c.dataset.net==="0"){
+      c.dataset.net="1";
+      c.style.backgroundImage='url("carte-'+c.dataset.ref+'.webp")';
+    }
+  });
+}
 function etoile(cx,cy,r){ var p=r*0.30;
   return "M"+cx+" "+(cy-r)+" L"+(cx+p)+" "+(cy-p)+" L"+(cx+r)+" "+cy+" L"+(cx+p)+" "+(cy+p)+
          " L"+cx+" "+(cy+r)+" L"+(cx-p)+" "+(cy+p)+" L"+(cx-r)+" "+cy+" L"+(cx-p)+" "+(cy-p)+" Z"; }
@@ -823,9 +794,7 @@ function dessinerJalons(){
                      '<path d="'+etoile(60,106,7)+'" fill="#EAFBFF"/>'; }
     else { d='<path d="'+etoile(60,112,7)+'" fill="#243542" opacity=".85"/>'; }
     g.innerHTML=d; }); }
-S("capitale").innerHTML=svg((function(){ var f=FORMES.edim();
-  return '<path d="'+f.corps+'" fill="#0A131D" stroke="rgba(32,217,245,.16)" stroke-width="1.4"/>'+
-         '<path d="'+f.lum+'" fill="#D4AF37" opacity=".45"/>'; })());
+
 ETAPES.forEach(function(){ S("points").appendChild(document.createElement("i")); });
 
 function melange(c1,c2,t){
@@ -843,27 +812,24 @@ function rendu(){
   S("cielA").style.background="linear-gradient(to bottom,"+haut+" 0%,"+haut+" 30%,"+
     melange(haut,bas,0.20)+" 54%,"+melange(haut,bas,0.60)+" 68%,"+bas+" 76%,"+
     melange(bas,"#050709",0.6)+" 100%)";
-  S("etoiles").style.transform="translate3d("+(-x*0.05)+"px,0,0)";
-  S("promont").style.transform="translate3d("+(-x*0.17)+"px,0,0)";
-  S("mer").style.transform    ="translate3d("+(-x*0.30)+"px,0,0)";
-  S("falaise").style.transform="translate3d("+(-x*0.80)+"px,0,0)";
-  S("herbes").style.transform ="translate3d("+(-(x*1.45)%168)+"px,0,0)";
-  elVilles.forEach(function(v,i){ v.style.transform="translate3d("+(0.62*(i*W-x))+"px,0,0)";
-    v.style.opacity=Math.max(0,1-Math.abs(i*W-x)/(W*1.9)); });
+  S("etoiles").style.transform="translate3d("+(-x*0.06)+"px,0,0)";
+  /* chaque carte glisse à 30 % de la vitesse du doigt : la parallaxe donne
+     la profondeur sans qu'on ait besoin de dessiner quoi que ce soit */
+  elCartes.forEach(function(c,k){
+    var d=k*W-x, r=d/W;
+    c.style.transform="translate3d("+(d*0.30)+"px,0,0)";
+    var pres=Math.max(0,1-Math.abs(r)/1.15);
+    c.style.opacity=pres.toFixed(3);
+    c.classList.toggle("loin", Math.abs(r)>0.34);
+    c.style.zIndex = String(10-Math.round(Math.abs(r)*10));
+  });
   elJalons.forEach(function(j,i){ j.style.transform="translate3d("+(i*W-x)+"px,0,0)";
     j.style.opacity=Math.max(0,1-Math.abs(i*W-x)/(W*1.4)); });
-  var p=pos/9, cap=S("capitale");
-  cap.style.transformOrigin="78% 100%";
-  cap.style.transform="translate3d("+(-x*0.09)+"px,0,0) scale("+(0.30+p*0.60).toFixed(3)+")";
-  cap.style.opacity=(pos>8.0? Math.max(0,(9-pos))*0.32 : 0.10+p*0.28).toFixed(2);
-  var lx=8+p*70, ly=28-Math.sin(p*Math.PI)*19, op=(0.22+Math.sin(p*Math.PI)*0.46);
-  S("lune").style.transform="translate3d("+lx+"vw,"+ly+"vh,0)"; S("lune").style.opacity=op.toFixed(2);
-  S("reflet").style.transform="translate3d("+(lx+3)+"vw,0,0)"; S("reflet").style.opacity=(op*0.75).toFixed(2);
   var proche=Math.abs(pos-Math.round(pos))<0.16;
   S("titre").classList.toggle("loin",!proche);
   var i=Math.round(pos);
   if(i!==lastI && proche){
-    lastI=i; courant=i; var e=ETAPES[i];
+    lastI=i; courant=i; var e=ETAPES[i]; affiner(i);
     S("hNum").textContent="Chapitre "+(i+1)+" sur 10";
     S("hTitre").textContent=e.ch;
     S("hVille").textContent=e.v;
@@ -878,7 +844,7 @@ function rendu(){
 }
 function mesurer(){ W=rail.querySelector(".station").getBoundingClientRect().width; }
 window.addEventListener("resize",mesurer);
-mesurer(); dessinerTrace(); dessinerJalons(); rendu();
+mesurer(); dessinerTrace(); dessinerJalons(); affiner(0); rendu();
 
 S("bApercu").addEventListener("click",function(){
   FAITS=(FAITS===10)?4:10; this.textContent=FAITS+" / 10";
@@ -1088,7 +1054,7 @@ function el(tag, attrs){
   }
   return n;
 }
-function melange(t){ var a=t.slice(),i,j,x;
+function brasser(t){ var a=t.slice(),i,j,x;
   for(i=a.length-1;i>0;i--){ j=Math.floor(Math.random()*(i+1)); x=a[i];a[i]=a[j];a[j]=x; } return a; }
 function motNu(x){
   return String(x).toLowerCase()
@@ -1184,10 +1150,13 @@ function lancer(L){
   var mots=L.concepts, plan=[];
   mots.forEach(function(c){ plan.push({t:"decouverte", c:c}); });
   var types=["choix","ecoute","ecrire"];
-  melange(mots).forEach(function(c,i){
+  brasser(mots).forEach(function(c,i){
     var t=types[i%3];
     /* on ne demande pas d'écrire en japonais depuis un clavier latin */
-    if(t==="ecrire" && cible()==="ja") t="choix";
+    if(t==="ecrire" && cible()==="ja") t="ecoute";
+    /* ni un mot qui s'écrit pareil dans les deux langues : « le paddock »
+       -> « paddock » n'apprend rien. Le chapitre Écurie en compte huit. */
+    if(t==="ecrire" && motNu(c.mots[cible()].m)===motNu(c.mots[langueUI()].m)) t="ecoute";
     plan.push({t:t, c:c});
   });
   var ph=(LC.chap.phrases||[]).filter(function(p){ return !p.lecon || p.lecon===L.n; });
@@ -1226,13 +1195,33 @@ function suivant(juste, ref){
   }
   LC.i++; etape();
 }
-function verdict(zone, juste, bonne, apres){
+/* Une note sur le mot, affichée à CHAQUE réponse — juste ou fausse.
+   La réussite est un moment d'attention disponible : autant y apprendre
+   quelque chose. On montre en priorité la variante régionale, qui est le
+   champ le plus utile du lexique et n'apparaissait qu'une seule fois. */
+function noteSurLeMot(c){
+  if(!c) return null;
+  var ui=langueUI(), lg=cible(), mc=c.mots[lg], mu=c.mots[ui];
+  var bloc=el("div",{class:"lcNote"});
+  bloc.appendChild(el("p",{class:"lcNm"},
+    el("b",{text:mc.m}),
+    mc.p ? el("i",{text:" [ "+mc.p+" ]"}) : null,
+    el("span",{text:" · "+mu.m})
+  ));
+  if(mc.var) bloc.appendChild(el("p",{class:"lcNv", text:"Aussi : "+mc.var}));
+  else if(c.def && (c.def[ui]||c.def.fr))
+    bloc.appendChild(el("p",{class:"lcNv", text:(c.def[ui]||c.def.fr)}));
+  return bloc;
+}
+function verdict(zone, juste, bonne, apres, concept){
   zone.className="lcVerdict "+(juste?"j":"f");
   videEl(zone);
   var ui=langueUI();
   zone.appendChild(el("b",{text: juste ? (ui==="en"?"That's it":"C'est ça")
                                       : (ui==="en"?"Not yet":"Pas encore")}));
   if(!juste && bonne) zone.appendChild(el("span",{text:(ui==="en"?"Answer: ":"La réponse : ")+bonne}));
+  var n=noteSurLeMot(concept);
+  if(n) zone.appendChild(n);
   zone.appendChild(el("button",{class:"lcCta", onclick:apres},
     ui==="en"?"Continue":"Continuer"));
 }
@@ -1266,19 +1255,19 @@ function exChoix(x){
   var src = versCible ? ui : lg, dst = versCible ? lg : ui;
   var bonne=c.mots[dst].m;
   var pool=LC.L.concepts.filter(function(y){ return y.ref!==c.ref; });
-  var leurres=melange(pool).slice(0,3).map(function(y){ return y.mots[dst].m; });
+  var leurres=brasser(pool).slice(0,3).map(function(y){ return y.mots[dst].m; });
   var zone=el("div",{class:"lcVerdict"});
   var corps=el("div",{},
     el("p",{class:"lcCons", text: ui==="en"?"Which word is it?":"Quel est ce mot ?"}),
     el("p",{class:"lcInvite", text:c.mots[src].m}),
     el("div",{class:"lcOpts"},
-      melange([bonne].concat(leurres)).map(function(o){
+      brasser([bonne].concat(leurres)).map(function(o){
         return el("button",{class:"lcOpt", onclick:function(){
           var juste=(o===bonne);
           this.classList.add(juste?"ok":"ko");
           Array.prototype.forEach.call(corps.querySelectorAll(".lcOpt"),function(b){ b.disabled=true; });
           if(dst===lg) dire(bonne, lg);
-          verdict(zone, juste, bonne, function(){ suivant(juste, c.ref); });
+          verdict(zone, juste, bonne, function(){ suivant(juste, c.ref); }, c);
         }}, o);
       })
     ),
@@ -1292,7 +1281,7 @@ function exEcoute(x){
   var c=x.c, ui=langueUI(), lg=cible();
   var bonne=c.mots[lg].m;
   var pool=LC.L.concepts.filter(function(y){ return y.ref!==c.ref; });
-  var leurres=melange(pool).slice(0,3).map(function(y){ return y.mots[lg].m; });
+  var leurres=brasser(pool).slice(0,3).map(function(y){ return y.mots[lg].m; });
   var zone=el("div",{class:"lcVerdict"});
   setTimeout(function(){ dire(bonne, lg); }, 400);
   var corps=el("div",{},
@@ -1300,12 +1289,12 @@ function exEcoute(x){
     el("button",{class:"lcHp", onclick:function(){ dire(bonne, lg); }}, "\u266a"),
     el("p",{class:"lcRej", text: ui==="en"?"Play again":"Réécouter"}),
     el("div",{class:"lcOpts"},
-      melange([bonne].concat(leurres)).map(function(o){
+      brasser([bonne].concat(leurres)).map(function(o){
         return el("button",{class:"lcOpt", onclick:function(){
           var juste=(o===bonne);
           this.classList.add(juste?"ok":"ko");
           Array.prototype.forEach.call(corps.querySelectorAll(".lcOpt"),function(b){ b.disabled=true; });
-          verdict(zone, juste, bonne, function(){ suivant(juste, c.ref); });
+          verdict(zone, juste, bonne, function(){ suivant(juste, c.ref); }, c);
         }}, o);
       })
     ),
@@ -1326,7 +1315,7 @@ function exEcrire(x){
     var juste = motNu(champ.value)===motNu(bonne);
     champ.disabled=true; champ.classList.add(juste?"ok":"ko");
     if(juste) dire(bonne, lg);
-    verdict(zone, juste, bonne, function(){ suivant(juste, c.ref); });
+    verdict(zone, juste, bonne, function(){ suivant(juste, c.ref); }, c);
   }
   return el("div",{},
     el("p",{class:"lcCons", text: ui==="en"?"Type the word":"Écris le mot"}),
@@ -1342,7 +1331,7 @@ function exPhrase(x){
   var ui=langueUI(), lg=cible();
   var attendue=x.p[lg]||x.p.en;
   var tuiles=attendue.split(" ").filter(function(t){ return t.length; });
-  var dispo=melange(tuiles), choisies=[];   /* on suit des INDICES : retirer rend au banc */
+  var dispo=brasser(tuiles), choisies=[];   /* on suit des INDICES : retirer rend au banc */
   var zone=el("div",{class:"lcVerdict"});
   var ligne=el("div",{class:"lcLigne"}), banc=el("div",{class:"lcBanc"});
   function redessiner(){
@@ -1366,7 +1355,7 @@ function exPhrase(x){
     el("button",{class:"lcCta", onclick:function(){
       var juste = choisies.map(function(i){ return dispo[i]; }).join(" ")===attendue;
       if(juste) dire(attendue, lg);
-      verdict(zone, juste, attendue, function(){ suivant(juste, null); });
+      verdict(zone, juste, attendue, function(){ suivant(juste, null); }, null);
     }}, ui==="en"?"Check":"Vérifier"),
     zone
   );
@@ -1390,6 +1379,25 @@ function finLecon(){
 }
 
 S("lcFermer").addEventListener("click", fermerLecon);
+
+/* ---------- revenir en arrière ----------
+   Il n'y avait aucune sortie : une fois sur le chemin, on était coincé.
+   Le bouton rouvre le carnet de route. Quand Lingo sera embarqué dans
+   Hype, c'est ici qu'on appellera HYPE_LINGO_HOST.quitter(). */
+S("retour").addEventListener("click", function(){
+  if(S("lecon").classList.contains("on")){ fermerLecon(); return; }
+  if(S("arrivee").classList.contains("ouvert")){ fermerArrivee(); return; }
+  S("ouverture").classList.remove("joue","fini");
+  S("ouverture").classList.add("parti");   /* on ne rejoue pas la vidéo */
+  S("ouverture").classList.remove("parti");
+  S("ouverture").scrollTop=0;
+});
+
+/* le bouton matériel « retour » du téléphone et le geste de balayage */
+window.addEventListener("popstate", function(){
+  if(S("lecon").classList.contains("on")) fermerLecon();
+  else if(S("arrivee").classList.contains("ouvert")) fermerArrivee();
+});
 
 
 /* le bouton de l'écran d'arrivée ouvre enfin la leçon */
