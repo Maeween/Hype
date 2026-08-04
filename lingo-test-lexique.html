@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hype Lingo · vérification des lexiques</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --noir:#060709; --nuit:#0B1729; --anthracite:#111417;
+    --turquoise:#20D9F5; --blanc:#F4F7FA;
+    --vert:#3BD98A; --rouge:#F5566B; --ambre:#F5C542;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0;padding:22px 16px 60px;
+    background:radial-gradient(120% 80% at 50% 0%,#12233C 0%,var(--noir) 70%);
+    color:var(--blanc);
+    font-family:"Montserrat",-apple-system,system-ui,sans-serif;
+    font-weight:300;font-size:15px;line-height:1.55;
+    min-height:100vh;
+  }
+  h1{
+    font-family:"Cinzel",Georgia,serif;font-weight:600;
+    font-size:21px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--blanc);margin:0 0 4px;
+  }
+  .sous{color:#8FA3B8;font-size:12.5px;letter-spacing:.04em;margin:0 0 26px}
+  .verdict{
+    border-radius:14px;padding:16px 18px;margin:0 0 24px;
+    border:1px solid rgba(32,217,245,.28);
+    background:rgba(32,217,245,.06);
+  }
+  .verdict.ok{border-color:rgba(59,217,138,.4);background:rgba(59,217,138,.08)}
+  .verdict.ko{border-color:rgba(245,86,107,.45);background:rgba(245,86,107,.09)}
+  .verdict b{
+    display:block;font-family:"Cinzel",Georgia,serif;font-weight:600;
+    font-size:15px;letter-spacing:.05em;margin-bottom:6px;
+  }
+  .verdict.ok b{color:var(--vert)}
+  .verdict.ko b{color:var(--rouge)}
+  .verdict p{margin:0;font-size:13.5px;color:#C8D6E4}
+  .chiffres{display:flex;gap:10px;margin:0 0 26px}
+  .chiffre{
+    flex:1;text-align:center;padding:14px 6px;border-radius:12px;
+    background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);
+  }
+  .chiffre em{
+    display:block;font-style:normal;font-family:"Cinzel",Georgia,serif;
+    font-size:26px;font-weight:600;color:var(--turquoise);line-height:1.1;
+  }
+  .chiffre span{display:block;font-size:10.5px;letter-spacing:.09em;
+    text-transform:uppercase;color:#7E92A8;margin-top:5px}
+  h2{
+    font-family:"Cinzel",Georgia,serif;font-weight:600;font-size:12px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--turquoise);
+    margin:30px 0 12px;padding-bottom:7px;
+    border-bottom:1px solid rgba(32,217,245,.16);
+  }
+  .ch{
+    display:flex;align-items:center;gap:12px;padding:12px 14px;
+    border-radius:11px;margin-bottom:8px;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  }
+  .ch .pt{width:8px;height:8px;border-radius:50%;flex:0 0 8px;background:var(--vert)}
+  .ch.absent .pt{background:var(--rouge)}
+  .ch .num{
+    font-family:"Cinzel",Georgia,serif;font-size:13px;color:#7E92A8;
+    width:20px;flex:0 0 20px;text-align:center;
+  }
+  .ch .nom{flex:1;min-width:0}
+  .ch .nom b{display:block;font-weight:600;font-size:14px;letter-spacing:.02em}
+  .ch .nom i{display:block;font-style:normal;font-size:11.5px;color:#7E92A8;margin-top:2px}
+  .ch .val{font-size:11.5px;color:#A8BACD;text-align:right;white-space:nowrap}
+  .ch.absent .val{color:var(--rouge)}
+  .ligne{
+    padding:11px 14px;border-radius:10px;margin-bottom:7px;font-size:13px;
+    background:rgba(255,255,255,.03);border-left:2px solid rgba(32,217,245,.4);
+  }
+  .ligne.alerte{border-left-color:var(--ambre);color:#F0DFB0}
+  .ligne.mal{border-left-color:var(--rouge);color:#F5B8C1}
+  .ligne code{
+    font-family:ui-monospace,Menlo,monospace;font-size:12px;
+    color:var(--turquoise);background:rgba(32,217,245,.09);
+    padding:1px 5px;border-radius:4px;
+  }
+  footer{
+    margin-top:36px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07);
+    font-size:11.5px;color:#6B7E92;line-height:1.7;
+  }
+</style>
+</head>
+<body>
+
+<h1>Vérification des lexiques</h1>
+<p class="sous">Hype Lingo · voyage 1 · Îles Britanniques et Irlande</p>
+
+<div id="verdict" class="verdict"><b>Chargement…</b><p>Si ce message reste affiché, c'est que le JavaScript ne s'exécute pas.</p></div>
+
+<div class="chiffres">
+  <div class="chiffre"><em id="nCh">–</em><span>chapitres</span></div>
+  <div class="chiffre"><em id="nCo">–</em><span>concepts</span></div>
+  <div class="chiffre"><em id="nPh">–</em><span>phrases</span></div>
+</div>
+
+<h2>Les dix chapitres</h2>
+<div id="chapitres"></div>
+
+<h2>Contrôles</h2>
+<div id="controles"></div>
+
+<footer>
+  Page de vérification autonome, à supprimer du dépôt quand les leçons seront branchées.<br>
+  Elle charge les mêmes fichiers que <code>lingo.html</code> et n'écrit rien.
+</footer>
+
+<!-- les neuf lexiques écrits, exactement comme dans lingo.html -->
+<script src="hype-lingo-lex-ecurie.js"></script>
+<script src="hype-lingo-lex-pansage.js"></script>
+<script src="hype-lingo-lex-cheval.js"></script>
+<script src="hype-lingo-lex-materiel.js"></script>
+<script src="hype-lingo-lex-cours.js"></script>
+<script src="hype-lingo-lex-dressage.js"></script>
+<script src="hype-lingo-lex-obstacle.js"></script>
+<script src="hype-lingo-lex-concours.js"></script>
+<script src="hype-lingo-lex-urgences.js"></script>
+
+<script>
+(function(){
+  var LANGUES = ["fr","en","es","it","de","ja"];
+  var AVEC_P  = ["en","de","ja"];
+
+  /* le plan du voyage, tel qu'il est dans ETAPES de lingo.html */
+  var PLAN = [
+    {n:1,  cle:"ecurie",   titre:"L'écurie",     ville:"Newmarket"},
+    {n:2,  cle:"pansage",  titre:"Le pansage",   ville:"Lambourn"},
+    {n:3,  cle:"cheval",   titre:"Le cheval",    ville:"Connemara"},
+    {n:4,  cle:"materiel", titre:"Le matériel",  ville:"Walsall"},
+    {n:5,  cle:"cours",    titre:"Le cours",     ville:"Aberystwyth"},
+    {n:6,  cle:"dressage", titre:"Le dressage",  ville:"Windsor"},
+    {n:7,  cle:"obstacle", titre:"L'obstacle",   ville:"Hickstead"},
+    {n:8,  cle:"concours", titre:"Le concours",  ville:"Badminton"},
+    {n:9,  cle:"urgences", titre:"Les urgences", ville:"Kildare"},
+    {n:10, cle:"dialogues",titre:"Les dialogues",ville:"Édimbourg"}
+  ];
+
+  var LEX = window.HYPE_LINGO_LEX || {};
+  var boiteCh = document.getElementById("chapitres");
+  var boiteCo = document.getElementById("controles");
+
+  var totalCo = 0, totalPh = 0, charges = 0, manquants = [];
+  var refs = {}, defauts = [];
+
+  PLAN.forEach(function(p){
+    var c = LEX[p.cle];
+    var d = document.createElement("div");
+    d.className = "ch" + (c ? "" : " absent");
+
+    var val;
+    if (c) {
+      charges++;
+      var nc = (c.concepts || []).length;
+      var np = (c.phrases  || []).length;
+      totalCo += nc; totalPh += np;
+      val = nc + " concepts · " + np + " phrases";
+      if (c.races) {
+        var r = 0;
+        for (var k in c.races) r += c.races[k].length;
+        val += " · " + r + " races";
+      }
+
+      /* contrôles par chapitre */
+      (c.concepts || []).forEach(function(x){
+        refs[x.ref] = (refs[x.ref] || []).concat(p.cle);
+        LANGUES.forEach(function(l){
+          var o = x.mots && x.mots[l];
+          if (!o || !o.m) defauts.push(p.cle + " · " + x.ref + " · " + l + " sans mot");
+          else if (AVEC_P.indexOf(l) >= 0 && !o.p) defauts.push(p.cle + " · " + x.ref + " · " + l + " sans prononciation");
+        });
+        if (!x.def || !x.def.fr || !x.def.en) defauts.push(p.cle + " · " + x.ref + " · définition incomplète");
+      });
+      (c.phrases || []).forEach(function(x){
+        LANGUES.forEach(function(l){
+          if (!x[l]) defauts.push(p.cle + " · phrase " + x.ref + " · " + l + " manquante");
+        });
+      });
+    } else {
+      val = (p.n === 10) ? "pas encore écrit" : "NON CHARGÉ";
+      if (p.n !== 10) manquants.push(p.titre + " (hype-lingo-lex-" + p.cle + ".js)");
+    }
+
+    d.innerHTML =
+      '<span class="pt"></span>' +
+      '<span class="num">' + p.n + '</span>' +
+      '<span class="nom"><b>' + p.titre + '</b><i>' + p.ville + '</i></span>' +
+      '<span class="val">' + val + '</span>';
+    boiteCh.appendChild(d);
+  });
+
+  document.getElementById("nCh").textContent = charges;
+  document.getElementById("nCo").textContent = totalCo;
+  document.getElementById("nPh").textContent = totalPh;
+
+  /* collisions de ref entre chapitres */
+  var collisions = [];
+  for (var r in refs) if (refs[r].length > 1) collisions.push(r + " → " + refs[r].join(", "));
+
+  function ajoute(txte, classe){
+    var d = document.createElement("div");
+    d.className = "ligne" + (classe ? " " + classe : "");
+    d.innerHTML = txte;
+    boiteCo.appendChild(d);
+  }
+
+  ajoute(charges + " fichiers de lexique chargés sur 9 attendus.", charges === 9 ? "" : "mal");
+  if (manquants.length) ajoute("Introuvables : " + manquants.join(" · ") + ". Vérifie que les fichiers sont bien à la racine du dépôt, avec exactement ce nom.", "mal");
+
+  ajoute(collisions.length === 0
+    ? "Aucune <code>ref</code> en collision entre chapitres."
+    : "Collisions de <code>ref</code> : " + collisions.join(" · "),
+    collisions.length === 0 ? "" : "mal");
+
+  ajoute(defauts.length === 0
+    ? "Six langues complètes partout, prononciations EN/DE/JA présentes, définitions FR/EN présentes."
+    : defauts.length + " défaut(s) : " + defauts.slice(0, 12).join(" · ") + (defauts.length > 12 ? " …" : ""),
+    defauts.length === 0 ? "" : "mal");
+
+  if (!LEX.dialogues) ajoute("Chapitre 10 · Les dialogues : pas encore écrit. Ce n'est pas une erreur.", "alerte");
+
+  /* verdict */
+  var v = document.getElementById("verdict");
+  var casse = (charges !== 9) || collisions.length || defauts.length;
+  if (casse) {
+    v.className = "verdict ko";
+    v.innerHTML = "<b>Quelque chose ne va pas</b><p>Regarde la section Contrôles ci-dessous : les lignes rouges disent quoi.</p>";
+  } else {
+    v.className = "verdict ok";
+    v.innerHTML = "<b>Tout est chargé</b><p>Les neuf lexiques sont lus par le navigateur, " + totalCo +
+      " concepts et " + totalPh + " phrases sont disponibles dans <code>window.HYPE_LINGO_LEX</code>. " +
+      "Il reste à les brancher sur un écran de leçon — c'est le chantier suivant.</p>";
+  }
+})();
+</script>
+</body>
+</html>
