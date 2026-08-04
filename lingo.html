@@ -101,7 +101,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
 /* ---------------- L'OUVERTURE ---------------- */
 #ouverture{position:fixed;inset:0;z-index:40;background:#04060A;display:flex;
- align-items:center;justify-content:flex-start;flex-direction:column;overflow-y:auto;
+ align-items:center;justify-content:flex-start;flex-direction:column;overflow-y:auto;overflow-x:hidden;
  -webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 30px) 0
  calc(env(safe-area-inset-bottom) + 40px)}
 #ouverture.joue{overflow:hidden;padding:0;justify-content:center}
@@ -126,7 +126,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvVoile{position:absolute;inset:0;pointer-events:none;
  background:radial-gradient(80% 55% at 50% 42%,rgba(32,217,245,.10),transparent 74%),
             linear-gradient(to top,rgba(4,6,10,.9) 0%,transparent 44%)}
-#ouvDebut{position:relative;text-align:center;padding:0 24px;max-width:520px;
+#ouvDebut{position:relative;text-align:center;padding:0 22px;width:100%;max-width:520px;
  transition:opacity .5s}
 #ouverture.joue #ouvDebut{opacity:0;pointer-events:none}
 #ouvDebut .sur{font-size:10px;letter-spacing:.36em;text-transform:uppercase;
@@ -142,16 +142,16 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .carnet{text-align:left;margin:0 0 28px}
 .carnet .ct{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);
  margin:0 0 12px}
-.cv{display:flex;align-items:baseline;gap:10px;padding:9px 0;
+.cv{display:flex;align-items:baseline;gap:10px;padding:9px 0;flex-wrap:wrap;
  border-bottom:1px solid rgba(255,255,255,.06)}
 .cv:last-child{border-bottom:0}
 .cv .n{font-family:'Cinzel',serif;font-size:11px;color:var(--turquoise);width:16px;flex:0 0 16px}
-.cv .d{flex:1;min-width:0}
+.cv .d{flex:1 1 60%;min-width:0}
 .cv .d b{display:block;font-family:'Cinzel',serif;font-weight:500;font-size:14px;line-height:1.25}
 .cv .d i{display:block;font-style:normal;font-size:10.5px;color:var(--gris);margin-top:3px;
  line-height:1.5}
 .cv .ch{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#6E7C88;
- white-space:nowrap;flex:0 0 auto}
+ white-space:nowrap;flex:0 0 auto;max-width:100%}
 .regles{text-align:left;padding:16px 16px 4px;border-radius:14px;margin:0 0 30px;
  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
 .regles p{font-size:12px;line-height:1.7;color:var(--gris);margin:0 0 12px}
@@ -1403,11 +1403,11 @@ S("arrPartir").addEventListener("click",function(){ fermerArrivee(); setTimeout(
    Elle ne démarre qu'au tap sur « Partir » : iOS refuse de lancer une
    vidéo sans geste préalable.
    ================================================================== */
-var DEJA_VU = "hype_lingo_ouverture_vue";
+/* L'ouverture rejoue à CHAQUE fois qu'on appuie sur Partir : c'est elle
+   qui contient les constellations, le tracé et les Îles qui s'illuminent.
+   Elle ne se voyait qu'une seule fois, donc plus jamais après le premier
+   lancement. Le bouton « Passer » reste là pour qui la connaît. */
 (function(){
-  var vue=false;
-  try{ vue = localStorage.getItem(DEJA_VU)==="1"; }catch(e){}
-  if(vue){ S("ouverture").classList.add("parti"); return; }
   var v=S("ouvVid");
   S("ouvPartir").addEventListener("click",function(){
     v.src="ouverture.mp4";
@@ -1426,7 +1426,6 @@ function terminerOuverture(){
   var v=S("ouvVid");
   try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){}
   S("ouverture").classList.add("parti");
-  try{ localStorage.setItem(DEJA_VU,"1"); }catch(e){}
 }
 
 /* ==================================================================
