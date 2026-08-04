@@ -28909,6 +28909,13 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
             React.createElement("div", { style: { marginTop: 4, fontSize: 11, fontFamily: "'Montserrat',sans-serif", color: "rgba(234,241,244,0.82)", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, L5acc("Le vocabulaire \u00e9questre en six langues, de ville en ville.", "Equestrian vocabulary in six languages, city by city.", "El vocabulario ecuestre en seis idiomas, de ciudad en ciudad.", "Il lessico equestre in sei lingue, di citt\u00e0 in citt\u00e0.", "\u516d\u304b\u56fd\u8a9e\u306e\u99ac\u8853\u7528\u8a9e\u3092\u3001\u8857\u304b\u3089\u8857\u3078\u3002"))),
           React.createElement("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a")),
 
+        /* 04/08 : acces direct au Sprint. Onze gestes separaient l'accueil du
+           premier exercice de vocabulaire ; les testeurs decrochaient avant.
+           Ce bouton ouvre Lingua directement sur le jeu de 60 secondes. */
+        React.createElement("button", { className: "rv d5", onClick: function () { window.location.href = "lingo.html#sprint"; }, style: { width: "100%", marginTop: 10, padding: "13px 18px", borderRadius: 15, background: "rgba(32,217,245,0.10)", border: "1px solid rgba(32,217,245,0.32)", color: "#7DDDE8", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between" } },
+          React.createElement("span", null, L5acc("Le Sprint \u00b7 60 secondes", "The Sprint \u00b7 60 seconds", "El Sprint \u00b7 60 segundos", "Lo Sprint \u00b7 60 secondi", "\u30b9\u30d7\u30ea\u30f3\u30c8 \u00b7 60\u79d2")),
+          React.createElement("span", { style: { fontSize: 15 } }, "\u203a")),
+
         React.createElement("button", { className: "banner culture glass rv d4", style: { marginTop: 20 }, onClick: nav("articles") },
           React.createElement("div", { className: "cu-img" }),
           React.createElement("div", { className: "bn-veil" }),
