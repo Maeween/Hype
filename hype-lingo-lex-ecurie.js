@@ -326,9 +326,9 @@ window.HYPE_LINGO_LEX.ecurie = {
   { ref:"doucher", lecon:4, coll:"gestes", v:true,
     mots:{ fr:{m:"doucher"}, en:{m:"to hose down", p:"tou-hoz-daoune"},
            es:{m:"duchar", var:"mangueriar"}, it:{m:"docciare"},
-           de:{m:"abspritzen", p:"ap-chprit-sen"}, ja:{m:"馬体を洗う", p:"batai o arau"} }, // ?? formulation courante
-    def:{ fr:"Rincer le cheval, ou seulement les membres, après le travail. Sur un cheval chaud, on commence par les jambes, jamais par les reins.",
-          en:"Rinse the horse, or just the legs, after work. On a hot horse, start at the legs, never at the loins." } },
+           de:{m:"abspritzen", p:"ap-chprit-sen"}, ja:{m:"馬に水をかける", p:"uma ni mizu o kakeru", var:"脚を冷やす (ashi o hiyasu) pour les seuls membres · 馬体を洗う (batai o arau) = laver au shampooing"} },
+    def:{ fr:"Rincer le cheval après le travail. Sur un cheval chaud, on commence par les membres, jamais par les reins. Le japonais distingue trois gestes que le français confond : asperger d'eau, refroidir les membres, et laver au shampooing.",
+          en:"Rinse the horse after work. On a hot horse, start at the legs, never at the loins. Japanese keeps three verbs apart where French has one: sluicing with water, cooling the legs, and washing with shampoo." } },
 
   { ref:"attacher", lecon:4, coll:"gestes", v:true,
     mots:{ fr:{m:"attacher"}, en:{m:"to tie up", p:"tou-taï-eup"},
