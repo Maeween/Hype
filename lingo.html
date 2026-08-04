@@ -955,7 +955,7 @@ function ouvrirArrivee(i){
   S("arrVille").textContent=e.v;
   S("arrNation").textContent=e.nat+" · à l'aube";
   S("empNom").textContent="ARRIVÉE À "+e.v.toUpperCase();
-  S("empTxt").innerHTML="Emplacement de l'animation<br><code>arrivee-"+e.ref+".mp4</code><br>3 s · muette · sans texte · 720 px";
+  S("empTxt").innerHTML="Vidéo introuvable<br><code>arrivee-"+e.ref+".mp4</code><br>à déposer à la racine du dépôt";
   S("souvT").textContent="Souvenir de "+e.v;
   S("souvN").textContent=e.souv;
   S("souvSvg").innerHTML=ICONES[e.ic]||"";
@@ -963,29 +963,20 @@ function ouvrirArrivee(i){
   ecrire();
 
   /* la vidéo : créée maintenant, détruite à la fermeture */
-  /* première visite = la grande séquence ; retour = la courte.
+  /* UNE VILLE, UNE VIDÉO, qui joue à chaque passage.
+     Le système à deux niveaux (grande arrivée puis reprise courte) est
+     supprimé : il répondait à des arrivées de quinze secondes, elles font
+     maintenant moins de cinq. Il coûtait huit fichiers à produire, une
+     mémoire du « déjà vu » et un repli — pour rien.
      Aucune boucle : ces clips finissent sur le panneau de la ville, et un
      raccord panneau -> vue aérienne se verrait à chaque tour. La dernière
      image reste affichée, ce qui rend le récit par-dessus bien plus lisible. */
-  var dejaVue = false;
-  try { dejaVue = localStorage.getItem("hype_lingo_vue_"+e.ref)==="1"; } catch(err){}
   videoEl=document.createElement("video");
   videoEl.muted=true; videoEl.loop=false; videoEl.autoplay=true;
   videoEl.setAttribute("playsinline","");
   videoEl.setAttribute("webkit-playsinline","");
   videoEl.preload="auto";
-  /* Les dix villes sont traitées pareil : grande arrivée la première fois,
-     reprise courte au retour. Newmarket n'est plus une exception — sa
-     séquence a été extraite de l'ouverture en un fichier à part. */
-  videoEl.src = dejaVue ? ("reprise-"+e.ref+".mp4") : ("arrivee-"+e.ref+".mp4");
-  /* si la longue manque, on retombe sur la courte plutôt que sur un trou */
-  videoEl.addEventListener("error", function(){
-    if (videoEl && videoEl.src.indexOf("arrivee-") >= 0) {
-      videoEl.src = "reprise-"+e.ref+".mp4";
-      var r=videoEl.play(); if(r&&r.catch) r.catch(function(){});
-    }
-  });
-  try { localStorage.setItem("hype_lingo_vue_"+e.ref,"1"); } catch(err){}
+  videoEl.src = "arrivee-"+e.ref+".mp4";
   videoEl.addEventListener("error",function(){ S("emplacement").style.display="flex"; });
   videoEl.addEventListener("playing",function(){ S("emplacement").style.display="none"; });
   S("vue").insertBefore(videoEl, S("vue").firstChild);
