@@ -12,6 +12,89 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🗺️ SESSION 84 (04/08) — HYPE LINGO : LE VOYAGE 1 EST JOUABLE
+
+⚠️ **L'`index.html` de Hype n'a PAS été touché.** Tout se passe dans `lingo.html` et ses fichiers, à la racine. Seule exception de la journée : un correctif d'une ligne sur l'accueil (voir plus bas).
+
+### Ce qui est en ligne
+
+**Le voyage 1 s'appelle « LES ÎLES »** — Angleterre · Irlande · Pays de Galles · Écosse, mention *anglais* en petit. ⚠️ **Ne jamais écrire « Îles Britanniques » seul** : le terme est contesté en Irlande et Kildare est en République d'Irlande. Formule retenue après discussion : titre = la destination, la langue en sous-titre. Gabarit pour la suite : La Péninsule (es), La Botte (it), L'Archipel (ja).
+
+**Un carnet de route** ouvre le module : le pourquoi des dix villes (« pas les capitales politiques, les capitales du cheval »), l'itinéraire avec une ligne par ville expliquant son choix, et les trois règles du jeu. Fond vivant derrière, bouton « Partir ».
+
+**La Traversée** : chemin côtier défilable au doigt, sept couches à vitesses différentes, la nuit qui avance d'une ville à l'autre, la lune et son reflet sur la mer, une étoile par étape, la constellation qui se dessine derrière le cavalier.
+
+**Dix villes, dix chapitres** : Newmarket (écurie) · Lambourn (pansage) · Connemara (cheval) · Walsall (matériel) · Aberystwyth (cours) · Windsor (dressage) · Hickstead (obstacle) · Badminton (concours) · Kildare (urgences) · Édimbourg (dialogues).
+
+**L'arrivée en ville** : vidéo, récit court, **carte postale qui se retourne** sur une lettre manuscrite signée Hype, trois volets dépliants, souvenir à collectionner.
+
+**LA LEÇON EST BRANCHÉE** (c'était le trou depuis le 3/08). Cinq exercices : carte de découverte, choix dans les deux sens, écoute, écriture, phrase à remettre en ordre. Réponses en plaques de verre 2×2 sur la carte postale — **jamais de liste verticale de pilules**, c'est ce qui faisait Duolingo. Maîtrise de 1 à 5 par mot, en `localStorage` (`hype_lingo_maitrise`).
+
+### Les fichiers, tous à la racine
+
+| Quoi | Combien | Poids |
+|---|---|---|
+| `lingo.html` | 1 | 79 Ko |
+| `hype-lingo-villes.js` | 1 | 14 Ko |
+| `hype-lingo-lex-*.js` | 8 chapitres | ~260 Ko |
+| `carte-*.webp` + vignettes | 20 | 1,0 Mo |
+| `fond-*.webp` | 10 | 19 Ko |
+| vidéos `.mp4` | 13 | 5,5 Mo |
+| `cheval.webp` | 1 | 2 Ko |
+
+⚠️ **`index.html` est le SEUL nom de fichier interdit à la racine** — l'app Hype a déjà été écrasée une fois par un dépôt de `lingo/index.html`.
+
+### Décisions techniques à ne pas défaire
+
+**Le lexique est stocké par CONCEPT, jamais par paire de langues.** Une entrée = un objet équestre avec ses 6 langues côte à côte (`m` mot, `p` prononciation pour EN/DE/JA seulement, `var` variante régionale, `def` définition, `dit` pour les ordres criés). Bidirectionnel gratuit ; une paire FR→EN imposerait 30 combinaisons.
+
+**`VOYAGE_LANGUE` ≠ `langue`.** `VOYAGE_LANGUE` est la langue enseignée (« en ») ; `langue` est celle dans laquelle on lit les cartes postales. Bug corrigé en séance : la leçon apprenait le français à une francophone.
+
+**Le flou des fonds est CUIT DANS L'IMAGE**, jamais calculé en direct. `filter:blur()` sur une image plein écran animée fait chuter Safari iOS à 30 i/s. Bonus : une image floue et sombre pèse **1 Ko au lieu de 100**. À l'exécution, on n'anime que `transform` et `opacity`.
+
+**Pas de voile noir sur les cartes** : la charte l'interdit sur les chevaux. L'assombrissement fait partie de l'image, plus un dégradé qui monte du bas.
+
+**Une seule vidéo à l'écran, jamais deux.** Créée à l'ouverture, et à la fermeture : `pause()` + retrait de `src` + `load()` — un simple `pause()` ne libère pas la mémoire sur iOS. Aucune vidéo sur le chemin qui défile : elle se battrait avec le défilement en profondeur.
+
+**Le cadrage des vidéos est choisi par le code** selon les dimensions réelles du fichier : portrait → `cover`, paysage → `contain`. Trois vidéos sont en paysage (ouverture, reprises de Newmarket et Lambourn) et étaient massivement rognées.
+
+**Format des vidéos à produire** : verticales 9:16, 4-5 s, muettes, sans texte incrusté (sauf un panneau réel de la ville), sans écran de fin CapCut, export au plus haut débit — la conversion est faite ici. **Recadrer le filigrane par le HAUT seulement** : couper à gauche mange la première lettre des noms longs (« ABERYSTWYT »).
+
+**Prompt d'image, gabarit figé** : vertical 3:4, un seul sujet, tiers haut et bas volontairement sombres pour recevoir le titre et le tampon, aucun texte, aucun visage reconnaissable, aucun bâtiment contemporain. Vue de haut en premier plan de vidéo (l'arrivée se découvre depuis le paysage).
+
+### Tarifs — décidés, à peaufiner plus tard
+
+**Gratuit** : le chapitre 1 de chaque pays, **plus le chapitre Urgences partout, dans les six langues**. Aucun mur d'énergie à la Duolingo — leur système d'énergie est détesté par près de la moitié des utilisateurs sondés, et sur une communauté de club ça coûterait plus en bouche-à-oreille que ça ne rapporterait.
+**Premium** : chapitres 2 à 9, exercice vocal, mode trilingue, hors ligne, cosmétiques. **Le cours reste payant** malgré son utilité : c'est la valeur du module.
+
+### ⚠️ Ce qui manque, précisément
+
+- **`hype-lingo-lex-pansage.js`** : appelé par `lingo.html`, absent du dépôt. Le chapitre 2 affiche un message explicite au lieu de planter.
+- **`hype-lingo-lex-dialogues.js`** : chapitre 10, pas écrit, pas appelé.
+- **Huit `reprise-<ville>.mp4`** : seules Newmarket et Lambourn en ont. Sans elles, la grande arrivée rejoue à chaque retour. Une seule reprise générique suffirait.
+- **Le vocal** : décidé en Premium, pas prototypé. Ne jamais noter l'accent — on vérifie que le bon mot a été dit. Ne marche pas hors ligne.
+- **L'écriture en japonais** bascule en choix (clavier latin). À terme : tuiles kana.
+- **Le passeport, le globe, la collection, le mode Lexique** : décidés, pas construits.
+- **115 entrées de lexique marquées `// ??`** — voir plus bas.
+
+### ⚠️ RELECTURE NATIVE : le vrai chantier restant
+
+**Répartition des doutes** : allemand 90, japonais 88, espagnol 21, italien 21. Les chapitres les plus techniques sont les plus incertains (obstacle 30, dressage 26, matériel 22, concours 21).
+
+**Avertissement d'expérience** : sur le chapitre Écurie, **trois termes japonais sur six vérifiés étaient faux**, dont un purement inventé (`係留リング`). ChatGPT et Gemini les ont corrigés — mais deux IA qui s'accordent ne valent pas un cavalier natif. Fichier `hype-lingo-doutes-a-verifier.md` à compléter, pas à recréer.
+
+**Trouvaille à conserver comme contenu** : les langues ne découpent pas le monde pareil. Le japonais nomme *l'endroit où l'on attache* (繋ぎ場) là où le français nomme *l'anneau*, et distingue trois gestes — asperger d'eau, refroidir les membres, laver au shampooing — là où le français dit « doucher ». C'est ce qui rendra le module crédible.
+
+### Correctif sur l'app Hype
+
+- [x] **Doublon sur l'accueil corrigé** : `hypeQuetesASuivre(ctx, amis).slice(0, 3)` → `.slice(1, 4)` à la ligne 28460. Le bandeau « La suite pour toi » prend `liste[0]`, le bloc « Tes prochaines quêtes » repartait de zéro : la même quête apparaissait deux fois, tous les jours. Vérifié : 15 blocs script valides, `allerVersGalop` = 3, 901 fonctions, aucune perte.
+
+### 🐌 Diagnostic du démarrage (mesuré, NON corrigé)
+
+Rappel de la session 81, toujours valable et toujours le problème le plus grave de l'app : **119 fichiers `hype-images-*.js` chargés d'un coup en scripts bloquants**, 580 Ko par image en base64, en 1024×1536 pour des cartes de 400 px. **Mais `hype-images-1.js` prouve que le bon pattern existait** : les clés k0 à k191 sont de vrais fichiers (`images/k12.png`). Ordre proposé : WebP 1024 q82 (−85 %), retour aux vrais fichiers, puis un service worker sobre. Le `sw.js` actuel est un **worker de retrait** : aucun hors-ligne aujourd'hui.
+
+---
+
 ## 🤝 SESSION 83 (03/08) — LE PARRAINAGE EST CODÉ (18 familles)
 
 **Part de la 82.** Livré : 10 494 529 octets, md5 `7143bc1c`. ⚠️ **`hype-parrainage.sql` à exécuter.** `allerVersGalop` = 3 · 388 const · 6 nouvelles fonctions + 1 composant, 0 perdue · chaque identifiant défini une fois · toutes les icônes de familles existent · 15 blocs inline valides · rendu Playwright sans nouvelle erreur.
