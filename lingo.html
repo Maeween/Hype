@@ -13,6 +13,51 @@ html,body{margin:0;height:100%;overflow:hidden;background:#060709;color:var(--bl
  font-family:'Montserrat',system-ui,sans-serif}
 button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
+/* ---------------- PRÉSENTATION ET DESTINATIONS ---------------- */
+#intro,#dest{position:fixed;inset:0;z-index:44;background:#04060A;overflow-y:auto;
+ -webkit-overflow-scrolling:touch;display:none}
+#intro.on,#dest.on{display:block}
+#inFond{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+#inFondImg{position:absolute;inset:-10%;width:120%;height:120%;
+ background-image:url("lingua-affiche.webp");background-size:cover;background-position:center 30%;
+ animation:fvKen 20s ease-in-out infinite alternate}
+#inBas{position:absolute;inset:0;background:linear-gradient(to bottom,
+ rgba(4,6,10,.30) 0%,rgba(4,6,10,.62) 40%,rgba(4,6,10,.94) 68%,#04060A 100%)}
+#inPage,#dsPage{position:relative;z-index:1;max-width:520px;margin:0 auto;width:100%;
+ padding:calc(env(safe-area-inset-top) + 54px) 22px calc(env(safe-area-inset-bottom) + 40px)}
+#intro .sur,#dest .sur{font-size:10px;letter-spacing:.34em;text-transform:uppercase;
+ color:var(--turquoise);margin:0 0 14px;text-align:center}
+#intro h1,#dest h1{font-family:'Cinzel',serif;font-weight:600;font-size:30px;margin:0;
+ text-align:center;line-height:1.2}
+#intro .cit{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:15px;
+ line-height:1.6;color:rgba(244,247,250,.78);text-align:center;margin:18px 0 40vh}
+.pts{margin:0 0 30px}
+.pt{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.pt:last-child{border-bottom:0}
+.pt b{display:block;font-size:14px;font-weight:600;line-height:1.4}
+.pt i{display:block;font-style:normal;font-size:12.5px;line-height:1.65;color:var(--gris);
+ margin-top:5px}
+#inSuite,#dsListe button{font-family:inherit}
+#inSuite{display:block;width:100%;padding:16px 20px;font-size:12.5px;font-weight:600;
+ letter-spacing:.13em;text-transform:uppercase;color:#060709;background:var(--turquoise);
+ border-radius:15px;box-shadow:0 16px 40px -20px rgba(32,217,245,.95)}
+#dest .sous{font-size:12.5px;line-height:1.7;color:var(--gris);text-align:center;margin:16px 0 30px}
+#dsRetour{position:absolute;left:8px;top:calc(env(safe-area-inset-top) + 12px);
+ width:38px;height:38px;font-size:26px;line-height:1;color:var(--blanc);opacity:.7}
+.ds{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;margin-bottom:10px;
+ border-radius:16px;text-align:left;background:rgba(255,255,255,.04);
+ border:1px solid rgba(255,255,255,.09)}
+.ds.ouvert{background:linear-gradient(160deg,rgba(32,517,245,.14),rgba(10,14,18,.8));
+ border-color:rgba(32,217,245,.42);box-shadow:0 16px 40px -26px rgba(32,217,245,.9)}
+.ds .dr{font-size:22px;flex:0 0 auto}
+.ds .dd{flex:1;min-width:0}
+.ds .dd b{display:block;font-family:'Cinzel',serif;font-weight:500;font-size:16px}
+.ds .dd i{display:block;font-style:normal;font-size:11.5px;color:var(--gris);margin-top:4px;
+ line-height:1.5}
+.ds .dg{flex:0 0 auto;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--gris)}
+.ds.ouvert .dg{color:var(--turquoise);font-weight:600}
+#dest .pied{font-size:11.5px;line-height:1.7;color:#6E7C88;text-align:center;margin:26px 0 0}
 /* ---------------- LE CHEMIN ---------------- */
 #scene{position:fixed;inset:0;overflow:hidden}
 .couche{position:absolute;left:0;bottom:0;pointer-events:none;will-change:transform}
@@ -90,7 +135,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #cta.verrou{background:rgba(255,255,255,.07);color:var(--gris);
  border:1px solid rgba(255,255,255,.12);box-shadow:none}
 #points{display:flex;gap:5px}
-#points i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18)}
+#points i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18);
+ position:relative;cursor:pointer}
+/* la cible tactile fait 26 px sans que le point grossisse : un point de
+   5 px est inatteignable au doigt (Apple recommande 44 px minimum). */
+#points i::after{content:"";position:absolute;left:50%;top:50%;width:26px;height:26px;
+ transform:translate(-50%,-50%)}
 #points i.f{background:var(--or)}
 #points i.a{background:var(--turquoise);box-shadow:0 0 9px var(--turquoise)}
 #outils{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 12px);z-index:11;
@@ -145,16 +195,20 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .carnet{text-align:left;margin:0 0 28px}
 .carnet .ct{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);
  margin:0 0 12px}
-.cv{display:flex;align-items:baseline;gap:10px;padding:9px 0;flex-wrap:wrap;
- border-bottom:1px solid rgba(255,255,255,.06)}
+.cv{display:flex;align-items:center;gap:10px;padding:12px 2px;flex-wrap:wrap;width:100%;
+ text-align:left;border-bottom:1px solid rgba(255,255,255,.06)}
 .cv:last-child{border-bottom:0}
 .cv .n{font-family:'Cinzel',serif;font-size:11px;color:var(--turquoise);width:16px;flex:0 0 16px}
 .cv .d{flex:1 1 60%;min-width:0}
 .cv .d b{display:block;font-family:'Cinzel',serif;font-weight:500;font-size:14px;line-height:1.25}
-.cv .d i{display:block;font-style:normal;font-size:10.5px;color:var(--gris);margin-top:3px;
- line-height:1.5}
-.cv .ch{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#6E7C88;
- white-space:nowrap;flex:0 0 auto;max-width:100%}
+.cv .d i{display:block;font-style:normal;font-size:10px;letter-spacing:.1em;
+ text-transform:uppercase;color:#6E7C88;margin-top:4px}
+.cv .pl{flex:0 0 auto;width:20px;text-align:center;font-size:15px;color:var(--turquoise);
+ opacity:.55;transition:transform .25s,opacity .25s}
+.cv.ouv .pl{transform:rotate(45deg);opacity:1}
+.cv .pq{flex:0 0 100%;max-height:0;overflow:hidden;font-size:12.5px;line-height:1.65;
+ color:#A9B7C3;transition:max-height .3s ease,padding .3s ease;padding:0 0 0 26px}
+.cv.ouv .pq{max-height:130px;padding:9px 0 2px 26px}
 .regles{text-align:left;padding:16px 16px 4px;border-radius:14px;margin:0 0 30px;
  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
 .regles p{font-size:12px;line-height:1.7;color:var(--gris);margin:0 0 12px}
@@ -589,6 +643,40 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <button id="ouvSuite">Entrer à Newmarket</button>
 </div>
 
+<!-- ==================================================================
+     LA PRÉSENTATION puis LE CHOIX DU VOYAGE.
+     Avant, on tombait directement sur le carnet de route : un mur de texte,
+     et aucun endroit pour choisir la langue qu'on apprend. Ces deux écrans
+     se voient une fois, puis on va droit au voyage en cours.
+     ================================================================== -->
+<div id="intro">
+  <div id="inFond"><div id="inFondImg"></div><div id="inBas"></div></div>
+  <div id="inPage">
+    <p class="sur">Hype Lingua</p>
+    <h1>Échanger avec<br>les cavaliers<br>du monde entier</h1>
+    <p class="cit">Chaque cavalier a une histoire.<br>Voici le début de la nôtre.</p>
+    <div class="pts">
+      <div class="pt"><b>Le vocabulaire équestre en six langues</b><i>Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.</i></div>
+      <div class="pt"><b>Dix villes, dix chapitres</b><i>On voyage de ville en ville. Chacune enseigne une partie du métier.</i></div>
+      <div class="pt"><b>Comprendre un enseignant à l'étranger</b><i>Les ordres qu'on crie en reprise, à reconnaître au vol.</i></div>
+      <div class="pt"><b>Savoir dire l'essentiel en cas d'urgence</b><i>« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.</i></div>
+      <div class="pt"><b>Une collection à rapporter</b><i>Une carte postale et un souvenir par ville, gagnés, pas donnés.</i></div>
+    </div>
+    <button id="inSuite">Choisir ma destination</button>
+  </div>
+</div>
+
+<div id="dest">
+  <div id="dsPage">
+    <button id="dsRetour" aria-label="Retour">‹</button>
+    <p class="sur">Hype Lingua</p>
+    <h1>Où veux-tu aller ?</h1>
+    <p class="sous">Une destination, une langue. Le premier chapitre est offert partout.</p>
+    <div id="dsListe"></div>
+    <p class="pied">Les autres destinations arrivent. Le vocabulaire est déjà écrit pour les six langues : c'est le voyage qui reste à construire.</p>
+  </div>
+</div>
+
 <div id="ouverture">
   <div id="ouvFond"><div id="ouvFondImg"></div><div id="ouvFondBrume"></div><div id="ouvFondBas"></div></div>
   <div id="ouvDebut">
@@ -770,11 +858,16 @@ var POURQUOI = {
   if(!b) return;
   var t=document.createElement("p"); t.className="ct"; t.textContent="L'itinéraire";
   b.appendChild(t);
+  /* Chaque ville est un dépliant : à l'arrivée on ne voit que dix lignes
+     courtes, pas un mur de texte. On ouvre celle qui intrigue. */
   ETAPES.forEach(function(e,i){
-    var d=document.createElement("div"); d.className="cv";
+    var d=document.createElement("button");
+    d.className="cv"; d.type="button";
     d.innerHTML='<span class="n">'+(i+1)+'</span>'+
-      '<span class="d"><b>'+e.v+'</b><i>'+e.nat+' · '+(POURQUOI[e.ref]||"")+'</i></span>'+
-      '<span class="ch">'+e.ch+'</span>';
+      '<span class="d"><b>'+e.v+'</b><i>'+e.nat+' · '+e.ch+'</i></span>'+
+      '<span class="pl">+</span>'+
+      '<span class="pq">'+(POURQUOI[e.ref]||"")+'</span>';
+    d.addEventListener("click",function(){ this.classList.toggle("ouv"); });
     b.appendChild(d);
   });
 })();
@@ -817,13 +910,22 @@ ETAPES.forEach(function(e,idx){
   j.className="jalon"; j.style.width="30vw"; j.style.marginLeft="-15vw"; j.style.height="100%";
   j.innerHTML=svg('<g></g>',"0 0 120 150"); S("jalons").appendChild(j); elJalons.push(j);
 });
-/* la carte nette (~100 Ko) arrive à l'approche, et une seule à la fois */
+/* ⚠️ PLANTAGE MÉMOIRE iOS — corrigé le 04/08.
+   Avant : la carte nette (900x1200) était chargée à l'approche et JAMAIS
+   déchargée. Après les dix villes, dix images décodées en mémoire, soit une
+   quarantaine de mégaoctets. Un pincement pour zoomer force Safari à tout
+   re-rasteriser et l'onglet meurt.
+   Maintenant : trois cartes nettes au maximum ; les autres repassent au
+   fond de 1 Ko, ce qui libère réellement la mémoire de décodage. */
 function affiner(i){
   elCartes.forEach(function(c,k){
     var proche=Math.abs(k-i)<=1;
     if(proche && c.dataset.net==="0"){
       c.dataset.net="1";
       c.style.backgroundImage='url("carte-'+c.dataset.ref+'.webp")';
+    } else if(!proche && c.dataset.net==="1"){
+      c.dataset.net="0";
+      c.style.backgroundImage='url("fond-'+c.dataset.ref+'.webp")';
     }
   });
 }
@@ -1062,7 +1164,24 @@ function fermerArrivee(){
     if(videoEl.parentNode) videoEl.parentNode.removeChild(videoEl); videoEl=null; }
 }
 S("cta").addEventListener("click",function(){
-  if(this.className==="verrou") return; ouvrirArrivee(courant); });
+  /* Un bouton verrouillé qui ne fait rien enferme : sur une ville pas
+     encore atteinte, il n'y avait plus qu'à faire glisser le doigt
+     horizontalement — ce que Safari interprète comme son geste de retour.
+     Il ramène donc à l'étape en cours, celle qu'il désigne. */
+  if(this.className==="verrou"){ allerA(FAITS); return; }
+  ouvrirArrivee(courant); });
+
+/* aller à une étape par son numéro, en douceur */
+function allerA(i){
+  i=Math.max(0,Math.min(ETAPES.length-1,i));
+  try{ rail.scrollTo({left:i*W, behavior:"smooth"}); }
+  catch(e){ rail.scrollLeft=i*W; }
+}
+/* les points du bas deviennent une vraie navigation */
+Array.prototype.forEach.call(S("points").children, function(n,k){
+  n.style.cursor="pointer";
+  n.addEventListener("click", function(){ allerA(k); });
+});
 S("depliB").addEventListener("click",function(){ S("depli").classList.toggle("ouvert"); });
 S("depliB2").addEventListener("click",function(){ S("depli2").classList.toggle("ouvert"); });
 S("depliB3").addEventListener("click",function(){ S("depli3").classList.toggle("ouvert"); });
@@ -1650,6 +1769,61 @@ function finLecon(){
 
 S("lcFermer").addEventListener("click", fermerLecon);
 
+
+/* ==================================================================
+   LES DESTINATIONS. Le voyage 1 est le seul ouvert : le vocabulaire des
+   six langues est déjà écrit, c'est le voyage (villes, images, vidéos)
+   qui reste à construire pour les cinq autres.
+   ================================================================== */
+var DESTINATIONS = [
+  { cle:"iles",     dr:"\uD83C\uDFF4", nom:"Les Îles",      lg:"en", ouvert:true,
+    d:"Angleterre, Irlande, pays de Galles, Écosse — l'anglais des écuries." },
+  { cle:"peninsule",dr:"\uD83C\uDDEA\uD83C\uDDF8", nom:"La Péninsule", lg:"es", ouvert:false,
+    d:"Andalousie, Jerez, Lisbonne — l'espagnol et le portugais du dressage classique." },
+  { cle:"botte",    dr:"\uD83C\uDDEE\uD83C\uDDF9", nom:"La Botte",     lg:"it", ouvert:false,
+    d:"Toscane, Rome, les Marches — l'italien du saut d'obstacles." },
+  { cle:"rhin",     dr:"\uD83C\uDDE9\uD83C\uDDEA", nom:"Le Rhin",      lg:"de", ouvert:false,
+    d:"Warendorf, Hanovre, Aix-la-Chapelle — l'allemand de l'élevage et du dressage." },
+  { cle:"archipel", dr:"\uD83C\uDDEF\uD83C\uDDF5", nom:"L'Archipel",   lg:"ja", ouvert:false,
+    d:"Hokkaido, Tokyo — le japonais des centres équestres." },
+  { cle:"lexique",  dr:"\u2726", nom:"Le Lexique français", lg:"fr", ouvert:false,
+    d:"Le jargon de la FFE expliqué simplement, pour débuter en français." }
+];
+
+function montrerIntro(){ S("intro").classList.add("on"); S("intro").scrollTop=0; }
+function montrerDest(){
+  S("intro").classList.remove("on");
+  S("dest").classList.add("on"); S("dest").scrollTop=0;
+  var b=S("dsListe"); videEl(b);
+  DESTINATIONS.forEach(function(D){
+    b.appendChild(el("button",{class:"ds"+(D.ouvert?" ouvert":""), onclick:function(){
+      if(!D.ouvert) return;
+      VOYAGE_LANGUE = D.lg;
+      S("dest").classList.remove("on");
+      try{ localStorage.setItem("hype_lingua_voyage", D.cle); }catch(e){}
+    }},
+      el("span",{class:"dr", text:D.dr}),
+      el("span",{class:"dd"}, el("b",{text:D.nom}), el("i",{text:D.d})),
+      el("span",{class:"dg", text: D.ouvert ? "Partir" : "Bientôt"})
+    ));
+  });
+}
+S("inSuite").addEventListener("click", montrerDest);
+S("dsRetour").addEventListener("click", function(){
+  S("dest").classList.remove("on"); montrerIntro();
+});
+
+/* La présentation ne se voit qu'une fois. Le choix de destination reste
+   accessible par le bouton de retour du carnet de route. */
+(function(){
+  var vu=false;
+  try{ vu = localStorage.getItem("hype_lingua_intro")==="1"; }catch(e){}
+  if(!vu){
+    montrerIntro();
+    try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
+  }
+})();
+
 /* Tout est défini : on redemande un rendu du chemin pour que le bouton
    affiche le décompte de mots (au premier passage, les tables du moteur
    de leçon n'existaient pas encore). */
@@ -1664,6 +1838,7 @@ S("retour").addEventListener("click", function(){
   if(S("arrivee").classList.contains("ouvert")){ fermerArrivee(); return; }
   S("ouvFilm").classList.remove("joue","fini");
   S("ouverture").classList.remove("joue","parti");
+  S("ouverture").scrollTop=0;
   S("ouverture").scrollTop=0;
 });
 
