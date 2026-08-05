@@ -26870,7 +26870,7 @@ function TableauxSpectralHype(props) {
     if (estClub) {
       (async function () { try { var u = await utilisateurActuel(); await supa.from("tableaux_clubs").upsert({ cle: cleV, clef_club: clef, contenu: txt || null, maj_par: u ? u.id : null, maj_le: new Date().toISOString() }, { onConflict: "cle" }); setClubVoix(txt || ""); } catch (e) { } })();
     } else {
-      try { var o = {}; o[champVoix] = txt || null; majProfil(o).then(function (r) { if (r && !r.error && r.data) setProf(r.data); }).catch(function () { }); } catch (e) { }
+      try { var o = {}; o[champVoix] = txt || null; majProfil(o).then(function (r) { if (r && r.error) { try { console.warn("[Hype] echec enregistrement " + champVoix, r.error); } catch (eW) { } return; } if (r && r.data) { setProf(r.data); /* 05/08 : le profil de l APPLICATION doit etre rafraichi lui aussi, sinon les quetes continuent de lire une valeur perimee et « Ecris la philosophie de ton ecurie » reste affichee alors qu elle est faite. */ try { if (ctx && typeof ctx.setProfil === "function") { var dd = r.data; ctx.setProfil(function (pp) { var np = Object.assign({}, pp); np[champVoix] = dd[champVoix]; return np; }); } } catch (eS) { } } }).catch(function (eC) { try { console.warn("[Hype] echec enregistrement " + champVoix, eC); } catch (eW2) { } }); } catch (e) { }
     }
   }
   function sauverHist() {
@@ -26878,7 +26878,7 @@ function TableauxSpectralHype(props) {
     if (estClub) {
       (async function () { try { var u = await utilisateurActuel(); await supa.from("tableaux_clubs").upsert({ cle: cleH, clef_club: clef, contenu: txt || null, maj_par: u ? u.id : null, maj_le: new Date().toISOString() }, { onConflict: "cle" }); setClubHist(txt || ""); } catch (e) { } })();
     } else {
-      try { var o = {}; o[champHist] = txt || null; majProfil(o).then(function (r) { if (r && !r.error && r.data) setProf(r.data); }).catch(function () { }); } catch (e) { }
+      try { var o = {}; o[champHist] = txt || null; majProfil(o).then(function (r) { if (r && r.error) { try { console.warn("[Hype] echec enregistrement " + champHist, r.error); } catch (eW) { } return; } if (r && r.data) { setProf(r.data); /* 05/08 : meme rafraichissement du profil de l application que pour champVoix. */ try { if (ctx && typeof ctx.setProfil === "function") { var dh = r.data; ctx.setProfil(function (pp) { var nh = Object.assign({}, pp); nh[champHist] = dh[champHist]; return nh; }); } } catch (eS) { } } }).catch(function (eC) { try { console.warn("[Hype] echec enregistrement " + champHist, eC); } catch (eW2) { } }); } catch (e) { }
     }
   }
 
