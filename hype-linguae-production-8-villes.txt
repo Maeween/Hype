@@ -1,0 +1,427 @@
+HYPE LINGUAE — PRODUCTION DES HUIT VILLES
+Six images par ville : cinq plans de vidéo (9:16) + une carte postale (3:4).
+Un bloc = un message à envoyer. Il enchaîne les six sans qu'on ait à réexpliquer.
+Généré le 5 août 2026.
+
+==================================================================
+
+##################################################################
+# SAUMUR
+##################################################################
+
+VILLE : Saumur (France) — Le Cadre Noir
+
+CONSIGNES VALABLES POUR TOUTES LES IMAGES DE CETTE VILLE
+
+Format : VERTICAL 9:16, pleine résolution, une image par plan.
+Style : peinture numérique réaliste et atmosphérique, pas photoréaliste. Grain léger de papier ancien.
+Lumière : le soleil est juste sous l'horizon. Ciel sombre et nuageux en haut, lumière dorée au centre, brume basse. L'heure peut avancer légèrement d'un plan au suivant, mais la palette ne change JAMAIS : bleu nuit en haut, or au centre. Jamais de plein jour, jamais de lumière blanche ou grise.
+Le cheval : UN SEUL cheval pour les cinq images, décrit à l'identique à chaque fois. Il ne doit pas changer de robe ni de type entre deux plans.
+Le cavalier : toujours vu de dos ou de trois quarts arrière. JAMAIS son visage.
+
+INTERDITS sur toutes les images :
+• Aucun texte, sauf le panneau du plan 5.
+• Aucun visage reconnaissable, aucun bâtiment contemporain, aucune voiture.
+• Aucun cadre, aucune bordure, aucun coin arrondi, aucun filigrane.
+
+⚠️ LE PANNEAU DU PLAN 5 : il doit occuper AU MAXIMUM LES DEUX TIERS DE LA LARGEUR de l'image, vu de face, centré, avec une large marge vide de chaque côté. Un panneau qui touche les bords perd ses premières et dernières lettres au montage.
+
+LE CHEVAL DE CETTE VILLE, à décrire à l'identique dans chaque image où il apparaît :
+un cheval bai foncé, robe unie, crinière courte et rangée, monté par un cavalier en tenue sombre très sobre
+
+==========================================================
+GÉNÈRE LES SIX IMAGES SUIVANTES, UNE PAR UNE, DANS CET ORDRE.
+Ne fais pas de planche : six images séparées, chacune en 9:16 pleine résolution.
+==========================================================
+
+IMAGE 1 sur 6 — plan 1 de la vidéo
+La Loire large et paisible vue de haut, la brume sur l'eau, les toits d'ardoise de la ville et la silhouette d'un château blanc sur son promontoire. Aucun cheval sur cette image.
+
+IMAGE 2 sur 6 — plan 2 de la vidéo
+Une allée de tuffeau blanc bordée de platanes, vue au niveau du sol, la brume entre les troncs. Aucun cheval.
+
+IMAGE 3 sur 6 — plan 3 de la vidéo
+L'intérieur d'un immense manège ancien : sable clair fraîchement ratissé, hautes fenêtres de pierre, poussière suspendue dans la lumière rasante. Aucun cheval.
+
+IMAGE 4 sur 6 — plan 4 de la vidéo
+Le même manège, et un cheval bai foncé, robe unie, crinière courte et rangée, monté par un cavalier en tenue sombre très sobre au trot rassemblé, vu de trois quarts arrière, très académique. Il occupe le centre de l'image.
+
+IMAGE 5 sur 6 — plan 5 de la vidéo
+Un mur de tuffeau clair. Un panneau de fer forgé suspendu portant le mot SAUMUR, vu de face, centré, occupant au maximum les deux tiers de la largeur, avec une large marge vide de chaque côté.
+
+IMAGE 6 sur 6 — la carte postale (format 3:4, pas 9:16)
+L'intérieur d'un grand manège ancien : sable clair fraîchement ratissé, hautes fenêtres en pierre de tuffeau, poussière suspendue dans la lumière rasante. un cheval bai foncé, robe unie, crinière courte et rangée, monté par un cavalier en tenue sombre très sobre au trot rassemblé au centre. Rien d'autre dans l'image.
+Le tiers supérieur et le tiers inférieur restent volontairement sombres et calmes : ils recevront le titre et le tampon ajoutés par l'application.
+
+
+
+##################################################################
+# JEREZ DE LA FRONTERA
+##################################################################
+
+VILLE : Jerez de la Frontera (Espagne) — École royale andalouse, le PRE
+
+CONSIGNES VALABLES POUR TOUTES LES IMAGES DE CETTE VILLE
+
+Format : VERTICAL 9:16, pleine résolution, une image par plan.
+Style : peinture numérique réaliste et atmosphérique, pas photoréaliste. Grain léger de papier ancien.
+Lumière : le soleil est juste sous l'horizon. Ciel sombre et nuageux en haut, lumière dorée au centre, brume basse. L'heure peut avancer légèrement d'un plan au suivant, mais la palette ne change JAMAIS : bleu nuit en haut, or au centre. Jamais de plein jour, jamais de lumière blanche ou grise.
+Le cheval : UN SEUL cheval pour les cinq images, décrit à l'identique à chaque fois. Il ne doit pas changer de robe ni de type entre deux plans.
+Le cavalier : toujours vu de dos ou de trois quarts arrière. JAMAIS son visage.
+
+INTERDITS sur toutes les images :
+• Aucun texte, sauf le panneau du plan 5.
+• Aucun visage reconnaissable, aucun bâtiment contemporain, aucune voiture.
+• Aucun cadre, aucune bordure, aucun coin arrondi, aucun filigrane.
+
+⚠️ LE PANNEAU DU PLAN 5 : il doit occuper AU MAXIMUM LES DEUX TIERS DE LA LARGEUR de l'image, vu de face, centré, avec une large marge vide de chaque côté. Un panneau qui touche les bords perd ses premières et dernières lettres au montage.
+
+⚠️ PROPRE À CETTE VILLE
+• Le cheval doit être un PRE : encolure haute et arrondie, crins très longs et ondulés. Ce n'est ni un pur-sang ni un cheval de sport.
+
+LE CHEVAL DE CETTE VILLE, à décrire à l'identique dans chaque image où il apparaît :
+un PRE gris pommelé : encolure haute et arrondie, crinière et queue très longues et ondulées, port relevé, monté par un cavalier en tenue sombre
+
+==========================================================
+GÉNÈRE LES SIX IMAGES SUIVANTES, UNE PAR UNE, DANS CET ORDRE.
+Ne fais pas de planche : six images séparées, chacune en 9:16 pleine résolution.
+==========================================================
+
+IMAGE 1 sur 6 — plan 1 de la vidéo
+La campagne andalouse vue de haut : des oliviers, une plaine sèche dans la brume, et au loin les toits ocre et les clochers blancs de la ville. Aucun cheval.
+
+IMAGE 2 sur 6 — plan 2 de la vidéo
+Un long mur blanchi à la chaux surmonté de tuiles, une grille de fer forgé, des bougainvilliers. Aucun cheval.
+
+IMAGE 3 sur 6 — plan 3 de la vidéo
+Une cour de sable clair bordée d'arcades blanches, très ratissée, colonnes et ombres longues. Aucun cheval.
+
+IMAGE 4 sur 6 — plan 4 de la vidéo
+La même cour, et un PRE gris pommelé : encolure haute et arrondie, crinière et queue très longues et ondulées, port relevé, monté par un cavalier en tenue sombre au trot rassemblé, vu de trois quarts arrière, au centre de l'image.
+
+IMAGE 5 sur 6 — plan 5 de la vidéo
+Un mur blanc chaulé. Un panneau de fer forgé portant le mot JEREZ, vu de face, centré, occupant au maximum les deux tiers de la largeur, large marge vide de chaque côté.
+
+IMAGE 6 sur 6 — la carte postale (format 3:4, pas 9:16)
+Une cour de sable clair bordée d'arcades blanches. un PRE gris pommelé : encolure haute et arrondie, crinière et queue très longues et ondulées, port relevé, monté par un cavalier en tenue sombre au trot rassemblé, vu de trois quarts arrière. Ombres longues sur le sable, murs chaulés, une grille de fer forgé.
+Le tiers supérieur et le tiers inférieur restent volontairement sombres et calmes : ils recevront le titre et le tampon ajoutés par l'application.
+
+
+
+##################################################################
+# WARENDORF
+##################################################################
+
+VILLE : Warendorf (Allemagne) — La formation allemande, le hanovrien
+
+CONSIGNES VALABLES POUR TOUTES LES IMAGES DE CETTE VILLE
+
+Format : VERTICAL 9:16, pleine résolution, une image par plan.
+Style : peinture numérique réaliste et atmosphérique, pas photoréaliste. Grain léger de papier ancien.
+Lumière : le soleil est juste sous l'horizon. Ciel sombre et nuageux en haut, lumière dorée au centre, brume basse. L'heure peut avancer légèrement d'un plan au suivant, mais la palette ne change JAMAIS : bleu nuit en haut, or au centre. Jamais de plein jour, jamais de lumière blanche ou grise.
+Le cheval : UN SEUL cheval pour les cinq images, décrit à l'identique à chaque fois. Il ne doit pas changer de robe ni de type entre deux plans.
+Le cavalier : toujours vu de dos ou de trois quarts arrière. JAMAIS son visage.
+
+INTERDITS sur toutes les images :
+• Aucun texte, sauf le panneau du plan 5.
+• Aucun visage reconnaissable, aucun bâtiment contemporain, aucune voiture.
+• Aucun cadre, aucune bordure, aucun coin arrondi, aucun filigrane.
+
+⚠️ LE PANNEAU DU PLAN 5 : il doit occuper AU MAXIMUM LES DEUX TIERS DE LA LARGEUR de l'image, vu de face, centré, avec une large marge vide de chaque côté. Un panneau qui touche les bords perd ses premières et dernières lettres au montage.
+
+⚠️ PROPRE À CETTE VILLE
+• WARENDORF est un nom long : le panneau doit être vu de loin et de face, avec beaucoup de marge, sinon les lettres sautent.
+
+LE CHEVAL DE CETTE VILLE, à décrire à l'identique dans chaque image où il apparaît :
+un hanovrien bai, grand cheval de sport aux membres longs, crinière tressée, monté par un cavalier en tenue sombre
+
+==========================================================
+GÉNÈRE LES SIX IMAGES SUIVANTES, UNE PAR UNE, DANS CET ORDRE.
+Ne fais pas de planche : six images séparées, chacune en 9:16 pleine résolution.
+==========================================================
+
+IMAGE 1 sur 6 — plan 1 de la vidéo
+Une plaine verte et plate vue de haut : haies rectilignes, bâtiments de brique rouge à toit d'ardoise, brume au ras des prés. Aucun cheval.
+
+IMAGE 2 sur 6 — plan 2 de la vidéo
+Une allée bordée de barrières blanches impeccables, vue au niveau du sol. Aucun cheval.
+
+IMAGE 3 sur 6 — plan 3 de la vidéo
+Une cour d'écurie de brique très ordonnée : sol pavé lavé, portes de box alignées, une lanterne allumée sous l'auvent. Aucun cheval.
+
+IMAGE 4 sur 6 — plan 4 de la vidéo
+Une carrière de sable, et un hanovrien bai, grand cheval de sport aux membres longs, crinière tressée, monté par un cavalier en tenue sombre au trot allongé, mouvement ample, vu de trois quarts arrière, au centre de l'image.
+
+IMAGE 5 sur 6 — plan 5 de la vidéo
+Un mur de brique rouge. Un panneau de fer forgé portant le mot WARENDORF, vu de face, centré, occupant au maximum les deux tiers de la largeur, large marge vide de chaque côté.
+
+IMAGE 6 sur 6 — la carte postale (format 3:4, pas 9:16)
+Une cour d'écurie de brique rouge très ordonnée : sol pavé lavé, portes de box alignées, une lanterne allumée sous l'auvent. un hanovrien bai, grand cheval de sport aux membres longs, crinière tressée, monté par un cavalier en tenue sombre tenu en main par un homme vu de dos. Brume basse entre les bâtiments.
+Le tiers supérieur et le tiers inférieur restent volontairement sombres et calmes : ils recevront le titre et le tampon ajoutés par l'application.
+
+
+
+##################################################################
+# SÉVILLE
+##################################################################
+
+VILLE : Séville (Espagne) — Les traditions andalouses
+
+CONSIGNES VALABLES POUR TOUTES LES IMAGES DE CETTE VILLE
+
+Format : VERTICAL 9:16, pleine résolution, une image par plan.
+Style : peinture numérique réaliste et atmosphérique, pas photoréaliste. Grain léger de papier ancien.
+Lumière : le soleil est juste sous l'horizon. Ciel sombre et nuageux en haut, lumière dorée au centre, brume basse. L'heure peut avancer légèrement d'un plan au suivant, mais la palette ne change JAMAIS : bleu nuit en haut, or au centre. Jamais de plein jour, jamais de lumière blanche ou grise.
+Le cheval : UN SEUL cheval pour les cinq images, décrit à l'identique à chaque fois. Il ne doit pas changer de robe ni de type entre deux plans.
+Le cavalier : toujours vu de dos ou de trois quarts arrière. JAMAIS son visage.
+
+INTERDITS sur toutes les images :
+• Aucun texte, sauf le panneau du plan 5.
+• Aucun visage reconnaissable, aucun bâtiment contemporain, aucune voiture.
+• Aucun cadre, aucune bordure, aucun coin arrondi, aucun filigrane.
+
+⚠️ LE PANNEAU DU PLAN 5 : il doit occuper AU MAXIMUM LES DEUX TIERS DE LA LARGEUR de l'image, vu de face, centré, avec une large marge vide de chaque côté. Un panneau qui touche les bords perd ses premières et dernières lettres au montage.
+
+⚠️ PROPRE À CETTE VILLE
+• Aucune foule, aucune feria, aucun spectacle : le cheval est présenté, pas exhibé.
+
+LE CHEVAL DE CETTE VILLE, à décrire à l'identique dans chaque image où il apparaît :
+un PRE gris pommelé pansé jusqu'à briller, crinière tressée, mené en main par un homme en tenue traditionnelle andalouse (chapeau à large bord, veste courte) vu de dos
+
+==========================================================
+GÉNÈRE LES SIX IMAGES SUIVANTES, UNE PAR UNE, DANS CET ORDRE.
+Ne fais pas de planche : six images séparées, chacune en 9:16 pleine résolution.
+==========================================================
+
+IMAGE 1 sur 6 — plan 1 de la vidéo
+Les toits de tuiles ocre de la vieille ville vus de haut : patios plantés d'orangers, une haute tour de brique, la brume sur le fleuve. Aucun cheval.
+
+IMAGE 2 sur 6 — plan 2 de la vidéo
+Une rue étroite aux murs chaulés : grilles de fer forgé, pots de géraniums, pavés. Aucune enseigne lisible. Aucun cheval.
+
+IMAGE 3 sur 6 — plan 3 de la vidéo
+Une cour pavée bordée d'arcades blanches, un attelage à l'arrêt, cuir et laiton astiqués. Aucun cheval attelé.
+
+IMAGE 4 sur 6 — plan 4 de la vidéo
+La même cour, et un PRE gris pommelé pansé jusqu'à briller, crinière tressée, mené en main par un homme en tenue traditionnelle andalouse (chapeau à large bord, veste courte) vu de dos au centre de l'image, immobile, présenté.
+
+IMAGE 5 sur 6 — plan 5 de la vidéo
+Un mur chaulé. Un panneau de fer forgé portant le mot SEVILLA, vu de face, centré, occupant au maximum les deux tiers de la largeur, large marge vide de chaque côté.
+
+IMAGE 6 sur 6 — la carte postale (format 3:4, pas 9:16)
+Une cour pavée bordée d'arcades blanches. un PRE gris pommelé pansé jusqu'à briller, crinière tressée, mené en main par un homme en tenue traditionnelle andalouse (chapeau à large bord, veste courte) vu de dos au centre, immobile. Du cuir et du laiton astiqués, des orangers, une grille de fer forgé.
+Le tiers supérieur et le tiers inférieur restent volontairement sombres et calmes : ils recevront le titre et le tampon ajoutés par l'application.
+
+
+
+##################################################################
+# VEJER DE LA FRONTERA
+##################################################################
+
+VILLE : Vejer de la Frontera (Espagne) — L'intendance d'un grand campement
+
+CONSIGNES VALABLES POUR TOUTES LES IMAGES DE CETTE VILLE
+
+Format : VERTICAL 9:16, pleine résolution, une image par plan.
+Style : peinture numérique réaliste et atmosphérique, pas photoréaliste. Grain léger de papier ancien.
+Lumière : le soleil est juste sous l'horizon. Ciel sombre et nuageux en haut, lumière dorée au centre, brume basse. L'heure peut avancer légèrement d'un plan au suivant, mais la palette ne change JAMAIS : bleu nuit en haut, or au centre. Jamais de plein jour, jamais de lumière blanche ou grise.
+Le cheval : UN SEUL cheval pour les cinq images, décrit à l'identique à chaque fois. Il ne doit pas changer de robe ni de type entre deux plans.
+Le cavalier : toujours vu de dos ou de trois quarts arrière. JAMAIS son visage.
+
+INTERDITS sur toutes les images :
+• Aucun texte, sauf le panneau du plan 5.
+• Aucun visage reconnaissable, aucun bâtiment contemporain, aucune voiture.
+• Aucun cadre, aucune bordure, aucun coin arrondi, aucun filigrane.
+
+⚠️ LE PANNEAU DU PLAN 5 : il doit occuper AU MAXIMUM LES DEUX TIERS DE LA LARGEUR de l'image, vu de face, centré, avec une large marge vide de chaque côté. Un panneau qui touche les bords perd ses premières et dernières lettres au montage.
+
+⚠️ PROPRE À CETTE VILLE
+• Aucune inscription sur les toiles des écuries : pas de nom, pas de sponsor. Aucun camion, aucun van.
+
+LE CHEVAL DE CETTE VILLE, à décrire à l'identique dans chaque image où il apparaît :
+un cheval bai à l'attache, tête basse, tranquille, sans cavalier
+
+==========================================================
+GÉNÈRE LES SIX IMAGES SUIVANTES, UNE PAR UNE, DANS CET ORDRE.
+Ne fais pas de planche : six images séparées, chacune en 9:16 pleine résolution.
+==========================================================
+
+IMAGE 1 sur 6 — plan 1 de la vidéo
+Un village blanc perché sur une colline, vu de haut : campagne sèche, pins parasols, l'Atlantique deviné au loin dans la brume. Aucun cheval.
+
+IMAGE 2 sur 6 — plan 2 de la vidéo
+Un vaste terrain de sable clair où s'alignent de longues écuries de toile blanche, vues au niveau du sol. Aucune inscription sur les toiles. Aucun cheval.
+
+IMAGE 3 sur 6 — plan 3 de la vidéo
+Une allée entre les box : seaux, bottes de foin empilées, une brouette, tout en ordre. Aucun cheval.
+
+IMAGE 4 sur 6 — plan 4 de la vidéo
+Le même lieu, et un cheval bai à l'attache, tête basse, tranquille, sans cavalier devant son box, tandis qu'une main verse du foin dans un filet. Aucun visage.
+
+IMAGE 5 sur 6 — plan 5 de la vidéo
+Un mur de pierre claire. Un panneau de fer forgé portant le mot VEJER, vu de face, centré, occupant au maximum les deux tiers de la largeur, large marge vide de chaque côté.
+
+IMAGE 6 sur 6 — la carte postale (format 3:4, pas 9:16)
+Une allée entre de longues écuries de toile blanche, sur du sable clair. un cheval bai à l'attache, tête basse, tranquille, sans cavalier devant son box. Autour de lui, seulement trois objets : un seau, une botte de foin, une brouette. Au loin dans la brume, un village blanc sur sa colline.
+Le tiers supérieur et le tiers inférieur restent volontairement sombres et calmes : ils recevront le titre et le tampon ajoutés par l'application.
+
+
+
+##################################################################
+# OLIVA NOVA
+##################################################################
+
+VILLE : Oliva Nova (Espagne) — S'engager, et fauter
+
+CONSIGNES VALABLES POUR TOUTES LES IMAGES DE CETTE VILLE
+
+Format : VERTICAL 9:16, pleine résolution, une image par plan.
+Style : peinture numérique réaliste et atmosphérique, pas photoréaliste. Grain léger de papier ancien.
+Lumière : le soleil est juste sous l'horizon. Ciel sombre et nuageux en haut, lumière dorée au centre, brume basse. L'heure peut avancer légèrement d'un plan au suivant, mais la palette ne change JAMAIS : bleu nuit en haut, or au centre. Jamais de plein jour, jamais de lumière blanche ou grise.
+Le cheval : UN SEUL cheval pour les cinq images, décrit à l'identique à chaque fois. Il ne doit pas changer de robe ni de type entre deux plans.
+Le cavalier : toujours vu de dos ou de trois quarts arrière. JAMAIS son visage.
+
+INTERDITS sur toutes les images :
+• Aucun texte, sauf le panneau du plan 5.
+• Aucun visage reconnaissable, aucun bâtiment contemporain, aucune voiture.
+• Aucun cadre, aucune bordure, aucun coin arrondi, aucun filigrane.
+
+⚠️ LE PANNEAU DU PLAN 5 : il doit occuper AU MAXIMUM LES DEUX TIERS DE LA LARGEUR de l'image, vu de face, centré, avec une large marge vide de chaque côté. Un panneau qui touche les bords perd ses premières et dernières lettres au montage.
+
+⚠️ PROPRE À CETTE VILLE
+• AUCUN dossard, AUCUN numéro sur les obstacles, aucune banderole, aucun logo de sponsor, aucun public. C'est un terrain de concours : c'est là que le risque de texte est le plus fort.
+
+LE CHEVAL DE CETTE VILLE, à décrire à l'identique dans chaque image où il apparaît :
+un cheval gris clair de saut d'obstacles, monté par un cavalier en tenue sombre SANS DOSSARD
+
+==========================================================
+GÉNÈRE LES SIX IMAGES SUIVANTES, UNE PAR UNE, DANS CET ORDRE.
+Ne fais pas de planche : six images séparées, chacune en 9:16 pleine résolution.
+==========================================================
+
+IMAGE 1 sur 6 — plan 1 de la vidéo
+La plaine côtière vue de haut : palmiers, orangers en lignes, la Méditerranée au loin dans la brume. Aucun cheval.
+
+IMAGE 2 sur 6 — plan 2 de la vidéo
+Une grande carrière de sable clair bordée de lices blanches, vue au niveau du sol. Aucun cheval.
+
+IMAGE 3 sur 6 — plan 3 de la vidéo
+Une ligne d'obstacles : barres blanches, chandeliers, fleurs au pied. AUCUN numéro, AUCUN panneau, AUCUN logo. Aucun cheval.
+
+IMAGE 4 sur 6 — plan 4 de la vidéo
+Le même terrain, et un cheval gris clair de saut d'obstacles, monté par un cavalier en tenue sombre SANS DOSSARD franchissant un oxer, vu de trois quarts arrière, au centre de l'image.
+
+IMAGE 5 sur 6 — plan 5 de la vidéo
+Un mur de pierre claire. Un panneau de fer forgé portant le mot OLIVA, vu de face, centré, occupant au maximum les deux tiers de la largeur, large marge vide de chaque côté.
+
+IMAGE 6 sur 6 — la carte postale (format 3:4, pas 9:16)
+Une grande carrière de sable clair bordée de lices blanches. un cheval gris clair de saut d'obstacles, monté par un cavalier en tenue sombre SANS DOSSARD franchissant un oxer, vu de trois quarts arrière. Des palmiers au fond, la mer devinée dans la brume. Pas plus de trois éléments : le cheval, l'obstacle, les palmiers.
+Le tiers supérieur et le tiers inférieur restent volontairement sombres et calmes : ils recevront le titre et le tampon ajoutés par l'application.
+
+
+
+##################################################################
+# AIX-LA-CHAPELLE
+##################################################################
+
+VILLE : Aix-la-Chapelle (Allemagne) — Le grand concours
+
+CONSIGNES VALABLES POUR TOUTES LES IMAGES DE CETTE VILLE
+
+Format : VERTICAL 9:16, pleine résolution, une image par plan.
+Style : peinture numérique réaliste et atmosphérique, pas photoréaliste. Grain léger de papier ancien.
+Lumière : le soleil est juste sous l'horizon. Ciel sombre et nuageux en haut, lumière dorée au centre, brume basse. L'heure peut avancer légèrement d'un plan au suivant, mais la palette ne change JAMAIS : bleu nuit en haut, or au centre. Jamais de plein jour, jamais de lumière blanche ou grise.
+Le cheval : UN SEUL cheval pour les cinq images, décrit à l'identique à chaque fois. Il ne doit pas changer de robe ni de type entre deux plans.
+Le cavalier : toujours vu de dos ou de trois quarts arrière. JAMAIS son visage.
+
+INTERDITS sur toutes les images :
+• Aucun texte, sauf le panneau du plan 5.
+• Aucun visage reconnaissable, aucun bâtiment contemporain, aucune voiture.
+• Aucun cadre, aucune bordure, aucun coin arrondi, aucun filigrane.
+
+⚠️ LE PANNEAU DU PLAN 5 : il doit occuper AU MAXIMUM LES DEUX TIERS DE LA LARGEUR de l'image, vu de face, centré, avec une large marge vide de chaque côté. Un panneau qui touche les bords perd ses premières et dernières lettres au montage.
+
+⚠️ PROPRE À CETTE VILLE
+• Aucune banderole, aucun panneau publicitaire dans les gradins, aucun logo, aucun dossard, aucun écran d'affichage, aucun public. C'est le plus grand concours du monde : il voudra en mettre partout.
+
+LE CHEVAL DE CETTE VILLE, à décrire à l'identique dans chaque image où il apparaît :
+un cheval bai de saut d'obstacles, très en équilibre, monté par un cavalier en tenue sombre SANS DOSSARD
+
+==========================================================
+GÉNÈRE LES SIX IMAGES SUIVANTES, UNE PAR UNE, DANS CET ORDRE.
+Ne fais pas de planche : six images séparées, chacune en 9:16 pleine résolution.
+==========================================================
+
+IMAGE 1 sur 6 — plan 1 de la vidéo
+Une ville de pierre sombre au creux de collines boisées, vue de haut : la silhouette d'une cathédrale à coupole octogonale, la brume entre les toits. Aucun cheval.
+
+IMAGE 2 sur 6 — plan 2 de la vidéo
+Un immense stade en herbe, gradins vides et silencieux, rosée sur le gazon, vu au niveau du sol. Aucune banderole, aucun panneau publicitaire. Aucun cheval.
+
+IMAGE 3 sur 6 — plan 3 de la vidéo
+Un obstacle imposant seul au milieu du terrain : barres blanches, massifs de fleurs au pied. Aucun numéro. Aucun cheval.
+
+IMAGE 4 sur 6 — plan 4 de la vidéo
+Le même stade, et un cheval bai de saut d'obstacles, très en équilibre, monté par un cavalier en tenue sombre SANS DOSSARD au galop sur l'herbe, vu de trois quarts arrière, au centre de l'image.
+
+IMAGE 5 sur 6 — plan 5 de la vidéo
+Un mur de pierre sombre. Un panneau de fer forgé portant le mot AACHEN, vu de face, centré, occupant au maximum les deux tiers de la largeur, large marge vide de chaque côté.
+
+IMAGE 6 sur 6 — la carte postale (format 3:4, pas 9:16)
+Un immense stade en herbe, gradins vides et silencieux, rosée sur le gazon. Un obstacle imposant seul au milieu du terrain. un cheval bai de saut d'obstacles, très en équilibre, monté par un cavalier en tenue sombre SANS DOSSARD au galop, vu de trois quarts arrière. Au fond dans la brume, la silhouette d'une cathédrale à coupole.
+Le tiers supérieur et le tiers inférieur restent volontairement sombres et calmes : ils recevront le titre et le tampon ajoutés par l'application.
+
+
+
+##################################################################
+# LAMOTTE-BEUVRON
+##################################################################
+
+VILLE : Lamotte-Beuvron (France) — La sécurité et le manège
+
+CONSIGNES VALABLES POUR TOUTES LES IMAGES DE CETTE VILLE
+
+Format : VERTICAL 9:16, pleine résolution, une image par plan.
+Style : peinture numérique réaliste et atmosphérique, pas photoréaliste. Grain léger de papier ancien.
+Lumière : le soleil est juste sous l'horizon. Ciel sombre et nuageux en haut, lumière dorée au centre, brume basse. L'heure peut avancer légèrement d'un plan au suivant, mais la palette ne change JAMAIS : bleu nuit en haut, or au centre. Jamais de plein jour, jamais de lumière blanche ou grise.
+Le cheval : UN SEUL cheval pour les cinq images, décrit à l'identique à chaque fois. Il ne doit pas changer de robe ni de type entre deux plans.
+Le cavalier : toujours vu de dos ou de trois quarts arrière. JAMAIS son visage.
+
+INTERDITS sur toutes les images :
+• Aucun texte, sauf le panneau du plan 5.
+• Aucun visage reconnaissable, aucun bâtiment contemporain, aucune voiture.
+• Aucun cadre, aucune bordure, aucun coin arrondi, aucun filigrane.
+
+⚠️ LE PANNEAU DU PLAN 5 : il doit occuper AU MAXIMUM LES DEUX TIERS DE LA LARGEUR de l'image, vu de face, centré, avec une large marge vide de chaque côté. Un panneau qui touche les bords perd ses premières et dernières lettres au montage.
+
+⚠️ PROPRE À CETTE VILLE
+• LA BOMBE EST OBLIGATOIRE et correctement portée : c'est la ville qui enseigne la sécurité, l'image ne peut pas la contredire.
+• Aucun visage d'enfant reconnaissable : vue de dos uniquement. Aucun dossard.
+
+LE CHEVAL DE CETTE VILLE, à décrire à l'identique dans chaque image où il apparaît :
+un poney bai monté par un enfant portant une bombe correctement ajustée et une tenue de club, vu de trois quarts arrière, JAMAIS son visage
+
+==========================================================
+GÉNÈRE LES SIX IMAGES SUIVANTES, UNE PAR UNE, DANS CET ORDRE.
+Ne fais pas de planche : six images séparées, chacune en 9:16 pleine résolution.
+==========================================================
+
+IMAGE 1 sur 6 — plan 1 de la vidéo
+La Sologne vue de haut : forêt de pins et de bouleaux, étangs qui fument dans la brume, vastes prairies plates. Aucun cheval.
+
+IMAGE 2 sur 6 — plan 2 de la vidéo
+Un alignement de carrières de sable séparées de lices blanches, à perte de vue, vu au niveau du sol. Aucun cheval.
+
+IMAGE 3 sur 6 — plan 3 de la vidéo
+Une carrière vide au sable fraîchement ratissé, les traces du râteau visibles, la brume au ras du sol. Aucun cheval.
+
+IMAGE 4 sur 6 — plan 4 de la vidéo
+La même carrière, et un poney bai monté par un enfant portant une bombe correctement ajustée et une tenue de club, vu de trois quarts arrière, JAMAIS son visage au trot enlevé, posture juste, geste sûr, au centre de l'image.
+
+IMAGE 5 sur 6 — plan 5 de la vidéo
+Un poteau de bois. Un panneau de fer forgé portant le mot LAMOTTE, vu de face, centré, occupant au maximum les deux tiers de la largeur, large marge vide de chaque côté.
+
+IMAGE 6 sur 6 — la carte postale (format 3:4, pas 9:16)
+Un alignement de carrières de sable séparées de lices blanches, à perte de vue dans la brume. Au premier plan, un poney bai monté par un enfant portant une bombe correctement ajustée et une tenue de club, vu de trois quarts arrière, JAMAIS son visage au trot enlevé. Des pins de Sologne au fond, un étang qui fume.
+Le tiers supérieur et le tiers inférieur restent volontairement sombres et calmes : ils recevront le titre et le tampon ajoutés par l'application.
+

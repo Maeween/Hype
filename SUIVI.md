@@ -53,6 +53,28 @@ Trois sorties en fin de chapitre : **rester au pays · suivre le sujet · choisi
 ⚠️ **Les récits courts (`RECITS` de `lingo.html`) ne sont PAS écrits ici** — Blandine les prend en charge dans une autre conversation. Ne pas les produire depuis cette page.
 ⚠️ **Décision de Blandine : aucune ville n'est retirée**, Lambourn comprise. Les cartes postales et vidéos représentent des heures de travail déjà faites. La mention « Lambourn candidate au retrait » de `hype-linguae-structure-v2.md` est **caduque**.
 
+### ✅ Décision de fin de session : les RAPPELS sont autorisés
+Blandine : « on s'en fout, on peut avoir des rappels en plus d'une ville à l'autre ». **Un mot peut donc appartenir à deux villes.** Ce n'est pas un doublon mais de la révision espacée gratuite — la maîtrise est stockée **par concept**, pas par ville, donc un mot déjà croisé ailleurs arrive à moitié acquis.
+⚠️ **CONSÉQUENCE DE STRUCTURE, à faire AVANT la migration** : le champ `chapitre` ne peut plus porter une valeur unique par concept, il devient **une liste d'étapes**. C'est le seul vrai changement que cette décision entraîne, mais il conditionne tout le reste.
+
+### ✅ Nouvelle collection `poney` (Lamotte-Beuvron)
+Remarque de Blandine, juste : Lamotte c'est d'abord des milliers de poneys, pas le tracé de manège. **`cours/figures` remonte à Aberystwyth** (qui devient la seule étape à trois collections, 30 mots — les trois disent « monter ») et Lamotte reçoit **`poney` + `urgences/cavalier`**.
+La collection = **6 rappels** (le poney, la taille au garrot, le poulain, le cheval d'école, le caractère, calme — déjà écrits et traduits) + **4 concepts neufs traduits dans les 6 langues** : la toise (`das Stockmaß` / `測尺`), le poney-club, la catégorie de taille, le poney shetland.
+⚠️ **Piège de contenu documenté** : les catégories poney **A à E sont une convention FFE française**, inexistante en GB, en Allemagne et au Japon, qui classent par taille au garrot sans lettres. Le concept est écrit « catégorie de taille », jamais les lettres — sinon on enseigne une notion qui ne veut rien dire dans le pays où le cavalier s'en servira. La `def` doit le préciser.
+⚠️ **Les 4 nouvelles entrées vont au fichier des doutes** : aucune n'a été relue par un natif.
+⚠️ **NON APPLIQUÉ dans les fichiers** — voir ci-dessous.
+
+### 🎬 Vidéos d'arrivée converties (Saumur, Jerez)
+Toutes les sources fournies sont en **HEVC dans un `.mov` avec piste audio** — le cas du 2 août : Safari les lit, Chrome et Firefox souvent pas. Traitement appliqué : H.264 profil Main + faststart, **audio retiré** (sans ça iOS refuse la lecture auto), recadrage `crop=456:810:12:42` qui enlève le filigrane « Ai » du haut-gauche **et** deux bandes noires de 2 px sur les bords. Sortie **456×810** (9:16 exact), ~500 Ko chacune.
+- **`arrivee-saumur.mp4`** — 5,0 s. Panneau SAUMUR présent et entier (il monte de 4,3 s à 4,7 s puis tient jusqu'à la fin).
+- **`arrivee-jerez.mp4`** — 5,1 s, la vue de la ville dans la brume au-dessus des oliviers. **Choisie par Blandine.** Cohérente avec la règle des arrivées : la ville se découvre depuis le paysage.
+- **`arrivee-jerez-variante-portrait.mp4`** — le portrait du gris à contre-jour, écartée comme arrivée (gros plan, ne montre pas le lieu) mais **gardée pour la carte postale** : elle colle mot pour mot à la lettre de la ville.
+⚠️ **Le source ne fait que 480 px de large** alors que les autres arrivées sont annoncées à 720. **Pas agrandi volontairement** — un upscale n'ajoute aucun détail, juste du flou et du poids. Réexporter en 720 ou 1080 si possible.
+⚠️ **Erreur de ma part corrigée en séance** : j'avais annoncé à Blandine que le panneau était coupé à mi-transition et que ma livraison ne le contenait pas. **Faux dans les deux cas** — mes numéros d'image ne correspondaient pas au montage réel, et la mesure a confirmé que le panneau était bien là, entier. Leçon : vérifier le fichier LIVRÉ, pas le fichier source.
+
+### ⛔ Ce que cette page n'a PAS appliqué, et pourquoi
+Les fichiers `hype-lingo-lex-*.js` **n'ont pas été modifiés**. La session 86 les attend pour poser ses huit corrections de vocabulaire, et la collection `poney` doit y entrer aussi. **Une seule page codeuse** : elle appliquera les deux d'un même geste. Deux pages qui éditent les mêmes fichiers en parallèle, c'est l'incident du 3 août.
+
 ### Sur le rapport de corrections du vocabulaire
 ⚠️ **Ne pas l'appliquer en bloc.** Plusieurs entrées sont inexploitables : le chandelier espagnol se contredit dans sa propre ligne, « la réception » y est validée en français, le talus italien est traduit par « il talus ». Il contredit aussi la première relecture sur l'amortisseur espagnol. **Aucun cavalier natif n'a encore relu quoi que ce soit** — cinq revues, cinq IA. Trou le plus net : **36 mots allemands vus par une seule source**.
 

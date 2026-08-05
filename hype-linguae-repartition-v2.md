@@ -142,3 +142,104 @@ Le fil « même pays » n'existe pas partout — Aberystwyth et Édimbourg sont 
 - **Huit villes neuves.** Saumur, Jerez, Warendorf : textes écrits et traduits ce jour (`hype-linguae-villes-nouvelles.md`). Séville, Oliva Nova, Vejer, Aix-la-Chapelle, Lamotte-Beuvron : français écrit, traductions à faire.
 - **Les images et vidéos** des huit. Gabarit figé : vertical 3:4, un seul sujet, tiers haut et bas sombres, aucun texte.
 - **La relecture native.** 220 mots attendent toujours un cavalier qui monte dans le pays. Cinq revues, cinq IA, aucune humaine. Trou le plus net : 36 mots allemands vus par une seule source.
+
+
+---
+
+## Annexe · la table de migration
+
+**La règle est mécanique** : une collection devient une leçon. Chaque concept prend le numéro d'étape de sa ville en `chapitre`, et 1 ou 2 en `lecon` selon la collection. Aucun mot n'est réécrit, aucune traduction n'est touchée — seuls deux champs numériques changent.
+
+⚠️ Les entrées **sans `coll`** (les phrases) suivent la collection de leur leçon d'origine : elles prennent les mêmes valeurs que les concepts qui les entourent aujourd'hui.
+
+| Collection d'origine | `chapitre` → | `lecon` → | Étape |
+|---|---|---|---|
+| `ecurie` / `lieu` | **1** | **1** | Newmarket |
+| `ecurie` / `gestes+materiel` | **1** | **2** | Newmarket |
+| `pansage` / `outils` | **2** | **1** | Lambourn |
+| `pansage` / `corps` | **2** | **2** | Lambourn |
+| `cheval` / `robes` | **3** | **1** | Connemara |
+| `cheval` / `marques` | **3** | **2** | Connemara |
+| `materiel` / `selle` | **4** | **1** | Walsall |
+| `materiel` / `filet` | **4** | **2** | Walsall |
+| `cours` / `allures` | **5** | **1** | Aberystwyth |
+| `cours` / `position` | **5** | **2** | Aberystwyth |
+| `urgences` / `alerte` | **6** | **1** | Kildare |
+| `urgences` / `cheval-urg` | **6** | **2** | Kildare |
+| `cheval` / `identite` | **7** | **1** | Jerez |
+| `cheval` / `morpho` | **7** | **2** | Jerez |
+| `ecurie` / `nourriture` | **8** | **1** | Vejer |
+| `ecurie` / `litiere+outils` | **8** | **2** | Vejer |
+| `obstacle` / `obstacles` | **9** | **1** | Hickstead |
+| `obstacle` / `parcours` | **9** | **2** | Hickstead |
+| `concours` / `complet` | **10** | **1** | Badminton |
+| `concours` / `jour-j` | **10** | **2** | Badminton |
+| `dressage` / `rectangle` | **11** | **1** | Windsor |
+| `dressage` / `notation` | **11** | **2** | Windsor |
+| `materiel` / `cavalier` | **12** | **1** | Séville |
+| `pansage` / `etat` | **12** | **2** | Séville |
+| `concours` / `engager` | **13** | **1** | Oliva Nova |
+| `obstacle` / `fautes` | **13** | **2** | Oliva Nova |
+| `materiel` / `protections` | **14** | **1** | Warendorf |
+| `pansage` / `gestes` | **14** | **2** | Warendorf |
+| `obstacle` / `saut` | **15** | **1** | Aix-la-Chapelle |
+| `concours` / `gens` | **15** | **2** | Aix-la-Chapelle |
+| `urgences` / `cavalier` | **16** | **1** | Lamotte-Beuvron |
+| `cours` / `figures` | **16** | **2** | Lamotte-Beuvron |
+| `dressage` / `mouvements` | **17** | **1** | Saumur |
+| `dressage` / `qualites` | **17** | **2** | Saumur |
+| `urgences` / `mots` | **18** | **1** | Édimbourg |
+| `cours` / `deroule` | **18** | **2** | Édimbourg |
+
+⚠️ **Deux collections traversent leur chapitre d'origine** : `pansage/etat` part à Séville et `pansage/gestes` à Warendorf, alors que `pansage/outils` et `pansage/corps` restent à Lambourn. Idem pour `cours/figures` (Lamotte) et `cours/deroule` (Édimbourg). C'est voulu — mais ça veut dire qu'**un fichier de lexique n'alimente plus une seule ville**. Toute logique qui suppose « un fichier = un chapitre » doit être revue avant la migration.
+
+
+---
+
+## Annexe · la collection `poney` (Lamotte-Beuvron)
+
+**Décidée le 5 août.** Lamotte, c'est d'abord des milliers de poneys et de jeunes cavaliers — le vocabulaire du tracé de manège n'y était pas à sa place.
+
+**Nouvelle répartition :**
+
+| Ville | Collections | Mots |
+|---|---|---|
+| **Lamotte-Beuvron** | **`poney`** (nouvelle) + `urgences/cavalier` | 20 |
+| **Aberystwyth** | `cours/allures` + `cours/position` + `cours/figures` | 30 |
+
+⚠️ Aberystwyth devient la seule étape à trois collections. C'est défendable : les trois disent « monter », et rien d'autre. Si c'est trop lourd à l'usage, `cours/figures` pourra migrer vers une ville future.
+
+### ✅ Le principe des rappels est acquis (décision de Blandine)
+
+**Un mot peut appartenir à deux villes.** Ce n'est pas un doublon, c'est de la révision espacée gratuite : la maîtrise est stockée **par concept**, pas par ville. Un mot déjà su ailleurs arrive déjà à moitié acquis, ce qui rend le souvenir de la ville un peu plus facile à gagner — et c'est tant mieux.
+
+Conséquence technique : le champ `chapitre` ne peut plus être une valeur unique par concept. Il devient **une liste d'étapes**. C'est le seul vrai changement de structure que cette décision entraîne, et il doit être fait avant la migration, pas après.
+
+### Les dix concepts
+
+**Six rappels** — déjà écrits, déjà traduits, rien à produire :
+
+| Concept | Vient de |
+|---|---|
+| le poney | `cheval/marques` |
+| la taille au garrot | `cheval/marques` |
+| le poulain | `cheval/identite` |
+| le cheval d'école | `cheval/identite` |
+| le caractère | `cheval/identite` |
+| calme | `cheval/identite` |
+
+**Quatre concepts neufs** — à créer, traductions ci-dessous :
+
+**la toise** · en `the measuring stick` · es `el hipómetro` (aussi *la vara de medir*) · it `l'ippometro` · de `das Stockmaß` · ja `測尺 / そくしゃく (sokushaku)`
+
+**le poney-club** · en `the pony club` · es `el club de ponis` · it `il pony club` · de `der Ponyhof` (aussi *der Ponyclub*) · ja `ポニークラブ (ponī kurabu)`
+
+**la catégorie de taille** · en `the height category` · es `la categoría por altura` · it `la categoria di altezza` · de `die Größenklasse` · ja `体高区分 / たいこうくぶん (taikō kubun)`
+
+**le poney shetland** · en `the Shetland pony` · es `el poni Shetland` · it `il pony Shetland` · de `das Shetlandpony` · ja `シェットランドポニー (shettorando ponī)`
+
+⚠️ **Un piège de contenu, à ne pas ignorer.** Les catégories poney A à E sont **une convention FFE française**. Elles n'existent ni en Grande-Bretagne, ni en Allemagne, ni au Japon, qui classent par taille au garrot sans lettres. Le concept est donc enseigné comme « catégorie de taille » et non comme les lettres françaises — sinon on apprend à un cavalier une notion qui ne veut rien dire dans le pays où il va s'en servir. La `def` de l'entrée doit le dire.
+
+⚠️ **Les quatre nouvelles entrées vont au fichier des doutes** comme les autres : aucune n'a été relue par un natif. `das Stockmaß` et `測尺` sont les deux plus à confirmer.
+
+⚠️ **Ne pas appliquer depuis cette page.** Les fichiers `hype-lingo-lex-*.js` sont attendus par la session qui a traduit `lingo.html`, pour y poser huit corrections de vocabulaire. Deux pages qui éditent les mêmes fichiers en parallèle, c'est l'incident du 3 août. **Une seule page codeuse**, qui appliquera la collection `poney` et les huit corrections d'un même geste.
