@@ -12,6 +12,28 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🔧 SESSION 91 (06/08, nuit) — CORRECTIONS APRÈS LE TEST EN LIGNE DE BLANDINE
+
+### 🔴 ÉCRAN VIDE APRÈS « ENTRER À NEWMARKET » — de ma faute
+Blandine a entré dans le voyage et **il ne restait que le bouton Sprint**. Cause : le bouton « Le globe » était placé **dans `#outils`**, et `#outils` fait partie du chemin que la session 90 a masqué. En cachant le chemin, **j'ai supprimé la seule porte d'entrée du globe**, et rien ne le rouvrait pour un joueur ayant déjà vu l'intro (le `setTimeout(ouvrirGlobe)` n'était branché que sur le choix de la langue).
+**Corrigé** : `#bGlobe` sorti de `#outils`, avec son propre style hors du bloc masqué · `terminerOuverture()` ouvre le globe (320 ms) · « Revenir au voyage » ouvre le globe au lieu de refermer sur le vide.
+✅ Vérifié en simulant le cas exact : `localStorage.hype_lingua_intro = 1`, donc pas d'intro → bouton visible, globe ouvert en sortant du carnet.
+⚠️ **Leçon** : masquer un bloc, c'est masquer tout ce qu'il contient. Vérifier ce qu'on emporte avec.
+
+### 🔴 Les dépliants des 8 villes neuves s'ouvraient sur du vide
+Le dépliant de l'itinéraire affiche un résumé d'une ligne pris dans la table **`POURQUOI`**, où les 8 nouvelles n'existaient pas. **8 résumés écrits dans les 6 langues.** Vérifié : plus aucune ville sans résumé.
+⚠️ Un chiffre inventé retiré au passage : « quarante mille personnes » pour Aix — je n'ai jamais vérifié la capacité du stade. Remplacé par « un stade plein ».
+
+### ✅ Textes périmés de la présentation et du carnet
+- « **On voyage la nuit, on arrive à l'aube. Le chemin se fait au doigt** » → décrivait un chemin **supprimé**. Devient « Tu choisis ta prochaine étape. Sur le globe, ou parmi celles que la ville que tu quittes te propose. »
+- « **Dix villes, dix chapitres** » → « Dix-huit destinations », avec « Du Suffolk à l'Andalousie ».
+
+### ⚠️ RESTE UNE INCOHÉRENCE DE FOND, NON TRAITÉE
+Le voyage s'appelle toujours **« Les Îles · Angleterre, Irlande, pays de Galles, Écosse »** alors qu'il passe désormais par la France, l'Espagne et l'Allemagne. Et `DESTINATIONS` propose encore des **régions** (Les Îles, La Péninsule…) — c'est la structure v1 abandonnée. En v2 on choisit **une langue** et on fait le tour du monde. **L'écran de choix doit devenir un choix de langue.** Décision à prendre avec Blandine, pas à trancher seul : ça touche le nom du voyage, le sous-titre, et les 6 entrées de `DESTINATIONS`.
+⚠️ Idée de Blandine à instruire : **remplacer la liste de l'itinéraire par des cartes qui se retournent.** Le carnet est de toute façon devenu redondant avec le globe — la vraie question est peut-être de le supprimer plutôt que de le redessiner.
+
+---
+
 ## 🎚️ SESSION 90 (05/08) — LE CHEMIN EST RETIRÉ, LES NIVEAUX DE DIFFICULTÉ ARRIVENT
 
 ### 🔴 Retour de test de Blandine : le chapitre 1 était trop dur
