@@ -28378,6 +28378,15 @@ function ClocheNotifs() {
    au-dessus de rien. */
 var AFFICHER_ACTU_LAMOTTE = false;
 
+/* 05/08 (demande Blandine) : l encart « Mes messages » quitte l accueil — « quoi qu il
+   arrive il ne restera pas la ». Masque par constante, pas supprime : repasser a true le
+   fait revenir tel quel. La messagerie reste accessible par l icone du hero.
+   Neuf maquettes d encart alternatif ont ete explorees (portes de box, ardoise, carnet de
+   liaison, longe, constellation, mot sous la porte...) : aucune retenue, la decision a ete
+   de retirer le bloc. La video hype-messagerie-video.mp4 (le poney qui apporte la lettre)
+   reste disponible au depot pour un usage ulterieur. */
+var AFFICHER_ENCART_MESSAGES = false;
+
 var HYPE_QUETES_MAISON = { "photo-profil": 1, "cours": 1, "quiz-parfait": 1, "article": 1, "langue": 1, "notifs": 1, "hey-baby": 1, "philosophie-ecurie": 1, "ami": 1, "photo-cheval": 1, "cheval": 1 };
 
 /* Numéro du jour : sert de graine de rotation (change à minuit, stable dans la journée). */
@@ -28742,7 +28751,7 @@ function EcranUnivers() {
            avant que la video s affiche (signale par Blandine). Elle passe a opacite 0 et n est
            revelee qu en cas d echec de la video, ce qui est son seul role. */
         React.createElement("div", { className: "hero-img", style: { opacity: 0, transition: "opacity .5s ease" } }),
-        React.createElement("video", { src: "hype-accueil-video.mp4", poster: "hype-accueil-poster.jpg", muted: true, loop: true, playsInline: true, autoPlay: true, preload: "metadata", "aria-hidden": "true", /* 05/08 : nouvelle animation d accueil, verticale 480x854 fournie par Blandine. Nom de fichier distinct volontairement : hype-anim-cheval.mp4 reste utilise par la carte Grand Prix, ou une video verticale casserait la mise en page. Le poster evite le flash noir avant lecture. */ /* 31/07 soir : ANIMATION DU HERO (fichier separe, meme nom = remplacable sans toucher a l index). L image hero-img reste dessous en filet de securite. */
+        React.createElement("video", { src: "hype-accueil-video-2.mp4", poster: "hype-accueil-poster-2.jpg", muted: true, loop: true, playsInline: true, autoPlay: true, preload: "metadata", "aria-hidden": "true", /* 05/08 : nouvelle animation d accueil, verticale 480x854 fournie par Blandine. Nom de fichier distinct volontairement : hype-anim-cheval.mp4 reste utilise par la carte Grand Prix, ou une video verticale casserait la mise en page. Le poster evite le flash noir avant lecture. */ /* 31/07 soir : ANIMATION DU HERO (fichier separe, meme nom = remplacable sans toucher a l index). L image hero-img reste dessous en filet de securite. */
           onError: function (eEr) {
             try {
               eEr.target.style.display = "none";
@@ -28859,8 +28868,38 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
 
 /* 27/07 : carte Communaute equestre remise dans Mon monde, meme format que Mon Ecurie (grande carte,
            demande explicite de Blandine apres l avoir retiree par erreur de partout). */
-        React.createElement("button", { className: "rv d3", style: { marginTop: 18, position: "relative", width: "100%", height: 188, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(32,217,245,0.24)", cursor: "pointer", padding: 0, textAlign: "left", display: "block", background: "#0A0F14" }, onClick: nav("communaute") },
+        React.createElement("button", { className: "rv d3", style: { marginTop: 18, position: "relative", width: "100%", height: "auto", minHeight: 188, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(32,217,245,0.24)", cursor: "pointer", padding: 0, textAlign: "left", display: "block", background: "#0A0F14" }, onClick: nav("communaute") },
           React.createElement("div", { style: { position: "absolute", inset: 0, backgroundImage: ((typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.duoCommunaute) ? ("url(" + HYPE_IMGS.duoCommunaute + ")") : "none"), backgroundSize: "cover", backgroundPosition: "center" } }),
+          /* 05/08 : la carte Communaute passe de l image fixe a l animation (globe, Europe,
+             ecurie de nuit, cheval). La video est DANS LE FLUX en width 100% / height auto :
+             la carte adopte le format du fichier, donc rien n est rogne — contrairement au
+             cover d une hauteur imposee, qui coupait en haut et en bas.
+             L image duoCommunaute reste dessous en filet de securite et reprend son role si
+             la video echoue. IntersectionObserver : la lecture s arrete des que la carte sort
+             de l ecran, pour ne pas cumuler deux decodeurs actifs sur l accueil (cause des
+             plantages memoire iOS). */
+          React.createElement("video", { src: "hype-communaute-video-2.mp4", poster: "hype-communaute-poster-2.jpg", muted: true, loop: true, playsInline: true, autoPlay: true, preload: "metadata", "aria-hidden": "true",
+            onError: function (eEr) {
+              try {
+                eEr.target.style.display = "none";
+                var pc = eEr.target.parentNode;
+                if (pc) pc.style.height = "188px";
+              } catch (e0) { }
+            },
+            ref: function (elC) {
+              try {
+                if (!elC || elC.__animCom) return; elC.__animCom = 1;
+                var lireC = function () { try { var pc = elC.play(); if (pc && pc.catch) pc.catch(function () { }); } catch (e1) { } };
+                lireC();
+                if (typeof IntersectionObserver === "function") {
+                  var ioC = new IntersectionObserver(function (ents) {
+                    ents.forEach(function (en) { if (en.isIntersecting) lireC(); else { try { elC.pause(); } catch (e2) { } } });
+                  }, { threshold: 0.05 });
+                  ioC.observe(elC);
+                }
+              } catch (e3) { }
+            },
+            style: { position: "relative", zIndex: 1, display: "block", width: "100%", height: "auto", pointerEvents: "none", background: "transparent" } }),
           React.createElement("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(2,5,9,0.9) 8%, rgba(2,5,9,0.28) 52%, rgba(2,5,9,0.03) 80%)" } }),
           React.createElement("div", { style: { position: "absolute", left: 16, right: 14, bottom: 13 } },
             React.createElement("div", { style: { fontSize: 8.5, letterSpacing: "0.3em", fontWeight: 800, color: "#7DDDE8", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif" } }, L5acc("Ensemble", "Together", "Juntos", "Insieme", "\u4e00\u7dd2\u306b")),
@@ -28869,7 +28908,7 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
 
         /* 28/07 : la messagerie etait seulement accessible par une petite icone du hero — donc invisible.
            Elle devient un vrai encart de Mon monde, avec le compteur de non lus (choix B2+B3 de Blandine). */
-        React.createElement("button", { className: "rv d3", onClick: function () { setEcran("messagerie"); }, style: { position: "relative", width: "100%", height: 150, marginTop: 18, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(32,217,245,0.30)", cursor: "pointer", padding: 0, textAlign: "left", display: "block", background: "#0A0F14", boxShadow: "0 12px 28px rgba(0,0,0,0.5)" } },
+        (AFFICHER_ENCART_MESSAGES ? React.createElement("button", { className: "rv d3", onClick: function () { setEcran("messagerie"); }, style: { position: "relative", width: "100%", height: 150, marginTop: 18, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(32,217,245,0.30)", cursor: "pointer", padding: 0, textAlign: "left", display: "block", background: "#0A0F14", boxShadow: "0 12px 28px rgba(0,0,0,0.5)" } },
           React.createElement("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(110% 90% at 78% 14%, rgba(32,217,245,0.22), transparent 62%), linear-gradient(135deg,#0c1620,#05080d)" } }),
           React.createElement("span", { style: { position: "absolute", top: 16, right: 20, fontSize: 56, opacity: 0.3 } }, "\uD83D\uDCAC"),
           React.createElement("div", { style: { position: "absolute", left: 18, right: 60, bottom: 16 } },
@@ -28881,7 +28920,7 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
               L5acc("\u00c9cris \u00e0 ton \u00e9curie, r\u00e9ponds \u00e0 tes amis.", "Write to your stable, reply to your friends.", "Escribe a tu cuadra, responde a tus amigos.", "Scrivi alla tua scuderia, rispondi ai tuoi amici.", "\u5395\u820e\u306e\u4ef2\u9593\u306b\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u3002"))),
           (nonLusMsg > 0)
             ? React.createElement("span", { style: { position: "absolute", right: 16, bottom: 16, minWidth: 26, height: 26, borderRadius: 999, background: "#FF5A5F", color: "#fff", fontSize: 11, fontWeight: 800, lineHeight: "26px", textAlign: "center", padding: "0 7px", boxShadow: "0 0 12px rgba(255,90,95,0.8)", fontFamily: "'Montserrat',sans-serif" } }, (nonLusMsg > 99 ? "99+" : String(nonLusMsg)))
-            : React.createElement("span", { style: { position: "absolute", right: 15, bottom: 16, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a")),
+            : React.createElement("span", { style: { position: "absolute", right: 15, bottom: 16, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a")) : null),
 
         chapAcc(L5acc("Mon apprentissage", "My learning", "Mi aprendizaje", "Il mio apprendimento", "私の学び"), "d3"),
         /* 27/07 : Decouvrir remonte au-dessus de l'actualite (demande Blandine), contenu redefini : IA -> Galops -> Culture equestre -> Sante. */
