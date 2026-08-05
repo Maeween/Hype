@@ -12,6 +12,219 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🗺️ SESSION 87 (05/08) — LINGUAE : RÉPARTITION DU VOCABULAIRE + HUIT VILLES ÉCRITES
+
+**Aucun code. `index.html` et `lingo.html` non modifiés.** Étape 3 de `hype-linguae-structure-v2.md`.
+Documents livrés : **`hype-linguae-repartition-v2.md`** et **`hype-linguae-villes-nouvelles.md`**.
+
+⚠️ **Numérotation** : le numéro 86 était déjà pris par la session « les six langues » du même jour. Numéro suivant pris, conformément à la règle en tête de fichier.
+
+### La découverte qui simplifie tout
+Les chapitres ne sont pas des blocs de 42 mots à démonter à la main : **chaque chapitre est déjà découpé en 4 collections d'environ 10 concepts** (champ `coll`). Neuf chapitres = **36 collections, 378 mots**. Une destination = **deux collections = vingt mots** → **dix-huit villes, aucune collection orpheline**. Vérifié par calcul : 36 placées, 36 uniques, 0 manquante, 0 doublon.
+
+⚠️ **Le chiffre de 336 était faux à deux titres.** Il ne comptait que 8 chapitres (le pansage était cru absent) et seulement les *concepts* : chaque chapitre porte en plus 7-8 *phrases* sans `coll`, qui suivent leur leçon d'origine et voyagent avec elle.
+
+⚠️ **CORRECTION D'UNE ERREUR DE MA PART** : j'avais conclu que `hype-lingo-lex-pansage.js` n'existait pas dans le dépôt, et donc que **Lambourn se retirait tout seul**. Faux — le fichier existe (42 concepts, 13 marqueurs `// ??`). **Lambourn est réintégré** avec son pansage entier, et son retrait redevient une décision ouverte, pas une évidence.
+
+### Ce qui est arrêté
+**18 villes**, dont 8 neuves : Saumur, Jerez, Warendorf (prioritaires), + Séville, Oliva Nova, Vejer, Aix-la-Chapelle, Lamotte-Beuvron. **L'Espagne passe à quatre villes** (décision de Blandine).
+
+⚠️ **Windsor reprend la notation du dressage** (`rectangle` + `notation`) — mon premier découpage lui avait pris le dressage pour le donner à Saumur, ce que Blandine a relevé. Windsor = le dressage **qu'on juge** (protocole, coefficient, pourcentage) ; Saumur = celui **qu'on enseigne** (`mouvements` + `qualites`). Plus aucune collection en réserve.
+
+⚠️ **Édimbourg est sauvé sans écrire le chapitre dialogues** : `urgences/mots` + `cours/deroule` — les deux seules collections du module qui sont de la parole vive et non des objets.
+
+**Décision de Blandine : toutes les villes ont une leçon**, quitte à ce que le rapport au lieu soit plus lointain. Le vocabulaire de compétition (8 collections entre obstacle et concours) est **détourné sur plusieurs spots** : Hickstead, Badminton, Oliva Nova, Aix-la-Chapelle. L'option « villes-étapes sans leçon » est écartée.
+
+### Trois niveaux de difficulté (idée de Blandine)
+**1 nommer** · **2 situer** · **3 dire** (phrases entières et notions abstraites : Saumur, Édimbourg). Le niveau est porté par **la ville**, pas par le mot, s'affiche sur le globe et **ne verrouille rien**. La matière existe déjà : les ~70 phrases sans `coll` et le champ `dit` des chapitres cours et urgences.
+
+### Les fils de sortie
+Trois sorties en fin de chapitre : **rester au pays · suivre le sujet · choisir sur le globe**. Nommées par ce qu'elles promettent, jamais par leur mécanique. Le fil thématique existe une fois par paire de villes puis s'éteint — personne ne peut faire le tour du monde en ne voyant que du dressage.
+⚠️ **Deux règles à tenir** : le fil « même pays » n'existe pas partout (Aberystwyth et Édimbourg sont seules) → le bouton **disparaît** et une destination libre prend sa place, jamais de bouton mort. Et **au moins une proposition doit être accessible** → filtrer sur ce qui est ouvert avant de proposer, sinon le joueur se prend un mur juste après le chapitre offert.
+
+### Trois conséquences techniques à trancher AVANT de coder
+- **Le bloc `races` doit changer d'index** : rangé par *voyage* (`races[voyageCourant]`), héritage de « une langue = un pays ». En v2 il doit être indexé **par ville**.
+- **Le champ `chapitre` change de sens** : il désignera l'étape, plus le thème. Recenser tout ce qui le lit, `lingo.html` compris.
+- **Le niveau est une donnée nouvelle** portée par la ville.
+
+### Textes écrits ce jour
+**Les huit villes neuves ont leur lettre + 3 volets, écrits en français ET traduits dans les six langues** (fr/en/es/it/de/ja), gabarit identique aux dix villes existantes. **Cinq marqueurs `// ??`** posés sur les faits à vérifier (datation du Cadre Noir, intitulé du spectacle de Jerez, rôle exact de la Deutsche Reitschule, période de la Feria, durée du parcours d'Aix). Un chiffre inventé a été retiré au passage (capacité du stade d'Aix-la-Chapelle) : **on n'écrit pas un nombre qu'on n'a pas vérifié.**
+➡️ Ces textes vont dans `hype-lingo-villes.js`, précisément le fichier que la session 86 n'avait pas pu traduire.
+⚠️ **Les récits courts (`RECITS` de `lingo.html`) ne sont PAS écrits ici** — Blandine les prend en charge dans une autre conversation. Ne pas les produire depuis cette page.
+⚠️ **Décision de Blandine : aucune ville n'est retirée**, Lambourn comprise. Les cartes postales et vidéos représentent des heures de travail déjà faites. La mention « Lambourn candidate au retrait » de `hype-linguae-structure-v2.md` est **caduque**.
+
+### Sur le rapport de corrections du vocabulaire
+⚠️ **Ne pas l'appliquer en bloc.** Plusieurs entrées sont inexploitables : le chandelier espagnol se contredit dans sa propre ligne, « la réception » y est validée en français, le talus italien est traduit par « il talus ». Il contredit aussi la première relecture sur l'amortisseur espagnol. **Aucun cavalier natif n'a encore relu quoi que ce soit** — cinq revues, cinq IA. Trou le plus net : **36 mots allemands vus par une seule source**.
+
+---
+
+## 🌐 SESSION 86 (05/08) — HYPE LINGUAE : LES SIX LANGUES
+
+**Fichier touché : `lingo.html` uniquement.** `index.html` n'a pas été modifié — inutile de le repousser.
+
+### Ce qui a été fait
+
+**Tout le contenu français de `lingo.html` est passé en six langues** (FR/EN/ES/IT/DE/JA) :
+
+- **`RECITS`** — les neuf villes qui n'avaient que le français. Newmarket était déjà fait, il n'a pas été touché. Trente récits ajoutés, trois blocs chacun.
+- **`POURQUOI`** — les dix lignes du carnet de route.
+- **`COLL_NOM`** — les trente-deux familles de mots.
+- **`ACCUEIL_CHAP`** — il manquait ES/IT/DE/JA sur les dix chapitres.
+- **`DESTINATIONS`** — les six voyages, nom et description.
+- **Les étapes** — titres de chapitres, nations, heures, souvenirs, et les noms de villes en japonais.
+- **L'interface** — soixante-quinze clés : présentation, destinations, carnet, traversée, arrivée, leçon, écran de départ.
+
+**`langueUI()` accepte désormais les six langues.** Elle ne renvoyait que `fr` ou `en` : aucune traduction ne se serait affichée sans ça.
+
+**Trois textes corrigés au passage :**
+- Le récit d'Édimbourg disait « cinq nations » alors que l'itinéraire en compte quatre — Angleterre, Irlande, pays de Galles, Écosse. Corrigé dans les six langues, français compris.
+- « trois épreuves » (Badminton) devient *phases* en anglais et *Prüfungen* en allemand : en concours complet ce sont trois phases d'une même épreuve.
+- « une piste » (Windsor) devient *il rettangolo* en italien et *ein Viereck* en allemand, les noms propres du rectangle de dressage dans ces langues.
+
+### Vérifications
+
+`node --check` sur le bloc script après chaque patch. Test fonctionnel des tables : les six langues parcourues sur les dix étapes × cinq champs, plus récits, pourquoi, familles, accueils, destinations et clés d'interface. **Aucun trou.** Les récits ont bien trois blocs dans les six langues.
+
+### Ce qui n'a PAS été fait, et pourquoi
+
+⚠️ **Les lettres manuscrites des villes** vivent dans `hype-lingo-villes.js`, qui n'était pas fourni. Elles restent en français.
+Un commentaire du code prévient : *« on ne traduit qu'une fois les dix villes validées, sinon on traduit des textes qu'on va réécrire »*. À faire quand les villes seront figées.
+
+⚠️ **Les huit corrections du lexique** (`Lammfell` → `Sattelpad`, `der` → `das Vorderzeug`, `神経質` → `気性難`, `推進` → `推進力`, `el cordón` → `la lista`, `il cuscinetto` → `ammortizzatore`…) vivent dans `hype-lingo-lex-*.js`, non fournis. Elles attendent.
+
+⚠️ **Le champ `p` (lecture) des entrées japonaises** — même fichier, même attente. C'est la correction la plus importante du lexique : sans elle, la synthèse vocale `ja-JP` prononce 前橋 *Maebashi* (une ville) au lieu de *zenkyō*, et 長靴 *nagagutsu* (bottes en caoutchouc) au lieu de *chōka* (bottes de monte).
+
+### Décisions qui attendent Blandine
+
+1. **Chapitre 5** : le titre dit « En selle », la clé et le mot d'accueil parlent de la reprise. Soit le titre devient « La reprise », soit le mot d'accueil s'élargit. Traduit « En selle » tel quel en attendant.
+2. **Entrées françaises ambiguës** : « l'amortisseur » et « les guêtres » ne disent pas la matière ni le type, alors que l'allemand, l'espagnol, l'italien et le japonais les nomment. Tant que l'entrée source est floue, aucune des six langues n'est décidable. C'est le vrai correctif de fond du lexique.
+3. **Pansage en italien** : *La pulizia* (comprise tout de suite) ou *Il governo* (le terme technique) ? J'ai mis *La pulizia*.
+
+### État des relectures du lexique
+
+Cinq revues d'IA sur les 220 mots incertains, fusionnées dans `hype-linguae-tableau-de-bord.md` : **113 mots confirmés par au moins deux sources, 38 vus une seule fois** (dont 36 en allemand, chapitres 7 à 9 — la revue allemande s'était arrêtée en route), 48 à préciser, 8 à corriger, 8 verdicts inexploitables. Aucun cavalier natif n'a encore relu quoi que ce soit. Les cinq revues le disent elles-mêmes, chacune à sa manière.
+
+À ne pas refaire : relancer une IA sur les 113 lignes déjà confirmées. Les cinq revues ont produit huit corrections utilisables — et huit erreurs. Le rendement s'est inversé.
+
+### Correctifs de fin de session
+
+**`NOM_MODULE`** — le nom affiché du module était écrit en dur à quinze endroits (titre de l'onglet, deux écrans statiques, deux écrans construits en JS, les six langues de `voyage1`, le message de partage WhatsApp, le titre de `navigator.share`). Tout passe désormais par une constante unique en tête de la table d'interface, propagée par `{nom}` dans `T()`. Le jour où le nom change, c'est **une ligne**.
+⚠️ Le **nom de fichier** reste `lingo.html`. Le renommer casserait les liens déjà poussés et le raccourci depuis l'app.
+
+**La synthèse vocale japonaise lit enfin la bonne chose.** `dire()` passait le mot écrit à `SpeechSynthesisUtterance` : la voix `ja-JP` prononçait 前橋 *Maebashi* (une ville) au lieu de *zenkyō* (le pommeau), et 長靴 *nagagutsu* (botte en caoutchouc) au lieu de *chōka* (botte de monte). `dire()` consulte maintenant une table de lectures construite une seule fois depuis le lexique chargé, et donne le champ `p` à la synthèse. Aucun fichier de lexique n'a eu besoin d'être modifié pour ça.
+
+**Deux corrections dans `hype-lingo-lex-cheval.js`** — les seules des huit qui étaient dans un fichier fourni :
+- `liste` · espagnol : `el cordón` → **`la lista`** (`el cordón` passe en variante). La phrase d'exemple suit : *« Es una yegua torda con una gran lista. »*
+- `chaud` · japonais : `神経質` → **`気性難`** (*kishōnan*), `神経質` conservé en variante avec sa vraie valeur (« nerveux »). La phrase d'exemple suit. Les trois revues étaient d'accord sur ce point.
+Les deux marqueurs `// ??` correspondants ont été retirés. Il en reste **dix** dans ce fichier.
+
+**❗ Une affirmation fausse de ma part, corrigée.** J'ai écrit plus haut dans cette session que « le champ `p` manque aux entrées japonaises ». **C'est faux.** Les deux fichiers fournis ont 92 entrées japonaises sur 92 avec leur lecture. J'avais conclu de l'absence de `p` dans le tableau de bord — qui listait des mots *douteux*, pas la structure du lexique — à son absence dans les fichiers, que je n'avais pas. Le problème réel était ailleurs et il est corrigé ci-dessus : c'est `dire()` qui n'utilisait pas `p`.
+
+**Reste à faire côté fichiers non fournis :**
+- Six corrections sur huit vivent dans `hype-lingo-lex-materiel.js` et `hype-lingo-lex-dressage.js` : `das Lammfell` → `das Sattelpad`, `der` → `das Vorderzeug`, `der Ansager` → `der Kommandant`, `推進` → `推進力`, `il cuscinetto` → `ammortizzatore`, et la lecture `ちょうか` à vérifier sur 長靴.
+- `hype-lingo-villes.js` : le dernier volet d'Édimbourg dit encore *« Dix villes, cinq nations, une langue »* — il y en a **quatre**. Un seul mot à changer, cherchable sur « cinq nations ». Le fichier n'a pas pu être livré corrigé : il n'est arrivé qu'en texte dans la conversation, et le réécrire de mémoire aurait fait courir un risque de coquille sur dix villes.
+
+### ⚠️ Impact de la structure v2 sur ce travail
+
+La session 85 bis a été lue **après** coup : les traductions livrées ici ont été faites sur la structure v1. Ce qui reste valable et ce qui ne l'est plus :
+
+**Toujours valable — les villes restent :**
+- Les 9 récits en six langues, les 10 lignes `POURQUOI`, les noms de villes, nations, heures et souvenirs.
+- Toute l'interface de leçon, le Sprint, le Duel, `NOM_MODULE`, le correctif `dire()`, les corrections du lexique.
+
+**À refaire quand la v2 sera codée :**
+- **`DESTINATIONS`** — l'écran des six voyages (Les Îles / La Péninsule / La Botte / Le Rhin / L'Archipel / Le Lexique) servait à choisir un **pays**. En v2 il sert à choisir une **langue** : même écran, autre sens. Les six noms poétiques et leurs descriptions restent utilisables, mais les descriptions parlent de pays (« Andalousie, Jerez, Lisbonne ») alors qu'elles devront parler de langue — à réécrire, pas à jeter.
+
+⚠️ **Correction d'une erreur de ma part (Blandine, 05/08) : LES PAYS SONT CONSERVÉS.** J'avais écrit qu'ils disparaîtraient. Non : à la fin de chaque ville, le cavalier choisit s'il **continue dans le même pays** ou s'il **change de pays**. Le pays reste donc une notion vivante du jeu — il cesse seulement d'enfermer le joueur. Conséquences :
+  - `I18N_NAT` reste utile et devra **grandir** : il n'a que Angleterre, Irlande, Pays de Galles, Écosse. Saumur, Jerez et Warendorf demandent France, Espagne et Allemagne dans les six langues.
+  - L'écran de fin de chapitre aura besoin de nouvelles clés d'interface — « Continuer en {pays} », « Changer de pays », « Retourner au globe » — à écrire en six langues quand il sera codé.
+  - Le champ `nat` de chaque étape garde tout son sens ; ne pas le retirer.
+- **Le carnet de route** — « Angleterre · Irlande · Pays de Galles · Écosse », « — anglais — », « Dix chapitres, dix villes », et les trois règles dont « on voyage la nuit, on arrive à l'aube » : tout cela décrit le chemin côtier, abandonné.
+- **`ACCUEIL_CHAP`** — les dix mots d'accueil suivent les huit chapitres thématiques actuels. La v2 les redistribue en douze étapes d'environ vingt mots, et **le chapitre 3 « Le cheval » se dissout**. Ces dix textes seront donc réécrits.
+- **La querelle « cinq nations »** devient sans objet : en v2 le voyage traverse bien plus de quatre pays. La correction reste juste pour la v1 et ne gêne pas.
+
+**Ce que ça ne remet pas en cause :** la couche de traduction elle-même. `tx()`, `T()`, `data-t` et les tables `I18N_*` sont indépendantes de la navigation — la v2 s'y branche sans rien réécrire. C'est précisément ce que la doctrine visait.
+
+### Préparation Flutter
+
+**Améliorations d'architecture réalisées :**
+- **Une couche de traduction unique** posée dans `lingo.html` : `tx(objet)` pour les données, `tx2(table, secours)` pour les champs d'étape, `T(clé, variables)` pour l'interface. Une seule porte d'entrée au lieu de ternaires `ui==="en"?…:…` éparpillés dans le fichier. C'est un contrat, pas une rustine : Flutter le réimplémentera à l'identique.
+- **Séparation données / présentation** : les données restent écrites en français dans `ETAPES`, les traductions vivent dans des tables séparées (`I18N_NAT`, `I18N_H`, `ETAPES_I18N`) rangées par référence de ville. La structure d'origine n'a pas été alourdie et reste lisible.
+- **Repli en cascade par construction** : `tx()` accepte aussi bien une chaîne nue qu'un objet multilingue, et retombe toujours sur le français. Une langue non écrite n'a jamais pu casser l'affichage — c'est ce qui a permis de patcher par étapes sans écran blanc.
+- **Interface pilotée par attributs** (`data-t` texte, `data-th` html, `data-ta` aria) et une fonction `appliquerLangue()` unique, rappelable si la langue change en cours de route. Les chaînes ne sont plus en dur dans le HTML.
+- **Textes à variables nommées** : `T("vSurN", {v:…, a:…, n:…})` au lieu de concaténations. L'ordre des mots peut changer d'une langue à l'autre sans toucher au code — ce que la concaténation interdisait.
+
+**Dépendances supprimées :** les ternaires de langue dans `montrerAccueilChapitre`, `montrerLecon` et l'affichage des libellés de traversée.
+
+- **Le nom du module sorti en constante** (`NOM_MODULE`) : une seule source de vérité, propagée par `{nom}`. Un renommage ne se fait plus à quinze endroits.
+- **Les lectures japonaises centralisées** (`LECTURES_JA`) : construites une fois depuis le lexique, sans toucher aux fichiers de données. `dire()` a maintenant un contrat clair — on lui donne un mot et une langue, il sait quoi prononcer.
+
+**Ce qui reste à moderniser dans `lingo.html` :**
+- Les textes du Sprint et du Duel utilisent encore des ternaires `ui==="en"` : ils n'ont pas été convertis cette session (les traductions existent, elles attendent dans le document de traductions).
+- `VILLES` dépend d'un fichier global (`window.HYPE_LINGO_VILLES`) sans contrat déclaré.
+- Les lexiques sont chargés par nom de fichier deviné (`hype-lingo-lex-<lg>.js`) sans registre.
+
+**Risques :** aucun changement de comportement ni de mise en page. En français, l'affichage est identique au fichier d'origine — les accesseurs renvoient la valeur française telle quelle. Le seul chemin nouveau s'active quand `langueUI()` renvoie autre chose que `fr`, ce qui ne se produit que si le pont hôte fournit une de ces langues.
+
+---
+
+## 🧭 SESSION 85 bis (04/08, fin de soirée) — CHANGEMENT DE STRUCTURE
+
+⚠️ **DÉCISION DE STRUCTURE, à lire avant toute reprise de Linguae.** Document complet : **`hype-linguae-structure-v2.md`**.
+
+**L'organisation « une langue = un pays = dix villes » est ABANDONNÉE.** Toute conversation qui reprend le module doit partir de la v2, sinon elle produit du contenu pour une structure morte.
+
+### Pourquoi
+
+Quatre problèmes constatés en testant :
+
+- **42 mots par chapitre, personne n'en vient à bout** — donc le souvenir de la ville ne se gagne jamais et la récompense finale est décorative.
+- **Le parcours imposé verrouille** : tant qu'un chapitre n'est pas fini, la ville suivante reste fermée. En pratique **neuf villes sur dix ne sont jamais vues**.
+- Chaque joueur ne découvrait qu'un seul pays.
+- **Le travail de création ne profitait qu'à une partie des utilisateurs** : dix villes britanniques pour les seuls anglicistes. Soixante villes à produire au total.
+
+### La v2
+
+**Le joueur choisit UNE langue, puis fait le tour du monde équestre.** Newmarket, le Connemara, Jerez, Saumur, Warendorf : le décor change, la langue étudiée jamais. Un anglophone visite l'Espagne et le Japon — en anglais.
+
+**Les villes ne sont produites qu'une fois et servent aux six langues.** ⚠️ L'architecture est déjà prête : le lexique est stocké par concept avec ses six langues côte à côte. **Rien à réécrire, seulement à ranger autrement.**
+
+**Choix libre à la fin de chaque chapitre** : trois ou quatre destinations proposées (dont une dans le même pays), ou retour au globe pour choisir soi-même. ⚠️ **Proposer, pas étaler** — un débutant devant soixante destinations ne choisit rien.
+
+**LE GLOBE remplace le chemin côtier.** Le voyage part de l'écurie du joueur, à sa vraie ville ; chaque destination trace une ligne depuis ce point. Le globe devient le passeport : pas une liste, une carte. Hype a déjà `GLOBE_HTML_HYPE` intégré par iframe, même motif que Linguae.
+
+⚠️ **LE CHEMIN CÔTIER EST ABANDONNÉ** — construit le jour même. Il ne tient que si les villes sont voisines : Newmarket → Doha n'a aucun sens le long d'une falaise. Le garder imposerait deux modes de déplacement. La constellation peut renaître sur le globe, une étoile par destination.
+
+### Ce qui ne bouge pas
+
+Les leçons et leurs six exercices, les vagues de trois, la révision espacée, le Sprint, le Duel, les cartes postales, les vidéos, les récits, les lettres, les souvenirs, le stockage par concept, et les décisions de gratuité. **C'est la navigation qui change, pas le jeu.**
+
+### Les douze premières destinations
+
+**Neuf déjà produites** : Newmarket, Connemara, Aberystwyth, Windsor, Badminton, Hickstead, Kildare, Walsall, Édimbourg.
+**Trois à produire en priorité** : **Saumur** (Cadre Noir), **Jerez** (école andalouse, PRE), **Warendorf** (formation allemande).
+⚠️ **Lambourn est candidate au retrait** : doublon avec Newmarket, deux villages d'entraînement anglais à quinze minutes l'un de l'autre. Sa carte et sa vidéo restent utilisables en destination secondaire.
+
+⚠️ **Douze, pas soixante.** La liste de la vision est le réservoir, pas le lot de départ.
+
+### Le vrai travail restant
+
+**Redistribuer les 336 mots** : de huit chapitres de 42 à douze étapes d'environ vingt. Le principe : **le lieu enseigne ce qu'on y fait** — Walsall la sellerie, Saumur le dressage, Jerez les races, Kildare les urgences, Newmarket l'écurie.
+
+⚠️ **Le chapitre 3 « Le cheval » se dissout** : chaque destination a sa race (Connemara, PRE, Lusitanien, Hanovrien). Les races ne sont plus un chapitre mais **un mot par ville**.
+
+**Vingt mots par étape** au lieu de 42 : c'est ce qui rend le souvenir réellement gagnable.
+
+### Ordre de travail
+
+1. ~~Écrire la structure~~ — fait, voir `hype-linguae-structure-v2.md`
+2. Arrêter les douze destinations (décision, pas code)
+3. **Redistribuer le vocabulaire** — le gros du travail
+4. Le globe, en remplacement du chemin
+5. Produire Saumur, Jerez, Warendorf
+
+---
+
 ## 🎮 SESSION 85 (04/08, soir) — HYPE LINGUAE : LE JEU
 
 ⚠️ **Le module s'appelle désormais HYPE LINGUAE.** Troisième nom en une soirée : Lingo → Lingua → **Linguae** (pluriel latin de *lingua*, les langues). C'est le nom retenu. Ne pas le réécrire en Lingo.

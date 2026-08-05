@@ -616,9 +616,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <div id="voile"></div>
 </div>
 
-<button id="retour" aria-label="Revenir au carnet de route">‹</button>
-<button id="bSprint">Sprint · 60 s</button>
-<div id="voyage"><b>Les Îles</b><span>anglais</span></div>
+<button id="retour" data-ta="retourCarnet" aria-label="Revenir au carnet de route">‹</button>
+<button id="bSprint" data-t="sprint60">Sprint · 60 s</button>
+<div id="voyage"><b id="voyNom">Les Îles</b><span id="voyLg">anglais</span></div>
 
 <div id="hud"><div id="titre">
   <p class="num" id="hNum">Chapitre 1 sur 10</p>
@@ -670,13 +670,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <div class="pdos">
         <div class="ptete"><b id="pnom2">Newmarket</b><i id="plieu2">Suffolk · United Kingdom</i></div>
         <div class="plettre" id="plettre"></div>
-        <div class="ptampon"><b id="ptnom">NEWMARKET</b><i>Passeport Hype</i></div>
+        <div class="ptampon"><b id="ptnom">NEWMARKET</b><i data-t="passeport">Passeport Hype</i></div>
       </div>
     </div>
   </div>
 
   <div class="depli" id="depli">
-    <button id="depliB"><span id="depliT">La race d'ici</span><span class="pl">+</span></button>
+    <button id="depliB"><span id="depliT" data-t="raceIci">La race d'ici</span><span class="pl">+</span></button>
     <div class="corps"><p id="depliC"></p></div>
   </div>
   <div class="depli" id="depli2" style="margin-top:9px">
@@ -699,8 +699,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   </div>
 
   <div id="arrBas">
-    <button id="arrPartir">Reprendre la route</button>
-    <button id="arrJouer">Les mots du chapitre</button>
+    <button id="arrPartir" data-t="reprendreRoute">Reprendre la route</button>
+    <button id="arrJouer" data-t="motsChapitre">Les mots du chapitre</button>
   </div>
 </div>
 
@@ -711,7 +711,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="ouvFilm">
   <video id="ouvVid" muted playsinline webkit-playsinline preload="auto"></video>
   <div id="ouvVoile"></div>
-  <button id="ouvPasser">Passer</button>
+  <button id="ouvPasser" data-t="passer">Passer</button>
   <button id="ouvSuite">Entrer à Newmarket</button>
 </div>
 
@@ -724,55 +724,55 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="intro">
   <div id="inFond"><div id="inFondImg"></div><div id="inBas"></div></div>
   <div id="inPage">
-    <p class="sur">Hype Linguae</p>
-    <h1>Échanger avec<br>les cavaliers<br>du monde entier</h1>
-    <p class="cit">Chaque cavalier a une histoire.<br>Voici le début de la nôtre.</p>
+    <p class="sur" data-t="nomModule">Hype Linguae</p>
+    <h1 data-th="introTitre">Échanger avec<br>les cavaliers<br>du monde entier</h1>
+    <p class="cit" data-th="introCit">Chaque cavalier a une histoire.<br>Voici le début de la nôtre.</p>
     <div class="pts">
-      <div class="pt"><b>Le vocabulaire équestre en six langues</b><i>Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.</i></div>
-      <div class="pt"><b>Dix villes, dix chapitres</b><i>On voyage de ville en ville. Chacune enseigne une partie du métier.</i></div>
-      <div class="pt"><b>Comprendre un enseignant à l'étranger</b><i>Les ordres qu'on crie en reprise, à reconnaître au vol.</i></div>
-      <div class="pt"><b>Savoir dire l'essentiel en cas d'urgence</b><i>« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.</i></div>
-      <div class="pt"><b>Une collection à rapporter</b><i>Une carte postale et un souvenir par ville, gagnés, pas donnés.</i></div>
+      <div class="pt"><b data-t="pt1t">Le vocabulaire équestre en six langues</b><i data-t="pt1d">Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.</i></div>
+      <div class="pt"><b data-t="pt2t">Dix villes, dix chapitres</b><i data-t="pt2d">On voyage de ville en ville. Chacune enseigne une partie du métier.</i></div>
+      <div class="pt"><b data-t="pt3t">Comprendre un enseignant à l'étranger</b><i data-t="pt3d">Les ordres qu'on crie en reprise, à reconnaître au vol.</i></div>
+      <div class="pt"><b data-t="pt4t">Savoir dire l'essentiel en cas d'urgence</b><i data-t="pt4d">« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.</i></div>
+      <div class="pt"><b data-t="pt5t">Une collection à rapporter</b><i data-t="pt5d">Une carte postale et un souvenir par ville, gagnés, pas donnés.</i></div>
     </div>
-    <button id="inSuite">Choisir ma destination</button>
+    <button id="inSuite" data-t="choisirDest">Choisir ma destination</button>
   </div>
 </div>
 
 <div id="dest">
   <div id="dsPage">
-    <button id="dsRetour" aria-label="Retour">‹</button>
-    <p class="sur">Hype Linguae</p>
-    <h1>Où veux-tu aller ?</h1>
-    <p class="sous">Une destination, une langue. Le premier chapitre est offert partout.</p>
+    <button id="dsRetour" data-ta="retour" aria-label="Retour">‹</button>
+    <p class="sur" data-t="nomModule">Hype Linguae</p>
+    <h1 data-t="destTitre">Où veux-tu aller ?</h1>
+    <p class="sous" data-t="destSous">Une destination, une langue. Le premier chapitre est offert partout.</p>
     <div id="dsListe"></div>
-    <p class="pied">Les autres destinations arrivent. Le vocabulaire est déjà écrit pour les six langues : c'est le voyage qui reste à construire.</p>
+    <p class="pied" data-t="destPied">Les autres destinations arrivent. Le vocabulaire est déjà écrit pour les six langues : c'est le voyage qui reste à construire.</p>
   </div>
 </div>
 
 <div id="ouverture">
   <div id="ouvFond"><div id="ouvFondImg"></div><div id="ouvFondBrume"></div><div id="ouvFondBas"></div></div>
   <div id="ouvDebut">
-    <p class="sur">Hype Linguae · Voyage 1</p>
-    <h1>Les Îles</h1>
-    <p class="sous">Angleterre · Irlande · Pays de Galles · Écosse</p>
-    <p class="langue">— anglais —</p>
+    <p class="sur" data-t="voyage1">Hype Linguae · Voyage 1</p>
+    <h1 id="ouvNom">Les Îles</h1>
+    <p class="sous" data-t="ouvNations">Angleterre · Irlande · Pays de Galles · Écosse</p>
+    <p class="langue" data-t="ouvLangue">— anglais —</p>
 
-    <p class="intro">Dix chapitres, dix villes. <b>Pas les capitales politiques — les capitales
+    <p class="intro" data-th="ouvIntro">Dix chapitres, dix villes. <b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
     et où le vocabulaire que tu vas apprendre s'entend vraiment.</p>
 
     <div class="carnet" id="carnet"></div>
 
     <div class="regles">
-      <p><b>On voyage la nuit, on arrive à l'aube.</b> Le chemin se fait au doigt, d'une ville
+      <p data-th="regle1"><b>On voyage la nuit, on arrive à l'aube.</b> Le chemin se fait au doigt, d'une ville
       à la suivante.</p>
-      <p><b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale
+      <p data-th="regle2"><b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale
       à retourner, un souvenir, et une étoile de plus dans ton ciel.</p>
-      <p><b>Le chapitre des urgences est offert</b> — savoir dire « il boite » ou « appelez le
+      <p data-th="regle3"><b>Le chapitre des urgences est offert</b> — savoir dire « il boite » ou « appelez le
       vétérinaire » à l'étranger ne se monnaie pas.</p>
     </div>
 
-    <button id="ouvPartir">Partir</button>
+    <button id="ouvPartir" data-t="partir">Partir</button>
   </div>
 </div>
 
@@ -798,10 +798,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
 <div id="depart">
   <div id="dpFond"></div>
-  <button id="dpPasser">Passer</button>
+  <button id="dpPasser" data-t="passer">Passer</button>
   <div id="dpTampon"><b id="dpVille">NEWMARKET</b><i id="dpNation">Angleterre</i></div>
   <div id="dpTexte"><p id="dpTitre">Tampon obtenu</p><span id="dpSous">Une étoile de plus dans ton ciel</span></div>
-  <button id="dpSuite">Reprendre la route</button>
+  <button id="dpSuite" data-t="reprendreRoute">Reprendre la route</button>
 </div>
 
 <!-- ==================================================================
@@ -846,6 +846,79 @@ var ETAPES = [
 ];
 var FAITS = 4, TRACE = true;
 
+/* ---- traductions des étapes ----
+   Les nations et les heures sont partagées (quatre et dix valeurs) ;
+   le reste est propre à chaque ville et rangé sous sa référence. */
+var I18N_NAT = {
+ "Angleterre":     {en:"England", es:"Inglaterra", it:"Inghilterra", de:"England", ja:"イングランド"},
+ "Irlande":        {en:"Ireland", es:"Irlanda",    it:"Irlanda",     de:"Irland",  ja:"アイルランド"},
+ "Pays de Galles": {en:"Wales",   es:"Gales",      it:"Galles",      de:"Wales",   ja:"ウェールズ"},
+ "Écosse":         {en:"Scotland",es:"Escocia",    it:"Scozia",      de:"Schottland", ja:"スコットランド"}
+};
+var I18N_H = {
+ "20 h 10":{en:"8.10 pm", es:"20:10", it:"20:10", de:"20:10 Uhr", ja:"20時10分"},
+ "20 h 55":{en:"8.55 pm", es:"20:55", it:"20:55", de:"20:55 Uhr", ja:"20時55分"},
+ "21 h 40":{en:"9.40 pm", es:"21:40", it:"21:40", de:"21:40 Uhr", ja:"21時40分"},
+ "22 h 30":{en:"10.30 pm",es:"22:30", it:"22:30", de:"22:30 Uhr", ja:"22時30分"},
+ "23 h 20":{en:"11.20 pm",es:"23:20", it:"23:20", de:"23:20 Uhr", ja:"23時20分"},
+ "00 h 30":{en:"12.30 am",es:"00:30", it:"00:30", de:"00:30 Uhr", ja:"0時30分"},
+ "01 h 40":{en:"1.40 am", es:"01:40", it:"01:40", de:"01:40 Uhr", ja:"1時40分"},
+ "02 h 50":{en:"2.50 am", es:"02:50", it:"02:50", de:"02:50 Uhr", ja:"2時50分"},
+ "04 h 10":{en:"4.10 am", es:"04:10", it:"04:10", de:"04:10 Uhr", ja:"4時10分"},
+ "05 h 25":{en:"5.25 am", es:"05:25", it:"05:25", de:"05:25 Uhr", ja:"5時25分"}
+};
+var ETAPES_I18N = {
+ newmarket:{
+   ch:{en:"The yard", es:"La cuadra", it:"La scuderia", de:"Der Stall", ja:"厩舎"},
+   v:{ja:"ニューマーケット"},
+   souv:{en:"A miniature English saddle", es:"Una silla inglesa en miniatura",
+         it:"Una sella inglese in miniatura", de:"Ein englischer Sattel in Miniatur",
+         ja:"ミニチュアの英国鞍"}},
+ lambourn:{
+   ch:{en:"Grooming", es:"El cepillado", it:"La pulizia", de:"Das Putzen", ja:"手入れ"},
+   v:{ja:"ランボーン"},
+   souv:{en:"A copper curry comb", es:"Una almohaza de cobre", it:"Una striglia di rame",
+         de:"Ein Striegel aus Kupfer", ja:"銅の毛櫛"}},
+ connemara:{
+   ch:{en:"The horse", es:"El caballo", it:"Il cavallo", de:"Das Pferd", ja:"馬"},
+   v:{ja:"コネマラ"},
+   souv:{en:"A rope halter", es:"Una cabezada de cuerda", it:"Una capezza di corda",
+         de:"Ein Knotenhalter", ja:"ロープの無口"}},
+ walsall:{
+   ch:{en:"The tack", es:"El equipo", it:"L'attrezzatura", de:"Die Ausrüstung", ja:"馬具"},
+   v:{ja:"ウォルソール"},
+   souv:{en:"A saddler's awl", es:"Un punzón de guarnicionero", it:"Un punteruolo da sellaio",
+         de:"Eine Sattlerahle", ja:"馬具職人の菱錐"}},
+ aberystwyth:{
+   ch:{en:"In the saddle", es:"A caballo", it:"In sella", de:"Im Sattel", ja:"騎乗"},
+   v:{ja:"アベリストゥイス"},
+   souv:{en:"A Welsh cob's shoe", es:"Una herradura de cob galés", it:"Un ferro di cob gallese",
+         de:"Ein Hufeisen eines Welsh Cob", ja:"ウェルシュ・コブの蹄鉄"}},
+ windsor:{
+   ch:{en:"Dressage", es:"La doma", it:"Il dressage", de:"Die Dressur", ja:"馬場馬術"},
+   v:{ja:"ウィンザー"},
+   souv:{en:"The letter A", es:"La letra A", it:"La lettera A", de:"Der Buchstabe A", ja:"「A」の文字"}},
+ hickstead:{
+   ch:{en:"Jumping", es:"El salto", it:"Il salto", de:"Das Springen", ja:"障害飛越"},
+   v:{ja:"ヒクステッド"},
+   souv:{en:"A red flag", es:"Un banderín rojo", it:"Una bandierina rossa",
+         de:"Ein rotes Fähnchen", ja:"赤い旗"}},
+ badminton:{
+   ch:{en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会"},
+   v:{ja:"バドミントン"},
+   souv:{en:"A rosette", es:"Una escarapela", it:"Una coccarda", de:"Eine Schleife", ja:"ロゼット"}},
+ kildare:{
+   ch:{en:"Emergencies", es:"Las urgencias", it:"Le emergenze", de:"Notfälle", ja:"緊急時"},
+   v:{ja:"キルデア"},
+   souv:{en:"A stethoscope", es:"Un estetoscopio", it:"Uno stetoscopio",
+         de:"Ein Stethoskop", ja:"聴診器"}},
+ edimbourg:{
+   ch:{en:"Conversations", es:"Las conversaciones", it:"I dialoghi", de:"Gespräche", ja:"会話"},
+   v:{en:"Edinburgh", es:"Edimburgo", it:"Edimburgo", de:"Edinburgh", ja:"エディンバラ"},
+   souv:{en:"A notebook of words", es:"Un cuaderno de palabras", it:"Un quaderno di parole",
+         de:"Ein Wörterheft", ja:"言葉の手帳"}}
+};
+
 /* ==================================================================
    LES VILLES : lettre manuscrite (verso de la carte) + volets dépliants.
    Français seul pour l'instant — on ne traduit qu'une fois les dix
@@ -874,33 +947,177 @@ var RECITS = {
   ja:["霧はまだ降りていない。サラブレッドが一頭ずつ厩舎から出てくる。厩務員たちは口を開かない。",
       "馬の横断路では車が止まる。ここでは、夜が明けるより先に蹄の音が聞こえる。",
       {f:"二千頭を超える調教馬。17世紀、競馬を見るために王の宮廷がここに置かれた。"}]},
- lambourn:{fr:["Un village de pierre au creux des Downs. À six heures, les seaux résonnent dans la cour et la buée sort des naseaux.",
-   "On étrille avant que le jour se lève, parce qu'après, il faut travailler.",
-   {f:"Une vallée entière qui ne vit que du cheval d'entraînement."}]},
- connemara:{fr:["La pierre, la tourbe, et un vent qui ne s'arrête jamais. Les poneys sont dehors, gris comme le ciel.",
-   "Personne ne les a fabriqués. Ce sol les a faits solides.",
-   {f:"Le Connemara est la seule race de poney native d'Irlande."}]},
- walsall:{fr:["Odeur de cuir et de cire chaude. Derrière les verrières, on coud encore à la main, deux aiguilles à la fois.",
-   "Le point sellier ne s'apprend pas en un mois.",
-   {f:"Une ville de selliers et de bourreliers depuis le XIX siècle."}]},
- aberystwyth:{fr:["La mer d'Irlande, une plage vide, et des cobs qui piaffent au bord de l'eau.",
-   "Le galop finit dans les vagues. Le sel sèche sur les bottes, le poney souffle.",
-   {f:"Pays du Welsh pony et du Welsh cob — quatre sections, de la plus petite au cob monté par les adultes."}]},
- windsor:{fr:["Les tours au fond, le sable ratissé, le silence. Un cheval seul, une piste, des lettres.",
-   "Ici, la précision est une forme de politesse.",
-   {f:"Un château habité depuis neuf siècles, et une tradition équestre qui va avec."}]},
- hickstead:{fr:["L'herbe est courte et le talus fait peur vu d'en haut. Les barres claquent, le public retient son souffle.",
-   "On descend le Derby Bank sans savoir si on a eu raison.",
-   {f:"Le seul terrain britannique avec ce talus, franchi en concours depuis les années soixante."}]},
- badminton:{fr:["Le parc, la grande maison, et la boue de mai. Quatre jours, trois épreuves, un seul cheval.",
-   "Le cross ne pardonne pas l'approximation.",
-   {f:"L'un des concours complets les plus relevés au monde."}]},
- kildare:{fr:["Une lumière allumée à trois heures du matin. Le vétérinaire arrive, on parle bas.",
-   "Dire vite et dire juste : il boite, il transpire, il ne mange plus.",
-   {f:"Le haras national irlandais est à Tully, tout près, à côté des pistes du Curragh."}]},
- edimbourg:{fr:["Des pavés, un vent froid, une ville verticale. Ici, on parle enfin — au café, à la gare, au club.",
-   "Et l'accent n'est pas celui qu'on t'a appris.",
-   {f:"Fin du voyage : dix villes, cinq nations, une langue."}]}
+ lambourn:{
+  fr:["Un village de pierre au creux des Downs. À six heures, les seaux résonnent dans la cour et la buée sort des naseaux.",
+      "On étrille avant que le jour se lève, parce qu'après, il faut travailler.",
+      {f:"Une vallée entière qui ne vit que du cheval d'entraînement."}],
+  en:["A stone village in the fold of the Downs. At six, the buckets ring in the yard and breath steams from the nostrils.",
+      "You groom before daylight, because after that there is work to do.",
+      {f:"A whole valley that lives on nothing but the racehorse in training."}],
+  es:["Un pueblo de piedra en el hueco de los Downs. A las seis, los cubos resuenan en el patio y el vaho sale de los ollares.",
+      "Se cepilla antes de que amanezca, porque después hay que trabajar.",
+      {f:"Un valle entero que vive solo del caballo de entrenamiento."}],
+  it:["Un villaggio di pietra nella conca dei Downs. Alle sei, i secchi risuonano nel cortile e il vapore esce dalle narici.",
+      "Si striglia prima che faccia giorno, perché dopo c'è da lavorare.",
+      {f:"Un'intera valle che vive solo del cavallo da allenamento."}],
+  de:["Ein Dorf aus Stein in der Senke der Downs. Um sechs klingen die Eimer im Hof, und der Atem dampft aus den Nüstern.",
+      "Geputzt wird vor Tagesanbruch, denn danach muss gearbeitet werden.",
+      {f:"Ein ganzes Tal, das nur vom Rennpferd im Training lebt."}],
+  ja:["ダウンズのくぼ地にある石の村。六時、中庭にバケツの音が響き、鼻から白い息が立つ。",
+      "夜が明ける前に手入れを済ませる。そのあとは、仕事が待っているからだ。",
+      {f:"谷ひとつが、調教馬だけで生きている。"}]},
+ connemara:{
+  fr:["La pierre, la tourbe, et un vent qui ne s'arrête jamais. Les poneys sont dehors, gris comme le ciel.",
+      "Personne ne les a fabriqués. Ce sol les a faits solides.",
+      {f:"Le Connemara est la seule race de poney native d'Irlande."}],
+  en:["Stone, peat, and a wind that never stops. The ponies are out, grey as the sky.",
+      "Nobody made them. This ground made them hard.",
+      {f:"The Connemara is the only pony breed native to Ireland."}],
+  es:["La piedra, la turba y un viento que no para nunca. Los ponis están fuera, tordos como el cielo.",
+      "Nadie los ha fabricado. Este suelo los ha hecho duros.",
+      {f:"El connemara es la única raza de poni nativa de Irlanda."}],
+  it:["La pietra, la torba, e un vento che non si ferma mai. I pony sono fuori, grigi come il cielo.",
+      "Nessuno li ha fabbricati. È questo suolo che li ha fatti solidi.",
+      {f:"Il connemara è l'unica razza di pony autoctona d'Irlanda."}],
+  de:["Stein, Torf und ein Wind, der niemals aufhört. Die Ponys stehen draußen, grau wie der Himmel.",
+      "Niemand hat sie gemacht. Dieser Boden hat sie hart gemacht.",
+      {f:"Das Connemara ist die einzige Ponyrasse, die aus Irland stammt."}],
+  ja:["石、泥炭、そして止むことのない風。ポニーたちは外にいる。空と同じ芦毛だ。",
+      "誰かが作ったのではない。この土地が彼らを頑丈にした。",
+      {f:"コネマラは、アイルランド固有の唯一のポニー種。"}]},
+ walsall:{
+  fr:["Odeur de cuir et de cire chaude. Derrière les verrières, on coud encore à la main, deux aiguilles à la fois.",
+      "Le point sellier ne s'apprend pas en un mois.",
+      {f:"Une ville de selliers et de bourreliers depuis le XIX siècle."}],
+  en:["The smell of leather and warm wax. Behind the glass roofs they still sew by hand, two needles at a time.",
+      "The saddle stitch is not learnt in a month.",
+      {f:"A town of saddlers and harness makers since the nineteenth century."}],
+  es:["Olor a cuero y a cera caliente. Detrás de las vidrieras aún se cose a mano, con dos agujas a la vez.",
+      "El punto de guarnicionero no se aprende en un mes.",
+      {f:"Una ciudad de guarnicioneros y talabarteros desde el siglo XIX."}],
+  it:["Odore di cuoio e di cera calda. Dietro le vetrate si cuce ancora a mano, due aghi alla volta.",
+      "Il punto sellaio non si impara in un mese.",
+      {f:"Una città di sellai e di bardai dal XIX secolo."}],
+  de:["Geruch von Leder und warmem Wachs. Hinter den Glasdächern wird noch von Hand genäht, mit zwei Nadeln gleichzeitig.",
+      "Der Sattlerstich lernt sich nicht in einem Monat.",
+      {f:"Eine Stadt der Sattler und Riemer seit dem 19. Jahrhundert."}],
+  ja:["革と温かい蝋の匂い。ガラス屋根の下では、今も二本の針で手縫いをしている。",
+      "鞍の手縫いは、一か月では身につかない。",
+      {f:"19世紀から続く、馬具職人と鞍工の町。"}]},
+ aberystwyth:{
+  fr:["La mer d'Irlande, une plage vide, et des cobs qui piaffent au bord de l'eau.",
+      "Le galop finit dans les vagues. Le sel sèche sur les bottes, le poney souffle.",
+      {f:"Pays du Welsh pony et du Welsh cob — quatre sections, de la plus petite au cob monté par les adultes."}],
+  en:["The Irish Sea, an empty beach, and cobs stamping at the water's edge.",
+      "The gallop ends in the waves. Salt dries on your boots, the pony blows.",
+      {f:"Home of the Welsh pony and the Welsh cob — four sections, from the smallest to the cob ridden by adults."}],
+  es:["El mar de Irlanda, una playa vacía y cobs que piafan a la orilla del agua.",
+      "El galope termina en las olas. La sal se seca en las botas, el poni resopla.",
+      {f:"La tierra del Welsh pony y del Welsh cob: cuatro secciones, de la más pequeña al cob que montan los adultos."}],
+  it:["Il mare d'Irlanda, una spiaggia vuota, e cob che scalpitano sul bagnasciuga.",
+      "Il galoppo finisce nelle onde. Il sale si asciuga sugli stivali, il pony soffia.",
+      {f:"La terra del Welsh pony e del Welsh cob: quattro sezioni, dalla più piccola al cob montato dagli adulti."}],
+  de:["Die Irische See, ein leerer Strand, und Cobs, die am Wasser scharren.",
+      "Der Galopp endet in den Wellen. Salz trocknet auf den Stiefeln, das Pony schnaubt.",
+      {f:"Heimat des Welsh Pony und des Welsh Cob — vier Sektionen, von der kleinsten bis zum Cob, den Erwachsene reiten."}],
+  ja:["アイリッシュ海、人のいない浜、そして波打ち際で前掻きをするコブたち。",
+      "駈歩は波の中で終わる。長靴に塩が乾き、ポニーが鼻を鳴らす。",
+      {f:"ウェルシュポニーとウェルシュコブの土地。四つのセクションがあり、最小のものから大人が乗るコブまで。"}]},
+ windsor:{
+  fr:["Les tours au fond, le sable ratissé, le silence. Un cheval seul, une piste, des lettres.",
+      "Ici, la précision est une forme de politesse.",
+      {f:"Un château habité depuis neuf siècles, et une tradition équestre qui va avec."}],
+  en:["The towers behind, the raked sand, the silence. One horse, one arena, a set of letters.",
+      "Here, precision is a form of good manners.",
+      {f:"A castle lived in for nine centuries, and the riding tradition that comes with it."}],
+  es:["Las torres al fondo, la arena rastrillada, el silencio. Un caballo solo, una pista, unas letras.",
+      "Aquí la precisión es una forma de cortesía.",
+      {f:"Un castillo habitado desde hace nueve siglos, y la tradición ecuestre que lo acompaña."}],
+  it:["Le torri in fondo, la sabbia rastrellata, il silenzio. Un cavallo solo, un rettangolo, delle lettere.",
+      "Qui la precisione è una forma di cortesia.",
+      {f:"Un castello abitato da nove secoli, e la tradizione equestre che ne deriva."}],
+  de:["Die Türme im Hintergrund, der geharkte Sand, die Stille. Ein Pferd allein, ein Viereck, ein paar Buchstaben.",
+      "Hier ist Präzision eine Form von Höflichkeit.",
+      {f:"Ein Schloss, seit neun Jahrhunderten bewohnt, und die Reittradition, die dazugehört."}],
+  ja:["奥に塔、掻き均された砂、静けさ。一頭の馬、一つの馬場、いくつかの文字。",
+      "ここでは、正確さは礼儀のかたちだ。",
+      {f:"九世紀のあいだ人が住み続ける城と、それに伴う馬術の伝統。"}]},
+ hickstead:{
+  fr:["L'herbe est courte et le talus fait peur vu d'en haut. Les barres claquent, le public retient son souffle.",
+      "On descend le Derby Bank sans savoir si on a eu raison.",
+      {f:"Le seul terrain britannique avec ce talus, franchi en concours depuis les années soixante."}],
+  en:["The grass is short and the bank is frightening from the top. The poles rattle, the crowd holds its breath.",
+      "You go down the Derby Bank without knowing whether you were right.",
+      {f:"The only British arena with that bank, jumped in competition since the nineteen sixties."}],
+  es:["La hierba es corta y el talud da miedo visto desde arriba. Las barras suenan, el público retiene el aliento.",
+      "Se baja el Derby Bank sin saber si se ha acertado.",
+      {f:"El único terreno británico con ese talud, saltado en concurso desde los años sesenta."}],
+  it:["L'erba è corta e la banchina fa paura vista dall'alto. Le barriere risuonano, il pubblico trattiene il respiro.",
+      "Si scende il Derby Bank senza sapere se si è avuto ragione.",
+      {f:"L'unico campo britannico con quella banchina, affrontata in concorso dagli anni sessanta."}],
+  de:["Das Gras ist kurz, und der Wall macht Angst, wenn man von oben schaut. Die Stangen klappern, das Publikum hält den Atem an.",
+      "Man reitet den Derby Bank hinunter, ohne zu wissen, ob es richtig war.",
+      {f:"Der einzige britische Platz mit diesem Wall, im Turnier seit den sechziger Jahren."}],
+  ja:["芝は短く、上から見る土手は怖い。横木が鳴り、観客が息を止める。",
+      "ダービー・バンクを下る。正しかったのかは、下りきるまで分からない。",
+      {f:"この土手を持つ英国唯一の競技場。1960年代から競技で飛ばれている。"}]},
+ badminton:{
+  fr:["Le parc, la grande maison, et la boue de mai. Quatre jours, trois épreuves, un seul cheval.",
+      "Le cross ne pardonne pas l'approximation.",
+      {f:"L'un des concours complets les plus relevés au monde."}],
+  en:["The park, the big house, and the May mud. Four days, three phases, one horse.",
+      "Cross-country does not forgive the approximate.",
+      {f:"One of the toughest three-day events in the world."}],
+  es:["El parque, la gran casa y el barro de mayo. Cuatro días, tres pruebas, un solo caballo.",
+      "El cross no perdona lo aproximado.",
+      {f:"Uno de los concursos completos más exigentes del mundo."}],
+  it:["Il parco, la grande casa, e il fango di maggio. Quattro giorni, tre prove, un solo cavallo.",
+      "Il cross non perdona l'approssimazione.",
+      {f:"Uno dei concorsi completi più impegnativi al mondo."}],
+  de:["Der Park, das große Haus und der Matsch im Mai. Vier Tage, drei Prüfungen, ein Pferd.",
+      "Das Gelände verzeiht keine halben Sachen.",
+      {f:"Eine der schwersten Vielseitigkeitsprüfungen der Welt."}],
+  ja:["広い庭園、大きな館、そして五月の泥。四日間、三つの種目、たった一頭の馬。",
+      "クロスカントリーは、曖昧さを許さない。",
+      {f:"世界で最も過酷な総合馬術競技のひとつ。"}]},
+ kildare:{
+  fr:["Une lumière allumée à trois heures du matin. Le vétérinaire arrive, on parle bas.",
+      "Dire vite et dire juste : il boite, il transpire, il ne mange plus.",
+      {f:"Le haras national irlandais est à Tully, tout près, à côté des pistes du Curragh."}],
+  en:["A light on at three in the morning. The vet arrives, everyone speaks low.",
+      "Say it fast and say it right: he's lame, he's sweating, he's off his feed.",
+      {f:"The Irish National Stud is at Tully, close by, next to the Curragh gallops."}],
+  es:["Una luz encendida a las tres de la madrugada. Llega el veterinario, se habla en voz baja.",
+      "Decirlo rápido y decirlo bien: cojea, suda, ya no come.",
+      {f:"La yeguada nacional irlandesa está en Tully, muy cerca, junto a las pistas del Curragh."}],
+  it:["Una luce accesa alle tre del mattino. Arriva il veterinario, si parla a voce bassa.",
+      "Dirlo in fretta e dirlo giusto: zoppica, suda, non mangia più.",
+      {f:"L'allevamento nazionale irlandese si trova a Tully, a due passi, accanto alle piste del Curragh."}],
+  de:["Um drei Uhr nachts brennt Licht. Der Tierarzt kommt, alle sprechen leise.",
+      "Schnell sagen und richtig sagen: er lahmt, er schwitzt, er frisst nicht mehr.",
+      {f:"Das irische Nationalgestüt liegt in Tully, ganz nah, neben den Bahnen des Curragh."}],
+  ja:["午前三時、灯りがひとつ点いている。獣医が着き、みな声を落とす。",
+      "速く、正確に伝える。跛行している、汗をかいている、飼料を食べない。",
+      {f:"アイルランド国立牧場はすぐ近くのタリーにあり、カラーの調教コースに隣接している。"}]},
+ edimbourg:{
+  fr:["Des pavés, un vent froid, une ville verticale. Ici, on parle enfin — au café, à la gare, au club.",
+      "Et l'accent n'est pas celui qu'on t'a appris.",
+      {f:"Fin du voyage : dix villes, quatre nations, une langue."}],
+  en:["Cobbles, a cold wind, a vertical city. Here you finally speak — in the café, at the station, at the club.",
+      "And the accent is not the one you were taught.",
+      {f:"End of the journey: ten towns, four nations, one language."}],
+  es:["Adoquines, un viento frío, una ciudad vertical. Aquí, por fin, se habla: en el café, en la estación, en el club.",
+      "Y el acento no es el que te enseñaron.",
+      {f:"Fin del viaje: diez ciudades, cuatro naciones, una lengua."}],
+  it:["Ciottoli, un vento freddo, una città verticale. Qui, finalmente, si parla: al caffè, alla stazione, al club.",
+      "E l'accento non è quello che ti hanno insegnato.",
+      {f:"Fine del viaggio: dieci città, quattro nazioni, una lingua."}],
+  de:["Kopfsteinpflaster, ein kalter Wind, eine senkrechte Stadt. Hier wird endlich gesprochen — im Café, am Bahnhof, im Club.",
+      "Und der Akzent ist nicht der, den man dir beigebracht hat.",
+      {f:"Ende der Reise: zehn Städte, vier Nationen, eine Sprache."}],
+  ja:["石畳、冷たい風、垂直の街。ここでようやく言葉を交わす。カフェで、駅で、クラブで。",
+      "そして、その訛りは教わったものとは違う。",
+      {f:"旅の終わり。十の街、四つの国、ひとつの言語。"}]}
 };
 
 
@@ -925,21 +1142,71 @@ var S = document.getElementById.bind(document);
 
 /* Pourquoi ces dix villes — affiché sur le carnet de route, avant le départ. */
 var POURQUOI = {
- newmarket:"Capitale mondiale du pur-sang. Les chevaux y ont la priorité sur les voitures.",
- lambourn:"La vallée du cheval de course : un village entier qui ne vit que de ça.",
- connemara:"La seule race de poney native d'Irlande, née de la pierre et du vent.",
- walsall:"La ville du cuir. C'est ici qu'on coud encore les selles à la main.",
- aberystwyth:"Le pays du Welsh cob — et une plage où les randonnées finissent au galop dans la mer.",
- windsor:"Neuf siècles de tradition équestre au pied d'un château habité.",
- hickstead:"Le Derby Bank : la plus haute butte de compétition au monde.",
- badminton:"L'un des concours complets les plus relevés de la planète.",
- kildare:"Le haras national irlandais, à deux pas des pistes du Curragh.",
- edimbourg:"Fin du voyage. Une capitale, un accent, et tout ce que tu sais déjà dire."
+ newmarket:{fr:"Capitale mondiale du pur-sang. Les chevaux y ont la priorité sur les voitures.",
+  en:"World capital of the thoroughbred. Here horses have right of way over cars.",
+  es:"Capital mundial del purasangre. Aquí los caballos tienen prioridad sobre los coches.",
+  it:"Capitale mondiale del purosangue. Qui i cavalli hanno la priorità sulle auto.",
+  de:"Welthauptstadt des Vollbluts. Hier haben Pferde Vorfahrt vor Autos.",
+  ja:"サラブレッドの世界的中心地。ここでは馬が車より優先される。"},
+ lambourn:{fr:"La vallée du cheval de course : un village entier qui ne vit que de ça.",
+  en:"The racehorse valley: a whole village that lives on nothing else.",
+  es:"El valle del caballo de carreras: un pueblo entero que no vive de otra cosa.",
+  it:"La valle del cavallo da corsa: un intero villaggio che vive solo di questo.",
+  de:"Das Tal des Rennpferds: ein ganzes Dorf, das von nichts anderem lebt.",
+  ja:"競走馬の谷。村ひとつが、それだけで生きている。"},
+ connemara:{fr:"La seule race de poney native d'Irlande, née de la pierre et du vent.",
+  en:"The only pony breed native to Ireland, born of stone and wind.",
+  es:"La única raza de poni nativa de Irlanda, nacida de la piedra y del viento.",
+  it:"L'unica razza di pony autoctona d'Irlanda, nata dalla pietra e dal vento.",
+  de:"Die einzige Ponyrasse, die aus Irland stammt — geboren aus Stein und Wind.",
+  ja:"アイルランド固有の唯一のポニー種。石と風から生まれた。"},
+ walsall:{fr:"La ville du cuir. C'est ici qu'on coud encore les selles à la main.",
+  en:"The leather town. This is where saddles are still sewn by hand.",
+  es:"La ciudad del cuero. Aquí todavía se cosen las sillas a mano.",
+  it:"La città del cuoio. È qui che le selle si cuciono ancora a mano.",
+  de:"Die Stadt des Leders. Hier werden Sättel noch von Hand genäht.",
+  ja:"革の町。ここでは今も鞍を手で縫っている。"},
+ aberystwyth:{fr:"Le pays du Welsh cob — et une plage où les randonnées finissent au galop dans la mer.",
+  en:"Welsh cob country — and a beach where rides end at a gallop in the sea.",
+  es:"La tierra del Welsh cob, y una playa donde las rutas terminan al galope dentro del mar.",
+  it:"La terra del Welsh cob, e una spiaggia dove le passeggiate finiscono al galoppo in mare.",
+  de:"Das Land des Welsh Cob — und ein Strand, an dem Ausritte im Galopp ins Meer enden.",
+  ja:"ウェルシュコブの故郷。外乗が海の中の駈歩で終わる浜がある。"},
+ windsor:{fr:"Neuf siècles de tradition équestre au pied d'un château habité.",
+  en:"Nine centuries of riding tradition at the foot of a castle still lived in.",
+  es:"Nueve siglos de tradición ecuestre al pie de un castillo habitado.",
+  it:"Nove secoli di tradizione equestre ai piedi di un castello abitato.",
+  de:"Neun Jahrhunderte Reittradition am Fuß eines bewohnten Schlosses.",
+  ja:"人が住み続ける城のふもとに、九世紀分の馬術の伝統。"},
+ hickstead:{fr:"Le Derby Bank : la plus haute butte de compétition au monde.",
+  en:"The Derby Bank: the highest competition bank in the world.",
+  es:"El Derby Bank: el talud de competición más alto del mundo.",
+  it:"Il Derby Bank: la banchina da competizione più alta al mondo.",
+  de:"Der Derby Bank: der höchste Turnierwall der Welt.",
+  ja:"ダービー・バンク。競技用の土手として世界一の高さ。"},
+ badminton:{fr:"L'un des concours complets les plus relevés de la planète.",
+  en:"One of the toughest three-day events on the planet.",
+  es:"Uno de los concursos completos más exigentes del planeta.",
+  it:"Uno dei concorsi completi più impegnativi del pianeta.",
+  de:"Eine der anspruchsvollsten Vielseitigkeitsprüfungen der Welt.",
+  ja:"世界で最も難度の高い総合馬術競技のひとつ。"},
+ kildare:{fr:"Le haras national irlandais, à deux pas des pistes du Curragh.",
+  en:"The Irish National Stud, a step away from the Curragh gallops.",
+  es:"La yeguada nacional irlandesa, a dos pasos de las pistas del Curragh.",
+  it:"L'allevamento nazionale irlandese, a due passi dalle piste del Curragh.",
+  de:"Das irische Nationalgestüt, nur einen Schritt von den Bahnen des Curragh entfernt.",
+  ja:"アイルランド国立牧場。カラーの調教コースのすぐ隣。"},
+ edimbourg:{fr:"Fin du voyage. Une capitale, un accent, et tout ce que tu sais déjà dire.",
+  en:"End of the journey. A capital, an accent, and everything you can already say.",
+  es:"Fin del viaje. Una capital, un acento y todo lo que ya sabes decir.",
+  it:"Fine del viaggio. Una capitale, un accento, e tutto quello che sai già dire.",
+  de:"Ende der Reise. Eine Hauptstadt, ein Akzent, und alles, was du schon sagen kannst.",
+  ja:"旅の終わり。首都、訛り、そしてもう言えるようになったことすべて。"}
 };
 (function(){
   var b=document.getElementById("carnet");
   if(!b) return;
-  var t=document.createElement("p"); t.className="ct"; t.textContent="L'itinéraire";
+  var t=document.createElement("p"); t.className="ct"; t.setAttribute("data-t","itineraire"); t.textContent=T("itineraire");
   b.appendChild(t);
   /* Chaque ville est un dépliant : à l'arrivée on ne voit que dix lignes
      courtes, pas un mur de texte. On ouvre celle qui intrigue. */
@@ -947,9 +1214,9 @@ var POURQUOI = {
     var d=document.createElement("button");
     d.className="cv"; d.type="button";
     d.innerHTML='<span class="n">'+(i+1)+'</span>'+
-      '<span class="d"><b>'+e.v+'</b><i>'+e.nat+' · '+e.ch+'</i></span>'+
+      '<span class="d"><b>'+eV(e)+'</b><i>'+eNat(e)+' · '+eCh(e)+'</i></span>'+
       '<span class="pl">+</span>'+
-      '<span class="pq">'+(POURQUOI[e.ref]||"")+'</span>';
+      '<span class="pq">'+tx(POURQUOI[e.ref])+'</span>';
     d.addEventListener("click",function(){ this.classList.toggle("ouv"); });
     b.appendChild(d);
   });
@@ -1061,9 +1328,9 @@ function rendu(){
   if(i!==lastI && proche){
     lastI=i; courant=i; var e=ETAPES[i]; affiner(i);
     S("hNum").textContent="Chapitre "+(i+1)+" sur 10";
-    S("hTitre").textContent=e.ch;
-    S("hVille").textContent=e.v;
-    S("hHeure").textContent=e.nat+" · en route, "+e.h;
+    S("hTitre").textContent=eCh(e);
+    S("hVille").textContent=eV(e);
+    S("hHeure").textContent=eNat(e)+" · "+T("enRoute")+" "+eH(e);
     var ouvert=i<=FAITS;
     S("cta").className=ouvert?"":"verrou";
     /* le bouton dit ce qu'on va y trouver, pas seulement où on va :
@@ -1071,10 +1338,10 @@ function rendu(){
     var ec=etatChapitre(e.ref);
     var libelle;
     if(i>FAITS) libelle="Termine "+ETAPES[FAITS].v;
-    else if(ec.total===0) libelle=(i<FAITS?"Revoir ":"Arriver à ")+e.v;
-    else if(ec.acquis===0) libelle=e.v+" · "+ec.total+" mots";
-    else if(ec.tout) libelle=e.v+" · chapitre terminé";
-    else libelle=e.v+" · "+ec.acquis+" / "+ec.total+" mots";
+    else if(ec.total===0) libelle=T(i<FAITS?"revoirV":"arriverV",{v:eV(e)});
+    else if(ec.acquis===0) libelle=T("vMots",{v:eV(e),n:ec.total});
+    else if(ec.tout) libelle=T("vFini",{v:eV(e)});
+    else libelle=T("vSurN",{v:eV(e),a:ec.acquis,n:ec.total});
     S("ctaTxt").textContent=libelle;
     Array.prototype.forEach.call(S("points").children,function(n,k){
       n.className=(k<FAITS)?"f":(k===i?"a":""); });
@@ -1155,10 +1422,10 @@ function garnirVille(e){
     S("ptourne").textContent = etc.fini ? "Touche pour lire" : "";
     S("pcarte").classList.remove("dos");
     S("pimg").src = "carte-"+e.ref+".webp";
-    S("pimg").alt = e.v;
-    S("pnom").textContent = e.v;  S("pnom2").textContent = e.v;
+    S("pimg").alt = eV(e);
+    S("pnom").textContent = eV(e);  S("pnom2").textContent = eV(e);
     S("plieu").textContent = v.lieu; S("plieu2").textContent = v.lieu;
-    S("ptnom").textContent = e.v.toUpperCase();
+    S("ptnom").textContent = eV(e).toUpperCase();
     ecrireLettre(v);
   }
 
@@ -1201,18 +1468,18 @@ function ajusterCadrage(v){
 
 function ouvrirArrivee(i){
   courant=i; var e=ETAPES[i];
-  S("arrChap").textContent="Chapitre "+(i+1)+" · "+e.ch;
-  S("arrVille").textContent=e.v;
-  S("arrNation").textContent=e.nat+" · à l'aube";
-  S("empNom").textContent="ARRIVÉE À "+e.v.toUpperCase();
+  S("arrChap").textContent=T("chapEt",{n:(i+1),t:eCh(e)});
+  S("arrVille").textContent=eV(e);
+  S("arrNation").textContent=eNat(e)+" · "+T("aLAube");
+  S("empNom").textContent=T("arriveeA",{v:eV(e).toUpperCase()});
   S("empTxt").innerHTML="Vidéo introuvable<br><code>arrivee-"+e.ref+".mp4</code><br>à déposer à la racine du dépôt";
   /* le souvenir ne s'obtient qu'avec TOUS les mots du chapitre : c'est
      l'objet de collection, il doit se mériter. Tant qu'il manque un mot,
      on l'annonce sans le donner. */
   var so=etatChapitre(e.ref);
-  S("souvT").textContent = so.tout ? ("Souvenir de "+e.v) : "Souvenir à mériter";
-  S("souvN").textContent = so.tout ? e.souv
-    : (e.souv + " — les " + so.total + " mots du chapitre");
+  S("souvT").textContent = so.tout ? T("souvenirDe",{v:eV(e)}) : T("souvAMeriter");
+  S("souvN").textContent = so.tout ? eSouv(e)
+    : T("souvMots",{s:eSouv(e), n:so.total});
   S("souvSvg").innerHTML=ICONES[e.ic]||"";
   S("souvenir").classList.toggle("apercu", !so.tout);
   garnirVille(e);
@@ -1301,12 +1568,273 @@ var VOIX = { fr:"fr-FR", en:"en-GB", es:"es-ES", it:"it-IT", de:"de-DE", ja:"ja-
    lit ses cartes en français mais apprend l'anglais. */
 var VOYAGE_LANGUE = "en";
 
-/* La langue de l'interface. Le pont la fournit ; fr et en seulement pour l'instant. */
+/* La langue de l'interface : les six langues du référentiel Hype.
+   Le pont la fournit ; tout ce qui n'est pas reconnu retombe sur le français. */
+var LANGUES_UI = ["fr","en","es","it","de","ja"];
 function langueUI(){
   var l = "fr";
   try{ if(window.HYPE_LINGO_HOST && HYPE_LINGO_HOST.langue) l = HYPE_LINGO_HOST.langue(); }catch(e){}
-  return (l==="en") ? "en" : "fr";
+  return (LANGUES_UI.indexOf(l) >= 0) ? l : "fr";
 }
+
+/* ---------- couche de traduction ----------
+   Une seule porte d'entrée. Les données restent écrites en français ;
+   tx() rend la version affichée. Tolérant par construction : une chaîne
+   nue passe telle quelle, une traduction manquante retombe sur le français.
+   Rien ne casse quand une langue n'est pas encore écrite. */
+function tx(o){
+  if(o==null) return "";
+  if(typeof o === "string") return o;
+  var u = langueUI();
+  return o[u] || o.fr || "";
+}
+
+/* Les cinq champs traduisibles d'une étape. Le français vit dans ETAPES,
+   les cinq autres langues dans les tables ci-dessus. */
+function eCh(e){   return e ? tx2(ETAPES_I18N[e.ref] && ETAPES_I18N[e.ref].ch,   e.ch)   : ""; }
+function eV(e){    return e ? tx2(ETAPES_I18N[e.ref] && ETAPES_I18N[e.ref].v,    e.v)    : ""; }
+function eSouv(e){ return e ? tx2(ETAPES_I18N[e.ref] && ETAPES_I18N[e.ref].souv, e.souv) : ""; }
+function eNat(e){  return e ? tx2(I18N_NAT[e.nat], e.nat) : ""; }
+function eH(e){    return e ? tx2(I18N_H[e.h],     e.h)   : ""; }
+function tx2(o, secours){
+  if(!o) return secours;
+  var u = langueUI();
+  return (u==="fr") ? secours : (o[u] || secours);
+}
+
+/* ---------- textes de l'interface ----------
+   Une clé, six langues. T("cle", {v:"Newmarket"}) remplace {v} dans le texte.
+   Les écrans statiques se balisent avec data-t (texte) ou data-th (html) ;
+   appliquerLangue() les remplit au démarrage et à chaque changement de langue. */
+/* ==================================================================
+   LE NOM DU MODULE. Une seule ligne à changer le jour où il change.
+   Il se propage partout via {nom} dans les textes de l'interface,
+   y compris le titre de l'onglet et le message de partage.
+   ⚠️ Le NOM DE FICHIER reste lingo.html : le renommer casserait les
+   liens déjà poussés et le raccourci depuis l'app.
+   ================================================================== */
+var NOM_MODULE = "Hype Linguae";
+
+var UI = {
+ nomModule:{fr:"{nom}", en:"{nom}", es:"{nom}", it:"{nom}", de:"{nom}", ja:"{nom}"},
+ traversee:{fr:"La Traversée", en:"The Crossing", es:"La Travesía", it:"La Traversata",
+   de:"Die Überfahrt", ja:"旅路"},
+ partageScore:{fr:"J'ai fait {score} sur {nom}. Mêmes dix mots, bats-moi : ",
+   en:"I scored {score} on {nom}. Same ten words, beat me: ",
+   es:"He hecho {score} en {nom}. Las mismas diez palabras, supérame: ",
+   it:"Ho fatto {score} su {nom}. Le stesse dieci parole, battimi: ",
+   de:"Ich habe {score} bei {nom}. Dieselben zehn Wörter — schlag mich: ",
+   ja:"{nom}で{score}点。同じ十語で、私を超えてみて："},
+ choisirDest:{fr:"Choisir ma destination", en:"Choose my destination", es:"Elegir mi destino",
+   it:"Scegliere la destinazione", de:"Ziel wählen", ja:"行き先を選ぶ"},
+ introTitre:{fr:"Échanger avec<br>les cavaliers<br>du monde entier",
+   en:"Talk to riders<br>all over<br>the world",
+   es:"Hablar con jinetes<br>de todo<br>el mundo",
+   it:"Parlare con i cavalieri<br>di tutto<br>il mondo",
+   de:"Mit Reitern<br>auf der ganzen<br>Welt sprechen",
+   ja:"世界の<br>馬乗りたちと<br>語り合う"},
+ introCit:{fr:"Chaque cavalier a une histoire.<br>Voici le début de la nôtre.",
+   en:"Every rider has a story.<br>This is the beginning of ours.",
+   es:"Cada jinete tiene una historia.<br>Esta es el principio de la nuestra.",
+   it:"Ogni cavaliere ha una storia.<br>Questo è l'inizio della nostra.",
+   de:"Jeder Reiter hat eine Geschichte.<br>Dies ist der Anfang unserer.",
+   ja:"馬乗りには、それぞれの物語がある。<br>これは、私たちの物語の始まり。"},
+ pt1t:{fr:"Le vocabulaire équestre en six langues", en:"Stable vocabulary in six languages",
+   es:"El vocabulario ecuestre en seis idiomas", it:"Il vocabolario equestre in sei lingue",
+   de:"Reitvokabular in sechs Sprachen", ja:"六か国語の馬術用語"},
+ pt1d:{fr:"Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.",
+   en:"French, English, Spanish, Italian, German, Japanese — the real words, the ones used in the yard.",
+   es:"Francés, inglés, español, italiano, alemán, japonés: el de verdad, el de las cuadras.",
+   it:"Francese, inglese, spagnolo, italiano, tedesco, giapponese: quello vero, quello delle scuderie.",
+   de:"Französisch, Englisch, Spanisch, Italienisch, Deutsch, Japanisch — die echten Wörter, die im Stall fallen.",
+   ja:"フランス語、英語、スペイン語、イタリア語、ドイツ語、日本語。厩舎で実際に使われる言葉。"},
+ pt2t:{fr:"Dix villes, dix chapitres", en:"Ten towns, ten chapters", es:"Diez ciudades, diez capítulos",
+   it:"Dieci città, dieci capitoli", de:"Zehn Städte, zehn Kapitel", ja:"十の街、十の章"},
+ pt2d:{fr:"On voyage de ville en ville. Chacune enseigne une partie du métier.",
+   en:"You travel from town to town. Each one teaches a part of the craft.",
+   es:"Se viaja de ciudad en ciudad. Cada una enseña una parte del oficio.",
+   it:"Si viaggia di città in città. Ognuna insegna una parte del mestiere.",
+   de:"Man reist von Stadt zu Stadt. Jede lehrt einen Teil des Handwerks.",
+   ja:"街から街へ旅する。それぞれが、この仕事の一部を教えてくれる。"},
+ pt3t:{fr:"Comprendre un enseignant à l'étranger", en:"Understand an instructor abroad",
+   es:"Entender a un profesor en el extranjero", it:"Capire un istruttore all'estero",
+   de:"Einen Reitlehrer im Ausland verstehen", ja:"海外のインストラクターを理解する"},
+ pt3d:{fr:"Les ordres qu'on crie en reprise, à reconnaître au vol.",
+   en:"The commands shouted in a lesson, to catch on the fly.",
+   es:"Las órdenes que se gritan en clase, para reconocerlas al vuelo.",
+   it:"I comandi urlati in lezione, da riconoscere al volo.",
+   de:"Die Kommandos, die in der Reitstunde gerufen werden — im Flug erkennen.",
+   ja:"レッスンで飛ぶ号令を、その場で聞き取る。"},
+ pt4t:{fr:"Savoir dire l'essentiel en cas d'urgence", en:"Say what matters in an emergency",
+   es:"Saber decir lo esencial en una urgencia", it:"Saper dire l'essenziale in un'emergenza",
+   de:"Im Notfall das Wichtigste sagen können", ja:"緊急時に必要なことを言えるように"},
+ pt4d:{fr:"« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.",
+   en:"\u201CHe\u2019s lame\u201D, \u201Ccall the vet\u201D. This chapter is free, everywhere.",
+   es:"«Cojea», «llamad al veterinario». Este capítulo es gratis, en todas partes.",
+   it:"«Zoppica», «chiamate il veterinario». Questo capitolo è gratuito, sempre.",
+   de:"\u201EEr lahmt\u201C, \u201Eruft den Tierarzt\u201C. Dieses Kapitel ist überall kostenlos.",
+   ja:"「跛行している」「獣医を呼んで」。この章は、どの言語でも無料。"},
+ pt5t:{fr:"Une collection à rapporter", en:"A collection to bring home",
+   es:"Una colección para traer de vuelta", it:"Una collezione da portare a casa",
+   de:"Eine Sammlung für den Heimweg", ja:"持ち帰るコレクション"},
+ pt5d:{fr:"Une carte postale et un souvenir par ville, gagnés, pas donnés.",
+   en:"One postcard and one keepsake per town — earned, not given.",
+   es:"Una postal y un recuerdo por ciudad, ganados, no regalados.",
+   it:"Una cartolina e un souvenir per città, guadagnati, non regalati.",
+   de:"Eine Postkarte und ein Andenken pro Stadt — verdient, nicht geschenkt.",
+   ja:"街ごとに絵はがき一枚と記念品一つ。与えられるのではなく、勝ち取るもの。"},
+ destTitre:{fr:"Où veux-tu aller ?", en:"Where do you want to go?", es:"¿Adónde quieres ir?",
+   it:"Dove vuoi andare?", de:"Wohin willst du?", ja:"どこへ行く？"},
+ destSous:{fr:"Une destination, une langue. Le premier chapitre est offert partout.",
+   en:"One destination, one language. The first chapter is free everywhere.",
+   es:"Un destino, un idioma. El primer capítulo es gratis en todas partes.",
+   it:"Una destinazione, una lingua. Il primo capitolo è gratuito sempre.",
+   de:"Ein Ziel, eine Sprache. Das erste Kapitel ist überall kostenlos.",
+   ja:"行き先ひとつに言語ひとつ。第一章はどこでも無料。"},
+ destPied:{fr:"Les autres destinations arrivent. Le vocabulaire est déjà écrit pour les six langues : c'est le voyage qui reste à construire.",
+   en:"The other destinations are on their way. The vocabulary is already written in all six languages — it is the journey that remains to be built.",
+   es:"Los demás destinos están en camino. El vocabulario ya está escrito en los seis idiomas: lo que queda por construir es el viaje.",
+   it:"Le altre destinazioni stanno arrivando. Il vocabolario è già scritto nelle sei lingue: è il viaggio che resta da costruire.",
+   de:"Die anderen Ziele kommen. Das Vokabular ist in allen sechs Sprachen schon geschrieben — zu bauen bleibt die Reise.",
+   ja:"ほかの行き先も準備中。語彙は六か国語ですでに書き上がっている。あとは旅を作るだけ。"},
+ retour:{fr:"Retour", en:"Back", es:"Volver", it:"Indietro", de:"Zurück", ja:"戻る"},
+ partirDs:{fr:"Partir", en:"Go", es:"Partir", it:"Parti", de:"Aufbrechen", ja:"出発"},
+ bientot:{fr:"Bientôt", en:"Soon", es:"Pronto", it:"Presto", de:"Bald", ja:"近日"},
+ voyage1:{fr:"{nom} · Voyage 1", en:"{nom} · Journey 1", es:"{nom} · Viaje 1",
+   it:"{nom} · Viaggio 1", de:"{nom} · Reise 1", ja:"{nom} · 第1の旅"},
+ ouvNations:{fr:"Angleterre · Irlande · Pays de Galles · Écosse",
+   en:"England · Ireland · Wales · Scotland", es:"Inglaterra · Irlanda · Gales · Escocia",
+   it:"Inghilterra · Irlanda · Galles · Scozia", de:"England · Irland · Wales · Schottland",
+   ja:"イングランド・アイルランド・ウェールズ・スコットランド"},
+ ouvLangue:{fr:"— anglais —", en:"— English —", es:"— inglés —", it:"— inglese —",
+   de:"— Englisch —", ja:"— 英語 —"},
+ ouvIntro:{fr:"Dix chapitres, dix villes. <b>Pas les capitales politiques — les capitales du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde, et où le vocabulaire que tu vas apprendre s'entend vraiment.",
+   en:"Ten chapters, ten towns. <b>Not the political capitals — the horse capitals.</b> Places where riding is not a hobby but everyone's trade, and where the words you are about to learn are really spoken.",
+   es:"Diez capítulos, diez ciudades. <b>No las capitales políticas: las capitales del caballo.</b> Lugares donde la equitación no es un pasatiempo sino el oficio de todos, y donde el vocabulario que vas a aprender se oye de verdad.",
+   it:"Dieci capitoli, dieci città. <b>Non le capitali politiche — le capitali del cavallo.</b> Luoghi dove l'equitazione non è un passatempo ma il mestiere di tutti, e dove il vocabolario che imparerai si sente davvero.",
+   de:"Zehn Kapitel, zehn Städte. <b>Nicht die politischen Hauptstädte — die Hauptstädte des Pferdes.</b> Orte, an denen Reiten kein Hobby ist, sondern der Beruf aller, und an denen die Wörter, die du lernst, wirklich fallen.",
+   ja:"十の章、十の街。<b>政治の首都ではなく、馬の首都。</b>乗馬が趣味ではなく、みんなの仕事である場所。これから覚える言葉が、本当に聞こえてくる場所。"},
+ regle1:{fr:"<b>On voyage la nuit, on arrive à l'aube.</b> Le chemin se fait au doigt, d'une ville à la suivante.",
+   en:"<b>You travel by night and arrive at dawn.</b> The road moves under your finger, from one town to the next.",
+   es:"<b>Se viaja de noche y se llega al amanecer.</b> El camino se recorre con el dedo, de una ciudad a la siguiente.",
+   it:"<b>Si viaggia di notte e si arriva all'alba.</b> La strada si percorre col dito, da una città alla successiva.",
+   de:"<b>Man reist nachts und kommt im Morgengrauen an.</b> Der Weg entsteht unter dem Finger, von einer Stadt zur nächsten.",
+   ja:"<b>夜に旅をして、夜明けに着く。</b>道は指で進む。街から次の街へ。"},
+ regle2:{fr:"<b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale à retourner, un souvenir, et une étoile de plus dans ton ciel.",
+   en:"<b>Every town leaves a trace:</b> a stamp in your passport, a postcard to turn over, a keepsake, and one more star in your sky.",
+   es:"<b>Cada ciudad deja una huella:</b> un sello en tu pasaporte, una postal que dar la vuelta, un recuerdo y una estrella más en tu cielo.",
+   it:"<b>Ogni città lascia una traccia:</b> un timbro sul passaporto, una cartolina da girare, un souvenir, e una stella in più nel tuo cielo.",
+   de:"<b>Jede Stadt lässt eine Spur:</b> einen Stempel im Pass, eine Postkarte zum Umdrehen, ein Andenken und einen Stern mehr an deinem Himmel.",
+   ja:"<b>街はそれぞれ跡を残す。</b>パスポートの消印、裏返せる絵はがき、記念品、そして夜空にもう一つの星。"},
+ regle3:{fr:"<b>Le chapitre des urgences est offert</b> — savoir dire « il boite » ou « appelez le vétérinaire » à l'étranger ne se monnaie pas.",
+   en:"<b>The emergency chapter is free</b> — knowing how to say \u201Che\u2019s lame\u201D or \u201Ccall the vet\u201D abroad is not for sale.",
+   es:"<b>El capítulo de urgencias es gratis</b>: saber decir «cojea» o «llamad al veterinario» en el extranjero no se cobra.",
+   it:"<b>Il capitolo delle emergenze è gratuito</b> — saper dire «zoppica» o «chiamate il veterinario» all'estero non si vende.",
+   de:"<b>Das Notfallkapitel ist kostenlos</b> — zu wissen, wie man im Ausland \u201Eer lahmt\u201C oder \u201Eruft den Tierarzt\u201C sagt, ist nicht verkäuflich.",
+   ja:"<b>緊急時の章は無料。</b>海外で「跛行している」「獣医を呼んで」と言えること。これは売り物ではない。"},
+ itineraire:{fr:"L'itinéraire", en:"The route", es:"El itinerario", it:"L'itinerario",
+   de:"Die Route", ja:"行程"},
+ partir:{fr:"Partir", en:"Set off", es:"Partir", it:"Partire", de:"Aufbrechen", ja:"出発する"},
+ passer:{fr:"Passer", en:"Skip", es:"Saltar", it:"Salta", de:"Überspringen", ja:"スキップ"},
+ entrerA:{fr:"Entrer à {v}", en:"Enter {v}", es:"Entrar en {v}", it:"Entra a {v}",
+   de:"{v} betreten", ja:"{v}に入る"},
+ retourCarnet:{fr:"Revenir au carnet de route", en:"Back to the route", es:"Volver al itinerario",
+   it:"Torna all'itinerario", de:"Zurück zur Route", ja:"行程に戻る"},
+ sprint60:{fr:"Sprint · 60 s", en:"Sprint · 60 s", es:"Sprint · 60 s", it:"Sprint · 60 s",
+   de:"Sprint · 60 s", ja:"スプリント・60秒"},
+ traceOn:{fr:"Trace : on", en:"Trail: on", es:"Rastro: sí", it:"Traccia: sì",
+   de:"Spur: an", ja:"軌跡：オン"},
+ traceOff:{fr:"Trace : off", en:"Trail: off", es:"Rastro: no", it:"Traccia: no",
+   de:"Spur: aus", ja:"軌跡：オフ"},
+ commencer:{fr:"Commencer", en:"Start", es:"Empezar", it:"Inizia", de:"Beginnen", ja:"はじめる"},
+ enRoute:{fr:"en route,", en:"on the road,", es:"en ruta,", it:"in viaggio,",
+   de:"unterwegs,", ja:"移動中"},
+ aLAube:{fr:"à l'aube", en:"at dawn", es:"al amanecer", it:"all'alba",
+   de:"im Morgengrauen", ja:"夜明け"},
+ chapNsur:{fr:"Chapitre {n} sur 10", en:"Chapter {n} of 10", es:"Capítulo {n} de 10",
+   it:"Capitolo {n} di 10", de:"Kapitel {n} von 10", ja:"第{n}章／全10章"},
+ chapEt:{fr:"Chapitre {n} · {t}", en:"Chapter {n} · {t}", es:"Capítulo {n} · {t}",
+   it:"Capitolo {n} · {t}", de:"Kapitel {n} · {t}", ja:"第{n}章・{t}"},
+ termineV:{fr:"Termine {v}", en:"Finish {v}", es:"Termina {v}", it:"Finisci {v}",
+   de:"Beende {v}", ja:"{v}を終える"},
+ revoirV:{fr:"Revoir {v}", en:"See {v} again", es:"Volver a {v}", it:"Rivedi {v}",
+   de:"{v} wiedersehen", ja:"{v}をもう一度"},
+ arriverV:{fr:"Arriver à {v}", en:"Arrive at {v}", es:"Llegar a {v}", it:"Arriva a {v}",
+   de:"Ankommen in {v}", ja:"{v}に着く"},
+ vMots:{fr:"{v} · {n} mots", en:"{v} · {n} words", es:"{v} · {n} palabras",
+   it:"{v} · {n} parole", de:"{v} · {n} Wörter", ja:"{v}・{n}語"},
+ vFini:{fr:"{v} · chapitre terminé", en:"{v} · chapter complete", es:"{v} · capítulo terminado",
+   it:"{v} · capitolo finito", de:"{v} · Kapitel fertig", ja:"{v}・章クリア"},
+ vSurN:{fr:"{v} · {a} / {n} mots", en:"{v} · {a} / {n} words", es:"{v} · {a} / {n} palabras",
+   it:"{v} · {a} / {n} parole", de:"{v} · {a} / {n} Wörter", ja:"{v}・{a}／{n}語"},
+ arriveeA:{fr:"ARRIVÉE À {v}", en:"ARRIVING IN {v}", es:"LLEGADA A {v}", it:"ARRIVO A {v}",
+   de:"ANKUNFT IN {v}", ja:"{v}到着"},
+ passeport:{fr:"Passeport Hype", en:"Hype Passport", es:"Pasaporte Hype",
+   it:"Passaporto Hype", de:"Hype-Pass", ja:"Hypeパスポート"},
+ souvenirDe:{fr:"Souvenir de {v}", en:"Keepsake from {v}", es:"Recuerdo de {v}",
+   it:"Souvenir di {v}", de:"Andenken aus {v}", ja:"{v}の記念品"},
+ souvAMeriter:{fr:"Souvenir à mériter", en:"Keepsake to be earned", es:"Recuerdo por merecer",
+   it:"Souvenir da meritare", de:"Andenken zu verdienen", ja:"記念品は勝ち取るもの"},
+ souvMots:{fr:"{s} — les {n} mots du chapitre", en:"{s} — all {n} words of the chapter",
+   es:"{s} — las {n} palabras del capítulo", it:"{s} — le {n} parole del capitolo",
+   de:"{s} — alle {n} Wörter des Kapitels", ja:"{s}──この章の{n}語すべて"},
+ raceIci:{fr:"La race d'ici", en:"The local breed", es:"La raza de aquí",
+   it:"La razza di qui", de:"Die Rasse von hier", ja:"この土地の品種"},
+ reprendreRoute:{fr:"Reprendre la route", en:"Back on the road", es:"Seguir el camino",
+   it:"Riprendi la strada", de:"Weiterreisen", ja:"旅を続ける"},
+ motsChapitre:{fr:"Les mots du chapitre", en:"The words of this chapter",
+   es:"Las palabras del capítulo", it:"Le parole del capitolo",
+   de:"Die Wörter des Kapitels", ja:"この章の言葉"},
+ lecon:{fr:"Leçon ", en:"Lesson ", es:"Lección ", it:"Lezione ", de:"Lektion ", ja:"レッスン"},
+ motsAcquis:{fr:" mots acquis", en:" words learned", es:" palabras aprendidas",
+   it:" parole acquisite", de:" Wörter gelernt", ja:"語 習得"},
+ tamponObtenu:{fr:"Tampon obtenu", en:"Stamp collected", es:"Sello conseguido",
+   it:"Timbro ottenuto", de:"Stempel erhalten", ja:"消印を獲得"},
+ prochaineEtape:{fr:"Prochaine étape · {v}", en:"Next stop · {v}", es:"Próxima etapa · {v}",
+   it:"Prossima tappa · {v}", de:"Nächste Etappe · {v}", ja:"次の街・{v}"},
+ voyageTermine:{fr:"Voyage terminé", en:"Journey complete", es:"Viaje terminado",
+   it:"Viaggio finito", de:"Reise beendet", ja:"旅の完了"},
+ nomLangue:{fr:"français", en:"anglais", es:"espagnol", it:"italien", de:"allemand", ja:"japonais"}
+};
+/* Le nom de la langue enseignée, dit dans la langue de l'interface. */
+var LANGUE_NOM = {
+ en:{fr:"anglais", en:"English", es:"inglés", it:"inglese", de:"Englisch", ja:"英語"},
+ es:{fr:"espagnol", en:"Spanish", es:"español", it:"spagnolo", de:"Spanisch", ja:"スペイン語"},
+ it:{fr:"italien", en:"Italian", es:"italiano", it:"italiano", de:"Italienisch", ja:"イタリア語"},
+ de:{fr:"allemand", en:"German", es:"alemán", it:"tedesco", de:"Deutsch", ja:"ドイツ語"},
+ ja:{fr:"japonais", en:"Japanese", es:"japonés", it:"giapponese", de:"Japanisch", ja:"日本語"},
+ fr:{fr:"français", en:"French", es:"francés", it:"francese", de:"Französisch", ja:"フランス語"}
+};
+function T(cle, vars){
+  var t = tx(UI[cle]), k;
+  t = t.split("{nom}").join(NOM_MODULE);
+  if(vars) for(k in vars) t = t.split("{"+k+"}").join(vars[k]);
+  return t;
+}
+/* Remplit les écrans statiques. Appelée au démarrage ; rappelable si la
+   langue change en cours de route. */
+function appliquerLangue(){
+  var i, l;
+  l = document.querySelectorAll("[data-t]");
+  for(i=0;i<l.length;i++) l[i].textContent = T(l[i].getAttribute("data-t"));
+  l = document.querySelectorAll("[data-th]");
+  for(i=0;i<l.length;i++) l[i].innerHTML = T(l[i].getAttribute("data-th"));
+  l = document.querySelectorAll("[data-ta]");
+  for(i=0;i<l.length;i++) l[i].setAttribute("aria-label", T(l[i].getAttribute("data-ta")));
+  /* le nom du voyage et la langue enseignée suivent la destination choisie */
+  var D=null, k;
+  for(k=0;k<DESTINATIONS.length;k++) if(DESTINATIONS[k].lg===VOYAGE_LANGUE) D=DESTINATIONS[k];
+  if(D){
+    var nom=tx(D.nom), lg=tx(LANGUE_NOM[D.lg]);
+    if(S("voyNom")) S("voyNom").textContent=nom;
+    if(S("voyLg"))  S("voyLg").textContent=lg;
+    if(S("ouvNom")) S("ouvNom").textContent=nom;
+    var pl=document.querySelector(".langue");
+    if(pl) pl.textContent="— "+lg+" —";
+    document.title = NOM_MODULE+" · "+lg+" · "+T("traversee");
+  }
+}
+
 
 /* ---------- petits outils ---------- */
 function el(tag, attrs){
@@ -1344,10 +1872,35 @@ function amorcerVoix(){
   try{ var u=new SpeechSynthesisUtterance(" "); u.volume=0; window.speechSynthesis.speak(u);
        voixPretes=true; }catch(e){}
 }
+/* ---------- lectures japonaises ----------
+   Un kanji ne se lit pas tout seul : 前橋 se prononce zenkyō (le pommeau)
+   et non Maebashi (la ville), 長靴 chōka (botte de monte) et non nagagutsu
+   (botte en caoutchouc). Le lexique porte déjà la lecture dans le champ `p` ;
+   c'est elle qu'on donne à la synthèse, jamais le mot écrit.
+   La table se construit une fois, à la première demande, depuis le lexique
+   chargé — aucun fichier à modifier. */
+var LECTURES_JA = null;
+function lectureJa(txt){
+  if(LECTURES_JA === null){
+    LECTURES_JA = {};
+    try{
+      var L = window.HYPE_LINGO_LEX || {}, k, i, cs, m;
+      for(k in L){
+        cs = (L[k] && L[k].concepts) || [];
+        for(i=0;i<cs.length;i++){
+          m = cs[i].mots && cs[i].mots.ja;
+          if(m && m.m && m.p) LECTURES_JA[m.m] = m.p;
+        }
+      }
+    }catch(e){}
+  }
+  return LECTURES_JA[txt] || txt;
+}
 function dire(txt, lg){
   if(!("speechSynthesis" in window)) return;
+  var d = (lg==="ja") ? lectureJa(txt) : txt;
   try{ window.speechSynthesis.cancel();
-       var u=new SpeechSynthesisUtterance(txt); u.lang=VOIX[lg]||"en-GB"; u.rate=0.9;
+       var u=new SpeechSynthesisUtterance(d); u.lang=VOIX[lg]||"en-GB"; u.rate=0.9;
        window.speechSynthesis.speak(u); }catch(e){}
 }
 
@@ -1370,44 +1923,56 @@ var LC = null;
    et les outils » dit ce qu'on va apprendre.
    ================================================================== */
 var COLL_NOM = {
-  lieu:"Le lieu", litiere:"La litière", outils:"Les outils", nourriture:"L'eau et la nourriture",
-  materiel:"Tenir et attacher", gestes:"Les gestes",
-  robes:"Les robes", marques:"Les marques", morpho:"Le corps", identite:"L'identité",
-  selle:"La selle", filet:"Le filet", cavalier:"Le cavalier", protections:"Les protections",
-  allures:"Les allures", position:"La position", figures:"La piste et les figures",
-  deroule:"Le déroulé du cours",
-  rectangle:"Le rectangle", mouvements:"Les mouvements", qualites:"Les qualités",
-  notation:"La notation",
-  obstacles:"Les obstacles", parcours:"Le parcours", fautes:"Les fautes", saut:"Le saut",
-  engager:"S'engager", complet:"Le concours complet", "jour-j":"Le jour J", gens:"Les gens",
-  alerte:"Donner l'alerte", "cheval-urg":"Sur le cheval", mots:"Les mots qui sauvent"
+  lieu:{fr:"Le lieu", en:"The place", es:"El lugar", it:"Il luogo", de:"Der Ort", ja:"場所"},
+  litiere:{fr:"La litière", en:"The bedding", es:"La cama", it:"La lettiera", de:"Die Einstreu", ja:"敷料"},
+  outils:{fr:"Les outils", en:"The tools", es:"Las herramientas", it:"Gli attrezzi", de:"Das Werkzeug", ja:"道具"},
+  nourriture:{fr:"L'eau et la nourriture", en:"Water and feed", es:"El agua y el pienso", it:"L'acqua e il mangime", de:"Wasser und Futter", ja:"水と飼料"},
+  materiel:{fr:"Tenir et attacher", en:"Holding and tying", es:"Sujetar y atar", it:"Tenere e legare", de:"Halten und anbinden", ja:"持つ・つなぐ"},
+  gestes:{fr:"Les gestes", en:"The handling", es:"El manejo", it:"I gesti", de:"Der Umgang", ja:"扱い方"},
+  robes:{fr:"Les robes", en:"The coat colours", es:"Las capas", it:"I mantelli", de:"Die Fellfarben", ja:"毛色"},
+  marques:{fr:"Les marques", en:"The markings", es:"Las marcas", it:"I segni particolari", de:"Die Abzeichen", ja:"標徴"},
+  morpho:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体の部位"},
+  identite:{fr:"L'identité", en:"Identity", es:"La identidad", it:"L'identità", de:"Die Identität", ja:"個体識別"},
+  selle:{fr:"La selle", en:"The saddle", es:"La silla", it:"La sella", de:"Der Sattel", ja:"鞍"},
+  filet:{fr:"Le filet", en:"The bridle", es:"La cabezada", it:"La testiera", de:"Die Trense", ja:"頭絡"},
+  cavalier:{fr:"Le cavalier", en:"The rider", es:"El jinete", it:"Il cavaliere", de:"Der Reiter", ja:"騎乗者"},
+  protections:{fr:"Les protections", en:"The protective gear", es:"Las protecciones", it:"Le protezioni", de:"Die Schutzausrüstung", ja:"保護具"},
+  allures:{fr:"Les allures", en:"The paces", es:"Los aires", it:"Le andature", de:"Die Gangarten", ja:"歩様"},
+  position:{fr:"La position", en:"The position", es:"La posición", it:"L'assetto", de:"Der Sitz", ja:"騎座"},
+  figures:{fr:"La piste et les figures", en:"The track and the figures", es:"La pista y las figuras", it:"La pista e le figure", de:"Die Bahn und die Hufschlagfiguren", ja:"馬場と図形運動"},
+  deroule:{fr:"Le déroulé du cours", en:"How a lesson runs", es:"El desarrollo de la clase", it:"Lo svolgimento della lezione", de:"Der Ablauf der Reitstunde", ja:"レッスンの流れ"},
+  rectangle:{fr:"Le rectangle", en:"The arena", es:"El rectángulo", it:"Il rettangolo", de:"Das Viereck", ja:"競技馬場"},
+  mouvements:{fr:"Les mouvements", en:"The movements", es:"Los movimientos", it:"I movimenti", de:"Die Lektionen", ja:"運動"},
+  qualites:{fr:"Les qualités", en:"The qualities", es:"Las cualidades", it:"Le qualità", de:"Die Qualitäten", ja:"馬の質"},
+  notation:{fr:"La notation", en:"The marking", es:"La puntuación", it:"Il punteggio", de:"Die Bewertung", ja:"採点"},
+  obstacles:{fr:"Les obstacles", en:"The fences", es:"Los obstáculos", it:"Gli ostacoli", de:"Die Hindernisse", ja:"障害"},
+  parcours:{fr:"Le parcours", en:"The course", es:"El recorrido", it:"Il percorso", de:"Der Parcours", ja:"コース"},
+  fautes:{fr:"Les fautes", en:"The faults", es:"Las faltas", it:"Le penalità", de:"Die Fehler", ja:"減点"},
+  saut:{fr:"Le saut", en:"The jump", es:"El salto", it:"Il salto", de:"Der Sprung", ja:"飛越"},
+  engager:{fr:"S'engager", en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"出場申込"},
+  complet:{fr:"Le concours complet", en:"Eventing", es:"El concurso completo", it:"Il concorso completo", de:"Die Vielseitigkeit", ja:"総合馬術"},
+  "jour-j":{fr:"Le jour J", en:"The day itself", es:"El día del concurso", it:"Il giorno della gara", de:"Der Turniertag", ja:"試合当日"},
+  gens:{fr:"Les gens", en:"The people", es:"La gente", it:"Le persone", de:"Die Leute", ja:"人びと"},
+  alerte:{fr:"Donner l'alerte", en:"Raising the alarm", es:"Dar la alarma", it:"Dare l'allarme", de:"Alarm schlagen", ja:"通報する"},
+  "cheval-urg":{fr:"Sur le cheval", en:"On the horse", es:"En el caballo", it:"Sul cavallo", de:"Am Pferd", ja:"馬の状態"},
+  mots:{fr:"Les mots qui sauvent", en:"The words that save", es:"Las palabras que salvan", it:"Le parole che salvano", de:"Die Worte, die retten", ja:"命を救う言葉"}
 };
 var ACCUEIL_CHAP = {
-  ecurie:{ fr:"Les mots de l'écurie : le lieu, la litière, la nourriture, les gestes du matin.",
-           en:"The words of the yard: the place, the bedding, the feed, the morning jobs." },
-  pansage:{ fr:"Le pansage, outil par outil, geste par geste.",
-            en:"Grooming, tool by tool, job by job." },
-  cheval:{ fr:"Décrire un cheval : sa robe, ses marques, son corps, son identité.",
-           en:"Describing a horse: colour, markings, body, identity." },
-  materiel:{ fr:"Tout ce qu'on met sur le cheval — et sur soi.",
-             en:"Everything you put on the horse — and on yourself." },
-  cours:{ fr:"Les ordres qu'on entend en reprise, et ceux qu'on donne quand on enseigne.",
-          en:"The commands you hear in a lesson, and the ones you give when you teach." },
-  dressage:{ fr:"Le travail sur le plat : le rectangle, les mouvements, ce qu'un juge regarde.",
-             en:"Flatwork: the arena, the movements, what a judge looks for." },
-  obstacle:{ fr:"Le saut : les obstacles, le parcours, les fautes, les phases du saut.",
-             en:"Jumping: the fences, the course, the faults, the phases of the jump." },
-  concours:{ fr:"S'engager, arriver, passer, comprendre son classement.",
-             en:"Entering, arriving, competing, reading your result." },
-  urgences:{ fr:"Ce qu'on ne veut jamais avoir à dire — et qu'il faut savoir dire vite.",
-             en:"What you never want to say — and must be able to say fast." },
-  dialogues:{ fr:"Parler à quelqu'un : demander, réserver, comprendre une réponse.",
-              en:"Talking to someone: asking, booking, understanding the answer." }
+  ecurie:{fr:"Les mots de l'écurie : le lieu, la litière, la nourriture, les gestes du matin.", en:"The words of the yard: the place, the bedding, the feed, the morning jobs.", es:"Las palabras de la cuadra: el lugar, la cama, el pienso, los gestos de la mañana.", it:"Le parole della scuderia: il luogo, la lettiera, il mangime, i gesti del mattino.", de:"Die Wörter des Stalls: der Ort, die Einstreu, das Futter, die Arbeit am Morgen.", ja:"厩舎の言葉。場所、敷料、飼料、朝の作業。"},
+  pansage:{fr:"Le pansage, outil par outil, geste par geste.", en:"Grooming, tool by tool, job by job.", es:"El cepillado, herramienta por herramienta, gesto por gesto.", it:"La pulizia, attrezzo per attrezzo, gesto per gesto.", de:"Das Putzen, Werkzeug für Werkzeug, Griff für Griff.", ja:"手入れを、道具ごと、動作ごとに。"},
+  cheval:{fr:"Décrire un cheval : sa robe, ses marques, son corps, son identité.", en:"Describing a horse: colour, markings, body, identity.", es:"Describir un caballo: su capa, sus marcas, su cuerpo, su identidad.", it:"Descrivere un cavallo: il mantello, i segni particolari, il corpo, l'identità.", de:"Ein Pferd beschreiben: Farbe, Abzeichen, Körper, Identität.", ja:"馬を描写する。毛色、標徴、体、個体情報。"},
+  materiel:{fr:"Tout ce qu'on met sur le cheval — et sur soi.", en:"Everything you put on the horse — and on yourself.", es:"Todo lo que se le pone al caballo, y todo lo que te pones tú.", it:"Tutto ciò che si mette sul cavallo — e su di sé.", de:"Alles, was man dem Pferd anlegt — und sich selbst.", ja:"馬に着けるもの、そして自分が身に着けるもの。"},
+  cours:{fr:"Les ordres qu'on entend en reprise, et ceux qu'on donne quand on enseigne.", en:"The commands you hear in a lesson, and the ones you give when you teach.", es:"Las órdenes que se oyen en clase, y las que se dan cuando se enseña.", it:"I comandi che si sentono in lezione, e quelli che si danno quando si insegna.", de:"Die Kommandos, die man in der Reitstunde hört — und die man gibt, wenn man unterrichtet.", ja:"レッスンで飛ぶ号令、そして教えるときに出す号令。"},
+  dressage:{fr:"Le travail sur le plat : le rectangle, les mouvements, ce qu'un juge regarde.", en:"Flatwork: the arena, the movements, what a judge looks for.", es:"El trabajo en llano: el rectángulo, los movimientos, lo que mira un juez.", it:"Il lavoro in piano: il rettangolo, i movimenti, ciò che guarda un giudice.", de:"Die Dressurarbeit: das Viereck, die Lektionen, worauf ein Richter schaut.", ja:"平地運動。馬場、運動、審判員が見るところ。"},
+  obstacle:{fr:"Le saut : les obstacles, le parcours, les fautes, les phases du saut.", en:"Jumping: the fences, the course, the faults, the phases of the jump.", es:"El salto: los obstáculos, el recorrido, las faltas, las fases del salto.", it:"Il salto: gli ostacoli, il percorso, le penalità, le fasi del salto.", de:"Das Springen: die Hindernisse, der Parcours, die Fehler, die Phasen des Sprungs.", ja:"飛越。障害、コース、減点、飛越の各局面。"},
+  concours:{fr:"S'engager, arriver, passer, comprendre son classement.", en:"Entering, arriving, competing, reading your result.", es:"Inscribirse, llegar, competir, entender la clasificación.", it:"Iscriversi, arrivare, gareggiare, capire la classifica.", de:"Nennen, ankommen, starten, sein Ergebnis lesen.", ja:"申し込み、到着、出番、順位の読み方。"},
+  urgences:{fr:"Ce qu'on ne veut jamais avoir à dire — et qu'il faut savoir dire vite.", en:"What you never want to say — and must be able to say fast.", es:"Lo que nunca quieres tener que decir, y que hay que saber decir rápido.", it:"Ciò che non si vuole mai dover dire — e che bisogna saper dire in fretta.", de:"Was man nie sagen will — und schnell sagen können muss.", ja:"言わずに済ませたい言葉。だから、すぐ言えなければならない。"},
+  dialogues:{fr:"Parler à quelqu'un : demander, réserver, comprendre une réponse.", en:"Talking to someone: asking, booking, understanding the answer.", es:"Hablar con alguien: preguntar, reservar, entender la respuesta.", it:"Parlare con qualcuno: chiedere, prenotare, capire la risposta.", de:"Mit jemandem sprechen: fragen, buchen, die Antwort verstehen.", ja:"人と話す。尋ねる、予約する、返事を理解する。"}
 };
 /* Le nom d'une leçon : la ou les familles qu'elle contient. */
 function nomLecon(L){
   var vus=[], n;
-  L.concepts.forEach(function(c){ n=COLL_NOM[c.coll]; if(n && vus.indexOf(n)<0) vus.push(n); });
+  L.concepts.forEach(function(c){ n=tx(COLL_NOM[c.coll]); if(n && vus.indexOf(n)<0) vus.push(n); });
   if(!vus.length) return "Leçon "+L.n;
   if(vus.length===1) return vus[0];
   /* la seconde famille perd sa majuscule : « La litière et les outils » */
@@ -1450,7 +2015,7 @@ function ouvrirLecon(refVille){
   S("lecon").classList.add("on");
   amorcerVoix();
   if(!chap){
-    S("lcTitre").textContent = e ? e.ch : "";
+    S("lcTitre").textContent = eCh(e);
     videEl(S("lcJauge"));
     videEl(S("lcCorps"));
     S("lcCorps").appendChild(el("p",{class:"lcCons",
@@ -1459,7 +2024,7 @@ function ouvrirLecon(refVille){
       text:"Le fichier hype-lingo-lex-"+cle+".js n'est pas chargé. Les autres chapitres sont jouables."}));
     return;
   }
-  LC = { cle:cle, chap:chap, ville:refVille, ch:(e?e.ch:""), villeNom:(e?e.v:"") };
+  LC = { cle:cle, chap:chap, ville:refVille, ch:eCh(e), villeNom:eV(e) };
   choisirLecon();
 }
 function fermerLecon(){
@@ -1482,9 +2047,9 @@ function choisirLecon(){
 
   /* un mot d'accueil : on dit ce qu'on va apprendre avant de faire choisir */
   var acc=ACCUEIL_CHAP[LC.cle];
-  if(acc) S("lcCorps").appendChild(el("p",{class:"lcAcc", text:(acc[ui]||acc.fr)}));
+  if(acc) S("lcCorps").appendChild(el("p",{class:"lcAcc", text:tx(acc)}));
   S("lcCorps").appendChild(el("p",{class:"lcAv",
-    text: et.acquis+" / "+et.total+(ui==="en"?" words learned":" mots acquis")}));
+    text: et.acquis+" / "+et.total+T("motsAcquis")}));
 
   /* une seule leçon est mise en avant : celle où reprendre */
   var Ls=lecons(LC.chap), suivante=null;
@@ -1590,7 +2155,7 @@ function etape(){
   if(LC.i>=LC.plan.length) return finLecon();
   var x=LC.plan[LC.i];
   jauge();
-  S("lcTitre").textContent = LC.ch + " · " + (langueUI()==="en"?"Lesson ":"Leçon ") + LC.L.n;
+  S("lcTitre").textContent = LC.ch + " · " + T("lecon") + LC.L.n;
   videEl(S("lcCorps"));
   S("lcCorps").appendChild({decouverte:exDecouverte, choix:exChoix, ecoute:exEcoute,
                             ecrire:exEcrire, dire:exDire, phrase:exPhrase}[x.t](x));
@@ -1940,7 +2505,7 @@ function accueilSprint(){
   S("spScore").textContent="0"; S("spCombo").className="";
   videEl(S("spCorps"));
   S("spCorps").appendChild(el("div",{id:"spAccueil"},
-    el("p",{class:"sur", text:"Hype Linguae"}),
+    el("p",{class:"sur", text:NOM_MODULE}),
     el("h1",{text:"Le Sprint"}),
     el("p",{text: ui==="en"
       ? "Sixty seconds. As many words as you can. Three in a row and the combo climbs."
@@ -2116,7 +2681,7 @@ function accueilDuel(){
   S("spScore").textContent="0"; S("spCombo").className="";
   videEl(S("spCorps"));
   S("spCorps").appendChild(el("div",{id:"spAccueil"},
-    el("p",{class:"sur", text:"Hype Linguae"}),
+    el("p",{class:"sur", text:NOM_MODULE}),
     el("h1",{text: ui==="en"?"The Duel":"Le Duel"}),
     el("p",{text: d.aBattre===null
       ? (ui==="en"?"Ten words. Play, then challenge someone with your score."
@@ -2201,11 +2766,9 @@ function finDuel(){
   ));
 }
 function partagerDuel(lien, score){
-  var ui=langueUI();
-  var txt=(ui==="en" ? ("I scored "+score+" on Hype Linguae. Same ten words, beat me: ")
-                     : ("J'ai fait "+score+" sur Hype Linguae. Mêmes dix mots, bats-moi : "))+lien;
+  var txt=T("partageScore",{score:score})+lien;
   if(navigator.share){
-    navigator.share({ title:"Hype Linguae", text:txt }).catch(function(){});
+    navigator.share({ title:NOM_MODULE, text:txt }).catch(function(){});
     return;
   }
   if(navigator.clipboard && navigator.clipboard.writeText){
@@ -2261,18 +2824,55 @@ S("lcFermer").addEventListener("click", fermerLecon);
    qui reste à construire pour les cinq autres.
    ================================================================== */
 var DESTINATIONS = [
-  { cle:"iles",     dr:"\uD83C\uDFF4", nom:"Les Îles",      lg:"en", ouvert:true,
-    d:"Angleterre, Irlande, pays de Galles, Écosse — l'anglais des écuries." },
-  { cle:"peninsule",dr:"\uD83C\uDDEA\uD83C\uDDF8", nom:"La Péninsule", lg:"es", ouvert:false,
-    d:"Andalousie, Jerez, Lisbonne — l'espagnol et le portugais du dressage classique." },
-  { cle:"botte",    dr:"\uD83C\uDDEE\uD83C\uDDF9", nom:"La Botte",     lg:"it", ouvert:false,
-    d:"Toscane, Rome, les Marches — l'italien du saut d'obstacles." },
-  { cle:"rhin",     dr:"\uD83C\uDDE9\uD83C\uDDEA", nom:"Le Rhin",      lg:"de", ouvert:false,
-    d:"Warendorf, Hanovre, Aix-la-Chapelle — l'allemand de l'élevage et du dressage." },
-  { cle:"archipel", dr:"\uD83C\uDDEF\uD83C\uDDF5", nom:"L'Archipel",   lg:"ja", ouvert:false,
-    d:"Hokkaido, Tokyo — le japonais des centres équestres." },
-  { cle:"lexique",  dr:"\u2726", nom:"Le Lexique français", lg:"fr", ouvert:false,
-    d:"Le jargon de la FFE expliqué simplement, pour débuter en français." }
+  { cle:"iles",     dr:"\uD83C\uDFF4", lg:"en", ouvert:true,
+    nom:{fr:"Les Îles", en:"The Isles", es:"Las Islas", it:"Le Isole", de:"Die Inseln", ja:"島々"},
+    d:{fr:"Angleterre, Irlande, pays de Galles, Écosse — l'anglais des écuries.",
+       en:"England, Ireland, Wales, Scotland — the English of the yard.",
+       es:"Inglaterra, Irlanda, Gales, Escocia: el inglés de las cuadras.",
+       it:"Inghilterra, Irlanda, Galles, Scozia: l'inglese delle scuderie.",
+       de:"England, Irland, Wales, Schottland — das Englisch der Stallgasse.",
+       ja:"イングランド、アイルランド、ウェールズ、スコットランド。厩舎の英語。"} },
+  { cle:"peninsule",dr:"\uD83C\uDDEA\uD83C\uDDF8", lg:"es", ouvert:false,
+    nom:{fr:"La Péninsule", en:"The Peninsula", es:"La Península", it:"La Penisola", de:"Die Halbinsel", ja:"半島"},
+    d:{fr:"Andalousie, Jerez, Lisbonne — l'espagnol et le portugais du dressage classique.",
+       en:"Andalusia, Jerez, Lisbon — the Spanish and Portuguese of classical dressage.",
+       es:"Andalucía, Jerez, Lisboa: el español y el portugués de la doma clásica.",
+       it:"Andalusia, Jerez, Lisbona: lo spagnolo e il portoghese del dressage classico.",
+       de:"Andalusien, Jerez, Lissabon — das Spanisch und Portugiesisch der klassischen Reitkunst.",
+       ja:"アンダルシア、ヘレス、リスボン。古典馬術のスペイン語とポルトガル語。"} },
+  { cle:"botte",    dr:"\uD83C\uDDEE\uD83C\uDDF9", lg:"it", ouvert:false,
+    nom:{fr:"La Botte", en:"The Boot", es:"La Bota", it:"Lo Stivale", de:"Der Stiefel", ja:"ブーツの国"},
+    d:{fr:"Toscane, Rome, les Marches — l'italien du saut d'obstacles.",
+       en:"Tuscany, Rome, the Marches — the Italian of showjumping.",
+       es:"Toscana, Roma, las Marcas: el italiano del salto de obstáculos.",
+       it:"Toscana, Roma, le Marche: l'italiano del salto ostacoli.",
+       de:"Toskana, Rom, die Marken — das Italienisch des Springreitens.",
+       ja:"トスカーナ、ローマ、マルケ。障害飛越のイタリア語。"} },
+  { cle:"rhin",     dr:"\uD83C\uDDE9\uD83C\uDDEA", lg:"de", ouvert:false,
+    nom:{fr:"Le Rhin", en:"The Rhine", es:"El Rin", it:"Il Reno", de:"Der Rhein", ja:"ライン"},
+    d:{fr:"Warendorf, Hanovre, Aix-la-Chapelle — l'allemand de l'élevage et du dressage.",
+       en:"Warendorf, Hanover, Aachen — the German of breeding and dressage.",
+       es:"Warendorf, Hannover, Aquisgrán: el alemán de la cría y de la doma.",
+       it:"Warendorf, Hannover, Aquisgrana: il tedesco dell'allevamento e del dressage.",
+       de:"Warendorf, Hannover, Aachen — das Deutsch der Zucht und der Dressur.",
+       ja:"ヴァレンドルフ、ハノーファー、アーヘン。生産と馬場馬術のドイツ語。"} },
+  { cle:"archipel", dr:"\uD83C\uDDEF\uD83C\uDDF5", lg:"ja", ouvert:false,
+    nom:{fr:"L'Archipel", en:"The Archipelago", es:"El Archipiélago", it:"L'Arcipelago", de:"Der Archipel", ja:"列島"},
+    d:{fr:"Hokkaido, Tokyo — le japonais des centres équestres.",
+       en:"Hokkaido, Tokyo — the Japanese of the riding centre.",
+       es:"Hokkaido, Tokio: el japonés de los centros ecuestres.",
+       it:"Hokkaido, Tokyo: il giapponese dei centri equestri.",
+       de:"Hokkaido, Tokio — das Japanisch der Reitzentren.",
+       ja:"北海道、東京。乗馬クラブの日本語。"} },
+  { cle:"lexique",  dr:"\u2726", lg:"fr", ouvert:false,
+    nom:{fr:"Le Lexique français", en:"The French Glossary", es:"El Léxico francés",
+         it:"Il Lessico francese", de:"Das französische Lexikon", ja:"フランス語の用語集"},
+    d:{fr:"Le jargon de la FFE expliqué simplement, pour débuter en français.",
+       en:"FFE jargon explained simply, to start out in French.",
+       es:"La jerga de la FFE explicada de forma sencilla, para empezar en francés.",
+       it:"Il gergo della FFE spiegato in modo semplice, per iniziare in francese.",
+       de:"Der Fachjargon der FFE einfach erklärt, für den Anfang auf Französisch.",
+       ja:"FFEの専門用語をやさしく解説。フランス語の入口。"} }
 ];
 
 function montrerIntro(){ S("intro").classList.add("on"); S("intro").scrollTop=0; }
@@ -2288,8 +2888,8 @@ function montrerDest(){
       try{ localStorage.setItem("hype_lingua_voyage", D.cle); }catch(e){}
     }},
       el("span",{class:"dr", text:D.dr}),
-      el("span",{class:"dd"}, el("b",{text:D.nom}), el("i",{text:D.d})),
-      el("span",{class:"dg", text: D.ouvert ? "Partir" : "Bientôt"})
+      el("span",{class:"dd"}, el("b",{text:tx(D.nom)}), el("i",{text:tx(D.d)})),
+      el("span",{class:"dg", text: T(D.ouvert ? "partirDs" : "bientot")})
     ));
   });
 }
@@ -2387,11 +2987,11 @@ function terminerOuverture(){
 var vidDepart=null;
 function lancerDepart(){
   var e=ETAPES[courant];
-  S("dpVille").textContent=e.v.toUpperCase();
-  S("dpNation").textContent=e.nat;
-  S("dpTitre").textContent="Tampon obtenu";
-  S("dpSous").textContent = (courant+1<10) ? ("Prochaine étape · "+ETAPES[courant+1].v)
-                                           : "Voyage terminé";
+  S("dpVille").textContent=eV(e).toUpperCase();
+  S("dpNation").textContent=eNat(e);
+  S("dpTitre").textContent=T("tamponObtenu");
+  S("dpSous").textContent = (courant+1<10) ? T("prochaineEtape",{v:eV(ETAPES[courant+1])})
+                                           : T("voyageTermine");
   vidDepart=document.createElement("video");
   vidDepart.muted=true; vidDepart.loop=true; vidDepart.autoplay=true;
   vidDepart.setAttribute("playsinline",""); vidDepart.setAttribute("webkit-playsinline","");
@@ -2415,6 +3015,10 @@ function finDepart(){
 }
 S("dpSuite").addEventListener("click",finDepart);
 S("dpPasser").addEventListener("click",finDepart);
+
+/* Au démarrage : on remplit les écrans statiques dans la langue de l'interface.
+   Appelé en dernier, quand DESTINATIONS et les écrans existent. */
+try{ appliquerLangue(); }catch(err){}
 </script>
 </body>
 </html>

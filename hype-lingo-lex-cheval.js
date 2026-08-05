@@ -121,7 +121,7 @@ window.HYPE_LINGO_LEX.cheval = {
 
   { ref:"liste", lecon:2, coll:"marques",
     mots:{ fr:{m:"la liste"}, en:{m:"the blaze", p:"bléïze", var:"stripe = fine"},
-           es:{m:"el cordón", var:"la lista"}, it:{m:"la lista"}, // ??
+           es:{m:"la lista", var:"el cordón"}, it:{m:"la lista"},
            de:{m:"die Blesse", p:"blè-se"}, ja:{m:"流星", p:"ryūsei"} },
     def:{ fr:"La bande blanche qui descend du front vers le nez. Apy en a une très large, continue jusqu'au museau. Le japonais l'appelle « étoile filante » (流星).",
           en:"The white band running down the face. A narrow one is a stripe, a broad one a blaze. Japanese calls it « shooting star »." } },
@@ -315,7 +315,7 @@ window.HYPE_LINGO_LEX.cheval = {
   { ref:"chaud", lecon:4, coll:"identite",
     mots:{ fr:{m:"chaud"}, en:{m:"hot", p:"hott", var:"sharp · fizzy"},
            es:{m:"nervioso", var:"caliente"}, it:{m:"caldo", var:"nervoso"},
-           de:{m:"heiß", p:"haïss", var:"nervös"}, ja:{m:"神経質", p:"shinkeishitsu"} }, // ??
+           de:{m:"heiß", p:"haïss", var:"nervös"}, ja:{m:"気性難", p:"kishōnan", var:"神経質 = nerveux"} },
     def:{ fr:"Un cheval chaud n'est pas méchant : il réagit vite et fort. L'anglais a les images les plus parlantes — **sharp** (vif comme une lame), **fizzy** (pétillant).",
           en:"A hot horse is not a mean one: it reacts fast and strongly. English has the liveliest images: sharp, fizzy." } },
 
@@ -426,7 +426,7 @@ window.HYPE_LINGO_LEX.cheval = {
     { ref:"jument-grise", lecon:1,
       fr:"C'est une jument grise avec une grande liste.",
       en:"She's a grey mare with a big blaze.",
-      es:"Es una yegua torda con un gran cordón.",
+      es:"Es una yegua torda con una gran lista.",
       it:"È una cavalla grigia con una grande lista.",
       de:"Sie ist eine Schimmelstute mit einer breiten Blesse.",
       ja:"大きな 流星 の ある 芦毛 の 牝馬 です 。" },
@@ -457,7 +457,7 @@ window.HYPE_LINGO_LEX.cheval = {
       es:"Es un poco nervioso, prefiero un caballo de escuela.",
       it:"È un po' caldo, preferisco un cavallo da scuola.",
       de:"Er ist etwas heiß, ich nehme lieber ein Schulpferd.",
-      ja:"少し 神経質 な ので 、 練習馬 の 方 が いい です 。" },
+      ja:"少し 気性難 な ので 、 練習馬 の 方 が いい です 。" },
     { ref:"quelle-race", lecon:4,
       fr:"C'est quelle race ?",
       en:"What breed is he ?",
