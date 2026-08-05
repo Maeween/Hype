@@ -12,6 +12,33 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🌐 SESSION 92 (06/08) — LE GLOBE RÉPARÉ ET DEVENU LISIBLE
+
+### 🔴 MON EXTRACTION AVAIT DÉBORDÉ — cause de « plein de bugs »
+`lingo-globe.html` contenait **7 592 caractères de trop après son `</html>`** : un pan du code **React de `index.html`** (écrans, NavBar, messagerie), capturé par erreur en extrayant `GLOBE_HTML_HYPE`. Ce code s'exécutait dans une page sans React, plantait, et **les gestionnaires de clic posés plus loin n'étaient jamais installés** — d'où « on clique sur une ville et il ne se passe rien ».
+**Corrigé** : troncature au premier `</html>`. 82 841 → 75 250 octets.
+⚠️ **Leçon** : en extrayant une chaîne HTML d'un gros fichier, borner sur `</html>` et **vérifier la queue du résultat**, pas seulement son début.
+
+### ✅ La zone basse liste enfin les destinations (idée de Blandine)
+Avant : la liste ne s'affichait **qu'en tapant** dans la recherche, sinon la moitié basse était vide et annonçait « **Aucun club trouvé** » — vestige de la recherche de clubs de Hype.
+Maintenant : **les 18 destinations sont toujours listées**, avec **pays · ce qu'elles enseignent · état** (Newmarket — Angleterre · L'écurie — FAITE). La recherche et les puces filtrent la liste. Toucher une ligne y vole et ouvre la fiche. Testé : 18 lignes, filtre « Faites » → 3.
+
+### ✅ Tout ce qui parlait encore de club
+Bouton `#fbtn` (« C'est mon club » en dur dans le HTML) · `HYPE_L` dans les 6 langues · `HYPE_MEM`/`HYPE_MON` · `TLAB` (les 5 types de club remplacés par les 4 états) · « Aucun club trouvé » · **l'orbe qui postait encore `hype-mon-club` à Hype** avec le contenu du champ de recherche — neutralisé, il ne fait plus que refermer (`linguae-fermer`, branché côté parent).
+✅ Vérifié par test : plus aucune occurrence de « club » dans le texte affiché.
+
+### ✅ Trois défauts d'habillage, tous mesurés au rendu et non à l'estime
+- **Les villes françaises de Hype** (`VILLES` : Strasbourg, Bordeaux, Perpignan…) s'affichaient sur le globe et noyaient les destinations. Tableau vidé — il reste **déclaré**, le moteur le parcourt à plusieurs endroits.
+- **La recherche partait hors écran** : elle est centrée par `left:50%` + `translateX(-50%)`, et poser `left/right` par-dessus sans neutraliser la translation la décalait d'une demi-largeur. `transform:none` ajouté.
+- **Le titre restait coupé sous un halo** : l'apparition lettre par lettre est réglée `.5s + i × .22s`, calibrée pour les 10 lettres de « YOUR WORLD ». À 16 lettres, la lueur de la dernière ne s'éteignait jamais. Décalage resserré à `.25s + i × .075s`.
+- Mise en page refaite en **trois zones franches** (globe / recherche / liste défilante / puces) d'après des mesures réelles : puces à 726..847 sur 844 px, donc liste arrêtée à 124 px du bas.
+
+✅ **Enchaînement complet revérifié dans `lingo.html`** : globe ouvert → 18 lignes → clic sur Newmarket → fiche → « Partir » → **écran d'arrivée sur Newmarket**. 0 erreur.
+
+⚠️ **Attention, dit par Blandine** : l'`index.html` que j'ai utilisé n'est peut-être pas le dernier. Si le globe de l'app a été corrigé depuis, il faudra **rejouer la greffe sur le globe à jour** — elle tient en huit modifications chirurgicales, toutes documentées dans le fichier.
+
+---
+
 ## 🔧 SESSION 91 (06/08, nuit) — CORRECTIONS APRÈS LE TEST EN LIGNE DE BLANDINE
 
 ### 🔴 ÉCRAN VIDE APRÈS « ENTRER À NEWMARKET » — de ma faute
@@ -28,8 +55,21 @@ Le dépliant de l'itinéraire affiche un résumé d'une ligne pris dans la table
 - « **On voyage la nuit, on arrive à l'aube. Le chemin se fait au doigt** » → décrivait un chemin **supprimé**. Devient « Tu choisis ta prochaine étape. Sur le globe, ou parmi celles que la ville que tu quittes te propose. »
 - « **Dix villes, dix chapitres** » → « Dix-huit destinations », avec « Du Suffolk à l'Andalousie ».
 
-### ⚠️ RESTE UNE INCOHÉRENCE DE FOND, NON TRAITÉE
-Le voyage s'appelle toujours **« Les Îles · Angleterre, Irlande, pays de Galles, Écosse »** alors qu'il passe désormais par la France, l'Espagne et l'Allemagne. Et `DESTINATIONS` propose encore des **régions** (Les Îles, La Péninsule…) — c'est la structure v1 abandonnée. En v2 on choisit **une langue** et on fait le tour du monde. **L'écran de choix doit devenir un choix de langue.** Décision à prendre avec Blandine, pas à trancher seul : ça touche le nom du voyage, le sous-titre, et les 6 entrées de `DESTINATIONS`.
+### ✅ LE VOYAGE N'EST PLUS UNE RÉGION, C'EST UNE LANGUE
+Corrigé dans la même session. `DESTINATIONS` proposait encore **des régions** — « Les Îles », « La Péninsule », « La Botte »… — héritage de la v1 où une langue valait un pays. Le joueur lisait « Angleterre, Irlande, pays de Galles, Écosse » **puis arrivait à Saumur et à Jerez.**
+- Les 6 entrées deviennent **6 langues** : L'anglais · L'espagnol · L'italien · L'allemand · Le japonais · Le français. Drapeaux mis à jour. Descriptions réécrites dans les 6 langues (« Le même tour du monde, en espagnol. Bientôt. »).
+- ⚠️ **Les clés `cle` sont conservées telles quelles** (`iles`, `peninsule`…) : elles sont déjà dans le localStorage des joueurs, les changer effacerait leur voyage en cours.
+- Écran de choix : « Où veux-tu aller ? » → **« Quelle langue veux-tu apprendre ? »**, sous-titre « Une langue, dix-huit destinations ».
+- En-tête du voyage : affichait `D.nom`, ce qui donnerait maintenant « L'anglais · anglais ». Devient **« Le tour du monde · anglais »** (nouveau libellé `tourDuMonde`, 6 langues).
+- Carnet : titre « Les Îles » → « Le tour du monde » · nations « Angleterre · Irlande · Galles · Écosse » → **+ France · Espagne · Allemagne** · intro « Dix chapitres, dix villes » → « Dix-huit villes », **dans les 6 langues**.
+- Présentation : le point « Dix villes, dix chapitres » n'était corrigé qu'en français — **les 5 autres langues disaient encore dix**. Traduit partout.
+✅ Vérifié en rendu réel dans 4 langues. Plus aucune mention de « dix villes » ni de « Les Îles » hors commentaire de code.
+
+### ⚠️ Reste ouvert
+Idée de Blandine : **remplacer la liste de l'itinéraire par des cartes qui se retournent.** Le carnet est de toute façon redondant avec le globe — la vraie question est peut-être de le supprimer plutôt que de le redessiner. Non tranché.
+
+### ~~Incohérence de fond~~ (réglée ci-dessus)
+Le voyage s'appelait **« Les Îles · Angleterre, Irlande, pays de Galles, Écosse »** alors qu'il passe désormais par la France, l'Espagne et l'Allemagne. Et `DESTINATIONS` propose encore des **régions** (Les Îles, La Péninsule…) — c'est la structure v1 abandonnée. En v2 on choisit **une langue** et on fait le tour du monde. **L'écran de choix doit devenir un choix de langue.** Décision à prendre avec Blandine, pas à trancher seul : ça touche le nom du voyage, le sous-titre, et les 6 entrées de `DESTINATIONS`.
 ⚠️ Idée de Blandine à instruire : **remplacer la liste de l'itinéraire par des cartes qui se retournent.** Le carnet est de toute façon devenu redondant avec le globe — la vraie question est peut-être de le supprimer plutôt que de le redessiner.
 
 ---
