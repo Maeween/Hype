@@ -123,6 +123,18 @@ Le globe sobre écrit d'abord est **remplacé** par le vrai globe de l'app. `GLO
 ✅ Vérifié en rendu réel : 19 points, états appliqués, arcs recalculés, `flyTo` vers Saumur, fiche correcte, **message `{t:"linguae-dest", ref:"saumur"}` réellement émis au clic**, bouton désactivé sur une étape fermée, et le tout fonctionne dans l'iframe depuis `lingo.html`. 0 erreur.
 ⚠️ `lingo-globe.html` passe de 40 à 83 Ko. Le fichier sobre est abandonné.
 
+### ✅ Les 8 vidéos sont au même format
+Les six qui ne l'étaient pas sont normalisées en **456×810, le 9:16 exact** — comme Saumur, Jerez et Séville. Recadrage de la largeur **au centre**, plus retrait des 2 px de bande noire que toutes portaient. **Durées inchangées** : Blandine n'a pas tranché le 5 ou le 10 s, et couper Golegã, Lamotte ou Vejer de moitié risquait de perdre leur panneau de fin.
+Perte réelle mesurée : **6,8 à 8,9 % de la largeur** (17 à 22 px par côté), 4 px de hauteur. Vérifié sur planche avant/après : le cheval, le cavalier, l'obstacle et le ciel sont intacts ; ce qui part est une bande de gazon latérale.
+⚠️ **Pourquoi c'était nécessaire** : le code choisit `cover` sur une vidéo portrait, donc il rognait lui-même à l'affichage — **sans savoir où est le sujet**. Un recadrage centré maîtrisé vaut mieux qu'un rognage aveugle.
+⚠️ **Fausse alerte évitée** : la détection automatique croyait voir un filigrane sur Aix et Vejer. Contrôle visuel avant de couper : ce n'étaient que des nuages éclairés. **Aucun recadrage du haut.** Leçon : ne jamais couper sur la seule foi d'un seuil de luminance.
+Golegã est incluse bien qu'absente des 18, pour qu'elle soit prête le jour où elle entre.
+
+### ✅ `hype-linguae-doutes.md` complété
+Ajout des **14 entrées du 5 août** qui n'avaient été relues par personne : les 4 mots neufs du poney et les 10 phrases de Saumur et Vejer. En-tête corrigé : **378 concepts, pas 336** (l'ancien compte oubliait le pansage et ne comptait pas les phrases).
+⚠️ Une consigne ajoutée pour les relecteurs : **une phrase se juge sur « un cavalier dirait-il ça, comme ça ? »**, pas sur l'exactitude grammaticale. Et le japonais des phrases **garde ses espaces** — ils sont fonctionnels, pas fautifs.
+⚠️ Doute signalé de moi-même : dans la phrase du passage, l'espagnol dit « paso español », **qui n'est pas le passage**. À faire corriger en priorité.
+
 ### ⚠️ Reste à faire
 - **Le chemin côtier est encore là**, fonctionnel mais condamné. Le bouton « Le globe » est la nouvelle entrée. Le retirer est un chantier à part.
 - **Le choix libre en fin de chapitre** (3 sorties : rester au pays / suivre le sujet / le globe) : préparé dans `hype-linguae-repartition-v2.md`, pas codé.

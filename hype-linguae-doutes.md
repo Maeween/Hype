@@ -1,6 +1,8 @@
 # Hype Linguae · vocabulaire à faire vérifier
 
-**Voyage 1 · anglais · état au 4 août 2026.** 336 concepts écrits, six langues chacun.
+**Voyage 1 · anglais · état au 5 août 2026.** 378 concepts écrits, six langues chacun.
+
+⚠️ **Le total a changé** : 378 et non 336. L'ancien compte oubliait le chapitre du pansage et ne comptait que les concepts, pas les phrases.
 
 **117 entrées ont été marquées comme incertaines** par celui qui les a écrites, ce qui représente **220 mots à vérifier** (une même entrée peut concerner plusieurs langues). Les voici, classées par langue.
 
@@ -398,6 +400,49 @@ Pour chaque mot : **est-ce celui qu'un cavalier de ce pays emploie réellement d
 | 1 · L'écurie | ? | sont celles dont je ne suis pas sûr : à faire valider par |
 | 4 · Le matériel | ? | reportées au fichier de doutes. |
 | 7 · L'obstacle | ? | au |
+
+---
+
+## Ajouts du 5 août 2026 — 14 entrées de plus
+
+Écrites après la répartition v2, elles **ne sont pas comptées dans les 220** ci-dessus et n'ont été relues par personne. **Allemand et japonais en priorité.**
+
+### Le chapitre du poney — 4 mots neufs
+Créé pour Lamotte-Beuvron. Les six autres entrées de ce chapitre sont des rappels déjà présents ailleurs, donc déjà couverts par les listes précédentes.
+
+| Concept | Allemand | Japonais | Espagnol | Italien | Ce dont je doute |
+|---|---|---|---|---|---|
+| la toise | `das Stockmaß` | `測尺` (sokushaku) | `el hipómetro` | `l'ippometro` | **Les deux plus douteux.** `Stockmaß` désigne-t-il l'instrument, ou seulement la mesure obtenue ? Et `測尺` est-il le mot d'un club, ou de la seule JRA ? |
+| le poney-club | `der Ponyhof` | `ポニークラブ` | `el club de ponis` | `il pony club` | `Ponyhof` ou `Ponyclub` en Allemagne ? Et en anglais, « The Pony Club » est une organisation nationale précise : la définition le signale, est-ce suffisant ? |
+| la catégorie de taille | `die Größenklasse` | `体高区分` | `la categoría por altura` | `la categoria di altezza` | ⚠️ **Les lettres A à E sont une convention FFE française.** Comment un cavalier allemand, japonais ou espagnol annonce-t-il la catégorie de son poney — en centimètres, en mains, autrement ? |
+| le poney shetland | `das Shetlandpony` | `シェットランドポニー` | `el poni Shetland` | `il pony Shetland` | Peu risqué, mais à confirmer. |
+
+### Les 10 phrases neuves
+Écrites pour combler un trou : le dressage n'avait de phrases qu'en leçons 1 et 4, or **Saumur** prend les leçons 2 et 3 — elle n'en avait aucune. Idem pour **Vejer** côté écurie.
+
+⚠️ **Une phrase se juge autrement qu'un mot.** La question n'est pas « la traduction est-elle exacte » mais **« un cavalier dirait-il ça, comme ça, dans cette situation ? »** Une phrase grammaticalement juste mais que personne ne prononce est à corriger.
+
+**Dressage — Saumur** (leçons 2 et 3)
+
+| Français | À vérifier surtout |
+|---|---|
+| Je fais une cession à la jambe de B vers E ? | l'allemand `Schenkelweichen von B nach E reiten` · le japonais `脚譲り` |
+| Sur quelle longueur je garde l'épaule en dedans ? | l'espagnol : `espalda adentro` est-il le terme employé en piste ? |
+| Il précipite au passage, je ralentis la cadence ? | ⚠️ l'espagnol dit « paso español », ce qui **n'est pas le passage** — à corriger si c'est faux |
+| Il n'est pas décontracté, je le laisse s'étirer ? | l'allemand `losgelassen` / `dehnen lassen` |
+| Je demande trop de rassembler pour son âge ? | l'italien `riunione` · le japonais `収縮` |
+| Ma main est trop lourde, il perd sa légèreté. | toutes : est-ce qu'on le dit ainsi, ou autrement ? |
+
+**Écurie — Vejer** (leçons 2 et 3)
+
+| Français | À vérifier surtout |
+|---|---|
+| Combien de balles de paille par box et par semaine ? | les unités : balle, botte, ballot selon les pays |
+| Où je vide la brouette et où sont les fourches ? | le japonais : `一輪車` est-il le mot d'écurie ou un mot de chantier ? |
+| Sa ration est écrite sur la porte, je peux la voir ? | — |
+| Je donne le foin avant les granulés, c'est bien ça ? | `Kraftfutter` / `濃厚飼料` : mots de professionnels ou d'usage courant ? |
+
+⚠️ **Détail de forme à ne pas « corriger »** : dans ces phrases, **le japonais est écrit avec des espaces** entre les groupes. Ce n'est pas une faute — l'exercice consiste à remettre des morceaux dans l'ordre, et sans espaces il n'y aurait rien à déplacer. Merci de garder les espaces où ils sont en proposant une correction.
 
 ---
 
