@@ -12,6 +12,58 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🌍 SESSION 89 (05/08) — LE GLOBE, LES 18 VILLES, ET UN BUG BLOQUANT DÉCOUVERT
+
+**Page codeuse unique, Blandine seule sur le projet, feu vert complet.** Part du `lingo.html` MD5 `2642d726` (171 235 o) → sortie 186 511 o.
+Livrés : `lingo.html`, `lingo-preview-02.html`, **`lingo-globe.html`** (nouveau), **`hype-lingo-lex-poney.js`** (nouveau).
+
+### 🔴 BUG BLOQUANT PRÉEXISTANT — le moteur de leçon ne tournait PAS
+Découvert au premier rendu Playwright du fichier reçu, **confirmé sur la version d'origine non modifiée** : `lingo.html` levait une `TypeError` pendant son initialisation et **le script s'arrêtait à la ligne 1302**. Tout ce qui est déclaré après restait `undefined` : `CHAPITRE_DE`, `TXT`, `MAITRISE`, `UI`, `VOIX`, `COLL_NOM`. Les fonctions existaient (hissage) mais le moteur de vocabulaire ne pouvait rien faire.
+
+**Cause :** le bloc qui construit le carnet appelle `T()` puis `langueUI()`, or `UI` et `LANGUES_UI` sont déclarées **bien plus bas dans le même script** — `var` est hissé, pas sa valeur. Introduit avec le travail des six langues (session 86).
+**Correction :** deux gardes, une dans `T()`, une dans `langueUI()`. On retombe sur vide / français au lieu de planter ; les éléments portent `data-t`, donc `appliquerLangue()` les remplit correctement juste après.
+⚠️ **C'est la troisième fois que ce motif frappe** (déjà `etatChapitre` en session 85). **Ne jamais appeler une fonction de traduction depuis un bloc d'initialisation situé avant la déclaration des tables.**
+
+### ✅ Le globe remplace le chemin
+Nouveau fichier **`lingo-globe.html`**, 40 Ko, chargé en iframe depuis `lingo.html` — même motif que `GLOBE_HTML_HYPE` dans l'app. **Aucune bibliothèque, aucun WebGL, aucun réseau** : projection orthographique sur canvas 2D. Le nuage de terres `LAND` (2215 points, grille 2,5°) est **repris du globe de l'app**, pour que les deux montrent la même Terre.
+- Une étape faite porte **une étoile d'or** et une ligne de grand cercle depuis le départ : la constellation perdue avec le chemin renaît là.
+- **Vol d'approche** : le globe s'ouvre sur la Terre entière puis se rapproche seul sur l'Europe en 1,1 s (arbitrage : les deux cadrages au lieu d'en choisir un). Toute action l'interrompt.
+- Glisser pour tourner, pincer pour zoomer, toucher une ville pour sa fiche, « Partir » renvoie la destination au parent.
+- ⚠️ **Anti-collision des étiquettes** : à 18 villes dans 600 km, tout afficher revient à ne rien lire. Seules les faites, les ouvertes et celle qu'on touche s'affichent, et une étiquette qui en chevauche une autre s'efface.
+- ⚠️ **Moiré polaire corrigé** : la grille régulière en degrés forme des arcs près des pôles ; la maille est éclaircie selon la latitude et coupée au-delà de 78°.
+- **Départ = Paris par défaut** (décision de Blandine). `departDuJoueur()` lira `HYPE_LINGO_HOST.ecurie()` **quand le pont l'exposera — il ne l'expose pas encore.**
+
+### ✅ Les 18 villes sont branchées et jouables
+`ETAPES` passe de 10 à 18 : + Saumur, Lamotte, Jerez, Séville, Vejer, Oliva, Warendorf, Aix-la-Chapelle. Nations (France, Espagne, Allemagne) et heures traduites dans les 6 langues, `ETAPES_I18N` complété pour les 8 (chapitre, nom, souvenir).
+**Vérifié en ouvrant les 18 leçons une par une dans un vrai navigateur : 18/18 jouables, 0 erreur.** 20 à 30 mots chacune.
+✅ **Tous les `10` en dur du chemin remplacés** par `ETAPES.length` (géométrie, jalons, points, compteur). Le libellé « Chapitre n sur 10 » devient `{t}` et est traduit.
+
+### ✅ Nouveau chapitre `poney` (Lamotte)
+`hype-lingo-lex-poney.js` : 10 concepts + 3 phrases. **6 rappels** partageant le `ref` d'entrées de `cheval.js` — voulu, la maîtrise est par `ref`. **4 entrées neuves** dans les 6 langues (la toise, le poney-club, la catégorie de taille, le shetland), **à faire relire par un natif**, `das Stockmaß` et `測尺` en premier.
+⚠️ La `def` de « catégorie de taille » précise que **les lettres A à E sont une convention FFE française** qui ne veut rien dire à l'étranger.
+
+### ✅ Cinq collections n'avaient aucun nom
+`corps`, `etat`, `cheval-urg`, `jour-j`, `races` existaient dans les lexiques depuis le 4 août mais n'étaient pas dans `COLL_NOM` : leurs leçons s'affichaient **« Leçon 2 »**. Repéré en ouvrant les 18 villes une par une. Nommées et traduites dans les 6 langues.
+
+### ⚠️ Trou de contenu repéré
+**Saumur n'a AUCUNE phrase** (0), parce que les leçons 2 et 3 du chapitre dressage n'en contiennent pas. Sa leçon n'aura donc pas d'exercice de phrase. Vejer n'en a que 2. À combler côté contenu.
+
+### Contrôles passés
+Syntaxe JS validée à chaque étape · **diff exhaustif dans les deux sens : aucune fonction perdue, aucune `var` perdue** (ajouts : `chapVirtuel`, `recopier`, `ouvrirGlobe`, `fermerGlobe`, `etatPourGlobe`, `departDuJoueur`, `ETAPE_SRC`, `ACCUEIL_VILLE`, `DEPART_DEFAUT`) · rendu Playwright réel : 0 erreur console, globe ouvert, pont vérifié, un exercice lancé jusqu'à l'affichage.
+
+### ✅ Ajouté après le premier test de Blandine
+**Le bouton « Continuer » de la première page était bloqué** — Blandine l'a signalé, et c'était le même bug bloquant : le gestionnaire de `#inSuite` était dans la partie morte du script. Vérifié par comparaison avant/après : sur la version d'origine le bouton **n'était même pas visible**, sur la corrigée il passe.
+**Titre sombre sur ciel clair** : classe `.pface.clair` + table `TITRE_SOMBRE` (8 villes : warendorf, jerez, golega, oliva, lamotte, saumur, aachen, vejer), appliquée par `appliquerTeinteTitre(ref)` au moment où la carte est posée. Les images restent intactes. Séville (tiers haut à 78) garde le titre crème.
+
+### ⚠️ Reste à faire
+- 🔴 **`hype-lingo-villes.js` n'a que les 10 villes d'origine.** Les 8 neuves n'ont donc **ni lettre au verso de la carte postale, ni volets « Prolonge ton voyage »** — les textes existent, traduits en 6 langues, dans `hype-linguae-villes-nouvelles.md`, mais **ne sont pas dans le fichier**. Le fichier n'a jamais été fourni à cette page : **à envoyer pour que je l'injecte.**
+- **Le chemin côtier est encore là**, fonctionnel mais condamné. Le bouton « Le globe » est la nouvelle entrée. Le retirer est un chantier à part.
+- **Le choix libre en fin de chapitre** (3 sorties : rester au pays / suivre le sujet / le globe) : préparé dans `hype-linguae-repartition-v2.md`, pas codé.
+- **Titre clair ou sombre selon la ville** : 15 cartes sur 18 ont un tiers haut au-dessus de 100 de luminance. Le titre sombre devient la règle, pas l'exception. Pas codé.
+- Les récits courts des 8 villes (pris ailleurs par Blandine) et la relecture native des 220 mots.
+
+---
+
 ## 🗺️ SESSION 87 (05/08) — LINGUAE : RÉPARTITION DU VOCABULAIRE + HUIT VILLES ÉCRITES
 
 **Aucun code. `index.html` et `lingo.html` non modifiés.** Étape 3 de `hype-linguae-structure-v2.md`.
