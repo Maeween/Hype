@@ -28372,6 +28372,12 @@ function ClocheNotifs() {
    ============================================================ */
 
 /* Quêtes réalisables sans aller à l'écurie (les autres attendent la vraie vie). */
+/* 05/08 (demande Blandine) : la carte Generali Open de France quitte l accueil.
+   Masquee par constante, pas supprimee : repasser a true la fait revenir. Le titre
+   de section « L actualite » est masque avec elle, sinon un intitule resterait seul
+   au-dessus de rien. */
+var AFFICHER_ACTU_LAMOTTE = false;
+
 var HYPE_QUETES_MAISON = { "photo-profil": 1, "cours": 1, "quiz-parfait": 1, "article": 1, "langue": 1, "notifs": 1, "hey-baby": 1, "philosophie-ecurie": 1, "ami": 1, "photo-cheval": 1, "cheval": 1 };
 
 /* Numéro du jour : sert de graine de rotation (change à minuit, stable dans la journée). */
@@ -28736,7 +28742,7 @@ function EcranUnivers() {
            avant que la video s affiche (signale par Blandine). Elle passe a opacite 0 et n est
            revelee qu en cas d echec de la video, ce qui est son seul role. */
         React.createElement("div", { className: "hero-img", style: { opacity: 0, transition: "opacity .5s ease" } }),
-        React.createElement("video", { src: "hype-anim-cheval.mp4", muted: true, loop: true, playsInline: true, autoPlay: true, preload: "metadata", "aria-hidden": "true", /* 31/07 soir : ANIMATION DU HERO (fichier separe, meme nom = remplacable sans toucher a l index). L image hero-img reste dessous en filet de securite. */
+        React.createElement("video", { src: "hype-accueil-video.mp4", poster: "hype-accueil-poster.jpg", muted: true, loop: true, playsInline: true, autoPlay: true, preload: "metadata", "aria-hidden": "true", /* 05/08 : nouvelle animation d accueil, verticale 480x854 fournie par Blandine. Nom de fichier distinct volontairement : hype-anim-cheval.mp4 reste utilise par la carte Grand Prix, ou une video verticale casserait la mise en page. Le poster evite le flash noir avant lecture. */ /* 31/07 soir : ANIMATION DU HERO (fichier separe, meme nom = remplacable sans toucher a l index). L image hero-img reste dessous en filet de securite. */
           onError: function (eEr) {
             try {
               eEr.target.style.display = "none";
@@ -28762,7 +28768,7 @@ function EcranUnivers() {
           /* 02/08 : plus de calcul de hauteur en JS. width 100% + height auto suffit : le
              navigateur respecte le format natif du fichier. La video est dans le flux, donc
              c est elle qui donne sa hauteur a l en-tete. Rien n est rogne, aucune bande. */
-          style: { position: "relative", zIndex: 1, display: "block", width: "100%", height: "auto", pointerEvents: "none", background: "transparent" } }),
+          style: { position: "relative", zIndex: 1, display: "block", width: "auto", maxWidth: "100%", height: "auto", maxHeight: "66vh", margin: "0 auto", pointerEvents: "none", background: "transparent" } }),
         React.createElement("div", { className: "hero-pulse" }),
         React.createElement("div", { className: "hero-side" }),
         React.createElement("div", { className: "hero-grad" }),
@@ -28928,16 +28934,16 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
            elle s etirait en pleine largeur avec un aspect-ratio 4/5 (carteVertAcc pensee pour une grille 2 colonnes)
            et devenait enorme, creant un grand vide entre Galops et Culture equestre. Ecran "sante" toujours routé. */
 
-        chapAcc(L5acc("L'actualit\u00e9", "The news", "La actualidad", "L'attualit\u00e0", "\u6700\u65b0\u60c5\u5831"), "d4"),
+        (AFFICHER_ACTU_LAMOTTE ? chapAcc(L5acc("L'actualit\u00e9", "The news", "La actualidad", "L'attualit\u00e0", "\u6700\u65b0\u60c5\u5831"), "d4") : null),
 
-        React.createElement("button", { className: "banner lamotte glass rv d4" + (lmEnCours ? " lm-live" : ""), onClick: function(){ try { window.__evenementOuvert = "lamotte"; } catch (e) {} setEcran("evenement"); } },
+        (AFFICHER_ACTU_LAMOTTE ? React.createElement("button", { className: "banner lamotte glass rv d4" + (lmEnCours ? " lm-live" : ""), onClick: function(){ try { window.__evenementOuvert = "lamotte"; } catch (e) {} setEcran("evenement"); } },
           React.createElement("div", { className: "lm-img", style: { backgroundImage: "url(" + PHOTO_PARC_ENTREE + ")", backgroundSize: "cover", backgroundPosition: "center 42%" } }),
           React.createElement("div", { className: "lm-veil" }),
           React.createElement("div", { className: "lm-info" },
           React.createElement("span", { className: "lm-badge", style: lmEnCours ? { fontStyle: "italic" } : undefined }, lmBadge),
           React.createElement("div", { className: "lm-t" }, t.lt),
           React.createElement("div", { className: "lm-loc" }, t.ll)),
-          React.createElement("span", { className: "lm-chev" }, "\u203a")),
+          React.createElement("span", { className: "lm-chev" }, "\u203a")) : null),
 
         /* 27/07 : Nos partenaires descend tout en bas de page, juste au-dessus de Devenir membre / Cercle Crystal. */
         React.createElement("button", { className: "rv d5", style: { marginTop: 18, position: "relative", width: "100%", height: 158, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(32,217,245,0.24)", cursor: "pointer", padding: 0, textAlign: "left", display: "block", background: "#0A0F14" }, onClick: nav("sellerie") },
