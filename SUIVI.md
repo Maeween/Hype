@@ -55,8 +55,13 @@ Syntaxe JS validée à chaque étape · **diff exhaustif dans les deux sens : au
 **Le bouton « Continuer » de la première page était bloqué** — Blandine l'a signalé, et c'était le même bug bloquant : le gestionnaire de `#inSuite` était dans la partie morte du script. Vérifié par comparaison avant/après : sur la version d'origine le bouton **n'était même pas visible**, sur la corrigée il passe.
 **Titre sombre sur ciel clair** : classe `.pface.clair` + table `TITRE_SOMBRE` (8 villes : warendorf, jerez, golega, oliva, lamotte, saumur, aachen, vejer), appliquée par `appliquerTeinteTitre(ref)` au moment où la carte est posée. Les images restent intactes. Séville (tiers haut à 78) garde le titre crème.
 
-### ⚠️ Reste à faire
-- 🔴 **`hype-lingo-villes.js` n'a que les 10 villes d'origine.** Les 8 neuves n'ont donc **ni lettre au verso de la carte postale, ni volets « Prolonge ton voyage »** — les textes existent, traduits en 6 langues, dans `hype-linguae-villes-nouvelles.md`, mais **ne sont pas dans le fichier**. Le fichier n'a jamais été fourni à cette page : **à envoyer pour que je l'injecte.**
+### ✅ Les 8 villes neuves ont enfin leurs textes dans le code
+Nouveau fichier **`hype-lingo-villes-monde.js`** (50 Ko). Il **complète** `hype-lingo-villes.js` au lieu de le remplacer : chargé après lui, il ajoute ses 8 clés **une par une, sans jamais écraser** une ville existante. Les 10 britanniques et irlandaises restent dans leur fichier, intactes.
+**Généré automatiquement depuis `hype-linguae-villes-nouvelles.md`** plutôt que retapé — zéro perte à la recopie. Les 8 villes ont lettre + 3 volets **dans les six langues**.
+⚠️ **Les volets deviennent traduisibles** : les 10 premières villes portent des chaînes, les 8 nouvelles un objet par langue. `tx()` accepte les deux, donc **rien à migrer** dans le fichier existant. Deux lignes changées dans l'affichage des dépliants.
+✅ Vérifié en rendu réel : la **lettre suit la langue étudiée** (elle est écrite dans la langue qu'on apprend) et les **volets suivent la langue d'interface** — testé fr/en/de/ja sur Saumur et Warendorf, correct dans les quatre.
+
+### ⚠️ Reste à faire Les 8 neuves n'ont donc **ni lettre au verso de la carte postale, ni volets « Prolonge ton voyage »** — les textes existent, traduits en 6 langues, dans `hype-linguae-villes-nouvelles.md`, mais **ne sont pas dans le fichier**. Le fichier n'a jamais été fourni à cette page : **à envoyer pour que je l'injecte.**
 - **Le chemin côtier est encore là**, fonctionnel mais condamné. Le bouton « Le globe » est la nouvelle entrée. Le retirer est un chantier à part.
 - **Le choix libre en fin de chapitre** (3 sorties : rester au pays / suivre le sujet / le globe) : préparé dans `hype-linguae-repartition-v2.md`, pas codé.
 - **Titre clair ou sombre selon la ville** : 15 cartes sur 18 ont un tiers haut au-dessus de 100 de luminance. Le titre sombre devient la règle, pas l'exception. Pas codé.

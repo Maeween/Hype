@@ -1,0 +1,343 @@
+/* hype-lingo-villes-monde.js — Hype Linguae · les huit villes du monde
+   ==================================================================
+   Saumur · Lamotte-Beuvron · Jerez · Séville · Vejer · Oliva Nova ·
+   Warendorf · Aix-la-Chapelle.
+
+   ⚠️ CE FICHIER COMPLÈTE hype-lingo-villes.js, il ne le remplace pas.
+   Il se charge APRÈS lui et ajoute ses clés une par une, sans jamais
+   écraser une ville existante. Les dix villes britanniques et
+   irlandaises restent où elles sont, dans leur fichier.
+
+   Contrairement aux dix premières, ces huit villes sont TRADUITES dans
+   les six langues dès leur création — lettre et volets. Les volets
+   portent donc un objet par langue au lieu d'une chaîne : `tx()` accepte
+   les deux, une chaîne est renvoyée telle quelle.
+
+   Généré le 5 août 2026 depuis hype-linguae-villes-nouvelles.md, pour ne
+   pas retaper les textes et ne rien perdre en recopiant.
+
+   ⚠️ Faits encore à vérifier avant publication : datation du Cadre Noir,
+   intitulé exact du spectacle de Jerez, rôle de la Deutsche Reitschule,
+   période de la Feria de Séville.
+   ================================================================== */
+
+window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
+
+(function(){
+  var MONDE = {
+
+  /* ============ SAUMUR · le Cadre Noir ============ */
+  saumur:{
+    lieu:"Maine-et-Loire · France", carte:true, niveau:3,
+    image:"l'écuyer en noir dans le grand manège",
+    lettre:{
+      fr:["Je n'ai entendu que le sable.", "Sept chevaux sont entrés au pas dans le grand manège, sept cavaliers en noir, et pendant vingt minutes personne n'a élevé la voix — ni les écuyers, ni nous."],
+      en:["All I could hear was the sand.", "Seven horses walked into the great riding hall, seven riders dressed in black, and for twenty minutes nobody raised their voice — not the écuyers, not us."],
+      es:["Solo se oía la arena.", "Siete caballos entraron al paso en el gran picadero, siete jinetes de negro, y durante veinte minutos nadie levantó la voz — ni los écuyers, ni nosotros."],
+      it:["Si sentiva solo la sabbia.", "Sette cavalli sono entrati al passo nel grande maneggio, sette cavalieri vestiti di nero, e per venti minuti nessuno ha alzato la voce — né gli écuyers, né noi."],
+      de:["Ich hörte nur den Sand.", "Sieben Pferde kamen im Schritt in die große Reithalle, sieben Reiter in Schwarz, und zwanzig Minuten lang hob niemand die Stimme — weder die Écuyers noch wir."],
+      ja:["聞こえたのは砂の音だけだった。", "七頭の馬が常歩で大きな馬場に入ってきた。黒い制服の七人の騎手。二十分のあいだ、誰も声を上げなかった — 教官たちも、私たちも。"]},
+    volets:[
+     {t:{fr:"Le Cadre Noir", en:"The Cadre Noir", es:"El Cadre Noir", it:"Il Cadre Noir", de:"Das Cadre Noir", ja:"カドル・ノワール（黒の騎兵団）"},
+      c:{
+          fr:"Une école, pas une équipe. Les écuyers y enseignent l'équitation française depuis le XIX siècle, en uniforme noir, et transmettent une façon de travailler le cheval fondée sur la légèreté plutôt que sur la force.",
+          en:"A school, not a team. Its écuyers have taught French classical riding since the 19th century, in black uniform, passing on a way of working horses built on lightness rather than strength.",
+          es:"Una escuela, no un equipo. Sus écuyers enseñan la equitación clásica francesa desde el siglo XIX, de uniforme negro, y transmiten una manera de trabajar al caballo basada en la ligereza y no en la fuerza.",
+          it:"Una scuola, non una squadra. I suoi écuyers insegnano l'equitazione classica francese dall'Ottocento, in uniforme nera, e tramandano un modo di lavorare il cavallo fondato sulla leggerezza e non sulla forza.",
+          de:"Eine Schule, keine Mannschaft. Seine Écuyers unterrichten seit dem 19. Jahrhundert die französische klassische Reitkunst, in schwarzer Uniform, und geben eine Arbeitsweise weiter, die auf Leichtigkeit beruht statt auf Kraft.",
+          ja:"チームではなく、学校です。十九世紀から黒い制服の教官たちがフランス古典馬術を教え、力ではなく軽さに基づいた馬の扱い方を伝えてきました。"}},
+     {t:{fr:"Les sauteurs", en:"The airs above the ground", es:"Los saltos de escuela", it:"I salti di scuola", de:"Die Schulsprünge", ja:"空中運動"},
+      c:{
+          fr:"Certains chevaux de l'école travaillent les sauts d'école : croupade, courbette, cabriole. Des mouvements hérités de l'équitation ancienne, exécutés à la main ou montés, et que presque personne d'autre au monde ne pratique encore.",
+          en:"Some of the school's horses perform the classical leaps: croupade, courbette, cabriole. Movements inherited from old riding traditions, shown in hand or ridden, that almost nobody else in the world still practises.",
+          es:"Algunos caballos de la escuela trabajan los aires sobre la tierra: croupade, courbette, cabriole. Movimientos heredados de la equitación antigua, presentados a la mano o montados, que casi nadie más practica hoy.",
+          it:"Alcuni cavalli della scuola lavorano le arie sopra il terreno: croupade, courbette, cabriole. Movimenti ereditati dall'equitazione antica, presentati a mano o montati, che quasi nessun altro pratica ancora.",
+          de:"Einige Pferde der Schule zeigen die Schulen über der Erde: Croupade, Courbette, Kapriole. Bewegungen aus der alten Reitkunst, an der Hand oder geritten vorgeführt, die fast niemand sonst auf der Welt noch pflegt.",
+          ja:"この学校の一部の馬は古典的な跳躍を行います。クルパード、クールベット、カプリオール。古い馬術から受け継がれた動きで、手綱で導く形か騎乗して見せられ、世界でこれを続けている場所はほとんどありません。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Va voir une reprise de manège plutôt qu'un gala. Sans musique et sans public nombreux, on entend les aides : un souffle, un déplacement de poids, et le cheval change d'allure sans qu'on ait rien vu.",
+          en:"Watch a working session rather than a gala. With no music and few spectators, you can hear the aids: a breath, a shift of weight, and the horse changes pace without you seeing a thing.",
+          es:"Ve a ver un trabajo de picadero antes que una gala. Sin música ni mucho público se oyen las ayudas: un aliento, un cambio de peso, y el caballo cambia de aire sin que hayas visto nada.",
+          it:"Guarda una ripresa di lavoro, non un galà. Senza musica e senza folla si sentono gli aiuti: un respiro, uno spostamento di peso, e il cavallo cambia andatura senza che tu abbia visto nulla.",
+          de:"Sieh dir eine Arbeitsreprise an, keine Gala. Ohne Musik und ohne großes Publikum hört man die Hilfen: ein Atemzug, eine Gewichtsverlagerung, und das Pferd wechselt die Gangart, ohne dass man etwas gesehen hätte.",
+          ja:"ガラ公演よりも、ふだんの調教を見てください。音楽も大観衆もない場所では扶助が聞こえます。ひと息、重心の移動、それだけで馬の歩様が変わる — こちらには何も見えないまま。"}}
+    ]},
+
+  /* ============ LAMOTTE-BEUVRON · le poney ============ */
+  lamotte:{
+    lieu:"Loir-et-Cher · France", carte:true, niveau:2,
+    image:"les carrières à perte de vue et les poneys partout",
+    lettre:{
+      fr:["Je n'ai jamais vu autant de poneys au même endroit.", "Une chute sur la carrière d'à côté, et en quelques secondes trois adultes étaient là — sans courir, sans crier. La cavalière s'est relevée toute seule, et la reprise a continué."],
+      en:["I had never seen so many ponies in one place.", "A fall in the next arena, and within seconds three adults were there — without running, without shouting. The rider got up on her own, and the lesson carried on."],
+      es:["Nunca había visto tantos ponis en un mismo sitio.", "Una caída en la pista de al lado, y en unos segundos había tres adultos allí — sin correr, sin gritar. La amazona se levantó sola y la clase siguió."],
+      it:["Non avevo mai visto tanti pony nello stesso posto.", "Una caduta nel campo accanto, e in pochi secondi c'erano tre adulti — senza correre, senza gridare. L'amazzone si è rialzata da sola e la lezione è continuata."],
+      de:["So viele Ponys an einem Ort hatte ich noch nie gesehen.", "Ein Sturz auf dem Platz nebenan, und binnen Sekunden standen drei Erwachsene dort — ohne zu rennen, ohne zu rufen. Die Reiterin stand allein auf, und die Stunde ging weiter."],
+      ja:["あれほど多くのポニーが一か所にいるのを見たことがなかった。", "隣の馬場で落馬があり、数秒のうちに大人が三人そばにいた。走りもせず、叫びもせずに。乗り手は自分で立ち上がり、レッスンはそのまま続いた。"]},
+    volets:[
+     {t:{fr:"Le plus grand parc équestre", en:"The largest equestrian park", es:"El mayor parque ecuestre", it:"Il più grande parco equestre", de:"Der größte Reitsportpark", ja:"最大の馬術パーク"},
+      c:{
+          fr:"Des dizaines de carrières, des milliers de chevaux et de poneys, et une semaine par an où toute l'équitation française se retrouve au même endroit pour ses championnats.",
+          en:"Dozens of arenas, thousands of horses and ponies, and one week a year when the whole of French riding gathers in the same place for its championships.",
+          es:"Decenas de pistas, miles de caballos y ponis, y una semana al año en que toda la equitación francesa se reúne en el mismo lugar para sus campeonatos.",
+          it:"Decine di campi, migliaia di cavalli e pony, e una settimana all'anno in cui tutta l'equitazione francese si ritrova nello stesso luogo per i suoi campionati.",
+          de:"Dutzende Plätze, Tausende Pferde und Ponys, und eine Woche im Jahr, in der sich der gesamte französische Reitsport am selben Ort zu seinen Meisterschaften trifft.",
+          ja:"数十面の馬場、何千頭もの馬とポニー。そして年に一週間、フランス馬術のすべてが選手権のためにこの同じ場所に集まります。"}},
+     {t:{fr:"Réagir à une chute", en:"Reacting to a fall", es:"Reaccionar ante una caída", it:"Reagire a una caduta", de:"Auf einen Sturz reagieren", ja:"落馬に対応する"},
+      c:{
+          fr:"On ne relève pas un cavalier tombé. On demande s'il va bien, on lui dit de ne pas bouger, on attrape le cheval, on appelle. Quatre gestes dans le bon ordre — et ce sont ceux qu'il faut savoir dire dans la langue du pays où l'on monte.",
+          en:"You don't pick up a fallen rider. You ask if they're all right, you tell them not to move, you catch the horse, you call for help. Four actions in the right order — and they're the ones you need to be able to say in the language of the country you're riding in.",
+          es:"A un jinete caído no se le levanta. Se le pregunta si está bien, se le dice que no se mueva, se coge al caballo, se pide ayuda. Cuatro gestos en el orden correcto — y son los que hay que saber decir en el idioma del país donde montas.",
+          it:"Un cavaliere caduto non si tira su. Gli si chiede se sta bene, gli si dice di non muoversi, si prende il cavallo, si chiama aiuto. Quattro gesti nell'ordine giusto — e sono quelli da saper dire nella lingua del paese in cui monti.",
+          de:"Einen gestürzten Reiter richtet man nicht auf. Man fragt, ob alles in Ordnung ist, sagt ihm, sich nicht zu bewegen, fängt das Pferd ein, ruft Hilfe. Vier Handgriffe in der richtigen Reihenfolge — und genau die muss man in der Sprache des Landes sagen können, in dem man reitet.",
+          ja:"落ちた人を起こしてはいけません。大丈夫かと尋ね、動かないように伝え、馬を捕まえ、人を呼ぶ。正しい順番で四つの行動を。そしてこれは、自分が乗っている国の言葉で言えなければならないことです。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Regarde une reprise de club plutôt qu'une épreuve. Les mots de l'enseignant y reviennent en boucle — sur la piste, changez de main, une volte — et c'est exactement le vocabulaire qui te servira partout ailleurs.",
+          en:"Watch a club lesson rather than a class. The instructor's words come round and round — on the track, change the rein, a volte — and that is exactly the vocabulary that will serve you everywhere else.",
+          es:"Mira una clase de club antes que una prueba. Las palabras del profesor vuelven una y otra vez — a la pista, cambien de mano, una volta — y ese es justamente el vocabulario que te servirá en todas partes.",
+          it:"Guarda una lezione di club, non una gara. Le parole dell'istruttore tornano in continuazione — in pista, cambiate di mano, una volta — ed è esattamente il vocabolario che ti servirà ovunque.",
+          de:"Sieh dir eine Vereinsstunde an, keine Prüfung. Die Worte des Ausbilders kehren immer wieder — auf den Hufschlag, Handwechsel, eine Volte — und genau dieses Vokabular wird dir überall sonst dienen.",
+          ja:"競技よりも、クラブのレッスンを見てください。指導者の言葉が何度も繰り返されます —「蹄跡へ」「手前を換えて」「一つ輪乗り」。それこそが、どこへ行っても役に立つ語彙です。"}}
+    ]},
+
+  /* ============ JEREZ DE LA FRONTERA · décrire un cheval ============ */
+  jerez:{
+    lieu:"Andalucía · Spain", carte:true, niveau:1,
+    image:"l'étalon gris seul sous les arcades",
+    lettre:{
+      fr:["On m'a demandé de le décrire, et je n'ai pas su.", "Il était gris, très gris, avec une crinière qui touchait presque le sol — et le palefrenier attendait, patiemment, que je trouve les mots. Ce jour-là j'ai compris à quoi sert le vocabulaire."],
+      en:["Someone asked me to describe him, and I couldn't.", "He was grey, very grey, with a mane that nearly touched the ground — and the groom waited patiently for me to find the words. That was the day I understood what vocabulary is for."],
+      es:["Me pidieron que lo describiera y no supe hacerlo.", "Era tordo, muy tordo, con una crin que casi tocaba el suelo — y el mozo esperó con paciencia a que yo encontrara las palabras. Ese día entendí para qué sirve el vocabulario."],
+      it:["Mi hanno chiesto di descriverlo e non ci sono riuscito.", "Era grigio, grigissimo, con una criniera che sfiorava terra — e lo stalliere ha aspettato con pazienza che trovassi le parole. Quel giorno ho capito a cosa serve il vocabolario."],
+      de:["Man bat mich, ihn zu beschreiben, und ich konnte es nicht.", "Er war ein Schimmel, ein sehr heller, mit einer Mähne, die fast den Boden berührte — und der Pfleger wartete geduldig, bis ich die Worte fand. An diesem Tag verstand ich, wozu Vokabeln gut sind."],
+      ja:["「この馬を説明して」と言われて、言葉が出なかった。", "芦毛の、とても白い馬だった。たてがみは地面に届きそうなほど長い。厩務員は急かさず、私が言葉を見つけるのを待っていた。あの日、語彙が何のためにあるのかがわかった。"]},
+    volets:[
+     {t:{fr:"La race d'ici", en:"The breed here", es:"La raza de aquí", it:"La razza di qui", de:"Die Rasse von hier", ja:"この土地の品種"},
+      c:{
+          fr:"Le pura raza española, qu'on appelle aussi PRE. Un cheval compact au port de tête haut, à la crinière et à la queue très fournies, connu pour sa docilité et sa facilité au rassembler. La robe grise y est la plus répandue.",
+          en:"The Pura Raza Española, also called the PRE. A compact horse with a high head carriage and an abundant mane and tail, known for its willing temperament and its ease in collection. Grey is by far its most common colour.",
+          es:"El pura raza española, también llamado PRE. Un caballo compacto, de cuello alzado, con crin y cola muy pobladas, conocido por su docilidad y su facilidad para reunirse. La capa torda es la más extendida.",
+          it:"Il pura raza española, chiamato anche PRE. Un cavallo compatto, dal collo portato alto, con criniera e coda foltissime, noto per la docilità e la facilità nel riunirsi. Il grigio è di gran lunga il mantello più diffuso.",
+          de:"Der Pura Raza Española, auch PRE genannt. Ein kompaktes Pferd mit hoher Halshaltung, sehr üppiger Mähne und Schweif, bekannt für seine Gutmütigkeit und seine Leichtigkeit in der Versammlung. Schimmel ist die häufigste Farbe.",
+          ja:"プーラ・ラサ・エスパニョーラ、PRE とも呼ばれます。頸を高く保つ、まとまった体型の馬で、たてがみと尾がとても豊か。温厚で、収縮が容易なことで知られています。毛色は芦毛が最も多く見られます。"}},
+     {t:{fr:"L'école", en:"The school", es:"La escuela", it:"La scuola", de:"Die Schule", ja:"学校"},
+      c:{
+          fr:"La Real Escuela Andaluza del Arte Ecuestre entraîne et présente ses chevaux à Jerez. Son spectacle porte un titre qui dit tout : « comment dansent les chevaux andalous ».",
+          en:"The Real Escuela Andaluza del Arte Ecuestre trains and shows its horses in Jerez. Its performance carries a title that says everything: \"how the Andalusian horses dance\".",
+          es:"La Real Escuela Andaluza del Arte Ecuestre entrena y presenta sus caballos en Jerez. Su espectáculo lleva un título que lo dice todo: «cómo bailan los caballos andaluces».",
+          it:"La Real Escuela Andaluza del Arte Ecuestre addestra e presenta i suoi cavalli a Jerez. Il suo spettacolo porta un titolo che dice tutto: «come ballano i cavalli andalusi».",
+          de:"Die Real Escuela Andaluza del Arte Ecuestre bildet ihre Pferde in Jerez aus und stellt sie vor. Ihre Vorführung trägt einen Titel, der alles sagt: „Wie die andalusischen Pferde tanzen\".",
+          ja:"王立アンダルシア馬術学校がヘレスで馬を調教し、披露しています。その公演の題名がすべてを語っています —「アンダルシアの馬はいかに踊るか」。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Viens un jour d'entraînement plutôt qu'un jour de spectacle. On y voit les mêmes chevaux, sans costume ni musique, et on y comprend combien de répétitions se cachent derrière trois minutes de gala.",
+          en:"Come on a training day rather than a show day. You see the same horses without costume or music, and you understand how much repetition hides behind three minutes of gala.",
+          es:"Ve un día de entrenamiento antes que un día de espectáculo. Se ven los mismos caballos sin traje ni música, y se entiende cuántos ensayos hay detrás de tres minutos de gala.",
+          it:"Vieni in un giorno di lavoro, non di spettacolo. Vedi gli stessi cavalli senza costumi né musica, e capisci quante prove si nascondono dietro tre minuti di galà.",
+          de:"Komm an einem Trainingstag statt an einem Showtag. Man sieht dieselben Pferde ohne Kostüm und Musik und begreift, wie viele Wiederholungen hinter drei Minuten Gala stecken.",
+          ja:"公演の日より、稽古の日に行ってください。衣装も音楽もない同じ馬たちを見れば、三分の舞台の裏にどれだけの反復があるのかがわかります。"}}
+    ]},
+
+  /* ============ SÉVILLE · la présentation ============ */
+  seville:{
+    lieu:"Andalucía · Spain", carte:true, niveau:2,
+    image:"l'attelage et le costume court dans la poussière de la feria",
+    lettre:{
+      fr:["Je n'avais jamais vu un cheval aussi propre.", "Pas simplement lavé : lustré, tressé, préparé depuis l'aube pour une heure de défilé. Et à la fin de la journée, sous la poussière, il l'était encore."],
+      en:["I had never seen a horse so clean.", "Not simply washed: polished, plaited, prepared since dawn for one hour of parade. And at the end of the day, under the dust, he still was."],
+      es:["Nunca había visto un caballo tan limpio.", "No solo lavado: lustrado, trenzado, preparado desde el alba para una hora de paseo. Y al final del día, bajo el polvo, seguía estándolo."],
+      it:["Non avevo mai visto un cavallo così pulito.", "Non solo lavato: lucidato, intrecciato, preparato dall'alba per un'ora di sfilata. E a fine giornata, sotto la polvere, lo era ancora."],
+      de:["Ich hatte noch nie ein so sauberes Pferd gesehen.", "Nicht bloß gewaschen: poliert, eingeflochten, seit dem Morgengrauen für eine Stunde Umzug vorbereitet. Und am Abend, unter dem Staub, war es das immer noch."],
+      ja:["あれほど手入れの行き届いた馬を見たことがなかった。", "ただ洗っただけではない。艶を出し、たてがみを編み、一時間の行進のために夜明けから支度をしていた。そして一日の終わり、砂ぼこりの下でも、まだそのままだった。"]},
+    volets:[
+     {t:{fr:"La feria", en:"The feria", es:"La feria", it:"La feria", de:"Die Feria", ja:"フェリア"},
+      c:{
+          fr:"Chaque printemps, la ville se remplit d'attelages et de cavaliers en costume traditionnel. Ce n'est pas une compétition : personne n'est classé, personne n'est chronométré. On se montre, et on regarde.",
+          en:"Each spring the city fills with carriages and riders in traditional dress. It is not a competition: nobody is placed, nobody is timed. You show yourself, and you watch.",
+          es:"Cada primavera la ciudad se llena de enganches y de jinetes con traje tradicional. No es una competición: nadie se clasifica, nadie se cronometra. Uno se muestra y uno mira.",
+          it:"Ogni primavera la città si riempie di attacchi e di cavalieri in costume tradizionale. Non è una gara: nessuno viene classificato, nessuno cronometrato. Ci si mostra e si guarda.",
+          de:"Jedes Frühjahr füllt sich die Stadt mit Gespannen und Reitern in traditioneller Tracht. Es ist kein Wettkampf: niemand wird platziert, niemand gestoppt. Man zeigt sich, und man schaut.",
+          ja:"春になると、街は馬車と伝統衣装の騎手であふれます。競技ではありません。順位もなく、タイムも計られません。見せて、そして見る。それだけです。"}},
+     {t:{fr:"La doma vaquera", en:"Doma vaquera", es:"La doma vaquera", it:"La doma vaquera", de:"Doma vaquera", ja:"ドマ・バケーラ"},
+      c:{
+          fr:"L'équitation de travail andalouse, née de la conduite du bétail. Une main tient les rênes, l'autre reste libre, et le cheval tourne court sur les hanches. Elle a sa propre discipline de concours aujourd'hui.",
+          en:"Andalusian working riding, born from handling cattle. One hand holds the reins, the other stays free, and the horse turns short on its hindquarters. Today it has its own competitive discipline.",
+          es:"La equitación de trabajo andaluza, nacida del manejo del ganado. Una mano lleva las riendas, la otra queda libre, y el caballo gira corto sobre los cuartos traseros. Hoy tiene su propia disciplina de concurso.",
+          it:"L'equitazione di lavoro andalusa, nata dalla conduzione del bestiame. Una mano tiene le redini, l'altra resta libera, e il cavallo gira corto sui posteriori. Oggi ha una propria disciplina agonistica.",
+          de:"Die andalusische Arbeitsreitweise, aus der Rinderarbeit entstanden. Eine Hand führt die Zügel, die andere bleibt frei, und das Pferd wendet eng über die Hinterhand. Heute ist sie eine eigene Turnierdisziplin.",
+          ja:"牛の扱いから生まれたアンダルシアの実用馬術。片手で手綱を持ち、もう一方の手は自由なまま、馬は後躯を軸に小さく回ります。今では独立した競技種目になっています。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Regarde les mains des cavaliers plutôt que les costumes. C'est là que se voit la différence entre un cheval habillé et un cheval travaillé.",
+          en:"Watch the riders' hands rather than the costumes. That is where you see the difference between a horse that is dressed up and a horse that is schooled.",
+          es:"Mira las manos de los jinetes antes que los trajes. Ahí se ve la diferencia entre un caballo vestido y un caballo trabajado.",
+          it:"Guarda le mani dei cavalieri più che i costumi. È lì che si vede la differenza tra un cavallo vestito e un cavallo lavorato.",
+          de:"Achte auf die Hände der Reiter, nicht auf die Trachten. Dort sieht man den Unterschied zwischen einem geschmückten und einem gearbeiteten Pferd.",
+          ja:"衣装ではなく、騎手の手を見てください。着飾った馬と、鍛えられた馬の違いはそこに出ます。"}}
+    ]},
+
+  /* ============ VEJER DE LA FRONTERA · l'intendance ============ */
+  vejer:{
+    lieu:"Andalucía · Spain", carte:true, niveau:1,
+    image:"les box de tournée alignés, les brouettes au petit jour",
+    lettre:{
+      fr:["Six heures du matin, et la journée avait déjà commencé pour tout le monde sauf moi.", "Les brouettes passaient, les seaux se remplissaient, quelqu'un comptait les rations à voix haute. Personne ne montait encore, et pourtant tout le monde travaillait."],
+      en:["Six in the morning, and the day had already started for everyone but me.", "Barrows went past, buckets filled up, someone counted out the feeds aloud. Nobody was riding yet, and yet everybody was working."],
+      es:["Las seis de la mañana, y el día ya había empezado para todos menos para mí.", "Pasaban las carretillas, se llenaban los cubos, alguien contaba las raciones en voz alta. Nadie montaba todavía y, sin embargo, todo el mundo trabajaba."],
+      it:["Le sei del mattino, e la giornata era già cominciata per tutti tranne che per me.", "Passavano le carriole, si riempivano i secchi, qualcuno contava le razioni ad alta voce. Nessuno montava ancora, eppure lavoravano tutti."],
+      de:["Sechs Uhr morgens, und der Tag hatte für alle schon begonnen, nur für mich nicht.", "Schubkarren fuhren vorbei, Eimer füllten sich, jemand zählte die Rationen laut ab. Niemand ritt schon, und trotzdem arbeiteten alle."],
+      ja:["朝六時。私以外の全員にとって、一日はもう始まっていた。", "一輪車が行き交い、バケツが満たされ、誰かが飼料の量を声に出して数えている。まだ誰も乗っていないのに、全員が働いていた。"]},
+    volets:[
+     {t:{fr:"Deux mois sur place", en:"Two months on site", es:"Dos meses en el sitio", it:"Due mesi sul posto", de:"Zwei Monate vor Ort", ja:"二か月の滞在"},
+      c:{
+          fr:"Une tournée d'hiver ne dure pas un week-end. Les écuries s'installent pour des semaines : boxes de tournée, foin livré par camion, rations préparées pour des dizaines de chevaux, une organisation qui tient de la petite ferme.",
+          en:"A winter tour doesn't last a weekend. Stables settle in for weeks: temporary stalls, hay delivered by lorry, feeds made up for dozens of horses, an organisation closer to a small farm.",
+          es:"Una gira de invierno no dura un fin de semana. Las cuadras se instalan durante semanas: boxes de gira, heno traído en camión, raciones preparadas para decenas de caballos, una organización de pequeña granja.",
+          it:"Un circuito invernale non dura un fine settimana. Le scuderie si installano per settimane: box da trasferta, fieno consegnato col camion, razioni preparate per decine di cavalli, un'organizzazione da piccola azienda agricola.",
+          de:"Eine Wintertour dauert kein Wochenende. Ställe richten sich für Wochen ein: Turnierboxen, Heu per Lastwagen, Rationen für Dutzende Pferde, eine Organisation wie auf einem kleinen Hof.",
+          ja:"冬のツアーは週末で終わりません。厩舎ごと何週間も居つきます。仮設の馬房、トラックで届く乾草、何十頭分もの飼料の支度 — 小さな農場のような運営です。"}},
+     {t:{fr:"Nourrir juste", en:"Feeding right", es:"Alimentar bien", it:"Nutrire giusto", de:"Richtig füttern", ja:"正しく与える"},
+      c:{
+          fr:"Chaque cheval a sa ration, écrite sur sa porte. Le foin d'abord, les granulés en complément, l'eau toujours disponible. En tournée, un cheval qui mange mal se voit sur le parcours deux jours plus tard.",
+          en:"Every horse has its feed, written on its door. Forage first, hard feed as a supplement, water always available. On tour, a horse that eats badly shows it on the course two days later.",
+          es:"Cada caballo tiene su ración, escrita en su puerta. Primero el forraje, el pienso como complemento, agua siempre disponible. En gira, un caballo que come mal se nota en el recorrido dos días después.",
+          it:"Ogni cavallo ha la sua razione, scritta sulla porta. Prima il foraggio, i mangimi come complemento, l'acqua sempre disponibile. In trasferta, un cavallo che mangia male si vede in percorso due giorni dopo.",
+          de:"Jedes Pferd hat seine Ration, an der Boxentür notiert. Raufutter zuerst, Kraftfutter als Ergänzung, Wasser immer verfügbar. Auf Tour sieht man ein schlecht gefüttertes Pferd zwei Tage später im Parcours.",
+          ja:"馬ごとに決まった量があり、馬房の扉に書かれています。まず粗飼料、補いとして濃厚飼料、水はいつでも飲めるように。遠征では、食べ方の乱れは二日後の走行に出ます。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Propose ton aide un matin. On te confiera une brouette avant de te confier un cheval, et c'est comme ça qu'on apprend le vocabulaire qui sert vraiment.",
+          en:"Offer to help one morning. You'll be handed a barrow before you're handed a horse, and that is how you learn the vocabulary that actually serves.",
+          es:"Ofrécete a ayudar una mañana. Te darán una carretilla antes que un caballo, y así es como se aprende el vocabulario que de verdad sirve.",
+          it:"Offriti di dare una mano una mattina. Ti affideranno una carriola prima di un cavallo, ed è così che si impara il vocabolario che serve davvero.",
+          de:"Biete eines Morgens deine Hilfe an. Man gibt dir eine Schubkarre, bevor man dir ein Pferd gibt — und genau so lernt man die Wörter, die wirklich gebraucht werden.",
+          ja:"朝、手伝いを申し出てみてください。馬より先に一輪車を渡されます。本当に役立つ言葉は、そうやって覚えるものです。"}}
+    ]},
+
+  /* ============ OLIVA NOVA · s'engager et fauter ============ */
+  oliva:{
+    lieu:"Comunidad Valenciana · Spain", carte:true, niveau:2,
+    image:"les pistes de sable au bord de la mer, en hiver",
+    lettre:{
+      fr:["J'ai passé ma première matinée au secrétariat, pas sur un cheval.", "Il fallait un dossard, une licence, une liste de départ — et tout se disait dans une langue que je ne parlais pas. J'ai appris plus de mots ce matin-là qu'en une semaine."],
+      en:["I spent my first morning at the show office, not on a horse.", "I needed a number, a licence, a start list — and it was all said in a language I didn't speak. I learned more words that morning than in a week."],
+      es:["Pasé mi primera mañana en la secretaría, no encima de un caballo.", "Hacía falta un dorsal, una licencia, una lista de salida — y todo se decía en un idioma que yo no hablaba. Aprendí más palabras esa mañana que en una semana."],
+      it:["Ho passato la mia prima mattina in segreteria, non a cavallo.", "Servivano un numero, una licenza, una lista di partenza — e tutto si diceva in una lingua che non parlavo. Ho imparato più parole quella mattina che in una settimana."],
+      de:["Meinen ersten Vormittag verbrachte ich im Meldebüro, nicht auf einem Pferd.", "Es brauchte eine Nummer, eine Lizenz, eine Startliste — und alles wurde in einer Sprache gesagt, die ich nicht sprach. An diesem Vormittag lernte ich mehr Wörter als in einer ganzen Woche."],
+      ja:["最初の午前中は馬の上ではなく、事務所で過ごした。", "ゼッケン、ライセンス、出場順のリスト。そのすべてが、私の話せない言葉でやり取りされていた。あの午前中に覚えた単語は、一週間分より多かった。"]},
+    volets:[
+     {t:{fr:"La tournée d'hiver", en:"The winter tour", es:"La gira de invierno", it:"Il circuito invernale", de:"Die Wintertour", ja:"冬のツアー"},
+      c:{
+          fr:"Pendant que le nord de l'Europe gèle, des écuries entières descendent ici pour plusieurs semaines de concours au soleil. Les chevaux voyagent, les familles suivent, et une petite ville de toile s'installe autour des pistes.",
+          en:"While northern Europe freezes, whole stables come down here for weeks of competition in the sun. The horses travel, the families follow, and a small canvas town grows up around the arenas.",
+          es:"Mientras el norte de Europa se hiela, cuadras enteras bajan aquí para semanas de concurso al sol. Los caballos viajan, las familias siguen, y una pequeña ciudad de lona crece alrededor de las pistas.",
+          it:"Mentre il nord Europa gela, scuderie intere scendono qui per settimane di concorso al sole. I cavalli viaggiano, le famiglie seguono, e attorno ai campi cresce una piccola città di tela.",
+          de:"Während Nordeuropa friert, ziehen ganze Ställe für Wochen hierher, zu Turnieren in der Sonne. Die Pferde reisen, die Familien folgen, und rund um die Plätze wächst eine kleine Zeltstadt.",
+          ja:"北ヨーロッパが凍りつくあいだ、厩舎ごとこの地に下りてきて、陽射しの下で何週間も競技を続けます。馬が移動し、家族がついてきて、馬場のまわりに小さな布の町ができあがります。"}},
+     {t:{fr:"S'engager", en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"エントリーする"},
+      c:{
+          fr:"Avant de sauter, il faut s'inscrire : choisir son épreuve, présenter sa licence, retirer son dossard, vérifier l'ordre de passage. Ce vocabulaire-là ne s'apprend pas à cheval, il s'apprend au guichet.",
+          en:"Before you jump, you enter: choose your class, show your licence, collect your number, check the order of go. That vocabulary isn't learned on a horse; it's learned at the desk.",
+          es:"Antes de saltar hay que inscribirse: elegir la prueba, presentar la licencia, recoger el dorsal, comprobar el orden de salida. Ese vocabulario no se aprende a caballo, se aprende en la ventanilla.",
+          it:"Prima di saltare bisogna iscriversi: scegliere la categoria, presentare la licenza, ritirare il numero, controllare l'ordine di partenza. Quel vocabolario non si impara a cavallo, si impara allo sportello.",
+          de:"Bevor man springt, meldet man: die Prüfung wählen, die Lizenz vorzeigen, die Nummer abholen, die Startfolge prüfen. Diese Wörter lernt man nicht im Sattel, sondern am Schalter.",
+          ja:"飛ぶ前に、まず申し込みます。種目を選び、ライセンスを見せ、ゼッケンを受け取り、出場順を確かめる。この語彙は馬上ではなく、受付の窓口で覚えるものです。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Reste une demi-journée près de la piste d'échauffement. C'est là qu'on entend les vraies conversations : le refus qu'on commente, la faute qu'on explique, la ligne qu'on refait autrement.",
+          en:"Spend half a day beside the warm-up arena. That's where the real conversations happen: the refusal being discussed, the fault being explained, the line being ridden differently next time.",
+          es:"Quédate media jornada junto a la pista de calentamiento. Ahí se oyen las conversaciones de verdad: el rehúse que se comenta, la falta que se explica, la línea que se rehace de otra manera.",
+          it:"Resta mezza giornata vicino al campo prova. È lì che si sentono i discorsi veri: il rifiuto commentato, l'errore spiegato, la linea rifatta in un altro modo.",
+          de:"Bleib einen halben Tag am Abreiteplatz. Dort hört man die echten Gespräche: die Verweigerung, die besprochen wird, der Fehler, der erklärt wird, die Linie, die man nächstes Mal anders reitet.",
+          ja:"半日、練習馬場のそばにいてください。本当の会話が聞こえるのはそこです。拒止をめぐるやり取り、失敗の説明、次はどう回るかという相談。"}}
+    ]},
+
+  /* ============ WARENDORF · les gestes de la formation ============ */
+  warendorf:{
+    lieu:"Nordrhein-Westfalen · Germany", carte:true, niveau:2,
+    image:"la cour du haras au petit matin",
+    lettre:{
+      fr:["On m'a repris trois fois sur la même sangle.", "Pas sèchement — on m'a montré, j'ai refait, on m'a remontré. À la troisième, j'ai compris que ce n'était pas la sangle qui comptait, mais le fait de la faire pareil chaque jour."],
+      en:["They corrected me three times on the same girth.", "Not sharply — they showed me, I did it again, they showed me again. By the third time I understood that the girth wasn't the point; doing it the same way every day was."],
+      es:["Me corrigieron tres veces con la misma cincha.", "Sin brusquedad: me lo mostraron, lo repetí, me lo volvieron a mostrar. A la tercera entendí que lo importante no era la cincha, sino hacerlo igual todos los días."],
+      it:["Mi hanno ripreso tre volte sulla stessa cinghia.", "Senza asprezza: me l'hanno mostrato, ho rifatto, me l'hanno mostrato ancora. Alla terza ho capito che non contava la cinghia, ma farlo allo stesso modo ogni giorno."],
+      de:["Dreimal haben sie mich beim selben Gurt korrigiert.", "Nicht barsch — sie zeigten es mir, ich machte es noch einmal, sie zeigten es wieder. Beim dritten Mal verstand ich: nicht der Gurt zählte, sondern dass man es jeden Tag gleich macht."],
+      ja:["同じ腹帯のことで三度直された。", "厳しくではなく、やって見せてくれて、私がやり直し、また見せてくれた。三度目に気づいた。大事なのは腹帯ではなく、毎日それを同じようにやることなのだと。"]},
+    volets:[
+     {t:{fr:"La ville de la formation", en:"The town of training", es:"La ciudad de la formación", it:"La città della formazione", de:"Die Stadt der Ausbildung", ja:"育成の町"},
+      c:{
+          fr:"Warendorf abrite le haras d'État de Westphalie et le centre de la fédération allemande. C'est ici que se forment enseignants, cavaliers professionnels et juges — un même endroit pour toute une filière.",
+          en:"Warendorf is home to the Westphalian state stud and to the centre of the German equestrian federation. Instructors, professional riders and judges are all trained here — one place for a whole profession.",
+          es:"Warendorf acoge la yeguada estatal de Westfalia y el centro de la federación alemana. Aquí se forman profesores, jinetes profesionales y jueces: un mismo lugar para todo un oficio.",
+          it:"Warendorf ospita il deposito stalloni statale della Vestfalia e il centro della federazione tedesca. Qui si formano istruttori, cavalieri professionisti e giudici: un solo luogo per un intero mestiere.",
+          de:"In Warendorf liegen das Landgestüt Westfalen und das Zentrum der Deutschen Reiterlichen Vereinigung. Hier werden Ausbilder, Berufsreiter und Richter ausgebildet — ein Ort für einen ganzen Berufsstand.",
+          ja:"ヴァーレンドルフにはヴェストファーレン州立種馬所と、ドイツ馬術連盟の拠点があります。指導者も、プロの騎手も、審判員も、ここで育ちます。ひとつの職業のすべてが同じ場所にあります。"}},
+     {t:{fr:"L'échelle de progression", en:"The training scale", es:"La escala de la formación", it:"La scala di addestramento", de:"Die Skala der Ausbildung", ja:"訓練のスケール"},
+      c:{
+          fr:"La formation allemande s'appuie sur six degrés qu'on apprend dans l'ordre : régularité, décontraction, contact, impulsion, rectitude, rassembler. Ce n'est pas une théorie d'école : les juges notent en s'y référant.",
+          en:"German training rests on six steps learned in order: rhythm, suppleness, contact, impulsion, straightness, collection. It isn't classroom theory: judges score by referring to it.",
+          es:"La enseñanza alemana se apoya en seis grados que se aprenden en orden: ritmo, decontracción, contacto, impulsión, rectitud y reunión. No es teoría de aula: los jueces puntúan tomándola como referencia.",
+          it:"L'insegnamento tedesco poggia su sei gradi appresi in ordine: ritmo, decontrazione, contatto, impulso, rettitudine, riunione. Non è teoria da aula: i giudici valutano facendovi riferimento.",
+          de:"Die deutsche Ausbildung ruht auf sechs Punkten, die man der Reihe nach lernt: Takt, Losgelassenheit, Anlehnung, Schwung, Geraderichtung, Versammlung. Das ist keine Schultheorie: Richter bewerten danach.",
+          ja:"ドイツの馬術教育は、順に学ぶ六つの段階に支えられています。リズム、リラックス、コンタクト、推進、まっすぐさ、収縮。机上の理論ではなく、審判員はこれを基準に採点します。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Regarde le début d'une séance, pas la fin. C'est dans les vingt premières minutes qu'on voit la méthode : rien de spectaculaire, la même chose refaite jusqu'à ce qu'elle soit juste.",
+          en:"Watch the start of a session, not the end. The method shows in the first twenty minutes: nothing spectacular, the same thing repeated until it is right.",
+          es:"Mira el principio de una sesión, no el final. El método se ve en los primeros veinte minutos: nada espectacular, lo mismo repetido hasta que sale bien.",
+          it:"Guarda l'inizio di una seduta, non la fine. Il metodo si vede nei primi venti minuti: niente di spettacolare, la stessa cosa rifatta finché non è giusta.",
+          de:"Sieh dir den Anfang einer Einheit an, nicht das Ende. In den ersten zwanzig Minuten zeigt sich die Methode: nichts Spektakuläres, dasselbe so lange wiederholt, bis es stimmt.",
+          ja:"練習の終わりではなく、始まりを見てください。方法が見えるのは最初の二十分です。派手なことは何もなく、正しくなるまで同じことを繰り返すだけ。"}}
+    ]},
+
+  /* ============ AIX-LA-CHAPELLE · le grand concours ============ */
+  aachen:{
+    lieu:"Nordrhein-Westfalen · Germany", carte:true, niveau:2,
+    image:"le stade plein, un cheval seul à l'entrée de piste",
+    lettre:{
+      fr:["Le stade était plein, et pourtant on n'entendait rien.", "Le cheval est entré, la cloche a sonné, et pendant une minute vingt il n'y a plus eu que le bruit des sabots. La foule n'a recommencé à respirer qu'après la dernière barre."],
+      en:["A stadium full of people, and total silence.", "The horse came in, the bell rang, and for eighty seconds there was nothing but the sound of hooves. The crowd only started breathing again after the last fence."],
+      es:["Un estadio lleno, y un silencio total.", "El caballo entró, sonó la campana, y durante ochenta segundos no hubo más que el ruido de los cascos. El público no volvió a respirar hasta el último obstáculo."],
+      it:["Uno stadio pieno, e un silenzio totale.", "Il cavallo è entrato, la campana ha suonato, e per ottanta secondi non si è sentito altro che gli zoccoli. Il pubblico ha ricominciato a respirare solo dopo l'ultimo ostacolo."],
+      de:["Ein volles Stadion, und völlige Stille.", "Das Pferd kam herein, die Glocke ertönte, und achtzig Sekunden lang gab es nichts als Hufschlag. Das Publikum atmete erst nach dem letzten Sprung wieder."],
+      ja:["満員のスタジアムが、完全に静まりかえっていた。", "馬が入場し、開始の鐘が鳴り、八十秒のあいだ聞こえるのは蹄の音だけだった。観客が息をし直したのは、最後の障害を跳んだあとだった。"]},
+    volets:[
+     {t:{fr:"Le CHIO", en:"The CHIO", es:"El CHIO", it:"Il CHIO", de:"Das CHIO", ja:"CHIO（国際馬術大会）"},
+      c:{
+          fr:"Un concours international qui réunit plusieurs disciplines la même semaine : saut, dressage, attelage, complet. C'est l'un des rendez-vous les plus suivis du calendrier, et beaucoup de cavaliers le placent au-dessus des championnats.",
+          en:"An international show bringing several disciplines together in the same week: jumping, dressage, driving, eventing. It is one of the most closely followed fixtures of the year, and many riders rate it above a championship.",
+          es:"Un concurso internacional que reúne varias disciplinas en la misma semana: salto, doma, enganches, completo. Es una de las citas más seguidas del año, y muchos jinetes la ponen por encima de un campeonato.",
+          it:"Un concorso internazionale che riunisce più discipline nella stessa settimana: salto, dressage, attacchi, completo. È uno degli appuntamenti più seguiti dell'anno, e molti cavalieri lo mettono sopra un campionato.",
+          de:"Ein internationales Turnier, das mehrere Disziplinen in derselben Woche zusammenbringt: Springen, Dressur, Fahren, Vielseitigkeit. Es ist einer der meistbeachteten Termine des Jahres, und viele Reiter stellen es über eine Meisterschaft.",
+          ja:"同じ一週間に複数種目が集まる国際大会です。障害、馬場、馬車、総合。一年でもっとも注目される大会のひとつで、選手権より上に置く騎手も少なくありません。"}},
+     {t:{fr:"Le barrage", en:"The jump-off", es:"El desempate", it:"Il barrage", de:"Das Stechen", ja:"ジャンプオフ"},
+      c:{
+          fr:"Quand plusieurs cavaliers finissent sans faute, on recommence : parcours raccourci, chronomètre lancé, et cette fois la vitesse départage. C'est le moment où l'on voit qui accepte de risquer une barre pour gagner une seconde.",
+          en:"When several riders finish clear, you start again: shortened course, clock running, and this time speed decides. It's the moment you see who will risk a fence to gain a second.",
+          es:"Cuando varios jinetes terminan sin falta, se vuelve a empezar: recorrido acortado, cronómetro en marcha, y esta vez decide la velocidad. Es el momento en que se ve quién acepta arriesgar un derribo por ganar un segundo.",
+          it:"Quando più cavalieri finiscono netti, si ricomincia: percorso accorciato, cronometro avviato, e stavolta decide la velocità. È il momento in cui si vede chi accetta di rischiare un abbattimento per guadagnare un secondo.",
+          de:"Wenn mehrere Reiter fehlerfrei bleiben, geht es von vorn los: verkürzter Parcours, laufende Uhr, und diesmal entscheidet die Zeit. Der Moment, in dem man sieht, wer eine Stange riskiert, um eine Sekunde zu gewinnen.",
+          ja:"何人もが無失点で終えたとき、もう一度走ります。短縮されたコース、動き出す時計、そして今度は速さで決まります。一秒のために一本を落とす危険を取る人が、誰なのかが見える瞬間です。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Assieds-toi près de la sortie de piste. On y voit les cavaliers redevenir eux-mêmes en trois secondes : ceux qui tapent l'encolure, ceux qui ne disent rien, et ceux qui vérifient un antérieur avant même de mettre pied à terre.",
+          en:"Sit near the arena exit. You watch riders become themselves again in three seconds: the ones who pat the neck, the ones who say nothing, and the ones who check a foreleg before they've even dismounted.",
+          es:"Siéntate cerca de la salida de pista. Ahí se ve a los jinetes volver a ser ellos mismos en tres segundos: los que palmean el cuello, los que no dicen nada, y los que revisan una mano antes incluso de echar pie a tierra.",
+          it:"Siediti vicino all'uscita di campo. Lì i cavalieri ridiventano se stessi in tre secondi: chi dà una pacca sul collo, chi non dice niente, e chi controlla un anteriore prima ancora di scendere.",
+          de:"Setz dich an den Ausgang des Parcours. Dort werden Reiter in drei Sekunden wieder sie selbst: die einen klopfen den Hals, die anderen sagen nichts, und wieder andere prüfen ein Vorderbein, bevor sie überhaupt abgestiegen sind.",
+          ja:"出口のそばに座ってください。騎手が三秒で素の自分に戻るのが見えます。首を叩く人、何も言わない人、降りる前に前肢を確かめる人。"}}
+    ]}
+
+  };
+
+  /* ajout clé par clé : on ne remplace jamais une ville déjà présente */
+  var k;
+  for(k in MONDE){
+    if(Object.prototype.hasOwnProperty.call(MONDE,k) &&
+       !Object.prototype.hasOwnProperty.call(window.HYPE_LINGO_VILLES,k)){
+      window.HYPE_LINGO_VILLES[k] = MONDE[k];
+    }
+  }
+})();
