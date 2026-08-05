@@ -10,7 +10,55 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
+**Version actuelle de l'index.html : 05/08/2026 (session 90) — Vidéo d'accueil verticale, Lamotte masqué, quête philosophie réparée — md5 `d744dac5f75a1299c5d616ce61ff7203`, 10 499 969 octets. Part du fichier fourni par Blandine `70a0c0d1` (9 791 253 o).**
+
+## 🎬 SESSION 90 (05/08) — VIDÉO D'ACCUEIL, LAMOTTE, QUÊTE PHILOSOPHIE
+
+**Page codeuse unique sur l'index.** Part du fichier fourni par Blandine `70a0c0d1` (9 791 253 o) → sortie **`d744dac5f75a1299c5d616ce61ff7203`** (10 499 969 o).
+Livrés : `index.html`, `hype-accueil-video.mp4` (nouveau), `hype-accueil-poster.jpg` (nouveau).
+
+### 🔴 ALERTE — NE PAS DÉPLOYER LE `lingo.html` DE CETTE SESSION
+Blandine a fourni en cours de session un `lingo.html` de **77 495 octets**. La session 89 a produit un fichier de **186 511 octets** (globe, 18 villes). Le fichier fourni était donc **une branche bien antérieure**, et le `lingo.html` livré ici (md5 `b89224276434e9746d36a4ee2d11c384`, renommage « Hype Lingua ») **régresserait massivement** : perte du globe, des 8 villes ajoutées et des correctifs du bug bloquant.
+⚠️ **Ce fichier est à jeter.** Le renommage éventuel du module doit être réappliqué sur la version 186 Ko, et il ne représente que 2 lignes (`<title>` et `<p class="sur">`).
+
+### ✅ La vidéo de la bannière d'accueil
+Blandine a fourni un `.mov` **HEVC 480×854, 5,1 s, 1,89 Mo**. Deux problèmes : le HEVC n'est lu **que par Safari**, et le `.mov` n'est pas un format web.
+**Transcodé en H.264/MP4, yuv420p, CRF 24, `+faststart`, piste audio supprimée → 324 Ko** (÷5,8). Poster JPEG extrait de la première frame pour éviter le flash noir.
+- La source du `<video>` du `<header className="hero">` passe à `hype-accueil-video.mp4`.
+- ⚠️ **`hype-anim-cheval.mp4` est conservé et toujours utilisé** par la carte Grand Prix (ligne ~31187). C'est pourquoi le nouveau fichier porte un nom distinct au lieu d'écraser l'ancien : une vidéo verticale casserait cette carte. **3 occurrences de `hype-anim-cheval.mp4` doivent rester dans l'index.**
+- **Hauteur plafonnée à 66vh** (demande : « max les 2/3 de l'écran »), avec `width: auto`, `maxWidth: 100%`, `margin: 0 auto`. Les deux contraintes s'appliquent, le format natif est conservé : vidéo **entière, dézoomée, centrée**, aucun rognage, aucune bande noire dans l'image. Sans ce plafond, un 9:16 en `width:100%` donnait ~690 px de haut sur un iPhone de 390 px.
+
+### ✅ Lamotte retiré de l'accueil
+`AFFICHER_ACTU_LAMOTTE = false`, nouvelle constante. **Rien n'est supprimé** : la carte est intacte dans le fichier, repasser à `true` la fait revenir.
+⚠️ **Le titre de section « L'actualité » est masqué avec elle** : la section ne contenait QUE cette carte, l'intitulé serait resté seul au-dessus de rien.
+
+### ✅ Quête « Écris la philosophie de ton écurie » — diagnostic et correctif
+Blandine signalait une quête **qui redemandait une chose déjà faite** et **ne se mettait pas à jour**.
+**Cause trouvée dans `TableauxSpectralHype`** : la sauvegarde appelle bien `majProfil({ecurie_voix: …})`, mais ne mettait à jour que son **état local** (`setProf`). Le `profil` du contexte applicatif restait périmé, or la condition de la quête est `fait: ctx.profil.ecurie_voix`. La quête restait donc affichée indéfiniment.
+**Second problème : l'échec était totalement muet** — `.catch(function () { })` vide. Si la colonne n'existait pas en base, rien ne le signalait.
+**Correctif appliqué sur les deux champs (`champVoix` et `champHistoire`)** :
+- rafraîchissement de `ctx.setProfil` après enregistrement réussi → la quête disparaît immédiatement, sans rechargement ;
+- `console.warn` avec l'erreur au lieu du catch vide.
+**SQL passé par Blandine pendant la session** (idempotent) : `alter table profiles add column if not exists ecurie_voix text;` et `ecurie_histoire text;`. ⚠️ Avec `if not exists`, le « Success » ne dit **pas** si les colonnes manquaient. Si elles manquaient, le texte précédent n'a jamais été enregistré et doit être réécrit une fois.
+
+### ✅ Quêtes en double sur l'accueil — déjà corrigé, à ne pas refaire
+Blandine voyait la même quête en haut (`BandeauSuiteHype`, `liste[0]`) et en bas (`BlocProchainesQuetes`). **Le fichier fourni contenait déjà `slice(1, 4)`** : le correctif avait été appliqué par une session antérieure. Le doublon venait de la **version déployée**, pas du code. Ce déploiement le règle.
+
+### 📌 Constaté dans l'index, non modifié
+L'encart **« Hype Linguae »** (240 px, fond `lingo-accueil.webp`) et le bouton **« Le Sprint · 60 secondes »** vers `lingo.html#sprint` sont **déjà en place**, datés du 04/08.
+⚠️ **`lingo.html#sprint` ne mène nulle part** dans la version fournie : le mot « sprint » y apparaît **0 fois**. À vérifier contre la version 186 Ko.
+⚠️ **`lingo-accueil.webp`** est appelé par l'encart — vérifier sa présence au dépôt, sinon fond noir uni.
+⚠️ **Nom du module non tranché.** Blandine a écarté « Hype Lingua » (« ça me choque »), hésité sur « Linguae ». Décision de séance : **on garde « Linguae » tel qu'il est dans l'index**, à revoir plus tard. Pistes évoquées et non retenues : Le Carnet, La Traversée, Koinē, Passus, Iter.
+
+### ✅ Vérifications de livraison
+907 fonctions top-level identiques dans les deux sens · 390 `const` inchangés · **un seul `var` de plus** (`AFFICHER_ACTU_LAMOTTE`) · `allerVersGalop` = **3 occurrences** · **15 blocs `<script>` inline validés** par `node --check` · contrôles ciblés sur chaque marqueur inséré.
+
+### 🔴 Laissé ouvert, avec diagnostic
+- **Compression photo — le chantier le plus rentable qui reste.** Cause racine de la lenteur à l'ajout de photo, des crashs mémoire iOS **et** désormais d'un coût réel : Blandine est passée en **Supabase Pro** (8 Go base, 100 Go fichiers, 250 Go egress, puis 0,09 $/Go — 0,03 $/Go si mis en cache). Une photo de 4 Mo servie 1 000 fois = 4 Go. Cible : redimensionner à ~1200 px, JPEG 0,8, avec gestion de l'orientation EXIF. **La surveillance de quota du 14 août n'a plus d'objet.**
+- **Décalage horizontal après la visionneuse photo.** Toute la page part vers la gauche à la fermeture (titre débordant, onglets coupés). Hypothèse : `scrollLeft` non remis à zéro — iOS Safari le conserve, contrairement aux navigateurs de bureau. **Test à faire par Blandine avant tout code** : sur l'écran cassé, glisser vers la droite ; si tout se remet en place, l'hypothèse est confirmée et le correctif tient en deux lignes à la fermeture.
+- **Vidéos de Linguae en format panoramique.** `ajusterCadrage()` met `object-fit: contain` dès qu'une vidéo est plus large que haute → bande horizontale avec du noir. Rien à corriger dans le code : il suffit que les fichiers soient **verticaux**. Priorité : `ouverture.mp4`, puis `depart.mp4` (un seul fichier répare 10 écrans), puis les arrivées déjà produites. Format cible **720×1280, MP4 H.264, muette, sans texte**, 3 s pour les arrivées.
+- **Chapitre 10 de Linguae (Les dialogues, Édimbourg)** — pas écrit. Périmètre arbitré : **situations pratiques** (réserver une reprise, se présenter, dire son niveau, demander un cheval calme, payer, remercier), pas de la révision. Structure arbitrée : garder `concepts` + `phrases`, ajouter deux champs **optionnels** `scene` et `role` — additif, aucun changement obligatoire du moteur. Registre arbitré : **vouvoiement** et forme polie japonaise, et on en fait du contenu (en japonais le registre décide de la réponse obtenue). Reste **Premium**, le freemium n'est pas rouvert.
+- **Hey Baby depuis Linguae** — idée validée par Blandine : inviter à poser ses questions dans sa langue. Trois paramètres à transmettre : **langue d'interface** (elle donne le pays sans rien détecter), **langue cible du voyage**, **chapitre en cours**. Règle : répondre **dans la langue de la question**, pas celle de l'interface, et toujours donner le terme dans la langue cible. Blocage : `HYPE_LINGO_HOST` n'existe pas dans le code. Option simple : appeler directement `assistant.js` sans toucher à `index.html`.
 
 ## 🌍 SESSION 89 (05/08) — LE GLOBE, LES 18 VILLES, ET UN BUG BLOQUANT DÉCOUVERT
 
