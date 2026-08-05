@@ -1546,7 +1546,19 @@ async function filAmis() {
 /* ── Le silence est une animation : respecter les préférences système ── */
 @media (prefers-reduced-motion:reduce){.cm-breath,.cm-breath-slow,.cm-bloom,.cm-fade-in,.cm-fade-out,.cm-pulse,.cm-drift,.cm-wave,.cm-wind{animation:none!important}}
 /* ═══════════════════════ fin CRYSTAL MOTION ═══════════════════════ */
-</style></head><body><div id="root"></div><div id="boot">Hype — chargement…</div><script>window.process={env:{NODE_ENV:"production"}};window.global=window;var __mods={},__cache={};function __require(n){if(__cache[n])return __cache[n].exports;var m={exports:{}};__cache[n]=m;if(!__mods[n])throw new Error("module "+n);__mods[n](m,m.exports,__require);return m.exports;}function __def(n,f){__mods[n]=f;}</script><script>__def("react",function(module,exports,require){
+</style><style>
+/* 05/08 (bug signale par Blandine) : apres fermeture de la visionneuse photo, toute la page
+   restait decalee vers la gauche — titre qui deborde, onglets coupes. Cause : un element plus
+   large que l ecran cree un defilement horizontal AU NIVEAU DE LA PAGE, et iOS Safari conserve
+   ce scrollLeft a la fermeture (les navigateurs de bureau le remettent a zero, d ou l absence
+   du bug en developpement).
+   Deux protections complementaires : ici on empeche la page de defiler horizontalement du tout,
+   et cote JS on remet le scroll a zero a la fermeture. Les rails horizontaux (.lst, .horses-row,
+   .fstrip, .rbstrip, .manege, .filters) ont chacun leur propre overflow-x et ne sont PAS
+   touches : ils continuent de defiler normalement. */
+html, body { overflow-x: hidden !important; max-width: 100% !important; }
+</style>
+</head><body><div id="root"></div><div id="boot">Hype — chargement…</div><script>window.process={env:{NODE_ENV:"production"}};window.global=window;var __mods={},__cache={};function __require(n){if(__cache[n])return __cache[n].exports;var m={exports:{}};__cache[n]=m;if(!__mods[n])throw new Error("module "+n);__mods[n](m,m.exports,__require);return m.exports;}function __def(n,f){__mods[n]=f;}</script><script>__def("react",function(module,exports,require){
 /**
  * @license React
  * react.production.js
@@ -31931,6 +31943,25 @@ function EcranCheval() {
     try { listerCommentairesPhoto(uV).then(function (r) { setCmV((r && r.data) || []); }).catch(function () { setCmV([]); }); } catch (e2) { setCmV([]); }
   }
   React.useEffect(function () { if (visionneuse) chargerLkCm(visionneuse); else { setCmPanneau(false); setCmTexte(""); } }, [visionneuse]);
+  React.useEffect(function () {
+    /* 05/08 : a la FERMETURE de la visionneuse, on remet le defilement horizontal de la page
+       a zero. Uniquement au niveau du document : les rails horizontaux gardent leur position,
+       puisqu ils defilent dans leur propre conteneur. */
+    if (visionneuse) return;
+    try {
+      var remettre = function () {
+        try {
+          var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+          if (document.documentElement) document.documentElement.scrollLeft = 0;
+          if (document.body) document.body.scrollLeft = 0;
+          if (window.scrollTo) window.scrollTo(0, y);
+        } catch (e1) { }
+      };
+      remettre();
+      /* iOS applique parfois son inertie apres le rendu : on repasse une fois au frame suivant */
+      if (typeof requestAnimationFrame === "function") requestAnimationFrame(remettre);
+    } catch (e2) { }
+  }, [visionneuse]);
   React.useEffect(function () { /* 31/07 : iOS tue la page quand trop de videos tournent — on met tout en pause a l ouverture d un media (bug signale par Blandine) */
     try {
       var vids = document.querySelectorAll("video");
