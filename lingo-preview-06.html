@@ -1,0 +1,3381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060709">
+<title>PREVIEW · Hype Linguae · Anglais · La Traversée</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Cinzel:wght@500;600&family=Klee+One&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--turquoise:#20D9F5;--blanc:#F4F7FA;--gris:#8996A2;--or:#D4AF37}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#060709;color:var(--blanc);
+ font-family:'Montserrat',system-ui,sans-serif}
+button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer}
+
+/* ---------------- PRÉSENTATION ET DESTINATIONS ---------------- */
+#intro,#dest{position:fixed;inset:0;z-index:44;background:#04060A;overflow-y:auto;
+ -webkit-overflow-scrolling:touch;display:none}
+#intro.on,#dest.on{display:block}
+#inFond{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+#inFondImg{position:absolute;inset:-10%;width:120%;height:120%;
+ background-image:url("lingua-affiche.webp");background-size:cover;background-position:center 30%;
+ animation:fvKen 20s ease-in-out infinite alternate}
+#inBas{position:absolute;inset:0;background:linear-gradient(to bottom,
+ rgba(4,6,10,.30) 0%,rgba(4,6,10,.62) 40%,rgba(4,6,10,.94) 68%,#04060A 100%)}
+#inPage,#dsPage{position:relative;z-index:1;max-width:520px;margin:0 auto;width:100%;
+ padding:calc(env(safe-area-inset-top) + 54px) 22px calc(env(safe-area-inset-bottom) + 40px)}
+#intro .sur,#dest .sur{font-size:10px;letter-spacing:.34em;text-transform:uppercase;
+ color:var(--turquoise);margin:0 0 14px;text-align:center}
+#intro h1,#dest h1{font-family:'Cinzel',serif;font-weight:600;font-size:30px;margin:0;
+ text-align:center;line-height:1.2}
+#intro .cit{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:15px;
+ line-height:1.6;color:rgba(244,247,250,.78);text-align:center;margin:18px 0 40vh}
+.pts{margin:0 0 30px}
+.pt{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.pt:last-child{border-bottom:0}
+.pt b{display:block;font-size:14px;font-weight:600;line-height:1.4}
+.pt i{display:block;font-style:normal;font-size:12.5px;line-height:1.65;color:var(--gris);
+ margin-top:5px}
+#inSuite,#dsListe button{font-family:inherit}
+#inSuite{display:block;width:100%;padding:16px 20px;font-size:12.5px;font-weight:600;
+ letter-spacing:.13em;text-transform:uppercase;color:#060709;background:var(--turquoise);
+ border-radius:15px;box-shadow:0 16px 40px -20px rgba(32,217,245,.95)}
+#dest .sous{font-size:12.5px;line-height:1.7;color:var(--gris);text-align:center;margin:16px 0 30px}
+#dsRetour{position:absolute;left:8px;top:calc(env(safe-area-inset-top) + 12px);
+ width:38px;height:38px;font-size:26px;line-height:1;color:var(--blanc);opacity:.7}
+.ds{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;margin-bottom:10px;
+ border-radius:16px;text-align:left;background:rgba(255,255,255,.04);
+ border:1px solid rgba(255,255,255,.09)}
+.ds.ouvert{background:linear-gradient(160deg,rgba(32,517,245,.14),rgba(10,14,18,.8));
+ border-color:rgba(32,217,245,.42);box-shadow:0 16px 40px -26px rgba(32,217,245,.9)}
+.ds .dr{font-size:22px;flex:0 0 auto}
+.ds .dd{flex:1;min-width:0}
+.ds .dd b{display:block;font-family:'Cinzel',serif;font-weight:500;font-size:16px}
+.ds .dd i{display:block;font-style:normal;font-size:11.5px;color:var(--gris);margin-top:4px;
+ line-height:1.5}
+.ds .dg{flex:0 0 auto;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+ color:var(--gris)}
+.ds.ouvert .dg{color:var(--turquoise);font-weight:600}
+#dest .pied{font-size:11.5px;line-height:1.7;color:#6E7C88;text-align:center;margin:26px 0 0}
+/* ---------------- LE CHEMIN ---------------- */
+#scene{position:fixed;inset:0;overflow:hidden}
+.couche{position:absolute;left:0;bottom:0;pointer-events:none}
+#ciel{position:absolute;inset:0}
+
+
+
+
+
+
+
+
+.couche svg{display:block;width:100%;height:100%;overflow:visible}
+
+
+
+
+
+
+#rail{position:fixed;inset:0;z-index:8;display:flex;overflow-x:auto;overflow-y:hidden;
+ scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+#rail::-webkit-scrollbar{display:none}
+.station{flex:0 0 78vw;height:100%;scroll-snap-align:center}
+
+
+
+
+
+/* ==================================================================
+   LE CHEMIN — les dix cartes postales, plus aucun dessin.
+   L'étape en cours est nette et plein écran ; celles d'avant et d'après
+   sont floutées et sombres sur les côtés (les fichiers fond-*.webp de
+   1 Ko). On fait glisser, les villes défilent comme des souvenirs.
+   Supprimé le 4 août : montagnes en triangles, cabanes géométriques,
+   mer en traits, lune grise, herbes — c'était un bouchon de travail,
+   et à côté des vraies cartes ça faisait brouillon.
+   ================================================================== */
+#cartes{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.chc{position:absolute;top:0;bottom:0;left:0;width:100%;
+ background-size:cover;background-position:center}
+.chc.loin{filter:brightness(.42) saturate(.7)}
+#voile{position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(to bottom,rgba(4,6,10,.62) 0%,rgba(4,6,10,.12) 34%,
+   rgba(4,6,10,.30) 62%,rgba(4,6,10,.9) 100%)}
+#etoiles{top:0;height:46%;width:170%;opacity:.85}
+#jalons{bottom:19%;height:20%;width:100%}
+.jalon{position:absolute;bottom:0;left:50%}
+#voyage{position:fixed;left:0;right:0;top:0;z-index:9;pointer-events:none;
+ padding:calc(env(safe-area-inset-top) + 13px) 88px 0;text-align:center}
+#voyage b{font-family:'Cinzel',serif;font-size:12px;font-weight:500;letter-spacing:.3em;
+ color:var(--turquoise);display:block}
+#voyage span{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:12px;
+ color:var(--gris);display:block;margin-top:2px}
+#bSprint{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom) + 96px);z-index:12;
+ padding:11px 16px;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ color:#060709;background:var(--turquoise);border-radius:99px;
+ box-shadow:0 14px 34px -16px rgba(32,217,245,.95)}
+#retour{position:fixed;left:10px;top:calc(env(safe-area-inset-top) + 8px);z-index:12;
+ width:38px;height:38px;font-size:26px;line-height:1;color:var(--blanc);opacity:.7;
+ border-radius:50%;background:rgba(6,7,9,.5)}
+#hud{position:fixed;left:0;right:0;top:0;z-index:10;pointer-events:none;
+ padding:calc(env(safe-area-inset-top) + 76px) 30px 0;text-align:center}
+#hud .num{font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--turquoise);margin:0 0 7px}
+#hud h1{font-family:'Cinzel',serif;font-weight:500;font-size:24px;margin:0;line-height:1.2;
+ text-shadow:0 2px 26px rgba(0,0,0,.95)}
+#hud .lieu{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;opacity:.68;margin:9px 0 0}
+#hud .heure{font-size:9.5px;letter-spacing:.2em;color:var(--or);opacity:.7;margin:5px 0 0}
+#titre{transition:opacity .34s,transform .34s}
+#titre.loin{opacity:0;transform:translateY(-8px)}
+
+#bas{position:fixed;left:0;right:0;bottom:0;z-index:10;
+ padding:0 18px calc(env(safe-area-inset-bottom) + 16px);
+ display:flex;flex-direction:column;align-items:center;gap:10px;
+ background:linear-gradient(to top,rgba(6,7,9,.9),transparent)}
+#cta{pointer-events:auto;width:100%;max-width:420px;display:flex;align-items:center;
+ justify-content:space-between;padding:15px 20px;border-radius:15px;
+ background:var(--turquoise);color:#060709;font-size:12.5px;font-weight:600;
+ letter-spacing:.1em;text-transform:uppercase;box-shadow:0 16px 40px -18px rgba(32,217,245,.95)}
+#cta.verrou{background:rgba(255,255,255,.07);color:var(--gris);
+ border:1px solid rgba(255,255,255,.12);box-shadow:none}
+#points{display:flex;gap:5px}
+#points i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18);
+ position:relative;cursor:pointer}
+/* la cible tactile fait 26 px sans que le point grossisse : un point de
+   5 px est inatteignable au doigt (Apple recommande 44 px minimum). */
+#points i::after{content:"";position:absolute;left:50%;top:50%;width:26px;height:26px;
+ transform:translate(-50%,-50%)}
+#points i.f{background:var(--or)}
+#points i.a{background:var(--turquoise);box-shadow:0 0 9px var(--turquoise)}
+/* ==================================================================
+   LE CHEMIN CÔTIER EST RETIRÉ (5 août 2026, décision de Blandine).
+   Il détonnait avec le reste depuis que le globe porte le voyage.
+
+   ⚠️ Il n'est PAS supprimé du DOM, volontairement : `mesurer()` lit la
+   largeur d'une station pour calculer W, et plusieurs fonctions divisent
+   par W (affiner, rendu). Un `display:none` mettrait W à zéro et
+   produirait des NaN silencieux. On le sort donc du flux visuel en
+   gardant ses dimensions — la suppression franche du code est un
+   nettoyage à part, à faire quand plus rien ne le lira.
+   ================================================================== */
+#rail,#hud,#outils,#bas{opacity:0;pointer-events:none;visibility:hidden}
+
+#globe{position:fixed;inset:0;z-index:40;background:#060709;opacity:0;visibility:hidden;
+  transition:opacity .3s ease,visibility .3s ease}
+#globe.on{opacity:1;visibility:visible}
+#globeIf{position:absolute;inset:0;width:100%;height:100%;border:0;background:#060709}
+#globeX{position:absolute;top:calc(env(safe-area-inset-top) + 10px);left:12px;z-index:2;
+  width:38px;height:38px;border:0;border-radius:50%;background:rgba(255,255,255,.08);
+  color:#9AA6B2;font-size:20px;line-height:1;cursor:pointer}
+#bGlobe{font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+#outils{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 12px);z-index:11;
+ display:flex;flex-direction:column;gap:6px}
+#outils button{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--turquoise);
+ background:rgba(6,7,9,.6);border:1px solid rgba(32,217,245,.28);border-radius:99px;
+ padding:6px 10px}
+
+/* ---------------- L'OUVERTURE ---------------- */
+#ouverture{position:fixed;inset:0;z-index:40;background:#04060A;display:flex;
+ align-items:center;justify-content:flex-start;flex-direction:column;overflow-y:auto;overflow-x:hidden;
+ -webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top) + 30px) 0
+ calc(env(safe-area-inset-bottom) + 40px)}
+#ouverture.joue{overflow:hidden;padding:0;justify-content:center}
+#ouverture.parti{display:none}
+/* le carnet de route respire : la carte de Newmarket, floutée, en fond */
+#ouvFond{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+ transition:opacity .6s}
+#ouverture.joue #ouvFond{opacity:0}
+#ouvFondImg{position:absolute;inset:-12%;width:124%;height:124%;
+ background-image:url("fond-newmarket.webp");background-size:cover;background-position:center;
+ animation:fvKen 18s ease-in-out infinite alternate, fvSouffle 14s ease-in-out infinite;
+ }
+#ouvFondBrume{position:absolute;top:-20%;left:-60%;width:220%;height:140%;
+ background:radial-gradient(50% 40% at 50% 50%, rgba(190,215,225,.07), transparent 70%);
+ animation:fvBrume 52s linear infinite}
+#ouvFondBas{position:absolute;inset:0;
+ background:linear-gradient(to bottom,rgba(4,6,10,.6) 0%,rgba(4,6,10,.86) 40%,#04060A 100%)}
+#ouvDebut{position:relative;z-index:1}
+#ouvFilm{position:fixed;inset:0;z-index:42;background:#04060A;display:none}
+#ouvFilm.joue{display:block}
+#ouvVid{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;
+ pointer-events:none;transition:opacity .8s ease}
+#ouvFilm.joue #ouvVid{opacity:1}
+
+#ouvVoile{position:absolute;inset:0;pointer-events:none;z-index:2;
+ background:radial-gradient(80% 55% at 50% 42%,rgba(32,217,245,.10),transparent 74%),
+            linear-gradient(to top,rgba(4,6,10,.9) 0%,transparent 44%)}
+#ouvDebut{position:relative;text-align:center;padding:0 22px;width:100%;max-width:520px;
+ transition:opacity .5s}
+#ouverture.joue #ouvDebut{opacity:0;pointer-events:none}
+#ouvDebut .sur{font-size:10px;letter-spacing:.36em;text-transform:uppercase;
+ color:var(--turquoise);margin:0 0 14px}
+#ouvDebut h1{font-family:'Cinzel',serif;font-weight:600;font-size:40px;margin:0;line-height:1.05}
+#ouvDebut .sous{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris);
+ margin:14px 0 0}
+#ouvDebut .langue{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
+ font-size:14px;color:var(--turquoise);opacity:.8;margin:12px 0 30px;letter-spacing:.06em}
+#ouvDebut .intro{font-size:13.5px;line-height:1.75;color:#C3D0DA;margin:0 0 26px;
+ text-align:left}
+#ouvDebut .intro b{color:var(--blanc);font-weight:600}
+.carnet{text-align:left;margin:0 0 28px}
+.carnet .ct{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);
+ margin:0 0 12px}
+.cv{display:flex;align-items:center;gap:10px;padding:12px 2px;flex-wrap:wrap;width:100%;
+ text-align:left;border-bottom:1px solid rgba(255,255,255,.06)}
+.cv:last-child{border-bottom:0}
+.cv .n{font-family:'Cinzel',serif;font-size:11px;color:var(--turquoise);width:16px;flex:0 0 16px}
+.cv .d{flex:1 1 60%;min-width:0}
+.cv .d b{display:block;font-family:'Cinzel',serif;font-weight:500;font-size:14px;line-height:1.25}
+.cv .d i{display:block;font-style:normal;font-size:10px;letter-spacing:.1em;
+ text-transform:uppercase;color:#6E7C88;margin-top:4px}
+.cv .pl{flex:0 0 auto;width:20px;text-align:center;font-size:15px;color:var(--turquoise);
+ opacity:.55;transition:transform .25s,opacity .25s}
+.cv.ouv .pl{transform:rotate(45deg);opacity:1}
+.cv .pq{flex:0 0 100%;max-height:0;overflow:hidden;font-size:12.5px;line-height:1.65;
+ color:#A9B7C3;transition:max-height .3s ease,padding .3s ease;padding:0 0 0 26px}
+.cv.ouv .pq{max-height:130px;padding:9px 0 2px 26px}
+.regles{text-align:left;padding:16px 16px 4px;border-radius:14px;margin:0 0 30px;
+ background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+.regles p{font-size:12px;line-height:1.7;color:var(--gris);margin:0 0 12px}
+.regles b{color:#DCE5EC;font-weight:600}
+#ouvPartir{padding:16px 44px;border-radius:15px;background:var(--turquoise);color:#060709;
+ font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+ box-shadow:0 16px 42px -18px rgba(32,217,245,.95)}
+#ouvPasser,#ouvSuite{position:absolute;z-index:3;opacity:0;transition:opacity .4s}
+#ouvFilm.joue #ouvPasser{opacity:1}
+#ouvPasser{top:calc(env(safe-area-inset-top) + 16px);right:18px;font-size:10px;
+ letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
+#ouvSuite{bottom:calc(env(safe-area-inset-bottom) + 34px);left:50%;transform:translateX(-50%);
+ padding:15px 30px;border-radius:14px;background:var(--turquoise);color:#060709;
+ font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+ pointer-events:none}
+#ouvFilm.fini #ouvSuite{opacity:1;pointer-events:auto}
+
+
+/* ==================================================================
+   LE FOND VIVANT — derrière les textes de l'écran d'arrivée.
+   Le flou, l'assombrissement et la désaturation sont CUITS DANS L'IMAGE
+   à la fabrication : fond-<ville>.webp, 420 px, 1 à 2 Ko.
+   Trois raisons :
+     · un filter:blur() sur une image plein écran animée fait chuter
+       Safari iOS à 30 i/s ;
+     · une image floue n'a pas besoin d'être nette : 1 Ko au lieu de 100 ;
+     · pas de voile noir par-dessus le cheval, la charte l'interdit.
+   À l'exécution on n'anime que transform et opacity — les deux seules
+   propriétés que le GPU traite sans repeindre.
+   ================================================================== */
+#fv{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#fvImg{position:absolute;inset:-12%;width:124%;height:124%;
+ background-size:cover;background-position:center;
+ animation:fvKen 15s ease-in-out infinite alternate,
+           fvSouffle 13s ease-in-out infinite;
+ }
+@keyframes fvKen{
+  from{transform:scale(1.16) translate3d(-0.7%, 0.5%, 0)}
+  to  {transform:scale(1.20) translate3d( 0.7%,-0.5%, 0)} }
+@keyframes fvSouffle{ 0%,100%{filter:brightness(0.98)} 50%{filter:brightness(1.04)} }
+#fvBrume{position:absolute;top:-20%;left:-60%;width:220%;height:140%;
+ background:radial-gradient(50% 40% at 50% 50%, rgba(190,215,225,.07), transparent 70%);
+ animation:fvBrume 46s linear infinite}
+@keyframes fvBrume{ from{transform:translate3d(0,0,0)} to{transform:translate3d(36%,-4%,0)} }
+.fv-p{position:absolute;border-radius:50%;background:#9FE8F5}
+@keyframes fvMonte{
+  0%{transform:translate3d(0,0,0);opacity:0} 14%{opacity:.45}
+  86%{opacity:.35} 100%{transform:translate3d(var(--dx),-120%,0);opacity:0} }
+#fvBas{position:absolute;inset:0;
+ background:linear-gradient(to top,#060709 0%,rgba(6,7,9,.86) 30%,rgba(6,7,9,.4) 66%,transparent 100%)}
+/* le contenu passe devant le fond */
+#vue,#recit,#postal,#souvenir,#arrBas,.depli{position:relative;z-index:1}
+@media (prefers-reduced-motion:reduce){
+ #fvImg,#fvBrume,.fv-p{animation:none!important}
+ #fvImg{transform:scale(1.16)} .fv-p{opacity:.3}
+}
+
+/* ---------------- L'ARRIVÉE ---------------- */
+#arrivee{position:fixed;inset:0;z-index:20;background:#060709;overflow-y:auto;
+ transform:translateY(100%);transition:transform .5s cubic-bezier(.22,1,.28,1);
+ -webkit-overflow-scrolling:touch}
+#arrivee.ouvert{transform:none}
+#vue{position:relative;height:52svh;min-height:280px;overflow:hidden;
+ background:linear-gradient(165deg,#16222E,#0A1016 70%)}
+#vue video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#vue::after{content:"";position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(to top,#060709 2%,rgba(6,7,9,.6) 30%,transparent 64%)}
+#emplacement{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+ justify-content:center;gap:9px;color:#3D4C58;text-align:center;padding:26px}
+#emplacement b{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.16em;font-weight:500}
+#emplacement span{font-size:10px;line-height:1.65;max-width:250px}
+#emplacement i{position:absolute;inset:16px;border:1px dashed rgba(32,217,245,.2);border-radius:14px}
+#arrTete{position:absolute;left:0;right:0;bottom:18px;z-index:2;text-align:center;padding:0 22px}
+#arrTete .pays{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--turquoise);margin:0 0 8px}
+#arrTete h2{font-family:'Cinzel',serif;font-weight:600;font-size:30px;margin:0;line-height:1.1;
+ text-shadow:0 3px 30px rgba(0,0,0,.95)}
+#arrTete .nation{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--or);
+ opacity:.85;margin:9px 0 0}
+#recit{padding:24px 22px 8px;max-width:520px;margin:0 auto}
+#langues{display:flex;gap:6px;justify-content:center;margin:0 0 20px;flex-wrap:wrap}
+#langues button{font-size:9.5px;letter-spacing:.14em;padding:7px 11px;border-radius:99px;
+ color:var(--gris);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+#langues button.on{color:#060709;background:var(--turquoise);border-color:var(--turquoise)}
+#texte p{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17.5px;
+ line-height:1.76;color:#DCE5EC;margin:0 0 17px}
+#texte p.fait{font-family:'Montserrat',sans-serif;font-style:normal;font-size:12.5px;
+ line-height:1.7;color:var(--gris)}
+/* le dépliant */
+.depli{max-width:520px;margin:6px auto 0;padding:0 22px}
+.depli button{width:100%;display:flex;align-items:center;justify-content:space-between;
+ padding:15px 16px;border-radius:14px;background:rgba(255,255,255,.04);
+ border:1px solid rgba(255,255,255,.08);font-size:11px;letter-spacing:.16em;
+ text-transform:uppercase;color:var(--blanc);text-align:left}
+.depli button span.pl{color:var(--turquoise);font-size:15px;line-height:1;transition:transform .3s}
+.depli.ouvert button span.pl{transform:rotate(45deg)}
+.depli .corps{max-height:0;overflow:hidden;transition:max-height .42s ease}
+.depli.ouvert .corps{max-height:600px}
+.depli .corps p{font-size:13.5px;line-height:1.75;color:#C4D0DA;margin:15px 4px 0}
+/* ---------- LA CARTE POSTALE ---------- */
+#postal{max-width:520px;margin:26px auto 0;padding:0 22px}
+#postal .kick{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--or);
+ text-align:center;margin:0 0 12px}
+.pcarte{position:relative;width:100%;aspect-ratio:3/4;transform-style:preserve-3d;
+ transition:transform .62s cubic-bezier(.4,.1,.2,1);cursor:pointer}
+.pcarte.dos{transform:rotateY(180deg)}
+.pface,.pdos{position:absolute;inset:0;border-radius:14px;overflow:hidden;
+ backface-visibility:hidden;-webkit-backface-visibility:hidden;
+ box-shadow:0 26px 60px -30px rgba(0,0,0,.95)}
+.pface{background:#0A0F14;border:1px solid rgba(212,175,55,.26)}
+.pface img{width:100%;height:100%;object-fit:cover;display:block}
+.pface .titre{position:absolute;left:0;right:0;top:22px;text-align:center;padding:0 18px}
+.pface .titre b{display:block;font-family:'Cinzel',serif;font-size:25px;font-weight:600;
+ color:#F4E6C4;letter-spacing:.03em;text-shadow:0 3px 24px rgba(0,0,0,.95)}
+.pface .titre i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.26em;
+ text-transform:uppercase;color:rgba(244,230,196,.72);margin-top:7px;
+ text-shadow:0 2px 14px rgba(0,0,0,.95)}
+/* ⚠️ Titre sombre sur ciel clair. Mesuré le 5 août sur les dix-huit
+   cartes : quinze ont un tiers haut au-dessus de 100 de luminance, et
+   Warendorf monte à 182. Un titre crème s'y perd complètement. On garde
+   les images intactes — elles sont belles ainsi — et c'est le titre qui
+   s'adapte. La liste vit dans TITRE_SOMBRE. */
+.pface.clair .titre b{color:#120C05;text-shadow:0 1px 10px rgba(255,244,214,.85)}
+.pface.clair .titre i{color:rgba(18,12,5,.78);text-shadow:0 1px 8px rgba(255,244,214,.8)}
+.pface.clair .tourne{color:rgba(18,12,5,.62)}
+.pface .tourne{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:9px;
+ letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+/* le verso : du papier, posé sur le noir Spectral */
+.pdos{transform:rotateY(180deg);background:linear-gradient(160deg,#F2EADA,#E4D9C4);
+ border:1px solid rgba(212,175,55,.3);padding:22px 20px;display:flex;flex-direction:column}
+.pdos .ptete{text-align:center;border-bottom:1px solid rgba(60,45,25,.18);padding-bottom:10px}
+.pdos .ptete b{font-family:'Cinzel',serif;font-size:17px;color:#241A0C;letter-spacing:.04em}
+.pdos .ptete i{display:block;font-style:normal;font-size:7.5px;letter-spacing:.24em;
+ text-transform:uppercase;color:#6B5B44;margin-top:5px}
+.plettre{flex:1;margin-top:14px;font-family:'Caveat',cursive;font-size:20px;line-height:1.5;
+ color:#2B2416;padding-right:76px}
+.plettre.ja{font-family:'Klee One',serif;font-size:14px;line-height:1.85;padding-right:70px}
+.plettre p{margin:0 0 9px}
+.plettre .sign{margin-top:12px}
+.ptampon{position:absolute;right:16px;bottom:20px;width:88px;height:88px;border-radius:50%;
+ border:2px solid rgba(32,110,140,.55);display:flex;flex-direction:column;align-items:center;
+ justify-content:center;gap:3px;color:#26708C;transform:rotate(-11deg);opacity:.85}
+.ptampon::after{content:"";position:absolute;inset:6px;border:1px solid rgba(32,110,140,.35);border-radius:50%}
+.ptampon b{font-family:'Cinzel',serif;font-size:9px;text-align:center;padding:0 8px;line-height:1.15}
+.ptampon i{font-style:normal;font-size:5.5px;letter-spacing:.16em;text-transform:uppercase}
+
+/* Montrer sans donner : l'aperçu est assombri, non cliquable, et
+   n'entre pas dans le passeport. */
+#postal.apercu .pcarte{pointer-events:none;filter:brightness(.52) saturate(.72)}
+#postal.apercu .pface{border-color:rgba(212,175,55,.45)}
+#postal .note{font-size:11px;letter-spacing:.02em;color:var(--or);text-align:center;
+ margin:11px 0 0;opacity:.9}
+#souvenir.apercu .carte{opacity:.5;filter:saturate(.6)}
+
+/* le souvenir */
+#souvenir{max-width:520px;margin:22px auto 0;padding:0 22px}
+#souvenir .carte{display:flex;align-items:center;gap:15px;padding:16px 18px;border-radius:16px;
+ background:linear-gradient(140deg,rgba(212,175,55,.12),rgba(17,20,23,.9));
+ border:1px solid rgba(212,175,55,.3)}
+#souvenir svg{width:46px;height:46px;flex:0 0 auto}
+#souvenir .t{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);margin:0 0 5px}
+#souvenir .n{font-family:'Cinzel',serif;font-size:15px;margin:0;line-height:1.25}
+#arrBas{display:flex;gap:9px;padding:24px 22px calc(env(safe-area-inset-bottom) + 26px);
+ max-width:520px;margin:0 auto}
+#arrBas button{flex:1;padding:15px 12px;border-radius:14px;font-size:11.5px;font-weight:600;
+ letter-spacing:.1em;text-transform:uppercase}
+#arrJouer{background:var(--turquoise);color:#060709;box-shadow:0 14px 34px -18px rgba(32,217,245,.9)}
+#arrPartir{background:rgba(255,255,255,.05);color:var(--gris);border:1px solid rgba(255,255,255,.1)}
+
+/* ==================================================================
+   LA LEÇON — consomme window.HYPE_LINGO_LEX.
+   Gabarit « le cheval est le héros » : la carte postale de la ville
+   en fond vivant, le contenu en verre par-dessus. Aucune liste
+   verticale de pilules : c'est ce qui faisait Duolingo.
+   ================================================================== */
+#lecon{position:fixed;inset:0;z-index:26;background:#04060A;display:none;
+ overflow-y:auto;-webkit-overflow-scrolling:touch}
+#lecon.on{display:block}
+#lcFond{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#lcFondImg{position:absolute;inset:-12%;width:124%;height:124%;
+ background-size:cover;background-position:center;
+ animation:fvKen 16s ease-in-out infinite alternate, fvSouffle 13s ease-in-out infinite;
+ }
+#lcFondBas{position:absolute;inset:0;
+ background:linear-gradient(to bottom,rgba(4,6,10,.72) 0%,rgba(4,6,10,.9) 46%,#04060A 100%)}
+#lcPage{position:relative;z-index:1;max-width:520px;margin:0 auto;
+ padding:calc(env(safe-area-inset-top) + 16px) 20px calc(env(safe-area-inset-bottom) + 34px);
+ min-height:100svh;display:flex;flex-direction:column}
+#lcBarre{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+#lcFermer{font-size:17px;color:var(--gris);padding:4px 8px 4px 0;line-height:1}
+#lcJauge{display:flex;gap:3px;flex:1}
+#lcJauge i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.12)}
+#lcJauge i.f{background:var(--turquoise)}
+#lcJauge i.a{background:rgba(32,217,245,.5)}
+#lcTitre{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);
+ margin:0 0 4px;text-align:center}
+#lcCorps{flex:1;display:flex;flex-direction:column}
+.lcCons{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris);
+ margin:8px 0 24px;text-align:center}
+/* le choix des leçons */
+.lcL{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;margin-bottom:10px;
+ border-radius:16px;text-align:left;
+ background:linear-gradient(160deg,rgba(32,217,245,.09),rgba(10,14,18,.72));
+ border:1px solid var(--bord)}
+.lcL:disabled{opacity:.45}
+.lcL .num{font-family:'Cinzel',serif;font-size:20px;color:var(--turquoise);width:26px;flex:0 0 26px}
+.lcL .d{flex:1;min-width:0}
+.lcL .d b{display:block;font-family:'Cinzel',serif;font-weight:500;font-size:15px}
+.lcL .d i{display:block;font-style:normal;font-size:11px;color:var(--gris);margin-top:4px}
+.lcL .pc{display:flex;gap:3px;margin-top:7px}
+.lcL .pc s{width:14px;height:3px;border-radius:2px;background:rgba(255,255,255,.16);
+ text-decoration:none}
+.lcL .pc s.f{background:var(--or)}
+/* la carte de mot */
+.lcCarte{position:relative;width:100%;padding:30px 22px 24px;text-align:center;border-radius:22px;
+ background:linear-gradient(170deg,rgba(32,217,245,.12),rgba(10,14,18,.82) 60%);
+ border:1px solid var(--bord);
+ box-shadow:0 26px 60px -40px rgba(32,217,245,.5)}
+.lcMot{font-family:'Cinzel',serif;font-size:32px;font-weight:600;margin:0;line-height:1.15}
+.lcPhon{font-size:12.5px;color:var(--turquoise);letter-spacing:.14em;margin:9px 0 0}
+.lcVar{font-size:11px;color:var(--gris);margin:7px 0 0;font-style:italic}
+.lcFil{width:32px;height:1px;background:var(--bord);margin:16px auto}
+.lcTrad{font-size:15px;font-weight:500;margin:0;opacity:.92}
+.lcSon{margin-top:16px;padding:9px 18px;font-size:11px;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--turquoise);border:1px solid var(--bord);
+ border-radius:99px;background:rgba(32,217,245,.06)}
+.lcDef{font-size:13px;line-height:1.7;color:#B9C6D2;text-align:center;margin:20px 4px 0}
+/* les réponses, en plaques de verre 2×2 */
+.lcInvite{font-family:'Cinzel',serif;font-size:26px;text-align:center;margin:0 0 24px;line-height:1.25}
+.lcPetit{font-family:'Montserrat',sans-serif;font-size:15px;color:var(--gris);font-weight:300}
+.lcOpts{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%}
+.lcOpt{padding:16px 10px;font-size:14px;text-align:center;border-radius:14px;
+ background:rgba(10,14,18,.6);border:1px solid rgba(255,255,255,.12);
+ transition:border-color .2s,background .2s,transform .16s}
+.lcOpt:active{transform:scale(.98)}
+.lcOpt.ok{border-color:var(--turquoise);background:rgba(32,217,245,.16)}
+.lcOpt.ko{border-color:rgba(230,120,130,.55);background:rgba(70,20,26,.5)}
+.lcOpt:disabled{opacity:.5}
+.lcOpt.ok:disabled,.lcOpt.ko:disabled{opacity:1}
+.lcHp{width:82px;height:82px;border-radius:50%;font-size:25px;color:var(--turquoise);
+ background:rgba(32,217,245,.08);border:1px solid var(--bord);margin:0 auto;display:block;
+ box-shadow:0 0 40px -14px rgba(32,217,245,.8)}
+.lcRej{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris);
+ margin:12px 0 24px;text-align:center}
+.lcChamp{width:100%;padding:16px 18px;font-size:17px;color:var(--blanc);text-align:center;
+ background:rgba(10,14,18,.6);border:1px solid rgba(255,255,255,.14);border-radius:14px}
+.lcChamp.ok{border-color:var(--turquoise)}
+.lcChamp.ko{border-color:rgba(230,120,130,.55)}
+.lcLigne{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;width:100%;min-height:54px;
+ padding:12px;border-radius:14px;border:1px dashed rgba(32,217,245,.22);
+ background:rgba(32,217,245,.04)}
+.lcVide{color:var(--gris);letter-spacing:.4em;font-size:13px;align-self:center}
+.lcBanc{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:14px}
+.lcTuile{padding:10px 14px;font-size:14px;border-radius:11px;background:rgba(10,14,18,.66);
+ border:1px solid rgba(255,255,255,.13)}
+.lcTuile.p{border-color:var(--bord);background:rgba(32,217,245,.1)}
+.lcCta{display:block;width:100%;margin-top:20px;padding:15px 20px;font-size:12.5px;
+ font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#060709;
+ background:var(--turquoise);border-radius:14px;
+ box-shadow:0 14px 34px -18px rgba(32,217,245,.9)}
+.lcVerdict{width:100%}
+.lcVerdict.j,.lcVerdict.f{margin-top:20px;padding:15px 17px 17px;border-radius:16px}
+.lcVerdict.j{background:rgba(32,217,245,.08);border:1px solid var(--bord)}
+.lcVerdict.f{background:rgba(230,120,130,.07);border:1px solid rgba(230,120,130,.3)}
+.lcVerdict b{font-family:'Cinzel',serif;font-size:16px;display:block}
+.lcVerdict span{display:block;font-size:13px;color:var(--gris);margin-top:6px}
+.lcNote{margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.09)}
+.lcNm{margin:0;font-size:14px;line-height:1.5}
+.lcNm b{font-family:'Cinzel',serif;font-weight:600;color:var(--blanc)}
+.lcNm i{font-style:normal;color:var(--turquoise);font-size:12px;letter-spacing:.1em}
+.lcNm span{color:var(--gris)}
+.lcNv{margin:7px 0 0;font-size:12.5px;line-height:1.65;color:#A9B7C3}
+.lcAcc{font-size:13.5px;line-height:1.7;color:#C7D3DD;text-align:center;margin:0 0 10px}
+.lcAv{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--or);
+ text-align:center;margin:0 0 24px}
+.lcL.on{background:linear-gradient(160deg,rgba(32,217,245,.20),rgba(10,14,18,.8));
+ border-color:rgba(32,217,245,.5);box-shadow:0 16px 40px -26px rgba(32,217,245,.9)}
+.lcL .d u{display:block;text-decoration:none;font-size:10px;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--or);margin-top:6px;opacity:.85}
+.lcL .go{flex:0 0 auto;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+ color:var(--turquoise);align-self:center}
+.lcL.on .go{font-weight:600}
+.lcRec{margin-top:26px;padding:16px 17px 14px;border-radius:16px;
+ background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08)}
+.lcRt{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--gris);margin:0 0 12px}
+.lcRl{display:flex;align-items:baseline;gap:10px;padding:7px 0;font-size:13px;color:#93A3B0}
+.lcRl.ok{color:var(--blanc)}
+.lcRl .p{color:var(--gris);font-size:12px}
+.lcRl.ok .p{color:var(--or)}
+.lcRl .q{flex:1;min-width:0}
+.lcRl .e{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris);
+ white-space:nowrap}
+.lcRl.ok .e{color:var(--or)}
+.lcHp.ecoute{animation:lcPulse 1.1s ease-in-out infinite;border-color:rgba(32,217,245,.8)}
+@keyframes lcPulse{0%,100%{box-shadow:0 0 30px -10px rgba(32,217,245,.6)}
+ 50%{box-shadow:0 0 54px -6px rgba(32,217,245,1)}}
+.lcMicro{display:block;width:100%;margin-top:11px;padding:14px 18px;font-size:11.5px;
+ letter-spacing:.12em;text-transform:uppercase;color:var(--turquoise);border-radius:14px;
+ background:rgba(32,217,245,.07);border:1px solid var(--bord)}
+.lcMicro.ecoute{animation:lcPulse 1.1s ease-in-out infinite;border-color:rgba(32,217,245,.85)}
+.lcEviter{display:block;margin:18px auto 0;font-size:11px;letter-spacing:.1em;color:var(--gris);
+ text-decoration:underline;text-underline-offset:3px}
+.lcScore{font-family:'Cinzel',serif;font-size:34px;color:var(--turquoise);text-align:center;margin:0}
+
+/* ==================================================================
+   LE SPRINT — soixante secondes.
+   Un seul bouton, on tape, on joue. Pas de voyage, pas de vidéo, pas de
+   choix de leçon : onze gestes séparaient l'accueil du premier exercice,
+   les testeurs décrochaient avant. Ici, deux taps.
+   Même vocabulaire, mais ça devient un jeu d'arcade : chrono, combo,
+   record personnel. Aucun mur d'énergie — on ne bloque jamais le jeu.
+   ================================================================== */
+#sprint{position:fixed;inset:0;z-index:30;background:#04060A;display:none;overflow-y:auto}
+#sprint.on{display:block}
+#spFond{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+#spFondImg{position:absolute;inset:-10%;width:120%;height:120%;
+ background-image:url("fond-lingua.webp");background-size:cover;background-position:center;
+ animation:fvKen 20s ease-in-out infinite alternate}
+#spBas{position:absolute;inset:0;background:linear-gradient(to bottom,
+ rgba(4,6,10,.62) 0%,rgba(4,6,10,.88) 44%,#04060A 100%)}
+#spPage{position:relative;z-index:1;max-width:520px;margin:0 auto;width:100%;
+ padding:calc(env(safe-area-inset-top) + 16px) 20px calc(env(safe-area-inset-bottom) + 34px);
+ min-height:100svh;display:flex;flex-direction:column}
+#spTete{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+#spFermer{font-size:17px;color:var(--gris);padding:4px 10px 4px 0}
+#spChrono{flex:1;height:4px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+#spChrono i{display:block;height:100%;background:var(--turquoise);width:100%;
+ transition:width .25s linear}
+#sprint.presse #spChrono i{background:#F5566B}
+#spSec{font-family:'Cinzel',serif;font-size:15px;color:var(--turquoise);width:34px;text-align:right}
+#sprint.presse #spSec{color:#F5566B}
+#spBarre{display:flex;align-items:baseline;justify-content:space-between;margin:14px 0 26px}
+#spScore{font-family:'Cinzel',serif;font-size:30px;line-height:1}
+#spCombo{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--or);opacity:0;
+ transition:opacity .2s,transform .2s;transform:translateY(4px)}
+#spCombo.on{opacity:1;transform:none}
+#spCombo b{font-family:'Cinzel',serif;font-size:16px;color:var(--or)}
+#spCorps{flex:1}
+#spAccueil{text-align:center;padding-top:6vh}
+#spAccueil h1{font-family:'Cinzel',serif;font-weight:600;font-size:36px;margin:0;line-height:1.05}
+#spAccueil .sur{font-size:10px;letter-spacing:.32em;text-transform:uppercase;
+ color:var(--turquoise);margin:0 0 14px}
+#spAccueil p{font-size:13.5px;line-height:1.7;color:#C3D0DA;margin:20px 0 0}
+#spRec{margin:30px 0 0;padding:15px 16px;border-radius:15px;background:rgba(255,255,255,.04);
+ border:1px solid rgba(255,255,255,.08);display:flex;gap:10px}
+#spRec div{flex:1;text-align:center}
+#spRec em{display:block;font-style:normal;font-family:'Cinzel',serif;font-size:23px;
+ color:var(--turquoise)}
+#spRec span{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+ color:var(--gris);margin-top:5px}
+#spGo{display:block;width:100%;margin-top:26px;padding:17px 20px;font-size:13px;font-weight:600;
+ letter-spacing:.14em;text-transform:uppercase;color:#060709;background:var(--turquoise);
+ border-radius:15px;box-shadow:0 16px 42px -20px rgba(32,217,245,.95)}
+#spGo.encore{background:rgba(255,255,255,.07);color:var(--blanc);
+ border:1px solid rgba(255,255,255,.14);box-shadow:none}
+.spMot{font-family:'Cinzel',serif;font-size:28px;text-align:center;margin:8vh 0 26px;
+ line-height:1.25}
+.spOpts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.spOpt{padding:17px 10px;font-size:14px;text-align:center;border-radius:14px;
+ background:rgba(10,14,18,.62);border:1px solid rgba(255,255,255,.13)}
+.spOpt.ok{border-color:var(--turquoise);background:rgba(32,217,245,.18)}
+.spOpt.ko{border-color:rgba(230,120,130,.55);background:rgba(70,20,26,.5)}
+.spFlash{position:fixed;inset:0;pointer-events:none;z-index:31;opacity:0;
+ transition:opacity .18s}
+.spFlash.j{background:radial-gradient(60% 40% at 50% 50%,rgba(32,217,245,.22),transparent 72%);opacity:1}
+.spFlash.f{background:radial-gradient(60% 40% at 50% 50%,rgba(245,86,107,.20),transparent 72%);opacity:1}
+
+/* ---------------- LE DÉPART ---------------- */
+#depart{position:fixed;inset:0;z-index:30;background:#04060A;display:none;
+ align-items:center;justify-content:center;flex-direction:column;overflow:hidden}
+#depart.on{display:flex}
+#depart video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+#dpFond{position:absolute;inset:0;
+ background:radial-gradient(70% 50% at 50% 42%,rgba(32,217,245,.16),transparent 72%)}
+#dpTampon{position:relative;width:150px;height:150px;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:6px;border:2.5px solid rgba(32,217,245,.8);
+ border-radius:50%;color:var(--turquoise);transform:rotate(-12deg);
+ box-shadow:0 0 40px -8px rgba(32,217,245,.6);
+ animation:tchak .6s cubic-bezier(.2,1.6,.4,1) .25s both}
+#dpTampon::after{content:"";position:absolute;inset:8px;border:1px solid rgba(32,217,245,.4);border-radius:50%}
+#dpTampon b{font-family:'Cinzel',serif;font-size:15px;text-align:center;padding:0 14px;line-height:1.2;font-weight:600}
+#dpTampon i{font-style:normal;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.85}
+@keyframes tchak{0%{opacity:0;transform:rotate(-12deg) scale(3);filter:blur(5px)}
+ 68%{opacity:1;filter:blur(0)}100%{opacity:1;transform:rotate(-12deg) scale(1)}}
+#dpTexte{position:relative;margin-top:26px;text-align:center;opacity:0;
+ animation:monte .5s ease .85s both}
+#dpTexte p{margin:0;font-family:'Cinzel',serif;font-size:19px}
+#dpTexte span{display:block;margin-top:9px;font-size:10px;letter-spacing:.22em;
+ text-transform:uppercase;color:var(--gris)}
+@keyframes monte{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+#dpSuite{position:relative;margin-top:34px;padding:14px 26px;border-radius:14px;
+ background:var(--turquoise);color:#060709;font-size:11.5px;font-weight:600;
+ letter-spacing:.12em;text-transform:uppercase;opacity:0;animation:monte .5s ease 1.3s both}
+#dpPasser{position:absolute;top:calc(env(safe-area-inset-top) + 16px);right:18px;
+ font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
+
+@media (prefers-reduced-motion:reduce){
+ #apy{animation:none}#arrivee{transition:none}
+ #dpTampon,#dpTexte,#dpSuite{animation-duration:.001s}
+}
+</style>
+</head>
+<body>
+
+<div id="scene">
+  <div id="ciel"></div>
+  <div id="cartes"></div>
+  <div class="couche" id="etoiles"></div>
+  <div class="couche" id="jalons"></div>
+  <div id="voile"></div>
+</div>
+
+<button id="retour" data-ta="retourCarnet" aria-label="Revenir au carnet de route">‹</button>
+<button id="bSprint" data-t="sprint60">Sprint · 60 s</button>
+<div id="voyage"><b id="voyNom">Les Îles</b><span id="voyLg">anglais</span></div>
+
+<div id="hud"><div id="titre">
+  <p class="num" id="hNum">Chapitre 1 sur 18</p>
+  <h1 id="hTitre">L'écurie</h1>
+  <p class="lieu" id="hVille">Newmarket</p>
+  <p class="heure" id="hHeure">20 h 10</p>
+</div></div>
+
+<div id="outils">
+  <button id="bGlobe" data-t="leGlobe">Le globe</button>
+  <button id="bApercu">4 / 18</button>
+  <button id="bTrace">Trace : on</button>
+</div>
+
+<div id="bas">
+  <div id="points"></div>
+  <button id="cta"><span id="ctaTxt">Commencer</span><span>›</span></button>
+</div>
+
+<div id="rail"></div>
+
+<!-- ==================================================================
+     LE GLOBE — il remplace le chemin côtier, abandonné le 4 août : un
+     chemin n'a de sens qu'entre villes voisines, et Newmarket → Doha
+     n'en a aucun. Le globe est le passeport : pas une liste, une carte.
+     Chargé en iframe, comme GLOBE_HTML_HYPE dans l'app — même motif.
+     ================================================================== -->
+<div id="globe">
+  <iframe id="globeIf" src="lingo-globe.html" title="Le tour du monde"></iframe>
+  <button id="globeX" aria-label="Fermer">×</button>
+</div>
+
+<div id="arrivee">
+  <div id="fv"><div id="fvImg"></div><div id="fvBrume"></div><div id="fvBas"></div></div>
+  <div id="vue">
+    <div id="emplacement"><i></i>
+      <b id="empNom">ARRIVÉE À NEWMARKET</b>
+      <span id="empTxt">Emplacement de l'animation<br><code>arrivee-newmarket.mp4</code><br>3 s · muette · sans texte · 720 px</span>
+    </div>
+    <div id="arrTete">
+      <p class="pays" id="arrChap">Chapitre 1 · L'écurie</p>
+      <h2 id="arrVille">Newmarket</h2>
+      <p class="nation" id="arrNation">Angleterre</p>
+    </div>
+  </div>
+
+  <div id="recit">
+    <div id="langues"></div>
+    <div id="texte"></div>
+  </div>
+
+  <div id="postal">
+    <p class="kick" id="postalKick">Carte postale débloquée</p>
+    <p class="note" id="postalNote"></p>
+    <div class="pcarte" id="pcarte">
+      <div class="pface">
+        <img id="pimg" alt="">
+        <div class="titre"><b id="pnom">Newmarket</b><i id="plieu">Suffolk · United Kingdom</i></div>
+        <div class="tourne" id="ptourne">Touche pour lire</div>
+      </div>
+      <div class="pdos">
+        <div class="ptete"><b id="pnom2">Newmarket</b><i id="plieu2">Suffolk · United Kingdom</i></div>
+        <div class="plettre" id="plettre"></div>
+        <div class="ptampon"><b id="ptnom">NEWMARKET</b><i data-t="passeport">Passeport Hype</i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="depli" id="depli">
+    <button id="depliB"><span id="depliT" data-t="raceIci">La race d'ici</span><span class="pl">+</span></button>
+    <div class="corps"><p id="depliC"></p></div>
+  </div>
+  <div class="depli" id="depli2" style="margin-top:9px">
+    <button id="depliB2"><span id="depliT2"></span><span class="pl">+</span></button>
+    <div class="corps"><p id="depliC2"></p></div>
+  </div>
+  <div class="depli" id="depli3" style="margin-top:9px">
+    <button id="depliB3"><span id="depliT3"></span><span class="pl">+</span></button>
+    <div class="corps"><p id="depliC3"></p></div>
+  </div>
+
+  <div id="souvenir">
+    <div class="carte">
+      <svg id="souvSvg" viewBox="0 0 60 60"></svg>
+      <div>
+        <p class="t" id="souvT">Souvenir de Newmarket</p>
+        <p class="n" id="souvN">Une selle anglaise miniature</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="arrBas">
+    <button id="arrPartir" data-t="reprendreRoute">Reprendre la route</button>
+    <button id="arrJouer" data-t="motsChapitre">Les mots du chapitre</button>
+  </div>
+</div>
+
+<!-- Le film est un calque à part, en position fixe. Il était auparavant
+     dans #ouverture, qui défile : la vidéo se plaçait par rapport à la
+     hauteur totale du carnet au lieu de l'écran, et son z-index la faisait
+     passer par-dessus les boutons — le tap n'atteignait jamais « Entrer ». -->
+<div id="ouvFilm">
+  <video id="ouvVid" muted playsinline webkit-playsinline preload="auto"></video>
+  <div id="ouvVoile"></div>
+  <button id="ouvPasser" data-t="passer">Passer</button>
+  <button id="ouvSuite">Entrer à Newmarket</button>
+</div>
+
+<!-- ==================================================================
+     LA PRÉSENTATION puis LE CHOIX DU VOYAGE.
+     Avant, on tombait directement sur le carnet de route : un mur de texte,
+     et aucun endroit pour choisir la langue qu'on apprend. Ces deux écrans
+     se voient une fois, puis on va droit au voyage en cours.
+     ================================================================== -->
+<div id="intro">
+  <div id="inFond"><div id="inFondImg"></div><div id="inBas"></div></div>
+  <div id="inPage">
+    <p class="sur" data-t="nomModule">Hype Linguae</p>
+    <h1 data-th="introTitre">Échanger avec<br>les cavaliers<br>du monde entier</h1>
+    <p class="cit" data-th="introCit">Chaque cavalier a une histoire.<br>Voici le début de la nôtre.</p>
+    <div class="pts">
+      <div class="pt"><b data-t="pt1t">Le vocabulaire équestre en six langues</b><i data-t="pt1d">Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.</i></div>
+      <div class="pt"><b data-t="pt2t">Dix villes, dix chapitres</b><i data-t="pt2d">On voyage de ville en ville. Chacune enseigne une partie du métier.</i></div>
+      <div class="pt"><b data-t="pt3t">Comprendre un enseignant à l'étranger</b><i data-t="pt3d">Les ordres qu'on crie en reprise, à reconnaître au vol.</i></div>
+      <div class="pt"><b data-t="pt4t">Savoir dire l'essentiel en cas d'urgence</b><i data-t="pt4d">« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.</i></div>
+      <div class="pt"><b data-t="pt5t">Une collection à rapporter</b><i data-t="pt5d">Une carte postale et un souvenir par ville, gagnés, pas donnés.</i></div>
+    </div>
+    <button id="inSuite" data-t="choisirDest">Choisir ma destination</button>
+  </div>
+</div>
+
+<div id="dest">
+  <div id="dsPage">
+    <button id="dsRetour" data-ta="retour" aria-label="Retour">‹</button>
+    <p class="sur" data-t="nomModule">Hype Linguae</p>
+    <h1 data-t="destTitre">Où veux-tu aller ?</h1>
+    <p class="sous" data-t="destSous">Une destination, une langue. Le premier chapitre est offert partout.</p>
+    <div id="dsListe"></div>
+    <p class="pied" data-t="destPied">Les autres destinations arrivent. Le vocabulaire est déjà écrit pour les six langues : c'est le voyage qui reste à construire.</p>
+  </div>
+</div>
+
+<div id="ouverture">
+  <div id="ouvFond"><div id="ouvFondImg"></div><div id="ouvFondBrume"></div><div id="ouvFondBas"></div></div>
+  <div id="ouvDebut">
+    <p class="sur" data-t="voyage1">Hype Linguae · Voyage 1</p>
+    <h1 id="ouvNom">Les Îles</h1>
+    <p class="sous" data-t="ouvNations">Angleterre · Irlande · Pays de Galles · Écosse</p>
+    <p class="langue" data-t="ouvLangue">— anglais —</p>
+
+    <p class="intro" data-th="ouvIntro">Dix chapitres, dix villes. <b>Pas les capitales politiques — les capitales
+    du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
+    et où le vocabulaire que tu vas apprendre s'entend vraiment.</p>
+
+    <div class="carnet" id="carnet"></div>
+
+    <div class="regles">
+      <p data-th="regle1"><b>On voyage la nuit, on arrive à l'aube.</b> Le chemin se fait au doigt, d'une ville
+      à la suivante.</p>
+      <p data-th="regle2"><b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale
+      à retourner, un souvenir, et une étoile de plus dans ton ciel.</p>
+      <p data-th="regle3"><b>Le chapitre des urgences est offert</b> — savoir dire « il boite » ou « appelez le
+      vétérinaire » à l'étranger ne se monnaie pas.</p>
+    </div>
+
+    <button id="ouvPartir" data-t="partir">Partir</button>
+  </div>
+</div>
+
+<div id="lecon">
+  <div id="lcFond"><div id="lcFondImg"></div><div id="lcFondBas"></div></div>
+  <div id="lcPage">
+    <div id="lcBarre"><button id="lcFermer" aria-label="Fermer">✕</button><div id="lcJauge"></div></div>
+    <p id="lcTitre"></p>
+    <div id="lcCorps"></div>
+  </div>
+</div>
+
+<div id="sprint">
+  <div id="spFond"><div id="spFondImg"></div><div id="spBas"></div></div>
+  <div class="spFlash" id="spFlash"></div>
+  <div id="spPage">
+    <div id="spTete"><button id="spFermer" aria-label="Fermer">✕</button>
+      <div id="spChrono"><i></i></div><div id="spSec">60</div></div>
+    <div id="spBarre"><div id="spScore">0</div><div id="spCombo"></div></div>
+    <div id="spCorps"></div>
+  </div>
+</div>
+
+<div id="depart">
+  <div id="dpFond"></div>
+  <button id="dpPasser" data-t="passer">Passer</button>
+  <div id="dpTampon"><b id="dpVille">NEWMARKET</b><i id="dpNation">Angleterre</i></div>
+  <div id="dpTexte"><p id="dpTitre">Tampon obtenu</p><span id="dpSous">Une étoile de plus dans ton ciel</span></div>
+  <button id="dpSuite" data-t="reprendreRoute">Reprendre la route</button>
+</div>
+
+<!-- ==================================================================
+     LEXIQUES — les neuf chapitres ecrits, un fichier par chapitre.
+     Chacun ajoute sa cle a window.HYPE_LINGO_LEX (ecurie, pansage,
+     cheval, materiel, cours, dressage, obstacle, concours, urgences).
+     Ces fichiers DOIVENT etre charges avant le script principal.
+     Ajoute le 4 aout 2026 : ils existaient au depot mais n'etaient
+     charges par personne.
+     Le chapitre 10 (Les dialogues) n'est pas encore ecrit.
+     ================================================================== -->
+<script src="hype-lingo-lex-ecurie.js"></script>
+<script src="hype-lingo-lex-pansage.js"></script>
+<script src="hype-lingo-lex-cheval.js"></script>
+<script src="hype-lingo-lex-materiel.js"></script>
+<script src="hype-lingo-lex-cours.js"></script>
+<script src="hype-lingo-lex-dressage.js"></script>
+<script src="hype-lingo-lex-obstacle.js"></script>
+<script src="hype-lingo-lex-concours.js"></script>
+<script src="hype-lingo-lex-urgences.js"></script>
+<!-- Le poney : chapitre créé le 5 août 2026 pour Lamotte-Beuvron.
+     Six de ses dix entrées sont des RAPPELS partageant le `ref` d'entrées
+     de hype-lingo-lex-cheval.js — voulu, la maîtrise est par `ref`. -->
+<script src="hype-lingo-lex-poney.js"></script>
+
+<!-- Les dix villes : lettre manuscrite et trois volets. Ajouté le 4 août 2026,
+     en remplacement de l'objet VILLES qui était en dur ici et n'avait que trois villes. -->
+<script src="hype-lingo-villes.js"></script>
+<!-- Les huit villes du tour du monde. Se charge APRÈS le fichier des dix
+     et complète le même objet clé par clé, sans jamais écraser. -->
+<script src="hype-lingo-villes-monde.js"></script>
+
+<script>
+/* ==================================================================
+   VOYAGE 1 — ANGLAIS · Îles Britanniques et Irlande
+   Chaque chapitre est une ville, chaque ville sous SON drapeau.
+   ================================================================== */
+var ETAPES = [
+ {ref:"newmarket", ch:"L'écurie",     v:"Newmarket",   nat:"Angleterre",     h:"20 h 10", ciel:["#12233C","#3A3A52"], forme:"ecuries",  souv:"Une selle anglaise miniature", ic:"selle"},
+ {ref:"lambourn",  ch:"Le pansage",   v:"Lambourn",    nat:"Angleterre",     h:"20 h 55", ciel:["#0E1D33","#2A3049"], forme:"village",  souv:"Une étrille de cuivre",        ic:"etrille"},
+ {ref:"connemara", ch:"Le cheval",    v:"Connemara",   nat:"Irlande",        h:"21 h 40", ciel:["#0B1729","#1C2740"], forme:"lande",    souv:"Un licol de corde",            ic:"licol"},
+ {ref:"walsall",   ch:"Le matériel",  v:"Walsall",     nat:"Angleterre",     h:"22 h 30", ciel:["#091320","#161F33"], forme:"ateliers", souv:"Une alêne de sellier",         ic:"alene"},
+ {ref:"aberystwyth",ch:"En selle",    v:"Aberystwyth", nat:"Pays de Galles", h:"23 h 20", ciel:["#070F1A","#101828"], forme:"cote",     souv:"Un fer de cob gallois",        ic:"fer"},
+ {ref:"windsor",   ch:"Le dressage",  v:"Windsor",     nat:"Angleterre",     h:"00 h 30", ciel:["#05090F","#0B1220"], forme:"chateau",  souv:"La lettre A",                  ic:"lettre"},
+ {ref:"hickstead", ch:"L'obstacle",   v:"Hickstead",   nat:"Angleterre",     h:"01 h 40", ciel:["#060B12","#0D1524"], forme:"obstacles",souv:"Un fanion rouge",              ic:"fanion"},
+ {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Une cocarde",                  ic:"cocarde"},
+ {ref:"kildare",   ch:"Les urgences", v:"Kildare",     nat:"Irlande",        h:"04 h 10", ciel:["#0C1A2C","#20344B"], forme:"haras",    souv:"Un stéthoscope",               ic:"stetho"},
+ {ref:"edimbourg", ch:"Les dialogues",v:"Édimbourg",   nat:"Écosse",         h:"05 h 25", ciel:["#16283F","#C58B45"], forme:"edim",     souv:"Un carnet de mots",            ic:"carnet"},
+ /* ---- les huit destinations du tour du monde, ajoutées le 5 août 2026 ----
+    Le champ `h` est un reste du chemin d'une nuit, abandonné avec lui : il
+    ne raconte plus une progression, seulement une heure d'arrivée plausible.
+    `forme` et `ic` réutilisent les silhouettes et icônes existantes — il n'y
+    en a que dix, et en créer huit de plus n'apporterait rien tant que le
+    dessin du chemin n'est pas remplacé. */
+ {ref:"saumur",    ch:"Le Cadre Noir", v:"Saumur",      nat:"France",         h:"06 h 40", ciel:["#0A1522","#2E3B4E"], forme:"chateau",  souv:"Un lampion du Cadre Noir",     ic:"lettre"},
+ {ref:"lamotte",   ch:"Le poney",      v:"Lamotte-Beuvron", nat:"France",     h:"07 h 30", ciel:["#0C1A27","#33455A"], forme:"lande",    souv:"Une toise de bois",            ic:"fer"},
+ {ref:"jerez",     ch:"Le cheval",     v:"Jerez",       nat:"Espagne",        h:"08 h 15", ciel:["#101B26","#4A4258"], forme:"haras",    souv:"Une jarre andalouse",          ic:"licol"},
+ {ref:"seville",   ch:"La présentation",v:"Séville",    nat:"Espagne",        h:"09 h 05", ciel:["#131C24","#5A4A4E"], forme:"village",  souv:"Un peigne de tresses",         ic:"cocarde"},
+ {ref:"vejer",     ch:"L'intendance",  v:"Vejer",       nat:"Espagne",        h:"09 h 50", ciel:["#0E1A22","#4E5257"], forme:"cote",     souv:"Un seau de zinc",              ic:"etrille"},
+ {ref:"oliva",     ch:"S'engager",     v:"Oliva Nova",  nat:"Espagne",        h:"10 h 35", ciel:["#0D1A24","#3E5566"], forme:"obstacles",souv:"Un dossard de tournée",        ic:"fanion"},
+ {ref:"warendorf", ch:"La formation",  v:"Warendorf",   nat:"Allemagne",      h:"11 h 20", ciel:["#0B141E","#2F4256"], forme:"ecuries",  souv:"Un carnet d'échelle",          ic:"selle"},
+ {ref:"aachen",    ch:"Le grand concours",v:"Aix-la-Chapelle", nat:"Allemagne", h:"12 h 10", ciel:["#0A1219","#354A5C"], forme:"manoir", souv:"Une cloche de barrage",        ic:"cocarde"}
+];
+var FAITS = 4, TRACE = true;
+
+/* ---- traductions des étapes ----
+   Les nations et les heures sont partagées (quatre et dix valeurs) ;
+   le reste est propre à chaque ville et rangé sous sa référence. */
+var I18N_NAT = {
+ "Angleterre":     {en:"England", es:"Inglaterra", it:"Inghilterra", de:"England", ja:"イングランド"},
+ "Irlande":        {en:"Ireland", es:"Irlanda",    it:"Irlanda",     de:"Irland",  ja:"アイルランド"},
+ "Pays de Galles": {en:"Wales",   es:"Gales",      it:"Galles",      de:"Wales",   ja:"ウェールズ"},
+ "Écosse":         {en:"Scotland",es:"Escocia",    it:"Scozia",      de:"Schottland", ja:"スコットランド"},
+ "France":         {en:"France",  es:"Francia",    it:"Francia",     de:"Frankreich", ja:"フランス"},
+ "Espagne":        {en:"Spain",   es:"España",     it:"Spagna",      de:"Spanien",    ja:"スペイン"},
+ "Allemagne":      {en:"Germany", es:"Alemania",   it:"Germania",    de:"Deutschland",ja:"ドイツ"}
+};
+var I18N_H = {
+ "20 h 10":{en:"8.10 pm", es:"20:10", it:"20:10", de:"20:10 Uhr", ja:"20時10分"},
+ "20 h 55":{en:"8.55 pm", es:"20:55", it:"20:55", de:"20:55 Uhr", ja:"20時55分"},
+ "21 h 40":{en:"9.40 pm", es:"21:40", it:"21:40", de:"21:40 Uhr", ja:"21時40分"},
+ "22 h 30":{en:"10.30 pm",es:"22:30", it:"22:30", de:"22:30 Uhr", ja:"22時30分"},
+ "23 h 20":{en:"11.20 pm",es:"23:20", it:"23:20", de:"23:20 Uhr", ja:"23時20分"},
+ "00 h 30":{en:"12.30 am",es:"00:30", it:"00:30", de:"00:30 Uhr", ja:"0時30分"},
+ "01 h 40":{en:"1.40 am", es:"01:40", it:"01:40", de:"01:40 Uhr", ja:"1時40分"},
+ "02 h 50":{en:"2.50 am", es:"02:50", it:"02:50", de:"02:50 Uhr", ja:"2時50分"},
+ "04 h 10":{en:"4.10 am", es:"04:10", it:"04:10", de:"04:10 Uhr", ja:"4時10分"},
+ "05 h 25":{en:"5.25 am", es:"05:25", it:"05:25", de:"05:25 Uhr", ja:"5時25分"},
+ "06 h 40":{en:"6.40 am", es:"06:40", it:"06:40", de:"06:40 Uhr", ja:"6時40分"},
+ "07 h 30":{en:"7.30 am", es:"07:30", it:"07:30", de:"07:30 Uhr", ja:"7時30分"},
+ "08 h 15":{en:"8.15 am", es:"08:15", it:"08:15", de:"08:15 Uhr", ja:"8時15分"},
+ "09 h 05":{en:"9.05 am", es:"09:05", it:"09:05", de:"09:05 Uhr", ja:"9時05分"},
+ "09 h 50":{en:"9.50 am", es:"09:50", it:"09:50", de:"09:50 Uhr", ja:"9時50分"},
+ "10 h 35":{en:"10.35 am",es:"10:35", it:"10:35", de:"10:35 Uhr", ja:"10時35分"},
+ "11 h 20":{en:"11.20 am",es:"11:20", it:"11:20", de:"11:20 Uhr", ja:"11時20分"},
+ "12 h 10":{en:"12.10 pm",es:"12:10", it:"12:10", de:"12:10 Uhr", ja:"12時10分"}
+};
+var ETAPES_I18N = {
+ saumur:{
+   ch:{en:"The Cadre Noir", es:"El Cadre Noir", it:"Il Cadre Noir", de:"Das Cadre Noir", ja:"カドル・ノワール"},
+   v:{ja:"ソミュール"},
+   souv:{en:"A Cadre Noir cap badge", es:"Un distintivo del Cadre Noir",
+         it:"Un distintivo del Cadre Noir", de:"Ein Abzeichen des Cadre Noir",
+         ja:"カドル・ノワールの帽章"}},
+ lamotte:{
+   ch:{en:"The pony", es:"El poni", it:"Il pony", de:"Das Pony", ja:"ポニー"},
+   v:{ja:"ラモット・ブーヴロン"},
+   souv:{en:"A wooden measuring stick", es:"Un hipómetro de madera",
+         it:"Un ippometro di legno", de:"Ein hölzernes Stockmaß", ja:"木の測尺"}},
+ jerez:{
+   ch:{en:"The horse", es:"El caballo", it:"Il cavallo", de:"Das Pferd", ja:"馬"},
+   v:{ja:"ヘレス"},
+   souv:{en:"An Andalusian jar", es:"Una jarra andaluza", it:"Una giara andalusa",
+         de:"Ein andalusischer Krug", ja:"アンダルシアの壺"}},
+ seville:{
+   ch:{en:"Turnout", es:"La presentación", it:"La presentazione", de:"Das Herausbringen", ja:"見せる支度"},
+   v:{en:"Seville", es:"Sevilla", it:"Siviglia", de:"Sevilla", ja:"セビリア"},
+   souv:{en:"A plaiting comb", es:"Un peine de trenzas", it:"Un pettine da trecce",
+         de:"Ein Flechtkamm", ja:"編み込み用の櫛"}},
+ vejer:{
+   ch:{en:"Running the yard", es:"La intendencia", it:"La gestione", de:"Die Stallwirtschaft", ja:"厩舎の運営"},
+   v:{ja:"ベヘル"},
+   souv:{en:"A zinc bucket", es:"Un cubo de zinc", it:"Un secchio di zinco",
+         de:"Ein Zinkeimer", ja:"亜鉛のバケツ"}},
+ oliva:{
+   ch:{en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"申し込む"},
+   v:{ja:"オリバ・ノバ"},
+   souv:{en:"A tour number bib", es:"Un dorsal de gira", it:"Un numero di gara",
+         de:"Eine Startnummer der Tour", ja:"ツアーのゼッケン"}},
+ warendorf:{
+   ch:{en:"Training", es:"La formación", it:"La formazione", de:"Die Ausbildung", ja:"育成"},
+   v:{ja:"ヴァーレンドルフ"},
+   souv:{en:"A training-scale notebook", es:"Un cuaderno de la escala",
+         it:"Un quaderno della scala", de:"Ein Heft zur Ausbildungsskala",
+         ja:"訓練スケールの手帳"}},
+ aachen:{
+   ch:{en:"The great show", es:"El gran concurso", it:"Il grande concorso",
+       de:"Das große Turnier", ja:"大競技会"},
+   v:{en:"Aachen", es:"Aquisgrán", it:"Aquisgrana", de:"Aachen", ja:"アーヘン"},
+   souv:{en:"A jump-off bell", es:"Una campana de desempate", it:"Una campana di barrage",
+         de:"Eine Glocke des Stechens", ja:"ジャンプオフの鐘"}},
+
+ newmarket:{
+   ch:{en:"The yard", es:"La cuadra", it:"La scuderia", de:"Der Stall", ja:"厩舎"},
+   v:{ja:"ニューマーケット"},
+   souv:{en:"A miniature English saddle", es:"Una silla inglesa en miniatura",
+         it:"Una sella inglese in miniatura", de:"Ein englischer Sattel in Miniatur",
+         ja:"ミニチュアの英国鞍"}},
+ lambourn:{
+   ch:{en:"Grooming", es:"El cepillado", it:"La pulizia", de:"Das Putzen", ja:"手入れ"},
+   v:{ja:"ランボーン"},
+   souv:{en:"A copper curry comb", es:"Una almohaza de cobre", it:"Una striglia di rame",
+         de:"Ein Striegel aus Kupfer", ja:"銅の毛櫛"}},
+ connemara:{
+   ch:{en:"The horse", es:"El caballo", it:"Il cavallo", de:"Das Pferd", ja:"馬"},
+   v:{ja:"コネマラ"},
+   souv:{en:"A rope halter", es:"Una cabezada de cuerda", it:"Una capezza di corda",
+         de:"Ein Knotenhalter", ja:"ロープの無口"}},
+ walsall:{
+   ch:{en:"The tack", es:"El equipo", it:"L'attrezzatura", de:"Die Ausrüstung", ja:"馬具"},
+   v:{ja:"ウォルソール"},
+   souv:{en:"A saddler's awl", es:"Un punzón de guarnicionero", it:"Un punteruolo da sellaio",
+         de:"Eine Sattlerahle", ja:"馬具職人の菱錐"}},
+ aberystwyth:{
+   ch:{en:"In the saddle", es:"A caballo", it:"In sella", de:"Im Sattel", ja:"騎乗"},
+   v:{ja:"アベリストゥイス"},
+   souv:{en:"A Welsh cob's shoe", es:"Una herradura de cob galés", it:"Un ferro di cob gallese",
+         de:"Ein Hufeisen eines Welsh Cob", ja:"ウェルシュ・コブの蹄鉄"}},
+ windsor:{
+   ch:{en:"Dressage", es:"La doma", it:"Il dressage", de:"Die Dressur", ja:"馬場馬術"},
+   v:{ja:"ウィンザー"},
+   souv:{en:"The letter A", es:"La letra A", it:"La lettera A", de:"Der Buchstabe A", ja:"「A」の文字"}},
+ hickstead:{
+   ch:{en:"Jumping", es:"El salto", it:"Il salto", de:"Das Springen", ja:"障害飛越"},
+   v:{ja:"ヒクステッド"},
+   souv:{en:"A red flag", es:"Un banderín rojo", it:"Una bandierina rossa",
+         de:"Ein rotes Fähnchen", ja:"赤い旗"}},
+ badminton:{
+   ch:{en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会"},
+   v:{ja:"バドミントン"},
+   souv:{en:"A rosette", es:"Una escarapela", it:"Una coccarda", de:"Eine Schleife", ja:"ロゼット"}},
+ kildare:{
+   ch:{en:"Emergencies", es:"Las urgencias", it:"Le emergenze", de:"Notfälle", ja:"緊急時"},
+   v:{ja:"キルデア"},
+   souv:{en:"A stethoscope", es:"Un estetoscopio", it:"Uno stetoscopio",
+         de:"Ein Stethoskop", ja:"聴診器"}},
+ edimbourg:{
+   ch:{en:"Conversations", es:"Las conversaciones", it:"I dialoghi", de:"Gespräche", ja:"会話"},
+   v:{en:"Edinburgh", es:"Edimburgo", it:"Edimburgo", de:"Edinburgh", ja:"エディンバラ"},
+   souv:{en:"A notebook of words", es:"Un cuaderno de palabras", it:"Un quaderno di parole",
+         de:"Ein Wörterheft", ja:"言葉の手帳"}}
+};
+
+/* ==================================================================
+   LES VILLES : lettre manuscrite (verso de la carte) + volets dépliants.
+   Français seul pour l'instant — on ne traduit qu'une fois les dix
+   villes validées, sinon on traduit des textes qu'on va réécrire.
+   ================================================================== */
+var VILLES = window.HYPE_LINGO_VILLES || {};   /* les dix villes vivent dans hype-lingo-villes.js */
+/* ---- récits : sensoriels et courts. Newmarket en 6 langues,
+   les neuf autres en français seulement pour l'instant. ---- */
+var RECITS = {
+ newmarket:{
+  fr:["Le brouillard n'est pas encore tombé. Les pur-sang sortent des écuries un par un, et les lads ne se parlent pas.",
+      "Aux passages cavaliers, les voitures s'arrêtent. Ici, on entend le galop avant de voir le jour.",
+      {f:"Plus de deux mille chevaux à l'entraînement, et une cour royale installée là au XVII siècle pour suivre les courses."}],
+  en:["The mist has not lifted. The thoroughbreds come out one by one, and the lads do not speak.",
+      "At the horse crossings, the cars stop. Here you hear the gallop before you see the day.",
+      {f:"Over two thousand horses in training, and a royal court that settled here in the seventeenth century to follow the racing."}],
+  es:["La niebla aún no ha caído. Los purasangres salen uno a uno, y los mozos no hablan.",
+      "En los pasos de caballos, los coches se detienen. Aquí se oye el galope antes de ver el día.",
+      {f:"Más de dos mil caballos en entrenamiento, y una corte real instalada aquí en el siglo XVII para seguir las carreras."}],
+  it:["La nebbia non è ancora scesa. I purosangue escono uno alla volta, e i garzoni non parlano.",
+      "Agli attraversamenti per cavalli, le auto si fermano. Qui si sente il galoppo prima di vedere il giorno.",
+      {f:"Oltre duemila cavalli in allenamento, e una corte reale insediata qui nel Seicento per seguire le corse."}],
+  de:["Der Nebel ist noch nicht gefallen. Die Vollblüter kommen einer nach dem anderen heraus, und die Pfleger sprechen nicht.",
+      "An den Reiterübergängen halten die Autos. Hier hört man den Galopp, bevor man den Tag sieht.",
+      {f:"Über zweitausend Pferde im Training, und ein Königshof, der sich im 17. Jahrhundert hier niederließ, um den Rennen zu folgen."}],
+  ja:["霧はまだ降りていない。サラブレッドが一頭ずつ厩舎から出てくる。厩務員たちは口を開かない。",
+      "馬の横断路では車が止まる。ここでは、夜が明けるより先に蹄の音が聞こえる。",
+      {f:"二千頭を超える調教馬。17世紀、競馬を見るために王の宮廷がここに置かれた。"}]},
+ lambourn:{
+  fr:["Un village de pierre au creux des Downs. À six heures, les seaux résonnent dans la cour et la buée sort des naseaux.",
+      "On étrille avant que le jour se lève, parce qu'après, il faut travailler.",
+      {f:"Une vallée entière qui ne vit que du cheval d'entraînement."}],
+  en:["A stone village in the fold of the Downs. At six, the buckets ring in the yard and breath steams from the nostrils.",
+      "You groom before daylight, because after that there is work to do.",
+      {f:"A whole valley that lives on nothing but the racehorse in training."}],
+  es:["Un pueblo de piedra en el hueco de los Downs. A las seis, los cubos resuenan en el patio y el vaho sale de los ollares.",
+      "Se cepilla antes de que amanezca, porque después hay que trabajar.",
+      {f:"Un valle entero que vive solo del caballo de entrenamiento."}],
+  it:["Un villaggio di pietra nella conca dei Downs. Alle sei, i secchi risuonano nel cortile e il vapore esce dalle narici.",
+      "Si striglia prima che faccia giorno, perché dopo c'è da lavorare.",
+      {f:"Un'intera valle che vive solo del cavallo da allenamento."}],
+  de:["Ein Dorf aus Stein in der Senke der Downs. Um sechs klingen die Eimer im Hof, und der Atem dampft aus den Nüstern.",
+      "Geputzt wird vor Tagesanbruch, denn danach muss gearbeitet werden.",
+      {f:"Ein ganzes Tal, das nur vom Rennpferd im Training lebt."}],
+  ja:["ダウンズのくぼ地にある石の村。六時、中庭にバケツの音が響き、鼻から白い息が立つ。",
+      "夜が明ける前に手入れを済ませる。そのあとは、仕事が待っているからだ。",
+      {f:"谷ひとつが、調教馬だけで生きている。"}]},
+ connemara:{
+  fr:["La pierre, la tourbe, et un vent qui ne s'arrête jamais. Les poneys sont dehors, gris comme le ciel.",
+      "Personne ne les a fabriqués. Ce sol les a faits solides.",
+      {f:"Le Connemara est la seule race de poney native d'Irlande."}],
+  en:["Stone, peat, and a wind that never stops. The ponies are out, grey as the sky.",
+      "Nobody made them. This ground made them hard.",
+      {f:"The Connemara is the only pony breed native to Ireland."}],
+  es:["La piedra, la turba y un viento que no para nunca. Los ponis están fuera, tordos como el cielo.",
+      "Nadie los ha fabricado. Este suelo los ha hecho duros.",
+      {f:"El connemara es la única raza de poni nativa de Irlanda."}],
+  it:["La pietra, la torba, e un vento che non si ferma mai. I pony sono fuori, grigi come il cielo.",
+      "Nessuno li ha fabbricati. È questo suolo che li ha fatti solidi.",
+      {f:"Il connemara è l'unica razza di pony autoctona d'Irlanda."}],
+  de:["Stein, Torf und ein Wind, der niemals aufhört. Die Ponys stehen draußen, grau wie der Himmel.",
+      "Niemand hat sie gemacht. Dieser Boden hat sie hart gemacht.",
+      {f:"Das Connemara ist die einzige Ponyrasse, die aus Irland stammt."}],
+  ja:["石、泥炭、そして止むことのない風。ポニーたちは外にいる。空と同じ芦毛だ。",
+      "誰かが作ったのではない。この土地が彼らを頑丈にした。",
+      {f:"コネマラは、アイルランド固有の唯一のポニー種。"}]},
+ walsall:{
+  fr:["Odeur de cuir et de cire chaude. Derrière les verrières, on coud encore à la main, deux aiguilles à la fois.",
+      "Le point sellier ne s'apprend pas en un mois.",
+      {f:"Une ville de selliers et de bourreliers depuis le XIX siècle."}],
+  en:["The smell of leather and warm wax. Behind the glass roofs they still sew by hand, two needles at a time.",
+      "The saddle stitch is not learnt in a month.",
+      {f:"A town of saddlers and harness makers since the nineteenth century."}],
+  es:["Olor a cuero y a cera caliente. Detrás de las vidrieras aún se cose a mano, con dos agujas a la vez.",
+      "El punto de guarnicionero no se aprende en un mes.",
+      {f:"Una ciudad de guarnicioneros y talabarteros desde el siglo XIX."}],
+  it:["Odore di cuoio e di cera calda. Dietro le vetrate si cuce ancora a mano, due aghi alla volta.",
+      "Il punto sellaio non si impara in un mese.",
+      {f:"Una città di sellai e di bardai dal XIX secolo."}],
+  de:["Geruch von Leder und warmem Wachs. Hinter den Glasdächern wird noch von Hand genäht, mit zwei Nadeln gleichzeitig.",
+      "Der Sattlerstich lernt sich nicht in einem Monat.",
+      {f:"Eine Stadt der Sattler und Riemer seit dem 19. Jahrhundert."}],
+  ja:["革と温かい蝋の匂い。ガラス屋根の下では、今も二本の針で手縫いをしている。",
+      "鞍の手縫いは、一か月では身につかない。",
+      {f:"19世紀から続く、馬具職人と鞍工の町。"}]},
+ aberystwyth:{
+  fr:["La mer d'Irlande, une plage vide, et des cobs qui piaffent au bord de l'eau.",
+      "Le galop finit dans les vagues. Le sel sèche sur les bottes, le poney souffle.",
+      {f:"Pays du Welsh pony et du Welsh cob — quatre sections, de la plus petite au cob monté par les adultes."}],
+  en:["The Irish Sea, an empty beach, and cobs stamping at the water's edge.",
+      "The gallop ends in the waves. Salt dries on your boots, the pony blows.",
+      {f:"Home of the Welsh pony and the Welsh cob — four sections, from the smallest to the cob ridden by adults."}],
+  es:["El mar de Irlanda, una playa vacía y cobs que piafan a la orilla del agua.",
+      "El galope termina en las olas. La sal se seca en las botas, el poni resopla.",
+      {f:"La tierra del Welsh pony y del Welsh cob: cuatro secciones, de la más pequeña al cob que montan los adultos."}],
+  it:["Il mare d'Irlanda, una spiaggia vuota, e cob che scalpitano sul bagnasciuga.",
+      "Il galoppo finisce nelle onde. Il sale si asciuga sugli stivali, il pony soffia.",
+      {f:"La terra del Welsh pony e del Welsh cob: quattro sezioni, dalla più piccola al cob montato dagli adulti."}],
+  de:["Die Irische See, ein leerer Strand, und Cobs, die am Wasser scharren.",
+      "Der Galopp endet in den Wellen. Salz trocknet auf den Stiefeln, das Pony schnaubt.",
+      {f:"Heimat des Welsh Pony und des Welsh Cob — vier Sektionen, von der kleinsten bis zum Cob, den Erwachsene reiten."}],
+  ja:["アイリッシュ海、人のいない浜、そして波打ち際で前掻きをするコブたち。",
+      "駈歩は波の中で終わる。長靴に塩が乾き、ポニーが鼻を鳴らす。",
+      {f:"ウェルシュポニーとウェルシュコブの土地。四つのセクションがあり、最小のものから大人が乗るコブまで。"}]},
+ windsor:{
+  fr:["Les tours au fond, le sable ratissé, le silence. Un cheval seul, une piste, des lettres.",
+      "Ici, la précision est une forme de politesse.",
+      {f:"Un château habité depuis neuf siècles, et une tradition équestre qui va avec."}],
+  en:["The towers behind, the raked sand, the silence. One horse, one arena, a set of letters.",
+      "Here, precision is a form of good manners.",
+      {f:"A castle lived in for nine centuries, and the riding tradition that comes with it."}],
+  es:["Las torres al fondo, la arena rastrillada, el silencio. Un caballo solo, una pista, unas letras.",
+      "Aquí la precisión es una forma de cortesía.",
+      {f:"Un castillo habitado desde hace nueve siglos, y la tradición ecuestre que lo acompaña."}],
+  it:["Le torri in fondo, la sabbia rastrellata, il silenzio. Un cavallo solo, un rettangolo, delle lettere.",
+      "Qui la precisione è una forma di cortesia.",
+      {f:"Un castello abitato da nove secoli, e la tradizione equestre che ne deriva."}],
+  de:["Die Türme im Hintergrund, der geharkte Sand, die Stille. Ein Pferd allein, ein Viereck, ein paar Buchstaben.",
+      "Hier ist Präzision eine Form von Höflichkeit.",
+      {f:"Ein Schloss, seit neun Jahrhunderten bewohnt, und die Reittradition, die dazugehört."}],
+  ja:["奥に塔、掻き均された砂、静けさ。一頭の馬、一つの馬場、いくつかの文字。",
+      "ここでは、正確さは礼儀のかたちだ。",
+      {f:"九世紀のあいだ人が住み続ける城と、それに伴う馬術の伝統。"}]},
+ hickstead:{
+  fr:["L'herbe est courte et le talus fait peur vu d'en haut. Les barres claquent, le public retient son souffle.",
+      "On descend le Derby Bank sans savoir si on a eu raison.",
+      {f:"Le seul terrain britannique avec ce talus, franchi en concours depuis les années soixante."}],
+  en:["The grass is short and the bank is frightening from the top. The poles rattle, the crowd holds its breath.",
+      "You go down the Derby Bank without knowing whether you were right.",
+      {f:"The only British arena with that bank, jumped in competition since the nineteen sixties."}],
+  es:["La hierba es corta y el talud da miedo visto desde arriba. Las barras suenan, el público retiene el aliento.",
+      "Se baja el Derby Bank sin saber si se ha acertado.",
+      {f:"El único terreno británico con ese talud, saltado en concurso desde los años sesenta."}],
+  it:["L'erba è corta e la banchina fa paura vista dall'alto. Le barriere risuonano, il pubblico trattiene il respiro.",
+      "Si scende il Derby Bank senza sapere se si è avuto ragione.",
+      {f:"L'unico campo britannico con quella banchina, affrontata in concorso dagli anni sessanta."}],
+  de:["Das Gras ist kurz, und der Wall macht Angst, wenn man von oben schaut. Die Stangen klappern, das Publikum hält den Atem an.",
+      "Man reitet den Derby Bank hinunter, ohne zu wissen, ob es richtig war.",
+      {f:"Der einzige britische Platz mit diesem Wall, im Turnier seit den sechziger Jahren."}],
+  ja:["芝は短く、上から見る土手は怖い。横木が鳴り、観客が息を止める。",
+      "ダービー・バンクを下る。正しかったのかは、下りきるまで分からない。",
+      {f:"この土手を持つ英国唯一の競技場。1960年代から競技で飛ばれている。"}]},
+ badminton:{
+  fr:["Le parc, la grande maison, et la boue de mai. Quatre jours, trois épreuves, un seul cheval.",
+      "Le cross ne pardonne pas l'approximation.",
+      {f:"L'un des concours complets les plus relevés au monde."}],
+  en:["The park, the big house, and the May mud. Four days, three phases, one horse.",
+      "Cross-country does not forgive the approximate.",
+      {f:"One of the toughest three-day events in the world."}],
+  es:["El parque, la gran casa y el barro de mayo. Cuatro días, tres pruebas, un solo caballo.",
+      "El cross no perdona lo aproximado.",
+      {f:"Uno de los concursos completos más exigentes del mundo."}],
+  it:["Il parco, la grande casa, e il fango di maggio. Quattro giorni, tre prove, un solo cavallo.",
+      "Il cross non perdona l'approssimazione.",
+      {f:"Uno dei concorsi completi più impegnativi al mondo."}],
+  de:["Der Park, das große Haus und der Matsch im Mai. Vier Tage, drei Prüfungen, ein Pferd.",
+      "Das Gelände verzeiht keine halben Sachen.",
+      {f:"Eine der schwersten Vielseitigkeitsprüfungen der Welt."}],
+  ja:["広い庭園、大きな館、そして五月の泥。四日間、三つの種目、たった一頭の馬。",
+      "クロスカントリーは、曖昧さを許さない。",
+      {f:"世界で最も過酷な総合馬術競技のひとつ。"}]},
+ kildare:{
+  fr:["Une lumière allumée à trois heures du matin. Le vétérinaire arrive, on parle bas.",
+      "Dire vite et dire juste : il boite, il transpire, il ne mange plus.",
+      {f:"Le haras national irlandais est à Tully, tout près, à côté des pistes du Curragh."}],
+  en:["A light on at three in the morning. The vet arrives, everyone speaks low.",
+      "Say it fast and say it right: he's lame, he's sweating, he's off his feed.",
+      {f:"The Irish National Stud is at Tully, close by, next to the Curragh gallops."}],
+  es:["Una luz encendida a las tres de la madrugada. Llega el veterinario, se habla en voz baja.",
+      "Decirlo rápido y decirlo bien: cojea, suda, ya no come.",
+      {f:"La yeguada nacional irlandesa está en Tully, muy cerca, junto a las pistas del Curragh."}],
+  it:["Una luce accesa alle tre del mattino. Arriva il veterinario, si parla a voce bassa.",
+      "Dirlo in fretta e dirlo giusto: zoppica, suda, non mangia più.",
+      {f:"L'allevamento nazionale irlandese si trova a Tully, a due passi, accanto alle piste del Curragh."}],
+  de:["Um drei Uhr nachts brennt Licht. Der Tierarzt kommt, alle sprechen leise.",
+      "Schnell sagen und richtig sagen: er lahmt, er schwitzt, er frisst nicht mehr.",
+      {f:"Das irische Nationalgestüt liegt in Tully, ganz nah, neben den Bahnen des Curragh."}],
+  ja:["午前三時、灯りがひとつ点いている。獣医が着き、みな声を落とす。",
+      "速く、正確に伝える。跛行している、汗をかいている、飼料を食べない。",
+      {f:"アイルランド国立牧場はすぐ近くのタリーにあり、カラーの調教コースに隣接している。"}]},
+ edimbourg:{
+  fr:["Des pavés, un vent froid, une ville verticale. Ici, on parle enfin — au café, à la gare, au club.",
+      "Et l'accent n'est pas celui qu'on t'a appris.",
+      {f:"Fin du voyage : dix villes, quatre nations, une langue."}],
+  en:["Cobbles, a cold wind, a vertical city. Here you finally speak — in the café, at the station, at the club.",
+      "And the accent is not the one you were taught.",
+      {f:"End of the journey: ten towns, four nations, one language."}],
+  es:["Adoquines, un viento frío, una ciudad vertical. Aquí, por fin, se habla: en el café, en la estación, en el club.",
+      "Y el acento no es el que te enseñaron.",
+      {f:"Fin del viaje: diez ciudades, cuatro naciones, una lengua."}],
+  it:["Ciottoli, un vento freddo, una città verticale. Qui, finalmente, si parla: al caffè, alla stazione, al club.",
+      "E l'accento non è quello che ti hanno insegnato.",
+      {f:"Fine del viaggio: dieci città, quattro nazioni, una lingua."}],
+  de:["Kopfsteinpflaster, ein kalter Wind, eine senkrechte Stadt. Hier wird endlich gesprochen — im Café, am Bahnhof, im Club.",
+      "Und der Akzent ist nicht der, den man dir beigebracht hat.",
+      {f:"Ende der Reise: zehn Städte, vier Nationen, eine Sprache."}],
+  ja:["石畳、冷たい風、垂直の街。ここでようやく言葉を交わす。カフェで、駅で、クラブで。",
+      "そして、その訛りは教わったものとは違う。",
+      {f:"旅の終わり。十の街、四つの国、ひとつの言語。"}]}
+};
+
+
+var ICONES = {
+ selle:'<path d="M8 26 q22 -19 44 -2 q-4 12 -14 12 h-16 q-10 0 -14 -10 Z M16 36 v10 M44 36 v10 M14 46 h32" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ etrille:'<path d="M14 20 h32 q4 0 4 5 v10 q0 5 -4 5 h-32 q-4 0 -4 -5 v-10 q0 -5 4 -5 Z M14 40 v7 M22 40 v7 M30 40 v7 M38 40 v7 M46 40 v7" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ licol:'<path d="M20 14 h20 q6 0 6 8 v12 q0 8 -8 8 h-16 q-8 0 -8 -8 v-12 q0 -8 6 -8 Z M14 30 h32 M30 42 v10 M24 52 h12" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ alene:'<path d="M30 8 v34 M24 42 h12 l-6 10 Z M18 20 q12 -8 24 0" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ fer:'<path d="M30 10 q-18 0 -18 20 q0 14 6 22 M30 10 q18 0 18 20 q0 14 -6 22 M18 26 h4 M42 26 h4 M20 38 h4 M40 38 h4" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/>',
+ lettre:'<path d="M18 46 L30 14 L42 46 M23 34 h14" fill="none" stroke="#D4AF37" stroke-width="2.4" stroke-linejoin="round"/>',
+ fanion:'<path d="M18 10 v40 M18 12 h24 l-7 8 l7 8 h-24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ cocarde:'<circle cx="30" cy="22" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="22" r="4" fill="#D4AF37"/><path d="M24 32 l-4 20 l10 -7 l10 7 l-4 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ stetho:'<path d="M20 10 v12 q0 10 10 10 q10 0 10 -10 v-12 M30 32 v10 q0 6 8 6" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="42" cy="48" r="6" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ carnet:'<path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>'
+};
+
+/* ---------- silhouettes ---------- */
+function toits(n,x0,w,h){ var d="",i; for(i=0;i<n;i++){ var x=x0+i*w;
+  d+="M"+x+" 150 V"+(150-h)+" L"+(x+w/2)+" "+(150-h-13)+" L"+(x+w)+" "+(150-h)+" V150 Z"; } return d; }
+
+var S = document.getElementById.bind(document);
+
+/* Pourquoi ces dix villes — affiché sur le carnet de route, avant le départ. */
+var POURQUOI = {
+ newmarket:{fr:"Capitale mondiale du pur-sang. Les chevaux y ont la priorité sur les voitures.",
+  en:"World capital of the thoroughbred. Here horses have right of way over cars.",
+  es:"Capital mundial del purasangre. Aquí los caballos tienen prioridad sobre los coches.",
+  it:"Capitale mondiale del purosangue. Qui i cavalli hanno la priorità sulle auto.",
+  de:"Welthauptstadt des Vollbluts. Hier haben Pferde Vorfahrt vor Autos.",
+  ja:"サラブレッドの世界的中心地。ここでは馬が車より優先される。"},
+ lambourn:{fr:"La vallée du cheval de course : un village entier qui ne vit que de ça.",
+  en:"The racehorse valley: a whole village that lives on nothing else.",
+  es:"El valle del caballo de carreras: un pueblo entero que no vive de otra cosa.",
+  it:"La valle del cavallo da corsa: un intero villaggio che vive solo di questo.",
+  de:"Das Tal des Rennpferds: ein ganzes Dorf, das von nichts anderem lebt.",
+  ja:"競走馬の谷。村ひとつが、それだけで生きている。"},
+ connemara:{fr:"La seule race de poney native d'Irlande, née de la pierre et du vent.",
+  en:"The only pony breed native to Ireland, born of stone and wind.",
+  es:"La única raza de poni nativa de Irlanda, nacida de la piedra y del viento.",
+  it:"L'unica razza di pony autoctona d'Irlanda, nata dalla pietra e dal vento.",
+  de:"Die einzige Ponyrasse, die aus Irland stammt — geboren aus Stein und Wind.",
+  ja:"アイルランド固有の唯一のポニー種。石と風から生まれた。"},
+ walsall:{fr:"La ville du cuir. C'est ici qu'on coud encore les selles à la main.",
+  en:"The leather town. This is where saddles are still sewn by hand.",
+  es:"La ciudad del cuero. Aquí todavía se cosen las sillas a mano.",
+  it:"La città del cuoio. È qui che le selle si cuciono ancora a mano.",
+  de:"Die Stadt des Leders. Hier werden Sättel noch von Hand genäht.",
+  ja:"革の町。ここでは今も鞍を手で縫っている。"},
+ aberystwyth:{fr:"Le pays du Welsh cob — et une plage où les randonnées finissent au galop dans la mer.",
+  en:"Welsh cob country — and a beach where rides end at a gallop in the sea.",
+  es:"La tierra del Welsh cob, y una playa donde las rutas terminan al galope dentro del mar.",
+  it:"La terra del Welsh cob, e una spiaggia dove le passeggiate finiscono al galoppo in mare.",
+  de:"Das Land des Welsh Cob — und ein Strand, an dem Ausritte im Galopp ins Meer enden.",
+  ja:"ウェルシュコブの故郷。外乗が海の中の駈歩で終わる浜がある。"},
+ windsor:{fr:"Neuf siècles de tradition équestre au pied d'un château habité.",
+  en:"Nine centuries of riding tradition at the foot of a castle still lived in.",
+  es:"Nueve siglos de tradición ecuestre al pie de un castillo habitado.",
+  it:"Nove secoli di tradizione equestre ai piedi di un castello abitato.",
+  de:"Neun Jahrhunderte Reittradition am Fuß eines bewohnten Schlosses.",
+  ja:"人が住み続ける城のふもとに、九世紀分の馬術の伝統。"},
+ hickstead:{fr:"Le Derby Bank : la plus haute butte de compétition au monde.",
+  en:"The Derby Bank: the highest competition bank in the world.",
+  es:"El Derby Bank: el talud de competición más alto del mundo.",
+  it:"Il Derby Bank: la banchina da competizione più alta al mondo.",
+  de:"Der Derby Bank: der höchste Turnierwall der Welt.",
+  ja:"ダービー・バンク。競技用の土手として世界一の高さ。"},
+ badminton:{fr:"L'un des concours complets les plus relevés de la planète.",
+  en:"One of the toughest three-day events on the planet.",
+  es:"Uno de los concursos completos más exigentes del planeta.",
+  it:"Uno dei concorsi completi più impegnativi del pianeta.",
+  de:"Eine der anspruchsvollsten Vielseitigkeitsprüfungen der Welt.",
+  ja:"世界で最も難度の高い総合馬術競技のひとつ。"},
+ kildare:{fr:"Le haras national irlandais, à deux pas des pistes du Curragh.",
+  en:"The Irish National Stud, a step away from the Curragh gallops.",
+  es:"La yeguada nacional irlandesa, a dos pasos de las pistas del Curragh.",
+  it:"L'allevamento nazionale irlandese, a due passi dalle piste del Curragh.",
+  de:"Das irische Nationalgestüt, nur einen Schritt von den Bahnen des Curragh entfernt.",
+  ja:"アイルランド国立牧場。カラーの調教コースのすぐ隣。"},
+ edimbourg:{fr:"Fin du voyage. Une capitale, un accent, et tout ce que tu sais déjà dire.",
+  en:"End of the journey. A capital, an accent, and everything you can already say.",
+  es:"Fin del viaje. Una capital, un acento y todo lo que ya sabes decir.",
+  it:"Fine del viaggio. Una capitale, un accento, e tutto quello che sai già dire.",
+  de:"Ende der Reise. Eine Hauptstadt, ein Akzent, und alles, was du schon sagen kannst.",
+  ja:"旅の終わり。首都、訛り、そしてもう言えるようになったことすべて。"}
+};
+(function(){
+  var b=document.getElementById("carnet");
+  if(!b) return;
+  var t=document.createElement("p"); t.className="ct"; t.setAttribute("data-t","itineraire"); t.textContent=T("itineraire");
+  b.appendChild(t);
+  /* Chaque ville est un dépliant : à l'arrivée on ne voit que dix lignes
+     courtes, pas un mur de texte. On ouvre celle qui intrigue. */
+  ETAPES.forEach(function(e,i){
+    var d=document.createElement("button");
+    d.className="cv"; d.type="button";
+    d.innerHTML='<span class="n">'+(i+1)+'</span>'+
+      '<span class="d"><b>'+eV(e)+'</b><i>'+eNat(e)+' · '+eCh(e)+'</i></span>'+
+      '<span class="pl">+</span>'+
+      '<span class="pq">'+tx(POURQUOI[e.ref])+'</span>';
+    d.addEventListener("click",function(){ this.classList.toggle("ouv"); });
+    b.appendChild(d);
+  });
+})();
+
+var rail = S("rail"), W;
+ETAPES.forEach(function(){ var d=document.createElement("div"); d.className="station"; rail.appendChild(d); });
+var marge=document.createElement("div"); marge.style.cssText="flex:0 0 11vw;height:100%";
+rail.insertBefore(marge, rail.firstChild); rail.appendChild(marge.cloneNode());
+function svg(inner,vb){ return '<svg viewBox="'+(vb||"0 0 300 150")+'" preserveAspectRatio="none">'+inner+'</svg>'; }
+
+S("ciel").innerHTML='<div id="cielA" style="position:absolute;inset:0"></div>';
+(function(){ var inner="",i;
+  for(i=0;i<130;i++) inner+='<circle cx="'+(Math.random()*1200|0)+'" cy="'+(Math.random()*300|0)+
+    '" r="'+(Math.random()*1.1+.3).toFixed(1)+'" fill="#CFEAF3" opacity="'+(Math.random()*.45+.07).toFixed(2)+'"/>';
+  /* Le chemin est un reste : il est remplacé par le globe. On le garde
+     fonctionnel le temps de la transition, mais sans `10` en dur — sinon
+     huit villes sur dix-huit n'ont ni jalon, ni point, ni trace. */
+  var N=ETAPES.length, ecart=1060/Math.max(1,N-1);
+  var P=[],j; for(j=0;j<N;j++) P.push([70+j*ecart, 148 - Math.sin(j/(N-1)*Math.PI)*84]);
+  window.__P=P; inner+='<g id="gTrace"></g>';
+  S("etoiles").innerHTML=svg(inner,"0 0 1200 300"); })();
+function dessinerTrace(){ var P=window.__P,g=S("gTrace"),d="",i; if(!g) return;
+  if(!TRACE){ g.innerHTML=""; return; }
+  for(i=1;i<Math.min(FAITS,P.length);i++)
+    d+='<path d="M'+P[i-1][0]+' '+P[i-1][1]+' Q'+((P[i-1][0]+P[i][0])/2)+' '+
+       ((P[i-1][1]+P[i][1])/2-13)+' '+P[i][0]+' '+P[i][1]+
+       '" fill="none" stroke="#20D9F5" stroke-width="1" opacity=".34"/>';
+  for(i=0;i<P.length;i++){ var f=i<FAITS;
+    d+='<circle cx="'+P[i][0]+'" cy="'+P[i][1]+'" r="'+(f?3:1.7)+'" fill="'+(f?"#20D9F5":"#39505C")+
+       '" opacity="'+(f?".9":".5")+'"/>'; }
+  g.innerHTML=d; }
+
+/* ---------- les dix cartes postales composent le décor ---------- */
+var elCartes=[], elJalons=[];
+ETAPES.forEach(function(e,idx){
+  var c=document.createElement("div");
+  c.className="chc loin";
+  /* on part du fond de 1 Ko ; la carte nette n'est chargée que pour l'étape voisine */
+  c.style.backgroundImage='url("fond-'+e.ref+'.webp")';
+  c.dataset.ref=e.ref; c.dataset.net="0";
+  S("cartes").appendChild(c); elCartes.push(c);
+
+  var j=document.createElement("div");
+  j.className="jalon"; j.style.width="30vw"; j.style.marginLeft="-15vw"; j.style.height="100%";
+  j.innerHTML=svg('<g></g>',"0 0 120 150"); S("jalons").appendChild(j); elJalons.push(j);
+});
+/* ⚠️ PLANTAGE MÉMOIRE iOS — corrigé le 04/08.
+   Avant : la carte nette (900x1200) était chargée à l'approche et JAMAIS
+   déchargée. Après les dix villes, dix images décodées en mémoire, soit une
+   quarantaine de mégaoctets. Un pincement pour zoomer force Safari à tout
+   re-rasteriser et l'onglet meurt.
+   Maintenant : trois cartes nettes au maximum ; les autres repassent au
+   fond de 1 Ko, ce qui libère réellement la mémoire de décodage. */
+function affiner(i){
+  elCartes.forEach(function(c,k){
+    var proche=Math.abs(k-i)<=1;
+    if(proche && c.dataset.net==="0"){
+      c.dataset.net="1";
+      c.style.backgroundImage='url("carte-'+c.dataset.ref+'.webp")';
+    } else if(!proche && c.dataset.net==="1"){
+      c.dataset.net="0";
+      c.style.backgroundImage='url("fond-'+c.dataset.ref+'.webp")';
+    }
+  });
+}
+function etoile(cx,cy,r){ var p=r*0.30;
+  return "M"+cx+" "+(cy-r)+" L"+(cx+p)+" "+(cy-p)+" L"+(cx+r)+" "+cy+" L"+(cx+p)+" "+(cy+p)+
+         " L"+cx+" "+(cy+r)+" L"+(cx-p)+" "+(cy+p)+" L"+(cx-r)+" "+cy+" L"+(cx-p)+" "+(cy-p)+" Z"; }
+function dessinerJalons(){
+  elJalons.forEach(function(j,i){ var g=j.querySelector("g"), fait=i<FAITS, suiv=i===FAITS, d="";
+    if(fait){ d='<path d="'+etoile(60,106,13)+'" fill="#D4AF37" opacity=".92"/>'+
+                '<path d="'+etoile(60,106,24)+'" fill="#D4AF37" opacity=".09"/>'; }
+    else if(suiv){ d='<path d="'+etoile(60,106,15)+'" fill="none" stroke="#20D9F5" stroke-width="2"/>'+
+                     '<path d="'+etoile(60,106,27)+'" fill="#20D9F5" opacity=".12"/>'+
+                     '<path d="'+etoile(60,106,7)+'" fill="#EAFBFF"/>'; }
+    else { d='<path d="'+etoile(60,112,7)+'" fill="#243542" opacity=".85"/>'; }
+    g.innerHTML=d; }); }
+
+ETAPES.forEach(function(){ S("points").appendChild(document.createElement("i")); });
+
+function melange(c1,c2,t){
+  function h(c){ return [parseInt(c.substr(1,2),16),parseInt(c.substr(3,2),16),parseInt(c.substr(5,2),16)]; }
+  var a=h(c1), b=h(c2);
+  return "#"+a.map(function(v,i){ var n=Math.max(0,Math.min(255,Math.round(v+(b[i]-v)*t)));
+    return (n<16?"0":"")+n.toString(16); }).join(""); }
+
+var lastI=-1, courant=0;
+function rendu(){
+  var x=rail.scrollLeft, pos=x/W;
+  var i0=Math.max(0,Math.min(9,Math.floor(pos))), i1=Math.min(9,i0+1), t=Math.max(0,Math.min(1,pos-i0));
+  var a=ETAPES[i0].ciel, b=ETAPES[i1].ciel;
+  var haut=melange(a[0],b[0],t), bas=melange(a[1],b[1],t);
+  S("cielA").style.background="linear-gradient(to bottom,"+haut+" 0%,"+haut+" 30%,"+
+    melange(haut,bas,0.20)+" 54%,"+melange(haut,bas,0.60)+" 68%,"+bas+" 76%,"+
+    melange(bas,"#050709",0.6)+" 100%)";
+  S("etoiles").style.transform="translate3d("+(-x*0.06)+"px,0,0)";
+  /* chaque carte glisse à 30 % de la vitesse du doigt : la parallaxe donne
+     la profondeur sans qu'on ait besoin de dessiner quoi que ce soit */
+  elCartes.forEach(function(c,k){
+    var d=k*W-x, r=d/W;
+    c.style.transform="translate3d("+(d*0.30)+"px,0,0)";
+    var pres=Math.max(0,1-Math.abs(r)/1.15);
+    c.style.opacity=pres.toFixed(3);
+    c.classList.toggle("loin", Math.abs(r)>0.34);
+    c.style.zIndex = String(10-Math.round(Math.abs(r)*10));
+  });
+  elJalons.forEach(function(j,i){ j.style.transform="translate3d("+(i*W-x)+"px,0,0)";
+    j.style.opacity=Math.max(0,1-Math.abs(i*W-x)/(W*1.4)); });
+  var proche=Math.abs(pos-Math.round(pos))<0.16;
+  S("titre").classList.toggle("loin",!proche);
+  var i=Math.round(pos);
+  if(i!==lastI && proche){
+    lastI=i; courant=i; var e=ETAPES[i]; affiner(i);
+    S("hNum").textContent=T("chapNsur",{n:i+1, t:ETAPES.length});
+    S("hTitre").textContent=eCh(e);
+    S("hVille").textContent=eV(e);
+    S("hHeure").textContent=eNat(e)+" · "+T("enRoute")+" "+eH(e);
+    var ouvert=i<=FAITS;
+    S("cta").className=ouvert?"":"verrou";
+    /* le bouton dit ce qu'on va y trouver, pas seulement où on va :
+       les testeurs ne comprenaient pas où était le vocabulaire. */
+    var ec=etatChapitre(e.ref);
+    var libelle;
+    if(i>FAITS) libelle="Termine "+ETAPES[FAITS].v;
+    else if(ec.total===0) libelle=T(i<FAITS?"revoirV":"arriverV",{v:eV(e)});
+    else if(ec.acquis===0) libelle=T("vMots",{v:eV(e),n:ec.total});
+    else if(ec.tout) libelle=T("vFini",{v:eV(e)});
+    else libelle=T("vSurN",{v:eV(e),a:ec.acquis,n:ec.total});
+    S("ctaTxt").textContent=libelle;
+    Array.prototype.forEach.call(S("points").children,function(n,k){
+      n.className=(k<FAITS)?"f":(k===i?"a":""); });
+  }
+  requestAnimationFrame(rendu);
+}
+function mesurer(){ W=rail.querySelector(".station").getBoundingClientRect().width; }
+window.addEventListener("resize",mesurer);
+mesurer(); dessinerTrace(); dessinerJalons(); affiner(0); rendu();
+
+S("bApercu").addEventListener("click",function(){
+  FAITS=(FAITS===ETAPES.length)?4:ETAPES.length; this.textContent=FAITS+" / "+ETAPES.length;
+  dessinerTrace(); dessinerJalons(); lastI=-1; });
+S("bTrace").addEventListener("click",function(){
+  TRACE=!TRACE; this.textContent="Trace : "+(TRACE?"on":"off"); dessinerTrace(); });
+
+/* ==================================================================
+   ARRIVÉE : récit + dépliant + souvenir + animation
+   L'animation n'est chargée QU'À L'OUVERTURE et libérée à la fermeture
+   (une vidéo laissée en mémoire est la cause des plantages iOS).
+   ================================================================== */
+var LG=["fr","en","es","it","de","ja"], LGN={fr:"FR",en:"EN",es:"ES",it:"IT",de:"DE",ja:"日本語"};
+var langue="fr", videoEl=null;
+
+LG.forEach(function(l){
+  var b=document.createElement("button"); b.textContent=LGN[l]; b.className=(l===langue?"on":"");
+  b.addEventListener("click",function(){ langue=l;
+    Array.prototype.forEach.call(S("langues").children,function(n,k){ n.className=(LG[k]===l?"on":""); });
+    ecrire();
+    var v=VILLES[ETAPES[courant].ref]; if(v&&v.carte) ecrireLettre(v); });
+  S("langues").appendChild(b);
+});
+
+function ecrire(){
+  var e=ETAPES[courant], r=RECITS[e.ref] || {};
+  var bloc = r[langue] || r.fr || [];
+  var manque = !r[langue] && langue!=="fr";
+  S("texte").innerHTML = bloc.map(function(x){
+    return (typeof x==="string") ? "<p>"+x+"</p>" : '<p class="fait">'+x.f+"</p>";
+  }).join("") + (manque ? '<p class="fait">— Récit non encore traduit dans cette langue.</p>' : "");
+}
+
+
+/* ---------- carte postale + volets ---------- */
+/* six poussières turquoise, créées une seule fois */
+(function(){
+  var fv=document.getElementById("fv"), i;
+  for(i=0;i<6;i++){
+    var p=document.createElement("div"); p.className="fv-p";
+    var t=(2.0+Math.random()*2.2).toFixed(1);
+    p.style.width=t+"px"; p.style.height=t+"px";
+    p.style.left=(6+Math.random()*88).toFixed(0)+"%"; p.style.top="104%";
+    p.style.setProperty("--dx",((Math.random()-0.5)*14).toFixed(0)+"vw");
+    p.style.animation="fvMonte "+(26+Math.random()*22).toFixed(0)+"s linear "+
+                      (Math.random()*20).toFixed(0)+"s infinite";
+    fv.insertBefore(p, fv.lastElementChild);
+  }
+})();
+
+function garnirVille(e){
+  var v = VILLES[e.ref];
+  /* le fond vivant reprend la carte postale de la ville */
+  document.getElementById("fvImg").style.backgroundImage = 'url("fond-'+e.ref+'.webp")';
+
+  /* la carte postale : seulement si son image existe */
+  var etc = etatChapitre(e.ref);
+  S("postal").style.display = (v && v.carte) ? "block" : "none";
+  if (v && v.carte){
+    /* On MONTRE la récompense sans la donner : la carte s'affiche en aperçu,
+       assombrie, elle ne se retourne pas et n'entre pas dans le passeport
+       tant que le chapitre n'est pas terminé. */
+    S("postal").classList.toggle("apercu", !etc.fini);
+    S("postalKick").textContent = etc.fini ? "Carte postale débloquée" : "Ta récompense";
+    var reste = Math.max(0, Math.ceil(etc.total*0.6) - etc.acquis);
+    S("postalNote").textContent = etc.fini ? ""
+      : (reste>0 ? ("Encore "+reste+" mots pour la recevoir")
+                 : "Termine le chapitre pour la recevoir");
+    S("ptourne").textContent = etc.fini ? "Touche pour lire" : "";
+    S("pcarte").classList.remove("dos");
+    S("pimg").src = "carte-"+e.ref+".webp";
+    appliquerTeinteTitre(e.ref);
+    S("pimg").alt = eV(e);
+    S("pnom").textContent = eV(e);  S("pnom2").textContent = eV(e);
+    S("plieu").textContent = v.lieu; S("plieu2").textContent = v.lieu;
+    S("ptnom").textContent = eV(e).toUpperCase();
+    ecrireLettre(v);
+  }
+
+  /* les trois volets */
+  var vol = (v && v.volets) ? v.volets : [];
+  ["","2","3"].forEach(function(n,i){
+    var bloc = S("depli"+n);
+    bloc.classList.remove("ouvert");
+    if (vol[i]){
+      bloc.style.display = "block";
+      /* Les dix premières villes portent des chaînes, les huit du monde
+         portent un objet par langue. tx() accepte les deux : une chaîne
+         est renvoyée telle quelle. Rien à migrer côté fichier existant. */
+      S("depliT"+n).textContent = tx(vol[i].t);
+      S("depliC"+n).textContent = tx(vol[i].c);
+    } else { bloc.style.display = "none"; }
+  });
+}
+
+function ecrireLettre(v){
+  var L = v.lettre[langue] || v.lettre.fr;
+  var manque = !v.lettre[langue];
+  S("plettre").className = "plettre" + (langue==="ja" ? " ja" : "");
+  S("plettre").innerHTML =
+    L.map(function(x){ return "<p>"+x+"</p>"; }).join("") +
+    '<p class="sign">' + (langue==="ja" ? "またね、Hype" : "À bientôt, Hype") + "</p>" +
+    (manque ? '<p class="sign" style="font-size:12px;opacity:.6">(lettre non encore traduite)</p>' : "");
+}
+
+
+/* Une vidéo verticale remplit l'écran sans perte ; une vidéo en paysage
+   serait massivement rognée. On laisse donc le format du fichier décider :
+   portrait -> cover, paysage -> contain (bandes noires, fond déjà noir). */
+function ajusterCadrage(v){
+  if(!v) return;
+  function poser(){
+    if(!v.videoWidth || !v.videoHeight) return;
+    v.style.objectFit = (v.videoWidth > v.videoHeight) ? "contain" : "cover";
+  }
+  v.addEventListener("loadedmetadata", poser);
+  poser();
+}
+
+function ouvrirArrivee(i){
+  courant=i; var e=ETAPES[i];
+  S("arrChap").textContent=T("chapEt",{n:(i+1),t:eCh(e)});
+  S("arrVille").textContent=eV(e);
+  S("arrNation").textContent=eNat(e)+" · "+T("aLAube");
+  S("empNom").textContent=T("arriveeA",{v:eV(e).toUpperCase()});
+  S("empTxt").innerHTML="Vidéo introuvable<br><code>arrivee-"+e.ref+".mp4</code><br>à déposer à la racine du dépôt";
+  /* le souvenir ne s'obtient qu'avec TOUS les mots du chapitre : c'est
+     l'objet de collection, il doit se mériter. Tant qu'il manque un mot,
+     on l'annonce sans le donner. */
+  var so=etatChapitre(e.ref);
+  S("souvT").textContent = so.tout ? T("souvenirDe",{v:eV(e)}) : T("souvAMeriter");
+  S("souvN").textContent = so.tout ? eSouv(e)
+    : T("souvMots",{s:eSouv(e), n:so.total});
+  S("souvSvg").innerHTML=ICONES[e.ic]||"";
+  S("souvenir").classList.toggle("apercu", !so.tout);
+  garnirVille(e);
+  ecrire();
+
+  /* la vidéo : créée maintenant, détruite à la fermeture */
+  /* UNE VILLE, UNE VIDÉO, qui joue à chaque passage.
+     Le système à deux niveaux (grande arrivée puis reprise courte) est
+     supprimé : il répondait à des arrivées de quinze secondes, elles font
+     maintenant moins de cinq. Il coûtait huit fichiers à produire, une
+     mémoire du « déjà vu » et un repli — pour rien.
+     Aucune boucle : ces clips finissent sur le panneau de la ville, et un
+     raccord panneau -> vue aérienne se verrait à chaque tour. La dernière
+     image reste affichée, ce qui rend le récit par-dessus bien plus lisible. */
+  videoEl=document.createElement("video");
+  videoEl.muted=true; videoEl.loop=false; videoEl.autoplay=true;
+  videoEl.setAttribute("playsinline","");
+  videoEl.setAttribute("webkit-playsinline","");
+  videoEl.preload="auto";
+  videoEl.src = "arrivee-"+e.ref+".mp4";
+  videoEl.addEventListener("error",function(){ S("emplacement").style.display="flex"; });
+  videoEl.addEventListener("playing",function(){ S("emplacement").style.display="none"; });
+  S("vue").insertBefore(videoEl, S("vue").firstChild);
+  ajusterCadrage(videoEl);
+  S("emplacement").style.display="flex";
+  var j=videoEl.play(); if(j&&j.catch) j.catch(function(){});
+  S("arrivee").classList.add("ouvert");
+  /* le chemin est masqué derrière : ses cartes nettes ne servent à rien */
+  elCartes.forEach(function(c){
+    if(c.dataset.net==="1"){ c.dataset.net="0";
+      c.style.backgroundImage='url("fond-'+c.dataset.ref+'.webp")'; }
+  });
+}
+function fermerArrivee(){
+  S("arrivee").classList.remove("ouvert");
+  /* ⚠️ LA CARTE POSTALE 900x1200 RESTAIT EN MÉMOIRE APRÈS LA FERMETURE.
+     Mesuré : trois images de cette taille décodées en même temps, soit une
+     douzaine de mégaoctets, plus la vidéo. Un pincement pour zoomer force
+     Safari à tout re-rastériser à l'échelle supérieure et l'onglet meurt. */
+  try{ S("pimg").removeAttribute("src"); }catch(err){}
+  if(videoEl){ try{ videoEl.pause(); videoEl.removeAttribute("src"); videoEl.load(); }catch(err){}
+    if(videoEl.parentNode) videoEl.parentNode.removeChild(videoEl); videoEl=null; }
+}
+S("cta").addEventListener("click",function(){
+  /* Un bouton verrouillé qui ne fait rien enferme : sur une ville pas
+     encore atteinte, il n'y avait plus qu'à faire glisser le doigt
+     horizontalement — ce que Safari interprète comme son geste de retour.
+     Il ramène donc à l'étape en cours, celle qu'il désigne. */
+  if(this.className==="verrou"){ allerA(FAITS); return; }
+  ouvrirArrivee(courant); });
+
+/* aller à une étape par son numéro, en douceur */
+function allerA(i){
+  i=Math.max(0,Math.min(ETAPES.length-1,i));
+  try{ rail.scrollTo({left:i*W, behavior:"smooth"}); }
+  catch(e){ rail.scrollLeft=i*W; }
+}
+/* ==================================================================
+   LE PONT AVEC LE GLOBE
+   On lui envoie l'état à chaque ouverture — quelles étapes sont faites,
+   lesquelles sont ouvertes, d'où part le voyage. Il nous renvoie la
+   destination choisie.
+
+   ⚠️ Le départ vient du profil Hype quand il l'expose ; il ne l'expose
+   pas encore, donc on part de Paris par défaut (décision de Blandine).
+   ================================================================== */
+var DEPART_DEFAUT = { nom:"Paris", lat:48.8566, lng:2.3522 };
+
+/* Les villes dont la carte postale a un tiers haut trop clair pour un
+   titre crème. Valeurs de luminance moyenne du tiers supérieur, mesurées
+   le 5 août sur les fichiers livrés :
+     warendorf 182 · jerez 182 · golega 181 · oliva 170 · lamotte 150
+     saumur 153 · aachen 168 · vejer 118 · seville 78
+   Séville est la seule assez sombre pour garder le titre clair. Les dix
+   villes britanniques et irlandaises n'ont pas été mesurées ici : leurs
+   cartes datent du 4 août et le titre crème y fonctionnait déjà. */
+/* ==================================================================
+   LES TROIS NIVEAUX (5 août 2026, après le test de Blandine)
+   Elle a joué le chapitre 1 en parlant très bien anglais et l'a trouvé
+   dur : trop de phrases, et surtout trop de vocal. Les chiffres lui
+   donnaient raison — `exercicePour` tirait « dire » une fois sur quatre
+   dès deux points de maîtrise, soit cinq fois par leçon, alors que la
+   décision du 4 août disait l'inverse : le micro est un bouton
+   secondaire, jamais le mode par défaut. Et les phrases tombaient dès
+   la première vague de trois mots, y compris sur le chapitre offert.
+
+   Le niveau est porté par la VILLE, pas par le mot :
+     1 · nommer  — reconnaître, écouter, écrire. Pas de phrase à
+                   remettre en ordre, pas de vocal imposé.
+     2 · situer  — les phrases entrent, une par vague.
+     3 · dire    — le vocal entre dans le tirage.
+   Dans tous les cas le micro reste PROPOSÉ sur l'exercice d'écoute.
+   ================================================================== */
+var NIVEAU_VILLE = {
+  newmarket:1, lambourn:1, connemara:1, walsall:1, aberystwyth:1,
+  kildare:1, jerez:1, vejer:1,
+  hickstead:2, badminton:2, windsor:2, seville:2, oliva:2,
+  warendorf:2, aachen:2, lamotte:2,
+  saumur:3, edimbourg:3
+};
+function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
+
+var TITRE_SOMBRE = ["warendorf","jerez","golega","oliva","lamotte",
+                    "saumur","aachen","vejer"];
+
+function appliquerTeinteTitre(ref){
+  var f = document.querySelector("#pcarte .pface");
+  if(!f) return;
+  if(TITRE_SOMBRE.indexOf(ref) >= 0) f.classList.add("clair");
+  else f.classList.remove("clair");
+}
+
+function departDuJoueur(){
+  try{
+    if(window.HYPE_LINGO_HOST && HYPE_LINGO_HOST.ecurie){
+      var e = HYPE_LINGO_HOST.ecurie();
+      if(e && typeof e.lat === "number" && typeof e.lng === "number") return e;
+    }
+  }catch(e){}
+  return DEPART_DEFAUT;
+}
+
+function etatPourGlobe(){
+  var faites=[], ouvertes=[];
+  ETAPES.forEach(function(e,i){
+    if(etatChapitre(e.ref).fini) faites.push(e.ref);
+    else if(i<=FAITS) ouvertes.push(e.ref);
+  });
+  return { t:"linguae-etat", faites:faites, ouvertes:ouvertes, depart:departDuJoueur() };
+}
+
+function ouvrirGlobe(){
+  S("globe").classList.add("on");
+  var f=S("globeIf");
+  /* l'iframe peut ne pas être prête au premier appel : on tente, et on
+     retente au chargement. Sans ça le globe s'ouvre vide une fois sur deux. */
+  function envoyer(){ try{ f.contentWindow.postMessage(etatPourGlobe(), "*"); }catch(e){} }
+  envoyer();
+  f.addEventListener("load", envoyer, {once:true});
+  setTimeout(envoyer, 260);
+}
+function fermerGlobe(){ S("globe").classList.remove("on"); }
+
+S("bGlobe").addEventListener("click", ouvrirGlobe);
+S("globeX").addEventListener("click", fermerGlobe);
+
+window.addEventListener("message", function(ev){
+  var d = ev.data || {};
+  if(d.t !== "linguae-dest" || !d.ref) return;
+  var i = -1;
+  ETAPES.forEach(function(e,k){ if(e.ref===d.ref) i=k; });
+  if(i < 0) return;
+  fermerGlobe();
+  /* Le globe ne propose que des étapes accessibles, mais on revérifie :
+     un bouton qui mène à une ville verrouillée enferme le joueur.
+     On ouvre directement l'ARRIVÉE — vidéo, carte postale, lettre, puis
+     la leçon. C'est ce que le rail faisait, en un geste au lieu d'un
+     glissement à l'aveugle. */
+  var k = (i > FAITS) ? FAITS : i;
+  allerA(k);
+  ouvrirArrivee(k);
+});
+
+/* les points du bas deviennent une vraie navigation */
+Array.prototype.forEach.call(S("points").children, function(n,k){
+  n.style.cursor="pointer";
+  n.addEventListener("click", function(){ allerA(k); });
+});
+S("depliB").addEventListener("click",function(){ S("depli").classList.toggle("ouvert"); });
+S("depliB2").addEventListener("click",function(){ S("depli2").classList.toggle("ouvert"); });
+S("depliB3").addEventListener("click",function(){ S("depli3").classList.toggle("ouvert"); });
+S("pcarte").addEventListener("click",function(){
+  this.classList.toggle("dos");
+  S("ptourne").textContent = this.classList.contains("dos") ? "" : "Touche pour lire";
+});
+/* si l'image de carte manque, on masque le bloc plutôt que d'afficher un cadre vide */
+S("pimg").addEventListener("error",function(){ S("postal").style.display="none"; });
+
+/* ==================================================================
+   LA LEÇON — le moteur de jeu. Il lit window.HYPE_LINGO_LEX et rien
+   d'autre : ajouter un chapitre au dépôt suffit à le rendre jouable.
+   ================================================================== */
+var CHAPITRE_DE = {
+  newmarket:"ecurie", lambourn:"pansage", connemara:"cheval", walsall:"materiel",
+  aberystwyth:"cours", windsor:"dressage", hickstead:"obstacle", badminton:"concours",
+  kildare:"urgences", edimbourg:"dialogues"
+};
+
+/* ==================================================================
+   RÉPARTITION V2 — une ville reçoit des LEÇONS, plus un fichier entier.
+   Ajouté le 5 août 2026, d'après hype-linguae-repartition-v2.md.
+
+   Avant : une ville = un fichier de lexique = 42 mots. Personne ne
+   terminait un chapitre, donc le souvenir de la ville ne se gagnait
+   jamais et la récompense finale restait décorative.
+
+   Maintenant : une ville = deux leçons d'origine ≈ 20 mots. L'unité
+   déplacée est la LEÇON du fichier source, pas la collection : les
+   phrases (« Quelle est sa robe ? ») n'ont pas de champ `coll` mais
+   appartiennent à une leçon, donc elles suivent leur famille sans
+   traitement particulier.
+
+   ⚠️ Les fichiers hype-lingo-lex-*.js ne sont PAS modifiés. Le
+   rangement vit ici, dans le moteur. C'est ce qui permet à un même
+   concept d'appartenir à deux villes (les rappels, décidés le 5 août) :
+   la maîtrise est stockée par `c.ref`, donc un mot déjà croisé ailleurs
+   arrive déjà acquis. Un rappel n'est pas un doublon, c'est de la
+   révision espacée gratuite.
+   ================================================================== */
+var ETAPE_SRC = {
+  newmarket:   [["ecurie",1],   ["ecurie",4]],
+  lambourn:    [["pansage",1],  ["pansage",2]],
+  connemara:   [["cheval",1],   ["cheval",2]],
+  walsall:     [["materiel",1], ["materiel",2]],
+  aberystwyth: [["cours",1],    ["cours",2],   ["cours",3]],
+  windsor:     [["dressage",1], ["dressage",4]],
+  hickstead:   [["obstacle",1], ["obstacle",2]],
+  badminton:   [["concours",2], ["concours",3]],
+  kildare:     [["urgences",1], ["urgences",3]],
+  edimbourg:   [["urgences",4], ["cours",4]],
+  /* les huit du tour du monde */
+  saumur:      [["dressage",2], ["dressage",3]],
+  lamotte:     [["poney",1],    ["urgences",2]],
+  jerez:       [["cheval",4],   ["cheval",3]],
+  seville:     [["materiel",3], ["pansage",4]],
+  vejer:       [["ecurie",3],   ["ecurie",2]],
+  oliva:       [["concours",1], ["obstacle",3]],
+  warendorf:   [["materiel",4], ["pansage",3]],
+  aachen:      [["obstacle",4], ["concours",4]]
+};
+
+/* Le texte d'accueil d'un chapitre se choisit par le fichier source majoritaire,
+   sauf pour les villes composées : Édimbourg puise dans urgences et cours mais
+   enseigne bien les dialogues, et c'est ce qu'il faut annoncer au joueur. */
+var ACCUEIL_VILLE = { edimbourg:"dialogues", lamotte:"poney", seville:"materiel",
+                      vejer:"ecurie", oliva:"concours", warendorf:"pansage", aachen:"obstacle" };
+
+/* Construit le chapitre d'une ville en assemblant ses leçons sources.
+   Les concepts sont copiés en surface et renumérotés 1..n : le reste du
+   moteur (lecons, nomLecon, acquisDe) continue de lire `lecon` et `coll`
+   sans savoir que le chapitre est composé. */
+function chapVirtuel(refVille){
+  var src = ETAPE_SRC[refVille];
+  if(!src) return null;
+  var LEX = window.HYPE_LINGO_LEX || {}, out = [], phr = [], rang = 0, manque = [];
+  src.forEach(function(paire){
+    var chap = LEX[paire[0]];
+    if(!chap){ if(manque.indexOf(paire[0])<0) manque.push(paire[0]); return; }
+    var lot = (chap.concepts||[]).filter(function(c){ return (c.lecon||1) === paire[1]; });
+    if(!lot.length) return;
+    rang++;
+    lot.forEach(function(c){ out.push(recopier(c, rang)); });
+    /* les phrases de la même leçon suivent leur famille */
+    (chap.phrases||[]).forEach(function(p){
+      if((p.lecon||1) === paire[1]) phr.push(recopier(p, rang));
+    });
+  });
+  if(!out.length) return manque.length ? {concepts:[], phrases:[], manque:manque} : null;
+  return { concepts: out, phrases: phr, cle: src[0][0], manque: manque };
+}
+/* copie de surface avec renumérotation de la leçon : on ne touche jamais
+   l'objet d'origine, qui reste partagé entre les villes qui le reçoivent */
+function recopier(o, rang){
+  var c = {}, k;
+  for(k in o) if(Object.prototype.hasOwnProperty.call(o,k)) c[k] = o[k];
+  c.lecon = rang;
+  return c;
+}
+
+var VOIX = { fr:"fr-FR", en:"en-GB", es:"es-ES", it:"it-IT", de:"de-DE", ja:"ja-JP" };
+
+/* La langue enseignée par CE voyage. Elle n'a rien à voir avec `langue`,
+   qui est celle dans laquelle on lit les cartes postales : un francophone
+   lit ses cartes en français mais apprend l'anglais. */
+var VOYAGE_LANGUE = "en";
+
+/* La langue de l'interface : les six langues du référentiel Hype.
+   Le pont la fournit ; tout ce qui n'est pas reconnu retombe sur le français. */
+var LANGUES_UI = ["fr","en","es","it","de","ja"];
+function langueUI(){
+  var l = "fr";
+  try{ if(window.HYPE_LINGO_HOST && HYPE_LINGO_HOST.langue) l = HYPE_LINGO_HOST.langue(); }catch(e){}
+  /* même cause que dans T() : `LANGUES_UI` est déclarée dans ce script
+     mais assignée après la construction du carnet, qui appelle déjà
+     langueUI(). On retombe sur le français plutôt que de planter. */
+  if(typeof LANGUES_UI === "undefined" || !LANGUES_UI) return "fr";
+  return (LANGUES_UI.indexOf(l) >= 0) ? l : "fr";
+}
+
+/* ---------- couche de traduction ----------
+   Une seule porte d'entrée. Les données restent écrites en français ;
+   tx() rend la version affichée. Tolérant par construction : une chaîne
+   nue passe telle quelle, une traduction manquante retombe sur le français.
+   Rien ne casse quand une langue n'est pas encore écrite. */
+function tx(o){
+  if(o==null) return "";
+  if(typeof o === "string") return o;
+  var u = langueUI();
+  return o[u] || o.fr || "";
+}
+
+/* Les cinq champs traduisibles d'une étape. Le français vit dans ETAPES,
+   les cinq autres langues dans les tables ci-dessus. */
+function eCh(e){   return e ? tx2(ETAPES_I18N[e.ref] && ETAPES_I18N[e.ref].ch,   e.ch)   : ""; }
+function eV(e){    return e ? tx2(ETAPES_I18N[e.ref] && ETAPES_I18N[e.ref].v,    e.v)    : ""; }
+function eSouv(e){ return e ? tx2(ETAPES_I18N[e.ref] && ETAPES_I18N[e.ref].souv, e.souv) : ""; }
+function eNat(e){  return e ? tx2(I18N_NAT[e.nat], e.nat) : ""; }
+function eH(e){    return e ? tx2(I18N_H[e.h],     e.h)   : ""; }
+function tx2(o, secours){
+  if(!o) return secours;
+  var u = langueUI();
+  return (u==="fr") ? secours : (o[u] || secours);
+}
+
+/* ---------- textes de l'interface ----------
+   Une clé, six langues. T("cle", {v:"Newmarket"}) remplace {v} dans le texte.
+   Les écrans statiques se balisent avec data-t (texte) ou data-th (html) ;
+   appliquerLangue() les remplit au démarrage et à chaque changement de langue. */
+/* ==================================================================
+   LE NOM DU MODULE. Une seule ligne à changer le jour où il change.
+   Il se propage partout via {nom} dans les textes de l'interface,
+   y compris le titre de l'onglet et le message de partage.
+   ⚠️ Le NOM DE FICHIER reste lingo.html : le renommer casserait les
+   liens déjà poussés et le raccourci depuis l'app.
+   ================================================================== */
+var NOM_MODULE = "Hype Linguae";
+
+var UI = {
+ nomModule:{fr:"{nom}", en:"{nom}", es:"{nom}", it:"{nom}", de:"{nom}", ja:"{nom}"},
+ traversee:{fr:"La Traversée", en:"The Crossing", es:"La Travesía", it:"La Traversata",
+   de:"Die Überfahrt", ja:"旅路"},
+ partageScore:{fr:"J'ai fait {score} sur {nom}. Mêmes dix mots, bats-moi : ",
+   en:"I scored {score} on {nom}. Same ten words, beat me: ",
+   es:"He hecho {score} en {nom}. Las mismas diez palabras, supérame: ",
+   it:"Ho fatto {score} su {nom}. Le stesse dieci parole, battimi: ",
+   de:"Ich habe {score} bei {nom}. Dieselben zehn Wörter — schlag mich: ",
+   ja:"{nom}で{score}点。同じ十語で、私を超えてみて："},
+ choisirDest:{fr:"Choisir ma destination", en:"Choose my destination", es:"Elegir mi destino",
+   it:"Scegliere la destinazione", de:"Ziel wählen", ja:"行き先を選ぶ"},
+ introTitre:{fr:"Échanger avec<br>les cavaliers<br>du monde entier",
+   en:"Talk to riders<br>all over<br>the world",
+   es:"Hablar con jinetes<br>de todo<br>el mundo",
+   it:"Parlare con i cavalieri<br>di tutto<br>il mondo",
+   de:"Mit Reitern<br>auf der ganzen<br>Welt sprechen",
+   ja:"世界の<br>馬乗りたちと<br>語り合う"},
+ introCit:{fr:"Chaque cavalier a une histoire.<br>Voici le début de la nôtre.",
+   en:"Every rider has a story.<br>This is the beginning of ours.",
+   es:"Cada jinete tiene una historia.<br>Esta es el principio de la nuestra.",
+   it:"Ogni cavaliere ha una storia.<br>Questo è l'inizio della nostra.",
+   de:"Jeder Reiter hat eine Geschichte.<br>Dies ist der Anfang unserer.",
+   ja:"馬乗りには、それぞれの物語がある。<br>これは、私たちの物語の始まり。"},
+ pt1t:{fr:"Le vocabulaire équestre en six langues", en:"Stable vocabulary in six languages",
+   es:"El vocabulario ecuestre en seis idiomas", it:"Il vocabolario equestre in sei lingue",
+   de:"Reitvokabular in sechs Sprachen", ja:"六か国語の馬術用語"},
+ pt1d:{fr:"Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.",
+   en:"French, English, Spanish, Italian, German, Japanese — the real words, the ones used in the yard.",
+   es:"Francés, inglés, español, italiano, alemán, japonés: el de verdad, el de las cuadras.",
+   it:"Francese, inglese, spagnolo, italiano, tedesco, giapponese: quello vero, quello delle scuderie.",
+   de:"Französisch, Englisch, Spanisch, Italienisch, Deutsch, Japanisch — die echten Wörter, die im Stall fallen.",
+   ja:"フランス語、英語、スペイン語、イタリア語、ドイツ語、日本語。厩舎で実際に使われる言葉。"},
+ pt2t:{fr:"Dix villes, dix chapitres", en:"Ten towns, ten chapters", es:"Diez ciudades, diez capítulos",
+   it:"Dieci città, dieci capitoli", de:"Zehn Städte, zehn Kapitel", ja:"十の街、十の章"},
+ pt2d:{fr:"On voyage de ville en ville. Chacune enseigne une partie du métier.",
+   en:"You travel from town to town. Each one teaches a part of the craft.",
+   es:"Se viaja de ciudad en ciudad. Cada una enseña una parte del oficio.",
+   it:"Si viaggia di città in città. Ognuna insegna una parte del mestiere.",
+   de:"Man reist von Stadt zu Stadt. Jede lehrt einen Teil des Handwerks.",
+   ja:"街から街へ旅する。それぞれが、この仕事の一部を教えてくれる。"},
+ pt3t:{fr:"Comprendre un enseignant à l'étranger", en:"Understand an instructor abroad",
+   es:"Entender a un profesor en el extranjero", it:"Capire un istruttore all'estero",
+   de:"Einen Reitlehrer im Ausland verstehen", ja:"海外のインストラクターを理解する"},
+ pt3d:{fr:"Les ordres qu'on crie en reprise, à reconnaître au vol.",
+   en:"The commands shouted in a lesson, to catch on the fly.",
+   es:"Las órdenes que se gritan en clase, para reconocerlas al vuelo.",
+   it:"I comandi urlati in lezione, da riconoscere al volo.",
+   de:"Die Kommandos, die in der Reitstunde gerufen werden — im Flug erkennen.",
+   ja:"レッスンで飛ぶ号令を、その場で聞き取る。"},
+ pt4t:{fr:"Savoir dire l'essentiel en cas d'urgence", en:"Say what matters in an emergency",
+   es:"Saber decir lo esencial en una urgencia", it:"Saper dire l'essenziale in un'emergenza",
+   de:"Im Notfall das Wichtigste sagen können", ja:"緊急時に必要なことを言えるように"},
+ pt4d:{fr:"« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.",
+   en:"\u201CHe\u2019s lame\u201D, \u201Ccall the vet\u201D. This chapter is free, everywhere.",
+   es:"«Cojea», «llamad al veterinario». Este capítulo es gratis, en todas partes.",
+   it:"«Zoppica», «chiamate il veterinario». Questo capitolo è gratuito, sempre.",
+   de:"\u201EEr lahmt\u201C, \u201Eruft den Tierarzt\u201C. Dieses Kapitel ist überall kostenlos.",
+   ja:"「跛行している」「獣医を呼んで」。この章は、どの言語でも無料。"},
+ pt5t:{fr:"Une collection à rapporter", en:"A collection to bring home",
+   es:"Una colección para traer de vuelta", it:"Una collezione da portare a casa",
+   de:"Eine Sammlung für den Heimweg", ja:"持ち帰るコレクション"},
+ pt5d:{fr:"Une carte postale et un souvenir par ville, gagnés, pas donnés.",
+   en:"One postcard and one keepsake per town — earned, not given.",
+   es:"Una postal y un recuerdo por ciudad, ganados, no regalados.",
+   it:"Una cartolina e un souvenir per città, guadagnati, non regalati.",
+   de:"Eine Postkarte und ein Andenken pro Stadt — verdient, nicht geschenkt.",
+   ja:"街ごとに絵はがき一枚と記念品一つ。与えられるのではなく、勝ち取るもの。"},
+ destTitre:{fr:"Où veux-tu aller ?", en:"Where do you want to go?", es:"¿Adónde quieres ir?",
+   it:"Dove vuoi andare?", de:"Wohin willst du?", ja:"どこへ行く？"},
+ destSous:{fr:"Une destination, une langue. Le premier chapitre est offert partout.",
+   en:"One destination, one language. The first chapter is free everywhere.",
+   es:"Un destino, un idioma. El primer capítulo es gratis en todas partes.",
+   it:"Una destinazione, una lingua. Il primo capitolo è gratuito sempre.",
+   de:"Ein Ziel, eine Sprache. Das erste Kapitel ist überall kostenlos.",
+   ja:"行き先ひとつに言語ひとつ。第一章はどこでも無料。"},
+ destPied:{fr:"Les autres destinations arrivent. Le vocabulaire est déjà écrit pour les six langues : c'est le voyage qui reste à construire.",
+   en:"The other destinations are on their way. The vocabulary is already written in all six languages — it is the journey that remains to be built.",
+   es:"Los demás destinos están en camino. El vocabulario ya está escrito en los seis idiomas: lo que queda por construir es el viaje.",
+   it:"Le altre destinazioni stanno arrivando. Il vocabolario è già scritto nelle sei lingue: è il viaggio che resta da costruire.",
+   de:"Die anderen Ziele kommen. Das Vokabular ist in allen sechs Sprachen schon geschrieben — zu bauen bleibt die Reise.",
+   ja:"ほかの行き先も準備中。語彙は六か国語ですでに書き上がっている。あとは旅を作るだけ。"},
+ retour:{fr:"Retour", en:"Back", es:"Volver", it:"Indietro", de:"Zurück", ja:"戻る"},
+ partirDs:{fr:"Partir", en:"Go", es:"Partir", it:"Parti", de:"Aufbrechen", ja:"出発"},
+ bientot:{fr:"Bientôt", en:"Soon", es:"Pronto", it:"Presto", de:"Bald", ja:"近日"},
+ voyage1:{fr:"{nom} · Voyage 1", en:"{nom} · Journey 1", es:"{nom} · Viaje 1",
+   it:"{nom} · Viaggio 1", de:"{nom} · Reise 1", ja:"{nom} · 第1の旅"},
+ ouvNations:{fr:"Angleterre · Irlande · Pays de Galles · Écosse",
+   en:"England · Ireland · Wales · Scotland", es:"Inglaterra · Irlanda · Gales · Escocia",
+   it:"Inghilterra · Irlanda · Galles · Scozia", de:"England · Irland · Wales · Schottland",
+   ja:"イングランド・アイルランド・ウェールズ・スコットランド"},
+ ouvLangue:{fr:"— anglais —", en:"— English —", es:"— inglés —", it:"— inglese —",
+   de:"— Englisch —", ja:"— 英語 —"},
+ ouvIntro:{fr:"Dix chapitres, dix villes. <b>Pas les capitales politiques — les capitales du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde, et où le vocabulaire que tu vas apprendre s'entend vraiment.",
+   en:"Ten chapters, ten towns. <b>Not the political capitals — the horse capitals.</b> Places where riding is not a hobby but everyone's trade, and where the words you are about to learn are really spoken.",
+   es:"Diez capítulos, diez ciudades. <b>No las capitales políticas: las capitales del caballo.</b> Lugares donde la equitación no es un pasatiempo sino el oficio de todos, y donde el vocabulario que vas a aprender se oye de verdad.",
+   it:"Dieci capitoli, dieci città. <b>Non le capitali politiche — le capitali del cavallo.</b> Luoghi dove l'equitazione non è un passatempo ma il mestiere di tutti, e dove il vocabolario che imparerai si sente davvero.",
+   de:"Zehn Kapitel, zehn Städte. <b>Nicht die politischen Hauptstädte — die Hauptstädte des Pferdes.</b> Orte, an denen Reiten kein Hobby ist, sondern der Beruf aller, und an denen die Wörter, die du lernst, wirklich fallen.",
+   ja:"十の章、十の街。<b>政治の首都ではなく、馬の首都。</b>乗馬が趣味ではなく、みんなの仕事である場所。これから覚える言葉が、本当に聞こえてくる場所。"},
+ regle1:{fr:"<b>On voyage la nuit, on arrive à l'aube.</b> Le chemin se fait au doigt, d'une ville à la suivante.",
+   en:"<b>You travel by night and arrive at dawn.</b> The road moves under your finger, from one town to the next.",
+   es:"<b>Se viaja de noche y se llega al amanecer.</b> El camino se recorre con el dedo, de una ciudad a la siguiente.",
+   it:"<b>Si viaggia di notte e si arriva all'alba.</b> La strada si percorre col dito, da una città alla successiva.",
+   de:"<b>Man reist nachts und kommt im Morgengrauen an.</b> Der Weg entsteht unter dem Finger, von einer Stadt zur nächsten.",
+   ja:"<b>夜に旅をして、夜明けに着く。</b>道は指で進む。街から次の街へ。"},
+ regle2:{fr:"<b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale à retourner, un souvenir, et une étoile de plus dans ton ciel.",
+   en:"<b>Every town leaves a trace:</b> a stamp in your passport, a postcard to turn over, a keepsake, and one more star in your sky.",
+   es:"<b>Cada ciudad deja una huella:</b> un sello en tu pasaporte, una postal que dar la vuelta, un recuerdo y una estrella más en tu cielo.",
+   it:"<b>Ogni città lascia una traccia:</b> un timbro sul passaporto, una cartolina da girare, un souvenir, e una stella in più nel tuo cielo.",
+   de:"<b>Jede Stadt lässt eine Spur:</b> einen Stempel im Pass, eine Postkarte zum Umdrehen, ein Andenken und einen Stern mehr an deinem Himmel.",
+   ja:"<b>街はそれぞれ跡を残す。</b>パスポートの消印、裏返せる絵はがき、記念品、そして夜空にもう一つの星。"},
+ regle3:{fr:"<b>Le chapitre des urgences est offert</b> — savoir dire « il boite » ou « appelez le vétérinaire » à l'étranger ne se monnaie pas.",
+   en:"<b>The emergency chapter is free</b> — knowing how to say \u201Che\u2019s lame\u201D or \u201Ccall the vet\u201D abroad is not for sale.",
+   es:"<b>El capítulo de urgencias es gratis</b>: saber decir «cojea» o «llamad al veterinario» en el extranjero no se cobra.",
+   it:"<b>Il capitolo delle emergenze è gratuito</b> — saper dire «zoppica» o «chiamate il veterinario» all'estero non si vende.",
+   de:"<b>Das Notfallkapitel ist kostenlos</b> — zu wissen, wie man im Ausland \u201Eer lahmt\u201C oder \u201Eruft den Tierarzt\u201C sagt, ist nicht verkäuflich.",
+   ja:"<b>緊急時の章は無料。</b>海外で「跛行している」「獣医を呼んで」と言えること。これは売り物ではない。"},
+ itineraire:{fr:"L'itinéraire", en:"The route", es:"El itinerario", it:"L'itinerario",
+   de:"Die Route", ja:"行程"},
+ partir:{fr:"Partir", en:"Set off", es:"Partir", it:"Partire", de:"Aufbrechen", ja:"出発する"},
+ passer:{fr:"Passer", en:"Skip", es:"Saltar", it:"Salta", de:"Überspringen", ja:"スキップ"},
+ entrerA:{fr:"Entrer à {v}", en:"Enter {v}", es:"Entrar en {v}", it:"Entra a {v}",
+   de:"{v} betreten", ja:"{v}に入る"},
+ retourCarnet:{fr:"Revenir au carnet de route", en:"Back to the route", es:"Volver al itinerario",
+   it:"Torna all'itinerario", de:"Zurück zur Route", ja:"行程に戻る"},
+ sprint60:{fr:"Sprint · 60 s", en:"Sprint · 60 s", es:"Sprint · 60 s", it:"Sprint · 60 s",
+   de:"Sprint · 60 s", ja:"スプリント・60秒"},
+ traceOn:{fr:"Trace : on", en:"Trail: on", es:"Rastro: sí", it:"Traccia: sì",
+   de:"Spur: an", ja:"軌跡：オン"},
+ traceOff:{fr:"Trace : off", en:"Trail: off", es:"Rastro: no", it:"Traccia: no",
+   de:"Spur: aus", ja:"軌跡：オフ"},
+ commencer:{fr:"Commencer", en:"Start", es:"Empezar", it:"Inizia", de:"Beginnen", ja:"はじめる"},
+ enRoute:{fr:"en route,", en:"on the road,", es:"en ruta,", it:"in viaggio,",
+   de:"unterwegs,", ja:"移動中"},
+ aLAube:{fr:"à l'aube", en:"at dawn", es:"al amanecer", it:"all'alba",
+   de:"im Morgengrauen", ja:"夜明け"},
+ chapNsur:{fr:"Chapitre {n} sur {t}", en:"Chapter {n} of {t}", es:"Capítulo {n} de {t}",
+   it:"Capitolo {n} di {t}", de:"Kapitel {n} von {t}", ja:"第{n}章／全{t}章"},
+ leGlobe:{fr:"Le globe", en:"The globe", es:"El globo", it:"Il globo",
+   de:"Der Globus", ja:"地球儀"},
+ chapEt:{fr:"Chapitre {n} · {t}", en:"Chapter {n} · {t}", es:"Capítulo {n} · {t}",
+   it:"Capitolo {n} · {t}", de:"Kapitel {n} · {t}", ja:"第{n}章・{t}"},
+ termineV:{fr:"Termine {v}", en:"Finish {v}", es:"Termina {v}", it:"Finisci {v}",
+   de:"Beende {v}", ja:"{v}を終える"},
+ revoirV:{fr:"Revoir {v}", en:"See {v} again", es:"Volver a {v}", it:"Rivedi {v}",
+   de:"{v} wiedersehen", ja:"{v}をもう一度"},
+ arriverV:{fr:"Arriver à {v}", en:"Arrive at {v}", es:"Llegar a {v}", it:"Arriva a {v}",
+   de:"Ankommen in {v}", ja:"{v}に着く"},
+ vMots:{fr:"{v} · {n} mots", en:"{v} · {n} words", es:"{v} · {n} palabras",
+   it:"{v} · {n} parole", de:"{v} · {n} Wörter", ja:"{v}・{n}語"},
+ vFini:{fr:"{v} · chapitre terminé", en:"{v} · chapter complete", es:"{v} · capítulo terminado",
+   it:"{v} · capitolo finito", de:"{v} · Kapitel fertig", ja:"{v}・章クリア"},
+ vSurN:{fr:"{v} · {a} / {n} mots", en:"{v} · {a} / {n} words", es:"{v} · {a} / {n} palabras",
+   it:"{v} · {a} / {n} parole", de:"{v} · {a} / {n} Wörter", ja:"{v}・{a}／{n}語"},
+ arriveeA:{fr:"ARRIVÉE À {v}", en:"ARRIVING IN {v}", es:"LLEGADA A {v}", it:"ARRIVO A {v}",
+   de:"ANKUNFT IN {v}", ja:"{v}到着"},
+ passeport:{fr:"Passeport Hype", en:"Hype Passport", es:"Pasaporte Hype",
+   it:"Passaporto Hype", de:"Hype-Pass", ja:"Hypeパスポート"},
+ souvenirDe:{fr:"Souvenir de {v}", en:"Keepsake from {v}", es:"Recuerdo de {v}",
+   it:"Souvenir di {v}", de:"Andenken aus {v}", ja:"{v}の記念品"},
+ souvAMeriter:{fr:"Souvenir à mériter", en:"Keepsake to be earned", es:"Recuerdo por merecer",
+   it:"Souvenir da meritare", de:"Andenken zu verdienen", ja:"記念品は勝ち取るもの"},
+ souvMots:{fr:"{s} — les {n} mots du chapitre", en:"{s} — all {n} words of the chapter",
+   es:"{s} — las {n} palabras del capítulo", it:"{s} — le {n} parole del capitolo",
+   de:"{s} — alle {n} Wörter des Kapitels", ja:"{s}──この章の{n}語すべて"},
+ raceIci:{fr:"La race d'ici", en:"The local breed", es:"La raza de aquí",
+   it:"La razza di qui", de:"Die Rasse von hier", ja:"この土地の品種"},
+ reprendreRoute:{fr:"Reprendre la route", en:"Back on the road", es:"Seguir el camino",
+   it:"Riprendi la strada", de:"Weiterreisen", ja:"旅を続ける"},
+ motsChapitre:{fr:"Les mots du chapitre", en:"The words of this chapter",
+   es:"Las palabras del capítulo", it:"Le parole del capitolo",
+   de:"Die Wörter des Kapitels", ja:"この章の言葉"},
+ lecon:{fr:"Leçon ", en:"Lesson ", es:"Lección ", it:"Lezione ", de:"Lektion ", ja:"レッスン"},
+ motsAcquis:{fr:" mots acquis", en:" words learned", es:" palabras aprendidas",
+   it:" parole acquisite", de:" Wörter gelernt", ja:"語 習得"},
+ tamponObtenu:{fr:"Tampon obtenu", en:"Stamp collected", es:"Sello conseguido",
+   it:"Timbro ottenuto", de:"Stempel erhalten", ja:"消印を獲得"},
+ prochaineEtape:{fr:"Prochaine étape · {v}", en:"Next stop · {v}", es:"Próxima etapa · {v}",
+   it:"Prossima tappa · {v}", de:"Nächste Etappe · {v}", ja:"次の街・{v}"},
+ voyageTermine:{fr:"Voyage terminé", en:"Journey complete", es:"Viaje terminado",
+   it:"Viaggio finito", de:"Reise beendet", ja:"旅の完了"},
+ nomLangue:{fr:"français", en:"anglais", es:"espagnol", it:"italien", de:"allemand", ja:"japonais"}
+};
+/* Le nom de la langue enseignée, dit dans la langue de l'interface. */
+var LANGUE_NOM = {
+ en:{fr:"anglais", en:"English", es:"inglés", it:"inglese", de:"Englisch", ja:"英語"},
+ es:{fr:"espagnol", en:"Spanish", es:"español", it:"spagnolo", de:"Spanisch", ja:"スペイン語"},
+ it:{fr:"italien", en:"Italian", es:"italiano", it:"italiano", de:"Italienisch", ja:"イタリア語"},
+ de:{fr:"allemand", en:"German", es:"alemán", it:"tedesco", de:"Deutsch", ja:"ドイツ語"},
+ ja:{fr:"japonais", en:"Japanese", es:"japonés", it:"giapponese", de:"Japanisch", ja:"日本語"},
+ fr:{fr:"français", en:"French", es:"francés", it:"francese", de:"Französisch", ja:"フランス語"}
+};
+function T(cle, vars){
+  /* ⚠️ CORRECTION DU 5 AOÛT — bug bloquant préexistant.
+     `UI` est déclarée bien plus bas dans le même script : `var` est hissé,
+     sa valeur non. Or T() est appelée pendant la construction du carnet,
+     avant. Résultat : TypeError, le script s'arrêtait là, et TOUT ce qui
+     est déclaré ensuite (CHAPITRE_DE, TXT, MAITRISE, VOIX) restait
+     undefined — le moteur de leçon ne tournait pas du tout.
+     On répond vide plutôt que de planter : les éléments portent data-t,
+     donc appliquerLangue() les remplit correctement juste après. */
+  var t = tx((typeof UI !== "undefined" && UI) ? UI[cle] : null), k;
+  t = t.split("{nom}").join(NOM_MODULE);
+  if(vars) for(k in vars) t = t.split("{"+k+"}").join(vars[k]);
+  return t;
+}
+/* Remplit les écrans statiques. Appelée au démarrage ; rappelable si la
+   langue change en cours de route. */
+function appliquerLangue(){
+  var i, l;
+  l = document.querySelectorAll("[data-t]");
+  for(i=0;i<l.length;i++) l[i].textContent = T(l[i].getAttribute("data-t"));
+  l = document.querySelectorAll("[data-th]");
+  for(i=0;i<l.length;i++) l[i].innerHTML = T(l[i].getAttribute("data-th"));
+  l = document.querySelectorAll("[data-ta]");
+  for(i=0;i<l.length;i++) l[i].setAttribute("aria-label", T(l[i].getAttribute("data-ta")));
+  /* le nom du voyage et la langue enseignée suivent la destination choisie */
+  var D=null, k;
+  for(k=0;k<DESTINATIONS.length;k++) if(DESTINATIONS[k].lg===VOYAGE_LANGUE) D=DESTINATIONS[k];
+  if(D){
+    var nom=tx(D.nom), lg=tx(LANGUE_NOM[D.lg]);
+    if(S("voyNom")) S("voyNom").textContent=nom;
+    if(S("voyLg"))  S("voyLg").textContent=lg;
+    if(S("ouvNom")) S("ouvNom").textContent=nom;
+    var pl=document.querySelector(".langue");
+    if(pl) pl.textContent="— "+lg+" —";
+    document.title = NOM_MODULE+" · "+lg+" · "+T("traversee");
+  }
+}
+
+
+/* ---------- petits outils ---------- */
+function el(tag, attrs){
+  var n=document.createElement(tag), i, k;
+  if(attrs) for(k in attrs){
+    if(k==="class") n.className=attrs[k];
+    else if(k==="html") n.innerHTML=attrs[k];
+    else if(k==="text") n.textContent=attrs[k];
+    else if(k.slice(0,2)==="on") n.addEventListener(k.slice(2), attrs[k]);
+    else n.setAttribute(k, attrs[k]);
+  }
+  for(i=2;i<arguments.length;i++){
+    var c=arguments[i];
+    if(c===null||c===undefined||c===false) continue;
+    if(Array.isArray(c)) c.forEach(function(x){ if(x) n.appendChild(x); });
+    else n.appendChild(typeof c==="string" ? document.createTextNode(c) : c);
+  }
+  return n;
+}
+function brasser(t){ var a=t.slice(),i,j,x;
+  for(i=a.length-1;i>0;i--){ j=Math.floor(Math.random()*(i+1)); x=a[i];a[i]=a[j];a[j]=x; } return a; }
+function motNu(x){
+  return String(x).toLowerCase()
+    .replace(/^(le |la |les |l'|the |el |los |las |il |i |lo |der |die |das |to |au |aux )/,"")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9\u3040-\u30ff\u4e00-\u9fff]/g,"").trim();
+}
+function videEl(n){ while(n.firstChild) n.removeChild(n.firstChild); }
+
+/* iOS refuse de parler si le premier appel ne vient pas d'un geste :
+   on amorce la synthèse au premier tap, à volume nul. */
+var voixPretes=false;
+function amorcerVoix(){
+  if(voixPretes || !("speechSynthesis" in window)) return;
+  try{ var u=new SpeechSynthesisUtterance(" "); u.volume=0; window.speechSynthesis.speak(u);
+       voixPretes=true; }catch(e){}
+}
+/* ---------- lectures japonaises ----------
+   Un kanji ne se lit pas tout seul : 前橋 se prononce zenkyō (le pommeau)
+   et non Maebashi (la ville), 長靴 chōka (botte de monte) et non nagagutsu
+   (botte en caoutchouc). Le lexique porte déjà la lecture dans le champ `p` ;
+   c'est elle qu'on donne à la synthèse, jamais le mot écrit.
+   La table se construit une fois, à la première demande, depuis le lexique
+   chargé — aucun fichier à modifier. */
+var LECTURES_JA = null;
+function lectureJa(txt){
+  if(LECTURES_JA === null){
+    LECTURES_JA = {};
+    try{
+      var L = window.HYPE_LINGO_LEX || {}, k, i, cs, m;
+      for(k in L){
+        cs = (L[k] && L[k].concepts) || [];
+        for(i=0;i<cs.length;i++){
+          m = cs[i].mots && cs[i].mots.ja;
+          if(m && m.m && m.p) LECTURES_JA[m.m] = m.p;
+        }
+      }
+    }catch(e){}
+  }
+  return LECTURES_JA[txt] || txt;
+}
+function dire(txt, lg){
+  if(!("speechSynthesis" in window)) return;
+  var d = (lg==="ja") ? lectureJa(txt) : txt;
+  try{ window.speechSynthesis.cancel();
+       var u=new SpeechSynthesisUtterance(d); u.lang=VOIX[lg]||"en-GB"; u.rate=0.9;
+       window.speechSynthesis.speak(u); }catch(e){}
+}
+
+/* ---------- la maîtrise, gardée sur le téléphone ---------- */
+var MAITRISE = (function(){
+  try{ return JSON.parse(localStorage.getItem("hype_lingo_maitrise")) || {}; }catch(e){ return {}; }
+})();
+function sauverMaitrise(){
+  try{ localStorage.setItem("hype_lingo_maitrise", JSON.stringify(MAITRISE)); }catch(e){}
+}
+
+/* ---------- état de la leçon en cours ---------- */
+var LC = null;
+
+
+/* ==================================================================
+   NOMS DES LEÇONS ET MOT D'ACCUEIL
+   Les familles (`coll`) sont déjà rangées dans les lexiques : on ne fait
+   que les afficher. « Leçon 2 · 11 mots » ne disait rien ; « La litière
+   et les outils » dit ce qu'on va apprendre.
+   ================================================================== */
+var COLL_NOM = {
+  /* Ajoutés le 5 août. `poney` vient du nouveau chapitre de Lamotte ; les
+     quatre autres existaient dans les lexiques depuis le 4 août mais
+     n'avaient jamais de nom : leurs leçons s'affichaient « Leçon 2 ».
+     Repéré en ouvrant les dix-huit villes une par une. */
+  poney:{fr:"Le poney", en:"The pony", es:"El poni", it:"Il pony", de:"Das Pony", ja:"ポニー"},
+  corps:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体"},
+  etat:{fr:"L'état du poil", en:"The state of the coat", es:"El estado de la capa",
+        it:"Lo stato del mantello", de:"Der Zustand des Fells", ja:"毛の状態"},
+  "cheval-urg":{fr:"Sur le cheval", en:"On the horse", es:"En el caballo",
+        it:"Sul cavallo", de:"Am Pferd", ja:"馬について"},
+  "jour-j":{fr:"Le jour J", en:"The big day", es:"El día del concurso",
+        it:"Il giorno di gara", de:"Der Turniertag", ja:"当日"},
+  races:{fr:"Les races", en:"The breeds", es:"Las razas", it:"Le razze",
+        de:"Die Rassen", ja:"品種"},
+  lieu:{fr:"Le lieu", en:"The place", es:"El lugar", it:"Il luogo", de:"Der Ort", ja:"場所"},
+  litiere:{fr:"La litière", en:"The bedding", es:"La cama", it:"La lettiera", de:"Die Einstreu", ja:"敷料"},
+  outils:{fr:"Les outils", en:"The tools", es:"Las herramientas", it:"Gli attrezzi", de:"Das Werkzeug", ja:"道具"},
+  nourriture:{fr:"L'eau et la nourriture", en:"Water and feed", es:"El agua y el pienso", it:"L'acqua e il mangime", de:"Wasser und Futter", ja:"水と飼料"},
+  materiel:{fr:"Tenir et attacher", en:"Holding and tying", es:"Sujetar y atar", it:"Tenere e legare", de:"Halten und anbinden", ja:"持つ・つなぐ"},
+  gestes:{fr:"Les gestes", en:"The handling", es:"El manejo", it:"I gesti", de:"Der Umgang", ja:"扱い方"},
+  robes:{fr:"Les robes", en:"The coat colours", es:"Las capas", it:"I mantelli", de:"Die Fellfarben", ja:"毛色"},
+  marques:{fr:"Les marques", en:"The markings", es:"Las marcas", it:"I segni particolari", de:"Die Abzeichen", ja:"標徴"},
+  morpho:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体の部位"},
+  identite:{fr:"L'identité", en:"Identity", es:"La identidad", it:"L'identità", de:"Die Identität", ja:"個体識別"},
+  selle:{fr:"La selle", en:"The saddle", es:"La silla", it:"La sella", de:"Der Sattel", ja:"鞍"},
+  filet:{fr:"Le filet", en:"The bridle", es:"La cabezada", it:"La testiera", de:"Die Trense", ja:"頭絡"},
+  cavalier:{fr:"Le cavalier", en:"The rider", es:"El jinete", it:"Il cavaliere", de:"Der Reiter", ja:"騎乗者"},
+  protections:{fr:"Les protections", en:"The protective gear", es:"Las protecciones", it:"Le protezioni", de:"Die Schutzausrüstung", ja:"保護具"},
+  allures:{fr:"Les allures", en:"The paces", es:"Los aires", it:"Le andature", de:"Die Gangarten", ja:"歩様"},
+  position:{fr:"La position", en:"The position", es:"La posición", it:"L'assetto", de:"Der Sitz", ja:"騎座"},
+  figures:{fr:"La piste et les figures", en:"The track and the figures", es:"La pista y las figuras", it:"La pista e le figure", de:"Die Bahn und die Hufschlagfiguren", ja:"馬場と図形運動"},
+  deroule:{fr:"Le déroulé du cours", en:"How a lesson runs", es:"El desarrollo de la clase", it:"Lo svolgimento della lezione", de:"Der Ablauf der Reitstunde", ja:"レッスンの流れ"},
+  rectangle:{fr:"Le rectangle", en:"The arena", es:"El rectángulo", it:"Il rettangolo", de:"Das Viereck", ja:"競技馬場"},
+  mouvements:{fr:"Les mouvements", en:"The movements", es:"Los movimientos", it:"I movimenti", de:"Die Lektionen", ja:"運動"},
+  qualites:{fr:"Les qualités", en:"The qualities", es:"Las cualidades", it:"Le qualità", de:"Die Qualitäten", ja:"馬の質"},
+  notation:{fr:"La notation", en:"The marking", es:"La puntuación", it:"Il punteggio", de:"Die Bewertung", ja:"採点"},
+  obstacles:{fr:"Les obstacles", en:"The fences", es:"Los obstáculos", it:"Gli ostacoli", de:"Die Hindernisse", ja:"障害"},
+  parcours:{fr:"Le parcours", en:"The course", es:"El recorrido", it:"Il percorso", de:"Der Parcours", ja:"コース"},
+  fautes:{fr:"Les fautes", en:"The faults", es:"Las faltas", it:"Le penalità", de:"Die Fehler", ja:"減点"},
+  saut:{fr:"Le saut", en:"The jump", es:"El salto", it:"Il salto", de:"Der Sprung", ja:"飛越"},
+  engager:{fr:"S'engager", en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"出場申込"},
+  complet:{fr:"Le concours complet", en:"Eventing", es:"El concurso completo", it:"Il concorso completo", de:"Die Vielseitigkeit", ja:"総合馬術"},
+  "jour-j":{fr:"Le jour J", en:"The day itself", es:"El día del concurso", it:"Il giorno della gara", de:"Der Turniertag", ja:"試合当日"},
+  gens:{fr:"Les gens", en:"The people", es:"La gente", it:"Le persone", de:"Die Leute", ja:"人びと"},
+  alerte:{fr:"Donner l'alerte", en:"Raising the alarm", es:"Dar la alarma", it:"Dare l'allarme", de:"Alarm schlagen", ja:"通報する"},
+  "cheval-urg":{fr:"Sur le cheval", en:"On the horse", es:"En el caballo", it:"Sul cavallo", de:"Am Pferd", ja:"馬の状態"},
+  mots:{fr:"Les mots qui sauvent", en:"The words that save", es:"Las palabras que salvan", it:"Le parole che salvano", de:"Die Worte, die retten", ja:"命を救う言葉"}
+};
+var ACCUEIL_CHAP = {
+  ecurie:{fr:"Les mots de l'écurie : le lieu, la litière, la nourriture, les gestes du matin.", en:"The words of the yard: the place, the bedding, the feed, the morning jobs.", es:"Las palabras de la cuadra: el lugar, la cama, el pienso, los gestos de la mañana.", it:"Le parole della scuderia: il luogo, la lettiera, il mangime, i gesti del mattino.", de:"Die Wörter des Stalls: der Ort, die Einstreu, das Futter, die Arbeit am Morgen.", ja:"厩舎の言葉。場所、敷料、飼料、朝の作業。"},
+  pansage:{fr:"Le pansage, outil par outil, geste par geste.", en:"Grooming, tool by tool, job by job.", es:"El cepillado, herramienta por herramienta, gesto por gesto.", it:"La pulizia, attrezzo per attrezzo, gesto per gesto.", de:"Das Putzen, Werkzeug für Werkzeug, Griff für Griff.", ja:"手入れを、道具ごと、動作ごとに。"},
+  cheval:{fr:"Décrire un cheval : sa robe, ses marques, son corps, son identité.", en:"Describing a horse: colour, markings, body, identity.", es:"Describir un caballo: su capa, sus marcas, su cuerpo, su identidad.", it:"Descrivere un cavallo: il mantello, i segni particolari, il corpo, l'identità.", de:"Ein Pferd beschreiben: Farbe, Abzeichen, Körper, Identität.", ja:"馬を描写する。毛色、標徴、体、個体情報。"},
+  materiel:{fr:"Tout ce qu'on met sur le cheval — et sur soi.", en:"Everything you put on the horse — and on yourself.", es:"Todo lo que se le pone al caballo, y todo lo que te pones tú.", it:"Tutto ciò che si mette sul cavallo — e su di sé.", de:"Alles, was man dem Pferd anlegt — und sich selbst.", ja:"馬に着けるもの、そして自分が身に着けるもの。"},
+  cours:{fr:"Les ordres qu'on entend en reprise, et ceux qu'on donne quand on enseigne.", en:"The commands you hear in a lesson, and the ones you give when you teach.", es:"Las órdenes que se oyen en clase, y las que se dan cuando se enseña.", it:"I comandi che si sentono in lezione, e quelli che si danno quando si insegna.", de:"Die Kommandos, die man in der Reitstunde hört — und die man gibt, wenn man unterrichtet.", ja:"レッスンで飛ぶ号令、そして教えるときに出す号令。"},
+  dressage:{fr:"Le travail sur le plat : le rectangle, les mouvements, ce qu'un juge regarde.", en:"Flatwork: the arena, the movements, what a judge looks for.", es:"El trabajo en llano: el rectángulo, los movimientos, lo que mira un juez.", it:"Il lavoro in piano: il rettangolo, i movimenti, ciò che guarda un giudice.", de:"Die Dressurarbeit: das Viereck, die Lektionen, worauf ein Richter schaut.", ja:"平地運動。馬場、運動、審判員が見るところ。"},
+  obstacle:{fr:"Le saut : les obstacles, le parcours, les fautes, les phases du saut.", en:"Jumping: the fences, the course, the faults, the phases of the jump.", es:"El salto: los obstáculos, el recorrido, las faltas, las fases del salto.", it:"Il salto: gli ostacoli, il percorso, le penalità, le fasi del salto.", de:"Das Springen: die Hindernisse, der Parcours, die Fehler, die Phasen des Sprungs.", ja:"飛越。障害、コース、減点、飛越の各局面。"},
+  concours:{fr:"S'engager, arriver, passer, comprendre son classement.", en:"Entering, arriving, competing, reading your result.", es:"Inscribirse, llegar, competir, entender la clasificación.", it:"Iscriversi, arrivare, gareggiare, capire la classifica.", de:"Nennen, ankommen, starten, sein Ergebnis lesen.", ja:"申し込み、到着、出番、順位の読み方。"},
+  urgences:{fr:"Ce qu'on ne veut jamais avoir à dire — et qu'il faut savoir dire vite.", en:"What you never want to say — and must be able to say fast.", es:"Lo que nunca quieres tener que decir, y que hay que saber decir rápido.", it:"Ciò che non si vuole mai dover dire — e che bisogna saper dire in fretta.", de:"Was man nie sagen will — und schnell sagen können muss.", ja:"言わずに済ませたい言葉。だから、すぐ言えなければならない。"},
+  dialogues:{fr:"Parler à quelqu'un : demander, réserver, comprendre une réponse.", en:"Talking to someone: asking, booking, understanding the answer.", es:"Hablar con alguien: preguntar, reservar, entender la respuesta.", it:"Parlare con qualcuno: chiedere, prenotare, capire la risposta.", de:"Mit jemandem sprechen: fragen, buchen, die Antwort verstehen.", ja:"人と話す。尋ねる、予約する、返事を理解する。"}
+};
+/* Le nom d'une leçon : la ou les familles qu'elle contient. */
+function nomLecon(L){
+  var vus=[], n;
+  L.concepts.forEach(function(c){ n=tx(COLL_NOM[c.coll]); if(n && vus.indexOf(n)<0) vus.push(n); });
+  if(!vus.length) return "Leçon "+L.n;
+  if(vus.length===1) return vus[0];
+  /* la seconde famille perd sa majuscule : « La litière et les outils » */
+  var b=vus[1].charAt(0).toLowerCase()+vus[1].slice(1);
+  return vus[0]+" et "+b;
+}
+function apercuMots(L, n){
+  return L.concepts.slice(0,n||4).map(function(c){ return c.mots[cible()].m; }).join(" · ");
+}
+function acquisDe(L){ return L.concepts.filter(function(c){ return (MAITRISE[c.ref]||0)>=3; }).length; }
+
+/* ---------- les récompenses d'un chapitre ---------- */
+function etatChapitre(refVille){
+  /* Appelée par le chemin, qui s'exécute AVANT que ces tables soient
+     initialisées (déclarées plus bas dans le même script : `var` est hissé
+     mais pas sa valeur). On répond prudemment plutôt que de planter. */
+  if(typeof CHAPITRE_DE==="undefined" || typeof MAITRISE==="undefined")
+    return { total:0, acquis:0, fini:false, tout:false };
+  var chap = (typeof chapVirtuel==="function") ? chapVirtuel(refVille) : null;
+  if(!chap || !(chap.concepts||[]).length) return { total:0, acquis:0, fini:false, tout:false };
+  var t=(chap.concepts||[]).length;
+  var a=(chap.concepts||[]).filter(function(c){ return (MAITRISE[c.ref]||0)>=3; }).length;
+  var lecs=lecons(chap);
+  var fini=lecs.length>0 && lecs.every(function(L){ return acquisDe(L) >= Math.ceil(L.concepts.length*0.6); });
+  return { total:t, acquis:a, fini:fini, tout:(t>0 && a===t) };
+}
+
+/* ---------- l'XP part vers Hype, jamais vers un compteur à part ---------- */
+function donnerXP(n, raison){
+  try{
+    if(window.HYPE_LINGO_HOST && HYPE_LINGO_HOST.xpAjouter) HYPE_LINGO_HOST.xpAjouter(n, raison);
+  }catch(e){}
+}
+
+function ouvrirLecon(refVille){
+  var chap = chapVirtuel(refVille);
+  var cle = chap ? chap.cle : CHAPITRE_DE[refVille];
+  var e = ETAPES.filter(function(x){ return x.ref===refVille; })[0];
+  S("lcFondImg").style.backgroundImage = 'url("fond-'+refVille+'.webp")';
+  S("lecon").classList.add("on");
+  amorcerVoix();
+  if(!chap || !(chap.concepts||[]).length){
+    S("lcTitre").textContent = eCh(e);
+    videEl(S("lcJauge"));
+    videEl(S("lcCorps"));
+    S("lcCorps").appendChild(el("p",{class:"lcCons",
+      text:"Ce chapitre n'a pas encore de vocabulaire."}));
+    var absents = (chap && chap.manque && chap.manque.length) ? chap.manque
+                : (ETAPE_SRC[refVille] ? [ETAPE_SRC[refVille][0][0]] : [cle]);
+    S("lcCorps").appendChild(el("p",{class:"lcDef",
+      text:"Le fichier hype-lingo-lex-"+absents[0]+".js n'est pas chargé. Les autres chapitres sont jouables."}));
+    return;
+  }
+  LC = { cle:cle, chap:chap, ville:refVille, ch:eCh(e), villeNom:eV(e) };
+  choisirLecon();
+}
+function fermerLecon(){
+  S("lecon").classList.remove("on");
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  LC=null;
+}
+
+/* ---------- le choix de la leçon ---------- */
+function lecons(chap){
+  var m={}; (chap.concepts||[]).forEach(function(c){ var n=c.lecon||1; (m[n]=m[n]||[]).push(c); });
+  return Object.keys(m).sort(function(a,b){return a-b}).map(function(n){
+    return { n:+n, concepts:m[n] };
+  });
+}
+function choisirLecon(){
+  var ui=langueUI(), et=etatChapitre(LC.ville);
+  S("lcTitre").textContent = LC.ch;
+  videEl(S("lcJauge")); videEl(S("lcCorps"));
+
+  /* un mot d'accueil : on dit ce qu'on va apprendre avant de faire choisir */
+  var acc=ACCUEIL_CHAP[(typeof ACCUEIL_VILLE!=="undefined" && ACCUEIL_VILLE[LC.ville]) || LC.cle];
+  if(acc) S("lcCorps").appendChild(el("p",{class:"lcAcc", text:tx(acc)}));
+  S("lcCorps").appendChild(el("p",{class:"lcAv",
+    text: et.acquis+" / "+et.total+T("motsAcquis")}));
+
+  /* une seule leçon est mise en avant : celle où reprendre */
+  var Ls=lecons(LC.chap), suivante=null;
+  Ls.forEach(function(L){ if(!suivante && acquisDe(L) < L.concepts.length) suivante=L; });
+
+  Ls.forEach(function(L){
+    var a=acquisDe(L), n=L.concepts.length, active=(L===suivante);
+    var pc=el("span",{class:"pc"});
+    L.concepts.forEach(function(c){ pc.appendChild(el("s",{class:((MAITRISE[c.ref]||0)>=3)?"f":""})); });
+    S("lcCorps").appendChild(el("button",{class:"lcL"+(active?" on":""), onclick:function(){ lancer(L); }},
+      el("span",{class:"num", text:String(L.n)}),
+      el("span",{class:"d"},
+        el("b",{text:nomLecon(L)}),
+        el("i",{text:apercuMots(L,4)+" \u2026"}),
+        el("u",{text:(a===n ? (ui==="en"?"complete":"termin\u00e9e")
+                            : a+" / "+n+(ui==="en"?" learned":" acquis"))}),
+        pc),
+      el("span",{class:"go", text: active ? (ui==="en"?"Start":"Commencer") : "\u203a"})
+    ));
+  });
+
+  /* ce que le chapitre débloque, et ce qu'il reste à faire */
+  var reste=Math.max(0, Math.ceil(et.total*0.6)-et.acquis);
+  var boite=el("div",{class:"lcRec"});
+  boite.appendChild(el("p",{class:"lcRt", text: ui==="en"?"What this chapter unlocks":"Ce que ce chapitre d\u00e9bloque"}));
+  boite.appendChild(ligneRec(et.fini,
+    (ui==="en"?"The postcard of ":"La carte postale de ")+LC.villeNom,
+    et.fini ? (ui==="en"?"yours":"obtenue")
+            : (reste>0 ? (ui==="en"?(reste+" more words"):("encore "+reste+" mots"))
+                       : (ui==="en"?"almost there":"presque"))));
+  boite.appendChild(ligneRec(et.tout,
+    (ui==="en"?"The keepsake of ":"Le souvenir de ")+LC.villeNom,
+    et.tout ? (ui==="en"?"yours":"obtenu")
+            : (ui==="en"?("all "+et.total+" words"):("les "+et.total+" mots"))));
+  S("lcCorps").appendChild(boite);
+}
+function ligneRec(obtenu, quoi, etat){
+  return el("div",{class:"lcRl"+(obtenu?" ok":"")},
+    el("span",{class:"p", text: obtenu ? "\u2726" : "\u25CB"}),
+    el("span",{class:"q", text:quoi}),
+    el("span",{class:"e", text:etat}));
+}
+
+/* ---------- construction du parcours d'exercices ---------- */
+function lancer(L){
+  /* VAGUES DE TROIS.
+     Avant : dix découvertes d'affilée, puis dix exercices — au premier
+     exercice on avait déjà oublié le premier mot. Le principe de la
+     répétition espacée est de faire revenir un mot AVANT l'oubli, pas
+     après. On découvre donc trois mots, on les teste tout de suite, une
+     phrase les emploie, et on passe aux trois suivants.
+     Et la leçon commence par une révision : les mots du chapitre déjà vus
+     dont la maîtrise est la plus basse — l'équivalent de leur séance de
+     révision, qui ne tire que les mots dus. */
+  var plan=[];
+
+  var ailleurs=(LC.chap.concepts||[]).filter(function(c){
+    var m=MAITRISE[c.ref]||0;
+    return m>0 && m<4 && L.concepts.indexOf(c)<0;
+  }).sort(function(a,b){ return (MAITRISE[a.ref]||0)-(MAITRISE[b.ref]||0); }).slice(0,3);
+  ailleurs.forEach(function(c){ plan.push({t:exercicePour(c), c:c, rev:true}); });
+
+  /* d'abord les phrases de cette leçon, puis les autres du chapitre :
+     chaque vague de trois mots doit se terminer par une phrase. */
+  var propres=brasser((LC.chap.phrases||[]).filter(function(x){ return x.lecon===L.n; }));
+  var autres=brasser((LC.chap.phrases||[]).filter(function(x){ return x.lecon!==L.n; }));
+  var phrases=propres.concat(autres);
+  var vague=[], nph=0;
+  L.concepts.forEach(function(c,idx){
+    vague.push(c);
+    if(vague.length===3 || idx===L.concepts.length-1){
+      vague.forEach(function(x){ plan.push({t:"decouverte", c:x}); });
+      brasser(vague).forEach(function(x){ plan.push({t:exercicePour(x), c:x}); });
+      /* les phrases à remettre en ordre n'apparaissent qu'à partir du
+         niveau 2 : sur une ville de découverte, elles cassent l'élan. */
+      if(niveauVille(LC.ville) >= 2 && phrases[nph]){
+        plan.push({t:"phrase", p:phrases[nph]}); nph++;
+      }
+      vague=[];
+    }
+  });
+  LC.L=L; LC.plan=plan; LC.i=0; LC.justes=0; LC.nouveaux=[];
+  LC.aTester=plan.filter(function(x){ return x.t!=="decouverte"; }).length;
+  etape();
+}
+/* quel exercice pour ce mot, selon ce qu'on sait déjà de lui */
+function exercicePour(c){
+  var m=MAITRISE[c.ref]||0, lg=cible(), ui=langueUI();
+  var niv = niveauVille((LC && LC.ville) || "");
+  /* « dire » n'entre dans le tirage qu'au niveau 3. Ailleurs, on écoute
+     et on répète pour soi — le micro reste offert sur l'écoute. */
+  var pool = (m===0) ? ["choix"]
+           : (m===1 ? ["choix","ecoute"]
+           : (niv >= 3 ? ["ecoute","ecrire","dire","choix"]
+                       : ["ecoute","ecrire","choix","ecoute"]));
+  var t=pool[Math.floor(Math.random()*pool.length)];
+  if(t==="ecrire" && lg==="ja") t="ecoute";
+  if(t==="ecrire" && motNu(c.mots[lg].m)===motNu(c.mots[ui].m)) t="ecoute";
+  if(t==="dire" && !vocalPossible()) t="ecoute";
+  return t;
+}
+
+/* la langue qu'on apprend, jamais celle qu'on parle déjà */
+function cible(){ return VOYAGE_LANGUE; }
+
+function jauge(){
+  var j=S("lcJauge"); videEl(j);
+  LC.plan.forEach(function(x,i){
+    j.appendChild(el("i",{class: i<LC.i ? "f" : (i===LC.i ? "a" : "")}));
+  });
+}
+function etape(){
+  if(LC.i>=LC.plan.length) return finLecon();
+  var x=LC.plan[LC.i];
+  jauge();
+  S("lcTitre").textContent = LC.ch + " · " + T("lecon") + LC.L.n;
+  videEl(S("lcCorps"));
+  S("lcCorps").appendChild({decouverte:exDecouverte, choix:exChoix, ecoute:exEcoute,
+                            ecrire:exEcrire, dire:exDire, phrase:exPhrase}[x.t](x));
+  S("lecon").scrollTop=0;
+}
+function suivant(juste, ref){
+  if(juste){
+    LC.justes++;
+    if(ref){
+      var n=MAITRISE[ref]||0;
+      if(n===0) LC.nouveaux.push(ref);
+      MAITRISE[ref]=Math.min(5,n+1); sauverMaitrise();
+    }
+  }
+  LC.i++; etape();
+}
+/* Une note sur le mot, affichée à CHAQUE réponse — juste ou fausse.
+   La réussite est un moment d'attention disponible : autant y apprendre
+   quelque chose. On montre en priorité la variante régionale, qui est le
+   champ le plus utile du lexique et n'apparaissait qu'une seule fois. */
+function noteSurLeMot(c){
+  if(!c) return null;
+  var ui=langueUI(), lg=cible(), mc=c.mots[lg], mu=c.mots[ui];
+  var bloc=el("div",{class:"lcNote"});
+  bloc.appendChild(el("p",{class:"lcNm"},
+    el("b",{text:mc.m}),
+    mc.p ? el("i",{text:" [ "+mc.p+" ]"}) : null,
+    el("span",{text:" · "+mu.m})
+  ));
+  if(mc.var) bloc.appendChild(el("p",{class:"lcNv", text:"Aussi : "+mc.var}));
+  else if(c.def && (c.def[ui]||c.def.fr))
+    bloc.appendChild(el("p",{class:"lcNv", text:(c.def[ui]||c.def.fr)}));
+  return bloc;
+}
+function verdict(zone, juste, bonne, apres, concept){
+  zone.className="lcVerdict "+(juste?"j":"f");
+  videEl(zone);
+  var ui=langueUI();
+  zone.appendChild(el("b",{text: juste ? (ui==="en"?"That's it":"C'est ça")
+                                      : (ui==="en"?"Not yet":"Pas encore")}));
+  if(!juste && bonne) zone.appendChild(el("span",{text:(ui==="en"?"Answer: ":"La réponse : ")+bonne}));
+  var n=noteSurLeMot(concept);
+  if(n) zone.appendChild(n);
+  zone.appendChild(el("button",{class:"lcCta", onclick:apres},
+    ui==="en"?"Continue":"Continuer"));
+}
+
+/* ---------- 1. la carte de découverte ---------- */
+function exDecouverte(x){
+  var c=x.c, ui=langueUI(), lg=cible();
+  var mc=c.mots[lg], mu=c.mots[ui];
+  return el("div",{},
+    el("p",{class:"lcCons", text: ui==="en"?"A new word":"Un mot nouveau"}),
+    el("div",{class:"lcCarte"},
+      el("p",{class:"lcMot", text:mc.m}),
+      mc.p ? el("p",{class:"lcPhon", text:"[ "+mc.p+" ]"}) : null,
+      mc.var ? el("p",{class:"lcVar", text:mc.var}) : null,
+      el("div",{class:"lcFil"}),
+      el("p",{class:"lcTrad", text:mu.m}),
+      el("button",{class:"lcSon", onclick:function(){ dire(mc.m, lg); }},
+        "\u266a  "+(ui==="en"?"Listen":"Écouter"))
+    ),
+    el("p",{class:"lcDef", text:(c.def&&(c.def[ui]||c.def.fr))||""}),
+    el("button",{class:"lcCta", onclick:function(){
+      dire(mc.m, lg); setTimeout(function(){ suivant(false,null); },240);
+    }}, ui==="en"?"Continue":"Continuer")
+  );
+}
+
+/* ---------- 2. choisir, dans les deux sens ---------- */
+function exChoix(x){
+  var c=x.c, ui=langueUI(), lg=cible();
+  var versCible = Math.random()<0.5;
+  var src = versCible ? ui : lg, dst = versCible ? lg : ui;
+  var bonne=c.mots[dst].m;
+  var pool=LC.L.concepts.filter(function(y){ return y.ref!==c.ref; });
+  var leurres=brasser(pool).slice(0,3).map(function(y){ return y.mots[dst].m; });
+  var zone=el("div",{class:"lcVerdict"});
+  var corps=el("div",{},
+    el("p",{class:"lcCons", text: ui==="en"?"Which word is it?":"Quel est ce mot ?"}),
+    el("p",{class:"lcInvite", text:c.mots[src].m}),
+    el("div",{class:"lcOpts"},
+      brasser([bonne].concat(leurres)).map(function(o){
+        return el("button",{class:"lcOpt", onclick:function(){
+          var juste=(o===bonne);
+          this.classList.add(juste?"ok":"ko");
+          Array.prototype.forEach.call(corps.querySelectorAll(".lcOpt"),function(b){ b.disabled=true; });
+          if(dst===lg) dire(bonne, lg);
+          verdict(zone, juste, bonne, function(){ suivant(juste, c.ref); }, c);
+        }}, o);
+      })
+    ),
+    zone
+  );
+  return corps;
+}
+
+/* ---------- 3. écouter puis choisir ---------- */
+function exEcoute(x){
+  var c=x.c, ui=langueUI(), lg=cible();
+  var bonne=c.mots[lg].m;
+  var pool=LC.L.concepts.filter(function(y){ return y.ref!==c.ref; });
+  var leurres=brasser(pool).slice(0,3).map(function(y){ return y.mots[lg].m; });
+  var zone=el("div",{class:"lcVerdict"});
+  setTimeout(function(){ dire(bonne, lg); }, 400);
+  var corps=el("div",{},
+    el("p",{class:"lcCons", text: ui==="en"?"Listen and choose":"Écoute et choisis"}),
+    el("button",{class:"lcHp", onclick:function(){ dire(bonne, lg); }}, "\u266a"),
+    el("p",{class:"lcRej", text: ui==="en"?"Play again":"Réécouter"}),
+    el("div",{class:"lcOpts"},
+      brasser([bonne].concat(leurres)).map(function(o){
+        return el("button",{class:"lcOpt", onclick:function(){
+          var juste=(o===bonne);
+          this.classList.add(juste?"ok":"ko");
+          Array.prototype.forEach.call(corps.querySelectorAll(".lcOpt"),function(b){ b.disabled=true; });
+          verdict(zone, juste, bonne, function(){ suivant(juste, c.ref); }, c);
+        }}, o);
+      })
+    ),
+    zone
+  );
+  return corps;
+}
+
+/* ---------- 4. écrire ---------- */
+function exEcrire(x){
+  var c=x.c, ui=langueUI(), lg=cible();
+  var bonne=c.mots[lg].m;
+  var zone=el("div",{class:"lcVerdict"});
+  var champ=el("input",{class:"lcChamp", type:"text", autocapitalize:"none",
+    autocomplete:"off", spellcheck:"false", placeholder:"…"});
+  function valider(){
+    if(champ.disabled) return;
+    var juste = motNu(champ.value)===motNu(bonne);
+    champ.disabled=true; champ.classList.add(juste?"ok":"ko");
+    if(juste) dire(bonne, lg);
+    verdict(zone, juste, bonne, function(){ suivant(juste, c.ref); }, c);
+  }
+  return el("div",{},
+    el("p",{class:"lcCons", text: ui==="en"?"Type the word":"Écris le mot"}),
+    el("p",{class:"lcInvite", text:c.mots[ui].m}),
+    champ,
+    el("button",{class:"lcCta", onclick:valider}, ui==="en"?"Check":"Vérifier"),
+    zone
+  );
+}
+
+/* ---------- 5. remettre la phrase dans l'ordre ---------- */
+function exPhrase(x){
+  var ui=langueUI(), lg=cible();
+  var attendue=x.p[lg]||x.p.en;
+  var tuiles=attendue.split(" ").filter(function(t){ return t.length; });
+  var dispo=brasser(tuiles), choisies=[];   /* on suit des INDICES : retirer rend au banc */
+  var zone=el("div",{class:"lcVerdict"});
+  var ligne=el("div",{class:"lcLigne"}), banc=el("div",{class:"lcBanc"});
+  function redessiner(){
+    videEl(ligne); videEl(banc);
+    choisies.forEach(function(idx,pos){
+      ligne.appendChild(el("button",{class:"lcTuile p", onclick:function(){
+        choisies.splice(pos,1); redessiner(); }}, dispo[idx]));
+    });
+    if(!choisies.length) ligne.appendChild(el("span",{class:"lcVide", text:"· · ·"}));
+    dispo.forEach(function(mot,idx){
+      if(choisies.indexOf(idx)>=0) return;
+      banc.appendChild(el("button",{class:"lcTuile", onclick:function(){
+        choisies.push(idx); redessiner(); }}, mot));
+    });
+  }
+  redessiner();
+  return el("div",{},
+    el("p",{class:"lcCons", text: ui==="en"?"Put the sentence in order":"Remets la phrase dans l'ordre"}),
+    el("p",{class:"lcInvite lcPetit", text:x.p[ui]||x.p.fr}),
+    ligne, banc,
+    el("button",{class:"lcCta", onclick:function(){
+      var juste = choisies.map(function(i){ return dispo[i]; }).join(" ")===attendue;
+      if(juste) dire(attendue, lg);
+      verdict(zone, juste, attendue, function(){ suivant(juste, null); }, null);
+    }}, ui==="en"?"Check":"Vérifier"),
+    zone
+  );
+}
+
+
+/* ==================================================================
+   L'EXERCICE VOCAL — toujours facultatif.
+   Deux niveaux. Si le navigateur sait écouter, il écoute et valide.
+   Sinon (et hors ligne, c'est toujours le cas : la reconnaissance passe
+   par les serveurs d'Apple ou de Google), on garde la méthode Pimsleur :
+   on entend, on répète à voix haute, on se juge soi-même. Cet exercice-là
+   marche partout, sans permission, sans réseau.
+   ⚠️ On ne note JAMAIS l'accent. On vérifie que le bon mot a été dit.
+   Une débutante recalée sur sa prononciation abandonne.
+   ================================================================== */
+function vocalPossible(){
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+function exDire(x){
+  var c=x.c, ui=langueUI(), lg=cible();
+  var attendu=c.mots[lg].m;
+  var zone=el("div",{class:"lcVerdict"});
+  var sorti=false;          /* uniquement pour ne pas valider deux fois */
+  var reco=null, montre=null;
+
+  function terminer(juste){
+    if(sorti) return; sorti=true;
+    if(montre){ clearTimeout(montre); montre=null; }
+    arreter();
+    verdict(zone, juste, attendu, function(){ suivant(juste, c.ref); }, c);
+  }
+  function arreter(){
+    micro.classList.remove("ecoute");
+    if(reco){ try{ reco.abort(); }catch(e){} try{ reco.stop(); }catch(e){} reco=null; }
+  }
+
+  /* LE MODE PAR DÉFAUT NE DEMANDE RIEN À PERSONNE.
+     On entend le mot, on le répète, on se juge — méthode Pimsleur. Ça marche
+     hors ligne, sans permission, sur tous les appareils. La reconnaissance
+     vocale est un bonus, pas le chemin normal : sur iPhone elle peut ne
+     jamais répondre, et la page restait bloquée. */
+  var bJuste=el("button",{class:"lcCta", onclick:function(){ terminer(true); }},
+    ui==="en"?"I said it":"Je l'ai dit");
+  var bRate=el("button",{class:"lcEviter", onclick:function(){ terminer(false); }},
+    ui==="en"?"I couldn't":"Je n'ai pas réussi");
+
+  var etat=el("p",{class:"lcRej", text: ui==="en"?"Repeat it out loud":"Répète-le à voix haute"});
+
+  var micro=el("button",{class:"lcMicro", onclick:function(){
+    if(sorti) return;
+    if(!vocalPossible()){
+      etat.textContent = ui==="en" ? "Not available on this device"
+                                   : "Indisponible sur cet appareil";
+      return;
+    }
+    try{
+      var R=window.SpeechRecognition||window.webkitSpeechRecognition;
+      reco=new R(); reco.lang=VOIX[lg]||"en-GB";
+      reco.interimResults=false; reco.maxAlternatives=4;
+      micro.classList.add("ecoute");
+      etat.textContent = ui==="en" ? "Listening\u2026" : "J'\u00e9coute\u2026";
+      /* ⚠️ FILET INDISPENSABLE : sur iOS la reconnaissance peut ne jamais
+         rendre de réponse. Sans ce délai, la page restait bloquée. */
+      montre=setTimeout(function(){
+        arreter();
+        etat.textContent = ui==="en" ? "Didn't hear \u2014 judge yourself"
+                                     : "Rien entendu \u2014 juge par toi-m\u00eame";
+      }, 6000);
+      reco.onresult=function(ev){
+        if(montre){ clearTimeout(montre); montre=null; }
+        var dits=[], k;
+        for(k=0;k<ev.results[0].length;k++) dits.push(ev.results[0][k].transcript);
+        var att=motNu(attendu);
+        /* indulgent : on ne juge jamais l'accent, seulement le mot */
+        var ok=dits.some(function(d){ var m=motNu(d);
+          return m===att || m.indexOf(att)>=0 || att.indexOf(m)>=0; });
+        etat.textContent=(ui==="en"?"Heard: ":"Entendu : ")+dits[0];
+        terminer(ok);
+      };
+      reco.onerror=function(){
+        if(montre){ clearTimeout(montre); montre=null; }
+        arreter();
+        etat.textContent = ui==="en" ? "Microphone unavailable \u2014 judge yourself"
+                                     : "Micro indisponible \u2014 juge par toi-m\u00eame";
+      };
+      reco.onend=function(){ micro.classList.remove("ecoute"); };
+      reco.start();
+    }catch(e){
+      arreter();
+      etat.textContent = ui==="en" ? "Microphone unavailable" : "Micro indisponible";
+    }
+  }}, "\u25CF  "+(ui==="en"?"Let it listen":"Le faire écouter"));
+
+  return el("div",{},
+    el("p",{class:"lcCons", text: ui==="en"?"Say it out loud":"Dis-le à voix haute"}),
+    el("p",{class:"lcInvite", text:attendu}),
+    c.mots[lg].p ? el("p",{class:"lcPhon", style:"text-align:center;margin:-14px 0 22px",
+      text:"[ "+c.mots[lg].p+" ]"}) : null,
+    el("button",{class:"lcSon", style:"display:block;margin:0 auto 20px",
+      onclick:function(){ dire(attendu, lg); }},
+      "\u266a  "+(ui==="en"?"Listen":"L'entendre")),
+    etat,
+    bJuste,
+    micro,
+    bRate,
+    zone
+  );
+}
+
+/* ---------- fin de leçon ---------- */
+function finLecon(){
+  var ui=langueUI();
+  jauge(); videEl(S("lcCorps"));
+  var sur=LC.aTester || LC.plan.filter(function(x){ return x.t!=="decouverte"; }).length;
+  /* l'XP part vers Hype : 2 par mot nouvellement acquis, 10 si le chapitre
+     se termine. Valeurs provisoires — le barème de Hype n'est pas validé. */
+  var et=etatChapitre(LC.ville);
+  if(LC.nouveaux.length) donnerXP(LC.nouveaux.length*2, "lingua-mots");
+  if(et.fini && !LC.dejaFini){ LC.dejaFini=true; donnerXP(10, "lingua-chapitre"); }
+  S("lcCorps").appendChild(el("div",{},
+    el("p",{class:"lcCons", text: ui==="en"?"Lesson complete":"Leçon terminée"}),
+    el("p",{class:"lcScore", text:LC.justes+" / "+sur}),
+    LC.nouveaux.length ? el("p",{class:"lcDef",
+      text:LC.nouveaux.length+(ui==="en"?" new words in your collection":" mots de plus dans ta collection")}) : null,
+    el("button",{class:"lcCta", onclick:function(){ choisirLecon(); }},
+      ui==="en"?"Another lesson":"Une autre leçon"),
+    el("button",{class:"lcCta", style:"background:rgba(255,255,255,.06);color:#8996A2;box-shadow:none;border:1px solid rgba(255,255,255,.1)",
+      onclick:fermerLecon}, ui==="en"?"Back to the journey":"Revenir au voyage")
+  ));
+}
+
+
+/* ==================================================================
+   LE SPRINT — le moteur. Soixante secondes, le plus de mots possible.
+   Il puise dans TOUS les chapitres chargés (336 concepts), en donnant
+   la priorité à ce qui est déjà un peu connu : on veut de la vitesse,
+   pas de la découverte.
+   ================================================================== */
+var SP = null;
+var SP_REC = (function(){
+  try{ return JSON.parse(localStorage.getItem("hype_lingua_sprint")) || {best:0, parties:0, total:0}; }
+  catch(e){ return {best:0, parties:0, total:0}; }
+})();
+function sauverRec(){
+  try{ localStorage.setItem("hype_lingua_sprint", JSON.stringify(SP_REC)); }catch(e){}
+}
+function reservoirSprint(){
+  var LEX=window.HYPE_LINGO_LEX||{}, t=[];
+  Object.keys(LEX).forEach(function(k){ (LEX[k].concepts||[]).forEach(function(c){ t.push(c); }); });
+  /* les mots déjà croisés d'abord : le sprint est un test de vitesse,
+     pas un premier contact. S'il n'y en a pas assez, on complète. */
+  var connus=t.filter(function(c){ return (MAITRISE[c.ref]||0)>0; });
+  return (connus.length>=12) ? connus.concat(brasser(t).slice(0,20)) : t;
+}
+function ouvrirSprint(){
+  S("sprint").classList.add("on");
+  amorcerVoix();
+  accueilSprint();
+}
+function fermerSprint(){
+  if(SP && SP.minuteur){ clearInterval(SP.minuteur); SP.minuteur=null; }
+  SP=null;
+  S("sprint").classList.remove("on","presse");
+  S("spSec").textContent="60";
+  S("spChrono").firstElementChild.style.width="100%";
+}
+function accueilSprint(){
+  var ui=langueUI();
+  S("spScore").textContent="0"; S("spCombo").className="";
+  videEl(S("spCorps"));
+  S("spCorps").appendChild(el("div",{id:"spAccueil"},
+    el("p",{class:"sur", text:NOM_MODULE}),
+    el("h1",{text:"Le Sprint"}),
+    el("p",{text: ui==="en"
+      ? "Sixty seconds. As many words as you can. Three in a row and the combo climbs."
+      : "Soixante secondes. Le plus de mots possible. Trois d'affilée et le combo monte."}),
+    el("div",{id:"spRec"},
+      el("div",{}, el("em",{text:String(SP_REC.best)}), el("span",{text: ui==="en"?"record":"record"})),
+      el("div",{}, el("em",{text:String(SP_REC.parties)}), el("span",{text: ui==="en"?"games":"parties"})),
+      el("div",{}, el("em",{text:String(SP_REC.total)}), el("span",{text: ui==="en"?"words":"mots"}))
+    ),
+    el("button",{id:"spGo", onclick:demarrerSprint},
+      ui==="en" ? "Start" : "C'est parti")
+  ));
+}
+function demarrerSprint(){
+  var res=reservoirSprint();
+  if(res.length<4){ accueilSprint(); return; }
+  SP={ pool:res, score:0, combo:0, meilleurCombo:0, reste:60, justes:[], minuteur:null };
+  S("sprint").classList.remove("presse");
+  S("spScore").textContent="0";
+  SP.minuteur=setInterval(function(){
+    SP.reste--;
+    S("spSec").textContent=String(Math.max(0,SP.reste));
+    S("spChrono").firstElementChild.style.width=(SP.reste/60*100)+"%";
+    if(SP.reste<=10) S("sprint").classList.add("presse");
+    if(SP.reste<=0) finSprint();
+  },1000);
+  questionSprint();
+}
+function flash(bon){
+  var f=S("spFlash");
+  f.className="spFlash "+(bon?"j":"f");
+  setTimeout(function(){ f.className="spFlash"; },170);
+}
+function questionSprint(){
+  if(!SP) return;
+  var lg=cible(), ui=langueUI();
+  var c=SP.pool[Math.floor(Math.random()*SP.pool.length)];
+  var versCible=Math.random()<0.5;
+  var src=versCible?ui:lg, dst=versCible?lg:ui;
+  var bonne=c.mots[dst].m;
+  var leurres=[], vus={}, essais=0; vus[bonne]=1;
+  while(leurres.length<3 && essais<60){
+    essais++;
+    var y=SP.pool[Math.floor(Math.random()*SP.pool.length)];
+    var m=y.mots[dst].m;
+    if(!vus[m]){ vus[m]=1; leurres.push(m); }
+  }
+  videEl(S("spCorps"));
+  var corps=el("div",{},
+    el("p",{class:"spMot", text:c.mots[src].m}),
+    el("div",{class:"spOpts"},
+      brasser([bonne].concat(leurres)).map(function(o){
+        return el("button",{class:"spOpt", onclick:function(){
+          if(!SP) return;
+          var juste=(o===bonne);
+          this.classList.add(juste?"ok":"ko");
+          flash(juste);
+          if(juste){
+            SP.combo++; SP.meilleurCombo=Math.max(SP.meilleurCombo,SP.combo);
+            /* le combo multiplie à partir de trois d'affilée */
+            var mult = SP.combo>=9 ? 4 : (SP.combo>=6 ? 3 : (SP.combo>=3 ? 2 : 1));
+            SP.score += mult;
+            SP.justes.push(c.ref);
+            S("spScore").textContent=String(SP.score);
+            if(mult>1){ S("spCombo").className="on";
+              S("spCombo").innerHTML=(ui==="en"?"combo ":"combo ")+"<b>×"+mult+"</b>"; }
+          } else {
+            SP.combo=0; S("spCombo").className="";
+          }
+          setTimeout(function(){ if(SP) questionSprint(); }, juste?170:520);
+        }}, o);
+      })
+    )
+  );
+  S("spCorps").appendChild(corps);
+}
+function finSprint(){
+  if(!SP) return;
+  clearInterval(SP.minuteur); SP.minuteur=null;
+  var ui=langueUI(), score=SP.score, record=(score>SP_REC.best);
+  /* le sprint fait progresser la maîtrise, mais moins qu'une leçon :
+     c'est de la vitesse, pas de l'apprentissage. */
+  var uniques={}; SP.justes.forEach(function(r){ uniques[r]=1; });
+  Object.keys(uniques).forEach(function(r){ MAITRISE[r]=Math.min(5,(MAITRISE[r]||0)+1); });
+  sauverMaitrise();
+  SP_REC.parties++; SP_REC.total+=Object.keys(uniques).length;
+  if(record) SP_REC.best=score;
+  sauverRec();
+  donnerXP(Math.round(score/3), "lingua-sprint");
+  var mc=SP.meilleurCombo;
+  SP=null;
+  S("spCombo").className="";
+  videEl(S("spCorps"));
+  S("spCorps").appendChild(el("div",{id:"spAccueil"},
+    el("p",{class:"sur", text: record ? (ui==="en"?"New record":"Nouveau record")
+                                      : (ui==="en"?"Time":"Terminé")}),
+    el("h1",{text:String(score)}),
+    el("p",{text:(ui==="en"?"Best combo ":"Meilleur combo ")+"\u00d7"+
+      (mc>=9?4:(mc>=6?3:(mc>=3?2:1)))+" \u00b7 "+
+      Object.keys(uniques).length+(ui==="en"?" different words":" mots différents")}),
+    el("div",{id:"spRec"},
+      el("div",{}, el("em",{text:String(SP_REC.best)}), el("span",{text:ui==="en"?"record":"record"})),
+      el("div",{}, el("em",{text:String(SP_REC.parties)}), el("span",{text:ui==="en"?"games":"parties"})),
+      el("div",{}, el("em",{text:String(SP_REC.total)}), el("span",{text:ui==="en"?"words":"mots"}))
+    ),
+    el("button",{id:"spGo", onclick:demarrerSprint}, ui==="en"?"Again":"Encore"),
+    el("button",{id:"spGo", class:"encore", onclick:function(){ ouvrirDuel(grainePropre(), null); }},
+      ui==="en"?"Challenge someone":"Défier quelqu'un"),
+    el("button",{id:"spGo", class:"encore", onclick:fermerSprint},
+      ui==="en"?"Back to the journey":"Revenir au voyage")
+  ));
+}
+
+/* ==================================================================
+   LE DUEL — sans serveur, sans compte, sans temps réel.
+   Une graine dans un lien : les deux joueurs reçoivent LES MÊMES dix
+   mots dans le MÊME ordre, chacun joue quand il veut. Le lien porte le
+   score de celui qui défie ; le défié voit le score à battre en face du
+   sien et peut renvoyer le résultat.
+   Aucune table Supabase, rien à exécuter en base : ça marche par
+   WhatsApp, que tout le monde a déjà.
+   ================================================================== */
+var DUEL = null;
+
+/* un générateur pseudo-aléatoire reproductible à partir d'une graine */
+function semeur(graine){
+  var h=1779033703^graine.length, i;
+  for(i=0;i<graine.length;i++){
+    h=Math.imul(h^graine.charCodeAt(i),3432918353);
+    h=(h<<13)|(h>>>19);
+  }
+  var a=h>>>0;
+  return function(){
+    a+=0x6D2B79F5; var t=a;
+    t=Math.imul(t^(t>>>15),t|1);
+    t^=t+Math.imul(t^(t>>>7),t|61);
+    return ((t^(t>>>14))>>>0)/4294967296;
+  };
+}
+function grainePropre(){
+  return Math.random().toString(36).slice(2,8);
+}
+/* la même graine donne toujours la même liste de dix mots */
+function motsDuDuel(graine){
+  var LEX=window.HYPE_LINGO_LEX||{}, tous=[];
+  Object.keys(LEX).sort().forEach(function(k){
+    (LEX[k].concepts||[]).forEach(function(c){ tous.push(c); });
+  });
+  var r=semeur(graine), pris={}, liste=[], essais=0;
+  while(liste.length<10 && essais<500){
+    essais++;
+    var i=Math.floor(r()*tous.length);
+    if(!pris[i]){ pris[i]=1; liste.push(tous[i]); }
+  }
+  return liste;
+}
+function lienDuel(graine, score){
+  var base=location.href.split("#")[0];
+  return base+"#duel="+graine+(score!==null&&score!==undefined ? ("-"+score) : "");
+}
+
+function ouvrirDuel(graine, aBattre){
+  DUEL={ graine:graine, aBattre:(aBattre===null?null:aBattre), mots:motsDuDuel(graine),
+         i:0, score:0, combo:0 };
+  if(DUEL.mots.length<4){ DUEL=null; return; }
+  S("sprint").classList.add("on");
+  amorcerVoix();
+  accueilDuel();
+}
+function accueilDuel(){
+  var ui=langueUI(), d=DUEL;
+  S("spSec").textContent="\u2694"; S("spChrono").firstElementChild.style.width="100%";
+  S("spScore").textContent="0"; S("spCombo").className="";
+  videEl(S("spCorps"));
+  S("spCorps").appendChild(el("div",{id:"spAccueil"},
+    el("p",{class:"sur", text:NOM_MODULE}),
+    el("h1",{text: ui==="en"?"The Duel":"Le Duel"}),
+    el("p",{text: d.aBattre===null
+      ? (ui==="en"?"Ten words. Play, then challenge someone with your score."
+                 : "Dix mots. Tu joues, puis tu défies quelqu'un avec ton score.")
+      : (ui==="en"?("Ten words, the same as your challenger. Score to beat: "+d.aBattre+".")
+                 : ("Dix mots, les mêmes que ton adversaire. Score à battre : "+d.aBattre+"."))}),
+    d.aBattre!==null ? el("div",{id:"spRec"},
+      el("div",{}, el("em",{text:String(d.aBattre)}), el("span",{text:ui==="en"?"to beat":"à battre"}))
+    ) : null,
+    el("button",{id:"spGo", onclick:questionDuel}, ui==="en"?"Start":"C'est parti")
+  ));
+}
+function questionDuel(){
+  var d=DUEL; if(!d) return;
+  if(d.i>=d.mots.length) return finDuel();
+  var ui=langueUI(), lg=cible(), c=d.mots[d.i];
+  /* le sens est fixé par la graine : les deux joueurs ont la même épreuve */
+  var r=semeur(d.graine+"-"+d.i);
+  var versCible = r()<0.5;
+  var src=versCible?ui:lg, dst=versCible?lg:ui;
+  var bonne=c.mots[dst].m;
+  var pool=d.mots.filter(function(y){ return y!==c; });
+  var leurres=[], vus={}; vus[bonne]=1;
+  pool.forEach(function(y){ var m=y.mots[dst].m; if(!vus[m] && leurres.length<3){ vus[m]=1; leurres.push(m); } });
+  var ordre=[bonne].concat(leurres);
+  /* mélange reproductible : même disposition pour les deux joueurs */
+  var k, j, tmp;
+  for(k=ordre.length-1;k>0;k--){ j=Math.floor(r()*(k+1)); tmp=ordre[k]; ordre[k]=ordre[j]; ordre[j]=tmp; }
+
+  S("spSec").textContent=(d.i+1)+"/"+d.mots.length;
+  videEl(S("spCorps"));
+  S("spChrono").firstElementChild.style.width=((d.i)/d.mots.length*100)+"%";
+  S("spCorps").appendChild(el("div",{},
+    el("p",{class:"spMot", text:c.mots[src].m}),
+    el("div",{class:"spOpts"},
+      ordre.map(function(o){
+        return el("button",{class:"spOpt", onclick:function(){
+          if(!DUEL) return;
+          var juste=(o===bonne);
+          this.classList.add(juste?"ok":"ko");
+          flash(juste);
+          if(juste){
+            d.combo++;
+            var mult=d.combo>=6?3:(d.combo>=3?2:1);
+            d.score+=mult;
+            MAITRISE[c.ref]=Math.min(5,(MAITRISE[c.ref]||0)+1);
+            S("spScore").textContent=String(d.score);
+            if(mult>1){ S("spCombo").className="on";
+              S("spCombo").innerHTML="combo <b>\u00d7"+mult+"</b>"; }
+          } else { d.combo=0; S("spCombo").className=""; }
+          d.i++;
+          setTimeout(function(){ if(DUEL) questionDuel(); }, juste?200:560);
+        }}, o);
+      })
+    )
+  ));
+}
+function finDuel(){
+  var d=DUEL, ui=langueUI();
+  sauverMaitrise();
+  donnerXP(Math.round(d.score/2), "linguae-duel");
+  var gagne = (d.aBattre!==null && d.score>d.aBattre);
+  var egal  = (d.aBattre!==null && d.score===d.aBattre);
+  var lien=lienDuel(d.graine, d.score);
+  DUEL=null;
+  S("spCombo").className="";
+  videEl(S("spCorps"));
+  S("spCorps").appendChild(el("div",{id:"spAccueil"},
+    el("p",{class:"sur", text: gagne ? (ui==="en"?"You win":"Tu gagnes")
+      : (egal ? (ui==="en"?"Draw":"Match nul")
+      : (d.aBattre!==null ? (ui==="en"?"Beaten":"Battu") : (ui==="en"?"Your score":"Ton score")))}),
+    el("h1",{text: d.aBattre!==null ? (d.score+" \u2013 "+d.aBattre) : String(d.score)}),
+    el("p",{text: d.aBattre!==null
+      ? (ui==="en"?"Send the link back so they can see.":"Renvoie le lien pour qu'il voie le résultat.")
+      : (ui==="en"?"Send this link. Same ten words, same order.":"Envoie ce lien. Les mêmes dix mots, dans le même ordre.")}),
+    el("button",{id:"spGo", onclick:function(){ partagerDuel(lien, d.score); }},
+      ui==="en"?"Challenge someone":"Défier quelqu'un"),
+    el("button",{id:"spGo", class:"encore", onclick:function(){ ouvrirDuel(grainePropre(), null); }},
+      ui==="en"?"New duel":"Nouveau duel"),
+    el("button",{id:"spGo", class:"encore", onclick:fermerSprint},
+      ui==="en"?"Back":"Revenir")
+  ));
+}
+function partagerDuel(lien, score){
+  var txt=T("partageScore",{score:score})+lien;
+  if(navigator.share){
+    navigator.share({ title:NOM_MODULE, text:txt }).catch(function(){});
+    return;
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+      alert(ui==="en"?"Link copied.":"Lien copié.");
+    }).catch(function(){ alert(txt); });
+    return;
+  }
+  alert(txt);
+}
+
+S("spFermer").addEventListener("click", fermerSprint);
+S("bSprint").addEventListener("click", ouvrirSprint);
+
+/* lingo.html#sprint ouvre directement le jeu : c'est le raccourci depuis
+   l'accueil de Hype, pour tomber sur un exercice en deux taps. */
+/* #duel=graine ou #duel=graine-score : on entre directement dans le duel.
+   ⚠️ Écouté aussi sur hashchange : quand on est DÉJÀ sur la page, ouvrir un
+   lien de duel ne change que l'ancre et le script ne se relance pas — sans
+   ça, un frère qui clique le lien depuis Linguae ne voyait rien se passer. */
+function lireAncre(){
+  var m=/^#duel=([a-z0-9]+)(?:-(\d+))?$/.exec(location.hash||"");
+  if(m){
+    S("intro").classList.remove("on"); S("dest").classList.remove("on");
+    S("ouverture").classList.add("parti");
+    if(SP){ fermerSprint(); }
+    ouvrirDuel(m[1], m[2]!==undefined ? parseInt(m[2],10) : null);
+    return true;
+  }
+  if(location.hash==="#sprint"){
+    S("intro").classList.remove("on"); S("dest").classList.remove("on");
+    S("ouverture").classList.add("parti");
+    ouvrirSprint(); return true;
+  }
+  return false;
+}
+window.addEventListener("hashchange", lireAncre);
+if(lireAncre()){
+  /* rien de plus : l'écran de jeu est ouvert */
+} else if(false){
+  S("intro").classList.remove("on");
+  S("dest").classList.remove("on");
+  S("ouverture").classList.add("parti");
+  ouvrirSprint();
+}
+
+S("lcFermer").addEventListener("click", fermerLecon);
+
+
+/* ==================================================================
+   LES DESTINATIONS. Le voyage 1 est le seul ouvert : le vocabulaire des
+   six langues est déjà écrit, c'est le voyage (villes, images, vidéos)
+   qui reste à construire pour les cinq autres.
+   ================================================================== */
+var DESTINATIONS = [
+  { cle:"iles",     dr:"\uD83C\uDFF4", lg:"en", ouvert:true,
+    nom:{fr:"Les Îles", en:"The Isles", es:"Las Islas", it:"Le Isole", de:"Die Inseln", ja:"島々"},
+    d:{fr:"Angleterre, Irlande, pays de Galles, Écosse — l'anglais des écuries.",
+       en:"England, Ireland, Wales, Scotland — the English of the yard.",
+       es:"Inglaterra, Irlanda, Gales, Escocia: el inglés de las cuadras.",
+       it:"Inghilterra, Irlanda, Galles, Scozia: l'inglese delle scuderie.",
+       de:"England, Irland, Wales, Schottland — das Englisch der Stallgasse.",
+       ja:"イングランド、アイルランド、ウェールズ、スコットランド。厩舎の英語。"} },
+  { cle:"peninsule",dr:"\uD83C\uDDEA\uD83C\uDDF8", lg:"es", ouvert:false,
+    nom:{fr:"La Péninsule", en:"The Peninsula", es:"La Península", it:"La Penisola", de:"Die Halbinsel", ja:"半島"},
+    d:{fr:"Andalousie, Jerez, Lisbonne — l'espagnol et le portugais du dressage classique.",
+       en:"Andalusia, Jerez, Lisbon — the Spanish and Portuguese of classical dressage.",
+       es:"Andalucía, Jerez, Lisboa: el español y el portugués de la doma clásica.",
+       it:"Andalusia, Jerez, Lisbona: lo spagnolo e il portoghese del dressage classico.",
+       de:"Andalusien, Jerez, Lissabon — das Spanisch und Portugiesisch der klassischen Reitkunst.",
+       ja:"アンダルシア、ヘレス、リスボン。古典馬術のスペイン語とポルトガル語。"} },
+  { cle:"botte",    dr:"\uD83C\uDDEE\uD83C\uDDF9", lg:"it", ouvert:false,
+    nom:{fr:"La Botte", en:"The Boot", es:"La Bota", it:"Lo Stivale", de:"Der Stiefel", ja:"ブーツの国"},
+    d:{fr:"Toscane, Rome, les Marches — l'italien du saut d'obstacles.",
+       en:"Tuscany, Rome, the Marches — the Italian of showjumping.",
+       es:"Toscana, Roma, las Marcas: el italiano del salto de obstáculos.",
+       it:"Toscana, Roma, le Marche: l'italiano del salto ostacoli.",
+       de:"Toskana, Rom, die Marken — das Italienisch des Springreitens.",
+       ja:"トスカーナ、ローマ、マルケ。障害飛越のイタリア語。"} },
+  { cle:"rhin",     dr:"\uD83C\uDDE9\uD83C\uDDEA", lg:"de", ouvert:false,
+    nom:{fr:"Le Rhin", en:"The Rhine", es:"El Rin", it:"Il Reno", de:"Der Rhein", ja:"ライン"},
+    d:{fr:"Warendorf, Hanovre, Aix-la-Chapelle — l'allemand de l'élevage et du dressage.",
+       en:"Warendorf, Hanover, Aachen — the German of breeding and dressage.",
+       es:"Warendorf, Hannover, Aquisgrán: el alemán de la cría y de la doma.",
+       it:"Warendorf, Hannover, Aquisgrana: il tedesco dell'allevamento e del dressage.",
+       de:"Warendorf, Hannover, Aachen — das Deutsch der Zucht und der Dressur.",
+       ja:"ヴァレンドルフ、ハノーファー、アーヘン。生産と馬場馬術のドイツ語。"} },
+  { cle:"archipel", dr:"\uD83C\uDDEF\uD83C\uDDF5", lg:"ja", ouvert:false,
+    nom:{fr:"L'Archipel", en:"The Archipelago", es:"El Archipiélago", it:"L'Arcipelago", de:"Der Archipel", ja:"列島"},
+    d:{fr:"Hokkaido, Tokyo — le japonais des centres équestres.",
+       en:"Hokkaido, Tokyo — the Japanese of the riding centre.",
+       es:"Hokkaido, Tokio: el japonés de los centros ecuestres.",
+       it:"Hokkaido, Tokyo: il giapponese dei centri equestri.",
+       de:"Hokkaido, Tokio — das Japanisch der Reitzentren.",
+       ja:"北海道、東京。乗馬クラブの日本語。"} },
+  { cle:"lexique",  dr:"\u2726", lg:"fr", ouvert:false,
+    nom:{fr:"Le Lexique français", en:"The French Glossary", es:"El Léxico francés",
+         it:"Il Lessico francese", de:"Das französische Lexikon", ja:"フランス語の用語集"},
+    d:{fr:"Le jargon de la FFE expliqué simplement, pour débuter en français.",
+       en:"FFE jargon explained simply, to start out in French.",
+       es:"La jerga de la FFE explicada de forma sencilla, para empezar en francés.",
+       it:"Il gergo della FFE spiegato in modo semplice, per iniziare in francese.",
+       de:"Der Fachjargon der FFE einfach erklärt, für den Anfang auf Französisch.",
+       ja:"FFEの専門用語をやさしく解説。フランス語の入口。"} }
+];
+
+function montrerIntro(){ S("intro").classList.add("on"); S("intro").scrollTop=0; }
+function montrerDest(){
+  S("intro").classList.remove("on");
+  S("dest").classList.add("on"); S("dest").scrollTop=0;
+  var b=S("dsListe"); videEl(b);
+  DESTINATIONS.forEach(function(D){
+    b.appendChild(el("button",{class:"ds"+(D.ouvert?" ouvert":""), onclick:function(){
+      if(!D.ouvert) return;
+      VOYAGE_LANGUE = D.lg;
+      S("dest").classList.remove("on");
+      try{ localStorage.setItem("hype_lingua_voyage", D.cle); }catch(e){}
+      /* Le chemin ayant disparu, c'est le globe qui accueille : on choisit
+         sa langue, puis on voit le monde. Un temps de respiration pour que
+         l'écran de destination ait fini de se refermer. */
+      setTimeout(ouvrirGlobe, 380);
+    }},
+      el("span",{class:"dr", text:D.dr}),
+      el("span",{class:"dd"}, el("b",{text:tx(D.nom)}), el("i",{text:tx(D.d)})),
+      el("span",{class:"dg", text: T(D.ouvert ? "partirDs" : "bientot")})
+    ));
+  });
+}
+S("inSuite").addEventListener("click", montrerDest);
+S("dsRetour").addEventListener("click", function(){
+  S("dest").classList.remove("on"); montrerIntro();
+});
+
+/* La présentation ne se voit qu'une fois. Le choix de destination reste
+   accessible par le bouton de retour du carnet de route. */
+(function(){
+  /* tout raccourci de jeu passe devant : on vient jouer, pas lire.
+     Le garde-fou ne testait que #sprint — avec #duel=… la présentation
+     se réaffichait PAR-DESSUS le duel et interceptait les taps. */
+  var h=location.hash||"";
+  if(h==="#sprint" || h.indexOf("#duel=")===0) return;
+  var vu=false;
+  try{ vu = localStorage.getItem("hype_lingua_intro")==="1"; }catch(e){}
+  if(!vu){
+    montrerIntro();
+    try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
+  }
+})();
+
+/* Tout est défini : on redemande un rendu du chemin pour que le bouton
+   affiche le décompte de mots (au premier passage, les tables du moteur
+   de leçon n'existaient pas encore). */
+lastI=-1;
+
+/* ---------- revenir en arrière ----------
+   Il n'y avait aucune sortie : une fois sur le chemin, on était coincé.
+   Le bouton rouvre le carnet de route. Quand Lingo sera embarqué dans
+   Hype, c'est ici qu'on appellera HYPE_LINGO_HOST.quitter(). */
+S("retour").addEventListener("click", function(){
+  if(S("lecon").classList.contains("on")){ fermerLecon(); return; }
+  if(S("arrivee").classList.contains("ouvert")){ fermerArrivee(); return; }
+  S("ouvFilm").classList.remove("joue","fini");
+  S("ouverture").classList.remove("joue","parti");
+  S("ouverture").scrollTop=0;
+  S("ouverture").scrollTop=0;
+});
+
+/* le bouton matériel « retour » du téléphone et le geste de balayage */
+window.addEventListener("popstate", function(){
+  if(S("lecon").classList.contains("on")) fermerLecon();
+  else if(S("arrivee").classList.contains("ouvert")) fermerArrivee();
+});
+
+
+/* le bouton de l'écran d'arrivée ouvre enfin la leçon */
+S("arrJouer").addEventListener("click",function(){
+  var ref=ETAPES[courant].ref;
+  fermerArrivee();
+  setTimeout(function(){ ouvrirLecon(ref); },260);
+});
+S("arrPartir").addEventListener("click",function(){ fermerArrivee(); setTimeout(lancerDepart,240); });
+
+/* ==================================================================
+   OUVERTURE : la séquence complète, jouée UNE SEULE FOIS.
+   Étoiles, tracé, Îles, puis l'arrivée à Newmarket d'un seul tenant.
+   Elle ne démarre qu'au tap sur « Partir » : iOS refuse de lancer une
+   vidéo sans geste préalable.
+   ================================================================== */
+/* L'ouverture rejoue à CHAQUE fois qu'on appuie sur Partir : c'est elle
+   qui contient les constellations, le tracé et les Îles qui s'illuminent.
+   Elle ne se voyait qu'une seule fois, donc plus jamais après le premier
+   lancement. Le bouton « Passer » reste là pour qui la connaît. */
+(function(){
+  var v=S("ouvVid");
+  S("ouvPartir").addEventListener("click",function(){
+    v.src="ouverture.mp4";
+    v.addEventListener("error",terminerOuverture);
+    v.addEventListener("ended",function(){ S("ouvFilm").classList.add("fini"); });
+    ajusterCadrage(v);
+    S("ouvFilm").classList.add("joue");
+    S("ouverture").classList.add("joue");
+    var j=v.play(); if(j&&j.catch) j.catch(terminerOuverture);
+    /* filet de sécurité : si la vidéo manque, on n'enferme personne.
+       Le bouton de sortie apparaît au bout de 2 s quoi qu'il arrive. */
+    setTimeout(function(){ S("ouvFilm").classList.add("fini"); }, 2000);
+  });
+  S("ouvPasser").addEventListener("click",terminerOuverture);
+  S("ouvSuite").addEventListener("click",terminerOuverture);
+})();
+function terminerOuverture(){
+  var v=S("ouvVid");
+  try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){}
+  S("ouvFilm").classList.remove("joue","fini");
+  S("ouverture").classList.add("parti");
+}
+
+/* ==================================================================
+   DÉPART : une seule séquence, réutilisée pour les dix villes.
+   ================================================================== */
+var vidDepart=null;
+function lancerDepart(){
+  var e=ETAPES[courant];
+  S("dpVille").textContent=eV(e).toUpperCase();
+  S("dpNation").textContent=eNat(e);
+  S("dpTitre").textContent=T("tamponObtenu");
+  S("dpSous").textContent = (courant+1<10) ? T("prochaineEtape",{v:eV(ETAPES[courant+1])})
+                                           : T("voyageTermine");
+  vidDepart=document.createElement("video");
+  vidDepart.muted=true; vidDepart.loop=true; vidDepart.autoplay=true;
+  vidDepart.setAttribute("playsinline",""); vidDepart.setAttribute("webkit-playsinline","");
+  vidDepart.src="depart.mp4";
+  vidDepart.addEventListener("error",function(){ if(vidDepart&&vidDepart.parentNode)
+    vidDepart.parentNode.removeChild(vidDepart); });
+  S("depart").insertBefore(vidDepart, S("depart").firstChild);
+  ajusterCadrage(vidDepart);
+  var j=vidDepart.play(); if(j&&j.catch) j.catch(function(){});
+  S("depart").classList.add("on");
+}
+function finDepart(){
+  S("depart").classList.remove("on");
+  if(vidDepart){ try{ vidDepart.pause(); vidDepart.removeAttribute("src"); vidDepart.load(); }catch(err){}
+    if(vidDepart.parentNode) vidDepart.parentNode.removeChild(vidDepart); vidDepart=null; }
+  if(courant===FAITS && FAITS<10){
+    FAITS++; S("bApercu").textContent=FAITS+" / "+ETAPES.length;
+    dessinerTrace(); dessinerJalons(); lastI=-1;
+    if(courant+1<10) rail.scrollTo({left:(courant+1)*W, behavior:"smooth"});
+  }
+}
+S("dpSuite").addEventListener("click",finDepart);
+S("dpPasser").addEventListener("click",finDepart);
+
+/* Au démarrage : on remplit les écrans statiques dans la langue de l'interface.
+   Appelé en dernier, quand DESTINATIONS et les écrans existent. */
+try{ appliquerLangue(); }catch(err){}
+</script>
+</body>
+</html>

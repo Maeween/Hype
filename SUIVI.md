@@ -10,55 +10,38 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 05/08/2026 (session 90) — Vidéo d'accueil verticale, Lamotte masqué, quête philosophie réparée — md5 `d744dac5f75a1299c5d616ce61ff7203`, 10 499 969 octets. Part du fichier fourni par Blandine `70a0c0d1` (9 791 253 o).**
+**Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
-## 🎬 SESSION 90 (05/08) — VIDÉO D'ACCUEIL, LAMOTTE, QUÊTE PHILOSOPHIE
+## 🎚️ SESSION 90 (05/08) — LE CHEMIN EST RETIRÉ, LES NIVEAUX DE DIFFICULTÉ ARRIVENT
 
-**Page codeuse unique sur l'index.** Part du fichier fourni par Blandine `70a0c0d1` (9 791 253 o) → sortie **`d744dac5f75a1299c5d616ce61ff7203`** (10 499 969 o).
-Livrés : `index.html`, `hype-accueil-video.mp4` (nouveau), `hype-accueil-poster.jpg` (nouveau).
+### 🔴 Retour de test de Blandine : le chapitre 1 était trop dur
+Elle a joué Newmarket **en parlant très bien anglais** et l'a trouvé difficile : trop de phrases, et surtout **trop de vocal**. Les chiffres lui donnaient raison.
+**Ce que le code faisait vraiment** : `exercicePour` tirait uniformément dans `["ecoute","ecrire","dire","choix"]` dès 2 points de maîtrise — soit **le micro une fois sur quatre, cinq fois par leçon**. Or la décision du 4 août disait l'inverse : le vocal n'est plus le mode par défaut, le micro est un bouton secondaire. **Cette décision n'était pas dans le code.** Et les phrases à remettre en ordre tombaient **dès la première vague de trois mots**, y compris sur le chapitre offert.
 
-### 🔴 ALERTE — NE PAS DÉPLOYER LE `lingo.html` DE CETTE SESSION
-Blandine a fourni en cours de session un `lingo.html` de **77 495 octets**. La session 89 a produit un fichier de **186 511 octets** (globe, 18 villes). Le fichier fourni était donc **une branche bien antérieure**, et le `lingo.html` livré ici (md5 `b89224276434e9746d36a4ee2d11c384`, renommage « Hype Lingua ») **régresserait massivement** : perte du globe, des 8 villes ajoutées et des correctifs du bug bloquant.
-⚠️ **Ce fichier est à jeter.** Le renommage éventuel du module doit être réappliqué sur la version 186 Ko, et il ne représente que 2 lignes (`<title>` et `<p class="sur">`).
+### ✅ Trois niveaux, portés par la VILLE
+Table `NIVEAU_VILLE` + `niveauVille(ref)`. Le champ `niveau` posé le matin dans la répartition sert enfin.
+- **1 · nommer** — reconnaître, écouter, écrire. **Aucune phrase, aucun vocal imposé.** newmarket, lambourn, connemara, walsall, aberystwyth, kildare, jerez, vejer.
+- **2 · situer** — les phrases entrent, une par vague. hickstead, badminton, windsor, seville, oliva, warendorf, aachen, lamotte.
+- **3 · dire** — le vocal entre dans le tirage. saumur, edimbourg.
+✅ **Mesuré sur 200 leçons simulées par ville** : niveau 1 → 0 % de phrase, 0 % de vocal · niveau 2 → 12 à 17 % de phrases, 0 % de vocal · niveau 3 → 11 à 12 % de vocal. Le micro reste **proposé** sur l'exercice d'écoute partout, jamais imposé.
+⚠️ Saumur affiche 0 % de phrases parce qu'elle n'en a aucune (trou de contenu déjà noté).
 
-### ✅ La vidéo de la bannière d'accueil
-Blandine a fourni un `.mov` **HEVC 480×854, 5,1 s, 1,89 Mo**. Deux problèmes : le HEVC n'est lu **que par Safari**, et le `.mov` n'est pas un format web.
-**Transcodé en H.264/MP4, yuv420p, CRF 24, `+faststart`, piste audio supprimée → 324 Ko** (÷5,8). Poster JPEG extrait de la première frame pour éviter le flash noir.
-- La source du `<video>` du `<header className="hero">` passe à `hype-accueil-video.mp4`.
-- ⚠️ **`hype-anim-cheval.mp4` est conservé et toujours utilisé** par la carte Grand Prix (ligne ~31187). C'est pourquoi le nouveau fichier porte un nom distinct au lieu d'écraser l'ancien : une vidéo verticale casserait cette carte. **3 occurrences de `hype-anim-cheval.mp4` doivent rester dans l'index.**
-- **Hauteur plafonnée à 66vh** (demande : « max les 2/3 de l'écran »), avec `width: auto`, `maxWidth: 100%`, `margin: 0 auto`. Les deux contraintes s'appliquent, le format natif est conservé : vidéo **entière, dézoomée, centrée**, aucun rognage, aucune bande noire dans l'image. Sans ce plafond, un 9:16 en `width:100%` donnait ~690 px de haut sur un iPhone de 390 px.
+### ✅ Le chemin côtier est retiré de l'écran (décision de Blandine)
+« Il détonne vraiment avec le reste maintenant. » Le globe devient la seule navigation.
+- **`#rail`, `#hud`, `#outils`, `#bas` passent en `opacity:0 / visibility:hidden`** — ⚠️ **PAS en `display:none` et PAS supprimés du DOM** : `mesurer()` lit la largeur d'une station pour calculer `W`, et `affiner()`/`rendu()` divisent par `W`. Un `display:none` mettrait W à 0 et produirait des NaN silencieux. Vérifié après coup : **W = 304 px**, intact.
+- **« Partir » sur le globe ouvre directement l'ARRIVÉE** (`ouvrirArrivee`) : vidéo, carte postale, lettre, souvenir, puis la leçon. C'est ce que le rail faisait, en un geste au lieu d'un glissement à l'aveugle.
+- **Le globe devient l'accueil** : après le choix de la langue, il s'ouvre seul (380 ms de respiration pour laisser l'écran de destination se refermer).
+✅ Enchaînement complet vérifié en rendu réel : intro → clic Continuer → choix de la langue → globe ouvert seul → fiche Newmarket → Partir → **écran d'arrivée sur Newmarket**. 0 erreur.
+⚠️ **Le code du chemin est toujours là**, seulement invisible. Sa suppression franche est un nettoyage à part, à faire quand plus rien ne le lira.
 
-### ✅ Lamotte retiré de l'accueil
-`AFFICHER_ACTU_LAMOTTE = false`, nouvelle constante. **Rien n'est supprimé** : la carte est intacte dans le fichier, repasser à `true` la fait revenir.
-⚠️ **Le titre de section « L'actualité » est masqué avec elle** : la section ne contenait QUE cette carte, l'intitulé serait resté seul au-dessus de rien.
+### ⚠️ Reste à faire
+- **Le choix libre en fin de chapitre** (rester au pays / suivre le sujet / le globe) : **pas encore codé**. Les deux fils se déduisent tout seuls — même `nat` pour le pays, même fichier de lexique pour la thématique — donc aucune table à maintenir. Décision de Blandine : **proposer les candidates et laisser le joueur trancher**, et **masquer le bouton quand le fil n'existe pas** (Aberystwyth et Édimbourg sont seules dans leur nation ; le poney n'existe qu'à Lamotte).
+- Les trous de contenu : **Saumur sans phrase**, Vejer avec deux.
+- Homogénéiser les vidéos (6 sur 8 ni en 9:16 exact ni à la même durée).
+- Relecture native des 220 mots + les 4 du poney.
+- Les récits courts (pris ailleurs par Blandine) et la carte d'entrée dans `index.html`.
 
-### ✅ Quête « Écris la philosophie de ton écurie » — diagnostic et correctif
-Blandine signalait une quête **qui redemandait une chose déjà faite** et **ne se mettait pas à jour**.
-**Cause trouvée dans `TableauxSpectralHype`** : la sauvegarde appelle bien `majProfil({ecurie_voix: …})`, mais ne mettait à jour que son **état local** (`setProf`). Le `profil` du contexte applicatif restait périmé, or la condition de la quête est `fait: ctx.profil.ecurie_voix`. La quête restait donc affichée indéfiniment.
-**Second problème : l'échec était totalement muet** — `.catch(function () { })` vide. Si la colonne n'existait pas en base, rien ne le signalait.
-**Correctif appliqué sur les deux champs (`champVoix` et `champHistoire`)** :
-- rafraîchissement de `ctx.setProfil` après enregistrement réussi → la quête disparaît immédiatement, sans rechargement ;
-- `console.warn` avec l'erreur au lieu du catch vide.
-**SQL passé par Blandine pendant la session** (idempotent) : `alter table profiles add column if not exists ecurie_voix text;` et `ecurie_histoire text;`. ⚠️ Avec `if not exists`, le « Success » ne dit **pas** si les colonnes manquaient. Si elles manquaient, le texte précédent n'a jamais été enregistré et doit être réécrit une fois.
-
-### ✅ Quêtes en double sur l'accueil — déjà corrigé, à ne pas refaire
-Blandine voyait la même quête en haut (`BandeauSuiteHype`, `liste[0]`) et en bas (`BlocProchainesQuetes`). **Le fichier fourni contenait déjà `slice(1, 4)`** : le correctif avait été appliqué par une session antérieure. Le doublon venait de la **version déployée**, pas du code. Ce déploiement le règle.
-
-### 📌 Constaté dans l'index, non modifié
-L'encart **« Hype Linguae »** (240 px, fond `lingo-accueil.webp`) et le bouton **« Le Sprint · 60 secondes »** vers `lingo.html#sprint` sont **déjà en place**, datés du 04/08.
-⚠️ **`lingo.html#sprint` ne mène nulle part** dans la version fournie : le mot « sprint » y apparaît **0 fois**. À vérifier contre la version 186 Ko.
-⚠️ **`lingo-accueil.webp`** est appelé par l'encart — vérifier sa présence au dépôt, sinon fond noir uni.
-⚠️ **Nom du module non tranché.** Blandine a écarté « Hype Lingua » (« ça me choque »), hésité sur « Linguae ». Décision de séance : **on garde « Linguae » tel qu'il est dans l'index**, à revoir plus tard. Pistes évoquées et non retenues : Le Carnet, La Traversée, Koinē, Passus, Iter.
-
-### ✅ Vérifications de livraison
-907 fonctions top-level identiques dans les deux sens · 390 `const` inchangés · **un seul `var` de plus** (`AFFICHER_ACTU_LAMOTTE`) · `allerVersGalop` = **3 occurrences** · **15 blocs `<script>` inline validés** par `node --check` · contrôles ciblés sur chaque marqueur inséré.
-
-### 🔴 Laissé ouvert, avec diagnostic
-- **Compression photo — le chantier le plus rentable qui reste.** Cause racine de la lenteur à l'ajout de photo, des crashs mémoire iOS **et** désormais d'un coût réel : Blandine est passée en **Supabase Pro** (8 Go base, 100 Go fichiers, 250 Go egress, puis 0,09 $/Go — 0,03 $/Go si mis en cache). Une photo de 4 Mo servie 1 000 fois = 4 Go. Cible : redimensionner à ~1200 px, JPEG 0,8, avec gestion de l'orientation EXIF. **La surveillance de quota du 14 août n'a plus d'objet.**
-- **Décalage horizontal après la visionneuse photo.** Toute la page part vers la gauche à la fermeture (titre débordant, onglets coupés). Hypothèse : `scrollLeft` non remis à zéro — iOS Safari le conserve, contrairement aux navigateurs de bureau. **Test à faire par Blandine avant tout code** : sur l'écran cassé, glisser vers la droite ; si tout se remet en place, l'hypothèse est confirmée et le correctif tient en deux lignes à la fermeture.
-- **Vidéos de Linguae en format panoramique.** `ajusterCadrage()` met `object-fit: contain` dès qu'une vidéo est plus large que haute → bande horizontale avec du noir. Rien à corriger dans le code : il suffit que les fichiers soient **verticaux**. Priorité : `ouverture.mp4`, puis `depart.mp4` (un seul fichier répare 10 écrans), puis les arrivées déjà produites. Format cible **720×1280, MP4 H.264, muette, sans texte**, 3 s pour les arrivées.
-- **Chapitre 10 de Linguae (Les dialogues, Édimbourg)** — pas écrit. Périmètre arbitré : **situations pratiques** (réserver une reprise, se présenter, dire son niveau, demander un cheval calme, payer, remercier), pas de la révision. Structure arbitrée : garder `concepts` + `phrases`, ajouter deux champs **optionnels** `scene` et `role` — additif, aucun changement obligatoire du moteur. Registre arbitré : **vouvoiement** et forme polie japonaise, et on en fait du contenu (en japonais le registre décide de la réponse obtenue). Reste **Premium**, le freemium n'est pas rouvert.
-- **Hey Baby depuis Linguae** — idée validée par Blandine : inviter à poser ses questions dans sa langue. Trois paramètres à transmettre : **langue d'interface** (elle donne le pays sans rien détecter), **langue cible du voyage**, **chapitre en cours**. Règle : répondre **dans la langue de la question**, pas celle de l'interface, et toujours donner le terme dans la langue cible. Blocage : `HYPE_LINGO_HOST` n'existe pas dans le code. Option simple : appeler directement `assistant.js` sans toucher à `index.html`.
+---
 
 ## 🌍 SESSION 89 (05/08) — LE GLOBE, LES 18 VILLES, ET UN BUG BLOQUANT DÉCOUVERT
 
@@ -109,7 +92,20 @@ Nouveau fichier **`hype-lingo-villes-monde.js`** (50 Ko). Il **complète** `hype
 ⚠️ **Les volets deviennent traduisibles** : les 10 premières villes portent des chaînes, les 8 nouvelles un objet par langue. `tx()` accepte les deux, donc **rien à migrer** dans le fichier existant. Deux lignes changées dans l'affichage des dépliants.
 ✅ Vérifié en rendu réel : la **lettre suit la langue étudiée** (elle est écrite dans la langue qu'on apprend) et les **volets suivent la langue d'interface** — testé fr/en/de/ja sur Saumur et Warendorf, correct dans les quatre.
 
-### ⚠️ Reste à faire Les 8 neuves n'ont donc **ni lettre au verso de la carte postale, ni volets « Prolonge ton voyage »** — les textes existent, traduits en 6 langues, dans `hype-linguae-villes-nouvelles.md`, mais **ne sont pas dans le fichier**. Le fichier n'a jamais été fourni à cette page : **à envoyer pour que je l'injecte.**
+### ✅ LE GLOBE DE HYPE EST GREFFÉ (demande de Blandine)
+Le globe sobre écrit d'abord est **remplacé** par le vrai globe de l'app. `GLOBE_HTML_HYPE` extrait et décodé depuis `index.html` (98 Ko) — **identique dans les deux index reçus aujourd'hui**, rien n'avait bougé.
+**Le moteur est conservé intégralement** : cycle jour/nuit calculé sur l'heure réelle, halo d'atmosphère, lueur directionnelle du soleil, deux couches d'étoiles scintillantes, particules de sillage qui s'étirent quand on tourne le globe, `flyTo`, zoom, recherche. **Seules les DONNÉES changent** : les clubs deviennent les 18 destinations.
+- `type` porte l'état : **F** faite (or) · **O** ouverte (turquoise) · **D** à découvrir (gris) · **X** le départ.
+- `moi:true` sur le départ : le moteur le centre et l'entoure d'or — exactement ce qu'on voulait pour l'écurie du joueur.
+- `mem` détourné pour piloter la taille du point : une étape faite se voit de plus loin.
+- **Les arcs ne relient plus les clubs voisins** mais partent du départ vers chaque étape faite. `recalculerArcs()` à chaque état reçu.
+- Filtres rhabillés : Tout · Faites · Ouvertes · À découvrir. Titre « LE TOUR DU MONDE », animation lettre par lettre conservée. Recherche « Chercher une destination ».
+- Fiche nettoyée de ce qui appartenait aux clubs : plus de GPS, plus de « membres Hype », plus de téléphone. Reste la distance depuis le départ (« à 253 km de Paris »), le pays et le chapitre.
+- **Bouton contextuel** : « Partir » si ouverte, « Y retourner » si faite, **désactivé** si pas encore ouverte — un bouton qui ne fait rien enferme.
+✅ Vérifié en rendu réel : 19 points, états appliqués, arcs recalculés, `flyTo` vers Saumur, fiche correcte, **message `{t:"linguae-dest", ref:"saumur"}` réellement émis au clic**, bouton désactivé sur une étape fermée, et le tout fonctionne dans l'iframe depuis `lingo.html`. 0 erreur.
+⚠️ `lingo-globe.html` passe de 40 à 83 Ko. Le fichier sobre est abandonné.
+
+### ⚠️ Reste à faire
 - **Le chemin côtier est encore là**, fonctionnel mais condamné. Le bouton « Le globe » est la nouvelle entrée. Le retirer est un chantier à part.
 - **Le choix libre en fin de chapitre** (3 sorties : rester au pays / suivre le sujet / le globe) : préparé dans `hype-linguae-repartition-v2.md`, pas codé.
 - **Titre clair ou sombre selon la ville** : 15 cartes sur 18 ont un tiers haut au-dessus de 100 de luminance. Le titre sombre devient la règle, pas l'exception. Pas codé.
