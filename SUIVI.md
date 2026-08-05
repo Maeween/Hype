@@ -34,9 +34,27 @@ Table `NIVEAU_VILLE` + `niveauVille(ref)`. Le champ `niveau` posé le matin dans
 ✅ Enchaînement complet vérifié en rendu réel : intro → clic Continuer → choix de la langue → globe ouvert seul → fiche Newmarket → Partir → **écran d'arrivée sur Newmarket**. 0 erreur.
 ⚠️ **Le code du chemin est toujours là**, seulement invisible. Sa suppression franche est un nettoyage à part, à faire quand plus rien ne le lira.
 
-### ⚠️ Reste à faire
-- **Le choix libre en fin de chapitre** (rester au pays / suivre le sujet / le globe) : **pas encore codé**. Les deux fils se déduisent tout seuls — même `nat` pour le pays, même fichier de lexique pour la thématique — donc aucune table à maintenir. Décision de Blandine : **proposer les candidates et laisser le joueur trancher**, et **masquer le bouton quand le fil n'existe pas** (Aberystwyth et Édimbourg sont seules dans leur nation ; le poney n'existe qu'à Lamotte).
-- Les trous de contenu : **Saumur sans phrase**, Vejer avec deux.
+### ✅ LE CHOIX LIBRE EN FIN DE CHAPITRE EST CODÉ
+Trois sorties, affichées **seulement quand le chapitre est terminé** (`et.fini`) : **Rester en {nation}** · **Suivre {le sujet}** · **Choisir sur le globe**. Chaque candidate est un bouton portant le nom de la ville et son chapitre ; le joueur tranche (décision de Blandine), on ne choisit pas pour lui.
+⚠️ **Aucune table à maintenir** : `filsDeSortie(ref)` déduit tout de l'existant — même pays = même `nat` dans `ETAPES`, même sujet = au moins un fichier de lexique commun dans `ETAPE_SRC`. Ajouter une ville fait apparaître ses fils sans y toucher.
+⚠️ **Deux garde-fous** : on n'affiche que des villes **accessibles** (`k <= FAITS`) et **pas encore faites** — sinon le fil du dressage renvoie Windsor vers Saumur puis Saumur vers Windsor en boucle. Trois candidates au maximum par fil (« proposer, pas étaler »). **Un fil sans candidate ne s'affiche pas.**
+✅ Vérifié sur 8 villes : Newmarket → 3 anglaises + Vejer (écurie) · Windsor → 3 anglaises + Saumur (dressage) · **Aberystwyth et Édimbourg n'ont aucun fil « pays » et le bouton disparaît bien** · Lamotte → Saumur + Kildare et Édimbourg par les urgences. Rendu réel contrôlé en capture.
+
+### 🔴 TROISIÈME COLLISION DE NOM DU PROJET
+Mes blocs s'appelaient `.lcFil` — **`.lcFil` existait déjà ligne 457** : c'est le filet de séparation de **32 × 1 px**. Mes conteneurs héritaient donc de sa largeur et de sa hauteur, et toute la fin de chapitre se chevauchait à l'écran. Repéré en mesurant les `getBoundingClientRect` des enfants (w=32, h=1), pas à l'œil. Renommé `.lcSortie` / `.lcSortieT` / `.lcSortieV`.
+⚠️ Après `melange`→`brasser` et `.cv`→`.chc`, c'est la **troisième fois**. La règle du document de passation est juste et je ne l'ai pas appliquée : **chercher le nom AVANT de le créer.**
+⚠️ Corollaire : le titre du sujet venait d'abord de `COLL_NOM`, qui est indexé par **collection** et non par **fichier** — le libellé sortait vide (« Suivre  »). C'est `HYPE_LINGO_LEX[fichier].titre` qu'il faut lire.
+
+### ⚠️ Reste à faire Les deux fils se déduisent tout seuls — même `nat` pour le pays, même fichier de lexique pour la thématique — donc aucune table à maintenir. Décision de Blandine : **proposer les candidates et laisser le joueur trancher**, et **masquer le bouton quand le fil n'existe pas** (Aberystwyth et Édimbourg sont seules dans leur nation ; le poney n'existe qu'à Lamotte).
+- ~~Les trous de contenu : Saumur sans phrase, Vejer avec deux.~~ **RÉGLÉ, voir ci-dessous.**
+
+### ✅ Les trous de phrases sont comblés
+Nouveau fichier **`hype-lingo-phrases-monde.js`**. **La cause** : les phrases sont rangées par leçon dans leur fichier d'origine, et la v2 ne donne pas les mêmes leçons aux mêmes villes. `dressage` n'avait de phrases qu'en **leçons 1 et 4** — or Saumur prend les **leçons 2 et 3**, donc zéro. C'est la ville de niveau 3, celle du palier « dire » : **son niveau était creux.** `ecurie` n'en avait qu'une par leçon → Vejer n'en avait que deux.
+**10 phrases écrites dans les 6 langues** : 6 pour le dressage (cession à la jambe, épaule en dedans, passage, décontraction, rassembler, légèreté) et 4 pour l'écurie (paille, brouette, ration, ordre foin/granulés).
+⚠️ **Additif, n'écrase rien** : le fichier pousse dans `phrases` du chapitre et **refuse tout `ref` déjà présent**. Vérifié en rechargeant le script deux fois → toujours 6 phrases pour Saumur, aucun doublon. Aucun fichier de lexique modifié.
+⚠️ **Style à respecter pour toute phrase future** : espace avant le point d'interrogation, et **le japonais s'écrit AVEC des espaces** entre les groupes — ce n'est pas une coquille, l'exercice consiste à remettre des morceaux dans l'ordre et sans espaces il n'y a rien à déplacer.
+✅ Après ajout : Saumur 20 mots / **6 phrases** (17 % de la leçon), Vejer 21 / 6.
+⚠️ **Les 10 phrases n'ont pas été relues par un natif** — à ajouter à `hype-linguae-doutes.md`, allemand et japonais en priorité.
 - Homogénéiser les vidéos (6 sur 8 ni en 9:16 exact ni à la même durée).
 - Relecture native des 220 mots + les 4 du poney.
 - Les récits courts (pris ailleurs par Blandine) et la carte d'entrée dans `index.html`.
