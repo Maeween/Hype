@@ -12,6 +12,48 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🌊 SESSION 94 (06/08) — LA BAULE EN ÉTAPE 1, ET LA SÉCURITÉ ENFIN ÉCRITE
+
+### 🔴 La sécurité n'existait NULLE PART dans les 378 mots
+On savait dire « la fourche » et « le coefficient », **pas « ne passe pas derrière lui »**. Pour une application qui enseigne à des débutants, c'était le trou le plus sérieux du lexique. Réparé.
+
+### ✅ Nouveau chapitre `hype-lingo-lex-arrivee.js` — 23 concepts, 6 phrases, 6 langues
+Deux collections :
+- **`inscrire`** (12) — réserver, le cours particulier, le cours collectif, le niveau, débutant, le tarif, l'assurance, la bombe est fournie, un cheval calme, la balade, une heure de cours, annuler.
+- **`securite`** (11) — passer devant, ne passe pas derrière, préviens-le avant de le toucher, n'enroule pas la longe, garde tes distances, attention, tiens-le, lâche, attache ta bombe, des chaussures fermées, ne bouge pas.
+✅ Vérifié par exécution : 23 concepts (12 + 11), 6 phrases, **aucune langue manquante sur aucune entrée**.
+⚠️ Les définitions portent les pièges réels : les **échelles de niveau ne se traduisent pas** (un Galop 4 ne veut rien dire ailleurs — dire ce qu'on sait faire, pas son diplôme) · en club britannique on dit **« hat »** et non « helmet », **« mind out »** et non « attention » · une **Reitstunde** allemande fait souvent 45 minutes et non 60 · l'assurance fédérale **ne couvre pas forcément à l'étranger**.
+⚠️ **Aucun de ces 29 items n'a été relu par un natif** — à ajouter à `hype-linguae-doutes.md`.
+
+### ✅ La Baule est l'étape 1
+Décidé par Blandine après test : commencer par l'écurie « n'est pas vendeur de rêve », et surtout ce n'est pas ce qu'un cavalier vit d'abord. **Deauville a d'abord été retenue, puis remplacée par La Baule** — le Jumping international se court les pieds dans l'eau et la plage fait neuf kilomètres.
+**Newmarket recule d'un cran.** `ETAPES` passe à **19**, `ETAPE_SRC`, `NIVEAU_VILLE`, `ACCUEIL_VILLE`, `POURQUOI` et `ETAPES_I18N` complétés, et la ville est ajoutée au globe (lat 47.2861, lng −2.3931).
+✅ Vérifié en rendu : 19 étapes, La Baule première, ses deux leçons « S'inscrire » et « La sécurité » s'ouvrent, 23 mots et 6 phrases servis, quiz accessible. Globe : 20 points, 19 destinations listées, La Baule en tête.
+⚠️ **Aberystwyth reste dans le voyage** avec son welsh cob — on ne perd rien de ce qui était produit.
+
+### ✅ Textes de la ville, dans les six langues (`labaule.md`)
+Lettre + 3 volets + résumé d'itinéraire. **Le prestige va dans les volets, l'émotion dans la lettre** (décision de Blandine sur le CSI) : la lettre raconte le trac du premier matin — « c'est la première fois que je demandais un cheval dans une langue qui n'est pas la mienne » — et le premier volet raconte le Jumping, les carrières face à l'océan, le sable qui vient de la mer.
+
+### ⚠️ À produire par Blandine pour cette ville
+`carte-labaule.webp` (3:4, tiers bas sombre) · `arrivee-labaule.mp4` (456×810) · `objet-labaule.png` (un fanion du Jumping).
+Le **récit court** est pris en charge ailleurs.
+
+### ✅ Les objets : prompt livré (`objets-prompt.md`)
+18 objets, PNG transparent 1024×1024, nommage `objet-<ref>.png`. ⚠️ **Faire les 18 et pas seulement les 8 manquants** : les 10 existants sont des icônes vectorielles et le mélange de styles se verrait. Deux ambiguïtés levées dans le prompt : la **lettre A de Windsor** est un marqueur de carrière de dressage, et le **carnet de Warendorf** illustre l'échelle de progression à six degrés.
+
+### ⚠️ Décidé, pas encore construit : LA PAGE DE COLLECTION
+Blandine : une page à part, **une grille des 18 cartes postales**, celles gagnées en couleur, les autres assombries. On touche, **la carte se retourne** : au verso la lettre de la ville, et en bas la ligne de l'objet — « À gagner : … » ou « **Récompense obtenue** » avec son dessin.
+Choix arrêtés : les cartes non gagnées **se retournent aussi** mais avec la lettre masquée · grille à **deux colonnes** (les cartes sont en 3:4) · **ordre du voyage**, les cases vides font partie du récit.
+⚠️ **Fichier séparé `lingo-collection.html` en iframe**, comme le globe : `lingo.html` fait déjà 216 Ko et l'incident du globe a montré que ses blocs de script cassent en silence.
+⚠️ Aujourd'hui **la carte et l'objet ne vont nulle part** : ils ne vivent que sur l'écran d'arrivée de leur ville. Le globe ne garde que le tampon.
+
+### ⚠️ Toujours en attente
+**Une seule leçon de 12 mots par ville** (au lieu de deux) — refait le tableau des villes, à faire d'un bloc.
+**Un Sprint sur les 12 mots de la leçon**, à côté du quiz.
+**`arrivee-connemara.mp4` absent du serveur**, et les 9 autres vidéos britanniques jamais vérifiées.
+
+---
+
 ## 🏅 SESSION 93 (06/08) — LES RÉCOMPENSES SE GAGNENT AU QUIZ
 
 ### 🔴 Le problème, dit par Blandine : « les gens n'y comprendront rien »
