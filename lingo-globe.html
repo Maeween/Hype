@@ -78,6 +78,8 @@ canvas#globe{height:64dvh!important}
   align-items:center}
 .filters .chip{align-self:center}
 #results .r{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
+/* la ville recommandée, en tête de liste */
+#results .r.reco{background:rgba(232,200,135,.08);border-bottom-color:rgba(232,200,135,.22)}
 #results .r:last-child{border-bottom:0}
 #results .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .filters{position:absolute;left:0;right:0;top:86dvh;display:flex;gap:8px;overflow-x:auto;padding:0 18px;z-index:6;scrollbar-width:none}
@@ -243,7 +245,13 @@ function resize(){ DPR=Math.min(window.devicePixelRatio||1,2); const r=cv.getBou
   /* Linguae : le centre était à 0.60 de la hauteur du canvas et la sphère
      remontait sous le titre. Descendu à 0.68, et le rayon élargi de 0.29 à
      0.33 — le globe occupe mieux l'espace qu'on lui donne. */
-  cy=H*0.62; R0=Math.min(W,H)*0.44; posBgr(); }
+  /* ⚠️ REVENU À UNE TAILLE PLUS SÛRE le 6 août 2026. Agrandi plus tôt
+     aujourd'hui (0.29 -> 0.44) et testé seulement sur un émulateur
+     390x844 : sur un vrai iPhone, Blandine a vu un globe qui dépasse en
+     bas de l'écran et des boutons +/- devenus inutilisables, probablement
+     recouverts par le halo agrandi. Je préfère revenir à une valeur déjà
+     vérifiée plutôt que d'ajuster à l'aveugle une deuxième fois. */
+  cy=H*0.58; R0=Math.min(W,H)*0.36; posBgr(); }
 window.addEventListener('resize',resize); function posBgr(){var b=document.getElementById('bgr');if(!b)return;var IW=1086,IH=1448,FX=0.508,FY=0.398,FR=0.37;var ring=R0*1.6;var sc=ring/(FR*IW);var dw=IW*sc,dh=IH*sc;b.style.left=(cx-FX*dw)+'px';b.style.top=(cy-FY*dh)+'px';b.style.width=dw+'px';b.style.height=dh+'px';var mk='radial-gradient(circle at '+(FX*100)+'% '+(FY*100)+'%, rgba(0,0,0,0) '+(R0*1.06)+'px, rgba(0,0,0,0.85) '+(R0*1.3)+'px, rgba(0,0,0,1) '+(ring*0.62)+'px, rgba(0,0,0,1) '+(ring*1.18)+'px, rgba(0,0,0,0) '+(ring*1.33)+'px)';b.style.webkitMaskImage=mk;b.style.maskImage=mk;}
 
 // continents
@@ -293,6 +301,14 @@ function appliquerEtatLinguae(e){
        une étape faite se voit de plus loin qu'une étape fermée. */
     c.mem = (c.type === "F") ? 200 : (c.type === "O" ? 90 : 0);
   });
+  /* ⚠️ LA SUGGESTION MISE EN AVANT (6 août 2026). `lingo.html` envoie la
+     ville qu'il vient de recommander en fin de chapitre. Si le joueur
+     ferme sans choisir, il retombe ici — et retrouve la même suggestion
+     plutôt qu'un globe neutre : l'abandon ramène aussi vers la suite. */
+  /* `priorite` existe déjà dans le moteur de Hype (anneau doré, point plus
+     grand, plus lumineux) — c'est exactement l'effet voulu, on le réutilise
+     au lieu d'écrire un second système de surbrillance. */
+  CLUBS.forEach(function(c){ c.reco = !!(e.reco && c.ref === e.reco); c.priorite = c.reco; });
   if(e.depart && typeof e.depart.lat === "number"){
     var dep = CLUBS.filter(function(c){ return c.depart; })[0];
     if(dep){
@@ -469,7 +485,10 @@ function renderResults(){
     RES.innerHTML='<div class="r" style="opacity:.55">'+LL.vide+'</div>';
     RES.classList.add('on'); return;
   }
-  RES.innerHTML=list.map(o=>'<div class="r" data-i="'+o.i+'"><span class="dot" style="background:'+(COL[o.c.type]||"#20D9F5")+';box-shadow:0 0 7px '+(COL[o.c.type]||"#20D9F5")+'"></span><div style="flex:1"><div style="font-size:14px;font-weight:600">'+o.c.nom+'</div><div style="font-size:11.5px;opacity:.55">'+o.c.ville+(o.c.region?' \u00b7 '+o.c.region:'')+'</div></div><span style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.6">'+(TLAB[o.c.type]||'')+'</span></div>').join('');
+  /* la ville recommandée par lingo.html remonte en tête de liste, quel
+     que soit le filtre actif — c'est elle qu'on cherche en premier */
+  list.sort((a,b)=>(b.c.reco?1:0)-(a.c.reco?1:0));
+  RES.innerHTML=list.map(o=>'<div class="r'+(o.c.reco?' reco':'')+'" data-i="'+o.i+'"><span class="dot" style="background:'+(COL[o.c.type]||"#20D9F5")+';box-shadow:0 0 7px '+(COL[o.c.type]||"#20D9F5")+'"></span><div style="flex:1"><div style="font-size:14px;font-weight:600">'+(o.c.reco?'\u2605 ':'')+o.c.nom+'</div><div style="font-size:11.5px;opacity:.55">'+o.c.ville+(o.c.region?' \u00b7 '+o.c.region:'')+'</div></div><span style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.6">'+(TLAB[o.c.type]||'')+'</span></div>').join('');
   RES.classList.add('on');
   RES.querySelectorAll('.r').forEach(el=>{ const i=el.getAttribute('data-i'); if(i!==null) el.addEventListener('click',()=>{ const idx=+i; RES.style.display='none'; Q.blur(); flyTo(CLUBS[idx].lat,CLUBS[idx].lng,2.2); setTimeout(()=>openF(idx),460); }); }); }
 Q.addEventListener('input',()=>{ query=Q.value.trim().toLowerCase(); renderResults(); });

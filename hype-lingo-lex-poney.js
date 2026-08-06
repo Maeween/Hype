@@ -112,28 +112,26 @@ window.HYPE_LINGO_LEX.poney = {
   phrases: [
 
   { ref:"ph-poney-taille", lecon:1,
-    mots:{ fr:{m:"Quelle est sa taille au garrot ?"},
-           en:{m:"How tall is he?", p:"haou tôl"},
-           es:{m:"¿Cuánto mide de alzada?"},
-           it:{m:"Quanto misura al garrese?"},
-           de:{m:"Wie groß ist er?", p:"vi grôss"},
-           ja:{m:"体高はどれくらいですか。", p:"taikō wa dore kurai desu ka"} } },
+      fr:"Quelle est sa taille au garrot ?",
+      en:"How tall is he?",
+      es:"¿Cuánto mide de alzada?",
+      it:"Quanto misura al garrese?",
+      de:"Wie groß ist er?",
+      ja:"体高はどれくらいですか。" },
 
   { ref:"ph-poney-debutant", lecon:1,
-    mots:{ fr:{m:"C'est un poney pour débuter ?"},
-           en:{m:"Is he a beginner's pony?", p:"bi-gui-neuze"},
-           es:{m:"¿Es un poni para principiantes?"},
-           it:{m:"È un pony per principianti?"},
-           de:{m:"Ist es ein Pony für Anfänger?"},
-           ja:{m:"初心者向けのポニーですか。", p:"shoshinsha-muke no ponī desu ka"} } },
+      fr:"C'est un poney pour débuter ?",
+      en:"Is he a beginner's pony?",
+      es:"¿Es un poni para principiantes?",
+      it:"È un pony per principianti?",
+      de:"Ist es ein Pony für Anfänger?",
+      ja:"初心者向けのポニーですか。" },
 
   { ref:"ph-poney-calme", lecon:1,
-    mots:{ fr:{m:"Il est très calme."},
-           en:{m:"He is very quiet."},
-           es:{m:"Es muy tranquilo."},
-           it:{m:"È molto tranquillo."},
-           de:{m:"Es ist sehr brav."},
-           ja:{m:"とてもおとなしいです。", p:"totemo otonashii desu"} } }
-
-  ]
+      fr:"Il est très calme.",
+      en:"He is very quiet.",
+      es:"Es muy tranquilo.",
+      it:"È molto tranquillo.",
+      de:"Es ist sehr brav.",
+      ja:"とてもおとなしいです。" },]
 };

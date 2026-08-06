@@ -165,8 +165,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   border:1px solid rgba(32,217,245,.4);border-radius:999px}
 
 #globe{position:fixed;inset:0;z-index:40;background:#060709;opacity:0;visibility:hidden;
-  transition:opacity .3s ease,visibility .3s ease}
-#globe.on{opacity:1;visibility:visible}
+  pointer-events:none;transition:opacity .3s ease,visibility .3s ease}
+#globe.on{opacity:1;visibility:visible;pointer-events:auto}
 #globeIf{position:absolute;inset:0;width:100%;height:100%;border:0;background:#060709}
 #globeX{position:absolute;top:calc(env(safe-area-inset-top) + 10px);left:12px;z-index:2;
   width:38px;height:38px;border:0;border-radius:50%;background:rgba(255,255,255,.08);
@@ -559,6 +559,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .lcJal.ok b{color:var(--or)} .lcJal.ok i{color:var(--or)}
 .lcSortieT{margin:0 0 8px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
   color:var(--turquoise)}
+/* la recommandation mise en avant : un seul bouton, plus haut que les
+   autres, avec le sujet et le nom de la ville l'un sous l'autre */
+.lcReco{display:flex!important;flex-direction:column;align-items:flex-start!important;
+  gap:2px;padding:16px 18px;margin-top:8px}
+.lcReco b{font-family:'Cinzel',Georgia,serif;font-size:14.5px;font-weight:600;
+  color:#04202A;text-transform:none;letter-spacing:0}
+.lcReco i{font-style:normal;font-size:11px;color:rgba(4,32,42,.62)}
 .lcSortieV{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:7px;
   padding:12px 14px;border:1px solid rgba(255,255,255,.12);border-radius:12px;
   background:rgba(255,255,255,.04);color:#F4F7FA;font:inherit;text-align:left;cursor:pointer}
@@ -792,7 +799,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <video id="ouvVid" muted playsinline webkit-playsinline preload="auto"></video>
   <div id="ouvVoile"></div>
   <button id="ouvPasser" data-t="passer">Passer</button>
-  <button id="ouvSuite">Entrer à Newmarket</button>
+  <button id="ouvSuite">Entrer à La Baule</button>
 </div>
 
 <!-- ==================================================================
@@ -1801,6 +1808,11 @@ function allerA(i){
    ================================================================== */
 var DEPART_DEFAUT = { nom:"Paris", lat:48.8566, lng:2.3522 };
 
+/* La ville mise en avant en fin de chapitre (voir finLecon). Envoyée au
+   globe pour qu'il la fasse briller — même si le joueur ferme sans
+   choisir, l'abandon ramène quand même vers la suite logique. */
+var PROCHAINE_RECOMMANDEE = null;
+
 /* Les villes dont la carte postale a un tiers haut trop clair pour un
    titre crème. Valeurs de luminance moyenne du tiers supérieur, mesurées
    le 5 août sur les fichiers livrés :
@@ -1898,14 +1910,24 @@ function etatPourGlobe(){
     if(etatChapitre(e.ref).fini) faites.push(e.ref);
     else if(i<=FAITS) ouvertes.push(e.ref);
   });
-  return { t:"linguae-etat", faites:faites, ouvertes:ouvertes, depart:departDuJoueur() };
+  return { t:"linguae-etat", faites:faites, ouvertes:ouvertes, depart:departDuJoueur(),
+           reco:PROCHAINE_RECOMMANDEE };
 }
 
 function ouvrirGlobe(){
   S("globe").classList.add("on");
   var f=S("globeIf");
-  /* l'iframe peut ne pas être prête au premier appel : on tente, et on
-     retente au chargement. Sans ça le globe s'ouvre vide une fois sur deux. */
+  /* ⚠️ CORRIGÉ le 6 août 2026 — Blandine : après avoir fermé le globe à la
+     croix, plus rien ne répondait, et le geste de swipe finissait par
+     sortir de Linguae entièrement (retour Safari au lieu d'une action
+     dans l'app). Cause probable : une iframe sous un parent en
+     `visibility:hidden` peut, sur certaines versions de Safari iOS,
+     continuer à capter le toucher — un défaut WebKit connu. `opacity` et
+     `visibility` seuls ne suffisent donc pas à garantir qu'elle ne
+     capte plus rien. On force maintenant `pointer-events:none` en CSS
+     ET on retire l'iframe du rendu (`display:none`) à la fermeture :
+     deux verrous au lieu d'un. */
+  f.style.display = "";
   function envoyer(){
     try{
       /* la langue d'interface d'abord : le globe étiquette ses puces et ses
@@ -1918,7 +1940,14 @@ function ouvrirGlobe(){
   f.addEventListener("load", envoyer, {once:true});
   setTimeout(envoyer, 260);
 }
-function fermerGlobe(){ S("globe").classList.remove("on"); }
+function fermerGlobe(){
+  S("globe").classList.remove("on");
+  /* le verrou dur : l'iframe disparaît du rendu, elle ne peut plus rien
+     capter, quoi que fasse Safari avec visibility/opacity entre-temps */
+  setTimeout(function(){
+    if(!S("globe").classList.contains("on")) S("globeIf").style.display = "none";
+  }, 320);
+}
 
 S("bGlobe").addEventListener("click", ouvrirGlobe);
 S("globeX").addEventListener("click", fermerGlobe);
@@ -1988,33 +2017,48 @@ var CHAPITRE_DE = {
    révision espacée gratuite.
    ================================================================== */
 var ETAPE_SRC = {
-  labaule:     [["arrivee",1],   ["arrivee",2]],
-  newmarket:   [["ecurie",1],   ["ecurie",4]],
-  lambourn:    [["pansage",1],  ["pansage",2]],
-  connemara:   [["cheval",1],   ["cheval",2]],
-  walsall:     [["materiel",1], ["materiel",2]],
-  aberystwyth: [["cours",1],    ["cours",2],   ["cours",3]],
-  windsor:     [["dressage",1], ["dressage",4]],
-  hickstead:   [["obstacle",1], ["obstacle",2]],
-  badminton:   [["concours",2], ["concours",3]],
-  kildare:     [["urgences",1], ["urgences",3]],
-  edimbourg:   [["urgences",4], ["cours",4]],
-  /* les huit du tour du monde */
-  saumur:      [["dressage",2], ["dressage",3]],
-  lamotte:     [["poney",1],    ["urgences",2]],
-  jerez:       [["cheval",4],   ["cheval",3]],
-  seville:     [["materiel",3], ["pansage",4]],
-  vejer:       [["ecurie",3],   ["ecurie",2]],
-  oliva:       [["concours",1], ["obstacle",3]],
-  warendorf:   [["materiel",4], ["pansage",3]],
-  aachen:      [["obstacle",4], ["concours",4]]
+  /* ==================================================================
+     LE GRAND REGROUPEMENT — une seule leçon, ~10-12 mots, par ville
+     (6 août 2026, après le test de Blandine sur le déploiement réel).
+
+     « On s'attend à avoir la carte postale, pas à faire 15 leçons
+     éparpillées » — et le bouton « Continuer » vers une seconde leçon
+     de la même ville sautait l'arrivée (pas de vidéo, pas de titre, on
+     ne sait plus où on est). La Baule avait déjà ce format ; toutes les
+     autres villes gardaient encore l'ancien format à deux leçons.
+
+     Chaque ville ne garde plus qu'UNE SEULE collection. L'autre moitié
+     ne disparaît pas : elle reste dans son fichier, non attribuée,
+     prête pour une ville future — exactement comme la réserve déjà
+     documentée dans hype-linguae-repartition-v2.md. Le choix retenu
+     pour chaque ville est celui qui correspond le mieux à sa lettre et
+     à ses volets déjà écrits (détail dans SUIVI.md, session du jour). */
+  labaule:     [["arrivee",1]],
+  newmarket:   [["ecurie",1]],
+  lambourn:    [["pansage",1]],
+  connemara:   [["cheval",1]],
+  walsall:     [["materiel",1]],
+  aberystwyth: [["cours",1]],
+  windsor:     [["dressage",1]],
+  hickstead:   [["obstacle",1]],
+  badminton:   [["concours",2]],
+  kildare:     [["urgences",1]],
+  edimbourg:   [["urgences",4]],
+  saumur:      [["dressage",3]],
+  lamotte:     [["poney",1]],
+  jerez:       [["cheval",4]],
+  seville:     [["materiel",3]],
+  vejer:       [["ecurie",3]],
+  oliva:       [["concours",1]],
+  warendorf:   [["materiel",4]],
+  aachen:      [["obstacle",4]]
 };
 
 /* Le texte d'accueil d'un chapitre se choisit par le fichier source majoritaire,
    sauf pour les villes composées : Édimbourg puise dans urgences et cours mais
    enseigne bien les dialogues, et c'est ce qu'il faut annoncer au joueur. */
 var ACCUEIL_VILLE = { labaule:"arrivee", edimbourg:"dialogues", lamotte:"poney", seville:"materiel",
-                      vejer:"ecurie", oliva:"concours", warendorf:"pansage", aachen:"obstacle" };
+                      vejer:"ecurie", oliva:"concours", warendorf:"materiel", aachen:"obstacle" };
 
 /* Construit le chapitre d'une ville en assemblant ses leçons sources.
    Les concepts sont copiés en surface et renumérotés 1..n : le reste du
@@ -2139,8 +2183,8 @@ var UI = {
    it:"Francese, inglese, spagnolo, italiano, tedesco, giapponese: quello vero, quello delle scuderie.",
    de:"Französisch, Englisch, Spanisch, Italienisch, Deutsch, Japanisch — die echten Wörter, die im Stall fallen.",
    ja:"フランス語、英語、スペイン語、イタリア語、ドイツ語、日本語。厩舎で実際に使われる言葉。"},
- pt2t:{fr:"Dix-huit destinations", en:"Eighteen destinations", es:"Dieciocho destinos",
-   it:"Diciotto destinazioni", de:"Achtzehn Ziele", ja:"十八の目的地"},
+ pt2t:{fr:"Dix-neuf destinations", en:"Nineteen destinations", es:"Diecinueve destinos",
+   it:"Diciannove destinazioni", de:"Neunzehn Ziele", ja:"十九の目的地"},
  pt2d:{fr:"Du Suffolk à l'Andalousie. Chacune enseigne une partie du métier, dans la langue que tu apprends.",
    en:"From Suffolk to Andalusia. Each one teaches a part of the craft, in the language you are learning.",
    es:"De Suffolk a Andalucía. Cada una enseña una parte del oficio, en el idioma que aprendes.",
@@ -2176,7 +2220,7 @@ var UI = {
    ja:"街ごとに絵はがき一枚と記念品一つ。与えられるのではなく、勝ち取るもの。"},
  destTitre:{fr:"Quelle langue veux-tu apprendre ?", en:"Which language do you want to learn?", es:"¿Qué idioma quieres aprender?",
    it:"Dove vuoi andare?", de:"Wohin willst du?", ja:"どこへ行く？"},
- destSous:{fr:"Une langue, dix-huit destinations. Le premier chapitre est offert partout.",
+ destSous:{fr:"Une langue, dix-neuf destinations. Le premier chapitre est offert partout.",
    en:"One destination, one language. The first chapter is free everywhere.",
    es:"Un destino, un idioma. El primer capítulo es gratis en todas partes.",
    it:"Una destinazione, una lingua. Il primo capitolo è gratuito sempre.",
@@ -2199,12 +2243,12 @@ var UI = {
    ja:"イングランド・アイルランド・ウェールズ・スコットランド"},
  ouvLangue:{fr:"— anglais —", en:"— English —", es:"— inglés —", it:"— inglese —",
    de:"— Englisch —", ja:"— 英語 —"},
- ouvIntro:{fr:"Dix-huit villes. <b>Pas les capitales politiques — les capitales du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde, et où le vocabulaire que tu vas apprendre s'entend vraiment.",
-   en:"Eighteen towns. <b>Not the political capitals — the horse capitals.</b> Places where riding is not a hobby but everyone's trade, and where the words you are about to learn are really spoken.",
-   es:"Dieciocho ciudades. <b>No las capitales políticas: las capitales del caballo.</b> Lugares donde la equitación no es un pasatiempo sino el oficio de todos, y donde el vocabulario que vas a aprender se oye de verdad.",
-   it:"Diciotto città. <b>Non le capitali politiche — le capitali del cavallo.</b> Luoghi dove l'equitazione non è un passatempo ma il mestiere di tutti, e dove il vocabolario che imparerai si sente davvero.",
-   de:"Achtzehn Städte. <b>Nicht die politischen Hauptstädte — die Hauptstädte des Pferdes.</b> Orte, an denen Reiten kein Hobby ist, sondern der Beruf aller, und an denen die Wörter, die du lernst, wirklich fallen.",
-   ja:"十八の街。<b>政治の首都ではなく、馬の首都。</b>乗馬が趣味ではなく、みんなの仕事である場所。これから覚える言葉が、本当に聞こえてくる場所。"},
+ ouvIntro:{fr:"Dix-neuf villes. <b>Pas les capitales politiques — les capitales du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde, et où le vocabulaire que tu vas apprendre s'entend vraiment.",
+   en:"Nineteen towns. <b>Not the political capitals — the horse capitals.</b> Places where riding is not a hobby but everyone's trade, and where the words you are about to learn are really spoken.",
+   es:"Diecinueve ciudades. <b>No las capitales políticas: las capitales del caballo.</b> Lugares donde la equitación no es un pasatiempo sino el oficio de todos, y donde el vocabulario que vas a aprender se oye de verdad.",
+   it:"Diciannove città. <b>Non le capitali politiche — le capitali del cavallo.</b> Luoghi dove l'equitazione non è un passatempo ma il mestiere di tutti, e dove il vocabolario che imparerai si sente davvero.",
+   de:"Neunzehn Städte. <b>Nicht die politischen Hauptstädte — die Hauptstädte des Pferdes.</b> Orte, an denen Reiten kein Hobby ist, sondern der Beruf aller, und an denen die Wörter, die du lernst, wirklich fallen.",
+   ja:"十九の街。<b>政治の首都ではなく、馬の首都。</b>乗馬が趣味ではなく、みんなの仕事である場所。これから覚える言葉が、本当に聞こえてくる場所。"},
  regle1:{fr:"<b>Tu choisis ta prochaine étape.</b> Sur le globe, ou parmi celles que la ville que tu quittes te propose.",
    en:"<b>You travel by night and arrive at dawn.</b> The road moves under your finger, from one town to the next.",
    es:"<b>Se viaja de noche y se llega al amanecer.</b> El camino se recorre con el dedo, de una ciudad a la siguiente.",
@@ -2244,6 +2288,14 @@ var UI = {
    de:"im Morgengrauen", ja:"夜明け"},
  chapNsur:{fr:"Chapitre {n} sur {t}", en:"Chapter {n} of {t}", es:"Capítulo {n} de {t}",
    it:"Capitolo {n} di {t}", de:"Kapitel {n} von {t}", ja:"第{n}章／全{t}章"},
+ etMaintenant:{fr:"Et maintenant ?", en:"What now?", es:"¿Y ahora?",
+   it:"E adesso?", de:"Und jetzt?", ja:"次はどこへ？"},
+ continuerAvec:{fr:"Continuer avec {s} à {v}", en:"Continue with {s} in {v}",
+   es:"Continuar con {s} en {v}", it:"Continuare con {s} a {v}",
+   de:"Weiter mit {s} in {v}", ja:"{v}で{s}を続ける"},
+ continuerVers:{fr:"Continuer vers {v}", en:"Continue to {v}",
+   es:"Continuar hacia {v}", it:"Continuare verso {v}",
+   de:"Weiter nach {v}", ja:"{v}へ続ける"},
  resterEn:{fr:"Rester en {n}", en:"Stay in {n}", es:"Quedarse en {n}",
    it:"Restare in {n}", de:"In {n} bleiben", ja:"{n}にとどまる"},
  suivreLe:{fr:"Suivre {s}", en:"Follow {s}", es:"Seguir {s}",
@@ -2312,6 +2364,14 @@ var UI = {
  recapChap:{fr:"Où en est ce chapitre", en:"Where this chapter stands",
    es:"Cómo va este capítulo", it:"Come procede questo capitolo",
    de:"Stand dieses Kapitels", ja:"この章の進み具合"},
+ /* ⚠️ recapCarte/recapReste sont dépréciées depuis le 6 août — remplacées
+    par recapVersQuiz. Laissées définies au cas où, mais plus appelées. */
+ recapVersQuiz:{fr:"Passe le quiz pour gagner la carte postale et l'objet du voyage.",
+   en:"Take the quiz to earn the postcard and the keepsake.",
+   es:"Haz el cuestionario para ganar la postal y el recuerdo.",
+   it:"Fai il quiz per ottenere la cartolina e il souvenir.",
+   de:"Mach das Quiz, um die Postkarte und das Andenken zu gewinnen.",
+   ja:"クイズに挑戦して、絵はがきと記念品を手に入れよう。"},
  recapReste:{fr:"Le chapitre est terminé quand chaque leçon atteint son compte. La carte postale arrive à ce moment-là.",
    en:"The chapter is done when every lesson reaches its count. That is when the postcard comes.",
    es:"El capítulo termina cuando cada lección alcanza su cuenta. Entonces llega la postal.",
@@ -3247,9 +3307,13 @@ function finLecon(){
         el("b",{text:nomLecon(L)}),
         el("i",{text:ok+" / "+need})));
     });
-    zoneC.appendChild(el("p",{class:"lcDef", text: et.fini
-      ? T("recapCarte",{n:Math.max(0, et.total-et.acquis)})
-      : T("recapReste")}));
+    /* ⚠️ CORRIGÉ le 6 août 2026 : ce texte disait « carte postale obtenue »
+       d'après la MAÎTRISE (et.fini/et.acquis) — le signal d'avant le quiz.
+       Depuis la session 93, la carte et l'objet dépendent du QUIZ, pas de
+       la maîtrise : ce paragraphe pouvait annoncer une carte obtenue alors
+       qu'aucun quiz n'avait jamais été passé. Un seul message maintenant,
+       qui pointe toujours vers le quiz. */
+    zoneC.appendChild(el("p",{class:"lcDef", text:T("recapVersQuiz")}));
     S("lcCorps").appendChild(zoneC);
   }
 
@@ -3274,17 +3338,41 @@ function finLecon(){
      la v2 qui manquait. */
   if(et.fini){
     var fils = filsDeSortie(LC.ville), zone = S("lcCorps");
+
+    /* le nom du sujet est le TITRE du fichier de lexique, pas un nom de
+       collection : chaque hype-lingo-lex-*.js porte son `titre` traduit. */
+    function nomDuSujet(sujet){
+      var lex = (window.HYPE_LINGO_LEX || {})[sujet] || {};
+      var n = tx(lex.titre) || sujet;
+      return n.charAt(0).toLowerCase() + n.slice(1);
+    }
+
+    /* ⚠️ LA RECOMMANDATION MISE EN AVANT (6 août 2026, sur idée de Blandine)
+       « on peut donner le thème de la ville conseillée ? genre continue
+       avec le pansage à Newmarket ». Avant, trois boutons à plat, tous
+       d'égale importance : personne ne savait lequel choisir. Un seul
+       est maintenant mis en avant, nommé par ce qu'il enseigne — le fil
+       thématique d'abord, parce qu'il raconte une progression, le pays
+       sinon. Les deux listes complètes restent en dessous, en secours.
+       PROCHAINE_RECOMMANDEE est mémorisée : si le joueur ferme sans
+       choisir, le globe rouvre sur cette ville en surbrillance plutôt
+       que sur un écran neutre — l'abandon ramène aussi vers la suite. */
+    var reco = fils.theme.length ? fils.theme[0] : (fils.pays.length ? fils.pays[0] : null);
+    PROCHAINE_RECOMMANDEE = reco ? reco.e.ref : null;
+
+    if(reco){
+      var estTheme = !!reco.sujet;
+      zone.appendChild(el("p",{class:"lcSortieT", text:T("etMaintenant")}));
+      zone.appendChild(el("button",{class:"lcCta lcReco", onclick:function(){ partirVers(reco.i); }},
+        el("b",{text: estTheme ? T("continuerAvec",{s:nomDuSujet(reco.sujet), v:eV(reco.e)})
+                                : T("continuerVers",{v:eV(reco.e)})}),
+        el("i",{text:eCh(reco.e)})));
+    }
+
     var bPays = blocFil(T("resterEn",{n:eNat(ETAPES.filter(function(e){
                   return e.ref===LC.ville; })[0])}), fils.pays);
-    var bTheme = null;
-    if(fils.theme.length){
-      /* le nom du sujet est le TITRE du fichier de lexique, pas un nom de
-         collection : chaque hype-lingo-lex-*.js porte son `titre` traduit. */
-      var lex = (window.HYPE_LINGO_LEX || {})[fils.theme[0].sujet] || {};
-      var nomSujet = tx(lex.titre) || fils.theme[0].sujet;
-      bTheme = blocFil(T("suivreLe",{s:nomSujet.charAt(0).toLowerCase()+nomSujet.slice(1)}),
-                       fils.theme);
-    }
+    var bTheme = fils.theme.length
+      ? blocFil(T("suivreLe",{s:nomDuSujet(fils.theme[0].sujet)}), fils.theme) : null;
     if(bPays) zone.appendChild(bPays);
     if(bTheme) zone.appendChild(bTheme);
     zone.appendChild(el("button",{class:"lcCta",
@@ -3670,11 +3758,11 @@ var DESTINATIONS = [
   { cle:"iles",     dr:"\uD83C\uDDEC\uD83C\uDDE7", lg:"en", ouvert:true,
     nom:{fr:"L'anglais", en:"English", es:"El inglés", it:"L'inglese", de:"Englisch", ja:"英語"},
     d:{fr:"Dix-huit destinations, du Suffolk à l'Andalousie — l'anglais des écuries.",
-       en:"Eighteen destinations, from Suffolk to Andalusia — the English of the yard.",
-       es:"Dieciocho destinos, de Suffolk a Andalucía: el inglés de las cuadras.",
-       it:"Diciotto destinazioni, dal Suffolk all'Andalusia: l'inglese delle scuderie.",
-       de:"Achtzehn Ziele, von Suffolk bis Andalusien — das Englisch der Stallgasse.",
-       ja:"サフォークからアンダルシアまで、十八の目的地。厩舎の英語。"} },
+       en:"Nineteen destinations, from the Atlantic coast to Andalusia — the English of the yard.",
+       es:"Diecinueve destinos, de la costa atlántica a Andalucía: el inglés de las cuadras.",
+       it:"Diciannove destinazioni, dalla costa atlantica all'Andalusia: l'inglese delle scuderie.",
+       de:"Neunzehn Ziele, von der Atlantikküste bis Andalusien — das Englisch der Stallgasse.",
+       ja:"大西洋岸からアンダルシアまで、十九の目的地。厩舎の英語。"} },
   { cle:"peninsule",dr:"\uD83C\uDDEA\uD83C\uDDF8", lg:"es", ouvert:false,
     nom:{fr:"L'espagnol", en:"Spanish", es:"El español", it:"Lo spagnolo", de:"Spanisch", ja:"スペイン語"},
     d:{fr:"Le même tour du monde, en espagnol. Bientôt.",
@@ -3728,10 +3816,11 @@ function montrerDest(){
       VOYAGE_LANGUE = D.lg;
       S("dest").classList.remove("on");
       try{ localStorage.setItem("hype_lingua_voyage", D.cle); }catch(e){}
-      /* Le chemin ayant disparu, c'est le globe qui accueille : on choisit
-         sa langue, puis on voit le monde. Un temps de respiration pour que
-         l'écran de destination ait fini de se refermer. */
-      setTimeout(ouvrirGlobe, 380);
+      /* ⚠️ RETIRÉ le 6 août 2026. Ouvrir le globe ici, sur un délai,
+         pouvait chevaucher l'ouverture directe de La Baule que déclenche
+         maintenant terminerOuverture() — deux écrans qui se disputent
+         l'écran en même temps. Fermer #dest suffit : l'écran de bienvenue
+         qui se trouve dessous reprend la main tout seul. */
     }},
       el("span",{class:"dr", text:D.dr}),
       el("span",{class:"dd"}, el("b",{text:tx(D.nom)}), el("i",{text:tx(D.d)})),
@@ -3825,10 +3914,14 @@ function terminerOuverture(){
   try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){}
   S("ouvFilm").classList.remove("joue","fini");
   S("ouverture").classList.add("parti");
-  /* ⚠️ Le chemin est masqué : sans cette ligne, on sort du carnet sur un
-     écran vide où il ne reste que le bouton Sprint. C'est arrivé en ligne.
-     Le globe est désormais LE voyage : il s'ouvre dès qu'on y entre. */
-  setTimeout(ouvrirGlobe, 320);
+  /* ⚠️ CORRIGÉ le 6 août 2026. Le bouton promet « Entrer à La Baule » —
+     hier il ouvrait le globe à la place, sur un DÉLAI de 320 ms. Deux
+     défauts en un : le globe n'est pas ce que le bouton annonce, et le
+     délai créait une fenêtre où l'écran de bienvenue (doré) se referme
+     PENDANT que le globe (bleu) s'ouvre par-dessus — le flash que
+     Blandine a vu et décrit. On entre directement dans la ville promise,
+     sans délai, sans écran intermédiaire : plus rien à faire chevaucher. */
+  ouvrirArrivee(0);
 }
 
 /* ==================================================================

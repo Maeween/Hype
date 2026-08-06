@@ -19,6 +19,15 @@
    ⚠️ Le japonais des PHRASES s'écrit AVEC des espaces entre les groupes.
    Ce n'est pas une coquille : l'exercice consiste à remettre des
    morceaux dans l'ordre, et sans espaces il n'y a rien à déplacer.
+
+   ⚠️ RETAGUÉ le 6 août 2026 : une seule leçon par ville, 12 mots — pas
+   deux leçons de ~12 comme au départ (Blandine : « deux cours par
+   ville on s'y perd »). La leçon 1 mêle les 6 mots d'inscription et
+   les 6 de sécurité les plus utiles à l'arrivée ; les 11 restants
+   passent en leçon 2, EN RÉSERVE pour une ville future — rien n'est
+   perdu, juste pas encore attribué. `coll` ne bouge pas : une leçon
+   mixte affiche donc « S'inscrire et sécurité » (nomLecon() combine
+   les deux noms automatiquement).
    ================================================================== */
 
 window.HYPE_LINGO_LEX = window.HYPE_LINGO_LEX || {};
@@ -42,7 +51,7 @@ window.HYPE_LINGO_LEX.arrivee = {
     def:{ fr:"Retenir une place à l'avance. Dans la plupart des clubs c'est indispensable la veille, et parfois plusieurs jours avant en saison.",
           en:"To hold a place in advance. In most yards this is essential the day before, and sometimes several days ahead in season." } },
 
-  { ref:"cours-particulier", lecon:1, coll:"inscrire",
+  { ref:"cours-particulier", lecon:2, coll:"inscrire",
     mots:{ fr:{m:"le cours particulier"}, en:{m:"the private lesson", p:"praï-veut"},
            es:{m:"la clase particular"}, it:{m:"la lezione privata"},
            de:{m:"die Einzelstunde", p:"aïne-tsel-chtoune-de"},
@@ -50,7 +59,7 @@ window.HYPE_LINGO_LEX.arrivee = {
     def:{ fr:"Une reprise seul avec l'enseignant, par opposition au cours collectif. Plus cher, mais le bon choix quand on ne parle pas la langue.",
           en:"A lesson alone with the instructor, as opposed to a group lesson. Dearer, but the right choice when you don't speak the language." } },
 
-  { ref:"cours-collectif", lecon:1, coll:"inscrire",
+  { ref:"cours-collectif", lecon:2, coll:"inscrire",
     mots:{ fr:{m:"le cours collectif"}, en:{m:"the group lesson", p:"groupe"},
            es:{m:"la clase colectiva"}, it:{m:"la lezione di gruppo"},
            de:{m:"die Gruppenstunde"}, ja:{m:"グループレッスン", p:"gurūpu ressun"} },
@@ -79,7 +88,7 @@ window.HYPE_LINGO_LEX.arrivee = {
     def:{ fr:"Le prix de la reprise. Demande s'il comprend l'assurance et le matériel : selon les pays, l'un ou l'autre se paie à part.",
           en:"The cost of the lesson. Ask whether insurance and equipment are included: depending on the country, one or the other is charged separately." } },
 
-  { ref:"licence-assurance", lecon:1, coll:"inscrire",
+  { ref:"licence-assurance", lecon:2, coll:"inscrire",
     mots:{ fr:{m:"l'assurance"}, en:{m:"the insurance", p:"inn-chou-reunce"},
            es:{m:"el seguro"}, it:{m:"l'assicurazione"},
            de:{m:"die Versicherung", p:"fèr-zi-che-roung"},
@@ -102,14 +111,14 @@ window.HYPE_LINGO_LEX.arrivee = {
     def:{ fr:"La demande qui compte le plus, et qu'on ose rarement faire. Elle ne dit pas que tu as peur, elle dit que tu veux profiter de ta reprise.",
           en:"The request that matters most, and the one people rarely dare make. It doesn't say you are frightened; it says you want to enjoy your ride." } },
 
-  { ref:"balade", lecon:1, coll:"inscrire",
+  { ref:"balade", lecon:2, coll:"inscrire",
     mots:{ fr:{m:"la balade"}, en:{m:"the hack", p:"hak", var:"the trail ride"},
            es:{m:"el paseo"}, it:{m:"la passeggiata"},
            de:{m:"der Ausritt", p:"aouss-rit"}, ja:{m:"外乗", p:"gaijō"} },
     def:{ fr:"Une sortie dehors, par opposition à la reprise en carrière. ⚠️ « Hack » est le mot britannique ; les Américains disent « trail ride ».",
           en:"A ride out, as opposed to a lesson in the arena. « Hack » is the British word; Americans say « trail ride »." } },
 
-  { ref:"duree-reprise", lecon:1, coll:"inscrire",
+  { ref:"duree-reprise", lecon:2, coll:"inscrire",
     mots:{ fr:{m:"une heure de cours"}, en:{m:"an hour's lesson"},
            es:{m:"una hora de clase"}, it:{m:"un'ora di lezione"},
            de:{m:"eine Reitstunde", p:"raït-chtoune-de"},
@@ -117,7 +126,7 @@ window.HYPE_LINGO_LEX.arrivee = {
     def:{ fr:"⚠️ Attention au faux ami : en allemand, une « Reitstunde » désigne la leçon en général, souvent quarante-cinq minutes — pas soixante.",
           en:"Careful with the German: a « Reitstunde » means the lesson in general, often forty-five minutes rather than sixty." } },
 
-  { ref:"annuler", lecon:1, coll:"inscrire",
+  { ref:"annuler", lecon:2, coll:"inscrire",
     mots:{ fr:{m:"annuler"}, en:{m:"to cancel", p:"kann-seul"},
            es:{m:"cancelar"}, it:{m:"annullare"},
            de:{m:"absagen", p:"ap-za-gueune"}, ja:{m:"キャンセルする", p:"kyanseru suru"} },
@@ -126,7 +135,7 @@ window.HYPE_LINGO_LEX.arrivee = {
 
   /* ============ LEÇON 2 · LA SÉCURITÉ ============ */
 
-  { ref:"passer-devant", lecon:2, coll:"securite",
+  { ref:"passer-devant", lecon:1, coll:"securite",
     mots:{ fr:{m:"passer devant lui"}, en:{m:"to pass in front of him"},
            es:{m:"pasar por delante"}, it:{m:"passare davanti"},
            de:{m:"vor ihm vorbeigehen", p:"for-baï-gué-eune"},
@@ -134,7 +143,7 @@ window.HYPE_LINGO_LEX.arrivee = {
     def:{ fr:"La règle la plus simple et la plus utile : on contourne un cheval par l'avant, où il te voit. Derrière, il ne te voit pas, et un cheval qui sursaute frappe.",
           en:"The simplest and most useful rule: go round a horse in front, where he can see you. Behind, he cannot — and a startled horse kicks." } },
 
-  { ref:"jamais-derriere", lecon:2, coll:"securite",
+  { ref:"jamais-derriere", lecon:1, coll:"securite",
     mots:{ fr:{m:"ne passe pas derrière lui"}, en:{m:"don't walk behind him", p:"bi-haïnde"},
            es:{m:"no pases por detrás"}, it:{m:"non passare dietro"},
            de:{m:"geh nicht hinter ihm vorbei", p:"hine-teur"},
@@ -142,7 +151,7 @@ window.HYPE_LINGO_LEX.arrivee = {
     def:{ fr:"La phrase qu'on entend crier dans tous les clubs du monde. Si tu dois vraiment passer derrière, passe très près en gardant une main sur lui : un cheval frappe avec de l'élan, pas collé.",
           en:"The sentence shouted in every yard in the world. If you truly must pass behind, pass very close with a hand on him: a horse kicks with room, not from touching distance." } },
 
-  { ref:"prevenir-toucher", lecon:2, coll:"securite",
+  { ref:"prevenir-toucher", lecon:1, coll:"securite",
     mots:{ fr:{m:"préviens-le avant de le toucher"},
            en:{m:"speak to him before you touch him"},
            es:{m:"háblale antes de tocarlo"}, it:{m:"parlagli prima di toccarlo"},
@@ -151,7 +160,7 @@ window.HYPE_LINGO_LEX.arrivee = {
     def:{ fr:"La voix d'abord, la main ensuite. Un cheval surpris se défend ; un cheval averti attend.",
           en:"Voice first, hand second. A startled horse defends himself; a warned horse waits." } },
 
-  { ref:"longe-main", lecon:2, coll:"securite",
+  { ref:"longe-main", lecon:1, coll:"securite",
     mots:{ fr:{m:"n'enroule pas la longe"}, en:{m:"never wrap the rope round your hand"},
            es:{m:"no te enrolles la cuerda en la mano"},
            it:{m:"non avvolgere la corda alla mano"},
@@ -160,14 +169,14 @@ window.HYPE_LINGO_LEX.arrivee = {
     def:{ fr:"Le geste qui casse des doigts. On tient la longe pliée dans la main, jamais enroulée autour : si le cheval part, la corde doit pouvoir filer.",
           en:"The habit that breaks fingers. Hold the rope folded in your hand, never coiled round it: if the horse goes, the rope must be able to run." } },
 
-  { ref:"distance", lecon:2, coll:"securite",
+  { ref:"distance", lecon:1, coll:"securite",
     mots:{ fr:{m:"garde tes distances"}, en:{m:"keep your distance", p:"diss-teunce"},
            es:{m:"guarda las distancias"}, it:{m:"mantieni le distanze"},
            de:{m:"halte Abstand", p:"ap-chtant"}, ja:{m:"距離をとって", p:"kyori o totte"} },
     def:{ fr:"En reprise, une longueur de cheval entre le tien et celui de devant. C'est la distance qui évite un coup de pied — et le plus fréquent des accidents de club.",
           en:"In a lesson, one horse's length between you and the one ahead. That distance prevents a kick, the commonest accident in any yard." } },
 
-  { ref:"attention", lecon:2, coll:"securite",
+  { ref:"attention", lecon:1, coll:"securite",
     mots:{ fr:{m:"attention !"}, en:{m:"mind out!", p:"maïnde", var:"heads up!"},
            es:{m:"¡cuidado!"}, it:{m:"attenzione!"},
            de:{m:"Achtung!", p:"arr-toung"}, ja:{m:"危ない！", p:"abunai" } },
@@ -215,52 +224,50 @@ window.HYPE_LINGO_LEX.arrivee = {
   phrases: [
 
   { ref:"ph-reserver-demain", lecon:1,
-    mots:{ fr:{m:"Je voudrais réserver un cours pour demain matin."},
-           en:{m:"I would like to book a lesson for tomorrow morning."},
-           es:{m:"Quisiera reservar una clase para mañana por la mañana."},
-           it:{m:"Vorrei prenotare una lezione per domani mattina."},
-           de:{m:"Ich möchte eine Reitstunde für morgen früh buchen."},
-           ja:{m:"明日 の 朝 の レッスン を 予約 し たい です。"} } },
+      fr:"Je voudrais réserver un cours pour demain matin.",
+      en:"I would like to book a lesson for tomorrow morning.",
+      es:"Quisiera reservar una clase para mañana por la mañana.",
+      it:"Vorrei prenotare una lezione per domani mattina.",
+      de:"Ich möchte eine Reitstunde für morgen früh buchen.",
+      ja:"明日 の 朝 の レッスン を 予約 し たい です。" },
 
   { ref:"ph-je-debute", lecon:1,
-    mots:{ fr:{m:"Je débute, avez-vous un cheval très calme ?"},
-           en:{m:"I am a beginner — do you have a very quiet horse ?"},
-           es:{m:"Soy principiante, ¿ tienen un caballo muy tranquilo ?"},
-           it:{m:"Sono principiante, avete un cavallo molto tranquillo ?"},
-           de:{m:"Ich bin Anfänger — haben Sie ein sehr braves Pferd ?"},
-           ja:{m:"初心者 です。 とても おとなしい 馬 は い ます か ?"} } },
+      fr:"Je débute, avez-vous un cheval très calme ?",
+      en:"I am a beginner — do you have a very quiet horse ?",
+      es:"Soy principiante, ¿ tienen un caballo muy tranquilo ?",
+      it:"Sono principiante, avete un cavallo molto tranquillo ?",
+      de:"Ich bin Anfänger — haben Sie ein sehr braves Pferd ?",
+      ja:"初心者 です。 とても おとなしい 馬 は い ます か ?" },
 
   { ref:"ph-bombe-tarif", lecon:1,
-    mots:{ fr:{m:"La bombe est fournie ? Et quel est le tarif ?"},
-           en:{m:"Is a hat provided ? And what is the price ?"},
-           es:{m:"¿ El casco está incluido ? ¿ Y cuál es la tarifa ?"},
-           it:{m:"Il cap è fornito ? E qual è la tariffa ?"},
-           de:{m:"Wird eine Kappe gestellt ? Und was kostet es ?"},
-           ja:{m:"ヘルメット の 貸し出し は あり ます か。 料金 は いくら です か ?"} } },
+      fr:"La bombe est fournie ? Et quel est le tarif ?",
+      en:"Is a hat provided ? And what is the price ?",
+      es:"¿ El casco está incluido ? ¿ Y cuál es la tarifa ?",
+      it:"Il cap è fornito ? E qual è la tariffa ?",
+      de:"Wird eine Kappe gestellt ? Und was kostet es ?",
+      ja:"ヘルメット の 貸し出し は あり ます か。 料金 は いくら です か ?" },
 
-  { ref:"ph-derriere", lecon:2,
-    mots:{ fr:{m:"Ne passe pas derrière lui, passe devant."},
-           en:{m:"Don't walk behind him, go round the front."},
-           es:{m:"No pases por detrás, pasa por delante."},
-           it:{m:"Non passare dietro, passa davanti."},
-           de:{m:"Geh nicht hinter ihm vorbei, geh vorne herum."},
-           ja:{m:"後ろ を 通ら ないで、 前 を 通っ て。"} } },
+  { ref:"ph-derriere", lecon:1,
+      fr:"Ne passe pas derrière lui, passe devant.",
+      en:"Don't walk behind him, go round the front.",
+      es:"No pases por detrás, pasa por delante.",
+      it:"Non passare dietro, passa davanti.",
+      de:"Geh nicht hinter ihm vorbei, geh vorne herum.",
+      ja:"後ろ を 通ら ないで、 前 を 通っ て。" },
 
-  { ref:"ph-longe", lecon:2,
-    mots:{ fr:{m:"N'enroule pas la longe autour de ta main."},
-           en:{m:"Never wrap the rope round your hand."},
-           es:{m:"No te enrolles la cuerda en la mano."},
-           it:{m:"Non avvolgere la corda attorno alla mano."},
-           de:{m:"Wickle den Strick nicht um die Hand."},
-           ja:{m:"引き手 を 手 に 巻か ないで。"} } },
+  { ref:"ph-longe", lecon:1,
+      fr:"N'enroule pas la longe autour de ta main.",
+      en:"Never wrap the rope round your hand.",
+      es:"No te enrolles la cuerda en la mano.",
+      it:"Non avvolgere la corda attorno alla mano.",
+      de:"Wickle den Strick nicht um die Hand.",
+      ja:"引き手 を 手 に 巻か ないで。" },
 
   { ref:"ph-ca-va", lecon:2,
-    mots:{ fr:{m:"Ça va ? Ne bouge pas, j'attrape le cheval."},
-           en:{m:"Are you all right ? Don't move, I'll catch the horse."},
-           es:{m:"¿ Estás bien ? No te muevas, yo cojo el caballo."},
-           it:{m:"Tutto bene ? Non ti muovere, prendo il cavallo."},
-           de:{m:"Alles gut ? Beweg dich nicht, ich fange das Pferd."},
-           ja:{m:"大丈夫 です か。 動か ないで、 馬 を 捕まえ ます。"} } }
-
-  ]
+      fr:"Ça va ? Ne bouge pas, j'attrape le cheval.",
+      en:"Are you all right ? Don't move, I'll catch the horse.",
+      es:"¿ Estás bien ? No te muevas, yo cojo el caballo.",
+      it:"Tutto bene ? Non ti muovere, prendo il cavallo.",
+      de:"Alles gut ? Beweg dich nicht, ich fange das Pferd.",
+      ja:"大丈夫 です か。 動か ないで、 馬 を 捕まえ ます。" },]
 };
