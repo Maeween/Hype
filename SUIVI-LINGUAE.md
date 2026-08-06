@@ -22,6 +22,40 @@
 
 ---
 
+## ✍️ SESSION 103 · LINGUAE (06/08) — LES HUIT RÉCITS MANQUANTS SONT ÉCRITS
+
+« Je te laisse juge » — choix fait, et voici pourquoi : les huit villes concernées sont **déjà jouables et déjà en ligne**, alors que les huit destinations planifiées n'ont ni mots ni images. Réparer un trou visible passe avant d'ajouter du contenu par-dessus.
+Blandine confirme au passage : **Lamotte garde `poney`.** La sécurité (`arrivee` L2, 11 mots) reste donc en réserve, non attribuée.
+
+### ✅ RECITS passe de 13 à 21 entrées
+Écrits pour **Saumur, Lamotte-Beuvron, Jerez, Séville, Vejer, Oliva Nova, Warendorf, Aix-la-Chapelle** — dans les **six langues**, au format exact des treize existants : deux phrases évocatrices puis une note factuelle dans `{f:…}`.
+
+⚠️ **Aucun fait neuf n'a été inventé.** La matière vient des volets déjà écrits et relus dans `hype-linguae-villes-nouvelles.md` — le Cadre Noir et la légèreté, le pura raza española de l'École royale andalouse, le haras d'État de Westphalie, la doma vaquera à une main, la tournée d'hiver d'Oliva, la ration écrite sur la porte à Vejer, les quatre disciplines du CHIO et le barrage au chronomètre, le plus grand parc équestre d'Europe. Le récit ne répète jamais la lettre de la carte postale : il est plus court et se lit sous la vidéo.
+⚠️ **Les traductions n'ont pas été relues par un natif.** À reporter dans `hype-linguae-doutes.md`.
+
+### ✅ Le repli reste, mais n'a plus à servir
+Le filet posé en session 102 (à défaut de récit, la phrase du « pourquoi ») est conservé : il couvrira la prochaine ville ajoutée avant que son récit soit écrit. Il ne se déclenche plus sur aucune des vingt-et-une villes actuelles.
+
+### 🔴 Deux coquilles de ma main, attrapées avant livraison
+- Un **« три »** en cyrillique s'était glissé dans le japonais de Lamotte (« trois adultes »). Trouvé par un balayage de tout le bloc `RECITS` à la recherche de caractères cyrilliques ou grecs — zéro restant après correction.
+- Rien d'autre : le contrôle par exécution sur **21 villes × 6 langues** ne remonte aucune anomalie (structure à trois lignes, aucune ligne vide, troisième ligne bien factuelle partout).
+
+### Contrôles passés
+Syntaxe validée · contrôle exhaustif par exécution : **126 récits vérifiés** (21 villes × 6 langues), zéro anomalie · rendu réel sur Saumur, Aix-la-Chapelle et Lamotte-Beuvron, plus Saumur en allemand pour vérifier le changement de langue · balayage des caractères étrangers dans tout le bloc · aucune erreur JS · aucune régression sur Rome, Le Morne ni La Baule.
+
+### ⏳ Ce qui reste, par ordre d'utilité décroissante
+1. **Cinq jeux d'images du parcours V1** : Warendorf, Séville, Vejer, Aix-la-Chapelle, Lamotte-Beuvron. Prompts prêts dans `hype-linguae-production.txt`. Ce sont des villes jouables qui affichent « Vidéo introuvable ».
+2. **Les trois images de Rome** — `carte-rome.webp`, `fond-rome.webp`, `arrivee-rome.mp4`. Elle n'était pas dans les documents de production.
+3. **Le vocabulaire des huit destinations suivantes** (~20 mots × 6 langues chacune). Golegã a sa vidéo mais aucun mot : aucune n'est jouable.
+4. **La sécurité** (11 mots prêts) attend une ville. Lamotte est écartée.
+5. **Les phrases japonaises des lexiques anciens** n'ont pas d'espaces entre les groupes : l'exercice de remise en ordre n'a donc qu'une seule tuile à déplacer. Défaut antérieur, jamais traité.
+
+### 🧭 Préparation Flutter
+**Aucune amélioration d'architecture réalisée sur cette session** — elle est entièrement de contenu. Un seul point d'architecture confirmé au passage : les huit récits ont été ajoutés sans qu'une ligne de moteur bouge, et le repli de la session 102 s'est révélé exactement au bon endroit pour absorber le manque pendant qu'il durait.
+**Risques** : nuls. Rien d'exécutable n'a changé.
+
+---
+
 ## 🏛️ SESSION 102 · LINGUAE (06/08) — ROME, ET LE RÉCIT MANQUANT DE HUIT VILLES
 
 ### ✅ Une seule page codeuse à partir de maintenant
