@@ -22,6 +22,75 @@
 
 ---
 
+## 🏟️ SESSION 107 · LINGUAE (06/08) — LES DEUX IMAGES DE ROME FABRIQUÉES
+
+Blandine envoie une vue de Rome au couchant (1086×1448, le Tibre, la coupole, le Colisée). Les deux fichiers manquants en ont été tirés, **aux conventions mesurées sur les cartes déjà en place** plutôt qu'à vue de nez.
+
+- **`carte-rome.webp`** — 900×1200, comme les six autres cartes. 65 Ko.
+- **`fond-rome.webp`** — 420×560, flou gaussien puis assombrissement **calibré par mesure** : la luminance moyenne des fonds existants est de 39 à 43, celle de Rome est descendue à 40,1 en cherchant le facteur par itération (0,70). 1,5 Ko, exactement le gabarit des autres.
+
+✅ Vérifié en rendu réel : la carte du carnet charge `fond-rome.webp`, l'écran d'arrivée joue `arrivee-rome.mp4` et affiche la carte postale (le repli « Carte à venir » ne se déclenche plus). Rome est complète.
+
+### ⚠️ Une remarque de direction artistique, pas un défaut
+**La carte de Rome ne montre aucun cheval.** C'est la seule des sept dans ce cas — La Baule, Le Morne, Warendorf, Séville, Vejer, Aix-la-Chapelle et Lamotte en ont toutes un au premier plan. La bible dit « le cheval est toujours le héros ».
+C'est défendable pour Rome, dont le sujet est justement la ville qui contient un jardin où l'on saute. Mais c'est un écart, et il vaut mieux qu'il soit choisi que subi. **Rien changé** : à Blandine de dire si elle veut une version avec un cheval au premier plan.
+
+### Contrôles passés
+`verif.py` sur les fichiers touchés · luminance et poids des deux images confrontés aux six cartes et aux quinze fonds existants · rendu réel de l'écran d'arrivée de Rome et de sa carte dans le carnet · aucune erreur JS.
+
+### 🧭 Préparation Flutter
+**Aucune amélioration d'architecture réalisée sur cette session** — production d'actifs uniquement, aucun code touché.
+Un point de méthode toutefois : les deux images ont été calibrées **par mesure sur les actifs existants** (dimensions, luminance moyenne, poids) et non à l'œil. C'est ce qui garantit qu'un fond fabriqué ici se comporte comme un fond fabriqué ailleurs, et c'est reproductible pour les villes suivantes.
+**Risques** : nuls.
+
+---
+
+## 🌍 SESSION 106 · LINGUAE (06/08) — LES SIX LANGUES SONT OUVERTES
+
+Blandine : « on devrait les mettre en ligne non ? Indispensable pour choisir de quelle langue à quelle langue. » Elle avait raison, et c'était bien plus proche que « Bientôt » ne le laissait croire.
+
+### ✅ Le moteur était déjà prêt
+`cible()` renvoie `VOYAGE_LANGUE`, fixée par la destination choisie, et **tous** les exercices lisent `c.mots[lg]` pour la langue apprise et `c.mots[ui]` pour celle qu'on lit déjà. Le vocabulaire existe dans les six langues dans chaque lexique. Même le cas japonais était traité : `if(t==="ecrire" && lg==="ja") t="ecoute"` — on ne tape pas des kana au haras.
+✅ **Les six destinations passent à `ouvert:true`** (dont le français), et leurs descriptions perdent « Bientôt ». Le couple source → cible fonctionne : un cavalier qui lit en espagnol peut apprendre l'allemand.
+
+### ✅ Le filtre de la langue lue
+La liste proposait les mêmes cinq langues à tout le monde : un hispanophone se voyait offrir « El español ». `montrerDest()` écarte maintenant la destination dont `lg === langueUI()`. Le filtre est dans la fonction et non dans les données, pour qu'il suive la langue de l'interface si elle change.
+
+### 🔴 Deux défauts qui rendaient l'ouverture impossible, trouvés en la faisant
+**1 · Le voyage choisi n'était jamais relu.** `hype_lingua_voyage` était **écrit** dans le localStorage depuis toujours et **jamais relu** : au rechargement, `VOYAGE_LANGUE` retombait sur `"en"`. Invisible tant qu'une seule langue était ouverte — bloquant dès qu'il y en a six : on choisissait l'espagnol, on rechargeait, on revenait à l'anglais. Relecture ajoutée, qui refuse une destination fermée ou égale à la langue lue.
+**2 · La maîtrise n'était pas rangée par langue.** Le magasin `hype_lingo_maitrise` était un objet plat indexé par `ref` seul. Correct avec une seule langue, **faux dès qu'on change** : « le poney » su en anglais faisait passer « el poni » pour acquis, et le chapitre espagnol s'ouvrait déjà terminé. Le magasin devient `{en:{…}, es:{…}}`.
+✅ **Migration sans perte** : l'ancien format plat est reconnu à ce que ses valeurs sont des nombres, et rangé sous `"en"` — tous les joueurs existants apprenaient l'anglais. `MAITRISE` reste une variable réassignée par `chargerMaitrise()`, donc **aucun autre morceau de code n'a eu besoin de changer**.
+⚠️ **Reste ouvert, pour Blandine** : `hype_lingua_quiz` et `hype_lingua_cartes` (les quiz réussis et les cartes postales gagnées) restent **communs à toutes les langues**. Un joueur qui passe à l'espagnol arrive donc avec sa collection déjà remplie. C'est défendable — on a visité la ville — mais c'est une décision de jeu, pas une décision technique. Rien touché.
+
+### 🔴 Un `}` en trop, et une méthode de contrôle défaillante
+Mon patch a laissé un `}` en trop dans la description japonaise, et **mon contrôle de syntaxe ne l'a pas vu** : il visait le bloc script d'index 14, alors que l'ajout des deux `<script src>` des nouveaux lexiques avait décalé le bloc inline en 16. Le fichier était cassé et se chargeait sur un écran noir.
+✅ Rattrapé par le test de rendu, qui a remonté `Unexpected token '}'`.
+✅ **`verif.py` écrit** : il contrôle **tous** les blocs non vides d'un fichier HTML, plus les fichiers .js, et ne dépend plus d'aucun index. C'est ce script qui doit servir désormais.
+
+### ✅ `arrivee-rome.mp4` fabriqué
+Reçu en `.mov` HEVC 640×640 avec piste audio et filigrane « CapCut AI ». Converti en H.264 sans audio : **3,46 Mo → 410 Ko**.
+⚠️ **Le filigrane n'a PAS été effacé au filtre**, contrairement au Morne : le fond est ici texturé (toits, arbres) et `delogo` laissait des traînées verticales visibles, pires que le filigrane. **Recadré à la place** : le clip perd ses 78 premières lignes, ce qui sort le filigrane du champ. Le panneau ROME reste entier, seule la volute ornementale au-dessus est rognée. Résultat 640×562.
+⚠️ Le clip est donc légèrement **paysage** : `ajusterCadrage` le passera en `contain`, comme celui du Morne.
+
+### Contrôles passés
+`verif.py` sur les cinq fichiers, tous les blocs · **rendu réel de bout en bout en espagnol** : liste filtrée (cinq entrées, le français caché), choix de l'espagnol, `VOYAGE_LANGUE` et `cible()` à « es », magasin devenu `{"en":{},"es":{"poney":4}}`, **rechargement** conservant la langue et la maîtrise, leçon affichant « reservar · el nivel · principiante · la tarifa » · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **Les définitions n'existent qu'en français et en anglais** — plusieurs centaines de notes qui expliquent les pièges. Un joueur lisant en allemand les reçoit en français. C'est le seul vrai chantier de l'ouverture, et il se fait chapitre par chapitre.
+2. `carte-golega.webp`, `fond-golega.webp`, `carte-rome.webp`, `fond-rome.webp`.
+3. `lingua-affiche.webp` et `fond-newmarket.webp` (session 105).
+4. Le vocabulaire des sept destinations restantes.
+5. La sécurité (11 mots) attend une ville.
+
+### 🧭 Préparation Flutter
+- **Le paramétrage par langue est validé par l'usage** : ouvrir cinq langues n'a demandé aucune modification d'exercice. C'est la preuve que la frontière « moteur / contenu / langue » tient réellement, et pas seulement sur le papier.
+- **Un magasin nommé par dimension** : `hype_lingo_maitrise` passe d'un dictionnaire plat à un dictionnaire indexé par langue, avec migration détectée à la forme des données. Le motif servira pour toute autre dimension à venir.
+- **Outil d'abord, correctif ensuite** : `verif.py` remplace un contrôle fragile par un contrôle exhaustif. Le défaut n'était pas dans le code livré, il était dans ma façon de le vérifier.
+- **Reste à moderniser** : `hype_lingua_quiz` et `hype_lingua_cartes` ne sont pas dimensionnés par langue alors que `hype_lingo_maitrise` l'est désormais. L'incohérence est assumée le temps que Blandine tranche.
+- **Risques** : la migration du magasin de maîtrise touche des données de joueurs existants. Elle a été vérifiée dans les deux sens (ancien format plat lu et rangé sous « en », nouveau format relu après rechargement).
+
+---
+
 ## 🖼️ SESSION 105 · LINGUAE (06/08) — LE VIDE DE LA PRÉSENTATION EXPLIQUÉ : DEUX IMAGES MANQUANTES
 
 Blandine : « les pages que je voyais pas en ligne du coup elles apparaissent maintenant ? » Réponse cherchée dans le code plutôt que devinée — et ce n'était pas des pages absentes.
