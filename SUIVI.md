@@ -87,6 +87,36 @@ La relecture native des mots. Les vidéos et cartes manquantes (île Maurice à 
 
 ---
 
+## 🃏 SESSION 93 · LINGUAE (06/08) — LA PAGE DE COLLECTION
+
+⚠️ **Cette entrée avait déjà été écrite une première fois, puis a disparu** du fichier reçu en retour — probablement un croisement avec la conversation index.html qui travaillait au même moment sur ce même `SUIVI.md`. Réécrite ici, le code correspondant (`lingo-collection.html`) a bien été livré entre-temps, rien n'est perdu côté application.
+
+« On devrait faire une page avec toutes les cartes et les objets ensemble, et quand on retourne la carte ça dit l'objet à gagner ou récompense obtenue ». Construite.
+
+### ✅ `lingo-collection.html` — nouveau fichier, même motif que le globe
+Iframe séparée (comme `lingo-globe.html`), reçoit l'état des 19 villes par message depuis `lingo.html` (source unique de vérité, rien dupliqué), renvoie la fermeture par message. **Même double verrou de fermeture que le globe** (`pointer-events` + `display:none` sur l'iframe 320 ms après) : posé dès la construction, pas après-coup.
+- Grille de 19 cartes, 2 colonnes, dans l'ordre du voyage.
+- Trois états visuels : **verrouillée** (silhouette, pas de photo) · **ouverte sans carte** (photo assombrie, pas de tampon) · **carte gagnée** (photo claire, tampon doré).
+- On touche, la carte se retourne (flip CSS 3D). Au dos : pour une ville verrouillée, « À découvrir — termine cette leçon » ; pour une ville ouverte sans carte, « En cours — réussis le quiz » ; pour une carte gagnée, **la lettre de la ville** (langue étudiée, comme sur l'écran d'arrivée) et en bas la ligne de l'objet — **« À gagner »** ou **« Récompense obtenue »** avec son icône.
+
+### ✅ Image de carte absente : le même principe que « Vidéo introuvable »
+Dix des dix-neuf villes n'ont pas encore de `carte-X.webp`. Chaque carte **tente toujours de charger son image** et bascule sur « Carte à venir » seulement si le chargement échoue réellement (`onerror`). Aucune liste à maintenir à la main.
+
+### 🔴 Trouvé en construisant la page : La Baule affichait une lettre VIDE depuis le début
+Sa lettre et ses trois volets avaient été écrits (`labaule.md`) mais **jamais injectés dans `hype-lingo-villes-monde.js`**. Son écran d'arrivée officiel montrait donc une lettre blanche depuis qu'elle est devenue l'étape 1, sans que personne ne l'ait remarqué.
+✅ Corrigé : `MONDE.labaule` ajouté (lettre + 3 volets, 6 langues). Vérifié en exécution.
+
+### Contrôles passés
+Syntaxe validée sur les deux fichiers · diff exhaustif sur `lingo.html` (aucune fonction perdue) · rendu réel : 19 cartes affichées, compteur correct, trois états vérifiés un par un, lettre affichée et retournée · fermeture testée avec le même verrou que le globe.
+
+### ⚠️ Vérifié aujourd'hui : le globe de l'app n'a pas changé
+`index.html` reçu à nouveau (travail parallèle de la conversation index.html) — **le bloc `GLOBE_HTML_HYPE` est identique octet pour octet** à celui déjà greffé en session 92 · LINGUAE. Rien à resynchroniser.
+
+### ⚠️ Reste à faire
+Bouton d'entrée vers la collection en haut à droite, sous celui du globe — à repositionner si besoin. Pas de bouton « Partir » sur les cartes ouvertes-mais-pas-gagnées (vitrine, pas une seconde navigation) — à ajouter si voulu. Les dix cartes britanniques manquantes, toujours en attente côté serveur.
+
+---
+
 ## 🎬 SESSION 91 (05-06/08) — VIDÉOS, MASQUAGES, QUÊTE RÉPARÉE, ET LE DIAGNOSTIC TULLY
 
 **Page codeuse unique sur l'index.** Part de `70a0c0d1` (9 791 253 o) fourni par Blandine → sortie **`3e5dfd89a5eb0a8f4d6c03122d8bcdc7`** (10 506 977 o).

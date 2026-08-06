@@ -332,6 +332,55 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
 
   };
 
+  /* ⚠️ La Baule, ajoutée le 6 août 2026. Sa lettre et ses volets avaient
+     été écrits (labaule.md) mais jamais injectés ici — son écran
+     d'arrivée affichait donc une lettre VIDE depuis qu'elle est devenue
+     l'étape 1 du voyage. Trouvé en construisant la page de collection :
+     la carte se retournait sur du blanc. */
+  MONDE.labaule = {
+    lieu:"Loire-Atlantique · France", carte:true, niveau:1,
+    image:"les carrières face à l'océan",
+    lettre:{
+      fr:["C'est la première fois que je demandais un cheval dans une langue qui n'est pas la mienne.",
+          "Je me suis trompé sur presque tout, on m'a compris quand même, et on m'a donné un alezan très calme. On est partis vers la plage au pas, et je n'ai plus rien dit pendant vingt minutes."],
+      en:["It was the first time I had ever asked for a horse in a language that isn't mine.",
+          "I got almost everything wrong, they understood me anyway, and they gave me a very quiet chestnut. We walked down towards the beach, and I said nothing at all for twenty minutes."],
+      es:["Era la primera vez que pedía un caballo en un idioma que no es el mío.",
+          "Me equivoqué en casi todo, me entendieron igual y me dieron un alazán muy tranquilo. Bajamos al paso hacia la playa y no dije nada durante veinte minutos."],
+      it:["Era la prima volta che chiedevo un cavallo in una lingua che non è la mia.",
+          "Ho sbagliato quasi tutto, mi hanno capito comunque e mi hanno dato un sauro molto tranquillo. Siamo scesi al passo verso la spiaggia, e per venti minuti non ho detto niente."],
+      de:["Es war das erste Mal, dass ich in einer fremden Sprache nach einem Pferd fragte.",
+          "Ich machte fast alles falsch, man verstand mich trotzdem, und man gab mir einen sehr braven Fuchs. Wir gingen im Schritt zum Strand hinunter, und zwanzig Minuten lang sagte ich kein Wort."],
+      ja:["自分の言葉ではない言語で馬を頼んだのは、あれが初めてだった。",
+          "ほとんど言い間違えたけれど、それでも通じて、とてもおとなしい栗毛を出してくれた。常歩で浜へ下りていくあいだ、私は二十分間ひとことも話さなかった。"]},
+    volets:[
+      {t:{fr:"Le Jumping", en:"The Jumping", es:"El Jumping", it:"Il Jumping",
+          de:"Das Jumping", ja:"ジャンピング"},
+       c:{fr:"Chaque printemps, les carrières s'installent face à l'océan et les meilleurs cavaliers du monde y sautent à cent mètres de la plage. C'est l'un des plus anciens concours internationaux d'Europe, et le sable de la piste vient de la mer.",
+          en:"Every spring the arenas go up facing the ocean, and the best riders in the world jump a hundred metres from the beach. It is one of Europe's oldest international shows, and the sand in the ring comes from the sea.",
+          es:"Cada primavera las pistas se montan frente al océano y los mejores jinetes del mundo saltan a cien metros de la playa. Es uno de los concursos internacionales más antiguos de Europa, y la arena de la pista viene del mar.",
+          it:"Ogni primavera i campi si allestiscono di fronte all'oceano e i migliori cavalieri del mondo saltano a cento metri dalla spiaggia. È uno dei più antichi concorsi internazionali d'Europa, e la sabbia del campo viene dal mare.",
+          de:"Jedes Frühjahr entstehen die Plätze mit Blick auf den Ozean, und die besten Reiter der Welt springen hundert Meter vom Strand entfernt. Es ist eines der ältesten internationalen Turniere Europas — und der Sand im Parcours kommt aus dem Meer.",
+          ja:"春になると、大西洋に面して馬場が設けられ、世界最高の騎手たちが浜から百メートルの場所で障害を跳びます。ヨーロッパでもっとも古い国際大会のひとつで、走行路の砂は海から来たものです。"}},
+      {t:{fr:"La plage", en:"The beach", es:"La playa", it:"La spiaggia",
+          de:"Der Strand", ja:"浜辺"},
+       c:{fr:"Neuf kilomètres de sable, et le droit d'y monter hors saison, tôt le matin. L'eau salée est réputée bonne pour les tendons — on y descend les chevaux au pas dans les vagues, sans les faire nager.",
+          en:"Nine kilometres of sand, and the right to ride there out of season, early in the morning. Salt water is held to be good for tendons: horses are walked into the waves, not made to swim.",
+          es:"Nueve kilómetros de arena, y el derecho a montar allí fuera de temporada, temprano por la mañana. El agua salada se considera buena para los tendones: se entra a los caballos al paso en las olas, sin hacerlos nadar.",
+          it:"Nove chilometri di sabbia, e il diritto di montarvi fuori stagione, presto al mattino. L'acqua salata è ritenuta buona per i tendini: si fanno entrare i cavalli al passo tra le onde, senza farli nuotare.",
+          de:"Neun Kilometer Sand — und außerhalb der Saison darf man dort frühmorgens reiten. Salzwasser gilt als gut für die Sehnen: man führt die Pferde im Schritt in die Wellen, ohne sie schwimmen zu lassen.",
+          ja:"九キロの砂浜。シーズン外の早朝には、そこで乗ることが許されています。塩水は腱に良いとされ、馬は常歩で波に入れられます — 泳がせるのではなく。"}},
+      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi",
+          de:"Wenn du hinführest", ja:"もし行くなら"},
+       c:{fr:"Réserve la veille et dis ton niveau franchement : personne ne juge un débutant, tout le monde juge un débutant qui s'est présenté comme cavalier. Demande si la bombe est fournie, elle l'est presque toujours.",
+          en:"Book the day before and be honest about your level: nobody judges a beginner, everybody judges a beginner who claimed to be a rider. Ask whether a hat is provided — it almost always is.",
+          es:"Reserva el día antes y di tu nivel con franqueza: nadie juzga a un principiante, todos juzgan a un principiante que se presentó como jinete. Pregunta si el casco está incluido, casi siempre lo está.",
+          it:"Prenota il giorno prima e di' il tuo livello con franchezza: nessuno giudica un principiante, tutti giudicano un principiante che si è presentato come cavaliere. Chiedi se il cap è fornito: quasi sempre lo è.",
+          de:"Buche am Vortag und sag dein Können ehrlich: niemand verurteilt einen Anfänger, alle verurteilen einen Anfänger, der sich als Reiter ausgegeben hat. Frag, ob eine Kappe gestellt wird — fast immer ja.",
+          ja:"前日に予約し、自分の技量を正直に伝えること。初心者を悪く言う人はいませんが、経験者だと言った初心者は別です。ヘルメットの貸し出しがあるか尋ねてください。ほとんどの場合あります。"}}
+    ]
+  };
+
   /* ajout clé par clé : on ne remplace jamais une ville déjà présente */
   var k;
   for(k in MONDE){

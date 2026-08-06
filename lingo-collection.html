@@ -1,0 +1,249 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hype Linguae · la collection</title>
+<style>
+/* ==================================================================
+   HYPE LINGUAE — LA COLLECTION (6 août 2026)
+   « On devrait faire une page avec toutes les cartes et les objets
+   ensemble ». Une grille, une carte par ville dans l'ordre du voyage.
+   On touche, elle se retourne. Au dos : la lettre de la ville si la
+   carte est gagnée, et en bas la ligne de l'objet — « À gagner » ou
+   « Récompense obtenue » avec son dessin.
+
+   Page à part, en iframe, comme le globe : lingo.html dépasse déjà les
+   230 Ko et l'incident du globe a montré que ses blocs de script
+   cassent en silence dès qu'on ajoute de la matière au mauvais endroit.
+
+   Elle ne connaît AUCUNE ville par elle-même : tout arrive par message
+   depuis lingo.html (source unique de vérité), exactement comme le
+   globe. Elle ne fait que dessiner ce qu'on lui donne.
+   ================================================================== */
+:root{ --noir:#060709; --anthracite:#111417; --turq:#20D9F5; --or:#D4AF37; --blanc:#F4F7FA; }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--noir);color:var(--blanc);
+  font-family:'Montserrat',-apple-system,system-ui,sans-serif;overflow:hidden}
+body{overflow-y:auto;-webkit-overflow-scrolling:touch}
+#top{position:sticky;top:0;z-index:5;padding:calc(env(safe-area-inset-top) + 16px) 18px 14px;
+  background:linear-gradient(180deg,rgba(6,7,9,.97) 70%,rgba(6,7,9,0));text-align:center}
+#top h1{margin:0;font-family:'Cinzel',Georgia,serif;font-size:16px;letter-spacing:.16em;
+  text-transform:uppercase;font-weight:600}
+#top p{margin:6px 0 0;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#7C8894}
+#fermer{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:12px;z-index:6;
+  width:38px;height:38px;border:0;border-radius:50%;background:rgba(255,255,255,.08);
+  color:#9AA6B2;font-size:20px;line-height:1;cursor:pointer}
+#compte{position:fixed;top:calc(env(safe-area-inset-top) + 10px);right:14px;z-index:6;
+  text-align:right;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#7C8894}
+#compte b{display:block;font-family:'Cinzel',Georgia,serif;font-size:17px;color:var(--or);
+  letter-spacing:0}
+
+#grille{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:4px 16px calc(env(safe-area-inset-bottom) + 30px)}
+
+.carte{position:relative;aspect-ratio:3/4;perspective:1200px}
+.carte .flip{position:absolute;inset:0;transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.4,.1,.2,1);cursor:pointer}
+.carte.ouverte .flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:13px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.1)}
+.rec{background-size:cover;background-position:center}
+.rec img{width:100%;height:100%;object-fit:cover;display:block}
+.rec .voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,
+  rgba(0,0,0,0) 30%,rgba(0,0,0,0) 65%,rgba(0,0,0,.65) 100%)}
+.rec .nom{position:absolute;left:9px;right:9px;bottom:8px;font-family:'Cinzel',Georgia,serif;
+  font-size:12.5px;font-weight:600;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.rec .niv{position:absolute;left:9px;top:7px;font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(244,247,250,.85);text-shadow:0 1px 4px rgba(0,0,0,.8)}
+.rec .tampon{position:absolute;right:8px;top:7px;width:22px;height:22px;border-radius:50%;
+  border:1.4px solid var(--or);display:flex;align-items:center;justify-content:center;
+  color:var(--or);font-size:11px;background:rgba(6,7,9,.35)}
+
+/* ville pas encore ouverte : silhouette, pas de photo */
+.carte.verrou .rec{background:linear-gradient(155deg,#151b22,#0a0d11);
+  display:flex;align-items:center;justify-content:center}
+.carte.verrou .rec svg{width:30%;opacity:.22}
+.carte.verrou .rec .nom{opacity:.55}
+
+/* image absente du serveur : le repli apparaît seulement si le
+   chargement échoue vraiment (voir onerror dans carteHTML) */
+.face.sansimg{background:linear-gradient(155deg,#171d24,#0b0e12)}
+.face.sansimg .repli{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;text-align:center;padding:14px;color:#5E6975;font-size:9.5px}
+.face:not(.sansimg) .repli{display:none}
+
+/* ouverte mais pas gagnee : image assombrie, pas de tampon */
+.carte.ouverte-seule .rec img{filter:brightness(.5) saturate(.65)}
+
+.dos{background:linear-gradient(165deg,rgba(17,20,23,.97),rgba(6,7,9,.99));
+  transform:rotateY(180deg);display:flex;flex-direction:column;padding:12px 12px 10px}
+.dos .ville{font-family:'Cinzel',Georgia,serif;font-size:12.5px;font-weight:600;
+  border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:7px;margin-bottom:8px}
+.dos .ville i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:#7C8894;margin-top:2px}
+.dos .corps{flex:1;overflow-y:auto;font-family:'Caveat',cursive;font-size:15px;
+  line-height:1.4;color:#D9E2EA}
+.dos .corps.ja{font-family:'Klee One',serif;font-size:10.5px;line-height:1.7}
+.dos .corps p{margin:0 0 6px}
+.dos .verrouille{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;gap:6px;color:#5E6975;font-size:10.5px;padding:6px}
+.dos .objet{margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;gap:8px}
+.dos .objet svg{width:22px;height:22px;flex-shrink:0}
+.dos .objet .txt{flex:1;font-size:9.5px;line-height:1.35}
+.dos .objet .txt b{display:block;font-size:10.5px;font-weight:600}
+.dos.gagne .objet .txt b{color:var(--or)}
+.dos:not(.gagne) .objet .txt b{color:var(--turq)}
+.dos .objet.non svg{opacity:.3}
+
+#vide{display:none;padding:60px 30px;text-align:center;color:#7C8894;font-size:12px;line-height:1.6}
+</style></head><body>
+
+<button id="fermer" aria-label="Fermer">×</button>
+<div id="compte"><b id="nGagnees">0</b><span id="nSur">/ 0</span></div>
+<div id="top">
+  <h1>La collection</h1>
+  <p id="sousTitre">tes cartes, tes objets</p>
+</div>
+
+<div id="grille"></div>
+<div id="vide">Aucune destination pour l'instant.<br>Reviens quand le voyage aura commencé.</div>
+
+<script>
+var ICONES = {
+ lampion:'<path d="M30 10 v6 M20 16 h20 l-3 6 h-14 Z M22 22 q-4 12 8 14 q12 -2 8 -14 M26 40 h8 M30 44 v8" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ toise:'<path d="M30 8 v40 M20 48 h20 M24 14 h12 M24 22 h12 M24 30 h12 M24 38 h12 M14 12 h10" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ jarre:'<path d="M24 12 h12 M26 12 q-12 8 -10 22 q2 14 14 14 q12 0 14 -14 q2 -14 -10 -22 M18 30 q12 6 24 0" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ peigne:'<path d="M14 16 h32 q3 0 3 4 v6 q0 4 -3 4 h-32 q-3 0 -3 -4 v-6 q0 -4 3 -4 Z M16 30 v14 M22 30 v14 M28 30 v14 M34 30 v14 M40 30 v14 M46 30 v14" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ seau:'<path d="M16 20 h28 l-4 26 q-1 4 -5 4 h-10 q-4 0 -5 -4 Z M18 20 q12 -14 24 0 M22 28 h16" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ dossard:'<path d="M16 14 h28 v34 h-28 Z M22 10 v6 M38 10 v6 M24 26 h12 M24 34 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ echelle:'<path d="M20 10 v40 M40 10 v40 M20 18 h20 M20 26 h20 M20 34 h20 M20 42 h20" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ cloche:'<path d="M30 10 q-12 4 -12 20 q0 8 -4 12 h32 q-4 -4 -4 -12 q0 -16 -12 -20 Z M26 42 q1 8 4 8 q3 0 4 -8 M30 6 v4" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ selle:'<path d="M8 26 q22 -19 44 -2 q-4 12 -14 12 h-16 q-10 0 -14 -10 Z M16 36 v10 M44 36 v10 M14 46 h32" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ etrille:'<path d="M14 20 h32 q4 0 4 5 v10 q0 5 -4 5 h-32 q-4 0 -4 -5 v-10 q0 -5 4 -5 Z M14 40 v7 M22 40 v7 M30 40 v7 M38 40 v7 M46 40 v7" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ licol:'<path d="M20 14 h20 q6 0 6 8 v12 q0 8 -8 8 h-16 q-8 0 -8 -8 v-12 q0 -8 6 -8 Z M14 30 h32 M30 42 v10 M24 52 h12" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ alene:'<path d="M30 8 v34 M24 42 h12 l-6 10 Z M18 20 q12 -8 24 0" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ fer:'<path d="M30 10 q-18 0 -18 20 q0 14 6 22 M30 10 q18 0 18 20 q0 14 -6 22 M18 26 h4 M42 26 h4 M20 38 h4 M40 38 h4" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/>',
+ lettre:'<path d="M18 46 L30 14 L42 46 M23 34 h14" fill="none" stroke="#D4AF37" stroke-width="2.4" stroke-linejoin="round"/>',
+ fanion:'<path d="M18 10 v40 M18 12 h24 l-7 8 l7 8 h-24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ cocarde:'<circle cx="30" cy="22" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="22" r="4" fill="#D4AF37"/><path d="M24 32 l-4 20 l10 -7 l10 7 l-4 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ stetho:'<path d="M20 10 v12 q0 10 10 10 q10 0 10 -10 v-12 M30 32 v10 q0 6 8 6" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="42" cy="48" r="6" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ carnet:'<path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>'
+};
+var SILH = '<svg viewBox="0 0 60 60"><path d="M30 8 q-14 0 -14 16 q0 10 6 16 l-2 12 h20 l-2 -12 q6 -6 6 -16 q0 -16 -14 -16 Z" fill="none" stroke="#3A4550" stroke-width="2"/></svg>';
+
+var LANG = { fr:{
+  gagnees:"gagnées", verrouilleeT:"À découvrir", verrouilleeC:"Termine cette leçon pour retourner la carte.",
+  ouverteT:"En cours", ouverteC:"Réussis le quiz pour lire la lettre et voir la carte.",
+  aGagner:"À gagner", obtenu:"Récompense obtenue", sansImage:"Carte à venir",
+  vide:"Aucune destination pour l'instant.<br>Reviens quand le voyage aura commencé."
+}, en:{
+  gagnees:"earned", verrouilleeT:"To discover", verrouilleeC:"Finish this lesson to turn the card over.",
+  ouverteT:"In progress", ouverteC:"Pass the quiz to read the letter and see the card.",
+  aGagner:"To earn", obtenu:"Reward earned", sansImage:"Card coming soon",
+  vide:"No destination yet.<br>Come back once the journey has started."
+}, es:{
+  gagnees:"ganadas", verrouilleeT:"Por descubrir", verrouilleeC:"Termina esta lección para dar la vuelta a la carta.",
+  ouverteT:"En curso", ouverteC:"Aprueba el cuestionario para leer la carta y verla.",
+  aGagner:"Por ganar", obtenu:"Recompensa obtenida", sansImage:"Postal en camino",
+  vide:"Aún no hay destinos.<br>Vuelve cuando el viaje haya comenzado."
+}, it:{
+  gagnees:"ottenute", verrouilleeT:"Da scoprire", verrouilleeC:"Finisci questa lezione per girare la carta.",
+  ouverteT:"In corso", ouverteC:"Supera il quiz per leggere la lettera e vedere la cartolina.",
+  aGagner:"Da ottenere", obtenu:"Ricompensa ottenuta", sansImage:"Cartolina in arrivo",
+  vide:"Ancora nessuna destinazione.<br>Torna quando il viaggio sarà iniziato."
+}, de:{
+  gagnees:"erhalten", verrouilleeT:"Zu entdecken", verrouilleeC:"Beende diese Lektion, um die Karte umzudrehen.",
+  ouverteT:"In Arbeit", ouverteC:"Bestehe das Quiz, um den Brief zu lesen und die Karte zu sehen.",
+  aGagner:"Zu gewinnen", obtenu:"Belohnung erhalten", sansImage:"Postkarte folgt",
+  vide:"Noch kein Ziel.<br>Komm zurück, sobald die Reise begonnen hat."
+}, ja:{
+  gagnees:"獲得", verrouilleeT:"未開放", verrouilleeC:"このレッスンを終えるとカードがめくれます。",
+  ouverteT:"進行中", ouverteC:"クイズに合格すると手紙とカードが見られます。",
+  aGagner:"獲得条件", obtenu:"記念品を獲得", sansImage:"絵はがき準備中",
+  vide:"まだ目的地がありません。<br>旅が始まったらまた来てください。"
+}};
+var LL = LANG.fr, LG = "fr";
+
+function tampon(){ return '<div class="tampon">✓</div>'; }
+
+function carteHTML(v){
+  var wrap = document.createElement('div');
+  /* ⚠️ On ne sait pas d'avance si `carte-X.webp` existe sur le serveur —
+     dix des dix-neuf ne l'ont pas encore. Plutôt que de deviner, on
+     tente TOUJOURS de charger l'image et on bascule sur un repli textuel
+     seulement si elle échoue vraiment (même principe que « Vidéo
+     introuvable » sur l'écran d'arrivée). */
+  wrap.className = 'carte ' + (v.statut==='D' ? 'verrou' : (v.carte ? '' : 'ouverte-seule'));
+  var recto;
+  if(v.statut==='D'){
+    recto = SILH + '<div class="nom">'+v.nom+'</div>';
+  } else {
+    recto =
+      '<img src="carte-'+v.ref+'.webp" alt="" onerror="'+
+        "var f=this.closest('.face'); f.classList.add('sansimg'); this.remove();"+'">' +
+      '<div class="voile"></div>' +
+      '<div class="niv">'+v.nation+'</div>' +
+      (v.carte ? tampon() : '') +
+      '<div class="nom">'+v.nom+'</div>'+
+      '<div class="repli">'+LL.sansImage+'</div>';
+  }
+  wrap.innerHTML =
+    '<div class="flip">'+
+      '<div class="face rec">'+recto+'</div>'+
+      '<div class="face dos '+(v.objetGagne?'gagne':'')+'">'+dosHTML(v)+'</div>'+
+    '</div>';
+  var flip = wrap.querySelector('.flip');
+  flip.addEventListener('click', function(){ wrap.classList.toggle('ouverte'); });
+  return wrap;
+}
+
+function dosHTML(v){
+  if(v.statut==='D'){
+    return '<div class="verrouille">'+SILH+
+      '<b style="color:#8996A2;font-size:11px">'+LL.verrouilleeT+'</b>'+
+      '<span>'+LL.verrouilleeC+'</span></div>';
+  }
+  if(!v.carte){
+    return '<div class="verrouille">'+SILH+
+      '<b style="color:var(--turq);font-size:11px">'+LL.ouverteT+'</b>'+
+      '<span>'+LL.ouverteC+'</span></div>';
+  }
+  var lettre = (v.lettre||[]).map(function(p){ return '<p>'+p+'</p>'; }).join('');
+  var icone = ICONES[v.objetIcone] || '';
+  return '<div class="ville">'+v.nom+'<i>'+v.chapitre+'</i></div>'+
+    '<div class="corps'+(LG==='ja'?' ja':'')+'">'+lettre+'</div>'+
+    '<div class="objet'+(v.objetGagne?'':' non')+'"><svg viewBox="0 0 60 60">'+icone+'</svg>'+
+      '<div class="txt"><b>'+(v.objetGagne?LL.obtenu:LL.aGagner)+'</b>'+
+      (v.objetGagne ? v.objetNom : v.objetNom)+'</div></div>';
+}
+
+function peindre(villes){
+  var g = document.getElementById('grille');
+  g.innerHTML = '';
+  var gagnees = 0;
+  villes.forEach(function(v){
+    if(v.carte) gagnees++;
+    g.appendChild(carteHTML(v));
+  });
+  document.getElementById('nGagnees').textContent = gagnees;
+  document.getElementById('nSur').textContent = '/ ' + villes.length;
+  document.getElementById('sousTitre').textContent = gagnees + ' ' + LL.gagnees + ' · ' + villes.length;
+  document.getElementById('vide').style.display = villes.length ? 'none' : 'block';
+  document.getElementById('vide').innerHTML = LL.vide;
+}
+
+window.addEventListener('message', function(ev){
+  var d = ev.data || {};
+  if(d.t === 'hype-lang'){
+    LG = d.l; LL = LANG[d.l] || LANG.fr;
+    return;
+  }
+  if(d.t === 'linguae-collection'){
+    if(d.l){ LG = d.l; LL = LANG[d.l] || LANG.fr; }
+    peindre(d.villes || []);
+  }
+});
+
+document.getElementById('fermer').addEventListener('click', function(){
+  try{ parent.postMessage({t:'linguae-fermer-collection'}, '*'); }catch(e){}
+});
+</script>
+</body></html>
