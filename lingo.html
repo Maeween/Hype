@@ -1034,6 +1034,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <!-- L'arrivée dans un club : l'inscription et la sécurité, pour La Baule.
      ⚠️ La sécurité n'existait NULLE PART dans les 378 mots d'origine. -->
 <script src="hype-lingo-lex-arrivee.js"></script>
+<!-- L'endurance : chapitre cree le 6 aout 2026 pour Dubai, etape 24 et
+     PREMIERE etape hors d'Europe. La seule discipline ou l'on compte en
+     kilometres et en battements par minute.
+     ⚠️ Aucun rappel dedans : lex-urgences.js n'etait pas disponible, donc
+     `la boiterie` et `le veterinaire` n'ont pas pu etre repris par `ref`.
+     A completer quand ce fichier sera sous les yeux. -->
+<script src="hype-lingo-lex-endurance.js"></script>
 <!-- La vente : chapitre cree le 6 aout 2026 pour Verone (Italie).
      Le seul moment de la vie d'un cavalier ou se tromper coute cher, et il
      n'existait nulle part dans les 378 mots. Niveau 3 : on y parle.
@@ -1143,7 +1150,18 @@ var ETAPES = [
  {ref:"rome",      ch:"La Coupe des Nations", v:"Rome",   nat:"Italie",         h:"10 h 55", ciel:["#0D1620","#C97B4A"], forme:"obstacles",souv:"Une coupe de Piazza di Siena", ic:"coupe"},
  {ref:"verone",    ch:"Le commerce",   v:"Vérone",      nat:"Italie",         h:"11 h 05", ciel:["#121A1C","#B8863F"], forme:"village",  souv:"Un contrat de foire",          ic:"lettre"},
  {ref:"warendorf", ch:"La formation",  v:"Warendorf",   nat:"Allemagne",      h:"11 h 20", ciel:["#0B141E","#2F4256"], forme:"ecuries",  souv:"Un carnet d'échelle",          ic:"echelle"},
- {ref:"aachen",    ch:"Le grand concours",v:"Aix-la-Chapelle", nat:"Allemagne", h:"12 h 10", ciel:["#0A1219","#354A5C"], forme:"manoir", souv:"Une cloche de barrage",        ic:"cloche"}
+ {ref:"aachen",    ch:"Le grand concours",v:"Aix-la-Chapelle", nat:"Allemagne", h:"12 h 10", ciel:["#0A1219","#354A5C"], forme:"manoir", souv:"Une cloche de barrage",        ic:"cloche"},
+ /* ⚠️ DUBAÏ ajoutée le 6 août 2026, étape 24 — la PREMIÈRE étape hors
+    d'Europe et de Maurice. Le chapitre de l'ENDURANCE
+    (`hype-lingo-lex-endurance.js`), prévu par le plan de production.
+    Placée après Aix-la-Chapelle : le voyage quitte l'Europe par l'est, et
+    les prochaines (Tokyo, Tamworth, Buenos Aires, Lexington, Spruce
+    Meadows) continueront vers l'est puis l'ouest.
+    ⚠️ `forme:"lande"` est un emprunt assumé : aucune des dix silhouettes
+    du chemin ne dessine un désert, et en fabriquer une n'a pas été
+    demandé. À faire le jour où le chemin sera revu.
+    ⚠️ Aucune de ses trois images n'existe encore. */
+ {ref:"dubai",     ch:"L'endurance",   v:"Dubaï",       nat:"Émirats",        h:"13 h 05", ciel:["#120F14","#E0B070"], forme:"lande",    souv:"Un dossard de cent kilomètres", ic:"dossard"}
 ];
 var FAITS = 4, TRACE = true;
 
@@ -1181,6 +1199,7 @@ var I18N_H = {
  "10 h 55":{en:"10.55 am",es:"10:55", it:"10:55", de:"10:55 Uhr", ja:"10時55分"},
  "11 h 05":{en:"11.05 am",es:"11:05", it:"11:05", de:"11:05 Uhr", ja:"11時5分"},
  "11 h 20":{en:"11.20 am",es:"11:20", it:"11:20", de:"11:20 Uhr", ja:"11時20分"},
+ "13 h 05":{en:"1.05 pm", es:"13:05", it:"13:05", de:"13:05 Uhr", ja:"13時5分"},
  "12 h 10":{en:"12.10 pm",es:"12:10", it:"12:10", de:"12:10 Uhr", ja:"12時10分"}
 };
 var ETAPES_I18N = {
@@ -1584,6 +1603,25 @@ var RECITS = {
       "隣の馬場で落馬があり、数秒で大人三人がそこにいた。走らず、叫ばずに。",
       {f:"ヨーロッパ最大の馬術パーク。何十もの馬場があり、年に一週間、フランス馬術のすべてがここに集まる。"}]
  },
+ dubai:{
+  fr:["Le départ est donné de nuit, pour que la chaleur arrive le plus tard possible.",
+      "Personne ne parle de gagner. On parle de terminer.",
+      {f:"À chaque boucle, le vétérinaire écoute le cœur : le cheval doit redescendre sous un seuil fixé pour être autorisé à repartir."}],
+  en:["The start is given at night, so the heat comes as late as possible.",
+      "Nobody talks about winning. They talk about finishing.",
+      {f:"At every loop the vet listens to the heart: the horse must come back below a set threshold to be allowed to continue."}],
+  es:["La salida se da de noche, para que el calor llegue lo más tarde posible.",
+      "Nadie habla de ganar. Se habla de terminar.",
+      {f:"En cada vuelta el veterinario escucha el corazón: el caballo debe bajar por debajo de un umbral fijado para poder seguir."}],
+  it:["La partenza è data di notte, perché il caldo arrivi il più tardi possibile.",
+      "Nessuno parla di vincere. Si parla di finire.",
+      {f:"A ogni giro il veterinario ascolta il cuore: il cavallo deve scendere sotto una soglia fissata per poter ripartire."}],
+  de:["Gestartet wird nachts, damit die Hitze so spät wie möglich kommt.",
+      "Niemand spricht davon zu gewinnen. Man spricht davon anzukommen.",
+      {f:"Bei jeder Schleife hört der Tierarzt das Herz ab: das Pferd muss unter einen festgelegten Wert fallen, um weiterreiten zu dürfen."}],
+  ja:["\u6691\u3055\u304c\u6765\u308b\u306e\u3092\u3067\u304d\u308b\u3060\u3051\u9045\u304f\u3059\u308b\u305f\u3081\u3001\u30b9\u30bf\u30fc\u30c8\u306f\u591c\u306b\u5207\u3089\u308c\u308b\u3002",
+      "\u8ab0\u3082\u52dd\u3064\u8a71\u3092\u3057\u306a\u3044\u3002\u5b8c\u8d70\u3059\u308b\u8a71\u3092\u3059\u308b\u3002",
+      {f:"\u4e00\u5468\u3054\u3068\u306b\u7363\u533b\u304c\u5fc3\u97f3\u3092\u8074\u304f\u3002\u99ac\u306e\u5fc3\u62cd\u304c\u5b9a\u3081\u3089\u308c\u305f\u5024\u3092\u4e0b\u56de\u3089\u306a\u3051\u308c\u3070\u3001\u518d\u51fa\u767a\u306f\u8a8d\u3081\u3089\u308c\u306a\u3044\u3002"}]},
  verone:{
   fr:["Trois allées de boxes, et dans chacune quelqu'un qui attend qu'on lui pose une question.",
       "J'ai dit mon budget en entrant. On m'a montré quatre chevaux au lieu de quarante.",
@@ -1839,6 +1877,12 @@ var POURQUOI = {
   it:"Il più grande parco equestre d'Europa, e migliaia di pony ogni estate.",
   de:"Der größte Reitsportpark Europas — und jeden Sommer Tausende Ponys.",
   ja:"ヨーロッパ最大の馬術パーク。毎年夏、何千頭ものポニーが集まる。"},
+ dubai:{fr:"Cent soixante kilomètres en un jour, et un vétérinaire qui décide à chaque boucle si tu continues.",
+  en:"A hundred and sixty kilometres in a day, and a vet who decides at every loop whether you go on.",
+  es:"Ciento sesenta kilómetros en un día, y un veterinario que decide en cada vuelta si sigues.",
+  it:"Centosessanta chilometri in un giorno, e un veterinario che decide a ogni giro se continui.",
+  de:"Hundertsechzig Kilometer an einem Tag, und ein Tierarzt, der bei jeder Schleife entscheidet, ob du weiterreitest.",
+  ja:"一日で百六十キロ。そして一周ごとに、続けられるかを獣医が決める。"},
  verone:{fr:"La grande foire du cheval italienne, où l'on montre, où l'on essaie et où l'on vend.",
   en:"Italy's great horse fair, where horses are shown, tried and sold.",
   es:"La gran feria del caballo italiana, donde se muestra, se prueba y se vende.",
@@ -1969,7 +2013,7 @@ var NIVEAU_VILLE = {
   labaule:1, maurice:1, newmarket:1, lambourn:1, connemara:1, walsall:1, aberystwyth:1,
   kildare:1, jerez:1, vejer:1,
   hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
-  warendorf:2, aachen:2, lamotte:2, golega:2,
+  warendorf:2, aachen:2, lamotte:2, golega:2, dubai:2,
   saumur:3, edimbourg:3, verone:3
 };
 function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
@@ -2435,7 +2479,7 @@ function allerA(i){
    ================================================================== */
 /* Fin forcée d'un clip d'arrivée, en secondes. Une seule entrée pour
    l'instant : voir le commentaire dans ouvrirArrivee. */
-var FIN_VIDEO = { labaule: 4.4, vejer: 7.0, golega: 4.6 };
+var FIN_VIDEO = { labaule: 4.4, vejer: 7.0, golega: 4.6, verone: 3.9, dubai: 2.9 };
 /* ⚠️ vejer ajoutee le 6 aout 2026, meme defaut que La Baule : le panneau
    « Vejer de la Frontera » est TRONQUE dans le fichier lui-meme — le V est
    coupe a gauche et le A final a droite, sur toute la fin du clip (verifie
@@ -2456,9 +2500,20 @@ var FIN_VIDEO = { labaule: 4.4, vejer: 7.0, golega: 4.6 };
    choisie en SIMULANT le recadrage de l'app (cover dans une boite de
    52svh, soit un ratio de .888 pris dans une source en .602 : seule la
    bande centrale se voit). A 6,2 s on ne voyait plus que la croupe.
-   ⚠️ A dire a Blandine pour les prochaines villes : faire cadrer le
-   panneau AVEC DE LA MARGE des deux cotes, ou renoncer au panneau. Trois
-   sur neuf clips sont concernes. */
+   ⚠️ verone: 3.9 et dubai: 2.9 ajoutes le 6 aout, apres le lot de cinq
+   clips. Bilan reel : SIX clips sur QUATORZE ont un panneau coupe (La
+   Baule, Vejer, Golega, Verona, Dubai, et Lexington de justesse).
+   · VERONA : le mot est ENTIER a 3,9 s et ne se coupe qu'au tout dernier
+     resserrement. On s'arrete donc AVANT la fin en gardant le panneau —
+     premier cas ou l'on ne perd rien du tout.
+   · DUBAI : le mot n'est jamais entier. Arret a 2,9 s, au sommet du saut,
+     le cheval et le cavalier complets dans le cadre.
+   ⚠️ CE QU'IL FAUT DIRE POUR LES PROCHAINS CLIPS, et qui n'avait pas ete
+   compris jusqu'ici : le panneau doit etre au MILIEU de la hauteur, pas en
+   bas. L'ecran d'arrivee ecrit le chapitre et le nom de la ville par-dessus
+   le bas de la video, et l'image est recadree en `cover` — donc seule la
+   bande centrale se voit. Un panneau place en bas est coupe deux fois :
+   par le bord du cadre et par le titre. */
 
 var DEPART_DEFAUT = { nom:"Paris", lat:48.8566, lng:2.3522 };
 
@@ -2547,7 +2602,15 @@ function souvenirObtenu(ref){
   return !!q && q.t > 0 && q.s >= q.t;
 }
 
-var TITRE_SOMBRE = ["warendorf","jerez","golega","oliva","lamotte",
+/* ⚠️ `golega` RETIRÉE le 6 août 2026 : sa carte a été refaite, et son
+   tiers haut est passé d'un ciel clair à un ciel presque noir. Mesure du
+   jour, même méthode que le 5 août — Warendorf 172, Aix-la-Chapelle 161,
+   Lamotte 141, Vejer 110, Séville 77, Le Morne 59, Rome 48, Golegã 45.
+   Un titre sombre sur 45 de luminance est illisible : Golegã reprend donc
+   le titre crème. Rome, elle, n'a jamais eu à y entrer.
+   ⚠️ À refaire tourner cette mesure chaque fois qu'une carte est
+   remplacée : la liste dépend de l'image, pas de la ville. */
+var TITRE_SOMBRE = ["warendorf","jerez","oliva","lamotte",
                     "saumur","aachen","vejer"];
 
 function appliquerTeinteTitre(ref){
@@ -2771,6 +2834,7 @@ var ETAPE_SRC = {
   oliva:       [["concours",1]],
   rome:        [["concours",4]],
   verone:      [["vente",1]],
+  dubai:       [["endurance",1]],
   warendorf:   [["materiel",4]],
   aachen:      [["obstacle",4]]
 };
@@ -3365,6 +3429,8 @@ var COLL_NOM = {
     de:"Die Zucht", ja:"繁殖"},
   vente:{fr:"Acheter et vendre", en:"Buying and selling", es:"Comprar y vender",
     it:"Comprare e vendere", de:"Kaufen und verkaufen", ja:"売買"},
+  endurance:{fr:"L'endurance", en:"Endurance", es:"El raid", it:"L'endurance",
+    de:"Die Distanzreiterei", ja:"エンデュランス"},
   corps:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体"},
   etat:{fr:"L'état du poil", en:"The state of the coat", es:"El estado de la capa",
         it:"Lo stato del mantello", de:"Der Zustand des Fells", ja:"毛の状態"},
@@ -3415,6 +3481,7 @@ var ACCUEIL_CHAP = {
      donc la première ville du voyage entrait dans sa leçon sans un mot.
      Trouvé en ajoutant le chapitre du Morne. */
   arrivee:{fr:"Arriver quelque part et demander un cheval : réserver, dire son niveau, comprendre le tarif.", en:"Arriving somewhere and asking for a horse: booking, stating your level, understanding the price.", es:"Llegar a un sitio y pedir un caballo: reservar, decir tu nivel, entender el precio.", it:"Arrivare in un posto e chiedere un cavallo: prenotare, dire il proprio livello, capire il prezzo.", de:"Irgendwo ankommen und nach einem Pferd fragen: buchen, sein Können nennen, den Preis verstehen.", ja:"どこかに着いて、馬を頼む。予約する、自分の技量を伝える、料金を理解する。"},
+  endurance:{fr:"Courir loin sans abîmer le cheval : le kilomètre, la boucle, le contrôle vétérinaire, le rythme cardiaque.", en:"Going far without damaging the horse: the kilometre, the loop, the vet gate, the heart rate.", es:"Ir lejos sin dañar al caballo: el kilómetro, la vuelta, el control veterinario, la frecuencia cardíaca.", it:"Andare lontano senza rovinare il cavallo: il chilometro, il giro, il controllo veterinario, la frequenza cardiaca.", de:"Weit reiten, ohne das Pferd zu schädigen: der Kilometer, die Schleife, die Vetgate, die Herzfrequenz.", ja:"馬を痛めずに遠くまで走る。キロ、ループ、獣医検査、心拍数。"},
   vente:{fr:"Acheter un cheval sans se faire avoir : l'essai, la visite d'achat, le prix, le contrat, les papiers.", en:"Buying a horse without being caught out: the try-out, the vetting, the price, the contract, the papers.", es:"Comprar un caballo sin equivocarse: la prueba, la revisión veterinaria, el precio, el contrato, los papeles.", it:"Comprare un cavallo senza rimetterci: la prova, la visita d'acquisto, il prezzo, il contratto, i documenti.", de:"Ein Pferd kaufen, ohne hereinzufallen: das Probereiten, die Ankaufsuntersuchung, der Preis, der Vertrag, die Papiere.", ja:"失敗せずに馬を買う。試乗、購買前検査、値段、契約、書類。"},
   elevage:{fr:"D'où vient un cheval : la poulinière, la saillie, le poulinage, le sevrage, la lignée.", en:"Where a horse comes from: the broodmare, the covering, the foaling, the weaning, the bloodline.", es:"De dónde viene un caballo: la yegua de vientre, la cubrición, el parto, el destete, la línea de sangre.", it:"Da dove viene un cavallo: la fattrice, la monta, il parto, lo svezzamento, la linea di sangue.", de:"Woher ein Pferd kommt: die Zuchtstute, der Deckakt, die Geburt, das Absetzen, die Blutlinie.", ja:"馬がどこから来るのか。繁殖牝馬、交配、分娩、離乳、血統。"},
   balade:{fr:"Réserver une sortie et entrer dans l'eau : la marée, le lagon, se baigner, nager.", en:"Booking a ride out and going into the water: the tide, the lagoon, bathing, swimming.", es:"Reservar un paseo y entrar en el agua: la marea, la laguna, bañarse, nadar.", it:"Prenotare una passeggiata ed entrare in acqua: la marea, la laguna, il bagno, nuotare.", de:"Einen Ausritt buchen und ins Wasser gehen: die Tide, die Lagune, baden, schwimmen.", ja:"外乗を予約し、水に入る。潮、ラグーン、水浴、泳ぐこと。"},

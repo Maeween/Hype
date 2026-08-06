@@ -614,6 +614,62 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
   // ?? Fieracavalli « depuis 1898 » : date couramment citee pour la premiere
   //    edition. A confirmer avant publication.
 
+  /* ==================================================================
+     DUBAÏ — ajoutée le 6 août 2026, étape 24. Le chapitre de L'ENDURANCE.
+     Première étape hors d'Europe et de Maurice.
+     ⚠️ Son clip existe (`arrivee-dubai.mp4`), mais son panneau est coupé :
+     le clip s'arrête à 2,9 s, au sommet du saut (voir FIN_VIDEO).
+     ⚠️ Manquent `carte-dubai.webp` et `fond-dubai.webp`.
+     ================================================================== */
+  MONDE.dubai = {
+    lieu:"Al Marmoum · الإمارات", carte:true, niveau:2,
+    image:"la piste de sable au bord du désert, avant le lever du jour",
+    lettre:{
+      fr:["Personne ne parle de gagner. On parle de terminer.",
+          "À chaque boucle, le vétérinaire écoute le cœur et fait trotter le cheval en main sur vingt mètres. C'est lui qui dit si tu repars. J'ai vu un cavalier arrêter à cent trente kilomètres, de lui-même, et tout le monde lui a serré la main."],
+      en:["Nobody talks about winning. They talk about finishing.",
+          "At every loop the vet listens to the heart and has the horse trotted up in hand for twenty metres. He is the one who says whether you go on. I saw a rider stop at a hundred and thirty kilometres, of his own accord, and everyone shook his hand."],
+      es:["Nadie habla de ganar. Se habla de terminar.",
+          "En cada vuelta el veterinario escucha el corazón y hace trotar al caballo de la mano veinte metros. Es él quien dice si sigues. Vi a un jinete parar a ciento treinta kilómetros, por decisión propia, y todo el mundo le dio la mano."],
+      it:["Nessuno parla di vincere. Si parla di finire.",
+          "A ogni giro il veterinario ascolta il cuore e fa trottare il cavallo a mano per venti metri. È lui che dice se riparti. Ho visto un cavaliere fermarsi a centotrenta chilometri, da sé, e tutti gli hanno stretto la mano."],
+      de:["Niemand spricht davon zu gewinnen. Man spricht davon anzukommen.",
+          "Bei jeder Schleife hört der Tierarzt das Herz ab und lässt das Pferd zwanzig Meter an der Hand traben. Er sagt, ob du weiterreitest. Ich habe einen Reiter bei hundertdreißig Kilometern von sich aus aufhören sehen, und alle haben ihm die Hand gegeben."],
+      ja:["誰も勝つ話をしない。完走する話をする。",
+          "一周ごとに獣医が心音を聴き、二十メートル引き馬で常歩と速歩を見る。続けられるかを決めるのは彼だ。百三十キロで自ら止めた騎手を見た。誰もがその手を握っていた。"]},
+    volets:[
+      {t:{fr:"Cent soixante kilomètres", en:"A hundred and sixty kilometres",
+          es:"Ciento sesenta kilómetros", it:"Centosessanta chilometri",
+          de:"Hundertsechzig Kilometer", ja:"百六十キロ"},
+       c:{fr:"La plus longue épreuve se court en un seul jour, découpée en boucles qui ramènent toujours au même point. Entre chaque boucle, un contrôle vétérinaire obligatoire. Le classement ne récompense pas la vitesse pure : il tient compte du temps de récupération, donc arriver premier ne sert à rien si le cœur met vingt minutes à redescendre.",
+          en:"The longest ride is run in a single day, cut into loops that always return to the same point. Between each loop, a compulsory vet gate. The placings do not reward raw speed: recovery time counts, so arriving first is worth nothing if the heart takes twenty minutes to come down.",
+          es:"La prueba más larga se corre en un solo día, dividida en vueltas que siempre regresan al mismo punto. Entre cada vuelta, un control veterinario obligatorio. La clasificación no premia la velocidad pura: cuenta el tiempo de recuperación, así que llegar primero no sirve si el corazón tarda veinte minutos en bajar.",
+          it:"La prova più lunga si corre in un solo giorno, divisa in giri che riportano sempre allo stesso punto. Fra ogni giro, un controllo veterinario obbligatorio. La classifica non premia la velocità pura: conta il tempo di recupero, quindi arrivare primi non serve se il cuore ci mette venti minuti a scendere.",
+          de:"Der längste Ritt wird an einem Tag geritten, in Schleifen aufgeteilt, die immer zum selben Punkt zurückführen. Zwischen jeder Schleife eine verpflichtende Vetgate. Die Platzierung belohnt nicht die reine Geschwindigkeit: die Erholungszeit zählt, also nützt das erste Ankommen nichts, wenn das Herz zwanzig Minuten braucht.",
+          ja:"最長の競技は一日で走り切ります。コースはループに分かれ、いつも同じ地点へ戻ってきます。ループごとに獣医検査が義務づけられています。順位は速さだけでは決まりません。回復にかかった時間が数えられるため、心拍が下がるのに二十分かかるなら、一番に着いても意味がありません。"}},
+      {t:{fr:"Le vétérinaire décide", en:"The vet decides", es:"El veterinario decide",
+          it:"Decide il veterinario", de:"Der Tierarzt entscheidet", ja:"決めるのは獣医"},
+       c:{fr:"À chaque contrôle : le rythme cardiaque, l'hydratation, le dos, et le cheval trotté en main sur quelques mètres. S'il n'est pas régulier, la course s'arrête là, sans discussion. C'est la seule discipline où l'élimination pour boiterie est la sortie la plus fréquente, et où l'abandon volontaire est considéré comme une bonne décision plutôt qu'un échec.",
+          en:"At every gate: heart rate, hydration, back, and the horse trotted up in hand for a few metres. If it is not level, the ride ends there, without discussion. It is the only discipline where elimination for lameness is the commonest exit, and where retiring voluntarily counts as a good decision rather than a failure.",
+          es:"En cada control: la frecuencia cardíaca, la hidratación, el dorso, y el caballo trotado de la mano unos metros. Si no está regular, la carrera acaba allí, sin discusión. Es la única disciplina donde la eliminación por cojera es la salida más frecuente, y donde retirarse voluntariamente se considera una buena decisión y no un fracaso.",
+          it:"A ogni controllo: la frequenza cardiaca, l'idratazione, il dorso, e il cavallo trottato a mano per qualche metro. Se non è regolare, la gara finisce lì, senza discussione. È la sola disciplina in cui l'eliminazione per zoppia è l'uscita più frequente, e in cui ritirarsi di propria volontà è considerata una buona decisione e non un fallimento.",
+          de:"Bei jeder Gate: Herzfrequenz, Hydrierung, Rücken, und das Pferd wird einige Meter an der Hand vorgetrabt. Geht es nicht klar, endet der Ritt dort, ohne Diskussion. Es ist die einzige Disziplin, in der der Ausschluss wegen Lahmheit der häufigste Abgang ist — und in der freiwilliges Aufgeben als gute Entscheidung gilt, nicht als Scheitern.",
+          ja:"検査のたびに、心拍数、脱水の程度、背中を見られ、馬は引かれて数メートル速歩をします。歩様が揃っていなければ、競技はそこで終わり、議論はありません。歩様不良による失格が最も多い退場理由である唯一の種目であり、自らの棄権が失敗ではなく良い判断とみなされる唯一の種目です。"}},
+      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi",
+          de:"Wenn du hinführest", ja:"もし行くなら"},
+       c:{fr:"Ne viens pas monter, viens à l'assistance : c'est de là qu'on comprend la discipline. Tu attends au contrôle avec l'eau et les seaux, tu verses dès l'arrivée sans attendre, sur l'encolure et les membres, et tu regardes le chiffre descendre. Les départs se font de nuit pour éviter la chaleur — la journée commence vers trois heures du matin.",
+          en:"Do not come to ride, come to crew: that is where you understand the sport. You wait at the gate with water and buckets, you pour the moment the horse arrives, over neck and legs, and you watch the number come down. Starts are at night to avoid the heat — the day begins around three in the morning.",
+          es:"No vengas a montar, ven a la asistencia: es desde ahí que se entiende la disciplina. Esperas en el control con el agua y los cubos, echas en cuanto llega, sobre el cuello y las extremidades, y miras bajar la cifra. Las salidas son de noche para evitar el calor: el día empieza hacia las tres de la mañana.",
+          it:"Non venire a cavalcare, vieni all'assistenza: è da lì che si capisce la disciplina. Aspetti al controllo con l'acqua e i secchi, versi appena arriva, sull'incollatura e sugli arti, e guardi scendere il numero. Le partenze sono di notte per evitare il caldo: la giornata comincia verso le tre del mattino.",
+          de:"Komm nicht zum Reiten, komm zur Betreuung: von dort versteht man den Sport. Du wartest an der Gate mit Wasser und Eimern, du kühlst sofort bei der Ankunft, über Hals und Beine, und siehst die Zahl sinken. Gestartet wird nachts, um der Hitze auszuweichen — der Tag beginnt gegen drei Uhr morgens.",
+          ja:"乗るためではなく、サポートとして行くこと。そこからしか、この競技は分かりません。水とバケツを持って検査地点で待ち、馬が着いた瞬間から首と脚に水をかけ、数字が下がるのを見ます。暑さを避けるため出発は夜。一日は午前三時ごろに始まります。"}}
+    ]
+  };
+  // ?? « cent soixante kilometres » pour la plus longue epreuve en un jour :
+  //    formulation prudente, a confirmer avant publication.
+  // ?? Le seuil de 64 battements par minute est celui couramment applique,
+  //    mais il varie selon le reglement de l'epreuve. Verifier.
+
   /* ajout clé par clé : on ne remplace jamais une ville déjà présente */
   var k;
   for(k in MONDE){

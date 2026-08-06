@@ -22,6 +22,51 @@
 
 ---
 
+## 🎞️ SESSION 112 · LINGUAE (06/08) — SEPT CLIPS TRAITÉS, DUBAÏ ÉCRITE, ET LA VRAIE CAUSE DES PANNEAUX COUPÉS
+
+### ✅ Dubaï, étape 24 — la première hors d'Europe
+Nouveau fichier **`hype-lingo-lex-endurance.js`** : 12 mots, 4 phrases, 6 langues. L'endurance, le pur-sang arabe, le kilomètre, la boucle, le contrôle vétérinaire, le rythme cardiaque, la récupération, refroidir, l'assistance, la vitesse moyenne, l'abandon, éliminé pour boiterie.
+Tout est en place : `ETAPES`, `ETAPE_SRC`, `NIVEAU_VILLE`, `COLL_NOM`, `ACCUEIL_CHAP`, `POURQUOI`, `RECITS`, `MONDE.dubai` (lettre + 3 volets), globe (24,81 / 55,42), heure 13 h 05.
+
+⚠️ **UN MOT DU PLAN A ÉTÉ CHANGÉ, à valider.** Le plan écrivait « le relais » : ça n'existe pas en endurance, personne ne prend la suite du cavalier. Ce que le plan décrivait est **l'assistance** — l'équipe qui attend au contrôle avec l'eau et les seaux. Concept gardé, mot corrigé.
+⚠️ **Aucun rappel dans ce lexique** : `la boiterie` et `le vétérinaire` auraient dû en être, mais `hype-lingo-lex-urgences.js` n'a pas été fourni dans cette conversation. Impossible de vérifier leurs `ref` — et un `ref` inventé crée un doublon au lieu d'un rappel. À compléter.
+
+### ✅ Sept clips convertis
+Reçus en HEVC avec piste audio. Tous convertis en H.264, sans audio :
+`arrivee-verone.mp4` · `arrivee-dubai.mp4` · `arrivee-lexington.mp4` · `arrivee-tokyo.mp4` · `arrivee-spruce.mp4` · `arrivee-buenos.mp4` · `arrivee-tamworth.mp4` — tous en 480×854, 5,1 s, de 463 à 634 Ko (contre 1,9 à 2 Mo à l'entrée).
+
+✅ **Bonne nouvelle sur le filigrane** : sur un clip PORTRAIT, il est **invisible dans l'app**. L'écran d'arrivée recadre en `cover` dans une boîte de ratio 0,888 : sur une source en 0,562, seule la bande centrale se voit, et le filigrane en haut à gauche tombe hors champ. Vérifié par simulation sur les sept. Plus rien à effacer, contrairement au Morne (paysage) et à Rome (carré).
+
+### 🔴 Panneaux : le bilan, et la vraie cause enfin comprise
+Contrôle systématique de la dernière image des sept, **jugée dans le cadre réel de l'app** et non dans le fichier.
+- **Entiers** : SPRUCE MEADOWS, TOKYO, BUENOS AIRES, TAMWORTH. Les deux derniers sont arrivés après le message sur la marge — la consigne a porté.
+- **Coupés** : VERONA (V et A), DUBAI (D et I), LEXINGTON de justesse.
+
+✅ **`FIN_VIDEO.verone = 3.9`** — cas nouveau et intéressant : le mot est **entier à 3,9 s** et ne se coupe qu'au dernier resserrement de caméra. On s'arrête donc avant la fin **en gardant le panneau**. Premier clip où l'on ne perd rien.
+✅ **`FIN_VIDEO.dubai = 2.9`** — le mot n'est jamais entier. Arrêt au sommet du saut, cheval et cavalier complets dans le cadre.
+
+⚠️ **CE QUI N'AVAIT PAS ÉTÉ COMPRIS, et qui explique tout** : le panneau ne doit pas seulement avoir de la marge à gauche et à droite, il doit être **au MILIEU de la hauteur**. L'écran d'arrivée écrit le chapitre et le nom de la ville **par-dessus le bas de la vidéo**, et l'image est recadrée en `cover`. Un panneau placé en bas du cadre est donc coupé deux fois : par le bord et par le titre. Six clips sur quatorze en ont souffert. C'est noté dans le code, à passer dans les prompts.
+
+### Contrôles passés
+`verif.py` sur les quatre fichiers · lexique de l'endurance contrôlé par exécution (12 concepts, 4 phrases, zéro entrée incomplète sur 6 langues) · `chapVirtuel('dubai')` = 12 mots + 4 phrases · **contrôle exhaustif des 24 villes × 6 langues** sur `RECITS` et `VILLES` : aucune anomalie · les sept dernières images simulées dans le cadre de l'app avant décision · arrêts mesurés à 3,900 s et 2,900 s pile · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **Trois villes à écrire** : Lexington (le haras), Spruce Meadows (le froid et le terrain), Tokyo (les traditions) — leurs clips sont prêts, leur vocabulaire n'existe pas.
+2. **Deux de plus après** : Buenos Aires (le polo) et Tamworth (le western). Clips prêts également.
+3. **`carte-dubai.webp` et `fond-dubai.webp`** — et les mêmes pour les cinq villes ci-dessus.
+4. `lingua-affiche.webp` et le fond du carnet.
+5. Les définitions en quatre langues.
+6. La sécurité (11 mots) attend une ville.
+
+### 🧭 Préparation Flutter
+- **Cinquième ville ajoutée sans toucher au moteur.** Le geste ne varie plus : un lexique, sept entrées de données, une ligne de globe, une entrée de ville.
+- **`FIN_VIDEO` a maintenant cinq entrées** et absorbe un défaut d'actif systémique sans qu'aucune logique change. Le cas de Vérone montre qu'elle sert aussi à *garder* une image plutôt qu'à en éviter une.
+- **Une méthode s'est stabilisée** : ne jamais juger une image d'arrêt dans le fichier, toujours dans le cadre où elle sera vue. Elle a servi trois fois aujourd'hui et a évité trois mauvais choix.
+- **Reste à moderniser** : inchangé — `hype_lingua_quiz` et `hype_lingua_cartes` ne sont pas dimensionnés par langue.
+- **Risques** : aucun. Contenu, données et actifs.
+
+---
+
 ## 🌉 SESSION 111 · LINGUAE (06/08) — LES DEUX IMAGES DE VÉRONE
 
 Blandine envoie sa vue de Vérone : le gris à la bride devant l'Adige, le Ponte Pietra, la tour des Lamberti et le couchant sur les toits ocre.
