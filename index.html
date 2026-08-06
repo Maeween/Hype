@@ -33419,7 +33419,40 @@ function EcranMessagerie() {
   // ---------- VUE LISTE ----------
   if (vue === "liste") {
     return h("div", { style: { minHeight: "100vh", background: MSG_COL.fond, display: "flex", flexDirection: "column", paddingBottom: 100 } },
-      h("div", { style: { padding: "calc(env(safe-area-inset-top) + 20px) 20px 8px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
+      /* 05/08 (choix Blandine) : bandeau video en tete de la messagerie — le poney facteur qui
+         apporte la lettre. Version courte de 2 s, coupee avant que le mot MESSAGERIE s incruste
+         dans l image, sinon il ferait doublon avec le titre juste dessous.
+         La video est en object-fit cover dans un bandeau de 120 px : le format presque carre du
+         fichier est donc rogne en haut et en bas, c est assume — le poney reste centre.
+         Repli : si le fichier manque, le bandeau disparait entierement (height 0) au lieu de
+         laisser un rectangle noir. IntersectionObserver : pause des que le bandeau sort de
+         l ecran, pour ne pas cumuler les decodeurs actifs (memoire iOS). */
+      h("div", { style: { position: "relative", width: "100%", height: 120, overflow: "hidden", flex: "0 0 auto" } },
+        h("video", { src: "hype-messagerie-poney.mp4", poster: "hype-messagerie-poney-poster.jpg", muted: true, loop: true, playsInline: true, autoPlay: true, preload: "metadata", "aria-hidden": "true",
+          onError: function (eEr) {
+            try {
+              var pm = eEr.target.parentNode;
+              if (pm) { pm.style.height = "0px"; pm.style.border = "0"; }
+              eEr.target.style.display = "none";
+            } catch (e0) { }
+          },
+          ref: function (elM) {
+            try {
+              if (!elM || elM.__animMsg) return; elM.__animMsg = 1;
+              var lireM = function () { try { var pr = elM.play(); if (pr && pr.catch) pr.catch(function () { }); } catch (e1) { } };
+              lireM();
+              if (typeof IntersectionObserver === "function") {
+                var ioM = new IntersectionObserver(function (ents) {
+                  ents.forEach(function (en) { if (en.isIntersecting) lireM(); else { try { elM.pause(); } catch (e2) { } } });
+                }, { threshold: 0.05 });
+                ioM.observe(elM);
+              }
+            } catch (e3) { }
+          },
+          style: { position: "absolute", left: 0, top: "50%", transform: "translateY(-50%)", width: "100%", height: "auto", pointerEvents: "none", background: "transparent" } }),
+        h("div", { style: { position: "absolute", inset: 0, zIndex: 2, background: "linear-gradient(0deg, " + MSG_COL.fond + " 4%, rgba(6,7,9,0.24) 58%, rgba(6,7,9,0) 100%)" } })
+      ),
+      h("div", { style: { padding: "10px 20px 8px", display: "flex", alignItems: "center", justifyContent: "space-between" } },
         h("button", { onClick: function () { setEcran("dashboard"); }, "aria-label": "Retour", style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.05)", border: "1px solid " + MSG_COL.carteBord, color: MSG_COL.blanc, fontSize: 20, cursor: "pointer" } }, "\u2039"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 20, color: MSG_COL.blanc, letterSpacing: 0.3 } }, T("Messages", "Messages", "Mensajes", "Messaggi", "メッセージ")),
         h("button", { onClick: function () { if (onglet === "groupes") { setGroupeOuvert(true); } else { setNouveauOuvert(true); } }, "aria-label": onglet === "groupes" ? "Nouveau groupe" : "Nouveau message", style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(32,217,245,0.14)", border: "1px solid rgba(32,217,245,0.4)", color: MSG_COL.turquoise, fontSize: 17, cursor: "pointer" } }, "\u270E")),
