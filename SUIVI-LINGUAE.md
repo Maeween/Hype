@@ -22,6 +22,52 @@
 
 ---
 
+## 🇵🇹 SESSION 104 · LINGUAE (06/08) — GOLEGÃ ET L'ÉLEVAGE, CINQ VILLES ÉQUIPÉES, VEJER RATTRAPÉE
+
+### ✅ Golegã, étape 15 — le chapitre de l'ÉLEVAGE
+« Golegã c'est toi qui vois tu veux y mettre quoi. » Choix fait : **l'élevage**, parce que c'est le plus gros trou du module. Sur les 378 mots d'origine, **aucun ne parlait de la naissance d'un cheval** : on savait décrire sa robe, ses marques, son corps, mais pas d'où il venait. Le plan de production prévoyait déjà ce vocabulaire pour cette ville — ce choix l'applique plutôt qu'il ne l'invente.
+
+**Nouveau fichier `hype-lingo-lex-elevage.js`** : 12 mots, 4 phrases, 6 langues. L'élevage, le naisseur, la poulinière, la saillie, le poulinage, le sevrage, la lignée, le stud-book, le lusitanien — plus trois **rappels** (`poulain`, `etalon`, `jument`) qui portent le même `ref` que dans `lex-cheval.js`, donc arrivent déjà acquis pour qui a fait Jerez ou Lamotte.
+
+⚠️ **La vente n'est PAS dans ce chapitre**, et c'est écrit dans l'en-tête du fichier : `le marchand`, `l'essai`, `la visite d'achat`, `le prix`, `le contrat`, `la garantie` sont réservés à **Vérone**, et `le yearling`, `les ventes`, `le pedigree`, `la jument suitée` à **Lexington**. Golegã fait naître, elle ne vend pas. Contrôlé par script : aucun de ces mots réservés n'apparaît dans le fichier.
+⚠️ **Neuf entrées neuves, jamais relues par un natif.** Les plus à confirmer : `la saillie` (l'anglais sépare « covering » du service et « stud fee » du prix), `le stud-book` (gardé tel quel en français et en italien, traduit en allemand et en espagnol), et `le naisseur`, que l'anglais ne distingue pas de l'éleveur.
+
+Placée **entre Lamotte-Beuvron et Jerez** : on descend de France au Portugal, puis on remonte vers l'Andalousie. Heure 07 h 55. Niveau 2 · situer. `ETAPES`, `ETAPE_SRC`, `NIVEAU_VILLE`, `COLL_NOM`, `ACCUEIL_CHAP`, `POURQUOI`, `RECITS`, `MONDE.golega` (lettre + 3 volets : Le lusitanien · D'où vient un cheval · Si tu y allais), point sur le globe (39,4033 / −8,4869).
+⚠️ **Portugal ET Italie ajoutés à `ouvNations`** — l'Italie avait été oubliée lors de l'ajout de Rome.
+
+### ✅ Cinq villes du parcours V1 sont équipées
+Reçus et vérifiés : **Warendorf, Séville, Vejer, Aix-la-Chapelle, Lamotte-Beuvron** — carte postale (900×1200), fond (420×560) et clip d'arrivée pour chacune. Plus `arrivee-golega.mp4`.
+✅ **Rien à convertir** : les six clips sont déjà en H.264, portrait 456×810, sans piste audio. Format exactement conforme, contrairement au `.mov` HEVC du Morne qu'il avait fallu réencoder.
+✅ Vérifié en rendu réel ville par ville : le clip se charge, la carte postale s'affiche (le repli « Carte à venir » ne se déclenche plus), les volets et le récit sont là. **Les villes qui affichaient « Vidéo introuvable » ne l'affichent plus.**
+
+### 🔴 Vejer : deuxième panneau tronqué du projet
+Contrôle systématique de la dernière image des cinq clips. Quatre sont propres — WARENDORF, SEVILLA, AACHEN, LAMOTTE tiennent entiers dans le cadre avec de la marge. **Le cinquième non** : « Vejer de la Frontera » est **coupé des deux côtés** dans le fichier, le V à gauche et le A final à droite, sur toute la fin du clip (vérifié image par image de 8,4 s à 10,1 s — aucune image ne le montre entier). Le nom est simplement trop long pour les deux tiers de largeur que la consigne de production impose.
+✅ **`FIN_VIDEO.vejer = 7.0`** : on s'arrête juste avant le raccord, sur le cavalier en tenue traditionnelle qui remonte la rue pavée face au soleil. Bien meilleure dernière image qu'un panneau amputé. À retirer le jour où le clip est refait.
+
+### 🔴 Et un vrai défaut du mécanisme d'arrêt, trouvé en le testant
+Premier essai posé à 7,4 s : **l'arrêt s'est produit à 7,83 s**, donc sur le panneau tronqué qu'on cherchait précisément à éviter. Cause : `timeupdate` ne se déclenche qu'environ quatre fois par seconde, l'arrêt dépassait la consigne de 200 à 400 ms.
+✅ **Recalage ajouté** : après la pause, on revient exactement sur l'image demandée (`currentTime = stop`). L'image finale devient déterministe au lieu d'approximative. Vérifié : Vejer s'arrête à **7,000 s** pile, La Baule à **4,400 s** pile — là où elle s'immobilisait avant à 4,44 s.
+⚠️ Ce défaut affectait **déjà La Baule** depuis la session 98, sans conséquence visible parce que la marge y était large. Il aurait mordu sur la première ville dont la consigne serait serrée.
+
+### Contrôles passés
+Syntaxe validée sur les trois fichiers · lexique de l'élevage contrôlé par exécution (12 concepts, 4 phrases, zéro entrée incomplète sur 6 langues, japonais découpé en tuiles, aucun mot réservé à Vérone ou Lexington) · `chapVirtuel('golega')` = 12 mots + 4 phrases · **contrôle exhaustif** des 22 villes × 6 langues sur `RECITS` et sur `VILLES` (lettre + 3 volets) : aucune anomalie, hors les dix villes britanniques dont le fichier n'est pas dans cette conversation · rendu réel : carnet, arrivée de Golegã avec son clip, les cinq villes équipées une par une, arrêt de Vejer et de La Baule mesurés au millième · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **`carte-golega.webp` et `fond-golega.webp`** — le clip est là, les deux images manquent.
+2. **Les trois images de Rome.**
+3. **Le vocabulaire des sept destinations restantes** : Vérone (la vente), Lexington, Spruce Meadows, Dubaï, Tokyo, Buenos Aires, Tamworth. ~20 mots × 6 langues chacune.
+4. **La sécurité** (11 mots prêts) attend toujours une ville.
+5. **Le clip de Vejer** à refaire si tu veux son panneau.
+
+### 🧭 Préparation Flutter
+- **Troisième ville ajoutée sans toucher au moteur** (Le Morne, Rome, Golegã). Un ajout de ville = des entrées de données et un fichier de lexique. La frontière tient, et elle a maintenant été éprouvée trois fois.
+- **`FIN_VIDEO` devient un vrai mécanisme** plutôt qu'un cas particulier : deux entrées, un recalage déterministe, un comportement identique pour toutes les villes. C'est le genre de brique qui se porte telle quelle.
+- **Un défaut de synchronisation corrigé à la source** : l'arrêt ne dépend plus de la fréquence d'un événement du navigateur. Moins de dépendance au moteur de rendu = moins à réécrire au portage.
+- **Reste à moderniser** : `COLL_NOM`, `ACCUEIL_CHAP` et `ACCUEIL_VILLE` sont trois tables parallèles indexées différemment (par collection, par chapitre, par ville). Elles gagneraient à fusionner en une description par étape. Non fait, pas demandé.
+- **Risques** : le recalage de `currentTime` touche toutes les villes ayant une entrée `FIN_VIDEO` — les deux ont été mesurées après coup.
+
+---
+
 ## ✍️ SESSION 103 · LINGUAE (06/08) — LES HUIT RÉCITS MANQUANTS SONT ÉCRITS
 
 « Je te laisse juge » — choix fait, et voici pourquoi : les huit villes concernées sont **déjà jouables et déjà en ligne**, alors que les huit destinations planifiées n'ont ni mots ni images. Réparer un trou visible passe avant d'ajouter du contenu par-dessus.

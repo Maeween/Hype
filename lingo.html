@@ -1034,6 +1034,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <!-- L'arrivée dans un club : l'inscription et la sécurité, pour La Baule.
      ⚠️ La sécurité n'existait NULLE PART dans les 378 mots d'origine. -->
 <script src="hype-lingo-lex-arrivee.js"></script>
+<!-- L'elevage : chapitre cree le 6 aout 2026 pour Golega (Portugal).
+     Le plus gros trou du module : aucun des 378 mots d'origine ne parlait
+     de la naissance d'un cheval. Trois de ses entrees (`poulain`,
+     `etalon`, `jument`) sont des RAPPELS de lex-cheval.js.
+     ⚠️ La VENTE n'est pas ici : elle est reservee a Verone, et les ventes
+     de yearlings a Lexington. -->
+<script src="hype-lingo-lex-elevage.js"></script>
 <!-- La balade : chapitre cree le 6 aout 2026 pour Le Morne (ile Maurice),
      l'etape 2. Reserver une sortie et entrer dans l'eau. Son entree
      `balade` est un RAPPEL de hype-lingo-lex-arrivee.js (meme `ref`,
@@ -1093,6 +1100,16 @@ var ETAPES = [
     dessin du chemin n'est pas remplacé. */
  {ref:"saumur",    ch:"Le Cadre Noir", v:"Saumur",      nat:"France",         h:"06 h 40", ciel:["#0A1522","#2E3B4E"], forme:"chateau",  souv:"Un lampion du Cadre Noir",     ic:"lampion"},
  {ref:"lamotte",   ch:"Le poney",      v:"Lamotte-Beuvron", nat:"France",     h:"07 h 30", ciel:["#0C1A27","#33455A"], forme:"lande",    souv:"Une toise de bois",            ic:"toise"},
+ /* ⚠️ GOLEGÃ ajoutée le 6 août 2026. Blandine : « Golegã c'est toi qui
+    vois tu veux y mettre quoi » — choix fait, c'est L'ÉLEVAGE, le plus
+    gros trou du module : sur les 378 mots d'origine, aucun ne parlait de
+    la naissance d'un cheval. Le plan de production le prévoyait déjà pour
+    cette ville. Nouveau chapitre `elevage`, fichier à part.
+    Placée entre Lamotte et Jerez : on descend de France au Portugal, puis
+    on remonte vers l'Andalousie. Heure 07 h 55, entre les deux.
+    ⚠️ `arrivee-golega.mp4` existe déjà (reçu le 6 août). Manquent
+    `carte-golega.webp` et `fond-golega.webp` — les replis les couvrent. */
+ {ref:"golega",    ch:"L'élevage",     v:"Golegã",      nat:"Portugal",       h:"07 h 55", ciel:["#101A1E","#CDA765"], forme:"haras",    souv:"Une page du stud-book",        ic:"carnet"},
  {ref:"jerez",     ch:"Le cheval",     v:"Jerez",       nat:"Espagne",        h:"08 h 15", ciel:["#101B26","#4A4258"], forme:"haras",    souv:"Une jarre andalouse",          ic:"jarre"},
  {ref:"seville",   ch:"La présentation",v:"Séville",    nat:"Espagne",        h:"09 h 05", ciel:["#131C24","#5A4A4E"], forme:"village",  souv:"Un peigne de tresses",         ic:"peigne"},
  {ref:"vejer",     ch:"L'intendance",  v:"Vejer",       nat:"Espagne",        h:"09 h 50", ciel:["#0E1A22","#4E5257"], forme:"cote",     souv:"Un seau de zinc",              ic:"seau"},
@@ -1140,6 +1157,7 @@ var I18N_H = {
  "05 h 25":{en:"5.25 am", es:"05:25", it:"05:25", de:"05:25 Uhr", ja:"5時25分"},
  "06 h 40":{en:"6.40 am", es:"06:40", it:"06:40", de:"06:40 Uhr", ja:"6時40分"},
  "07 h 30":{en:"7.30 am", es:"07:30", it:"07:30", de:"07:30 Uhr", ja:"7時30分"},
+ "07 h 55":{en:"7.55 am", es:"07:55", it:"07:55", de:"07:55 Uhr", ja:"7時55分"},
  "08 h 15":{en:"8.15 am", es:"08:15", it:"08:15", de:"08:15 Uhr", ja:"8時15分"},
  "09 h 05":{en:"9.05 am", es:"09:05", it:"09:05", de:"09:05 Uhr", ja:"9時05分"},
  "09 h 50":{en:"9.50 am", es:"09:50", it:"09:50", de:"09:50 Uhr", ja:"9時50分"},
@@ -1549,6 +1567,25 @@ var RECITS = {
       "隣の馬場で落馬があり、数秒で大人三人がそこにいた。走らず、叫ばずに。",
       {f:"ヨーロッパ最大の馬術パーク。何十もの馬場があり、年に一週間、フランス馬術のすべてがここに集まる。"}]
  },
+ golega:{
+  fr:["La brume ne se lève pas encore, et la cour sent la paille mouillée.",
+      "Un gris à la crinière longue attend, et personne ici ne demande ce qu'il sait faire — on demande d'où il vient.",
+      {f:"Golegã tient sa foire du cheval en novembre depuis des siècles : c'est là que le lusitanien se montre et se juge."}],
+  en:["The mist has not lifted yet, and the yard smells of wet straw.",
+      "A grey with a long mane is waiting, and nobody here asks what he can do — they ask where he comes from.",
+      {f:"Golegã has held its horse fair in November for centuries: it is where the Lusitano is shown and judged."}],
+  es:["La niebla no se ha levantado todavía, y el patio huele a paja mojada.",
+      "Un tordo de crin larga espera, y aquí nadie pregunta qué sabe hacer: preguntan de dónde viene.",
+      {f:"Golegã celebra su feria del caballo en noviembre desde siglos: es allí donde el lusitano se muestra y se juzga."}],
+  it:["La nebbia non si è ancora alzata, e il cortile odora di paglia bagnata.",
+      "Un grigio dalla criniera lunga aspetta, e qui nessuno chiede cosa sa fare: chiedono da dove viene.",
+      {f:"Golegã tiene la sua fiera del cavallo in novembre da secoli: è lì che il lusitano si mostra e si giudica."}],
+  de:["Der Nebel hat sich noch nicht gehoben, und der Hof riecht nach nassem Stroh.",
+      "Ein Grauer mit langer Mähne wartet, und hier fragt niemand, was er kann — man fragt, woher er kommt.",
+      {f:"Golegã hält seinen Pferdemarkt seit Jahrhunderten im November: dort wird der Lusitano gezeigt und beurteilt."}],
+  ja:["霧はまだ晴れず、中庭は濡れた藁のにおいがする。",
+      "たてがみの長い芦毛が待っている。ここでは誰も何ができるかを訊かない。どこから来たのかを訊く。",
+      {f:"ゴレガは何世紀も十一月に馬市を開いてきた。ルシタノが披露され、見極められる場所だ。"}]},
  jerez:{
   fr:["Gris, très gris, avec une crinière qui touche presque le sol.",
       "On m'a demandé de le décrire, et je n'ai pas su : c'est ce jour-là que le vocabulaire a servi.",
@@ -1766,6 +1803,12 @@ var POURQUOI = {
   it:"Il più grande parco equestre d'Europa, e migliaia di pony ogni estate.",
   de:"Der größte Reitsportpark Europas — und jeden Sommer Tausende Ponys.",
   ja:"ヨーロッパ最大の馬術パーク。毎年夏、何千頭ものポニーが集まる。"},
+ golega:{fr:"La capitale du cheval portugais, et une foire de novembre où le lusitanien se montre depuis des siècles.",
+  en:"The capital of the Portuguese horse, and a November fair where the Lusitano has been shown for centuries.",
+  es:"La capital del caballo portugués, y una feria de noviembre donde el lusitano se muestra desde siglos.",
+  it:"La capitale del cavallo portoghese, e una fiera di novembre dove il lusitano si mostra da secoli.",
+  de:"Die Hauptstadt des portugiesischen Pferdes, und ein Novembermarkt, auf dem der Lusitano seit Jahrhunderten gezeigt wird.",
+  ja:"ポルトガル馬の首都。ルシタノが何世紀も披露されてきた十一月の市。"},
  jerez:{fr:"L'École royale andalouse, et le pura raza española chez lui.",
   en:"The Royal Andalusian School, and the Pura Raza Española at home.",
   es:"La Real Escuela Andaluza, y el pura raza española en su tierra.",
@@ -1884,7 +1927,7 @@ var NIVEAU_VILLE = {
   labaule:1, maurice:1, newmarket:1, lambourn:1, connemara:1, walsall:1, aberystwyth:1,
   kildare:1, jerez:1, vejer:1,
   hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
-  warendorf:2, aachen:2, lamotte:2,
+  warendorf:2, aachen:2, lamotte:2, golega:2,
   saumur:3, edimbourg:3
 };
 function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
@@ -2292,7 +2335,16 @@ function ouvrirArrivee(i){
   var stop = FIN_VIDEO[e.ref];
   if(stop){
     videoEl.addEventListener("timeupdate",function(){
-      if(this.currentTime >= stop){ try{ this.pause(); }catch(err){} }
+      if(this.currentTime >= stop){
+        try{ this.pause(); }catch(err){}
+        /* ⚠️ On REVIENT sur l'image voulue. `timeupdate` ne se déclenche
+           qu'environ quatre fois par seconde : sans ce recalage, l'arrêt
+           dépassait la consigne de 200 à 400 ms — assez, sur Vejer, pour
+           s'immobiliser sur le panneau tronqué qu'on cherchait justement à
+           éviter. Repéré en rendu réel (arrêt mesuré à 7,83 s pour une
+           consigne à 7,4 s). Le recalage rend l'image finale déterministe. */
+        try{ if(this.currentTime > stop) this.currentTime = stop; }catch(err){}
+      }
     });
   }
   S("vue").insertBefore(videoEl, S("vue").firstChild);
@@ -2341,7 +2393,16 @@ function allerA(i){
    ================================================================== */
 /* Fin forcée d'un clip d'arrivée, en secondes. Une seule entrée pour
    l'instant : voir le commentaire dans ouvrirArrivee. */
-var FIN_VIDEO = { labaule: 4.4 };
+var FIN_VIDEO = { labaule: 4.4, vejer: 7.0 };
+/* ⚠️ vejer ajoutee le 6 aout 2026, meme defaut que La Baule : le panneau
+   « Vejer de la Frontera » est TRONQUE dans le fichier lui-meme — le V est
+   coupe a gauche et le A final a droite, sur toute la fin du clip (verifie
+   image par image de 8,4 s a 10,1 s, aucune image ne le montre entier).
+   Le nom est long : il ne tenait pas dans les deux tiers de largeur que la
+   consigne de production imposait. On s'arrete donc a 7,4 s, juste avant
+   le raccord, sur le cavalier en tenue traditionnelle qui remonte la rue
+   pavee face au soleil — une bien meilleure derniere image qu'un panneau
+   ampute. A retirer d'ici le jour ou le clip est refait. */
 
 var DEPART_DEFAUT = { nom:"Paris", lat:48.8566, lng:2.3522 };
 
@@ -2647,6 +2708,7 @@ var ETAPE_SRC = {
   edimbourg:   [["urgences",4]],
   saumur:      [["dressage",3]],
   lamotte:     [["poney",1]],
+  golega:      [["elevage",1]],
   jerez:       [["cheval",4]],
   seville:     [["materiel",3]],
   vejer:       [["ecurie",3]],
@@ -2848,12 +2910,13 @@ var UI = {
  /* ⚠️ Maurice ajoutée, et les cinq traductions remises à jour : elles
     étaient restées aux quatre pays des îles Britanniques alors que le
     français en annonçait sept. */
- ouvNations:{fr:"Angleterre · Irlande · Galles · Écosse · France · Espagne · Allemagne · Maurice",
-   en:"England · Ireland · Wales · Scotland · France · Spain · Germany · Mauritius",
-   es:"Inglaterra · Irlanda · Gales · Escocia · Francia · España · Alemania · Mauricio",
-   it:"Inghilterra · Irlanda · Galles · Scozia · Francia · Spagna · Germania · Mauritius",
-   de:"England · Irland · Wales · Schottland · Frankreich · Spanien · Deutschland · Mauritius",
-   ja:"イングランド・アイルランド・ウェールズ・スコットランド・フランス・スペイン・ドイツ・モーリシャス"},
+ /* Italie ajoutee avec Rome, Portugal avec Golega (6 aout). */
+ ouvNations:{fr:"Angleterre · Irlande · Galles · Écosse · France · Espagne · Portugal · Italie · Allemagne · Maurice",
+   en:"England · Ireland · Wales · Scotland · France · Spain · Portugal · Italy · Germany · Mauritius",
+   es:"Inglaterra · Irlanda · Gales · Escocia · Francia · España · Portugal · Italia · Alemania · Mauricio",
+   it:"Inghilterra · Irlanda · Galles · Scozia · Francia · Spagna · Portogallo · Italia · Germania · Mauritius",
+   de:"England · Irland · Wales · Schottland · Frankreich · Spanien · Portugal · Italien · Deutschland · Mauritius",
+   ja:"イングランド・アイルランド・ウェールズ・スコットランド・フランス・スペイン・ポルトガル・イタリア・ドイツ・モーリシャス"},
  ouvLangue:{fr:"— anglais —", en:"— English —", es:"— inglés —", it:"— inglese —",
    de:"— Englisch —", ja:"— 英語 —"},
  ouvIntro:{fr:"<b>Pas les capitales politiques — les capitales du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde, et où le vocabulaire que tu vas apprendre s'entend vraiment.",
@@ -3219,6 +3282,8 @@ var COLL_NOM = {
   poney:{fr:"Le poney", en:"The pony", es:"El poni", it:"Il pony", de:"Das Pony", ja:"ポニー"},
   balade:{fr:"La balade", en:"The ride out", es:"El paseo", it:"La passeggiata",
     de:"Der Ausritt", ja:"外乗"},
+  elevage:{fr:"L'élevage", en:"Breeding", es:"La cría", it:"L'allevamento",
+    de:"Die Zucht", ja:"繁殖"},
   corps:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体"},
   etat:{fr:"L'état du poil", en:"The state of the coat", es:"El estado de la capa",
         it:"Lo stato del mantello", de:"Der Zustand des Fells", ja:"毛の状態"},
@@ -3269,6 +3334,7 @@ var ACCUEIL_CHAP = {
      donc la première ville du voyage entrait dans sa leçon sans un mot.
      Trouvé en ajoutant le chapitre du Morne. */
   arrivee:{fr:"Arriver quelque part et demander un cheval : réserver, dire son niveau, comprendre le tarif.", en:"Arriving somewhere and asking for a horse: booking, stating your level, understanding the price.", es:"Llegar a un sitio y pedir un caballo: reservar, decir tu nivel, entender el precio.", it:"Arrivare in un posto e chiedere un cavallo: prenotare, dire il proprio livello, capire il prezzo.", de:"Irgendwo ankommen und nach einem Pferd fragen: buchen, sein Können nennen, den Preis verstehen.", ja:"どこかに着いて、馬を頼む。予約する、自分の技量を伝える、料金を理解する。"},
+  elevage:{fr:"D'où vient un cheval : la poulinière, la saillie, le poulinage, le sevrage, la lignée.", en:"Where a horse comes from: the broodmare, the covering, the foaling, the weaning, the bloodline.", es:"De dónde viene un caballo: la yegua de vientre, la cubrición, el parto, el destete, la línea de sangre.", it:"Da dove viene un cavallo: la fattrice, la monta, il parto, lo svezzamento, la linea di sangue.", de:"Woher ein Pferd kommt: die Zuchtstute, der Deckakt, die Geburt, das Absetzen, die Blutlinie.", ja:"馬がどこから来るのか。繁殖牝馬、交配、分娩、離乳、血統。"},
   balade:{fr:"Réserver une sortie et entrer dans l'eau : la marée, le lagon, se baigner, nager.", en:"Booking a ride out and going into the water: the tide, the lagoon, bathing, swimming.", es:"Reservar un paseo y entrar en el agua: la marea, la laguna, bañarse, nadar.", it:"Prenotare una passeggiata ed entrare in acqua: la marea, la laguna, il bagno, nuotare.", de:"Einen Ausritt buchen und ins Wasser gehen: die Tide, die Lagune, baden, schwimmen.", ja:"外乗を予約し、水に入る。潮、ラグーン、水浴、泳ぐこと。"},
   gens:{fr:"Les gens d'un concours : qui décide, qui accompagne, qui réclame — et ce qu'on se dit à l'arrivée.", en:"The people at a show: who decides, who supports, who objects — and what you say to each other at the end.", es:"La gente de un concurso: quién decide, quién acompaña, quién reclama, y qué se dice al final.", it:"Le persone di un concorso: chi decide, chi accompagna, chi reclama — e cosa ci si dice all'arrivo.", de:"Die Menschen auf einem Turnier: wer entscheidet, wer begleitet, wer Einspruch erhebt — und was man sich am Ende sagt.", ja:"競技会にいる人たち。決める人、支える人、異議を申し立てる人。そして終わったあとに交わす言葉。"},
   ecurie:{fr:"Les mots de l'écurie : le lieu, la litière, la nourriture, les gestes du matin.", en:"The words of the yard: the place, the bedding, the feed, the morning jobs.", es:"Las palabras de la cuadra: el lugar, la cama, el pienso, los gestos de la mañana.", it:"Le parole della scuderia: il luogo, la lettiera, il mangime, i gesti del mattino.", de:"Die Wörter des Stalls: der Ort, die Einstreu, das Futter, die Arbeit am Morgen.", ja:"厩舎の言葉。場所、敷料、飼料、朝の作業。"},

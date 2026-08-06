@@ -504,6 +504,63 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
   //    mauvais score ecarte) est celui de la formule classique. Verifier qu'il
   //    correspond bien a l'edition romaine actuelle.
 
+  /* ==================================================================
+     GOLEGÃ — ajoutée le 6 août 2026, étape 15. Le chapitre de l'ÉLEVAGE
+     (`hype-lingo-lex-elevage.js`), choisi sur délégation de Blandine.
+     ⚠️ `arrivee-golega.mp4` existe. Manquent `carte-golega.webp` et
+     `fond-golega.webp` — les replis les couvrent.
+     ⚠️ Le nom porte un tilde ici, mais le panneau de la vidéo l'écrit
+     GOLEGA sans tilde : c'était une consigne de production, un tilde mal
+     rendu abîmait l'image. Ne pas s'en étonner.
+     ================================================================== */
+  MONDE.golega = {
+    lieu:"Ribatejo · Portugal", carte:true, niveau:2,
+    image:"la cour d'élevage dans la brume du matin",
+    lettre:{
+      fr:["On m'a montré la mère avant de me montrer le cheval.",
+          "Puis la grand-mère, sur une photo punaisée au mur du bureau. J'ai compris que je ne regardais pas un cheval mais une suite, et que le poulain dans la cour en était la dernière ligne."],
+      en:["They showed me the mother before they showed me the horse.",
+          "Then the grandmother, in a photograph pinned to the office wall. I understood that I was not looking at a horse but at a sequence, and that the foal in the yard was its latest line."],
+      es:["Me mostraron a la madre antes de mostrarme el caballo.",
+          "Luego a la abuela, en una foto clavada en la pared de la oficina. Entendí que no estaba mirando un caballo sino una sucesión, y que el potro del patio era su última línea."],
+      it:["Mi hanno mostrato la madre prima di mostrarmi il cavallo.",
+          "Poi la nonna, in una fotografia appuntata al muro dell'ufficio. Ho capito che non guardavo un cavallo ma una successione, e che il puledro nel cortile ne era l'ultima riga."],
+      de:["Man zeigte mir die Mutter, bevor man mir das Pferd zeigte.",
+          "Dann die Großmutter, auf einem Foto an der Bürowand. Ich begriff, dass ich kein Pferd ansah, sondern eine Folge — und dass das Fohlen im Hof deren letzte Zeile war."],
+      ja:["馬を見せられる前に、その母を見せられた。",
+          "次に祖母を、事務所の壁に留められた写真で。自分が見ていたのは一頭の馬ではなく連なりで、中庭にいる子馬はその最新の一行なのだと分かった。"]},
+    volets:[
+      {t:{fr:"Le lusitanien", en:"The Lusitano", es:"El lusitano", it:"Il lusitano",
+          de:"Der Lusitano", ja:"ルシタノ"},
+       c:{fr:"La race du Portugal : encolure ronde et haute, crins longs, un cheval remarquablement maniable, façonné par des siècles de travail devant le taureau. Il partage ses origines avec le pura raza española, dont il n'a été officiellement séparé qu'en 1967 — deux stud-books là où il n'y en avait qu'un.",
+          en:"Portugal's breed: a round, high-set neck, long mane, a remarkably handy horse shaped by centuries of work in front of the bull. It shares its origins with the pura raza española, from which it was only officially separated in 1967 — two stud books where there had been one.",
+          es:"La raza de Portugal: cuello redondo y alto, crines largas, un caballo notablemente manejable, formado por siglos de trabajo ante el toro. Comparte su origen con el pura raza española, del que solo fue separado oficialmente en 1967: dos libros genealógicos donde había uno.",
+          it:"La razza del Portogallo: incollatura tonda e alta, criniera lunga, un cavallo straordinariamente maneggevole, formato da secoli di lavoro davanti al toro. Condivide le origini con il pura raza española, da cui è stato separato ufficialmente solo nel 1967: due libri genealogici dove ce n'era uno.",
+          de:"Portugals Rasse: ein runder, hoch angesetzter Hals, lange Mähne, ein bemerkenswert wendiges Pferd, geformt von Jahrhunderten Arbeit vor dem Stier. Es teilt seine Herkunft mit dem Pura Raza Española, von dem es erst 1967 offiziell getrennt wurde — zwei Zuchtbücher, wo es eines gab.",
+          ja:"ポルトガルの品種。丸く高く付いた頸、長いたてがみ。牛を相手にする何世紀もの仕事が形づくった、きわめて器用な馬です。プラ・ラサ・エスパニョーラと起源を同じくし、公式に分けられたのは一九六七年のこと。ひとつだった血統登録簿が、二つになりました。"}},
+      {t:{fr:"D'où vient un cheval", en:"Where a horse comes from", es:"De dónde viene un caballo",
+          it:"Da dove viene un cavallo", de:"Woher ein Pferd kommt", ja:"馬はどこから来るか"},
+       c:{fr:"Une jument porte onze mois, met bas presque toujours la nuit, et son poulain est sevré vers cinq ou six mois. Entre-temps quelqu'un a choisi l'étalon, inscrit la naissance au stud-book et parié sur une lignée qui ne se vérifiera que dans quatre ans. C'est le seul métier du cheval où l'on travaille pour une génération qu'on ne montera pas.",
+          en:"A mare carries for eleven months, almost always foals at night, and her foal is weaned at around five or six months. In between, someone chose the stallion, entered the birth in the stud book and bet on a bloodline that will not prove itself for four years. It is the one horse trade where you work for a generation you will not ride.",
+          es:"Una yegua lleva once meses, pare casi siempre de noche, y su potro se desteta hacia los cinco o seis meses. Entretanto alguien eligió el semental, inscribió el nacimiento en el libro genealógico y apostó por una línea que no se comprobará hasta dentro de cuatro años. Es el único oficio del caballo en el que se trabaja para una generación que no se montará.",
+          it:"Una cavalla porta undici mesi, figlia quasi sempre di notte, e il suo puledro viene svezzato verso i cinque o sei mesi. Nel frattempo qualcuno ha scelto lo stallone, iscritto la nascita nel libro genealogico e scommesso su una linea che si verificherà solo fra quattro anni. È il solo mestiere del cavallo in cui si lavora per una generazione che non si monterà.",
+          de:"Eine Stute trägt elf Monate, fohlt fast immer nachts, und ihr Fohlen wird mit etwa fünf oder sechs Monaten abgesetzt. Dazwischen hat jemand den Hengst gewählt, die Geburt ins Zuchtbuch eingetragen und auf eine Blutlinie gesetzt, die sich erst in vier Jahren zeigt. Es ist der einzige Pferdeberuf, in dem man für eine Generation arbeitet, die man nicht reiten wird.",
+          ja:"牝馬は十一か月を経て、ほとんどの場合は夜に子を産み、子馬は五、六か月で離乳します。そのあいだに誰かが種牡馬を選び、出生を血統登録簿に記し、四年後にしか答えの出ない血統に賭けています。自分が乗ることのない世代のために働く、馬の仕事のなかで唯一のものです。"}},
+      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi",
+          de:"Wenn du hinführest", ja:"もし行くなら"},
+       c:{fr:"Viens en novembre, pendant la foire, mais arrive tôt le matin plutôt qu'à l'heure des défilés : c'est dans les cours, avant l'ouverture, qu'on parle vraiment de lignées. Et pose la question qu'on pose ici avant toutes les autres — non pas ce que le cheval sait faire, mais de qui il est né.",
+          en:"Come in November for the fair, but arrive early in the morning rather than at parade time: it is in the yards, before the gates open, that bloodlines are really discussed. And ask the question that comes first here — not what the horse can do, but who he is out of.",
+          es:"Ven en noviembre, durante la feria, pero llega temprano por la mañana y no a la hora de los desfiles: es en los patios, antes de abrir, donde de verdad se habla de líneas. Y haz la pregunta que aquí se hace antes que ninguna: no qué sabe hacer el caballo, sino de quién ha nacido.",
+          it:"Vieni in novembre, durante la fiera, ma arriva presto al mattino invece che all'ora delle sfilate: è nei cortili, prima dell'apertura, che si parla davvero di linee. E fai la domanda che qui viene prima di tutte: non che cosa sa fare il cavallo, ma da chi è nato.",
+          de:"Komm im November zum Markt, aber morgens früh und nicht zur Zeit der Umzüge: in den Höfen, vor dem Öffnen, wird wirklich über Blutlinien geredet. Und stell die Frage, die hier vor allen anderen kommt — nicht, was das Pferd kann, sondern von wem es abstammt.",
+          ja:"十一月の市の時期に、しかし行進の時刻ではなく朝の早い時間に着くこと。開場前の中庭でこそ、血統の話が本当に交わされます。そしてここで何より先に問われる問いを、あなたも問うてください。その馬が何をできるかではなく、誰から生まれたのかを。"}}
+    ]
+  };
+  // ?? La separation officielle du lusitanien et du pura raza espanola en 1967 :
+  //    date couramment citee, a confirmer avant publication.
+  // ?? La foire de Golega (Feira Nacional do Cavalo) se tient en novembre.
+  //    Formulation prudente : « depuis des siecles », sans date de fondation.
+
   /* ajout clé par clé : on ne remplace jamais une ville déjà présente */
   var k;
   for(k in MONDE){
