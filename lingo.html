@@ -1034,6 +1034,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <!-- L'arrivée dans un club : l'inscription et la sécurité, pour La Baule.
      ⚠️ La sécurité n'existait NULLE PART dans les 378 mots d'origine. -->
 <script src="hype-lingo-lex-arrivee.js"></script>
+<!-- La vente : chapitre cree le 6 aout 2026 pour Verone (Italie).
+     Le seul moment de la vie d'un cavalier ou se tromper coute cher, et il
+     n'existait nulle part dans les 378 mots. Niveau 3 : on y parle.
+     ⚠️ L'ELEVAGE n'est pas ici (Golega), ni les ventes de yearlings
+     (Lexington). Verone achete et vend ce qui est deja ne. -->
+<script src="hype-lingo-lex-vente.js"></script>
 <!-- L'elevage : chapitre cree le 6 aout 2026 pour Golega (Portugal).
      Le plus gros trou du module : aucun des 378 mots d'origine ne parlait
      de la naissance d'un cheval. Trois de ses entrees (`poulain`,
@@ -1100,6 +1106,15 @@ var ETAPES = [
     dessin du chemin n'est pas remplacé. */
  {ref:"saumur",    ch:"Le Cadre Noir", v:"Saumur",      nat:"France",         h:"06 h 40", ciel:["#0A1522","#2E3B4E"], forme:"chateau",  souv:"Un lampion du Cadre Noir",     ic:"lampion"},
  {ref:"lamotte",   ch:"Le poney",      v:"Lamotte-Beuvron", nat:"France",     h:"07 h 30", ciel:["#0C1A27","#33455A"], forme:"lande",    souv:"Une toise de bois",            ic:"toise"},
+ /* ⚠️ VÉRONE ajoutée le 6 août 2026, étape 21. Le chapitre du COMMERCE
+    (`hype-lingo-lex-vente.js`), prévu pour elle depuis le début par
+    hype-linguae-production-suite.txt. Placée entre Rome et Warendorf : on
+    remonte l'Italie du sud au nord, puis on passe en Allemagne. Heure
+    11 h 05, entre celles de Rome et de Warendorf.
+    ⚠️ NIVEAU 3 — le chapitre le plus parlé du voyage : on y négocie, on y
+    pose des questions gênantes, on y dit non. Seules Saumur, Édimbourg et
+    elle sont à ce palier.
+    ⚠️ Aucune de ses trois images n'existe encore. */
  /* ⚠️ GOLEGÃ ajoutée le 6 août 2026. Blandine : « Golegã c'est toi qui
     vois tu veux y mettre quoi » — choix fait, c'est L'ÉLEVAGE, le plus
     gros trou du module : sur les 378 mots d'origine, aucun ne parlait de
@@ -1126,6 +1141,7 @@ var ETAPES = [
     ⚠️ Première étape italienne du voyage, alors que l'italien est une des
     six langues depuis le début. */
  {ref:"rome",      ch:"La Coupe des Nations", v:"Rome",   nat:"Italie",         h:"10 h 55", ciel:["#0D1620","#C97B4A"], forme:"obstacles",souv:"Une coupe de Piazza di Siena", ic:"coupe"},
+ {ref:"verone",    ch:"Le commerce",   v:"Vérone",      nat:"Italie",         h:"11 h 05", ciel:["#121A1C","#B8863F"], forme:"village",  souv:"Un contrat de foire",          ic:"lettre"},
  {ref:"warendorf", ch:"La formation",  v:"Warendorf",   nat:"Allemagne",      h:"11 h 20", ciel:["#0B141E","#2F4256"], forme:"ecuries",  souv:"Un carnet d'échelle",          ic:"echelle"},
  {ref:"aachen",    ch:"Le grand concours",v:"Aix-la-Chapelle", nat:"Allemagne", h:"12 h 10", ciel:["#0A1219","#354A5C"], forme:"manoir", souv:"Une cloche de barrage",        ic:"cloche"}
 ];
@@ -1163,6 +1179,7 @@ var I18N_H = {
  "09 h 50":{en:"9.50 am", es:"09:50", it:"09:50", de:"09:50 Uhr", ja:"9時50分"},
  "10 h 35":{en:"10.35 am",es:"10:35", it:"10:35", de:"10:35 Uhr", ja:"10時35分"},
  "10 h 55":{en:"10.55 am",es:"10:55", it:"10:55", de:"10:55 Uhr", ja:"10時55分"},
+ "11 h 05":{en:"11.05 am",es:"11:05", it:"11:05", de:"11:05 Uhr", ja:"11時5分"},
  "11 h 20":{en:"11.20 am",es:"11:20", it:"11:20", de:"11:20 Uhr", ja:"11時20分"},
  "12 h 10":{en:"12.10 pm",es:"12:10", it:"12:10", de:"12:10 Uhr", ja:"12時10分"}
 };
@@ -1567,6 +1584,25 @@ var RECITS = {
       "隣の馬場で落馬があり、数秒で大人三人がそこにいた。走らず、叫ばずに。",
       {f:"ヨーロッパ最大の馬術パーク。何十もの馬場があり、年に一週間、フランス馬術のすべてがここに集まる。"}]
  },
+ verone:{
+  fr:["Trois allées de boxes, et dans chacune quelqu'un qui attend qu'on lui pose une question.",
+      "J'ai dit mon budget en entrant. On m'a montré quatre chevaux au lieu de quarante.",
+      {f:"Fieracavalli se tient à Vérone depuis 1898 : on y montre, on y essaie et on y vend, toutes races confondues."}],
+  en:["Three aisles of stalls, and in each of them someone waiting to be asked a question.",
+      "I said my budget as I walked in. They showed me four horses instead of forty.",
+      {f:"Fieracavalli has been held in Verona since 1898: horses are shown, tried and sold there, all breeds together."}],
+  es:["Tres pasillos de boxes, y en cada uno alguien esperando que le hagan una pregunta.",
+      "Dije mi presupuesto al entrar. Me mostraron cuatro caballos en lugar de cuarenta.",
+      {f:"Fieracavalli se celebra en Verona desde 1898: allí se muestra, se prueba y se vende, todas las razas juntas."}],
+  it:["Tre corsie di box, e in ognuna qualcuno che aspetta che gli si faccia una domanda.",
+      "Ho detto il mio budget entrando. Mi hanno mostrato quattro cavalli invece di quaranta.",
+      {f:"Fieracavalli si tiene a Verona dal 1898: lì si mostra, si prova e si vende, tutte le razze insieme."}],
+  de:["Drei Gassen mit Boxen, und in jeder jemand, der darauf wartet, gefragt zu werden.",
+      "Ich habe mein Budget genannt, als ich hereinkam. Man zeigte mir vier Pferde statt vierzig.",
+      {f:"Die Fieracavalli findet seit 1898 in Verona statt: dort wird gezeigt, probiert und verkauft, alle Rassen zusammen."}],
+  ja:["\u99ac\u623f\u306e\u5217\u304c\u4e09\u672c\u3002\u305d\u306e\u3069\u308c\u306b\u3082\u3001\u554f\u308f\u308c\u308b\u306e\u3092\u5f85\u3063\u3066\u3044\u308b\u4eba\u304c\u3044\u308b\u3002",
+      "\u5165\u308b\u306a\u308a\u4e88\u7b97\u3092\u544a\u3052\u305f\u3002\u56db\u5341\u982d\u3067\u306a\u304f\u3001\u56db\u982d\u3092\u898b\u305b\u3066\u304f\u308c\u305f\u3002",
+      {f:"\u30d5\u30a3\u30a8\u30e9\u30ab\u30f4\u30a1\u30c3\u30ea\u306f\u4e00\u516b\u4e5d\u516b\u5e74\u304b\u3089\u30f4\u30a7\u30ed\u30fc\u30ca\u3067\u958b\u304b\u308c\u3066\u3044\u308b\u3002\u54c1\u7a2e\u3092\u554f\u308f\u305a\u3001\u898b\u305b\u3001\u8a66\u3057\u3001\u58f2\u308b\u5834\u3002"}]},
  golega:{
   fr:["La brume ne se lève pas encore, et la cour sent la paille mouillée.",
       "Un gris à la crinière longue attend, et personne ici ne demande ce qu'il sait faire — on demande d'où il vient.",
@@ -1803,6 +1839,12 @@ var POURQUOI = {
   it:"Il più grande parco equestre d'Europa, e migliaia di pony ogni estate.",
   de:"Der größte Reitsportpark Europas — und jeden Sommer Tausende Ponys.",
   ja:"ヨーロッパ最大の馬術パーク。毎年夏、何千頭ものポニーが集まる。"},
+ verone:{fr:"La grande foire du cheval italienne, où l'on montre, où l'on essaie et où l'on vend.",
+  en:"Italy's great horse fair, where horses are shown, tried and sold.",
+  es:"La gran feria del caballo italiana, donde se muestra, se prueba y se vende.",
+  it:"La grande fiera del cavallo italiana, dove si mostra, si prova e si vende.",
+  de:"Italiens große Pferdemesse, auf der gezeigt, probiert und verkauft wird.",
+  ja:"イタリア最大の馬の見本市。見せ、試し、売る場所。"},
  golega:{fr:"La capitale du cheval portugais, et une foire de novembre où le lusitanien se montre depuis des siècles.",
   en:"The capital of the Portuguese horse, and a November fair where the Lusitano has been shown for centuries.",
   es:"La capital del caballo portugués, y una feria de noviembre donde el lusitano se muestra desde siglos.",
@@ -1928,7 +1970,7 @@ var NIVEAU_VILLE = {
   kildare:1, jerez:1, vejer:1,
   hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
   warendorf:2, aachen:2, lamotte:2, golega:2,
-  saumur:3, edimbourg:3
+  saumur:3, edimbourg:3, verone:3
 };
 function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
 
@@ -2393,7 +2435,7 @@ function allerA(i){
    ================================================================== */
 /* Fin forcée d'un clip d'arrivée, en secondes. Une seule entrée pour
    l'instant : voir le commentaire dans ouvrirArrivee. */
-var FIN_VIDEO = { labaule: 4.4, vejer: 7.0 };
+var FIN_VIDEO = { labaule: 4.4, vejer: 7.0, golega: 4.6 };
 /* ⚠️ vejer ajoutee le 6 aout 2026, meme defaut que La Baule : le panneau
    « Vejer de la Frontera » est TRONQUE dans le fichier lui-meme — le V est
    coupe a gauche et le A final a droite, sur toute la fin du clip (verifie
@@ -2402,7 +2444,21 @@ var FIN_VIDEO = { labaule: 4.4, vejer: 7.0 };
    consigne de production imposait. On s'arrete donc a 7,4 s, juste avant
    le raccord, sur le cavalier en tenue traditionnelle qui remonte la rue
    pavee face au soleil — une bien meilleure derniere image qu'un panneau
-   ampute. A retirer d'ici le jour ou le clip est refait. */
+   ampute. A retirer d'ici le jour ou le clip est refait.
+
+   ⚠️ golega ajoutee le 6 aout 2026 : TROISIEME panneau tronque du projet,
+   apres La Baule et Vejer. « GOLEGA » perd son A final au bord droit du
+   cadre, sur toute la fin du clip. Le defaut n'est donc pas un accident :
+   la consigne de production qui impose le texte dans les deux tiers de
+   largeur ne tient pas pour les noms longs. On s'arrete a 4,6 s, sur le
+   cavalier en tenue portugaise face a l'objectif, dans la brume et les
+   arbres — la plus belle image du clip, et de loin. La valeur a ete
+   choisie en SIMULANT le recadrage de l'app (cover dans une boite de
+   52svh, soit un ratio de .888 pris dans une source en .602 : seule la
+   bande centrale se voit). A 6,2 s on ne voyait plus que la croupe.
+   ⚠️ A dire a Blandine pour les prochaines villes : faire cadrer le
+   panneau AVEC DE LA MARGE des deux cotes, ou renoncer au panneau. Trois
+   sur neuf clips sont concernes. */
 
 var DEPART_DEFAUT = { nom:"Paris", lat:48.8566, lng:2.3522 };
 
@@ -2714,6 +2770,7 @@ var ETAPE_SRC = {
   vejer:       [["ecurie",3]],
   oliva:       [["concours",1]],
   rome:        [["concours",4]],
+  verone:      [["vente",1]],
   warendorf:   [["materiel",4]],
   aachen:      [["obstacle",4]]
 };
@@ -3252,12 +3309,34 @@ function dire(txt, lg){
        window.speechSynthesis.speak(u); }catch(e){}
 }
 
-/* ---------- la maîtrise, gardée sur le téléphone ---------- */
-var MAITRISE = (function(){
-  try{ return JSON.parse(localStorage.getItem("hype_lingo_maitrise")) || {}; }catch(e){ return {}; }
+/* ---------- la maîtrise, gardée sur le téléphone ----------
+   ⚠️ RANGÉE PAR LANGUE depuis le 6 août 2026, avec l'ouverture des cinq
+   langues. Avant, le magasin était un objet plat indexé par `ref` seul —
+   correct tant qu'on n'apprenait que l'anglais, faux dès qu'on change :
+   « le poney » su en anglais faisait passer « el poni » pour acquis, et
+   le chapitre espagnol s'ouvrait déjà terminé.
+   ⚠️ MIGRATION SANS PERTE : l'ancien format plat est reconnu à ce que ses
+   valeurs sont des nombres, et rangé sous "en" — tous les joueurs
+   existants apprenaient l'anglais. Personne ne perd sa progression.
+   ⚠️ `MAITRISE` reste une variable réassignée, pas une copie : tout le
+   code qui la lit passe par elle au moment de l'appel, donc rien d'autre
+   n'a eu besoin de changer. */
+var MAITRISE_TOUT = (function(){
+  var d={};
+  try{ d = JSON.parse(localStorage.getItem("hype_lingo_maitrise")) || {}; }catch(e){ d={}; }
+  var plat=false, k;
+  for(k in d){ if(typeof d[k] === "number"){ plat=true; break; } }
+  return plat ? { en:d } : d;
 })();
+var MAITRISE = {};
+function chargerMaitrise(){
+  if(!MAITRISE_TOUT[VOYAGE_LANGUE]) MAITRISE_TOUT[VOYAGE_LANGUE] = {};
+  MAITRISE = MAITRISE_TOUT[VOYAGE_LANGUE];
+}
+chargerMaitrise();
 function sauverMaitrise(){
-  try{ localStorage.setItem("hype_lingo_maitrise", JSON.stringify(MAITRISE)); }catch(e){}
+  MAITRISE_TOUT[VOYAGE_LANGUE] = MAITRISE;
+  try{ localStorage.setItem("hype_lingo_maitrise", JSON.stringify(MAITRISE_TOUT)); }catch(e){}
 }
 
 /* ---------- état de la leçon en cours ---------- */
@@ -3284,6 +3363,8 @@ var COLL_NOM = {
     de:"Der Ausritt", ja:"外乗"},
   elevage:{fr:"L'élevage", en:"Breeding", es:"La cría", it:"L'allevamento",
     de:"Die Zucht", ja:"繁殖"},
+  vente:{fr:"Acheter et vendre", en:"Buying and selling", es:"Comprar y vender",
+    it:"Comprare e vendere", de:"Kaufen und verkaufen", ja:"売買"},
   corps:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体"},
   etat:{fr:"L'état du poil", en:"The state of the coat", es:"El estado de la capa",
         it:"Lo stato del mantello", de:"Der Zustand des Fells", ja:"毛の状態"},
@@ -3334,6 +3415,7 @@ var ACCUEIL_CHAP = {
      donc la première ville du voyage entrait dans sa leçon sans un mot.
      Trouvé en ajoutant le chapitre du Morne. */
   arrivee:{fr:"Arriver quelque part et demander un cheval : réserver, dire son niveau, comprendre le tarif.", en:"Arriving somewhere and asking for a horse: booking, stating your level, understanding the price.", es:"Llegar a un sitio y pedir un caballo: reservar, decir tu nivel, entender el precio.", it:"Arrivare in un posto e chiedere un cavallo: prenotare, dire il proprio livello, capire il prezzo.", de:"Irgendwo ankommen und nach einem Pferd fragen: buchen, sein Können nennen, den Preis verstehen.", ja:"どこかに着いて、馬を頼む。予約する、自分の技量を伝える、料金を理解する。"},
+  vente:{fr:"Acheter un cheval sans se faire avoir : l'essai, la visite d'achat, le prix, le contrat, les papiers.", en:"Buying a horse without being caught out: the try-out, the vetting, the price, the contract, the papers.", es:"Comprar un caballo sin equivocarse: la prueba, la revisión veterinaria, el precio, el contrato, los papeles.", it:"Comprare un cavallo senza rimetterci: la prova, la visita d'acquisto, il prezzo, il contratto, i documenti.", de:"Ein Pferd kaufen, ohne hereinzufallen: das Probereiten, die Ankaufsuntersuchung, der Preis, der Vertrag, die Papiere.", ja:"失敗せずに馬を買う。試乗、購買前検査、値段、契約、書類。"},
   elevage:{fr:"D'où vient un cheval : la poulinière, la saillie, le poulinage, le sevrage, la lignée.", en:"Where a horse comes from: the broodmare, the covering, the foaling, the weaning, the bloodline.", es:"De dónde viene un caballo: la yegua de vientre, la cubrición, el parto, el destete, la línea de sangre.", it:"Da dove viene un cavallo: la fattrice, la monta, il parto, lo svezzamento, la linea di sangue.", de:"Woher ein Pferd kommt: die Zuchtstute, der Deckakt, die Geburt, das Absetzen, die Blutlinie.", ja:"馬がどこから来るのか。繁殖牝馬、交配、分娩、離乳、血統。"},
   balade:{fr:"Réserver une sortie et entrer dans l'eau : la marée, le lagon, se baigner, nager.", en:"Booking a ride out and going into the water: the tide, the lagoon, bathing, swimming.", es:"Reservar un paseo y entrar en el agua: la marea, la laguna, bañarse, nadar.", it:"Prenotare una passeggiata ed entrare in acqua: la marea, la laguna, il bagno, nuotare.", de:"Einen Ausritt buchen und ins Wasser gehen: die Tide, die Lagune, baden, schwimmen.", ja:"外乗を予約し、水に入る。潮、ラグーン、水浴、泳ぐこと。"},
   gens:{fr:"Les gens d'un concours : qui décide, qui accompagne, qui réclame — et ce qu'on se dit à l'arrivée.", en:"The people at a show: who decides, who supports, who objects — and what you say to each other at the end.", es:"La gente de un concurso: quién decide, quién acompaña, quién reclama, y qué se dice al final.", it:"Le persone di un concorso: chi decide, chi accompagna, chi reclama — e cosa ci si dice all'arrivo.", de:"Die Menschen auf einem Turnier: wer entscheidet, wer begleitet, wer Einspruch erhebt — und was man sich am Ende sagt.", ja:"競技会にいる人たち。決める人、支える人、異議を申し立てる人。そして終わったあとに交わす言葉。"},
@@ -4470,46 +4552,49 @@ var DESTINATIONS = [
        it:"Dalla costa atlantica all'Andalusia: l'inglese delle scuderie.",
        de:"Von der Atlantikküste bis Andalusien — das Englisch der Stallgasse.",
        ja:"大西洋岸からアンダルシアまで。厩舎の英語。"} },
-  { cle:"peninsule",dr:"\uD83C\uDDEA\uD83C\uDDF8", lg:"es", ouvert:false,
+  { cle:"peninsule",dr:"\uD83C\uDDEA\uD83C\uDDF8", lg:"es", ouvert:true,
     nom:{fr:"L'espagnol", en:"Spanish", es:"El español", it:"Lo spagnolo", de:"Spanisch", ja:"スペイン語"},
-    d:{fr:"Le même tour du monde, en espagnol. Bientôt.",
-       en:"The same world tour, in Spanish. Coming soon.",
-       es:"La misma vuelta al mundo, en español. Pronto.",
-       it:"Lo stesso giro del mondo, in spagnolo. Prossimamente.",
-       de:"Die gleiche Weltreise, auf Spanisch. Demnächst.",
-       ja:"同じ世界一周を、スペイン語で。近日公開。"} },
-  { cle:"botte",    dr:"\uD83C\uDDEE\uD83C\uDDF9", lg:"it", ouvert:false,
+    d:{fr:"Le même tour du monde, en espagnol, d'une ville à l'autre.",
+       en:"The same world tour, in Spanish, from one town to the next.",
+       es:"La misma vuelta al mundo, en español, de una ciudad a otra.",
+       it:"Lo stesso giro del mondo, in spagnolo, di città in città.",
+       de:"Die gleiche Weltreise, auf Spanisch, von Stadt zu Stadt.",
+       ja:"同じ世界一周を、スペイン語で。街から街へ。"} },
+  { cle:"botte",    dr:"\uD83C\uDDEE\uD83C\uDDF9", lg:"it", ouvert:true,
     nom:{fr:"L'italien", en:"Italian", es:"El italiano", it:"L'italiano", de:"Italienisch", ja:"イタリア語"},
-    d:{fr:"Le même tour du monde, en italien. Bientôt.",
-       en:"The same world tour, in Italian. Coming soon.",
-       es:"La misma vuelta al mundo, en italiano. Pronto.",
-       it:"Lo stesso giro del mondo, in italiano. Prossimamente.",
-       de:"Die gleiche Weltreise, auf Italienisch. Demnächst.",
-       ja:"同じ世界一周を、イタリア語で。近日公開。"} },
-  { cle:"rhin",     dr:"\uD83C\uDDE9\uD83C\uDDEA", lg:"de", ouvert:false,
+    d:{fr:"Le même tour du monde, en italien, d'une ville à l'autre.",
+       en:"The same world tour, in Italian, from one town to the next.",
+       es:"La misma vuelta al mundo, en italiano, de una ciudad a otra.",
+       it:"Lo stesso giro del mondo, in italiano, di città in città.",
+       de:"Die gleiche Weltreise, auf Italienisch, von Stadt zu Stadt.",
+       ja:"同じ世界一周を、イタリア語で。街から街へ。"} },
+  { cle:"rhin",     dr:"\uD83C\uDDE9\uD83C\uDDEA", lg:"de", ouvert:true,
     nom:{fr:"L'allemand", en:"German", es:"El alemán", it:"Il tedesco", de:"Deutsch", ja:"ドイツ語"},
-    d:{fr:"Le même tour du monde, en allemand. Bientôt.",
-       en:"The same world tour, in German. Coming soon.",
-       es:"La misma vuelta al mundo, en alemán. Pronto.",
-       it:"Lo stesso giro del mondo, in tedesco. Prossimamente.",
-       de:"Die gleiche Weltreise, auf Deutsch. Demnächst.",
-       ja:"同じ世界一周を、ドイツ語で。近日公開。"} },
-  { cle:"archipel", dr:"\uD83C\uDDEF\uD83C\uDDF5", lg:"ja", ouvert:false,
+    d:{fr:"Le même tour du monde, en allemand, d'une ville à l'autre.",
+       en:"The same world tour, in German, from one town to the next.",
+       es:"La misma vuelta al mundo, en alemán, de una ciudad a otra.",
+       it:"Lo stesso giro del mondo, in tedesco, di città in città.",
+       de:"Die gleiche Weltreise, auf Deutsch, von Stadt zu Stadt.",
+       ja:"同じ世界一周を、ドイツ語で。街から街へ。"} },
+  { cle:"archipel", dr:"\uD83C\uDDEF\uD83C\uDDF5", lg:"ja", ouvert:true,
     nom:{fr:"Le japonais", en:"Japanese", es:"El japonés", it:"Il giapponese", de:"Japanisch", ja:"日本語"},
-    d:{fr:"Le même tour du monde, en japonais. Bientôt.",
-       en:"The same world tour, in Japanese. Coming soon.",
-       es:"La misma vuelta al mundo, en japonés. Pronto.",
-       it:"Lo stesso giro del mondo, in giapponese. Prossimamente.",
-       de:"Die gleiche Weltreise, auf Japanisch. Demnächst.",
-       ja:"同じ世界一周を、日本語で。近日公開。"} },
-  { cle:"lexique",  dr:"\uD83C\uDDEB\uD83C\uDDF7", lg:"fr", ouvert:false,
+    d:{fr:"Le même tour du monde, en japonais, d'une ville à l'autre.",
+       en:"The same world tour, in Japanese, from one town to the next.",
+       es:"La misma vuelta al mundo, en japonés, de una ciudad a otra.",
+       it:"Lo stesso giro del mondo, in giapponese, di città in città.",
+       de:"Die gleiche Weltreise, auf Japanisch, von Stadt zu Stadt.",
+       ja:"同じ世界一周を、日本語で。街から街へ。"} },
+  /* ⚠️ Le français s'ouvre AUSSI (6 août 2026) : le vocabulaire y est
+     depuis le début, et le filtre de montrerDest le cache aux joueurs qui
+     lisent déjà en français. Il n'apparaît donc que pour les autres. */
+  { cle:"lexique",  dr:"\uD83C\uDDEB\uD83C\uDDF7", lg:"fr", ouvert:true,
     nom:{fr:"Le français", en:"French", es:"El francés", it:"Il francese", de:"Französisch", ja:"フランス語"},
-    d:{fr:"Le même tour du monde, en français. Bientôt.",
-       en:"The same world tour, in French. Coming soon.",
-       es:"La misma vuelta al mundo, en francés. Pronto.",
-       it:"Lo stesso giro del mondo, in francese. Prossimamente.",
-       de:"Die gleiche Weltreise, auf Französisch. Demnächst.",
-       ja:"同じ世界一周を、フランス語で。近日公開。"} }
+    d:{fr:"Le même tour du monde, en français, d'une ville à l'autre.",
+       en:"The same world tour, in French, from one town to the next.",
+       es:"La misma vuelta al mundo, en francés, de una ciudad a otra.",
+       it:"Lo stesso giro del mondo, in francese, di città in città.",
+       de:"Die gleiche Weltreise, auf Französisch, von Stadt zu Stadt.",
+       ja:"同じ世界一周を、フランス語で。街から街へ。"} }
 ];
 
 function montrerIntro(){ S("intro").classList.add("on"); S("intro").scrollTop=0; }
@@ -4517,10 +4602,16 @@ function montrerDest(){
   S("intro").classList.remove("on");
   S("dest").classList.add("on"); S("dest").scrollTop=0;
   var b=S("dsListe"); videEl(b);
-  DESTINATIONS.forEach(function(D){
+  /* ⚠️ On n'offre jamais d'apprendre la langue qu'on lit déjà : un
+     hispanophone se voyait proposer « El español ». Le filtre est ici et
+     pas dans DESTINATIONS, pour que la liste suive la langue de
+     l'interface si elle change. */
+  var moi = langueUI();
+  DESTINATIONS.filter(function(D){ return D.lg !== moi; }).forEach(function(D){
     b.appendChild(el("button",{class:"ds"+(D.ouvert?" ouvert":""), onclick:function(){
       if(!D.ouvert) return;
       VOYAGE_LANGUE = D.lg;
+      chargerMaitrise();          /* chaque langue a sa propre maîtrise */
       S("dest").classList.remove("on");
       try{ localStorage.setItem("hype_lingua_voyage", D.cle); }catch(e){}
       /* Premiere visite : c'est ici que le film s'enchaine. Il ne pouvait
@@ -4539,6 +4630,26 @@ function montrerDest(){
     ));
   });
 }
+/* ⚠️ RELECTURE DU VOYAGE, ajoutée le 6 août 2026 avec l'ouverture des
+   cinq langues. `hype_lingua_voyage` était ÉCRIT depuis toujours et
+   JAMAIS relu : au rechargement, VOYAGE_LANGUE retombait sur "en". Le
+   défaut ne se voyait pas tant qu'une seule langue était ouverte.
+   On refuse une destination fermée ou égale à la langue lue : le fichier
+   restant en mémoire ne doit pas rouvrir ce qu'on a fermé depuis. */
+(function(){
+  var cle=null;
+  try{ cle = localStorage.getItem("hype_lingua_voyage"); }catch(e){}
+  if(!cle) return;
+  for(var k=0;k<DESTINATIONS.length;k++){
+    var D=DESTINATIONS[k];
+    if(D.cle===cle && D.ouvert && D.lg!==langueUI()){
+      VOYAGE_LANGUE = D.lg;
+      chargerMaitrise();
+      return;
+    }
+  }
+})();
+
 S("inSuite").addEventListener("click", montrerDest);
 S("dsRetour").addEventListener("click", function(){
   S("dest").classList.remove("on"); montrerIntro();

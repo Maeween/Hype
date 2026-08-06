@@ -22,6 +22,82 @@
 
 ---
 
+## 🔺 SESSION 109 · LINGUAE (06/08) — TROISIÈME PANNEAU TRONQUÉ : CE N'EST PLUS UN ACCIDENT
+
+### ✅ Le clip de Golegã est conforme
+H.264, 480×798, 10,2 s, 737 Ko, **sans piste audio**. Rien à convertir.
+
+### 🔴 Mais son panneau est coupé, comme La Baule et Vejer
+« GOLEGA » perd son **A final** au bord droit du cadre, sur toute la fin du clip. **Trois clips sur neuf** sont maintenant concernés : La Baule, Vejer, Golegã.
+⚠️ **Ce n'est plus un accident, c'est la consigne de production.** Elle impose au texte de tenir dans les deux tiers de la largeur, et ça ne marche pas pour les noms longs. Écrit dans le code, à l'attention de Blandine : pour les prochaines villes, **faire cadrer le panneau avec de la marge des deux côtés, ou renoncer au panneau.**
+
+✅ **`FIN_VIDEO.golega = 4.6`**, et cette valeur a été choisie autrement que les précédentes : en **simulant le recadrage réel de l'app**. `#vue` fait 52svh, soit un ratio de 0,888, tandis que la source est en 0,602 — donc seule la bande centrale se voit. Quatre candidats ont été rendus dans ce cadre-là avant de choisir. À 6,2 s, on ne voyait plus que la croupe ; à 4,6 s, on a le cavalier en tenue portugaise face à l'objectif, la brume et les arbres.
+⚠️ **Méthode à garder** : pour choisir une image d'arrêt, il faut la juger dans le cadre où elle sera vue, pas dans le fichier.
+
+### ✅ `fond-golega.webp` fabriqué depuis le clip
+420×560, flou gaussien puis assombrissement calibré par itération sur la luminance des quinze fonds existants — 40,9 pour une cible de 39 à 43. 1,6 Ko. Vérifié en rendu : la carte du carnet le charge.
+⚠️ **`carte-golega.webp` n'a PAS été fabriquée depuis le clip, volontairement.** La carte postale est la récompense, elle s'affiche en 900×1200, et la source ne fait que 480 de large : un agrandissement de 1,9× se verrait, à côté de six cartes natives. Le flou du fond masque la résolution, une carte non. **À produire comme celle de Rome.**
+
+### Contrôles passés
+`verif.py` sur `lingo.html` · quatre images d'arrêt candidates jugées dans le cadre réel de l'app · luminance et poids du fond confrontés aux quinze existants · rendu réel : arrêt mesuré à 4,600 s pile, carte du carnet chargeant son fond · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **Vérone** : ses trois images (la ville est écrite, session 108).
+2. **`carte-golega.webp`** : la seule pièce manquante de Golegã.
+3. **`lingua-affiche.webp`** et le fond du carnet.
+4. Le vocabulaire des six destinations restantes.
+5. Les définitions en quatre langues.
+6. La sécurité (11 mots) attend une ville.
+
+### 🧭 Préparation Flutter
+**Aucune amélioration d'architecture réalisée sur cette session.**
+`FIN_VIDEO` compte maintenant trois entrées et reste une simple table : le mécanisme absorbe un défaut d'actif récurrent sans qu'une ligne de logique change. C'est la démonstration qu'un point d'extension bien placé coûte moins qu'un correctif par cas.
+**Risques** : nuls.
+
+---
+
+## 🇮🇹 SESSION 108 · LINGUAE (06/08) — VÉRONE ET LE COMMERCE, ÉTAPE 21
+
+« Donne la ville suivante à qui je dois faire vidéo et enchaîne de ton côté. » Chaîne prise : Vérone est écrite, il ne lui manque plus que ses trois images.
+
+### ✅ Le chapitre du COMMERCE, `hype-lingo-lex-vente.js`
+Prévu pour cette ville depuis le début par `hype-linguae-production-suite.txt`. **12 mots, 4 phrases, 6 langues** : le marchand, l'essai, la visite d'achat, la radiographie, négocier, le contrat de vente, la garantie, le vice caché, le passeport, le budget, la foire — plus un rappel (`prix`, déjà croisé à La Baule pour un tarif de reprise, ici pour un cheval entier).
+
+C'était le dernier grand manque du module avec l'élevage : **le seul moment de la vie d'un cavalier où se tromper coûte cher, et il n'existait nulle part dans les 378 mots.**
+
+⚠️ **Frontières tenues et écrites dans l'en-tête** : l'élevage reste à Golegã (`poulinière`, `saillie`, `sevrage`, `lignée`, `stud-book`), les ventes aux enchères à Lexington (`yearling`, `pedigree`, `jument suitée`). Vérone achète et vend ce qui est déjà né. Contrôlé par script : aucun mot réservé ne s'y trouve.
+⚠️ **NIVEAU 3** — troisième ville du voyage à ce palier, avec Saumur et Édimbourg. C'est le chapitre le plus parlé : on y négocie, on y pose des questions gênantes, on y dit non. Les exercices « dire » entrent donc dans le tirage.
+⚠️ **Onze entrées neuves, jamais relues par un natif.** Les plus à confirmer : `le vice caché` (notion juridique française dont l'équivalent anglais n'a pas la même portée), `la visite d'achat` (« the vetting », sans calque possible), et `la garantie` (l'italien sépare `garanzia` de `vizi occulti`).
+
+Placée **entre Rome et Warendorf** : on remonte l'Italie du sud au nord, puis on passe en Allemagne. Heure 11 h 05. Tout est en place — `ETAPES`, `ETAPE_SRC`, `NIVEAU_VILLE`, `COLL_NOM`, `ACCUEIL_CHAP`, `POURQUOI`, `RECITS`, `MONDE.verone` (lettre + 3 volets : Fieracavalli · Ce qui protège vraiment · Si tu y allais), point sur le globe (45,4384 / 10,9916).
+
+Le volet du milieu est écrit comme un conseil, pas comme une description : la visite d'achat par TON vétérinaire, les radios qui disent ce qui pourrait arriver plutôt que ce qui va bien, le passeport avant tout le reste, et le budget annoncé dès la première phrase.
+
+### ✅ Contrôles passés
+`verif.py` sur les quatre fichiers, tous les blocs · lexique contrôlé par exécution (12 concepts, 4 phrases, zéro entrée incomplète sur 6 langues, japonais découpé en tuiles, aucun mot réservé ailleurs) · `chapVirtuel('verone')` = 12 mots + 4 phrases · **contrôle exhaustif des 23 villes × 6 langues** sur `RECITS` et sur `VILLES` : aucune anomalie · rendu réel : carte du carnet (niveau 3 · dire, trois barres allumées, 12 mots), écran d'arrivée (« ARRIVÉE À VÉRONE », chapitre 21, trois volets) · aucune erreur JS.
+⚠️ Une coquille japonaise de ma main attrapée en relecture : un caractère erroné pour « regarder ». Corrigée et revérifiée.
+
+### 📋 État des actifs, ville par ville
+**Complètes** (clip + carte + fond) : La Baule, Le Morne, Rome, Warendorf, Séville, Vejer, Aix-la-Chapelle, Lamotte-Beuvron, plus les treize villes du parcours V1 déjà en ligne avant cette série.
+**Golegã** : clip ✅, carte ❌, fond ❌.
+**Vérone** : rien — clip, carte et fond à produire. **C'est la prochaine pour Blandine.**
+
+### ⏳ Ce qui reste
+1. **Vérone** : les trois images.
+2. **Golegã** : carte et fond.
+3. **`lingua-affiche.webp`** (l'affiche de la présentation, la fenêtre de 40vh) et le fond du carnet.
+4. **Le vocabulaire des six destinations restantes** : Lexington, Spruce Meadows, Dubaï, Tokyo, Buenos Aires, Tamworth.
+5. **Les définitions en quatre langues** (elles n'existent qu'en français et en anglais) — le chantier de fond depuis l'ouverture des six langues.
+6. La sécurité (11 mots) attend toujours une ville.
+
+### 🧭 Préparation Flutter
+- **Quatrième ville ajoutée sans toucher au moteur** (Le Morne, Rome, Golegã, Vérone). Le geste est maintenant rodé : un fichier de lexique, sept entrées de données, une ligne de globe. Aucune fonction modifiée depuis quatre villes.
+- **Les frontières de contenu sont devenues explicites** : chaque nouveau lexique porte en tête la liste des mots qui appartiennent à une autre ville, et un script le vérifie. C'est un contrat de contenu, l'équivalent éditorial des contrats de Repository.
+- **Reste à moderniser** : inchangé depuis la session 106 — `hype_lingua_quiz` et `hype_lingua_cartes` ne sont pas dimensionnés par langue alors que la maîtrise l'est.
+- **Risques** : aucun. Contenu et données uniquement.
+
+---
+
 ## 🏟️ SESSION 107 · LINGUAE (06/08) — LES DEUX IMAGES DE ROME FABRIQUÉES
 
 Blandine envoie une vue de Rome au couchant (1086×1448, le Tibre, la coupole, le Colisée). Les deux fichiers manquants en ont été tirés, **aux conventions mesurées sur les cartes déjà en place** plutôt qu'à vue de nez.

@@ -561,6 +561,59 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
   // ?? La foire de Golega (Feira Nacional do Cavalo) se tient en novembre.
   //    Formulation prudente : « depuis des siecles », sans date de fondation.
 
+  /* ==================================================================
+     VÉRONE — ajoutée le 6 août 2026, étape 21. Le chapitre du COMMERCE.
+     ⚠️ Aucune de ses images n'existe : ni carte, ni fond, ni clip. Les
+     replis les couvrent.
+     ⚠️ Ville de NIVEAU 3 : c'est le chapitre où l'on parle. Les volets
+     sont écrits pour donner de quoi dire, pas seulement de quoi nommer.
+     ================================================================== */
+  MONDE.verone = {
+    lieu:"Veneto · Italia", carte:true, niveau:3,
+    image:"les allées de boxes de la foire, un matin de novembre",
+    lettre:{
+      fr:["J'ai dit mon budget en entrant, et tout est devenu simple.",
+          "On m'a montré quatre chevaux au lieu de quarante. Le troisième était trop jeune pour moi et le marchand l'a dit lui-même, avant que je le demande. C'est là que j'ai compris à qui j'avais affaire."],
+      en:["I said my budget as I walked in, and everything became simple.",
+          "They showed me four horses instead of forty. The third was too young for me and the dealer said so himself, before I asked. That is when I understood who I was dealing with."],
+      es:["Dije mi presupuesto al entrar, y todo se volvió sencillo.",
+          "Me mostraron cuatro caballos en lugar de cuarenta. El tercero era demasiado joven para mí y el tratante lo dijo él mismo, antes de que yo preguntara. Ahí entendí con quién estaba tratando."],
+      it:["Ho detto il mio budget entrando, e tutto è diventato semplice.",
+          "Mi hanno mostrato quattro cavalli invece di quaranta. Il terzo era troppo giovane per me e il commerciante l'ha detto lui stesso, prima che lo chiedessi. È lì che ho capito con chi avevo a che fare."],
+      de:["Ich habe mein Budget genannt, als ich hereinkam, und alles wurde einfach.",
+          "Man zeigte mir vier Pferde statt vierzig. Das dritte war mir zu jung, und der Händler sagte es selbst, bevor ich fragte. Da begriff ich, mit wem ich es zu tun hatte."],
+      ja:["入るときに予算を告げた。それで、すべてが簡単になった。",
+          "四十頭ではなく四頭を見せてくれた。三頭目は私には若すぎたが、それを馬商のほうが、私が尋ねる前に言った。相手がどういう人か、そのとき分かった。"]},
+    volets:[
+      {t:{fr:"Fieracavalli", en:"Fieracavalli", es:"Fieracavalli", it:"Fieracavalli",
+          de:"Fieracavalli", ja:"フィエラカヴァッリ"},
+       c:{fr:"La grande foire du cheval italienne, à Vérone, chaque automne depuis 1898. Toutes les races au même endroit, des lusitaniens aux chevaux de trait, et derrière chaque box quelqu'un qui attend qu'on lui pose une question. Ce n'est pas la feria andalouse : ici on ne défile pas, on conclut.",
+          en:"Italy's great horse fair, in Verona, every autumn since 1898. Every breed in one place, from Lusitanos to draught horses, and behind each stall someone waiting to be asked a question. This is not the Andalusian feria: nobody parades here, deals are done.",
+          es:"La gran feria del caballo italiana, en Verona, cada otoño desde 1898. Todas las razas en el mismo sitio, de lusitanos a caballos de tiro, y detrás de cada box alguien esperando una pregunta. No es la feria andaluza: aquí no se desfila, se cierra.",
+          it:"La grande fiera del cavallo italiana, a Verona, ogni autunno dal 1898. Tutte le razze nello stesso posto, dai lusitani ai cavalli da tiro, e dietro ogni box qualcuno che aspetta una domanda. Non è la feria andalusa: qui non si sfila, si conclude.",
+          de:"Italiens große Pferdemesse, in Verona, jeden Herbst seit 1898. Alle Rassen an einem Ort, von Lusitanos bis zu Kaltblütern, und hinter jeder Box jemand, der auf eine Frage wartet. Das ist nicht die andalusische Feria: hier wird nicht defiliert, hier wird abgeschlossen.",
+          ja:"イタリア最大の馬の見本市。ヴェローナで、一八九八年から毎秋開かれています。ルシタノから輓馬まで、あらゆる品種がひとつの場所に集まり、どの馬房の奥にも、問われるのを待っている人がいます。アンダルシアのフェリアとは違います。ここでは行進はせず、取引が成立します。"}},
+      {t:{fr:"Ce qui protège vraiment", en:"What actually protects you", es:"Lo que de verdad protege",
+          it:"Quello che protegge davvero", de:"Was wirklich schützt", ja:"本当に守ってくれるもの"},
+       c:{fr:"Pas la parole du vendeur : la visite d'achat, faite par TON vétérinaire et payée par toi. Les radiographies ne disent pas que le cheval va bien, elles disent ce qui pourrait arriver. Demande le passeport avant tout le reste — sans lui il n'y a ni vente légale, ni déplacement possible. Et ce qu'on te dit spontanément vaut plus que ce qu'on te répond.",
+          en:"Not the seller's word: the vetting, done by YOUR vet and paid for by you. X-rays do not say the horse is sound, they say what might happen. Ask for the passport before anything else — without it there is no legal sale and no legal movement. And what you are told unprompted is worth more than what you are answered.",
+          es:"No la palabra del vendedor: la revisión veterinaria, hecha por TU veterinario y pagada por ti. Las radiografías no dicen que el caballo esté bien, dicen lo que podría pasar. Pide el pasaporte antes que nada: sin él no hay venta legal ni traslado posible. Y lo que te dicen sin preguntar vale más que lo que te contestan.",
+          it:"Non la parola del venditore: la visita d'acquisto, fatta dal TUO veterinario e pagata da te. Le radiografie non dicono che il cavallo sta bene, dicono cosa potrebbe succedere. Chiedi il passaporto prima di ogni altra cosa: senza di esso non c'è vendita legale né spostamento possibile. E quello che ti dicono senza chiederlo vale più di quello che ti rispondono.",
+          de:"Nicht das Wort des Verkäufers: die Ankaufsuntersuchung, gemacht von DEINEM Tierarzt und von dir bezahlt. Röntgenbilder sagen nicht, dass das Pferd gesund ist, sie sagen, was passieren könnte. Frage vor allem anderen nach dem Equidenpass — ohne ihn gibt es keinen legalen Verkauf und keinen legalen Transport. Und was man dir unaufgefordert sagt, ist mehr wert als das, was man dir antwortet.",
+          ja:"売り手の言葉ではありません。あなたの獣医が行い、あなたが支払う購買前検査です。レントゲンは「健全だ」とは言いません。何が起こり得るかを語るだけです。何より先にパスポートを求めること。それなしには合法な売買も、移動もできません。そして、尋なくても告げられたことは、尋ねて答えられたことより重い。"}},
+      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi",
+          de:"Wenn du hinführest", ja:"もし行くなら"},
+       c:{fr:"Annonce ton budget dès la première phrase : on te montrera les chevaux qui existent pour toi au lieu de te faire traverser la foire. Demande à sortir le cheval du box toi-même, à le panser, puis à le monter seul — pas seulement à le regarder travailler. Et repars sans rien acheter le premier jour : un cheval qu'on te garde vingt-quatre heures est un cheval qu'on t'aurait vendu quand même.",
+          en:"State your budget in your first sentence: you will be shown the horses that exist for you instead of walking the whole fair. Ask to bring the horse out of the stall yourself, to groom it, then to ride it alone — not just to watch it work. And leave without buying on the first day: a horse held for you for twenty-four hours is a horse that would have been sold to you anyway.",
+          es:"Di tu presupuesto en la primera frase: te mostrarán los caballos que existen para ti en lugar de hacerte cruzar la feria. Pide sacar el caballo del box tú misma, cepillarlo y luego montarlo sola, no solo verlo trabajar. Y vete sin comprar el primer día: un caballo que te guardan veinticuatro horas es un caballo que te habrían vendido igual.",
+          it:"Di' il tuo budget nella prima frase: ti mostreranno i cavalli che esistono per te invece di farti attraversare la fiera. Chiedi di tirare fuori il cavallo dal box tu stessa, di pulirlo, poi di montarlo da sola, non solo di guardarlo lavorare. E vai via senza comprare il primo giorno: un cavallo che ti tengono ventiquattr'ore è un cavallo che ti avrebbero venduto comunque.",
+          de:"Nenne dein Budget im ersten Satz: man zeigt dir die Pferde, die für dich existieren, statt dich durch die ganze Messe zu schicken. Bitte darum, das Pferd selbst aus der Box zu holen, es zu putzen und es dann allein zu reiten — nicht nur zuzusehen. Und geh am ersten Tag ohne Kauf: ein Pferd, das man dir vierundzwanzig Stunden reserviert, hätte man dir ohnehin verkauft.",
+          ja:"最初のひと言で予算を告げること。見本市を歩き回らされる代わりに、自分のために存在する馬を見せてもらえます。馬房から自分で出し、手入れをし、そして一人で乗せてもらうこと。働くところを見るだけで終わらせないこと。そして初日は買わずに帰ること。二十四時間取り置きしてくれる馬は、どうせ売ってもらえた馬です。"}}
+    ]
+  };
+  // ?? Fieracavalli « depuis 1898 » : date couramment citee pour la premiere
+  //    edition. A confirmer avant publication.
+
   /* ajout clé par clé : on ne remplace jamais une ville déjà présente */
   var k;
   for(k in MONDE){
