@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 06/08/2026 (session 92) — Photos plus jamais ecrites dans le localStorage + ecriture d'etat differee : corrige le plantage au zoom d'une photo sur iOS et la quete photo-cheval qui se devalidait a chaque rechargement — md5 `43e1cdf6ca0b7b0f7750ea23e369533f`, 10 508 454 octets. Part de `3e5dfd89` fourni par Blandine (verifie identique a la copie de session).**
+**Version actuelle de l'index.html : 06/08/2026 (SESSION 93 · INDEX) — Nom d'écurie perso séparé du club (`ecurie_perso`) + recherche club par noyau + garde-fou anti-écrasement — md5 `4c628a34b37c9e288fce6dee22ed0178`, 10 514 497 octets. Part du `83c24fde` (92 ter). Preview : `preview-95.html` (ouvre la page Écurie). SQL à exécuter : `ecurie-perso.sql`. Détail dans la section SESSION 93 ci-dessous.**
+
+**Ancienne version (92) — Photos plus jamais ecrites dans le localStorage + ecriture d'etat differee : corrige le plantage au zoom d'une photo sur iOS et la quete photo-cheval qui se devalidait a chaque rechargement — md5 `43e1cdf6ca0b7b0f7750ea23e369533f`, 10 508 454 octets. Part de `3e5dfd89` fourni par Blandine (verifie identique a la copie de session).**
 
 Diagnostic. L'effet ligne 21026 recopiait TOUT l'etat dans le localStorage a chaque changement, photos en base64 comprises (`toDataURL("image/jpeg", 0.92)` ligne 30119 produit une data URL de plusieurs Mo, +33 % de gonflement base64). Safari iOS plafonne le localStorage a 5 Mo : le quota debordait, et le code de rattrapage refaisait un SECOND `JSON.stringify` de plusieurs Mo en remplacant `c.photo` par `null`. Deux consequences : (1) `stringify` synchrone de plusieurs Mo sur le fil principal a chaque interaction, d'ou l'onglet tue par iOS a l'ouverture de la visionneuse ; (2) `c.photo` efface a chaque rechargement, donc le test `fait()` de la quete `photo-cheval` (ligne 27083, `c.photo_url || c.photo`) repassait a faux et la quete reapparaissait indefiniment sur l'accueil.
 
@@ -37,6 +39,85 @@ TROU A TRANCHER : `hype-images-3.js`, `-4.js` et `-5.js` ne sont charges par per
 TULLY, NON CORRIGE — diagnostic affine, le SUIVI 91 etait incomplet : `EcranCheval` gere DEJA les surnoms en dur via `NOMS_MIGRES` (ligne ~31625) et resout `cibleCh` sur le vrai `dbId` (ligne 31647), et `AlbumsCheval` recharge sur changement de `props.cible`. La liste en dur ligne 19769 n'explique donc pas seule les symptomes. Deux hypotheses restantes : (a) la RLS de `chevaux` limite le select a `user_id = auth.uid()`, or Tully appartient a Liam — la requete ne trouve rien, la fiche retombe sur la demo et la cible reste `cheval:tully` definitivement ; (b) fenetre de chargement de ~200 ms pendant laquelle une ecriture part sur la mauvaise cible. Trancher en ouvrant la fiche de Tully : vraies donnees = hypothese (b), fiche de demo figee = hypothese (a). Correction proposee et non encore validee : **option A**, desactiver les boutons d'ajout d'album tant que la base n'a pas repondu (~15 lignes, reversible) ; option B (lire `chevaux` filtre sur `user_id` au lieu de la liste en dur) = session dediee, 3 points de consommation (19777, 26541, 31921).
 
 MAQUETTE ACCUEIL DEMANDEE PAR BLANDINE, non commencee : encart **vertical** pour Linguae a gauche, et a sa droite les Galops et la Culture equestre empiles. Interet technique : un encart vertical accueille la video verticale sans rognage. Aujourd'hui les trois cartes sont pleine largeur et empilees (Galops 188 px ligne ~28948, Linguae 240 px ligne ~28962, Culture en banniere ligne ~28978), plus le bouton Sprint sous Linguae. Point de vigilance : en demi-largeur (~174 px), les titres en Cinzel 18 px ne tiendront pas — prevoir 13-14 px. A valider en maquette HTML autonome AVANT integration.
+
+**AJOUT SESSION 92 bis — correctif du zoom photo. index.html md5 `52c5b90b0436e6a99986251f5584a373`, 10 509 709 octets.**
+
+Le correctif localStorage de la 92 n'a PAS regle le plantage au zoom ni la quete : Blandine a teste, symptomes identiques (y compris via `preview-92.html`, donc pas un probleme de cache). Diagnostic revu.
+
+CAUSE REELLE DU PLANTAGE (`PhotoZoomHype`, ~ligne 29587) : le style de l'`img` portait `willChange: "transform"` en PERMANENCE, et `poser()` appliquait toujours `translate3d(...)`. Les deux ensemble promeuvent la photo pleine resolution sur une couche GPU que Safari rasterise a la taille agrandie ET en pixels physiques : sur un ecran x3, une photo plein cadre zoomee x5 demande une couche d'une quarantaine de megapixels. iOS n'alloue pas, et tue l'onglet sans message. Le plafond de zoom etait un `Math.min(5, ...)` en dur, indifferent a la taille de l'image et a la densite de l'ecran.
+
+CORRECTION (4 retouches + 1 fonction interne, tout dans `PhotoZoomHype`) :
+- `willChange` passe de `"transform"` a `"auto"` : plus de couche GPU permanente.
+- `poser()` n'utilise `translate3d` que si l'echelle depasse 1,01 ; retour en `translate` 2D sinon.
+- Nouvelle fonction interne `calculerZoomMax()`, appelee par `onLoad` de l'`img` : plafond calcule sur l'aire affichee x `devicePixelRatio`, pour garder la couche sous ~20 Mpx. Borne entre 2 et 5 (donne ~3,5 sur un iPhone plein cadre, au lieu de 5).
+- Le pincement utilise `s.zMax` au lieu du 5 en dur ; le double-tap est borne a `min(2,6 ; zMax)`.
+
+Verification : 15/15 blocs `<script>` OK a `node --check`. Fonctions top-level 907 -> 908 (`hypeEtatSansImages` seule difference, `calculerZoomMax` est interne donc absente du diff top-level). Const/var 542 -> 542 identiques. `allerVersGalop` = 3. Rendu Playwright : 2 pageerror, identiques a la base.
+
+QUETE photo-cheval — CAUSE ECARTEE, la base est SAINE. Requete de Blandine sur `chevaux` (role postgres, 20 lignes) : les `photo_url` existent et commencent bien par `https://ldpjebgts...`, ce ne sont PAS des data URL base64. Donc ni la colonne ni le stockage ne sont en cause. Il reste deux pistes, non tranchees : (a) les chevaux porteurs d'une photo n'arrivent pas dans `ctx.chevaux` de l'accueil ; (b) la table contient des DOUBLONS visibles dans le resultat (`Crumble` x2, `Cooltax` / `Cooltax de Virchel z`, `Elfe` / `Elfe de Feinn`, `My Dream` / `My Dream de Feinn`) — l'appli lit peut-etre la ligne SANS photo. A trancher en comparant les `id` et `user_id` des doublons.
+
+PREVIEW : `preview-93.html` (numero incremente, `preview-92.html` retire pour ne pas tester l'ancien par erreur).
+
+**AJOUT SESSION 93 bis — chevaux du club cliquables + vidéo carte Linguae préparée. index.html md5 `6375f8b16a42efe351b75c04cd8afb19`, 10 514 789 octets. Preview : `preview-96.html` (ouvre Mon Club). Nouveau média : `lingo-accueil.mp4` (à pousser à la racine).**
+
+TEST DE BLANDINE APRÈS LA 93 : philosophie, histoire, membres et tag Club officiel REVENUS sur Mon Club (confirmé) — le repli par noyau a retrouvé les contenus rangés sous « ecurie feinn ». Restait : les chevaux du club ne s'ouvraient pas.
+
+DIAGNOSTIC : les cartes du rail « Chevaux du club » (EcranGuilde, ~27588) n'ont JAMAIS eu de onClick — vignettes décoratives depuis leur création, pas une régression. Les chevaux arrivent de la base avec leur vrai id, et l'ouverture par id (window.__chevalOuvert + ecran cheval) existe depuis le 31/07.
+
+CORRECTIF : chaque vignette devient un bouton — onClick pose window.__chevalOuvert = cv.id puis setEcran("cheval"). Styles neutralisés (padding 0, fond transparent, textAlign left) pour un rendu identique au pixel. ⚠️ NON TRANCHÉ : un cheval d'un AUTRE membre s'ouvre sur sa fiche par id ; si la RLS de `chevaux` bloque la lecture de la fiche d'autrui (cas Tully, hypothèse a de la 92), la fiche s'ouvrira vide/démo — le même chantier RLS règlera les deux.
+
+VIDÉO CARTE LINGUAE (Accueil) : Blandine a fourni `copy_47DFBC08....mov` (752×560 PAYSAGE, HEVC, 5,1 s, 4 Mo, cheval au couchant sur la baie). Traitement session 92 appliqué : delogo x=18:y=16:w=150:h=48 (double filigrane CapCut, coordonnées propres à CET export), rognage 12 px par bord (coins arrondis cuits), H.264 yuv420p CRF 23 sans audio, faststart → `lingo-accueil.mp4` 728×536, 636 Ko. Filigrane vérifié disparu sur frames début/fin. INTÉGRATION FAITE dans la foulée (index md5 `07990199e65cb64eaa6531aef64e27b0`, 10 515 180 octets, preview-97 → Accueil) : <video autoPlay muted loop playsInline> par-dessus le webp (qui reste en repli si le mp4 manque). ⚠️ La carte vit dans le manège manegeCartesAcc rendu deux fois (pistes a/b) : la vidéo est donc instanciée deux fois — nécessaire pour la continuité visuelle du manège, fichier léger (636 Ko). ⚠️ Vérif Playwright impossible hors-ligne : la carte Linguae ne se rend qu'en ligne (constaté aussi sur la base) — syntaxe 15/15, à valider visuellement par Blandine. Le format paysage rentre dans la carte actuelle : la maquette verticale n'est PLUS un prérequis pour cette vidéo. NOTE lingo.html (page parallèle, lecture seule) : seul `ouverture.mp4` y est référencé (ligne 4013) — si l'intro vidéo de l'onglet Linguae ne s'affiche pas, c'est que `ouverture.mp4` n'est pas à la racine du dépôt.
+
+VÉRIFICATION : 15/15 node --check ; fonctions 1044→1044, const 551→551 ; allerVersGalop = 3 ; Playwright : 2 pageerror identiques, texte identique.
+
+### Préparation Flutter (session 93 bis)
+Aucune amélioration d'architecture réalisée sur cette session (branchement d'un handler existant + préparation d'un média).
+
+**SESSION 93 · INDEX (06/08, après-midi) — LE NOM DU CLUB SERVAIT DE CLÉ PARTOUT. index.html md5 `4c628a34b37c9e288fce6dee22ed0178`, 10 514 497 octets. Preview : `preview-95.html`. SQL : `ecurie-perso.sql` (à exécuter par Blandine).**
+
+SYMPTÔMES (constatés par Blandine sur téléphone) : page Mon Club vidée d'un coup — 0/1 membre, chevaux inouvrables, philosophie/histoire remplacées par les textes par défaut, bannière par défaut, tag Club officiel disparu du club et apparu sur la page Écurie perso, guilde fantôme « Feinn · 1 membre » dans le classement.
+
+CAUSE UNIQUE : Blandine a renommé sa page Écurie perso en « Feinn » (crayon ✎) pour la distinguer du vrai club. Or le crayon écrivait dans `profil.ecurie`, champ qui sert AUSSI de nom de club, et ce nom sert de CLÉ EXACTE partout : membres (`ilike("ecurie", monClub)` sans joker), chevaux (via ids membres), philo (`club-philo:<clefClubG>`), histoire (`club-histoire:<...>`), bannière (`club-banniere:<...>`), club revendiqué (`CLUBS_REVENDIQUES_G["ecurie feinn"]`), classement RPC `classement_ecuries` (groupé par valeur exacte — cause aussi du doublon « Sep » vs « Societe d'Equitation de Paris (SEP) », antérieur). AUCUNE DONNÉE N'A ÉTÉ SUPPRIMÉE : tout attendait sous l'ancienne clé.
+
+CORRECTIF (11 retouches, toutes vérifiées 1 occurrence exacte) :
+- **Nouveau champ `profiles.ecurie_perso`** (SQL livré, idempotent, avec reprise : ecurie_perso='Feinn' + ecurie='Ecurie Feinn' pour feinn@live.fr). `majProfil` l'accepte ; hydratation du profil le lit.
+- **EcranEcurie** : le titre et l'initiale lisent `ecurie_perso` (repli sur ecurie/club) ; le crayon ✎ n'écrit plus QUE `ecurie_perso` — renommer sa page perso ne touche plus jamais au club. Les requêtes (membres, chevauxDeLEcurie, notifications) restent sur le nom du club.
+- **EcranEcurie, badge** : le label « Club officiel » est RETIRÉ de la page perso (il appartient à Mon Club). La pilule reste, affiche le nom du club + « Voir les membres », et s'affiche dès qu'un club est renseigné (plus de passe-droit `estCompteFeinnEc`).
+- **clubRevendiquePar** : comparaison par `noyauEcurie()` en repli — « Feinn » ≡ « Ecurie Feinn » ≡ « Écurie Feinn ». Idem table locale `CLUBS_REVENDIQUES` d'EcranGuilde.
+- **EcranGuilde, membres** : recherche `ilike` sur `"%"+noyauEcurie(monClub)+"%"` (même logique que la page Écurie, motifClubEc). Chevaux et résultats suivent automatiquement (dérivés des ids membres).
+- **Bannière + philo + histoire du club** : lecture par clé exacte d'abord, puis REPLI PAR NOYAU sur toutes les variantes (`ilike "club-banniere:%"` etc., filtrées par noyau) — les contenus écrits sous « ecurie feinn » sont retrouvés quel que soit le nom courant. L'écriture reste sur la clé courante.
+- **Garde-fou anti-écrasement** (sauverVoix/sauverHist) : valider un champ VIDE n'écrase plus un texte existant (l'upsert écrasait silencieusement avec `contenu: null`).
+- **2 clés d'aperçu ajoutées** : `monecurie` (page Écurie) et `monclub` (page Mon Club) dans CIBLE_DIRECTE.
+
+VÉRIFICATION : 15/15 blocs `node --check` OK. Fonctions top-level 1044 → 1044, const/var 551 → 551, AUCUN ajout/retrait top-level (tout est interne). `allerVersGalop` = 3. Playwright réel : 2 pageerror identiques à la base (supabase hors-ligne + TEINTES_HYPE), texte rendu strictement identique.
+
+À FAIRE PAR BLANDINE, dans cet ordre : (1) exécuter `ecurie-perso.sql` dans Supabase ; (2) pousser index.html ; (3) fermer/relancer l'app COMPLÈTEMENT (multitâche) ; (4) vérifier : page Écurie titrée « Feinn », page Mon Club « Ecurie Feinn » avec 12 membres, chevaux, philo/histoire/bannière et tag officiel revenus.
+
+RESTE OUVERT : (a) la requête `tableaux_clubs` de Blandine ne montre que 2 LIGNES au total — contenu des 2 lignes pas encore vu (capture coupée). Si ses textes club n'y sont pas, ils n'ont jamais été enregistrés côté club (peut-être écrits côté Écurie perso → `profiles.ecurie_voix/ecurie_histoire`, intacts) ; (b) le RPC `classement_ecuries` groupe toujours par nom exact — la guilde fantôme « Feinn » disparaît avec la reprise SQL, mais le doublon « Sep »/« SEP » demande un correctif du RPC (SQL côté serveur, session dédiée) ; (c) le champ `club2` de Blandine contient peut-être encore « Feinn » — à corriger via le crayon de la 2ᵉ carte club sur la page Cavalier si la 2ᵉ page club affiche encore « Feinn ».
+
+### Préparation Flutter (session 93)
+- Frontière de domaine clarifiée : identité d'affichage perso (`ecurie_perso`) séparée de l'identité de club (`ecurie`) — un pas vers un vrai Repository « Club » avec identifiant stable plutôt qu'un nom libre en guise de clé.
+- Recherche par `noyauEcurie` mutualisée entre EcranEcurie et EcranGuilde (même sémantique des deux côtés).
+- Dette identifiée, non traitée : le classement RPC et `mur_evenement` (`"club:"+nom`) utilisent encore le nom exact comme clé. À terme : table `clubs` avec id, et `profiles.club_id`.
+
+**AJOUT SESSION 92 ter — atelier photo. index.html md5 `83c24fde77f182121c8698335d579374`, 10 511 025 octets. Preview : `preview-94.html`.**
+
+BUG : « je veux mettre une photo et ça rate 3 fois sur 4 ». CAUSE : `hypeRecadrer` (~29890) faisait `res(null)` quand la globale `__recadrageOuvrir` n'etait pas encore posee par `RecadrageHype` — la photo etait perdue EN SILENCE, sans erreur ni message. Toutes les photos de l'appli passent par cette porte (avatar 26525, couverture 27279, ecurie 29295, publication 30541, fiche cheval 32023/32054).
+
+CORRECTION 1 (filet, agit partout) : nouvelle fonction top-level `hypePhotoDirecte(fichier)` qui produit le MEME objet que l'atelier (`{fichier, dataUrl, apercuHabille, cadre, original}`) sans ouvrir d'interface. `hypeRecadrer` y bascule au lieu d'abandonner. Aucun comportement voulu n'est modifie.
+
+CORRECTION 2 (demande de Blandine) : plus d'atelier ni de cadres sur une photo PUBLIEE. Ligne 30541, `hypeRecadrer(f, 4/5, {ratios:true})` remplace par `hypePhotoDirecte(f)`. ATTENTION : cette ligne appartient a `MurHype`, composant PARTAGE (albums + murs d'ecurie + fil Communaute) — le changement vaut donc pour toutes les publications, et les photos du fil n'ont plus un format uniforme 4/5. Valide par Blandine.
+
+Verification : 15/15 blocs `node --check`. Fonctions top-level 907 -> 909, les DEUX seules differences sont `hypeEtatSansImages` et `hypePhotoDirecte`. Const/var 542 -> 542. `allerVersGalop` = 3. Playwright : 2 pageerror, identiques a la base.
+
+RESTE A FAIRE, bloque sur une information de Blandine (ne pas coder a l'aveugle) :
+- QUETE `photo-cheval` : base SAINE (photo_url en https, pas de base64) et les doublons ne sont PAS des doublons (chevaux d'autres cavaliers — NE RIEN SUPPRIMER, confirme par Blandine). Piste restante : la liste interrogee par la quete n'est pas celle affichee. `setChevaux` n'est alimente par la base qu'a la ligne 27888 (`mesChevaux()`) ; verifier si `ctx.chevaux` de l'accueil contient bien ces lignes. QUESTION POSEE, SANS REPONSE : l'Ecurie affiche-t-elle les chevaux avec leurs photos ?
+- TULLY : option A validee sur le principe, en attente de la reponse — la fiche de Tully montre-t-elle ses vraies donnees ou la demo figee ? (voir diagnostic complet en session 92).
+- « Crumble · Feinn » : distinguer les chevaux homonymes de proprietaires differents. A faire dans les listes et recherches, PAS dans sa propre ecurie (bruit). Eviter « by » (6 langues) — point median ou pseudo en petit sous le nom, comme les cartes Communaute.
+- MAQUETTE ACCUEIL : encart vertical Linguae a gauche, Galops + Culture equestre empiles a droite. Non commencee. A faire en maquette HTML autonome AVANT integration.
+- « plein de bugs » sur les photos, environ une journee de travail selon Blandine : non detailles.
+
+AVERTISSEMENT DE FIN DE CONVERSATION : la session 92 est arrivee au bout de sa place. Reprendre sur une nouvelle page, en repartant du `83c24fde77f182121c8698335d579374`.
 
 **Pour la suite, repartir de CETTE version (92).**
 
@@ -84,91 +165,6 @@ Syntaxe JS validée · diff exhaustif (aucune fonction perdue) · 79 phrases de 
 ### ⚠️ Non résolu, en attente
 **La vidéo de Newmarket affichée en bande horizontale** : capture montrée par Blandine, `arrivee-newmarket.mp4` en bande paysage tronquée. Fichier jamais reçu — l'un des dix vidéos britanniques/irlandaises d'origine, jamais vérifiées. Le code de cadrage (portrait → cover, paysage → contain) est sain en principe ; si cette vidéo est en paysage comme Maurice/La Baule l'étaient avant traitement, elle produirait exactement ce symptôme. **À vérifier dès que le fichier est envoyé.**
 La relecture native des mots. Les vidéos et cartes manquantes (île Maurice à finaliser, quelques autres). La page de collection (cartes qui se retournent), toujours pas commencée.
-
----
-
-## 🔧 SESSION 94 · LINGUAE (06/08) — « ARRÊTE DE CHANGER DES TRUCS SANS DEMANDER »
-
-Blandine, en toute lettres, après une carte postale invisible et un « 1/8 » incompréhensible juste après un 12/12 parfait. Elle a raison : plusieurs décisions avaient été prises ou réinterprétées sans repasser par elle. Cette session ne fait QUE ce qu'elle a confirmé, un point à la fois — rien de plus.
-
-### ✅ Le modèle de récompense, tel qu'elle le voulait depuis le début
-« La carte, dès que les 12/12 sont bons, même si on ne les a pas tous écrits. » Ce n'est plus le quiz qui donne la carte — **la leçon elle-même**, si tous les mots notés sont justes une seule fois, peu importe le type d'exercice tombé (choix, écoute, dire ou écrire comptent pareil). Le quiz ne garde plus que l'objet.
-Nouveau magasin persistant `CARTES_LECON` (`hype_lingua_cartes`), posé à la fin de `finLecon()` : `garderCarteLecon(ref, LC.justes, sur)` — exactement le score déjà affiché à l'écran, aucun second contrôle. `carteObtenue(ref)` garde son nom (pour ne pas toucher tous ses points d'appel) mais lit désormais ce nouveau magasin, pas le quiz.
-✅ Vérifié en jouant réellement une leçon de La Baule jusqu'au bout, sans jamais ouvrir le quiz : carte obtenue = vrai, objet obtenu = faux. Et une leçon volontairement fautive (Saumur, une erreur) : carte non obtenue, comme attendu.
-
-### ✅ Le « 1/8 » retiré
-Le bloc « Où en est ce chapitre » — celui qui affichait la MAÎTRISE (répétitions sur plusieurs passages) juste après un score de leçon parfait — est retiré de l'écran de fin de leçon. Il pouvait montrer « 1/8 » juste sous un « 12/12 », et rien ne disait que ces deux chiffres ne racontaient pas la même chose. La maîtrise continue de choisir les exercices et le Sprint en coulisses ; elle ne s'affiche plus nulle part comme une jauge de progression.
-⚠️ **Même correctif appliqué à `choisirLecon()`** (l'écran d'AVANT la leçon, pas seulement celui d'après) : il disait aussi « La carte postale : obtenue / encore X mots » d'après la maîtrise — même défaut, sur un autre écran. Corrigé pour suivre exactement la même règle que partout ailleurs.
-
-### ✅ La carte postale contradictoire, corrigée — l'aperçu flouté gardé
-Trouvé hier, confirmé aujourd'hui : « CARTE POSTALE GAGNÉE » suivi juste en dessous de « Encore 8 mots pour la recevoir » — deux systèmes différents qui se contredisaient à l'écran. Le texte du bas est retiré. **L'aperçu flouté avant obtention reste** — Blandine : « c'était sympa de la voir un peu floue » — rien touché de ce côté, seul le texte contradictoire disparaît.
-
-### ✅ La Baule : sécurité retirée, inscription complète
-« On avait dit qu'on commençait par l'inscription... la sécurité, faut que ce soit un autre chapitre. » Le mélange à 6+6 d'hier est défait. `hype-lingo-lex-arrivee.js` retagué une seconde fois : **leçon 1 = les 12 mots `inscrire` au complet** (reserver, cours-particulier, cours-collectif, niveau, debutant, tarif, licence-assurance, bombe-fournie, cheval-calme, balade, duree-reprise, annuler) — c'est le chapitre de La Baule. **Leçon 2 = les 11 mots `securite` au complet**, en réserve, prête telle quelle pour la ville qui portera la sécurité — pas encore choisie.
-⚠️ **Pas fait, à trancher avec elle** : les mots neufs qu'elle propose (le pas/le trot/le galop, les bottes, une phrase pour réserver une balade en groupe avec des débutants). Le pas/trot/galop et les bottes existent déjà ailleurs (`cours`, `materiel`) mais dans d'autres fichiers — les faire venir dans le chapitre de La Baule casserait le principe « un fichier par ville ». À décider : les écrire en propre pour La Baule, ou les garder pour une ville « en selle » future.
-
-### ⚠️ Hypothèse posée, pas confirmée : le texte de La Baule qui ne se lit pas en entier
-« Une fois que la vidéo s'arrête, ça la fout mal. » Une piste plausible et documentée : le clip finit sur sa dernière image (choix assumé, voir code) sans boucler, et un `<video>` sans `controls` peut malgré tout intercepter le défilement une fois arrêté sur iOS Safari — même famille de défaut que celle déjà rencontrée sur le globe et la collection. `pointer-events:none` ajouté sur la vidéo d'arrivée : tout geste doit désormais passer directement au conteneur qui défile en dessous.
-⚠️ **Pas vérifiable sans le vrai appareil.** Si ça ne suffit pas, il me faut une capture ou une description précise de ce qui manque à l'écran pour comprendre exactement quoi corriger.
-
-### ⚠️ Clarifié, pas pour moi : la vidéo de l'encart d'accueil
-Le fichier vidéo et les captures envoyés (panneau La Baule doré sur bleu nuit) sont pour l'**encart d'accueil sur `index.html`**, pas pour Linguae. Choix qui fonctionne bien pour cet usage-là, mais l'intégration revient à qui travaille sur `index.html`.
-
-### Contrôles passés
-Syntaxe validée · aucune référence morte (`SEUIL_CARTE`, `et.fini`, `et.tout`, `et.acquis` : zéro occurrence restante) · parcours complet rejoué en exécution réelle : leçon parfaite → carte obtenue sans quiz → blocs de sortie corrects → écran d'arrivée sans texte contradictoire.
-
----
-
-## 📖 SESSION 94 · LINGUAE (06/08) — LE RÉCIT MANQUANT DE LA BAULE, ET L'INSCRIPTION ÉTOFFÉE
-
-Blandine, après avoir rejoué La Baule : « ça ne se lit pas en entier une fois que la vidéo s'arrête, ça la fout mal pour la première ville ». Elle a aussi redemandé, séparément : le modèle carte/objet, le retrait du « 1/8 », la sécurité comme chapitre à part, et l'étoffement de l'inscription.
-
-⚠️ **Constat en reprenant le fichier** : plusieurs de ces demandes — le modèle carte = leçon parfaite / objet = quiz, le retrait du bloc de maîtrise, le nettoyage du texte contradictoire sous la carte postale, la séparation inscription/sécurité en deux leçons distinctes — **étaient déjà faites**, avec des commentaires datés « 6 août 2026 » expliquant exactement ces mêmes retours. Vérifié une par une avant de retravailler quoi que ce soit, pour ne pas écraser un travail déjà bon.
-
-### 🔴 LE VRAI TROU : `RECITS.labaule` n'existait pas
-Trouvé en cherchant pourquoi l'écran « ne se lit pas en entier ». La vidéo se fige sur le panneau de la ville (comportement voulu), puis l'écran affiche `#texte`, rempli par `RECITS[ref]` — un texte **différent** de la lettre de la carte postale, plus court, jamais écrit pour La Baule. **`#texte` restait donc totalement vide** : l'écran sautait du panneau figé directement à la carte postale, sans rien entre les deux. Sur la toute première ville du voyage.
-✅ **`RECITS.labaule` écrit et ajouté**, 6 langues, même format que les dix récits d'origine (deux phrases évocatrices + une note factuelle). Vérifié en rendu réel : le texte s'affiche, 274 caractères, entre les langues et la carte postale.
-
-### ✅ L'inscription de La Baule étoffée, la sécurité confirmée à part
-Vérifié que L1 (`arrivee.js`) ne contenait déjà plus que l'inscription (12 mots), la sécurité déjà isolée en L2 — la séparation demandée existait. **Cinq mots ajoutés** sur demande explicite (« le pas le trot le galop, les bottes, une phrase pour réserver en groupe ») : `le-groupe`, `pas`, `trot`, `galop`, `bottes` — et la définition de `balade` complétée pour couvrir plage et montagne. Pour tenir à 12, cinq mots plus administratifs (`cours-particulier`, `cours-collectif`, `licence-assurance`, `duree-reprise`, `annuler`) partent en réserve (L3, non attribuée). **Une phrase neuve** : « Nous sommes quatre, dont deux débutants — c'est possible ? », 6 langues.
-⚠️ La sécurité (L2, 11 mots) reste en réserve, **non attribuée à aucune ville** — Blandine : « on va faire la sécurité ailleurs ». Aucune destination choisie pour l'instant.
-✅ Vérifié en exécution : 12 mots exacts en leçon 1, 4 phrases, 0 entrée mal formée sur les 6 langues.
-
-### 💬 Clarification, rien à faire de mon côté
-La vidéo envoyée (`copy_47DFBC08...mov`) est destinée à l'**encart d'accueil sur `index.html`**, qui renvoie vers Hype Linguae — pas une vidéo d'arrivée de ville. Hors du périmètre de cette conversation (index.html appartient à l'autre fil). Pas de traitement fait.
-
-### Contrôles passés
-Syntaxe validée · récit affiché en rendu réel · leçon reconstruite vérifiée (12 mots, 4 phrases, structure des 6 langues saine) · aucune régression sur le reste du fichier.
-
----
-
-## 🃏 SESSION 93 · LINGUAE (06/08) — LA PAGE DE COLLECTION
-
-⚠️ **Cette entrée avait déjà été écrite une première fois, puis a disparu** du fichier reçu en retour — probablement un croisement avec la conversation index.html qui travaillait au même moment sur ce même `SUIVI.md`. Réécrite ici, le code correspondant (`lingo-collection.html`) a bien été livré entre-temps, rien n'est perdu côté application.
-
-« On devrait faire une page avec toutes les cartes et les objets ensemble, et quand on retourne la carte ça dit l'objet à gagner ou récompense obtenue ». Construite.
-
-### ✅ `lingo-collection.html` — nouveau fichier, même motif que le globe
-Iframe séparée (comme `lingo-globe.html`), reçoit l'état des 19 villes par message depuis `lingo.html` (source unique de vérité, rien dupliqué), renvoie la fermeture par message. **Même double verrou de fermeture que le globe** (`pointer-events` + `display:none` sur l'iframe 320 ms après) : posé dès la construction, pas après-coup.
-- Grille de 19 cartes, 2 colonnes, dans l'ordre du voyage.
-- Trois états visuels : **verrouillée** (silhouette, pas de photo) · **ouverte sans carte** (photo assombrie, pas de tampon) · **carte gagnée** (photo claire, tampon doré).
-- On touche, la carte se retourne (flip CSS 3D). Au dos : pour une ville verrouillée, « À découvrir — termine cette leçon » ; pour une ville ouverte sans carte, « En cours — réussis le quiz » ; pour une carte gagnée, **la lettre de la ville** (langue étudiée, comme sur l'écran d'arrivée) et en bas la ligne de l'objet — **« À gagner »** ou **« Récompense obtenue »** avec son icône.
-
-### ✅ Image de carte absente : le même principe que « Vidéo introuvable »
-Dix des dix-neuf villes n'ont pas encore de `carte-X.webp`. Chaque carte **tente toujours de charger son image** et bascule sur « Carte à venir » seulement si le chargement échoue réellement (`onerror`). Aucune liste à maintenir à la main.
-
-### 🔴 Trouvé en construisant la page : La Baule affichait une lettre VIDE depuis le début
-Sa lettre et ses trois volets avaient été écrits (`labaule.md`) mais **jamais injectés dans `hype-lingo-villes-monde.js`**. Son écran d'arrivée officiel montrait donc une lettre blanche depuis qu'elle est devenue l'étape 1, sans que personne ne l'ait remarqué.
-✅ Corrigé : `MONDE.labaule` ajouté (lettre + 3 volets, 6 langues). Vérifié en exécution.
-
-### Contrôles passés
-Syntaxe validée sur les deux fichiers · diff exhaustif sur `lingo.html` (aucune fonction perdue) · rendu réel : 19 cartes affichées, compteur correct, trois états vérifiés un par un, lettre affichée et retournée · fermeture testée avec le même verrou que le globe.
-
-### ⚠️ Vérifié aujourd'hui : le globe de l'app n'a pas changé
-`index.html` reçu à nouveau (travail parallèle de la conversation index.html) — **le bloc `GLOBE_HTML_HYPE` est identique octet pour octet** à celui déjà greffé en session 92 · LINGUAE. Rien à resynchroniser.
-
-### ⚠️ Reste à faire
-Bouton d'entrée vers la collection en haut à droite, sous celui du globe — à repositionner si besoin. Pas de bouton « Partir » sur les cartes ouvertes-mais-pas-gagnées (vitrine, pas une seconde navigation) — à ajouter si voulu. Les dix cartes britanniques manquantes, toujours en attente côté serveur.
 
 ---
 
