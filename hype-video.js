@@ -51,10 +51,30 @@
   /* Les trois liens « aides » n'ont pas été vérifiés. Passer ce drapeau à
      false pour les retirer de la bibliothèque tant que Blandine ne les a
      pas ouverts une fois chacun (dix secondes par lien). */
-  var INCLURE_NON_VERIFIEES = true;
+  /* 06/08 : bascule a false. Les 12 entrees precedentes portent toutes une
+     date de verification ; seuls les deux films « Objectif Galop® 2 » ajoutes
+     ce jour sont sans date, faute d'avoir pu les ouvrir (YouTube a repondu 429
+     a chaque tentative). Ils restent donc invisibles dans la bibliotheque
+     jusqu'a ce que Blandine ouvre les deux liens et qu'on inscrive la date.
+     Remettre a true n'a de sens que si l'on assume d'afficher des liens
+     jamais ouverts. */
+  var INCLURE_NON_VERIFIEES = false;
 
   /* Libellé du chapitre auquel une vidéo est reliée. */
   var CHAPITRES = {
+    /* 06/08 : premieres cles du Galop 1. Jusqu'ici CHAPITRES ne connaissait
+       que des chapitres de Galop 3 et 4 : rien ne pouvait se rattacher a un
+       cours du Galop 1, faute de libelle. Les intitules reprennent exactement
+       ceux des cours (regle : jamais d'identifiant technique a l'ecran). */
+    "g1-c2":  { fr: "Le pansage, premier soin", en: "Grooming, the first form of care", es: "El acicalado, el primer cuidado", it: "La pulizia, la prima cura", ja: "手入れ：最初のケア", de: "Die Fellpflege, die erste Pflege" },
+    "g1-c8":  { fr: "Le matériel de base", en: "Basic equipment", es: "El material básico", it: "L'attrezzatura di base", ja: "基本の道具", de: "Die Grundausrüstung" },
+    "g1-c10": { fr: "Le nœud d'attache", en: "The quick-release knot", es: "El nudo de atar", it: "Il nodo d'attacco", ja: "つなぎ結び", de: "Der Anbindeknoten" },
+    "g1-c15": { fr: "La sécurité avant tout", en: "Safety first", es: "La seguridad ante todo", it: "La sicurezza prima di tutto", ja: "安全が第一", de: "Sicherheit zuerst" },
+    "g1-c18": { fr: "Conduire en main en sécurité", en: "Leading in hand safely", es: "Llevar de la mano con seguridad", it: "Condurre a mano in sicurezza", ja: "安全な手級での引き马", de: "Sicher an der Hand führen" },
+    "g1-c19": { fr: "Monter et descendre en sécurité", en: "Mounting and dismounting safely", es: "Montar y desmontar con seguridad", it: "Salire e scendere in sicurezza", ja: "安全な乗降", de: "Sicher auf- und absteigen" },
+    /* 06/08 : premieres cles du Galop 2, pour les deux films « Objectif Galop® 2 ». */
+    "g2-c3": { fr: "Diriger sur un trac\u00e9", en: "Riding a line", es: "Trazar un recorrido", it: "Guidare su un tracciato", ja: "\u30e9\u30a4\u30f3\u3092\u63cf\u304f", de: "Auf einer Linie reiten" },
+    "g2-c4": { fr: "La d\u00e9couverte du saut", en: "Discovering the jump", es: "El descubrimiento del salto", it: "La scoperta del salto", ja: "\u8df3\u8e8d\u306e\u767a\u898b", de: "Die Entdeckung des Springens" },
     "g4-contact": { fr: "Le contact", en: "Contact", es: "El contacto", it: "Il contatto", ja: "コンタクト", de: "Die Anlehnung" },
     "g4-aides":   { fr: "L'accord des aides", en: "Coordination of the aids", es: "El acuerdo de las ayudas", it: "L'accordo degli aiuti", ja: "扶助の連携", de: "Das Zusammenspiel der Hilfen" },
     "g4-incurvation": { fr: "L'incurvation", en: "Bend and flexion", es: "La incurvación", it: "L'incurvamento", ja: "内方姿勢", de: "Stellung und Biegung" },
@@ -263,6 +283,198 @@
         it: "Una richiesta chiara, progressiva, seguita da un rilascio: l'illustrazione diretta del «più piccolo aiuto efficace».",
         ja: "はっきりと、段階的に求め、そして解放する。「効く最小の扶助」をそのまま示す内容。",
         de: "Eine klare, abgestufte Hilfe mit anschließendem Nachgeben: die direkte Veranschaulichung der \u201ekleinsten Hilfe, die wirkt\u201c."
+      }
+    },
+    /* ============================================================
+       06/08/2026 · SERIE « OBJECTIF GALOP® » DE LA FFE
+       Sept films par niveau, pour les Galops 1 a 4, tournes au Parc
+       Equestre Federal de Lamotte et au Poney-Club d'Orleans, diffuses
+       d'abord sur Equidia a l'automne 2015 puis mis en visionnage
+       gratuit. C'est le registre qui manquait : les webconferences IFCE
+       s'adressent a des professionnels, ce qui explique que les six
+       premieres videos du catalogue soient toutes en Galop 4.
+       Les cinq liens ci-dessous ont ete ouverts par Blandine le
+       06/08/2026 : les cinq repondent, duree 3 min 30 a 3 min 45,
+       d'ou dureeTranche "moyen" pour tous.
+       Trois des sept films du Galop 1 restent a trouver.
+       Des films de Galop 2 existent aussi : a ajouter ensuite.
+       RESERVE : ce sont des films sous droits FFE. Hype est un produit
+       payant qui recoupe les Guides Federaux ; un accord ecrit avec la
+       FFE est a obtenir avant d'en faire un pilier de l'application.
+       ============================================================ */
+    {
+      id: "v-g1-aborder", yt: "0IQaRtCxcFA",
+      source: "FFE", titreSource: "Objectif Galop® 1 : Aborder son cheval",
+      langueVideo: "fr", cours: ["g1-c15", "g1-c18"], galop: 1, theme: "securite",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Aborder son cheval",
+        en: "Approaching your horse",
+        es: "Abordar a su caballo",
+        it: "Avvicinarsi al proprio cavallo",
+        ja: "馬に近づく",
+        de: "An das Pferd herantreten"
+      },
+      resume: {
+        fr: "Se faire voir, se faire entendre, puis toucher : l'ordre des gestes qui font qu'un cheval ne sursaute pas.",
+        en: "Be seen, be heard, then touch: the order of gestures that keeps a horse from startling.",
+        es: "Hacerse ver, hacerse oír, y luego tocar: el orden de los gestos que evita que un caballo se sobresalte.",
+        it: "Farsi vedere, farsi sentire, poi toccare: l'ordine dei gesti che evita che un cavallo si spaventi.",
+        ja: "まず見てもらい、声をかけ、それから触れる。馬を驚かせないための順番。",
+        de: "Gesehen werden, gehört werden, dann berühren: die Reihenfolge, die ein Pferd nicht erschrecken lässt."
+      },
+      observer: {
+        fr: ["La position du cavalier par rapport a l'œil du cheval", "La voix avant la main", "Le premier point de contact sur l'encolure", "Le changement de cote"],
+        en: ["Where the rider stands in relation to the horse's eye", "Voice before hand", "The first point of contact on the neck", "Changing sides"],
+        es: ["La posición del jinete respecto al ojo del caballo", "La voz antes que la mano", "El primer punto de contacto en el cuello", "El cambio de lado"],
+        it: ["La posizione del cavaliere rispetto all'occhio del cavallo", "La voce prima della mano", "Il primo punto di contatto sull'incollatura", "Il cambio di lato"],
+        ja: ["馬の目に対する位置", "手より先に声", "首への最初の接触", "左右の入れ替わり"],
+        de: ["Die Position des Reiters zum Auge des Pferdes", "Die Stimme vor der Hand", "Der erste Kontaktpunkt am Hals", "Der Seitenwechsel"]
+      }
+    },
+    {
+      id: "v-g1-licol", yt: "GyQiZIse010",
+      source: "FFE", titreSource: "Objectif Galop® 1 : Mettre le licol",
+      langueVideo: "fr", cours: ["g1-c10", "g1-c8"], galop: 1, theme: "soins-et-materiel",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Mettre le licol",
+        en: "Putting on the halter",
+        es: "Poner el cabestro",
+        it: "Mettere la testiera",
+        ja: "絵口をつける",
+        de: "Das Halfter anlegen"
+      },
+      resume: {
+        fr: "Chaque partie du licol a un nom et une place. Le film montre le geste complet, sans precipitation.",
+        en: "Every part of the halter has a name and a place. The film shows the whole sequence, unhurried.",
+        es: "Cada parte del cabestro tiene un nombre y un lugar. El vídeo muestra el gesto completo, sin prisa.",
+        it: "Ogni parte della testiera ha un nome e un posto. Il film mostra il gesto completo, senza fretta.",
+        ja: "絵口の各部には名前と位置がある。あわてずに、一連の動作を見せる。",
+        de: "Jeder Teil des Halfters hat einen Namen und einen Platz. Der Film zeigt den ganzen Ablauf, ohne Eile."
+      }
+    },
+    {
+      id: "v-g1-mener", yt: "LhxKlloAFiQ",
+      source: "FFE", titreSource: "Objectif Galop® 1 : Mener son cheval",
+      langueVideo: "fr", cours: ["g1-c18"], galop: 1, theme: "travail-a-pied",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Mener son cheval en main",
+        en: "Leading your horse in hand",
+        es: "Llevar a su caballo de la mano",
+        it: "Condurre il cavallo a mano",
+        ja: "馬を引く",
+        de: "Das Pferd an der Hand führen"
+      },
+      resume: {
+        fr: "A la hauteur de l'épaule, jamais devant, jamais derriere. Ou se placer, comment tenir la longe, comment tourner.",
+        en: "Level with the shoulder, never in front, never behind. Where to stand, how to hold the rope, how to turn.",
+        es: "A la altura del hombro, nunca delante, nunca detrás. Dónde colocarse, cómo sujetar la cuerda, cómo girar.",
+        it: "All'altezza della spalla, mai davanti, mai dietro. Dove mettersi, come tenere la longhina, come girare.",
+        ja: "肩の位置で、前すぎず後ろすぎず。立ち位置、索の持ち方、曲がるときの動き。",
+        de: "Auf Höhe der Schulter, nie davor, nie dahinter. Wo man geht, wie man den Strick hält, wie man wendet."
+      },
+      observer: {
+        fr: ["La place du cavalier a hauteur d'epaule", "La main qui ne tire pas", "Le regard porte la ou l'on va", "Le tour effectue en poussant, pas en tirant"],
+        en: ["The handler level with the shoulder", "The hand that does not pull", "Eyes on where you are going", "Turning by pushing, not pulling"],
+        es: ["El sitio del jinete a la altura del hombro", "La mano que no tira", "La mirada puesta donde se va", "El giro empujando, no tirando"],
+        it: ["Il posto del cavaliere all'altezza della spalla", "La mano che non tira", "Lo sguardo dove si va", "La girata spingendo, non tirando"],
+        ja: ["肩の横に並ぶ位置", "引っ張らない手", "進む先を見る目線", "引かずに押して回る"],
+        de: ["Der Platz auf Höhe der Schulter", "Die Hand, die nicht zieht", "Der Blick dorthin, wohin man geht", "Die Wendung durch Schieben, nicht Ziehen"]
+      }
+    },
+    {
+      id: "v-g1-montoir", yt: "X16vL91kFqM",
+      source: "FFE", titreSource: "Objectif Galop® 1 : Monter et descendre",
+      langueVideo: "fr", cours: ["g1-c19"], galop: 1, theme: "position-du-cavalier",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Monter et descendre",
+        en: "Mounting and dismounting",
+        es: "Montar y desmontar",
+        it: "Salire e scendere",
+        ja: "乗ると降りる",
+        de: "Aufsteigen und Absteigen"
+      },
+      resume: {
+        fr: "Le montoir, les renes tenues, le pied qui ne pousse pas dans le flanc, et une descente qui ne surprend personne.",
+        en: "The mounting block, reins in hand, a foot that does not dig into the flank, and a dismount that surprises no one.",
+        es: "El montador, las riendas en la mano, el pie que no empuja el flanco, y una bajada que no sorprende a nadie.",
+        it: "Il montatoio, le redini in mano, il piede che non spinge nel fianco, e una discesa che non sorprende nessuno.",
+        ja: "踏台、手継の持ち方、脅を押さない足、そして馬を驚かせない下馬。",
+        de: "Die Aufstiegshilfe, die Zügel in der Hand, ein Fuß, der nicht in die Flanke drückt, und ein Absteigen, das niemanden überrascht."
+      }
+    },
+    {
+      id: "v-g1-pansage", yt: "UpUmD2Ht4fc",
+      source: "FFE", titreSource: "Objectif Galop® 3 : Le pansage",
+      langueVideo: "fr", cours: ["g1-c2"], galop: 1, theme: "soins-et-materiel",
+      rang: "approfondir", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Le pansage, geste par geste",
+        en: "Grooming, step by step",
+        es: "El acicalado, gesto a gesto",
+        it: "La pulizia, gesto per gesto",
+        ja: "手入れを一つずつ",
+        de: "Die Fellpflege, Schritt für Schritt"
+      },
+      resume: {
+        fr: "Film tourne pour le Galop 3, donc il va plus loin que le programme du Galop 1 : l'ordre des brosses y est montre en entier.",
+        en: "Filmed for Level 3, so it goes beyond the Level 1 syllabus: the full order of the brushes is shown.",
+        es: "Vídeo rodado para el Galop 3, por lo que va más allá del programa del Galop 1: se muestra el orden completo de los cepillos.",
+        it: "Girato per il Galoppo 3, quindi va oltre il programma del Galoppo 1: l'ordine delle spazzole è mostrato per intero.",
+        ja: "ガロー3向けに撮られたため、ガロー1の範囲を超える。ブラシの順番がすべて示される。",
+        de: "Für Galopp 3 gedreht, geht also über das Programm von Galopp 1 hinaus: die Reihenfolge der Bürsten wird vollständig gezeigt."
+      }
+    },
+    /* --- Galop 2, meme serie FFE. Deux films trouves sur les sept annonces.
+       verifie VIDE : ces deux liens n'ont pas pu etre ouverts (429 YouTube).
+       Ils sont donc ecartes de la bibliotheque par INCLURE_NON_VERIFIEES.
+       Inscrire la date du jour ici quand Blandine aura confirme, et remplir
+       dureeTranche a ce moment-la ("court", "moyen" ou "plus8"). --- */
+    {
+      id: "v-g2-premiers-sauts", yt: "MfzFo_IeSa8",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 2 : Premiers sauts",
+      langueVideo: "fr", cours: ["g2-c4"], galop: 2, theme: "obstacle",
+      rang: "principal", dureeTranche: "", verifie: "",
+      titre: {
+        fr: "Les premiers sauts",
+        en: "First jumps",
+        es: "Los primeros saltos",
+        it: "I primi salti",
+        ja: "\u306f\u3058\u3081\u306e\u8df3\u8e8d",
+        de: "Die ersten Spr\u00fcnge"
+      },
+      resume: {
+        fr: "Franchir un premier obstacle sans rien brusquer : l'abord, l'equilibre sur les etriers, et le regard qui passe par-dessus.",
+        en: "Taking a first fence without rushing anything: the approach, balance on the stirrups, and eyes looking beyond.",
+        es: "Franquear un primer obst\u00e1culo sin brusquedad: la aproximaci\u00f3n, el equilibrio sobre los estribos y la mirada m\u00e1s all\u00e1.",
+        it: "Superare il primo ostacolo senza forzare nulla: l'avvicinamento, l'equilibrio sulle staffe e lo sguardo oltre.",
+        ja: "\u7121\u7406\u306e\u306a\u3044\u521d\u3081\u3066\u306e\u8df3\u8e8d\u3002\u30a2\u30d7\u30ed\u30fc\u30c1\u3001\u9419\u306e\u4e0a\u3067\u306e\u30d0\u30e9\u30f3\u30b9\u3001\u305d\u3057\u3066\u5148\u3092\u898b\u308b\u76ee\u7dda\u3002",
+        de: "Ein erstes Hindernis ohne Hast \u00fcberwinden: das Heranreiten, das Gleichgewicht in den B\u00fcgeln und der Blick dar\u00fcber hinaus."
+      }
+    },
+    {
+      id: "v-g2-parcours", yt: "fYEuHOQ-WE0",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 2 : Parcours type Galop\u00ae 2",
+      langueVideo: "fr", cours: ["g2-c4", "g2-c3"], galop: 2, theme: "obstacle",
+      rang: "approfondir", dureeTranche: "", verifie: "",
+      titre: {
+        fr: "Un parcours type",
+        en: "A model course",
+        es: "Un recorrido tipo",
+        it: "Un percorso tipo",
+        ja: "\u6a19\u6e96\u7684\u306a\u30b3\u30fc\u30b9",
+        de: "Ein Musterparcours"
+      },
+      resume: {
+        fr: "A quoi ressemble le parcours attendu au Galop 2, du premier tracé au dernier arrêt.",
+        en: "What the Level 2 course actually looks like, from the first line to the final halt.",
+        es: "C\u00f3mo es el recorrido esperado en el Galop 2, del primer trazado a la \u00faltima parada.",
+        it: "Com'\u00e8 fatto il percorso richiesto al Galoppo 2, dal primo tracciato all'ultimo arresto.",
+        ja: "\u30ac\u30ed\u30fc2\u3067\u6c42\u3081\u3089\u308c\u308b\u30b3\u30fc\u30b9\u306e\u5168\u4f53\u50cf\u3002\u6700\u521d\u306e\u30e9\u30a4\u30f3\u304b\u3089\u6700\u5f8c\u306e\u505c\u6b62\u307e\u3067\u3002",
+        de: "Wie der beim Galopp 2 erwartete Parcours aussieht, von der ersten Linie bis zum letzten Halten."
       }
     }
   ];
@@ -561,6 +773,7 @@
     ".hv-lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(4,6,9,.55);font-size:18px}",
     ".hv-prog{position:absolute;left:0;right:0;bottom:0;height:2.5px;background:rgba(255,255,255,.14)}",
     ".hv-prog i{display:block;height:100%;background:linear-gradient(90deg,#20D9F5,#7DEBFF);box-shadow:0 0 10px rgba(32,217,245,.8)}",
+    ".hv-sous{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#6E7A87;margin:3px 0 0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-family:'Montserrat',sans-serif}",
     ".hv-rail{display:flex;gap:12px;overflow-x:auto;padding:2px 18px 6px}",
     ".hv-carte{flex:0 0 148px;text-align:left;background:none;border:none;padding:0;color:inherit}",
     ".hv-carte .hv-cov{aspect-ratio:2/3;border-radius:14px;border:1px solid #2A323D}",
@@ -797,7 +1010,7 @@
       var mini = vignette(v);
       var enfants = [
         h("div", { key: "f", style: { position: "absolute", inset: 0, background: fondCouv(v) } }),
-        mini ? h("img", {
+        (mini && !opts.sansMini) ? h("img", {
           key: "m", src: mini, alt: "", loading: "lazy",
           style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }
         }) : null,
@@ -806,26 +1019,50 @@
           h("path", { d: "M-20 178 C 80 178 100 80 210 92", fill: "none", stroke: "hsla(" + h2 + ",95%,80%,.22)", strokeWidth: .7 })),
         opts.sansVoile ? null : h("div", { key: "v", className: "hv-voile" })
       ];
-      if (opts.galop !== false) enfants.push(h("div", { key: "g", className: "hv-gal" }, T("Galop " + v.galop, "Level " + v.galop, "Galop " + v.galop, "Galop " + v.galop, "ガロー " + v.galop, "Galopp " + v.galop)));
-      if (opts.duree !== false && dureeDe(v)) enfants.push(h("div", { key: "d", className: "hv-duree" }, dureeDe(v)));
-      if (verrou(v)) {
-        enfants.push(h("div", { key: "l", className: "hv-lock" }, "◈"));
-      } else if (!v.src) {
-        enfants.push(h("div", { key: "s", className: "hv-tag hv-tag-soon" }, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst")));
-      } else if (p && p.vue) {
-        enfants.push(h("div", { key: "w", className: "hv-tag hv-tag-vue" }, T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen")));
-      }
+      /* 06/08 : PLUS AUCUN TEXTE INCRUSTE SUR LA MINIATURE (demande Blandine).
+         Les vignettes des webconferences IFCE sont des diapos : elles portent
+         deja leur propre titre cuit dans l'image, souvent sur plusieurs lignes.
+         Poser « Galop 4 » et « format long » par-dessus rendait les deux
+         illisibles, et cela contredisait la regle 18 de la Bible (jamais de
+         texte incruste dans une image). Ces informations descendent sous
+         l'image, dans le texte de la carte, ou elles se lisent vraiment.
+         Seul le cadenas premium reste sur l'image : c'est un glyphe, pas un
+         titre, et il doit se voir avant le clic. Les options opts.galop et
+         opts.duree restent acceptees pour ne pas casser les appels existants,
+         elles n'ont simplement plus d'effet. */
+      if (verrou(v)) enfants.push(h("div", { key: "l", className: "hv-lock" }, "◈"));
       /* Aucune barre de progression : voir la note sur enregistrerEtat. */
       return h("div", { className: "hv-cov" }, enfants);
     }
 
+    /* 06/08 : l'etat d'une video en un mot, pour la ligne de meta sous
+       l'image. Rend "" quand il n'y a rien de notable a dire. */
+    function etatDe(v) {
+      var pv = prog(v.id);
+      if (verrou(v)) return T("Premium", "Premium", "Premium", "Premium", "プレミアム", "Premium");
+      if (!v.src) return T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst");
+      if (pv && pv.vue) return T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen");
+      if (pv && pv.ouverte) return T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen");
+      return "";
+    }
+    /* Galop · duree · etat, sous l'image, separes par des points medians.
+       Les elements vides sont ecartes : jamais de « · · » orphelin. */
+    function metaDe(v) {
+      return [
+        T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + v.galop,
+        dureeDe(v),
+        etatDe(v)
+      ].filter(function (x) { return !!x; }).join(" · ");
+    }
     function carteAffiche(v) {
       return h("button", { key: v.id, className: "hv-carte", onClick: function () { ouvrir(v); } },
-        couv(v), h("h4", null, titreDe(v)), h("p", null, chapitreDe(v)));
+        couv(v), h("h4", null, titreDe(v)), h("p", null, chapitreDe(v)),
+        h("p", { className: "hv-sous" }, metaDe(v)));
     }
     function carteLarge(v) {
       return h("button", { key: v.id, className: "hv-large", onClick: function () { ouvrir(v); } },
-        couv(v), h("h4", null, titreDe(v)), h("p", null, chapitreDe(v)));
+        couv(v), h("h4", null, titreDe(v)), h("p", null, chapitreDe(v)),
+        h("p", { className: "hv-sous" }, metaDe(v)));
     }
     function carteLigne(v, n) {
       var p = prog(v.id);
@@ -948,6 +1185,8 @@
         h("span", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" } },
           h("h4", null, titreDe(mv)),
           h("span", { className: "hv-lie", style: { display: "block" } }, T("Chapitre : ", "Chapter: ", "Capítulo: ", "Capitolo: ", "章：", "Kapitel: ") + chapitreDe(mv)),
+          /* 06/08 : la duree quittait la miniature, elle se lit ici. */
+          dureeDe(mv) ? h("span", { className: "hv-lie", style: { display: "block", marginTop: 2 } }, dureeDe(mv)) : null,
           h("span", { style: { display: "block", fontSize: 9.5, color: "#20D9F5", marginTop: 9, letterSpacing: ".1em", textTransform: "uppercase" } },
             T("Reprendre", "Resume", "Reanudar", "Riprendi", "つづける", "Fortsetzen"))));
     }
@@ -956,7 +1195,14 @@
     var une = dispo[0];
     for (var iu = 0; iu < dispo.length; iu++) { var pu = prog(dispo[iu].id); if (!pu && !verrou(dispo[iu])) { une = dispo[iu]; break; } }
     var blocUne = h("div", { className: "hv-une" },
-      couv(une, { galop: false, sansVoile: true }),
+      /* 06/08 : la carte « A la une » n'affiche plus la vignette YouTube.
+         En 16/9 pleine largeur, une diapo de webconference IFCE devient un
+         mur de texte cuit dans l'image, juste sous le titre de la carte.
+         Le fond procedural de fondCouv() tient le role : sobre, dans la
+         palette, et il n'entre jamais en concurrence avec le texte. Les
+         vignettes restent en place dans les petites cartes, ou elles sont
+         decoratives et sans enjeu de lecture. */
+      couv(une, { galop: false, sansVoile: true, sansMini: true }),
       h("div", { className: "hv-une-txt" },
         h("span", { className: "hv-kick" }, T("Recommandée pour toi", "Recommended for you", "Recomendada para ti", "Consigliata per te", "あなたへのおすすめ", "Für dich empfohlen")),
         h("h3", null, titreDe(une)),
@@ -965,7 +1211,8 @@
           h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + une.galop),
           dureeDe(une) ? h("span", { className: "hv-mini" }, dureeDe(une)) : null,
           h("span", { className: "hv-mini" }, chapitreDe(une)),
-          une.source ? h("span", { className: "hv-mini" }, une.source) : null),
+          une.source ? h("span", { className: "hv-mini" }, une.source) : null,
+          etatDe(une) ? h("span", { className: "hv-mini" }, etatDe(une)) : null),
         h("div", { className: "hv-act" },
           h("button", { className: "hv-btn hv-btn-p", onClick: function () { ouvrir(une); } },
             T("Regarder", "Watch", "Ver", "Guarda", "見る", "Ansehen")),

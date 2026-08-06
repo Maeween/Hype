@@ -3658,6 +3658,70 @@ La bibliotheque video n'avait **aucune porte depuis l'accueil** : `EncartBibliot
 - La mosaique complete de l'accueil (variante C des maquettes) n'est PAS appliquee : Hey Baby, Galops et Linguae restent en pleine largeur. Leurs classes CSS (`.heyb` 188 px, `.bn-veil` en degrade horizontal, `.bn-info` a 70 %) sont dessinees pour des cartes larges ; les forcer dans une grille 2 colonnes demandait de retoucher du CSS partage. Ecarte pour ne rien casser.
 - Rappel d'un point encore ouvert du SUIVI : la maquette d'accueil avec **encart vertical Linguae a gauche** et Galops + Culture empiles a droite reste non commencee. Le duo de tuiles carrees livre aujourd'hui occupe la place que cette maquette prevoyait pour Culture — a arbitrer avec Blandine si elle revient a cette idee.
 
+### AJOUT SESSION 94 bis · PAGE VIDEO (`hype-video.js`)
+
+**`hype-video.js` md5 a recalculer a la livraison, 94 691 octets. `index.html` NON MODIFIE par cette passe (toujours `43c46461f722ac278e14aef5d30ae24a`).**
+
+Blandine a signale la page video illisible, capture a l'appui.
+
+**Diagnostic d'abord : le chevauchement entoure sur la capture n'existe pas dans l'app.** L'heure et l'icone 5G y sont posees par-dessus « CONTINUER A REGARDER », ce qui est impossible a l'ecran : c'est une capture longue recollee par iOS, le raccord duplique le bloc de texte par-dessus l'image. Le code de `hv-une` est sain, la vignette 16/9 precede le texte dans le flux, sans positionnement absolu. Aucun correctif de mise en page n'etait a faire de ce cote.
+
+**Le vrai defaut, lui, est reel :** les vignettes des webconferences IFCE sont des diapos qui portent leur propre titre cuit dans l'image (« WEBCONFERENCE », « 1.1 LE CONTACT : ELEMENT PHYSIQUE ET PSYCHOLOGIQUE... »), parfois en collage de quatre panneaux. L'ecran posait par-dessus les pastilles « Galop N », la duree et l'etat. Deux textes superposes, aucun lisible, et la regle 18 de la Bible enfreinte.
+
+1. **`couv()` : plus aucun texte incruste.** Retire de l'image : `hv-gal`, `hv-duree`, `hv-tag-soon`, `hv-tag-vue`. Seul le cadenas premium `hv-lock` reste : c'est un glyphe, pas un titre, et il doit se voir avant le clic. Les options `opts.galop` et `opts.duree` restent acceptees sans effet, pour ne casser aucun appel existant.
+2. **L'information descend sous l'image.** Deux fonctions ajoutees : `etatDe(v)` (Premium / Prochainement / Vue / A revoir, ou "" s'il n'y a rien a dire) et `metaDe(v)` (Galop · duree · etat, les vides ecartes, jamais de « · · » orphelin). Nouvelle ligne `.hv-sous` sous `carteAffiche` et `carteLarge`. `carteLigne` avait deja sa ligne de meta : rien perdu. « Continuer a regarder » recupere la duree en clair. « A la une » recoit l'etat dans ses pastilles `hv-minis`.
+3. **« A la une » n'affiche plus la vignette YouTube.** Nouvelle option `opts.sansMini` sur `couv()` : la carte prend le fond procedural de `fondCouv()`. En 16/9 pleine largeur, une diapo IFCE devient un mur de texte. Les vignettes restent dans les petites cartes, ou elles sont decoratives et sans enjeu de lecture.
+
+**Verification** : `node --check hype-video.js` OK. Aucun `hv-gal` / `hv-duree` restant dans le JSX. Les regles CSS `.hv-gal`, `.hv-duree`, `.hv-tag-soon`, `.hv-tag-vue` restent dans la feuille, desormais inutilisees — non supprimees, nettoyage quand plus rien ne pointera dessus.
+
+**A TESTER** : lisibilite des cartes du rail (la ligne `.hv-sous` en 9 px), et le rendu du fond procedural en 16/9 sur « A la une », qui n'avait jamais ete vu a cette taille.
+
+### AJOUT SESSION 94 ter · LES CINQ PREMIERS FILMS DU GALOP 1 (`hype-video.js`)
+
+**`hype-video.js` 105 071 octets. `index.html` NON MODIFIE (toujours `43c46461f722ac278e14aef5d30ae24a`).**
+
+**LA SOURCE QUI MANQUAIT.** La FFE a une serie « Objectif Galop® » : sept films par niveau pour les Galops 1 a 4, tournes au Parc Equestre Federal de Lamotte et au Poney-Club d'Orleans, diffuses sur Equidia a l'automne 2015 puis mis en visionnage gratuit. C'est le bon registre pour un debutant, et cela explique enfin pourquoi les six premieres videos du catalogue etaient toutes en Galop 4 : les webconferences IFCE s'adressent a des professionnels.
+
+**AUDIT PREALABLE · CE QUI MANQUE AU GALOP 1 PAR RAPPORT AU GALOP 4**
+- **Le Galop 1 a 20 chapitres** (`g1-c1` a `g1-c20`), pas 15 comme annonce depuis le debut du SUIVI. A corriger partout.
+- **Blocs « complements » : zero sur 20 chapitres.** Le Galop 4 en a deux par chapitre, rendus par `ComplementsBiomeca` avec un dictionnaire `COMPL_*_I18N` : trois onglets, le defi, les videos, et pour aller plus loin. C'est la structure qui accueille les videos en fin de cours, et elle existe deja.
+- `cartes-premium` : zero (10 sur le Galop 4). Aucune page interactive autonome non plus (`interactif-biomeca`, `interactif-cavalier`, `lien-phases-saut` sont propres au Galop 4).
+- En sens inverse le Galop 1 a 28 blocs `vrai-faux`, 7 `photo-liste`, des `astuce` et des `intro` que le Galop 4 n'a pas : il n'est pas pauvre partout.
+
+**FAIT CETTE PASSE**
+1. **Six cles de chapitres du Galop 1 dans `CHAPITRES`** : `g1-c2`, `g1-c8`, `g1-c10`, `g1-c15`, `g1-c18`, `g1-c19`, en 6 langues. La table ne connaissait que du Galop 3 et 4 : rien ne pouvait se rattacher a un cours du Galop 1, faute de libelle.
+2. **Cinq films ajoutes au catalogue**, tous `verifie: "2026-08-06"` (Blandine a ouvert les cinq liens, les cinq repondent), `dureeTranche: "moyen"` (3 min 30 a 3 min 45 d'apres elle) :
+
+| id | yt | film FFE | rattache a |
+|---|---|---|---|
+| `v-g1-aborder` | `0IQaRtCxcFA` | Objectif Galop® 1 : Aborder son cheval | `g1-c15`, `g1-c18` |
+| `v-g1-licol` | `GyQiZIse010` | Objectif Galop® 1 : Mettre le licol | `g1-c10`, `g1-c8` |
+| `v-g1-mener` | `LhxKlloAFiQ` | Objectif Galop® 1 : Mener son cheval | `g1-c18` |
+| `v-g1-montoir` | `X16vL91kFqM` | Objectif Galop® 1 : Monter et descendre | `g1-c19` |
+| `v-g1-pansage` | `UpUmD2Ht4fc` | Objectif Galop® 3 : Le pansage | `g1-c2` |
+
+Titres et resumes en 6 langues pour les cinq ; bloc `observer` en 6 langues pour « Aborder » et « Mener » (les deux ou il y a vraiment quelque chose a regarder). Themes pris dans `THEME_MAP` : `securite`, `soins-et-materiel`, `travail-a-pied`, `position-du-cavalier`.
+
+**DEUX CHOIX A CONNAITRE.** Le film du pansage est un film de **Galop 3**, porte a `galop: 1` pour qu'il apparaisse dans le rayon du Galop 1 ou il est utile, avec `rang: "approfondir"` ; son origine reste lisible car `titreSource` dit « Objectif Galop® 3 ». Aucun champ `doc` : les pages FFE TV correspondantes n'ont pas ete identifiees, mieux vaut rien qu'une URL devinee.
+
+**RESERVE DE DROITS, A NE PAS OUBLIER.** Ce sont des films sous droits FFE. Les videos IFCE aussi, mais Hype est un produit payant qui recoupe les Guides Federaux. Un accord ecrit avec la FFE est a obtenir avant d'en faire un pilier de l'application. Ecrit aussi en commentaire dans le fichier, au-dessus des entrees.
+
+**VERIFICATION** : `node --check` OK, et le fichier a ete charge dans Node avec des doublures de React / useApp / supa pour verifier qu'il s'execute et expose bien `window.EcranVideos`. Catalogue : 12 entrees (7 avant, 5 ajoutees).
+
+**AJOUT DANS LA MEME PASSE · DEUX FILMS DU GALOP 2**
+Deux films « Objectif Galop® 2 » trouves sur les sept annonces : `v-g2-premiers-sauts` (`MfzFo_IeSa8`, Premiers sauts) et `v-g2-parcours` (`fYEuHOQ-WE0`, Parcours type Galop® 2). Rattaches a `g2-c4` (« La decouverte du saut ») et, pour le parcours, aussi a `g2-c3` (« Diriger sur un trace »). Deux nouvelles cles dans `CHAPITRES` : `g2-c3`, `g2-c4`.
+
+**Ces deux-la portent `verifie: ""`** : impossible de les ouvrir, YouTube a repondu 429 a chaque tentative, y compris apres attente. En consequence **`INCLURE_NON_VERIFIEES` est passe a `false`** — ce que le commentaire d'origine du fichier prescrivait exactement pour ce cas. Les 12 entrees precedentes portent toutes une date de verification, donc la bascule ne cache rien d'autre : seuls ces deux films sont invisibles, et ils le restent jusqu'a ce que Blandine ouvre les deux liens. Inscrire alors la date **et** remplir `dureeTranche`, laisse vide plutot que devine.
+
+**RESTE A FAIRE**
+- **Les blocs complements en fin de cours ne sont PAS poses.** Les cinq films vivent pour l'instant dans la videotheque seule (rayon Galop 1, filtres, « Explorer par Galop »). Les brancher en fin de cours demande un dictionnaire `COMPL_*_I18N` par chapitre : un defi, des cases a cocher, un « pour aller plus loin », en 6 langues. Six chapitres concernes ici, vingt a terme. C'est le gros du travail, et c'est du contenu, pas du code.
+- **Trois des sept films du Galop 1 restent a trouver.** Rien de propre trouve sur le nœud d'attache ni sur la securite chez la FFE ; ce qui existe vient de clubs isoles, filme en 2012, ecarte volontairement.
+- **Des films de Galop 2 existent** (Blandine l'a signale) : meme methode, meme reserve de droits.
+- Verification autonome des liens impossible cette fois : YouTube a repondu 429 sur quatre tentatives, puis la limite d'appels a saute. C'est Blandine qui a verifie. Reessayer soi-meme lors d'une prochaine session pour les films suivants.
+
+### DEMANDE (MISE A JOUR) · VIDEOS POUR LES 20 COURS DU GALOP 1
+Blandine demande de chercher des videos pour tous les cours du Galop 1, de les mettre en fin de chaque cours et de les verser a la videotheque. **Non commence.** Point de vigilance a respecter absolument : un identifiant YouTube ne s'invente pas. Un ID de 11 caracteres fabrique ne renvoie pas une erreur propre, il renvoie une video quelconque et sans rapport. Le fichier a deja la convention qu'il faut pour ca : le champ `verifie` et le drapeau `INCLURE_NON_VERIFIEES`. Marche a suivre proposee : recherche des candidats reels, insertion avec `verifie: ""`, puis `INCLURE_NON_VERIFIEES = false` le temps que Blandine ouvre chaque lien une fois. Rien ne s'affiche tant qu'elle n'a pas valide. Le schema d'une entree est lourd (id, yt, source, intervenant, intervenantRole en 6 langues, titreSource, doc, cours, galop, theme, rang, dureeTranche, titre, resume, observer en 6 langues) : compter une passe dediee, pas un ajout en fin de session.
+
 ### Préparation Flutter (session 94)
 - **Composant mutualise et remis en service** : `carteVertAcc` (tuile d'accueil), passe de code mort a 2 appelants, avec ratio et rayon parametrables. Toute future tuile de l'accueil passe par lui plutot que par un nouveau bloc `React.createElement` recopie.
 - **Dependance supprimee** : la carte Culture equestre ne depend plus des classes CSS `banner culture glass` ni de `.bn-veil` / `.bn-info` / `.bn-k` / `.bn-t`. Elle ne garde que `.cu-img` pour l'image. Un bloc de moins accroche a la feuille de styles globale.
