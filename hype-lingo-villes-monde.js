@@ -441,6 +441,69 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
     ]
   };
 
+  /* ==================================================================
+     ROME — ajoutée le 6 août 2026. « Rome c'est cool faut garder »,
+     « fais Rome déjà ça c'est sûr ».
+     Piazza di Siena, l'ovale de la Villa Borghese. Elle prend `concours`
+     leçon 4 (les gens), qui était libre : le concurrent, le propriétaire,
+     l'entraîneur, le jury, la réclamation, le règlement, la note
+     minimale, le championnat, le trophée, l'esprit sportif.
+     ⚠️ Rome ne figure PAS dans hype-linguae-production.txt ni dans la
+     liste des huit destinations suivantes — c'est un ajout postérieur à
+     ces documents. Sa leçon ne prend rien à personne (vérifié par calcul
+     sur ETAPE_SRC), mais ses images restent à produire : ni
+     `carte-rome.webp`, ni `fond-rome.webp`, ni `arrivee-rome.mp4`.
+     Les replis les couvrent en attendant.
+     ================================================================== */
+  MONDE.rome = {
+    lieu:"Villa Borghese · Roma", carte:true, niveau:2,
+    image:"l'ovale de Piazza di Siena entre les pins",
+    lettre:{
+      fr:["On entend les klaxons de la ville par-dessus le mur du parc, et personne ne les écoute.",
+          "Le cavalier suivant est entré au galop entre deux pins, et il n'y avait plus qu'un obstacle, une ombre et le bruit des sabots sur l'herbe."],
+      en:["You can hear the city's horns over the wall of the park, and nobody is listening to them.",
+          "The next rider came in at a canter between two pines, and there was nothing left but a fence, a shadow, and the sound of hooves on grass."],
+      es:["Se oyen las bocinas de la ciudad por encima del muro del parque, y nadie las escucha.",
+          "El jinete siguiente entró al galope entre dos pinos, y ya no quedaba más que un obstáculo, una sombra y el ruido de los cascos sobre la hierba."],
+      it:["Si sentono i clacson della città oltre il muro del parco, e nessuno li ascolta.",
+          "Il cavaliere successivo è entrato al galoppo tra due pini, e non restava che un ostacolo, un'ombra e il suono degli zoccoli sull'erba."],
+      de:["Über die Mauer des Parks hört man die Hupen der Stadt, und niemand hört ihnen zu.",
+          "Der nächste Reiter kam im Galopp zwischen zwei Pinien herein, und es blieb nur noch ein Hindernis, ein Schatten und das Geräusch der Hufe auf dem Rasen."],
+      ja:["公園の壁の向こうから街のクラクションが聞こえてくるが、誰も聞いていない。",
+          "次の騎手が二本の松のあいだから駈歩で入ってきた。あとに残るのは障害ひとつ、影ひとつ、そして芝を打つ蹄の音だけだった。"]},
+    volets:[
+      {t:{fr:"Piazza di Siena", en:"Piazza di Siena", es:"Piazza di Siena", it:"Piazza di Siena",
+          de:"Piazza di Siena", ja:"ピアッツァ・ディ・シエナ"},
+       c:{fr:"Un ovale de gazon dessiné dans les jardins de la Villa Borghese, en pleine ville, entouré de pins et de gradins de pierre. Le concours international s'y tient depuis 1926 : ce n'est pas un stade construit pour le sport, c'est un jardin dans lequel on a fini par sauter.",
+          en:"An oval of grass laid out in the gardens of the Villa Borghese, in the middle of the city, ringed by pines and stone terraces. The international show has been held there since 1926: this is not a stadium built for sport, it is a garden people ended up jumping in.",
+          es:"Un óvalo de hierba trazado en los jardines de Villa Borghese, en plena ciudad, rodeado de pinos y de graderías de piedra. El concurso internacional se celebra allí desde 1926: no es un estadio construido para el deporte, es un jardín en el que se acabó saltando.",
+          it:"Un ovale d'erba disegnato nei giardini di Villa Borghese, in piena città, circondato da pini e da gradinate di pietra. Il concorso internazionale si tiene lì dal 1926: non è uno stadio costruito per lo sport, è un giardino in cui si è finito per saltare.",
+          de:"Ein Grasoval, angelegt in den Gärten der Villa Borghese, mitten in der Stadt, umgeben von Pinien und steinernen Rängen. Das internationale Turnier findet dort seit 1926 statt: das ist kein für den Sport gebautes Stadion, sondern ein Garten, in dem man irgendwann zu springen begann.",
+          ja:"ボルゲーゼ公園の庭園のなかに描かれた芝の楕円。街の真ん中にあり、松と石の観覧席が囲みます。国際大会は一九二六年から続いています。競技のために建てられた競技場ではなく、やがて障害を跳ぶことになった庭園です。"}},
+      {t:{fr:"La Coupe des Nations", en:"The Nations Cup", es:"La Copa de las Naciones",
+          it:"La Coppa delle Nazioni", de:"Der Nationenpreis", ja:"ネーションズカップ"},
+       c:{fr:"Des équipes nationales, pas des individus : chacune envoie quatre cavaliers, chacun passe deux fois, et on additionne les fautes en laissant tomber le plus mauvais score. C'est l'épreuve où l'on découvre le vocabulaire des gens — le chef d'équipe, le jury, la réclamation, le règlement — parce que tout s'y décide entre adultes qui se connaissent.",
+          en:"National teams, not individuals: each sends four riders, each rider goes twice, and the faults are added up with the worst score dropped. It is the class where you meet the vocabulary of people — the chef d'équipe, the ground jury, an objection, the rules — because everything there is settled between adults who know each other.",
+          es:"Equipos nacionales, no individuos: cada uno manda cuatro jinetes, cada jinete pasa dos veces, y se suman las faltas descartando el peor resultado. Es la prueba donde aparece el vocabulario de la gente — el jefe de equipo, el jurado, la reclamación, el reglamento — porque allí todo se decide entre adultos que se conocen.",
+          it:"Squadre nazionali, non individui: ognuna manda quattro cavalieri, ciascuno passa due volte, e si sommano le penalità scartando il peggior punteggio. È la prova in cui si incontra il vocabolario delle persone — il capo equipe, la giuria, il reclamo, il regolamento — perché lì tutto si decide fra adulti che si conoscono.",
+          de:"Nationalmannschaften, keine Einzelreiter: jede schickt vier Reiter, jeder geht zweimal, und die Fehler werden addiert, das schlechteste Ergebnis fällt heraus. Es ist die Prüfung, in der man das Vokabular der Menschen kennenlernt — der Equipechef, die Richter, der Einspruch, das Reglement — weil dort alles zwischen Erwachsenen geregelt wird, die sich kennen.",
+          ja:"個人ではなく国の代表チームで戦います。各国が四人を送り、それぞれが二回走行し、最も悪い成績を除いて減点を合計します。人にまつわる言葉——監督、審判団、異議、規定——に出会う競技です。すべてが、互いを知る大人たちのあいだで決まっていくからです。"}},
+      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi",
+          de:"Wenn du hinführest", ja:"もし行くなら"},
+       c:{fr:"Viens le matin plutôt que l'après-midi : les tribunes sont vides, les cavaliers reconnaissent le parcours à pied et comptent leurs foulées à voix haute, et tu entends ce qu'ils se disent. Entre par le parc et non par la rue — on arrive alors sur la piste sans savoir qu'elle est là.",
+          en:"Come in the morning rather than the afternoon: the stands are empty, riders walk the course on foot counting their strides out loud, and you can hear what they say to each other. Come in through the park and not from the street — you then arrive on the arena without knowing it was there.",
+          es:"Ven por la mañana antes que por la tarde: las gradas están vacías, los jinetes reconocen el recorrido a pie contando sus zancadas en voz alta, y oyes lo que se dicen. Entra por el parque y no por la calle: así llegas a la pista sin saber que estaba allí.",
+          it:"Vieni la mattina invece del pomeriggio: le tribune sono vuote, i cavalieri ricognizionano il percorso a piedi contando le falcate a voce alta, e senti quello che si dicono. Entra dal parco e non dalla strada: si arriva sul campo senza sapere che era lì.",
+          de:"Komm morgens statt nachmittags: die Tribünen sind leer, die Reiter gehen den Parcours ab und zählen ihre Galoppsprünge laut, und du hörst, was sie sich sagen. Komm durch den Park und nicht von der Straße — dann stehst du plötzlich am Platz, ohne gewusst zu haben, dass er dort ist.",
+          ja:"午後よりも午前に行くこと。観覧席は空で、騎手たちは徒歩でコースを下見し、歩数を声に出して数えています。彼らが交わす言葉が聞こえます。通りからではなく公園を抜けて入ること。そうすれば、そこにあると知らないまま馬場に出ます。"}}
+    ]
+  };
+  // ?? « depuis 1926 » : premiere edition du concours international de Piazza di Siena.
+  //    Formulation prudente conservee, a confirmer avant publication.
+  // ?? Le format de la Coupe des Nations (quatre cavaliers, deux tours, le plus
+  //    mauvais score ecarte) est celui de la formule classique. Verifier qu'il
+  //    correspond bien a l'edition romaine actuelle.
+
   /* ajout clé par clé : on ne remplace jamais une ville déjà présente */
   var k;
   for(k in MONDE){

@@ -22,6 +22,46 @@
 
 ---
 
+## 🏛️ SESSION 102 · LINGUAE (06/08) — ROME, ET LE RÉCIT MANQUANT DE HUIT VILLES
+
+### ✅ Une seule page codeuse à partir de maintenant
+Blandine a **arrêté les autres conversations** : « tu es la seule à avoir pris le relais dessus ». Le risque d'écrasement croisé qui a effacé trois sessions du SUIVI est donc levé — mais il faut le noter, parce que trois documents reçus aujourd'hui (`hype-linguae-production.txt`, `hype-linguae-production-suite.txt`, `hype-linguae-villes-nouvelles.md`) viennent de ces fils-là et **contiennent des décisions que ce SUIVI ne connaissait pas**.
+
+### ✅ Rome · Piazza di Siena, étape 19
+« Rome c'est cool faut garder » · « fais Rome déjà ça c'est sûr ».
+Placée **entre Oliva Nova et Warendorf**, pour la suite logique : Oliva apprend à *s'engager*, Rome apprend *les gens*, Warendorf la formation, Aix-la-Chapelle le grand concours. Elle prend **`concours` leçon 4** (le concurrent, le propriétaire, l'entraîneur, le jury, la réclamation, le règlement, la note minimale, le championnat, le trophée, l'esprit sportif) — leçon **libre, vérifiée par calcul sur `ETAPE_SRC`** avant attribution.
+- `ETAPES` + `ETAPE_SRC` + `NIVEAU_VILLE` (niveau 2 · situer) + heure **10 h 55** ajoutée à `I18N_H`.
+- **`ACCUEIL_VILLE.rome = "gens"`** avec un `ACCUEIL_CHAP.gens` neuf, 6 langues : Rome puise dans `concours` mais n'enseigne pas *s'engager*, le mot d'accueil devait le dire.
+- `POURQUOI` et `RECITS` écrits, 6 langues.
+- `MONDE.rome` dans `hype-lingo-villes-monde.js` : lettre + 3 volets (Piazza di Siena · La Coupe des Nations · Si tu y allais), 6 langues.
+- Nouvelle icône de souvenir **`coupe`** — « Une coupe de Piazza di Siena ».
+- Point ajouté au globe : lat 41,9139 / lng 12,4830.
+✅ Vérifié en rendu réel : 21 étapes, Rome en 19, `chapVirtuel('rome')` = 10 mots + 1 phrase, carte du carnet (niveau 2 · situer, 10 mots), écran d'arrivée complet (« ARRIVÉE À ROME », chapitre 19, récit, trois volets, souvenir).
+⚠️ **Rome ne figure dans AUCUN des documents de production** reçus aujourd'hui : ni dans les cinq villes manquantes du parcours V1, ni dans les huit destinations suivantes. C'est un ajout postérieur. Sa leçon ne prend rien à personne, mais **ses trois images restent à produire** — `carte-rome.webp`, `fond-rome.webp`, `arrivee-rome.mp4`. Les replis les couvrent.
+
+### 🔴 Trouvé en écrivant Rome : HUIT villes n'ont aucun récit
+`RECITS` ne contient que 13 entrées sur 21. Manquent : **Saumur, Lamotte-Beuvron, Jerez, Séville, Vejer, Oliva Nova, Warendorf, Aix-la-Chapelle**. Pour elles, `bloc` valait `[]` et `manque` restait faux en français : l'écran d'arrivée **sautait du panneau de la ville directement à la carte postale**, avec un blanc au milieu et rien pour l'expliquer.
+C'est **exactement le défaut corrigé pour La Baule en session 95**, resté vivant sur huit villes — invisible jusqu'ici parce que les tests portaient sur les premières étapes.
+✅ **Repli posé** : à défaut de récit, on affiche la phrase du « pourquoi », qui existe pour les vingt-et-une villes. Vérifié en rendu sur Saumur : le texte s'affiche au lieu du vide. Un manque de contenu dégrade l'affichage, il ne le vide pas.
+⚠️ **Ce n'est qu'un pansement.** Les huit récits restent à écrire (trois lignes × 6 langues chacun). À faire, mais c'est un chantier de contenu, pas un correctif.
+
+### 📋 Ce que les documents reçus changent pour la suite
+- **Le parcours V1 attend encore cinq jeux d'images** : Warendorf, Séville, Vejer, Aix-la-Chapelle, Lamotte-Beuvron (prompts prêts dans `hype-linguae-production.txt`).
+- **Huit destinations suivantes sont planifiées** avec prompts : Golegã, Vérone, Lexington, Spruce Meadows, Dubaï, Tokyo, Buenos Aires, Tamworth. **Golegã a déjà sa vidéo** (`arrivee-golega.mp4`, reçue aujourd'hui) mais **aucun vocabulaire** — donc aucune n'est jouable : chacune a besoin d'une vingtaine de mots dans les six langues.
+- **Vérone porte « acheter et vendre »** (le marchand, l'essai, la visite d'achat, le prix, le contrat, la garantie) : c'est bien le trou identifié plus tôt, et le plan le comblait déjà.
+- ⚠️ **La Maremma n'est nulle part** dans ces documents : c'était ma proposition, pas une reprise de la liste. La sécurité (`arrivee` L2, 11 mots) reste donc non attribuée. Dans le plan reçu, c'est **Lamotte-Beuvron** qui est décrite comme « la sécurité et le manège » — à trancher avec Blandine, parce que Lamotte porte aujourd'hui `poney`.
+
+### Contrôles passés
+Syntaxe validée sur les trois fichiers · Rome contrôlée par exécution dans les 6 langues (lettre 2 paragraphes, 3 volets titre + corps partout) · rendu réel du carnet, de l'arrivée et du globe · repli de récit vérifié sur une ville sans récit · aucune erreur JS · aucune régression sur Le Morne ni La Baule.
+
+### 🧭 Préparation Flutter
+- **Un ajout de ville ne touche plus aucune logique** : Rome n'a demandé que des entrées de données (`ETAPES`, `ETAPE_SRC`, `NIVEAU_VILLE`, `I18N_H`, `POURQUOI`, `RECITS`, `MONDE`, une icône, une ligne de globe). C'est la deuxième ville de suite ajoutée sans modifier une fonction — la frontière contenu/moteur tient.
+- **Troisième repli de la même famille** : après la carte postale absente et le fond absent, le récit absent. Les trois suivent maintenant la même règle — dégrader, jamais vider. Cette règle mériterait d'être écrite une fois pour toutes dans la doctrine plutôt que redécouverte à chaque fois.
+- **Reste à moderniser** : `ACCUEIL_VILLE` est une table d'exceptions qui grandit à chaque ville composée (5 entrées). Elle devrait devenir un champ de l'étape elle-même. Non fait, pas demandé, risque nul à laisser.
+- **Risques** : aucun. Le seul changement de comportement est le repli du récit, qui remplace un écran vide par une phrase.
+
+---
+
 ## 🐎 SESSION 101 · LINGUAE (06/08) — LE MORNE CORRIGÉ SUR LE FOND, ET SES TROIS ACTIFS EN PLACE
 
 ### 🔴 Je m'étais trompé : on ne desselle pas, on reste en selle

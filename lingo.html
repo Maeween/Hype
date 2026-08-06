@@ -1097,6 +1097,18 @@ var ETAPES = [
  {ref:"seville",   ch:"La présentation",v:"Séville",    nat:"Espagne",        h:"09 h 05", ciel:["#131C24","#5A4A4E"], forme:"village",  souv:"Un peigne de tresses",         ic:"peigne"},
  {ref:"vejer",     ch:"L'intendance",  v:"Vejer",       nat:"Espagne",        h:"09 h 50", ciel:["#0E1A22","#4E5257"], forme:"cote",     souv:"Un seau de zinc",              ic:"seau"},
  {ref:"oliva",     ch:"S'engager",     v:"Oliva Nova",  nat:"Espagne",        h:"10 h 35", ciel:["#0D1A24","#3E5566"], forme:"obstacles",souv:"Un dossard de tournée",        ic:"dossard"},
+ /* ⚠️ ROME ajoutée le 6 août 2026, sur décision de Blandine : « Rome
+    c'est cool faut garder » · « fais Rome déjà ça c'est sûr ».
+    Piazza di Siena, dans les jardins de la Villa Borghese, un des plus
+    anciens concours internationaux du monde. Placée ICI, et pas ailleurs,
+    pour la suite logique : Oliva Nova apprend à S'ENGAGER, Rome apprend
+    LES GENS qu'on y trouve, puis Warendorf la formation, puis
+    Aix-la-Chapelle le grand concours. Elle prend `concours` leçon 4, qui
+    était libre — vérifié par calcul sur ETAPE_SRC avant de l'attribuer.
+    Heure 10 h 55, entre celles d'Oliva et de Warendorf.
+    ⚠️ Première étape italienne du voyage, alors que l'italien est une des
+    six langues depuis le début. */
+ {ref:"rome",      ch:"La Coupe des Nations", v:"Rome",   nat:"Italie",         h:"10 h 55", ciel:["#0D1620","#C97B4A"], forme:"obstacles",souv:"Une coupe de Piazza di Siena", ic:"coupe"},
  {ref:"warendorf", ch:"La formation",  v:"Warendorf",   nat:"Allemagne",      h:"11 h 20", ciel:["#0B141E","#2F4256"], forme:"ecuries",  souv:"Un carnet d'échelle",          ic:"echelle"},
  {ref:"aachen",    ch:"Le grand concours",v:"Aix-la-Chapelle", nat:"Allemagne", h:"12 h 10", ciel:["#0A1219","#354A5C"], forme:"manoir", souv:"Une cloche de barrage",        ic:"cloche"}
 ];
@@ -1132,6 +1144,7 @@ var I18N_H = {
  "09 h 05":{en:"9.05 am", es:"09:05", it:"09:05", de:"09:05 Uhr", ja:"9時05分"},
  "09 h 50":{en:"9.50 am", es:"09:50", it:"09:50", de:"09:50 Uhr", ja:"9時50分"},
  "10 h 35":{en:"10.35 am",es:"10:35", it:"10:35", de:"10:35 Uhr", ja:"10時35分"},
+ "10 h 55":{en:"10.55 am",es:"10:55", it:"10:55", de:"10:55 Uhr", ja:"10時55分"},
  "11 h 20":{en:"11.20 am",es:"11:20", it:"11:20", de:"11:20 Uhr", ja:"11時20分"},
  "12 h 10":{en:"12.10 pm",es:"12:10", it:"12:10", de:"12:10 Uhr", ja:"12時10分"}
 };
@@ -1443,6 +1456,26 @@ var RECITS = {
   ja:["広い庭園、大きな館、そして五月の泥。四日間、三つの種目、たった一頭の馬。",
       "クロスカントリーは、曖昧さを許さない。",
       {f:"世界で最も過酷な総合馬術競技のひとつ。"}]},
+ /* Rome, ajoute le 6 aout 2026 avec l'etape. */
+ rome:{
+  fr:["Les pins du parc font de l'ombre sur la piste, et la ville continue juste derriere le mur.",
+      "Ce n'est pas un stade : c'est un jardin ou l'on saute depuis cent ans.",
+      {f:"Piazza di Siena accueille son concours international depuis 1926, et la Coupe des Nations s'y court sur l'herbe."}],
+  en:["The pines of the park shade the arena, and the city carries on just behind the wall.",
+      "This is not a stadium: it is a garden where people have been jumping for a hundred years.",
+      {f:"Piazza di Siena has held its international show since 1926, and the Nations Cup is run there on grass."}],
+  es:["Los pinos del parque dan sombra a la pista, y la ciudad sigue justo detr\u00e1s del muro.",
+      "No es un estadio: es un jard\u00edn donde se salta desde hace cien a\u00f1os.",
+      {f:"Piazza di Siena acoge su concurso internacional desde 1926, y la Copa de las Naciones se corre sobre hierba."}],
+  it:["I pini del parco fanno ombra sul campo, e la citt\u00e0 continua appena dietro il muro.",
+      "Non \u00e8 uno stadio: \u00e8 un giardino dove si salta da cento anni.",
+      {f:"Piazza di Siena ospita il suo concorso internazionale dal 1926, e la Coppa delle Nazioni si corre sull'erba."}],
+  de:["Die Pinien des Parks werfen Schatten auf den Platz, und die Stadt geht gleich hinter der Mauer weiter.",
+      "Das ist kein Stadion: das ist ein Garten, in dem seit hundert Jahren gesprungen wird.",
+      {f:"Piazza di Siena tr\u00e4gt sein internationales Turnier seit 1926 aus, und der Nationenpreis wird dort auf Rasen geritten."}],
+  ja:["\u516c\u5712\u306e\u677e\u304c\u99ac\u5834\u306b\u5f71\u3092\u843d\u3068\u3057\u3001\u58c1\u306e\u3059\u3050\u5411\u3053\u3046\u3067\u306f\u8857\u304c\u7d9a\u3044\u3066\u3044\u308b\u3002",
+      "\u30b9\u30bf\u30b8\u30a2\u30e0\u3067\u306f\u306a\u3044\u3002\u767e\u5e74\u524d\u304b\u3089\u969c\u5bb3\u3092\u8df3\u3093\u3067\u304d\u305f\u5ead\u5712\u3060\u3002",
+      {f:"\u30d4\u30a2\u30c3\u30c2\u30a7\u30fb\u30c7\u30a3\u30fb\u30b7\u30a8\u30fc\u30ca\u306f\u4e00\u4e5d\u4e8c\u516d\u5e74\u304b\u3089\u56fd\u969b\u5927\u4f1a\u3092\u958b\u304d\u3001\u30cd\u30fc\u30b7\u30e7\u30f3\u30ba\u30ab\u30c3\u30d7\u306f\u829d\u306e\u4e0a\u3067\u884c\u308f\u308c\u308b\u3002"}]},
  kildare:{
   fr:["Une lumière allumée à trois heures du matin. Le vétérinaire arrive, on parle bas.",
       "Dire vite et dire juste : il boite, il transpire, il ne mange plus.",
@@ -1511,6 +1544,9 @@ var ICONES = {
  cocarde:'<circle cx="30" cy="22" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="22" r="4" fill="#D4AF37"/><path d="M24 32 l-4 20 l10 -7 l10 7 l-4 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  stetho:'<path d="M20 10 v12 q0 10 10 10 q10 0 10 -10 v-12 M30 32 v10 q0 6 8 6" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="42" cy="48" r="6" fill="none" stroke="#D4AF37" stroke-width="2"/>',
  carnet:'<path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ /* la coupe de Piazza di Siena (Rome, 6 août) : une vasque à deux anses
+    sur son pied, comme celles qu'on remet devant les tribunes. */
+ coupe:'<path d="M20 14 h20 v8 q0 12 -10 12 q-10 0 -10 -12 Z M20 18 q-7 0 -7 6 q0 6 7 7 M40 18 q7 0 7 6 q0 6 -7 7 M30 34 v8 M22 46 h16 M24 42 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  /* le coquillage du lagon (Le Morne, 6 août) : une coquille en éventail,
     trois nervures, posée sur sa charnière. */
  coquillage:'<path d="M30 52 q-16 -6 -16 -22 q0 -14 16 -18 q16 4 16 18 q0 16 -16 22 Z M30 12 v40 M30 52 q-9 -8 -11 -26 M30 52 q9 -8 11 -26" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>'
@@ -1538,6 +1574,12 @@ var POURQUOI = {
   it:"Una laguna senza onde, e cavalli che entrano in acqua fino a nuotare.",
   de:"Eine Lagune ohne eine einzige Welle — und Pferde, die hineingehen, bis sie schwimmen.",
   ja:"波のないラグーン。馬たちは泳ぐところまで海に入っていく。"},
+ rome:{fr:"Un concours international dans un jardin, depuis 1926, au milieu des pins de la Villa Borghese.",
+  en:"An international show held in a garden since 1926, among the pines of the Villa Borghese.",
+  es:"Un concurso internacional en un jardín desde 1926, entre los pinos de Villa Borghese.",
+  it:"Un concorso internazionale in un giardino, dal 1926, tra i pini di Villa Borghese.",
+  de:"Ein internationales Turnier in einem Garten, seit 1926, zwischen den Pinien der Villa Borghese.",
+  ja:"一九二六年から続く、庭園のなかの国際大会。ボルゲーゼ公園の松のあいだで。"},
  saumur:{fr:"Le Cadre Noir, et une équitation qui se transmet depuis deux siècles.",
   en:"The Cadre Noir, and a way of riding handed down for two centuries.",
   es:"El Cadre Noir, y una equitación que se transmite desde dos siglos.",
@@ -1667,7 +1709,7 @@ var POURQUOI = {
 var NIVEAU_VILLE = {
   labaule:1, maurice:1, newmarket:1, lambourn:1, connemara:1, walsall:1, aberystwyth:1,
   kildare:1, jerez:1, vejer:1,
-  hickstead:2, badminton:2, windsor:2, seville:2, oliva:2,
+  hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
   warendorf:2, aachen:2, lamotte:2,
   saumur:3, edimbourg:3
 };
@@ -1910,9 +1952,23 @@ LG.forEach(function(l){
 });
 
 function ecrire(){
+  /* ⚠️ REPLI AJOUTÉ le 6 août 2026. Trouvé en écrivant le récit de Rome :
+     HUIT villes n'ont aucune entrée dans RECITS — saumur, lamotte, jerez,
+     seville, vejer, oliva, warendorf, aachen. Pour elles, `bloc` valait
+     [] et `manque` restait faux en français : l'écran d'arrivée sautait
+     donc du panneau de la ville directement à la carte postale, avec un
+     blanc au milieu et RIEN qui l'explique. C'est exactement le défaut
+     corrigé pour La Baule en session 95, resté vivant sur huit villes.
+     En attendant que leurs récits soient écrits, on affiche au moins la
+     phrase du « pourquoi », qui existe pour les vingt-et-une villes. Un
+     manque de contenu dégrade l'affichage, il ne le vide pas. */
   var e=ETAPES[courant], r=RECITS[e.ref] || {};
   var bloc = r[langue] || r.fr || [];
-  var manque = !r[langue] && langue!=="fr";
+  if(!bloc.length){
+    var pq = (typeof POURQUOI!=="undefined") ? tx(POURQUOI[e.ref]) : "";
+    if(pq) bloc = [{f:pq}];
+  }
+  var manque = !r[langue] && langue!=="fr" && (r.fr && r.fr.length);
   S("texte").innerHTML = bloc.map(function(x){
     return (typeof x==="string") ? "<p>"+x+"</p>" : '<p class="fait">'+x.f+"</p>";
   }).join("") + (manque ? '<p class="fait">— Récit non encore traduit dans cette langue.</p>' : "");
@@ -2421,6 +2477,7 @@ var ETAPE_SRC = {
   seville:     [["materiel",3]],
   vejer:       [["ecurie",3]],
   oliva:       [["concours",1]],
+  rome:        [["concours",4]],
   warendorf:   [["materiel",4]],
   aachen:      [["obstacle",4]]
 };
@@ -2428,7 +2485,9 @@ var ETAPE_SRC = {
 /* Le texte d'accueil d'un chapitre se choisit par le fichier source majoritaire,
    sauf pour les villes composées : Édimbourg puise dans urgences et cours mais
    enseigne bien les dialogues, et c'est ce qu'il faut annoncer au joueur. */
-var ACCUEIL_VILLE = { labaule:"arrivee", edimbourg:"dialogues", lamotte:"poney", seville:"materiel",
+/* `rome` puise dans `concours` mais n'enseigne pas s'engager : elle
+   enseigne les gens du concours. Le mot d'accueil doit dire ça. */
+var ACCUEIL_VILLE = { labaule:"arrivee", edimbourg:"dialogues", lamotte:"poney", seville:"materiel", rome:"gens",
                       vejer:"ecurie", oliva:"concours", warendorf:"materiel", aachen:"obstacle" };
 
 /* Construit le chapitre d'une ville en assemblant ses leçons sources.
@@ -3037,6 +3096,7 @@ var ACCUEIL_CHAP = {
      Trouvé en ajoutant le chapitre du Morne. */
   arrivee:{fr:"Arriver quelque part et demander un cheval : réserver, dire son niveau, comprendre le tarif.", en:"Arriving somewhere and asking for a horse: booking, stating your level, understanding the price.", es:"Llegar a un sitio y pedir un caballo: reservar, decir tu nivel, entender el precio.", it:"Arrivare in un posto e chiedere un cavallo: prenotare, dire il proprio livello, capire il prezzo.", de:"Irgendwo ankommen und nach einem Pferd fragen: buchen, sein Können nennen, den Preis verstehen.", ja:"どこかに着いて、馬を頼む。予約する、自分の技量を伝える、料金を理解する。"},
   balade:{fr:"Réserver une sortie et entrer dans l'eau : la marée, le lagon, se baigner, nager.", en:"Booking a ride out and going into the water: the tide, the lagoon, bathing, swimming.", es:"Reservar un paseo y entrar en el agua: la marea, la laguna, bañarse, nadar.", it:"Prenotare una passeggiata ed entrare in acqua: la marea, la laguna, il bagno, nuotare.", de:"Einen Ausritt buchen und ins Wasser gehen: die Tide, die Lagune, baden, schwimmen.", ja:"外乗を予約し、水に入る。潮、ラグーン、水浴、泳ぐこと。"},
+  gens:{fr:"Les gens d'un concours : qui décide, qui accompagne, qui réclame — et ce qu'on se dit à l'arrivée.", en:"The people at a show: who decides, who supports, who objects — and what you say to each other at the end.", es:"La gente de un concurso: quién decide, quién acompaña, quién reclama, y qué se dice al final.", it:"Le persone di un concorso: chi decide, chi accompagna, chi reclama — e cosa ci si dice all'arrivo.", de:"Die Menschen auf einem Turnier: wer entscheidet, wer begleitet, wer Einspruch erhebt — und was man sich am Ende sagt.", ja:"競技会にいる人たち。決める人、支える人、異議を申し立てる人。そして終わったあとに交わす言葉。"},
   ecurie:{fr:"Les mots de l'écurie : le lieu, la litière, la nourriture, les gestes du matin.", en:"The words of the yard: the place, the bedding, the feed, the morning jobs.", es:"Las palabras de la cuadra: el lugar, la cama, el pienso, los gestos de la mañana.", it:"Le parole della scuderia: il luogo, la lettiera, il mangime, i gesti del mattino.", de:"Die Wörter des Stalls: der Ort, die Einstreu, das Futter, die Arbeit am Morgen.", ja:"厩舎の言葉。場所、敷料、飼料、朝の作業。"},
   pansage:{fr:"Le pansage, outil par outil, geste par geste.", en:"Grooming, tool by tool, job by job.", es:"El cepillado, herramienta por herramienta, gesto por gesto.", it:"La pulizia, attrezzo per attrezzo, gesto per gesto.", de:"Das Putzen, Werkzeug für Werkzeug, Griff für Griff.", ja:"手入れを、道具ごと、動作ごとに。"},
   cheval:{fr:"Décrire un cheval : sa robe, ses marques, son corps, son identité.", en:"Describing a horse: colour, markings, body, identity.", es:"Describir un caballo: su capa, sus marcas, su cuerpo, su identidad.", it:"Descrivere un cavallo: il mantello, i segni particolari, il corpo, l'identità.", de:"Ein Pferd beschreiben: Farbe, Abzeichen, Körper, Identität.", ja:"馬を描写する。毛色、標徴、体、個体情報。"},
