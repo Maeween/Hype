@@ -381,6 +381,64 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
     ]
   };
 
+  /* ==================================================================
+     LE MORNE (île Maurice) — ajoutée le 6 août 2026.
+     Blandine : « L'île Maurice devait être ajoutée avec La Baule pour les
+     balades dans la mer, se baigner », puis « dans l'idée réserver une
+     ballade ». C'est donc la jumelle de La Baule et l'étape 2 du voyage :
+     La Baule apprend à s'inscrire, Le Morne apprend à réserver une sortie
+     et à entrer dans l'eau (chapitre `balade`).
+     Le nom de l'étape est LE MORNE, pas « Maurice » : c'est le lieu réel
+     où l'on monte sur l'île, au pied de la montagne du même nom, et le
+     reste du voyage nomme des villes, pas des pays.
+     ⚠️ `carte-maurice.webp` et `arrivee-maurice.mp4` n'existent pas encore.
+     Les deux replis les couvrent : « Carte à venir » sur l'écran d'arrivée
+     et dans la collection, « Vidéo introuvable » à la place du clip.
+     ================================================================== */
+  MONDE.maurice = {
+    lieu:"Le Morne · Maurice", carte:true, niveau:1,
+    image:"le lagon au pied de la montagne",
+    lettre:{
+      fr:["On a dessellé sur le sable, et j'ai compris que la balade commençait seulement là.",
+          "Le cheval est entré dans le lagon comme s'il rentrait chez lui. À un moment ses pieds ont quitté le fond, j'ai lâché la rêne comme on me l'avait dit, et il a nagé. Je n'ai jamais rien monté d'aussi calme."],
+      en:["We untacked on the sand, and I realised the ride was only starting there.",
+          "The horse walked into the lagoon as if he were going home. At some point his feet left the bottom, I let the rein go as I had been told, and he swam. I have never ridden anything so calm."],
+      es:["Desensillamos en la arena, y entendí que el paseo empezaba justo allí.",
+          "El caballo entró en la laguna como si volviera a su casa. En un momento sus pies dejaron el fondo, solté la rienda como me habían dicho, y nadó. Nunca he montado nada tan tranquilo."],
+      it:["Abbiamo tolto la sella sulla sabbia, e ho capito che la passeggiata cominciava solo lì.",
+          "Il cavallo è entrato nella laguna come se tornasse a casa. A un certo punto i suoi piedi hanno lasciato il fondo, ho mollato la redine come mi avevano detto, e ha nuotato. Non ho mai montato niente di così tranquillo."],
+      de:["Wir haben im Sand abgesattelt, und da begriff ich, dass der Ausritt erst dort anfing.",
+          "Das Pferd ging in die Lagune, als käme es nach Hause. Irgendwann verließen seine Hufe den Grund, ich gab den Zügel nach, wie man es mir gesagt hatte, und es schwamm. Ich habe noch nie etwas so Ruhiges geritten."],
+      ja:["砂の上で鞍を外したとき、外乗はここから始まるのだと分かった。",
+          "馬は自分の家に帰るようにラグーンへ入っていった。あるところで蹄が底を離れ、言われたとおり手綱をゆるめると、馬は泳いだ。あれほど静かな馬に乗ったことはない。"]},
+    volets:[
+      {t:{fr:"Le lagon", en:"The lagoon", es:"La laguna", it:"La laguna",
+          de:"Die Lagune", ja:"ラグーン"},
+       c:{fr:"Le récif casse la houle à un kilomètre du bord : entre les deux, l'eau est plate, tiède et claire jusqu'au fond. C'est ce qui rend la baignade à cheval possible ici alors qu'elle est dangereuse presque partout ailleurs — pas de vague pour déséquilibrer, pas de trou pour surprendre. On n'entre jamais dans la passe, l'ouverture par laquelle le lagon se vide vers le large.",
+          en:"The reef breaks the swell a kilometre out: between the two, the water is flat, warm and clear to the bottom. That is what makes riding into the sea possible here when it is dangerous almost everywhere else — no wave to unbalance you, no hole to surprise you. You never enter the pass, the gap where the lagoon empties out to sea.",
+          es:"El arrecife rompe el oleaje a un kilómetro de la orilla: entre los dos, el agua está plana, tibia y clara hasta el fondo. Eso hace posible aquí el baño a caballo, peligroso en casi todas partes: ninguna ola que desequilibre, ningún hoyo que sorprenda. Nunca se entra en el paso, la abertura por donde la laguna se vacía hacia el mar.",
+          it:"La barriera rompe l'onda lunga a un chilometro da riva: in mezzo, l'acqua è piatta, tiepida e trasparente fino al fondo. È questo che rende possibile qui il bagno a cavallo, pericoloso quasi in ogni altro posto: nessuna onda che squilibri, nessuna buca che sorprenda. Non si entra mai nel passo, l'apertura da cui la laguna si svuota verso il largo.",
+          de:"Das Riff bricht die Dünung einen Kilometer draußen: dazwischen ist das Wasser flach, warm und bis zum Grund klar. Das macht das Baden zu Pferd hier möglich, wo es fast überall sonst gefährlich ist — keine Welle, die aus dem Gleichgewicht bringt, kein Loch, das überrascht. In den Pass, die Öffnung, durch die sich die Lagune zum offenen Meer entleert, reitet man nie.",
+          ja:"サンゴ礁が沖合一キロでうねりを砕くため、その内側の水は平らで、ぬるく、底まで澄んでいます。ほかの多くの場所では危険な「馬と入る海」が、ここでは成り立つ理由です。体勢を崩す波もなく、不意の深みもありません。ラグーンの水が外洋へ抜ける水路には、決して入りません。"}},
+      {t:{fr:"Se baigner", en:"Going in", es:"Bañarse", it:"Fare il bagno",
+          de:"Ins Wasser", ja:"水に入る"},
+       c:{fr:"On dessine la sortie autour de la marée, pas autour de l'horaire : à marée basse la bande de sable mouillé porte le galop, à marée haute il n'y a plus de plage. On desselle avant d'entrer — une selle noyée est perdue — et la bombe reste sur la tête. Quand les pieds quittent le fond, le cheval nage tout seul ; la seule chose à faire est de lui laisser la tête libre.",
+          en:"The ride is planned around the tide, not the timetable: at low tide the strip of wet sand carries a canter, at high tide there is no beach left. You untack before going in — a drowned saddle is a lost saddle — and the hat stays on. When the hooves leave the bottom the horse swims by itself; the only thing to do is leave its head free.",
+          es:"La salida se organiza según la marea, no según el horario: con marea baja la franja de arena mojada aguanta el galope, con marea alta no queda playa. Se desensilla antes de entrar —una silla ahogada está perdida— y el casco se queda puesto. Cuando los cascos dejan el fondo, el caballo nada solo; lo único que hay que hacer es dejarle la cabeza libre.",
+          it:"L'uscita si organizza sulla marea, non sull'orario: con la marea bassa la striscia di sabbia bagnata regge il galoppo, con la marea alta non c'è più spiaggia. Si toglie la sella prima di entrare — una sella annegata è perduta — e il cap resta in testa. Quando gli zoccoli lasciano il fondo, il cavallo nuota da sé; l'unica cosa da fare è lasciargli la testa libera.",
+          de:"Der Ausritt richtet sich nach der Tide, nicht nach dem Stundenplan: bei Ebbe trägt der Streifen nassen Sandes den Galopp, bei Flut bleibt kein Strand übrig. Vor dem Wasser wird abgesattelt — ein ersoffener Sattel ist verloren — und die Kappe bleibt auf. Verlassen die Hufe den Grund, schwimmt das Pferd von selbst; das Einzige, was zu tun ist: den Kopf frei lassen.",
+          ja:"出発は時刻表ではなく潮で決めます。引き潮なら濡れた砂の帯が駈歩を支え、満ち潮では浜そのものがなくなります。水に入る前に鞍を外し（水没した鞍は使い物になりません）、ヘルメットは着けたままです。蹄が底を離れれば馬は自分で泳ぎます。こちらがすべきことは、頭を自由にしてやることだけです。"}},
+      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi",
+          de:"Wenn du hinführest", ja:"もし行くなら"},
+       c:{fr:"Réserve la veille, mets ton maillot sous ta tenue — il n'y a pas de vestiaire sur la plage — et demande l'heure de la marée avant l'heure du rendez-vous. Pars tôt le matin : à midi le sable brûle et l'ombre n'existe pas. Au retour, on rince le cheval à l'eau douce ; le sel qui sèche sur le poil irrite et raidit.",
+          en:"Book the day before, put your swimsuit on under your clothes — there is no changing room on the beach — and ask for the tide time before the meeting time. Go early: at midday the sand burns and there is no shade. Afterwards the horse is rinsed with fresh water; salt drying on the coat irritates and stiffens it.",
+          es:"Reserva el día antes, ponte el bañador debajo de la ropa —no hay vestuario en la playa— y pregunta la hora de la marea antes que la hora de la cita. Sal temprano: al mediodía la arena quema y no hay sombra. Al volver se aclara el caballo con agua dulce; la sal que se seca en la capa irrita y endurece.",
+          it:"Prenota il giorno prima, mettiti il costume sotto i vestiti — sulla spiaggia non ci sono spogliatoi — e chiedi l'ora della marea prima dell'ora dell'appuntamento. Parti presto: a mezzogiorno la sabbia scotta e l'ombra non esiste. Al rientro si sciacqua il cavallo con acqua dolce; il sale che asciuga sul mantello irrita e indurisce.",
+          de:"Buche am Vortag, zieh die Badehose unter die Reitsachen — am Strand gibt es keine Umkleide — und frage nach der Tide, bevor du nach der Uhrzeit fragst. Reite früh: mittags brennt der Sand, und Schatten gibt es nicht. Danach wird das Pferd mit Süßwasser abgespült; trocknendes Salz im Fell reizt und macht es stumpf.",
+          ja:"前日に予約し、水着は服の下に着ておくこと（浜に更衣室はありません）。集合時刻より先に、潮の時刻を尋ねてください。朝の早い時間に出ること。正午の砂は焼けるように熱く、日陰はありません。帰ったら真水で馬を洗い流します。毛に乾いた塩は、皮膚を荒らし、毛を硬くします。"}}
+    ]
+  };
+
   /* ajout clé par clé : on ne remplace jamais une ville déjà présente */
   var k;
   for(k in MONDE){

@@ -285,6 +285,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  text-transform:uppercase;color:#94A3AF;margin-top:5px}
 .vc .vtourne{position:absolute;right:9px;bottom:11px;z-index:2;font-size:13px;
  color:var(--turquoise);opacity:.5}
+/* Le niveau, devant : trois barres, autant d'allumees que le palier.
+   Sans mot, pour que la face reste une affiche — c'est au dos qu'on lit
+   ce que le palier veut dire. */
+.vc .vniv{position:absolute;right:9px;top:10px;z-index:2;display:flex;gap:3px}
+.vc .vniv i{display:block;width:9px;height:2px;border-radius:1px;
+ background:rgba(244,247,250,.22)}
+.vc .vniv i.on{background:var(--turquoise);box-shadow:0 0 7px rgba(32,217,245,.75)}
 /* dos */
 .vc .vdos{background:linear-gradient(165deg,rgba(17,20,23,.98),rgba(6,7,9,.99));
  transform:rotateY(180deg);display:flex;flex-direction:column;padding:11px 11px 9px}
@@ -293,8 +300,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .vc .vdos .vch{font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--or);
  border-bottom:1px solid rgba(255,255,255,.09);padding:4px 0 6px;margin-bottom:7px}
 .vc .vdos .vpq{flex:1;font-size:10.5px;line-height:1.5;color:#B3C0CB;overflow:hidden}
+.vc .vdos .vniveau{font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+ color:#E2C878;margin-top:7px}
+.vc .vdos .vniveau b{font-weight:600;color:#F0DFA8}
 .vc .vdos .vapp{font-size:8px;letter-spacing:.11em;text-transform:uppercase;
- color:var(--turquoise);opacity:.85;margin-top:7px}
+ color:var(--turquoise);opacity:.85;margin-top:4px}
 .vc .vdos .vapp span{color:#6E7C88}
 @media (max-width:340px){ .vc .vtitre b{font-size:12.5px} .vc .vdos .vpq{font-size:9.5px} }
 .regles{text-align:left;padding:16px 16px 4px;border-radius:14px;margin:0 0 30px;
@@ -1024,6 +1034,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <!-- L'arrivée dans un club : l'inscription et la sécurité, pour La Baule.
      ⚠️ La sécurité n'existait NULLE PART dans les 378 mots d'origine. -->
 <script src="hype-lingo-lex-arrivee.js"></script>
+<!-- La balade : chapitre cree le 6 aout 2026 pour Le Morne (ile Maurice),
+     l'etape 2. Reserver une sortie et entrer dans l'eau. Son entree
+     `balade` est un RAPPEL de hype-lingo-lex-arrivee.js (meme `ref`,
+     memes mots) : la maitrise est par `ref`, donc le mot arrive deja
+     acquis. Doit se charger APRES arrivee.js, jamais avant. -->
+<script src="hype-lingo-lex-balade.js"></script>
 <!-- Les phrases manquantes de Saumur (dressage L2-L3) et de Vejer
      (ecurie L2-L3). Additif : refuse tout ref déjà présent. -->
 <script src="hype-lingo-phrases-monde.js"></script>
@@ -1045,10 +1061,23 @@ var ETAPES = [
     commencer par l'écurie « n'est pas vendeur de rêve », et ce n'est pas ce
     qu'un cavalier vit d'abord. Il arrive quelque part, il s'inscrit, il
     apprend à se tenir près d'un cheval. Newmarket recule d'un cran. */
+ /* ⚠️ ORDRE MODIFIÉ le 6 août 2026, sur décision de Blandine.
+    « L'île Maurice devait être ajoutée avec La Baule pour les balades dans
+    la mer, se baigner » · « dans l'idée réserver une ballade » · « tu peux
+    mettre le cheval après ». Le début du voyage devient donc :
+    s'inscrire (La Baule) → réserver une sortie et entrer dans l'eau
+    (Le Morne) → décrire le cheval (Connemara) → l'écurie → le pansage.
+    ⚠️ Les HEURES ont été réattribuées pour rester croissantes : seules
+    celles des positions 2 à 5 bougent, tout ce qui suit Walsall est
+    inchangé. Ce n'est qu'un décor, mais un décor qui se lit.
+    ⚠️ Réordonner ne perd aucune progression : `hype_lingua_quiz` et
+    `hype_lingua_cartes` sont indexés par `ref`, pas par position (vérifié
+    avant de toucher à cette liste). */
  {ref:"labaule",   ch:"L'arrivée",    v:"La Baule",    nat:"France",         h:"19 h 30", ciel:["#16283F","#C58B45"], forme:"cote",     souv:"Un fanion du Jumping",         ic:"fanion"},
- {ref:"newmarket", ch:"L'écurie",     v:"Newmarket",   nat:"Angleterre",     h:"20 h 10", ciel:["#12233C","#3A3A52"], forme:"ecuries",  souv:"Une selle anglaise miniature", ic:"selle"},
- {ref:"lambourn",  ch:"Le pansage",   v:"Lambourn",    nat:"Angleterre",     h:"20 h 55", ciel:["#0E1D33","#2A3049"], forme:"village",  souv:"Une étrille de cuivre",        ic:"etrille"},
- {ref:"connemara", ch:"Le cheval",    v:"Connemara",   nat:"Irlande",        h:"21 h 40", ciel:["#0B1729","#1C2740"], forme:"lande",    souv:"Un licol de corde",            ic:"licol"},
+ {ref:"maurice",   ch:"La balade",    v:"Le Morne",    nat:"Maurice",        h:"19 h 55", ciel:["#08202A","#39C6C0"], forme:"cote",     souv:"Un coquillage du lagon",       ic:"coquillage"},
+ {ref:"connemara", ch:"Le cheval",    v:"Connemara",   nat:"Irlande",        h:"20 h 10", ciel:["#0B1729","#1C2740"], forme:"lande",    souv:"Un licol de corde",            ic:"licol"},
+ {ref:"newmarket", ch:"L'écurie",     v:"Newmarket",   nat:"Angleterre",     h:"20 h 55", ciel:["#12233C","#3A3A52"], forme:"ecuries",  souv:"Une selle anglaise miniature", ic:"selle"},
+ {ref:"lambourn",  ch:"Le pansage",   v:"Lambourn",    nat:"Angleterre",     h:"21 h 40", ciel:["#0E1D33","#2A3049"], forme:"village",  souv:"Une étrille de cuivre",        ic:"etrille"},
  {ref:"walsall",   ch:"Le matériel",  v:"Walsall",     nat:"Angleterre",     h:"22 h 30", ciel:["#091320","#161F33"], forme:"ateliers", souv:"Une alêne de sellier",         ic:"alene"},
  {ref:"aberystwyth",ch:"En selle",    v:"Aberystwyth", nat:"Pays de Galles", h:"23 h 20", ciel:["#070F1A","#101828"], forme:"cote",     souv:"Un fer de cob gallois",        ic:"fer"},
  {ref:"windsor",   ch:"Le dressage",  v:"Windsor",     nat:"Angleterre",     h:"00 h 30", ciel:["#05090F","#0B1220"], forme:"chateau",  souv:"La lettre A",                  ic:"lettre"},
@@ -1086,6 +1115,7 @@ var I18N_NAT = {
  "Allemagne":      {en:"Germany", es:"Alemania",   it:"Germania",    de:"Deutschland",ja:"ドイツ"}
 };
 var I18N_H = {
+ "19 h 55":{en:"7.55 pm", es:"19:55", it:"19:55", de:"19:55 Uhr", ja:"19時55分"},
  "20 h 10":{en:"8.10 pm", es:"20:10", it:"20:10", de:"20:10 Uhr", ja:"20時10分"},
  "20 h 55":{en:"8.55 pm", es:"20:55", it:"20:55", de:"20:55 Uhr", ja:"20時55分"},
  "21 h 40":{en:"9.40 pm", es:"21:40", it:"21:40", de:"21:40 Uhr", ja:"21時40分"},
@@ -1242,6 +1272,25 @@ var RECITS = {
       "ここでは、言葉を話せるようになる前に、馬を借りることを覚える。",
       {f:"毎年春、浜から百メートルの場所で国際障害飛越大会が開かれる。ヨーロッパで最も古い大会のひとつだ。"}]},
 
+ maurice:{
+  fr:["L'eau est tiède dès le matin, et le lagon ne fait pas une vague jusqu'au récif.",
+      "On desselle sur le sable : ce qui commence ici ne se monte pas en selle.",
+      {f:"Le récif casse la houle à un kilomètre du bord — c'est ce qui rend la baignade à cheval possible ici."}],
+  en:["The water is warm from the morning on, and the lagoon does not raise a single wave before the reef.",
+      "You untack on the sand: what begins here is not ridden in a saddle.",
+      {f:"The reef breaks the swell a kilometre out — that is what makes riding into the sea possible here."}],
+  es:["El agua está tibia desde la mañana, y la laguna no levanta una ola hasta el arrecife.",
+      "Se desensilla en la arena: lo que empieza aquí no se monta con silla.",
+      {f:"El arrecife rompe el oleaje a un kilómetro de la orilla: eso hace posible aquí el baño a caballo."}],
+  it:["L'acqua è tiepida già dal mattino, e la laguna non alza un'onda fino alla barriera.",
+      "Si toglie la sella sulla sabbia: quello che comincia qui non si monta in sella.",
+      {f:"La barriera rompe l'onda lunga a un chilometro da riva: è questo che rende possibile qui il bagno a cavallo."}],
+  de:["Das Wasser ist schon morgens warm, und die Lagune wirft bis zum Riff keine einzige Welle.",
+      "Abgesattelt wird im Sand: was hier beginnt, reitet man nicht im Sattel.",
+      {f:"Das Riff bricht die Dünung einen Kilometer draußen — das macht das Baden zu Pferd hier möglich."}],
+  ja:["水は朝からぬるく、ラグーンはサンゴ礁まで波ととのひとつ立てない。",
+      "鞍は砂の上で外す。ここから始まるものは、鞍の上では走らない。",
+      {f:"サンゴ礁が沖合一キロでうねりを砕く。だからここでは、馬と海に入ることができる。"}]},
  newmarket:{
   fr:["Le brouillard n'est pas encore tombé. Les pur-sang sortent des écuries un par un, et les lads ne se parlent pas.",
       "Aux passages cavaliers, les voitures s'arrêtent. Ici, on entend le galop avant de voir le jour.",
@@ -1461,7 +1510,10 @@ var ICONES = {
  fanion:'<path d="M18 10 v40 M18 12 h24 l-7 8 l7 8 h-24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  cocarde:'<circle cx="30" cy="22" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="22" r="4" fill="#D4AF37"/><path d="M24 32 l-4 20 l10 -7 l10 7 l-4 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  stetho:'<path d="M20 10 v12 q0 10 10 10 q10 0 10 -10 v-12 M30 32 v10 q0 6 8 6" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="42" cy="48" r="6" fill="none" stroke="#D4AF37" stroke-width="2"/>',
- carnet:'<path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>'
+ carnet:'<path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ /* le coquillage du lagon (Le Morne, 6 août) : une coquille en éventail,
+    trois nervures, posée sur sa charnière. */
+ coquillage:'<path d="M30 52 q-16 -6 -16 -22 q0 -14 16 -18 q16 4 16 18 q0 16 -16 22 Z M30 12 v40 M30 52 q-9 -8 -11 -26 M30 52 q9 -8 11 -26" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>'
 };
 
 /* ---------- silhouettes ---------- */
@@ -1480,6 +1532,12 @@ var POURQUOI = {
   it:"Un concorso internazionale con i piedi nell'acqua, e nove chilometri di spiaggia per una prima lezione.",
   de:"Ein internationales Springturnier mit den Füßen im Wasser — und neun Kilometer Strand für die erste Reitstunde.",
   ja:"海のすぐそばで開かれる国際障害馬術大会と、初めてのレッスンのための九キロの浜。"},
+ maurice:{fr:"Un lagon sans vague, et des chevaux qui entrent dans l'eau jusqu'à nager.",
+  en:"A lagoon without a single wave, and horses that walk in until they swim.",
+  es:"Una laguna sin olas, y caballos que entran en el agua hasta nadar.",
+  it:"Una laguna senza onde, e cavalli che entrano in acqua fino a nuotare.",
+  de:"Eine Lagune ohne eine einzige Welle — und Pferde, die hineingehen, bis sie schwimmen.",
+  ja:"波のないラグーン。馬たちは泳ぐところまで海に入っていく。"},
  saumur:{fr:"Le Cadre Noir, et une équitation qui se transmet depuis deux siècles.",
   en:"The Cadre Noir, and a way of riding handed down for two centuries.",
   es:"El Cadre Noir, y una equitación que se transmite desde dos siglos.",
@@ -1606,6 +1664,15 @@ var POURQUOI = {
    ⚠️ Aucun `onerror` a maintenir : un fond absent laisse simplement le
    degrade sombre de `.vrec` visible, ce qui reste une carte presentable.
    ================================================================== */
+var NIVEAU_VILLE = {
+  labaule:1, maurice:1, newmarket:1, lambourn:1, connemara:1, walsall:1, aberystwyth:1,
+  kildare:1, jerez:1, vejer:1,
+  hickstead:2, badminton:2, windsor:2, seville:2, oliva:2,
+  warendorf:2, aachen:2, lamotte:2,
+  saumur:3, edimbourg:3
+};
+function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
+
 (function(){
   var b=document.getElementById("carnet");
   if(!b) return;
@@ -1620,6 +1687,7 @@ var POURQUOI = {
         '<span class="vf vrec" style="background-image:url(&quot;fond-'+e.ref+'.webp&quot;)">'+
           '<span class="vhalo"></span><span class="vvoile"></span>'+
           '<span class="vn">'+(i+1)+'</span>'+
+          barresNiveau(niveauVille(e.ref))+
           '<span class="vtitre"><b>'+eV(e)+'</b><i>'+eNat(e)+'</i></span>'+
           '<span class="vtourne">+</span>'+
         '</span>'+
@@ -1629,6 +1697,7 @@ var POURQUOI = {
           '<span class="vnom">'+eV(e)+'</span>'+
           '<span class="vch">'+eCh(e)+'</span>'+
           '<span class="vpq">'+tx(POURQUOI[e.ref])+'</span>'+
+          '<span class="vniveau" data-n="'+niveauVille(e.ref)+'"></span>'+
           '<span class="vapp"></span>'+
         '</span>'+
       '</span>';
@@ -1641,8 +1710,36 @@ var POURQUOI = {
   b.appendChild(g);
 })();
 
+/* « à » + le nom d'une ville, en francais : au Morne, à La Baule,
+   aux Sables. Ailleurs, la langue n'a pas ce probleme. */
+function versLaVille(nom){
+  if(/^Les\s/i.test(nom))  return "aux " + nom.slice(4);
+  if(/^Le\s/i.test(nom))   return "au "  + nom.slice(3);
+  return "à " + nom;
+}
+
+/* Trois barres, autant d'allumees que le palier de la ville. */
+function barresNiveau(n){
+  var h='<span class="vniv" aria-hidden="true">', i;
+  for(i=1;i<=3;i++) h+='<i class="'+(i<=n?"on":"")+'"></i>';
+  return h+'</span>';
+}
+
 /* Ce qu'on apprend dans la ville — lu au premier retournement seulement. */
 function remplirApprentissage(carte){
+  /* ⚠️ Le libelle du niveau est ecrit ICI, pas a la construction des
+     cartes : la table de traduction TXT est definie plus bas dans le
+     fichier, donc T() renvoyait une chaine vide et le dos affichait un
+     « · » solitaire. Meme raison que pour le compte de mots. */
+  var nv=carte.querySelector(".vniveau");
+  if(nv && nv.dataset.fait!=="1"){
+    var n=nv.dataset.n||"1";
+    var lib=T("niveauNom"+n);
+    if(lib){
+      nv.dataset.fait="1";
+      nv.innerHTML=T("niveauN",{n:n})+" · <b>"+lib+"</b>";
+    }
+  }
   var z=carte.querySelector(".vapp");
   if(!z || z.dataset.fait==="1") return;
   var n=0;
@@ -1917,7 +2014,13 @@ function ouvrirArrivee(i){
   S("arrChap").textContent=T("chapEt",{n:(i+1),t:eCh(e)});
   S("arrVille").textContent=eV(e);
   S("arrNation").textContent=eNat(e)+" · "+T("aLAube");
-  S("empNom").textContent=T("arriveeA",{v:eV(e).toUpperCase()});
+  /* ⚠️ « ARRIVÉE À LE MORNE » — trouvé en ajoutant l'île Maurice, la
+     première ville du voyage dont le nom porte un article masculin. En
+     français à + le = au. Les autres langues n'ont pas le problème, donc
+     la contraction ne s'applique qu'au français. */
+  S("empNom").textContent = (langue==="fr")
+    ? "ARRIVÉE " + versLaVille(eV(e)).toUpperCase()
+    : T("arriveeA",{v:eV(e).toUpperCase()});
   S("empTxt").innerHTML="Vidéo introuvable<br><code>arrivee-"+e.ref+".mp4</code><br>à déposer à la racine du dépôt";
   /* le souvenir ne s'obtient qu'avec TOUS les mots du chapitre : c'est
      l'objet de collection, il doit se mériter. Tant qu'il manque un mot,
@@ -2042,14 +2145,9 @@ var PROCHAINE_RECOMMANDEE = null;
      3 · dire    — le vocal entre dans le tirage.
    Dans tous les cas le micro reste PROPOSÉ sur l'exercice d'écoute.
    ================================================================== */
-var NIVEAU_VILLE = {
-  labaule:1, newmarket:1, lambourn:1, connemara:1, walsall:1, aberystwyth:1,
-  kildare:1, jerez:1, vejer:1,
-  hickstead:2, badminton:2, windsor:2, seville:2, oliva:2,
-  warendorf:2, aachen:2, lamotte:2,
-  saumur:3, edimbourg:3
-};
-function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
+/* ⚠️ La table a ete DEPLACEE plus haut dans le fichier le 6 aout 2026,
+   au-dessus du carnet de route, qui en a besoin des la construction pour
+   afficher le niveau sur chaque carte. Voir NIVEAU_VILLE. */
 
 /* ==================================================================
    LES RÉCOMPENSES SE GAGNENT AU QUIZ (6 août 2026)
@@ -2306,6 +2404,7 @@ var ETAPE_SRC = {
      pour chaque ville est celui qui correspond le mieux à sa lettre et
      à ses volets déjà écrits (détail dans SUIVI.md, session du jour). */
   labaule:     [["arrivee",1]],
+  maurice:     [["balade",1]],
   newmarket:   [["ecurie",1]],
   lambourn:    [["pansage",1]],
   connemara:   [["cheval",1]],
@@ -2513,10 +2612,15 @@ var UI = {
  bientot:{fr:"Bientôt", en:"Soon", es:"Pronto", it:"Presto", de:"Bald", ja:"近日"},
  voyage1:{fr:"{nom} · Voyage 1", en:"{nom} · Journey 1", es:"{nom} · Viaje 1",
    it:"{nom} · Viaggio 1", de:"{nom} · Reise 1", ja:"{nom} · 第1の旅"},
- ouvNations:{fr:"Angleterre · Irlande · Galles · Écosse · France · Espagne · Allemagne",
-   en:"England · Ireland · Wales · Scotland", es:"Inglaterra · Irlanda · Gales · Escocia",
-   it:"Inghilterra · Irlanda · Galles · Scozia", de:"England · Irland · Wales · Schottland",
-   ja:"イングランド・アイルランド・ウェールズ・スコットランド"},
+ /* ⚠️ Maurice ajoutée, et les cinq traductions remises à jour : elles
+    étaient restées aux quatre pays des îles Britanniques alors que le
+    français en annonçait sept. */
+ ouvNations:{fr:"Angleterre · Irlande · Galles · Écosse · France · Espagne · Allemagne · Maurice",
+   en:"England · Ireland · Wales · Scotland · France · Spain · Germany · Mauritius",
+   es:"Inglaterra · Irlanda · Gales · Escocia · Francia · España · Alemania · Mauricio",
+   it:"Inghilterra · Irlanda · Galles · Scozia · Francia · Spagna · Germania · Mauritius",
+   de:"England · Irland · Wales · Schottland · Frankreich · Spanien · Deutschland · Mauritius",
+   ja:"イングランド・アイルランド・ウェールズ・スコットランド・フランス・スペイン・ドイツ・モーリシャス"},
  ouvLangue:{fr:"— anglais —", en:"— English —", es:"— inglés —", it:"— inglese —",
    de:"— Englisch —", ja:"— 英語 —"},
  ouvIntro:{fr:"<b>Pas les capitales politiques — les capitales du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde, et où le vocabulaire que tu vas apprendre s'entend vraiment.",
@@ -2543,6 +2647,19 @@ var UI = {
    it:"<b>Il capitolo delle emergenze è gratuito</b> — saper dire «zoppica» o «chiamate il veterinario» all'estero non si vende.",
    de:"<b>Das Notfallkapitel ist kostenlos</b> — zu wissen, wie man im Ausland \u201Eer lahmt\u201C oder \u201Eruft den Tierarzt\u201C sagt, ist nicht verkäuflich.",
    ja:"<b>緊急時の章は無料。</b>海外で「跛行している」「獣医を呼んで」と言えること。これは売り物ではない。"},
+ /* Les trois paliers portes par la ville (voir NIVEAU_VILLE) : ils
+    existaient depuis le 5 aout mais n'avaient jamais de nom affichable.
+    Demande de Blandine le 6 aout : « on avait dit aussi qu'on mettrait
+    des niveaux par cours » · « on pourrait les renseigner sur les cartes
+    des villes ». */
+ niveauN:{fr:"Niveau {n}", en:"Level {n}", es:"Nivel {n}", it:"Livello {n}",
+   de:"Stufe {n}", ja:"レベル{n}"},
+ niveauNom1:{fr:"Nommer", en:"Naming", es:"Nombrar", it:"Nominare",
+   de:"Benennen", ja:"名づける"},
+ niveauNom2:{fr:"Situer", en:"Placing", es:"Situar", it:"Collocare",
+   de:"Einordnen", ja:"位置づける"},
+ niveauNom3:{fr:"Dire", en:"Speaking", es:"Decir", it:"Dire",
+   de:"Sprechen", ja:"話す"},
  carteAVenir:{fr:"Carte à venir", en:"Card coming soon", es:"Postal en camino",
    it:"Cartolina in arrivo", de:"Karte folgt", ja:"カードは近日公開"},
  motsAApprendre:{fr:"mots à apprendre", en:"words to learn", es:"palabras por aprender",
@@ -2867,6 +2984,8 @@ var COLL_NOM = {
   securite:{fr:"La sécurité", en:"Safety", es:"La seguridad", it:"La sicurezza",
     de:"Die Sicherheit", ja:"安全"},
   poney:{fr:"Le poney", en:"The pony", es:"El poni", it:"Il pony", de:"Das Pony", ja:"ポニー"},
+  balade:{fr:"La balade", en:"The ride out", es:"El paseo", it:"La passeggiata",
+    de:"Der Ausritt", ja:"外乗"},
   corps:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体"},
   etat:{fr:"L'état du poil", en:"The state of the coat", es:"El estado de la capa",
         it:"Lo stato del mantello", de:"Der Zustand des Fells", ja:"毛の状態"},
@@ -2911,6 +3030,13 @@ var COLL_NOM = {
   mots:{fr:"Les mots qui sauvent", en:"The words that save", es:"Las palabras que salvan", it:"Le parole che salvano", de:"Die Worte, die retten", ja:"命を救う言葉"}
 };
 var ACCUEIL_CHAP = {
+  /* `balade` : le chapitre du Morne. `arrivee` : celui de La Baule, qui
+     n'avait AUCUN mot d'accueil depuis qu'elle est devenue l'étape 1 —
+     `ACCUEIL_VILLE.labaule` pointait sur une clé absente de cette table,
+     donc la première ville du voyage entrait dans sa leçon sans un mot.
+     Trouvé en ajoutant le chapitre du Morne. */
+  arrivee:{fr:"Arriver quelque part et demander un cheval : réserver, dire son niveau, comprendre le tarif.", en:"Arriving somewhere and asking for a horse: booking, stating your level, understanding the price.", es:"Llegar a un sitio y pedir un caballo: reservar, decir tu nivel, entender el precio.", it:"Arrivare in un posto e chiedere un cavallo: prenotare, dire il proprio livello, capire il prezzo.", de:"Irgendwo ankommen und nach einem Pferd fragen: buchen, sein Können nennen, den Preis verstehen.", ja:"どこかに着いて、馬を頼む。予約する、自分の技量を伝える、料金を理解する。"},
+  balade:{fr:"Réserver une sortie et entrer dans l'eau : la marée, le lagon, se baigner, nager.", en:"Booking a ride out and going into the water: the tide, the lagoon, bathing, swimming.", es:"Reservar un paseo y entrar en el agua: la marea, la laguna, bañarse, nadar.", it:"Prenotare una passeggiata ed entrare in acqua: la marea, la laguna, il bagno, nuotare.", de:"Einen Ausritt buchen und ins Wasser gehen: die Tide, die Lagune, baden, schwimmen.", ja:"外乗を予約し、水に入る。潮、ラグーン、水浴、泳ぐこと。"},
   ecurie:{fr:"Les mots de l'écurie : le lieu, la litière, la nourriture, les gestes du matin.", en:"The words of the yard: the place, the bedding, the feed, the morning jobs.", es:"Las palabras de la cuadra: el lugar, la cama, el pienso, los gestos de la mañana.", it:"Le parole della scuderia: il luogo, la lettiera, il mangime, i gesti del mattino.", de:"Die Wörter des Stalls: der Ort, die Einstreu, das Futter, die Arbeit am Morgen.", ja:"厩舎の言葉。場所、敷料、飼料、朝の作業。"},
   pansage:{fr:"Le pansage, outil par outil, geste par geste.", en:"Grooming, tool by tool, job by job.", es:"El cepillado, herramienta por herramienta, gesto por gesto.", it:"La pulizia, attrezzo per attrezzo, gesto per gesto.", de:"Das Putzen, Werkzeug für Werkzeug, Griff für Griff.", ja:"手入れを、道具ごと、動作ごとに。"},
   cheval:{fr:"Décrire un cheval : sa robe, ses marques, son corps, son identité.", en:"Describing a horse: colour, markings, body, identity.", es:"Describir un caballo: su capa, sus marcas, su cuerpo, su identidad.", it:"Descrivere un cavallo: il mantello, i segni particolari, il corpo, l'identità.", de:"Ein Pferd beschreiben: Farbe, Abzeichen, Körper, Identität.", ja:"馬を描写する。毛色、標徴、体、個体情報。"},

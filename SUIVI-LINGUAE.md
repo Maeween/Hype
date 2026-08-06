@@ -22,6 +22,55 @@
 
 ---
 
+## 🏝️ SESSION 100 · LINGUAE (06/08) — L'ÎLE MAURICE ENTRE DANS LE VOYAGE, ET LES NIVEAUX S'AFFICHENT
+
+### ✅ Le Morne (île Maurice) est l'étape 2
+« L'île Maurice devait être ajoutée avec La Baule pour les balades dans la mer, se baigner » · « dans l'idée réserver une ballade » · « mets-la où tu veux, je te laisse l'écrire ».
+
+**L'étape s'appelle LE MORNE, pas « Maurice »** : c'est le lieu réel où l'on monte sur l'île, au pied de la montagne du même nom, et tout le reste du voyage nomme des villes, pas des pays. Le pays devient la nation, comme Lamotte-Beuvron / France.
+
+**Nouveau chapitre `balade`**, dans son propre fichier `hype-lingo-lex-balade.js` (un fichier par ville, principe respecté) : **12 mots, 4 phrases, 6 langues**. Le chapitre s'appelle « la balade » et non « la mer » — ce qu'on apprend, c'est de demander une sortie, pas de nommer un paysage. La Baule apprend à *s'inscrire*, Le Morne apprend à *réserver une sortie et entrer dans l'eau* : la marée, le lagon, se baigner, nager, à cru, l'eau douce du retour.
+
+⚠️ **`balade` est un RAPPEL.** Le mot porte le même `ref` que dans `hype-lingo-lex-arrivee.js` et ses `mots` sont recopiés à l'identique — voulu, comme les six rappels du fichier `poney` : la maîtrise est stockée par `ref`, donc le mot croisé à La Baule arrive ici déjà acquis. Seule la définition change (à La Baule on en réserve une, ici on y est). Le fichier se charge **après** `arrivee.js`.
+⚠️ **11 entrées neuves jamais relues par un natif.** Les plus à confirmer : `à cru` (l'italien « a pelo »), `la marée` en japonais, et la distinction allemande `baden` / `schwimmen`. À reporter dans `hype-linguae-doutes.md`.
+⚠️ **Le japonais des 4 phrases est écrit AVEC DES ESPACES.** `attendue.split(" ")` découpe la phrase en tuiles à remettre dans l'ordre : sans espaces, il n'y a rien à déplacer. Les phrases japonaises des lexiques plus anciens n'en ont pas — défaut antérieur, non corrigé ici, à traiter séparément.
+
+### ✅ Le cheval juste après, comme demandé
+« Tu peux mettre le cheval après. » Le début du voyage devient : **1 La Baule** (s'inscrire) · **2 Le Morne** (la balade) · **3 Connemara** (le cheval) · **4 Newmarket** (l'écurie) · **5 Lambourn** (le pansage) · le reste inchangé.
+⚠️ **Les heures ont été réattribuées** pour rester croissantes — seules celles des positions 2 à 5 bougent, tout ce qui suit Walsall est intact. Ce n'est qu'un décor, mais un décor qui se lit.
+⚠️ **La sécurité reste en réserve** (`arrivee` leçon 2, 11 mots), non attribuée, pour la ville à venir. Aucune destination choisie.
+
+### ✅ Les niveaux sur les cartes des villes
+« On avait dit aussi qu'on mettrait des niveaux par cours » · « on pourrait les renseigner sur les cartes des villes ». Les trois paliers existaient depuis le 5 août (`NIVEAU_VILLE`) mais **ne s'affichaient nulle part**.
+- **Devant** : trois petites barres en haut à droite, autant d'allumées que le palier. Sans un mot, pour que la face reste une affiche.
+- **Au dos** : « NIVEAU 1 · NOMMER » (6 langues, nouvelles clés `niveauN`, `niveauNom1/2/3`), au-dessus du compte de mots.
+⚠️ La table `NIVEAU_VILLE` a été **déplacée plus haut** dans le fichier : le carnet en a besoin dès la construction pour les barres. Données pures + fonction pure, aucune dépendance — vérifié.
+⚠️ Le **libellé** du dos, lui, est écrit au retournement et non à la construction : la table de traduction `TXT` est définie plus bas dans le fichier, donc `T()` renvoyait une chaîne vide et le dos affichait un « · » solitaire. Repéré en rendu réel, corrigé, même mécanisme que le compte de mots.
+
+### 🔴 Trouvé grâce au Morne : « ARRIVÉE À LE MORNE »
+Le Morne est **la première ville du voyage dont le nom porte un article masculin**, et le gabarit `arriveeA` collait « À » devant sans réfléchir. Nouvelle fonction `versLaVille()` : à + le = **au**, à + les = aux, à + la = à la. Appliquée au français seulement, les autres langues n'ont pas ce problème. Vérifié : « ARRIVÉE AU MORNE » et « ARRIVÉE À LA BAULE ».
+
+### ✅ Deux manques antérieurs réparés au passage
+- **`ACCUEIL_CHAP.arrivee` n'existait pas** : `ACCUEIL_VILLE.labaule` pointait sur une clé absente de la table, donc **la première ville du voyage entrait dans sa leçon sans un mot d'accueil** depuis qu'elle est devenue l'étape 1. Écrit, 6 langues, en même temps que celui de `balade`.
+- **`ouvNations` était resté à quatre pays** dans les cinq traductions alors que le français en annonçait sept. Les six langues sont à jour, Maurice incluse.
+
+### Fichiers touchés
+`lingo.html` · `hype-lingo-lex-balade.js` (**nouveau**) · `hype-lingo-villes-monde.js` (lettre + 3 volets du Morne, 6 langues) · `lingo-globe.html` (Le Morne, lat −20,4547 / lng 57,3186).
+⚠️ **Manquent côté dépôt** : `carte-maurice.webp` et `arrivee-maurice.mp4`. Les deux replis les couvrent — « Carte à venir » sur l'écran d'arrivée et dans la collection, « Vidéo introuvable » à la place du clip. `fond-maurice.webp` existe déjà.
+
+### Contrôles passés
+Syntaxe validée sur les quatre fichiers · lexique contrôlé par exécution : 12 concepts, 4 phrases, **zéro entrée incomplète sur les 6 langues**, chaque phrase japonaise découpée en au moins 3 tuiles · `chapVirtuel('maurice')` renvoie bien 12 mots + 4 phrases · **rendu réel** : ordre des cartes (La Baule, Le Morne, Connemara, Newmarket…), barres de niveau (1 pour Le Morne, **3 pour Saumur**), dos complet (nom, chapitre, phrase, niveau, compte), écran d'arrivée du Morne (chapitre 2 · La balade, récit affiché, souvenir « Un coquillage du lagon »), leçon ouverte avec son mot d'accueil, globe rouvert · aucune erreur JS.
+⚠️ Deux coquilles japonaises de ma main, attrapées en relecture avant livraison : un mot anglais resté dans la phrase du « pourquoi », et un caractère faux pour « selle ». Corrigées et revérifiées.
+
+### 🧭 Préparation Flutter
+- **Un fichier par ville, tenu** : le chapitre du Morne n'a rien ajouté aux lexiques existants. La frontière « une ville = un fichier de contenu » reste nette, et le rappel par `ref` prouve qu'on peut partager du vocabulaire sans partager de fichier.
+- **Le contenu sort encore un peu plus du code** : `versLaVille()` remplace une concaténation implicite par une règle de langue nommée et testable. Même esprit que `FIN_VIDEO` en session 98.
+- **Ordre du voyage = donnée, pas structure** : réordonner `ETAPES` n'a demandé aucun changement de logique, parce que la progression est indexée par `ref`. Vérifié avant d'y toucher, c'est la propriété qui rendra le portage possible sans migration de données.
+- **Reste à moderniser** : trois endroits dépendent encore de l'ordre d'exécution du fichier (le compte de mots, le libellé de niveau, le titre de l'itinéraire), chacun avec son propre contournement. Un vrai « chargé / prêt » global les remplacerait tous les trois. Non fait, pas demandé, et chaque contournement est aujourd'hui documenté sur place.
+- **Risques** : le déplacement de `NIVEAU_VILLE` a été vérifié (aucun appelant entre l'ancienne et la nouvelle position). Le reste est du contenu et du style.
+
+---
+
 ## 🔍 SESSION 99 · LINGUAE (06/08) — LE FLASH DU CHEMIN IDENTIFIÉ SUR LA VIDÉO, LA CARTE À GAGNER RÉTABLIE
 
 ### 🔴 Le flash entre « Le tour du monde » et le globe : c'était le CHEMIN
