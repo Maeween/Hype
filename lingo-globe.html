@@ -238,7 +238,11 @@ const DEG=Math.PI/180;
 const cv=document.getElementById('globe'), ctx=cv.getContext('2d');
 let W,H,DPR,cx,cy,R0,R;
 function resize(){ DPR=Math.min(window.devicePixelRatio||1,2); const r=cv.getBoundingClientRect(); W=r.width;H=r.height;
-  cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0); cx=W/2; cy=H*0.60; R0=Math.min(W,H)*0.29; posBgr(); }
+  cv.width=W*DPR; cv.height=H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0); cx=W/2;
+  /* Linguae : le centre était à 0.60 de la hauteur du canvas et la sphère
+     remontait sous le titre. Descendu à 0.68, et le rayon élargi de 0.29 à
+     0.33 — le globe occupe mieux l'espace qu'on lui donne. */
+  cy=H*0.62; R0=Math.min(W,H)*0.44; posBgr(); }
 window.addEventListener('resize',resize); function posBgr(){var b=document.getElementById('bgr');if(!b)return;var IW=1086,IH=1448,FX=0.508,FY=0.398,FR=0.37;var ring=R0*1.6;var sc=ring/(FR*IW);var dw=IW*sc,dh=IH*sc;b.style.left=(cx-FX*dw)+'px';b.style.top=(cy-FY*dh)+'px';b.style.width=dw+'px';b.style.height=dh+'px';var mk='radial-gradient(circle at '+(FX*100)+'% '+(FY*100)+'%, rgba(0,0,0,0) '+(R0*1.06)+'px, rgba(0,0,0,0.85) '+(R0*1.3)+'px, rgba(0,0,0,1) '+(ring*0.62)+'px, rgba(0,0,0,1) '+(ring*1.18)+'px, rgba(0,0,0,0) '+(ring*1.33)+'px)';b.style.webkitMaskImage=mk;b.style.maskImage=mk;}
 
 // continents
@@ -352,9 +356,13 @@ function draw(){
   for(let la=-60;la<=60;la+=30){ ctx.beginPath(); let on=false; for(let lo=-180;lo<=180;lo+=6){const p=rot(v3(la,lo)); if(p.z>0){const X=cx+R*p.x,Y=cy-R*p.y; on?ctx.lineTo(X,Y):(ctx.moveTo(X,Y),on=true);}else on=false;} ctx.stroke(); }
   for(let lo=-180;lo<180;lo+=30){ ctx.beginPath(); let on=false; for(let la=-90;la<=90;la+=6){const p=rot(v3(la,lo)); if(p.z>0){const X=cx+R*p.x,Y=cy-R*p.y; on?ctx.lineTo(X,Y):(ctx.moveTo(X,Y),on=true);}else on=false;} ctx.stroke(); }
   // continents
-  land.forEach(s=>{ const p=rot(s); if(p.z<=0) return; const X=cx+R*p.x,Y=cy-R*p.y; const tw=0.4+0.6*Math.abs(Math.sin(T*0.03*s.tw+s.ph)); var __lf=p.x*__L.x+p.y*__L.y+p.z*__L.z; if(__lf<0)__lf=0; var __JF=__P.amb+(1-__P.amb)*__lf; const a=(0.2+0.5*p.z)*tw*__JF*2.25;
-    if(p.z>0.28 && tw>0.5){ ctx.save(); ctx.shadowColor='#8FEAF4'; ctx.shadowBlur=9*(1+p.z); ctx.fillStyle='rgba(135,238,247,'+Math.min(1,a*1.6).toFixed(2)+')'; ctx.beginPath(); ctx.arc(X,Y,1.05,0,6.2832); ctx.fill(); ctx.restore(); }
-    else { ctx.fillStyle='rgba(55,216,230,'+a.toFixed(2)+')'; ctx.fillRect(X,Y,1.0,1.0); } });
+  land.forEach(s=>{ const p=rot(s); if(p.z<=0) return; const X=cx+R*p.x,Y=cy-R*p.y; const tw=0.4+0.6*Math.abs(Math.sin(T*0.03*s.tw+s.ph)); var __lf=p.x*__L.x+p.y*__L.y+p.z*__L.z; if(__lf<0)__lf=0; var __JF=__P.amb+(1-__P.amb)*__lf; /* Linguae : les points de terre étaient trop sombres sur téléphone en
+       plein jour — le globe se lisait mal. Plancher relevé de 0.2 à 0.34,
+       et le facteur global de 2.25 à 3.1. Le cycle jour/nuit reste visible,
+       il est juste moins écrasant. */
+    const a=(0.52+0.45*p.z)*tw*__JF*4.4;
+    if(p.z>0.28 && tw>0.5){ ctx.save(); ctx.shadowColor='#8FEAF4'; ctx.shadowBlur=9*(1+p.z); ctx.fillStyle='rgba(135,238,247,'+Math.min(1,a*1.6).toFixed(2)+')'; ctx.beginPath(); ctx.arc(X,Y,1.5,0,6.2832); ctx.fill(); ctx.restore(); }
+    else { ctx.fillStyle='rgba(120,240,250,'+a.toFixed(2)+')'; ctx.fillRect(X,Y,1.45,1.45); } });
   // villes (reperes discrets)
   VILLES.forEach(function(c){ var p=rot(c.v); if(p.z<=0) return; var X=cx+R*p.x,Y=cy-R*p.y; var a=0.30+0.45*p.z;
     ctx.fillStyle='rgba(150,180,196,'+(a*0.55).toFixed(2)+')'; ctx.beginPath(); ctx.arc(X,Y,1.3,0,6.2832); ctx.fill();

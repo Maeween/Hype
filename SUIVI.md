@@ -12,6 +12,51 @@
 
 **Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
 
+## 🏅 SESSION 93 (06/08) — LES RÉCOMPENSES SE GAGNENT AU QUIZ
+
+### 🔴 Le problème, dit par Blandine : « les gens n'y comprendront rien »
+Elle a terminé Connemara et n'a **rien reçu**, sans pouvoir comprendre pourquoi. Cause : la carte postale et l'objet dépendaient de la **MAÎTRISE** des mots — une valeur invisible qui monte à force de répétitions, et qu'aucun écran n'affichait. Personne ne peut savoir qu'un mot est « à 3 sur 3 ».
+
+### ✅ Un seul endroit où l'on compte : le quiz de fin de leçon
+Règles arrêtées avec Blandine :
+- **leçon terminée** → le tampon, la ville est visitée ;
+- **quiz à 10/12 ou mieux** → la **carte postale** ;
+- **quiz sans faute** → l'**objet du voyage** ;
+- **retentable à volonté**, seul le meilleur score est conservé.
+Nouveau magasin `QUIZ` en localStorage (`hype_lingua_quiz`), + `carteObtenue(ref)` / `souvenirObtenu(ref)` / `garderQuiz()`. Le seuil est exprimé en **proportion** (`SEUIL_CARTE = 10/12`) pour survivre à une leçon de 10 ou de 14 mots.
+⚠️ **La maîtrise ne commande plus aucune récompense.** Elle continue de servir au choix des exercices et au Sprint, mais elle disparaît de l'écran — c'est elle qui rendait tout illisible.
+✅ Rebranché aux 4 endroits qui lisaient `etatChapitre().fini` / `.tout` : la carte postale de l'arrivée, le souvenir, le libellé du carnet.
+
+### ✅ Le quiz
+Tous les mots de la leçon, un par un, reconnaissance parmi quatre — **même mécanique que l'exercice de choix, pas d'écriture, pas de vocal, pas de chrono** : le quiz couronne, il ne punit pas. Jauge dédiée, prononciation du mot juste à chaque réponse.
+L'écran de résultat annonce **ce que le score donne**, exactement comme Blandine le demandait : « La carte postale — à l'instant » / « L'objet du voyage — encore 1 bonne réponse ». Plus de devinette.
+✅ Testé en rendu réel : sans-faute → carte + objet ; 9/10 → carte seule, « encore 1 bonne réponse » pour l'objet ; 8/10 → aucune des deux.
+
+### ✅ Le récapitulatif de fin de leçon (demande de Blandine)
+Elle a relevé trois manques d'un coup : on ne voyait pas **quels** mots on avait acquis, on ne savait pas où on en était du **chapitre**, et « Une autre leçon » ne disait pas **où** il menait.
+- Les mots de la leçon listés avec leur état : **or = acquis, turquoise = à revoir**, gris = pas encore travaillé.
+- L'avancement du chapitre leçon par leçon, avec le compte à atteindre.
+- Le bouton nomme sa destination : « **Continuer · Les marques** ».
+- Le bouton du quiz passe **avant** : c'est lui qui donne les récompenses.
+
+### ✅ Deux détails de langue attrapés au test
+- « gagnée à l'instant » servait à la fois à **la** carte et à **l'**objet : accord impossible. Devenu « à l'instant », sans participe, dans les 6 langues.
+- « encore 1 bonnes réponses » : singulier ajouté (`ilManque1`), 6 langues.
+
+### ✅ Le globe agrandi et éclairci (2 passes, à sa demande)
+Rayon **0,29 → 0,44** de la largeur · centre descendu à 0,62 · plancher de luminosité **0,20 → 0,52** · facteur global **2,25 → 4,4** · points plus gros et plus clairs. Le cycle jour/nuit reste actif, il n'écrase plus la lecture en plein jour. Les trois valeurs sont commentées dans le fichier pour être réglées en une passe.
+
+### ⚠️ Décidé mais PAS ENCORE FAIT — le gros morceau
+**Une seule leçon par ville, 12 mots** (au lieu de deux leçons de ~10). Blandine : « deux cours par ville on s'y perd », « une seule suffirait ». Conséquence : les 378 mots donnent **31 étapes** au lieu de 18 — 12 collections partiraient en réserve, prêtes pour les villes à produire. **Ça refait le tableau des villes, donc à faire d'un bloc.**
+**Et la réorganisation de l'ordre** : Blandine veut commencer par l'arrivée dans un club plutôt que par l'écurie. **Deauville** prend l'étape 1 (elle est dans la liste de la vision, sous « Courses et ventes ») ; **Aberystwyth reste** plus loin avec son welsh cob. À produire pour Deauville : carte postale, vidéo, récit.
+**Deux collections à ÉCRIRE, elles n'existent pas** : **l'inscription** (réserver, le niveau, le tarif, la bombe est-elle fournie, un cheval calme) et **la sécurité** (passer devant jamais derrière, prévenir avant de toucher, ne pas enrouler la longe autour de la main). ⚠️ **La sécurité est le trou le plus sérieux du lexique** pour une app qui enseigne à des débutants.
+**Un Sprint sur les 12 mots de la leçon**, à côté du quiz : le quiz pour gagner, le sprint pour s'entraîner.
+
+### ⚠️ Constat de test à ne pas perdre
+**`arrivee-connemara.mp4` est absent du serveur** — l'app l'affiche elle-même (« Vidéo introuvable »). Le document de passation prétendait que 17 vidéos sur 18 étaient en ligne : **c'est faux au moins pour Connemara**. Les 10 britanniques et irlandaises n'ont jamais été fournies à cette page, donc jamais vérifiées. À contrôler ville par ville depuis le globe.
+
+---
+
 ## 🌐 SESSION 92 (06/08) — LE GLOBE RÉPARÉ ET DEVENU LISIBLE
 
 ### 🔴 MON EXTRACTION AVAIT DÉBORDÉ — cause de « plein de bugs »
@@ -34,6 +79,15 @@ Bouton `#fbtn` (« C'est mon club » en dur dans le HTML) · `HYPE_L` dans les 6
 - Mise en page refaite en **trois zones franches** (globe / recherche / liste défilante / puces) d'après des mesures réelles : puces à 726..847 sur 844 px, donc liste arrêtée à 124 px du bas.
 
 ✅ **Enchaînement complet revérifié dans `lingo.html`** : globe ouvert → 18 lignes → clic sur Newmarket → fiche → « Partir » → **écran d'arrivée sur Newmarket**. 0 erreur.
+
+### ✅ Le globe parle enfin les six langues
+Tout ce que la greffe avait écrit était **en français en dur** : les puces, les états, les boutons de la fiche, le message de liste vide, la distance depuis le départ. Le reste du module parle six langues, pas eux.
+Table **`LING_L`** (6 langues × 13 libellés) + **`appliquerLangueLinguae(lg)`** qui rhabille les puces, `TLAB` et redessine. Le globe recevait déjà `{t:'hype-lang', l:'xx'}` — **`lingo.html` ne le lui envoyait jamais** : ajouté à l'ouverture, avant l'état.
+✅ Vérifié en fr/en/de/ja, et depuis `lingo.html` avec l'interface en allemand : « Alle / Erledigt / Offen / Zu entdecken ».
+
+### 🔴 Piège d'ordre de déclaration, attrapé au rendu
+En faisant lire la table par `FILT`, j'ai cassé le bloc : **`FILT` est déclarée AVANT `LING_L` dans le même script**. Lire `LL.tout` là levait une TypeError sur `undefined`, le script s'arrêtait à cet endroit, et **tout ce qui suit restait non initialisé** — alors que `node --check` passait et que la fonction semblait exister (les déclarations de fonction sont hissées, les `var` non).
+⚠️ **Deuxième fois aujourd'hui que ce motif frappe** (déjà `T()` et `langueUI()` en session 89). Les puces gardent donc des libellés français en dur, et c'est la fonction qui les traduit ensuite.
 
 ⚠️ **Attention, dit par Blandine** : l'`index.html` que j'ai utilisé n'est peut-être pas le dernier. Si le globe de l'app a été corrigé depuis, il faudra **rejouer la greffe sur le globe à jour** — elle tient en huit modifications chirurgicales, toutes documentées dans le fichier.
 
