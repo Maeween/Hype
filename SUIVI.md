@@ -10,165 +10,137 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 02/08/2026 (session 73) — Encart d'accès à la Bibliothèque vidéo (page Galops + Culture équestre) — md5 78074d5e, 9 709 371 octets. Part de la (72) be04e691.**
+**Version actuelle de l'index.html : 06/08/2026 (session 91) — Vidéos d'accueil et Communauté, bandeau messagerie, Lamotte et encart messages masqués, quête philosophie réparée, décalage horizontal corrigé — md5 `3e5dfd89a5eb0a8f4d6c03122d8bcdc7`, 10 506 977 octets. Part de `70a0c0d1` fourni par Blandine.**
 
-## 🌊 SESSION 94 (06/08) — LA BAULE EN ÉTAPE 1, ET LA SÉCURITÉ ENFIN ÉCRITE
+## 🎬 SESSION 91 (05-06/08) — VIDÉOS, MASQUAGES, QUÊTE RÉPARÉE, ET LE DIAGNOSTIC TULLY
 
-### 🔴 La sécurité n'existait NULLE PART dans les 378 mots
-On savait dire « la fourche » et « le coefficient », **pas « ne passe pas derrière lui »**. Pour une application qui enseigne à des débutants, c'était le trou le plus sérieux du lexique. Réparé.
+**Page codeuse unique sur l'index.** Part de `70a0c0d1` (9 791 253 o) fourni par Blandine → sortie **`3e5dfd89a5eb0a8f4d6c03122d8bcdc7`** (10 506 977 o).
+⚠️ Une autre session a utilisé le numéro 90 en parallèle (niveaux de difficulté Lingua). Aucune collision : elle ne touche pas l'index.
 
-### ✅ Nouveau chapitre `hype-lingo-lex-arrivee.js` — 23 concepts, 6 phrases, 6 langues
-Deux collections :
-- **`inscrire`** (12) — réserver, le cours particulier, le cours collectif, le niveau, débutant, le tarif, l'assurance, la bombe est fournie, un cheval calme, la balade, une heure de cours, annuler.
-- **`securite`** (11) — passer devant, ne passe pas derrière, préviens-le avant de le toucher, n'enroule pas la longe, garde tes distances, attention, tiens-le, lâche, attache ta bombe, des chaussures fermées, ne bouge pas.
-✅ Vérifié par exécution : 23 concepts (12 + 11), 6 phrases, **aucune langue manquante sur aucune entrée**.
-⚠️ Les définitions portent les pièges réels : les **échelles de niveau ne se traduisent pas** (un Galop 4 ne veut rien dire ailleurs — dire ce qu'on sait faire, pas son diplôme) · en club britannique on dit **« hat »** et non « helmet », **« mind out »** et non « attention » · une **Reitstunde** allemande fait souvent 45 minutes et non 60 · l'assurance fédérale **ne couvre pas forcément à l'étranger**.
-⚠️ **Aucun de ces 29 items n'a été relu par un natif** — à ajouter à `hype-linguae-doutes.md`.
+### 📦 Fichiers livrés
+`index.html` · `hype-accueil-video-2.mp4` · `hype-accueil-poster-2.jpg` · `hype-communaute-video-2.mp4` · `hype-communaute-poster-2.jpg` · `hype-messagerie-poney.mp4` · `hype-messagerie-poney-poster.jpg` · `test-compression-photo.html` · maquettes (`maquette-messages-accueil.html`, `-2`, `-B-et-C`, `maquette-poney-banniere.html`, `maquette-video-messagerie.html`, `maquette-encart-lingua.html`)
 
-### ✅ La Baule est l'étape 1
-Décidé par Blandine après test : commencer par l'écurie « n'est pas vendeur de rêve », et surtout ce n'est pas ce qu'un cavalier vit d'abord. **Deauville a d'abord été retenue, puis remplacée par La Baule** — le Jumping international se court les pieds dans l'eau et la plage fait neuf kilomètres.
-**Newmarket recule d'un cran.** `ETAPES` passe à **19**, `ETAPE_SRC`, `NIVEAU_VILLE`, `ACCUEIL_VILLE`, `POURQUOI` et `ETAPES_I18N` complétés, et la ville est ajoutée au globe (lat 47.2861, lng −2.3931).
-✅ Vérifié en rendu : 19 étapes, La Baule première, ses deux leçons « S'inscrire » et « La sécurité » s'ouvrent, 23 mots et 6 phrases servis, quiz accessible. Globe : 20 points, 19 destinations listées, La Baule en tête.
-⚠️ **Aberystwyth reste dans le voyage** avec son welsh cob — on ne perd rien de ce qui était produit.
+⚠️ **Le suffixe `-2` est indispensable.** Une première livraison portait les mêmes noms sans suffixe, avec des vidéos **recadrées** (donc coupées en haut et en bas). Safari et Netlify gardaient l'ancienne en cache — d'où trois allers-retours pour rien. Les fichiers sans `-2` ne sont plus appelés par personne et peuvent être supprimés du dépôt.
 
-### ✅ Textes de la ville, dans les six langues (`labaule.md`)
-Lettre + 3 volets + résumé d'itinéraire. **Le prestige va dans les volets, l'émotion dans la lettre** (décision de Blandine sur le CSI) : la lettre raconte le trac du premier matin — « c'est la première fois que je demandais un cheval dans une langue qui n'est pas la mienne » — et le premier volet raconte le Jumping, les carrières face à l'océan, le sable qui vient de la mer.
+### ✅ Les trois vidéos — transcodage et filigrane
+Blandine a fourni trois `.mov` en **HEVC**, lisibles seulement par Safari, donc inutilisables sur le web. Tous transcodés en **H.264 / MP4, yuv420p, CRF 23, `+faststart`, piste audio supprimée**.
 
-### ⚠️ À produire par Blandine pour cette ville
-`carte-labaule.webp` (3:4, tiers bas sombre) · `arrivee-labaule.mp4` (456×810) · `objet-labaule.png` (un fanion du Jumping).
-Le **récit court** est pris en charge ailleurs.
+⚠️ **LES TROIS PORTAIENT UN FILIGRANE « Ai » EN HAUT À GAUCHE**, non signalé par Blandine et présent sur toutes les images. Dans une appli payante c'est disqualifiant.
+**Méthode retenue : `delogo`, pas de recadrage.** Le premier essai recadrait (`crop`), ce qui coupait le bas de l'image — Blandine l'a immédiatement vu. Le filigrane est donc effacé sur place, par reconstitution des pixels voisins.
+**Position mesurée au zoom ×4 sur chaque fichier** (elle diffère d'une vidéo à l'autre, et ma première estimation à l'œil était fausse, laissant des traînées) :
+- accueil (480×854) : `delogo=x=12:y=9:w=38:h=38`
+- communauté (854×480) : `delogo=x=26:y=18:w=62:h=60`
+- messagerie (966×720) : `delogo=x=28:y=22:w=70:h=60`
 
-### ✅ Les objets : prompt livré (`objets-prompt.md`)
-18 objets, PNG transparent 1024×1024, nommage `objet-<ref>.png`. ⚠️ **Faire les 18 et pas seulement les 8 manquants** : les 10 existants sont des icônes vectorielles et le mélange de styles se verrait. Deux ambiguïtés levées dans le prompt : la **lettre A de Windsor** est un marqueur de carrière de dressage, et le **carnet de Warendorf** illustre l'échelle de progression à six degrés.
+| Fichier | Format | Durée | Poids | Coupe de fin |
+|---|---|---|---|---|
+| `hype-accueil-video-2.mp4` | 480×854 vertical | 5,1 s | 372 Ko (de 1,89 Mo) | aucune |
+| `hype-communaute-video-2.mp4` | 854×480 | 3,6 s | 410 Ko (de 1,92 Mo) | logo HYPE, qui apparaissait à 3,7 s |
+| `hype-messagerie-poney.mp4` | 966×720 | 2,0 s | 479 Ko (de 3,55 Mo) | avant l'incrustation du mot MESSAGERIE |
 
-### ⚠️ Décidé, pas encore construit : LA PAGE DE COLLECTION
-Blandine : une page à part, **une grille des 18 cartes postales**, celles gagnées en couleur, les autres assombries. On touche, **la carte se retourne** : au verso la lettre de la ville, et en bas la ligne de l'objet — « À gagner : … » ou « **Récompense obtenue** » avec son dessin.
-Choix arrêtés : les cartes non gagnées **se retournent aussi** mais avec la lettre masquée · grille à **deux colonnes** (les cartes sont en 3:4) · **ordre du voyage**, les cases vides font partie du récit.
-⚠️ **Fichier séparé `lingo-collection.html` en iframe**, comme le globe : `lingo.html` fait déjà 216 Ko et l'incident du globe a montré que ses blocs de script cassent en silence.
-⚠️ Aujourd'hui **la carte et l'objet ne vont nulle part** : ils ne vivent que sur l'écran d'arrivée de leur ville. Le globe ne garde que le tampon.
+⚠️ **Deux coupes de fin sont des décisions, pas des accidents.** Le logo HYPE de la Communauté ferait doublon avec l'interface. Et la fin de la messagerie affichait un **badge « 1 » lumineux** : un compteur peint dans l'image afficherait toujours 1, quel que soit le nombre réel de messages. La version longue (4,2 s, `hype-messagerie-video-2.mp4`) reste au dépôt si Blandine change d'avis.
 
-### ⚠️ Toujours en attente
-**Une seule leçon de 12 mots par ville** (au lieu de deux) — refait le tableau des villes, à faire d'un bloc.
-**Un Sprint sur les 12 mots de la leçon**, à côté du quiz.
-**`arrivee-connemara.mp4` absent du serveur**, et les 9 autres vidéos britanniques jamais vérifiées.
+### ✅ Bannière d'accueil : vidéo verticale, plafonnée à 2/3 d'écran
+- Source du `<video>` du `<header className="hero">` → `hype-accueil-video-2.mp4`, avec `poster`.
+- ⚠️ **`hype-anim-cheval.mp4` conservé, 3 occurrences à maintenir** : il sert encore à la carte Grand Prix (~ligne 31187), où une vidéo verticale casserait la mise en page. C'est pourquoi le nouveau fichier porte un nom distinct au lieu d'écraser l'ancien.
+- Style : `width: "auto"`, `maxWidth: "100%"`, `height: "auto"`, **`maxHeight: "66vh"`**, `margin: "0 auto"`. Les deux contraintes s'appliquent, le format natif est conservé : vidéo **entière, dézoomée, centrée**, aucun rognage. Sans le plafond, un 9:16 en `width:100%` donnait ~690 px de haut sur un iPhone de 390.
+- ⚠️ **Le poster était noir** : extrait de la première image, or la vidéo commence sur du noir. Le nouveau est pris à 3,6 s (cheval de face). Leçon générale : ne jamais extraire un poster de la frame 0.
 
----
+### ✅ Carte « Communauté équestre » de l'accueil : vidéo au lieu de l'image
+Décision de Blandine après discussion : l'image du **globe sur la page Communauté** est conservée (« elle est sublime », et elle est verticale donc adaptée) ; c'est **la carte de l'accueil** qui reçoit la vidéo, parce qu'elle est déjà horizontale comme le fichier.
+- Carte passée de `height: 188` fixe à **`height: "auto"` + `minHeight: 188`**, vidéo dans le flux en `width:100% / height:auto` → la carte adopte le format, rien n'est rogné (~219 px sur iPhone).
+- Image `duoCommunaute` **conservée dessous** en filet : `onError` la révèle et remet 188 px.
+- `IntersectionObserver` : pause dès que la carte sort de l'écran.
+- 🔴 **BUG QUE J'AI CRÉÉ PUIS CORRIGÉ** : la vidéo portait `zIndex: 1` alors que le voile dégradé et le titre n'en avaient aucun → **« ENSEMBLE · COMMUNAUTÉ ÉQUESTRE » disparaissait derrière la vidéo**. Corrigé : voile en `zIndex: 2`, bloc de titre et chevron en `zIndex: 3`. **Règle à retenir : dès qu'on met une vidéo en zIndex dans une carte, tous les calques au-dessus doivent recevoir un zIndex supérieur.**
 
-## 🏅 SESSION 93 (06/08) — LES RÉCOMPENSES SE GAGNENT AU QUIZ
+### ✅ Bandeau vidéo en tête de la messagerie
+Choix de Blandine parmi trois emplacements maquettés (écran vide / bandeau / vignette 68 px sur l'accueil) : **le bandeau**.
+- 120 px en haut de `EcranMessagerie`, au-dessus du bouton retour et du titre. Vidéo centrée verticalement, rognage haut/bas assumé.
+- Version courte de 2 s (`hype-messagerie-poney.mp4`) pour éviter le doublon avec le titre.
+- `onError` → le bandeau disparaît entièrement (`height: 0`) plutôt que de laisser un rectangle noir. `IntersectionObserver` → pause hors écran.
 
-### 🔴 Le problème, dit par Blandine : « les gens n'y comprendront rien »
-Elle a terminé Connemara et n'a **rien reçu**, sans pouvoir comprendre pourquoi. Cause : la carte postale et l'objet dépendaient de la **MAÎTRISE** des mots — une valeur invisible qui monte à force de répétitions, et qu'aucun écran n'affichait. Personne ne peut savoir qu'un mot est « à 3 sur 3 ».
+### ✅ Deux blocs retirés de l'accueil, par constante
+- **`AFFICHER_ACTU_LAMOTTE = false`** — la carte Generali Open de France ET le titre de section « L'actualité » (la section ne contenait que cette carte, l'intitulé serait resté seul).
+- **`AFFICHER_ENCART_MESSAGES = false`** — « quoi qu'il arrive il ne restera pas là ». La messagerie reste accessible par l'icône du hero.
+⚠️ Rien n'est supprimé dans les deux cas : une ligne à repasser à `true`.
 
-### ✅ Un seul endroit où l'on compte : le quiz de fin de leçon
-Règles arrêtées avec Blandine :
-- **leçon terminée** → le tampon, la ville est visitée ;
-- **quiz à 10/12 ou mieux** → la **carte postale** ;
-- **quiz sans faute** → l'**objet du voyage** ;
-- **retentable à volonté**, seul le meilleur score est conservé.
-Nouveau magasin `QUIZ` en localStorage (`hype_lingua_quiz`), + `carteObtenue(ref)` / `souvenirObtenu(ref)` / `garderQuiz()`. Le seuil est exprimé en **proportion** (`SEUIL_CARTE = 10/12`) pour survivre à une leçon de 10 ou de 14 mots.
-⚠️ **La maîtrise ne commande plus aucune récompense.** Elle continue de servir au choix des exercices et au Sprint, mais elle disparaît de l'écran — c'est elle qui rendait tout illisible.
-✅ Rebranché aux 4 endroits qui lisaient `etatChapitre().fini` / `.tout` : la carte postale de l'arrivée, le souvenir, le libellé du carnet.
+**Neuf maquettes d'encart messages alternatif ont été explorées et toutes écartées** (portes de box avec lanterne, ardoise, rang de losanges, carnet de liaison, longe, tableau de service, constellation, mot sous la porte, ligne unique). Motif : le problème était la **hauteur**, pas le dessin. Blandine a préféré retirer le bloc. Les maquettes restent au dépôt si le sujet revient.
 
-### ✅ Le quiz
-Tous les mots de la leçon, un par un, reconnaissance parmi quatre — **même mécanique que l'exercice de choix, pas d'écriture, pas de vocal, pas de chrono** : le quiz couronne, il ne punit pas. Jauge dédiée, prononciation du mot juste à chaque réponse.
-L'écran de résultat annonce **ce que le score donne**, exactement comme Blandine le demandait : « La carte postale — à l'instant » / « L'objet du voyage — encore 1 bonne réponse ». Plus de devinette.
-✅ Testé en rendu réel : sans-faute → carte + objet ; 9/10 → carte seule, « encore 1 bonne réponse » pour l'objet ; 8/10 → aucune des deux.
+### ✅ Quête « Écris la philosophie de ton écurie » — réparée
+Symptôme : la quête redemandait une action déjà faite et ne se mettait jamais à jour.
+**Cause dans `TableauxSpectralHype`** : la sauvegarde appelait bien `majProfil({ecurie_voix: …})` mais ne rafraîchissait que son **état local** (`setProf`). Le `profil` du contexte applicatif restait périmé, or la condition est `fait: ctx.profil.ecurie_voix`.
+**Second défaut : l'échec était totalement muet** — `.catch(function () { })` vide.
+**Correctif sur les deux champs (`champVoix` et `champHistoire`)** : rafraîchissement de `ctx.setProfil` après succès → la quête disparaît immédiatement, sans rechargement · `console.warn` avec l'erreur au lieu du catch vide.
+**SQL passé par Blandine** (idempotent) : `alter table profiles add column if not exists ecurie_voix text;` et `ecurie_histoire text;`. ⚠️ Avec `if not exists`, le « Success » ne dit pas si les colonnes manquaient. **Reste à vérifier que la quête a bien disparu de l'accueil.**
 
-### ✅ Le récapitulatif de fin de leçon (demande de Blandine)
-Elle a relevé trois manques d'un coup : on ne voyait pas **quels** mots on avait acquis, on ne savait pas où on en était du **chapitre**, et « Une autre leçon » ne disait pas **où** il menait.
-- Les mots de la leçon listés avec leur état : **or = acquis, turquoise = à revoir**, gris = pas encore travaillé.
-- L'avancement du chapitre leçon par leçon, avec le compte à atteindre.
-- Le bouton nomme sa destination : « **Continuer · Les marques** ».
-- Le bouton du quiz passe **avant** : c'est lui qui donne les récompenses.
+### ✅ Décalage horizontal après la visionneuse photo
+Symptôme : à la fermeture du plein écran, toute la page restait décalée vers la gauche (titre débordant, onglets coupés).
+Cause : un élément plus large que l'écran crée un défilement horizontal **au niveau de la page**, et iOS Safari conserve ce `scrollLeft` — les navigateurs de bureau le remettent à zéro, d'où l'invisibilité du bug en développement.
+**Deux protections, la cause et le symptôme** :
+- CSS ajouté dans un `<style>` avant `</head>` : `html, body { overflow-x: hidden !important; max-width: 100% !important; }`
+- JS : nouvel effet sur `[visionneuse]` qui remet `scrollLeft` à zéro à la fermeture, **et une seconde fois au frame suivant** (iOS applique son inertie après le rendu). La position verticale est préservée.
+⚠️ **Les rails horizontaux ne sont PAS touchés** : `.lst`, `.horses-row`, `.fstrip`, `.rbstrip`, `.manege`, `.filters` ont chacun leur propre `overflow-x`. Vérifié.
 
-### ✅ Deux détails de langue attrapés au test
-- « gagnée à l'instant » servait à la fois à **la** carte et à **l'**objet : accord impossible. Devenu « à l'instant », sans participe, dans les 6 langues.
-- « encore 1 bonnes réponses » : singulier ajouté (`ilManque1`), 6 langues.
-
-### ✅ Le globe agrandi et éclairci (2 passes, à sa demande)
-Rayon **0,29 → 0,44** de la largeur · centre descendu à 0,62 · plancher de luminosité **0,20 → 0,52** · facteur global **2,25 → 4,4** · points plus gros et plus clairs. Le cycle jour/nuit reste actif, il n'écrase plus la lecture en plein jour. Les trois valeurs sont commentées dans le fichier pour être réglées en une passe.
-
-### ⚠️ Décidé mais PAS ENCORE FAIT — le gros morceau
-**Une seule leçon par ville, 12 mots** (au lieu de deux leçons de ~10). Blandine : « deux cours par ville on s'y perd », « une seule suffirait ». Conséquence : les 378 mots donnent **31 étapes** au lieu de 18 — 12 collections partiraient en réserve, prêtes pour les villes à produire. **Ça refait le tableau des villes, donc à faire d'un bloc.**
-**Et la réorganisation de l'ordre** : Blandine veut commencer par l'arrivée dans un club plutôt que par l'écurie. **Deauville** prend l'étape 1 (elle est dans la liste de la vision, sous « Courses et ventes ») ; **Aberystwyth reste** plus loin avec son welsh cob. À produire pour Deauville : carte postale, vidéo, récit.
-**Deux collections à ÉCRIRE, elles n'existent pas** : **l'inscription** (réserver, le niveau, le tarif, la bombe est-elle fournie, un cheval calme) et **la sécurité** (passer devant jamais derrière, prévenir avant de toucher, ne pas enrouler la longe autour de la main). ⚠️ **La sécurité est le trou le plus sérieux du lexique** pour une app qui enseigne à des débutants.
-**Un Sprint sur les 12 mots de la leçon**, à côté du quiz : le quiz pour gagner, le sprint pour s'entraîner.
-
-### ⚠️ Constat de test à ne pas perdre
-**`arrivee-connemara.mp4` est absent du serveur** — l'app l'affiche elle-même (« Vidéo introuvable »). Le document de passation prétendait que 17 vidéos sur 18 étaient en ligne : **c'est faux au moins pour Connemara**. Les 10 britanniques et irlandaises n'ont jamais été fournies à cette page, donc jamais vérifiées. À contrôler ville par ville depuis le globe.
+### ✅ Quêtes en double sur l'accueil — déjà corrigé, ne pas refaire
+Le fichier fourni contenait déjà `slice(1, 4)` dans `BlocProchainesQuetes`. Le doublon venait de la **version déployée**. Ce déploiement le règle.
 
 ---
 
-## 🌐 SESSION 92 (06/08) — LE GLOBE RÉPARÉ ET DEVENU LISIBLE
+### 🔍 DIAGNOSTIC COMPLET — TULLY BLUE MOON ET LES ALBUMS (rien codé, tout documenté)
 
-### 🔴 MON EXTRACTION AVAIT DÉBORDÉ — cause de « plein de bugs »
-`lingo-globe.html` contenait **7 592 caractères de trop après son `</html>`** : un pan du code **React de `index.html`** (écrans, NavBar, messagerie), capturé par erreur en extrayant `GLOBE_HTML_HYPE`. Ce code s'exécutait dans une page sans React, plantait, et **les gestionnaires de clic posés plus loin n'étaient jamais installés** — d'où « on clique sur une ville et il ne se passe rien ».
-**Corrigé** : troncature au premier `</html>`. 82 841 → 75 250 octets.
-⚠️ **Leçon** : en extrayant une chaîne HTML d'un gros fichier, borner sur `</html>` et **vérifier la queue du résultat**, pas seulement son début.
+Symptôme rapporté : sur la page Écurie, l'album de Tully Blue moon apparaît, l'appli propose de l'ajouter aux chevaux et d'y mettre des photos ; **la validation échoue**, la photo se retrouve sur un autre fil, et la suppression ne fonctionne pas.
 
-### ✅ La zone basse liste enfin les destinations (idée de Blandine)
-Avant : la liste ne s'affichait **qu'en tapant** dans la recherche, sinon la moitié basse était vide et annonçait « **Aucun club trouvé** » — vestige de la recherche de clubs de Hype.
-Maintenant : **les 18 destinations sont toujours listées**, avec **pays · ce qu'elles enseignent · état** (Newmarket — Angleterre · L'écurie — FAITE). La recherche et les puces filtrent la liste. Toucher une ligne y vole et ouvre la fiche. Testé : 18 lignes, filtre « Faites » → 3.
+**Ce que la base dit (vérifié par Blandine dans le SQL Editor) :**
+- La table des chevaux est **`chevaux`**, colonne propriétaire **`user_id`** (⚠️ *pas* `proprietaire_id` — première requête en erreur), plus une colonne `ecurie` dont la valeur spéciale `__perso__` distingue les chevaux personnels.
+- **20 chevaux en base.** Tully Blue moon : id `907563eb-a7b7-48e9-8cfc-188624c385f8`, `user_id` `fa2875ae-f740-4774-ad79-4726477add5e`, ecurie « Ecurie Feinn ».
+- `fa2875ae…` = **Liam**. `f439c8e0…` = Delphine. **La réattribution de Tully à Liam a donc bien eu lieu. La base est correcte.**
+- La table des albums s'appelle **`albums_cheval`** (⚠️ *pas* `albums` — seconde requête en erreur), colonnes : `id, user_id, cible (text), nom, photos (jsonb), promu, created_at, couverture, visibilite, jeton`. Il existe aussi `albums_membres`.
+- 🟢 **AUCUN ALBUM ORPHELIN.** Ma requête de contrôle comparait aux seules cibles `cheval:*` et a produit **3 faux positifs** parfaitement valides : `ecurie:Ecurie Feinn`, `cavalier:fa2875ae…`, `cavalier:273a4599…`. **Les 3 albums `cheval:rizotto` notés dans un ancien SUIVI n'existent plus.** Rien à réparer en base, aucune urgence.
 
-### ✅ Tout ce qui parlait encore de club
-Bouton `#fbtn` (« C'est mon club » en dur dans le HTML) · `HYPE_L` dans les 6 langues · `HYPE_MEM`/`HYPE_MON` · `TLAB` (les 5 types de club remplacés par les 4 états) · « Aucun club trouvé » · **l'orbe qui postait encore `hype-mon-club` à Hype** avec le contenu du champ de recherche — neutralisé, il ne fait plus que refermer (`linguae-fermer`, branché côté parent).
-✅ Vérifié par test : plus aucune occurrence de « club » dans le texte affiché.
+**LA CAUSE, ET ELLE EST UNIQUEMENT DANS LE CODE :**
+Ligne **19769** : `CAVALIERS.liam.chevaux = ["mydream","rizotto","elfe","venus","idao","tully","heybaby"]`. Ce sont des **surnoms écrits en dur**, pas les identifiants réels. La `cible` d'un album vaut donc `cheval:tully` au lieu de `cheval:907563eb-…`. Deux mondes qui ne se rejoignent jamais : l'album créé depuis la fiche de démonstration n'est visible par aucune vraie fiche, et la suppression ne trouve rien à supprimer.
+Points de consommation repérés : **19777** (`var cav = __pub ? {…chevaux: []…} : (CAVALIERS[id] || CAVALIERS.liam)` — noter que sur un profil public `chevaux` est déjà forcé à `[]`), **26541** (`CHEVAUX_FICHE` + palmarès), **31921**.
 
-### ✅ Trois défauts d'habillage, tous mesurés au rendu et non à l'estime
-- **Les villes françaises de Hype** (`VILLES` : Strasbourg, Bordeaux, Perpignan…) s'affichaient sur le globe et noyaient les destinations. Tableau vidé — il reste **déclaré**, le moteur le parcourt à plusieurs endroits.
-- **La recherche partait hors écran** : elle est centrée par `left:50%` + `translateX(-50%)`, et poser `left/right` par-dessus sans neutraliser la translation la décalait d'une demi-largeur. `transform:none` ajouté.
-- **Le titre restait coupé sous un halo** : l'apparition lettre par lettre est réglée `.5s + i × .22s`, calibrée pour les 10 lettres de « YOUR WORLD ». À 16 lettres, la lueur de la dernière ne s'éteignait jamais. Décalage resserré à `.25s + i × .075s`.
-- Mise en page refaite en **trois zones franches** (globe / recherche / liste défilante / puces) d'après des mesures réelles : puces à 726..847 sur 844 px, donc liste arrêtée à 124 px du bas.
+**Correctif recommandé, non réalisé faute de place dans la conversation :** remplacer la liste en dur par une lecture réelle de `chevaux` filtrée sur `user_id`. Correctif intermédiaire sans risque si l'on veut d'abord arrêter l'hémorragie : **désactiver les boutons d'ajout sur cette fiche** (Tully continue de s'afficher, plus aucune écriture possible).
 
-✅ **Enchaînement complet revérifié dans `lingo.html`** : globe ouvert → 18 lignes → clic sur Newmarket → fiche → « Partir » → **écran d'arrivée sur Newmarket**. 0 erreur.
-
-### ✅ Le globe parle enfin les six langues
-Tout ce que la greffe avait écrit était **en français en dur** : les puces, les états, les boutons de la fiche, le message de liste vide, la distance depuis le départ. Le reste du module parle six langues, pas eux.
-Table **`LING_L`** (6 langues × 13 libellés) + **`appliquerLangueLinguae(lg)`** qui rhabille les puces, `TLAB` et redessine. Le globe recevait déjà `{t:'hype-lang', l:'xx'}` — **`lingo.html` ne le lui envoyait jamais** : ajouté à l'ouverture, avant l'état.
-✅ Vérifié en fr/en/de/ja, et depuis `lingo.html` avec l'interface en allemand : « Alle / Erledigt / Offen / Zu entdecken ».
-
-### 🔴 Piège d'ordre de déclaration, attrapé au rendu
-En faisant lire la table par `FILT`, j'ai cassé le bloc : **`FILT` est déclarée AVANT `LING_L` dans le même script**. Lire `LL.tout` là levait une TypeError sur `undefined`, le script s'arrêtait à cet endroit, et **tout ce qui suit restait non initialisé** — alors que `node --check` passait et que la fonction semblait exister (les déclarations de fonction sont hissées, les `var` non).
-⚠️ **Deuxième fois aujourd'hui que ce motif frappe** (déjà `T()` et `langueUI()` en session 89). Les puces gardent donc des libellés français en dur, et c'est la fonction qui les traduit ensuite.
-
-⚠️ **Attention, dit par Blandine** : l'`index.html` que j'ai utilisé n'est peut-être pas le dernier. Si le globe de l'app a été corrigé depuis, il faudra **rejouer la greffe sur le globe à jour** — elle tient en huit modifications chirurgicales, toutes documentées dans le fichier.
+⚠️ **Convention de nommage des tables non uniforme** — `chevaux` au pluriel, `albums_cheval` au singulier, `memoire_chevaux`, `photos_historique`, `photo_likes`. Deux requêtes ont échoué pour cette seule raison. **Toujours lire le nom réel dans le code (`grep 'from("'`) avant d'écrire du SQL.**
 
 ---
 
-## 🔧 SESSION 91 (06/08, nuit) — CORRECTIONS APRÈS LE TEST EN LIGNE DE BLANDINE
+### 🟡 COMPRESSION PHOTO — position de Blandine et état du test
+Blandine a d'abord **refusé** toute compression : « la qualité des photos est indispensable ». Arguments échangés et retenus :
+- Instagram **redimensionne systématiquement à 1080 px** en qualité 75-80 %, plus agressif que ce qui était proposé.
+- Une photo de 4000 px affichée sur 390 px (1170 réels) ne montre aucun détail de plus ; c'est le navigateur qui la réduit à la volée, avec un algorithme médiocre, **à chaque affichage**.
+- Ce qui dégrade vraiment, c'est de recompresser plusieurs fois — pas une passe unique à l'envoi.
+**Cible proposée et acceptée pour test : 1600 px, qualité 0,88**, plus généreux qu'Instagram, avec **conservation de l'originale** en réserve (100 Go de stockage sur le plan Pro ; c'est l'egress à 0,09 $/Go qui coûte, pas le stockage). Zoom confortable jusqu'à ×4.
 
-### 🔴 ÉCRAN VIDE APRÈS « ENTRER À NEWMARKET » — de ma faute
-Blandine a entré dans le voyage et **il ne restait que le bouton Sprint**. Cause : le bouton « Le globe » était placé **dans `#outils`**, et `#outils` fait partie du chemin que la session 90 a masqué. En cachant le chemin, **j'ai supprimé la seule porte d'entrée du globe**, et rien ne le rouvrait pour un joueur ayant déjà vu l'intro (le `setTimeout(ouvrirGlobe)` n'était branché que sur le choix de la langue).
-**Corrigé** : `#bGlobe` sorti de `#outils`, avec son propre style hors du bloc masqué · `terminerOuverture()` ouvre le globe (320 ms) · « Revenir au voyage » ouvre le globe au lieu de refermer sur le vide.
-✅ Vérifié en simulant le cas exact : `localStorage.hype_lingua_intro = 1`, donc pas d'intro → bouton visible, globe ouvert en sortant du carnet.
-⚠️ **Leçon** : masquer un bloc, c'est masquer tout ce qu'il contient. Vérifier ce qu'on emporte avec.
+**`test-compression-photo.html` livré** — page autonome, aucun envoi, tout dans le téléphone : deux panneaux côte à côte, curseur de zoom synchronisé jusqu'à ×8, déplacement au doigt, réglages 1200/1600/2000/2400 px et qualité 0,80/0,88/0,95.
+⚠️ **Trois corrections successives ont été nécessaires** et le test n'a toujours pas été concluant :
+1. **HEIC** — `new Image()` ne décode pas un blob HEIC de façon fiable. Remplacé par `createImageBitmap()` avec repli `FileReader`. **À retenir : les photos d'iPhone arrivent en HEIC, le code de l'appli devra le gérer.**
+2. **Panneau compressé noir** — la mise à l'échelle par `transform: scale()` était calculée sur `cadre.clientWidth`, qui vaut **0 quand le bloc est encore masqué** → `scale(0)`. Remplacé par des **largeurs/hauteurs CSS explicites** en pixels, insensibles à l'instant du calcul.
+3. **Balise `<img>` abandonnée** au profit d'un **canvas** alimenté par redécodage du JPEG produit — même voie que l'originale, donc fiable, et on observe les vrais artefacts.
+**Limite structurelle assumée** : impossible d'exécuter un navigateur depuis la session, donc chaque correctif est aveugle et Blandine sert de banc d'essai. **Si la page échoue encore, la bonne voie est de coder la compression dans l'appli derrière une constante à `false`.**
 
-### 🔴 Les dépliants des 8 villes neuves s'ouvraient sur du vide
-Le dépliant de l'itinéraire affiche un résumé d'une ligne pris dans la table **`POURQUOI`**, où les 8 nouvelles n'existaient pas. **8 résumés écrits dans les 6 langues.** Vérifié : plus aucune ville sans résumé.
-⚠️ Un chiffre inventé retiré au passage : « quarante mille personnes » pour Aix — je n'ai jamais vérifié la capacité du stade. Remplacé par « un stade plein ».
+### 🟡 HYPE LINGUA / LINGUAE — nom toujours non tranché
+Long échange sur le nom. « Hype Lingua » a été écarté par Blandine (« ça me choque » — le télescopage d'un mot anglais très contemporain et d'un mot latin). Pistes proposées et non retenues : Le Carnet, La Traversée, Koinē, Passus, Iter, Lingua Franca, Hippophonia, Lingua Equorum.
+⚠️ **État du dépôt : `lingo.html` contient « Hype Lingua » ×5 ET « Linguae » ×10 — le nom diffère selon l'écran.** L'index, lui, dit « Linguae ». Décision de séance : **on ne touche à rien, on tranchera à froid.** Le renommage ne coûte que quelques lignes, les noms de fichiers (`hype-lingo-lex-*.js`, clé `HYPE_LINGO_LEX`, clés `localStorage`) ne doivent **pas** être renommés — interne invisible, et renommer les clés `localStorage` effacerait la progression enregistrée.
 
-### ✅ Textes périmés de la présentation et du carnet
-- « **On voyage la nuit, on arrive à l'aube. Le chemin se fait au doigt** » → décrivait un chemin **supprimé**. Devient « Tu choisis ta prochaine étape. Sur le globe, ou parmi celles que la ville que tu quittes te propose. »
-- « **Dix villes, dix chapitres** » → « Dix-huit destinations », avec « Du Suffolk à l'Andalousie ».
-
-### ✅ LE VOYAGE N'EST PLUS UNE RÉGION, C'EST UNE LANGUE
-Corrigé dans la même session. `DESTINATIONS` proposait encore **des régions** — « Les Îles », « La Péninsule », « La Botte »… — héritage de la v1 où une langue valait un pays. Le joueur lisait « Angleterre, Irlande, pays de Galles, Écosse » **puis arrivait à Saumur et à Jerez.**
-- Les 6 entrées deviennent **6 langues** : L'anglais · L'espagnol · L'italien · L'allemand · Le japonais · Le français. Drapeaux mis à jour. Descriptions réécrites dans les 6 langues (« Le même tour du monde, en espagnol. Bientôt. »).
-- ⚠️ **Les clés `cle` sont conservées telles quelles** (`iles`, `peninsule`…) : elles sont déjà dans le localStorage des joueurs, les changer effacerait leur voyage en cours.
-- Écran de choix : « Où veux-tu aller ? » → **« Quelle langue veux-tu apprendre ? »**, sous-titre « Une langue, dix-huit destinations ».
-- En-tête du voyage : affichait `D.nom`, ce qui donnerait maintenant « L'anglais · anglais ». Devient **« Le tour du monde · anglais »** (nouveau libellé `tourDuMonde`, 6 langues).
-- Carnet : titre « Les Îles » → « Le tour du monde » · nations « Angleterre · Irlande · Galles · Écosse » → **+ France · Espagne · Allemagne** · intro « Dix chapitres, dix villes » → « Dix-huit villes », **dans les 6 langues**.
-- Présentation : le point « Dix villes, dix chapitres » n'était corrigé qu'en français — **les 5 autres langues disaient encore dix**. Traduit partout.
-✅ Vérifié en rendu réel dans 4 langues. Plus aucune mention de « dix villes » ni de « Les Îles » hors commentaire de code.
-
-### ⚠️ Reste ouvert
-Idée de Blandine : **remplacer la liste de l'itinéraire par des cartes qui se retournent.** Le carnet est de toute façon redondant avec le globe — la vraie question est peut-être de le supprimer plutôt que de le redessiner. Non tranché.
-
-### ~~Incohérence de fond~~ (réglée ci-dessus)
-Le voyage s'appelait **« Les Îles · Angleterre, Irlande, pays de Galles, Écosse »** alors qu'il passe désormais par la France, l'Espagne et l'Allemagne. Et `DESTINATIONS` propose encore des **régions** (Les Îles, La Péninsule…) — c'est la structure v1 abandonnée. En v2 on choisit **une langue** et on fait le tour du monde. **L'écran de choix doit devenir un choix de langue.** Décision à prendre avec Blandine, pas à trancher seul : ça touche le nom du voyage, le sous-titre, et les 6 entrées de `DESTINATIONS`.
-⚠️ Idée de Blandine à instruire : **remplacer la liste de l'itinéraire par des cartes qui se retournent.** Le carnet est de toute façon devenu redondant avec le globe — la vraie question est peut-être de le supprimer plutôt que de le redessiner.
+### 🔴 INCIDENT — `lingo.html` écrasé, puis récupéré
+Blandine a fourni un `lingo.html` de **77 495 o** en cours de session. J'y ai appliqué le renommage et elle l'a déposé. Or la version réelle du dépôt faisait **195 451 o** (globe, 18 villes, le Sprint). **Perte temporaire du globe et de 8 villes.**
+Récupéré via l'historique GitHub du fichier. **Vérifié après récupération** : `lingo-globe` présent, Saumur/Jerez/Warendorf présents, **« sprint » présent 55 fois** — le Sprint existe donc bien, et le bouton `lingo.html#sprint` de l'index ne pointait pas dans le vide, contrairement à ce que j'avais conclu sur la version tronquée.
+⚠️ **Leçon : ne jamais éditer un fichier fourni sans vérifier sa taille contre celle du dépôt.** Un écart de 60 % aurait dû m'alerter avant d'écrire.
 
 ---
+
+### 🔴 RESTE À FAIRE
+- **Tully / `CAVALIERS.liam.chevaux` ligne 19769** — diagnostic complet ci-dessus, correctif à écrire. **Aucune urgence** : la base est saine.
+- **Compression photo** — décider après un test concluant, ou coder derrière une constante.
+- **Vérifier que la quête philosophie a disparu** de l'accueil après déploiement.
+- **Vérifier que le décalage horizontal a disparu** après la visionneuse photo.
+- **Nom du module Lingua/Linguae** — à trancher, puis unifier les 15 occurrences.
+- **Chapitre 10 de Linguae (Les dialogues, Édimbourg)** — pas écrit. Périmètre, structure et registre déjà arbitrés dans la passation Lingo.
+- **Hey Baby depuis Linguae** — trois paramètres à transmettre (langue d'interface, langue cible, chapitre en cours), réponse dans la langue de la question. `HYPE_LINGO_HOST` n'existe pas dans le code ; option simple : appeler `assistant.js` directement.
+- **Vidéos de Linguae en format panoramique** — `ajusterCadrage()` met `contain` dès qu'une vidéo est plus large que haute. Rien à corriger dans le code : réexporter les fichiers en **720×1280 vertical**. Priorité `ouverture.mp4`, puis `depart.mp4` (un fichier répare 10 écrans).
 
 ## 🎚️ SESSION 90 (05/08) — LE CHEMIN EST RETIRÉ, LES NIVEAUX DE DIFFICULTÉ ARRIVENT
 
@@ -192,27 +164,9 @@ Table `NIVEAU_VILLE` + `niveauVille(ref)`. Le champ `niveau` posé le matin dans
 ✅ Enchaînement complet vérifié en rendu réel : intro → clic Continuer → choix de la langue → globe ouvert seul → fiche Newmarket → Partir → **écran d'arrivée sur Newmarket**. 0 erreur.
 ⚠️ **Le code du chemin est toujours là**, seulement invisible. Sa suppression franche est un nettoyage à part, à faire quand plus rien ne le lira.
 
-### ✅ LE CHOIX LIBRE EN FIN DE CHAPITRE EST CODÉ
-Trois sorties, affichées **seulement quand le chapitre est terminé** (`et.fini`) : **Rester en {nation}** · **Suivre {le sujet}** · **Choisir sur le globe**. Chaque candidate est un bouton portant le nom de la ville et son chapitre ; le joueur tranche (décision de Blandine), on ne choisit pas pour lui.
-⚠️ **Aucune table à maintenir** : `filsDeSortie(ref)` déduit tout de l'existant — même pays = même `nat` dans `ETAPES`, même sujet = au moins un fichier de lexique commun dans `ETAPE_SRC`. Ajouter une ville fait apparaître ses fils sans y toucher.
-⚠️ **Deux garde-fous** : on n'affiche que des villes **accessibles** (`k <= FAITS`) et **pas encore faites** — sinon le fil du dressage renvoie Windsor vers Saumur puis Saumur vers Windsor en boucle. Trois candidates au maximum par fil (« proposer, pas étaler »). **Un fil sans candidate ne s'affiche pas.**
-✅ Vérifié sur 8 villes : Newmarket → 3 anglaises + Vejer (écurie) · Windsor → 3 anglaises + Saumur (dressage) · **Aberystwyth et Édimbourg n'ont aucun fil « pays » et le bouton disparaît bien** · Lamotte → Saumur + Kildare et Édimbourg par les urgences. Rendu réel contrôlé en capture.
-
-### 🔴 TROISIÈME COLLISION DE NOM DU PROJET
-Mes blocs s'appelaient `.lcFil` — **`.lcFil` existait déjà ligne 457** : c'est le filet de séparation de **32 × 1 px**. Mes conteneurs héritaient donc de sa largeur et de sa hauteur, et toute la fin de chapitre se chevauchait à l'écran. Repéré en mesurant les `getBoundingClientRect` des enfants (w=32, h=1), pas à l'œil. Renommé `.lcSortie` / `.lcSortieT` / `.lcSortieV`.
-⚠️ Après `melange`→`brasser` et `.cv`→`.chc`, c'est la **troisième fois**. La règle du document de passation est juste et je ne l'ai pas appliquée : **chercher le nom AVANT de le créer.**
-⚠️ Corollaire : le titre du sujet venait d'abord de `COLL_NOM`, qui est indexé par **collection** et non par **fichier** — le libellé sortait vide (« Suivre  »). C'est `HYPE_LINGO_LEX[fichier].titre` qu'il faut lire.
-
-### ⚠️ Reste à faire Les deux fils se déduisent tout seuls — même `nat` pour le pays, même fichier de lexique pour la thématique — donc aucune table à maintenir. Décision de Blandine : **proposer les candidates et laisser le joueur trancher**, et **masquer le bouton quand le fil n'existe pas** (Aberystwyth et Édimbourg sont seules dans leur nation ; le poney n'existe qu'à Lamotte).
-- ~~Les trous de contenu : Saumur sans phrase, Vejer avec deux.~~ **RÉGLÉ, voir ci-dessous.**
-
-### ✅ Les trous de phrases sont comblés
-Nouveau fichier **`hype-lingo-phrases-monde.js`**. **La cause** : les phrases sont rangées par leçon dans leur fichier d'origine, et la v2 ne donne pas les mêmes leçons aux mêmes villes. `dressage` n'avait de phrases qu'en **leçons 1 et 4** — or Saumur prend les **leçons 2 et 3**, donc zéro. C'est la ville de niveau 3, celle du palier « dire » : **son niveau était creux.** `ecurie` n'en avait qu'une par leçon → Vejer n'en avait que deux.
-**10 phrases écrites dans les 6 langues** : 6 pour le dressage (cession à la jambe, épaule en dedans, passage, décontraction, rassembler, légèreté) et 4 pour l'écurie (paille, brouette, ration, ordre foin/granulés).
-⚠️ **Additif, n'écrase rien** : le fichier pousse dans `phrases` du chapitre et **refuse tout `ref` déjà présent**. Vérifié en rechargeant le script deux fois → toujours 6 phrases pour Saumur, aucun doublon. Aucun fichier de lexique modifié.
-⚠️ **Style à respecter pour toute phrase future** : espace avant le point d'interrogation, et **le japonais s'écrit AVEC des espaces** entre les groupes — ce n'est pas une coquille, l'exercice consiste à remettre des morceaux dans l'ordre et sans espaces il n'y a rien à déplacer.
-✅ Après ajout : Saumur 20 mots / **6 phrases** (17 % de la leçon), Vejer 21 / 6.
-⚠️ **Les 10 phrases n'ont pas été relues par un natif** — à ajouter à `hype-linguae-doutes.md`, allemand et japonais en priorité.
+### ⚠️ Reste à faire
+- **Le choix libre en fin de chapitre** (rester au pays / suivre le sujet / le globe) : **pas encore codé**. Les deux fils se déduisent tout seuls — même `nat` pour le pays, même fichier de lexique pour la thématique — donc aucune table à maintenir. Décision de Blandine : **proposer les candidates et laisser le joueur trancher**, et **masquer le bouton quand le fil n'existe pas** (Aberystwyth et Édimbourg sont seules dans leur nation ; le poney n'existe qu'à Lamotte).
+- Les trous de contenu : **Saumur sans phrase**, Vejer avec deux.
 - Homogénéiser les vidéos (6 sur 8 ni en 9:16 exact ni à la même durée).
 - Relecture native des 220 mots + les 4 du poney.
 - Les récits courts (pris ailleurs par Blandine) et la carte d'entrée dans `index.html`.
@@ -280,18 +234,6 @@ Le globe sobre écrit d'abord est **remplacé** par le vrai globe de l'app. `GLO
 - **Bouton contextuel** : « Partir » si ouverte, « Y retourner » si faite, **désactivé** si pas encore ouverte — un bouton qui ne fait rien enferme.
 ✅ Vérifié en rendu réel : 19 points, états appliqués, arcs recalculés, `flyTo` vers Saumur, fiche correcte, **message `{t:"linguae-dest", ref:"saumur"}` réellement émis au clic**, bouton désactivé sur une étape fermée, et le tout fonctionne dans l'iframe depuis `lingo.html`. 0 erreur.
 ⚠️ `lingo-globe.html` passe de 40 à 83 Ko. Le fichier sobre est abandonné.
-
-### ✅ Les 8 vidéos sont au même format
-Les six qui ne l'étaient pas sont normalisées en **456×810, le 9:16 exact** — comme Saumur, Jerez et Séville. Recadrage de la largeur **au centre**, plus retrait des 2 px de bande noire que toutes portaient. **Durées inchangées** : Blandine n'a pas tranché le 5 ou le 10 s, et couper Golegã, Lamotte ou Vejer de moitié risquait de perdre leur panneau de fin.
-Perte réelle mesurée : **6,8 à 8,9 % de la largeur** (17 à 22 px par côté), 4 px de hauteur. Vérifié sur planche avant/après : le cheval, le cavalier, l'obstacle et le ciel sont intacts ; ce qui part est une bande de gazon latérale.
-⚠️ **Pourquoi c'était nécessaire** : le code choisit `cover` sur une vidéo portrait, donc il rognait lui-même à l'affichage — **sans savoir où est le sujet**. Un recadrage centré maîtrisé vaut mieux qu'un rognage aveugle.
-⚠️ **Fausse alerte évitée** : la détection automatique croyait voir un filigrane sur Aix et Vejer. Contrôle visuel avant de couper : ce n'étaient que des nuages éclairés. **Aucun recadrage du haut.** Leçon : ne jamais couper sur la seule foi d'un seuil de luminance.
-Golegã est incluse bien qu'absente des 18, pour qu'elle soit prête le jour où elle entre.
-
-### ✅ `hype-linguae-doutes.md` complété
-Ajout des **14 entrées du 5 août** qui n'avaient été relues par personne : les 4 mots neufs du poney et les 10 phrases de Saumur et Vejer. En-tête corrigé : **378 concepts, pas 336** (l'ancien compte oubliait le pansage et ne comptait pas les phrases).
-⚠️ Une consigne ajoutée pour les relecteurs : **une phrase se juge sur « un cavalier dirait-il ça, comme ça ? »**, pas sur l'exactitude grammaticale. Et le japonais des phrases **garde ses espaces** — ils sont fonctionnels, pas fautifs.
-⚠️ Doute signalé de moi-même : dans la phrase du passage, l'espagnol dit « paso español », **qui n'est pas le passage**. À faire corriger en priorité.
 
 ### ⚠️ Reste à faire
 - **Le chemin côtier est encore là**, fonctionnel mais condamné. Le bouton « Le globe » est la nouvelle entrée. Le retirer est un chantier à part.
