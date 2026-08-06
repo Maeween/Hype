@@ -51,13 +51,12 @@
   /* Les trois liens « aides » n'ont pas été vérifiés. Passer ce drapeau à
      false pour les retirer de la bibliothèque tant que Blandine ne les a
      pas ouverts une fois chacun (dix secondes par lien). */
-  /* 06/08 : bascule a false. Les 12 entrees precedentes portent toutes une
-     date de verification ; seuls les deux films « Objectif Galop® 2 » ajoutes
-     ce jour sont sans date, faute d'avoir pu les ouvrir (YouTube a repondu 429
-     a chaque tentative). Ils restent donc invisibles dans la bibliotheque
-     jusqu'a ce que Blandine ouvre les deux liens et qu'on inscrive la date.
-     Remettre a true n'a de sens que si l'on assume d'afficher des liens
-     jamais ouverts. */
+  /* 06/08 : laisse a false, et c'est desormais la position par defaut. Les 14
+     entrees du catalogue portent toutes une date de verification, donc ce
+     drapeau ne cache rien aujourd'hui : il sert de garde-fou pour la suite.
+     Toute video ajoutee sans avoir ete ouverte reste invisible tant que la
+     date n'est pas inscrite. Ne le remettre a true que si l'on assume
+     d'afficher a des cavaliers des liens que personne n'a ouverts. */
   var INCLURE_NON_VERIFIEES = false;
 
   /* Libellé du chapitre auquel une vidéo est reliée. */
@@ -429,15 +428,14 @@
       }
     },
     /* --- Galop 2, meme serie FFE. Deux films trouves sur les sept annonces.
-       verifie VIDE : ces deux liens n'ont pas pu etre ouverts (429 YouTube).
-       Ils sont donc ecartes de la bibliotheque par INCLURE_NON_VERIFIEES.
-       Inscrire la date du jour ici quand Blandine aura confirme, et remplir
-       dureeTranche a ce moment-la ("court", "moyen" ou "plus8"). --- */
+       Verifies par Blandine le 06/08/2026 : les deux repondent. dureeTranche
+       reste vide, la duree n'a pas ete relevee ; l'ecran n'affiche alors rien
+       plutot qu'un chiffre invente. A completer si l'info remonte un jour. --- */
     {
       id: "v-g2-premiers-sauts", yt: "MfzFo_IeSa8",
       source: "FFE", titreSource: "Objectif Galop\u00ae 2 : Premiers sauts",
       langueVideo: "fr", cours: ["g2-c4"], galop: 2, theme: "obstacle",
-      rang: "principal", dureeTranche: "", verifie: "",
+      rang: "principal", dureeTranche: "", verifie: "2026-08-06",
       titre: {
         fr: "Les premiers sauts",
         en: "First jumps",
@@ -459,7 +457,7 @@
       id: "v-g2-parcours", yt: "fYEuHOQ-WE0",
       source: "FFE", titreSource: "Objectif Galop\u00ae 2 : Parcours type Galop\u00ae 2",
       langueVideo: "fr", cours: ["g2-c4", "g2-c3"], galop: 2, theme: "obstacle",
-      rang: "approfondir", dureeTranche: "", verifie: "",
+      rang: "approfondir", dureeTranche: "", verifie: "2026-08-06",
       titre: {
         fr: "Un parcours type",
         en: "A model course",
