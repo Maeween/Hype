@@ -22,6 +22,71 @@
 
 ---
 
+## 🌉 SESSION 111 · LINGUAE (06/08) — LES DEUX IMAGES DE VÉRONE
+
+Blandine envoie sa vue de Vérone : le gris à la bride devant l'Adige, le Ponte Pietra, la tour des Lamberti et le couchant sur les toits ocre.
+
+- **`carte-verone.webp`** — 900×1200, 77 Ko.
+- **`fond-verone.webp`** — 420×560, flou gaussien, luminance 41,5 pour une cible de 39 à 43 (facteur 0,70 trouvé par itération). 1,6 Ko.
+
+✅ **Mesure du titre faite d'emblée cette fois**, en application de la règle notée en session 110 : tiers supérieur de `carte-verone.webp` à **53,3**, donc bien en dessous du seuil de 100 — Vérone n'entre pas dans `TITRE_SOMBRE` et garde le titre crème. Vérifié en rendu : `rgb(244, 230, 196)`, lisible.
+✅ Vérifié aussi : la carte du carnet charge `fond-verone.webp`, la carte postale s'affiche, les trois volets sont là.
+
+⚠️ **Il ne manque plus que `arrivee-verone.mp4`.** L'écran d'arrivée affiche pour l'instant son repli — « Vidéo introuvable · arrivee-verone.mp4 · à déposer à la racine du dépôt ». Le prompt est prêt dans `hype-linguae-prompt-verone.txt`.
+
+### État des vingt-trois étapes
+**Complètes** : les vingt-et-une premières, plus Golegã et Rome finies dans les sessions précédentes.
+**Vérone** : carte ✅, fond ✅, clip ❌.
+
+### Contrôles passés
+Luminance et poids des deux images confrontés aux huit cartes et seize fonds existants · mesure du tiers haut faite avant livraison, pas après · rendu réel de l'écran d'arrivée de Vérone et de sa carte dans le carnet · aucune erreur JS.
+
+### 🧭 Préparation Flutter
+**Aucune amélioration d'architecture réalisée sur cette session** — production d'actifs uniquement.
+La règle de la session 110 a servi dès la ville suivante : la mesure du tiers supérieur est devenue un geste systématique à chaque nouvelle carte, au lieu d'être découverte après coup sur un titre illisible.
+**Risques** : nuls.
+
+---
+
+## 🗺️ SESSION 110 · LINGUAE (06/08) — GOLEGÃ COMPLÈTE, ET LE PROMPT DE VÉRONE
+
+### ✅ Golegã est finie
+Blandine envoie sa vue de Golegã (le lusitanien gris devant le fleuve, l'église et la tour du Ribatejo). Deux fichiers produits au gabarit mesuré :
+- **`carte-golega.webp`** — 900×1200, 68 Ko.
+- **`fond-golega.webp`** — **refait depuis cette image** plutôt que depuis le clip : 420×560, luminance 41,4 pour une cible de 39 à 43. Il remplace celui de la session 109.
+✅ Vérifié en rendu : la carte postale s'affiche, le fond charge sur la carte du carnet. **Golegã a désormais ses quatre pièces** — clip, carte, fond, lexique.
+
+### 🔴 Et un défaut créé par cette nouvelle carte : le titre devenu illisible
+`golega` figurait dans **`TITRE_SOMBRE`**, la liste des villes dont le tiers haut est trop clair pour un titre crème. C'était vrai de son ancienne carte ; la nouvelle a un ciel presque noir. Résultat : « Golegã » s'écrivait en brun très sombre sur du noir.
+✅ **Mesure refaite le jour même, même méthode que le 5 août** — luminance du tiers supérieur de chaque carte : Warendorf 172, Aix-la-Chapelle 161, Lamotte 141, Vejer 110, Séville 77, Le Morne 59, Rome 48, **Golegã 45**. `golega` est retirée de la liste et reprend le titre crème. Vérifié : `rgb(244, 230, 196)`.
+⚠️ **Règle notée dans le code** : cette liste dépend de l'image, pas de la ville. Il faut refaire la mesure **chaque fois qu'une carte est remplacée**. Rome, mesurée à 48, n'a jamais eu à y entrer.
+
+### ✅ `hype-linguae-prompt-verone.txt`
+Le prompt de production de Vérone, au gabarit exact des huit autres blocs : consignes de format, de lumière, de cheval unique, interdits, six images (cinq plans + la carte postale en 3:4), et la liste des fichiers à pousser à la fin.
+Le cheval de la ville : **un bai foncé tenu en main**, pas monté. Vérone n'est ni un haras ni un concours : c'est une foire, on y présente et on y vend.
+
+### 🔴 Correction de ce que j'ai dit en session 109
+J'avais écrit que « la consigne de production impose les deux tiers de largeur et ça ne marche pas ». **C'est inexact** : la consigne est bonne, elle est même écrite en gras dans chaque bloc de `hype-linguae-production.txt`. Le problème est qu'elle **n'a pas été respectée** par le générateur, trois fois sur neuf.
+✅ Donc consigne **durcie** dans le prompt de Vérone : la **moitié** de la largeur au maximum, une marge chiffrée d'un quart de chaque côté, et une porte de sortie explicite — « si le générateur n'y arrive toujours pas, mieux vaut un plan 5 sans panneau qu'un panneau amputé ».
+⚠️ Rappel ajouté aussi : exporter **sans piste audio**, et vérifier le filigrane CapCut, incrusté sur les clips du Morne et de Rome.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` · luminance du tiers haut des huit cartes disponibles, mesurée et non estimée · rendu réel de l'écran d'arrivée de Golegã : carte affichée, couleur du titre vérifiée à la valeur calculée · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **Vérone** : ses trois images (prompt prêt).
+2. **`lingua-affiche.webp`** et le fond du carnet — et la question du renommage de `fond-newmarket.webp`, toujours en attente.
+3. Le vocabulaire des six destinations restantes.
+4. Les définitions en quatre langues.
+5. La sécurité (11 mots) attend une ville.
+
+### 🧭 Préparation Flutter
+**Aucune amélioration d'architecture réalisée sur cette session.**
+Un point de méthode qui vaut d'être gardé : `TITRE_SOMBRE` est une liste **dérivée d'une mesure sur les actifs**, pas une préférence. Elle devrait à terme être calculée au chargement de l'image plutôt que maintenue à la main — c'est exactement le genre de constante qui se désynchronise dès qu'un actif change, et ça vient d'arriver.
+**Risques** : nuls.
+
+---
+
 ## 🔺 SESSION 109 · LINGUAE (06/08) — TROISIÈME PANNEAU TRONQUÉ : CE N'EST PLUS UN ACCIDENT
 
 ### ✅ Le clip de Golegã est conforme
