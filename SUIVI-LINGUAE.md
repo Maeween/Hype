@@ -22,6 +22,34 @@
 
 ---
 
+## 🖼️ SESSION 105 · LINGUAE (06/08) — LE VIDE DE LA PRÉSENTATION EXPLIQUÉ : DEUX IMAGES MANQUANTES
+
+Blandine : « les pages que je voyais pas en ligne du coup elles apparaissent maintenant ? » Réponse cherchée dans le code plutôt que devinée — et ce n'était pas des pages absentes.
+
+### 🔴 Le grand vide noir au milieu de la présentation
+Ce n'est pas un défaut de rendu : `#intro .cit` porte un `margin-bottom: 40vh` **volontaire**, qui ouvre une fenêtre pour laisser voir l'affiche du module avant qu'on descende sur les cinq points. Le vide est noir parce que **`lingua-affiche.webp` n'est pas sur le serveur**.
+⚠️ Attention au nom : ce fichier n'est PAS `fond-lingua.webp`. Ce sont deux images différentes — `fond-lingua.webp` (420×560, 2,1 Ko, reçue) sert uniquement à l'écran du Sprint. L'affiche de la présentation est un fichier à part, jamais évoqué jusqu'ici, et jamais produit.
+
+### 🔴 Le fond du carnet de route aussi
+`#ouvFondImg` charge **`fond-newmarket.webp` en dur** — et c'est l'un des six fonds manquants (avec Lambourn, Connemara, Hickstead, Kildare, Édimbourg). Le carnet s'affiche donc sur du noir plat au lieu de son ambiance.
+⚠️ Le nom en dur est lui-même douteux : le fond de la page d'itinéraire n'a aucune raison d'être celui de Newmarket. À revoir quand l'affiche du module existera, mais rien touché sans demande.
+
+### ✅ Un dernier chiffre, dans le repli HTML
+`pt2t` disait encore « Dix-huit destinations » dans le HTML de secours, alors que la table de traduction dit « Une ville, un chapitre » depuis la session 98. Invisible en pratique (T() écrase au chargement), mais c'est la troisième fois que ce fichier porte deux valeurs contradictoires au même endroit. Aligné. **Plus aucun chiffre de destinations dans le fichier**, hors commentaires historiques.
+
+### Ce qui apparaîtra, et ce qui n'apparaîtra pas, après déploiement
+Apparaîtront : les cartes du carnet, les niveaux, Rome, Golegã, Le Morne, les huit récits, les cinq villes équipées, les textes sans chiffre.
+N'apparaîtront pas tant que les fichiers ne sont pas poussés : l'affiche de la présentation (`lingua-affiche.webp`), le fond du carnet (`fond-newmarket.webp`), les images de Golegã et de Rome, et les six fonds britanniques.
+
+### Contrôles passés
+Syntaxe validée · inventaire exhaustif des images attendues par le fichier (`grep` sur tous les `url()`) confronté à ce qui a été reçu · aucun chiffre de destination restant hors commentaires.
+
+### 🧭 Préparation Flutter
+**Aucune amélioration d'architecture réalisée sur cette session.** Un constat utile toutefois : `fond-newmarket.webp` en dur dans le CSS est le dernier actif média nommé en dehors des tables de données. Tous les autres passent par le `ref` de la ville. Ce serait à sortir dans une variable au même titre que `FIN_VIDEO`.
+**Risques** : nuls, un seul mot de texte modifié.
+
+---
+
 ## 🇵🇹 SESSION 104 · LINGUAE (06/08) — GOLEGÃ ET L'ÉLEVAGE, CINQ VILLES ÉQUIPÉES, VEJER RATTRAPÉE
 
 ### ✅ Golegã, étape 15 — le chapitre de l'ÉLEVAGE
