@@ -3713,6 +3713,58 @@ Deux films « Objectif Galop® 2 » trouves sur les sept annonces : `v-g2-premie
 
 **Verifies par Blandine le 06/08/2026** : les deux repondent. `INCLURE_NON_VERIFIEES` reste malgre tout a **`false`**, et c'est desormais la position par defaut : les 14 entrees du catalogue portent toutes une date, donc le drapeau ne cache rien aujourd'hui et sert de garde-fou pour la suite. Toute video ajoutee sans avoir ete ouverte restera invisible tant que la date n'est pas inscrite. `dureeTranche` laisse vide pour ces deux-la, la duree n'ayant pas ete relevee — l'ecran n'affiche alors rien plutot qu'un chiffre invente.
 
+### AJOUT SESSION 94 quinquies · LE GALOP 4 — CINQ FILMS QUI SE BRANCHENT TOUT DE SUITE
+
+**Catalogue : 21 entrees, 14 films FFE. `index.html` toujours NON MODIFIE.**
+
+Priorite mise sur le Galop 4, comme propose : ses chapitres existent deja **et portent deja leurs blocs complements**, donc ces videos s'affichent en fin de cours sans qu'il y ait rien d'autre a construire. C'est le seul niveau dans ce cas.
+
+| id | yt | film | duree | chapitre |
+|---|---|---|---|---|
+| `v-g4-contact-ffe` | `NjQnoMUWVRM` | Objectif Galop® 4 : Le contact | 3:51 | `g4-contact` |
+| `v-g4-hanches` | `CtjUbHS9q9A` | Deplacer les hanches du cheval | 3:34 | `g4-epaules-hanches` |
+| `v-g4-epaules` | `3ewp5jGh2Mc` | Deplacer les epaules du cheval | 3:33 | `g4-epaules-hanches` |
+| `v-g4-premier-parcours` | `VSyUiMEVoE4` | Premier parcours | 3:51 | `g4-obstacles-equilibre` |
+| `v-g4-exterieur` | `1X3oBNAlypM` | Circuler en exterieur | 3:44 | `g4-exterieur` |
+
+Trois cles de chapitres ajoutees a `CHAPITRES` : `g4-epaules-hanches`, `g4-obstacles-equilibre`, `g4-exterieur`. Ces chapitres existaient dans les cours mais n'avaient pas de libelle dans le fichier video.
+
+**A noter sur `g4-contact` :** ce chapitre porte maintenant **quatre** videos — les trois interventions IFCE (theorie : le juge, l'ergonome des mors, le veterinaire) plus le film FFE monte. C'est le premier chapitre de l'app a avoir une vraie profondeur video, theorie et pratique. A regarder a l'ecran : quatre cartes dans un bloc complements, ce n'est peut-etre pas ce que la mise en page prevoyait. Le champ `rang` permet de trier (`principal` / `approfondir`) si c'est trop charge.
+
+**Deux videos sur `g4-epaules-hanches`** aussi : hanches puis epaules, dans cet ordre, et c'est voulu — les regarder a la suite rend la difference evidente.
+
+**METHODE VALIDEE.** Recherche sur le titre exact = identifiant trouve du premier coup, 7 fois sur 8. Les recherches approximatives ne donnaient rien. Donc : **toujours partir du titre exact**, et c'est pour ca que les captures de Blandine valent de l'or.
+
+**VERIFICATION** : `node --check` OK, chargement en Node OK, 21 identifiants tous distincts, aucun `verifie` vide.
+
+**RESTE 14 FILMS SUR 28.** Galop 1 : 6/7 (le 7e titre inconnu). Galop 2 : 2/7 (5 titres connus). Galop 3 : 1/7 (4 titres connus, 2 inconnus). Galop 4 : 5/7 — manquent « S'equilibre assis » (3:29), « Reprise de dressage type Galop 4 » (3:25), et le 6e titre de la serie. **Prochaine passe : finir le Galop 4 (2 titres connus, immediatement branchables), puis le Galop 2.**
+
+### AJOUT SESSION 94 quater · L'INVENTAIRE DE LA SERIE, RELEVE PAR BLANDINE
+
+Blandine a envoye 26 captures de recherches YouTube (« galop 1 », « galop 2 ffe », « galop 3 ffe », « galop 4 ffe »). Elles ne montrent pas les identifiants — l'identifiant est dans l'URL, invisible dans une liste de resultats — **mais elles donnent les TITRES EXACTS et les DUREES**, ce qui change tout : une recherche sur le titre exact retrouve l'identifiant du premier coup, alors que les recherches approximatives s'epuisaient.
+
+**Deux films de plus au catalogue, trouves par cette methode :**
+| id | yt | film | duree | rattache a |
+|---|---|---|---|---|
+| `v-g1-conduire-pas` | `D1VGrsEq030` | Objectif Galop® 1 : Conduire au pas | 3:25 | `g1-c9`, `g1-c5` |
+| `v-g1-etriers` | `hEylsvCNoAM` | Objectif Galop® 1 : Rester en equilibre sur ses etriers | 3:49 | `g1-c5` |
+
+Deux cles de chapitres de plus : `g1-c5` (La position du cavalier), `g1-c9` (Les aides naturelles et artificielles). **Catalogue : 16 entrees, 9 films FFE.** Les durees des deux films du Galop 2 sont desormais renseignees (`moyen`).
+
+**INVENTAIRE RELEVE SUR LES CAPTURES — ce qui reste a trouver.** Le numero est celui affiche dans le film lui-meme, il donne l'ordre de la serie.
+
+*Galop 1 — 6 des 7 trouves.* 1 Aborder son cheval (3:31) ✓ · 2 Mettre le licol (3:46) ✓ · 3 Monter et descendre (3:54) ✓ · Mener son cheval (3:26) ✓ · 5 Conduire au pas (3:25) ✓ · 6 Rester en equilibre sur ses etriers (3:49) ✓ · **le 7e reste inconnu, son titre n'apparait sur aucune capture.**
+
+*Galop 2 — 2 des 7 trouves.* 1 Deplacer son cheval a l'attache (3:38) · Circuler a pied avec son cheval (3:46) · 3 Regler ses etriers et ressangler (4:20) · 4 Reussir ses transitions (3:45) · 5 Manipuler ses renes (3:43) · 6 Premiers sauts (3:52) ✓ · 7 Parcours type Galop 2 (3:40) ✓
+
+*Galop 3 — 1 des 7 trouve.* Le pansage (3:46) ✓ · 4 Varier son equilibre (4:01) · 5 Partir au galop (3:35) · 7 Adapter son equilibre en terrain varie (3:39) · Sauter des lignes de cavaletti (3:40) · **deux titres manquent.**
+
+*Galop 4 — 0 des 7 trouve, et c'est le plus utile puisque tous les cours du Galop 4 existent deja.* 1 S'equilibrer assis (3:29) · 2 Le contact (3:51) · 3 Deplacer les hanches du cheval (3:34) · 4 Deplacer les epaules du cheval (3:33) · 5 Premier parcours (3:51) · 7 Circuler en exterieur (3:44) · Reprise de dressage type Galop 4 (3:25) · **un titre manque.**
+
+Soit **19 films encore a chercher**, tous avec leur titre exact sauf quatre. Une passe dediee suffit : une recherche par titre, l'identifiant tombe. **Priorite suggeree : le Galop 4**, dont les 16 chapitres et les blocs complements existent deja — c'est la ou les videos se brancheraient immediatement, sans rien construire.
+
+Attention en revanche : les captures montrent aussi beaucoup de videos de chaines privees (Golden Dream, GaloPassion, Horse Precious, Equitationfrance, clubs divers). **Ne pas les verser au catalogue** : qualite inegale, droits inconnus, et une app payante pour enfants n'envoie pas ses cavaliers vers des chaines qu'on ne maitrise pas. Uniquement du FFE et de l'IFCE.
+
 **LE GISEMENT COMPLET EST IDENTIFIE.** La serie compte **28 films de 3 min 30, sept par niveau, pour les Galops 1 a 4**, coproduits par la FFE et Equidia avec le soutien du Fonds Eperon, tournes du 13 au 24 avril 2015 principalement au Parc Equestre Federal de Lamotte (scenes d'ecurie au Poney-Club d'Orleans), realisation Aleksandar Dzerdz, coordination Danielle Lambert. Les themes se repartissent en trois axes : s'occuper du cheval, pratique equestre a pied, pratique equestre a cheval. Ils existent aussi en 4 montages de 26 minutes, un par niveau. **7 des 28 sont dans le catalogue ; 21 restent a recuperer.**
 
 Obstacle rencontre : impossible d'explorer la chaine YouTube de la FFE depuis la session — 429 systematique, puis blocage de l'outil. Les 7 identifiants trouves l'ont ete par recherche titre par titre, ce qui s'epuise vite. Deux pistes pour la suite : reessayer l'exploration de la chaine dans une prochaine session, ou demander a Blandine de deposer la liste des titres depuis son telephone (la chaine Galops® de FFE TV les regroupe), ce qui rendrait la recherche des identifiants beaucoup plus sure.

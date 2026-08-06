@@ -66,6 +66,8 @@
        cours du Galop 1, faute de libelle. Les intitules reprennent exactement
        ceux des cours (regle : jamais d'identifiant technique a l'ecran). */
     "g1-c2":  { fr: "Le pansage, premier soin", en: "Grooming, the first form of care", es: "El acicalado, el primer cuidado", it: "La pulizia, la prima cura", ja: "手入れ：最初のケア", de: "Die Fellpflege, die erste Pflege" },
+    "g1-c5":  { fr: "La position du cavalier", en: "The rider's position", es: "La posición del jinete", it: "La posizione del cavaliere", ja: "騎手の姓勢", de: "Die Sitzposition des Reiters" },
+    "g1-c9":  { fr: "Les aides naturelles et artificielles", en: "Natural and artificial aids", es: "Las ayudas naturales y artificiales", it: "Gli aiuti naturali e artificiali", ja: "自然の扶助と人工の扶助", de: "Natürliche und künstliche Hilfen" },
     "g1-c8":  { fr: "Le matériel de base", en: "Basic equipment", es: "El material básico", it: "L'attrezzatura di base", ja: "基本の道具", de: "Die Grundausrüstung" },
     "g1-c10": { fr: "Le nœud d'attache", en: "The quick-release knot", es: "El nudo de atar", it: "Il nodo d'attacco", ja: "つなぎ結び", de: "Der Anbindeknoten" },
     "g1-c15": { fr: "La sécurité avant tout", en: "Safety first", es: "La seguridad ante todo", it: "La sicurezza prima di tutto", ja: "安全が第一", de: "Sicherheit zuerst" },
@@ -74,6 +76,11 @@
     /* 06/08 : premieres cles du Galop 2, pour les deux films « Objectif Galop® 2 ». */
     "g2-c3": { fr: "Diriger sur un trac\u00e9", en: "Riding a line", es: "Trazar un recorrido", it: "Guidare su un tracciato", ja: "\u30e9\u30a4\u30f3\u3092\u63cf\u304f", de: "Auf einer Linie reiten" },
     "g2-c4": { fr: "La d\u00e9couverte du saut", en: "Discovering the jump", es: "El descubrimiento del salto", it: "La scoperta del salto", ja: "\u8df3\u8e8d\u306e\u767a\u898b", de: "Die Entdeckung des Springens" },
+    /* 06/08 : cles ajoutees pour les films « Objectif Galop® 4 ». Les trois
+       chapitres existaient deja dans les cours, ils n'avaient pas de libelle ici. */
+    "g4-epaules-hanches": { fr: "Déplacer les épaules et les hanches", en: "Moving the shoulders and haunches", es: "Desplazar los hombros y las ancas", it: "Spostare le spalle e le anche", ja: "肩と腰を動かす", de: "Schultern und Hanken versetzen" },
+    "g4-obstacles-equilibre": { fr: "Équilibre à l'obstacle", en: "Balance over fences", es: "Equilibrio ante el obstáculo", it: "Equilibrio all'ostacolo", ja: "障害でのバランス", de: "Gleichgewicht am Sprung" },
+    "g4-exterieur": { fr: "En extérieur", en: "Out on a hack", es: "En exterior", it: "In esterno", ja: "外乗で", de: "Im Gelände" },
     "g4-contact": { fr: "Le contact", en: "Contact", es: "El contacto", it: "Il contatto", ja: "コンタクト", de: "Die Anlehnung" },
     "g4-aides":   { fr: "L'accord des aides", en: "Coordination of the aids", es: "El acuerdo de las ayudas", it: "L'accordo degli aiuti", ja: "扶助の連携", de: "Das Zusammenspiel der Hilfen" },
     "g4-incurvation": { fr: "L'incurvation", en: "Bend and flexion", es: "La incurvación", it: "L'incurvamento", ja: "内方姿勢", de: "Stellung und Biegung" },
@@ -427,15 +434,192 @@
         de: "Für Galopp 3 gedreht, geht also über das Programm von Galopp 1 hinaus: die Reihenfolge der Bürsten wird vollständig gezeigt."
       }
     },
+    {
+      id: "v-g1-conduire-pas", yt: "D1VGrsEq030",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 1 : Conduire au pas",
+      langueVideo: "fr", cours: ["g1-c9", "g1-c5"], galop: 1, theme: "position-du-cavalier",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Conduire au pas",
+        en: "Steering at the walk",
+        es: "Conducir al paso",
+        it: "Condurre al passo",
+        ja: "\u5e38\u6b69\u3067\u306e\u624b\u7dbf\u64cd\u4f5c",
+        de: "Im Schritt lenken"
+      },
+      resume: {
+        fr: "Tourner, s'arreter, repartir : la premiere conversation entre la main, la jambe et le cheval.",
+        en: "Turning, halting, moving off: the first conversation between hand, leg and horse.",
+        es: "Girar, parar, volver a andar: la primera conversaci\u00f3n entre la mano, la pierna y el caballo.",
+        it: "Girare, fermarsi, ripartire: la prima conversazione tra mano, gamba e cavallo.",
+        ja: "\u66f2\u304c\u308b\u3001\u6b62\u307e\u308b\u3001\u518d\u3073\u9032\u3080\u3002\u624b\u3068\u8107\u3068\u99ac\u306e\u3001\u306f\u3058\u3081\u306e\u4f1a\u8a71\u3002",
+        de: "Wenden, halten, antreten: das erste Gespr\u00e4ch zwischen Hand, Bein und Pferd."
+      },
+      observer: {
+        fr: ["La main basse et le poignet souple", "Le regard porte dans la direction voulue", "La jambe qui demande avant que la main tourne", "L'arret obtenu sans tirer"],
+        en: ["Low hand, supple wrist", "Eyes carried in the chosen direction", "The leg asking before the hand turns", "A halt obtained without pulling"],
+        es: ["La mano baja y la mu\u00f1eca flexible", "La mirada puesta en la direcci\u00f3n elegida", "La pierna que pide antes de que la mano gire", "La parada obtenida sin tirar"],
+        it: ["La mano bassa e il polso morbido", "Lo sguardo nella direzione scelta", "La gamba che chiede prima che la mano giri", "L'arresto ottenuto senza tirare"],
+        ja: ["\u4f4e\u3044\u624b\u3068\u67d4\u3089\u304b\u3044\u624b\u9996", "\u884c\u304d\u305f\u3044\u65b9\u5411\u3092\u898b\u308b\u76ee\u7dda", "\u624b\u3092\u4f7f\u3046\u524d\u306b\u8107\u3067\u6c42\u3081\u308b", "\u5f15\u304b\u305a\u306b\u5f97\u308b\u505c\u6b62"],
+        de: ["Tiefe Hand, weiches Handgelenk", "Der Blick in die gew\u00e4hlte Richtung", "Das Bein fragt, bevor die Hand wendet", "Das Halten ohne Ziehen"]
+      }
+    },
+    {
+      id: "v-g1-etriers", yt: "hEylsvCNoAM",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 1 : Rester en \u00e9quilibre sur ses \u00e9triers",
+      langueVideo: "fr", cours: ["g1-c5"], galop: 1, theme: "position-du-cavalier",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "En \u00e9quilibre sur ses \u00e9triers",
+        en: "Balanced on the stirrups",
+        es: "En equilibrio sobre los estribos",
+        it: "In equilibrio sulle staffe",
+        ja: "\u9419\u306e\u4e0a\u3067\u306e\u30d0\u30e9\u30f3\u30b9",
+        de: "Im Gleichgewicht in den B\u00fcgeln"
+      },
+      resume: {
+        fr: "Le talon qui descend, le genou qui plie, et tout le poids qui trouve enfin son chemin jusqu'au pied.",
+        en: "Heel down, knee bending, and the whole weight finally finding its way to the foot.",
+        es: "El tal\u00f3n que baja, la rodilla que se dobla, y todo el peso que encuentra por fin su camino hasta el pie.",
+        it: "Il tallone che scende, il ginocchio che si flette, e tutto il peso che trova finalmente la strada fino al piede.",
+        ja: "\u8e75\u3092\u4e0b\u3052\u3001\u819d\u3092\u3086\u308b\u3081\u308b\u3002\u4f53\u91cd\u304c\u3084\u3063\u3068\u8db3\u3078\u3068\u9053\u3092\u898b\u3064\u3051\u308b\u3002",
+        de: "Die Ferse tief, das Knie gebeugt, und das ganze Gewicht findet endlich seinen Weg bis in den Fu\u00df."
+      },
+      observer: {
+        fr: ["Le talon plus bas que la pointe du pied", "Le genou qui absorbe le mouvement", "Le buste qui avance sans s'effondrer", "Les mains qui restent independantes de l'equilibre"],
+        en: ["Heel lower than the toe", "The knee absorbing the movement", "The upper body coming forward without collapsing", "Hands staying independent of the balance"],
+        es: ["El tal\u00f3n m\u00e1s bajo que la punta del pie", "La rodilla que absorbe el movimiento", "El busto que avanza sin hundirse", "Las manos que siguen independientes del equilibrio"],
+        it: ["Il tallone pi\u00f9 basso della punta del piede", "Il ginocchio che assorbe il movimento", "Il busto che avanza senza cedere", "Le mani che restano indipendenti dall'equilibrio"],
+        ja: ["\u3064\u307e\u5148\u3088\u308a\u4f4e\u3044\u8e75", "\u52d5\u304d\u3092\u5438\u6536\u3059\u308b\u819d", "\u5d29\u308c\u305a\u306b\u524d\u306b\u51fa\u308b\u4e0a\u4f53", "\u30d0\u30e9\u30f3\u30b9\u3068\u5207\u308a\u96e2\u3055\u308c\u305f\u624b"],
+        de: ["Die Ferse tiefer als die Fu\u00dfspitze", "Das Knie, das die Bewegung aufnimmt", "Der Oberk\u00f6rper kommt vor, ohne einzusinken", "Die H\u00e4nde bleiben unabh\u00e4ngig vom Gleichgewicht"]
+      }
+    },
+    /* --- Galop 4, meme serie FFE. Cinq films sur les sept trouves.
+       Ils se rattachent a des chapitres qui existent deja et qui portent deja
+       leurs blocs complements : ces videos s'affichent donc en fin de cours
+       sans qu'il y ait rien d'autre a construire. Verifies le 06/08/2026 par
+       recherche sur les titres exacts releves par Blandine ; durees lues sur
+       ses captures. Manquent : « S'equilibre assis », « Reprise de dressage
+       type Galop 4 », et le 6e titre de la serie. --- */
+    {
+      id: "v-g4-contact-ffe", yt: "NjQnoMUWVRM",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 4 : Le contact",
+      langueVideo: "fr", cours: ["g4-contact"], galop: 4, theme: "position-du-cavalier",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Le contact, en pratique",
+        en: "Contact, in practice",
+        es: "El contacto, en la pr\u00e1ctica",
+        it: "Il contatto, in pratica",
+        ja: "\u5b9f\u8df5\u3068\u3057\u3066\u306e\u30b3\u30f3\u30bf\u30af\u30c8",
+        de: "Anlehnung in der Praxis"
+      },
+      resume: {
+        fr: "Apres les trois interventions IFCE sur la theorie du contact, voici le meme sujet monte, filme, en trois minutes.",
+        en: "After the three IFCE talks on the theory of contact, here is the same subject ridden, filmed, in three minutes.",
+        es: "Despu\u00e9s de las tres intervenciones del IFCE sobre la teor\u00eda del contacto, aqu\u00ed est\u00e1 el mismo tema montado, filmado, en tres minutos.",
+        it: "Dopo i tre interventi IFCE sulla teoria del contatto, ecco lo stesso tema a cavallo, filmato, in tre minuti.",
+        ja: "\u30b3\u30f3\u30bf\u30af\u30c8\u306e\u7406\u8ad6\u3092\u8a9e\u308bIFCE\u306e\u4e09\u3064\u306e\u8b1b\u6f14\u306e\u3042\u3068\u306b\u3001\u540c\u3058\u4e3b\u984c\u3092\u99ac\u4e0a\u3067\u3001\u4e09\u5206\u3067\u3002",
+        de: "Nach den drei IFCE-Beitr\u00e4gen zur Theorie der Anlehnung hier dasselbe Thema geritten, gefilmt, in drei Minuten."
+      }
+    },
+    {
+      id: "v-g4-hanches", yt: "CtjUbHS9q9A",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 4 : D\u00e9placer les hanches du cheval",
+      langueVideo: "fr", cours: ["g4-epaules-hanches"], galop: 4, theme: "dressage",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "D\u00e9placer les hanches",
+        en: "Moving the haunches",
+        es: "Desplazar las ancas",
+        it: "Spostare le anche",
+        ja: "\u8170\u3092\u52d5\u304b\u3059",
+        de: "Die Hanken versetzen"
+      },
+      resume: {
+        fr: "La jambe reculee demande, la main accompagne, et l'arriere-main se deplace d'un pas. Pas deux.",
+        en: "The leg drawn back asks, the hand follows, and the hindquarters move over by one step. Not two.",
+        es: "La pierna atrasada pide, la mano acompa\u00f1a, y los cuartos traseros se desplazan un paso. No dos.",
+        it: "La gamba arretrata chiede, la mano accompagna, e le anche si spostano di un passo. Non due.",
+        ja: "\u5f8c\u308d\u306b\u5f15\u3044\u305f\u8107\u3067\u6c42\u3081\u3001\u624b\u304c\u5bfe\u5fdc\u3057\u3001\u5f8c\u80a2\u304c\u4e00\u6b69\u52d5\u304f\u3002\u4e8c\u6b69\u3067\u306f\u306a\u3044\u3002",
+        de: "Das zur\u00fcckgenommene Bein fragt, die Hand begleitet, und die Hinterhand tritt einen Schritt zur Seite. Nicht zwei."
+      }
+    },
+    {
+      id: "v-g4-epaules", yt: "3ewp5jGh2Mc",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 4 : D\u00e9placer les \u00e9paules du cheval",
+      langueVideo: "fr", cours: ["g4-epaules-hanches"], galop: 4, theme: "dressage",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "D\u00e9placer les \u00e9paules",
+        en: "Moving the shoulders",
+        es: "Desplazar los hombros",
+        it: "Spostare le spalle",
+        ja: "\u80a9\u3092\u52d5\u304b\u3059",
+        de: "Die Schultern versetzen"
+      },
+      resume: {
+        fr: "Le pendant du precedent, par l'avant-main. Regarder les deux a la suite rend la difference evidente.",
+        en: "The counterpart of the previous film, through the forehand. Watching both in a row makes the difference obvious.",
+        es: "La contraparte del anterior, por el tercio delantero. Verlos seguidos hace la diferencia evidente.",
+        it: "Il corrispondente del precedente, dall'avantreno. Guardarli di seguito rende la differenza evidente.",
+        ja: "\u524d\u306e\u4f5c\u54c1\u306e\u5bfe\u3092\u306a\u3059\u3001\u524d\u80a2\u304b\u3089\u306e\u8a71\u3002\u7d9a\u3051\u3066\u898b\u308b\u3068\u9055\u3044\u304c\u306f\u3063\u304d\u308a\u3059\u308b\u3002",
+        de: "Das Gegenst\u00fcck zum vorigen Film, \u00fcber die Vorhand. Beide hintereinander gesehen, wird der Unterschied offensichtlich."
+      }
+    },
+    {
+      id: "v-g4-premier-parcours", yt: "VSyUiMEVoE4",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 4 : Premier parcours",
+      langueVideo: "fr", cours: ["g4-obstacles-equilibre"], galop: 4, theme: "obstacle",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Le premier parcours",
+        en: "The first course",
+        es: "El primer recorrido",
+        it: "Il primo percorso",
+        ja: "\u306f\u3058\u3081\u3066\u306e\u30b3\u30fc\u30b9",
+        de: "Der erste Parcours"
+      },
+      resume: {
+        fr: "Reconnaitre, compter ses foulees, garder le meme galop du premier au dernier obstacle.",
+        en: "Walking the course, counting strides, keeping the same canter from the first fence to the last.",
+        es: "Reconocer el recorrido, contar las zancadas, mantener el mismo galope del primer al \u00faltimo obst\u00e1culo.",
+        it: "Ricognizione, conteggio delle falcate, e lo stesso galoppo dal primo all'ultimo ostacolo.",
+        ja: "\u30b3\u30fc\u30b9\u3092\u4e0b\u898b\u3057\u3001\u6b69\u6570\u3092\u6570\u3048\u3001\u6700\u521d\u304b\u3089\u6700\u5f8c\u306e\u969c\u5bb3\u307e\u3067\u540c\u3058\u99c8\u6b69\u3092\u4fdd\u3064\u3002",
+        de: "Den Parcours abgehen, Galoppspr\u00fcnge z\u00e4hlen, denselben Galopp vom ersten bis zum letzten Sprung halten."
+      }
+    },
+    {
+      id: "v-g4-exterieur", yt: "1X3oBNAlypM",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 4 : Circuler en ext\u00e9rieur",
+      langueVideo: "fr", cours: ["g4-exterieur"], galop: 4, theme: "securite",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Circuler en ext\u00e9rieur",
+        en: "Riding out",
+        es: "Circular en exterior",
+        it: "Uscire in esterno",
+        ja: "\u5916\u4e57\u3067\u306e\u884c\u52d5",
+        de: "Im Gel\u00e4nde unterwegs"
+      },
+      resume: {
+        fr: "Le groupe, les distances, la route, et ce qu'on fait quand un cheval derriere n'est plus d'accord.",
+        en: "The group, the distances, the road, and what to do when a horse behind stops agreeing.",
+        es: "El grupo, las distancias, la carretera, y qu\u00e9 hacer cuando un caballo de atr\u00e1s deja de estar de acuerdo.",
+        it: "Il gruppo, le distanze, la strada, e cosa fare quando un cavallo dietro non \u00e8 pi\u00f9 d'accordo.",
+        ja: "\u96c6\u56e3\u3001\u8eca\u9593\u8ddd\u96e2\u3001\u8def\u4e0a\u3001\u305d\u3057\u3066\u5f8c\u308d\u306e\u99ac\u304c\u7d0d\u5f97\u3057\u306a\u304f\u306a\u3063\u305f\u3068\u304d\u306e\u5bfe\u5fdc\u3002",
+        de: "Die Gruppe, die Abst\u00e4nde, die Stra\u00dfe, und was man tut, wenn ein Pferd hinten nicht mehr einverstanden ist."
+      }
+    },
     /* --- Galop 2, meme serie FFE. Deux films trouves sur les sept annonces.
-       Verifies par Blandine le 06/08/2026 : les deux repondent. dureeTranche
-       reste vide, la duree n'a pas ete relevee ; l'ecran n'affiche alors rien
-       plutot qu'un chiffre invente. A completer si l'info remonte un jour. --- */
+       Verifies par Blandine le 06/08/2026 : les deux repondent. Durees lues
+       sur ses captures : 3 min 52 pour les premiers sauts, 3 min 40 pour le
+       parcours type, d'ou dureeTranche "moyen" pour les deux. --- */
     {
       id: "v-g2-premiers-sauts", yt: "MfzFo_IeSa8",
       source: "FFE", titreSource: "Objectif Galop\u00ae 2 : Premiers sauts",
       langueVideo: "fr", cours: ["g2-c4"], galop: 2, theme: "obstacle",
-      rang: "principal", dureeTranche: "", verifie: "2026-08-06",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
       titre: {
         fr: "Les premiers sauts",
         en: "First jumps",
@@ -457,7 +641,7 @@
       id: "v-g2-parcours", yt: "fYEuHOQ-WE0",
       source: "FFE", titreSource: "Objectif Galop\u00ae 2 : Parcours type Galop\u00ae 2",
       langueVideo: "fr", cours: ["g2-c4", "g2-c3"], galop: 2, theme: "obstacle",
-      rang: "approfondir", dureeTranche: "", verifie: "2026-08-06",
+      rang: "approfondir", dureeTranche: "moyen", verifie: "2026-08-06",
       titre: {
         fr: "Un parcours type",
         en: "A model course",
