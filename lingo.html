@@ -268,6 +268,17 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
  pointer-events:none}
 #ouvFilm.fini #ouvSuite{opacity:1;pointer-events:auto}
+/* Relance manuelle : visible SEULEMENT si le demarrage automatique du film
+   a ete refuse (economie d'energie, economiseur de donnees). Sans texte,
+   donc sans traduction a maintenir. */
+#ouvRelance{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);
+ width:78px;height:78px;border-radius:50%;display:none;align-items:center;justify-content:center;
+ background:rgba(8,14,20,.55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+ border:1px solid rgba(32,217,245,.42);box-shadow:0 0 46px -12px rgba(32,217,245,.55)}
+#ouvFilm.refuse #ouvRelance{display:flex}
+#ouvRelance i{display:block;width:0;height:0;margin-left:6px;
+ border-left:18px solid var(--turquoise);border-top:12px solid transparent;
+ border-bottom:12px solid transparent}
 
 
 /* ==================================================================
@@ -832,6 +843,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <div id="ouvVoile"></div>
   <button id="ouvPasser" data-t="passer">Passer</button>
   <button id="ouvSuite" data-t="commenceVoyage">Commence ton voyage</button>
+  <button id="ouvRelance" type="button" aria-label="Lancer le film"><i></i></button>
 </div>
 
 <!-- ==================================================================
@@ -3931,6 +3943,10 @@ function montrerDest(){
       VOYAGE_LANGUE = D.lg;
       S("dest").classList.remove("on");
       try{ localStorage.setItem("hype_lingua_voyage", D.cle); }catch(e){}
+      /* Premiere visite : c'est ici que le film s'enchaine. Il ne pouvait
+         pas partir au chargement, il aurait joue en entier DERRIERE la
+         presentation (#intro et #dest sont au-dessus de lui). */
+      lancerFilm();
       /* ⚠️ RETIRÉ le 6 août 2026. Ouvrir le globe ici, sur un délai,
          pouvait chevaucher l'ouverture directe de La Baule que déclenche
          maintenant terminerOuverture() — deux écrans qui se disputent
@@ -3962,6 +3978,10 @@ S("dsRetour").addEventListener("click", function(){
     montrerIntro();
     try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
   }
+  /* Deja venu : le film part tout seul, sans passer par le carnet.
+     Premiere visite : il part a la fermeture de l'ecran de destination
+     (voir montrerDest), pour ne pas jouer derriere la presentation. */
+  else lancerFilm();
 })();
 
 /* Tout est défini : on redemande un rendu du chemin pour que le bouton
@@ -3976,10 +3996,9 @@ lastI=-1;
 S("retour").addEventListener("click", function(){
   if(S("lecon").classList.contains("on")){ fermerLecon(); return; }
   if(S("arrivee").classList.contains("ouvert")){ fermerArrivee(); return; }
-  S("ouvFilm").classList.remove("joue","fini");
-  S("ouverture").classList.remove("joue","parti");
-  S("ouverture").scrollTop=0;
-  S("ouverture").scrollTop=0;
+  /* meme sortie que la fin du film : le carnet de route, video arretee
+     (avant, la vidéo restait en lecture derriere un calque masque). */
+  terminerOuverture();
 });
 
 /* le bouton matériel « retour » du téléphone et le geste de balayage */
@@ -3998,45 +4017,96 @@ S("arrJouer").addEventListener("click",function(){
 S("arrPartir").addEventListener("click",function(){ fermerArrivee(); setTimeout(lancerDepart,240); });
 
 /* ==================================================================
-   OUVERTURE : la séquence complète, jouée UNE SEULE FOIS.
-   Étoiles, tracé, Îles, puis l'arrivée à Newmarket d'un seul tenant.
-   Elle ne démarre qu'au tap sur « Partir » : iOS refuse de lancer une
-   vidéo sans geste préalable.
+   OUVERTURE — L'ORDRE, corrige le 6 aout 2026 sur retour de Blandine :
+   « en gros l'ordre est mauvais en ligne ».
+
+   AVANT : carnet des 18 villes -> « Partir » -> film -> globe.
+   Le film arrivait donc APRES la liste des villes, et « Commence ton
+   voyage » sautait directement au globe : le carnet ne se revoyait
+   jamais, et la sequence se lisait a l'envers.
+
+   MAINTENANT : film -> « Commence ton voyage » -> carnet des 18 villes
+   -> « Partir » -> globe.
+
+   ⚠️ LE FILM DEMARRE SEUL. Aucun geste prealable n'est necessaire : iOS
+   n'exige un tap que pour une video SONORE, et celle-ci est muette +
+   playsinline. Le commentaire precedent affirmait le contraire, c'etait
+   trop prudent. A noter : le tap fait depuis l'encart d'accueil de
+   index.html ne compte de toute facon pas — c'est un autre document, le
+   credit de geste ne traverse pas la navigation.
+
+   ⚠️ DEUX CAS refusent quand meme le demarrage automatique : le mode
+   economie d'energie et l'economiseur de donnees. Dans ces cas SEULEMENT,
+   play() renvoie une promesse rejetee et on affiche le bouton de relance
+   (#ouvRelance) par-dessus. On n'enchaine PLUS discretement vers la suite
+   comme avant : ca donnait l'impression que le film n'existait pas.
+   Un vrai `error` sur le fichier (absent, illisible) continue lui a
+   passer directement au carnet — inutile de proposer de relancer ce qui
+   ne peut pas jouer.
+
+   ⚠️ SI L'ENCART OUVRE LINGUAE DANS UNE IFRAME de index.html, il faut
+   allow="autoplay" sur cette iframe, sinon Safari refuse meme le muet.
+   Cet attribut est dans index.html, pas ici : a passer a l'autre fil.
    ================================================================== */
-/* L'ouverture rejoue à CHAQUE fois qu'on appuie sur Partir : c'est elle
-   qui contient les constellations, le tracé et les Îles qui s'illuminent.
-   Elle ne se voyait qu'une seule fois, donc plus jamais après le premier
-   lancement. Le bouton « Passer » reste là pour qui la connaît. */
+var FILM_FILET=null;
+
+function lancerFilm(){
+  var v=S("ouvVid");
+  if(S("ouvFilm").classList.contains("joue")) return;   /* deja en cours */
+  S("ouvFilm").classList.remove("fini","refuse");
+  v.src="ouverture.mp4";
+  ajusterCadrage(v);
+  S("ouvFilm").classList.add("joue");
+  S("ouverture").classList.add("joue");
+  var j=v.play();
+  if(j&&j.catch) j.catch(function(){ S("ouvFilm").classList.add("refuse"); });
+  /* Le film fait 10,1 s mesurees. Le bouton de sortie apparaissait avant
+     au bout de 2 s, quoi qu'il arrive : huit secondes AVANT la fin, donc
+     on sautait en pleine sequence. Il n'apparait plus qu'a la vraie fin
+     (evenement `ended`), ce filet ne servant que si l'evenement ne vient
+     jamais — video absente, decodage bloque. */
+  if(FILM_FILET) clearTimeout(FILM_FILET);
+  FILM_FILET=setTimeout(function(){ S("ouvFilm").classList.add("fini"); }, 10500);
+}
+
 (function(){
   var v=S("ouvVid");
-  S("ouvPartir").addEventListener("click",function(){
-    v.src="ouverture.mp4";
-    v.addEventListener("error",terminerOuverture);
-    v.addEventListener("ended",function(){ S("ouvFilm").classList.add("fini"); });
-    ajusterCadrage(v);
-    S("ouvFilm").classList.add("joue");
-    S("ouverture").classList.add("joue");
-    var j=v.play(); if(j&&j.catch) j.catch(terminerOuverture);
-    /* filet de sécurité : si la vidéo manque, on n'enferme personne.
-       Le bouton de sortie apparaît au bout de 2 s quoi qu'il arrive. */
-    setTimeout(function(){ S("ouvFilm").classList.add("fini"); }, 2000);
+  v.addEventListener("ended",function(){ S("ouvFilm").classList.add("fini"); });
+  /* garde-fou : ne traiter l'erreur que si le film est reellement a
+     l'ecran. Sinon le v.load() de terminerOuverture, qui vide la source,
+     peut relancer terminerOuverture en boucle. */
+  v.addEventListener("error",function(){
+    if(S("ouvFilm").classList.contains("joue")) terminerOuverture();
+  });
+  v.addEventListener("playing",function(){ S("ouvFilm").classList.remove("refuse"); });
+  S("ouvRelance").addEventListener("click",function(){
+    S("ouvFilm").classList.remove("refuse");
+    var j=v.play();
+    if(j&&j.catch) j.catch(function(){ S("ouvFilm").classList.add("refuse"); });
   });
   S("ouvPasser").addEventListener("click",terminerOuverture);
   S("ouvSuite").addEventListener("click",terminerOuverture);
+  /* « Partir », sur le carnet, est maintenant la DERNIERE marche de la
+     sequence : il ouvre le globe. Ce n'est plus lui qui lance le film. */
+  S("ouvPartir").addEventListener("click",partirVersGlobe);
 })();
+
+/* fin du film (ou « Passer ») -> le carnet de route des 18 villes */
 function terminerOuverture(){
   var v=S("ouvVid");
+  if(FILM_FILET){ clearTimeout(FILM_FILET); FILM_FILET=null; }
   try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){}
-  S("ouvFilm").classList.remove("joue","fini");
+  S("ouvFilm").classList.remove("joue","fini","refuse");
+  S("ouverture").classList.remove("joue","parti");
+  S("ouverture").scrollTop=0;
+}
+
+/* « Partir » -> le globe. La Baule y est SUGGEREE (anneau dore, en tete
+   de liste, meme mecanisme que la recommandation de fin de chapitre)
+   mais rien n'oblige a la choisir : « ca fait 8 fois que je fais La
+   Baule, je vais vomir a force. » */
+function partirVersGlobe(){
   S("ouverture").classList.add("parti");
-  /* ⚠️ CORRIGÉ à nouveau le 6 août 2026, sur retour de Blandine :
-     « ça fait 8 fois que je fais La Baule, je vais vomir à force ».
-     La version précédente forçait l'entrée directe dans La Baule à
-     chaque fois — pratique le tout premier jour, épuisant à chaque
-     rechargement de test ensuite. Le bouton dit maintenant ce qu'il
-     fait : « Commence ton voyage » ouvre le globe, La Baule y est
-     SUGGÉRÉE (même mécanisme que la recommandation de fin de chapitre —
-     anneau doré, en tête de liste) mais rien n'oblige à la choisir. */
   PROCHAINE_RECOMMANDEE = ETAPES[0] ? ETAPES[0].ref : null;
   setTimeout(ouvrirGlobe, 120);
 }
