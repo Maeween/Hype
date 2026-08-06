@@ -1,0 +1,298 @@
+# SUIVI HYPE LINGUAE
+
+> Le journal de Hype Linguae (`lingo.html` et ses fichiers satellites : `lingo-globe.html`,
+> `lingo-collection.html`, `hype-lingo-lex-*.js`, `hype-lingo-villes*.js`) vit **ici**,
+> séparément du `SUIVI.md` partagé avec `index.html`.
+>
+> **Pourquoi ce fichier existe** (6 août 2026) : trois sessions Linguae d'affilée ont
+> disparu du `SUIVI.md` partagé, écrasées par des écritures concurrentes de la
+> conversation qui travaille sur `index.html` au même moment. Le `SUIVI.md` documente
+> lui-même deux précédents du même problème, les 16 et 28/07 — ce n'est pas un
+> incident isolé, c'est un défaut de structure : deux pages codeuses différentes
+> (`lingo.html` et `index.html`) partageant un seul journal séquentiel.
+>
+> **La règle change donc, pour Linguae seulement** : ce fichier-ci est la source de
+> vérité pour tout ce qui touche `lingo.html` et ses satellites. Le `SUIVI.md` partagé
+> garde son historique déjà écrit (dont d'anciennes sessions Linguae, avant ce jour) et
+> reste la source pour `index.html` — mais ne reçoit plus de nouvelles sessions Linguae.
+>
+> **Règle de reprise, comme dans le SUIVI partagé** : ne jamais conclure qu'un travail
+> n'est pas fait sur la seule lecture de ce fichier — vérifier l'index réel
+> (`lingo.html`) par recherche exhaustive avant de conclure à un manque.
+
+---
+
+## 🔍 SESSION 99 · LINGUAE (06/08) — LE FLASH DU CHEMIN IDENTIFIÉ SUR LA VIDÉO, LA CARTE À GAGNER RÉTABLIE
+
+### 🔴 Le flash entre « Le tour du monde » et le globe : c'était le CHEMIN
+Blandine : « il reste toujours le flash d'une ancienne page entre la page le tour du monde et le globe ». Trouvé en dépouillant son enregistrement image par image (60 i/s) : **entre 4,15 s et 4,25 s, le chemin est intégralement visible** — ses boutons LE GLOBE / LA COLLECTION, la carte postale de La Baule, le bouton SPRINT · 60 S. Environ 150 ms.
+
+**Cause exacte** : `#globe` et `#ouverture` étaient tous deux en `z-index:40`. À rang égal, c'est l'ordre du document qui tranche — et `#ouverture` vient après `#globe`, donc le carnet gagnait. Il fallait donc masquer le carnet AVANT d'ouvrir le globe, et pendant ce laps de temps le chemin, qui est la page de fond, apparaissait. Le `setTimeout(…, 120)` n'était pas le problème : même à zéro, la transition d'opacité du globe (.3 s) aurait laissé voir le chemin au travers.
+
+✅ **Corrigé en deux temps** : `#globe` passe en `z-index:41` (au-dessus du carnet, toujours sous `#ouvFilm` à 42 et `#intro`/`#dest` à 44) · `partirVersGlobe()` ouvre le globe **d'abord** et ne retire le carnet qu'après 340 ms, quand le globe est complètement opaque.
+✅ Vérifié par échantillonnage de la transition en rendu réel : le globe atteint l'opacité 1 pendant que le carnet est encore là, puis le carnet passe en `parti`. **Zéro instant où le carnet est masqué sans que le globe soit opaque** — le flash n'est plus possible par construction, pas juste improbable.
+
+### 🔴 La carte à gagner avait disparu de l'écran d'arrivée
+« Initialement on avait ajouté la carte à gagner et l'objet à gagner mais floutés sur cette page. » L'objet était bien là ; la carte, non. Cause : `S("pimg").addEventListener("error", … display="none")` — **une image absente du serveur masquait tout le bloc**, titre compris.
+✅ Une image manquante n'est plus une raison de retirer la récompense de l'écran. Le cadre reste, la ville se lit, et une mention discrète **« Carte à venir »** (6 langues, nouvelle clé `carteAVenir`) remplace la photo. Si `carte-labaule.webp` existe bien en ligne, rien ne change : l'image s'affiche comme avant, et un `load` réussi retire la classe de repli.
+⚠️ Je ne peux pas vérifier d'ici si `carte-labaule.webp` est réellement en ligne — c'est l'hypothèse la plus probable pour expliquer la disparition, mais elle reste à confirmer côté dépôt.
+
+### ✅ « On lit mal » : la règle qui tuait le texte
+Trouvé : `#souvenir.apercu .carte{opacity:.5}` s'appliquait à **toute la carte**, texte compris, sur fond noir. « Montrer sans donner » doit se lire sur l'objet, pas sur les mots.
+✅ Le voile passe sur **l'icône seule** (`opacity:.4`), le cadre s'atténue légèrement, et le texte revient à pleine opacité : titre en gris clair `#DCE5EC`, étiquette en or clarifié `#E2C878`. Même clarification pour `#arrTete .nation` (la ligne « FRANCE · À L'AUBE »), qui manquait de contraste avec `--or` à .2em de tracking.
+
+### ✅ Deux chiffres de plus, trouvés sur ses captures
+L'écran de choix de la langue en portait deux que je n'avais pas vus en session 98, **et ils se contredisaient** : le sous-titre disait « dix-neuf destinations », la ligne de l'anglais « Dix-huit destinations ». Retirés tous les deux (`destSous` → « Une langue, une destination » · la description de l'anglais → « De la côte atlantique à l'Andalousie », 6 langues).
+
+### ⏳ Prochaine session : l'île Maurice
+Décisions prises par Blandine, à exécuter : **Maurice s'insère après La Baule**, sur l'idée de **réserver une balade** (mer, baignade) — « mets-la où tu veux, je te laisse l'écrire ». Puis **le cheval** juste après, puis **la sécurité** dans une ville encore à créer (« il en reste une trentaine »).
+Reste à écrire : son lexique (~12 mots + 3 phrases, 6 langues), sa lettre et ses 3 volets dans `hype-lingo-villes-monde.js`, son récit, sa phrase de « pourquoi », ses coordonnées globe, son entrée `ETAPES` + `ETAPE_SRC`. `fond-maurice.webp` existe déjà ; `carte-maurice.webp` et `arrivee-maurice.mp4` manquent (le repli « Carte à venir » et « Vidéo introuvable » couvrent l'attente).
+⚠️ **Vérifié avant de promettre que le réordonnancement est sans risque** : `FAITS` n'est pas persisté (`var FAITS = 4` en dur) et les magasins `hype_lingua_quiz` / `hype_lingua_cartes` sont indexés **par `ref`**, pas par position. Déplacer des villes dans `ETAPES` ne perd donc aucune progression.
+
+### Contrôles passés
+Syntaxe validée · transition carnet → globe instrumentée en rendu réel (aucun instant à risque) · écran d'arrivée vérifié : bloc de la carte présent avec sa mention, souvenir lisible (opacité 1, couleurs mesurées), volets intacts · les deux écrans de textes relus sans chiffre · aucune erreur JS · aucune régression sur les cartes du carnet de la session 98.
+
+### 🧭 Préparation Flutter
+- **Empilement rendu explicite** : le rang du globe est désormais une décision écrite et commentée, plus une conséquence de l'ordre du DOM. C'est la même hiérarchie qu'un `Stack` — le jour du portage, l'ordre est déjà documenté.
+- **Transitions ordonnées, pas chronométrées à l'aveugle** : `partirVersGlobe()` fait apparaître avant de faire disparaître. Le délai n'est plus là pour espérer, il attend une transition dont la durée est connue.
+- **Repli au lieu de disparition** : la carte postale suit maintenant la même règle que la collection et que les cartes du carnet — un actif manquant dégrade l'affichage, il ne supprime pas le contenu. Trois endroits, une seule règle.
+- **Reste à moderniser** : les états d'affichage restent portés par des classes CSS (`apercu`, `sansimg`, `parti`, `on`) posées depuis plusieurs fonctions différentes ; un état d'écran unique serait plus sûr. Non fait, pas demandé.
+- **Risques** : le changement de `z-index` du globe a été vérifié contre tous les autres calques (arrivée 20, carnet 40, film 42, présentation 44) — aucun conflit. Le reste est du texte et du style.
+
+---
+
+## 🃏 SESSION 98 · LINGUAE (06/08) — LE CARNET EN CARTES, LE CHIFFRE RETIRÉ, LE PANNEAU COUPÉ CONTOURNÉ
+
+Trois demandes de Blandine, toutes validées avant écriture.
+
+### ✅ Les dix-neuf villes deviennent des cartes qui se retournent
+« On devait passer les villes en cartes qui se retournent avec la petite phrase et le contenu de leur apprentissage afin que ça soit moins fastidieux. » Le mur de dix-neuf lignes dépliantes est remplacé par une grille 2 colonnes, **même motif de flip que `lingo-collection.html`** (`perspective` + `rotateY(180deg)` + `backface-visibility`), format 3/4.
+- **Devant** : le fond de la ville, son numéro en Cinzel turquoise, son nom, son pays.
+- **Au dos** : le nom (ajouté — retournée, la carte ne disait plus de quelle ville elle parlait), le chapitre en petites capitales dorées, la phrase du « pourquoi », et en bas **« N mots à apprendre »**.
+
+⚠️ **Le nombre de mots est rempli au premier retournement, pas à la construction.** Le bloc du carnet s'exécute avant que les lexiques et `chapVirtuel` existent (même raison que le `lastI=-1` de la fin du fichier) : demander le compte à la construction renverrait toujours zéro. `remplirApprentissage()` le calcule au retournement, une seule fois par ville, et ne marque rien si le lexique n'est pas encore là — la carte retentera au retournement suivant. Vérifié dans les deux sens : La Baule affiche « 12 mots à apprendre », Connemara reste muette faute de `hype-lingo-lex-cheval.js` dans l'environnement de test.
+
+### ⚠️ Décision de fond prise en cours de route : le flou est une matière, pas une photo
+Blandine a envoyé ses 15 `fond-*.webp`. **Mesurés : 420×560 pour 1,3 à 2,1 Ko** — ce sont des flous volontaires, faits pour passer *derrière* du texte. Sur une carte de 170 px de large, ça donne une tache sombre, pas une affiche : la règle « une carte = une affiche avec un sujet identifiable » ne pouvait pas être tenue avec ces fichiers.
+✅ Choix validé : le flou est traité **comme de la profondeur** (assombri, remonté en haut de carte) et c'est le nom en Cinzel qui porte l'affiche. Le jour où de vraies photos nettes existent, il suffit de changer le préfixe du fichier et de baisser le voile.
+⚠️ **`carte-*.webp` n'est PAS utilisée sur le carnet** — c'est la carte postale, la récompense. La montrer avant le départ grillerait le cadeau. Écrit noir sur blanc dans le code pour que personne ne « corrige » ça plus tard.
+⚠️ **Six fonds manquent** sur les dix-neuf : Newmarket, Lambourn, Connemara, Hickstead, Kildare, Édimbourg. Aucun `onerror` à maintenir : un fond absent laisse le dégradé sombre de `.vrec`, ce qui reste une carte présentable (vérifié en rendu).
+
+### ✅ Le chiffre retiré partout
+« Tu peux même retirer le chiffre, ça va évoluer. » Trouvé au passage : **il y avait deux valeurs contradictoires en ligne** — le repli HTML disait « dix-huit villes », la table de traduction « dix-neuf ». Retiré des trois endroits : le repli HTML, `ouvIntro` (6 langues, le texte attaque maintenant sur « Pas les capitales politiques »), et `pt2t` qui devient **« Une ville, un chapitre »** (6 langues). Plus rien à mettre à jour à chaque ville ajoutée.
+
+### 🔴 La vidéo de La Baule : le panneau est coupé DANS LE FICHIER
+« La vidéo d'arrivée s'arrête sur le panneau coupé, tu peux régler ça ? » Mesuré image par image : `arrivee-labaule.mp4` fait 456×810, 5,1 s, et **de 4,6 s à 5,1 s toutes les images montrent « A BAUL »** — le L et le E ne sont nulle part dans le fichier. Aucun cadrage CSS ne peut les faire revenir ; ce que montrait l'aperçu iOS était déjà l'image entière.
+À noter quand même : dans l'app, `#vue` fait 52svh, donc le recadrage rogne le **haut et le bas**, pas les côtés — on ne perdait rien de plus que le fichier.
+✅ Choix de Blandine : **finir à 4,4 s sur le cheval en l'air**. Nouvelle table `FIN_VIDEO = { labaule: 4.4 }`, appliquée par un écouteur `timeupdate` posé seulement si la ville a une entrée. Vérifié en rendu réel : arrêt à 4,44 s, vidéo en pause, dernière image = le cheval au-dessus de l'obstacle. **À retirer le jour où la vidéo est refaite** avec le panneau cadré entier.
+
+### ⏳ En attente d'elle : l'île Maurice et la place du chapitre « le cheval »
+« L'île Maurice devait être ajoutée avec La Baule pour les balades dans la mer, se baigner » — d'où `fond-maurice.webp`, qui n'est donc pas un intrus. « Le cheval, ça devait être la suite du chapitre de La Baule. »
+État réel de la répartition : étape 1 La Baule (`arrivee` 1) · 2 Newmarket (`ecurie` 1) · 3 Lambourn (`pansage` 1) · **4 Connemara (`cheval` 1)** · 14 Jerez (`cheval` 4). Les leçons 2 et 3 de `cheval` sont donc **libres en réserve**.
+Ce qu'il reste à trancher : Maurice porte-t-elle une leçon de `cheval` (rien à écrire, insertion immédiate après La Baule) ou son propre lexique de la mer (« la baignade », « nager », « le lagon », « le sable » — ~12 mots + 3 phrases à écrire en 6 langues) ? Et faut-il déplacer `cheval` en étape 2 ? **Rien touché à la répartition** : c'est une décision de programme.
+Pour qu'une ville existe, il lui faut de toute façon : lexique, lettre + 3 volets dans `hype-lingo-villes-monde.js`, récit, phrase de « pourquoi », coordonnées globe, carte postale, vidéo d'arrivée. Le fond, lui, est déjà là.
+
+### Contrôles passés
+Syntaxe validée · rendu réel 390×844 : 19 cartes affichées, fond chargé quand le fichier existe et dégradé propre quand il manque, retournement testé sur plusieurs cartes, dos complet (nom + chapitre + phrase + compte), arrêt vidéo à 4,44 s, textes sans chiffre dans les deux écrans · aucune erreur JS · aucune régression sur la séquence d'ouverture de la session 97 (film → carnet → globe rejoué).
+⚠️ Le Chromium de test n'a pas H.264 : essais sur copies VP9 des deux vidéos, mêmes durées. Deux lexiques seulement étaient présents en local (`arrivee`, `villes-monde`), d'où les compteurs vides sur les autres villes — comportement attendu, pas un défaut.
+
+### 🧭 Préparation Flutter
+- **Données sorties du code** : `FIN_VIDEO` remplace ce qui aurait été une constante en dur dans `ouvrirArrivee`. Une ville = une entrée ; la logique de lecture ne connaît aucun cas particulier.
+- **Calcul différé au lieu d'ordre de chargement** : `remplirApprentissage()` supprime une dépendance implicite à l'ordre d'exécution du fichier (le carnet n'a plus besoin que les lexiques existent avant lui). C'est exactement le motif d'un état chargé à la demande — portable tel quel.
+- **Composant réutilisé, pas dupliqué** : la carte du carnet reprend le motif de flip déjà validé sur `lingo-collection.html` (mêmes valeurs de perspective, de durée et de courbe). Deux endroits, une seule grammaire visuelle à porter.
+- **Reste à moderniser** : la carte du carnet et la carte de la collection sont deux implémentations HTML distinctes de la même idée ; elles gagneraient à devenir un seul constructeur paramétré (face avant, face arrière, état). Non fait volontairement — les deux vivent dans des documents séparés, mutualiser demanderait un module partagé, donc un risque sans demande.
+- **Risques** : aucun sur le moteur de leçon (aucune fonction du moteur touchée). Les six fonds manquants sont un manque d'actif, pas un défaut de code — le repli est visuel et sans JS.
+
+---
+
+## 🎬 SESSION 97 · LINGUAE (06/08) — L'ORDRE DE LA SÉQUENCE D'OUVERTURE REMIS DROIT
+
+Blandine : « en gros l'ordre est mauvais en ligne ». Confirmé après elle : la séquence se lisait à l'envers.
+
+**Avant** : carnet des 18 villes → « Partir » → film → « Commence ton voyage » → globe.
+Le film arrivait donc APRÈS la liste des villes, et « Commence ton voyage » sautait directement au globe — **le carnet ne se revoyait jamais**.
+
+**Maintenant** : film → « Commence ton voyage » → **carnet des 18 villes** → « Partir » → globe.
+Ordre choisi par Blandine (question posée, réponse : « le carnet de route »).
+
+### 🔴 Trouvé en mesurant le fichier : le bouton apparaissait 8 s trop tôt
+`ouverture.mp4` fait **10,1 s** (h264, portrait 536×728, 812 Ko — mesuré, pas supposé). Le filet de sécurité posait la classe `fini` — donc affichait « Commence ton voyage » — au bout de **2 s quoi qu'il arrive**. On pouvait donc sauter au globe en pleine séquence sans jamais voir la fin du film. C'est une partie de la sensation d'« ordre cassé », indépendante de l'enchaînement.
+✅ Le bouton n'apparaît plus qu'à la **vraie fin** (`ended`). Le filet passe de 2 s à **10 500 ms**, et ne sert plus que si l'événement ne vient jamais (fichier absent, décodage bloqué). Vérifié en rendu réel : `fini` posée à `currentTime = 10.10 s`, bouton invisible à 3 s.
+
+### ✅ Le film démarre seul — et la raison invoquée avant était fausse
+Le commentaire du code affirmait « iOS refuse de lancer une vidéo sans geste préalable ». C'est vrai d'une vidéo **sonore** seulement : celle-ci est `muted` + `playsinline`, donc elle peut démarrer sans tap. Le geste « Partir » n'était pas une nécessité technique.
+⚠️ **Et le tap depuis l'encart d'accueil de `index.html` ne compte pas** — question posée par Blandine. C'est un autre document : le crédit de geste ne traverse pas la navigation. Ce qui autorise la lecture, c'est le muet, pas le tap.
+
+### ✅ Nouveau repli : `#ouvRelance`, au lieu d'enchaîner en douce
+Deux cas refusent quand même le démarrage automatique : **mode économie d'énergie** et **économiseur de données**. Avant, `play()` rejeté appelait `terminerOuverture` → on passait à la suite sans rien montrer, et le film semblait ne pas exister.
+✅ Désormais `play()` rejeté pose la classe `refuse` et affiche un **bouton de relance rond, sans texte** (donc sans traduction à maintenir), centré sur la première image, verre dépoli + triangle turquoise. « Passer » reste visible : aucun piège. Un vrai `error` sur le fichier (absent, illisible) continue lui à passer directement au carnet — inutile de proposer de relancer ce qui ne peut pas jouer.
+⚠️ **À passer au fil `index.html`** : si l'encart d'accueil ouvre Linguae dans une **iframe**, il faut `allow="autoplay"` sur cette iframe, sinon Safari refuse même le muet. L'attribut est dans `index.html`, pas ici.
+
+### ✅ Deux corrections d'accompagnement
+- **Boucle possible sur `error`** : l'écouteur d'erreur appelait `terminerOuverture`, qui vide la source par `v.load()` — ce qui peut refaire lever `error`. Garde-fou : l'erreur n'est traitée que si le film est réellement à l'écran (`joue`).
+- **Le bouton retour laissait la vidéo en lecture** derrière un calque masqué (il retirait les classes sans arrêter le film). Il passe par la même sortie que la fin du film.
+
+### Découpage du code
+`terminerOuverture()` ne fait plus qu'une chose : **film → carnet**. L'ouverture du globe est sortie dans `partirVersGlobe()`, branchée sur « Partir ». `lancerFilm()` est le seul point d'entrée du film, appelé à deux endroits : au chargement si la présentation a déjà été vue, et à la fermeture de l'écran de destination pour une première visite — sinon le film jouerait en entier **derrière** `#intro` et `#dest`, qui sont au-dessus de lui (z-index 44 contre 42).
+
+### Contrôles passés
+Syntaxe validée (`node --check`, 15 blocs) · **parcours complet rejoué en rendu réel** sur mobile 390×844 : première visite (présentation → destination → film → fin à 10,10 s → carnet 19 villes → dépliant → Partir → globe avec La Baule ★ en tête) · rechargement (film qui part seul, sans présentation) · démarrage refusé simulé (bouton de relance affiché, « Passer » fonctionnel) · vidéo absente (carnet affiché directement, personne enfermé) · aucune erreur JS.
+⚠️ Le Chromium de test n'a pas le codec H.264 : les essais ont tourné sur une copie VP9 de la même vidéo, même durée. La logique testée est identique, le fichier livré reste `ouverture.mp4`.
+
+### Constaté au passage, rien touché
+`#intro` annonce « **Dix-huit** destinations », le carnet en liste **19** et son texte dit « Dix-neuf villes ». Incohérence antérieure à cette session, hors demande — à trancher quand tu veux.
+
+### 🧭 Préparation Flutter
+- **Frontière d'écran clarifiée** : `terminerOuverture()` (film → carnet) et `partirVersGlobe()` (carnet → globe) sont deux transitions nommées et séparées, au lieu d'une seule fonction qui traversait trois écrans. Chaque bouton appelle une transition, pas une suite d'effets de bord.
+- **Point d'entrée unique du média** : `lancerFilm()` centralise source, cadrage, classes, lecture, échec et filet. Les appelants ne connaissent plus l'élément `<video>` — un seul endroit à porter le jour où ce sera un `VideoPlayerController`.
+- **Dépendance retirée** : plus aucun écouteur de média attaché à l'intérieur d'un gestionnaire de clic (les `addEventListener` s'empilaient à chaque lecture). Ils sont posés une fois, à l'initialisation.
+- **Reste à moderniser** : la séquence d'ouverture pilote toujours l'état par classes CSS sur trois éléments (`#ouvFilm`, `#ouverture`, `#globe`) ; un état d'écran explicite (une variable, une fonction de rendu) serait le vrai équivalent d'un routeur. Non fait volontairement — pas demandé, et risque nul à laisser en place.
+- **Risques** : aucun sur le reste du fichier (six remplacements ciblés, tous à occurrence unique vérifiée). Le seul comportement dépendant de l'appareil est le démarrage automatique, désormais couvert par un repli visible.
+
+---
+
+## 🧭 SESSION 96 · LINGUAE (06/08) — LA BAULE N'EST PLUS FORCÉE, LA SAUVEGARDE VÉRIFIÉE
+
+### ✅ Persistance vérifiée par un vrai test, pas une supposition
+Blandine : « à chaque fois je refais en boucle et rien n'est mémorisé ». Testé en fermant réellement la page et en en ouvrant une nouvelle dans le même navigateur (pas juste en relisant une variable JS en cours de session) : la carte et l'objet gagnés survivent. **Le mécanisme fonctionne.**
+⚠️ Cause la plus probable de ce qu'elle vit, à confirmer avec elle : si le fichier est ouvert en local (`file://`) et que chaque test se fait depuis un téléchargement légèrement différent, Safari iOS peut traiter ça comme une origine différente à chaque fois — stockage vide à chaque ouverture. Si elle teste sur l'adresse Netlify en ligne, ce problème ne devrait pas se produire. **Question posée, réponse en attente.**
+
+### ✅ La Baule n'est plus une entrée forcée
+« Ça fait 8 fois que je fais La Baule, je vais vomir à force. » `terminerOuverture()` ouvrait directement `ouvrirArrivee(0)` — nécessaire le tout premier jour, épuisant à charge de test répétée ensuite.
+**Le bouton dit maintenant ce qu'il fait** : « Commence ton voyage » (au lieu de « Entrer à La Baule »), dans un bleu sombre et discret plutôt que le turquoise plein — sur demande explicite. Il ouvre le globe ; **La Baule y est suggérée** (même mécanisme que la recommandation de fin de chapitre : étoile, anneau doré, en tête de liste) mais **rien n'oblige à la choisir** — n'importe quelle autre ville accessible reste cliquable normalement.
+✅ Vérifié en rendu réel : bouton renommé, globe ouvert (pas d'arrivée forcée), La Baule marquée ★ en tête de liste, fiche de Saumur ouverte librement à côté.
+
+### Contrôles passés
+Syntaxe validée · flux complet rejoué (intro → bouton → globe avec suggestion → choix libre d'une autre ville) · aucune régression.
+
+---
+
+## 📖 SESSION 95 · LINGUAE (06/08) — LE RÉCIT MANQUANT DE LA BAULE, ET L'INSCRIPTION ÉTOFFÉE
+
+Blandine, après avoir rejoué La Baule : « ça ne se lit pas en entier une fois que la vidéo s'arrête, ça la fout mal pour la première ville ». Elle a aussi redemandé, séparément : le modèle carte/objet, le retrait du « 1/8 », la sécurité comme chapitre à part, et l'étoffement de l'inscription.
+
+⚠️ **Constat en reprenant le fichier** : plusieurs de ces demandes — le modèle carte = leçon parfaite / objet = quiz, le retrait du bloc de maîtrise, le nettoyage du texte contradictoire sous la carte postale, la séparation inscription/sécurité en deux leçons distinctes — **étaient déjà faites**, avec des commentaires datés « 6 août 2026 » expliquant exactement ces mêmes retours. Vérifié une par une avant de retravailler quoi que ce soit, pour ne pas écraser un travail déjà bon.
+
+### 🔴 LE VRAI TROU : `RECITS.labaule` n'existait pas
+Trouvé en cherchant pourquoi l'écran « ne se lit pas en entier ». La vidéo se fige sur le panneau de la ville (comportement voulu), puis l'écran affiche `#texte`, rempli par `RECITS[ref]` — un texte **différent** de la lettre de la carte postale, plus court, jamais écrit pour La Baule. **`#texte` restait donc totalement vide** : l'écran sautait du panneau figé directement à la carte postale, sans rien entre les deux. Sur la toute première ville du voyage.
+✅ **`RECITS.labaule` écrit et ajouté**, 6 langues, même format que les dix récits d'origine (deux phrases évocatrices + une note factuelle). Vérifié en rendu réel : le texte s'affiche, 274 caractères, entre les langues et la carte postale.
+
+### ✅ L'inscription de La Baule étoffée, la sécurité confirmée à part
+Vérifié que L1 (`arrivee.js`) ne contenait déjà plus que l'inscription (12 mots), la sécurité déjà isolée en L2 — la séparation demandée existait. **Cinq mots ajoutés** sur demande explicite (« le pas le trot le galop, les bottes, une phrase pour réserver en groupe ») : `le-groupe`, `pas`, `trot`, `galop`, `bottes` — et la définition de `balade` complétée pour couvrir plage et montagne. Pour tenir à 12, cinq mots plus administratifs (`cours-particulier`, `cours-collectif`, `licence-assurance`, `duree-reprise`, `annuler`) partent en réserve (L3, non attribuée). **Une phrase neuve** : « Nous sommes quatre, dont deux débutants — c'est possible ? », 6 langues.
+⚠️ La sécurité (L2, 11 mots) reste en réserve, **non attribuée à aucune ville** — Blandine : « on va faire la sécurité ailleurs ». Aucune destination choisie pour l'instant.
+✅ Vérifié en exécution : 12 mots exacts en leçon 1, 4 phrases, 0 entrée mal formée sur les 6 langues.
+
+### 💬 Clarification, rien à faire de mon côté
+La vidéo envoyée (`copy_47DFBC08...mov`) est destinée à l'**encart d'accueil sur `index.html`**, qui renvoie vers Hype Linguae — pas une vidéo d'arrivée de ville. Hors du périmètre de cette conversation (index.html appartient à l'autre fil). Pas de traitement fait.
+
+### Contrôles passés
+Syntaxe validée · récit affiché en rendu réel · leçon reconstruite vérifiée (12 mots, 4 phrases, structure des 6 langues saine) · aucune régression sur le reste du fichier.
+
+---
+
+## 🔧 SESSION 94 · LINGUAE (06/08) — « ARRÊTE DE CHANGER DES TRUCS SANS DEMANDER »
+
+Blandine, en toute lettres, après une carte postale invisible et un « 1/8 » incompréhensible juste après un 12/12 parfait. Elle a raison : plusieurs décisions avaient été prises ou réinterprétées sans repasser par elle. Cette session ne fait QUE ce qu'elle a confirmé, un point à la fois — rien de plus.
+
+### ✅ Le modèle de récompense, tel qu'elle le voulait depuis le début
+« La carte, dès que les 12/12 sont bons, même si on ne les a pas tous écrits. » Ce n'est plus le quiz qui donne la carte — **la leçon elle-même**, si tous les mots notés sont justes une seule fois, peu importe le type d'exercice tombé (choix, écoute, dire ou écrire comptent pareil). Le quiz ne garde plus que l'objet.
+Nouveau magasin persistant `CARTES_LECON` (`hype_lingua_cartes`), posé à la fin de `finLecon()` : `garderCarteLecon(ref, LC.justes, sur)` — exactement le score déjà affiché à l'écran, aucun second contrôle. `carteObtenue(ref)` garde son nom (pour ne pas toucher tous ses points d'appel) mais lit désormais ce nouveau magasin, pas le quiz.
+✅ Vérifié en jouant réellement une leçon de La Baule jusqu'au bout, sans jamais ouvrir le quiz : carte obtenue = vrai, objet obtenu = faux. Et une leçon volontairement fautive (Saumur, une erreur) : carte non obtenue, comme attendu.
+
+### ✅ Le « 1/8 » retiré
+Le bloc « Où en est ce chapitre » — celui qui affichait la MAÎTRISE (répétitions sur plusieurs passages) juste après un score de leçon parfait — est retiré de l'écran de fin de leçon. Il pouvait montrer « 1/8 » juste sous un « 12/12 », et rien ne disait que ces deux chiffres ne racontaient pas la même chose. La maîtrise continue de choisir les exercices et le Sprint en coulisses ; elle ne s'affiche plus nulle part comme une jauge de progression.
+⚠️ **Même correctif appliqué à `choisirLecon()`** (l'écran d'AVANT la leçon, pas seulement celui d'après) : il disait aussi « La carte postale : obtenue / encore X mots » d'après la maîtrise — même défaut, sur un autre écran. Corrigé pour suivre exactement la même règle que partout ailleurs.
+
+### ✅ La carte postale contradictoire, corrigée — l'aperçu flouté gardé
+Trouvé hier, confirmé aujourd'hui : « CARTE POSTALE GAGNÉE » suivi juste en dessous de « Encore 8 mots pour la recevoir » — deux systèmes différents qui se contredisaient à l'écran. Le texte du bas est retiré. **L'aperçu flouté avant obtention reste** — Blandine : « c'était sympa de la voir un peu floue » — rien touché de ce côté, seul le texte contradictoire disparaît.
+
+### ✅ La Baule : sécurité retirée, inscription complète
+« On avait dit qu'on commençait par l'inscription... la sécurité, faut que ce soit un autre chapitre. » Le mélange à 6+6 d'hier est défait. `hype-lingo-lex-arrivee.js` retagué une seconde fois : **leçon 1 = les 12 mots `inscrire` au complet** (reserver, cours-particulier, cours-collectif, niveau, debutant, tarif, licence-assurance, bombe-fournie, cheval-calme, balade, duree-reprise, annuler) — c'est le chapitre de La Baule. **Leçon 2 = les 11 mots `securite` au complet**, en réserve, prête telle quelle pour la ville qui portera la sécurité — pas encore choisie.
+⚠️ **Pas fait, à trancher avec elle** : les mots neufs qu'elle propose (le pas/le trot/le galop, les bottes, une phrase pour réserver une balade en groupe avec des débutants). Le pas/trot/galop et les bottes existent déjà ailleurs (`cours`, `materiel`) mais dans d'autres fichiers — les faire venir dans le chapitre de La Baule casserait le principe « un fichier par ville ». À décider : les écrire en propre pour La Baule, ou les garder pour une ville « en selle » future.
+
+### ⚠️ Hypothèse posée, pas confirmée : le texte de La Baule qui ne se lit pas en entier
+« Une fois que la vidéo s'arrête, ça la fout mal. » Une piste plausible et documentée : le clip finit sur sa dernière image (choix assumé, voir code) sans boucler, et un `<video>` sans `controls` peut malgré tout intercepter le défilement une fois arrêté sur iOS Safari — même famille de défaut que celle déjà rencontrée sur le globe et la collection. `pointer-events:none` ajouté sur la vidéo d'arrivée : tout geste doit désormais passer directement au conteneur qui défile en dessous.
+⚠️ **Pas vérifiable sans le vrai appareil.** Si ça ne suffit pas, il me faut une capture ou une description précise de ce qui manque à l'écran pour comprendre exactement quoi corriger.
+
+### ⚠️ Clarifié, pas pour moi : la vidéo de l'encart d'accueil
+Le fichier vidéo et les captures envoyés (panneau La Baule doré sur bleu nuit) sont pour l'**encart d'accueil sur `index.html`**, pas pour Linguae. Choix qui fonctionne bien pour cet usage-là, mais l'intégration revient à qui travaille sur `index.html`.
+
+### Contrôles passés
+Syntaxe validée · aucune référence morte (`SEUIL_CARTE`, `et.fini`, `et.tout`, `et.acquis` : zéro occurrence restante) · parcours complet rejoué en exécution réelle : leçon parfaite → carte obtenue sans quiz → blocs de sortie corrects → écran d'arrivée sans texte contradictoire.
+
+---
+
+## 🃏 SESSION 93 · LINGUAE (06/08) — LA PAGE DE COLLECTION
+
+⚠️ **Cette entrée avait déjà été écrite une première fois, puis a disparu** du fichier reçu en retour — probablement un croisement avec la conversation index.html qui travaillait au même moment sur ce même `SUIVI.md`. Réécrite ici, le code correspondant (`lingo-collection.html`) a bien été livré entre-temps, rien n'est perdu côté application.
+
+« On devrait faire une page avec toutes les cartes et les objets ensemble, et quand on retourne la carte ça dit l'objet à gagner ou récompense obtenue ». Construite.
+
+### ✅ `lingo-collection.html` — nouveau fichier, même motif que le globe
+Iframe séparée (comme `lingo-globe.html`), reçoit l'état des 19 villes par message depuis `lingo.html` (source unique de vérité, rien dupliqué), renvoie la fermeture par message. **Même double verrou de fermeture que le globe** (`pointer-events` + `display:none` sur l'iframe 320 ms après) : posé dès la construction, pas après-coup.
+- Grille de 19 cartes, 2 colonnes, dans l'ordre du voyage.
+- Trois états visuels : **verrouillée** (silhouette, pas de photo) · **ouverte sans carte** (photo assombrie, pas de tampon) · **carte gagnée** (photo claire, tampon doré).
+- On touche, la carte se retourne (flip CSS 3D). Au dos : pour une ville verrouillée, « À découvrir — termine cette leçon » ; pour une ville ouverte sans carte, « En cours — réussis le quiz » ; pour une carte gagnée, **la lettre de la ville** (langue étudiée, comme sur l'écran d'arrivée) et en bas la ligne de l'objet — **« À gagner »** ou **« Récompense obtenue »** avec son icône.
+
+### ✅ Image de carte absente : le même principe que « Vidéo introuvable »
+Dix des dix-neuf villes n'ont pas encore de `carte-X.webp`. Chaque carte **tente toujours de charger son image** et bascule sur « Carte à venir » seulement si le chargement échoue réellement (`onerror`). Aucune liste à maintenir à la main.
+
+### 🔴 Trouvé en construisant la page : La Baule affichait une lettre VIDE depuis le début
+Sa lettre et ses trois volets avaient été écrits (`labaule.md`) mais **jamais injectés dans `hype-lingo-villes-monde.js`**. Son écran d'arrivée officiel montrait donc une lettre blanche depuis qu'elle est devenue l'étape 1, sans que personne ne l'ait remarqué.
+✅ Corrigé : `MONDE.labaule` ajouté (lettre + 3 volets, 6 langues). Vérifié en exécution.
+
+### Contrôles passés
+Syntaxe validée sur les deux fichiers · diff exhaustif sur `lingo.html` (aucune fonction perdue) · rendu réel : 19 cartes affichées, compteur correct, trois états vérifiés un par un, lettre affichée et retournée · fermeture testée avec le même verrou que le globe.
+
+### ⚠️ Vérifié aujourd'hui : le globe de l'app n'a pas changé
+`index.html` reçu à nouveau (travail parallèle de la conversation index.html) — **le bloc `GLOBE_HTML_HYPE` est identique octet pour octet** à celui déjà greffé en session 92 · LINGUAE. Rien à resynchroniser.
+
+### ⚠️ Reste à faire
+Bouton d'entrée vers la collection en haut à droite, sous celui du globe — à repositionner si besoin. Pas de bouton « Partir » sur les cartes ouvertes-mais-pas-gagnées (vitrine, pas une seconde navigation) — à ajouter si voulu. Les dix cartes britanniques manquantes, toujours en attente côté serveur.
+
+---
+
+## 🚨 SESSION 92 · LINGUAE (06/08) — PANNE BLOQUANTE CORRIGÉE + REFONTE À UNE LEÇON PAR VILLE
+
+⚠️ **Collision de numérotation repérée en ouvrant ce fichier** : la conversation Linguae, en parallèle, avait numéroté ses propres sessions 87 à 96 sans jamais voir CE fichier-ci (celui d'index.html), qui s'arrête à la session 91 — **avec un contenu totalement différent** de la « session 91 » de la conversation Linguae. Deux sessions 91 distinctes existent donc quelque part, chacune dans sa branche. Cette entrée reprend le fil à partir du numéro réellement libre ici, et consolide tout le travail Linguae depuis la dernière synchronisation connue, plutôt que de recréer cinq sous-sessions qui ne correspondraient à rien pour qui lit ce fichier. **Suggestion pour la suite : préfixer les sessions par le fichier concerné (ex. « SESSION N · LINGUAE » vs « SESSION N · INDEX ») pour que ce genre de collision se voie tout de suite.**
+
+Blandine a testé Hype Linguae sur son iPhone et s'est retrouvée **complètement bloquée** : écran mort, boutons qui ne répondent plus, obligée de swiper pour sortir de l'app Hype entière et tout relancer. Cette session corrige la panne et va plus loin : elle traite la cause de fond que Blandine a exprimée pendant les échanges — « on s'attend à la carte postale, pas à 15 leçons éparpillées ».
+
+### 🔴 CAUSE DU BLOCAGE 1 : deux ouvertures automatiques du globe qui se disputaient l'écran
+Deux `setTimeout(ouvrirGlobe, …)` avaient été posés le même jour à deux endroits différents : après le choix de la langue (380 ms) et après la vidéo de bienvenue (320 ms). Pour une première visite, les deux pouvaient se déclencher l'un après l'autre — deux écrans qui s'ouvrent et se referment presque en même temps. **Effet exact décrit par Blandine** : « on aperçoit Newmarket dans ses tons oranges un centième de seconde avant que le globe bleu s'affiche ».
+✅ **Corrigé** : `terminerOuverture()` n'ouvre plus le globe sur un délai, elle appelle directement `ouvrirArrivee(0)` — on entre réellement dans la première ville, sans écran intermédiaire. Le `setTimeout(ouvrirGlobe, 380)` après le choix de langue est retiré : fermer l'écran de destination suffit, l'écran de bienvenue dessous reprend la main tout seul. **Le globe redevient 100 % manuel**, il ne s'ouvre plus que sur une action explicite.
+✅ Le bouton « Entrer à Newmarket » (texte figé depuis que La Baule est devenue l'étape 1, et qui de toute façon n'entrait nulle part — il ouvrait le globe à la place) devient « Entrer à La Baule » et fait vraiment ce qu'il dit.
+
+### 🔴 CAUSE DU BLOCAGE 2 : une iframe qui continue à capter le toucher même masquée
+Sur Safari iOS, une iframe sous un parent en `visibility:hidden` peut continuer à capter le toucher — un défaut WebKit connu. `opacity`/`visibility` seuls ne suffisaient pas à garantir qu'elle ne captait plus rien après la fermeture du globe.
+✅ **Double verrou posé** : `#globe{pointer-events:none}` par défaut, `pointer-events:auto` seulement quand `.on` · et l'iframe elle-même passe en `display:none` 320 ms après la fermeture (verrou dur, en plus du CSS). Vérifié : `pointer-events:none` actif immédiatement à la fermeture, iframe à `display:none` 320 ms après, le bouton `#bGlobe` reste cliquable. C'est probablement aussi la cause du swipe qui ramenait Blandine hors de Linguae entièrement : plus rien ne répondant, son geste finissait par atteindre le geste système de retour de Safari.
+
+### 🔴 BUG CRITIQUE TROUVÉ EN VÉRIFIANT : des phrases qui auraient pu planter l'app
+Deux fichiers de lexique écrits récemment (`hype-lingo-lex-arrivee.js` — La Baule — et `hype-lingo-lex-poney.js` — Lamotte) utilisaient une structure de phrase imbriquée `mots:{fr:{m:"..."}}`, copiée par erreur du format des concepts. **Le moteur (`exPhrase`) attend des chaînes directes `fr:"..."`** — vérifié sur les fichiers d'origine. Avec la mauvaise structure, l'exercice de phrase plante net. **L'app se serait figée pile sur un exercice de phrase de La Baule — la toute première ville du voyage.**
+✅ Corrigé par conversion automatique (script, pas de saisie manuelle). **Balayage complet des 11 fichiers de lexique : 79 phrases vérifiées, structure correcte partout.** Un exercice de phrase de La Baule lancé réellement dans un navigateur : rendu correct, 0 erreur.
+
+### ✅ Le globe trop grand, coupé en bas, +/− inatteignables
+Ramené à des valeurs plus conservatrices (`R0=0.36` du plus petit côté, centre à `0.58` de la hauteur). **Vérifié sur 5 tailles d'iPhone réelles** (SE 375×667, 13/14 390×844, 15 Pro 393×852, Pro Max 430×932, Mini 360×780) : le globe ne déborde jamais en bas, les boutons `+`/`−` restent dans l'écran sur les cinq, et répondent réellement au clic (zoom vérifié borné entre 1 et 3.8).
+
+### ✅ LE VRAI CHANTIER : une seule leçon par ville, sur les 19 destinations
+Le format à une seule leçon (déjà appliqué à La Baule seule) est étendu aux 19 villes. `ETAPE_SRC` réduit à une seule paire `[fichier, leçon]` par ville partout — l'autre moitié ne disparaît pas, elle reste en réserve pour une ville future. Chaque choix croise les mots réels de la leçon avec la lettre et les volets déjà écrits de la ville :
+- **Kildare** (chapitre offert) garde `urgences/1` plutôt que `urgences/3` — parce que « le vétérinaire » y est, le mot qui compte le plus dans une urgence.
+- **Windsor** et **Saumur** (même fichier `dressage`) : Windsor garde `dressage/1` (rectangle, lettres, juge — « le dressage qu'on juge », son volet raconte déjà le mystère des 8 lettres) ; Saumur garde `dressage/3` (décontraction, rassembler, légèreté — « le dressage qu'on enseigne », l'échelle de progression du Cadre Noir).
+- **Jerez** garde `cheval/4` (hongre, étalon, jument, race) — son volet dit explicitement « l'école présente ses étalons ».
+- **Aachen** garde `obstacle/4` (barrage, chrono, tour d'honneur) — son volet est centré sur le barrage.
+⚠️ Quelques arbitrages sont serrés (Séville, Vejer, Warendorf avaient deux collections également pertinentes) — réversibles si besoin.
+✅ **Vérifié programmatiquement pour les 19 villes** : une seule leçon chacune, 10 à 12 mots. ✅ **Vérifié en rendu réel avec une vraie simulation de maîtrise** : le bloc « Où en est ce chapitre » — celui qui listait plusieurs leçons sans rapport, exactement ce que Blandine décrivait — **n'apparaît plus**, puisqu'il n'y a plus qu'une seule leçon par ville. Finir la leçon → le quiz donne directement la carte et l'objet.
+⚠️ Correction annexe : l'accueil de Warendorf pointait vers « pansage », corrigé vers « materiel » (sa collection retenue).
+
+### ✅ Les mentions de « dix-huit » corrigées en « dix-neuf »
+13 occurrences dans les 6 langues (présentation, écran de choix de langue, intro du carnet, description du voyage anglais). Vérifié : plus aucune trace côté joueur.
+
+### Contrôles passés
+Syntaxe JS validée · diff exhaustif (aucune fonction perdue) · 79 phrases de tout le module balayées · 19 villes vérifiées une par une en exécution réelle · parcours complet rejoué (intro → choix de langue → arrivée directe à La Baule sans flash → leçon → quiz sans faute → carte et objet obtenus → retour au voyage → globe réouvert et cliquable) · 5 tailles d'écran testées pour le globe.
+⚠️ **Honnêteté sur les limites du test** : reproduit en Chromium headless, pas sur un iPhone réel. Le raisonnement tient (deux causes identifiées avec certitude dans le code, corrigées, vérifiables), mais la confirmation définitive reste le test de Blandine en conditions réelles.
+
+### ⚠️ Non résolu, en attente
+**La vidéo de Newmarket affichée en bande horizontale** : capture montrée par Blandine, `arrivee-newmarket.mp4` en bande paysage tronquée. Fichier jamais reçu — l'un des dix vidéos britanniques/irlandaises d'origine, jamais vérifiées. Le code de cadrage (portrait → cover, paysage → contain) est sain en principe ; si cette vidéo est en paysage comme Maurice/La Baule l'étaient avant traitement, elle produirait exactement ce symptôme. **À vérifier dès que le fichier est envoyé.**
+La relecture native des mots. Les vidéos et cartes manquantes (île Maurice à finaliser, quelques autres). La page de collection (cartes qui se retournent), toujours pas commencée.
+
+---

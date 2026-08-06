@@ -168,7 +168,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   font-weight:600;color:var(--or);background:rgba(212,175,55,.10);
   border:1px solid rgba(212,175,55,.4);border-radius:999px}
 
-#globe{position:fixed;inset:0;z-index:40;background:#060709;opacity:0;visibility:hidden;
+/* ⚠️ z-index 41 et non 40 depuis le 6 aout 2026. A 40, le globe avait le
+   MEME rang que #ouverture (le carnet) et perdait donc au depart, etant
+   place avant lui dans le document : il fallait masquer le carnet AVANT
+   d'ouvrir le globe, ce qui laissait voir le chemin en dessous pendant
+   la transition. Mesure sur l'enregistrement de Blandine : environ 150 ms
+   de chemin visible, avec ses boutons LE GLOBE / LA COLLECTION / SPRINT.
+   A 41 le globe passe par-dessus le carnet, donc on peut l'ouvrir d'abord
+   et ne retirer le carnet qu'une fois le globe opaque. */
+#globe{position:fixed;inset:0;z-index:41;background:#060709;opacity:0;visibility:hidden;
   pointer-events:none;transition:opacity .3s ease,visibility .3s ease}
 #globe.on{opacity:1;visibility:visible;pointer-events:auto}
 #globeIf{position:absolute;inset:0;width:100%;height:100%;border:0;background:#060709}
@@ -237,20 +245,58 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .carnet{text-align:left;margin:0 0 28px}
 .carnet .ct{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);
  margin:0 0 12px}
-.cv{display:flex;align-items:center;gap:10px;padding:12px 2px;flex-wrap:wrap;width:100%;
- text-align:left;border-bottom:1px solid rgba(255,255,255,.06)}
-.cv:last-child{border-bottom:0}
-.cv .n{font-family:'Cinzel',serif;font-size:11px;color:var(--turquoise);width:16px;flex:0 0 16px}
-.cv .d{flex:1 1 60%;min-width:0}
-.cv .d b{display:block;font-family:'Cinzel',serif;font-weight:500;font-size:14px;line-height:1.25}
-.cv .d i{display:block;font-style:normal;font-size:10px;letter-spacing:.1em;
- text-transform:uppercase;color:#6E7C88;margin-top:4px}
-.cv .pl{flex:0 0 auto;width:20px;text-align:center;font-size:15px;color:var(--turquoise);
- opacity:.55;transition:transform .25s,opacity .25s}
-.cv.ouv .pl{transform:rotate(45deg);opacity:1}
-.cv .pq{flex:0 0 100%;max-height:0;overflow:hidden;font-size:12.5px;line-height:1.65;
- color:#A9B7C3;transition:max-height .3s ease,padding .3s ease;padding:0 0 0 26px}
-.cv.ouv .pq{max-height:130px;padding:9px 0 2px 26px}
+
+/* ---- LES VILLES EN CARTES QUI SE RETOURNENT (6 aout 2026) ----
+   Avant : dix-neuf lignes depliantes, « c'etait fastidieux » (Blandine).
+   Maintenant : une grille de cartes, meme motif de flip que
+   lingo-collection.html (perspective + rotateY + backface-visibility).
+   Devant, le fond de la ville ; au dos, la phrase et ce qu'on y apprend.
+
+   ⚠️ LE FLOU EST UNE MATIERE, PAS UNE PHOTO. Les fichiers fond-*.webp
+   font 420x560 pour 1 a 2 Ko : ce sont des flous volontaires, faits pour
+   passer DERRIERE du texte. Ils ne peuvent pas etre le sujet d'une carte.
+   Ils sont donc traites comme de la profondeur — assombris, remontes en
+   haut de carte — et c'est le nom en Cinzel qui porte l'affiche. Le jour
+   ou de vraies photos nettes existent, il suffira de changer le prefixe
+   du fichier et de baisser le voile.
+   ⚠️ carte-*.webp n'est PAS utilisee ici : c'est la carte postale, la
+   recompense. La montrer avant le depart grillerait le cadeau. */
+.vgrille{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.vc{position:relative;aspect-ratio:3/4;perspective:1100px;background:none;padding:0;
+ width:100%;text-align:left}
+.vc .vflip{position:absolute;inset:0;transform-style:preserve-3d;
+ transition:transform .55s cubic-bezier(.4,.1,.2,1)}
+.vc.ouv .vflip{transform:rotateY(180deg)}
+.vc .vf{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+ border-radius:13px;overflow:hidden;border:1px solid rgba(255,255,255,.09)}
+/* devant */
+.vc .vrec{background:linear-gradient(158deg,#141A21,#080B0F 72%);
+ background-size:cover;background-position:center 34%}
+.vc .vrec .vvoile{position:absolute;inset:0;
+ background:linear-gradient(180deg,rgba(6,7,9,.34) 0%,rgba(6,7,9,.58) 46%,rgba(6,7,9,.93) 100%)}
+.vc .vrec .vhalo{position:absolute;left:-30%;top:-24%;width:160%;height:90%;
+ background:radial-gradient(46% 42% at 50% 50%,rgba(32,217,245,.11),transparent 72%)}
+.vc .vn{position:absolute;left:10px;top:8px;font-family:'Cinzel',serif;font-size:10px;
+ color:var(--turquoise);letter-spacing:.08em;z-index:2}
+.vc .vtitre{position:absolute;left:10px;right:10px;bottom:9px;z-index:2}
+.vc .vtitre b{display:block;font-family:'Cinzel',serif;font-weight:600;font-size:14.5px;
+ line-height:1.12;color:var(--blanc);text-shadow:0 1px 8px rgba(0,0,0,.85)}
+.vc .vtitre i{display:block;font-style:normal;font-size:8px;letter-spacing:.15em;
+ text-transform:uppercase;color:#94A3AF;margin-top:5px}
+.vc .vtourne{position:absolute;right:9px;bottom:11px;z-index:2;font-size:13px;
+ color:var(--turquoise);opacity:.5}
+/* dos */
+.vc .vdos{background:linear-gradient(165deg,rgba(17,20,23,.98),rgba(6,7,9,.99));
+ transform:rotateY(180deg);display:flex;flex-direction:column;padding:11px 11px 9px}
+.vc .vdos .vnom{font-family:'Cinzel',serif;font-weight:600;font-size:12px;line-height:1.1;
+ color:var(--blanc)}
+.vc .vdos .vch{font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--or);
+ border-bottom:1px solid rgba(255,255,255,.09);padding:4px 0 6px;margin-bottom:7px}
+.vc .vdos .vpq{flex:1;font-size:10.5px;line-height:1.5;color:#B3C0CB;overflow:hidden}
+.vc .vdos .vapp{font-size:8px;letter-spacing:.11em;text-transform:uppercase;
+ color:var(--turquoise);opacity:.85;margin-top:7px}
+.vc .vdos .vapp span{color:#6E7C88}
+@media (max-width:340px){ .vc .vtitre b{font-size:12.5px} .vc .vdos .vpq{font-size:9.5px} }
 .regles{text-align:left;padding:16px 16px 4px;border-radius:14px;margin:0 0 30px;
  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
 .regles p{font-size:12px;line-height:1.7;color:var(--gris);margin:0 0 12px}
@@ -349,7 +395,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #arrTete .pays{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--turquoise);margin:0 0 8px}
 #arrTete h2{font-family:'Cinzel',serif;font-weight:600;font-size:30px;margin:0;line-height:1.1;
  text-shadow:0 3px 30px rgba(0,0,0,.95)}
-#arrTete .nation{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--or);
+/* meme raison : l'or a .2em de tracking sur du noir manquait de contraste */
+#arrTete .nation{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#E2C878;
  opacity:.85;margin:9px 0 0}
 #recit{padding:24px 22px 8px;max-width:520px;margin:0 auto}
 #langues{display:flex;gap:6px;justify-content:center;margin:0 0 20px;flex-wrap:wrap}
@@ -421,10 +468,27 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 /* Montrer sans donner : l'aperçu est assombri, non cliquable, et
    n'entre pas dans le passeport. */
 #postal.apercu .pcarte{pointer-events:none;filter:brightness(.52) saturate(.72)}
+/* image pas encore sur le serveur : le cadre reste, la ville se lit,
+   et une mention discrete remplace la photo. */
+.pcarte.sansimg .pface{background:linear-gradient(158deg,#141A21,#080B0F 74%)}
+.pcarte.sansimg .pface img{display:none}
+.pcarte.sansimg .pface::after{content:attr(data-attente);position:absolute;left:0;right:0;
+ bottom:42%;text-align:center;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+ color:#5E6975}
 #postal.apercu .pface{border-color:rgba(212,175,55,.45)}
 #postal .note{font-size:11px;letter-spacing:.02em;color:var(--or);text-align:center;
  margin:11px 0 0;opacity:.9}
-#souvenir.apercu .carte{opacity:.5;filter:saturate(.6)}
+/* ⚠️ CORRIGE le 6 aout 2026 — « on lit mal, change la couleur ».
+   La regle disait `opacity:.5` sur TOUTE la carte : le texte tombait donc
+   a moitie transparent sur du noir, illisible. « Montrer sans donner »
+   doit se lire sur l'objet, pas sur les mots. Le voile passe donc sur
+   l'icone seule, le cadre reste discret, et le texte revient a pleine
+   opacite avec un or plus clair. */
+#souvenir.apercu svg{opacity:.4}
+#souvenir.apercu .carte{background:linear-gradient(140deg,rgba(212,175,55,.07),rgba(17,20,23,.9));
+ border-color:rgba(212,175,55,.2)}
+#souvenir.apercu .t{color:#E2C878}
+#souvenir.apercu .n{color:#DCE5EC}
 
 /* le souvenir */
 #souvenir{max-width:520px;margin:22px auto 0;padding:0 22px}
@@ -432,7 +496,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  background:linear-gradient(140deg,rgba(212,175,55,.12),rgba(17,20,23,.9));
  border:1px solid rgba(212,175,55,.3)}
 #souvenir svg{width:46px;height:46px;flex:0 0 auto}
-#souvenir .t{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);margin:0 0 5px}
+#souvenir .t{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:#E2C878;margin:0 0 5px}
 #souvenir .n{font-family:'Cinzel',serif;font-size:15px;margin:0;line-height:1.25}
 #arrBas{display:flex;gap:9px;padding:24px 22px calc(env(safe-area-inset-bottom) + 26px);
  max-width:520px;margin:0 auto}
@@ -888,7 +952,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <p class="sous" data-t="ouvNations">Angleterre · Irlande · Galles · Écosse · France · Espagne · Allemagne</p>
     <p class="langue" data-t="ouvLangue">— anglais —</p>
 
-    <p class="intro" data-th="ouvIntro">Dix-huit villes. <b>Pas les capitales politiques — les capitales
+    <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
     et où le vocabulaire que tu vas apprendre s'entend vraiment.</p>
 
@@ -1525,24 +1589,71 @@ var POURQUOI = {
   de:"Ende der Reise. Eine Hauptstadt, ein Akzent, und alles, was du schon sagen kannst.",
   ja:"旅の終わり。首都、訛り、そしてもう言えるようになったことすべて。"}
 };
+/* ==================================================================
+   LE CARNET EN CARTES (6 aout 2026, demande de Blandine : « on devait
+   passer les villes en cartes qui se retournent avec la petite phrase et
+   le contenu de leur apprentissage afin que ce soit moins fastidieux »).
+
+   Devant : le fond de la ville, son numero, son nom, son pays.
+   Au dos : le chapitre, la phrase du « pourquoi », et le nombre de mots.
+
+   ⚠️ LE NOMBRE DE MOTS EST REMPLI PLUS TARD, au premier retournement.
+   Ce bloc s'execute avant que les lexiques et `chapVirtuel` existent
+   (meme raison que le `lastI=-1` de la fin du fichier) : demander le
+   compte ici renverrait toujours zero. On le calcule donc au moment ou
+   la carte se retourne, quand tout est charge — et on ne le calcule
+   qu'une fois par ville.
+   ⚠️ Aucun `onerror` a maintenir : un fond absent laisse simplement le
+   degrade sombre de `.vrec` visible, ce qui reste une carte presentable.
+   ================================================================== */
 (function(){
   var b=document.getElementById("carnet");
   if(!b) return;
   var t=document.createElement("p"); t.className="ct"; t.setAttribute("data-t","itineraire"); t.textContent=T("itineraire");
   b.appendChild(t);
-  /* Chaque ville est un dépliant : à l'arrivée on ne voit que dix lignes
-     courtes, pas un mur de texte. On ouvre celle qui intrigue. */
+  var g=document.createElement("div"); g.className="vgrille";
   ETAPES.forEach(function(e,i){
     var d=document.createElement("button");
-    d.className="cv"; d.type="button";
-    d.innerHTML='<span class="n">'+(i+1)+'</span>'+
-      '<span class="d"><b>'+eV(e)+'</b><i>'+eNat(e)+' · '+eCh(e)+'</i></span>'+
-      '<span class="pl">+</span>'+
-      '<span class="pq">'+tx(POURQUOI[e.ref])+'</span>';
-    d.addEventListener("click",function(){ this.classList.toggle("ouv"); });
-    b.appendChild(d);
+    d.className="vc"; d.type="button"; d.dataset.ref=e.ref;
+    d.setAttribute("aria-label", eV(e)+" — "+eNat(e));
+    d.innerHTML='<span class="vflip">'+
+        '<span class="vf vrec" style="background-image:url(&quot;fond-'+e.ref+'.webp&quot;)">'+
+          '<span class="vhalo"></span><span class="vvoile"></span>'+
+          '<span class="vn">'+(i+1)+'</span>'+
+          '<span class="vtitre"><b>'+eV(e)+'</b><i>'+eNat(e)+'</i></span>'+
+          '<span class="vtourne">+</span>'+
+        '</span>'+
+        '<span class="vf vdos">'+
+          /* le nom au dos aussi : retournée, la carte ne disait plus
+             de quelle ville elle parlait. */
+          '<span class="vnom">'+eV(e)+'</span>'+
+          '<span class="vch">'+eCh(e)+'</span>'+
+          '<span class="vpq">'+tx(POURQUOI[e.ref])+'</span>'+
+          '<span class="vapp"></span>'+
+        '</span>'+
+      '</span>';
+    d.addEventListener("click",function(){
+      this.classList.toggle("ouv");
+      remplirApprentissage(this);
+    });
+    g.appendChild(d);
   });
+  b.appendChild(g);
 })();
+
+/* Ce qu'on apprend dans la ville — lu au premier retournement seulement. */
+function remplirApprentissage(carte){
+  var z=carte.querySelector(".vapp");
+  if(!z || z.dataset.fait==="1") return;
+  var n=0;
+  try{
+    var ch=chapVirtuel(carte.dataset.ref);
+    if(ch && ch.concepts) n=ch.concepts.length;
+  }catch(e){}
+  if(!n) return;                      /* lexique pas encore la : on retentera */
+  z.dataset.fait="1";
+  z.innerHTML=n+" <span>"+T("motsAApprendre")+"</span>";
+}
 
 var rail = S("rail"), W;
 ETAPES.forEach(function(){ var d=document.createElement("div"); d.className="station"; rail.appendChild(d); });
@@ -1750,6 +1861,8 @@ function garnirVille(e){
     S("postalNote").textContent = "";
     S("ptourne").textContent = _carte ? "Touche pour lire" : "";
     S("pcarte").classList.remove("dos");
+    document.querySelector("#pcarte .pface").setAttribute("data-attente", T("carteAVenir"));
+    S("pcarte").classList.remove("sansimg");
     S("pimg").src = "carte-"+e.ref+".webp";
     appliquerTeinteTitre(e.ref);
     S("pimg").alt = eV(e);
@@ -1834,6 +1947,21 @@ function ouvrirArrivee(i){
   videoEl.src = "arrivee-"+e.ref+".mp4";
   videoEl.addEventListener("error",function(){ S("emplacement").style.display="flex"; });
   videoEl.addEventListener("playing",function(){ S("emplacement").style.display="none"; });
+  /* ⚠️ ARRET ANTICIPE, ville par ville (6 août 2026).
+     Le clip de La Baule finit sur le panneau de la ville — mais le panneau
+     est TRONQUE dans le fichier lui-même : de 4,6 s à 5,1 s, toutes les
+     images montrent « A BAUL », le L et le E ne sont nulle part dans la
+     vidéo. Aucun cadrage ne peut les faire revenir. On arrête donc le clip
+     avant, sur le cheval en l'air, qui est une bien meilleure dernière
+     image. À retirer d'ici le jour où la vidéo est refaite avec le panneau
+     cadré entier. Les autres villes n'ont pas d'entrée : elles jouent
+     jusqu'au bout, comme avant. */
+  var stop = FIN_VIDEO[e.ref];
+  if(stop){
+    videoEl.addEventListener("timeupdate",function(){
+      if(this.currentTime >= stop){ try{ this.pause(); }catch(err){} }
+    });
+  }
   S("vue").insertBefore(videoEl, S("vue").firstChild);
   ajusterCadrage(videoEl);
   S("emplacement").style.display="flex";
@@ -1878,6 +2006,10 @@ function allerA(i){
    ⚠️ Le départ vient du profil Hype quand il l'expose ; il ne l'expose
    pas encore, donc on part de Paris par défaut (décision de Blandine).
    ================================================================== */
+/* Fin forcée d'un clip d'arrivée, en secondes. Une seule entrée pour
+   l'instant : voir le commentaire dans ouvrirArrivee. */
+var FIN_VIDEO = { labaule: 4.4 };
+
 var DEPART_DEFAUT = { nom:"Paris", lat:48.8566, lng:2.3522 };
 
 /* La ville mise en avant en fin de chapitre (voir finLecon). Envoyée au
@@ -2112,7 +2244,18 @@ S("pcarte").addEventListener("click",function(){
   S("ptourne").textContent = this.classList.contains("dos") ? "" : "Touche pour lire";
 });
 /* si l'image de carte manque, on masque le bloc plutôt que d'afficher un cadre vide */
-S("pimg").addEventListener("error",function(){ S("postal").style.display="none"; });
+/* ⚠️ CORRIGE le 6 aout 2026 — « initialement on avait ajoute la carte a
+   gagner et l'objet a gagner mais floutes sur cette page ».
+   L'objet etait bien la, la carte avait disparu : cette ligne masquait
+   TOUT le bloc des qu'une image manquait sur le serveur. Une image
+   absente n'est pas une raison de retirer la recompense de l'ecran —
+   c'est meme l'inverse, on annonce ce qui est a gagner. Le cadre reste
+   donc en place, floute comme les autres, avec sa mention. */
+S("pimg").addEventListener("error",function(){
+  S("pcarte").classList.add("sansimg");
+  try{ this.removeAttribute("src"); }catch(e){}
+});
+S("pimg").addEventListener("load",function(){ S("pcarte").classList.remove("sansimg"); });
 
 /* ==================================================================
    LA LEÇON — le moteur de jeu. Il lit window.HYPE_LINGO_LEX et rien
@@ -2312,8 +2455,12 @@ var UI = {
    it:"Francese, inglese, spagnolo, italiano, tedesco, giapponese: quello vero, quello delle scuderie.",
    de:"Französisch, Englisch, Spanisch, Italienisch, Deutsch, Japanisch — die echten Wörter, die im Stall fallen.",
    ja:"フランス語、英語、スペイン語、イタリア語、ドイツ語、日本語。厩舎で実際に使われる言葉。"},
- pt2t:{fr:"Dix-neuf destinations", en:"Nineteen destinations", es:"Diecinueve destinos",
-   it:"Diciannove destinazioni", de:"Neunzehn Ziele", ja:"十九の目的地"},
+ /* Le compte est retire des textes le 6 aout 2026 : « tu peux meme retirer
+    le chiffre, ca va evoluer ». Ne pas le remettre a chaque ville ajoutee —
+    il y avait deja deux valeurs contradictoires en ligne (le repli HTML
+    disait dix-huit, cette table dix-neuf). */
+ pt2t:{fr:"Une ville, un chapitre", en:"One town, one chapter", es:"Una ciudad, un capítulo",
+   it:"Una città, un capitolo", de:"Eine Stadt, ein Kapitel", ja:"一つの街に一つの章"},
  pt2d:{fr:"Du Suffolk à l'Andalousie. Chacune enseigne une partie du métier, dans la langue que tu apprends.",
    en:"From Suffolk to Andalusia. Each one teaches a part of the craft, in the language you are learning.",
    es:"De Suffolk a Andalucía. Cada una enseña una parte del oficio, en el idioma que aprendes.",
@@ -2349,7 +2496,7 @@ var UI = {
    ja:"街ごとに絵はがき一枚と記念品一つ。与えられるのではなく、勝ち取るもの。"},
  destTitre:{fr:"Quelle langue veux-tu apprendre ?", en:"Which language do you want to learn?", es:"¿Qué idioma quieres aprender?",
    it:"Dove vuoi andare?", de:"Wohin willst du?", ja:"どこへ行く？"},
- destSous:{fr:"Une langue, dix-neuf destinations. Le premier chapitre est offert partout.",
+ destSous:{fr:"Une langue, une destination. Le premier chapitre est offert partout.",
    en:"One destination, one language. The first chapter is free everywhere.",
    es:"Un destino, un idioma. El primer capítulo es gratis en todas partes.",
    it:"Una destinazione, una lingua. Il primo capitolo è gratuito sempre.",
@@ -2372,12 +2519,12 @@ var UI = {
    ja:"イングランド・アイルランド・ウェールズ・スコットランド"},
  ouvLangue:{fr:"— anglais —", en:"— English —", es:"— inglés —", it:"— inglese —",
    de:"— Englisch —", ja:"— 英語 —"},
- ouvIntro:{fr:"Dix-neuf villes. <b>Pas les capitales politiques — les capitales du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde, et où le vocabulaire que tu vas apprendre s'entend vraiment.",
-   en:"Nineteen towns. <b>Not the political capitals — the horse capitals.</b> Places where riding is not a hobby but everyone's trade, and where the words you are about to learn are really spoken.",
-   es:"Diecinueve ciudades. <b>No las capitales políticas: las capitales del caballo.</b> Lugares donde la equitación no es un pasatiempo sino el oficio de todos, y donde el vocabulario que vas a aprender se oye de verdad.",
-   it:"Diciannove città. <b>Non le capitali politiche — le capitali del cavallo.</b> Luoghi dove l'equitazione non è un passatempo ma il mestiere di tutti, e dove il vocabolario che imparerai si sente davvero.",
-   de:"Neunzehn Städte. <b>Nicht die politischen Hauptstädte — die Hauptstädte des Pferdes.</b> Orte, an denen Reiten kein Hobby ist, sondern der Beruf aller, und an denen die Wörter, die du lernst, wirklich fallen.",
-   ja:"十九の街。<b>政治の首都ではなく、馬の首都。</b>乗馬が趣味ではなく、みんなの仕事である場所。これから覚える言葉が、本当に聞こえてくる場所。"},
+ ouvIntro:{fr:"<b>Pas les capitales politiques — les capitales du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde, et où le vocabulaire que tu vas apprendre s'entend vraiment.",
+   en:"<b>Not the political capitals — the horse capitals.</b> Places where riding is not a hobby but everyone's trade, and where the words you are about to learn are really spoken.",
+   es:"<b>No las capitales políticas: las capitales del caballo.</b> Lugares donde la equitación no es un pasatiempo sino el oficio de todos, y donde el vocabulario que vas a aprender se oye de verdad.",
+   it:"<b>Non le capitali politiche — le capitali del cavallo.</b> Luoghi dove l'equitazione non è un passatempo ma il mestiere di tutti, e dove il vocabolario che imparerai si sente davvero.",
+   de:"<b>Nicht die politischen Hauptstädte — die Hauptstädte des Pferdes.</b> Orte, an denen Reiten kein Hobby ist, sondern der Beruf aller, und an denen die Wörter, die du lernst, wirklich fallen.",
+   ja:"<b>政治の首都ではなく、馬の首都。</b>乗馬が趣味ではなく、みんなの仕事である場所。これから覚える言葉が、本当に聞こえてくる場所。"},
  regle1:{fr:"<b>Tu choisis ta prochaine étape.</b> Sur le globe, ou parmi celles que la ville que tu quittes te propose.",
    en:"<b>You travel by night and arrive at dawn.</b> The road moves under your finger, from one town to the next.",
    es:"<b>Se viaja de noche y se llega al amanecer.</b> El camino se recorre con el dedo, de una ciudad a la siguiente.",
@@ -2396,6 +2543,10 @@ var UI = {
    it:"<b>Il capitolo delle emergenze è gratuito</b> — saper dire «zoppica» o «chiamate il veterinario» all'estero non si vende.",
    de:"<b>Das Notfallkapitel ist kostenlos</b> — zu wissen, wie man im Ausland \u201Eer lahmt\u201C oder \u201Eruft den Tierarzt\u201C sagt, ist nicht verkäuflich.",
    ja:"<b>緊急時の章は無料。</b>海外で「跛行している」「獣医を呼んで」と言えること。これは売り物ではない。"},
+ carteAVenir:{fr:"Carte à venir", en:"Card coming soon", es:"Postal en camino",
+   it:"Cartolina in arrivo", de:"Karte folgt", ja:"カードは近日公開"},
+ motsAApprendre:{fr:"mots à apprendre", en:"words to learn", es:"palabras por aprender",
+   it:"parole da imparare", de:"Wörter zu lernen", ja:"覚える単語"},
  itineraire:{fr:"L'itinéraire", en:"The route", es:"El itinerario", it:"L'itinerario",
    de:"Die Route", ja:"行程"},
  partir:{fr:"Partir", en:"Set off", es:"Partir", it:"Partire", de:"Aufbrechen", ja:"出発する"},
@@ -3884,12 +4035,15 @@ var DESTINATIONS = [
      localStorage des joueurs, la changer effacerait leur voyage. */
   { cle:"iles",     dr:"\uD83C\uDDEC\uD83C\uDDE7", lg:"en", ouvert:true,
     nom:{fr:"L'anglais", en:"English", es:"El inglés", it:"L'inglese", de:"Englisch", ja:"英語"},
-    d:{fr:"Dix-huit destinations, du Suffolk à l'Andalousie — l'anglais des écuries.",
-       en:"Nineteen destinations, from the Atlantic coast to Andalusia — the English of the yard.",
-       es:"Diecinueve destinos, de la costa atlántica a Andalucía: el inglés de las cuadras.",
-       it:"Diciannove destinazioni, dalla costa atlantica all'Andalusia: l'inglese delle scuderie.",
-       de:"Neunzehn Ziele, von der Atlantikküste bis Andalusien — das Englisch der Stallgasse.",
-       ja:"大西洋岸からアンダルシアまで、十九の目的地。厩舎の英語。"} },
+    /* Chiffres retires ici aussi (6 aout) : cet ecran en portait deux de
+       plus, et ils se contredisaient — « dix-neuf » dans le sous-titre,
+       « dix-huit » dans cette ligne. */
+    d:{fr:"De la côte atlantique à l'Andalousie — l'anglais des écuries.",
+       en:"From the Atlantic coast to Andalusia — the English of the yard.",
+       es:"De la costa atlántica a Andalucía: el inglés de las cuadras.",
+       it:"Dalla costa atlantica all'Andalusia: l'inglese delle scuderie.",
+       de:"Von der Atlantikküste bis Andalusien — das Englisch der Stallgasse.",
+       ja:"大西洋岸からアンダルシアまで。厩舎の英語。"} },
   { cle:"peninsule",dr:"\uD83C\uDDEA\uD83C\uDDF8", lg:"es", ouvert:false,
     nom:{fr:"L'espagnol", en:"Spanish", es:"El español", it:"Lo spagnolo", de:"Spanisch", ja:"スペイン語"},
     d:{fr:"Le même tour du monde, en espagnol. Bientôt.",
@@ -4106,9 +4260,13 @@ function terminerOuverture(){
    mais rien n'oblige a la choisir : « ca fait 8 fois que je fais La
    Baule, je vais vomir a force. » */
 function partirVersGlobe(){
-  S("ouverture").classList.add("parti");
   PROCHAINE_RECOMMANDEE = ETAPES[0] ? ETAPES[0].ref : null;
-  setTimeout(ouvrirGlobe, 120);
+  /* Le globe s'ouvre D'ABORD, par-dessus le carnet. Le carnet ne se
+     retire qu'ensuite, quand le globe est completement opaque (sa
+     transition dure .3 s) : plus rien ne peut apparaitre entre les deux.
+     L'ordre inverse — celui d'avant — faisait clignoter le chemin. */
+  ouvrirGlobe();
+  setTimeout(function(){ S("ouverture").classList.add("parti"); }, 340);
 }
 
 /* ==================================================================
