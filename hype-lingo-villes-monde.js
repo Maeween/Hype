@@ -391,25 +391,27 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
      Le nom de l'étape est LE MORNE, pas « Maurice » : c'est le lieu réel
      où l'on monte sur l'île, au pied de la montagne du même nom, et le
      reste du voyage nomme des villes, pas des pays.
-     ⚠️ `carte-maurice.webp` et `arrivee-maurice.mp4` n'existent pas encore.
-     Les deux replis les couvrent : « Carte à venir » sur l'écran d'arrivée
-     et dans la collection, « Vidéo introuvable » à la place du clip.
+     ⚠️ CORRIGÉ le 6 août 2026, après vérification du lieu réel et de la
+     photo de Blandine : la première version faisait desseller avant
+     d'entrer dans l'eau. Au Haras du Morne, l'eau monte JUSQU'À LA SELLE
+     et le cheval nage avec son cavalier dessus. La baignade y est
+     réservée aux cavaliers expérimentés, savoir nager est exigé.
      ================================================================== */
   MONDE.maurice = {
-    lieu:"Le Morne · Maurice", carte:true, niveau:1,
+    lieu:"Rivière Noire · Maurice", carte:true, niveau:1,
     image:"le lagon au pied de la montagne",
     lettre:{
-      fr:["On a dessellé sur le sable, et j'ai compris que la balade commençait seulement là.",
+      fr:["L'eau est montée jusqu'à la selle, et j'ai compris que la balade commençait seulement là.",
           "Le cheval est entré dans le lagon comme s'il rentrait chez lui. À un moment ses pieds ont quitté le fond, j'ai lâché la rêne comme on me l'avait dit, et il a nagé. Je n'ai jamais rien monté d'aussi calme."],
-      en:["We untacked on the sand, and I realised the ride was only starting there.",
+      en:["The water came up to the saddle, and I realised the ride was only starting there.",
           "The horse walked into the lagoon as if he were going home. At some point his feet left the bottom, I let the rein go as I had been told, and he swam. I have never ridden anything so calm."],
-      es:["Desensillamos en la arena, y entendí que el paseo empezaba justo allí.",
+      es:["El agua subió hasta la silla, y entendí que el paseo empezaba justo allí.",
           "El caballo entró en la laguna como si volviera a su casa. En un momento sus pies dejaron el fondo, solté la rienda como me habían dicho, y nadó. Nunca he montado nada tan tranquilo."],
-      it:["Abbiamo tolto la sella sulla sabbia, e ho capito che la passeggiata cominciava solo lì.",
+      it:["L'acqua è salita fino alla sella, e ho capito che la passeggiata cominciava solo lì.",
           "Il cavallo è entrato nella laguna come se tornasse a casa. A un certo punto i suoi piedi hanno lasciato il fondo, ho mollato la redine come mi avevano detto, e ha nuotato. Non ho mai montato niente di così tranquillo."],
-      de:["Wir haben im Sand abgesattelt, und da begriff ich, dass der Ausritt erst dort anfing.",
+      de:["Das Wasser stieg bis zum Sattel, und da begriff ich, dass der Ausritt erst dort anfing.",
           "Das Pferd ging in die Lagune, als käme es nach Hause. Irgendwann verließen seine Hufe den Grund, ich gab den Zügel nach, wie man es mir gesagt hatte, und es schwamm. Ich habe noch nie etwas so Ruhiges geritten."],
-      ja:["砂の上で鞍を外したとき、外乗はここから始まるのだと分かった。",
+      ja:["水が鞍まで上がってきたとき、外乗はここから始まるのだと分かった。",
           "馬は自分の家に帰るようにラグーンへ入っていった。あるところで蹄が底を離れ、言われたとおり手綱をゆるめると、馬は泳いだ。あれほど静かな馬に乗ったことはない。"]},
     volets:[
       {t:{fr:"Le lagon", en:"The lagoon", es:"La laguna", it:"La laguna",
@@ -422,20 +424,20 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           ja:"サンゴ礁が沖合一キロでうねりを砕くため、その内側の水は平らで、ぬるく、底まで澄んでいます。ほかの多くの場所では危険な「馬と入る海」が、ここでは成り立つ理由です。体勢を崩す波もなく、不意の深みもありません。ラグーンの水が外洋へ抜ける水路には、決して入りません。"}},
       {t:{fr:"Se baigner", en:"Going in", es:"Bañarse", it:"Fare il bagno",
           de:"Ins Wasser", ja:"水に入る"},
-       c:{fr:"On dessine la sortie autour de la marée, pas autour de l'horaire : à marée basse la bande de sable mouillé porte le galop, à marée haute il n'y a plus de plage. On desselle avant d'entrer — une selle noyée est perdue — et la bombe reste sur la tête. Quand les pieds quittent le fond, le cheval nage tout seul ; la seule chose à faire est de lui laisser la tête libre.",
-          en:"The ride is planned around the tide, not the timetable: at low tide the strip of wet sand carries a canter, at high tide there is no beach left. You untack before going in — a drowned saddle is a lost saddle — and the hat stays on. When the hooves leave the bottom the horse swims by itself; the only thing to do is leave its head free.",
-          es:"La salida se organiza según la marea, no según el horario: con marea baja la franja de arena mojada aguanta el galope, con marea alta no queda playa. Se desensilla antes de entrar —una silla ahogada está perdida— y el casco se queda puesto. Cuando los cascos dejan el fondo, el caballo nada solo; lo único que hay que hacer es dejarle la cabeza libre.",
-          it:"L'uscita si organizza sulla marea, non sull'orario: con la marea bassa la striscia di sabbia bagnata regge il galoppo, con la marea alta non c'è più spiaggia. Si toglie la sella prima di entrare — una sella annegata è perduta — e il cap resta in testa. Quando gli zoccoli lasciano il fondo, il cavallo nuota da sé; l'unica cosa da fare è lasciargli la testa libera.",
-          de:"Der Ausritt richtet sich nach der Tide, nicht nach dem Stundenplan: bei Ebbe trägt der Streifen nassen Sandes den Galopp, bei Flut bleibt kein Strand übrig. Vor dem Wasser wird abgesattelt — ein ersoffener Sattel ist verloren — und die Kappe bleibt auf. Verlassen die Hufe den Grund, schwimmt das Pferd von selbst; das Einzige, was zu tun ist: den Kopf frei lassen.",
-          ja:"出発は時刻表ではなく潮で決めます。引き潮なら濡れた砂の帯が駈歩を支え、満ち潮では浜そのものがなくなります。水に入る前に鞍を外し（水没した鞍は使い物になりません）、ヘルメットは着けたままです。蹄が底を離れれば馬は自分で泳ぎます。こちらがすべきことは、頭を自由にしてやることだけです。"}},
+       c:{fr:"On dessine la sortie autour de la marée, pas autour de l'horaire : à marée basse la bande de sable mouillé porte le galop, à marée haute il n'y a plus de plage. On reste en selle : l'eau monte jusqu'à la selle et le cheval nage avec toi dessus, la bombe sur la tête. Quand les pieds quittent le fond, il nage tout seul ; la seule chose à faire est de lui laisser la tête libre. ⚠️ La baignade est réservée aux cavaliers déjà confirmés, et il faut savoir nager.",
+          en:"The ride is planned around the tide, not the timetable: at low tide the strip of wet sand carries a canter, at high tide there is no beach left. You stay in the saddle: the water rises to it and the horse swims with you on its back, hat on. When the hooves leave the bottom it swims by itself; the only thing to do is leave its head free. The swim is for experienced riders only, and you must be able to swim.",
+          es:"La salida se organiza según la marea, no según el horario: con marea baja la franja de arena mojada aguanta el galope, con marea alta no queda playa. Se queda uno en la silla: el agua sube hasta ella y el caballo nada contigo encima, con el casco puesto. Cuando los cascos dejan el fondo, nada solo; lo único que hay que hacer es dejarle la cabeza libre. El baño es solo para jinetes experimentados, y hay que saber nadar.",
+          it:"L'uscita si organizza sulla marea, non sull'orario: con la marea bassa la striscia di sabbia bagnata regge il galoppo, con la marea alta non c'è più spiaggia. Si resta in sella: l'acqua sale fino alla sella e il cavallo nuota con te sopra, con il cap in testa. Quando gli zoccoli lasciano il fondo, nuota da sé; l'unica cosa da fare è lasciargli la testa libera. Il bagno è riservato ai cavalieri esperti, e bisogna saper nuotare.",
+          de:"Der Ausritt richtet sich nach der Tide, nicht nach dem Stundenplan: bei Ebbe trägt der Streifen nassen Sandes den Galopp, bei Flut bleibt kein Strand übrig. Man bleibt im Sattel: das Wasser steigt bis zum Sattel, und das Pferd schwimmt mit dir darauf, die Kappe bleibt auf. Verlassen die Hufe den Grund, schwimmt es von selbst; das Einzige, was zu tun ist: den Kopf frei lassen. Das Baden ist erfahrenen Reitern vorbehalten, und schwimmen können muss man.",
+          ja:"出発は時刻表ではなく潮で決めます。引き潮なら濡れた砂の帯が駈歩を支え、満ち潮では浜そのものがなくなります。鞍には乗ったままです。水は鞍の高さまで上がり、馬はあなたを乗せて泳ぎます。ヘルメットは着けたまま。蹄が底を離れれば馬は自分で泳ぎます。こちらがすべきことは、頭を自由にしてやることだけです。水浴は経験のある騎乗者に限られ、泳げることが条件です。"}},
       {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi",
           de:"Wenn du hinführest", ja:"もし行くなら"},
-       c:{fr:"Réserve la veille, mets ton maillot sous ta tenue — il n'y a pas de vestiaire sur la plage — et demande l'heure de la marée avant l'heure du rendez-vous. Pars tôt le matin : à midi le sable brûle et l'ombre n'existe pas. Au retour, on rince le cheval à l'eau douce ; le sel qui sèche sur le poil irrite et raidit.",
-          en:"Book the day before, put your swimsuit on under your clothes — there is no changing room on the beach — and ask for the tide time before the meeting time. Go early: at midday the sand burns and there is no shade. Afterwards the horse is rinsed with fresh water; salt drying on the coat irritates and stiffens it.",
-          es:"Reserva el día antes, ponte el bañador debajo de la ropa —no hay vestuario en la playa— y pregunta la hora de la marea antes que la hora de la cita. Sal temprano: al mediodía la arena quema y no hay sombra. Al volver se aclara el caballo con agua dulce; la sal que se seca en la capa irrita y endurece.",
-          it:"Prenota il giorno prima, mettiti il costume sotto i vestiti — sulla spiaggia non ci sono spogliatoi — e chiedi l'ora della marea prima dell'ora dell'appuntamento. Parti presto: a mezzogiorno la sabbia scotta e l'ombra non esiste. Al rientro si sciacqua il cavallo con acqua dolce; il sale che asciuga sul mantello irrita e indurisce.",
-          de:"Buche am Vortag, zieh die Badehose unter die Reitsachen — am Strand gibt es keine Umkleide — und frage nach der Tide, bevor du nach der Uhrzeit fragst. Reite früh: mittags brennt der Sand, und Schatten gibt es nicht. Danach wird das Pferd mit Süßwasser abgespült; trocknendes Salz im Fell reizt und macht es stumpf.",
-          ja:"前日に予約し、水着は服の下に着ておくこと（浜に更衣室はありません）。集合時刻より先に、潮の時刻を尋ねてください。朝の早い時間に出ること。正午の砂は焼けるように熱く、日陰はありません。帰ったら真水で馬を洗い流します。毛に乾いた塩は、皮膚を荒らし、毛を硬くします。"}}
+       c:{fr:"Réserve la veille, dis ton niveau franchement — la baignade demande un cavalier confirmé — mets ton maillot sous ta tenue, emporte une serviette et de quoi te changer, et demande l'heure de la marée avant l'heure du rendez-vous. Pars tôt le matin : à midi le sable brûle et l'ombre n'existe pas. Au retour, on rince le cheval à l'eau douce ; le sel qui sèche sur le poil irrite et raidit.",
+          en:"Book the day before, be honest about your level — the swim needs an experienced rider — put your swimsuit on under your clothes, take a towel and something to change into, and ask for the tide time before the meeting time. Go early: at midday the sand burns and there is no shade. Afterwards the horse is rinsed with fresh water; salt drying on the coat irritates and stiffens it.",
+          es:"Reserva el día antes, di tu nivel con franqueza —el baño exige jinete experimentado—, ponte el bañador debajo de la ropa, lleva una toalla y ropa para cambiarte, y pregunta la hora de la marea antes que la hora de la cita. Sal temprano: al mediodía la arena quema y no hay sombra. Al volver se aclara el caballo con agua dulce; la sal que se seca en la capa irrita y endurece.",
+          it:"Prenota il giorno prima, di' il tuo livello con franchezza — il bagno richiede un cavaliere esperto —, mettiti il costume sotto i vestiti, porta un telo e qualcosa per cambiarti, e chiedi l'ora della marea prima dell'ora dell'appuntamento. Parti presto: a mezzogiorno la sabbia scotta e l'ombra non esiste. Al rientro si sciacqua il cavallo con acqua dolce; il sale che asciuga sul mantello irrita e indurisce.",
+          de:"Buche am Vortag, sag dein Können ehrlich — für das Baden braucht es einen erfahrenen Reiter —, zieh die Badehose unter die Reitsachen, nimm ein Handtuch und Wechselkleidung mit, und frage nach der Tide, bevor du nach der Uhrzeit fragst. Reite früh: mittags brennt der Sand, und Schatten gibt es nicht. Danach wird das Pferd mit Süßwasser abgespült; trocknendes Salz im Fell reizt und macht es stumpf.",
+          ja:"前日に予約し、自分の技量は正直に伝えること（水浴には経験が求められます）。水着は服の下に着ておき、タオルと着替えを持っていくこと。集合時刻より先に、潮の時刻を尋ねてください。朝の早い時間に出ること。正午の砂は焼けるように熱く、日陰はありません。帰ったら真水で馬を洗い流します。毛に乾いた塩は、皮膚を荒らし、毛を硬くします。"}}
     ]
   };
 

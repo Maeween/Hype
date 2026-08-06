@@ -22,6 +22,40 @@
 
 ---
 
+## 🐎 SESSION 101 · LINGUAE (06/08) — LE MORNE CORRIGÉ SUR LE FOND, ET SES TROIS ACTIFS EN PLACE
+
+### 🔴 Je m'étais trompé : on ne desselle pas, on reste en selle
+En vérifiant le lieu réel après la livraison de la session 100 : au **Haras du Morne**, l'eau monte **jusqu'à la selle** et le cheval nage **avec son cavalier dessus**. La photo envoyée par Blandine le montre également. Ma première version faisait desseller avant d'entrer et portait le mot « à cru » — c'est une pratique d'ailleurs, pas celle d'ici. Quatre corrections validées par elle, toutes appliquées :
+
+1. **Le mot « à cru » sort du lexique**, remplacé par **`cavalier-confirme`** (le cavalier confirmé / the experienced rider / el jinete experimentado / il cavaliere esperto / der erfahrene Reiter / 経験者). C'est ce qu'il faut vraiment savoir dire là-bas : la baignade dans le lagon est **réservée aux cavaliers expérimentés**, et savoir nager est exigé.
+2. **La phrase `ph-balade-cru` devient `ph-balade-confirme`** : « Il faut être cavalier confirmé pour la baignade ? », 6 langues.
+3. **Les définitions de `baignade` et `nager`** précisent qu'on reste en selle et que l'eau monte jusqu'à la selle.
+4. **Le volet « Se baigner », la lettre et le récit** sont réécrits en conséquence, 6 langues. Le volet « Si tu y allais » gagne la condition de niveau, la serviette et de quoi se changer.
+
+⚠️ Écrit noir sur blanc dans l'en-tête des deux fichiers : **ne pas réintroduire « à cru » sur cette ville.**
+⚠️ À dire si la question revient : le **niveau 1** affiché sur la carte du Morne parle de la difficulté de **langue**, pas d'équitation. Le chapitre reste accessible à un débutant même si la baignade réelle demande un bon cavalier.
+
+### ✅ Les trois actifs du Morne sont là
+- **`carte-maurice.webp`** et **`fond-maurice.webp`** : envoyés par Blandine aux bons noms, chargés en rendu réel, la carte postale s'affiche (le repli « Carte à venir » ne se déclenche plus).
+- **`arrivee-maurice.mp4`** : fabriqué ici à partir du `.mov` qu'elle a envoyé. Trois choses faites au passage :
+  · **HEVC → H.264** (le `.mov` d'origine était en HEVC, que Chrome et Android ne lisent pas de façon fiable ; Safari seul l'aurait joué),
+  · **piste audio retirée** (l'élément est muet de toute façon) et recompression : **4,16 Mo → 403 Ko**, à durée et dimensions identiques (752×560, 5,1 s),
+  · **filigrane « CapCut AI » effacé** (filtre `delogo`) : il était fixe en haut à gauche, sur du ciel uni, donc l'effacement est invisible. Vérifié sur quatre images réparties dans le clip.
+✅ **Aucune entrée `FIN_VIDEO` nécessaire** : contrairement à La Baule, le panneau « ÎLE MAURICE » est **entièrement dans le cadre** à la dernière image. Vérifié.
+⚠️ Le clip est en **paysage** (752×560) là où les autres arrivées sont en portrait : `ajusterCadrage` le passe donc en `contain` (bandes noires haut et bas sur fond déjà noir), pas en `cover`. Vérifié en rendu, c'est propre.
+
+### ✅ Corrigé au passage
+`lieu` du Morne disait « Le Morne · Maurice », juste sous un titre de carte postale qui affiche déjà « Le Morne » — répétition. Devient **« Rivière Noire · Maurice »**, le district réel, comme « Loire-Atlantique · France » pour La Baule.
+
+### Contrôles passés
+Syntaxe validée sur les trois fichiers · lexique contrôlé par exécution : 12 concepts, 4 phrases, **zéro entrée incomplète sur les 6 langues**, plus aucune trace de `a-cru` ni de `bareback` · **rendu réel** : clip du Morne joué jusqu'au bout (5,10 s, dernière image le panneau entier, `object-fit: contain`), carte postale affichée avec sa photo, trois volets ouverts et relus, récit corrigé à l'écran · aucune erreur JS.
+
+### 🧭 Préparation Flutter
+- **Aucune modification d'architecture cette session** : elle ne touche que du contenu (lexique, lettre, volets, récit) et un actif média. Les corrections de fond ont été faites *dans les fichiers de contenu*, sans qu'une seule ligne de moteur bouge — c'est exactement ce que la séparation « une ville = un fichier » devait permettre, et c'est la première fois qu'elle est mise à l'épreuve par une correction factuelle.
+- **Risques** : nuls côté code. Le seul point de vigilance est éditorial : deux fichiers portent maintenant un avertissement explicite contre la réintroduction de « à cru ».
+
+---
+
 ## 🏝️ SESSION 100 · LINGUAE (06/08) — L'ÎLE MAURICE ENTRE DANS LE VOYAGE, ET LES NIVEAUX S'AFFICHENT
 
 ### ✅ Le Morne (île Maurice) est l'étape 2

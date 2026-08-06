@@ -18,11 +18,20 @@
    y va.
 
    ⚠️ ONZE ENTRÉES SONT NEUVES et n'ont jamais été relues par un natif.
-   Les plus à confirmer : `à cru` (bareback / a pelo / a pelo — l'italien
-   dit aussi « a pelo », à vérifier), `la marée` en japonais (潮), et
-   surtout les tournures allemandes de la baignade (`baden`, `schwimmen`
-   — l'allemand distingue nettement les deux, contrairement au français
-   courant). À reporter dans hype-linguae-doutes.md.
+   Les plus à confirmer : `la marée` en japonais (潮) et les tournures
+   allemandes de la baignade (`baden`, `schwimmen` — l'allemand distingue
+   nettement les deux, contrairement au français courant).
+   À reporter dans hype-linguae-doutes.md.
+
+   ⚠️ CORRIGÉ le 6 août 2026, APRÈS vérification du lieu réel.
+   La première version disait qu'on desselle avant d'entrer dans l'eau, et
+   portait le mot « à cru ». C'est FAUX pour Le Morne : au Haras du Morne
+   l'eau monte jusqu'à la selle et le cheval nage avec son cavalier
+   dessus. La photo de Blandine le montre aussi. « À cru » est donc
+   remplacé par `cavalier-confirme` — ce qu'il faut vraiment savoir dire
+   là-bas, la baignade y étant réservée aux cavaliers expérimentés, avec
+   obligation de savoir nager. Ne pas réintroduire « à cru » sur cette
+   ville : ce serait une pratique d'ailleurs, pas celle d'ici.
 
    ⚠️ LE JAPONAIS DES PHRASES EST ÉCRIT AVEC DES ESPACES entre les
    groupes. Ce n'est pas une coquille : `attendue.split(" ")` découpe la
@@ -58,15 +67,15 @@ window.HYPE_LINGO_LEX.balade = {
     mots:{ fr:{m:"la baignade"}, en:{m:"the swim", p:"souim"},
            es:{m:"el baño"}, it:{m:"il bagno"},
            de:{m:"das Baden", p:"ba-deune"}, ja:{m:"水浴", p:"suiyoku"} },
-    def:{ fr:"Entrer dans l'eau avec le cheval. ⚠️ Ce n'est pas la même chose que le faire nager : on peut se baigner jusqu'au poitrail sans jamais que le cheval nage.",
-          en:"Going into the water with the horse. Not the same as making it swim: you can wade in chest-deep without the horse ever swimming." } },
+    def:{ fr:"Entrer dans l'eau avec le cheval, en restant en selle. ⚠️ Ce n'est pas la même chose que le faire nager : on peut se baigner jusqu'au poitrail sans jamais que le cheval nage.",
+          en:"Going into the water with the horse, staying in the saddle. Not the same as making it swim: you can wade in chest-deep without the horse ever swimming." } },
 
   { ref:"nager", lecon:1, coll:"balade",
     mots:{ fr:{m:"nager"}, en:{m:"to swim", p:"tou souim"},
            es:{m:"nadar"}, it:{m:"nuotare"},
            de:{m:"schwimmen", p:"chvi-meune"}, ja:{m:"泳ぐ", p:"oyogu"} },
-    def:{ fr:"Le moment où les pieds du cheval ne touchent plus. Il nage naturellement, mais il faut lui lâcher la tête : la rêne qui retient le noie.",
-          en:"The moment the horse's feet leave the bottom. It swims naturally, but its head must be free: a restraining rein drowns it." } },
+    def:{ fr:"Le moment où les pieds du cheval ne touchent plus. L'eau monte jusqu'à la selle et il nage avec toi dessus. Il nage naturellement, mais il faut lui lâcher la tête : la rêne qui retient le noie.",
+          en:"The moment the horse's feet leave the bottom. The water rises to the saddle and it swims with you on its back. It swims naturally, but its head must be free: a restraining rein drowns it." } },
 
   { ref:"lagon", lecon:1, coll:"balade",
     mots:{ fr:{m:"le lagon"}, en:{m:"the lagoon", p:"la-goune"},
@@ -89,12 +98,12 @@ window.HYPE_LINGO_LEX.balade = {
     def:{ fr:"La bande dure laissée par la mer qui se retire. C'est la seule où l'on peut galoper : le sable sec fatigue les tendons en quelques minutes.",
           en:"The firm strip left by the retreating sea. The only one you can canter on: dry sand tires tendons within minutes." } },
 
-  { ref:"a-cru", lecon:1, coll:"balade",
-    mots:{ fr:{m:"à cru"}, en:{m:"bareback", p:"bèr-bak"},
-           es:{m:"a pelo"}, it:{m:"a pelo"},
-           de:{m:"ohne Sattel", p:"ô-ne za-tel"}, ja:{m:"裸馬", p:"hadakauma"} },
-    def:{ fr:"Sans selle. On desselle avant d'entrer dans l'eau : une selle mouillée se ruine, et le cuir gonflé blesse au retour.",
-          en:"Without a saddle. You untack before going in: a soaked saddle is ruined, and swollen leather rubs the horse raw afterwards." } },
+  { ref:"cavalier-confirme", lecon:1, coll:"balade",
+    mots:{ fr:{m:"le cavalier confirmé"}, en:{m:"the experienced rider", p:"iks-pi-rieunst"},
+           es:{m:"el jinete experimentado"}, it:{m:"il cavaliere esperto"},
+           de:{m:"der erfahrene Reiter", p:"èr-fa-re-ne"}, ja:{m:"経験者", p:"keikensha"} },
+    def:{ fr:"Celui qui monte déjà. ⚠️ La baignade dans le lagon lui est réservée : les débutants font la plage, pas l'eau profonde, et savoir nager est exigé en plus. Dire son niveau franchement décide de la sortie qu'on te propose.",
+          en:"Someone who already rides. The lagoon swim is reserved for them: beginners get the beach, not the deep water, and you must be able to swim. Stating your level honestly decides which ride you are offered." } },
 
   { ref:"guide", lecon:1, coll:"balade",
     mots:{ fr:{m:"le guide"}, en:{m:"the guide", p:"gaïd"},
@@ -160,13 +169,13 @@ window.HYPE_LINGO_LEX.balade = {
       de:"Wann startet der Ausritt, je nach Tide ?",
       ja:"潮 に あわせ て 外乗 は 何時 に 出 ます か ?" },
 
-  { ref:"ph-balade-cru", lecon:1,
-      fr:"On entre dans l'eau à cru ?",
-      en:"Do we go into the water bareback ?",
-      es:"¿ Entramos al agua a pelo ?",
-      it:"Entriamo in acqua a pelo ?",
-      de:"Gehen wir ohne Sattel ins Wasser ?",
-      ja:"裸馬 で 水 に 入り ます か ?" }
+  { ref:"ph-balade-confirme", lecon:1,
+      fr:"Il faut être cavalier confirmé pour la baignade ?",
+      en:"Do you have to be an experienced rider for the swim ?",
+      es:"¿ Hay que ser jinete experimentado para el baño ?",
+      it:"Bisogna essere cavaliere esperto per il bagno ?",
+      de:"Muss man erfahrener Reiter sein, um ins Wasser zu gehen ?",
+      ja:"水浴 に は 経験者 で ない と いけ ませ ん か ?" }
 
   ]
 };
