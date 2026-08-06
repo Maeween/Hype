@@ -31,6 +31,18 @@ body.idlelit .glowcast{opacity:1;animation:castB 8s 2.6s ease-in-out infinite al
    du globe de Hype : la liste se retrouvait par-dessus le champ, et les
    dix-huit lignes étaient hors écran. Elle vit maintenant dans le flux,
    entre la recherche et les puces, et elle défile. */
+/* ⚠️ Le globe occupe 58dvh, et ma première mise en page posait la
+   recherche à 50dvh : elle lui recouvrait les 8 derniers pourcents et la
+   sphère paraissait coupée en bas. Le globe passe à 64dvh — il respire —
+   et tout le reste descend sous lui.
+   La recherche est masquée : elle venait de la recherche de clubs de Hype,
+   et sur dix-huit destinations les quatre puces suffisent. Taper au clavier
+   pour trouver une ville dans une liste de dix-huit, c'est du travail en
+   trop. Une ligne à retirer si tu veux la revoir. */
+canvas#globe{height:64dvh!important}
+.glowcast{top:58dvh!important}
+.wrap .search{display:none!important}
+
 /* ⚠️ MISE EN PAGE LINGUAE — refaite au rendu mesuré, pas à l'estime.
    Le globe de Hype plaçait la liste des clubs en absolu sous sa recherche
    (« top: 59dvh + 56px ») : avec dix-huit destinations à montrer, elle
@@ -39,7 +51,7 @@ body.idlelit .glowcast{opacity:1;animation:castB 8s 2.6s ease-in-out infinite al
      le globe en haut, la recherche, la liste qui défile, les puces en bas. */
 /* Les puces mesurent 121 px de haut au rendu (rangée défilante + marges)
    et commencent à 726 sur un écran de 844 : la liste doit s'arrêter avant. */
-#results{position:fixed;left:14px;right:14px;top:calc(50dvh + 46px);bottom:124px;
+#results{position:fixed;left:14px;right:14px;top:calc(64dvh + 10px);bottom:68px;
   z-index:9;border-radius:16px;display:none;overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   background:linear-gradient(180deg,rgba(10,16,24,.92),rgba(6,10,16,.96));
@@ -59,7 +71,11 @@ body.idlelit .glowcast{opacity:1;animation:castB 8s 2.6s ease-in-out infinite al
    On resserre le décalage plutôt que de supprimer l'effet. */
 .yw span{animation-duration:.9s!important;
   animation-delay:calc(.25s + var(--i)*.075s)!important}
-.filters{bottom:14px;align-items:center}
+/* ⚠️ La règle d'origine pose `top:86dvh` et vient APRÈS la mienne : mon
+   `bottom` s'ajoutait au `top` au lieu de le remplacer, et la rangée
+   s'étirait sur 125 px en débordant sous l'écran. On annule le `top`. */
+.filters{top:auto!important;bottom:calc(env(safe-area-inset-bottom) + 12px)!important;
+  align-items:center}
 .filters .chip{align-self:center}
 #results .r{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
 #results .r:last-child{border-bottom:0}
@@ -381,9 +397,9 @@ var curClub=null; function openF(i){ sel=i; const c=CLUBS[i]; curClub=c; try{var
        un bouton qui ne fait rien enferme, donc on le désactive. */
     var _et = c.type;
     _fb.disabled = (_et === "D" || !!c.depart);
-    _fb.textContent = c.depart ? 'Ton point de départ'
-                   : (_et === "F" ? 'Y retourner'
-                   : (_et === "O" ? 'Partir' : 'Pas encore ouverte'));
+    _fb.textContent = c.depart ? LL.bX
+                   : (_et === "F" ? LL.bF
+                   : (_et === "O" ? LL.bO : LL.bD));
     _fb.style.opacity = _fb.disabled ? '.45' : '1';
     _fb.onclick=function(){ if(_fb.disabled) return; try{ parent.postMessage({t:'linguae-dest', ref:c.ref}, '*'); }catch(x){}  setTimeout(function(){ try{ closeF(); }catch(x){} try{ parent.postMessage({t:'globe-exit'}, '*'); }catch(x){} }, 850); }; }}catch(x){} const dk=dist(CLUBS[MOI].lat,CLUBS[MOI].lng,c.lat,c.lng);
   document.getElementById('f_nom').textContent=c.nom;
@@ -392,8 +408,8 @@ var curClub=null; function openF(i){ sel=i; const c=CLUBS[i]; curClub=c; try{var
      Les coordonnées GPS et le nombre de membres appartiennent aux clubs
      de Hype, pas à un voyage — on les retire. */
   var _dep = CLUBS.filter(function(x){ return x.depart; })[0];
-  document.getElementById('f_addr').textContent = c.depart ? 'Le point de départ de ton voyage'
-    : (dk>0 ? 'à '+dk+' km de '+((_dep&&_dep.nom)||'ton écurie') : '');
+  document.getElementById('f_addr').textContent = c.depart ? LL.dep
+    : (dk>0 ? LL.loin.replace('{n}', dk).replace('{v}', (_dep&&_dep.nom)||'') : '');
   document.getElementById('f_type').textContent=(TLAB[c.type]||'').toUpperCase();
   document.getElementById('f_disc').innerHTML=(c.disc||[]).map(d=>'<b>'+d+'</b>').join('');
   document.getElementById('f_sec').innerHTML=(c.stages||c.events||c.cours)?('<div class="s"><span class="ic">&#127942;</span><span class="lb">Stages</span><span class="vl">'+(c.stages||'\u2014')+'</span></div><div class="s"><span class="ic">&#128197;</span><span class="lb">\u00c9v\u00e9nements</span><span class="vl">'+(c.events||'\u2014')+'</span></div><div class="s"><span class="ic">&#128218;</span><span class="lb">Cours</span><span class="vl">'+(c.cours||'\u2014')+'</span></div>'):(c.note?('<div class="s"><span class="ic">&#10024;</span><span class="lb">\u00c0 noter</span><span class="vl">'+c.note+'</span></div>'):'');
@@ -441,7 +457,7 @@ function renderResults(){
   var list = CLUBS.map((c,i)=>({c,i}))
     .filter(o => !o.c.depart && passType(o.c) && (!query || isMatch(o.c)));
   if(!list.length){
-    RES.innerHTML='<div class="r" style="opacity:.55">Aucune destination ici</div>';
+    RES.innerHTML='<div class="r" style="opacity:.55">'+LL.vide+'</div>';
     RES.classList.add('on'); return;
   }
   RES.innerHTML=list.map(o=>'<div class="r" data-i="'+o.i+'"><span class="dot" style="background:'+(COL[o.c.type]||"#20D9F5")+';box-shadow:0 0 7px '+(COL[o.c.type]||"#20D9F5")+'"></span><div style="flex:1"><div style="font-size:14px;font-weight:600">'+o.c.nom+'</div><div style="font-size:11.5px;opacity:.55">'+o.c.ville+(o.c.region?' \u00b7 '+o.c.region:'')+'</div></div><span style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.6">'+(TLAB[o.c.type]||'')+'</span></div>').join('');
@@ -453,6 +469,11 @@ setTimeout(function(){ try{ renderResults(); }catch(e){} }, 60);
 QX.addEventListener('click',()=>{ Q.value=''; query=''; renderResults(); });
 
 // ---- filtres ----
+/* ⚠️ Libellés français en dur ET NON `LL.xxx` : `FILT` est déclarée AVANT
+   la table LING_L dans ce même bloc de script. Lire `LL` ici levait une
+   TypeError sur `undefined`, le bloc s'arrêtait là, et tout ce qui suit
+   restait non initialisé. C'est `appliquerLangueLinguae()` qui les
+   rhabille ensuite, quand la langue arrive du parent. */
 const FILT=[['all','Tout'],['F','Faites'],['O','Ouvertes'],['D','À découvrir']];
 const FB=document.getElementById('filters');
 FB.innerHTML=FILT.map((f,i)=>'<span class="chip glass'+(i===0?' on':'')+'" data-t="'+f[0]+'">'+f[1]+'</span>').join('');
@@ -469,7 +490,58 @@ resize(); frame();
 var _bk=document.querySelector(".back"); if(_bk){ _bk.style.cursor="pointer"; _bk.addEventListener("click",function(){ if(F.style.display==="block"){ closeF(); } else if(RES&&RES.style.display==="block"){ Q.value=""; query=""; renderResults(); Q.blur(); } }); }
 var _ov=document.getElementById("affoverlay"); if(_ov){ document.getElementById("affclose").addEventListener("click",function(){ _ov.style.display="none"; }); _ov.addEventListener("click",function(e){ if(e.target===_ov) _ov.style.display="none"; }); }
 
-window.addEventListener('message',function(e){ if(e&&e.data&&e.data.t==='hype-exit'){ try{ wave={a:true,t:0,dist:null}; }catch(x){} } }); var HYPE_L={fr:{ph:'Chercher une destination',mem:'étapes',mon:'Ton départ',voir:'Partir'},en:{ph:'Search a destination',mem:'stages',mon:'Your start',voir:'Go there'},es:{ph:'Buscar un destino',mem:'etapas',mon:'Tu salida',voir:'Partir'},it:{ph:'Cerca una destinazione',mem:'tappe',mon:'La tua partenza',voir:'Parti'},de:{ph:'Ein Ziel suchen',mem:'Etappen',mon:'Dein Start',voir:'Losreiten'},ja:{ph:'目的地を検索',mem:'ステージ',mon:'出発地',voir:'出発する'}}; var HYPE_MEM='étapes'; var HYPE_MON='Ton départ'; window.addEventListener('message',function(e){ if(e&&e.data&&e.data.t==='hype-lang'){ var L=HYPE_L[e.data.l]||HYPE_L.fr; HYPE_MEM=L.mem; HYPE_MON=L.mon; try{ var q=document.getElementById('q'); if(q){ q.placeholder=L.ph; } }catch(x){} try{ var fb=document.querySelector('.fbtn'); if(fb){ fb.textContent=L.voir; } }catch(x){} } if(e&&e.data&&e.data.t==='hype-club-connu'&&e.data.nom){ try{ var s=document.querySelector('.search'); if(s&&!s.__hc){ s.__hc=1; for(var ci=0;ci<s.children.length;ci++){ s.children[ci].__od=s.children[ci].style.display; s.children[ci].style.display='none'; } var w=document.createElement('div'); w.id='hcw'; w.style.cssText='display:flex;align-items:center;gap:8px;width:100%;min-width:0'; var nom=document.createElement('span'); nom.textContent=e.data.nom; nom.style.cssText='flex:1;min-width:0;font-family:Cinzel,Georgia,serif;font-size:10px;letter-spacing:.3px;color:#B9C9CE;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'; var bok=document.createElement('button'); bok.textContent=e.data.lOk||'Continuer'; bok.style.cssText='flex:0 0 auto;border:none;border-radius:999px;padding:8px 13px;background:linear-gradient(90deg,#0C5763,#38E2F8);color:#fff;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap'; var bch=document.createElement('button'); bch.textContent=e.data.lChg||'Changer'; bch.style.cssText='flex:0 0 auto;border:1px solid rgba(32,217,245,.4);border-radius:999px;padding:8px 11px;background:transparent;color:#20D9F5;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap'; w.appendChild(nom); w.appendChild(bok); w.appendChild(bch); s.appendChild(w); bok.addEventListener('click',function(){ try{ parent.postMessage({t:'globe-exit'},'*'); }catch(x2){} }); bch.addEventListener('click',function(){ try{ for(var cj=0;cj<s.children.length;cj++){ var c=s.children[cj]; if(c.id!=='hcw'){ c.style.display=c.__od||''; } } w.parentNode&&w.parentNode.removeChild(w); s.__hc=0; var q=document.getElementById('q'); q&&q.focus(); }catch(x3){} }); } }catch(x){} } });
+window.addEventListener('message',function(e){ if(e&&e.data&&e.data.t==='hype-exit'){ try{ wave={a:true,t:0,dist:null}; }catch(x){} } }); var HYPE_L={fr:{ph:'Chercher une destination',mem:'étapes',mon:'Ton départ',voir:'Partir'},en:{ph:'Search a destination',mem:'stages',mon:'Your start',voir:'Go there'},es:{ph:'Buscar un destino',mem:'etapas',mon:'Tu salida',voir:'Partir'},it:{ph:'Cerca una destinazione',mem:'tappe',mon:'La tua partenza',voir:'Parti'},de:{ph:'Ein Ziel suchen',mem:'Etappen',mon:'Dein Start',voir:'Losreiten'},ja:{ph:'目的地を検索',mem:'ステージ',mon:'出発地',voir:'出発する'}}; var HYPE_MEM='étapes'; var HYPE_MON='Ton départ';
+
+/* ==================================================================
+   LES LIBELLÉS LINGUAE DANS LES SIX LANGUES (6 août 2026)
+   Tout ce que la greffe avait écrit était en français en dur : les
+   puces, les états, les boutons de la fiche, la liste vide. Le reste du
+   module parle six langues — pas eux. Le globe reçoit déjà
+   {t:'hype-lang', l:'xx'} du parent ; on s'en sert.
+   ================================================================== */
+var LING_L = {
+ fr:{f:"Faites",o:"Ouvertes",d:"À découvrir",tout:"Tout",
+     eF:"Faite",eO:"Ouverte",eD:"À découvrir",eX:"Ton départ",
+     bF:"Y retourner",bO:"Partir",bD:"Pas encore ouverte",bX:"Ton point de départ",
+     vide:"Aucune destination ici",dep:"Le départ de ton voyage",loin:"à {n} km de {v}"},
+ en:{f:"Done",o:"Open",d:"To discover",tout:"All",
+     eF:"Done",eO:"Open",eD:"To discover",eX:"Your start",
+     bF:"Go back",bO:"Set off",bD:"Not open yet",bX:"Your starting point",
+     vide:"No destination here",dep:"The start of your journey",loin:"{n} km from {v}"},
+ es:{f:"Hechas",o:"Abiertas",d:"Por descubrir",tout:"Todo",
+     eF:"Hecha",eO:"Abierta",eD:"Por descubrir",eX:"Tu salida",
+     bF:"Volver",bO:"Partir",bD:"Aún no abierta",bX:"Tu punto de partida",
+     vide:"Ningún destino aquí",dep:"El inicio de tu viaje",loin:"a {n} km de {v}"},
+ it:{f:"Fatte",o:"Aperte",d:"Da scoprire",tout:"Tutto",
+     eF:"Fatta",eO:"Aperta",eD:"Da scoprire",eX:"La tua partenza",
+     bF:"Tornarci",bO:"Partire",bD:"Non ancora aperta",bX:"Il tuo punto di partenza",
+     vide:"Nessuna destinazione qui",dep:"L'inizio del tuo viaggio",loin:"a {n} km da {v}"},
+ de:{f:"Erledigt",o:"Offen",d:"Zu entdecken",tout:"Alle",
+     eF:"Erledigt",eO:"Offen",eD:"Zu entdecken",eX:"Dein Start",
+     bF:"Zurückkehren",bO:"Losreiten",bD:"Noch nicht offen",bX:"Dein Startpunkt",
+     vide:"Kein Ziel hier",dep:"Der Beginn deiner Reise",loin:"{n} km von {v}"},
+ ja:{f:"達成",o:"開放中",d:"未開放",tout:"すべて",
+     eF:"達成",eO:"開放中",eD:"未開放",eX:"出発地",
+     bF:"もう一度行く",bO:"出発する",bD:"まだ開放されていません",bX:"あなたの出発地",
+     vide:"ここに目的地はありません",dep:"旅の出発点",loin:"{v}から{n}km"}
+};
+var LL = LING_L.fr;
+
+function appliquerLangueLinguae(lg){
+  LL = LING_L[lg] || LING_L.fr;
+  TLAB.F = LL.eF; TLAB.O = LL.eO; TLAB.D = LL.eD; TLAB.X = LL.eX;
+  try{
+    var fb = document.getElementById('filters');
+    if(fb) fb.querySelectorAll('.chip').forEach(function(c,i){
+      c.textContent = [LL.tout, LL.f, LL.o, LL.d][i] || c.textContent;
+    });
+  }catch(e){}
+  try{ renderResults(); }catch(e){}
+  try{ if(typeof draw === "function") draw(); }catch(e){}
+}
+window.addEventListener('message', function(e){
+  if(e && e.data && e.data.t === 'hype-lang') appliquerLangueLinguae(e.data.l);
+}); window.addEventListener('message',function(e){ if(e&&e.data&&e.data.t==='hype-lang'){ var L=HYPE_L[e.data.l]||HYPE_L.fr; HYPE_MEM=L.mem; HYPE_MON=L.mon; try{ var q=document.getElementById('q'); if(q){ q.placeholder=L.ph; } }catch(x){} try{ var fb=document.querySelector('.fbtn'); if(fb){ fb.textContent=L.voir; } }catch(x){} } if(e&&e.data&&e.data.t==='hype-club-connu'&&e.data.nom){ try{ var s=document.querySelector('.search'); if(s&&!s.__hc){ s.__hc=1; for(var ci=0;ci<s.children.length;ci++){ s.children[ci].__od=s.children[ci].style.display; s.children[ci].style.display='none'; } var w=document.createElement('div'); w.id='hcw'; w.style.cssText='display:flex;align-items:center;gap:8px;width:100%;min-width:0'; var nom=document.createElement('span'); nom.textContent=e.data.nom; nom.style.cssText='flex:1;min-width:0;font-family:Cinzel,Georgia,serif;font-size:10px;letter-spacing:.3px;color:#B9C9CE;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'; var bok=document.createElement('button'); bok.textContent=e.data.lOk||'Continuer'; bok.style.cssText='flex:0 0 auto;border:none;border-radius:999px;padding:8px 13px;background:linear-gradient(90deg,#0C5763,#38E2F8);color:#fff;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap'; var bch=document.createElement('button'); bch.textContent=e.data.lChg||'Changer'; bch.style.cssText='flex:0 0 auto;border:1px solid rgba(32,217,245,.4);border-radius:999px;padding:8px 11px;background:transparent;color:#20D9F5;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap'; w.appendChild(nom); w.appendChild(bok); w.appendChild(bch); s.appendChild(w); bok.addEventListener('click',function(){ try{ parent.postMessage({t:'globe-exit'},'*'); }catch(x2){} }); bch.addEventListener('click',function(){ try{ for(var cj=0;cj<s.children.length;cj++){ var c=s.children[cj]; if(c.id!=='hcw'){ c.style.display=c.__od||''; } } w.parentNode&&w.parentNode.removeChild(w); s.__hc=0; var q=document.getElementById('q'); q&&q.focus(); }catch(x3){} }); } }catch(x){} } });
 (function(){var t;function arm(){document.body.classList.remove('idlelit');clearTimeout(t);t=setTimeout(function(){document.body.classList.add('idlelit');},4000);}['touchstart','pointerdown','mousemove','wheel','keydown'].forEach(function(ev){window.addEventListener(ev,arm,{passive:true});});arm();})();
 </script>
 
