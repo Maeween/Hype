@@ -28740,12 +28740,16 @@ function EcranUnivers() {
   
 
     function L5acc(fr, en, es, it, ja) { return lg === "en" ? en : lg === "es" ? es : lg === "it" ? it : lg === "ja" ? ja : fr; }
+  /* 06/08 : L5acc ne connait que 5 langues et l allemand y retombe sur le francais.
+     trAcc prend un objet a 6 langues pour les libelles ajoutes a partir d aujourd hui,
+     en s appuyant sur le tr du contexte quand il est disponible. */
+  function trAcc(o) { try { if (ctx && typeof ctx.tr === "function") return ctx.tr(o); } catch (eTr) { } return o[lg] || o.fr; }
   function chapAcc(label, d) {
     return React.createElement("div", { className: "rv " + (d || ""), style: { display: "flex", alignItems: "center", gap: 11, margin: "34px 0 20px", fontSize: 11, fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", color: "#20D9F5", fontFamily: "'Montserrat',sans-serif" } },
       React.createElement("span", { style: { width: 24, height: 2, background: "#20D9F5", borderRadius: 2, flex: "0 0 auto" } }), label);
   }
   function carteVertAcc(o) {
-    return React.createElement("button", { onClick: o.onClick, style: { position: "relative", aspectRatio: "4 / 5", width: "100%", borderRadius: 22, overflow: "hidden", border: "1px solid rgba(32,217,245,0.24)", background: "#0A0F14", cursor: "pointer", padding: 0, textAlign: "left" } },
+    return React.createElement("button", { onClick: o.onClick, style: { position: "relative", aspectRatio: (o.ratio || "4 / 5"), width: "100%", borderRadius: (o.rayon || 22), overflow: "hidden", border: "1px solid rgba(32,217,245,0.24)", background: "#0A0F14", cursor: "pointer", padding: 0, textAlign: "left" } },
       o.classe
         ? React.createElement("div", { className: o.classe })
         : (o.img
@@ -28841,9 +28845,15 @@ function EcranUnivers() {
             React.createElement("path", { d: "M16 17l5-5-5-5" }),
             React.createElement("path", { d: "M21 12H9" }))),
         React.createElement(ClocheNotifs, null),
-        React.createElement("button", { onClick: function () { setEcran("messagerie"); }, "aria-label": "Messages", style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 146, zIndex: 7, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 4px 18px rgba(0,0,0,0.35)", fontSize: 16 } }, "\uD83D\uDCAC",
+        /* 06/08 : la messagerie du hero passe de l emoji 💬 a la FENTE CRISTAL (demande Blandine).
+             Meme place, meme taille, meme onClick : seule l apparence change. La pastille rouge
+             #FF5A5F devient turquoise pour rentrer dans la palette Hype Spectral. La fente
+             respire (hypeFente) uniquement quand il y a du courrier ; eteinte elle est gris ardoise. */
+        React.createElement("button", { onClick: function () { setEcran("messagerie"); }, "aria-label": "Messages", style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 146, zIndex: 7, width: 38, height: 38, borderRadius: 13, border: "1px solid " + (nonLusMsg > 0 ? "rgba(32,217,245,0.55)" : "rgba(255,255,255,0.22)"), background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 4px 18px rgba(0,0,0,0.35)", padding: 0 } },
+          React.createElement("span", { "aria-hidden": "true", style: { width: 18, height: 3, borderRadius: 2, background: (nonLusMsg > 0 ? "#20D9F5" : "rgba(255,255,255,0.42)"), boxShadow: (nonLusMsg > 0 ? "0 0 10px rgba(32,217,245,0.9), 0 0 24px rgba(32,217,245,0.3)" : "none"), animation: (nonLusMsg > 0 ? "hypeFente 3.4s ease-in-out infinite" : "none") } }),
+          React.createElement("span", { "aria-hidden": "true", style: { position: "absolute", bottom: 9, width: 18, height: 1, background: "rgba(255,255,255,0.16)" } }),
           /* 28/07 : pastille du nombre de messages non lus. */
-          (nonLusMsg > 0) ? React.createElement("span", { style: { position: "absolute", top: -3, right: -3, minWidth: 17, height: 17, borderRadius: 999, background: "#FF5A5F", color: "#fff", fontSize: 9, fontWeight: 800, lineHeight: "17px", textAlign: "center", padding: "0 4px", boxShadow: "0 0 9px rgba(255,90,95,0.85)", fontFamily: "'Montserrat',sans-serif" } }, (nonLusMsg > 99 ? "99+" : String(nonLusMsg))) : null),
+          (nonLusMsg > 0) ? React.createElement("span", { style: { position: "absolute", top: -4, right: -4, minWidth: 17, height: 17, borderRadius: 999, background: "#20D9F5", color: "#04262C", fontSize: 9.5, fontWeight: 800, lineHeight: "13px", textAlign: "center", padding: "0 4px", border: "2px solid #07080A", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 10px rgba(32,217,245,0.7)", fontFamily: "'Montserrat',sans-serif" } }, (nonLusMsg > 99 ? "99+" : String(nonLusMsg))) : null),
         React.createElement("div", { style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 14, zIndex: 6 } },
           React.createElement("button", { onClick: function(){ setLangOuvert(!langOuvert); }, "aria-label": "Langue", style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 18px rgba(0,0,0,0.35)" } }, ({ fr: "\ud83c\uddeb\ud83c\uddf7", en: "\ud83c\uddec\ud83c\udde7", es: "\ud83c\uddea\ud83c\uddf8", it: "\ud83c\uddee\ud83c\uddf9", ja: "\ud83c\uddef\ud83c\uddf5" })[lg] || "\ud83c\uddeb\ud83c\uddf7"),
           langOuvert ? React.createElement("div", { style: { position: "absolute", top: 44, right: 0, display: "flex", flexDirection: "column", gap: 6, padding: 8, borderRadius: 16, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(8,11,15,0.86)", WebkitBackdropFilter: "blur(14px)", backdropFilter: "blur(14px)", boxShadow: "0 14px 34px rgba(0,0,0,0.5)" } },
@@ -28857,7 +28867,7 @@ function EcranUnivers() {
            retirant le wordmark, j aurais du l en sortir a ce moment-la.
            L ombre portee (textShadow) devient inutile hors de l image : retiree. */
         React.createElement("div", { style: { width: "100%", textAlign: "center", padding: "14px 8px 0" } },
-            React.createElement("style", null, "@keyframes hypeLettre{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}@keyframes hypeGlow{0%,100%{text-shadow:0 0 18px rgba(32,217,245,0.75),0 0 40px rgba(32,217,245,0.35)}50%{text-shadow:0 0 26px rgba(32,217,245,0.95),0 0 56px rgba(32,217,245,0.5)}}"),
+            React.createElement("style", null, "@keyframes hypeLettre{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}@keyframes hypeFente{0%,100%{opacity:.72}50%{opacity:1}}@keyframes hypeGlow{0%,100%{text-shadow:0 0 18px rgba(32,217,245,0.75),0 0 40px rgba(32,217,245,0.35)}50%{text-shadow:0 0 26px rgba(32,217,245,0.95),0 0 56px rgba(32,217,245,0.5)}}"),
             /* 02/08 : le wordmark HYPE ecrit ici faisait doublon — l animation de la banniere
                contient deja le mot (decision Blandine). Retire, conformement a la Design Bible :
                le texte ne repete pas l image, il la renforce. La baseline qui le precedait etait
@@ -29018,13 +29028,25 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
           React.createElement("span", null, L5acc("Le Sprint \u00b7 60 secondes", "The Sprint \u00b7 60 seconds", "El Sprint \u00b7 60 segundos", "Lo Sprint \u00b7 60 secondi", "\u30b9\u30d7\u30ea\u30f3\u30c8 \u00b7 60\u79d2")),
           React.createElement("span", { style: { fontSize: 15 } }, "\u203a")),
 
-        React.createElement("button", { className: "banner culture glass rv d4", style: { marginTop: 20 }, onClick: nav("articles") },
-          React.createElement("div", { className: "cu-img" }),
-          React.createElement("div", { className: "bn-veil" }),
-          React.createElement("div", { className: "bn-info", style: { maxWidth: "100%" } },
-            React.createElement("div", { className: "bn-k" }, L5acc("Histoire & traditions", "History & traditions", "Historia y tradiciones", "Storia e tradizioni", "歴史と伝統")),
-            React.createElement("div", { className: "bn-t" }, L5acc("Culture équestre", "Equestrian culture", "Cultura ecuestre", "Cultura equestre", "馬術文化"))),
-          React.createElement("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a")),
+        /* 06/08 : Culture equestre quitte la banniere pleine largeur et passe en tuile CARREE,
+           en duo avec la Videotheque (demande Blandine). La bibliotheque video n avait aucune
+           porte depuis l accueil : elle n etait atteignable que par la page Galops et par
+           Culture equestre. Les deux tuiles reutilisent carteVertAcc, composant deja present
+           dans EcranUnivers mais sans aucun appelant depuis le retrait de Sante equine le 27/07 ;
+           il recoit juste un ratio parametrable. La classe CSS .culture reste en place, inutilisee. */
+        React.createElement("div", { className: "rv d4", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 20 } },
+          carteVertAcc({
+            ratio: "1 / 1", rayon: 18, classe: "cu-img",
+            k: trAcc({ fr: "Histoire & traditions", en: "History & traditions", es: "Historia y tradiciones", it: "Storia e tradizioni", ja: "歴史と伝統", de: "Geschichte & Traditionen" }),
+            t: trAcc({ fr: "Culture équestre", en: "Equestrian culture", es: "Cultura ecuestre", it: "Cultura equestre", ja: "馬術文化", de: "Reitkultur" }),
+            onClick: nav("articles")
+          }),
+          carteVertAcc({
+            ratio: "1 / 1", rayon: 18, img: "images/hype-encart-video.jpg", pos: "right center",
+            k: trAcc({ fr: "Une autre façon d'apprendre", en: "Another way to learn", es: "Otra forma de aprender", it: "Un altro modo di imparare", ja: "もうひとつの学び方", de: "Eine andere Art zu lernen" }),
+            t: trAcc({ fr: "Vidéothèque", en: "Video library", es: "Videoteca", it: "Videoteca", ja: "動画ライブラリ", de: "Videobibliothek" }),
+            onClick: function () { setEcran("videos"); }
+          })),
 
         /* 27/07 : Sante equine (Bien-etre) retiree pour l'instant — restee seule apres le depart de Nos partenaires,
            elle s etirait en pleine largeur avec un aspect-ratio 4/5 (carteVertAcc pensee pour une grille 2 colonnes)

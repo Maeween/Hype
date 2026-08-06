@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 06/08/2026 (SESSION 93 · INDEX) — Nom d'écurie perso séparé du club (`ecurie_perso`) + recherche club par noyau + garde-fou anti-écrasement — md5 `4c628a34b37c9e288fce6dee22ed0178`, 10 514 497 octets. Part du `83c24fde` (92 ter). Preview : `preview-95.html` (ouvre la page Écurie). SQL à exécuter : `ecurie-perso.sql`. Détail dans la section SESSION 93 ci-dessous.**
+**Version actuelle de l'index.html : 06/08/2026 (SESSION 94 · ACCUEIL) — Fente cristal a la place de l'emoji messagerie + Culture equestre et Videotheque en tuiles carrees — md5 `43c46461f722ac278e14aef5d30ae24a`, 10 517 602 octets. Part du fichier fourni par Blandine (`07990199e65cb64eaa6531aef64e27b0`, 10 515 180 octets). Preview : `preview-94.html` (ouvre l'Accueil). Aucun SQL. Detail dans la section SESSION 94 ci-dessous.**
+
+**Ancienne version (93 bis) — 06/08/2026 (SESSION 93 · INDEX) — Nom d'écurie perso séparé du club (`ecurie_perso`) + recherche club par noyau + garde-fou anti-écrasement — md5 `4c628a34b37c9e288fce6dee22ed0178`, 10 514 497 octets. Part du `83c24fde` (92 ter). Preview : `preview-95.html` (ouvre la page Écurie). SQL à exécuter : `ecurie-perso.sql`. Détail dans la section SESSION 93 ci-dessous.**
 
 **Ancienne version (92) — Photos plus jamais ecrites dans le localStorage + ecriture d'etat differee : corrige le plantage au zoom d'une photo sur iOS et la quete photo-cheval qui se devalidait a chaque rechargement — md5 `43e1cdf6ca0b7b0f7750ea23e369533f`, 10 508 454 octets. Part de `3e5dfd89` fourni par Blandine (verifie identique a la copie de session).**
 
@@ -3605,6 +3607,65 @@ Fichier `maquette-trace-V4.html` (autonome, aucun script distant, moteur et bibl
 - Page "Nos Ambassadeurs"
 - GRAND QUIZZ transversal Bronze/Argent/Or, mode entraînement libre permanent
 
+
+---
+
+## SESSION 94 · ACCUEIL (06/08, soir) — LA BOITE AUX LETTRES ET LA VIDEOTHEQUE
+
+**index.html md5 `43c46461f722ac278e14aef5d30ae24a`, 10 517 602 octets. Preview : `preview-94.html` (ouvre l'Accueil). Aucun SQL, aucun media nouveau.**
+
+### AVERTISSEMENT DE NUMEROTATION ET DE BASE
+Le fichier fourni par Blandine porte le md5 `07990199e65cb64eaa6531aef64e27b0` / 10 515 180 octets. Il ne correspond **ni** a la 93 (`4c628a34`, 10 514 497) **ni** a la 93 bis (`6375f8b1`, 10 514 789) : +391 octets par rapport a la 93 bis. Une session a donc livre sans se declarer dans le SUIVI. Le numero 94 est pris en lisant l'en-tete de ce fichier ; si une page a deja utilise 94 ailleurs, c'est un doublon a arbitrer. Travail effectue sur LE fichier de Blandine, conformement a la regle de base.
+
+### CE QUI ETAIT DEJA FAIT ET N'A PAS ETE RETOUCHE
+Blandine demandait le retrait de l'encart « Mes messages » et du bloc Lamotte. **Les deux etaient deja masques** par les constantes `AFFICHER_ENCART_MESSAGES = false` et `AFFICHER_ACTU_LAMOTTE = false` (session du 05/08), titre « L'actualite » compris. Aucune ligne touchee de ce cote. Rappel du commentaire en place : la video `hype-messagerie-video.mp4` (le poney qui apporte la lettre) reste disponible au depot pour un usage ulterieur — c'est la video que Blandine evoquait.
+
+### A · `carteVertAcc` rendu parametrable
+`carteVertAcc(o)` existait dans `EcranUnivers` mais **n'avait plus aucun appelant** depuis le retrait de Sante equine le 27/07 : code mort. Il recoit deux options facultatives, `o.ratio` (defaut `"4 / 5"`) et `o.rayon` (defaut `22`), et redevient le composant de tuile de l'accueil. Aucun appelant existant a adapter, puisqu'il n'y en avait aucun.
+
+### B · La fente cristal remplace l'emoji dans le hero
+L'icone messagerie du hero etait un bouton emoji 💬 avec pastille rouge `#FF5A5F`. Meme position (`right: 146`), meme taille (38x38), **meme `onClick` vers `setEcran("messagerie")`**, meme `aria-label` : seule l'apparence change.
+- Bouton en `borderRadius: 13` au lieu du cercle ; bordure turquoise quand il y a du courrier, blanche translucide sinon.
+- Une barre de 18x3 fait la fente : gris ardoise a vide, turquoise `#20D9F5` avec halo quand il y a du courrier. Un filet de 18x1 fait le socle.
+- Pastille passee au turquoise sur texte `#04262C`, bordee de 2 px de `#07080A` pour se detacher de la photo.
+- Nouveau keyframe `hypeFente` ajoute a la balise `<style>` deja presente dans le hero (a cote de `hypeLettre` et `hypeGlow`). L'animation ne tourne **que** si `nonLusMsg > 0` : rien ne clignote sur une boite vide.
+Les 3 autres occurrences de `#FF5A5F` dans l'index appartiennent a d'autres ecrans et n'ont pas ete touchees.
+
+### C · Culture equestre et Videotheque en tuiles carrees
+La bibliotheque video n'avait **aucune porte depuis l'accueil** : `EncartBibliothequeVideo` n'est pose que sur la page Galops et dans Culture equestre. Elle entre donc dans « Mon apprentissage ».
+- La banniere pleine largeur `banner culture glass` (176 px) est remplacee par une grille `1fr 1fr` de deux tuiles carrees en `ratio: "1 / 1"`, `rayon: 18`, `gap: 10`.
+- Tuile gauche : Culture equestre, qui **reutilise la classe CSS `.cu-img`** deja en place (donc la meme image `images/inline-07.jpg`, meme cadrage `62% 30%`), `onClick: nav("articles")`.
+- Tuile droite : Videotheque, image `images/hype-encart-video.jpg` (celle de l'encart existant, cadrage `right center`), `onClick: setEcran("videos")`. Aucune image nouvelle a produire ni a pousser.
+- Le reste de « Mon apprentissage » est intact : Hey Baby, Theorie des Galops, Hype Linguae (video de fond incluse) et le bandeau fin du Sprint n'ont pas bouge d'un octet.
+- La classe CSS `.culture` reste dans la feuille de styles, desormais inutilisee. Non supprimee volontairement : nettoyage a faire quand plus rien ne pointera dessus.
+
+### C bis · `trAcc`, six langues
+`L5acc` ne prend que 5 langues et l'allemand y retombe sur le francais. Les libelles ajoutes aujourd'hui passent par `trAcc(o)`, qui delegue au `tr` du contexte quand il existe et retombe sur `o[lg] || o.fr` sinon. Sur-titre de la Videotheque : « UNE AUTRE FACON D'APPRENDRE », dans les six langues.
+
+### VERIFICATION
+- 15/15 blocs `<script>` inline valides par `node --check`.
+- `carteVertAcc({` : 2 appels (0 avant). `trAcc(` : 5. `hypeFente` : 3. `banner culture glass` : 0.
+- Diff exhaustif : 55 lignes, toutes dans `EcranUnivers`. Rien touche ailleurs.
+- Rendu Playwright NON effectue : mode rapide, la modification est visuelle et confinee. A verifier a l'oeil sur `preview-94.html`.
+
+### A TESTER PAR BLANDINE
+1. La fente : eteinte quand la boite est vide, allumee et respirante avec la pastille turquoise quand il y a du courrier. Un tap ouvre bien la messagerie.
+2. Les deux tuiles carrees : cadrage des images a cette taille, et lisibilite du sur-titre de la Videotheque sur deux lignes.
+3. Que l'image `images/hype-encart-video.jpg` rende bien en cadrage `right center` sur un carre — c'est une image pensee pour une banniere large.
+
+### NON FAIT, ET POURQUOI
+- **Passage des images en jpg pour reduire le poids : impossible cette session.** Les images ne sont pas dans l'index, elles vivent dans 122 fichiers `hype-images-1.js` a `hype-images-122.js` qui n'ont pas ete fournis. A noter pour le vrai chantier : png->jpg ne suffit pas, c'est le base64 lui-meme qui gonfle de 33 % ; le gain se prend en sortant les images en vrais fichiers, comme le fait deja `images/*.jpg`.
+- La mosaique complete de l'accueil (variante C des maquettes) n'est PAS appliquee : Hey Baby, Galops et Linguae restent en pleine largeur. Leurs classes CSS (`.heyb` 188 px, `.bn-veil` en degrade horizontal, `.bn-info` a 70 %) sont dessinees pour des cartes larges ; les forcer dans une grille 2 colonnes demandait de retoucher du CSS partage. Ecarte pour ne rien casser.
+- Rappel d'un point encore ouvert du SUIVI : la maquette d'accueil avec **encart vertical Linguae a gauche** et Galops + Culture empiles a droite reste non commencee. Le duo de tuiles carrees livre aujourd'hui occupe la place que cette maquette prevoyait pour Culture — a arbitrer avec Blandine si elle revient a cette idee.
+
+### Préparation Flutter (session 94)
+- **Composant mutualise et remis en service** : `carteVertAcc` (tuile d'accueil), passe de code mort a 2 appelants, avec ratio et rayon parametrables. Toute future tuile de l'accueil passe par lui plutot que par un nouveau bloc `React.createElement` recopie.
+- **Dependance supprimee** : la carte Culture equestre ne depend plus des classes CSS `banner culture glass` ni de `.bn-veil` / `.bn-info` / `.bn-k` / `.bn-t`. Elle ne garde que `.cu-img` pour l'image. Un bloc de moins accroche a la feuille de styles globale.
+- **Couche i18n amelioree** : `trAcc` introduit les 6 langues dans un ecran qui n'en gerait que 5. Contrat clair (un objet de langues en entree), transposable tel quel a un `AppLocalizations` Flutter, contrairement a `L5acc` et ses 5 parametres positionnels.
+- **Dette non augmentee** : aucune ligne dupliquee, aucun composant nouveau cree, aucun `!important`, aucun style global ajoute.
+- **Restant a moderniser sur cet ecran** : `EcranUnivers` fait 492 lignes et melange donnees (table `D` des traductions), presentation et navigation. Le decoupage naturel serait un `AccueilRepository` pour `nonLusMsg` / quetes / annonces, et la sortie de la table `D` du corps du composant. Non fait : hors demande, et l'ecran est en cours d'evolution visuelle.
+- **Risque identifie** : `EcranDashboard` est du code mort confirme (`ecran === "dashboard"` rend `EcranUnivers`). Il contient une grille d'acces rapides qui pointe vers `videos`, `examen`, `classement`, `badges` — donc un lecteur du code peut croire que ces portes existent alors qu'elles ne sont pas branchees. A supprimer dans une session dediee, apres verification qu'aucun appel ne subsiste.
+
 ---
 
 ## 📝 Historique
@@ -3618,4 +3679,5 @@ Fichier `maquette-trace-V4.html` (autonome, aucun script distant, moteur et bibl
 | 27/07 (2) | Autre page | Accueil : carte Communauté équestre remise dans Mon monde, section Découvrir réordonnée, carte Culture équestre remontée dans Actualité. Article Cadre Noir : philosophie dépliée en permanence, bonus Hype passé en carrousel, album participatif remonté avant "Visiter". |
 | 27/07 (3) | Claude (page "Articles 4 écoles") | **Article Cadre Noir** : carrousel des 3 écoles restantes (retrait des 5 cartes stub), encart "Marquer ma visite" (compteur permanent + SQL), encart "Partager cet article". |
 | 29/07 (44) | **Bibliothèque vidéo.** Nouvel écran + page de lecture dans un fichier séparé `hype-video.js` ; ancien écran vidéo factice retiré ; catalogue de 6 vraies vidéos (3 IFCE confirmées + 3 à vérifier) en 6 langues ; pas de pourcentage de lecture (lecteur externe) ; miniatures YouTube distantes (0 bande passante Netlify). Lien cours → vidéo (étape D) volontairement non fait. |
+| 06/08 (94) | Claude (page Accueil) | **Accueil** : fente cristal a la place de l'emoji messagerie (pastille turquoise), Culture equestre + Videotheque en tuiles carrees via `carteVertAcc` remis en service, helper `trAcc` 6 langues. Encart messages et Lamotte etaient deja masques par constantes. |
 | 02/08 (72) | Claude (Directeur Technique) | **Visionneuse zoomable** (`PhotoZoomHype`, sans état React) corrigeant la sortie de l'appli au zoom ; vidéo de cérémonie figée sur la page Performances ; titre vertical « Liens & partage » désuperposé. Inventaire architectural de l'index (étape 1) : le contenu pèse plus que le code, extraction de `contenu_galop1_i18n` prête mais volontairement reportée après les bugs. En attente : passage Supabase en Pro. |
