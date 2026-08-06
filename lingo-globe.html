@@ -403,7 +403,13 @@ cv.addEventListener('pointerdown',e=>{ cv.setPointerCapture(e.pointerId); ptr.se
   if(ptr.size===1){ dragging=true; moved=0; sx=lx=e.clientX; sy=ly=e.clientY; dT=performance.now(); lastMoveT=dT; vyaw=0; velYaw=0; vpitch=0; velPitch=0; }
   else if(ptr.size===2){ const a=[...ptr.values()]; pinch0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y); zoom0=zoom; dragging=false; } });
 cv.addEventListener('pointermove',e=>{ if(!ptr.has(e.pointerId)) return; ptr.set(e.pointerId,{x:e.clientX,y:e.clientY}); lastTouch=performance.now();
-  if(ptr.size>=2){ const a=[...ptr.values()]; const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y); zoom=Math.max(1,Math.min(3.8, zoom0*d/(pinch0||1))); return; }
+  /* ⚠️ CORRIGÉ le 6 août 2026 — Blandine : globe qui semble « vide, cassé »
+     après quelques appuis sur +. Preuve reproduite : à zoom 3.8, R dépasse
+     530 px sur un écran de 390 — la sphère grossit tant qu'elle perd toute
+     forme ronde reconnaissable, il ne reste qu'un nuage de points épars.
+     Plafond redescendu à 2.2 : le globe reste TOUJOURS identifiable comme
+     un globe, quel que soit le zoom atteint. */
+  if(ptr.size>=2){ const a=[...ptr.values()]; const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y); zoom=Math.max(1,Math.min(2.2, zoom0*d/(pinch0||1))); return; }
   if(dragging){ const now2=performance.now(); const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY; moved+=Math.abs(dx)+Math.abs(dy); const k=0.011/Math.sqrt(zoom); const dyaw=dx*k, dpitch=dy*k; yaw+=dyaw; pitch+=dpitch; const dtm=Math.max(now2-lastMoveT,1); lastMoveT=now2; const inst=dyaw/dtm, instP=dpitch/dtm; velYaw=velYaw*0.5+inst*0.5; velPitch=velPitch*0.5+instP*0.5; } });
 function up(e){ if(ptr.has(e.pointerId)) ptr.delete(e.pointerId); if(ptr.size<2) pinch0=0;
   if(dragging && ptr.size===0){ dragging=false; const dt=performance.now()-dT;
@@ -508,7 +514,7 @@ FB.innerHTML=FILT.map((f,i)=>'<span class="chip glass'+(i===0?' on':'')+'" data-
 FB.querySelectorAll('.chip').forEach(el=>el.addEventListener('click',()=>{ filterType=el.getAttribute('data-t'); FB.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===el)); if(sel>=0&&!passType(CLUBS[sel]))closeF(); renderResults(); updCnt(); }));
 
 // ---- outils ----
-document.getElementById('zin').addEventListener('click',()=>{ zoom=Math.min(3.8,zoom*1.4); lastTouch=performance.now(); });
+document.getElementById('zin').addEventListener('click',()=>{ zoom=Math.min(2.2,zoom*1.4); lastTouch=performance.now(); });
 document.getElementById('zout').addEventListener('click',()=>{ zoom=Math.max(1,zoom/1.4); lastTouch=performance.now(); });
 document.getElementById('rec').addEventListener('click',()=>{ closeF(); flyTo(46,4,1.2); });
 
