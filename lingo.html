@@ -1281,7 +1281,7 @@ var ETAPES = [
     ⚠️ Le western n'existait nulle part dans les 378 mots d'origine — ni la
     selle a corne, ni le troupeau, ni le tri, ni la monte a une main.
     C'etait le plus gros angle mort du module. */
- {ref:"tamworth",  ch:"Le western",    v:"Tamworth",    nat:"Australie",      h:"15 h 40", ciel:["#141110","#D98F4A"], forme:"lande",    souv:"Une corde tressee",             ic:"licol"},
+ {ref:"tamworth",  ch:"Le western",    v:"Tamworth",    nat:"Australie",      h:"15 h 40", ciel:["#141110","#D98F4A"], forme:"lande",    souv:"Une corde tressée",             ic:"licol"},
  {ref:"buenos",    ch:"Le polo",       v:"Buenos Aires",nat:"Argentine",      h:"16 h 30", ciel:["#101812","#D9A055"], forme:"lande",    souv:"Un maillet de bambou",          ic:"alene"},
  /* ⚠️ LEXINGTON et SPRUCE MEADOWS ajoutées le 6 août 2026, étapes 27 et 28.
     ⚠️ IL RESTE UN CRÉNEAU À 15 h 40 pour Tamworth, entre Tokyo et Buenos
@@ -2968,8 +2968,25 @@ function souvenirObtenu(ref){
    le titre crème. Rome, elle, n'a jamais eu à y entrer.
    ⚠️ À refaire tourner cette mesure chaque fois qu'une carte est
    remplacée : la liste dépend de l'image, pas de la ville. */
+/* ⚠️ `dubai` a ete ajoutee puis RETIREE le 7 aout 2026. Sa carte devait
+   changer pour une cour au plein soleil (tiers superieur a 125,7), mais
+   Blandine a tranche : « sinon tu mets la carte a quelqu'un d'autre, faut
+   que ca reste fidele ». L'image montrait une presentation de race, pas
+   l'endurance. Elle garde donc sa carte de plage, dont le tiers haut est a
+   54,7 — titre creme. Ne pas remettre dubai dans cette liste sans
+   remesurer la carte reellement en ligne. */
+/* ⚠️ `rome` AJOUTEE le 7 aout 2026. Sa nouvelle carte est un plein jour —
+   Colisee, toits ocre, ciel de nuages — et son tiers superieur mesure
+   191,9 de luminance, presque le double du seuil de 100. Un titre creme y
+   serait invisible.
+   C'est la PREMIERE carte du projet a declencher reellement la bascule
+   ecrite le 6 aout. Les suivantes en couleurs normales feront de meme :
+   la liste va s'allonger, c'est prevu et c'est sain. */
 var TITRE_SOMBRE = ["warendorf","jerez","oliva","lamotte",
-                    "saumur","aachen","vejer"];
+                    "saumur","aachen","vejer","rome","hickstead"];
+/* ⚠️ `hickstead` ajoutee le 7 aout 2026 : nouvelle carte en plein jour,
+   tiers superieur a 186,0. Deuxieme carte en couleurs normales, deuxieme
+   bascule. La liste va continuer de s'allonger au fil de la serie. */
 
 function appliquerTeinteTitre(ref){
   var f = document.querySelector("#pcarte .pface");
