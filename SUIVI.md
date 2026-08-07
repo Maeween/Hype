@@ -10,7 +10,13 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 06/08/2026 (SESSION 94 · ACCUEIL) — Fente cristal a la place de l'emoji messagerie + Culture equestre et Videotheque en tuiles carrees — md5 `43c46461f722ac278e14aef5d30ae24a`, 10 517 602 octets. Part du fichier fourni par Blandine (`07990199e65cb64eaa6531aef64e27b0`, 10 515 180 octets). Preview : `preview-94.html` (ouvre l'Accueil). Aucun SQL. Detail dans la section SESSION 94 ci-dessous.**
+**Version actuelle de l'index.html : 07/08/2026 (SESSION 97 · COUVERTURES DU GALOP 2 + ALLEMAND g2-depart) — md5 `af2e8386d732d2c20142164521111d46`, 10 529 918 octets. Preview : `preview-97.html` (ouvre `g2-depart`). Aucun SQL. **12 images a pousser dans `images/`** — voir la liste. Detail dans la section SESSION 97 ci-dessous.**
+
+**Ancienne version (96) — 07/08/2026 (SESSION 96 · CLASSEMENT g1-c19) — md5 `a9cd38adf2845ad5b8a96a14430a4707`, 10 527 044 octets. Preview : `preview-96.html` (ouvre le Galop 1). Aucun SQL. Une seule ligne modifiee. Detail dans la section SESSION 96 ci-dessous.**
+
+**Ancienne version (95) — 06/08/2026 (SESSION 95 · SCISSION baby-c17) — md5 `2aeacbfaac298af6bbee00e74b3fcff8`, 10 527 038 octets. Preview : `preview-95.html` (ouvre `baby-c16`). Aucun SQL. Detail dans la section SESSION 95 ci-dessous.**
+
+**Ancienne version (94) — 06/08/2026 (SESSION 94 · ACCUEIL) — Fente cristal a la place de l'emoji messagerie + Culture equestre et Videotheque en tuiles carrees — md5 `43c46461f722ac278e14aef5d30ae24a`, 10 517 602 octets. Part du fichier fourni par Blandine (`07990199e65cb64eaa6531aef64e27b0`, 10 515 180 octets). Preview : `preview-94.html` (ouvre l'Accueil). Aucun SQL. Detail dans la section SESSION 94 ci-dessous.**
 
 **Ancienne version (93 bis) — 06/08/2026 (SESSION 93 · INDEX) — Nom d'écurie perso séparé du club (`ecurie_perso`) + recherche club par noyau + garde-fou anti-écrasement — md5 `4c628a34b37c9e288fce6dee22ed0178`, 10 514 497 octets. Part du `83c24fde` (92 ter). Preview : `preview-95.html` (ouvre la page Écurie). SQL à exécuter : `ecurie-perso.sql`. Détail dans la section SESSION 93 ci-dessous.**
 
@@ -3608,6 +3614,167 @@ Fichier `maquette-trace-V4.html` (autonome, aucun script distant, moteur et bibl
 - GRAND QUIZZ transversal Bronze/Argent/Or, mode entraînement libre permanent
 
 
+
+
+
+---
+
+## SESSION 97 · LES COUVERTURES DU GALOP 2, ET L'ALLEMAND DE g2-depart
+
+**index.html md5 `af2e8386d732d2c20142164521111d46`, 10 529 918 octets. Preview : `preview-97.html`. Aucun SQL.**
+
+### CE QUI ETAIT CASSE, ET DEPUIS QUAND
+Blandine decouvre un chapitre du Galop 2 affiche en **ecran entierement noir**, titre pose sur du vide. Diagnostic : `CouvAffiche` ecrivait `background: "url(" + hero + ")"` sans garde, donc un `src` vide donnait `url()`.
+
+**Dix chapitres du Galop 2 etaient dans ce cas.** Sept avec un bloc de couverture complet mais `src: ""` ; trois (`g2-c5`, `g2-c6`, `g2-anatomie`) sans bloc de couverture du tout.
+
+**Ces couvertures n'ont jamais existe — ce n'est pas une perte.** Verifie sur deux index anterieurs fournis par Blandine : celui du 27/07 et celui du **18/07**, tous deux identiques sur ce point. Le second est anterieur a tous les rollbacks connus. Comparaison complete des huit tables entre le 18/07 et aujourd'hui : **aucun chapitre disparu nulle part**, et tout a grandi (Baby 24 -> 27, Galop 3 15 -> 16, Galop 4 8 coquilles de 24 Ko -> 15 vrais chapitres de 716 Ko).
+
+### FAIT
+1. **Repli anti-ecran-noir dans `CouvAffiche`** : `var heroSur = hero;` puis retombee sur `GALOPS_HERO` sous `try`. Place dans le composant et non chez l'appelant, donc **tous les appels presents et futurs sont proteges**. Plus jamais d'ecran noir, meme sur un chapitre sans image.
+2. **Les 15 couvertures du Galop 2 sont renseignees** (contre 5 avant). Dix pointent vers `images/couv-g2-*.jpg`, en chemin direct — pas de base64, pas de cle `k`. C'est la direction que le SUIVI recommande depuis la session 81.
+3. **Trois blocs de couverture crees** pour `g2-c5`, `g2-c6` et `g2-anatomie` : titre1, titre2, accent `#1FA9C9`, citation, **en 6 langues**.
+4. **`g2-c4`** : `type`, `titre` et les trois champs de couverture completes en es/it/de (n'avait que fr/en/ja).
+5. **`g2-depart` traduit en allemand de bout en bout** : en-tete, couverture, **4 blocs de texte-riche (68 chaines)** et **les 10 QCM (60 chaines)**. Plus es/it sur l'en-tete et la couverture. Le chapitre affichait un titre allemand et du francais des la premiere ligne — pire qu'une absence de traduction, puisque cela promettait ce qui n'existait pas.
+
+**Terminologie allemande retenue** : Angaloppieren, Hilfen, Schenkel, Wade, Becken, Zügel, Gurt, Vorhand, Galoppsprung, fleißiger Trab, « Stellung und Biegung » pour l'incurvation. A reutiliser telle quelle pour les chapitres suivants, pour que le registre reste homogene.
+
+### AUDIT i18n DE TOUTES LES TABLES — L'ETAT REEL
+Script conserve : `audit_i18n.js` (en-tetes et couvertures) et `audit_de_g1.js` (allemand par zone : en-tete, couverture, corps, QCM).
+
+| niveau | chapitres | incomplets apres cette session |
+|---|---|---|
+| Baby | 27 | **0** |
+| **Galop 1** | 19 | **16** |
+| Galop 2 | 15 | **0** (en-tetes) |
+| Galop 3 | 16 | 1 — `g3-c1`, il manque es et de |
+| Galops 4 · 5 · 6 · 7 | 34 | **0** |
+
+**Point de methode important** : l'audit des en-tetes ne suffit pas. `g2-aides` et `g2-c4` ont une couverture allemande complete mais **zero allemand dans le corps** (18 et 8 blocs). Il faut auditer les quatre zones separement — en-tete, couverture, corps, QCM — sinon on croit un chapitre traduit alors qu'il ne l'est qu'en surface.
+
+### RESTE A FAIRE SUR L'ALLEMAND
+- **`g2-aides`** : corps 0/18 (199 chaines, 13 819 caracteres).
+- **`g2-c4`** : corps 0/8 et QCM 0/10 (154 chaines, 9 907 caracteres).
+- **Galop 1** : 16 chapitres sur 19 sans **aucun** allemand — ni en-tete, ni couverture, ni corps, ni QCM. Seuls `g1-c15`, `g1-c17` et `g1-c19` l'ont, et ils l'ont a 100 %. Ce sont les trois chapitres les plus recents du niveau. **Conforme a la consigne de projet « allemand obligatoire a partir du Galop 2 »** : le Galop 1 n'y etait pas soumis. A trancher avec Blandine, ce n'est pas un bug.
+- `g3-c1` : es et de sur l'en-tete et la couverture.
+
+### DEUX ANCRAGES RATES DANS CETTE SESSION, ET LA REGLE QUI EN SORT
+⚠️ **Compter les occurrences sur le fichier entier ne prouve rien.** « Une seule occurrence » ne veut pas dire « la bonne ».
+- Premier rate : chercher un chapitre par `s.index('"g2-robes"')` trouve d'abord son entree dans `HYPE_COURS_PRETS`, **a 3,6 millions de caracteres** du tableau des cours. Un garde-fou de distance l'a intercepte.
+- Second rate : « Le départ au galop » existe au Galop 2 ET au Galop 3, l'un en caracteres reels, l'autre en sequences echappees. Le remplacement a trouve sa cible dans le mauvais niveau. Le script est sorti avant d'ecrire (`sys.exit` avant le `write` final), donc **rien n'a ete abime** — mais j'avais annonce a Blandine une modification parasite dans le Galop 3 qui n'a jamais eu lieu. Correction faite aupres d'elle.
+
+**REGLE A APPLIQUER DESORMAIS** : delimiter d'abord la table par equilibrage des crochets, puis le chapitre a l'interieur de cette tranche, **et ne jamais faire de recherche de chaine sur le fichier entier**. Pour les modifications lourdes, la methode la plus sure est celle utilisee ici : evaluer le chapitre en objet JS, le modifier en memoire, le re-serialiser, le remettre a sa place exacte. Scripts conserves : `injecter_de.js` et son controle `controle_de.js`.
+
+### VERIFICATION
+- 15/15 blocs `<script>` inline valides par `node --check`.
+- **Controle de non-perte sur `g2-depart`** : le chapitre a ete re-evalue avant et apres, aplati en 444 champs hors allemand, puis compare champ par champ. **0 perdu, 0 valeur modifiee**, 8 ajoutes (es/it de l'en-tete). Ce controle etait indispensable : la re-serialisation a **raccourci** le chapitre de 40 206 a 33 402 caracteres, parce que `JSON.stringify` compacte les espaces. Sans la comparaison champ par champ, ce raccourcissement aurait pu passer pour une perte de contenu — ou en cacher une.
+- Sequence des elements `k` identique entre `fr` et `de` sur les 4 blocs. 10 QCM avec question, options et explication en allemand, nombre d'options identique.
+- Table du Galop 2 evaluee en JS : 15 chapitres, ordre des identifiants inchange.
+
+### ⚠️ A FAIRE PAR BLANDINE — LES 12 IMAGES
+Les couvertures pointent vers `images/`. **Sans ces fichiers pousses, les dix chapitres afficheront `GALOPS_HERO`** grace au repli — donc rien de casse, mais rien de nouveau non plus.
+
+`couv-g2-pansage.jpg` · `couv-g2-filet-selle.jpg` · `couv-g2-robes.jpg` · `couv-g2-sens.jpg` · `couv-g2-vie-sociale.jpg` · `couv-g2-heberger.jpg` · `couv-g2-familles.jpg` · `couv-g2-mener.jpg` · `couv-g2-connaitre.jpg` · `couv-g2-anatomie.jpg`
+
+Plus `couv-g2-robes-variante-pre.jpg` (alternative pour `g2-vie-sociale`) et `reserve-g2-tete-filet.jpg`, non references pour l'instant.
+
+**Contrainte de format, a retenir pour toute future couverture** : l'affichage est en **`contain`**, pas `cover`. L'image est donc vue **en entier, jamais recadree** — contrairement aux autres cartes de l'app. Un visuel en paysage apparaitrait en bande etroite entre deux vides noirs. Donc : **portrait, sujet dans les deux tiers du haut, tiers du bas sombre**, car un degrade noir monte du bas (transparent jusqu'a 46 % de la hauteur, opaque a 94 %).
+
+
+---
+
+## SESSION 96 · « Monter et descendre en securite » passe dans Equitation
+
+**index.html md5 `a9cd38adf2845ad5b8a96a14430a4707`, 10 527 044 octets. Preview : `preview-96.html`. Une seule ligne modifiee, aucun SQL.**
+
+`CATEGORIE_PAR_COURS["g1-c19"]` passe de `"vie"` a `"technique"`. Le chapitre « Monter et descendre en securite » quitte donc la rubrique Vie du cheval pour Equitation, ou il a effectivement sa place : c'est un geste monte, pas un soin.
+
+Le Galop 1 se repartit maintenant ainsi : Vie du cheval 6 · Connaissance du cheval 5 · Culture 4 · **Equitation 3** (`g1-c5` La position du cavalier, `g1-c9` Les aides, `g1-c19` Monter et descendre) · Bilan 1.
+
+⚠️ **Equitation reste la rubrique la plus maigre du Galop 1 : 3 chapitres sur 19.** `g1-c18` « Conduire son poney ou son cheval en main en securite » et `g1-c17` « Preparer son poney : seller et brider » sont toujours en Vie du cheval. Pour `g1-c17` c'est defendable, pour `g1-c18` c'est discutable — la conduite en main est un geste technique. **A trancher avec Blandine, pas decide unilateralement.**
+
+✅ Verification : `node --check` sur les 15 blocs inline, et relecture de la table apres modification (19 cours du Galop 1 toujours categorises, aucune categorie invalide, les 5 rubriques declarees dans `CATEGORIES_COURS` toutes utilisees).
+
+### CONSIGNE DE BLANDINE, A RESPECTER · NE RIEN SUPPRIMER DANS LE GALOP 2
+Une analyse de cette session avait releve une apparente redondance : `g2-c1` « Seller, brider et panser seul » face a `g2-pansage` + `g2-filet-selle`, et `g2-c6` « Connaitre le cheval : sens, robes, aliments » face a `g2-sens` + `g2-robes` + `g2-vie-sociale` + `g2-anatomie`. **Blandine a tranche : ces chapitres ne traitent pas de la meme chose malgre la ressemblance des titres. AUCUNE SUPPRESSION.** Meme statut que le titre partage entre `g1-c9` et `g2-aides`, deja note ancien et volontaire. **Toute page qui refera ce diagnostic doit s'arreter ici.**
+
+### RECHERCHE DE PERTE DANS LE GALOP 2 · AUCUNE TRACE TROUVEE
+Blandine signale une perte de chapitres. Verifications faites, toutes negatives :
+- `COURS_GALOP2_FR` mesurait **479 Ko** lors d'un audit precedent inscrit au SUIVI, il fait **521 Ko** aujourd'hui : la table a grossi.
+- Les 15 chapitres sont presents dans les trois endroits qui les recensent : la table, `HYPE_COURS_PRETS`, `CATEGORIE_PAR_COURS`.
+- **Aucun identifiant orphelin** : rien dans le code ne pointe vers un chapitre du Galop 2 absent. Une suppression laisse presque toujours une reference pendante ; il n'y en a aucune.
+- Piste de l'invisible testee : un cours dont la categorie ne figure pas dans `CATEGORIES_COURS` tomberait entre les deux boucles d'affichage et disparaitrait de l'ecran tout en restant au fichier. **Les 64 entrees ont ete verifiees, zero categorie invalide.**
+Conclusion : soit la perte est anterieure a l'audit a 479 Ko et il n'en reste aucune trace exploitable, soit le souvenir se confond avec le Galop 3 (16 chapitres). **Pour aller plus loin il faut un titre de chapitre**, meme approximatif : avec un titre on peut fouiller le SUIVI et les anciennes versions, sans titre on cherche a l'aveugle.
+
+### AUDIT DES QCM · 22 CHAPITRES SUR 111 SONT EN DESSOUS DE 5 QUESTIONS
+Demande de Blandine : verifier que tous les chapitres ont bien leurs 10 questions. Reponse : non.
+
+**Le gros du trou est aux Galops 5, 6 et 7 — 18 chapitres, tous a 1 ou 2 questions.** Seule exception : `g6-c2` « L'impulsion » a ses 10, et c'est aussi le seul chapitre du Galop 6 inscrit dans `HYPE_COURS_PRETS`. Ces niveaux sont donc des squelettes assumes, pas du contenu perdu : le chantier du Galop 6 a ete ouvert sur l'impulsion puis arrete.
+
+**Les 4 autres sont dans des niveaux consideres comme finis, et meritent d'etre completes :**
+`g1-c20` La physiologie du cheval (3) · `g1-c16` Le passeport du cheval (3) · `g2-c1` (2) · `g2-c6` (2).
+
+**Le reste est sain** : Galop 1 17/19 chapitres a 10 questions · Galop 3 : 10 partout · Galop 4 : 10 partout et `g4-c5` La sante a 12 · Baby : 5 ou 6 selon le palier, conforme a la Bible. Le chapitre a 40 questions est le grand quiz du Galop 1, normal.
+
+**Script d'audit conserve** : `audit_qcm.py`. Point de methode important — les questions vivent a deux endroits selon les tables, soit un tableau `quiz`, soit des blocs `type: "qcm"` dans `blocs`. Ne compter qu'une des deux formes fait conclure a tort qu'un chapitre n'a pas de quiz.
+
+### DETTE OUVERTE PAR MOI, A SOLDER
+1. **« Le conseil du coach » a ete retire de `baby-c16` et `baby-c17`** en session 95, sur la base de la Bible v1.3. **Blandine a inverse la decision** : la section est presente dans 22 cours Baby sur 27, donc c'est la regle reelle et c'est la Bible qui doit etre corrigee. **A refaire** : remettre l'encadre sur `c16` et `c17` (il existe deja en 6 langues, c'est un copier-coller), et en ecrire un pour `baby-c20`, `c21` et `c26`, les trois autres qui en manquent.
+2. **Raccourcis `#g2c1` et `#g2c6` a ajouter** a la table `MAP` : le Galop 2 n'a que trois cibles directes (`#aidesg2`, `#departg2`, `#sautg2`), ce qui a empeche de donner a Blandine un lien direct vers les chapitres a examiner.
+3. **Couverture de `baby-c17`** : partage encore `k560` avec `c16`. Blandine a fourni une illustration Evan/Bambina montee, parfaite pour ce chapitre, livree en JPG. Attend l'attribution d'une cle.
+
+
+---
+
+## SESSION 95 · LE CHEMIN BABY RETROUVE SES 27 CHAPITRES
+
+**index.html md5 `2aeacbfaac298af6bbee00e74b3fcff8`, 10 527 038 octets. Preview : `preview-95.html` (ouvre `baby-c16`). Aucun SQL, aucun media nouveau.**
+
+### CE QUE BLANDINE A REPERE, ET ELLE AVAIT RAISON
+Poney d'Argent n'affichait que **8 chapitres au lieu de 9**, et le 8e, `baby-c17`, s'appelait « J'arrete Apy, **je repars** et je retrouve mes renes » : trois actions dans un titre, pour un enfant. L'identifiant `baby-c16` etait libre. Rien n'avait ete perdu par rollback : **deux cours avaient ete ecrits comme un seul**, et le numero saute.
+
+### LA SCISSION
+Le bloc `texte-riche` comptait **51 elements, exactement la meme sequence dans les 6 langues** — propriete verifiee avant de toucher, c'est elle qui a rendu l'operation sure : on coupe au meme index partout.
+
+| | `baby-c16` « J'arrete Apy » | `baby-c17` « Je repars et je retrouve mes renes » |
+|---|---|---|
+| etapes | 1 a 8 (choisir l'endroit, distances, ajuster les renes, mains, preparer, demander, relacher, rester immobile) | 9 a 11 (demander de repartir, lacher les renes, les reprendre) |
+| elements | 40 | 14 |
+| QCM | 6 | 5 |
+| duree | 8 min | 6 min |
+| icone | 🛑 | 🌾 |
+
+**Principe suivi : redistribuer, pas reecrire.** Les paragraphes, sections, encadres, « Les mots d'Apy », « Le petit defi » et « A retenir » sont les textes de Blandine, deja traduits, simplement repartis (puces triees une par une). Le contenu reellement neuf est limite a ce que la coupure rendait necessaire : le titre de `c16`, son 2e titre de couverture, une ouverture pour `c17`, une puce de synthese, et **3 QCM pour que `c17` en ait 5** comme le demande la Bible Baby. Tout en 6 langues.
+
+### « LE CONSEIL DU COACH » RETIRE — ET UN CONSTAT PLUS LARGE
+La Bible Baby v1.3 demande explicitement de supprimer les sections « Le conseil du coach » et « Demande a Hey Baby » des cours Baby. L'encadre a ete retire du cours scinde (element 47, identifie et verifie avant suppression).
+
+⚠️ **MAIS il reste dans 22 autres cours Baby** : `baby-c1` a `c15`, `c18`, `c19`, `c22` a `c25`, `c27`. « Demande a Hey Baby » n'apparait nulle part (0 occurrence), donc ce point-la est deja propre. **A trancher avec Blandine : campagne de retrait sur les 22, ou revision de la regle dans la Bible.** Ce n'est pas un bug, c'est un ecart entre la doctrine ecrite et le contenu en place.
+
+### VALIDATION RETROACTIVE (demande Blandine)
+Une cavaliere qui avait deja valide l'ancien `baby-c17` aurait vu son Poney d'Argent retomber a 8 sur 9 et **perdu son palier**. Rattrapage greffe sur l'initialisation de `coursTermines` : si la liste contient `baby-c17` sans `baby-c16`, on ajoute `baby-c16`. Idempotent par construction (il teste l'absence de la cle), enveloppe dans un `try`, et il n'invente aucun score de quiz — seule la validation du cours est accordee.
+
+### COUVERTURE — POINT EN ATTENTE
+`baby-c16` garde `k560`, dont l'affiche dit deja « J'ARRETE APY » : elle lui va mieux qu'a l'ancien cours. **`baby-c17` utilise provisoirement la MEME image `k560`**, faute d'en avoir une autre. Les deux cartes se lisent differemment (titres de couverture distincts, nouvelle citation pour `c17`), mais c'est le meme visuel — le meme defaut que `baby-c7`, deja note au SUIVI. **Il faut une image d'Apy qui repart pour `baby-c17`.** Rappel de la regle : les visuels Baby sont livres en JPG et inseres par Blandine, jamais par Claude.
+
+### VERIFICATION
+- 15/15 blocs `<script>` inline valides par `node --check`.
+- **La table Baby entiere reparsee en JSON apres modification** : 27 cours, sequence `baby-c1..c27` continue, plus aucun trou. C'est le controle qui compte ici, bien plus que `node --check`.
+- Les 6 langues de `c16` ont 40 elements, celles de `c17` en ont 14. Aucune langue en retard.
+- `baby-c16` ajoute a `HYPE_COURS_PRETS`.
+- Deux cibles de preview ajoutees : `babyarret` (c16) et `babyrepart` (c17).
+- Pas de rendu Playwright : l'app a besoin des 120+ `hype-images-*.js`. **A ouvrir sur iPhone apres le push.**
+
+### A TESTER PAR BLANDINE
+1. Poney d'Argent affiche bien **9 chapitres**.
+2. Les deux nouveaux cours s'ouvrent, se lisent, et leurs QCM se terminent.
+3. Sur un compte qui avait deja valide l'ancien cours : le palier Argent est conserve.
+4. Changer de langue sur les deux cours — rien ne doit retomber en francais.
+
+### AU PASSAGE · LES LIBELLES DE PREVIEW SONT DECALES
+`babypaille` pointe sur `baby-c17`, `babydescend` sur `baby-c15` (« Je me mets a poney »), etc. Ce decalage est anterieur a cette session et n'a pas ete corrige : il ne concerne que les cibles de developpement, invisibles des cavaliers. A nettoyer un jour.
+
+
 ---
 
 ## SESSION 94 · ACCUEIL (06/08, soir) — LA BOITE AUX LETTRES ET LA VIDEOTHEQUE
@@ -3839,5 +4006,8 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 | 27/07 (2) | Autre page | Accueil : carte Communauté équestre remise dans Mon monde, section Découvrir réordonnée, carte Culture équestre remontée dans Actualité. Article Cadre Noir : philosophie dépliée en permanence, bonus Hype passé en carrousel, album participatif remonté avant "Visiter". |
 | 27/07 (3) | Claude (page "Articles 4 écoles") | **Article Cadre Noir** : carrousel des 3 écoles restantes (retrait des 5 cartes stub), encart "Marquer ma visite" (compteur permanent + SQL), encart "Partager cet article". |
 | 29/07 (44) | **Bibliothèque vidéo.** Nouvel écran + page de lecture dans un fichier séparé `hype-video.js` ; ancien écran vidéo factice retiré ; catalogue de 6 vraies vidéos (3 IFCE confirmées + 3 à vérifier) en 6 langues ; pas de pourcentage de lecture (lecteur externe) ; miniatures YouTube distantes (0 bande passante Netlify). Lien cours → vidéo (étape D) volontairement non fait. |
+| 07/08 (97) | Claude (page Accueil) | **Galop 2** : repli anti-ecran-noir dans `CouvAffiche`, les 15 couvertures renseignees (10 en `images/`), 3 blocs de couverture crees en 6 langues, `g2-c4` complete en es/it/de, **`g2-depart` traduit en allemand de bout en bout** (128 chaines). Audit i18n des 8 tables. Aucun chapitre perdu depuis le 18/07. |
+| 07/08 (96) | Claude (page Accueil) | `g1-c19` « Monter et descendre en securite » passe de Vie du cheval a Equitation. Audit des QCM : 22 chapitres sous 5 questions, dont 18 aux Galops 5-7. Recherche de perte dans le Galop 2 : aucune trace. Consigne de Blandine : ne rien supprimer dans le Galop 2. |
+| 06/08 (95) | Claude (page Accueil) | **Chemin Baby** : `baby-c17` scinde en `baby-c16` « J'arrete Apy » + `baby-c17` « Je repars et je retrouve mes renes ». Poney d'Argent repasse a 9 chapitres, sequence `baby-c1..c27` continue. « Le conseil du coach » retire du cours scinde (reste dans 22 autres). Validation retroactive de `c16` pour qui avait `c17`. |
 | 06/08 (94) | Claude (page Accueil) | **Accueil** : fente cristal a la place de l'emoji messagerie (pastille turquoise), Culture equestre + Videotheque en tuiles carrees via `carteVertAcc` remis en service, helper `trAcc` 6 langues. Encart messages et Lamotte etaient deja masques par constantes. |
 | 02/08 (72) | Claude (Directeur Technique) | **Visionneuse zoomable** (`PhotoZoomHype`, sans état React) corrigeant la sortie de l'appli au zoom ; vidéo de cérémonie figée sur la page Performances ; titre vertical « Liens & partage » désuperposé. Inventaire architectural de l'index (étape 1) : le contenu pèse plus que le code, extraction de `contenu_galop1_i18n` prête mais volontairement reportée après les bugs. En attente : passage Supabase en Pro. |
