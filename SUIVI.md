@@ -3713,6 +3713,46 @@ Deux films « Objectif Galop® 2 » trouves sur les sept annonces : `v-g2-premie
 
 **Verifies par Blandine le 06/08/2026** : les deux repondent. `INCLURE_NON_VERIFIEES` reste malgre tout a **`false`**, et c'est desormais la position par defaut : les 14 entrees du catalogue portent toutes une date, donc le drapeau ne cache rien aujourd'hui et sert de garde-fou pour la suite. Toute video ajoutee sans avoir ete ouverte restera invisible tant que la date n'est pas inscrite. `dureeTranche` laisse vide pour ces deux-la, la duree n'ayant pas ete relevee — l'ecran n'affiche alors rien plutot qu'un chiffre invente.
 
+### DOCTRINE · SORTIR LES COURS DE L'INDEX (demande Blandine, 06/08)
+
+Direction validee par Blandine : **continuer a extraire de `index.html`, comme cela a ete fait pour Lingo puis pour la videotheque**, en visant maintenant les tables de cours. Non commence, c'est une orientation, pas une tache de cette session.
+
+**MESURE FAITE.** Index = 10,03 Mo. Poids des tables de donnees, mesure entre bornes fiables :
+`COURS_BABY_I18N` 1 794 Ko · `COURS_GALOP1_I18N` 1 055 Ko · `COURS_GALOP3_FR` 936 Ko · `COURS_GALOP4_FR` 716 Ko · `HYPE_COURS_PRETS` 696 Ko · `COURS_GALOP2_FR` 521 Ko · `COURS_GALOP6_FR` 64 Ko · `COURS_GALOP5_FR` 10 Ko. **Soit environ 5,8 Mo, plus de la moitie de l'index.** (`COURS_GALOP7_FR` non mesurable : le marqueur suivant est trop loin, la mesure brute de 2 676 Ko englobe d'autre code.)
+
+**REGLE : on sort les DONNEES, pas la LOGIQUE.** Les tables partent dans des fichiers externes, les composants qui les lisent restent dans l'index. C'est ce qui rend l'operation quasi sans risque : une table est un objet inerte, un composant a des dependances (contexte, i18n, navigation). Contre-exemple a ne pas suivre : `hype-video.js` embarque son ecran ET ses donnees, ce qui etait justifie pour une fonctionnalite neuve isolee, mais ne doit pas servir de modele pour decouper de l'existant.
+
+**ORDRE PROPOSE**, du plus rentable au moins rentable :
+1. `COURS_BABY_I18N` (1,8 Mo) — le plus gros, le plus isole, son propre ecran, aucun partage avec les Galops. Le meilleur premier coup.
+2. `COURS_GALOP1_I18N` (1 Mo) — 6 langues, table la plus editee.
+3. `COURS_GALOP3_FR` puis `COURS_GALOP4_FR` puis `COURS_GALOP2_FR`.
+4. `HYPE_COURS_PRETS` — a examiner d'abord : ce n'est pas du contenu de cours mais un index d'etats, peut-etre a garder pres de la logique.
+
+**TROIS RISQUES A NE PAS OUBLIER.**
+- **Le service worker.** Chaque nouveau fichier doit entrer dans sa liste de precache. Oublie, un utilisateur hors ligne obtient une app qui s'ouvre mais dont les cours ont disparu : echec invisible, pire qu'un bug franc. C'est LE point de vigilance.
+- **L'ordre de chargement.** Les `<script src>` classiques sans `defer` ni `async` s'executent dans l'ordre du document : placer les fichiers de donnees AVANT le bloc applicatif suffit. Prevoir malgre tout un repli dans l'ecran de cours (table absente = message, pas d'ecran blanc).
+- **Ne pas confondre avec le vrai gain.** Un decoupage statique n'allege pas le telechargement initial, il allege l'edition et le risque : chaque session ne manipule plus un fichier de 10 Mo. Le gain de poids reel viendra d'un chargement a la demande — un cavalier au Galop 1 ne telecharge pas les Galops 4 a 7. C'est une seconde phase, plus lourde, a ne pas melanger avec la premiere.
+
+**Lien avec la doctrine Flutter :** chaque fichier extrait devient une frontiere de domaine naturelle, et un candidat direct a un Repository. C'est la meilleure preparation possible, bien plus utile qu'un refactoring de composants.
+
+### AJOUT SESSION 94 sexies · LE GALOP 4 EST FAIT (6 SUR 7)
+
+**Catalogue : 23 entrees, 16 films FFE. `index.html` toujours NON MODIFIE.**
+
+| id | yt | film | duree | chapitre |
+|---|---|---|---|---|
+| `v-g4-assiette` | `q8CwpjoeBtk` | Objectif Galop® 4 : S'equilibre assis | 3:29 | `g4-aides` |
+| `v-g4-reprise` | `WHJscXoC9sM` | Reprise de dressage type Galop® 4 | 3:25 | `g4-transitions`, `g4-incurvation` |
+
+Cle `g4-transitions` ajoutee a `CHAPITRES`. **Le 6e film du Galop 4 manque encore : son titre n'apparait sur aucune capture.** Les six autres sont au catalogue.
+
+**REPARTITION DES VIDEOS PAR CHAPITRE DU GALOP 4, apres cette passe :**
+`g4-contact` 4 · `g4-aides` 4 · `g4-incurvation` 2 · `g4-epaules-hanches` 2 · `g4-transitions` 1 · `g4-obstacles-equilibre` 1 · `g4-exterieur` 1 · `g4-biomeca` 1.
+
+**Correction faite en cours de route :** « S'equilibre assis » etait d'abord rattache a `g4-aides` ET `g4-contact`, ce qui portait le chapitre du contact a **cinq** videos. Ramene au seul chapitre des aides. Quatre videos sur un chapitre, c'est deja beaucoup pour un bloc complements qui n'a jamais ete dessine pour ca — **a verifier a l'oeil sur `g4-contact` et `g4-aides`**. Si c'est trop charge, le champ `rang` permet de reléguer les trois interventions IFCE en « pour approfondir » et de garder le film FFE en tete, ce qui serait d'ailleurs plus logique pedagogiquement : le film monte d'abord, la theorie ensuite.
+
+**RESTE 12 FILMS SUR 28.** Galop 1 : 6/7 · Galop 2 : 2/7 (5 titres connus) · Galop 3 : 1/7 (4 titres connus) · Galop 4 : 6/7. **Prochaine passe : le Galop 2, dont cinq titres sont connus** — mais attention, aucun chapitre du Galop 2 n'a de bloc complements, donc ces videos ne vivront que dans la videotheque jusqu'a ce que les dictionnaires `COMPL_*` du Galop 2 existent.
+
 ### AJOUT SESSION 94 quinquies · LE GALOP 4 — CINQ FILMS QUI SE BRANCHENT TOUT DE SUITE
 
 **Catalogue : 21 entrees, 14 films FFE. `index.html` toujours NON MODIFIE.**

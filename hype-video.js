@@ -78,6 +78,7 @@
     "g2-c4": { fr: "La d\u00e9couverte du saut", en: "Discovering the jump", es: "El descubrimiento del salto", it: "La scoperta del salto", ja: "\u8df3\u8e8d\u306e\u767a\u898b", de: "Die Entdeckung des Springens" },
     /* 06/08 : cles ajoutees pour les films « Objectif Galop® 4 ». Les trois
        chapitres existaient deja dans les cours, ils n'avaient pas de libelle ici. */
+    "g4-transitions": { fr: "Réussir ses transitions", en: "Clean transitions", es: "Lograr sus transiciones", it: "Riuscire le transizioni", ja: "変換を成功させる", de: "Übergänge gelingen lassen" },
     "g4-epaules-hanches": { fr: "Déplacer les épaules et les hanches", en: "Moving the shoulders and haunches", es: "Desplazar los hombros y las ancas", it: "Spostare le spalle e le anche", ja: "肩と腰を動かす", de: "Schultern und Hanken versetzen" },
     "g4-obstacles-equilibre": { fr: "Équilibre à l'obstacle", en: "Balance over fences", es: "Equilibrio ante el obstáculo", it: "Equilibrio all'ostacolo", ja: "障害でのバランス", de: "Gleichgewicht am Sprung" },
     "g4-exterieur": { fr: "En extérieur", en: "Out on a hack", es: "En exterior", it: "In esterno", ja: "外乗で", de: "Im Gelände" },
@@ -499,8 +500,60 @@
        leurs blocs complements : ces videos s'affichent donc en fin de cours
        sans qu'il y ait rien d'autre a construire. Verifies le 06/08/2026 par
        recherche sur les titres exacts releves par Blandine ; durees lues sur
-       ses captures. Manquent : « S'equilibre assis », « Reprise de dressage
-       type Galop 4 », et le 6e titre de la serie. --- */
+       ses captures. Sept films sur les sept de la serie sont desormais au
+       catalogue, sauf le 6e, dont le titre n'apparait sur aucune capture. --- */
+    {
+      id: "v-g4-assiette", yt: "q8CwpjoeBtk",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 4 : S'\u00e9quilibre assis",
+      langueVideo: "fr", cours: ["g4-aides"], galop: 4, theme: "position-du-cavalier",
+      rang: "principal", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "S'\u00e9quilibrer assis",
+        en: "Balance in the seat",
+        es: "Equilibrarse sentado",
+        it: "Equilibrarsi in sella",
+        ja: "\u5750\u3063\u3066\u30d0\u30e9\u30f3\u30b9\u3092\u53d6\u308b",
+        de: "Im Sitz ins Gleichgewicht kommen"
+      },
+      resume: {
+        fr: "L'assiette n'est pas une position, c'est une aide. Le film montre ce que le bassin dit au cheval quand il cesse de resister.",
+        en: "The seat is not a position, it is an aid. The film shows what the pelvis tells the horse once it stops resisting.",
+        es: "El asiento no es una posici\u00f3n, es una ayuda. El v\u00eddeo muestra lo que la pelvis dice al caballo cuando deja de resistir.",
+        it: "L'assetto non \u00e8 una posizione, \u00e8 un aiuto. Il film mostra cosa dice il bacino al cavallo quando smette di resistere.",
+        ja: "\u9a0e\u5750\u306f\u59d3\u52e2\u3067\u306f\u306a\u304f\u6276\u52a9\u3067\u3042\u308b\u3002\u9aa8\u76e4\u304c\u62b5\u6297\u3092\u3084\u3081\u305f\u3068\u304d\u3001\u99ac\u306b\u4f55\u3092\u4f1d\u3048\u308b\u306e\u304b\u3002",
+        de: "Der Sitz ist keine Haltung, er ist eine Hilfe. Der Film zeigt, was das Becken dem Pferd sagt, sobald es aufh\u00f6rt zu widerstehen."
+      },
+      observer: {
+        fr: ["Le bassin qui suit le mouvement sans le forcer", "Les epaules qui restent au-dessus des hanches", "La jambe qui pend au lieu de serrer", "Le moment ou le cheval se detend sous l'assiette"],
+        en: ["The pelvis following the movement without forcing it", "Shoulders staying above the hips", "The leg hanging instead of gripping", "The moment the horse relaxes under the seat"],
+        es: ["La pelvis que sigue el movimiento sin forzarlo", "Los hombros que se mantienen sobre las caderas", "La pierna que cuelga en vez de apretar", "El momento en que el caballo se relaja bajo el asiento"],
+        it: ["Il bacino che segue il movimento senza forzarlo", "Le spalle che restano sopra le anche", "La gamba che pende invece di stringere", "Il momento in cui il cavallo si distende sotto l'assetto"],
+        ja: ["\u52d5\u304d\u3092\u5f37\u3081\u305a\u306b\u5f93\u3046\u9aa8\u76e4", "\u8170\u306e\u771f\u4e0a\u306b\u3068\u3069\u307e\u308b\u80a9", "\u7de0\u3081\u3064\u3051\u305a\u306b\u5782\u308c\u308b\u8107", "\u9a0e\u5750\u306e\u4e0b\u3067\u99ac\u304c\u7de9\u3080\u77ac\u9593"],
+        de: ["Das Becken folgt der Bewegung, ohne sie zu erzwingen", "Die Schultern bleiben \u00fcber den H\u00fcften", "Das Bein h\u00e4ngt, statt zu klemmen", "Der Moment, in dem sich das Pferd unter dem Sitz l\u00f6st"]
+      }
+    },
+    {
+      id: "v-g4-reprise", yt: "WHJscXoC9sM",
+      source: "FFE", titreSource: "Objectif Galop\u00ae 4 : Reprise de dressage type Galop\u00ae 4",
+      langueVideo: "fr", cours: ["g4-transitions", "g4-incurvation"], galop: 4, theme: "dressage",
+      rang: "approfondir", dureeTranche: "moyen", verifie: "2026-08-06",
+      titre: {
+        fr: "Une reprise de dressage",
+        en: "A dressage test",
+        es: "Una reprise de doma",
+        it: "Una ripresa di dressage",
+        ja: "\u99ac\u5834\u99ac\u8853\u306e\u6f14\u76ee",
+        de: "Eine Dressuraufgabe"
+      },
+      resume: {
+        fr: "La reprise attendue au Galop 4, montee en entier. Tout ce que les chapitres expliquent separement, enchaine sans coupure.",
+        en: "The test expected at Level 4, ridden in full. Everything the chapters explain separately, linked without a break.",
+        es: "La reprise esperada en el Galop 4, montada por completo. Todo lo que los cap\u00edtulos explican por separado, encadenado sin cortes.",
+        it: "La ripresa richiesta al Galoppo 4, montata per intero. Tutto ci\u00f2 che i capitoli spiegano separatamente, legato senza interruzioni.",
+        ja: "\u30ac\u30ed\u30fc4\u3067\u6c42\u3081\u3089\u308c\u308b\u6f14\u76ee\u3092\u901a\u3057\u3067\u3002\u5404\u7ae0\u304c\u5225\u3005\u306b\u8aac\u304f\u3053\u3068\u304c\u3001\u5207\u308c\u76ee\u306a\u304f\u7d9a\u304f\u3002",
+        de: "Die bei Galopp 4 erwartete Aufgabe, komplett geritten. Alles, was die Kapitel einzeln erkl\u00e4ren, ohne Unterbrechung verkn\u00fcpft."
+      }
+    },
     {
       id: "v-g4-contact-ffe", yt: "NjQnoMUWVRM",
       source: "FFE", titreSource: "Objectif Galop\u00ae 4 : Le contact",
