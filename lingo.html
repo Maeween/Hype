@@ -44,6 +44,16 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    voir, parce que mon test verifiait la CLASSE et non la VISIBILITE.
    45 passe devant le carnet (40), le globe (41) et le film (42).
    ⚠️ Meme correction sur #intro, qui n'avait aucun z-index du tout. */
+/* ⚠️ MON DIAGNOSTIC DU 7 AOUT ETAIT FAUX, et il faut que ce soit ecrit ici.
+   J'ai affirme que `#dest` etait en z-index 1 et que l'ecran des langues
+   se dessinait sous le carnet. C'etait un artefact de MA mesure : mon
+   script lisait le premier `z-index` trouve dans les lignes suivant
+   `#dest{`, et il est tombe sur celui de `#inPage`, pas sur celui de
+   `#dest`. La regle groupee `#intro,#dest` ci-dessus porte z-index 44
+   depuis toujours — donc au-dessus du carnet (40) et du globe (41).
+   L'ecran des langues n'a JAMAIS ete cache par le carnet.
+   Ces deux lignes sont conservees : 45 passe aussi devant le film (42),
+   ce qui ne peut pas nuire. Mais elles ne sont pas la cause. */
 #dest{position:relative;z-index:45}
 #intro{z-index:45}
 #inPage,#dsPage{position:relative;z-index:1;max-width:520px;margin:0 auto;width:100%;
@@ -262,6 +272,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  margin:14px 0 0}
 #ouvDebut /* le bouton de changement de langue : même dessin qu'avant, plus un
    soulignement discret pour qu'on devine qu'il se touche */
+#ouvVersion{font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+ color:rgba(244,247,250,.28);text-align:center;margin:10px 0 0}
 .langue{border:0;padding:0;cursor:pointer;
  border-bottom:1px solid rgba(32,217,245,.35);padding-bottom:2px;
  font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
@@ -835,6 +847,16 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .spFlash.f{background:radial-gradient(60% 40% at 50% 50%,rgba(245,86,107,.20),transparent 72%);opacity:1}
 
 /* ---------------- LE DÉPART ---------------- */
+/* ⚠️ Deux etats du sceau (7 aout 2026). Gagne : turquoise et lumineux,
+   comme avant. Pas gagne : le meme dessin en gris eteint, sans halo — il
+   montre ce qu'il RESTE a gagner au lieu de feliciter pour rien. */
+/* ⚠️ `!important` sur l'opacite, et ce n'est pas de la paresse : le sceau
+   porte l'animation `tchak` en `both`, dont la derniere image fixe
+   l'opacite a 1. Une animation bat une declaration normale — seul
+   `!important` la depasse. Mesure faite : sans lui, l'opacite restait a 1. */
+#dpTampon.pasgagne{border-color:rgba(244,247,250,.22);box-shadow:none;
+ opacity:.45!important}
+#dpTampon.pasgagne b,#dpTampon.pasgagne i{color:rgba(244,247,250,.5)}
 #depart{position:fixed;inset:0;z-index:30;background:#04060A;display:none;
  align-items:center;justify-content:center;flex-direction:column;overflow:hidden}
 #depart.on{display:flex}
@@ -1072,6 +1094,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          six sont ouvertes, il n'y avait plus AUCUN chemin pour en changer.
          La ligne qui affiche déjà la langue est l'endroit évident. -->
     <button class="langue" id="ouvLangue" data-t="ouvLangue">— anglais —</button>
+    <!-- ⚠️ MARQUEUR DE VERSION, 7 aout 2026. Blandine deploie depuis un
+         telephone et n'a aucun moyen de savoir quelle version tourne
+         reellement. Trois fois cette semaine, un defaut deja corrige a ete
+         signale a nouveau et j'ai accuse le deploiement sans preuve.
+         Cette ligne repond a la question en un coup d'oeil. A incrementer
+         avec VER. -->
+    <p id="ouvVersion">v2 · 7 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1215,6 +1244,61 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    VOYAGE 1 — ANGLAIS · Îles Britanniques et Irlande
    Chaque chapitre est une ville, chaque ville sous SON drapeau.
    ================================================================== */
+/* ==================================================================
+   VERSION DES ACTIFS (7 aout 2026)
+
+   Blandine : « les photos ne se mettent pas a jour, et celles qui
+   s'affichent sont celles qui s'affichaient deja ».
+
+   Cause : les fichiers remplaces gardent le MEME NOM. Le navigateur — et
+   surtout le service worker de l'application, qui controle tout le domaine
+   — servent leur copie en cache indefiniment. Un fichier peut etre
+   correctement deploye et rester invisible pendant des jours. Vider le
+   cache une fois ne suffit pas : le probleme revient a chaque image
+   remplacee. D'ou ce numero, ajoute a toutes les adresses construites en JS.
+
+   ⚠️ A INCREMENTER A CHAQUE LOT D'IMAGES REMPLACEES. Geste de livraison,
+   pas option.
+
+   ⚠️ DECLAREE ICI, TOUT EN HAUT, ET PAS AILLEURS. Premier essai : posee au
+   milieu du fichier, avant `FIN_VIDEO`. Le carnet de route, construit plus
+   HAUT, l'utilisait donc alors qu'elle valait encore `undefined` — les
+   adresses devenaient « carte-labaule.webpundefined ». C'est la CINQUIEME
+   fois que ce fichier piege sur l'ordre d'execution. Toute constante
+   utilisee par plusieurs endroits se declare avant le premier d'entre eux.
+
+   ⚠️ Les fonds declares dans le CSS (fond-newmarket, fond-lingua,
+   lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
+   il faudra vider le cache a la main le jour ou ils changeront.
+   ================================================================== */
+var VER = "?v=2";
+
+/* ==================================================================
+   LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
+
+   Blandine, quatre fois : « je ne vois toujours pas la page ou on choisit
+   les langues ». Le bouton existe, la ligne soulignee se voit sur ses
+   captures — mais son ecouteur etait attache tout en BAS du script, apres
+   des milliers de lignes. Si quoi que ce soit echoue avant, l'ecouteur
+   n'est jamais pose et le bouton ne fait rien, silencieusement.
+
+   Une DELEGATION posee sur `document` des le debut ne peut pas rater :
+   elle ne depend d'aucun element deja construit, ni de la fin du fichier.
+   Elle capte le clic meme si le bouton est cree plus tard.
+   ⚠️ Ne pas retirer l'ecouteur direct du bas : les deux coexistent sans
+   se genter, et `montrerDest` est idempotent.
+   ================================================================== */
+document.addEventListener("click", function(ev){
+  var b = ev.target && ev.target.closest ? ev.target.closest("#ouvLangue") : null;
+  if(!b) return;
+  ev.preventDefault();
+  try{ montrerDest(); }
+  catch(err){
+    /* si meme ca echoue, on le DIT au lieu de ne rien faire */
+    alert("Linguae : le choix des langues n'a pas pu s'ouvrir.\n"+(err && err.message ? err.message : err));
+  }
+}, true);
+
 var ETAPES = [
  /* ⚠️ LA BAULE EST L'ÉTAPE 1 depuis le 6 août 2026. Blandine, en testant :
     commencer par l'écurie « n'est pas vendeur de rêve », et ce n'est pas ce
@@ -2398,7 +2482,7 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
              n'est pas la meme chose : ici elle est rognee, assombrie et
              sert de fond ; la recompense reste la carte entiere, avec sa
              lettre au verso et son entree dans la collection. */
-          '<span class="vimg" style="background-image:url(&quot;carte-'+e.ref+'.webp&quot;),url(&quot;fond-'+e.ref+'.webp&quot;)"></span>'+
+          '<span class="vimg" style="background-image:url(&quot;carte-'+e.ref+'.webp'+VER+'&quot;),url(&quot;fond-'+e.ref+'.webp'+VER+'&quot;)"></span>'+
           '<span class="vhalo"></span><span class="vvoile"></span>'+
           '<span class="vn">'+(i+1)+'</span>'+
           barresNiveau(niveauVille(e.ref))+
@@ -2511,7 +2595,7 @@ ETAPES.forEach(function(e,idx){
   var c=document.createElement("div");
   c.className="chc loin";
   /* on part du fond de 1 Ko ; la carte nette n'est chargée que pour l'étape voisine */
-  c.style.backgroundImage='url("fond-'+e.ref+'.webp")';
+  c.style.backgroundImage='url("fond-'+e.ref+'.webp'+VER+'")';
   c.dataset.ref=e.ref; c.dataset.net="0";
   S("cartes").appendChild(c); elCartes.push(c);
 
@@ -2707,7 +2791,7 @@ function garnirVille(e){
     S("pcarte").classList.remove("dos");
     document.querySelector("#pcarte .pface").setAttribute("data-attente", T("carteAVenir"));
     S("pcarte").classList.remove("sansimg");
-    S("pimg").src = "carte-"+e.ref+".webp";
+    S("pimg").src = "carte-"+e.ref+".webp"+VER;
     appliquerTeinteTitre(e.ref);
     S("pimg").alt = eV(e);
     S("pnom").textContent = eV(e);  S("pnom2").textContent = eV(e);
@@ -2794,7 +2878,7 @@ function ouvrirArrivee(i){
   videoEl.setAttribute("playsinline","");
   videoEl.setAttribute("webkit-playsinline","");
   videoEl.preload="auto";
-  videoEl.src = "arrivee-"+e.ref+".mp4";
+  videoEl.src = "arrivee-"+e.ref+".mp4"+VER;
   videoEl.addEventListener("error",function(){ S("emplacement").style.display="flex"; });
   videoEl.addEventListener("playing",function(){ S("emplacement").style.display="none"; });
   /* ⚠️ ARRET ANTICIPE, ville par ville (6 août 2026).
@@ -3683,6 +3767,17 @@ var UI = {
  lecon:{fr:"Leçon ", en:"Lesson ", es:"Lección ", it:"Lezione ", de:"Lektion ", ja:"レッスン"},
  motsAcquis:{fr:" mots acquis", en:" words learned", es:" palabras aprendidas",
    it:" parole acquisite", de:" Wörter gelernt", ja:"語 習得"},
+ /* ⚠️ DEUX CLES AJOUTEES le 7 aout 2026, sur retour de Blandine : « encore
+    un tampon obtenu sans raison ». L'ecran de depart annoncait « Tampon
+    obtenu » DES QU'ON TOUCHAIT « Reprendre la route » — donc en quittant
+    une ville sans avoir appris un seul mot. C'est le meme mensonge que le
+    plancher de quatre villes offertes, supprime le 7 aout : l'interface
+    felicitait pour rien.
+    Le titre depend maintenant de l'etat reel du chapitre. */
+ etapeCommencee:{fr:"Étape commencée", en:"Stage begun", es:"Etapa empezada",
+   it:"Tappa iniziata", de:"Etappe begonnen", ja:"始めた区間"},
+ reprendLaRoute:{fr:"Tu reprends la route", en:"You ride on", es:"Sigues tu camino",
+   it:"Riprendi la strada", de:"Du reitest weiter", ja:"また道へ"},
  tamponObtenu:{fr:"Tampon obtenu", en:"Stamp collected", es:"Sello conseguido",
    it:"Timbro ottenuto", de:"Stempel erhalten", ja:"消印を獲得"},
  prochaineEtape:{fr:"Prochaine étape · {v}", en:"Next stop · {v}", es:"Próxima etapa · {v}",
@@ -5386,7 +5481,19 @@ function lancerDepart(){
   var e=ETAPES[courant];
   S("dpVille").textContent=eV(e).toUpperCase();
   S("dpNation").textContent=eNat(e);
-  S("dpTitre").textContent=T("tamponObtenu");
+  /* ⚠️ LE TAMPON SE MERITE, depuis le 7 aout 2026.
+     · chapitre terminé      → « Tampon obtenu », et le sceau s'affiche
+     · commencé sans finir   → « Étape commencée », sceau en retrait
+     · rien appris           → « Tu reprends la route », pas de sceau
+     Le sceau rond portant le nom de la ville est la RECOMPENSE VISUELLE :
+     le dessiner alors que rien n'a été fait, c'est ce que Blandine a vu
+     deux fois. Il ne se dessine plus que s'il est mérité. */
+  var ec = etatChapitre(e.ref);
+  var merite = ec.fini;
+  S("dpTitre").textContent = merite ? T("tamponObtenu")
+                    : (ec.acquis > 0 ? T("etapeCommencee") : T("reprendLaRoute"));
+  S("dpTampon").classList.toggle("gagne", merite);
+  S("dpTampon").classList.toggle("pasgagne", !merite);
   /* ⚠️ `<10` corrige le 6 aout 2026 : reste de l'epoque ou le voyage
      comptait dix villes. Avec vingt-huit, la ville suivante n'etait plus
      annoncee au-dela de la dixieme. */

@@ -79,6 +79,72 @@ Les deux images en portrait, et le fond du carnet de route — qui pourra se dé
 
 ---
 
+## 🏷️ SESSION 127 · LINGUAE (07/08) — LE TAMPON SE MÉRITE, ET LES IMAGES SE VERSIONNENT
+
+### 🔴 Le tampon était accordé par le simple fait de partir
+Blandine : « encore un tampon obtenu sans raison ». Trouvé en une recherche : `#arrPartir` — le bouton **« Reprendre la route »** — appelait `lancerDepart()`, qui affichait « Tampon obtenu » **sans aucune condition**. On ouvrait l'écran d'arrivée d'une ville, on repartait sans lire un mot, et l'application félicitait.
+C'est exactement le même mensonge que le plancher de quatre villes offertes supprimé le matin même : **l'interface récompensait pour rien.**
+
+✅ **Trois états au lieu d'un** :
+· chapitre terminé → « Tampon obtenu », sceau turquoise et lumineux
+· commencé sans finir → « Étape commencée », sceau éteint
+· rien appris → « Tu reprends la route », sceau éteint
+Deux clés i18n ajoutées en six langues. Le sceau rond portant le nom de la ville est la récompense visuelle : il ne se dessine plus en pleine lumière quand rien n'a été fait. **Il reste visible mais éteint** — il montre ce qui reste à gagner au lieu de féliciter.
+⚠️ Détail technique noté dans le CSS : `opacity` ne pouvait pas être baissée par une simple déclaration, parce que `#dpTampon` porte l'animation `tchak` dont les images-clés fixent l'opacité. Une animation bat une déclaration normale ; seul `!important` la dépasse. Mesuré : sans lui, l'opacité restait à 1.
+✅ Vérifié en rendu : les trois états donnent bien les trois titres, et l'opacité passe de 0,45 à 1 quand le tampon est mérité.
+
+### 🔴 « Les photos ne se mettent pas à jour, et celles qui s'affichent sont celles qui s'affichaient déjà »
+Diagnostic : les fichiers remplacés **gardent le même nom**. Le navigateur, et surtout le service worker de l'application — qui contrôle tout le domaine, même si `lingo.html` n'en déclare aucun — servent leur copie en cache indéfiniment. **Un fichier peut être correctement déployé et rester invisible pendant des jours.**
+Vider le cache une fois ne règle rien : le problème revient à chaque image remplacée.
+
+✅ **`var VER = "?v=2"`**, ajoutée à toutes les adresses construites en JS : cartes du carnet, cartes du chemin, carte postale de l'arrivée, clips d'arrivée. **Changer ce numéro force le rechargement de tout d'un seul coup.**
+⚠️ **À INCRÉMENTER À CHAQUE LOT D'IMAGES REMPLACÉES.** C'est un geste de livraison, pas une option.
+⚠️ Les quatre fonds déclarés dans le CSS (`fond-newmarket`, `fond-lingua`, `lingua-affiche`, `lingua-langues`) ne peuvent pas prendre la variable. Ils changent rarement ; ce jour-là il faudra vider le cache à la main.
+✅ Mesuré en rendu : **59 requêtes d'actifs sur 64 portent `?v=2`**, les 5 autres sont exactement les fonds CSS attendus, et zéro adresse contient « undefined ».
+
+### 🔴 Deux erreurs de ma main dans cette session, et la seconde est structurelle
+**1 · Mon script de patch écrivait le fichier à la fin.** Une ancre introuvable a déclenché un `sys.exit` : quatre remplacements déjà calculés ont été perdus, et comme un autre script avait écrit entre-temps, le fichier s'est retrouvé avec `+VER` sur la ligne de la vidéo **sans que `var VER` existe**. La page plantait. ✅ Les scripts de patch écrivent maintenant **après chaque remplacement réussi**.
+
+**2 · `VER` déclarée au milieu du fichier, alors que le carnet la lit plus haut.** `var` est hissée mais pas sa valeur : les adresses devenaient `carte-labaule.webpundefined`, donc **aucune image ne se chargeait** — pire que pas de version du tout. ✅ Déplacée tout en haut, juste avant `ETAPES`.
+⚠️ **CINQUIÈME fois** que ce fichier piège sur l'ordre d'exécution, après le compte de mots, le libellé de niveau, le titre de l'itinéraire et l'avancement. La règle est maintenant écrite dans le code : **toute constante utilisée à plusieurs endroits se déclare avant le premier d'entre eux.**
+
+### ✅ Et deux mises au point dues à Blandine
+**Newmarket avait déjà sa carte, et c'est moi qui l'ai envoyée la refaire.** Son lot de vingt fichiers ne contenait que `carte-newmarket-vignette.webp` ; j'en ai déduit que la grande manquait peut-être et je le lui ai dit. Elle existait. Il lui suffit de ne pas pousser la mienne.
+**Et mon inventaire « il manque une carte pour… » était infondé** : il disait ce que j'ai dans ce bac à sable, pas ce qui est sur le dépôt. Formulation corrigée pour la suite : « je ne l'ai pas » et non « elle manque ».
+
+### Contrôles passés
+`verif.py` après chaque étape · trois états du tampon vérifiés en rendu avec les titres et les opacités · 64 requêtes d'actifs interceptées et comptées · les vingt fichiers du dépôt contrôlés un par un (vrai webp, ratio 0,750, poids) : tous conformes, ce qui a éliminé les hypothèses d'extension, de casse et d'accents.
+
+---
+
+## 🧭 SESSION 128 · LINGUAE (07/08) — MON DIAGNOSTIC DU Z-INDEX ÉTAIT FAUX
+
+Blandine, **quatrième fois** : « je ne vois toujours pas la page où on choisit les langues ».
+
+### 🔴 Je dois rectifier la session 125 : ma correction ne corrigeait rien
+J'ai affirmé avoir trouvé la cause — `#dest` en `z-index: 1`, donc dessiné sous le carnet — et je l'ai écrit ici comme une victoire. **C'était un artefact de ma propre mesure.** Mon script cherchait le premier `z-index` dans les lignes suivant `#dest{` et il est tombé sur celui de `#inPage`, pas sur celui de `#dest`.
+
+La règle groupée `#intro,#dest` porte **`z-index: 44` depuis toujours** — au-dessus du carnet (40) et du globe (41). **L'écran des langues n'a jamais été caché par le carnet.** J'ai donc annoncé une cause fausse, fermé le sujet, et laissé Blandine avec son problème.
+⚠️ La leçon de la session 125 — « vérifier ce qui est peint, jamais ce qui est déclaré » — restait juste. Mais je l'avais appliquée à un diagnostic déjà faux, ce qui m'a donné une fausse confirmation : le test montrait bien l'écran peint **après** un changement qui n'était pas la cause.
+
+### ✅ Une cause plausible, et une ceinture qui la couvre
+Le bouton existe — la ligne soulignée est visible sur ses captures. Mais son écouteur était attaché **tout en bas** du script, après des milliers de lignes. **Si quoi que ce soit échoue avant, l'écouteur n'est jamais posé et le bouton ne fait rien, silencieusement.** Et ce fichier a planté au moins une fois aujourd'hui (`VER` non définie), donc ce n'est pas théorique.
+✅ **Délégation posée sur `document` dès le début du script**, en phase de capture. Elle ne dépend d'aucun élément déjà construit ni de la fin du fichier. Testé de la manière la plus dure : l'écouteur direct détruit en clonant le bouton, puis clic — l'écran des langues est bien **peint au centre**.
+✅ Et si `montrerDest()` échouait malgré tout, une alerte le **dit** au lieu de ne rien faire. Un bouton muet est le pire des états : impossible à diagnostiquer à distance.
+
+### ✅ Un marqueur de version visible, pour arrêter de deviner
+Blandine déploie depuis un téléphone et n'a **aucun moyen** de savoir quelle version tourne. Trois fois cette semaine, un défaut déjà corrigé a été signalé à nouveau, et deux fois j'ai accusé le déploiement sans preuve.
+✅ Une ligne discrète sous la langue du carnet : **`v2 · 7 août`**. Elle répond à la question en un coup d'œil, et elle s'incrémente avec `VER`.
+⚠️ **À mettre à jour en même temps que `VER` à chaque livraison.** Les deux vont ensemble.
+
+### Contrôles passés
+`verif.py` · z-index réels relevés dans le navigateur et non par grep, cette fois · délégation testée après destruction de l'écouteur direct · marqueur de version vérifié visible et positionné · aucune erreur JS.
+
+### 🧭 La leçon, plus dure que les précédentes
+**Un diagnostic annoncé doit être vérifié contre l'hypothèse inverse.** J'ai mesuré, trouvé un chiffre qui collait à mon intuition, corrigé, testé la correction — et tout confirmait, sauf que le chiffre venait du mauvais élément. Le test d'après-coup ne pouvait pas me contredire : il vérifiait que l'écran s'affiche, ce qu'il faisait déjà. **Ce qu'il aurait fallu tester, c'est l'état AVANT correction.** Reproduire le défaut avant de le corriger, comme je l'ai fait pour le globe en session 117 — et pas seulement constater qu'il a disparu après.
+
+---
+
 # 🤝 PASSATION — état du module au 7 août 2026, fin de session 124
 
 **À lire en premier par la conversation qui reprend Linguae.** Ce bloc dit l'état réel, ce qui est en cours du côté de Blandine, et les pièges qui ont coûté du temps. Les sessions détaillées sont en dessous, dans l'ordre inverse.
