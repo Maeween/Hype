@@ -302,10 +302,14 @@ var CONNEXIONS = CONNEXIONS_LINGUAE;
 function appliquerEtatLinguae(e){
   if(!e) return;
   var faites = e.faites || [], ouvertes = e.ouvertes || [];
+  /* ⚠️ le niveau vient du parent (7 aout 2026) : le globe ne duplique pas
+     la table NIVEAU_VILLE, il recoit le chiffre et son nom deja traduit. */
+  var niveaux = e.niveaux || {};
   CLUBS.forEach(function(c){
     if(c.depart) return;
     if(faites.indexOf(c.ref) >= 0)        c.type = "F";
     else if(ouvertes.indexOf(c.ref) >= 0) c.type = "O";
+    if(niveaux[c.ref]){ c.niv = niveaux[c.ref].n; c.nivNom = niveaux[c.ref].nom; }
     else                                  c.type = "D";
     /* `mem` pilote la taille du point dans le moteur d'origine :
        une étape faite se voit de plus loin qu'une étape fermée. */
@@ -436,8 +440,12 @@ var curAff=null;
 var curClub=null; function openF(i){ sel=i; const c=CLUBS[i]; curClub=c; try{var _tl=document.querySelector('.tools'); if(_tl)_tl.style.display='none';}catch(x){} try{var _fb=document.getElementById('fbtn'); if(_fb){ /* Linguae : le bouton devient « Partir », et il renvoie la
        destination au parent. Une étape fermée ne mène nulle part —
        un bouton qui ne fait rien enferme, donc on le désactive. */
+    /* ⚠️ `_et === "D"` NE DESACTIVE PLUS depuis le 7 aout 2026 : « D » ne
+       veut plus dire « fermee » mais « pas encore visitee », et toutes les
+       villes sont accessibles. Seul le point de depart n'est pas une
+       destination. */
     var _et = c.type;
-    _fb.disabled = (_et === "D" || !!c.depart);
+    _fb.disabled = !!c.depart;
     _fb.textContent = c.depart ? LL.bX
                    : (_et === "F" ? LL.bF
                    : (_et === "O" ? LL.bO : LL.bD));
@@ -452,6 +460,26 @@ var curClub=null; function openF(i){ sel=i; const c=CLUBS[i]; curClub=c; try{var
   document.getElementById('f_addr').textContent = c.depart ? LL.dep
     : (dk>0 ? LL.loin.replace('{n}', dk).replace('{v}', (_dep&&_dep.nom)||'') : '');
   document.getElementById('f_type').textContent=(TLAB[c.type]||'').toUpperCase();
+  /* ⚠️ LE NIVEAU SUR LA FICHE (7 aout 2026, demande de Blandine : preciser
+     « les themes et niveau de difficulte »). Le theme etait deja la, sur la
+     ligne du dessus. Le niveau s'ajoute en dessous, meme dessin que sur les
+     lignes de la liste : trois barres et le mot du palier. */
+  try{
+    var _nv=document.getElementById('f_niv');
+    if(!_nv){
+      _nv=document.createElement('div'); _nv.id='f_niv';
+      _nv.style.cssText='font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;'+
+        'color:#E8C980;margin-top:5px;display:flex;align-items:center;gap:6px';
+      var _r=document.getElementById('f_reg'); if(_r&&_r.parentNode) _r.parentNode.insertBefore(_nv,_r.nextSibling);
+    }
+    if(c.niv){
+      _nv.style.display='flex';
+      _nv.innerHTML='<span style="display:inline-flex;gap:2px">'+[1,2,3].map(function(k){
+        return '<i style="display:block;width:9px;height:2px;border-radius:1px;background:'+
+               (k<=c.niv?'#20D9F5':'rgba(244,247,250,.42)')+'"></i>'; }).join('')+
+        '</span>'+(c.nivNom||'');
+    } else { _nv.style.display='none'; }
+  }catch(x){}
   document.getElementById('f_disc').innerHTML=(c.disc||[]).map(d=>'<b>'+d+'</b>').join('');
   document.getElementById('f_sec').innerHTML=(c.stages||c.events||c.cours)?('<div class="s"><span class="ic">&#127942;</span><span class="lb">Stages</span><span class="vl">'+(c.stages||'\u2014')+'</span></div><div class="s"><span class="ic">&#128197;</span><span class="lb">\u00c9v\u00e9nements</span><span class="vl">'+(c.events||'\u2014')+'</span></div><div class="s"><span class="ic">&#128218;</span><span class="lb">Cours</span><span class="vl">'+(c.cours||'\u2014')+'</span></div>'):(c.note?('<div class="s"><span class="ic">&#10024;</span><span class="lb">\u00c0 noter</span><span class="vl">'+c.note+'</span></div>'):'');
   document.getElementById('f_info').innerHTML='';
@@ -516,7 +544,7 @@ function renderResults(){
   /* la ville recommandée par lingo.html remonte en tête de liste, quel
      que soit le filtre actif — c'est elle qu'on cherche en premier */
   list.sort((a,b)=>(b.c.reco?1:0)-(a.c.reco?1:0));
-  RES.innerHTML=list.map(o=>'<div class="r'+(o.c.reco?' reco':'')+'" data-i="'+o.i+'"><span class="dot" style="background:'+(COL[o.c.type]||"#20D9F5")+';box-shadow:0 0 7px '+(COL[o.c.type]||"#20D9F5")+'"></span><div style="flex:1"><div style="font-size:14px;font-weight:600">'+(o.c.reco?'\u2605 ':'')+o.c.nom+'</div><div style="font-size:11.5px;opacity:.55">'+o.c.ville+(o.c.region?' \u00b7 '+o.c.region:'')+'</div></div><span style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.6">'+(TLAB[o.c.type]||'')+'</span></div>').join('');
+  RES.innerHTML=list.map(o=>'<div class="r'+(o.c.reco?' reco':'')+'" data-i="'+o.i+'"><span class="dot" style="background:'+(COL[o.c.type]||"#20D9F5")+';box-shadow:0 0 7px '+(COL[o.c.type]||"#20D9F5")+'"></span><div style="flex:1"><div style="font-size:14px;font-weight:600">'+(o.c.reco?'\u2605 ':'')+o.c.nom+'</div><div style="font-size:11.5px;opacity:.6">'+o.c.ville+(o.c.region?' \u00b7 '+o.c.region:'')+'</div>'+(o.c.niv?'<div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#E8C980;margin-top:3px;display:flex;align-items:center;gap:5px"><span style="display:inline-flex;gap:2px">'+[1,2,3].map(k=>'<i style="display:block;width:8px;height:2px;border-radius:1px;background:'+(k<=o.c.niv?'#20D9F5':'rgba(244,247,250,.42)')+'"></i>').join('')+'</span>'+o.c.nivNom+'</div>':'')+'</div><span style="font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.6">'+(TLAB[o.c.type]||'')+'</span></div>').join('');
   RES.classList.add('on');
   RES.querySelectorAll('.r').forEach(el=>{ const i=el.getAttribute('data-i'); if(i!==null) el.addEventListener('click',()=>{ const idx=+i; RES.style.display='none'; Q.blur(); flyTo(CLUBS[idx].lat,CLUBS[idx].lng,2.2); setTimeout(()=>openF(idx),460); }); }); }
 Q.addEventListener('input',()=>{ query=Q.value.trim().toLowerCase(); renderResults(); });
@@ -569,32 +597,32 @@ window.addEventListener('message',function(e){ if(e&&e.data&&e.data.t==='hype-ex
 var LING_L = {
  fr:{f:"Faites",o:"Ouvertes",d:"À découvrir",tout:"Tout",
      eF:"Faite",eO:"Ouverte",eD:"À découvrir",eX:"Ton départ",
-     bF:"Y retourner",bO:"Partir",bD:"Pas encore ouverte",bX:"Ton point de départ",
+     bF:"Y retourner",bO:"Partir",bD:"Partir",bX:"Ton point de départ",
      vide:"Aucune destination ici",dep:"Le départ de ton voyage",loin:"à {n} km de {v}",
      affichees:["ville affichée","villes affichées"]},
  en:{f:"Done",o:"Open",d:"To discover",tout:"All",
      eF:"Done",eO:"Open",eD:"To discover",eX:"Your start",
-     bF:"Go back",bO:"Set off",bD:"Not open yet",bX:"Your starting point",
+     bF:"Go back",bO:"Set off",bD:"Set off",bX:"Your starting point",
      vide:"No destination here",dep:"The start of your journey",loin:"{n} km from {v}",
      affichees:["place shown","places shown"]},
  es:{f:"Hechas",o:"Abiertas",d:"Por descubrir",tout:"Todo",
      eF:"Hecha",eO:"Abierta",eD:"Por descubrir",eX:"Tu salida",
-     bF:"Volver",bO:"Partir",bD:"Aún no abierta",bX:"Tu punto de partida",
+     bF:"Volver",bO:"Partir",bD:"Partir",bX:"Tu punto de partida",
      vide:"Ningún destino aquí",dep:"El inicio de tu viaje",loin:"a {n} km de {v}",
      affichees:["ciudad mostrada","ciudades mostradas"]},
  it:{f:"Fatte",o:"Aperte",d:"Da scoprire",tout:"Tutto",
      eF:"Fatta",eO:"Aperta",eD:"Da scoprire",eX:"La tua partenza",
-     bF:"Tornarci",bO:"Partire",bD:"Non ancora aperta",bX:"Il tuo punto di partenza",
+     bF:"Tornarci",bO:"Partire",bD:"Partire",bX:"Il tuo punto di partenza",
      vide:"Nessuna destinazione qui",dep:"L'inizio del tuo viaggio",loin:"a {n} km da {v}",
      affichees:["città mostrata","città mostrate"]},
  de:{f:"Erledigt",o:"Offen",d:"Zu entdecken",tout:"Alle",
      eF:"Erledigt",eO:"Offen",eD:"Zu entdecken",eX:"Dein Start",
-     bF:"Zurückkehren",bO:"Losreiten",bD:"Noch nicht offen",bX:"Dein Startpunkt",
+     bF:"Zurückkehren",bO:"Losreiten",bD:"Losreiten",bX:"Dein Startpunkt",
      vide:"Kein Ziel hier",dep:"Der Beginn deiner Reise",loin:"{n} km von {v}",
      affichees:["Ort angezeigt","Orte angezeigt"]},
  ja:{f:"達成",o:"開放中",d:"未開放",tout:"すべて",
      eF:"達成",eO:"開放中",eD:"未開放",eX:"出発地",
-     bF:"もう一度行く",bO:"出発する",bD:"まだ開放されていません",bX:"あなたの出発地",
+     bF:"もう一度行く",bO:"出発する",bD:"出発する",bX:"あなたの出発地",
      vide:"ここに目的地はありません",dep:"旅の出発点",loin:"{v}から{n}km",
      affichees:["件表示","件表示"]}
 };

@@ -22,6 +22,97 @@
 
 ---
 
+## 🌐 SESSION 120 · LINGUAE (07/08) — TOUT EST OUVERT, LE PLANCHER SUPPRIMÉ, THÈMES ET NIVEAUX AFFICHÉS
+
+### ⚠️ D'abord une rectification, parce qu'elle compte
+Blandine : « ne retire pas de page sans m'en avertir ». **Aucune page n'a été retirée.** L'écran de choix de la langue (`#dest`) est dans le fichier depuis le début et n'a jamais été supprimé. Ce qui a changé, c'est qu'il n'était joignable **qu'à la première visite** — et tant qu'une seule langue était ouverte, ça ne se voyait pas. La session 106 a ouvert les six langues sans ouvrir de porte pour y revenir : voilà la faute, et elle est de moi.
+🔴 **Et un commentaire du code mentait**, ce qui explique la confusion : il affirmait que « le choix de destination reste accessible par le bouton de retour du carnet de route ». C'est faux — ce bouton ramène AU carnet, il n'a jamais mené au choix de la langue. Le commentaire est corrigé et dit maintenant où est la vraie porte.
+✅ La porte existe depuis la session 119 : **la ligne de langue du carnet est un bouton**. Elle est dans le fichier livré.
+
+### ✅ TOUT EST OUVERT
+« Ouvre tout — pour les villes on peut avoir besoin d'étudier un chapitre en particulier qui soit à la fin. »
+
+Deux règles se superposaient et se contredisaient : un déblocage en chaîne, **et** un plancher de quatre villes offertes. Le plancher était le plus grave : `var FAITS = 4` marquait quatre villes comme **FAITES sans qu'elles aient été jouées** — elles portaient leur tampon sur le chemin. **C'est l'explication du tampon de Lambourn.** Une ville marquée faite sans avoir été ouverte, c'est un mensonge de l'interface.
+
+✅ Une seule règle désormais : **tout est accessible, tout le temps.** Supprimés : le plancher (`FAITS` part de 0), le cadenas du chemin (`class="verrou"` n'est plus jamais posée), le libellé « Termine X d'abord », le repli du globe vers la dernière ville accessible, le filtre d'accessibilité des fils de sortie, et la désactivation du bouton de la fiche du globe.
+✅ **`FAITS` change de nature** : il ne mesure plus l'avancée du déplacement mais le **nombre réel de chapitres terminés**, recompté à chaque retour et au démarrage. La trace dessinée sur le chemin dit donc enfin la vérité.
+✅ Le bouton d'aperçu ne déverrouille plus rien — tout est ouvert — et **ne sauvegarde plus** : il ne doit pas faire croire à une progression qui n'existe pas.
+⚠️ **NE PAS RÉINTRODUIRE DE PLANCHER**, c'est écrit dans le code. Si la progressivité revient un jour, elle doit se voir dans le niveau affiché, pas dans une porte fermée.
+
+### ✅ Les trois états changent de sens, et gagnent en justesse
+Puisque plus rien n'est verrouillé :
+· **FAITE** — le chapitre est terminé
+· **OUVERTE** — commencée : au moins un mot su
+· **À DÉCOUVRIR** — jamais touchée. Ce n'est plus « fermée » mais « pas encore visitée » — ce que le mot dit d'ailleurs.
+Les quatre filtres du globe gardent tout leur sens, et le bouton dit « Partir » dans les six langues au lieu de « Pas encore ouverte ».
+
+### ✅ Thèmes et niveaux affichés
+« Pense à préciser à côté les thèmes et niveau de difficulté. »
+Le thème y était déjà — c'est le champ `region` de chaque point, alimenté par le chapitre : « Italie · Le commerce ». Le niveau, non : **le globe ne connaissait pas `NIVEAU_VILLE`.**
+✅ Le parent le lui **envoie** avec son nom déjà traduit, plutôt que de dupliquer la table là-bas. Affiché sur **les lignes de la liste et sur la fiche**, avec le même dessin que sur les cartes du carnet : trois barres, autant d'allumées que le palier, et le mot — NOMMER, SITUER, DIRE.
+⚠️ Les cartes du carnet, elles, se retournent déjà et portent thème, niveau et compte de mots depuis la session 113. Les deux écrans disent maintenant la même chose.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` et `lingo-globe.html` · `FAITS` vérifié à 0 au démarrage · les 29 villes parcourues sans qu'aucun cadenas n'apparaisse · `etatPourGlobe()` renvoie bien 29 niveaux traduits · globe testé avec un état simulé : 29 lignes, thème et niveau sur chacune, fiche d'une ville « à découvrir » avec son niveau et un bouton **Partir actif** · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. Les lettres et volets de cinq villes (Lexington, Spruce Meadows, Tokyo, Buenos Aires, Tamworth).
+2. `lingua-affiche.webp` et le fond du carnet.
+3. Les définitions en quatre langues.
+4. La sécurité (11 mots) attend une ville.
+5. `niveau` divergent entre `arrivee` et `concours`.
+
+### 🧭 Préparation Flutter
+- **Une règle au lieu de deux qui se contredisent.** Le plancher et la chaîne cohabitaient sans que personne puisse dire ce qui était vrai. Une seule règle, écrite, avec un avertissement contre son retour.
+- **Un compteur qui compte au lieu d'un compteur qui suppose.** `FAITS` était une position dans une chaîne, il devient une mesure de l'état réel, dérivée de la maîtrise. Une valeur dérivée ne peut pas mentir ; une valeur stockée en parallèle, si.
+- **Le niveau voyage au lieu d'être dupliqué** : le globe reçoit la donnée du parent plutôt que d'embarquer sa copie de `NIVEAU_VILLE`. Une seule source de vérité pour deux documents.
+- **Reste à moderniser** : le « prêt » global, `niveau` divergent.
+- **Risques** : le sens de « À découvrir » change pour les joueurs existants — une ville jamais touchée s'affichait déjà ainsi, donc l'affichage ne bouge pas ; ce qui change, c'est qu'on peut désormais y aller.
+
+---
+
+## 🗝️ SESSION 119 · LINGUAE (07/08) — LE CHOIX DE LA LANGUE ÉTAIT DEVENU INACCESSIBLE, ET LE FLASH SUPPRIMÉ À LA SOURCE
+
+Quatre remarques de Blandine. **Deux étaient des défauts que j'ai corrigés, deux demandent sa décision** — je ne les ai pas touchées.
+
+### 🔴 1 · « Où est passée la page où on choisit la langue ? »
+Elle n'a jamais bougé : elle n'était accessible **que par l'écran de présentation, qui ne se montre qu'à la première visite**. Tant qu'une seule langue était ouverte, personne ne s'en apercevait. **Depuis la session 106 qui a ouvert les six, il n'existait plus aucun chemin pour en changer.** C'est moi qui ai créé le problème en ouvrant les langues sans ouvrir la porte.
+✅ **La ligne « — anglais — » du carnet devient un bouton** et renvoie au choix. C'est l'endroit évident : elle affiche déjà la langue. Soulignement turquoise discret pour qu'on devine qu'elle se touche.
+
+### 🔴 2 · Et un second défaut trouvé en testant le premier
+Choisir une langue changeait bien `VOYAGE_LANGUE`, **mais rien ne redessinait l'écran** : après avoir choisi l'italien, le carnet continuait d'annoncer « — anglais — », et le titre du document aussi. Invisible jusqu'ici parce qu'on ne pouvait choisir qu'une seule fois, avant même d'avoir vu le carnet.
+✅ `appliquerLangue()` est appelée au choix. Vérifié sur trois langues d'affilée : le libellé, la cible et le titre suivent.
+
+### 🔴 3 · Le flash du carnet entre la vidéo d'entrée et le film
+« La page pop quelques centièmes de seconde entre les deux. »
+Le carnet était l'écran **visible par défaut**, et `lancerFilm()` ne le masque qu'une fois le script parcouru. Entre le premier affichage de la page et cet instant, il se voyait. Mon correctif de la session 97 avait supprimé le flash du *chemin* entre le carnet et le globe, mais pas celui-ci, qui a une cause différente.
+✅ **Le carnet part maintenant masqué** (`class="joue"` dans le HTML lui-même) : il ne peut plus apparaître avant l'heure. C'est `terminerOuverture()` qui le révèle à la fin du film.
+✅ Mesuré au chargement, relevé toutes les 50 ms sur une deuxième visite — le cas exact de Blandine : **zéro instant où le carnet est visible avant l'heure.**
+⚠️ Le raccourci `#sprint` / `#duel` retire la classe explicitement : sans ça, en fermant le sprint on serait ressorti sur un carnet invisible.
+
+### ⏳ 4 · « Beaucoup de villes sont encore inatteignables » — question de conception, pas défaut
+Les correctifs de la session 117 (plafond à dix, avancement sauvegardé) **ne suffisent pas** : le déblocage reste une **chaîne stricte**, une ville à la fois, en partant de la quatrième. Avec vingt-neuf étapes, atteindre Tamworth demande vingt-cinq leçons dans l'ordre imposé.
+Ça se défendait à dix villes. À vingt-neuf, c'est une décision à reprendre, et **ce n'est pas à moi de la prendre**. Trois pistes à trancher avec elle : ouvrir tout un continent dès qu'une de ses villes est faite ; ouvrir les trois suivantes au lieu d'une ; ou garder la chaîne mais commencer plus haut. Rien touché.
+⚠️ Rappel : le bouton d'aperçu du chemin ouvre tout d'un tap, et il sauvegarde depuis la session 117.
+
+### ⏳ 5 · Le tampon de Lambourn sans avoir appris un mot
+Deux mécanismes peuvent l'expliquer, et **je ne peux pas départager sans voir son téléphone** :
+· **Le tampon dessiné sur la carte postale est décoratif** : le verso porte toujours le nom de la ville, gagné ou pas. Sur l'écran d'arrivée la carte est en mode aperçu (assombrie), mais le tampon y figure quand même. Ce serait alors normal — c'est l'aperçu de ce qu'elle peut gagner.
+· **Ou bien `var FAITS = 4`** : les quatre premières villes sont offertes au démarrage, et les villes « faites » portent leur tampon sur le chemin. Ce plancher de quatre est d'origine, mais avec le réordonnancement du 6 août les quatre offertes ne sont plus les mêmes qu'avant.
+La carte n'est réellement acquise que par `garderCarteLecon()`, **sur une leçon sans une seule faute** — jamais autrement. La page Collection dit la vérité : ce qui y figure est gagné.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` · **flash mesuré par relevé toutes les 50 ms au chargement**, première et deuxième visite : zéro fuite · parcours complet présentation → destination → film → carnet · bouton de langue testé sur trois langues, libellé, cible et titre du document vérifiés à chaque fois · raccourci `#sprint` vérifié · aucune erreur JS.
+
+### 🧭 Préparation Flutter
+- **Un état initial déclaré dans le HTML plutôt que corrigé en JS** : le carnet part masqué au lieu d'être masqué après coup. C'est la différence entre un état initial et une correction d'état — et la seule des deux qui ne peut pas rater.
+- **Une leçon qui se répète** : ouvrir une fonctionnalité (les six langues) sans ouvrir son chemin d'accès. La session 106 a livré six langues jouables et zéro moyen d'en changer. À vérifier systématiquement : quand on rend quelque chose possible, par où y arrive-t-on ?
+- **`appliquerLangue()` n'était appelée qu'au démarrage** alors qu'elle est faite pour être rejouée. Un rendu doit pouvoir être redemandé à tout moment — c'est exactement ce qu'un `setState` impose, et ce que ce fichier fait encore à la main.
+- **Reste à moderniser** : le « prêt » global, `niveau` divergent, et la règle de déblocage à revoir avec Blandine.
+- **Risques** : aucun. Un état initial, un appel de rendu, un bouton.
+
+---
+
 ## 🤠 SESSION 118 · LINGUAE (06/08) — TAMWORTH, LA DERNIÈRE. ET DEUX FAUX RAPPELS DÉMASQUÉS PAR LE SCRIPT
 
 ### ✅ Tamworth (Nouvelle-Galles du Sud), étape 26 — LE WESTERN

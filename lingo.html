@@ -237,7 +237,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvDebut h1{font-family:'Cinzel',serif;font-weight:600;font-size:40px;margin:0;line-height:1.05}
 #ouvDebut .sous{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris);
  margin:14px 0 0}
-#ouvDebut .langue{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
+#ouvDebut /* le bouton de changement de langue : même dessin qu'avant, plus un
+   soulignement discret pour qu'on devine qu'il se touche */
+.langue{border:0;padding:0;cursor:pointer;
+ border-bottom:1px solid rgba(32,217,245,.35);padding-bottom:2px;
+ font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
  font-size:14px;color:var(--turquoise);opacity:.8;margin:12px 0 30px;letter-spacing:.06em}
 #ouvDebut .intro{font-size:13.5px;line-height:1.75;color:#C3D0DA;margin:0 0 26px;
  text-align:left}
@@ -1006,13 +1010,32 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   </div>
 </div>
 
-<div id="ouverture">
+<!-- ⚠️ `class="joue"` DÈS LE DÉPART depuis le 6 août 2026, sur retour de
+     Blandine : « il y a encore un flash de la page du tour du monde entre
+     la vidéo qui emmène sur Linguae et le début de la vidéo d'accueil ».
+     Le carnet était l'écran visible par défaut, et `lancerFilm()` ne le
+     masque qu'une fois le script parcouru : entre le premier affichage et
+     cet instant, il se voyait quelques centièmes de seconde. En partant
+     déjà masqué, il ne peut plus apparaître avant l'heure.
+     ⚠️ `terminerOuverture()` retire cette classe — c'est lui qui révèle le
+     carnet à la fin du film. Et le raccourci #sprint/#duel la retire aussi
+     (voir l'IIFE de la présentation), sinon on ressortirait du jeu sur un
+     carnet invisible. -->
+<div id="ouverture" class="joue">
   <div id="ouvFond"><div id="ouvFondImg"></div><div id="ouvFondBrume"></div><div id="ouvFondBas"></div></div>
   <div id="ouvDebut">
     <p class="sur" data-t="voyage1">Hype Linguae · Voyage 1</p>
     <h1 id="ouvNom">Le tour du monde</h1>
     <p class="sous" data-t="ouvNations">Angleterre · Irlande · Galles · Écosse · France · Espagne · Allemagne</p>
-    <p class="langue" data-t="ouvLangue">— anglais —</p>
+    <!-- ⚠️ La ligne de la langue est un BOUTON depuis le 6 août 2026, sur
+         la question de Blandine : « où est passée la page où on choisit la
+         langue qu'on veut apprendre ? ».
+         Elle n'était accessible qu'à la toute première visite, via l'écran
+         de présentation qui ne se montre qu'une fois. Tant qu'une seule
+         langue était ouverte, personne ne s'en apercevait. Depuis que les
+         six sont ouvertes, il n'y avait plus AUCUN chemin pour en changer.
+         La ligne qui affiche déjà la langue est l'endroit évident. -->
+    <button class="langue" id="ouvLangue" data-t="ouvLangue">— anglais —</button>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1265,6 +1288,35 @@ var ETAPES = [
  {ref:"lexington", ch:"Le haras",      v:"Lexington",   nat:"États-Unis",     h:"17 h 20", ciel:["#0E1620","#C8A46A"], forme:"haras",    souv:"Un numéro de lot",              ic:"dossard"},
  {ref:"spruce",    ch:"Le froid",      v:"Spruce Meadows", nat:"Canada",      h:"18 h 10", ciel:["#0B1420","#8FB4C8"], forme:"lande",    souv:"Une couverture d'hiver",        ic:"seau"}
 ];
+/* ==================================================================
+   TOUTES LES VILLES SONT OUVERTES (7 août 2026)
+
+   Décision de Blandine : « ouvre tout — pour les villes on peut avoir
+   besoin d'étudier un chapitre en particulier qui soit à la fin ».
+
+   AVANT, deux règles se superposaient et se contredisaient :
+     · un déblocage en chaîne, une ville à la fois ;
+     · et un PLANCHER de quatre villes offertes au démarrage.
+   Le plancher était le plus grave : `var FAITS = 4` marquait quatre villes
+   comme FAITES sans qu'elles aient été jouées — elles portaient leur
+   tampon sur le chemin. C'est ce que Blandine a vu sur Lambourn. Une ville
+   marquée faite sans avoir été ouverte, c'est un mensonge de l'interface.
+
+   MAINTENANT, une seule règle : tout est accessible, tout le temps.
+   `FAITS` ne verrouille plus rien. Il ne sert qu'à la TRACE dessinée sur le
+   chemin, et il vaut désormais le nombre réel de chapitres terminés —
+   compté, jamais offert.
+
+   ⚠️ NE PAS RÉINTRODUIRE DE PLANCHER. Si un jour il faut de la
+   progressivité, elle doit se voir dans le niveau affiché (1 · nommer,
+   2 · situer, 3 · dire), pas dans une porte fermée.
+   ================================================================== */
+function villesFaites(){
+  var n=0;
+  ETAPES.forEach(function(e){ if(etatChapitre(e.ref).fini) n++; });
+  return n;
+}
+
 /* ⚠️ LES ETAPES FRANCHIES, gardees sur le telephone depuis le 6 aout 2026.
    Avant, `FAITS` valait 4 en dur et n'etait JAMAIS sauvegarde : a chaque
    rechargement, le voyage repartait a la quatrieme ville, et tout ce qu'on
@@ -1282,13 +1334,15 @@ var FAITS_TOUT = (function(){
 })();
 function chargerFaits(){
   var n = FAITS_TOUT[VOYAGE_LANGUE];
-  FAITS = (typeof n === "number" && n >= 4) ? Math.min(n, ETAPES.length) : 4;
+  /* ⚠️ PLUS DE PLANCHER A QUATRE (7 aout 2026) : la valeur relue n'est
+     qu'une trace de progression, et zero est une valeur legitime. */
+  FAITS = (typeof n === "number" && n >= 0) ? Math.min(n, ETAPES.length) : 0;
 }
 function sauverFaits(){
   FAITS_TOUT[VOYAGE_LANGUE] = FAITS;
   try{ localStorage.setItem("hype_lingua_faits", JSON.stringify(FAITS_TOUT)); }catch(e){}
 }
-var FAITS = 4, TRACE = true;
+var FAITS = 0, TRACE = true;
 /* ⚠️ chargerFaits() N'EST PAS APPELE ICI. `VOYAGE_LANGUE` est declaree
    bien plus bas dans ce meme script : a cet endroit elle vaut `undefined`,
    donc on relirait FAITS_TOUT[undefined] et on retomberait toujours sur 4.
@@ -2473,14 +2527,17 @@ function rendu(){
     S("hTitre").textContent=eCh(e);
     S("hVille").textContent=eV(e);
     S("hHeure").textContent=eNat(e)+" · "+T("enRoute")+" "+eH(e);
-    var ouvert=i<=FAITS;
-    S("cta").className=ouvert?"":"verrou";
+    /* ⚠️ Toutes les villes sont accessibles depuis le 7 août 2026 : plus
+       de cadenas, plus de « Termine X d'abord ». */
+    S("cta").className="";
     /* le bouton dit ce qu'on va y trouver, pas seulement où on va :
        les testeurs ne comprenaient pas où était le vocabulaire. */
     var ec=etatChapitre(e.ref);
     var libelle;
-    if(i>FAITS) libelle="Termine "+ETAPES[FAITS].v;
-    else if(ec.total===0) libelle=T(i<FAITS?"revoirV":"arriverV",{v:eV(e)});
+    /* le libellé ne parle plus de verrou mais de ce qu'on y trouve :
+       « Arriver à X » si on n'y est jamais allé, « Revoir X » si le
+       chapitre est terminé. */
+    if(ec.total===0) libelle=T(etatChapitre(e.ref).fini?"revoirV":"arriverV",{v:eV(e)});
     else if(ec.acquis===0) libelle=T("vMots",{v:eV(e),n:ec.total});
     else if(souvenirObtenu(e.ref)) libelle=T("vFini",{v:eV(e)});
     else libelle=T("vSurN",{v:eV(e),a:ec.acquis,n:ec.total});
@@ -2495,7 +2552,11 @@ window.addEventListener("resize",mesurer);
 mesurer(); dessinerTrace(); dessinerJalons(); affiner(0); rendu();
 
 S("bApercu").addEventListener("click",function(){
-  FAITS=(FAITS===ETAPES.length)?4:ETAPES.length; sauverFaits();
+  /* ⚠️ Ce bouton servait a TOUT DEVERROUILLER d'un tap. Depuis le 7 aout
+     tout est ouvert : il ne sert plus qu'a visualiser la trace complete du
+     chemin, sans rien debloquer. Il ne sauvegarde donc plus — il ne doit
+     pas faire croire a une progression qui n'existe pas. */
+  FAITS=(FAITS===ETAPES.length)?villesFaites():ETAPES.length;
   this.textContent=FAITS+" / "+ETAPES.length;
   dessinerTrace(); dessinerJalons(); lastI=-1; });
 S("bTrace").addEventListener("click",function(){
@@ -2723,6 +2784,8 @@ S("cta").addEventListener("click",function(){
      encore atteinte, il n'y avait plus qu'à faire glisser le doigt
      horizontalement — ce que Safari interprète comme son geste de retour.
      Il ramène donc à l'étape en cours, celle qu'il désigne. */
+  /* ⚠️ La classe `verrou` n'est plus jamais posée depuis le 7 août 2026.
+     Le test reste, inoffensif, pour le cas où un ancien état traînerait. */
   if(this.className==="verrou"){ allerA(FAITS); return; }
   ouvrirArrivee(courant); });
 
@@ -2894,14 +2957,33 @@ function departDuJoueur(){
   return DEPART_DEFAUT;
 }
 
+/* ⚠️ LES TROIS ÉTATS ONT CHANGÉ DE SENS le 7 août 2026, puisque plus rien
+   n'est verrouillé :
+     · FAITE       — le chapitre est terminé
+     · OUVERTE     — commencée : au moins un mot su
+     · À DÉCOUVRIR — jamais touchée. Ce n'est plus « fermée », c'est
+                     « pas encore visitée » — ce que le mot dit d'ailleurs.
+   Les quatre filtres du globe gardent donc tout leur sens. */
 function etatPourGlobe(){
   var faites=[], ouvertes=[];
   ETAPES.forEach(function(e,i){
-    if(etatChapitre(e.ref).fini) faites.push(e.ref);
-    else if(i<=FAITS) ouvertes.push(e.ref);
+    var ec=etatChapitre(e.ref);
+    if(ec.fini) faites.push(e.ref);
+    else if(ec.acquis > 0) ouvertes.push(e.ref);
+  });
+  /* ⚠️ LE NIVEAU PART AUSSI VERS LE GLOBE depuis le 7 août 2026, sur
+     demande de Blandine : « pense à préciser à côté les thèmes et niveau de
+     difficulté ». Le thème y était déjà (c'est le champ `region` de chaque
+     point, alimenté par le chapitre). Le niveau, non : le globe ne
+     connaissait pas `NIVEAU_VILLE`. On le lui envoie, avec son nom traduit,
+     plutôt que de dupliquer la table là-bas. */
+  var niveaux={};
+  ETAPES.forEach(function(e){
+    var n=niveauVille(e.ref);
+    niveaux[e.ref]={ n:n, nom:T("niveauNom"+n) };
   });
   return { t:"linguae-etat", faites:faites, ouvertes:ouvertes, depart:departDuJoueur(),
-           reco:PROCHAINE_RECOMMANDEE };
+           niveaux:niveaux, reco:PROCHAINE_RECOMMANDEE };
 }
 
 function ouvrirGlobe(){
@@ -2954,7 +3036,8 @@ function ouvrirCollection(){
       f.contentWindow.postMessage({t:"hype-lang", l:langueUI()}, "*");
       var villes = ETAPES.map(function(e,i){
         var etc = etatChapitre(e.ref);
-        var statut = (i > FAITS) ? "D" : (carteObtenue(e.ref) ? "F" : "O");
+        var ec = etatChapitre(e.ref);
+        var statut = ec.fini ? "F" : (ec.acquis > 0 ? "O" : "D");
         var v = VILLES[e.ref] || {};
         return {
           ref: e.ref, nom: eV(e), nation: eNat(e), chapitre: eCh(e),
@@ -2998,9 +3081,10 @@ window.addEventListener("message", function(ev){
      On ouvre directement l'ARRIVÉE — vidéo, carte postale, lettre, puis
      la leçon. C'est ce que le rail faisait, en un geste au lieu d'un
      glissement à l'aveugle. */
-  var k = (i > FAITS) ? FAITS : i;
-  allerA(k);
-  ouvrirArrivee(k);
+  /* ⚠️ Plus de repli sur la derniere ville accessible : elles le sont
+     toutes. On va exactement ou le joueur a touche. */
+  allerA(i);
+  ouvrirArrivee(i);
 });
 
 /* les points du bas deviennent une vraie navigation */
@@ -4296,7 +4380,6 @@ function filsDeSortie(ref){
   var pays=[], theme=[];
   ETAPES.forEach(function(e,k){
     if(k === moi) return;
-    if(k > FAITS) return;                        /* pas encore accessible */
     if(etatChapitre(e.ref).fini) return;         /* déjà faite */
     if(e.nat === eMoi.nat) pays.push({i:k, e:e});
     var communs = fichiersDe(e.ref).filter(function(f){ return mesFichiers.indexOf(f) >= 0; });
@@ -4964,6 +5047,13 @@ function montrerDest(){
       VOYAGE_LANGUE = D.lg;
       chargerMaitrise();          /* chaque langue a sa propre maîtrise */
       chargerFaits();             /* et son propre avancement */
+      /* ⚠️ AJOUTE le 6 aout 2026. Choisir une langue changeait bien
+         VOYAGE_LANGUE, mais rien ne redessinait l'ecran : la ligne du
+         carnet continuait d'annoncer « — anglais — » apres avoir choisi
+         l'italien, et le titre du document aussi. Le defaut ne se voyait
+         pas tant qu'on ne pouvait choisir qu'une fois, a la premiere
+         visite, avant meme d'avoir vu le carnet. */
+      try{ appliquerLangue(); }catch(e){}
       S("dest").classList.remove("on");
       try{ localStorage.setItem("hype_lingua_voyage", D.cle); }catch(e){}
       /* Premiere visite : c'est ici que le film s'enchaine. Il ne pouvait
@@ -5008,24 +5098,42 @@ function montrerDest(){
    relecture du voyage ci-dessus. Et il faut redessiner, parce que le
    chemin et ses jalons ont deja ete traces avec la valeur par defaut. */
 try{
+  /* ⚠️ On RECOMPTE au lieu de faire confiance au magasin : la maitrise est
+     la seule source de verite, et elle est elle-meme rangee par langue.
+     `chargerFaits()` reste utile comme valeur de secours si le recompte
+     echoue (lexiques pas encore charges). */
   chargerFaits();
+  try{ var n=villesFaites(); if(n!==FAITS){ FAITS=n; sauverFaits(); } }catch(e2){}
   if(S("bApercu")) S("bApercu").textContent = FAITS+" / "+ETAPES.length;
   dessinerTrace(); dessinerJalons(); lastI=-1;
 }catch(e){}
 
 S("inSuite").addEventListener("click", montrerDest);
+/* le carnet renvoie au choix de la langue */
+if(S("ouvLangue")) S("ouvLangue").addEventListener("click", montrerDest);
 S("dsRetour").addEventListener("click", function(){
   S("dest").classList.remove("on"); montrerIntro();
 });
 
-/* La présentation ne se voit qu'une fois. Le choix de destination reste
-   accessible par le bouton de retour du carnet de route. */
+/* La présentation ne se voit qu'une fois.
+   ⚠️ CE COMMENTAIRE ÉTAIT FAUX et il a induit en erreur : il affirmait que
+   « le choix de destination reste accessible par le bouton de retour du
+   carnet de route ». C'est inexact — le bouton de retour ramène AU carnet,
+   il n'y a jamais mené au choix de la langue. Le choix n'était donc
+   joignable qu'à la première visite, et plus jamais ensuite.
+   Depuis le 7 août 2026, la vraie porte est la ligne de langue du carnet
+   (#ouvLangue), qui appelle montrerDest(). */
 (function(){
   /* tout raccourci de jeu passe devant : on vient jouer, pas lire.
      Le garde-fou ne testait que #sprint — avec #duel=… la présentation
      se réaffichait PAR-DESSUS le duel et interceptait les taps. */
   var h=location.hash||"";
-  if(h==="#sprint" || h.indexOf("#duel=")===0) return;
+  if(h==="#sprint" || h.indexOf("#duel=")===0){
+    /* le carnet part masque (voir son `class="joue"`) : sans ca, en
+       fermant le sprint on tomberait sur un ecran vide. */
+    S("ouverture").classList.remove("joue");
+    return;
+  }
   var vu=false;
   try{ vu = localStorage.getItem("hype_lingua_intro")==="1"; }catch(e){}
   if(!vu){
@@ -5205,11 +5313,18 @@ function finDepart(){
      dix-huit d'entre elles etaient DEFINITIVEMENT inatteignables : meme en
      jouant parfaitement, on ne debloquait jamais au-dela de la dixieme.
      Le meme dix bloquait le defilement du chemin. */
-  if(courant===FAITS && FAITS<ETAPES.length){
-    FAITS++; sauverFaits(); S("bApercu").textContent=FAITS+" / "+ETAPES.length;
+  /* ⚠️ REECRIT le 7 aout 2026. Avant, FAITS s'incrementait quand on
+     traversait la ville frontiere — donc il mesurait l'avancee du DEPLACEMENT.
+     Puisque tout est ouvert, il n'y a plus de frontiere : FAITS devient le
+     nombre reel de chapitres TERMINES, recompte a chaque retour. La trace
+     dessinee sur le chemin dit donc enfin la verite. */
+  var n = villesFaites();
+  if(n !== FAITS){
+    FAITS = n; sauverFaits();
+    if(S("bApercu")) S("bApercu").textContent = FAITS+" / "+ETAPES.length;
     dessinerTrace(); dessinerJalons(); lastI=-1;
-    if(courant+1<ETAPES.length) rail.scrollTo({left:(courant+1)*W, behavior:"smooth"});
   }
+  if(courant+1<ETAPES.length) rail.scrollTo({left:(courant+1)*W, behavior:"smooth"});
 }
 S("dpSuite").addEventListener("click",finDepart);
 S("dpPasser").addEventListener("click",finDepart);
