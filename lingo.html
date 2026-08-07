@@ -1117,7 +1117,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v2 · 7 août</p>
+    <p id="ouvVersion">v3 · 7 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1288,7 +1288,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=2";
+var VER = "?v=3";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -3122,7 +3122,10 @@ function souvenirObtenu(ref){
    ecrite le 6 aout. Les suivantes en couleurs normales feront de meme :
    la liste va s'allonger, c'est prevu et c'est sain. */
 var TITRE_SOMBRE = ["warendorf","jerez","oliva","lamotte",
-                    "saumur","aachen","vejer","rome","hickstead","newmarket"];
+                    "saumur","aachen","vejer","rome","hickstead","newmarket",
+                    /* mesures du 7 aout, lot edimbourg + buenos :
+                       tiers haut 111,9 et 153,1 — toutes deux claires. */
+                    "edimbourg","buenos"];
 /* ⚠️ `vejer` etait DEJA dans cette liste, et sa nouvelle carte le confirme :
    son tiers superieur passe de 110 a 140,9 de luminance. Rien a changer,
    mais la mesure a ete refaite comme la regle l'exige a chaque

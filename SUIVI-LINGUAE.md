@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 129)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 130)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -35,12 +35,12 @@
 
 **Elle refait les 29 cartes postales en couleurs normales.** L'ancien prompt imposait une palette dorée unique — excellente pour un clip de cinq plans, désastreuse pour 29 cartes vues côte à côte. Le nouveau prompt donne **une lumière par ville** (`hype-linguae-prompt-cartes.txt`).
 
-**Faites et livrées** : Rome, Hickstead, Vejer, Newmarket *(mais Newmarket avait déjà une belle carte — c'est mon inventaire erroné qui l'a envoyée la refaire ; il lui suffit de ne pas pousser la mienne)*.
+**Faites et livrées** : Rome, Hickstead, Vejer, Newmarket, Édimbourg, Buenos Aires *(mais Newmarket avait déjà une belle carte — c'est mon inventaire erroné qui l'a envoyée la refaire ; il lui suffit de ne pas pousser la mienne)*.
 
 ### Le geste à répéter à chaque carte reçue — il ne s'improvise pas
 1. **`carte-<ville>.webp`** — 900×1200, qualité webp 72 à 82. Au-delà de 180 Ko, descendre à 72 : mesuré, l'écart est de 2,3/255 à la taille d'affichage réelle (348 px), soit le seuil de perception. En dessous de 72, on ne gagne plus rien.
 2. **`fond-<ville>.webp`** — 420×560, flou gaussien 14, puis assombrissement **par itération** jusqu'à une luminance moyenne ≤ 42. Le facteur varie de 0,25 à 0,95 selon l'image : ne jamais le fixer d'avance.
-3. **Mesurer le tiers supérieur de la carte.** Au-dessus de 100 de luminance → ajouter la ville dans **`TITRE_SOMBRE`**, sinon le titre crème est illisible. Déjà dedans : warendorf, jerez, oliva, lamotte, saumur, aachen, vejer, rome, hickstead, newmarket.
+3. **Mesurer le tiers supérieur de la carte.** Au-dessus de 100 de luminance → ajouter la ville dans **`TITRE_SOMBRE`**, sinon le titre crème est illisible. Déjà dedans : warendorf, jerez, oliva, lamotte, saumur, aachen, vejer, rome, hickstead, newmarket, edimbourg, buenos.
 4. **Incrémenter `VER` et le marqueur de version.**
 
 ⚠️ **Format** : les cartes sont en **3:4 portrait**. Les siennes le sont déjà. Si une arrive en carré ou en paysage, on peut la **prolonger** (échantillonner la couleur du bord et fondre vers le noir) plutôt que la rogner — fait pour les deux fonds d'écran d'entrée, 429 et 624 px ajoutés, couture invisible. Ne marche que si les bords sont sombres.
@@ -100,6 +100,33 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🖼️ SESSION 130 · LINGUAE (07/08) — ÉDIMBOURG ET BUENOS AIRES, ET LA PAGE FANTÔME NOMMÉE
+
+Deux cartes reçues (générées en 2:3, 1024×1536), traitées selon le geste établi.
+
+### ✅ Édimbourg — Calton Hill, recadrée par le haut
+Le 3:4 impose de perdre 171 px : pris **dans le ciel**, pas dans les sabots. Le cheval noir garde ses quatre membres, le château et la tour de l'horloge restent au centre. `carte-edimbourg.webp` 148 Ko (q82) · `fond-edimbourg.webp` facteur 0,60, luminance 41,0.
+Tiers supérieur **111,9** → `edimbourg` ajoutée à `TITRE_SOMBRE`.
+
+### ✅ Buenos Aires — même recadrage, même raison
+171 px pris dans le ciel : le cheval bai gagne en taille relative, la skyline et le port restent identifiables. `carte-buenos.webp` 150 Ko (q82) · `fond-buenos.webp` facteur 0,42, luminance 41,3.
+Tiers supérieur **153,1** → `buenos` ajoutée à `TITRE_SOMBRE`.
+⚠️ Fidélité au chapitre (« Le polo ») : la carte montre la ville, pas le polo. Signalé à Blandine, qui tranche — la règle « le lieu qu'on veut garder en photo » plaide pour la garder.
+
+### ✅ `VER` passe à `?v=3`, marqueur `v3 · 7 août`
+Le geste de livraison obligatoire, appliqué.
+
+### 📌 La page vide de sa capture : c'est le RESTE DU CHEMIN D'UNE NUIT
+Blandine : « cette page c'est quoi ». C'est `#scene` — l'écran-racine du module, celui du chemin côtier abandonné le 4 août. Le globe l'a remplacé mais l'écran est resté : il ne porte plus que trois boutons (Le globe · La collection · Sprint) sur le fond flou en dur (`fond-newmarket.webp`, point 4 de la passation). Rien n'est cassé, mais rien n'y vit. **À trancher par Blandine** : soit on l'habille (le fond du carnet prévu au point 4, plus un état d'accueil), soit on le court-circuite pour ouvrir directement le carnet ou le globe.
+
+### Contrôles passés
+Patch Python ancre par ancre (écriture après chaque remplacement) · contrôle de tous les blocs `<script>` : 1 bloc non vide, OK · mesures de luminance faites au script, jamais à l'œil.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 
