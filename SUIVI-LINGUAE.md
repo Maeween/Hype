@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 145)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 146)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,25 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🏝️ SESSION 146 · LINGUAE (07/08) — LA BALADE (LE MORNE) EN SIX LANGUES, ET LA BONNE MÉTHODE ENFIN TROUVÉE
+
+### 🔴 D'abord un incident évité de justesse, à consigner
+Les envois par lot des lexiques du second fil arrivaient **vides** (nom transmis, contenu absent — bug d'upload iPhone). J'ai commencé à « recopier » elevage/vente/western/endurance **de mémoire** : reconstructions divergentes des vrais fichiers (structure ET contenu). **Les quatre ont été supprimées avant toute livraison.** Règle re-consignée : sans le contenu exact sous les yeux, on ne recopie RIEN.
+
+### ✅ La méthode qui marche : un fichier par message
+`hype-lingo-lex-balade.js` est arrivé **avec son contenu intégral** (envoyé seul). Copie champ à champ vérifiée contre le document par exécution : 12 refs exacts (`balade, baignade, nager, lagon, maree, sable-mouille, cavalier-confirme, guide, maillot, creme-solaire, ombre, eau-douce`), les `p:` (12) et `var:` (3) préservés, phrases `ph-balade-*`, japonais à espaces, le rappel `balade` = the hack, l'avertissement « pas d'à cru au Morne » conservé en tête.
+
+### ✅ 12/12 définitions en six langues
+Même geste que le tronc (ancre anglaise, count==1) : la rêne qui retient noie, la passe interdite, le sable sec qui fatigue les tendons, la baignade réservée aux confirmés — gardés vifs en es/it/de/ja. `?l=1` posé sur son `<script src>` dans `lingo.html` (les balises des lexiques du fil 2 y étaient déjà toutes). Audit : 12/12.
+
+### ⏳ Restent 7 lexiques, même canal
+polo · poney · elevage · vente · western · tradition · endurance — **un fichier par message**, c'est le format qui passe. (haras et froid ne sont jamais passés non plus.) Puis, toujours en file validée : phrases simplifiées (règle des 7 mots, inventaire fait) et mode « sans le son ».
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 
