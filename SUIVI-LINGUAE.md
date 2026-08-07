@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 142)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 143)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,27 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 📚 SESSION 143 · LINGUAE (07/08) — LE CHANTIER DES DÉFINITIONS EST TERMINÉ : 406 NOTES EN SIX LANGUES
+
+« Continue jusqu'au bout sans attendre mon retour, signale-moi quand c'est fini » — fait, en une traite : les huit lexiques restants (écurie, pansage, cheval, matériel, cours, dressage, obstacle, concours) rejoignent urgences et arrivée.
+
+### ✅ 406/406 — audit final par exécution des dix fichiers
+urgences 42 · arrivée 28 · écurie 42 · pansage 42 · cheval 42 · matériel 42 · cours 42 · dressage 42 · obstacle 42 · concours 42 — chaque note vérifiée porteuse des six langues (fr/en/es/it/de/ja), `node --check` sur chaque fichier après patch. Geste inchangé de bout en bout : ancre sur la définition anglaise exacte, `count==1`, écriture après chaque remplacement. Les pièges gardés vifs dans chaque langue, jamais affadis : Kardätsche/Wurzelbürste, der Schweif, casco double sens, hands 16.2, foal/colt/filly, the ride = le groupe, go large, Trense/Kandare, Fessel/Fesselgelenk, l'échelle allemande Takt→Versammlung citée telle quelle, Durchlässigkeit dans les phrases anglaises, shadbelly, die Kür, camp draft, four faults, the tannoy, Hals- und Beinbruch / in bocca al lupo…
+
+### ✅ Caches
+Les dix `<script src>` incrémentés dans `lingo.html` : écurie/pansage/cours passent à `?l=1`, cheval/matériel/dressage/obstacle/concours à `?l=2` (ils portaient déjà `?l=1` depuis la session 134), arrivée/urgences déjà faits en 141-142. Marqueur inchangé : **v12** (aucun changement visuel).
+
+### 🎨 En parallèle : le nom du module
+Blandine garde **« Ride the world »** en signature mais cherche encore le nom. Pistes proposées (voir la réponse du jour) : **Hype Atlas** (recommandation — un mot, universel, l'objet noble qu'on ouvre), **Hype Grand Tour** (l'héritage du voyage aristocratique d'apprentissage), **Hype Passeport** (double sens équestre). Décision à elle ; « Hype Linguae » reste en place tant que rien n'est tranché.
+
+### ⏳ Ce qui reste au-delà (inchangé)
+Défs des 8 lexiques de l'autre fil (balade, polo, poney, élevage, vente, western, tradition, endurance) + haras/froid quand les fichiers repasseront · fonds + `TITRE_SOMBRE` des cartes par lots de 6 · mp4 d'arrivée pour extraction ffmpeg · verdict fond vivant v12 · 3 refs partagés + niveau à trancher · ~112 // ?? à faire relire.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 
