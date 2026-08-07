@@ -124,8 +124,18 @@ window.HYPE_LINGO_LEX.endurance = {
   { ref:"abandon", lecon:1, coll:"endurance",
     mots:{ fr:{m:"l'abandon"}, en:{m:"to retire", p:"ri-taï-eur"},
            es:{m:"la retirada"}, it:{m:"il ritiro"},
-           de:{m:"der Aufgabe", p:"aouf-ga-be", var:"aufgeben"},
-           ja:{m:"リタイア", p:"ritaia"} },
+           /* ⚠️ ALIGNE SUR hype-lingo-lex-obstacle.js le 6 aout 2026 : cette
+              entree porte le meme `ref` que celle du chapitre obstacle, donc
+              c'est un RAPPEL et les mots doivent etre identiques. J'avais
+              ecrit « der Aufgabe », qui est en plus faux — Aufgabe est
+              feminin, et la forme juste est le verbe substantive neutre
+              « das Aufgeben », deja utilisee dans l'autre fichier. */
+           de:{m:"das Aufgeben", p:"aouf-gué-beune"},
+           /* ⚠️ le japonais aussi doit correspondre a l'entree du chapitre
+              obstacle : 棄権 (kiken), et non リタイア. Meme `ref` = memes mots,
+              sinon l'exercice teste une traduction que le joueur n'a jamais
+              vue. Trouve par le controle automatique, langue par langue. */
+           ja:{m:"棄権", p:"kiken"} },
     def:{ fr:"Arrêter avant la fin. ⚠️ En endurance ce n'est pas un échec mais une décision de soin, et la culture de la discipline le respecte. L'anglais distingue « to retire », choisi par le cavalier, de « to be eliminated », décidé par le jury.",
           en:"Stopping before the end. In endurance this is not a failure but a care decision, and the sport's culture respects it. English separates « to retire », the rider's choice, from « to be eliminated », the jury's." } },
 

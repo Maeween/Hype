@@ -1091,6 +1091,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      objets. Et le seul ou deux mots francais distincts se confondent en
      anglais : `le salut` et `l'arc` sont tous deux « bow ». -->
 <script src="hype-lingo-lex-tradition.js"></script>
+<!-- Le western : chapitre cree le 6 aout 2026 pour Tamworth (Australie).
+     ⚠️ L'anglais d'ici n'est PAS celui des autres villes : le troupeau se
+     dit « the mob », le rassemblement « the muster », les parcs « the
+     yards » toujours au pluriel. Un cavalier qui ne connait que l'anglais
+     des ecuries britanniques ne comprendra pas une phrase de Tamworth.
+     C'est le sujet du chapitre. -->
+<script src="hype-lingo-lex-western.js"></script>
 <!-- Le polo : chapitre cree le 6 aout 2026 pour Buenos Aires.
      ⚠️ Trois faux amis dans les cinq premiers mots : la periode se dit
      chukka, la monte se dit pony (et ce n'est pas un poney), le handicap
@@ -1242,6 +1249,12 @@ var ETAPES = [
     chapitre n'enseigne pas des objets mais des conventions, et un mot mal
     placé y est une impolitesse plutôt qu'une faute. */
  {ref:"tokyo",     ch:"La tradition",  v:"Tokyo",       nat:"Japon",          h:"14 h 30", ciel:["#141018","#E2A6B4"], forme:"village",  souv:"Une flèche de yabusame",        ic:"fanion"},
+ /* ⚠️ TAMWORTH ajoutee le 6 aout 2026 : elle remplit le dernier creneau
+    reserve, a 15 h 40. LES VINGT-NEUF ETAPES PREVUES SONT ECRITES.
+    ⚠️ Le western n'existait nulle part dans les 378 mots d'origine — ni la
+    selle a corne, ni le troupeau, ni le tri, ni la monte a une main.
+    C'etait le plus gros angle mort du module. */
+ {ref:"tamworth",  ch:"Le western",    v:"Tamworth",    nat:"Australie",      h:"15 h 40", ciel:["#141110","#D98F4A"], forme:"lande",    souv:"Une corde tressee",             ic:"licol"},
  {ref:"buenos",    ch:"Le polo",       v:"Buenos Aires",nat:"Argentine",      h:"16 h 30", ciel:["#101812","#D9A055"], forme:"lande",    souv:"Un maillet de bambou",          ic:"alene"},
  /* ⚠️ LEXINGTON et SPRUCE MEADOWS ajoutées le 6 août 2026, étapes 27 et 28.
     ⚠️ IL RESTE UN CRÉNEAU À 15 h 40 pour Tamworth, entre Tokyo et Buenos
@@ -1317,6 +1330,7 @@ var I18N_H = {
  "11 h 05":{en:"11.05 am",es:"11:05", it:"11:05", de:"11:05 Uhr", ja:"11時5分"},
  "11 h 20":{en:"11.20 am",es:"11:20", it:"11:20", de:"11:20 Uhr", ja:"11時20分"},
  "14 h 30":{en:"2.30 pm", es:"14:30", it:"14:30", de:"14:30 Uhr", ja:"14時30分"},
+ "15 h 40":{en:"3.40 pm", es:"15:40", it:"15:40", de:"15:40 Uhr", ja:"15時40分"},
  "16 h 30":{en:"4.30 pm", es:"16:30", it:"16:30", de:"16:30 Uhr", ja:"16時30分"},
  "17 h 20":{en:"5.20 pm", es:"17:20", it:"17:20", de:"17:20 Uhr", ja:"17時20分"},
  "18 h 10":{en:"6.10 pm", es:"18:10", it:"18:10", de:"18:10 Uhr", ja:"18時10分"},
@@ -1743,6 +1757,25 @@ var RECITS = {
   ja:["馬場の端に座らされ、何も説明されなかった。",
       "一時間もすると、ひと言も交わさぬまま順番が分かっていた。",
       {f:"流鏑馬は騎射である。駈歩で走りながら、当たれば割れる木の的を射る。"}]},
+ tamworth:{
+  fr:["On est partis à cinq heures pour aller chercher des bêtes que personne n'avait vues depuis un mois.",
+      "Le cheval savait où elles étaient avant nous.",
+      {f:"Ici le troupeau se dit « the mob » et le rassemblement « the muster » : deux mots qu'un cavalier anglais n'emploierait pas."}],
+  en:["We left at five to fetch cattle nobody had seen for a month.",
+      "The horse knew where they were before we did.",
+      {f:"Here the herd is « the mob » and the roundup is « the muster »: two words an English rider would not use."}],
+  es:["Salimos a las cinco a buscar animales que nadie había visto en un mes.",
+      "El caballo sabía dónde estaban antes que nosotros.",
+      {f:"Aquí la manada se dice « the mob » y la junta « the muster »: dos palabras que un jinete inglés no usaría."}],
+  it:["Siamo partiti alle cinque per andare a prendere bestie che nessuno vedeva da un mese.",
+      "Il cavallo sapeva dov'erano prima di noi.",
+      {f:"Qui la mandria si dice « the mob » e il raduno « the muster »: due parole che un cavaliere inglese non userebbe."}],
+  de:["Wir sind um fünf losgeritten, um Tiere zu holen, die seit einem Monat niemand gesehen hatte.",
+      "Das Pferd wusste vor uns, wo sie waren.",
+      {f:"Hier heißt die Herde « the mob » und das Zusammentreiben « the muster »: zwei Wörter, die ein englischer Reiter nicht benutzen würde."}],
+  ja:["一か月だれも見ていない牛を探しに、五時に出発した。",
+      "どこにいるかを、馬は私たちより先に知っていた。",
+      {f:"ここでは群れを « the mob »、追い集めを « the muster » と言う。イギリスの騎手なら使わない二つの言葉だ。"}]},
  buenos:{
   fr:["Huit chevaux pour un seul joueur, et il en change toutes les sept minutes.",
       "Personne ne regarde la balle. Tout le monde regarde la ligne qu'elle a prise.",
@@ -2080,6 +2113,12 @@ var POURQUOI = {
   it:"Tiro con l'arco a cavallo in un santuario, e settimane a guardare prima di poter fare.",
   de:"Bogenschießen zu Pferd in einem Schrein, und Wochen des Zusehens, bevor man tun darf.",
   ja:"神社で行われる騎射。そして、やることを許されるまでの、見るだけの数週間。"},
+ tamworth:{fr:"Des chevaux qui travaillent le bétail, et un anglais que Newmarket ne comprendrait pas.",
+  en:"Horses that work cattle, and an English that Newmarket would not follow.",
+  es:"Caballos que trabajan el ganado, y un inglés que Newmarket no entendería.",
+  it:"Cavalli che lavorano il bestiame, e un inglese che Newmarket non capirebbe.",
+  de:"Pferde, die mit dem Vieh arbeiten, und ein Englisch, dem Newmarket nicht folgen würde.",
+  ja:"牛を相手に働く馬たち。そしてニューマーケットには通じない英語。"},
  buenos:{fr:"Quatre cavaliers, huit chevaux chacun, et une seule règle qui compte : la ligne de balle.",
   en:"Four riders, eight horses each, and one rule that matters: the line of the ball.",
   es:"Cuatro jinetes, ocho caballos cada uno, y una sola regla que cuenta: la línea de la bocha.",
@@ -2234,7 +2273,7 @@ var NIVEAU_VILLE = {
   labaule:1, maurice:1, newmarket:1, lambourn:1, connemara:1, walsall:1, aberystwyth:1,
   kildare:1, jerez:1, vejer:1,
   hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
-  warendorf:2, aachen:2, lamotte:2, golega:2, dubai:2, lexington:2, spruce:1, buenos:2,
+  warendorf:2, aachen:2, lamotte:2, golega:2, dubai:2, lexington:2, spruce:1, buenos:2, tamworth:2,
   saumur:3, edimbourg:3, verone:3, tokyo:3
 };
 function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
@@ -3061,6 +3100,7 @@ var ETAPE_SRC = {
   verone:      [["vente",1]],
   dubai:       [["endurance",1]],
   tokyo:       [["tradition",1]],
+  tamworth:    [["western",1]],
   buenos:      [["polo",1]],
   lexington:   [["haras",1]],
   spruce:      [["froid",1]],
@@ -3668,6 +3708,8 @@ var COLL_NOM = {
     it:"La tradizione", de:"Die Tradition", ja:"伝統"},
   polo:{fr:"Le polo", en:"Polo", es:"El polo", it:"Il polo",
     de:"Das Polo", ja:"ポロ"},
+  western:{fr:"Le western", en:"Western riding", es:"La monta western",
+    it:"L'equitazione western", de:"Westernreiten", ja:"ウエスタン"},
   corps:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体"},
   etat:{fr:"L'état du poil", en:"The state of the coat", es:"El estado de la capa",
         it:"Lo stato del mantello", de:"Der Zustand des Fells", ja:"毛の状態"},
@@ -3719,6 +3761,7 @@ var ACCUEIL_CHAP = {
      Trouvé en ajoutant le chapitre du Morne. */
   arrivee:{fr:"Arriver quelque part et demander un cheval : réserver, dire son niveau, comprendre le tarif.", en:"Arriving somewhere and asking for a horse: booking, stating your level, understanding the price.", es:"Llegar a un sitio y pedir un caballo: reservar, decir tu nivel, entender el precio.", it:"Arrivare in un posto e chiedere un cavallo: prenotare, dire il proprio livello, capire il prezzo.", de:"Irgendwo ankommen und nach einem Pferd fragen: buchen, sein Können nennen, den Preis verstehen.", ja:"どこかに着いて、馬を頼む。予約する、自分の技量を伝える、料金を理解する。"},
   tradition:{fr:"Ce qui ne s'écrit nulle part : le salut, l'ordre, le silence, observer avant de faire.", en:"What is written nowhere: the bow, the order, the silence, watching before doing.", es:"Lo que no está escrito en ninguna parte: el saludo, el orden, el silencio, observar antes de hacer.", it:"Quello che non è scritto da nessuna parte: il saluto, l'ordine, il silenzio, osservare prima di fare.", de:"Was nirgends geschrieben steht: die Verbeugung, die Reihenfolge, die Stille, zusehen, bevor man tut.", ja:"どこにも書かれていないこと。お辞儀、順番、静けさ、そしてやる前に見ること。"},
+  western:{fr:"Le travail du bétail : la selle à corne, la corde, le troupeau, le tri, la monte à une main.", en:"Working cattle: the saddle horn, the rope, the mob, the cutting, neck reining.", es:"El trabajo del ganado: la perilla, la cuerda, la manada, el aparte, montar a una mano.", it:"Il lavoro del bestiame: il pomo, la corda, la mandria, la separazione, montare a una mano.", de:"Die Arbeit mit dem Vieh: das Sattelhorn, das Seil, die Herde, das Aussortieren, einhändig reiten.", ja:"牛を扱う仕事。ホーン、ロープ、群れ、仕分け、片手手綱。"},
   polo:{fr:"Le polo, et ses faux amis : la période se dit chukka, et la monte se dit pony.", en:"Polo and its false friends: the period is a chukka, and the horse is a pony.", es:"El polo y sus falsos amigos: el período es un chukker y la montura es un pony.", it:"Il polo e i suoi falsi amici: il periodo è un chukker e il cavallo è un pony.", de:"Polo und seine falschen Freunde: die Periode heißt Chukker, das Pferd heißt Pony.", ja:"ポロと、その空似言葉。ピリオドはチャッカ、馬はポニーと呼ばれる。"},
   haras:{fr:"Le haras et la vente : le lot, l'enchère, le pedigree, le yearling, la jument suitée.", en:"The stud farm and the sale: the lot, the bidding, the pedigree, the yearling, the mare with a foal at foot.", es:"La yeguada y la subasta: el lote, la puja, el pedigrí, el yearling, la yegua con rastra.", it:"L'allevamento e l'asta: il lotto, il rilancio, il pedigree, il puledro di un anno, la fattrice con puledro.", de:"Das Gestüt und die Auktion: das Los, das Gebot, die Abstammung, der Jährling, die Stute mit Fohlen.", ja:"牧場と競売。上場番号、入札、血統書、一歳馬、子付き牝馬。"},
   froid:{fr:"L'hiver à l'écurie : le gel, la glace, le sol gelé, la couverture, l'abreuvoir à casser.", en:"Winter in the yard: the frost, the ice, the frozen ground, the rug, the trough to break.", es:"El invierno en la cuadra: la helada, el hielo, el suelo helado, la manta, el bebedero que hay que romper.", it:"L'inverno in scuderia: il gelo, il ghiaccio, il terreno gelato, la coperta, l'abbeveratoio da rompere.", de:"Winter im Stall: der Frost, das Eis, der gefrorene Boden, die Decke, die Tränke, die aufgebrochen werden muss.", ja:"厩舎の冬。霜、氷、凍った地面、馬着、割らなければならない水桶。"},

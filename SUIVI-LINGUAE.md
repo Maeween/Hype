@@ -22,6 +22,55 @@
 
 ---
 
+## 🤠 SESSION 118 · LINGUAE (06/08) — TAMWORTH, LA DERNIÈRE. ET DEUX FAUX RAPPELS DÉMASQUÉS PAR LE SCRIPT
+
+### ✅ Tamworth (Nouvelle-Galles du Sud), étape 26 — LE WESTERN
+`hype-lingo-lex-western.js` : la selle western, la corne, le licol éthologique, la corde, le troupeau, le rassemblement, le tri, le stock horse, monter à une main, les chaps, les parcs à bétail, le chapeau à large bord.
+
+**Le western n'existait nulle part dans les 378 mots d'origine.** Ni la selle à corne, ni le troupeau, ni le tri, ni la monte à une main. Tout le module était écrit pour l'équitation classique européenne : c'était le plus gros angle mort qui restait.
+
+⚠️ **Et l'anglais d'ici n'est pas celui des autres villes** — c'est le sujet du chapitre, pas un détail :
+· le troupeau → **the mob**, et pas « the herd »
+· le rassemblement → **the muster**, mot qu'un Anglais n'emploierait pas
+· les parcs → **the yards**, toujours au pluriel — alors que dans une écurie britannique « the yard » au singulier désigne la cour
+· le chapeau → **an Akubra**, du nom de la marque
+Un cavalier qui ne connaît que l'anglais des écuries britanniques ne comprendrait pas une phrase de Tamworth.
+⚠️ **Relecture par un natif AUSTRALIEN**, pas britannique. `the mob`, `the muster` et `neck reining` en priorité.
+
+Elle remplit le dernier créneau réservé, à **15 h 40**. La suite des heures est complète et croissante de La Baule à Spruce Meadows. **Les vingt-neuf étapes prévues sont écrites.**
+
+### 🔴 Deux FAUX RAPPELS, trouvés par le contrôle automatique et pas à l'œil
+Le script qui compare les `ref` partagés entre les douze lexiques a été étendu : il ne se contente plus de signaler un `ref` en double, **il compare les six traductions**. Il a immédiatement remonté deux cas — **les deux de ma main**.
+
+**1 · `prix` était un faux rappel, et le pire type.** J'avais nommé l'entrée de Vérone `prix` en la présentant comme un rappel de La Baule. Deux fautes : le mot n'est pas à La Baule mais dans le chapitre **concours**, et surtout il n'y désigne **pas la même chose** — là-bas `prix` est l'argent qu'on **gagne** (« the prize money »), à Vérone c'est l'argent qu'on **paie** (« the price »). Aucune langue ne les confond.
+Partager le `ref` aurait fait passer « prize money », su à Badminton, pour « price » acquis à Vérone — et l'exercice aurait testé une traduction que le joueur n'a jamais vue.
+✅ Renommé **`prix-achat`** (« le prix demandé » / « the asking price »), et la définition explique désormais la différence avec le prix d'un concours.
+
+**2 · `abandon` divergeait sur deux langues.** Cette entrée partage volontairement son `ref` avec le chapitre obstacle, mais j'avais écrit `der Aufgabe` en allemand — **faux en plus** (Aufgabe est féminin ; la forme juste est le verbe substantivé neutre `das Aufgeben`, déjà utilisée dans l'autre fichier) — et `リタイア` en japonais là où obstacle dit `棄権`.
+✅ Les deux alignées sur l'entrée existante. Un même `ref` doit porter exactement les mêmes mots, sinon ce n'est pas un rappel mais un piège.
+
+### ⚠️ Et un troisième, antérieur, qui n'est PAS de moi
+`niveau` est partagé entre `arrivee` et `concours` avec **deux allemands différents** : `das Niveau` d'un côté, `die Klasse` de l'autre. Les deux sont défendables — le niveau du cavalier et la catégorie d'une épreuve ne sont pas la même notion — mais alors ce ne devrait pas être le même `ref`. **Rien touché** : c'est du contenu antérieur, et le renommer déplacerait la maîtrise déjà acquise des joueurs. À trancher avec Blandine.
+
+### Contrôles passés
+`verif.py` sur les quatre fichiers · **contrôle des rappels étendu à la comparaison des six traductions**, sur 12 lexiques et 220 mots : deux divergences trouvées, deux corrigées, une signalée · lexique western contrôlé par exécution · 29 étapes, suite des heures relue et croissante · `RECITS` complet sur 29 villes × 6 langues · rendu réel de l'écran d'arrivée de Tamworth avec son clip et sa carte · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **Les lettres et volets de cinq villes** : Lexington, Spruce Meadows, Tokyo, Buenos Aires, Tamworth. Leurs cartes postales s'affichent sans texte au verso.
+2. `lingua-affiche.webp` et le fond du carnet.
+3. Les définitions en quatre langues.
+4. La sécurité (11 mots) attend une ville.
+5. Le `niveau` divergent à trancher.
+
+### 🧭 Préparation Flutter
+- **Le contrôle de contenu a franchi un cap** : il ne vérifie plus la forme (un `ref` en double) mais **le sens** (les six traductions concordent). C'est un test de cohérence sémantique, et il a trouvé deux défauts qu'aucune relecture humaine n'aurait vus — le mot était juste dans les deux fichiers, c'est leur mise en commun qui était fausse.
+- **Une leçon générale** : mes deux erreurs viennent de la même cause, avoir cru me souvenir d'où venait un mot au lieu de vérifier. Le script est plus fiable que ma mémoire du projet, et il coûte deux secondes.
+- **Douzième lexique, aucune fonction touchée.** Le geste d'ajout de ville n'a pas varié depuis Le Morne.
+- **Reste à moderniser** : le « prêt » global, et `niveau` à trancher.
+- **Risques** : le renommage de `prix` en `prix-achat` touche une maîtrise **jamais acquise** — Vérone n'a été écrite qu'aujourd'hui, aucun joueur n'a pu apprendre ce mot. Aucune migration nécessaire.
+
+---
+
 ## 🔓 SESSION 117 · LINGUAE (06/08) — « POURQUOI PLEIN D'ENTRE ELLES NE SONT PAS OUVERTES ? » : QUATRE DÉFAUTS EMPILÉS
 
 Deux questions de Blandine, deux vrais défauts derrière — et un troisième trouvé en corrigeant.

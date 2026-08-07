@@ -44,14 +44,23 @@ window.HYPE_LINGO_LEX.vente = {
 
   /* ============ LEÇON 1 · ACHETER ET VENDRE ============ */
 
-  /* ---- rappel ---- */
+  /* ⚠️ CE N'EST PAS UN RAPPEL, et il a failli en devenir un par erreur.
+     J'avais nomme cette entree `prix` en la presentant comme un rappel de
+     La Baule. Deux fautes : le mot n'est pas a La Baule mais dans le
+     chapitre CONCOURS, et surtout il n'y designe PAS la meme chose — la-bas
+     `prix` est l'argent qu'on GAGNE (« the prize money »), ici c'est
+     l'argent qu'on PAIE (« the price »). Aucune langue ne les confond.
+     Partager le `ref` aurait fait passer « prize money », su a Badminton,
+     pour « price » acquis a Verone, et l'exercice aurait teste la mauvaise
+     traduction. Renomme `prix-achat`, et precise en meme temps.
+     ⚠️ Trouve par le controle automatique des `ref` partages, pas a l'oeil. */
 
-  { ref:"prix", lecon:1, coll:"vente",
-    mots:{ fr:{m:"le prix"}, en:{m:"the price", p:"praïss"},
-           es:{m:"el precio"}, it:{m:"il prezzo"},
-           de:{m:"der Preis", p:"praïss"}, ja:{m:"値段", p:"nedan"} },
-    def:{ fr:"Déjà croisé à La Baule pour un tarif de reprise. Ici il porte sur le cheval entier, et il se discute.",
-          en:"Already met at La Baule for a lesson fee. Here it covers the whole horse, and it is open to discussion." } },
+  { ref:"prix-achat", lecon:1, coll:"vente",
+    mots:{ fr:{m:"le prix demandé"}, en:{m:"the asking price", p:"ass-king praïss"},
+           es:{m:"el precio pedido"}, it:{m:"il prezzo richiesto"},
+           de:{m:"der Kaufpreis", p:"kaouf-praïss"}, ja:{m:"売り値", p:"urine"} },
+    def:{ fr:"Ce que le vendeur annonce, et qui n'est pas ce que tu paieras. ⚠️ À ne pas confondre avec le prix d'un concours, qui est l'argent qu'on gagne : l'anglais dit « the prize money » dans un cas et « the price » dans l'autre.",
+          en:"What the seller asks, which is not what you will pay. Not to be confused with a prize at a show: that is prize money, this is a price." } },
 
   /* ---- entrées neuves, non relues par un natif ---- */
 
