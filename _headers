@@ -24,6 +24,9 @@
 /lingo.html
   Cache-Control: public, max-age=0, must-revalidate
 
+/lingo-globe.html
+  Cache-Control: public, max-age=0, must-revalidate
+
 
 # --------------------------------------------------------------------------
 #  CACHE UN AN, IMMUABLE — contenus adressés par clé, jamais réécrits
@@ -38,6 +41,44 @@
   Cache-Control: public, max-age=31536000, immutable
 
 /images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+
+# --------------------------------------------------------------------------
+#  LINGUAE — ses fichiers vivent A LA RACINE, pas dans images/
+#  C'est le plus gros poste du depot apres l'index : les 19 cartes postales
+#  et les 19 videos d'arrivee ne changent jamais une fois produites.
+#  Sans ces lignes, elles etaient renegociees a chaque ouverture du module.
+# --------------------------------------------------------------------------
+
+/carte-*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/fond-*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/vignette-*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/cheval.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/arrivee-*.mp4
+  Cache-Control: public, max-age=31536000, immutable
+
+/ouverture.mp4
+  Cache-Control: public, max-age=31536000, immutable
+
+/lingo-accueil.mp4
+  Cache-Control: public, max-age=31536000, immutable
+
+/hype-lingo-lex-*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/hype-lingo-villes.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/hype-lingo-villes-monde.js
   Cache-Control: public, max-age=31536000, immutable
 
 
