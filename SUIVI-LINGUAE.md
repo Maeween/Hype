@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 141)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 142)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -107,6 +107,21 @@ Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-m
 
 ---
 
+## 📖 SESSION 142 · LINGUAE (07/08) — LES DÉFINITIONS DE L'ARRIVÉE EN SIX LANGUES
+
+Suite du chantier ouvert en session 141, dans l'ordre du voyage : **le chapitre de l'arrivée** (La Baule, étape 1 — le premier que tout joueur rencontre).
+
+### ✅ 28/28 définitions en es/it/de/ja
+Même geste que les urgences : ancre sur la définition anglaise exacte, `count==1`, écriture après chaque remplacement. Pièges gardés vifs dans chaque langue (canter/gallop, Reitstunde ≠ 60 min, hat ≠ helmet, hack/trail ride, « les échelles ne se traduisent pas »). `node --check` + relecture par exécution : 28/28. `hype-lingo-lex-arrivee.js?l=1` posé dans `lingo.html`.
+
+### ⏳ Restent 8 lexiques ici (~330 notes)
+cheval · concours · cours · dressage · écurie · matériel · obstacle · pansage — 42 chacun, même geste, dans l'ordre du voyage : écurie (Newmarket, étape 4) ensuite.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
+
+---
+
 ## 📖 SESSION 141 · LINGUAE (07/08) — LE CHANTIER DES DÉFINITIONS EST OUVERT : LES URGENCES EN SIX LANGUES
 
 « Continue » — donc le chantier de fond noté à la passation : **les définitions n'existaient qu'en français et en anglais** ; un joueur en allemand, espagnol, italien ou japonais les recevait en français. On commence par **le chapitre OFFERT** (les urgences), celui que tout le monde voit.
@@ -118,7 +133,7 @@ Les 42 notes du lexique `urgences` reçoivent es/it/de/ja, traduites depuis le c
 J'ai affirmé à Blandine que 16 villes n'avaient pas leur carte — **elle les avait toutes faites dans la journée, dans l'autre fil.** Même erreur que Newmarket à la passation : confondre « je ne l'ai pas vu passer ici » avec « ça n'existe pas ». Elle a donné l'adresse du site (`https://majestic-melba-997a68.netlify.app/`), mais l'outil web ne permet pas d'y deviner des adresses de fichiers une à une — l'inventaire du dépôt reste hors de ma portée. **Les 29 cartes existent, point.** Reste leur geste d'accompagnement : `fond-<ville>.webp` + mesure `TITRE_SOMBRE`, par lots de six quand elle enverra les images.
 
 ### ⏳ La suite du chantier des définitions
-~360 notes restantes sur les neuf autres lexiques présents ici (arrivée 28, puis cheval/concours/cours/dressage/écurie/matériel/obstacle/pansage 42 chacun) — même geste, lexique par lexique. Les huit lexiques de ce fil (balade, polo, poney, élevage, vente, western, tradition, endurance, + haras/froid côté dépôt) suivront quand leurs fichiers repasseront.
+~330 notes restantes sur les huit autres lexiques présents ici ( cheval/concours/cours/dressage/écurie/matériel/obstacle/pansage 42 chacun) — même geste, lexique par lexique. Les huit lexiques de ce fil (balade, polo, poney, élevage, vente, western, tradition, endurance, + haras/froid côté dépôt) suivront quand leurs fichiers repasseront.
 
 ### 🧭 Préparation Flutter
 Aucune amélioration d'architecture réalisée sur cette session.
