@@ -1232,7 +1232,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v10 · 7 août</p>
+    <p id="ouvVersion">v11 · 7 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1410,7 +1410,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=10";
+var VER = "?v=11";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -3576,7 +3576,7 @@ function ouvrirCollection(){
           lettre: (v.lettre && v.lettre[langue]) ? v.lettre[langue] : (v.lettre ? v.lettre.fr : [])
         };
       });
-      f.contentWindow.postMessage({t:"linguae-collection", l:langueUI(), villes:villes}, "*");
+      f.contentWindow.postMessage({t:"linguae-collection", l:langueUI(), villes:villes, ver:VER}, "*");
     }catch(e){}
   }
   envoyer();

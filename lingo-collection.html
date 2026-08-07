@@ -161,6 +161,7 @@ var LANG = { fr:{
   vide:"まだ目的地がありません。<br>旅が始まったらまた来てください。"
 }};
 var LL = LANG.fr, LG = "fr";
+var VERSION = "";   /* renseignee par lingo.html (message linguae-collection) */
 
 function tampon(){ return '<div class="tampon">✓</div>'; }
 
@@ -171,17 +172,18 @@ function carteHTML(v){
      tente TOUJOURS de charger l'image et on bascule sur un repli textuel
      seulement si elle échoue vraiment (même principe que « Vidéo
      introuvable » sur l'écran d'arrivée). */
-  wrap.className = 'carte ' + (v.statut==='D' ? 'verrou' : (v.carte ? '' : 'ouverte-seule'));
+  wrap.className = 'carte ' + (v.carte ? '' : 'verrou');
   var recto;
-  if(v.statut==='D'){
+  if(!v.carte){
+    /* pas gagnee = pas d'image, quel que soit l'avancement du chapitre */
     recto = SILH + '<div class="nom">'+v.nom+'</div>';
   } else {
     recto =
-      '<img src="carte-'+v.ref+'.webp" alt="" onerror="'+
+      '<img src="carte-'+v.ref+'.webp'+VERSION+'" alt="" onerror="'+
         "var f=this.closest('.face'); f.classList.add('sansimg'); this.remove();"+'">' +
       '<div class="voile"></div>' +
       '<div class="niv">'+v.nation+'</div>' +
-      (v.carte ? tampon() : '') +
+      tampon() +
       '<div class="nom">'+v.nom+'</div>'+
       '<div class="repli">'+LL.sansImage+'</div>';
   }
@@ -238,6 +240,7 @@ window.addEventListener('message', function(ev){
   }
   if(d.t === 'linguae-collection'){
     if(d.l){ LG = d.l; LL = LANG[d.l] || LANG.fr; }
+    if(d.ver){ VERSION = d.ver; }   /* le cache suit VER de lingo.html */
     peindre(d.villes || []);
   }
 });
