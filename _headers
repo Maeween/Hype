@@ -1,0 +1,84 @@
+# ==========================================================================
+#  Hype — en-têtes de cache Netlify
+#  À placer à la RACINE du dépôt, à côté de index.html. Nom exact : _headers
+#  (pas d'extension, l'underscore compte)
+#
+#  Principe : ce qui ne change JAMAIS est mis en cache un an.
+#             ce qui change à chaque push n'est jamais mis en cache.
+# ==========================================================================
+
+
+# --------------------------------------------------------------------------
+#  JAMAIS EN CACHE — sinon un push ne parviendrait pas aux cavaliers
+# --------------------------------------------------------------------------
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/lingo.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+
+# --------------------------------------------------------------------------
+#  CACHE UN AN, IMMUABLE — contenus adressés par clé, jamais réécrits
+#  119 fichiers d'images + 3 fichiers de la base de clubs.
+#  C'est ici que se trouve l'essentiel du gain.
+# --------------------------------------------------------------------------
+
+/hype-images-*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/hype-clubs-db-*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+
+# --------------------------------------------------------------------------
+#  CACHE COURT AVEC REVALIDATION — fichiers susceptibles d'être corrigés
+#  Le navigateur les réutilise pendant une heure, puis demande au serveur
+#  s'ils ont changé. Une réponse « pas changé » ne coûte presque rien.
+# --------------------------------------------------------------------------
+
+/hype-supabase.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/hype-video.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/hype-pedagogie.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/hype-dressage-conseils.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/hype-clubs-loader.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
+
+# ==========================================================================
+#  ATTENTION — LA RÈGLE QUI VA AVEC CE FICHIER
+#
+#  « immutable » veut dire : le navigateur ne revient JAMAIS vérifier
+#  pendant un an. Donc un fichier de cette liste ne se corrige plus, il se
+#  remplace par un NOUVEAU nom.
+#
+#  Concrètement :
+#   · une image se change en poussant une nouvelle clé (k649, k650…),
+#     jamais en réécrivant k207 ;
+#   · un lot d'images se complète en créant hype-images-123.js,
+#     jamais en modifiant hype-images-42.js.
+#
+#  C'est déjà la convention du projet (clés k555–k629 figées, nouveaux lots
+#  ajoutés à la suite) — ce fichier ne fait que la rendre officielle.
+#
+#  Si un jour il FAUT vraiment réécrire un de ces fichiers sur place :
+#  retirer sa ligne d'ici, pousser, attendre une heure, puis remettre.
+# ==========================================================================
