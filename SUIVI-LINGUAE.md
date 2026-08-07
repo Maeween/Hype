@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 144)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 145)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,28 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🌐 SESSION 145 · LINGUAE (07/08) — L'ÉCRAN DES LANGUES ÉTAIT CASSÉ PAR UNE LIGNE « QUI NE POUVAIT PAS NUIRE »
+
+Deux symptômes rapportés par Blandine : chez elle, l'écran du choix des langues **n'apparaît jamais** via le bouton « — anglais — » ; chez son fils, **première connexion**, il apparaît mais **refuse de défiler**.
+
+### 🔴 Une seule cause, et c'était la mienne
+`#dest{position:relative;z-index:45}` — la ligne ajoutée le 7 août avec le commentaire « 45 passe aussi devant le film, ce qui ne peut pas nuire ». Elle **écrasait le `position:fixed`** de la règle groupée `#intro,#dest` : l'écran retombait dans le flux du document. Conséquences exactes des deux symptômes : plus de boîte pleine hauteur donc plus de défilement interne (l'écran figé du fils, qui le voit au premier lancement) ; et ouvert par le bouton, il se dessinait **en bas du document, hors de vue** (le « rien » de Blandine). Corrigé en gardant le seul `z-index:45`. Banc : position fixed, couvre l'écran, défile — vérifié par mesure.
+
+### 📌 Leçon consignée
+« Ne peut pas nuire » n'existe pas : une propriété ajoutée sans besoin est un bug qui attend son heure. Ne déclarer que ce dont on a la preuve du besoin.
+
+Marqueur **v14 · 7 août**. À pousser : `lingo.html` seul.
+
+### ⏳ File d'attente validée (prochaines sessions, dans l'ordre)
+1. **Phrases simplifiées** (« ok pour les phrases ») : règle des 7 mots, ~30 phrases longues à réécrire ×6 langues sur les dix lexiques — l'inventaire complet est fait, beaucoup sont déjà courtes.
+2. **« Sans le son »** (« ok pour le sans le son ») : bouton 🔇 sur chaque exercice d'écoute/parole basculant vers l'équivalent visuel + réglage « mode silencieux » ; et « dire » dès le niveau 2.
+3. **Traductions des 8 lexiques** : toujours en attente des 8 URLs Netlify (redemandées).
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 
