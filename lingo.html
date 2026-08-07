@@ -1034,6 +1034,27 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <!-- L'arrivée dans un club : l'inscription et la sécurité, pour La Baule.
      ⚠️ La sécurité n'existait NULLE PART dans les 378 mots d'origine. -->
 <script src="hype-lingo-lex-arrivee.js"></script>
+<!-- La tradition : chapitre cree le 6 aout 2026 pour Tokyo.
+     ⚠️ Le seul chapitre du module qui enseigne des CONVENTIONS et non des
+     objets. Et le seul ou deux mots francais distincts se confondent en
+     anglais : `le salut` et `l'arc` sont tous deux « bow ». -->
+<script src="hype-lingo-lex-tradition.js"></script>
+<!-- Le polo : chapitre cree le 6 aout 2026 pour Buenos Aires.
+     ⚠️ Trois faux amis dans les cinq premiers mots : la periode se dit
+     chukka, la monte se dit pony (et ce n'est pas un poney), le handicap
+     note le JOUEUR et non le cheval. -->
+<script src="hype-lingo-lex-polo.js"></script>
+<!-- Le haras : chapitre cree le 6 aout 2026 pour Lexington (Kentucky).
+     ⚠️ NE PAS CONFONDRE avec lex-elevage.js (Golega), qui fait NAITRE, ni
+     avec lex-vente.js (Verone), ou l'on achete un cheval pour soi en
+     discutant. Ici on leve la main dans une salle et le prix monte. -->
+<script src="hype-lingo-lex-haras.js"></script>
+<!-- Le froid : chapitre cree le 6 aout 2026 pour Spruce Meadows (Alberta).
+     ⚠️ Le site est un lieu de SAUT D'OBSTACLES, mais l'obstacle etait deja
+     pris quatre fois. Le froid est l'angle qui apporte des mots neufs — le
+     module n'avait pas un seul mot d'hiver. Et il parle du froid de
+     l'ECURIE, pas d'un concours sous la neige : la saison y est l'ete. -->
+<script src="hype-lingo-lex-froid.js"></script>
 <!-- L'endurance : chapitre cree le 6 aout 2026 pour Dubai, etape 24 et
      PREMIERE etape hors d'Europe. La seule discipline ou l'on compte en
      kilometres et en battements par minute.
@@ -1161,7 +1182,23 @@ var ETAPES = [
     du chemin ne dessine un désert, et en fabriquer une n'a pas été
     demandé. À faire le jour où le chemin sera revu.
     ⚠️ Aucune de ses trois images n'existe encore. */
- {ref:"dubai",     ch:"L'endurance",   v:"Dubaï",       nat:"Émirats",        h:"13 h 05", ciel:["#120F14","#E0B070"], forme:"lande",    souv:"Un dossard de cent kilomètres", ic:"dossard"}
+ {ref:"dubai",     ch:"L'endurance",   v:"Dubaï",       nat:"Émirats",        h:"13 h 05", ciel:["#120F14","#E0B070"], forme:"lande",    souv:"Un dossard de cent kilomètres", ic:"dossard"},
+ /* ⚠️ TOKYO et BUENOS AIRES ajoutées le 6 août 2026 : elles remplissent
+    deux des trois créneaux réservés entre Dubaï et Lexington. Il reste
+    15 h 40 pour TAMWORTH, dont le clip et les images sont prêts.
+    ⚠️ Tokyo est en NIVEAU 3, comme Saumur, Édimbourg et Vérone : son
+    chapitre n'enseigne pas des objets mais des conventions, et un mot mal
+    placé y est une impolitesse plutôt qu'une faute. */
+ {ref:"tokyo",     ch:"La tradition",  v:"Tokyo",       nat:"Japon",          h:"14 h 30", ciel:["#141018","#E2A6B4"], forme:"village",  souv:"Une flèche de yabusame",        ic:"fanion"},
+ {ref:"buenos",    ch:"Le polo",       v:"Buenos Aires",nat:"Argentine",      h:"16 h 30", ciel:["#101812","#D9A055"], forme:"lande",    souv:"Un maillet de bambou",          ic:"alene"},
+ /* ⚠️ LEXINGTON et SPRUCE MEADOWS ajoutées le 6 août 2026, étapes 27 et 28.
+    ⚠️ IL RESTE UN CRÉNEAU À 15 h 40 pour Tamworth, entre Tokyo et Buenos
+    Aires. Ne pas « corriger » cet écart d'heures.
+    ⚠️ `forme` : Lexington reprend `haras`, Spruce Meadows `lande`. Aucune
+    des dix silhouettes ne dessine ni un pré du Kentucky ni les Rocheuses ;
+    en fabriquer une n'a pas été demandé. */
+ {ref:"lexington", ch:"Le haras",      v:"Lexington",   nat:"États-Unis",     h:"17 h 20", ciel:["#0E1620","#C8A46A"], forme:"haras",    souv:"Un numéro de lot",              ic:"dossard"},
+ {ref:"spruce",    ch:"Le froid",      v:"Spruce Meadows", nat:"Canada",      h:"18 h 10", ciel:["#0B1420","#8FB4C8"], forme:"lande",    souv:"Une couverture d'hiver",        ic:"seau"}
 ];
 var FAITS = 4, TRACE = true;
 
@@ -1199,6 +1236,10 @@ var I18N_H = {
  "10 h 55":{en:"10.55 am",es:"10:55", it:"10:55", de:"10:55 Uhr", ja:"10時55分"},
  "11 h 05":{en:"11.05 am",es:"11:05", it:"11:05", de:"11:05 Uhr", ja:"11時5分"},
  "11 h 20":{en:"11.20 am",es:"11:20", it:"11:20", de:"11:20 Uhr", ja:"11時20分"},
+ "14 h 30":{en:"2.30 pm", es:"14:30", it:"14:30", de:"14:30 Uhr", ja:"14時30分"},
+ "16 h 30":{en:"4.30 pm", es:"16:30", it:"16:30", de:"16:30 Uhr", ja:"16時30分"},
+ "17 h 20":{en:"5.20 pm", es:"17:20", it:"17:20", de:"17:20 Uhr", ja:"17時20分"},
+ "18 h 10":{en:"6.10 pm", es:"18:10", it:"18:10", de:"18:10 Uhr", ja:"18時10分"},
  "13 h 05":{en:"1.05 pm", es:"13:05", it:"13:05", de:"13:05 Uhr", ja:"13時5分"},
  "12 h 10":{en:"12.10 pm",es:"12:10", it:"12:10", de:"12:10 Uhr", ja:"12時10分"}
 };
@@ -1603,6 +1644,82 @@ var RECITS = {
       "隣の馬場で落馬があり、数秒で大人三人がそこにいた。走らず、叫ばずに。",
       {f:"ヨーロッパ最大の馬術パーク。何十もの馬場があり、年に一週間、フランス馬術のすべてがここに集まる。"}]
  },
+ tokyo:{
+  fr:["On m'a fait asseoir au bord de la piste, et on ne m'a rien expliqué.",
+      "Au bout d'une heure j'avais compris l'ordre de passage sans qu'un mot soit dit.",
+      {f:"Le yabusame est le tir à l'arc à cheval : au galop, sur des cibles de bois qui se brisent quand la flèche touche."}],
+  en:["They sat me down at the edge of the track and explained nothing.",
+      "After an hour I had worked out the order of going without a word being said.",
+      {f:"Yabusame is mounted archery: at the gallop, at wooden targets that shatter when the arrow lands."}],
+  es:["Me hicieron sentarme al borde de la pista y no me explicaron nada.",
+      "Al cabo de una hora había entendido el orden de paso sin que se dijera una palabra.",
+      {f:"El yabusame es tiro con arco a caballo: al galope, sobre blancos de madera que se rompen cuando la flecha acierta."}],
+  it:["Mi hanno fatto sedere a bordo pista e non mi hanno spiegato niente.",
+      "Dopo un'ora avevo capito l'ordine di passaggio senza che una parola fosse detta.",
+      {f:"Lo yabusame è il tiro con l'arco a cavallo: al galoppo, su bersagli di legno che si spezzano quando la freccia colpisce."}],
+  de:["Man setzte mich an den Rand der Bahn und erklärte mir nichts.",
+      "Nach einer Stunde hatte ich die Reihenfolge begriffen, ohne dass ein Wort gefallen war.",
+      {f:"Yabusame ist Bogenschießen zu Pferd: im Galopp, auf Holzscheiben, die zerbrechen, wenn der Pfeil trifft."}],
+  ja:["馬場の端に座らされ、何も説明されなかった。",
+      "一時間もすると、ひと言も交わさぬまま順番が分かっていた。",
+      {f:"流鏑馬は騎射である。駈歩で走りながら、当たれば割れる木の的を射る。"}]},
+ buenos:{
+  fr:["Huit chevaux pour un seul joueur, et il en change toutes les sept minutes.",
+      "Personne ne regarde la balle. Tout le monde regarde la ligne qu'elle a prise.",
+      {f:"Après chaque but, les deux équipes changent de côté : le camp qu'on défend n'est jamais le même deux fois de suite."}],
+  en:["Eight horses for one player, and he changes every seven minutes.",
+      "Nobody watches the ball. Everybody watches the line it has taken.",
+      {f:"After every goal the two teams change ends: the end you defend is never the same twice running."}],
+  es:["Ocho caballos para un solo jugador, y los cambia cada siete minutos.",
+      "Nadie mira la bocha. Todo el mundo mira la línea que ha tomado.",
+      {f:"Después de cada gol los dos equipos cambian de lado: el campo que se defiende nunca es el mismo dos veces seguidas."}],
+  it:["Otto cavalli per un solo giocatore, e li cambia ogni sette minuti.",
+      "Nessuno guarda la palla. Tutti guardano la linea che ha preso.",
+      {f:"Dopo ogni gol le due squadre cambiano campo: il lato che si difende non è mai lo stesso due volte di seguito."}],
+  de:["Acht Pferde für einen einzigen Spieler, und er wechselt alle sieben Minuten.",
+      "Niemand schaut auf den Ball. Alle schauen auf die Linie, die er genommen hat.",
+      {f:"Nach jedem Tor wechseln beide Mannschaften die Seite: die Seite, die man verteidigt, ist nie zweimal dieselbe."}],
+  ja:["ひとりの選手に八頭の馬。七分ごとに乗り替える。",
+      "誰もボールを見ていない。ボールが取ったラインを、全員が見ている。",
+      {f:"得点のたびに両チームは陣地を替える。守る側が二度続けて同じになることはない。"}]},
+ lexington:{
+  fr:["Des barrières noires, et derrière elles encore des barrières noires, jusqu'à la brume.",
+      "Le cheval qui est passé avant le mien avait un an et n'avait jamais été monté. Il s'est vendu en quarante secondes.",
+      {f:"Tous les pur-sang changent d'âge le 1er janvier : un yearling vendu en septembre a donc entre un et deux ans réels."}],
+  en:["Black fences, and behind them more black fences, all the way to the mist.",
+      "The horse that went through before mine was a year old and had never been ridden. He sold in forty seconds.",
+      {f:"Every Thoroughbred changes age on 1 January: a yearling sold in September is therefore between one and two years old in fact."}],
+  es:["Vallas negras, y detrás de ellas más vallas negras, hasta la niebla.",
+      "El caballo que pasó antes que el mío tenía un año y nunca había sido montado. Se vendió en cuarenta segundos.",
+      {f:"Todos los pura sangre cambian de edad el 1 de enero: un yearling vendido en septiembre tiene en realidad entre uno y dos años."}],
+  it:["Recinti neri, e dietro di essi altri recinti neri, fino alla nebbia.",
+      "Il cavallo passato prima del mio aveva un anno e non era mai stato montato. È stato venduto in quaranta secondi.",
+      {f:"Tutti i purosangue cambiano età il 1° gennaio: un puledro di un anno venduto in settembre ne ha in realtà fra uno e due."}],
+  de:["Schwarze Zäune, und dahinter noch mehr schwarze Zäune, bis in den Nebel.",
+      "Das Pferd vor meinem war ein Jahr alt und noch nie geritten. Es war in vierzig Sekunden verkauft.",
+      {f:"Alle Vollblüter werden am 1. Januar ein Jahr älter: ein im September verkaufter Jährling ist also tatsächlich zwischen einem und zwei Jahren alt."}],
+  ja:["黑い柵。その向こうにまた黑い柵が、霧のなかまで続いている。",
+      "私の前に上場した馬は一歳で、一度も人を乗せたことがなかった。四十秒で売れた。",
+      {f:"サラブレッドは一月一日に一斉に年を取る。九月に売られる一歳馬は、実際には一歳から二歳のあいだ。"}]},
+ spruce:{
+  fr:["Moins vingt-deux au thermomètre de l'écurie, et le premier geste de la journée est de casser la glace.",
+      "Les chevaux, eux, n'ont pas l'air dérangés. C'est nous qui ne tenons pas.",
+      {f:"Le froid ne tue pas par le froid mais par la soif : un cheval qui ne boit pas assez fait une colique d'impaction."}],
+  en:["Minus twenty-two on the yard thermometer, and the first job of the day is breaking the ice.",
+      "The horses do not look bothered. It is us who cannot take it.",
+      {f:"Cold does not kill through cold but through thirst: a horse that drinks too little gets an impaction colic."}],
+  es:["Veintidós bajo cero en el termómetro de la cuadra, y lo primero del día es romper el hielo.",
+      "Los caballos no parecen molestos. Somos nosotros los que no aguantamos.",
+      {f:"El frío no mata por el frío sino por la sed: un caballo que no bebe bastante hace un cólico por impactación."}],
+  it:["Meno ventidue sul termometro della scuderia, e il primo gesto della giornata è rompere il ghiaccio.",
+      "I cavalli non sembrano disturbati. Siamo noi che non resistiamo.",
+      {f:"Il freddo non uccide per il freddo ma per la sete: un cavallo che non beve abbastanza fa una colica da impatto."}],
+  de:["Minus zweiundzwanzig auf dem Stallthermometer, und der erste Griff des Tages ist das Eis aufzubrechen.",
+      "Die Pferde scheinen es nicht zu stören. Wir sind es, die es nicht aushalten.",
+      {f:"Kälte tötet nicht durch Kälte, sondern durch Durst: ein Pferd, das zu wenig trinkt, bekommt eine Verstopfungskolik."}],
+  ja:["厩舎の温度計はマイナス二十二度。一日の最初の仕事は、氷を割ることだ。",
+      "馬たちは平気な顔をしている。こたえられないのはこちらだ。",
+      {f:"寒さが命を奪うのは寒さではなく、渇きによる。水を十分に飲まない馬は、詰まりによる痝痛を起こす。"}]},
  dubai:{
   fr:["Le départ est donné de nuit, pour que la chaleur arrive le plus tard possible.",
       "Personne ne parle de gagner. On parle de terminer.",
@@ -1877,6 +1994,30 @@ var POURQUOI = {
   it:"Il più grande parco equestre d'Europa, e migliaia di pony ogni estate.",
   de:"Der größte Reitsportpark Europas — und jeden Sommer Tausende Ponys.",
   ja:"ヨーロッパ最大の馬術パーク。毎年夏、何千頭ものポニーが集まる。"},
+ tokyo:{fr:"Le tir à l'arc à cheval dans un sanctuaire, et des semaines à regarder avant d'avoir le droit de faire.",
+  en:"Mounted archery at a shrine, and weeks of watching before you are allowed to do.",
+  es:"Tiro con arco a caballo en un santuario, y semanas mirando antes de tener derecho a hacer.",
+  it:"Tiro con l'arco a cavallo in un santuario, e settimane a guardare prima di poter fare.",
+  de:"Bogenschießen zu Pferd in einem Schrein, und Wochen des Zusehens, bevor man tun darf.",
+  ja:"神社で行われる騎射。そして、やることを許されるまでの、見るだけの数週間。"},
+ buenos:{fr:"Quatre cavaliers, huit chevaux chacun, et une seule règle qui compte : la ligne de balle.",
+  en:"Four riders, eight horses each, and one rule that matters: the line of the ball.",
+  es:"Cuatro jinetes, ocho caballos cada uno, y una sola regla que cuenta: la línea de la bocha.",
+  it:"Quattro cavalieri, otto cavalli ciascuno, e una sola regola che conta: la linea della palla.",
+  de:"Vier Reiter, acht Pferde pro Mann, und eine Regel, die zählt: die Linie des Balls.",
+  ja:"四人の騎手、一人に八頭の馬。そして意味を持つ規則はひとつだけ、ボールのライン。"},
+ lexington:{fr:"Des barrières noires à perte de vue, et des chevaux d'un an vendus sur leur seul pedigree.",
+  en:"Black fences to the horizon, and one-year-olds sold on their pedigree alone.",
+  es:"Vallas negras hasta el horizonte, y caballos de un año vendidos solo por su pedigrí.",
+  it:"Recinti neri a perdita d'occhio, e cavalli di un anno venduti solo sul pedigree.",
+  de:"Schwarze Zäune bis zum Horizont, und Einjährige, die allein auf ihre Abstammung verkauft werden.",
+  ja:"地平線まで続く黒い柵。そして血統だけで売られていく一歳馬たち。"},
+ spruce:{fr:"L'hiver albertain, où l'on apprend que le froid ne tue pas par le froid mais par la soif.",
+  en:"The Alberta winter, where you learn that cold kills through thirst, not through cold.",
+  es:"El invierno de Alberta, donde se aprende que el frío no mata por el frío sino por la sed.",
+  it:"L'inverno dell'Alberta, dove si impara che il freddo non uccide per il freddo ma per la sete.",
+  de:"Der Winter in Alberta, wo man lernt, dass Kälte nicht durch Kälte tötet, sondern durch Durst.",
+  ja:"アルバータの冬。寒さが人を殺すのは寒さではなく、渇きによってだと学ぶ場所。"},
  dubai:{fr:"Cent soixante kilomètres en un jour, et un vétérinaire qui décide à chaque boucle si tu continues.",
   en:"A hundred and sixty kilometres in a day, and a vet who decides at every loop whether you go on.",
   es:"Ciento sesenta kilómetros en un día, y un veterinario que decide en cada vuelta si sigues.",
@@ -2013,8 +2154,8 @@ var NIVEAU_VILLE = {
   labaule:1, maurice:1, newmarket:1, lambourn:1, connemara:1, walsall:1, aberystwyth:1,
   kildare:1, jerez:1, vejer:1,
   hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
-  warendorf:2, aachen:2, lamotte:2, golega:2, dubai:2,
-  saumur:3, edimbourg:3, verone:3
+  warendorf:2, aachen:2, lamotte:2, golega:2, dubai:2, lexington:2, spruce:1, buenos:2,
+  saumur:3, edimbourg:3, verone:3, tokyo:3
 };
 function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
 
@@ -2835,6 +2976,10 @@ var ETAPE_SRC = {
   rome:        [["concours",4]],
   verone:      [["vente",1]],
   dubai:       [["endurance",1]],
+  tokyo:       [["tradition",1]],
+  buenos:      [["polo",1]],
+  lexington:   [["haras",1]],
+  spruce:      [["froid",1]],
   warendorf:   [["materiel",4]],
   aachen:      [["obstacle",4]]
 };
@@ -3431,6 +3576,14 @@ var COLL_NOM = {
     it:"Comprare e vendere", de:"Kaufen und verkaufen", ja:"売買"},
   endurance:{fr:"L'endurance", en:"Endurance", es:"El raid", it:"L'endurance",
     de:"Die Distanzreiterei", ja:"エンデュランス"},
+  haras:{fr:"Le haras", en:"The stud farm", es:"La yeguada",
+    it:"L'allevamento da corsa", de:"Das Gestüt", ja:"牧場"},
+  froid:{fr:"Le froid", en:"The cold", es:"El frío", it:"Il freddo",
+    de:"Die Kälte", ja:"寒さ"},
+  tradition:{fr:"La tradition", en:"Tradition", es:"La tradición",
+    it:"La tradizione", de:"Die Tradition", ja:"伝統"},
+  polo:{fr:"Le polo", en:"Polo", es:"El polo", it:"Il polo",
+    de:"Das Polo", ja:"ポロ"},
   corps:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体"},
   etat:{fr:"L'état du poil", en:"The state of the coat", es:"El estado de la capa",
         it:"Lo stato del mantello", de:"Der Zustand des Fells", ja:"毛の状態"},
@@ -3481,6 +3634,10 @@ var ACCUEIL_CHAP = {
      donc la première ville du voyage entrait dans sa leçon sans un mot.
      Trouvé en ajoutant le chapitre du Morne. */
   arrivee:{fr:"Arriver quelque part et demander un cheval : réserver, dire son niveau, comprendre le tarif.", en:"Arriving somewhere and asking for a horse: booking, stating your level, understanding the price.", es:"Llegar a un sitio y pedir un caballo: reservar, decir tu nivel, entender el precio.", it:"Arrivare in un posto e chiedere un cavallo: prenotare, dire il proprio livello, capire il prezzo.", de:"Irgendwo ankommen und nach einem Pferd fragen: buchen, sein Können nennen, den Preis verstehen.", ja:"どこかに着いて、馬を頼む。予約する、自分の技量を伝える、料金を理解する。"},
+  tradition:{fr:"Ce qui ne s'écrit nulle part : le salut, l'ordre, le silence, observer avant de faire.", en:"What is written nowhere: the bow, the order, the silence, watching before doing.", es:"Lo que no está escrito en ninguna parte: el saludo, el orden, el silencio, observar antes de hacer.", it:"Quello che non è scritto da nessuna parte: il saluto, l'ordine, il silenzio, osservare prima di fare.", de:"Was nirgends geschrieben steht: die Verbeugung, die Reihenfolge, die Stille, zusehen, bevor man tut.", ja:"どこにも書かれていないこと。お辞儀、順番、静けさ、そしてやる前に見ること。"},
+  polo:{fr:"Le polo, et ses faux amis : la période se dit chukka, et la monte se dit pony.", en:"Polo and its false friends: the period is a chukka, and the horse is a pony.", es:"El polo y sus falsos amigos: el período es un chukker y la montura es un pony.", it:"Il polo e i suoi falsi amici: il periodo è un chukker e il cavallo è un pony.", de:"Polo und seine falschen Freunde: die Periode heißt Chukker, das Pferd heißt Pony.", ja:"ポロと、その空似言葉。ピリオドはチャッカ、馬はポニーと呼ばれる。"},
+  haras:{fr:"Le haras et la vente : le lot, l'enchère, le pedigree, le yearling, la jument suitée.", en:"The stud farm and the sale: the lot, the bidding, the pedigree, the yearling, the mare with a foal at foot.", es:"La yeguada y la subasta: el lote, la puja, el pedigrí, el yearling, la yegua con rastra.", it:"L'allevamento e l'asta: il lotto, il rilancio, il pedigree, il puledro di un anno, la fattrice con puledro.", de:"Das Gestüt und die Auktion: das Los, das Gebot, die Abstammung, der Jährling, die Stute mit Fohlen.", ja:"牧場と競売。上場番号、入札、血統書、一歳馬、子付き牝馬。"},
+  froid:{fr:"L'hiver à l'écurie : le gel, la glace, le sol gelé, la couverture, l'abreuvoir à casser.", en:"Winter in the yard: the frost, the ice, the frozen ground, the rug, the trough to break.", es:"El invierno en la cuadra: la helada, el hielo, el suelo helado, la manta, el bebedero que hay que romper.", it:"L'inverno in scuderia: il gelo, il ghiaccio, il terreno gelato, la coperta, l'abbeveratoio da rompere.", de:"Winter im Stall: der Frost, das Eis, der gefrorene Boden, die Decke, die Tränke, die aufgebrochen werden muss.", ja:"厩舎の冬。霜、氷、凍った地面、馬着、割らなければならない水桶。"},
   endurance:{fr:"Courir loin sans abîmer le cheval : le kilomètre, la boucle, le contrôle vétérinaire, le rythme cardiaque.", en:"Going far without damaging the horse: the kilometre, the loop, the vet gate, the heart rate.", es:"Ir lejos sin dañar al caballo: el kilómetro, la vuelta, el control veterinario, la frecuencia cardíaca.", it:"Andare lontano senza rovinare il cavallo: il chilometro, il giro, il controllo veterinario, la frequenza cardiaca.", de:"Weit reiten, ohne das Pferd zu schädigen: der Kilometer, die Schleife, die Vetgate, die Herzfrequenz.", ja:"馬を痛めずに遠くまで走る。キロ、ループ、獣医検査、心拍数。"},
   vente:{fr:"Acheter un cheval sans se faire avoir : l'essai, la visite d'achat, le prix, le contrat, les papiers.", en:"Buying a horse without being caught out: the try-out, the vetting, the price, the contract, the papers.", es:"Comprar un caballo sin equivocarse: la prueba, la revisión veterinaria, el precio, el contrato, los papeles.", it:"Comprare un cavallo senza rimetterci: la prova, la visita d'acquisto, il prezzo, il contratto, i documenti.", de:"Ein Pferd kaufen, ohne hereinzufallen: das Probereiten, die Ankaufsuntersuchung, der Preis, der Vertrag, die Papiere.", ja:"失敗せずに馬を買う。試乗、購買前検査、値段、契約、書類。"},
   elevage:{fr:"D'où vient un cheval : la poulinière, la saillie, le poulinage, le sevrage, la lignée.", en:"Where a horse comes from: the broodmare, the covering, the foaling, the weaning, the bloodline.", es:"De dónde viene un caballo: la yegua de vientre, la cubrición, el parto, el destete, la línea de sangre.", it:"Da dove viene un cavallo: la fattrice, la monta, il parto, lo svezzamento, la linea di sangue.", de:"Woher ein Pferd kommt: die Zuchtstute, der Deckakt, die Geburt, das Absetzen, die Blutlinie.", ja:"馬がどこから来るのか。繁殖牝馬、交配、分娩、離乳、血統。"},

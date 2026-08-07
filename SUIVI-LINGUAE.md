@@ -22,6 +22,95 @@
 
 ---
 
+## ⛩️ SESSION 114 · LINGUAE (06/08) — TOKYO ET BUENOS AIRES, ÉTAPES 25 ET 26
+
+### ✅ Tokyo — LA TRADITION, et le seul chapitre de conventions du module
+`hype-lingo-lex-tradition.js` : le salut, le maître, l'apprentissage, observer d'abord, le silence, l'ordre, se déchausser, remercier, la tenue de cérémonie, le yabusame, l'arc, la cible.
+
+⚠️ **Ce chapitre ne ressemble à aucun autre, et c'est voulu.** Partout ailleurs on apprend à nommer des objets et des gestes. Ici on apprend **ce qu'on fait, dans quel ordre, et ce qu'on ne fait pas**. Un mot mal placé n'y est pas une faute de vocabulaire mais une impolitesse. D'où le **niveau 3**, avec Saumur, Édimbourg et Vérone.
+
+⚠️ **Le piège qui justifie à lui seul le chapitre** : en anglais, `le salut` (la révérence) et `l'arc` (l'arme) sont **le même mot**, « bow », prononcé différemment. Les deux sont dans la même leçon, à quelques lignes d'écart, parce que le yabusame les met côte à côte. **C'est le seul endroit du module où deux mots français distincts se confondent en anglais** — noté dans le fichier pour qu'on ne les sépare jamais.
+
+⚠️ **RELECTURE PRIORITAIRE PAR UN NATIF.** Le japonais de ce chapitre porte sur la politesse, où le registre change tout : `稽古` (l'entraînement sous un maître, non l'apprentissage en général), `先生` (qui s'emploie comme titre après le nom), et la formule de remerciement **au passé** en fin de séance. C'est le chapitre où une erreur de registre serait la plus visible.
+
+### ✅ Buenos Aires — LE POLO, et trois faux amis en cinq mots
+`hype-lingo-lex-polo.js` : le maillet, la période, la monte, le changement de cheval, le handicap, la ligne de balle, la balle, le but, l'arbitre monté, les bandes, la queue nattée, le criollo.
+
+⚠️ **Presque aucun mot ne se traduit littéralement, et c'est l'intérêt** :
+· `la période` ne se dit pas « the period » mais **the chukka** ;
+· `la monte` ne se dit pas « the mount » mais **the pony** — et « pony » ne veut pas dire poney, un cheval de polo dépasse 1,55 m ;
+· `le handicap` note **le joueur**, de −2 à 10 goals, et pas le cheval.
+Trois faux amis dans les cinq premiers mots. Deux détails de règle ont été mis dans les définitions parce qu'ils déroutent tout le monde : **après chaque but on change de côté**, et **couper la ligne de balle est la faute cardinale**.
+⚠️ L'espagnol est celui d'**Argentine** : `el taco` pour le maillet, `la bocha` pour la balle. L'Espagne dirait `mazo` et `pelota`.
+
+### ⚠️ Le créneau de Tamworth reste ouvert
+Les heures se remplissent comme prévu : Dubaï 13 h 05 · **Tokyo 14 h 30** · *(15 h 40 réservé)* · **Buenos Aires 16 h 30** · Lexington 17 h 20 · Spruce Meadows 18 h 10. **Tamworth s'insérera à 15 h 40**, son clip et ses deux images sont déjà prêts. C'est écrit dans le commentaire de `ETAPES` — ne pas « corriger » l'écart.
+
+### Contrôles passés
+`verif.py` sur les trois fichiers · les deux lexiques contrôlés par exécution (12 concepts, 4 phrases, zéro entrée incomplète sur 6 langues, japonais découpé en tuiles) · **contrôle des `ref` partagés sur les onze lexiques** : aucune collision · `chapVirtuel` renvoie 12 mots + 4 phrases pour les deux · **28 villes × 6 langues** sur `RECITS` : aucune anomalie · balayage des échappements `\uXXXX` et des caractères cyrilliques dans tout le bloc `RECITS` : zéro, le défaut de la session 113 ne s'est pas reproduit · suite des heures relue · rendu réel des deux écrans d'arrivée avec clips et cartes postales · globe à 29 points · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **Tamworth** (le western) — la dernière ville. Clip et images prêts.
+2. **Les lettres et volets** de Dubaï existent ; ceux de Lexington, Spruce Meadows, Tokyo et Buenos Aires **restent à écrire** — leur carte postale s'affiche donc sans texte au verso.
+3. `lingua-affiche.webp` et le fond du carnet.
+4. Les définitions en quatre langues.
+5. La sécurité (11 mots) attend une ville.
+
+### 🧭 Préparation Flutter
+- **Neuvième ville ajoutée sans toucher au moteur.** Onze lexiques chargés, aucune fonction modifiée depuis Le Morne.
+- **Le contrôle des `ref` partagés tourne maintenant sur onze fichiers** et distingue toujours les rappels voulus des collisions. Le contrat de contenu tient à l'échelle.
+- **Un défaut de méthode corrigé durablement** : le balayage des échappements et des caractères étrangers est devenu systématique après l'incident de la session 113. Il n'a rien trouvé cette fois.
+- **Reste à moderniser** : inchangé.
+- **Risques** : aucun. Contenu et données.
+
+---
+
+## 🐎 SESSION 113 · LINGUAE (06/08) — LEXINGTON ET SPRUCE MEADOWS, ÉTAPES 25 ET 26
+
+Cinq villes restaient à écrire. **Faites par deux plutôt qu'en une fois**, décision assumée : chaque ville demande douze mots, quatre phrases, une lettre, trois volets et un récit, tous en six langues. Ce fil a déjà produit une erreur de fond (« à cru » au Morne), une coquille cyrillique et une accolade en trop quand j'ai voulu aller vite. Trois villes de plus dans le même message auraient multiplié ce risque.
+
+### ✅ Lexington (Kentucky), étape 25 — LE HARAS
+`hype-lingo-lex-haras.js` : 12 mots, 4 phrases, 6 langues. Le haras, le pur-sang, la jument suitée, le yearling, le pedigree, l'étalonnage, la vente aux enchères, le lot, la mise à prix, le commissaire-priseur, adjugé, la piste d'entraînement.
+
+⚠️ **Trois chapitres parlent maintenant d'argent et de chevaux, et les frontières sont écrites dans les trois fichiers** :
+· **Golegã** (`elevage`) fait NAÎTRE — la poulinière, la saillie, le sevrage, la lignée, le stud-book.
+· **Vérone** (`vente`) achète UN cheval POUR SOI, en discutant avec un marchand.
+· **Lexington** (`haras`) vend à l'échelle industrielle — on lève la main dans une salle et le prix monte seul.
+Vérifié par script : **aucun `ref` partagé** entre les neuf lexiques chargés.
+
+### ✅ Spruce Meadows (Alberta), étape 26 — LE FROID
+`hype-lingo-lex-froid.js` : le gel, la neige, la glace, le sol gelé, les crampons, la couverture d'hiver, tondre, l'abri, l'abreuvoir gelé, rentrer les chevaux, le foin à volonté, la piste en herbe. **Le module n'avait pas un seul mot d'hiver.**
+
+⚠️ **Deux écarts assumés, écrits dans le fichier plutôt que cachés :**
+1. **Spruce Meadows est un site de SAUT D'OBSTACLES**, et l'un des plus réputés du monde. Le froid n'est pas sa spécialité : c'est le seul angle qui apporte des mots neufs, l'obstacle étant déjà pris quatre fois (Hickstead, Badminton, Aix-la-Chapelle, Rome).
+2. **Sa saison est l'ÉTÉ**, de juin à septembre. Le gel y est réel mais pas pendant les concours. Le chapitre parle donc du froid de **l'écurie** — l'hiver albertain quand la piste est fermée — et non d'un concours sous la neige. Volets et récit écrits dans ce sens, pour qu'un cavalier qui connaît le lieu ne tique pas.
+✅ **Niveau 1** pour Spruce Meadows : c'est du vocabulaire concret qu'on nomme et qu'on montre du doigt. Lexington est en niveau 2.
+
+### ⚠️ Un trou volontaire dans les heures, à ne pas « corriger »
+Dubaï est à 13 h 05, Lexington à **17 h 20**, Spruce Meadows à **18 h 10**. L'écart est voulu : **Tokyo, Tamworth et Buenos Aires viendront s'insérer entre les deux** (autour de 14 h 30, 15 h 40 et 16 h 30), et leurs clips sont déjà prêts. C'est écrit dans le commentaire de `ETAPES`.
+
+### 🔴 Deux défauts de ma main, attrapés avant livraison
+1. **269 séquences `\uXXXX` littérales** se sont retrouvées dans les deux récits : mon script d'insertion a écrit les échappements au lieu des caractères. Le fichier fonctionnait — JavaScript interprète ces séquences — mais la source devenait illisible, dans un fichier que Blandine lit. Converties en vrais caractères et revérifiées.
+2. **Une coquille japonaise** : un caractère faux pour « ôter » dans le récit de Spruce Meadows. Corrigée, puis balayage de tout le bloc `RECITS` à la recherche de caractères cyrilliques ou grecs — aucun.
+
+### Contrôles passés
+`verif.py` sur les quatre fichiers, tous les blocs · les deux lexiques contrôlés par exécution (12 concepts, 4 phrases, zéro entrée incomplète sur 6 langues, japonais découpé en tuiles) · **contrôle des `ref` partagés sur les neuf lexiques** : aucune collision involontaire · `chapVirtuel` renvoie 12 mots + 4 phrases pour les deux · **26 villes × 6 langues** sur `RECITS` : aucune anomalie · suite des heures relue en entier, croissante · rendu réel des deux écrans d'arrivée avec leurs clips · globe à 27 points · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **Trois villes** : Tokyo (les traditions), Buenos Aires (le polo), Tamworth (le western). Clips prêts, vocabulaire à écrire. **C'est la suite immédiate.**
+2. **Les cartes et fonds** de Dubaï, Lexington, Spruce Meadows, et des trois à venir.
+3. `lingua-affiche.webp` et le fond du carnet.
+4. Les définitions en quatre langues.
+5. La sécurité (11 mots) attend une ville.
+
+### 🧭 Préparation Flutter
+- **Septième ville ajoutée sans toucher au moteur.** Le geste est devenu un formulaire : un lexique, sept entrées de données, un récit, une ligne de globe.
+- **Le contrat de contenu est maintenant vérifié par script**, et non plus seulement écrit en commentaire : le contrôle des `ref` partagés sur l'ensemble des lexiques distingue les rappels voulus des collisions accidentelles. C'est un test, pas une intention.
+- **Reste à moderniser** : inchangé — `hype_lingua_quiz` et `hype_lingua_cartes` ne sont pas dimensionnés par langue ; `TITRE_SOMBRE` reste une liste maintenue à la main.
+- **Risques** : aucun. Contenu et données.
+
+---
+
 ## 🎞️ SESSION 112 · LINGUAE (06/08) — SEPT CLIPS TRAITÉS, DUBAÏ ÉCRITE, ET LA VRAIE CAUSE DES PANNEAUX COUPÉS
 
 ### ✅ Dubaï, étape 24 — la première hors d'Europe
