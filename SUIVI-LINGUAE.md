@@ -1,3 +1,127 @@
+## 🏞️ SESSION 126 · LINGUAE (07/08) — LES DEUX ÉCRANS D'ENTRÉE ONT LEUR IMAGE
+
+Blandine renvoie les deux visuels. Aucun des deux n'est en portrait — le premier est **carré** (763×738) et le second **paysage** (1402×1122).
+
+### ✅ Prolongés au lieu d'être rognés
+Un recadrage `cover` sur un carré aurait coûté **54 % de la largeur**, et sur le paysage bien plus. Mais les quatre bords des deux images mesurent entre **5 et 23 de luminance** sur 255 : presque noirs.
+✅ Donc **prolongation plutôt que recadrage** : la couleur du bord est échantillonnée ligne à ligne et fondue vers le noir en courbe douce, pour ajouter du ciel en haut et du sol en bas. 429 px ajoutés sur l'écran des langues, 624 px sur la présentation. **Rien n'est perdu, et la couture ne se voit pas.**
+✅ Sortie en **1170×1560**, la largeur d'un iPhone en densité ×3 : plus d'agrandissement, donc plus de flou. 59 Ko et 130 Ko.
+✅ Le sujet est placé plus haut sur la présentation (42 % au lieu de 50 %) pour tomber dans la fenêtre visible, celle que le code réserve entre la citation et les cinq points.
+
+### ✅ Vérifié en rendu réel, en densité ×3
+Le titre reste lisible sur les deux. Sur la présentation, les icônes dorées et la tête du cheval passent derrière le texte sans le gêner ; la boussole tombe dans la moitié basse, là où le voile l'absorbe — c'est le comportement voulu. Sur l'écran des langues, le cheval noir occupe le haut et les cartes de langues se posent dessus.
+✅ `elementFromPoint` confirme que l'écran des langues est bien **peint** au centre, pas seulement ouvert — le contrôle mis en place à la session 125.
+
+### 📌 Réponse à une question de Blandine, qui vaut d'être notée
+« Les cartes, c'est en portrait qu'il les faut ? » **Oui, 3:4 — et les siennes le sont déjà, exactement.** Vérifié sur cinq d'entre elles : 900×1200, ratio 0,750 pile. Le format des cartes n'a jamais posé de problème ; seuls ces deux fonds plein écran étaient hors format, parce qu'ils remplissent un écran de ratio 0,46, bien plus haut que 3:4.
+
+### Contrayles passés
+`verif.py` · formats et luminance des quatre bords mesurés avant de choisir la méthode · ratio des cartes existantes vérifié · rendu réel des deux écrans en densité ×3 · visibilité confirmée par `elementFromPoint` · aucune erreur JS.
+
+### ⏳ Il ne reste qu'une image
+Le fond du carnet de route, que le CSS va chercher sous `fond-newmarket.webp`. Il peut se dériver de l'affiche — même famille visuelle, et les deux pages se suivent.
+
+---
+
+## 🎯 SESSION 125 · LINGUAE (07/08) — TROUVÉ : L'ÉCRAN DES LANGUES S'OUVRAIT DERRIÈRE LE CARNET
+
+Blandine, pour la troisième fois : « la page de choix des langues je la vois jamais en ligne perso ». **Elle avait raison les trois fois, et ce n'était pas un problème de déploiement.**
+
+### 🔴 Un z-index, et trois messages perdus à cause de mon test
+`#dest` était en **`z-index: 1`**. Le carnet de route est en **40**, le globe en 41, le film en 42.
+Quand elle touchait la ligne de langue depuis le carnet, l'écran des langues **s'ouvrait réellement** — la classe `on` était posée, la liste construite, les cinq langues présentes — mais il se dessinait **derrière** le carnet, qui occupe tout l'écran. Rien n'apparaissait.
+
+Le z-index 1 était juste à l'origine : cet écran ne s'affichait qu'à la première visite, **avant** que le carnet n'existe. Il est devenu faux le jour où j'ai ajouté le bouton de retour depuis le carnet, en session 119.
+
+⚠️ **Et je ne l'ai pas vu parce que mon test vérifiait la CLASSE et non la VISIBILITÉ.** J'avais écrit « écran dest ouvert : on » et je m'en étais contenté. Un élément peut porter sa classe, avoir sa hauteur, contenir tout son contenu, et rester invisible sous un autre. J'ai renvoyé Blandine au déploiement deux fois sur la foi de ce test.
+✅ **Le test refait interroge ce qui est réellement peint** : `document.elementFromPoint(195, 300)` au centre de l'écran répond maintenant « écran des langues ». C'est cette forme de vérification qu'il faut pour tout ce qui se superpose.
+✅ `#dest` passe à **45**, devant le carnet, le globe et le film. `#intro` aussi, qui n'avait aucun z-index du tout — même piège en attente.
+
+### 🔴 Et un second défaut trouvé dans la foulée
+Le bouton de retour de l'écran des langues appelait `montrerIntro()` **sans condition** : en arrivant du carnet, il renvoyait le joueur à l'écran de présentation, c'est-à-dire au tout début du module, sans raison.
+✅ Il ne remonte plus à la présentation que si elle n'a jamais été vue. Sinon il revient d'où l'on vient : le carnet. Vérifié — après retour, la présentation reste masquée et le carnet est à l'opacité 1.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` · z-index de tous les écrans relevés et comparés (intro, dest, ouverture, globe, vue, arrivée) · **visibilité réelle testée par `elementFromPoint`**, pas par la classe · capture d'écran de l'écran des langues ouvert depuis le carnet · retour vérifié dans les deux cas · aucune erreur JS.
+
+### 🧭 La leçon, à garder
+**Vérifier ce qui est peint, jamais ce qui est déclaré.** Trois messages de Blandine et deux renvois au déploiement de ma part, pour un `z-index: 1` qu'un test de visibilité aurait trouvé en une seconde. Le même piège dort partout où des écrans se superposent — et ce fichier en a six.
+
+---
+
+## 🖼️ SESSION 124 · LINGUAE (07/08) — LES DEUX ÉCRANS D'ENTRÉE ONT ENFIN UNE PLACE POUR LEUR IMAGE
+
+Blandine envoie une planche de six visuels et propose un appariement : **les drapeaux autour du cheval noir pour l'écran de choix de la langue, la boussole pour l'écran de présentation** qui décrit les chapitres. Les deux sujets collent exactement — des drapeaux là où l'on choisit une langue, une boussole et des icônes de matériel là où l'on annonce un voyage et ses chapitres.
+
+### ✅ Le code est prêt pour les deux, et l'écran des langues n'avait AUCUN fond
+`#dest` n'avait pas d'image du tout : du noir plat, alors qu'il est vu à **chaque changement de langue** depuis que la ligne du carnet y ramène. Il a maintenant sa couche de fond, bâtie sur le même modèle que celle de la présentation, voile compris — les deux écrans se suivent et doivent se ressembler.
+✅ **Deux fichiers distincts** : `lingua-affiche.webp` pour la présentation, **`lingua-langues.webp`** pour le choix de la langue. Le second est un nom neuf.
+✅ `background-position` à **40 %** sur l'écran des langues contre 30 % sur la présentation : le texte y descend moins bas, on peut montrer davantage du bas de l'image.
+✅ Vérifié en rendu réel : les deux fonds se chargent, la couche fait 857 px de haut, et **le film d'ouverture n'a pas bougé** — il part seul et le carnet reste masqué, comme promis à Blandine quand elle a demandé si ça touchait à sa vidéo.
+
+### 🔴 Mais les six visuels sont CARRÉS, et les écrans sont en portrait
+Chiffré plutôt qu'estimé :
+· une image carrée mise en `cover` sur un écran de 390×844 doit être agrandie **1,65 fois**, et **54 % de sa largeur sort du cadre** — 27 % à gauche, 27 % à droite ;
+· et elles font **512 px de côté**, donc sur un iPhone en densité ×3 (1170 px de large) elles seraient agrandies **2,3 fois** : floues.
+
+Simulation du recadrage réel faite sur les deux :
+· **Les drapeaux survivent bien.** Le cheval, le livre et une partie de l'anneau restent. On perd environ la moitié des drapeaux latéraux, mais l'image se lit encore et le sujet reste clair. Utilisable telle quelle si Blandine est pressée.
+· **La boussole survive mal.** Le cheval est réduit à un liseré sur le bord droit, et la boussole — l'élément le plus fort — tombe dans la moitié basse, celle que le voile emmène au noir. À régénérer.
+
+✅ **À demander pour les deux : le même sujet, en 3:4 portrait, pleine résolution.** Le sujet centré, le tiers haut calme pour le titre, rien d'essentiel dans les 15 % du bas.
+⚠️ Et pour l'affiche de la présentation, le rappel qui vaut : **le cheval du film d'ouverture est une jument noire, seule** — les deux images de Blandine ont bien un cheval noir, ce qui tombe juste.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` · les six vignettes découpées et mesurées une par une (tiers haut de 22 à 51, ensemble de 25 à 63) · lisibilité simulée à 170 px puis en plein écran portrait avec le recadrage `cover` réel · rendu réel des deux écrans avec des images provisoires, puis provisoires retirées · film d'ouverture et masquage du carnet vérifiés inchangés · aucune erreur JS.
+
+### ⏳ Ce qui reste sur ce point
+Les deux images en portrait, et le fond du carnet de route — qui pourra se dériver de l'affiche.
+
+---
+
+# 🤝 PASSATION — état du module au 7 août 2026, fin de session 124
+
+**À lire en premier par la conversation qui reprend Linguae.** Ce bloc dit l'état réel, ce qui est en cours du côté de Blandine, et les pièges qui ont coûté du temps. Les sessions détaillées sont en dessous, dans l'ordre inverse.
+
+## Ce qui est fait
+**Le voyage compte 29 étapes, toutes accessibles, toutes écrites.** Chacune a son chapitre, son niveau, son heure, son récit en six langues, sa lettre et ses trois volets, son point sur le globe, son souvenir.
+**Six langues ouvertes** — français, anglais, espagnol, italien, allemand, japonais. Le choix se fait par la ligne de langue du carnet, devenue un bouton.
+**Douze lexiques dans ce fil**, 220 mots : arrivee, balade, concours, elevage, endurance, froid, haras, obstacle, polo, tradition, vente, western. Sept autres existent côté Blandine (ecurie, pansage, cheval, materiel, cours, dressage, urgences, poney) et ne sont jamais passés dans cette conversation.
+**Maîtrise et avancement rangés par langue.** Changer de langue recommence le voyage, ce qui est cohérent : le vocabulaire de la nouvelle langue est vierge.
+
+## Ce que Blandine fait en ce moment
+**Elle refait les 29 cartes postales en couleurs normales**, parce que la palette dorée imposée par l'ancien prompt les rendait toutes semblables. Deux sont faites et livrées : **Rome** et **Hickstead**. Le prompt par ville est dans `hype-linguae-prompt-cartes.txt`.
+
+**Le geste à répéter à chaque carte reçue**, et il ne s'improvise pas :
+1. `carte-<ville>.webp` — 900×1200, qualité webp 72 à 82. Au-delà de 180 Ko, descendre à 72 : mesuré, l'écart est de 2,3/255 à la taille d'affichage réelle (348 px), soit le seuil de perception. Ne pas descendre sous 72, on ne gagne plus rien.
+2. `fond-<ville>.webp` — 420×560, flou gaussien 14, puis assombrissement **par itération** jusqu'à une luminance moyenne ≤ 42. Le facteur varie de 0,30 à 0,95 selon l'image : ne jamais le fixer d'avance.
+3. **Mesurer le tiers supérieur de la carte.** Au-dessus de 100 de luminance, ajouter la ville dans `TITRE_SOMBRE` de `lingo.html`, sinon le titre crème est illisible. Rome (192) et Hickstead (186) y sont déjà. **Cette mesure est obligatoire à chaque remplacement de carte** — la liste dépend de l'image, pas de la ville.
+
+## Ce qui reste, par ordre d'utilité
+1. **Les 27 cartes restantes.** C'est le chantier en cours.
+2. **`lingua-affiche.webp`** — le fond de l'écran de présentation, jamais produit. Prompt prêt dans `hype-linguae-prompt-affiche.txt`. ⚠️ **Le cheval du film d'ouverture est une JUMENT NOIRE, seule, sans cavalier** — vérifié image par image dans `ouverture.mp4`. L'affiche doit lui correspondre ; le prompt disait « gris pommelé », c'était une erreur de ma part.
+3. **Le fond du carnet de route.** Le CSS va chercher `fond-newmarket.webp`, en dur, pour la page « Le tour du monde » — reste d'une ancienne version. À produire très sombre et très flou (du texte blanc et 29 cartes passent par-dessus), puis renommer proprement. Peut se dériver de l'affiche.
+4. **Les définitions en quatre langues.** Elles n'existent qu'en français et en anglais ; un joueur lisant en allemand les reçoit en français. Plusieurs centaines de notes. Seul vrai chantier de fond restant.
+5. **`niveau` divergent** entre `arrivee` (`das Niveau`) et `concours` (`die Klasse`) — même `ref`, deux sens. À trancher par Blandine : renommer déplacerait la maîtrise déjà acquise.
+6. **La sécurité** (11 mots prêts) n'a pas de ville.
+7. **Ranger le module dans un dossier `linguae/`** — décidé, à faire **quand la série de cartes sera close**, pas avant. Neuf endroits à changer, plus une ligne dans `index.html` (autre fil).
+
+## Les pièges qui ont coûté du temps
+**L'ordre d'exécution du fichier.** Quatre fois : une valeur lue avant que la variable dont elle dépend soit déclarée. `VOYAGE_LANGUE` est déclarée très bas ; tout ce qui en dépend doit être appelé après la relecture du voyage, en fin de fichier. Un « prêt » global remplacerait les quatre contournements.
+**Valider TOUS les blocs `<script>`, jamais un index.** Un `}` en trop est passé parce que je vérifiais le bloc 14 alors que l'ajout de deux `<script src>` avait décalé le bloc inline en 16. Utiliser **`verif.py`**, livré.
+**Un contrôle de syntaxe ne prouve pas le rendu.** Playwright obligatoire avant livraison.
+**Les `ref` partagés entre lexiques.** Un script compare les six traductions de chaque `ref` en double : il a trouvé deux faux rappels que la relecture humaine n'aurait pas vus (`prix` qui signifiait « prize money » d'un côté et « price » de l'autre). À relancer après chaque nouveau lexique.
+**Pas de `⚠️` dans un texte vu par le joueur.** C'est une convention de commentaires et de champs `def`, pas de volet narratif.
+**Identifier les images au CONTENU, jamais au libellé du message.** Trois fois sur trois, l'ordre annoncé ne correspondait pas aux fichiers.
+**Ne pas réintroduire de plancher de villes offertes** (`FAITS` partait à 4 et marquait quatre villes comme faites sans qu'elles soient jouées), ni de `rotateY` sur les cartes du carnet (texte en miroir sur Safari iOS et 28 couches composites).
+**Une plainte de lisibilité ne se corrige pas en changeant la couleur avant d'avoir mesuré.** Deux fois sur trois, le contraste était bon et le coupable était la taille. Jamais moins de 9 px pour une capitale espacée.
+**Les panneaux des clips d'arrivée** : six sur quatorze avaient un nom coupé. Le panneau doit être au **milieu de la hauteur**, pas en bas — l'app écrit le nom de la ville par-dessus le bas de la vidéo et recadre en `cover`. `FIN_VIDEO` (labaule 4,4 · vejer 7,0 · golega 4,6 · verone 3,9 · dubai 2,9) arrête le clip avant le raccord ; l'image d'arrêt se juge **dans le cadre de l'app**, jamais dans le fichier.
+
+## Fichiers livrés dans ce fil, autorité
+`lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · les neuf lexiques créés ici · `verif.py` · les quatre fichiers de prompts · les cartes, fonds et clips produits. **Blandine reste la source d'autorité** : toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée.
+
+---
+
 # SUIVI HYPE LINGUAE
 
 > Le journal de Hype Linguae (`lingo.html` et ses fichiers satellites : `lingo-globe.html`,
@@ -19,6 +143,94 @@
 > **Règle de reprise, comme dans le SUIVI partagé** : ne jamais conclure qu'un travail
 > n'est pas fait sur la seule lecture de ce fichier — vérifier l'index réel
 > (`lingo.html`) par recherche exhaustive avant de conclure à un manque.
+
+---
+
+## 🔍 SESSION 123 · LINGUAE (07/08) — TROIS CARTES RELUES, DEUX INCOHÉRENCES DE FOND
+
+Blandine envoie trois cartes en couleurs normales et demande : « dis-moi si tu vois des incohérences ». Oui, deux — et aucune ne portait sur la lumière.
+
+⚠️ **Ordre des fichiers ≠ ordre annoncé, troisième fois.** Elle écrit « Dubaï, Saumur et Warendorf », les fichiers sont dans l'ordre Warendorf, Dubaï, Saumur. Identification au contenu, comme d'habitude — jamais au libellé.
+
+### ✅ SAUMUR — parfaite, livrée
+Le Grand Manège, la lumière tombant des hautes fenêtres, la poussière en suspension, l'écuyer de dos sans son visage. Exactement le prompt. Tiers supérieur à 22,2 → titre crème. `carte-saumur.webp` et `fond-saumur.webp` produits.
+⚠️ Réserve mineure, pas une incohérence : on est pile derrière le cheval, donc croupe et queue mais pas de tête. La règle « le cheval est le héros » est affaiblie, mais le lieu porte l'image.
+
+### 🔴 WARENDORF — l'image raconte un autre chapitre, et celui d'une autre ville
+Son chapitre est **« La formation »** : on y forme les enseignants et les cavaliers professionnels. L'image montrait **un poulain seul dans une allée** — c'est de l'élevage. Et pire : barrières blanches, poulain, grange, brume, c'est **l'identité visuelle de Lexington**. Deux cartes qui se confondent, précisément le problème qu'on cherchait à résoudre.
+✅ **Blandine a tranché en une phrase : « ah ben mets-les à Lexington alors ».** L'image devient `carte-lexington.webp` et `fond-lexington.webp`, remplaçant celles du portail au château d'eau — conservées de mon côté sous `*-ancienne.webp`.
+✅ C'est mieux sur le fond : Lexington enseigne **le haras**, et un poulain raconte ça mieux qu'un portail.
+⚠️ **Contradiction restante, dans MON texte et non dans son image** : le premier volet de Lexington s'appelle « Les barrières noires » et décrit du bois peint en noir, alors que la nouvelle carte montre des barrières blanches. Signalé, trois voies proposées, **rien touché** — c'est son texte autant que son image. Elle a répondu « pas grave », donc la contradiction reste assumée pour l'instant.
+
+### 🔴 DUBAÏ — la fidélité l'emporte sur la beauté, et c'est elle qui l'a dit
+Son chapitre est **l'endurance** : le kilomètre, le contrôle vétérinaire, le rythme cardiaque. L'image envoyée était une **présentation de race** — un arabe posé en licol de présentation dans une cour. Superbe, et objectivement plus claire que les autres (ensemble à 98,7 contre 75,7 pour l'actuelle).
+J'ai d'abord produit les fichiers en acceptant le compromis. **Blandine a corrigé la trajectoire : « sinon tu mets la carte à quelqu'un d'autre, faut que ça reste fidèle ».** Elle a raison, et c'est le bon arbitrage.
+✅ **Tout est revenu en arrière** : Dubaï garde sa carte de plage — quatre chevaux au galop dans l'eau, ce qui dit au moins la distance et le mouvement. Fichiers restaurés, `dubai` retirée de `TITRE_SOMBRE`, avertissement écrit dans le code pour ne pas l'y remettre sans remesurer la carte réellement en ligne.
+
+### 📌 Ce que cet aller-retour a quand même prouvé
+Le tiers supérieur de la carte refusée mesurait **125,7** — la première image du projet à franchir le seuil de 100. Le mécanisme de bascule du titre, écrit le 6 août et jamais déclenché depuis, **fonctionne**. Les cartes en couleurs normales qui arrivent vont l'utiliser de plus en plus : la lisibilité du titre n'est pas un obstacle au changement de palette.
+
+### ⏳ L'image de la cour reste sans emploi
+Elle est belle et n'appartient à aucun chapitre écrit. Deux pistes si Blandine veut la garder : **Jerez** (« Le cheval », où l'on décrit un cheval à l'arrêt — mais son cheval est un arabe et Jerez enseigne le pura raza española), ou une future ville du Golfe. À trancher par elle, pas par moi.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` · les trois images mesurées avant tout jugement (tiers supérieur, bande basse, ensemble) · ancienne et nouvelle carte de Lexington comparées avant remplacement · carte de Dubaï restaurée et remesurée à 54,7 après l'aller-retour · copies de sauvegarde des deux cartes remplacées.
+
+### 🧭 Préparation Flutter
+**Aucune modification d'architecture** — production d'actifs et un retour arrière.
+Deux acquis de méthode :
+- **Mesurer avant de juger, et identifier au contenu et non au libellé.** Les trois défauts trouvés ce coup-ci étaient de fond (le chapitre que l'image raconte), pas de forme — et aucun n'aurait été vu en regardant la lumière.
+- **Un retour arrière doit être complet.** Restaurer la carte sans retirer `dubai` de `TITRE_SOMBRE` aurait laissé un titre foncé sur une carte sombre, c'est-à-dire illisible : exactement le défaut qu'on venait de corriger sur Golegã. Un avertissement est écrit à l'endroit du piège.
+**Risques** : aucun.
+
+---
+
+## ✉️ SESSION 122 · LINGUAE (07/08) — LES CINQ LETTRES MANQUANTES, ET LE PROMPT DES CARTES POSTALES
+
+### ✅ Les cinq villes sans dépliant sont complétées
+Blandine : « sur les pages d'arrivée normalement on a le dépliant et les cartes et objets à gagner, là je vois plein de villes sans ».
+Diagnostic précis avant d'écrire : **les dix villes britanniques ont bien leurs lettres**, dans `hype-lingo-villes.js` — un fichier qui n'est pas dans cette conversation, d'où l'impression qu'elles manquaient aussi. Les vraies absentes étaient les **cinq dernières villes écrites** : Lexington, Spruce Meadows, Tokyo, Buenos Aires, Tamworth.
+
+✅ Lettre (deux paragraphes) et trois volets pour chacune, **six langues** :
+· **Lexington** — Les barrières noires · Vendre un cheval d'un an · Si tu y allais
+· **Spruce Meadows** — L'hiver albertain · C'est le sol qui décide · Si tu y allais
+· **Tokyo** — Le yabusame · Ce qui ne s'écrit pas · Si tu y allais
+· **Buenos Aires** — Huit chevaux pour un homme · La ligne de balle · Si tu y allais
+· **Tamworth** — Le rassemblement · L'anglais d'ici · Si tu y allais
+
+Le fichier des villes passe de 14 à **19 entrées**. Avec les dix britanniques, les vingt-neuf étapes ont désormais leur verso.
+⚠️ **Le cadrage de Spruce Meadows est tenu jusque dans son troisième volet**, qui dit franchement au lecteur que la saison de saut est l'été et que le vocabulaire du chapitre est celui de l'hiver. Mieux vaut le dire que laisser un cavalier averti buter dessus.
+
+### 🔴 Trois coquilles de ma main, attrapées avant livraison
+1. **Le « ⚠️ » apparaissait dans du texte VU par le joueur** — deux volets, Le Morne et Spruce Meadows. Ce signe est une convention de mes commentaires de code et des champs `def` ; dans un paragraphe narratif de l'écran d'arrivée, il n'a rien à faire. Retiré des deux, et reformulé en prose.
+2. **Un mot anglais resté dans le japonais** de Tokyo (« good » au milieu d'une phrase). Trouvé par un balayage de mots parasites sur tout le fichier — le même balayage a signalé trois autres « good » qui étaient, eux, de l'anglais légitime : **un contrôle automatique se relit, il ne se croit pas.**
+3. **Un accent manquant** dans le souvenir de Tamworth (« Une corde tressee »).
+
+### ✅ `hype-linguae-prompt-cartes.txt` — une lumière par ville
+Blandine : « les cartes postales en doré sont toutes un peu ressemblantes, je vais les refaire comme l'île Maurice plutôt, en couleurs normales ».
+
+Elle a raison, **et il y a une cause mécanique** qu'il fallait trouver avant de réécrire quoi que ce soit. La consigne de lumière des anciens prompts dit textuellement : « le soleil est juste sous l'horizon… la palette ne change JAMAIS : bleu nuit en haut, or au centre. Jamais de plein jour. » Excellente pour un clip de cinq plans qui doit tenir ensemble ; **désastreuse pour vingt-neuf cartes qu'on voit côte à côte**. Le Morne est la seule qui échappait à la règle, et la seule qu'on distingue au premier coup d'œil.
+
+✅ Nouveau prompt qui **sépare les deux cas** : la règle de palette unique reste pour les clips, et disparaît pour les cartes. **Chaque ville reçoit son heure et son climat**, listés une par une — plein jour couvert au Connemara, aube froide à Newmarket, plein midi de feria à Séville, jour de novembre sans soleil à Vérone, hiver bleuté à Spruce Meadows.
+✅ Y sont aussi rappelées les contraintes techniques que le générateur ignore : format 3/4 et non 9/16, **le cheval au premier plan** (plusieurs cartes actuelles en font un détail du paysage), tiers supérieur calme pour le titre, 15 % du bas laissés libres à cause du voile du carnet, et pas de cadre ni de coins arrondis puisque l'application dessine la forme.
+✅ Et une bonne nouvelle qui autorise le plein jour : **le titre s'adapte tout seul**, puisque je mesure le tiers supérieur de chaque carte pour choisir entre le crème et le foncé.
+
+### Contrôles passés
+`verif.py` sur les deux fichiers · les cinq villes contrôlées par exécution : lettre à deux paragraphes et trois volets titre + corps, **six langues, zéro manque** · balayage du « ⚠️ » dans tout texte visible : aucun restant · balayage de mots parasites · rendu réel des trois écrans d'arrivée (volets, carte postale, souvenir) · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **Les vingt-neuf cartes postales à refaire** en couleurs normales — prompt livré. Je refabrique les fonds et remesure le titre à chaque envoi.
+2. `lingua-affiche.webp` et le fond du carnet.
+3. Les définitions en quatre langues.
+4. La sécurité (11 mots) attend une ville.
+5. `niveau` divergent entre `arrivee` et `concours`.
+
+### 🧭 Préparation Flutter
+- **Un diagnostic avant une écriture** : la plainte disait « plein de villes sans », la réalité était « cinq villes sans, et dix que tu ne peux pas voir d'ici ». Vérifier quel fichier porte quoi avant d'écrire évite de réécrire ce qui existe.
+- **Une règle bonne dans un contexte, mauvaise dans l'autre.** La palette unique servait la cohérence d'un clip et détruisait la lisibilité d'une grille. Le nouveau prompt sépare explicitement les deux usages plutôt que de choisir un compromis mou.
+- **Un contrôle automatique doit se relire** : le balayage de mots parasites a trouvé une vraie faute et trois faux positifs. Utile, pas décisionnaire.
+- **Reste à moderniser** : inchangé.
+- **Risques** : aucun. Contenu et un fichier de prompt.
 
 ---
 
