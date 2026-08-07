@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 07/08/2026 (SESSION 100 · CORRECTIF QUETE photo-cheval) — md5 `2a872ce82efdc337257ffcf7234b4f13`, 10 535 090 octets. Preview : `preview-100.html` (ouvre l'ecran Quetes). Aucun SQL. **12 images toujours a pousser dans `images/`**. Detail dans la section SESSION 100 ci-dessous.**
+**Version actuelle de l'index.html : 07/08/2026 (SESSION 100 · QUETE photo-cheval, VALIDEE DEPUIS TOUS LES CHEMINS) — md5 `bfc5d118f8b1a6e2aea9570ad4f72886`, 10 535 908 octets. Preview : `preview-101.html` (ouvre la page Cavalier). Aucun SQL. **12 images toujours a pousser dans `images/`**. Detail dans la section SESSION 100 ci-dessous.**
+
+**Ancienne version (99) — 07/08/2026 (SESSION 100 · CORRECTIF QUETE photo-cheval) — md5 `2a872ce82efdc337257ffcf7234b4f13`, 10 535 090 octets. Preview : `preview-100.html` (ouvre l'ecran Quetes). Aucun SQL. **12 images toujours a pousser dans `images/`**. Detail dans la section SESSION 100 ci-dessous.**
 
 **Ancienne version (99) — 07/08/2026 (SESSION 99 · LE GALOP 2 EST COMPLET EN 6 LANGUES) — md5 `6cbe7b6c9079d553b2658d6ffbf4c7a8`, 10 533 663 octets. Preview : `preview-99.html` (ouvre `g2-aides`). Aucun SQL. **12 images toujours a pousser dans `images/`**. Detail dans la section SESSION 99 ci-dessous.**
 
@@ -3659,7 +3661,31 @@ Or l'ajout d'une photo depuis `EcranCheval` ecrivait a **trois** endroits :
 
 **A TESTER** : ouvrir la fiche d'un cheval qui t'appartient, ajouter une photo, puis aller sur l'ecran Quetes **sans recharger l'application**. La quete doit etre validee et les 15 XP verses.
 
-⚠️ **Limite connue, non corrigee** : le correctif ne s'applique qu'au chemin « fiche du cheval », le seul que decrit le texte de la quete. Le bouton « Mon cheval » de la page Cavalier (`choisirCheval`) ecrit dans `profil.chevalPhoto` / `cheval_photo`, **un champ du profil et non une ligne de `chevaux`** — il ne validera donc pas la quete, et c'est coherent avec l'intitule. A clarifier avec Blandine si elle attendait l'inverse.
+### COMPLEMENT · LA QUETE SE VALIDE DEPUIS TOUS LES CHEMINS (demande Blandine)
+
+Le premier correctif ne couvrait que la fiche du cheval. Blandine attendait l'inverse de ce que j'avais suppose : **la quete doit se valider quel que soit le chemin emprunte.**
+
+**Il y a trois chemins dans l'app, et ils n'ecrivent pas au meme endroit :**
+| chemin | ou la photo est ecrite | validait la quete avant ? |
+|---|---|---|
+| Fiche d'un cheval | `chevaux.photo_url` en base | non — l'etat global n'etait pas mis a jour (corrige plus haut) |
+| Creation d'un cheval avec photo | `setChevaux` avec `c.photo` en local | **oui, deja** |
+| Bouton « Mon cheval » de la page Cavalier | `profil.chevalPhoto` / `cheval_photo` en base | **non, et jamais** |
+
+Le troisieme est le piege : `choisirCheval` ecrit un champ **du profil**, qui ne touche aucune ligne de la table `chevaux`. Aucune mise a jour d'etat n'aurait pu le faire valider — il fallait elargir la condition elle-meme.
+
+`fait()` accepte donc desormais les deux formes : d'abord `profil.chevalPhoto` ou `profil.cheval_photo`, puis, a defaut, `photo_url` / `photo` sur l'une des lignes de `ctx.chevaux`. Le test du profil est enveloppe dans un `try`, et `ctx.profil` absent ne provoque rien.
+
+**TEST DE LA VRAIE FONCTION**, extraite du fichier et executee en Node sur sept cas :
+`rien` → non · `photo sur la fiche` → **valide** · `photo a la creation` → **valide** · `bouton Mon cheval` → **valide** · `champ base cheval_photo` → **valide** · `profil absent` → non · `tout vide` → non.
+
+**Diff total de la session** : 43 lignes, 41 ajoutees, 2 retirees. Deux zones : `EcranCheval` (la repercussion dans l'etat global) et la definition de la quete dans `HYPE_QUETES_DECOUVERTE`.
+
+⚠️ **A savoir sur ou cette quete s'affiche** : `HYPE_QUETES_DECOUVERTE` n'alimente que « La suite pour toi » et « Tes prochaines quetes » **sur l'accueil**, en lecture seule. L'ecran Quetes, lui, affiche les 14 familles de `HYPE_FAMILLES`, qui est un autre systeme — c'est lui qui verse l'XP. Le `xp: 15` inscrit sur la quete decouverte **n'est verse par personne** : c'est une valeur de maquette. A clarifier avec Blandine si elle attend un versement reel.
+
+Ne pas confondre non plus avec la famille **« Fiches completes »**, qui compte les chevaux dont la fiche a photo **ET** robe **ET** age **ET** un parent renseigne (`hypeFicheComplete`). Une photo seule ne fait pas avancer cette famille, et c'est normal.
+
+
 
 
 ---
@@ -4138,7 +4164,7 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 | 27/07 (2) | Autre page | Accueil : carte Communauté équestre remise dans Mon monde, section Découvrir réordonnée, carte Culture équestre remontée dans Actualité. Article Cadre Noir : philosophie dépliée en permanence, bonus Hype passé en carrousel, album participatif remonté avant "Visiter". |
 | 27/07 (3) | Claude (page "Articles 4 écoles") | **Article Cadre Noir** : carrousel des 3 écoles restantes (retrait des 5 cartes stub), encart "Marquer ma visite" (compteur permanent + SQL), encart "Partager cet article". |
 | 29/07 (44) | **Bibliothèque vidéo.** Nouvel écran + page de lecture dans un fichier séparé `hype-video.js` ; ancien écran vidéo factice retiré ; catalogue de 6 vraies vidéos (3 IFCE confirmées + 3 à vérifier) en 6 langues ; pas de pourcentage de lecture (lecteur externe) ; miniatures YouTube distantes (0 bande passante Netlify). Lien cours → vidéo (étape D) volontairement non fait. |
-| 07/08 (100) | Claude (page Accueil) | **Quete `photo-cheval` corrigee** : la photo etait ecrite en base et en local mais jamais dans l'etat global `ctx.chevaux` que lit la quete. On y repercute desormais le `photo_url` des que la base confirme. 26 lignes, confinees a `EcranCheval`. |
+| 07/08 (100) | Claude (page Accueil) | **Quete `photo-cheval` corrigee et validee depuis les 3 chemins** (fiche, creation, bouton « Mon cheval » de la page Cavalier) : la photo etait ecrite en base et en local mais jamais dans l'etat global `ctx.chevaux` que lit la quete. On y repercute desormais le `photo_url` des que la base confirme. 26 lignes, confinees a `EcranCheval`. |
 | 07/08 (99) | Claude (page Accueil) | **`g2-aides` traduit (199 chaines, 9 blocs). LE GALOP 2 EST COMPLET EN 6 LANGUES** sur ses 15 chapitres, corps et QCM compris. Variation de taille expliquee : c'est l'encodage `\\uXXXX` -> caracteres reels, pas le compactage. |
 | 07/08 (98) | Claude (page Accueil) | **`g2-c4` traduit en allemand** (154 chaines : 4 blocs + 10 QCM). Glossaire allemand du saut fixe. Outil `injecter.js` cree, idempotent et reutilisable. Il ne reste que `g2-aides` au Galop 2. |
 | 07/08 (97) | Claude (page Accueil) | **Galop 2** : repli anti-ecran-noir dans `CouvAffiche`, les 15 couvertures renseignees (10 en `images/`), 3 blocs de couverture crees en 6 langues, `g2-c4` complete en es/it/de, **`g2-depart` traduit en allemand de bout en bout** (128 chaines). Audit i18n des 8 tables. Aucun chapitre perdu depuis le 18/07. |
