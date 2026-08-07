@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 07/08/2026 (SESSION 104 · LES SIX LANGUES SONT COMPLÈTES DE BABY AU GALOP 4) — md5 `85778901fa567561c84e4b33c9a8c2a0`, 10 957 741 octets. Aucune preview (Blandine ne s'en sert pas). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` → à déclarer en k644.** Detail dans la section SESSION 104 ci-dessous.**
+**Version actuelle de l'index.html : 08/08/2026 (SESSION 105 · UNE BARRIÈRE D'ERREUR PAR ÉCRAN) — md5 `8b4f3eed7d382b74d3cdf63dc67fe35c`, 10 964 421 octets. Aucune preview. Aucun SQL. **`couv-g1-c11-de.jpg` toujours à pousser → k644.** Detail dans la section SESSION 105 ci-dessous.**
+
+**Ancienne version (104) — 07/08/2026 (SESSION 104 · LES SIX LANGUES SONT COMPLÈTES DE BABY AU GALOP 4) — md5 `85778901fa567561c84e4b33c9a8c2a0`, 10 957 741 octets. Aucune preview (Blandine ne s'en sert pas). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` → à déclarer en k644.** Detail dans la section SESSION 104 ci-dessous.**
 
 **Ancienne version (103) — 07/08/2026 (SESSION 103 · LES SIX LANGUES SONT ALIGNÉES JUSQU'AU GALOP 4, SAUF UN CHAPITRE) — md5 `3ed7728c04f4d0e9c096294963cc0244`, 10 870 272 octets. Preview : `preview-107.html` (ouvre « Les aides pour tourner », g3-c14). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` → sera déclarée en k644. 12 images du G2 toujours en attente.** Detail dans la section SESSION 103 ci-dessous.**
 
@@ -104,6 +106,92 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 105 · UNE BARRIÈRE D'ERREUR PAR ÉCRAN
+
+**index.html md5 `8b4f3eed7d382b74d3cdf63dc67fe35c`, 10 964 421 octets. Aucune preview. Aucun SQL.**
+
+### Le problème, mesuré
+
+L'app n'avait **aucune barrière d'erreur**. Les 11 occurrences de `componentDidCatch` /
+`getDerivedStateFromError` trouvées dans le fichier sont toutes **dans le code de React lui-même**
+(lignes 8597 à 14471). `ChasseErreursGalop` n'en est pas une : c'est le jeu « Chasse aux erreurs »,
+mon premier grep s'était fait piéger par le nom.
+
+Conséquence : les 61 écrans partagent une seule racine React, et une exception non rattrapée dans
+n'importe lequel **démonte l'arbre entier**. Plus de barre d'onglets, plus de swipe, aucune issue :
+il faut fermer l'app. C'est la cause des « foirages qui impactent d'autres parties » signalés par
+Blandine. Le commentaire de la session du 27/07 le disait déjà : *« React vide la racine »*.
+
+### Ce qui a été fait
+
+**`BarriereEcran`**, classe React posée autour de la seule chaîne des 61 écrans dans `Router()`.
+
+**Les textes ne sont pas nouveaux.** L'écran de plantage global « Un caillou dans le sabot »
+(Apy k554, titre Cinzel, six langues) existait déjà dans le bloc d'amorçage. Ses quatre chaînes
+sont reprises **mot pour mot** dans `HYPE_SABOT`, plus une cinquième écrite dans le même ton :
+« Réessayer cette page », traduite dans les six langues. Un seul vocabulaire pour l'app.
+
+**Trois détails qui font la différence :**
+
+1. **`key: ecran`** sur l'appel. Changer de page remonte la barrière, donc **revenir sur la page la
+   réessaie**. Sans cette clé, un écran cassé le resterait jusqu'au rechargement complet.
+2. **La barrière se ferme AVANT les surcouches.** `OverlayQuoiDeNeuf`, `InvitationsEcurieHype` et
+   surtout **`NavBar` sont à l'intérieur du même div** que les écrans. Les englober aurait emporté
+   la barre d'onglets avec l'écran — exactement le défaut qu'on corrige. Ordre vérifié :
+   barrière(3496) < overlay(8514) < navbar(8653).
+3. **`componentDidCatch` écrit dans la console** `[Hype] écran « club » : …` avec le
+   `componentStack`. Avant, rien. Le nom de l'écran fautif apparaît aussi dans « Détails
+   techniques », pour savoir quoi rollback sans chercher.
+
+`langue` a été ajouté à la destructuration de `useApp()` dans `Router` — il était dans le contexte
+mais pas extrait.
+
+### Contrôles passés
+
+- **Les 4 remplacements vérifiés uniques** avant écriture (`count == 1` chacun).
+- **`node --check` sur les 15 blocs `<script>` inline** : tout OK. La classe isolée compile seule.
+- **Accolades de `Router` équilibrées** — 341 427 caractères délimités proprement. C'est le
+  contrôle qui manquait lors de l'échec sur le bloc pedigree en session 65.
+- **Les six langues** de `HYPE_SABOT` ont bien 5 chaînes chacune, vérifié par évaluation réelle.
+- **Preuve de rendu contre l'index d'avant, six langues : IDENTIQUE AU CARACTERE PRES** sur les
+  20 060 valeurs. Aucun contenu touché.
+- **Une seule région contiguë modifiée** : 8 284 octets remplacés par 14 958, +6 674 octets au
+  total. Rien ailleurs dans le fichier.
+
+### Ce qui reste ouvert
+
+**Le découpage du contenu.** Banc d'essai fait sur `COURS_BABY_I18N` : 1,57 Mo sortis, objet
+reconstruit **identique bit pour bit**, repli `|| []` testé. Cause de l'échec de la session 71
+identifiée : `HYPE_IMGS` est une constante du bloc inline, invisible depuis un fichier externe →
+`ReferenceError`. Le Galop 1 était le pire premier choix (133 réfs d'images + 3 constantes).
+Ordre à suivre : Baby, puis G4, puis G5-6-7 (tous sans dépendance), les Galops 1-2-3 en dernier.
+**Non appliqué, en attente.**
+
+**Le `_headers`** a été poussé le 07/08 : cache un an sur les 119 `hype-images-*.js`, les 3
+`hype-clubs-db-*.js` et `images/`, jamais de cache sur `index.html`. Règle qui va avec : un fichier
+marqué immuable ne se corrige plus, il se remplace par un nouveau nom.
+
+**Déconnexion signalée après le push du `_headers`.** Le `_headers` ne peut pas en être la cause :
+il n'agit que sur les en-têtes HTTP, la session vit dans `localStorage` via `stockageHype`
+(`persistSession`, `autoRefreshToken`, repli `sessionStorage`). Code relu, sain — le bug du
+27/07 sur `hype_rappeler` coincé à `"0"` est bien corrigé. Deux causes plausibles restantes :
+l'app ouverte **à la fois depuis l'icône d'accueil et depuis Safari** (rotation du jeton de
+rafraîchissement Supabase, un contexte invalide l'autre), ou une purge de stockage par iOS.
+À surveiller ; parade propre si ça se reproduit : stocker la session sous une clé propre à Hype.
+
+**Le bug de voix du tracé animé** — `traceChoisirVoix()` filtre sur `/^fr/i` puis force cette voix
+quelle que soit la langue, écrasant `u.lang`. Correctif préparé, non appliqué. À noter : l'appel
+`TRACE_VOIX = traceChoisirVoix()` au chargement n'est **pas protégé** et se trouve à 8,2 Mo dans un
+bloc de 9 Mo — s'il lançait une exception, tout ce qui est déclaré après resterait `undefined`.
+C'est le motif exact du plantage de `lingo.html`. Le correctif rend l'appel paresseux et sous
+`try/catch`, ce qui supprime cette bombe en même temps.
+
+**Quatre affiches allemandes** (k213, k219, k225, k168) → k645 à k648. Repli provisoire sur
+l'anglais posé en session 104 : **ces cinq lignes devront être repassées sur k644–k648**, sinon une
+affiche allemande poussée ne s'afficherait jamais.
 
 ---
 
