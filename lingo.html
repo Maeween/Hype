@@ -13,22 +13,129 @@ html,body{margin:0;height:100%;overflow:hidden;background:#060709;color:var(--bl
  font-family:'Montserrat',system-ui,sans-serif}
 button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
-/* ---- la carte postale qui se pose, fin de lecon (7 aout 2026) ---- */
-.lcGain{margin:22px 0 6px;text-align:center}
-.lcGainT{font-size:10px;letter-spacing:.24em;text-transform:uppercase;
- color:#E8C980;margin:0 0 12px;animation:gainT .5s ease .55s both}
-.lcGainImg{display:block;width:150px;aspect-ratio:3/4;object-fit:cover;
- margin:0 auto;border-radius:10px;border:1px solid rgba(232,201,128,.35);
- box-shadow:0 22px 44px -20px rgba(0,0,0,.9), 0 0 0 4px rgba(232,201,128,.08);
- animation:gainCarte .85s cubic-bezier(.16,1.1,.3,1) both}
-.lcGainV{font-family:'Cinzel',serif;font-size:13px;color:var(--blanc);
- margin:12px 0 0;animation:gainT .5s ease .7s both}
+/* ==================================================================
+   FIN DE LECON & FIN DE QUIZ — direction A « le carnet », choisie par
+   Blandine le 7 aout 2026 sur maquette (fin-lecon.html).
+   Ses regles, toutes issues de ses retours :
+   · l'or pur ne sert qu'aux LISERES et aux icones ; tout texte dore
+     prend la creme --orTexte, seule lisible sur le noir ;
+   · l'animation de la carte est prononcee mais FINIT DROITE ;
+   · un reflet traverse la carte une fois posee, puis repasse ;
+   · toucher la carte l'ouvre en grand ;
+   · l'objet est TOUJOURS montre, grise s'il attend encore ;
+   · chaque ecran se referme sur une phrase positive sur le sujet.
+   ================================================================== */
+:root{--orTexte:#F6E3AC}
+.lcSurT{font-size:12px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;
+ color:var(--orTexte);margin:0 0 8px;text-align:center;
+ text-shadow:0 0 22px rgba(212,175,55,.35)}
+.lcConsT{font-family:'Cinzel',serif;font-size:16px;letter-spacing:.1em;color:var(--blanc);
+ margin:0 0 4px;text-align:center}
+.lcGain{margin:20px 0 4px;text-align:center}
+.lcGainImg{position:relative;display:block;width:min(62vw,232px);margin:0 auto}
+.lcGainImg img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;
+ border-radius:8px;border:1px solid rgba(232,201,128,.32);
+ box-shadow:0 30px 60px -26px rgba(0,0,0,.95), 0 0 0 5px rgba(244,247,250,.045);
+ animation:gainCarte 1.15s cubic-bezier(.16,1.1,.3,1) both}
+/* le reflet : une lame de lumiere traverse la carte posee, puis repasse */
+.lgReflet{position:absolute;inset:0;border-radius:8px;overflow:hidden;pointer-events:none}
+.lgReflet i{position:absolute;top:-20%;bottom:-20%;left:-60%;width:34%;
+ background:linear-gradient(105deg,transparent,rgba(244,247,250,.32) 45%,rgba(244,247,250,.06) 55%,transparent);
+ transform:skewX(-14deg);animation:lgLame 7s ease-in-out 1.3s infinite}
+@keyframes lgLame{0%{left:-60%;opacity:0}4%{opacity:1}16%{left:120%;opacity:.9}17%,100%{left:120%;opacity:0}}
+/* le coin adhesif dore, comme dans un album */
+.lgCoin{position:absolute;left:-9px;top:-9px;width:32px;height:32px;
+ background:linear-gradient(135deg,rgba(212,175,55,.8),rgba(212,175,55,.32) 55%,transparent 56%);
+ border-radius:4px 0 0 0;opacity:0;animation:lgCoin .4s ease 1.2s both}
+@keyframes lgCoin{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.lcGainT{font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;
+ color:var(--orTexte);margin:0 0 12px;animation:gainT .5s ease .65s both}
+.lcGainV{font-family:'Cinzel',serif;font-size:17px;letter-spacing:.06em;color:var(--blanc);
+ margin:14px 0 0;text-align:center;animation:gainT .5s ease .85s both}
+.lcGainV i{display:block;font-style:normal;font-size:11.5px;letter-spacing:.2em;
+ text-transform:uppercase;color:var(--orTexte);margin-top:6px}
 @keyframes gainCarte{
-  0%{opacity:0;transform:translateY(-38px) rotate(-13deg) scale(1.5);filter:blur(7px)}
- 55%{opacity:1;filter:blur(0)}
- 78%{transform:translateY(4px) rotate(2.5deg) scale(1)}
+  0%{opacity:0;transform:translateY(-90px) rotate(-17deg) scale(1.8);filter:blur(11px)}
+ 48%{opacity:1;filter:blur(0)}
+ 68%{transform:translateY(6px) rotate(2.8deg) scale(.985)}
+ 84%{transform:translateY(-2px) rotate(-1deg) scale(1.005)}
 100%{opacity:1;transform:translateY(0) rotate(0) scale(1);filter:blur(0)}}
 @keyframes gainT{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* le lien vers la collection, sous la legende */
+.lgColl{display:block;margin:12px auto 0;padding:7px 12px;font-size:12px;font-weight:500;
+ letter-spacing:.14em;text-transform:uppercase;color:var(--orTexte);
+ border-bottom:1px solid rgba(212,175,55,.5)}
+/* le score : une ligne manuscrite de carnet, pas un chiffre-monument */
+.lgManu{font-family:'Caveat',cursive;font-size:25px;color:#BFD9E2;
+ text-align:center;margin:18px 0 0}
+.lgManu b{color:var(--turquoise);font-weight:600}
+/* les mots, replies derriere une ligne du carnet */
+.lgPli{margin-top:20px;border-top:1px dashed rgba(255,255,255,.14);
+ border-bottom:1px dashed rgba(255,255,255,.14)}
+.lgPliB{display:flex;justify-content:space-between;align-items:center;width:100%;
+ padding:13px 2px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gris)}
+.lgPliB s{text-decoration:none;color:var(--turquoise);font-size:14px;transition:transform .3s}
+.lgPli.ouvert .lgPliB s{transform:rotate(45deg)}
+.lgPliC{display:none;padding:2px 0 6px}
+.lgPli.ouvert .lgPliC{display:block}
+/* l'objet du voyage, toujours present : grise s'il attend, dore s'il est la */
+.lgObj{display:flex;align-items:center;gap:14px;margin:18px auto 0;
+ padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.03);
+ border:1px solid rgba(255,255,255,.09);text-align:left}
+.lgObj .med{position:relative;flex:0 0 54px;width:54px;height:54px;border-radius:50%;
+ border:1px dashed rgba(212,175,55,.4);opacity:.55;
+ background:radial-gradient(circle at 50% 42%, rgba(212,175,55,.08), rgba(10,14,18,.6) 70%)}
+.lgObj .med svg{position:absolute;inset:10px;width:34px;height:34px}
+.lgRecMini{flex:0 0 44px;width:44px;aspect-ratio:3/4;object-fit:cover;border-radius:6px;
+ border:1px solid rgba(232,201,128,.35)}
+.lgObj p{margin:0;font-size:12px;line-height:1.6;color:#B9C6D2}
+.lgObj p b{color:var(--orTexte);font-weight:600}
+.lgObj.gagne .med{opacity:1;border-style:solid;border-color:rgba(212,175,55,.55);
+ box-shadow:0 0 30px -10px rgba(212,175,55,.6)}
+/* le grand medaillon de la fin de quiz — il ARRIVE, il ne se lit pas */
+.lgMed{position:relative;width:130px;height:130px;margin:22px auto 0;border-radius:50%;
+ background:radial-gradient(circle at 50% 42%, rgba(212,175,55,.14), rgba(10,14,18,.6) 70%);
+ border:1px solid rgba(212,175,55,.5);
+ box-shadow:0 24px 50px -24px rgba(0,0,0,.95), 0 0 46px -18px rgba(212,175,55,.55);
+ animation:lgTampon .85s cubic-bezier(.16,1.1,.3,1) both}
+.lgMed svg{position:absolute;inset:28px;width:74px;height:74px}
+.lgMed .anneau{position:absolute;inset:-8px;border-radius:50%;
+ border:1px dashed rgba(212,175,55,.35);animation:lgTour 40s linear infinite}
+.lgMed.enAttente{border-style:dashed;border-color:rgba(212,175,55,.35);
+ box-shadow:0 24px 50px -24px rgba(0,0,0,.95);animation:none;opacity:.55;
+ background:radial-gradient(circle at 50% 42%, rgba(212,175,55,.06), rgba(10,14,18,.6) 70%)}
+.lgMed.enAttente .anneau{animation-duration:80s}
+@keyframes lgTampon{
+  0%{opacity:0;transform:scale(1.6) rotate(9deg);filter:blur(6px)}
+ 60%{opacity:1;filter:blur(0)}
+ 80%{transform:scale(.97) rotate(-1.5deg)}
+100%{opacity:1;transform:none;filter:blur(0)}}
+@keyframes lgTour{to{transform:rotate(360deg)}}
+/* les mots a revoir avant de retenter */
+.lgARevoir{margin:18px auto 0;padding:14px 14px 10px;border-radius:14px;
+ background:rgba(230,120,130,.05);border:1px solid rgba(230,120,130,.28)}
+.lgARevoirT{margin:0 0 9px;font-size:11px;font-weight:600;letter-spacing:.18em;
+ text-transform:uppercase;color:#E8A6AE;text-align:center}
+.lgARevoir .lcMot{display:block;margin-top:6px;border-color:rgba(230,120,130,.3)}
+.lgARevoir .lcMot b{color:var(--blanc)}
+/* la phrase de fin : douce, en dernier, toujours positive sur le sujet */
+.lgPhrase{margin:22px 6px 4px;font-size:13px;line-height:1.75;color:#C9D6DF;
+ text-align:center;font-style:italic}
+.lgPhrase b{color:var(--turquoise);font-weight:500;font-style:normal}
+/* le sous-CTA sur deux lignes */
+.lcCta .fil2{display:block;font-size:9.5px;letter-spacing:.16em;font-weight:400;
+ color:rgba(6,7,9,.72);margin-top:3px;text-transform:none}
+.lcCta.calme2 .fil2{color:var(--gris)}
+/* la carte en grand : toucher pour ouvrir, toucher pour refermer */
+#lgGrand{position:fixed;inset:0;z-index:46;background:rgba(4,6,10,.96);display:none;
+ flex-direction:column;align-items:center;justify-content:center;gap:14px}
+#lgGrand.on{display:flex;animation:gainT .25s ease both}
+#lgGrand img{max-width:92vw;max-height:80svh;border-radius:12px;
+ border:1px solid rgba(232,201,128,.4);box-shadow:0 40px 90px -30px rgba(0,0,0,1)}
+#lgGrand p{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gris);margin:0}
+@media (prefers-reduced-motion:reduce){
+ .lcGainImg img,.lgMed{animation-duration:.001s}
+ .lgReflet i,.lgMed .anneau{animation:none}}
 
 /* ---------------- PRÉSENTATION ET DESTINATIONS ---------------- */
 #intro,#dest{position:fixed;inset:0;z-index:44;background:#04060A;overflow-y:auto;
@@ -1125,7 +1232,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v4 · 7 août</p>
+    <p id="ouvVersion">v5 · 7 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1303,7 +1410,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=4";
+var VER = "?v=5";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -2559,6 +2666,13 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
 
 /* « à » + le nom d'une ville, en francais : au Morne, à La Baule,
    aux Sables. Ailleurs, la langue n'a pas ce probleme. */
+function deLaVille(nom){
+  if(langueUI()!=="fr") return "de "+nom;
+  if(/^[AEIOUÉÈÊÀÂÎÔÛH]/i.test(nom)) return "d'"+nom;
+  if(/^Le\s/i.test(nom))  return "du "+nom.slice(3);
+  if(/^Les\s/i.test(nom)) return "des "+nom.slice(4);
+  return "de "+nom;
+}
 function versLaVille(nom){
   if(/^Les\s/i.test(nom))  return "aux " + nom.slice(4);
   if(/^Le\s/i.test(nom))   return "au "  + nom.slice(3);
@@ -3136,6 +3250,190 @@ function souvenirObtenu(ref){
    C'est la PREMIERE carte du projet a declencher reellement la bascule
    ecrite le 6 aout. Les suivantes en couleurs normales feront de meme :
    la liste va s'allonger, c'est prevu et c'est sain. */
+
+/* ==================================================================
+   LA PHRASE DE FIN (7 aout 2026, demande de Blandine) : chaque ecran de
+   fin se referme sur une phrase positive sur le SUJET du chapitre —
+   « avoir la chance de partager une baignade avec son cheval est un
+   moment incroyable » etait son exemple pour la balade. Une par ville,
+   six langues, lue par tx().
+   ================================================================== */
+var PHRASES_FIN = {
+ labaule:{fr:"Pousser la porte d'une écurie dans une autre langue, c'est déjà voyager. <b>La tienne s'ouvre ici.</b>",
+  en:"Walking into a yard in another language is already travelling. <b>Yours starts here.</b>",
+  es:"Entrar en una cuadra en otro idioma ya es viajar. <b>La tuya empieza aquí.</b>",
+  it:"Entrare in una scuderia in un'altra lingua è già viaggiare. <b>La tua inizia qui.</b>",
+  de:"In einer anderen Sprache einen Stall zu betreten ist schon eine Reise. <b>Deine beginnt hier.</b>",
+  ja:"別の言葉で厩舎の扉を開くこと、それはもう旅。<b>きみの旅はここから始まる。</b>"},
+ maurice:{fr:"Partager une baignade avec son cheval est un moment incroyable. <b>Si l'occasion se présente, ne la laisse pas passer.</b>",
+  en:"Sharing a swim with your horse is an incredible moment. <b>If the chance comes, take it.</b>",
+  es:"Compartir un baño con tu caballo es un momento increíble. <b>Si surge la ocasión, no la dejes pasar.</b>",
+  it:"Fare il bagno con il proprio cavallo è un momento incredibile. <b>Se capita l'occasione, non lasciartela sfuggire.</b>",
+  de:"Mit dem eigenen Pferd zu schwimmen ist ein unglaublicher Moment. <b>Wenn sich die Gelegenheit bietet, nutze sie.</b>",
+  ja:"馬と一緒に海を泳ぐのは信じられないほど素敵な瞬間。<b>チャンスが来たら、逃さないで。</b>"},
+ connemara:{fr:"Savoir décrire un cheval, c'est savoir le regarder. <b>Et on n'a jamais fini de les regarder.</b>",
+  en:"Knowing how to describe a horse means knowing how to look at one. <b>And you never stop looking.</b>",
+  es:"Saber describir un caballo es saber mirarlo. <b>Y nunca se termina de mirarlos.</b>",
+  it:"Saper descrivere un cavallo è saperlo guardare. <b>E non si smette mai di guardarli.</b>",
+  de:"Ein Pferd beschreiben zu können heißt, es sehen zu können. <b>Und man hört nie auf hinzusehen.</b>",
+  ja:"馬を言葉で描けることは、馬をよく見られるということ。<b>そして馬は、いくら見ても見飽きない。</b>"},
+ newmarket:{fr:"Une écurie se comprend avec les mots de ceux qui y vivent. <b>Les tiens sont maintenant les leurs.</b>",
+  en:"A yard makes sense in the words of the people who live there. <b>Now their words are yours.</b>",
+  es:"Una cuadra se entiende con las palabras de quienes viven en ella. <b>Ahora sus palabras son tuyas.</b>",
+  it:"Una scuderia si capisce con le parole di chi la vive. <b>Ora le loro parole sono tue.</b>",
+  de:"Einen Stall versteht man mit den Worten derer, die dort leben. <b>Jetzt sind ihre Worte deine.</b>",
+  ja:"厩舎は、そこで生きる人たちの言葉で理解できる。<b>その言葉が、今きみのものになった。</b>"},
+ lambourn:{fr:"Le pansage est le moment où le cheval apprend à te connaître. <b>Prends ton temps, il compte double.</b>",
+  en:"Grooming is when your horse gets to know you. <b>Take your time — it counts double.</b>",
+  es:"La limpieza es el momento en que el caballo te conoce. <b>Tómate tu tiempo: cuenta doble.</b>",
+  it:"La pulizia è il momento in cui il cavallo impara a conoscerti. <b>Prenditi tempo: vale doppio.</b>",
+  de:"Beim Putzen lernt dein Pferd dich kennen. <b>Nimm dir Zeit — sie zählt doppelt.</b>",
+  ja:"手入れの時間は、馬がきみを知る時間。<b>ゆっくりでいい。その時間は二倍の価値がある。</b>"},
+ walsall:{fr:"Un cuir bien entretenu dure toute une vie de cavalier. <b>Le matériel le rend toujours.</b>",
+  en:"Well-kept leather lasts a rider's lifetime. <b>Good care always pays back.</b>",
+  es:"Un cuero bien cuidado dura toda una vida de jinete. <b>El material siempre lo devuelve.</b>",
+  it:"Un cuoio ben curato dura tutta una vita da cavaliere. <b>Il materiale lo restituisce sempre.</b>",
+  de:"Gut gepflegtes Leder hält ein Reiterleben lang. <b>Gute Pflege zahlt sich immer aus.</b>",
+  ja:"よく手入れされた革は、騎手の一生に寄り添う。<b>道具への愛情は必ず返ってくる。</b>"},
+ aberystwyth:{fr:"Les premières foulées au bord de la mer ne s'oublient pas. <b>Chaque mise en selle en garde un peu.</b>",
+  en:"Your first strides by the sea are never forgotten. <b>Every ride keeps a little of them.</b>",
+  es:"Los primeros pasos junto al mar no se olvidan. <b>Cada monta guarda un poco de ellos.</b>",
+  it:"Le prime falcate in riva al mare non si dimenticano. <b>Ogni volta in sella ne conserva un po'.</b>",
+  de:"Die ersten Schritte am Meer vergisst man nie. <b>Jedes Aufsitzen trägt etwas davon weiter.</b>",
+  ja:"海辺での初めての騎乗は忘れられない。<b>これからの騎乗のたびに、その記憶が少しずつ生きる。</b>"},
+ windsor:{fr:"Le dressage n'est pas une contrainte : c'est une conversation. <b>Tu viens d'en apprendre la langue.</b>",
+  en:"Dressage isn't constraint — it's a conversation. <b>You've just learned its language.</b>",
+  es:"La doma no es una imposición: es una conversación. <b>Acabas de aprender su idioma.</b>",
+  it:"Il dressage non è una costrizione: è una conversazione. <b>Hai appena imparato la sua lingua.</b>",
+  de:"Dressur ist kein Zwang — sie ist ein Gespräch. <b>Du hast gerade ihre Sprache gelernt.</b>",
+  ja:"馬場馬術は強制ではなく、会話。<b>きみは今、その言葉を覚えた。</b>"},
+ hickstead:{fr:"Un bel obstacle se franchit d'abord dans la tête. <b>Regarde loin, ton cheval suivra.</b>",
+  en:"A fence is cleared in your head first. <b>Look far ahead — your horse will follow.</b>",
+  es:"Un obstáculo se salta primero con la cabeza. <b>Mira lejos: tu caballo te seguirá.</b>",
+  it:"Un ostacolo si supera prima nella testa. <b>Guarda lontano: il tuo cavallo ti seguirà.</b>",
+  de:"Ein Sprung wird zuerst im Kopf gemeistert. <b>Schau weit voraus — dein Pferd folgt dir.</b>",
+  ja:"障害はまず頭の中で跳ぶもの。<b>遠くを見て。馬はきっとついてくる。</b>"},
+ badminton:{fr:"Un concours se gagne bien avant le jour du concours. <b>Chaque détente compte déjà.</b>",
+  en:"A competition is won long before competition day. <b>Every warm-up already counts.</b>",
+  es:"Un concurso se gana mucho antes del día del concurso. <b>Cada calentamiento ya cuenta.</b>",
+  it:"Una gara si vince molto prima del giorno della gara. <b>Ogni lavoro alla corda conta già.</b>",
+  de:"Ein Turnier wird lange vor dem Turniertag gewonnen. <b>Jedes Abreiten zählt schon.</b>",
+  ja:"競技は当日よりずっと前に決まっている。<b>今日の練習が、もう本番の一部。</b>"},
+ kildare:{fr:"Savoir dire « il boite » dans une autre langue peut changer une journée. <b>Tu sauras le dire.</b>",
+  en:"Knowing how to say “he's lame” in another language can change a whole day. <b>Now you can.</b>",
+  es:"Saber decir «cojea» en otro idioma puede cambiar un día entero. <b>Ahora sabrás decirlo.</b>",
+  it:"Saper dire «zoppica» in un'altra lingua può cambiare una giornata. <b>Ora sai dirlo.</b>",
+  de:"„Er lahmt“ in einer anderen Sprache sagen zu können, kann einen Tag verändern. <b>Jetzt kannst du es.</b>",
+  ja:"「跛行しています」を外国語で言えることが、その日を変えることもある。<b>きみはもう言える。</b>"},
+ edimbourg:{fr:"Oser poser une question dans une autre langue, c'est déjà parler. <b>La prochaine, tu la poseras sans y penser.</b>",
+  en:"Daring to ask a question in another language is already speaking it. <b>The next one will come without thinking.</b>",
+  es:"Atreverse a preguntar en otro idioma ya es hablarlo. <b>La próxima te saldrá sin pensar.</b>",
+  it:"Osare fare una domanda in un'altra lingua è già parlarla. <b>La prossima ti verrà senza pensarci.</b>",
+  de:"Sich in einer anderen Sprache eine Frage zu trauen heißt schon, sie zu sprechen. <b>Die nächste kommt wie von selbst.</b>",
+  ja:"外国語で質問する勇気、それはもう「話せている」ということ。<b>次の質問は、考えずに口から出てくる。</b>"},
+ saumur:{fr:"La légèreté du Cadre Noir se cherche toute une vie. <b>La chercher, c'est déjà monter mieux.</b>",
+  en:"The lightness of the Cadre Noir takes a lifetime to find. <b>Seeking it already makes you ride better.</b>",
+  es:"La ligereza del Cadre Noir se busca toda una vida. <b>Buscarla ya es montar mejor.</b>",
+  it:"La leggerezza del Cadre Noir si cerca per tutta la vita. <b>Cercarla è già montare meglio.</b>",
+  de:"Die Leichtigkeit des Cadre Noir sucht man ein Leben lang. <b>Sie zu suchen heißt schon besser reiten.</b>",
+  ja:"カードル・ノワールの軽やかさは一生かけて探すもの。<b>探すことそのものが、上達への道。</b>"},
+ lamotte:{fr:"Tout grand cavalier a commencé sur un poney. <b>Les poneys le savent, et ils sont patients.</b>",
+  en:"Every great rider started on a pony. <b>Ponies know it — and they are patient.</b>",
+  es:"Todo gran jinete empezó en un poni. <b>Los ponis lo saben, y son pacientes.</b>",
+  it:"Ogni grande cavaliere ha iniziato su un pony. <b>I pony lo sanno, e sono pazienti.</b>",
+  de:"Jeder große Reiter hat auf einem Pony angefangen. <b>Ponys wissen das — und sie sind geduldig.</b>",
+  ja:"どんな名騎手もポニーから始まった。<b>ポニーはそれを知っていて、辛抱強く待ってくれる。</b>"},
+ golega:{fr:"Voir naître un poulain, c'est voir commencer une histoire. <b>Quelqu'un la montera un jour.</b>",
+  en:"Watching a foal being born is watching a story begin. <b>Someone will ride it one day.</b>",
+  es:"Ver nacer un potro es ver empezar una historia. <b>Alguien lo montará algún día.</b>",
+  it:"Vedere nascere un puledro è vedere iniziare una storia. <b>Un giorno qualcuno lo monterà.</b>",
+  de:"Ein Fohlen zur Welt kommen zu sehen heißt, eine Geschichte beginnen zu sehen. <b>Eines Tages wird sie jemand reiten.</b>",
+  ja:"仔馬の誕生は、ひとつの物語の始まり。<b>いつか誰かが、その馬に乗る日が来る。</b>"},
+ jerez:{fr:"Chaque robe, chaque marque raconte un cheval unique. <b>Il n'y en a pas deux pareils au monde.</b>",
+  en:"Every coat, every marking tells of one unique horse. <b>No two in the world are alike.</b>",
+  es:"Cada capa, cada marca cuenta un caballo único. <b>No hay dos iguales en el mundo.</b>",
+  it:"Ogni mantello, ogni segno racconta un cavallo unico. <b>Non ce ne sono due uguali al mondo.</b>",
+  de:"Jedes Fell, jedes Abzeichen erzählt von einem einzigartigen Pferd. <b>Keine zwei auf der Welt sind gleich.</b>",
+  ja:"毛色も、白斑も、一頭一頭の物語。<b>世界に同じ馬は二頭といない。</b>"},
+ seville:{fr:"Présenter un cheval, c'est le mettre en lumière sans se montrer soi. <b>La plus belle des élégances.</b>",
+  en:"Presenting a horse means putting it in the light, not yourself. <b>The finest kind of elegance.</b>",
+  es:"Presentar un caballo es ponerlo a él en la luz, no a ti. <b>La más bella elegancia.</b>",
+  it:"Presentare un cavallo è mettere in luce lui, non te. <b>La più bella delle eleganze.</b>",
+  de:"Ein Pferd vorzustellen heißt, es ins Licht zu stellen — nicht sich selbst. <b>Die schönste Form von Eleganz.</b>",
+  ja:"馬を披露するとは、自分ではなく馬を輝かせること。<b>それが最も美しいエレガンス。</b>"},
+ vejer:{fr:"Une écurie qui tourne bien, c'est des chevaux qui vont bien. <b>L'intendance est un soin comme les autres.</b>",
+  en:"A well-run yard means horses doing well. <b>Good housekeeping is a kind of care too.</b>",
+  es:"Una cuadra que funciona bien son caballos que están bien. <b>La intendencia también es un cuidado.</b>",
+  it:"Una scuderia che funziona bene sono cavalli che stanno bene. <b>La gestione è una cura come le altre.</b>",
+  de:"Ein gut geführter Stall bedeutet Pferde, denen es gut geht. <b>Auch Organisation ist eine Form der Pflege.</b>",
+  ja:"きちんと回る厩舎には、元気な馬がいる。<b>厩舎の仕事も、大切なケアのひとつ。</b>"},
+ oliva:{fr:"S'engager sur un concours, c'est se donner un rendez-vous avec soi-même. <b>Ose le prendre.</b>",
+  en:"Entering a show is making an appointment with yourself. <b>Dare to keep it.</b>",
+  es:"Inscribirse en un concurso es darse una cita con uno mismo. <b>Atrévete a acudir.</b>",
+  it:"Iscriversi a una gara è darsi un appuntamento con se stessi. <b>Osa presentarti.</b>",
+  de:"Sich für ein Turnier zu nennen heißt, sich mit sich selbst zu verabreden. <b>Trau dich hinzugehen.</b>",
+  ja:"競技へのエントリーは、自分自身との約束。<b>勇気を出して、その約束を果たそう。</b>"},
+ rome:{fr:"Autour de la piste, tout un monde travaille pour une seule minute de sport. <b>Tu en fais partie maintenant.</b>",
+  en:"Around the arena, a whole world works for one minute of sport. <b>You're part of it now.</b>",
+  es:"Alrededor de la pista, todo un mundo trabaja para un minuto de deporte. <b>Ahora formas parte de él.</b>",
+  it:"Intorno al campo, un mondo intero lavora per un minuto di sport. <b>Ora ne fai parte anche tu.</b>",
+  de:"Rund um den Parcours arbeitet eine ganze Welt für eine Minute Sport. <b>Jetzt gehörst du dazu.</b>",
+  ja:"アリーナの周りでは、たった1分の競技のために大勢が働いている。<b>きみも今、その一員。</b>"},
+ verone:{fr:"Acheter un cheval, c'est choisir un compagnon pour des années. <b>Les bonnes questions d'aujourd'hui font les belles histoires de demain.</b>",
+  en:"Buying a horse means choosing a companion for years. <b>Today's good questions make tomorrow's good stories.</b>",
+  es:"Comprar un caballo es elegir un compañero para años. <b>Las buenas preguntas de hoy hacen las bellas historias de mañana.</b>",
+  it:"Comprare un cavallo è scegliere un compagno per anni. <b>Le buone domande di oggi fanno le belle storie di domani.</b>",
+  de:"Ein Pferd zu kaufen heißt, einen Gefährten für Jahre zu wählen. <b>Gute Fragen heute machen schöne Geschichten morgen.</b>",
+  ja:"馬を買うことは、何年も連れ添う相棒を選ぶこと。<b>今日の良い質問が、明日の良い物語をつくる。</b>"},
+ warendorf:{fr:"On ne finit jamais d'apprendre à cheval — et c'est une bonne nouvelle. <b>Il y aura toujours un lendemain à progresser.</b>",
+  en:"You never finish learning with horses — and that's good news. <b>There will always be a tomorrow to improve.</b>",
+  es:"Nunca se termina de aprender a caballo, y es una buena noticia. <b>Siempre habrá un mañana para progresar.</b>",
+  it:"Non si finisce mai di imparare a cavallo — ed è una buona notizia. <b>Ci sarà sempre un domani per migliorare.</b>",
+  de:"Mit Pferden lernt man nie aus — und das ist eine gute Nachricht. <b>Es gibt immer ein Morgen zum Besserwerden.</b>",
+  ja:"馬の世界に学び終わりはない。それは嬉しい知らせ。<b>明日はいつでも、上達のためにある。</b>"},
+ aachen:{fr:"Les plus grands cavaliers du monde ont le trac, eux aussi. <b>Ce qui compte, c'est d'entrer en piste.</b>",
+  en:"The best riders in the world get nervous too. <b>What counts is riding into the arena.</b>",
+  es:"Los mejores jinetes del mundo también tienen nervios. <b>Lo que cuenta es entrar en pista.</b>",
+  it:"Anche i più grandi cavalieri del mondo hanno il batticuore. <b>Ciò che conta è entrare in campo.</b>",
+  de:"Auch die besten Reiter der Welt sind nervös. <b>Was zählt, ist in den Parcours einzureiten.</b>",
+  ja:"世界のトップ騎手だって緊張する。<b>大事なのは、アリーナに入っていくこと。</b>"},
+ dubai:{fr:"En endurance, le vainqueur est d'abord celui qui écoute son cheval. <b>Cent kilomètres d'écoute.</b>",
+  en:"In endurance, the winner is the one who listens to their horse. <b>A hundred kilometres of listening.</b>",
+  es:"En raid, gana primero quien escucha a su caballo. <b>Cien kilómetros de escucha.</b>",
+  it:"In endurance vince prima di tutto chi ascolta il proprio cavallo. <b>Cento chilometri di ascolto.</b>",
+  de:"Im Distanzreiten gewinnt zuerst, wer seinem Pferd zuhört. <b>Hundert Kilometer Zuhören.</b>",
+  ja:"エンデュランスで勝つのは、馬の声を聴ける騎手。<b>100キロの道のりは、100キロの対話。</b>"},
+ tokyo:{fr:"Le yabusame se transmet depuis huit siècles, d'un cavalier à l'autre. <b>Apprendre, c'est déjà transmettre.</b>",
+  en:"Yabusame has been passed down for eight centuries, rider to rider. <b>Learning is already passing it on.</b>",
+  es:"El yabusame se transmite desde hace ocho siglos, de jinete a jinete. <b>Aprender ya es transmitir.</b>",
+  it:"Lo yabusame si tramanda da otto secoli, da cavaliere a cavaliere. <b>Imparare è già tramandare.</b>",
+  de:"Yabusame wird seit acht Jahrhunderten weitergegeben, von Reiter zu Reiter. <b>Lernen heißt schon weitergeben.</b>",
+  ja:"流鏑馬は八百年、騎手から騎手へ受け継がれてきた。<b>学ぶことは、受け継ぐことの始まり。</b>"},
+ tamworth:{fr:"Le western, c'est un cheval qui travaille avec toi, pas pour toi. <b>Un vrai coéquipier.</b>",
+  en:"Western riding is a horse working with you, not for you. <b>A true teammate.</b>",
+  es:"La monta western es un caballo que trabaja contigo, no para ti. <b>Un verdadero compañero de equipo.</b>",
+  it:"Il western è un cavallo che lavora con te, non per te. <b>Un vero compagno di squadra.</b>",
+  de:"Westernreiten ist ein Pferd, das mit dir arbeitet, nicht für dich. <b>Ein echter Teamkollege.</b>",
+  ja:"ウエスタンの馬は、きみの「ために」ではなく「一緒に」働く。<b>本当のチームメイト。</b>"},
+ buenos:{fr:"Au polo, huit chevaux et quatre cavaliers ne font qu'une seule équipe. <b>Et les chevaux adorent jouer.</b>",
+  en:"In polo, eight horses and four riders make one single team. <b>And the horses love the game.</b>",
+  es:"En el polo, ocho caballos y cuatro jinetes forman un solo equipo. <b>Y a los caballos les encanta jugar.</b>",
+  it:"Nel polo, otto cavalli e quattro cavalieri fanno una sola squadra. <b>E ai cavalli piace giocare.</b>",
+  de:"Beim Polo bilden acht Pferde und vier Reiter ein einziges Team. <b>Und die Pferde lieben das Spiel.</b>",
+  ja:"ポロでは8頭の馬と4人の騎手がひとつのチーム。<b>そして馬たちは、この遊びが大好き。</b>"},
+ lexington:{fr:"Dans un grand haras, chaque cheval est une promesse. <b>Quelqu'un, quelque part, l'attend déjà.</b>",
+  en:"In a great stud farm, every horse is a promise. <b>Somewhere, someone is already waiting for it.</b>",
+  es:"En un gran haras, cada caballo es una promesa. <b>Alguien, en algún lugar, ya lo espera.</b>",
+  it:"In un grande allevamento, ogni cavallo è una promessa. <b>Qualcuno, da qualche parte, lo aspetta già.</b>",
+  de:"In einem großen Gestüt ist jedes Pferd ein Versprechen. <b>Irgendwo wartet schon jemand auf es.</b>",
+  ja:"名門の牧場では、どの馬もひとつの約束。<b>どこかで誰かが、その馬を待っている。</b>"},
+ spruce:{fr:"L'hiver, les chevaux comptent sur toi plus que jamais. <b>Et la buée au-dessus des box vaut tous les étés.</b>",
+  en:"In winter, horses count on you more than ever. <b>And the steam above the stables is worth every summer.</b>",
+  es:"En invierno, los caballos cuentan contigo más que nunca. <b>Y el vaho sobre los boxes vale todos los veranos.</b>",
+  it:"D'inverno i cavalli contano su di te più che mai. <b>E il vapore sopra i box vale tutte le estati.</b>",
+  de:"Im Winter zählen die Pferde mehr denn je auf dich. <b>Und der Dampf über den Boxen ist jeden Sommer wert.</b>",
+  ja:"冬、馬たちはいつも以上にきみを頼りにしている。<b>馬房の上に立ちのぼる湯気は、どんな夏にも代えがたい。</b>"}
+};
 var TITRE_SOMBRE = ["warendorf","jerez","oliva","lamotte",
                     "saumur","aachen","vejer","rome","hickstead","newmarket",
                     /* mesures du 7 aout, lot edimbourg + buenos :
@@ -3284,7 +3582,13 @@ S("globeX").addEventListener("click", function(){ fermerGlobe(); montrerCarnet()
 window.addEventListener("message", function(ev){
   var d = ev.data || {};
   if(d.t === "linguae-fermer"){ fermerGlobe(); montrerCarnet(); return; }
-  if(d.t === "linguae-fermer-collection"){ fermerCollection(); montrerCarnet(); return; }
+  if(d.t === "linguae-fermer-collection"){ fermerCollection();
+    /* ⚠️ la collection s'ouvre aussi DEPUIS la fin de lecon (lien « la
+       retrouver dans ta collection ») : si la lecon est encore ouverte,
+       remonter le carnet (z 40) la couvrirait (z 26). On ne remonte le
+       carnet que si rien d'autre n'attend dessous. */
+    if(!S("lecon").classList.contains("on")) montrerCarnet();
+    return; }
   if(d.t !== "linguae-dest" || !d.ref) return;
   var i = -1;
   ETAPES.forEach(function(e,k){ if(e.ref===d.ref) i=k; });
@@ -3777,6 +4081,55 @@ var UI = {
    it:"Continuare · {n}", de:"Weiter · {n}", ja:"続ける・{n}"},
  revoirLecon:{fr:"Revoir une leçon", en:"Review a lesson", es:"Repasar una lección",
    it:"Ripassare una lezione", de:"Eine Lektion wiederholen", ja:"レッスンを復習する"},
+ /* ---- refonte fin de lecon / fin de quiz, direction A (7 aout 2026) ---- */
+ finChapitreT:{fr:"Chapitre terminé", en:"Chapter complete", es:"Capítulo terminado",
+   it:"Capitolo completato", de:"Kapitel abgeschlossen", ja:"章クリア"},
+ finLeconT:{fr:"Leçon terminée", en:"Lesson complete", es:"Lección terminada",
+   it:"Lezione completata", de:"Lektion abgeschlossen", ja:"レッスン終了"},
+ manuSansFaute:{fr:"{s} sur {s} — sans faute.", en:"{s} out of {s} — flawless.",
+   es:"{s} de {s} — sin fallos.", it:"{s} su {s} — senza errori.",
+   de:"{s} von {s} — fehlerfrei.", ja:"{s}問中{s}問 — ノーミス。"},
+ manuPresque:{fr:"{s} sur {t} — il s'en est fallu de peu.", en:"{s} out of {t} — so close.",
+   es:"{s} de {t} — por muy poco.", it:"{s} su {t} — per un soffio.",
+   de:"{s} von {t} — knapp daneben.", ja:"{s}問中{t}問 — あと少し。"},
+ manuEncore:{fr:"{s} sur {t} — encore un passage et c'est bon.",
+   en:"{s} out of {t} — one more pass and it's yours.",
+   es:"{s} de {t} — una vuelta más y lo tienes.",
+   it:"{s} su {t} — ancora un giro e ci sei.",
+   de:"{s} von {t} — noch ein Durchgang und es sitzt.",
+   ja:"{s}問中{t}問 — もう一周で完成。"},
+ taCarteNo:{fr:"Ta carte postale · nº {n}", en:"Your postcard · no. {n}",
+   es:"Tu postal · n.º {n}", it:"La tua cartolina · n. {n}",
+   de:"Deine Postkarte · Nr. {n}", ja:"きみの絵はがき · {n}枚目"},
+ versColl:{fr:"La retrouver dans ta collection ›", en:"Find it in your collection ›",
+   es:"Verla en tu colección ›", it:"Ritrovarla nella tua collezione ›",
+   de:"In deiner Sammlung ansehen ›", ja:"コレクションで見る ›"},
+ objetAttend:{fr:"Il te reste l'objet du voyage à gagner : un sans-faute au quiz, et il est à toi.",
+   en:"The keepsake is still waiting: a flawless quiz and it's yours.",
+   es:"El recuerdo aún te espera: un cuestionario sin fallos y es tuyo.",
+   it:"Il souvenir ti aspetta ancora: un quiz senza errori ed è tuo.",
+   de:"Das Andenken wartet noch: ein fehlerfreies Quiz, und es gehört dir.",
+   ja:"旅の記念品はまだ待っている。クイズをノーミスで、きみのものに。"},
+ objetDejaL:{fr:"L'objet du voyage est déjà à toi : {o}.",
+   en:"The keepsake is already yours: {o}.", es:"El recuerdo ya es tuyo: {o}.",
+   it:"Il souvenir è già tuo: {o}.", de:"Das Andenken gehört dir schon: {o}.",
+   ja:"旅の記念品はもうきみのもの：{o}。"},
+ objetSeGagneLa:{fr:"L'objet du voyage se gagne là", en:"That's where the keepsake is won",
+   es:"Ahí se gana el recuerdo", it:"È lì che si vince il souvenir",
+   de:"Dort wird das Andenken gewonnen", ja:"記念品はここで手に入る"},
+ aRevoirAvant:{fr:"À revoir avant de retenter", en:"Review before retrying",
+   es:"Para repasar antes de reintentar", it:"Da rivedere prima di riprovare",
+   de:"Vor dem nächsten Versuch wiederholen", ja:"再挑戦の前に復習"},
+ retenterQuiz:{fr:"Retenter le quiz", en:"Retry the quiz", es:"Reintentar el cuestionario",
+   it:"Riprovare il quiz", de:"Quiz erneut versuchen", ja:"クイズに再挑戦"},
+ meilleurCompte:{fr:"Seul le meilleur score compte", en:"Only your best score counts",
+   es:"Solo cuenta tu mejor puntuación", it:"Conta solo il tuo punteggio migliore",
+   de:"Nur dein bestes Ergebnis zählt", ja:"ベストスコアだけが記録される"},
+ bravoObjet:{fr:"Bravo — {o} rejoint ta collection.", en:"Well done — {o} joins your collection.",
+   es:"Enhorabuena — {o} entra en tu colección.", it:"Bravo — {o} entra nella tua collezione.",
+   de:"Glückwunsch — {o} kommt in deine Sammlung.", ja:"おめでとう — {o}がコレクションに加わった。"},
+ toucheFermer:{fr:"Touche pour refermer", en:"Tap to close", es:"Toca para cerrar",
+   it:"Tocca per chiudere", de:"Tippen zum Schließen", ja:"タップで閉じる"},
  tourDuMonde:{fr:"Le tour du monde", en:"The world tour", es:"La vuelta al mundo",
    it:"Il giro del mondo", de:"Die Weltreise", ja:"世界一周"},
  laCollection:{fr:"La collection", en:"The collection", es:"La colección",
@@ -3890,6 +4243,8 @@ function appliquerLangue(){
 
 /* ---------- petits outils ---------- */
 function el(tag, attrs){
+  /* attrs.html : contenu riche (phrases de fin, manuscrit) — jamais de
+     texte joueur la-dedans, uniquement nos propres chaines traduites. */
   var n=document.createElement(tag), i, k;
   if(attrs) for(k in attrs){
     if(k==="class") n.className=attrs[k];
@@ -4204,16 +4559,26 @@ function choisirLecon(){
      la carte se gagne dans la leçon (tous les mots bons), l'objet au
      quiz sans faute. */
   var carteFaite = carteObtenue(LC.ville), objFait = souvenirObtenu(LC.ville);
+  var eC_ = ETAPES[ETAPES.findIndex(function(x){ return x.ref===LC.ville; })];
   var boite=el("div",{class:"lcRec"});
   boite.appendChild(el("p",{class:"lcRt", text: ui==="en"?"What this chapter unlocks":"Ce que ce chapitre d\u00e9bloque"}));
-  boite.appendChild(ligneRec(carteFaite,
-    (ui==="en"?"The postcard of ":"La carte postale de ")+LC.villeNom,
-    carteFaite ? (ui==="en"?"yours":"obtenue")
-               : (ui==="en"?"all words right, once":"tous les mots bons, une fois")));
-  boite.appendChild(ligneRec(objFait,
-    (ui==="en"?"The keepsake of ":"Le souvenir de ")+LC.villeNom,
-    objFait ? (ui==="en"?"yours":"obtenu")
-            : (ui==="en"?"a perfect quiz":"le quiz sans faute")));
+  /* la carte postale, en vraie miniature — grisee tant qu'elle attend */
+  var mini = document.createElement("img");
+  mini.className="lgRecMini"; mini.alt=LC.villeNom;
+  mini.src="carte-"+LC.ville+".webp"+VER;
+  if(!carteFaite) mini.style.opacity=".42";
+  mini.addEventListener("error",function(){ this.style.display="none"; });
+  boite.appendChild(el("div",{class:"lgObj"+(carteFaite?" gagne":""), style:"margin-top:10px"}, mini,
+    el("p",{html:"<b>"+((ui==="en"?"The postcard ":"La carte postale ")+(ui==="en"?("of "+LC.villeNom):deLaVille(LC.villeNom)))+"</b> — "+
+      (carteFaite ? (ui==="en"?"yours":"obtenue")
+                  : (ui==="en"?"all words right, once":"tous les mots bons, une fois"))})));
+  /* l'objet, dans son medaillon — le meme dessin que partout */
+  var medC = el("span",{class:"med"});
+  medC.innerHTML='<svg viewBox="0 0 60 60">'+(ICONES[eC_&&eC_.ic]||"")+'</svg>';
+  boite.appendChild(el("div",{class:"lgObj"+(objFait?" gagne":""), style:"margin-top:8px"}, medC,
+    el("p",{html:"<b>"+((ui==="en"?"The keepsake ":"Le souvenir ")+(ui==="en"?("of "+LC.villeNom):deLaVille(LC.villeNom)))+"</b> — "+
+      (objFait ? (ui==="en"?"yours":"obtenu")
+               : (ui==="en"?"a perfect quiz":"le quiz sans faute"))})));
   S("lcCorps").appendChild(boite);
 }
 function ligneRec(obtenu, quoi, etat){
@@ -4646,7 +5011,7 @@ var QZ = null;
 function ouvrirQuiz(){
   var mots = (LC.L && LC.L.concepts) ? brasser(LC.L.concepts.slice()) : [];
   if(!mots.length) return;
-  QZ = { mots:mots, i:0, justes:0, total:mots.length };
+  QZ = { mots:mots, i:0, justes:0, total:mots.length, rates:[] };
   etapeQuiz();
 }
 function etapeQuiz(){
@@ -4670,6 +5035,7 @@ function etapeQuiz(){
           this.classList.add(juste ? "ok" : "ko");
           Array.prototype.forEach.call(corps.querySelectorAll(".lcOpt"), function(b){ b.disabled=true; });
           if(juste) QZ.justes++;
+          else if(QZ.rates.indexOf(c)<0) QZ.rates.push(c);
           dire(bonne, lg);
           setTimeout(function(){ QZ.i++; etapeQuiz(); }, juste ? 520 : 1100);
         }}, o);
@@ -4679,34 +5045,69 @@ function etapeQuiz(){
   S("lcCorps").appendChild(corps);
 }
 function finQuiz(){
-  var ui = langueUI(), sc = QZ.justes, tot = QZ.total;
+  /* ==================================================================
+     REECRIT le 7 aout 2026, direction A validee sur maquette.
+     Le quiz ne parle toujours QUE de l'objet (regle du 6 aout : la carte
+     se gagne dans la lecon). Mais l'objet recoit ENFIN le meme honneur
+     que la carte : il ARRIVE dans son medaillon, il ne se lit plus dans
+     une ligne de liste. Et les mots rates se developpent, avec le bouton
+     pour retenter (retours de Blandine sur la maquette).
+     ================================================================== */
+  var ui = langueUI(), sc = QZ.justes, tot = QZ.total, rates = QZ.rates.slice();
   var avantObj = souvenirObtenu(LC.ville);
   garderQuiz(LC.ville, sc, tot);
   var obj = souvenirObtenu(LC.ville);
+  var eV_ = ETAPES[ETAPES.findIndex(function(x){ return x.ref===LC.ville; })];
   videEl(S("lcJauge")); videEl(S("lcCorps"));
   S("lcTitre").textContent = T("quizTitre");
   var zone = S("lcCorps");
   zone.appendChild(el("div",{},
-    el("p",{class:"lcCons", text:T("quizFait")}),
-    el("p",{class:"lcScore", text:sc+" / "+tot})
+    el("p",{class:"lcSurT", text:T("quizFait")}),
+    el("p",{class:"lcConsT", text: eCh(eV_)+" · "+eV(eV_)})
   ));
-  /* ⚠️ CORRIGÉ le 6 août 2026 : le quiz ne parle plus que de l'OBJET.
-     La carte postale se gagne dans la leçon elle-même (tous les mots
-     bons, une seule fois) — la mêler ici faisait dire deux choses
-     différentes à deux écrans qui se suivent. */
-  var bloc = el("div",{class:"lcSortie"}, el("p",{class:"lcSortieT", text:T("quizRecomp")}));
-  bloc.appendChild(el("div",{class:"lcJal"+(obj?" ok":"")},
-    el("b",{text:T("lObjet")}),
+  /* le medaillon : il se pose s'il vient d'etre gagne, il brille sans
+     rejouer s'il l'etait deja, il attend en pointilles sinon */
+  var med = el("div",{class:"lgMed"+(obj?"":" enAttente")});
+  if(obj && avantObj) med.style.animation="none";   /* deja a toi : pas de rejeu */
+  med.appendChild(el("span",{class:"anneau"}));
+  var svg = el("span",{});
+  svg.innerHTML='<svg viewBox="0 0 60 60">'+(ICONES[eV_&&eV_.ic]||"")+'</svg>';
+  med.appendChild(svg.firstChild);
+  zone.appendChild(med);
+  zone.appendChild(el("p",{class:"lcGainV", style:"animation:none", text:eSouv(eV_)},
     el("i",{text: obj ? (avantObj ? T("dejaAToi") : T("gagneMaintenant"))
                       : manqueTxt(tot-sc)})));
-  zone.appendChild(bloc);
+  /* la ligne manuscrite, comme en fin de lecon */
+  var manque = tot - sc;
+  zone.appendChild(el("p",{class:"lgManu", html:
+    manque<=0 ? T("manuSansFaute",{s:tot})
+              : (manque<=2 ? T("manuPresque",{s:sc,t:tot})
+                           : T("manuEncore",{s:sc,t:tot}))}));
+  if(obj && !avantObj){
+    zone.appendChild(el("p",{class:"lcDef", html:"<b style='color:var(--orTexte)'>"+
+      T("bravoObjet",{o:eSouv(eV_)})+"</b>"}));
+  }
   if(!obj){
-    zone.appendChild(el("p",{class:"lcDef", text:T("quizRetente")}));
-    zone.appendChild(el("button",{class:"lcCta", onclick:ouvrirQuiz}, T("quizRefaire")));
+    /* les mots rates, developpes : on voit QUOI revoir avant de retenter */
+    if(rates.length){
+      var rev = el("div",{class:"lgARevoir"},
+        el("p",{class:"lgARevoirT", text:T("aRevoirAvant")}));
+      rates.forEach(function(c){
+        rev.appendChild(el("span",{class:"lcMot"},
+          el("b",{text:c.mots[cible()].m}),
+          el("i",{text:c.mots[langueUI()] ? c.mots[langueUI()].m : ""})));
+      });
+      zone.appendChild(rev);
+    }
+    zone.appendChild(el("button",{class:"lcCta", onclick:ouvrirQuiz},
+      el("b",{text:T("retenterQuiz")}),
+      el("span",{class:"fil2", text:T("meilleurCompte")})));
   }
   zone.appendChild(el("button",{class:"lcCta",
     style:"margin-top:9px;background:rgba(255,255,255,.06);color:#8996A2;box-shadow:none;border:1px solid rgba(255,255,255,.1)",
     onclick:function(){ QZ=null; finLecon(); }}, T("quizRetour")));
+  var ph = PHRASES_FIN[LC.ville];
+  if(ph) zone.appendChild(el("p",{class:"lgPhrase", html:tx(ph)}));
 }
 
 function manqueTxt(n){ return n<=1 ? T("ilManque1") : T("ilManque",{n:n}); }
@@ -4745,10 +5146,18 @@ function finLecon(){
      pas où on en était du CHAPITRE, et « une autre leçon » ne disait pas
      où il menait.
      ================================================================== */
+  var eV_ = ETAPES[ETAPES.findIndex(function(x){ return x.ref===LC.ville; })];
+  var noV = ETAPES.findIndex(function(x){ return x.ref===LC.ville; }) + 1;
   S("lcCorps").appendChild(el("div",{},
-    el("p",{class:"lcCons", text: ui==="en"?"Lesson complete":"Leçon terminée"}),
-    el("p",{class:"lcScore", text:LC.justes+" / "+sur})
+    el("p",{class:"lcSurT", text: T(carteGagnee ? "finChapitreT" : "finLeconT")}),
+    el("p",{class:"lcConsT", text: eCh(eV_)+" · "+eV(eV_)})
   ));
+  /* le score est une ligne manuscrite de carnet, pas un chiffre-monument */
+  var manque = sur - LC.justes;
+  S("lcCorps").appendChild(el("p",{class:"lgManu", html:
+    manque<=0 ? T("manuSansFaute",{s:sur})
+              : (manque<=2 ? T("manuPresque",{s:LC.justes,t:sur})
+                           : T("manuEncore",{s:LC.justes,t:sur}))}));
 
   /* ⚠️ LA CARTE POSTALE SE MONTRE AU MOMENT OU ELLE SE GAGNE (7 aout 2026).
      Elle arrive de loin, tourne un peu, et se pose — c'est le geste que
@@ -4756,25 +5165,35 @@ function finLecon(){
      Elle n'apparait QUE la premiere fois : revoir une lecon deja parfaite
      ne doit pas rejouer la recompense. */
   if(carteNeuve){
-    var eV_ = ETAPES[ETAPES.findIndex(function(x){ return x.ref===LC.ville; })];
     var bloc = el("div",{class:"lcGain"});
     bloc.appendChild(el("p",{class:"lcGainT", text:T("carteGagnee")}));
+    var cadre = el("span",{class:"lcGainImg"});
     var img = document.createElement("img");
-    img.className="lcGainImg"; img.alt=eV_?eV(eV_):LC.ville;
+    img.alt=eV_?eV(eV_):LC.ville;
     img.src="carte-"+LC.ville+".webp"+VER;
     /* si la carte n'existe pas encore comme fichier, on n'affiche pas un
        cadre vide : le titre suffit. */
-    img.addEventListener("error",function(){ this.style.display="none"; });
-    bloc.appendChild(img);
-    if(eV_) bloc.appendChild(el("p",{class:"lcGainV", text:eV(eV_)}));
+    img.addEventListener("error",function(){ cadre.style.display="none"; });
+    /* toucher la carte l'ouvre en grand (retour de Blandine, maquette) */
+    img.addEventListener("click",function(){ ouvrirGrand(img.src, img.alt); });
+    cadre.appendChild(img);
+    cadre.appendChild(el("span",{class:"lgReflet"}, el("i",{})));
+    cadre.appendChild(el("span",{class:"lgCoin"}));
+    bloc.appendChild(cadre);
+    if(eV_) bloc.appendChild(el("p",{class:"lcGainV", text:eV(eV_)},
+      el("i",{text:T("taCarteNo",{n:noV})})));
     S("lcCorps").appendChild(bloc);
+  }
+  /* le chemin vers la collection : la recompense doit dire OU on la
+     retrouve (retour de Blandine, maquette) */
+  if(carteGagnee){
+    S("lcCorps").appendChild(el("button",{class:"lgColl",
+      onclick:function(){ ouvrirCollection(); }}, T("versColl")));
   }
 
   /* ---- les mots de la leçon, avec leur état ---- */
   var motsL = (LC.L && LC.L.concepts) ? LC.L.concepts : [];
   if(motsL.length){
-    var zoneM = el("div",{class:"lcSortie"},
-      el("p",{class:"lcSortieT", text:T("recapMots")}));
     var grille = el("div",{class:"lcRecap"});
     motsL.forEach(function(c){
       var m = MAITRISE[c.ref] || 0;
@@ -4782,12 +5201,28 @@ function finLecon(){
         el("b",{text:c.mots[cible()].m}),
         el("i",{text:c.mots[langueUI()] ? c.mots[langueUI()].m : ""})));
     });
-    zoneM.appendChild(grille);
     var nAcq = motsL.filter(function(c){ return (MAITRISE[c.ref]||0)>=3; }).length;
-    zoneM.appendChild(el("p",{class:"lcDef",
-      text:T("recapCompte",{a:nAcq, t:motsL.length})}));
-    S("lcCorps").appendChild(zoneM);
+    /* le pli : les mots sont la si on les veut, ils n'encombrent plus.
+       Ouvert d'office quand la lecon n'est pas parfaite : on doit VOIR
+       ce qui reste a revoir sans un tap de plus. */
+    var pli = el("div",{class:"lgPli"+(manque>0?" ouvert":"")});
+    pli.appendChild(el("button",{class:"lgPliB",
+      onclick:function(){ pli.classList.toggle("ouvert"); }},
+      el("span",{text:T("recapMots")}), el("s",{text:"+"})));
+    pli.appendChild(el("div",{class:"lgPliC"}, grille,
+      el("p",{class:"lcDef", text:T("recapCompte",{a:nAcq, t:motsL.length})})));
+    S("lcCorps").appendChild(pli);
   }
+  /* l'objet du voyage, TOUJOURS montre : grise s'il attend encore, avec
+     la phrase qui dit comment le gagner ; dore s'il est deja la
+     (retour de Blandine : « c'est pas parce que tu as la carte que tu as
+     forcement l'objet ») */
+  var objDeja = souvenirObtenu(LC.ville);
+  var medS = el("span",{class:"med"});
+  medS.innerHTML = '<svg viewBox="0 0 60 60">'+(ICONES[eV_&&eV_.ic]||"")+'</svg>';
+  S("lcCorps").appendChild(el("div",{class:"lgObj"+(objDeja?" gagne":"")}, medS,
+    el("p",{html: objDeja ? T("objetDejaL",{o:eSouv(eV_)})
+                          : "<b>"+T("lObjet")+"</b> — "+T("objetAttend")})));
 
   /* ⚠️ RETIRÉ le 6 août 2026, sur demande de Blandine : le bloc
      « Où en est ce chapitre » listait la MAÎTRISE (répétitions sur
@@ -4806,7 +5241,8 @@ function finLecon(){
   /* le quiz : il ne donne plus que l'objet */
   var qz = scoreQuiz(LC.ville);
   S("lcCorps").appendChild(el("button",{class:"lcCta", onclick:ouvrirQuiz},
-    qz ? T("quizRefaire") : T("quizLancer")));
+    el("b",{text: qz ? T("quizRefaire") : T("quizLancer")}),
+    objDeja ? null : el("span",{class:"fil2", text:T("objetSeGagneLa")})));
   S("lcCorps").appendChild(el("button",{class:"lcCta",
     style:"margin-top:9px;background:rgba(255,255,255,.06);color:#C6D0DA;box-shadow:none;border:1px solid rgba(255,255,255,.12)",
     onclick:function(){ if(suivante) lancer(suivante); else lancer(LC.L); }},
@@ -4865,6 +5301,24 @@ function finLecon(){
     style:"margin-top:9px;background:rgba(255,255,255,.06);color:#8996A2;box-shadow:none;border:1px solid rgba(255,255,255,.1)",
     onclick:function(){ fermerLecon(); montrerCarnet(); setTimeout(ouvrirGlobe, 140); }},
     ui==="en"?"Back to the journey":"Revenir au voyage"));
+  /* la phrase de fin : positive, sur le sujet du chapitre, en dernier */
+  var ph = PHRASES_FIN[LC.ville];
+  if(ph) S("lcCorps").appendChild(el("p",{class:"lgPhrase", html:tx(ph)}));
+}
+
+/* la carte en grand : construit une fois, reutilise ensuite */
+function ouvrirGrand(src, alt){
+  var g = S("lgGrand");
+  if(!g){
+    g = el("div",{id:"lgGrand"});
+    g.appendChild(el("img",{alt:alt||""}));
+    g.appendChild(el("p",{text:T("toucheFermer")}));
+    g.addEventListener("click",function(){ g.classList.remove("on"); });
+    document.body.appendChild(g);
+  }
+  g.querySelector("img").src = src;
+  g.querySelector("p").textContent = T("toucheFermer");
+  g.classList.add("on");
 }
 
 

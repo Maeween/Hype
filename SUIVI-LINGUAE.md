@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 132)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 133)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -56,7 +56,7 @@
 ## 4 · Ce qui reste, par ordre d'utilité
 
 1. **Les 25 cartes restantes.** Chantier en cours.
-2. **Refondre visuellement la fin de leçon et la fin de quiz.** Demande explicite de Blandine : « il faut retravailler ces pages, c'est pas possible ». Aujourd'hui : un score, des listes, des boutons empilés. L'animation de la carte est un premier pas ; **l'objet gagné au quiz mérite le même traitement.**
+2. ~~Refondre la fin de leçon et la fin de quiz~~ — **FAIT en session 133** (direction A « le carnet », choisie sur maquette). Reste à valider sur le téléphone de Blandine, et les autres écrans de leçon (exercices eux-mêmes) ne sont pas touchés.
 3. **Les deux fonds d'entrée en portrait pleine résolution** — `lingua-affiche.webp` et `lingua-langues.webp` existent, prolongés depuis des sources carrée et paysage. Blandine les refait. ⚠️ **Le cheval du film d'ouverture est une JUMENT NOIRE, seule, sans cavalier** (vérifié image par image) : l'affiche doit lui correspondre.
 4. **Le fond du carnet de route.** Le CSS va chercher `fond-newmarket.webp` en dur pour la page « Le tour du monde » — reste d'une ancienne version. À produire très sombre et très flou, puis renommer proprement. Peut se dériver de l'affiche.
 5. **Les définitions en quatre langues.** Elles n'existent qu'en français et en anglais ; un joueur lisant en allemand les reçoit en français. Plusieurs centaines de notes. Seul vrai chantier de fond restant.
@@ -102,6 +102,40 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🎨 SESSION 133 · LINGUAE (07/08) — LA DIRECTION A INTÉGRÉE : FIN DE LEÇON, FIN DE QUIZ, ÉCRAN DU CHAPITRE
+
+Blandine a choisi **A · le carnet** sur la maquette `fin-lecon.html`, après cinq allers-retours de retours. Tout est intégré dans `lingo.html`.
+
+### ✅ La fin de leçon, réécrite
+Sur-titre crème + titre Cinzel (« Chapitre terminé · Les dialogues · Édimbourg »), score en **ligne manuscrite** Caveat (« 10 sur 10 — sans faute. », trois variantes selon l'écart), carte en grand cliché avec **coin adhésif, reflet qui repasse toutes les 7 s, animation prononcée qui finit DROITE**, légende « Ta carte postale · nº 12 », **lien « La retrouver dans ta collection › »**, **toucher la carte l'ouvre en plein écran** (`ouvrirGrand`, construit à la demande). Les mots se **replient** derrière une ligne pointillée — **ouverts d'office quand la leçon n'est pas parfaite**. L'**objet est toujours montré** : médaillon grisé en pointillés + « il te reste l'objet à gagner : un sans-faute au quiz » quand il attend, doré quand il est là ; le bouton du quiz porte « L'objet du voyage se gagne là ». **Phrase de fin** positive sur le sujet, en dernier.
+
+### ✅ La fin de quiz, réécrite
+L'objet reçoit **le même honneur que la carte** : il ARRIVE dans son médaillon (échelle, rotation, il se pose), anneau pointillé qui tourne lentement ; en pointillés grisés s'il attend ; sans rejeu s'il était déjà gagné. `QZ.rates` retient **quels mots ont été ratés** : ils se développent dans l'encart « À revoir avant de retenter », avec « Retenter le quiz — seul le meilleur score compte ». Quiz parfait → « **Bravo — Un carnet de mots rejoint ta collection.** » Phrase de fin aussi.
+
+### ✅ L'écran du chapitre (sa 3e capture)
+« Ce que ce chapitre débloque » : les deux ronds ○ deviennent des **objets** — vraie miniature de la carte postale (grisée à 42 % tant qu'elle attend) et médaillon de l'objet, dans le même dessin que partout. Au passage : **« de Édimbourg » → « d'Édimbourg »** (`deLaVille()`, élision française, du/des pour Le/Les ; les autres langues inchangées).
+
+### ✅ Les 29 phrases de fin, six langues
+`PHRASES_FIN`, une par ville, sur le SUJET du chapitre — l'exemple de Blandine (la baignade avec son cheval) est celle du Morne, presque mot pour mot. **Cardinalité vérifiée par script : 29 refs × 6 langues.** 16 clés d'interface ajoutées (manuscrit, objet, à revoir, bravo…), six langues chacune.
+
+### ✅ Règles de la maquette appliquées partout
+L'or pur ne sert qu'aux liserés et icônes ; tout texte doré passe en crème `--orTexte` #F6E3AC (retour « je n'arrive pas à lire le doré sur le noir »). Garde-fou : fermer la collection ouverte depuis une leçon ne remonte plus le carnet par-dessus la leçon.
+
+### ⚠️ `VER` passe à `?v=5`, marqueur `v5 · 7 août`
+Pas un lot d'images cette fois, mais Blandine doit pouvoir VOIR d'un coup d'œil que la refonte tourne.
+
+### Contrôles passés
+Tous les blocs `<script>` après chaque étape · cardinalité 29×6 par node · **banc d'essai Playwright sans les fichiers lexiques** (faux chapitre de 10 mots) : leçon parfaite avec carte neuve, plein écran ouvert/refermé au toucher, leçon imparfaite (pli ouvert, pas de carte), quiz raté (2 mots développés), quiz parfait (bravo), écran du chapitre — six rendus jugés à l'œil, aucune erreur JS de nos chemins.
+⚠️ **Caveat (l'écriture manuscrite) et Cinzel retombent sur des polices de secours dans mon bac à sable** (pas de réseau) : le rendu des polices est à valider sur son téléphone. Caveat est déjà dans la ligne de fonts du fichier depuis l'origine.
+
+### ⏳ Reste sur ce chantier
+La validation sur téléphone, et si elle le souhaite : le même traitement pour l'écran d'arrivée (souvenir), et l'effet miroir sur les cartes de la collection.
+
+### 🧭 Préparation Flutter
+`ouvrirGrand()` et `deLaVille()` sont des utilitaires purs réutilisables. Les récompenses (carte, objet) ont désormais UN seul langage visuel (`lgObj`, `lgMed`, `lcGain`) au lieu de trois — c'est un composant de plus identifié pour le portage.
 
 ---
 
