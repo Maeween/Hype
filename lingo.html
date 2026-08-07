@@ -309,8 +309,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    ⚠️ Si un jour de vraies photos nettes remplacent les flous, c'est
    `brightness` qu'il faudra baisser, pas le voile qu'il faudra remonter. */
 .vc .vrec{background:linear-gradient(158deg,#141A21,#080B0F 72%)}
+/* ⚠️ `brightness` redescend de 1,95 a 1,12 : la premiere image empilee est
+   desormais une carte postale NETTE, exposee normalement. Le 1,95 servait a
+   rattraper un flou volontairement assombri a 40 de luminance. Le laisser
+   aurait delave les cartes nettes. */
 .vc .vrec .vimg{position:absolute;inset:0;background-size:cover;
- background-position:center 34%;filter:brightness(1.95) saturate(1.12)}
+ background-position:center 34%;filter:brightness(1.12) saturate(1.06)}
 .vc .vrec .vvoile{position:absolute;inset:0;
  background:linear-gradient(180deg,rgba(6,7,9,.10) 0%,rgba(6,7,9,.34) 46%,rgba(6,7,9,.82) 100%)}
 .vc .vrec .vhalo{position:absolute;left:-30%;top:-24%;width:160%;height:90%;
@@ -2346,7 +2350,23 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
         '<span class="vf vrec">'+
           /* l'image dans sa propre couche : elle est eclaircie par un
              filtre CSS, qui ne doit pas toucher au texte. */
-          '<span class="vimg" style="background-image:url(&quot;fond-'+e.ref+'.webp&quot;)"></span>'+
+          /* ⚠️ DEUX IMAGES EMPILEES, la nette d'abord (7 aout 2026).
+             Blandine, deux fois : « les cartes floutées on voit rien ».
+             Elle a raison et l'eclaircissement de la session 115 n'a pas
+             suffi : un flou de 420 px reste un flou, et six villes n'ont
+             meme aucun fond.
+             CSS multiple backgrounds : la PREMIERE est dessinee au-dessus,
+             et si son fichier n'existe pas elle est simplement ignoree.
+             On met donc `carte-X.webp` (nette, 900x1200) devant
+             `fond-X.webp` (le flou) : repli automatique, sans onerror et
+             sans liste a maintenir.
+             ⚠️ J'avais argumente CONTRE : la carte postale est la
+             recompense, la montrer avant le depart grille le cadeau.
+             L'argument ne tient pas face a « on ne voit rien ». Et ce
+             n'est pas la meme chose : ici elle est rognee, assombrie et
+             sert de fond ; la recompense reste la carte entiere, avec sa
+             lettre au verso et son entree dans la collection. */
+          '<span class="vimg" style="background-image:url(&quot;carte-'+e.ref+'.webp&quot;),url(&quot;fond-'+e.ref+'.webp&quot;)"></span>'+
           '<span class="vhalo"></span><span class="vvoile"></span>'+
           '<span class="vn">'+(i+1)+'</span>'+
           barresNiveau(niveauVille(e.ref))+
@@ -2363,8 +2383,19 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
           '<span class="vapp"></span>'+
         '</span>'+
       '</span>';
+    /* ⚠️ DEUX TEMPS depuis le 7 aout 2026, sur retour de Blandine :
+       « quand on clique dessus alors qu'elles sont deja retournees ou qu'on
+       double clic on s'attendrait a etre envoye sur la page concernee ».
+       · carte de face   → elle se retourne et montre ce qu'on y apprend
+       · carte au verso  → on part dans la ville
+       Un double tap fait donc naturellement les deux, ce qui est exactement
+       ce qu'elle attendait. Et on ne laisse qu'une carte ouverte a la fois :
+       ca evite d'avoir a la refermer pour en lire une autre. */
     d.addEventListener("click",function(){
-      this.classList.toggle("ouv");
+      if(this.classList.contains("ouv")){ partirVersVille(i); return; }
+      var deja = document.querySelector(".vc.ouv");
+      if(deja && deja !== this) deja.classList.remove("ouv");
+      this.classList.add("ouv");
       remplirApprentissage(this);
     });
     g.appendChild(d);
@@ -5261,6 +5292,16 @@ function terminerOuverture(){
   S("ouvFilm").classList.remove("joue","fini","refuse");
   S("ouverture").classList.remove("joue","parti");
   S("ouverture").scrollTop=0;
+}
+
+/* Depuis une carte du carnet, on entre directement dans la ville.
+   Meme sortie que le globe : on masque le carnet, puis on ouvre l'arrivee.
+   ⚠️ Le carnet est masque APRES l'ouverture de l'arrivee, jamais avant :
+   c'est la lecon du flash du chemin (session 99). */
+function partirVersVille(i){
+  allerA(i);
+  ouvrirArrivee(i);
+  setTimeout(function(){ S("ouverture").classList.add("parti"); }, 340);
 }
 
 /* « Partir » -> le globe. La Baule y est SUGGEREE (anneau dore, en tete

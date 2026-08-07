@@ -22,6 +22,46 @@
 
 ---
 
+## 🖼️ SESSION 121 · LINGUAE (07/08) — LES CARTES DU CARNET DEVIENNENT NETTES ET CLIQUABLES
+
+### ✅ La carte postale nette passe devant le flou
+« On voudrait voir les cartes moins floues, là on voit vraiment rien. » Deuxième fois qu'elle le dit — l'éclaircissement de la session 116 n'a pas suffi, et c'était prévisible : **un flou de 420 px reste un flou**, et six villes n'ont même aucun fond.
+
+✅ **Deux images empilées, la nette d'abord.** CSS multiple backgrounds : la première déclarée est dessinée au-dessus, et si son fichier n'existe pas elle est simplement ignorée. On met donc `carte-X.webp` (nette, 900×1200) devant `fond-X.webp` (le flou) — **repli automatique, sans `onerror` et sans liste à maintenir.** Les quinze villes qui ont leur carte postale s'affichent nettes, les autres gardent le flou.
+✅ `brightness` redescend de **1,95 à 1,12** : le 1,95 servait à rattraper un flou volontairement assombri à 40 de luminance. Le laisser aurait délavé les cartes nettes.
+
+⚠️ **J'avais argumenté CONTRE, en session 98 : la carte postale est la récompense, la montrer avant le départ grille le cadeau.** L'argument ne tient pas face à « on ne voit rien ». Et ce n'est pas tout à fait la même chose : ici elle est rognée en 3/4, assombrie par le voile et sert de fond ; la récompense reste la carte entière, avec sa lettre au verso, son tampon et son entrée dans la collection.
+
+### ✅ La carte déjà retournée emmène dans la ville
+« Quand on clique dessus alors qu'elles sont déjà retournées ou qu'on double clic on s'attendrait à être envoyé sur la page concernée. »
+✅ **Deux temps** : carte de face → elle se retourne et montre le chapitre, le niveau et le compte de mots ; carte au verso → **on part dans la ville**. Un double tap fait donc naturellement les deux, ce qui est exactement ce qu'elle décrivait.
+✅ **Une seule carte ouverte à la fois** : ouvrir une autre referme la précédente. Plus besoin de refermer pour lire ailleurs.
+✅ `partirVersVille()` masque le carnet **après** avoir ouvert l'arrivée, jamais avant — c'est la leçon du flash du chemin de la session 99.
+
+### ⏳ Ses deux autres remarques : très probablement le fichier en ligne
+« On voit toujours un moment la page Le tour du monde entre la vidéo d'accueil et la première vidéo » et « l'écran de choix de langue est où, je le vois pas ».
+Les deux ont été corrigés en **session 119** : le carnet part masqué depuis le HTML lui-même (mesuré, relevé toutes les 50 ms, zéro apparition), et la ligne de langue du carnet est devenue un bouton. **Les deux symptômes disparaissent ensemble si le fichier livré n'est pas encore déployé** — et c'est l'explication la plus simple, puisque ce sont précisément les deux corrections de cette livraison.
+✅ **Test donné à Blandine pour trancher en un coup d'œil** : sur le carnet, la ligne « — anglais — » doit être soulignée d'un trait turquoise fin. Si elle ne l'est pas, le fichier en ligne est l'ancien, et les deux remarques s'expliquent. Si elle l'est, le défaut est réel et je cherche ailleurs.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` · rendu réel : image empilée vérifiée (`url(carte-…), url(fond-…)`), filtre à 1,12, Le Morne s'affiche net et La Baule retombe sur son flou faute de carte locale — le repli fonctionne dans les deux sens · premier tap = retournement avec une seule carte ouverte, second tap = arrivée ouverte sur la bonne ville, carnet masqué après · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. Les lettres et volets de cinq villes.
+2. `lingua-affiche.webp` et le fond du carnet.
+3. Les définitions en quatre langues.
+4. La sécurité (11 mots) attend une ville.
+5. `niveau` divergent entre `arrivee` et `concours`.
+
+### 🧭 Préparation Flutter
+- **Un repli obtenu par le CSS plutôt que par du code** : deux images empilées remplacent un `onerror`, un test de chargement ou une liste de villes à maintenir. Moins de code, et un comportement qui ne peut pas se désynchroniser des fichiers réellement présents.
+- **Un geste, deux intentions, sans bouton de plus** : retourner puis partir. C'est le genre d'affordance qui se porte tel quel, et qui évite d'ajouter un « Partir » sur chacune des vingt-neuf cartes.
+- **Une décision de conception révisée par l'usage.** J'avais raison sur le principe — ne pas montrer la récompense avant de l'avoir gagnée — et tort sur le résultat, parce que la conséquence était un écran illisible. Le principe cède quand il produit une interface qu'on ne peut pas utiliser.
+- **Reste à moderniser** : inchangé.
+- **Risques** : aucun. Une image de plus dans une pile CSS, et un branchement de clic.
+
+---
+
 ## 🌐 SESSION 120 · LINGUAE (07/08) — TOUT EST OUVERT, LE PLANCHER SUPPRIMÉ, THÈMES ET NIVEAUX AFFICHÉS
 
 ### ⚠️ D'abord une rectification, parce qu'elle compte
