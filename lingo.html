@@ -262,18 +262,53 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    ⚠️ carte-*.webp n'est PAS utilisee ici : c'est la carte postale, la
    recompense. La montrer avant le depart grillerait le cadeau. */
 .vgrille{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-.vc{position:relative;aspect-ratio:3/4;perspective:1100px;background:none;padding:0;
+/* ⚠️ LE RETOURNEMENT 3D A ÉTÉ RETIRÉ le 6 août 2026, sur retour de
+   Blandine : « quand on retourne les cartes le texte à l'envers empiète
+   sur le reste, et ça lag à mort ».
+
+   Les deux symptômes avaient la même cause. `backface-visibility:hidden`
+   ne masque PAS de façon fiable, sur Safari iOS, le contenu d'une face
+   dont les enfants sont eux-mêmes positionnés : le texte du dos
+   traversait la face avant, retourné en miroir. Et faire tourner
+   vingt-huit cartes en 3D, chacune avec sa `perspective`, son
+   `preserve-3d` et son image de fond, crée vingt-huit couches composites
+   que le téléphone recompose à chaque image — d'où le ralentissement.
+
+   Remplacé par un simple croisement d'opacité, avec un très léger
+   grandissement pour garder la sensation de bascule. Aucune couche 3D,
+   aucune face arrière à masquer : le problème du miroir devient
+   impossible, pas seulement improbable. Le JS n'a pas changé, la classe
+   `ouv` fait toujours tout le travail.
+   ⚠️ NE PAS RÉINTRODUIRE `rotateY` ici. */
+.vc{position:relative;aspect-ratio:3/4;background:none;padding:0;
  width:100%;text-align:left}
-.vc .vflip{position:absolute;inset:0;transform-style:preserve-3d;
- transition:transform .55s cubic-bezier(.4,.1,.2,1)}
-.vc.ouv .vflip{transform:rotateY(180deg)}
-.vc .vf{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
- border-radius:13px;overflow:hidden;border:1px solid rgba(255,255,255,.09)}
+.vc .vflip{position:absolute;inset:0}
+.vc .vf{position:absolute;inset:0;border-radius:13px;overflow:hidden;
+ border:1px solid rgba(255,255,255,.09);
+ transition:opacity .28s ease,transform .28s ease}
+.vc .vrec{opacity:1;transform:scale(1)}
+.vc .vdos{opacity:0;transform:scale(.97);pointer-events:none}
+.vc.ouv .vrec{opacity:0;transform:scale(.97);pointer-events:none}
+.vc.ouv .vdos{opacity:1;transform:scale(1);pointer-events:auto}
 /* devant */
-.vc .vrec{background:linear-gradient(158deg,#141A21,#080B0F 72%);
- background-size:cover;background-position:center 34%}
+/* ⚠️ L'IMAGE EST DANS SA PROPRE COUCHE depuis le 6 août 2026, sur retour
+   de Blandine : « les cartes floutées on voit rien ».
+   Elle avait raison, et c'était arithmétique : les fichiers `fond-*.webp`
+   sont des flous volontaires calibrés à 40 de luminance moyenne, et on
+   posait par-dessus un voile qui montait à .93 d'opacité en bas de carte.
+   Il ne restait rien à voir.
+   Deux corrections : l'image passe dans une couche `.vimg` à elle, ce qui
+   permet de l'ÉCLAIRCIR sans toucher au texte (un filtre sur `.vrec`
+   aurait aussi délavé le titre) ; et le voile redescend de .34/.58/.93 à
+   .10/.34/.82 — assez pour que le nom reste lisible en bas, plus assez
+   pour effacer la photo.
+   ⚠️ Si un jour de vraies photos nettes remplacent les flous, c'est
+   `brightness` qu'il faudra baisser, pas le voile qu'il faudra remonter. */
+.vc .vrec{background:linear-gradient(158deg,#141A21,#080B0F 72%)}
+.vc .vrec .vimg{position:absolute;inset:0;background-size:cover;
+ background-position:center 34%;filter:brightness(1.95) saturate(1.12)}
 .vc .vrec .vvoile{position:absolute;inset:0;
- background:linear-gradient(180deg,rgba(6,7,9,.34) 0%,rgba(6,7,9,.58) 46%,rgba(6,7,9,.93) 100%)}
+ background:linear-gradient(180deg,rgba(6,7,9,.10) 0%,rgba(6,7,9,.34) 46%,rgba(6,7,9,.82) 100%)}
 .vc .vrec .vhalo{position:absolute;left:-30%;top:-24%;width:160%;height:90%;
  background:radial-gradient(46% 42% at 50% 50%,rgba(32,217,245,.11),transparent 72%)}
 .vc .vn{position:absolute;left:10px;top:8px;font-family:'Cinzel',serif;font-size:10px;
@@ -293,8 +328,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  background:rgba(244,247,250,.22)}
 .vc .vniv i.on{background:var(--turquoise);box-shadow:0 0 7px rgba(32,217,245,.75)}
 /* dos */
-.vc .vdos{background:linear-gradient(165deg,rgba(17,20,23,.98),rgba(6,7,9,.99));
- transform:rotateY(180deg);display:flex;flex-direction:column;padding:11px 11px 9px}
+.vc .vdos{background:linear-gradient(165deg,#12161A,#07090C);
+ display:flex;flex-direction:column;padding:11px 11px 9px}
 .vc .vdos .vnom{font-family:'Cinzel',serif;font-weight:600;font-size:12px;line-height:1.1;
  color:var(--blanc)}
 .vc .vdos .vch{font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--or);
@@ -2170,7 +2205,10 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
     d.className="vc"; d.type="button"; d.dataset.ref=e.ref;
     d.setAttribute("aria-label", eV(e)+" — "+eNat(e));
     d.innerHTML='<span class="vflip">'+
-        '<span class="vf vrec" style="background-image:url(&quot;fond-'+e.ref+'.webp&quot;)">'+
+        '<span class="vf vrec">'+
+          /* l'image dans sa propre couche : elle est eclaircie par un
+             filtre CSS, qui ne doit pas toucher au texte. */
+          '<span class="vimg" style="background-image:url(&quot;fond-'+e.ref+'.webp&quot;)"></span>'+
           '<span class="vhalo"></span><span class="vvoile"></span>'+
           '<span class="vn">'+(i+1)+'</span>'+
           barresNiveau(niveauVille(e.ref))+

@@ -22,6 +22,41 @@
 
 ---
 
+## 🩹 SESSION 115 · LINGUAE (06/08) — LE RETOURNEMENT 3D RETIRÉ, LES FONDS ÉCLAIRCIS
+
+Blandine, capture à l'appui : « quand on retourne les cartes le texte à l'envers empiète sur le reste, et ça lag à mort » · « les cartes floutées on voit rien ».
+
+### 🔴 Le texte en miroir et le ralentissement avaient la MÊME cause
+`backface-visibility:hidden` ne masque pas de façon fiable, sur Safari iOS, le contenu d'une face dont les enfants sont eux-mêmes positionnés en absolu. Le texte du dos traversait donc la face avant, **retourné en miroir** — visible sur sa capture, « LA BAULE » à l'envers par-dessus « NIVEAU 1 · NOMMER ».
+Et faire tourner **vingt-huit cartes** en 3D, chacune avec sa `perspective`, son `preserve-3d` et son image, crée vingt-huit couches composites que le téléphone recompose à chaque image. D'où le ralentissement.
+
+✅ **Le retournement 3D est supprimé**, remplacé par un croisement d'opacité avec un léger grandissement (.28 s). Aucune couche 3D, aucune face arrière à masquer : **le miroir devient impossible, pas seulement improbable.** Le JS n'a pas changé d'une ligne — la classe `ouv` fait toujours tout le travail.
+⚠️ Écrit dans le CSS : **ne pas réintroduire `rotateY` sur ces cartes.**
+✅ Mesuré : huit retournements enchaînés coûtent **1 ms de script**, et la face avant tombe bien à l'opacité 0 quand le dos est à 1.
+
+⚠️ **La carte postale de l'écran d'arrivée garde son flip 3D** (`.pcarte`), et c'est volontaire : il n'y en a **qu'une seule à l'écran**, donc ni ralentissement ni couches multiples. Elle porte cependant le même motif `backface-visibility` que celui qui a échoué sur le carnet. Blandine n'a jamais signalé de miroir dessus — sans doute parce que son dos est un fond de papier opaque et non un dégradé translucide. **À surveiller** : si le défaut apparaît là aussi, la correction est la même.
+
+### 🔴 « On voit rien » : c'était arithmétique
+Les fichiers `fond-*.webp` sont des flous volontaires calibrés à **40 de luminance moyenne**, et on posait par-dessus un voile qui montait à **.93 d'opacité** en bas de carte. Il ne restait rien à voir. Ma faute : j'avais validé le principe du « flou comme matière » sans vérifier ce que la somme des deux donnait à l'écran.
+✅ **L'image passe dans sa propre couche `.vimg`**, ce qui permet de l'éclaircir (`brightness 1.95`, `saturate 1.12`) **sans délaver le texte** — un filtre posé sur `.vrec` aurait aussi affadi le titre. Et le voile redescend de .34/.58/.93 à **.10/.34/.82** : assez pour que le nom reste lisible en bas, plus assez pour effacer la photo.
+⚠️ Noté dans le CSS : si de vraies photos nettes remplacent les flous un jour, c'est `brightness` qu'il faudra baisser, pas le voile qu'il faudra remonter.
+
+### ⏳ Une question posée à Blandine, pas tranchée
+Même éclairci, un flou reste un flou : on distingue une ambiance, pas un lieu. Et **six villes n'ont aucun fond** (Newmarket, Lambourn, Connemara, Hickstead, Kildare, Édimbourg) — leur carte est un dégradé sombre, sans rien.
+La solution évidente serait d'utiliser les `carte-*.webp`, nettes en 900×1200. J'avais argumenté contre : la carte postale est la récompense, la montrer avant le départ grille le cadeau. Mais l'argument ne tient plus si l'alternative est de ne rien voir. **Choix laissé à Blandine**, avec repli automatique sur le flou pour les villes sans carte postale.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` · rendu réel : 28 cartes, aucune `perspective` résiduelle, filtre bien appliqué à la couche d'image seule, opacités croisées vérifiées dans les deux sens · huit retournements chronométrés · aucune erreur JS · aucune régression sur l'écran d'arrivée.
+
+### 🧭 Préparation Flutter
+- **Une animation coûteuse remplacée par une animation d'opacité** : le carnet ne crée plus de couches 3D. C'est aussi la forme la plus directement portable — un `AnimatedOpacity` en Flutter, là où un flip 3D demanderait un `Transform` et un test de face.
+- **Un filtre isolé dans sa couche** : séparer l'image du texte pour pouvoir traiter l'une sans l'autre est le même principe que séparer les données de la présentation. Ça évitera de délaver un titre en corrigeant une photo.
+- **Une leçon de méthode, à retenir** : j'avais validé « le flou comme matière » sur le principe, sans mesurer la somme du flou et du voile. Deux valeurs chacune défendable donnaient un résultat noir. Les décisions visuelles doivent être vérifiées à l'écran, pas raisonnées.
+- **Reste à moderniser** : `.pcarte` porte encore le motif `backface-visibility` qui a échoué ailleurs.
+- **Risques** : le changement est purement visuel et réversible, et il ne touche aucune donnée.
+
+---
+
 ## ⛩️ SESSION 114 · LINGUAE (06/08) — TOKYO ET BUENOS AIRES, ÉTAPES 25 ET 26
 
 ### ✅ Tokyo — LA TRADITION, et le seul chapitre de conventions du module
