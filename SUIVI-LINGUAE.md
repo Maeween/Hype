@@ -1,3 +1,108 @@
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 129)
+
+**À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
+
+---
+
+## 1 · Ce qui est fait
+
+**Le voyage compte 29 étapes, toutes accessibles, toutes écrites.** Chacune a son chapitre, son niveau (1 nommer · 2 situer · 3 dire), son heure, son récit en six langues, sa lettre et ses trois volets, son point sur le globe, son souvenir.
+
+**Six langues ouvertes** — français, anglais, espagnol, italien, allemand, japonais. Le choix se fait par la ligne de langue du carnet, devenue un bouton.
+
+**Douze lexiques dans ce fil, 220 mots** : arrivee, balade, concours, elevage, endurance, froid, haras, obstacle, polo, tradition, vente, western. Sept autres existent côté Blandine (ecurie, pansage, cheval, materiel, cours, dressage, urgences, poney) et **ne sont jamais passés dans cette conversation** — ne jamais conclure qu'ils manquent.
+
+**Maîtrise et avancement rangés par langue.** Changer de langue recommence le voyage, ce qui est cohérent : le vocabulaire de la nouvelle langue est vierge. `hype_lingua_quiz` et `hype_lingua_cartes` restent **communs** à toutes les langues — incohérence assumée, décision de jeu en attente.
+
+**Tout est ouvert, sans plancher.** Plus de déblocage en chaîne, plus de villes offertes. `FAITS` ne verrouille plus rien : il compte les chapitres réellement terminés et ne sert qu'à la trace du chemin. ⚠️ **Ne pas réintroduire de plancher.**
+
+**Le tampon et la carte se méritent.** Trois états au départ d'une ville (terminé / commencé / rien), et la carte postale **arrive en animation** au moment où elle se gagne.
+
+---
+
+## 2 · Les deux outils de diagnostic posés aujourd'hui, à utiliser
+
+**`var VER = "?v=2"`** — ajoutée à toutes les adresses d'images et de clips construites en JS. Les fichiers remplacés gardant le même nom, le navigateur et le service worker de l'app servaient leur copie en cache indéfiniment : **une image parfaitement déployée pouvait rester invisible des jours.**
+⚠️ **À INCRÉMENTER À CHAQUE LOT D'IMAGES REMPLACÉES.** Geste de livraison obligatoire.
+⚠️ Les quatre fonds déclarés en CSS (`fond-newmarket`, `fond-lingua`, `lingua-affiche`, `lingua-langues`) ne peuvent pas la prendre : vider le cache à la main le jour où ils changent.
+
+**Le marqueur de version visible** — `v2 · 7 août`, sous la ligne de langue du carnet. Blandine déploie depuis un téléphone et n'avait aucun moyen de savoir quelle version tourne ; trois fois cette semaine un défaut déjà corrigé a été signalé et j'ai accusé le déploiement **sans preuve**. Désormais la question se règle d'un coup d'œil.
+⚠️ **À mettre à jour en même temps que `VER`.** Les deux vont ensemble.
+
+---
+
+## 3 · Ce que Blandine fait en ce moment
+
+**Elle refait les 29 cartes postales en couleurs normales.** L'ancien prompt imposait une palette dorée unique — excellente pour un clip de cinq plans, désastreuse pour 29 cartes vues côte à côte. Le nouveau prompt donne **une lumière par ville** (`hype-linguae-prompt-cartes.txt`).
+
+**Faites et livrées** : Rome, Hickstead, Vejer, Newmarket *(mais Newmarket avait déjà une belle carte — c'est mon inventaire erroné qui l'a envoyée la refaire ; il lui suffit de ne pas pousser la mienne)*.
+
+### Le geste à répéter à chaque carte reçue — il ne s'improvise pas
+1. **`carte-<ville>.webp`** — 900×1200, qualité webp 72 à 82. Au-delà de 180 Ko, descendre à 72 : mesuré, l'écart est de 2,3/255 à la taille d'affichage réelle (348 px), soit le seuil de perception. En dessous de 72, on ne gagne plus rien.
+2. **`fond-<ville>.webp`** — 420×560, flou gaussien 14, puis assombrissement **par itération** jusqu'à une luminance moyenne ≤ 42. Le facteur varie de 0,25 à 0,95 selon l'image : ne jamais le fixer d'avance.
+3. **Mesurer le tiers supérieur de la carte.** Au-dessus de 100 de luminance → ajouter la ville dans **`TITRE_SOMBRE`**, sinon le titre crème est illisible. Déjà dedans : warendorf, jerez, oliva, lamotte, saumur, aachen, vejer, rome, hickstead, newmarket.
+4. **Incrémenter `VER` et le marqueur de version.**
+
+⚠️ **Format** : les cartes sont en **3:4 portrait**. Les siennes le sont déjà. Si une arrive en carré ou en paysage, on peut la **prolonger** (échantillonner la couleur du bord et fondre vers le noir) plutôt que la rogner — fait pour les deux fonds d'écran d'entrée, 429 et 624 px ajoutés, couture invisible. Ne marche que si les bords sont sombres.
+
+⚠️ **Identifier les images au CONTENU, jamais au libellé du message.** Quatre fois sur quatre, l'ordre annoncé ne correspondait pas aux fichiers.
+
+⚠️ **Vérifier la fidélité au chapitre avant la beauté.** Trois images ont été refusées ou déplacées pour ça : une carte d'élevage proposée pour « la formation », une présentation de race pour « l'endurance », un village perché donné pour Jerez qui est une ville de plaine. C'est Blandine qui a tranché : « faut que ça reste fidèle ».
+
+---
+
+## 4 · Ce qui reste, par ordre d'utilité
+
+1. **Les 25 cartes restantes.** Chantier en cours.
+2. **Refondre visuellement la fin de leçon et la fin de quiz.** Demande explicite de Blandine : « il faut retravailler ces pages, c'est pas possible ». Aujourd'hui : un score, des listes, des boutons empilés. L'animation de la carte est un premier pas ; **l'objet gagné au quiz mérite le même traitement.**
+3. **Les deux fonds d'entrée en portrait pleine résolution** — `lingua-affiche.webp` et `lingua-langues.webp` existent, prolongés depuis des sources carrée et paysage. Blandine les refait. ⚠️ **Le cheval du film d'ouverture est une JUMENT NOIRE, seule, sans cavalier** (vérifié image par image) : l'affiche doit lui correspondre.
+4. **Le fond du carnet de route.** Le CSS va chercher `fond-newmarket.webp` en dur pour la page « Le tour du monde » — reste d'une ancienne version. À produire très sombre et très flou, puis renommer proprement. Peut se dériver de l'affiche.
+5. **Les définitions en quatre langues.** Elles n'existent qu'en français et en anglais ; un joueur lisant en allemand les reçoit en français. Plusieurs centaines de notes. Seul vrai chantier de fond restant.
+6. **Ranger le module dans un dossier `linguae/`** — décidé, **à faire quand la série de cartes sera close**, pas avant. Neuf endroits à changer, plus une ligne dans `index.html` (autre fil).
+7. **`niveau` divergent** entre `arrivee` (`das Niveau`) et `concours` (`die Klasse`) — même `ref`, deux sens. À trancher par Blandine : renommer déplacerait la maîtrise déjà acquise.
+8. **La sécurité** (11 mots prêts) n'a pas de ville.
+9. **Les fichiers `carte-<ville>-vignette.webp`** (360×480) existent pour sept villes britanniques. Linguae ne les demande jamais — soit `index.html` les utilise, soit ce sont des restes.
+
+---
+
+## 5 · Les pièges de ce fichier — tous rencontrés pour de vrai
+
+**L'ordre d'exécution, CINQ fois.** Une valeur lue avant que la variable dont elle dépend soit affectée. `var` est hissée, pas sa valeur. Dernier cas : `VER` déclarée au milieu du fichier alors que le carnet la lit plus haut → les adresses devenaient `carte-labaule.webpundefined`, **donc aucune image ne chargeait**. Règle écrite dans le code : **toute constante utilisée à plusieurs endroits se déclare avant le premier d'entre eux.** Un « prêt » global remplacerait les cinq contournements.
+
+**Valider TOUS les blocs `<script>`, jamais un index.** Un `}` en trop est passé parce que je vérifiais le bloc 14 alors que l'ajout de deux `<script src>` avait décalé le bloc inline en 16. **Utiliser `verif.py`**, livré.
+
+**Un contrôle de syntaxe ne prouve pas le rendu.** Playwright obligatoire avant livraison.
+
+**Vérifier ce qui est PEINT, jamais ce qui est déclaré.** Un élément peut porter sa classe, avoir sa hauteur, contenir tout son contenu et rester invisible sous un autre. `document.elementFromPoint()` répond vraiment.
+
+**Reproduire le défaut AVANT de le corriger.** Ma pire erreur du jour : j'ai annoncé avoir trouvé la cause de l'écran des langues invisible (`z-index: 1`), et c'était **un artefact de ma propre mesure** — mon grep lisait le z-index d'un élément voisin. La vraie valeur était 44, au-dessus du carnet. Mon test d'après-coup ne pouvait pas me contredire : il vérifiait que l'écran s'affiche, ce qu'il faisait déjà.
+
+**Les scripts de patch doivent écrire APRÈS CHAQUE remplacement**, pas à la fin. Un `sys.exit` sur une ancre introuvable a fait perdre quatre remplacements et laissé le fichier dans un état incohérent.
+
+**Les `ref` partagés entre lexiques se vérifient par script**, et pas seulement en double : **en comparant les six traductions**. Deux faux rappels trouvés ainsi, que l'œil n'aurait pas vus (`prix` = « prize money » d'un côté, « price » de l'autre).
+
+**Pas de `⚠️` dans un texte vu par le joueur** — c'est une convention de commentaires et de champs `def`, pas de volet narratif.
+
+**Une plainte de lisibilité se mesure avant de se corriger.** Deux fois sur trois le contraste était bon et le coupable était la taille. **Jamais moins de 9 px pour une capitale espacée.**
+
+**Une animation bat une déclaration CSS normale** ; seul `!important` la dépasse. Mesuré sur l'opacité du sceau.
+
+**Les panneaux des clips d'arrivée** : six sur quatorze avaient un nom coupé. Le panneau doit être **au milieu de la hauteur**, pas en bas — l'app écrit le nom de la ville par-dessus le bas de la vidéo et recadre en `cover`. `FIN_VIDEO` (labaule 4,4 · vejer 7,0 · golega 4,6 · verone 3,9 · dubai 2,9) arrête le clip avant le raccord ; **l'image d'arrêt se juge dans le cadre de l'app**, jamais dans le fichier.
+
+**Ne pas réintroduire `rotateY` sur les cartes du carnet** : texte en miroir sur Safari iOS et 28 couches composites. Le croisement d'opacité les remplace.
+
+**Dire « je ne l'ai pas » et non « il manque ».** Mon inventaire ne voit que ce bac à sable, pas le dépôt. Cette confusion a envoyé Blandine refaire une carte qui existait déjà.
+
+---
+
+## 6 · Fichiers et autorité
+
+Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
+
+⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
 ## 🏞️ SESSION 126 · LINGUAE (07/08) — LES DEUX ÉCRANS D'ENTRÉE ONT LEUR IMAGE
 
 Blandine renvoie les deux visuels. Aucun des deux n'est en portrait — le premier est **carré** (763×738) et le second **paysage** (1402×1122).
@@ -166,50 +271,6 @@ Sur idée de Blandine — « l'occasion d'ajouter une animation avec la carte qu
 `verif.py` · bloc de gain vérifié par exécution : présent, titre traduit, image versionnée, nom de ville, animation nommée · second passage vérifié sans rejeu · aucune erreur JS.
 ⚠️ **L'animation n'a pas pu être jugée à l'œil** : mon montage de test affiche l'écran de leçon sous le carnet. Le bloc et son animation sont confirmés par le DOM, mais **le rendu visuel est à valider sur le téléphone de Blandine.**
 
----
-
-# 🤝 PASSATION — état du module au 7 août 2026, fin de session 124
-
-**À lire en premier par la conversation qui reprend Linguae.** Ce bloc dit l'état réel, ce qui est en cours du côté de Blandine, et les pièges qui ont coûté du temps. Les sessions détaillées sont en dessous, dans l'ordre inverse.
-
-## Ce qui est fait
-**Le voyage compte 29 étapes, toutes accessibles, toutes écrites.** Chacune a son chapitre, son niveau, son heure, son récit en six langues, sa lettre et ses trois volets, son point sur le globe, son souvenir.
-**Six langues ouvertes** — français, anglais, espagnol, italien, allemand, japonais. Le choix se fait par la ligne de langue du carnet, devenue un bouton.
-**Douze lexiques dans ce fil**, 220 mots : arrivee, balade, concours, elevage, endurance, froid, haras, obstacle, polo, tradition, vente, western. Sept autres existent côté Blandine (ecurie, pansage, cheval, materiel, cours, dressage, urgences, poney) et ne sont jamais passés dans cette conversation.
-**Maîtrise et avancement rangés par langue.** Changer de langue recommence le voyage, ce qui est cohérent : le vocabulaire de la nouvelle langue est vierge.
-
-## Ce que Blandine fait en ce moment
-**Elle refait les 29 cartes postales en couleurs normales**, parce que la palette dorée imposée par l'ancien prompt les rendait toutes semblables. Deux sont faites et livrées : **Rome** et **Hickstead**. Le prompt par ville est dans `hype-linguae-prompt-cartes.txt`.
-
-**Le geste à répéter à chaque carte reçue**, et il ne s'improvise pas :
-1. `carte-<ville>.webp` — 900×1200, qualité webp 72 à 82. Au-delà de 180 Ko, descendre à 72 : mesuré, l'écart est de 2,3/255 à la taille d'affichage réelle (348 px), soit le seuil de perception. Ne pas descendre sous 72, on ne gagne plus rien.
-2. `fond-<ville>.webp` — 420×560, flou gaussien 14, puis assombrissement **par itération** jusqu'à une luminance moyenne ≤ 42. Le facteur varie de 0,30 à 0,95 selon l'image : ne jamais le fixer d'avance.
-3. **Mesurer le tiers supérieur de la carte.** Au-dessus de 100 de luminance, ajouter la ville dans `TITRE_SOMBRE` de `lingo.html`, sinon le titre crème est illisible. Rome (192) et Hickstead (186) y sont déjà. **Cette mesure est obligatoire à chaque remplacement de carte** — la liste dépend de l'image, pas de la ville.
-
-## Ce qui reste, par ordre d'utilité
-1. **Les 27 cartes restantes.** C'est le chantier en cours.
-2. **`lingua-affiche.webp`** — le fond de l'écran de présentation, jamais produit. Prompt prêt dans `hype-linguae-prompt-affiche.txt`. ⚠️ **Le cheval du film d'ouverture est une JUMENT NOIRE, seule, sans cavalier** — vérifié image par image dans `ouverture.mp4`. L'affiche doit lui correspondre ; le prompt disait « gris pommelé », c'était une erreur de ma part.
-3. **Le fond du carnet de route.** Le CSS va chercher `fond-newmarket.webp`, en dur, pour la page « Le tour du monde » — reste d'une ancienne version. À produire très sombre et très flou (du texte blanc et 29 cartes passent par-dessus), puis renommer proprement. Peut se dériver de l'affiche.
-4. **Les définitions en quatre langues.** Elles n'existent qu'en français et en anglais ; un joueur lisant en allemand les reçoit en français. Plusieurs centaines de notes. Seul vrai chantier de fond restant.
-5. **`niveau` divergent** entre `arrivee` (`das Niveau`) et `concours` (`die Klasse`) — même `ref`, deux sens. À trancher par Blandine : renommer déplacerait la maîtrise déjà acquise.
-6. **La sécurité** (11 mots prêts) n'a pas de ville.
-7. **Ranger le module dans un dossier `linguae/`** — décidé, à faire **quand la série de cartes sera close**, pas avant. Neuf endroits à changer, plus une ligne dans `index.html` (autre fil).
-
-## Les pièges qui ont coûté du temps
-**L'ordre d'exécution du fichier.** Quatre fois : une valeur lue avant que la variable dont elle dépend soit déclarée. `VOYAGE_LANGUE` est déclarée très bas ; tout ce qui en dépend doit être appelé après la relecture du voyage, en fin de fichier. Un « prêt » global remplacerait les quatre contournements.
-**Valider TOUS les blocs `<script>`, jamais un index.** Un `}` en trop est passé parce que je vérifiais le bloc 14 alors que l'ajout de deux `<script src>` avait décalé le bloc inline en 16. Utiliser **`verif.py`**, livré.
-**Un contrôle de syntaxe ne prouve pas le rendu.** Playwright obligatoire avant livraison.
-**Les `ref` partagés entre lexiques.** Un script compare les six traductions de chaque `ref` en double : il a trouvé deux faux rappels que la relecture humaine n'aurait pas vus (`prix` qui signifiait « prize money » d'un côté et « price » de l'autre). À relancer après chaque nouveau lexique.
-**Pas de `⚠️` dans un texte vu par le joueur.** C'est une convention de commentaires et de champs `def`, pas de volet narratif.
-**Identifier les images au CONTENU, jamais au libellé du message.** Trois fois sur trois, l'ordre annoncé ne correspondait pas aux fichiers.
-**Ne pas réintroduire de plancher de villes offertes** (`FAITS` partait à 4 et marquait quatre villes comme faites sans qu'elles soient jouées), ni de `rotateY` sur les cartes du carnet (texte en miroir sur Safari iOS et 28 couches composites).
-**Une plainte de lisibilité ne se corrige pas en changeant la couleur avant d'avoir mesuré.** Deux fois sur trois, le contraste était bon et le coupable était la taille. Jamais moins de 9 px pour une capitale espacée.
-**Les panneaux des clips d'arrivée** : six sur quatorze avaient un nom coupé. Le panneau doit être au **milieu de la hauteur**, pas en bas — l'app écrit le nom de la ville par-dessus le bas de la vidéo et recadre en `cover`. `FIN_VIDEO` (labaule 4,4 · vejer 7,0 · golega 4,6 · verone 3,9 · dubai 2,9) arrête le clip avant le raccord ; l'image d'arrêt se juge **dans le cadre de l'app**, jamais dans le fichier.
-
-## Fichiers livrés dans ce fil, autorité
-`lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · les neuf lexiques créés ici · `verif.py` · les quatre fichiers de prompts · les cartes, fonds et clips produits. **Blandine reste la source d'autorité** : toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée.
-
----
 
 # SUIVI HYPE LINGUAE
 

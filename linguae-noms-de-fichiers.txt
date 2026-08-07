@@ -1,0 +1,36 @@
+LES NOMS DE FICHIERS QUE LE CODE RECLAME
+Compare cette liste avec ce qui est sur le depot. Le code ne cherche
+QUE du .webp — pas de .jpg, pas de .jpeg, aucun repli. Et Netlify est
+sensible a la casse et aux accents.
+
+ville             nom exact attendu
+------------------------------------------------------------
+ 1 La Baule         carte-labaule.webp   fond-labaule.webp
+ 2 Le Morne         carte-maurice.webp   fond-maurice.webp   <<< PIEGE : le nom du fichier ne se deduit PAS du nom de la ville
+ 3 Connemara        carte-connemara.webp   fond-connemara.webp
+ 4 Newmarket        carte-newmarket.webp   fond-newmarket.webp
+ 5 Lambourn         carte-lambourn.webp   fond-lambourn.webp
+ 6 Walsall          carte-walsall.webp   fond-walsall.webp
+ 7 Aberystwyth      carte-aberystwyth.webp   fond-aberystwyth.webp
+ 8 Windsor          carte-windsor.webp   fond-windsor.webp
+ 9 Hickstead        carte-hickstead.webp   fond-hickstead.webp
+10 Badminton        carte-badminton.webp   fond-badminton.webp
+11 Kildare          carte-kildare.webp   fond-kildare.webp
+12 Édimbourg        carte-edimbourg.webp   fond-edimbourg.webp
+13 Saumur           carte-saumur.webp   fond-saumur.webp
+14 Lamotte-Beuvron  carte-lamotte.webp   fond-lamotte.webp   <<< PIEGE : le nom du fichier ne se deduit PAS du nom de la ville
+15 Golegã           carte-golega.webp   fond-golega.webp
+16 Jerez            carte-jerez.webp   fond-jerez.webp
+17 Séville          carte-seville.webp   fond-seville.webp
+18 Vejer            carte-vejer.webp   fond-vejer.webp
+19 Oliva Nova       carte-oliva.webp   fond-oliva.webp   <<< PIEGE : le nom du fichier ne se deduit PAS du nom de la ville
+20 Rome             carte-rome.webp   fond-rome.webp
+21 Vérone           carte-verone.webp   fond-verone.webp
+22 Warendorf        carte-warendorf.webp   fond-warendorf.webp
+23 Aix-la-Chapelle  carte-aachen.webp   fond-aachen.webp   <<< PIEGE : le nom du fichier ne se deduit PAS du nom de la ville
+24 Dubaï            carte-dubai.webp   fond-dubai.webp
+25 Tokyo            carte-tokyo.webp   fond-tokyo.webp
+26 Tamworth         carte-tamworth.webp   fond-tamworth.webp
+27 Buenos Aires     carte-buenos.webp   fond-buenos.webp   <<< PIEGE : le nom du fichier ne se deduit PAS du nom de la ville
+28 Lexington        carte-lexington.webp   fond-lexington.webp
+29 Spruce Meadows   carte-spruce.webp   fond-spruce.webp   <<< PIEGE : le nom du fichier ne se deduit PAS du nom de la ville

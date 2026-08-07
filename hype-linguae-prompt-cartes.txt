@@ -1,0 +1,187 @@
+PROMPT — LES CARTES POSTALES DE HYPE LINGUAE
+Version du 7 août 2026. Remplace le bloc « IMAGE 6 / la carte postale »
+des fichiers de production précédents.
+======================================================================
+
+POURQUOI CE NOUVEAU PROMPT
+Blandine : « les cartes postales en doré sont toutes un peu ressemblantes,
+je vais les refaire comme l'île Maurice plutôt, en couleurs normales ».
+
+Elle a raison, et il y a une cause mécanique. La consigne de lumière des
+anciens prompts disait, mot pour mot :
+
+  « le soleil est juste sous l'horizon. Ciel sombre en haut, lumière dorée
+    au centre. La palette ne change JAMAIS : bleu nuit en haut, or au
+    centre. Jamais de plein jour, jamais de lumière blanche ou grise. »
+
+Cette phrase est excellente pour les CLIPS d'arrivée — cinq plans de cinq
+secondes qui doivent tenir ensemble. Elle est mauvaise pour les cartes
+postales, qui se voient VINGT-NEUF CÔTE À CÔTE dans le carnet de route :
+la même heure et la même palette imposées à toutes, et elles se
+confondent. Le Morne est la seule qui échappe à la règle, et c'est la
+seule qu'on distingue au premier coup d'œil.
+
+⚠️ Donc : la règle de lumière ne s'applique PLUS aux cartes postales.
+Chaque ville reçoit sa propre heure et son propre climat, ci-dessous.
+Pour les clips d'arrivée, garde l'ancienne consigne, elle est bonne.
+
+======================================================================
+CE QUI NE CHANGE PAS — à répéter dans chaque demande
+======================================================================
+
+Format : VERTICAL 3:4 (et non 9:16). Une seule image par ville, pleine
+résolution. Je la redimensionne en 900×1200, ne t'en occupe pas.
+
+Style : peinture numérique réaliste et atmosphérique, pas photoréaliste.
+Grain léger de papier ancien. C'est une carte postale, pas une photo.
+
+LE CHEVAL EST LE HÉROS. Il est au premier plan, grand dans l'image,
+reconnaissable. C'est la règle la plus importante et la plus souvent
+oubliée : sur plusieurs cartes actuelles le cheval est un détail dans un
+paysage, et la carte de Rome n'en a aucun. Il doit occuper une vraie place.
+
+⚠️ ET ON DOIT RECONNAÎTRE LA VILLE, ajouté le 7 août 2026 à la demande de
+Blandine : « ça serait bien qu'on voie quand même le paysage autour, à
+chaque fois c'est surtout la ville qu'on veut garder en photo, en plus du
+thème ». C'est juste, et ça manquait : une carte postale sert à se
+souvenir d'un endroit, pas seulement d'une discipline.
+Chaque carte porte donc DEUX choses :
+  · au premier plan, le cheval et le chapitre — ce qu'on y apprend ;
+  · derrière, le lieu identifiable — toits, montagne, mer, monument.
+Un lieu reconnaissable sans hésiter, mais qui reste le fond. Si les deux
+ne tiennent pas dans le cadre, c'est le cheval qui garde le premier plan.
+
+⚠️ ET QUE ÇA RESTE ROMANTIQUE ET JOLI. Ce n'est pas un document
+touristique : c'est une carte qu'on gagne et qu'on garde.
+
+Le cavalier, s'il y en a un : de dos ou de trois quarts arrière, jamais
+son visage. Beaucoup de cartes n'ont pas besoin de cavalier du tout.
+
+INTERDITS :
+• Aucun texte, aucun panneau écrit, aucun logo, aucun filigrane.
+• Aucun cadre, aucune bordure, aucun coin arrondi : l'application dessine
+  elle-même la forme de la carte.
+• Aucun visage reconnaissable.
+• Aucun bâtiment contemporain, aucune voiture.
+
+LE REGISTRE — À NE PAS SACRIFIER
+Poétique, rêveur, doux. Une image qu'on aurait envie d'encadrer, pas une
+affiche de film. Si le générateur doit choisir entre spectaculaire et joli,
+il choisit joli.
+• Lumière DOUCE et diffuse, brume, air, profondeur. Des lointains qui
+  s'effacent. Des contours qui respirent.
+• Palette calme et peu nombreuse. Trois ou quatre tons qui s'accordent.
+• Le calme plutôt que l'action. Un cheval arrêté ou au pas vaut mieux
+  qu'un cheval cabré.
+• L'esprit d'une peinture de paysage du dix-neuvième siècle : de l'espace,
+  du silence, une lumière qui vient de loin.
+
+À ÉVITER ABSOLUMENT — c'est ce qui rend les images laides
+• Contrastes durs, noirs bouchés, blancs brûlés, effet HDR, saturation
+  poussée, halos lumineux artificiels.
+• Peau et poil « plastique », brillance de rendu 3D, netteté excessive sur
+  toute l'image.
+• Cheval cabré, naseaux dilatés, œil affolé, muscles exagérés,
+  encolure surgonflée. Un cheval calme, au modèle juste.
+• ⚠️ L'ANATOMIE DU CHEVAL, c'est là que ces générateurs échouent le plus :
+  compte les jambes, vérifie les jarrets, les sabots et le sens des
+  articulations. Une jambe de trop ou un genou à l'envers rend l'image
+  inutilisable même si le reste est beau.
+• Selle ou bride mal dessinée, rênes qui ne partent de rien, mors flottant.
+• Foule, drapeaux, banderoles, ciel en feu, éclairs, poussière théâtrale.
+• Plus d'un ou deux chevaux, sauf si le prompt le demande.
+
+
+⚠️ DEUX ZONES À LAISSER CALMES, et c'est technique :
+• le TIERS SUPÉRIEUR reçoit le nom de la ville et son lieu, écrits par
+  l'application. Pas de détail important ni de contraste violent là.
+• la BANDE INFÉRIEURE est assombrie par un voile dans le carnet de route.
+  Ne mets rien d'essentiel dans les 15 % du bas.
+Le sujet vit donc au CENTRE de l'image.
+
+⚠️ Le titre s'adapte tout seul : je mesure la luminosité du tiers haut de
+chaque carte et l'application écrit en crème sur un ciel sombre, en foncé
+sur un ciel clair. Tu n'as pas à t'en soucier — un ciel de plein jour est
+désormais permis.
+
+======================================================================
+UNE LUMIÈRE PAR VILLE
+======================================================================
+La référence de ce que je veux : LE MORNE. Plein jour, lagon turquoise,
+ciel bleu franc, chevaux nets dans l'eau. Voilà l'écart de palette que je
+cherche entre deux cartes voisines.
+
+ 1  LA BAULE ....... fin d'après-midi de mai, lumière blanche de bord de
+                     mer, ciel bleu pâle et vent. Pas de couchant.
+ 2  LE MORNE ....... inchangée. C'est la référence.
+ 3  CONNEMARA ...... plein jour couvert, ciel gris argent, pluie qui vient
+                     de cesser, pierre mouillée, vert profond.
+ 4  NEWMARKET ...... aube claire d'automne, brume basse blanche et bleutée,
+                     lumière froide. Pas d'or.
+ 5  LAMBOURN ....... matin d'hiver limpide, ciel bleu dur, gel sur les
+                     toits, ombres longues et nettes.
+ 6  WALSALL ........ intérieur d'atelier, jour indirect par une verrière,
+                     lumière neutre sur du cuir. Pas de lanterne.
+ 7  ABERYSTWYTH .... milieu de journée venteux, mer gris-vert, écume,
+                     ciel chargé mais lumineux.
+ 8  WINDSOR ........ fin de matinée d'été, plein soleil sur le sable de la
+                     carrière, ciel bleu profond, ombres courtes.
+ 9  HICKSTEAD ...... après-midi d'orage qui s'éloigne, ciel bleu-noir au
+                     fond, herbe éclairée en plein.
+10  BADMINTON ...... matin de printemps ensoleillé, vert acide, ciel bleu
+                     avec des nuages blancs ronds.
+11  KILDARE ........ jour blanc et haut, ciel uniforme, lumière sans
+                     ombre — celle d'une clinique, calme et franche.
+12  ÉDIMBOURG ...... fin d'après-midi d'hiver, ciel bleu-gris et pierre
+                     sombre, lumière rasante froide.
+13  SAUMUR ......... plein jour dans un grand manège, lumière tombant de
+                     haut par des fenêtres, poussière en suspension.
+14  LAMOTTE-BEUVRON  matin d'été bleu et vert, plein soleil, l'ambiance
+                     d'un immense terrain de vacances.
+15  GOLEGÃ ......... plein jour d'automne, ciel bleu pâle et murs blanchis
+                     à la chaux, lumière crue du Ribatejo.
+16  JEREZ .......... matin lumineux d'Andalousie, ombre nette d'un patio,
+                     ocre et blanc, ciel bleu franc.
+17  SÉVILLE ........ plein midi de feria, blancs éclatants, lumière dure,
+                     couleurs saturées des tenues.
+18  VEJER .......... début de matinée, murs blancs éblouissants, ciel bleu
+                     très clair, mer au loin.
+19  OLIVA NOVA ..... plein soleil d'hiver méditerranéen, bleu et sable
+                     clair, ombres nettes. Lumière de janvier au sud.
+20  ROME ........... fin de matinée sous les pins de la Villa Borghese,
+                     lumière verte filtrée, taches de soleil au sol.
+21  VÉRONE ......... jour de novembre couvert et doux, lumière égale sur
+                     la pierre rose, sans soleil direct.
+22  WARENDORF ...... matin d'automne net et froid, ciel bleu clair, buée
+                     aux naseaux, allées ratissées.
+23  AIX-LA-CHAPELLE  après-midi de juillet, stade en plein soleil, vert
+                     dense, drapeaux, foule en clair.
+24  DUBAÏ .......... aube pâle avant la chaleur, ciel blanc-rosé, sable
+                     clair, ombres à peine posées. Pas de couchant orange.
+25  TOKYO .......... plein jour de printemps sous les cerisiers, lumière
+                     rose et blanche, ciel bleu léger.
+26  TAMWORTH ....... plein midi d'été austral, lumière écrasante, ciel bleu
+                     dur, poussière ocre, eucalyptus gris-vert.
+27  BUENOS AIRES ... fin d'après-midi d'été, herbe verte éclairée de côté,
+                     ciel bleu, poussière soulevée.
+28  LEXINGTON ...... matin d'octobre, ciel bleu vif, barrières noires et
+                     herbe verte, brume au loin qui se lève.
+29  SPRUCE MEADOWS   ⚠️ Deux saisons possibles, et une seule est juste :
+                     l'HIVER. Plein jour d'hiver albertain, neige bleutée,
+                     ciel pâle, Rocheuses au fond, buée. Le chapitre parle
+                     du froid de l'écurie, pas d'un concours d'été.
+
+======================================================================
+CE QU'IL FAUT M'ENVOYER
+======================================================================
+Une image par ville, dans n'importe quel ordre, sans les renommer — je
+reconnais les villes. Pour chacune je fabrique :
+• carte-<ville>.webp — 900×1200, le gabarit des autres
+• fond-<ville>.webp  — 420×560, flou et assombri au même niveau que les
+                       seize existants (luminance moyenne 40)
+et je remesure le tiers supérieur pour décider si le titre doit passer en
+foncé. C'est fait ville par ville, jamais estimé à l'œil.
+
+⚠️ Tu peux les envoyer par lots de deux ou trois. Une par message si tu
+utilises un générateur : les demandes groupées produisent des planches au
+lieu d'images séparées.
