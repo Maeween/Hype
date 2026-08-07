@@ -169,9 +169,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    plutot que 30% : sur cet ecran le texte descend moins bas, donc on peut
    montrer un peu plus du bas de l'image. */
 #dsFond{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-#dsFondImg{position:absolute;inset:-10%;width:120%;height:120%;
- background-image:url("lingua-langues.webp");background-size:cover;background-position:center 40%;
- animation:fvKen 20s ease-in-out infinite alternate}
+#dsFondImg{position:absolute;inset:0;width:100%;height:100%;
+ background-image:url("lingua-langues.webp");background-size:contain;
+ background-repeat:no-repeat;background-position:center top}
 #inBas{position:absolute;inset:0;background:linear-gradient(to bottom,
  rgba(4,6,10,.30) 0%,rgba(4,6,10,.62) 40%,rgba(4,6,10,.94) 68%,#04060A 100%)}
 /* ⚠️ Z-INDEX CORRIGE le 7 aout 2026, et c'est LA raison pour laquelle
@@ -1265,7 +1265,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v14 · 7 août</p>
+    <p id="ouvVersion">v15 · 8 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1362,7 +1362,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      ⚠️ Trois faux amis dans les cinq premiers mots : la periode se dit
      chukka, la monte se dit pony (et ce n'est pas un poney), le handicap
      note le JOUEUR et non le cheval. -->
-<script src="hype-lingo-lex-polo.js"></script>
+<script src="hype-lingo-lex-polo.js?l=1"></script>
 <!-- Le haras : chapitre cree le 6 aout 2026 pour Lexington (Kentucky).
      ⚠️ NE PAS CONFONDRE avec lex-elevage.js (Golega), qui fait NAITRE, ni
      avec lex-vente.js (Verone), ou l'on achete un cheval pour soi en
@@ -1443,7 +1443,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=14";
+var VER = "?v=15";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)

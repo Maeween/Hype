@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 146)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 148)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,54 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🐎 SESSION 148 · LINGUAE (08/08) — LE CANAL EST TROUVÉ : POLO EN SIX LANGUES, ET L'ÉCRAN DES LANGUES DÉZOOMÉ
+
+### ✅ LE CANAL DÉFINITIF DES FICHIERS : l'URL brute GitHub, tapée par Blandine
+`https://raw.githubusercontent.com/Maeween/Hype/main/<fichier>` — servie en texte lisible (Netlify servait les .js en « binaire » illisible pour l'outil web ; le lien doit venir d'ELLE, tapé comme texte de message — les liens en pièce jointe arrivent vides). **Polo récupéré intégralement par ce canal.**
+
+### ✅ Polo (Buenos Aires) : copie verbatim + 12/12 définitions en six langues
+Copie contrôlée par exécution (12 refs exacts, `p:` ×12, `var:` ×3, phrases `ph-polo-*`, ja espacé, avertissements d'en-tête préservés — chukka/taco/handicap à relire par natifs). Défs es/it/de/ja avec les trois faux amis gardés vifs (chukka ≠ period, pony ≠ poney, la bocha). `?l=1` posé. Audit 12/12.
+
+### ✅ L'écran des langues : le fond enfin lisible
+Blandine, capture : « on ne voit même pas ce que c'est — le changer ou le dézoomer fortement ». Cause : surcadrage 120 % + `cover` sur une image portrait = plein écran sur un détail sombre. **Dézoom fort** : image entière (`contain`, posée en haut, sans animation de zoom), noir autour. Rendu jugé : le cheval cabré, l'anneau de drapeaux et le livre sont identifiables. Marqueur **v15 · 8 août**.
+
+### 📥 Restent 6 lexiques — Blandine tape ces lignes (une par message ou toutes ensemble) :
+raw.githubusercontent.com/Maeween/Hype/main/hype-lingo-lex-poney.js · -elevage.js · -vente.js · -western.js · -tradition.js · -endurance.js (précédées de https:// — et haras/froid par le même canal s'ils doivent passer ici).
+
+### 🗂️ Nouvelles demandes de Blandine EN ATTENTE (proposer avant de coder)
+· **Partager l'appli depuis chaque chapitre** (bouton partage natif, `partagerDuel` existe comme modèle).
+· **La collection accessible depuis l'accueil** (le carnet).
+· **Une page « comment ça marche »** : le guide des besoins → villes (« réserver une balade → La Baule ou Le Morne ; te préparer pour un cours → Aberystwyth/Saumur… »).
+Propositions à faire, puis Burghley (passation S147) puis phrases 7 mots puis sans-le-son.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
+
+---
+
+## 🧳 SESSION 147 · LINGUAE (07-08/08) — PASSATION (demandée par Blandine, contexte plein)
+
+### ✅ Décisions prises ce soir, à exécuter en tête de prochaine session
+**1 · BURGHLEY, 30ᵉ étape du voyage — VALIDÉE (« Bon fais burghley »).** Le chapitre CROSS y vit ; Badminton garde « le complet comme événement ». À construire :
+· `hype-lingo-lex-cross.js` : **12 notions** validées — le piano · le trakehner · la table · le coin (the corner) · le fossé (the ditch) · le rondin (the log) · la haie (the brush) · les crampons (the studs) · la sangle bavette (the stud girth) · la toque (the silk) · le numéro du cheval (the bridle number) · le chronomètre (the stopwatch). Format = celui de `balade` : mots 6 langues avec `p:`/`var:`, **defs directement en 6 langues**, 4 phrases `ph-cross-*` (japonais À ESPACES).
+· Intégration `lingo.html` : entrée ETAPES **après badminton**, même format une-ligne que ses voisines, p. ex. `{ref:"burghley", ch:"Le cross", v:"Burghley", nat:"Angleterre", h:"02 h 55", ciel:["#081020","#122036"], forme:"manoir", souv:"Une paire de crampons", ic:"fer"}` (ICONES disponibles : lampion toise jarre peigne seau dossard echelle cloche selle etrille licol alene fer lettre fanion cocarde stetho carnet coupe coquillage — pas de nouveau SVG nécessaire). + `ETAPE_SRC.burghley:[["cross",1]]` + `<script src="hype-lingo-lex-cross.js">` + entrée `ACCUEIL_CHAP.cross` (6 langues). Aucun « 29 » codé en dur trouvé (collection/compteurs dynamiques). Pas de carte/fond/récit : les replis existants couvrent ; lettre à écrire plus tard.
+**2 · Entrée « les formats » à AJOUTER au lexique concours** (leçon 2 = Badminton) : ODE / three-day event, **CCI-S / CCI-L (ex-CIC/CCI, renommés 2019 — les vieux sigles vivent encore sur le terrain)**, étoiles CCI 1★–5★, Badminton = 5★. Une notion, 6 langues, def 6 langues, `?l` du concours à incrémenter (`?l=2` actuel → `?l=3`).
+**3 · Chantilly : PAS dans le voyage** (vérifié dans `ETAPE_SRC`, réponse donnée à Blandine) — gardée en réserve pour un futur chapitre « hippodrome/courses » France.
+
+### 📥 Le canal des lexiques du fil 2 — état exact
+**balade : FAIT** (S146, six langues, livré). Restent **7** : polo · poney · elevage · vente · western · tradition · endurance (+ haras et froid, jamais passés). **Un fichier par message = le seul format qui passe.** ⚠️ Le document reçu en fin de session est arrivé **VIDE** (encore) : à redemander. Interdiction absolue re-consignée : ne JAMAIS reconstruire un fichier dont le contenu n'est pas intégralement visible (incident S146 : 4 reconstructions supprimées avant livraison).
+
+### 📦 Chez Blandine, à pousser si pas déjà fait
+`lingo.html` **v14** (fix écran des langues) · lot balade (`hype-lingo-lex-balade.js` + `lingo.html` avec `?l=1`). Les paquets vivent dans pousser-v14/ et pousser-balade/ (outputs cumulatifs, ne rien effacer).
+
+### 🗂️ File d'attente validée (ordre)
+1. Burghley + formats (ci-dessus). 2. **Phrases simplifiées** (« ok ») : règle des 7 mots — à réécrire ×6 : arrivee 0-3 · urgences 0,1,3,4,6,7,9 · pansage 4,6 · cheval 4,5,7 · materiel 2,6,7 · cours 0,1,2,5,6 · dressage 0,2,5,6,7 · obstacle 1,4,6,7 · concours 0,1,2,3,4 (brouillons dans le transcript). 3. **« Sans le son »** (« ok ») : bouton 🔇 par exercice écouter/dire → équivalent visuel, réglage mode silencieux, « dire » dès niveau 2. 4. Defs des lexiques du fil 2 à mesure des arrivées. 5. Fonds+TITRE_SOMBRE des cartes par lots de 6 · mp4 arrivée (ffmpeg dispo) · nom du module (reco Hype Atlas, « Ride the world » = signature validée) · verdicts téléphone v12/v13/v14.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session (passation).
 
 ---
 
