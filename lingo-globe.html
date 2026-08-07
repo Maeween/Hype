@@ -493,6 +493,18 @@ const Q=document.getElementById('q'), QX=document.getElementById('qx'), RES=docu
    Plus de zone morte, et on comprend le voyage sans avoir à tourner le
    globe à l'aveugle. */
 function renderResults(){
+  /* ⚠️ CORRIGE le 6 aout 2026, sur retour de Blandine : « une fois que
+     j'ai ouvert ceux a decouvrir ils ne s'ouvrent plus, du coup on n'a
+     plus nulle part ou aller ».
+     Toucher une ville de la liste posait `RES.style.display='none'` en
+     style INLINE pour laisser voir le globe. Or renderResults() ne
+     reaffichait la liste qu'en ajoutant la classe `on` — le style inline,
+     plus fort qu'une classe, restait la pour toujours. Resultat : apres
+     avoir ouvert UNE SEULE fiche, la liste ne revenait plus jamais, quel
+     que soit l'onglet, alors que le compteur continuait d'annoncer
+     « 4 AFFICHES ». Le voyage devenait sans issue.
+     On remet donc l'affichage a chaque rendu. */
+  RES.style.display='';
   QX.style.display = query ? 'block' : 'none';
   var list = CLUBS.map((c,i)=>({c,i}))
     .filter(o => !o.c.depart && passType(o.c) && (!query || isMatch(o.c)));
@@ -527,10 +539,21 @@ document.getElementById('zin').addEventListener('click',()=>{ zoom=Math.min(2.2,
 document.getElementById('zout').addEventListener('click',()=>{ zoom=Math.max(1,zoom/1.4); lastTouch=performance.now(); });
 document.getElementById('rec').addEventListener('click',()=>{ closeF(); flyTo(46,4,1.2); });
 
-function updCnt(){ const n=CLUBS.filter(passType).length; document.getElementById('cnt').textContent=(filterType==='all'?'':(n+' AFFICH\u00c9S')); }
+/* ⚠️ Le libelle etait « AFFICHES » en dur : masculin, toujours pluriel, et
+   jamais traduit alors que tout le reste du globe parle six langues. Les
+   villes sont feminines, et il y en a parfois une seule. */
+function updCnt(){
+  const n=CLUBS.filter(passType).length;
+  var mot = (LL && LL.affichees) ? LL.affichees : ['ville affich\u00e9e','villes affich\u00e9es'];
+  document.getElementById('cnt').textContent =
+    (filterType==='all' ? '' : (n+' '+(n>1?mot[1]:mot[0])));
+}
 updCnt();
 resize(); frame();
-var _bk=document.querySelector(".back"); if(_bk){ _bk.style.cursor="pointer"; _bk.addEventListener("click",function(){ if(F.style.display==="block"){ closeF(); } else if(RES&&RES.style.display==="block"){ Q.value=""; query=""; renderResults(); Q.blur(); } }); }
+var _bk=document.querySelector(".back"); if(_bk){ _bk.style.cursor="pointer"; _bk.addEventListener("click",function(){ if(F.style.display==="block"){ closeF(); } else if(query){ /* ⚠️ testait `RES.style.display==="block"`, qui n'est
+     jamais pose : renderResults() passe par la classe `on`. La branche
+     etait morte, le bouton retour n'effacait jamais la recherche. */
+     Q.value=""; query=""; renderResults(); Q.blur(); } }); }
 var _ov=document.getElementById("affoverlay"); if(_ov){ document.getElementById("affclose").addEventListener("click",function(){ _ov.style.display="none"; }); _ov.addEventListener("click",function(e){ if(e.target===_ov) _ov.style.display="none"; }); }
 
 window.addEventListener('message',function(e){ if(e&&e.data&&e.data.t==='hype-exit'){ try{ wave={a:true,t:0,dist:null}; }catch(x){} } }); var HYPE_L={fr:{ph:'Chercher une destination',mem:'étapes',mon:'Ton départ',voir:'Partir'},en:{ph:'Search a destination',mem:'stages',mon:'Your start',voir:'Go there'},es:{ph:'Buscar un destino',mem:'etapas',mon:'Tu salida',voir:'Partir'},it:{ph:'Cerca una destinazione',mem:'tappe',mon:'La tua partenza',voir:'Parti'},de:{ph:'Ein Ziel suchen',mem:'Etappen',mon:'Dein Start',voir:'Losreiten'},ja:{ph:'目的地を検索',mem:'ステージ',mon:'出発地',voir:'出発する'}}; var HYPE_MEM='étapes'; var HYPE_MON='Ton départ';
@@ -546,27 +569,33 @@ var LING_L = {
  fr:{f:"Faites",o:"Ouvertes",d:"À découvrir",tout:"Tout",
      eF:"Faite",eO:"Ouverte",eD:"À découvrir",eX:"Ton départ",
      bF:"Y retourner",bO:"Partir",bD:"Pas encore ouverte",bX:"Ton point de départ",
-     vide:"Aucune destination ici",dep:"Le départ de ton voyage",loin:"à {n} km de {v}"},
+     vide:"Aucune destination ici",dep:"Le départ de ton voyage",loin:"à {n} km de {v}",
+     affichees:["ville affichée","villes affichées"]},
  en:{f:"Done",o:"Open",d:"To discover",tout:"All",
      eF:"Done",eO:"Open",eD:"To discover",eX:"Your start",
      bF:"Go back",bO:"Set off",bD:"Not open yet",bX:"Your starting point",
-     vide:"No destination here",dep:"The start of your journey",loin:"{n} km from {v}"},
+     vide:"No destination here",dep:"The start of your journey",loin:"{n} km from {v}",
+     affichees:["place shown","places shown"]},
  es:{f:"Hechas",o:"Abiertas",d:"Por descubrir",tout:"Todo",
      eF:"Hecha",eO:"Abierta",eD:"Por descubrir",eX:"Tu salida",
      bF:"Volver",bO:"Partir",bD:"Aún no abierta",bX:"Tu punto de partida",
-     vide:"Ningún destino aquí",dep:"El inicio de tu viaje",loin:"a {n} km de {v}"},
+     vide:"Ningún destino aquí",dep:"El inicio de tu viaje",loin:"a {n} km de {v}",
+     affichees:["ciudad mostrada","ciudades mostradas"]},
  it:{f:"Fatte",o:"Aperte",d:"Da scoprire",tout:"Tutto",
      eF:"Fatta",eO:"Aperta",eD:"Da scoprire",eX:"La tua partenza",
      bF:"Tornarci",bO:"Partire",bD:"Non ancora aperta",bX:"Il tuo punto di partenza",
-     vide:"Nessuna destinazione qui",dep:"L'inizio del tuo viaggio",loin:"a {n} km da {v}"},
+     vide:"Nessuna destinazione qui",dep:"L'inizio del tuo viaggio",loin:"a {n} km da {v}",
+     affichees:["città mostrata","città mostrate"]},
  de:{f:"Erledigt",o:"Offen",d:"Zu entdecken",tout:"Alle",
      eF:"Erledigt",eO:"Offen",eD:"Zu entdecken",eX:"Dein Start",
      bF:"Zurückkehren",bO:"Losreiten",bD:"Noch nicht offen",bX:"Dein Startpunkt",
-     vide:"Kein Ziel hier",dep:"Der Beginn deiner Reise",loin:"{n} km von {v}"},
+     vide:"Kein Ziel hier",dep:"Der Beginn deiner Reise",loin:"{n} km von {v}",
+     affichees:["Ort angezeigt","Orte angezeigt"]},
  ja:{f:"達成",o:"開放中",d:"未開放",tout:"すべて",
      eF:"達成",eO:"開放中",eD:"未開放",eX:"出発地",
      bF:"もう一度行く",bO:"出発する",bD:"まだ開放されていません",bX:"あなたの出発地",
-     vide:"ここに目的地はありません",dep:"旅の出発点",loin:"{v}から{n}km"}
+     vide:"ここに目的地はありません",dep:"旅の出発点",loin:"{v}から{n}km",
+     affichees:["件表示","件表示"]}
 };
 var LL = LING_L.fr;
 

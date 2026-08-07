@@ -22,6 +22,89 @@
 
 ---
 
+## 🔓 SESSION 117 · LINGUAE (06/08) — « POURQUOI PLEIN D'ENTRE ELLES NE SONT PAS OUVERTES ? » : QUATRE DÉFAUTS EMPILÉS
+
+Deux questions de Blandine, deux vrais défauts derrière — et un troisième trouvé en corrigeant.
+
+### 🔴 1 · La progression s'arrêtait à la DIXIÈME ville
+`if(courant===FAITS && FAITS<10)` — un **dix codé en dur**, reste de l'époque où le voyage comptait dix villes. Avec vingt-huit étapes, **dix-huit d'entre elles étaient définitivement inatteignables** : même en jouant parfaitement, on ne débloquait jamais au-delà de la dixième. Le même dix bloquait le défilement du chemin et l'annonce de la ville suivante.
+✅ Remplacé par `ETAPES.length` aux trois endroits.
+
+### 🔴 2 · L'avancement n'était jamais sauvegardé
+`var FAITS = 4` en dur, écrit nulle part. À **chaque rechargement**, le voyage repartait à la quatrième ville et tout ce qui avait été ouvert se refermait.
+✅ Rangé dans `hype_lingua_faits`, **par langue** — cohérent avec la maîtrise depuis la session 106 : un cavalier qui passe à l'espagnol recommence son voyage, puisque son vocabulaire espagnol est vierge. Le plancher reste à 4 : les quatre premières villes sont offertes, c'était le comportement d'origine.
+✅ Vérifié dans les deux sens : `{"en":13,"es":6}`, l'anglais retrouve 13 en revenant, l'espagnol garde 6.
+
+### 🔴 3 · Et la sauvegarde ne se relisait pas — même piège d'ordre que d'habitude
+Premier essai : la valeur était **bien écrite** sous `"en"` mais **jamais relue**. `chargerFaits()` était appelée à la déclaration de `FAITS`, or `VOYAGE_LANGUE` est déclarée bien plus bas dans le même script : on lisait donc `FAITS_TOUT[undefined]`, et on retombait toujours sur 4.
+✅ L'appel déplacé après la relecture du voyage, avec un redessin du chemin et des jalons — qui avaient déjà été tracés avec la valeur par défaut. Mesuré : 13 survit au rechargement, 28 jalons redessinés.
+⚠️ **Quatrième fois** que ce fil bute sur l'ordre d'exécution du fichier (le compte de mots, le libellé de niveau, le titre de l'itinéraire, et maintenant l'avancement). Chacun a son contournement local. Un vrai « prêt » global les remplacerait tous.
+
+### 🔴 4 · Le globe : après avoir ouvert UNE ville, la liste ne revenait plus jamais
+« Une fois que j'ai ouvert ceux à découvrir ils ne s'ouvrent plus, du coup on n'a plus nulle part où aller. »
+Toucher une ville posait `RES.style.display='none'` en style **inline**, pour laisser voir le globe. Or `renderResults()` ne réaffichait la liste qu'en ajoutant la classe `on` — et **un style inline est plus fort qu'une classe**. Après une seule fiche ouverte, la liste était morte, quel que soit l'onglet, pendant que le compteur continuait d'annoncer « 4 AFFICHÉS ». Le voyage devenait sans issue.
+✅ `renderResults()` remet l'affichage à chaque rendu. Reproduit puis vérifié : après ouverture d'une fiche, changer d'onglet ramène bien la liste.
+✅ Trouvé au passage : le bouton retour testait ce même style inline jamais posé — **la branche était morte**, il n'effaçait jamais la recherche. Corrigé.
+
+### ✅ Et le compteur du globe, tant qu'on y était
+« 4 AFFICHÉS » était en dur : masculin alors que les villes sont féminines, toujours au pluriel même pour une seule, et **jamais traduit** alors que tout le reste du globe parle six langues. Devient « 1 ville affichée » / « 23 villes affichées », dans les six langues.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` et `lingo-globe.html` · défaut du globe **reproduit avant correction** puis vérifié après, sur les trois onglets · persistance de l'avancement testée avec rechargement et changement de langue · plafond de progression vérifié à 27 → 28 · compteur relu en français et en anglais · aucune erreur JS.
+
+### ⏳ Ce qui reste
+1. **Tamworth** — la dernière ville, créneau réservé à 15 h 40.
+2. Les lettres et volets de Lexington, Spruce Meadows, Tokyo, Buenos Aires.
+3. `lingua-affiche.webp` et le fond du carnet.
+4. Les définitions en quatre langues.
+5. La sécurité (11 mots) attend une ville.
+
+### 🧭 Préparation Flutter
+- **Deux constantes codées en dur remplacées par la donnée** : `10` devient `ETAPES.length`. C'est exactement le type de valeur qui survit à un portage et casse silencieusement.
+- **Troisième magasin dimensionné par langue** (`maîtrise`, et maintenant `avancement`). Il ne reste que `quiz` et `cartes` à trancher — l'incohérence est désormais isolée à deux clés.
+- **Un style inline supprimé au profit d'une classe** : le défaut du globe venait du mélange des deux façons de cacher un élément. Un seul mécanisme d'état par élément, c'est aussi ce que demandera le portage.
+- **Reste à moderniser** : le « prêt » global, réclamé pour la quatrième fois.
+- **Risques** : la sauvegarde de l'avancement crée une clé neuve, sans migration à faire — l'absence de valeur retombe sur 4, le comportement d'avant.
+
+---
+
+## 🔎 SESSION 116 · LINGUAE (06/08) — « ON LIT MAL » : LA MESURE DIT QUE CE N'ÉTAIT PAS LA COULEUR
+
+Blandine : « idem on lit mal niveau couleurs je trouve ». **J'ai mesuré au lieu d'estimer, et le diagnostic n'est pas celui-là.**
+
+### 🔴 Contraste mesuré sur les pixels réels, pas jugé à l'œil
+Fond reconstitué comme il apparaît vraiment — image éclaircie à 1,95 puis voile appliqué — puis luminance relative et rapport de contraste calculés par zone :
+
+| texte | couleur | contraste | verdict |
+|---|---|---|---|
+| titre de la ville | `#F4F7FA` | **18,5:1** | largement bon |
+| pays sur la face | `#94A3AF` | **7,7:1** | bon |
+| numéro d'étape | `#20D9F5` | **9,3:1** | bon |
+| chapitre au dos | `#D4AF37` | **8,9:1** | bon |
+| phrase au dos | `#B3C0CB` | **10,1:1** | bon |
+| gris du compte de mots | `#6E7C88` | **4,35:1** | juste sous le seuil de 4,5 |
+| **barre de niveau éteinte** | `rgba(…,.22)` | **1,56:1** | **invisible** |
+
+**Un seul élément était vraiment fautif en couleur** : la barre de niveau éteinte, à 1,56:1 — littéralement invisible sur le fond éclairci. Et un second de justesse, le gris du compte de mots.
+
+### ✅ Le vrai coupable était la TAILLE
+Tout le reste était à **7,5 ou 8 px, en capitales, avec .11 à .20 em d'interlettrage**. À cette taille, un contraste de 8:1 ne sert à rien : ce n'est pas une question de lumière mais de dessin de lettre. C'est pour ça que Blandine parlait de couleurs — le symptôme est le même, la cause non.
+
+Repris, tout en gardant l'échelle de la carte : le pays 8 → **9,5 px**, le chapitre au dos 7,5 → **9 px**, le niveau et le compte de mots 8 → **9 px**, la phrase 10,5 → **11,5 px**, le nom au dos 12 → **13 px**, le numéro 10 → **11 px**. Interlettrages resserrés en conséquence, parce qu'un espacement large sur une petite capitale sépare les lettres plus qu'il ne les aère.
+Et les couleurs remontées quand même là où l'écart s'était réduit — l'or à `#E8C980` comme sur le souvenir de l'écran d'arrivée, le gris à `#93A2AE` (7,1:1), la barre éteinte à `.42` avec une ombre pour tenir sur les fonds clairs. Ombres portées ajoutées sur les textes posés au-dessus de l'image, qui est plus lumineuse depuis la session 115.
+
+⚠️ **Règle notée dans le CSS** : sur ces cartes, ne jamais descendre sous **9 px pour une capitale espacée**. C'est la troisième fois que ce fil bute sur une lisibilité — le souvenir de l'écran d'arrivée, la ligne du pays sur la carte postale, et maintenant le carnet. Deux fois sur trois, la cause n'était pas la couleur.
+
+### Contrôles passés
+`verif.py` sur `lingo.html` · contraste calculé sur les pixels du fond reconstitué, avant et après · tailles finales relues dans le navigateur (`getComputedStyle`), face avant et dos · rendu réel en densité ×3 pour juger comme sur l'écran du téléphone · aucune erreur JS.
+
+### 🧭 Préparation Flutter
+**Aucune amélioration d'architecture réalisée sur cette session.**
+Un acquis de méthode en revanche, qui vaut d'être écrit une fois pour toutes : **une plainte de lisibilité ne se corrige pas en changeant la couleur avant d'avoir mesuré.** Trois fois sur ce projet, le réflexe aurait été de foncer ou d'éclaircir un ton ; deux fois, le contraste était déjà bon et le problème était la taille ou l'opacité du parent. Le calcul prend deux minutes et évite de dégrader une palette qui va bien.
+**Risques** : aucun. Uniquement des tailles et des tons.
+
+---
+
 ## 🩹 SESSION 115 · LINGUAE (06/08) — LE RETOURNEMENT 3D RETIRÉ, LES FONDS ÉCLAIRCIS
 
 Blandine, capture à l'appui : « quand on retourne les cartes le texte à l'envers empiète sur le reste, et ça lag à mort » · « les cartes floutées on voit rien ».

@@ -311,36 +311,53 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  background:linear-gradient(180deg,rgba(6,7,9,.10) 0%,rgba(6,7,9,.34) 46%,rgba(6,7,9,.82) 100%)}
 .vc .vrec .vhalo{position:absolute;left:-30%;top:-24%;width:160%;height:90%;
  background:radial-gradient(46% 42% at 50% 50%,rgba(32,217,245,.11),transparent 72%)}
-.vc .vn{position:absolute;left:10px;top:8px;font-family:'Cinzel',serif;font-size:10px;
- color:var(--turquoise);letter-spacing:.08em;z-index:2}
+.vc .vn{position:absolute;left:10px;top:8px;font-family:'Cinzel',serif;font-size:11px;
+ color:var(--turquoise);letter-spacing:.08em;z-index:2;
+ text-shadow:0 1px 6px rgba(0,0,0,.9)}
 .vc .vtitre{position:absolute;left:10px;right:10px;bottom:9px;z-index:2}
 .vc .vtitre b{display:block;font-family:'Cinzel',serif;font-weight:600;font-size:14.5px;
  line-height:1.12;color:var(--blanc);text-shadow:0 1px 8px rgba(0,0,0,.85)}
-.vc .vtitre i{display:block;font-style:normal;font-size:8px;letter-spacing:.15em;
- text-transform:uppercase;color:#94A3AF;margin-top:5px}
-.vc .vtourne{position:absolute;right:9px;bottom:11px;z-index:2;font-size:13px;
- color:var(--turquoise);opacity:.5}
+/* ⚠️ LISIBILITÉ, 6 août 2026 — « on lit mal niveau couleurs je trouve ».
+   J'ai mesuré le contraste réel sur les pixels du fond éclairci, et la
+   couleur n'était pas le problème : #94A3AF donnait déjà 7,7:1, très
+   au-dessus du seuil de 4,5. LE PROBLÈME EST LA TAILLE — 8 px en
+   capitales avec .15em d'interlettrage, ça ne se lit pas quel que soit le
+   contraste. Passé à 9,5 px, et la couleur remontée quand même parce
+   qu'éclaircir l'image en dessous avait réduit l'écart.
+   ⚠️ Règle à garder : sur ces cartes, ne pas descendre sous 9 px pour
+   une capitale espacée. */
+.vc .vtitre i{display:block;font-style:normal;font-size:9.5px;letter-spacing:.13em;
+ text-transform:uppercase;color:#C3CFD9;margin-top:5px;
+ text-shadow:0 1px 6px rgba(0,0,0,.9)}
+.vc .vtourne{position:absolute;right:9px;bottom:11px;z-index:2;font-size:14px;
+ color:var(--turquoise);opacity:.8;text-shadow:0 1px 6px rgba(0,0,0,.9)}
 /* Le niveau, devant : trois barres, autant d'allumees que le palier.
    Sans mot, pour que la face reste une affiche — c'est au dos qu'on lit
    ce que le palier veut dire. */
 .vc .vniv{position:absolute;right:9px;top:10px;z-index:2;display:flex;gap:3px}
-.vc .vniv i{display:block;width:9px;height:2px;border-radius:1px;
- background:rgba(244,247,250,.22)}
+/* la barre éteinte mesurait 1,56:1 sur le fond éclairci : invisible.
+   Remontée à .42, avec une ombre pour tenir sur les fonds clairs. */
+.vc .vniv i{display:block;width:10px;height:2px;border-radius:1px;
+ background:rgba(244,247,250,.42);box-shadow:0 0 3px rgba(0,0,0,.8)}
 .vc .vniv i.on{background:var(--turquoise);box-shadow:0 0 7px rgba(32,217,245,.75)}
 /* dos */
 .vc .vdos{background:linear-gradient(165deg,#12161A,#07090C);
  display:flex;flex-direction:column;padding:11px 11px 9px}
-.vc .vdos .vnom{font-family:'Cinzel',serif;font-weight:600;font-size:12px;line-height:1.1;
+.vc .vdos .vnom{font-family:'Cinzel',serif;font-weight:600;font-size:13px;line-height:1.1;
  color:var(--blanc)}
-.vc .vdos .vch{font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--or);
- border-bottom:1px solid rgba(255,255,255,.09);padding:4px 0 6px;margin-bottom:7px}
-.vc .vdos .vpq{flex:1;font-size:10.5px;line-height:1.5;color:#B3C0CB;overflow:hidden}
-.vc .vdos .vniveau{font-size:8px;letter-spacing:.12em;text-transform:uppercase;
- color:#E2C878;margin-top:7px}
+/* 7,5 px en capitales espacées : illisible malgré 8,87:1 de contraste.
+   9 px, et l'or clarifié comme sur le souvenir de l'écran d'arrivée. */
+.vc .vdos .vch{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#E8C980;
+ border-bottom:1px solid rgba(255,255,255,.12);padding:4px 0 6px;margin-bottom:7px}
+.vc .vdos .vpq{flex:1;font-size:11.5px;line-height:1.5;color:#C6D2DC;overflow:hidden}
+.vc .vdos .vniveau{font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+ color:#E8C980;margin-top:7px}
 .vc .vdos .vniveau b{font-weight:600;color:#F0DFA8}
-.vc .vdos .vapp{font-size:8px;letter-spacing:.11em;text-transform:uppercase;
- color:var(--turquoise);opacity:.85;margin-top:4px}
-.vc .vdos .vapp span{color:#6E7C88}
+/* #6E7C88 mesurait 4,35:1 — juste sous le seuil. Et 8 px de capitales
+   espacées, comme partout ici, était le vrai coupable. */
+.vc .vdos .vapp{font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+ color:var(--turquoise);opacity:1;margin-top:4px}
+.vc .vdos .vapp span{color:#93A2AE}
 @media (max-width:340px){ .vc .vtitre b{font-size:12.5px} .vc .vdos .vpq{font-size:9.5px} }
 .regles{text-align:left;padding:16px 16px 4px;border-radius:14px;margin:0 0 30px;
  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
@@ -1235,7 +1252,35 @@ var ETAPES = [
  {ref:"lexington", ch:"Le haras",      v:"Lexington",   nat:"États-Unis",     h:"17 h 20", ciel:["#0E1620","#C8A46A"], forme:"haras",    souv:"Un numéro de lot",              ic:"dossard"},
  {ref:"spruce",    ch:"Le froid",      v:"Spruce Meadows", nat:"Canada",      h:"18 h 10", ciel:["#0B1420","#8FB4C8"], forme:"lande",    souv:"Une couverture d'hiver",        ic:"seau"}
 ];
+/* ⚠️ LES ETAPES FRANCHIES, gardees sur le telephone depuis le 6 aout 2026.
+   Avant, `FAITS` valait 4 en dur et n'etait JAMAIS sauvegarde : a chaque
+   rechargement, le voyage repartait a la quatrieme ville, et tout ce qu'on
+   avait ouvert se refermait. C'est la deuxieme moitie de la reponse a
+   « pourquoi plein d'entre elles ne sont pas ouvertes ».
+   ⚠️ RANGE PAR LANGUE, comme la maitrise depuis la session 106 : un
+   cavalier qui passe a l'espagnol recommence son voyage, ce qui est
+   coherent avec le fait que son vocabulaire espagnol est vierge.
+   ⚠️ Le plancher reste a 4 : les quatre premieres villes sont offertes,
+   c'est le comportement d'origine et il n'y a pas de raison de le changer.
+   Le bouton d'apercu (#bApercu) continue de tout ouvrir d'un tap. */
+var FAITS_TOUT = (function(){
+  try{ return JSON.parse(localStorage.getItem("hype_lingua_faits")) || {}; }
+  catch(e){ return {}; }
+})();
+function chargerFaits(){
+  var n = FAITS_TOUT[VOYAGE_LANGUE];
+  FAITS = (typeof n === "number" && n >= 4) ? Math.min(n, ETAPES.length) : 4;
+}
+function sauverFaits(){
+  FAITS_TOUT[VOYAGE_LANGUE] = FAITS;
+  try{ localStorage.setItem("hype_lingua_faits", JSON.stringify(FAITS_TOUT)); }catch(e){}
+}
 var FAITS = 4, TRACE = true;
+/* ⚠️ chargerFaits() N'EST PAS APPELE ICI. `VOYAGE_LANGUE` est declaree
+   bien plus bas dans ce meme script : a cet endroit elle vaut `undefined`,
+   donc on relirait FAITS_TOUT[undefined] et on retomberait toujours sur 4.
+   Mesure faite : la valeur etait bien ecrite sous "en" mais jamais relue.
+   L'appel se trouve apres la relecture du voyage, en fin de fichier. */
 
 /* ---- traductions des étapes ----
    Les nations et les heures sont partagées (quatre et dix valeurs) ;
@@ -2411,7 +2456,8 @@ window.addEventListener("resize",mesurer);
 mesurer(); dessinerTrace(); dessinerJalons(); affiner(0); rendu();
 
 S("bApercu").addEventListener("click",function(){
-  FAITS=(FAITS===ETAPES.length)?4:ETAPES.length; this.textContent=FAITS+" / "+ETAPES.length;
+  FAITS=(FAITS===ETAPES.length)?4:ETAPES.length; sauverFaits();
+  this.textContent=FAITS+" / "+ETAPES.length;
   dessinerTrace(); dessinerJalons(); lastI=-1; });
 S("bTrace").addEventListener("click",function(){
   TRACE=!TRACE; this.textContent="Trace : "+(TRACE?"on":"off"); dessinerTrace(); });
@@ -4874,6 +4920,7 @@ function montrerDest(){
       if(!D.ouvert) return;
       VOYAGE_LANGUE = D.lg;
       chargerMaitrise();          /* chaque langue a sa propre maîtrise */
+      chargerFaits();             /* et son propre avancement */
       S("dest").classList.remove("on");
       try{ localStorage.setItem("hype_lingua_voyage", D.cle); }catch(e){}
       /* Premiere visite : c'est ici que le film s'enchaine. Il ne pouvait
@@ -4907,10 +4954,21 @@ function montrerDest(){
     if(D.cle===cle && D.ouvert && D.lg!==langueUI()){
       VOYAGE_LANGUE = D.lg;
       chargerMaitrise();
+      chargerFaits();
       return;
     }
   }
 })();
+
+/* ⚠️ C'EST ICI qu'on relit l'avancement, et pas a la declaration de
+   FAITS : il faut que `VOYAGE_LANGUE` soit connue, donc apres la
+   relecture du voyage ci-dessus. Et il faut redessiner, parce que le
+   chemin et ses jalons ont deja ete traces avec la valeur par defaut. */
+try{
+  chargerFaits();
+  if(S("bApercu")) S("bApercu").textContent = FAITS+" / "+ETAPES.length;
+  dessinerTrace(); dessinerJalons(); lastI=-1;
+}catch(e){}
 
 S("inSuite").addEventListener("click", montrerDest);
 S("dsRetour").addEventListener("click", function(){
@@ -5077,7 +5135,10 @@ function lancerDepart(){
   S("dpVille").textContent=eV(e).toUpperCase();
   S("dpNation").textContent=eNat(e);
   S("dpTitre").textContent=T("tamponObtenu");
-  S("dpSous").textContent = (courant+1<10) ? T("prochaineEtape",{v:eV(ETAPES[courant+1])})
+  /* ⚠️ `<10` corrige le 6 aout 2026 : reste de l'epoque ou le voyage
+     comptait dix villes. Avec vingt-huit, la ville suivante n'etait plus
+     annoncee au-dela de la dixieme. */
+  S("dpSous").textContent = (courant+1<ETAPES.length) ? T("prochaineEtape",{v:eV(ETAPES[courant+1])})
                                            : T("voyageTermine");
   vidDepart=document.createElement("video");
   vidDepart.muted=true; vidDepart.loop=true; vidDepart.autoplay=true;
@@ -5094,10 +5155,17 @@ function finDepart(){
   S("depart").classList.remove("on");
   if(vidDepart){ try{ vidDepart.pause(); vidDepart.removeAttribute("src"); vidDepart.load(); }catch(err){}
     if(vidDepart.parentNode) vidDepart.parentNode.removeChild(vidDepart); vidDepart=null; }
-  if(courant===FAITS && FAITS<10){
-    FAITS++; S("bApercu").textContent=FAITS+" / "+ETAPES.length;
+  /* ⚠️ CORRIGE le 6 aout 2026, sur la question de Blandine : « pourquoi
+     plein d'entre elles ne sont pas ouvertes ? »
+     Le compteur d'etapes franchies s'arretait a DIX, chiffre code en dur
+     du temps ou le voyage comptait dix villes. Avec vingt-huit etapes,
+     dix-huit d'entre elles etaient DEFINITIVEMENT inatteignables : meme en
+     jouant parfaitement, on ne debloquait jamais au-dela de la dixieme.
+     Le meme dix bloquait le defilement du chemin. */
+  if(courant===FAITS && FAITS<ETAPES.length){
+    FAITS++; sauverFaits(); S("bApercu").textContent=FAITS+" / "+ETAPES.length;
     dessinerTrace(); dessinerJalons(); lastI=-1;
-    if(courant+1<10) rail.scrollTo({left:(courant+1)*W, behavior:"smooth"});
+    if(courant+1<ETAPES.length) rail.scrollTo({left:(courant+1)*W, behavior:"smooth"});
   }
 }
 S("dpSuite").addEventListener("click",finDepart);
