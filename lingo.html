@@ -70,6 +70,25 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  text-align:center;margin:18px 0 0}
 .lgManu b{color:var(--turquoise);font-weight:600}
 /* les mots, replies derriere une ligne du carnet */
+.lgRecomp{margin-top:20px;padding:15px 15px 13px;border-radius:16px;
+ background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.08);text-align:left}
+.lgRecomp .recT{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;
+ color:var(--gris);margin-bottom:4px}
+.lgRLigne{display:flex;align-items:center;gap:13px;margin-top:11px}
+.lgRLigne p b{display:block;font-size:13px;color:#DCE6EE;font-weight:600}
+.lgRLigne.ok p b{color:var(--orTexte)}
+.lgRLigne p i{font-style:normal;font-size:11.5px;color:var(--gris);line-height:1.5}
+.lgRVig{flex:0 0 40px;width:40px;aspect-ratio:3/4;border-radius:6px;overflow:hidden;
+ border:1px solid rgba(232,201,128,.35);background:#0B0F13;position:relative}
+.lgRVig img{width:100%;height:100%;object-fit:cover;display:block}
+.lgRVig.silh{border-style:dashed;border-color:rgba(255,255,255,.18)}
+.lgRVig.silh::after{content:"";position:absolute;inset:26% 30%;border-radius:45% 45% 40% 40%;
+ border:1.5px solid rgba(255,255,255,.14)}
+.lgRVig.med{aspect-ratio:1/1;border-radius:50%;height:40px;display:flex;
+ align-items:center;justify-content:center;overflow:visible;
+ background:radial-gradient(circle at 50% 42%, rgba(212,175,55,.1), rgba(10,14,18,.6) 70%)}
+.lgRVig.med svg{width:24px;height:24px}
+.lgRVig.med.attente{border-style:dashed;border-color:rgba(212,175,55,.35);opacity:.6}
 .lgPli{margin-top:20px;border-top:1px dashed rgba(255,255,255,.14);
  border-bottom:1px dashed rgba(255,255,255,.14)}
 .lgPliB{display:flex;justify-content:space-between;align-items:center;width:100%;
@@ -1246,7 +1265,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v12 · 7 août</p>
+    <p id="ouvVersion">v13 · 7 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1424,7 +1443,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=12";
+var VER = "?v=13";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -4012,6 +4031,21 @@ var UI = {
    de:"im Morgengrauen", ja:"夜明け"},
  chapNsur:{fr:"Chapitre {n} sur {t}", en:"Chapter {n} of {t}", es:"Capítulo {n} de {t}",
    it:"Capitolo {n} di {t}", de:"Kapitel {n} von {t}", ja:"第{n}章／全{t}章"},
+ recompChap:{fr:"Les récompenses du chapitre", en:"This chapter's rewards",
+   es:"Las recompensas del capítulo", it:"Le ricompense del capitolo",
+   de:"Die Belohnungen des Kapitels", ja:"この章のごほうび"},
+ recompAToi:{fr:"Gagnée — elle est à toi", en:"Won — it's yours",
+   es:"Ganada — es tuya", it:"Vinta — è tua",
+   de:"Gewonnen — sie gehört dir", ja:"獲得ずみ — きみのもの"},
+ recompCarteComment:{fr:"Tous les mots bons, une fois", en:"All words right, once",
+   es:"Todas las palabras bien, una vez", it:"Tutte le parole giuste, una volta",
+   de:"Einmal alle Wörter richtig", ja:"一度、全問正解で"},
+ recompObjComment:{fr:"Le quiz sans faute", en:"A clear quiz",
+   es:"El quiz sin fallos", it:"Il quiz senza errori",
+   de:"Das Quiz fehlerfrei", ja:"クイズを満点で"},
+ laCarteDe:{fr:"La carte postale · {v}", en:"The postcard · {v}",
+   es:"La postal · {v}", it:"La cartolina · {v}",
+   de:"Die Postkarte · {v}", ja:"絵はがき · {v}"},
  etMaintenant:{fr:"Et maintenant ?", en:"What now?", es:"¿Y ahora?",
    it:"E adesso?", de:"Und jetzt?", ja:"次はどこへ？"},
  continuerAvec:{fr:"Continuer avec {s} à {v}", en:"Continue with {s} in {v}",
@@ -5183,11 +5217,50 @@ function finQuiz(){
   zone.appendChild(el("button",{class:"lcCta",
     style:"margin-top:9px;background:rgba(255,255,255,.06);color:#8996A2;box-shadow:none;border:1px solid rgba(255,255,255,.1)",
     onclick:function(){ QZ=null; finLecon(); }}, T("quizRetour")));
+  zone.appendChild(blocRecompenses());
   var ph = PHRASES_FIN[LC.ville];
   if(ph) zone.appendChild(el("p",{class:"lgPhrase", html:tx(ph)}));
 }
 
 function manqueTxt(n){ return n<=1 ? T("ilManque1") : T("ilManque",{n:n}); }
+
+/* le bloc des recompenses du chapitre, pour les deux ecrans de fin */
+function blocRecompenses(){
+  var eV_ = ETAPES[ETAPES.findIndex(function(x){ return x.ref===LC.ville; })];
+  var carte = carteObtenue(LC.ville), obj = souvenirObtenu(LC.ville);
+  var bloc = el("div",{class:"lgRecomp"});
+  bloc.appendChild(el("p",{class:"recT", text:T("recompChap")}));
+  /* la carte */
+  var lC = el("div",{class:"lgRLigne"+(carte?" ok":"")});
+  var vC = el("span",{class:"lgRVig"});
+  if(carte){
+    var im=document.createElement("img");
+    im.alt=eV_?eV(eV_):LC.ville; im.src="carte-"+LC.ville+".webp"+VER;
+    im.addEventListener("error",function(){ vC.classList.add("silh"); im.remove(); });
+    im.addEventListener("click",function(){ ouvrirGrand(im.src, im.alt); });
+    vC.appendChild(im);
+  } else vC.classList.add("silh");
+  lC.appendChild(vC);
+  lC.appendChild(el("p",{},
+    el("b",{text:T("laCarteDe",{v:eV_?eV(eV_):""})}),
+    el("i",{text: carte ? T("recompAToi") : T("recompCarteComment")})));
+  bloc.appendChild(lC);
+  /* le souvenir */
+  var lO = el("div",{class:"lgRLigne"+(obj?" ok":"")});
+  var vO = el("span",{class:"lgRVig med"+(obj?"":" attente")});
+  var sv = el("span",{});
+  sv.innerHTML='<svg viewBox="0 0 60 60">'+(ICONES[eV_&&eV_.ic]||"")+'</svg>';
+  vO.appendChild(sv.firstChild);
+  lO.appendChild(vO);
+  lO.appendChild(el("p",{},
+    el("b",{text:eSouv(eV_)}),
+    el("i",{text: obj ? T("recompAToi") : T("recompObjComment")})));
+  bloc.appendChild(lO);
+  /* le chemin : TOUJOURS visible */
+  bloc.appendChild(el("button",{class:"lgColl", style:"margin-top:12px",
+    onclick:function(){ ouvrirCollection(); }}, T("versColl")));
+  return bloc;
+}
 
 /* ---------- fin de leçon ---------- */
 function finLecon(){
@@ -5261,12 +5334,6 @@ function finLecon(){
       el("i",{text:T("taCarteNo",{n:noV})})));
     S("lcCorps").appendChild(bloc);
   }
-  /* le chemin vers la collection : la recompense doit dire OU on la
-     retrouve (retour de Blandine, maquette) */
-  if(carteGagnee){
-    S("lcCorps").appendChild(el("button",{class:"lgColl",
-      onclick:function(){ ouvrirCollection(); }}, T("versColl")));
-  }
 
   /* ---- les mots de la leçon, avec leur état ---- */
   var motsL = (LC.L && LC.L.concepts) ? LC.L.concepts : [];
@@ -5294,12 +5361,7 @@ function finLecon(){
      la phrase qui dit comment le gagner ; dore s'il est deja la
      (retour de Blandine : « c'est pas parce que tu as la carte que tu as
      forcement l'objet ») */
-  var objDeja = souvenirObtenu(LC.ville);
-  var medS = el("span",{class:"med"});
-  medS.innerHTML = '<svg viewBox="0 0 60 60">'+(ICONES[eV_&&eV_.ic]||"")+'</svg>';
-  S("lcCorps").appendChild(el("div",{class:"lgObj"+(objDeja?" gagne":"")}, medS,
-    el("p",{html: objDeja ? T("objetDejaL",{o:eSouv(eV_)})
-                          : "<b>"+T("lObjet")+"</b> — "+T("objetAttend")})));
+  S("lcCorps").appendChild(blocRecompenses());
 
   /* ⚠️ RETIRÉ le 6 août 2026, sur demande de Blandine : le bloc
      « Où en est ce chapitre » listait la MAÎTRISE (répétitions sur
@@ -5319,7 +5381,7 @@ function finLecon(){
   var qz = scoreQuiz(LC.ville);
   S("lcCorps").appendChild(el("button",{class:"lcCta", onclick:ouvrirQuiz},
     el("b",{text: qz ? T("quizRefaire") : T("quizLancer")}),
-    objDeja ? null : el("span",{class:"fil2", text:T("objetSeGagneLa")})));
+    souvenirObtenu(LC.ville) ? null : el("span",{class:"fil2", text:T("objetSeGagneLa")})));
   S("lcCorps").appendChild(el("button",{class:"lcCta",
     style:"margin-top:9px;background:rgba(255,255,255,.06);color:#C6D0DA;box-shadow:none;border:1px solid rgba(255,255,255,.12)",
     onclick:function(){ if(suivante) lancer(suivante); else lancer(LC.L); }},

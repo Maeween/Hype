@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 143)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 144)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,29 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🎁 SESSION 144 · LINGUAE (07/08) — LES RÉCOMPENSES TOUJOURS VISIBLES EN FIN D'ÉCRAN
+
+Blandine : « quand on les gagne, et même déjà gagnés, on ne sait pas où aller les voir — les montrer sur la page de fin avec le lien vers la collection ».
+
+### ✅ Un bloc unique « Les récompenses du chapitre », fin de leçon ET fin de quiz
+`blocRecompenses()` : la carte (vraie vignette si gagnée — tap pour l'ouvrir en grand —, silhouette sinon), le souvenir (médaillon plein ou pointillé), l'état de chacun en toutes lettres (« Gagnée — elle est à toi » / « Tous les mots bons, une fois » / « Le quiz sans faute »), et **le bouton vers la collection TOUJOURS présent** — plus seulement quand la carte est gagnée. En fin de leçon il remplace l'ancien bloc objet (`lgObj`) ; la grande animation de la carte fraîchement gagnée reste inchangée au-dessus. Cinq libellés ajoutés en six langues. Élision réglée par le point médian (« La carte postale · Édimbourg »).
+🔴 Au passage, réparé une référence orpheline créée par le remplacement (`objDeja` encore lu par le bouton quiz) — attrapée par le banc, pas par `node --check` : les deux contrôles restent nécessaires.
+
+### ✅ Rendu contrôlé
+Banc fin de leçon (Édimbourg, carte gagnée, objet en attente) : les deux états lisibles d'un coup, le lien souligné or, aucune erreur JS. Marqueur **v13 · 7 août**. À pousser : `lingo.html` seul.
+
+### 🎤 Deux demandes EN ATTENTE DE VALIDATION (règle absolue : proposer d'abord)
+1. **« Les phrases sont trop compliquées »** — proposition : règle des 7 mots (une idée par phrase, présent, pas de subordonnée), réécriture des ~40 phrases des dix lexiques dans les six langues. Exemples avant/après soumis à Blandine.
+2. **« Une alternative quand les gens ne peuvent ni entendre ni parler — d'ailleurs il n'y a plus de moment où on parle ? »** — constat exact : les exercices « dire » n'entrent qu'au niveau 3 (villes tardives), donc quasi invisibles. Proposition : (a) « dire » dès le niveau 2, une fois par leçon ; (b) sur CHAQUE exercice d'écoute ou de parole, un bouton « 🔇 sans le son » qui bascule vers l'équivalent visuel (écouter→associer en lisant, dire→construire la phrase en tuiles) ; (c) un réglage « mode silencieux » qui le fait d'office. Rien d'implémenté sans son feu vert.
+
+### ⏳ Traductions des 8 lexiques : toujours bloquées
+Les fichiers envoyés ne se sont pas déposés sur le disque (bug d'upload récurrent) ; les 8 URLs Netlify demandées à Blandine — dès qu'elle les colle, chantier d'une traite.
+
+### 🧭 Préparation Flutter
+`blocRecompenses()` mutualise fin de leçon et fin de quiz : un composant de plus prêt à voyager.
 
 ---
 
