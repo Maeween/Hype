@@ -1232,7 +1232,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v6 · 7 août</p>
+    <p id="ouvVersion">v9 · 7 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1373,10 +1373,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
 <!-- Les dix villes : lettre manuscrite et trois volets. Ajouté le 4 août 2026,
      en remplacement de l'objet VILLES qui était en dur ici et n'avait que trois villes. -->
-<script src="hype-lingo-villes.js"></script>
+<script src="hype-lingo-villes.js?l=1"></script>
 <!-- Les huit villes du tour du monde. Se charge APRÈS le fichier des dix
      et complète le même objet clé par clé, sans jamais écraser. -->
-<script src="hype-lingo-villes-monde.js"></script>
+<script src="hype-lingo-villes-monde.js?l=1"></script>
 
 <script>
 /* ==================================================================
@@ -1410,7 +1410,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=6";
+var VER = "?v=9";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -2923,9 +2923,16 @@ function garnirVille(e){
   /* le fond vivant reprend la carte postale de la ville */
   document.getElementById("fvImg").style.backgroundImage = 'url("fond-'+e.ref+'.webp")';
 
-  /* la carte postale : seulement si son image existe */
-  S("postal").style.display = (v && v.carte) ? "block" : "none";
-  if (v && v.carte){
+  /* ⚠️ LA CARTE NE DEPEND PLUS DU FICHIER DES VILLES (7 aout 2026).
+     Capture de Blandine : Spruce Meadows sans son bloc carte, alors que
+     `carte-spruce.webp` etait poussee. `VILLES[ref].carte` jugeait une
+     image qu'il ne connait pas : l'entree de la ville peut manquer dans
+     hype-lingo-villes-monde.js sans que la carte, elle, manque.
+     Le bloc s'affiche pour TOUTES les villes ; si le fichier webp
+     n'existe pas, le repli `sansimg` du 6 aout montre deja proprement
+     « carte a venir ». Le lieu et la lettre gardent leurs replis. */
+  S("postal").style.display = "block";
+  {
     /* On MONTRE la récompense sans la donner : la carte s'affiche en
        aperçu, assombrie — Blandine : « c'était sympa de la voir un peu
        floue ». On la garde ; on retire seulement le texte qui la
@@ -2947,9 +2954,11 @@ function garnirVille(e){
     appliquerTeinteTitre(e.ref);
     S("pimg").alt = eV(e);
     S("pnom").textContent = eV(e);  S("pnom2").textContent = eV(e);
-    S("plieu").textContent = v.lieu; S("plieu2").textContent = v.lieu;
+    var _lieu = (v && v.lieu) ? v.lieu : eNat(e);
+    S("plieu").textContent = _lieu; S("plieu2").textContent = _lieu;
     S("ptnom").textContent = eV(e).toUpperCase();
-    ecrireLettre(v);
+    if(v && v.lettre) ecrireLettre(v);
+    else ecrireLettreAbsente(e);
   }
 
   /* les trois volets */
@@ -2968,6 +2977,14 @@ function garnirVille(e){
   });
 }
 
+/* la ville n'a pas encore son entree dans hype-lingo-villes*.js : le
+   verso reste habite au lieu de rester vide. */
+function ecrireLettreAbsente(e){
+  S("plettre").className = "plettre" + (langue==="ja" ? " ja" : "");
+  S("plettre").innerHTML =
+    "<p>"+T("lettreBientot",{v:eV(e)})+"</p>" +
+    '<p class="sign">' + (langue==="ja" ? "またね、Hype" : "À bientôt, Hype") + "</p>";
+}
 function ecrireLettre(v){
   var L = v.lettre[langue] || v.lettre.fr;
   var manque = !v.lettre[langue];
@@ -4128,6 +4145,12 @@ var UI = {
  bravoObjet:{fr:"Bravo — {o} rejoint ta collection.", en:"Well done — {o} joins your collection.",
    es:"Enhorabuena — {o} entra en tu colección.", it:"Bravo — {o} entra nella tua collezione.",
    de:"Glückwunsch — {o} kommt in deine Sammlung.", ja:"おめでとう — {o}がコレクションに加わった。"},
+ lettreBientot:{fr:"La lettre de {v} est en route — elle arrivera dans une prochaine version.",
+   en:"The letter from {v} is on its way — it will arrive in a coming update.",
+   es:"La carta de {v} está en camino: llegará en una próxima versión.",
+   it:"La lettera da {v} è in viaggio: arriverà in un prossimo aggiornamento.",
+   de:"Der Brief aus {v} ist unterwegs — er kommt mit einem der nächsten Updates.",
+   ja:"{v}からの手紙はいま旅の途中。次のアップデートで届きます。"},
  toucheFermer:{fr:"Touche pour refermer", en:"Tap to close", es:"Toca para cerrar",
    it:"Tocca per chiudere", de:"Tippen zum Schließen", ja:"タップで閉じる"},
  tourDuMonde:{fr:"Le tour du monde", en:"The world tour", es:"La vuelta al mundo",
@@ -4626,6 +4649,15 @@ function lancer(L){
       vague=[];
     }
   });
+  /* ⚠️ AJOUT du 7 aout 2026, demande de Blandine : « fais faire des
+     phrases aussi par moments ». Au niveau 1 la regle du 6 aout tenait
+     les phrases hors des vagues — c'etait juste, mais le joueur d'une
+     ville de decouverte ne voyait alors JAMAIS une phrase entiere.
+     Compromis : UNE phrase, en toute fin de lecon, quand le chapitre en
+     a. On repart avec une vraie phrase en poche, sans casser l'elan. */
+  if(niveauVille(LC.ville) < 2 && phrases[0]){
+    plan.push({t:"phrase", p:phrases[0]});
+  }
   LC.L=L; LC.plan=plan; LC.i=0; LC.justes=0; LC.nouveaux=[];
   LC.aTester=plan.filter(function(x){ return x.t!=="decouverte"; }).length;
   etape();

@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 134)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 137)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -15,6 +15,8 @@
 **Maîtrise et avancement rangés par langue.** Changer de langue recommence le voyage, ce qui est cohérent : le vocabulaire de la nouvelle langue est vierge. `hype_lingua_quiz` et `hype_lingua_cartes` restent **communs** à toutes les langues — incohérence assumée, décision de jeu en attente.
 
 **Tout est ouvert, sans plancher.** Plus de déblocage en chaîne, plus de villes offertes. `FAITS` ne verrouille plus rien : il compte les chapitres réellement terminés et ne sert qu'à la trace du chemin. ⚠️ **Ne pas réintroduire de plancher.**
+
+**La carte de la page d'arrivée ne dépend plus du fichier des villes** (session 135) : le bloc s'affiche pour les 29, l'image vient de `carte-<ref>.webp` avec le repli « carte à venir » si le fichier n'existe pas, le lieu retombe sur la nation, et un verso de repli (« la lettre est en route », 6 langues) couvre les villes sans entrée dans `hype-lingo-villes*.js`. Les cinq villes qui n'avaient AUCUNE entrée (Tokyo, Tamworth, Buenos Aires, Lexington, Spruce Meadows) l'ont reçue en session 136 : le voyage est complet, 29/29.
 
 **Le chemin de nuit est court-circuité** (7 août, décision de Blandine : « il sert à rien, on garde juste la vidéo avant »). Le carnet de route est la racine : toute fermeture (globe, collection, leçon, arrivée, départ, sprint, duel) retombe sur lui, jamais sur `#scene`. La collection et le sprint ont leurs boutons sur le carnet, sous « Partir » ; `#sprint` et `#collection` sont passés en z-index 41. Les éléments du chemin restent dans le fichier (le code de la trace écrit dedans) mais aucun écran ne mène plus à eux.
 
@@ -102,6 +104,82 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🖼️ SESSION 137 · LINGUAE (07/08) — LES DEUX FONDS D'ENTRÉE, LES PHRASES AU NIVEAU 1, ET LES TRADUCTIONS DES DIX VILLES ARRÊTÉES À TEMPS
+
+### ✅ Les deux images « que tu m'avais fait faire » sont produites
+`lingua-affiche.webp` (la boussole, 1400×1120, 181 Ko — fond de l'écran de présentation) et `lingua-langues.webp` (le cheval aux drapeaux, 763×738, 39 Ko — fond de l'écran de choix des langues). **Noms exacts attendus par le CSS.** Pourquoi Blandine ne voyait ni la page des langues ni les images : les correctifs (z-index 44 de `#dest`, délégation de clic sur `#ouvLangue`) sont dans les v7/v8 **pas encore déployées**, et ces deux webp n'avaient jamais été produites. Tout arrive ensemble avec ce lot.
+
+### ✅ « Fais faire des phrases aussi par moments » — fait
+Au niveau 1, UNE phrase entre désormais en toute fin de leçon quand le chapitre en a. La règle du 6 août reste intacte pour le reste : une par vague dès le niveau 2, vocal au niveau 3 seulement. Marqueur **v9 · 7 août**, `hype-lingo-villes.js?l=1` préparé.
+
+### ✅ Les lexiques des cinq dernières villes — réponse à sa question
+Oui : tokyo→tradition, tamworth→western, buenos→polo **vérifiés** (12 concepts + 4 phrases chacun) ; lexington→haras et spruce→froid créés dans ce fil, à confirmer sur le dépôt.
+
+### 🔴 Les traductions des dix villes : ARRÊTÉES avant livraison, et c'est une bonne nouvelle
+Feu vert reçu (« traduis tout partout »), les dix villes traduites en brouillon (`villes-v3-a.js` + `villes-v3-b.js`)… et au contrôle final, **les textes français de cinq villes du brouillon b (Windsor, Hickstead, Badminton, Kildare, Édimbourg) ne sont PAS ceux de Blandine** — je les avais réécrits au lieu de les recopier. La règle du projet est absolue : le français validé ne se remplace JAMAIS. Le fichier original n'existe ni sur ce disque ni dans le transcript de ce fil → **impossible de restaurer ses textes sans le fichier**. Rien livré côté villes. ⚠️ **Demandé à Blandine : renvoyer `hype-lingo-villes.js`** ; les traductions reprendront depuis SES textes, avec un contrôle verbatim du français par script avant toute livraison.
+
+### Contrôles passés
+`node --check` sur tous les blocs de `lingo.html` après chaque patch · brouillons de traduction non livrés (règle du français verbatim non satisfaite).
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
+
+---
+
+## ✉️ SESSION 136 · LINGUAE (07/08) — LES CINQ DERNIÈRES VILLES REÇOIVENT LEUR ENTRÉE : LE VOYAGE EST COMPLET
+
+Blandine envoie enfin les deux fichiers de villes. L'audit tranche tout :
+
+### 🔎 L'audit des 29
+`hype-lingo-villes.js` : les 10 britanniques et irlandaises, lettres **en français seulement** (l'en-tête l'assume : traduction après validation des textes). `hype-lingo-villes-monde.js` : 14 villes, six langues complètes. **Cinq villes n'avaient AUCUNE entrée : Tokyo, Tamworth, Buenos Aires, Lexington, Spruce Meadows** — les cinq dernières étapes. C'était la cause première du « Spruce n'a pas sa page » (la session 135 a rendu la carte indépendante ; restaient le lieu, la lettre et les volets).
+
+### ✅ Les cinq entrées écrites, dans le style et la structure du fichier
+Sections `MONDE.<ref> = {…};` comme Dubaï. Chacune : `lieu`, `carte` **véridique** (true pour Tamworth/Buenos/Spruce dont les webp existent ; false pour Tokyo et Lexington, à passer à true quand leurs cartes arriveront — sans effet d'affichage depuis la session 135, mais on ne ment pas au fichier), `niveau` aligné sur `NIVEAU_VILLE` (tokyo 3, spruce 1, les trois autres 2), `image` mentale, **lettre en six langues** (un moment vécu : la cible qui claque à Tokyo, la poussière avant les bêtes à Tamworth, les huit chevaux qui tournent ensemble à Palermo, les barrières noires jusqu'à l'horizon à Lexington, « il a bu, le tien ? » à Spruce), **trois volets en six langues** chacun (yabusame et transmission ; Stock Horse, stations et camp draft ; Palermo-la-cathédrale et le petisero ; le Bluegrass et les ventes de yearlings ; Spruce Meadows, le chinook, l'hiver).
+Formulations prudentes sur les faits (« la tradition veut que », « parmi les plus dotés ») — pas de date inventée.
+
+### 🔴 Piège évité EN CASSANT la première tentative
+J'avais inséré les cinq comme des clés de l'objet littéral `MONDE = {…}` — or le fichier n'est PAS un seul littéral : les ajouts récents sont des **sections-instructions** (`MONDE.dubai = {…};`), et il y a sept `};` de sections. `node --check` a refusé, **je suis reparti du fichier original de Blandine** et les cinq sont des sections comme Dubaï. Leçon pour la suite : dans ce fichier, on ajoute une ville en queue, jamais dans le littéral de tête.
+
+### ✅ Cache et marqueur
+`hype-lingo-villes-monde.js` reçoit `?l=1` sur son `<script src>` ; marqueur **v8 · 7 août**.
+
+### ⏳ Reste sur le chantier des villes
+1. Les **lettres des 10 britanniques/irlandaises en 5 langues de plus** — dès que Blandine valide les textes français (règle de l'en-tête du fichier).
+2. `carte:` de Tokyo et Lexington à passer à `true` quand leurs webp seront poussées (cosmétique).
+3. Les faits `// ??` du fichier (Rowley, jardin japonais de Tully…) toujours à confirmer.
+
+### Contrôles passés
+`node --check` sur le fichier reconstruit · audit par exécution : **19 entrées, six langues partout, lettres ET volets, 29/29 avec le fichier des dix** · tous les blocs `<script>` de `lingo.html`.
+
+### 🧭 Préparation Flutter
+Le format « section-instruction par ville » est exactement un enregistrement par entité : le fichier est prêt à devenir une table.
+
+---
+
+## 🛠️ SESSION 135 · LINGUAE (07/08) — SPRUCE AVAIT SA CARTE, C'EST LE CODE QUI REFUSAIT DE LA MONTRER
+
+Blandine (avant de s'absenter : « n'attends pas après moi et enchaîne ») : Spruce Meadows n'a pas sa page d'accueil avec la carte. Or `carte-spruce.webp` est poussée et fonctionne partout ailleurs.
+
+### 🔴 La cause : `VILLES[ref].carte` jugeait une image qu'il ne connaît pas
+`garnirVille` n'affichait le bloc carte postale **que si la ville a son entrée dans `hype-lingo-villes*.js` avec un champ `carte`**. L'entrée de Spruce manque (ou est incomplète) dans `hype-lingo-villes-monde.js` — fichier que je n'ai pas dans ce fil — donc le bloc entier disparaissait, image comprise. Le fichier des villes était devenu le juge d'un webp qu'il ne connaît pas.
+
+### ✅ La carte s'affiche pour les 29, quoi que dise le fichier des villes
+Le bloc postal s'affiche toujours. L'image vient de `carte-<ref>.webp` + `VER` ; si le fichier n'existe pas, le repli `sansimg` du 6 août montre déjà « carte à venir » proprement. Le lieu retombe sur la nation (`eNat`). Et si la ville n'a pas de lettre, un **verso de repli** (`ecrireLettreAbsente`, clé `lettreBientot` en 6 langues) écrit « La lettre de Spruce Meadows est en route — elle arrivera dans une prochaine version. À bientôt, Hype » avec le tampon habituel — jamais un dos vide.
+
+### Contrôles passés
+Tous les blocs `<script>` · **rendu Playwright de l'arrivée de Spruce avec `VILLES={}`** (le cas exact de sa capture) : bloc visible, `carte-spruce.webp` chargée (naturalWidth > 0), titre en foncé (TITRE_SOMBRE), lieu « Canada », verso de repli lisible avec tampon — deux captures jugées à l'œil, aucune erreur JS.
+Marqueur **v7 · 7 août**, `VER` suit.
+
+### ⏳ Ce qui reste pour que « tout soit opérationnel »
+1. **Les vraies lettres** des villes sans entrée : il faut `hype-lingo-villes.js` et `hype-lingo-villes-monde.js` pour auditer les 29 et écrire ce qui manque (6 langues). Demandés à Blandine.
+2. **Les 19 cartes restantes** (chantier de production de Blandine) — leurs pages les afficheront désormais dès le push, sans autre geste que `VER`.
+3. `haras` et `froid` à confirmer sur le dépôt (fichiers de ce fil, non revérifiés).
+
+### 🧭 Préparation Flutter
+La page d'arrivée ne dépend plus que de données optionnelles : chaque bloc a son repli. C'est le contrat qu'il faudra pour le Repository Flutter — l'écran se construit avec ce qu'il a.
 
 ---
 
