@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 07/08/2026 (SESSION 103 · LES SIX LANGUES SONT ALIGNÉES JUSQU'AU GALOP 4, SAUF UN CHAPITRE) — md5 `3ed7728c04f4d0e9c096294963cc0244`, 10 870 272 octets. Preview : `preview-107.html` (ouvre « Les aides pour tourner », g3-c14). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` → sera déclarée en k644. 12 images du G2 toujours en attente.** Detail dans la section SESSION 103 ci-dessous.**
+**Version actuelle de l'index.html : 07/08/2026 (SESSION 104 · LES SIX LANGUES SONT COMPLÈTES DE BABY AU GALOP 4) — md5 `85778901fa567561c84e4b33c9a8c2a0`, 10 957 741 octets. Aucune preview (Blandine ne s'en sert pas). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` → à déclarer en k644.** Detail dans la section SESSION 104 ci-dessous.**
+
+**Ancienne version (103) — 07/08/2026 (SESSION 103 · LES SIX LANGUES SONT ALIGNÉES JUSQU'AU GALOP 4, SAUF UN CHAPITRE) — md5 `3ed7728c04f4d0e9c096294963cc0244`, 10 870 272 octets. Preview : `preview-107.html` (ouvre « Les aides pour tourner », g3-c14). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` → sera déclarée en k644. 12 images du G2 toujours en attente.** Detail dans la section SESSION 103 ci-dessous.**
 
 **Ancienne version (102) — 07/08/2026 (SESSION 102 · CHEVAUX, QUOTAS, XP DES QUETES) — md5 `df9107f23af622ea4a9b280069bbb87f`, 10 768 896 octets. Preview : `preview-102.html` (ouvre la page Cavalier). Aucun SQL — `hype_paliers` existe deja. Part du `c13a4e3e` de la session 101. **12 images du Galop 2 toujours a pousser dans `images/`**. Detail dans la section SESSION 102 ci-dessous.**
 
@@ -102,6 +104,100 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 104 · LES SIX LANGUES SONT COMPLÈTES DE BABY AU GALOP 4
+
+**index.html md5 `85778901fa567561c84e4b33c9a8c2a0`, 10 957 741 octets. Aucun SQL.**
+
+### Le tableau est plein
+
+| | Baby | G1 | G2 | G3 | G4 |
+|---|---|---|---|---|---|
+| fr · en · es · it · ja · **de** | 27/27 | 19/19 | 15/15 | **16/16** | 15/15 |
+
+**Les six langues sont désormais identiques et complètes sur les 92 chapitres de Baby au Galop 4.**
+Plus aucun écart entre elles. C'est la fin du chantier ouvert ce matin, qui partait de 3 chapitres
+sur 19 en allemand au Galop 1 et de trois chapitres monolingues français.
+
+### Injecté dans cette session
+
+`g3-c14` **Les aides pour tourner** en anglais, espagnol, italien et japonais — 52 dictionnaires
+par langue, 269 chaînes chacune.
+
+### Une convention de plus : ne pas s'inquiéter des clés « en trop »
+
+Mes fichiers de traduction contenaient 279 clés pour 269 attendues. Les 10 en excédent sont des
+numéros de puce (`1.` à `5.`) que le lexique avait déjà résolus. **L'injecteur ignore silencieusement
+les clés dont il n'a pas besoin** — seules les clés *manquantes* l'arrêtent. Donc au contrôle de
+parité, `manquants 0` est la seule ligne qui compte ; `en trop` est sans conséquence.
+
+### Deux coquilles attrapées par les contrôles automatiques
+
+- **italien** : `scegle` au lieu de `sceglie` (`blocs.7.contenu|0.sous`).
+- **japonais** : rien cette fois — la recherche de caractères latins résiduels est revenue vide.
+  Elle avait attrapé `three つの` la session précédente, elle reste obligatoire.
+
+### Contrôles passés
+
+- **`node --check` sur les 15 blocs `<script>` inline** : tout OK.
+- **Preuve de rendu** contre l'index de départ, huit tables, six langues : **20 055 valeurs rendues
+  comparées, 0 perdue, 0 ajoutée**. Le **français et l'allemand sont identiques au caractère près**
+  (rien n'a bougé pour eux), et une seule table est touchée — `COURS_GALOP3_FR` — avec 291 valeurs
+  différentes en japonais, exactement le compte attendu.
+- **Simulation de résolution de langue** Baby → Galop 4, six langues : 1 881 éléments de contenu par
+  langue, aucune anomalie.
+
+### Ce qui reste ouvert
+
+**Le bug de voix du tracé animé.** `traceChoisirVoix()` filtre les voix de synthèse sur `/^fr/i`,
+uniquement le français, puis force cette voix sur l'énoncé quelle que soit la langue. Le `u.lang`
+correctement calculé par `LANGUE_VOIX[langue]` est donc écrasé par `u.voice`. Résultat : un lecteur
+allemand voit « Einreiten im Sitztrab » à l'écran et l'entend prononcé en français. Correctif de
+trois lignes — filtrer les voix sur la langue courante et ne rien forcer si aucune voix n'existe.
+**Non corrigé, en attente de validation.**
+
+**Quatre affiches de cours à doubler en allemand** — k213 (`g1-c12` La FFE), k219 (`g1-c13` Le Parc
+Équestre Fédéral), k225 (`g1-c16` Le passeport du cheval), k168 (`g1-c20` Les parties du cheval).
+Les versions allemandes existent mais comportent des erreurs de fond listées en SESSION 101 et 103.
+Elles seront k645 à k648. La première, k207 → `couv-g1-c11-de.jpg`, est corrigée et prête.
+
+**Repli provisoire décidé : l'ANGLAIS, plus le français.** Les cinq objets `src` du Galop 1 qui
+portent une infographie par langue reçoivent une clé `de` pointant sur leur version anglaise :
+
+| Chapitre | fr | en | **de (provisoire)** |
+|---|---|---|---|
+| `g1-c11` Mon passeport cavalier | k207 | k208 | **k208** |
+| `g1-c12` La fédération (FFE) | k213 | k214 | **k214** |
+| `g1-c13` Le Parc Équestre Fédéral | k219 | k220 | **k220** |
+| `g1-c16` Le passeport du cheval | k225 | k226 | **k226** |
+| `g1-c20` Les parties du cheval | k168 | k169 | **k169** |
+
+Raison : un lecteur germanophone lit bien plus probablement l'anglais que le français. Le repli
+implicite du code (`src[langue] || src.fr`) l'envoyait sur l'affiche française.
+
+**À faire quand les affiches allemandes arrivent :** remplacer ces cinq valeurs `de` par k644 à
+k648. `g1-c11` en premier, son affiche est déjà prête (`couv-g1-c11-de.jpg` → k644).
+**Ne pas oublier ces cinq lignes** : sans ça, une affiche allemande poussée dans `images/` ne
+s'afficherait jamais, puisque la clé `de` pointerait toujours sur l'anglais.
+
+**Cinq visuels Lamotte en français + anglais seulement** — `CEREMONIE_LAMOTTE`, `PUISSANCE_LAMOTTE`,
+`SOIREE_CHAMP_LAMOTTE`, `ANIMATIONS_LAMOTTE`, `PLAN_LAMOTTE`. Repli sur le français, rien de cassé.
+Blandine a décidé de laisser : l'événement est passé. À revoir l'an prochain si l'édition revient.
+
+**Les reprises de dressage sont complètes** — vérifié : `REPRISES_FFE`, 10 figures, six langues
+chacune, six niveaux (g3 à g7 et clubelite). Le tracé animé lit ses figures dans cette table, donc
+le texte affiché suit bien la langue ; seule la voix est en défaut (voir ci-dessus).
+
+**Galops 5, 6 et 7** — hors périmètre de ce chantier, mais l'audit les donne à 0/6, 1/7 et 0/6.
+Le Galop 6 a un seul chapitre traduit. C'est le prochain grand morceau si tu veux monter le niveau.
+
+### Note de méthode
+
+Blandine ne se sert pas des fichiers d'aperçu (`preview-N.html`). **Arrêt de leur production.**
+Ne livrer que `index.html`, `SUIVI.md` et les images éventuelles, et dire explicitement à chaque
+livraison ce qui se pousse et ce qui ne se pousse pas.
 
 ---
 
