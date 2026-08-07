@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 137)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 138)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,27 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🎨 SESSION 138 · LINGUAE (07/08) — LA BOMBE RETIRÉE DU LAGON, LES VOLETS EN BLANC, ET LA MAQUETTE DE L'ÉCRAN DE CHAPITRE
+
+### ✅ Trois retours de Blandine sur ses captures de v9 (déployée)
+1. **Le Morne, volet « Se baigner »** : « tu pourras retirer la précision *la bombe sur la tête*, ça fait too much » — retirée **dans les six langues** (fr, en, es, it, de, ja) de `hype-lingo-villes-monde.js`, ancre par ancre.
+2. **« Écris en blanc, on lit super mal — et plus gros »** : le corps des volets passe de 13,5 px gris #C4D0DA à **15 px blanc cassé** (`--blanc`), interligne 1,8. Marqueur **v10 · 7 août**.
+3. **« Les premières pages de cours, il faut les redesigner… une image ou une anim en rapport avec le thème »** : c'est l'écran du chapitre (`choisirLecon`). **Maquette livrée, deux directions** (`page-chapitre.html`, montée sur Édimbourg) :
+   · **A · Le bandeau** — la carte postale de la ville, recadrée en large, EST l'en-tête ; dérive lente (Ken Burns), voile dégradé, titres posés dessus (sur-titre crème + Cinzel) ;
+   · **B · Le fond vivant** — le fond flou de la ville habite tout l'écran comme sur la page d'arrivée, titres centrés + ligne manuscrite Caveat.
+   Communs aux deux : carte de leçon redessinée (verre turquoise, jauge d'acquis, bouton Continuer plein), bloc « débloque » de la session 133 conservé. ⚠️ **Rien n'est intégré : Blandine choisit A, B, ou un mélange.** À noter pour l'intégration : les villes sans carte poussée retomberont sur le repli existant (bandeau→fond, fond→noir doux).
+
+### ✅ Rendus contrôlés
+Les deux directions rendues en 390 px et jugées à l'œil ; collision du bouton « Continuer » avec la ligne des mots trouvée au premier rendu et corrigée (bouton passé dans le flux).
+
+### 📦 Livraison cumulative `pousser-v10/`
+Tout ce qui doit être poussé, y compris ce qui n'a pas bougé depuis v9 (règle des liens : plus jamais d'effacement) : `lingo.html` (v10) · `hype-lingo-villes.js` · `hype-lingo-villes-monde.js` (bombe retirée) · 5 lexiques corrigés · 2 fonds webp · la maquette `page-chapitre.html` · `SUIVI-LINGUAE.md`.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 

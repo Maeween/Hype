@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maquette · l'écran du chapitre</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Montserrat:wght@300;400;500;600&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--noir:#060709;--turquoise:#20D9F5;--blanc:#F4F7FA;--gris:#8996A2;
+ --or:#D4AF37;--orTexte:#F6E3AC}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--noir);color:var(--blanc);font-family:'Montserrat',sans-serif;
+ min-height:100svh}
+button{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer}
+
+/* la barre de maquette — rien de ceci n'ira dans l'app */
+#barre{position:sticky;top:0;z-index:50;background:rgba(4,6,10,.94);padding:10px 14px 12px;
+ backdrop-filter:blur(8px)}
+#barre p{font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris);
+ text-align:center;margin-bottom:9px}
+#onglets{display:flex;gap:8px;justify-content:center}
+#onglets button{padding:9px 16px;border-radius:20px;font-size:10px;font-weight:600;
+ letter-spacing:.14em;text-transform:uppercase;color:var(--gris);
+ background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+#onglets button.on{background:var(--turquoise);color:#060709;border-color:transparent}
+.ecran{display:none;position:relative;min-height:100svh}
+.ecran.on{display:block}
+
+/* ================= A · LE BANDEAU =================
+   La carte postale de la ville, recadrée en large, EST l'en-tête.
+   Le titre du chapitre se pose dessus, la page respire en dessous. */
+#a .bandeau{position:relative;height:295px;overflow:hidden}
+#a .bandeau img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+ object-position:center 26%;animation:derive 26s ease-in-out infinite alternate}
+@keyframes derive{from{transform:scale(1.04) translateY(0)}to{transform:scale(1.1) translateY(-12px)}}
+#a .bandeau .voile{position:absolute;inset:0;background:linear-gradient(to bottom,
+ rgba(4,6,10,.24), rgba(4,6,10,.06) 34%, rgba(4,6,10,.56) 72%, #060709 98%)}
+#a .bandeau .fermer{position:absolute;top:calc(14px + env(safe-area-inset-top));left:16px;
+ width:38px;height:38px;border-radius:50%;background:rgba(4,6,10,.4);color:var(--blanc);
+ font-size:17px;backdrop-filter:blur(6px)}
+#a .bTitres{position:absolute;left:22px;right:22px;bottom:16px;text-align:left}
+#a .bTitres .sur{font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
+ color:var(--orTexte);text-shadow:0 1px 14px rgba(0,0,0,.8);margin-bottom:7px}
+#a .bTitres h1{font-family:'Cinzel',serif;font-size:31px;font-weight:600;letter-spacing:.04em;
+ text-shadow:0 2px 20px rgba(0,0,0,.85)}
+#a .bTitres .ou{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#CBD6DF;
+ margin-top:6px;text-shadow:0 1px 10px rgba(0,0,0,.8)}
+#a .desc{max-width:520px;margin:18px auto 0;padding:0 24px;font-size:15.5px;line-height:1.75;
+ color:var(--blanc);text-align:center}
+#a .desc b{color:var(--turquoise);font-weight:500}
+
+/* ================= B · LE FOND VIVANT =================
+   Le fond flou de la ville habite TOUT l'écran, comme sur la page
+   d'arrivée : la page cesse d'être noire, elle est « quelque part ». */
+#b .fond{position:fixed;inset:0;z-index:0;pointer-events:none}
+#b .fond img{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;
+ filter:blur(2px) brightness(.6);animation:derive 30s ease-in-out infinite alternate}
+#b .fond .voile{position:absolute;inset:0;background:
+ radial-gradient(90% 60% at 50% 0%, rgba(4,6,10,.1), rgba(4,6,10,.72) 62%, rgba(4,6,10,.95) 100%)}
+#b .page{position:relative;z-index:1;padding-top:calc(16px + env(safe-area-inset-top))}
+#b .fermer{margin-left:16px;width:38px;height:38px;border-radius:50%;
+ background:rgba(4,6,10,.42);color:var(--blanc);font-size:17px;backdrop-filter:blur(6px)}
+#b .tetes{max-width:520px;margin:16px auto 0;padding:0 24px;text-align:center}
+#b .tetes .sur{font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
+ color:var(--orTexte);margin-bottom:8px}
+#b .tetes h1{font-family:'Cinzel',serif;font-size:29px;font-weight:600;letter-spacing:.05em}
+#b .tetes .manu{font-family:'Caveat',cursive;font-size:23px;color:#BFD9E2;margin-top:10px}
+#b .desc{max-width:520px;margin:14px auto 0;padding:0 24px;font-size:15.5px;line-height:1.75;
+ color:var(--blanc);text-align:center}
+
+/* ============ ce qui est COMMUN aux deux directions ============ */
+.corpsC{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:0 22px 40px}
+.carteL{margin-top:24px;padding:18px 18px 16px;border-radius:18px;position:relative;
+ background:linear-gradient(150deg, rgba(32,217,245,.13), rgba(10,16,20,.72) 58%);
+ border:1px solid rgba(32,217,245,.22);
+ box-shadow:0 26px 50px -26px rgba(0,0,0,.9), 0 0 44px -22px rgba(32,217,245,.5)}
+.carteL .lg{position:absolute;left:18px;top:16px;font-family:'Cinzel',serif;font-size:26px;
+ color:var(--turquoise)}
+.carteL .t{margin-left:36px;font-family:'Cinzel',serif;font-size:19px;letter-spacing:.04em}
+.carteL .mots{margin:9px 0 0 36px;font-size:12.5px;line-height:1.6;color:#C4D0DA}
+.carteL .acq{margin:10px 0 0 36px;font-size:10.5px;font-weight:600;letter-spacing:.18em;
+ text-transform:uppercase;color:var(--orTexte)}
+.carteL .jauge{display:flex;gap:5px;margin:8px 0 2px 36px}
+.carteL .jauge i{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.14)}
+.carteL .jauge i.f{background:var(--or)}
+.carteL .go{display:block;margin:14px 0 2px 36px;padding:12px 22px;border-radius:12px;
+ background:var(--turquoise);color:#060709;
+ font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+ box-shadow:0 10px 26px -12px rgba(32,217,245,.7)}
+.rec{margin-top:16px;padding:16px;border-radius:18px;background:rgba(255,255,255,.028);
+ border:1px solid rgba(255,255,255,.08)}
+.recT{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gris);
+ margin-bottom:4px}
+.obj{display:flex;align-items:center;gap:14px;margin-top:10px;padding:12px 14px;
+ border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09)}
+.obj img{flex:0 0 44px;width:44px;aspect-ratio:3/4;object-fit:cover;border-radius:6px;
+ border:1px solid rgba(232,201,128,.35)}
+.obj .med{position:relative;flex:0 0 54px;width:54px;height:54px;border-radius:50%;
+ border:1px dashed rgba(212,175,55,.4);opacity:.6;
+ background:radial-gradient(circle at 50% 42%, rgba(212,175,55,.08), rgba(10,14,18,.6) 70%)}
+.obj .med svg{position:absolute;inset:12px;width:30px;height:30px}
+.obj p{font-size:12.5px;line-height:1.6;color:#C9D5DE}
+.obj p b{color:var(--orTexte);font-weight:600}
+</style>
+</head>
+<body>
+
+<div id="barre">
+  <p>maquette · deux directions à comparer — cette barre n'ira pas dans l'app</p>
+  <div id="onglets">
+    <button class="on" data-e="a">A · Le bandeau</button>
+    <button data-e="b">B · Le fond vivant</button>
+  </div>
+</div>
+
+<!-- ============ A · LE BANDEAU ============ -->
+<div class="ecran on" id="a">
+  <div class="bandeau">
+    <img src="carte-edimbourg.webp" alt="">
+    <span class="voile"></span>
+    <button class="fermer">✕</button>
+    <div class="bTitres">
+      <p class="sur">Chapitre 12 · Écosse</p>
+      <h1>Les dialogues</h1>
+      <p class="ou">Édimbourg · Royaume-Uni</p>
+    </div>
+  </div>
+  <p class="desc">Parler à quelqu'un : <b>demander, réserver, comprendre une réponse.</b></p>
+  <div class="corpsC">
+    <div class="carteL">
+      <span class="lg">1</span>
+      <p class="t">Les dialogues</p>
+      <p class="mots">could I · the answer · to ask · to explain …</p>
+      <p class="acq">7 / 12 acquis</p>
+      <div class="jauge"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i></div>
+      <button class="go">Continuer</button>
+    </div>
+    <div class="rec">
+      <p class="recT">Ce que ce chapitre débloque</p>
+      <div class="obj"><img src="carte-edimbourg.webp" alt="">
+        <p><b>La carte postale d'Édimbourg</b> — tous les mots bons, une fois</p></div>
+      <div class="obj"><span class="med"><svg viewBox="0 0 60 60"><path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/></svg></span>
+        <p><b>Le souvenir d'Édimbourg</b> — le quiz sans faute</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ B · LE FOND VIVANT ============ -->
+<div class="ecran" id="b">
+  <div class="fond"><img src="fond-edimbourg.webp" onerror="this.src='carte-edimbourg.webp'" alt=""><span class="voile"></span></div>
+  <div class="page">
+    <button class="fermer">✕</button>
+    <div class="tetes">
+      <p class="sur">Chapitre 12 · Écosse</p>
+      <h1>Les dialogues</h1>
+      <p class="manu">Demander, réserver, comprendre une réponse.</p>
+    </div>
+    <div class="corpsC">
+      <div class="carteL">
+        <span class="lg">1</span>
+        <p class="t">Les dialogues</p>
+        <p class="mots">could I · the answer · to ask · to explain …</p>
+        <p class="acq">7 / 12 acquis</p>
+        <div class="jauge"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i><i></i></div>
+        <button class="go">Continuer</button>
+      </div>
+      <div class="rec">
+        <p class="recT">Ce que ce chapitre débloque</p>
+        <div class="obj"><img src="carte-edimbourg.webp" alt="">
+          <p><b>La carte postale d'Édimbourg</b> — tous les mots bons, une fois</p></div>
+        <div class="obj"><span class="med"><svg viewBox="0 0 60 60"><path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/></svg></span>
+          <p><b>Le souvenir d'Édimbourg</b> — le quiz sans faute</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll("#onglets button").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll("#onglets button").forEach(function(x){ x.classList.remove("on"); });
+    document.querySelectorAll(".ecran").forEach(function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    document.getElementById(b.dataset.e).classList.add("on");
+    window.scrollTo(0,0);
+  });
+});
+</script>
+</body>
+</html>
