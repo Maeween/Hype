@@ -10,7 +10,11 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 07/08/2026 (SESSION 100 · QUETE photo-cheval, VALIDEE DEPUIS TOUS LES CHEMINS) — md5 `bfc5d118f8b1a6e2aea9570ad4f72886`, 10 535 908 octets. Preview : `preview-101.html` (ouvre la page Cavalier). Aucun SQL. **12 images toujours a pousser dans `images/`**. Detail dans la section SESSION 100 ci-dessous.**
+**Version actuelle de l'index.html : 07/08/2026 (SESSION 101 · ALLEMAND 15/16 AU GALOP 3) — md5 `c13a4e3eb56a2429dac22ebe55a65016`, 10 756 766 octets. Preview : `preview-106.html` (ouvre « Agir, résister et céder », g3-c13, l'un des trois chapitres qui étaient monolingues). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` (affiche allemande de la licence, corrigée) → sera déclarée en k644. 12 images du G2 toujours en attente.** Detail dans la section SESSION 101 ci-dessous.**
+
+**Ancienne version (100) — 07/08/2026 (SESSION 100 · QUETE photo-cheval) — md5 `bfc5d118f8b1a6e2aea9570ad4f72886`, 10 535 908 octets. Preview : `preview-101.html`.**
+
+**Ancienne version (100) — 07/08/2026 (SESSION 100 · QUETE photo-cheval, VALIDEE DEPUIS TOUS LES CHEMINS) — md5 `bfc5d118f8b1a6e2aea9570ad4f72886`, 10 535 908 octets. Preview : `preview-101.html` (ouvre la page Cavalier). Aucun SQL. Detail dans la section SESSION 100 ci-dessous.**
 
 **Ancienne version (99) — 07/08/2026 (SESSION 100 · CORRECTIF QUETE photo-cheval) — md5 `2a872ce82efdc337257ffcf7234b4f13`, 10 535 090 octets. Preview : `preview-100.html` (ouvre l'ecran Quetes). Aucun SQL. **12 images toujours a pousser dans `images/`**. Detail dans la section SESSION 100 ci-dessous.**
 
@@ -86,7 +90,299 @@ VIDÉO CARTE LINGUAE (Accueil) : Blandine a fourni `copy_47DFBC08....mov` (752×
 
 VÉRIFICATION : 15/15 node --check ; fonctions 1044→1044, const 551→551 ; allerVersGalop = 3 ; Playwright : 2 pageerror identiques, texte identique.
 
-### Préparation Flutter (session 93 bis)
+### Préparation Flutter (session 101)
+Aucune amélioration d'architecture réalisée sur cette session côté application : c'est un chantier de contenu. Une amélioration d'outillage en revanche, réutilisable pour toutes les langues et toutes les tables :
+
+- `lib_table.js` — isolement d'une table de cours et d'un chapitre par équilibrage de crochets, puis évaluation en objet JS. Remplace `injecter.js`, qui ne connaissait que `COURS_GALOP2_FR`.
+- `i18n.js` — aplatissement d'un dictionnaire `{fr:…}` en couples **chemin → chaîne**, dans les deux sens. C'est ce qui rend l'injection indépendante de la position dans le tableau : plus de clés `"0.3"` à recompter à la main.
+- `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
+
+Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 101 (suite 2) · `g3-c13` EN ALLEMAND + LA PREMIÈRE AFFICHE ALLEMANDE CORRIGÉE
+
+**index.html md5 `c13a4e3eb56a2429dac22ebe55a65016`, 10 756 766 octets. Preview : `preview-106.html`. Aucun SQL.**
+**Image à pousser : `couv-g1-c11-de.jpg` (1023×1537, JPEG q92, 428 Ko).**
+
+### État
+
+| | Baby | G1 | G2 | G3 | G4 |
+|---|---|---|---|---|---|
+| **fr** | 27/27 | 19/19 | 15/15 | 16/16 | 15/15 |
+| **de** | 27/27 | 19/19 | 15/15 | **15/16** | 15/15 |
+| en · es · it · ja | 27/27 | 19/19 | 15/15 | 14/16 | 15/15 |
+
+`g3-c13` **Agir, résister et céder** traduit en allemand : 50 dictionnaires, 249 chaînes. Terminologie classique allemande retenue — **`einwirken` / `verwahren` / `nachgeben`**, qui est le triplet consacré en équitation allemande, et non une traduction littérale de « agir / résister / céder ».
+
+**Il ne reste que `g3-c14` Les aides pour tourner (269 chaînes) pour boucler l'allemand jusqu'au Galop 4.** Puis en/es/it/ja sur `g3-c13` et `g3-c14`.
+
+### Un incident de méthode, rattrapé par le contrôle
+
+En écrivant l'allemand de `g3-c13` je me suis **décalé d'un bloc** sur trois clés (`blocs.3.contenu|2` et `|3`) : j'avais écrit un titre et un sous-titre là où le français attendait un texte simple. Le contrôle de parité des clés avant injection l'a arrêté net — 248 clés produites contre 249 attendues, avec la liste exacte des manquantes et des surnuméraires.
+
+**Leçon à garder : toujours comparer les jeux de clés `fr-<id>-<langue>.json` et `<langue>-<id>.json` AVANT d'appeler `injecter2.js`.** L'injecteur aurait de toute façon refusé (il s'arrête sur traduction manquante), mais la comparaison de clés donne le diagnostic en une ligne au lieu d'une liste de chemins.
+
+### L'affiche allemande de la licence (k207 → `couv-g1-c11-de.jpg`)
+
+Blandine a fourni la version allemande. Elle contenait des erreurs. Trois ont été **corrigées directement dans l'image**, par transplantation de glyphes déjà présents — donc police, couleur, inclinaison et antialiasing exacts, sans aucune police externe :
+
+| Où | Avant | Après |
+|---|---|---|
+| carte de licence | `31.08.2025` | `31.12.2025` |
+| capture du téléphone | `31.08.2025` | `31.12.2025` |
+| titre de section | `DIE „DIGITALE REFLEABE"` | `DIE „DIGITALE ROUTINE"` |
+
+**Technique, réutilisable :** on ne compose pas de texte, on **déplace des glyphes de l'image**. Pour les dates, copie brute de blocs depuis la même ligne (chiffres tabulaires, avance ~7 px). Pour le titre, extraction de l'alpha d'encre de chaque lettre contre un fond reconstruit par colonne, puis recomposition de `ROUTINE` avec `R O U T I N E` prélevés dans `HERAUSFORDERUNG`, `DEINES` et `DIGITALE` de la même ligne, écart d'encre de 3 px comme dans le titre d'origine, guillemet fermant remonté.
+
+**Pièges rencontrés, à ne pas refaire :**
+- les fenêtres sources doivent s'arrêter **avant** le glyphe voisin — un patch trop large a emporté un point, puis un pixel du `3` a épaissi un autre point ;
+- le `2` prélevé plus loin sur la ligne était 2 à 3 px plus bas (ligne légèrement inclinée) : il faut décaler la fenêtre verticalement, pas seulement horizontalement ;
+- pour reconstruire un fond, **échantillonner des lignes garanties sans encre**. Mes premières lignes mordaient sur l'encre et sur l'élément du dessous, ce qui a produit des traînées verticales. Sur ce titre l'encre est sur les lignes 1042→1063 ; le fond propre est 1036→1040 et 1064→1068.
+
+**`REFLEX` était impossible** : aucun `X` majuscule n'existe sur l'affiche dans cette condensée turquoise. `ROUTINE` a été choisi parce que ses sept lettres sont toutes sur la même ligne et que le sens est conservé.
+
+### Ce qui n'a PAS été corrigé sur l'affiche, et pourquoi c'est le bon choix
+
+`Sachschäden` (au lieu de `Personenschäden`), `Bundesprüfungen` (plutôt `Verbandsprüfungen`), `des laufenden Jahres` (au lieu de `des folgenden Jahres`, deux fois) et le bloc « Zugang zu Prüfungen » dont la dernière phrase a perdu son sens. Tous demandent de **recomposer des lignes de texte centré** : ça se verrait.
+
+**Le texte du cours, lui, est juste** — l'allemand de `g1-c11` dit bien « vom 1. September bis zum 31. Dezember des folgenden Jahres » et bien « Personenschäden ». L'affiche est un récapitulatif visuel posé sous un texte correct. Seule la date méritait la chirurgie, parce qu'elle se lit sur la carte et que le cours ne pouvait pas la rattraper.
+
+### Les autres affiches allemandes reçues, à refaire à la génération
+
+**k213 (La FFE)** — sous-titre `IIm Herzen` (un `I` en trop) · `Übungsleiter:innen` alors que l'app dit `Reitlehrer` · `Galops` alors que l'app dit `Galopp` · forme inclusive `Reiter:in` qui n'existe nulle part ailleurs dans l'app.
+
+**k225 (Le passeport du cheval)** — le titre principal dit `DER PFEREDEPASS` (`E` et `D` inversés) · l'encart « Wusstest du ? » est inventé (`Seit 2009` sort de nulle part, « Le livret » lu comme un nom propre `Le Luriet`) · `sein Ursprung (Name des Züchters)` alors que le français dit « ses origines (si elles sont connues) », erreur répétée dans le schéma · `innerhalb von 30 Tagen`, délai inventé · **`oder beim FN` : la FN est la fédération allemande, le français dit SIRE géré par l'IFCE — contresens** · les étiquettes du passeport dessiné sont du charabia (`Rer Foes`, `Becerng Clapes`, `Gesofungen`) · titre `DAS SIGNALMENT` mal orthographié · espaces avant `?` (règle française, l'allemand n'en met pas).
+
+**k219 (Le Parc Équestre Fédéral)** — à auditer en détail, mais deux écarts de chiffres déjà repérés : `100 Hektar` alors que le français dit **400 hectares**, et `530 Betten` là où le français parle de **520 boxes** (des boxes, pas des lits). Titre `DAS FÉDÉRALE REITSPORTZENTRUM` mêle français et allemand.
+
+**Règle générale pour les cinq affiches :** laisser le nom `FÉDÉRATION FRANÇAISE D'ÉQUITATION` en français, comme un nom propre. k213 le laisse, k207 le traduit en `FRANZÖSISCHE REITERLICHE FÖDERATION` — il faut choisir une seule règle.
+
+### Contrôles passés
+
+- **`node --check` sur les 15 blocs `<script>` inline** de l'index et de l'aperçu : tout OK.
+- **Preuve de rendu** contre le fichier livré en début de session, les huit tables, les six langues : **20 055 valeurs rendues comparées, 0 perdue, 0 ajoutée**. Le rendu **français est identique au caractère près** ; les seules différences sont, langue par langue, du français remplacé par la traduction attendue (`de` 1 376 valeurs, `es` et `it` moins, etc.).
+- **Simulation de résolution de langue** Baby → Galop 4, six langues : 1 881 éléments de contenu par langue, aucune anomalie.
+
+**Rappel : le contrôle de non-perte par chemins de données ne suffit plus** depuis la conversion de structure — il signale 677 champs « perdus » et 677 « ajoutés » sur le Galop 3, qui ne sont que le passage de `blocs.1.contenu.0.texte` à `blocs.1.contenu.fr.0.texte`. C'est `preuve_rendu.js`, qui compare le **rendu**, qui fait foi désormais.
+
+---
+
+## SESSION 101 (fin) · LES MONOLINGUES — CONVERSION PROUVÉE, ET LE GALOP 4 BOUCLÉ
+
+**index.html md5 `e0fd3b3ada355a67f9f76f0c5866da80`, 10 736 403 octets. Preview : `preview-105.html`. Aucun SQL.**
+
+### Où en est chaque table
+
+| | Baby | G1 | G2 | G3 | G4 |
+|---|---|---|---|---|---|
+| **fr** | 27/27 | 19/19 | 15/15 | 16/16 | 15/15 |
+| **en · es · it · ja · de** | 27/27 | 19/19 | 15/15 | 14/16 | **15/15** |
+
+**Le Galop 4 est terminé dans les six langues.** Il ne reste, jusqu'au Galop 4, que `g3-c13` et `g3-c14`.
+
+### 1. La conversion de structure — la moitié invisible du travail
+
+Les trois chapitres monolingues (`g3-c13` Agir, résister et céder · `g3-c14` Les aides pour tourner · `g4-galop-qualite` Le départ au galop de qualité) n'étaient pas « non traduits » : leurs textes étaient des **chaînes brutes**, pas des dictionnaires `{fr:…}`. Aucune langue ne pouvait s'y accrocher.
+
+**Vérification faite avant de toucher à quoi que ce soit :** le convertisseur de l'app (`convertirCoursI18nVersInterne`, ligne 23411) accepte les **deux** formats — `tr()` laisse passer les chaînes, et les tableaux sont testés par `Array.isArray`. Les tables G3 et G4 passent bien par lui (`obtenirCoursParGalop`), et **c'est le seul point d'entrée** : aucun autre code ne lit ces tables en direct. La conversion était donc sans risque.
+
+`convertir_structure.js` enveloppe chaque valeur au bon niveau, ce qui n'est pas trivial :
+- champs scalaires lus par `tr()` → `{fr: "…"}` ;
+- **tableaux de contenu → `{fr: [...]}` en un seul bloc, JAMAIS élément par élément.** C'est le piège : à l'intérieur d'un élément de `contenu`, les champs `titre`/`sous`/`texte`/`gras`/`puces` ne passent pas par `tr()`. Les envelopper individuellement aurait affiché des objets à l'écran ;
+- `couv.*` → `{fr: "…"}`, résolu par le `L()` de `CouvAffiche`.
+
+**Preuve de neutralité** (`preuve_rendu.js`) : le script reproduit le convertisseur de l'app à l'identique et compare le **résultat rendu** avant/après, pas les données. Verdict : **20 055 valeurs rendues, identiques au caractère près, dans les six langues.** C'est la seule mesure qui vaut ici — les chapitres ont même *maigri* (moins d'espaces après ré-sérialisation) tout en gagnant une structure.
+
+**Règle pour la suite : ne jamais convertir et traduire dans le même mouvement.** Tant que la conversion n'est pas prouvée neutre, plus rien ne distingue une perte de données d'une traduction.
+
+### 2. `g4-galop-qualite` traduit dans les cinq langues
+
+45 dictionnaires par langue (en-tête, couverture, 5 blocs, 10 questions), soit 225 dictionnaires ajoutés. Terminologie alignée sur l'existant : `Angaloppieren` / `Galoppsprung` / `Vorhand` / `Schwung` côté allemand, `prise` et `perte d'équilibre` rendues par *gathering* / *losing the balance*, *toma* / *pérdida de equilibrio*, *presa* / *perdita di equilibrio*, バランスを受け止める / 失う.
+
+**Piège du lexique, deuxième occurrence :** `couv.titre1` valait « LE DÉPART » et le lexique l'a pré-rempli en **« THE CANTER »** (anglais) et **« DAS »** (allemand), repris de `g2-depart` où le titre était coupé « LE DÉPART / AU GALOP ». Avec le `titre2` d'ici (« DE QUALITÉ »), ça donnait « THE CANTER / WITH QUALITY » et « DAS / IN QUALITÄT » — le second est du charabia. Écrasé à la main. **Le champ `couv.titre1` est le plus exposé de tous : à relire systématiquement dans le fichier `auto`.**
+
+### 3. Ce qui reste, et son coût réel
+
+| Chapitre | Titre | Par langue | × 5 langues |
+|---|---|---|---|
+| `g3-c13` | Agir, résister et céder | 50 dictionnaires | 250 |
+| `g3-c14` | Les aides pour tourner | 52 dictionnaires | 260 |
+
+La structure est déjà convertie sur les deux : il n'y a plus que de la traduction, avec l'outillage habituel. Une session.
+
+### 4. Les cinq affiches allemandes — décision prise
+
+Blandine a vu les cinq affiches françaises et **fait traduire les versions allemandes**. Elles arriveront par la suite. En attendant, **`src` reste sans clé `de`** et le repli du code affiche l'affiche française : rien n'est cassé, rien ne ment.
+
+**À faire à leur arrivée :** déclarer **k644 à k648** dans un nouveau fichier **`hype-images-123.js`** (k643 et le lot 122 sont les derniers occupés, aucun trou dans les 30 dernières clés), extension `.jpg`, puis ajouter la clé `de` aux cinq objets `src` :
+
+| Clé FR | Chapitre | Format |
+|---|---|---|
+| k207 | `g1-c11` La licence FFE | portrait, dense |
+| k213 | `g1-c12` La FFE | portrait, dense |
+| k219 | `g1-c13` Le Parc Équestre Fédéral | portrait, dense |
+| k225 | `g1-c16` Le passeport du cheval | portrait, dense |
+| k168 | `g1-c20` Les parties du cheval | **paysage** |
+
+**Vérifier les noms de fichiers réellement poussés sur GitHub avec Blandine avant de déclarer.**
+
+### 5. Une anomalie de contenu repérée, non corrigée
+
+L'affiche **k168 s'intitule « LES PARTIES DU CHEVAL À CONNAÎTRE – GALOP 1 »** et nomme oreille, garrot, croupe, boulet, jarret… Mais elle est posée sur **`g1-c20` « La physiologie du cheval »**, dont le texte traite du squelette, de la pompe podale, de la respiration, de la digestion et de la répartition du poids. **L'affiche n'illustre pas le cours**, et il n'existe aucun autre chapitre « les parties du cheval » au Galop 1.
+
+Deux hypothèses : l'affiche s'est posée au mauvais endroit, ou il manque un chapitre d'extérieur au Galop 1. **À trancher avec Blandine — rien n'a été déplacé.**
+
+Note pour la traduction de k168 : ce sont trente étiquettes anatomiques précises, la traduction la plus exposée des cinq. Le glossaire allemand déjà fixé dans les cours doit être respecté (`Widerrist`, `Vorhand`, `Hals`, `Gurt`, `Becken`, `Wade`) — proposer la liste complète des trente termes à Blandine avant que l'affiche partc en traduction.
+
+### Contrôles passés
+
+- **`node --check` sur les 15 blocs `<script>` inline** de l'index et de l'aperçu : tout OK.
+- **Contrôle de non-perte du français** après les cinq injections, les huit tables réévaluées, les cinq langues ignorées d'un coup : **17 452 champs français comparés, 0 perdu, 0 ajouté, 0 modifié.** Nombre de chapitres et ordre des identifiants inchangés.
+- **Preuve de rendu de la conversion** : 20 055 valeurs rendues comparées avant/après, dans les six langues, **identiques au caractère près**.
+- **Simulation de résolution de langue** sur Baby → Galop 4 : 1 881 éléments de contenu par langue, six langues, aucune anomalie.
+
+---
+
+## SESSION 101 (suite) · LES SIX LANGUES SONT ALIGNÉES JUSQU'AU GALOP 4
+
+**index.html md5 `bfd655b8c2abd97e0f0d2998d7284932`, 10 687 362 octets. Preview : `preview-103.html`. Aucun SQL.**
+
+### L'état, en une ligne par langue
+
+| | Baby | G1 | G2 | G3 | G4 |
+|---|---|---|---|---|---|
+| **fr** | 27/27 | 19/19 | 15/15 | 16/16 | 15/15 |
+| **en** | 27/27 | 19/19 | 15/15 | 14/16 | 14/15 |
+| **es** | 27/27 | 19/19 | 15/15 | 14/16 | 14/15 |
+| **it** | 27/27 | 19/19 | 15/15 | 14/16 | 14/15 |
+| **ja** | 27/27 | 19/19 | 15/15 | 14/16 | 14/15 |
+| **de** | 27/27 | 19/19 | 15/15 | 14/16 | 14/15 |
+
+Les cinq langues étrangères sont **exactement au même niveau**. Il ne reste, jusqu'au Galop 4, que **trois chapitres monolingues** — identiques pour toutes les langues, donc plus aucun écart entre elles.
+
+### Ce qui a été fait dans cette suite
+
+**`g1-c14` Le grand quiz du Galop 1, `g1-c4` Les allures, `g1-c7` Les robes, `g1-c18` Conduire en main, `g1-c3` Le mode de vie** — allemand complet. **Le Galop 1 est terminé : 19/19.**
+
+**`g2-c4` La découverte du saut** — espagnol et italien ajoutés sur le corps et les 10 questions. C'était le chapitre qui affichait un titre espagnol puis du français dès la première ligne. **Le Galop 2 est terminé : 15/15 dans les six langues.**
+
+**`g3-c1` Le trot enlevé sur le bon diagonal** — espagnol et allemand ajoutés partout (en-tête, couverture, corps, 10 questions). 40 dictionnaires par langue.
+
+### Ce qui reste, jusqu'au Galop 4 : trois chapitres monolingues
+
+Ce ne sont pas des traductions manquantes, c'est une **structure différente**. Leurs textes sont des chaînes brutes au lieu de dictionnaires `{fr:…}`, donc aucune langue ne peut s'y accrocher :
+
+| Chapitre | Titre | Volume |
+|---|---|---|
+| `g3-c13` | Agir, résister et céder | 8 blocs, 10 QCM, 338 chaînes (15 891 car.) |
+| `g3-c14` | Les aides pour tourner | 9 blocs, 10 QCM, 384 chaînes (18 029 car.) |
+| `g4-galop-qualite` | Le départ au galop de qualité | 5 blocs, 10 QCM, 167 chaînes (8 725 car.) |
+
+**Le travail se fait en deux temps, et le premier est mécanique :** convertir chaque chaîne en `{fr: "…"}` — sans rien traduire, à structure et à contenu français identiques. Une fois cette conversion faite et vérifiée (0 perdu, 0 modifié), les cinq langues se posent avec l'outillage habituel, chapitre par chapitre. 889 chaînes × 5 langues, donc deux à trois sessions.
+
+**À ne pas faire :** traduire et convertir dans le même mouvement. La conversion doit être prouvée neutre avant qu'on ajoute quoi que ce soit, sinon plus rien ne distingue une perte de données d'une traduction.
+
+### Contrôles passés sur l'ensemble de la session
+
+- **`node --check` sur les 15 blocs `<script>` inline** de l'index et de l'aperçu : tout OK.
+- **Contrôle de non-perte définitif** contre le fichier livré en début de session, les huit tables réévaluées, **les trois langues ajoutées (`de`, `es`, `it`) ignorées d'un coup** : **44 386 champs comparés, 0 perdu, 0 ajouté, 0 modifié.** Nombre de chapitres et ordre des identifiants inchangés partout. C'est la seule mesure qui prouve quelque chose — l'index a grossi de 152 Ko, ce chiffre ne signifie rien.
+- **Simulation de résolution de langue** sur Baby → Galop 4, pour les cinq langues : **1 881 éléments de contenu par langue, aucune anomalie** (aucun texte vide, aucun type inattendu, cardinalité des options conforme, aucun index `correct` hors bornes).
+- **Recherche d'accents français parasites dans l'allemand** (`à â ç è ê ë î ï ô ù û œ`) sur les cinq tables : 2 occurrences, toutes deux légitimes — le nom de **François Baucher** dans `g2-aides` et `g4-aides`. Les noms d'auteurs ne sont jamais traduits, l'outil les recopie automatiquement.
+
+### Note d'outillage
+
+`extraire.js` nomme désormais ses sorties avec la langue : `fr-<id>-<langue>.json` et `auto-<id>-<langue>.json`. Les traductions écrites à la main suivent la convention `<langue>-<id>.json`. **Ordre d'appel impératif :**
+
+```
+node injecter2.js <id> <langue> auto-<id>-<langue>.json <langue>-<id>.json
+```
+
+Le fichier `auto` d'abord, le fichier écrit à la main ensuite — sinon le lexique écrase les traductions choisies. Et **toujours relire le fichier `auto` avant d'injecter** : c'est là qu'était le piège « DAS VOLLSTÄNDIGE » décrit plus haut.
+
+---
+
+## SESSION 101 · L'ALLEMAND DU GALOP 1 — 11 CHAPITRES SUR 16
+
+**index.html md5 `371a12803a9719429f7d0da7ce744259`, 10 582 525 octets. Preview : `preview-102.html`. Aucun SQL.**
+
+### Ce qui est fait
+
+Onze chapitres du Galop 1 passent de **zéro allemand** à **100 %** — en-tête, couverture, corps du cours **et** QCM :
+
+`g1-c2` Le pansage · `g1-c5` La position du cavalier · `g1-c6` Comprendre le cheval · `g1-c8` Le matériel de base · `g1-c9` Les aides naturelles et artificielles · `g1-c10` Le nœud d'attache · `g1-c11` Mon passeport cavalier · `g1-c12` La fédération (FFE) · `g1-c13` Le Parc Équestre Fédéral · `g1-c16` Le passeport du cheval · `g1-c20` La physiologie du cheval
+
+**Galop 1 : 14 chapitres complets sur 19** (contre 3 en arrivant).
+
+### Ce qui reste
+
+| Chapitre | Titre | Volume |
+|---|---|---|
+| `g1-c3` | Le mode de vie du cheval | 235 chaînes |
+| `g1-c4` | Les allures du cheval | 214 chaînes |
+| `g1-c7` | Les robes du cheval | 236 chaînes |
+| `g1-c18` | Conduire son poney ou son cheval en main en sécurité | 177 chaînes |
+| `g1-c14` | Le grand quiz du Galop 1 | 274 chaînes (40 questions) |
+
+Soit environ **1 100 chaînes**, une bonne session. `g1-c14` en dernier, comme prévu.
+
+### Trois trous découverts en auditant, hors du chantier annoncé
+
+La passation annonçait le Galop 1 comme « le dernier trou ». L'audit par zone en a trouvé trois autres :
+
+1. **`g2-depart` et `g2-c4` n'ont ni espagnol ni italien dans le corps ni dans les QCM.** En-tête et couverture les ont : ces deux chapitres affichent donc un titre espagnol puis du français dès la première ligne. Exactement le symptôme que la passation décrivait pour l'allemand de `g2-aides`. 4 dictionnaires sur 42 par langue. **Le Galop 2 n'est pas terminé.**
+2. **`g3-c1` n'a ni espagnol ni allemand**, nulle part (0 sur 40 pour l'allemand, 2 sur 42 pour l'espagnol). La passation le donnait comme « petit, en-tête et couverture seulement » — c'est en réalité le chapitre entier.
+3. **`g3-c13`, `g3-c14` et `g4-galop-qualite` sont monolingues français.** Pas « non traduits » : leurs textes sont des chaînes brutes, pas des dictionnaires `{fr:…}`. Il faut d'abord convertir leur structure, puis écrire six langues. C'est le plus gros des trois chantiers.
+
+### Un point à trancher : les infographies allemandes
+
+Cinq des chapitres traduits portent une infographie **par langue** (`src` = `{fr:k207, en:k208, ja:k209, es:k210, it:k211}` pour `g1-c11`, même schéma pour `c12`, `c13`, `c16`, `c20`). Il n'existe pas de version allemande.
+
+Je n'ai **rien touché** : sans clé `de`, le repli du code (`src[langue] || src.fr`) affiche l'affiche **française** au lecteur germanophone. Deux options, à choisir :
+- **produire cinq affiches allemandes** (le plus propre, cinq images à générer et à pousser) ;
+- **rabattre `src.de` sur l'anglais** — un germanophone lit plus probablement l'anglais que le français. Une ligne par chapitre, aucune image à produire.
+
+Rien n'est cassé dans les deux cas. C'est un choix de qualité perçue.
+
+### Une correction de code, minuscule mais nécessaire
+
+La règle des italiques sur « Le secret des grands cavaliers » est appliquée par détection de mot-clé dans `rendreSegmentRiche`. La liste contenait le français, l'anglais, l'espagnol, l'italien et le japonais — **pas l'allemand**. Ajout de `"großen Reiter"`, et la phrase allemande est fixée à **« Das Geheimnis der großen Reiter: »** partout.
+
+### Méthode, et pourquoi elle a changé
+
+`injecter.js` demandait des clés positionnelles (`"0.3"`, comptées à la main dans `contenu.fr`) et ne connaissait qu'une seule table. Remplacé par un adressage **par chemin** : `blocs.1.contenu|1.puces.0.gras`. Le chemin se lit, se vérifie, et ne se décale pas quand un bloc bouge.
+
+Trois garde-fous, en plus de ceux d'origine :
+- **une traduction manquante arrête l'outil** avant écriture, avec la liste des chemins absents ;
+- **la cardinalité est vérifiée après coup** : l'ensemble des chemins de la langue ajoutée doit être identique à celui du français, sinon arrêt ;
+- **les dictionnaires d'images sont exclus** du texte (`src`, `srcHaut`, `image`, `logo`) — ils étaient auparavant candidats à la « traduction » puisque leur `fr` est une chaîne.
+
+### Le lexique de réemploi, et le piège qu'il tend
+
+`extraire.js` récolte tous les couples fr → de déjà présents dans les huit tables (**8 587 entrées** en fin de session) et pré-remplit automatiquement les chaînes identiques. Effet direct : `g1-c9` (Les aides) est arrivé avec **57 feuilles sur 93 déjà résolues**, reprises de `g2-aides` — le glossaire se réapplique tout seul, sans risque de synonyme.
+
+**Mais une même chaîne française n'a pas toujours la même traduction selon le découpage.** Cas réel de la session : `« LE PANSAGE »` en `couv.titre1` de `g1-c2` a été pré-rempli en **« DAS VOLLSTÄNDIGE »**, récupéré de `g2-pansage` où le titre était coupé autrement (« LE PANSAGE / COMPLET » → « DAS VOLLSTÄNDIGE / PUTZEN »). Avec le `titre2` de `g1-c2` (« LES PREMIERS SOINS »), ça donnait « DAS VOLLSTÄNDIGE / DIE ERSTE PFLEGE » — du charabia.
+
+**Conséquence pratique : relire le fichier `auto-*.json` avant chaque injection**, et passer les fichiers dans l'ordre `auto-<id>.json` **puis** `de-<id>.json`, pour que les traductions écrites à la main écrasent le lexique et non l'inverse. C'est l'ordre inverse qui a été utilisé sur les cinq premiers chapitres — leurs fichiers `auto` ont été relus un par un, ils sont sains.
+
+### Contrôles passés
+
+- **`node --check` sur les 15 blocs `<script>` inline** de l'index et de l'aperçu : tout OK.
+- **Contrôle de non-perte après chaque lot** : les huit tables réévaluées avant/après, tous les champs hors allemand comparés un par un. **0 perdu, 0 ajouté, 0 modifié** à chaque fois, sur 70 596 champs au total. Nombre de chapitres et ordre des identifiants inchangés.
+- **Simulation de résolution de langue** sur les 271 éléments de contenu du Galop 1 en allemand : aucun texte vide, aucun type inattendu, aucun `correct` hors bornes, cardinalité des options conforme.
+
+**Rappel de la passation, vérifié à nouveau : la variation de taille ne prouve rien.** L'index grossit de 47 Ko sur la session, mais chapitre par chapitre l'écart mélange l'allemand ajouté et la conversion des `\uXXXX` en caractères réels. Seule la comparaison champ par champ signifie quelque chose.
+
+### Ce que je n'ai pas fait
+
+- Les 12 images de couverture du Galop 2 sont toujours en attente dans `images/` — non vérifié cette session, chantier indépendant.
+- Aucune image produite ni modifiée.
+- Aucun SQL.
+
+---
+
+## Préparation Flutter (session 93 bis)
 Aucune amélioration d'architecture réalisée sur cette session (branchement d'un handler existant + préparation d'un média).
 
 **SESSION 93 · INDEX (06/08, après-midi) — LE NOM DU CLUB SERVAIT DE CLÉ PARTOUT. index.html md5 `4c628a34b37c9e288fce6dee22ed0178`, 10 514 497 octets. Preview : `preview-95.html`. SQL : `ecurie-perso.sql` (à exécuter par Blandine).**
