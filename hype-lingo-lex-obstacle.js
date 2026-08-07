@@ -211,8 +211,8 @@ window.HYPE_LINGO_LEX.obstacle = {
 
   { ref:"derobade", lecon:3, coll:"fautes",
     mots:{ fr:{m:"la dérobade"}, en:{m:"a run-out", p:"reune-aoute"},
-           es:{m:"una escapada"}, it:{m:"una scappata"}, // ??
-           de:{m:"das Vorbeilaufen", p:"for-baï-laou-feune"}, ja:{m:"逃避", p:"tōhi"} }, // ??
+           es:{m:"una escapada"}, it:{m:"una scappata", var:"uno scarto"}, /* it precise (rapport 07/08) ; ⚠️ es : ligne du rapport inutilisable, toujours a valider */
+           de:{m:"das Vorbeilaufen", p:"for-baï-laou-feune"}, ja:{m:"逃避", p:"tōhi", var:"斜走 = en club"} }, /* ja precise (rapport 07/08) */
     def:{ fr:"Le cheval passe à côté de l'obstacle au lieu de le sauter. L'allemand est le plus descriptif des six : *Vorbeilaufen*, « courir à côté ».",
           en:"The horse goes past the fence instead of over it. German is the most literal of the six: « running past »." } },
 

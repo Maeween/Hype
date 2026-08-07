@@ -105,7 +105,7 @@ window.HYPE_LINGO_LEX.concours = {
 
   { ref:"chef-piste", lecon:1, coll:"engager",
     mots:{ fr:{m:"le chef de piste"}, en:{m:"the course designer", p:"korss di-zaï-neur", var:"course builder"},
-           es:{m:"el jefe de pista"}, it:{m:"il disegnatore di percorsi"}, // ??
+           es:{m:"el jefe de pista"}, it:{m:"il disegnatore di percorsi", var:"il direttore di campo"}, /* it precise (rapport 07/08) */
            de:{m:"der Parcourschef", p:"par-kour-chèf"}, ja:{m:"コースデザイナー", p:"kōsu dezainā"} },
     def:{ fr:"Celui qui dessine le parcours, choisit les distances et décide de la difficulté. ⚠️ L'anglais insiste sur le dessin (**designer**), le français sur l'autorité (le chef), l'allemand mélange les deux.",
           en:"The person who plans the course, sets the distances and decides the difficulty. English stresses the design, French the authority." } },
@@ -163,14 +163,14 @@ window.HYPE_LINGO_LEX.concours = {
 
   { ref:"talus", lecon:2, coll:"complet",
     mots:{ fr:{m:"le talus"}, en:{m:"the bank", p:"bannk"},
-           es:{m:"el talud"}, it:{m:"la banchina"}, // ??
+           es:{m:"el talud"}, it:{m:"la banchina", var:"il gradino"}, /* it precise (rapport 07/08) */
            de:{m:"der Wall", p:"val"}, ja:{m:"バンク", p:"banku"} },
     def:{ fr:"Une butte à monter ou à descendre, parfois avec une barre au sommet. Le plus célèbre du monde est le Derby Bank de Hickstead — la ville de l'étape précédente.",
           en:"A mound to climb or drop off, sometimes with a rail on top. The most famous is Hickstead's Derby Bank." } },
 
   { ref:"contre-bas", lecon:2, coll:"complet",
     mots:{ fr:{m:"le contre-bas"}, en:{m:"the drop", p:"drop", var:"a drop fence"},
-           es:{m:"el salto en bajada"}, it:{m:"il salto in discesa"}, // ??
+           es:{m:"el salto en bajada", var:"el escalón de bajada"}, it:{m:"il salto in discesa"}, /* es precise (rapport 07/08) */
            de:{m:"der Tiefsprung", p:"tif-chproung"}, ja:{m:"ドロップ", p:"doroppu"} },
     def:{ fr:"La réception est plus basse que la battue. Le cavalier laisse filer les rênes et reste en arrière : c'est le seul obstacle où l'on s'interdit d'anticiper.",
           en:"The landing is lower than the take-off. Let the reins slip and stay behind the movement." } },
@@ -185,7 +185,7 @@ window.HYPE_LINGO_LEX.concours = {
   { ref:"option", lecon:2, coll:"complet",
     mots:{ fr:{m:"l'option"}, en:{m:"the long route", p:"long route", var:"the alternative"},
            es:{m:"la opción"}, it:{m:"l'opzione"},
-           de:{m:"der Umweg", p:"oum-vék"}, ja:{m:"迂回ルート", p:"ukai rūto"} }, // ??
+           de:{m:"der Umweg", p:"oum-vék", var:"der Alternativweg"}, ja:{m:"迂回ルート", p:"ukai rūto"} }, /* de precise (rapport 07/08) */
     def:{ fr:"Le chemin plus long et plus sûr, autorisé sur les combinaisons de cross. Prendre l'option coûte des secondes, jamais de pénalités — et un cavalier expérimenté la choisit sans hésiter quand son cheval doute.",
           en:"The longer, safer way through a cross-country combination. It costs seconds, never penalties." } },
 

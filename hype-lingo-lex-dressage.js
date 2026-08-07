@@ -92,7 +92,7 @@ window.HYPE_LINGO_LEX.dressage = {
   { ref:"lecteur", lecon:1, coll:"rectangle",
     mots:{ fr:{m:"le lecteur"}, en:{m:"the commander", p:"ko-man-deur", var:"the reader"},
            es:{m:"el lector"}, it:{m:"il lettore"},
-           de:{m:"der Ansager", p:"an-za-gueur"}, ja:{m:"読み上げ係", p:"yomiage-gakari"} }, // ??
+           de:{m:"der Ansager", p:"an-za-gueur", var:"der Kommandant"}, ja:{m:"読み上げ係", p:"yomiage-gakari"} }, /* precise (rapport 07/08) */
     def:{ fr:"La personne qui lit la reprise à voix haute, autorisée dans la plupart des épreuves de club. ⚠️ En anglais on dit **commander**, un mot qui n'a rien à voir avec commander quelque chose.",
           en:"The person reading the test aloud, allowed at most club levels. English calls them the commander, nothing to do with ordering." } },
 
@@ -122,14 +122,14 @@ window.HYPE_LINGO_LEX.dressage = {
   { ref:"cession-jambe", lecon:2, coll:"mouvements",
     mots:{ fr:{m:"la cession à la jambe"}, en:{m:"leg-yield", p:"lègue-yild"},
            es:{m:"la cesión a la pierna"}, it:{m:"la cessione alla gamba"},
-           de:{m:"das Schenkelweichen", p:"chèn-keul-vaï-cheune"}, ja:{m:"脚に譲る", p:"ashi ni yuzuru"} }, // ??
+           de:{m:"das Schenkelweichen", p:"chèn-keul-vaï-cheune"}, ja:{m:"脚に譲る", p:"ashi ni yuzuru", var:"レッグ・イールド"} }, /* precise (rapport 07/08) */
     def:{ fr:"Le cheval se déplace de côté sans incurvation, presque droit. Le premier mouvement latéral appris, et celui qu'on confond le plus souvent avec l'appuyer.",
           en:"The horse moves sideways with no bend, almost straight. The first lateral work learned, and the one most often confused with half-pass." } },
 
   { ref:"epaule-dedans", lecon:2, coll:"mouvements",
     mots:{ fr:{m:"l'épaule en dedans"}, en:{m:"shoulder-in", p:"chol-deur-inn"},
            es:{m:"la espalda adentro"}, it:{m:"la spalla in dentro"},
-           de:{m:"das Schulterherein", p:"choul-teur-hè-raïn"}, ja:{m:"ショルダーイン", p:"shorudā in"} }, // ??
+           de:{m:"das Schulterherein", p:"choul-teur-hè-raïn"}, ja:{m:"ショルダーイン", p:"shorudā in"} }, /* valide (rapport 07/08) */
     def:{ fr:"Les épaules rentrées vers l'intérieur, les hanches sur la piste, le cheval incurvé autour de la jambe intérieure. Les cinq langues latines et germaniques disent toutes littéralement « épaule dedans » — un cas rare d'accord total.",
           en:"Shoulders brought in, hips on the track, the horse bent round the inside leg. All five European languages say literally « shoulder in »." } },
 

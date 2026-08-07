@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 133)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 134)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -102,6 +102,36 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 📋 SESSION 134 · LINGUAE (07/08) — LE VOCABULAIRE EST COMPLET, ET LE RAPPORT DE RELECTURE APPLIQUÉ
+
+Blandine envoie dix fichiers de lexiques (dont les sept jamais passés dans ce fil) et deux PDF : le rapport de relecture native `hype-linguae-corrections.pdf`, et `lexique-35-notions-suite.pdf` **qui appartient au fil Hey Baby (index.html) — rien à en faire ici, signalé.**
+
+### ✅ VÉRIFIÉ : aucune ville ne manque de vocabulaire
+Les dix fichiers chargés et croisés avec `ETAPE_SRC` : les neuf villes qui empruntent une leçon numérotée l'ont toutes (Édimbourg urgences·4 : 10 mots, Saumur dressage·3 : 10, Jerez cheval·4 : 12, Séville matériel·3 : 10, Vejer écurie·3 : 10, Rome concours·4 : 10, Warendorf matériel·4 : 12, Aix obstacle·4 : 11, Badminton concours·2 : 11). Les huit lexiques de ce fil couvrent leurs villes. **Restent non revérifiés ici : `haras` (Lexington) et `froid` (Spruce), fichiers non fournis dans ce lot — créés dans ce fil, donc a priori sains.** Si une page dit « pas encore de vocabulaire » sur le téléphone, c'est un problème de déploiement, pas de contenu.
+
+### ✅ Le rapport de relecture appliqué — corrections claires seulement
+**Corrigés** : le pie ja 駁毛→**雑色 zasshoku** (駁毛 en var) · la liste es **el cordón retiré** · l'amortisseur de das Lammfell→**das Pad** (Lammfell = vraie peau d'agneau, en var ; défs FR/EN réécrites) et it il cuscinetto→**il sottosella** · le pommeau ja lecture **zenkyō** (maebashi… c'est la ville !) · le collier de chasse **das** Vorderzeug (genre) + lecture munetsunagi · le blanc ja lecture shiroge.
+**Précisés (en `var`)** : Schimmel (blanc), la mantilla de gel (amortisseur), der Kommandant (lecteur), レッグ・イールド (cession), uno scarto + 斜走 (dérobade), il direttore di campo (chef de piste), il gradino (talus), el escalón de bajada (contre-bas), der Alternativweg (option).
+**Validés, marqueur levé** : l'isabelle, l'épaule en dedans.
+⚠️ **Deux lignes du rapport sont inutilisables** (texte incohérent) : le chandelier es et la dérobade es — leurs `// ??` restent, à revalider autrement.
+
+### 🔴 Trouvé par le contrôle des `ref` partagés (six langues comparées)
+Outre `niveau` (déjà connu, passation §7), **trois refs portent deux mots différents selon le fichier** : `distance` (arrivée « garde tes distances » / cours « la distance »), `attention` (« attention ! » / « attention »), `bottes` (« the boots » / « the riding boots », ja ブーツ / 長靴). Même `ref` = même maîtrise partagée entre des mots différents — le mécanisme des faux rappels. **À trancher par Blandine** comme pour `niveau` : renommer déplacerait la maîtrise acquise. Rien touché.
+
+### ✅ Cache des lexiques
+Les cinq fichiers corrigés reçoivent `?l=1` sur leur `<script src>` dans `lingo.html` — même piège que les images : sans ça le service worker servirait l'ancienne copie indéfiniment. **Nouveau geste : incrémenter `?l=` à chaque remplacement d'un fichier de lexique.** Marqueur passé à `v6 · 7 août` (`VER` suit).
+
+### 📊 État des marqueurs `// ??` restants
+112 entrées encore non validées par un natif : obstacle 28 · dressage 23 · matériel 18 · concours 17 · pansage 13 · cheval 7 · urgences 4 · écurie 2. Le rapport n'en couvrait qu'une trentaine.
+
+### Contrôles passés
+`node --check` sur les cinq fichiers corrigés après chaque remplacement (écriture ancre par ancre) · contrôle des refs partagés sur les dix fichiers · tous les blocs `<script>` de `lingo.html`.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 

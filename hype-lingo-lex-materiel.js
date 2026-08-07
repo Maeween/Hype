@@ -58,10 +58,10 @@ window.HYPE_LINGO_LEX.materiel = {
 
   { ref:"amortisseur", lecon:1, coll:"selle",
     mots:{ fr:{m:"l'amortisseur"}, en:{m:"the half pad", p:"haf padd", var:"gel pad · sheepskin"},
-           es:{m:"el amortiguador"}, it:{m:"il cuscinetto"}, // ??
-           de:{m:"das Lammfell", p:"lam-fèll", var:"die Sattelunterlage"}, ja:{m:"ゲルパッド", p:"geru paddo"} }, // ??
-    def:{ fr:"La couche de gel ou de mouton qu'on glisse sous la selle. En Allemagne, le mot courant est das Lammfell, la peau de mouton, même quand la matière est synthétique.",
-          en:"The gel or sheepskin layer under the saddle. In Germany the usual word is Lammfell, sheepskin, even when it is synthetic." } },
+           es:{m:"el amortiguador", var:"la mantilla de gel"}, it:{m:"il sottosella"}, /* it corrige (rapport 07/08) */
+           de:{m:"das Pad", p:"pad", var:"das Lammfell = en peau d'agneau"}, ja:{m:"ゲルパッド", p:"geru paddo"} }, /* de corrige (rapport 07/08) : Pad generique, Lammfell = agneau seulement */
+    def:{ fr:"La couche de gel ou de mouton qu'on glisse sous la selle. ⚠️ En allemand, das Pad est le mot générique ; das Lammfell ne se dit que de la vraie peau d'agneau.",
+          en:"The gel or sheepskin layer under the saddle. In German, das Pad is the generic word; Lammfell only means real sheepskin." } },
 
   { ref:"sangle", lecon:1, coll:"selle",
     mots:{ fr:{m:"la sangle"}, en:{m:"the girth", p:"gueurss"},
@@ -87,7 +87,7 @@ window.HYPE_LINGO_LEX.materiel = {
   { ref:"pommeau", lecon:1, coll:"selle",
     mots:{ fr:{m:"le pommeau"}, en:{m:"the pommel", p:"po-meul"},
            es:{m:"la perilla"}, it:{m:"il pomello"},
-           de:{m:"der Sattelkopf", p:"za-teul-kopf"}, ja:{m:"前橋", p:"maebashi"} }, // ??
+           de:{m:"der Sattelkopf", p:"za-teul-kopf"}, ja:{m:"前橋", p:"zenkyō"} }, /* ja corrige (rapport 07/08) : lecture zenkyō — maebashi est la ville */
     def:{ fr:"L'avant relevé de la selle, qu'on attrape à la montée en cas de besoin. L'arrière s'appelle le troussequin.",
           en:"The raised front of the saddle, grabbed when mounting if needed. The raised back is the cantle." } },
 
@@ -173,7 +173,7 @@ window.HYPE_LINGO_LEX.materiel = {
   { ref:"collier-chasse", lecon:2, coll:"filet",
     mots:{ fr:{m:"le collier de chasse"}, en:{m:"the breastplate", p:"brèst-pléïte"},
            es:{m:"el petral"}, it:{m:"il pettorale"},
-           de:{m:"der Vorderzeug", p:"for-deur-tsoïg"}, ja:{m:"胸繋", p:"munagai"} }, // ??
+           de:{m:"das Vorderzeug", p:"for-deur-tsoïg"}, ja:{m:"胸繋", p:"munetsunagi"} }, /* de corrige (rapport 07/08) : genre neutre ; ja lu munetsunagi */
     def:{ fr:"Il empêche la selle de reculer, en extérieur et en cross. Le nom français vient de la chasse à courre ; l'anglais décrit simplement la poitrine.",
           en:"It stops the saddle sliding back, out hacking and across country. French names it after hunting, English simply after the chest." } },
 

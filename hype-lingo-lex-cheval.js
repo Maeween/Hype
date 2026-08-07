@@ -85,14 +85,14 @@ window.HYPE_LINGO_LEX.cheval = {
   { ref:"pie", lecon:1, coll:"robes",
     mots:{ fr:{m:"le pie"}, en:{m:"piebald", p:"païe-bôld", var:"skewbald · coloured (GB) · pinto (US)"},
            es:{m:"pío", var:"pinto"}, it:{m:"pezzato"},
-           de:{m:"die Schecke", p:"chè-ke"}, ja:{m:"駁毛", p:"buchige", var:"パイント"} }, // ??
+           de:{m:"die Schecke", p:"chè-ke"}, ja:{m:"雑色", p:"zasshoku", var:"駁毛"} }, /* ja corrige (rapport 07/08) : usage elevage/courses */
     def:{ fr:"Grandes plaques blanches sur une autre robe. ⚠️ L'anglais est la seule langue à couper la robe en deux : **piebald** = noir et blanc, **skewbald** = toute autre couleur et blanc. En Grande-Bretagne, on dit souvent simplement « a coloured ».",
           en:"Large white patches over another colour. English alone splits it: piebald is black and white, skewbald any other colour with white." } },
 
   { ref:"isabelle", lecon:1, coll:"robes",
     mots:{ fr:{m:"l'isabelle"}, en:{m:"dun", p:"deune"},
            es:{m:"bayo"}, it:{m:"falbo"},
-           de:{m:"der Falbe", p:"fal-be"}, ja:{m:"河原毛", p:"kawarage"} }, // ??
+           de:{m:"der Falbe", p:"fal-be"}, ja:{m:"河原毛", p:"kawarage"} }, /* valide (rapport 07/08) */
     def:{ fr:"Robe sable à dorée, crins foncés, souvent une raie de mulet sur le dos. Le japonais a un mot pour elle parce que ses poneys indigènes la portent.",
           en:"A sandy to golden coat with dark mane and often a dorsal stripe. Japanese has its own word, as its native ponies carry it." } },
 
@@ -113,7 +113,7 @@ window.HYPE_LINGO_LEX.cheval = {
   { ref:"blanc", lecon:1, coll:"robes",
     mots:{ fr:{m:"le blanc"}, en:{m:"white", p:"ouaïte", var:"cremello"},
            es:{m:"blanco"}, it:{m:"bianco"},
-           de:{m:"der Weißgeborene", p:"vaïss-gue-bo-re-ne"}, ja:{m:"白毛", p:"shirage"} }, // ??
+           de:{m:"der Weißgeborene", p:"vaïss-gue-bo-re-ne", var:"der Schimmel = le gris courant"}, ja:{m:"白毛", p:"shiroge"} }, /* rapport 07/08 : Weißgeborenes = ne blanc (rarissime), Schimmel = usage courant ; ja lu shiroge */
     def:{ fr:"⚠️ Le piège classique. Un cheval « blanc » est presque toujours un gris blanchi. Le blanc véritable naît blanc et reste rarissime — l'allemand a un mot exprès pour lui : der Weißgeborene, « le né-blanc ».",
           en:"The classic trap: a « white » horse is nearly always a whitened grey. True white horses are born white and are very rare." } },
 
@@ -121,7 +121,7 @@ window.HYPE_LINGO_LEX.cheval = {
 
   { ref:"liste", lecon:2, coll:"marques",
     mots:{ fr:{m:"la liste"}, en:{m:"the blaze", p:"bléïze", var:"stripe = fine"},
-           es:{m:"la lista", var:"el cordón"}, it:{m:"la lista"},
+           es:{m:"la lista"}, it:{m:"la lista"}, /* es corrige (rapport 07/08) : el cordón retire */
            de:{m:"die Blesse", p:"blè-se"}, ja:{m:"流星", p:"ryūsei"} },
     def:{ fr:"La bande blanche qui descend du front vers le nez. Apy en a une très large, continue jusqu'au museau. Le japonais l'appelle « étoile filante » (流星).",
           en:"The white band running down the face. A narrow one is a stripe, a broad one a blaze. Japanese calls it « shooting star »." } },
