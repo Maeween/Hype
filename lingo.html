@@ -754,7 +754,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  animation:fvKen 16s ease-in-out infinite alternate, fvSouffle 13s ease-in-out infinite;
  }
 #lcFondBas{position:absolute;inset:0;
- background:linear-gradient(to bottom,rgba(4,6,10,.72) 0%,rgba(4,6,10,.9) 46%,#04060A 100%)}
+ background:radial-gradient(95% 58% at 50% 0%,
+  rgba(4,6,10,.16), rgba(4,6,10,.66) 58%, rgba(4,6,10,.94) 100%)}
+/* le fond n'existe pas encore pour toutes les villes : quand l'image de
+   repli est la CARTE (nette et claire), on la floute et l'assombrit en
+   CSS pour retrouver la meme matiere */
+#lcFondImg.depuisCarte{filter:blur(9px) brightness(.5) saturate(.85)}
 #lcPage{position:relative;z-index:1;max-width:520px;margin:0 auto;
  padding:calc(env(safe-area-inset-top) + 16px) 20px calc(env(safe-area-inset-bottom) + 34px);
  min-height:100svh;display:flex;flex-direction:column}
@@ -764,6 +769,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #lcJauge i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.12)}
 #lcJauge i.f{background:var(--turquoise)}
 #lcJauge i.a{background:rgba(32,217,245,.5)}
+#lcSur{font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
+ color:var(--orTexte);text-align:center;margin:8px 0 0}
+#lcTitre.grand{font-family:'Cinzel',serif;font-size:27px;font-weight:600;letter-spacing:.05em;
+ color:var(--blanc);text-transform:none;text-align:center;margin:8px 0 0;
+ text-shadow:0 2px 18px rgba(0,0,0,.7)}
+.lcManu{font-family:'Caveat',cursive;font-size:22px;line-height:1.35;color:#BFD9E2;
+ text-align:center;margin:10px 0 16px}
 #lcTitre{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);
  margin:0 0 4px;text-align:center}
 #lcCorps{flex:1;display:flex;flex-direction:column}
@@ -845,7 +857,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .lcAcc{font-size:13.5px;line-height:1.7;color:#C7D3DD;text-align:center;margin:0 0 10px}
 .lcAv{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--or);
  text-align:center;margin:0 0 24px}
-.lcL.on{background:linear-gradient(160deg,rgba(32,217,245,.20),rgba(10,14,18,.8));
+.lcL{border-radius:18px;background:rgba(8,12,16,.55);backdrop-filter:blur(6px)}
+.lcL.on{background:linear-gradient(150deg,rgba(32,217,245,.16),rgba(10,16,20,.78) 58%);
+ box-shadow:0 26px 50px -26px rgba(0,0,0,.9), 0 0 44px -22px rgba(32,217,245,.5);
  border-color:rgba(32,217,245,.5);box-shadow:0 16px 40px -26px rgba(32,217,245,.9)}
 .lcL .d u{display:block;text-decoration:none;font-size:10px;letter-spacing:.14em;
  text-transform:uppercase;color:var(--or);margin-top:6px;opacity:.85}
@@ -1232,7 +1246,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v11 · 7 août</p>
+    <p id="ouvVersion">v12 · 7 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1410,7 +1424,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=11";
+var VER = "?v=12";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -4515,7 +4529,20 @@ function ouvrirLecon(refVille){
   var chap = chapVirtuel(refVille);
   var cle = chap ? chap.cle : CHAPITRE_DE[refVille];
   var e = ETAPES.filter(function(x){ return x.ref===refVille; })[0];
-  S("lcFondImg").style.backgroundImage = 'url("fond-'+refVille+'.webp")';
+  (function(){
+    var f = S("lcFondImg");
+    f.classList.remove("depuisCarte");
+    f.style.backgroundImage = "";
+    var essai = new Image();
+    essai.onload = function(){ f.style.backgroundImage = 'url("fond-'+refVille+'.webp'+VER+'")'; };
+    essai.onerror = function(){
+      var c = new Image();
+      c.onload = function(){ f.classList.add("depuisCarte");
+        f.style.backgroundImage = 'url("carte-'+refVille+'.webp'+VER+'")'; };
+      c.src = "carte-"+refVille+".webp"+VER;
+    };
+    essai.src = "fond-"+refVille+".webp"+VER;
+  })();
   S("lecon").classList.add("on");
   amorcerVoix();
   if(!chap || !(chap.concepts||[]).length){
@@ -4548,12 +4575,26 @@ function lecons(chap){
 }
 function choisirLecon(){
   var ui=langueUI();
+  /* direction B « le fond vivant » (7 aout 2026) : sur-titre creme
+     Chapitre N · Nation, titre Cinzel, mot d'accueil en ligne manuscrite.
+     lcTitre porte la classe .grand ICI SEULEMENT — les exercices, le
+     quiz et les fins gardent leur petit bandeau discret. */
+  var eB = ETAPES[ETAPES.findIndex(function(x){ return x.ref===LC.ville; })];
+  var noB = ETAPES.findIndex(function(x){ return x.ref===LC.ville; }) + 1;
   S("lcTitre").textContent = LC.ch;
+  S("lcTitre").classList.add("grand");
   videEl(S("lcJauge")); videEl(S("lcCorps"));
+  var sur = S("lcSur");
+  if(!sur){
+    sur = el("p",{id:"lcSur"});
+    S("lcTitre").parentNode.insertBefore(sur, S("lcTitre"));
+  }
+  sur.style.display = "";
+  sur.textContent = (ui==="en"?"Chapter ":"Chapitre ")+noB+(eB?" · "+eNat(eB):"");
 
-  /* un mot d'accueil : on dit ce qu'on va apprendre avant de faire choisir */
+  /* le mot d'accueil devient la ligne manuscrite sous le titre */
   var acc=ACCUEIL_CHAP[(typeof ACCUEIL_VILLE!=="undefined" && ACCUEIL_VILLE[LC.ville]) || LC.cle];
-  if(acc) S("lcCorps").appendChild(el("p",{class:"lcAcc", text:tx(acc)}));
+  if(acc) S("lcCorps").appendChild(el("p",{class:"lcManu", text:tx(acc)}));
 
   /* une seule leçon est mise en avant : celle où reprendre */
   var Ls=lecons(LC.chap), suivante=null;
@@ -4689,6 +4730,8 @@ function jauge(){
   });
 }
 function etape(){
+  S("lcTitre").classList.remove("grand");
+  var _su=S("lcSur"); if(_su) _su.style.display="none";
   if(LC.i>=LC.plan.length) return finLecon();
   var x=LC.plan[LC.i];
   jauge();
@@ -5047,6 +5090,8 @@ function ouvrirQuiz(){
   etapeQuiz();
 }
 function etapeQuiz(){
+  S("lcTitre").classList.remove("grand");
+  var _sq=S("lcSur"); if(_sq) _sq.style.display="none";
   if(QZ.i >= QZ.mots.length) return finQuiz();
   var c = QZ.mots[QZ.i], ui = langueUI(), lg = cible();
   var bonne = c.mots[lg].m;
