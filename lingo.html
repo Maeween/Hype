@@ -1462,9 +1462,15 @@ function villesFaites(){
    ⚠️ RANGE PAR LANGUE, comme la maitrise depuis la session 106 : un
    cavalier qui passe a l'espagnol recommence son voyage, ce qui est
    coherent avec le fait que son vocabulaire espagnol est vierge.
-   ⚠️ Le plancher reste a 4 : les quatre premieres villes sont offertes,
-   c'est le comportement d'origine et il n'y a pas de raison de le changer.
-   Le bouton d'apercu (#bApercu) continue de tout ouvrir d'un tap. */
+   ⚠️ COMMENTAIRE PERIME CORRIGE le 7 aout 2026. Il disait : « le plancher
+   reste a 4, les quatre premieres villes sont offertes ». C'etait vrai a
+   la session 117 et FAUX depuis la 120, qui a supprime le plancher — la
+   valeur part maintenant de 0 et ne compte que les chapitres reellement
+   termines. Un commentaire qui contredit le code est un piege : c'est
+   exactement ce qui m'a fait chercher une porte inexistante vers l'ecran
+   des langues pendant trois messages.
+   ⚠️ Le bouton d'apercu (#bApercu) n'ouvre plus rien puisque tout est
+   ouvert : il ne sert qu'a visualiser la trace complete du chemin. */
 var FAITS_TOUT = (function(){
   try{ return JSON.parse(localStorage.getItem("hype_lingua_faits")) || {}; }
   catch(e){ return {}; }
