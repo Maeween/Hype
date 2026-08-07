@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 07/08/2026 (SESSION 101 · ALLEMAND 15/16 AU GALOP 3) — md5 `c13a4e3eb56a2429dac22ebe55a65016`, 10 756 766 octets. Preview : `preview-106.html` (ouvre « Agir, résister et céder », g3-c13, l'un des trois chapitres qui étaient monolingues). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` (affiche allemande de la licence, corrigée) → sera déclarée en k644. 12 images du G2 toujours en attente.** Detail dans la section SESSION 101 ci-dessous.**
+**Version actuelle de l'index.html : 07/08/2026 (SESSION 102 · CHEVAUX, QUOTAS, XP DES QUETES) — md5 `df9107f23af622ea4a9b280069bbb87f`, 10 768 896 octets. Preview : `preview-102.html` (ouvre la page Cavalier). Aucun SQL — `hype_paliers` existe deja. Part du `c13a4e3e` de la session 101. **12 images du Galop 2 toujours a pousser dans `images/`**. Detail dans la section SESSION 102 ci-dessous.**
+
+**Ancienne version (101) — 07/08/2026 (SESSION 101 · ALLEMAND 15/16 AU GALOP 3) — md5 `c13a4e3eb56a2429dac22ebe55a65016`, 10 756 766 octets. Preview : `preview-106.html` (ouvre « Agir, résister et céder », g3-c13, l'un des trois chapitres qui étaient monolingues). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` (affiche allemande de la licence, corrigée) → sera déclarée en k644. 12 images du G2 toujours en attente.** Detail dans la section SESSION 101 ci-dessous.**
 
 **Ancienne version (100) — 07/08/2026 (SESSION 100 · QUETE photo-cheval) — md5 `bfc5d118f8b1a6e2aea9570ad4f72886`, 10 535 908 octets. Preview : `preview-101.html`.**
 
@@ -300,6 +302,82 @@ node injecter2.js <id> <langue> auto-<id>-<langue>.json <langue>-<id>.json
 ```
 
 Le fichier `auto` d'abord, le fichier écrit à la main ensuite — sinon le lexique écrase les traductions choisies. Et **toujours relire le fichier `auto` avant d'injecter** : c'est là qu'était le piège « DAS VOLLSTÄNDIGE » décrit plus haut.
+
+
+---
+
+## SESSION 102 · CHEVAUX, QUOTAS ET XP DES QUETES
+
+**index.html md5 `df9107f23af622ea4a9b280069bbb87f`, 10 768 896 octets. Preview : `preview-102.html`. Aucun SQL a executer. Diff : 186 lignes, 174 ajoutees, 12 retirees. Part du `c13a4e3e` livre par la session 101.**
+
+⚠️ **Numerotation** : la session precedente avait pris 101 (allemand du Galop 3). Le SUIVI recu ne contenait plus la section « Decisions de Blandine du 07/08 » que j'avais ecrite avant — **section perdue en circulation**, exactement le cas prevu par la regle de reprise en tete de ce fichier. Elle est reintegree ici.
+
+### 1. LA QUETE « photo-cheval » — CAUSE REELLE, ENFIN CORRIGEE
+Blandine avait refait la manipulation **huit fois** sans succes, malgre les deux correctifs de la session 100 — bien presents dans son fichier, verifie. Ils fonctionnaient, mais etaient **annules a chaque demarrage** par la fusion des chevaux.
+
+**L'ancien code rapprochait par NOM et ecartait la ligne de la base des qu'un nom etait deja connu en local.** La copie locale, venue du localStorage et sans photo, etait gardee ; la version base, celle qui porte `photo_url`, etait jetee. Comparer par nom est faux en soi : deux chevaux peuvent porter le meme nom, et un cheval renomme devenait un doublon. S'y ajoutait un **`slice(0, 3)`** qui tronquait l'etat a trois chevaux — un 4e cheval n'existait donc pas pour la quete.
+
+**Reecrite** : rapprochement par **identifiant**, **mise a jour** des lignes connues avec les champs de la base, ajout des inconnues, **plus aucune troncature**. Les deux noms de champ sont portes (`photo_url` en base, `photo` pour l'affichage), et une photo locale plus recente n'est jamais ecrasee.
+
+**Verifiee en executant la vraie fonction** sur cinq cas : cheval local sans photo + base avec photo → quete validee · quatre chevaux → les quatre presents · cheval renomme → mis a jour, pas de doublon · photo locale recente → preservee · cheval de demo → ecarte.
+
+### 2. BAREME DES CHEVAUX
+Deux helpers, source unique : `hypeQuotaChevaux(premium, ambassadeur)` et `hypeChevalBloque(chevaux, cheval, premium, ambassadeur)`.
+
+| statut | chevaux |
+|---|---|
+| Ambassadeur ou moderateur | **illimite** |
+| Premium | **6** |
+| Gratuit | **1** |
+
+⚠️ **Correction d'une erreur que j'avais commise** : j'avais note le gratuit a 3, en me fiant au `slice(0, 3)` — qui n'etait pas la regle mais la troncature. La regle reelle etait **1 gratuit / 3 premium**, comme le disait le message : « ton premier cheval est offert ». Blandine a confirme le maintien du gratuit a 1.
+
+Le role vient de `estAmbassadeurHype`, qui inclut deja les moderateurs. Lecture asynchrone : **avant la reponse, le compte est traite comme non-ambassadeur** — le cas le plus restrictif, jamais l'inverse, pour ne pas ouvrir un acces par erreur.
+
+Suivent desormais le quota : le bouton « Ajouter » (etait `< 3` en dur), le declenchement de la modale (etait `!premium && >= 1`), l'enregistrement local apres creation (etait `>= 3` en dur — un premium a 6 chevaux voyait son 4e refuse silencieusement **apres** son enregistrement en base), et le compteur d'en-tete (etait « n/3 » en dur et reserve aux premium ; il affiche le quota reel pour tous, et rien pour un ambassadeur).
+
+### 3. LES CHEVAUX AU-DELA DU QUOTA PASSENT EN GRISE
+Decision de Blandine : « on garde le premier actif et les autres en gris », et « ses albums de chevaux deviennent grises et inaccessibles mais on les garde ».
+
+**L'ordre de la liste fait foi** : les premiers arrives restent actifs. Les cartes au-dela du quota passent en `opacity: 0.38` + `grayscale(1)`, ne menent plus a la fiche, et un tap ouvre la modale d'explication. **Rien n'est supprime, rien n'est cache.**
+
+⚠️ **Changement structurel** : la grille des cartes etait conditionnee a `premium`, donc **un compte gratuit ne voyait AUCUNE carte** — le grise etait impossible a montrer. Le ternaire `premium ? grille : invitation` est devenu deux elements freres : grille pour tous, invitation aux seuls comptes non premium.
+
+⚠️ **A arbitrer avec Blandine** : l'invitation « Decouvrir Premium » contient **son propre apercu grise de deux chevaux**, desormais en doublon avec les cartes grisees juste au-dessus. Non touche — c'est du dessin, pas du code casse.
+
+Le texte de la modale annoncait « jusqu'a 2 chevaux de plus » : il annonce maintenant 6 au total **et dit ce qui arrive en cas d'arret** — « aucun cheval n'est supprime : ceux au-dela du premier se mettent simplement en pause ». **L'allemand manquait sur cette chaine**, il a ete ajoute : 6 langues completes.
+
+### 4. L'XP DES QUETES DECOUVERTE EST BRANCHEE
+Blandine : « si c'est une maquette elle n'a rien a foutre la, sinon si elle est la bien sur qu'elle doit etre connectee et donner de l'XP ». Et sur le bandeau : **le garder**, « c'est pas mal d'avoir un truc la-haut qui dit quoi faire ensuite, que les gens decouvrent petit a petit l'appli ».
+
+`hypeVerserXpQuetes(ctx, amisCount)` reutilise le registre des familles, **`hype_paliers`**, avec un identifiant prefixe **`quete:`** pour ne pas entrer en collision avec les 14 familles. **Aucune table nouvelle, aucun SQL.** Appelee une seule fois au montage de `BandeauSuiteHype`, la ou ces quetes sont deja evaluees pour l'affichage.
+
+Les trois garanties, reprises du systeme des familles :
+1. l'XP n'est versee **que si la base a accepte l'ecriture** — sinon elle serait reversee a chaque ouverture ;
+2. **base injoignable** (hors ligne, RLS) : on ne seme rien et on ne verse rien ;
+3. **premier passage** : rattrapage verse **une seule fois**, comme Blandine l'avait tranche pour les familles (« ce n'est pas fair-play de repartir de zero pour ceux qui etaient la avant »).
+
+**Verifie sur la vraie fonction**, cinq scenarios : 1er passage → 60 XP de rattrapage sur 4 quetes, registre ecrit · 2e passage → 0 · nouvelle quete → 25 XP · base injoignable → `null`, rien de verse · ecriture refusee → 0 XP.
+
+### VERIFICATION
+- 15/15 blocs `<script>` inline valides par `node --check` **apres chacune** des quatre etapes.
+- Les trois fonctions nouvelles extraites du fichier et **executees reellement** en Node, pas seulement relues.
+- Controles cibles : plus aucune occurrence de `sansDemo.length >= 3`, du compteur `"/3"`, ni du compteur conditionne a `premium`.
+- Pas de rendu Playwright : l'app exige les 120+ `hype-images-*.js`. **A verifier sur iPhone.**
+
+### A TESTER PAR BLANDINE
+1. **La quete** : ajouter une photo depuis la fiche d'un cheval, revenir a l'accueil — la suggestion disparait, l'XP monte. Puis **recharger l'app** : elle doit rester validee. C'est ce point precis qui echouait huit fois.
+2. **Le compteur** de « Mes chevaux » : 1/1 en gratuit, n/6 en premium, rien sur son compte.
+3. ⚠️ **Son compte `feinn@live.fr` est moderateur, donc illimite** : elle ne verra ni la limite, ni le grise, ni le compteur plafonne. **Un compte de test gratuit est indispensable.**
+4. L'XP de rattrapage : un seul versement, meme en rechargeant plusieurs fois.
+
+### RESTE OUVERT — dont une decision de Blandine a ne pas perdre
+- **L'apercu grise en doublon** dans l'invitation Premium.
+- **AVERTISSEMENTS AVANT ECHEANCE** — decision prise le 07/08 : avertir **quinze jours avant, puis une semaine avant, etc.** Blandine a dit « on verra ca d'ici la, on n'en est pas la ». ⚠️ **Verrou technique** : l'application est aujourd'hui incapable de le faire. `planAbo` ne dit que « mensuel », « annuel » ou « duo » — **un etat, pas une echeance**. Aucune date d'expiration n'est stockee, ni en base ni en local. Seul **Stripe** la detient. Prealables, dans cet ordre : un webhook Stripe qui ecrit l'echeance dans une colonne Supabase (travail serveur, hors `index.html`), puis le choix du canal — banniere a l'ouverture ou vraies notifications, ce dernier etant un chantier a lui seul.
+- **Galop 1** : 16 chapitres sur 19 sans allemand — chantier confie a une conversation dediee (`passation-galop1.md`).
+- **Les 12 images du Galop 2** a pousser dans `images/`.
+- Ne pas confondre avec la famille **« Fiches completes »** : `hypeFicheComplete` exige photo **ET** robe **ET** age **ET** un parent. Une photo seule ne la fait pas avancer, c'est normal.
+
 
 ---
 
