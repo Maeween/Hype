@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 07/08/2026 (SESSION 102 · CHEVAUX, QUOTAS, XP DES QUETES) — md5 `df9107f23af622ea4a9b280069bbb87f`, 10 768 896 octets. Preview : `preview-102.html` (ouvre la page Cavalier). Aucun SQL — `hype_paliers` existe deja. Part du `c13a4e3e` de la session 101. **12 images du Galop 2 toujours a pousser dans `images/`**. Detail dans la section SESSION 102 ci-dessous.**
+**Version actuelle de l'index.html : 07/08/2026 (SESSION 103 · LES SIX LANGUES SONT ALIGNÉES JUSQU'AU GALOP 4, SAUF UN CHAPITRE) — md5 `3ed7728c04f4d0e9c096294963cc0244`, 10 870 272 octets. Preview : `preview-107.html` (ouvre « Les aides pour tourner », g3-c14). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` → sera déclarée en k644. 12 images du G2 toujours en attente.** Detail dans la section SESSION 103 ci-dessous.**
+
+**Ancienne version (102) — 07/08/2026 (SESSION 102 · CHEVAUX, QUOTAS, XP DES QUETES) — md5 `df9107f23af622ea4a9b280069bbb87f`, 10 768 896 octets. Preview : `preview-102.html` (ouvre la page Cavalier). Aucun SQL — `hype_paliers` existe deja. Part du `c13a4e3e` de la session 101. **12 images du Galop 2 toujours a pousser dans `images/`**. Detail dans la section SESSION 102 ci-dessous.**
 
 **Ancienne version (101) — 07/08/2026 (SESSION 101 · ALLEMAND 15/16 AU GALOP 3) — md5 `c13a4e3eb56a2429dac22ebe55a65016`, 10 756 766 octets. Preview : `preview-106.html` (ouvre « Agir, résister et céder », g3-c13, l'un des trois chapitres qui étaient monolingues). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` (affiche allemande de la licence, corrigée) → sera déclarée en k644. 12 images du G2 toujours en attente.** Detail dans la section SESSION 101 ci-dessous.**
 
@@ -100,6 +102,112 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 103 · L'ALLEMAND EST COMPLET JUSQU'AU GALOP 4
+
+**index.html md5 `3ed7728c04f4d0e9c096294963cc0244`, 10 870 272 octets. Preview : `preview-107.html`. Aucun SQL.**
+**Image à pousser : `couv-g1-c11-de.jpg` (1023×1537, JPEG q92, 428 Ko) → à déclarer en k644 dans `hype-images-123.js`.**
+
+Appliqué par-dessus l'index de la session 102 (`df9107f2`), pas par-dessus une copie gardée.
+
+### État des six langues
+
+| | Baby | G1 | G2 | G3 | G4 |
+|---|---|---|---|---|---|
+| **fr** | 27/27 | 19/19 | 15/15 | 16/16 | 15/15 |
+| **de** | 27/27 | 19/19 | 15/15 | **16/16** | 15/15 |
+| en · es · it · ja | 27/27 | 19/19 | 15/15 | **15/16** | 15/15 |
+
+**L'allemand est complet de Baby au Galop 4.** Les quatre autres langues n'ont plus qu'un seul
+chapitre de retard : `g3-c14`.
+
+### Injecté dans cette session
+
+| Chapitre | Langue | Dictionnaires |
+|---|---|---|
+| `g3-c14` Les aides pour tourner | 🇩🇪 | 52 |
+| `g3-c13` Agir, résister et céder | 🇬🇧 | 50 |
+| `g3-c13` Agir, résister et céder | 🇪🇸 | 50 |
+| `g3-c13` Agir, résister et céder | 🇮🇹 | 50 |
+| `g3-c13` Agir, résister et céder | 🇯🇵 | 50 |
+
+Ce sont les deux derniers chapitres qui étaient **monolingues français** en début de journée.
+Leur structure avait été convertie et prouvée neutre ; il ne restait que la traduction.
+
+### La terminologie du triplet, fixée pour de bon
+
+`g3-c13` s'appelle « Agir, résister et céder ». Ces trois mots reviennent dans `g3-c14` et
+reviendront aux Galops supérieurs. Ils sont désormais figés :
+
+| | agir | résister | céder |
+|---|---|---|---|
+| 🇩🇪 | `einwirken` | `verwahren` | `nachgeben` |
+| 🇬🇧 | `acting` | `resisting` | `yielding` |
+| 🇪🇸 | `actuar` | `resistir` | `ceder` |
+| 🇮🇹 | `agire` | `resistere` | `cedere` |
+| 🇯🇵 | `働きかける` | `支える` | `譲る` |
+
+L'allemand n'est **pas** une traduction littérale : `einwirken / verwahren / nachgeben` est le
+triplet consacré de l'équitation allemande. Ne pas le remplacer par `handeln / widerstehen / abgeben`.
+
+Pour `g3-c14`, en plus : `innerer` / `äußerer Zügel`, `öffnender Zügel`, `Stellung` (le pli),
+`Bogen` (la courbe), `Zirkel`, `Volte`, `Hufschlag`, `Ausfallen der Hinterhand` (le dérapage).
+
+### Deux erreurs attrapées par les contrôles, pas par la relecture
+
+**Un décalage d'un bloc** dans l'allemand de `g3-c13` : trois clés (`blocs.3.contenu|2` et `|3`)
+où j'avais écrit un titre et un sous-titre là où le français attendait un texte simple. Détecté
+par la **comparaison des jeux de clés avant injection** — 248 produites contre 249 attendues,
+avec la liste exacte.
+
+**Un mot anglais resté dans le japonais** : `three つの` au lieu de `三つの`. Détecté par une
+recherche de caractères latins dans les chaînes japonaises.
+
+**Ces deux contrôles sont désormais obligatoires avant chaque injection :**
+
+```
+# 1. parité des jeux de clés
+python3 -c "import json; fr=json.load(open('fr-<id>-<lg>.json')); d=json.load(open('<lg>-<id>.json'));
+print(len(fr),len(d), [k for k in fr if k not in d], [k for k in d if k not in fr])"
+
+# 2. caractères étrangers résiduels
+#    - dans l'allemand : [àâçèêëîïôùûœ]  (sauf les noms d'auteurs : François Baucher)
+#    - dans le japonais : [A-Za-z]{3,}
+```
+
+### Un piège de volume à connaître pour la suite
+
+Sur `g3-c14`, l'allemand n'avait que **269** chaînes à écrire, mais l'anglais, l'espagnol,
+l'italien et le japonais en ont **281**. Ce n'est pas une incohérence : le lexique de réemploi
+était plus riche en allemand parce que `g3-c13` venait d'être traduit en allemand juste avant.
+Les douze chaînes d'écart sont des numéros de puce (`1.` à `5.`), le champ `type`
+(« pratique équestre ») et une option de QCM.
+
+**Donc : toujours régénérer `fr-<id>-<langue>.json` juste avant de traduire.** Un fichier
+d'extraction vieux d'une injection n'a plus le bon périmètre.
+
+### Contrôles passés
+
+- **`node --check` sur les 15 blocs `<script>` inline** de l'index et de l'aperçu : tout OK.
+- **Preuve de rendu** contre l'index de la session 102, les huit tables, les six langues :
+  **20 055 valeurs rendues comparées, 0 perdue, 0 ajoutée.** Le rendu **français est identique
+  au caractère près**. Une seule table touchée (`COURS_GALOP3_FR`), avec exactement le nombre de
+  valeurs attendu par langue.
+- **Simulation de résolution de langue** Baby → Galop 4, six langues : 1 881 éléments de contenu
+  par langue, aucune anomalie (aucun texte vide, cardinalité des options conforme, aucun index
+  `correct` hors bornes).
+
+### Ce qui reste
+
+**`g3-c14` Les aides pour tourner en en/es/it/ja** — 281 chaînes par langue. C'est le dernier
+trou jusqu'au Galop 4. Les fichiers `fr-g3-c14-<langue>.json` et `auto-g3-c14-<langue>.json`
+sont extraits, mais **à régénérer** puisque l'allemand vient d'être injecté (voir le piège de
+volume ci-dessus).
+
+**Les quatre autres affiches allemandes** (k213, k219, k225) ont des erreurs de fond documentées
+dans la section SESSION 101. Elles demandent une régénération, pas une retouche pixel.
 
 ---
 
