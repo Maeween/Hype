@@ -10,7 +10,11 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 07/08/2026 (SESSION 97 · COUVERTURES DU GALOP 2 + ALLEMAND g2-depart) — md5 `af2e8386d732d2c20142164521111d46`, 10 529 918 octets. Preview : `preview-97.html` (ouvre `g2-depart`). Aucun SQL. **12 images a pousser dans `images/`** — voir la liste. Detail dans la section SESSION 97 ci-dessous.**
+**Version actuelle de l'index.html : 07/08/2026 (SESSION 99 · LE GALOP 2 EST COMPLET EN 6 LANGUES) — md5 `6cbe7b6c9079d553b2658d6ffbf4c7a8`, 10 533 663 octets. Preview : `preview-99.html` (ouvre `g2-aides`). Aucun SQL. **12 images toujours a pousser dans `images/`**. Detail dans la section SESSION 99 ci-dessous.**
+
+**Ancienne version (98) — 07/08/2026 (SESSION 98 · ALLEMAND g2-c4) — md5 `5590f21666fc380e29266037dc3267b1`, 10 540 698 octets. Preview : `preview-98.html` (ouvre `g2-c4`). Aucun SQL. **12 images toujours a pousser dans `images/`**. Detail dans la section SESSION 98 ci-dessous.**
+
+**Ancienne version (97) — 07/08/2026 (SESSION 97 · COUVERTURES DU GALOP 2 + ALLEMAND g2-depart) — md5 `af2e8386d732d2c20142164521111d46`, 10 529 918 octets. Preview : `preview-97.html` (ouvre `g2-depart`). Aucun SQL. **12 images a pousser dans `images/`** — voir la liste. Detail dans la section SESSION 97 ci-dessous.**
 
 **Ancienne version (96) — 07/08/2026 (SESSION 96 · CLASSEMENT g1-c19) — md5 `a9cd38adf2845ad5b8a96a14430a4707`, 10 527 044 octets. Preview : `preview-96.html` (ouvre le Galop 1). Aucun SQL. Une seule ligne modifiee. Detail dans la section SESSION 96 ci-dessous.**
 
@@ -3617,6 +3621,95 @@ Fichier `maquette-trace-V4.html` (autonome, aucun script distant, moteur et bibl
 
 
 
+
+
+---
+
+## SESSION 99 · LE GALOP 2 EST INTEGRALEMENT EN SIX LANGUES
+
+**index.html md5 `6cbe7b6c9079d553b2658d6ffbf4c7a8`, 10 533 663 octets. Preview : `preview-99.html`. Aucun SQL.**
+
+`g2-aides` « Les aides naturelles et artificielles » etait le dernier chapitre dont le corps restait en francais. **9 blocs, 42 elements, 199 chaines traduites.** Les 10 QCM etaient deja faits.
+
+**LE GALOP 2 EST DESORMAIS COMPLET** : ses 15 chapitres ont les six langues sur l'en-tete, la couverture, le corps ET les QCM. Verifie par les deux audits (`audit_i18n.js` et `audit_de_g1.js`).
+
+**Glossaire allemand des aides, a reutiliser** : Hilfen · natürliche / künstliche Hilfen · Schenkel · Hände · Sitz · Gewichtshilfe · Stimme · Zügel · Gebiss · Gerte · Sporen · Schwung · Hals · **Unabhängigkeit der Hilfen** (independance des aides) · **Nachgeben** (relachement, qui sert aussi de recompense).
+
+Les citations d'auteurs ont ete traduites, pas laissees en francais : Nuno Oliveira (« Die wahre Reitkunst beginnt, wenn das Pferd auf fast unsichtbare Hilfen antwortet ») et le principe attribue a Baucher. **Les noms des auteurs, eux, ne sont pas traduits** — c'est volontaire.
+
+### LA VARIATION DE TAILLE, EXPLIQUEE POUR DE BON
+Blandine a eu raison de ne pas se satisfaire de « JSON.stringify compacte les espaces ». Mesure faite :
+
+| chapitre | avant | apres | sequences `\uXXXX` avant | apres |
+|---|---|---|---|---|
+| `g2-depart` | 40 206 | 33 365 (**−6 841**) | **3 139** | 0 |
+| `g2-c4` | 30 040 | 40 621 (**+10 581**) | 0 | 0 |
+| `g2-aides` | 120 666 | 101 420 (**−19 246**) | nombreuses | 0 |
+
+**La cause n'est pas le compactage des espaces, c'est l'encodage.** Un `é` ecrit `\u00e9` occupe **six caracteres de fichier** ; ecrit `é`, il en occupe **un**. `g2-depart` contenait 3 139 sequences echappees, dont 56 demi-emoji : leur conversion libere 15 695 caracteres, soit plus que les ~9 500 ajoutes par la traduction. D'ou un fichier qui maigrit alors que le contenu s'enrichit. `g2-c4`, deja en caracteres reels, n'avait rien a economiser et grossit donc du poids honnete de la traduction.
+
+⚠️ **CONSEQUENCE A CONNAITRE** : la re-serialisation **convertit l'encodage** du chapitre traite, de l'echappement vers les caracteres litteraux. Ce n'est pas neutre. Tout script qui chercherait une chaine echappee dans `g2-depart` ou `g2-aides` ne la trouvera plus. Effet de bord favorable ici — les 15 chapitres du Galop 2 sont maintenant homogenes, alors que `g2-depart` etait le seul en echappement — mais c'etait un effet de bord, pas une decision.
+
+⚠️ **REGLE** : **la variation de taille d'un fichier ne prouve rien**, ni dans un sens ni dans l'autre, des lors que l'encodage change en meme temps. Seule la comparaison champ par champ prouve l'integrite. Ne jamais conclure a une perte, ni a une absence de perte, sur la seule taille.
+
+### VERIFICATION
+- 15/15 blocs `<script>` inline valides par `node --check`.
+- **Controle de non-perte** : `g2-aides` aplati en **1 327 champs** hors allemand, avant et apres. **0 perdu, 0 ajoute, 0 valeur modifiee.**
+- Sequence des elements `k` identique entre `fr` et `de` sur les 9 blocs (5, 4, 3, 3, 5, 4, 5, 7, 6). QCM : 10, allemand complet, nombre d'options identique.
+- Table du Galop 2 evaluee en JS : 15 chapitres, ordre des identifiants inchange.
+
+### ETAT i18n DE TOUTES LES TABLES
+| niveau | chapitres | incomplets |
+|---|---|---|
+| Baby | 27 | **0** |
+| **Galop 1** | 19 | **16** |
+| **Galop 2** | 15 | **0** |
+| Galop 3 | 16 | 1 — `g3-c1` (es et de) |
+| Galops 4 · 5 · 6 · 7 | 34 | **0** |
+
+### RESTE
+- **Galop 1** : 16 chapitres sur 19 sans aucun allemand — ni en-tete, ni couverture, ni corps, ni QCM. Seuls `g1-c15`, `g1-c17` et `g1-c19` l'ont, a 100 %. **Conforme a la consigne « allemand obligatoire a partir du Galop 2 »** : decision de Blandine attendue, ce n'est pas un bug. Volume estime : plusieurs milliers de chaines, plusieurs sessions.
+- `g3-c1` : es et de sur l'en-tete et la couverture. Petit, a faire au passage.
+- **Les 12 images du Galop 2 a pousser dans `images/`** — sans elles, le repli `GALOPS_HERO` s'affiche.
+
+
+---
+
+## SESSION 98 · L'ALLEMAND DE g2-c4 « La decouverte du saut »
+
+**index.html md5 `5590f21666fc380e29266037dc3267b1`, 10 540 698 octets. Preview : `preview-98.html`. Aucun SQL.**
+
+Deuxieme des trois chapitres du Galop 2 qui affichaient un titre allemand et du francais dans le corps. **154 chaines traduites** : 4 blocs de texte-riche (20 elements) et les 10 QCM.
+
+**Terminologie ajoutee au glossaire allemand du projet**, dans le prolongement de celui de g2-depart :
+obstacle → `Hindernis` / `Sprung` · galop en equilibre → `leichter Sitz` · point d'appel → `Absprungpunkt` · encolure → `Hals` · foulee de galop → `Galoppsprung` · assiette → `Sitz` · avant-main → `Vorhand` · reception → `Landung` · balancier naturel → `Balancierstange` · etriers → `Bügel` · impulsion → `Schwung` · abord → `Anritt`.
+**A reutiliser telle quelle** pour `g2-aides` et pour tout futur chapitre, afin que le Galop 2 parle d'une seule voix en allemand.
+
+### OUTIL CREE, REUTILISABLE
+`injecter.js <id> <trad.json>` — injecteur generique pour un chapitre du Galop 2. Il applique la methode validee en session 97 : delimiter la table par equilibrage, delimiter le chapitre **dans** la table, evaluer ce seul chapitre en objet JS, le modifier en memoire, le re-serialiser, le remettre a sa place exacte. **Aucune recherche de chaine sur le fichier entier.**
+
+Garde-fous integres, tous verifies avant ecriture : l'identifiant du chapitre isole doit correspondre a celui demande ; chaque element du corps doit avoir sa traduction ; le nombre de puces doit etre identique entre `fr` et la traduction ; le nombre d'options doit etre identique sur chaque QCM ; aucun marqueur `@IMG:` ou `@CST:` ne doit subsister apres restitution des constantes. Un bloc deja traduit est ignore, l'outil est donc **idempotent**.
+
+### VERIFICATION
+- 15/15 blocs `<script>` inline valides par `node --check`.
+- **Controle de non-perte** (`controle_c4.js`, derive de celui de la 97) : chapitre aplati en **530 champs hors allemand**, avant et apres. **0 perdu, 0 ajoute, 0 valeur modifiee.**
+- Sequence des elements `k` identique entre `fr` et `de` sur les 4 blocs (6, 5, 6, 3 elements). 10 QCM avec question, options et explication en allemand, nombre d'options identique.
+- Table du Galop 2 evaluee en JS : 15 chapitres, ordre des identifiants inchange.
+- Ici la re-serialisation a **allonge** le chapitre (30 077 → 40 670 caracteres), l'inverse de la session 97 ou elle l'avait raccourci. Ni l'un ni l'autre ne dit quoi que ce soit sur l'integrite : **seule la comparaison champ par champ le dit.** Ne jamais lire la variation de taille comme un signal.
+
+### ETAT DE L'ALLEMAND AU GALOP 2
+| chapitre | en-tete | couverture | corps | QCM |
+|---|---|---|---|---|
+| **`g2-aides`** | 2/2 | 3/3 | **0/18** | 10/10 |
+| tous les 14 autres | complet | complet | complet | complet |
+
+**Il ne reste que `g2-aides`** : 199 chaines, 13 819 caracteres. C'est le plus gros des trois, et le dernier.
+
+### RESTE ENSUITE
+- **Galop 1** : 16 chapitres sur 19 sans aucun allemand. Conforme a la consigne de projet « allemand obligatoire a partir du Galop 2 » — decision de Blandine attendue, ce n'est pas un bug.
+- `g3-c1` : es et de sur l'en-tete et la couverture.
+
+
 ---
 
 ## SESSION 97 · LES COUVERTURES DU GALOP 2, ET L'ALLEMAND DE g2-depart
@@ -4006,6 +4099,8 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 | 27/07 (2) | Autre page | Accueil : carte Communauté équestre remise dans Mon monde, section Découvrir réordonnée, carte Culture équestre remontée dans Actualité. Article Cadre Noir : philosophie dépliée en permanence, bonus Hype passé en carrousel, album participatif remonté avant "Visiter". |
 | 27/07 (3) | Claude (page "Articles 4 écoles") | **Article Cadre Noir** : carrousel des 3 écoles restantes (retrait des 5 cartes stub), encart "Marquer ma visite" (compteur permanent + SQL), encart "Partager cet article". |
 | 29/07 (44) | **Bibliothèque vidéo.** Nouvel écran + page de lecture dans un fichier séparé `hype-video.js` ; ancien écran vidéo factice retiré ; catalogue de 6 vraies vidéos (3 IFCE confirmées + 3 à vérifier) en 6 langues ; pas de pourcentage de lecture (lecteur externe) ; miniatures YouTube distantes (0 bande passante Netlify). Lien cours → vidéo (étape D) volontairement non fait. |
+| 07/08 (99) | Claude (page Accueil) | **`g2-aides` traduit (199 chaines, 9 blocs). LE GALOP 2 EST COMPLET EN 6 LANGUES** sur ses 15 chapitres, corps et QCM compris. Variation de taille expliquee : c'est l'encodage `\\uXXXX` -> caracteres reels, pas le compactage. |
+| 07/08 (98) | Claude (page Accueil) | **`g2-c4` traduit en allemand** (154 chaines : 4 blocs + 10 QCM). Glossaire allemand du saut fixe. Outil `injecter.js` cree, idempotent et reutilisable. Il ne reste que `g2-aides` au Galop 2. |
 | 07/08 (97) | Claude (page Accueil) | **Galop 2** : repli anti-ecran-noir dans `CouvAffiche`, les 15 couvertures renseignees (10 en `images/`), 3 blocs de couverture crees en 6 langues, `g2-c4` complete en es/it/de, **`g2-depart` traduit en allemand de bout en bout** (128 chaines). Audit i18n des 8 tables. Aucun chapitre perdu depuis le 18/07. |
 | 07/08 (96) | Claude (page Accueil) | `g1-c19` « Monter et descendre en securite » passe de Vie du cheval a Equitation. Audit des QCM : 22 chapitres sous 5 questions, dont 18 aux Galops 5-7. Recherche de perte dans le Galop 2 : aucune trace. Consigne de Blandine : ne rien supprimer dans le Galop 2. |
 | 06/08 (95) | Claude (page Accueil) | **Chemin Baby** : `baby-c17` scinde en `baby-c16` « J'arrete Apy » + `baby-c17` « Je repars et je retrouve mes renes ». Poney d'Argent repasse a 9 chapitres, sequence `baby-c1..c27` continue. « Le conseil du coach » retire du cours scinde (reste dans 22 autres). Validation retroactive de `c16` pour qui avait `c17`. |
