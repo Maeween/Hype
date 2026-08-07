@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 138)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 141)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,74 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 📖 SESSION 141 · LINGUAE (07/08) — LE CHANTIER DES DÉFINITIONS EST OUVERT : LES URGENCES EN SIX LANGUES
+
+« Continue » — donc le chantier de fond noté à la passation : **les définitions n'existaient qu'en français et en anglais** ; un joueur en allemand, espagnol, italien ou japonais les recevait en français. On commence par **le chapitre OFFERT** (les urgences), celui que tout le monde voit.
+
+### ✅ 42/42 définitions en six langues
+Les 42 notes du lexique `urgences` reçoivent es/it/de/ja, traduites depuis le couple fr/en validé — les conventions du fichier respectées (`⚠️` et `**gras**` conservés là où le français les porte, pièges de langue adaptés sans être affadis : die Rehe, das Handy, « I've come off », 落馬, « it's not safe »…). Insertion ancrée sur la valeur anglaise exacte (`count==1`), écriture après chaque remplacement. `node --check` + relecture par exécution : **42/42 portent les six langues.** Côté `lingo.html`, rien à changer : l'affichage lit déjà `def[langueUI()] || def.fr`.
+
+### ⚠️ Correction de trajectoire (encore l'inventaire)
+J'ai affirmé à Blandine que 16 villes n'avaient pas leur carte — **elle les avait toutes faites dans la journée, dans l'autre fil.** Même erreur que Newmarket à la passation : confondre « je ne l'ai pas vu passer ici » avec « ça n'existe pas ». Elle a donné l'adresse du site (`https://majestic-melba-997a68.netlify.app/`), mais l'outil web ne permet pas d'y deviner des adresses de fichiers une à une — l'inventaire du dépôt reste hors de ma portée. **Les 29 cartes existent, point.** Reste leur geste d'accompagnement : `fond-<ville>.webp` + mesure `TITRE_SOMBRE`, par lots de six quand elle enverra les images.
+
+### ⏳ La suite du chantier des définitions
+~360 notes restantes sur les neuf autres lexiques présents ici (arrivée 28, puis cheval/concours/cours/dressage/écurie/matériel/obstacle/pansage 42 chacun) — même geste, lexique par lexique. Les huit lexiques de ce fil (balade, polo, poney, élevage, vente, western, tradition, endurance, + haras/froid côté dépôt) suivront quand leurs fichiers repasseront.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
+
+---
+
+## 🌆 SESSION 140 · LINGUAE (07/08) — LE FOND VIVANT EST DANS L'APP
+
+Blandine : « essaie le fond vivant pour voir, je ne vois rien sur les maquettes ». (Normal : la maquette téléchargée seule n'a pas les images à côté d'elle — d'où l'intégration directe pour juger EN VRAI.)
+
+### 🔴 Le fond de ville existait déjà… noyé sous le voile
+L'écran du chapitre chargeait déjà `fond-<ville>.webp` — mais son voile montait à 72 % de noir dès le haut et 90 % à mi-écran : il n'y avait littéralement rien à voir. C'est pour ça que ses captures étaient noires.
+
+### ✅ Direction B intégrée dans `lingo.html`
+· **Voile radial** comme la maquette : la ville respire en haut, le texte reste posé sur du sombre en bas.
+· **En-tête B** sur le choix de leçon seulement : sur-titre crème « Chapitre N · Nation », titre du chapitre en **Cinzel 27 px**, mot d'accueil en **ligne manuscrite** (Caveat). Les exercices, le quiz et les fins gardent leur petit bandeau — `.grand` est retiré en entrant dans `etape()`/`etapeQuiz()`.
+· **Carte de leçon en verre turquoise** (fond flouté, halo, ombre portée) — la mise en avant `.on` reprend le dessin de la maquette.
+· **Repli du fond** : `fond-<ville>` sondé d'abord ; s'il n'existe pas, la **carte** prend le relais, floutée et assombrie en CSS (`.depuisCarte`) ; sinon noir doux. Les deux adresses portent `VER`.
+Marqueur **v12 · 7 août**.
+
+### ✅ Son idée des clips d'arrivée : oui, et l'outil est prêt
+« On peut extraire une image des vidéos d'arrivée qui corresponde au thème » — **oui** : ffmpeg est disponible ici. Le geste : elle envoie les `arrivee-<ville>.mp4` des villes SANS carte (par lots), j'en tire l'image la plus fidèle au thème (en évitant le panneau du nom, cf. FIN_VIDEO), et je livre le `fond-<ville>.webp` au geste habituel (420×560, flou, luminance ≤ 42). En attendant, le repli carte→fond couvre déjà les villes dont la carte existe.
+
+### Contrôles passés
+`node --check` tous blocs · rendu Playwright de l'écran du chapitre (Édimbourg, faux chapitre 10 mots) : fond visible et respirant, en-tête B, carte de leçon, bloc « débloque » — jugé à l'œil, aucune erreur JS. ⚠️ Caveat retombe sur une police de secours dans le bac à sable (pas de réseau) : la ligne manuscrite est à juger sur téléphone.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
+
+---
+
+## 🃏 SESSION 139 · LINGUAE (07/08) — LA COLLECTION NE MONTRE PLUS QUE CE QUI EST GAGNÉ
+
+Blandine, captures à l'appui : des cartes jamais gagnées (Warendorf, Windsor, Rome) s'affichaient en clair dans la collection, et « Carte à venir » apparaissait sur des villes dont la carte est poussée (Séville, Vejer, Aix) — alors que le compteur, lui, disait juste : 2/29.
+
+### 🔴 Deux causes, un seul fichier : `lingo-collection.html` (reçu de Blandine)
+1. La règle `ouverte-seule` montrait **la vraie image assombrie** dès qu'un chapitre était « en cours ». Or un chapitre peut être « en cours » **sans avoir été joué** : les `ref` partagés entre lexiques font qu'un mot appris à La Baule marque aussi Rome (le mécanisme `niveau`/`distance`/`attention` déjà documenté). D'où des cartes en clair jamais méritées.
+2. Le « Carte à venir » venait du repli d'image de ces mêmes cartes non gagnées (cache/chargement) — pas d'une liste en dur, contrairement à mon hypothèse d'avant lecture du fichier.
+
+### ✅ La règle devient celle de la récompense : pas gagnée = pas d'image
+Une carte non gagnée est une **silhouette**, quel que soit l'avancement du chapitre ; la distinction « à découvrir / en cours » reste au dos. L'image ne se charge que pour une carte gagnée — avec le repli « carte à venir » si le fichier n'existe pas encore (seul cas légitime). Le tampon ✓ n'est plus conditionnel dans le recto gagné.
+
+### ✅ Le cache de la galerie suit enfin `VER`
+`lingo.html` transmet `ver: VER` dans le message `linguae-collection`, la galerie l'ajoute aux adresses `carte-*.webp`. **Plus de double comptabilité** : incrémenter `VER` suffit, la collection suit. Marqueur **v11 · 7 août**.
+
+### Contrôles passés
+`node --check` sur les deux fichiers · banc Playwright de la galerie par message forgé (4 états : gagnée avec image, gagnée sans fichier → « carte à venir », en cours non gagnée → silhouette, jamais jouée → silhouette) : images présentes UNIQUEMENT sur les gagnées, vérifié par requête ET à l'œil.
+
+### ⏳ Note de fond (déjà au dossier)
+Les faux « en cours » viennent des `ref` partagés — toujours à trancher par Blandine (`niveau`, `distance`, `attention`, `bottes`). La galerie n'en montre plus le symptôme.
+
+### 🧭 Préparation Flutter
+Le contrat de la collection (message unique, données complètes + version) est un vrai contrat de composant : réutilisable tel quel.
 
 ---
 
