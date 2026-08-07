@@ -1,7 +1,11 @@
-/* hype-lingo-villes-monde.js — Hype Linguae · les huit villes du monde
+/* hype-lingo-villes-monde.js — Hype Linguae · les dix-neuf villes du monde
    ==================================================================
    Saumur · Lamotte-Beuvron · Jerez · Séville · Vejer · Oliva Nova ·
-   Warendorf · Aix-la-Chapelle.
+   Warendorf · Aix-la-Chapelle · La Baule · Le Morne · Dubaï — et les
+   CINQ dernières, ajoutées le 7 août 2026 en queue de fichier (sections
+   `MONDE.<ref> = {…};`, comme Dubaï) : Tokyo · Tamworth · Buenos Aires ·
+   Lexington · Spruce Meadows. Avec les dix de hype-lingo-villes.js, les
+   29 étapes du voyage ont désormais toutes leur entrée.
 
    ⚠️ CE FICHIER COMPLÈTE hype-lingo-villes.js, il ne le remplace pas.
    Il se charge APRÈS lui et ajoute ses clés une par une, sans jamais
@@ -669,6 +673,205 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
   //    formulation prudente, a confirmer avant publication.
   // ?? Le seuil de 64 battements par minute est celui couramment applique,
   //    mais il varie selon le reglement de l'epreuve. Verifier.
+
+/* ============ TOKYO · la tradition ============ */
+  /* Ajoutée le 7 août 2026 avec les quatre suivantes : les CINQ dernières
+     étapes du voyage n'avaient jamais reçu leur entrée — c'est ce qui
+     laissait la page de Spruce Meadows sans carte (voir session 135 du
+     SUIVI). Même structure et mêmes six langues que les quatorze autres. */
+  MONDE.tokyo = {
+    lieu:"Tōkyō · Japan", carte:false, niveau:3,
+    image:"la cible qui éclate au galop, sous les arbres du sanctuaire",
+    lettre:{
+      fr:["J'ai entendu le résultat avant de le voir.","Le cheval est passé au galop dans l'allée du sanctuaire, l'archer a lâché sa flèche, et la planche de bois a claqué. Personne n'a applaudi pendant le passage — on s'est incliné, et moi aussi."],
+      en:["I heard the result before I saw it.","The horse galloped down the shrine track, the archer released his arrow, and the wooden board cracked. Nobody clapped during the run — everyone bowed, and so did I."],
+      es:["Oí el resultado antes de verlo.","El caballo pasó al galope por la avenida del santuario, el arquero soltó su flecha y la tabla de madera estalló. Nadie aplaudió durante el paso — todos se inclinaron, y yo también."],
+      it:["Ho sentito il risultato prima di vederlo.","Il cavallo è passato al galoppo nel viale del santuario, l'arciere ha lasciato la freccia, e la tavola di legno ha schioccato. Nessuno ha applaudito durante il passaggio — tutti si sono inchinati, e anch'io."],
+      de:["Ich hörte das Ergebnis, bevor ich es sah.","Das Pferd galoppierte die Bahn des Schreins entlang, der Schütze ließ den Pfeil los, und das Holzbrett zerbarst. Niemand klatschte während des Ritts — alle verbeugten sich, und ich auch."],
+      ja:["結果は、見るより先に聞こえた。","馬が神社の馬場を駆け抜け、射手が矢を放ち、木の的が乾いた音を立てて割れた。走る間、誰も拍手をしなかった。みんなが礼をして、私もそうした。"]},
+    volets:[
+     {t:{fr:"Le yabusame", en:"Yabusame", es:"El yabusame", it:"Lo yabusame", de:"Yabusame", ja:"流鏑馬"},
+      c:{
+          fr:"Le tir à l'arc à cheval, au galop, sur des cibles alignées le long d'une piste droite. C'est un rite avant d'être un sport : il se court dans l'enceinte de sanctuaires, et la tenue du cavalier compte autant que la précision de ses flèches.",
+          en:"Mounted archery at the gallop, at targets set along a straight track. It is a rite before it is a sport: it is run within shrine grounds, and the rider's bearing counts as much as the accuracy of his arrows.",
+          es:"El tiro con arco a caballo, al galope, sobre blancos alineados a lo largo de una pista recta. Es un rito antes que un deporte: se corre en el recinto de santuarios, y la compostura del jinete cuenta tanto como la precisión de sus flechas.",
+          it:"Il tiro con l'arco a cavallo, al galoppo, su bersagli allineati lungo una pista dritta. È un rito prima di essere uno sport: si corre nel recinto dei santuari, e il portamento del cavaliere conta quanto la precisione delle sue frecce.",
+          de:"Bogenschießen zu Pferd, im Galopp, auf Ziele entlang einer geraden Bahn. Es ist ein Ritus, bevor es ein Sport ist: Es wird auf dem Gelände von Schreinen geritten, und die Haltung des Reiters zählt so viel wie die Genauigkeit seiner Pfeile.",
+          ja:"疾走する馬上から、直線馬場に並ぶ的を射る弓術。スポーツである前に神事であり、神社の境内で行われ、的中の正確さと同じくらい騎手の所作が重んじられます。"}},
+     {t:{fr:"Huit siècles de transmission", en:"Eight centuries handed down", es:"Ocho siglos de transmisión", it:"Otto secoli di trasmissione", de:"Acht Jahrhunderte Überlieferung", ja:"八百年の継承"},
+      c:{
+          fr:"Le yabusame se transmet depuis l'époque des samouraïs, d'écoles en écoles, de maître à élève. On n'y entre pas par un concours mais par un apprentissage : des années à observer, à répéter le geste à pied, avant de le faire au galop.",
+          en:"Yabusame has been handed down since the age of the samurai, school by school, master to pupil. You do not enter it through a competition but through an apprenticeship: years of watching and repeating the movement on foot before doing it at the gallop.",
+          es:"El yabusame se transmite desde la época de los samuráis, de escuela en escuela, de maestro a alumno. No se entra por un concurso sino por un aprendizaje: años observando y repitiendo el gesto a pie antes de hacerlo al galope.",
+          it:"Lo yabusame si tramanda dall'epoca dei samurai, di scuola in scuola, da maestro ad allievo. Non vi si entra con una gara ma con un apprendistato: anni a osservare e ripetere il gesto a piedi prima di farlo al galoppo.",
+          de:"Yabusame wird seit der Zeit der Samurai weitergegeben, von Schule zu Schule, vom Meister zum Schüler. Man kommt nicht über einen Wettkampf hinein, sondern über eine Lehre: Jahre des Zusehens und des Übens zu Fuß, bevor man es im Galopp tut.",
+          ja:"流鏑馬は侍の時代から、流派から流派へ、師から弟子へと受け継がれてきました。入口は競技会ではなく稽古です。何年も見て、徒歩で所作を繰り返し、それから初めて馬上で行います。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Vise l'automne : plusieurs grands sanctuaires de Tokyo et des environs donnent alors leurs cérémonies de yabusame. Arrive tôt, place-toi près d'une cible, et écoute — le claquement du bois s'entend avant que les applaudissements n'osent partir.",
+          en:"Aim for autumn: several great shrines in and around Tokyo hold their yabusame ceremonies then. Arrive early, stand near a target, and listen — the crack of the wood is heard before the applause dares to start.",
+          es:"Apunta al otoño: varios grandes santuarios de Tokio y sus alrededores celebran entonces sus ceremonias de yabusame. Llega temprano, colócate cerca de un blanco y escucha — el chasquido de la madera se oye antes de que el aplauso se atreva a empezar.",
+          it:"Punta all'autunno: diversi grandi santuari di Tokyo e dintorni tengono allora le loro cerimonie di yabusame. Arriva presto, mettiti vicino a un bersaglio e ascolta — lo schiocco del legno si sente prima che l'applauso osi partire.",
+          de:"Ziele auf den Herbst: Mehrere große Schreine in und um Tokio halten dann ihre Yabusame-Zeremonien ab. Komm früh, stell dich nahe an ein Ziel und horche — das Krachen des Holzes ist zu hören, bevor der Applaus sich traut.",
+          ja:"ねらい目は秋。東京とその近郊のいくつかの大きな神社で流鏑馬神事が行われます。早めに着いて、的の近くに立って、耳を澄ませて。拍手が起こるより先に、木の割れる音が聞こえます。"}}
+    ]
+  };
+
+  /* ============ TAMWORTH · le western ============ */
+  MONDE.tamworth = {
+    lieu:"New South Wales · Australia", carte:true, niveau:2,
+    image:"la poussière ocre au-dessus des parcs à bétail",
+    lettre:{
+      fr:["La poussière est montée avant les bêtes.","On les a entendues ensuite, puis les cavaliers sont apparus au milieu, tranquilles, une main sur les rênes et l'autre libre. Personne ne criait. Le troupeau tournait comme s'il l'avait décidé lui-même."],
+      en:["The dust rose before the cattle did.","Then we heard them, and the riders appeared in the middle of it all, unhurried, one hand on the reins and the other free. Nobody was shouting. The mob turned as if it had decided to itself."],
+      es:["El polvo subió antes que las reses.","Después las oímos, y los jinetes aparecieron en medio, tranquilos, una mano en las riendas y la otra libre. Nadie gritaba. La manada giraba como si lo hubiera decidido ella misma."],
+      it:["La polvere si è alzata prima delle bestie.","Poi le abbiamo sentite, e i cavalieri sono apparsi in mezzo, tranquilli, una mano sulle redini e l'altra libera. Nessuno gridava. La mandria girava come se l'avesse deciso da sola."],
+      de:["Der Staub stieg auf, bevor die Rinder kamen.","Dann hörten wir sie, und die Reiter erschienen mittendrin, ruhig, eine Hand am Zügel und die andere frei. Niemand schrie. Die Herde drehte, als hätte sie es selbst beschlossen."],
+      ja:["牛より先に、土ぼこりが上がった。","それから牛たちの音が聞こえ、その真ん中に騎手たちが現れた。落ち着いて、片手に手綱、もう片方の手は自由なまま。誰も叫ばない。群れはまるで自分で決めたかのように向きを変えた。"]},
+    volets:[
+     {t:{fr:"L'Australian Stock Horse", en:"The Australian Stock Horse", es:"El Australian Stock Horse", it:"L'Australian Stock Horse", de:"Das Australian Stock Horse", ja:"オーストラリアン・ストックホース"},
+      c:{
+          fr:"La race du bétail australien : compacte, endurante, capable de tourner sur place et de travailler du matin au soir. On la surnomme là-bas « la race qui a bâti le pays » — elle a porté les pionniers, les troupeaux et même des régiments entiers.",
+          en:"Australia's cattle breed: compact, tireless, able to turn on the spot and work from dawn to dusk. Over there it is called « the breed that built the nation » — it carried the pioneers, the herds, and even whole regiments.",
+          es:"La raza del ganado australiano: compacta, resistente, capaz de girar en el sitio y trabajar de la mañana a la noche. Allí la llaman « la raza que construyó la nación »: llevó a los pioneros, a los rebaños y hasta a regimientos enteros.",
+          it:"La razza del bestiame australiano: compatta, instancabile, capace di girare sul posto e lavorare dall'alba al tramonto. Laggiù la chiamano « la razza che ha costruito la nazione »: ha portato i pionieri, le mandrie e persino interi reggimenti.",
+          de:"Australiens Viehrasse: kompakt, unermüdlich, fähig, auf der Stelle zu wenden und von früh bis spät zu arbeiten. Man nennt sie dort « die Rasse, die die Nation aufgebaut hat » — sie trug die Pioniere, die Herden und sogar ganze Regimenter.",
+          ja:"オーストラリアの牧畜を支える品種。がっしりとして疲れを知らず、その場で旋回し、朝から晩まで働けます。現地では「国を築いた馬」と呼ばれ、開拓者を、家畜の群れを、そして連隊さえも運びました。"}},
+     {t:{fr:"Les stations", en:"The stations", es:"Las estancias", it:"Le stazioni", de:"Die Stations", ja:"ステーション（大牧場）"},
+      c:{
+          fr:"Ici, une ferme d'élevage s'appelle une station, et certaines couvrent des dizaines de milliers d'hectares. Le rassemblement — the muster — peut durer des jours, à cheval, en famille, parfois avec un hélicoptère en renfort au-dessus des troupeaux.",
+          en:"Here a cattle farm is called a station, and some cover tens of thousands of hectares. The muster can last for days, on horseback, as a family, sometimes with a helicopter helping out above the mobs.",
+          es:"Aquí una explotación ganadera se llama station, y algunas cubren decenas de miles de hectáreas. El rodeo — the muster — puede durar días, a caballo, en familia, a veces con un helicóptero de refuerzo sobre las manadas.",
+          it:"Qui un allevamento si chiama station, e alcune coprono decine di migliaia di ettari. Il raduno — the muster — può durare giorni, a cavallo, in famiglia, a volte con un elicottero in rinforzo sopra le mandrie.",
+          de:"Hier heißt ein Viehbetrieb Station, und manche umfassen Zehntausende Hektar. Das Zusammentreiben — the muster — kann Tage dauern, zu Pferd, mit der ganzen Familie, manchmal mit einem Helikopter als Verstärkung über den Herden.",
+          ja:"ここでは牧場をステーションと呼び、数万ヘクタールに及ぶものもあります。牛の追い集め「マスター」は数日がかり。馬に乗り、家族総出で、ときには群れの上空をヘリコプターが手伝います。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Tamworth est une ville de chevaux et de country : son grand centre équestre couvert accueille toute l'année des concours de tri de bétail, de rodéo et de monte western. Va voir une épreuve de camp draft — le tri australien — on n'en voit nulle part ailleurs.",
+          en:"Tamworth is a town of horses and country music: its big indoor equestrian centre hosts cattle-work, rodeo and western riding events all year round. Watch a camp draft — Australia's own cattle-cutting sport — you will see it nowhere else.",
+          es:"Tamworth es una ciudad de caballos y de country: su gran centro ecuestre cubierto acoge todo el año pruebas de trabajo de ganado, rodeo y monta western. Ve a ver un camp draft — el aparte australiano —: no se ve en ningún otro lugar.",
+          it:"Tamworth è una città di cavalli e di country: il suo grande centro equestre coperto ospita tutto l'anno prove di lavoro con il bestiame, rodeo e monta western. Va' a vedere un camp draft — la separazione all'australiana —: non si vede da nessun'altra parte.",
+          de:"Tamworth ist eine Stadt der Pferde und der Countrymusik: Ihr großes überdachtes Reitsportzentrum beherbergt das ganze Jahr über Rinderarbeits-, Rodeo- und Westernprüfungen. Sieh dir ein Camp Draft an — Australiens eigenes Rindertrennen — das gibt es nirgendwo sonst.",
+          ja:"タムワースは馬とカントリーミュージックの町。大きな屋内馬術センターでは一年中、牛追いやロデオ、ウエスタンの競技が開かれます。キャンプドラフト — オーストラリア独自の牛の仕分け競技 — をぜひ。ここでしか見られません。"}}
+    ]
+  };
+
+  /* ============ BUENOS AIRES · le polo ============ */
+  MONDE.buenos = {
+    lieu:"Buenos Aires · Argentina", carte:true, niveau:2,
+    image:"la ligne de balle sous les tribunes de Palermo",
+    lettre:{
+      fr:["Huit chevaux ont tourné en même temps.","La balle est partie vers l'autre bout du terrain, et tout le monde est reparti derrière, au galop, comme un seul mouvement. À la fin de la période, les cavaliers ont changé de cheval sans même descendre du rythme."],
+      en:["Eight horses turned at the same instant.","The ball flew to the far end of the field and everyone swept after it at a gallop, like a single movement. At the end of the chukka the players changed ponies without even dropping out of the rhythm."],
+      es:["Ocho caballos giraron al mismo tiempo.","La bocha salió hacia el otro extremo de la cancha y todos partieron detrás, al galope, como un solo movimiento. Al final del chukker, los jugadores cambiaron de caballo sin bajar siquiera el ritmo."],
+      it:["Otto cavalli hanno girato nello stesso istante.","La palla è volata verso l'altro capo del campo e tutti sono ripartiti dietro, al galoppo, come un solo movimento. Alla fine del chukker i giocatori hanno cambiato cavallo senza nemmeno uscire dal ritmo."],
+      de:["Acht Pferde wendeten im selben Augenblick.","Der Ball flog ans andere Ende des Feldes, und alle jagten ihm im Galopp nach, wie eine einzige Bewegung. Am Ende des Chukkers wechselten die Spieler die Pferde, ohne auch nur aus dem Rhythmus zu fallen."],
+      ja:["八頭の馬が同時に向きを変えた。","ボールがフィールドの反対側へ飛び、全員がその後を追って駆け出した。まるでひとつの動きのように。チャッカが終わると、選手たちはリズムを崩すことなく馬を乗り替えた。"]},
+    volets:[
+     {t:{fr:"Palermo, la cathédrale", en:"Palermo, the cathedral", es:"Palermo, la catedral", it:"Palermo, la cattedrale", de:"Palermo, die Kathedrale", ja:"パレルモ — ポロの大聖堂"},
+      c:{
+          fr:"Le terrain de Palermo, en pleine ville, est surnommé « la cathédrale du polo ». C'est là que se joue chaque année l'Abierto de Palermo, le tournoi le plus relevé du monde — les meilleurs handicaps de la planète s'y retrouvent presque tous.",
+          en:"The Palermo ground, right inside the city, is nicknamed « the cathedral of polo ». It hosts the Palermo Open every year, the strongest tournament in the world — nearly all of the planet's top handicaps meet there.",
+          es:"La cancha de Palermo, en plena ciudad, es apodada « la catedral del polo ». Allí se juega cada año el Abierto de Palermo, el torneo más fuerte del mundo: casi todos los mejores handicaps del planeta se encuentran allí.",
+          it:"Il campo di Palermo, in piena città, è soprannominato « la cattedrale del polo ». Vi si gioca ogni anno l'Abierto di Palermo, il torneo più forte del mondo: quasi tutti i migliori handicap del pianeta si ritrovano lì.",
+          de:"Das Feld von Palermo, mitten in der Stadt, trägt den Beinamen « die Kathedrale des Polo ». Dort wird jedes Jahr das Abierto de Palermo gespielt, das stärkste Turnier der Welt — fast alle Spitzenhandicaps des Planeten treffen sich dort.",
+          ja:"街の真ん中にあるパレルモ競技場は「ポロの大聖堂」と呼ばれます。毎年ここで世界最高峰の大会、パレルモ・オープンが開かれ、世界のトップハンディキャップ選手のほとんどが集まります。"}},
+     {t:{fr:"Le petisero", en:"The petisero", es:"El petisero", it:"Il petisero", de:"Der Petisero", ja:"ペティセロ"},
+      c:{
+          fr:"Derrière chaque joueur, il y a un petisero : celui qui prépare, entraîne et amène les six à huit chevaux d'un match. Les joueurs le disent eux-mêmes — la moitié du polo se joue à l'écurie, avant que la balle ne soit lancée.",
+          en:"Behind every player there is a petisero: the one who prepares, fits and brings the six to eight horses of a match. The players say it themselves — half of polo is played in the yard, before the ball is ever thrown in.",
+          es:"Detrás de cada jugador hay un petisero: el que prepara, entrena y trae los seis a ocho caballos de un partido. Los propios jugadores lo dicen: la mitad del polo se juega en la caballeriza, antes de que se lance la bocha.",
+          it:"Dietro ogni giocatore c'è un petisero: colui che prepara, allena e porta i sei-otto cavalli di una partita. Lo dicono i giocatori stessi: metà del polo si gioca in scuderia, prima che la palla venga lanciata.",
+          de:"Hinter jedem Spieler steht ein Petisero: der die sechs bis acht Pferde eines Spiels vorbereitet, trainiert und bringt. Die Spieler sagen es selbst — die Hälfte des Polo wird im Stall gespielt, bevor der Ball überhaupt eingeworfen ist.",
+          ja:"どの選手の背後にもペティセロがいます。一試合に使う六〜八頭を仕上げ、調教し、連れてくる存在。選手たち自身が言います — ポロの半分は、ボールが投げ入れられる前に、厩舎で決まっている、と。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Vise la fin de l'année : la grande saison de Palermo se joue au printemps austral, en novembre et décembre. Prends une place basse, près de la ligne — c'est là qu'on entend les maillets, les sabots, et les joueurs qui s'appellent en espagnol.",
+          en:"Aim for the end of the year: the great Palermo season is played in the southern spring, in November and December. Take a low seat, near the boards — that is where you hear the mallets, the hooves, and the players calling to each other in Spanish.",
+          es:"Apunta al final del año: la gran temporada de Palermo se juega en la primavera austral, en noviembre y diciembre. Toma una ubicación baja, cerca de la línea: allí se oyen los tacos, los cascos y los jugadores llamándose en español.",
+          it:"Punta alla fine dell'anno: la grande stagione di Palermo si gioca nella primavera australe, a novembre e dicembre. Prendi un posto in basso, vicino alla linea: è lì che senti le stecche, gli zoccoli e i giocatori che si chiamano in spagnolo.",
+          de:"Ziele auf das Jahresende: Die große Saison von Palermo wird im Südfrühling gespielt, im November und Dezember. Nimm einen Platz weit unten, nahe der Bande — dort hörst du die Schläger, die Hufe und die Spieler, die einander auf Spanisch zurufen.",
+          ja:"ねらい目は年末。パレルモの本シーズンは南半球の春、十一月と十二月です。ラインに近い低い席を取って。マレットの音、蹄の音、スペイン語で呼び合う選手たちの声が聞こえてきます。"}}
+    ]
+  };
+
+  /* ============ LEXINGTON · le haras ============ */
+  MONDE.lexington = {
+    lieu:"Kentucky · United States", carte:false, niveau:2,
+    image:"les barrières noires à perte de vue sur l'herbe bleue",
+    lettre:{
+      fr:["Des barrières noires jusqu'à l'horizon.","Derrière chacune, des poulinières et leurs poulains de l'année. Le chauffeur m'a dit le nom des haras comme on récite une famille — et à chaque nom, il ralentissait un peu."],
+      en:["Black fences all the way to the horizon.","Behind every one of them, broodmares with this year's foals. The driver named the farms the way you recite a family — and at every name, he slowed down a little."],
+      es:["Vallas negras hasta el horizonte.","Detrás de cada una, yeguas de vientre con sus potros del año. El conductor me dijo el nombre de los haras como quien recita una familia — y con cada nombre, frenaba un poco."],
+      it:["Steccati neri fino all'orizzonte.","Dietro ognuno, fattrici con i puledri dell'anno. L'autista mi diceva i nomi degli allevamenti come si recita una famiglia — e a ogni nome rallentava un po'."],
+      de:["Schwarze Zäune bis zum Horizont.","Hinter jedem einzelnen Zuchtstuten mit den Fohlen dieses Jahres. Der Fahrer nannte mir die Namen der Gestüte, wie man eine Familie aufsagt — und bei jedem Namen wurde er ein wenig langsamer."],
+      ja:["黒い柵が地平線まで続いていた。","その一つひとつの向こうに、繁殖牝馬と今年生まれの子馬たち。運転手は牧場の名前を、家族の名を唱えるように教えてくれた。名前を言うたび、少しだけ速度を落としながら。"]},
+    volets:[
+     {t:{fr:"L'herbe bleue", en:"The bluegrass", es:"La hierba azul", it:"L'erba blu", de:"Das Bluegrass", ja:"ブルーグラス"},
+      c:{
+          fr:"La région s'appelle le Bluegrass, du nom de son herbe aux reflets bleutés au printemps. Son sol calcaire enrichit l'herbe en minéraux, et la tradition veut que ce soit lui qui fasse l'os des poulains d'ici — c'est en tout cas ce qu'on te dira dans chaque haras.",
+          en:"The region is called the Bluegrass, after its grass with a bluish sheen in spring. Its limestone soil enriches the grass with minerals, and tradition has it that this is what builds the bone of the foals raised here — that, at least, is what every farm will tell you.",
+          es:"La región se llama Bluegrass, por su hierba de reflejos azulados en primavera. Su suelo calcáreo enriquece la hierba en minerales, y la tradición dice que es eso lo que hace el hueso de los potros de aquí — al menos, eso te dirán en cada haras.",
+          it:"La regione si chiama Bluegrass, dal nome della sua erba dai riflessi bluastri in primavera. Il suo suolo calcareo arricchisce l'erba di minerali, e la tradizione vuole che sia questo a fare l'osso dei puledri di qui — o almeno, è quello che ti diranno in ogni allevamento.",
+          de:"Die Region heißt Bluegrass, nach ihrem Gras mit bläulichem Schimmer im Frühjahr. Ihr Kalksteinboden reichert das Gras mit Mineralien an, und die Überlieferung sagt, genau das mache die Knochen der hier aufgezogenen Fohlen — das jedenfalls wird man dir auf jedem Gestüt erzählen.",
+          ja:"この地方はブルーグラスと呼ばれます。春に青みを帯びて見える牧草にちなんだ名前です。石灰岩の大地が草をミネラルで豊かにし、それがこの土地の子馬の骨をつくる — と伝えられています。少なくとも、どの牧場でもそう聞かされるでしょう。"}},
+     {t:{fr:"Les ventes de yearlings", en:"The yearling sales", es:"Las ventas de yearlings", it:"Le vendite di yearling", de:"Die Jährlingsauktionen", ja:"一歳馬のセール"},
+      c:{
+          fr:"Chaque année, les grandes ventes aux enchères de Lexington voient passer des milliers de yearlings sous le marteau. Un poulain d'un an, jamais monté, peut y atteindre des sommes à sept chiffres — sur la foi d'un pedigree et d'une manière de marcher.",
+          en:"Every year, Lexington's great auctions see thousands of yearlings pass under the hammer. A one-year-old, never ridden, can fetch seven figures there — on the strength of a pedigree and a way of walking.",
+          es:"Cada año, las grandes subastas de Lexington ven pasar miles de yearlings bajo el martillo. Un potro de un año, jamás montado, puede alcanzar allí cifras de siete dígitos — sobre la fe de un pedigrí y de una manera de caminar.",
+          it:"Ogni anno le grandi aste di Lexington vedono passare migliaia di yearling sotto il martello. Un puledro di un anno, mai montato, può raggiungervi cifre a sette zeri — sulla fede di un pedigree e di un modo di camminare.",
+          de:"Jedes Jahr gehen bei den großen Auktionen von Lexington Tausende Jährlinge unter den Hammer. Ein einjähriges, nie gerittenes Fohlen kann dort siebenstellige Summen erzielen — auf das Wort eines Pedigrees und einer Art zu gehen hin.",
+          ja:"毎年、レキシントンの大セールでは何千頭もの一歳馬が競りにかけられます。一度も騎乗されたことのない一歳馬に、七桁の値がつくことも。血統書と、歩き方。それだけを頼りに。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Le Kentucky Horse Park, aux portes de la ville, est un parc entier dédié au cheval : musées, races présentées au travail, champions à la retraite qu'on vient saluer. C'est aussi là que se court le grand concours complet américain, chaque printemps.",
+          en:"The Kentucky Horse Park, on the edge of town, is a whole park devoted to the horse: museums, breeds shown at work, retired champions people come to greet. It is also where America's great three-day event is run every spring.",
+          es:"El Kentucky Horse Park, a las puertas de la ciudad, es un parque entero dedicado al caballo: museos, razas presentadas al trabajo, campeones retirados a los que la gente viene a saludar. Allí se corre también, cada primavera, el gran concurso completo americano.",
+          it:"Il Kentucky Horse Park, alle porte della città, è un parco intero dedicato al cavallo: musei, razze presentate al lavoro, campioni in pensione che la gente viene a salutare. È lì che si corre anche, ogni primavera, il grande completo americano.",
+          de:"Der Kentucky Horse Park am Stadtrand ist ein ganzer Park, der dem Pferd gewidmet ist: Museen, Rassen bei der Arbeit, Champions im Ruhestand, die man begrüßen kommt. Dort wird auch jedes Frühjahr Amerikas große Vielseitigkeitsprüfung geritten.",
+          ja:"街のすぐ外にあるケンタッキー・ホースパークは、馬に捧げられた一つの公園です。博物館があり、さまざまな品種が実演され、引退した名馬に会いに人々が訪れます。毎年春には、アメリカ最大の総合馬術大会もここで開かれます。"}}
+    ]
+  };
+
+  /* ============ SPRUCE MEADOWS · le froid ============ */
+  MONDE.spruce = {
+    lieu:"Alberta · Canada", carte:true, niveau:1,
+    image:"la buée au-dessus des box, les Rocheuses au fond",
+    lettre:{
+      fr:["Moins vingt ce matin, et tout le monde était dehors.","La buée montait des box en colonnes droites, les Rocheuses fermaient l'horizon, et la première question qu'on m'a posée n'était pas « tu montes ? » mais « il a bu, le tien ? »."],
+      en:["Minus twenty this morning, and everyone was outside.","Steam rose from the stables in straight columns, the Rockies closed off the horizon, and the first question anyone asked me was not « are you riding? » but « has yours drunk? »."],
+      es:["Veinte bajo cero esta mañana, y todo el mundo estaba fuera.","El vaho subía de los boxes en columnas rectas, las Rocosas cerraban el horizonte, y la primera pregunta que me hicieron no fue « ¿montas? » sino « ¿el tuyo ha bebido? »."],
+      it:["Meno venti stamattina, e tutti erano fuori.","Il vapore saliva dai box in colonne dritte, le Montagne Rocciose chiudevano l'orizzonte, e la prima domanda che mi hanno fatto non è stata « monti? » ma « il tuo ha bevuto? »."],
+      de:["Minus zwanzig heute Morgen, und alle waren draußen.","Der Dampf stieg in geraden Säulen aus den Boxen, die Rockys schlossen den Horizont, und die erste Frage, die man mir stellte, war nicht « reitest du? », sondern « hat deiner getrunken? »."],
+      ja:["今朝は氷点下二十度。それでも、みんな外にいた。","馬房から湯気がまっすぐな柱になって立ちのぼり、地平線はロッキー山脈が閉じていた。最初に聞かれたのは「乗るの？」ではなく「きみの馬、水は飲んだ？」だった。"]},
+    volets:[
+     {t:{fr:"Spruce Meadows", en:"Spruce Meadows", es:"Spruce Meadows", it:"Spruce Meadows", de:"Spruce Meadows", ja:"スプルース・メドウズ"},
+      c:{
+          fr:"Aux portes de Calgary, l'un des grands rendez-vous du saut d'obstacles mondial. Créé par une famille dans les années 1970, le site accueille chaque été des tournois où viennent les meilleurs cavaliers du monde — et son grand prix compte parmi les plus dotés du sport.",
+          en:"On the edge of Calgary, one of the world's great show jumping venues. Built by one family in the 1970s, it hosts tournaments every summer that draw the best riders in the world — and its grand prix ranks among the richest in the sport.",
+          es:"A las puertas de Calgary, una de las grandes citas del salto de obstáculos mundial. Creado por una familia en los años setenta, el recinto acoge cada verano torneos a los que acuden los mejores jinetes del mundo — y su gran premio figura entre los mejor dotados del deporte.",
+          it:"Alle porte di Calgary, uno dei grandi appuntamenti del salto ostacoli mondiale. Creato da una famiglia negli anni Settanta, il sito ospita ogni estate tornei che richiamano i migliori cavalieri del mondo — e il suo gran premio è tra i più ricchi dello sport.",
+          de:"Vor den Toren Calgarys liegt einer der großen Treffpunkte des Weltspringsports. In den 1970er-Jahren von einer Familie aufgebaut, empfängt die Anlage jeden Sommer Turniere mit den besten Reitern der Welt — und ihr Großer Preis gehört zu den höchstdotierten des Sports.",
+          ja:"カルガリー郊外にある、世界の障害馬術の大舞台のひとつ。一九七〇年代にひとつの家族が築き、毎年夏には世界のトップ騎手が集まる大会が開かれます。そのグランプリは、この競技で最も賞金の高い大会のひとつに数えられます。"}},
+     {t:{fr:"Le chinook", en:"The chinook", es:"El chinook", it:"Il chinook", de:"Der Chinook", ja:"チヌーク"},
+      c:{
+          fr:"L'Alberta connaît un vent qui n'existe presque nulle part ailleurs : le chinook, un vent chaud qui descend des Rocheuses et peut faire remonter la température de vingt degrés en quelques heures. Les chevaux le sentent avant les thermomètres — et avant nous.",
+          en:"Alberta has a wind that exists almost nowhere else: the chinook, a warm wind that rolls down from the Rockies and can lift the temperature by twenty degrees in a few hours. The horses feel it before the thermometers do — and before we do.",
+          es:"Alberta conoce un viento que casi no existe en ningún otro lugar: el chinook, un viento cálido que baja de las Rocosas y puede subir la temperatura veinte grados en unas horas. Los caballos lo sienten antes que los termómetros — y antes que nosotros.",
+          it:"L'Alberta conosce un vento che quasi non esiste altrove: il chinook, un vento caldo che scende dalle Montagne Rocciose e può far risalire la temperatura di venti gradi in poche ore. I cavalli lo sentono prima dei termometri — e prima di noi.",
+          de:"Alberta kennt einen Wind, den es fast nirgendwo sonst gibt: den Chinook, einen warmen Wind, der von den Rockys herabfällt und die Temperatur in wenigen Stunden um zwanzig Grad steigen lassen kann. Die Pferde spüren ihn vor den Thermometern — und vor uns.",
+          ja:"アルバータには、ほかではめったに出会えない風があります。チヌーク — ロッキー山脈から吹き下ろす暖かい風で、数時間で気温を二十度も上げることがあります。馬たちは温度計より先に、そして私たちより先に、それを感じ取ります。"}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+      c:{
+          fr:"Viens en été pour le grand tournoi, sous le soleil et devant les tribunes pleines. Mais si tu veux comprendre ce chapitre, reviens un matin d'hiver : l'écurie à moins vingt, l'eau qu'on casse, la buée — c'est là que le pays se raconte vraiment.",
+          en:"Come in summer for the great tournament, in the sun, in front of full stands. But if you want to understand this chapter, come back on a winter morning: the yard at minus twenty, the water you break, the steam — that is where this country really tells its story.",
+          es:"Ven en verano para el gran torneo, bajo el sol y ante las gradas llenas. Pero si quieres entender este capítulo, vuelve una mañana de invierno: la cuadra a veinte bajo cero, el agua que se rompe, el vaho — ahí es donde este país se cuenta de verdad.",
+          it:"Vieni d'estate per il grande torneo, sotto il sole e davanti alle tribune piene. Ma se vuoi capire questo capitolo, torna una mattina d'inverno: la scuderia a meno venti, l'acqua da rompere, il vapore — è lì che questo paese si racconta davvero.",
+          de:"Komm im Sommer zum großen Turnier, in der Sonne, vor vollen Tribünen. Aber wenn du dieses Kapitel verstehen willst, komm an einem Wintermorgen wieder: der Stall bei minus zwanzig, das Wasser, das man aufbricht, der Dampf — dort erzählt sich dieses Land wirklich.",
+          ja:"夏に来れば、太陽の下、満員のスタンドの前で大きな大会が見られます。でもこの章を理解したいなら、冬の朝にもう一度来てください。氷点下二十度の厩舎、割って開ける水、立ちのぼる湯気 — この国の本当の物語は、そこにあります。"}}
+    ]
+  };
 
   /* ajout clé par clé : on ne remplace jamais une ville déjà présente */
   var k;
