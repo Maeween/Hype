@@ -145,6 +145,29 @@ Blandine déploie depuis un téléphone et n'a **aucun moyen** de savoir quelle 
 
 ---
 
+## 🎴 SESSION 129 · LINGUAE (07/08) — LA CARTE ÉTAIT GAGNÉE EN SILENCE
+
+Blandine : « j'ai fini Newmarket en entier, pas de carte, pas de récompense, rien ».
+
+### 🔴 Le diagnostic n'est pas celui qu'on croit : la carte ÉTAIT accordée
+Sa capture le prouve elle-même. Le bloc **« ET MAINTENANT ? — Continuer avec l'écurie à Vejer »** ne s'affiche que si `carteGagnee` est vrai. Et le quiz avait bien donné l'objet : « L'objet du voyage — **à l'instant** ».
+**Le défaut est ailleurs, et il est plus grave : rien ne le lui disait.** La carte était rangée dans la collection en silence, et il fallait retourner sur l'écran d'arrivée de la ville pour s'en apercevoir. **Une récompense qu'on ne voit pas arriver n'est pas une récompense.**
+
+### ✅ La carte se montre au moment où elle se gagne
+Sur idée de Blandine — « l'occasion d'ajouter une animation avec la carte qui se décolle et s'ajoute » — la carte postale **arrive de loin, tourne un peu et se pose**, sous le score de la leçon : elle entre à 1,5× d'échelle avec un flou et 13 degrés de rotation, dépasse légèrement, puis se stabilise. 0,85 s, une seule courbe.
+✅ **Un état neuf a dû être introduit** : il fallait distinguer « carte gagnée » de « carte gagnée **à l'instant** ». On retient donc l'état d'avant l'appel à `garderCarteLecon`. Revoir une leçon déjà parfaite ne rejoue pas la récompense — vérifié, le bloc n'apparaît pas au second passage.
+✅ L'adresse de l'image porte `VER`, donc elle suivra les remplacements de cartes. Et si le fichier n'existe pas encore, l'image s'efface au lieu de laisser un cadre vide : le titre suffit.
+
+### ⏳ Ce que Blandine demande en plus, et qui reste à faire
+« Il faut retravailler ces pages visuellement, c'est pas possible. » Elle a raison : l'écran de fin de leçon et celui de fin de quiz sont fonctionnels et sans tenue — un score, des listes, des boutons empilés. L'annonce de la carte est un premier pas, pas la refonte.
+**À reprendre par la conversation suivante** : la mise en page de `finLecon` et de la fin de quiz, où l'objet gagné mériterait le même traitement que la carte.
+
+### Contrôles passés
+`verif.py` · bloc de gain vérifié par exécution : présent, titre traduit, image versionnée, nom de ville, animation nommée · second passage vérifié sans rejeu · aucune erreur JS.
+⚠️ **L'animation n'a pas pu être jugée à l'œil** : mon montage de test affiche l'écran de leçon sous le carnet. Le bloc et son animation sont confirmés par le DOM, mais **le rendu visuel est à valider sur le téléphone de Blandine.**
+
+---
+
 # 🤝 PASSATION — état du module au 7 août 2026, fin de session 124
 
 **À lire en premier par la conversation qui reprend Linguae.** Ce bloc dit l'état réel, ce qui est en cours du côté de Blandine, et les pièges qui ont coûté du temps. Les sessions détaillées sont en dessous, dans l'ordre inverse.

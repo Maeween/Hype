@@ -13,6 +13,23 @@ html,body{margin:0;height:100%;overflow:hidden;background:#060709;color:var(--bl
  font-family:'Montserrat',system-ui,sans-serif}
 button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer}
 
+/* ---- la carte postale qui se pose, fin de lecon (7 aout 2026) ---- */
+.lcGain{margin:22px 0 6px;text-align:center}
+.lcGainT{font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+ color:#E8C980;margin:0 0 12px;animation:gainT .5s ease .55s both}
+.lcGainImg{display:block;width:150px;aspect-ratio:3/4;object-fit:cover;
+ margin:0 auto;border-radius:10px;border:1px solid rgba(232,201,128,.35);
+ box-shadow:0 22px 44px -20px rgba(0,0,0,.9), 0 0 0 4px rgba(232,201,128,.08);
+ animation:gainCarte .85s cubic-bezier(.16,1.1,.3,1) both}
+.lcGainV{font-family:'Cinzel',serif;font-size:13px;color:var(--blanc);
+ margin:12px 0 0;animation:gainT .5s ease .7s both}
+@keyframes gainCarte{
+  0%{opacity:0;transform:translateY(-38px) rotate(-13deg) scale(1.5);filter:blur(7px)}
+ 55%{opacity:1;filter:blur(0)}
+ 78%{transform:translateY(4px) rotate(2.5deg) scale(1)}
+100%{opacity:1;transform:translateY(0) rotate(0) scale(1);filter:blur(0)}}
+@keyframes gainT{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
 /* ---------------- PRÉSENTATION ET DESTINATIONS ---------------- */
 #intro,#dest{position:fixed;inset:0;z-index:44;background:#04060A;overflow-y:auto;
  -webkit-overflow-scrolling:touch;display:none}
@@ -4669,8 +4686,18 @@ function finLecon(){
      leçon, si tous les mots notés sont bons — pas au quiz. C'est le
      score que le joueur vient de voir à l'écran, « 12 / 12 », qui
      décide, rien d'autre. */
+  /* ⚠️ ON RETIENT L'ETAT D'AVANT, depuis le 7 aout 2026. Blandine : « j'ai
+     fini Newmarket en entier, pas de carte, pas de recompense, rien ».
+     La carte ETAIT bien accordee — c'est meme ce qui declenchait le bloc
+     « Et maintenant ? » sur sa capture. Mais RIEN ne le lui disait : elle
+     etait gagnee en silence, et il fallait retourner sur l'ecran d'arrivee
+     pour s'en apercevoir. Une recompense qu'on ne voit pas arriver n'est
+     pas une recompense.
+     Il faut donc distinguer « gagnee » de « gagnee A L'INSTANT ». */
+  var avaitDeja = carteObtenue(LC.ville);
   garderCarteLecon(LC.ville, LC.justes, sur);
   var carteGagnee = carteObtenue(LC.ville);
+  var carteNeuve = carteGagnee && !avaitDeja;
   /* l'XP part vers Hype : 2 par mot nouvellement acquis, 10 si la carte
      vient d'être gagnée. Valeurs provisoires — le barème de Hype n'est
      pas validé. */
@@ -4688,6 +4715,26 @@ function finLecon(){
     el("p",{class:"lcCons", text: ui==="en"?"Lesson complete":"Leçon terminée"}),
     el("p",{class:"lcScore", text:LC.justes+" / "+sur})
   ));
+
+  /* ⚠️ LA CARTE POSTALE SE MONTRE AU MOMENT OU ELLE SE GAGNE (7 aout 2026).
+     Elle arrive de loin, tourne un peu, et se pose — c'est le geste que
+     Blandine demandait : « la carte qui se decolle et s'ajoute ».
+     Elle n'apparait QUE la premiere fois : revoir une lecon deja parfaite
+     ne doit pas rejouer la recompense. */
+  if(carteNeuve){
+    var eV_ = ETAPES[ETAPES.findIndex(function(x){ return x.ref===LC.ville; })];
+    var bloc = el("div",{class:"lcGain"});
+    bloc.appendChild(el("p",{class:"lcGainT", text:T("carteGagnee")}));
+    var img = document.createElement("img");
+    img.className="lcGainImg"; img.alt=eV_?eV(eV_):LC.ville;
+    img.src="carte-"+LC.ville+".webp"+VER;
+    /* si la carte n'existe pas encore comme fichier, on n'affiche pas un
+       cadre vide : le titre suffit. */
+    img.addEventListener("error",function(){ this.style.display="none"; });
+    bloc.appendChild(img);
+    if(eV_) bloc.appendChild(el("p",{class:"lcGainV", text:eV(eV_)}));
+    S("lcCorps").appendChild(bloc);
+  }
 
   /* ---- les mots de la leçon, avec leur état ---- */
   var motsL = (LC.L && LC.L.concepts) ? LC.L.concepts : [];
