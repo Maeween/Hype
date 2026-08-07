@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 130)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 132)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -15,6 +15,8 @@
 **Maîtrise et avancement rangés par langue.** Changer de langue recommence le voyage, ce qui est cohérent : le vocabulaire de la nouvelle langue est vierge. `hype_lingua_quiz` et `hype_lingua_cartes` restent **communs** à toutes les langues — incohérence assumée, décision de jeu en attente.
 
 **Tout est ouvert, sans plancher.** Plus de déblocage en chaîne, plus de villes offertes. `FAITS` ne verrouille plus rien : il compte les chapitres réellement terminés et ne sert qu'à la trace du chemin. ⚠️ **Ne pas réintroduire de plancher.**
+
+**Le chemin de nuit est court-circuité** (7 août, décision de Blandine : « il sert à rien, on garde juste la vidéo avant »). Le carnet de route est la racine : toute fermeture (globe, collection, leçon, arrivée, départ, sprint, duel) retombe sur lui, jamais sur `#scene`. La collection et le sprint ont leurs boutons sur le carnet, sous « Partir » ; `#sprint` et `#collection` sont passés en z-index 41. Les éléments du chemin restent dans le fichier (le code de la trace écrit dedans) mais aucun écran ne mène plus à eux.
 
 **Le tampon et la carte se méritent.** Trois états au départ d'une ville (terminé / commencé / rien), et la carte postale **arrive en animation** au moment où elle se gagne.
 
@@ -35,12 +37,12 @@
 
 **Elle refait les 29 cartes postales en couleurs normales.** L'ancien prompt imposait une palette dorée unique — excellente pour un clip de cinq plans, désastreuse pour 29 cartes vues côte à côte. Le nouveau prompt donne **une lumière par ville** (`hype-linguae-prompt-cartes.txt`).
 
-**Faites et livrées** : Rome, Hickstead, Vejer, Newmarket, Édimbourg, Buenos Aires *(mais Newmarket avait déjà une belle carte — c'est mon inventaire erroné qui l'a envoyée la refaire ; il lui suffit de ne pas pousser la mienne)*.
+**Faites et livrées** : Rome, Hickstead, Vejer, Newmarket, Édimbourg, Buenos Aires, Spruce Meadows, Golegã, Badminton, Tamworth *(mais Newmarket avait déjà une belle carte — c'est mon inventaire erroné qui l'a envoyée la refaire ; il lui suffit de ne pas pousser la mienne)*.
 
 ### Le geste à répéter à chaque carte reçue — il ne s'improvise pas
 1. **`carte-<ville>.webp`** — 900×1200, qualité webp 72 à 82. Au-delà de 180 Ko, descendre à 72 : mesuré, l'écart est de 2,3/255 à la taille d'affichage réelle (348 px), soit le seuil de perception. En dessous de 72, on ne gagne plus rien.
 2. **`fond-<ville>.webp`** — 420×560, flou gaussien 14, puis assombrissement **par itération** jusqu'à une luminance moyenne ≤ 42. Le facteur varie de 0,25 à 0,95 selon l'image : ne jamais le fixer d'avance.
-3. **Mesurer le tiers supérieur de la carte.** Au-dessus de 100 de luminance → ajouter la ville dans **`TITRE_SOMBRE`**, sinon le titre crème est illisible. Déjà dedans : warendorf, jerez, oliva, lamotte, saumur, aachen, vejer, rome, hickstead, newmarket, edimbourg, buenos.
+3. **Mesurer le tiers supérieur de la carte.** Au-dessus de 100 de luminance → ajouter la ville dans **`TITRE_SOMBRE`**, sinon le titre crème est illisible. Déjà dedans : warendorf, jerez, oliva, lamotte, saumur, aachen, vejer, rome, hickstead, newmarket, edimbourg, buenos, spruce, golega, badminton, tamworth.
 4. **Incrémenter `VER` et le marqueur de version.**
 
 ⚠️ **Format** : les cartes sont en **3:4 portrait**. Les siennes le sont déjà. Si une arrive en carré ou en paysage, on peut la **prolonger** (échantillonner la couleur du bord et fondre vers le noir) plutôt que la rogner — fait pour les deux fonds d'écran d'entrée, 429 et 624 px ajoutés, couture invisible. Ne marche que si les bords sont sombres.
@@ -100,6 +102,48 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🛤️ SESSION 131 · LINGUAE (07/08) — LE CHEMIN DE NUIT COURT-CIRCUITÉ
+
+Blandine, devant sa capture de l'écran vide : « Court-circuite-le, il sert à rien le chemin de nuit » · « On garde juste la vidéo avant ».
+
+### ✅ Le carnet devient la racine, la vidéo d'ouverture reste
+Le film (`ouverture.mp4`) joue comme avant et débouche sur le carnet. Mais plus AUCUNE fermeture ne retombe sur `#scene` : `montrerCarnet()` (retire `parti`, sans remettre le défilement à zéro) est appelée par la croix du globe, les messages de fermeture des deux iframes, la croix de la leçon, le bouton retour, le geste matériel, et `finDepart` — « Reprendre la route » ramène donc au carnet.
+
+### ✅ La collection et le sprint gagnent leurs portes sur le carnet
+Ils n'étaient joignables QUE depuis l'écran du chemin. Deux boutons sous « Partir » (`#ouvAutres`) : La collection (liseré or) · Sprint · 60 s (liseré turquoise). `#sprint` passe de z-index 30 à 41 et `#collection` de 40 à 41 — à leurs anciens rangs, ils se dessinaient SOUS le carnet, donc invisibles depuis lui.
+
+### 🔴 Piège évité en écrivant : la ville choisie au globe s'ouvrait derrière le carnet
+L'arrivée est en z-index 20, sous le carnet (40). Quand le globe est ouvert depuis une fin de leçon, le carnet est visible dessous : choisir une ville aurait ouvert l'arrivée en silence derrière lui. Même retrait différé que `partirVersVille` (340 ms après l'ouverture), jamais avant — la leçon du flash de la session 99.
+Idem pour les raccourcis `#sprint` et `#duel` : ils retiraient le carnet (`parti`) ; ils le laissent maintenant attendre dessous (`remove("joue")`), pour que la fermeture retombe dessus.
+
+### Contrôles passés
+Tous les blocs `<script>` OK · **rendu Playwright complet, mesuré par `elementFromPoint`** : chargement → carnet · sprint ouvert/fermé → carnet · arrivée + retour → carnet · `finDepart` → carnet · collection ouverte par-dessus le carnet. Le chemin n'est apparu dans aucun des huit états.
+
+### 🧭 Préparation Flutter
+Le carnet est désormais l'unique écran-racine : la hiérarchie de navigation (carnet → globe/collection/sprint → arrivée → leçon → départ) est enfin un arbre, ce qui simplifiera le portage en routes Flutter. Les éléments morts du chemin (`#scene`, `#rail`, `#hud`, `#bas`, `#outils`, `#voyage`, boutons associés) sont le prochain candidat à la suppression, quand la série de cartes sera close.
+
+---
+
+## 🎴 SESSION 132 · LINGUAE (07/08) — QUATRE CARTES D'UN COUP, ET DEUX ARBITRAGES DE BLANDINE
+
+### ✅ Spruce Meadows — gardée sur décision de Blandine
+J'avais objecté : le chapitre est « Le froid » et le prompt impose l'hiver ; l'image est un couchant doré d'été avec le panneau écrit. Blandine : « Garde Spruce Meadows je l'adore et le concours a lieu en été ». C'est elle qui tranche, et l'argument est vrai (les Masters se courent en été). 152 Ko, tiers haut 128,4.
+
+### ✅ Golegã · Badminton · Tamworth — même geste, même coupe
+Coupe 3:4 prise entièrement dans le ciel, sujets et lieux au centre : le portail et le village pour Golegã (159 Ko, 121,7), la maison et la rivière pour Badminton (177 Ko, 149,0), l'arène, l'éolienne et la ville pour Tamworth (154 Ko, 131,0).
+⚠️ Les quatre portent leur nom ÉCRIT dans l'image (panneaux) alors que l'app écrit le nom par-dessus le tiers haut : le nom apparaîtra deux fois. Ceux de Spruce, Golegã et Badminton vivent dans la bande basse voilée ; celui de Tamworth est en haut à droite, sous le titre de l'app. Signalé, Blandine garde.
+
+### ✅ `TITRE_SOMBRE` + `VER`
+Les quatre villes ajoutées (toutes > 100). `VER` passe à `?v=4`, marqueur `v4 · 7 août` — un seul incrément pour le lot, comme le veut la règle.
+
+### Contrôles passés
+Blocs `<script>` OK · rendu Playwright de la session 131 repassé intégralement après le passage en v4 : huit états, zéro apparition du chemin.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 
