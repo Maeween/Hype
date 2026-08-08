@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
+**Version actuelle de l'index.html : 08/08/2026 (SESSION 111 · CHEMINS DIRECTS, CADRAGE MEMORY, TÉMOIN DE VERSION) — md5 `f5866e123ce8fc4825a71de5ec318b2e`, 9 127 282 octets. **`hype-cours-baby.js` md5 `bdcd692f0ca13be26583937a44e51e43`, 1 817 899 octets — À POUSSER.** **L'app affiche désormais sa version : « reprise 1.2 · baby 111 » sous Quoi de neuf.** Aucun SQL.**
+
+**Ancienne version (110) — 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
 
 **Ancienne version (110) — 08/08/2026 (SESSION 110 · L'ÉCRASEMENT DES CLÉS D'IMAGES, PONT LINGUAE, PALIERS BABY, CADRAGE DES QUIZ) — md5 `df70065f9dcd6e32e25181260f1379fc`, 9 128 897 octets. `hype-cours-baby.js` inchangé. Aucune preview. Aucun SQL.**
 
@@ -120,6 +122,95 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 111 · CHEMINS DIRECTS, ET UN TÉMOIN DE VERSION POUR SORTIR DU DOUTE
+
+**index.html md5 `f5866e123ce8fc4825a71de5ec318b2e`, 9 127 282 octets.**
+**hype-cours-baby.js md5 `bdcd692f0ca13be26583937a44e51e43`, 1 817 899 octets.**
+
+### LE TÉMOIN DE VERSION — la vraie leçon de la journée
+
+Les couvertures Baby n'ont pas changé malgré **quatre tentatives** : renommage des déclarations,
+déplacement du bloc après les lots d'images, chemins écrits en dur dans la donnée, et vidage du
+cache. À chaque fois, la vérification locale était bonne et l'app affichait autre chose.
+
+**Le problème de fond n'est pas technique, il est de méthode : rien ne permettait de savoir quelle
+version tournait réellement sur le téléphone.** Chaque doute coûtait un aller-retour de
+vérification sur GitHub, et aucune de ces vérifications ne prouvait ce qui était *chargé*.
+
+`HYPE_VERSION_APP` existait déjà et s'affiche sous « Quoi de neuf » sous la forme
+« reprise 1.1 ». Deux ajouts :
+
+- **`HYPE_VERSION_APP` passe à `"1.2"`.**
+- **`hype-cours-baby.js` déclare en première ligne `window.COURS_BABY_VERSION = "111"`**, et le lien
+  affiche désormais **« reprise 1.2 · baby 111 »**.
+
+**À incrémenter à chaque modification de l'un ou l'autre.** Quand Blandine dit « ce n'est pas
+corrigé », la première question devient : *que dit le lien Quoi de neuf ?* Si ce n'est pas
+« 1.2 · baby 111 », le fichier n'est pas chargé et il n'y a rien d'autre à chercher.
+
+### Théorie de l'écrasement : FAUSSE, et comment on l'a su
+
+En session 110 j'avais conclu que les clés `k646`–`k657` étaient écrasées par les lots d'images
+chargés après elles. **Blandine a fait la remarque décisive : « le puzzle était fonctionnel ».**
+Le puzzle utilise `HYPE_IMGS["k645"]`, déclarée dans le même bloc, au même endroit, dans la même
+plage. S'il s'affiche, ces clés ne sont pas écrasées. La théorie tombe d'un mot.
+
+**Une observation qui contredit la théorie vaut mieux que dix qui la confirment.** Le puzzle
+fonctionnait depuis le début et invalidait à lui seul l'explication.
+
+**LE PUZZLE A ÉTÉ REMIS À L'IDENTIQUE.** Je l'avais passé en chemin direct par souci de cohérence
+alors qu'il marchait. `k645` est redéclarée, la cascade
+`HYPE_IMGS["k645"] || HYPE_IMGS["k432"] || GALOPS_HERO` est restaurée.
+**Ne jamais toucher à ce qui fonctionne, même pour uniformiser.**
+
+### Les couvertures Baby passent en chemin direct
+
+Faute de cause établie, on supprime l'intermédiaire plutôt que de deviner. Les 12 couvertures ne
+passent plus par `HYPE_IMGS` : le chemin est écrit dans la donnée.
+
+```js
+{ "type": "couv-affiche", "src": "images/baby-c3-brosse.jpg", ... }
+```
+
+Idem pour l'affiche allemande de `g1-c11`. Les 14 déclarations `k644`–`k657` devenues inutiles ont
+été retirées, sauf `k645` (le puzzle).
+
+### Les images tronquées du Memory
+
+Cause : **`objectPosition: "center top"`** sur les cartes. Les illustrations ont leur sujet au
+centre, l'ancrage haut coupait le poney. **Quatre occurrences corrigées en `"center"`** dans
+`MemoryGalop`, `MemoryPoneyGrille` et `MemoryPoneyJeu` (deux). Les trois autres du fichier
+(`rondSocial`, `menuDeroulant`, `EcranSante`) sont des portraits : ancrage haut conservé.
+
+**Signalé non corrigé après le push : Blandine indique que le Memory n'est toujours pas réparé.**
+Elle a déplacé `k548`/`k550`/`k551`/`k552` dans `images/`. Si les cartes restent vides ET que le
+lien affiche « reprise 1.2 », alors la cause est ailleurs et il faudra chercher du côté de ce qui
+sert réellement `HYPE_IMGS` pour ces clés. **Le témoin de version est la première chose à lire.**
+
+### Les paliers Baby restent dépliés
+
+Validé par Blandine : les encarts restent ouverts. `PalierBabyCarte` ne se replie plus en pastille ;
+seul le bouton d'action cède la place à une pastille de réussite. **19 éléments rendus à l'état
+« déjà fait » contre 3 auparavant**, vérifié en exécutant le composant.
+
+**Demande en attente : le niveau Or doit dérouler les cours appris comme les deux autres.**
+`FinCheminBabyCarte` (3 626 octets) ne reçoit aujourd'hui que `nbTermines`, `totalCours`,
+`totalEtoiles` — **pas la liste des cours**. Il faudra lui passer `coursNiveau` depuis
+`CheminPoneyBaby` et ajouter la section « Ce que tu as appris ». **Non fait.**
+
+### Contrôles passés
+
+- **`node --check`** sur `hype-cours-baby.js` et les 16 blocs inline : tout OK.
+- **Non-perte sur Baby** : 27 chapitres, comparaison chapitre par chapitre en neutralisant les
+  couvertures visées → **0 différence ailleurs**.
+- **Preuve de rendu** six langues : une seule différence sur 14 053 valeurs, `COURS_GALOP1_I18N`
+  chapitre 11 `blocs.2.src.de` — exactement le champ visé.
+- **`k645` : déclarée 1 fois, utilisée 1 fois** après restauration.
+- **Deux ancres fausses rejetées avant écriture** (le lien de version, dont les échappements
+  diffèrent dans le fichier) — aucune écriture à l'aveugle.
 
 ---
 

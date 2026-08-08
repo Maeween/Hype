@@ -32499,7 +32499,7 @@ function LienQuoiDeNeuf(props) {
     className: "qdnlien",
     style: props && props.compte ? { marginTop: 22 } : undefined,
     onClick: function () { ctx.setEcran("quoi-de-neuf"); }
-  }, majM("lien", langue), " \u00B7 ", h("b", null, majM("reprise", langue).toLowerCase() + " " + HYPE_VERSION_APP));
+  }, majM("lien", langue), " \u00B7 ", h("b", null, majM("reprise", langue).toLowerCase() + " " + HYPE_VERSION_APP + " \u00B7 baby " + ((typeof window !== "undefined" && window.COURS_BABY_VERSION) ? window.COURS_BABY_VERSION : "?")));
 }
 
 

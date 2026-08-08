@@ -1,3 +1,8 @@
+/* TEMOIN DE VERSION : affiche dans l'app sous « Quoi de neuf », a cote du
+   numero de reprise. Permet de savoir en un coup d'oeil quelle version de CE
+   fichier tourne reellement, sans rien verifier sur GitHub. A incrementer a
+   chaque modification du fichier. */
+window.COURS_BABY_VERSION = "111";
 /* Hype — Chemin Baby : 27 chapitres, 6 langues.
    Sorti de index.html pour alleger le telechargement et isoler les retours arriere.
    CHARGER APRES tous les hype-images-*.js : les cles doivent deja exister.
