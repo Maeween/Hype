@@ -132,6 +132,92 @@ Aucune amélioration d'architecture réalisée sur cette session (passation).
 
 ---
 
+## 🧹 SESSION 170 · LINGUAE (08/08) — LA PAGE RANGÉE, ET L'ICÔNE QUI NE VOULAIT PAS CHANGER (v33)
+
+### 🔴 « Tout s'entasse, c'est le bordel » — mesuré, et c'était vrai
+Relevé de la composition du carnet, bloc par bloc, au pixel :
+· **Le bouton du globe occupait 12 → 44 px et le label du carnet 30 → 41 px : ils se recouvraient exactement.** D'où « le bouton passe par-dessus mon titre ». Descendu **en bas à droite** (pastille flottante) : il ne croise plus aucun texte et reste sous le pouce.
+· **Le bandeau d'installation s'insérait entre « Partir » et l'introduction** — au milieu du chemin de lecture, pour une action qui ne se fait qu'une fois. Descendu **en pied de page**, après le sprint et la collection.
+· **Le marqueur de version touchait le paragraphe suivant** (393 → 403 px, l'intro démarrant à 403). Descendu lui aussi en pied de page : il sert à Blandine, pas aux cavalières.
+· `#ouvPartir` reçoit une marge unique (30 px dessus, 34 dessous) : les valeurs venaient de trois époques différentes et les blocs se touchaient.
+🔴 À noter : c'est moi qui avais empilé deux blocs dans cette zone le même jour sans reprendre la composition d'ensemble. Et dans le premier jet de cette correction, **mon commentaire annonçait un déplacement du marqueur que le code ne faisait pas** — attrapé au banc géométrique, corrigé.
+
+### 🔴 L'icône : iOS refusait la nouvelle
+Blandine : « il veut mettre de force l'ancienne icône ». La boîte « Sur l'écran d'accueil » affichait encore la boussole alors que la nouvelle icône était déployée. **iOS met l'`apple-touch-icon` en cache par ADRESSE** et le conserve même après remplacement du fichier ; `VER` n'a aucun effet sur un `apple-touch-icon`.
+· **Correction : les trois icônes changent de nom** (suffixe `-2`), et `lingo.html` + le manifest pointent vers les nouveaux noms. Une adresse neuve ne peut pas être en cache.
+· ⚠️ **À REFAIRE à chaque changement d'icône** : suffixe `-3`, `-4`… C'est le seul moyen fiable. Écrit dans le code.
+
+### 📦 À pousser
+`lingo.html` · `linguae.webmanifest` · **`apple-touch-icon-linguae-2.png`** · **`icone-linguae-192-2.png`** · **`icone-linguae-512-2.png`** (les trois anciens fichiers peuvent rester, ils ne sont plus référencés).
+
+### ⏳ Reste en file
+`lingo-collection.html` · le **passeport** · **Clonbinane** (lexique écrit, non câblé) · **Compiègne** · l'audit de `hype-lingo-villes.js` · les 62 images du carnet si le lag persiste · les deux `filter: blur()`.
+
+### 🧭 Préparation Flutter
+Aucune amélioration. Le **banc géométrique** (relever haut/bas de chaque bloc d'un écran et détecter les recouvrements) est le troisième outil de mesure réutilisable de la journée, avec la sonde d'appels et l'audit de contenu par exécution.
+
+---
+
+## 🧯 SESSION 169 · LINGUAE (08/08) — MA CORRECTION AVAIT EMPIRÉ LES CHOSES (v32)
+
+### 🔴 `content-visibility:auto` était une erreur, et elle a cassé DEUX choses
+Posée en v31 pour le lag. Blandine, après déploiement : « l'architecture de la page est devenue déconnante, on voit plus deux images côte à côte mais une et demie » puis « on dirait presque que c'est même plus long à charger les images qu'avant ».
+**Les deux remarques sont exactes, et prévisibles :**
+· **La grille** — hors écran, l'élément prend la taille de `contain-intrinsic-size` et non sa taille réelle ; la grille mesure ses colonnes sur une hauteur factice et déborde.
+· **Le chargement** — la propriété **diffère le rendu ET le chargement** de ce qui n'est pas visible. Sur une page parcourue de haut en bas, on ne gagne rien : on retarde tout.
+⚠️ **NE PAS LA REMETTRE sur `.vc`.** Sur une grille d'images parcourue au doigt, ce n'est pas le bon outil. Commentaire laissé dans le code.
+🔴 Leçon de méthode : je l'ai livrée **sans pouvoir la mesurer** (bac à sable sans composition réelle) en annonçant « sans risque, gros gain ». C'était une hypothèse présentée comme une correction.
+
+### ✅ La vraie cause, elle, est identifiée et mesurée : 31 filtres composites
+`.vc .vrec .vimg` portait `filter:brightness(1.12) saturate(1.06)`. **Il y a 31 cartes**, donc 31 éléments filtrés : un filtre force une **couche composite par élément** et son recalcul à chaque image pendant le défilement.
+Mesure sur le même banc : **filtres dans la page 63 → 32**, animations **12 → 5**, grille rétablie (deux cartes de 168 px côte à côte, aucun débordement).
+La luminosité que le filtre apportait est reprise **sans coût** par le voile `.vvoile`, allégé de 4 points à chaque étage. ⚠️ Si une carte paraît terne, la corriger **dans le fichier `.webp`**, jamais par un filtre répété 31 fois.
+
+### ⏳ S'IL LAGUE ENCORE : le suspect suivant est identifié, décision à Blandine
+`.vimg` charge **DEUX images de fond par carte** — `carte-<ref>.webp` **et** `fond-<ref>.webp` en repli — soit **62 images** pour 31 cartes, en 900×1200 et 420×560, affichées à ~168 px de large. C'est beaucoup de téléchargement et surtout de **décodage mémoire** sur iPhone.
+Trois voies, par ordre de gain : (1) ne charger que `carte-` et laisser le dégradé sombre de `.vrec` en repli — change l'aspect des villes sans carte ; (2) produire des **vignettes 360×480** dédiées au carnet (des `carte-<ville>-vignette.webp` existent déjà pour sept villes britanniques et ne sont jamais demandées — piste 9 de la passation) ; (3) passer les cartes en `<img loading="lazy" decoding="async">`, ce qui suppose de réécrire le balisage de la carte.
+**Rien n'est fait : la 1 et la 2 changent le visuel, donc c'est sa décision.**
+
+### 📦 À pousser
+`lingo.html` **v32** (`VER = "?v=32"`).
+
+### 📝 Écrit mais NON câblé, en attente
+`hype-lingo-lex-apprentissage.js` — Clonbinane, 10 concepts + 3 phrases en six langues, angle « science de l'apprentissage » distinct de Santa Ynez, **aucun `ref` partagé** avec le lexique horsemanship. Le fichier existe ; l'étape, `ETAPE_SRC`, `NIVEAU_VILLE`, `COLL_NOM` et le récit restent à écrire. Volontairement gardé hors de cette livraison pour ne pas mélanger une correction urgente avec un ajout de contenu.
+
+### 🧭 Préparation Flutter
+Aucune amélioration. Dette confirmée : **les effets visuels sont répétés par élément** (31 filtres, 37 ombres) au lieu d'être portés par un conteneur. Une passe de rationalisation des effets vaudrait plus que n'importe quelle astuce de rendu.
+
+---
+
+## 🐂 SESSION 168 · LINGUAE (08/08) — « RASSURE-MOI, ON PARLE PAS DES CHEVAUX LÀ ? » (hype-lingo-villes-monde.js)
+
+### 🔴 D'ABORD : LE CANAL DES `.js` A CHANGÉ, LE SUIVI MENTAIT
+`hype-lingo-villes-monde.js` a été **uploadé et il est arrivé COMPLET (142 431 octets, `node --check` OK).** La note « les uploads .js arrivent vides, seul le canal GitHub raw fonctionne » est **périmée** : elle a coûté plusieurs allers-retours aujourd'hui, dont un où j'ai réclamé une ligne raw pour un fichier que Blandine pouvait simplement envoyer. ⚠️ **Essayer l'upload d'abord, le canal raw en secours.**
+
+### 🔴 Le défaut signalé : l'Australian Stock Horse décrit comme du bétail
+Blandine, sur le volet de Tamworth : « race du bétail australien ? Rassure-moi on parle pas des chevaux là ? ». **Sa lecture était la bonne.** L'Australian Stock Horse est le cheval **qui travaille** le bétail.
+⚠️ **La faute était dans CINQ langues sur six**, pas seulement en français : *Australia's cattle breed · la raza del ganado australiano · la razza del bestiame australiano · Australiens Viehrasse*. Seul le japonais disait juste. **Corriger le français seul aurait laissé le défaut dans quatre langues.**
+Formulation retenue (celle de Blandine) : le **nom propre en tête** — il ne se traduit pas, c'est une race — puis sa définition en apposition : *« L'Australian Stock Horse, la race de chevaux qui mène les troupeaux australiens : … »*. Idem dans les six langues, accord suivi partout.
+
+### ✅ Et l'audit large a retrouvé, seul, les deux défauts déjà signalés
+Script d'audit par exécution sur les **19 villes** du fichier (lettres, volets, récits, six langues) :
+1. **« Je n'ai jamais rien monté d'aussi calme »** — Blandine : « c'est avilissant pour le cheval ». Là encore **les six langues étaient touchées** (*ridden anything so calm · montado nada tan tranquilo · montato niente di così tranquillo · etwas so Ruhiges geritten*). Corrigé en gardant **son** mot : *« Je n'ai jamais rien vécu d'aussi grisant »* — et les équivalents (*exhilarating · emocionante · esaltante · Berauschendes* · 胸が高鳴った). Le sujet devient la cavalière, le cheval cesse d'être la chose montée.
+2. **Un ⚠️ dans un texte vu par la joueuse** (volet « Se baigner » du Morne). Le pictogramme part, **l'avertissement reste** — baignade réservée aux confirmés, savoir nager : c'est une consigne de sécurité, pas une décoration.
+
+### ✅ Cinq alertes vérifiées et déclarées INNOCENTES
+Le motif `geritten` ressortait sur saumur, dubaï, tokyo et lexington (×2). Contrôlées une par une dans leur phrase : ce sont des emplois normaux (« an der Hand oder geritten », « nie gerittenes Fohlen », « wird geritten »). **Aucune correction.** ⚠️ Ne pas les « corriger » lors d'un futur audit : une alerte n'est pas un défaut.
+
+### 📦 À pousser
+**`hype-lingo-villes-monde.js`** (⚠️ ce fichier n'a pas de paramètre `?l=` sur sa balise dans `lingo.html` — vérifier au déploiement si le cache le sert encore ; au besoin lui en ajouter un, comme les lexiques).
+
+### ⏳ Reste en file
+`lingo-collection.html` · le **passeport** · **Clonbinane** et **Compiègne** · l'audit des lettres du fichier `hype-lingo-villes.js` (les DIX premières villes, que je n'ai toujours pas — le même audit doit y tourner) · les deux `filter: blur()`.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture. Acquis réutilisable : **le script d'audit par exécution** (charger le `.js`, parcourir villes × langues × champs, tester des motifs) a retrouvé de lui-même les deux défauts signalés par Blandine et écarté cinq fausses alertes. À rejouer sur tout fichier de contenu avant livraison.
+
+---
+
 ## ⚡ SESSION 167 · LINGUAE (08/08) — LE LAG, ET LA NOUVELLE ICÔNE (v31)
 
 ### 🐴 La nouvelle icône

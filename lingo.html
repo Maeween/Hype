@@ -30,7 +30,13 @@
      deplacement, pas avant — un scope errone empeche l'installation.
      ================================================================== -->
 <link rel="manifest" href="linguae.webmanifest">
-<link rel="apple-touch-icon" href="apple-touch-icon-linguae.png">
+<!-- ⚠️ NOM CHANGE le 8 aout 2026 (suffixe -2). iOS met l'apple-touch-icon
+     en cache par ADRESSE et le garde meme apres remplacement du fichier :
+     Blandine voyait encore l'ancienne boussole dans « Sur l'ecran d'accueil »
+     alors que la nouvelle icone etait deployee. Un nom neuf ne peut pas etre
+     en cache. ⚠️ A REFAIRE (suffixe -3, -4...) a chaque changement d'icone :
+     `VER` ne fonctionne pas sur un apple-touch-icon. -->
+<link rel="apple-touch-icon" href="apple-touch-icon-linguae-2.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -407,7 +413,21 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    ou le bouton a ete SORTI de #outils sans que son z-index soit remonte.
    41 est la meme valeur que #sprint et #collection, passes ce jour-la
    pour exactement la meme raison. */
-#bGlobe{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 12px);z-index:41;
+/* ⚠️ DESCENDU EN BAS A DROITE le 8 aout 2026. Mesure : le bouton occupait
+   12 -> 44 px et le label du carnet 30 -> 41 px — ils se recouvraient
+   exactement, d'ou « le bouton du globe passe par-dessus mon titre ». En
+   bas a droite il ne croise aucun texte, et il reste atteignable au pouce
+   sans remonter la page. */
+/* ⚠️ FONDU DANS « PARTIR » le 8 aout 2026, decision de Blandine : « fonds-le
+   dans Partir ». Il y avait DEUX portes vers le meme ecran — ce bouton
+   flottant et le bouton « Partir » du carnet — et la premiere recouvrait le
+   titre. `#ouvPartir` appelle deja `ouvrirGlobe()` : une seule porte suffit.
+   ⚠️ L'ELEMENT ET SON ECOUTEUR SONT CONSERVES, seulement masques. Raison
+   historique a ne pas oublier : ce bouton avait ete cree parce que masquer
+   le chemin de nuit avait supprime la SEULE porte du globe (ecran vide au
+   lancement). Le jour ou « Partir » bougerait, il suffit de retirer ce
+   `display:none` pour retrouver une porte de secours. */
+#bGlobe{display:none;position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom) + 16px);z-index:41;
   padding:10px 15px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
   font-weight:600;color:var(--turquoise);background:rgba(32,217,245,.10);
   border:1px solid rgba(32,217,245,.4);border-radius:999px}
@@ -487,8 +507,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  margin:14px 0 0}
 #ouvDebut /* le bouton de changement de langue : même dessin qu'avant, plus un
    soulignement discret pour qu'on devine qu'il se touche */
+/* ⚠️ Le marqueur sert a Blandine, pas aux cavalieres : il descend en pied
+   de page avec le bandeau, et non plus entre « Partir » et l'introduction.
+   Marge du haut reduite : il flottait a 10 px sous un bouton de 47 px. */
 #ouvVersion{font-size:9px;letter-spacing:.14em;text-transform:uppercase;
- color:rgba(244,247,250,.28);text-align:center;margin:10px 0 0}
+ color:rgba(244,247,250,.22);text-align:center;margin:26px 0 0}
 /* l'aide a l'installation : une surface de verre fume, jamais une pub */
 #ouvInstall{margin:22px auto 0;max-width:420px;padding:14px 16px 12px;
  border:1px solid rgba(32,217,245,.22);border-radius:16px;
@@ -766,7 +789,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.05)}
 #ouvCollection{color:var(--or);border:1px solid rgba(212,175,55,.4)}
 #ouvSprint{color:var(--turquoise);border:1px solid rgba(32,217,245,.4)}
-#ouvPartir{padding:16px 44px;border-radius:15px;background:var(--turquoise);color:#060709;
+/* ⚠️ RESPIRATION AJOUTEE le 8 aout 2026 : entre la paire de langues, le
+   mode sans le son, « Partir » et le marqueur, les marges venaient de trois
+   epoques differentes et les blocs se touchaient. Une seule valeur ici. */
+#ouvPartir{margin:30px 0 34px;padding:16px 44px;border-radius:15px;background:var(--turquoise);color:#060709;
  font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
  box-shadow:0 16px 42px -18px rgba(32,217,245,.95)}
 #ouvPasser,#ouvSuite{position:absolute;z-index:3;opacity:0;transition:opacity .4s}
@@ -1522,7 +1548,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v32 · 8 août</p>
+
 
     <!-- ⚠️ AIDE A L'INSTALLATION (8 aout 2026). Demande de Blandine :
          « il faut aussi un truc qui aide a installer sur la page d'accueil
@@ -1536,14 +1562,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          · iOS ne fournit aucune invite programmable : on affiche donc le
            geste exact. Android/Chrome : vrai bouton via beforeinstallprompt.
          · Refus memorise (`hype_lingua_install`), on ne harcele pas. -->
-    <div id="ouvInstall" hidden>
-      <p id="ouvInstT"></p>
-      <p id="ouvInstC"></p>
-      <div id="ouvInstB">
-        <button id="ouvInstOk" type="button" hidden></button>
-        <button id="ouvInstNon" type="button"></button>
-      </div>
-    </div>
+    <!-- ⚠️ Le bandeau d'installation a ete DEPLACE en bas de page (voir
+         apres #ouvAutres). Il s'inserait entre « Partir » et l'introduction,
+         donc au milieu du chemin de lecture, pour une action qui ne se fait
+         qu'une fois. Blandine : « tout s'entasse ». -->
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1571,6 +1593,23 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <div id="ouvAutres">
       <button id="ouvCollection" data-t="laCollection">La collection</button>
       <button id="ouvSprint" data-t="sprint60">Sprint · 60 s</button>
+    </div>
+
+    <!-- ⚠️ MARQUEUR DE VERSION, descendu ici le 8 aout 2026. Il sert a
+         Blandine pour savoir ce qui tourne, pas aux cavalieres : sa place
+         est en pied de page, pas entre « Partir » et l'introduction, ou il
+         coupait la lecture et touchait le paragraphe suivant. -->
+    <p id="ouvVersion">v34 · 8 août</p>
+
+    <!-- l'aide a l'installation, en fin de page : c'est une action unique,
+         elle n'a pas a couper la lecture du carnet. -->
+    <div id="ouvInstall" hidden>
+      <p id="ouvInstT"></p>
+      <p id="ouvInstC"></p>
+      <div id="ouvInstB">
+        <button id="ouvInstOk" type="button" hidden></button>
+        <button id="ouvInstNon" type="button"></button>
+      </div>
     </div>
   </div>
 </div>
@@ -1731,7 +1770,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=32";
+var VER = "?v=34";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -6582,7 +6621,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v32 · 8 août · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v34 · 8 août · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
