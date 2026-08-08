@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 151)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 152)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,29 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🏰 SESSION 152 · LINGUAE (08/08) — BURGHLEY, LA 30ᵉ ÉTAPE : LE CHAPITRE CROSS EST NÉ (v17)
+
+La passation S147 est exécutée. **Burghley (Angleterre) rejoint le voyage juste après Badminton** — les deux monuments anglais se répondent : Badminton apprend *l'événement*, Burghley apprend *le terrain*.
+
+### ✅ `hype-lingo-lex-cross.js` — 12 notions, six langues d'emblée
+Les obstacles : le piano (**the steps**), le trakehner, la table, le coin (**the corner**), le fossé (**the ditch** — qu'on ne regarde jamais), le rondin (**the log**, celui de Burghley), la haie (**the brush**, et le bullfinch qu'on traverse). L'équipement : les crampons (**the studs**), la sangle bavette (**the stud girth**), la toque (**the silk / hat cover**), le numéro du cheval (**the bridle number**), le chronomètre (**the stopwatch**). 4 phrases courtes (règle des 7 mots déjà appliquée), japonais à espaces, doutes natifs signalés en tête (piano/steps, silk, orthographes).
+
+### ✅ Intégration `lingo.html`
+Entrée ETAPES une-ligne après badminton (`souv:"Une paire de crampons"`, `ic:"fer"`, `forme:"manoir"`) · `ETAPE_SRC.burghley:[["cross",1]]` · balise script · `ACCUEIL_CHAP.cross` ×6. Banc par mesure : l'étape existe, `chapVirtuel('burghley')` rend 12 mots, aucune erreur JS. Ni carte ni fond poussés : les replis existants couvrent (fond → carte → ciel).
+
+### ✅ L'entrée « le format » ajoutée à Badminton (concours, leçon 2)
+ODE / three-day event · **CCI-S / CCI-L, ex-CIC/CCI renommés 2019** (les vieux sigles s'entendent encore — la note l'apprend) · étoiles 1★–5★, Badminton = 5★. Concours passe à **43 notions**, `?l=4`. 🔴 L'ancre de S152-interrompue a été retrouvée en lisant la vraie fin du fichier sur disque (le `**` du gras cassait l'ancre supposée).
+
+Marqueur **v17 · 8 août**. À pousser : `lingo.html` + `hype-lingo-lex-cross.js` + `hype-lingo-lex-concours.js`.
+
+### ▶️ Reprise immédiate à la prochaine session (re-validé par Blandine ce jour)
+1. **Phrases simplifiées — 7 mots max ×6 langues** sur les cibles inventoriées du tronc. 2. **« Sans le son »** : bouton 🔇 sur chaque exercice écouter/dire → équivalent visuel, réglage mode silencieux, et **« dire » dès le niveau 2** (aujourd'hui quasi invisible, niveau 3 seulement).
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 

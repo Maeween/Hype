@@ -520,7 +520,22 @@ window.HYPE_LINGO_LEX.concours = {
           es:"La frase más útil de todo el capítulo, en las seis lenguas: **bravo, bonito recorrido**. Decírsela a alguien que acaba de salir de pista abre más puertas en una cuadra extranjera que cualquier clasificación. En Gran Bretaña se dice simplemente **« well ridden ! »**.",
           it:"La frase più utile di tutto il capitolo, nelle sei lingue: **bravo, bel percorso**. Dirla a qualcuno appena uscito dal campo apre più porte in una scuderia straniera di qualsiasi classifica. In Gran Bretagna si dice semplicemente **« well ridden ! »**.",
           de:"Der nützlichste Satz des ganzen Kapitels, in allen sechs Sprachen: **Bravo, schöne Runde**. Ihn jemandem zu sagen, der gerade vom Platz kommt, öffnet in einem fremden Stall mehr Türen als jede Platzierung. In Großbritannien sagt man schlicht **« well ridden ! »**.",
-          ja:"この章でいちばん役に立つひと言。六言語すべてで — **お見事、いい走行でしたね**。馬場から出てきたばかりの人にかけるその言葉は、どんな成績よりも、外国の厩舎の扉を開いてくれます。イギリスならただ **« well ridden ! »** と。" } }
+          ja:"この章でいちばん役に立つひと言。六言語すべてで — **お見事、いい走行でしたね**。馬場から出てきたばかりの人にかけるその言葉は、どんな成績よりも、外国の厩舎の扉を開いてくれます。イギリスならただ **« well ridden ! »** と。" } },
+
+  /* ---- ajout du 8 août 2026 (passation S147, demande de Blandine :
+     « il faut aussi différencier 3 days event etc, il y a CIC et CCI
+     aussi ») : les formats du concours complet, en une seule notion. ---- */
+
+  { ref:"formats-complet", lecon:2, coll:"concours",
+    mots:{ fr:{m:"le format"}, en:{m:"the format", p:"for-matt"},
+           es:{m:"el formato"}, it:{m:"il formato"},
+           de:{m:"das Format"}, ja:{m:"競技形式", p:"kyōgi keishiki"} },
+    def:{ fr:"Le complet se court en un jour (**ODE**, one-day event) ou en trois (**le three-day event**). En international : **CCI-S** (court) et **CCI-L** (long) — ⚠️ les anciens sigles **CIC/CCI**, renommés en 2019, s'entendent encore partout. La difficulté se lit aux étoiles, de 1★ à 5★ : Badminton est un 5★, il n'en existe qu'une poignée au monde.",
+          en:"Eventing runs over one day (**ODE**, one-day event) or three (**the three-day event**). Internationally: **CCI-S** (short) and **CCI-L** (long) — the old labels **CIC/CCI**, renamed in 2019, are still heard everywhere. Difficulty reads in stars, 1★ to 5★: Badminton is a 5★, and there is only a handful in the world.",
+          es:"El completo se corre en un día (**ODE**, one-day event) o en tres (**el three-day event**). En internacional: **CCI-S** (corto) y **CCI-L** (largo) — ⚠️ las siglas antiguas **CIC/CCI**, renombradas en 2019, aún se oyen en todas partes. La dificultad se lee en estrellas, de 1★ a 5★: Badminton es un 5★, y solo hay un puñado en el mundo.",
+          it:"Il completo si corre in un giorno (**ODE**, one-day event) o in tre (**il three-day event**). In internazionale: **CCI-S** (corto) e **CCI-L** (lungo) — ⚠️ le vecchie sigle **CIC/CCI**, rinominate nel 2019, si sentono ancora ovunque. La difficoltà si legge nelle stelle, da 1★ a 5★: Badminton è un 5★, e ne esiste una manciata al mondo.",
+          de:"Die Vielseitigkeit läuft an einem Tag (**ODE**, one-day event) oder an dreien (**das Three-Day-Event**). International: **CCI-S** (kurz) und **CCI-L** (lang) — ⚠️ die alten Kürzel **CIC/CCI**, 2019 umbenannt, hört man noch überall. Die Schwierigkeit steht in Sternen, 1★ bis 5★: Badminton ist ein 5★ — davon gibt es weltweit eine Handvoll.",
+          ja:"総合馬術は一日で行う **ODE**（ワンデイイベント）と、三日間の **three-day event** があります。国際競技では **CCI-S**（ショート）と **CCI-L**（ロング）— ⚠️ 2019年に改称された旧称 **CIC/CCI** も、現場ではまだあちこちで聞こえます。難易度は 1★ から 5★ の星の数で読みます。バドミントンは 5★ — 世界に一握りしかない格付けです。" } }
   ],
 
   /* ---- phrases complètes ---- */

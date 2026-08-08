@@ -1280,7 +1280,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v16 · 8 août</p>
+    <p id="ouvVersion">v17 · 8 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1352,7 +1352,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-cours.js?l=1"></script>
 <script src="hype-lingo-lex-dressage.js?l=2"></script>
 <script src="hype-lingo-lex-obstacle.js?l=2"></script>
-<script src="hype-lingo-lex-concours.js?l=3"></script>
+<script src="hype-lingo-lex-concours.js?l=4"></script>
+<script src="hype-lingo-lex-cross.js"></script>
 <script src="hype-lingo-lex-urgences.js?l=1"></script>
 <!-- Le poney : chapitre créé le 5 août 2026 pour Lamotte-Beuvron.
      Six de ses dix entrées sont des RAPPELS partageant le `ref` d'entrées
@@ -1458,7 +1459,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=16";
+var VER = "?v=17";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -1513,6 +1514,7 @@ var ETAPES = [
  {ref:"windsor",   ch:"Le dressage",  v:"Windsor",     nat:"Angleterre",     h:"00 h 30", ciel:["#05090F","#0B1220"], forme:"chateau",  souv:"La lettre A",                  ic:"lettre"},
  {ref:"hickstead", ch:"L'obstacle",   v:"Hickstead",   nat:"Angleterre",     h:"01 h 40", ciel:["#060B12","#0D1524"], forme:"obstacles",souv:"Un fanion rouge",              ic:"fanion"},
  {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Une cocarde",                  ic:"cocarde"},
+  {ref:"burghley",  ch:"Le cross",     v:"Burghley",    nat:"Angleterre",     h:"02 h 55", ciel:["#0A1424","#16263C"], forme:"manoir",   souv:"Une paire de crampons",        ic:"fer"},
  {ref:"kildare",   ch:"Les urgences", v:"Kildare",     nat:"Irlande",        h:"04 h 10", ciel:["#0C1A2C","#20344B"], forme:"haras",    souv:"Un stéthoscope",               ic:"stetho"},
  {ref:"edimbourg", ch:"Les dialogues",v:"Édimbourg",   nat:"Écosse",         h:"05 h 25", ciel:["#16283F","#C58B45"], forme:"edim",     souv:"Un carnet de mots",            ic:"carnet"},
  /* ---- les huit destinations du tour du monde, ajoutées le 5 août 2026 ----
@@ -3759,6 +3761,7 @@ var ETAPE_SRC = {
   windsor:     [["dressage",1]],
   hickstead:   [["obstacle",1]],
   badminton:   [["concours",2]],
+  burghley:    [["cross",1]],
   kildare:     [["urgences",1]],
   edimbourg:   [["urgences",4]],
   saumur:      [["dressage",3]],
@@ -4513,6 +4516,7 @@ var COLL_NOM = {
   mots:{fr:"Les mots qui sauvent", en:"The words that save", es:"Las palabras que salvan", it:"Le parole che salvano", de:"Die Worte, die retten", ja:"命を救う言葉"}
 };
 var ACCUEIL_CHAP = {
+  cross:{fr:"Le terrain et son équipement : les obstacles fixes, les crampons, la toque, le chronomètre.", en:"The country and its kit: the fixed fences, the studs, the hat cover, the stopwatch.", es:"El terreno y su equipo: los obstáculos fijos, los tacos, la funda del casco, el cronómetro.", it:"Il terreno e il suo equipaggiamento: gli ostacoli fissi, i ramponi, la copertura del casco, il cronometro.", de:"Das Gelände und seine Ausrüstung: die festen Hindernisse, die Stollen, der Helmbezug, die Stoppuhr.", ja:"クロスの地形と装備 — 固定障害、スタッド、ヘルメットカバー、ストップウォッチ。"},
   /* `balade` : le chapitre du Morne. `arrivee` : celui de La Baule, qui
      n'avait AUCUN mot d'accueil depuis qu'elle est devenue l'étape 1 —
      `ACCUEIL_VILLE.labaule` pointait sur une clé absente de cette table,
