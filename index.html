@@ -35047,7 +35047,28 @@ function MemoryGalop({ paires, tr }) {
                     key: carte.id, onClick: () => toucher(carte),
                     style: { aspectRatio: "1/1", borderRadius: 12, overflow: "hidden", border: `1.5px solid ${estTrouvee ? COLORS.turquoise : COLORS.nuitBordure}`, background: visible ? (estTrouvee ? `${COLORS.turquoise}22` : COLORS.turquoise) : COLORS.nuitElevee, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: COLORS.nuit, opacity: estTrouvee ? 0.55 : 1, padding: 0, position: "relative" }
                 },
-                    visible && carte.src ? React.createElement("img", { src: carte.src, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" } })
+                    visible && carte.src ? React.createElement("img", { src: carte.src, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" },
+                        /* Un src peut exister et pourtant ne pas se charger : les cles k547-k554 et
+                           k615-k628 sont servies par de VRAIS FICHIERS de images/, et un fichier absent
+                           du depot affichait le carre au point d'interrogation du navigateur.
+                           Le garde-fou « paires.every(p => !!p.src) », qui grise un niveau incomplet,
+                           ne peut pas le voir : le src est bien present, c'est la ressource qui manque.
+                           On replie donc sur l'emoji du theme, exactement comme pour une paire sans src :
+                           la carte reste jouable et la partie n'est pas gachee. */
+                        onError: function (ev) {
+                            try {
+                                var n = ev.currentTarget || ev.target;
+                                if (n.dataset && n.dataset.replie === "1") return;   /* une seule fois */
+                                if (n.dataset) n.dataset.replie = "1";
+                                var par = n.parentNode; if (!par) return;
+                                n.style.display = "none";
+                                var sp = document.createElement("span");
+                                sp.textContent = carte.emoji || "\u2754";
+                                sp.style.fontSize = "52px";
+                                par.appendChild(sp);
+                                console.warn("[Hype] Memory : image absente -> " + carte.src);
+                            } catch (e) { }
+                        } })
                         : visible ? React.createElement("span", { style: { fontSize: 20 } }, carte.emoji)
                         : React.createElement("span", { style: { color: COLORS.grisTresDoux } }, "?"));
             })),
@@ -35353,7 +35374,28 @@ function MemoryPoneyGrille({ paires, numeroNiveau, onTermine, tr, forcerTout }) 
                     key: carte.id, onClick: () => toucher(carte),
                     style: { aspectRatio: "1/1", borderRadius: 14, overflow: "hidden", border: `1.5px solid ${estTrouvee ? COLORS.turquoise : COLORS.nuitBordure}`, background: visible ? (estTrouvee ? `${COLORS.turquoise}22` : COLORS.nuitClaire) : COLORS.nuitElevee, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, position: "relative", opacity: estTrouvee ? 0.6 : 1 }
                 },
-                    visible && carte.src ? React.createElement("img", { src: carte.src, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" } })
+                    visible && carte.src ? React.createElement("img", { src: carte.src, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" },
+                        /* Un src peut exister et pourtant ne pas se charger : les cles k547-k554 et
+                           k615-k628 sont servies par de VRAIS FICHIERS de images/, et un fichier absent
+                           du depot affichait le carre au point d'interrogation du navigateur.
+                           Le garde-fou « paires.every(p => !!p.src) », qui grise un niveau incomplet,
+                           ne peut pas le voir : le src est bien present, c'est la ressource qui manque.
+                           On replie donc sur l'emoji du theme, exactement comme pour une paire sans src :
+                           la carte reste jouable et la partie n'est pas gachee. */
+                        onError: function (ev) {
+                            try {
+                                var n = ev.currentTarget || ev.target;
+                                if (n.dataset && n.dataset.replie === "1") return;   /* une seule fois */
+                                if (n.dataset) n.dataset.replie = "1";
+                                var par = n.parentNode; if (!par) return;
+                                n.style.display = "none";
+                                var sp = document.createElement("span");
+                                sp.textContent = carte.emoji || "\u2754";
+                                sp.style.fontSize = "52px";
+                                par.appendChild(sp);
+                                console.warn("[Hype] Memory : image absente -> " + carte.src);
+                            } catch (e) { }
+                        } })
                         : visible ? React.createElement("span", { style: { fontSize: 52 } }, carte.emoji || "❔")
                         : React.createElement("span", { style: { color: COLORS.grisTresDoux, fontSize: 34 } }, "?"));
             })));
