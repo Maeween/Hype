@@ -10,7 +10,7 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 08/08/2026 (SESSION 111 · CHEMINS DIRECTS, CADRAGE MEMORY, TÉMOIN DE VERSION) — md5 `f5866e123ce8fc4825a71de5ec318b2e`, 9 127 282 octets. **`hype-cours-baby.js` md5 `bdcd692f0ca13be26583937a44e51e43`, 1 817 899 octets — À POUSSER.** **L'app affiche désormais sa version : « reprise 1.2 · baby 111 » sous Quoi de neuf.** Aucun SQL.**
+**Version actuelle de l'index.html : 08/08/2026 (SESSION 111 · CHEMINS DIRECTS, CADRAGE MEMORY, TÉMOIN DE VERSION) — md5 `0bec15cde7b3e253f23ce90293d27c97`, 9 127 282 octets. **`hype-cours-baby.js` md5 `bdcd692f0ca13be26583937a44e51e43`, 1 817 899 octets — À POUSSER.** **L'app affiche désormais sa version : « reprise 1.2 · baby 111 » sous Quoi de neuf.** Aucun SQL.**
 
 **Ancienne version (110) — 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
 
@@ -127,7 +127,7 @@ Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js
 
 ## SESSION 111 · CHEMINS DIRECTS, ET UN TÉMOIN DE VERSION POUR SORTIR DU DOUTE
 
-**index.html md5 `f5866e123ce8fc4825a71de5ec318b2e`, 9 127 282 octets.**
+**index.html md5 `0bec15cde7b3e253f23ce90293d27c97`, 9 127 282 octets.**
 **hype-cours-baby.js md5 `bdcd692f0ca13be26583937a44e51e43`, 1 817 899 octets.**
 
 ### LE TÉMOIN DE VERSION — la vraie leçon de la journée
@@ -200,6 +200,15 @@ seul le bouton d'action cède la place à une pastille de réussite. **19 élém
 `FinCheminBabyCarte` (3 626 octets) ne reçoit aujourd'hui que `nbTermines`, `totalCours`,
 `totalEtoiles` — **pas la liste des cours**. Il faudra lui passer `coursNiveau` depuis
 `CheminPoneyBaby` et ajouter la section « Ce que tu as appris ». **Non fait.**
+
+### RATTRAPAGE AU MOMENT DE LA PASSATION
+
+⚠️ **Le bump `HYPE_VERSION_APP` à `"1.2"` avait été PERDU** : il avait été appliqué, puis effacé
+par une restauration de l'index depuis une référence, en cours de session. Retrouvé en relisant
+l'état du fichier avant d'écrire la passation, et réappliqué.
+
+**Règle : après toute restauration depuis un fichier de référence, revérifier les modifications
+déjà appliquées.** Un `cp ref.html index.html` annule silencieusement tout ce qui précède.
 
 ### Contrôles passés
 
