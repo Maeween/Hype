@@ -30,13 +30,7 @@
      deplacement, pas avant — un scope errone empeche l'installation.
      ================================================================== -->
 <link rel="manifest" href="linguae.webmanifest">
-<!-- ⚠️ NOM CHANGE le 8 aout 2026 (suffixe -2). iOS met l'apple-touch-icon
-     en cache par ADRESSE et le garde meme apres remplacement du fichier :
-     Blandine voyait encore l'ancienne boussole dans « Sur l'ecran d'accueil »
-     alors que la nouvelle icone etait deployee. Un nom neuf ne peut pas etre
-     en cache. ⚠️ A REFAIRE (suffixe -3, -4...) a chaque changement d'icone :
-     `VER` ne fonctionne pas sur un apple-touch-icon. -->
-<link rel="apple-touch-icon" href="apple-touch-icon-linguae-2.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-linguae.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -253,17 +247,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    ici : sans lui, l'image ne se voit plus et la liste remonte d'un coup. */
 #inOrigT{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;
  color:rgba(244,247,250,.4);text-align:center;margin:34px 0 10px}
-/* le bloc image : un objet net, pose au centre, sans voile */
-#inBloc{position:relative;margin:26px 0 0;border-radius:20px;overflow:hidden;
- box-shadow:0 40px 90px -40px rgba(0,0,0,.92), 0 0 0 1px rgba(255,255,255,.06)}
-#inBloc img{display:block;width:100%;height:auto}
-#inBloc::before{content:"";position:absolute;left:-8%;right:-8%;top:20%;bottom:20%;
- z-index:-1;background:radial-gradient(60% 50% at 50% 50%,rgba(32,217,245,.12),transparent 70%)}
-#inBlocLgd{font-size:9px;letter-spacing:.22em;text-transform:uppercase;
- color:rgba(244,247,250,.3);text-align:center;margin:10px 0 0}
-/* ⚠️ 40vh RAMENE A 0 : le creux n'a plus de raison d'etre, l'image occupe
-   desormais le milieu de la page. C'etait le vide signale par Blandine. */
-#inOrigine{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 0 30px}
+#inOrigine{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 0 40vh}
 #inOrigine button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
  border-radius:12px;padding:6px 9px;font-size:21px;line-height:1;cursor:pointer}
 #inOrigine button.actif{border-color:rgba(32,217,245,.65);
@@ -271,16 +255,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .pts{margin:0 0 30px}
 .pt{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)}
 .pt:last-child{border-bottom:0}
-/* ⚠️ LISIBILITE, 8 aout 2026 — MESUREE avant d'etre corrigee, comme la
-   regle du SUIVI l'exige. Contraste du gris #8996A2 sur le noir #060709 :
-   6,67 : 1, donc DEJA conforme (AA demande 4,5). Le coupable etait bien la
-   TAILLE, pas la couleur — deux fois sur trois, comme note. On monte donc
-   les corps de 14 -> 15,5 et de 12,5 -> 13,5, et on eclaircit quand meme
-   le gris a #AEBAC6 (10,21 : 1) car ces lignes sont longues et lues une
-   seule fois. ⚠️ Ne pas descendre sous 13 px sur un texte de deux lignes. */
-.pt b{display:block;font-size:15.5px;font-weight:600;line-height:1.45}
-.pt i{display:block;font-style:normal;font-size:13.5px;line-height:1.7;color:#AEBAC6;
- margin-top:6px}
+.pt b{display:block;font-size:14px;font-weight:600;line-height:1.4}
+.pt i{display:block;font-style:normal;font-size:12.5px;line-height:1.65;color:var(--gris);
+ margin-top:5px}
 #inSuite,#dsListe button{font-family:inherit}
 #inSuite{display:block;width:100%;padding:16px 20px;font-size:12.5px;font-weight:600;
  letter-spacing:.13em;text-transform:uppercase;color:#060709;background:var(--turquoise);
@@ -403,31 +380,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    nettoyage à part, à faire quand plus rien ne le lira.
    ================================================================== */
 #rail,#hud,#outils,#bas{opacity:0;pointer-events:none;visibility:hidden}
-/* ⚠️ z-index 12 -> 41 le 8 aout 2026. Blandine : « il est passe ou mon
-   globe ? ». Il n'avait pas disparu : il etait ENTERRE. Le carnet
-   (#ouverture) est en z-index 40 depuis qu'il est devenu la racine le
-   7 aout ; ce bouton restait a 12, donc dessous. Mesure faite :
-   `elementFromPoint` au centre du bouton renvoyait `ouverture` — present,
-   opacite 1, et intouchable. Valeurs identiques dans la v20 du matin :
-   le defaut est anterieur, il vient du court-circuit du chemin de nuit,
-   ou le bouton a ete SORTI de #outils sans que son z-index soit remonte.
-   41 est la meme valeur que #sprint et #collection, passes ce jour-la
-   pour exactement la meme raison. */
-/* ⚠️ DESCENDU EN BAS A DROITE le 8 aout 2026. Mesure : le bouton occupait
-   12 -> 44 px et le label du carnet 30 -> 41 px — ils se recouvraient
-   exactement, d'ou « le bouton du globe passe par-dessus mon titre ». En
-   bas a droite il ne croise aucun texte, et il reste atteignable au pouce
-   sans remonter la page. */
-/* ⚠️ FONDU DANS « PARTIR » le 8 aout 2026, decision de Blandine : « fonds-le
-   dans Partir ». Il y avait DEUX portes vers le meme ecran — ce bouton
-   flottant et le bouton « Partir » du carnet — et la premiere recouvrait le
-   titre. `#ouvPartir` appelle deja `ouvrirGlobe()` : une seule porte suffit.
-   ⚠️ L'ELEMENT ET SON ECOUTEUR SONT CONSERVES, seulement masques. Raison
-   historique a ne pas oublier : ce bouton avait ete cree parce que masquer
-   le chemin de nuit avait supprime la SEULE porte du globe (ecran vide au
-   lancement). Le jour ou « Partir » bougerait, il suffit de retirer ce
-   `display:none` pour retrouver une porte de secours. */
-#bGlobe{display:none;position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom) + 16px);z-index:41;
+#bGlobe{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 12px);z-index:12;
   padding:10px 15px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
   font-weight:600;color:var(--turquoise);background:rgba(32,217,245,.10);
   border:1px solid rgba(32,217,245,.4);border-radius:999px}
@@ -507,30 +460,21 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  margin:14px 0 0}
 #ouvDebut /* le bouton de changement de langue : même dessin qu'avant, plus un
    soulignement discret pour qu'on devine qu'il se touche */
-/* ⚠️ Le marqueur sert a Blandine, pas aux cavalieres : il descend en pied
-   de page avec le bandeau, et non plus entre « Partir » et l'introduction.
-   Marge du haut reduite : il flottait a 10 px sous un bouton de 47 px. */
-#ouvVersion{font-size:9px;letter-spacing:.14em;text-transform:uppercase;
- color:rgba(244,247,250,.22);text-align:center;margin:26px 0 0}
-/* l'aide a l'installation : une surface de verre fume, jamais une pub */
-#ouvInstall{margin:22px auto 0;max-width:420px;padding:14px 16px 12px;
- border:1px solid rgba(32,217,245,.22);border-radius:16px;
- background:linear-gradient(160deg,rgba(32,217,245,.07),rgba(10,14,18,.6));
- text-align:center}
-#ouvInstall[hidden]{display:none}
-#ouvInstT{margin:0;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.04em}
-#ouvInstC{margin:7px 0 0;font-size:11.5px;line-height:1.6;color:#9AA8B4}
-#ouvInstB{display:flex;justify-content:center;gap:10px;margin-top:11px;flex-wrap:wrap}
-#ouvInstB button{border:0;font:inherit;cursor:pointer;border-radius:999px;
- font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 16px}
-#ouvInstOk{background:var(--turquoise);color:#060709;font-weight:600}
-#ouvInstOk[hidden]{display:none}
-#ouvInstNon{background:none;color:#7C8894;border-bottom:1px dashed rgba(255,255,255,.16)!important;
- border-radius:0!important;padding:2px 0!important}
+/* ⚠️ RENDU LISIBLE le 8 aout 2026 : Blandine deploie depuis un telephone et
+   doit pouvoir lire d'un coup d'oeil ce qui tourne. Il etait a 28 % de
+   blanc sur du noir — invisible en plein jour. Blanc franc, corps 11. */
+#ouvVersion{font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+ color:rgba(244,247,250,.92);text-align:center;margin:14px 0 0}
 #ouvLangPhrase{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
  color:#C3D0DA;margin:14px 0 8px}
 /* la paire de langues : je lis -> j'apprends (v22) */
-#ouvPaire{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 0 16px}
+/* ⚠️ ECARTES le 8 aout 2026, demande de Blandine : « on pourrait pousser
+   plus a gauche et plus a droite la langue dans laquelle on lit et celle
+   qu'on apprend ». `space-between` dans une largeur bornee : les deux
+   drapeaux vont aux bords, la fleche reste au centre. La largeur est bornee
+   (et non 100 %) pour qu'ils ne collent pas aux marges de l'ecran. */
+#ouvPaire{display:flex;align-items:center;justify-content:space-between;
+ gap:9px;margin:0 auto 18px;max-width:300px}
 #ouvPaire button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
  border-radius:14px;padding:7px 12px 6px;cursor:pointer;display:flex;flex-direction:column;
  align-items:center;gap:3px;min-width:76px}
@@ -629,63 +573,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    impossible, pas seulement improbable. Le JS n'a pas changé, la classe
    `ouv` fait toujours tout le travail.
    ⚠️ NE PAS RÉINTRODUIRE `rotateY` ici. */
-/* ==================================================================
-   PERFORMANCE (8 aout 2026) — Blandine : « on lag a mort ».
-   MESURE AVANT : 15,2 ms par image pendant le scroll du carnet sur un
-   Chromium de BUREAU. La limite des 60 images/s est a 16,7 : on etait donc
-   deja a la limite sur une machine de bureau, donc effondre sur iPhone.
-   1322 noeuds dans la page, 656 rien que dans le carnet (3857 px de haut),
-   et 12 animations INFINIES qui tournaient en permanence.
-   ⚠️ Amplificateur constate sur ses captures : batterie a 7 %. En mode
-   economie d'energie iOS bride le rafraichissement — le lag devient
-   spectaculaire sans qu'une ligne de code ait change.
-   ================================================================== */
-
-/* 1 · ⚠️ `content-visibility:auto` A ETE POSE PUIS RETIRE le 8 aout 2026.
-   C'ETAIT UNE ERREUR, ET ELLE A CASSE DEUX CHOSES A LA FOIS :
-   · LA GRILLE. Blandine : « on voit plus deux images cote a cote mais une
-     et demie ». Hors ecran, l'element prend la taille de
-     `contain-intrinsic-size` au lieu de sa taille reelle : la grille
-     mesure ses colonnes sur une hauteur factice et deborde.
-   · LE CHARGEMENT. Blandine : « c'est meme plus long a charger les images
-     qu'avant » — exact, et c'est la definition de la propriete : elle
-     DIFFERE le rendu ET le chargement de ce qui n'est pas visible. Sur une
-     page qu'on parcourt de haut en bas, on ne gagne rien, on retarde tout.
-   ⚠️ NE PAS LA REMETTRE sur `.vc`. Sur une grille d'images parcourue au
-   doigt, ce n'est pas le bon outil. */
 .vc{position:relative;aspect-ratio:3/4;background:none;padding:0;
  width:100%;text-align:left}
-
-/* 2 · LES ANIMATIONS DES ECRANS FERMES S'ARRETENT.
-   Une animation CSS ne s'interrompt PAS parce que son parent est masque :
-   le compositeur continue de travailler pour des pixels que personne ne
-   voit. Douze animations infinies tournaient ainsi en permanence, dont
-   celles de trois ecrans fermes. Aucun changement visible : quand l'ecran
-   revient, l'animation repart.
-   ⚠️ `!important` necessaire : ces animations sont declarees sur l'element
-   lui-meme, et une declaration normale ne bat pas une autre declaration
-   normale plus specifique. */
-#intro:not(.on) #inFondImg,
-#lecon:not(.on) #lcFondImg,
-#sprint:not(.on) #spFondImg,
-#arrivee:not(.on) #fvImg,
-#arrivee:not(.on) #fvBrume,
-#arrivee:not(.on) .fv-p,
-#arrivee:not(.on) .lgReflet i,
-#arrivee:not(.on) .lgMed .anneau{animation:none!important}
-/* le carnet est la racine : ses fonds ne s'animent que lorsqu'il est
-   reellement au premier plan (`.parti` = un autre ecran a pris la main). */
-#ouverture.parti #ouvFondImg,
-#ouverture.parti #ouvFondBrume{animation:none!important}
-
-/* 3 · ET ON RESPECTE LE REGLAGE DU SYSTEME.
-   Une cavalière qui a active « reduire les animations » sur son telephone
-   le fait souvent pour une raison — mal des transports, migraines,
-   telephone lent. On la croit. */
-@media (prefers-reduced-motion: reduce){
-  #inFondImg,#lcFondImg,#spFondImg,#fvImg,#fvBrume,.fv-p,
-  #ouvFondImg,#ouvFondBrume,.lgReflet i,.lgMed .anneau{animation:none!important}
-}
 .vc .vflip{position:absolute;inset:0}
 .vc .vf{position:absolute;inset:0;border-radius:13px;overflow:hidden;
  border:1px solid rgba(255,255,255,.09);
@@ -713,23 +602,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    desormais une carte postale NETTE, exposee normalement. Le 1,95 servait a
    rattraper un flou volontairement assombri a 40 de luminance. Le laisser
    aurait delave les cartes nettes. */
-/* ⚠️ LE `filter` A ETE RETIRE le 8 aout 2026 — c'est LA cause du lag, pas
-   les animations. Il y a 31 cartes dans le carnet, donc 31 elements
-   `.vimg` portant chacun `filter:brightness() saturate()`. Un filtre force
-   la creation d'une COUCHE COMPOSITE par element et son recalcul a chaque
-   image pendant le defilement : trente-et-une couches filtrees sur un
-   telephone, c'est le lag decrit par Blandine.
-   La correction visuelle qu'il apportait (+12 % de luminosite pour
-   rattraper les cartes assombries) est reprise SANS COUT par le voile
-   `.vvoile` juste en dessous, allege d'autant.
-   ⚠️ Si une carte parait terne apres ce changement, la corriger DANS LE
-   FICHIER `.webp`, jamais par un filtre CSS repete 31 fois. */
 .vc .vrec .vimg{position:absolute;inset:0;background-size:cover;
- background-position:center 34%}
-/* voile allege de 4 points a chaque etage : compense exactement la
-   luminosite que le `filter` retire apportait, sans couche composite. */
+ background-position:center 34%;filter:brightness(1.12) saturate(1.06)}
 .vc .vrec .vvoile{position:absolute;inset:0;
- background:linear-gradient(180deg,rgba(6,7,9,.06) 0%,rgba(6,7,9,.30) 46%,rgba(6,7,9,.78) 100%)}
+ background:linear-gradient(180deg,rgba(6,7,9,.10) 0%,rgba(6,7,9,.34) 46%,rgba(6,7,9,.82) 100%)}
 .vc .vrec .vhalo{position:absolute;left:-30%;top:-24%;width:160%;height:90%;
  background:radial-gradient(46% 42% at 50% 50%,rgba(32,217,245,.11),transparent 72%)}
 .vc .vn{position:absolute;left:10px;top:8px;font-family:'Cinzel',serif;font-size:11px;
@@ -789,10 +665,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.05)}
 #ouvCollection{color:var(--or);border:1px solid rgba(212,175,55,.4)}
 #ouvSprint{color:var(--turquoise);border:1px solid rgba(32,217,245,.4)}
-/* ⚠️ RESPIRATION AJOUTEE le 8 aout 2026 : entre la paire de langues, le
-   mode sans le son, « Partir » et le marqueur, les marges venaient de trois
-   epoques differentes et les blocs se touchaient. Une seule valeur ici. */
-#ouvPartir{margin:30px 0 34px;padding:16px 44px;border-radius:15px;background:var(--turquoise);color:#060709;
+#ouvPartir{padding:16px 44px;border-radius:15px;background:var(--turquoise);color:#060709;
  font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
  box-shadow:0 16px 42px -18px rgba(32,217,245,.95)}
 #ouvPasser,#ouvSuite{position:absolute;z-index:3;opacity:0;transition:opacity .4s}
@@ -1455,18 +1328,6 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <!-- le choix de la langue d'origine, des la page d'entree (demande de
          Blandine) : c'est la premiere chose a regler, avant la destination.
          Construit depuis LANGUES_UI par rangeeOrigine(), jamais en dur. -->
-    <!-- ⚠️ L'IMAGE EN BLOC (8 aout 2026, variante 3 choisie sur maquette).
-         Blandine : « je pensais que tu allais la mettre au milieu de la page
-         ou il n'y a rien ». Le vide venait de moi : le 40vh qui faisait
-         respirer la page etait accroche a la citation retiree en v23.
-         ⚠️ AUCUN VOILE, AUCUN FILTRE sur cette image — regle absolue de la
-         bible. Le fond de page reste sombre, le texte l'entoure et ne passe
-         JAMAIS dessus (c'est ce qui a fait ecarter la variante 2, dont le
-         voile allege restait un voile).
-         ⚠️ `?v=` ajoute en JS plus bas : un attribut src statique ne peut
-         pas porter VER, et le fichier changera. -->
-    <div id="inBloc"><img id="inBlocImg" alt=""></div>
-    <p id="inBlocLgd">Le tour du monde du cheval</p>
     <p id="inOrigT" data-t="origineT">Je lis en</p>
     <div id="inOrigine" aria-label="Choisir sa langue de lecture"></div>
     <div class="pts">
@@ -1540,32 +1401,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     </div>
     <div id="ouvDrapeaux" aria-label="Choisir sa langue de lecture"></div>
     <button id="ouvMuet" type="button">🔇 mode sans le son : non</button>
-    <!-- la porte principale du voyage, remontee ici le 8 aout 2026 -->
-    <button id="ouvPartir" data-t="partir">Partir</button>
     <!-- ⚠️ MARQUEUR DE VERSION, 7 aout 2026. Blandine deploie depuis un
          telephone et n'a aucun moyen de savoir quelle version tourne
          reellement. Trois fois cette semaine, un defaut deja corrige a ete
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-
-
-    <!-- ⚠️ AIDE A L'INSTALLATION (8 aout 2026). Demande de Blandine :
-         « il faut aussi un truc qui aide a installer sur la page d'accueil
-         comme dans Hype ». Je n'ai PAS `index.html` dans ce fil : ce
-         bandeau est ecrit d'apres le comportement normal d'une PWA, il ne
-         copie pas celui de Hype. A comparer sur le telephone.
-         · Cache s'il tourne DEJA en mode installe (navigator.standalone
-           sur iOS, display-mode: standalone ailleurs).
-         · Cache s'il tourne DANS Hype (en iframe) : on n'installe pas un
-           module depuis l'application qui le contient.
-         · iOS ne fournit aucune invite programmable : on affiche donc le
-           geste exact. Android/Chrome : vrai bouton via beforeinstallprompt.
-         · Refus memorise (`hype_lingua_install`), on ne harcele pas. -->
-    <!-- ⚠️ Le bandeau d'installation a ete DEPLACE en bas de page (voir
-         apres #ouvAutres). Il s'inserait entre « Partir » et l'introduction,
-         donc au milieu du chemin de lecture, pour une action qui ne se fait
-         qu'une fois. Blandine : « tout s'entasse ». -->
+    <p id="ouvVersion">v30 · villes</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1582,34 +1424,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       vétérinaire » à l'étranger ne se monnaie pas.</p>
     </div>
 
-    <!-- ⚠️ « Partir » A ETE REMONTE le 8 aout 2026, sous la paire de langues.
-         Il etait ICI, en bas du carnet : mesure au banc, a 4719 px du haut
-         d'une page qui en fait pres de 4000 — il fallait scroller tout le
-         carnet pour trouver la porte principale du voyage. Le bouton lui-meme
-         n'a pas change, seule sa place dans le document. -->
+    <button id="ouvPartir" data-t="partir">Partir</button>
     <!-- ⚠️ AJOUTEES le 7 aout 2026 avec le court-circuit du chemin de nuit :
          la collection et le sprint n'etaient joignables QUE depuis l'ecran
          du chemin. Le carnet etant devenu la racine, il porte leurs portes. -->
     <div id="ouvAutres">
       <button id="ouvCollection" data-t="laCollection">La collection</button>
       <button id="ouvSprint" data-t="sprint60">Sprint · 60 s</button>
-    </div>
-
-    <!-- ⚠️ MARQUEUR DE VERSION, descendu ici le 8 aout 2026. Il sert a
-         Blandine pour savoir ce qui tourne, pas aux cavalieres : sa place
-         est en pied de page, pas entre « Partir » et l'introduction, ou il
-         coupait la lecture et touchait le paragraphe suivant. -->
-    <p id="ouvVersion">v34 · 8 août</p>
-
-    <!-- l'aide a l'installation, en fin de page : c'est une action unique,
-         elle n'a pas a couper la lecture du carnet. -->
-    <div id="ouvInstall" hidden>
-      <p id="ouvInstT"></p>
-      <p id="ouvInstC"></p>
-      <div id="ouvInstB">
-        <button id="ouvInstOk" type="button" hidden></button>
-        <button id="ouvInstNon" type="button"></button>
-      </div>
     </div>
   </div>
 </div>
@@ -1770,7 +1591,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=34";
+var VER = "?v=28r";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -1790,9 +1611,6 @@ var LG_DRAPEAU = {fr:"\uD83C\uDDEB\uD83C\uDDF7", en:"\uD83C\uDDEC\uD83C\uDDE7",
   es:"\uD83C\uDDEA\uD83C\uDDF8", it:"\uD83C\uDDEE\uD83C\uDDF9",
   de:"\uD83C\uDDE9\uD83C\uDDEA", ja:"\uD83C\uDDEF\uD83C\uDDF5"};
 /* le choix explicite fait DANS Linguae. Null = on suit le pont Hype. */
-/* vraie a la premiere visite : la presentation attend la fin du film.
-   Declaree ICI, avant l'IIFE d'ouverture qui la lit et l'ecrit. */
-var INTRO_APRES = false;
 var LECTURE = null;
 try{ var _lec = localStorage.getItem("hype_lingua_lecture");
      if(LANGUES_UI.indexOf(_lec) >= 0) LECTURE = _lec; }catch(e){}
@@ -3043,21 +2861,30 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
     {cle:"elevage",  fr:"parler élevage",                 en:"talk breeding"},
     {cle:"cross",    fr:"marcher un cross",               en:"walk a cross-country course"}
   ];
+  /* ⚠️ L'INDEX EST REMONTE (8 aout 2026, v30). partirVersVille() prend un
+     index dans ETAPES, pas une ref : l'ancienne version le jetait, ce qui
+     obligeait a passer par ouvrirLecon(ref) — et cette porte-la s'ouvre
+     DERRIERE le carnet. Voir le commentaire du bouton ci-dessous. */
   function villesDe(cle){
-    return ETAPES.filter(function(e){
+    var out=[];
+    ETAPES.forEach(function(e,i){
       var src=ETAPE_SRC[e.ref]||[];
-      return src.some(function(x){ return x[0]===cle; });
-    }).map(function(e){ return {ref:e.ref, nom:eV(e)}; });
+      if(src.some(function(x){ return x[0]===cle; })) out.push({ref:e.ref, nom:eV(e), i:i});
+    });
+    return out;
   }
   var pliOuvert=false;
+  /* libelle du plieur : il etait ecrit deux fois a l'identique, donc a
+     retoucher deux fois. Une seule source, et la traduction se posera ici. */
+  function libelleGuide(){ return langueUI()==="en" ? "How does it work ?" : "Comment ça marche ?"; }
   var pb=document.createElement("button"); pb.id="ouvGuideB"; pb.type="button";
-  pb.textContent=(langueUI()==="en"?"How does it work ?":"Comment ça marche ?")+"  +";
+  pb.textContent=libelleGuide()+"  +";
   var pz=document.createElement("div"); pz.id="ouvGuide";
   pb.addEventListener("click", function(){
     construireGuide();
     pliOuvert=!pliOuvert;
     pz.style.display=pliOuvert?"block":"none";
-    pb.textContent=(langueUI()==="en"?"How does it work ?":"Comment ça marche ?")+(pliOuvert?"  \u2212":"  +");
+    pb.textContent=libelleGuide()+(pliOuvert?"  \u2212":"  +");
   });
   var guideFait=false;
   function construireGuide(){
@@ -3074,7 +2901,21 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
     ligne.appendChild(el("b",{text:(uiG==="en"?g.en:g.fr)+" \u2192 "}));
     v.forEach(function(x,i){
       if(i) ligne.appendChild(document.createTextNode(" \u00b7 "));
-      ligne.appendChild(el("button",{class:"gVille", onclick:function(){ ouvrirLecon(x.ref); }}, x.nom));
+      /* ⚠️ CORRIGE (8 aout 2026, v30) : « ca n'a pas marche de cliquer sur les
+         villes ». Le clic marchait, la LECON s'ouvrait — mais #lecon est en
+         z-index 26 et le carnet #ouverture en 40, et rien n'escamotait le
+         carnet. La lecon se construisait derriere, invisible : bouton mort a
+         l'usage. ouvrirLecon() n'etait legitime que depuis la page d'arrivee.
+         3e occurrence du piege de la session 128.
+         REGLE : tout ecran ouvert depuis le carnet passe au-dessus de 40 ou
+         escamote le carnet. partirVersVille() fait le second, dans le bon
+         ordre (arrivee ouverte AVANT le masquage, lecon du flash, session 99).
+         On arrive dans la ville, la lecon s'ouvre de la — « la ville puis la
+         lecon », decision de Blandine. */
+      ligne.appendChild(el("button",{class:"gVille", onclick:function(){
+        if(pliOuvert){ pliOuvert=false; pz.style.display="none"; pb.textContent=libelleGuide()+"  +"; }
+        partirVersVille(x.i);
+      }}, x.nom));
     });
     pz.appendChild(ligne);
   });
@@ -4348,25 +4189,6 @@ var UI = {
    ja:"「下馬」と言われて、ドロップを飛んでしまわないように。"},                  // ??
  origineT:{fr:"Je lis en", en:"I read in", es:"Leo en", it:"Leggo in",
    de:"Ich lese", ja:"読む言語"},
- instT:{fr:"Garde Linguae sous la main", en:"Keep Linguae close by",
-   es:"Ten Linguae a mano", it:"Tieni Linguae a portata di mano",
-   de:"Linguae immer dabei", ja:"Linguae をすぐ開けるように"},
- instIos:{fr:"Touche « Partager » en bas de Safari, puis « Sur l'écran d'accueil ».",
-   en:"Tap Share at the bottom of Safari, then Add to Home Screen.",
-   es:"Toca «Compartir» abajo en Safari y luego «Añadir a inicio».",
-   it:"Tocca «Condividi» in basso in Safari, poi «Aggiungi a Home».",
-   de:"Tippe unten in Safari auf „Teilen“, dann „Zum Home-Bildschirm“.",
-   ja:"Safari 下部の「共有」から「ホーム画面に追加」を選んでください。"},
- instAndroid:{fr:"Ajoute Linguae à ton écran d'accueil, comme une application.",
-   en:"Add Linguae to your home screen, like an app.",
-   es:"Añade Linguae a tu pantalla de inicio, como una aplicación.",
-   it:"Aggiungi Linguae alla schermata Home, come un'app.",
-   de:"Füge Linguae zum Startbildschirm hinzu, wie eine App.",
-   ja:"アプリのように、ホーム画面に追加できます。"},
- instOk:{fr:"Installer", en:"Install", es:"Instalar", it:"Installa",
-   de:"Installieren", ja:"追加する"},
- instNon:{fr:"plus tard", en:"later", es:"más tarde", it:"più tardi",
-   de:"später", ja:"あとで"},
  traversee:{fr:"La Traversée", en:"The Crossing", es:"La Travesía", it:"La Traversata",
    de:"Die Überfahrt", ja:"旅路"},
  partageScore:{fr:"J'ai fait {score} sur {nom}. Mêmes dix mots, bats-moi : ",
@@ -4381,22 +4203,15 @@ var UI = {
     refusees (« ca fait site de rencontre ») ; les garder en reserve, meme
     debranchees, c'est risquer de les voir ressuscitees par une relecture
     distraite. Elles sont dans le SUIVI si besoin. NE PAS LES RECREER. */
- /* ⚠️ LE CHIFFRE RETIRE le 8 aout 2026. Blandine : « on aura plus de
-    langues, que ca joue pas sur le nombre de villes ». Un chiffre ecrit
-    dans une accroche se perime a la premiere langue ajoutee. Ne pas le
-    remettre — ni ici, ni ailleurs dans un texte vu par la joueuse. */
- pt1t:{fr:"Le vocabulaire équestre, dans toutes les langues", en:"Stable vocabulary, in every language",
-   es:"El vocabulario ecuestre, en todos los idiomas", it:"Il vocabolario equestre, in tutte le lingue",
-   de:"Reitvokabular, in allen Sprachen", ja:"馬術の言葉を、すべての言語で"},
- /* ⚠️ L'ENUMERATION RETIREE avec le chiffre : citer les six langues, c'est
-    ecrire le chiffre autrement. Le drapeau de la langue lue et la rangee
-    juste au-dessus le disent deja, et se mettent a jour tout seuls. */
- pt1d:{fr:"Le vrai, celui des écuries.",
-   en:"The real words — the ones used in the yard.",
-   es:"El de verdad, el de las cuadras.",
-   it:"Quello vero, quello delle scuderie.",
-   de:"Die echten Wörter, die im Stall fallen.",
-   ja:"厩舎で実際に使われる言葉。"},
+ pt1t:{fr:"Le vocabulaire équestre en six langues", en:"Stable vocabulary in six languages",
+   es:"El vocabulario ecuestre en seis idiomas", it:"Il vocabolario equestre in sei lingue",
+   de:"Reitvokabular in sechs Sprachen", ja:"六か国語の馬術用語"},
+ pt1d:{fr:"Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.",
+   en:"French, English, Spanish, Italian, German, Japanese — the real words, the ones used in the yard.",
+   es:"Francés, inglés, español, italiano, alemán, japonés: el de verdad, el de las cuadras.",
+   it:"Francese, inglese, spagnolo, italiano, tedesco, giapponese: quello vero, quello delle scuderie.",
+   de:"Französisch, Englisch, Spanisch, Italienisch, Deutsch, Japanisch — die echten Wörter, die im Stall fallen.",
+   ja:"フランス語、英語、スペイン語、イタリア語、ドイツ語、日本語。厩舎で実際に使われる言葉。"},
  /* Le compte est retire des textes le 6 aout 2026 : « tu peux meme retirer
     le chiffre, ca va evoluer ». Ne pas le remettre a chaque ville ajoutee —
     il y avait deja deux valeurs contradictoires en ligne (le repli HTML
@@ -4421,19 +4236,12 @@ var UI = {
  pt4t:{fr:"Savoir dire l'essentiel en cas d'urgence", en:"Say what matters in an emergency",
    es:"Saber decir lo esencial en una urgencia", it:"Saper dire l'essenziale in un'emergenza",
    de:"Im Notfall das Wichtigste sagen können", ja:"緊急時に必要なことを言えるように"},
- /* ⚠️ REECRIT le 8 aout 2026, formulation de Blandine : « pouvoir signaler
-    une urgence ou demander de l'aide est vital ». « Offert », « gratuit »,
-    « free » ont ete ecartes : ils attirent l'oeil sur le PRIX au moment
-    exact ou l'on parle d'un cheval qui boite, et ils contredisent
-    l'abonnement a venir. On dit la RAISON, pas l'avantage.
-    ⚠️ « en libre acces » (choix de Blandine) : « a disponibilite » n'existe
-    pas en francais, et « disponible » est un mot de catalogue. */
- pt4d:{fr:"Demander de l'aide peut être vital. Ce chapitre est en libre accès dans toutes les langues.",
-   en:"Asking for help can be vital. This chapter is open to everyone, in every language.",
-   es:"Pedir ayuda puede ser vital. Este capítulo es de acceso libre en todos los idiomas.",
-   it:"Chiedere aiuto può essere vitale. Questo capitolo è ad accesso libero in tutte le lingue.",
-   de:"Um Hilfe bitten zu können, kann lebenswichtig sein. Dieses Kapitel ist in allen Sprachen frei zugänglich.",
-   ja:"助けを求められることは、命に関わる。この章はすべての言語で自由に使える。"},
+ pt4d:{fr:"« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.",
+   en:"\u201CHe\u2019s lame\u201D, \u201Ccall the vet\u201D. This chapter is free, everywhere.",
+   es:"«Cojea», «llamad al veterinario». Este capítulo es gratis, en todas partes.",
+   it:"«Zoppica», «chiamate il veterinario». Questo capitolo è gratuito, sempre.",
+   de:"\u201EEr lahmt\u201C, \u201Eruft den Tierarzt\u201C. Dieses Kapitel ist überall kostenlos.",
+   ja:"「跛行している」「獣医を呼んで」。この章は、どの言語でも無料。"},
  pt5t:{fr:"Une collection à rapporter", en:"A collection to bring home",
    es:"Una colección para traer de vuelta", it:"Una collezione da portare a casa",
    de:"Eine Sammlung für den Heimweg", ja:"持ち帰るコレクション"},
@@ -4824,7 +4632,6 @@ function appliquerLangue(){
     /* la paire suit la destination choisie (v22). Protegee : appliquerLangue
        peut tourner avant que dessinerPaire soit atteinte. */
     try{ dessinerPaire(); }catch(e){}
-    try{ majInstall(); }catch(e){}   /* le bandeau suit la langue lue */
     document.title = NOM_MODULE+" · "+lg+" · "+T("traversee");
   }
 }
@@ -6621,7 +6428,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v34 · 8 août · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v30 · villes · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -6705,139 +6512,6 @@ if(S("inOrigine")) S("inOrigine").addEventListener("click", function(ev){
      ouverte, on la reconstruit pour que le filtre suive. */
   if(S("dest") && S("dest").classList.contains("on")){ try{ montrerDest(); }catch(e){} }
 });
-/* le bloc de la page d'entree : src pose en JS pour qu'il porte VER —
-   un attribut src ecrit dans le HTML ne peut pas la prendre. */
-if(S("inBlocImg")) S("inBlocImg").src = "lingua-bloc.webp" + VER;
-
-/* ==================================================================
-   L'AIDE A L'INSTALLATION (8 aout 2026)
-   Blandine : « il faut aussi un truc qui aide a installer sur la page
-   d'accueil comme dans Hype ». ⚠️ Je n'ai pas `index.html` dans ce fil :
-   ce bandeau suit le comportement normal d'une PWA, il ne recopie pas
-   celui de Hype. A comparer sur le telephone.
-   Quatre cas, et il se TAIT dans trois d'entre eux :
-     · deja installe        -> rien (navigator.standalone ou display-mode)
-     · dans Hype (iframe)   -> rien : on n'installe pas un module depuis
-                               l'application qui le contient
-     · refus memorise       -> rien (hype_lingua_install)
-     · iOS Safari           -> le geste exact, aucune invite programmable
-     · Android/Chrome       -> vrai bouton via beforeinstallprompt
-   ================================================================== */
-var INVITE_PWA = null;
-window.addEventListener("beforeinstallprompt", function(ev){
-  ev.preventDefault(); INVITE_PWA = ev; majInstall();
-});
-function dejaInstalle(){
-  try{
-    if(window.navigator.standalone === true) return true;               /* iOS */
-    if(window.matchMedia && matchMedia("(display-mode: standalone)").matches) return true;
-  }catch(e){}
-  return false;
-}
-function dansHype(){
-  try{ return window.parent !== window; }catch(e){ return true; }
-}
-function installRefuse(){
-  try{ return localStorage.getItem("hype_lingua_install") === "non"; }catch(e){ return false; }
-}
-function majInstall(){
-  var b = S("ouvInstall"); if(!b) return;
-  if(dejaInstalle() || dansHype() || installRefuse()){ b.hidden = true; return; }
-  var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent || "");
-  S("ouvInstT").textContent = T("instT");
-  S("ouvInstC").textContent = (INVITE_PWA && !iOS) ? T("instAndroid") : T("instIos");
-  S("ouvInstOk").textContent = T("instOk");
-  S("ouvInstOk").hidden = !(INVITE_PWA && !iOS);
-  S("ouvInstNon").textContent = T("instNon");
-  b.hidden = false;
-}
-if(S("ouvInstOk")) S("ouvInstOk").addEventListener("click", function(){
-  if(!INVITE_PWA) return;
-  INVITE_PWA.prompt();
-  INVITE_PWA.userChoice.then(function(){ INVITE_PWA = null; majInstall(); });
-});
-if(S("ouvInstNon")) S("ouvInstNon").addEventListener("click", function(){
-  try{ localStorage.setItem("hype_lingua_install","non"); }catch(e){}
-  S("ouvInstall").hidden = true;
-});
-majInstall();
-
-/* ==================================================================
-   LE RETOUR PAR GESTE (8 aout 2026)
-   Blandine : « quand je suis sur une page je veux toujours pouvoir aller
-   en arriere, on reste coince ». C'est le prix de l'installation : en mode
-   application il n'y a plus la barre de Safari, donc plus AUCUN bouton
-   retour, et les ecrans de Linguae sont des couches empilees sur une seule
-   page — le geste du systeme n'a rien a remonter.
-
-   ⚠️ GESTE DE BORD UNIQUEMENT : le doigt doit partir des 34 premiers
-   pixels a gauche. C'est la convention iOS, et surtout c'est ce qui evite
-   d'entrer en conflit avec ce qui existe deja au milieu de l'ecran — le
-   glissement du globe, le retournement des cartes, les tuiles du sprint.
-   Un swipe pris n'importe ou aurait casse trois ecrans.
-
-   ⚠️ PAS DE « EN AVANT ». Ces ecrans ne forment pas un historique mais une
-   PILE : refermer une lecon ne laisse rien a rouvrir. Promettre un geste
-   avant qui ne fait rien serait pire que son absence. Le bouton « Partir »
-   du carnet est le chemin en avant, et il est deja la.
-
-   ⚠️ ORDRE DE LA PILE : du plus haut au plus bas. Le premier ecran ouvert
-   trouve est celui qu'on ferme. `#depart` n'est pas dans la liste : c'est
-   une transition qui se termine seule.
-   ================================================================== */
-var PILE_RETOUR = [
-  {id:"duel",       fermer:function(){ if(typeof fermerDuel==="function") fermerDuel();
-                                       else S("duel").classList.remove("on"); }},
-  {id:"sprint",     fermer:function(){ fermerSprint(); }},
-  {id:"collection", fermer:function(){ fermerCollection(); }},
-  {id:"lecon",      fermer:function(){ fermerLecon(); montrerCarnet(); }},
-  {id:"arrivee",    fermer:function(){ fermerArrivee(); }},
-  {id:"globe",      fermer:function(){ fermerGlobe(); montrerCarnet(); }},
-  {id:"dest",       fermer:function(){ S("dest").classList.remove("on"); }},
-  {id:"intro",      fermer:function(){ /* la presentation n'est pas une impasse :
-     la refermer sans l'avoir quittee laisserait la joueuse sur un carnet
-     qu'elle n'a pas encore vu. On la marque vue et on passe. */
-     try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
-     S("intro").classList.remove("on"); }}
-];
-function retourEnArriere(){
-  for(var k=0;k<PILE_RETOUR.length;k++){
-    var el0 = S(PILE_RETOUR[k].id);
-    if(el0 && el0.classList.contains("on")){
-      try{ PILE_RETOUR[k].fermer(); }catch(e){}
-      return true;
-    }
-  }
-  return false;   /* deja sur le carnet : rien a remonter */
-}
-(function(){
-  var x0=null, y0=null, t0=0;
-  document.addEventListener("touchstart", function(ev){
-    if(ev.touches.length!==1){ x0=null; return; }
-    var t=ev.touches[0];
-    x0 = (t.clientX <= 34) ? t.clientX : null;   /* bord gauche seulement */
-    y0 = t.clientY; t0 = Date.now();
-  }, {passive:true});
-  document.addEventListener("touchend", function(ev){
-    if(x0===null) return;
-    var t=ev.changedTouches[0];
-    var dx = t.clientX - x0, dy = Math.abs(t.clientY - y0);
-    x0 = null;
-    /* horizontal franc, court, et pas un scroll en diagonale */
-    if(dx > 68 && dy < 56 && (Date.now()-t0) < 700) retourEnArriere();
-  }, {passive:true});
-  /* le bouton retour materiel d'Android, et le geste systeme quand il
-     existe : une entree d'historique factice a consommer. */
-  try{ history.pushState({lingua:1}, ""); }catch(e){}
-  window.addEventListener("popstate", function(){
-    var ferme = retourEnArriere();
-    try{ history.pushState({lingua:1}, ""); }catch(e){}
-    if(!ferme && window.HYPE_LINGO_HOST && HYPE_LINGO_HOST.quitter){
-      try{ HYPE_LINGO_HOST.quitter(); }catch(e){}
-    }
-  });
-})();
-
 rangeeOrigine();
 
 if(S("ouvLecture")) S("ouvLecture").addEventListener("click", function(){
@@ -6887,17 +6561,8 @@ S("dsRetour").addEventListener("click", function(){
      chaque changement — exactement la plainte de Blandine du 8 aout. */
   try{ saut = localStorage.getItem("hype_lingua_saut")==="1";
        if(saut) localStorage.removeItem("hype_lingua_saut"); }catch(e){}
-  /* ⚠️ ORDRE INVERSE le 8 aout 2026, demande de Blandine : « on doit
-     arriver en tout premier sur la fameuse video ». Avant, a la premiere
-     visite, le film arrivait TROISIEME : presentation, puis choix de la
-     destination, puis film. La raison historique etait bonne — le film
-     aurait joue DERRIERE #intro et #dest, qui sont en z-index 45 contre 42
-     — mais la solution n'etait pas de le repousser, c'etait de montrer la
-     presentation A LA FIN du film. C'est ce que fait `INTRO_APRES` :
-     terminerOuverture() ouvre la presentation si elle n'a jamais ete vue.
-     ⚠️ Ne pas rappeler montrerIntro() ici : le film serait masque. */
   if(!vu){
-    INTRO_APRES = true;
+    montrerIntro();
     /* ⚠️ LE DRAPEAU NE SE POSE PLUS ICI (8 aout 2026, v23). Il etait ecrit
        des l'AFFICHAGE de la presentation. Depuis que le choix de la langue
        d'origine s'y trouve, quiconque changerait de langue et rechargerait
@@ -6910,7 +6575,18 @@ S("dsRetour").addEventListener("click", function(){
   /* Deja venu : le film part tout seul, sans passer par le carnet.
      Premiere visite : il part a la fermeture de l'ecran de destination
      (voir montrerDest), pour ne pas jouer derriere la presentation. */
-  if(!saut) lancerFilm();
+  else if(!saut) lancerFilm();
+  /* ⚠️ ECRAN NOIR CORRIGE ICI (8 aout 2026, v29). Le cas `vu && saut` —
+     deja venue, et rechargement declenche par un changement de langue de
+     lecture — ne declenchait AUCUNE des deux branches ci-dessus. Or
+     `#ouverture` part avec class="joue" (carnet masque, session 126) et SEUL
+     terminerOuverture() retire cette classe. Resultat : plus de film, pas de
+     carnet, aucune sortie — ecran noir, application a tuer. Reproduit deux
+     fois par Blandine (fr->it, puis es->it) : ce n'etait pas l'italien, c'est
+     TOUT changement de langue depuis le carnet.
+     On revele donc le carnet directement, sans rejouer le film : c'est
+     exactement ce que `saut` veut dire. */
+  else terminerOuverture();
 })();
 
 /* Tout est défini : on redemande un rendu du chemin pour que le bouton
@@ -6978,11 +6654,6 @@ S("arrPartir").addEventListener("click",function(){ fermerArrivee(); setTimeout(
    Cet attribut est dans index.html, pas ici : a passer a l'autre fil.
    ================================================================== */
 var FILM_FILET=null;
-/* ⚠️ `INTRO_APRES` est declaree TOUT EN HAUT, avec VER. Elle etait ici, et
-   l'IIFE d'ouverture qui la met a vrai s'execute AVANT cette ligne : `var`
-   hisse la declaration, pas la valeur, donc `= false` l'ecrasait juste
-   apres et la presentation ne s'ouvrait jamais. Sixieme occurrence de ce
-   piege dans ce fichier — attrapee au banc, pas en production. */
 
 function lancerFilm(){
   var v=S("ouvVid");
@@ -7054,13 +6725,6 @@ function montrerCarnet(){
 
 /* fin du film (ou « Passer ») -> le carnet de route des 18 villes */
 function terminerOuverture(){
-  /* ⚠️ LA REPRISE EST ICI, ET PAS SUR LES BOUTONS (8 aout 2026). Trois
-     chemins sortent du film : « Passer », « Commence ton voyage », et
-     l'evenement `error` de la balise video quand le fichier manque. En
-     branchant la suite sur les deux boutons seulement, une video absente
-     laissait la joueuse sur le carnet sans avoir jamais vu la
-     presentation. Un seul point de sortie, tous les chemins couverts. */
-  if(INTRO_APRES){ INTRO_APRES=false; setTimeout(montrerIntro, 60); }
   var v=S("ouvVid");
   if(FILM_FILET){ clearTimeout(FILM_FILET); FILM_FILET=null; }
   try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){}

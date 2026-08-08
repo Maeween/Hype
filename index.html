@@ -20355,6 +20355,16 @@ const HYPE_SYNC_CHAMPS = ["profil", "xp", "serie", "coursTermines", "quizResulta
 /* Cles exactes a synchroniser + prefixes (cles multiples : une par id) */
 const HYPE_EXTRAS_CLES = ["hypeBabyPaliers", "hypeMemoryPoneyProfil", "hype_galops_vus", "hype_teinte", "hype_trace_decor", "augalop_cercleVIP"];
 const HYPE_EXTRAS_PREFIXES = ["hype_quete_", "hype_cheval_stats_"];
+/* Progression de Hype Linguae (08/08/2026). Le module vit dans lingo.html, sur
+   le MEME domaine, donc dans le meme localStorage — mais aucune de ses cles
+   n'etait ramassee ici. Sa progression n'existait donc QUE sur le telephone :
+   reinstaller le raccourci ou effacer les donnees Safari l'effacait sans retour.
+   C'est arrive le 8 aout 2026. Rien a changer dans lingo.html : il continue
+   d'ecrire son localStorage, c'est Hype qui met a l'abri et refusionne.
+   ⚠️ `hype_lingua_saut` est volontairement ABSENTE : drapeau jetable, lu puis
+   supprime pour sauter le film une seule fois. Le synchroniser ferait sauter
+   l'ouverture sur un autre telephone. */
+const HYPE_EXTRAS_LINGUAE = ["hype_lingua_cartes", "hype_lingua_faits", "hype_lingua_quiz", "hype_lingo_maitrise", "hype_lingua_sprint", "hype_lingua_voyage", "hype_lingua_langue", "hype_lingua_lecture", "hype_lingua_intro", "hype_lingua_muet"];
 
 function hypeCollecterExtras() {
     var out = {};
@@ -20362,6 +20372,18 @@ function hypeCollecterExtras() {
         HYPE_EXTRAS_CLES.forEach(function (k) {
             var v = localStorage.getItem(k);
             if (v !== null) out[k] = v;
+        });
+        /* Linguae : plafond propre. Ces valeurs ne contiennent aucune image, mais
+           `hype_lingo_maitrise` peut depasser les 4000 caracteres du garde-fou des
+           prefixes (31 villes x 6 langues x un niveau par mot). Et surtout : on
+           TRACE le depassement. Une valeur qui tombe en silence, c'est une
+           progression perdue sans message — exactement ce qu'on repare ici. */
+        HYPE_EXTRAS_LINGUAE.forEach(function (k) {
+            var vL = null;
+            try { vL = localStorage.getItem(k); } catch (eL) { return; }
+            if (vL === null) return;
+            if (vL.length > 200000) { console.warn("hypeCollecterExtras: " + k + " ignoree, " + vL.length + " caracteres"); return; }
+            out[k] = vL;
         });
         for (var i = 0; i < localStorage.length; i++) {
             var k2 = localStorage.key(i);
@@ -20420,6 +20442,73 @@ function hypeFusionnerExtra(cle, valLocale, valDistante) {
             if (typeof pa.avatar === "string" || typeof pb.avatar === "string") res.avatar = pa.avatar || pb.avatar;
             return JSON.stringify(res);
         }
+        // ===== HYPE LINGUAE : une progression ne recule jamais =====
+        // Cartes postales gagnees : union. Une carte gagnee ne se reperd pas.
+        if (cle === "hype_lingua_cartes") {
+            var ca = JSON.parse(valLocale || "{}") || {}, cb = JSON.parse(valDistante || "{}") || {};
+            var cu = Object.assign({}, cb, ca);
+            Object.keys(cu).forEach(function (k) { cu[k] = !!(ca[k] || cb[k]); });
+            return JSON.stringify(cu);
+        }
+        // Chapitres termines, rangés par langue : le plus grand nombre gagne.
+        if (cle === "hype_lingua_faits") {
+            var fa = JSON.parse(valLocale || "{}") || {}, fb = JSON.parse(valDistante || "{}") || {};
+            var fu = {};
+            Object.keys(fb).concat(Object.keys(fa)).forEach(function (k) {
+                fu[k] = Math.max(Number(fa[k]) || 0, Number(fb[k]) || 0);
+            });
+            return JSON.stringify(fu);
+        }
+        // Quiz : le meilleur score par chapitre. Forme reelle : { ref: {s:score, t:total} }.
+        if (cle === "hype_lingua_quiz") {
+            var qa = JSON.parse(valLocale || "{}") || {}, qb = JSON.parse(valDistante || "{}") || {};
+            var qu = {};
+            Object.keys(qb).concat(Object.keys(qa)).forEach(function (k) {
+                var xa = qa[k], xb = qb[k];
+                if (!xa) { qu[k] = xb; return; }
+                if (!xb) { qu[k] = xa; return; }
+                qu[k] = ((Number(xa.s) || 0) >= (Number(xb.s) || 0)) ? xa : xb;
+            });
+            return JSON.stringify(qu);
+        }
+        // Maitrise : { langue: { mot: niveau } }, le niveau le plus haut par mot.
+        // ⚠️ L'ancien format plat (valeurs numeriques a la racine) valait "en" dans
+        //    lingo.html. On applique la MEME migration des deux cotes avant de
+        //    fusionner : sans elle, un telephone reste sur l'ancien format ecraserait
+        //    le nouveau, ou le rangerait sous une langue fausse.
+        if (cle === "hype_lingo_maitrise") {
+            var parLangue = function (o) {
+                var plat = false, kk;
+                for (kk in o) { if (typeof o[kk] === "number") { plat = true; break; } }
+                return plat ? { en: o } : o;
+            };
+            var ma = parLangue(JSON.parse(valLocale || "{}") || {});
+            var mb = parLangue(JSON.parse(valDistante || "{}") || {});
+            var mu = {};
+            Object.keys(mb).concat(Object.keys(ma)).forEach(function (lg) {
+                var motsA = ma[lg] || {}, motsB = mb[lg] || {}, mots = {};
+                Object.keys(motsB).concat(Object.keys(motsA)).forEach(function (r) {
+                    mots[r] = Math.max(Number(motsA[r]) || 0, Number(motsB[r]) || 0);
+                });
+                mu[lg] = mots;
+            });
+            return JSON.stringify(mu);
+        }
+        // Sprint : aucun compteur ne recule.
+        if (cle === "hype_lingua_sprint") {
+            var spA = JSON.parse(valLocale || "{}") || {}, spB = JSON.parse(valDistante || "{}") || {};
+            return JSON.stringify({
+                best: Math.max(Number(spA.best) || 0, Number(spB.best) || 0),
+                parties: Math.max(Number(spA.parties) || 0, Number(spB.parties) || 0),
+                total: Math.max(Number(spA.total) || 0, Number(spB.total) || 0)
+            });
+        }
+        // Film d'ouverture deja vu : le "1" gagne.
+        if (cle === "hype_lingua_intro") return (valLocale === "1" || valDistante === "1") ? "1" : valLocale;
+        // Les autres cles Linguae (voyage, langue, lecture, muet) sont une POSITION
+        // ou une preference d'appareil, pas un acquis : elles tombent volontairement
+        // dans le repli « le local prime » en fin de fonction.
+
         // Stats de chevaux : on complete sans effacer ce qui existe en local
         if (cle.indexOf("hype_cheval_stats_") === 0) {
             var sa = JSON.parse(valLocale || "{}") || {}, sb = JSON.parse(valDistante || "{}") || {};
