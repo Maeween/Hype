@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 155)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 157 — PASSATION)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,155 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🧳 SESSION 157 · LINGUAE (08/08) — PASSATION (demandée par Blandine, contexte plein)
+
+### 📦 ÉTAT : la file validée est ENTIÈREMENT SOLDÉE
+Le module est complet à ce jour : **30 villes** (Burghley incluse, avec vidéo/fond/carte) · **518 définitions six langues** (517 + formats-complet) · **107 phrases toutes ≤ 7 mots** · mode **sans le son** (réglage + bouton 🔇 par exercice + « dire » dès le niveau 2) · **partage** par chapitre · **collection** à l'accueil et par chapitre · pli **« comment ça marche »** avec guide des besoins généré depuis ETAPE_SRC · **pont Hey Baby** moitié Linguae (+ clé `hype_lingua_langue` persistée).
+
+### 📲 CHEZ BLANDINE — pousser si pas encore fait, dans cet ordre de fraîcheur
+Dernier état = **pousser-burghley-video/** : `lingo.html` (**v20 · 8 août**) + `arrivee-burghley.mp4` + `fond-burghley.webp` + `carte-burghley.webp` (le visuel d'elle, pas les images vidéo). Si des lots plus anciens n'ont jamais été poussés, le `lingo.html` v20 les couvre TOUS — il suffit d'y joindre les 14 lexiques de pousser-v17-sanson/ + `hype-lingo-lex-cross.js` (pousser-burghley/). Vérité du marqueur sur téléphone : **v20 · 8 août**.
+
+### 📄 EN ATTENTE CHEZ ELLE (une action d'elle, pas de moi)
+1. **Coller `SPEC-PONT-HEYBABY.md`** (pousser-v19-pont/) dans le fil principal → moitié index.html/assistant.js du pont (3 gestes, garde-fous, recette incluse). L'index (10,5 Mo) ne PEUT PAS transiter ici — refusé deux fois, expliqué, accepté.
+2. Ses **verdicts téléphone** sur v17→v20 (5 points de recette donnés : marqueur, carnet, chapitre, fin de leçon, Burghley).
+3. Les lignes GitHub raw de **haras** et **froid** si elle veut leurs définitions (canal : `https://raw.githubusercontent.com/Maeween/Hype/main/hype-lingo-lex-haras.js` tapée PAR ELLE comme texte).
+4. Le **nom du module** (reco Hype Atlas ; « Ride the world » = signature validée ; Hype Linguae tant que rien n'est tranché).
+
+### 🔧 RAPPELS TECHNIQUES POUR LA REPRISE
+· Canal fichiers : URL raw.githubusercontent tapée par elle = seul canal fiable ; uploads .js arrivent vides ; JAMAIS de reconstruction de mémoire. · Patchs : ancre count==1, écriture après CHAQUE rep, et **après tout échec re-vérifier CHAQUE rep au grep** (leçon S150, appliquée avec succès en S152/154). · Livraisons : dossiers datés cumulatifs dans outputs, lingo.html EN PREMIER, liste de push en une ligne. · Marqueur `ouvVersion` + `VER` ensemble, `?l` +1 par lexique modifié. · ⚠️ L'IIFE du carnet tourne AVANT ETAPE_SRC/el : tout ajout au carnet qui lit ces données doit se différer (modèle `construireGuide()`).
+
+### 💡 IDÉES NON ENGAGÉES (à proposer, jamais commencées)
+Fonds+TITRE_SOMBRE des cartes par lots de 6 · lettre de voyage de Burghley (6 langues) · rappels boiterie/vétérinaire dans endurance (en-tête du fichier le prévoit, exige urgences sous les yeux — il y est, lex/) · relecture native des ~130 doutes signalés en en-têtes.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session (passation).
+
+---
+
+## 🐴 SESSION 160 · LINGUAE (08/08) — LA PAGE D'ENTRÉE REFAITE, LE TITRE REJETÉ SUPPRIMÉ (v23)
+
+🔴 **Ma faute, signalée par Blandine : « on avait dit non pour cette version là », « on retrouve échanger bla-bla-bla ».** En v22 j'avais laissé `introTitre`/`introCit` intacts en annonçant qu'on trancherait « devant la maquette ». J'avais confondu **choisir le nouveau titre** (ouvert) et **retirer celui qu'elle avait barré** (tranché). Le second ne dépendait pas du premier. Leçon : un contenu refusé se retire tout de suite, un remplaçant se choisit après.
+
+### ✅ La page d'entrée, composition décidée par Blandine
+Dans cet ordre, et rien d'autre : **HYPE LINGUAE** (le nom devient le seul titre, Cinzel 34 px) · **Ride the world** (signature, petites capitales turquoise, **jamais traduite**) · **la phrase d'humour** · **le choix de la langue d'origine** · puis les cinq points et le bouton, inchangés.
+⚠️ Le `40vh` qui faisait respirer la page était porté par `.cit` ; il est descendu sur `#inOrigine`. Sans ce déplacement l'image ne se voit plus et la liste remonte d'un coup.
+
+### ✅ La phrase d'humour, et pourquoi ELLE est à cet endroit précis
+*« Pour t'éviter de sauter le contre-bas au lieu de mettre pied à terre. »* — trouvaille de Blandine, à moitié pour rire, et meilleure que tout ce que j'avais proposé : elle ne **promet** pas du vocabulaire, elle montre ce qu'on **évite**. Son défaut (une blague s'use à la relecture) est annulé ici : **la page d'entrée ne se voit qu'une fois**, elle est gardée par `hype_lingua_intro`. Ne pas la déplacer vers un écran vu à chaque lancement.
+Écrite en six langues, clé `introBlague`. ⚠️ **es · it · de · ja sont marquées `// ??`** : « contre-bas » n'a pas d'équivalent évident hors du français et de l'anglais, et le terme de cross doit être validé par un natif. Même convention que les lexiques.
+
+### ✅ Le choix de la langue d'origine dès l'entrée
+`#inOrigine`, construit par `rangeeOrigine()` depuis **`LANGUES_UI`** — donc une septième langue apparaît **aux deux endroits** (entrée + carnet) sans retouche.
+⚠️ **Ici on ne recharge PAS** (contrairement au carnet) : la page d'entrée est entièrement bâtie sur `data-t`/`data-th`, `appliquerLangue()` suffit et le changement se voit immédiatement.
+
+### 🔴 Le piège attrapé avant de livrer : le drapeau de la présentation
+`hype_lingua_intro` était écrit **dès l'AFFICHAGE** de la présentation. Avec le choix de langue désormais dessus, quiconque rechargerait au milieu de son choix serait déversé sur le carnet, présentation jamais lue. Le drapeau se pose maintenant **à la sortie** (`#inSuite`), avec un **repli dans `montrerDest()`** si la sortie se fait autrement. La présentation revient tant qu'on ne l'a pas quittée — comportement juste.
+
+### 🗑️ Les clés rejetées sont SUPPRIMÉES, pas débranchées
+`introTitre` et `introCit` (12 chaînes traduites) sont retirées de la table. Les garder en réserve, même débranchées, c'était risquer une résurrection par relecture distraite. Vérifié : le texte **vu** sur la page d'entrée ne contient plus « Échanger » ni « nôtre » ; la seule occurrence restante dans le fichier est le commentaire qui explique le refus. **NE PAS LES RECRÉER.**
+
+### 🧪 Banc (Playwright)
+Aucune erreur JS. Titre = `Hype Linguae`, signature = `RIDE THE WORLD`, blague affichée, rangée = `fr en es it de ja`, actif = `fr`. `elementFromPoint` sur 🇩🇪 renvoie le bouton lui-même. Choix DE **sans rechargement** → blague en allemand, libellé `ICH LESE`, bouton `ZIEL WÄHLEN`, points en allemand, actif = `de`. Sortie → drapeau posé, `#dest` ouvert, destinations = `Englisch · Spanisch · Italienisch · Japanisch · Französisch` (l'allemand correctement exclu, on ne l'apprend pas si on le lit).
+
+### ⚠️ DEUX DÉFAUTS TROUVÉS EN PASSANT, NON CORRIGÉS (accord de Blandine requis)
+1. **`pt1t` / `pt1d` annoncent « six langues » en dur** dans les cinq points — exactement ce que Blandine a interdit (« on aura plus de langues »). Se périmera à la septième. Correction proposée : retirer le chiffre et l'énumération.
+2. **Faute de frappe CSS, ligne ~228** : `.ds.ouvert{background:linear-gradient(160deg,rgba(32,`**`517`**`,245,.14)…` — `517` au lieu de `217`. La couleur est invalide, donc **le navigateur jette toute la déclaration `background`** : les destinations ouvertes perdent leur dégradé turquoise. Un caractère à changer.
+
+### 📦 À pousser
+`lingo.html` seul (**v23 · 8 août**, `VER = "?v=23"`). Contient v21 et v22.
+
+### 🧭 Préparation Flutter
+La politique de langue est maintenant complète et unique : **une source (`LANGUES_UI`), une clé (`hype_lingua_lecture`), une fonction (`langueUI()`) à trois niveaux**, et deux surfaces d'entrée (page d'entrée, carnet) qui la lisent sans la dupliquer. C'est la brique qui permettra au module de vivre hors de `index.html`.
+
+---
+
+## 🇯🇵 → 🇬🇧 SESSION 159 · LINGUAE (08/08) — LA PAIRE DE LANGUES, ET L'INTERFACE ENFIN VIVANTE (v22)
+
+Demande de Blandine, mot pour mot : « un petit drapeau japonais, une flèche, un petit drapeau anglais, comme ça on sait toujours où on en est ». Livré — et ça règle un défaut bien plus grave que l'affichage.
+
+### ✅ Ce qui change vraiment : `langueUI()` a enfin une deuxième source
+Avant, elle ne lisait **que** `HYPE_LINGO_HOST.langue()` : sans le pont, elle retombait sur `"fr"` quoi qu'il arrive, et **toute la couche EN/ES/IT/JA/DE de l'interface était morte** — d'où « tout est supposé être traduit mais je crois que rien n'est branché ». Nouvelle clé **`hype_lingua_lecture`**, et l'ordre est : **choix explicite dans Linguae → sinon le pont → sinon français.** Le choix local gagne : c'est la condition de l'autonomie du module.
+Preuve au banc, pas une promesse : après avoir choisi l'allemand en lecture, `destTitre` affiche **« Wohin willst du? »**. La couche de traduction fonctionnait depuis le début, personne ne pouvait l'atteindre.
+
+### ✅ La paire, et le marqueur qui la dit
+`#ouvPaire` : 🇫🇷 **je lis** · ⇄ · 🇬🇧 **j'apprends**, les deux tappables. Le gauche ouvre une rangée de drapeaux, le droit garde `montrerDest()` (inchangé), **la flèche échange les deux**. Le marqueur de version affiche désormais la paire réelle : **`v22 · 8 août · fr → en`** — Blandine déploie depuis un téléphone et peut lire d'un coup d'œil quelle langue l'interface a vraiment prise.
+Trois clés de texte ajoutées en six langues : `ouvPaireT`, `paireLis`, `paireApprends`.
+
+### ⚠️ RIEN N'EST ÉCRIT EN DUR — décision de Blandine du 8 août
+« On aura plus de langues, que ça joue pas sur le nombre de villes. » Juste, et structurant : **les villes sont les chapitres, les langues une dimension par-dessus.** L'ancienne rangée était cinq drapeaux en dur dans le HTML ; elle se construit maintenant depuis `LANGUES_UI`, et la destination depuis `DESTINATIONS`. **Une septième langue s'ajoute à UN seul endroit (tout en haut du script) et apparaît des deux côtés de la flèche.** Corollaire pour la comm' : aucun chiffre dans une accroche — il se périme à la première langue ajoutée.
+Coût réel d'une langue de plus, à chiffrer avant de promettre : le vocabulaire est le plus facile (une clé par mot). Le poids est dans les **récits et lettres des 30 villes** + les phrases de `T()`.
+
+### 🔧 Deux décisions techniques à connaître avant d'y toucher
+1. **`LANGUES_UI`, `LG_DRAPEAU` et `LECTURE` sont déclarées TOUT EN HAUT, avec `VER`** — la seconde déclaration de `LANGUES_UI` (ligne ~3930) a été retirée. Le carnet appelle `langueUI()` bien avant : `var` hisse la déclaration, pas la valeur. C'est la panne qui a coûté cinq sessions. ⚠️ Ne pas les redéclarer plus bas.
+2. **Changer la langue de lecture RECHARGE la page, et c'est voulu.** Les boutons du carnet, le guide des besoins généré depuis `ETAPE_SRC` et les titres de chapitres sont construits au chargement ; les redessiner un par un est exactement la voie qui a déjà coûté deux sessions (« rien ne redessinait l'écran »). `rechargerLingua()` pose **`hype_lingua_saut`**, lu par l'IIFE d'ouverture, pour que le film ne rejoue pas au retour — sinon on recréait le défaut corrigé en v21.
+
+### 🧪 Banc (Playwright, ce qui est PEINT)
+`elementFromPoint` au centre de 🇫🇷 → `dp`, enfant du bouton : il est bien au-dessus. Rangée construite = `fr en es it de ja`, actif = `fr`. Choix DE → `hype_lingua_lecture=de`, marqueur `DE → EN`, libellés `ICH LESE / ICH LERNE`, **film non relancé**, `hype_lingua_saut` consommé. Échange → `EN → DE`, `hype_lingua_voyage=rhin`, `hype_lingua_langue=de`. Aucune erreur JS.
+⚠️ Piège de banc à retenir : sur `file://` avec la présentation non vue, le carnet est hors viewport et Playwright ne peut pas cliquer. Poser `hype_lingua_intro=1`, recharger, puis `terminerOuverture()`.
+
+### 🎨 Nom et accroche — en attente, à trancher devant la maquette
+· **Equest : écarté** — c'est un vermifuge équin à la moxidectine, sur ordonnance, dans toutes les pharmacies équestres. Nom occupé dans le marché exact, et par un médicament.
+· **« Ride the world » : gardé comme signature**, sous le mot HYPE, jamais traduite. Un seul anglais par page.
+· L'accroche actuelle (« Échanger avec les cavaliers du monde entier » / « Chaque cavalier a une histoire ») est **rejetée par Blandine : « ça fait site de rencontre »**. Elle a raison, et le coupable est le titre autant que la citation. Pistes proposées : *Les mots du cheval* · *Le mot juste* · *Seller à Tokyo*. **« Parler cheval » : détesté, enterré** (et ambigu : s'entend comme parler AVEC les chevaux).
+· Trouvaille de Blandine, à moitié pour rire mais la meilleure du lot : *« Pour t'éviter de sauter le contre-bas au lieu de mettre pied à terre. »* Longue (14 mots), s'use à la relecture, et exige le terme technique du cross validé par un natif dans 5 langues. **Décision : à garder pour un endroit qui se lit une seule fois** (mode d'emploi, fin de premier chapitre), pas sur la page d'entrée. Rien n'est modifié dans le fichier : `introTitre` et `introCit` sont inchangés en v22.
+· **Noms : 1. Hype Linguae (l'existant, aucune raison d'en changer) · 2. Hype Atlas · Universe et Equest écartés.**
+
+### 💰 Abonnement autonome — repères donnés, décisions ouvertes
+7,99 €/mois tient : mensuel Duolingo ~8,49 €, Babbel dès ~14,99 €. Trois points structurels : (1) c'est **le rapport au prix global de Hype** qui décide, pas le chiffre — un module seul autour de 50-60 % du global garde le global évident ; (2) **en PWA Apple ne prend rien**, via l'App Store 7,99 devient ~5,60 net ; (3) l'essai d'un mois puis bascule au global se fait avec `trial_period_days: 30`, mais **il faut annuler le 7,99 à la conversion** sinon double prélèvement. Une seule modification de schéma : colonne **`plan`** (`linguae` / `global`) dans `abonnements_premium`, aujourd'hui un Premium oui/non. Reste ouvert : compte connecté suffit, ou abonnement payant exigé ?
+
+### 📦 À pousser
+`lingo.html` seul (**v22 · 8 août**, `VER = "?v=22"`).
+
+### 🧭 Préparation Flutter
+**Une vraie amélioration.** La langue de lecture devient une **donnée propre au module** (`hype_lingua_lecture`) au lieu d'une dépendance au pont : `langueUI()` a une politique claire à trois niveaux (local → hôte → repli), lisible par tout le produit. C'est le premier contrat de données qui rend Linguae détachable de `index.html`, donc la condition technique de l'appli autonome. Les rangées de drapeaux sont dérivées de `LANGUES_UI`/`DESTINATIONS` : une source de vérité, pas des listes dupliquées dans le HTML.
+
+---
+
+## 🎬 SESSION 158 · LINGUAE (08/08) — LE FILM QUI REPARTAIT, ET LA FIN DU FAUX CHANTIER DES DÉFINITIONS (v21)
+
+Blandine : « quand je clique sur allemand je reviens sur la vidéo d'accueil et retour sur les pages en français ». Trois réponses, dont deux qui ferment des dossiers.
+
+### ✅ Le film ne repart plus à chaque changement de langue
+Dans le `onclick` d'une destination, **`lancerFilm()` était appelé SANS CONDITION** (ligne 6120). Il était prévu pour la première visite — le film ne pouvait pas partir au chargement, il aurait joué DERRIÈRE `#intro` et `#dest` — mais il repartait donc à CHAQUE changement de langue. Conditionné à `_dejaEnVoyage`, **lu AVANT** que `hype_lingua_voyage` soit réécrit dix lignes plus bas (sinon la clé vient d'être posée et la première visite ne se distingue plus des suivantes).
+🔴 **Piège de mesure attrapé au banc** : `ouverture.mp4` n'existe pas dans le bac à sable, donc l'`error` du `<video>` appelle `terminerOuverture()` qui retire la classe `joue` — **tester `#ouvFilm.joue` ne prouve RIEN ici**, mon premier banc se félicitait tout seul. Refait avec une **sonde sur `lancerFilm`** et pile d'appels : première visite 1 appel (depuis 6120), changement de langue 0. ⚠️ Playwright appelle la fonction quand `evaluate()` reçoit une expression qui vaut une fonction — un appel fantôme dans les traces, ne pas le compter.
+
+### 📌 Le film part AUSSI à chaque lancement (ligne 6230) — et c'est VOULU
+`else lancerFilm()` dans l'IIFE d'ouverture : « déjà venu → le film part tout seul ». Ce n'est pas un défaut, c'est l'ouverture cinéma avec son bouton PASSER. **Décision en attente de Blandine** : le garder à chaque lancement, ou une fois par jour, ou une fois pour toutes.
+
+### ✅ Le point 5 du SUIVI est MORT — les définitions sont complètes
+Captures GitHub raw de `hype-lingo-lex-ecurie.js` : `def:{ fr / en / es / it / de / ja }` sur box, sellerie, cour — l'allemand y est. **Il n'y a AUCUN chantier de traduction restant.** Le point 5 (« les définitions n'existent qu'en français et en anglais ») datait d'avant S143 et envoyait vers un chantier fantôme. ⚠️ Ne pas le ressusciter.
+
+### 🧭 Le vrai sujet trouvé sous sa plainte : `langueUI()` n'a qu'une source
+`langueUI()` ne lit **que** `HYPE_LINGO_HOST.langue()`. Sans le pont — ou si `index.html` ne l'implémente pas — elle retombe sur `"fr"` **quoi qu'il arrive**, et toute la couche EN/ES/IT/JA/DE de l'interface est morte. De plus le sélecteur de l'app n'a **que cinq drapeaux (FR/EN/ES/IT/JA)** : personne ne peut mettre l'app en allemand aujourd'hui. C'est ce qui fait que Blandine croyait « rien n'est branché ».
+
+### 🎯 DEMANDÉ PAR BLANDINE, VALIDÉ, À FAIRE EN v22 — la paire de langues
+« Un petit drapeau japonais, une flèche, un petit drapeau anglais, comme ça on sait toujours où on en est. » 🇯🇵 → 🇬🇧 en haut du carnet, **les deux tappables** : à gauche la langue de lecture, à droite la langue apprise. Nouvelle clé `hype_lingua_lecture` ; `langueUI()` devient : choix explicite dans Linguae → sinon le pont → sinon français. Garde-fous : lecture ≠ langue apprise (la flèche échange les deux), et la maîtrise est rangée par `VOYAGE_LANGUE` seul — **changer la langue de lecture ne perd aucune progression** (vérifié : `MAITRISE_TOUT[VOYAGE_LANGUE]`). ⚠️ `appliquerLangue()` écrit `document.querySelector(".langue").textContent` : il faudra le faire écrire dans un enfant, sinon il efface les drapeaux. ⚠️ `data-t="ouvLangue"` sur le bouton fait la même chose via la boucle `[data-t]`.
+
+### 🏗️ DEMANDÉ PAR BLANDINE — Linguae installable en appli autonome, compte Hype OBLIGATOIRE
+Faisable, et le fichier est déjà prêt côté jeu : tous les appels au pont sont gardés, le stockage est en clés `hype_lingua_*`. Ce qui manque est l'emballage : `manifest.webmanifest`, **son propre service worker** (celui de Hype est à la racine en network-first et l'avalerait), donc **le dossier `linguae/` devient obligatoire** — un SW ne cache que ce qui est dans sa portée, les 30 cartes, 30 fonds, clips et 21 lexiques doivent y descendre. Deux icônes 192/512. **Même domaine que Hype** = `localStorage` partagé, la progression suit d'une icône à l'autre ; domaine séparé = deux avancements définitivement disjoints. Compte obligatoire ⇒ session Supabase lue dans Linguae (déjà présente en localStorage si même domaine, donc pas de reconnexion), écran de connexion au modèle `connexion-hype-spectral.html`, et **tolérance hors-ligne** (dernière session vue, sinon l'appli ne s'ouvre pas à l'écurie sans réseau). Reste à trancher : compte connecté suffit, ou abonnement payant exigé ?
+
+### 📦 À pousser
+`lingo.html` seul (**v21 · 8 août**, `VER = "?v=21"`).
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session. La v22 en apportera une : la langue de lecture deviendra une donnée propre à Linguae (`hype_lingua_lecture`) au lieu d'une dépendance au pont, ce qui est la condition de l'autonomie du module.
+
+---
+
+## 🎬 SESSION 156 · LINGUAE (08/08) — LA VIDÉO D'ARRIVÉE DE BURGHLEY (v20)
+
+Blandine a envoyé le clip (5,1 s, HEVC 560×752). Chaîne appliquée :
+· **`arrivee-burghley.mp4`** : conversion H.264 720 px, muette, faststart — le format que `ouvVid` lit partout.
+· **Contrôle image par image de la fin** : le panneau « BURGHLEY » a le **B légèrement coupé à gauche sur toutes les images** (même famille de défaut que La Baule et Vejer), et dès ~4,75 s un cheval passe DEVANT le panneau en flou. → **`FIN_VIDEO.burghley = 4.6`** (la vue la plus entière), commenté dans le code, à retirer si la vidéo est refaite.
+· **`fond-burghley.webp`** : l'image du manoir avec le cavalier qui monte la colline (0,8 s) — le fond de chapitre ne pouvait pas être le panneau (du texte derrière du texte).
+· **`carte-burghley.webp` (OPTION)** : le même manoir en portrait 3:4 — proposé comme carte postale de l'étape, Blandine décide si elle le pousse ou attend un visuel dédié.
+Marqueur **v20 · 8 août**. À pousser : `lingo.html` + `arrivee-burghley.mp4` + `fond-burghley.webp` (+ `carte-burghley.webp` si l'option plaît).
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 

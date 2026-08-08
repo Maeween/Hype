@@ -207,7 +207,21 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #intro h1,#dest h1{font-family:'Cinzel',serif;font-weight:600;font-size:30px;margin:0;
  text-align:center;line-height:1.2}
 #intro .cit{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:15px;
- line-height:1.6;color:rgba(244,247,250,.78);text-align:center;margin:18px 0 40vh}
+ line-height:1.6;color:rgba(244,247,250,.78);text-align:center;margin:18px 0 0}
+/* le nom du module devient le seul titre : Cinzel, tres espace, aere */
+#intro h1.marque{font-size:34px;letter-spacing:.06em}
+/* la signature, sous le nom, en petites capitales espacees */
+#inSign{font-size:9.5px;letter-spacing:.36em;text-transform:uppercase;
+ color:var(--turquoise);text-align:center;margin:12px 0 0;opacity:.85}
+/* ⚠️ LE 40vh QUI FAISAIT RESPIRER LA PAGE ETAIT PORTE PAR `.cit`. Il descend
+   ici : sans lui, l'image ne se voit plus et la liste remonte d'un coup. */
+#inOrigT{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;
+ color:rgba(244,247,250,.4);text-align:center;margin:34px 0 10px}
+#inOrigine{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 0 40vh}
+#inOrigine button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
+ border-radius:12px;padding:6px 9px;font-size:21px;line-height:1;cursor:pointer}
+#inOrigine button.actif{border-color:rgba(32,217,245,.65);
+ box-shadow:0 0 18px rgba(32,217,245,.22)}
 .pts{margin:0 0 30px}
 .pt{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)}
 .pt:last-child{border-bottom:0}
@@ -420,7 +434,20 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  color:rgba(244,247,250,.28);text-align:center;margin:10px 0 0}
 #ouvLangPhrase{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
  color:#C3D0DA;margin:14px 0 8px}
-#ouvDrapeaux{display:flex;justify-content:center;gap:14px;margin:0 0 4px}
+/* la paire de langues : je lis -> j'apprends (v22) */
+#ouvPaire{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 0 10px}
+#ouvPaire button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
+ border-radius:14px;padding:7px 12px 6px;cursor:pointer;display:flex;flex-direction:column;
+ align-items:center;gap:3px;min-width:76px}
+#ouvPaire .dp{font-size:22px;line-height:1}
+#ouvPaire i{font-style:normal;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;
+ color:rgba(244,247,250,.42);white-space:nowrap}
+#ouvPaire #ouvEchange{border:0;background:none;min-width:0;padding:0 1px;font-size:17px;
+ color:rgba(32,217,245,.7);box-shadow:none}
+#ouvPaire #ouvLangue{border-color:rgba(32,217,245,.45);box-shadow:0 0 18px rgba(32,217,245,.15)}
+/* la rangee de lecture ne s'ouvre qu'au tap sur le drapeau de gauche */
+#ouvDrapeaux{display:none;justify-content:center;gap:14px;margin:0 0 4px}
+#ouvDrapeaux.ouvert{display:flex}
 #ouvDrapeaux button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
  border-radius:12px;padding:6px 9px;font-size:21px;line-height:1;cursor:pointer}
 #ouvDrapeaux button.actif{border-color:rgba(32,217,245,.65);
@@ -1238,9 +1265,23 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="intro">
   <div id="inFond"><div id="inFondImg"></div><div id="inBas"></div></div>
   <div id="inPage">
-    <p class="sur" data-t="nomModule">Hype Linguae</p>
-    <h1 data-th="introTitre">Échanger avec<br>les cavaliers<br>du monde entier</h1>
-    <p class="cit" data-th="introCit">Chaque cavalier a une histoire.<br>Voici le début de la nôtre.</p>
+    <!-- ⚠️ TITRE ET CITATION RETIRES le 8 aout 2026, sur refus explicite de
+         Blandine : « Échanger avec les cavaliers du monde entier » + « Chaque
+         cavalier a une histoire, voici le debut de la notre » = « ca fait site
+         de rencontre », et le titre etait une phrase alors que la regle dit
+         2 a 5 mots. Decision : pas de titre du tout, le nom du module en
+         grand, la signature dessous, puis la phrase d'humour.
+         ⚠️ Les cles `introTitre` et `introCit` restent dans la table mais ne
+         sont plus branchees : NE PAS les rebrancher (voir SUIVI S160). -->
+    <h1 class="marque" data-t="nomModule">Hype Linguae</h1>
+    <!-- la signature ne se traduit JAMAIS : une signature n'est pas un slogan -->
+    <p id="inSign">Ride the world</p>
+    <p class="cit" data-th="introBlague">Pour t'éviter de sauter le contre-bas au lieu de mettre pied à terre.</p>
+    <!-- le choix de la langue d'origine, des la page d'entree (demande de
+         Blandine) : c'est la premiere chose a regler, avant la destination.
+         Construit depuis LANGUES_UI par rangeeOrigine(), jamais en dur. -->
+    <p id="inOrigT" data-t="origineT">Je lis en</p>
+    <div id="inOrigine" aria-label="Choisir sa langue de lecture"></div>
     <div class="pts">
       <div class="pt"><b data-t="pt1t">Le vocabulaire équestre en six langues</b><i data-t="pt1d">Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.</i></div>
       <div class="pt"><b data-t="pt2t">Une ville, un chapitre</b><i data-t="pt2d">Du Suffolk à l'Andalousie. Chacune enseigne une partie du métier, dans la langue que tu apprends.</i></div>
@@ -1297,11 +1338,20 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          langue était ouverte, personne ne s'en apercevait. Depuis que les
          six sont ouvertes, il n'y avait plus AUCUN chemin pour en changer.
          La ligne qui affiche déjà la langue est l'endroit évident. -->
-    <p id="ouvLangPhrase">Choisis la langue que tu veux apprendre :</p>
-    <div id="ouvDrapeaux" aria-label="Choisir sa langue">
-      <button data-lg="en">🇬🇧</button><button data-lg="es">🇪🇸</button><button data-lg="it">🇮🇹</button><button data-lg="de">🇩🇪</button><button data-lg="ja">🇯🇵</button>
+    <p id="ouvLangPhrase" data-t="ouvPaireT">Je lis en · j'apprends</p>
+    <!-- ⚠️ LA PAIRE DE LANGUES (8 aout 2026). Demande de Blandine :
+         « un petit drapeau japonais, une fleche, un petit drapeau anglais,
+         comme ca on sait toujours ou on en est ». Les deux drapeaux sont
+         tappables ; les libelles et les drapeaux sont ecrits par
+         dessinerPaire(), jamais en dur — une septieme langue apparait
+         toute seule. La rangee #ouvDrapeaux sert maintenant a choisir la
+         langue de LECTURE et se construit depuis LANGUES_UI. -->
+    <div id="ouvPaire">
+      <button id="ouvLecture" type="button"><span class="dp"></span><i></i></button>
+      <button id="ouvEchange" type="button" aria-label="échanger">⇄</button>
+      <button id="ouvLangue" type="button"><span class="dp"></span><i></i></button>
     </div>
-    <button class="langue" id="ouvLangue" data-t="ouvLangue">— anglais —</button>
+    <div id="ouvDrapeaux" aria-label="Choisir sa langue de lecture"></div>
     <button id="ouvMuet" type="button">🔇 mode sans le son : non</button>
     <!-- ⚠️ MARQUEUR DE VERSION, 7 aout 2026. Blandine deploie depuis un
          telephone et n'a aucun moyen de savoir quelle version tourne
@@ -1309,7 +1359,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v20 · 8 août</p>
+    <p id="ouvVersion">v23 · 8 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1488,7 +1538,29 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=20";
+var VER = "?v=23";
+
+/* ==================================================================
+   LA LANGUE DE LECTURE (8 aout 2026, v22)
+   Declarees ICI et pas au milieu du fichier : le carnet appelle
+   langueUI() bien avant, et `var` hisse la declaration, pas la valeur.
+   C'est la panne qui a coute cinq sessions (VER lue trop tot donnait
+   « carte-labaule.webpundefined »). Toute constante utilisee a
+   plusieurs endroits se declare avant le premier d'entre eux.
+   ⚠️ AUCUNE LISTE EN DUR AILLEURS : les rangees de drapeaux se
+   construisent depuis LANGUES_UI et DESTINATIONS. Une septieme langue
+   s'ajoute ici et apparait partout toute seule. Le nombre de VILLES
+   n'a rien a voir avec le nombre de langues : les villes sont les
+   chapitres, les langues une dimension par-dessus (Blandine, 8 aout).
+   ================================================================== */
+var LANGUES_UI = ["fr","en","es","it","de","ja"];
+var LG_DRAPEAU = {fr:"\uD83C\uDDEB\uD83C\uDDF7", en:"\uD83C\uDDEC\uD83C\uDDE7",
+  es:"\uD83C\uDDEA\uD83C\uDDF8", it:"\uD83C\uDDEE\uD83C\uDDF9",
+  de:"\uD83C\uDDE9\uD83C\uDDEA", ja:"\uD83C\uDDEF\uD83C\uDDF5"};
+/* le choix explicite fait DANS Linguae. Null = on suit le pont Hype. */
+var LECTURE = null;
+try{ var _lec = localStorage.getItem("hype_lingua_lecture");
+     if(LANGUES_UI.indexOf(_lec) >= 0) LECTURE = _lec; }catch(e){}
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -3927,8 +3999,16 @@ var VOYAGE_LANGUE = "en";
 
 /* La langue de l'interface : les six langues du référentiel Hype.
    Le pont la fournit ; tout ce qui n'est pas reconnu retombe sur le français. */
-var LANGUES_UI = ["fr","en","es","it","de","ja"];
+/* ⚠️ LANGUES_UI et LG_DRAPEAU sont maintenant declarees TOUT EN HAUT,
+   avec VER : le carnet appelle langueUI() avant ce point. Ne pas les
+   redeclarer ici. */
 function langueUI(){
+  /* 1. le choix fait dans Linguae gagne toujours : c'est ce qui rend le
+     module autonome (sans lui, la fonction ne pouvait retourner que
+     « fr » des que le pont Hype etait absent, et toute la couche
+     EN/ES/IT/JA/DE de l'interface etait morte — Blandine : « tout est
+     suppose etre traduit mais je crois que rien n'est branche »). */
+  if(LECTURE) return LECTURE;
   var l = "fr";
   try{ if(window.HYPE_LINGO_HOST && HYPE_LINGO_HOST.langue) l = HYPE_LINGO_HOST.langue(); }catch(e){}
   /* même cause que dans T() : `LANGUES_UI` est déclarée dans ce script
@@ -3978,6 +4058,24 @@ var NOM_MODULE = "Hype Linguae";
 
 var UI = {
  nomModule:{fr:"{nom}", en:"{nom}", es:"{nom}", it:"{nom}", de:"{nom}", ja:"{nom}"},
+ /* ⚠️ LA PHRASE D'ENTREE — trouvaille de Blandine, 8 aout 2026, a moitie
+    pour rire et meilleure que tout ce que j'avais propose : elle ne PROMET
+    pas du vocabulaire, elle montre ce qu'on evite. Sa place est ici et
+    nulle part ailleurs : la page d'entree ne se voit qu'UNE FOIS (elle est
+    gardee par `hype_lingua_intro`), donc une blague n'a pas le temps de
+    s'user. Ne pas la mettre sur un ecran vu a chaque lancement.
+    ⚠️ `// ??` = terme technique du cross a faire valider par un natif,
+    meme convention que les lexiques. Le contre-bas (obstacle descendant)
+    n'a pas de traduction evidente hors du francais et de l'anglais. */
+ introBlague:{
+   fr:"Pour t'éviter de sauter le contre-bas au lieu de mettre pied à terre.",
+   en:"So you don't jump the drop when you were only told to dismount.",
+   es:"Para que no saltes el descenso cuando solo te piden pie a tierra.",      // ??
+   it:"Per non saltare il salto in discesa quando ti dicono solo di scendere.", // ??
+   de:"Damit du nicht den Drop springst, wenn du nur absteigen sollst.",        // ??
+   ja:"「下馬」と言われて、ドロップを飛んでしまわないように。"},                  // ??
+ origineT:{fr:"Je lis en", en:"I read in", es:"Leo en", it:"Leggo in",
+   de:"Ich lese", ja:"読む言語"},
  traversee:{fr:"La Traversée", en:"The Crossing", es:"La Travesía", it:"La Traversata",
    de:"Die Überfahrt", ja:"旅路"},
  partageScore:{fr:"J'ai fait {score} sur {nom}. Mêmes dix mots, bats-moi : ",
@@ -3988,18 +4086,10 @@ var UI = {
    ja:"{nom}で{score}点。同じ十語で、私を超えてみて："},
  choisirDest:{fr:"Choisir ma destination", en:"Choose my destination", es:"Elegir mi destino",
    it:"Scegliere la destinazione", de:"Ziel wählen", ja:"行き先を選ぶ"},
- introTitre:{fr:"Échanger avec<br>les cavaliers<br>du monde entier",
-   en:"Talk to riders<br>all over<br>the world",
-   es:"Hablar con jinetes<br>de todo<br>el mundo",
-   it:"Parlare con i cavalieri<br>di tutto<br>il mondo",
-   de:"Mit Reitern<br>auf der ganzen<br>Welt sprechen",
-   ja:"世界の<br>馬乗りたちと<br>語り合う"},
- introCit:{fr:"Chaque cavalier a une histoire.<br>Voici le début de la nôtre.",
-   en:"Every rider has a story.<br>This is the beginning of ours.",
-   es:"Cada jinete tiene una historia.<br>Esta es el principio de la nuestra.",
-   it:"Ogni cavaliere ha una storia.<br>Questo è l'inizio della nostra.",
-   de:"Jeder Reiter hat eine Geschichte.<br>Dies ist der Anfang unserer.",
-   ja:"馬乗りには、それぞれの物語がある。<br>これは、私たちの物語の始まり。"},
+ /* ⚠️ `introTitre` et `introCit` SUPPRIMEES le 8 aout 2026. Blandine les a
+    refusees (« ca fait site de rencontre ») ; les garder en reserve, meme
+    debranchees, c'est risquer de les voir ressuscitees par une relecture
+    distraite. Elles sont dans le SUIVI si besoin. NE PAS LES RECREER. */
  pt1t:{fr:"Le vocabulaire équestre en six langues", en:"Stable vocabulary in six languages",
    es:"El vocabulario ecuestre en seis idiomas", it:"Il vocabolario equestre in sei lingue",
    de:"Reitvokabular in sechs Sprachen", ja:"六か国語の馬術用語"},
@@ -4079,6 +4169,12 @@ var UI = {
    ja:"イングランド・アイルランド・ウェールズ・スコットランド・フランス・スペイン・ポルトガル・イタリア・ドイツ・モーリシャス"},
  ouvLangue:{fr:"— anglais —", en:"— English —", es:"— inglés —", it:"— inglese —",
    de:"— Englisch —", ja:"— 英語 —"},
+ ouvPaireT:{fr:"Je lis en · j'apprends", en:"I read in · I'm learning",
+   es:"Leo en · aprendo", it:"Leggo in · imparo",
+   de:"Ich lese · ich lerne", ja:"読む言語 ・ 学ぶ言語"},
+ paireLis:{fr:"je lis", en:"I read", es:"leo", it:"leggo", de:"ich lese", ja:"読む"},
+ paireApprends:{fr:"j'apprends", en:"learning", es:"aprendo", it:"imparo",
+   de:"ich lerne", ja:"学ぶ"},
  ouvIntro:{fr:"<b>Pas les capitales politiques — les capitales du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde, et où le vocabulaire que tu vas apprendre s'entend vraiment.",
    en:"<b>Not the political capitals — the horse capitals.</b> Places where riding is not a hobby but everyone's trade, and where the words you are about to learn are really spoken.",
    es:"<b>No las capitales políticas: las capitales del caballo.</b> Lugares donde la equitación no es un pasatiempo sino el oficio de todos, y donde el vocabulario que vas a aprender se oye de verdad.",
@@ -4420,6 +4516,9 @@ function appliquerLangue(){
     if(S("ouvNom")) S("ouvNom").textContent=nom;
     var pl=document.querySelector(".langue");
     if(pl) pl.textContent="— "+lg+" —";
+    /* la paire suit la destination choisie (v22). Protegee : appliquerLangue
+       peut tourner avant que dessinerPaire soit atteinte. */
+    try{ dessinerPaire(); }catch(e){}
     document.title = NOM_MODULE+" · "+lg+" · "+T("traversee");
   }
 }
@@ -6077,6 +6176,9 @@ var DESTINATIONS = [
 
 function montrerIntro(){ S("intro").classList.add("on"); S("intro").scrollTop=0; }
 function montrerDest(){
+  /* repli du drapeau de la presentation (v23) : si on arrive ici par un
+     autre chemin que le bouton, la presentation est quittee quand meme. */
+  try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
   S("intro").classList.remove("on");
   S("dest").classList.add("on"); S("dest").scrollTop=0;
   var b=S("dsListe"); videEl(b);
@@ -6088,6 +6190,9 @@ function montrerDest(){
   DESTINATIONS.filter(function(D){ return D.lg !== moi; }).forEach(function(D){
     b.appendChild(el("button",{class:"ds"+(D.ouvert?" ouvert":""), onclick:function(){
       if(!D.ouvert) return;
+      /* lu AVANT que hype_lingua_voyage soit reecrit plus bas */
+      var _dejaEnVoyage = false;
+      try{ _dejaEnVoyage = !!localStorage.getItem("hype_lingua_voyage"); }catch(e){}
       VOYAGE_LANGUE = D.lg;
       chargerMaitrise();          /* chaque langue a sa propre maîtrise */
       chargerFaits();             /* et son propre avancement */
@@ -6104,7 +6209,17 @@ function montrerDest(){
       /* Premiere visite : c'est ici que le film s'enchaine. Il ne pouvait
          pas partir au chargement, il aurait joue en entier DERRIERE la
          presentation (#intro et #dest sont au-dessus de lui). */
-      lancerFilm();
+      /* ⚠️ CONDITIONNE le 8 aout 2026. Blandine : « quand je clique sur
+         allemand je reviens sur la video d'accueil ». `lancerFilm()` etait
+         appele SANS CONDITION : prevu pour la premiere visite (le film ne
+         pouvait pas partir au chargement, il aurait joue DERRIERE #intro
+         et #dest), il repartait donc a CHAQUE changement de langue. On ne
+         le lance que si aucun voyage n'etait encore enregistre — l'etat
+         est lu AVANT l'ecriture ci-dessus, sinon la cle vient d'etre
+         posee et la premiere visite ne se distingue plus des suivantes.
+         Ne rien lancer est sans effet de bord : fermer #dest rend la main
+         au carnet, qui est la racine, et appliquerLangue() l'a redessine. */
+      if(!_dejaEnVoyage) lancerFilm();
       /* ⚠️ RETIRÉ le 6 août 2026. Ouvrir le globe ici, sur un délai,
          pouvait chevaucher l'ouverture directe de La Baule que déclenche
          maintenant terminerOuverture() — deux écrans qui se disputent
@@ -6153,7 +6268,11 @@ try{
   dessinerTrace(); dessinerJalons(); lastI=-1;
 }catch(e){}
 
-S("inSuite").addEventListener("click", montrerDest);
+S("inSuite").addEventListener("click", function(){
+  /* la presentation est reellement quittee : c'est ICI qu'on la marque vue */
+  try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
+  montrerDest();
+});
 /* le carnet renvoie au choix de la langue */
 if(S("ouvLangue")) S("ouvLangue").addEventListener("click", montrerDest);
 if(S("ouvMuet")){
@@ -6168,13 +6287,124 @@ if(S("ouvMuet")){
   });
   majMuet();
 }
-if(S("ouvDrapeaux")){
-  S("ouvDrapeaux").addEventListener("click", function(ev){
-    var b=ev.target.closest("button[data-lg]"); if(b) montrerDest();
-  });
-  (function(){ var a=S("ouvDrapeaux").querySelector('[data-lg="'+VOYAGE_LANGUE+'"]');
-    if(a) a.classList.add("actif"); })();
+/* ==================================================================
+   LA PAIRE DE LANGUES — « je lis » -> « j'apprends » (v22, 8 aout 2026)
+
+   Avant : une rangee de cinq drapeaux qui ouvrait simplement l'ecran des
+   destinations, et AUCUN moyen de choisir la langue de lecture — la seule
+   source de langueUI() etait le pont Hype, donc « fr » des qu'on sortait
+   de l'app. Blandine ne pouvait pas voir une seule definition allemande
+   alors qu'elles sont toutes ecrites.
+
+   ⚠️ Rien n'est ecrit en dur : la rangee vient de LANGUES_UI, la
+   destination de DESTINATIONS. Une septieme langue s'ajoute a un seul
+   endroit (tout en haut) et apparait des deux cotes de la fleche.
+   ================================================================== */
+function dessinerPaire(){
+  var lec = langueUI(), app = VOYAGE_LANGUE, g = S("ouvLecture"), d = S("ouvLangue"), n;
+  if(g){ n=g.querySelector(".dp"); if(n) n.textContent = LG_DRAPEAU[lec] || lec;
+         n=g.querySelector("i");   if(n) n.textContent = T("paireLis"); }
+  if(d){ n=d.querySelector(".dp"); if(n) n.textContent = LG_DRAPEAU[app] || app;
+         n=d.querySelector("i");   if(n) n.textContent = T("paireApprends"); }
+  /* le marqueur de version dit la paire : Blandine deploie depuis un
+     telephone et doit pouvoir lire d'un coup d'oeil quelle langue
+     l'interface a REELLEMENT prise. */
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v23 · 8 août · "+lec+" → "+app;
 }
+
+function rangeeLecture(){
+  var b=S("ouvDrapeaux"); if(!b) return;
+  videEl(b);
+  var lec=langueUI();
+  LANGUES_UI.forEach(function(l){
+    var bt=document.createElement("button");
+    bt.type="button"; bt.setAttribute("data-lec", l);
+    bt.textContent = LG_DRAPEAU[l] || l;
+    if(l===lec) bt.classList.add("actif");
+    b.appendChild(bt);
+  });
+}
+
+/* ⚠️ ON RECHARGE LA PAGE, ET C'EST VOULU. Changer la langue de lecture
+   change des textes construits AU CHARGEMENT : les boutons du carnet, le
+   guide des besoins genere depuis ETAPE_SRC, les titres de chapitres.
+   Les redessiner un par un est exactement la voie qui a deja coute deux
+   sessions (« choisir une langue changeait bien la variable, mais rien ne
+   redessinait l'ecran »). Le rechargement est la seule facon d'etre sur
+   que TOUT suive. `hype_lingua_saut` empeche le film de rejouer au retour. */
+function rechargerLingua(){
+  try{ localStorage.setItem("hype_lingua_saut","1"); }catch(e){}
+  location.reload();
+}
+
+function poserLecture(l){
+  if(LANGUES_UI.indexOf(l) < 0) return;
+  if(l === langueUI()){ S("ouvDrapeaux").classList.remove("ouvert"); return; }
+  /* on ne lit pas la langue qu'on apprend : la choisir echange les deux */
+  if(l === VOYAGE_LANGUE){ echangerLangues(); return; }
+  try{ localStorage.setItem("hype_lingua_lecture", l); }catch(e){}
+  rechargerLingua();
+}
+
+/* La fleche echange lecture et apprentissage. La maitrise est rangee par
+   VOYAGE_LANGUE seul (MAITRISE_TOUT[VOYAGE_LANGUE]) : l'echange ne perd
+   aucune progression, il rouvre celle de la langue visee. */
+function echangerLangues(){
+  var lec = langueUI(), app = VOYAGE_LANGUE, D=null, k;
+  for(k=0;k<DESTINATIONS.length;k++)
+    if(DESTINATIONS[k].lg===lec && DESTINATIONS[k].ouvert) D=DESTINATIONS[k];
+  if(!D) return;   /* langue pas encore ouverte a l'apprentissage : on ne fait rien */
+  try{ localStorage.setItem("hype_lingua_lecture", app);
+       localStorage.setItem("hype_lingua_voyage", D.cle);
+       localStorage.setItem("hype_lingua_langue", D.lg); }catch(e){}
+  rechargerLingua();
+}
+
+/* ---------- la meme rangee, mais sur la PAGE D'ENTREE (v23) ----------
+   Demande de Blandine : le choix de la langue d'origine doit etre la des
+   l'entree, avant la destination. Meme source (LANGUES_UI), donc une
+   septieme langue apparait aux DEUX endroits sans rien retoucher.
+   ⚠️ ICI ON NE RECHARGE PAS. La page d'entree est entierement construite
+   depuis `data-t`/`data-th` : appliquerLangue() suffit et le changement se
+   voit tout de suite. Un rechargement serait meme nuisible — voir le
+   deplacement du drapeau `hype_lingua_intro` plus bas. */
+function rangeeOrigine(){
+  var b=S("inOrigine"); if(!b) return;
+  videEl(b);
+  var lec=langueUI();
+  LANGUES_UI.forEach(function(l){
+    var bt=document.createElement("button");
+    bt.type="button"; bt.setAttribute("data-org", l);
+    bt.textContent = LG_DRAPEAU[l] || l;
+    if(l===lec) bt.classList.add("actif");
+    b.appendChild(bt);
+  });
+}
+if(S("inOrigine")) S("inOrigine").addEventListener("click", function(ev){
+  var b = ev.target && ev.target.closest ? ev.target.closest("button[data-org]") : null;
+  if(!b) return;
+  var l = b.getAttribute("data-org");
+  if(LANGUES_UI.indexOf(l) < 0) return;
+  try{ localStorage.setItem("hype_lingua_lecture", l); }catch(e){}
+  LECTURE = l;
+  try{ appliquerLangue(); }catch(e){}
+  rangeeOrigine();
+  /* la liste des destinations exclut la langue qu'on lit deja : si elle est
+     ouverte, on la reconstruit pour que le filtre suive. */
+  if(S("dest") && S("dest").classList.contains("on")){ try{ montrerDest(); }catch(e){} }
+});
+rangeeOrigine();
+
+if(S("ouvLecture")) S("ouvLecture").addEventListener("click", function(){
+  rangeeLecture();
+  S("ouvDrapeaux").classList.toggle("ouvert");
+});
+if(S("ouvEchange")) S("ouvEchange").addEventListener("click", echangerLangues);
+if(S("ouvDrapeaux")) S("ouvDrapeaux").addEventListener("click", function(ev){
+  var b = ev.target && ev.target.closest ? ev.target.closest("button[data-lec]") : null;
+  if(b) poserLecture(b.getAttribute("data-lec"));
+});
+dessinerPaire();
 S("dsRetour").addEventListener("click", function(){
   S("dest").classList.remove("on");
   /* ⚠️ On ne remonte a la presentation QUE si elle n'a jamais ete vue.
@@ -6205,16 +6435,28 @@ S("dsRetour").addEventListener("click", function(){
     S("ouverture").classList.remove("joue");
     return;
   }
-  var vu=false;
+  var vu=false, saut=false;
   try{ vu = localStorage.getItem("hype_lingua_intro")==="1"; }catch(e){}
+  /* ⚠️ v22 : un changement de langue de lecture recharge la page (voir
+     rechargerLingua). Sans ce drapeau, le film d'ouverture repartirait a
+     chaque changement — exactement la plainte de Blandine du 8 aout. */
+  try{ saut = localStorage.getItem("hype_lingua_saut")==="1";
+       if(saut) localStorage.removeItem("hype_lingua_saut"); }catch(e){}
   if(!vu){
     montrerIntro();
-    try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
+    /* ⚠️ LE DRAPEAU NE SE POSE PLUS ICI (8 aout 2026, v23). Il etait ecrit
+       des l'AFFICHAGE de la presentation. Depuis que le choix de la langue
+       d'origine s'y trouve, quiconque changerait de langue et rechargerait
+       serait deverse sur le carnet en plein milieu de son choix. Il se pose
+       maintenant a la SORTIE (bouton `#inSuite`), donc la presentation
+       revient tant qu'on ne l'a pas quittee — ce qui est le comportement
+       juste. Voir aussi le repli sur montrerDest, au cas ou la sortie se
+       fasse autrement. */
   }
   /* Deja venu : le film part tout seul, sans passer par le carnet.
      Premiere visite : il part a la fermeture de l'ecran de destination
      (voir montrerDest), pour ne pas jouer derriere la presentation. */
-  else lancerFilm();
+  else if(!saut) lancerFilm();
 })();
 
 /* Tout est défini : on redemande un rendu du chemin pour que le bouton
