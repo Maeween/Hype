@@ -27302,7 +27302,10 @@ function EcranUnivers() {
 
   
 
-    function L5acc(fr, en, es, it, ja) { return lg === "en" ? en : lg === "es" ? es : lg === "it" ? it : lg === "ja" ? ja : fr; }
+    /* 6e argument « de » ajoute le 08/08 : les cartes de l'accueil n'avaient que cinq
+   langues et un lecteur allemand recevait le francais. Le parametre est OPTIONNEL,
+   donc les appels existants gardent exactement leur comportement (repli fr). */
+function L5acc(fr, en, es, it, ja, de) { return lg === "en" ? en : lg === "es" ? es : lg === "it" ? it : lg === "ja" ? ja : lg === "de" ? (de || fr) : fr; }
   /* 06/08 : L5acc ne connait que 5 langues et l allemand y retombe sur le francais.
      trAcc prend un objet a 6 langues pour les libelles ajoutes a partir d aujourd hui,
      en s appuyant sur le tr du contexte quand il est disponible. */
@@ -27581,7 +27584,8 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
           React.createElement("div", { style: { position: "absolute", left: 16, right: 14, bottom: 13 } },
             React.createElement("div", { style: { fontSize: 8.5, letterSpacing: "0.3em", fontWeight: 800, color: "#7DDDE8", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, L5acc("Parler cheval ailleurs", "Talk horse abroad", "Hablar de caballos fuera", "Parlare di cavalli all'estero", "\u6d77\u5916\u3067\u99ac\u306e\u8a71")),
             React.createElement("div", { style: { marginTop: 5, fontFamily: "'Cinzel',serif", fontSize: 18, fontWeight: 700, letterSpacing: "0.06em", color: "#F4FEFF", textShadow: "0 2px 14px rgba(2,5,9,0.9)", textTransform: "uppercase" } }, "Hype Linguae"),
-            React.createElement("div", { style: { marginTop: 4, fontSize: 11, fontFamily: "'Montserrat',sans-serif", color: "rgba(234,241,244,0.82)", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, L5acc("Le vocabulaire \u00e9questre en six langues, de ville en ville.", "Equestrian vocabulary in six languages, city by city.", "El vocabulario ecuestre en seis idiomas, de ciudad en ciudad.", "Il lessico equestre in sei lingue, di citt\u00e0 in citt\u00e0.", "\u516d\u304b\u56fd\u8a9e\u306e\u99ac\u8853\u7528\u8a9e\u3092\u3001\u8857\u304b\u3089\u8857\u3078\u3002"))),
+            React.createElement("div", { style: { marginTop: 5, fontSize: 9.5, letterSpacing: "0.22em", fontWeight: 700, fontFamily: "'Montserrat',sans-serif", color: "#7DDDE8", textTransform: "uppercase", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, "Ride the world"),
+            React.createElement("div", { style: { marginTop: 5, fontSize: 11, lineHeight: 1.45, fontFamily: "'Montserrat',sans-serif", color: "rgba(234,241,244,0.82)", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, L5acc("Apprendre les mots du cheval pour en parler avec les cavaliers du monde entier.", "Learn the words of the horse, and talk about them with riders the world over.", "Aprende las palabras del caballo para hablar de ellas con jinetes de todo el mundo.", "Impara le parole del cavallo per parlarne con i cavalieri di tutto il mondo.", "\u99ac\u306e\u3053\u3068\u3070\u3092\u5b66\u3093\u3067\u3001\u4e16\u754c\u4e2d\u306e\u4e57\u308a\u624b\u3068\u8a9e\u308a\u3042\u3046\u3002", "Die W\u00f6rter des Pferdes lernen und mit Reitern aus aller Welt dar\u00fcber sprechen."))),
           React.createElement("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a")),
 
         /* 04/08 : acces direct au Sprint. Onze gestes separaient l'accueil du
