@@ -1309,7 +1309,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v19 · 8 août</p>
+    <p id="ouvVersion">v20 · 8 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1488,7 +1488,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=19";
+var VER = "?v=20";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -3261,7 +3261,13 @@ function allerA(i){
    ================================================================== */
 /* Fin forcée d'un clip d'arrivée, en secondes. Une seule entrée pour
    l'instant : voir le commentaire dans ouvrirArrivee. */
-var FIN_VIDEO = { labaule: 4.4, vejer: 7.0, golega: 4.6, verone: 3.9, dubai: 2.9 };
+var FIN_VIDEO = { labaule: 4.4, vejer: 7.0, golega: 4.6, verone: 3.9, dubai: 2.9,
+  /* burghley ajoutee le 8 aout 2026, meme famille de defaut que La Baule :
+     le B du panneau « BURGHLEY » est legerement coupe a gauche sur TOUTES
+     les images (verifie image par image de 4,3 s a 5,1 s), et a partir de
+     ~4,75 s un cheval passe DEVANT le panneau en flou. On s'arrete a 4,6 s,
+     la vue la plus entiere du panneau. A retirer si la video est refaite. */
+  burghley: 4.6 };
 /* ⚠️ vejer ajoutee le 6 aout 2026, meme defaut que La Baule : le panneau
    « Vejer de la Frontera » est TRONQUE dans le fichier lui-meme — le V est
    coupe a gauche et le A final a droite, sur toute la fin du clip (verifie
