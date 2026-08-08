@@ -207,12 +207,12 @@ window.HYPE_LINGO_LEX.western = {
       ja:"片手 手綱 で 乗れ ます か ?" },
 
   { ref:"ph-western-corne", lecon:1,
-      fr:"Ne tiens pas la corne, garde ta main libre.",
-      en:"Do not hold the horn, keep your hand free.",
-      es:"No agarres la perilla, deja la mano libre.",
-      it:"Non tenere il pomo, tieni la mano libera.",
-      de:"Halt dich nicht am Sattelhorn fest, lass die Hand frei.",
-      ja:"ホーン を 握ら ない で。 手 は 空け て おい て ください。" },
+      fr:"Ne tiens pas la corne.",
+      en:"Do not hold the horn.",
+      es:"No agarres la perilla.",
+      it:"Non tenere il pomo.",
+      de:"Halt dich nicht am Horn fest.",
+      ja:"ホーン を 握ら ない で。" },
 
   { ref:"ph-western-parcs", lecon:1,
       fr:"On les trie aux parcs avant midi.",

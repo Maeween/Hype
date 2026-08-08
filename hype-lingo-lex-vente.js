@@ -208,28 +208,28 @@ window.HYPE_LINGO_LEX.vente = {
       ja:"一人 で 試乗 し て も いい です か ?" },
 
   { ref:"ph-vente-veto", lecon:1,
-      fr:"La visite d'achat sera faite par mon vétérinaire.",
-      en:"The vetting will be done by my own vet.",
-      es:"La revisión veterinaria la hará mi veterinario.",
-      it:"La visita d'acquisto la farà il mio veterinario.",
-      de:"Die Ankaufsuntersuchung macht mein Tierarzt.",
-      ja:"購買前 検査 は 私 の 獣医 が 行い ます。" },
+      fr:"La visite d'achat : mon vétérinaire.",
+      en:"The vetting: my own vet.",
+      es:"La revisión: mi veterinario.",
+      it:"La visita: il mio veterinario.",
+      de:"Die Untersuchung macht mein Tierarzt.",
+      ja:"検査 は 私 の 獣医 が し ます。" },
 
   { ref:"ph-vente-budget", lecon:1,
-      fr:"Mon budget s'arrête là. Vous avez autre chose ?",
-      en:"That is the top of my budget. Do you have anything else ?",
-      es:"Mi presupuesto llega hasta ahí. ¿ Tiene algo más ?",
-      it:"Il mio budget si ferma qui. Ha qualcos'altro ?",
-      de:"Da endet mein Budget. Haben Sie noch etwas anderes ?",
-      ja:"予算 は そこ まで です。 ほか に あり ます か ?" },
+      fr:"Mon budget s'arrête là.",
+      en:"That's the top of my budget.",
+      es:"Mi presupuesto llega hasta ahí.",
+      it:"Il mio budget si ferma qui.",
+      de:"Da endet mein Budget.",
+      ja:"予算 は そこ まで です。" },
 
   { ref:"ph-vente-papiers", lecon:1,
-      fr:"Je peux voir son passeport et ses radios ?",
-      en:"May I see his passport and his x-rays ?",
-      es:"¿ Puedo ver su pasaporte y sus radiografías ?",
-      it:"Posso vedere il passaporto e le radiografie ?",
-      de:"Darf ich seinen Equidenpass und die Röntgenbilder sehen ?",
-      ja:"パスポート と レントゲン を 見 て も いい です か ?" }
+      fr:"Je peux voir son passeport ?",
+      en:"May I see his passport ?",
+      es:"¿ Puedo ver su pasaporte ?",
+      it:"Posso vedere il passaporto ?",
+      de:"Darf ich seinen Pass sehen ?",
+      ja:"パスポート を 見 て も いい です か ?" }
 
   ]
 };

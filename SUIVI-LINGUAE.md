@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 152)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 153)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,24 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🔇 SESSION 153 · LINGUAE (08/08) — LE MODE « SANS LE SON », LA PAROLE DÈS LE NIVEAU 2, ET TOUTES LES PHRASES EN 7 MOTS
+
+### ✅ Le mode « sans le son » (demandé trois fois — le voilà)
+· **Réglage persistant** sur le carnet, sous le choix de langue : « 🔇 mode sans le son : non/oui » (localStorage `hype_lingua_muet`, turquoise quand actif). En mode silencieux, `exercicePour()` transforme d'office : **écouter → lire et choisir** (exChoix), **dire → écrire le mot** (exEcrire, avec repli choix pour le japonais et les mots identiques) — via `equivalentVisuel()`.
+· **Bouton 🔇 « Sans le son » sur CHAQUE exercice** d'écoute et de parole (`boutonSansLeSon`) : bascule instantanée de CET exercice vers son équivalent visuel, sans réglage global — pour le bus, l'écurie, la nuit.
+· **« Dire » entre au tirage dès le NIVEAU 2** (avant : niveau 3 seulement, donc quasi jamais — le constat de Blandine « il n'y a plus de moment où on parle ? » était exact). Banc par mesure : bascule du carnet OK, bouton 🔇 sur l'écoute → 4 options de lecture, type remplacé, aucune erreur.
+
+### ✅ Les phrases simplifiées — règle des 7 mots, PARTOUT
+**38 cibles inventoriées + 8 retardataires attrapées par l'audit global = 46 phrases réécrites en six langues** (japonais à espaces conservé). L'audit final balaie les 18 lexiques : **la règle a ensuite été étendue au fil 2 (12 phrases de balade/polo/vente/western/endurance, casse-caches +1) — 107 phrases au total, TOUTES ≤ 7 mots en français.** Une idée par phrase, le cœur communicatif gardé (« La longe, jamais autour de la main » ; « Rouge à droite, blanc à gauche » ; « Appelez le vétérinaire, tout de suite »).
+
+### 📦 À pousser (un seul lot)
+`lingo.html` (**v17**, casse-caches +1 sur les neuf lexiques touchés : arrivee 2 · urgences 2 · pansage 2 · cheval 3 · materiel 3 · cours 2 · dressage 3 · obstacle 3 · concours 5) + les **9 lexiques du tronc** réécrits. NB : ce lot inclut aussi Burghley (S152) si pas encore poussé.
+
+### 🧭 Préparation Flutter
+`equivalentVisuel()` et `boutonSansLeSon()` : la politique d'accessibilité est un composant, pas des cas épars.
 
 ---
 

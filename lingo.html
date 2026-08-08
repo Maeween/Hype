@@ -425,6 +425,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  border-radius:12px;padding:6px 9px;font-size:21px;line-height:1;cursor:pointer}
 #ouvDrapeaux button.actif{border-color:rgba(32,217,245,.65);
  box-shadow:0 0 18px rgba(32,217,245,.22)}
+#ouvMuet{display:block;margin:-18px auto 26px;border:0;background:none;cursor:pointer;
+ font-size:11.5px;letter-spacing:.08em;color:#9AA8B4;
+ border-bottom:1px dashed rgba(255,255,255,.18);padding-bottom:2px}
+#ouvMuet.actif{color:var(--turquoise);border-bottom-color:rgba(32,217,245,.45)}
+.lcMuet{display:block;margin:2px auto 18px;border:1px solid rgba(255,255,255,.14);
+ background:rgba(255,255,255,.03);border-radius:999px;padding:7px 15px;cursor:pointer;
+ font-size:12px;color:#C3D0DA}
 .langue{border:0;padding:0;cursor:pointer;
  border-bottom:1px solid rgba(32,217,245,.35);padding-bottom:2px;
  font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
@@ -1274,6 +1281,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <button data-lg="en">🇬🇧</button><button data-lg="es">🇪🇸</button><button data-lg="it">🇮🇹</button><button data-lg="de">🇩🇪</button><button data-lg="ja">🇯🇵</button>
     </div>
     <button class="langue" id="ouvLangue" data-t="ouvLangue">— anglais —</button>
+    <button id="ouvMuet" type="button">🔇 mode sans le son : non</button>
     <!-- ⚠️ MARQUEUR DE VERSION, 7 aout 2026. Blandine deploie depuis un
          telephone et n'a aucun moyen de savoir quelle version tourne
          reellement. Trois fois cette semaine, un defaut deja corrige a ete
@@ -1346,22 +1354,22 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      Le chapitre 10 (Les dialogues) n'est pas encore ecrit.
      ================================================================== -->
 <script src="hype-lingo-lex-ecurie.js?l=1"></script>
-<script src="hype-lingo-lex-pansage.js?l=1"></script>
-<script src="hype-lingo-lex-cheval.js?l=2"></script>
-<script src="hype-lingo-lex-materiel.js?l=2"></script>
-<script src="hype-lingo-lex-cours.js?l=1"></script>
-<script src="hype-lingo-lex-dressage.js?l=2"></script>
-<script src="hype-lingo-lex-obstacle.js?l=2"></script>
-<script src="hype-lingo-lex-concours.js?l=4"></script>
+<script src="hype-lingo-lex-pansage.js?l=2"></script>
+<script src="hype-lingo-lex-cheval.js?l=3"></script>
+<script src="hype-lingo-lex-materiel.js?l=3"></script>
+<script src="hype-lingo-lex-cours.js?l=2"></script>
+<script src="hype-lingo-lex-dressage.js?l=3"></script>
+<script src="hype-lingo-lex-obstacle.js?l=3"></script>
+<script src="hype-lingo-lex-concours.js?l=5"></script>
 <script src="hype-lingo-lex-cross.js"></script>
-<script src="hype-lingo-lex-urgences.js?l=1"></script>
+<script src="hype-lingo-lex-urgences.js?l=2"></script>
 <!-- Le poney : chapitre créé le 5 août 2026 pour Lamotte-Beuvron.
      Six de ses dix entrées sont des RAPPELS partageant le `ref` d'entrées
      de hype-lingo-lex-cheval.js — voulu, la maîtrise est par `ref`. -->
 <script src="hype-lingo-lex-poney.js?l=3"></script>
 <!-- L'arrivée dans un club : l'inscription et la sécurité, pour La Baule.
      ⚠️ La sécurité n'existait NULLE PART dans les 378 mots d'origine. -->
-<script src="hype-lingo-lex-arrivee.js?l=1"></script>
+<script src="hype-lingo-lex-arrivee.js?l=2"></script>
 <!-- La tradition : chapitre cree le 6 aout 2026 pour Tokyo.
      ⚠️ Le seul chapitre du module qui enseigne des CONVENTIONS et non des
      objets. Et le seul ou deux mots francais distincts se confondent en
@@ -1373,12 +1381,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      yards » toujours au pluriel. Un cavalier qui ne connait que l'anglais
      des ecuries britanniques ne comprendra pas une phrase de Tamworth.
      C'est le sujet du chapitre. -->
-<script src="hype-lingo-lex-western.js?l=1"></script>
+<script src="hype-lingo-lex-western.js?l=2"></script>
 <!-- Le polo : chapitre cree le 6 aout 2026 pour Buenos Aires.
      ⚠️ Trois faux amis dans les cinq premiers mots : la periode se dit
      chukka, la monte se dit pony (et ce n'est pas un poney), le handicap
      note le JOUEUR et non le cheval. -->
-<script src="hype-lingo-lex-polo.js?l=1"></script>
+<script src="hype-lingo-lex-polo.js?l=2"></script>
 <!-- Le haras : chapitre cree le 6 aout 2026 pour Lexington (Kentucky).
      ⚠️ NE PAS CONFONDRE avec lex-elevage.js (Golega), qui fait NAITRE, ni
      avec lex-vente.js (Verone), ou l'on achete un cheval pour soi en
@@ -1396,13 +1404,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      ⚠️ Aucun rappel dedans : lex-urgences.js n'etait pas disponible, donc
      `la boiterie` et `le veterinaire` n'ont pas pu etre repris par `ref`.
      A completer quand ce fichier sera sous les yeux. -->
-<script src="hype-lingo-lex-endurance.js?l=1"></script>
+<script src="hype-lingo-lex-endurance.js?l=2"></script>
 <!-- La vente : chapitre cree le 6 aout 2026 pour Verone (Italie).
      Le seul moment de la vie d'un cavalier ou se tromper coute cher, et il
      n'existait nulle part dans les 378 mots. Niveau 3 : on y parle.
      ⚠️ L'ELEVAGE n'est pas ici (Golega), ni les ventes de yearlings
      (Lexington). Verone achete et vend ce qui est deja ne. -->
-<script src="hype-lingo-lex-vente.js?l=1"></script>
+<script src="hype-lingo-lex-vente.js?l=2"></script>
 <!-- L'elevage : chapitre cree le 6 aout 2026 pour Golega (Portugal).
      Le plus gros trou du module : aucun des 378 mots d'origine ne parlait
      de la naissance d'un cheval. Trois de ses entrees (`poulain`,
@@ -1415,7 +1423,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      `balade` est un RAPPEL de hype-lingo-lex-arrivee.js (meme `ref`,
      memes mots) : la maitrise est par `ref`, donc le mot arrive deja
      acquis. Doit se charger APRES arrivee.js, jamais avant. -->
-<script src="hype-lingo-lex-balade.js?l=1"></script>
+<script src="hype-lingo-lex-balade.js?l=2"></script>
 <!-- Les phrases manquantes de Saumur (dressage L2-L3) et de Vejer
      (ecurie L2-L3). Additif : refuse tout ref déjà présent. -->
 <script src="hype-lingo-phrases-monde.js"></script>
@@ -4764,16 +4772,20 @@ function lancer(L){
 function exercicePour(c){
   var m=MAITRISE[c.ref]||0, lg=cible(), ui=langueUI();
   var niv = niveauVille((LC && LC.ville) || "");
-  /* « dire » n'entre dans le tirage qu'au niveau 3. Ailleurs, on écoute
-     et on répète pour soi — le micro reste offert sur l'écoute. */
+  /* « dire » entre dans le tirage dès le NIVEAU 2 (demande de Blandine,
+     8 août : « il n'y a plus de moment où on parle ? » — il n'entrait
+     qu'au niveau 3, donc presque jamais). Au niveau 1 on écoute encore. */
   var pool = (m===0) ? ["choix"]
            : (m===1 ? ["choix","ecoute"]
-           : (niv >= 3 ? ["ecoute","ecrire","dire","choix"]
+           : (niv >= 2 ? ["ecoute","ecrire","dire","choix"]
                        : ["ecoute","ecrire","choix","ecoute"]));
   var t=pool[Math.floor(Math.random()*pool.length)];
   if(t==="ecrire" && lg==="ja") t="ecoute";
   if(t==="ecrire" && motNu(c.mots[lg].m)===motNu(c.mots[ui].m)) t="ecoute";
   if(t==="dire" && !vocalPossible()) t="ecoute";
+  /* le mode silencieux transforme d'office écoute et parole en leurs
+     équivalents visuels — voir equivalentVisuel() */
+  if(modeSilencieux()) t = equivalentVisuel(t, c);
   return t;
 }
 
@@ -4902,6 +4914,7 @@ function exEcoute(x){
     el("p",{class:"lcCons", text: ui==="en"?"Listen and choose":"Écoute et choisis"}),
     el("button",{class:"lcHp", onclick:function(){ dire(bonne, lg); }}, "\u266a"),
     el("p",{class:"lcRej", text: ui==="en"?"Play again":"Réécouter"}),
+    boutonSansLeSon(x),
     el("div",{class:"lcOpts"},
       brasser([bonne].concat(leurres)).map(function(o){
         return el("button",{class:"lcOpt", onclick:function(){
@@ -4988,6 +5001,27 @@ function exPhrase(x){
    ================================================================== */
 function vocalPossible(){
   return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+/* le mode « sans le son » : pour qui ne peut ni entendre ni parler —
+   ou simplement pas ici, pas maintenant (transport, ecurie, nuit). */
+function modeSilencieux(){ return localStorage.getItem("hype_lingua_muet")==="1"; }
+function equivalentVisuel(t, c){
+  /* l'ecoute devient une lecture a choix ; le dire devient l'ecriture
+     du mot — sauf quand l'ecriture est déjà interdite (japonais, mot
+     identique), ou l'on retombe sur le choix. */
+  if(t==="ecoute") return "choix";
+  if(t==="dire"){
+    var lg=cible(), ui=langueUI();
+    if(lg==="ja" || motNu(c.mots[lg].m)===motNu(c.mots[ui].m)) return "choix";
+    return "ecrire";
+  }
+  return t;
+}
+function boutonSansLeSon(x){
+  var ui=langueUI();
+  return el("button",{class:"lcMuet", onclick:function(){
+    x.t = equivalentVisuel(x.t, x.c); etape();
+  }}, "\uD83D\uDD07  "+(ui==="en"?"Without sound":"Sans le son"));
 }
 function exDire(x){
   var c=x.c, ui=langueUI(), lg=cible();
@@ -5076,6 +5110,7 @@ function exDire(x){
     bJuste,
     micro,
     bRate,
+    boutonSansLeSon(x),
     zone
   );
 }
@@ -5987,6 +6022,18 @@ try{
 S("inSuite").addEventListener("click", montrerDest);
 /* le carnet renvoie au choix de la langue */
 if(S("ouvLangue")) S("ouvLangue").addEventListener("click", montrerDest);
+if(S("ouvMuet")){
+  var majMuet=function(){
+    var on=modeSilencieux();
+    S("ouvMuet").textContent="\uD83D\uDD07 mode sans le son : "+(on?"oui":"non");
+    S("ouvMuet").classList.toggle("actif", on);
+  };
+  S("ouvMuet").addEventListener("click", function(){
+    localStorage.setItem("hype_lingua_muet", modeSilencieux()?"0":"1");
+    majMuet();
+  });
+  majMuet();
+}
 if(S("ouvDrapeaux")){
   S("ouvDrapeaux").addEventListener("click", function(ev){
     var b=ev.target.closest("button[data-lg]"); if(b) montrerDest();

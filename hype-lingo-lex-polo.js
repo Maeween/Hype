@@ -197,11 +197,11 @@ window.HYPE_LINGO_LEX.polo = {
       ja:"彼 が ライン を 持っ て い ます。 通し て ください。" },
 
   { ref:"ph-polo-changer", lecon:1,
-      fr:"Tu changes de cheval à chaque période ?",
+      fr:"Tu changes de cheval chaque période ?",
       en:"Do you change ponies every chukka ?",
-      es:"¿ Cambias de caballo en cada chukker ?",
+      es:"¿ Cambias de caballo cada chukker ?",
       it:"Cambi cavallo a ogni chukker ?",
-      de:"Wechselst du in jedem Chukker das Pferd ?",
+      de:"Wechselst du jedes Chukker das Pferd ?",
       ja:"チャッカ ごと に 馬 を 替え ます か ?" },
 
   { ref:"ph-polo-handicap", lecon:1,
