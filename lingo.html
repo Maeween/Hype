@@ -443,6 +443,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvGuide .gLigne b{color:#E8EEF3;font-weight:600}
 #ouvGuide .gVille{border:0;background:none;padding:0;cursor:pointer;
  color:var(--turquoise);font-size:13px;border-bottom:1px solid rgba(32,217,245,.35)}
+.lgHeyBaby{margin-top:16px;text-align:center}
+.lgHeyBaby p{font-size:12.5px;color:var(--gris);margin:0 0 8px}
+.lgHeyBaby button{border:1px solid rgba(32,217,245,.35);background:rgba(32,217,245,.06);
+ border-radius:999px;padding:9px 18px;cursor:pointer;font-size:12.5px;color:var(--turquoise)}
 .lcPartage{display:block;margin:12px auto 0;border:1px solid rgba(255,255,255,.14);
  background:rgba(255,255,255,.03);border-radius:999px;padding:9px 18px;cursor:pointer;
  font-size:12px;color:#C3D0DA}
@@ -1305,7 +1309,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v18 · 8 août</p>
+    <p id="ouvVersion">v19 · 8 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1484,7 +1488,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=18";
+var VER = "?v=19";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -5381,11 +5385,28 @@ function finQuiz(){
     style:"margin-top:9px;background:rgba(255,255,255,.06);color:#8996A2;box-shadow:none;border:1px solid rgba(255,255,255,.1)",
     onclick:function(){ QZ=null; finLecon(); }}, T("quizRetour")));
   zone.appendChild(blocRecompenses());
+  zone.appendChild(blocHeyBaby());
   var ph = PHRASES_FIN[LC.ville];
   if(ph) zone.appendChild(el("p",{class:"lgPhrase", html:tx(ph)}));
 }
 
 function manqueTxt(n){ return n<=1 ? T("ilManque1") : T("ilManque",{n:n}); }
+
+/* le pont vers Hey Baby (8 août, validé) : une phrase que le chapitre
+   ne couvre pas ? L'appli principale prend le relais, en sachant d'où
+   l'on vient — la langue apprise et la ville voyagent dans le lien. */
+function blocHeyBaby(){
+  var ui=langueUI();
+  var b=el("div",{class:"lgHeyBaby"});
+  b.appendChild(el("p",{text: ui==="en"
+    ? "A phrase this chapter doesn't cover ?"
+    : "Une phrase que le chapitre ne couvre pas ?"}));
+  b.appendChild(el("button",{onclick:function(){
+    location.href="index.html?heybaby=1&lingo="+encodeURIComponent(cible())
+      +"&ville="+encodeURIComponent((LC&&LC.ville)||"");
+  }}, "\uD83D\uDC34  "+(ui==="en"?"Ask Hey Baby":"Demande à Hey Baby")));
+  return b;
+}
 
 /* le bloc des recompenses du chapitre, pour les deux ecrans de fin */
 function blocRecompenses(){
@@ -5525,6 +5546,7 @@ function finLecon(){
      (retour de Blandine : « c'est pas parce que tu as la carte que tu as
      forcement l'objet ») */
   S("lcCorps").appendChild(blocRecompenses());
+  S("lcCorps").appendChild(blocHeyBaby());
 
   /* ⚠️ RETIRÉ le 6 août 2026, sur demande de Blandine : le bloc
      « Où en est ce chapitre » listait la MAÎTRISE (répétitions sur
@@ -6071,7 +6093,8 @@ function montrerDest(){
          visite, avant meme d'avoir vu le carnet. */
       try{ appliquerLangue(); }catch(e){}
       S("dest").classList.remove("on");
-      try{ localStorage.setItem("hype_lingua_voyage", D.cle); }catch(e){}
+      try{ localStorage.setItem("hype_lingua_voyage", D.cle);
+           localStorage.setItem("hype_lingua_langue", D.lg); }catch(e){}
       /* Premiere visite : c'est ici que le film s'enchaine. Il ne pouvait
          pas partir au chargement, il aurait joue en entier DERRIERE la
          presentation (#intro et #dest sont au-dessus de lui). */

@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 154)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 155)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,23 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🐴 SESSION 155 · LINGUAE (08/08) — LE PONT HEY BABY, MOITIÉ LINGUAE + LA SPEC DE L'AUTRE MOITIÉ (v19)
+
+Blandine : « tu es sûr que tu ne veux pas tout faire toi-même ? » — réponse honnête : tout ce qui est transportable est fait ici ; `index.html` (10,5 Mo) ne peut pas transiter dans ce fil, sa moitié part en SPEC prête à coller au fil principal.
+
+### ✅ Moitié Linguae, livrée (lingo.html v19)
+En fin de leçon ET de quiz, sous les récompenses : « Une phrase que le chapitre ne couvre pas ? **🐴 Demande à Hey Baby** » → `index.html?heybaby=1&lingo=<langue>&ville=<ref>`. Et une ligne nouvelle : la langue apprise est désormais **persistée** (`hype_lingua_langue`) à chaque choix de destination — elle n'existait nulle part (vérité relevée sur disque : seule la destination `hype_lingua_voyage` était écrite ; la spec initiale supposait une clé, la vérification l'a corrigée AVANT livraison).
+
+### 📄 SPEC-PONT-HEYBABY.md — à coller dans le fil principal
+Trois gestes de l'autre côté : (1) `index.html` lit `?heybaby=1&lingo=&ville=` (au même endroit que `?merci=1`), ouvre Hey Baby, **pré-remplit sans envoyer**, nettoie l'URL ; (2) lit `hype_lingua_langue` pour connaître la langue apprise même hors pont ; (3) `assistant.js` reçoit langue+ville dans le contexte cavalier + une consigne d'usage. Garde-fous et recette inclus.
+
+À pousser : `lingo.html` seul (**v19 · 8 août**). La spec ne se pousse pas — elle se colle dans l'autre conversation.
+
+### 🧭 Préparation Flutter
+La langue apprise a maintenant une clé de stockage propre, lisible par tout le produit : un contrat de données inter-modules.
 
 ---
 
