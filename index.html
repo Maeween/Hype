@@ -37984,11 +37984,11 @@ function PalierBabyCarte({ level, niveauSuivant, verrouille, fait, coursNiveau, 
             React.createElement("span", { style: { fontSize: 22 } }, "\uD83D\uDD12"),
             React.createElement("p", { style: { margin: "4px 0 0", fontSize: 11.5, color: COLORS.encreDoux } }, tr({ fr: "Palier à venir", en: "Milestone to come", es: "Etapa por venir", it: "Traguardo in arrivo", de: "Meilenstein kommt noch", ja: "つぎのごほうび" })));
     }
-    if (fait) {
-        return React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 10, margin: "16px 22px", padding: "12px 16px", borderRadius: 999, background: `${meta.cadre}22`, border: `1.5px solid ${meta.cadre}` } },
-            React.createElement("span", { style: { fontSize: 22 } }, meta.medaille),
-            React.createElement("span", { style: { fontSize: 12.5, fontWeight: 800, color: meta.cadre } }, tr(meta.nom) + " \u2713"));
-    }
+    /* 08/08 : L'ENCART DE PALIER RESTE OUVERT APRES VALIDATION.
+       Il se repliait en une simple pastille des que validerPalier avait ete
+       appele, et l'enfant perdait l'acces au recapitulatif de ce qu'il avait
+       appris et aux questions de rappel. Les trois paliers ont desormais la
+       meme presentation : seul le bouton du bas change. */
     const questions = PALIERS_BABY_QUIZ[level] || [];
     return React.createElement("div", { style: { margin: "18px 20px", padding: "22px 18px", borderRadius: 22, background: `linear-gradient(160deg, ${meta.cadre}22, ${COLORS.nuitClaire})`, border: `1.5px solid ${meta.cadre}`, textAlign: "center" } },
         React.createElement("div", { style: { position: "relative", width: 84, height: 84, margin: "0 auto 10px" } },
@@ -38005,9 +38005,15 @@ function PalierBabyCarte({ level, niveauSuivant, verrouille, fait, coursNiveau, 
             questions.map((qq, i) => React.createElement("button", { key: i, onClick: () => setReponsesVues((r) => ({ ...r, [i]: true })), style: { display: "block", width: "100%", textAlign: "left", background: COLORS.nuitElevee, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 12, padding: "9px 12px", marginBottom: 6 } },
                 React.createElement("p", { style: { margin: 0, fontSize: 12, fontWeight: 700, color: COLORS.encre } }, tr(qq.q)),
                 React.createElement("p", { style: { margin: "4px 0 0", fontSize: 11.5, color: meta.cadre, fontWeight: 700 } }, reponsesVues[i] ? tr(qq.r) : tr({ fr: "Touche pour voir la réponse", en: "Tap to see the answer", es: "Toca para ver la respuesta", it: "Tocca per vedere la risposta", de: "Tippen für die Antwort", ja: "タップしてこたえをみる" }))))),
-        React.createElement(BoutonPrincipal, {
-            texte: metaSuivant ? tr({ fr: "Continuer vers le ", en: "Continue to ", es: "Continuar hacia el ", it: "Continua verso il ", de: "Weiter zum ", ja: "つぎへすすむ：" }) + tr(metaSuivant.nom) : tr({ fr: "Continuer", en: "Continue", es: "Continuar", it: "Continua", de: "Weiter", ja: "つづける" }),
-            couleur: meta.cadre, onClick: onValider,
+        /* Palier deja valide : tout l'encart reste affiche, seul le bouton
+           d'action cede la place a une pastille de reussite. */
+        fait
+            ? React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 9, marginTop: 4, padding: "12px 16px", borderRadius: 999, background: `${meta.cadre}22`, border: `1.5px solid ${meta.cadre}` } },
+                React.createElement("span", { style: { fontSize: 20 } }, meta.medaille),
+                React.createElement("span", { style: { fontSize: 12.5, fontWeight: 800, color: meta.cadre } }, tr(meta.nom) + " \u2713"))
+            : React.createElement(BoutonPrincipal, {
+                texte: metaSuivant ? tr({ fr: "Continuer vers le ", en: "Continue to ", es: "Continuar hacia el ", it: "Continua verso il ", de: "Weiter zum ", ja: "つぎへすすむ：" }) + tr(metaSuivant.nom) : tr({ fr: "Continuer", en: "Continue", es: "Continuar", it: "Continua", de: "Weiter", ja: "つづける" }),
+                couleur: meta.cadre, onClick: onValider,
         }));
 }
 function CheminPoneyBaby({ coursListe, quizResultats, coursTermines, tr, onOuvrir }) {
@@ -38507,8 +38513,16 @@ function EcranQuiz() {
             const dx = t1.clientX - d.x, dy = t1.clientY - d.y;
             if (dx > 65 && Math.abs(dx) > Math.abs(dy) * 1.6) setConfirmQuit(true);
         };
-        return (React.createElement("div", { "data-noswipe": "true", onTouchStart: onQuizTouchStart, onTouchEnd: onQuizTouchEnd, style: { minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", isolation: "isolate", background: "#060709" } },
-            React.createElement("div", { style: { position: "relative", height: "37vh", flex: "none", overflow: "hidden" } },
+        return (React.createElement("div", { "data-noswipe": "true", onTouchStart: onQuizTouchStart, onTouchEnd: onQuizTouchEnd, style: { minHeight: "calc(100dvh - 84px)", height: "calc(100dvh - 84px)", display: "flex", flexDirection: "column", position: "relative", isolation: "isolate", background: "#060709" } },
+            /* 08/08 : L'ECRAN DE QUIZ TENAIT SUR 100dvh alors que la barre d'onglets
+               occupe 84 px en bas. L'ecran etait donc systematiquement 84 px trop
+               grand : il fallait faire defiler vers le bas pour atteindre le bouton
+               Verifier, ou vers le haut pour revoir l'image en entier.
+               « calc(100dvh - 84px) » est la convention deja employee par sept autres
+               ecrans de l'app, dont CouvAffiche. On fixe aussi height (et pas seulement
+               minHeight) pour que les 37% de l'image se calculent sur l'espace REELLEMENT
+               disponible, et non sur la fenetre entiere. */
+            React.createElement("div", { style: { position: "relative", height: "37%", flex: "none", overflow: "hidden" } },
                 React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundImage: "url(" + fondQuizChapitre + ")", backgroundSize: "cover", backgroundPosition: "center" } }),
                 React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0.12) 42%, rgba(6,7,9,0.72) 78%, #060709 100%)" } }),
                 React.createElement("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 16, fontFamily: "'Cinzel',serif", fontSize: 10, letterSpacing: "0.28em", textTransform: "uppercase", color: TQ, background: "rgba(6,9,12,0.4)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 99, padding: "6px 12px", backdropFilter: "blur(8px)" } }, T("Quiz", "Quiz", "Quiz", "Quiz", "\u30af\u30a4\u30ba")),

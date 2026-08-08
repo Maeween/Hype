@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 08/08/2026 (SESSION 109 · ACCUEIL ENTIÈREMENT ALLEMAND, CARTE LINGUAE) — md5 `e72f9d89e2d9cb358c8c0175ba6fd7e6`, 9 124 894 octets. **`hype-cours-baby.js` md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets (1,73 Mo) — À POUSSER AUSSI.** Aucune preview. Aucun SQL.**
+**Version actuelle de l'index.html : 08/08/2026 (SESSION 110 · L'ÉCRASEMENT DES CLÉS D'IMAGES, PONT LINGUAE, PALIERS BABY, CADRAGE DES QUIZ) — md5 `df70065f9dcd6e32e25181260f1379fc`, 9 128 897 octets. `hype-cours-baby.js` inchangé. Aucune preview. Aucun SQL.**
+
+**Ancienne version (109) — 08/08/2026 (SESSION 109 · ACCUEIL ENTIÈREMENT ALLEMAND, CARTE LINGUAE) — md5 `e72f9d89e2d9cb358c8c0175ba6fd7e6`, 9 124 894 octets. **`hype-cours-baby.js` md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets (1,73 Mo) — À POUSSER AUSSI.** Aucune preview. Aucun SQL.**
 
 **Ancienne version (108) — 08/08/2026 (SESSION 108 · FILET DE SECOURS SUR LES CARTES DE MEMORY) — md5 `9881edf35f11f24c4d4071355ea91a0f`, 9 124 095 octets. `hype-cours-baby.js` inchange depuis la 107. **4 FICHIERS A DEPLACER : k548, k550, k551, k552 de la racine vers `images/`.** Aucun SQL.**
 
@@ -116,6 +118,143 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 110 · LA CAUSE RÉELLE DES COUVERTURES QUI NE CHANGEAIENT PAS
+
+**index.html md5 `df70065f9dcd6e32e25181260f1379fc`, 9 128 897 octets. Aucun SQL.**
+
+### LA LEÇON DE LA JOURNÉE : L'ORDRE DE CHARGEMENT DE HYPE_IMGS
+
+Les douze couvertures Baby ne changeaient pas, quoi qu'on écrive. Blandine avait déjà essayé par
+elle-même, sans succès, avant cette session.
+
+**Cause : `HYPE_IMGS` est un objet, et le dernier fichier chargé gagne.** Les déclarations
+`k644`–`k657` étaient posées dans un `<script>` inline situé **entre les lots `hype-images-113` et
+`hype-images-114`**. Or **neuf lots se chargent après** (114 à 122), et le SUIVI donne le lot 122
+comme « le dernier occupé ». L'un d'eux redéfinit ces clés et écrasait les chemins de fichiers.
+
+**Correctif : le bloc de déclarations a été déplacé APRÈS le dernier lot et AVANT
+`hype-cours-baby.js`.** Vérifié par script : **0 lot d'images ne se charge plus après lui.**
+
+**LES DEUX BOUCLES DE CONVENTION N'ONT PAS ÉTÉ TOUCHÉES, ET C'EST VOLON9 128 897RE.**
+`k547`–`k554` et `k615`–`k628` restent avant les lots. Leur sémantique est celle d'un *filet de
+sécurité* : elles déclarent un chemin de fichier, et si un lot définit ensuite la même clé en
+base64, le base64 gagne. L'image s'affiche quand le lot est là, le fichier prend le relais quand il
+manque. Les déplacer casserait ce comportement.
+
+La distinction à retenir :
+
+| Déclaration | Position | Sémantique |
+|---|---|---|
+| boucles `k547-k554`, `k615-k628` | **avant** les lots | filet : le lot gagne s'il existe |
+| clés uniques (`k644`–`k657` et suivantes) | **après** les lots | seule définition, ne doit pas être écrasée |
+
+**RÈGLE POUR LA SUITE, inscrite en commentaire dans le code à l'endroit de la déclaration :**
+toute nouvelle clé va après le dernier lot et avant les fichiers qui la consomment. Et **avant
+d'attribuer une clé, vérifier qu'aucun lot ne l'utilise déjà** — vérification impossible depuis le
+bac à sable, qui ne contient pas les lots : il faut demander à Blandine la dernière clé occupée.
+
+**Ce qui a fait perdre du temps, à ne pas refaire :** la simulation locale résolvait correctement
+`baby-c3 -> images/baby-c3-brosse.jpg`, alors que l'app affichait autre chose. **Cette divergence
+était le signe qu'il manquait quelque chose à la simulation** — précisément les neuf lots absents
+du bac à sable. Elle aurait dû déclencher l'examen de l'ordre de chargement immédiatement, au lieu
+de cinq vérifications successives demandées à Blandine sur des fichiers qui étaient tous corrects.
+
+### Le Memory : cause DIFFÉRENTE, ne pas confondre
+
+Question de Blandine : est-ce le même problème sur le Memory ? **Non.** Si un lot définissait
+`k550` en base64, l'image **s'afficherait**. Or les cartes montrent le carré cassé du navigateur :
+c'est donc bien le chemin `images/k550.jpg` qui est servi, et le fichier est à la **racine** du
+dépôt (`Hype / k550.jpg`, confirmé par Blandine).
+
+**Reste à faire par Blandine : déplacer `k548.jpg`, `k550.jpg`, `k551.jpg`, `k552.jpg` de la racine
+vers `images/`.** Aucun changement de code. Bénéfice annexe : ils tombent alors sous la règle
+`/images/*` du `_headers` et passent en cache un an.
+
+### Le pont Linguae → Hey Baby
+
+Implémenté **entièrement dans `index.html`**. La spec prévoyait de modifier `assistant.js` : ce
+n'est **pas nécessaire**. Vérifié : le relais reçoit `{ system, messages }` déjà construits, et
+c'est `getSystemPrompt` côté client qui assemble le contexte. Un déploiement de moins.
+
+Sur `?heybaby=1&lingo=en&ville=verone`, recette testée :
+
+```
+ecran ouvert       assistant
+champ pre-rempli   "Traduis-moi en anglais : "     (sans envoyer)
+URL nettoyee       /index.html?autre=x            (les autres parametres conserves)
+```
+
+et dans le contexte transmis au modèle :
+
+```
+Langue etrangere en cours d'apprentissage : anglais
+Revient du chapitre Linguae : verone
+CONSIGNE : si le cavalier apprend une langue, propose spontanement la traduction...
+```
+
+**Sans les paramètres : 0 ligne ajoutée au contexte.** La clé `hype_lingua_langue` seule suffit
+également, sans passer par le bouton.
+
+**PIÈGE ÉVITÉ : `window.__hbCoursCtx` n'a PAS été utilisé**, contrairement à ce que suggérait la
+spec. Son consommateur fait `return (c && c.titre) ? c : null` — **un contexte sans `titre` est
+jeté silencieusement**, le pont n'aurait jamais fonctionné. On passe par `window.__hbPrefill`, qui
+existait déjà et sert exactement à pré-remplir sans envoyer.
+
+### L'encart de palier Baby reste ouvert
+
+L'encart « Bravo, tu as terminé le chemin du Poney de Bronze » ne disparaissait pas : **il se
+repliait en pastille dès que `validerPalier` avait été appelé.** L'enfant perdait l'accès au
+récapitulatif et aux questions de rappel.
+
+Désormais l'encart complet reste affiché dans les trois états ; **seul le bouton d'action cède la
+place à une pastille de réussite** quand le palier est validé. Vérifié en exécutant le composant :
+**19 éléments rendus à l'état « déjà fait », contre 3 auparavant.**
+
+**Note :** le niveau Or utilise `FinCheminBabyCarte`, structurellement différente (carte de fin de
+parcours, sans récapitulatif ni rappels). Blandine l'a remarqué. **Non aligné pour l'instant.**
+
+### Le cadrage des pages de quiz
+
+`EcranQuiz` avait `minHeight: "100dvh"` alors que la barre d'onglets occupe **84 px** : l'écran
+était systématiquement 84 px trop grand, d'où l'obligation de défiler vers le bas pour atteindre
+le bouton ou vers le haut pour revoir l'image.
+
+Corrigé en `calc(100dvh - 84px)`, **la convention déjà employée par sept autres écrans** dont
+`CouvAffiche`. `height` est fixé en plus de `minHeight` pour que la zone d'image se calcule sur
+l'espace réellement disponible : elle passe de `37vh` à `37%`.
+
+**MÊME DÉFAUT AILLEURS, non corrigé faute d'accord :** `EcranExamenBlanc` (3 occurrences),
+`EcranJeuGalop`, `EcranReprisesFiches`. L'examen blanc a peut-être besoin de défiler.
+
+### GALOPS_I18N traduit en allemand
+
+Les 8 niveaux reçoivent `titre`, `sousTitre` et `competences` en allemand — **24 champs**.
+`Galopp` avec deux `p`, comme dans les 92 chapitres.
+
+Compteur des libellés sans allemand : **522 → 498**. Blocs restants par ordre de priorité :
+`I18N` (317, la connexion et l'onboarding — le premier écran qu'un Allemand voit),
+`BADGES_I18N` (59), `LEGENDES_HYPE` (50, surestimé : noms propres et mots identiques),
+puis une soixantaine dispersés.
+
+### Contrôles passés
+
+- **`node --check`** sur les 16 blocs inline après chaque étape : tout OK.
+- **Une régression rattrapée avant livraison :** un premier essai sur le bouton du palier laissait
+  une parenthèse en trop (`}));` ferme trois choses, deux avaient été refermées). Détectée par
+  `node --check`, index restauré depuis la référence, correctif refait proprement.
+- **Composant `PalierBabyCarte` exécuté** dans ses trois états avec un React factice.
+- **Pont testé** sur quatre cas, dont l'absence de paramètres et la clé seule.
+- **Chaîne d'images simulée** de bout en bout : `HYPE_IMGS` → fichier de cours → convertisseur.
+- **Preuve de rendu** six langues : 14 053 valeurs, **IDENTIQUE AU CARACTERE PRES**.
+- **Chaque remplacement vérifié unique** avant écriture ; deux ancres fausses rejetées sans écrire.
+
+### Consigne de livraison de Blandine
+
+**Ne jamais envoyer le SUIVI seul** — l'ouvrir sans l'index fait planter son téléphone. Il doit
+être livré **avec l'index à chaque fois**, et mis à jour à chaque session.
 
 ---
 
