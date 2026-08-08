@@ -10,7 +10,11 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 08/08/2026 (SESSION 107 · NOUVELLES COUVERTURES DU CHEMIN BABY) — md5 `79459a876099f9f9cd9eb69ed1f89acc`, 9 120 913 octets. **hype-cours-baby.js md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets — MODIFIE, a pousser aussi.** **13 images a pousser dans `images/`.** Aucune preview. Aucun SQL. Detail dans la section SESSION 107.**
+**Version actuelle de l'index.html : 08/08/2026 (SESSION 109 · ACCUEIL ENTIÈREMENT ALLEMAND, CARTE LINGUAE) — md5 `e72f9d89e2d9cb358c8c0175ba6fd7e6`, 9 124 894 octets. **`hype-cours-baby.js` md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets (1,73 Mo) — À POUSSER AUSSI.** Aucune preview. Aucun SQL.**
+
+**Ancienne version (108) — 08/08/2026 (SESSION 108 · FILET DE SECOURS SUR LES CARTES DE MEMORY) — md5 `9881edf35f11f24c4d4071355ea91a0f`, 9 124 095 octets. `hype-cours-baby.js` inchange depuis la 107. **4 FICHIERS A DEPLACER : k548, k550, k551, k552 de la racine vers `images/`.** Aucun SQL.**
+
+**Ancienne version (107) — 08/08/2026 (SESSION 107 · NOUVELLES COUVERTURES DU CHEMIN BABY) — md5 `79459a876099f9f9cd9eb69ed1f89acc`, 9 120 913 octets. **hype-cours-baby.js md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets — MODIFIE, a pousser aussi.** **13 images a pousser dans `images/`.** Aucune preview. Aucun SQL. Detail dans la section SESSION 107.**
 
 **Ancienne version (106) — 08/08/2026 (SESSION 107 · 12 COUVERTURES BABY + PUZZLE DU BRONZE) — md5 `79459a876099f9f9cd9eb69ed1f89acc`, 9 120 913 octets. **hype-cours-baby.js md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets — MODIFIE, a pousser aussi.** **13 IMAGES a pousser dans `images/`.** Aucune preview. Aucun SQL. Detail en SESSION 107 ci-dessous.**
 
@@ -112,6 +116,235 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 109 · L'ACCUEIL PARLE ALLEMAND, ET LA CARTE LINGUAE
+
+**index.html md5 `e72f9d89e2d9cb358c8c0175ba6fd7e6`, 9 124 894 octets.**
+**hype-cours-baby.js md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets — inchangé depuis la 107, mais À POUSSER : il ne l'avait pas été.**
+
+### L'incident du matin, à retenir
+
+Les douze nouvelles couvertures Baby ne s'affichaient pas. Trois causes empilées, démêlées une par une :
+
+1. **Les noms de fichiers.** Les images ont été poussées sous `baby-c3-brosse.jpg` et non
+   `couv-baby-c3-brosse.jpg`. Les déclarations de l'index ont été alignées sur les noms RÉELS.
+   Vérifié : **13 sur 13 concordent** désormais, par comparaison script contre la liste observée.
+2. **`hype-cours-baby.js` n'avait pas été poussé.** J'ai affirmé à tort qu'il était bon. Le signe
+   qui aurait dû me mettre en garde : Blandine voyait les **anciennes** images, pas des vignettes
+   vides. Voir l'ancienne image prouve que l'ancienne clé est lue, donc l'ancien fichier de cours.
+3. Le puzzle fonctionnait parce que son nom, `puzzle-baby-bronze.jpg`, n'avait pas changé.
+
+**Règles tirées de cet épisode :**
+
+- **Ne plus inventer de noms de fichiers.** Revenir à `kNNN.jpg`, déclaré par la boucle de
+  convention. Chaque nom descriptif est un intermédiaire de plus entre ma livraison et le dépôt,
+  donc une occasion de divergence. C'était mon idée, elle a coûté une heure.
+- **Ne jamais demander à Blandine de chercher une chaîne dans un fichier de données.** 1,8 Mo de
+  JavaScript sur un téléphone, c'est impossible. Les repères utilisables sont la **taille du
+  fichier** et le **chemin** affichés par GitHub, lisibles en deux secondes.
+- **Ne jamais affirmer qu'un fichier est à jour sans preuve.** Si je ne peux pas le vérifier, le
+  dire.
+
+### La carte Hype Linguae de l'accueil
+
+Quatre niveaux, conformes à la Bible (label, titre, slogan, une ligne) :
+
+```
+PARLER CHEVAL AILLEURS        (label turquoise, traduit)
+HYPE LINGUAE                  (Cinzel)
+Ride the world                (slogan — JAMAIS traduit, comme « YOUR EQUESTRIAN WORLD »)
+Un langage équestre universel. (traduit, six langues)
+```
+
+Allemand : `Pferdesprache weltweit` · `Ride the world` · `Eine universelle Reitsprache.`
+
+**Deux lignes descriptives s'étaient empilées** au fil des échanges, ce qui faisait cinq lignes de
+texte sur la carte. La longue a été retirée : la Bible impose un sous-titre de deux lignes maximum
+et un texte qui ne dépasse pas le tiers du visuel.
+
+### L'accueil est entièrement lisible en allemand
+
+`L5acc(fr, en, es, it, ja, de)` prend l'allemand en **sixième** argument, et son absence faisait
+retomber sur le français (`de || fr`). **Seize appels sur dix-neuf ne le fournissaient pas.**
+
+Les seize sont complétés. Vérifié par script : **19 appels sur 19 ont l'allemand, 0 libellé ne
+retombe plus sur le français.**
+
+| Français | Allemand |
+|---|---|
+| Mon monde · Ton univers | Meine Welt · Deine Welt |
+| Mon Écurie | Mein Stall |
+| Ensemble · Communauté équestre | Gemeinsam · Reitergemeinschaft |
+| Entre cavaliers · Mes messages | Unter Reitern · Meine Nachrichten |
+| Écris à ton écurie, réponds à tes amis. | Schreib deinem Stall, antworte deinen Freunden. |
+| Mon apprentissage · Théorie des Galops | Mein Lernweg · Theorie der Galopps |
+| Du Galop 1 au Galop 7, à ton rythme. | Vom Galopp 1 bis zum Galopp 7, in deinem Tempo. |
+| Parler cheval ailleurs | Pferdesprache weltweit |
+| Le Sprint · 60 secondes | Der Sprint · 60 Sekunden |
+| L'actualité · Sélection · Nos partenaires | Aktuelles · Auswahl · Unsere Partner |
+
+**`Galopp` avec deux `p`**, comme dans les 92 chapitres, pour ne pas contredire les cours.
+
+### AUDIT : CE QUI RESTE SANS ALLEMAND DANS L'APPLICATION
+
+Mesuré sur l'index, commentaires exclus, en distinguant la nature de chaque dictionnaire :
+
+| Nature | Nombre | Quoi |
+|---|---|---|
+| **Libellés d'interface** | **~514** | dictionnaires `{fr, en, es, it, ja}` sans clé `de` |
+| Affiches par langue | 13 | infographies dont la version allemande n'existe pas |
+| Expressions à examiner | 47 | variables, pas du texte littéral |
+
+**Les blocs dominants, d'après l'échantillonnage :** les écrans de **connexion et d'accueil
+initial** (« Rejoignez-nous ! », « Bon retour », « Continuer avec Google », « Adresse email »,
+« Mot de passe », « Apprends et révise les Galops »…) et les **noms de couleurs** de la palette
+(Turquoise, Anthracite, Bordeaux Crimson, Doré…).
+
+**Attention, l'attribution par écran n'est pas fiable** avec la méthode employée : elle rattachait
+400 libellés à `BanniereFond`, ce qui est faux — la détection décroche sur les fonctions fléchées
+et les `const X = () =>`. À refaire proprement avant de planifier le chantier.
+
+Ordre suggéré, du plus visible au moins visible : **connexion et inscription** (c'est la première
+chose qu'un Allemand voit), puis les **noms de couleurs**, puis le reste au fil de l'eau.
+
+### AUDIT : CE QU'ON PEUT ENCORE DÉTACHER
+
+L'index fait **8,17 Mo** après la sortie de Baby.
+
+**Les tables de cours restantes — 3,09 Mo, soit 38 %.** Dépendances réelles mesurées :
+
+| Table | Taille | Réfs images | Constantes du bloc inline |
+|---|---|---|---|
+| `COURS_GALOP4_FR` | 0,66 Mo | 15 | **aucune** |
+| `COURS_GALOP6_FR` | 0,06 Mo | 1 | **aucune** |
+| `COURS_GALOP5_FR` + `G7` | 0,02 Mo | 0 | **aucune** |
+| `MEMORY_PONEY_NIVEAUX` | 0,04 Mo | 120 | **aucune** |
+| `COURS_GALOP3_FR` | 1,01 Mo | 12 | 6 constantes `INFOG_*` + `GALOPS_HERO` |
+| `COURS_GALOP2_FR` | 0,50 Mo | 3 | 7 constantes `COUV_*` / `INFOG_*` / `PHOTO_*` |
+| `COURS_GALOP1_I18N` | 0,84 Mo | 133 | `GALOPS_HERO`, `INFOG_SECURITE_G1`, `INFOG_SELLERBRIDER_G1` |
+
+**Prochain coup évident : `COURS_GALOP4_FR` + G5 + G6 + G7 réunis, soit 0,74 Mo, aucune
+dépendance.** Même recette exactement que Baby, un seul fichier `hype-cours-galops-sup.js`.
+
+`MEMORY_PONEY_NIVEAUX` est petit mais **sans aucune dépendance** malgré ses 120 références
+d'images : bon candidat gratuit à joindre au même lot.
+
+Les Galops 1, 2 et 3 en dernier, **en sortant leurs constantes d'affiches avec eux** — c'est
+précisément ce qui avait fait échouer la session 71.
+
+**Les commentaires : 0,53 Mo, soit 6 % du fichier.** Le SUIVI inline en `<!-- -->` pèse 0,11 Mo,
+les notes de code en `/* */` 0,42 Mo. **À NE PAS SUPPRIMER** : ce sont elles qui expliquent
+pourquoi chaque correctif délicat est écrit comme il l'est, et plusieurs ont déjà évité de refaire
+un bug. 6 % est un prix raisonnable pour cette mémoire. Le vrai levier reste le cache, pas la
+suppression de commentaires.
+
+### Contrôles passés
+
+- **`node --check`** sur les 15 blocs inline à chaque étape : tout OK.
+- **Preuve de rendu** contre l'état d'avant, six langues : 14 053 valeurs, **IDENTIQUE AU
+  CARACTERE PRES** — aucun contenu de cours touché par les modifications de l'accueil.
+- **Rendu** : 1 881 éléments par langue, aucune anomalie.
+- **Chaque remplacement vérifié unique** avant écriture. Deux ancres fausses ont été rejetées
+  avant d'écrire, ce qui a évité d'insérer du texte au mauvais endroit.
+
+---
+
+## SESSION 108 · LES CARTES DE MEMORY NE CASSENT PLUS
+
+**index.html md5 `9881edf35f11f24c4d4071355ea91a0f`, 9 124 095 octets. Aucun SQL.**
+**Aucune image a produire — mais 4 fichiers a DEPLACER dans le depot.**
+
+### Le symptome et la cause
+
+Blandine signale des cartes affichant le carre au point d'interrogation du navigateur dans
+« Les allures » et « Le saut d'obstacles ».
+
+Ces deux niveaux sont **les seuls du Memory a utiliser des cles servies par de vrais fichiers** :
+`k550` et `k552` pour les allures, `k548` et `k551` pour les obstacles. Les 98 autres cles du jeu
+sont en base64 dans les lots `hype-images-*.js` et ne peuvent pas casser ainsi.
+
+**Cause confirmee par Blandine sur GitHub : le chemin du fichier est `Hype / k550.jpg`, sans
+`images/`.** Les quatre fichiers sont a la RACINE du depot, alors que la boucle de convention
+declare `images/k550.jpg`. La ressource n'existe donc pas a l'adresse demandee.
+
+**Reparation, sans aucune modification de code : deplacer `k548.jpg`, `k550.jpg`, `k551.jpg` et
+`k552.jpg` de la racine vers `images/`.** La regle `/images/*` du `_headers` les mettra alors en
+cache un an, ce qui n'est pas le cas a la racine.
+
+### Pourquoi le garde-fou existant ne pouvait rien voir
+
+Le code grise deja un niveau incomplet :
+
+```js
+const niveauxJouables = MEMORY_PONEY_NIVEAUX.filter((n) => n.paires.every((p) => !!p.src) && !n.estBoss);
+```
+
+Mais ce test verifie que `src` **existe**, pas qu'il **se charge**. Ici `src` vaut bien
+`"images/k550.jpg"` : la declaration est correcte, c'est le fichier qui manque. D'ou l'etiquette
+PROCHAINEMENT absente sur des niveaux pourtant casses.
+
+### Le correctif : un repli sur l'emoji du theme
+
+Un `onError` a ete pose sur l'image des cartes. Si la ressource ne charge pas, l'image est masquee
+et remplacee par **l'emoji du theme** — exactement le repli deja prevu pour une paire sans `src`.
+La carte reste jouable, la partie n'est pas gachee, et un avertissement part dans la console :
+
+```
+[Hype] Memory : image absente -> images/k550.jpg
+```
+
+Un verrou `dataset.replie` empeche le repli de se declencher deux fois sur la meme carte.
+
+### DEUX GRILLES, PAS UNE — le garde-fou a servi
+
+Le premier essai a echoue avant ecriture : l'ancre etait trouvee **2 fois**. Il existe deux jeux
+de memory distincts, **`MemoryGalop`** et **`MemoryPoneyGrille`**, avec le meme code de carte et
+donc le meme defaut. Le correctif a ete applique aux deux, et le nombre d'applications verifie
+(2 attendues, 2 obtenues) avant ecriture.
+
+**A retenir : ne jamais conclure qu'un composant est unique parce qu'on en a trouve un.** Le
+controle `count == 1` aurait ici fait rater la moitie du correctif s'il avait ete ecrit en
+`replace` sans verification.
+
+### La liste des fichiers attendus
+
+`liste-fichiers-images.txt` est genere depuis l'index : **62 cles servies par un vrai fichier**,
+toutes attendues dans `images/`. Elle recense les boucles de convention (k547-k554 en `.jpg`,
+k615-k628 en `.jpeg`) et les declarations explicites (k644-k657). Toute absence dans `images/`
+produit desormais un repli propre au lieu d'un carre casse — mais l'image manque toujours.
+
+A comparer une fois avec le contenu reel de `images/` : c'est le controle qui manquait, et qui
+aurait evite de chercher a l'aveugle.
+
+### Sur le base64 : la convention est respectee
+
+Question de Blandine : « on devait arreter le base64 ». La convention inscrite dans le code dit
+*« a partir de k547 »* — elle ne vise que les images **nouvelles**. Les 98 cles base64 du Memory
+sont anterieures et n'ont jamais ete converties.
+
+**Conversion de l'ancien base64 : non prioritaire.** Le gain de poids est deja pris depuis que le
+`_headers` met les 119 lots en cache un an. Le risque, lui, est reel : extraire des centaines
+d'images et reecrire toutes les declarations, avec pour symptome d'erreur exactement le carre
+casse qu'on vient de corriger. A envisager plus tard, par lots, avec un controle prouvant que
+chaque cle utilisee est servie.
+
+### Contrôles passés
+
+- **`node --check`** sur les 15 blocs inline : tout OK.
+- **Repli teste sur un faux DOM**, pour les deux composants : image masquee, emoji du theme
+  affiche a 52 px, avertissement emis, second appel ignore, et repli sur `\u2754` quand la carte
+  n'a pas d'emoji.
+- **Preuve de rendu** contre l'index d'avant, six langues : 14 053 valeurs,
+  **IDENTIQUE AU CARACTERE PRES**. Aucune donnee de cours touchee.
+- **Deux regions contigues modifiees**, +3 178 octets, correspondant aux deux grilles.
+
+### Reste ouvert sur le Memory
+
+Sur les captures, « Les allures » et « Le saut d'obstacles » portent l'etiquette PROCHAINEMENT
+alors qu'ils sont jouables et notes. A verifier : soit l'etiquette est fausse, soit le verrou ne
+verrouille pas l'acces. **Non corrige, non diagnostique.**
 
 ---
 
