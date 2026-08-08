@@ -132,6 +132,71 @@ Aucune amélioration d'architecture réalisée sur cette session (passation).
 
 ---
 
+## 📲 SESSION 162 · LINGUAE (08/08) — LE MINIMUM INSTALLABLE : LINGUAE A SON ICÔNE (v26)
+
+Blandine : « du coup là j'ai une entrée indépendante et la possibilité d'un raccourci qui lui soit propre ? » — oui, et il ne manquait que l'emballage. Le module tourne seul depuis la v22 (appels au pont tous gardés, langue de lecture devenue sa propre donnée). Livré : **manifest, icônes, mode standalone**, sans déplacer un seul fichier.
+
+### ✅ Ce qui est livré
+· **`linguae.webmanifest`** — `name` Hype Linguae, `short_name` Linguae, `start_url: /lingo.html`, `display: standalone`, `orientation: portrait`, fonds et thème `#060709`, trois icônes dont une `maskable`. JSON validé.
+· **`icone-linguae-512.png`, `icone-linguae-192.png`, `apple-touch-icon-linguae.png` (180)** — dérivées du visuel envoyé par Blandine (boussole de laiton, cheval cabré sur la rose des vents).
+· **Balises dans `lingo.html`** : `link rel=manifest`, `apple-touch-icon`, `apple-mobile-web-app-capable`, `status-bar-style: black-translucent`, `apple-mobile-web-app-title: Linguae`.
+
+### 🎨 Le choix du recadrage, et pourquoi PAS l'image entière
+L'image envoyée compte cinq sujets (boussole ouverte, quatre pastilles dorées, cheval noir) : **à 56 px c'est une bouillie**. Seul le **cadran avec le cheval cabré** tient comme icône — un sujet unique, centré, circulaire. Deux recadrages essayés puis **simulés à 120 / 80 / 56 px** avant de trancher : le cadrage serré gagne, le cheval reste lisible à la taille réelle d'une icône d'écran d'accueil. ⚠️ Méthode à répéter : une icône se juge à 56 px, jamais en grand.
+⚠️ L'icône est **laiton et or**, pas turquoise. Cohérente avec l'or déjà employé (« Ma collection », les cartes), mais c'est un écart assumé au « la lumière est toujours turquoise » de la bible. Décision de Blandine, à confirmer si elle veut une version turquoise.
+
+### ⚠️ CE QUE CE N'EST PAS — à ne pas laisser croire
+1. **Aucun hors-ligne.** Il n'y a pas de service worker à Linguae : sans réseau, l'icône ouvre une page d'erreur, là où celle de Hype s'ouvre. Le hors-ligne exige le dossier **`linguae/`** — un SW ne met en cache que ce qui est dans SA portée, donc les 30 cartes, 30 fonds, clips et 21 lexiques doivent y descendre. À faire après la série de cartes.
+2. **`scope` volontairement absent** du manifest : il vaudrait « / » et recouvrirait celui de Hype. À poser sur `/linguae/` le jour du déplacement, pas avant — un scope erroné **empêche l'installation**.
+3. **Deux applis installées depuis la même origine sur iOS : non vérifié.** Le stockage partagé est voulu (la progression suit), mais le comportement des deux fenêtres selon les versions d'iOS n'est pas garanti. À tester sur le téléphone, pas à supposer.
+4. `index.html` n'est pas dans ce fil : la configuration exacte du raccourci de Hype n'est pas connue d'ici. Ne pas affirmer que les deux se comportent à l'identique.
+
+### 🌍 Décision arrêtée : MÊME DOMAINE
+Même origine = même `localStorage` (maîtrise, cartes, langue de lecture suivent d'une icône à l'autre) + session Supabase déjà présente (aucune reconnexion, ce qui rend « compte Hype obligatoire » indolore) + un seul déploiement. Deux domaines sépareraient **définitivement** les deux avancements, sans fusion possible. Le seul argument inverse serait commercial (vendre Linguae sans dire Hype), et ce n'est pas le but.
+
+### 🧪 Banc
+Balises présentes et résolues, `apple-mobile-web-app-title` = `Linguae`, standalone = `yes`, marqueur `V26 · 8 AOÛT · FR → EN`, aucune erreur JS. Seuls absents : les 21 lexiques, normal dans ce bac à sable.
+
+### 📦 À pousser (lot cumulatif v21 → v26)
+`lingo.html` · `linguae.webmanifest` · `icone-linguae-512.png` · `icone-linguae-192.png` · `apple-touch-icon-linguae.png` · `ouverture.mp4` (si la v25 n'est pas déjà poussée).
+
+### 🧭 Préparation Flutter
+Le module a maintenant son **identité d'application propre** (manifest, icônes, point d'entrée déclaré) en plus de son contrat de données (`hype_lingua_lecture`). Deux des trois conditions de son détachement de `index.html` sont réunies ; il reste la portée (dossier `linguae/` + service worker) et la porte du compte.
+
+---
+
+## 🎬 SESSION 161 · LINGUAE (08/08) — LE NOUVEAU FILM D'OUVERTURE ET LE CHEVAUCHEMENT DU CARNET (v25)
+
+### 🔴 Le chevauchement — défaut que J'AVAIS introduit en v22
+Capture de Blandine : « ça se chevauche et on dirait qu'il y a un vieux titre qui traîne derrière ». **Ce n'était pas un vieux titre** : `#ouvMuet` (« mode sans le son ») portait `margin:-18px` pour venir se coller sous l'ancien bouton de langue unique, qui avait `margin:12px 0 30px`. En v22 ce bouton est devenu `#ouvPaire` (marge 0 0 10px) : les −18 px remontaient donc la ligne du son **dans les drapeaux**. Corrigé en `4px auto 26px`, et `#ouvPaire` passe à 16 px de bas.
+⚠️ **Ne jamais remettre de marge négative ici** : elle dépend du bloc du dessus, qui a déjà changé deux fois.
+Banc géométrique (les quatre blocs, bord à bord) : langPhrase 158→172 · paire 180→230 · muet 246→264 · version 290→300. **Aucun chevauchement**, et `elementFromPoint` au centre de la ligne du son renvoie bien `ouvMuet` (elle n'est plus sous un autre élément).
+
+### ✅ Le nouveau film d'ouverture
+Blandine : « je supporte plus la vidéo d'accueil, remets celle-ci ». Source reçue : **HEVC 752×560 paysage, 5,1 s, avec son**. Chaîne appliquée : H.264, **muet**, faststart, CRF 20, **résolution native conservée** (le fichier ne fait que 560 px de haut : l'agrandir à 720 n'ajoute rien et gonfle le poids). Résultat : **960 Ko**.
+⚠️ **Filigrane « Ai » en haut à gauche**, présent sur toutes les images. Masqué par un cache noir à bord fondu (noyau opaque 96×80, dégradé gaussien jusqu'à 190×165) : le coin est du ciel étoilé quasi noir, le cache y est invisible. Vérifié sur trois images (0,4 s / 2,5 s / 4,9 s).
+⚠️ **Le clip est en PAYSAGE.** `ajusterCadrage()` choisit donc `contain` : il s'affichera en bande sur fond noir, pas en plein écran comme l'ancien (qui était en portrait). J'ai essayé une variante plein écran (fond flouté assombri derrière) : **elle a l'air d'une capture d'écran**, bord arrondi visible et halo clair sous la bande. **Non livrée.** Un vrai plein écran demanderait un clip portrait à la source.
+· **`FILM_FILET` : 10500 → 5600 ms.** Le filet de secours était calé sur l'ancien film de 10,1 s ; laissé tel quel, il retenait le bouton de sortie cinq secondes de trop sur une image figée. ⚠️ À régler à nouveau à chaque remplacement du film.
+
+### 🔴 Le piège qui aurait coûté un aller-retour : `ouverture.mp4` n'avait PAS de `VER`
+`arrivee-<ref>.mp4` la portait depuis toujours ; **l'ouverture et `depart.mp4`, non**. Le nom du fichier ne changeant pas, le navigateur et le service worker auraient servi l'ANCIEN film indéfiniment : Blandine aurait poussé la nouvelle vidéo et revu l'ancienne, sans moyen de comprendre. `VER` ajoutée aux deux. C'est le défaut documenté en tête du SUIVI, resté vivant sur les deux seuls clips non paramétrés.
+⚠️ **Playback non vérifié au banc** : le Chromium de ce bac à sable n'a pas de décodeur H.264, la balise part en `error` et `terminerOuverture()` vide la source. Format, durée, poids et images vérifiés à l'ffprobe/ffmpeg ; **le rendu réel est à juger sur le téléphone de Blandine.** Ne pas prétendre l'avoir vu jouer.
+
+### ✅ La faute de frappe CSS corrigée
+`.ds.ouvert` : `rgba(32,517,245,.14)` → `rgba(32,217,245,.14)`. La couleur était invalide, donc le navigateur jetait **toute** la déclaration `background` : les destinations ouvertes n'avaient jamais eu leur dégradé turquoise.
+
+### 💡 DEUX CHAPITRES DEMANDÉS PAR BLANDINE — lieu à trancher, rien commencé
+· **La chasse à courre.** Recommandation : **Compiègne**, pas Fontainebleau — la vénerie française vit dans la forêt de Compiègne (équipages, trompes, tenues), Fontainebleau est identifié Grand Parquet, donc CSO et complet. Alternative internationale : Melton Mowbray / Leicestershire, berceau du fox hunting, mais la chasse à courre y est interdite depuis 2004 (trail hunting) — donc un vocabulaire au passé. ⚠️ Sujet politiquement sensible : à traiter en vocabulaire et tradition, sans plaidoyer.
+· **Le horsemanship.** Ce n'est pas un lieu, c'est une école — le piège est de le poser n'importe où. Il descend de la tradition **vaquero de Californie** (bride horse, hackamore, snaffle) : recommandation **Santa Ynez, Californie**. Lexington est déjà pris par le pur-sang, Tamworth par le western de compétition. Le vocabulaire y est riche et intraduisible (feel, timing, balance, release) — un bon chapitre de niveau 3.
+
+### 📦 À pousser
+`lingo.html` **v25** + **`ouverture.mp4`** (le nouveau film, à écraser). Contient v21 → v25.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session (correction d'affichage et remplacement d'actif).
+
+---
+
 ## 🐴 SESSION 160 · LINGUAE (08/08) — LA PAGE D'ENTRÉE REFAITE, LE TITRE REJETÉ SUPPRIMÉ (v23)
 
 🔴 **Ma faute, signalée par Blandine : « on avait dit non pour cette version là », « on retrouve échanger bla-bla-bla ».** En v22 j'avais laissé `introTitre`/`introCit` intacts en annonçant qu'on trancherait « devant la maquette ». J'avais confondu **choisir le nouveau titre** (ouvert) et **retirer celui qu'elle avait barré** (tranché). Le second ne dépendait pas du premier. Leçon : un contenu refusé se retire tout de suite, un remplaçant se choisit après.

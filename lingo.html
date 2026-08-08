@@ -5,6 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#060709">
 <title>Hype Linguae · Anglais · La Traversée</title>
+
+<!-- ==================================================================
+     MINIMUM INSTALLABLE (8 aout 2026, v26)
+     Demande de Blandine : « une entree independante et un raccourci qui
+     lui soit propre », comme celui de Hype. Le module tournait deja seul
+     depuis la v22 (tous les appels au pont sont gardes, la langue de
+     lecture est sa propre donnee) ; il ne lui manquait que l'emballage.
+
+     ⚠️ CE N'EST PAS ENCORE UNE APPLI HORS LIGNE. Il n'y a pas de service
+     worker a Linguae : sans reseau, l'icone ouvrira une page d'erreur.
+     Le hors-ligne demande le dossier `linguae/` — un service worker ne
+     peut mettre en cache que ce qui est dans SA portee, donc les cartes,
+     les fonds, les clips et les 21 lexiques doivent y descendre. A faire
+     apres la serie de cartes, comme decide.
+
+     ⚠️ MEME DOMAINE QUE HYPE, ET C'EST VOULU : meme origine = meme
+     localStorage, donc la progression suit d'une icone a l'autre, et la
+     session Supabase est deja la (pas de reconnexion). Deux domaines
+     separeraient definitivement les deux avancements.
+
+     ⚠️ `scope` est volontairement absent : il vaudrait donc "/" et
+     recouvrirait celui de Hype. A poser sur "/linguae/" le jour du
+     deplacement, pas avant — un scope errone empeche l'installation.
+     ================================================================== -->
+<link rel="manifest" href="linguae.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon-linguae.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Linguae">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Cinzel:wght@500;600&family=Klee+One&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--turquoise:#20D9F5;--blanc:#F4F7FA;--gris:#8996A2;--or:#D4AF37}
@@ -238,7 +268,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .ds{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;margin-bottom:10px;
  border-radius:16px;text-align:left;background:rgba(255,255,255,.04);
  border:1px solid rgba(255,255,255,.09)}
-.ds.ouvert{background:linear-gradient(160deg,rgba(32,517,245,.14),rgba(10,14,18,.8));
+.ds.ouvert{background:linear-gradient(160deg,rgba(32,217,245,.14),rgba(10,14,18,.8));
  border-color:rgba(32,217,245,.42);box-shadow:0 16px 40px -26px rgba(32,217,245,.9)}
 .ds .dr{font-size:22px;flex:0 0 auto}
 .ds .dd{flex:1;min-width:0}
@@ -435,7 +465,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvLangPhrase{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
  color:#C3D0DA;margin:14px 0 8px}
 /* la paire de langues : je lis -> j'apprends (v22) */
-#ouvPaire{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 0 10px}
+#ouvPaire{display:flex;align-items:center;justify-content:center;gap:9px;margin:0 0 16px}
 #ouvPaire button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
  border-radius:14px;padding:7px 12px 6px;cursor:pointer;display:flex;flex-direction:column;
  align-items:center;gap:3px;min-width:76px}
@@ -452,7 +482,16 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  border-radius:12px;padding:6px 9px;font-size:21px;line-height:1;cursor:pointer}
 #ouvDrapeaux button.actif{border-color:rgba(32,217,245,.65);
  box-shadow:0 0 18px rgba(32,217,245,.22)}
-#ouvMuet{display:block;margin:-18px auto 26px;border:0;background:none;cursor:pointer;
+/* ⚠️ MARGE NEGATIVE RETIREE le 8 aout 2026. Elle valait -18px pour venir
+   se coller sous l'ancien bouton de langue unique, qui portait
+   `margin:12px 0 30px`. En v22 ce bouton a ete remplace par #ouvPaire
+   (margin 0 0 10px) : les -18px remontaient donc la ligne du son DANS les
+   drapeaux. Capture de Blandine : « ca se chevauche et on dirait qu'il y a
+   un vieux titre qui traine derriere » — ce n'etait pas un vieux titre,
+   c'etait cette ligne-ci passant sous les boutons. ⚠️ Ne pas remettre de
+   marge negative ici : elle depend du bloc du dessus, qui a change deux
+   fois. */
+#ouvMuet{display:block;margin:4px auto 26px;border:0;background:none;cursor:pointer;
  font-size:11.5px;letter-spacing:.08em;color:#9AA8B4;
  border-bottom:1px dashed rgba(255,255,255,.18);padding-bottom:2px}
 #ouvMuet.actif{color:var(--turquoise);border-bottom-color:rgba(32,217,245,.45)}
@@ -1359,7 +1398,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v23 · 8 août</p>
+    <p id="ouvVersion">v26 · 8 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1538,7 +1577,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=23";
+var VER = "?v=26";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -6309,7 +6348,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v23 · 8 août · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v26 · 8 août · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -6529,7 +6568,14 @@ function lancerFilm(){
   var v=S("ouvVid");
   if(S("ouvFilm").classList.contains("joue")) return;   /* deja en cours */
   S("ouvFilm").classList.remove("fini","refuse");
-  v.src="ouverture.mp4";
+  /* ⚠️ VER AJOUTEE ICI LE 8 AOUT 2026, ET C'ETAIT LE PLUS IMPORTANT.
+     `arrivee-<ref>.mp4` portait deja `VER` ; l'ouverture, NON. Le fichier
+     gardant le meme nom, le navigateur et le service worker servaient
+     l'ancien film indefiniment : Blandine aurait pousse la nouvelle video
+     et revu l'ancienne, sans aucun moyen de comprendre pourquoi. C'est
+     exactement le defaut documente en tete du SUIVI, reste vivant sur les
+     deux seuls clips non parametres. */
+  v.src="ouverture.mp4"+VER;
   ajusterCadrage(v);
   S("ouvFilm").classList.add("joue");
   S("ouverture").classList.add("joue");
@@ -6541,7 +6587,13 @@ function lancerFilm(){
      (evenement `ended`), ce filet ne servant que si l'evenement ne vient
      jamais — video absente, decodage bloque. */
   if(FILM_FILET) clearTimeout(FILM_FILET);
-  FILM_FILET=setTimeout(function(){ S("ouvFilm").classList.add("fini"); }, 10500);
+  /* ⚠️ 5600 ms depuis le 8 aout 2026 : le NOUVEAU film d'ouverture fait
+     5,1 s mesurees a l'ffprobe (l'ancien en faisait 10,1). Ce filet ne
+     sert que si l'evenement `ended` ne vient jamais — video absente,
+     decodage bloque ; le bouton de sortie apparait normalement a la vraie
+     fin. Laisse a 10500, il aurait retenu le bouton cinq secondes de trop
+     sur un ecran fige. ⚠️ A REGLER A NOUVEAU si le film est remplace. */
+  FILM_FILET=setTimeout(function(){ S("ouvFilm").classList.add("fini"); }, 5600);
 }
 
 (function(){
@@ -6643,7 +6695,9 @@ function lancerDepart(){
   vidDepart=document.createElement("video");
   vidDepart.muted=true; vidDepart.loop=true; vidDepart.autoplay=true;
   vidDepart.setAttribute("playsinline",""); vidDepart.setAttribute("webkit-playsinline","");
-  vidDepart.src="depart.mp4";
+  /* meme correction que pour l'ouverture : sans VER, un remplacement de
+     ce clip resterait invisible derriere le cache. */
+  vidDepart.src="depart.mp4"+VER;
   vidDepart.addEventListener("error",function(){ if(vidDepart&&vidDepart.parentNode)
     vidDepart.parentNode.removeChild(vidDepart); });
   S("depart").insertBefore(vidDepart, S("depart").firstChild);
