@@ -397,7 +397,17 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    nettoyage à part, à faire quand plus rien ne le lira.
    ================================================================== */
 #rail,#hud,#outils,#bas{opacity:0;pointer-events:none;visibility:hidden}
-#bGlobe{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 12px);z-index:12;
+/* ⚠️ z-index 12 -> 41 le 8 aout 2026. Blandine : « il est passe ou mon
+   globe ? ». Il n'avait pas disparu : il etait ENTERRE. Le carnet
+   (#ouverture) est en z-index 40 depuis qu'il est devenu la racine le
+   7 aout ; ce bouton restait a 12, donc dessous. Mesure faite :
+   `elementFromPoint` au centre du bouton renvoyait `ouverture` — present,
+   opacite 1, et intouchable. Valeurs identiques dans la v20 du matin :
+   le defaut est anterieur, il vient du court-circuit du chemin de nuit,
+   ou le bouton a ete SORTI de #outils sans que son z-index soit remonte.
+   41 est la meme valeur que #sprint et #collection, passes ce jour-la
+   pour exactement la meme raison. */
+#bGlobe{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 12px);z-index:41;
   padding:10px 15px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
   font-weight:600;color:var(--turquoise);background:rgba(32,217,245,.10);
   border:1px solid rgba(32,217,245,.4);border-radius:999px}
@@ -1436,13 +1446,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     </div>
     <div id="ouvDrapeaux" aria-label="Choisir sa langue de lecture"></div>
     <button id="ouvMuet" type="button">🔇 mode sans le son : non</button>
+    <!-- la porte principale du voyage, remontee ici le 8 aout 2026 -->
+    <button id="ouvPartir" data-t="partir">Partir</button>
     <!-- ⚠️ MARQUEUR DE VERSION, 7 aout 2026. Blandine deploie depuis un
          telephone et n'a aucun moyen de savoir quelle version tourne
          reellement. Trois fois cette semaine, un defaut deja corrige a ete
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v29 · 8 août</p>
+    <p id="ouvVersion">v30 · 8 août</p>
 
     <!-- ⚠️ AIDE A L'INSTALLATION (8 aout 2026). Demande de Blandine :
          « il faut aussi un truc qui aide a installer sur la page d'accueil
@@ -1480,7 +1492,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       vétérinaire » à l'étranger ne se monnaie pas.</p>
     </div>
 
-    <button id="ouvPartir" data-t="partir">Partir</button>
+    <!-- ⚠️ « Partir » A ETE REMONTE le 8 aout 2026, sous la paire de langues.
+         Il etait ICI, en bas du carnet : mesure au banc, a 4719 px du haut
+         d'une page qui en fait pres de 4000 — il fallait scroller tout le
+         carnet pour trouver la porte principale du voyage. Le bouton lui-meme
+         n'a pas change, seule sa place dans le document. -->
     <!-- ⚠️ AJOUTEES le 7 aout 2026 avec le court-circuit du chemin de nuit :
          la collection et le sprint n'etaient joignables QUE depuis l'ecran
          du chemin. Le carnet etant devenu la racine, il porte leurs portes. -->
@@ -1647,7 +1663,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=29";
+var VER = "?v=30";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -6498,7 +6514,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v29 · 8 août · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v30 · 8 août · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
