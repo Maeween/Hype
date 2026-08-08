@@ -132,6 +132,67 @@ Aucune amélioration d'architecture réalisée sur cette session (passation).
 
 ---
 
+## ⚡ SESSION 167 · LINGUAE (08/08) — LE LAG, ET LA NOUVELLE ICÔNE (v31)
+
+### 🐴 La nouvelle icône
+Visuel envoyé par Blandine : tête de cheval noir devant un globe turquoise cerclé de drapeaux. **Bien meilleure que la boussole** — sujet unique, fort contraste, et **turquoise donc dans l'identité** au lieu de l'or.
+⚠️ **Cadre retiré : 66 px rognés sur chaque bord.** L'image portait un contour de verre et une marge noire, et iOS applique **son propre masque arrondi** par-dessus : sans recadrage, on aurait eu un cadre dans un cadre. Contrôlé à 120 / 80 / **56 px** : la silhouette et le globe se lisent, les drapeaux deviennent une bande colorée — acceptable.
+⚠️ **iOS met l'icône en cache dur** : après changement, il faut **supprimer le raccourci et le réinstaller**. `VER` ne peut rien pour un `apple-touch-icon`.
+
+### 📊 Le lag — diagnostic mesuré
+· **12 animations infinies tournaient en permanence**, y compris celles d'écrans fermés. Une animation CSS ne s'arrête pas parce que son parent est masqué : le compositeur travaille pour des pixels que personne ne voit.
+· 1322 nœuds dans la page, **656 rien que dans le carnet**, haut de 3857 px et entièrement rendu.
+· 2 éléments à `filter: blur()`, 37 ombres portées, 39 dégradés.
+· ⚠️ **Amplificateur relevé sur ses captures : batterie à 7 %.** En mode économie d'énergie, iOS bride le rafraîchissement — le lag devient spectaculaire sans qu'une ligne ait changé.
+
+### ✅ Deux corrections
+1. **`content-visibility:auto` + `contain-intrinsic-size:auto 240px` sur `.vc`** : le navigateur saute la mise en page et la peinture des cartes hors écran. Plus gros levier sur une liste de 3857 px. ⚠️ À ne pas mettre sur un élément portant une animation d'entrée — elle ne se jouerait qu'à l'arrivée à l'écran. Les `.vc` n'en ont pas.
+2. **Animations suspendues sur les écrans fermés** : `#intro`, `#lecon`, `#sprint`, `#arrivee` en `:not(.on)`, et les fonds du carnet quand `#ouverture.parti`. Résultat mesuré : **12 animations infinies → 3**. Aucun changement visible, elles repartent au retour de l'écran.
+3. Ajouté au passage : **`prefers-reduced-motion`** respecté.
+
+### 🔴 DEUX INDICATEURS INUTILES, ET JE LE DIS
+· Mon premier indicateur — « ms par image de scroll » — donnait 16,67 avant et 16,64 après. **Il ne pouvait pas descendre plus bas : 16,67 ms EST la cadence de `requestAnimationFrame`.** Je mesurais l'intervalle entre les images, pas le travail fourni pendant chacune. Encore un test incapable de me contredire.
+· Second essai via le protocole devtools (`RecalcStyleDuration`, `LayoutDuration`) : 7,7 → 6,4 ms de style, layout à 0 dans les deux cas. **Chromium sans écran ne compose pas vraiment** : ces chiffres ne prouvent pas le gain.
+**Conclusion honnête : le gain réel n'est pas mesurable dans ce bac à sable.** Ce qui est établi et vérifiable, c'est la baisse structurelle des animations permanentes (12 → 3) et le saut de rendu des cartes hors écran. Le ressenti se juge sur le téléphone de Blandine, **batterie chargée** pour ne pas confondre avec le bridage d'iOS.
+(NB : le nombre de nœuds monte de 4468 à 5084 entre v20 et v31 — c'est le prix des ajouts du jour, bloc image, bandeau d'installation, 31ᵉ ville. Pas une régression du travail de performance.)
+
+### ⏳ Non fait, proposé
+Retirer les deux `filter: blur()` ou les remplacer par un dégradé sombre — en attente de l'avis de Blandine, c'est un choix visuel.
+
+### 📦 À pousser (lot cumulatif v21 → v31)
+`lingo.html` · **les trois icônes refaites** · `lingua-bloc.webp` · `hype-lingo-lex-horsemanship.js` · `linguae.webmanifest` · `ouverture.mp4`.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture. Dette notée : la politique d'animation est désormais **déclarée en un seul bloc CSS** au lieu d'être implicite, ce qui la rend auditable — mais les z-index restent épars (12, 40, 41, 42, 44, 45) et ont déjà causé deux défauts.
+
+---
+
+## 🌍 SESSION 166 · LINGUAE (08/08) — LE GLOBE ÉTAIT ENTERRÉ (v30)
+
+Blandine : « il est passé où mon globe ?? ». **Il n'avait pas disparu : il était enterré.**
+
+### 🔴 Le diagnostic, et il vient d'avant aujourd'hui
+`#bGlobe` était en **`z-index: 12`**. Le carnet `#ouverture` est en **40** depuis qu'il est devenu la racine le 7 août. Le bouton était donc **sous** le carnet : présent, opacité 1, et intouchable. Mesure décisive — `elementFromPoint` au centre du bouton renvoyait **`ouverture`**, pas `bGlobe`. C'est exactement la règle « vérifier ce qui est PEINT, jamais ce qui est déclaré ».
+⚠️ **Vérifié contre le fichier v20 du matin : valeurs identiques.** Le défaut est antérieur à la séance, il vient du court-circuit du chemin de nuit — le bouton avait été **sorti de `#outils`** (parce que masquer le chemin supprimait la seule porte du globe) sans que son z-index soit remonté. `#sprint` et `#collection` avaient été passés à 41 ce jour-là pour la même raison ; celui-ci a été oublié.
+· Correction : **`#bGlobe` en z-index 41.**
+
+### ✅ Et « Partir » était introuvable
+Mesuré au banc : à **4719 px du haut** d'un carnet qui en fait près de 4000. Il fallait dérouler tout le carnet pour atteindre la porte principale du voyage. Remonté **sous la paire de langues et le mode sans le son**, à 290 px. Le bouton n'a pas changé, seule sa place dans le document.
+
+### 🧪 Banc
+`bGlobe` : z-index 41, `elementFromPoint` renvoie **`bGlobe`**, tap réel → globe ouvert. `ouvPartir` : haut 290 px, peint, tap réel → globe ouvert. Aucune erreur JS. **Deux portes, les deux joignables.**
+
+### 📦 À pousser
+`lingo.html` **v30** (`VER = "?v=30"`), avec le lot v21→v29 s'il ne l'est pas : `lingua-bloc.webp`, `hype-lingo-lex-horsemanship.js`, `linguae.webmanifest`, les trois icônes, `ouverture.mp4`.
+
+### ⏳ Reste en file, inchangé
+`lingo-collection.html` (vue en grand, dos sans lettre, polices non chargées) · le **passeport** · **Clonbinane** et **Compiègne** · la lettre du Morne et l'audit des trente lettres (conversation « textes »).
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture. À noter comme dette : **les z-index sont des nombres épars dans le CSS** (12, 40, 41, 42, 44, 45) et ce défaut est le second causé par eux. Une échelle nommée — racine / écran / surface / film / présentation — les rendrait vérifiables d'un coup d'œil.
+
+---
+
 ## 📲 SESSION 165 · LINGUAE (08/08) — LA PAGE D'ENTRÉE, L'INSTALLATION, LE FILM EN PREMIER, LE RETOUR (v29)
 
 Grosse séance. Six demandes de Blandine, toutes livrées, et **trois pièges du fichier retombés dessus**.

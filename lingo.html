@@ -606,8 +606,60 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    impossible, pas seulement improbable. Le JS n'a pas changé, la classe
    `ouv` fait toujours tout le travail.
    ⚠️ NE PAS RÉINTRODUIRE `rotateY` ici. */
+/* ==================================================================
+   PERFORMANCE (8 aout 2026) — Blandine : « on lag a mort ».
+   MESURE AVANT : 15,2 ms par image pendant le scroll du carnet sur un
+   Chromium de BUREAU. La limite des 60 images/s est a 16,7 : on etait donc
+   deja a la limite sur une machine de bureau, donc effondre sur iPhone.
+   1322 noeuds dans la page, 656 rien que dans le carnet (3857 px de haut),
+   et 12 animations INFINIES qui tournaient en permanence.
+   ⚠️ Amplificateur constate sur ses captures : batterie a 7 %. En mode
+   economie d'energie iOS bride le rafraichissement — le lag devient
+   spectaculaire sans qu'une ligne de code ait change.
+   ================================================================== */
+
+/* 1 · LE CARNET NE CALCULE PLUS LES CARTES HORS ECRAN.
+   `content-visibility:auto` dit au navigateur de sauter la mise en page et
+   la peinture de ce qui n'est pas visible ; `contain-intrinsic-size` lui
+   donne la taille a reserver pour que la barre de defilement ne saute pas.
+   Sur une liste de 3857 px, c'est le plus gros levier disponible.
+   ⚠️ Ne PAS mettre sur un element qui porte une animation d'entree : le
+   navigateur ne la jouerait qu'a l'arrivee a l'ecran. Les `.vc` n'en ont
+   pas — leur retournement est declenche au tap. */
 .vc{position:relative;aspect-ratio:3/4;background:none;padding:0;
- width:100%;text-align:left}
+ width:100%;text-align:left;
+ content-visibility:auto;contain-intrinsic-size:auto 240px}
+
+/* 2 · LES ANIMATIONS DES ECRANS FERMES S'ARRETENT.
+   Une animation CSS ne s'interrompt PAS parce que son parent est masque :
+   le compositeur continue de travailler pour des pixels que personne ne
+   voit. Douze animations infinies tournaient ainsi en permanence, dont
+   celles de trois ecrans fermes. Aucun changement visible : quand l'ecran
+   revient, l'animation repart.
+   ⚠️ `!important` necessaire : ces animations sont declarees sur l'element
+   lui-meme, et une declaration normale ne bat pas une autre declaration
+   normale plus specifique. */
+#intro:not(.on) #inFondImg,
+#lecon:not(.on) #lcFondImg,
+#sprint:not(.on) #spFondImg,
+#arrivee:not(.on) #fvImg,
+#arrivee:not(.on) #fvBrume,
+#arrivee:not(.on) .fv-p,
+#arrivee:not(.on) .lgReflet i,
+#arrivee:not(.on) .lgMed .anneau{animation:none!important}
+/* le carnet est la racine : ses fonds ne s'animent que lorsqu'il est
+   reellement au premier plan (`.parti` = un autre ecran a pris la main). */
+#ouverture.parti #ouvFondImg,
+#ouverture.parti #ouvFondBrume{animation:none!important}
+
+/* 3 · ET ON RESPECTE LE REGLAGE DU SYSTEME.
+   Une cavalière qui a active « reduire les animations » sur son telephone
+   le fait souvent pour une raison — mal des transports, migraines,
+   telephone lent. On la croit. */
+@media (prefers-reduced-motion: reduce){
+  #inFondImg,#lcFondImg,#spFondImg,#fvImg,#fvBrume,.fv-p,
+  #ouvFondImg,#ouvFondBrume,.lgReflet i,.lgMed .anneau{animation:none!important}
+}
 .vc .vflip{position:absolute;inset:0}
 .vc .vf{position:absolute;inset:0;border-radius:13px;overflow:hidden;
  border:1px solid rgba(255,255,255,.09);
@@ -1454,7 +1506,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v30 · 8 août</p>
+    <p id="ouvVersion">v31 · 8 août</p>
 
     <!-- ⚠️ AIDE A L'INSTALLATION (8 aout 2026). Demande de Blandine :
          « il faut aussi un truc qui aide a installer sur la page d'accueil
@@ -1663,7 +1715,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=30";
+var VER = "?v=31";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -6514,7 +6566,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v30 · 8 août · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v31 · 8 août · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
