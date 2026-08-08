@@ -19317,176 +19317,7 @@ const I18N = {
    Le contenu des Galops 2 à 7 reste en structure FR uniquement (démo limitée).
    ============================================================================ */
 /* ---------- GALOPS : titres, sous-titres, compétences ---------- */
-const GALOPS_I18N = [
-    {
-        id: "baby",
-        couleur: "#6C9BD1", disponible: true, nouveau: true,
-        icone: "🎠",
-        debloque: true,
-        titre: { fr: "Baby", en: "Baby", ja: "ベビー", es: "Baby", it: "Baby" },
-        sousTitre: {
-            fr: "Mes premiers pas avec le poney",
-            en: "My first steps with the pony",
-            ja: "ポニーとの最初の一歩",
-            es: "Mis primeros pasos con el poni",
-            it: "I miei primi passi con il pony",
-        },
-        competences: {
-            fr: ["Dire bonjour au poney", "Approcher en confiance", "Les bons gestes", "Premiers mots du cavalier"],
-            en: ["Saying hello to the pony", "Approaching with confidence", "The right gestures", "A rider's first words"],
-            ja: ["ポニーへの挨拶", "安心して近づく", "正しい動作", "乗り手の最初の言葉"],
-            es: ["Saludar al poni", "Acercarse con confianza", "Los gestos correctos", "Primeras palabras del jinete"],
-            it: ["Salutare il pony", "Avvicinarsi con fiducia", "I gesti giusti", "Le prime parole del cavaliere"],
-        },
-    },
-    {
-        id: 1,
-        couleur: "#5FBB46", disponible: true,
-        icone: "🌱",
-        debloque: true,
-        titre: { fr: "Galop 1", en: "Level 1", ja: "ギャロップ1", es: "Nivel 1", it: "Livello 1" },
-        sousTitre: {
-            fr: "Découverte du cheval",
-            en: "Getting to know the horse",
-            ja: "ポニーとの出会い",
-            es: "Descubriendo al caballo",
-            it: "Alla scoperta del cavallo",
-        },
-        competences: {
-            fr: ["Sécurité de base", "Pansage simple", "Robes et parties du corps", "Allures et équilibre"],
-            en: ["Basic safety", "Simple grooming", "Coat colors and body parts", "Gaits and balance"],
-            ja: ["基本的な安全管理", "簡単な手入れ", "毛色と体の部位", "歩法とバランス"],
-            es: ["Seguridad básica", "Cuidados simples", "Capas y partes del cuerpo", "Aires y equilibrio"],
-            it: ["Sicurezza di base", "Pulizia semplice", "Mantelli e parti del corpo", "Andature ed equilibrio"],
-        },
-    },
-    {
-        id: 2,
-        couleur: "#1FB6C9", disponible: true, nouveau: true,
-        icone: "🐴",
-        debloque: false,
-        titre: { fr: "Galop 2", en: "Level 2", ja: "ギャロップ2", es: "Nivel 2", it: "Livello 2" },
-        sousTitre: {
-            fr: "Autonomie de base",
-            en: "Building independence",
-            ja: "基本的な自立",
-            es: "Autonomía básica",
-            it: "Autonomia di base",
-        },
-        competences: {
-            fr: ["Seller/brider", "Allures au galop", "Premiers sauts", "Comportement du cheval"],
-            en: ["Tacking up", "Canter work", "First jumps", "Horse behavior"],
-            ja: ["鞍と頭絡の装着", "駈歩での運動", "初めての跳躍", "馬の行動学"],
-            es: ["Ensillar/embridar", "Trabajo al galope", "Primeros saltos", "Comportamiento del caballo"],
-            it: ["Sellare/imbrigliare", "Andature al galoppo", "Primi salti", "Comportamento del cavallo"],
-        },
-    },
-    {
-        id: 3,
-        couleur: "#FFC73C", disponible: true, nouveau: true,
-        icone: "🏇",
-        debloque: false,
-        titre: { fr: "Galop 3", en: "Level 3", ja: "ギャロップ3", es: "Nivel 3", it: "Livello 3" },
-        sousTitre: {
-            fr: "Indépendance en reprise",
-            en: "Independent riding",
-            ja: "自立した馬場運動",
-            es: "Independencia en pista",
-            it: "Indipendenza in maneggio",
-        },
-        competences: {
-            fr: ["Transitions", "Travail sans étriers", "Saut d'obstacle", "Anatomie du cheval"],
-            en: ["Transitions", "Riding without stirrups", "Show jumping", "Horse anatomy"],
-            ja: ["移行運動", "鐙なしでの運動", "障害飛越", "馬の解剖学"],
-            es: ["Transiciones", "Trabajo sin estribos", "Salto de obstáculos", "Anatomía del caballo"],
-            it: ["Transizioni", "Lavoro senza staffe", "Salto ostacoli", "Anatomia del cavallo"],
-        },
-    },
-    {
-        id: 4,
-        couleur: "#FF8B6B", disponible: true, nouveau: true,
-        icone: "🌳",
-        debloque: false,
-        titre: { fr: "Galop 4", en: "Level 4", ja: "ギャロップ4", es: "Nivel 4", it: "Livello 4" },
-        sousTitre: {
-            fr: "Maîtrise en extérieur",
-            en: "Mastering outdoor riding",
-            ja: "野外騎乗の習得",
-            es: "Dominio en exterior",
-            it: "Padronanza in esterno",
-        },
-        competences: {
-            fr: ["Sortie en extérieur", "Parcours d'obstacles", "Alimentation", "Premiers secours"],
-            en: ["Trail riding", "Jumping courses", "Feeding", "First aid"],
-            ja: ["野外騎乗", "障害コース", "飼料管理", "応急処置"],
-            es: ["Salidas al exterior", "Recorridos de obstáculos", "Alimentación", "Primeros auxilios"],
-            it: ["Uscite in esterno", "Percorsi a ostacoli", "Alimentazione", "Primo soccorso"],
-        },
-    },
-    {
-        id: 5,
-        couleur: "#0E8F9F", disponible: false,
-        icone: "⭐",
-        debloque: false,
-        titre: { fr: "Galop 5", en: "Level 5", ja: "ギャロップ5", es: "Nivel 5", it: "Livello 5" },
-        sousTitre: {
-            fr: "Perfectionnement technique",
-            en: "Technical refinement",
-            ja: "技術の向上",
-            es: "Perfeccionamiento técnico",
-            it: "Perfezionamento tecnico",
-        },
-        competences: {
-            fr: ["Dressage avancé", "CSO technique", "Locomotion", "Maréchalerie"],
-            en: ["Advanced dressage", "Technical jumping", "Locomotion", "Farriery"],
-            ja: ["上級馬術", "技術的な障害飛越", "運動学", "蹄鉄学"],
-            es: ["Doma avanzada", "Salto técnico", "Locomoción", "Herraje"],
-            it: ["Dressage avanzato", "Salto ostacoli tecnico", "Locomozione", "Maniscalcheria"],
-        },
-    },
-    {
-        id: 6,
-        couleur: "#469135", disponible: true, nouveau: true,
-        icone: "🏆",
-        debloque: false,
-        titre: { fr: "Galop 6", en: "Level 6", ja: "ギャロップ6", es: "Nivel 6", it: "Livello 6" },
-        sousTitre: {
-            fr: "Cavalier confirmé",
-            en: "Confirmed rider",
-            ja: "上級ライダー",
-            es: "Jinete confirmado",
-            it: "Cavaliere esperto",
-        },
-        competences: {
-            fr: ["Équitation d'extérieur", "Travail à pied", "Pathologies", "Réglementation"],
-            en: ["Outdoor riding", "Groundwork", "Common ailments", "Regulations"],
-            ja: ["野外馬術", "地上運動", "疾患の基礎知識", "規則"],
-            es: ["Equitación de exterior", "Trabajo a pie", "Patologías", "Normativa"],
-            it: ["Equitazione di campagna", "Lavoro da terra", "Patologie", "Regolamento"],
-        },
-    },
-    {
-        id: 7,
-        couleur: "#1A2E35", disponible: false,
-        icone: "👑",
-        debloque: false,
-        titre: { fr: "Galop 7", en: "Level 7", ja: "ギャロップ7", es: "Nivel 7", it: "Livello 7" },
-        sousTitre: {
-            fr: "Vers le Galop 7 fédéral",
-            en: "Toward the federal level 7",
-            ja: "連盟認定ギャロップ7へ",
-            es: "Hacia el nivel 7 federal",
-            it: "Verso il Livello 7 federale",
-        },
-        competences: {
-            fr: ["Compétition", "Enseignement de base", "Élevage", "Gestion d'écurie"],
-            en: ["Competition", "Basic teaching", "Breeding", "Stable management"],
-            ja: ["競技", "基礎指導", "繁殖", "馬房管理"],
-            es: ["Competición", "Enseñanza básica", "Cría", "Gestión de cuadra"],
-            it: ["Competizione", "Insegnamento di base", "Allevamento", "Gestione della scuderia"],
-        },
-    },
-];
+const GALOPS_I18N = [{"id":"baby","couleur":"#6C9BD1","disponible":true,"nouveau":true,"icone":"🎠","debloque":true,"titre":{"fr":"Baby","en":"Baby","ja":"ベビー","es":"Baby","it":"Baby","de":"Baby"},"sousTitre":{"fr":"Mes premiers pas avec le poney","en":"My first steps with the pony","ja":"ポニーとの最初の一歩","es":"Mis primeros pasos con el poni","it":"I miei primi passi con il pony","de":"Meine ersten Schritte mit dem Pony"},"competences":{"fr":["Dire bonjour au poney","Approcher en confiance","Les bons gestes","Premiers mots du cavalier"],"en":["Saying hello to the pony","Approaching with confidence","The right gestures","A rider's first words"],"ja":["ポニーへの挨拶","安心して近づく","正しい動作","乗り手の最初の言葉"],"es":["Saludar al poni","Acercarse con confianza","Los gestos correctos","Primeras palabras del jinete"],"it":["Salutare il pony","Avvicinarsi con fiducia","I gesti giusti","Le prime parole del cavaliere"],"de":["Dem Pony Hallo sagen","Sich vertrauensvoll nähern","Die richtigen Handgriffe","Die ersten Worte des Reiters"]}},{"id":1,"couleur":"#5FBB46","disponible":true,"icone":"🌱","debloque":true,"titre":{"fr":"Galop 1","en":"Level 1","ja":"ギャロップ1","es":"Nivel 1","it":"Livello 1","de":"Galopp 1"},"sousTitre":{"fr":"Découverte du cheval","en":"Getting to know the horse","ja":"ポニーとの出会い","es":"Descubriendo al caballo","it":"Alla scoperta del cavallo","de":"Das Pferd entdecken"},"competences":{"fr":["Sécurité de base","Pansage simple","Robes et parties du corps","Allures et équilibre"],"en":["Basic safety","Simple grooming","Coat colors and body parts","Gaits and balance"],"ja":["基本的な安全管理","簡単な手入れ","毛色と体の部位","歩法とバランス"],"es":["Seguridad básica","Cuidados simples","Capas y partes del cuerpo","Aires y equilibrio"],"it":["Sicurezza di base","Pulizia semplice","Mantelli e parti del corpo","Andature ed equilibrio"],"de":["Grundlagen der Sicherheit","Einfaches Putzen","Farben und Körperteile","Gangarten und Gleichgewicht"]}},{"id":2,"couleur":"#1FB6C9","disponible":true,"nouveau":true,"icone":"🐴","debloque":false,"titre":{"fr":"Galop 2","en":"Level 2","ja":"ギャロップ2","es":"Nivel 2","it":"Livello 2","de":"Galopp 2"},"sousTitre":{"fr":"Autonomie de base","en":"Building independence","ja":"基本的な自立","es":"Autonomía básica","it":"Autonomia di base","de":"Erste Selbstständigkeit"},"competences":{"fr":["Seller/brider","Allures au galop","Premiers sauts","Comportement du cheval"],"en":["Tacking up","Canter work","First jumps","Horse behavior"],"ja":["鞍と頭絡の装着","駈歩での運動","初めての跳躍","馬の行動学"],"es":["Ensillar/embridar","Trabajo al galope","Primeros saltos","Comportamiento del caballo"],"it":["Sellare/imbrigliare","Andature al galoppo","Primi salti","Comportamento del cavallo"],"de":["Satteln und trensen","Gangarten bis zum Galopp","Erste Sprünge","Verhalten des Pferdes"]}},{"id":3,"couleur":"#FFC73C","disponible":true,"nouveau":true,"icone":"🏇","debloque":false,"titre":{"fr":"Galop 3","en":"Level 3","ja":"ギャロップ3","es":"Nivel 3","it":"Livello 3","de":"Galopp 3"},"sousTitre":{"fr":"Indépendance en reprise","en":"Independent riding","ja":"自立した馬場運動","es":"Independencia en pista","it":"Indipendenza in maneggio","de":"Selbstständig in der Abteilung"},"competences":{"fr":["Transitions","Travail sans étriers","Saut d'obstacle","Anatomie du cheval"],"en":["Transitions","Riding without stirrups","Show jumping","Horse anatomy"],"ja":["移行運動","鐙なしでの運動","障害飛越","馬の解剖学"],"es":["Transiciones","Trabajo sin estribos","Salto de obstáculos","Anatomía del caballo"],"it":["Transizioni","Lavoro senza staffe","Salto ostacoli","Anatomia del cavallo"],"de":["Übergänge","Arbeit ohne Bügel","Springen","Anatomie des Pferdes"]}},{"id":4,"couleur":"#FF8B6B","disponible":true,"nouveau":true,"icone":"🌳","debloque":false,"titre":{"fr":"Galop 4","en":"Level 4","ja":"ギャロップ4","es":"Nivel 4","it":"Livello 4","de":"Galopp 4"},"sousTitre":{"fr":"Maîtrise en extérieur","en":"Mastering outdoor riding","ja":"野外騎乗の習得","es":"Dominio en exterior","it":"Padronanza in esterno","de":"Sicher im Gelände"},"competences":{"fr":["Sortie en extérieur","Parcours d'obstacles","Alimentation","Premiers secours"],"en":["Trail riding","Jumping courses","Feeding","First aid"],"ja":["野外騎乗","障害コース","飼料管理","応急処置"],"es":["Salidas al exterior","Recorridos de obstáculos","Alimentación","Primeros auxilios"],"it":["Uscite in esterno","Percorsi a ostacoli","Alimentazione","Primo soccorso"],"de":["Ausritt ins Gelände","Springparcours","Fütterung","Erste Hilfe"]}},{"id":5,"couleur":"#0E8F9F","disponible":false,"icone":"⭐","debloque":false,"titre":{"fr":"Galop 5","en":"Level 5","ja":"ギャロップ5","es":"Nivel 5","it":"Livello 5","de":"Galopp 5"},"sousTitre":{"fr":"Perfectionnement technique","en":"Technical refinement","ja":"技術の向上","es":"Perfeccionamiento técnico","it":"Perfezionamento tecnico","de":"Technische Verfeinerung"},"competences":{"fr":["Dressage avancé","CSO technique","Locomotion","Maréchalerie"],"en":["Advanced dressage","Technical jumping","Locomotion","Farriery"],"ja":["上級馬術","技術的な障害飛越","運動学","蹄鉄学"],"es":["Doma avanzada","Salto técnico","Locomoción","Herraje"],"it":["Dressage avanzato","Salto ostacoli tecnico","Locomozione","Maniscalcheria"],"de":["Fortgeschrittene Dressur","Technisches Springen","Bewegungslehre","Hufbeschlag"]}},{"id":6,"couleur":"#469135","disponible":true,"nouveau":true,"icone":"🏆","debloque":false,"titre":{"fr":"Galop 6","en":"Level 6","ja":"ギャロップ6","es":"Nivel 6","it":"Livello 6","de":"Galopp 6"},"sousTitre":{"fr":"Cavalier confirmé","en":"Confirmed rider","ja":"上級ライダー","es":"Jinete confirmado","it":"Cavaliere esperto","de":"Erfahrener Reiter"},"competences":{"fr":["Équitation d'extérieur","Travail à pied","Pathologies","Réglementation"],"en":["Outdoor riding","Groundwork","Common ailments","Regulations"],"ja":["野外馬術","地上運動","疾患の基礎知識","規則"],"es":["Equitación de exterior","Trabajo a pie","Patologías","Normativa"],"it":["Equitazione di campagna","Lavoro da terra","Patologie","Regolamento"],"de":["Geländereiten","Arbeit an der Hand","Krankheiten","Regelwerk"]}},{"id":7,"couleur":"#1A2E35","disponible":false,"icone":"👑","debloque":false,"titre":{"fr":"Galop 7","en":"Level 7","ja":"ギャロップ7","es":"Nivel 7","it":"Livello 7","de":"Galopp 7"},"sousTitre":{"fr":"Vers le Galop 7 fédéral","en":"Toward the federal level 7","ja":"連盟認定ギャロップ7へ","es":"Hacia el nivel 7 federal","it":"Verso il Livello 7 federale","de":"Auf dem Weg zum Verbands-Galopp 7"},"competences":{"fr":["Compétition","Enseignement de base","Élevage","Gestion d'écurie"],"en":["Competition","Basic teaching","Breeding","Stable management"],"ja":["競技","基礎指導","繁殖","馬房管理"],"es":["Competición","Enseñanza básica","Cría","Gestión de cuadra"],"it":["Competizione","Insegnamento di base","Allevamento","Gestione della scuderia"],"de":["Turniersport","Grundlagen des Unterrichtens","Zucht","Stallmanagement"]}}];
 /* ---------- BADGES ---------- */
 const BADGES_I18N = [
     {
@@ -21025,6 +20856,27 @@ function HypeApp() {
                 params.delete("vip");
                 const reste = params.toString();
                 window.history.replaceState({}, "", window.location.pathname + (reste ? "?" + reste : ""));
+            }
+            /* PONT LINGUAE -> HEY BABY : ?heybaby=1&lingo=<lg>&ville=<ref>
+               lingo.html ouvre index.html avec ces parametres en fin de lecon ou de quiz.
+               On ouvre l'ecran de l'assistant et on PRE-REMPLIT le champ, sans envoyer.
+               window.__hbPrefill existe deja et sert exactement a cela : il est consomme
+               par un useEffect de EcranAssistantIA, puis remis a null.
+               On n'utilise PAS window.__hbCoursCtx : son consommateur le jette quand il
+               n'a pas de "titre" ( return (c && c.titre) ? c : null ). */
+            if (params.get("heybaby") === "1") {
+                var lgIn = params.get("lingo") || "";
+                var villeIn = params.get("ville") || "";
+                var NOMS_LG_IN = { en: "anglais", es: "espagnol", it: "italien", de: "allemand", ja: "japonais" };
+                try {
+                    if (NOMS_LG_IN[lgIn]) window.__hbPrefill = "Traduis-moi en " + NOMS_LG_IN[lgIn] + " : ";
+                    if (villeIn) window.__hbLingoVille = villeIn;
+                    if (NOMS_LG_IN[lgIn]) window.__hbLingoLangue = lgIn;
+                } catch (eHb) { }
+                params.delete("heybaby"); params.delete("lingo"); params.delete("ville");
+                var resteHb = params.toString();
+                window.history.replaceState({}, "", window.location.pathname + (resteHb ? "?" + resteHb : ""));
+                setEcran("assistant");
             }
             // Retour d'un abonnement Stripe : merci Crystal + activation du Premium.
             if (params.get("merci") === "1") {
@@ -41401,6 +41253,24 @@ function getContexteHeyBaby(ctx) {
         if (typeof ctx.xp === "number") L.push("XP dans l'app : " + ctx.xp + (typeof ctx.serie === "number" && ctx.serie > 0 ? " — série de " + ctx.serie + " jours" : ""));
         L.push("Abonnement : " + (ctx.premium ? ("Premium" + (ctx.planAbo ? " (" + ctx.planAbo + ")" : "")) : "Gratuit"));
         L.push("Langue de l'app : " + (ctx.langue || "fr"));
+        /* PONT LINGUAE -> HEY BABY (08/08/2026).
+           La langue apprise est ecrite par lingo.html v19 dans le localStorage du
+           MEME domaine, cle "hype_lingua_langue". Absente avant la v19 : dans ce cas
+           on n'ajoute rien, aucun repli invente.
+           Le contexte est construit ICI, cote client : assistant.js ne fait que
+           relayer { system, messages }. Aucune modification de la fonction Netlify. */
+        try {
+            var lgApprise = ctx.lingoLangue || null;
+            if (!lgApprise && typeof window !== "undefined" && window.__hbLingoLangue) lgApprise = window.__hbLingoLangue;
+            if (!lgApprise && typeof localStorage !== "undefined") lgApprise = localStorage.getItem("hype_lingua_langue");
+            var NOMS_LG = { en: "anglais", es: "espagnol", it: "italien", de: "allemand", ja: "japonais" };
+            if (lgApprise && NOMS_LG[lgApprise]) {
+                L.push("Langue etrangere en cours d'apprentissage : " + NOMS_LG[lgApprise]);
+                var villeLg = ctx.lingoVille || ((typeof window !== "undefined") ? window.__hbLingoVille : null);
+                if (villeLg) L.push("Revient du chapitre Linguae : " + String(villeLg).slice(0, 40));
+                L.push("CONSIGNE : si le cavalier apprend une langue, propose spontanement la traduction de tes phrases cles dans cette langue, et corrige avec bienveillance ses essais.");
+            }
+        } catch (eLg) { }
     }
     catch (errCtx) { }
     if (!L.length) return "";
