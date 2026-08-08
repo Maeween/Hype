@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 150)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 151)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,25 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🏁 SESSION 151 · LINGUAE (08/08) — LE FIL 2 EST ENTIÈREMENT EN SIX LANGUES : 111 NOTES, HUIT LEXIQUES, TERMINÉ
+
+Western, tradition et endurance récupérés par le canal GitHub raw (une ligne tapée par Blandine par fichier), copies verbatim contrôlées par exécution, définitions traduites. **Audit final du fil 2 : balade 12/12 · polo 12/12 · poney 19/19 · elevage 20/20 · vente 12/12 · western 12/12 · tradition 12/12 · endurance 12/12 — 111 notes, six langues partout.** Avec le tronc (406 notes, S143), le module compte **517 définitions complètes**.
+
+Gardés vifs dans les trois derniers : Tamworth (« the mob » pas « the herd », muster/roundup, la corne qui n'est PAS une poignée, neck reining, yards pluriel ≠ yard britannique, l'Akubra) ; Tokyo (bow « baou » ≠ bow « bô », sensei après le nom, keiko = la répétition, le merci au passé) ; Dubaï (el raid, cent milles = cent soixante km, at the vet gate, retire ≠ eliminated, l'abandon comme décision de soin — et les commentaires d'alignement de `abandon` sur obstacle préservés dans la copie).
+
+Casse-caches posés : western/tradition/endurance `?l=1` (balade/polo/elevage/vente déjà faits). Marqueur inchangé **v16**.
+
+### 📦 Push : le dernier lot (pousser-endurance/) contient LE lingo.html à jour de tous les casse-caches
+`hype-lingo-lex-endurance.js` + `lingo.html`. (Si les lots précédents ne sont pas encore poussés : pousser les 8 lexiques + CE lingo.html-ci, qui les couvre tous.)
+
+### 🗂️ La file validée reprend (ordre)
+1. **Burghley** (passation S147 : lexique cross 12 notions + entrée formats à Badminton). 2. Phrases 7 mots. 3. Sans-le-son. 4. Propositions : partage par chapitre · collection depuis l'accueil · page « comment ça marche » · pont Hey Baby fin de chapitre. 5. haras/froid si Blandine envoie les lignes.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 
