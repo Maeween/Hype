@@ -247,7 +247,17 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    ici : sans lui, l'image ne se voit plus et la liste remonte d'un coup. */
 #inOrigT{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;
  color:rgba(244,247,250,.4);text-align:center;margin:34px 0 10px}
-#inOrigine{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 0 40vh}
+/* le bloc image : un objet net, pose au centre, sans voile */
+#inBloc{position:relative;margin:26px 0 0;border-radius:20px;overflow:hidden;
+ box-shadow:0 40px 90px -40px rgba(0,0,0,.92), 0 0 0 1px rgba(255,255,255,.06)}
+#inBloc img{display:block;width:100%;height:auto}
+#inBloc::before{content:"";position:absolute;left:-8%;right:-8%;top:20%;bottom:20%;
+ z-index:-1;background:radial-gradient(60% 50% at 50% 50%,rgba(32,217,245,.12),transparent 70%)}
+#inBlocLgd{font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+ color:rgba(244,247,250,.3);text-align:center;margin:10px 0 0}
+/* ⚠️ 40vh RAMENE A 0 : le creux n'a plus de raison d'etre, l'image occupe
+   desormais le milieu de la page. C'etait le vide signale par Blandine. */
+#inOrigine{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 0 30px}
 #inOrigine button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
  border-radius:12px;padding:6px 9px;font-size:21px;line-height:1;cursor:pointer}
 #inOrigine button.actif{border-color:rgba(32,217,245,.65);
@@ -255,9 +265,16 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .pts{margin:0 0 30px}
 .pt{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)}
 .pt:last-child{border-bottom:0}
-.pt b{display:block;font-size:14px;font-weight:600;line-height:1.4}
-.pt i{display:block;font-style:normal;font-size:12.5px;line-height:1.65;color:var(--gris);
- margin-top:5px}
+/* ⚠️ LISIBILITE, 8 aout 2026 — MESUREE avant d'etre corrigee, comme la
+   regle du SUIVI l'exige. Contraste du gris #8996A2 sur le noir #060709 :
+   6,67 : 1, donc DEJA conforme (AA demande 4,5). Le coupable etait bien la
+   TAILLE, pas la couleur — deux fois sur trois, comme note. On monte donc
+   les corps de 14 -> 15,5 et de 12,5 -> 13,5, et on eclaircit quand meme
+   le gris a #AEBAC6 (10,21 : 1) car ces lignes sont longues et lues une
+   seule fois. ⚠️ Ne pas descendre sous 13 px sur un texte de deux lignes. */
+.pt b{display:block;font-size:15.5px;font-weight:600;line-height:1.45}
+.pt i{display:block;font-style:normal;font-size:13.5px;line-height:1.7;color:#AEBAC6;
+ margin-top:6px}
 #inSuite,#dsListe button{font-family:inherit}
 #inSuite{display:block;width:100%;padding:16px 20px;font-size:12.5px;font-weight:600;
  letter-spacing:.13em;text-transform:uppercase;color:#060709;background:var(--turquoise);
@@ -462,6 +479,21 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    soulignement discret pour qu'on devine qu'il se touche */
 #ouvVersion{font-size:9px;letter-spacing:.14em;text-transform:uppercase;
  color:rgba(244,247,250,.28);text-align:center;margin:10px 0 0}
+/* l'aide a l'installation : une surface de verre fume, jamais une pub */
+#ouvInstall{margin:22px auto 0;max-width:420px;padding:14px 16px 12px;
+ border:1px solid rgba(32,217,245,.22);border-radius:16px;
+ background:linear-gradient(160deg,rgba(32,217,245,.07),rgba(10,14,18,.6));
+ text-align:center}
+#ouvInstall[hidden]{display:none}
+#ouvInstT{margin:0;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.04em}
+#ouvInstC{margin:7px 0 0;font-size:11.5px;line-height:1.6;color:#9AA8B4}
+#ouvInstB{display:flex;justify-content:center;gap:10px;margin-top:11px;flex-wrap:wrap}
+#ouvInstB button{border:0;font:inherit;cursor:pointer;border-radius:999px;
+ font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 16px}
+#ouvInstOk{background:var(--turquoise);color:#060709;font-weight:600}
+#ouvInstOk[hidden]{display:none}
+#ouvInstNon{background:none;color:#7C8894;border-bottom:1px dashed rgba(255,255,255,.16)!important;
+ border-radius:0!important;padding:2px 0!important}
 #ouvLangPhrase{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
  color:#C3D0DA;margin:14px 0 8px}
 /* la paire de langues : je lis -> j'apprends (v22) */
@@ -1319,6 +1351,18 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <!-- le choix de la langue d'origine, des la page d'entree (demande de
          Blandine) : c'est la premiere chose a regler, avant la destination.
          Construit depuis LANGUES_UI par rangeeOrigine(), jamais en dur. -->
+    <!-- ⚠️ L'IMAGE EN BLOC (8 aout 2026, variante 3 choisie sur maquette).
+         Blandine : « je pensais que tu allais la mettre au milieu de la page
+         ou il n'y a rien ». Le vide venait de moi : le 40vh qui faisait
+         respirer la page etait accroche a la citation retiree en v23.
+         ⚠️ AUCUN VOILE, AUCUN FILTRE sur cette image — regle absolue de la
+         bible. Le fond de page reste sombre, le texte l'entoure et ne passe
+         JAMAIS dessus (c'est ce qui a fait ecarter la variante 2, dont le
+         voile allege restait un voile).
+         ⚠️ `?v=` ajoute en JS plus bas : un attribut src statique ne peut
+         pas porter VER, et le fichier changera. -->
+    <div id="inBloc"><img id="inBlocImg" alt=""></div>
+    <p id="inBlocLgd">Le tour du monde du cheval</p>
     <p id="inOrigT" data-t="origineT">Je lis en</p>
     <div id="inOrigine" aria-label="Choisir sa langue de lecture"></div>
     <div class="pts">
@@ -1398,7 +1442,28 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v26 · 8 août</p>
+    <p id="ouvVersion">v29 · 8 août</p>
+
+    <!-- ⚠️ AIDE A L'INSTALLATION (8 aout 2026). Demande de Blandine :
+         « il faut aussi un truc qui aide a installer sur la page d'accueil
+         comme dans Hype ». Je n'ai PAS `index.html` dans ce fil : ce
+         bandeau est ecrit d'apres le comportement normal d'une PWA, il ne
+         copie pas celui de Hype. A comparer sur le telephone.
+         · Cache s'il tourne DEJA en mode installe (navigator.standalone
+           sur iOS, display-mode: standalone ailleurs).
+         · Cache s'il tourne DANS Hype (en iframe) : on n'installe pas un
+           module depuis l'application qui le contient.
+         · iOS ne fournit aucune invite programmable : on affiche donc le
+           geste exact. Android/Chrome : vrai bouton via beforeinstallprompt.
+         · Refus memorise (`hype_lingua_install`), on ne harcele pas. -->
+    <div id="ouvInstall" hidden>
+      <p id="ouvInstT"></p>
+      <p id="ouvInstC"></p>
+      <div id="ouvInstB">
+        <button id="ouvInstOk" type="button" hidden></button>
+        <button id="ouvInstNon" type="button"></button>
+      </div>
+    </div>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1472,6 +1537,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-obstacle.js?l=3"></script>
 <script src="hype-lingo-lex-concours.js?l=5"></script>
 <script src="hype-lingo-lex-cross.js"></script>
+<!-- Santa Ynez, 31e etape (8 aout 2026). Le horsemanship : `timing`,
+     `feel` et `release` n'ont pas de traduction francaise satisfaisante,
+     et la colonne francaise donne en meme temps le vocabulaire des
+     savoirs ethologiques de la FFE. -->
+<script src="hype-lingo-lex-horsemanship.js"></script>
 <script src="hype-lingo-lex-urgences.js?l=2"></script>
 <!-- Le poney : chapitre créé le 5 août 2026 pour Lamotte-Beuvron.
      Six de ses dix entrées sont des RAPPELS partageant le `ref` d'entrées
@@ -1577,7 +1647,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=26";
+var VER = "?v=29";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -1597,6 +1667,9 @@ var LG_DRAPEAU = {fr:"\uD83C\uDDEB\uD83C\uDDF7", en:"\uD83C\uDDEC\uD83C\uDDE7",
   es:"\uD83C\uDDEA\uD83C\uDDF8", it:"\uD83C\uDDEE\uD83C\uDDF9",
   de:"\uD83C\uDDE9\uD83C\uDDEA", ja:"\uD83C\uDDEF\uD83C\uDDF5"};
 /* le choix explicite fait DANS Linguae. Null = on suit le pont Hype. */
+/* vraie a la premiere visite : la presentation attend la fin du film.
+   Declaree ICI, avant l'IIFE d'ouverture qui la lit et l'ecrit. */
+var INTRO_APRES = false;
 var LECTURE = null;
 try{ var _lec = localStorage.getItem("hype_lingua_lecture");
      if(LANGUES_UI.indexOf(_lec) >= 0) LECTURE = _lec; }catch(e){}
@@ -1735,6 +1808,12 @@ var ETAPES = [
     des dix silhouettes ne dessine ni un pré du Kentucky ni les Rocheuses ;
     en fabriquer une n'a pas été demandé. */
  {ref:"lexington", ch:"Le haras",      v:"Lexington",   nat:"États-Unis",     h:"17 h 20", ciel:["#0E1620","#C8A46A"], forme:"haras",    souv:"Un numéro de lot",              ic:"dossard"},
+ /* ⚠️ SANTA YNEZ AJOUTEE le 8 aout 2026, 31e etape. Inseree ICI et pas en
+    fin de liste : les heures doivent rester croissantes, et 17 h 45 tient
+    entre Lexington (17 h 20) et Spruce Meadows (18 h 10) sans toucher a
+    une seule autre ville. `forme:"lande"` est deja dessinee — pas de
+    nouveau SVG a produire pour une etape de plus. */
+ {ref:"santaynez", ch:"Le horsemanship", v:"Santa Ynez", nat:"États-Unis",   h:"17 h 45", ciel:["#101418","#E0B27A"], forme:"lande",    souv:"Un hackamore de crin",          ic:"licol"},
  {ref:"spruce",    ch:"Le froid",      v:"Spruce Meadows", nat:"Canada",      h:"18 h 10", ciel:["#0B1420","#8FB4C8"], forme:"lande",    souv:"Une couverture d'hiver",        ic:"seau"}
 ];
 /* ==================================================================
@@ -1957,6 +2036,33 @@ var VILLES = window.HYPE_LINGO_VILLES || {};   /* les dix villes vivent dans hyp
 /* ---- récits : sensoriels et courts. Newmarket en 6 langues,
    les neuf autres en français seulement pour l'instant. ---- */
 var RECITS = {
+ /* ⚠️ SANTA YNEZ (8 aout 2026). Le troisieme element est un `{f:}` : c'est
+    le champ « fait », rendu en classe `fait`. Le fait de la reine est
+    verifie (Elizabeth II a fait venir Monty Roberts travailler ses chevaux
+    en 1989, a soutenu sa methode et l'a pousse a ecrire ses memoires ; il
+    est mort le 2 aout 2026 a 91 ans dans son ranch de Solvang, dans cette
+    vallee). Cite UNE fois, sans pathos : les joueuses ont dix a quinze ans.
+    ⚠️ Ne pas transformer ce chapitre en hommage — Blandine : le but est de
+    decouvrir le monde et le monde equestre. */
+ santaynez:{
+  fr:["La vallée sent la poussière chaude et l'eucalyptus, et rien ici ne se fait dans le bruit.",
+      "On y apprend à demander si peu que le cheval réponde avant qu'on ait insisté.",
+      {f:"En 1989, la reine d'Angleterre a fait venir un horseman de cette vallée travailler ses chevaux. C'est de là que le monde a connu sa méthode."}],
+  en:["The valley smells of warm dust and eucalyptus, and nothing here is done loudly.",
+      "You learn to ask so little that the horse answers before you have insisted.",
+      {f:"In 1989 the Queen of England brought a horseman from this valley to work with her horses. That is how the world came to know his method."}],
+  es:["El valle huele a polvo caliente y eucalipto, y aquí nada se hace con ruido.",
+      "Se aprende a pedir tan poco que el caballo responde antes de que insistas.",
+      {f:"En 1989 la reina de Inglaterra hizo venir a un horseman de este valle para trabajar sus caballos. Así conoció el mundo su método."}],
+  it:["La valle odora di polvere calda e di eucalipto, e qui nulla si fa con il rumore.",
+      "Si impara a chiedere così poco che il cavallo risponde prima che tu abbia insistito.",
+      {f:"Nel 1989 la regina d'Inghilterra fece venire un horseman di questa valle a lavorare i suoi cavalli. Fu così che il mondo conobbe il suo metodo."}],
+  de:["Das Tal riecht nach warmem Staub und Eukalyptus, und nichts geschieht hier laut.",
+      "Man lernt, so wenig zu fragen, dass das Pferd antwortet, bevor man nachgesetzt hat.",
+      {f:"1989 ließ die Königin von England einen Horseman aus diesem Tal zu ihren Pferden kommen. So erfuhr die Welt von seiner Methode."}],
+  ja:["谷は温かい土とユーカリの匂いがして、ここでは何ひとつ大きな音では行われない。",
+      "押す前に馬が答えてくれるほど、小さく求めることを学ぶ。",
+      {f:"1989年、英国の女王がこの谷のホースマンを招き、自分の馬を扱わせた。そこから彼の手法が世界に知られた。"}]},
  /* ⚠️ AJOUTÉ le 6 août 2026. Manquant depuis que La Baule est devenue
     l'étape 1 : `#texte` restait VIDE (RECITS.labaule n'existait pas),
     donc l'écran d'arrivée sautait directement du panneau figé de la
@@ -2783,7 +2889,10 @@ var NIVEAU_VILLE = {
   kildare:1, jerez:1, vejer:1,
   hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
   warendorf:2, aachen:2, lamotte:2, golega:2, dubai:2, lexington:2, spruce:1, buenos:2, tamworth:2,
-  saumur:3, edimbourg:3, verone:3, tokyo:3
+  saumur:3, edimbourg:3, verone:3, tokyo:3,
+  /* niveau 3 : le chapitre porte sur des notions (timing, ressenti), pas
+     sur des objets a nommer. On y parle. */
+  santaynez:3
 };
 function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
 
@@ -3984,6 +4093,7 @@ var ETAPE_SRC = {
   tamworth:    [["western",1]],
   buenos:      [["polo",1]],
   lexington:   [["haras",1]],
+  santaynez:   [["horsemanship",1]],
   spruce:      [["froid",1]],
   warendorf:   [["materiel",4]],
   aachen:      [["obstacle",4]]
@@ -4115,6 +4225,25 @@ var UI = {
    ja:"「下馬」と言われて、ドロップを飛んでしまわないように。"},                  // ??
  origineT:{fr:"Je lis en", en:"I read in", es:"Leo en", it:"Leggo in",
    de:"Ich lese", ja:"読む言語"},
+ instT:{fr:"Garde Linguae sous la main", en:"Keep Linguae close by",
+   es:"Ten Linguae a mano", it:"Tieni Linguae a portata di mano",
+   de:"Linguae immer dabei", ja:"Linguae をすぐ開けるように"},
+ instIos:{fr:"Touche « Partager » en bas de Safari, puis « Sur l'écran d'accueil ».",
+   en:"Tap Share at the bottom of Safari, then Add to Home Screen.",
+   es:"Toca «Compartir» abajo en Safari y luego «Añadir a inicio».",
+   it:"Tocca «Condividi» in basso in Safari, poi «Aggiungi a Home».",
+   de:"Tippe unten in Safari auf „Teilen“, dann „Zum Home-Bildschirm“.",
+   ja:"Safari 下部の「共有」から「ホーム画面に追加」を選んでください。"},
+ instAndroid:{fr:"Ajoute Linguae à ton écran d'accueil, comme une application.",
+   en:"Add Linguae to your home screen, like an app.",
+   es:"Añade Linguae a tu pantalla de inicio, como una aplicación.",
+   it:"Aggiungi Linguae alla schermata Home, come un'app.",
+   de:"Füge Linguae zum Startbildschirm hinzu, wie eine App.",
+   ja:"アプリのように、ホーム画面に追加できます。"},
+ instOk:{fr:"Installer", en:"Install", es:"Instalar", it:"Installa",
+   de:"Installieren", ja:"追加する"},
+ instNon:{fr:"plus tard", en:"later", es:"más tarde", it:"più tardi",
+   de:"später", ja:"あとで"},
  traversee:{fr:"La Traversée", en:"The Crossing", es:"La Travesía", it:"La Traversata",
    de:"Die Überfahrt", ja:"旅路"},
  partageScore:{fr:"J'ai fait {score} sur {nom}. Mêmes dix mots, bats-moi : ",
@@ -4129,15 +4258,22 @@ var UI = {
     refusees (« ca fait site de rencontre ») ; les garder en reserve, meme
     debranchees, c'est risquer de les voir ressuscitees par une relecture
     distraite. Elles sont dans le SUIVI si besoin. NE PAS LES RECREER. */
- pt1t:{fr:"Le vocabulaire équestre en six langues", en:"Stable vocabulary in six languages",
-   es:"El vocabulario ecuestre en seis idiomas", it:"Il vocabolario equestre in sei lingue",
-   de:"Reitvokabular in sechs Sprachen", ja:"六か国語の馬術用語"},
- pt1d:{fr:"Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.",
-   en:"French, English, Spanish, Italian, German, Japanese — the real words, the ones used in the yard.",
-   es:"Francés, inglés, español, italiano, alemán, japonés: el de verdad, el de las cuadras.",
-   it:"Francese, inglese, spagnolo, italiano, tedesco, giapponese: quello vero, quello delle scuderie.",
-   de:"Französisch, Englisch, Spanisch, Italienisch, Deutsch, Japanisch — die echten Wörter, die im Stall fallen.",
-   ja:"フランス語、英語、スペイン語、イタリア語、ドイツ語、日本語。厩舎で実際に使われる言葉。"},
+ /* ⚠️ LE CHIFFRE RETIRE le 8 aout 2026. Blandine : « on aura plus de
+    langues, que ca joue pas sur le nombre de villes ». Un chiffre ecrit
+    dans une accroche se perime a la premiere langue ajoutee. Ne pas le
+    remettre — ni ici, ni ailleurs dans un texte vu par la joueuse. */
+ pt1t:{fr:"Le vocabulaire équestre, dans toutes les langues", en:"Stable vocabulary, in every language",
+   es:"El vocabulario ecuestre, en todos los idiomas", it:"Il vocabolario equestre, in tutte le lingue",
+   de:"Reitvokabular, in allen Sprachen", ja:"馬術の言葉を、すべての言語で"},
+ /* ⚠️ L'ENUMERATION RETIREE avec le chiffre : citer les six langues, c'est
+    ecrire le chiffre autrement. Le drapeau de la langue lue et la rangee
+    juste au-dessus le disent deja, et se mettent a jour tout seuls. */
+ pt1d:{fr:"Le vrai, celui des écuries.",
+   en:"The real words — the ones used in the yard.",
+   es:"El de verdad, el de las cuadras.",
+   it:"Quello vero, quello delle scuderie.",
+   de:"Die echten Wörter, die im Stall fallen.",
+   ja:"厩舎で実際に使われる言葉。"},
  /* Le compte est retire des textes le 6 aout 2026 : « tu peux meme retirer
     le chiffre, ca va evoluer ». Ne pas le remettre a chaque ville ajoutee —
     il y avait deja deux valeurs contradictoires en ligne (le repli HTML
@@ -4162,12 +4298,19 @@ var UI = {
  pt4t:{fr:"Savoir dire l'essentiel en cas d'urgence", en:"Say what matters in an emergency",
    es:"Saber decir lo esencial en una urgencia", it:"Saper dire l'essenziale in un'emergenza",
    de:"Im Notfall das Wichtigste sagen können", ja:"緊急時に必要なことを言えるように"},
- pt4d:{fr:"« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.",
-   en:"\u201CHe\u2019s lame\u201D, \u201Ccall the vet\u201D. This chapter is free, everywhere.",
-   es:"«Cojea», «llamad al veterinario». Este capítulo es gratis, en todas partes.",
-   it:"«Zoppica», «chiamate il veterinario». Questo capitolo è gratuito, sempre.",
-   de:"\u201EEr lahmt\u201C, \u201Eruft den Tierarzt\u201C. Dieses Kapitel ist überall kostenlos.",
-   ja:"「跛行している」「獣医を呼んで」。この章は、どの言語でも無料。"},
+ /* ⚠️ REECRIT le 8 aout 2026, formulation de Blandine : « pouvoir signaler
+    une urgence ou demander de l'aide est vital ». « Offert », « gratuit »,
+    « free » ont ete ecartes : ils attirent l'oeil sur le PRIX au moment
+    exact ou l'on parle d'un cheval qui boite, et ils contredisent
+    l'abonnement a venir. On dit la RAISON, pas l'avantage.
+    ⚠️ « en libre acces » (choix de Blandine) : « a disponibilite » n'existe
+    pas en francais, et « disponible » est un mot de catalogue. */
+ pt4d:{fr:"Demander de l'aide peut être vital. Ce chapitre est en libre accès dans toutes les langues.",
+   en:"Asking for help can be vital. This chapter is open to everyone, in every language.",
+   es:"Pedir ayuda puede ser vital. Este capítulo es de acceso libre en todos los idiomas.",
+   it:"Chiedere aiuto può essere vitale. Questo capitolo è ad accesso libero in tutte le lingue.",
+   de:"Um Hilfe bitten zu können, kann lebenswichtig sein. Dieses Kapitel ist in allen Sprachen frei zugänglich.",
+   ja:"助けを求められることは、命に関わる。この章はすべての言語で自由に使える。"},
  pt5t:{fr:"Une collection à rapporter", en:"A collection to bring home",
    es:"Una colección para traer de vuelta", it:"Una collezione da portare a casa",
    de:"Eine Sammlung für den Heimweg", ja:"持ち帰るコレクション"},
@@ -4558,6 +4701,7 @@ function appliquerLangue(){
     /* la paire suit la destination choisie (v22). Protegee : appliquerLangue
        peut tourner avant que dessinerPaire soit atteinte. */
     try{ dessinerPaire(); }catch(e){}
+    try{ majInstall(); }catch(e){}   /* le bandeau suit la langue lue */
     document.title = NOM_MODULE+" · "+lg+" · "+T("traversee");
   }
 }
@@ -4678,6 +4822,12 @@ var LC = null;
    et les outils » dit ce qu'on va apprendre.
    ================================================================== */
 var COLL_NOM = {
+  /* Santa Ynez, 8 aout 2026 : sans ces deux entrees, ses lecons
+     s'afficheraient « Lecon 1 » au lieu de porter un nom. */
+  pied:{fr:"Le travail à pied", en:"Groundwork", es:"El trabajo desde el suelo",
+    it:"Il lavoro da terra", de:"Die Bodenarbeit", ja:"地上作業"},
+  ressenti:{fr:"Le ressenti", en:"Feel", es:"El tacto", it:"La sensibilità",
+    de:"Das Gefühl", ja:"感覚"},
   /* Ajoutés le 5 août. `poney` vient du nouveau chapitre de Lamotte ; les
      quatre autres existaient dans les lexiques depuis le 4 août mais
      n'avaient jamais de nom : leurs leçons s'affichaient « Leçon 2 ».
@@ -6348,7 +6498,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v26 · 8 août · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v29 · 8 août · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -6432,6 +6582,139 @@ if(S("inOrigine")) S("inOrigine").addEventListener("click", function(ev){
      ouverte, on la reconstruit pour que le filtre suive. */
   if(S("dest") && S("dest").classList.contains("on")){ try{ montrerDest(); }catch(e){} }
 });
+/* le bloc de la page d'entree : src pose en JS pour qu'il porte VER —
+   un attribut src ecrit dans le HTML ne peut pas la prendre. */
+if(S("inBlocImg")) S("inBlocImg").src = "lingua-bloc.webp" + VER;
+
+/* ==================================================================
+   L'AIDE A L'INSTALLATION (8 aout 2026)
+   Blandine : « il faut aussi un truc qui aide a installer sur la page
+   d'accueil comme dans Hype ». ⚠️ Je n'ai pas `index.html` dans ce fil :
+   ce bandeau suit le comportement normal d'une PWA, il ne recopie pas
+   celui de Hype. A comparer sur le telephone.
+   Quatre cas, et il se TAIT dans trois d'entre eux :
+     · deja installe        -> rien (navigator.standalone ou display-mode)
+     · dans Hype (iframe)   -> rien : on n'installe pas un module depuis
+                               l'application qui le contient
+     · refus memorise       -> rien (hype_lingua_install)
+     · iOS Safari           -> le geste exact, aucune invite programmable
+     · Android/Chrome       -> vrai bouton via beforeinstallprompt
+   ================================================================== */
+var INVITE_PWA = null;
+window.addEventListener("beforeinstallprompt", function(ev){
+  ev.preventDefault(); INVITE_PWA = ev; majInstall();
+});
+function dejaInstalle(){
+  try{
+    if(window.navigator.standalone === true) return true;               /* iOS */
+    if(window.matchMedia && matchMedia("(display-mode: standalone)").matches) return true;
+  }catch(e){}
+  return false;
+}
+function dansHype(){
+  try{ return window.parent !== window; }catch(e){ return true; }
+}
+function installRefuse(){
+  try{ return localStorage.getItem("hype_lingua_install") === "non"; }catch(e){ return false; }
+}
+function majInstall(){
+  var b = S("ouvInstall"); if(!b) return;
+  if(dejaInstalle() || dansHype() || installRefuse()){ b.hidden = true; return; }
+  var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent || "");
+  S("ouvInstT").textContent = T("instT");
+  S("ouvInstC").textContent = (INVITE_PWA && !iOS) ? T("instAndroid") : T("instIos");
+  S("ouvInstOk").textContent = T("instOk");
+  S("ouvInstOk").hidden = !(INVITE_PWA && !iOS);
+  S("ouvInstNon").textContent = T("instNon");
+  b.hidden = false;
+}
+if(S("ouvInstOk")) S("ouvInstOk").addEventListener("click", function(){
+  if(!INVITE_PWA) return;
+  INVITE_PWA.prompt();
+  INVITE_PWA.userChoice.then(function(){ INVITE_PWA = null; majInstall(); });
+});
+if(S("ouvInstNon")) S("ouvInstNon").addEventListener("click", function(){
+  try{ localStorage.setItem("hype_lingua_install","non"); }catch(e){}
+  S("ouvInstall").hidden = true;
+});
+majInstall();
+
+/* ==================================================================
+   LE RETOUR PAR GESTE (8 aout 2026)
+   Blandine : « quand je suis sur une page je veux toujours pouvoir aller
+   en arriere, on reste coince ». C'est le prix de l'installation : en mode
+   application il n'y a plus la barre de Safari, donc plus AUCUN bouton
+   retour, et les ecrans de Linguae sont des couches empilees sur une seule
+   page — le geste du systeme n'a rien a remonter.
+
+   ⚠️ GESTE DE BORD UNIQUEMENT : le doigt doit partir des 34 premiers
+   pixels a gauche. C'est la convention iOS, et surtout c'est ce qui evite
+   d'entrer en conflit avec ce qui existe deja au milieu de l'ecran — le
+   glissement du globe, le retournement des cartes, les tuiles du sprint.
+   Un swipe pris n'importe ou aurait casse trois ecrans.
+
+   ⚠️ PAS DE « EN AVANT ». Ces ecrans ne forment pas un historique mais une
+   PILE : refermer une lecon ne laisse rien a rouvrir. Promettre un geste
+   avant qui ne fait rien serait pire que son absence. Le bouton « Partir »
+   du carnet est le chemin en avant, et il est deja la.
+
+   ⚠️ ORDRE DE LA PILE : du plus haut au plus bas. Le premier ecran ouvert
+   trouve est celui qu'on ferme. `#depart` n'est pas dans la liste : c'est
+   une transition qui se termine seule.
+   ================================================================== */
+var PILE_RETOUR = [
+  {id:"duel",       fermer:function(){ if(typeof fermerDuel==="function") fermerDuel();
+                                       else S("duel").classList.remove("on"); }},
+  {id:"sprint",     fermer:function(){ fermerSprint(); }},
+  {id:"collection", fermer:function(){ fermerCollection(); }},
+  {id:"lecon",      fermer:function(){ fermerLecon(); montrerCarnet(); }},
+  {id:"arrivee",    fermer:function(){ fermerArrivee(); }},
+  {id:"globe",      fermer:function(){ fermerGlobe(); montrerCarnet(); }},
+  {id:"dest",       fermer:function(){ S("dest").classList.remove("on"); }},
+  {id:"intro",      fermer:function(){ /* la presentation n'est pas une impasse :
+     la refermer sans l'avoir quittee laisserait la joueuse sur un carnet
+     qu'elle n'a pas encore vu. On la marque vue et on passe. */
+     try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
+     S("intro").classList.remove("on"); }}
+];
+function retourEnArriere(){
+  for(var k=0;k<PILE_RETOUR.length;k++){
+    var el0 = S(PILE_RETOUR[k].id);
+    if(el0 && el0.classList.contains("on")){
+      try{ PILE_RETOUR[k].fermer(); }catch(e){}
+      return true;
+    }
+  }
+  return false;   /* deja sur le carnet : rien a remonter */
+}
+(function(){
+  var x0=null, y0=null, t0=0;
+  document.addEventListener("touchstart", function(ev){
+    if(ev.touches.length!==1){ x0=null; return; }
+    var t=ev.touches[0];
+    x0 = (t.clientX <= 34) ? t.clientX : null;   /* bord gauche seulement */
+    y0 = t.clientY; t0 = Date.now();
+  }, {passive:true});
+  document.addEventListener("touchend", function(ev){
+    if(x0===null) return;
+    var t=ev.changedTouches[0];
+    var dx = t.clientX - x0, dy = Math.abs(t.clientY - y0);
+    x0 = null;
+    /* horizontal franc, court, et pas un scroll en diagonale */
+    if(dx > 68 && dy < 56 && (Date.now()-t0) < 700) retourEnArriere();
+  }, {passive:true});
+  /* le bouton retour materiel d'Android, et le geste systeme quand il
+     existe : une entree d'historique factice a consommer. */
+  try{ history.pushState({lingua:1}, ""); }catch(e){}
+  window.addEventListener("popstate", function(){
+    var ferme = retourEnArriere();
+    try{ history.pushState({lingua:1}, ""); }catch(e){}
+    if(!ferme && window.HYPE_LINGO_HOST && HYPE_LINGO_HOST.quitter){
+      try{ HYPE_LINGO_HOST.quitter(); }catch(e){}
+    }
+  });
+})();
+
 rangeeOrigine();
 
 if(S("ouvLecture")) S("ouvLecture").addEventListener("click", function(){
@@ -6481,8 +6764,17 @@ S("dsRetour").addEventListener("click", function(){
      chaque changement — exactement la plainte de Blandine du 8 aout. */
   try{ saut = localStorage.getItem("hype_lingua_saut")==="1";
        if(saut) localStorage.removeItem("hype_lingua_saut"); }catch(e){}
+  /* ⚠️ ORDRE INVERSE le 8 aout 2026, demande de Blandine : « on doit
+     arriver en tout premier sur la fameuse video ». Avant, a la premiere
+     visite, le film arrivait TROISIEME : presentation, puis choix de la
+     destination, puis film. La raison historique etait bonne — le film
+     aurait joue DERRIERE #intro et #dest, qui sont en z-index 45 contre 42
+     — mais la solution n'etait pas de le repousser, c'etait de montrer la
+     presentation A LA FIN du film. C'est ce que fait `INTRO_APRES` :
+     terminerOuverture() ouvre la presentation si elle n'a jamais ete vue.
+     ⚠️ Ne pas rappeler montrerIntro() ici : le film serait masque. */
   if(!vu){
-    montrerIntro();
+    INTRO_APRES = true;
     /* ⚠️ LE DRAPEAU NE SE POSE PLUS ICI (8 aout 2026, v23). Il etait ecrit
        des l'AFFICHAGE de la presentation. Depuis que le choix de la langue
        d'origine s'y trouve, quiconque changerait de langue et rechargerait
@@ -6495,7 +6787,7 @@ S("dsRetour").addEventListener("click", function(){
   /* Deja venu : le film part tout seul, sans passer par le carnet.
      Premiere visite : il part a la fermeture de l'ecran de destination
      (voir montrerDest), pour ne pas jouer derriere la presentation. */
-  else if(!saut) lancerFilm();
+  if(!saut) lancerFilm();
 })();
 
 /* Tout est défini : on redemande un rendu du chemin pour que le bouton
@@ -6563,6 +6855,11 @@ S("arrPartir").addEventListener("click",function(){ fermerArrivee(); setTimeout(
    Cet attribut est dans index.html, pas ici : a passer a l'autre fil.
    ================================================================== */
 var FILM_FILET=null;
+/* ⚠️ `INTRO_APRES` est declaree TOUT EN HAUT, avec VER. Elle etait ici, et
+   l'IIFE d'ouverture qui la met a vrai s'execute AVANT cette ligne : `var`
+   hisse la declaration, pas la valeur, donc `= false` l'ecrasait juste
+   apres et la presentation ne s'ouvrait jamais. Sixieme occurrence de ce
+   piege dans ce fichier — attrapee au banc, pas en production. */
 
 function lancerFilm(){
   var v=S("ouvVid");
@@ -6634,6 +6931,13 @@ function montrerCarnet(){
 
 /* fin du film (ou « Passer ») -> le carnet de route des 18 villes */
 function terminerOuverture(){
+  /* ⚠️ LA REPRISE EST ICI, ET PAS SUR LES BOUTONS (8 aout 2026). Trois
+     chemins sortent du film : « Passer », « Commence ton voyage », et
+     l'evenement `error` de la balise video quand le fichier manque. En
+     branchant la suite sur les deux boutons seulement, une video absente
+     laissait la joueuse sur le carnet sans avoir jamais vu la
+     presentation. Un seul point de sortie, tous les chemins couverts. */
+  if(INTRO_APRES){ INTRO_APRES=false; setTimeout(montrerIntro, 60); }
   var v=S("ouvVid");
   if(FILM_FILET){ clearTimeout(FILM_FILET); FILM_FILET=null; }
   try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){}
@@ -6682,7 +6986,17 @@ function lancerDepart(){
      le dessiner alors que rien n'a été fait, c'est ce que Blandine a vu
      deux fois. Il ne se dessine plus que s'il est mérité. */
   var ec = etatChapitre(e.ref);
-  var merite = ec.fini;
+  /* ⚠️ ALIGNE SUR LA CARTE le 8 aout 2026, decision de Blandine :
+     « quand la carte est gagnee le tampon doit etre eclaire ». Le sceau
+     lisait `ec.fini` — 60 % des mots de chaque lecon — alors que la carte
+     postale demande une lecon SANS UNE SEULE ERREUR (garderCarteLecon :
+     justes >= sur). Deux mesures differentes pour ce qui est, pour la
+     joueuse, le meme evenement : elle pouvait donc tenir la carte en main
+     et voir le sceau gris en partant. Une seule verite desormais.
+     ⚠️ `ec.fini` n'est PAS touche : six autres endroits le lisent (compte
+     des chapitres faits, statut de la collection, globe, choix du Sprint,
+     libelle « revoir »). Seul le sceau du depart change de source. */
+  var merite = carteObtenue(e.ref);
   S("dpTitre").textContent = merite ? T("tamponObtenu")
                     : (ec.acquis > 0 ? T("etapeCommencee") : T("reprendLaRoute"));
   S("dpTampon").classList.toggle("gagne", merite);

@@ -132,6 +132,138 @@ Aucune amélioration d'architecture réalisée sur cette session (passation).
 
 ---
 
+## 📲 SESSION 165 · LINGUAE (08/08) — LA PAGE D'ENTRÉE, L'INSTALLATION, LE FILM EN PREMIER, LE RETOUR (v29)
+
+Grosse séance. Six demandes de Blandine, toutes livrées, et **trois pièges du fichier retombés dessus**.
+
+### ✅ 1 · L'image en bloc (maquette B choisie)
+Maquette à deux variantes livrée puis tranchée par Blandine. **Variante B retenue** : fond noir, l'image posée au centre en bloc net, coins arrondis, halo turquoise, **aucun voile** — la variante A allégeait le voile mais un voile allégé reste un voile, donc contraire à la bible. Nouveau fichier **`lingua-bloc.webp`** (1100×789, 117 Ko), `src` posé **en JS** pour qu'il porte `VER` (un attribut `src` écrit dans le HTML ne peut pas la prendre).
+⚠️ Le vide au milieu de la page venait de moi : le `40vh` qui la faisait respirer était accroché à la citation retirée en v23. Il est ramené à 0, l'image occupe désormais ce milieu.
+
+### ✅ 2 · Les textes des cinq points
+· **`pt1t`** : « Le vocabulaire équestre, **dans toutes les langues** » — le chiffre disparaît, dans les six langues.
+· **`pt1d`** : l'énumération des six langues retirée aussi — **citer les six, c'est écrire le chiffre autrement**. Reste « Le vrai, celui des écuries. »
+· **`pt4d`** : formulation de Blandine, aboutie après plusieurs passes — *« Demander de l'aide peut être vital. Ce chapitre est **en libre accès** dans toutes les langues. »* Écartés en route et pourquoi : **offert / gratuit / free** attirent l'œil sur le prix au moment où l'on parle d'un cheval qui boite et contredisent l'abonnement à venir ; **à disponibilité** n'existe pas en français ; **disponible** est un mot de catalogue. En anglais, *free access* est ambigu → *open to everyone*.
+
+### ✅ 3 · La lisibilité — MESURÉE avant d'être corrigée
+Contraste du gris `#8996A2` sur `#060709` : **6,67 : 1**, donc déjà conforme (AA demande 4,5). **Le coupable était la taille**, comme deux fois sur trois. `.pt b` 14 → **15,5 px**, `.pt i` 12,5 → **13,5 px**, et le gris éclairci à `#AEBAC6` (**10,21 : 1**) parce que ces lignes sont longues. ⚠️ Ne pas descendre sous 13 px sur un texte de deux lignes.
+
+### ✅ 4 · L'aide à l'installation
+Bandeau de verre fumé sur le carnet, sous le marqueur. Il **se tait dans trois cas sur quatre** : déjà installé (`navigator.standalone` ou `display-mode: standalone`), ouvert **dans Hype** (iframe — on n'installe pas un module depuis l'application qui le contient), refus mémorisé (`hype_lingua_install`). iOS n'a aucune invite programmable → on affiche **le geste exact** ; Android/Chrome → vrai bouton via `beforeinstallprompt`. Six langues (`instT`, `instIos`, `instAndroid`, `instOk`, `instNon`).
+⚠️ Écrit d'après le comportement normal d'une PWA : **`index.html` n'est pas dans ce fil**, donc ce bandeau ne recopie pas celui de Hype. À comparer sur le téléphone.
+
+### ✅ 5 · Le film d'ouverture passe EN PREMIER
+Blandine : « on doit arriver en tout premier sur la fameuse vidéo ». Avant, à la première visite, il arrivait **troisième** : présentation, choix de la destination, puis film. La raison historique était bonne — il aurait joué **derrière** `#intro` et `#dest` (z-index 45 contre 42) — mais la solution n'était pas de le repousser, c'était de **montrer la présentation à la fin du film**. Drapeau `INTRO_APRES`.
+⚠️ **La reprise est dans `terminerOuverture()`, pas sur les boutons.** Trois chemins sortent du film : « Passer », « Commence ton voyage », et l'événement `error` de la balise quand le fichier manque. Branchée sur les deux boutons seulement, une vidéo absente laissait la joueuse sans jamais voir la présentation.
+
+### ✅ 6 · Le retour par geste
+« On reste coincé sur les pages » — c'est le prix de l'installation : en mode application, plus de barre Safari, donc **plus aucun bouton retour**, et les écrans sont des couches sur une seule page.
+· **Geste de bord uniquement** : le doigt part des **34 premiers pixels à gauche**. Convention iOS, et surtout seule façon de ne pas entrer en conflit avec le glissement du globe, le retournement des cartes et les tuiles du sprint. Un swipe pris n'importe où aurait cassé trois écrans.
+· **`PILE_RETOUR`** : duel → sprint → collection → leçon → arrivée → globe → dest → intro. Le premier ouvert trouvé est celui qu'on ferme. `#depart` exclu (transition qui se termine seule). La présentation fermée au geste est **marquée vue**, sinon on tomberait sur un carnet jamais présenté.
+· **`popstate`** branché avec une entrée d'historique factice : couvre le bouton matériel d'Android, et appelle `HYPE_LINGO_HOST.quitter()` si la pile est vide.
+· ⚠️ **PAS de geste « en avant »**, et c'est délibéré : ces écrans forment une **pile**, pas un historique. Refermer une leçon ne laisse rien à rouvrir ; promettre un geste qui ne fait rien serait pire que son absence.
+
+### 🔴 TROIS PIÈGES RETOMBÉS DESSUS DANS CETTE SEULE SÉANCE
+1. **Ordre d'exécution, 6ᵉ occurrence.** `var INTRO_APRES = false;` était déclarée à côté de `FILM_FILET`, donc **après** l'IIFE d'ouverture qui la met à vrai : `var` hisse la déclaration, pas la valeur, et l'affectation l'écrasait juste après. La présentation ne s'ouvrait jamais. Déplacée **tout en haut, avec `VER`**. Attrapée au banc.
+2. **Ancre non unique → bloc inséré DEUX FOIS.** Le bloc d'installation et la ligne `majInstall()` de `appliquerLangue` se sont retrouvés en double parce que l'ancre du patch **contenait la ligne d'ancrage elle-même** : après remplacement, l'ancre existe toujours, et une seconde exécution passe le `count==1`. Détecté au grep, doublon retiré, puis ancre marquée temporairement (`/* ANCRE_RETOUR */`) pour garantir l'unicité. ⚠️ **Ne jamais réutiliser une ancre qui figure dans le texte de remplacement.**
+3. **Banc qui ne peut pas contredire.** Rappel : `ouverture.mp4` absent du bac à sable ⇒ `error` ⇒ `terminerOuverture()` vide la source. Mesurer `#ouvVid.src` ou `#ouvFilm.joue` ne prouve rien ici.
+
+### 🧪 Banc (Playwright, gestes tactiles réels)
+Aucune erreur JS. Première visite : le film part, la présentation s'ouvre **après**. Geste de bord depuis la présentation → fermée **et marquée vue**. Globe → fermé. Pile globe + collection → **la collection seule** se ferme, le globe reste. **Geste au milieu de l'écran → ignoré.** Textes vérifiés à l'écran (pt1t, pt1d, pt4d), bloc image présent avec `lingua-bloc.webp?v=29`.
+
+### 📦 À pousser (lot cumulatif v21 → v29)
+`lingo.html` · **`lingua-bloc.webp`** (nouveau) · `hype-lingo-lex-horsemanship.js` · `linguae.webmanifest` · les trois icônes · `ouverture.mp4`.
+
+### ⏳ Reste en file
+`lingo-collection.html` (vue en grand, dos sans lettre, polices non chargées — fichier récupéré, sa propre livraison) · le **passeport** à maquetter · **Clonbinane** et **Compiègne** · la lettre du Morne et l'audit des trente lettres (conversation « textes »).
+
+### 🧭 Préparation Flutter
+`retourEnArriere()` et `PILE_RETOUR` **rendent explicite la pile de navigation**, jusqu'ici implicite dans des `classList` dispersés : c'est la première description formelle des écrans du module et de leur ordre. Un routeur Flutter s'écrira contre cette liste. `majInstall()` isole de même la politique d'installation en un point unique.
+
+---
+
+## 🔖 SESSION 164 · LINGUAE (08/08) — LE TAMPON SUIT LA CARTE (v28)
+
+Blandine : « normalement la carte je l'avais seulement si tous les mots étaient ok » — **elle avait raison et je lui avais répondu de travers.** `garderCarteLecon` exige `justes >= sur` : une leçon **sans une seule erreur**. J'avais dit « à la fin de la leçon », c'est plus exigeant que ça.
+
+### ✅ Le sceau du départ lit maintenant `carteObtenue()`
+Il lisait `ec.fini` — 60 % des mots de chaque leçon (`acquisDe(L) >= ceil(L.concepts.length*0.6)`). Deux mesures différentes pour ce qui est, pour la joueuse, **le même événement** : d'où « pourquoi il s'affiche grisé alors que j'ai la carte ». Décision de Blandine : « donne le tampon avec la carte simplement ».
+⚠️ **`ec.fini` n'est PAS touché** : six autres endroits le lisent (compte des chapitres faits, statut `F/O/D` de la collection, globe, choix du Sprint, libellé « revoir », trace du chemin). Seule la source du sceau change.
+
+### 🔴 Piège de banc, le même que pour le film — et je suis tombé dedans une fois de plus
+Premier banc : « AVEC carte → opacité **0** ». J'ai failli annoncer une régression. En réalité `#dpTampon` porte l'animation `tchak` en `both` (0 % → opacité 0), et **l'animation ne tourne pas si `#depart` n'est pas réellement affiché**. Re-mesuré écran ouvert et après les 0,85 s d'animation : **opacité 1, bordure `rgba(32,217,245,.8)`** quand la carte est là ; **0,45 et bordure blanche à 22 %** sinon. ⚠️ Toujours afficher l'écran avant de mesurer une propriété animée.
+
+### 📌 Les trois récompenses, écrites noir sur blanc pour ne plus s'y perdre
+| récompense | condition réelle |
+|---|---|
+| la carte postale | leçon **sans une seule erreur** (`justes >= sur`) |
+| le sceau du départ | **la carte** (depuis le 8 août ; avant : 60 % par leçon) |
+| le souvenir | quiz **sans faute** (`q.s >= q.t`) |
+Le `.ptampon` imprimé sur la carte postale (couleur `#26708C`, opacité 0,85) **n'a aucun état** : c'est de l'encre sur papier crème, voulu ainsi. Ne pas le confondre avec `#dpTampon`.
+
+### 🎫 LE PASSEPORT — décidé, à faire, pas commencé
+Blandine : « le tampon ira sur le passeport qu'on créera ». **Argument décisif : le mot est DÉJÀ dans l'app** — le sceau porte l'inscription « Passeport Hype » et `regle2` annonce « un tampon sur ton passeport ». La promesse est faite, la page n'existe pas. Un tampon par ville gagnée, aucune image à produire (les sceaux sont en CSS/SVG, le dessin existe déjà en deux tailles). À maquetter avant d'écrire.
+
+### ⏳ La collection — diagnostic fait, correction à livrer (fichier séparé)
+`lingo-collection.html` récupéré par le canal GitHub raw. **Trois défauts confirmés dans le fichier**, plus un non signalé :
+1. **Aucune vue en grand** : les cartes sont des vignettes 3/4 et `.dos .corps` scrolle dans une boîte minuscule — « on lit rien ». C'est une fonction à ajouter (lecteur plein écran), pas un bug.
+2. **Dos sans lettre** : `dosHTML` fait `(v.lettre||[]).map(...)` → chaîne vide si la ville n'a pas d'entrée dans `hype-lingo-villes*.js`. Le repli « la lettre est en route » existe sur l'écran d'arrivée mais **n'a jamais été porté jusqu'à la collection**.
+3. **Les polices ne sont pas chargées** : ce fichier n'a **aucun `<link>` Google Fonts**, alors que son CSS demande `Caveat`, `Cinzel` et `Klee One`. D'où l'écriture manuscrite absente dans la grille. Une ligne.
+4. Détail : `(v.objetGagne ? v.objetNom : v.objetNom)` — deux branches identiques, sans effet.
+⚠️ **Une page de code à la fois** : ce fichier fera sa propre livraison, pas mélangé à `lingo.html`.
+
+### 🌍 Installation autonome — adresse donnée
+`https://majestic-melba-997a68.netlify.app/lingo.html`, à ouvrir **dans Safari** puis « Sur l'écran d'accueil ». ⚠️ Exige que le lot v26 (manifest + 3 icônes) soit poussé, sinon iOS met une capture d'écran en guise d'icône. Toujours **pas de hors-ligne** ; à surveiller : une éventuelle interception par le service worker de Hype à la racine.
+
+### 📦 À pousser
+`lingo.html` **v28** (`VER = "?v=28"`), plus le lot v21→v27 s'il ne l'est pas déjà : `hype-lingo-lex-horsemanship.js`, `linguae.webmanifest`, les trois icônes, `ouverture.mp4`.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture. À noter comme dette : **trois notions parallèles de « ville faite »** (`CARTES_LECON`, `etatChapitre().fini`, `QUIZ[ref]`) coexistent dans le fichier. Le sceau en lit une désormais, mais l'unification reste à faire — candidat naturel à un futur service de progression.
+
+---
+
+## 🤠 SESSION 163 · LINGUAE (08/08) — SANTA YNEZ, LA 31ᵉ ÉTAPE : LE HORSEMANSHIP (v27)
+
+Blandine, en recadrant utilement : **« le but c'est de découvrir aussi le monde et le monde équestre »**. Trois chapitres ont été décidés dans cette séance ; le premier est livré, les deux autres suivent (une page de code à la fois).
+
+### ✅ Santa Ynez, Californie — livré
+· **Étape insérée entre Lexington (17 h 20) et Spruce Meadows (18 h 10), à 17 h 45.** Vérifié par calcul : la seule baisse d'heure de tout le voyage reste le passage de minuit (aberystwyth → windsor). Aucune autre ville touchée.
+· `souv:"Un hackamore de crin"` · `forme:"lande"` (déjà dessinée, **pas de nouveau SVG**) · `ic:"licol"` · ciel nuit et or.
+· **Niveau 3** : le chapitre porte sur des notions, pas sur des objets à nommer. On y parle.
+· **`hype-lingo-lex-horsemanship.js` — 12 concepts, 3 phrases, six langues.** Validé par exécution : 12/12 mots et 12/12 définitions dans les six langues, refs uniques, titre traduit, phrases ≤ 7 mots en français.
+· **Deux entrées `COLL_NOM` ajoutées** (`pied`, `ressenti`) : sans elles les leçons s'afficheraient « Leçon 1 » au lieu de porter un nom — défaut déjà rencontré le 5 août sur cinq collections.
+· **Récit en six langues**, avec le fait de la reine en troisième position (`{f:}`).
+
+### 🎯 Le vrai sujet du chapitre, et pourquoi il est bon
+`timing`, `feel` et `release` **n'ont pas de traduction française satisfaisante**. Le français dit « juste moment », « ressenti », « relâchement » : voisin, pas identique. C'est exactement l'écart qu'un module de langues montre mieux qu'un cours. Et la **colonne française donne en même temps le vocabulaire des savoirs éthologiques de la FFE**, celui que les cavalières passent réellement — d'où la conclusion importante : **aucun besoin d'une étape française pour porter des mots français.** Le module est bilingue par construction.
+
+### 🔴 RÈGLE NOUVELLE, ABSOLUE : aucun centre équestre privé français cité
+Blandine : « La Cense, j'ai des cavaliers qui vont en stage là-bas au lieu de venir chez moi, j'ai pas envie de leur faire de la pub. » **Raison décisive et définitive.** Écrite en tête du lexique. ⚠️ Vaut pour TOUS les chapitres à venir : pas d'école, pas de haras privé, pas de formation commerciale nommée. Les lieux publics ou fédéraux restent possibles (Lamotte-Beaupré/Lamotte-Beuvron, Saumur, IFCE).
+
+### 🔴 Mon erreur à ne pas répéter : un poste passé présenté comme une adresse
+J'ai proposé La Cense comme lieu du chapitre en m'appuyant sur le fait qu'Andy Booth y a été directeur pédagogique **pendant douze ans — au passé.** Il a depuis fondé sa propre école. Blandine : « je pensais qu'il faisait juste des interventions parfois » — elle avait raison, c'est moi qui ai transformé un CV en carte de visite. ⚠️ Vérifier le temps du verbe dans une source avant d'en faire un lieu.
+Et une dérive de méthode signalée pour mémoire : pendant trois messages j'ai cherché **un lieu pour caser un homme**, alors qu'un chapitre se choisit pour son vocabulaire. Le recadrage de Blandine a remis les choses d'aplomb.
+
+### 📌 Sur Andy Booth — ce qui est vrai, et ce qu'on n'en fait pas
+Australien, né dans un ranch ; bourse de la reine d'Angleterre en 1997 pour étudier chez les « chuchoteurs » américains ; cinq ans auprès de Pat Parelli ; a côtoyé Ray Hunt, Monty Roberts et Buck Brannaman ; installé en France en 2001, il y a apporté le horsemanship, que **la FFE a rebaptisé « équitation éthologique » en 2003** avant de créer les savoirs et le brevet d'enseignant en 2004.
+**Décision : pas de chapitre à son nom.** Un chapitre est une ville plus un vocabulaire, jamais une personne ; et c'est quelqu'un de vivant qui vend des formations — bâtir un chapitre autour de lui serait une caution qu'il n'a pas donnée. ⚠️ Aucun rapport institutionnel entre l'IFCE et lui : l'IFCE cite son école dans une fiche documentaire, rien de plus. Ne pas en faire un lien.
+
+### ⏳ LES DEUX CHAPITRES SUIVANTS, décidés, pas commencés
+1. **Clonbinane, Victoria (Australie)** — chapitre « L'équitation éthologique » / la science du comportement. Angle **distinct** de Santa Ynez pour qu'aucun `ref` ne soit dupliqué (c'est le piège des faux rappels du SUIVI) : renforcement, signal, habituation, seuil de réaction, apprentissage. C'est de là que vient la *learning theory* appliquée au cheval.
+2. **Compiègne** — la chasse à courre. La vénerie française vit dans cette forêt ; Fontainebleau est identifié Grand Parquet, donc CSO et complet. ⚠️ Sujet politiquement chargé : vocabulaire et tradition, **sans plaidoyer**.
+
+### 🧪 Banc (Playwright)
+31 étapes, Santa Ynez en index 29, heures 17 h 20 → **17 h 45** → 18 h 10. Lexique chargé, `chapVirtuel('santaynez')` renvoie **12 concepts / 3 phrases / aucun manque**, niveau 3, collections nommées « Le travail à pied » et « Le ressenti ». Écran d'arrivée ouvert : « CHAPITRE 30 · LE HORSEMANSHIP », ville peinte « Santa Ynez », récit affiché, **le fait de 1989 présent**. Aucune erreur JS.
+
+### 📦 À pousser (lot cumulatif v21 → v27)
+`lingo.html` · **`hype-lingo-lex-horsemanship.js`** (nouveau) · `linguae.webmanifest` · les trois icônes · `ouverture.mp4`.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture. À noter cependant : l'ajout d'une 31ᵉ étape n'a demandé **aucune modification de moteur** — une entrée dans `ETAPES`, une dans `ETAPE_SRC`, une dans `NIVEAU_VILLE`, un fichier de lexique, un récit. La frontière données/moteur tient.
+
+---
+
 ## 📲 SESSION 162 · LINGUAE (08/08) — LE MINIMUM INSTALLABLE : LINGUAE A SON ICÔNE (v26)
 
 Blandine : « du coup là j'ai une entrée indépendante et la possibilité d'un raccourci qui lui soit propre ? » — oui, et il ne manquait que l'emballage. Le module tourne seul depuis la v22 (appels au pont tous gardés, langue de lecture devenue sa propre donnée). Livré : **manifest, icônes, mode standalone**, sans déplacer un seul fichier.
