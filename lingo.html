@@ -429,6 +429,23 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  font-size:11.5px;letter-spacing:.08em;color:#9AA8B4;
  border-bottom:1px dashed rgba(255,255,255,.18);padding-bottom:2px}
 #ouvMuet.actif{color:var(--turquoise);border-bottom-color:rgba(32,217,245,.45)}
+#ouvColl{display:block;margin:0 auto 20px;border:1px solid rgba(232,201,128,.35);
+ background:rgba(232,201,128,.05);border-radius:999px;padding:9px 20px;cursor:pointer;
+ font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--orTexte)}
+#ouvGuideB{display:block;width:100%;text-align:left;border:0;background:none;cursor:pointer;
+ font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gris);
+ padding:14px 0;border-top:1px dashed rgba(255,255,255,.14);margin-top:2px}
+#ouvGuide{padding:2px 0 16px}
+#ouvGuide .gTxt{font-size:13px;line-height:1.75;color:#C3D0DA;margin:0 0 14px}
+#ouvGuide .gTitre{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+ color:var(--orTexte);margin:0 0 10px}
+#ouvGuide .gLigne{font-size:13px;line-height:1.9;color:#C3D0DA;margin:0 0 7px}
+#ouvGuide .gLigne b{color:#E8EEF3;font-weight:600}
+#ouvGuide .gVille{border:0;background:none;padding:0;cursor:pointer;
+ color:var(--turquoise);font-size:13px;border-bottom:1px solid rgba(32,217,245,.35)}
+.lcPartage{display:block;margin:12px auto 0;border:1px solid rgba(255,255,255,.14);
+ background:rgba(255,255,255,.03);border-radius:999px;padding:9px 18px;cursor:pointer;
+ font-size:12px;color:#C3D0DA}
 .lcMuet{display:block;margin:2px auto 18px;border:1px solid rgba(255,255,255,.14);
  background:rgba(255,255,255,.03);border-radius:999px;padding:7px 15px;cursor:pointer;
  font-size:12px;color:#C3D0DA}
@@ -1288,7 +1305,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v17 · 8 août</p>
+    <p id="ouvVersion">v18 · 8 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1467,7 +1484,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=17";
+var VER = "?v=18";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -2658,6 +2675,66 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
 (function(){
   var b=document.getElementById("carnet");
   if(!b) return;
+  /* la collection depuis l'accueil (demande de Blandine, 8 août) */
+  var bc=document.createElement("button"); bc.id="ouvColl"; bc.type="button";
+  bc.textContent="\uD83C\uDFB4  "+(langueUI()==="en"?"My collection":"Ma collection");
+  bc.addEventListener("click", function(){ ouvrirCollection(); });
+  b.appendChild(bc);
+
+  /* « comment ça marche » : le mode d'emploi + le guide des besoins,
+     généré depuis ETAPE_SRC — chaque ligne dit « tu veux… → va à… »
+     avec les VRAIES villes du chapitre, jamais une liste de mémoire. */
+  var GUIDE=[
+    {cle:"arrivee",  fr:"t'inscrire dans un club",        en:"join a riding school"},
+    {cle:"balade",   fr:"réserver une balade",            en:"book a ride out"},
+    {cle:"urgences", fr:"faire face à un pépin",          en:"handle an emergency"},
+    {cle:"cours",    fr:"suivre un cours",                en:"follow a lesson"},
+    {cle:"cheval",   fr:"décrire un cheval",              en:"describe a horse"},
+    {cle:"materiel", fr:"parler du matériel",             en:"talk tack"},
+    {cle:"concours", fr:"t'engager en concours",          en:"enter a show"},
+    {cle:"vente",    fr:"acheter un cheval",              en:"buy a horse"},
+    {cle:"elevage",  fr:"parler élevage",                 en:"talk breeding"},
+    {cle:"cross",    fr:"marcher un cross",               en:"walk a cross-country course"}
+  ];
+  function villesDe(cle){
+    return ETAPES.filter(function(e){
+      var src=ETAPE_SRC[e.ref]||[];
+      return src.some(function(x){ return x[0]===cle; });
+    }).map(function(e){ return {ref:e.ref, nom:eV(e)}; });
+  }
+  var pliOuvert=false;
+  var pb=document.createElement("button"); pb.id="ouvGuideB"; pb.type="button";
+  pb.textContent=(langueUI()==="en"?"How does it work ?":"Comment ça marche ?")+"  +";
+  var pz=document.createElement("div"); pz.id="ouvGuide";
+  pb.addEventListener("click", function(){
+    construireGuide();
+    pliOuvert=!pliOuvert;
+    pz.style.display=pliOuvert?"block":"none";
+    pb.textContent=(langueUI()==="en"?"How does it work ?":"Comment ça marche ?")+(pliOuvert?"  \u2212":"  +");
+  });
+  var guideFait=false;
+  function construireGuide(){
+  if(guideFait) return; guideFait=true;
+  var uiG=langueUI();
+  pz.appendChild(el("p",{class:"gTxt", text: uiG==="en"
+    ? "One language, one round-the-world trip. Each city teaches the words of one real situation; finish its lesson to win the postcard, its quiz to win the keepsake."
+    : "Une langue, un tour du monde. Chaque ville t'apprend les mots d'une vraie situation ; finis sa leçon pour gagner la carte postale, son quiz pour gagner le souvenir."}));
+  pz.appendChild(el("p",{class:"gTitre", text: uiG==="en"?"Where do I start ? You want to\u2026":"Par où commencer ? Tu veux\u2026"}));
+  GUIDE.forEach(function(g){
+    var v=villesDe(g.cle);
+    if(!v.length) return;
+    var ligne=el("p",{class:"gLigne"});
+    ligne.appendChild(el("b",{text:(uiG==="en"?g.en:g.fr)+" \u2192 "}));
+    v.forEach(function(x,i){
+      if(i) ligne.appendChild(document.createTextNode(" \u00b7 "));
+      ligne.appendChild(el("button",{class:"gVille", onclick:function(){ ouvrirLecon(x.ref); }}, x.nom));
+    });
+    pz.appendChild(ligne);
+  });
+  }
+  pz.style.display="none";
+  b.appendChild(pb); b.appendChild(pz);
+
   var t=document.createElement("p"); t.className="ct"; t.setAttribute("data-t","itineraire"); t.textContent=T("itineraire");
   b.appendChild(t);
   var g=document.createElement("div"); g.className="vgrille";
@@ -4709,6 +4786,34 @@ function choisirLecon(){
       (objFait ? (ui==="en"?"yours":"obtenu")
                : (ui==="en"?"a perfect quiz":"le quiz sans faute"))})));
   S("lcCorps").appendChild(boite);
+
+  /* le chemin vers la collection, et le partage de l'appli — demandes
+     de Blandine (8 août) : « proposer de partager l'appli depuis chaque
+     chapitre » et « consulter ses collections ». */
+  S("lcCorps").appendChild(el("button",{class:"lgColl", style:"margin-top:14px",
+    onclick:function(){ ouvrirCollection(); }}, T("versColl")));
+  S("lcCorps").appendChild(el("button",{class:"lcPartage",
+    onclick:function(){ partagerHype(); }},
+    "\u2197  "+(ui==="en"?"Share Hype with a friend":"Partager Hype à un ami")));
+}
+
+/* le partage de l'appli elle-même, sur le modèle de partagerDuel */
+function partagerHype(){
+  var ui=langueUI();
+  var txt=(ui==="en"
+    ? "I'm learning stable English on Hype \u2728 "
+    : "J'apprends la langue des écuries sur Hype \u2728 ")+location.origin+location.pathname;
+  if(navigator.share){
+    navigator.share({ title:NOM_MODULE, text:txt }).catch(function(){});
+    return;
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+      alert(ui==="en"?"Link copied.":"Lien copié.");
+    }).catch(function(){ alert(txt); });
+    return;
+  }
+  alert(txt);
 }
 function ligneRec(obtenu, quoi, etat){
   return el("div",{class:"lcRl"+(obtenu?" ok":"")},

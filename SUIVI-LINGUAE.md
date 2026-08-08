@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 153)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 154)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,22 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🧭 SESSION 154 · LINGUAE (08/08) — LE PARTAGE, LA COLLECTION À L'ACCUEIL, ET « COMMENT ÇA MARCHE » (v18)
+
+Les trois demandes restantes de Blandine, livrées :
+**1 · Partager l'appli depuis chaque chapitre** : bouton « ↗ Partager Hype à un ami » en bas de chaque page de chapitre — `partagerHype()` sur le modèle de partagerDuel (Web Share natif, repli presse-papier).
+**2 · La collection depuis l'accueil** : bouton or « 🎴 Ma collection » sur le carnet, au-dessus du mode d'emploi — et le lien vers la collection est aussi ajouté en bas de chaque page de chapitre.
+**3 · « Comment ça marche ? »** : un pli sur le carnet, avant l'itinéraire — trois lignes d'explication (une langue, un voyage, la carte à la leçon, le souvenir au quiz) puis **le guide des besoins, GÉNÉRÉ depuis ETAPE_SRC** : « Tu veux… t'inscrire dans un club → La Baule · réserver une balade → Le Morne · faire face à un pépin → Kildare · Édimbourg · … marcher un cross → Burghley ». Chaque nom de ville est tappable et ouvre son chapitre. Aucune liste de mémoire : les villes viennent des données.
+🔴 Incident maîtrisé : `ETAPE_SRC` est déclaré APRÈS l'IIFE du carnet — le guide se construit donc **au premier tap** (`construireGuide()` différé), pas au chargement. Attrapé au banc (bouton null), réparé avec des ancres re-vérifiées une à une (leçon S150 appliquée).
+Banc final : collection présente, 10 lignes du guide avec les vraies villes, aucune erreur. Marqueur **v18 · 8 août**. À pousser : `lingo.html` seul.
+
+### ⏳ Reste en file : le pont Hey Baby (proposition à écrire — chantier à cheval sur assistant.js, fil principal)
+
+### 🧭 Préparation Flutter
+Le guide des besoins est dérivé des données (ETAPE_SRC) et non dupliqué : une source de vérité.
 
 ---
 
