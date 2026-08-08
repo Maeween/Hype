@@ -10,7 +10,11 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 08/08/2026 (SESSION 106 · LE CHEMIN BABY SORT DE L'INDEX) — md5 `621eee729a311be00812de6329a50ef6`, 9 119 146 octets. **NOUVEAU FICHIER OBLIGATOIRE : `hype-cours-baby.js`, md5 `226b9c2508417759506c2b2ed0c45b03`, 1 846 043 octets.** Aucune preview. Aucun SQL. Detail dans la section SESSION 106 ci-dessous.**
+**Version actuelle de l'index.html : 08/08/2026 (SESSION 107 · NOUVELLES COUVERTURES DU CHEMIN BABY) — md5 `79459a876099f9f9cd9eb69ed1f89acc`, 9 120 913 octets. **hype-cours-baby.js md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets — MODIFIE, a pousser aussi.** **13 images a pousser dans `images/`.** Aucune preview. Aucun SQL. Detail dans la section SESSION 107.**
+
+**Ancienne version (106) — 08/08/2026 (SESSION 107 · 12 COUVERTURES BABY + PUZZLE DU BRONZE) — md5 `79459a876099f9f9cd9eb69ed1f89acc`, 9 120 913 octets. **hype-cours-baby.js md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets — MODIFIE, a pousser aussi.** **13 IMAGES a pousser dans `images/`.** Aucune preview. Aucun SQL. Detail en SESSION 107 ci-dessous.**
+
+**Ancienne version (106) — 08/08/2026 (SESSION 106 · LE CHEMIN BABY SORT DE L'INDEX) — md5 `c0bf654245ac928f93c42df0de13a0a2`, 9 119 449 octets. **NOUVEAU FICHIER OBLIGATOIRE : `hype-cours-baby.js`, md5 `226b9c2508417759506c2b2ed0c45b03`, 1 846 043 octets.** Aucune preview. Aucun SQL. Detail dans la section SESSION 106 ci-dessous.**
 
 **Ancienne version (105) — 08/08/2026 (SESSION 105 · UNE BARRIÈRE D'ERREUR PAR ÉCRAN) — md5 `8b4f3eed7d382b74d3cdf63dc67fe35c`, 10 964 421 octets. Aucune preview. Aucun SQL. **`couv-g1-c11-de.jpg` toujours à pousser → k644.** Detail dans la section SESSION 105 ci-dessous.**
 
@@ -111,9 +115,228 @@ Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js
 
 ---
 
+## SESSION 107 · DOUZE COUVERTURES ET LE PUZZLE DU CHEMIN BABY
+
+**index.html md5 `3b28f61ca030325d23c875e38040a40e`, 9 122 076 octets.**
+**hype-cours-baby.js md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets — MODIFIE.**
+**13 fichiers a pousser dans `images/` (2,8 Mo au total).** Aucune preview. Aucun SQL.
+
+### Ce qui change
+
+Douze chapitres du Chemin Baby recoivent une nouvelle illustration de couverture, et le puzzle du
+Poney de Bronze une nouvelle image. Les cles vont de **k645 a k657**.
+
+| Cle | Fichier | Chapitre | Poids |
+|---|---|---|---|
+| k645 | `puzzle-baby-bronze.jpg` | PUZZLE Poney de Bronze | 304 Ko |
+| k646 | `baby-c3-brosse.jpg` | `baby-c3` Je brosse Apy | 249 Ko |
+| k647 | `baby-c4-en-main.jpg` | `baby-c4` J'emmene Apy jusqu'au terrain | 212 Ko |
+| k648 | `baby-c5-avec-aide.jpg` | `baby-c5` Je monte sur Apy avec de l'aide | 236 Ko |
+| k649 | `baby-c6-le-pas.jpg` | `baby-c6` Je decouvre le pas sur Apy | 220 Ko |
+| k650 | `baby-c7-equilibre.jpg` | `baby-c7` Je joue avec mon equilibre | 209 Ko |
+| k651 | `baby-c12-licol-filet.jpg` | `baby-c12` Je reconnais le licol et le filet | 240 Ko |
+| k652 | `baby-c13-range-materiel.jpg` | `baby-c13` J'enleve le licol et je range | 192 Ko |
+| k653 | `baby-c14-terrain.jpg` | `baby-c14` J'emmene Apy sur le terrain | 226 Ko |
+| k654 | `baby-c16-arrete.jpg` | `baby-c16` J'arrete Apy | 224 Ko |
+| k655 | `baby-c17-repart.jpg` | `baby-c17` Je repars, je retrouve mes renes | 132 Ko |
+| k656 | `baby-c18-descend.jpg` | `baby-c18` Je descends d'Apy tout seul | 201 Ko |
+| k657 | `baby-c20-nourriture.jpg` | `baby-c20` Paille ou foin ? | 247 Ko |
+
+### Un doublon corrige au passage
+
+`baby-c16` « J'arrete Apy » et `baby-c17` « Je repars et je retrouve mes renes » partageaient la
+**meme image k560**, donc la meme vignette deux fois de suite sur le chemin. Les deux recoivent
+maintenant une image distincte. **Verifie : plus aucun doublon de couverture sur les 27 chapitres.**
+
+### Le puzzle garde son repli en cascade
+
+```js
+poney_bronze: HYPE_IMGS["k645"] || HYPE_IMGS["k432"] || GALOPS_HERO
+```
+Si le nouveau fichier n'arrive pas, l'ancien puzzle reste affiche. Pas de trou.
+
+### Choix de production des images
+
+- **1200 px de cote maximum, JPEG q84 progressif** pour les couvertures ; **1100 px q82** pour le
+  puzzle, qui s'affiche sur environ 340 px de large (soit 1020 px sur un ecran 3x).
+- Comparaison visuelle faite a l'echelle reelle d'une piece de puzzle entre 1254 px q86 (437 Ko) et
+  1100 px q82 (304 Ko) : **aucune difference visible**, y compris sur les cils et le grain de
+  l'aquarelle. 30 % de poids en moins.
+- **42 Mo de sources PNG -> 2,8 Mo de JPEG**, 223 Ko en moyenne par image.
+- `k652` a ete **recadree en 4:5** depuis un original en 0,56 (941x1672), fenetre centree : c'est le
+  seul cadrage qui garde les trois personnages, la selle et les bottes.
+
+### Nommage : des noms descriptifs, plus des kNNN
+
+Les fichiers portent des noms parlants (`baby-c13-range-materiel.jpg`) et non `k652.jpg`. La cle
+reste tracee dans `index.html`, mais le nom du fichier dit a quoi il sert au moment de pousser.
+Le cache immuable de `_headers` les couvre : **pour en remplacer une, changer son NOM.**
+
+### Deux pieges rencontres, dont un deja connu
+
+**Cles orphelines.** En session 106, `k644` avait ete *utilisee* sans etre *declaree* — affiche
+vide. Cette fois un controle croise a ete ajoute : on liste les cles utilisees dans les deux
+fichiers, les cles declarees dans `index.html`, et on verifie qu'aucune n'est orpheline.
+**Resultat : k645 a k657 toutes declarees.**
+
+**Fichiers de reference ecrases.** Les deux sauvegardes prises avant modification se sont
+retrouvees identiques a l'etat *apres*, ce qui a fait croire pendant un moment que le remplacement
+n'avait pas eu lieu. Le constat fiable a ete obtenu autrement : **compter les cles dans le fichier
+lui-meme.** Les 12 nouvelles y sont une fois chacune, et les 11 anciennes (k424, k422, k448, k444,
+k472, k500, k498, k499, k560, k561, k563) ont **toutes disparu**.
+
+Lecon : pour prouver un remplacement, compter les occurrences dans le fichier ecrit vaut mieux
+qu'un diff contre une sauvegarde dont on n'est pas certain de la date.
+
+### Controles passes
+
+- **`node --check`** sur `hype-cours-baby.js` et sur les 15 blocs inline de l'index : tout OK.
+- **Aucune cle orpheline** parmi k645-k657.
+- **Aucun doublon de couverture** sur les 27 chapitres Baby.
+- **Audit des six langues** : Baby 27/27 partout, inchange. **Rendu** : 1 881 elements par langue,
+  aucune anomalie.
+
+### Ce qui reste des images recues
+
+Sur les 33 illustrations envoyees, **15 avaient ete retenues par Blandine, 13 sont posees**. Restent
+six scenes de tendresse non affectees (un enfant qui enlace son poney, des variantes de friandises).
+Candidats naturels si elle veut poursuivre : `baby-c1` « Bonjour Apy », `baby-c8`, `baby-c9`
+« Ma grande mission ». Non fait, en attente.
+
+---
+
+## SESSION 107 · DOUZE COUVERTURES DU CHEMIN BABY, ET LE PUZZLE DU BRONZE
+
+**index.html md5 `0db57003b0e545d231bb1de420ad6b46`, 9 121 060 octets.**
+**hype-cours-baby.js md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets — modifie.**
+**13 images a pousser dans `images/`.** Aucun SQL.
+
+### Les treize fichiers
+
+| Cle | Chapitre | Fichier | Poids |
+|---|---|---|---|
+| k645 | puzzle Poney de Bronze | `puzzle-baby-bronze.jpg` | 304 Ko |
+| k646 | `baby-c3` Je brosse Apy | `baby-c3-brosse.jpg` | 249 Ko |
+| k647 | `baby-c4` J'emmene Apy jusqu'au terrain | `baby-c4-en-main.jpg` | 212 Ko |
+| k648 | `baby-c5` Je monte sur Apy avec de l'aide | `baby-c5-avec-aide.jpg` | 236 Ko |
+| k649 | `baby-c6` Je decouvre le pas | `baby-c6-le-pas.jpg` | 220 Ko |
+| k650 | `baby-c7` Je joue avec mon equilibre | `baby-c7-equilibre.jpg` | 209 Ko |
+| k651 | `baby-c12` Je reconnais le licol et le filet | `baby-c12-licol-filet.jpg` | 240 Ko |
+| k652 | `baby-c13` J'enleve le licol et je range | `baby-c13-range-materiel.jpg` | 192 Ko |
+| k653 | `baby-c14` J'emmene Apy sur le terrain | `baby-c14-terrain.jpg` | 226 Ko |
+| k654 | `baby-c16` J'arrete Apy | `baby-c16-arrete.jpg` | 224 Ko |
+| k655 | `baby-c17` Je repars, je retrouve mes renes | `baby-c17-repart.jpg` | 132 Ko |
+| k656 | `baby-c18` Je descends d'Apy tout seul | `baby-c18-descend.jpg` | 201 Ko |
+| k657 | `baby-c20` Paille ou foin ? La nourriture | `baby-c20-nourriture.jpg` | 247 Ko |
+
+**2,8 Mo au total.** Sources en PNG de 3 Mo chacune, ramenees a 1200 px (1100 pour le puzzle),
+JPEG q84 progressif — environ **-93 %** sans perte visible.
+
+Le puzzle a ete compare piece par piece a l'echelle reelle : 1254 px q86 (437 Ko) contre
+1100 px q82 (304 Ko), **aucune difference visible** meme sur les cils et le grain de l'aquarelle.
+Le puzzle s'affiche sur ~340 px de large, donc 1020 px suffisent sur un ecran 3x.
+
+### Le doublon est resolu
+
+`baby-c16` « J'arrete Apy » et `baby-c17` « Je repars et je retrouve mes renes » partageaient
+**la meme image k560** : le poney couche apparaissait deux fois de suite sur le chemin. Ils ont
+desormais k654 et k655. **Verifie apres coup : plus aucune cle utilisee deux fois sur les 27
+chapitres.**
+
+### Le puzzle du Bronze garde son repli en cascade
+
+```js
+poney_bronze: HYPE_IMGS["k645"] || HYPE_IMGS["k432"] || GALOPS_HERO
+```
+Structure d'origine conservee : si le fichier n'arrive pas, l'ancien puzzle s'affiche, pas un trou.
+
+### UN PIEGE DE DELIMITATION, a retenir absolument
+
+Le script de branchement a echoue sur `baby-c16`. Cause : **la cle `id` n'est pas toujours la
+premiere du chapitre.** Sur `baby-c16` et `baby-c17`, `type` la precede :
+
+```js
+{ "type": {"fr":"pratique", ...}, "id": "baby-c16", "duree": ... }
+```
+
+Un `lastIndexOf("{")` depuis l'identifiant tombait donc sur l'objet `type` et isolait un
+fragment sans `id`. Correction : remonter d'accolade en accolade jusqu'a trouver celle dont
+l'equilibrage **couvre l'identifiant** et dont l'evaluation **rend le bon `id`**.
+
+**Ne jamais supposer que `id` ouvre le chapitre.** Le meme piege attend tout futur script de
+modification ciblee, dans Baby comme dans les Galops.
+
+### Contrôles passés
+
+- **`node --check`** sur `hype-cours-baby.js` et sur les 15 blocs inline de l'index : tout OK.
+- **Non-perte prouvee** sur le fichier Baby : 27 chapitres, ordre identique, et comparaison
+  chapitre par chapitre en neutralisant `blocs[0].src` des 12 vises →
+  **0 difference ailleurs que sur la couverture.**
+- **Chaque cle utilisee est declaree** : les 12 cles >= k645 employees par Baby sont bien
+  presentes dans l'index, plus k645 pour le puzzle. Verifie par script, pas a l'oeil.
+  C'est le controle qui manquait en session 106 quand k644 avait ete utilisee sans etre declaree.
+- **Preuve de rendu** contre l'index d'avant, six langues : 14 053 valeurs,
+  **IDENTIQUE AU CARACTERE PRES** (la table Baby etant sortie, la comparaison porte sur les
+  sept autres tables — celles-ci ne devaient pas bouger, et elles n'ont pas bouge).
+- **Rendu et audit** : 1 881 elements par langue, Baby 27/27 dans les six langues.
+
+### INCIDENT · UNE EXPRESSION REGULIERE A EMPORTE SIX BALISES DE SCRIPT
+
+Les fichiers ont ete renommes apres la premiere livraison (le prefixe `couv-` retire). Les
+declarations ont alors ete reinserees **sans supprimer les anciennes** : les 13 cles se trouvaient
+declarees **deux fois**, et comme la seconde declaration ecrase la premiere en JavaScript, l'app
+cherchait des fichiers `couv-baby-*.jpg` qui n'existaient plus. Toutes les couvertures Baby
+auraient ete vides.
+
+Premiere tentative de reparation par expression reguliere, qui a fait bien pire :
+
+```
+\n/\* k645-k657[^*]*?\*/(?:\nwindow\.HYPE_IMGS\["k6[45][0-9]"\]="images/...";[^\n]*)+
+```
+
+Le `[^\n]*` en fin de motif a avale la suite de la ligne — or la derniere declaration est
+**collee a `</script>`**, lui-meme suivi de six balises `<script src="hype-images-114..119.js">`
+sur la meme ligne. **Sept balises supprimees, dont six fichiers d'images de 114 a 119.**
+
+Detecte par un comptage de balises : `<script>` 155 -> 148, externes 130 -> 124, blocs inline
+15 -> 14. Sans ce comptage, l'anomalie passait tous les autres controles — `node --check` etait
+vert, le rendu etait vert, l'audit etait vert.
+
+**Deux regles qui en decoulent :**
+
+1. **Compter les balises `<script>` avant et apres toute modification de l'index.** Ouvrantes,
+   fermantes, inline et externes. C'est le seul controle qui attrape ce genre de degat.
+2. **Ne jamais delimiter par expression reguliere ce qui touche a une fin de ligne dans ce
+   fichier.** Les declarations d'images sont collees aux balises, sans retour a la ligne. Il faut
+   ancrer sur une chaine litterale **incluant le `</script>`** et le restituer explicitement.
+
+Reparation : retour a la reference, puis reinsertion avec pour ancre
+`window.HYPE_IMGS["k644"]="images/couv-g1-c11-de.jpg";</script>` et restitution de la balise.
+Verifie apres coup : **155 balises, 130 scripts externes, identiques a la reference.**
+
+### Contrôle ajoute a la liste obligatoire
+
+`verif_final.js` verifie desormais, dans les deux sens :
+- chaque cle declaree a bien son fichier produit ;
+- chaque fichier produit a bien sa declaration ;
+- **aucune cle n'est declaree deux fois** ;
+- chaque cle utilisee par Baby est declaree ;
+- le puzzle garde sa cascade de repli.
+
+### Ce qui reste sur les couvertures Baby
+
+Six images retenues par Blandine n'ont pas trouve de chapitre : ce sont toutes des scenes de
+tendresse (enfant qui enlace son poney), interchangeables. Candidats naturels si elle veut :
+`baby-c1` « Bonjour Apy », `baby-c8`, `baby-c9` « Ma grande mission ». **Non affectees.**
+
+Les neuf chapitres du **Poney d'Or** (`baby-c19` a `c27`) gardent leurs images d'origine,
+sauf `baby-c20` qui recoit le seau de friandises (k657).
+
+---
+
 ## SESSION 106 · LE CHEMIN BABY SORT DE L'INDEX
 
-**index.html md5 `621eee729a311be00812de6329a50ef6`, 9 119 146 octets.**
+**index.html md5 `c0bf654245ac928f93c42df0de13a0a2`, 9 119 449 octets.**
 **hype-cours-baby.js md5 `226b9c2508417759506c2b2ed0c45b03`, 1 846 043 octets — NOUVEAU FICHIER, à pousser AVANT l'index.**
 Aucune preview. Aucun SQL.
 
@@ -200,6 +423,46 @@ vide le temps que l'autre suive : gênant, pas cassé, grâce au repli.
 **Vérifier la 9 119 146LLE sur GitHub, pas l'horodatage.** En session 71, le premier index de secours
 n'avait pas remplacé le fichier et GitHub affichait encore l'ancienne taille : c'est ce qui avait
 fait perdre le plus de temps. Après le push, l'index doit afficher **8,16 Mo** et non 9,73.
+
+
+### k644 : l'affiche allemande de la licence est branchée
+
+Blandine a poussé `images/couv-g1-c11-de.jpg` (l'affiche corrigée au pixel en session 101 : dates
+`31.08.2025` → `31.12.2025` sur la carte et sur le téléphone, titre `REFLEABE` → `ROUTINE`).
+
+Deux modifications :
+
+```js
+window.HYPE_IMGS["k644"] = "images/couv-g1-c11-de.jpg";   /* declaree pres du filet k547-k554 */
+```
+et sur `g1-c11`, `src.de` passe de **k208** (le repli anglais posé en session 104) à **k644**.
+
+État des cinq objets `src` du Galop 1 :
+
+| Chapitre | fr | en | de |
+|---|---|---|---|
+| `g1-c11` La licence FFE | k207 | k208 | **k644 — la vraie affiche allemande** |
+| `g1-c12` La FFE | k213 | k214 | k214 *(repli anglais)* |
+| `g1-c13` Le Parc Équestre Fédéral | k219 | k220 | k220 *(repli anglais)* |
+| `g1-c16` Le passeport du cheval | k225 | k226 | k226 *(repli anglais)* |
+| `g1-c20` Les parties du cheval | k168 | k169 | k169 *(repli anglais)* |
+
+**Découverte utile :** le composant `PhotoMultilingue` affiche des **drapeaux** sous l'affiche. Le
+lecteur peut donc changer la langue de l'infographie à la main, quelle que soit la langue de
+l'interface. Le drapeau 🇩🇪 servira désormais la vraie version allemande sur `g1-c11`.
+
+**INCIDENT DE MÉTHODE, à ne pas refaire.** Le script Python qui déclarait `k644` a planté sur un
+`import` inexistant **après** avoir affiché « ok » mais **avant** d'écrire le fichier. Le script
+suivant, lui, a bien branché `src.de` sur `k644`. Résultat intermédiaire : une clé **utilisée mais
+jamais déclarée**, donc `undefined`, donc une affiche vide pour les lecteurs allemands. Détecté en
+comptant les occurrences (1 au lieu de 2 attendues), puis réparé.
+
+**Règle : après chaque script de modification, compter les occurrences attendues dans le fichier
+écrit.** Un « ok » affiché à l'écran ne prouve pas que le disque a été touché.
+
+**Reste à vérifier par Blandine :** que le chemin est bien `images/couv-g1-c11-de.jpg`. Si le
+drapeau 🇩🇪 de `g1-c11` affiche une image vide, le fichier est ailleurs — le corriger est une
+seule ligne.
 
 ### La suite de l'extraction, par ordre de sûreté
 
