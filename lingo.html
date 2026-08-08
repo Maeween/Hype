@@ -169,9 +169,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    plutot que 30% : sur cet ecran le texte descend moins bas, donc on peut
    montrer un peu plus du bas de l'image. */
 #dsFond{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-#dsFondImg{position:absolute;inset:0;width:100%;height:100%;
+#dsFondImg{position:absolute;left:12%;right:12%;top:2.5%;height:44%;
  background-image:url("lingua-langues.webp");background-size:contain;
- background-repeat:no-repeat;background-position:center top}
+ background-repeat:no-repeat;background-position:center top;
+ -webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
 #inBas{position:absolute;inset:0;background:linear-gradient(to bottom,
  rgba(4,6,10,.30) 0%,rgba(4,6,10,.62) 40%,rgba(4,6,10,.94) 68%,#04060A 100%)}
 /* ⚠️ Z-INDEX CORRIGE le 7 aout 2026, et c'est LA raison pour laquelle
@@ -417,6 +418,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    soulignement discret pour qu'on devine qu'il se touche */
 #ouvVersion{font-size:9px;letter-spacing:.14em;text-transform:uppercase;
  color:rgba(244,247,250,.28);text-align:center;margin:10px 0 0}
+#ouvLangPhrase{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+ color:#C3D0DA;margin:14px 0 8px}
+#ouvDrapeaux{display:flex;justify-content:center;gap:14px;margin:0 0 4px}
+#ouvDrapeaux button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
+ border-radius:12px;padding:6px 9px;font-size:21px;line-height:1;cursor:pointer}
+#ouvDrapeaux button.actif{border-color:rgba(32,217,245,.65);
+ box-shadow:0 0 18px rgba(32,217,245,.22)}
 .langue{border:0;padding:0;cursor:pointer;
  border-bottom:1px solid rgba(32,217,245,.35);padding-bottom:2px;
  font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
@@ -798,8 +806,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #lcTitre{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);
  margin:0 0 4px;text-align:center}
 #lcCorps{flex:1;display:flex;flex-direction:column}
-.lcCons{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris);
- margin:8px 0 24px;text-align:center}
+.lcCons{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:#D6E0E8;
+ margin:8px 0 24px;text-align:center;text-shadow:0 1px 14px rgba(0,0,0,.9)}
 /* le choix des leçons */
 .lcL{display:flex;align-items:center;gap:14px;width:100%;padding:16px 18px;margin-bottom:10px;
  border-radius:16px;text-align:left;
@@ -827,9 +835,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .lcSon{margin-top:16px;padding:9px 18px;font-size:11px;letter-spacing:.14em;
  text-transform:uppercase;color:var(--turquoise);border:1px solid var(--bord);
  border-radius:99px;background:rgba(32,217,245,.06)}
-.lcDef{font-size:13px;line-height:1.7;color:#B9C6D2;text-align:center;margin:20px 4px 0}
+.lcDef{font-size:14px;line-height:1.75;color:#D3DDE5;text-align:center;margin:20px 4px 0;
+ text-shadow:0 1px 12px rgba(0,0,0,.85)}
+.lcDef b{color:var(--blanc);font-weight:600}
 /* les réponses, en plaques de verre 2×2 */
-.lcInvite{font-family:'Cinzel',serif;font-size:26px;text-align:center;margin:0 0 24px;line-height:1.25}
+.lcInvite{font-family:'Cinzel',serif;font-size:28px;text-align:center;margin:0 0 24px;line-height:1.3;
+ color:var(--blanc);text-shadow:0 2px 20px rgba(0,0,0,.92), 0 0 44px rgba(0,0,0,.6)}
 .lcPetit{font-family:'Montserrat',sans-serif;font-size:15px;color:var(--gris);font-weight:300}
 .lcOpts{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%}
 .lcOpt{padding:16px 10px;font-size:14px;text-align:center;border-radius:14px;
@@ -1258,6 +1269,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          langue était ouverte, personne ne s'en apercevait. Depuis que les
          six sont ouvertes, il n'y avait plus AUCUN chemin pour en changer.
          La ligne qui affiche déjà la langue est l'endroit évident. -->
+    <p id="ouvLangPhrase">Choisis la langue que tu veux apprendre :</p>
+    <div id="ouvDrapeaux" aria-label="Choisir sa langue">
+      <button data-lg="en">🇬🇧</button><button data-lg="es">🇪🇸</button><button data-lg="it">🇮🇹</button><button data-lg="de">🇩🇪</button><button data-lg="ja">🇯🇵</button>
+    </div>
     <button class="langue" id="ouvLangue" data-t="ouvLangue">— anglais —</button>
     <!-- ⚠️ MARQUEUR DE VERSION, 7 aout 2026. Blandine deploie depuis un
          telephone et n'a aucun moyen de savoir quelle version tourne
@@ -1265,7 +1280,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v15 · 8 août</p>
+    <p id="ouvVersion">v16 · 8 août</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1337,7 +1352,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-cours.js?l=1"></script>
 <script src="hype-lingo-lex-dressage.js?l=2"></script>
 <script src="hype-lingo-lex-obstacle.js?l=2"></script>
-<script src="hype-lingo-lex-concours.js?l=2"></script>
+<script src="hype-lingo-lex-concours.js?l=3"></script>
 <script src="hype-lingo-lex-urgences.js?l=1"></script>
 <!-- Le poney : chapitre créé le 5 août 2026 pour Lamotte-Beuvron.
      Six de ses dix entrées sont des RAPPELS partageant le `ref` d'entrées
@@ -1386,7 +1401,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      n'existait nulle part dans les 378 mots. Niveau 3 : on y parle.
      ⚠️ L'ELEVAGE n'est pas ici (Golega), ni les ventes de yearlings
      (Lexington). Verone achete et vend ce qui est deja ne. -->
-<script src="hype-lingo-lex-vente.js"></script>
+<script src="hype-lingo-lex-vente.js?l=1"></script>
 <!-- L'elevage : chapitre cree le 6 aout 2026 pour Golega (Portugal).
      Le plus gros trou du module : aucun des 378 mots d'origine ne parlait
      de la naissance d'un cheval. Trois de ses entrees (`poulain`,
@@ -1443,7 +1458,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=15";
+var VER = "?v=16";
 
 /* ==================================================================
    LE BOUTON DE LANGUE, BRANCHE ICI ET PAS EN FIN DE FICHIER (7 aout 2026)
@@ -4334,6 +4349,10 @@ function el(tag, attrs){
 }
 function brasser(t){ var a=t.slice(),i,j,x;
   for(i=a.length-1;i>0;i--){ j=Math.floor(Math.random()*(i+1)); x=a[i];a[i]=a[j];a[j]=x; } return a; }
+function enrichirDef(t){
+  t=String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  return t.replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>");
+}
 function motNu(x){
   return String(x).toLowerCase()
     .replace(/^(le |la |les |l'|the |el |los |las |il |i |lo |der |die |das |to |au |aux )/,"")
@@ -4832,7 +4851,7 @@ function exDecouverte(x){
       el("button",{class:"lcSon", onclick:function(){ dire(mc.m, lg); }},
         "\u266a  "+(ui==="en"?"Listen":"Écouter"))
     ),
-    el("p",{class:"lcDef", text:(c.def&&(c.def[ui]||c.def.fr))||""}),
+    el("p",{class:"lcDef", html:enrichirDef((c.def&&(c.def[ui]||c.def.fr))||"")}),
     el("button",{class:"lcCta", onclick:function(){
       dire(mc.m, lg); setTimeout(function(){ suivant(false,null); },240);
     }}, ui==="en"?"Continue":"Continuer")
@@ -5964,6 +5983,13 @@ try{
 S("inSuite").addEventListener("click", montrerDest);
 /* le carnet renvoie au choix de la langue */
 if(S("ouvLangue")) S("ouvLangue").addEventListener("click", montrerDest);
+if(S("ouvDrapeaux")){
+  S("ouvDrapeaux").addEventListener("click", function(ev){
+    var b=ev.target.closest("button[data-lg]"); if(b) montrerDest();
+  });
+  (function(){ var a=S("ouvDrapeaux").querySelector('[data-lg="'+VOYAGE_LANGUE+'"]');
+    if(a) a.classList.add("actif"); })();
+}
 S("dsRetour").addEventListener("click", function(){
   S("dest").classList.remove("on");
   /* ⚠️ On ne remonte a la presentation QUE si elle n'a jamais ete vue.

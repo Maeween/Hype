@@ -1,4 +1,4 @@
-# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 148)
+# 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 150)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
 
@@ -104,6 +104,35 @@
 Livrés dans ce fil : `lingo.html` · `lingo-globe.html` · `hype-lingo-villes-monde.js` · neuf lexiques créés ici · `verif.py` · quatre fichiers de prompts · `linguae-noms-de-fichiers.txt` · les cartes, fonds et clips produits.
 
 ⚠️ **Blandine reste la source d'autorité.** Toujours partir du fichier qu'elle envoie, jamais d'une copie mémorisée : plusieurs conversations travaillent en parallèle sur ce projet.
+
+---
+
+## 🛠️ SESSION 150 · LINGUAE (08/08) — LES CINQ RETOURS EN RAFALE + VENTE EN SIX LANGUES (v16)
+
+Blandine, captures à l'appui, cinq points traités :
+**1 · Lisibilité des exercices** : la consigne (.lcCons 10,5px grise) et la phrase (.lcInvite sans couleur) étaient illisibles sur les fonds vivants clairs. → consigne 12,5px #D6E0E8 ombrée ; phrase 28px, blanche, double ombre portée ; .lcDef 14px #D3DDE5 ombrée. Et le **gras des notes enfin rendu** : sa capture montrait les `**` bruts — `enrichirDef()` (échappement + **…**→<b>) posé sur la carte-mot, `.lcDef b` blanc.
+**2 · Poney** : confirmé fait en S149 (19 notions) — rien à refaire, à pousser si pas fait.
+**3 · Écran des langues, dézoom 2** : image réduite (boîte 76 % × 44 % de haut, `contain`, fondu en bas) — noir autour, l'anneau de drapeaux visible. ⚠️ Si encore trop serré, c'est l'image SOURCE qui cadre la tête du cheval au ras : la prochaine étape serait une nouvelle image, pas du CSS. 🔴 Leçon : la 1ʳᵉ pose du dézoom 2 avait été SILENCIEUSEMENT perdue (le script s'était arrêté à une ancre ratée en amont — `motNu(t)` au lieu de `motNu(x)`) ; attrapé par vérification directe du disque, règle : après tout patch multi-remplacements en échec, re-vérifier CHAQUE remplacement au grep.
+**4 · Choix de langue intuitif** : sur le carnet, phrase « Choisis la langue que tu veux apprendre : » + rangée de 5 drapeaux (actif surligné turquoise), chaque drapeau ouvre l'écran des langues. Rendu vérifié.
+**5 · The rosette = le flot ?** Oui : ajouté `var:"le flot"` sur `cocarde` (concours) — techniquement la cocarde est la rosace et le flot les rubans, l'usage courant dit flot. `?l=3` posé sur concours.
+**Vente (Vérone)** récupérée par le canal GitHub : copie verbatim (12 refs, l'en-tête prix-achat≠prix préservé), **12/12 défs en six langues** (vetting par TON vétérinaire, haggle/negotiate, vice caché ≠ latent defect, feria ≠ foire), `?l=1`.
+Marqueur **v16 · 8 août**. Restent au canal : western · tradition · endurance (+ haras, froid).
+
+### 🧭 Préparation Flutter
+`enrichirDef()` : premier utilitaire de rendu riche mutualisable.
+
+---
+
+## 🎠 SESSION 149 · LINGUAE (08/08) — LAMOTTE PASSE DE 10 À 19 NOTIONS, EN SIX LANGUES
+
+Poney récupéré par le canal GitHub (copie verbatim contrôlée : 10 concepts, `p:` partout, rappels du Connemara préservés), ses 10 défs traduites — puis **deux salves d'enrichissement validées par Blandine** :
+· S1 (« toise shetland épreuve par équipe carrousel pony games equifun etc ») : **jeux-poney** (mounted games ≠ pony games), **epreuve-equipe**, **carrousel** (⚠️ the quadrille — carousel = le manège forain), **equifun** (nom FFE intraduisible : décrire, pas traduire), **double-poney** (le piège franco-français : « a large pony » ou la taille en cm).
+· S2 (« âge maximum, à cru, en licol, rênes de couleur ») : **age-limite-poney** (c'est le CAVALIER qui a 16 ans max en international, pas le poney), **a-cru** (trois langues disent « au poil », l'anglais « le dos nu »), **monter-licol** (manège fermé, jamais imposé), **renes-couleur** (« prends au bleu » — rainbow reins).
+Réparé au passage, signalé à Blandine sans toucher au sens : la 4ᵉ phrase manquante (« On fait les jeux cet après-midi ? ») et les **espaces du japonais** des 3 phrases (règle des tuiles). **19 concepts · 19 défs six langues · 4 phrases** — audits par exécution à chaque étape. `?l=3`.
+NB : `a-cru` est propre à Lamotte — l'interdit « pas d'à cru » ne vaut QUE pour Le Morne (en-tête de balade).
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session.
 
 ---
 

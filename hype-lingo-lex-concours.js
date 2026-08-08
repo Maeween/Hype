@@ -143,7 +143,7 @@ window.HYPE_LINGO_LEX.concours = {
           ja:"コースを描き、距離を選び、難度を決める人。⚠️ 英語は設計を強調し（**designer**）、フランス語は権限を（「長」）、ドイツ語はその両方を混ぜています。" } },
 
   { ref:"cocarde", lecon:1, coll:"engager",
-    mots:{ fr:{m:"la cocarde"}, en:{m:"the rosette", p:"rô-zètt", var:"ribbon (US)"},
+    mots:{ fr:{m:"la cocarde", var:"le flot"}, en:{m:"the rosette", p:"rô-zètt", var:"ribbon (US)"},
            es:{m:"la escarapela"}, it:{m:"la coccarda"},
            de:{m:"die Schleife", p:"chlaï-fe"}, ja:{m:"ロゼット", p:"rozetto"} }, // ??
     def:{ fr:"Le souvenir que tu rapportes de Badminton. ⚠️ Deux pièges : les Américains disent **ribbon**, et surtout **la couleur de la première place change de pays** — rouge en Grande-Bretagne et en Irlande, bleu aux États-Unis. Un cavalier britannique fier de sa rosette rouge a gagné, pas fini deuxième.",
