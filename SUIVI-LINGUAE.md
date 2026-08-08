@@ -1,3 +1,173 @@
+# 🛠️ SESSION 169 · LINGUAE 7 (08/08) — LA PROGRESSION EST ENFIN SAUVEGARDÉE, ET DEUX ÉCRANS RENDUS À L'USAGE
+
+**Livré : `index.html` (voie A) + `lingo.html` v30 · villes.** Les quatre points rouges de la passation ont été pris dans l'ordre ; le point 1 est fait, le point 2 reste ouvert.
+
+## ✅ VOIE A — la progression Linguae entre dans le coffre-fort (`index.html`)
+
+**Le coffre-fort existait déjà et personne ne l'avait vu.** `index.html` possède depuis longtemps un mécanisme (`HYPE_EXTRAS_CLES` / `HYPE_EXTRAS_PREFIXES`, ligne ~20356) qui ramasse des clés du `localStorage`, les écrit dans la table `progression` de Supabase, et les **refusionne à la connexion avec la règle « le plus avancé gagne »**. Il servait aux quêtes, aux paliers Baby, au Mémory du Poney. Aucune clé Linguae n'y figurait.
+
+Or Linguae vit sur le **même domaine**, donc dans le **même `localStorage`**. Il n'y avait donc **aucun code Supabase à écrire dans `lingo.html`** : `lingo.html` n'est pas modifié par la voie A, il continue d'écrire son `localStorage`, et c'est Hype qui met à l'abri et refusionne.
+
+**Ce qui a été ajouté** (3 hunks, 89 lignes, **0 supprimée**) :
+- `HYPE_EXTRAS_LINGUAE` — 10 clés : `hype_lingua_cartes`, `_faits`, `_quiz`, `hype_lingo_maitrise`, `hype_lingua_sprint`, `_voyage`, `_langue`, `_lecture`, `_intro`, `_muet`.
+- Leur collecte, avec un **plafond propre à 200 000 caractères** et surtout un `console.warn` en cas de dépassement. Le garde-fou générique des préfixes est à 4000 caractères et laisse tomber la valeur **en silence** — or `hype_lingo_maitrise` (31 villes × 6 langues × un niveau par mot) peut le dépasser. Une progression qui disparaît sans message est exactement ce qu'on répare ici.
+- Les **règles de fusion**, une par clé, écrites sur la forme réelle vérifiée dans `lingo.html` : cartes = union ; `faits` = le plus grand nombre par langue ; quiz = le meilleur `{s,t}` par chapitre ; maîtrise = le niveau le plus haut par mot et par langue ; sprint = aucun compteur ne recule ; `intro` = le « 1 » gagne. `voyage`, `langue`, `lecture`, `muet` tombent volontairement dans le repli « le local prime » : c'est une **position** ou une préférence d'appareil, pas un acquis.
+
+⚠️ **`hype_lingua_saut` est volontairement EXCLUE.** C'est un drapeau jetable, lu puis supprimé pour sauter le film une fois. Le synchroniser ferait sauter l'ouverture sur un autre téléphone. C'est aussi le drapeau au cœur de l'écran noir corrigé ci-dessous.
+
+⚠️ **La migration de l'ancien format de maîtrise est reproduite dans la fusion.** `lingo.html` reconnaît l'ancien format plat (valeurs numériques à la racine) et le range sous `"en"`. La fusion applique la **même** migration des deux côtés avant de comparer — sans ça, un téléphone resté sur l'ancien format écraserait le nouveau ou rangerait sous une langue fausse.
+
+✅ **Vérifié, et pas seulement en syntaxe** : les règles de fusion ont été **exécutées** sur 20 cas, dont celui du 8 août (base en avance, local effacé → rien ne recule) et les deux sens de l'ancien format plat. Tous passent. Par ailleurs : 912 fonctions top-level identiques, `allerVersGalop` ×3, syntaxe des 144 blocs `<script>` validée, diff = 3 hunks confinés aux 3 zones voulues.
+
+⚠️ **Rien à faire en base.** La table `progression` existe déjà. Aucun SQL.
+
+⚠️ **Limite connue et assumée** : la sauvegarde se déclenche quand **Hype** se synchronise, pas à l'instant du gain dans Linguae. Des gains faits juste avant un effacement, sans repasser par l'app, seraient encore perdus. C'est le périmètre de la **voie B**, ouverte comme chantier séparé (voir décisions).
+
+## ✅ ÉCRAN NOIR AU CHANGEMENT DE LANGUE DE LECTURE (`lingo.html` v29)
+
+**Ce n'était pas l'italien.** Blandine l'a reproduit deux fois (fr→it, puis es→it) ; ça « remarchait en relançant » parce qu'un vrai redémarrage repart sans le drapeau.
+
+Cause exacte : `#ouverture` démarre avec `class="joue"` (carnet masqué, décision de la session 126 contre le flash du carnet) et **seul `terminerOuverture()` retire cette classe** — c'est écrit dans le commentaire ligne 1372. Or l'IIFE de la présentation fait :
+
+```js
+if(!vu){ montrerIntro(); }
+else if(!saut) lancerFilm();
+```
+
+Le cas **`vu && saut`** — déjà venue **et** rechargement déclenché par `rechargerLingua()` — ne déclenche **aucune** des deux branches. Pas de film, pas de carnet, personne pour révéler l'écran : noir, sans sortie, application à tuer. **Une branche manquante**, sur un chemin ouvert par le travail du 8 août (v22/v23).
+
+Corrigé par `else terminerOuverture();` — on révèle le carnet directement, ce qui est exactement le sens de `saut`.
+
+## ✅ LES VILLES DU GUIDE NE MENAIENT NULLE PART (`lingo.html` v30)
+
+« Ça n'a pas marché de cliquer sur les villes. » **Le clic marchait.** Le helper `el()` gère bien `onclick` (`addEventListener`), et `ouvrirLecon()` faisait son travail : la leçon s'ouvrait pour de vrai — **derrière le carnet**. `#lecon` est en **z-index 26**, `#ouverture` en **40**, et rien n'escamotait le carnet. `ouvrirLecon()` n'était légitime que depuis la page d'arrivée, où `partirVersVille()` escamote le carnet.
+
+Corrigé en passant par `partirVersVille(i)`, la sortie prévue : elle ouvre l'arrivée **puis** masque le carnet après 340 ms (l'ordre voulu depuis la session 99, le flash du chemin). `villesDe()` remonte désormais l'index de l'étape, qu'elle jetait. Le volet se replie au passage.
+
+Décision de Blandine : **la ville puis la leçon** — on arrive sur la carte postale et le récit, la leçon s'ouvre de là.
+
+🔴 **RÈGLE, 3ᵉ OCCURRENCE DU MÊME PIÈGE** (session 128 : l'écran des langues ; puis le sprint et la collection passés en 41 ; aujourd'hui le guide) :
+**tout écran ouvert depuis le carnet doit passer au-dessus de z-index 40, ou escamoter le carnet.**
+
+Au passage : le libellé du plieur était écrit **deux fois à l'identique**, donc à retoucher deux fois. Réuni en une source unique (`libelleGuide()`) — c'est ce genre de duplication qui fabrique les traductions à moitié faites.
+
+⚠️ **CES DEUX CORRECTIONS N'ONT PAS ÉTÉ VÉRIFIÉES EN RENDU.** Pas de navigateur avec images et vidéos ici. Syntaxe, compteurs et confinement du diff sont prouvés ; le raisonnement sur les z-index et sur la branche manquante est solide mais reste un raisonnement. **À confirmer en Safari navigation privée, jamais depuis l'icône installée.**
+
+## 🔎 CE QUI A ÉTÉ ÉTABLI SUR L'XP (et qui était faux depuis le début)
+
+**Linguae n'a jamais rapporté un seul XP.** `donnerXP()` est appelée à 4 endroits (mots nouveaux ×2, chapitre fini 10, sprint score/3, duel score/2) mais ne fait qu'une chose : `if(window.HYPE_LINGO_HOST && HYPE_LINGO_HOST.xpAjouter)`. **`HYPE_LINGO_HOST` n'est défini nulle part.**
+
+Et il ne pouvait pas l'être : `index.html` ouvre Linguae par **navigation** (`window.location.href = "lingo.html"`, ligne ~27421, « en application autonome »), pas en iframe. Deux documents = deux `window`. Même en iframe, il aurait fallu que Hype écrive explicitement l'objet dans `contentWindow`. Les commentaires de `lingo.html` le disent au futur (« quand Lingo sera embarqué »).
+
+**Bonne nouvelle** : rien d'acquis n'est perdu en changeant de méthode, et la voie A rend la suite possible sans pont.
+
+**Comment le système de quêtes marche réellement** (à savoir avant de coder) : les quêtes ne sont **pas** un compteur qu'on incrémente. Chaque quête porte une fonction `fait(ctx)` qui lit l'état et répond oui/non ; le paiement passe une seule fois par `hypeEnregistrerPalier("quete:"+id)`. Donc **un jalon atteint se récompense, une accumulation non** : « 2 XP par mot nouveau » n'est pas faisable sans accumulateur (chantier B). « Première carte », « cinq cartes », « une deuxième langue » se font tout de suite.
+
+⚠️ **Les 15 XP des quêtes découverte sont eux-mêmes notés « provisoires, à affiner par Blandine ».** Toute échelle proposée pour Linguae est calibrée sur une échelle non validée : chiffres = base de discussion, pas recommandation.
+
+## 📌 DÉCISIONS DE BLANDINE (08/08, à ne pas re-discuter)
+
+**Compte**
+- **Compte Hype obligatoire** pour Linguae.
+- Il n'y a **pas deux systèmes de comptes** : même domaine, même projet Supabase, donc « créer un compte depuis Linguae donne un compte Hype » est déjà le cas. Rien à fusionner.
+- Enchaînement voulu : **film d'ouverture → page de compte → suite**. Objection retenue de Blandine : « elle a pas vu grand-chose » après 20 s de film. Deux emplacements restent en balance : **la porte sur « Partir »** (après avoir vu le carnet, avant tout gain) ou **au premier gain**. **Non tranché — à juger sur maquette montrant les deux.**
+- Le Sprint est une **seconde sortie du carnet** : le laisser jouer librement et n'enregistrer le record qu'une fois le compte créé.
+- Petit mot à afficher : **« Un seul compte pour toutes les applications Hype. »** ⚠️ **Ne pas nommer « Theory »** ni aucun nom de produit non arrêté (règle : aucune donnée périssable dans une accroche ; et les Galops ne sont pas encore une application séparée).
+- 🔴 **Conséquence obligatoire** : l'**écran de suppression de compte** (RGPD + App Store, déjà listé côté Hype) devient bloquant. On n'exige pas une inscription sans offrir la sortie.
+
+**Quêtes et XP**
+- **XP affichée uniquement côté Hype.** Linguae ne compte rien, n'affiche rien. Une seule échelle (200 XP = 1 niveau). Cohérent avec le commentaire existant : « l'XP part vers Hype, jamais vers un compteur à part ».
+- ⚠️ **Point de vigilance** : la joueuse gagne dans Linguae et le voit dans Hype. Sans un mot au retour, le lien ne se fait pas — le rattrapage de quêtes existant est un point d'accroche.
+- **Paliers : une fois pour toutes**, toutes langues confondues (1 carte, 5, 10). Pas de 15/20/25 : sur 31 villes ça fait de la liste, pas du jeu.
+- **Une seule quête d'ouverture, sans nommer la langue** : « une deuxième langue », puis une troisième. Décision de Blandine, qui remplace ma proposition de six séries par langue — plus de bruit dans l'écran Quêtes, plus de six variantes à traduire, et **plus de dépendance à ce qui est rangé par langue** : la condition se lit en comptant les clés de `hype_lingua_faits`.
+- **Hauts faits** : rétrospectifs et rares (tour du monde complet, une langue entière), sans XP ou presque, sinon ce sont des quêtes déguisées. **Définition non validée par Blandine.**
+
+**Le guide « Comment ça marche »**
+- Le bloc rend **deux services sous une étiquette** : une explication qu'on lit une fois, et un **index thème → ville** auquel on revient. **À séparer en deux blocs.**
+- Le titre « Comment ça marche ? » ne convient pas pour l'index : Blandine veut qu'on trouve quelle ville porte quel thème, pour choisir quand on a besoin d'un chapitre précis. Pistes proposées : « Que veux-tu apprendre ? », « Les thèmes », « Trouver un thème », « Par thème ». **Non tranché.**
+- **Non tranché aussi** : l'index reste-t-il replié ? (Un outil auquel on revient gagne à être ouvert ; l'explication doit rester repliée.)
+
+## ⏳ CE QUI RESTE, dans l'ordre
+
+1. **Faire tester la v30** — changement de langue de lecture sans écran noir, et villes du guide qui mènent à la ville. Rien empiler avant.
+2. **Les 56 traductions** du bloc guide : 14 chaînes × es/it/de/ja. Le bloc est écrit en ternaires binaires `langueUI()==="en" ? … : …`, donc **tout sauf fr/en retombe en français** — d'où les captures « interface espagnole, encadré français ». Concerne « Ma collection », le mode d'emploi, « Par où commencer ? Tu veux… » et les 10 libellés. Contenu : autorisé sans validation.
+3. **« Le Morne · MAURICE »** reste en français quand La Baule dit « FRANCIA » : nom de nation sans forme espagnole. À vérifier sur les six langues, pas seulement l'espagnol.
+4. **Maquette de la disposition** du guide (deux blocs séparés, traduits, plusieurs dispositions à comparer) **et** maquette de la porte du compte montrant **les deux** emplacements. Blandine : « je sais pas » — donc ça se juge en voyant, pas par écrit.
+5. Les points **2 et 3 de la passation, toujours ouverts** : d'où chacun des trois écrans tire son état, puis les onglets du globe ; et le lag, **avec mesure sur appareil réel** (piste sérieuse : les `carte-<ville>-vignette.webp` déjà produites pour sept villes britanniques et jamais demandées par le code).
+6. Le **passeport**, Clonbinane à câbler (`hype-lingo-lex-apprentissage.js`, écrit, toujours absent des chargements), puis Compiègne.
+
+## 📝 MÉTHODE — ce qui a servi aujourd'hui
+
+- ✅ **Le piège de l'ancre dans son propre remplacement** (régression n°2 d'hier) est désormais gardé autrement : le patcher exige un **marqueur neuf absent du fichier**, ce qui protège vraiment de la double insertion. Mon premier garde-fou refusait des patchs légitimes.
+- ✅ **Exécuter les règles, pas les relire.** Les 20 cas de fusion ont tourné pour de vrai ; deux assertions du test étaient fausses, pas le code — corrigées côté test.
+- ✅ **Vérifier avant d'affirmer.** « Tes cartes sont-elles déjà en base ? » → non, vérifié exhaustivement : les deux listes du coffre-fort sont explicites, une seule mention de Linguae dans `index.html` et c'est une **lecture** (`hype_lingua_langue` pour le contexte Hey Baby). La collection du 8 août n'est pas récupérable.
+- ⚠️ **Partager le `localStorage` n'est pas être dans le coffre-fort.** Confusion légitime de Blandine (« on était déjà dedans non ? ») : le premier vit sur l'appareil, le second dans Supabase.
+
+---
+
+# 🧭 PASSATION — LINGUAE 7 · à lire en premier (état au 8 août 2026, 20 h 30)
+
+Journée dense et **mauvaise sur la fin** : treize versions livrées, **cinq régressions de mon fait**. Blandine a fini la séance sans pouvoir se servir du module. La v28 de retour (`v28r`) est l'état à considérer comme courant. **Ne rien ajouter avant d'avoir traité les quatre points ci-dessous.**
+
+## 🔴 1 · L'AVANCEMENT N'EST PAS SAUVEGARDÉ — le vrai sujet
+La progression (`hype_lingua_cartes`, `hype_lingua_voyage`, maîtrise) vit **uniquement dans le `localStorage`**, pas dans Supabase comme le reste de Hype. Conséquences, valables pour toutes les cavalières :
+· Changer de téléphone, effacer les données Safari ou **réinstaller le raccourci efface tout**, sans retour.
+· ⚠️ **C'est arrivé à Blandine aujourd'hui, à cause de moi** : je lui ai fait supprimer/réinstaller le raccourci et effacer des données pour forcer le rechargement de l'icône, **sans la prévenir que sa progression y était**. Sa collection est passée à 1 sur 31. Elle est en colère, et c'est légitime.
+· ⚠️ Le `localStorage` est **par appareil** : les autres cavalières ne sont PAS touchées. Vérifié conceptuellement, à redire clairement si la question revient.
+· **À proposer en premier dans Linguae 7 :** une sauvegarde de la progression côté Supabase (une ligne par cavalière, écrasée à chaque gain). Sans ça, des cartes « à mériter » reposent sur un stockage qu'un geste anodin efface.
+
+## 🔴 2 · TROIS ÉCRANS, TROIS ÉTATS QUI NE CONCORDENT PAS
+· Le **globe** affiche La Baule et Le Morne en « À DÉCOUVRIR », barres vides. **Blandine dit qu'elles ont toujours été vides et que les onglets ne sont pas branchés** — donc cet écran ne prouve rien sur l'avancement réel. J'en avais tiré « ta progression est perdue » : conclusion trop rapide, à ne pas répéter.
+· Les **onglets du globe** (`Tout · Faites · Ouvertes · À découvrir`) : « Tout » ne montre que 3 villes sur 31, « Faites » aucune. **Décision de Blandine : les réparer ou les supprimer, mais ne pas les laisser ainsi.**
+· La **collection** affiche 1 sur 31.
+**Première tâche technique : identifier d'où CHACUN des trois écrans tire son état.** S'ils lisent trois sources différentes, les trois symptômes ont une seule cause.
+
+## 🔴 3 · LE LAG — non résolu, et mes deux mesures étaient fausses
+Ça rame **aussi sur un iPhone 15 Pro neuf** : ce n'est ni la batterie, ni la mémoire, ni le téléphone de Blandine.
+· Fait établi : **31 filtres CSS composites retirés** en v32 (`filter` sur chaque `.vimg`), et **12 animations infinies ramenées à 3** en v31.
+· Suspect n°1 restant : **le carnet charge 62 images** — chaque `.vimg` déclare `carte-<ref>.webp` **et** `fond-<ref>.webp` (repli contre les fichiers manquants : six villes n'ont aucun fond, décision S115). Deux images en 900×1200 décodées pour un affichage de **168 px**.
+· ⚠️ **La carte du carnet est LA MÊME image que la carte postale**, rognée et assombrie. Elle est donc décodée deux fois en pleine résolution dans l'app.
+· 💡 **Des `carte-<ville>-vignette.webp` existent déjà pour sept villes britanniques et ne sont JAMAIS demandées par le code.** Produites puis oubliées. C'est la vraie piste : vignettes 360×480 pour le carnet, grande carte réservée à la collection.
+· 💡 Idée de Blandine, à retenir : une seule image par carte + **voile plus opaque** sur les non-gagnées.
+· ⚠️ **Aucune mesure de gain n'a été obtenue aujourd'hui.** Deux indicateurs successifs se sont révélés incapables de me contredire (ms par image = cadence de `requestAnimationFrame` ; métriques devtools = Chromium sans écran ne compose pas). **Exiger une mesure sur appareil réel** (Safari macOS relié à l'iPhone, onglet Timeline) avant toute correction de performance.
+
+## 🔴 4 · MES CINQ RÉGRESSIONS DU JOUR — et la cause commune
+1. `content-visibility:auto` sur `.vc` : a **cassé la grille** (« une image et demie ») **et retardé le chargement**. Retiré. ⚠️ Ne pas remettre.
+2. **Bloc d'installation inséré deux fois** : mon ancre de patch figurait dans son propre texte de remplacement, donc elle repassait le contrôle d'unicité. ⚠️ **Ne jamais réutiliser une ancre présente dans le remplacement.**
+3. `var INTRO_APRES = false;` déclarée **après** l'IIFE qui la met à vrai → écrasée. **6ᵉ occurrence de ce piège.** Toute constante partagée se déclare **tout en haut, avec `VER`**.
+4. **La vidéo jouait deux fois** : appel conservé dans le clic de destination après être passé au chargement en v29. Le « à moitié noire » était le second démarrage.
+5. **Mise en page entassée** : globe par-dessus le titre (12→44 px contre 30→41 px), bandeau et marqueur au milieu du chemin de lecture.
+**Cause commune : le rythme, pas la difficulté.** Toutes dans des zones retouchées deux ou trois fois le même jour, livrées **sans rejouer le parcours complet de la première visite** — seul chemin où ces défauts se voient.
+✅ **RÈGLE : avant toute livraison touchant l'ouverture — `localStorage.clear()`, chargement, film, présentation, destination, carnet — et COMPTER LES APPELS, pas vérifier des classes.**
+✅ **RÈGLE : proposer le retour en arrière dès la deuxième régression consécutive.** Je l'ai fait trop tard.
+
+## ✅ CE QUI EST BON ET DÉPLOYÉ (à ne pas refaire)
+· **`hype-lingo-villes-monde.js`** — l'Australian Stock Horse (« race du bétail » corrigé **dans cinq langues sur six**), la lettre du Morne (« rien monté d'aussi calme » → « rien vécu d'aussi grisant », six langues), un ⚠️ retiré d'un texte joueur. Audit par exécution sur les 19 villes : 0 défaut restant, 5 fausses alertes allemandes déclarées innocentes (**ne pas les « corriger »**).
+· **`lingo-collection.html`** — vue en grand (bouton ⤢, lettre à 20 px), repli « la lettre est en route » sur les dos sans lettre, **polices enfin chargées** (une iframe n'hérite pas des polices de sa parente), ternaire mort retiré.
+· **`lingo.html` v28r** — Santa Ynez (31ᵉ étape, 17 h 45, 12 concepts + 3 phrases six langues), la **paire de langues** 🇫🇷→🇬🇧 qui a débloqué les six langues de l'interface (`langueUI()` ne lisait que le pont et retombait sur « fr »), le tampon aligné sur la carte, le manifest + icônes, la paire écartée aux bords, le marqueur en blanc franc.
+· **Écrit mais NON câblé :** `hype-lingo-lex-apprentissage.js` (Clonbinane, 10 concepts + 3 phrases, six langues, aucun `ref` partagé avec horsemanship).
+
+## ⏳ FILE D'ATTENTE, dans l'ordre recommandé
+1. La sauvegarde de la progression (point 1).
+2. D'où vient l'état des trois écrans, puis les onglets du globe (point 2).
+3. Le lag, **avec mesure sur appareil** (point 3).
+4. Le **passeport** (le mot est déjà dans l'app : `regle2` promet « un tampon sur ton passeport », la page n'existe pas).
+5. Clonbinane à câbler, puis **Compiègne** (chasse à courre — vénerie, vocabulaire et tradition, **sans plaidoyer**).
+6. Audit de `hype-lingo-villes.js` (les dix premières villes) avec le script de la session 168.
+7. Le dossier `linguae/` + service worker + porte du compte Hype (**compte obligatoire**, décision de Blandine).
+
+## 📌 RÈGLES ACQUISES AUJOURD'HUI
+· **Aucun centre équestre privé français cité**, nulle part (La Cense écartée : ses cavaliers y partent en stage au lieu de venir chez elle).
+· **Aucun chiffre dans un texte d'accroche** — il se périme à la première langue ajoutée. Citer les six langues, c'est écrire le chiffre autrement.
+· **Le cheval n'est jamais un objet** (« rien monté d'aussi calme » est avilissant).
+· **Jamais de ⚠️ dans un texte vu par la joueuse.**
+· Une plainte de lisibilité **se mesure** : le gris était à 6,67 : 1, conforme — **c'était la taille**.
+· `apple-touch-icon` : iOS le cache **par adresse**. Changer d'icône = **changer le nom du fichier** (suffixe `-2`, `-3`…). `VER` n'y fait rien. ⚠️ Et prévenir avant toute réinstallation de raccourci (voir point 1).
+· **Les uploads `.js` et `.html` fonctionnent** — la note « ils arrivent vides, passer par GitHub raw » est **périmée**. Essayer l'upload d'abord.
+· Trois outils de mesure réutilisables : **sonde d'appels** (compter les appels d'une fonction), **banc géométrique** (haut/bas de chaque bloc + recouvrements), **audit de contenu par exécution** (charger le `.js`, parcourir villes × langues × champs).
+
+---
+
 # 🤝 PASSATION — Hype Linguae, état au 7 août 2026 (fin de session 157 — PASSATION)
 
 **À lire en premier.** Ce bloc dit l'état réel du module, ce que Blandine est en train de faire, le geste exact à répéter, et les pièges qui ont coûté du temps aujourd'hui. Les sessions détaillées suivent, de la plus récente à la plus ancienne.
@@ -129,6 +299,89 @@ Fonds+TITRE_SOMBRE des cartes par lots de 6 · lettre de voyage de Burghley (6 l
 
 ### 🧭 Préparation Flutter
 Aucune amélioration d'architecture réalisée sur cette session (passation).
+
+---
+
+## 🎬 SESSION 173 · LINGUAE (08/08) — LA VIDÉO JOUAIT DEUX FOIS, ET C'ÉTAIT MA FAUTE (v35)
+
+Blandine : « c'est de pire en pire, j'ai eu deux fois la vidéo dont une fois à moitié noire, puis impossible de charger des images pourtant déjà chargées, l'image n'est pas où elle devrait, il y a un flash ancien de cette image avant le lancement ». **Quatre symptômes. Un seul est prouvé et corrigé ici ; les trois autres sont décrits, non résolus.**
+
+### ✅ PROUVÉ ET CORRIGÉ : le double lancement du film
+Enchaînement, entièrement de mon fait :
+· **v21** — l'appel à `lancerFilm()` dans le clic de destination est conditionné à `_dejaEnVoyage`, pour que le film ne reparte pas à chaque changement de langue. Correct.
+· **v29** — le film passe **au chargement**, sans condition, pour « arriver en tout premier sur la vidéo ». Correct aussi.
+· **Mais je n'ai pas retiré l'appel du clic de destination.** À la première visite, `hype_lingua_voyage` n'est pas encore écrit, donc `_dejaEnVoyage` vaut faux : le film partait **au chargement, puis une seconde fois** au choix de la destination. Le « à moitié noire » est ce second démarrage sur une balise déjà en cours de lecture.
+· Appel supprimé. **Sonde d'appels, première visite : v20 → 1 appel après le choix de destination · v35 → 0.** ⚠️ Ne pas le remettre.
+
+### ⚠️ TROIS SYMPTÔMES NON RÉSOLUS, décrits pour la reprise
+1. **« Impossible de charger des images pourtant déjà chargées » à la descente.** Piste la plus probable : les **62 images de fond du carnet** (chaque `.vimg` charge `carte-<ref>.webp` ET `fond-<ref>.webp`, en 900×1200 pour un affichage à 168 px). Sur iPhone, la mémoire de décodage se purge et Safari abandonne des images déjà obtenues. C'est le suspect n°1 du lag ET de ce symptôme. **Trois voies possibles, toutes déjà décrites en S169, deux changent le visuel → décision de Blandine.**
+2. **« L'image n'est pas où elle devrait. »** Le bloc `#inBloc` est bien au centre de la présentation, mais la composition n'a pas été rejugée après le déplacement du `40vh` : à vérifier écran par écran, pas à corriger à l'aveugle.
+3. **« Un flash ancien de cette image avant le lancement de la première vidéo. »** Depuis la v29, le film part au chargement : la présentation ou le carnet ont donc le temps de peindre **une image** avant que `#ouvFilm` ne les couvre. Le mécanisme prévu pour ça existe (`class="joue"` dès le départ sur `#ouverture`, posé le 6 août contre ce flash exactement) mais **il n'a pas été rejugé après l'inversion de l'ordre**. À reprendre là.
+
+### 🔴 CONSTAT DE MÉTHODE, À LIRE AVANT LA PROCHAINE SÉANCE
+Cinq régressions ont été livrées aujourd'hui — le film qui repartait, le bloc inséré deux fois, la variable écrasée, `content-visibility`, le double lancement — **toutes dans des zones que je modifiais pour la deuxième ou troisième fois dans la même journée.** La cause commune n'est pas la difficulté technique : c'est le rythme. Chaque correction a été livrée sans rejouer le parcours complet de la première visite, qui est le seul chemin où ces défauts se voient.
+**Règle pour la reprise : avant toute livraison touchant l'ouverture, rejouer le parcours entier — `localStorage.clear()`, chargement, film, présentation, destination, carnet — et compter les appels, pas seulement vérifier les classes.**
+**Et proposer le retour en arrière quand les régressions s'enchaînent** : `lingo.html` v20 du matin est intact dans les uploads de la séance, la v28 est le dernier état stable connu avant les changements d'ouverture.
+
+### 📦 À pousser
+`lingo.html` **v35** seul.
+
+### 🧭 Préparation Flutter
+Aucune amélioration. Le vrai enseignement du jour est ailleurs : **l'ouverture du module (film, présentation, destination, carnet) est une machine à états implicite**, répartie entre une IIFE, deux drapeaux de `localStorage`, une classe CSS et trois écouteurs. Les cinq régressions viennent toutes de là. C'est le premier morceau à formaliser — avant les Repository, avant les domaines.
+
+---
+
+## 🎴 SESSION 172 · LINGUAE (08/08) — LA COLLECTION RÉPARÉE (lingo-collection.html)
+
+Fichier **uploadé et intact** (15 544 octets) — le canal des `.js`/`.html` fonctionne, confirmation du jour. Je n'ai PAS retapé ce fichier à la main : ses dix-huit icônes SVG sont exactement ce qu'une transcription corrompt en silence.
+
+### ✅ 1 · Les polices n'étaient pas chargées — le défaut que Blandine n'avait pas signalé
+Le CSS demandait `Caveat`, `Cinzel` et `Klee One`, et **aucun `<link>` de police n'existait dans cette page.** Une iframe n'hérite pas des polices de sa page parente : les lettres tombaient donc dans le serif de repli, et l'écriture manuscrite n'apparaissait nulle part dans la grille. Même liste que `lingo.html`, une ligne.
+
+### ✅ 2 · La vue en grand — « on peut pas ouvrir les cartes en grand du coup on lit rien »
+Exact : le dos d'une vignette 3/4 faisait défiler la lettre dans une boîte de quelques centimètres, en 15 px. Bouton **⤢** sur le dos → plein écran : image entière, titre, nation et chapitre, **lettre à 20 px**, objet en pied.
+· ⚠️ **Le retournement au tap est conservé** : on n'a pas remplacé un geste connu, on en a ajouté un explicite à côté. Garde-fou posé pour que le tap sur ⤢ n'ouvre pas la vue **et** ne retourne pas la carte en même temps.
+· ⚠️ La croix **ferme d'abord la vue en grand** : sinon on quittait la collection depuis un écran de lecture.
+· Délégation sur `document` : les cartes sont créées après le script (même leçon que `#ouvLangue` dans `lingo.html`).
+
+### ✅ 3 · Les dos vides
+`dosHTML` faisait `(v.lettre||[]).map(...)` → chaîne vide quand la ville n'a pas d'entrée dans `hype-lingo-villes*.js`. Le dos s'affichait **complètement vide** (« certaines ont le dos vide »). Le repli existait sur l'écran d'arrivée depuis le 7 août mais **n'avait jamais été porté jusqu'ici** : nouvelle clé `lettreEnRoute` en six langues, plus `enGrand` pour l'aria-label du bouton.
+
+### ✅ 4 · Le doublon sans effet
+`(v.objetGagne ? v.objetNom : v.objetNom)` — deux branches identiques. Retiré.
+
+### 🧪 Banc (trois villes simulées : gagnée avec lettre, gagnée sans lettre, verrouillée)
+Aucune erreur JS. 3 cartes peintes, 1 feuille de polices chargée. Dos de la ville sans lettre → **« La lettre est en route. »**. Tap sur ⤢ → vue en grand ouverte **et la carte n'a pas été retournée**. Lettre à **20 px** en grand contre 15 px dans la vignette. Croix → ferme le grand, pas la collection.
+
+### 📦 À pousser
+**`lingo-collection.html`** seul. (`lingo.html` n'est pas modifié par cette session.)
+
+### ⏳ Reste en file
+Le **passeport** · **Clonbinane** (lexique écrit, non câblé) · **Compiègne** · l'audit de `hype-lingo-villes.js` (les dix premières villes) · les 62 images du carnet si le lag persiste · les deux `filter: blur()`.
+
+### 🧭 Préparation Flutter
+Aucune amélioration d'architecture. Note : la collection est **entièrement pilotée par message** (`linguae-collection`) et ne connaît aucune ville par elle-même — c'est déjà la bonne frontière, elle survivra telle quelle à un changement de moteur.
+
+---
+
+## 🚪 SESSION 171 · LINGUAE (08/08) — UNE SEULE PORTE VERS LE GLOBE (v34)
+
+Décision de Blandine : « fonds-le dans Partir ». Il y avait **deux portes vers le même écran** — le bouton flottant « Le globe » et le bouton « Partir » du carnet — et la première recouvrait le titre.
+· `#bGlobe` passe en **`display:none`**. `#ouvPartir` appelle déjà `ouvrirGlobe()`.
+· ⚠️ **L'élément et son écouteur sont CONSERVÉS, seulement masqués.** Raison historique à ne pas perdre : ce bouton avait été créé parce que le court-circuit du chemin de nuit avait supprimé la **seule** porte du globe (écran vide au lancement). Le jour où « Partir » bougerait, retirer le `display:none` rend une porte de secours.
+· Confirmé aussi par Blandine : le bandeau d'installation **gênait** à sa place précédente, et le marqueur de version va **en bas** — les deux sont déjà descendus en v33.
+
+### 🧪 Banc
+`#bGlobe` : `display: none`. `elementFromPoint` au centre du label du carnet renvoie **`sur`** — le titre n'est plus recouvert. Tap sur « Partir » → globe ouvert. Aucune erreur JS.
+
+### 📦 À pousser
+`lingo.html` **v34**, avec le lot v33 s'il ne l'est pas : `linguae.webmanifest`, `apple-touch-icon-linguae-2.png`, `icone-linguae-192-2.png`, `icone-linguae-512-2.png`.
+
+### ⏳ Reste en file
+`lingo-collection.html` (le fichier est récupéré, quatre défauts identifiés — **à uploader, le canal marche**) · le **passeport** · **Clonbinane** (lexique écrit, non câblé) · **Compiègne** · l'audit de `hype-lingo-villes.js` · les 62 images du carnet si le lag persiste · les deux `filter: blur()`.
+
+### 🧭 Préparation Flutter
+Aucune amélioration. Note : le module n'a plus qu'**un point d'entrée par écran**, ce qui simplifie la table de navigation posée en v29 (`PILE_RETOUR`).
 
 ---
 
