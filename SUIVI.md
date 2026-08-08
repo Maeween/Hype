@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 08/08/2026 (SESSION 105 · UNE BARRIÈRE D'ERREUR PAR ÉCRAN) — md5 `8b4f3eed7d382b74d3cdf63dc67fe35c`, 10 964 421 octets. Aucune preview. Aucun SQL. **`couv-g1-c11-de.jpg` toujours à pousser → k644.** Detail dans la section SESSION 105 ci-dessous.**
+**Version actuelle de l'index.html : 08/08/2026 (SESSION 106 · LE CHEMIN BABY SORT DE L'INDEX) — md5 `621eee729a311be00812de6329a50ef6`, 9 119 146 octets. **NOUVEAU FICHIER OBLIGATOIRE : `hype-cours-baby.js`, md5 `226b9c2508417759506c2b2ed0c45b03`, 1 846 043 octets.** Aucune preview. Aucun SQL. Detail dans la section SESSION 106 ci-dessous.**
+
+**Ancienne version (105) — 08/08/2026 (SESSION 105 · UNE BARRIÈRE D'ERREUR PAR ÉCRAN) — md5 `8b4f3eed7d382b74d3cdf63dc67fe35c`, 10 964 421 octets. Aucune preview. Aucun SQL. **`couv-g1-c11-de.jpg` toujours à pousser → k644.** Detail dans la section SESSION 105 ci-dessous.**
 
 **Ancienne version (104) — 07/08/2026 (SESSION 104 · LES SIX LANGUES SONT COMPLÈTES DE BABY AU GALOP 4) — md5 `85778901fa567561c84e4b33c9a8c2a0`, 10 957 741 octets. Aucune preview (Blandine ne s'en sert pas). Aucun SQL. **À pousser aussi : `couv-g1-c11-de.jpg` → à déclarer en k644.** Detail dans la section SESSION 104 ci-dessous.**
 
@@ -52,7 +54,7 @@ Verification. 15 blocs `<script>` inline valides par `node --check` (15/15 OK). 
 
 A RETESTER PAR BLANDINE, dans cet ordre : (1) zoomer une photo plusieurs fois de suite — plus de plantage ; (2) ajouter une photo a un cheval, puis RECHARGER : si la quete `photo-cheval` reste validee, c'est regle. **Si elle revient encore apres rechargement**, la cause restante est differente et deja identifiee : la colonne `photo_url` n'est pas ecrite en base pour ce cheval, et le test de la quete ne trouve donc rien de durable. A traiter dans la session suivante.
 
-PAS FAIT VOLONTAIREMENT (racine, plus gros chantier) : la data URL renvoyee ligne 30131 (`fin({ fichier, dataUrl, apercuHabille })`) n'est toujours pas remplacee par l'URL Supabase une fois l'envoi termine. Elle reste donc en memoire vive (pas dans le localStorage). A faire pour supprimer la derniere source de pression memoire, mais touche plusieurs points de consommation — session dediee.
+PAS FAIT VOLON9 119 146REMENT (racine, plus gros chantier) : la data URL renvoyee ligne 30131 (`fin({ fichier, dataUrl, apercuHabille })`) n'est toujours pas remplacee par l'URL Supabase une fois l'envoi termine. Elle reste donc en memoire vive (pas dans le localStorage). A faire pour supprimer la derniere source de pression memoire, mais touche plusieurs points de consommation — session dediee.
 
 COMPRESSION A L'ENVOI : **abandonnee sur decision de Blandine.** La page `test-compression-photo.html` a echoue 4 fois (dernier echec : plafond memoire canvas d'iOS, qui rend un canvas transparent sans lever d'erreur — ne jamais construire de grand canvas de reference). Le sujet est clos, ne pas le relancer.
 
@@ -106,6 +108,107 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 106 · LE CHEMIN BABY SORT DE L'INDEX
+
+**index.html md5 `621eee729a311be00812de6329a50ef6`, 9 119 146 octets.**
+**hype-cours-baby.js md5 `226b9c2508417759506c2b2ed0c45b03`, 1 846 043 octets — NOUVEAU FICHIER, à pousser AVANT l'index.**
+Aucune preview. Aucun SQL.
+
+### Résultat
+
+| | avant | après |
+|---|---|---|
+| `index.html` | 9,73 Mo | **8,16 Mo** (−1,57 Mo, −16 %) |
+| le bloc `<script>` inline géant | 8,96 Mo | **7,40 Mo** |
+| `hype-cours-baby.js` | — | 1,76 Mo, **en cache un an** |
+
+Ce 1,57 Mo cesse d'être retéléchargé à chaque push. Et une erreur de contenu dans le Chemin Baby
+se répare désormais en revenant sur un fichier de 1,76 Mo, pas sur un index de 10 Mo.
+
+### Pourquoi ça a marché cette fois, alors que la session 71 avait échoué
+
+La tentative de la session 71 sortait les tables des **Galops** dans `hype-galops.js` et a produit
+un écran blanc. Cause identifiée : les tables référencent `HYPE_IMGS`, qui est une **constante
+déclarée dans le bloc inline**. Depuis un fichier externe elle n'existe pas → `ReferenceError` →
+le fichier meurt entier → table `undefined` → React ne monte rien.
+
+Mesure des dépendances réelles, obtenue en évaluant chaque table et en regardant quelles
+constantes ressortent dans l'objet :
+
+| Table | Taille | Réfs images | Constantes du bloc inline |
+|---|---|---|---|
+| **`COURS_BABY_I18N`** | **1,57 Mo** | 27 | **aucune** |
+| `COURS_GALOP1_I18N` | 0,84 Mo | 133 | `GALOPS_HERO`, `INFOG_SECURITE_G1`, `INFOG_SELLERBRIDER_G1` |
+| `COURS_GALOP2_FR` | 0,50 Mo | 3 | 7 constantes |
+| `COURS_GALOP3_FR` | 1,01 Mo | 12 | 6 constantes |
+| `COURS_GALOP4_FR` | 0,66 Mo | 15 | **aucune** |
+| G5 · G6 · G7 | 0,08 Mo | 1 | **aucune** |
+
+**Le Galop 1 était le pire premier choix possible** : la seule table à la fois lourde en images et
+dépendante de constantes. Baby est l'inverse — la plus grosse, et zéro dépendance nommée.
+
+### La recette, à reproduire telle quelle
+
+1. **Délimiter la table par équilibrage de crochets**, jamais par recherche de chaîne.
+2. **Une seule transformation, comptée** : `HYPE_IMGS[` devient `window.HYPE_IMGS[`. Vérifié 27 sur
+   27, et contrôle qu'**aucune référence nue ne subsiste**.
+3. Le fichier publie sur `window` : `window.COURS_BABY_I18N = [...]`.
+4. Dans l'index, la table est remplacée par une lecture **avec repli** :
+
+```js
+const COURS_BABY_I18N = (typeof window !== "undefined" && window.COURS_BABY_I18N) || [];
+```
+
+5. La balise est insérée **après le dernier `hype-images-*.js`** (119e, position 785 100) et
+   **avant le bloc inline** (785 481). Position obtenue : 785 447. Les deux conditions vérifiées
+   par script.
+
+### Le garde-fou qui manquait en session 71
+
+Le repli a été testé avec le fichier `undefined`, `null` et `false` : on obtient un tableau vide
+dans les trois cas. **Fichier absent, mal poussé ou cache froid : le Chemin Baby s'affiche vide,
+mais l'application démarre.** L'écran blanc n'est plus possible pour cette cause.
+
+### Contrôles passés
+
+- **Objet reconstruit identique bit pour bit.** Le fichier externe a été chargé dans l'ordre du
+  navigateur (`window.HYPE_IMGS` d'abord), puis les **huit** tables comparées à l'état d'avant :
+  Baby 1 585 917 caractères de part et d'autre, et les sept autres inchangées.
+- **`node --check`** sur `hype-cours-baby.js` et sur les 15 blocs inline de l'index : tout OK.
+- **130 scripts externes** au lieu de 129, comme attendu.
+- **Audit des six langues** : Baby 27/27 partout. **Rendu** : 1 881 éléments par langue, aucune
+  anomalie.
+
+### OUTILLAGE MODIFIÉ — à savoir avant la prochaine session
+
+`lib_table.js` reçoit **`lireTablePartout(nom)`**, qui cherche la table dans `index.html` puis dans
+les fichiers `hype-cours-*.js`. `audit2.js` et `rendu.js` l'utilisent désormais.
+
+**Le piège rencontré, à ne pas refaire :** une table sortie laisse dans l'index une ligne de repli
+qui contient `|| []`. L'ancien `lireTable` y trouvait le crochet et renvoyait un **tableau vide** :
+l'audit annonçait alors « Baby 0/0 » et faisait croire à une perte totale du contenu. La fonction
+rejette maintenant tout résultat vide et poursuit vers les fichiers externes.
+
+### Le jour du push
+
+**`hype-cours-baby.js` D'ABORD, `index.html` ensuite.** Si l'index arrive seul, le Chemin Baby est
+vide le temps que l'autre suive : gênant, pas cassé, grâce au repli.
+
+**Vérifier la 9 119 146LLE sur GitHub, pas l'horodatage.** En session 71, le premier index de secours
+n'avait pas remplacé le fichier et GitHub affichait encore l'ancienne taille : c'est ce qui avait
+fait perdre le plus de temps. Après le push, l'index doit afficher **8,16 Mo** et non 9,73.
+
+### La suite de l'extraction, par ordre de sûreté
+
+1. `COURS_GALOP4_FR` — 0,66 Mo, aucune dépendance. Même recette exactement.
+2. G5 + G6 + G7 réunis — 0,08 Mo, aucune dépendance. Petit, mais gratuit.
+3. `COURS_GALOP3_FR`, `COURS_GALOP2_FR`, `COURS_GALOP1_I18N` — seulement quand la méthode aura
+   tenu plusieurs semaines, et **en sortant leurs constantes d'affiches avec elles**.
+
+Cumul possible : 4,65 Mo, soit 48 % du fichier.
 
 ---
 
@@ -863,7 +966,7 @@ La relecture native des mots. Les vidéos et cartes manquantes (île Maurice à 
 ### ✅ Les trois vidéos — transcodage et filigrane
 Blandine a fourni trois `.mov` en **HEVC**, lisibles seulement par Safari, donc inutilisables sur le web. Tous transcodés en **H.264 / MP4, yuv420p, CRF 23, `+faststart`, piste audio supprimée**.
 
-⚠️ **LES TROIS PORTAIENT UN FILIGRANE « Ai » EN HAUT À GAUCHE**, non signalé par Blandine et présent sur toutes les images. Dans une appli payante c'est disqualifiant.
+⚠️ **LES TROIS POR9 119 146ENT UN FILIGRANE « Ai » EN HAUT À GAUCHE**, non signalé par Blandine et présent sur toutes les images. Dans une appli payante c'est disqualifiant.
 **Méthode retenue : `delogo`, pas de recadrage.** Le premier essai recadrait (`crop`), ce qui coupait le bas de l'image — Blandine l'a immédiatement vu. Le filigrane est donc effacé sur place, par reconstitution des pixels voisins.
 **Position mesurée au zoom ×4 sur chaque fichier** (elle diffère d'une vidéo à l'autre, et ma première estimation à l'œil était fausse, laissant des traînées) :
 - accueil (480×854) : `delogo=x=12:y=9:w=38:h=38`
@@ -1501,7 +1604,7 @@ Automatiser demanderait une fonction Netlify avec la clé secrète Stripe — la
 ### 🐛 INCIDENT DU JOUR — À RETENIR ABSOLUMENT
 L'`index.html` de **Hype Lingo** (application autonome, 13,6 Ko) a été poussé **par-dessus l'index de l'app** sur GitHub : site hors service. Rien n'était perdu (Netlify garde les déploiements, GitHub garde l'historique), mais **la cause reste ouverte** :
 ➡️ **Le fichier autonome de Lingo NE DOIT PAS s'appeler `index.html`.** À renommer `lingo.html` ou à placer dans un dossier `lingo/`. **À dire à la conversation qui travaille sur Lingo**, sinon l'accident se reproduira au prochain envoi.
-➡️ Rappel : sur GitHub, **se fier à la TAILLE affichée, jamais à l'horodatage**. C'est la taille (13,6 Ko au lieu de 9,99 Mo) qui a révélé l'écrasement.
+➡️ Rappel : sur GitHub, **se fier à la 9 119 146LLE affichée, jamais à l'horodatage**. C'est la taille (13,6 Ko au lieu de 9,99 Mo) qui a révélé l'écrasement.
 
 ### Reste sur les quêtes
 Assiduité (**semaines vs jours, toujours non tranché**) · Fidélité (date d'abonnement inexistante) · déclaratifs (concours, sellerie ×2, lieux élargis aux événements) · Passeport · jeux Baby (**clé de stockage du Mémory introuvable dans l'index**) · Distinctions (fondateur numéroté, Premier Cercle, Bienfaiteur) · rebrancher `EcranBadges` sur `hype_paliers`.
@@ -1616,7 +1719,7 @@ Blandine : « des fois 15/20 secondes » avant l'écran d'accueil. Cause trouvé
 
 ---
 
-## 👁️ SESSION 80 (03/08) — LA TABLE DES VUES : CINQ FAMILLES DE PLUS
+## 👁️ SESSION 80 (03/08) — LA 1 846 043LE DES VUES : CINQ FAMILLES DE PLUS
 
 **Deux fichiers à pousser ensemble : `index.html` ET `hype-video.js`.** Plus `hype-vues.sql` à exécuter avant.
 **16 familles au total** désormais (11 + 5).
@@ -2117,7 +2220,7 @@ Recommandation donnée à Blandine : finir les bugs avant les fonctionnalités. 
 | Bannière d'accueil entassée | Hauteur fixe de 432 px retirée : la vidéo passe dans le flux (`width:100%` + `height:auto`), le navigateur applique son format natif — **le calcul JS ajouté plus tôt dans la session a pu être supprimé**. 30 px en haut, 30 px avant Mon profil. |
 | Ancienne photo aperçue au chargement | L'image de secours `hero-img` était visible par défaut alors que son seul rôle est de couvrir un échec. Opacité 0, révélée uniquement sur `onError` (où la hauteur 432 px revient aussi). |
 
-### 🔒 TROUVAILLE IMPORTANTE — LES ALBUMS PRIVÉS N'ÉTAIENT PAS PRIVÉS
+### 🔒 TROUVAILLE IMPORTANTE — LES ALBUMS PRIVÉS N'É9 119 146ENT PAS PRIVÉS
 Le système de visibilité existait **déjà** (`public` / `partage` / `prive`, icône, libellé, panneau de membres dans l'en-tête de l'album ouvert). Mais `listerAlbumsCheval` **ne regardait pas la visibilité** : un album passé en privé restait visible par tout le monde. Le réglage existait et ne servait à rien.
 Filtrage ajouté **à la source** (seul point de lecture des albums → toutes les surfaces en héritent). Un album privé n'est visible que par son auteur.
 **⚠️ Reste ouvert :** le statut `partage` n'est toujours pas appliqué — les règles d'appartenance ne sont pas connues, elles n'ont pas été devinées. Un album « partagé » reste visible par tous, comme avant. **Question à Blandine : qui doit voir un album partagé ?**
@@ -2162,7 +2265,7 @@ Blandine : « pourquoi Mon Club a si peu de points comparé à Mon Écurie ? »
 
 ---
 
-### 📄 INVENTAIRE LIVRÉ — `INVENTAIRE-portes-ecurie-club.md`
+### 📄 INVEN9 119 146RE LIVRÉ — `INVEN9 119 146RE-portes-ecurie-club.md`
 11 portes recensées vers `ecurie` et `guilde`. **Seules 3 posent problème** ; les 8 autres ne nomment même pas leur destination et ne doivent pas être touchées.
 
 🔴 **La collision principale, trouvée :** sur la page Écurie, le badge **« Club officiel » n'est pas un badge, c'est un lien vers Mon Club.** Pilule turquoise, coche, libellé descriptif — rien n'indique qu'il change de page, et il porte le même texte que le badge de Mon Club. **C'est la cause directe de la confusion**, pas seulement la ressemblance des deux pages. À trancher : vrai bouton assumé (« Voir le club → ») ou badge non cliquable.
@@ -2198,7 +2301,7 @@ Blandine : « certains cavaliers n'aiment pas la compétition ». La section rev
 Blandine, après avoir fait elle-même l'inventaire : *« En vrai on a déjà tout sur le profil et sur les pages chevaux, non ? Qu'est-ce qu'elle apporte de plus ? »*
 **Réponse : rien.** Chaque élément de la page Écurie a déjà une maison ailleurs — bannière et philosophie → la structure ; chevaux → leurs fiches ; fil → le cavalier ; badge « Club officiel » → Mon Club. **La page se dissout.** Plus besoin de la renommer « Ma vie équestre », plus besoin de trancher le badge : les deux problèmes disparaissent avec elle.
 
-### 🔴 LA PREUVE QUE LE PROBLÈME ÉTAIT RÉEL
+### 🔴 LA PREUVE QUE LE PROBLÈME É9 119 146T RÉEL
 Blandine a écrit la devise du club **en croyant être sur la page du club**. Elle était sur la page Écurie.
 Ce n'est pas une étourderie : c'est la démonstration que les deux pages sont indiscernables, et que la confusion **produit déjà des données mal rangées**. Si ça arrive à celle qui a conçu l'appli, ça arrivera à tous les cavaliers.
 
@@ -2254,7 +2357,7 @@ Ligne 195, colonne 532 : `"src": GALOPS_HERO`.
 
 **Pourquoi mes contrôles ne l'ont pas vu.** `node --check` valide la **grammaire** d'un fichier, pas l'**existence** des variables qu'il appelle. Les 142 blocs étaient syntaxiquement parfaits. **À AJOUTER AUX CONTRÔLES : avant toute extraction, vérifier que le code déplacé ne référence aucun identifiant défini ailleurs.**
 
-**Déroulé, pour mémoire.** Fausses pistes explorées avant de trouver : nom/emplacement du fichier (il était bon), fichier tronqué (3,06 Mo, complet), service worker (il n'intercepte AUCUNE requête et se désinscrit — innocent). Ce qui a fait perdre du temps : le premier envoi de l'index de secours n'a pas remplacé le fichier (GitHub affichait encore 6,89 Mo). **Repère fiable retenu : la TAILLE du fichier sur GitHub, pas l'horodatage.** Version à un seul fichier ≈ 9,95 Mo · version découpée ≈ 6,89 Mo.
+**Déroulé, pour mémoire.** Fausses pistes explorées avant de trouver : nom/emplacement du fichier (il était bon), fichier tronqué (3,06 Mo, complet), service worker (il n'intercepte AUCUNE requête et se désinscrit — innocent). Ce qui a fait perdre du temps : le premier envoi de l'index de secours n'a pas remplacé le fichier (GitHub affichait encore 6,89 Mo). **Repère fiable retenu : la 9 119 146LLE du fichier sur GitHub, pas l'horodatage.** Version à un seul fichier ≈ 9,95 Mo · version découpée ≈ 6,89 Mo.
 
 **Résolution.** Retour à l'index à un seul fichier, md5 `e8d7131c`, 28 correctifs. **L'appli remarche.** `hype-galops.js` reste sur GitHub, ignoré.
 
@@ -2365,7 +2468,7 @@ J'avais alerté sur un risque de perte du texte de Blandine, en me fiant à un *
 - ~~Arbitrage du badge « Club officiel »~~ — il n'y a plus qu'une page à qualifier.
 - ~~Question de l'écurie privée~~ — sans objet.
 - ~~Encart d'accueil « MON ÉCURIE »~~ — à repointer vers Mon Club.
-- L'inventaire `INVENTAIRE-portes-ecurie-club.md` reste utile : il liste les 11 portes à repointer.
+- L'inventaire `INVEN9 119 146RE-portes-ecurie-club.md` reste utile : il liste les 11 portes à repointer.
 
 ### Rappel du cadre qui a permis de trancher (`ARCHITECTURE-pages-hype.md`)
 Trois sujets seulement : **le cavalier** (une personne), **le cheval** (un animal), **la structure** (un lieu collectif). Une page = un sujet. Une donnée = un seul propriétaire, un seul lieu d'écriture.
@@ -2714,7 +2817,7 @@ Le sélecteur de la photo d'écurie n'accepte que des images et le bandeau ne sa
 Chapitre Performances + carte « Partager sa fiche » sur la page CAVALIER · encart Résultats du CLUB (spécifier qui publie/validation/saisons) · bouton « Faire découvrir Hype » en Communauté · grille ordonnée des posts dans l'onglet Souvenirs · vidéos à fournir (bandeau Écurie Feinn, accueil « cheval en liberté », couverture g3-saut, profils vidéo Premium, poulain messagerie déjà dans le bucket) · décision « + Ajouter un flot » (construire l'upload ou retirer) · albums collaborateurs · quota Supabase avant le 14 août · déplacer les vidéos hors de « Untitled folder » · « Six instants » à harmoniser dans les 5 autres langues.
 
 
-## 🎯 PILE SESSION 70 — RÉCAP EXÉCUTABLE (consolidé 31/07 matin, tout le reste de la 69 est FAIT et en ligne)
+## 🎯 PILE SESSION 70 — RÉCAP EXÉCU1 846 043LE (consolidé 31/07 matin, tout le reste de la 69 est FAIT et en ligne)
 
 **Maquette n°1 (un seul écran, tout ensemble) — LA GRANDE FICHE CHEVAL :**
 1. Titres (nom/affixe/badge) SORTIS de la photo héro → bloc titre dessous.
@@ -2858,7 +2961,7 @@ Vérifié sur sources (dont PDF ffe.com) : battue des antérieurs, battue des po
 
 **18. Encarts photo/vidéo « très gros »** (demande Blandine, comme l'ancienne page) : vignettes de la bande défilante **220×220** (au lieu de 150), encart Vidéos **150px de haut** (au lieu de 96). Présence vérifiée par grep. Fichier : **10 307 296 octets.
 
-**17. Reconstruction après audit honnête.** ⚠️ **Correctif de SUIVI : deux modifications annoncées en (15) n'avaient JAMAIS été sauvegardées** (un échec d'assertion en fin de script annulait l'écriture entière, y compris les parties déjà « ok » — leçon : **une écriture par modification, et vérifier la PRÉSENCE dans le fichier, pas le message de succès**). Étaient perdus : le garde-fou propriétaire du pré-remplissage, et la requête profil du propriétaire. **Refait et vérifié présent cette fois** : (a) **carrés Clinique vétérinaire | Sellerie côte à côte** avant Liens & partage (6 langues, → `setEcran("clinique")`/`setEcran("sellerie")`) — décision Blandine, remplace l'encart sellerie pleine largeur et la bannière clinique disparue ; (b) **bande de photos 150px** (au lieu de 72) avec **défilement automatique doux** (0,6px/30ms, pause 2,6s au toucher, retour au début en douceur) ; (c) **encart Vidéos pleine largeur** sous les albums (aperçu vidéo en fond, compteur, → panneau souvenirs), rendu **seulement s'il existe au moins une vidéo** ; (d) **pré-remplissage de l'histoire au nom du PROPRIÉTAIRE du cheval** (requête `profiles` pseudo+ecurie sur `user_id`) visible par tous les visiteurs (« [Nom] est un [race] de l'écurie [du proprio], monté(e) par [proprio] »), phrase-crayon réservée au propriétaire. Fichier : **10 307 295 octets, md5 05674af8…** — présence des 4 chantiers vérifiée par grep avant livraison.
+**17. Reconstruction après audit honnête.** ⚠️ **Correctif de SUIVI : deux modifications annoncées en (15) n'avaient JAMAIS été sauvegardées** (un échec d'assertion en fin de script annulait l'écriture entière, y compris les parties déjà « ok » — leçon : **une écriture par modification, et vérifier la PRÉSENCE dans le fichier, pas le message de succès**). Étaient perdus : le garde-fou propriétaire du pré-remplissage, et la requête profil du propriétaire. **Refait et vérifié présent cette fois** : (a) **carrés Clinique vétérinaire | Sellerie côte à côte** avant Liens & partage (6 langues, → `setEcran("clinique")`/`setEcran("sellerie")`) — décision Blandine, remplace l'encart sellerie pleine largeur et la bannière clinique disparue ; (b) **bande de photos 150px** (au lieu de 72) avec **défilement automatique doux** (0,6px/30ms, pause 2,6s au toucher, retour au début en douceur) ; (c) **encart Vidéos pleine largeur** sous les albums (aperçu vidéo en fond, compteur, → panneau souvenirs), rendu **seulement s'il existe au moins une vidéo** ; (d) **pré-remplissage de l'histoire au nom du PROPRIÉ9 119 146RE du cheval** (requête `profiles` pseudo+ecurie sur `user_id`) visible par tous les visiteurs (« [Nom] est un [race] de l'écurie [du proprio], monté(e) par [proprio] »), phrase-crayon réservée au propriétaire. Fichier : **10 307 295 octets, md5 05674af8…** — présence des 4 chantiers vérifiée par grep avant livraison.
 
 **16. La bande de photos puise dans la galerie fusionnée** : `AlbumsPromus` charge désormais aussi `chargerPhotosSouvenirs` (commentaires + albums) — les photos de galerie d'un cheval sans album (cas Elfe) apparaissent enfin sur la fiche, sous la grille. Repli sur les seuls albums si la fonction manque. ⚠️ **Point de confusion résolu avec Blandine : elle avait poussé une version deux livraisons en retard** (repère : texte générique encore visible + carré Nouvel album présent) — le pré-remplissage encadré (liseré animé + crayon), les cartes réduites et le palmarès remonté étaient déjà dans les livraisons non poussées. **Fichier final de la session : 10 299 972 octets, md5 d7c0fba9…**
 
@@ -3750,7 +3853,7 @@ Problème signalé par Blandine : XP, cours terminés, étoiles de quiz et séri
 - **Fusion par type, jamais de recul** : drapeaux de quête → le « fait » gagne ; paliers Baby → union ; galops vus → union des ids ; Memory → par niveau, le meilleur score (moins d'erreurs) ; stats de chevaux → complétées sans écraser le local ; préférences simples → le local prime.
 - Testé au rendu réel : paliers `{bronze}` + `{argent}` → les deux ; Memory 3 erreurs vs 0 → 0 ; stats `{saut:110}` + `{saut:90,dressage:5}` → `{saut:110, dressage:5}` ; photo de cheval bien exclue de la collecte.
 
-⚠️ **INVENTAIRE COMPLET — ce qui reste volontairement en local seul** (26 clés passées en revue le 28/07) :
+⚠️ **INVEN9 119 146RE COMPLET — ce qui reste volontairement en local seul** (26 clés passées en revue le 28/07) :
 - **Images** (déjà dans Supabase Storage, le local n'est qu'un cache d'affichage) : `hype_cheval_photo_*`, `hype_cheval_photo_orig_*`, `hype_avatar_original`, `hype_ecurie_photo*`, `hype_club_banniere`
 - **Géré côté serveur, source de vérité ailleurs** : `augalop_vip` et `augalop_demandePro` (table `abonnements_premium`), `hype_heybaby_quota` (table `hey_baby_usage`)
 - **État d'interface propre à l'appareil, aucun intérêt à synchroniser** : `hype_coach_*` (coachmarks vus — normal qu'ils se rejouent sur un nouveau téléphone), `hype_install_vu`, `hype_maj_vue`, `hype_rappeler`, `hype_encart_photo_ferme`, `hype_notifs_comm_vu`, `hype_ajouts_ecurie_vus`, `hype_uid`
@@ -4121,7 +4224,7 @@ Message exact du bandeau Supabase : « **Organization exceeded its quota in the 
 
 ## 28/07/2026 — Bugs des photos de profil (produit communautaire) + messagerie visible
 
-### 🔴 LE BUG QUI CASSAIT LA PROMESSE COMMUNAUTAIRE — diagnostic complet
+### 🔴 LE BUG QUI CASSAIT LA PROMESSE COMMUNAU9 119 146RE — diagnostic complet
 Blandine ne voyait pas la photo d'Ambre. Constat en base (requête lancée par Blandine) : **24 profils sur 33 ont `avatar_url` VIDE**, alors que ces cavalières ont bien un avatar visible sur leur propre téléphone. Deux causes distinctes trouvées, les deux corrigées :
 
 1. **Import de photo qui échouait SILENCIEUSEMENT** (le plus grave). Un écran de profil appelait `syncProfilDistant({ avatar: ... })` — le champ envoyé s'appelait `avatar` alors que **la colonne est `avatar_url`**. Postgres refusait, et l'erreur était **avalée par un `catch (e) { }` vide**. La photo ne quittait jamais le téléphone. Bonus : ça envoyait l'image en **base64 complet** dans une colonne texte au lieu de passer par l'upload — vu le quota Supabase sous surveillance (restriction au 14 août), heureusement que ça ne marchait pas. → Remplacé par `hypeEnregistrerPhoto("avatar", ...)` qui fait un vrai upload dans le bucket puis écrit `avatar_url`, **et remonte l'échec à l'écran** au lieu de l'avaler.
@@ -4368,7 +4471,7 @@ Ne pas confondre non plus avec la famille **« Fiches completes »**, qui compte
 
 Les citations d'auteurs ont ete traduites, pas laissees en francais : Nuno Oliveira (« Die wahre Reitkunst beginnt, wenn das Pferd auf fast unsichtbare Hilfen antwortet ») et le principe attribue a Baucher. **Les noms des auteurs, eux, ne sont pas traduits** — c'est volontaire.
 
-### LA VARIATION DE TAILLE, EXPLIQUEE POUR DE BON
+### LA VARIATION DE 9 119 146LLE, EXPLIQUEE POUR DE BON
 Blandine a eu raison de ne pas se satisfaire de « JSON.stringify compacte les espaces ». Mesure faite :
 
 | chapitre | avant | apres | sequences `\uXXXX` avant | apres |
@@ -4389,7 +4492,7 @@ Blandine a eu raison de ne pas se satisfaire de « JSON.stringify compacte les e
 - Sequence des elements `k` identique entre `fr` et `de` sur les 9 blocs (5, 4, 3, 3, 5, 4, 5, 7, 6). QCM : 10, allemand complet, nombre d'options identique.
 - Table du Galop 2 evaluee en JS : 15 chapitres, ordre des identifiants inchange.
 
-### ETAT i18n DE TOUTES LES TABLES
+### ETAT i18n DE TOUTES LES 1 846 043LES
 | niveau | chapitres | incomplets |
 |---|---|---|
 | Baby | 27 | **0** |
@@ -4447,7 +4550,7 @@ Garde-fous integres, tous verifies avant ecriture : l'identifiant du chapitre is
 
 **index.html md5 `af2e8386d732d2c20142164521111d46`, 10 529 918 octets. Preview : `preview-97.html`. Aucun SQL.**
 
-### CE QUI ETAIT CASSE, ET DEPUIS QUAND
+### CE QUI E9 119 146T CASSE, ET DEPUIS QUAND
 Blandine decouvre un chapitre du Galop 2 affiche en **ecran entierement noir**, titre pose sur du vide. Diagnostic : `CouvAffiche` ecrivait `background: "url(" + hero + ")"` sans garde, donc un `src` vide donnait `url()`.
 
 **Dix chapitres du Galop 2 etaient dans ce cas.** Sept avec un bloc de couverture complet mais `src: ""` ; trois (`g2-c5`, `g2-c6`, `g2-anatomie`) sans bloc de couverture du tout.
@@ -4463,7 +4566,7 @@ Blandine decouvre un chapitre du Galop 2 affiche en **ecran entierement noir**, 
 
 **Terminologie allemande retenue** : Angaloppieren, Hilfen, Schenkel, Wade, Becken, Zügel, Gurt, Vorhand, Galoppsprung, fleißiger Trab, « Stellung und Biegung » pour l'incurvation. A reutiliser telle quelle pour les chapitres suivants, pour que le registre reste homogene.
 
-### AUDIT i18n DE TOUTES LES TABLES — L'ETAT REEL
+### AUDIT i18n DE TOUTES LES 1 846 043LES — L'ETAT REEL
 Script conserve : `audit_i18n.js` (en-tetes et couvertures) et `audit_de_g1.js` (allemand par zone : en-tete, couverture, corps, QCM).
 
 | niveau | chapitres | incomplets apres cette session |
@@ -4608,7 +4711,7 @@ Une cavaliere qui avait deja valide l'ancien `baby-c17` aurait vu son Poney d'Ar
 ### AVERTISSEMENT DE NUMEROTATION ET DE BASE
 Le fichier fourni par Blandine porte le md5 `07990199e65cb64eaa6531aef64e27b0` / 10 515 180 octets. Il ne correspond **ni** a la 93 (`4c628a34`, 10 514 497) **ni** a la 93 bis (`6375f8b1`, 10 514 789) : +391 octets par rapport a la 93 bis. Une session a donc livre sans se declarer dans le SUIVI. Le numero 94 est pris en lisant l'en-tete de ce fichier ; si une page a deja utilise 94 ailleurs, c'est un doublon a arbitrer. Travail effectue sur LE fichier de Blandine, conformement a la regle de base.
 
-### CE QUI ETAIT DEJA FAIT ET N'A PAS ETE RETOUCHE
+### CE QUI E9 119 146T DEJA FAIT ET N'A PAS ETE RETOUCHE
 Blandine demandait le retrait de l'encart « Mes messages » et du bloc Lamotte. **Les deux etaient deja masques** par les constantes `AFFICHER_ENCART_MESSAGES = false` et `AFFICHER_ACTU_LAMOTTE = false` (session du 05/08), titre « L'actualite » compris. Aucune ligne touchee de ce cote. Rappel du commentaire en place : la video `hype-messagerie-video.mp4` (le poney qui apporte la lettre) reste disponible au depot pour un usage ulterieur — c'est la video que Blandine evoquait.
 
 ### A · `carteVertAcc` rendu parametrable
@@ -4770,7 +4873,7 @@ Trois cles de chapitres ajoutees a `CHAPITRES` : `g4-epaules-hanches`, `g4-obsta
 
 **RESTE 14 FILMS SUR 28.** Galop 1 : 6/7 (le 7e titre inconnu). Galop 2 : 2/7 (5 titres connus). Galop 3 : 1/7 (4 titres connus, 2 inconnus). Galop 4 : 5/7 — manquent « S'equilibre assis » (3:29), « Reprise de dressage type Galop 4 » (3:25), et le 6e titre de la serie. **Prochaine passe : finir le Galop 4 (2 titres connus, immediatement branchables), puis le Galop 2.**
 
-### AJOUT SESSION 94 quater · L'INVENTAIRE DE LA SERIE, RELEVE PAR BLANDINE
+### AJOUT SESSION 94 quater · L'INVEN9 119 146RE DE LA SERIE, RELEVE PAR BLANDINE
 
 Blandine a envoye 26 captures de recherches YouTube (« galop 1 », « galop 2 ffe », « galop 3 ffe », « galop 4 ffe »). Elles ne montrent pas les identifiants — l'identifiant est dans l'URL, invisible dans une liste de resultats — **mais elles donnent les TITRES EXACTS et les DUREES**, ce qui change tout : une recherche sur le titre exact retrouve l'identifiant du premier coup, alors que les recherches approximatives s'epuisaient.
 
@@ -4782,7 +4885,7 @@ Blandine a envoye 26 captures de recherches YouTube (« galop 1 », « galop 2 f
 
 Deux cles de chapitres de plus : `g1-c5` (La position du cavalier), `g1-c9` (Les aides naturelles et artificielles). **Catalogue : 16 entrees, 9 films FFE.** Les durees des deux films du Galop 2 sont desormais renseignees (`moyen`).
 
-**INVENTAIRE RELEVE SUR LES CAPTURES — ce qui reste a trouver.** Le numero est celui affiche dans le film lui-meme, il donne l'ordre de la serie.
+**INVEN9 119 146RE RELEVE SUR LES CAPTURES — ce qui reste a trouver.** Le numero est celui affiche dans le film lui-meme, il donne l'ordre de la serie.
 
 *Galop 1 — 6 des 7 trouves.* 1 Aborder son cheval (3:31) ✓ · 2 Mettre le licol (3:46) ✓ · 3 Monter et descendre (3:54) ✓ · Mener son cheval (3:26) ✓ · 5 Conduire au pas (3:25) ✓ · 6 Rester en equilibre sur ses etriers (3:49) ✓ · **le 7e reste inconnu, son titre n'apparait sur aucune capture.**
 
