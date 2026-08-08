@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 08/08/2026 (SESSION 110 · L'ÉCRASEMENT DES CLÉS D'IMAGES, PONT LINGUAE, PALIERS BABY, CADRAGE DES QUIZ) — md5 `df70065f9dcd6e32e25181260f1379fc`, 9 128 897 octets. `hype-cours-baby.js` inchangé. Aucune preview. Aucun SQL.**
+**Version actuelle de l'index.html : 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
+
+**Ancienne version (110) — 08/08/2026 (SESSION 110 · L'ÉCRASEMENT DES CLÉS D'IMAGES, PONT LINGUAE, PALIERS BABY, CADRAGE DES QUIZ) — md5 `df70065f9dcd6e32e25181260f1379fc`, 9 128 897 octets. `hype-cours-baby.js` inchangé. Aucune preview. Aucun SQL.**
 
 **Ancienne version (109) — 08/08/2026 (SESSION 109 · ACCUEIL ENTIÈREMENT ALLEMAND, CARTE LINGUAE) — md5 `e72f9d89e2d9cb358c8c0175ba6fd7e6`, 9 124 894 octets. **`hype-cours-baby.js` md5 `ea769653fb4ad435595ffd765c8f8a10`, 1 817 525 octets (1,73 Mo) — À POUSSER AUSSI.** Aucune preview. Aucun SQL.**
 
@@ -118,6 +120,87 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 111 · LES COUVERTURES BABY EN CHEMIN DIRECT
+
+**index.html md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets.**
+**hype-cours-baby.js md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — modifié.**
+
+### MA THÉORIE DE L'ÉCRASEMENT É9 127 165T FAUSSE
+
+En session 110, j'ai conclu que les couvertures Baby ne changeaient pas parce que les clés
+`k646`–`k657`, déclarées entre les lots 113 et 114, étaient écrasées par les lots suivants.
+J'ai déplacé le bloc de déclarations. **Ça n'a rien changé.**
+
+**Puis Blandine a fait la remarque décisive : « le puzzle était fonctionnel ».** Le puzzle utilise
+`HYPE_IMGS["k645"]`, déclarée dans le même bloc, au même endroit, dans la même plage. **S'il
+s'affiche, les clés de cette plage ne sont pas écrasées.** La théorie tombe.
+
+**C'est la troisième hypothèse fausse de la journée**, après les noms de fichiers et le cache.
+Chacune tenait debout et chacune a coûté un aller-retour de vérification à Blandine.
+
+**Ce qu'il faut retenir de méthode :** une observation qui contredit la théorie vaut mieux que dix
+qui la confirment. Le puzzle fonctionnait depuis le début — il était sous les yeux, et il
+invalidait à lui seul l'explication par l'écrasement. Il fallait le remarquer avant de déplacer
+quoi que ce soit.
+
+### Ce qui a été fait, et pourquoi
+
+Faute de cause établie, on **supprime l'intermédiaire** plutôt que de continuer à deviner. Les 12
+couvertures Baby ne passent plus par une clé : le chemin est écrit **en dur dans la donnée**, dans
+`hype-cours-baby.js`.
+
+```js
+{ "type": "couv-affiche", "src": "images/baby-c3-brosse.jpg", ... }
+```
+
+Plus de clé, plus de dépendance à l'ordre de chargement, plus de `HYPE_IMGS` du tout pour ces
+douze images. Si ça ne s'affiche toujours pas, la cause ne peut plus être qu'ailleurs, et le champ
+de recherche est réduit d'autant.
+
+Idem pour l'affiche allemande de `g1-c11` : `HYPE_IMGS["k644"]` devient
+`"images/couv-g1-c11-de.jpg"` directement dans `COURS_GALOP1_I18N`.
+
+**LE PUZZLE A ÉTÉ REMIS COMME IL É9 127 165T.** Je l'avais passé en chemin direct par excès de zèle
+alors qu'il fonctionnait. `k645` est redéclarée et la cascade
+`HYPE_IMGS["k645"] || HYPE_IMGS["k432"] || GALOPS_HERO` est restaurée à l'identique.
+**Ne pas toucher à ce qui marche, même par cohérence.**
+
+### Les 14 déclarations de clés ont été retirées
+
+Le bloc `k644`–`k657` n'avait plus aucun usage après le passage en chemin direct. Il a été
+supprimé, sauf `k645` (le puzzle), redéclarée seule juste avant `hype-cours-baby.js`.
+
+### Les images tronquées du Memory
+
+Cause trouvée : **`objectPosition: "center top"`** sur les cartes. Les illustrations ont leur sujet
+au centre, l'ancrage en haut coupait donc le poney.
+
+**Quatre occurrences corrigées en `objectPosition: "center"`** : `MemoryGalop`,
+`MemoryPoneyGrille` et `MemoryPoneyJeu` (deux). Les trois autres du fichier
+(`rondSocial`, `menuDeroulant`, `EcranSante`) sont **laissées telles quelles** : ce sont des
+portraits, où l'ancrage haut est le bon choix.
+
+### Toujours en attente, côté Blandine
+
+**Déplacer `k548.jpg`, `k550.jpg`, `k551.jpg`, `k552.jpg` de la racine vers `images/`** — ce sont
+les cartes cassées de « Les allures » et « Le saut d'obstacles ». Aucun changement de code
+nécessaire, et le filet de secours de la session 108 affiche déjà l'emoji du thème à la place du
+carré cassé.
+
+### Contrôles passés
+
+- **`node --check`** sur `hype-cours-baby.js` et les 16 blocs inline : tout OK.
+- **Non-perte prouvée sur Baby** : 27 chapitres, et comparaison chapitre par chapitre en
+  neutralisant `blocs[0].src` des 12 visés → **0 différence ailleurs**.
+- **Preuve de rendu** six langues : **une seule différence sur 14 053 valeurs**,
+  `COURS_GALOP1_I18N` chapitre 11 `blocs.2.src.de` — exactement le champ visé,
+  `perdues 0` / `ajoutees 0`.
+- **Chaîne complète simulée** : le convertisseur rend bien
+  `baby-c3 -> images/baby-c3-brosse.jpg`.
+- **`k645` : déclarée 1 fois, utilisée 1 fois** — vérifié après restauration.
 
 ---
 
