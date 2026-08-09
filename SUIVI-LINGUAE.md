@@ -1,3 +1,110 @@
+# 🛠️ SESSION 171 · LINGUAE 9 (09/08) — LES BANDES DE L'INTRO, LE SON PAR CHAPITRE, ET LA PAGE DES THÈMES QUI SE LIT
+
+**Livré : `lingo.html` v43 · les thèmes (md5 `3113f73f28acf455be86d82194d8ff07`, 490 319 octets).** Aucune décision en attente à la clôture. `index.html` NON MODIFIÉ cette session. Cinq maquettes validées une par une dans la journée avant la moindre ligne de code.
+
+## ✅ V39 · LES DEUX BANDES GRISES AUTOUR DE L'INTRO DU TOUR DU MONDE
+Même recette que les bandes de la page des thèmes (`#15181C`, 26 px, 18 px d'air) mais **en retrait** : elles s'arrêtent à la largeur de la colonne de texte (330 px) et portent des coins arrondis de 6 px. Marqueurs : `#ouvIntroB`, `.oBande`.
+- **Variante 3 sur quatre**, choisie après un aller-retour : Blandine ne voyait pas l'écart (« je vois pas l'écart et du coup y'en a l'extérieur de la page aussi ? ») — l'air entre bande et texte est noir sur fond noir, 18 ou 10 px se ressemblent, et le bord à bord de la maquette d'origine sortait de la colonne.
+- ⚠️ `.oBande` est un `<span>` : `display:block` OBLIGATOIRE (même leçon que `.thBande`).
+- ⚠️ Les 26 px et les 18 px sont portés par `#ouvIntroB`, **pas** par la marge de `.intro` : c'est ce qui garantit que le dessus et le dessous sont strictement égaux. Ne pas remettre de `margin` sur `.intro` dans ce bloc.
+- La clé i18n `ouvIntro` et le `<p>` sont intacts : seul l'emballage est neuf.
+
+## ✅ V39 · LE MODE SANS LE SON PASSE AU DÉBUT DE CHAQUE CHAPITRE
+Demande de Blandine : « le truc sans son est-ce qu'on peut pas plutôt l'activer ou désactiver à chaque début de chapitre ? ». Le bouton `#ouvMuet` du carnet était vu **une fois**, au lancement, jamais au moment où la question se pose.
+- Nouveau `#lcSon`, écrit par `boutonSonChapitre()` dans `choisirLecon()`, **sous le mot d'accueil et au-dessus des leçons**. Deux états : gris « avec le son », turquoise « sans le son », interrupteur qui glisse.
+- Le réglage reste **mémorisé** dans la même clé `hype_lingua_muet` : les préférences déjà enregistrées sont conservées, on ne repose pas la question, on la rend visible.
+- Le clic **redessine `choisirLecon()` en entier** plutôt que de bricoler le bouton : l'écran est reconstruit de zéro à chaque passage, aucun risque de désynchro.
+- Nouvelle table `SON_TXT` (6 langues).
+- ⚠️ `boutonSansLeSon` — l'échappatoire **pendant** un exercice — est CONSERVÉ. Les deux ne se marchent pas sur les pieds : celui-ci décide avant, l'autre dépanne au milieu.
+- ⚠️ `#ouvMuet` et son pilote sont supprimés du document. Le CSS est laissé mort, commenté. **NE PAS le remettre** : deux commandes pour un réglage, c'est le bug classique d'en rafraîchir une et pas l'autre.
+
+## ✅ V39 · LA PAGE DES THÈMES — OPTION B, LES ÉTOILES, LE LISERÉ
+- **La ligne de précision (`.thPrec`, option B validée sur maquette).** Sept thèmes portent plusieurs villes : « Travailler sur le plat » s'affichait à l'identique sur Windsor et Saumur, « Parler du matériel » trois fois. Le verbe du thème reste, la ligne turquoise dit ce que **cette** ville enseigne. Le texte n'est **pas écrit à la main** : `thPrecision()` demande `nomLecon()` sur la leçon de la ville, donc les familles du lexique (`COLL_NOM`), donc du texte déjà traduit en six langues — une ville future prend son intitulé toute seule.
+  - ⚠️ Elle n'apparaît QUE si le thème porte plus d'une ville (`multi`), sinon elle répéterait le verbe du dessus (« Jouer au polo » / « Le polo »).
+  - ⚠️ Elle rend `""` plutôt qu'un « Leçon 1 » de secours, et `""` si l'intitulé répète le verbe, et `""` si les lexiques ne sont pas chargés.
+  - ⚠️ **À VÉRIFIER AU DÉPLOIEMENT** : les seize intitulés réels n'ont jamais pu être lus — les `hype-lingo-lex-*.js` n'ont pas été fournis de la journée. Trois sont sûrs par recoupement (`rome` → Les gens via `ACCUEIL_VILLE`, `vejer` → l'intendance, `edimbourg` → les dialogues), les treize autres sortiront du moteur. Ouvrir la page une fois en ligne et lire les seize.
+- **Les étoiles** (`thEtoiles()`) : en haut à **droite**, autant d'étoiles que de niveau, **aucune étoile éteinte**, aucune place réservée pour elles. La pastille noire (`rgba(0,0,0,.5)`) se rétrécit d'elle-même — une étoile pour Le Morne, cinq pour Saumur — et reste calée à droite, donc l'alignement tient à l'œil. Trois demandes successives de Blandine dans la même session, toutes appliquées.
+- **La coche `.thOk` est supprimée**, remplacée par un **liseré doré** `.thT.gagne`. Question de Blandine : « pour le truc validé est-ce qu'on en a vraiment besoin puisque la carte est colorée ? » — elle avait raison sur le fond, mais le voile est doux depuis v35 : sur une carte déjà sombre l'écart ne se voit presque pas. Le liseré tient le même rôle sans rien poser sur l'image, qui ne porte plus qu'une seule pastille.
+- **Le titre de famille passe dans un bandeau** : dégradé `#15181C` → `#0A0C0F`, filet turquoise dessus, Cinzel `#F0DFA8` 14,5 px. Avant, 12 px de doré sombre très espacé se perdaient dans le noir (« on peut faire quoi pour améliorer les titres on les voit pas ? »). Six dessins maquettés, le bandeau choisi.
+
+## 🐞 V39 · LA TACHE DE COULEUR QUI SE PROMENAIT SUR LA PAGE — VRAIE CAUSE TROUVÉE
+Blandine voyait une tache floue, violette puis orange, glisser sur la page des thèmes pendant le défilement et **manger les titres de famille** (« À CHEVAL » à moitié effacé sur sa capture). J'ai d'abord accusé un bandeau collant à `backdrop-filter` dans ma maquette — corrigé, et la tache est revenue en orange : mauvaise cause.
+- **Vraie cause :** `.thVig.pas{filter:saturate(.55) brightness(.62)}`. Un filtre CSS sur un élément absolu dans un `overflow:hidden` force un calque de composition que WebKit repeint mal ; la couleur d'une tuile déjà sortie de l'écran restait étalée dessus.
+- **Correctif :** `opacity:.5` sur `.thVig.pas`, `background:#070A0F` sur `.thBand` pour que l'opacité ait un fond sombre à révéler, `isolation:isolate` sur `.thT`. Même voile, aucun calque en plus.
+- ⚠️ **NE PAS remettre `filter` sur cette page, ni `backdrop-filter` nulle part** : c'est la même famille de défaut que la bande fantôme des éléments collants, déjà documentée pour `#thFam`.
+- Si la tache subsiste : la tester dans Safari plutôt que dans le navigateur intégré, pour départager moteur de rendu et CSS.
+
+## ✅ V40 · LA LARGEUR DU BANDEAU — TRANCHÉE
+« Ok à la taille seule du mot » — **variante 5 sur six**, après refus du bord à bord, de la colonne des tuiles et des largeurs fixes. Le bandeau n'est donc pas un bloc mais une **étiquette qui épouse son texte** : `display:inline-block`, `padding:12px 26px`, `border-radius:99px`. « Au club » est court, « Les disciplines » est long.
+- ⚠️ C'est `.thGrp` qui centre l'étiquette (`text-align:center` ajouté) : un `inline-block` ne peut pas se centrer lui-même. Si `.thGrp` perd son `text-align`, le titre part à gauche.
+- ⚠️ Ce `text-align:center` ne fuit pas dans les tuiles, `.thT` porte déjà `text-align:left`. **Ne pas le lui retirer.**
+- Les six largeurs restent dans `maquette-largeurs-bandeau.html` si le sujet revient.
+
+## ✅ V41–V42 · LES SEIZE INTITULÉS VÉRIFIÉS SUR LES VRAIS LEXIQUES, ET DEUX RENOMMAGES
+Les sept lexiques des thèmes multi-villes ont enfin été fournis (`ecurie`, `cheval`, `materiel`, `dressage`, `obstacle`, `concours`, `urgences`). Le moteur a été rejoué hors ligne sur les vraies données : **les seize intitulés sortent propres, aucun `coll` sans nom ne casse une ligne.**
+
+| Ville | Verbe du thème | Ligne turquoise |
+|---|---|---|
+| Newmarket | Visiter une écurie | Le lieu |
+| Vejer | Visiter une écurie | L'eau et la nourriture |
+| Connemara | Décrire un cheval | Les robes |
+| Jerez | Décrire un cheval | L'identité |
+| Walsall | Parler du matériel | La selle |
+| Séville | Parler du matériel | Le cavalier |
+| Warendorf | Parler du matériel | Les protections |
+| Windsor | Travailler sur le plat | Le rectangle |
+| Saumur | Travailler sur le plat | Les qualités |
+| Hickstead | Sauter un obstacle | Les obstacles |
+| Aix-la-Chapelle | Sauter un obstacle | Les phases du saut |
+| Badminton | En concours | Le concours complet |
+| Oliva Nova | En concours | S'engager |
+| Rome | En concours | Les gens |
+| Kildare | Gérer une urgence | Donner l'alerte |
+| Édimbourg | Gérer une urgence | Les mots qui sauvent |
+
+⚠️ **Mes propositions de maquette étaient plus bavardes que la réalité** : j'annonçais « Le rectangle et les mouvements », le moteur donne « Le rectangle ». Chaque ville ne tient qu'UNE famille depuis le grand regroupement du 6 août, donc les intitulés sont courts. Ne pas s'étonner de l'écart avec les maquettes de la journée.
+
+### V41 · `COLL_NOM.saut` : « Le saut » → « Les phases du saut »
+Sur la tuile d'Aix-la-Chapelle, « Le saut » s'affichait sous « Sauter un obstacle » : la tuile bégayait. Six langues reprises **mot pour mot** de `ACCUEIL_CHAP.obstacle` pour que l'appli ne se contredise pas.
+⚠️ Ce nom sert à DEUX endroits : la ligne de précision des tuiles et le nom de la leçon dans l'écran de chapitre. Les deux y gagnent ; s'il fallait un jour un libellé court dans la leçon, il faudrait deux tables et non une.
+
+### V42 · `TH_LIB.concours` : « t'engager en concours » → « en concours »
+Le verbe était faux pour deux de ses trois villes — Rome enseigne les **gens** du concours, Badminton le **complet**, on ne s'y engage pas — et sur Oliva Nova il bégayait avec sa propre ligne (« S'engager »).
+⚠️ C'est désormais **le seul thème des vingt-deux qui n'est pas tourné à l'infinitif**, volontairement : il coiffe trois villes trop différentes pour un verbe commun. Ne pas « harmoniser » sans y repenser.
+
+## ✅ V43 · CINQ FAMILLES — « LES DISCIPLINES » N'EST PLUS UN SAC
+Idée de Blandine : « on aurait pu faire une série concours en plus de à terre, à cheval et des disciplines ? ». Elle avait raison — la famille mélangeait une compétition, des cultures équestres et une condition de terrain.
+
+| Famille | Clés | Villes |
+|---|---|---|
+| Au club | arrivee, balade, urgences, vente | 5 |
+| À pied | pansage, materiel, ecurie, cheval, horsemanship, elevage, haras | 11 |
+| À cheval | cours, dressage, obstacle, **froid** | 6 |
+| **Le concours** | **concours, cross** | 4 |
+| Les disciplines | poney, polo, western, endurance, tradition | 5 |
+
+- `concours` + `cross` forment la nouvelle famille : Badminton enseigne « Le concours complet », Burghley c'est le cross du complet — elles étaient séparées pour rien, l'une dans les disciplines, l'autre dans « À cheval ».
+- `froid` passe dans **À cheval** (« le froid on devrait peut-être le mettre dans en selle ») : Spruce Meadows enseigne monter par grand froid, c'est une condition de monte.
+- `endurance` **reste** dans les disciplines, tranché par Blandine (« endurance c'est une discipline pour le coup »). `poney` reste aussi : Lamotte enseigne la culture poney, pas une épreuve.
+- ⚠️ Le nom est **« Le concours »** et non « En concours », alors que la discussion portait sur ce mot. Volontaire : le thème `concours` porte déjà « en concours » (v42), et l'avoir en double sur la même tuile — titre de famille puis sur-titre — ferait bégayer comme « Le saut » sous « Sauter un obstacle ». **Un nom, un verbe.** Pour inverser, changer les DEUX ensemble.
+- **Vérifié en rejouant le moteur hors ligne sur les données du fichier :** 5 familles, 31 tuiles, 22 clés rangées, aucune ville sans famille, aucune en double, aucune clé de `TH_LIB` oubliée. Le compteur d'en-tête ne change pas (22 thèmes · 31 villes · 16 nations) — les clés sont juste rangées autrement.
+- ⚠️ Rien d'autre à toucher : tuiles, onglets, compteur et ancres `#thG0..n` sont tous générés depuis `TH_FAMILLES`. La rangée d'onglets défile déjà, cinq y tiennent.
+
+## 🐞 UN `coll` ORPHELIN DANS `hype-lingo-lex-concours.js` — NON CORRIGÉ, EN ATTENTE
+Le mot `formats-complet` (« le format ») porte `coll:"concours"`, absente de `COLL_NOM` — seul mot du lexique dans ce cas. Badminton n'en souffre pas : la famille sans nom est ignorée.
+⚠️ **PIÈGE : ne PAS ajouter un nom à `concours` dans `COLL_NOM`.** Badminton afficherait alors « Le concours complet et le concours ». Le vrai correctif est de basculer ce mot sur `coll:"complet"`, à qui il appartient — une ligne dans le lexique, en attente du feu vert de Blandine.
+
+## 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session. Reste à moderniser, inchangé : le contrat de dépôt pour la progression (`MAITRISE` / `FAITS` / cartes lisent et écrivent `localStorage` en direct depuis le moteur), la frontière Academy ↔ Linguae (`HYPE_LINGO_HOST` est un pont ad hoc, pas une interface), et la séparation entre les données de voyage (`ETAPES`, `ETAPE_SRC`, `TH_FAMILLES`) et leur rendu, aujourd'hui mêlés dans le même fichier.
+
+## 📋 Protocole respecté
+- Maquette avant code sur chacun des trois sujets ; aucune ligne écrite avant un « ok ».
+- Contenu refusé retiré immédiatement : les variantes de titres non retenues et la coche ne subsistent nulle part.
+- Aucun compte en dur dans la copie.
+- `node --check` passé sur le bloc de script inline après chaque modification.
+
+---
+
 # 🛠️ SESSION 170 · LINGUAE 8 (09/08) — LA PAGE DU TOUR DU MONDE, LA LUMIÈRE, ET LE VERROU PREMIUM
 
 **Livré : `lingo.html` v38 · navigation (md5 `6f5290b24d9037ac7651a5e87e6825a0`, 475438 octets) + `tour-monde.webp` (44 748 octets, à pousser À CÔTÉ de lingo.html) + `index.html` session 113 (la clé `hype_premium`, voir SUIVI.md — À POUSSER EN PREMIER).** Cinq versions dans la journée (v33→v37), toutes cumulées dans le fichier livré.

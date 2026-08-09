@@ -528,37 +528,97 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#8A99A1;cursor:pointer}
 #thFamIn button.actif{background:rgba(200,169,106,.1);border-color:rgba(200,169,106,.45);color:#C8A96A}
 #thZone{max-width:440px;margin:0 auto;padding:0 14px 46px;background:#000}
-.thGrp{margin:44px 0 0;scroll-margin-top:20px}
+.thGrp{margin:44px 0 0;scroll-margin-top:20px;text-align:center}
 .thGrp:first-child{margin-top:42px}
-.thGt{display:flex;flex-direction:column;align-items:center;gap:9px;margin:0 0 17px}
-.thGt i{width:64px;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,106,.55),transparent)}
-.thGt span{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:#C8A96A}
+/* ⚠️ v39 — LE TITRE DE FAMILLE PASSE DANS UN BANDEAU (choix de Blandine sur
+   maquette a six dessins : « ok pour bandeau »). Degrade du gris des bandes
+   vers le noir, filet turquoise dessus, Cinzel dore clair : c'est le meme
+   langage que les deux bandes de l'intro du tour du monde, donc la page
+   devient coherente d'un ecran a l'autre. Avant, 12 px de dore sombre tres
+   espace se perdaient dans le noir — « on peut faire quoi pour ameliorer les
+   titres on les voit pas ? ».
+   ⚠️ LARGEUR ARRETEE le 9 aout, variante 5 sur six : « ok a la taille seule
+   du mot ». Le bandeau n'est donc PAS un bloc de largeur fixe mais une
+   etiquette qui epouse son texte — « Au club » est court, « Les disciplines »
+   est long. Blandine avait refuse le bord a bord (« ok pour bandeau mais pas
+   sur toute la largeur »), puis la colonne des tuiles et les largeurs fixes.
+   ⚠️ `display:inline-block` + `text-align:center` sur `.thGrp` : c'est le
+   parent qui centre l'etiquette, l'etiquette ne peut pas se centrer elle-meme.
+   Si un jour `.thGrp` perd son `text-align`, le titre part a gauche.
+   ⚠️ Le `text-align:center` de `.thGrp` ne fuit pas dans les tuiles : `.thT`
+   porte deja `text-align:left`. Ne pas le lui retirer.
+   ⚠️ `.thGt i` (l'ancien filet dore) est masque, pas supprime : le bandeau
+   porte deja sa ligne de separation, et le JS continue de le produire. */
+.thGt{display:inline-block;margin:0 0 20px;padding:12px 26px;text-align:center;
+ background:linear-gradient(180deg,#15181C,#0A0C0F);
+ border-top:1px solid rgba(32,217,245,.35);border-radius:99px}
+.thGt i{display:none}
+.thGt span{font-family:'Cinzel',serif;font-size:14.5px;letter-spacing:.24em;
+ text-transform:uppercase;color:#F0DFA8}
 .thG{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
-.thT{position:relative;background:#0B1017;border:1px solid rgba(255,255,255,.07);border-radius:13px;
+.thT{isolation:isolate;position:relative;background:#0B1017;border:1px solid rgba(255,255,255,.07);border-radius:13px;
  cursor:pointer;text-align:left;width:100%;display:block;font-family:'Montserrat',sans-serif;
  overflow:hidden;padding:0}
 .thT:active{border-color:rgba(32,217,245,.4)}
 /* ⚠️ display:block OBLIGATOIRE : c'est un <span>, donc inline par defaut, et
    une hauteur est IGNOREE sur un element inline. Sans ca le bandeau s'ecrase
    a zero : plus d'image, plus d'etoile, et le ✓ retombe sur le titre. */
-.thBand{display:block;position:relative;height:76px;overflow:hidden}
+.thBand{display:block;position:relative;height:76px;overflow:hidden;background:#070A0F}
 .thVig{position:absolute;inset:0;background-size:cover;background-position:center 42%}
 /* ⚠️ v35 (choix B de Blandine, 9 aout) : la carte a gagner reste EN
    COULEURS, juste voilee. L'ancien grayscale(1) brightness(.3) eteignait
    toute la page des qu'on n'avait rien gagne — « on ne lit rien ». */
-.thVig.pas{filter:saturate(.55) brightness(.62)}
+/* ⚠️ v39 — `filter:saturate(.55) brightness(.62)` REMPLACE PAR UNE OPACITE.
+   Blandine voyait une tache de couleur floue, violette puis orange, se
+   promener sur la page pendant le defilement et manger les titres de
+   famille. Un filtre CSS sur un element absolu dans un `overflow:hidden`
+   force un calque de composition que WebKit repeint mal : la couleur d'une
+   tuile deja sortie de l'ecran restait etalee dessus. L'opacite sur le fond
+   sombre de `.thBand` donne exactement le meme voile sans creer de calque.
+   ⚠️ NE PAS remettre `filter` ici, ni `backdrop-filter` ailleurs sur cette
+   page : c'est la meme famille de defaut que la bande fantome des elements
+   collants, deja documentee plus haut. */
+.thVig.pas{opacity:.5}
 .thFondu{position:absolute;left:0;right:0;bottom:0;height:34px;z-index:1;
  background:linear-gradient(to top,#0B1017,rgba(11,16,23,0))}
-.thTec{position:absolute;top:7px;left:8px;z-index:3;font-size:9px;font-weight:700;color:#EAF0F4;
- letter-spacing:.03em;background:rgba(0,0,0,.62);border-radius:99px;padding:2px 7px;
- text-shadow:0 1px 4px rgba(0,0,0,.9)}
-.thOk{position:absolute;top:7px;right:8px;z-index:3;width:17px;height:17px;border-radius:99px;
- background:#C8A96A;color:#0B0D10;font-size:10px;font-weight:900;display:flex;
- align-items:center;justify-content:center}
+/* ⚠️ v39 — LES ETOILES. Trois demandes de Blandine dans la meme session :
+   « je prefererais les etoiles pleines et en haut a droite des encarts des
+   villes », puis « attention les etoiles on n'affiche pas celles qui ne sont
+   pas remplies », puis « pastille noire sans etoiles vides ».
+   Donc : autant d'etoiles que de niveau, AUCUNE etoile eteinte, aucune place
+   reservee pour elles — la pastille se retrecit d'elle-meme, une etoile pour
+   Le Morne, cinq pour Saumur. Elle reste calee a droite, donc l'alignement
+   tient a l'oeil malgre les largeurs differentes.
+   ⚠️ Le coin haut-DROIT etait celui de la coche : voir `.thT.gagne`. */
+.thTec{position:absolute;top:6px;right:7px;z-index:3;display:flex;gap:1px;align-items:center;
+ background:rgba(0,0,0,.5);border-radius:99px;padding:3px 7px;font-size:9.5px;line-height:1;
+ letter-spacing:.03em;text-shadow:0 1px 4px rgba(0,0,0,.95)}
+.thTec s{text-decoration:none;color:#E8C980}
+/* ⚠️ v39 — LA COCHE DOREE EST SUPPRIMEE. Question de Blandine : « pour le
+   truc valide est-ce qu'on en a vraiment besoin puisque la carte est
+   coloree ? ». Elle avait raison sur le fond, mais le voile est doux depuis
+   v35 (opacite .5) : sur une carte deja sombre l'ecart ne se voit presque
+   pas. Le lisere dore autour de la tuile tient donc le meme role, sans rien
+   poser sur l'image — et l'image ne porte plus qu'une seule pastille, les
+   etoiles. `.thOk` n'est plus produit par personne.
+   ⚠️ Cette regle doit rester APRES la declaration de `.thT`, sinon la
+   bordure blanche a 7 % gagne. */
+.thT.gagne{border-color:rgba(200,169,106,.55);box-shadow:0 0 0 1px rgba(200,169,106,.14)}
 .thBas{display:block;padding:6px 10px 10px}
 /* ⚠️ v35 : 8 px de capitales espacees, c'est illisible quel que soit le
    contraste — la regle des 9 px minimum etait deja ecrite plus haut pour
    les cartes du carnet, elle vaut ici aussi. */
+/* ⚠️ v39 — LA LIGNE DE PRECISION (option B, validee sur maquette). Sept
+   themes portent plusieurs villes : « Travailler sur le plat » s'affichait a
+   l'identique sur Windsor et Saumur, « Parler du materiel » trois fois. Le
+   verbe du theme reste, et cette ligne dit ce que CETTE ville enseigne.
+   ⚠️ Le texte n'est pas ecrit a la main : c'est `nomLecon()` sur la lecon de
+   la ville, donc les familles du lexique (`COLL_NOM`), donc deja traduit
+   dans les six langues. Une ville ajoutee prend son intitule toute seule.
+   ⚠️ Elle n'apparait QUE si le theme porte plus d'une ville — ailleurs elle
+   repeterait le verbe du dessus (« Jouer au polo » / « Le polo »). */
+.thPrec{display:block;font-size:10px;font-weight:600;line-height:1.35;
+ color:var(--turquoise);margin:0 0 5px}
 .thSur{display:block;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
  color:#C3CFD9;margin:0 0 4px}
 .thVille{display:block;font-family:'Cinzel',serif;font-size:15.5px;font-weight:600;color:#FFFFFF;
@@ -655,6 +715,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    c'etait cette ligne-ci passant sous les boutons. ⚠️ Ne pas remettre de
    marge negative ici : elle depend du bloc du dessus, qui a change deux
    fois. */
+/* ⚠️ v39 : #ouvMuet n'existe plus dans le document (le reglage est passe au
+   debut de chaque chapitre). Ces deux regles sont laissees mortes plutot que
+   supprimees : elles ne coutent rien et documentent l'emplacement d'origine
+   si on devait revenir en arriere. */
 #ouvMuet{display:block;margin:4px auto 26px;border:0;background:none;cursor:pointer;
  font-size:11.5px;letter-spacing:.08em;color:#9AA8B4;
  border-bottom:1px dashed rgba(255,255,255,.18);padding-bottom:2px}
@@ -675,6 +739,27 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .lcPartage{display:block;margin:12px auto 0;border:1px solid rgba(255,255,255,.14);
  background:rgba(255,255,255,.03);border-radius:999px;padding:9px 18px;cursor:pointer;
  font-size:12px;color:#C3D0DA}
+/* ⚠️ v39 — LE REGLAGE DU SON AU DEBUT DE CHAQUE CHAPITRE (#lcSon). Il
+   remplace le bouton #ouvMuet du carnet, vu une fois au lancement et jamais
+   au moment ou la question se pose. Deux etats lisibles a l'oeil : gris =
+   avec le son, turquoise = sans le son, avec un interrupteur qui glisse.
+   ⚠️ Il est ECRIT A CHAQUE PASSAGE dans choisirLecon() : ne pas le mettre
+   dans le HTML, l'ecran de lecon est vide puis rempli a chaque ouverture. */
+#lcSon{display:flex;align-items:center;justify-content:center;gap:9px;
+ margin:14px auto 20px;border:1px solid rgba(255,255,255,.14);
+ background:rgba(255,255,255,.03);border-radius:999px;padding:9px 16px;
+ font-family:'Montserrat',sans-serif;font-size:11.5px;color:#C3D0DA;cursor:pointer;
+ width:max-content;max-width:100%}
+#lcSon em{font-style:normal;font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+ color:#8B99A2;font-weight:700}
+#lcSon .int{position:relative;flex:0 0 auto;width:38px;height:20px;border-radius:99px;
+ background:rgba(255,255,255,.12)}
+#lcSon .int::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;
+ border-radius:99px;background:#8B99A2;transition:left .18s ease, background .18s ease}
+#lcSon.muet{border-color:rgba(32,217,245,.45);background:rgba(32,217,245,.06);color:var(--turquoise)}
+#lcSon.muet em{color:var(--turquoise)}
+#lcSon.muet .int{background:rgba(32,217,245,.3)}
+#lcSon.muet .int::after{left:20px;background:var(--turquoise)}
 .lcMuet{display:block;margin:2px auto 18px;border:1px solid rgba(255,255,255,.14);
  background:rgba(255,255,255,.03);border-radius:999px;padding:7px 15px;cursor:pointer;
  font-size:12px;color:#C3D0DA}
@@ -688,6 +773,21 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    plus petit. Aucune cle i18n touchee. */
 #ouvDebut .intro{font-size:12.5px;line-height:1.8;color:#A7B4BD;margin:30px auto 26px;
  max-width:330px;text-align:center}
+/* ⚠️ v39 — LES DEUX BANDES GRISES AUTOUR DE L'INTRO (variante 3 sur maquette
+   a quatre largeurs). MEME recette que les bandes de la page des themes
+   (#15181C, 26 px, 18 px d'air), mais EN RETRAIT : elles s'arretent a la
+   largeur de la colonne de texte et portent des coins arrondis, la ou celles
+   des themes vont d'un bord de l'ecran a l'autre. Blandine a explicitement
+   refuse le bord a bord ici : « je vois pas l'ecart et du coup y'en a
+   l'exterieur de la page aussi ? ».
+   ⚠️ `.oBande` est un <span> : `display:block` est OBLIGATOIRE, sinon la
+   hauteur est ignoree (meme lecon que `.thBande` le 9 aout).
+   ⚠️ Les 26 px de la bande et les 18 px d'air sont portes par ce bloc, PAS
+   par la marge de .intro : c'est ce qui garantit que le dessus et le dessous
+   sont strictement egaux. Ne pas remettre de margin sur .intro ici. */
+#ouvIntroB{max-width:330px;margin:30px auto 26px}
+#ouvIntroB .oBande{display:block;height:26px;background:#15181C;border-radius:6px}
+#ouvIntroB .intro{margin:18px auto}
 #ouvDebut .intro b{display:block;color:var(--blanc);font-weight:500;
  font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
  font-size:19.5px;line-height:1.4;letter-spacing:.015em}
@@ -1622,18 +1722,35 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <div id="thZone"></div>
 </div>
 
-    <button id="ouvMuet" type="button">🔇 mode sans le son : non</button>
+    <!-- ⚠️ v39 — LE BOUTON DU MODE SANS LE SON EST PARTI D'ICI. Demande de
+         Blandine : « le truc sans son est-ce qu'on peut pas plutot l'activer
+         ou desactiver a chaque debut de chapitre ? ». Il etait vu une fois,
+         au lancement, jamais au moment ou la question se pose. Il vit
+         maintenant sur l'ecran d'ouverture de chaque chapitre, ecrit par
+         `boutonSonChapitre()` dans `choisirLecon()`. Le reglage reste
+         MEMORISE dans `hype_lingua_muet` : on ne repose pas la question, on
+         la rend visible et modifiable a chaque entree.
+         ⚠️ NE PAS le remettre ici : ce serait deux commandes pour un seul
+         reglage, avec le risque classique d'en rafraichir une et pas
+         l'autre. -->
     <!-- ⚠️ MARQUEUR DE VERSION, 7 aout 2026. Blandine deploie depuis un
          telephone et n'a aucun moyen de savoir quelle version tourne
          reellement. Trois fois cette semaine, un defaut deja corrige a ete
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v38 · navigation</p>
+    <p id="ouvVersion">v43 · les thèmes</p>
 
-    <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
-    du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
-    et où le vocabulaire que tu vas apprendre s'entend vraiment.</p>
+    <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
+         La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
+         l'emballage est nouveau. -->
+    <div id="ouvIntroB">
+      <span class="oBande"></span>
+      <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
+      du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
+      et où le vocabulaire que tu vas apprendre s'entend vraiment.</p>
+      <span class="oBande"></span>
+    </div>
 
     <div class="carnet" id="carnet"></div>
 
@@ -3103,14 +3220,44 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
    ⚠️ Ces notes sont un BROUILLON a corriger par Blandine. Deux repères donnés
    par elle : Saumur au maximum, les cross a 4.
    ================================================================== */
+/* ⚠️ v43 — CINQ FAMILLES AU LIEU DE QUATRE (decision de Blandine, 9 aout).
+   « Les disciplines » etait un sac : elle melangeait une competition
+   (concours), des cultures equestres (polo, western, tradition, poney) et une
+   condition de terrain (froid). Trois natures differentes sous un seul nom.
+
+   Ce qui bouge, et pourquoi :
+   - `concours` et `cross` forment la nouvelle famille LE CONCOURS. Badminton
+     enseigne « Le concours complet » et Burghley c'est le cross du complet :
+     elles etaient separees pour rien, l'une dans les disciplines, l'autre
+     dans « A cheval ».
+   - `froid` passe dans A CHEVAL (« le froid on devrait peut-etre le mettre
+     dans en selle ») : Spruce Meadows enseigne monter par grand froid, c'est
+     une condition de monte, pas une discipline.
+   - `endurance` RESTE dans les disciplines : c'en est une, tranche par
+     Blandine (« endurance c'est une discipline pour le coup »).
+   - `poney` reste aussi : Lamotte enseigne la culture poney, pas une epreuve.
+
+   ⚠️ Le nom de la 4e famille est « Le concours » et NON « En concours »,
+   alors que la question portait sur « en concours ». C'est volontaire : le
+   theme `concours` porte deja le libelle « en concours » (v42), et l'avoir en
+   double sur la meme tuile — titre de famille puis sur-titre — ferait
+   begayer exactement comme « Le saut » sous « Sauter un obstacle ». Un nom,
+   un verbe. Si tu preferes l'inverse, changer les DEUX ensemble.
+
+   ⚠️ Rien d'autre a toucher : les tuiles, les onglets, le compteur et les
+   ancres #thG0..n sont tous generes depuis cette table. La rangee d'onglets
+   defile deja, cinq y tiennent. Le compteur de themes ne change pas (22
+   cles, elles sont juste rangees autrement). */
 var TH_FAMILLES = [
   { cles:["arrivee","balade","urgences","vente"],
     nom:{fr:"Au club", en:"At the club", es:"En el club", it:"Al club", de:"Im Verein", ja:"クラブで"} },
   { cles:["pansage","materiel","ecurie","cheval","horsemanship","elevage","haras"],
     nom:{fr:"À pied", en:"On the ground", es:"A pie", it:"Da terra", de:"Am Boden", ja:"地上から"} },
-  { cles:["cours","dressage","obstacle","cross"],
+  { cles:["cours","dressage","obstacle","froid"],
     nom:{fr:"À cheval", en:"In the saddle", es:"A caballo", it:"In sella", de:"Im Sattel", ja:"馬上で"} },
-  { cles:["concours","poney","polo","western","endurance","tradition","froid"],
+  { cles:["concours","cross"],
+    nom:{fr:"Le concours", en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会"} },
+  { cles:["poney","polo","western","endurance","tradition"],
     nom:{fr:"Les disciplines", en:"The disciplines", es:"Las disciplinas", it:"Le discipline", de:"Die Disziplinen", ja:"各種目"} }
 ];
 
@@ -3130,7 +3277,15 @@ var TH_LIB = {
   dressage:{fr:"travailler sur le plat",en:"work on the flat",es:"trabajar en el plano",it:"lavorare in piano",de:"auf dem Platz arbeiten",ja:"平地で調馬する"},
   obstacle:{fr:"sauter un obstacle",en:"jump a fence",es:"saltar un obstáculo",it:"saltare un ostacolo",de:"ein Hindernis springen",ja:"障害を飛ぶ"},
   cross:{fr:"marcher un cross",en:"walk a cross-country course",es:"recorrer un cross",it:"ricognire un cross",de:"einen Geländeparcours abgehen",ja:"クロスカントリーを下見する"},
-  concours:{fr:"t'engager en concours",en:"enter a show",es:"inscribirte en un concurso",it:"iscriverti a un concorso",de:"bei einem Turnier nennen",ja:"競技会に申し込む"},
+  /* ⚠️ v42 — « t'engager en concours » DEVIENT « en concours » (demande de
+     Blandine). Le verbe etait faux pour deux de ses trois villes : Rome
+     enseigne les gens du concours et Badminton le complet, on ne s'y engage
+     pas. Et sur Oliva Nova il begayait avec sa propre ligne de precision
+     (« S'engager »). C'est donc le seul theme des vingt-deux qui n'est PAS
+     tourne a l'infinitif, volontairement : il coiffe trois villes trop
+     differentes pour un verbe commun.
+     ⚠️ Ecrit en minuscule comme tous les autres : `thMaj()` met la capitale. */
+  concours:{fr:"en concours",en:"at a show",es:"en concurso",it:"in concorso",de:"auf dem Turnier",ja:"競技会で"},
   poney:{fr:"équitation poney",en:"pony riding",es:"equitación con ponis",it:"equitazione con i pony",de:"Ponyreiten",ja:"ポニーの乗馬"},
   polo:{fr:"jouer au polo",en:"play polo",es:"jugar al polo",it:"giocare a polo",de:"Polo spielen",ja:"ポロをする"},
   western:{fr:"monter western",en:"ride western",es:"montar western",it:"montare western",de:"Westernreiten",ja:"ウエスタンで乗る"},
@@ -3172,6 +3327,36 @@ var TH_PAVILLON = {
 };
 
 function thL(o){ var l=langueUI(); return (o && (o[l]||o.fr)) || ""; }
+/* ⚠️ v39 — L'INTITULE PRECIS D'UNE VILLE (option B). On ne l'ecrit pas a la
+   main : on demande a `nomLecon()` le nom de la lecon que cette ville porte,
+   c'est-a-dire les familles du lexique — donc du texte deja traduit dans les
+   six langues, et une ville future prend son intitule toute seule.
+   ⚠️ Chaque ville ne tient QU'UNE lecon depuis le grand regroupement du
+   6 aout (`ETAPE_SRC[ref]` = une seule paire) : `Ls[0]` est donc la bonne, et
+   pas un choix arbitraire.
+   ⚠️ On rend "" plutot qu'un « Lecon 1 » de secours : mieux vaut pas de ligne
+   qu'une ligne qui n'apprend rien. Meme chose si l'intitule repete le verbe
+   du theme, et si les lexiques ne sont pas encore charges. */
+function thPrecision(refVille, verbe){
+  try{
+    if(typeof chapVirtuel!=="function") return "";
+    var ch=chapVirtuel(refVille);
+    if(!ch || !(ch.concepts||[]).length) return "";
+    var Ls=lecons(ch);
+    if(!Ls.length) return "";
+    var n=nomLecon(Ls[0]);
+    if(!n || /^(le[cç]on|lesson)\s/i.test(n)) return "";
+    if(verbe && n.toLowerCase()===String(verbe).toLowerCase()) return "";
+    return n;
+  }catch(e){ return ""; }
+}
+/* les etoiles de technicite : autant d'etoiles que de niveau, pas une de
+   plus. Aucune etoile eteinte (choix de Blandine, 9 aout). */
+function thEtoiles(n){
+  var e=el("span",{class:"thTec"}), i;
+  for(i=0;i<n;i++) e.appendChild(el("s",{text:"\u2605"}));
+  return e;
+}
 function thMaj(t){ return t ? t.charAt(0).toUpperCase()+t.slice(1) : t; }
 
 /* les villes d'un theme, avec leur index dans ETAPES (partirVersVille en a
@@ -3212,22 +3397,29 @@ function construireThemes(){
     var vide=true;
     f.cles.forEach(function(cle){
       var sur=thMaj(thL(TH_LIB[cle]));
-      thVillesDe(cle).forEach(function(x){
+      var villes=thVillesDe(cle), multi=(villes.length>1);
+      villes.forEach(function(x){
         vide=false; nbV++; nats[x.e.nat]=1;
         var gagnee=!!cartes[x.e.ref];
         var t=TH_TECH[x.e.ref]||3;
-        var b=el("button",{class:"thT", onclick:function(){ fermerThemes(); partirVersVille(x.i); }});
+        var b=el("button",{class:"thT"+(gagnee?" gagne":""),
+          onclick:function(){ fermerThemes(); partirVersVille(x.i); }});
         var band=el("span",{class:"thBand"});
         var vig=el("span",{class:"thVig"+(gagnee?"":" pas")});
         vig.style.backgroundImage='url("carte-'+x.e.ref+'.webp'+VER+'"),linear-gradient(160deg,'+x.e.ciel[0]+','+x.e.ciel[1]+')';
         band.appendChild(vig);
         band.appendChild(el("span",{class:"thFondu"}));
-        band.appendChild(el("span",{class:"thTec", text:"\u2605 "+t}));
-        if(gagnee) band.appendChild(el("span",{class:"thOk", text:"\u2713"}));
+        band.appendChild(thEtoiles(t));
         b.appendChild(band);
         var bas=el("span",{class:"thBas"});
         bas.appendChild(el("span",{class:"thSur", text:sur}));
         bas.appendChild(el("span",{class:"thVille", text:eV(x.e)}));
+        /* la ligne de precision : seulement quand le theme porte plusieurs
+           villes, sinon elle repeterait le verbe juste au-dessus. */
+        if(multi){
+          var pr=thPrecision(x.e.ref, sur);
+          if(pr) bas.appendChild(el("span",{class:"thPrec", text:pr}));
+        }
         var nat=el("span",{class:"thNat"});
         nat.appendChild(el("span",{class:"dr", text:TH_PAVILLON[x.e.nat]||""}));
         nat.appendChild(document.createTextNode(eNat(x.e)));
@@ -5287,7 +5479,18 @@ var COLL_NOM = {
   obstacles:{fr:"Les obstacles", en:"The fences", es:"Los obstáculos", it:"Gli ostacoli", de:"Die Hindernisse", ja:"障害"},
   parcours:{fr:"Le parcours", en:"The course", es:"El recorrido", it:"Il percorso", de:"Der Parcours", ja:"コース"},
   fautes:{fr:"Les fautes", en:"The faults", es:"Las faltas", it:"Le penalità", de:"Die Fehler", ja:"減点"},
-  saut:{fr:"Le saut", en:"The jump", es:"El salto", it:"Il salto", de:"Der Sprung", ja:"飛越"},
+  /* ⚠️ v41 — « Le saut » RENOMME « Les phases du saut » (demande de Blandine,
+     9 aout). Sur la tuile d'Aix-la-Chapelle, « Le saut » s'affichait sous le
+     verbe « Sauter un obstacle » : la tuile begayait. Et c'est plus juste, la
+     lecon enseigne bien le battu, l'appel, le planer, le poser.
+     ⚠️ Ce nom sert A DEUX ENDROITS : la ligne de precision des tuiles
+     (`thPrecision`) et le nom de la lecon dans l'ecran du chapitre
+     (`nomLecon`). Les deux gagnent au change, mais s'il fallait un jour un
+     libelle court dans la lecon, il faudrait deux tables et non une.
+     Les six traductions reprennent MOT POUR MOT celles de `ACCUEIL_CHAP.obstacle`
+     (« les phases du saut ») pour que l'appli ne se contredise pas. */
+  saut:{fr:"Les phases du saut", en:"The phases of the jump", es:"Las fases del salto",
+        it:"Le fasi del salto", de:"Die Phasen des Sprungs", ja:"飛越の各局面"},
   engager:{fr:"S'engager", en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"出場申込"},
   complet:{fr:"Le concours complet", en:"Eventing", es:"El concurso completo", it:"Il concorso completo", de:"Die Vielseitigkeit", ja:"総合馬術"},
   "jour-j":{fr:"Le jour J", en:"The day itself", es:"El día del concurso", it:"Il giorno della gara", de:"Der Turniertag", ja:"試合当日"},
@@ -5449,6 +5652,42 @@ function lecons(chap){
     return { n:+n, concepts:m[n] };
   });
 }
+/* ==================================================================
+   LE REGLAGE DU SON, AU DEBUT DE CHAQUE CHAPITRE (v39, 9 aout 2026)
+
+   Demande de Blandine : « le truc sans son est-ce qu'on peut pas plutot
+   l'activer ou desactiver a chaque debut de chapitre ? ». Le bouton du
+   carnet est supprime : celui-ci le remplace.
+
+   ⚠️ Le reglage est MEMORISE (meme cle `hype_lingua_muet` qu'avant) : on ne
+   repose pas la question a chaque fois, on la rend visible et modifiable au
+   seul endroit ou elle se pose vraiment.
+   ⚠️ Le bouton « Sans le son » qui apparait PENDANT un exercice
+   (`boutonSansLeSon`) reste en place : c'est l'echappatoire quand on est
+   deja lancee et que le silence devient necessaire. Les deux ne se marchent
+   pas sur les pieds — celui-ci decide avant, l'autre depanne au milieu.
+   ================================================================== */
+var SON_TXT = {
+  avec:{fr:"avec le son", en:"sound on", es:"con sonido", it:"con l'audio",
+        de:"mit Ton", ja:"音あり"},
+  sans:{fr:"sans le son", en:"sound off", es:"sin sonido", it:"senza audio",
+        de:"ohne Ton", ja:"音なし"}
+};
+function boutonSonChapitre(){
+  var muet=modeSilencieux();
+  var b=el("button",{id:"lcSon", type:"button"});
+  if(muet) b.classList.add("muet");
+  b.appendChild(el("span",{class:"int"}));
+  b.appendChild(el("em",{text:tx(muet?SON_TXT.sans:SON_TXT.avec)}));
+  b.appendChild(el("span",{text:muet?"\uD83D\uDD07":"\uD83D\uDD0A"}));
+  b.addEventListener("click", function(){
+    try{ localStorage.setItem("hype_lingua_muet", modeSilencieux()?"0":"1"); }catch(e){}
+    /* on redessine l'ecran entier : c'est lui qui porte l'etat, et il est
+       reconstruit de zero a chaque passage — aucun risque de desynchro. */
+    choisirLecon();
+  });
+  return b;
+}
 function choisirLecon(){
   var ui=langueUI();
   /* direction B « le fond vivant » (7 aout 2026) : sur-titre creme
@@ -5471,6 +5710,10 @@ function choisirLecon(){
   /* le mot d'accueil devient la ligne manuscrite sous le titre */
   var acc=ACCUEIL_CHAP[(typeof ACCUEIL_VILLE!=="undefined" && ACCUEIL_VILLE[LC.ville]) || LC.cle];
   if(acc) S("lcCorps").appendChild(el("p",{class:"lcManu", text:tx(acc)}));
+
+  /* ⚠️ v39 : le reglage du son vient ICI — sous le mot d'accueil, au-dessus
+     des lecons. C'est le dernier instant ou le choix est encore gratuit. */
+  S("lcCorps").appendChild(boutonSonChapitre());
 
   /* une seule leçon est mise en avant : celle où reprendre */
   var Ls=lecons(LC.chap), suivante=null;
@@ -6901,18 +7144,10 @@ S("inSuite").addEventListener("click", function(){
 });
 /* le carnet renvoie au choix de la langue */
 if(S("ouvLangue")) S("ouvLangue").addEventListener("click", montrerDest);
-if(S("ouvMuet")){
-  var majMuet=function(){
-    var on=modeSilencieux();
-    S("ouvMuet").textContent="\uD83D\uDD07 mode sans le son : "+(on?"oui":"non");
-    S("ouvMuet").classList.toggle("actif", on);
-  };
-  S("ouvMuet").addEventListener("click", function(){
-    localStorage.setItem("hype_lingua_muet", modeSilencieux()?"0":"1");
-    majMuet();
-  });
-  majMuet();
-}
+/* ⚠️ v39 — le pilote du bouton #ouvMuet est retire avec le bouton lui-meme.
+   Le reglage vit desormais sur l'ecran d'ouverture de chaque chapitre
+   (`boutonSonChapitre()`), et il lit toujours la meme cle
+   `hype_lingua_muet` : les preferences deja enregistrees sont conservees. */
 /* ==================================================================
    LA PAIRE DE LANGUES — « je lis » -> « j'apprends » (v22, 8 aout 2026)
 
@@ -6955,7 +7190,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v38 · navigation · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v43 · les thèmes · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
