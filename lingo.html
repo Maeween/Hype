@@ -193,9 +193,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #inFond{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 #inFondImg{position:absolute;inset:0;
  background:radial-gradient(120% 80% at 50% 0%, #0D1826 0%, #070D16 55%, #05070C 100%)}
-/* v59 : le fond-affiche plein ecran est retire (Blandine : « le fond est
-   nul, c'est quoi cet enorme trou ») — l'image vit desormais DANS la page,
-   voir #inAffiche. */
+/* v59 : le fond-affiche plein ecran est retire (Blandine) — l'image vit
+   desormais DANS la page, voir #inAffiche. */
 /* ⚠️ Le fond de l'ecran des langues, 7 aout 2026. Meme dessin que celui de
    la presentation, image differente. `background-position: center 40%`
    plutot que 30% : sur cet ecran le texte descend moins bas, donc on peut
@@ -272,15 +271,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #inPortes{position:relative;display:flex;gap:9px;padding-bottom:3px}
 #inPortes::after{content:"";position:absolute;left:16%;right:16%;bottom:0;height:2px;border-radius:99px;
  background:var(--turquoise);box-shadow:0 0 18px 3px rgba(32,217,245,.5),0 0 44px 10px rgba(32,217,245,.2);
- animation:inRespire 4.5s ease-in-out infinite}
+ animation:inRespire 4.5s ease-in-out infinite;pointer-events:none}
 @keyframes inRespire{0%,100%{opacity:.55}50%{opacity:1}}
 #inPortes button{flex:1;padding:13px 8px 14px;border-radius:14px;cursor:pointer;text-align:center;
  background:rgba(9,13,17,.85);border:1px solid rgba(255,255,255,.1);font-family:inherit;color:inherit}
 #inPortes .pk{display:block;font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;
- color:#7DDDE8;font-weight:800}
+ color:#7DDDE8;font-weight:800;pointer-events:none}
 #inPortes .ph{display:block;font-family:'Cinzel',serif;font-size:15.5px;font-weight:600;
- letter-spacing:.12em;color:#F4FEFF;margin-top:3px}
-#inPortes .ps{display:block;font-size:8.5px;color:var(--gris);margin-top:2px}
+ letter-spacing:.12em;color:#F4FEFF;margin-top:3px;pointer-events:none}
+#inPortes .ps{display:block;font-size:8.5px;color:var(--gris);margin-top:2px;pointer-events:none}
 #inSuite,#dsListe button{font-family:inherit}
 #inSuite{display:block;width:100%;padding:16px 20px;font-size:12.5px;font-weight:600;
  letter-spacing:.13em;text-transform:uppercase;color:#060709;background:var(--turquoise);
@@ -1206,7 +1205,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #arrPartager{display:block;margin:0 auto;position:relative;z-index:1;
  padding:11px 22px calc(env(safe-area-inset-bottom)/2 + 11px);margin-bottom:10px;
  background:none;border:none;color:var(--or);font-size:10.5px;font-weight:600;
- letter-spacing:.16em;text-transform:uppercase;cursor:pointer;opacity:.85}
+ letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
 #arrPartir{background:rgba(255,255,255,.05);color:var(--gris);border:1px solid rgba(255,255,255,.1)}
 
 /* ==================================================================
@@ -1671,9 +1670,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <button id="arrPartir" data-t="reprendreRoute">Reprendre la route</button>
     <button id="arrJouer" data-t="motsChapitre">Les mots du chapitre</button>
   </div>
-  <!-- v54 : partager le voyage juste apres une ville gagnee — le moment ou
-       l'envie d'en parler est la plus forte (deux emplacements demandes
-       par Blandine, 9 aout : ici et sur le carnet d'accueil). -->
+  <!-- v54 : partager juste apres une ville gagnee. -->
   <button id="arrPartager" data-t="partagerVoyage">Partager le voyage</button>
 </div>
 
@@ -1725,10 +1722,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <div class="pt large"><b data-t="pt4t">L'essentiel en cas d'urgence</b><i data-t="pt4d">« Il boite », « appelez le vétérinaire ». Ces mots sont offerts, partout.</i>
         <span class="ptOu" id="inOuKildare" data-t="ouKildare">S'apprend à Kildare · Irlande ›</span></div>
     </div>
-    <button id="inSuite" data-t="choisirDest">Choisir mon voyage</button>
-    <!-- v56 : la porte vers Hype (maquette validee par Blandine, 9 aout au
-         soir). La presentation est la page turquoise du module : les deux
-         battants y sont chez eux. HYPE ne se traduit jamais (marque). -->
+    <button id="inSuite" data-t="choisirDest">Choisir ma destination</button>
+    <!-- v56 : la porte vers Hype (maquettes validees par Blandine). -->
     <p id="inPassage" data-t="passageHype">Et quand tu veux, le voyage continue au-delà des mots.</p>
     <div id="inPortes">
       <button id="inHype" type="button"><span class="pk" data-t="porteHypeK">Ton monde équestre</span><span class="ph">HYPE</span><span class="ps" data-t="porteHypeS">Ton écurie, ta communauté</span></button>
@@ -1858,7 +1853,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v59 · l'affiche à sa place</p>
+    <p id="ouvVersion">v60 · la reconstruction</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -4130,9 +4125,7 @@ function ouvrirArrivee(i){
   videoEl.setAttribute("webkit-playsinline","");
   videoEl.preload="auto";
   videoEl.src = "arrivee-"+e.ref+".mp4"+VER;
-  /* v52 : un tap sur la video la rejoue depuis le debut (souhait de
-     Blandine, 9 aout) — utile quand on arrive apres coup ou qu'on veut
-     revoir le plan. Le recalage du point d'arret continue de s'appliquer. */
+  /* v52 : un tap sur la video la rejoue depuis le debut (Blandine, 9 aout). */
   videoEl.style.cursor="pointer";
   videoEl.addEventListener("click", function(){
     try{ this.currentTime=0; var p=this.play(); if(p&&p.catch) p.catch(function(){}); }catch(e2){}
@@ -4165,18 +4158,12 @@ function ouvrirArrivee(i){
   }
   S("vue").insertBefore(videoEl, S("vue").firstChild);
   ajusterCadrage(videoEl);
-  /* v55 : le panneau « Vidéo introuvable » n'est PLUS montré d'office en
-     attendant le signal playing — sur une connexion lente il restait
-     plusieurs secondes de texte de chantier par-dessus la ville (capture
-     de Blandine, La Baule, 9 août). Caché par défaut ; seul l'événement
-     error le révèle. En cas d'attente, c'est le fond de la ville qui
-     habille l'écran, pas l'échafaudage. */
+  /* v55 : le panneau « Video introuvable » n'apparait QUE sur erreur reelle
+     (avant : montre d'office en attendant `playing` — plusieurs secondes de
+     texte de chantier sur reseau mobile, capture de Blandine, La Baule). */
   S("emplacement").style.display="none";
   var j=videoEl.play(); if(j&&j.catch) j.catch(function(){});
-  S("arrivee").scrollTop=0;   /* v51 : l'ecran est reutilise pour les 31 villes,
-     il gardait le defilement de la ville precedente — on arrivait en bas
-     de Tokyo pendant que la video jouait en haut (Blandine, 9 aout). */
-  S("arrivee").classList.add("ouvert");
+  S("arrivee").scrollTop=0; S("arrivee").classList.add("ouvert");
   /* le chemin est masqué derrière : ses cartes nettes ne servent à rien */
   elCartes.forEach(function(c){
     if(c.dataset.net==="1"){ c.dataset.net="0";
@@ -4980,11 +4967,8 @@ var UI = {
    it:"Ho fatto {score} su {nom}. Le stesse dieci parole, battimi: ",
    de:"Ich habe {score} bei {nom}. Dieselben zehn Wörter — schlag mich: ",
    ja:"{nom}で{score}点。同じ十語で、私を超えてみて："},
- choisirDest:{fr:"Choisir mon voyage", en:"Choose my journey", es:"Elegir mi viaje",
-   it:"Scegliere il mio viaggio", de:"Meine Reise wählen", ja:"旅を選ぶ"},
- continuerVoyage:{fr:"Continuer mon voyage", en:"Continue my journey",
-   es:"Continuar mi viaje", it:"Continuare il mio viaggio",
-   de:"Meine Reise fortsetzen", ja:"旅を続ける"},
+ choisirDest:{fr:"Choisir ma destination", en:"Choose my destination", es:"Elegir mi destino",
+   it:"Scegliere la destinazione", de:"Ziel wählen", ja:"行き先を選ぶ"},
  ouKildare:{fr:"S'apprend à Kildare · Irlande ›", en:"Learned in Kildare · Ireland ›",
    es:"Se aprende en Kildare · Irlanda ›", it:"Si impara a Kildare · Irlanda ›",
    de:"Lernst du in Kildare · Irland ›", ja:"キルデア（アイルランド）で学べる ›"},
@@ -5006,6 +4990,18 @@ var UI = {
  porteGalopsS:{fr:"Cours et quiz · 6 langues", en:"Lessons and quizzes · 6 languages",
    es:"Cursos y quiz · 6 idiomas", it:"Corsi e quiz · 6 lingue",
    de:"Kurse und Quiz · 6 Sprachen", ja:"コースとクイズ・6言語"},
+ partagerVoyage:{fr:"Partager le voyage", en:"Share the journey", es:"Compartir el viaje",
+   it:"Condividi il viaggio", de:"Die Reise teilen", ja:"旅をシェア"},
+ lienCopie:{fr:"Lien copié", en:"Link copied", es:"Enlace copiado",
+   it:"Link copiato", de:"Link kopiert", ja:"コピーしました"},
+ msgPartage:{fr:"Fais le tour du monde du vocabulaire équestre avec Hype Linguae.",
+   en:"Travel the world of horse vocabulary with Hype Linguae.",
+   es:"Da la vuelta al mundo del vocabulario ecuestre con Hype Linguae.",
+   it:"Fai il giro del mondo del vocabolario equestre con Hype Linguae.",
+   de:"Reise mit Hype Linguae um die Welt des Pferdevokabulars.",
+   ja:"Hype Linguae で馬の言葉の世界一周へ。"},
+ codeParrain:{fr:"Mon code parrain : ", en:"My referral code: ", es:"Mi código de padrino: ",
+   it:"Il mio codice: ", de:"Mein Einladungscode: ", ja:"紹介コード："},
  /* ⚠️ `introTitre` et `introCit` SUPPRIMEES le 8 aout 2026. Blandine les a
     refusees (« ca fait site de rencontre ») ; les garder en reserve, meme
     debranchees, c'est risquer de les voir ressuscitees par une relecture
@@ -5334,18 +5330,6 @@ var UI = {
    it:"Il giro del mondo", de:"Die Weltreise", ja:"世界一周"},
  laCollection:{fr:"La collection", en:"The collection", es:"La colección",
    it:"La collezione", de:"Die Sammlung", ja:"コレクション"},
- partagerVoyage:{fr:"Partager le voyage", en:"Share the journey", es:"Compartir el viaje",
-   it:"Condividi il viaggio", de:"Die Reise teilen", ja:"旅をシェア"},
- lienCopie:{fr:"Lien copié", en:"Link copied", es:"Enlace copiado",
-   it:"Link copiato", de:"Link kopiert", ja:"コピーしました"},
- msgPartage:{fr:"Fais le tour du monde du vocabulaire équestre avec Hype Linguae.",
-   en:"Travel the world of horse vocabulary with Hype Linguae.",
-   es:"Da la vuelta al mundo del vocabulario ecuestre con Hype Linguae.",
-   it:"Fai il giro del mondo del vocabolario equestre con Hype Linguae.",
-   de:"Reise mit Hype Linguae um die Welt des Pferdevokabulars.",
-   ja:"Hype Linguae で馬の言葉の世界一周へ。"},
- codeParrain:{fr:"Mon code parrain : ", en:"My referral code: ", es:"Mi código de padrino: ",
-   it:"Il mio codice: ", de:"Mein Einladungscode: ", ja:"紹介コード："},
  leGlobe:{fr:"Le globe", en:"The globe", es:"El globo", it:"Il globo",
    de:"Der Globus", ja:"地球儀"},
  chapEt:{fr:"Chapitre {n} · {t}", en:"Chapter {n} · {t}", es:"Capítulo {n} · {t}",
@@ -7104,7 +7088,7 @@ function ouvrirDuel(graine, aBattre){
   DUEL={ graine:graine, aBattre:(aBattre===null?null:aBattre), mots:motsDuDuel(graine),
          i:0, score:0, combo:0 };
   if(DUEL.mots.length<4){ DUEL=null; return; }
-  S("sprint").classList.add("on");
+  S("sprint").scrollTop=0; S("sprint").classList.add("on");
   amorcerVoix();
   accueilDuel();
 }
@@ -7322,29 +7306,12 @@ var DESTINATIONS = [
        ja:"同じ世界一周を、フランス語で。街から街へ。"} }
 ];
 
-function montrerIntro(){
-  /* v57 : le bouton de sortie s'adapte. Nouveau voyageur : « Choisir mon
-     voyage » -> choix de la langue. Voyage en cours : « Continuer mon
-     voyage » -> droit au carnet. Le drapeau hype_lingua_intro ne sert
-     plus qu'a departager ces deux etiquettes. */
-  var vu=false; try{ vu = localStorage.getItem("hype_lingua_intro")==="1"; }catch(e){}
-  var b=S("inSuite");
-  if(b){
-    b.dataset.mode = vu ? "continuer" : "choisir";
-    b.setAttribute("data-t", vu ? "continuerVoyage" : "choisirDest");
-    try{ b.textContent = T(vu ? "continuerVoyage" : "choisirDest"); }catch(e2){}
-  }
-  S("intro").classList.add("on"); S("intro").scrollTop=0;
-}
+function montrerIntro(){ S("intro").classList.add("on"); S("intro").scrollTop=0; }
 function montrerDest(){
-  /* v56 — LA GUERISON DU DRAPEAU. Le « repli » de v23 gravait
-     hype_lingua_intro a CHAQUE passage ici — y compris depuis la paire de
-     drapeaux du carnet (8 aout) : changer de langue marquait la
-     presentation « vue pour toujours », en silence. C'est ce qui l'a fait
-     disparaitre chez Blandine le 9 aout. Desormais, seul le bouton
-     « Choisir mon voyage » (inSuite) pose le drapeau : quitter la
-     presentation par sa porte, oui ; la perdre en changeant de langue,
-     plus jamais. */
+  /* v56 — LA GUERISON DU DRAPEAU : le repli de v23 gravait le drapeau a
+     chaque passage (donc en changeant de langue depuis le carnet) — c'est
+     ce qui a fait disparaitre la presentation chez Blandine le 9 aout.
+     Seule la sortie par le bouton #inSuite le pose desormais. */
   S("intro").classList.remove("on");
   S("dest").classList.add("on"); S("dest").scrollTop=0;
   var b=S("dsListe"); videEl(b);
@@ -7434,16 +7401,9 @@ try{
   dessinerTrace(); dessinerJalons(); lastI=-1;
 }catch(e){}
 
-S("inSuite").addEventListener("click", function(){
-  /* v57 : deux sorties selon le mode pose par montrerIntro(). */
-  if(this.dataset.mode === "continuer"){
-    S("intro").classList.remove("on");   /* le carnet est dessous */
-    return;
-  }
-  /* premiere sortie : c'est ICI qu'on marque la presentation vue */
-  try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
-  montrerDest();
-});
+/* v60 : la sortie de la presentation est cablee par DELEGATION (voir le
+   script « cablage v60 » en fin de fichier) — plus aucun ecouteur individuel
+   perdable sur #inSuite. */
 /* le carnet renvoie au choix de la langue */
 if(S("ouvLangue")) S("ouvLangue").addEventListener("click", montrerDest);
 /* ⚠️ v39 — le pilote du bouton #ouvMuet est retire avec le bouton lui-meme.
@@ -7492,7 +7452,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v59 · l'affiche à sa place · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v60 · la reconstruction · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -7639,20 +7599,11 @@ S("dsRetour").addEventListener("click", function(){
   /* Deja venu : le film part tout seul, sans passer par le carnet.
      Premiere visite : il part a la fermeture de l'ecran de destination
      (voir montrerDest), pour ne pas jouer derriere la presentation. */
-  /* v57 (decision de Blandine) : la presentation porte desormais les
-     raccourcis (battants Hype/Galops, pastille Kildare) — elle s'affiche a
-     CHAQUE lancement, pour tout le monde. Deja venu : le film joue d'abord,
-     la presentation attend dessous, « Continuer mon voyage » rend le carnet. */
-  else if(!saut){
-    /* v58 — REPARATION : mon v57 affichait la presentation AVANT le film,
-       or elle est au-dessus de lui (z-index 45 contre 42) : le film jouait
-       derriere elle, invisible — « la video d'accueil a disparu »
-       (Blandine, 9 aout au soir). Le film joue donc d'abord, seul, et la
-       presentation s'ouvre a sa fin (drapeau une-fois releve par
-       terminerOuverture). */
-    window.__introApresFilm = true;
-    lancerFilm();
-  }
+  /* v57/58 (decision de Blandine) : la presentation porte les raccourcis,
+     elle s'affiche a CHAQUE lancement. Deja venu : le film joue D'ABORD,
+     seul (il est SOUS la presentation, z 42 contre 45), et la presentation
+     s'ouvre a sa fin via le drapeau une-fois releve par terminerOuverture. */
+  else if(!saut){ window.__introApresFilm = true; lancerFilm(); }
   /* ⚠️ ECRAN NOIR CORRIGE ICI (8 aout 2026, v29). Le cas `vu && saut` —
      deja venue, et rechargement declenche par un changement de langue de
      lecture — ne declenchait AUCUNE des deux branches ci-dessus. Or
@@ -7663,8 +7614,7 @@ S("dsRetour").addEventListener("click", function(){
      TOUT changement de langue depuis le carnet.
      On revele donc le carnet directement, sans rejouer le film : c'est
      exactement ce que `saut` veut dire. */
-  else { terminerOuverture(); montrerIntro(); }  /* v57 : rechargement de
-     langue — pas de film, mais la presentation reste le passage. */
+  else { terminerOuverture(); montrerIntro(); }  /* v57 : rechargement de langue — pas de film, mais la presentation reste le passage. */
 })();
 
 /* Tout est défini : on redemande un rendu du chemin pour que le bouton
@@ -7845,8 +7795,8 @@ function terminerOuverture(){
   S("ouverture").classList.remove("joue","parti");
   S("ouverture").scrollTop=0;
   /* v58 : apres le film d'un habitue, la presentation prend le relais.
-     Le drapeau est une-fois : la premiere visite (film lance a la sortie
-     du choix de langue) ne le pose pas, donc pas de double presentation. */
+     Drapeau une-fois : la premiere visite (film lance a la sortie du choix
+     de langue) ne le pose pas — aucune double presentation. */
   if(window.__introApresFilm){
     window.__introApresFilm=false;
     try{ montrerIntro(); }catch(e){}
@@ -7960,62 +7910,10 @@ S("dpPasser").addEventListener("click",finDepart);
    Appelé en dernier, quand DESTINATIONS et les écrans existent. */
 try{ appliquerLangue(); }catch(err){}
 </script>
-
 <script>
-/* LINGUAE ▸ v54 « Partager le voyage » (9 août 2026, demande de Blandine).
-   Deux portes : le carnet d'accueil (#ouvPartager) et la fin d'une arrivée
-   (#arrPartager). Feuille de partage native quand elle existe, sinon copie
-   du lien. Le code parrain Hype est repris s'il a été mis en cache par
-   l'écran Partager de Hype (même conteneur) — en attendant Supabase dans
-   Linguae, décision de Blandine du 9 août. */
-(function(){
-  var LIEN = "https://majestic-melba-997a68.netlify.app/lingo.html";
-  function t(cle){
-    try {
-      var l = localStorage.getItem("hype_lingua_lecture") || "fr";
-      var e = (typeof UI !== "undefined" && UI[cle]) ? UI[cle] : null;
-      if (e) return e[l] || e.fr;
-    } catch (er) {}
-    var secours = { partagerVoyage:"Partager le voyage", lienCopie:"Lien copié",
-      msgPartage:"Fais le tour du monde du vocabulaire équestre avec Hype Linguae.",
-      codeParrain:"Mon code parrain : " };
-    return secours[cle] || cle;
-  }
-  function texteComplet(){
-    var m = t("msgPartage");
-    try { var c = localStorage.getItem("hype_parrain_code");
-      if (c) m += " " + t("codeParrain") + c; } catch (e) {}
-    return m;
-  }
-  function copier(btn){
-    var fait = function(){ if(!btn) return; var av=btn.textContent;
-      btn.textContent = t("lienCopie");
-      setTimeout(function(){ btn.textContent = av; }, 1700); };
-    var tout = texteComplet() + " " + LIEN;
-    try { if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(tout).then(fait).catch(function(){}); return; } } catch (e) {}
-    try { var ta=document.createElement("textarea"); ta.value=tout; ta.setAttribute("readonly","");
-      ta.style.position="absolute"; ta.style.left="-9999px"; document.body.appendChild(ta);
-      ta.select(); document.execCommand("copy"); document.body.removeChild(ta); fait(); } catch (e2) {}
-  }
-  function partager(ev){
-    var btn = ev && ev.currentTarget;
-    try { if (navigator.share) {
-      navigator.share({ title:"Hype Linguae", text: texteComplet(), url: LIEN }).catch(function(){});
-      return; } } catch (e) {}
-    copier(btn);
-  }
-  var a = document.getElementById("ouvPartager");
-  var b = document.getElementById("arrPartager");
-  if (a) a.addEventListener("click", partager);
-  if (b) b.addEventListener("click", partager);
-})();
-</script>
-<script>
-/* LINGUAE ▸ INVITATION « Sur ton écran d'accueil » — reprise du popup Hype
-   (9 août 2026, demande de Blandine). Une seule fois par appareil, jamais en
-   mode installé, jamais dans les iframes (globe, collection). Accents dorés
-   du carnet au lieu du turquoise Spectral. */
+/* LINGUAE ▸ INVITATION « Sur ton écran d'accueil » (v53, reprise du popup
+   Hype, accents dorés du carnet). Une fois par appareil, jamais installé,
+   jamais en iframe. */
 (function () {
   try {
     if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return;
@@ -8023,15 +7921,12 @@ try{ appliquerLangue(); }catch(err){}
     if (window.self !== window.top) return;
     if (localStorage.getItem("hype_lingua_install_vu")) return;
   } catch (e) { return; }
-
   var ua = navigator.userAgent || "";
   var estIOS = /iPhone|iPad|iPod/.test(ua);
   var estAndroid = /Android/.test(ua);
   if (!estIOS && !estAndroid) return;
-
   var promptDiffere = null;
   window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); promptDiffere = e; });
-
   var L = "fr";
   try { L = localStorage.getItem("hype_lingua_lecture") || (navigator.language || "fr").slice(0, 2); } catch (e2) {}
   var DICT = {
@@ -8043,13 +7938,11 @@ try{ appliquerLangue(); }catch(err){}
     ja: { t: "LINGUAE \u3092\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb", p: "\u672c\u7269\u306e\u30a2\u30d7\u30ea\u306e\u3088\u3046\u306b\u5168\u753b\u9762\u3067\u3002", ios: "\u2022\u2022\u2022 \u307e\u305f\u306f\u5171\u6709 \u2192\u300c\u30db\u30fc\u30e0\u753b\u9762\u306b\u8ffd\u52a0\u300d", andr: "\u30e1\u30cb\u30e5\u30fc \u22ee \u2192\u300c\u30db\u30fc\u30e0\u753b\u9762\u306b\u8ffd\u52a0\u300d", btn: "\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb", plus: "\u3042\u3068\u3067", ok: "\u4e86\u89e3" }
   };
   var T = DICT[L] || DICT.fr;
-
   function fermer(carte) {
     try { localStorage.setItem("hype_lingua_install_vu", "1"); } catch (e) {}
     carte.style.opacity = "0"; carte.style.transform = "translateX(-50%) translateY(24px)";
     setTimeout(function () { try { carte.remove(); } catch (e) {} }, 380);
   }
-
   function montrer() {
     if (document.getElementById("lingua-install")) return;
     var carte = document.createElement("div");
@@ -8060,7 +7953,6 @@ try{ appliquerLangue(); }catch(err){}
       "-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 14px 44px rgba(0,0,0,0.5);" +
       "padding:15px 16px;font-family:'Montserrat',system-ui,sans-serif;color:#F2ECDD;" +
       "transition:opacity .38s ease,transform .38s cubic-bezier(.2,.8,.25,1)";
-
     var installable = (estAndroid && promptDiffere);
     carte.innerHTML =
       "<div style='position:absolute;top:9px;right:12px;font-size:22px;line-height:1;color:#9a8f79;padding:6px;cursor:pointer' id='li-inst-x'>&times;</div>" +
@@ -8078,12 +7970,10 @@ try{ appliquerLangue(); }catch(err){}
           "</div>"
         : "<div style='margin-top:12px;padding-top:11px;border-top:1px solid rgba(255,255,255,0.07);font-size:12.5px;line-height:1.5;color:#D8CBAA'>" + (estIOS ? T.ios : T.andr) + "</div>" +
           "<div id='li-inst-ok' style='margin-top:12px;text-align:center;padding:12px;border-radius:999px;background:rgba(232,201,128,0.2);border:1px solid rgba(232,201,128,0.8);color:#E8C980;font-weight:700;font-size:14px;cursor:pointer'>" + T.ok + "</div>");
-
     document.body.appendChild(carte);
     requestAnimationFrame(function () { requestAnimationFrame(function () {
       carte.style.opacity = "1"; carte.style.transform = "translateX(-50%) translateY(0)";
     }); });
-
     document.getElementById("li-inst-x").addEventListener("click", function () { fermer(carte); });
     var non = document.getElementById("li-inst-non");
     if (non) non.addEventListener("click", function () { fermer(carte); });
@@ -8096,7 +7986,6 @@ try{ appliquerLangue(); }catch(err){}
     var ok = document.getElementById("li-inst-ok");
     if (ok) ok.addEventListener("click", function () { fermer(carte); });
   }
-
   var arme = false;
   function armer() { if (arme) return; arme = true; setTimeout(montrer, 4000); }
   window.addEventListener("touchstart", armer, { once: true, passive: true });
@@ -8105,33 +7994,89 @@ try{ appliquerLangue(); }catch(err){}
 })();
 </script>
 <script>
-/* v56 : les branchements de la presentation retrouvee.
-   - L'affiche « Le tour du monde » du carnet rouvre la presentation a
-     volonte (plus aucune page dependante d'un drapeau).
-   - Les deux battants : HYPE -> l'accueil de Hype ; LES GALOPS ->
-     ./index.html#galops (la cle du lien profond sera posee dans l'index au
-     prochain feu vert ; d'ici la, Hype ouvre son accueil).
-   - La pastille Kildare ouvre la ville du chapitre des urgences. */
+/* ==================================================================
+   CÂBLAGE v60 — PAR DÉLÉGATION (9 août, reconstruction).
+   Un seul écouteur, sur document : les boutons de la présentation, du
+   carnet et de la fin d'arrivée sont routés par leur id, quel que soit
+   le moment où leurs nœuds sont créés ou réécrits. C'est la réponse
+   structurelle à « aucun bouton ne marche » : un écouteur délégué ne
+   peut pas être perdu.
+   ================================================================== */
 (function(){
-  var h=document.getElementById("inHype");
-  if(h) h.addEventListener("click", function(){ location.href="./index.html"; });
-  var g=document.getElementById("inGalops");
-  if(g) g.addEventListener("click", function(){ location.href="./index.html#galops"; });
-  var k=document.getElementById("inOuKildare");
-  if(k) k.addEventListener("click", function(ev){
-    if(ev && ev.stopPropagation) ev.stopPropagation();
+  var LIEN = "https://majestic-melba-997a68.netlify.app/lingo.html";
+  function tUI(cle){
     try{
-      for(var i=0;i<ETAPES.length;i++) if(ETAPES[i].ref==="kildare"){
-        document.getElementById("intro").classList.remove("on");
-        partirVersVille(i); return;
-      }
+      var l = localStorage.getItem("hype_lingua_lecture") || "fr";
+      if (typeof UI !== "undefined" && UI[cle]) return UI[cle][l] || UI[cle].fr;
     }catch(e){}
-  });
-  var c=document.getElementById("ouvCadre");
-  if(c){
-    c.style.cursor="pointer";
-    c.addEventListener("click", function(){ try{ montrerIntro(); }catch(e){} });
+    var sec={ partagerVoyage:"Partager le voyage", lienCopie:"Lien copié",
+      msgPartage:"Fais le tour du monde du vocabulaire équestre avec Hype Linguae.",
+      codeParrain:"Mon code parrain : " };
+    return sec[cle] || cle;
   }
+  function textePartage(){
+    var m = tUI("msgPartage");
+    try{ var c = localStorage.getItem("hype_parrain_code");
+      if(c) m += " " + tUI("codeParrain") + c; }catch(e){}
+    return m;
+  }
+  function copier(btn){
+    var fait=function(){ if(!btn) return; var av=btn.textContent;
+      btn.textContent=tUI("lienCopie");
+      setTimeout(function(){ btn.textContent=av; },1700); };
+    var tout=textePartage()+" "+LIEN;
+    try{ if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(tout).then(fait).catch(function(){}); return; } }catch(e){}
+    try{ var ta=document.createElement("textarea"); ta.value=tout; ta.setAttribute("readonly","");
+      ta.style.position="absolute"; ta.style.left="-9999px"; document.body.appendChild(ta);
+      ta.select(); document.execCommand("copy"); document.body.removeChild(ta); fait(); }catch(e2){}
+  }
+  function partager(btn){
+    try{ if(navigator.share){
+      navigator.share({ title:"Linguae", text:textePartage(), url:LIEN }).catch(function(){});
+      return; } }catch(e){}
+    copier(btn);
+  }
+  document.addEventListener("click", function(ev){
+    var t = ev.target;
+    if(!t || !t.closest) return;
+    var b = t.closest("#inSuite,#inHype,#inGalops,#inOuKildare,#ouvCadre,#ouvPartager,#arrPartager");
+    if(!b) return;
+    switch(b.id){
+      case "inSuite":
+        /* c'est ICI que la presentation est marquee vue (une seule main). */
+        try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
+        try{ montrerDest(); }catch(e){}
+        break;
+      case "inHype":
+        location.href = "./index.html";
+        break;
+      case "inGalops":
+        /* la cle `galops` du lien profond sera posee dans l'index au
+           prochain feu vert ; d'ici la, Hype ouvre son accueil. */
+        location.href = "./index.html#galops";
+        break;
+      case "inOuKildare":
+        ev.stopPropagation();
+        try{
+          for(var i=0;i<ETAPES.length;i++) if(ETAPES[i].ref==="kildare"){
+            var el=document.getElementById("intro");
+            if(el) el.classList.remove("on");
+            partirVersVille(i); break;
+          }
+        }catch(e){}
+        break;
+      case "ouvCadre":
+        try{ montrerIntro(); }catch(e){}
+        break;
+      case "ouvPartager":
+      case "arrPartager":
+        partager(b);
+        break;
+    }
+  });
+  var cadre=document.getElementById("ouvCadre");
+  if(cadre) cadre.style.cursor="pointer";
 })();
 </script>
 </body>

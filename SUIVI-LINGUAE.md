@@ -106,6 +106,20 @@ Aucune amélioration d'architecture réalisée sur cette session. Reste à moder
 ---
 
 
+# SESSION 182 · 09/08 nuit · v60 « la reconstruction » — ROLLBACK + REPLAY PROPRE
+
+**Incident n°9 (le mien, le plus grave de la journée).** Sur le v59 en ligne, AUCUN bouton de la présentation ne répondait (Continuer/Choisir, battants Hype/Galops, pastille). Autopsie menée (banc node avec DOM factice, diff intégral v50→v59 en 27 hunks) : cause exacte **non identifiée formellement** — le banc butait sur des artefacts et bouclait. Décision, sur proposition de Blandine : **rollback sur son v50 pur (md5 `1ba70d…`) et reconstruction d'un bloc** de toutes les couches du jour.
+
+## ✅ v60 — ce qu'il contient (replay complet, ancres vérifiées une à une)
+v51 (arriver en haut — arrivée + les DEUX ouvertures du sprint, solo et duel) · v52 (tap = rejouer) · v53 (invitation d'installation dorée) · v54 (Partager le voyage : carnet + fin d'arrivée, code parrain repris du cache Hype) · v55 (panneau « Vidéo introuvable » sur erreur réelle seulement) · v56 (Linguae renommé partout, mosaïque justifiée, urgence en socle + pastille Kildare, « De Buenos Aires à Tokyo », phrase de passage, battants HYPE/LES GALOPS, guérison du drapeau) · v57/58 (présentation à CHAQUE lancement, le film d'abord pour les habitués via `__introApresFilm`) · v59 (fond plein écran retiré, trou 40vh refermé, affiche dans la page).
+
+## 🔁 Deux changements de doctrine dans le replay
+1. **« Choisir ma destination » pour tout le monde** (décision Blandine) : une seule étiquette, une seule action (→ choix du voyage). Le bouton caméléon Choisir/Continuer du v57 est abandonné.
+2. **CÂBLAGE PAR DÉLÉGATION** : plus AUCUN écouteur individuel sur les boutons de la présentation/du carnet — un seul écouteur délégué sur `document` route par id (#inSuite, #inHype, #inGalops, #inOuKildare, #ouvCadre, #ouvPartager, #arrPartager). Quel que soit le moment où un nœud est créé, détruit ou réécrit, le tap arrive. C'est la réponse structurelle à la panne, même sans son autopsie complète.
+
+## ⚠️ Honnêteté de passation
+La cause racine du v59 muet n'est pas prouvée ; la délégation éradique toute la classe « écouteur perdu/jamais posé ». Si le v60 restait muet sur l'appareil de Blandine, le coupable serait ailleurs (couche au-dessus, service worker) — à réévaluer avec elle.
+
 # SESSION 181 · 09/08 soir · v59 « l'affiche à sa place »
 
 Blandine (capture) : « le fond est nul, c'est quoi cet énorme trou sans rien ?! Retire le fond et mets plutôt l'image à cet endroit-là. » Diagnostic : `#inOrigine` portait **margin-bottom 40vh** — un vide volontaire de l'ancien design, pensé pour laisser voir le fond plein écran. Fait : fond-affiche plein écran retiré (remplacé par un dégradé nuit sobre, Ken Burns supprimé), le trou refermé (40vh → 26px), et **l'image `lingua-affiche.webp` posée DANS la page** (#inAffiche, cadre arrondi 232px, entre les drapeaux et la mosaïque).
