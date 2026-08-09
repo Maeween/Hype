@@ -44350,9 +44350,24 @@ if (__boot)
       "  visionneuses=" + document.querySelectorAll("[data-hype-zoom]").length);
     var centre = document.elementFromPoint(Math.round(window.innerWidth / 2), Math.round(window.innerHeight / 2));
     lignes.push("centre ecran -> " + nom(centre));
+    var ifr = document.querySelectorAll("iframe");
+    if (ifr.length) {
+      var det = [];
+      for (var q = 0; q < ifr.length && q < 4; q++) {
+        var r2 = ifr[q].getBoundingClientRect();
+        det.push(Math.round(r2.width) + "x" + Math.round(r2.height) + "@" + Math.round(r2.top));
+      }
+      lignes.push("iframes a l ecran : " + ifr.length + "  [" + det.join(" ") + "]");
+    }
     var geo = document.elementFromPoint(x, y);
     lignes.push("cible de l evenement -> " + nom(cibleEvt) + "   |   sous le doigt -> " + nom(geo));
-    if (cibleEvt && geo && cibleEvt !== geo)
+    if (geo && geo.tagName === "IFRAME") {
+      lignes.push("!!! DOIGT SUR UNE IFRAME : la page parente ne recoit AUCUN evenement de ce geste.");
+      lignes.push("    Le contenu de l iframe a son propre html/body en overflow:hidden : il ne peut pas");
+      lignes.push("    defiler, et il ne repasse pas le geste au parent. Cul-de-sac tactile.");
+      lignes.push("    (les lignes ci-dessus sur la cible de l evenement viennent du geste PRECEDENT)");
+    }
+    else if (cibleEvt && geo && cibleEvt !== geo)
       lignes.push("!!! GESTE DETOURNE : l evenement part vers " + nom(cibleEvt) +
         " alors que le doigt est sur " + nom(geo) + " -> capture de pointeur restee coincee");
     if (cibleEvt) {
@@ -44360,8 +44375,11 @@ if (__boot)
       var ce = cibleEvt, k = 0;
       while (ce && k < 5) { lignes.push("  " + fiche(ce)); ce = ce.parentElement; k++; }
     }
-    lignes.push("touchmove recus : " + nbMove + "   deplacement doigt max : " + Math.round(dyMax) +
-      "px   fin du geste : " + fin);
+    var bougeNow = Math.abs(racine().scrollTop - top0);
+    lignes.push("touchmove recus : " + nbMove + "   doigt : " + Math.round(dyMax) +
+      "px   PAGE DEPLACEE : " + Math.round(bougeNow) + "px" +
+      (nbMove > 0 && dyMax >= 12 ? (bougeNow < 3 ? "   <<< BLOQUE (en direct)" : "   => OK (en direct)") : "") +
+      "   fin : " + fin);
     lignes.push("touchmove annule par du JS : " + (annule === null ? "(glisse le doigt)" : (annule ? "OUI  <<< CAUSE JS" : "non")) +
       "   la page a bouge : " + (bloque === null ? "(glisse le doigt)" : (bloque ? "non  <<< BLOQUE" : "oui")));
     lignes.push("chaine sous le doigt (" + x + "," + y + ") :");
