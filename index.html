@@ -44329,7 +44329,7 @@ if (__boot)
   var y0 = 0, top0 = 0, bloque = null, annule = null, dyMax = 0;
   /* Le geste bloque doit SURVIVRE au fait de lever le doigt et de changer de page :
      sinon chaque capture d ecran montre l analyse du geste suivant, celui qui marche. */
-  var xDep = 0, yDep = 0, cibleEvt = null;
+  var xDep = 0, yDep = 0, cibleEvt = null, nbMove = 0, fin = "-";
   var fige = null;
   try { fige = localStorage.getItem("hype_debug_fige") || null; } catch (e) { }
 
@@ -44360,6 +44360,8 @@ if (__boot)
       var ce = cibleEvt, k = 0;
       while (ce && k < 5) { lignes.push("  " + fiche(ce)); ce = ce.parentElement; k++; }
     }
+    lignes.push("touchmove recus : " + nbMove + "   deplacement doigt max : " + Math.round(dyMax) +
+      "px   fin du geste : " + fin);
     lignes.push("touchmove annule par du JS : " + (annule === null ? "(glisse le doigt)" : (annule ? "OUI  <<< CAUSE JS" : "non")) +
       "   la page a bouge : " + (bloque === null ? "(glisse le doigt)" : (bloque ? "non  <<< BLOQUE" : "oui")));
     lignes.push("chaine sous le doigt (" + x + "," + y + ") :");
@@ -44387,6 +44389,7 @@ if (__boot)
       var t = e.touches[0]; if (!t) return;
       cibleEvt = e.target;   /* la ou le geste part REELLEMENT : diffère de elementFromPoint si une capture de pointeur traine */
       y0 = t.clientY; top0 = racine().scrollTop; bloque = null; annule = null; dyMax = 0;
+      nbMove = 0; fin = "geste en cours";
       xDep = Math.round(t.clientX); yDep = Math.round(t.clientY);
       analyser(Math.round(t.clientX), Math.round(t.clientY));
     } catch (x) { }
@@ -44397,8 +44400,9 @@ if (__boot)
   window.addEventListener("touchmove", function (e) {
     try {
       var t = e.touches[0]; if (!t) return;
+      nbMove++;
       if (Math.abs(t.clientY - y0) < 12) return;
-      annule = e.defaultPrevented || annule;
+      annule = (e.defaultPrevented === true) ? true : (annule === null ? false : annule);
       dyMax = Math.max(dyMax, Math.abs(t.clientY - y0));
       analyser(Math.round(t.clientX), Math.round(y0));
     } catch (x) { }
@@ -44407,21 +44411,35 @@ if (__boot)
   /* Verdict au relachement : c est la seule mesure fiable du deplacement reel.
      Mesurer sur le premier touchmove donnait un faux "bloque", Chrome n ayant pas
      encore commence a defiler a ce moment-la. */
-  window.addEventListener("touchend", function () {
+  function terminer(comment) {
     try {
-      if (dyMax < 12) return;
+      fin = comment;
+      if (nbMove === 0) {
+        /* Aucun touchmove recu alors que le doigt a bouge : le geste est confisque avant
+           d arriver au document. C est l information decisive. */
+        fige = "(doigt parti de " + xDep + "," + yDep + ")\nAUCUN touchmove RECU, fin par " +
+          comment + "\n" + dernier;
+        try { localStorage.setItem("hype_debug_fige", fige); } catch (e3) { }
+        analyser(xDep, yDep);
+        afficher(dernier + "\n>>> AUCUN touchmove RECU — geste confisque (" + comment + ")");
+        return;
+      }
+      if (dyMax < 12) { afficher(dernier + "\n>>> geste trop court (" + Math.round(dyMax) + "px), rejoue en glissant plus"); return; }
       var d = Math.abs(racine().scrollTop - top0);
       bloque = d < 3;
       analyser(xDep, yDep);
       var verdict = "\n>>> doigt " + Math.round(dyMax) + "px, page deplacee de " +
-        Math.round(d) + "px  =>  " + (bloque ? "BLOQUE" : "OK");
+        Math.round(d) + "px, " + nbMove + " touchmove, fin=" + comment +
+        "  =>  " + (bloque ? "BLOQUE" : "OK");
       if (bloque) {
         fige = "(doigt parti de " + xDep + "," + yDep + ")\n" + dernier + verdict;
         try { localStorage.setItem("hype_debug_fige", fige); } catch (e2) { }
       }
       afficher(dernier + verdict);
     } catch (x) { }
-  }, { passive: true });
+  }
+  window.addEventListener("touchend", function () { terminer("touchend"); }, { passive: true });
+  window.addEventListener("touchcancel", function () { terminer("TOUCHCANCEL (geste confisque)"); }, { passive: true });
 
   /* Effacer la memoire du geste bloque : ?debug=reset */
   try { if (/debug=reset/.test((location.search || "") + (location.hash || ""))) { localStorage.removeItem("hype_debug_fige"); fige = null; } } catch (e) { }
