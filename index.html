@@ -21251,12 +21251,57 @@ function hypeFiletScroll() {
     }
     catch (e) { }
 }
+/* ── PUITS TACTILES — correctif 09/08/2026 (blocage du defilement Android) ────
+   Une boite en overflow:hidden dont le contenu DEPASSE reste un conteneur de
+   defilement aux yeux de Chrome Android. Le geste s y accroche, la boite ne peut
+   pas defiler puisqu elle est "hidden", et Chrome ne rend PAS le geste a la page :
+   rien ne bouge, sans aucun preventDefault ni touch-action en cause. WebKit (iPhone)
+   ne s accroche pas de cette facon — d ou un bug invisible sur iOS et bloquant sur
+   Android. Constate en direct sur le fil d annonces (.filann-b .mask, piste en
+   width:max-content), diagnostic pose avec le panneau de diagnostic.
+   Ce balayage rend le defilement vertical a la page sur TOUTES les boites de ce type,
+   sans toucher au design ni aux rails horizontaux volontaires (overflow-x auto/scroll,
+   laisses intacts). Rejoue a chaque changement d ecran, en dehors du rendu.
+   Note : seul le depassement vers la DROITE ou le BAS compte — un decor pose en
+   negatif (left:-90px des reflets Spectral) n est pas atteignable et ne cree pas de
+   conteneur de defilement. ────────────────────────────────────────────────────── */
+function hypeLibererPuitsTactiles() {
+    try {
+        var noeuds = document.querySelectorAll("div,section,header,ul,li,span");
+        var n = 0;
+        for (var i = 0; i < noeuds.length; i++) {
+            var el = noeuds[i];
+            if (el.__hypePuits) continue;
+            var deborde = (el.scrollWidth > el.clientWidth + 4) || (el.scrollHeight > el.clientHeight + 4);
+            if (!deborde) continue;
+            var g = getComputedStyle(el);
+            var cache = (g.overflowX === "hidden" && g.overflowY === "hidden") ||
+                (g.overflowX === "hidden" && el.scrollWidth > el.clientWidth + 4) ||
+                (g.overflowY === "hidden" && el.scrollHeight > el.clientHeight + 4);
+            if (!cache) continue;                       /* rails volontaires (auto/scroll) : intacts */
+            if (g.touchAction !== "auto") continue;     /* choix explicite deja pose : on respecte */
+            el.style.touchAction = "pan-y";
+            el.__hypePuits = 1;
+            n++;
+        }
+        if (n) { try { console.log("[Hype] puits tactiles liberes : " + n); } catch (e2) { } }
+    }
+    catch (e) { }
+}
 function Router() {
     const { ecran, setEcran, retourEcran, avancerEcran, zoomImg, merciVIP, impression, langue } = useApp();
     /* Filet de securite du verrou de defilement (voir hypeVerrouScroll) : a chaque
        changement d'ecran et au retour d'arriere-plan, on repart de la realite du DOM.
        Le blocage de defilement Android se repare donc seul, sans redemarrage. */
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
+    /* Liberation des puits tactiles : apres peinture, et une seconde fois un peu plus tard
+       pour les contenus qui arrivent de Supabase (annonces, chevaux, photos). */
+    useEffect(() => {
+        var a = requestAnimationFrame(function () { hypeLibererPuitsTactiles(); });
+        var b = setTimeout(hypeLibererPuitsTactiles, 900);
+        var c = setTimeout(hypeLibererPuitsTactiles, 2600);
+        return () => { cancelAnimationFrame(a); clearTimeout(b); clearTimeout(c); };
+    }, [ecran]);
     useEffect(() => {
         const realigner = () => hypeFiletScroll();
         document.addEventListener("visibilitychange", realigner);
@@ -32322,8 +32367,8 @@ var FIL_ANN_CSS = ""
 + ".filann-b .lbl .dia{width:9px;height:9px;transform:rotate(45deg);background:#20D9F5;box-shadow:0 0 10px #20D9F5}"
 + ".filann-b .fl{position:absolute;left:0;top:0;bottom:0;width:40px;z-index:2;background:linear-gradient(90deg,#060709,transparent);pointer-events:none}"
 + ".filann-b .fr{position:absolute;right:0;top:0;bottom:0;width:40px;z-index:2;background:linear-gradient(270deg,#060709,transparent);pointer-events:none}"
-+ ".filann-b .mask{overflow:hidden;padding-left:118px}"
-+ ".filann-b .trk{display:flex;width:max-content;animation:filann-marquee 26s linear infinite}"
++ ".filann-b .mask{overflow:hidden;padding-left:118px;touch-action:pan-y}"
++ ".filann-b .trk{display:flex;width:max-content;animation:filann-marquee 26s linear infinite;touch-action:pan-y}"
 + ".filann-b .trk:hover{animation-play-state:paused}"
 + ".filann-b .it{display:inline-flex;align-items:center;gap:9px;padding:0 22px;font-size:16px;font-weight:600;white-space:nowrap;color:#F2F8FA;font-family:'Montserrat',sans-serif;cursor:pointer}"
 + ".filann-b .it .emo{font-size:18px}.filann-b .it .g{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7FEAF2;font-weight:700}"
@@ -44219,7 +44264,16 @@ if (__boot)
       " ta=" + g.touchAction + " pe=" + g.pointerEvents +
       " z=" + g.zIndex +
       " sh/ch=" + el.scrollHeight + "/" + el.clientHeight +
+      " sw/cw=" + el.scrollWidth + "/" + el.clientWidth +
+      (puitsTactile(el, g) ? "  <<< PUITS TACTILE" : "") +
       (scrollable ? "  <<< DEFILE" : "");
+  }
+  /* Boite qui avale le geste : overflow cache ALORS QUE le contenu deborde. */
+  function puitsTactile(el, g) {
+    var dx = el.scrollWidth > el.clientWidth + 4, dy = el.scrollHeight > el.clientHeight + 4;
+    if (!dx && !dy) return false;
+    var cache = (g.overflowX === "hidden" && dx) || (g.overflowY === "hidden" && dy);
+    return cache && g.touchAction === "auto";
   }
   function interditVertical(ta) {
     return ta === "none" || ta === "pan-x" || ta === "pan-left" || ta === "pan-right" ||
@@ -44227,7 +44281,7 @@ if (__boot)
   }
 
   var dernier = "";
-  var y0 = 0, top0 = 0, bloque = null, annule = null;
+  var y0 = 0, top0 = 0, bloque = null, annule = null, dyMax = 0;
 
   function racine() { return document.scrollingElement || document.documentElement; }
 
@@ -44249,14 +44303,17 @@ if (__boot)
     lignes.push("touchmove annule par du JS : " + (annule === null ? "(glisse le doigt)" : (annule ? "OUI  <<< CAUSE JS" : "non")) +
       "   la page a bouge : " + (bloque === null ? "(glisse le doigt)" : (bloque ? "non  <<< BLOQUE" : "oui")));
     lignes.push("chaine sous le doigt (" + x + "," + y + ") :");
-    var el = document.elementFromPoint(x, y), n = 0, coupable = null;
+    var el = document.elementFromPoint(x, y), n = 0, coupable = null, puits = null;
     while (el && n < 9) {
       lignes.push("  " + fiche(el));
-      var ta = getComputedStyle(el).touchAction;
-      if (!coupable && interditVertical(ta)) coupable = nom(el) + " (touch-action:" + ta + ")";
+      var gg = getComputedStyle(el);
+      if (!coupable && interditVertical(gg.touchAction)) coupable = nom(el) + " (touch-action:" + gg.touchAction + ")";
+      if (!puits && puitsTactile(el, gg)) puits = nom(el) + " (overflow cache + contenu qui deborde)";
       el = el.parentElement; n++;
     }
-    if (coupable) lignes.push("!!! PREMIER PARENT QUI INTERDIT LE VERTICAL : " + coupable);
+    if (coupable) lignes.push("!!! PARENT QUI INTERDIT LE VERTICAL : " + coupable);
+    if (puits) lignes.push("!!! PUITS TACTILE : " + puits);
+    if (!coupable && !puits) lignes.push("aucun puits ni blocage touch-action dans cette chaine.");
     dernier = lignes.join("\n");
     panneauPret().textContent = dernier;
   }
@@ -44264,7 +44321,7 @@ if (__boot)
   window.addEventListener("touchstart", function (e) {
     try {
       var t = e.touches[0]; if (!t) return;
-      y0 = t.clientY; top0 = racine().scrollTop; bloque = null; annule = null;
+      y0 = t.clientY; top0 = racine().scrollTop; bloque = null; annule = null; dyMax = 0;
       analyser(Math.round(t.clientX), Math.round(t.clientY));
     } catch (x) { }
   }, { passive: true, capture: true });
@@ -44275,9 +44332,23 @@ if (__boot)
     try {
       var t = e.touches[0]; if (!t) return;
       if (Math.abs(t.clientY - y0) < 12) return;
-      annule = e.defaultPrevented;
-      bloque = Math.abs(racine().scrollTop - top0) < 2;
+      annule = e.defaultPrevented || annule;
+      dyMax = Math.max(dyMax, Math.abs(t.clientY - y0));
       analyser(Math.round(t.clientX), Math.round(y0));
+    } catch (x) { }
+  }, { passive: true });
+
+  /* Verdict au relachement : c est la seule mesure fiable du deplacement reel.
+     Mesurer sur le premier touchmove donnait un faux "bloque", Chrome n ayant pas
+     encore commence a defiler a ce moment-la. */
+  window.addEventListener("touchend", function () {
+    try {
+      if (dyMax < 12) return;
+      var d = Math.abs(racine().scrollTop - top0);
+      bloque = d < 3;
+      analyser(Math.round(window.innerWidth / 2), Math.round(y0));
+      panneauPret().textContent = dernier + "\n>>> doigt " + Math.round(dyMax) +
+        "px, page deplacee de " + Math.round(d) + "px  =>  " + (bloque ? "BLOQUE" : "OK");
     } catch (x) { }
   }, { passive: true });
 
