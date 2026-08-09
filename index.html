@@ -21211,8 +21211,61 @@ class BarriereEcran extends React.Component {
                String((this.state.mort && (this.state.mort.stack || this.state.mort.message)) || this.state.mort)));
     }
 }
+/* ── VERROU DE DEFILEMENT — correctif 09/08/2026 (bug scroll Android) ─────────
+   Un seul mecanisme dans toute l'app pose body{overflow:hidden} : la visionneuse
+   PhotoZoomable. L'ancienne version memorisait la valeur precedente et la
+   restaurait a la fermeture. Si deux visionneuses se superposaient, ou si l'ecran
+   changeait par le bouton retour physique pendant qu'une photo etait ouverte, un
+   "hidden" fantome restait colle sur <body>.
+   Sur Android/Chrome cela bloque completement le defilement ; sur iPhone/WebKit
+   la regle n'a aucun effet sur body — d'ou un bug invisible sur iOS et bloquant
+   sur Android, que seul un redemarrage complet effacait (le rechargement du
+   document supprimant le style inline). Ce n'etait donc PAS un etat fige cote
+   appareil, contrairement a la conclusion d'une session precedente.
+   Nouveau principe : plus aucune valeur memorisee. Un compteur global, et la
+   verite finale est le DOM lui-meme (attribut data-hype-zoom sur l'overlay), ce
+   qui rend le verrou auto-reparateur via hypeFiletScroll(). ────────────────── */
+function hypeVerrouScroll() {
+    try {
+        window.__hypeScrollLock = (window.__hypeScrollLock || 0) + 1;
+        document.body.style.overflow = "hidden";
+    }
+    catch (e) { }
+}
+function hypeDeverrouScroll() {
+    try {
+        window.__hypeScrollLock = Math.max(0, (window.__hypeScrollLock || 0) - 1);
+        if (!window.__hypeScrollLock)
+            document.body.style.overflow = "";
+    }
+    catch (e) { }
+}
+/* Realigne body.overflow sur la realite du DOM : s'il ne reste aucune visionneuse
+   ouverte, le verrou est leve d'office. Appele a chaque changement d'ecran et au
+   retour d'arriere-plan (voir Router). */
+function hypeFiletScroll() {
+    try {
+        var ouvertes = document.querySelectorAll("[data-hype-zoom]").length;
+        window.__hypeScrollLock = ouvertes;
+        document.body.style.overflow = ouvertes ? "hidden" : "";
+    }
+    catch (e) { }
+}
 function Router() {
     const { ecran, setEcran, retourEcran, avancerEcran, zoomImg, merciVIP, impression, langue } = useApp();
+    /* Filet de securite du verrou de defilement (voir hypeVerrouScroll) : a chaque
+       changement d'ecran et au retour d'arriere-plan, on repart de la realite du DOM.
+       Le blocage de defilement Android se repare donc seul, sans redemarrage. */
+    useEffect(() => { hypeFiletScroll(); }, [ecran]);
+    useEffect(() => {
+        const realigner = () => hypeFiletScroll();
+        document.addEventListener("visibilitychange", realigner);
+        window.addEventListener("pageshow", realigner);
+        return () => {
+            document.removeEventListener("visibilitychange", realigner);
+            window.removeEventListener("pageshow", realigner);
+        };
+    }, []);
     // Le verrou de paiement demande la connexion : on ouvre l'\u00e9cran Mon compte.
     useEffect(() => {
         const versCompte = () => { try { setEcran("moncompte"); } catch (e) { } };
@@ -21261,7 +21314,7 @@ function Router() {
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
         React.createElement("div", { style: { maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: showNav ? 84 : 0, overflow: "hidden" } },
-            PHOTOS.watermark && ecran !== "galops" && (React.createElement("div", { style: {
+            PHOTOS.watermark && ecran !== "galops" && (React.createElement("div", { "data-hype-filigrane": "1", style: {
                     position: "fixed",
                     top: 0, left: "50%", transform: "translateX(-50%)",
                     width: "100%", maxWidth: 480, height: "100vh",
@@ -21343,6 +21396,13 @@ function GlobalStyles() {
       @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Righteous&family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap');
       * { box-sizing: border-box; }
       html, body { margin: 0; overscroll-behavior: none; background: ${COLORS.nuit}; }
+      /* 09/08/2026 — Le filigrane est le SEUL element de la coquille qui recouvre le contenu
+         sur toute la hauteur (position:fixed, 100vh). S'il capte le toucher, plus rien ne
+         defile sauf en partant de la barre du bas, qui est au-dessus de lui : exactement le
+         symptome constate sur Android. Le pointer-events:none est deja pose en style inline ;
+         cette regle le verrouille en dur pour qu'aucune modification future, ni aucun etat
+         partiel, ne puisse le perdre. Ne pas retirer. */
+      [data-hype-filigrane] { pointer-events: none !important; }
       h1, h2, h3, .display { font-family: 'Baloo 2', 'Noto Sans JP', sans-serif; }
       button { font-family: 'Inter', 'Noto Sans JP', sans-serif; cursor: pointer; border: none; background: none; }
       button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid ${COLORS.turquoise}; outline-offset: 2px; }
@@ -33910,13 +33970,12 @@ function PhotoZoomable({ src, alt, style, onClicSurAgrandi }) {
         const onKey = (e) => { if (e.key === "Escape")
             setOuvert(false); };
         window.addEventListener("keydown", onKey);
-        const prevOverflow = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
-        return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prevOverflow; };
+        hypeVerrouScroll(); /* 09/08/2026 : compteur global au lieu du memorise/restaure — voir hypeVerrouScroll */
+        return () => { window.removeEventListener("keydown", onKey); hypeDeverrouScroll(); };
     }, [ouvert]);
     return (React.createElement(React.Fragment, null,
         React.createElement("img", { src: src, alt: alt || "", onClick: () => setOuvert(true), style: { ...style, cursor: "zoom-in" } }),
-        ouvert && (React.createElement("div", { onClick: () => setOuvert(false), onTouchStart: (e) => e.stopPropagation(), onTouchMove: (e) => e.stopPropagation(), onTouchEnd: (e) => e.stopPropagation(), role: "dialog", "aria-modal": "true", "aria-label": alt || "Photo agrandie", style: { position: "fixed", inset: 0, zIndex: 1000, background: "rgba(0,0,0,0.92)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20, animation: "fadeIn 0.2s ease-out" } },
+        ouvert && (React.createElement("div", { onClick: () => setOuvert(false), onTouchStart: (e) => e.stopPropagation(), onTouchMove: (e) => e.stopPropagation(), onTouchEnd: (e) => e.stopPropagation(), role: "dialog", "aria-modal": "true", "aria-label": alt || "Photo agrandie", "data-hype-zoom": "1", style: { position: "fixed", inset: 0, zIndex: 1000, background: "rgba(0,0,0,0.92)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20, animation: "fadeIn 0.2s ease-out" } },
             React.createElement("img", { src: src, alt: alt || "", onClick: onClicSurAgrandi ? (e) => { e.stopPropagation(); setOuvert(false); onClicSurAgrandi(); } : undefined, style: { maxWidth: "100%", maxHeight: "100%", borderRadius: 14, animation: "popIn 0.25s ease-out", cursor: onClicSurAgrandi ? "pointer" : "zoom-out" } }),
             React.createElement("button", { onClick: (e) => { e.stopPropagation(); setOuvert(false); }, "aria-label": "Fermer", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 18, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.15)", color: COLORS.blanc, fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" } }, "\u2715")))));
 }

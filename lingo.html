@@ -1816,7 +1816,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v52 · rejouer l'arrivée</p>
+    <p id="ouvVersion">v53 · l'invitation à l'écran d'accueil</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -7384,7 +7384,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v52 · rejouer l'arrivée · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v53 · l'invitation à l'écran d'accueil · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -7830,6 +7830,100 @@ S("dpPasser").addEventListener("click",finDepart);
 /* Au démarrage : on remplit les écrans statiques dans la langue de l'interface.
    Appelé en dernier, quand DESTINATIONS et les écrans existent. */
 try{ appliquerLangue(); }catch(err){}
+</script>
+
+<script>
+/* LINGUAE ▸ INVITATION « Sur ton écran d'accueil » — reprise du popup Hype
+   (9 août 2026, demande de Blandine). Une seule fois par appareil, jamais en
+   mode installé, jamais dans les iframes (globe, collection). Accents dorés
+   du carnet au lieu du turquoise Spectral. */
+(function () {
+  try {
+    if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return;
+    if (navigator.standalone === true) return;
+    if (window.self !== window.top) return;
+    if (localStorage.getItem("hype_lingua_install_vu")) return;
+  } catch (e) { return; }
+
+  var ua = navigator.userAgent || "";
+  var estIOS = /iPhone|iPad|iPod/.test(ua);
+  var estAndroid = /Android/.test(ua);
+  if (!estIOS && !estAndroid) return;
+
+  var promptDiffere = null;
+  window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); promptDiffere = e; });
+
+  var L = "fr";
+  try { L = localStorage.getItem("hype_lingua_lecture") || (navigator.language || "fr").slice(0, 2); } catch (e2) {}
+  var DICT = {
+    fr: { t: "INSTALLE LINGUAE", p: "Plein écran, comme une vraie app.", ios: "Touche \u2022\u2022\u2022 ou Partager, puis \u00ab Sur l\u2019écran d\u2019accueil \u00bb.", andr: "Menu \u22ee puis \u00ab Ajouter à l\u2019écran d\u2019accueil \u00bb.", btn: "Installer", plus: "Plus tard", ok: "Compris" },
+    en: { t: "INSTALL LINGUAE", p: "Full screen, like a real app.", ios: "Tap \u2022\u2022\u2022 or Share, then \u201cAdd to Home Screen\u201d.", andr: "Menu \u22ee then \u201cAdd to Home screen\u201d.", btn: "Install", plus: "Later", ok: "Got it" },
+    es: { t: "INSTALA LINGUAE", p: "Pantalla completa, como una app.", ios: "Toca \u2022\u2022\u2022 o Compartir, luego \u00abA\u00f1adir a pantalla de inicio\u00bb.", andr: "Men\u00fa \u22ee y \u00abA\u00f1adir a pantalla de inicio\u00bb.", btn: "Instalar", plus: "M\u00e1s tarde", ok: "Entendido" },
+    it: { t: "INSTALLA LINGUAE", p: "Schermo intero, come una vera app.", ios: "Tocca \u2022\u2022\u2022 o Condividi, poi \u00abAggiungi a Home\u00bb.", andr: "Menu \u22ee poi \u00abAggiungi a schermata Home\u00bb.", btn: "Installa", plus: "Pi\u00f9 tardi", ok: "Capito" },
+    de: { t: "LINGUAE INSTALLIEREN", p: "Vollbild, wie eine echte App.", ios: "Tippe \u2022\u2022\u2022 oder Teilen, dann \u201eZum Home-Bildschirm\u201c.", andr: "Men\u00fc \u22ee dann \u201eZum Startbildschirm hinzuf\u00fcgen\u201c.", btn: "Installieren", plus: "Sp\u00e4ter", ok: "Alles klar" },
+    ja: { t: "LINGUAE \u3092\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb", p: "\u672c\u7269\u306e\u30a2\u30d7\u30ea\u306e\u3088\u3046\u306b\u5168\u753b\u9762\u3067\u3002", ios: "\u2022\u2022\u2022 \u307e\u305f\u306f\u5171\u6709 \u2192\u300c\u30db\u30fc\u30e0\u753b\u9762\u306b\u8ffd\u52a0\u300d", andr: "\u30e1\u30cb\u30e5\u30fc \u22ee \u2192\u300c\u30db\u30fc\u30e0\u753b\u9762\u306b\u8ffd\u52a0\u300d", btn: "\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb", plus: "\u3042\u3068\u3067", ok: "\u4e86\u89e3" }
+  };
+  var T = DICT[L] || DICT.fr;
+
+  function fermer(carte) {
+    try { localStorage.setItem("hype_lingua_install_vu", "1"); } catch (e) {}
+    carte.style.opacity = "0"; carte.style.transform = "translateX(-50%) translateY(24px)";
+    setTimeout(function () { try { carte.remove(); } catch (e) {} }, 380);
+  }
+
+  function montrer() {
+    if (document.getElementById("lingua-install")) return;
+    var carte = document.createElement("div");
+    carte.id = "lingua-install";
+    carte.style.cssText = "position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(24px);opacity:0;" +
+      "width:calc(100% - 28px);max-width:420px;z-index:999999;box-sizing:border-box;" +
+      "background:rgba(12,10,7,0.96);border:1px solid rgba(232,201,128,0.5);border-radius:22px;" +
+      "-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 14px 44px rgba(0,0,0,0.5);" +
+      "padding:15px 16px;font-family:'Montserrat',system-ui,sans-serif;color:#F2ECDD;" +
+      "transition:opacity .38s ease,transform .38s cubic-bezier(.2,.8,.25,1)";
+
+    var installable = (estAndroid && promptDiffere);
+    carte.innerHTML =
+      "<div style='position:absolute;top:9px;right:12px;font-size:22px;line-height:1;color:#9a8f79;padding:6px;cursor:pointer' id='li-inst-x'>&times;</div>" +
+      "<div style='display:flex;align-items:center;gap:12px'>" +
+        "<img src='apple-touch-icon-linguae.png' alt='' style='width:46px;height:46px;border-radius:12px;flex-shrink:0' onerror=\"this.style.display='none'\">" +
+        "<div style='min-width:0'>" +
+          "<div style=\"font-family:'Cinzel',serif;font-size:14.5px;font-weight:600;letter-spacing:2.5px;color:#F4E9CE\">" + T.t + "</div>" +
+          "<div style='font-size:12.5px;color:#B9AC90;margin-top:3px'>" + T.p + "</div>" +
+        "</div>" +
+      "</div>" +
+      (installable
+        ? "<div style='display:flex;gap:10px;margin-top:14px'>" +
+            "<div id='li-inst-go' style='flex:1;text-align:center;padding:12px;border-radius:999px;background:rgba(232,201,128,0.2);border:1px solid rgba(232,201,128,0.8);color:#E8C980;font-weight:700;font-size:14px;cursor:pointer'>" + T.btn + "</div>" +
+            "<div id='li-inst-non' style='padding:12px 16px;border-radius:999px;color:#9a8f79;font-size:13px;cursor:pointer'>" + T.plus + "</div>" +
+          "</div>"
+        : "<div style='margin-top:12px;padding-top:11px;border-top:1px solid rgba(255,255,255,0.07);font-size:12.5px;line-height:1.5;color:#D8CBAA'>" + (estIOS ? T.ios : T.andr) + "</div>" +
+          "<div id='li-inst-ok' style='margin-top:12px;text-align:center;padding:12px;border-radius:999px;background:rgba(232,201,128,0.2);border:1px solid rgba(232,201,128,0.8);color:#E8C980;font-weight:700;font-size:14px;cursor:pointer'>" + T.ok + "</div>");
+
+    document.body.appendChild(carte);
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      carte.style.opacity = "1"; carte.style.transform = "translateX(-50%) translateY(0)";
+    }); });
+
+    document.getElementById("li-inst-x").addEventListener("click", function () { fermer(carte); });
+    var non = document.getElementById("li-inst-non");
+    if (non) non.addEventListener("click", function () { fermer(carte); });
+    var go = document.getElementById("li-inst-go");
+    if (go) go.addEventListener("click", function () {
+      if (!promptDiffere) { fermer(carte); return; }
+      promptDiffere.prompt();
+      promptDiffere.userChoice.then(function () { fermer(carte); }).catch(function () { fermer(carte); });
+    });
+    var ok = document.getElementById("li-inst-ok");
+    if (ok) ok.addEventListener("click", function () { fermer(carte); });
+  }
+
+  var arme = false;
+  function armer() { if (arme) return; arme = true; setTimeout(montrer, 4000); }
+  window.addEventListener("touchstart", armer, { once: true, passive: true });
+  window.addEventListener("click", armer, { once: true });
+  setTimeout(armer, 40000);
+})();
 </script>
 </body>
 </html>
