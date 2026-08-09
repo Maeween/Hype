@@ -20893,6 +20893,18 @@ function HypeApp() {
         window.addEventListener("popstate", onPop);
         return () => window.removeEventListener("popstate", onPop);
     }, []);
+    /* ⚠️ LINGUAE ▸ LA CLE hype_premium (9 aout 2026, verrou v36 de lingo.html).
+       lingo.html vit sur le meme domaine et doit savoir si le compte est
+       Premium pour verrouiller ses lecons — il n'a ni Supabase ni React.
+       On depose donc le statut dans le localStorage partage, recalcule a
+       chaque changement d'abonnement ou de profil (VIP compris). Meme
+       formule que `premium` dans value, plus bas. */
+    useEffect(() => {
+        try {
+            const v = (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!(profil && profil.vip)) ? "1" : "0";
+            if (localStorage.getItem("hype_premium") !== v) localStorage.setItem("hype_premium", v);
+        } catch (e) { }
+    }, [planAbo, profil]);
     const value = {
         ecran, setEcran: naviguer, retourEcran, avancerEcran, retourDepuisAccueil,
         peutReculer: historiqueEcrans.length > 0, peutAvancer: pileAvant.length > 0,

@@ -10,7 +10,11 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 08/08/2026 (SESSION 112 · LA PROGRESSION DE LINGUAE ENTRE DANS LE COFFRE-FORT) — md5 `5b61adb5b51f7818f992e7b2be990726`, 9 132 715 octets. `hype-cours-baby.js` INCHANGÉ depuis la 111 (toujours à pousser si ce n'est pas fait). Aucune preview. **Aucun SQL : la table `progression` existe déjà.** Livré aussi, mais c'est un AUTRE fichier : `lingo.html` v30 · villes (deux corrections bloquantes, détail dans `SUIVI-LINGUAE.md`).**
+**Version actuelle de l'index.html : 09/08/2026 (SESSION 114 · LA CLÉ `hype_premium` RÉAPPLIQUÉE + LA COMMUNAUTÉ EN PROCHAINEMENT) — md5 `9f324dc0f876f3fd24d5254a36aaaeb7`, 9136372 octets. Base : la 112 fournie par Blandine (la 113 n'avait pas été poussée) ; la clé `hype_premium` y est reposée à l'identique, plus la fermeture de la Communauté. Diff avec la 112 : 3 hunks, 42 lignes ajoutées, 1 remplacée. Aucune preview. Aucun SQL. À POUSSER AVANT `lingo.html` v43. `hype-cours-baby.js` inchangé.**
+
+**Ancienne version (113, JAMAIS POUSSÉE — remplacée par la 114) : (SESSION 113 · LA CLÉ `hype_premium` POUR LE VERROU DE LINGUAE) — md5 `6ccf8ed511efb7834c2153d5b8ece9ad`, 9133471 octets. Diff avec la 112 : 1 hunk, 12 lignes ajoutées, 0 supprimée. Aucune preview. Aucun SQL. À POUSSER AVANT `lingo.html` v37 (verrou Premium, détail dans `SUIVI-LINGUAE.md`). `hype-cours-baby.js` inchangé.****
+
+**Ancienne version (112) — 08/08/2026 (SESSION 112 · LA PROGRESSION DE LINGUAE ENTRE DANS LE COFFRE-FORT) — md5 `5b61adb5b51f7818f992e7b2be990726`, 9 132 715 octets. Voie A comprise DANS la 113 (la 113 est la 112 + 12 lignes).**
 
 **Ancienne version (111) — 08/08/2026 (SESSION 111 · CHEMINS DIRECTS, CADRAGE MEMORY, TÉMOIN DE VERSION) — md5 `0bec15cde7b3e253f23ce90293d27c97`, 9 127 282 octets. **`hype-cours-baby.js` md5 `bdcd692f0ca13be26583937a44e51e43`, 1 817 899 octets — À POUSSER.** **L'app affiche désormais sa version : « reprise 1.2 · baby 111 » sous Quoi de neuf.** Aucun SQL.**
 
@@ -1305,6 +1309,38 @@ recherche de caractères latins dans les chaînes japonaises.
 **Ces deux contrôles sont désormais obligatoires avant chaque injection :**
 
 ```
+
+# 🛠️ SESSION 114 · HYPE (09/08) — RÉAPPLICATION 113 + LA COMMUNAUTÉ FERMÉE « PROCHAINEMENT »
+
+**Base de travail : l'index 112 fourni par Blandine** (règle de la base de travail — la 113 n'était pas dans son fichier). Deux choses :
+
+## ✅ LA CLÉ `hype_premium` REPOSÉE (le contenu exact de la session 113)
+Même useEffect, même endroit (avant `const value = {` de useApp), mêmes 12 lignes. Voir la section SESSION 113 pour le détail — tout y reste vrai.
+
+## ✅ LA COMMUNAUTÉ EN « PROCHAINEMENT » (décision de Blandine : « trop de trucs à refaire dessus »)
+- **Un seul point d'étranglement : le rendu.** `ecran === "communaute"` rend désormais `EcranCommunauteProchainement` — toutes les portes (nav, cartes, hash `#communaute`) mènent là, aucune n'a été touchée une par une.
+- **`EcranCommunaute` est CONSERVÉ intact** juste en dessous. Pour rouvrir : remettre `EcranCommunaute` sur la ligne du rendu (~21281). Une ligne.
+- L'écran : fond noir Hype, kick turquoise « Prochainement », titre Cinzel « La Communauté », phrase courte, bouton Retour (`retourEcran`, repli dashboard). **6 langues** (fr/en/es/it/ja/de), **exécuté** hors React (rendu ja vérifié + clic Retour).
+- Blocs script au découpage naïf : mêmes 9 faux positifs avant/après (des `</script>` dans des chaînes, cf. 112-113) — rien de cassé.
+
+## 📐 PRÉPARATION FLUTTER
+Le remplacement d'écran par point d'étranglement unique (une ligne au rendu, composant d'origine intact) est exactement le pattern « feature flag » qu'on transposera : aucune amélioration d'architecture nouvelle au-delà, dit honnêtement.
+
+# 🛠️ SESSION 113 · HYPE (09/08) — UNE SEULE CHOSE, POUR LE VERROU DE LINGUAE
+
+## ✅ LA CLÉ `hype_premium` (12 lignes, 1 hunk, 0 supprimée)
+
+`lingo.html` verrouille désormais ses leçons (voir `SUIVI-LINGUAE.md`, session 170) et doit savoir si le compte est Premium — il n'a ni Supabase ni React. `index.html` dépose donc le statut dans le `localStorage` partagé (même domaine) :
+
+- un `useEffect` dans `useApp`, juste avant `const value = {` : écrit `hype_premium` = `"1"`/`"0"`, **même formule que `premium`** (mensuel/annuel/duo/VIP), recalculé sur `[planAbo, profil]`, écriture seulement si la valeur change ;
+- **exécuté** hors React (planAbo="annuel" → pose bien `"1"`) ; le découpage naïf des blocs `<script>` donne les MÊMES 9 faux positifs avant/après (des `</script>` vivent dans des chaînes JS — méthode d'extraction à bornes réelles requise, cf. session 112).
+
+⚠️ Limite assumée : un abonné qui n'a jamais ouvert Hype sur l'appareil n'a pas la clé — il voit le verrou une fois, le bouton l'emmène sur la page d'abonnement où son statut se pose.
+
+## 📐 PRÉPARATION FLUTTER
+
+Un petit pas réel : le statut Premium devient un **contrat explicite inter-modules** (`hype_premium` dans le localStorage, écrit par Hype, lu par Linguae) au lieu d'un état interne — c'est exactement le genre de frontière (Academy/Community) qu'un Repository Flutter reprendra tel quel. Rien d'autre sur cette session.
+
 # 1. parité des jeux de clés
 python3 -c "import json; fr=json.load(open('fr-<id>-<lg>.json')); d=json.load(open('<lg>-<id>.json'));
 print(len(fr),len(d), [k for k in fr if k not in d], [k for k in d if k not in fr])"
