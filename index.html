@@ -20000,6 +20000,35 @@ function CarteEvenementsC(){
     (evs.length>1 ? h("div", { style:{ position:"absolute", right:14, bottom:15, display:"flex", gap:5 } }, evs.map(function(e,i){ var on=(i===(idx%evs.length)); return h("i", { key:i, style:{ width: on?14:5, height:5, borderRadius: on?3:"50%", background: on?"#20D9F5":"rgba(255,255,255,0.32)", boxShadow: on?"0 0 6px #20D9F5":"none", display:"block" } }); })) : null));
 }
 
+/* ⚠️ 09/08/2026 — LA COMMUNAUTE EST FERMEE « PROCHAINEMENT » (decision de
+   Blandine : trop de chantiers dessus, pas le temps). Ce petit ecran la
+   remplace AU RENDU ; EcranCommunaute est conserve intact juste dessous —
+   pour rouvrir, remettre EcranCommunaute a la place de
+   EcranCommunauteProchainement ligne du rendu (« ecran === "communaute" »). */
+function EcranCommunauteProchainement() {
+    var app = useApp(); var retour = app.retourEcran; var setEcran = app.setEcran; var lg = app.langue || "fr";
+    var h = React.createElement;
+    function T(fr,en,es,it,ja,de){ return lg==="en"?en : lg==="es"?(es||en) : lg==="it"?(it||en) : lg==="ja"?(ja||en) : lg==="de"?(de||en) : fr; }
+    return h("div", { style: { minHeight: "100vh", background: "#060709", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 26px", textAlign: "center" } },
+        h("div", { style: { maxWidth: 340 } },
+            h("p", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#20D9F5", fontWeight: 800, margin: "0 0 14px" } },
+                T("Prochainement","Coming soon","Próximamente","Prossimamente","近日公開","Demnächst")),
+            h("h1", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 30, fontWeight: 600, color: "#F4F7FA", margin: "0 0 14px", lineHeight: 1.15 } },
+                T("La Communauté","The Community","La Comunidad","La Community","コミュニティ","Die Community")),
+            h("div", { style: { width: 44, height: 1, margin: "0 auto 16px", background: "linear-gradient(90deg,transparent,#20D9F5,transparent)" } }),
+            h("p", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 13, lineHeight: 1.75, color: "#A7B4BD", margin: "0 0 26px" } },
+                T("On lui prépare une nouvelle maison. Elle rouvre bientôt, en mieux.",
+                  "We are building it a new home. It will reopen soon, better.",
+                  "Le estamos preparando una nueva casa. Reabrirá pronto, mejor.",
+                  "Le stiamo preparando una nuova casa. Riaprirà presto, migliore.",
+                  "新しい姿に生まれ変わる準備をしています。まもなく、より良い形で再開します。",
+                  "Wir bauen ihr ein neues Zuhause. Sie öffnet bald wieder, besser.")),
+            h("button", { onClick: function(){ if (retour) retour(); else setEcran("dashboard"); },
+                style: { fontFamily: "'Montserrat',sans-serif", padding: "13px 30px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.06)", color: "#20D9F5", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer" } },
+                T("Retour","Back","Volver","Indietro","戻る","Zurück"))
+        )
+    );
+}
 function EcranCommunaute() {
     var app = useApp(); var setEcran = app.setEcran; var lg = app.langue || "fr"; var tr = app.tr;
     var h = React.createElement;
@@ -20893,7 +20922,7 @@ function HypeApp() {
         window.addEventListener("popstate", onPop);
         return () => window.removeEventListener("popstate", onPop);
     }, []);
-    /* ⚠️ LINGUAE ▸ LA CLE hype_premium (9 aout 2026, verrou v36 de lingo.html).
+    /* ⚠️ LINGUAE ▸ LA CLE hype_premium (9 aout 2026, verrou v36+ de lingo.html).
        lingo.html vit sur le meme domaine et doit savoir si le compte est
        Premium pour verrouiller ses lecons — il n'a ni Supabase ni React.
        On depose donc le statut dans le localStorage partage, recalcule a
@@ -21290,7 +21319,7 @@ function Router() {
                 ecran === "classement" && React.createElement(EcranClassement, null),
                 ecran === "admin" && React.createElement(EcranAdmin, null),
                 ecran === "monde" && React.createElement(EcranMonde, null),
-                ecran === "communaute" && React.createElement(EcranCommunaute, null),
+                ecran === "communaute" && React.createElement(EcranCommunauteProchainement, null),
                 ecran === "evenement" && React.createElement(EcranEvenement, null),
           ecran === "cavalier" && React.createElement(EcranMonCavalier, null),
                 ecran === "moncavalier" && React.createElement(EcranMonCavalier, null),
@@ -22797,7 +22826,17 @@ function EcranConnexionSpectral() {
         if (reactive) { try { window.__hypeReactive = true; window.dispatchEvent(new Event("hype-compte-reactive")); } catch (eEv) { } }
       } catch (eRe) { }
       try { var r3 = await monProfil(); if (r3 && r3.data) { var d3 = r3.data; setProfil(function (pp) { return Object.assign({}, pp, { pseudo: d3.pseudo || pp.pseudo, prenom: d3.pseudo || pp.prenom, ecurie: d3.ecurie || pp.ecurie, club: d3.ecurie || pp.club, ecurie2: d3.ecurie2 || pp.ecurie2, club2: d3.ecurie2 || pp.club2, email: email, avatar: d3.avatar_url || pp.avatar, avatar_url: d3.avatar_url || pp.avatar_url, histoire: d3.histoire || pp.histoire, ville: d3.ville || pp.ville, ecurie_voix: d3.ecurie_voix || pp.ecurie_voix, ecurie_histoire: d3.ecurie_histoire || pp.ecurie_histoire }); }); } } catch (e) { }
-    } catch (e) { } setEcran("dashboard"); })(); }
+    } catch (e) { }
+    /* ⚠️ LINGUAE ▸ LE RETOUR AU VOYAGE (9 aout 2026, session 115). Les portes
+       du compte de lingo.html (v45) posent hype_retour_linguae = Date.now()
+       avant d'envoyer vers #connexion. Si le drapeau a moins d'UNE HEURE, on
+       ramene le cavalier dans Linguae au lieu du dashboard — sa carte l'attend.
+       Toujours efface, meme perime : les connexions suivantes vont dans Hype. */
+    try { var tLg = parseInt(localStorage.getItem("hype_retour_linguae") || "0", 10);
+      if (tLg) { localStorage.removeItem("hype_retour_linguae");
+        if (Date.now() - tLg < 3600000) { location.href = "./lingo.html"; return; } }
+    } catch (eLg) { }
+    setEcran("dashboard"); })(); }
   function valider() { if (enCours) return; setErreur("");
     var em = email.trim();
     if (!em || !mdp) { setErreur(T("Remplis email et mot de passe.", "Fill in email and password.", "Completa email y contrase\u00f1a.", "Compila email e password.", "\u30e1\u30fc\u30eb\u3068\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3002", "Fülle E-Mail und Passwort aus.")); return; }

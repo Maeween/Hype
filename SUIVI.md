@@ -131,7 +131,14 @@ Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js
 
 ---
 
-## SESSION 112 · LA PROGRESSION DE LINGUAE ENTRE DANS LE COFFRE-FORT
+## SESSION 115 · 09/08 · LE RETOUR AU VOYAGE (Linguae → connexion → Linguae)
+
+Base : session 114. Une seule zone touchée, dans `apresConnexion()` (le point unique par lequel passent connexion ET inscription-après-confirmation) : si `hype_retour_linguae` (posé par les portes du compte de lingo.html v45, valeur = Date.now()) a **moins d'une heure**, le cavalier est ramené vers `./lingo.html` au lieu du dashboard — sa carte l'attend. Le drapeau est **toujours effacé**, même périmé : les connexions suivantes vont normalement dans Hype. Matrice node 5/5 OK (retour frais, drapeau effacé, connexion suivante, périmé, périmé effacé). Pour mémoire, vérifié ce jour : la **suppression de compte existe déjà** (EcranSupprimerCompte, 60 j de grâce, 6 langues, Netlify supprimer-compte.js) — rien de bloquant stores.
+
+## Préparation Flutter
+Contrat inter-modules éclairci : la navigation croisée Hype ↔ Linguae passe par des drapeaux localStorage horodatés à durée de vie courte (`hype_retour_linguae`, 1 h), pas par des URLs à état — pattern réutilisable pour tout futur module satellite.
+
+# SESSION 112 · LA PROGRESSION DE LINGUAE ENTRE DANS LE COFFRE-FORT
 
 **Une seule zone touchée dans `index.html`** : le système de synchronisation des progressions annexes (~ligne 20356). 3 hunks, 89 lignes ajoutées, **0 supprimée**. Rien d'autre.
 

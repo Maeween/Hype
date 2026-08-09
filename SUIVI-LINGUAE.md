@@ -106,6 +106,12 @@ Aucune amélioration d'architecture réalisée sur cette session. Reste à moder
 ---
 
 
+# SESSION 175 · 09/08 · v45 « le retour au voyage »
+
+- `versConnexion()` pose `hype_retour_linguae = Date.now()` avant d'envoyer vers `./index.html#connexion`. Côté index (session 115), `apresConnexion()` ramène vers `lingo.html` si le drapeau a moins d'1 h, et l'efface toujours. Le joueur qui passe une porte du compte revient donc **directement à son voyage**, carte gardée — y compris après une inscription avec confirmation par email, puisqu'il repasse par la connexion.
+- Marqueur : « v45 · le retour au voyage ». Matrice 5/5 OK, node --check OK des deux côtés. **À pousser ensemble : index.html (115) puis lingo.html (v45).**
+- 📌 **Note de Blandine (9 août) : il faudra proposer un accès à Hype quelque part dans Linguae, à un moment donné.** Aujourd'hui lingo.html n'a aucune porte visible vers l'app principale (on n'y va que par les portes du compte ou le paywall). À dessiner : où (carnet ? fin de chapitre ? Collection ?) et sous quelle forme — maquette à proposer avant de coder.
+
 # SESSION 174 · LINGUAE 8 (suite) — 09/08 · v44 « la porte du compte »
 
 **Base : le v43 « les thèmes » de Blandine** (celui de la session 173). Décisions actées ce jour : **A+B**, **B dure**, **Collection ouverte à tous** (les 28 emplacements vides sont la meilleure publicité Premium), message de B « clair mais sympa ».
