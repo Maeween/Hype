@@ -556,11 +556,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  background:#C8A96A;color:#0B0D10;font-size:10px;font-weight:900;display:flex;
  align-items:center;justify-content:center}
 .thBas{display:block;padding:6px 10px 10px}
-.thSur{display:block;font-size:8px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;
- color:#8FA0AB;margin:0 0 4px}
-.thVille{display:block;font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#F4F7FA;
- line-height:1.16;letter-spacing:.02em;margin:0 0 4px}
-.thNat{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#8FA0AB;font-weight:600}
+/* ⚠️ v35 : 8 px de capitales espacees, c'est illisible quel que soit le
+   contraste — la regle des 9 px minimum etait deja ecrite plus haut pour
+   les cartes du carnet, elle vaut ici aussi. */
+.thSur{display:block;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+ color:#C3CFD9;margin:0 0 4px}
+.thVille{display:block;font-family:'Cinzel',serif;font-size:15.5px;font-weight:600;color:#FFFFFF;
+ line-height:1.16;letter-spacing:.02em;margin:0 0 5px}
+.thNat{display:block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#9AA7AF;font-weight:600}
 .thNat .dr{font-size:10px;letter-spacing:0;margin-right:4px}
 /* l'entree depuis le carnet */
 /* ⚠️ v34 : les pastilles themes/collection deviennent DEUX BANDEAUX du meme
