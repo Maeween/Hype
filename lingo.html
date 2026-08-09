@@ -473,6 +473,84 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  color:#C3D0DA;margin:14px auto 9px;display:flex;justify-content:space-between;
  align-items:baseline;gap:12px;max-width:274px;padding:0 8px}
 #ouvLangPhrase span{white-space:nowrap}
+
+/* ==================================================================
+   LES THEMES D'APPRENTISSAGE — 9 aout 2026 (v32)
+   ⚠️ z-index 42 : au-dessus du carnet (40). 4e occurrence du piege de la
+   session 128 — un ecran ouvert depuis le carnet et laisse en dessous se
+   construit dans le vide et le bouton parait mort.
+   ================================================================== */
+#themes{position:fixed;inset:0;z-index:42;background:#000;display:none;overflow-y:auto;
+ -webkit-overflow-scrolling:touch}
+#themes.on{display:block}
+#thFermer{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:12px;z-index:4;
+ width:38px;height:38px;border-radius:99px;border:1px solid rgba(255,255,255,.16);
+ background:rgba(0,0,0,.55);color:#F4F7FA;font-size:17px;line-height:1;cursor:pointer;
+ backdrop-filter:blur(6px)}
+#thTete{position:relative;background:#000}
+#thImg{width:100%;display:block;background:#000}
+#thVoile{position:absolute;left:0;right:0;bottom:0;height:54%;pointer-events:none;
+ background:linear-gradient(to top,rgba(0,0,0,.96) 3%,rgba(0,0,0,.5) 46%,transparent)}
+#thTitres{position:absolute;left:0;right:0;bottom:14px;text-align:center;padding:0 22px;z-index:2}
+#thTitres .kick,#thTitres h2,#thTitres .cpt{text-shadow:0 2px 18px rgba(0,0,0,.96)}
+#thTitres .kick{font-size:8.5px;letter-spacing:.34em;text-transform:uppercase;
+ color:var(--turq);font-weight:800;margin:0 0 9px}
+#thTitres h2{font-family:'Cinzel',serif;font-size:21px;line-height:1.2;font-weight:700;
+ margin:0;letter-spacing:.1em;text-transform:uppercase;color:#F4F7FA}
+#thTitres .trait{width:40px;height:1px;margin:11px auto 9px;
+ background:linear-gradient(90deg,transparent,#C8A96A,transparent)}
+#thTitres .cpt{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#8B99A2;
+ margin:0;font-weight:600}
+/* la bande des familles : un filet dessus, un filet dessous, 17 px de chaque
+   cote. ⚠️ line-height:0 sur la rangee et 1 sur les boutons : sans ca, la
+   place reservee aux jambages ajoute quelques pixels SOUS les boutons et les
+   deux cotes ne sont plus egaux. Et elle n'est PAS collante — un element
+   collant avec un fond laisse une bande fantome pendant le defilement. */
+#thFam{position:static;background:#000;padding:17px 0;margin-top:30px;line-height:0;
+ border-top:1px solid rgba(255,255,255,.065);border-bottom:1px solid rgba(255,255,255,.065)}
+#thFamIn{display:flex;gap:6px;overflow-x:auto;padding:0 14px;line-height:0}
+#thFamIn::-webkit-scrollbar{display:none}
+#thFamIn button{flex:0 0 auto;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:700;
+ letter-spacing:.13em;text-transform:uppercase;padding:6px 12px;border-radius:99px;line-height:1;
+ background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#8A99A1;cursor:pointer}
+#thFamIn button.actif{background:rgba(200,169,106,.1);border-color:rgba(200,169,106,.45);color:#C8A96A}
+#thZone{max-width:440px;margin:0 auto;padding:0 14px 46px;background:#000}
+.thGrp{margin:44px 0 0;scroll-margin-top:20px}
+.thGrp:first-child{margin-top:42px}
+.thGt{display:flex;flex-direction:column;align-items:center;gap:9px;margin:0 0 17px}
+.thGt i{width:64px;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,106,.55),transparent)}
+.thGt span{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:#C8A96A}
+.thG{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}
+.thT{position:relative;background:#0B1017;border:1px solid rgba(255,255,255,.07);border-radius:13px;
+ cursor:pointer;text-align:left;width:100%;display:block;font-family:'Montserrat',sans-serif;
+ overflow:hidden;padding:0}
+.thT:active{border-color:rgba(32,217,245,.4)}
+/* ⚠️ display:block OBLIGATOIRE : c'est un <span>, donc inline par defaut, et
+   une hauteur est IGNOREE sur un element inline. Sans ca le bandeau s'ecrase
+   a zero : plus d'image, plus d'etoile, et le ✓ retombe sur le titre. */
+.thBand{display:block;position:relative;height:76px;overflow:hidden}
+.thVig{position:absolute;inset:0;background-size:cover;background-position:center 42%}
+.thVig.pas{filter:grayscale(1) brightness(.3)}
+.thFondu{position:absolute;left:0;right:0;bottom:0;height:34px;z-index:1;
+ background:linear-gradient(to top,#0B1017,rgba(11,16,23,0))}
+.thTec{position:absolute;top:7px;left:8px;z-index:3;font-size:9px;font-weight:700;color:#EAF0F4;
+ letter-spacing:.03em;background:rgba(0,0,0,.62);border-radius:99px;padding:2px 7px;
+ text-shadow:0 1px 4px rgba(0,0,0,.9)}
+.thOk{position:absolute;top:7px;right:8px;z-index:3;width:17px;height:17px;border-radius:99px;
+ background:#C8A96A;color:#0B0D10;font-size:10px;font-weight:900;display:flex;
+ align-items:center;justify-content:center}
+.thBas{display:block;padding:6px 10px 10px}
+.thSur{display:block;font-size:8px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;
+ color:#66737C;margin:0 0 4px}
+.thVille{display:block;font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#F4F7FA;
+ line-height:1.16;letter-spacing:.02em;margin:0 0 4px}
+.thNat{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#66737C;font-weight:600}
+.thNat .dr{font-size:10px;letter-spacing:0;margin-right:4px}
+/* l'entree depuis le carnet */
+#ouvThemes{display:block;width:100%;margin:0 0 10px;padding:13px;border-radius:99px;
+ background:rgba(32,217,245,.06);border:1px solid rgba(32,217,245,.4);color:#20D9F5;
+ font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;
+ text-transform:uppercase;cursor:pointer}
 /* la paire de langues : je lis -> j'apprends (v22) */
 /* ⚠️ ECARTES le 8 aout 2026, demande de Blandine : « on pourrait pousser
    plus a gauche et plus a droite la langue dans laquelle on lit et celle
@@ -1409,6 +1487,25 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <button id="ouvLangue" type="button"><span class="dp"></span><i></i></button>
     </div>
     <div id="ouvDrapeaux" aria-label="Choisir sa langue de lecture"></div>
+<!-- ⚠️ LES THEMES D'APPRENTISSAGE (v32). L'image themes-hero.webp doit etre
+     poussee a cote de lingo.html ; en son absence le cadre reste noir, la page
+     fonctionne quand meme. -->
+<div id="themes">
+  <button id="thFermer" type="button" aria-label="fermer">&#10005;</button>
+  <div id="thTete">
+    <img id="thImg" alt="">
+    <div id="thVoile"></div>
+    <div id="thTitres">
+      <p class="kick">Hype Linguae</p>
+      <h2 id="thTitre">Les thèmes d'apprentissage</h2>
+      <div class="trait"></div>
+      <p class="cpt" id="thCpt"></p>
+    </div>
+  </div>
+  <div id="thFam"><div id="thFamIn"></div></div>
+  <div id="thZone"></div>
+</div>
+
     <button id="ouvMuet" type="button">🔇 mode sans le son : non</button>
     <!-- ⚠️ MARQUEUR DE VERSION, 7 aout 2026. Blandine deploie depuis un
          telephone et n'a aucun moyen de savoir quelle version tourne
@@ -1416,7 +1513,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v31 · paire</p>
+    <p id="ouvVersion">v32 · themes</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -2845,11 +2942,196 @@ var NIVEAU_VILLE = {
   santaynez:3
 };
 function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
+/* ==================================================================
+   LES THEMES D'APPRENTISSAGE — 9 aout 2026 (v32)
+
+   Les tuiles sont GENEREES depuis ETAPE_SRC. C'est ce qui a revele que le
+   guide precedent n'affichait que 10 themes sur 22 : douze etaient invisibles,
+   donc treize villes n'apparaissaient nulle part.
+
+   ⚠️ Verifie le 9 aout en rejouant le moteur sur les donnees du fichier :
+   31 villes, 31 tuiles, 22 themes, AUCUNE ville sans theme. (J'avais annonce
+   a tort qu'Aix-la-Chapelle n'avait pas de theme — elle est bien rattachee a
+   `obstacle`, avec Hickstead. Mon extraction d'a-cote avait perdu une entree.)
+
+   TECHNICITE : note de 1 a 5, par VILLE et non par theme — Windsor et Saumur
+   sont tous deux du travail sur le plat et n'ont pas le meme niveau.
+   ⚠️ Ces notes sont un BROUILLON a corriger par Blandine. Deux repères donnés
+   par elle : Saumur au maximum, les cross a 4.
+   ================================================================== */
+var TH_FAMILLES = [
+  { cles:["arrivee","balade","urgences","vente"],
+    nom:{fr:"Au club", en:"At the club", es:"En el club", it:"Al club", de:"Im Verein", ja:"クラブで"} },
+  { cles:["pansage","materiel","ecurie","cheval","horsemanship","elevage","haras"],
+    nom:{fr:"À pied", en:"On the ground", es:"A pie", it:"Da terra", de:"Am Boden", ja:"地上から"} },
+  { cles:["cours","dressage","obstacle","cross"],
+    nom:{fr:"À cheval", en:"In the saddle", es:"A caballo", it:"In sella", de:"Im Sattel", ja:"馬上で"} },
+  { cles:["concours","poney","polo","western","endurance","tradition","froid"],
+    nom:{fr:"Les disciplines", en:"The disciplines", es:"Las disciplinas", it:"Le discipline", de:"Die Disziplinen", ja:"各種目"} }
+];
+
+var TH_LIB = {
+  arrivee:{fr:"arriver dans un club",en:"arrive at a riding school",es:"llegar a un club",it:"arrivare in un club",de:"im Reitverein ankommen",ja:"乗馬クラブに着く"},
+  balade:{fr:"réserver une balade",en:"book a ride out",es:"reservar un paseo",it:"prenotare una passeggiata",de:"einen Ausritt buchen",ja:"外乗を予約する"},
+  urgences:{fr:"gérer une urgence",en:"handle an emergency",es:"gestionar una urgencia",it:"gestire un'emergenza",de:"einen Notfall bewältigen",ja:"緊急事態に対応する"},
+  vente:{fr:"acheter un cheval",en:"buy a horse",es:"comprar un caballo",it:"comprare un cavallo",de:"ein Pferd kaufen",ja:"馬を買う"},
+  pansage:{fr:"panser ton cheval",en:"groom your horse",es:"cepillar tu caballo",it:"governare il tuo cavallo",de:"dein Pferd putzen",ja:"馬を手入れする"},
+  materiel:{fr:"parler du matériel",en:"talk tack",es:"hablar de equipo",it:"parlare di attrezzatura",de:"über Ausrüstung sprechen",ja:"馬具について話す"},
+  ecurie:{fr:"visiter une écurie",en:"visit a yard",es:"visitar una cuadra",it:"visitare una scuderia",de:"einen Stall besichtigen",ja:"厩舎を見学する"},
+  cheval:{fr:"décrire un cheval",en:"describe a horse",es:"describir un caballo",it:"descrivere un cavallo",de:"ein Pferd beschreiben",ja:"馬を描写する"},
+  horsemanship:{fr:"faire du horsemanship",en:"practise horsemanship",es:"practicar doma natural",it:"praticare il horsemanship",de:"Horsemanship üben",ja:"ホースマンシップを学ぶ"},
+  elevage:{fr:"parler élevage",en:"talk breeding",es:"hablar de cría",it:"parlare di allevamento",de:"über Zucht sprechen",ja:"繁殖について話す"},
+  haras:{fr:"visiter un haras",en:"visit a stud farm",es:"visitar una yeguada",it:"visitare un allevamento",de:"ein Gestüt besuchen",ja:"牧場を訪ねる"},
+  cours:{fr:"suivre un cours",en:"take a lesson",es:"tomar una clase",it:"seguire una lezione",de:"an einer Reitstunde teilnehmen",ja:"レッスンを受ける"},
+  dressage:{fr:"travailler sur le plat",en:"work on the flat",es:"trabajar en el plano",it:"lavorare in piano",de:"auf dem Platz arbeiten",ja:"平地で調馬する"},
+  obstacle:{fr:"sauter un obstacle",en:"jump a fence",es:"saltar un obstáculo",it:"saltare un ostacolo",de:"ein Hindernis springen",ja:"障害を飛ぶ"},
+  cross:{fr:"marcher un cross",en:"walk a cross-country course",es:"recorrer un cross",it:"ricognire un cross",de:"einen Geländeparcours abgehen",ja:"クロスカントリーを下見する"},
+  concours:{fr:"t'engager en concours",en:"enter a show",es:"inscribirte en un concurso",it:"iscriverti a un concorso",de:"bei einem Turnier nennen",ja:"競技会に申し込む"},
+  poney:{fr:"équitation poney",en:"pony riding",es:"equitación con ponis",it:"equitazione con i pony",de:"Ponyreiten",ja:"ポニーの乗馬"},
+  polo:{fr:"jouer au polo",en:"play polo",es:"jugar al polo",it:"giocare a polo",de:"Polo spielen",ja:"ポロをする"},
+  western:{fr:"monter western",en:"ride western",es:"montar western",it:"montare western",de:"Westernreiten",ja:"ウエスタンで乗る"},
+  endurance:{fr:"partir en endurance",en:"ride endurance",es:"hacer raid",it:"fare endurance",de:"Distanzreiten",ja:"エンデュランスに出る"},
+  tradition:{fr:"découvrir une tradition",en:"discover a tradition",es:"descubrir una tradición",it:"scoprire una tradizione",de:"eine Tradition entdecken",ja:"伝統を知る"},
+  froid:{fr:"monter par grand froid",en:"ride in deep cold",es:"montar con frío intenso",it:"montare col grande freddo",de:"bei strengem Frost reiten",ja:"厳寒の中で乗る"}
+};
+
+var TH_TXT = {
+  titre:{fr:"Les thèmes d'apprentissage",en:"The learning themes",es:"Los temas de aprendizaje",it:"I temi di apprendimento",de:"Die Lernthemen",ja:"学習テーマ"},
+  themes:{fr:"thèmes",en:"themes",es:"temas",it:"temi",de:"Themen",ja:"テーマ"},
+  villes:{fr:"villes",en:"towns",es:"ciudades",it:"città",de:"Städte",ja:"都市"},
+  nations:{fr:"nations",en:"nations",es:"naciones",it:"nazioni",de:"Nationen",ja:"国"}
+};
+
+var TH_TECH = {
+  labaule:2, maurice:1, connemara:2, newmarket:3, lambourn:3, aberystwyth:2,
+  kildare:3, walsall:3, hickstead:4, badminton:4, windsor:4, burghley:4,
+  edimbourg:3, saumur:5, lamotte:2, golega:4, jerez:4, seville:3, vejer:2,
+  oliva:3, rome:3, verone:3, dubai:4, tokyo:4, tamworth:3, buenos:4,
+  lexington:4, santaynez:5, spruce:4, warendorf:4, aachen:5
+};
+
+/* les pavillons : il n'existait aucune table de drapeaux par nation dans le
+   fichier (LG_DRAPEAU est par LANGUE, pas par pays). ⚠️ Angleterre, Ecosse et
+   Pays de Galles utilisent les drapeaux de sous-division (suite de balises),
+   qui s'affichent sur iOS mais pas partout. */
+var TH_PAVILLON = {
+  "France":"\uD83C\uDDEB\uD83C\uDDF7", "Maurice":"\uD83C\uDDF2\uD83C\uDDFA",
+  "Irlande":"\uD83C\uDDEE\uD83C\uDDEA", "Portugal":"\uD83C\uDDF5\uD83C\uDDF9",
+  "Espagne":"\uD83C\uDDEA\uD83C\uDDF8", "Italie":"\uD83C\uDDEE\uD83C\uDDF9",
+  "Allemagne":"\uD83C\uDDE9\uD83C\uDDEA", "\u00c9mirats":"\uD83C\uDDE6\uD83C\uDDEA",
+  "Japon":"\uD83C\uDDEF\uD83C\uDDF5", "Australie":"\uD83C\uDDE6\uD83C\uDDFA",
+  "Argentine":"\uD83C\uDDE6\uD83C\uDDF7", "\u00c9tats-Unis":"\uD83C\uDDFA\uD83C\uDDF8",
+  "Canada":"\uD83C\uDDE8\uD83C\uDDE6",
+  "Angleterre":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
+  "\u00c9cosse":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC73\uDB40\uDC63\uDB40\uDC74\uDB40\uDC7F",
+  "Pays de Galles":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC77\uDB40\uDC6C\uDB40\uDC73\uDB40\uDC7F"
+};
+
+function thL(o){ var l=langueUI(); return (o && (o[l]||o.fr)) || ""; }
+function thMaj(t){ return t ? t.charAt(0).toUpperCase()+t.slice(1) : t; }
+
+/* les villes d'un theme, avec leur index dans ETAPES (partirVersVille en a
+   besoin) — lues dans ETAPE_SRC, jamais ecrites de memoire. */
+function thVillesDe(cle){
+  var out=[];
+  ETAPES.forEach(function(e,i){
+    var src=ETAPE_SRC[e.ref]||[];
+    if(src.some(function(x){ return x[0]===cle; })) out.push({e:e, i:i});
+  });
+  return out;
+}
+
+var thFait=false, thLangue=null;
+function construireThemes(){
+  var lg=langueUI();
+  if(thFait && thLangue===lg) return;
+  thFait=true; thLangue=lg;
+
+  var img=S("thImg");
+  if(img && !img.getAttribute("src")) img.src="themes-hero.webp"+VER;
+  if(S("thTitre")) S("thTitre").textContent=thL(TH_TXT.titre);
+
+  var z=S("thZone"); if(!z) return;
+  videEl(z);
+  var fam=S("thFamIn"); if(fam) videEl(fam);
+  var cartes={};
+  try{ cartes=JSON.parse(localStorage.getItem("hype_lingua_cartes")||"{}")||{}; }catch(e){}
+  var nbT=0, nbV=0, nats={};
+
+  TH_FAMILLES.forEach(function(f, fi){
+    var grp=el("div",{class:"thGrp"}); grp.id="thG"+fi;
+    var gt=el("div",{class:"thGt"});
+    gt.appendChild(el("i",{}));
+    gt.appendChild(el("span",{text:thL(f.nom)}));
+    grp.appendChild(gt);
+    var g=el("div",{class:"thG"});
+    var vide=true;
+    f.cles.forEach(function(cle){
+      var sur=thMaj(thL(TH_LIB[cle]));
+      thVillesDe(cle).forEach(function(x){
+        vide=false; nbV++; nats[x.e.nat]=1;
+        var gagnee=!!cartes[x.e.ref];
+        var t=TH_TECH[x.e.ref]||3;
+        var b=el("button",{class:"thT", onclick:function(){ fermerThemes(); partirVersVille(x.i); }});
+        var band=el("span",{class:"thBand"});
+        var vig=el("span",{class:"thVig"+(gagnee?"":" pas")});
+        vig.style.backgroundImage='url("carte-'+x.e.ref+'.webp'+VER+'"),linear-gradient(160deg,'+x.e.ciel[0]+','+x.e.ciel[1]+')';
+        band.appendChild(vig);
+        band.appendChild(el("span",{class:"thFondu"}));
+        band.appendChild(el("span",{class:"thTec", text:"\u2605 "+t}));
+        if(gagnee) band.appendChild(el("span",{class:"thOk", text:"\u2713"}));
+        b.appendChild(band);
+        var bas=el("span",{class:"thBas"});
+        bas.appendChild(el("span",{class:"thSur", text:sur}));
+        bas.appendChild(el("span",{class:"thVille", text:eV(x.e)}));
+        var nat=el("span",{class:"thNat"});
+        nat.appendChild(el("span",{class:"dr", text:TH_PAVILLON[x.e.nat]||""}));
+        nat.appendChild(document.createTextNode(eNat(x.e)));
+        bas.appendChild(nat);
+        b.appendChild(bas);
+        g.appendChild(b);
+      });
+      if(TH_LIB[cle]) nbT++;
+    });
+    if(vide) return;
+    grp.appendChild(g);
+    z.appendChild(grp);
+    if(fam){
+      var bf=el("button",{type:"button", text:thL(f.nom), onclick:function(){
+        var c=S("thG"+fi); if(c) c.scrollIntoView({behavior:"smooth", block:"start"});
+        Array.prototype.forEach.call(fam.children,function(k){ k.classList.remove("actif"); });
+        bf.classList.add("actif");
+      }});
+      fam.appendChild(bf);
+    }
+  });
+  if(S("thCpt")) S("thCpt").textContent =
+    nbT+" "+thL(TH_TXT.themes)+" \u00b7 "+nbV+" "+thL(TH_TXT.villes)
+    +" \u00b7 "+Object.keys(nats).length+" "+thL(TH_TXT.nations);
+}
+
+function ouvrirThemes(){
+  construireThemes();
+  S("themes").classList.add("on");
+  S("themes").scrollTop=0;
+  /* ⚠️ C'EST CE PUSHSTATE QUI FAIT MARCHER LE GESTE DE RETOUR. Le popstate
+     existait deja mais personne ne poussait d'etat : il n'y avait rien a quoi
+     revenir. */
+  try{ history.pushState({ecran:"themes"}, ""); }catch(e){}
+}
+function fermerThemes(){ S("themes").classList.remove("on"); }
+
 
 (function(){
   var b=document.getElementById("carnet");
   if(!b) return;
   /* la collection depuis l'accueil (demande de Blandine, 8 août) */
+  /* ⚠️ LES THEMES AVANT LA COLLECTION (demande de Blandine). */
+  var bt=document.createElement("button"); bt.id="ouvThemes"; bt.type="button";
+  bt.textContent=thL(TH_TXT.titre);
+  bt.addEventListener("click", function(){ ouvrirThemes(); });
+  b.appendChild(bt);
+
   var bc=document.createElement("button"); bc.id="ouvColl"; bc.type="button";
   bc.textContent="\uD83C\uDFB4  "+(langueUI()==="en"?"My collection":"Ma collection");
   bc.addEventListener("click", function(){ ouvrirCollection(); });
@@ -2858,30 +3140,10 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
   /* « comment ça marche » : le mode d'emploi + le guide des besoins,
      généré depuis ETAPE_SRC — chaque ligne dit « tu veux… → va à… »
      avec les VRAIES villes du chapitre, jamais une liste de mémoire. */
-  var GUIDE=[
-    {cle:"arrivee",  fr:"t'inscrire dans un club",        en:"join a riding school"},
-    {cle:"balade",   fr:"réserver une balade",            en:"book a ride out"},
-    {cle:"urgences", fr:"faire face à un pépin",          en:"handle an emergency"},
-    {cle:"cours",    fr:"suivre un cours",                en:"follow a lesson"},
-    {cle:"cheval",   fr:"décrire un cheval",              en:"describe a horse"},
-    {cle:"materiel", fr:"parler du matériel",             en:"talk tack"},
-    {cle:"concours", fr:"t'engager en concours",          en:"enter a show"},
-    {cle:"vente",    fr:"acheter un cheval",              en:"buy a horse"},
-    {cle:"elevage",  fr:"parler élevage",                 en:"talk breeding"},
-    {cle:"cross",    fr:"marcher un cross",               en:"walk a cross-country course"}
-  ];
   /* ⚠️ L'INDEX EST REMONTE (8 aout 2026, v30). partirVersVille() prend un
      index dans ETAPES, pas une ref : l'ancienne version le jetait, ce qui
      obligeait a passer par ouvrirLecon(ref) — et cette porte-la s'ouvre
      DERRIERE le carnet. Voir le commentaire du bouton ci-dessous. */
-  function villesDe(cle){
-    var out=[];
-    ETAPES.forEach(function(e,i){
-      var src=ETAPE_SRC[e.ref]||[];
-      if(src.some(function(x){ return x[0]===cle; })) out.push({ref:e.ref, nom:eV(e), i:i});
-    });
-    return out;
-  }
   var pliOuvert=false;
   /* libelle du plieur : il etait ecrit deux fois a l'identique, donc a
      retoucher deux fois. Une seule source, et la traduction se posera ici. */
@@ -2902,32 +3164,11 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
   pz.appendChild(el("p",{class:"gTxt", text: uiG==="en"
     ? "One language, one round-the-world trip. Each city teaches the words of one real situation; finish its lesson to win the postcard, its quiz to win the keepsake."
     : "Une langue, un tour du monde. Chaque ville t'apprend les mots d'une vraie situation ; finis sa leçon pour gagner la carte postale, son quiz pour gagner le souvenir."}));
-  pz.appendChild(el("p",{class:"gTitre", text: uiG==="en"?"Where do I start ? You want to\u2026":"Par où commencer ? Tu veux\u2026"}));
-  GUIDE.forEach(function(g){
-    var v=villesDe(g.cle);
-    if(!v.length) return;
-    var ligne=el("p",{class:"gLigne"});
-    ligne.appendChild(el("b",{text:(uiG==="en"?g.en:g.fr)+" \u2192 "}));
-    v.forEach(function(x,i){
-      if(i) ligne.appendChild(document.createTextNode(" \u00b7 "));
-      /* ⚠️ CORRIGE (8 aout 2026, v30) : « ca n'a pas marche de cliquer sur les
-         villes ». Le clic marchait, la LECON s'ouvrait — mais #lecon est en
-         z-index 26 et le carnet #ouverture en 40, et rien n'escamotait le
-         carnet. La lecon se construisait derriere, invisible : bouton mort a
-         l'usage. ouvrirLecon() n'etait legitime que depuis la page d'arrivee.
-         3e occurrence du piege de la session 128.
-         REGLE : tout ecran ouvert depuis le carnet passe au-dessus de 40 ou
-         escamote le carnet. partirVersVille() fait le second, dans le bon
-         ordre (arrivee ouverte AVANT le masquage, lecon du flash, session 99).
-         On arrive dans la ville, la lecon s'ouvre de la — « la ville puis la
-         lecon », decision de Blandine. */
-      ligne.appendChild(el("button",{class:"gVille", onclick:function(){
-        if(pliOuvert){ pliOuvert=false; pz.style.display="none"; pb.textContent=libelleGuide()+"  +"; }
-        partirVersVille(x.i);
-      }}, x.nom));
-    });
-    pz.appendChild(ligne);
-  });
+  /* ⚠️ LA LISTE DU GUIDE EST RETIREE ICI le 9 aout 2026 : elle est remplacee
+     par l'ecran « Les thèmes d'apprentissage », qui montre les 22 themes et
+     les 30 villes au lieu de 10 themes. Le mode d'emploi ci-dessus reste :
+     Blandine voulait separer l'explication (qu'on lit une fois) de l'index
+     (auquel on revient). */
   }
   pz.style.display="none";
   b.appendChild(pb); b.appendChild(pz);
@@ -6457,7 +6698,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v31 · paire · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v32 · themes · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -6628,6 +6869,7 @@ lastI=-1;
    Le bouton rouvre le carnet de route. Quand Lingo sera embarqué dans
    Hype, c'est ici qu'on appellera HYPE_LINGO_HOST.quitter(). */
 S("retour").addEventListener("click", function(){
+  if(S("themes") && S("themes").classList.contains("on")){ fermerThemes(); return; }
   if(S("lecon").classList.contains("on")){ fermerLecon(); montrerCarnet(); return; }
   if(S("arrivee").classList.contains("ouvert")){ fermerArrivee(); montrerCarnet(); return; }
   /* meme sortie que la fin du film : le carnet de route, video arretee
@@ -6637,6 +6879,7 @@ S("retour").addEventListener("click", function(){
 
 /* le bouton matériel « retour » du téléphone et le geste de balayage */
 window.addEventListener("popstate", function(){
+  if(S("themes") && S("themes").classList.contains("on")){ fermerThemes(); return; }
   if(S("lecon").classList.contains("on")){ fermerLecon(); montrerCarnet(); }
   else if(S("arrivee").classList.contains("ouvert")){ fermerArrivee(); montrerCarnet(); }
 });
@@ -6731,7 +6974,8 @@ function lancerFilm(){
     var j=v.play();
     if(j&&j.catch) j.catch(function(){ S("ouvFilm").classList.add("refuse"); });
   });
-  S("ouvPasser").addEventListener("click",terminerOuverture);
+  S("thFermer").addEventListener("click", fermerThemes);
+S("ouvPasser").addEventListener("click",terminerOuverture);
   S("ouvSuite").addEventListener("click",terminerOuverture);
   /* « Partir », sur le carnet, est maintenant la DERNIERE marche de la
      sequence : il ouvre le globe. Ce n'est plus lui qui lance le film. */
