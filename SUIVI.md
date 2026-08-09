@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 09/08/2026 (SESSION 116 · LE BLOCAGE DU DÉFILEMENT SUR ANDROID) — md5 `0c8a83cfb7339027da51564a7ec68656`, 9140372 octets. Base : le fichier fourni par Blandine en séance, qui contenait déjà la 115 (`hype_retour_linguae` présent 3 fois — vérifié avant toute modification). Diff : 3 zones, +3 266 octets, fonctions 913 → 916 (les 3 helpers du verrou), const 390 → 390. Aucune preview. Aucun SQL. `hype-cours-baby.js` inchangé.**
+**Version actuelle de l'index.html : 09/08/2026 (SESSION 117b · PUITS TACTILES — `overflow:clip`, LE VRAI REMÈDE) — md5 `cb39d279012b7f034b17cd7d5353c5d1`, 9155346 octets. Base : le fichier de Blandine (mon lot 1 + la session 116 parrainage, préservée : `codeParrain` 3, `shortcuts` 3). Diff : 6 zones, +11 351 octets, fonctions 916 → 917. Panneau de diagnostic **remis, dormant**. Aucune preview. Aucun SQL. `hype-cours-baby.js` inchangé.**
+
+**⚠️ COLLISION DE NUMÉROTATION 116 :** deux sessions ont pris le 116 le 09/08 — celle du parrainage (dans le fichier de Blandine) et la mienne (défilement Android). J'ai renuméroté la mienne en **117** et laissé le 116 à celle du parrainage. Le prochain numéro libre est **118**.
 
 **Note de numérotation :** l'en-tête est resté sur la 114 alors que la session 115 (retour au Voyage, `apresConnexion()`) était bien dans le fichier de Blandine. La 115 n'est donc pas perdue, seulement non consignée en tête. La présente session prend le 116.
 
@@ -138,7 +140,7 @@ Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js
 
 ---
 
-## SESSION 116 · 09/08 · LE BLOCAGE DU DÉFILEMENT SUR ANDROID
+## SESSION 117 · 09/08 · LE BLOCAGE DU DÉFILEMENT SUR ANDROID — CAUSE RÉELLE TROUVÉE
 
 Signalé en urgence par Blandine : **plus de défilement sur Android, alors que tout va bien sur iPhone.** Symptôme affiné en cours de séance, et c'est lui qui a tout décidé : **le défilement ne répond que si le geste démarre sur la barre de menu du bas** ; depuis le contenu, image totalement figée. Sur **tous** les écrans. Constaté après une fermeture complète de l'appli.
 
@@ -165,8 +167,44 @@ Deux tests décisifs avaient été proposés (l'écran Galops, seul écran où l
 ### VÉRIFICATION
 `node --check` sur le bloc principal (25 300 lignes extraites entre les balises) : OK. Contrôle de non-régression de syntaxe sur **tous** les blocs inline, comparé au fichier de départ : signature d'erreurs identique (les seules « erreurs » sont les faux positifs du découpeur sur les `<script>` contenus dans les chaînes des iframes). `prevOverflow` : 0 occurrence restante. `hypeVerrouScroll` 4, `hypeDeverrouScroll` 2, `hypeFiletScroll` 4, `data-hype-zoom` 3, `data-hype-filigrane` 2. Pas de vérification Playwright (mode rapide, correctif ciblé sans nouvelle page ni nouvelle image).
 
+### 🎯 CAUSE RÉELLE — LES PUITS TACTILES (trouvée avec le panneau, sur l'Android de Blandine)
+Mes deux premières hypothèses (verrou fantôme, filigrane) étaient des bugs réels mais **pas la cause**. Le panneau de diagnostic l'a établi en deux captures :
+- `touchmove annulé par du JS : non` → aucun `preventDefault` en cause.
+- `ta=auto` sur toute la chaîne → aucun `touch-action` en cause.
+- `body inline='' verrou=0` → le verrou était bien innocent.
+- et pourtant `scrollHeight=3387` contre `innerHeight=718`, soit 2 669 px à défiler, sans que la page bouge.
+
+**Le mécanisme :** une boîte en `overflow:hidden` dont le contenu **déborde vers la droite ou vers le bas** reste un conteneur de défilement aux yeux de **Chrome Android**. Le geste s'y accroche, la boîte ne peut pas défiler puisqu'elle est `hidden`, et Chrome **ne rend pas** le geste à la page : rien ne bouge, sans aucune trace ni en JS ni en `touch-action`. **WebKit (iPhone) ne s'accroche pas de cette façon** — d'où un bug totalement invisible sur iOS et bloquant sur Android. C'est l'asymétrie que je cherchais depuis le début.
+
+**Les deux puits identifiés en direct :**
+- `.filann-b .mask` — le fil d'annonces : piste en `width:max-content`, débordement énorme sous un `overflow:hidden`.
+- `header.hero.rv` — **le bandeau photo d'accueil : `sw/cw = 556/360`**, soit 196 px de débordement à droite, sur les 570 premiers pixels de l'écran. Tous les écrans commencent par un bandeau bâti sur ce modèle : voilà pourquoi le blocage paraissait universel, et pourquoi seule la barre du bas (qui n'est pas un de ces bandeaux) laissait défiler.
+
+**CORRECTIF GLOBAL — `hypeLibererPuitsTactiles()`** (posée avant `Router`, rejouée à chaque changement d'écran via `requestAnimationFrame` + deux relances à 900 ms et 2 600 ms pour les contenus qui arrivent de Supabase) : balayage du DOM qui repère toute boîte dont l'`overflow` est caché **alors que son contenu déborde**, et lui pose `touch-action: pan-y`. Le défilement vertical revient toujours à la page.
+Garde-fous, vérifiés par simulation sur 7 boîtes représentatives : les rails horizontaux volontaires (`overflow-x: auto/scroll` — manège, rail des chevaux, listes de modale) sont **ignorés** ; un `touch-action` déjà posé explicitement (canvas du globe, visionneuse pincée) est **respecté** ; une carte Spectral normale n'est même pas examinée puisque rien ne déborde ; les décors posés en négatif (les reflets à `left:-90px`) ne créent **pas** de puits, un débordement vers la gauche n'étant pas atteignable. Marquage `el.__hypePuits` pour ne traiter chaque nœud qu'une fois. **Aucune modification de design, aucune animation Spectral retirée.**
+En ceinture, `.filann-b .mask` et `.filann-b .trk` reçoivent aussi `touch-action: pan-y` directement en CSS.
+
+**Sur le brief d'audit :** le `body { touch-action: pan-y }` qui y était suggéré n'a **pas** été appliqué — il aurait cassé tous les rails horizontaux de l'app. Le brief disait lui-même de ne pas l'appliquer aveuglément.
+
+### PANNEAU DE DIAGNOSTIC — encore présent, dormant
+Bloc autonome en fin de fichier, **entièrement inerte** par défaut : aucun élément créé, aucun écouteur posé. Allumage par `?debug=scroll` (mémorisé, PWA comprise), extinction par `?debug=off`. Il rapporte : `defaultPrevented` sur `touchmove`, de quoi défiler (`scrollHeight` vs `innerHeight`), le conteneur qui porte le défilement, la chaîne complète sous le doigt avec `overflow` / `height` / `position` / `touch-action` / `pointer-events` / `sh-ch` / **`sw-cw`**, le premier parent qui interdit le vertical, et `<<< PUITS TACTILE` sur chaque boîte fautive. Verdict final au relâchement du doigt : `doigt Xpx, page déplacée de Ypx => OK/BLOQUÉ`.
+**Erreur de ma part corrigée en séance :** je mesurais d'abord le déplacement dès le premier `touchmove`, ce qui donnait un faux « BLOQUÉ » — Chrome n'a pas encore commencé à défiler à cet instant. La mesure se fait désormais au relâchement.
+- [x] **RETIRÉ** le 09/08 après confirmation par capture : `ta=pan-y` appliqué sur `header.hero.rv`, « aucun puits ni blocage touch-action dans cette chaîne », `scrollTop=56`. Le bloc entier (7 695 octets) est parti. Sa spécification complète reste écrite ci-dessus : il peut être reconstruit à l'identique en une intervention si un blocage tactile réapparaît.
+
+### AUDIT COMPLET DU FICHIER (demandé par le brief, chiffres relevés)
+`body.style.overflow` manipulé : 1 seul endroit fonctionnel (la visionneuse). `documentElement.style.overflow` : jamais. Classes `no-scroll`/`modal-open` : 0. `preventDefault` sur `touchmove` : 1 écouteur, confiné au SVG du tracé et retiré au démontage ; sur `wheel` et `pointermove` : 0. `touch-action:none` : 2 en CSS + 5 en JS, tous sur des éléments précis, aucun sur un conteneur de page. `overscroll-behavior:none` : 1, sans effet sur la capacité à défiler. `height:100vh` figé : 9 (héros et scènes) contre 56 `minHeight` sains. Calques `position:fixed` couvrant l'écran : 64, dont **un seul monté en permanence** (le filigrane, verrouillé en `pointer-events:none`).
+
+### ⚠️ CORRECTION DE MON PROPRE CORRECTIF (117b) — `touch-action` NE SUFFIT PAS
+Le premier remède posait `touch-action: pan-y` sur les puits. **Insuffisant, et démontré par Blandine :** sa capture montrait `ta=pan-y` bien appliqué sur `header.hero.rv`, et le défilement restait bloqué dès que le doigt partait du bandeau. `pan-y` autorise le geste vertical **sur** la boîte ; il ne l'empêche pas de rester un **conteneur de défilement**, auquel Chrome Android s'accroche pour n'en rien faire.
+**Le vrai remède : `overflow: clip`.** Même découpe visuelle que `hidden`, mais **aucun conteneur de défilement créé** — plus rien à quoi s'accrocher, le geste repart à la page. Écrit partout selon le motif `overflow:hidden;overflow:clip` : les navigateurs qui ignorent `clip` gardent `hidden`, les autres ne latchent plus. Côté JS, `clipDispo` teste `CSS.supports("overflow","clip")` une fois, et `pan-y` reste posé en repli.
+Appliqué en CSS sur les trois boîtes identifiées (`.uv3 .hero`, `.filann-b`, `.filann-b .mask`) **et** dans le balayage `hypeLibererPuitsTactiles()`, qui traite tous les autres cas au fil des écrans.
+
 ### RESTE À FAIRE
-- [ ] **Geste côté Android** : vider les données du site ou réinstaller la PWA, pour sortir du build en cache. Si le blocage persiste **après** ça et avec le présent index, alors les deux diagnostics sont épuisés et il faut passer à l'outil de diagnostic proposé : un calque temporaire qui nomme à l'écran l'élément réellement sous le doigt (`document.elementFromPoint`). Il n'a pas été codé, Blandine ne l'a pas demandé.
+- [ ] **Confirmer sur l'Android** que le défilement part maintenant du bandeau d'accueil (c'est là que ça coinçait). Panneau toujours disponible par `?debug=scroll`, `?debug=off` pour l'éteindre. **À retirer** une fois confirmé.
+
+- [ ] **Les 196 px de trop du bandeau d'accueil** (`header.hero.rv`, `sw/cw = 556/360`) : le clip le rend invisible à l'œil, donc rien ne presse, mais c'est cette anomalie de largeur qui transformait le décor en piège tactile. À reprendre proprement, sur une séance dédiée, **sans toucher au rendu** — et vérifier au passage si d'autres bandeaux du même modèle débordent aussi. Le correctif `hypeLibererPuitsTactiles()` neutralise l'effet, il ne supprime pas la cause de mise en page.
+
+- [x] **Piste du cache écartée** : la cause n'était pas un vieux build. Le panneau tournait bien sur la version à jour. Si le blocage persiste **après** ça et avec le présent index, alors les deux diagnostics sont épuisés et il faut passer à l'outil de diagnostic proposé : un calque temporaire qui nomme à l'écran l'élément réellement sous le doigt (`document.elementFromPoint`). Il n'a pas été codé, Blandine ne l'a pas demandé.
 - [ ] Le témoin de version (`reprise 1.2 · baby …`) reste le moyen le plus court de savoir quel build tourne sur un appareil donné. À utiliser en premier réflexe sur tout bug « qui ne se reproduit que sur un téléphone ».
 
 ## Préparation Flutter
@@ -174,6 +212,15 @@ Une frontière technique a été isolée proprement : **la gestion du défilemen
 Contrat de présentation également durci : le calque de filigrane est désormais identifié par un attribut de données (`data-hype-filigrane`) et gouverné par une règle du Design System, plus par un style inline isolé — un pas de plus vers des couches de fond décrites par tokens plutôt que par styles locaux.
 
 ---
+
+## SESSION 116 · 09/08 · LE PARRAINAGE (session parallèle — NE PAS ÉCRASER)
+
+Travail d'une autre page, trouvé dans le fichier que Blandine a fourni en fin de journée et **intégralement préservé** lors de la réapplication du correctif de défilement (vérifié marqueur par marqueur : `codeParrain` présent, barre `shortcuts` présente).
+- Le bloc parrainage complet (code personnel, saisie d'un code, compteur de filleuls) était **orphelin** : il a retrouvé son toit.
+- Le code parrain rejoint l'écran de partage : récupéré ou créé à l'ouverture, affiché sous les boutons, glissé dans le texte partagé, et mis en cache local pour que Linguae puisse le reprendre.
+- La barre `shortcuts` (Classement · Badges · Partager · Installer) était **construite mais jamais rendue** — du code mort, d'où le « on ne sait plus où trouver le bouton pour partager l'appli » signalé par Blandine. Elle est rendue.
+
+La page qui reprendra ce chantier est seule à pouvoir en détailler les vérifications ; ce résumé est reconstitué depuis les commentaires du code, il n'est pas de première main.
 
 ## SESSION 115 · 09/08 · LE RETOUR AU VOYAGE (Linguae → connexion → Linguae)
 
