@@ -106,6 +106,30 @@ Aucune amélioration d'architecture réalisée sur cette session. Reste à moder
 ---
 
 
+# SESSION 181 · 09/08 soir · v59 « l'affiche à sa place »
+
+Blandine (capture) : « le fond est nul, c'est quoi cet énorme trou sans rien ?! Retire le fond et mets plutôt l'image à cet endroit-là. » Diagnostic : `#inOrigine` portait **margin-bottom 40vh** — un vide volontaire de l'ancien design, pensé pour laisser voir le fond plein écran. Fait : fond-affiche plein écran retiré (remplacé par un dégradé nuit sobre, Ken Burns supprimé), le trou refermé (40vh → 26px), et **l'image `lingua-affiche.webp` posée DANS la page** (#inAffiche, cadre arrondi 232px, entre les drapeaux et la mosaïque).
+
+# SESSION 180 · 09/08 soir · v58 « le film retrouvé » — RÉPARATION D'UNE RÉGRESSION À MOI
+
+**Incident n°8 (règle du 9 août — le mien).** Le v57 affichait la présentation AVANT `lancerFilm()` pour les habitués ; or #intro (z-index 45) recouvre #ouvFilm (42) : **le film d'ouverture jouait derrière elle, invisible** — « la vidéo d'accueil a disparu » (Blandine). Le code m'avait prévenu (« pour ne pas jouer derrière la présentation ») ; je suis passée à côté. Régression introduite et réparée le même soir.
+
+## ✅ v58
+Habitué : le film joue d'abord, **seul** ; à sa fin (ou sur Passer), `terminerOuverture()` relève un drapeau une-fois (`__introApresFilm`) et ouvre la présentation — « Continuer mon voyage » rend le carnet. Première visite : inchangée (présentation → choix de langue → film), le drapeau n'étant pas posé, aucune double présentation. Rechargement de langue : inchangé (carnet + présentation, sans film).
+
+# SESSION 179 · 09/08 soir · v57 « le passage par la présentation »
+
+**Décision de Blandine** : la présentation porte désormais les raccourcis (battants Hype/Galops, pastille Kildare) — « fallait pas mettre les raccourcis dessus sinon » — donc elle s'affiche **à chaque lancement, pour tout le monde**.
+
+## ✅ v57
+- **Démarrage** : les trois branches passent par la présentation. Nouveau voyageur : présentation d'abord, film à la sortie du choix de langue (inchangé). Déjà venu : le film joue, la présentation attend dessous. Rechargement de langue (`saut`) : carnet révélé + présentation, sans rejouer le film.
+- **Le bouton s'adapte** (matrice node jouée sur les deux parcours) : « **Choisir mon voyage** » tant qu'aucun voyage commencé (→ choix de la langue, pose le drapeau) ; « **Continuer mon voyage** » ensuite (→ referme la présentation, le carnet est dessous — aucun détour par le choix de langue). Nouvelle clé `continuerVoyage`, 6 langues.
+- Le drapeau `hype_lingua_intro` ne sert plus qu'à départager les deux étiquettes.
+- L'affiche du carnet (la photo d'en-tête `tour-monde.webp`, page des 31 cartes) reste un bonus : un tap la rouvre.
+
+## ⚠️ Gouvernance (rappel du soir)
+Blandine a recadré deux emballements : maquette écran-titre partie sans validation d'emplacement, et début du v57 avant son « oui » explicite. Les deux stoppés net, rien d'écrit avant son feu vert. La règle reste : **présenter, attendre le oui, opérer.**
+
 # SESSION 178 · 09/08 soir · v56 « la présentation retrouvée »
 
 **L'enquête d'abord.** Blandine : la page de présentation (5 promesses + « Choisir ma destination ») s'affichait à chaque lancement — disparue « depuis quelques heures ». Coupable identifié : le **repli de v23** dans `montrerDest()` gravait `hype_lingua_intro` à CHAQUE passage — donc aussi via la paire de drapeaux du carnet (tappable depuis le 8 août). Changer de langue = présentation marquée « vue pour toujours », en silence. Mes v51–v55 hors de cause (vérifié : trois mains seulement écrivaient ce drapeau).

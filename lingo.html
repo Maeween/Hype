@@ -191,9 +191,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  -webkit-overflow-scrolling:touch;display:none}
 #intro.on,#dest.on{display:block}
 #inFond{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-#inFondImg{position:absolute;inset:-10%;width:120%;height:120%;
- background-image:url("lingua-affiche.webp");background-size:cover;background-position:center 30%;
- animation:fvKen 20s ease-in-out infinite alternate}
+#inFondImg{position:absolute;inset:0;
+ background:radial-gradient(120% 80% at 50% 0%, #0D1826 0%, #070D16 55%, #05070C 100%)}
+/* v59 : le fond-affiche plein ecran est retire (Blandine : « le fond est
+   nul, c'est quoi cet enorme trou ») — l'image vit desormais DANS la page,
+   voir #inAffiche. */
 /* ⚠️ Le fond de l'ecran des langues, 7 aout 2026. Meme dessin que celui de
    la presentation, image differente. `background-position: center 40%`
    plutot que 30% : sur cet ecran le texte descend moins bas, donc on peut
@@ -247,7 +249,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    ici : sans lui, l'image ne se voit plus et la liste remonte d'un coup. */
 #inOrigT{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;
  color:rgba(244,247,250,.4);text-align:center;margin:34px 0 10px}
-#inOrigine{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 0 40vh}
+#inOrigine{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 0 26px}
+#inAffiche{height:232px;border-radius:20px;margin:0 0 26px;
+ background-image:url("lingua-affiche.webp");background-size:cover;background-position:center 32%;
+ border:1px solid rgba(255,255,255,.09);box-shadow:0 24px 50px -28px rgba(0,0,0,.85)}
 #inOrigine button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
  border-radius:12px;padding:6px 9px;font-size:21px;line-height:1;cursor:pointer}
 #inOrigine button.actif{border-color:rgba(32,217,245,.65);
@@ -1710,6 +1715,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          Construit depuis LANGUES_UI par rangeeOrigine(), jamais en dur. -->
     <p id="inOrigT" data-t="origineT">Je lis en</p>
     <div id="inOrigine" aria-label="Choisir sa langue de lecture"></div>
+    <!-- v59 : l'affiche du module, encadree, a la place du trou. -->
+    <div id="inAffiche" aria-hidden="true"></div>
     <div class="pts">
       <div class="pt"><b data-t="pt1t">Le vocabulaire en six langues</b><i data-t="pt1d">FR · EN · ES · IT · DE · JA — le vrai, celui des écuries.</i></div>
       <div class="pt"><b data-t="pt2t">Une ville, un chapitre</b><i data-t="pt2d">De Buenos Aires à Tokyo, dans la langue que tu apprends.</i></div>
@@ -1851,7 +1858,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v57 · le passage par la présentation</p>
+    <p id="ouvVersion">v59 · l'affiche à sa place</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -7485,7 +7492,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v57 · le passage par la présentation · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v59 · l'affiche à sa place · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -7636,7 +7643,16 @@ S("dsRetour").addEventListener("click", function(){
      raccourcis (battants Hype/Galops, pastille Kildare) — elle s'affiche a
      CHAQUE lancement, pour tout le monde. Deja venu : le film joue d'abord,
      la presentation attend dessous, « Continuer mon voyage » rend le carnet. */
-  else if(!saut){ montrerIntro(); lancerFilm(); }
+  else if(!saut){
+    /* v58 — REPARATION : mon v57 affichait la presentation AVANT le film,
+       or elle est au-dessus de lui (z-index 45 contre 42) : le film jouait
+       derriere elle, invisible — « la video d'accueil a disparu »
+       (Blandine, 9 aout au soir). Le film joue donc d'abord, seul, et la
+       presentation s'ouvre a sa fin (drapeau une-fois releve par
+       terminerOuverture). */
+    window.__introApresFilm = true;
+    lancerFilm();
+  }
   /* ⚠️ ECRAN NOIR CORRIGE ICI (8 aout 2026, v29). Le cas `vu && saut` —
      deja venue, et rechargement declenche par un changement de langue de
      lecture — ne declenchait AUCUNE des deux branches ci-dessus. Or
@@ -7828,6 +7844,13 @@ function terminerOuverture(){
   S("ouvFilm").classList.remove("joue","fini","refuse");
   S("ouverture").classList.remove("joue","parti");
   S("ouverture").scrollTop=0;
+  /* v58 : apres le film d'un habitue, la presentation prend le relais.
+     Le drapeau est une-fois : la premiere visite (film lance a la sortie
+     du choix de langue) ne le pose pas, donc pas de double presentation. */
+  if(window.__introApresFilm){
+    window.__introApresFilm=false;
+    try{ montrerIntro(); }catch(e){}
+  }
 }
 
 /* Depuis une carte du carnet, on entre directement dans la ville.
