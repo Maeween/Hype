@@ -20931,11 +20931,40 @@ function HypeApp() {
        On depose donc le statut dans le localStorage partage, recalcule a
        chaque changement d'abonnement ou de profil (VIP compris). Meme
        formule que `premium` dans value, plus bas. */
-    useEffect(() => {
+    /* 10/08/2026 — DEUX DEFAUTS CORRIGES (signales par Blandine : « Linguae veut
+       m'envoyer prendre un abonnement alors que je le suis deja »).
+       (1) La formule oubliait le plan `ai` (que la lecture Supabase accepte
+           pourtant, voir lireAbo plus bas) ET les moderateurs / ambassadeurs,
+           qui ont le passe-droit partout ailleurs dans l'app mais pas ici.
+           estAmbassadeurHype inclut deja les moderateurs.
+       (2) La cle etait ecrite DES LE PREMIER RENDU : a cet instant la verite
+           serveur n'est pas encore arrivee, la formule vaut « 0 » et l'ecrit.
+           Elle se corrigeait ensuite, mais un passage sur Linguae dans cette
+           fenetre — ou une lecture Supabase qui echoue en silence — laissait un
+           « 0 » perime. On n'ecrit donc plus « 0 » tant que `aboLu` est faux :
+           un Premium reste Premium entre deux ouvertures, jamais retrograde par
+           un chargement en cours. « 1 » reste ecrit immediatement (aucun risque
+           a ouvrir trop tot ce qui est de toute facon ouvert).
+       L'etat vit dans une ref et non dans le state : les deux appelants
+       (l'effet ci-dessous et lireAbo, qui a des dependances vides et
+       capturerait un profil perime) ecrivent dans la meme verite. */
+    const refClePremium = useRef({ plan: "", vip: false, user: null, aboLu: false });
+    function majClePremium(patch) {
         try {
-            const v = (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!(profil && profil.vip)) ? "1" : "0";
-            if (localStorage.getItem("hype_premium") !== v) localStorage.setItem("hype_premium", v);
+            const e = refClePremium.current;
+            if (patch) { for (const k in patch) e[k] = patch[k]; }
+            const parPlan = (e.plan === "mensuel" || e.plan === "annuel" || e.plan === "duo" || e.plan === "ai");
+            const rang = (typeof estAmbassadeurHype === "function") && estAmbassadeurHype(e.user);
+            if (parPlan || !!e.vip || rang) {
+                if (localStorage.getItem("hype_premium") !== "1") localStorage.setItem("hype_premium", "1");
+                return;
+            }
+            if (!e.aboLu) return;
+            if (localStorage.getItem("hype_premium") !== "0") localStorage.setItem("hype_premium", "0");
         } catch (e) { }
+    }
+    useEffect(() => {
+        majClePremium({ plan: planAbo, vip: !!(profil && profil.vip) });
     }, [planAbo, profil]);
     const value = {
         ecran, setEcran: naviguer, retourEcran, avancerEcran, retourDepuisAccueil,
@@ -21032,13 +21061,24 @@ function HypeApp() {
         let fini = false;
         async function lireAbo(u) {
             try {
-                if (!u || typeof supa === "undefined") return;
+                /* 10/08 : c'est ICI, et nulle part ailleurs, que l'utilisateur ET son
+                   abonnement sont connus en meme temps — donc le seul endroit d'ou la
+                   cle hype_premium peut legitimement passer a « 0 ». On y signale
+                   `aboLu` dans TOUS les cas de sortie, y compris les sorties precoces,
+                   sinon la cle resterait indefiniment muette. */
+                if (!u) { majClePremium({ aboLu: true, plan: "", vip: false, user: null }); return; }
+                if (typeof supa === "undefined") return;
                 const r = await supa.from("abonnements_premium").select("plan,statut,expire_le").eq("user_id", u.id).maybeSingle();
                 const abo = r && r.data;
-                if (fini || !abo) return;
+                if (fini) return;
+                /* aucune ligne d'abonnement : on ne touche PAS a planAbo (comportement
+                   d'origine, la valeur locale fait foi), mais l'utilisateur est connu —
+                   son rang d'ambassadeur peut donc ouvrir la cle. */
+                if (!abo) { majClePremium({ aboLu: true, user: u }); return; }
                 const actif = abo.statut === "actif" && (!abo.expire_le || new Date(abo.expire_le).getTime() > Date.now());
                 if (actif && (abo.plan === "mensuel" || abo.plan === "annuel" || abo.plan === "ai" || abo.plan === "duo")) setPlanAbo(abo.plan);
                 else setPlanAbo("");
+                majClePremium({ aboLu: true, user: u, plan: actif ? abo.plan : "" });
             } catch (eAbo) { }
         }
         (async () => { try { const { data } = await supa.auth.getUser(); lireAbo(data && data.user); } catch (e) { } })();
