@@ -1629,7 +1629,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v36 · verrou</p>
+    <p id="ouvVersion">v38 · navigation</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -3265,6 +3265,27 @@ function ouvrirThemes(){
 }
 function fermerThemes(){ S("themes").classList.remove("on"); }
 
+/* ==================================================================
+   LE GESTE DE RETOUR SUR LES PAGES DE VILLE (v38, 9 aout 2026).
+   Confirme par Blandine : « ca marche pas » — seul ouvrirThemes poussait
+   un etat ; arrivee et lecon n'en poussaient AUCUN, donc le balayage
+   quittait la page au lieu de fermer l'ecran.
+   UN SEUL push par sejour en ville (drapeau villePoussee) : arrivee puis
+   lecon ne font pas deux etats, sinon il faudrait deux balayages pour
+   ressortir. Le drapeau se remet a zero quand le popstate consomme
+   l'etat. Cas assume : fermer a la croix laisse l'etat en pile — le
+   balayage suivant est avale (ou re-sert a la ville suivante, qui ne
+   repousse pas grace au drapeau) ; pareil pour l'etat des themes quand on
+   part en ville depuis eux. Un vrai menage de pile viendra avec le
+   chantier navigation, pas avant.
+   ================================================================== */
+var villePoussee=false;
+function pousserVille(){
+  if(villePoussee) return;
+  villePoussee=true;
+  try{ history.pushState({ecran:"ville"}, ""); }catch(e){}
+}
+
 
 (function(){
   var b=document.getElementById("carnet");
@@ -3727,6 +3748,7 @@ function ajusterCadrage(v){
 }
 
 function ouvrirArrivee(i){
+  pousserVille();   /* v38 : le geste de retour fonctionne aussi ici */
   courant=i; var e=ETAPES[i];
   S("arrChap").textContent=T("chapEt",{n:(i+1),t:eCh(e)});
   S("arrVille").textContent=eV(e);
@@ -5348,24 +5370,20 @@ function donnerXP(n, raison){
    Premium qui n'a JAMAIS ouvert Hype sur cet appareil verra donc le
    verrou : le bouton l'emmene sur la page d'abonnement, ou son statut se
    pose — au retour, tout est ouvert. Assume.
-   Offert : Kildare (VILLE_OFFERTE) + la premiere ville dont on ouvre la
-   lecon (hype_lingua_libre, posee au premier passage, a vie sur cet
-   appareil — pas synchronisee, assume aussi) + les duels recus par lien.
+   Offert : Kildare (les urgences) + MAURICE (la vitrine, decision de
+   Blandine du 9 aout : une etoile de moins que La Baule et « elle amene
+   plus au voyage ») + les duels recus par lien. Le mecanisme « premiere
+   ville au choix » a ete livre puis RETIRE le meme jour, remplace par
+   cette vitrine fixe — une vitrine curatee vaut mieux qu'une vitrine
+   aleatoire. hype_lingua_libre n'est plus ni lue ni ecrite ; une valeur
+   posee par la version precedente (jamais deployee) serait ignoree.
    ================================================================== */
 function estPremium(){
   try{ return localStorage.getItem("hype_premium")==="1"; }catch(e){ return false; }
 }
-var VILLE_OFFERTE = { kildare:1 };
+var VILLE_OFFERTE = { kildare:1, maurice:1 };
 function villeAutorisee(refVille){
-  if(estPremium() || VILLE_OFFERTE[refVille]) return true;
-  var libre="";
-  try{ libre=localStorage.getItem("hype_lingua_libre")||""; }catch(e){}
-  if(!libre){
-    /* la premiere lecon qu'on ouvre devient SA ville offerte */
-    try{ localStorage.setItem("hype_lingua_libre", refVille); }catch(e){}
-    return true;
-  }
-  return libre===refVille;
+  return estPremium() || !!VILLE_OFFERTE[refVille];
 }
 function ouvrirPaywall(){ S("paywall").classList.add("on"); }
 function fermerPaywall(){ S("paywall").classList.remove("on"); }
@@ -5383,6 +5401,7 @@ function creerDuel(){
 }
 function ouvrirLecon(refVille){
   if(!villeAutorisee(refVille)){ ouvrirPaywall(); return; }
+  pousserVille();   /* v38 : apres le verrou — le paywall ne pousse pas */
   var chap = chapVirtuel(refVille);
   var cle = chap ? chap.cle : CHAPITRE_DE[refVille];
   var e = ETAPES.filter(function(x){ return x.ref===refVille; })[0];
@@ -6936,7 +6955,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v36 · verrou · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v38 · navigation · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -7118,8 +7137,9 @@ S("retour").addEventListener("click", function(){
 /* le bouton matériel « retour » du téléphone et le geste de balayage */
 window.addEventListener("popstate", function(){
   if(S("themes") && S("themes").classList.contains("on")){ fermerThemes(); return; }
-  if(S("lecon").classList.contains("on")){ fermerLecon(); montrerCarnet(); }
-  else if(S("arrivee").classList.contains("ouvert")){ fermerArrivee(); montrerCarnet(); }
+  if(S("lecon").classList.contains("on")){ villePoussee=false; fermerLecon(); montrerCarnet(); }
+  else if(S("arrivee").classList.contains("ouvert")){ villePoussee=false; fermerArrivee(); montrerCarnet(); }
+  else { villePoussee=false; }   /* v38 : etat orphelin consomme (croix), drapeau remis */
 });
 
 

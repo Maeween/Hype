@@ -1,3 +1,50 @@
+# 🛠️ SESSION 170 · LINGUAE 8 (09/08) — LA PAGE DU TOUR DU MONDE, LA LUMIÈRE, ET LE VERROU PREMIUM
+
+**Livré : `lingo.html` v38 · navigation (md5 `6f5290b24d9037ac7651a5e87e6825a0`, 475438 octets) + `tour-monde.webp` (44 748 octets, à pousser À CÔTÉ de lingo.html) + `index.html` session 113 (la clé `hype_premium`, voir SUIVI.md — À POUSSER EN PREMIER).** Cinq versions dans la journée (v33→v37), toutes cumulées dans le fichier livré.
+
+## ✅ V33 · BANDES — la page des thèmes respire
+Deux bandes grises décoratives `#15181C` (choix **B** sur maquette A/B/C) de 26 px, strictement égales, 18 px d'air, autour de la barre d'onglets ; les filets 1px supprimés ; phrase « Choisis ton thème d'apprentissage » AU-DESSUS des bandes, FR seule pour l'instant. Marqueurs : `#thPhrase`, `#thBandes`, `.thBande`, `.thAir` (⚠️ `display:block` — ce sont des `<span>`).
+
+## ✅ V34 · CARNET — la page d'accueil validée sur maquette (« Ok vendu »)
+- **La photo d'en-tête** : `tour-monde.webp` dans son cadre `#ouvCadre`, titre EN BAS DANS l'image, voile montant du bas seulement, **aucun filtre** (recette du brun). Cadrage validé : `size 112%`, `position 64% 22%`. Sans le fichier image : cadre noir, la page tourne.
+- **La ligne des nations** n'est plus une chaîne en dur : `dessinerNations()` depuis `ETAPES`, traduite via `eNat()`, appelée dans `appliquerLangue()` (1 ligne ajoutée), séparateur `·` / `・` (ja). **Défaut n°2 de la passation réglé** — `I18N_NAT` complété des 9 nations manquantes, « Pays de Galles » en toutes lettres.
+- **Le défilé** : 16 pavillons ×2, 33 px, couleurs, `oGlisse` 56 s, pause au doigt, `prefers-reduced-motion` géré. Généré depuis `ETAPES` via `TH_PAVILLON` (existant).
+- **Les deux bandeaux** remplacent les pastilles ET le plieur « Comment ça marche ? » (supprimé, décision Blandine — le paragraphe « Une langue, un tour du monde… » part avec lui, à re-placer si souhaité, non tranché). Même modèle : vignette (mosaïque 4 tuiles / éventail 3 cartes), titre Cinzel, phrase, chevron, filet vertical turquoise/doré. ⚠️ « Ma collection » passe par `data-t` (clé `maCollection`, 6 langues) — un `T()` à cet endroit rendrait vide (`var UI` affectée plus bas, bug du 5 août). ⚠️ **Les sous-titres des bandeaux restent en FR** : Blandine change leur contenu bientôt, ne pas traduire avant.
+- **L'intro** « Pas les capitales politiques — les capitales du cheval. » : même clé `ouvIntro`, seul l'habit change (accroche serif italique centrée via `display:block` sur le `<b>`, filet doré en `::after`, suite petite).
+
+## ✅ V35 · LUMIÈRE — la page des thèmes se lit enfin
+- Cartes non gagnées : `grayscale(1) brightness(.3)` → **`saturate(.55) brightness(.62)`** (choix **B** sur maquette A/B/C — « on ne lit rien c'est très sombre »). L'option C (le ciel de la ville, cadeau intact) reste dans la maquette si un jour le spoiler gêne.
+- ⚠️ Le sur-titre était en **8 px de capitales espacées** — sous la règle des 9 px minimum déjà documentée dans ce fichier pour le carnet, non appliquée ici. `.thSur` 9,5 px `#C3CFD9`, `.thVille` 15,5 px blanc pur, `.thNat` 9 px `#9AA7AF`.
+
+## ✅ V36→V37 · LE VERROU PREMIUM (décisions de Blandine, toutes du 9 août)
+**Offert sans abonnement** : **Maurice** (la vitrine — « une étoile de moins et amène plus au voyage que La Baule ») + **Kildare** (les urgences) + **les duels reçus par lien** (`#duel=…`). **Premium** : toutes les autres leçons (La Baule comprise), le **Sprint solo**, la **création** de duel (`creerDuel()` sur les 2 boutons « Défier »/« Nouveau duel »).
+- ⚠️ Le mécanisme v36 « première ville au choix » (`hype_lingua_libre`) a été livré puis **RETIRÉ le même jour** (jamais déployé), remplacé par la vitrine fixe — une trace localStorage éventuelle est ignorée.
+- Le verrou : `estPremium()` lit `localStorage.hype_premium` (écrit par `index.html`, session 113) ; `villeAutorisee()` dans `ouvrirLecon()` ; porte du sprint dans `ouvrirSprint()` (le hash `#duel=` appelle `ouvrirDuel` directement et reste libre). Écran `#paywall` (z 60, au-dessus du sprint), phrase de Blandine en 6 langues (`pwTitre/pwTxt/pwCta/pwTard`), bouton doré → `./index.html#premium` (porte `CIBLE_DIRECTE` existante), « Plus tard » referme.
+- **Matrice exécutée** (pas relue) : Maurice/Kildare ouvertes, La Baule refusée, trace v36 ignorée, Premium ouvre tout, expiration referme tout.
+- ⚠️ **Un seul abonnement** (décision) : pas d'abonnement Linguae à part — Stripe → `abonnements_premium` → `hype_premium`, câblage existant.
+- ⚠️ Verrou d'affichage côté client, assumé « pour l'instant » — à durcir côté serveur avec le chantier des comptes.
+
+## ✅ LA RÉPARTITION DES URGENCES — 22 mots dormaient
+Le fichier `hype-lingo-lex-urgences.js` (42 concepts, 4 leçons, « GRATUIT DANS TOUS LES PAYS » en tête) n'était posé que par moitié : **les leçons 2 et 3 n'étaient placées dans AUCUNE ville** — dont « il boite » et « appelez le vétérinaire », les mots mêmes de la promesse du carnet. Décision **B** de Blandine : les termes les plus urgents dans UNE ville accessible.
+- **Kildare = leçons 1 + 3 + 4** (secours humains + urgences du cheval + mots à crier, 32 mots, offert).
+- **Édimbourg = leçon 2** (la chute du cavalier, vocabulaire médical descriptif, Premium). Si la chute doit être offerte aussi : une ligne dans `ETAPE_SRC`.
+- **La promesse ajustée en 6 langues** pour rester vraie : « Le **chapitre** des urgences est offert » → « Les **mots** de l'urgence sont offerts » (`regle3`, `pt4d`, + les 2 textes en dur du HTML).
+
+## 📋 DÉCISIONS / RÉPONSES DE LA SESSION
+- Supabase : la voie A est DANS l'index de la session 113 — pousser cet index suffit, aucun SQL.
+- Quêtes : décisions prises (XP côté Hype, 200 XP = 1 niveau, paliers 1/5/10 cartes), **rien codé**.
+- Porte du compte : **non tranchée** (sur « Partir » vs au premier gain, à juger sur maquette) ; entraîne l'écran de suppression de compte (RGPD/App Store), chantier bloquant. **Prochain domino.**
+- « les images d'écriture sont sombres » (dicté voix) : question posée à Blandine, **sans réponse** — à requalifier.
+
+## 🔴 RESTE À FAIRE (hérité + nouveau)
+1. ~~Swipe retour sur les pages de ville~~ **FAIT en v38** (même session) : drapeau `villePoussee`, UN push par séjour en ville (`ouvrirArrivee` + `ouvrirLecon` après le verrou — le paywall ne pousse pas), remise à zéro dans le popstate, état orphelin (fermeture à la croix) absorbé et réutilisé par la ville suivante. **Trois parcours exécutés** (arrivée→leçon→balayage, croix→ville suivante, balayage à vide). Le vrai ménage de pile attend le chantier navigation.
+2. Phrase des onglets thèmes + sous-titres des bandeaux : traductions en attente du contenu définitif de Blandine.
+3. Défaut n°3 de la passation (aachen faux positif) : toujours ouvert.
+4. Relecture native des lexiques (entrées `// ??`).
+5. Maquette de la porte du compte (les deux emplacements).
+
+**Ordre de poussée : `index.html` (113) → `lingo.html` v37 + `tour-monde.webp` (racine, à côté de lingo.html).**
+
 # 🛠️ SESSION 169 · LINGUAE 7 (08/08) — LA PROGRESSION EST ENFIN SAUVEGARDÉE, ET DEUX ÉCRANS RENDUS À L'USAGE
 
 **Livré : `index.html` (voie A) + `lingo.html` v30 · villes.** Les quatre points rouges de la passation ont été pris dans l'ordre ; le point 1 est fait, le point 2 reste ouvert.
