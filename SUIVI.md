@@ -12,6 +12,26 @@
 
 **Version actuelle de l'index.html : 09/08/2026 (SESSION 117 · LA CEINTURE `overflow-x` — LE DÉFILEMENT ANDROID, CAUSE PROUVÉE) — md5 `d23e8a9daf18e6b589226549591d7f23`, 9163189 octets. Contient : ceinture en `clip`, `overscroll` sur `html` seul, verrou de défilement, captures de pointeur souris-seulement, 2 conteneurs du parcours d'entrée libérés (`hu-root`, personnalisation), fil d'annonces `pan-y`, panneau de diagnostic (dormant, `?debug=scroll` / `?debug=off`) avec mesure dès le premier touchmove. Session 116 parrainage préservée (`codeParrain` 3, `shortcuts` 3). À RETIRER après confirmation : le panneau.**
 
+## 🔁 PASSATION → SESSION 118 (écrite le 09/08 tard, session 117)
+
+**Où on en est, en une phrase :** le blocage du défilement Android a une **cause prouvée par mesure** (la ceinture `overflow-x: hidden` du 02/08 rendait `body` accrochable d'un demi-pixel, `overscroll-behavior:none` interdisait le relais — détail complet dans la section 117), le correctif est livré (md5 `d23e8a9daf18e6b589226549591d7f23`, 9 163 189 octets), **mais la confirmation de Blandine sur son Samsung n'était pas encore arrivée à la fin de la session.** NE PAS écrire « réglé » sans son test — cette session a conclu trop vite deux fois, et une session antérieure avait enterré le bug à tort (« état figé côté appareil »).
+
+**Premier geste de la prochaine session :**
+1. Demander à Blandine : le défilement fonctionne-t-il depuis le contenu (pas la barre du bas) ?
+2. **Si OUI** → nettoyage : (a) retirer le bloc panneau de diagnostic — fin de fichier, délimité par le commentaire `MODE DIAGNOSTIC DU DEFILEMENT`, juste avant le script serviceWorker ; (b) retirer la sonde compteur de rendus dans `Router` (useEffect `window.__hypeRenders`, commentaire `SONDE TEMPORAIRE`) ; (c) lui rappeler `?debug=off` si le bandeau est encore affiché chez elle ; (d) consigner la confirmation ici. Tout le reste (ceinture clip, overscroll html seul, verrou, captures pointeur, conteneurs libérés, balayage horizontal) est du correctif définitif et RESTE.
+3. **Si NON** → le panneau mesure désormais `defaultPrevented` dès le PREMIER touchmove (l'angle mort est comblé). Lire : `touchmove annulé`, `PAGE DEPLACEE`, la chaîne, et les lignes `rendus`/`cible`. Piste non explorée restante : spécificités du mode PWA installé (standalone) vs Chrome onglet — faire tester les deux.
+
+**Outillage construit cette session, à reconstruire au besoin (précieux, non versionné) :** reproduction locale en émulation Android — Playwright/Chromium, viewport 360×759 tactile, et un **simulacre `window.supabase`** injecté en `add_init_script` (un `createClient` renvoyant un Proxy chaînable dont le `then` résout `{data:[],error:null}`, plus `auth.getSession→session:null`, `channel()` chaînable, `storage.getPublicUrl→''`). Avec ça l'app boote hors-ligne, `#monecurie` ouvre un écran à barre de navigation, et les gestes s'envoient par CDP `Input.dispatchTouchEvent`. Limite connue : ne reproduit PAS l'accrochage du demi-pixel (arrondi différent) — s'en servir pour la non-régression, pas pour prouver un bug tactile négatif.
+
+**Chantiers ouverts, sans urgence :**
+- Source des ~190 px de trop du bandeau d'accueil (`header.hero.rv`, `sw` observé à 542/543/551/556 selon les captures — la largeur VARIE, probablement un rail interne). Séance dédiée, sans toucher au rendu.
+- Retirer un jour le balayage `hypeLibererPuitsTactiles` si le fil d'annonces reçoit un `touch-action` en dur (le CSS l'a déjà) — décision à proposer à Blandine, pas à prendre seul.
+- Numérotation : **le prochain numéro libre est 118.** Deux sessions ont déjà pris le 116 le 09/08.
+
+**Base de travail :** toujours partir du fichier que Blandine fournit en séance (elle fait tourner plusieurs pages). Vérifier `codeParrain` (3) et `shortcuts` (3) avant toute livraison — c'est le travail de la session 116 parallèle.
+
+---
+
 **⚠️ COLLISION DE NUMÉROTATION 116 :** deux sessions ont pris le 116 le 09/08 — celle du parrainage (dans le fichier de Blandine) et la mienne (défilement Android). J'ai renuméroté la mienne en **117** et laissé le 116 à celle du parrainage. Le prochain numéro libre est **118**.
 
 **Note de numérotation :** l'en-tête est resté sur la 114 alors que la session 115 (retour au Voyage, `apresConnexion()`) était bien dans le fichier de Blandine. La 115 n'est donc pas perdue, seulement non consignée en tête. La présente session prend le 116.
