@@ -1851,7 +1851,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v56 · la présentation retrouvée</p>
+    <p id="ouvVersion">v57 · le passage par la présentation</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -4975,6 +4975,9 @@ var UI = {
    ja:"{nom}で{score}点。同じ十語で、私を超えてみて："},
  choisirDest:{fr:"Choisir mon voyage", en:"Choose my journey", es:"Elegir mi viaje",
    it:"Scegliere il mio viaggio", de:"Meine Reise wählen", ja:"旅を選ぶ"},
+ continuerVoyage:{fr:"Continuer mon voyage", en:"Continue my journey",
+   es:"Continuar mi viaje", it:"Continuare il mio viaggio",
+   de:"Meine Reise fortsetzen", ja:"旅を続ける"},
  ouKildare:{fr:"S'apprend à Kildare · Irlande ›", en:"Learned in Kildare · Ireland ›",
    es:"Se aprende en Kildare · Irlanda ›", it:"Si impara a Kildare · Irlanda ›",
    de:"Lernst du in Kildare · Irland ›", ja:"キルデア（アイルランド）で学べる ›"},
@@ -7312,7 +7315,20 @@ var DESTINATIONS = [
        ja:"同じ世界一周を、フランス語で。街から街へ。"} }
 ];
 
-function montrerIntro(){ S("intro").classList.add("on"); S("intro").scrollTop=0; }
+function montrerIntro(){
+  /* v57 : le bouton de sortie s'adapte. Nouveau voyageur : « Choisir mon
+     voyage » -> choix de la langue. Voyage en cours : « Continuer mon
+     voyage » -> droit au carnet. Le drapeau hype_lingua_intro ne sert
+     plus qu'a departager ces deux etiquettes. */
+  var vu=false; try{ vu = localStorage.getItem("hype_lingua_intro")==="1"; }catch(e){}
+  var b=S("inSuite");
+  if(b){
+    b.dataset.mode = vu ? "continuer" : "choisir";
+    b.setAttribute("data-t", vu ? "continuerVoyage" : "choisirDest");
+    try{ b.textContent = T(vu ? "continuerVoyage" : "choisirDest"); }catch(e2){}
+  }
+  S("intro").classList.add("on"); S("intro").scrollTop=0;
+}
 function montrerDest(){
   /* v56 — LA GUERISON DU DRAPEAU. Le « repli » de v23 gravait
      hype_lingua_intro a CHAQUE passage ici — y compris depuis la paire de
@@ -7412,7 +7428,12 @@ try{
 }catch(e){}
 
 S("inSuite").addEventListener("click", function(){
-  /* la presentation est reellement quittee : c'est ICI qu'on la marque vue */
+  /* v57 : deux sorties selon le mode pose par montrerIntro(). */
+  if(this.dataset.mode === "continuer"){
+    S("intro").classList.remove("on");   /* le carnet est dessous */
+    return;
+  }
+  /* premiere sortie : c'est ICI qu'on marque la presentation vue */
   try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
   montrerDest();
 });
@@ -7464,7 +7485,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v56 · la présentation retrouvée · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v57 · le passage par la présentation · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -7611,7 +7632,11 @@ S("dsRetour").addEventListener("click", function(){
   /* Deja venu : le film part tout seul, sans passer par le carnet.
      Premiere visite : il part a la fermeture de l'ecran de destination
      (voir montrerDest), pour ne pas jouer derriere la presentation. */
-  else if(!saut) lancerFilm();
+  /* v57 (decision de Blandine) : la presentation porte desormais les
+     raccourcis (battants Hype/Galops, pastille Kildare) — elle s'affiche a
+     CHAQUE lancement, pour tout le monde. Deja venu : le film joue d'abord,
+     la presentation attend dessous, « Continuer mon voyage » rend le carnet. */
+  else if(!saut){ montrerIntro(); lancerFilm(); }
   /* ⚠️ ECRAN NOIR CORRIGE ICI (8 aout 2026, v29). Le cas `vu && saut` —
      deja venue, et rechargement declenche par un changement de langue de
      lecture — ne declenchait AUCUNE des deux branches ci-dessus. Or
@@ -7622,7 +7647,8 @@ S("dsRetour").addEventListener("click", function(){
      TOUT changement de langue depuis le carnet.
      On revele donc le carnet directement, sans rejouer le film : c'est
      exactement ce que `saut` veut dire. */
-  else terminerOuverture();
+  else { terminerOuverture(); montrerIntro(); }  /* v57 : rechargement de
+     langue — pas de film, mais la presentation reste le passage. */
 })();
 
 /* Tout est défini : on redemande un rendu du chemin pour que le bouton
