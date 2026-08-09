@@ -1,30 +1,3 @@
-# SESSION 116 · 09/08 · Le partage retrouvé — base : l'index de Blandine du 9 août (verrou de défilement inclus)
-
-**Pourquoi.** Blandine : « on ne sait plus où trouver un bouton pour partager l'appli ». Diagnostic : dans l'Accueil (EcranUnivers), la barre `shortcuts` (Classement · Badges · **Partager** · Installer) était **construite mais jamais rendue** — code mort. Et le **BlocParrainage** complet (03/08 : code personnel, tables `hype_parrain_codes`/`hype_filleuls`, 3 filleuls validés = un mois offert) vivait sous la grille du rayon Communauté, **orphelin depuis « Prochainement »**.
-
-## ✅ 116.1 — Accueil : la barre ressuscitée
-`shortcuts` est enfin rendue, en bas de l'Accueil, juste au-dessus du bouton Mon compte. Zéro code neuf : résurrection.
-
-## ✅ 116.2 — Mon compte : le parrainage retrouve un toit
-Bouton « Partager Hype » (verre turquoise, 6 langues) ouvrant l'écran Partager existant, suivi du **BlocParrainage** complet rehébergé tel quel.
-
-## ✅ 116.3 — Écran Partager : allemand + code parrain
-DE ajouté au DICT (6-langues standard). Le code parrain est récupéré/créé à l'ouverture (`hypeMonCodeParrain`), glissé dans le texte de la feuille de partage (« …Mon code parrain : XXXX », 6 langues) et **mis en cache local (`hype_parrain_code`)** pour que Linguae le reprenne (même conteneur).
-
-## 📌 Décisions en attente (Blandine)
-- **Critère du filleul validé** : aujourd'hui = a ajouté un cheval OU terminé un cours (décision du 03/08, anti-faux-comptes). Blandine demande si on passe à « a pris l'abonnement » — durcissement d'économie, rien changé sans son feu vert.
-- Gros problème Hype en parallèle signalé par Blandine : **interdiction de refondre l'index sans la prévenir** — les 3 interventions ci-dessus sont des ajouts localisés, validés par elle.
-
-## 🔒 Reprise en main de l'index (09/08 au soir)
-Blandine reprend l'index : **interdiction d'y coder sans son accord explicite**, y compris préparations.
-La **ligne légale de rétractation** (validée, 6 langues, mention « Hype et Linguae ») n'est PAS posée :
-tout est prêt dans `retractation-premium.md` (ancre du gabarit PV5_TPL, CSS, textes exacts) pour une
-pose en une minute le jour du feu vert. Incident tracé : premier script de pose planté (échappement
-Python) AVANT toute écriture — l'index n'a jamais été touché par cette tentative.
-
-## Préparation Flutter
-Frontière inter-modules documentée : la clé locale `hype_parrain_code` devient le **contrat de pont Hype→Linguae** pour le parrainage (comme `hype_retour_linguae` pour la navigation). À terme (Linguae autonome + Supabase), ce pont sera remplacé par la lecture directe de `hype_parrain_codes`. Aucun autre chantier d'architecture sur cette session.
-
 # SUIVI HYPE
 
 > Ce fichier circule entre les pages de travail. Chaque page qui arrive le lit, chaque page qui repart le met à jour avant de le refaire circuler. Objectif : que Blandine n'ait rien à retenir par cœur.
@@ -37,7 +10,13 @@ Frontière inter-modules documentée : la clé locale `hype_parrain_code` devien
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 09/08/2026 (SESSION 114 · LA CLÉ `hype_premium` RÉAPPLIQUÉE + LA COMMUNAUTÉ EN PROCHAINEMENT) — md5 `9f324dc0f876f3fd24d5254a36aaaeb7`, 9136372 octets. Base : la 112 fournie par Blandine (la 113 n'avait pas été poussée) ; la clé `hype_premium` y est reposée à l'identique, plus la fermeture de la Communauté. Diff avec la 112 : 3 hunks, 42 lignes ajoutées, 1 remplacée. Aucune preview. Aucun SQL. À POUSSER AVANT `lingo.html` v43. `hype-cours-baby.js` inchangé.**
+**Version actuelle de l'index.html : 09/08/2026 (SESSION 117b · PUITS TACTILES — `overflow:clip`, LE VRAI REMÈDE) — md5 `cb39d279012b7f034b17cd7d5353c5d1`, 9155346 octets. Base : le fichier de Blandine (mon lot 1 + la session 116 parrainage, préservée : `codeParrain` 3, `shortcuts` 3). Diff : 6 zones, +11 351 octets, fonctions 916 → 917. Panneau de diagnostic **remis, dormant**. Aucune preview. Aucun SQL. `hype-cours-baby.js` inchangé.**
+
+**⚠️ COLLISION DE NUMÉROTATION 116 :** deux sessions ont pris le 116 le 09/08 — celle du parrainage (dans le fichier de Blandine) et la mienne (défilement Android). J'ai renuméroté la mienne en **117** et laissé le 116 à celle du parrainage. Le prochain numéro libre est **118**.
+
+**Note de numérotation :** l'en-tête est resté sur la 114 alors que la session 115 (retour au Voyage, `apresConnexion()`) était bien dans le fichier de Blandine. La 115 n'est donc pas perdue, seulement non consignée en tête. La présente session prend le 116.
+
+**Ancienne version (115) : dans le fichier de Blandine, en-tête non mis à jour — voir la section SESSION 115 plus bas.**
 
 **Ancienne version (113, JAMAIS POUSSÉE — remplacée par la 114) : (SESSION 113 · LA CLÉ `hype_premium` POUR LE VERROU DE LINGUAE) — md5 `6ccf8ed511efb7834c2153d5b8ece9ad`, 9133471 octets. Diff avec la 112 : 1 hunk, 12 lignes ajoutées, 0 supprimée. Aucune preview. Aucun SQL. À POUSSER AVANT `lingo.html` v37 (verrou Premium, détail dans `SUIVI-LINGUAE.md`). `hype-cours-baby.js` inchangé.****
 
@@ -160,6 +139,88 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
 
 ---
+
+## SESSION 117 · 09/08 · LE BLOCAGE DU DÉFILEMENT SUR ANDROID — CAUSE RÉELLE TROUVÉE
+
+Signalé en urgence par Blandine : **plus de défilement sur Android, alors que tout va bien sur iPhone.** Symptôme affiné en cours de séance, et c'est lui qui a tout décidé : **le défilement ne répond que si le geste démarre sur la barre de menu du bas** ; depuis le contenu, image totalement figée. Sur **tous** les écrans. Constaté après une fermeture complète de l'appli.
+
+### ⚠️ CORRECTION D'UNE CONCLUSION PRÉCÉDENTE
+La session qui avait tranché « bug scroll Android = état figé côté appareil, pas un bug de code » **avait tort**. Le redémarrage complet soignait le symptôme parce qu'il recharge le document et efface un style **inline** posé sur `<body>` — pas parce que l'appareil était en cause. D'où le retour du bug. La ligne du TODO « si le blocage revient, redemander d'abord un redémarrage » reste utile comme dépannage, mais ne doit plus servir de diagnostic.
+
+### DIAGNOSTIC 1 — le verrou de défilement fantôme (bug réel, corrigé)
+Un seul endroit de toute l'app touchait au défilement global : `PhotoZoomable`, qui posait `document.body.style.overflow = "hidden"` à l'ouverture d'une photo et **restaurait la valeur mémorisée** à la fermeture. Deux visionneuses superposées fermées dans le désordre, ou une sortie d'écran par le bouton retour physique pendant qu'une photo était ouverte, et un `hidden` fantôme restait collé sur `<body>`.
+**Asymétrie des plateformes, la clé de l'affaire :** `body { overflow: hidden }` bloque réellement le défilement sur **Android/Chrome**, et n'a **aucun effet** sur `body` en **iPhone/WebKit**. Un bug invisible sur iOS, bloquant sur Android.
+Vérifié : `document.body.*` n'est manipulé qu'en 7 endroits dans tout le fichier, et `body.style.overflow` en **un seul** (`PhotoZoomable`). Aucun autre verrou global. Les `touchAction: "none"` et les écouteurs `{passive:false}` sont tous confinés à des éléments précis (canvas, tracé au doigt, visionneuse pincée) et correctement retirés au démontage — écartés.
+
+**CORRECTIF :** trois helpers de haut niveau, `hypeVerrouScroll()` / `hypeDeverrouScroll()` / `hypeFiletScroll()`, posés juste avant `Router`.
+- Compteur global `window.__hypeScrollLock`, **plus aucune valeur mémorisée** : deux visionneuses empilées ne peuvent plus se marcher dessus.
+- `hypeFiletScroll()` reprend la vérité **dans le DOM** (`document.querySelectorAll("[data-hype-zoom]")`, attribut ajouté sur l'overlay de `PhotoZoomable`) et réaligne `body.overflow` dessus. Appelé à chaque changement d'écran (`useEffect` sur `[ecran]` dans `Router`) et au retour d'arrière-plan (`visibilitychange`, `pageshow`). **Le blocage se répare donc seul, sans redémarrage**, même si le compteur se désynchronise.
+- 5 scénarios testés en isolant les 3 fonctions avec des stubs : ouverture/fermeture simple, deux visionneuses fermées dans le désordre (l'ancien bug exact), verrou fantôme + filet, filet alors qu'une photo est réellement ouverte, déverrou en trop (pas de compteur négatif). Les 5 passent.
+
+### DIAGNOSTIC 2 — ce qui explique le symptôme décrit (le filigrane), et la cause probable
+Le verrou fantôme **ne peut pas** produire ce que Blandine décrit : une fermeture complète l'efface, et s'il était actif la barre du bas ne défilerait pas non plus. Le symptôme « tout est figé sauf en partant de la barre du bas, sur tous les écrans » désigne un **calque plein écran qui avale le geste, dans la coquille commune** — et dans `Router` il n'y en a qu'un : le **filigrane** (`PHOTOS.watermark` = `PHOTO_SAUT`, `position:fixed`, 100vh, largeur max 480, `zIndex:0`, opacité 0,18). La barre du bas est en `position:fixed` au-dessus de lui : d'où le seul geste qui fonctionne.
+Or dans le fichier de Blandine ce filigrane porte **déjà** `pointerEvents: "none"` : il est inoffensif en l'état. **Hypothèse retenue : l'Android n'exécutait pas cette version, mais un build plus ancien servi par le cache du service worker** — ce qui explique d'un coup l'iPhone à jour qui va bien, l'Android bloqué, et le « de nouveau ».
+Deux tests décisifs avaient été proposés (l'écran Galops, seul écran où le filigrane n'est volontairement pas rendu — `ecran !== "galops"` ; et le témoin de version `reprise 1.2 · baby …` en bas de l'accueil, à comparer entre les deux appareils). **Blandine n'avait pas le temps de tester**, décision assumée : on durcit le code pour rendre le symptôme impossible, et le remède côté cache est un geste unique de son côté (vider les données du site / réinstaller la PWA), qu'aucun code livré ne peut faire à sa place.
+
+**CORRECTIF :** attribut `data-hype-filigrane` sur le calque + règle globale `[data-hype-filigrane] { pointer-events: none !important; }` dans `GlobalStyles`. Le `pointer-events:none` inline est conservé ; la règle CSS le verrouille en dur pour qu'aucune modification future ni aucun état partiel ne puisse le perdre. **Ne pas retirer cette règle.**
+
+### VÉRIFICATION
+`node --check` sur le bloc principal (25 300 lignes extraites entre les balises) : OK. Contrôle de non-régression de syntaxe sur **tous** les blocs inline, comparé au fichier de départ : signature d'erreurs identique (les seules « erreurs » sont les faux positifs du découpeur sur les `<script>` contenus dans les chaînes des iframes). `prevOverflow` : 0 occurrence restante. `hypeVerrouScroll` 4, `hypeDeverrouScroll` 2, `hypeFiletScroll` 4, `data-hype-zoom` 3, `data-hype-filigrane` 2. Pas de vérification Playwright (mode rapide, correctif ciblé sans nouvelle page ni nouvelle image).
+
+### 🎯 CAUSE RÉELLE — LES PUITS TACTILES (trouvée avec le panneau, sur l'Android de Blandine)
+Mes deux premières hypothèses (verrou fantôme, filigrane) étaient des bugs réels mais **pas la cause**. Le panneau de diagnostic l'a établi en deux captures :
+- `touchmove annulé par du JS : non` → aucun `preventDefault` en cause.
+- `ta=auto` sur toute la chaîne → aucun `touch-action` en cause.
+- `body inline='' verrou=0` → le verrou était bien innocent.
+- et pourtant `scrollHeight=3387` contre `innerHeight=718`, soit 2 669 px à défiler, sans que la page bouge.
+
+**Le mécanisme :** une boîte en `overflow:hidden` dont le contenu **déborde vers la droite ou vers le bas** reste un conteneur de défilement aux yeux de **Chrome Android**. Le geste s'y accroche, la boîte ne peut pas défiler puisqu'elle est `hidden`, et Chrome **ne rend pas** le geste à la page : rien ne bouge, sans aucune trace ni en JS ni en `touch-action`. **WebKit (iPhone) ne s'accroche pas de cette façon** — d'où un bug totalement invisible sur iOS et bloquant sur Android. C'est l'asymétrie que je cherchais depuis le début.
+
+**Les deux puits identifiés en direct :**
+- `.filann-b .mask` — le fil d'annonces : piste en `width:max-content`, débordement énorme sous un `overflow:hidden`.
+- `header.hero.rv` — **le bandeau photo d'accueil : `sw/cw = 556/360`**, soit 196 px de débordement à droite, sur les 570 premiers pixels de l'écran. Tous les écrans commencent par un bandeau bâti sur ce modèle : voilà pourquoi le blocage paraissait universel, et pourquoi seule la barre du bas (qui n'est pas un de ces bandeaux) laissait défiler.
+
+**CORRECTIF GLOBAL — `hypeLibererPuitsTactiles()`** (posée avant `Router`, rejouée à chaque changement d'écran via `requestAnimationFrame` + deux relances à 900 ms et 2 600 ms pour les contenus qui arrivent de Supabase) : balayage du DOM qui repère toute boîte dont l'`overflow` est caché **alors que son contenu déborde**, et lui pose `touch-action: pan-y`. Le défilement vertical revient toujours à la page.
+Garde-fous, vérifiés par simulation sur 7 boîtes représentatives : les rails horizontaux volontaires (`overflow-x: auto/scroll` — manège, rail des chevaux, listes de modale) sont **ignorés** ; un `touch-action` déjà posé explicitement (canvas du globe, visionneuse pincée) est **respecté** ; une carte Spectral normale n'est même pas examinée puisque rien ne déborde ; les décors posés en négatif (les reflets à `left:-90px`) ne créent **pas** de puits, un débordement vers la gauche n'étant pas atteignable. Marquage `el.__hypePuits` pour ne traiter chaque nœud qu'une fois. **Aucune modification de design, aucune animation Spectral retirée.**
+En ceinture, `.filann-b .mask` et `.filann-b .trk` reçoivent aussi `touch-action: pan-y` directement en CSS.
+
+**Sur le brief d'audit :** le `body { touch-action: pan-y }` qui y était suggéré n'a **pas** été appliqué — il aurait cassé tous les rails horizontaux de l'app. Le brief disait lui-même de ne pas l'appliquer aveuglément.
+
+### PANNEAU DE DIAGNOSTIC — encore présent, dormant
+Bloc autonome en fin de fichier, **entièrement inerte** par défaut : aucun élément créé, aucun écouteur posé. Allumage par `?debug=scroll` (mémorisé, PWA comprise), extinction par `?debug=off`. Il rapporte : `defaultPrevented` sur `touchmove`, de quoi défiler (`scrollHeight` vs `innerHeight`), le conteneur qui porte le défilement, la chaîne complète sous le doigt avec `overflow` / `height` / `position` / `touch-action` / `pointer-events` / `sh-ch` / **`sw-cw`**, le premier parent qui interdit le vertical, et `<<< PUITS TACTILE` sur chaque boîte fautive. Verdict final au relâchement du doigt : `doigt Xpx, page déplacée de Ypx => OK/BLOQUÉ`.
+**Erreur de ma part corrigée en séance :** je mesurais d'abord le déplacement dès le premier `touchmove`, ce qui donnait un faux « BLOQUÉ » — Chrome n'a pas encore commencé à défiler à cet instant. La mesure se fait désormais au relâchement.
+- [x] **RETIRÉ** le 09/08 après confirmation par capture : `ta=pan-y` appliqué sur `header.hero.rv`, « aucun puits ni blocage touch-action dans cette chaîne », `scrollTop=56`. Le bloc entier (7 695 octets) est parti. Sa spécification complète reste écrite ci-dessus : il peut être reconstruit à l'identique en une intervention si un blocage tactile réapparaît.
+
+### AUDIT COMPLET DU FICHIER (demandé par le brief, chiffres relevés)
+`body.style.overflow` manipulé : 1 seul endroit fonctionnel (la visionneuse). `documentElement.style.overflow` : jamais. Classes `no-scroll`/`modal-open` : 0. `preventDefault` sur `touchmove` : 1 écouteur, confiné au SVG du tracé et retiré au démontage ; sur `wheel` et `pointermove` : 0. `touch-action:none` : 2 en CSS + 5 en JS, tous sur des éléments précis, aucun sur un conteneur de page. `overscroll-behavior:none` : 1, sans effet sur la capacité à défiler. `height:100vh` figé : 9 (héros et scènes) contre 56 `minHeight` sains. Calques `position:fixed` couvrant l'écran : 64, dont **un seul monté en permanence** (le filigrane, verrouillé en `pointer-events:none`).
+
+### ⚠️ CORRECTION DE MON PROPRE CORRECTIF (117b) — `touch-action` NE SUFFIT PAS
+Le premier remède posait `touch-action: pan-y` sur les puits. **Insuffisant, et démontré par Blandine :** sa capture montrait `ta=pan-y` bien appliqué sur `header.hero.rv`, et le défilement restait bloqué dès que le doigt partait du bandeau. `pan-y` autorise le geste vertical **sur** la boîte ; il ne l'empêche pas de rester un **conteneur de défilement**, auquel Chrome Android s'accroche pour n'en rien faire.
+**Le vrai remède : `overflow: clip`.** Même découpe visuelle que `hidden`, mais **aucun conteneur de défilement créé** — plus rien à quoi s'accrocher, le geste repart à la page. Écrit partout selon le motif `overflow:hidden;overflow:clip` : les navigateurs qui ignorent `clip` gardent `hidden`, les autres ne latchent plus. Côté JS, `clipDispo` teste `CSS.supports("overflow","clip")` une fois, et `pan-y` reste posé en repli.
+Appliqué en CSS sur les trois boîtes identifiées (`.uv3 .hero`, `.filann-b`, `.filann-b .mask`) **et** dans le balayage `hypeLibererPuitsTactiles()`, qui traite tous les autres cas au fil des écrans.
+
+### RESTE À FAIRE
+- [ ] **Confirmer sur l'Android** que le défilement part maintenant du bandeau d'accueil (c'est là que ça coinçait). Panneau toujours disponible par `?debug=scroll`, `?debug=off` pour l'éteindre. **À retirer** une fois confirmé.
+
+- [ ] **Les 196 px de trop du bandeau d'accueil** (`header.hero.rv`, `sw/cw = 556/360`) : le clip le rend invisible à l'œil, donc rien ne presse, mais c'est cette anomalie de largeur qui transformait le décor en piège tactile. À reprendre proprement, sur une séance dédiée, **sans toucher au rendu** — et vérifier au passage si d'autres bandeaux du même modèle débordent aussi. Le correctif `hypeLibererPuitsTactiles()` neutralise l'effet, il ne supprime pas la cause de mise en page.
+
+- [x] **Piste du cache écartée** : la cause n'était pas un vieux build. Le panneau tournait bien sur la version à jour. Si le blocage persiste **après** ça et avec le présent index, alors les deux diagnostics sont épuisés et il faut passer à l'outil de diagnostic proposé : un calque temporaire qui nomme à l'écran l'élément réellement sous le doigt (`document.elementFromPoint`). Il n'a pas été codé, Blandine ne l'a pas demandé.
+- [ ] Le témoin de version (`reprise 1.2 · baby …`) reste le moyen le plus court de savoir quel build tourne sur un appareil donné. À utiliser en premier réflexe sur tout bug « qui ne se reproduit que sur un téléphone ».
+
+## Préparation Flutter
+Une frontière technique a été isolée proprement : **la gestion du défilement global de l'application ne vit plus dans un composant**. Elle est désormais dans trois fonctions de haut niveau sans état React (`hypeVerrouScroll` / `hypeDeverrouScroll` / `hypeFiletScroll`), avec un invariant vérifiable de l'extérieur — l'état du verrou est déduit du DOM, pas d'une variable mémorisée. C'est exactement la forme d'un futur service `ScrollLockService` côté Flutter : une API à trois entrées, un compteur, et une réconciliation sur événement de cycle de vie (`visibilitychange`/`pageshow` deviendront `AppLifecycleState`). Aucun composant n'écrit plus directement dans `document.body.style`.
+Contrat de présentation également durci : le calque de filigrane est désormais identifié par un attribut de données (`data-hype-filigrane`) et gouverné par une règle du Design System, plus par un style inline isolé — un pas de plus vers des couches de fond décrites par tokens plutôt que par styles locaux.
+
+---
+
+## SESSION 116 · 09/08 · LE PARRAINAGE (session parallèle — NE PAS ÉCRASER)
+
+Travail d'une autre page, trouvé dans le fichier que Blandine a fourni en fin de journée et **intégralement préservé** lors de la réapplication du correctif de défilement (vérifié marqueur par marqueur : `codeParrain` présent, barre `shortcuts` présente).
+- Le bloc parrainage complet (code personnel, saisie d'un code, compteur de filleuls) était **orphelin** : il a retrouvé son toit.
+- Le code parrain rejoint l'écran de partage : récupéré ou créé à l'ouverture, affiché sous les boutons, glissé dans le texte partagé, et mis en cache local pour que Linguae puisse le reprendre.
+- La barre `shortcuts` (Classement · Badges · Partager · Installer) était **construite mais jamais rendue** — du code mort, d'où le « on ne sait plus où trouver le bouton pour partager l'appli » signalé par Blandine. Elle est rendue.
+
+La page qui reprendra ce chantier est seule à pouvoir en détailler les vérifications ; ce résumé est reconstitué depuis les commentaires du code, il n'est pas de première main.
 
 ## SESSION 115 · 09/08 · LE RETOUR AU VOYAGE (Linguae → connexion → Linguae)
 
@@ -5260,7 +5321,7 @@ Fichier `maquette-trace-V4.html` (autonome, aucun script distant, moteur et bibl
 - [x] **Roadmap "Les grandes écoles" — TERMINÉE** : les 4 écoles (Cadre Noir gratuit + École Portugaise/Vienne/Jerez Premium) sont livrées. Plus aucun stub "Bientôt sur Hype" dans l'app.
 - [ ] **Album participatif — décisions tranchées, à coder** : Blandine a validé le 27/07 : **sans modération** + **limite de 5 photos/vidéos par personne**. SQL + upload à coder — un album par école (Cadre Noir, École Portugaise, École Espagnole de Vienne, École Royale Andalouse), mêmes règles partout.
 - [ ] **Cartes "Voix contemporaines"** (Carde/Henriquet/Karl) dans l'article Cadre Noir : affichées en "Bientôt : son article →", pas encore de fiche/article dédié à brancher derrière.
-- [ ] **Si le blocage scroll Android revient** : redemander d'abord un redémarrage complet de l'appli (fermeture depuis le multitâche, pas juste retour en arrière) avant toute autre investigation — c'est ce qui a résolu le cas de Gabrielle.
+- [x] **Blocage scroll Android — CAUSE TROUVÉE en session 116, voir sa section.** Ce n'était PAS un état figé de l'appareil : un `body{overflow:hidden}` fantôme laissé par la visionneuse photo, qui bloque Android et n'a aucun effet sur iPhone, et que le redémarrage effaçait par simple rechargement du document. Corrigé (verrou compté + filet auto-réparateur). Le redémarrage complet reste un dépannage valable, mais **ne doit plus servir de diagnostic**. Premier réflexe désormais : lire le témoin de version (`reprise 1.2 · baby …`, bas de l'accueil) sur l'appareil qui bogue, pour savoir quel build il exécute réellement.
 - [ ] **Coller le bloc SQL des 4 annonces en 6 langues** — après déploiement (rappel des sessions précédentes).
 - [ ] **Localiser et appliquer l'image d'accueil Baby et l'image du puzzle**.
 - [ ] **~49 images encore en réserve** — décider de leur usage.

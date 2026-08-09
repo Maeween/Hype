@@ -44327,6 +44327,11 @@ if (__boot)
 
   var dernier = "";
   var y0 = 0, top0 = 0, bloque = null, annule = null, dyMax = 0;
+  /* Le geste bloque doit SURVIVRE au fait de lever le doigt et de changer de page :
+     sinon chaque capture d ecran montre l analyse du geste suivant, celui qui marche. */
+  var xDep = 0, yDep = 0;
+  var fige = null;
+  try { fige = localStorage.getItem("hype_debug_fige") || null; } catch (e) { }
 
   function racine() { return document.scrollingElement || document.documentElement; }
 
@@ -44360,13 +44365,18 @@ if (__boot)
     if (puits) lignes.push("!!! PUITS TACTILE : " + puits);
     if (!coupable && !puits) lignes.push("aucun puits ni blocage touch-action dans cette chaine.");
     dernier = lignes.join("\n");
-    panneauPret().textContent = dernier;
+    afficher(dernier);
+  }
+  function afficher(courant) {
+    panneauPret().textContent = courant +
+      (fige ? "\n\n===== DERNIER GESTE BLOQUE (fige, survit au changement de page) =====\n" + fige : "");
   }
 
   window.addEventListener("touchstart", function (e) {
     try {
       var t = e.touches[0]; if (!t) return;
       y0 = t.clientY; top0 = racine().scrollTop; bloque = null; annule = null; dyMax = 0;
+      xDep = Math.round(t.clientX); yDep = Math.round(t.clientY);
       analyser(Math.round(t.clientX), Math.round(t.clientY));
     } catch (x) { }
   }, { passive: true, capture: true });
@@ -44391,11 +44401,20 @@ if (__boot)
       if (dyMax < 12) return;
       var d = Math.abs(racine().scrollTop - top0);
       bloque = d < 3;
-      analyser(Math.round(window.innerWidth / 2), Math.round(y0));
-      panneauPret().textContent = dernier + "\n>>> doigt " + Math.round(dyMax) +
-        "px, page deplacee de " + Math.round(d) + "px  =>  " + (bloque ? "BLOQUE" : "OK");
+      analyser(xDep, yDep);
+      var verdict = "\n>>> doigt " + Math.round(dyMax) + "px, page deplacee de " +
+        Math.round(d) + "px  =>  " + (bloque ? "BLOQUE" : "OK");
+      if (bloque) {
+        fige = "(doigt parti de " + xDep + "," + yDep + ")\n" + dernier + verdict;
+        try { localStorage.setItem("hype_debug_fige", fige); } catch (e2) { }
+      }
+      afficher(dernier + verdict);
     } catch (x) { }
   }, { passive: true });
+
+  /* Effacer la memoire du geste bloque : ?debug=reset */
+  try { if (/debug=reset/.test((location.search || "") + (location.hash || ""))) { localStorage.removeItem("hype_debug_fige"); fige = null; } } catch (e) { }
+  if (fige) { try { afficher("— HYPE DIAGNOSTIC DEFILEMENT —  (?debug=reset pour oublier le geste fige)"); } catch (e) { } }
 
   try { console.log("[Hype] mode diagnostic defilement ACTIF"); } catch (e) { }
 })();
