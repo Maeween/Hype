@@ -1228,6 +1228,25 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 /* ⚠️ z-index 41 depuis le 7 aout 2026 (court-circuit du chemin de nuit) :
    le sprint s'ouvre desormais PAR-DESSUS le carnet, comme le globe. A 30
    il se dessinait sous lui et devenait invisible depuis le carnet. */
+/* le verrou premium : par-dessus tout, meme le sprint */
+#paywall{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;
+ background:rgba(3,5,8,.78);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding:26px}
+#paywall.on{display:flex}
+.pwBoite{position:relative;width:100%;max-width:360px;border-radius:24px;overflow:hidden;
+ background:#0D141D;border:1px solid rgba(232,201,128,.22);padding:30px 24px 22px;text-align:center;
+ box-shadow:0 26px 60px rgba(0,0,0,.7)}
+.pwBoite::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+ background:linear-gradient(#E8C980,rgba(232,201,128,0))}
+.pwKick{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--orTexte);
+ font-weight:700;margin:0 0 10px}
+.pwBoite h2{font-family:'Cinzel',serif;font-size:22px;font-weight:600;color:var(--blanc);margin:0 0 12px}
+.pwTxt{font-size:13px;line-height:1.75;color:#C3D0DA;margin:0 0 22px}
+#pwAller{display:block;width:100%;padding:14px;border-radius:99px;border:0;cursor:pointer;
+ background:linear-gradient(120deg,#E8C980,#C8A96A);color:#100C04;font-family:'Montserrat',sans-serif;
+ font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+#pwTard{display:block;margin:14px auto 0;border:0;background:none;cursor:pointer;
+ font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gris);
+ border-bottom:1px solid rgba(255,255,255,.2);padding:2px 1px}
 #sprint{position:fixed;inset:0;z-index:41;background:#04060A;display:none;overflow-y:auto}
 #sprint.on{display:block}
 #spFond{position:absolute;inset:0;overflow:hidden;pointer-events:none}
@@ -1492,7 +1511,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <div class="pt"><b data-t="pt1t">Le vocabulaire équestre en six langues</b><i data-t="pt1d">Français, anglais, espagnol, italien, allemand, japonais — le vrai, celui des écuries.</i></div>
       <div class="pt"><b data-t="pt2t">Une ville, un chapitre</b><i data-t="pt2d">Du Suffolk à l'Andalousie. Chacune enseigne une partie du métier, dans la langue que tu apprends.</i></div>
       <div class="pt"><b data-t="pt3t">Comprendre un enseignant à l'étranger</b><i data-t="pt3d">Les ordres qu'on crie en reprise, à reconnaître au vol.</i></div>
-      <div class="pt"><b data-t="pt4t">Savoir dire l'essentiel en cas d'urgence</b><i data-t="pt4d">« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.</i></div>
+      <div class="pt"><b data-t="pt4t">Savoir dire l'essentiel en cas d'urgence</b><i data-t="pt4d">« Il boite », « appelez le vétérinaire ». Ces mots sont offerts, partout.</i></div>
       <div class="pt"><b data-t="pt5t">Une collection à rapporter</b><i data-t="pt5d">Une carte postale et un souvenir par ville, gagnés, pas donnés.</i></div>
     </div>
     <button id="inSuite" data-t="choisirDest">Choisir ma destination</button>
@@ -1610,7 +1629,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v35 · lumière</p>
+    <p id="ouvVersion">v36 · verrou</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1623,7 +1642,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       à la suivante.</p>
       <p data-th="regle2"><b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale
       à retourner, un souvenir, et une étoile de plus dans ton ciel.</p>
-      <p data-th="regle3"><b>Le chapitre des urgences est offert</b> — savoir dire « il boite » ou « appelez le
+      <p data-th="regle3"><b>Les mots de l'urgence sont offerts</b> — savoir dire « il boite » ou « appelez le
       vétérinaire » à l'étranger ne se monnaie pas.</p>
     </div>
 
@@ -1647,6 +1666,22 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   </div>
 </div>
 
+<!-- ⚠️ LE VERROU PREMIUM (v36, 9 aout 2026). Verrou d'affichage cote
+     client, assume « pour l'instant » : le statut vient de la cle
+     localStorage hype_premium ecrite par index.html (meme domaine).
+     Offert sans abonnement : Kildare (les urgences), UNE ville au choix
+     (la premiere lecon ouverte, memorisee dans hype_lingua_libre), et les
+     duels RECUS par lien. Premium : toutes les autres lecons, le Sprint
+     solo, la CREATION de duel. -->
+<div id="paywall">
+  <div class="pwBoite">
+    <p class="pwKick">Hype Linguae</p>
+    <h2 data-t="pwTitre">Le voyage Premium</h2>
+    <p class="pwTxt" data-t="pwTxt">Les villes suivantes font partie du voyage Premium. L'abonnement Hype Premium débloque toutes les leçons de Linguae — et toute l'application Hype avec.</p>
+    <button id="pwAller" type="button" data-t="pwCta">Découvrir l'abonnement</button>
+    <button id="pwTard" type="button" data-t="pwTard">Plus tard</button>
+  </div>
+</div>
 <div id="sprint">
   <div id="spFond"><div id="spFondImg"></div><div id="spBas"></div></div>
   <div class="spFlash" id="spFlash"></div>
@@ -4400,8 +4435,16 @@ var ETAPE_SRC = {
   hickstead:   [["obstacle",1]],
   badminton:   [["concours",2]],
   burghley:    [["cross",1]],
-  kildare:     [["urgences",1]],
-  edimbourg:   [["urgences",4]],
+  /* ⚠️ v36 (decision B de Blandine, 9 aout) : les termes les plus urgents
+     regroupes dans UNE ville offerte. Kildare recoit les lecons 1 (les
+     secours), 3 (les urgences du cheval) et 4 (les mots a crier) — le kit
+     de panique complet, 32 mots, gratuit. Edimbourg recoit la lecon 2 (la
+     chute du cavalier, vocabulaire medical descriptif), Premium. Les
+     lecons 2 et 3 etaient jusqu'ici PLACEES NULLE PART : 22 mots
+     d'urgence dormaient, dont « il boite » et « appelez le veterinaire »
+     — les mots memes de la promesse du carnet. */
+  kildare:     [["urgences",1],["urgences",3],["urgences",4]],
+  edimbourg:   [["urgences",2]],
   saumur:      [["dressage",3]],
   lamotte:     [["poney",1]],
   golega:      [["elevage",1]],
@@ -4595,12 +4638,12 @@ var UI = {
  pt4t:{fr:"Savoir dire l'essentiel en cas d'urgence", en:"Say what matters in an emergency",
    es:"Saber decir lo esencial en una urgencia", it:"Saper dire l'essenziale in un'emergenza",
    de:"Im Notfall das Wichtigste sagen können", ja:"緊急時に必要なことを言えるように"},
- pt4d:{fr:"« Il boite », « appelez le vétérinaire ». Ce chapitre est offert, partout.",
-   en:"\u201CHe\u2019s lame\u201D, \u201Ccall the vet\u201D. This chapter is free, everywhere.",
-   es:"«Cojea», «llamad al veterinario». Este capítulo es gratis, en todas partes.",
-   it:"«Zoppica», «chiamate il veterinario». Questo capitolo è gratuito, sempre.",
-   de:"\u201EEr lahmt\u201C, \u201Eruft den Tierarzt\u201C. Dieses Kapitel ist überall kostenlos.",
-   ja:"「跛行している」「獣医を呼んで」。この章は、どの言語でも無料。"},
+ pt4d:{fr:"« Il boite », « appelez le vétérinaire ». Ces mots sont offerts, partout.",
+   en:"\u201CHe\u2019s lame\u201D, \u201Ccall the vet\u201D. These words are free, everywhere.",
+   es:"«Cojea», «llamad al veterinario». Estas palabras son gratis, en todas partes.",
+   it:"«Zoppica», «chiamate il veterinario». Queste parole sono gratuite, sempre.",
+   de:"\u201EEr lahmt\u201C, \u201Eruft den Tierarzt\u201C. Diese Wörter sind überall kostenlos.",
+   ja:"「跛行している」「獣医を呼んで」。この言葉は、どの言語でも無料。"},
  pt5t:{fr:"Une collection à rapporter", en:"A collection to bring home",
    es:"Una colección para traer de vuelta", it:"Una collezione da portare a casa",
    de:"Eine Sammlung für den Heimweg", ja:"持ち帰るコレクション"},
@@ -4665,12 +4708,12 @@ var UI = {
    it:"<b>Ogni città lascia una traccia:</b> un timbro sul passaporto, una cartolina da girare, un souvenir, e una stella in più nel tuo cielo.",
    de:"<b>Jede Stadt lässt eine Spur:</b> einen Stempel im Pass, eine Postkarte zum Umdrehen, ein Andenken und einen Stern mehr an deinem Himmel.",
    ja:"<b>街はそれぞれ跡を残す。</b>パスポートの消印、裏返せる絵はがき、記念品、そして夜空にもう一つの星。"},
- regle3:{fr:"<b>Le chapitre des urgences est offert</b> — savoir dire « il boite » ou « appelez le vétérinaire » à l'étranger ne se monnaie pas.",
-   en:"<b>The emergency chapter is free</b> — knowing how to say \u201Che\u2019s lame\u201D or \u201Ccall the vet\u201D abroad is not for sale.",
-   es:"<b>El capítulo de urgencias es gratis</b>: saber decir «cojea» o «llamad al veterinario» en el extranjero no se cobra.",
-   it:"<b>Il capitolo delle emergenze è gratuito</b> — saper dire «zoppica» o «chiamate il veterinario» all'estero non si vende.",
-   de:"<b>Das Notfallkapitel ist kostenlos</b> — zu wissen, wie man im Ausland \u201Eer lahmt\u201C oder \u201Eruft den Tierarzt\u201C sagt, ist nicht verkäuflich.",
-   ja:"<b>緊急時の章は無料。</b>海外で「跛行している」「獣医を呼んで」と言えること。これは売り物ではない。"},
+ regle3:{fr:"<b>Les mots de l'urgence sont offerts</b> — savoir dire « il boite » ou « appelez le vétérinaire » à l'étranger ne se monnaie pas.",
+   en:"<b>The emergency words are free</b> — knowing how to say \u201Che\u2019s lame\u201D or \u201Ccall the vet\u201D abroad is not for sale.",
+   es:"<b>Las palabras de urgencia son gratis</b>: saber decir «cojea» o «llamad al veterinario» en el extranjero no se cobra.",
+   it:"<b>Le parole dell'emergenza sono gratuite</b> — saper dire «zoppica» o «chiamate il veterinario» all'estero non si vende.",
+   de:"<b>Die Notfallwörter sind kostenlos</b> — zu wissen, wie man im Ausland \u201Eer lahmt\u201C oder \u201Eruft den Tierarzt\u201C sagt, ist nicht verkäuflich.",
+   ja:"<b>緊急時の言葉は無料。</b>海外で「跛行している」「獣医を呼んで」と言えること。これは売り物ではない。"},
  /* Les trois paliers portes par la ville (voir NIVEAU_VILLE) : ils
     existaient depuis le 5 aout mais n'avaient jamais de nom affichable.
     Demande de Blandine le 6 aout : « on avait dit aussi qu'on mettrait
@@ -4942,7 +4985,20 @@ var UI = {
    it:"Viaggio finito", de:"Reise beendet", ja:"旅の完了"},
  nomLangue:{fr:"français", en:"anglais", es:"espagnol", it:"italien", de:"allemand", ja:"japonais"},
  maCollection:{fr:"Ma collection", en:"My collection", es:"Mi colección",
-   it:"La mia collezione", de:"Meine Sammlung", ja:"マイコレクション"}
+   it:"La mia collezione", de:"Meine Sammlung", ja:"マイコレクション"},
+ /* le verrou premium (v36) — la phrase est de Blandine, 9 aout */
+ pwTitre:{fr:"Le voyage Premium", en:"The Premium journey", es:"El viaje Premium",
+   it:"Il viaggio Premium", de:"Die Premium-Reise", ja:"プレミアムの旅"},
+ pwTxt:{fr:"Les villes suivantes font partie du voyage Premium. L'abonnement Hype Premium débloque toutes les leçons de Linguae — et toute l'application Hype avec.",
+   en:"The next cities are part of the Premium journey. The Hype Premium subscription unlocks every Linguae lesson — and the whole Hype app with it.",
+   es:"Las siguientes ciudades forman parte del viaje Premium. La suscripción Hype Premium desbloquea todas las lecciones de Linguae — y toda la aplicación Hype.",
+   it:"Le prossime città fanno parte del viaggio Premium. L'abbonamento Hype Premium sblocca tutte le lezioni di Linguae — e tutta l'app Hype.",
+   de:"Die nächsten Städte gehören zur Premium-Reise. Das Hype-Premium-Abo schaltet alle Linguae-Lektionen frei — und die ganze Hype-App dazu.",
+   ja:"ここから先の街はプレミアムの旅。Hype プレミアムに登録すると、Linguae のすべてのレッスンと Hype アプリ全体が使えます。"},
+ pwCta:{fr:"Découvrir l'abonnement", en:"See the subscription", es:"Ver la suscripción",
+   it:"Scopri l'abbonamento", de:"Zum Abo", ja:"プランを見る"},
+ pwTard:{fr:"Plus tard", en:"Later", es:"Más tarde",
+   it:"Più tardi", de:"Später", ja:"あとで"}
 };
 /* Le nom de la langue enseignée, dit dans la langue de l'interface. */
 var LANGUE_NOM = {
@@ -5285,7 +5341,48 @@ function donnerXP(n, raison){
   }catch(e){}
 }
 
+/* ==================================================================
+   LE VERROU PREMIUM (v36, 9 aout 2026) — decision de Blandine.
+   Le statut est depose par index.html dans localStorage.hype_premium a
+   chaque ouverture de Hype (meme domaine, meme localStorage). Un compte
+   Premium qui n'a JAMAIS ouvert Hype sur cet appareil verra donc le
+   verrou : le bouton l'emmene sur la page d'abonnement, ou son statut se
+   pose — au retour, tout est ouvert. Assume.
+   Offert : Kildare (VILLE_OFFERTE) + la premiere ville dont on ouvre la
+   lecon (hype_lingua_libre, posee au premier passage, a vie sur cet
+   appareil — pas synchronisee, assume aussi) + les duels recus par lien.
+   ================================================================== */
+function estPremium(){
+  try{ return localStorage.getItem("hype_premium")==="1"; }catch(e){ return false; }
+}
+var VILLE_OFFERTE = { kildare:1 };
+function villeAutorisee(refVille){
+  if(estPremium() || VILLE_OFFERTE[refVille]) return true;
+  var libre="";
+  try{ libre=localStorage.getItem("hype_lingua_libre")||""; }catch(e){}
+  if(!libre){
+    /* la premiere lecon qu'on ouvre devient SA ville offerte */
+    try{ localStorage.setItem("hype_lingua_libre", refVille); }catch(e){}
+    return true;
+  }
+  return libre===refVille;
+}
+function ouvrirPaywall(){ S("paywall").classList.add("on"); }
+function fermerPaywall(){ S("paywall").classList.remove("on"); }
+S("pwTard").addEventListener("click", fermerPaywall);
+S("pwAller").addEventListener("click", function(){
+  /* la page d'abonnement Hype : meme racine Netlify, porte deja cablee
+     dans CIBLE_DIRECTE (cle premium). */
+  location.href="./index.html#premium";
+});
+/* la creation d'un duel est Premium ; un duel RECU (#duel=...) reste
+   libre — c'est l'invitation, decision de Blandine. */
+function creerDuel(){
+  if(!estPremium()){ ouvrirPaywall(); return; }
+  ouvrirDuel(grainePropre(), null);
+}
 function ouvrirLecon(refVille){
+  if(!villeAutorisee(refVille)){ ouvrirPaywall(); return; }
   var chap = chapVirtuel(refVille);
   var cle = chap ? chap.cle : CHAPITRE_DE[refVille];
   var e = ETAPES.filter(function(x){ return x.ref===refVille; })[0];
@@ -6283,6 +6380,7 @@ function reservoirSprint(){
   return (connus.length>=12) ? connus.concat(brasser(t).slice(0,20)) : t;
 }
 function ouvrirSprint(){
+  if(!estPremium()){ ouvrirPaywall(); return; }   /* v36 : le Sprint solo est Premium */
   S("sprint").classList.add("on");
   amorcerVoix();
   accueilSprint();
@@ -6406,7 +6504,7 @@ function finSprint(){
       el("div",{}, el("em",{text:String(SP_REC.total)}), el("span",{text:ui==="en"?"words":"mots"}))
     ),
     el("button",{id:"spGo", onclick:demarrerSprint}, ui==="en"?"Again":"Encore"),
-    el("button",{id:"spGo", class:"encore", onclick:function(){ ouvrirDuel(grainePropre(), null); }},
+    el("button",{id:"spGo", class:"encore", onclick:function(){ creerDuel(); }},
       ui==="en"?"Challenge someone":"Défier quelqu'un"),
     el("button",{id:"spGo", class:"encore", onclick:fermerSprint},
       ui==="en"?"Back to the journey":"Revenir au voyage")
@@ -6553,7 +6651,7 @@ function finDuel(){
       : (ui==="en"?"Send this link. Same ten words, same order.":"Envoie ce lien. Les mêmes dix mots, dans le même ordre.")}),
     el("button",{id:"spGo", onclick:function(){ partagerDuel(lien, d.score); }},
       ui==="en"?"Challenge someone":"Défier quelqu'un"),
-    el("button",{id:"spGo", class:"encore", onclick:function(){ ouvrirDuel(grainePropre(), null); }},
+    el("button",{id:"spGo", class:"encore", onclick:function(){ creerDuel(); }},
       ui==="en"?"New duel":"Nouveau duel"),
     el("button",{id:"spGo", class:"encore", onclick:fermerSprint},
       ui==="en"?"Back":"Revenir")
@@ -6838,7 +6936,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v35 · lumière · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v36 · verrou · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
