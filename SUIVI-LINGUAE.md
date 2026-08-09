@@ -119,11 +119,18 @@ Un tap sur la vidéo d'arrivée la rejoue depuis le début (souhait de Blandine)
 ## ✅ lingo-controle.html — la page de vérité du déploiement
 Fichier **autonome** à déposer à la racine, à ouvrir après chaque poussée : interroge le serveur (HEAD sans cache, repli GET, contourne le service worker) pour **115 fichiers** — 31 vidéos d'arrivée + 31 cartes + 31 fonds + 22 lexiques + pages/médias du module — et affiche vert/rouge, compteurs, **liste copiable des manquants**. Bouton Relancer. Seule maintenance : reporter dans `VILLES` toute ville ajoutée/retirée d'ETAPES (liste vérifiée identique au v52 ce jour). Contexte : impossible de vérifier depuis mon poste (le domaine Netlify refuse l'accès automatisé) ; manquants déjà connus : arrivee-rome.mp4 (a existé, perdue), Vérone et Dubaï (jamais créées), Tokyo/Buenos Aires à confirmer.
 
+## ✅ Les deux lexiques jamais écrits — créés ce jour
+Verdict GitHub (capture de Blandine) : « No commits history » pour lex-froid → les fichiers n'avaient JAMAIS existé ; la conception du 6 août n'avait vécu que dans les commentaires de lingo.html. Écrits le 9 août sur le gabarit des chapitres du 6 août (une leçon, une coll, `chapitre` 15 et 16 = les deux trous libres) :
+- **hype-lingo-lex-haras.js** (Lexington) : les ventes de yearlings — haras, yearling, enchères, catalogue, lot/« hip number », ring, commissaire-priseur, marteau, enchérir (v), pedigree. Distinct de l'élevage (Golegã) et de la vente (Vérone), rappelé dans les defs.
+- **hype-lingo-lex-froid.js** (Spruce Meadows) : le froid de l'écurie — hiver, neige, gel, glace, dégel, poil d'hiver, **chinook** (le mot local, comme « the mob » à Tamworth), buée, couvrir (v), hiverner (v).
+Dédoublonnage des `ref` vérifié contre les 20 lexiques disponibles (piège des faux rappels) : `couverture` restant à l'écurie → verbe `couvrir` ici ; `tondre`/`mue` restant au pansage → `poilhiver` ici. 10 concepts + 3 phrases chacun, 6 langues vérifiées sans trou par exécution node. Relecture native recommandée (marqué en tête de fichiers).
+
 ## ⚠️ Incidents de la session (règle du 9 août : tout se dit)
 1. Édition de la phrase du souvenir (v44) : accolade doublée par mon remplacement, fichier syntaxiquement cassé une étape — attrapé par node --check, réparé aussitôt.
 2. Script v52 : apostrophe mal échappée, le script a refusé de démarrer — aucun octet écrit, relancé corrigé.
 3. Mon vérificateur a affiché un faux « KO » sur le v52 (condition mal écrite comptant tout en échec) — revérification rigoureuse : fichier réellement sain.
 4. Accès web sortant : refus des URL non fournies par Blandine, puis refus robots du domaine Netlify — la vérification en ligne est donc impossible depuis mon poste, d'où la page de contrôle.
+5. hype-lingo-lex-haras.js livré cassé à la première écriture : guillemets allemands „…" fermés par un guillemet droit qui terminait la chaîne JS — attrapé par node --check avant livraison, réparé (fermeture „…“), revalidé.
 
 # SESSION 175 · 09/08 · v45 « le retour au voyage »
 
