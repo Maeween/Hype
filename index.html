@@ -21305,6 +21305,10 @@ function Router() {
        changement d'ecran et au retour d'arriere-plan, on repart de la realite du DOM.
        Le blocage de defilement Android se repare donc seul, sans redemarrage. */
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
+    /* SONDE TEMPORAIRE (09/08) : compte les rendus de la coquille. Si ce compteur grimpe
+       pendant un geste, l app se redessine sous le doigt et le navigateur abandonne le geste
+       (touchcancel), ce qui expliquerait un defilement mort sans aucun blocage apparent. */
+    useEffect(() => { try { window.__hypeRenders = (window.__hypeRenders || 0) + 1; } catch (e) { } });
     /* Liberation des puits tactiles : apres peinture, et une seconde fois un peu plus tard
        pour les contenus qui arrivent de Supabase (annonces, chevaux, photos). */
     useEffect(() => {
@@ -44329,7 +44333,7 @@ if (__boot)
   var y0 = 0, top0 = 0, bloque = null, annule = null, dyMax = 0;
   /* Le geste bloque doit SURVIVRE au fait de lever le doigt et de changer de page :
      sinon chaque capture d ecran montre l analyse du geste suivant, celui qui marche. */
-  var xDep = 0, yDep = 0, cibleEvt = null, nbMove = 0, fin = "-";
+  var xDep = 0, yDep = 0, cibleEvt = null, nbMove = 0, fin = "-", rendusDep = null;
   var fige = null;
   try { fige = localStorage.getItem("hype_debug_fige") || null; } catch (e) { }
 
@@ -44346,6 +44350,11 @@ if (__boot)
     lignes.push("body: of=" + gb.overflow + "/" + gb.overflowY + " ta=" + gb.touchAction +
       " pos=" + gb.position + " h=" + gb.height + "  inline='" + (document.body.style.overflow || "") + "'");
     lignes.push("html: of=" + gh.overflow + "/" + gh.overflowY + " ta=" + gh.touchAction + " h=" + gh.height);
+    lignes.push("rendus de la coquille : total " + (window.__hypeRenders || 0) +
+      "   PENDANT CE GESTE : " + (rendusDep === null ? "-" : ((window.__hypeRenders || 0) - rendusDep)) +
+      ((rendusDep !== null && (window.__hypeRenders || 0) - rendusDep > 0) ? "   <<< L APP SE REDESSINE SOUS LE DOIGT" : ""));
+    lignes.push("cible encore presente dans le DOM : " +
+      (cibleEvt ? (document.contains(cibleEvt) ? "oui" : "NON  <<< l element a disparu pendant le geste") : "-"));
     lignes.push("verrou=" + (window.__hypeScrollLock === undefined ? "absent" : window.__hypeScrollLock) +
       "  visionneuses=" + document.querySelectorAll("[data-hype-zoom]").length);
     var centre = document.elementFromPoint(Math.round(window.innerWidth / 2), Math.round(window.innerHeight / 2));
@@ -44407,7 +44416,7 @@ if (__boot)
       var t = e.touches[0]; if (!t) return;
       cibleEvt = e.target;   /* la ou le geste part REELLEMENT : diffère de elementFromPoint si une capture de pointeur traine */
       y0 = t.clientY; top0 = racine().scrollTop; bloque = null; annule = null; dyMax = 0;
-      nbMove = 0; fin = "geste en cours";
+      nbMove = 0; fin = "geste en cours"; rendusDep = window.__hypeRenders || 0;
       xDep = Math.round(t.clientX); yDep = Math.round(t.clientY);
       analyser(Math.round(t.clientX), Math.round(t.clientY));
     } catch (x) { }
