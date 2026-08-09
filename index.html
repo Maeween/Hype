@@ -44161,4 +44161,127 @@ if (__boot)
   window.addEventListener("focus", recadrer);
   window.addEventListener("orientationchange", function () { setTimeout(recadrer, 120); });
 })();
+</script><script>
+/* ===== 09/08/2026 · MODE DIAGNOSTIC DU DEFILEMENT (temporaire, dormant par defaut) =====
+   Demande dans le brief d audit "blocage du scroll Android". ENTIEREMENT INERTE tant qu il
+   n est pas active : aucun element cree, aucun ecouteur pose, aucun changement de design.
+   ACTIVATION : ouvrir l app avec ?debug=scroll (memorise ensuite, meme en PWA).
+   EXTINCTION : ouvrir l app avec ?debug=off.
+   Ce que le panneau repond, en un seul appui du doigt :
+     - le geste est-il annule par du JS (defaultPrevented sur touchmove) ;
+     - la page a-t-elle de quoi defiler (scrollHeight vs hauteur d ecran) ;
+     - quel conteneur porte reellement le defilement ;
+     - quel element est sous le doigt, et toute sa chaine de parents avec overflow /
+       height / position / touch-action / pointer-events calcules ;
+     - le premier parent qui interdit le panoramique vertical (touch-action) ;
+     - l etat du verrou de defilement (window.__hypeScrollLock, body.style.overflow).
+   A RETIRER une fois la cause identifiee et corrigee. */
+(function () {
+  var actif = false;
+  try {
+    var q = (location.search || "") + (location.hash || "");
+    if (/debug=off/.test(q)) { localStorage.removeItem("hype_debug_scroll"); }
+    else if (/debug=scroll|debug-scroll/.test(q)) { localStorage.setItem("hype_debug_scroll", "1"); }
+    actif = localStorage.getItem("hype_debug_scroll") === "1";
+  } catch (e) { actif = false; }
+  if (!actif) return;
+
+  var panneau = null;
+  function panneauPret() {
+    if (panneau) return panneau;
+    panneau = document.createElement("div");
+    panneau.id = "hype-debug-scroll";
+    panneau.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:2147483647;" +
+      "pointer-events:none;max-height:52vh;overflow:hidden;box-sizing:border-box;padding:8px 10px;" +
+      "background:rgba(4,6,9,0.93);border-top:1px solid #20D9F5;color:#DDEAEE;" +
+      "font-family:ui-monospace,monospace;font-size:9.5px;line-height:1.35;white-space:pre-wrap;word-break:break-all";
+    document.body.appendChild(panneau);
+    return panneau;
+  }
+
+  function nom(el) {
+    if (!el) return "(aucun)";
+    if (el === document.documentElement) return "html";
+    if (el === document.body) return "body";
+    var s = (el.tagName || "?").toLowerCase();
+    if (el.id) s += "#" + el.id;
+    var c = el.getAttribute && el.getAttribute("class");
+    if (c) s += "." + String(c).trim().split(/\s+/).slice(0, 3).join(".");
+    return s;
+  }
+  function fiche(el) {
+    var g = getComputedStyle(el);
+    var scrollable = el.scrollHeight > el.clientHeight + 4 &&
+      (g.overflowY === "auto" || g.overflowY === "scroll" || el === document.scrollingElement);
+    return nom(el) +
+      "  of=" + g.overflow + "/" + g.overflowY +
+      " h=" + g.height + " pos=" + g.position +
+      " ta=" + g.touchAction + " pe=" + g.pointerEvents +
+      " z=" + g.zIndex +
+      " sh/ch=" + el.scrollHeight + "/" + el.clientHeight +
+      (scrollable ? "  <<< DEFILE" : "");
+  }
+  function interditVertical(ta) {
+    return ta === "none" || ta === "pan-x" || ta === "pan-left" || ta === "pan-right" ||
+      ta === "pinch-zoom" || ta === "pan-x pinch-zoom";
+  }
+
+  var dernier = "";
+  var y0 = 0, top0 = 0, bloque = null, annule = null;
+
+  function racine() { return document.scrollingElement || document.documentElement; }
+
+  function analyser(x, y) {
+    var lignes = [];
+    var r = racine();
+    lignes.push("— HYPE DIAGNOSTIC DEFILEMENT —  (?debug=off pour eteindre)");
+    lignes.push("scrollingElement=" + nom(r) + "  scrollTop=" + Math.round(r.scrollTop) +
+      "  scrollHeight=" + r.scrollHeight + "  innerHeight=" + window.innerHeight +
+      "  a defiler=" + Math.max(0, r.scrollHeight - window.innerHeight) + "px");
+    var gb = getComputedStyle(document.body), gh = getComputedStyle(document.documentElement);
+    lignes.push("body: of=" + gb.overflow + "/" + gb.overflowY + " ta=" + gb.touchAction +
+      " pos=" + gb.position + " h=" + gb.height + "  inline='" + (document.body.style.overflow || "") + "'");
+    lignes.push("html: of=" + gh.overflow + "/" + gh.overflowY + " ta=" + gh.touchAction + " h=" + gh.height);
+    lignes.push("verrou=" + (window.__hypeScrollLock === undefined ? "absent" : window.__hypeScrollLock) +
+      "  visionneuses=" + document.querySelectorAll("[data-hype-zoom]").length);
+    var centre = document.elementFromPoint(Math.round(window.innerWidth / 2), Math.round(window.innerHeight / 2));
+    lignes.push("centre ecran -> " + nom(centre));
+    lignes.push("touchmove annule par du JS : " + (annule === null ? "(glisse le doigt)" : (annule ? "OUI  <<< CAUSE JS" : "non")) +
+      "   la page a bouge : " + (bloque === null ? "(glisse le doigt)" : (bloque ? "non  <<< BLOQUE" : "oui")));
+    lignes.push("chaine sous le doigt (" + x + "," + y + ") :");
+    var el = document.elementFromPoint(x, y), n = 0, coupable = null;
+    while (el && n < 9) {
+      lignes.push("  " + fiche(el));
+      var ta = getComputedStyle(el).touchAction;
+      if (!coupable && interditVertical(ta)) coupable = nom(el) + " (touch-action:" + ta + ")";
+      el = el.parentElement; n++;
+    }
+    if (coupable) lignes.push("!!! PREMIER PARENT QUI INTERDIT LE VERTICAL : " + coupable);
+    dernier = lignes.join("\n");
+    panneauPret().textContent = dernier;
+  }
+
+  window.addEventListener("touchstart", function (e) {
+    try {
+      var t = e.touches[0]; if (!t) return;
+      y0 = t.clientY; top0 = racine().scrollTop; bloque = null; annule = null;
+      analyser(Math.round(t.clientX), Math.round(t.clientY));
+    } catch (x) { }
+  }, { passive: true, capture: true });
+
+  /* En phase de remontee, tout le monde a deja parle : defaultPrevented dit si un
+     ecouteur de l app a annule le geste. Ecouteur passif, il ne bloque rien lui-meme. */
+  window.addEventListener("touchmove", function (e) {
+    try {
+      var t = e.touches[0]; if (!t) return;
+      if (Math.abs(t.clientY - y0) < 12) return;
+      annule = e.defaultPrevented;
+      bloque = Math.abs(racine().scrollTop - top0) < 2;
+      analyser(Math.round(t.clientX), Math.round(y0));
+    } catch (x) { }
+  }, { passive: true });
+
+  try { console.log("[Hype] mode diagnostic defilement ACTIF"); } catch (e) { }
+})();
+
 </script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script></body></html>

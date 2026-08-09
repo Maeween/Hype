@@ -10,7 +10,11 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 09/08/2026 (SESSION 114 · LA CLÉ `hype_premium` RÉAPPLIQUÉE + LA COMMUNAUTÉ EN PROCHAINEMENT) — md5 `9f324dc0f876f3fd24d5254a36aaaeb7`, 9136372 octets. Base : la 112 fournie par Blandine (la 113 n'avait pas été poussée) ; la clé `hype_premium` y est reposée à l'identique, plus la fermeture de la Communauté. Diff avec la 112 : 3 hunks, 42 lignes ajoutées, 1 remplacée. Aucune preview. Aucun SQL. À POUSSER AVANT `lingo.html` v43. `hype-cours-baby.js` inchangé.**
+**Version actuelle de l'index.html : 09/08/2026 (SESSION 116 · LE BLOCAGE DU DÉFILEMENT SUR ANDROID) — md5 `0c8a83cfb7339027da51564a7ec68656`, 9140372 octets. Base : le fichier fourni par Blandine en séance, qui contenait déjà la 115 (`hype_retour_linguae` présent 3 fois — vérifié avant toute modification). Diff : 3 zones, +3 266 octets, fonctions 913 → 916 (les 3 helpers du verrou), const 390 → 390. Aucune preview. Aucun SQL. `hype-cours-baby.js` inchangé.**
+
+**Note de numérotation :** l'en-tête est resté sur la 114 alors que la session 115 (retour au Voyage, `apresConnexion()`) était bien dans le fichier de Blandine. La 115 n'est donc pas perdue, seulement non consignée en tête. La présente session prend le 116.
+
+**Ancienne version (115) : dans le fichier de Blandine, en-tête non mis à jour — voir la section SESSION 115 plus bas.**
 
 **Ancienne version (113, JAMAIS POUSSÉE — remplacée par la 114) : (SESSION 113 · LA CLÉ `hype_premium` POUR LE VERROU DE LINGUAE) — md5 `6ccf8ed511efb7834c2153d5b8ece9ad`, 9133471 octets. Diff avec la 112 : 1 hunk, 12 lignes ajoutées, 0 supprimée. Aucune preview. Aucun SQL. À POUSSER AVANT `lingo.html` v37 (verrou Premium, détail dans `SUIVI-LINGUAE.md`). `hype-cours-baby.js` inchangé.****
 
@@ -120,7 +124,10 @@ VIDÉO CARTE LINGUAE (Accueil) : Blandine a fourni `copy_47DFBC08....mov` (752×
 
 VÉRIFICATION : 15/15 node --check ; fonctions 1044→1044, const 551→551 ; allerVersGalop = 3 ; Playwright : 2 pageerror identiques, texte identique.
 
-### Préparation Flutter (session 101)
+### 🔴 À RÉGLER — signalé par Blandine le 9 août (capture à l'appui)
+Le problème des **cartes sur le chemin des poneys** (parcours Baby « Poney de Bronze », vignettes des étapes), supposé résolu, **ne l'est toujours pas** en ligne. À reprendre au prochain rendez-vous sur l'index : reproduire depuis sa capture (écran Galops → Poney de Bronze), identifier si c'est le chargement des images (retry), les clés HYPE_IMGS, ou le rendu des vignettes. Ne pas re-fermer sans vérification sur son téléphone.
+
+## Préparation Flutter (session 101)
 Aucune amélioration d'architecture réalisée sur cette session côté application : c'est un chantier de contenu. Une amélioration d'outillage en revanche, réutilisable pour toutes les langues et toutes les tables :
 
 - `lib_table.js` — isolement d'une table de cours et d'un chapitre par équilibrage de crochets, puis évaluation en objet JS. Remplace `injecter.js`, qui ne connaissait que `COURS_GALOP2_FR`.
@@ -128,6 +135,43 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 116 · 09/08 · LE BLOCAGE DU DÉFILEMENT SUR ANDROID
+
+Signalé en urgence par Blandine : **plus de défilement sur Android, alors que tout va bien sur iPhone.** Symptôme affiné en cours de séance, et c'est lui qui a tout décidé : **le défilement ne répond que si le geste démarre sur la barre de menu du bas** ; depuis le contenu, image totalement figée. Sur **tous** les écrans. Constaté après une fermeture complète de l'appli.
+
+### ⚠️ CORRECTION D'UNE CONCLUSION PRÉCÉDENTE
+La session qui avait tranché « bug scroll Android = état figé côté appareil, pas un bug de code » **avait tort**. Le redémarrage complet soignait le symptôme parce qu'il recharge le document et efface un style **inline** posé sur `<body>` — pas parce que l'appareil était en cause. D'où le retour du bug. La ligne du TODO « si le blocage revient, redemander d'abord un redémarrage » reste utile comme dépannage, mais ne doit plus servir de diagnostic.
+
+### DIAGNOSTIC 1 — le verrou de défilement fantôme (bug réel, corrigé)
+Un seul endroit de toute l'app touchait au défilement global : `PhotoZoomable`, qui posait `document.body.style.overflow = "hidden"` à l'ouverture d'une photo et **restaurait la valeur mémorisée** à la fermeture. Deux visionneuses superposées fermées dans le désordre, ou une sortie d'écran par le bouton retour physique pendant qu'une photo était ouverte, et un `hidden` fantôme restait collé sur `<body>`.
+**Asymétrie des plateformes, la clé de l'affaire :** `body { overflow: hidden }` bloque réellement le défilement sur **Android/Chrome**, et n'a **aucun effet** sur `body` en **iPhone/WebKit**. Un bug invisible sur iOS, bloquant sur Android.
+Vérifié : `document.body.*` n'est manipulé qu'en 7 endroits dans tout le fichier, et `body.style.overflow` en **un seul** (`PhotoZoomable`). Aucun autre verrou global. Les `touchAction: "none"` et les écouteurs `{passive:false}` sont tous confinés à des éléments précis (canvas, tracé au doigt, visionneuse pincée) et correctement retirés au démontage — écartés.
+
+**CORRECTIF :** trois helpers de haut niveau, `hypeVerrouScroll()` / `hypeDeverrouScroll()` / `hypeFiletScroll()`, posés juste avant `Router`.
+- Compteur global `window.__hypeScrollLock`, **plus aucune valeur mémorisée** : deux visionneuses empilées ne peuvent plus se marcher dessus.
+- `hypeFiletScroll()` reprend la vérité **dans le DOM** (`document.querySelectorAll("[data-hype-zoom]")`, attribut ajouté sur l'overlay de `PhotoZoomable`) et réaligne `body.overflow` dessus. Appelé à chaque changement d'écran (`useEffect` sur `[ecran]` dans `Router`) et au retour d'arrière-plan (`visibilitychange`, `pageshow`). **Le blocage se répare donc seul, sans redémarrage**, même si le compteur se désynchronise.
+- 5 scénarios testés en isolant les 3 fonctions avec des stubs : ouverture/fermeture simple, deux visionneuses fermées dans le désordre (l'ancien bug exact), verrou fantôme + filet, filet alors qu'une photo est réellement ouverte, déverrou en trop (pas de compteur négatif). Les 5 passent.
+
+### DIAGNOSTIC 2 — ce qui explique le symptôme décrit (le filigrane), et la cause probable
+Le verrou fantôme **ne peut pas** produire ce que Blandine décrit : une fermeture complète l'efface, et s'il était actif la barre du bas ne défilerait pas non plus. Le symptôme « tout est figé sauf en partant de la barre du bas, sur tous les écrans » désigne un **calque plein écran qui avale le geste, dans la coquille commune** — et dans `Router` il n'y en a qu'un : le **filigrane** (`PHOTOS.watermark` = `PHOTO_SAUT`, `position:fixed`, 100vh, largeur max 480, `zIndex:0`, opacité 0,18). La barre du bas est en `position:fixed` au-dessus de lui : d'où le seul geste qui fonctionne.
+Or dans le fichier de Blandine ce filigrane porte **déjà** `pointerEvents: "none"` : il est inoffensif en l'état. **Hypothèse retenue : l'Android n'exécutait pas cette version, mais un build plus ancien servi par le cache du service worker** — ce qui explique d'un coup l'iPhone à jour qui va bien, l'Android bloqué, et le « de nouveau ».
+Deux tests décisifs avaient été proposés (l'écran Galops, seul écran où le filigrane n'est volontairement pas rendu — `ecran !== "galops"` ; et le témoin de version `reprise 1.2 · baby …` en bas de l'accueil, à comparer entre les deux appareils). **Blandine n'avait pas le temps de tester**, décision assumée : on durcit le code pour rendre le symptôme impossible, et le remède côté cache est un geste unique de son côté (vider les données du site / réinstaller la PWA), qu'aucun code livré ne peut faire à sa place.
+
+**CORRECTIF :** attribut `data-hype-filigrane` sur le calque + règle globale `[data-hype-filigrane] { pointer-events: none !important; }` dans `GlobalStyles`. Le `pointer-events:none` inline est conservé ; la règle CSS le verrouille en dur pour qu'aucune modification future ni aucun état partiel ne puisse le perdre. **Ne pas retirer cette règle.**
+
+### VÉRIFICATION
+`node --check` sur le bloc principal (25 300 lignes extraites entre les balises) : OK. Contrôle de non-régression de syntaxe sur **tous** les blocs inline, comparé au fichier de départ : signature d'erreurs identique (les seules « erreurs » sont les faux positifs du découpeur sur les `<script>` contenus dans les chaînes des iframes). `prevOverflow` : 0 occurrence restante. `hypeVerrouScroll` 4, `hypeDeverrouScroll` 2, `hypeFiletScroll` 4, `data-hype-zoom` 3, `data-hype-filigrane` 2. Pas de vérification Playwright (mode rapide, correctif ciblé sans nouvelle page ni nouvelle image).
+
+### RESTE À FAIRE
+- [ ] **Geste côté Android** : vider les données du site ou réinstaller la PWA, pour sortir du build en cache. Si le blocage persiste **après** ça et avec le présent index, alors les deux diagnostics sont épuisés et il faut passer à l'outil de diagnostic proposé : un calque temporaire qui nomme à l'écran l'élément réellement sous le doigt (`document.elementFromPoint`). Il n'a pas été codé, Blandine ne l'a pas demandé.
+- [ ] Le témoin de version (`reprise 1.2 · baby …`) reste le moyen le plus court de savoir quel build tourne sur un appareil donné. À utiliser en premier réflexe sur tout bug « qui ne se reproduit que sur un téléphone ».
+
+## Préparation Flutter
+Une frontière technique a été isolée proprement : **la gestion du défilement global de l'application ne vit plus dans un composant**. Elle est désormais dans trois fonctions de haut niveau sans état React (`hypeVerrouScroll` / `hypeDeverrouScroll` / `hypeFiletScroll`), avec un invariant vérifiable de l'extérieur — l'état du verrou est déduit du DOM, pas d'une variable mémorisée. C'est exactement la forme d'un futur service `ScrollLockService` côté Flutter : une API à trois entrées, un compteur, et une réconciliation sur événement de cycle de vie (`visibilitychange`/`pageshow` deviendront `AppLifecycleState`). Aucun composant n'écrit plus directement dans `document.body.style`.
+Contrat de présentation également durci : le calque de filigrane est désormais identifié par un attribut de données (`data-hype-filigrane`) et gouverné par une règle du Design System, plus par un style inline isolé — un pas de plus vers des couches de fond décrites par tokens plutôt que par styles locaux.
 
 ---
 
@@ -5230,7 +5274,7 @@ Fichier `maquette-trace-V4.html` (autonome, aucun script distant, moteur et bibl
 - [x] **Roadmap "Les grandes écoles" — TERMINÉE** : les 4 écoles (Cadre Noir gratuit + École Portugaise/Vienne/Jerez Premium) sont livrées. Plus aucun stub "Bientôt sur Hype" dans l'app.
 - [ ] **Album participatif — décisions tranchées, à coder** : Blandine a validé le 27/07 : **sans modération** + **limite de 5 photos/vidéos par personne**. SQL + upload à coder — un album par école (Cadre Noir, École Portugaise, École Espagnole de Vienne, École Royale Andalouse), mêmes règles partout.
 - [ ] **Cartes "Voix contemporaines"** (Carde/Henriquet/Karl) dans l'article Cadre Noir : affichées en "Bientôt : son article →", pas encore de fiche/article dédié à brancher derrière.
-- [ ] **Si le blocage scroll Android revient** : redemander d'abord un redémarrage complet de l'appli (fermeture depuis le multitâche, pas juste retour en arrière) avant toute autre investigation — c'est ce qui a résolu le cas de Gabrielle.
+- [x] **Blocage scroll Android — CAUSE TROUVÉE en session 116, voir sa section.** Ce n'était PAS un état figé de l'appareil : un `body{overflow:hidden}` fantôme laissé par la visionneuse photo, qui bloque Android et n'a aucun effet sur iPhone, et que le redémarrage effaçait par simple rechargement du document. Corrigé (verrou compté + filet auto-réparateur). Le redémarrage complet reste un dépannage valable, mais **ne doit plus servir de diagnostic**. Premier réflexe désormais : lire le témoin de version (`reprise 1.2 · baby …`, bas de l'accueil) sur l'appareil qui bogue, pour savoir quel build il exécute réellement.
 - [ ] **Coller le bloc SQL des 4 annonces en 6 langues** — après déploiement (rappel des sessions précédentes).
 - [ ] **Localiser et appliquer l'image d'accueil Baby et l'image du puzzle**.
 - [ ] **~49 images encore en réserve** — décider de leur usage.
