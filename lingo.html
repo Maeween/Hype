@@ -560,10 +560,59 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .thNat{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#66737C;font-weight:600}
 .thNat .dr{font-size:10px;letter-spacing:0;margin-right:4px}
 /* l'entree depuis le carnet */
-#ouvThemes{display:block;width:100%;margin:0 0 10px;padding:13px;border-radius:99px;
- background:rgba(32,217,245,.06);border:1px solid rgba(32,217,245,.4);color:#20D9F5;
- font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;
- text-transform:uppercase;cursor:pointer}
+/* ⚠️ v34 : les pastilles themes/collection deviennent DEUX BANDEAUX du meme
+   modele (maquette validee). Vignette / titre Cinzel / phrase / chevron,
+   filet vertical turquoise (themes) ou dore (collection). */
+.oEntree{width:100%;display:block;background:none;border:0;padding:0;cursor:pointer;
+ text-align:left;margin:0 0 12px}
+.oC2{position:relative;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.09);
+ background:#0F151E;padding:18px;display:flex;align-items:center;gap:15px}
+.oRu{position:absolute;left:0;top:0;bottom:0;width:3px;
+ background:linear-gradient(#20D9F5,rgba(32,217,245,0))}
+.oOr .oRu{background:linear-gradient(#E8C980,rgba(232,201,128,0))}
+.oOr .oC2{border-color:rgba(232,201,128,.16)}
+.oTxE{flex:1;min-width:0;display:block}
+.oT{display:block;font-family:'Cinzel',serif;font-size:16.5px;font-weight:700;
+ margin:0 0 4px;letter-spacing:.03em;color:var(--blanc)}
+.oS{display:block;font-size:11px;line-height:1.5;color:#78858E}
+.oCh{font-size:20px;color:#7DDDE8;flex:0 0 auto}
+.oOr .oCh{color:#E8C980}
+.oMosa{position:relative;flex:0 0 76px;height:82px;display:grid;
+ grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4px}
+.oMosa span{display:block;border-radius:5px;background-size:cover;background-position:center;
+ border:1px solid rgba(255,255,255,.12)}
+.oEventail{position:relative;flex:0 0 76px;height:82px;display:block}
+.oEventail span{position:absolute;top:8px;width:50px;height:66px;border-radius:7px;display:block;
+ background-size:cover;background-position:center;box-shadow:0 4px 14px rgba(0,0,0,.7);
+ border:1px solid rgba(255,255,255,.14)}
+.oEventail span:nth-child(1){left:0;transform:rotate(-11deg)}
+.oEventail span:nth-child(2){left:12px;transform:rotate(-1deg)}
+.oEventail span:nth-child(3){left:24px;transform:rotate(9deg)}
+/* la photo d'en-tete : cadre decolle, titre en bas dans l'image */
+#ouvCadre{position:relative;display:block;margin:0 -6px 0;border-radius:22px;overflow:hidden;
+ border:1px solid rgba(255,255,255,.075);background:#000;
+ box-shadow:0 18px 44px rgba(0,0,0,.62), 0 0 0 1px rgba(32,217,245,.05)}
+#ouvCadre .oIm{display:block;width:100%;aspect-ratio:1170/1240;
+ background-image:url("tour-monde.webp?v=34");background-size:112%;
+ background-position:64% 22%;background-repeat:no-repeat;background-color:#000}
+#ouvCadre .oVo{position:absolute;left:0;right:0;bottom:0;height:46%;pointer-events:none;
+ background:linear-gradient(to top,rgba(0,0,0,.94) 0%,rgba(0,0,0,.55) 42%,transparent 100%)}
+#ouvCadre .oTx{position:absolute;left:0;right:0;bottom:18px;text-align:center;padding:0 18px;z-index:2}
+#ouvCadre .sur{margin:0 0 9px;text-shadow:0 1px 10px #000}
+#ouvCadre h1{font-size:27px;line-height:1.1;letter-spacing:.02em;text-transform:uppercase;
+ text-shadow:0 2px 20px rgba(0,0,0,.96)}
+/* le defile de drapeaux : 33 px, en couleurs, pause au doigt */
+#ouvDefile{position:relative;margin:22px -22px 0;overflow:hidden;
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 13%,#000 87%,transparent);
+         mask-image:linear-gradient(90deg,transparent,#000 13%,#000 87%,transparent)}
+.oPiste{display:flex;gap:25px;width:max-content;align-items:center;
+ animation:oGlisse 56s linear infinite}
+#ouvDefile:active .oPiste{animation-play-state:paused}
+@keyframes oGlisse{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.oPiste{animation:none;flex-wrap:wrap;width:auto;
+ justify-content:center}#ouvDefile{-webkit-mask-image:none;mask-image:none}}
+.oDr{font-size:33px;line-height:1;flex:0 0 auto;display:block;
+ filter:drop-shadow(0 2px 7px rgba(0,0,0,.7))}
 /* la paire de langues : je lis -> j'apprends (v22) */
 /* ⚠️ ECARTES le 8 aout 2026, demande de Blandine : « on pourrait pousser
    plus a gauche et plus a droite la langue dans laquelle on lit et celle
@@ -604,14 +653,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  font-size:11.5px;letter-spacing:.08em;color:#9AA8B4;
  border-bottom:1px dashed rgba(255,255,255,.18);padding-bottom:2px}
 #ouvMuet.actif{color:var(--turquoise);border-bottom-color:rgba(32,217,245,.45)}
-#ouvColl{display:block;margin:0 auto 20px;border:1px solid rgba(232,201,128,.35);
- background:rgba(232,201,128,.05);border-radius:999px;padding:9px 20px;cursor:pointer;
- font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--orTexte)}
-#ouvGuideB{display:block;width:100%;text-align:left;border:0;background:none;cursor:pointer;
- font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gris);
- padding:14px 0;border-top:1px dashed rgba(255,255,255,.14);margin-top:2px}
-#ouvGuide{padding:2px 0 16px}
-#ouvGuide .gTxt{font-size:13px;line-height:1.75;color:#C3D0DA;margin:0 0 14px}
+/* ⚠️ v34 : #ouvColl est un bandeau (.oEntree ci-dessus). Le CSS du plieur
+   « Comment ca marche ? » (#ouvGuideB/#ouvGuide) est retire avec lui ;
+   .gTitre/.gLigne/.gVille restent morts-vivants inoffensifs. */
 #ouvGuide .gTitre{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
  color:var(--orTexte);margin:0 0 10px}
 #ouvGuide .gLigne{font-size:13px;line-height:1.9;color:#C3D0DA;margin:0 0 7px}
@@ -632,9 +676,17 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  border-bottom:1px solid rgba(32,217,245,.35);padding-bottom:2px;
  font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
  font-size:14px;color:var(--turquoise);opacity:.8;margin:12px 0 30px;letter-spacing:.06em}
-#ouvDebut .intro{font-size:13.5px;line-height:1.75;color:#C3D0DA;margin:0 0 26px;
- text-align:left}
-#ouvDebut .intro b{color:var(--blanc);font-weight:600}
+/* ⚠️ v34 — L'INTRO RETRAVAILLEE (maquette validee). MEME contenu, meme
+   data-th=ouvIntro : seul l'habit change. Le <b> devient l'accroche en
+   serif italique centree, un filet dore dessous via ::after, la suite en
+   plus petit. Aucune cle i18n touchee. */
+#ouvDebut .intro{font-size:12.5px;line-height:1.8;color:#A7B4BD;margin:30px auto 26px;
+ max-width:330px;text-align:center}
+#ouvDebut .intro b{display:block;color:var(--blanc);font-weight:500;
+ font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
+ font-size:19.5px;line-height:1.4;letter-spacing:.015em}
+#ouvDebut .intro b::after{content:"";display:block;width:40px;height:1px;
+ margin:14px auto;background:linear-gradient(90deg,transparent,var(--or),transparent)}
 .carnet{text-align:left;margin:0 0 28px}
 .carnet .ct{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--or);
  margin:0 0 12px}
@@ -1475,9 +1527,28 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="ouverture" class="joue">
   <div id="ouvFond"><div id="ouvFondImg"></div><div id="ouvFondBrume"></div><div id="ouvFondBas"></div></div>
   <div id="ouvDebut">
-    <p class="sur" data-t="voyage1">Hype Linguae · Voyage 1</p>
-    <h1 id="ouvNom">Le tour du monde</h1>
-    <p class="sous" data-t="ouvNations">Angleterre · Irlande · Galles · Écosse · France · Espagne · Allemagne</p>
+    <!-- ⚠️ LA PHOTO D'EN-TETE (v34, maquette validee par Blandine le 9 aout).
+         Le titre vit EN BAS DANS la photo ; le voile ne monte que du bas,
+         le cheval et le globe restent nets — AUCUN filtre, aucune
+         desaturation (c'est la recette du brun, voir passation).
+         Cadrage valide : size 112 %, position 64 % 22 % (« un peu vers le
+         haut et la droite »). `tour-monde.webp` (44 Ko) doit etre poussee a
+         cote de lingo.html ; en son absence le cadre reste noir et la page
+         fonctionne. -->
+    <div id="ouvCadre">
+      <span class="oIm"></span><span class="oVo"></span>
+      <span class="oTx">
+        <p class="sur" data-t="voyage1">Hype Linguae · Voyage 1</p>
+        <h1 id="ouvNom">Le tour du monde</h1>
+      </span>
+    </div>
+    <!-- ⚠️ LA LIGNE DES NATIONS N'EST PLUS UNE CHAINE EN DUR (v34) : elle
+         est generee depuis ETAPES par dessinerNations() — defaut n°2 de la
+         passation, 10 nations annoncees sur 16. data-t retire, sinon
+         appliquerLangue() la recrasait avec la vieille chaine. -->
+    <p class="sous" id="ouvNations"></p>
+    <!-- le defile de drapeaux, 33 px, en couleurs (maquette-tete validee) -->
+    <div id="ouvDefile"><div class="oPiste" id="ouvPiste"></div></div>
     <!-- ⚠️ La ligne de la langue est un BOUTON depuis le 6 août 2026, sur
          la question de Blandine : « où est passée la page où on choisit la
          langue qu'on veut apprendre ? ».
@@ -1533,7 +1604,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v33 · bandes</p>
+    <p id="ouvVersion">v34 · carnet</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -1960,7 +2031,19 @@ var I18N_NAT = {
  "Écosse":         {en:"Scotland",es:"Escocia",    it:"Scozia",      de:"Schottland", ja:"スコットランド"},
  "France":         {en:"France",  es:"Francia",    it:"Francia",     de:"Frankreich", ja:"フランス"},
  "Espagne":        {en:"Spain",   es:"España",     it:"Spagna",      de:"Spanien",    ja:"スペイン"},
- "Allemagne":      {en:"Germany", es:"Alemania",   it:"Germania",    de:"Deutschland",ja:"ドイツ"}
+ "Allemagne":      {en:"Germany", es:"Alemania",   it:"Germania",    de:"Deutschland",ja:"ドイツ"},
+ /* ⚠️ LES 9 NATIONS MANQUANTES (v34) : I18N_NAT n'en couvrait que 7 sur
+    16, c'est pour ca que la ligne des nations mentait. Completee depuis
+    ETAPES. */
+ "Maurice":        {en:"Mauritius", es:"Mauricio", it:"Mauritius", de:"Mauritius", ja:"モーリシャス"},
+ "Portugal":       {en:"Portugal",  es:"Portugal", it:"Portogallo",de:"Portugal",  ja:"ポルトガル"},
+ "Italie":         {en:"Italy",     es:"Italia",   it:"Italia",    de:"Italien",   ja:"イタリア"},
+ "Émirats":        {en:"UAE",       es:"Emiratos", it:"Emirati",   de:"Emirate",   ja:"アラブ首長国連邦"},
+ "Japon":          {en:"Japan",     es:"Japón",    it:"Giappone",  de:"Japan",     ja:"日本"},
+ "Australie":      {en:"Australia", es:"Australia",it:"Australia", de:"Australien",ja:"オーストラリア"},
+ "Argentine":      {en:"Argentina", es:"Argentina",it:"Argentina", de:"Argentinien",ja:"アルゼンチン"},
+ "États-Unis":     {en:"United States", es:"Estados Unidos", it:"Stati Uniti", de:"USA", ja:"アメリカ"},
+ "Canada":         {en:"Canada",    es:"Canadá",   it:"Canada",    de:"Kanada",    ja:"カナダ"}
 };
 var I18N_H = {
  "19 h 55":{en:"7.55 pm", es:"19:55", it:"19:55", de:"19:55 Uhr", ja:"19時55分"},
@@ -3145,53 +3228,53 @@ function fermerThemes(){ S("themes").classList.remove("on"); }
 (function(){
   var b=document.getElementById("carnet");
   if(!b) return;
-  /* la collection depuis l'accueil (demande de Blandine, 8 août) */
-  /* ⚠️ LES THEMES AVANT LA COLLECTION (demande de Blandine). */
-  var bt=document.createElement("button"); bt.id="ouvThemes"; bt.type="button";
-  bt.textContent=thL(TH_TXT.titre);
-  bt.addEventListener("click", function(){ ouvrirThemes(); });
-  b.appendChild(bt);
-
-  var bc=document.createElement("button"); bc.id="ouvColl"; bc.type="button";
-  bc.textContent="\uD83C\uDFB4  "+(langueUI()==="en"?"My collection":"Ma collection");
-  bc.addEventListener("click", function(){ ouvrirCollection(); });
-  b.appendChild(bc);
-
-  /* « comment ça marche » : le mode d'emploi + le guide des besoins,
-     généré depuis ETAPE_SRC — chaque ligne dit « tu veux… → va à… »
-     avec les VRAIES villes du chapitre, jamais une liste de mémoire. */
-  /* ⚠️ L'INDEX EST REMONTE (8 aout 2026, v30). partirVersVille() prend un
-     index dans ETAPES, pas une ref : l'ancienne version le jetait, ce qui
-     obligeait a passer par ouvrirLecon(ref) — et cette porte-la s'ouvre
-     DERRIERE le carnet. Voir le commentaire du bouton ci-dessous. */
-  var pliOuvert=false;
-  /* libelle du plieur : il etait ecrit deux fois a l'identique, donc a
-     retoucher deux fois. Une seule source, et la traduction se posera ici. */
-  function libelleGuide(){ return langueUI()==="en" ? "How does it work ?" : "Comment ça marche ?"; }
-  var pb=document.createElement("button"); pb.id="ouvGuideB"; pb.type="button";
-  pb.textContent=libelleGuide()+"  +";
-  var pz=document.createElement("div"); pz.id="ouvGuide";
-  pb.addEventListener("click", function(){
-    construireGuide();
-    pliOuvert=!pliOuvert;
-    pz.style.display=pliOuvert?"block":"none";
-    pb.textContent=libelleGuide()+(pliOuvert?"  \u2212":"  +");
-  });
-  var guideFait=false;
-  function construireGuide(){
-  if(guideFait) return; guideFait=true;
-  var uiG=langueUI();
-  pz.appendChild(el("p",{class:"gTxt", text: uiG==="en"
-    ? "One language, one round-the-world trip. Each city teaches the words of one real situation; finish its lesson to win the postcard, its quiz to win the keepsake."
-    : "Une langue, un tour du monde. Chaque ville t'apprend les mots d'une vraie situation ; finis sa leçon pour gagner la carte postale, son quiz pour gagner le souvenir."}));
-  /* ⚠️ LA LISTE DU GUIDE EST RETIREE ICI le 9 aout 2026 : elle est remplacee
-     par l'ecran « Les thèmes d'apprentissage », qui montre les 22 themes et
-     les 30 villes au lieu de 10 themes. Le mode d'emploi ci-dessus reste :
-     Blandine voulait separer l'explication (qu'on lit une fois) de l'index
-     (auquel on revient). */
+  /* ⚠️ LES DEUX BANDEAUX (v34, maquette validee) : le meme modele pour les
+     themes et la collection — vignette a gauche, titre en Cinzel, une
+     phrase, chevron, filet vertical de couleur. Themes au-dessus.
+     Le titre « Ma collection » passe par data-t (cle maCollection) : `UI`
+     n'est affectee que plus bas dans ce script, un T() ici rendrait une
+     chaine vide (bug du 5 aout) ; appliquerLangue() remplit a la fin.
+     ⚠️ Les sous-titres restent en francais : Blandine change leur contenu
+     bientot — ne pas les traduire avant. */
+  function oVignette(refs, mode){
+    var v=el("span",{class:mode==="mosa"?"oMosa":"oEventail"});
+    refs.forEach(function(r){
+      var e=null, k; for(k=0;k<ETAPES.length;k++) if(ETAPES[k].ref===r){ e=ETAPES[k]; break; }
+      var c=e?e.ciel:["#0B1729","#1C2740"];
+      var t=el("span");
+      t.style.backgroundImage='url("carte-'+r+'.webp'+VER+'"),linear-gradient(160deg,'+c[0]+','+c[1]+')';
+      v.appendChild(t);
+    });
+    return v;
   }
-  pz.style.display="none";
-  b.appendChild(pb); b.appendChild(pz);
+  function oBandeau(id, orDore, vignette, titre, sousTitre, action){
+    var bo=el("button",{id:id, class:"oEntree"+(orDore?" oOr":""), type:"button", onclick:action});
+    var c=el("span",{class:"oC2"});
+    c.appendChild(el("span",{class:"oRu"}));
+    c.appendChild(vignette);
+    var tx=el("span",{class:"oTxE"});
+    tx.appendChild(titre);
+    tx.appendChild(el("span",{class:"oS", text:sousTitre}));
+    c.appendChild(tx);
+    c.appendChild(el("span",{class:"oCh", text:"\u203A"}));
+    bo.appendChild(c);
+    return bo;
+  }
+  b.appendChild(oBandeau("ouvThemes", false,
+    oVignette(["labaule","windsor","saumur","tokyo"],"mosa"),
+    el("span",{class:"oT", text:thL(TH_TXT.titre)}),
+    "22 thèmes, 31 villes. Trouve où s'apprend ce dont tu as besoin.",
+    function(){ ouvrirThemes(); }));
+  b.appendChild(oBandeau("ouvColl", true,
+    oVignette(["labaule","maurice","connemara"],"eventail"),
+    el("span",{class:"oT","data-t":"maCollection"}),
+    "Tes cartes postales et tes souvenirs.",
+    function(){ ouvrirCollection(); }));
+
+  /* ⚠️ LE PLIEUR « COMMENT CA MARCHE ? » EST SUPPRIME (v34, decision de
+     Blandine, 9 aout) : les deux bandeaux ci-dessus le remplacent. La
+     paragraphe d'explication (« Une langue, un tour du monde... ») part
+     avec lui — s'il doit revivre quelque part, decision a prendre avant. */
 
   var t=document.createElement("p"); t.className="ct"; t.setAttribute("data-t","itineraire"); t.textContent=T("itineraire");
   b.appendChild(t);
@@ -4851,7 +4934,9 @@ var UI = {
    it:"Prossima tappa · {v}", de:"Nächste Etappe · {v}", ja:"次の街・{v}"},
  voyageTermine:{fr:"Voyage terminé", en:"Journey complete", es:"Viaje terminado",
    it:"Viaggio finito", de:"Reise beendet", ja:"旅の完了"},
- nomLangue:{fr:"français", en:"anglais", es:"espagnol", it:"italien", de:"allemand", ja:"japonais"}
+ nomLangue:{fr:"français", en:"anglais", es:"espagnol", it:"italien", de:"allemand", ja:"japonais"},
+ maCollection:{fr:"Ma collection", en:"My collection", es:"Mi colección",
+   it:"La mia collezione", de:"Meine Sammlung", ja:"マイコレクション"}
 };
 /* Le nom de la langue enseignée, dit dans la langue de l'interface. */
 var LANGUE_NOM = {
@@ -4878,8 +4963,37 @@ function T(cle, vars){
 }
 /* Remplit les écrans statiques. Appelée au démarrage ; rappelable si la
    langue change en cours de route. */
+/* ⚠️ v34 — LA LIGNE DES NATIONS EST GENEREE DEPUIS ETAPES (defaut n°2 de
+   la passation : la chaine en dur annoncait 10 nations sur 16 et redrivait
+   a chaque ajout de ville). Traduite via eNat(). Point median : `·` pour
+   cinq langues, `・` (U+30FB) pour le japonais — une scission sur `·`
+   echoue en silence en japonais, lecon de la session precedente. */
+function dessinerNations(){
+  var n=S("ouvNations"); if(!n) return;
+  var vus={}, noms=[];
+  ETAPES.forEach(function(e){
+    if(vus[e.nat]) return; vus[e.nat]=1;
+    noms.push(eNat(e));
+  });
+  n.textContent = noms.join(langueUI()==="ja" ? " \u30fb " : " \u00b7 ");
+}
+/* le defile de drapeaux : une fois au chargement, pas par langue (des
+   pavillons n'ont pas de langue). TH_PAVILLON couvre les 16 nations. */
+(function(){
+  var p=S("ouvPiste"); if(!p) return;
+  var vus={}, liste=[];
+  ETAPES.forEach(function(e){ if(!vus[e.nat]){ vus[e.nat]=1; liste.push(e.nat); } });
+  liste.concat(liste).forEach(function(nat){
+    var d=document.createElement("span"); d.className="oDr";
+    d.textContent=TH_PAVILLON[nat]||"";
+    d.setAttribute("aria-label",nat);
+    p.appendChild(d);
+  });
+})();
 function appliquerLangue(){
   var i, l;
+  /* v34 : la ligne des nations suit la langue de lecture. */
+  try{ dessinerNations(); }catch(e){}
   l = document.querySelectorAll("[data-t]");
   for(i=0;i<l.length;i++) l[i].textContent = T(l[i].getAttribute("data-t"));
   l = document.querySelectorAll("[data-th]");
@@ -6718,7 +6832,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v33 · bandes · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v34 · carnet · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
