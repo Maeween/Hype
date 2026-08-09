@@ -1816,7 +1816,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v50 · plein écran</p>
+    <p id="ouvVersion">v51 · toujours arriver en haut</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -4117,6 +4117,9 @@ function ouvrirArrivee(i){
   ajusterCadrage(videoEl);
   S("emplacement").style.display="flex";
   var j=videoEl.play(); if(j&&j.catch) j.catch(function(){});
+  S("arrivee").scrollTop=0;   /* v51 : l'ecran est reutilise pour les 31 villes,
+     il gardait le defilement de la ville precedente — on arrivait en bas
+     de Tokyo pendant que la video jouait en haut (Blandine, 9 aout). */
   S("arrivee").classList.add("ouvert");
   /* le chemin est masqué derrière : ses cartes nettes ne servent à rien */
   elCartes.forEach(function(c){
@@ -6827,7 +6830,7 @@ function reservoirSprint(){
 }
 function ouvrirSprint(){
   if(!estPremium()){ ouvrirPaywall(); return; }   /* v36 : le Sprint solo est Premium */
-  S("sprint").classList.add("on");
+  S("sprint").scrollTop=0; S("sprint").classList.add("on");
   amorcerVoix();
   accueilSprint();
 }
@@ -7374,7 +7377,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v50 · plein écran · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v51 · toujours arriver en haut · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
