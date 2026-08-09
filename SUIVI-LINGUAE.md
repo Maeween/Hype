@@ -106,6 +106,25 @@ Aucune amélioration d'architecture réalisée sur cette session. Reste à moder
 ---
 
 
+# SESSION 176 · 09/08 · v51 + v52 + la page de contrôle — base : le v50 de Blandine
+
+**Base de travail : le v50 « plein écran » de Blandine** (fusion vérifiée : tout le v44/v45 y est). Le v50 est la référence.
+
+## ✅ v51 « toujours arriver en haut »
+Bug signalé par Blandine (Tokyo s'ouvrait en bas de page, la vidéo finissait avant qu'elle remonte) : `#arrivee` est réutilisé pour les 31 villes et **gardait le défilement de la ville précédente**. Audit des 6 écrans défilables : `arrivee` et `sprint` n'avaient pas de remise à zéro (les 4 autres si). Corrigé aux deux ouvertures.
+
+## ✅ v52 « rejouer l'arrivée »
+Un tap sur la vidéo d'arrivée la rejoue depuis le début (souhait de Blandine). Curseur pointeur, le recalage du point d'arrêt continue de s'appliquer.
+
+## ✅ lingo-controle.html — la page de vérité du déploiement
+Fichier **autonome** à déposer à la racine, à ouvrir après chaque poussée : interroge le serveur (HEAD sans cache, repli GET, contourne le service worker) pour **115 fichiers** — 31 vidéos d'arrivée + 31 cartes + 31 fonds + 22 lexiques + pages/médias du module — et affiche vert/rouge, compteurs, **liste copiable des manquants**. Bouton Relancer. Seule maintenance : reporter dans `VILLES` toute ville ajoutée/retirée d'ETAPES (liste vérifiée identique au v52 ce jour). Contexte : impossible de vérifier depuis mon poste (le domaine Netlify refuse l'accès automatisé) ; manquants déjà connus : arrivee-rome.mp4 (a existé, perdue), Vérone et Dubaï (jamais créées), Tokyo/Buenos Aires à confirmer.
+
+## ⚠️ Incidents de la session (règle du 9 août : tout se dit)
+1. Édition de la phrase du souvenir (v44) : accolade doublée par mon remplacement, fichier syntaxiquement cassé une étape — attrapé par node --check, réparé aussitôt.
+2. Script v52 : apostrophe mal échappée, le script a refusé de démarrer — aucun octet écrit, relancé corrigé.
+3. Mon vérificateur a affiché un faux « KO » sur le v52 (condition mal écrite comptant tout en échec) — revérification rigoureuse : fichier réellement sain.
+4. Accès web sortant : refus des URL non fournies par Blandine, puis refus robots du domaine Netlify — la vérification en ligne est donc impossible depuis mon poste, d'où la page de contrôle.
+
 # SESSION 175 · 09/08 · v45 « le retour au voyage »
 
 - `versConnexion()` pose `hype_retour_linguae = Date.now()` avant d'envoyer vers `./index.html#connexion`. Côté index (session 115), `apresConnexion()` ramène vers `lingo.html` si le drapeau a moins d'1 h, et l'efface toujours. Le joueur qui passe une porte du compte revient donc **directement à son voyage**, carte gardée — y compris après une inscription avec confirmation par email, puisqu'il repasse par la connexion.

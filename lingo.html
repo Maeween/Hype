@@ -1816,7 +1816,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v51 · toujours arriver en haut</p>
+    <p id="ouvVersion">v52 · rejouer l'arrivée</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -4087,6 +4087,13 @@ function ouvrirArrivee(i){
   videoEl.setAttribute("webkit-playsinline","");
   videoEl.preload="auto";
   videoEl.src = "arrivee-"+e.ref+".mp4"+VER;
+  /* v52 : un tap sur la video la rejoue depuis le debut (souhait de
+     Blandine, 9 aout) — utile quand on arrive apres coup ou qu'on veut
+     revoir le plan. Le recalage du point d'arret continue de s'appliquer. */
+  videoEl.style.cursor="pointer";
+  videoEl.addEventListener("click", function(){
+    try{ this.currentTime=0; var p=this.play(); if(p&&p.catch) p.catch(function(){}); }catch(e2){}
+  });
   videoEl.addEventListener("error",function(){ S("emplacement").style.display="flex"; });
   videoEl.addEventListener("playing",function(){ S("emplacement").style.display="none"; });
   /* ⚠️ ARRET ANTICIPE, ville par ville (6 août 2026).
@@ -7377,7 +7384,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v51 · toujours arriver en haut · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v52 · rejouer l'arrivée · "+lec+" → "+app;
 }
 
 function rangeeLecture(){

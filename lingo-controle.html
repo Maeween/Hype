@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Linguae · Contrôle des fichiers</title>
+<style>
+/* ==========================================================================
+   LINGO-CONTROLE — la page de vérité du déploiement (Blandine, 9 août 2026).
+   Fichier autonome, à déposer à la racine à côté de lingo.html. Ne touche à
+   rien : il ne fait que DEMANDER chaque fichier au serveur (HEAD, sans
+   cache) et afficher vert/rouge. À ouvrir après chaque poussée.
+   ========================================================================== */
+:root{ --noir:#060709; --anth:#111417; --turquoise:#20D9F5; --blanc:#F4F7FA; --gris:#8A94A0; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--noir);color:var(--blanc);font-family:'Montserrat',system-ui,sans-serif;
+ padding:26px 18px calc(30px + env(safe-area-inset-bottom));}
+h1{font-family:Georgia,'Times New Roman',serif;font-weight:600;font-size:26px;letter-spacing:.04em;margin:6px 0 2px}
+.kick{color:var(--turquoise);font-size:10.5px;letter-spacing:.28em;text-transform:uppercase}
+.sous{color:var(--gris);font-size:12.5px;margin:6px 0 18px;line-height:1.55}
+.compteur{display:flex;gap:10px;margin:0 0 18px}
+.pastille{flex:1;background:var(--anth);border:1px solid rgba(255,255,255,.07);border-radius:14px;
+ padding:12px 8px;text-align:center}
+.pastille b{display:block;font-size:22px;font-weight:800}
+.pastille span{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gris)}
+#nOk b{color:#4ADE80} #nKo b{color:#F87171} #nAttente b{color:var(--gris)}
+h2{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gris);
+ margin:22px 0 8px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:6px}
+.l{display:flex;align-items:center;gap:10px;padding:7px 2px;border-bottom:1px solid rgba(255,255,255,.04);
+ font-size:12.5px}
+.l code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--blanc);word-break:break-all}
+.p{width:9px;height:9px;border-radius:99px;flex:0 0 9px;background:#3A424C}
+.ok .p{background:#4ADE80} .ko .p{background:#F87171}
+.ok code{color:#7d8894} .ko code{color:#FCA5A5;font-weight:600}
+.ko{background:rgba(248,113,113,.05)}
+#manquants{display:none;margin:20px 0 0;background:var(--anth);border:1px solid rgba(248,113,113,.3);
+ border-radius:14px;padding:14px}
+#manquants h3{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#F87171;margin:0 0 8px}
+#manquants pre{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--blanc);
+ white-space:pre-wrap;word-break:break-all;line-height:1.7}
+#copier{margin-top:10px;width:100%;padding:12px;border-radius:99px;border:0;cursor:pointer;
+ background:linear-gradient(120deg,#0C5763,#38E2F8);color:#04141A;font-weight:800;font-size:11.5px;
+ letter-spacing:.12em;text-transform:uppercase;font-family:inherit}
+#relancer{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));padding:12px 18px;
+ border-radius:99px;border:1px solid rgba(32,217,245,.4);background:rgba(6,7,9,.85);color:var(--turquoise);
+ font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-family:inherit;cursor:pointer}
+</style>
+</head>
+<body>
+<p class="kick">Hype Linguae</p>
+<h1>Contrôle des fichiers</h1>
+<p class="sous" id="etat">Interrogation du serveur en cours — chaque fichier est demandé directement à Netlify, sans cache.</p>
+
+<div class="compteur">
+  <div class="pastille" id="nOk"><b>0</b><span>en ligne</span></div>
+  <div class="pastille" id="nKo"><b>0</b><span>manquants</span></div>
+  <div class="pastille" id="nAttente"><b>0</b><span>à tester</span></div>
+</div>
+
+<div id="manquants"><h3>Fichiers à déposer à la racine</h3><pre id="listeManquants"></pre>
+<button id="copier" type="button">Copier la liste</button></div>
+
+<div id="sections"></div>
+<button id="relancer" type="button">↻ Relancer</button>
+
+<script>
+/* Les 31 villes d'ETAPES (lingo.html v52). Si une ville est ajoutée ou
+   retirée dans lingo.html, il faut la reporter ICI — c'est la seule
+   maintenance de cette page. */
+var VILLES=["labaule","maurice","connemara","newmarket","lambourn","walsall","aberystwyth",
+ "windsor","hickstead","badminton","burghley","kildare","edimbourg","saumur","lamotte",
+ "golega","jerez","seville","vejer","oliva","rome","verone","warendorf","aachen","dubai",
+ "tokyo","tamworth","buenos","lexington","santaynez","spruce"];
+
+/* Les fichiers hors villes que lingo.html référence. */
+var AUTRES=["ouverture.mp4","depart.mp4","tour-monde.webp","themes-hero.webp",
+ "lingua-affiche.webp","lingua-langues.webp","lingo-globe.html","lingo-collection.html",
+ "hype-lingo-villes.js","hype-lingo-villes-monde.js","hype-lingo-phrases-monde.js"];
+var LEX=["arrivee","balade","cheval","concours","cours","cross","dressage","ecurie","elevage",
+ "endurance","froid","haras","horsemanship","materiel","obstacle","pansage","polo","poney",
+ "tradition","urgences","vente","western"].map(function(t){return "hype-lingo-lex-"+t+".js";});
+
+var GROUPES=[
+ {titre:"Vidéos d'arrivée (31)", fichiers:VILLES.map(function(v){return "arrivee-"+v+".mp4";})},
+ {titre:"Cartes postales (31)",  fichiers:VILLES.map(function(v){return "carte-"+v+".webp";})},
+ {titre:"Fonds de ville (31)",   fichiers:VILLES.map(function(v){return "fond-"+v+".webp";})},
+ {titre:"Pages & médias du module ("+AUTRES.length+")", fichiers:AUTRES},
+ {titre:"Lexiques ("+LEX.length+")", fichiers:LEX}
+];
+
+var S=function(id){return document.getElementById(id);};
+var etatParFichier={}, total=0;
+GROUPES.forEach(function(g){ total+=g.fichiers.length; });
+
+function construire(){
+  var h="";
+  GROUPES.forEach(function(g,gi){
+    h+="<h2>"+g.titre+"</h2>";
+    g.fichiers.forEach(function(f){
+      h+='<div class="l" id="f-'+f.replace(/[^a-z0-9]/g,"_")+'"><span class="p"></span><code>'+f+"</code></div>";
+    });
+  });
+  S("sections").innerHTML=h;
+}
+
+function poser(f, ok){
+  etatParFichier[f]=ok;
+  var el=S("f-"+f.replace(/[^a-z0-9]/g,"_"));
+  if(el) el.className="l "+(ok?"ok":"ko");
+  var oks=0,kos=0;
+  for(var k in etatParFichier){ etatParFichier[k]?oks++:kos++; }
+  S("nOk").firstElementChild.textContent=oks;
+  S("nKo").firstElementChild.textContent=kos;
+  S("nAttente").firstElementChild.textContent=total-oks-kos;
+  if(oks+kos===total) conclure(kos);
+}
+
+function conclure(kos){
+  if(kos===0){
+    S("etat").textContent="Tout est en ligne — les "+total+" fichiers répondent. Rien à faire.";
+    S("manquants").style.display="none";
+    return;
+  }
+  S("etat").textContent=kos+" fichier(s) ne répondent pas. La liste exacte est ci-dessous — chaque nom est celui à déposer, tel quel, à la racine du dépôt.";
+  var man=[]; for(var k in etatParFichier){ if(!etatParFichier[k]) man.push(k); }
+  man.sort();
+  S("listeManquants").textContent=man.join("\n");
+  S("manquants").style.display="block";
+}
+
+/* HEAD sans cache ; certains hébergeurs refusent HEAD → repli GET partiel.
+   cache:"no-store" contourne aussi le service worker network-first. */
+function tester(f){
+  fetch(f+"?controle="+Date.now(), {method:"HEAD", cache:"no-store"})
+   .then(function(r){
+      if(r.ok){ poser(f,true); }
+      else if(r.status===405 || r.status===501){ testerGet(f); }
+      else { poser(f,false); }
+   })
+   .catch(function(){ testerGet(f); });
+}
+function testerGet(f){
+  fetch(f+"?controle="+Date.now(), {method:"GET", cache:"no-store", headers:{"Range":"bytes=0-0"}})
+   .then(function(r){ poser(f, r.ok); })
+   .catch(function(){ poser(f,false); });
+}
+
+function lancer(){
+  etatParFichier={};
+  construire();
+  S("etat").textContent="Interrogation du serveur en cours — chaque fichier est demandé directement à Netlify, sans cache.";
+  S("manquants").style.display="none";
+  /* par petites vagues pour ne pas assommer le réseau du téléphone */
+  var file=[]; GROUPES.forEach(function(g){ g.fichiers.forEach(function(f){ file.push(f); }); });
+  var i=0;
+  (function vague(){
+    for(var n=0;n<6 && i<file.length;n++,i++) tester(file[i]);
+    if(i<file.length) setTimeout(vague, 220);
+  })();
+}
+
+S("copier").addEventListener("click", function(){
+  var t=S("listeManquants").textContent;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){ S("copier").textContent="Copié ✓"; 
+      setTimeout(function(){ S("copier").textContent="Copier la liste"; },1600); });
+  }
+});
+S("relancer").addEventListener("click", lancer);
+lancer();
+</script>
+</body>
+</html>
