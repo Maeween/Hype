@@ -1559,7 +1559,9 @@ async function filAmis() {
    et cote JS on remet le scroll a zero a la fermeture. Les rails horizontaux (.lst, .horses-row,
    .fstrip, .rbstrip, .manege, .filters) ont chacun leur propre overflow-x et ne sont PAS
    touches : ils continuent de defiler normalement. */
-/* 09/08 : hidden -> clip. Avec overflow-x:hidden, body devenait un conteneur de defilement (l autre axe passe en auto) defilable d un demi-pixel d arrondi ; Chrome Android y ACCROCHAIT le geste, et l overscroll-behavior:none d en dessous interdisait le relais vers la page : defilement mort sur tout l ecran SAUF depuis la barre du bas (position:fixed, hors de la chaine de body). clip decoupe pareil sans creer de conteneur. hidden conserve en repli pour les navigateurs sans clip. */
+/* 🔴🔴 INTERDIT DE REVENIR EN ARRIÈRE — BUG MAJEUR RÉSOLU LES 09-10/08/2026 🔴🔴
+   NE JAMAIS remettre `overflow-x: hidden` SEUL sur html/body, NE JAMAIS retirer le `clip` ci-dessous.
+   09/08 : hidden -> clip. Avec overflow-x:hidden, body devenait un conteneur de defilement (l autre axe passe en auto) defilable d un demi-pixel d arrondi ; Chrome Android y ACCROCHAIT le geste, et l overscroll-behavior:none d en dessous interdisait le relais vers la page : defilement mort sur tout l ecran SAUF depuis la barre du bas (position:fixed, hors de la chaine de body). clip decoupe pareil sans creer de conteneur. hidden conserve en repli pour les navigateurs sans clip. */
 html, body { overflow-x: hidden !important; overflow-x: clip !important; max-width: 100% !important; }
 </style>
 </head><body><div id="root"></div><div id="boot">Hype — chargement…</div><script>window.process={env:{NODE_ENV:"production"}};window.global=window;var __mods={},__cache={};function __require(n){if(__cache[n])return __cache[n].exports;var m={exports:{}};__cache[n]=m;if(!__mods[n])throw new Error("module "+n);__mods[n](m,m.exports,__require);return m.exports;}function __def(n,f){__mods[n]=f;}</script><script>__def("react",function(module,exports,require){
@@ -21306,10 +21308,6 @@ function Router() {
        changement d'ecran et au retour d'arriere-plan, on repart de la realite du DOM.
        Le blocage de defilement Android se repare donc seul, sans redemarrage. */
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
-    /* SONDE TEMPORAIRE (09/08) : compte les rendus de la coquille. Si ce compteur grimpe
-       pendant un geste, l app se redessine sous le doigt et le navigateur abandonne le geste
-       (touchcancel), ce qui expliquerait un defilement mort sans aucun blocage apparent. */
-    useEffect(() => { try { window.__hypeRenders = (window.__hypeRenders || 0) + 1; } catch (e) { } });
     /* Liberation des puits tactiles : apres peinture, et une seconde fois un peu plus tard
        pour les contenus qui arrivent de Supabase (annonces, chevaux, photos). */
     useEffect(() => {
@@ -21457,7 +21455,8 @@ function GlobalStyles() {
       @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Righteous&family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap');
       * { box-sizing: border-box; }
       html, body { margin: 0; background: ${COLORS.nuit}; }
-      /* 09/08 : overscroll-behavior:none RETIRE de body — il interdisait le relais du defilement
+      /* 🔴🔴 NE JAMAIS remettre overscroll-behavior:none sur BODY — html SEULEMENT. Bug majeur des 09-10/08/2026. 🔴🔴
+         09/08 : overscroll-behavior:none RETIRE de body — il interdisait le relais du defilement
          de body vers la page (voir la ceinture overflow-x en tete de fichier, meme correctif).
          Conserve sur html seulement : le rebond et le tirer-pour-rafraichir restent bloques,
          mais un geste accroche a body remonte desormais jusqu a la page. */
@@ -44261,227 +44260,4 @@ if (__boot)
   window.addEventListener("focus", recadrer);
   window.addEventListener("orientationchange", function () { setTimeout(recadrer, 120); });
 })();
-</script><script>
-/* ===== 09/08/2026 · MODE DIAGNOSTIC DU DEFILEMENT (temporaire, dormant par defaut) =====
-   Demande dans le brief d audit "blocage du scroll Android". ENTIEREMENT INERTE tant qu il
-   n est pas active : aucun element cree, aucun ecouteur pose, aucun changement de design.
-   ACTIVATION : ouvrir l app avec ?debug=scroll (memorise ensuite, meme en PWA).
-   EXTINCTION : ouvrir l app avec ?debug=off.
-   Ce que le panneau repond, en un seul appui du doigt :
-     - le geste est-il annule par du JS (defaultPrevented sur touchmove) ;
-     - la page a-t-elle de quoi defiler (scrollHeight vs hauteur d ecran) ;
-     - quel conteneur porte reellement le defilement ;
-     - quel element est sous le doigt, et toute sa chaine de parents avec overflow /
-       height / position / touch-action / pointer-events calcules ;
-     - le premier parent qui interdit le panoramique vertical (touch-action) ;
-     - l etat du verrou de defilement (window.__hypeScrollLock, body.style.overflow).
-   A RETIRER une fois la cause identifiee et corrigee. */
-(function () {
-  var actif = false;
-  try {
-    var q = (location.search || "") + (location.hash || "");
-    if (/debug=off/.test(q)) { localStorage.removeItem("hype_debug_scroll"); }
-    else if (/debug=scroll|debug-scroll/.test(q)) { localStorage.setItem("hype_debug_scroll", "1"); }
-    actif = localStorage.getItem("hype_debug_scroll") === "1";
-  } catch (e) { actif = false; }
-  if (!actif) return;
-
-  var panneau = null;
-  function panneauPret() {
-    if (panneau) return panneau;
-    panneau = document.createElement("div");
-    panneau.id = "hype-debug-scroll";
-    panneau.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:2147483647;" +
-      "pointer-events:none;max-height:52vh;overflow:hidden;box-sizing:border-box;padding:8px 10px;" +
-      "background:rgba(4,6,9,0.93);border-top:1px solid #20D9F5;color:#DDEAEE;" +
-      "font-family:ui-monospace,monospace;font-size:9.5px;line-height:1.35;white-space:pre-wrap;word-break:break-all";
-    document.body.appendChild(panneau);
-    return panneau;
-  }
-
-  function nom(el) {
-    if (!el) return "(aucun)";
-    if (el === document.documentElement) return "html";
-    if (el === document.body) return "body";
-    var s = (el.tagName || "?").toLowerCase();
-    if (el.id) s += "#" + el.id;
-    var c = el.getAttribute && el.getAttribute("class");
-    if (c) s += "." + String(c).trim().split(/\s+/).slice(0, 3).join(".");
-    return s;
-  }
-  function fiche(el) {
-    var g = getComputedStyle(el);
-    var scrollable = el.scrollHeight > el.clientHeight + 4 &&
-      (g.overflowY === "auto" || g.overflowY === "scroll" || el === document.scrollingElement);
-    return nom(el) +
-      "  of=" + g.overflow + "/" + g.overflowY +
-      " h=" + g.height + " pos=" + g.position +
-      " ta=" + g.touchAction + " pe=" + g.pointerEvents +
-      " z=" + g.zIndex +
-      " sh/ch=" + el.scrollHeight + "/" + el.clientHeight +
-      " sw/cw=" + el.scrollWidth + "/" + el.clientWidth +
-      (puitsTactile(el, g) ? "  <<< PUITS TACTILE" : "") +
-      (scrollable ? "  <<< DEFILE" : "");
-  }
-  /* Boite qui avale le geste : overflow cache ALORS QUE le contenu deborde. */
-  function puitsTactile(el, g) {
-    var dx = el.scrollWidth > el.clientWidth + 4, dy = el.scrollHeight > el.clientHeight + 4;
-    if (!dx && !dy) return false;
-    var cache = (g.overflowX === "hidden" && dx) || (g.overflowY === "hidden" && dy);
-    return cache && g.touchAction === "auto";
-  }
-  function interditVertical(ta) {
-    return ta === "none" || ta === "pan-x" || ta === "pan-left" || ta === "pan-right" ||
-      ta === "pinch-zoom" || ta === "pan-x pinch-zoom";
-  }
-
-  var dernier = "";
-  var y0 = 0, top0 = 0, bloque = null, annule = null, dyMax = 0;
-  /* Le geste bloque doit SURVIVRE au fait de lever le doigt et de changer de page :
-     sinon chaque capture d ecran montre l analyse du geste suivant, celui qui marche. */
-  var xDep = 0, yDep = 0, cibleEvt = null, nbMove = 0, fin = "-", rendusDep = null;
-  var fige = null;
-  try { fige = localStorage.getItem("hype_debug_fige") || null; } catch (e) { }
-
-  function racine() { return document.scrollingElement || document.documentElement; }
-
-  function analyser(x, y) {
-    var lignes = [];
-    var r = racine();
-    lignes.push("— HYPE DIAGNOSTIC DEFILEMENT —  (?debug=off pour eteindre)");
-    lignes.push("scrollingElement=" + nom(r) + "  scrollTop=" + Math.round(r.scrollTop) +
-      "  scrollHeight=" + r.scrollHeight + "  innerHeight=" + window.innerHeight +
-      "  a defiler=" + Math.max(0, r.scrollHeight - window.innerHeight) + "px");
-    var gb = getComputedStyle(document.body), gh = getComputedStyle(document.documentElement);
-    lignes.push("body: of=" + gb.overflow + "/" + gb.overflowY + " ta=" + gb.touchAction +
-      " pos=" + gb.position + " h=" + gb.height + "  inline='" + (document.body.style.overflow || "") + "'");
-    lignes.push("html: of=" + gh.overflow + "/" + gh.overflowY + " ta=" + gh.touchAction + " h=" + gh.height);
-    lignes.push("rendus de la coquille : total " + (window.__hypeRenders || 0) +
-      "   PENDANT CE GESTE : " + (rendusDep === null ? "-" : ((window.__hypeRenders || 0) - rendusDep)) +
-      ((rendusDep !== null && (window.__hypeRenders || 0) - rendusDep > 0) ? "   <<< L APP SE REDESSINE SOUS LE DOIGT" : ""));
-    lignes.push("cible encore presente dans le DOM : " +
-      (cibleEvt ? (document.contains(cibleEvt) ? "oui" : "NON  <<< l element a disparu pendant le geste") : "-"));
-    lignes.push("verrou=" + (window.__hypeScrollLock === undefined ? "absent" : window.__hypeScrollLock) +
-      "  visionneuses=" + document.querySelectorAll("[data-hype-zoom]").length);
-    var centre = document.elementFromPoint(Math.round(window.innerWidth / 2), Math.round(window.innerHeight / 2));
-    lignes.push("centre ecran -> " + nom(centre));
-    var ifr = document.querySelectorAll("iframe");
-    if (ifr.length) {
-      var det = [];
-      for (var q = 0; q < ifr.length && q < 4; q++) {
-        var r2 = ifr[q].getBoundingClientRect();
-        det.push(Math.round(r2.width) + "x" + Math.round(r2.height) + "@" + Math.round(r2.top));
-      }
-      lignes.push("iframes a l ecran : " + ifr.length + "  [" + det.join(" ") + "]");
-    }
-    var geo = document.elementFromPoint(x, y);
-    lignes.push("cible de l evenement -> " + nom(cibleEvt) + "   |   sous le doigt -> " + nom(geo));
-    if (geo && geo.tagName === "IFRAME") {
-      lignes.push("!!! DOIGT SUR UNE IFRAME : la page parente ne recoit AUCUN evenement de ce geste.");
-      lignes.push("    Le contenu de l iframe a son propre html/body en overflow:hidden : il ne peut pas");
-      lignes.push("    defiler, et il ne repasse pas le geste au parent. Cul-de-sac tactile.");
-      lignes.push("    (les lignes ci-dessus sur la cible de l evenement viennent du geste PRECEDENT)");
-    }
-    else if (cibleEvt && geo && cibleEvt !== geo)
-      lignes.push("!!! GESTE DETOURNE : l evenement part vers " + nom(cibleEvt) +
-        " alors que le doigt est sur " + nom(geo) + " -> capture de pointeur restee coincee");
-    if (cibleEvt) {
-      lignes.push("chaine de la CIBLE DE L EVENEMENT :");
-      var ce = cibleEvt, k = 0;
-      while (ce && k < 5) { lignes.push("  " + fiche(ce)); ce = ce.parentElement; k++; }
-    }
-    var bougeNow = Math.abs(racine().scrollTop - top0);
-    lignes.push("touchmove recus : " + nbMove + "   doigt : " + Math.round(dyMax) +
-      "px   PAGE DEPLACEE : " + Math.round(bougeNow) + "px" +
-      (nbMove > 0 && dyMax >= 12 ? (bougeNow < 3 ? "   <<< BLOQUE (en direct)" : "   => OK (en direct)") : "") +
-      "   fin : " + fin);
-    lignes.push("touchmove annule par du JS : " + (annule === null ? "(glisse le doigt)" : (annule ? "OUI  <<< CAUSE JS" : "non")) +
-      "   la page a bouge : " + (bloque === null ? "(glisse le doigt)" : (bloque ? "non  <<< BLOQUE" : "oui")));
-    lignes.push("chaine sous le doigt (" + x + "," + y + ") :");
-    var el = document.elementFromPoint(x, y), n = 0, coupable = null, puits = null;
-    while (el && n < 9) {
-      lignes.push("  " + fiche(el));
-      var gg = getComputedStyle(el);
-      if (!coupable && interditVertical(gg.touchAction)) coupable = nom(el) + " (touch-action:" + gg.touchAction + ")";
-      if (!puits && puitsTactile(el, gg)) puits = nom(el) + " (overflow cache + contenu qui deborde)";
-      el = el.parentElement; n++;
-    }
-    if (coupable) lignes.push("!!! PARENT QUI INTERDIT LE VERTICAL : " + coupable);
-    if (puits) lignes.push("!!! PUITS TACTILE : " + puits);
-    if (!coupable && !puits) lignes.push("aucun puits ni blocage touch-action dans cette chaine.");
-    dernier = lignes.join("\n");
-    afficher(dernier);
-  }
-  function afficher(courant) {
-    panneauPret().textContent = courant +
-      (fige ? "\n\n===== DERNIER GESTE BLOQUE (fige, survit au changement de page) =====\n" + fige : "");
-  }
-
-  window.addEventListener("touchstart", function (e) {
-    try {
-      var t = e.touches[0]; if (!t) return;
-      cibleEvt = e.target;   /* la ou le geste part REELLEMENT : diffère de elementFromPoint si une capture de pointeur traine */
-      y0 = t.clientY; top0 = racine().scrollTop; bloque = null; annule = null; dyMax = 0;
-      nbMove = 0; fin = "geste en cours"; rendusDep = window.__hypeRenders || 0;
-      xDep = Math.round(t.clientX); yDep = Math.round(t.clientY);
-      analyser(Math.round(t.clientX), Math.round(t.clientY));
-    } catch (x) { }
-  }, { passive: true, capture: true });
-
-  /* En phase de remontee, tout le monde a deja parle : defaultPrevented dit si un
-     ecouteur de l app a annule le geste. Ecouteur passif, il ne bloque rien lui-meme. */
-  window.addEventListener("touchmove", function (e) {
-    try {
-      var t = e.touches[0]; if (!t) return;
-      nbMove++;
-      /* 09/08 : mesure des le PREMIER touchmove — c est lui qui decide du defilement sur Chrome.
-         L ancienne version n echantillonnait qu au-dela de 12px et pouvait rater une annulation decisive. */
-      annule = (e.defaultPrevented === true) ? true : (annule === null ? false : annule);
-      if (Math.abs(t.clientY - y0) < 12) return;
-      dyMax = Math.max(dyMax, Math.abs(t.clientY - y0));
-      analyser(Math.round(t.clientX), Math.round(y0));
-    } catch (x) { }
-  }, { passive: true });
-
-  /* Verdict au relachement : c est la seule mesure fiable du deplacement reel.
-     Mesurer sur le premier touchmove donnait un faux "bloque", Chrome n ayant pas
-     encore commence a defiler a ce moment-la. */
-  function terminer(comment) {
-    try {
-      fin = comment;
-      if (nbMove === 0) {
-        /* Aucun touchmove recu alors que le doigt a bouge : le geste est confisque avant
-           d arriver au document. C est l information decisive. */
-        fige = "(doigt parti de " + xDep + "," + yDep + ")\nAUCUN touchmove RECU, fin par " +
-          comment + "\n" + dernier;
-        try { localStorage.setItem("hype_debug_fige", fige); } catch (e3) { }
-        analyser(xDep, yDep);
-        afficher(dernier + "\n>>> AUCUN touchmove RECU — geste confisque (" + comment + ")");
-        return;
-      }
-      if (dyMax < 12) { afficher(dernier + "\n>>> geste trop court (" + Math.round(dyMax) + "px), rejoue en glissant plus"); return; }
-      var d = Math.abs(racine().scrollTop - top0);
-      bloque = d < 3;
-      analyser(xDep, yDep);
-      var verdict = "\n>>> doigt " + Math.round(dyMax) + "px, page deplacee de " +
-        Math.round(d) + "px, " + nbMove + " touchmove, fin=" + comment +
-        "  =>  " + (bloque ? "BLOQUE" : "OK");
-      if (bloque) {
-        fige = "(doigt parti de " + xDep + "," + yDep + ")\n" + dernier + verdict;
-        try { localStorage.setItem("hype_debug_fige", fige); } catch (e2) { }
-      }
-      afficher(dernier + verdict);
-    } catch (x) { }
-  }
-  window.addEventListener("touchend", function () { terminer("touchend"); }, { passive: true });
-  window.addEventListener("touchcancel", function () { terminer("TOUCHCANCEL (geste confisque)"); }, { passive: true });
-
-  /* Effacer la memoire du geste bloque : ?debug=reset */
-  try { if (/debug=reset/.test((location.search || "") + (location.hash || ""))) { localStorage.removeItem("hype_debug_fige"); fige = null; } } catch (e) { }
-  if (fige) { try { afficher("— HYPE DIAGNOSTIC DEFILEMENT —  (?debug=reset pour oublier le geste fige)"); } catch (e) { } }
-
-  try { console.log("[Hype] mode diagnostic defilement ACTIF"); } catch (e) { }
-})();
-
-
 </script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script></body></html>
