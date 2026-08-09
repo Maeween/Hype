@@ -774,11 +774,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  color:rgba(32,217,245,.7);box-shadow:none}
 #ouvPaire #ouvLangue{border-color:rgba(32,217,245,.45);box-shadow:0 0 18px rgba(32,217,245,.15)}
 /* la rangee de lecture ne s'ouvre qu'au tap sur le drapeau de gauche */
-#ouvDrapeaux{display:none;justify-content:center;gap:14px;margin:0 0 4px}
-#ouvDrapeaux.ouvert{display:flex}
-#ouvDrapeaux button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
+#ouvDrapeaux,#ouvVoyages{display:none;justify-content:center;gap:14px;margin:0 0 4px}
+#ouvDrapeaux.ouvert,#ouvVoyages.ouvert{display:flex}
+#ouvDrapeaux button,#ouvVoyages button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
  border-radius:12px;padding:6px 9px;font-size:21px;line-height:1;cursor:pointer}
-#ouvDrapeaux button.actif{border-color:rgba(32,217,245,.65);
+#ouvDrapeaux button.actif,#ouvVoyages button.actif{border-color:rgba(32,217,245,.65);
  box-shadow:0 0 18px rgba(32,217,245,.22)}
 /* ⚠️ MARGE NEGATIVE RETIREE le 8 aout 2026. Elle valait -18px pour venir
    se coller sous l'ancien bouton de langue unique, qui portait
@@ -1810,6 +1810,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <button id="ouvLangue" type="button"><span class="dp"></span><i></i></button>
     </div>
     <div id="ouvDrapeaux" aria-label="Choisir sa langue de lecture"></div>
+    <div id="ouvVoyages" aria-label="Choisir la langue apprise"></div>
 <!-- ⚠️ LES THEMES D'APPRENTISSAGE (v32). L'image themes-hero.webp doit etre
      poussee a cote de lingo.html ; en son absence le cadre reste noir, la page
      fonctionne quand meme. -->
@@ -1853,7 +1854,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v60 · la reconstruction</p>
+    <p id="ouvVersion">v61 · les langues derrière leur porte</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -2135,10 +2136,16 @@ document.addEventListener("click", function(ev){
   var b = ev.target && ev.target.closest ? ev.target.closest("#ouvLangue") : null;
   if(!b) return;
   ev.preventDefault();
-  try{ montrerDest(); }
+  /* v61 : plus de page — la rangee de drapeaux se deroule sur place,
+     comme « Je lis en ». La page des langues ne sert plus qu'a la
+     ceremonie de premiere visite. */
+  try{
+    rangeeVoyages();
+    S("ouvVoyages").classList.toggle("ouvert");
+    S("ouvDrapeaux").classList.remove("ouvert");
+  }
   catch(err){
-    /* si meme ca echoue, on le DIT au lieu de ne rien faire */
-    alert("Linguae : le choix des langues n'a pas pu s'ouvrir.\n"+(err && err.message ? err.message : err));
+    alert("Linguae : la rangée des langues n'a pas pu s'ouvrir.\n"+(err && err.message ? err.message : err));
   }
 }, true);
 
@@ -7405,7 +7412,8 @@ try{
    script « cablage v60 » en fin de fichier) — plus aucun ecouteur individuel
    perdable sur #inSuite. */
 /* le carnet renvoie au choix de la langue */
-if(S("ouvLangue")) S("ouvLangue").addEventListener("click", montrerDest);
+/* v61 : le drapeau « j'apprends » est route par l'ecouteur global (rangee
+   sur place) — l'ecouteur individuel vers la page est retire. */
 /* ⚠️ v39 — le pilote du bouton #ouvMuet est retire avec le bouton lui-meme.
    Le reglage vit desormais sur l'ecran d'ouverture de chaque chapitre
    (`boutonSonChapitre()`), et il lit toujours la meme cle
@@ -7452,7 +7460,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v60 · la reconstruction · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v61 · les langues derrière leur porte · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -7486,6 +7494,33 @@ function poserLecture(l){
   /* on ne lit pas la langue qu'on apprend : la choisir echange les deux */
   if(l === VOYAGE_LANGUE){ echangerLangues(); return; }
   try{ localStorage.setItem("hype_lingua_lecture", l); }catch(e){}
+  rechargerLingua();
+}
+
+function rangeeVoyages(){
+  var b=S("ouvVoyages"); if(!b) return;
+  videEl(b);
+  DESTINATIONS.forEach(function(D){
+    if(!D.ouvert) return;
+    var bt=document.createElement("button");
+    bt.type="button"; bt.setAttribute("data-voy", D.lg);
+    bt.textContent = LG_DRAPEAU[D.lg] || D.lg;
+    if(D.lg===VOYAGE_LANGUE) bt.classList.add("actif");
+    b.appendChild(bt);
+  });
+}
+/* v61 : changer de langue apprise depuis le carnet. Meme doctrine que la
+   lecture (« ON RECHARGE LA PAGE, ET C'EST VOULU ») : trop de textes sont
+   construits au chargement pour redessiner a la main. */
+function poserVoyage(lg){
+  if(lg === VOYAGE_LANGUE){ S("ouvVoyages").classList.remove("ouvert"); return; }
+  if(lg === langueUI()){ echangerLangues(); return; }
+  var D=null,k;
+  for(k=0;k<DESTINATIONS.length;k++)
+    if(DESTINATIONS[k].lg===lg && DESTINATIONS[k].ouvert) D=DESTINATIONS[k];
+  if(!D) return;
+  try{ localStorage.setItem("hype_lingua_voyage", D.cle);
+       localStorage.setItem("hype_lingua_langue", D.lg); }catch(e){}
   rechargerLingua();
 }
 
@@ -7540,6 +7575,7 @@ rangeeOrigine();
 
 if(S("ouvLecture")) S("ouvLecture").addEventListener("click", function(){
   rangeeLecture();
+  S("ouvVoyages").classList.remove("ouvert");   /* v61 : une rangee a la fois */
   S("ouvDrapeaux").classList.toggle("ouvert");
 });
 if(S("ouvEchange")) S("ouvEchange").addEventListener("click", echangerLangues);
@@ -7548,16 +7584,8 @@ if(S("ouvDrapeaux")) S("ouvDrapeaux").addEventListener("click", function(ev){
   if(b) poserLecture(b.getAttribute("data-lec"));
 });
 dessinerPaire();
-S("dsRetour").addEventListener("click", function(){
-  S("dest").classList.remove("on");
-  /* ⚠️ On ne remonte a la presentation QUE si elle n'a jamais ete vue.
-     Sinon on revient d'ou l'on vient : le carnet de route. Avant, ce
-     bouton rouvrait la presentation meme quand on arrivait du carnet, ce
-     qui renvoyait le joueur au tout debut du module sans raison. */
-  var vu=false;
-  try{ vu = !!localStorage.getItem("hype_lingua_intro"); }catch(e){}
-  if(!vu) montrerIntro();
-});
+/* v61 : le retour de la page des langues est cable par DELEGATION (voir le
+   cablage v60 en fin de fichier) — ecouteur individuel retire. */
 
 /* La présentation ne se voit qu'une fois.
    ⚠️ CE COMMENTAIRE ÉTAIT FAUX et il a induit en erreur : il affirmait que
@@ -8040,13 +8068,25 @@ try{ appliquerLangue(); }catch(err){}
   document.addEventListener("click", function(ev){
     var t = ev.target;
     if(!t || !t.closest) return;
-    var b = t.closest("#inSuite,#inHype,#inGalops,#inOuKildare,#ouvCadre,#ouvPartager,#arrPartager");
+    var v = t.closest("#ouvVoyages button[data-voy]");
+    if(v){ try{ poserVoyage(v.getAttribute("data-voy")); }catch(e){} return; }
+    var b = t.closest("#inSuite,#inHype,#inGalops,#inOuKildare,#ouvCadre,#ouvPartager,#arrPartager,#dsRetour");
     if(!b) return;
     switch(b.id){
       case "inSuite":
-        /* c'est ICI que la presentation est marquee vue (une seule main). */
+        /* v61 : premiere visite -> la ceremonie (choix du voyage) ; ensuite
+           « Choisir ma destination » mene droit au carnet, les 31 villes. */
+        var vuS=false; try{ vuS = localStorage.getItem("hype_lingua_intro")==="1"; }catch(e){}
+        if(vuS){ var elS=document.getElementById("intro"); if(elS) elS.classList.remove("on"); break; }
         try{ localStorage.setItem("hype_lingua_intro","1"); }catch(e){}
         try{ montrerDest(); }catch(e){}
+        break;
+      case "dsRetour":
+        /* v61 : le retour de la page des langues, repare par delegation
+           (le bug trouve par Blandine sur le v60). */
+        var elR=document.getElementById("dest"); if(elR) elR.classList.remove("on");
+        var vuR=false; try{ vuR = !!localStorage.getItem("hype_lingua_intro"); }catch(e){}
+        if(!vuR){ try{ montrerIntro(); }catch(e){} }
         break;
       case "inHype":
         location.href = "./index.html";

@@ -106,6 +106,18 @@ Aucune amélioration d'architecture réalisée sur cette session. Reste à moder
 ---
 
 
+# SESSION 183 · 10/08 · v61 « les langues derrière leur porte »
+
+**Décisions de Blandine** : la page du choix des langues n'est pas indispensable (« on peut choisir depuis le drapeau ») — mais elle reste pour la cérémonie de PREMIÈRE visite.
+
+## À l'écran
+- **Première visite : inchangée.** Présentation → « Choisir ma destination » → la page des langues (« Où veux-tu aller ? ») → le voyage.
+- **+** Ensuite, « Choisir ma destination » mène **droit au carnet** — la page des langues ne revient plus jamais d'elle-même.
+- **+** Le drapeau « j'apprends » de la paire **déroule une rangée de drapeaux sur le carnet** (#ouvVoyages, jumelle de « Je lis en » ; une seule rangée ouverte à la fois). Choisir = rechargement (même doctrine que la lecture) ; choisir sa langue de lecture = échange des deux ; re-taper sa langue = referme.
+- **+** Le **bouton retour** de la page des langues revit (rapatrié dans la délégation — le bug trouvé par Blandine sur le v60). Les écouteurs individuels de dsRetour et ouvLangue sont retirés.
+
+Vérifications : node --check tous blocs ; matrice logique de poserVoyage jouée (même langue → referme ; langue de lecture → échange ; langue fermée → rien ; choix valide → clés posées + rechargement).
+
 # SESSION 182 · 09/08 nuit · v60 « la reconstruction » — ROLLBACK + REPLAY PROPRE
 
 **Incident n°9 (le mien, le plus grave de la journée).** Sur le v59 en ligne, AUCUN bouton de la présentation ne répondait (Continuer/Choisir, battants Hype/Galops, pastille). Autopsie menée (banc node avec DOM factice, diff intégral v50→v59 en 27 hunks) : cause exacte **non identifiée formellement** — le banc butait sur des artefacts et bouclait. Décision, sur proposition de Blandine : **rollback sur son v50 pur (md5 `1ba70d…`) et reconstruction d'un bloc** de toutes les couches du jour.
