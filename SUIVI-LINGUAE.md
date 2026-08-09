@@ -1,3 +1,43 @@
+# 🛠️ SESSION 172 · LINGUAE 10 (09/08) — LE FILM D'ACCUEIL EN PLEIN ÉCRAN, ET LE DOUBLE TAP POUR LE PASSER
+
+**Livré : `lingo.html` v46 · le film d'accueil (md5 `6e165ca68bc574ad233044ad4224e5a4`, 500 843 octets) + `ouverture.mp4` (md5 `0546dd74fad7f3f6ec06e810957fad13`, 904 795 octets, à pousser À LA RACINE, à côté de `lingo.html`).** `index.html` NON MODIFIÉ.
+
+⚠️ **Base de départ : le `lingo.html` v45 rendu par Blandine**, pas le v43 de la session 171. Les versions **v44 et v45 (« le retour au voyage ») ne sont documentées nulle part dans ce SUIVI** — elles ont été faites dans un autre fil. Ce qui suit ne touche QUE le film d'ouverture ; le reste du v45 est intact.
+
+## ✅ LA VIDÉO — CONVERTIE AVANT D'ÊTRE POUSSÉE
+Le fichier fourni était un **HEVC dans un conteneur QuickTime** (`.mov`, 4 753 274 octets, 560×752, 5,10 s, 7,3 Mb/s). Ça joue sur iPhone et **nulle part ailleurs** : Chrome et Android auraient affiché un écran noir, sans erreur visible.
+- Converti en **H.264 high / yuv420p, CRF 22, `+faststart`** : **4,7 Mo → 905 Ko**, même résolution, même durée (5,10 s), audio AAC conservé (inaudible de toute façon, le `<video>` porte `muted`).
+- ⚠️ `+faststart` n'est pas cosmétique : sans lui l'index du fichier est en fin de piste et la lecture ne démarre qu'après téléchargement complet.
+- ⚠️ **Le filet de sécurité reste bon** : `FILM_FILET` est à 5 600 ms et la nouvelle vidéo fait 5,10 s, comme l'ancienne à 20 ms près. **À revoir si le film change encore.**
+
+## ✅ LE PLEIN ÉCRAN
+`#ouvVid` passe de `object-fit:contain` à **`cover` en dur**, et `ajusterCadrage(v)` est **retiré de `lancerFilm()`**.
+- Pourquoi : `ajusterCadrage` posait `object-fit` en **style en ligne**, donc il gagnait contre la feuille de style, et il ne passait en `cover` que si la vidéo était plus haute que large. La nouvelle ouverture étant portrait, elle remplissait déjà l'écran **par accident** — un futur clip paysage serait retombé en bandes noires sans prévenir. Le film d'ouverture est désormais plein écran **par contrat**.
+- ⚠️ Les **arrivées** et les **départs** continuent d'appeler `ajusterCadrage` : leurs clips sont de formats variés et le rognage y coûterait de l'information. Ne pas « harmoniser ».
+
+## ✅ LE DOUBLE TAP POUR PASSER
+Nouvelle IIFE dans le bloc d'écouteurs du film. Deux taps à moins de **350 ms** sur `#ouvFilm` → `terminerOuverture()`.
+- ⚠️ **Pas `dblclick`** : sur iOS il n'arrive pas de façon fiable sur un calque sans texte, et il arrive **après** le zoom. Les taps sont comptés à la main.
+- ⚠️ **`touch-action:manipulation` sur `#ouvFilm`** : sans lui iOS interprète deux taps rapides comme un zoom, le geste n'atteint jamais le code et l'écran grossit à la place.
+- ⚠️ Un **seul** tap ne fait rien, volontairement : le film dure 5 s, une sortie sur un simple frôlement serait pire que pas de sortie.
+- ⚠️ Les taps qui tombent sur `#ouvPasser`, `#ouvSuite` ou `#ouvRelance` sont ignorés : ces boutons ont leur propre action, et « Passer » sort dès le premier coup.
+- ⚠️ **Le bouton « Passer » reste.** Le double tap s'ajoute, il ne le remplace pas : personne ne devine un geste invisible.
+
+## ⚠️ `VER` MONTE DE `?v=28r` À `?v=29` — LE PIÈGE À NE PAS OUBLIER
+`ouverture.mp4` garde le même nom. Sans cette montée, le navigateur **et le service worker** resservent l'ancien film indéfiniment : on pousse la nouvelle vidéo et on revoit l'ancienne, sans aucun moyen de comprendre pourquoi. C'est le défaut documenté en tête de ce SUIVI, et il avait déjà coûté une session le 8 août.
+- Contrepartie assumée : tout le reste des ressources se retélécharge une fois.
+- ⚠️ **Ordre de poussée : `ouverture.mp4` D'ABORD, `lingo.html` ENSUITE.** Dans l'autre sens, le v46 demande `ouverture.mp4?v=29` qui n'existe pas encore, et le premier visiteur tombe sur un film absent — `terminerOuverture()` s'enclenche sur l'erreur, il voit le carnet sans film.
+
+## 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session. Un point noté au passage : le cadrage des vidéos est décidé à trois endroits différents (feuille de style, `ajusterCadrage`, style en ligne), ce qui est exactement le genre de règle qui devra devenir **une** propriété d'un composant vidéo unique le jour du portage.
+
+## 📋 Protocole respecté
+- Vidéo analysée à l'`ffprobe` avant toute décision ; codec incompatible détecté avant la poussée, pas après.
+- `node --check` passé sur le bloc de script inline.
+- Travail fait sur le fichier rendu par Blandine (v45), aucune reprise d'une copie plus ancienne.
+
+---
+
 # 🛠️ SESSION 171 · LINGUAE 9 (09/08) — LES BANDES DE L'INTRO, LE SON PAR CHAPITRE, ET LA PAGE DES THÈMES QUI SE LIT
 
 **Livré : `lingo.html` v43 · les thèmes (md5 `3113f73f28acf455be86d82194d8ff07`, 490 319 octets).** Aucune décision en attente à la clôture. `index.html` NON MODIFIÉ cette session. Cinq maquettes validées une par une dans la journée avant la moindre ligne de code.
@@ -105,32 +145,6 @@ Aucune amélioration d'architecture réalisée sur cette session. Reste à moder
 
 ---
 
-
-# SESSION 176 · 09/08 · v51 + v52 + la page de contrôle — base : le v50 de Blandine
-
-**Base de travail : le v50 « plein écran » de Blandine** (fusion vérifiée : tout le v44/v45 y est). Le v50 est la référence.
-
-## ✅ v51 « toujours arriver en haut »
-Bug signalé par Blandine (Tokyo s'ouvrait en bas de page, la vidéo finissait avant qu'elle remonte) : `#arrivee` est réutilisé pour les 31 villes et **gardait le défilement de la ville précédente**. Audit des 6 écrans défilables : `arrivee` et `sprint` n'avaient pas de remise à zéro (les 4 autres si). Corrigé aux deux ouvertures.
-
-## ✅ v52 « rejouer l'arrivée »
-Un tap sur la vidéo d'arrivée la rejoue depuis le début (souhait de Blandine). Curseur pointeur, le recalage du point d'arrêt continue de s'appliquer.
-
-## ✅ lingo-controle.html — la page de vérité du déploiement
-Fichier **autonome** à déposer à la racine, à ouvrir après chaque poussée : interroge le serveur (HEAD sans cache, repli GET, contourne le service worker) pour **115 fichiers** — 31 vidéos d'arrivée + 31 cartes + 31 fonds + 22 lexiques + pages/médias du module — et affiche vert/rouge, compteurs, **liste copiable des manquants**. Bouton Relancer. Seule maintenance : reporter dans `VILLES` toute ville ajoutée/retirée d'ETAPES (liste vérifiée identique au v52 ce jour). Contexte : impossible de vérifier depuis mon poste (le domaine Netlify refuse l'accès automatisé) ; manquants déjà connus : arrivee-rome.mp4 (a existé, perdue), Vérone et Dubaï (jamais créées), Tokyo/Buenos Aires à confirmer.
-
-## ✅ Les deux lexiques jamais écrits — créés ce jour
-Verdict GitHub (capture de Blandine) : « No commits history » pour lex-froid → les fichiers n'avaient JAMAIS existé ; la conception du 6 août n'avait vécu que dans les commentaires de lingo.html. Écrits le 9 août sur le gabarit des chapitres du 6 août (une leçon, une coll, `chapitre` 15 et 16 = les deux trous libres) :
-- **hype-lingo-lex-haras.js** (Lexington) : les ventes de yearlings — haras, yearling, enchères, catalogue, lot/« hip number », ring, commissaire-priseur, marteau, enchérir (v), pedigree. Distinct de l'élevage (Golegã) et de la vente (Vérone), rappelé dans les defs.
-- **hype-lingo-lex-froid.js** (Spruce Meadows) : le froid de l'écurie — hiver, neige, gel, glace, dégel, poil d'hiver, **chinook** (le mot local, comme « the mob » à Tamworth), buée, couvrir (v), hiverner (v).
-Dédoublonnage des `ref` vérifié contre les 20 lexiques disponibles (piège des faux rappels) : `couverture` restant à l'écurie → verbe `couvrir` ici ; `tondre`/`mue` restant au pansage → `poilhiver` ici. 10 concepts + 3 phrases chacun, 6 langues vérifiées sans trou par exécution node. Relecture native recommandée (marqué en tête de fichiers).
-
-## ⚠️ Incidents de la session (règle du 9 août : tout se dit)
-1. Édition de la phrase du souvenir (v44) : accolade doublée par mon remplacement, fichier syntaxiquement cassé une étape — attrapé par node --check, réparé aussitôt.
-2. Script v52 : apostrophe mal échappée, le script a refusé de démarrer — aucun octet écrit, relancé corrigé.
-3. Mon vérificateur a affiché un faux « KO » sur le v52 (condition mal écrite comptant tout en échec) — revérification rigoureuse : fichier réellement sain.
-4. Accès web sortant : refus des URL non fournies par Blandine, puis refus robots du domaine Netlify — la vérification en ligne est donc impossible depuis mon poste, d'où la page de contrôle.
-5. hype-lingo-lex-haras.js livré cassé à la première écriture : guillemets allemands „…" fermés par un guillemet droit qui terminait la chaîne JS — attrapé par node --check avant livraison, réparé (fermeture „…“), revalidé.
 
 # SESSION 175 · 09/08 · v45 « le retour au voyage »
 
