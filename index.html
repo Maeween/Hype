@@ -1559,7 +1559,8 @@ async function filAmis() {
    et cote JS on remet le scroll a zero a la fermeture. Les rails horizontaux (.lst, .horses-row,
    .fstrip, .rbstrip, .manege, .filters) ont chacun leur propre overflow-x et ne sont PAS
    touches : ils continuent de defiler normalement. */
-html, body { overflow-x: hidden !important; max-width: 100% !important; }
+/* 09/08 : hidden -> clip. Avec overflow-x:hidden, body devenait un conteneur de defilement (l autre axe passe en auto) defilable d un demi-pixel d arrondi ; Chrome Android y ACCROCHAIT le geste, et l overscroll-behavior:none d en dessous interdisait le relais vers la page : defilement mort sur tout l ecran SAUF depuis la barre du bas (position:fixed, hors de la chaine de body). clip decoupe pareil sans creer de conteneur. hidden conserve en repli pour les navigateurs sans clip. */
+html, body { overflow-x: hidden !important; overflow-x: clip !important; max-width: 100% !important; }
 </style>
 </head><body><div id="root"></div><div id="boot">Hype — chargement…</div><script>window.process={env:{NODE_ENV:"production"}};window.global=window;var __mods={},__cache={};function __require(n){if(__cache[n])return __cache[n].exports;var m={exports:{}};__cache[n]=m;if(!__mods[n])throw new Error("module "+n);__mods[n](m,m.exports,__require);return m.exports;}function __def(n,f){__mods[n]=f;}</script><script>__def("react",function(module,exports,require){
 /**
@@ -21455,7 +21456,12 @@ function GlobalStyles() {
     return (React.createElement("style", null, `
       @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Righteous&family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap');
       * { box-sizing: border-box; }
-      html, body { margin: 0; overscroll-behavior: none; background: ${COLORS.nuit}; }
+      html, body { margin: 0; background: ${COLORS.nuit}; }
+      /* 09/08 : overscroll-behavior:none RETIRE de body — il interdisait le relais du defilement
+         de body vers la page (voir la ceinture overflow-x en tete de fichier, meme correctif).
+         Conserve sur html seulement : le rebond et le tirer-pour-rafraichir restent bloques,
+         mais un geste accroche a body remonte desormais jusqu a la page. */
+      html { overscroll-behavior: none; }
       /* 09/08/2026 — Le filigrane est le SEUL element de la coquille qui recouvre le contenu
          sur toute la hauteur (position:fixed, 100vh). S'il capte le toucher, plus rien ne
          defile sauf en partant de la barre du bas, qui est au-dessus de lui : exactement le
@@ -44428,8 +44434,10 @@ if (__boot)
     try {
       var t = e.touches[0]; if (!t) return;
       nbMove++;
-      if (Math.abs(t.clientY - y0) < 12) return;
+      /* 09/08 : mesure des le PREMIER touchmove — c est lui qui decide du defilement sur Chrome.
+         L ancienne version n echantillonnait qu au-dela de 12px et pouvait rater une annulation decisive. */
       annule = (e.defaultPrevented === true) ? true : (annule === null ? false : annule);
+      if (Math.abs(t.clientY - y0) < 12) return;
       dyMax = Math.max(dyMax, Math.abs(t.clientY - y0));
       analyser(Math.round(t.clientX), Math.round(y0));
     } catch (x) { }

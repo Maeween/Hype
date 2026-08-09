@@ -10,7 +10,7 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 09/08/2026 (SESSION 117b · PUITS TACTILES — `overflow:clip`, LE VRAI REMÈDE) — md5 `cb39d279012b7f034b17cd7d5353c5d1`, 9155346 octets. Base : le fichier de Blandine (mon lot 1 + la session 116 parrainage, préservée : `codeParrain` 3, `shortcuts` 3). Diff : 6 zones, +11 351 octets, fonctions 916 → 917. Panneau de diagnostic **remis, dormant**. Aucune preview. Aucun SQL. `hype-cours-baby.js` inchangé.**
+**Version actuelle de l'index.html : 09/08/2026 (SESSION 117 · LA CEINTURE `overflow-x` — LE DÉFILEMENT ANDROID, CAUSE PROUVÉE) — md5 `d23e8a9daf18e6b589226549591d7f23`, 9163189 octets. Contient : ceinture en `clip`, `overscroll` sur `html` seul, verrou de défilement, captures de pointeur souris-seulement, 2 conteneurs du parcours d'entrée libérés (`hu-root`, personnalisation), fil d'annonces `pan-y`, panneau de diagnostic (dormant, `?debug=scroll` / `?debug=off`) avec mesure dès le premier touchmove. Session 116 parrainage préservée (`codeParrain` 3, `shortcuts` 3). À RETIRER après confirmation : le panneau.**
 
 **⚠️ COLLISION DE NUMÉROTATION 116 :** deux sessions ont pris le 116 le 09/08 — celle du parrainage (dans le fichier de Blandine) et la mienne (défilement Android). J'ai renuméroté la mienne en **117** et laissé le 116 à celle du parrainage. Le prochain numéro libre est **118**.
 
@@ -166,6 +166,26 @@ Deux tests décisifs avaient été proposés (l'écran Galops, seul écran où l
 
 ### VÉRIFICATION
 `node --check` sur le bloc principal (25 300 lignes extraites entre les balises) : OK. Contrôle de non-régression de syntaxe sur **tous** les blocs inline, comparé au fichier de départ : signature d'erreurs identique (les seules « erreurs » sont les faux positifs du découpeur sur les `<script>` contenus dans les chaînes des iframes). `prevOverflow` : 0 occurrence restante. `hypeVerrouScroll` 4, `hypeDeverrouScroll` 2, `hypeFiletScroll` 4, `data-hype-zoom` 3, `data-hype-filigrane` 2. Pas de vérification Playwright (mode rapide, correctif ciblé sans nouvelle page ni nouvelle image).
+
+### 🎯🎯 LA CAUSE — LA CEINTURE `overflow-x` DU 02/08 (troisième diagnostic, le bon, prouvé par mesure)
+Les puits tactiles ci-dessous étaient un vrai défaut mais PAS la cause : le blocage a survécu à leur correction (`overflow:clip` posé et vérifié à l'écran par Blandine, défilement toujours mort). Les sondes ont ensuite éliminé une à une : annulation JS (non), touch-action (auto partout), verrou (0), re-rendus sous le doigt (0), cible disparue (non), app pas à jour (non — le panneau évoluait à chaque push). Restait un geste parfaitement reçu (6–11 touchmove, doigt 125–260 px), 2 698 px à défiler, page immobile, et un `TOUCHCANCEL` occasionnel.
+
+**Le mécanisme, enfin :** la ceinture anti-décalage latéral ajoutée le 02/08 en tête de fichier — `html, body { overflow-x: hidden !important }` — a armé une bombe à retardement CSS :
+1. `overflow-x: hidden` force l'axe Y en `auto` (les deux axes ne peuvent pas mélanger `visible` et `hidden`). Visible dans TOUTES les captures de la session : `body: of=hidden auto`.
+2. `html` ayant son propre overflow non-visible, celui de `body` n'est plus remonté au viewport : **`body` devient un conteneur de défilement indépendant.**
+3. La hauteur de `body` est fractionnaire (`3457.55px`) contre un `scrollHeight` entier (`3458`) : sur l'appareil de Blandine, **`body` est défilable d'un demi-pixel d'arrondi.** Chrome Android ACCROCHE le geste à ce demi-pixel.
+4. `overscroll-behavior: none`, posé sur `html` ET `body` (GlobalStyles), **interdit le relais** de `body` vers la page. Geste intégralement avalé, sans aucune trace JS. Le `TOUCHCANCEL` occasionnel est Chrome qui jette l'éponge.
+5. **La barre du bas est en `position:fixed`** : son ancêtre de défilement est le viewport directement, `body` n'est pas sur son chemin — d'où le seul geste qui fonctionnait. Le symptôme le plus déroutant de la session, expliqué exactement.
+6. iPhone : WebKit n'accroche pas ainsi → invisible. Émulation Chromium : l'arrondi tombe juste (`2587/2587`) → `body` non défilable → irreproductible. La ceinture date du 02/08 → cohérent avec « on n'avait pas ce bug avant ».
+
+**CORRECTIF (3 zones) :**
+- Ceinture (tête de fichier) : `overflow-x: hidden !important; overflow-x: clip !important;` — `clip` découpe pareil mais **ne crée pas de conteneur** et, contrairement à `hidden`, **laisse l'axe Y en `visible`** : `body` ne peut structurellement plus accrocher un geste. `hidden` reste en repli pour les navigateurs sans `clip`.
+- GlobalStyles : `overscroll-behavior: none` **retiré de `body`**, conservé sur `html` seul (le tirer-pour-rafraîchir reste bloqué ; un geste accroché à `body` remonte désormais à la page).
+- Panneau : `defaultPrevented` mesuré dès le PREMIER `touchmove` (c'est lui qui décide du défilement sur Chrome ; l'échantillonnage à partir de 12 px pouvait rater une annulation décisive).
+
+**PREUVE PAR MESURE (émulation Chromium 141, avant/après) :** `body` passe de `of=hidden/auto + overscroll none` (accrochable, relais interdit) à `of=clip/visible + overscroll auto` (inaccrochable). App démarrée en émulation Android avec simulacre Supabase : boote, navigue, défile sur les trois zones testées, zéro touchcancel.
+
+**⚠️ Incident en cours de correction (signalé conformément à la règle du 09/08) :** ma première insertion de la règle `overscroll` est tombée DANS l'interpolation `${COLORS.nuit}` du gabarit GlobalStyles — CSS produit invalide, `background` de body perdu. Détecté par relecture de la zone générée avant livraison, réparé, revérifié (accolades équilibrées, rendu contrôlé). Aucun fichier défectueux n'a été livré.
 
 ### 🎯 CAUSE RÉELLE — LES PUITS TACTILES (trouvée avec le panneau, sur l'Android de Blandine)
 Mes deux premières hypothèses (verrou fantôme, filigrane) étaient des bugs réels mais **pas la cause**. Le panneau de diagnostic l'a établi en deux captures :
