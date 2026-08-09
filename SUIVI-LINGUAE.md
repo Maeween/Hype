@@ -1,43 +1,3 @@
-# 🛠️ SESSION 172 · LINGUAE 10 (09/08) — LE FILM D'ACCUEIL EN PLEIN ÉCRAN, ET LE DOUBLE TAP POUR LE PASSER
-
-**Livré : `lingo.html` v46 · le film d'accueil (md5 `6e165ca68bc574ad233044ad4224e5a4`, 500 843 octets) + `ouverture.mp4` (md5 `0546dd74fad7f3f6ec06e810957fad13`, 904 795 octets, à pousser À LA RACINE, à côté de `lingo.html`).** `index.html` NON MODIFIÉ.
-
-⚠️ **Base de départ : le `lingo.html` v45 rendu par Blandine**, pas le v43 de la session 171. Les versions **v44 et v45 (« le retour au voyage ») ne sont documentées nulle part dans ce SUIVI** — elles ont été faites dans un autre fil. Ce qui suit ne touche QUE le film d'ouverture ; le reste du v45 est intact.
-
-## ✅ LA VIDÉO — CONVERTIE AVANT D'ÊTRE POUSSÉE
-Le fichier fourni était un **HEVC dans un conteneur QuickTime** (`.mov`, 4 753 274 octets, 560×752, 5,10 s, 7,3 Mb/s). Ça joue sur iPhone et **nulle part ailleurs** : Chrome et Android auraient affiché un écran noir, sans erreur visible.
-- Converti en **H.264 high / yuv420p, CRF 22, `+faststart`** : **4,7 Mo → 905 Ko**, même résolution, même durée (5,10 s), audio AAC conservé (inaudible de toute façon, le `<video>` porte `muted`).
-- ⚠️ `+faststart` n'est pas cosmétique : sans lui l'index du fichier est en fin de piste et la lecture ne démarre qu'après téléchargement complet.
-- ⚠️ **Le filet de sécurité reste bon** : `FILM_FILET` est à 5 600 ms et la nouvelle vidéo fait 5,10 s, comme l'ancienne à 20 ms près. **À revoir si le film change encore.**
-
-## ✅ LE PLEIN ÉCRAN
-`#ouvVid` passe de `object-fit:contain` à **`cover` en dur**, et `ajusterCadrage(v)` est **retiré de `lancerFilm()`**.
-- Pourquoi : `ajusterCadrage` posait `object-fit` en **style en ligne**, donc il gagnait contre la feuille de style, et il ne passait en `cover` que si la vidéo était plus haute que large. La nouvelle ouverture étant portrait, elle remplissait déjà l'écran **par accident** — un futur clip paysage serait retombé en bandes noires sans prévenir. Le film d'ouverture est désormais plein écran **par contrat**.
-- ⚠️ Les **arrivées** et les **départs** continuent d'appeler `ajusterCadrage` : leurs clips sont de formats variés et le rognage y coûterait de l'information. Ne pas « harmoniser ».
-
-## ✅ LE DOUBLE TAP POUR PASSER
-Nouvelle IIFE dans le bloc d'écouteurs du film. Deux taps à moins de **350 ms** sur `#ouvFilm` → `terminerOuverture()`.
-- ⚠️ **Pas `dblclick`** : sur iOS il n'arrive pas de façon fiable sur un calque sans texte, et il arrive **après** le zoom. Les taps sont comptés à la main.
-- ⚠️ **`touch-action:manipulation` sur `#ouvFilm`** : sans lui iOS interprète deux taps rapides comme un zoom, le geste n'atteint jamais le code et l'écran grossit à la place.
-- ⚠️ Un **seul** tap ne fait rien, volontairement : le film dure 5 s, une sortie sur un simple frôlement serait pire que pas de sortie.
-- ⚠️ Les taps qui tombent sur `#ouvPasser`, `#ouvSuite` ou `#ouvRelance` sont ignorés : ces boutons ont leur propre action, et « Passer » sort dès le premier coup.
-- ⚠️ **Le bouton « Passer » reste.** Le double tap s'ajoute, il ne le remplace pas : personne ne devine un geste invisible.
-
-## ⚠️ `VER` MONTE DE `?v=28r` À `?v=29` — LE PIÈGE À NE PAS OUBLIER
-`ouverture.mp4` garde le même nom. Sans cette montée, le navigateur **et le service worker** resservent l'ancien film indéfiniment : on pousse la nouvelle vidéo et on revoit l'ancienne, sans aucun moyen de comprendre pourquoi. C'est le défaut documenté en tête de ce SUIVI, et il avait déjà coûté une session le 8 août.
-- Contrepartie assumée : tout le reste des ressources se retélécharge une fois.
-- ⚠️ **Ordre de poussée : `ouverture.mp4` D'ABORD, `lingo.html` ENSUITE.** Dans l'autre sens, le v46 demande `ouverture.mp4?v=29` qui n'existe pas encore, et le premier visiteur tombe sur un film absent — `terminerOuverture()` s'enclenche sur l'erreur, il voit le carnet sans film.
-
-## 🧭 Préparation Flutter
-Aucune amélioration d'architecture réalisée sur cette session. Un point noté au passage : le cadrage des vidéos est décidé à trois endroits différents (feuille de style, `ajusterCadrage`, style en ligne), ce qui est exactement le genre de règle qui devra devenir **une** propriété d'un composant vidéo unique le jour du portage.
-
-## 📋 Protocole respecté
-- Vidéo analysée à l'`ffprobe` avant toute décision ; codec incompatible détecté avant la poussée, pas après.
-- `node --check` passé sur le bloc de script inline.
-- Travail fait sur le fichier rendu par Blandine (v45), aucune reprise d'une copie plus ancienne.
-
----
-
 # 🛠️ SESSION 171 · LINGUAE 9 (09/08) — LES BANDES DE L'INTRO, LE SON PAR CHAPITRE, ET LA PAGE DES THÈMES QUI SE LIT
 
 **Livré : `lingo.html` v43 · les thèmes (md5 `3113f73f28acf455be86d82194d8ff07`, 490 319 octets).** Aucune décision en attente à la clôture. `index.html` NON MODIFIÉ cette session. Cinq maquettes validées une par une dans la journée avant la moindre ligne de code.
@@ -145,6 +105,115 @@ Aucune amélioration d'architecture réalisée sur cette session. Reste à moder
 
 ---
 
+
+# SESSION 178 · 09/08 soir · v56 « la présentation retrouvée »
+
+**L'enquête d'abord.** Blandine : la page de présentation (5 promesses + « Choisir ma destination ») s'affichait à chaque lancement — disparue « depuis quelques heures ». Coupable identifié : le **repli de v23** dans `montrerDest()` gravait `hype_lingua_intro` à CHAQUE passage — donc aussi via la paire de drapeaux du carnet (tappable depuis le 8 août). Changer de langue = présentation marquée « vue pour toujours », en silence. Mes v51–v55 hors de cause (vérifié : trois mains seulement écrivaient ce drapeau).
+
+## ✅ v56 — le contenu (maquette validée pièce par pièce par Blandine)
+- **Renommage : « Hype Linguae » → « Linguae »** partout (une ligne : `NOM_MODULE`, qui se propage via {nom} ; + fallbacks HTML + <title>).
+- **La mosaïque** : les 5 promesses en grille 2 colonnes (tuiles de verre, trait turquoise, textes **justifiés avec césure** — exigence de Blandine contre les fins de ligne en drapeau), **« L'essentiel en cas d'urgence » en socle pleine largeur** avec la pastille « S'apprend à Kildare · Irlande › » (tappable → ouvre la ville, `partirVersVille`).
+- Textes 6 langues réécrits : pt1t/pt1d (FR·EN·ES·IT·DE·JA), pt2d (**« De Buenos Aires à Tokyo »** — choix final après Miami, écartée car pas encore une étape), pt3t, pt4t.
+- **« Choisir ma destination » → « Choisir mon voyage »** (6 langues) : le bouton mène au choix de la langue, pas aux villes — le nom mentait.
+- **La phrase de passage** (italique, 6 langues) : « Et quand tu veux, le voyage continue au-delà des mots. »
+- **Les deux battants HYPE / LES GALOPS** en pied, liseré turquoise qui respire (la présentation est la page turquoise du module). HYPE → ./index.html ; LES GALOPS → ./index.html#galops (⚠️ la clé `galops` du lien profond reste à poser dans l'index — feu vert index requis ; d'ici là Hype ouvre son accueil).
+- **L'affiche « Le tour du monde » du carnet est tappable** et rouvre la présentation à volonté — plus aucune page dépendante d'un drapeau.
+- **La guérison** : `montrerDest()` ne grave plus le drapeau ; seul « Choisir mon voyage » le pose. Changer de langue ne coûte plus jamais une page.
+
+## 📌 Reste ouvert
+- Clé `galops: { ecran: "galops" }` dans la carte des liens profonds de l'index (une ligne, au feu vert).
+- Miami Beach, 32e étape (voir décision en session 177).
+
+# SESSION 177 · 09/08 · Les médias retrouvés + v53/v54 (installation & partage)
+
+## ✅ La chasse aux 17 manquants (contrôle du jour : 109 verts / 17 rouges)
+- **arrivee-rome.mp4 REFAITE** (montage 3 actes depuis 2 vidéos de Blandine) : survol du Tibre → concours entier (abord, saut, réception, vidéo 2) → panneau de marbre ROME. Retirés : le cheval en liberté (hors sujet Coupe des Nations, décision Blandine) et le volet vers un panneau routier tronqué. 480×608 · H.264 · 5,2 s.
+- **arrivee-hickstead.mp4** et **arrivee-santaynez.mp4 + carte-santaynez.webp** fournis par Blandine, vérifiés, prêts.
+- **Recette des fonds rétro-ingénierée** depuis la paire Rome (erreur résiduelle 1,9) : 420×560 + flou gaussien 14 px + luminosité ×0,298, webp ≤ ~2 Ko. **5 fonds fabriqués** : santaynez, burghley (sa version 900×1200 nette re-traitée — ne pas déposer la brute), connemara, kildare (depuis vignette), lambourn. **6 fonds fournis** par Blandine dans la liste des manquants : aachen, jerez, lamotte, oliva, seville, warendorf.
+- **Les 2 lexiques jamais existés** (GitHub : « No commits history ») écrits : voir session 176.
+- **Reste 1 seul rouge après dépôt : arrivee-windsor.mp4.**
+
+## ✅ v53 — l'invitation à l'écran d'accueil
+Popup d'installation repris de Hype, adapté carnet : accents dorés, icône Linguae, 6 langues (DE ajouté, absent du popup Hype), langue suivie sur `hype_lingua_lecture`. Garde-fous : jamais installé/standalone, jamais en iframe, 1 fois par appareil (`hype_lingua_install_vu`), 4 s après le premier toucher.
+
+## ✅ v54 — partager le voyage (2 emplacements, demande Blandine)
+Boutons `#ouvPartager` (carnet d'accueil, à côté de Collection/Sprint) et `#arrPartager` (fin d'arrivée, discret doré — le moment où l'envie de partager est la plus forte). `navigator.share` (repli copie + « Lien copié »), texte 6 langues (table `UI`), lien lingo.html, **code parrain repris du cache `hype_parrain_code`** posé par l'écran Partager de Hype — en attendant Supabase dans Linguae (acté par Blandine : « il faut Supabase pour Linguae mais donne déjà le partage »).
+
+## 📌 Décision de Blandine (09/08 au soir) — Miami, future étape
+**Miami Beach entre au programme comme future étape (32e)** : le concours sur le sable, océan en fond de piste — l'équivalent américain de l'esprit La Baule/Vejer. Blandine autorise expressément la citation du tour concerné (exception à la règle « aucun organisme privé » du 08/08, pour cette étape). À produire le jour venu : chapitre/lexique dédié (thème à choisir — le concours de plage ?), arrivee-miami.mp4, carte-miami.webp, fond-miami.webp, entrée ETAPES + lien vers un lexique. La phrase de la présentation (« De Miami à l'Australie ») l'annonce déjà.
+
+## ✅ v55 — l'arrivée sans échafaudage
+Capture de Blandine (La Baule) : le panneau « Vidéo introuvable · à déposer à la racine » s'affichait À CHAQUE ouverture d'arrivée, avant le démarrage de la vidéo (il était montré d'office et ne disparaissait qu'au signal `playing` — plusieurs secondes sur réseau mobile). Corrigé : caché par défaut, révélé uniquement par l'événement `error`. En attente de lecture, c'est le fond de la ville qui habille l'écran.
+
+## ⚠️ Incidents de la session (règle du 9 août)
+6. Montage Rome, erreur de jugement : le segment plein cadre (l'obstacle !) pris pour un clip parasite et coupé — Blandine l'a vu (« il manque la partie avec le saut »), remonté aussitôt, puis remplacé par le concours complet de la vidéo 2.
+7. v54 : ma fonction lisait une table `TT` inexistante au lieu de `UI` — le repli aurait dégradé EN SILENCE (partage toujours en français). Attrapé au contrôle avant livraison, corrigé, testé (node).
+
+# SESSION 176 · 09/08 · v51 + v52 + la page de contrôle — base : le v50 de Blandine
+
+**Base de travail : le v50 « plein écran » de Blandine** (fusion vérifiée : tout le v44/v45 y est). Le v50 est la référence.
+
+## ✅ v51 « toujours arriver en haut »
+Bug signalé par Blandine (Tokyo s'ouvrait en bas de page, la vidéo finissait avant qu'elle remonte) : `#arrivee` est réutilisé pour les 31 villes et **gardait le défilement de la ville précédente**. Audit des 6 écrans défilables : `arrivee` et `sprint` n'avaient pas de remise à zéro (les 4 autres si). Corrigé aux deux ouvertures.
+
+## ✅ v52 « rejouer l'arrivée »
+Un tap sur la vidéo d'arrivée la rejoue depuis le début (souhait de Blandine). Curseur pointeur, le recalage du point d'arrêt continue de s'appliquer.
+
+## ✅ lingo-controle.html — la page de vérité du déploiement
+Fichier **autonome** à déposer à la racine, à ouvrir après chaque poussée : interroge le serveur (HEAD sans cache, repli GET, contourne le service worker) pour **115 fichiers** — 31 vidéos d'arrivée + 31 cartes + 31 fonds + 22 lexiques + pages/médias du module — et affiche vert/rouge, compteurs, **liste copiable des manquants**. Bouton Relancer. Seule maintenance : reporter dans `VILLES` toute ville ajoutée/retirée d'ETAPES (liste vérifiée identique au v52 ce jour). Contexte : impossible de vérifier depuis mon poste (le domaine Netlify refuse l'accès automatisé) ; manquants déjà connus : arrivee-rome.mp4 (a existé, perdue), Vérone et Dubaï (jamais créées), Tokyo/Buenos Aires à confirmer.
+
+## ✅ Les deux lexiques jamais écrits — créés ce jour
+Verdict GitHub (capture de Blandine) : « No commits history » pour lex-froid → les fichiers n'avaient JAMAIS existé ; la conception du 6 août n'avait vécu que dans les commentaires de lingo.html. Écrits le 9 août sur le gabarit des chapitres du 6 août (une leçon, une coll, `chapitre` 15 et 16 = les deux trous libres) :
+- **hype-lingo-lex-haras.js** (Lexington) : les ventes de yearlings — haras, yearling, enchères, catalogue, lot/« hip number », ring, commissaire-priseur, marteau, enchérir (v), pedigree. Distinct de l'élevage (Golegã) et de la vente (Vérone), rappelé dans les defs.
+- **hype-lingo-lex-froid.js** (Spruce Meadows) : le froid de l'écurie — hiver, neige, gel, glace, dégel, poil d'hiver, **chinook** (le mot local, comme « the mob » à Tamworth), buée, couvrir (v), hiverner (v).
+Dédoublonnage des `ref` vérifié contre les 20 lexiques disponibles (piège des faux rappels) : `couverture` restant à l'écurie → verbe `couvrir` ici ; `tondre`/`mue` restant au pansage → `poilhiver` ici. 10 concepts + 3 phrases chacun, 6 langues vérifiées sans trou par exécution node. Relecture native recommandée (marqué en tête de fichiers).
+
+## ⚠️ Incidents de la session (règle du 9 août : tout se dit)
+1. Édition de la phrase du souvenir (v44) : accolade doublée par mon remplacement, fichier syntaxiquement cassé une étape — attrapé par node --check, réparé aussitôt.
+2. Script v52 : apostrophe mal échappée, le script a refusé de démarrer — aucun octet écrit, relancé corrigé.
+3. Mon vérificateur a affiché un faux « KO » sur le v52 (condition mal écrite comptant tout en échec) — revérification rigoureuse : fichier réellement sain.
+4. Accès web sortant : refus des URL non fournies par Blandine, puis refus robots du domaine Netlify — la vérification en ligne est donc impossible depuis mon poste, d'où la page de contrôle.
+5. hype-lingo-lex-haras.js livré cassé à la première écriture : guillemets allemands „…" fermés par un guillemet droit qui terminait la chaîne JS — attrapé par node --check avant livraison, réparé (fermeture „…“), revalidé.
+
+# 🛠️ SESSION 172 · LINGUAE 10 (09/08) — LE FILM D'ACCUEIL EN PLEIN ÉCRAN, ET LE DOUBLE TAP POUR LE PASSER
+
+**Livré : `lingo.html` v46 · le film d'accueil (md5 `6e165ca68bc574ad233044ad4224e5a4`, 500 843 octets) + `ouverture.mp4` (md5 `0546dd74fad7f3f6ec06e810957fad13`, 904 795 octets, à pousser À LA RACINE, à côté de `lingo.html`).** `index.html` NON MODIFIÉ.
+
+⚠️ **Base de départ : le `lingo.html` v45 rendu par Blandine**, pas le v43 de la session 171. Les versions **v44 et v45 (« le retour au voyage ») ne sont documentées nulle part dans ce SUIVI** — elles ont été faites dans un autre fil. Ce qui suit ne touche QUE le film d'ouverture ; le reste du v45 est intact.
+
+## ✅ LA VIDÉO — CONVERTIE AVANT D'ÊTRE POUSSÉE
+Le fichier fourni était un **HEVC dans un conteneur QuickTime** (`.mov`, 4 753 274 octets, 560×752, 5,10 s, 7,3 Mb/s). Ça joue sur iPhone et **nulle part ailleurs** : Chrome et Android auraient affiché un écran noir, sans erreur visible.
+- Converti en **H.264 high / yuv420p, CRF 22, `+faststart`** : **4,7 Mo → 905 Ko**, même résolution, même durée (5,10 s), audio AAC conservé (inaudible de toute façon, le `<video>` porte `muted`).
+- ⚠️ `+faststart` n'est pas cosmétique : sans lui l'index du fichier est en fin de piste et la lecture ne démarre qu'après téléchargement complet.
+- ⚠️ **Le filet de sécurité reste bon** : `FILM_FILET` est à 5 600 ms et la nouvelle vidéo fait 5,10 s, comme l'ancienne à 20 ms près. **À revoir si le film change encore.**
+
+## ✅ LE PLEIN ÉCRAN
+`#ouvVid` passe de `object-fit:contain` à **`cover` en dur**, et `ajusterCadrage(v)` est **retiré de `lancerFilm()`**.
+- Pourquoi : `ajusterCadrage` posait `object-fit` en **style en ligne**, donc il gagnait contre la feuille de style, et il ne passait en `cover` que si la vidéo était plus haute que large. La nouvelle ouverture étant portrait, elle remplissait déjà l'écran **par accident** — un futur clip paysage serait retombé en bandes noires sans prévenir. Le film d'ouverture est désormais plein écran **par contrat**.
+- ⚠️ Les **arrivées** et les **départs** continuent d'appeler `ajusterCadrage` : leurs clips sont de formats variés et le rognage y coûterait de l'information. Ne pas « harmoniser ».
+
+## ✅ LE DOUBLE TAP POUR PASSER
+Nouvelle IIFE dans le bloc d'écouteurs du film. Deux taps à moins de **350 ms** sur `#ouvFilm` → `terminerOuverture()`.
+- ⚠️ **Pas `dblclick`** : sur iOS il n'arrive pas de façon fiable sur un calque sans texte, et il arrive **après** le zoom. Les taps sont comptés à la main.
+- ⚠️ **`touch-action:manipulation` sur `#ouvFilm`** : sans lui iOS interprète deux taps rapides comme un zoom, le geste n'atteint jamais le code et l'écran grossit à la place.
+- ⚠️ Un **seul** tap ne fait rien, volontairement : le film dure 5 s, une sortie sur un simple frôlement serait pire que pas de sortie.
+- ⚠️ Les taps qui tombent sur `#ouvPasser`, `#ouvSuite` ou `#ouvRelance` sont ignorés : ces boutons ont leur propre action, et « Passer » sort dès le premier coup.
+- ⚠️ **Le bouton « Passer » reste.** Le double tap s'ajoute, il ne le remplace pas : personne ne devine un geste invisible.
+
+## ⚠️ `VER` MONTE DE `?v=28r` À `?v=29` — LE PIÈGE À NE PAS OUBLIER
+`ouverture.mp4` garde le même nom. Sans cette montée, le navigateur **et le service worker** resservent l'ancien film indéfiniment : on pousse la nouvelle vidéo et on revoit l'ancienne, sans aucun moyen de comprendre pourquoi. C'est le défaut documenté en tête de ce SUIVI, et il avait déjà coûté une session le 8 août.
+- Contrepartie assumée : tout le reste des ressources se retélécharge une fois.
+- ⚠️ **Ordre de poussée : `ouverture.mp4` D'ABORD, `lingo.html` ENSUITE.** Dans l'autre sens, le v46 demande `ouverture.mp4?v=29` qui n'existe pas encore, et le premier visiteur tombe sur un film absent — `terminerOuverture()` s'enclenche sur l'erreur, il voit le carnet sans film.
+
+## 🧭 Préparation Flutter
+Aucune amélioration d'architecture réalisée sur cette session. Un point noté au passage : le cadrage des vidéos est décidé à trois endroits différents (feuille de style, `ajusterCadrage`, style en ligne), ce qui est exactement le genre de règle qui devra devenir **une** propriété d'un composant vidéo unique le jour du portage.
+
+## 📋 Protocole respecté
+- Vidéo analysée à l'`ffprobe` avant toute décision ; codec incompatible détecté avant la poussée, pas après.
+- `node --check` passé sur le bloc de script inline.
+- Travail fait sur le fichier rendu par Blandine (v45), aucune reprise d'une copie plus ancienne.
+
+---
 
 # SESSION 175 · 09/08 · v45 « le retour au voyage »
 
