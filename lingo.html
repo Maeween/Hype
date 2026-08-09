@@ -441,12 +441,40 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvFondBas{position:absolute;inset:0;
  background:linear-gradient(to bottom,rgba(4,6,10,.6) 0%,rgba(4,6,10,.86) 40%,#04060A 100%)}
 #ouvDebut{position:relative;z-index:1}
-#ouvFilm{position:fixed;inset:0;z-index:42;background:#04060A;display:none}
+/* ⚠️ v46 — `touch-action:manipulation` AJOUTE. Sans lui, iOS interprete deux
+   taps rapides comme un zoom : le double tap de sortie ne serait jamais
+   arrive au code, et l'ecran aurait grossi a la place. */
+/* ⚠️ v49 — `100dvh` AJOUTE (« tu me mets la video en plein ecran a
+   l'ouverture ? genre full immersion »). `inset:0` seul ne suffit pas sur
+   Safari iOS : la hauteur du conteneur fixe est calculee sur le viewport
+   AVEC la barre d'adresse, et quand elle se retracte il reste une bande du
+   fond de page en bas de l'ecran. `dvh` suit la hauteur reellement visible.
+   Ecrit APRES `inset:0` pour que les vieux moteurs qui ignorent `dvh`
+   gardent l'ancien comportement au lieu de ne rien avoir. */
+#ouvFilm{position:fixed;inset:0;z-index:42;background:#000;display:none;
+ width:100%;height:100dvh;touch-action:manipulation}
 #ouvFilm.joue{display:block}
-#ouvVid{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;
+/* ⚠️ v46 — `object-fit:cover` EN DUR (demande de Blandine : « on peut
+   remplacer la video d'accueil par celle-ci en plein ecran ? »). C'etait
+   `contain`, et `ajusterCadrage()` ne passait en `cover` que si la video
+   etait plus haute que large. La nouvelle ouverture est portrait, donc elle
+   remplissait deja l'ecran par accident — mais un futur clip paysage serait
+   retombe en bandes noires sans prevenir. Le film d'ouverture est desormais
+   plein ecran par contrat, quel que soit le clip.
+   ⚠️ `pointer-events:none` reste : c'est #ouvFilm qui recoit les taps. */
+#ouvVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
  pointer-events:none;transition:opacity .8s ease}
 #ouvFilm.joue #ouvVid{opacity:1}
 
+/* ⚠️ v49 — LE VOILE NE COUVRE PLUS LE FILM PENDANT QU'IL JOUE. Il posait un
+   halo turquoise et un degrade noir montant sur 44 % de l'image du debut a la
+   fin : c'etait la seule chose qui restait entre le clip et le plein ecran.
+   Il ne revient qu'a la fin (`.fini`), quand le bouton « Commence ton
+   voyage » apparait et a besoin d'un fond pour se detacher.
+   ⚠️ NE PAS le supprimer : sans lui, ce bouton se lit mal sur une image
+   claire. */
+#ouvVoile{opacity:0;transition:opacity .7s ease}
+#ouvFilm.fini #ouvVoile{opacity:1}
 #ouvVoile{position:absolute;inset:0;pointer-events:none;z-index:2;
  background:radial-gradient(80% 55% at 50% 42%,rgba(32,217,245,.10),transparent 74%),
             linear-gradient(to top,rgba(4,6,10,.9) 0%,transparent 44%)}
@@ -658,9 +686,33 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvCadre{position:relative;display:block;margin:0 -6px 0;border-radius:22px;overflow:hidden;
  border:1px solid rgba(255,255,255,.075);background:#000;
  box-shadow:0 18px 44px rgba(0,0,0,.62), 0 0 0 1px rgba(32,217,245,.05)}
+/* ⚠️ v47 — RECADRAGE (« l'image du tour du monde est très mal positionnée,
+   coupe le haut et remonte-la vers le haut et la droite qu'elle soit
+   centrée »). `22%` gardait un quart de ciel vide en haut et coupait le bas
+   de l'anneau de drapeaux : le sujet n'etait pas centre, il etait pousse vers
+   le bas hors du cadre.
+   Le sujet vit entre 19 % et 78 % de la hauteur du fichier (mesure faite sur
+   le profil de luminance de tour-monde.webp, 1100x1852). A 112 %, la fenetre
+   couvre 56 % de l'image : `46%` place son centre a 48,5 %, soit pile le
+   milieu du sujet — le cheval entier, le globe centre, l'anneau complet, et
+   plus une bande de ciel noir en haut.
+   ⚠️ NE PAS remonter au-dessus de 50 % : on couperait la criniere.
+   ⚠️ `background-size` reste a 112 % : en dessous, le sujet rapetisse et le
+   noir revient sur les cotes. Si un jour l'image change, refaire la mesure,
+   ne pas transposer ces chiffres.
+   ⚠️ v48 — L'HORIZONTALE PASSE DE 80 % A 40 % (« le cheval encore un peu plus
+   vers la droite »). ATTENTION AU SENS, c'est contre-intuitif : un pourcentage
+   qui BAISSE fait glisser l'image vers la DROITE dans le cadre. Monter a 100 %
+   pousserait le cheval a gauche.
+   ⚠️ La course horizontale totale ne fait que 12 % de la largeur du cadre —
+   43 px sur un iPhone — parce que `background-size` est a 112 %. On est donc
+   deja au tiers de ce qui est possible : pour aller nettement plus a droite il
+   faudrait MONTER la taille (120 % donne le double de course), au prix d'un
+   sujet plus gros et de l'anneau rogne a gauche. A demander avant de le faire.
+   ⚠️ Le `?v=34` en dur reste : l'image, elle, n'a pas change. */
 #ouvCadre .oIm{display:block;width:100%;aspect-ratio:1170/1240;
  background-image:url("tour-monde.webp?v=34");background-size:112%;
- background-position:64% 22%;background-repeat:no-repeat;background-color:#000}
+ background-position:40% 46%;background-repeat:no-repeat;background-color:#000}
 #ouvCadre .oVo{position:absolute;left:0;right:0;bottom:0;height:46%;pointer-events:none;
  background:linear-gradient(to top,rgba(0,0,0,.94) 0%,rgba(0,0,0,.55) 42%,transparent 100%)}
 #ouvCadre .oTx{position:absolute;left:0;right:0;bottom:18px;text-align:center;padding:0 18px;z-index:2}
@@ -927,7 +979,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
  box-shadow:0 16px 42px -18px rgba(32,217,245,.95)}
 #ouvPasser,#ouvSuite{position:absolute;z-index:3;opacity:0;transition:opacity .4s}
-#ouvFilm.joue #ouvPasser{opacity:1}
+/* ⚠️ v49 : le bouton « Passer » n'arrive qu'apres 1,2 s, pour que la
+   premiere seconde soit de l'image et rien d'autre. Le double tap, lui,
+   fonctionne des le debut — personne n'est prisonnier du film. */
+#ouvFilm.joue #ouvPasser{opacity:1;transition-delay:1.2s}
 #ouvPasser{top:calc(env(safe-area-inset-top) + 16px);right:18px;font-size:10px;
  letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
 #ouvSuite{bottom:calc(env(safe-area-inset-bottom) + 34px);left:50%;transform:translateX(-50%);
@@ -1761,7 +1816,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v45 · le retour au voyage</p>
+    <p id="ouvVersion">v49 · plein écran</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -1985,7 +2040,17 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    lingua-affiche, lingua-langues) ne peuvent pas prendre cette variable :
    il faudra vider le cache a la main le jour ou ils changeront.
    ================================================================== */
-var VER = "?v=28r";
+/* ⚠️ v46 — MONTEE DE 28r A 29 PARCE QUE `ouverture.mp4` A ETE REMPLACEE.
+   Le fichier garde le meme nom : sans ce changement, le navigateur ET le
+   service worker resservent l'ancien film indefiniment, et on cherche
+   pendant une heure pourquoi la nouvelle video « n'est pas passee ».
+   Contrepartie assumee : tout le reste se retelecharge une fois. */
+/* ⚠️ v48 : 29 -> 30. `ouverture.mp4` a ete RECOUPEE une deuxieme fois le
+   meme jour, pour retirer le filigrane « Ai » et les coins arrondis cuits
+   dans l'image. Meme nom de fichier, donc meme piege : sans cette montee,
+   qui aurait deja pousse la premiere version garderait la video au
+   filigrane, sans aucun moyen de le comprendre. */
+var VER = "?v=30";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -7305,7 +7370,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v45 · le retour au voyage · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v49 · plein écran · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -7547,7 +7612,11 @@ function lancerFilm(){
      exactement le defaut documente en tete du SUIVI, reste vivant sur les
      deux seuls clips non parametres. */
   v.src="ouverture.mp4"+VER;
-  ajusterCadrage(v);
+  /* ⚠️ v46 : `ajusterCadrage(v)` RETIRE ICI. Il posait `object-fit` en style
+     en ligne, donc il gagnait contre le `cover` de la feuille de style et
+     pouvait remettre des bandes noires sur un clip paysage. Les arrivees et
+     les departs continuent de l'appeler, eux : leurs clips sont de formats
+     varies et le rognage y couterait de l'information. */
   S("ouvFilm").classList.add("joue");
   S("ouverture").classList.add("joue");
   var j=v.play();
@@ -7585,6 +7654,33 @@ function lancerFilm(){
   S("thFermer").addEventListener("click", fermerThemes);
 S("ouvPasser").addEventListener("click",terminerOuverture);
   S("ouvSuite").addEventListener("click",terminerOuverture);
+
+  /* ==================================================================
+     LE DOUBLE TAP POUR PASSER LE FILM (v46, demande de Blandine :
+     « ajoute le double tap si quelqu'un veut la passer »).
+
+     ⚠️ On ne se sert PAS de l'evenement `dblclick` : sur iOS il n'arrive
+     pas de facon fiable sur un calque sans texte, et il arrive apres le
+     zoom. On compte donc les taps a la main.
+     ⚠️ 350 ms : au-dela on ne lit plus un geste mais deux taps distincts.
+     ⚠️ Un SEUL tap ne fait rien, volontairement — le film dure 5 s, une
+     sortie sur un simple frolement serait pire que pas de sortie.
+     ⚠️ On ignore les taps qui tombent sur les trois boutons du calque :
+     ils ont deja leur propre action et « Passer » sort des le premier coup.
+     ⚠️ Le bouton « Passer » RESTE : le double tap s'ajoute, il ne le
+     remplace pas — personne ne devine un geste invisible.
+     ================================================================== */
+  (function(){
+    var film=S("ouvFilm"), dernier=0;
+    film.addEventListener("click", function(ev){
+      if(!film.classList.contains("joue")) return;
+      if(ev.target && ev.target.closest &&
+         ev.target.closest("#ouvPasser,#ouvSuite,#ouvRelance")) return;
+      var t=Date.now();
+      if(t-dernier < 350){ dernier=0; terminerOuverture(); return; }
+      dernier=t;
+    });
+  })();
   /* « Partir », sur le carnet, est maintenant la DERNIERE marche de la
      sequence : il ouvre le globe. Ce n'est plus lui qui lance le film. */
   S("ouvPartir").addEventListener("click",partirVersGlobe);
