@@ -543,7 +543,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    a zero : plus d'image, plus d'etoile, et le ✓ retombe sur le titre. */
 .thBand{display:block;position:relative;height:76px;overflow:hidden}
 .thVig{position:absolute;inset:0;background-size:cover;background-position:center 42%}
-.thVig.pas{filter:grayscale(1) brightness(.3)}
+/* ⚠️ v35 (choix B de Blandine, 9 aout) : la carte a gagner reste EN
+   COULEURS, juste voilee. L'ancien grayscale(1) brightness(.3) eteignait
+   toute la page des qu'on n'avait rien gagne — « on ne lit rien ». */
+.thVig.pas{filter:saturate(.55) brightness(.62)}
 .thFondu{position:absolute;left:0;right:0;bottom:0;height:34px;z-index:1;
  background:linear-gradient(to top,#0B1017,rgba(11,16,23,0))}
 .thTec{position:absolute;top:7px;left:8px;z-index:3;font-size:9px;font-weight:700;color:#EAF0F4;
@@ -554,10 +557,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  align-items:center;justify-content:center}
 .thBas{display:block;padding:6px 10px 10px}
 .thSur{display:block;font-size:8px;font-weight:800;letter-spacing:.17em;text-transform:uppercase;
- color:#66737C;margin:0 0 4px}
+ color:#8FA0AB;margin:0 0 4px}
 .thVille{display:block;font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#F4F7FA;
  line-height:1.16;letter-spacing:.02em;margin:0 0 4px}
-.thNat{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#66737C;font-weight:600}
+.thNat{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#8FA0AB;font-weight:600}
 .thNat .dr{font-size:10px;letter-spacing:0;margin-right:4px}
 /* l'entree depuis le carnet */
 /* ⚠️ v34 : les pastilles themes/collection deviennent DEUX BANDEAUX du meme
@@ -1604,7 +1607,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v34 · carnet</p>
+    <p id="ouvVersion">v35 · lumière</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -6832,7 +6835,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v34 · carnet · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v35 · lumière · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
