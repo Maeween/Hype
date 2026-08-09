@@ -10,7 +10,9 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 08/08/2026 (SESSION 111 · CHEMINS DIRECTS, CADRAGE MEMORY, TÉMOIN DE VERSION) — md5 `0bec15cde7b3e253f23ce90293d27c97`, 9 127 282 octets. **`hype-cours-baby.js` md5 `bdcd692f0ca13be26583937a44e51e43`, 1 817 899 octets — À POUSSER.** **L'app affiche désormais sa version : « reprise 1.2 · baby 111 » sous Quoi de neuf.** Aucun SQL.**
+**Version actuelle de l'index.html : 08/08/2026 (SESSION 112 · LA PROGRESSION DE LINGUAE ENTRE DANS LE COFFRE-FORT) — md5 `5b61adb5b51f7818f992e7b2be990726`, 9 132 715 octets. `hype-cours-baby.js` INCHANGÉ depuis la 111 (toujours à pousser si ce n'est pas fait). Aucune preview. **Aucun SQL : la table `progression` existe déjà.** Livré aussi, mais c'est un AUTRE fichier : `lingo.html` v30 · villes (deux corrections bloquantes, détail dans `SUIVI-LINGUAE.md`).**
+
+**Ancienne version (111) — 08/08/2026 (SESSION 111 · CHEMINS DIRECTS, CADRAGE MEMORY, TÉMOIN DE VERSION) — md5 `0bec15cde7b3e253f23ce90293d27c97`, 9 127 282 octets. **`hype-cours-baby.js` md5 `bdcd692f0ca13be26583937a44e51e43`, 1 817 899 octets — À POUSSER.** **L'app affiche désormais sa version : « reprise 1.2 · baby 111 » sous Quoi de neuf.** Aucun SQL.**
 
 **Ancienne version (110) — 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
 
@@ -122,6 +124,36 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 112 · LA PROGRESSION DE LINGUAE ENTRE DANS LE COFFRE-FORT
+
+**Une seule zone touchée dans `index.html`** : le système de synchronisation des progressions annexes (~ligne 20356). 3 hunks, 89 lignes ajoutées, **0 supprimée**. Rien d'autre.
+
+**Le problème.** La progression de Hype Linguae (`lingo.html`) vivait **uniquement dans le `localStorage`**, jamais dans Supabase. Réinstaller le raccourci ou effacer les données Safari l'effaçait sans retour. **C'est arrivé à Blandine le 8 août** : sa collection est passée de 31 cartes à 1, sur ma consigne d'effacer, et sans que je l'aie prévenue. Le `localStorage` étant par appareil, aucune autre cavalière n'a été touchée.
+
+**Ce qui a été fait.** `index.html` possédait déjà tout le mécanisme : `HYPE_EXTRAS_CLES` / `HYPE_EXTRAS_PREFIXES` ramassent des clés du `localStorage`, les écrivent dans la table `progression`, et les refusionnent à la connexion avec la règle « le plus avancé gagne » (déjà en service pour les quêtes, les paliers Baby, le Mémory du Poney). Aucune clé Linguae n'y figurait. Comme Linguae est sur le **même domaine**, donc le même `localStorage`, il a suffi de l'y faire entrer :
+
+- `HYPE_EXTRAS_LINGUAE` — 10 clés (`hype_lingua_cartes`, `_faits`, `_quiz`, `hype_lingo_maitrise`, `_sprint`, `_voyage`, `_langue`, `_lecture`, `_intro`, `_muet`).
+- Leur collecte, avec un plafond propre (200 000 caractères) **et un `console.warn` en cas de dépassement**. Le garde-fou générique des préfixes est à 4000 caractères et laisse tomber la valeur **en silence** — or `hype_lingo_maitrise` (31 villes × 6 langues) peut le dépasser.
+- Une **règle de fusion par clé**, écrite sur la forme réelle vérifiée dans `lingo.html`, pour qu'aucune progression ne recule.
+
+⚠️ **`lingo.html` N'EST PAS MODIFIÉ par ce travail.** Il continue d'écrire son `localStorage` ; c'est Hype qui met à l'abri. (Les deux corrections livrées dans `lingo.html` aujourd'hui sont un sujet séparé — voir `SUIVI-LINGUAE.md`.)
+
+⚠️ **Limite assumée** : la sauvegarde se déclenche quand **Hype** se synchronise, pas à l'instant du gain dans Linguae. Couvrir ce dernier cas suppose un client Supabase dans `lingo.html` (« voie B »), ouvert comme chantier séparé et **qui dépend de la porte du compte**.
+
+**Établi au passage, et important pour qui coderait les quêtes** : **Linguae n'a jamais rapporté un seul XP.** `donnerXP()` y est appelée à 4 endroits mais ne fait rien sans `window.HYPE_LINGO_HOST`, qui n'est **défini nulle part** — et ne pouvait pas l'être, puisque `index.html` ouvre Linguae par **navigation** (`window.location.href = "lingo.html"`, ~ligne 27421), donc dans un autre document. Rien d'acquis n'est perdu ; la voie A rend la suite possible **sans pont**.
+
+**Décisions de Blandine à respecter côté Hype :**
+- **XP affichée uniquement côté Hype**, une seule échelle (200 XP = 1 niveau). Linguae ne compte rien.
+- Les quêtes Linguae s'écriront comme les 10 quêtes découverte (`fait(ctx)` déclaratif + paiement unique par `hypeEnregistrerPalier`). ⚠️ Ce système reconnaît **un jalon atteint, pas une accumulation** : « 2 XP par mot » n'est pas faisable ainsi.
+- **Paliers une fois pour toutes** (1 carte, 5, 10), plus **une seule quête d'ouverture sans nommer la langue** (« une deuxième langue »).
+- 🔴 **Compte Hype obligatoire pour Linguae** → l'**écran de suppression de compte** (RGPD + App Store, déjà dans la liste À FAIRE) devient **bloquant**.
+
+✅ **Vérifications** : syntaxe des **144 blocs `<script>`** validée un par un ; **912 fonctions** top-level identiques avant/après ; `allerVersGalop` ×3 ; diff confiné aux 3 zones voulues, 0 ligne supprimée. Et les règles de fusion ont été **exécutées** sur 20 cas — dont celui du 8 août (base en avance, local effacé → rien ne recule) et les deux sens de l'ancien format plat de la maîtrise. Tous passent.
+
+⚠️ **Non vérifié en rendu** : pas de test Playwright sur cette livraison. Le code touché ne s'exécute qu'à la connexion et à la synchronisation, donc invisible d'un rendu à froid ; à confirmer en usage réel (gagner une carte dans Linguae, ouvrir Hype, vider les données, se reconnecter).
 
 ---
 

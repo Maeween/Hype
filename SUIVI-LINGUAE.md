@@ -87,6 +87,32 @@ Et il ne pouvait pas l'être : `index.html` ouvre Linguae par **navigation** (`w
 - Le titre « Comment ça marche ? » ne convient pas pour l'index : Blandine veut qu'on trouve quelle ville porte quel thème, pour choisir quand on a besoin d'un chapitre précis. Pistes proposées : « Que veux-tu apprendre ? », « Les thèmes », « Trouver un thème », « Par thème ». **Non tranché.**
 - **Non tranché aussi** : l'index reste-t-il replié ? (Un outil auquel on revient gagne à être ouvert ; l'explication doit rester repliée.)
 
+## 🎨 MAQUETTES DE FIN DE SESSION (rien intégré dans l'app)
+
+Quatre fichiers autonomes livrés, plus deux images. **Aucune ligne de `lingo.html` touchée par ce volet.**
+
+- `maquette-index-themes.html` — l'index des thèmes. Trois vues : **Mosaïque** (deux thèmes côte à côte, miniatures — retenue par Blandine, ouverture par défaut), Compacte, Fiche.
+- `maquette-tete.html` — l'en-tête du carnet : image d'accueil, **défilé de drapeaux en couleurs** (34/42/52 px à comparer), accroche centrée.
+- `hero-monde.webp` (43 Ko, 1100 px) — cheval au-dessus du globe au ruban de drapeaux, pour l'en-tête du carnet. Retenue parmi trois propositions : fond déjà noir, cheval en héros, grandes zones sombres pour poser le titre.
+- `hero-themes.webp` (55 Ko, 1100 px) — cheval au-dessus du livre ouvert, pour la page des thèmes.
+
+**Décisions de Blandine sur ces maquettes :**
+- Le bloc actuel est **scindé en deux** : l'explication repliée d'un côté, l'**index thème → ville** de l'autre, avec son propre titre. Motif : « c'est important de savoir quel thème est dans quelle ville, ça peut favoriser le choix quand on a besoin de faire un chapitre en particulier ».
+- **Défilé de drapeaux** à la place de la liste de pays en petit. **En couleurs** — j'avais proposé de les griser sur un malentendu de dictée (« plus gros » entendu « plus gris »), Blandine a corrigé : aucune raison de griser, ce sont les seules taches vives de l'écran. Sans nom de pays sous les drapeaux (le nom reste annoncé par VoiceOver).
+- **Accroche et marqueur de version centrés** : ils étaient sur deux alignements différents dans le même bloc.
+- **De l'air** avant l'entrée « Découvrir les thèmes ».
+- Titre de l'index : **non tranché** (« Que veux-tu apprendre ? », « Les thèmes », « Trouver un thème », « Par thème »). Numéro d'étape et vignette éteinte/allumée : **non tranchés**.
+
+🔴 **DEUX DÉFAUTS DE DONNÉES TROUVÉS EN RECONSTRUISANT LES LISTES** (et non en les recopiant) :
+
+1. **Le guide n'affiche que 10 thèmes sur 22.** `ETAPE_SRC` en contient 22 ; douze sont invisibles — `ecurie`, `pansage`, `dressage`, `obstacle`, `poney`, `endurance`, `tradition`, `western`, `polo`, `haras`, `horsemanship`, `froid`. Donc Windsor, Lambourn, Saumur, Hickstead, Lamotte, Dubaï, Tokyo, Tamworth, Buenos Aires, Lexington, Santa Ynez, Spruce et Vejer n'apparaissent nulle part dans l'index. C'est précisément ce que Blandine voulait réparer.
+2. **La ligne des nations du carnet est fausse** (`ouvNations`, chaîne écrite à la main, ~ligne 1381) : elle liste **10 nations sur 16**. Manquent les Émirats, le Japon, l'Australie, l'Argentine, les États-Unis et le Canada. À corriger en six langues, et **à générer depuis `ETAPES`** pour qu'elle ne redérive plus — c'est ce que fait la maquette.
+3. **`aachen` n'a aucune entrée dans `ETAPE_SRC`** : Aix-la-Chapelle est absente de l'index quoi qu'on affiche. À corriger côté données.
+
+⚠️ **Les libellés des 12 thèmes manquants sont de moi, provisoires** (« visiter une écurie », « monter par grand froid », « faire du horsemanship »…). À relire par Blandine **avant** traduction en six langues.
+
+⚠️ **Point de perf à trancher avant d'intégrer une image d'en-tête** : le carnet est justement l'écran qui lague. 43 Ko c'est peu, mais rien ne sera affirmé sans mesure sur l'appareil (point 3 de la file d'attente).
+
 ## ⏳ CE QUI RESTE, dans l'ordre
 
 1. **Faire tester la v30** — changement de langue de lecture sans écran noir, et villes du guide qui mènent à la ville. Rien empiler avant.
