@@ -21276,13 +21276,13 @@ function hypeLibererPuitsTactiles() {
         for (var i = 0; i < noeuds.length; i++) {
             var el = noeuds[i];
             if (el.__hypePuits) continue;
-            var deborde = (el.scrollWidth > el.clientWidth + 4) || (el.scrollHeight > el.clientHeight + 4);
+            /* 09/08 soir : UNIQUEMENT le debordement HORIZONTAL. Poser overflow:clip sur une boite
+               qui deborde verticalement rendrait son contenu definitivement inatteignable — c est un
+               defaut de mise en page a corriger a la source (voir hu-root), pas a verrouiller ici. */
+            var deborde = el.scrollWidth > el.clientWidth + 4;
             if (!deborde) continue;
             var g = getComputedStyle(el);
-            var cache = (g.overflowX === "hidden" && g.overflowY === "hidden") ||
-                (g.overflowX === "hidden" && el.scrollWidth > el.clientWidth + 4) ||
-                (g.overflowY === "hidden" && el.scrollHeight > el.clientHeight + 4);
-            if (!cache) continue;                       /* rails volontaires (auto/scroll) : intacts */
+            if (g.overflowX !== "hidden") continue;     /* rails volontaires (auto/scroll) : intacts */
             /* 09/08 soir — CORRECTION DE MON PROPRE CORRECTIF : touch-action:pan-y ne suffit
                PAS. Il autorise le geste vertical SUR la boite, mais la boite reste un conteneur
                de defilement : Chrome s y accroche quand meme et n en fait rien. Constate en
@@ -23203,7 +23203,7 @@ function EcranHypeUniverse(props){
     h("path", { d: "M7 20v-6a5 5 0 0 1 10 0v6" }), h("path", { d: "M5.2 20h3.2M15.6 20h3.2" }));
   var userIc = h("svg", { viewBox: "0 0 24 24", width: 19, height: 19, fill: "none", stroke: TQ, strokeWidth: 1.8, strokeLinecap: "round", style: { flex: "0 0 auto" } },
     h("circle", { cx: 12, cy: 8, r: 3.6 }), h("path", { d: "M5 19.6c1.6-3.6 4.5-5.4 7-5.4s5.4 1.8 7 5.4" }));
-  return h("div", { className: "hu-root" + (fFoc ? " hu-slow" : "") + (lance ? " hu-launch" : "") + (retour ? " hu-retour" : ""), onClick: (retour && !lance) ? function(){ setLance(true); playCristal(); setTimeout(function(){ onSuivant(); }, 3000); } : undefined, style: { position: "relative", height: "100%", minHeight: "100vh", overflow: "hidden", background: "#04070d" } },
+  return h("div", { className: "hu-root" + (fFoc ? " hu-slow" : "") + (lance ? " hu-launch" : "") + (retour ? " hu-retour" : ""), onClick: (retour && !lance) ? function(){ setLance(true); playCristal(); setTimeout(function(){ onSuivant(); }, 3000); } : undefined, style: { position: "relative", /* 09/08 : height:"100%" RETIRE. Il figeait la boite a la hauteur exacte de l ecran (759px) alors que son contenu en fait 856 : 97px sequestres, invisibles et inatteignables, et surtout le DOCUMENT n avait plus rien a faire defiler (scrollHeight = innerHeight = 759). Diagnostic pose au panneau : 6 touchmove recus, doigt 125px, page deplacee 0px, aucune annulation JS. minHeight:100vh garde le plein ecran ; la boite grandit quand le contenu depasse et c est la page qui defile. overflow:hidden conserve : il decoupe le decor pose en inset:-6%. */ minHeight: "100vh", overflow: "hidden", background: "#04070d" } },
     h("div", { style: { position: "absolute", inset: "-6%", backgroundImage: "url(" + IMG_HYPE_UNIVERSE_BG + ")", backgroundSize: "cover", backgroundPosition: "center 30%", filter: "blur(24px) brightness(.72)", transform: "scale(1.12)" } }),
     h("div", { className: "hu-bg", style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_HYPE_UNIVERSE_BG + ")", backgroundSize: "auto 62%", backgroundPosition: "center 50%", backgroundRepeat: "no-repeat", backgroundColor: "#04070d", WebkitMaskImage: "linear-gradient(180deg, transparent 15%, #000 30%, #000 75%, transparent 89%)", maskImage: "linear-gradient(180deg, transparent 15%, #000 30%, #000 75%, transparent 89%)" } }),
     h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,7,13,.60) 0%, rgba(4,7,13,.10) 22%, rgba(4,7,13,0) 46%, rgba(4,7,13,.28) 70%, rgba(4,7,13,.92) 100%)" } }),
@@ -23319,7 +23319,7 @@ function EcranPersonnalisation(props){
   ];
   var galopActuel = local.galop || 4;
   var objActuel = local.objectif || "progresser";
-  return h("div", { ref: rootRef, style: { position: "relative", height: "100%", minHeight: "100vh", overflow: "hidden", background: "#04070d" } },
+  return h("div", { ref: rootRef, style: { position: "relative", /* 09/08 : height:"100%" RETIRE. Il figeait la boite a la hauteur exacte de l ecran (759px) alors que son contenu en fait 856 : 97px sequestres, invisibles et inatteignables, et surtout le DOCUMENT n avait plus rien a faire defiler (scrollHeight = innerHeight = 759). Diagnostic pose au panneau : 6 touchmove recus, doigt 125px, page deplacee 0px, aucune annulation JS. minHeight:100vh garde le plein ecran ; la boite grandit quand le contenu depasse et c est la page qui defile. overflow:hidden conserve : il decoupe le decor pose en inset:-6%. */ minHeight: "100vh", overflow: "hidden", background: "#04070d" } },
     h("style", null, CSS),
     h("div", { style: { position: "absolute", inset: 0, animation: "souffle 7.5s ease-in-out infinite", transformOrigin: "20% 62%", willChange: "transform", filter: charge ? "brightness(1.15) saturate(1.06)" : "none", transition: "filter .6s ease" } },
       h("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_PERSONNALISATION_BG + ")", backgroundSize: "cover", backgroundPosition: "0% center" } }),
