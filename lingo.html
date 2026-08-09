@@ -465,16 +465,25 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    blanc sur du noir — invisible en plein jour. Blanc franc, corps 11. */
 #ouvVersion{font-size:11px;letter-spacing:.16em;text-transform:uppercase;
  color:rgba(244,247,250,.92);text-align:center;margin:14px 0 0}
+/* ⚠️ ALIGNEE SUR LES DRAPEAUX le 9 aout 2026 (Blandine : « ils sont encore
+   colles alors que leurs drapeaux se sont eloignes »). Meme largeur bornee et
+   meme space-between que #ouvPaire, donc chaque mot tombe au-dessus de son
+   drapeau. Les deux <span> sont ecrits par dessinerPaire(). */
 #ouvLangPhrase{font-size:12px;letter-spacing:.14em;text-transform:uppercase;
- color:#C3D0DA;margin:14px 0 8px}
+ color:#C3D0DA;margin:14px auto 9px;display:flex;justify-content:space-between;
+ align-items:baseline;gap:12px;max-width:274px;padding:0 8px}
+#ouvLangPhrase span{white-space:nowrap}
 /* la paire de langues : je lis -> j'apprends (v22) */
 /* ⚠️ ECARTES le 8 aout 2026, demande de Blandine : « on pourrait pousser
    plus a gauche et plus a droite la langue dans laquelle on lit et celle
    qu'on apprend ». `space-between` dans une largeur bornee : les deux
    drapeaux vont aux bords, la fleche reste au centre. La largeur est bornee
    (et non 100 %) pour qu'ils ne collent pas aux marges de l'ecran. */
+/* 300 -> 274 le 9 aout 2026 : Blandine trouvait les deux drapeaux trop
+   ecartes. Meme valeur que #ouvLangPhrase pour que les mots restent pile
+   au-dessus d'eux — si l'une des deux change, changer les deux. */
 #ouvPaire{display:flex;align-items:center;justify-content:space-between;
- gap:9px;margin:0 auto 18px;max-width:300px}
+ gap:9px;margin:0 auto 18px;max-width:274px}
 #ouvPaire button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);
  border-radius:14px;padding:7px 12px 6px;cursor:pointer;display:flex;flex-direction:column;
  align-items:center;gap:3px;min-width:76px}
@@ -1386,7 +1395,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          langue était ouverte, personne ne s'en apercevait. Depuis que les
          six sont ouvertes, il n'y avait plus AUCUN chemin pour en changer.
          La ligne qui affiche déjà la langue est l'endroit évident. -->
-    <p id="ouvLangPhrase" data-t="ouvPaireT">Je lis en · j'apprends</p>
+    <p id="ouvLangPhrase"><span>Je lis en</span><span>j'apprends</span></p>
     <!-- ⚠️ LA PAIRE DE LANGUES (8 aout 2026). Demande de Blandine :
          « un petit drapeau japonais, une fleche, un petit drapeau anglais,
          comme ca on sait toujours ou on en est ». Les deux drapeaux sont
@@ -1407,7 +1416,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v30 · villes</p>
+    <p id="ouvVersion">v31 · paire</p>
 
     <p class="intro" data-th="ouvIntro"><b>Pas les capitales politiques — les capitales
     du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
@@ -6425,10 +6434,30 @@ function dessinerPaire(){
          n=g.querySelector("i");   if(n) n.textContent = T("paireLis"); }
   if(d){ n=d.querySelector(".dp"); if(n) n.textContent = LG_DRAPEAU[app] || app;
          n=d.querySelector("i");   if(n) n.textContent = T("paireApprends"); }
+  /* les deux moities de la phrase, alignees sur les deux drapeaux. On scinde
+     la chaine deja traduite sur son point median : rien de nouveau a traduire,
+     et une septieme langue suivrait toute seule. Repli si le point median
+     manque dans une traduction : on remet la phrase entiere d'un seul bloc. */
+  var ph = S("ouvLangPhrase");
+  if(ph){
+    /* ⚠️ DEUX points medians a gerer : le japonais utilise le point median
+       pleine largeur \u30fb (katakana middle dot), pas \u00b7. Verifie sur les
+       six traductions : sans ce second caractere, la scission echouait
+       silencieusement en japonais et la phrase restait d'un bloc. */
+    var mor = String(T("ouvPaireT") || "").split(/[\u00b7\u30fb]/);
+    videEl(ph);
+    if(mor.length < 2){
+      ph.appendChild(document.createTextNode(mor[0] || ""));
+    } else {
+      var sg = document.createElement("span"); sg.textContent = mor[0].trim();
+      var sd = document.createElement("span"); sd.textContent = mor[1].trim();
+      ph.appendChild(sg); ph.appendChild(sd);
+    }
+  }
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v30 · villes · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v31 · paire · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
