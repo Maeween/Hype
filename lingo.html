@@ -1816,7 +1816,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v49 · plein écran</p>
+    <p id="ouvVersion">v50 · plein écran</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -2050,7 +2050,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    dans l'image. Meme nom de fichier, donc meme piege : sans cette montee,
    qui aurait deja pousse la premiere version garderait la video au
    filigrane, sans aucun moyen de le comprendre. */
-var VER = "?v=30";
+/* ⚠️ v50 : 30 -> 31. Troisieme `ouverture.mp4` de la journee, reexportee en
+   9:16 par Blandine puis recoupee ici. Meme nom de fichier a chaque fois,
+   donc meme piege a chaque fois : sans cette montee, qui a deja pousse la
+   version precedente garde l'ancienne video. */
+var VER = "?v=31";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -7370,7 +7374,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v49 · plein écran · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v50 · plein écran · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
