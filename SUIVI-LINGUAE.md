@@ -105,6 +105,26 @@ Aucune amélioration d'architecture réalisée sur cette session. Reste à moder
 
 ---
 
+
+# SESSION 174 · LINGUAE 8 (suite) — 09/08 · v44 « la porte du compte »
+
+**Base : le v43 « les thèmes » de Blandine** (celui de la session 173). Décisions actées ce jour : **A+B**, **B dure**, **Collection ouverte à tous** (les 28 emplacements vides sont la meilleure publicité Premium), message de B « clair mais sympa ».
+
+## ✅ A — LA FEUILLE SOUPLE SUR « PARTIR »
+- Écran `#porteA` (même boîte que le paywall, accent **turquoise**) : « Ton passeport de voyage », CTA turquoise « Créer mon compte » → `./index.html#connexion` (porte `CIBLE_DIRECTE` existante), « Plus tard ».
+- Proposée **une seule fois par appareil** (`hype_lingua_passeport_vu`), jamais si un compte existe. « Plus tard » retient le refus et laisse partir vers le globe (`partirVersGlobe` reprend).
+
+## ✅ B — LA PORTE DURE AU GAIN D'UNE CARTE
+- Dans `finLecon`, au moment exact où une carte **vient d'être gagnée** (`carteNeuve`) sans compte : écran `#porteB` (accent **doré**) par-dessus la récompense, avec la carte postale de la ville inclinée (repli : masquée si le fichier manque), titre « Un compte pour la garder ».
+- Texte de **Blandine** (retenu après 10 propositions — les miennes étaient « longues et pas très poétiques ») : « **Premier souvenir de voyage gagné ! Conserve-le et continue ta route avec Hype Premium…** ». Titre choisi par Blandine : « **Bien joué, voyageur** ». Le compte est porté par le CTA « Créer mon compte ».
+- **Pas de « continuer sans compte »** : seul CTA « Créer mon compte ». La porte se repose à chaque nouvelle carte tant que le compte n'existe pas. Le verrou réel des villes suivantes reste `villeAutorisee()` (hype_premium n'existe pas sans compte).
+
+## ⚙️ MOTEUR
+- `estConnecte()` lit le jeton Supabase **partagé sur le domaine** : `sb-ldpjebgtskzdokrublfg-auth-token` en localStorage, repli sessionStorage (aligné sur `stockageHype` de l'index), tolérant aux trois formes de jeton et au JSON corrompu.
+- 4 clés i18n 6 langues : `paTitre`, `paTxt`, `pbTitre`, `pbTxt` + `cptCta` partagé ; « Plus tard » réutilise `pwTard`.
+- **Matrice exécutée : 11/11 OK** (A affichée/retenue/plus jamais, connecté local + session, jeton corrompu, B ouverte, deux CTA → `#connexion`). `node --check` OK.
+- Limite assumée : le retour navigateur pendant B ramène au carnet sans fermer la porte proprement — à lisser dans le chantier navigation. Vérifié : la **suppression de compte existe déjà** dans l'index (EcranSupprimerCompte, 60 j de grâce, 6 langues, fonction Netlify supprimer-compte.js) — rien de bloquant pour les stores. Reste à faire ensuite : retour vers Linguae après création du compte, quêtes, voie B de sauvegarde.
+
 # 🛠️ SESSION 170 · LINGUAE 8 (09/08) — LA PAGE DU TOUR DU MONDE, LA LUMIÈRE, ET LE VERROU PREMIUM
 
 **Livré : `lingo.html` v38 · navigation (md5 `6f5290b24d9037ac7651a5e87e6825a0`, 475438 octets) + `tour-monde.webp` (44 748 octets, à pousser À CÔTÉ de lingo.html) + `index.html` session 113 (la clé `hype_premium`, voir SUIVI.md — À POUSSER EN PREMIER).** Cinq versions dans la journée (v33→v37), toutes cumulées dans le fichier livré.

@@ -1347,6 +1347,28 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #pwTard{display:block;margin:14px auto 0;border:0;background:none;cursor:pointer;
  font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gris);
  border-bottom:1px solid rgba(255,255,255,.2);padding:2px 1px}
+/* la porte du compte (v44, decisions de Blandine du 9 aout) : A turquoise
+   et SOUPLE sur « Partir » (proposee une fois, « Plus tard » laisse passer),
+   B doree et DURE au gain d'une carte — pas de « plus tard » sur B, le
+   message invite (« si tu veux continuer le voyage... ») au lieu de menacer. */
+#porteA,#porteB{position:fixed;inset:0;z-index:62;display:none;align-items:center;justify-content:center;
+ background:rgba(3,5,8,.8);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding:26px}
+#porteA.on,#porteB.on{display:flex}
+#porteA .pwBoite{border-color:rgba(32,217,245,.25)}
+#porteA .pwBoite::before{background:linear-gradient(var(--turquoise),rgba(32,217,245,0))}
+#porteA .pwKick{color:var(--turquoise)}
+#paCta{display:block;width:100%;padding:14px;border-radius:99px;border:0;cursor:pointer;
+ background:linear-gradient(120deg,#20D9F5,#5FE9F0);color:#04141A;font-family:'Montserrat',sans-serif;
+ font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+#paTard{display:block;margin:14px auto 0;border:0;background:none;cursor:pointer;
+ font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gris);
+ border-bottom:1px solid rgba(255,255,255,.2);padding:2px 1px}
+#pbImg{display:block;width:148px;aspect-ratio:3/4;object-fit:cover;margin:2px auto 18px;
+ border-radius:12px;border:1px solid rgba(232,201,128,.35);box-shadow:0 14px 34px rgba(0,0,0,.55);
+ transform:rotate(-2deg)}
+#pbCta{display:block;width:100%;padding:14px;border-radius:99px;border:0;cursor:pointer;
+ background:linear-gradient(120deg,#E8C980,#C8A96A);color:#100C04;font-family:'Montserrat',sans-serif;
+ font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 #sprint{position:fixed;inset:0;z-index:41;background:#04060A;display:none;overflow-y:auto}
 #sprint.on{display:block}
 #spFond{position:absolute;inset:0;overflow:hidden;pointer-events:none}
@@ -1739,7 +1761,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v43 · les thèmes</p>
+    <p id="ouvVersion">v44 · la porte du compte</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -1797,6 +1819,23 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <p class="pwTxt" data-t="pwTxt">Les villes suivantes font partie du voyage Premium. L'abonnement Hype Premium débloque toutes les leçons de Linguae — et toute l'application Hype avec.</p>
     <button id="pwAller" type="button" data-t="pwCta">Découvrir l'abonnement</button>
     <button id="pwTard" type="button" data-t="pwTard">Plus tard</button>
+  </div>
+</div>
+<div id="porteA">
+  <div class="pwBoite">
+    <p class="pwKick">Hype Linguae</p>
+    <h2 data-t="paTitre">Ton passeport de voyage</h2>
+    <p class="pwTxt" data-t="paTxt">Crée ton compte Hype avant de partir : ta progression, tes cartes postales et tes souvenirs te suivront partout, sur tous tes appareils.</p>
+    <button id="paCta" type="button" data-t="cptCta">Créer mon compte</button>
+    <button id="paTard" type="button" data-t="pwTard">Plus tard</button>
+  </div>
+</div>
+<div id="porteB">
+  <div class="pwBoite">
+    <img id="pbImg" alt="">
+    <h2 data-t="pbTitre">Bien joué, voyageur</h2>
+    <p class="pwTxt" data-t="pbTxt">Premier souvenir de voyage gagné ! Conserve-le et continue ta route avec Hype Premium…</p>
+    <button id="pbCta" type="button" data-t="cptCta">Créer mon compte</button>
   </div>
 </div>
 <div id="sprint">
@@ -5212,7 +5251,26 @@ var UI = {
  pwCta:{fr:"Découvrir l'abonnement", en:"See the subscription", es:"Ver la suscripción",
    it:"Scopri l'abbonamento", de:"Zum Abo", ja:"プランを見る"},
  pwTard:{fr:"Plus tard", en:"Later", es:"Más tarde",
-   it:"Più tardi", de:"Später", ja:"あとで"}
+   it:"Più tardi", de:"Später", ja:"あとで"},
+ /* la porte du compte (v44) */
+ paTitre:{fr:"Ton passeport de voyage", en:"Your travel passport", es:"Tu pasaporte de viaje",
+   it:"Il tuo passaporto di viaggio", de:"Dein Reisepass", ja:"きみの旅のパスポート"},
+ paTxt:{fr:"Crée ton compte Hype avant de partir : ta progression, tes cartes postales et tes souvenirs te suivront partout, sur tous tes appareils.",
+   en:"Create your Hype account before you set off: your progress, postcards and keepsakes will follow you everywhere, on all your devices.",
+   es:"Crea tu cuenta Hype antes de partir: tu progreso, tus postales y tus recuerdos te seguirán a todas partes, en todos tus dispositivos.",
+   it:"Crea il tuo account Hype prima di partire: i tuoi progressi, le cartoline e i ricordi ti seguiranno ovunque, su tutti i tuoi dispositivi.",
+   de:"Erstelle dein Hype-Konto, bevor du aufbrichst: dein Fortschritt, deine Postkarten und Erinnerungen begleiten dich überall, auf all deinen Geräten.",
+   ja:"出発前に Hype アカウントを作ろう。進み具合も、絵はがきも、思い出も、どの端末でもずっときみのもの。"},
+ pbTitre:{fr:"Bien joué, voyageur", en:"Well done, traveller", es:"Bien hecho, viajero",
+   it:"Ben fatto, viaggiatore", de:"Gut gemacht, Reisender", ja:"おみごと、旅人さん"},
+ pbTxt:{fr:"Premier souvenir de voyage gagné ! Conserve-le et continue ta route avec Hype Premium…",
+   en:"Your first travel keepsake! Keep it safe and carry on your journey with Hype Premium…",
+   es:"¡Primer recuerdo de viaje ganado! Consérvalo y sigue tu ruta con Hype Premium…",
+   it:"Primo ricordo di viaggio conquistato! Conservalo e continua la tua strada con Hype Premium…",
+   de:"Dein erstes Reiseandenken! Bewahre es gut auf und setze deine Reise mit Hype Premium fort…",
+   ja:"旅のはじめての思い出をゲット！大切に残して、Hype プレミアムで旅を続けよう…"},
+ cptCta:{fr:"Créer mon compte", en:"Create my account", es:"Crear mi cuenta",
+   it:"Crea il mio account", de:"Konto erstellen", ja:"アカウント作成"}
 };
 /* Le nom de la langue enseignée, dit dans la langue de l'interface. */
 var LANGUE_NOM = {
@@ -5596,6 +5654,56 @@ S("pwAller").addEventListener("click", function(){
      dans CIBLE_DIRECTE (cle premium). */
   location.href="./index.html#premium";
 });
+/* ==================================================================
+   LA PORTE DU COMPTE (v44, decisions de Blandine du 9 aout).
+   La session Supabase est PARTAGEE avec index.html (meme domaine) :
+   on lit le jeton la ou le client de l'index le pose (localStorage,
+   repli sessionStorage — voir stockageHype cote index).
+   ================================================================== */
+function estConnecte(){
+  var b=null;
+  try{ b=localStorage.getItem("sb-ldpjebgtskzdokrublfg-auth-token"); }catch(e1){}
+  if(!b){ try{ b=sessionStorage.getItem("sb-ldpjebgtskzdokrublfg-auth-token"); }catch(e2){} }
+  if(!b) return false;
+  try{
+    var j=JSON.parse(b);
+    return !!(j && (j.access_token || (j.currentSession && j.currentSession.access_token)
+                    || (j.session && j.session.access_token)));
+  }catch(e){ return false; }
+}
+function versConnexion(){
+  /* la porte connexion de l'index existe deja dans CIBLE_DIRECTE */
+  location.href="./index.html#connexion";
+}
+/* A — SOUPLE, sur « Partir » : proposee UNE seule fois par appareil
+   (hype_lingua_passeport_vu), jamais si un compte existe deja.
+   « Plus tard » retient le refus et laisse partir. */
+function porteAAffichable(){
+  if(estConnecte()) return false;
+  try{ if(localStorage.getItem("hype_lingua_passeport_vu")==="1") return false; }catch(e){}
+  return true;
+}
+S("paCta").addEventListener("click", versConnexion);
+S("paTard").addEventListener("click", function(){
+  try{ localStorage.setItem("hype_lingua_passeport_vu","1"); }catch(e){}
+  S("porteA").classList.remove("on");
+  partirVersGlobe();
+});
+/* B — DURE, au gain d'une carte sans compte : pas de « continuer sans
+   compte » (decision du 9 aout). Le seul chemin est la creation du
+   compte ; la porte se reposera a chaque nouvelle carte tant qu'il
+   n'existe pas. Le verrou des villes suivantes, lui, est deja assure
+   par villeAutorisee() : hype_premium ne peut exister sans compte. */
+function ouvrirPorteB(refVille, nomVille){
+  var img=S("pbImg");
+  img.alt=nomVille||refVille;
+  img.style.display="";
+  img.onerror=function(){ img.style.display="none"; };
+  img.src="carte-"+refVille+".webp"+VER;
+  S("porteB").classList.add("on");
+}
+S("pbCta").addEventListener("click", versConnexion);
+
 /* la creation d'un duel est Premium ; un duel RECU (#duel=...) reste
    libre — c'est l'invitation, decision de Blandine. */
 function creerDuel(){
@@ -6490,6 +6598,10 @@ function finLecon(){
     if(eV_) bloc.appendChild(el("p",{class:"lcGainV", text:eV(eV_)},
       el("i",{text:T("taCarteNo",{n:noV})})));
     S("lcCorps").appendChild(bloc);
+    /* v44 : la carte vient d'etre gagnee SANS compte — la porte dure se
+       pose par-dessus la recompense, au moment ou il y a quelque chose
+       a perdre. Pas de « plus tard » : B est dure (decision du 9 aout). */
+    if(!estConnecte()) ouvrirPorteB(LC.ville, eV_?eV(eV_):LC.ville);
   }
 
   /* ---- les mots de la leçon, avec leur état ---- */
@@ -7190,7 +7302,7 @@ function dessinerPaire(){
   /* le marqueur de version dit la paire : Blandine deploie depuis un
      telephone et doit pouvoir lire d'un coup d'oeil quelle langue
      l'interface a REELLEMENT prise. */
-  if(S("ouvVersion")) S("ouvVersion").textContent = "v43 · les thèmes · "+lec+" → "+app;
+  if(S("ouvVersion")) S("ouvVersion").textContent = "v44 · la porte du compte · "+lec+" → "+app;
 }
 
 function rangeeLecture(){
@@ -7514,6 +7626,8 @@ function partirVersVille(i){
    mais rien n'oblige a la choisir : « ca fait 8 fois que je fais La
    Baule, je vais vomir a force. » */
 function partirVersGlobe(){
+  /* v44 : la feuille du passeport se propose ici, une fois, avant le globe */
+  if(porteAAffichable()){ S("porteA").classList.add("on"); return; }
   PROCHAINE_RECOMMANDEE = ETAPES[0] ? ETAPES[0].ref : null;
   /* Le globe s'ouvre D'ABORD, par-dessus le carnet. Le carnet ne se
      retire qu'ensuite, quand le globe est completement opaque (sa
