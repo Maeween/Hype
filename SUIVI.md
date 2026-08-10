@@ -68,6 +68,44 @@ Linguae doit devenir une **app iOS indépendante rapidement** ; Hype en a pour d
 
 ---
 
+## SESSION 121 · 10/08 · LA SUPPRESSION DE COMPTE N'AVAIT JAMAIS FONCTIONNÉ
+
+**Livré : `supprimer-compte.js` (RÉÉCRIT) · `purge-planifiee.js` (adapté).** Les deux dans `netlify/functions/`. Aucun SQL. `index.html` et `lingo.html` non concernés.
+
+### ▸ LA PANNE, ET DEPUIS LE DÉBUT
+En lançant la purge à la main depuis Netlify (bouton « Run now »), le journal a montré :
+`Runtime.ImportModuleError: Cannot find module '@supabase/supabase-js'` — pile : `supprimer-compte.js` ← `purge-planifiee.js`.
+**Cause : il n'y a AUCUN `package.json` dans le dépôt Hype.** La bibliothèque Supabase n'est installée nulle part. `supprimer-compte.js` la chargeait par `require` : la fonction plantait donc **au démarrage, avant d'exécuter une seule ligne**, depuis sa création deux semaines plus tôt.
+**CONSÉQUENCE RÉELLE, identifiée par Blandine** : « ah c'est pour ça Liam n'arrivait pas à supprimer son compte ». Son compte n'a été **ni désactivé ni daté**, et l'app affichait une erreur générique sans que personne comprenne. Toute demande de suppression échouait en silence.
+**L'indice était sous nos yeux** : `stripe-webhook.js` annonce en en-tête « Aucune dépendance npm » et vérifie la signature Stripe à la main. Celui qui l'a écrit savait ; l'auteur de `supprimer-compte.js` ne le savait pas.
+**Ce n'est pas la session 120 qui a cassé quelque chose** : c'est son test qui a révélé une panne ancienne et muette. Sans le « Run now », elle n'aurait été découverte qu'à la plainte d'une cavalière.
+
+### ▸ LA RÉPARATION (choix de Blandine : « va s'y » sur l'option sans dépendance)
+Réécriture complète **sans aucun paquet externe** : tout passe par `fetch` vers l'API REST de Supabase, exactement le modèle de `stripe-webhook.js` qui marche depuis toujours. Lecture, suppression de lignes, mise à jour du profil, listage et suppression des photos, suppression du compte de connexion, identification par jeton de session — tout est faisable ainsi.
+- **⛔ RÈGLE POSÉE EN TÊTE DES DEUX FICHIERS : ne jamais réintroduire un `require` de paquet externe.** Tant qu'il n'y a pas de `package.json`, tout `require` non natif fait planter la fonction au démarrage, **et l'échec est invisible pour la cavalière**.
+- `purge-planifiee.js` adapté : il reçoit `config()` au lieu d'un client Supabase. Un seul code de purge, deux appelants, comme avant.
+- L'ancienne version est conservée hors livraison sous `supprimer-compte.js.ancien` pour comparaison.
+
+### ▸ VÉRIFICATIONS — 27 CONTRÔLES, 27/27
+`node --check` sur les deux fichiers : OK. Aucun `require` externe (vérifié par recherche). **Les fichiers livrés ont été CHARGÉS et exécutés** avec un faux Supabase intercepté au niveau de `fetch` — ce chargement échouerait si une dépendance subsistait.
+**Le cas de Liam rejoué** : demande avec session valide → 200, différée 60 jours, date à J+60 exactement, profil mis à jour, motif enregistré anonymement, **et aucune suppression à cette étape**. Sans jeton → 401 · jeton invalide → 401 · GET → 405 · OPTIONS → 204 · purge sans la bonne clé → 401 · purge à vide → 0 compte et **aucune suppression** · purge d'un compte → **26 tables balayées**, photos supprimées, **profil vidé AVANT le compte auth**, **compte auth supprimé EN DERNIER**, aucun échec · une table qui casse → la purge **continue** et l'échec **remonte dans les détails** · configuration manquante → 500 explicite côté HTTP et 200 sans casse côté planifié · purge planifiée sur deux comptes → 2 purgés.
+
+### ▸ À L'ÉCRAN
+- **+** la suppression de compte **fonctionne enfin** : le compte est désactivé et daté à J+60, l'écran de confirmation affiche la date réelle
+- **−** l'erreur générique qui s'affichait à chaque tentative disparaît
+- aucun autre écran, bouton ou parcours modifié
+
+### ▸ À FAIRE PAR BLANDINE APRÈS LE PUSH
+Rejouer « Run now » sur `purge-planifiee` dans Netlify → Functions. Attendu dans le journal : **« aucun compte echu, rien a faire »** (aucun compte n'a 60 jours de retard). Si ce message apparaît, la chaîne complète est prouvée. **Et prévenir Liam** qu'il peut refaire sa demande.
+
+### ▸ RESTE À TRAITER, SIGNALÉ
+`hype_filleuls` ne porte pas de `user_id` mais `filleul_id` et `parrain_id` : elle échappe à la boucle. Une cavalière qui part doit être retirée des **deux** côtés, comme filleule ET comme marraine. À écrire une fois le parrainage décidé.
+
+### ▸ Préparation Flutter
+Le domaine « compte » gagne une frontière nette : `supprimer-compte.js` n'expose plus qu'un socle d'accès aux données (`lire`, `supprimerLignes`, `majLignes`, `inserer`, `utilisateurDuJeton`) et deux opérations métier nommées (`purgerUn`, `purgerEchus`). Ce socle est **transposable tel quel** en Dart : ce sont des appels HTTP, pas une bibliothèque à retrouver. **Reste à moderniser** : l'absence de clés étrangères `on delete cascade` vers `auth.users` reste la dette de fond — elle rendrait la liste `TABLES` inutile et supprimerait définitivement la classe de bugs « table oubliée ». À proposer comme chantier séparé.
+
+---
+
 ## SESSION 120 · 10/08 · LA PURGE DES COMPTES ENFIN DÉCLENCHÉE + NEUF TABLES OUBLIÉES
 
 **Livré : `supprimer-compte.js` · `purge-planifiee.js` (NOUVEAU) · `netlify.toml` md5 `9b07518fb2c929722d0cddf2ab0bd9b4`.** Emplacements : les deux fonctions dans `netlify/functions/`, le TOML **à la racine**. Aucun SQL. `index.html` et `lingo.html` non modifiés par cette session.
