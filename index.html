@@ -577,6 +577,38 @@ function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email)
 // Team Ambassadeurs Hype : les modérateurs en font partie automatiquement + membres nommés
 const HYPE_AMBASSADEURS = ["liamroux0@gmail.com", "evan.roux.2014@icloud.com", "rizeamegane@gmail.com"];
 function estAmbassadeurHype(u) { try { if (estModerateurHype(u)) return true; return !!(u && u.email && HYPE_AMBASSADEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
+/* ============================================================
+   10/08/2026 — LA LISTE DES AMBASSADEURS PASSE DANS SUPABASE
+   (décision de Blandine : « ok vas y on fait ca », après « sinon sur
+   supabase on peut lui indiquer que sa concerne aussi linguae ? »).
+
+   POURQUOI : nommer un Ambassadeur exigeait de modifier ce fichier,
+   donc un push GitHub + un déploiement. Désormais une ligne dans
+   `hype_ambassadeurs` suffit, écrite depuis l'iPhone, et elle sert
+   Hype ET Linguae — source unique, plus deux listes à tenir.
+   Voir `hype-ambassadeurs.sql`.
+
+   LA LISTE CI-DESSUS RESTE, EN SECOURS : si la base ne répond pas
+   (réseau capricieux, RLS mal posée), personne ne perd ses accès.
+   On n'ENLÈVE jamais un e-mail d'après la base, on ne fait qu'AJOUTER :
+   une lecture qui échoue ne doit pas dégrader un droit acquis.
+   La politique de lecture ne montre à chacun QUE sa propre ligne :
+   « aucune ligne » signifie donc « pas Ambassadeur », jamais
+   « la liste est vide ».
+   ============================================================ */
+async function hypeChargerAmbassadeur(u) {
+  try {
+    if (!u || !u.email || typeof supa === "undefined" || !supa) return false;
+    var mail = String(u.email).toLowerCase().trim();
+    if (HYPE_AMBASSADEURS.indexOf(mail) !== -1) return true;   /* déjà connu, rien à demander */
+    var r = await supa.from("hype_ambassadeurs").select("email").eq("email", mail).maybeSingle();
+    if (r && !r.error && r.data && r.data.email) {
+      if (HYPE_AMBASSADEURS.indexOf(mail) === -1) HYPE_AMBASSADEURS.push(mail);
+      return true;
+    }
+  } catch (e) { }
+  return false;
+}
 // Fond Studio Premium : palette de teintes (noir actif pour tous, le reste réservé aux ambassadeurs pour l'instant)
 const TEINTES_FOND_STUDIO = [
   { id: "noir", nom: { fr: "Noir", en: "Black", es: "Negro", it: "Nero", ja: "黒" , de: "Rappe"}, rgb: { r: 5, g: 6, b: 8 }, ambassadeur: false },
@@ -21067,6 +21099,11 @@ function HypeApp() {
                    `aboLu` dans TOUS les cas de sortie, y compris les sorties precoces,
                    sinon la cle resterait indefiniment muette. */
                 if (!u) { majClePremium({ aboLu: true, plan: "", vip: false, user: null }); return; }
+                /* 10/08 : le rang d'Ambassadeur est demandé à Supabase AVANT de
+                   conclure. Sans ça, un Ambassadeur ajouté en base (et absent de
+                   la liste de secours) serait compté non-Premium. La fonction
+                   n'ajoute jamais rien si la lecture échoue. */
+                await hypeChargerAmbassadeur(u);
                 if (typeof supa === "undefined") return;
                 const r = await supa.from("abonnements_premium").select("plan,statut,expire_le").eq("user_id", u.id).maybeSingle();
                 const abo = r && r.data;

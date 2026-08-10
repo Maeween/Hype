@@ -2047,6 +2047,152 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      et complète le même objet clé par clé, sans jamais écraser. -->
 <script src="hype-lingo-villes-monde.js?l=1"></script>
 
+<!-- ==================================================================
+     10/08/2026 — LINGUAE A SON PROPRE ACCÈS SUPABASE
+     ORDRE DE BLANDINE : « donne-lui un accès à linguae », puis
+     « ok on part la dessus pour l'instant ».
+
+     CE QUI ÉTAIT CASSÉ (structurellement, pas un bug) : lingo.html
+     n'avait NI Supabase NI React. Il croyait ce que index.html avait
+     écrit dans l'étiquette `hype_premium`. Conséquence : sur un
+     appareil qui n'avait jamais lancé Hype — donc sur TOUT lien de
+     partage, et pour les Ambassadeurs sur un téléphone neuf —
+     l'étiquette n'existait pas et le verrou restait fermé.
+
+     MAINTENANT : Linguae interroge la base elle-même. La session
+     Supabase vit dans le stockage local du MÊME domaine : la
+     bibliothèque retrouve donc la session déjà ouverte, sans
+     reconnexion, et lit `abonnements_premium` + `hype_ambassadeurs`
+     à la source.
+
+     LIMITE ASSUMÉE, dite à Blandine avant livraison : il faut être
+     CONNECTÉ. Linguae n'a pas d'écran de connexion (la porte B
+     renvoie vers Hype). Sur un téléphone où personne ne s'est jamais
+     connecté, la première connexion se fait donc toujours dans Hype.
+     Ce qui disparaît, c'est le passage obligé pour VALIDER le
+     Premium — pas pour OUVRIR la session.
+     ================================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ==================================================================
+   LE PONT PREMIUM — bloc autonome, ne dépend d'aucune fonction de
+   Linguae et n'est utilisé par aucune. Il ne fait qu'une chose :
+   tenir l'étiquette `hype_premium` à jour depuis la base.
+
+   POURQUOI AUCUN REDESSIN N'EST NÉCESSAIRE (vérifié dans le fichier) :
+   `villeAutorisee()` / `estPremium()` ne sont appelés qu'au MOMENT DU
+   TAP — ouverture d'une leçon, création d'un duel, Sprint solo —
+   jamais au dessin des tuiles. Rien à l'écran ne dépend de la
+   réponse ; elle arrive donc bien avant qu'un doigt puisse toucher
+   une ville. C'est exactement le choix de Blandine : « villes
+   ouvertes tout de suite, la base corrige derrière ».
+
+   DOCTRINE DE L'ÉTIQUETTE (la même que dans index.html) : on écrit
+   « 1 » dès qu'on sait que c'est ouvert, et on n'écrit « 0 » QUE
+   lorsque la vérité serveur est connue. Une lecture qui échoue ne
+   doit JAMAIS rétrograder une abonnée.
+   ================================================================== */
+(function(){
+  var URL_SUPA = "https://ldpjebgtskzdokrublfg.supabase.co";
+  var CLE_SUPA = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
+  /* liste de secours, recopiée de index.html : si la base ne répond
+     pas, personne ne perd ses accès. On n'enlève jamais un droit
+     d'après la base, on ne fait qu'ajouter. */
+  var SECOURS = ["liamroux0@gmail.com","evan.roux.2014@icloud.com","rizeamegane@gmail.com",
+                 "feinn@live.fr","malicia2008@hotmail.fr"];
+  var PLANS_OUVRANTS = ["mensuel","annuel","duo","ai"];
+
+  function poser(v){
+    try{ if(localStorage.getItem("hype_premium")!==v) localStorage.setItem("hype_premium", v); }catch(e){}
+  }
+
+  /* Même adaptateur de stockage que index.html : lecture dans
+     localStorage avec repli sessionStorage, pour retomber sur la
+     session déjà ouverte quelle que soit la façon dont elle a été
+     écrite. Sans ça, une session rangée par l'autre fichier pourrait
+     ne pas être vue. */
+  var stockagePont = {
+    getItem: function(k){ try{ var v=localStorage.getItem(k); if(v===null){ try{ v=sessionStorage.getItem(k); }catch(e2){} } return v; }catch(e){ return null; } },
+    setItem: function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+    removeItem: function(k){ try{ localStorage.removeItem(k); }catch(e){} }
+  };
+
+  async function pont(){
+    try{
+      if(!window.supabase || !window.supabase.createClient) return;   /* CDN injoignable : l'étiquette reste telle quelle */
+      var sb = window.supabase.createClient(URL_SUPA, CLE_SUPA, {
+        auth: { storage: stockagePont, persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+      });
+      var u = null;
+      try{ var g = await sb.auth.getUser(); u = g && g.data && g.data.user; }catch(e){}
+      if(!u){ poser("0"); return; }   /* personne n'est connecté : « 0 » est la vérité */
+
+      var mail = String(u.email||"").toLowerCase().trim();
+      var ouvert = SECOURS.indexOf(mail) !== -1;
+
+      /* 1) le rang d'Ambassadeur (table partagée avec Hype) */
+      if(!ouvert){
+        try{
+          var ra = await sb.from("hype_ambassadeurs").select("email").eq("email", mail).maybeSingle();
+          if(ra && !ra.error && ra.data && ra.data.email) ouvert = true;
+        }catch(e){}
+      }
+
+      /* 2) l'abonnement payant, si le rang n'a rien donné */
+      var aboLu = false;
+      if(!ouvert){
+        try{
+          var rb = await sb.from("abonnements_premium").select("plan,statut,expire_le").eq("user_id", u.id).maybeSingle();
+          if(rb && !rb.error){
+            aboLu = true;
+            var a = rb.data;
+            if(a){
+              var actif = a.statut === "actif" && (!a.expire_le || new Date(a.expire_le).getTime() > Date.now());
+              if(actif && PLANS_OUVRANTS.indexOf(a.plan) !== -1) ouvert = true;
+            }
+          }
+        }catch(e){}
+      }
+
+      if(ouvert){ poser("1"); return; }
+      /* « 0 » seulement si la base a VRAIMENT répondu — sinon on laisse
+         l'étiquette en place plutôt que de fermer à tort. */
+      if(aboLu) poser("0");
+    }catch(e){}
+  }
+
+  /* ==================================================================
+     10/08/2026 — LE BLOC DE SYNCHRONISATION DE LA PROGRESSION A ÉTÉ
+     RETIRÉ, sur demande de Blandine (« relivre le propre je préfère »).
+
+     POURQUOI : il avait été écrit pour une table `hype_lingua_progression`
+     à cinq colonnes, qui n'a JAMAIS été créée en base — le SQL n'a pas
+     été exécuté. Et surtout, la structure a été remise en question :
+     `index.html` sauvegarde DÉJÀ la progression de Linguae via
+     `HYPE_EXTRAS_LINGUAE` (dix clés, ligne ~20431) avec des règles de
+     fusion généreuses. Deux endroits sauvegardant la même chose
+     finiraient par se contredire. La décision de structure reste ENTIÈRE
+     et n'est pas tranchée : rien ne doit être réécrit ici avant.
+
+     ÉTAT ACTUEL, ASSUMÉ : la progression de Linguae (cartes, maîtrise,
+     villes faites, records de Sprint, souvenirs) vit dans le
+     localStorage, et c'est HYPE qui la met à l'abri sur le compte à
+     chaque ouverture. Comportement inchangé depuis toujours.
+
+     CE QUI RESTE ICI : uniquement le pont Premium (`hype_premium`), qui
+     lit `hype_ambassadeurs` et `abonnements_premium`. Ces deux tables
+     existent, cette partie fonctionne.
+
+     Spécification complète du bloc retiré : SUIVI-LINGUAE.md, session 186
+     (cinq blocs, cinq fonctions de fusion pures testées 11/11,
+     versement à la connexion, écritures groupées). Reconstructible à
+     l'identique en une intervention le jour où la structure sera fixée.
+     ================================================================== */
+
+  try{ pont(); }catch(e){}
+})();
+</script>
+
 <script>
 /* ==================================================================
    VOYAGE 1 — ANGLAIS · Îles Britanniques et Irlande

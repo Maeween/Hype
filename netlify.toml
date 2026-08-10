@@ -96,3 +96,32 @@
 
 # ---------- Compression : Netlify le fait déjà, mais on s'assure ----------
 # (rien à configurer, Netlify sert automatiquement en Brotli/gzip)
+
+# ============================================================
+#  AJOUT DU 10/08/2026 — LES VIDÉOS (demande de Blandine : « fais le »)
+#
+#  POURQUOI MAINTENANT : le film d'ouverture de Linguae joue désormais
+#  à CHAQUE connexion et pour TOUT LE MONDE (lingo.html v62). Sans
+#  règle de cache, `ouverture.mp4` était retéléchargé en entier à
+#  chaque visite : bande passante Netlify qui grimpe, et démarrage du
+#  film plus lent sur un réseau moyen. Avec cette règle, il est
+#  téléchargé UNE FOIS puis rejoué depuis la mémoire du téléphone.
+#
+#  ⚠️ CONSÉQUENCE À CONNAÎTRE : `immutable` veut dire « ce fichier ne
+#  changera jamais ». Si tu remplaces `ouverture.mp4` par une nouvelle
+#  version SANS changer son nom, les visiteurs qui l'ont déjà en cache
+#  continueront de voir l'ANCIEN film, jusqu'à un an. Pour diffuser un
+#  nouveau film, change son nom de fichier (ouverture-2.mp4) et
+#  l'adresse qui le charge dans lingo.html — comme pour les images
+#  (k610, k611...). C'est la même règle que le reste de ce fichier.
+# ============================================================
+
+[[headers]]
+  for = "/*.mp4"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.webm"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
