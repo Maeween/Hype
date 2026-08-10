@@ -1548,6 +1548,91 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  #apy{animation:none}#arrivee{transition:none}
  #dpTampon,#dpTexte,#dpSuite{animation-duration:.001s}
 }
+
+/* ==================================================================
+   v66 — L'ÉCRAN DE COMPTE DE LINGUAE (maquette validée le 10/08).
+   Il REMPLACE la porte B, qui renvoyait vers Hype — inacceptable pour
+   une app qui doit devenir indépendante. Trois vues dans un seul
+   panneau : la question, la connexion, la création.
+   ================================================================== */
+#compte{position:fixed;inset:0;z-index:70;display:none;overflow-y:auto;
+  -webkit-overflow-scrolling:touch;background:#060709}
+#compte.on{display:block}
+#compte .cpVue{display:none;padding:0 26px 46px;max-width:430px;margin:0 auto}
+#compte .cpVue.on{display:block;animation:cpEntre .42s ease}
+@keyframes cpEntre{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+#cpFermer{position:absolute;top:14px;left:14px;z-index:2;width:38px;height:38px;
+  border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.35);
+  color:var(--gris);font-size:19px;cursor:pointer}
+.cpAffiche{position:relative;height:36vh;min-height:225px;overflow:hidden;
+  background:url("lingua-affiche.webp") center/cover no-repeat}
+.cpAffiche::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(58% 48% at 50% 44%,rgba(32,217,245,.16),transparent 72%),
+             linear-gradient(180deg,transparent 55%,#060709);animation:cpResp 7s ease-in-out infinite}
+@keyframes cpResp{0%,100%{opacity:.72}50%{opacity:1}}
+.cpIco{display:flex;justify-content:center;padding:30px 0 0;position:relative}
+.cpIco::before{content:"";position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  width:190px;height:126px;border-radius:50%;
+  background:radial-gradient(circle,rgba(32,217,245,.20),transparent 70%);
+  animation:cpResp 7s ease-in-out infinite}
+.cpIco img{position:relative;width:92px;height:92px;border-radius:24px;
+  border:1px solid rgba(32,217,245,.26)}
+.cpMot{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.14em;text-align:center;
+  margin:14px 0 0;font-size:30px;background:linear-gradient(180deg,#FFF,#9FB4BE 60%,#6E8189);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.cpDevise{text-align:center;font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--turquoise);margin:9px 0 0}
+.cpQ{font-family:'Cinzel',serif;font-size:19.5px;line-height:1.42;text-align:center;
+  margin:24px 0 0;font-weight:400;color:var(--encre)}
+.cpFort{text-align:center;font-size:14.5px;line-height:1.55;color:var(--encre);
+  margin:18px 0 0;font-weight:500}
+.cpGris{text-align:center;font-size:12.5px;line-height:1.7;color:var(--gris);margin:13px 0 0}
+.cpBtn{display:block;width:100%;padding:16px 20px;border-radius:999px;border:none;
+  font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  cursor:pointer;margin-top:13px;font-family:inherit}
+.cpPlein{background:linear-gradient(90deg,#0C5763,#38E2F8);color:#04171C;
+  box-shadow:0 8px 30px rgba(32,217,245,.22)}
+.cpVide{background:transparent;color:var(--encre);border:1px solid rgba(32,217,245,.34)}
+.cpLien{display:block;width:100%;background:none;border:none;color:var(--gris);
+  font-size:12px;margin-top:17px;cursor:pointer;text-decoration:underline;
+  text-underline-offset:4px;text-decoration-color:rgba(255,255,255,.18);font-family:inherit}
+.cpChamp{position:relative;margin-top:12px}
+.cpChamp input{width:100%;padding:15px 16px;border-radius:16px;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);
+  color:var(--encre);font-size:16px;outline:none;font-family:inherit}
+.cpChamp input:focus{border-color:rgba(32,217,245,.42);background:rgba(32,217,245,.05)}
+.cpChamp input::placeholder{color:#63737C}
+.cpLib{font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--gris);
+  margin:22px 0 9px;text-align:center}
+.cpAge{display:flex;gap:10px}
+.cpAge button{flex:1;padding:14px 8px;border-radius:16px;background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.09);color:var(--gris);font-size:13px;cursor:pointer;
+  font-family:inherit}
+.cpAge button.on{border-color:rgba(32,217,245,.55);color:var(--turquoise);
+  background:rgba(32,217,245,.07)}
+.cpMsg{margin-top:15px;padding:12px 14px;border-radius:14px;font-size:12.5px;
+  line-height:1.6;display:none}
+.cpMsg.on{display:block}
+.cpMsg.mal{border:1px solid rgba(224,121,107,.4);background:rgba(224,121,107,.08);color:#E0A79B}
+.cpMsg.bien{border:1px solid rgba(32,217,245,.35);background:rgba(32,217,245,.06);color:#9FD9E4}
+.cpInst{display:flex;gap:13px;align-items:center;margin-top:26px;padding:14px 15px;
+  border-radius:18px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.028)}
+.cpInst img{width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  border:1px solid rgba(32,217,245,.22)}
+.cpInst p{margin:0;font-size:11.5px;line-height:1.65;color:var(--gris)}
+.cpInst b{color:var(--encre);font-weight:600;display:block;font-size:12.5px;margin-bottom:3px}
+.cpEdit{text-align:center;font-style:italic;font-size:10.5px;color:#4E5B63;margin:30px 0 0}
+.cpRang{display:flex;justify-content:space-between;align-items:center;padding:15px 2px;
+  border-bottom:1px solid rgba(255,255,255,.09);font-size:13.5px;color:var(--encre)}
+.cpRang span:last-child{color:var(--gris);font-size:13px;text-align:right}
+.cpDur{color:#E0796B !important;text-decoration-color:rgba(224,121,107,.3) !important}
+/* la ligne d'accès, sur la présentation et sur le carnet de route */
+.cpAcces{display:flex;align-items:center;justify-content:center;gap:9px;margin:18px auto 0;
+  max-width:330px;padding:11px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.028);font-size:12.5px;color:var(--gris);cursor:pointer;
+  font-family:inherit}
+.cpAcces b{color:var(--encre);font-weight:600}
+.cpAcces img{width:24px;height:24px;border-radius:7px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -1587,6 +1672,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      partie du chemin que l'on masque : en cachant le chemin, on avait
      supprimé la seule porte d'entrée du globe. Écran vide au lancement. -->
 <button id="bGlobe" data-t="leGlobe">Le globe</button>
+<!-- v66 : second et DERNIER endroit de la ligne d'accès (Blandine : « on va
+     pas lui montrer trois fois en trois pages »). Le carnet de route est là où
+     l'on passe le plus de temps, et où l'on peut vouloir se déconnecter sans
+     repasser par la présentation. -->
+<button class="cpAcces" id="cpAccesCarnet" type="button" style="position:relative;z-index:6;margin:10px auto 0"></button>
 
 <!-- La collection : cartes qui se retournent. Même motif que le globe —
      iframe séparée, même double verrou de fermeture (panne du 6 août
@@ -1879,6 +1969,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     </div>
 
     <button id="ouvPartir" data-t="partir">Partir</button>
+    <!-- v66 : LA LIGNE D'ACCÈS AU COMPTE, premier des deux endroits décidés
+         par Blandine. Discrète parce que la présentation s'affiche à CHAQUE
+         lancement (v57) : elle ne doit jamais peser. Deux états, remplis par
+         `cpAccesMaj()` — « me connecter ou créer un compte », ou « connectée ». -->
+    <button class="cpAcces" id="cpAccesIntro" type="button"></button>
     <!-- ⚠️ AJOUTEES le 7 aout 2026 avec le court-circuit du chemin de nuit :
          la collection et le sprint n'etaient joignables QUE depuis l'ecran
          du chemin. Le carnet etant devenu la racine, il porte leurs portes. -->
@@ -1924,6 +2019,82 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <button id="paTard" type="button" data-t="pwTard">Plus tard</button>
   </div>
 </div>
+<!-- ==================================================================
+     v66 — L'ÉCRAN DE COMPTE DE LINGUAE. Trois vues, un seul panneau.
+     Il REMPLACE la porte B (qui renvoyait vers Hype). L'ancien #porteB
+     reste dans le fichier mais n'est plus jamais ouvert : `versConnexion`
+     appelle désormais cet écran. Conservé pour ne rien casser d'un coup
+     et pouvoir revenir en arrière ; à supprimer une fois éprouvé.
+     ================================================================== -->
+<div id="compte">
+  <button id="cpFermer" type="button" aria-label="Fermer">&times;</button>
+
+  <!-- vue 1 : la question -->
+  <div class="cpVue on" id="cpQuestion">
+    <div class="cpAffiche" style="margin:0 -26px"></div>
+    <h1 class="cpMot">LINGUAE</h1>
+    <p class="cpDevise">Ride the world</p>
+    <p class="cpQ">As-tu déjà un compte<br>Hype ou Linguae ?</p>
+    <p class="cpFort">Un seul compte pour toutes tes aventures Hype.</p>
+    <p class="cpGris">Tes progressions et tes collections te suivront.</p>
+    <button class="cpBtn cpPlein" id="cpVersCo" type="button">Me connecter</button>
+    <button class="cpBtn cpVide"  id="cpVersCr" type="button">Créer un compte</button>
+    <p class="cpEdit">Linguae, une application Hype</p>
+  </div>
+
+  <!-- vue 2 : la connexion -->
+  <div class="cpVue" id="cpConnexion">
+    <div class="cpIco"><img src="apple-touch-icon-linguae.png" alt=""></div>
+    <h1 class="cpMot" style="font-size:27px">LINGUAE</h1>
+    <p class="cpDevise">Bon retour</p>
+    <div class="cpChamp"><input id="cpCoMail" type="email" inputmode="email" autocomplete="email" placeholder="Adresse e-mail"></div>
+    <div class="cpChamp"><input id="cpCoMdp" type="password" autocomplete="current-password" placeholder="Mot de passe"></div>
+    <div class="cpMsg" id="cpCoMsg"></div>
+    <button class="cpBtn cpPlein" id="cpCoGo" type="button" style="margin-top:20px">Se connecter</button>
+    <button class="cpLien" id="cpOubli" type="button">Mot de passe oublié ?</button>
+    <button class="cpLien" id="cpVersCr2" type="button">Pas encore de compte ? En créer un</button>
+    <div class="cpInst"><img src="apple-touch-icon-linguae.png" alt="">
+      <p><b>Garde Linguae sous la main</b>Touche « Partager » en bas de Safari, puis « Sur l'écran d'accueil ».</p></div>
+    <p class="cpEdit">Linguae, une application Hype</p>
+  </div>
+
+  <!-- vue 3 : la création -->
+  <div class="cpVue" id="cpCreation">
+    <div class="cpIco"><img src="apple-touch-icon-linguae.png" alt=""></div>
+    <h1 class="cpMot" style="font-size:27px">LINGUAE</h1>
+    <p class="cpDevise">Bienvenue</p>
+    <div class="cpChamp"><input id="cpCrMail" type="email" inputmode="email" autocomplete="email" placeholder="Adresse e-mail"></div>
+    <div class="cpChamp"><input id="cpCrMdp" type="password" autocomplete="new-password" placeholder="Mot de passe"></div>
+    <div class="cpChamp"><input id="cpCrNom" type="text" autocomplete="given-name" placeholder="Ton prénom"></div>
+    <p class="cpLib">Ton âge</p>
+    <div class="cpAge" id="cpAge">
+      <button type="button" data-maj="0">&minus; de 18 ans</button>
+      <button type="button" data-maj="1" class="on">+ de 18 ans</button>
+    </div>
+    <div class="cpMsg" id="cpCrMsg"></div>
+    <button class="cpBtn cpPlein" id="cpCrGo" type="button" style="margin-top:22px">Créer mon compte</button>
+    <button class="cpLien" id="cpVersCo2" type="button">Déjà un compte ? Me connecter</button>
+    <p class="cpGris" style="font-size:11.5px">Ton écurie ne se demande pas ici : tu la choisiras sur le globe, le jour où tu iras sur Hype.</p>
+    <p class="cpEdit">Linguae, une application Hype</p>
+  </div>
+
+  <!-- vue 4 : mon compte, une fois connectée -->
+  <div class="cpVue" id="cpMien">
+    <div class="cpIco"><img src="apple-touch-icon-linguae.png" alt=""></div>
+    <h1 class="cpMot" style="font-size:25px" id="cpMienNom">CAVALIÈRE</h1>
+    <p class="cpDevise">Ton compte</p>
+    <div style="margin-top:24px">
+      <div class="cpRang"><span>Adresse e-mail</span><span id="cpMienMail">—</span></div>
+      <div class="cpRang"><span>Mon carnet</span><span id="cpMienCarnet">—</span></div>
+      <div class="cpRang"><span>Premium</span><span id="cpMienPrem">—</span></div>
+    </div>
+    <div class="cpMsg" id="cpMienMsg"></div>
+    <button class="cpBtn cpVide" id="cpSortir" type="button" style="margin-top:26px">Me déconnecter</button>
+    <p class="cpGris" style="font-size:11.5px">Ta progression est sauvegardée sur ton compte : elle reviendra à ta prochaine connexion.</p>
+    <p class="cpEdit">Linguae, une application Hype</p>
+  </div>
+</div>
+
 <div id="porteB">
   <div class="pwBoite">
     <img id="pbImg" alt="">
@@ -2117,12 +2288,32 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     removeItem: function(k){ try{ localStorage.removeItem(k); }catch(e){} }
   };
 
-  async function pont(){
+  /* ==================================================================
+     v66 — LE CLIENT SUPABASE DEVIENT ACCESSIBLE À TOUT LINGUAE.
+     Il était enfermé dans `pont()` ; l'écran de compte en a besoin lui
+     aussi (`signInWithPassword`, `signUp`, `resetPasswordForEmail`,
+     `signOut`). On le fabrique donc UNE FOIS, à la demande, et on
+     l'expose. `persistSession` + `autoRefreshToken` sont ce qui fait
+     qu'on RESTE connecté d'une ouverture à l'autre — c'est la demande
+     de Blandine (« qu'on ait pas besoin de se connecter à chaque
+     déco »), et la raison pour laquelle la case « se rappeler de moi »
+     a été écartée : il n'y a rien à choisir, ça marche toujours.
+     ================================================================== */
+  window.clientLingua = function(){
+    if(window.__sbL) return window.__sbL;
+    if(!window.supabase || !window.supabase.createClient) return null;
     try{
-      if(!window.supabase || !window.supabase.createClient) return;   /* CDN injoignable : l'étiquette reste telle quelle */
-      var sb = window.supabase.createClient(URL_SUPA, CLE_SUPA, {
+      window.__sbL = window.supabase.createClient(URL_SUPA, CLE_SUPA, {
         auth: { storage: stockagePont, persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
       });
+    }catch(e){ return null; }
+    return window.__sbL;
+  };
+
+  async function pont(){
+    try{
+      var sb = window.clientLingua();
+      if(!sb) return;   /* CDN injoignable : l'étiquette reste telle quelle */
       var u = null;
       try{ var g = await sb.auth.getUser(); u = g && g.data && g.data.user; }catch(e){}
       if(!u){ poser("0"); return; }   /* personne n'est connecté : « 0 » est la vérité */
@@ -2365,6 +2556,35 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       }catch(e){}
     }catch(e){}
   }
+
+  /* ==================================================================
+     v66 — UNE POUSSÉE FORCÉE, exposée pour la déconnexion.
+     `progression()` sauvegarde à la fermeture et au passage en arrière-
+     plan ; la déconnexion, elle, a besoin d'une sauvegarde SYNCHRONE et
+     qui DIT si elle a réussi — parce que c'est ce résultat qui décide
+     d'effacer le local ou de le garder. Renvoie true seulement si la
+     base a confirmé l'écriture.
+     ================================================================== */
+  window.progressionPousser = async function(sb, u){
+    try{
+      if(!sb || !u) return false;
+      var local = {}, k;
+      for(k in CLES_PROG) local[k] = lireLocal(CLES_PROG[k]);
+      var base = {};
+      var r = await sb.from("hype_lingua_progression")
+                      .select("cartes,maitrise,faits,sprint,quiz,carnet")
+                      .eq("user_id", u.id).maybeSingle();
+      if(!r || r.error) return false;      /* base muette : on n'efface rien */
+      if(r.data) base = r.data;
+      var f = fusionner(local, base);
+      var w = await sb.from("hype_lingua_progression").upsert({
+        user_id: u.id, cartes: f.cartes, maitrise: f.maitrise, faits: f.faits,
+        sprint: f.sprint, quiz: f.quiz, carnet: f.carnet,
+        maj_le: new Date().toISOString()
+      }, { onConflict: "user_id" });
+      return !(w && w.error);
+    }catch(e){ return false; }
+  };
 
   /* ==================================================================
      LE CARNET — les deux gestes, exposés pour l'écran qui viendra.
@@ -6245,13 +6465,227 @@ function estConnecte(){
                     || (j.session && j.session.access_token)));
   }catch(e){ return false; }
 }
-function versConnexion(){
-  /* v45 : on pose l'heure du depart — l'index nous ramenera ici apres la
-     connexion ou l'inscription (drapeau honore 1 h, voir apresConnexion). */
-  try{ localStorage.setItem("hype_retour_linguae", String(Date.now())); }catch(e){}
-  /* la porte connexion de l'index existe deja dans CIBLE_DIRECTE */
-  location.href="./index.html#connexion";
+/* ==================================================================
+   v66 — LE COMPTE SE FAIT DANS LINGUAE, PLUS DANS HYPE.
+   `versConnexion` renvoyait vers `./index.html#connexion`. Blandine, le
+   10/08 : arrivée sur Hype par ce lien, elle a été traitée comme une
+   nouvelle visiteuse et a dû franchir QUATRE écrans (accueil animé,
+   bienvenue, âge, prénom) avant de pouvoir seulement saisir ses
+   identifiants — « mes cavaliers vont s'y perdre ». Et pour une app qui
+   doit devenir indépendante, dépendre de Hype pour se connecter est
+   rédhibitoire (le relecteur Apple ouvrira Linguae seule).
+   Tout se fait donc ici : inscription, connexion, mot de passe oublié,
+   déconnexion. La suppression de compte viendra à part (elle va dans un
+   réglage, pas dans un parcours d'entrée, et réutilisera
+   `supprimer-compte.js` qui ne demande qu'un jeton de session).
+   ================================================================== */
+var CP_MAJEUR = true;          /* la pastille d'âge choisie */
+
+function cpVue(id){
+  ["cpQuestion","cpConnexion","cpCreation","cpMien"].forEach(function(v){
+    var e = S(v); if(e) e.classList.toggle("on", v === id);
+  });
+  var p = S("compte"); if(p) p.scrollTop = 0;   /* remise à zéro du défilement */
 }
+function cpMsg(id, texte, bien){
+  var e = S(id); if(!e) return;
+  e.textContent = texte || "";
+  e.className = "cpMsg" + (texte ? (" on " + (bien ? "bien" : "mal")) : "");
+}
+function cpOccupe(id, oui){
+  var b = S(id); if(!b) return;
+  b.disabled = !!oui; b.style.opacity = oui ? ".55" : "";
+}
+
+/* ouvre l'écran : sur le compte si déjà connectée, sinon sur la question */
+function ouvrirCompte(){
+  cpMsg("cpCoMsg",""); cpMsg("cpCrMsg",""); cpMsg("cpMienMsg","");
+  if(estConnecte()){ cpRemplirMien(); cpVue("cpMien"); }
+  else cpVue("cpQuestion");
+  S("compte").classList.add("on");
+}
+function fermerCompte(){ S("compte").classList.remove("on"); cpAccesMaj(); }
+
+/* remplace l'ancien renvoi vers Hype : même nom, pour que tous les
+   appelants existants (porte B comprise) profitent du changement. */
+function versConnexion(){ ouvrirCompte(); }
+
+async function cpRemplirMien(){
+  try{
+    var n = 0; try{ n = (window.carnetListe ? window.carnetListe().length : 0); }catch(e){}
+    S("cpMienCarnet").textContent = n + (n === 1 ? " mot" : " mots");
+    S("cpMienPrem").textContent = estPremium() ? "Actif" : "—";
+    S("cpMienPrem").style.color = estPremium() ? "var(--turquoise)" : "";
+    var sb = window.clientLingua && window.clientLingua();
+    if(!sb) return;
+    var g = await sb.auth.getUser();
+    var u = g && g.data && g.data.user; if(!u) return;
+    S("cpMienMail").textContent = u.email || "—";
+    var pre = "";
+    try{ pre = (u.user_metadata && (u.user_metadata.prenom || u.user_metadata.pseudo)) || ""; }catch(e){}
+    if(!pre && u.email) pre = String(u.email).split("@")[0];
+    if(pre) S("cpMienNom").textContent = String(pre).toUpperCase();
+  }catch(e){}
+}
+
+/* ---------- la connexion ---------- */
+async function cpConnecter(){
+  var mail = (S("cpCoMail").value || "").trim();
+  var mdp  = S("cpCoMdp").value || "";
+  if(!mail || !mdp){ cpMsg("cpCoMsg","Il manque l'adresse ou le mot de passe."); return; }
+  var sb = window.clientLingua && window.clientLingua();
+  if(!sb){ cpMsg("cpCoMsg","Connexion indisponible pour l'instant. Réessaie dans un moment."); return; }
+  cpOccupe("cpCoGo", true); cpMsg("cpCoMsg","");
+  try{
+    var r = await sb.auth.signInWithPassword({ email: mail, password: mdp });
+    if(r && r.error){
+      /* message utile plutôt que le texte brut de Supabase, qui est en
+         anglais et parle de « credentials » */
+      var m = String(r.error.message || "");
+      cpMsg("cpCoMsg", /Invalid|invalid/.test(m)
+        ? "Adresse ou mot de passe incorrect."
+        : (/confirm/i.test(m) ? "Ton adresse n'est pas encore confirmée." : "La connexion a échoué. Réessaie."));
+      cpOccupe("cpCoGo", false); return;
+    }
+    cpApresEntree();
+  }catch(e){ cpMsg("cpCoMsg","La connexion a échoué. Réessaie."); cpOccupe("cpCoGo", false); }
+}
+
+/* ---------- la création, avec le rattrapage promis ---------- */
+async function cpCreer(){
+  var mail = (S("cpCrMail").value || "").trim();
+  var mdp  = S("cpCrMdp").value || "";
+  var nom  = (S("cpCrNom").value || "").trim();
+  if(!mail || !mdp){ cpMsg("cpCrMsg","Il manque l'adresse ou le mot de passe."); return; }
+  if(mdp.length < 6){ cpMsg("cpCrMsg","Le mot de passe doit faire au moins six caractères."); return; }
+  var sb = window.clientLingua && window.clientLingua();
+  if(!sb){ cpMsg("cpCrMsg","Création indisponible pour l'instant. Réessaie dans un moment."); return; }
+  cpOccupe("cpCrGo", true); cpMsg("cpCrMsg","");
+  try{
+    var r = await sb.auth.signUp({
+      email: mail, password: mdp,
+      options: { data: { prenom: nom || null, pseudo: nom || null, majeur: !!CP_MAJEUR } }
+    });
+    if(r && r.error){
+      var m = String(r.error.message || "");
+      /* ⚠️ LE RATTRAPAGE, promis à Blandine : on ne cherche JAMAIS si une
+         adresse existe (Supabase l'interdit, protection contre
+         l'énumération des comptes). Donc si la création échoue parce
+         qu'elle est déjà prise, on ne montre pas une erreur : on emmène
+         vers la connexion avec l'adresse déjà remplie. Personne ne reste
+         bloqué. */
+      if(/already|exist|registered/i.test(m)){
+        S("cpCoMail").value = mail;
+        cpVue("cpConnexion");
+        cpMsg("cpCoMsg","Tu as déjà un compte avec cette adresse. Connecte-toi.", true);
+        cpOccupe("cpCrGo", false); return;
+      }
+      cpMsg("cpCrMsg", /valid/i.test(m) ? "Cette adresse ne semble pas valide." : "La création a échoué. Réessaie.");
+      cpOccupe("cpCrGo", false); return;
+    }
+    /* si la confirmation d'e-mail est activée un jour, il n'y a pas de
+       session à cet instant : on le dit au lieu de laisser croire que
+       c'est fait. */
+    var session = r && r.data && r.data.session;
+    if(!session){
+      cpMsg("cpCrMsg","Compte créé. Ouvre ta boîte e-mail pour confirmer ton adresse, puis reviens te connecter.", true);
+      cpOccupe("cpCrGo", false); return;
+    }
+    cpApresEntree();
+  }catch(e){ cpMsg("cpCrMsg","La création a échoué. Réessaie."); cpOccupe("cpCrGo", false); }
+}
+
+/* ---------- le mot de passe oublié ---------- */
+async function cpOublie(){
+  var mail = (S("cpCoMail").value || "").trim();
+  if(!mail){ cpMsg("cpCoMsg","Écris d'abord ton adresse e-mail, puis touche à nouveau."); return; }
+  var sb = window.clientLingua && window.clientLingua();
+  if(!sb){ cpMsg("cpCoMsg","Indisponible pour l'instant. Réessaie dans un moment."); return; }
+  try{
+    /* le lien de retour ramène sur LINGUAE, pas sur Hype */
+    await sb.auth.resetPasswordForEmail(mail, { redirectTo: location.origin + location.pathname });
+  }catch(e){}
+  /* on répond la même chose dans tous les cas : dire « cette adresse est
+     inconnue » révélerait qui est inscrit. */
+  cpMsg("cpCoMsg","Si un compte existe avec cette adresse, un message vient de partir.", true);
+}
+
+/* ---------- après une entrée réussie ---------- */
+function cpApresEntree(){
+  cpOccupe("cpCoGo", false); cpOccupe("cpCrGo", false);
+  S("cpCoMdp").value = ""; S("cpCrMdp").value = "";
+  fermerCompte();
+  cpAccesMaj();
+  /* le pont reprend : il lit le Premium et VERSE la progression gagnée
+     sans compte dans le compte tout neuf (versement à la connexion). */
+  try{ if(typeof pont === "function") pont(); }catch(e){}
+}
+
+/* ---------- la déconnexion : sauvegarde FORCÉE d'abord ---------- */
+async function cpDeconnecter(){
+  var sb = window.clientLingua && window.clientLingua();
+  cpOccupe("cpSortir", true);
+  cpMsg("cpMienMsg","Sauvegarde de ta progression…", true);
+  var sauve = false;
+  try{
+    if(sb){
+      var g = await sb.auth.getUser();
+      var u = g && g.data && g.data.user;
+      if(u && typeof window.progressionPousser === "function"){
+        sauve = await window.progressionPousser(sb, u);
+      }
+    }
+  }catch(e){}
+  try{ if(sb) await sb.auth.signOut(); }catch(e){}
+  /* ⚠️ ON N'EFFACE LE LOCAL QUE SI LA SAUVEGARDE A RÉUSSI. Sinon on garde
+     tout : mieux vaut une copie locale de trop (la suivante sur ce
+     téléphone verrait des cartes qui ne sont pas les siennes) qu'une
+     progression perdue. Décision de Blandine. */
+  if(sauve){
+    ["hype_lingua_cartes","hype_lingo_maitrise","hype_lingua_faits",
+     "hype_lingua_sprint","hype_lingua_quiz","hype_lingua_carnet"].forEach(function(k){
+      try{ localStorage.removeItem(k); }catch(e){}
+    });
+  }
+  try{ localStorage.setItem("hype_premium","0"); }catch(e){}
+  cpOccupe("cpSortir", false);
+  location.reload();
+}
+
+/* ---------- la ligne d'accès, deux états, deux endroits ---------- */
+function cpAccesMaj(){
+  var co = estConnecte();
+  ["cpAccesIntro","cpAccesCarnet"].forEach(function(id){
+    var e = S(id); if(!e) return;
+    e.innerHTML = '<img src="apple-touch-icon-linguae.png" alt="">' +
+      (co ? "<span>Connectée &middot; <b>mon compte</b></span>"
+          : "<span>Me connecter ou <b>créer un compte</b></span>");
+  });
+}
+
+/* ---------- les branchements ---------- */
+(function(){
+  function br(id, fn){ var e=S(id); if(e) e.addEventListener("click", fn); }
+  br("cpFermer", fermerCompte);
+  br("cpVersCo", function(){ cpVue("cpConnexion"); });
+  br("cpVersCr", function(){ cpVue("cpCreation"); });
+  br("cpVersCo2", function(){ cpVue("cpConnexion"); });
+  br("cpVersCr2", function(){ cpVue("cpCreation"); });
+  br("cpCoGo", cpConnecter);
+  br("cpCrGo", cpCreer);
+  br("cpOubli", cpOublie);
+  br("cpSortir", cpDeconnecter);
+  var age = S("cpAge");
+  if(age) age.addEventListener("click", function(ev){
+    var b = ev.target.closest ? ev.target.closest("button") : null; if(!b) return;
+    CP_MAJEUR = b.dataset.maj === "1";
+    age.querySelectorAll("button").forEach(function(x){ x.classList.toggle("on", x === b); });
+  });
+  br("cpAccesIntro", ouvrirCompte);
+  br("cpAccesCarnet", ouvrirCompte);
+  cpAccesMaj();
+})();
+
 /* A — SOUPLE, sur « Partir » : proposee UNE seule fois par appareil
    (hype_lingua_passeport_vu), jamais si un compte existe deja.
    « Plus tard » retient le refus et laisse partir. */

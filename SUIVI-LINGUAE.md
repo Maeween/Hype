@@ -55,6 +55,48 @@
 
 ---
 
+# 🎯 SESSION 195 · 10/08 · v66 — LINGUAE A SON COMPTE. LE CORDON AVEC HYPE EST COUPÉ.
+
+**Livré : `lingo.html` md5 `9bb645f1bf5813105a1bfadfef0250be` (567 391 o).** Aucun SQL — les tables existent déjà. `index.html` **non modifié** (le masquage des boutons sociaux reste à faire, voir plus bas).
+
+## ▸ CE QUI CHANGE, EN UNE PHRASE
+`versConnexion()` ne renvoie **plus** vers `./index.html#connexion`. Tout se fait dans Linguae : inscription, connexion, mot de passe oublié, déconnexion, écran Mon compte. **La porte B est remplacée** — l'ancien `#porteB` reste dans le fichier mais n'est plus jamais ouvert (conservé pour pouvoir revenir en arrière, à supprimer une fois éprouvé).
+
+## ▸ POURQUOI, DANS LES MOTS DE BLANDINE
+Arrivée sur Hype **par le lien depuis Linguae**, donc sans session, elle a été traitée comme une nouvelle visiteuse : **quatre écrans** (accueil animé 3 s, bienvenue, âge, prénom) avant de pouvoir seulement saisir ses identifiants. « Je me suis envoyé quatre pages à remplir » · « **mes cavaliers vont s'y perdre** ». Et pour une app qui doit devenir indépendante, dépendre de Hype pour se connecter est rédhibitoire : le relecteur Apple ouvrira Linguae seule.
+
+## ▸ LES QUATRE VUES
+**La question** (affiche `lingua-affiche.webp` en 36 vh, sa phrase « Un seul compte pour toutes tes aventures Hype. » puis « Tes progressions et tes collections te suivront. ») · **la connexion** (e-mail, mot de passe, mot de passe oublié, encart d'installation) · **la création** (e-mail, mot de passe, prénom, ± 18 ans — **PAS d'écurie**, elle se choisit sur le globe côté Hype) · **Mon compte** (avatar, e-mail, nombre de mots du carnet, Premium, déconnexion).
+**Avatar : l'icône de l'app** (`apple-touch-icon-linguae.png`), choix de Blandine — « icône juste ». Fichier déjà présent et déjà déclaré, rien à téléverser. **Conséquence acceptée : tout le monde a le même avatar** — sans importance sur un écran où l'on est seul, à revoir le jour où des avatars apparaîtront dans un classement ou un fil. La variante « icône + initiale » reste disponible.
+
+## ▸ TROIS POINTS QUI COMPTENT PLUS QUE LE RESTE
+**1. Le rattrapage, comme promis.** On ne cherche JAMAIS si une adresse existe — Supabase l'interdit, c'est une protection contre l'énumération des comptes. Donc si la création échoue parce que l'adresse est déjà prise, **on n'affiche pas une erreur** : on emmène vers la connexion **avec l'adresse déjà remplie** et un message clair. Personne ne reste bloqué.
+**2. La déconnexion sauvegarde D'ABORD.** `window.progressionPousser()` a été ajoutée exprès : elle écrit et **dit si la base a confirmé**. **Le local n'est effacé QUE si elle a réussi** — sinon on garde tout. Mieux vaut une copie locale de trop qu'une progression perdue. Décision de Blandine.
+**3. Pas de case « se rappeler de moi ».** `persistSession` + `autoRefreshToken` sont actifs : on reste connecté d'une ouverture à l'autre. La case du dessin de Hype a été **écartée** avec son motif — cochée par défaut, elle invite à être décochée, et une session qui meurt à la fermeture ferait retaper le mot de passe chaque jour, exactement l'inverse de la demande.
+
+## ▸ AUTRES DÉTAILS UTILES
+Le lien de réinitialisation du mot de passe **ramène sur Linguae** (`redirectTo` = origine + chemin courant), pas sur Hype · les messages d'erreur sont **réécrits en français utile** plutôt que le texte brut de Supabase · le cas « pas de session après inscription » est traité, au cas où la confirmation d'e-mail soit activée un jour · le client Supabase, jusque-là enfermé dans `pont()`, est exposé par `window.clientLingua()` — fabriqué une seule fois, à la demande · après une entrée réussie, `pont()` est relancé, ce qui **verse** la progression gagnée sans compte dans le compte tout neuf.
+
+## ▸ LA LIGNE D'ACCÈS — DEUX ENDROITS, PAS TROIS
+Sur la **présentation** (sous « Partir ») et sur le **carnet de route** (à côté du Globe). Deux états : « Me connecter ou créer un compte » · « Connectée · mon compte ». Discrète, parce que la présentation s'affiche à chaque lancement.
+
+## ▸ À L'ÉCRAN
+- **+** l'écran de compte de Linguae, ouvert depuis la présentation, le carnet de route, ou au gain d'une carte sans compte
+- **+** la ligne d'accès, deux endroits
+- **−** le renvoi vers Hype disparaît : plus personne ne quitte Linguae pour se connecter
+- **−** la porte B n'apparaît plus (remplacée, son code reste dormant)
+
+## ▸ VÉRIFICATIONS — 43 CONTRÔLES, 43/43
+`node --check` 4/4 · fonctions **156 → 163**, aucune perdue, 7 ajoutées · balises `div` équilibrées (157/157) · **les 29 identifiants** utilisés par le JS existent dans le HTML · les 4 appels Supabase présents · `versConnexion` n'envoie plus vers `index.html` et ouvre bien l'écran · rattrapage présent · poussée forcée présente et effacement conditionné à sa réussite · le carnet fait partie des clés effacées · redirection du mot de passe vers Linguae · avatar = icône de l'app · aucune case « se rappeler de moi » · `scrollTop` remis à zéro à chaque vue.
+
+## ▸ CE QUI RESTE, ET QUI EST HORS DE CETTE LIVRAISON
+**Le masquage des boutons sociaux dans `index.html`** — autre fichier, non touché ici. **La suppression de compte dans Linguae** — elle va dans un réglage, pas dans un parcours d'entrée, et réutilisera `supprimer-compte.js` tel quel (il ne demande qu'un jeton de session, et il fonctionne depuis la session 121). **La page de collection** et les 31 objets. **Le signet du carnet** et sa page.
+
+## ▸ Vers l'App Store
+**La marche décisive est franchie.** Linguae ne dépend plus de Hype pour la connexion : un cavalier qui ne l'installera jamais peut s'inscrire, jouer, sauvegarder et se déconnecter. Restent, dans l'ordre : la **suppression de compte** (exigée par Apple dès qu'on peut s'inscrire), le **paiement** (seule vraie question non tranchée), puis le compte développeur Apple — qui commande la date et le branchement des connexions sociales.
+
+---
+
 # SESSION 194 · 10/08 · v65 — LA CARTE DE SANTA YNEZ : LE CACHE, PAS LE FICHIER
 
 **Livré : `lingo.html` md5 `089b3634b38b009c6bb327d250478bad`, un seul changement — `VER` 31 → 32.**
