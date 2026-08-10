@@ -4332,6 +4332,25 @@ function fermerArrivee(){
   try{ S("pimg").removeAttribute("src"); }catch(err){}
   if(videoEl){ try{ videoEl.pause(); videoEl.removeAttribute("src"); videoEl.load(); }catch(err){}
     if(videoEl.parentNode) videoEl.parentNode.removeChild(videoEl); videoEl=null; }
+  /* ⚠️ v63 — 10/08/2026 — BLOCAGE SUR UNE PAGE GRISE ET FLOUE, SIGNALÉ EN
+     URGENCE PAR BLANDINE (« je clique sur la baule et regarde la vidéo, et
+     après je reste bloquée sur une page toute grise sans rien »), alors
+     qu'elle venait d'envoyer le lien à beaucoup de monde.
+
+     CAUSE : `ouvrirArrivee` repasse TOUTES les cartes en fond flou de 1 Ko
+     pour libérer la mémoire pendant que la vidéo joue (garde-fou iOS du
+     04/08 : dix images 900x1200 décodées font mourir l'onglet). Mais rien
+     ne les remettait en net à la fermeture, et `affiner()` ne se déclenche
+     qu'au DÉFILEMENT du carnet. On retombait donc sur une carte floue et
+     sans texte lisible, et il fallait faire glisser le doigt
+     horizontalement pour que la page revienne — geste que personne ne
+     devine. Le parcours était mort pour tout nouveau visiteur arrivant
+     par le lien de partage.
+
+     ⛔ NE JAMAIS RETIRER CET APPEL. Toute fonction qui déclasse les cartes
+     en flou doit avoir son pendant qui les rétablit. Le garde-fou mémoire
+     reste entier : `affiner` ne remet en net que trois cartes au maximum. */
+  try{ if(typeof affiner === "function") affiner(courant); }catch(err){}
 }
 S("cta").addEventListener("click",function(){
   /* Un bouton verrouillé qui ne fait rien enferme : sur une ville pas
