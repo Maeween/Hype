@@ -35,21 +35,26 @@
 //  affichent une ligne par exécution, avec le nombre de comptes purgés.
 // ============================================================
 
-const { purgerEchus, clientAdmin } = require("./supprimer-compte");
+//  ⛔ AUCUNE DÉPENDANCE NPM ICI NON PLUS. Le 10/08, `supprimer-compte.js`
+//  plantait au chargement sur `Cannot find module '@supabase/supabase-js'`
+//  — il n'y a pas de `package.json` dans le dépôt. Comme cette fonction le
+//  require, elle plantait avec lui. Les deux sont maintenant écrites avec de
+//  simples appels réseau. Ne jamais réintroduire un paquet externe.
+const { purgerEchus, config } = require("./supprimer-compte");
 
 exports.handler = async () => {
   const debut = new Date().toISOString();
-  const admin = clientAdmin();
+  const cfg = config();
 
-  if (!admin) {
+  if (!cfg) {
     console.error("[purge " + debut + "] CONFIGURATION MANQUANTE : SUPABASE_URL ou la cle service_role absente dans Netlify. Aucun compte purge.");
-    // On répond 200 : une erreur de configuration ne doit pas faire
-    // réessayer la planification en boucle. Le journal porte la cause.
+    // On répond 200 : une erreur de configuration ne doit pas faire réessayer
+    // la planification en boucle. Le journal porte la cause.
     return { statusCode: 200, body: JSON.stringify({ ok: false, raison: "configuration" }) };
   }
 
   try {
-    const r = await purgerEchus(admin);
+    const r = await purgerEchus(cfg);
 
     if (r.purges === 0) {
       console.log("[purge " + debut + "] aucun compte echu, rien a faire.");
