@@ -20751,9 +20751,19 @@ function HypeApp() {
         return champMultilingue[langue] || champMultilingue.fr || "";
     };
     // Navigation avec historique (pour swipe retour/avancer)
+    /* session 112 — memoire de defilement par ecran (demande Blandine : revenir des jeux
+       ne doit plus remettre la page des cours tout en haut). On note la position au moment
+       de QUITTER un ecran, et on la restaure quand on y REVIENT (retour ou navigation). */
+    const __scrollMem = useRef({});
+    const __noterScroll = () => { try { __scrollMem.current[ecran] = window.scrollY || 0; } catch (e) { } };
+    useEffect(() => {
+        let p = 0; try { p = __scrollMem.current[ecran] || 0; } catch (e) { }
+        try { requestAnimationFrame(() => { requestAnimationFrame(() => { window.scrollTo(0, p); }); }); } catch (e) { }
+    }, [ecran]);
     const naviguer = (cible) => {
         if (!cible || cible === ecran)
             return;
+        __noterScroll();
         if (cible === "dashboard")
             setHistoriqueEcrans([]);
         else
@@ -20768,6 +20778,7 @@ function HypeApp() {
     const retourEcran = () => {
         if (historiqueEcrans.length === 0)
             return;
+        __noterScroll();
         const prec = historiqueEcrans[historiqueEcrans.length - 1];
         setPileAvant((p) => [...p, ecran]);
         setHistoriqueEcrans((h) => h.slice(0, -1));
@@ -20777,6 +20788,7 @@ function HypeApp() {
         if (pileAvant.length === 0)
             return;
         const suiv = pileAvant[pileAvant.length - 1];
+        __noterScroll();
         setHistoriqueEcrans((h) => [...h, ecran]);
         setPileAvant((p) => p.slice(0, -1));
         setEcran(suiv);
@@ -35071,13 +35083,15 @@ function MemoryMascotteAnim({ grande }) {
 }
 function MemoryPoneyGrille({ paires, numeroNiveau, onTermine, tr, forcerTout }) {
     /* Difficulté progressive : 4 paires aux niveaux 1-2, puis +1 paire tous les 2 niveaux (5 aux niveaux 3-4, 6 aux 5-6...), plafonnée au nombre de paires du thème. Le Boss (forcerTout) affiche toujours toutes ses paires. */
-    const MEMORY_TIRAGE_MAX = forcerTout ? paires.length : 4 + Math.floor(((numeroNiveau || 5) - 1) / 2);
+    /* session 112 : une paire SANS image n'entre jamais dans la grille (sinon deux cartes "?" irresolubles bloquent la partie a N-1/N — bug constate par Blandine sur le Saut d'obstacles). */
+    const pairesValides = React.useMemo(() => paires.filter(function (p) { return !!p.src; }), [paires]);
+    const MEMORY_TIRAGE_MAX = forcerTout ? pairesValides.length : 4 + Math.floor(((numeroNiveau || 5) - 1) / 2);
     const pairesJeu = React.useMemo(() => {
-        if (paires.length <= MEMORY_TIRAGE_MAX) return paires;
-        const copie = [...paires];
+        if (pairesValides.length <= MEMORY_TIRAGE_MAX) return pairesValides;
+        const copie = [...pairesValides];
         for (let i = copie.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[copie[i], copie[j]] = [copie[j], copie[i]]; }
         return copie.slice(0, MEMORY_TIRAGE_MAX);
-    }, [paires]);
+    }, [pairesValides]);
     const cartesInit = React.useMemo(() => {
         const doubles = [];
         pairesJeu.forEach((p, i) => { doubles.push({ id: i + "a", cle: p.cle, src: p.src, emoji: p.emoji, label: p.label }); doubles.push({ id: i + "b", cle: p.cle, src: p.src, emoji: p.emoji, label: p.label }); });
