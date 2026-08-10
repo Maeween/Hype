@@ -27,6 +27,12 @@
 /lingo-globe.html
   Cache-Control: public, max-age=0, must-revalidate
 
+/hype-cours-baby.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/hype-memory-poney.js
+  Cache-Control: public, max-age=0, must-revalidate
+
 
 # --------------------------------------------------------------------------
 #  CACHE UN AN, IMMUABLE — contenus adressés par clé, jamais réécrits
