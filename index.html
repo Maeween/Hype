@@ -18740,6 +18740,11 @@ window.addEventListener("error", function (ev) {
    hype-cours-baby.js — non pas a cause d'un ecrasement, mais pour supprimer un
    intermediaire de plus tant que la cause reelle n'est pas etablie. */
 window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
+/* session 112 — filet Memory : k611-k614 (niveau Saut d'obstacles) ne sont declares NULLE PART
+   (les boucles couvrent k547-554 et k615-628, le trou 611-614 tombe entre les deux).
+   Les photos ont ete poussees plusieurs fois dans images/ sans que la cle existe -> cartes en "?".
+   Declaration en repli : si un lot definit la cle un jour, le lot gagne ; sinon le fichier images/ sert. */
+for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 </script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=1"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
@@ -35038,7 +35043,7 @@ const MEMORY_MASCOTTE_CSS = ""
     + "@keyframes mpFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}"
     + "@keyframes mpGlowPulse{0%,100%{filter:drop-shadow(0 0 10px rgba(32,217,245,.55))}50%{filter:drop-shadow(0 0 22px rgba(32,217,245,.9))}}"
     + ".mp-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin:2px auto 8px}"
-    + ".mp-mascotte{font-size:46px;line-height:1;animation:mpPopIn .55s cubic-bezier(.34,1.56,.64,1) both,mpFloat 2.6s ease-in-out .55s infinite,mpGlowPulse 2.6s ease-in-out .55s infinite}"
+    + ".mp-mascotte{font-size:46px;line-height:1;animation:mpPopIn .55s cubic-bezier(.34,1.56,.64,1) both,mpFloat 2.6s ease-in-out .55s infinite;will-change:transform}/* session 112 : mpGlowPulse (drop-shadow anime en continu) retire, cause de lag iOS pendant la partie */"
     + ".mp-mascotte.mp-grande{font-size:72px}"
     + ".mp-spark{position:absolute;left:50%;top:50%;font-size:15px;opacity:0;animation:mpSpark 1.5s ease-out both}"
     + "@keyframes mpSpark{0%{opacity:0;transform:translate(0,0) scale(.3) rotate(0deg)}20%{opacity:1}100%{opacity:0;transform:translate(var(--mpx),var(--mpy)) scale(1) rotate(180deg)}}"
@@ -35186,8 +35191,20 @@ function MemoryPoneyJeu({ tr }) {
         setVue("resultat");
     };
     if (vue === "profil") {
-        return React.createElement("div", { style: { textAlign: "center" } },
-            React.createElement("div", { style: { borderRadius: 20, overflow: "hidden", marginBottom: 16, border: `1px solid ${COLORS.nuitBordure}` } },
+        var __memdiag = null;
+    try {
+        if (typeof location !== "undefined" && /(^|[?&])memdiag=1/.test(location.search)) {
+            var __l = (typeof MEMORY_PONEY_NIVEAUX !== "undefined" ? MEMORY_PONEY_NIVEAUX : []).map(function (n) {
+                var manq = (n.paires || []).filter(function (p) { return !p.src; }).map(function (p) { return p.cle; });
+                if (!n.couverture) manq.unshift("(couverture)");
+                return manq.length ? (n.id + " : " + manq.join(", ")) : null;
+            }).filter(Boolean);
+            __memdiag = React.createElement("pre", { style: { background: "#1a2230", color: "#8FE3A6", fontSize: 11, lineHeight: 1.6, padding: 12, borderRadius: 10, whiteSpace: "pre-wrap", margin: "0 0 12px" } },
+                __l.length ? ("IMAGES MANQUANTES (cle de paire par niveau)\n" + __l.join("\n")) : "Aucune image manquante : toutes les paires ont un src.");
+        }
+    } catch (e) { }
+    return React.createElement("div", { style: { textAlign: "center" } },
+            __memdiag, React.createElement("div", { style: { borderRadius: 20, overflow: "hidden", marginBottom: 16, border: `1px solid ${COLORS.nuitBordure}` } },
                 HYPE_IMGS["k452"] && React.createElement("img", { src: HYPE_IMGS["k452"], alt: "", style: { width: "100%", display: "block", maxHeight: 220, objectFit: "cover" } })),
             React.createElement("h2", { style: { fontFamily: "'Cinzel', serif", fontSize: 19, color: COLORS.blanc, margin: "0 0 6px" } }, tr({ fr: "Bienvenue dans le Mémory du Poney !", en: "Welcome to the Pony Memory!", es: "¡Bienvenido al Mémory del Poni!", it: "Benvenuto nel Mémory del Pony!", de: "Willkommen beim Pony-Memory!", ja: "ポニーのメモリーへようこそ！" })),
             React.createElement("p", { style: { color: COLORS.encreDoux, fontSize: 13, margin: "0 0 18px" } }, tr({ fr: "Comment tu t'appelles ?", en: "What's your name?", es: "¿Cómo te llamas?", it: "Come ti chiami?", de: "Wie heißt du?", ja: "なまえをおしえてね" })),
