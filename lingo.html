@@ -1281,6 +1281,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #lcJauge i{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.12)}
 #lcJauge i.f{background:var(--turquoise)}
 #lcJauge i.a{background:rgba(32,217,245,.5)}
+/* v69 : le reglage du son vient dans la barre des exercices, a cote de la
+   jauge (choix de Blandine), puisque l'ecran de chapitre qui le portait est
+   supprime. Version compacte : un rond, pas d'etiquette — la barre doit
+   rester une barre. */
+#lcSonB{flex:0 0 auto;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.12);
+ background:rgba(255,255,255,.04);color:#8B99A2;font-size:14px;line-height:1;cursor:pointer;
+ display:flex;align-items:center;justify-content:center}
+#lcSonB.muet{border-color:rgba(32,217,245,.45);background:rgba(32,217,245,.08);color:var(--turquoise)}
 #lcSur{font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
  color:var(--orTexte);text-align:center;margin:8px 0 0}
 #lcTitre.grand{font-family:'Cinzel',serif;font-size:27px;font-weight:600;letter-spacing:.05em;
@@ -1313,6 +1321,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  border:1px solid var(--bord);
  box-shadow:0 26px 60px -40px rgba(32,217,245,.5)}
 .lcMot{font-family:'Cinzel',serif;font-size:32px;font-weight:600;margin:0;line-height:1.15}
+/* v69 : le signet du carnet, dans le coin de la carte du mot. Discret tant
+   que le mot n'est pas gardé, doré une fois dedans. */
+.lcSignet{position:absolute;top:10px;right:10px;width:38px;height:38px;border:0;background:none;
+ color:rgba(255,255,255,.34);font-size:20px;line-height:1;cursor:pointer;
+ display:flex;align-items:center;justify-content:center}
+.lcSignet.dedans{color:var(--or)}
 .lcPhon{font-size:12.5px;color:var(--turquoise);letter-spacing:.14em;margin:9px 0 0}
 .lcVar{font-size:11px;color:var(--gris);margin:7px 0 0;font-style:italic}
 .lcFil{width:32px;height:1px;background:var(--bord);margin:16px auto}
@@ -2002,7 +2016,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v67 · la sortie des villes</p>
+    <p id="ouvVersion">v69 · droit dans la leçon</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -2046,7 +2060,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="lecon">
   <div id="lcFond"><div id="lcFondImg"></div><div id="lcFondBas"></div></div>
   <div id="lcPage">
-    <div id="lcBarre"><button id="lcFermer" aria-label="Fermer">✕</button><div id="lcJauge"></div></div>
+    <div id="lcBarre"><button id="lcFermer" aria-label="Fermer">✕</button><div id="lcJauge"></div><button id="lcSonB" type="button" data-ta="reglerSon" aria-label="Le son"></button></div>
     <p id="lcTitre"></p>
     <div id="lcCorps"></div>
   </div>
@@ -5759,6 +5773,7 @@ var UI = {
  retour:{fr:"Retour", en:"Back", es:"Volver", it:"Indietro", de:"Zurück", ja:"戻る"},
  /* v67 : la porte de sortie du chemin de nuit. Blandine : « elle peut pas
     s'inviter au hasard quand elle veut et ne mener nulle part ». */
+ reglerSon:{fr:"Le son", en:"Sound", es:"El sonido", it:"Il suono", de:"Der Ton", ja:"音"},
  continuerVoyage:{fr:"Continuer mon voyage", en:"Continue my journey",
    es:"Continuar mi viaje", it:"Continua il mio viaggio",
    de:"Meine Reise fortsetzen", ja:"旅を続ける"},
@@ -6853,7 +6868,24 @@ function ouvrirLecon(refVille){
     return;
   }
   LC = { cle:cle, chap:chap, ville:refVille, ch:eCh(e), villeNom:eV(e) };
-  choisirLecon();
+  /* ⚠️ v69 — L'ECRAN DE CHAPITRE EST SUPPRIME (ordre de Blandine, 10/08 :
+     « on peut les retirer ces deuxièmes pages là », « elles sont moches et
+     servent à rien »). Il avait ete dessine quand une ville portait
+     plusieurs lecons : il servait a CHOISIR laquelle reprendre. Depuis la
+     refonte a une seule lecon par ville, il ne restait qu'un bouton.
+     Ce qu'il portait :
+     · le reglage du son -> deplace dans la barre des exercices, a cote de
+       la jauge (choix de Blandine). Il garde le dernier reglage, comme
+       avant : rien ne change de ce cote.
+     · l'avancement mot par mot (les dix tirets) -> retire, Blandine :
+       « laisse tomber les tirets, j'avais même pas compris que c'était ça ».
+     · « Ce que ce chapitre debloque » -> retire, il faisait doublon avec la
+       page de la ville, qui annonce deja la carte et le souvenir.
+     `choisirLecon()` reste dans le fichier, plus appelee — a supprimer une
+     fois eprouve. On entre directement dans la lecon ou l'on en est. */
+  var Ls = lecons(chap), depart = null;
+  Ls.forEach(function(L){ if(!depart && acquisDe(L) < L.concepts.length) depart = L; });
+  lancer(depart || Ls[0]);
 }
 function fermerLecon(){
   S("lecon").classList.remove("on");
@@ -7091,6 +7123,14 @@ function exercicePour(c){
 function cible(){ return VOYAGE_LANGUE; }
 
 function jauge(){
+  /* v69 : le rond du son suit l'etat a chaque etape — il vit dans la barre,
+     qui n'est pas redessinee, donc il faut le remettre a jour ici. */
+  var b=S("lcSonB");
+  if(b){
+    var muet=modeSilencieux();
+    b.classList.toggle("muet", muet);
+    b.textContent = muet ? "\uD83D\uDD07" : "\uD83D\uDD0A";
+  }
   var j=S("lcJauge"); videEl(j);
   LC.plan.forEach(function(x,i){
     j.appendChild(el("i",{class: i<LC.i ? "f" : (i===LC.i ? "a" : "")}));
@@ -7104,8 +7144,26 @@ function etape(){
   jauge();
   S("lcTitre").textContent = LC.ch + " · " + T("lecon") + LC.L.n;
   videEl(S("lcCorps"));
-  S("lcCorps").appendChild({decouverte:exDecouverte, choix:exChoix, ecoute:exEcoute,
-                            ecrire:exEcrire, dire:exDire, phrase:exPhrase}[x.t](x));
+  /* ⚠️ v68 — LE GARDE-FOU. Blandine, 10/08, deux fois : « plantee sur la
+     derniere page sans rien », « retour au depart ». Un exercice qui jette
+     APRES le vidage du corps laissait un ecran noir definitif : plus aucun
+     bouton, la lecon jamais terminee, donc jamais sauvegardee. Le travail
+     etait perdu a chaque fois.
+     Desormais un exercice qui echoue est SAUTE, et la lecon continue. Un
+     mot manque ; l'app ne meurt pas. Si c'etait le dernier, on va a la fin
+     de lecon, qui enregistre. Le saut est trace en console pour que la
+     cause reste trouvable. */
+  var bloc=null;
+  try{
+    bloc = {decouverte:exDecouverte, choix:exChoix, ecoute:exEcoute,
+            ecrire:exEcrire, dire:exDire, phrase:exPhrase}[x.t](x);
+  }catch(err){
+    try{ console.warn("Linguae — exercice saute ("+x.t+") :", err && err.message); }catch(e){}
+    LC.i++;
+    if(LC.aTester>0 && x.t!=="decouverte") LC.aTester--;
+    return etape();
+  }
+  S("lcCorps").appendChild(bloc);
   S("lecon").scrollTop=0;
 }
 function suivant(juste, ref){
@@ -7151,12 +7209,36 @@ function verdict(zone, juste, bonne, apres, concept){
 }
 
 /* ---------- 1. la carte de découverte ---------- */
+/* v69 — LE SIGNET DU CARNET, demande de Blandine : « ajoute à côté des mots
+   qu'on apprend la possibilité de les ajouter au carnet de voyage […] qu'on
+   puisse commencer à les mémoriser et ajouter, et on construira la page
+   après ». Le stockage existait deja depuis la v64 (`carnetBasculer`,
+   `carnetContient`, cle `ville|mot`) et attendait son ecran : c'est ce
+   signet-la qui manquait. La PAGE du carnet reste a construire. */
+function signetCarnet(c){
+  var b=el("button",{class:"lcSignet", type:"button"});
+  function peindre(){
+    var dedans = (typeof window.carnetContient==="function")
+               && window.carnetContient(LC.ville, c.ref);
+    b.classList.toggle("dedans", !!dedans);
+    b.textContent = dedans ? "\u2605" : "\u2606";
+    b.setAttribute("aria-label", dedans ? "Retirer de mon carnet" : "Ajouter à mon carnet");
+  }
+  b.addEventListener("click", function(ev){
+    ev.stopPropagation();
+    if(typeof window.carnetBasculer==="function") window.carnetBasculer(LC.ville, c.ref);
+    peindre();
+  });
+  peindre();
+  return b;
+}
 function exDecouverte(x){
   var c=x.c, ui=langueUI(), lg=cible();
   var mc=c.mots[lg], mu=c.mots[ui];
   return el("div",{},
     el("p",{class:"lcCons", text: ui==="en"?"A new word":"Un mot nouveau"}),
     el("div",{class:"lcCarte"},
+      signetCarnet(c),
       el("p",{class:"lcMot", text:mc.m}),
       mc.p ? el("p",{class:"lcPhon", text:"[ "+mc.p+" ]"}) : null,
       mc.var ? el("p",{class:"lcVar", text:mc.var}) : null,
@@ -7254,7 +7336,22 @@ function exEcrire(x){
 /* ---------- 5. remettre la phrase dans l'ordre ---------- */
 function exPhrase(x){
   var ui=langueUI(), lg=cible();
-  var attendue=x.p[lg]||x.p.en;
+  /* ⚠️ v68 — LES DEUX ECRITURES DE PHRASE, apres le blocage signale par
+     Blandine a Spruce Meadows (« plantee sur la derniere page sans rien »,
+     deux fois de suite, la lecon jamais enregistree).
+     19 lexiques sur 19 ecrivent leurs phrases A PLAT : {lecon:1, fr:"…"}.
+     Les QUATRE ecrits le 9 aout — froid, haras, apprentissage,
+     horsemanship — les emboitent : {lecon:1, p:{fr:"…"}}. Le moteur
+     cherchait donc la phrase la ou il n'y avait rien, et jetait en plein
+     rendu, apres le vidage du corps : ecran noir, plus rien qui reponde,
+     et la fin de lecon jamais atteinte donc rien de sauvegarde.
+     Le blocage tombait sur le DERNIER exercice des villes de niveau 1,
+     celui qui donne la carte postale.
+     Plutot que de courir apres les fichiers, on lit les deux formes ici :
+     c'est le seul endroit qui compte, et un lexique ecrit demain dans
+     l'autre sens marchera quand meme. */
+  var ph = (x.p && typeof x.p.p === "object" && x.p.p) ? x.p.p : x.p;
+  var attendue=ph[lg]||ph.en;
   var tuiles=attendue.split(" ").filter(function(t){ return t.length; });
   var dispo=brasser(tuiles), choisies=[];   /* on suit des INDICES : retirer rend au banc */
   var zone=el("div",{class:"lcVerdict"});
@@ -7275,7 +7372,7 @@ function exPhrase(x){
   redessiner();
   return el("div",{},
     el("p",{class:"lcCons", text: ui==="en"?"Put the sentence in order":"Remets la phrase dans l'ordre"}),
-    el("p",{class:"lcInvite lcPetit", text:x.p[ui]||x.p.fr}),
+    el("p",{class:"lcInvite lcPetit", text:ph[ui]||ph.fr}),
     ligne, banc,
     el("button",{class:"lcCta", onclick:function(){
       var juste = choisies.map(function(i){ return dispo[i]; }).join(" ")===attendue;
@@ -8200,6 +8297,20 @@ if(lireAncre()){
 }
 
 S("lcFermer").addEventListener("click", function(){ fermerLecon(); montrerCarnet(); });
+
+/* v69 : le rond du son dans la barre des exercices. Il garde le dernier
+   reglage d'une lecon a l'autre (meme cle qu'avant). ⚠️ Il REDESSINE
+   l'exercice en cours : un exercice d'ecoute devenu muet doit repasser en
+   son equivalent visuel, sinon on reste devant un son qu'on n'entendra pas.
+   Le mot en cours n'est pas rejoue, on ne perd rien. */
+S("lcSonB").addEventListener("click", function(){
+  try{ localStorage.setItem("hype_lingua_muet", modeSilencieux()?"0":"1"); }catch(e){}
+  if(LC && LC.plan && LC.plan[LC.i]){
+    var x=LC.plan[LC.i];
+    if(x.c && x.t!=="decouverte" && x.t!=="phrase") x.t=exercicePour(x.c);
+    etape();
+  }
+});
 
 
 /* ==================================================================
