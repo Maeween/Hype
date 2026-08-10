@@ -10,7 +10,7 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `37b82f076ea53a6d996c54999dea9ff7`, 9 079 285 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112) + `hype-memory-poney.js` (1, NOUVEAU). ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
+**Version actuelle de l'index.html : 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `37b82f076ea53a6d996c54999dea9ff7`, 9 079 285 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (1, NOUVEAU, chargé via `?v=1`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
 
 **Ancienne version (110) — 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
 
@@ -163,6 +163,12 @@ Un premier plan (renommer les 12 fichiers en `-2`) a été remplacé quand Bland
 **RÈGLE GÉNÉRALISÉE (à ne plus jamais réapprendre) : une image sous `/images/*` ou toute ressource « immutable » ne se corrige JAMAIS sous le même nom — on change son ADRESSE (nouveau nom OU suffixe `?v=N`) et on met à jour la référence.** Tester dans Safari ne dit RIEN de l'app installée : leurs caches sont étanches. Le témoin de version, lui, traverse les deux.
 
 **Au passage, la question de Blandine « ce cache d'un an, on en a besoin ? » : OUI.** C'est lui qui a fait retomber la bande passante Netlify (1 750 crédits fin juillet, menace de coupure). Le supprimer = retour du problème en quelques semaines. Il n'est pas trop agressif, il exige juste son contrat : nom nouveau pour contenu nouveau.
+
+### 21H19 — LA VRAIE CAUSE, PROUVÉE PAR LE TÉMOIN COMPOSITE : `baby ?` MAIS `memo 1`
+
+Après push du soir, app installée fermée/rouverte : **`reprise 1.2 · baby ? · memo 1`**, vieilles couvertures toujours là. Lecture : `memo 1` chargé (adresse JAMAIS VUE) pendant que baby reste `?` — **l'app installée ressert une copie de `hype-cours-baby.js` ANTÉRIEURE à la session 111** (sans témoin, vieilles couvertures en clés k), et ce depuis toujours : Blandine confirme que baby n'a JAMAIS affiché un numéro dans l'app installée. Le `?v=2` posé sur les images était donc inopérant : il vit dans un fichier que l'app ne lit pas. Ce n'était NI les images, NI le sw.js, NI `_headers` seul : **le cache disque de la PWA iOS sert ce fichier sans revalider, quels que soient les en-têtes actuels** (comportement constaté, pas expliqué — ne plus perdre de temps à l'expliquer, le contourner).
+
+**Correctif définitif — le même que ce qui vient de marcher pour memo : une adresse neuve.** Les balises deviennent `hype-cours-baby.js?v=112` et `hype-memory-poney.js?v=1`. L'index n'étant jamais en cache, chaque appareil demande la bonne adresse dès le prochain lancement. Les `?v=2` des 12 images restent en place (ceinture et bretelles : le cache images de l'app peut aussi être poisseux).
 
 ### 🔴 SIGNALEMENT NON RÉSOLU : « bug des photos » dans le Memory
 
