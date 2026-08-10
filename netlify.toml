@@ -125,3 +125,23 @@
   for = "/*.webm"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# ============================================================
+#  AJOUT DU 10/08/2026 — LA PURGE AUTOMATIQUE DES COMPTES SUPPRIMÉS
+#  Ordre de Blandine : « on continue et planification pour la purge ».
+#
+#  CE QUI MANQUAIT : `supprimer-compte.js` désactivait bien les comptes à
+#  J+60, mais la purge définitive n'était appelée PAR PERSONNE — aucune
+#  planification n'existait. Les comptes restaient marqués « supprimé »
+#  indéfiniment sans jamais l'être vraiment. Point bloquant App Store.
+#
+#  CETTE SECTION EST CE QUI DÉCLENCHE `purge-planifiee.js`. Sans elle, le
+#  fichier existe mais ne tourne jamais. NE PAS LA SUPPRIMER.
+#
+#  "0 3 * * *" = chaque nuit à 3 h UTC (5 h en France l'été, 4 h l'hiver).
+#  Heure creuse volontaire : la purge peut supprimer plusieurs comptes et
+#  leurs fichiers d'un coup.
+# ============================================================
+
+[functions."purge-planifiee"]
+  schedule = "0 3 * * *"

@@ -57,6 +57,79 @@
 
 ---
 
+## SESSION 120 · 10/08 · LA PURGE DES COMPTES ENFIN DÉCLENCHÉE + NEUF TABLES OUBLIÉES
+
+**Livré : `supprimer-compte.js` · `purge-planifiee.js` (NOUVEAU) · `netlify.toml` md5 `9b07518fb2c929722d0cddf2ab0bd9b4`.** Emplacements : les deux fonctions dans `netlify/functions/`, le TOML **à la racine**. Aucun SQL. `index.html` et `lingo.html` non modifiés par cette session.
+
+### ▸ ORDRE DE BLANDINE
+« on continue et planification pour la purge », après un audit qu'elle a mené elle-même en base.
+
+### ▸ L'AUDIT, ET SON RÉSULTAT — À NE JAMAIS OUBLIER
+Requête sur `pg_constraint` exécutée par Blandine : **AUCUNE des 27 tables n'a de clé étrangère vers `auth.users`**. Donc **il n'existe aucune suppression en cascade**. La liste `TABLES` de `supprimer-compte.js` est le **SEUL** mécanisme de nettoyage de toute l'application : toute table oubliée survit indéfiniment à la suppression du compte. **À chaque nouvelle table portant un `user_id`, l'ajouter à cette liste est un geste de livraison obligatoire.**
+*(Effet secondaire favorable : sans contrainte, `deleteUser` ne peut jamais être bloqué par une ligne restante.)*
+
+### ▸ 1. NEUF TABLES AJOUTÉES (17 → 26)
+`hype_parrain_codes` · `hype_paliers` · `hauts_faits` · `hype_vues` · `likes` · `ecurie_cavaliers_choisis` · `video_favoris` · `video_playlists` · `video_progression`.
+- **`commentaires` reste VOLONTAIREMENT exclue** : commentaires laissés chez d'autres cavalières conservés, pseudo grisé. Choix documenté — **ne pas l'ajouter sans l'accord explicite de Blandine**.
+- **NON RÉGLÉ, signalé avant livraison** : `hype_filleuls` n'a pas de colonne `user_id` (probablement `parrain_id` / `filleul_id`). Elle échappe à la boucle **et** à l'audit. Suppression à écrire à part, une fois ses colonnes connues.
+
+### ▸ 2. LA PURGE ÉTAIT ÉCRITE MAIS N'ÉTAIT APPELÉE PAR PERSONNE
+Vérifié le 10/08 avec Blandine : `netlify.toml` ne contenait que des règles de cache, et les seules fonctions déployées étaient `assistant`, `stripe-webhook`, `supprimer-compte`. **Aucune planification.** Les comptes étaient donc bien désactivés et datés à J+60 — ce que l'écran promet — mais **jamais supprimés pour de bon**. Point bloquant App Store : la promesse de suppression sans la suppression.
+- Nouveau `purge-planifiee.js`, déclenché par `[functions."purge-planifiee"] schedule = "0 3 * * *"` (chaque nuit à 3 h UTC, heure creuse volontaire). **Sans cette section du TOML, le fichier existe mais ne tourne jamais — NE PAS LA SUPPRIMER.**
+- **La purge a été extraite en `purgerEchus(admin)`**, appelée par les DEUX chemins (planifié, et manuel avec clé). Un seul code : les deux listes de tables ne peuvent pas diverger.
+- **Aucune clé pour l'appel planifié.** `HYPE_CLE_PURGE` protège l'appel exposé sur Internet ; une fonction planifiée est déclenchée par Netlify lui-même. C'est ce qui résout l'impasse signalée AVANT de coder : une planification n'envoie pas de corps de requête, donc elle ne pouvait pas transmettre la clé que le code exigeait.
+- Journaux volontairement discrets : **on ne trace que les échecs**, jamais les identifiants purgés avec succès.
+
+### ▸ 3. CACHE DES VIDÉOS (même fichier TOML)
+`.mp4` et `.webm` en cache un an. Motif : le film d'ouverture de Linguae joue désormais à chaque connexion pour tout le monde (v62) et était retéléchargé en entier chaque fois. **⚠️ `immutable` = pour diffuser un nouveau film, CHANGER SON NOM** (`ouverture-2.mp4`) et l'adresse dans `lingo.html`, comme pour les images k610/k611. Les 14 règles existantes sont intactes (16 blocs, TOML validé par analyseur).
+
+### ▸ À L'ÉCRAN
+- **−** rien : aucun écran, aucun bouton, aucun parcours modifié
+- **effet invisible mais réel** : les comptes dont les 60 jours sont écoulés seront réellement supprimés dès la première nuit suivant le déploiement
+- **+** le film d'ouverture démarre plus vite dès la deuxième visite
+
+### ▸ VÉRIFICATIONS
+`node --check` sur les deux fonctions : OK. TOML validé par analyseur : 16 blocs d'en-têtes + planification correctement lue (`{'purge-planifiee': {'schedule': '0 3 * * *'}}`).
+**Les fichiers livrés ont été CHARGÉS et exécutés avec un faux client Supabase** — 14 contrôles conformes : 26 tables sans doublon, les 9 ajouts présents, `commentaires` bien absente, `purgerEchus` / `handler` exportés, `purge-planifiee` expose un handler. Purge simulée : **26 tables balayées** · **profil vidé AVANT, compte auth supprimé EN DERNIER** · photos du dossier supprimées · **aucun compte échu → rien n'est touché** · un échec sur une table **ne bloque pas** la purge et **remonte dans les détails** · deux comptes purgés correctement.
+
+### ▸ CE QUE JE N'AI PAS PU TESTER — DIT AVANT LIVRAISON
+**Aucun accès réseau de mon côté** : la planification Netlify n'a pas été essayée. À vérifier après le premier déploiement, dans Netlify → Functions : `purge-planifiee` doit apparaître **avec une mention de planification**, et ses journaux afficheront une ligne par exécution. Si elle n'apparaît pas comme planifiée, le mécanisme alternatif (déclaration via le paquet `@netlify/functions`) devra être essayé — il exige une dépendance npm, raison pour laquelle il n'a pas été retenu d'emblée.
+
+### ▸ INCIDENT DE LA SESSION (règle du 09/08)
+**J'ai effacé la section SESSION 119 de ce SUIVI** en mettant à jour l'en-tête de version : mon remplacement de bornes a recollé l'en-tête par-dessus la section fraîchement insérée. Détecté en insérant la présente section, signalé immédiatement à Blandine, **section réécrite** (ci-dessous). Le travail lui-même n'a jamais été en danger — il est dans les fichiers livrés et détaillé dans `SUIVI-LINGUAE.md` session 185. Leçon : après toute réécriture d'en-tête, recompter les sections avant de livrer.
+
+### ▸ Préparation Flutter
+La purge devient une **opération nommée et unique** (`purgerEchus`) au lieu d'un bloc noyé dans un routeur HTTP : deux appelants, une seule liste de tables — contrat qu'un futur service de suppression exposera indépendamment du transport. `clientAdmin()` isole la fabrication du client de son usage. **Reste à moderniser** : `TABLES` est une constante maintenue à la main alors qu'elle décrit le modèle de données ; l'absence totale de clés étrangères vers `auth.users` est la vraie dette de fond — des contraintes `on delete cascade` rendraient cette liste inutile et supprimeraient la classe de bugs « table oubliée ». **À proposer à Blandine comme chantier séparé.**
+
+---
+
+## SESSION 119 · 10/08 · LINGUAE A SON PROPRE ACCÈS SUPABASE + LA TABLE DES AMBASSADEURS
+
+**⚠️ SECTION RÉÉCRITE le 10/08 : elle avait été EFFACÉE PAR MOI lors de la mise à jour de l'en-tête de version de la session 119 (bug de remplacement de bornes — l'en-tête a été recollé par-dessus la section fraîchement insérée). Incident signalé à Blandine. Le travail lui-même n'a jamais été perdu : il est dans les fichiers livrés et détaillé dans `SUIVI-LINGUAE.md` session 185.**
+
+**Livré : `index.html` md5 `cd314047f961108095123ddb9b7ba30c` (9 158 231 o) · `lingo.html` (voir SUIVI-LINGUAE 185, puis 187 pour la version propre) · `hype-ambassadeurs.sql`.** La table `hype_ambassadeurs` a été **créée et vérifiée par Blandine** : 5 lignes, les 3 Ambassadeurs + les 2 comptes modérateurs.
+
+### ▸ ORDRES DE BLANDINE
+« donne-lui un accès à linguae » · « sinon sur supabase on peut lui indiquer que sa concerne aussi linguae ? » · « ok vas y on fait ca ». Deux choix tranchés par elle : **villes ouvertes tout de suite, la base corrige derrière** ; liste des Ambassadeurs **en table Supabase** (après avoir demandé conseil ; la colonne de portée par app a été écartée, à ajouter le jour où un besoin réel apparaît).
+
+### ▸ 1. LA TABLE `hype_ambassadeurs` — SOURCE UNIQUE POUR LES DEUX APPS
+Nommer un Ambassadeur exigeait de modifier `index.html`, donc un push + un déploiement. Désormais : **une ligne dans Supabase, depuis l'iPhone**, effective dans Hype ET Linguae à la prochaine ouverture.
+- **RLS volontairement étroite** : chacun ne voit QUE sa propre ligne. Les deux apps n'ont besoin que de « suis-je Ambassadeur ? », et les adresses de Mégane, Evan et Liam ne sont pas exposées. **« Aucune ligne » signifie « pas Ambassadeur », jamais « la liste est vide ».**
+- **Aucune politique d'écriture** : l'app ne peut jamais nommer un Ambassadeur toute seule. Ajout par Table Editor, e-mail **en minuscules**.
+- **La liste en dur reste dans les DEUX fichiers, en secours.** On n'enlève JAMAIS un droit d'après la base, on ne fait qu'ajouter.
+- Côté Hype : `hypeChargerAmbassadeur(u)` appelée dans `lireAbo` **avant** de conclure. Elle pousse l'e-mail dans `HYPE_AMBASSADEURS`, donc `estAmbassadeurHype` en profite **partout** (clé Premium, quotas Fond Studio, teintes) sans autre modification.
+
+### ▸ 2. LINGUAE INTERROGE LA BASE ELLE-MÊME
+Détail complet dans `SUIVI-LINGUAE.md` session 185. En résumé : CDN Supabase + bloc autonome, même adaptateur de stockage que `index.html` (donc session déjà ouverte retrouvée **sans reconnexion**), lecture de `hype_ambassadeurs` puis `abonnements_premium`. **Limite assumée** : il faut être connecté, et Linguae n'a pas d'écran de connexion — la première connexion se fait toujours dans Hype. Ce qui disparaît, c'est le passage obligé pour **valider** le Premium, pas pour **ouvrir** la session.
+
+### ▸ VÉRIFICATIONS
+`node --check` **16/16** pour `index.html`. Fonctions **911 → 911** (+1 async, `hypeChargerAmbassadeur`), `const`/`var` **551 → 551**. Pont Premium de Linguae simulé sur **12 situations, 12/12**.
+
+### ▸ Préparation Flutter
+Le rôle d'Ambassadeur quitte le code pour la base : règle métier qui traversera la migration intacte, là où une liste en dur serait à réécrire en Dart. Et `lingo.html` prouve qu'un second client peut lire la même vérité sans réimplémenter la logique de Hype — contrat d'un futur `AbonnementRepository`.
+
+---
+
 ## SESSION 118 · 10/08 · LA CLÉ PREMIUM DE LINGUAE, LE CODE PARRAIN VISIBLE, L'EN-TÊTE ALIGNÉ
 
 **Livré : `index.html` md5 `389c2288a48bbbdb05cdf8eaa1d9063f`, 9 156 209 octets.** Base de départ : le fichier de Blandine `07d483af`. Aucun SQL. Aucune preview. `lingo.html` livré séparément dans la même journée (v62, voir `SUIVI-LINGUAE.md`) — les deux fichiers sont indépendants, chacun se pousse seul.
