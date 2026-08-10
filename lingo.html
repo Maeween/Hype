@@ -7359,7 +7359,13 @@ function montrerDest(){
          posee et la premiere visite ne se distingue plus des suivantes.
          Ne rien lancer est sans effet de bord : fermer #dest rend la main
          au carnet, qui est la racine, et appliquerLangue() l'a redessine. */
-      if(!_dejaEnVoyage) lancerFilm();
+      /* ⚠️ v62 — 10/08/2026 : `lancerFilm()` RETIRE ICI. Le film joue
+         desormais en TETE de Linguae, a chaque ouverture et pour tout le
+         monde (voir la branche de demarrage). Le garder ici le ferait
+         jouer une SECONDE fois, juste apres, au moment ou l'on vient de
+         choisir sa langue. Conclusion annoncee a Blandine avant livraison.
+         `_dejaEnVoyage` reste lu au-dessus : il ne sert plus qu'a marquer
+         qu'un voyage existait avant ce choix. */
       /* ⚠️ RETIRÉ le 6 août 2026. Ouvrir le globe ici, sur un délai,
          pouvait chevaucher l'ouverture directe de La Baule que déclenche
          maintenant terminerOuverture() — deux écrans qui se disputent
@@ -7606,43 +7612,44 @@ dessinerPaire();
     S("ouverture").classList.remove("joue");
     return;
   }
-  var vu=false, saut=false;
-  try{ vu = localStorage.getItem("hype_lingua_intro")==="1"; }catch(e){}
-  /* ⚠️ v22 : un changement de langue de lecture recharge la page (voir
-     rechargerLingua). Sans ce drapeau, le film d'ouverture repartirait a
-     chaque changement — exactement la plainte de Blandine du 8 aout. */
+  /* ==================================================================
+     v62 — 10/08/2026 — LE FILM REVIENT EN TETE, POUR TOUT LE MONDE.
+     ORDRE DE BLANDINE, mot pour mot : « tu vas me remettre le film de la
+     tete de linguae et a la tete des liens de partage », « il va se
+     derouler a chaque fois que quelqu'un va se connecter et s'il en a
+     marre le double tap l'en sortira ».
+
+     CE QUI ETAIT CASSE : le v57 (hier soir) ne lancait le film que pour
+     `vu` — c'est-a-dire pour qui etait DEJA venu. Un nouveau visiteur ne
+     le voyait donc JAMAIS, et sur un lien de partage personne n'est
+     jamais  deja venu . Deux heures de travail sur ce film etaient
+     invisibles pour tout arrivant. Ce n'etait pas demande : Blandine
+     avait demande que la presentation porte les raccourcis, l'ordre
+     film/presentation a ete deduit en plus, sans etre annonce.
+
+     MAINTENANT : une seule branche. Le film joue a CHAQUE ouverture, quel
+     que soit le visiteur, et la presentation prend le relais a sa fin via
+     `__introApresFilm` (mecanisme du v58, deja eprouve). Le drapeau
+     `hype_lingua_intro` ne commande plus l'ouverture : il ne sert qu'a
+     departager les deux etiquettes du bouton #inSuite, plus bas.
+
+     LA SEULE EXCEPTION, confirmee par Blandine : le rechargement provoque
+     par un changement de langue de lecture (`hype_lingua_saut`). « C'est
+     pas parce qu'on change de langue dans l'appli qu'on doit refaire toute
+     l'appli film d'accueil inclus. » On revele le carnet directement.
+     Ce cas doit IMPERATIVEMENT appeler terminerOuverture() : `#ouverture`
+     part avec class="joue" (carnet masque) et seul terminerOuverture()
+     retire cette classe — sans lui, ecran noir, application a tuer
+     (defaut du 8 aout, reproduit deux fois : fr->it puis es->it).
+
+     Sortie du film pour qui en a marre : double tap sur le calque (350 ms)
+     ET bouton  Passer  visible des le debut. Les deux existent deja.
+     ================================================================== */
+  var saut=false;
   try{ saut = localStorage.getItem("hype_lingua_saut")==="1";
        if(saut) localStorage.removeItem("hype_lingua_saut"); }catch(e){}
-  if(!vu){
-    montrerIntro();
-    /* ⚠️ LE DRAPEAU NE SE POSE PLUS ICI (8 aout 2026, v23). Il etait ecrit
-       des l'AFFICHAGE de la presentation. Depuis que le choix de la langue
-       d'origine s'y trouve, quiconque changerait de langue et rechargerait
-       serait deverse sur le carnet en plein milieu de son choix. Il se pose
-       maintenant a la SORTIE (bouton `#inSuite`), donc la presentation
-       revient tant qu'on ne l'a pas quittee — ce qui est le comportement
-       juste. Voir aussi le repli sur montrerDest, au cas ou la sortie se
-       fasse autrement. */
-  }
-  /* Deja venu : le film part tout seul, sans passer par le carnet.
-     Premiere visite : il part a la fermeture de l'ecran de destination
-     (voir montrerDest), pour ne pas jouer derriere la presentation. */
-  /* v57/58 (decision de Blandine) : la presentation porte les raccourcis,
-     elle s'affiche a CHAQUE lancement. Deja venu : le film joue D'ABORD,
-     seul (il est SOUS la presentation, z 42 contre 45), et la presentation
-     s'ouvre a sa fin via le drapeau une-fois releve par terminerOuverture. */
-  else if(!saut){ window.__introApresFilm = true; lancerFilm(); }
-  /* ⚠️ ECRAN NOIR CORRIGE ICI (8 aout 2026, v29). Le cas `vu && saut` —
-     deja venue, et rechargement declenche par un changement de langue de
-     lecture — ne declenchait AUCUNE des deux branches ci-dessus. Or
-     `#ouverture` part avec class="joue" (carnet masque, session 126) et SEUL
-     terminerOuverture() retire cette classe. Resultat : plus de film, pas de
-     carnet, aucune sortie — ecran noir, application a tuer. Reproduit deux
-     fois par Blandine (fr->it, puis es->it) : ce n'etait pas l'italien, c'est
-     TOUT changement de langue depuis le carnet.
-     On revele donc le carnet directement, sans rejouer le film : c'est
-     exactement ce que `saut` veut dire. */
-  else { terminerOuverture(); montrerIntro(); }  /* v57 : rechargement de langue — pas de film, mais la presentation reste le passage. */
+  if(saut){ terminerOuverture(); montrerIntro(); }
+  else { window.__introApresFilm = true; lancerFilm(); }
 })();
 
 /* Tout est défini : on redemande un rendu du chemin pour que le bouton
