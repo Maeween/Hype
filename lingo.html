@@ -411,6 +411,30 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   font-weight:600;color:var(--or);background:rgba(212,175,55,.10);
   border:1px solid rgba(212,175,55,.4);border-radius:999px}
 
+/* ==================================================================
+   v67 — LE CHEMIN DE NUIT DEVIENT UNE PAGE QUI SE TIENT.
+   Blandine, capture du 10/08 a 19 h 38 : « la fleche retour sur cette
+   page ne marche pas non plus ainsi qu'aucun des boutons affiches »,
+   puis « vire les boutons du haut s'ils sont pas fonctionnels et que tu
+   sais pas les brancher, idem pour le sprint », « autant masquer le
+   bordel », « on s'en fout tant que les gens peuvent sortir ».
+   Cette page n'est plus une destination depuis le 7 aout, mais on peut
+   encore y tomber par une fermeture qui ne remonte pas le carnet. Elle
+   garde donc son image et son titre — et une seule porte, qui marche.
+   ⚠️ #retour n'est visible QUE sur cette page : partout ailleurs, un
+   calque opaque le recouvre (arrivee 20, lecon 26, carnet 40, globe et
+   collection 41, choix 44-45, paywall 60, compte 70). Le neutraliser ici
+   ne retire donc aucune sortie ailleurs.
+   ================================================================== */
+#retour,#bGlobe,#bCollection,#bSprint{opacity:0;pointer-events:none;visibility:hidden}
+#chSortie{position:fixed;left:50%;transform:translateX(-50%);z-index:12;
+ bottom:calc(env(safe-area-inset-bottom) + 34px);
+ padding:15px 30px;border:0;border-radius:99px;
+ font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.16em;
+ text-transform:uppercase;color:#060709;cursor:pointer;
+ background:linear-gradient(120deg,#0C5763,#20D9F5 55%,#38E2F8);
+ box-shadow:0 18px 44px -18px rgba(32,217,245,.9)}
+
 /* ⚠️ z-index 41 et non 40 depuis le 6 aout 2026. A 40, le globe avait le
    MEME rang que #ouverture (le carnet) et perdait donc au depart, etant
    place avant lui dans le document : il fallait masquer le carnet AVANT
@@ -1070,6 +1094,25 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  transform:translateY(100%);transition:transform .5s cubic-bezier(.22,1,.28,1);
  -webkit-overflow-scrolling:touch}
 #arrivee.ouvert{transform:none}
+/* ⚠️ v67 — LA FLECHE DE RETOUR DE L'ECRAN DE VILLE, signalee par Blandine
+   (« pas de fleche retour », « le swipe est tres difficile a effectuer »).
+   Le bouton #retour existait bien, avec son code de sortie deja pret, mais
+   il est en z-index 12 : l'ecran d'arrivee (20) et la lecon (26) le
+   RECOUVRENT d'un fond opaque. Il n'a donc jamais pu etre touche depuis une
+   ville. Choix de Blandine : une fleche propre a cet ecran (option B),
+   plutot que de remonter l'existante au-dessus de tout — qui l'aurait fait
+   apparaitre aussi sur le globe, la collection, le film et le compte, qui
+   ont deja leur fermeture.
+   `position:fixed` fonctionne ici parce que `#arrivee.ouvert` est en
+   `transform:none` : ouvert, il n'etablit plus de bloc conteneur, la fleche
+   se cale sur l'ecran. Ferme, le panneau est translate hors champ et
+   emmene la fleche avec lui — rien a masquer a la main.
+   z-index 21 : au-dessus du panneau (20), en dessous de la lecon (26), du
+   paywall (60) et du compte (70), qui doivent la couvrir. */
+#arrRetour{position:fixed;left:12px;top:calc(env(safe-area-inset-top) + 10px);z-index:21;
+ width:38px;height:38px;border:1px solid rgba(255,255,255,.1);border-radius:50%;
+ background:rgba(6,7,9,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+ color:var(--blanc);opacity:.82;font-size:26px;line-height:1;padding:0 3px 3px 0;cursor:pointer}
 #vue{position:relative;height:52svh;min-height:280px;overflow:hidden;
  background:linear-gradient(165deg,#16222E,#0A1016 70%)}
 #vue video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
@@ -1647,6 +1690,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
 <button id="retour" data-ta="retourCarnet" aria-label="Revenir au carnet de route">‹</button>
 <button id="bSprint" data-t="sprint60">Sprint · 60 s</button>
+<!-- v67 : LA PORTE DE SORTIE. Son code est neuf et n'emprunte rien a
+     #retour, dont on ignore encore pourquoi il ne repondait pas : si
+     celui-la marche et l'autre non, la cause se trouve dans #retour et
+     nulle part ailleurs. -->
+<button id="chSortie" type="button" data-t="continuerVoyage">Continuer mon voyage</button>
 <div id="voyage"><b id="voyNom">Le tour du monde</b><span id="voyLg">anglais</span></div>
 
 <div id="hud"><div id="titre">
@@ -1676,7 +1724,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      pas lui montrer trois fois en trois pages »). Le carnet de route est là où
      l'on passe le plus de temps, et où l'on peut vouloir se déconnecter sans
      repasser par la présentation. -->
-<button class="cpAcces" id="cpAccesCarnet" type="button" style="position:relative;z-index:6;margin:10px auto 0"></button>
+<!-- v67 : cette ligne etait le SEUL element en flux normal du corps de la
+     page, d'ou son chevauchement de la barre d'etat sur la capture du
+     10/08 a 19 h 38. Ancrage corrige : sous la zone sure, centree. Elle
+     reste fonctionnelle — c'est une vraie porte, contrairement aux
+     boutons du haut. -->
+<button class="cpAcces" id="cpAccesCarnet" type="button"
+  style="position:fixed;left:50%;transform:translateX(-50%);z-index:12;margin:0;
+         top:calc(env(safe-area-inset-top) + 10px);max-width:290px"></button>
 
 <!-- La collection : cartes qui se retournent. Même motif que le globe —
      iframe séparée, même double verrou de fermeture (panne du 6 août
@@ -1698,6 +1753,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 </div>
 
 <div id="arrivee">
+  <!-- v67 : la sortie de la ville. Meme dessin que la croix du globe et de
+       l'ecran de compte, pour qu'on la reconnaisse. -->
+  <button id="arrRetour" type="button" data-ta="retourCarnet" aria-label="Revenir au carnet de route">&lsaquo;</button>
   <div id="fv"><div id="fvImg"></div><div id="fvBrume"></div><div id="fvBas"></div></div>
   <div id="vue">
     <div id="emplacement"><i></i>
@@ -1944,7 +2002,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v61 · les langues derrière leur porte</p>
+    <p id="ouvVersion">v67 · la sortie des villes</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -5699,6 +5757,11 @@ var UI = {
    de:"Die anderen Ziele kommen. Das Vokabular ist in allen sechs Sprachen schon geschrieben — zu bauen bleibt die Reise.",
    ja:"ほかの行き先も準備中。語彙は六か国語ですでに書き上がっている。あとは旅を作るだけ。"},
  retour:{fr:"Retour", en:"Back", es:"Volver", it:"Indietro", de:"Zurück", ja:"戻る"},
+ /* v67 : la porte de sortie du chemin de nuit. Blandine : « elle peut pas
+    s'inviter au hasard quand elle veut et ne mener nulle part ». */
+ continuerVoyage:{fr:"Continuer mon voyage", en:"Continue my journey",
+   es:"Continuar mi viaje", it:"Continua il mio viaggio",
+   de:"Meine Reise fortsetzen", ja:"旅を続ける"},
  partirDs:{fr:"Partir", en:"Go", es:"Partir", it:"Parti", de:"Aufbrechen", ja:"出発"},
  bientot:{fr:"Bientôt", en:"Soon", es:"Pronto", it:"Presto", de:"Bald", ja:"近日"},
  voyage1:{fr:"{nom} · Voyage 1", en:"{nom} · Journey 1", es:"{nom} · Viaje 1",
@@ -6504,7 +6567,32 @@ function ouvrirCompte(){
   else cpVue("cpQuestion");
   S("compte").classList.add("on");
 }
-function fermerCompte(){ S("compte").classList.remove("on"); cpAccesMaj(); }
+/* ==================================================================
+   v67 — LE FILET. Blandine, 10/08 : « elle peut pas s'inviter au hasard
+   quand elle veut et ne mener nulle part ».
+   Le carnet de route se masque (`parti`) des qu'on part vers une ville ou
+   vers le globe, et il ne remonte que si l'ecran du dessus appelle
+   `montrerCarnet()` en se fermant. TROIS fermetures ne le faisaient pas —
+   l'ecran de compte, le Sprint, et la porte du passeport, qui n'etait
+   meme jamais refermee quand on partait creer son compte. Chacune
+   deposait la cavaliere sur le chemin de nuit, sans sortie.
+   Cette fonction est la reponse generale : apres n'importe quelle
+   fermeture, si plus AUCUN calque n'attend dessous, le carnet remonte.
+   Elle est volontairement exhaustive et lue de haut en bas : ajouter un
+   ecran a Linguae demain, c'est ajouter son identifiant a cette liste.
+   ================================================================== */
+var CALQUES_LINGUAE = ["compte","paywall","porteA","porteB","depart","dest","intro",
+                       "sprint","globe","collection","lecon","themes"];
+function rienDessus(){
+  for(var i=0;i<CALQUES_LINGUAE.length;i++){
+    var e=S(CALQUES_LINGUAE[i]);
+    if(e && e.classList.contains("on")) return false;
+  }
+  return !S("arrivee").classList.contains("ouvert");
+}
+function remonterSiVide(){ if(rienDessus()) montrerCarnet(); }
+
+function fermerCompte(){ S("compte").classList.remove("on"); cpAccesMaj(); remonterSiVide(); }
 
 /* remplace l'ancien renvoi vers Hype : même nom, pour que tous les
    appelants existants (porte B comprise) profitent du changement. */
@@ -6694,7 +6782,16 @@ function porteAAffichable(){
   try{ if(localStorage.getItem("hype_lingua_passeport_vu")==="1") return false; }catch(e){}
   return true;
 }
-S("paCta").addEventListener("click", versConnexion);
+/* v67 : troisieme trou — la porte du passeport restait `on` DERRIERE
+   l'ecran de compte, qui s'ouvre par-dessus (62 sous 70). En refermant le
+   compte, on retombait sur une porte qu'on croyait franchie. Les deux
+   portes se referment maintenant quand on part vers le compte. */
+function versCompteDepuisPorte(){
+  S("porteA").classList.remove("on");
+  S("porteB").classList.remove("on");
+  versConnexion();
+}
+S("paCta").addEventListener("click", versCompteDepuisPorte);
 S("paTard").addEventListener("click", function(){
   try{ localStorage.setItem("hype_lingua_passeport_vu","1"); }catch(e){}
   S("porteA").classList.remove("on");
@@ -6713,7 +6810,7 @@ function ouvrirPorteB(refVille, nomVille){
   img.src="carte-"+refVille+".webp"+VER;
   S("porteB").classList.add("on");
 }
-S("pbCta").addEventListener("click", versConnexion);
+S("pbCta").addEventListener("click", versCompteDepuisPorte);
 
 /* la creation d'un duel est Premium ; un duel RECU (#duel=...) reste
    libre — c'est l'invitation, decision de Blandine. */
@@ -7776,6 +7873,7 @@ function fermerSprint(){
   S("sprint").classList.remove("on","presse");
   S("spSec").textContent="60";
   S("spChrono").firstElementChild.style.width="100%";
+  remonterSiVide();   /* v67 : deuxieme des trois trous */
 }
 function accueilSprint(){
   var ui=langueUI();
@@ -8059,6 +8157,15 @@ function partagerDuel(lien, score){
 
 S("spFermer").addEventListener("click", fermerSprint);
 S("bSprint").addEventListener("click", ouvrirSprint);
+
+/* v67 : la sortie du chemin de nuit -> le carnet de route, la meme sortie
+   que celle de tous les autres ecrans. Le bouton reste branche meme si le
+   chemin est neutralise : c'est justement lui qui doit repondre quand plus
+   rien d'autre ne repond. */
+S("chSortie").addEventListener("click", function(){
+  if(S("themes") && S("themes").classList.contains("on")) fermerThemes();
+  montrerCarnet();
+});
 
 /* lingo.html#sprint ouvre directement le jeu : c'est le raccourci depuis
    l'accueil de Hype, pour tomber sur un exercice en deux taps. */
@@ -8539,6 +8646,29 @@ S("arrJouer").addEventListener("click",function(){
   setTimeout(function(){ ouvrirLecon(ref); },260);
 });
 S("arrPartir").addEventListener("click",function(){ fermerArrivee(); setTimeout(lancerDepart,240); });
+
+/* ---------- v67 : la fleche de retour de l'ecran de ville ----------
+   Elle ne ferme PAS directement : quand un etat de ville a ete pousse
+   (`villePoussee`), elle demande le retour au navigateur, et c'est le
+   `popstate` ci-dessus qui ferme. L'etat est ainsi CONSOMME au lieu de
+   rester en pile — sinon chaque sortie a la fleche ajouterait un balayage
+   mort de plus a ceux que Blandine a comptes (« au bout de 4 ou 5 fois le
+   swipe marche »). Si aucun etat n'a ete pousse, on ferme nous-memes :
+   `history.back()` ferait alors sortir de Linguae.
+   Filet de securite : si le popstate ne vient pas (cas WebKit rare), on
+   ferme a la main apres 320 ms — un bouton mort serait pire. */
+S("arrRetour").addEventListener("click", function(){
+  if(villePoussee){
+    try{ history.back(); }catch(e){ villePoussee=false; fermerArrivee(); montrerCarnet(); return; }
+    setTimeout(function(){
+      if(S("arrivee").classList.contains("ouvert")){
+        villePoussee=false; fermerArrivee(); montrerCarnet();
+      }
+    }, 320);
+    return;
+  }
+  fermerArrivee(); montrerCarnet();
+});
 
 /* ==================================================================
    OUVERTURE — L'ORDRE, corrige le 6 aout 2026 sur retour de Blandine :
