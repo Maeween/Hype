@@ -1,7 +1,7 @@
 /* TEMOIN DE VERSION : affiche dans l'app sous « Quoi de neuf », a cote du
    numero de reprise et de la version baby. A incrementer a chaque
    modification de CE fichier. */
-window.MEMORY_PONEY_VERSION = "1";
+window.MEMORY_PONEY_VERSION = "2";
 /* Hype — Memory du Poney : niveaux et paires du jeu.
    Sorti de index.html (session 112) pour alleger le fichier.
    CHARGER APRES tous les hype-images-*.js : les cles doivent deja exister
@@ -28,11 +28,11 @@ window.MEMORY_PONEY_NIVEAUX = [
     ] },
     { id: "evan", emoji: "🐴", couverture: HYPE_IMGS["k621"], titre: { fr: "Evan et sa ponette", en: "Evan and his pony", es: "Evan y su poni", it: "Evan e la sua pony", de: "Evan und sein Pony", ja: "エヴァンとポニー" }, lecon: { fr: "Evan a lui aussi son poney, une jolie ponette baie. À l'écurie, chaque cavalier a son binôme, et chaque duo a ses habitudes et ses petits moments à eux.", en: "Evan has his own pony too, a lovely bay mare. At the stables, every rider has their pony pal, and every duo has its own little routines and special moments.", es: "Evan también tiene su poni, una bonita yegua castaña. En el club hípico, cada jinete tiene su compañero, y cada dúo tiene sus costumbres y sus pequeños momentos juntos.", it: "Anche Evan ha il suo pony, una bella pony baia. Al maneggio, ogni cavaliere ha il suo compagno, e ogni coppia ha le sue abitudini e i suoi piccoli momenti insieme.", de: "Auch Evan hat sein eigenes Pony, eine hübsche braune Stute. Im Reiterhof hat jeder Reiter sein Pony-Team, und jedes Duo hat seine eigenen Gewohnheiten und kleinen gemeinsamen Momente.", ja: "エヴァンにも自分のポニーがいるよ。かわいい鹿毛のポニーだよ。うまやではみんな自分だけのポニーがいて、それぞれのコンビにはとくべつなじかんがあるんだ。" }, paires: [
         { cle: "evan1", src: HYPE_IMGS["k615"], label: { fr: "Evan et sa ponette", en: "Evan and his pony", es: "Evan y su poni", it: "Evan e la sua pony", de: "Evan und sein Pony", ja: "エヴァンとポニー" } },
-        { cle: "evan2", src: HYPE_IMGS["k616"], label: { fr: "Câlin", en: "Cuddle", es: "Mimo", it: "Coccola", de: "Kuscheln", ja: "ぎゅっと" } },
+        { cle: "evan2", src: "images/memory-evan-maman-2.jpg?v=1", label: { fr: "Avec maman", en: "With Mum", es: "Con mamá", it: "Con la mamma", de: "Mit Mama", ja: "ママといっしょ" } },
         { cle: "evan3", src: HYPE_IMGS["k617"], label: { fr: "Complices", en: "Best pals", es: "Cómplices", it: "Complici", de: "Verbündete", ja: "なかよし" } },
         { cle: "evan4", src: HYPE_IMGS["k618"], label: { fr: "En promenade", en: "Out for a walk", es: "De paseo", it: "A passeggio", de: "Beim Spaziergang", ja: "おさんぽ" } },
         { cle: "evan5", src: HYPE_IMGS["k619"], label: { fr: "Un beau sourire", en: "A big smile", es: "Una gran sonrisa", it: "Un bel sorriso", de: "Ein schönes Lächeln", ja: "すてきなえがお" } },
-        { cle: "evan6", src: HYPE_IMGS["k620"], label: { fr: "Toujours ensemble", en: "Always together", es: "Siempre juntos", it: "Sempre insieme", de: "Immer zusammen", ja: "いつもいっしょ" } },
+        { cle: "evan6", src: "images/memory-evan-maman-1.jpg?v=1", label: { fr: "Le premier saut", en: "The first jump", es: "El primer salto", it: "Il primo salto", de: "Der erste Sprung", ja: "はじめてのジャンプ" } },
         { cle: "evan7", src: HYPE_IMGS["k621"], label: { fr: "Sa ponette", en: "His pony", es: "Su poni", it: "La sua pony", de: "Sein Pony", ja: "ポニー" } },
         { cle: "evan8", src: HYPE_IMGS["k622"], label: { fr: "Confiance", en: "Trust", es: "Confianza", it: "Fiducia", de: "Vertrauen", ja: "しんらい" } },
         { cle: "evan9", src: HYPE_IMGS["k623"], label: { fr: "Petit moment à deux", en: "A little moment together", es: "Un momentito juntos", it: "Un piccolo momento insieme", de: "Ein kleiner gemeinsamer Moment", ja: "ふたりのじかん" } },
