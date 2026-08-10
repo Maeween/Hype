@@ -2127,6 +2127,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       try{ var g = await sb.auth.getUser(); u = g && g.data && g.data.user; }catch(e){}
       if(!u){ poser("0"); return; }   /* personne n'est connecté : « 0 » est la vérité */
 
+      /* v64 : la progression part en parallèle, sans bloquer le verrou.
+         Les deux sont indépendants — un échec de l'un ne doit pas
+         empêcher l'autre. */
+      try{ progression(sb, u); }catch(e){}
+
       var mail = String(u.email||"").toLowerCase().trim();
       var ouvert = SECOURS.indexOf(mail) !== -1;
 
@@ -2162,32 +2167,254 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   }
 
   /* ==================================================================
-     10/08/2026 — LE BLOC DE SYNCHRONISATION DE LA PROGRESSION A ÉTÉ
-     RETIRÉ, sur demande de Blandine (« relivre le propre je préfère »).
+     LA PROGRESSION SUIT LE COMPTE — v64, 10/08/2026
+     Réécrit d'après la spécification de la session 186, cette fois avec
+     la table décidée : Linguae POSSÈDE sa progression, Linguae l'écrit,
+     Hype ne fera que la lire. Ordre de Blandine : « Hype lit juste ce
+     que Linguae entre dans Supabase ».
 
-     POURQUOI : il avait été écrit pour une table `hype_lingua_progression`
-     à cinq colonnes, qui n'a JAMAIS été créée en base — le SQL n'a pas
-     été exécuté. Et surtout, la structure a été remise en question :
-     `index.html` sauvegarde DÉJÀ la progression de Linguae via
-     `HYPE_EXTRAS_LINGUAE` (dix clés, ligne ~20431) avec des règles de
-     fusion généreuses. Deux endroits sauvegardant la même chose
-     finiraient par se contredire. La décision de structure reste ENTIÈRE
-     et n'est pas tranchée : rien ne doit être réécrit ici avant.
+     SIX BLOCS. Les cinq premiers sont de la progression acquise, le
+     sixième est le carnet personnel.
+       cartes   `hype_lingua_cartes`  { ref: true }           les cartes gagnées
+       maitrise `hype_lingo_maitrise` { langue:{ mot: n } }    la maîtrise par voyage
+       faits    `hype_lingua_faits`   { langue: n }            les villes terminées
+       sprint   `hype_lingua_sprint`  { best,parties,total }   les records
+       quiz     `hype_lingua_quiz`    { ref: {s,t} }           les souvenirs
+       carnet   `hype_lingua_carnet`  { "ville|mot": {v,d,a} } le carnet (v64)
 
-     ÉTAT ACTUEL, ASSUMÉ : la progression de Linguae (cartes, maîtrise,
-     villes faites, records de Sprint, souvenirs) vit dans le
-     localStorage, et c'est HYPE qui la met à l'abri sur le compte à
-     chaque ouverture. Comportement inchangé depuis toujours.
+     DEUX RÈGLES DE FUSION, ET C'EST VOULU :
+     · les CINQ blocs de progression → LA PLUS GÉNÉREUSE, on garde le
+       meilleur des deux côtés. Personne ne perd jamais une carte.
+       Contrepartie assumée : on ne peut plus rien effacer.
+     · le CARNET → LE PLUS RÉCENT GAGNE (choix explicite de Blandine).
+       Il FAUT cette exception : avec la fusion généreuse, un mot retiré
+       du carnet reviendrait tout seul à la synchronisation suivante, et
+       le retrait serait impossible. Risque assumé et dit : si un mot est
+       ajouté sur un téléphone et retiré sur un autre le même jour, la
+       dernière synchronisation gagne. Un appui suffit à corriger.
 
-     CE QUI RESTE ICI : uniquement le pont Premium (`hype_premium`), qui
-     lit `hype_ambassadeurs` et `abonnements_premium`. Ces deux tables
-     existent, cette partie fonctionne.
+     LE CARNET NE RECOPIE PAS LE MOT, il garde sa RÉFÉRENCE et sa VILLE.
+     La traduction s'affiche depuis le lexique (`HYPE_LINGO_LEX`) au
+     moment du rendu : les carnets suivent donc automatiquement toute
+     correction de traduction ou ajout de langue. Chaque entrée porte
+     `v` (ville), `d` (date du dernier geste), `a` (true = dans le
+     carnet, false = retiré — on MARQUE le retrait au lieu d'effacer,
+     sinon il ne pourrait pas se propager).
 
-     Spécification complète du bloc retiré : SUIVI-LINGUAE.md, session 186
-     (cinq blocs, cinq fonctions de fusion pures testées 11/11,
-     versement à la connexion, écritures groupées). Reconstructible à
-     l'identique en une intervention le jour où la structure sera fixée.
+     VERSEMENT À LA CONNEXION (idée de Blandine) : ce qui a été gagné
+     SANS compte est fusionné dans le compte à la première lecture
+     connectée. Aucun écran, aucune manipulation.
+
+     ⚠️ NE TOUCHE PAS À `HYPE_EXTRAS_LINGUAE` dans index.html. Cette
+     livraison installe la sauvegarde de Linguae ; le retrait des dix
+     clés côté Hype se fera APRÈS vérification qu'elle écrit bien, et
+     seulement après avoir versé une fois dans cette table ce qui dort
+     déjà dans la sauvegarde de Hype. L'ordre inverse efface la
+     progression des cavalières.
+
+     ⚠️ Table requise : `hype_lingua_progression` (voir le SQL livré).
+     Sans elle la lecture échoue et ON NE TOUCHE À RIEN, ni en base ni
+     en local — la progression reste locale, comme avant.
      ================================================================== */
+  var CLES_PROG = {
+    cartes:   "hype_lingua_cartes",
+    maitrise: "hype_lingo_maitrise",
+    faits:    "hype_lingua_faits",
+    sprint:   "hype_lingua_sprint",
+    quiz:     "hype_lingua_quiz",
+    carnet:   "hype_lingua_carnet"
+  };
+
+  function lireLocal(cle){
+    try{ var v = localStorage.getItem(cle); return v ? (JSON.parse(v) || {}) : {}; }
+    catch(e){ return {}; }
+  }
+  function ecrireLocal(cle, val){
+    try{ localStorage.setItem(cle, JSON.stringify(val)); }catch(e){}
+  }
+  function obj(x){ return (x && typeof x === "object" && !Array.isArray(x)) ? x : {}; }
+  function memeChose(a, b){
+    try{ return JSON.stringify(a) === JSON.stringify(b); }catch(e){ return false; }
+  }
+
+  /* ---- les fusions, une par forme de donnée ---- */
+  function fusionVrai(a, b){                 /* { ref:true } — l'union */
+    var r = {}, k; a = obj(a); b = obj(b);
+    for(k in a){ if(a[k]) r[k] = true; }
+    for(k in b){ if(b[k]) r[k] = true; }
+    return r;
+  }
+  function fusionNombres(a, b){              /* { langue:{ mot:n } } — le plus grand */
+    var r = {}, l, m; a = obj(a); b = obj(b);
+    for(l in a){ r[l] = {}; for(m in obj(a[l])) r[l][m] = Number(a[l][m]) || 0; }
+    for(l in b){
+      if(!r[l]) r[l] = {};
+      for(m in obj(b[l])){
+        var v = Number(b[l][m]) || 0;
+        if(!(m in r[l]) || v > r[l][m]) r[l][m] = v;
+      }
+    }
+    return r;
+  }
+  function fusionPalier(a, b){               /* { langue:n } — le plus grand */
+    var r = {}, k; a = obj(a); b = obj(b);
+    for(k in a) r[k] = Number(a[k]) || 0;
+    for(k in b){ var v = Number(b[k]) || 0; if(!(k in r) || v > r[k]) r[k] = v; }
+    return r;
+  }
+  function fusionSprint(a, b){               /* records : aucun compteur ne recule */
+    a = obj(a); b = obj(b);
+    return {
+      best:    Math.max(Number(a.best)    || 0, Number(b.best)    || 0),
+      parties: Math.max(Number(a.parties) || 0, Number(b.parties) || 0),
+      total:   Math.max(Number(a.total)   || 0, Number(b.total)   || 0)
+    };
+  }
+  function fusionQuiz(a, b){                 /* { ref:{s,t} } — le meilleur score */
+    var r = {}, k; a = obj(a); b = obj(b);
+    for(k in a){ var x = obj(a[k]); r[k] = { s: Number(x.s) || 0, t: Number(x.t) || 0 }; }
+    for(k in b){
+      var y = obj(b[k]), s = Number(y.s) || 0, t = Number(y.t) || 0;
+      if(!r[k] || s > r[k].s) r[k] = { s: s, t: t };
+    }
+    return r;
+  }
+  /* LE CARNET — la seule fusion où le PLUS RÉCENT gagne, et la seule
+     raison est le retrait : sans ça un mot retiré reviendrait tout seul.
+     À date égale, l'ajout l'emporte sur le retrait : entre perdre un mot
+     et en garder un de trop, on garde. */
+  function fusionCarnet(a, b){
+    var r = {}, k; a = obj(a); b = obj(b);
+    function pose(src){
+      for(var kk in src){
+        var e = obj(src[kk]);
+        var d = Number(e.d) || 0;
+        var ligne = { v: e.v || "", d: d, a: (e.a !== false) };
+        var vu = r[kk];
+        if(!vu) { r[kk] = ligne; continue; }
+        if(d > vu.d) { r[kk] = ligne; continue; }
+        if(d === vu.d && ligne.a && !vu.a) r[kk] = ligne;
+      }
+    }
+    pose(a); pose(b);
+    return r;
+  }
+
+  function fusionner(local, base){
+    return {
+      cartes:   fusionVrai(local.cartes,      base.cartes),
+      maitrise: fusionNombres(local.maitrise, base.maitrise),
+      faits:    fusionPalier(local.faits,     base.faits),
+      sprint:   fusionSprint(local.sprint,    base.sprint),
+      quiz:     fusionQuiz(local.quiz,        base.quiz),
+      carnet:   fusionCarnet(local.carnet,    base.carnet)
+    };
+  }
+
+  async function progression(sb, u){
+    try{
+      var local = {}, k;
+      for(k in CLES_PROG) local[k] = lireLocal(CLES_PROG[k]);
+
+      var base = {}, ligneExiste = false;
+      var r = await sb.from("hype_lingua_progression")
+                      .select("cartes,maitrise,faits,sprint,quiz,carnet")
+                      .eq("user_id", u.id).maybeSingle();
+      if(!r || r.error) return;               /* base muette : on ne touche à RIEN */
+      if(r.data){ ligneExiste = true; base = r.data; }
+
+      var f = fusionner(local, base);
+
+      /* on rend au téléphone ce que le compte lui apporte */
+      for(k in CLES_PROG){ if(!memeChose(f[k], local[k])) ecrireLocal(CLES_PROG[k], f[k]); }
+
+      /* et au compte ce que le téléphone lui apporte — versement à la
+         connexion inclus : le local n'était rattaché à personne */
+      var aPousser = false;
+      for(k in CLES_PROG){ if(!memeChose(f[k], base[k])) { aPousser = true; break; } }
+      if(!ligneExiste || aPousser){
+        try{
+          await sb.from("hype_lingua_progression").upsert({
+            user_id: u.id, cartes: f.cartes, maitrise: f.maitrise, faits: f.faits,
+            sprint: f.sprint, quiz: f.quiz, carnet: f.carnet,
+            maj_le: new Date().toISOString()
+          }, { onConflict: "user_id" });
+        }catch(e){}
+      }
+
+      /* Les gains obtenus PENDANT la session partent à la fermeture et au
+         passage en arrière-plan (iOS ne garantit pas `beforeunload`, d'où
+         `visibilitychange` en plus). Une seule écriture, jamais une par carte. */
+      var pousser = function(){
+        try{
+          var maintenant = {}, kk;
+          for(kk in CLES_PROG) maintenant[kk] = lireLocal(CLES_PROG[kk]);
+          var g = fusionner(maintenant, f);
+          if(memeChose(g, f)) return;
+          f = g;
+          sb.from("hype_lingua_progression").upsert({
+            user_id: u.id, cartes: g.cartes, maitrise: g.maitrise, faits: g.faits,
+            sprint: g.sprint, quiz: g.quiz, carnet: g.carnet,
+            maj_le: new Date().toISOString()
+          }, { onConflict: "user_id" });
+        }catch(e){}
+      };
+      try{
+        window.addEventListener("visibilitychange", function(){ if(document.hidden) pousser(); });
+        window.addEventListener("pagehide", pousser);
+      }catch(e){}
+    }catch(e){}
+  }
+
+  /* ==================================================================
+     LE CARNET — les deux gestes, exposés pour l'écran qui viendra.
+     `carnetBasculer(refVille, refMot)` ajoute ou retire d'un appui, et
+     `carnetContient()` dit l'état du signet. La PAGE du carnet et le
+     signet à côté des mots ne sont PAS dans cette livraison : le
+     stockage d'abord, l'écran ensuite (annoncé à Blandine).
+     ================================================================== */
+  function carnetCle(refVille, refMot){ return String(refVille) + "|" + String(refMot); }
+  window.carnetContient = function(refVille, refMot){
+    try{
+      var e = obj(lireLocal(CLES_PROG.carnet)[carnetCle(refVille, refMot)]);
+      return e.a !== false && typeof e.d !== "undefined";
+    }catch(err){ return false; }
+  };
+  window.carnetBasculer = function(refVille, refMot){
+    try{
+      var tout = lireLocal(CLES_PROG.carnet);
+      var cle = carnetCle(refVille, refMot);
+      var dedans = window.carnetContient(refVille, refMot);
+      /* ⚠️ LA DATE DOIT ÊTRE STRICTEMENT CROISSANTE. Défaut trouvé au test :
+         deux mots ajoutés dans la MÊME milliseconde portaient la même date,
+         et l'ordre du carnet (du plus récent au plus ancien) devenait
+         arbitraire. On force donc la date à dépasser la plus grande déjà
+         posée. Bénéfice second, plus important : la fusion « le plus récent
+         gagne » ne peut plus tomber sur une égalité entre un ajout et un
+         retrait du même appareil. */
+      var maxi = 0;
+      for(var k in tout){ var d = Number(obj(tout[k]).d) || 0; if(d > maxi) maxi = d; }
+      var quand = Date.now();
+      if(quand <= maxi) quand = maxi + 1;
+      tout[cle] = { v: String(refVille), d: quand, a: !dedans };
+      ecrireLocal(CLES_PROG.carnet, tout);
+      return !dedans;
+    }catch(err){ return false; }
+  };
+  window.carnetListe = function(){
+    var out = [];
+    try{
+      var tout = lireLocal(CLES_PROG.carnet), k;
+      for(k in tout){
+        var e = obj(tout[k]);
+        if(e.a === false) continue;           /* retiré : on ne l'affiche pas */
+        var p = String(k).split("|");
+        out.push({ ville: e.v || p[0], mot: p[1], le: Number(e.d) || 0 });
+      }
+      out.sort(function(x,y){ return y.le - x.le; });   /* le plus récent d'abord */
+    }catch(err){}
+    return out;
+  };
 
   try{ pont(); }catch(e){}
 })();
