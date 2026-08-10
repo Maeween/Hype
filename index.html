@@ -35190,8 +35190,7 @@ function MemoryPoneyJeu({ tr }) {
         setResultat({ niveau: niveau, xpGagne: xpGagne, nouveauxBadges: nouveauxBadges, stats: stats, victoireFinale: victoireFinale, victoireSupreme: victoireSupreme });
         setVue("resultat");
     };
-    if (vue === "profil") {
-        var __memdiag = null;
+    var __memdiag = null;
     try {
         if (typeof location !== "undefined" && /(^|[?&])memdiag=1/.test(location.search)) {
             var __l = (typeof MEMORY_PONEY_NIVEAUX !== "undefined" ? MEMORY_PONEY_NIVEAUX : []).map(function (n) {
@@ -35203,8 +35202,10 @@ function MemoryPoneyJeu({ tr }) {
                 __l.length ? ("IMAGES MANQUANTES (cle de paire par niveau)\n" + __l.join("\n")) : "Aucune image manquante : toutes les paires ont un src.");
         }
     } catch (e) { }
+    if (vue === "profil") {
+        
     return React.createElement("div", { style: { textAlign: "center" } },
-            __memdiag, React.createElement("div", { style: { borderRadius: 20, overflow: "hidden", marginBottom: 16, border: `1px solid ${COLORS.nuitBordure}` } },
+            React.createElement("div", { style: { borderRadius: 20, overflow: "hidden", marginBottom: 16, border: `1px solid ${COLORS.nuitBordure}` } },
                 HYPE_IMGS["k452"] && React.createElement("div", { style: { position: "relative", height: 220, overflow: "hidden" } }, React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundImage: "url(" + HYPE_IMGS["k452"] + ")", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(14px) brightness(0.55)", transform: "scale(1.12)" } }), React.createElement("img", { src: HYPE_IMGS["k452"], alt: "", style: { position: "relative", width: "100%", height: "100%", objectFit: "contain" } }))),
             React.createElement("h2", { style: { fontFamily: "'Cinzel', serif", fontSize: 19, color: COLORS.blanc, margin: "0 0 6px" } }, tr({ fr: "Bienvenue dans le Mémory du Poney !", en: "Welcome to the Pony Memory!", es: "¡Bienvenido al Mémory del Poni!", it: "Benvenuto nel Mémory del Pony!", de: "Willkommen beim Pony-Memory!", ja: "ポニーのメモリーへようこそ！" })),
             React.createElement("p", { style: { color: COLORS.encreDoux, fontSize: 13, margin: "0 0 18px" } }, tr({ fr: "Comment tu t'appelles ?", en: "What's your name?", es: "¿Cómo te llamas?", it: "Come ti chiami?", de: "Wie heißt du?", ja: "なまえをおしえてね" })),
@@ -35246,6 +35247,7 @@ function MemoryPoneyJeu({ tr }) {
     }
     const badgesObtenus = MEMORY_PONEY_BADGES.filter((b) => profil && b.test(profil));
     return React.createElement("div", null,
+        __memdiag,
         profil && React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, background: COLORS.nuitClaire, border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, padding: "10px 14px", marginBottom: 14 } },
             React.createElement("span", { style: { fontSize: 24 } }, profil.avatar),
             React.createElement("div", { style: { flex: 1 } },
