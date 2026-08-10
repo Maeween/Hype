@@ -1029,6 +1029,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    premiere seconde soit de l'image et rien d'autre. Le double tap, lui,
    fonctionne des le debut — personne n'est prisonnier du film. */
 #ouvFilm.joue #ouvPasser{opacity:1;transition-delay:1.2s}
+/* v70 : le bouton d'accueil, en miroir de « Passer » — meme retard, meme
+   discretion, cote gauche. Il apparait aussi quand le film est fini, pour
+   qui a laisse la video se terminer et ne veut pas de la presentation. */
+#ouvAccueil{position:absolute;z-index:3;opacity:0;transition:opacity .4s;
+ top:calc(env(safe-area-inset-top) + 16px);left:18px;font-size:10px;
+ letter-spacing:.16em;text-transform:uppercase;color:var(--gris);
+ background:none;border:0;cursor:pointer;font-family:inherit}
+#ouvFilm.joue #ouvAccueil,#ouvFilm.fini #ouvAccueil{opacity:1;transition-delay:1.2s}
 #ouvPasser{top:calc(env(safe-area-inset-top) + 16px);right:18px;font-size:10px;
  letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
 #ouvSuite{bottom:calc(env(safe-area-inset-bottom) + 34px);left:50%;transform:translateX(-50%);
@@ -1289,6 +1297,18 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  background:rgba(255,255,255,.04);color:#8B99A2;font-size:14px;line-height:1;cursor:pointer;
  display:flex;align-items:center;justify-content:center}
 #lcSonB.muet{border-color:rgba(32,217,245,.45);background:rgba(32,217,245,.08);color:var(--turquoise)}
+/* v71 : LE FILET DU SON, valide par Blandine. Ce qui se fait ailleurs (et
+   ce que fait Linguae) : le reglage est pris une fois et on ne redemande
+   JAMAIS. Le seul risque restant etait qu'on coupe le son sans savoir ou le
+   retrouver : ce mot-la le dit, UNE SEULE FOIS, et s'efface tout seul.
+   Ce n'est pas une question — on n'interroge pas la cavaliere. */
+#lcAvis{position:fixed;left:50%;transform:translateX(-50%) translateY(6px);
+ bottom:calc(env(safe-area-inset-bottom) + 22px);z-index:28;max-width:86%;
+ padding:12px 18px;border-radius:14px;border:1px solid rgba(32,217,245,.22);
+ background:rgba(9,13,18,.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+ color:#C3D0DA;font-size:12px;line-height:1.45;text-align:center;
+ opacity:0;pointer-events:none;transition:opacity .34s ease,transform .34s ease}
+#lcAvis.on{opacity:1;transform:translateX(-50%) translateY(0)}
 #lcSur{font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
  color:var(--orTexte);text-align:center;margin:8px 0 0}
 #lcTitre.grand{font-family:'Cinzel',serif;font-size:27px;font-weight:600;letter-spacing:.05em;
@@ -1844,6 +1864,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <video id="ouvVid" muted playsinline webkit-playsinline preload="auto"></video>
   <div id="ouvVoile"></div>
   <button id="ouvPasser" data-t="passer">Passer</button>
+  <!-- v70 : la SECONDE sortie du film, demandee par Blandine : « un bouton
+       accueil qui nous fasse sauter la premiere page et nous amene a la page
+       le tour du monde plutot que juste passer ». « Passer » arrete le film
+       mais laisse la presentation prendre le relais ; celui-ci va droit au
+       carnet de route. -->
+  <button id="ouvAccueil" type="button" data-t="allerAccueil">Accueil</button>
   <button id="ouvSuite" data-t="commenceVoyage">Commence ton voyage</button>
   <button id="ouvRelance" type="button" aria-label="Lancer le film"><i></i></button>
 </div>
@@ -2016,7 +2042,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v69 · droit dans la leçon</p>
+    <p id="ouvVersion">v72 · les objets de collection</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -2063,6 +2089,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <div id="lcBarre"><button id="lcFermer" aria-label="Fermer">✕</button><div id="lcJauge"></div><button id="lcSonB" type="button" data-ta="reglerSon" aria-label="Le son"></button></div>
     <p id="lcTitre"></p>
     <div id="lcCorps"></div>
+    <!-- v71 : le mot d'une ligne quand le son est coupe pour la premiere
+         fois. Jamais une question, jamais bloquant. -->
+    <div id="lcAvis"></div>
   </div>
 </div>
 
@@ -2885,7 +2914,7 @@ var ETAPES = [
  {ref:"jerez",     ch:"Le cheval",     v:"Jerez",       nat:"Espagne",        h:"08 h 15", ciel:["#101B26","#4A4258"], forme:"haras",    souv:"Une jarre andalouse",          ic:"jarre"},
  {ref:"seville",   ch:"La présentation",v:"Séville",    nat:"Espagne",        h:"09 h 05", ciel:["#131C24","#5A4A4E"], forme:"village",  souv:"Un peigne de tresses",         ic:"peigne"},
  {ref:"vejer",     ch:"L'intendance",  v:"Vejer",       nat:"Espagne",        h:"09 h 50", ciel:["#0E1A22","#4E5257"], forme:"cote",     souv:"Un seau de zinc",              ic:"seau"},
- {ref:"oliva",     ch:"S'engager",     v:"Oliva Nova",  nat:"Espagne",        h:"10 h 35", ciel:["#0D1A24","#3E5566"], forme:"obstacles",souv:"Un dossard de tournée",        ic:"dossard"},
+ {ref:"oliva",     ch:"S'engager",     v:"Oliva Nova",  nat:"Espagne",        h:"10 h 35", ciel:["#0D1A24","#3E5566"], forme:"obstacles",souv:"Une malle de tournée",        ic:"dossard"},
  /* ⚠️ ROME ajoutée le 6 août 2026, sur décision de Blandine : « Rome
     c'est cool faut garder » · « fais Rome déjà ça c'est sûr ».
     Piazza di Siena, dans les jardins de la Villa Borghese, un des plus
@@ -2911,7 +2940,7 @@ var ETAPES = [
     du chemin ne dessine un désert, et en fabriquer une n'a pas été
     demandé. À faire le jour où le chemin sera revu.
     ⚠️ Aucune de ses trois images n'existe encore. */
- {ref:"dubai",     ch:"L'endurance",   v:"Dubaï",       nat:"Émirats",        h:"13 h 05", ciel:["#120F14","#E0B070"], forme:"lande",    souv:"Un dossard de cent kilomètres", ic:"dossard"},
+ {ref:"dubai",     ch:"L'endurance",   v:"Dubaï",       nat:"Émirats",        h:"13 h 05", ciel:["#120F14","#E0B070"], forme:"lande",    souv:"Une selle d'endurance", ic:"dossard"},
  /* ⚠️ TOKYO et BUENOS AIRES ajoutées le 6 août 2026 : elles remplissent
     deux des trois créneaux réservés entre Dubaï et Lexington. Il reste
     15 h 40 pour TAMWORTH, dont le clip et les images sont prêts.
@@ -5773,6 +5802,13 @@ var UI = {
  retour:{fr:"Retour", en:"Back", es:"Volver", it:"Indietro", de:"Zurück", ja:"戻る"},
  /* v67 : la porte de sortie du chemin de nuit. Blandine : « elle peut pas
     s'inviter au hasard quand elle veut et ne mener nulle part ». */
+ sonCoupeAvis:{fr:"Le son est coupé. Tu peux le remettre ici à tout moment.",
+   en:"Sound is off. You can turn it back on here at any time.",
+   es:"El sonido está apagado. Puedes volver a activarlo aquí cuando quieras.",
+   it:"Il suono è spento. Puoi riattivarlo qui quando vuoi.",
+   de:"Der Ton ist aus. Du kannst ihn hier jederzeit wieder einschalten.",
+   ja:"音はオフになっています。ここでいつでも戻せます。"},
+ allerAccueil:{fr:"Accueil", en:"Home", es:"Inicio", it:"Home", de:"Start", ja:"ホーム"},
  reglerSon:{fr:"Le son", en:"Sound", es:"El sonido", it:"Il suono", de:"Der Ton", ja:"音"},
  continuerVoyage:{fr:"Continuer mon voyage", en:"Continue my journey",
    es:"Continuar mi viaje", it:"Continua il mio viaggio",
@@ -8303,8 +8339,27 @@ S("lcFermer").addEventListener("click", function(){ fermerLecon(); montrerCarnet
    l'exercice en cours : un exercice d'ecoute devenu muet doit repasser en
    son equivalent visuel, sinon on reste devant un son qu'on n'entendra pas.
    Le mot en cours n'est pas rejoue, on ne perd rien. */
+var AVIS_MINUTEUR=null;
+function avisLecon(txt){
+  var a=S("lcAvis"); if(!a) return;
+  a.textContent=txt; a.classList.add("on");
+  if(AVIS_MINUTEUR) clearTimeout(AVIS_MINUTEUR);
+  AVIS_MINUTEUR=setTimeout(function(){ a.classList.remove("on"); }, 4200);
+}
 S("lcSonB").addEventListener("click", function(){
+  var versMuet = !modeSilencieux();
   try{ localStorage.setItem("hype_lingua_muet", modeSilencieux()?"0":"1"); }catch(e){}
+  /* v71 : le mot d'une ligne, la PREMIERE fois qu'on coupe le son, et
+     jamais plus. Le drapeau est a part de `hype_lingua_muet` : couper puis
+     remettre puis recouper ne le montre pas deux fois. */
+  if(versMuet){
+    var vu=false;
+    try{ vu = localStorage.getItem("hype_lingua_muet_dit")==="1"; }catch(e){}
+    if(!vu){
+      try{ localStorage.setItem("hype_lingua_muet_dit","1"); }catch(e){}
+      avisLecon(T("sonCoupeAvis"));
+    }
+  }
   if(LC && LC.plan && LC.plan[LC.i]){
     var x=LC.plan[LC.i];
     if(x.c && x.t!=="decouverte" && x.t!=="phrase") x.t=exercicePour(x.c);
@@ -8868,6 +8923,18 @@ function lancerFilm(){
   });
   S("thFermer").addEventListener("click", fermerThemes);
 S("ouvPasser").addEventListener("click",terminerOuverture);
+/* v70 : « Accueil » — le film s'arrete ET la presentation est sautee. Le
+   drapeau `__introApresFilm` est baisse AVANT terminerOuverture(), qui est
+   justement l'endroit qui le lit pour enchainer sur la presentation. On
+   referme aussi `#intro` au cas ou elle serait deja ouverte (film laisse
+   jusqu'au bout). Destination : le carnet de route — l'ecran a l'affiche,
+   aux drapeaux et au « je lis / j'apprends ». */
+S("ouvAccueil").addEventListener("click", function(){
+  window.__introApresFilm = false;
+  if(S("intro")) S("intro").classList.remove("on");
+  if(S("dest")) S("dest").classList.remove("on");
+  terminerOuverture();
+});
   S("ouvSuite").addEventListener("click",terminerOuverture);
 
   /* ==================================================================
@@ -8890,7 +8957,7 @@ S("ouvPasser").addEventListener("click",terminerOuverture);
     film.addEventListener("click", function(ev){
       if(!film.classList.contains("joue")) return;
       if(ev.target && ev.target.closest &&
-         ev.target.closest("#ouvPasser,#ouvSuite,#ouvRelance")) return;
+         ev.target.closest("#ouvPasser,#ouvSuite,#ouvRelance,#ouvAccueil")) return;
       var t=Date.now();
       if(t-dernier < 350){ dernier=0; terminerOuverture(); return; }
       dernier=t;

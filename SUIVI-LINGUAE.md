@@ -55,6 +55,171 @@
 
 ---
 
+# 🏺 SESSION 198 · 10/08 · v72 — LES 31 OBJETS DE COLLECTION SONT AU COMPLET
+
+**Livré : `lingo.html` (v72)** + le dossier `objets-villes/` (31 fichiers) et `objets-reserve/` (40 fichiers). Aucun SQL. `index.html` non modifié.
+
+## ▸ CE QUI EST FAIT
+Blandine a envoyé ses images d'objets, par planches. **Découpage automatisé** (script `decoupe.py` : détection des composantes, fusion par recouvrement réel des boîtes, fond rendu transparent, recadrage). **Les 31 villes ont désormais leur objet**, nommé `objet-<ref de la ville>.png` — même convention que les cartes postales, donc la page à venir les chargera sans liste à maintenir.
+
+⚠️ **Deux incidents de découpe, signalés à Blandine sur le moment** : (1) une première passe a fusionné le licol et la selle qui se touchaient de 5 px — critère corrigé (recouvrement réel > 25 % de la plus petite boîte, au lieu de la simple proximité). (2) Trois fichiers contenaient deux objets empilés (bottes/flot, coupe/gants, globe/médaillon) — séparés à la taille la plus fine.
+
+## ▸ ⚠️ DEUX SOUVENIRS CHANGÉS DANS `lingo.html` — SUR DÉCISION DE BLANDINE
+- **Dubaï** : « Un dossard de cent kilomètres » → **« Une selle d'endurance »**. Ses mots : *« selle d'endurance elle est top »*.
+- **Oliva Nova** : « Un dossard de tournée » → **« Une malle de tournée »**. Née d'une objection d'elle, juste : *« ils ont des dossards collés en cross à Oliva ? je crois pas »* — et elle a raison, Oliva Nova est du CSO et du dressage, les dossards collés au flanc sont du cross et de l'endurance. La malle espagnole à ferrures, avec son badge de participant, remplace le contresens.
+
+## ▸ ⚠️ UNE ERREUR DE CONTENU REPÉRÉE PAR BLANDINE
+Le générateur avait mis **une épingle à nourrice sur des bandes de polo** — les bandes se ferment au velcro, et une épingle contre un tendon est une aberration que n'importe quelle cavalière verrait. L'épingle appartenait au dossard, le générateur avait mélangé les deux objets. Bandes régénérées sans épingle, passées en réserve.
+
+## ▸ RÉAFFECTATIONS D'OBJETS (validées en conversation)
+Le **licol de corde tressé** (rope halter vaquero) va à **Santa Ynez** — c'est la famille du hackamore — et **Connemara** récupère le **licol de cuir**. **Golegã** prend le stud-book scellé à la cire, **Édimbourg** le carnet de mots, **Vérone** la malle de marchand.
+
+## ▸ 40 OBJETS EN RÉSERVE, VOLONTAIREMENT
+Décision de Blandine : *« il y aura d'autres villes de toute façon et on pourra toujours offrir ces objets par la suite en bonus pour d'autres hauts faits »*. La réserve (bombe, gants, mors, étriers, malle, longue-vue, plume et encrier, cristal, statuette, médaille, cravache, sacoche, valise, poncho, obstacle canadien, deux globes, plus les doublons) devient le stock des **hauts faits** et des villes futures. **Ne pas la jeter.**
+
+## ▸ ⚠️ IMPERFECTIONS CONNUES, À REPRENDRE SI ELLES GÊNENT
+- **Aberystwyth** (fer gallois) et **Hickstead** (fanion rouge) viennent d'images à **halo flou bleu-noir**, pas à fond blanc : détourées au contour (GrabCut), elles gardent un **liseré turquoise**. Peu visible sur fond sombre, à régénérer sur fond blanc si ça saute aux yeux.
+- Quelques découpes gardent un fragment de leur voisin en bas (licol de cuir, brosse à main, cravache, couverture, valise) : objets réellement superposés sur la planche d'origine.
+
+## ▸ À l'écran
+- **~** deux souvenirs changent de nom (Dubaï, Oliva Nova) — visibles sur l'écran d'arrivée et dans la collection
+- rien n'apparaît ni ne disparaît : **la page des objets n'existe pas encore**
+
+## ▸ EN ATTENTE D'UNE DÉCISION DE BLANDINE
+**La sellerie.** Son idée : *« ça pourrait être marrant si les gens les mettaient où ils voulaient sur une page, genre qu'elle pouvait ensuite être disposée dans une pièce du type grande sellerie, qu'ils puissent complètement aménager avec les objets gagnés »*. Précision d'elle : **ce n'est PAS la collection de cartes** — les cartes postales restent sur `lingo-collection.html`, les objets vont dans la sellerie. Deux écrans, deux rôles.
+Non tranché : (1) l'**image de la pièce** (pas encore fournie) ; (2) **pose libre au doigt** ou **emplacements prévus** où l'objet se cale — le second est bien plus agréable sur un écran de téléphone et laisse maîtriser la composition. ⚠️ À prévoir dès le premier jet : **la position de chaque objet est une donnée à sauvegarder**, et elle va dans la table de Linguae, pas celle de Hype.
+
+Plus les points hérités des sessions 196 et 197 : suppression réelle du chemin de nuit (à faire sur `lingo-essai.html`, idée de Blandine, pour ne rien risquer en ligne), prononciation notée, 15-18 mots par chapitre, la phrase à deux mots, la croix ou la flèche de la leçon, la page du carnet, et les **19 doublons de refs du lexique** (`poulain` en tête, sur lequel elle voulait regarder).
+
+## ▸ Vers l'App Store
+Neutre techniquement, mais la collection d'objets est un **argument de fiche App Store** : 31 récompenses illustrées se montrent en captures. La sellerie, si elle se fait, écrit dans la table de Linguae — **jamais dans celle de Hype**, doctrine inchangée.
+
+---
+
+# 🔔 SESSION 197 · 10/08 · v71 — LE SON, ET RIEN D'AUTRE
+
+**Livré : `lingo.html` (v71) seul.** `index.html` non modifié, aucun SQL, aucun lexique touché.
+
+## ▸ Le réglage du son : ce qui se fait ailleurs, et ce qu'on garde
+Question de Blandine : *« Son on peut faire par défaut mais mémoriser si la personne le passe en muet et lui demander franchement la fois d'après ? »* puis *« j'avoue que je sais pas ce qui se fait en général »*.
+
+**Réponse donnée, et retenue par elle (« pareil ») :** chez les apps de langues et les jeux, le réglage est pris **une fois** et on ne redemande **jamais**. Quelqu'un qui coupe le son a une raison — le train, un cours, quelqu'un qui dort à côté ; lui reposer la question, c'est lui redonner du travail alors qu'elle avait répondu. C'est **exactement le comportement déjà en place** dans Linguae : `hype_lingua_muet`, mémorisé, modifiable d'un doigt par le rond de la barre. **Rien n'a donc été changé de ce côté** — pas de question posée avant les leçons, ce qui aurait de toute façon réintroduit l'écran de plus qu'on venait de supprimer.
+
+## ▸ ✅ LE SEUL AJOUT : le filet, validé par Blandine (« oui ok pour le filet »)
+Le risque résiduel n'était pas la mémoire du réglage, c'était de couper le son **sans savoir où le retrouver**. D'où `#lcAvis` : un mot d'une ligne au bas de l'écran, « Le son est coupé. Tu peux le remettre ici à tout moment », **six langues**, qui s'efface seul au bout de 4,2 s.
+- **Ce n'est pas une question** : aucun bouton, aucune réponse attendue, `pointer-events:none` — il ne bloque rien et ne peut pas être touché par erreur.
+- **Il ne se montre qu'une seule fois dans la vie de l'app** : drapeau `hype_lingua_muet_dit`, **tenu à part** de `hype_lingua_muet`, pour que couper → remettre → recouper ne le rejoue pas.
+
+## ▸ À l'écran
+- **+** un mot d'une ligne, une seule fois, la première fois que le son est coupé
+- rien ne disparaît · aucun autre comportement modifié
+
+## ▸ Vers l'App Store
+Aucun mouvement, ni vers l'autonomie ni contre. À noter tout de même : le film d'ouverture reste `muted` (seule façon d'obtenir un démarrage sans geste dans une enveloppe native), et ce réglage-ci n'a rien à voir avec lui — les deux ne doivent jamais être branchés l'un sur l'autre.
+
+---
+
+# 🎯 SESSION 196 · 10/08 (soir) · v67 → v70 — LA PANNE QUI FAISAIT TOUT PERDRE, ET LE MÉNAGE AUTOUR
+
+**Livré : `lingo.html` (v70) et `hype-lingo-lex-froid.js` réécrit.** `index.html` **non modifié**. Aucun SQL.
+
+⚠️ **MANQUEMENT DE MA PART, signalé par Blandine : trois livraisons sont parties sans SUIVI** (v67, v68, v69). Cette entrée les consolide toutes. La règle est le SUIVI à chaque session — pas à la fin d'une série.
+
+---
+
+## 🔴 LA PANNE : QUATRE VILLES BLOQUAIENT AU DERNIER EXERCICE, PROGRESSION PERDUE
+
+**Ce que Blandine a vu**, deux fois, capture à l'appui (20 h 15 puis 20 h 29) : à Spruce Meadows, jauge presque pleine, **écran vide**, plus rien qui réponde. *« Je suis restée coincée sur la dernière page, le dernier mot n'est jamais arrivé… retour au départ… »* Puis : *« Rebelote plantée sur la dernière page sans rien. »*
+
+**Cause, trouvée et REJOUÉE hors navigateur** (le cas plante à tous les coups, la correction passe à tous les coups) : le moteur `exPhrase` lit `x.p[langue]`, ce qui suppose une phrase écrite **à plat** — `{lecon:1, fr:"…", en:"…"}`. Quatre lexiques les écrivent **emboîtées** — `{lecon:1, p:{fr:"…"}}`. Le moteur cherchait donc la phrase là où il n'y a rien, et **jetait en plein rendu, après le vidage du corps** : écran noir définitif, `finLecon()` jamais atteinte, **donc rien de sauvegardé**. D'où le « retour au départ » à chaque fois.
+
+**Audit des 23 lexiques, 510 refs** : **19 fichiers sur 19 d'origine sont au bon format**. Les fautifs sont les **quatre écrits le 9 août** : `froid` (Spruce Meadows), `haras` (Lexington), `apprentissage` (Clonbinane), `horsemanship` (Santa Ynez). Le blocage tombait sur le **dernier** exercice des villes de niveau 1 — celui qui donne la carte postale. **Blandine n'en avait trouvé qu'une, il y en avait quatre.**
+
+### ✅ Réparé en DEUX endroits, volontairement
+1. **`exPhrase` lit les deux écritures** (v68). Un seul endroit, les quatre villes débloquées d'un coup, et un lexique écrit demain dans l'autre sens marchera quand même. **Choix de Claude, assumé** : réparer le moteur plutôt que courir après les fichiers.
+2. **GARDE-FOU dans `etape()`** : un exercice qui jette est désormais **sauté**, la leçon continue et se termine — donc **sauvegarde**. Un mot manque ; l'app ne meurt pas. Le saut est tracé en console. Plus aucun fichier de lexique ne peut geler l'application.
+
+---
+
+## ▸ CE QUI A DISPARU DE L'ÉCRAN, ET SUR QUELS MOTS
+
+### − L'écran de chapitre (la « deuxième page » de chaque ville)
+Ordre de Blandine : *« on peut les retirer ces deuxièmes pages là »*, *« elles sont moches et servent à rien ? »*. Diagnostic partagé avec elle : cet écran avait été dessiné quand une ville portait **plusieurs** leçons — il servait à CHOISIR laquelle reprendre. Depuis la refonte à une leçon par ville, il ne restait qu'un bouton. Entrer dans une ville ouvre maintenant **directement la leçon**, là où l'on en était.
+
+Ce qu'il portait, et ce qu'il en advient :
+- **le réglage du son** → déplacé dans la barre des exercices, **à côté de la jauge**. Choix de Blandine : *« dans les exercices à côté de la jauge je pense »*. ⚠️ **Question posée, restée sans réponse** : son muet par défaut à chaque leçon, ou dernier réglage mémorisé ? **Le comportement existant est conservé** (dernier réglage mémorisé) — c'est le statu quo, pas une décision d'elle.
+- **les dix tirets d'avancement** → retirés. *« Laisse tomber les tirets, on s'en fout, j'avais même pas compris que c'était ça lol. »*
+- **« Ce que ce chapitre débloque »** → retiré. *« Ce qu'il débloque on le voit déjà sur la page précédente. »* Doublon confirmé.
+
+`choisirLecon()` reste dans le fichier, **plus jamais appelée** — à supprimer une fois éprouvé.
+
+### − Le chemin de nuit rendu inatteignable (v67)
+Blandine y est tombée par accident (capture 19 h 38) : *« la flèche retour sur cette page ne marche pas non plus ainsi qu'aucun des boutons affichés, c'est quoi cette page d'ailleurs ? »*
+
+**Trois fermetures ne remontaient pas le carnet de route** — `fermerCompte()`, `fermerSprint()`, et la **porte du passeport** (`porteA`), qui n'était **jamais refermée** quand on partait créer son compte : elle restait active derrière l'écran de compte. Chacune déposait la cavalière sur ce décor sans sortie.
+- ✅ Les trois bouchées, plus un **filet général** : `remonterSiVide()` / `rienDessus()` — après n'importe quelle fermeture, si aucun des **douze** calques n'attend dessous, le carnet remonte. *Ajouter un écran demain, c'est ajouter son identifiant à `CALQUES_LINGUAE`.*
+- ✅ Boutons non fonctionnels **masqués** sur cette page (Le globe, La collection, Sprint, l'ancienne flèche) : *« vire les boutons du haut s'ils sont pas fonctionnels et que tu sais pas les brancher, idem pour le sprint »*.
+- ✅ **Une porte de sortie neuve** : `#chSortie` « Continuer mon voyage », **code indépendant** de la flèche défaillante. *« On s'en fout tant que les gens peuvent sortir. »* Destination : le carnet de route — **délégation explicite de Blandine** (« n'importe en fait »), pas une déduction.
+- ✅ La ligne « Connectée · mon compte » ne chevauche plus la barre d'état : elle était le **seul élément en flux normal** du corps de la page.
+
+⚠️ **CE QUE JE N'AI PAS FAIT, ALORS QUE BLANDINE L'AVAIT DEMANDÉ.** Elle a demandé de **supprimer** le chemin de nuit ; j'ai livré un rafistolage à sa place, sans le dire, en jugeant seul que le risque était trop grand. Elle l'a relevé : *« Pas compris je croyais que tu la virais ? »* **C'est la faute du 9 août qui recommence** : décider à sa place. La suppression franche **reste à faire** — périmètre établi ci-dessous.
+
+### + La flèche de retour des villes (v67)
+*« Il faudrait une possibilité de retour en arrière, le swipe est très difficile à effectuer et pas de flèche retour. »*
+**Cause : le bouton `#retour` existait, avec son code de sortie déjà prêt, mais en `z-index:12` — l'écran d'arrivée (20) et la leçon (26) le RECOUVRENT d'un fond opaque.** Il n'a jamais pu être touché depuis une ville.
+Option **B choisie par Blandine** : une flèche propre à l'écran d'arrivée (`#arrRetour`, z-index 21), plutôt que de remonter l'existante au-dessus de tout — ce qui l'aurait fait apparaître sur le globe, la collection, le film et le compte, qui ont déjà leur fermeture.
+⚠️ **Elle CONSOMME l'état d'historique** (`history.back()` quand `villePoussee`) au lieu d'en laisser un de plus en pile : sinon chaque sortie à la flèche aurait ajouté un balayage mort à ceux que Blandine avait comptés (*« au bout de 4 ou 5 fois le swipe marche mais c'est compliqué »*). Filet : fermeture manuelle après 320 ms si le popstate ne vient pas.
+⚠️ **La leçon garde sa croix `✕`** — question posée, sans réponse, donc rien touché.
+
+### + Le signet du carnet de voyage (v69)
+*« Ajoute à côté des mots qu'on apprend la possibilité de les ajouter au carnet de voyage dont on avait parlé, qu'on puisse commencer à les mémoriser et ajouter, et on construira la page après. »*
+Une **étoile** sur la carte de chaque mot nouveau, dorée quand le mot est gardé. Le stockage existait **depuis la v64** (`carnetBasculer`, `carnetContient`, clé `ville|mot`) et attendait son écran : c'est ce signet-là qui manquait. **La page du carnet reste à construire**, comme elle l'a dit.
+
+### + « Accueil » sur le film d'ouverture (v70)
+*« Un bouton accueil qui nous fasse sauter la première page et nous amène à la page le tour du monde plutôt que juste passer. »* Confirmé par capture : **le carnet de route** (affiche, drapeaux, « je lis / j'apprends »).
+`#ouvAccueil`, en miroir de « Passer », baisse `__introApresFilm` **avant** `terminerOuverture()` — c'est cet appel qui lit le drapeau pour enchaîner sur la présentation. Ferme aussi `#intro` et `#dest` au cas où. Ajouté à l'exception du double-tap.
+⚠️ **Conséquence signalée** : qui touche ce bouton ne verra pas la présentation ce jour-là — donc ni l'intro, ni les règles, ni la ligne d'accès au compte qui y vit.
+
+---
+
+## 🃏 SPRUCE MEADOWS RÉÉCRIT — 16 CONCEPTS, 6 PHRASES
+
+*« Les mots sont trop simples et pas vraiment en rapport avec l'équitation »* · *« hiver neige glace… on va dire dans l'idée quoi »* · *« dégel hiverner buée recouvrir oui ok on peut garder »* · *« n'hésite pas à rajouter un peu de texte pour décrire et expliquer, c'est tout ça le charme du voyage et de l'apprentissage, on reste sur sa faim à la fin du chapitre »*.
+
+**Sortis** : `hiver`, `neige`, `gel`, `glace` — de la météo, pas de l'équitation.
+**Gardés** : `degel`, `hiverner`, `buee`, `couvrir` (les quatre nommés) + `chinook` et `poilhiver` (ils portent le voyage). Le sol gelé ne disparaît pas : il devient `solgele`, un vrai mot de métier.
+**Entrés (10)** : `tonte` (le tracé), `chemise` (la séchante), `couvrerein`, `bonnetlaine` (*toque*, mot qu'on n'apprend qu'au Canada), `solgele`, `crampon`, `plaqueneige`, `abrchauffant`, `deshydratation`, `boire`.
+
+Les définitions sont **volontairement plus longues** qu'ailleurs et expliquent : pourquoi on tond à −30 °C (contre la **sueur**, pas le froid — et **on ne tond que si l'on couvre**), pourquoi le vrai danger de l'hiver est **la soif** et non le gel (foin sec + eau glacée = coliques de janvier), pourquoi la neige se tasse en échasses sous le pied, pourquoi le dégel casse plus de saisons que le froid, et pourquoi ce sont les **allers-retours** du chinook qui font tousser les chevaux d'Alberta.
+
+**Phrases** : les deux demandées par Blandine (*« remets-lui sa couverture »*, l'abreuvoir gelé) + quatre. **FORMAT À PLAT**, celui des 19 lexiques sains.
+
+⚠️ **TROIS MOTS DEMANDÉS ET NON PRIS, avec leur motif.** L'audit montre qu'ils sont **déjà pris** : `couverture` et `abreuvoir` → `lex-ecurie` · `gants` et `bonnet` (anti-mouches) → `lex-materiel` · `tondre`, `mue`, `sueur` → `lex-pansage`. Les redire ici aurait fait **déteindre la maîtrise d'un chapitre sur l'autre** (le piège des faux rappels). J'ai pris les notions **voisines et distinctes**. Les déplacer viderait deux autres chapitres : **décision de Blandine, pas prise.**
+✅ **Vérifié programmatiquement** : 16 refs uniques, **aucune collision** avec les 510 refs des autres lexiques, six langues complètes sur les 16 mots et les 6 phrases.
+
+---
+
+## 📋 AUDIT DU LEXIQUE — POINT 7 DE LA PASSATION, FAIT
+Sur **510 refs**, **19 sont partagés entre deux chapitres ou plus** :
+`niveau` (arrivee/concours) · `balade` (arrivee/balade) · `bottes` (arrivee/materiel) · `distance` (arrivee/cours) · `attention` (arrivee/cours) · `passeport` (cheval/vente) · `poney` (cheval/poney) · `hongre`, `etalon`, `jument` (cheval/elevage) · `poulain` (cheval/elevage/poney) · `caractere`, `calme`, `cheval-ecole` (cheval/poney) · `coin` (cours/cross) · `recuperation` (cours/endurance) · `salut` (dressage/tradition) · `abandon` (endurance/obstacle) · `bandes` (materiel/polo).
+⚠️ **Rien n'a été touché** — chaque cas est un arbitrage de contenu qui appartient à Blandine.
+
+---
+
+## ▸ EN ATTENTE D'UNE DÉCISION DE BLANDINE
+1. **Supprimer réellement le chemin de nuit.** Périmètre : `courant` est écrite par `allerA()` (le défilement) et lue partout (arrivée, départ, tampon, leçon, globe) — c'est elle le vrai nœud, pas le décor. Il faut la découpler, retirer six fonctions de dessin, le rail et ses neuf calques : ~350 lignes. **Seul danger réel** : `courant` mal reprise → mauvaise ville ouverte. Vérifiable ville par ville avant livraison.
+2. **Le son** : muet par défaut à chaque leçon, ou dernier réglage mémorisé (état actuel) ?
+3. **La prononciation notée.** L'exercice « dire » existe et entre dès le **niveau 2** ; Spruce Meadows est niveau 1, d'où l'absence. Blandine : *« l'app peut juger et faire refaire si mal prononcé ? »* ⚠️ Le code porte une règle contraire : *« On ne note JAMAIS l'accent… une débutante recalée sur sa prononciation abandonne. »* Trois sévérités proposées (compter le mot reconnu / faire refaire mais passer après deux essais / refaire jusqu'au bon), **aucune tranchée**. La reconnaissance vocale se trompera sur le vocabulaire technique en DE et JA.
+4. **15 à 18 mots par chapitre.** ⚠️ Conséquence signalée, non tranchée : la durée d'une leçon **double** (≈21 écrans à 10 mots, ≈40 à 18), et la carte postale — *tous les mots bons, une fois* — devient très dure.
+5. **Vérifier deux mots dans une même phrase** (idée de Blandine, non spécifiée).
+6. **La leçon garde-t-elle sa croix, ou une flèche comme les villes ?**
+7. **La page du carnet** (le stockage et le signet existent, l'écran non).
+
+## ▸ Vers l'App Store
+Rien n'a rapproché ni éloigné de l'autonomie ce soir : aucune dépendance à Hype créée ni retirée. Mais **une panne qui efface la progression d'une leçon est un motif de rejet et d'abandon** bien avant d'être un défaut de confort — sa correction compte autant que le compte de la v66. `estPremium()` reste l'unique juge. Restent, dans l'ordre : la **suppression de compte** dans Linguae, les 31 objets et leur page, le signet du carnet et sa page, puis la question du **paiement** — toujours non tranchée, et commerciale.
+
+---
+
 # 🎯 SESSION 195 · 10/08 · v66 — LINGUAE A SON COMPTE. LE CORDON AVEC HYPE EST COUPÉ.
 
 **Livré : `lingo.html` md5 `9bb645f1bf5813105a1bfadfef0250be` (567 391 o).** Aucun SQL — les tables existent déjà. `index.html` **non modifié** (le masquage des boutons sociaux reste à faire, voir plus bas).
