@@ -10,7 +10,7 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `37b82f076ea53a6d996c54999dea9ff7`, 9 079 285 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (1, NOUVEAU, chargé via `?v=1`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
+**Version actuelle de l'index.html : 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `c9cbae31f990799f2c7b3ac3b0fb84d0`, 9 079 285 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (1, NOUVEAU, chargé via `?v=1`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
 
 **Ancienne version (110) — 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
 
@@ -173,6 +173,16 @@ Après push du soir, app installée fermée/rouverte : **`reprise 1.2 · baby ? 
 ### 🔴 SIGNALEMENT NON RÉSOLU : « bug des photos » dans le Memory
 
 Blandine signale des photos toujours cassées dans le Memory (formulation dictée ambiguë : chemin OK mais Memory KO, probablement). **Mesuré dans la donnée : 0 src vide sur les 11 niveaux** — donc si des cartes cassent, une partie des 101 clés externes (plage k518-k614 surtout) n'est pas réellement définie en ligne (lot `hype-images-*.js` absent ou clé jamais poussée). **Info manquante demandée 2 fois, toujours pas obtenue : QUEL niveau, et carré cassé OU carte vide ?** Vérifier aussi que l'observation date d'APRÈS l'expiration du cache (~14h30) ou de Safari privé. Piste de fond si confirmé : migrer les paires du Memory vers des chemins directs `images/*.jpg` (même recette que les couvertures Baby en 111) — chaque carte devient testable en 5 s dans Safari. Compatible avec le nouveau fichier.
+
+### QUIZ & MEMORY BABY — ADOUCISSEMENTS VALIDÉS (soirée, même index)
+
+Retours de Blandine après la victoire des couvertures, trois sujets :
+
+1. **Memory, barème adouci POUR TOUT LE MONDE** (validé : « il y a du hasard, on ne peut rien faire ») : `memoryPoneyEtoiles` passe de 0=3★/1-3=2★/4+=1★ à **0-2=3★ / 3-6=2★ / 7+=1★**. S'applique partout où les étoiles Memory s'affichent (fin de partie, liste des niveaux).
+2. **Compteur d'échecs masqué** : le « ❌ N essais ratés » pendant la partie est retiré (le comptage interne continue, il nourrit les étoiles) ; la phrase de fin ne donne plus le nombre — « Bravo, tu as retrouvé toutes les paires ! » (6 langues), le « Sans faute ! » spécial est conservé. L'encart or « retente ta chance » ne s'affiche plus que sous 3★ (erreurs > 2).
+3. **Sheet « Quitter le quiz ? » réparé** : Blandine décrivait un écran figé où seul « Continuer le quiz » était accessible, « Quitter » invisible sous le bord. Correctifs : zIndex 60 → **220** (au-dessus de tout), panneau `maxHeight 72vh + overflowY auto` (jamais coupé sans recours), bouton « Quitter » rendu visible (bordure + fond rosé au lieu du texte nu). Destination inchangée (`galop-detail`) faute de reproduction — **à re-signaler si la sortie ramène au mauvais endroit sur un cours Baby.**
+
+⚠️ **EN ATTENTE DE BLANDINE (2 questions posées, sans réponse)** : (a) barème d'étoiles des QUIZ de cours (`nbEtoilesPourScore` : 100%=3★/70%=2★) — adoucir pour les cours **Baby seulement** (proposé 80%=3★/50%=2★) ou partout ? Rien n'a été changé sur les quiz en attendant. (b) **« ? » dans le Memory** : des images changées restées en « ? » — la carte affiche « ? » quand la clé `HYPE_IMGS` est **absente** (≠ carré cassé = chemin mort, ≠ vieille image = cache). Si des clés ont été ajoutées en MODIFIANT un lot `hype-images-NNN.js` existant (immutable un an !), même piège que les couvertures : les apps gardent le vieux lot sans les nouvelles clés. **Test demandé : le Memory en Safari privé montre-t-il les mêmes « ? » ?** Privé aussi = clés jamais poussées (chercher le lot) ; privé OK = vieux lot en cache → versionner la balise du lot modifié (`?v=2`).
 
 ### IDÉES ÉCARTÉES CETTE SESSION (notées, non validées)
 
