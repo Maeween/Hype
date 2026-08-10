@@ -57,6 +57,17 @@
 
 ---
 
+## 🎯 RAPPEL — DOCTRINE « LINGUAE AUTONOME » (décision de Blandine, 10/08/2026)
+
+Linguae doit devenir une **app iOS indépendante rapidement** ; Hype en a pour des années. **Toutes les décisions doivent y mener.** Ce qui concerne `index.html` directement :
+
+- **La progression de Linguae appartient à Linguae.** Sens de circulation décidé par Blandine : **« Hype lit juste ce que Linguae entre dans Supabase »**. Linguae écrit, Hype lit, **jamais l'inverse**.
+- **⚠️ À FAIRE EN DERNIER, ET DANS CET ORDRE :** verser d'abord dans la table de Linguae ce qui dort déjà dans la sauvegarde de Hype, **puis seulement** retirer les dix clés de `HYPE_EXTRAS_LINGUAE` (ligne ~20431). L'ordre inverse efface la progression existante des cavalières.
+- **Conséquence acceptée par elle** : Hype affichera l'avancement de Linguae avec un léger retard.
+- Doctrine complète, avec le compte propre à Linguae, le paiement App Store et le calendrier réel : **en tête de `SUIVI-LINGUAE.md`**.
+
+---
+
 ## SESSION 120 · 10/08 · LA PURGE DES COMPTES ENFIN DÉCLENCHÉE + NEUF TABLES OUBLIÉES
 
 **Livré : `supprimer-compte.js` · `purge-planifiee.js` (NOUVEAU) · `netlify.toml` md5 `9b07518fb2c929722d0cddf2ab0bd9b4`.** Emplacements : les deux fonctions dans `netlify/functions/`, le TOML **à la racine**. Aucun SQL. `index.html` et `lingo.html` non modifiés par cette session.

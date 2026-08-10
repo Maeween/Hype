@@ -1,3 +1,38 @@
+# 🎯 DOCTRINE « LINGUAE AUTONOME » — DÉCISION DE BLANDINE, 10/08/2026
+
+> **Pourquoi elle existe.** Blandine : *« je préférais la mettre seule au début le temps que l'autre passe, on en a pour des années alors que Linguae peut être vite prête »*. Hype mettra des années à arriver sur l'App Store ; Linguae peut y être bien avant. **Toutes les décisions doivent mener à cette autonomie.** Et elle a refusé net de la rendre gratuite pour faciliter la soumission : *« je suis pas pour la laisser gratuite, faut pas déconner »*.
+>
+> ## LA RÈGLE
+>
+> **Linguae ne doit dépendre de Hype pour RIEN d'essentiel.** Un cavalier qui télécharge Linguae seule, et n'installera jamais Hype, doit pouvoir s'inscrire, jouer, garder sa progression et payer. Toute décision qui recrée une dépendance à Hype est à refuser, ou à signaler à Blandine comme un recul.
+>
+> ## CE QUE ÇA IMPLIQUE, POINT PAR POINT
+>
+> **1. La progression appartient à Linguae.** *(tranché par Blandine le 10/08 : « dans tous les cas si on veut la passer autonome il faut qu'elle ait la sienne alors non ? »)* Linguae a sa propre table et l'écrit elle-même. **Sens de circulation, décidé par elle : « Hype lit juste ce que Linguae entre dans Supabase ».** Linguae écrit, Hype lit — **jamais l'inverse**. Un seul propriétaire de la donnée, un seul écrivain. Les Galops sont hors d'atteinte **par construction**, pas par précaution.
+> - Spécification complète du code de synchronisation : **session 186** de ce fichier (5 blocs, 5 fonctions de fusion pures testées 11/11, versement à la connexion, écritures groupées). Il avait été livré puis retiré en session 187 ; il **redevient le bon chemin** et est reconstructible en une intervention.
+> - **⚠️ ÉTAPE DÉLICATE, À FAIRE EN DERNIER :** retirer les dix clés Linguae de `HYPE_EXTRAS_LINGUAE` dans `index.html` (ligne ~20431), **après** avoir versé une fois dans la table de Linguae ce qui dort déjà dans la sauvegarde de Hype. Dans l'autre ordre, on efface la progression existante des cavalières.
+> - **Conséquence signalée et acceptée** : Hype affichera l'avancement de Linguae avec un léger retard (l'état de la dernière ouverture de Linguae, pas de la seconde d'avant). Invisible en pratique.
+>
+> **2. Linguae a son propre compte.** Aujourd'hui la porte B renvoie vers Hype — inacceptable pour une app indépendante : le relecteur Apple ouvrira Linguae seule et ne trouvera aucun moyen de s'inscrire. Il faut inscription, connexion, mot de passe oublié, **et suppression de compte dans l'app** (exigée par Apple ET le RGPD dès qu'on peut s'inscrire). La suppression peut réutiliser `supprimer-compte.js` telle quelle : elle ne demande qu'un jeton de session.
+> - **NE PAS RECOPIER l'écran de Hype.** Le *dessin* se reprend (cheval spectral, mot-symbole, champs en verre fumé, bouton dégradé turquoise — adapté à Linguae), la *mécanique* s'écrit en direct : `signInWithPassword`, `signUp`, `resetPasswordForEmail`. Une centaine de lignes. Deux écrans jumeaux dans deux fichiers = un bug corrigé à moitié, comme les deux listes d'Ambassadeurs qu'on vient de fusionner.
+> - **Question ouverte, jamais posée à Blandine** : quelqu'un qui s'inscrit *depuis Linguae* obtiendra un compte Hype complet (même base, même table `profiles`) et pourra ouvrir Hype connecté. C'est peut-être voulu — mais ça change la porte d'entrée du produit. **À lui demander avant d'écrire l'inscription.**
+>
+> **3. Le Premium passe par UN SEUL point.** `estPremium()` est déjà l'unique juge dans `lingo.html` — **le garder ainsi**. Si Linguae vend un jour par l'achat intégré Apple, cette fonction devra lire **deux sources** (Stripe et Apple). Toute vérification de Premium éparpillée ailleurs dans le fichier est à refuser.
+>
+> **4. Le paiement est LA question non tranchée.** Des apps compagnons d'un abonnement web se font rejeter sous la règle 3.1.1 **même sans formulaire d'achat dedans** (le contenu affiché est lu comme du contenu payant acquis hors App Store ; un bouton « Restaurer mon compte » est un motif cité). Et la liberté de renvoyer vers son propre paiement **ne vaut pas en France** : hors USA il faut l'*External Purchase Link Entitlement*. Trois voies, aucune indolore : achat intégré Apple (15-30 %, à réconcilier avec `abonnements_premium`) · renvoi web avec entitlement (dossier à défendre sur une première soumission) · attendre Hype. **Décision commerciale de Blandine, pas technique.**
+>
+> **5. Le pont `localStorage` avec Hype est une béquille temporaire.** La clé `hype_premium` reste utile comme réponse instantanée, mais Linguae interroge déjà la base elle-même (session 185). Ne rien rebâtir qui en dépende.
+>
+> **6. Contraintes de l'enveloppe native, à respecter dès maintenant** : chemins relatifs et non absolus vers le domaine · rien qui repose sur un comportement propre à Safari · le film d'ouverture reste muet (`muted`), seule façon d'obtenir un démarrage sans geste · prévoir que le démarrage automatique peut être refusé (bouton de relance déjà en place).
+>
+> ## CALENDRIER RÉEL, DIT À BLANDINE
+> Le travail technique est court. Ce qui décide de la date, c'est le **compte développeur Apple** (99 $/an, vérification d'identité de plusieurs jours) et un **Mac ou un service de compilation** — une app iOS ne se construit pas depuis un iPhone. Plus les captures aux formats imposés, la politique de confidentialité hébergée, les déclarations dans App Store Connect. Estimation honnête : quelques jours de travail, **deux à quatre semaines de calendrier**, l'essentiel passé à attendre. Prévoir un ou deux rejets sur une première soumission.
+>
+> ## GESTE DE FIN DE SESSION
+> Chaque session Linguae se clôt par une section **« Vers l'App Store »** : ce qui a rapproché de l'autonomie, ce qui l'a éloignée, ce qui reste à faire. Au même titre que « Préparation Flutter » dans `SUIVI.md`.
+
+---
+
 # 🔴🔴🔴 LA FAUTE DU 9 AOÛT AU SOIR — À LIRE AVANT TOUTE CHOSE, ET À NE JAMAIS REPRODUIRE 🔴🔴🔴
 
 > **Ce qui s'est passé.** Le 09/08 au soir, session 179 (v57), Blandine a demandé **une seule chose** : que la présentation porte les raccourcis, et donc qu'elle s'affiche à chaque lancement. J'ai décidé **en plus, de moi-même**, de l'ordre film/présentation : présentation d'abord, film relégué à la sortie du choix de langue.
