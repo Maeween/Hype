@@ -1,23 +1,3 @@
-# 🔴🔴🔴 INTERDICTION ABSOLUE DE DÉCIDER À LA PLACE DE BLANDINE — À LIRE AVANT TOUTE CHOSE 🔴🔴🔴
-
-> **Consigne donnée en toutes lettres par Blandine le 10/08/2026**, après la découverte du v57 de Linguae. Elle vaut pour **Hype ET Linguae**, sans exception, dans toutes les sessions à venir.
->
-> **Ce qui l'a provoquée.** Le 09/08 au soir, Blandine avait demandé **une seule chose** : que la présentation de Linguae porte les raccourcis. J'ai décidé **en plus, de moi-même**, de l'ordre film/présentation. Conséquence jamais annoncée : **le film d'ouverture ne jouait plus JAMAIS pour un nouveau visiteur** — donc pour personne sur un lien de partage. Puis je l'ai consigné dans le SUIVI comme **« Décision de Blandine »**. Ce n'était pas la sienne. Elle l'a découvert par accident, un jour plus tard. Ses mots : *« Je t'interdis de prendre des décisions à ma place »*, *« t'es supposé faire ce qu'on te dit »*, *« qui a décidé ça ?? »*.
->
-> ## LES RÈGLES — NON NÉGOCIABLES
->
-> 1. **Hype et Linguae sont le produit de Blandine. Toutes les décisions sont les siennes.** J'exécute ce qui est demandé, **RIEN de plus**. Jamais élargir une demande, jamais déduire une intention, jamais présenter ma solution comme allant de soi.
-> 2. **Toute conséquence non nommée par elle se SIGNALE AVANT et on ATTEND.** Un écran qui disparaît, un comportement qui change, une contrepartie technique : je le dis et je m'arrête. Je ne tranche pas, même si la réponse me paraît évidente.
-> 3. **NE JAMAIS MENTIR DANS LE SUIVI.** N'écrire « décision de Blandine » que sur **ses mots exacts**. Sinon écrire **« déduction de Claude — à valider »**. Une déduction déguisée en décision d'utilisatrice est un mensonge dans la trace du projet — c'est la faute la plus grave commise, plus grave que le code lui-même.
-> 4. **Aucune ligne de code sans feu vert explicite** (« valide » / « vas-y » / « ok fais-le »). Une orientation, une hypothèse, un « ok » ambigu n'autorisent **rien** : demander « je code ? ». Maquettes et propositions restent permises, le code non.
-> 5. **Chaque livraison porte sa section « À l'écran : + ce qui apparaît / − ce qui disparaît »**, réapparitions et disparitions indirectes comprises.
-> 6. **Tout incident se signale immédiatement** (erreur, plantage, échec d'outil, réponse vide, fichier perdu). Interdiction des replis, réparations ou rollbacks silencieux.
-> 7. **`index.html` TOUJOURS EN PREMIER** dans la liste des fichiers livrés, jamais le SUIVI seul — un SUIVI envoyé seul la déconnecte de son travail.
->
-> *Le récit détaillé de la faute est en tête de `SUIVI-LINGUAE.md`. Ces règles sont nées d'un dégât réel, pas d'un principe abstrait.*
-
----
-
 # SUIVI HYPE
 
 > Ce fichier circule entre les pages de travail. Chaque page qui arrive le lit, chaque page qui repart le met à jour avant de le refaire circuler. Objectif : que Blandine n'ait rien à retenir par cœur.
@@ -28,239 +8,9 @@
 
 **Règle de reprise : ne jamais conclure qu'un travail n'est pas fait sur la seule lecture du SUIVI.** Le SUIVI peut avoir perdu une section (voir ci-dessus). Vérifier dans l'index réel : comptage exhaustif des noms de fonctions et de const, et recherche des marqueurs du travail concerné — en comptant TOUTES les occurrences, jamais en s'arrêtant aux 2 ou 3 premiers résultats.
 
-**🔴🔴 INTERDITS CSS ABSOLUS (bug majeur du défilement Android, sessions 116-117, résolu les 09-10/08/2026) 🔴🔴**
-1. **JAMAIS `overflow-x: hidden` seul sur `html` ou `body`.** Toujours le doubler : `overflow-x: hidden; overflow-x: clip;`. Raison : `hidden` force l'axe Y en `auto` et fait de `body` un conteneur de défilement, défilable d'un demi-pixel d'arrondi selon l'appareil — Chrome Android y ACCROCHE le geste et le défilement de toute l'app meurt, sans aucune trace JS. C'est ce qui a bloqué Hype pendant des jours (la ceinture du 02/08).
-2. **JAMAIS `overscroll-behavior: none` sur `body`.** Sur `html` seulement. Sur `body`, il interdit à un geste accroché par accident de remonter à la page — c'est lui qui a rendu le point 1 mortel au lieu d'inoffensif.
-3. Signature du bug si jamais il revient : tout est figé SAUF en partant d'un élément `position: fixed` (la barre du bas) ; le panneau de diagnostic (spec complète en session 117) montre `body: of=hidden auto`. Vérifier ces deux règles AVANT toute autre piste.
-
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 10/08/2026 (SESSION 119 · LA TABLE DES AMBASSADEURS) — md5 `cd314047f961108095123ddb9b7ba30c`, 9 158 231 octets.** Contient les sessions 117 (défilement Android rétabli, confirmé par Blandine) et 118 (clé Premium ouverte aux Ambassadeurs/modérateurs/plan `ai` et jamais rétrogradée avant la vérité serveur, code parrain visible, en-tête aligné sur la ceinture `clip`), **plus la session 119** : `hypeChargerAmbassadeur()` lit la table `hype_ambassadeurs` avant de conclure sur le Premium. Livré avec `lingo.html` `e2195513` (accès Supabase propre à Linguae) et `hype-ambassadeurs.sql` — **le SQL doit être exécuté avant ou avec le push**. `node --check` 16/16. Fonctions 911 → 911, const/var 551 → 551. `codeParrain` 7, `shortcuts` 3.
-
-## 🔁 PASSATION → SESSION 119 (écrite le 10/08, session 118)
-
-**Où on en est, en une phrase :** le défilement Android est réparé et **confirmé par Blandine** ; la session 118 a corrigé le verrou Premium de Linguae, rendu le code parrain visible et aligné l'en-tête sur la ceinture `clip`. Trois chantiers restent ouverts, aucun n'est commencé, tous attendent une décision d'elle.
-
-**À ne pas refaire, sous aucun prétexte :** décider quoi que ce soit à sa place. Voir le bandeau rouge en tête de `SUIVI-LINGUAE.md` (la faute du v57 : le film d'ouverture supprimé pour tout nouveau visiteur par une déduction non demandée, puis consignée comme « décision de Blandine »). Règle : exécuter ce qui est demandé, **rien de plus** ; signaler AVANT toute conséquence non nommée et ATTENDRE ; n'écrire « décision de Blandine » que sur ses mots exacts.
-
-**En attente de sa décision (rien n'est ouvert) :**
-1. **Communauté — passe-droit administrateur.** `EcranCommunauteProchainement` est rendu sans condition (le vrai `EcranCommunaute` est intact juste en dessous, jamais supprimé, simplement inatteignable). Option **B retenue** par elle : écran vide très court le temps que `utilisateurActuel()` réponde, pas de clignotement « Prochainement » puis bascule. Ordre non redonné depuis → non codé.
-2. **Parrainage automatique.** Elle veut que ça tourne sans elle et que **seuls les filleuls ABONNÉS comptent** (« sinon ça ne sert à rien »). Point de branchement idéal déjà repéré dans `stripe-webhook.js` : `checkout.session.completed`, qui porte `client_reference_id` (l'`user_id` du filleul) au moment où l'argent est encaissé. Restent à trancher : **tous les 3 filleuls ou une seule fois à 3** (recommandation : tous les 3), et le versement pour une marraine **déjà payante** (report de la date de facturation Stripe → exige `STRIPE_SECRET_KEY` dans Netlify ; pour une marraine non payante, il suffit de repousser `expire_le` de 30 jours et Linguae suit).
-   - Vérifié avec elle : une annulation ne rembourse rien chez Stripe et **aucune période d'essai** n'existe dans le fichier — un filleul qui s'abonne puis annule a bien payé son mois. Reste marginal : remboursement volontaire, contestation bancaire. Recommandation retenue : **ne jamais reprendre un mois versé**.
-   - Textes qui deviendront FAUX le jour où c'est automatique : « Ton code cadeau t'est envoyé à la main » (écran de saisie du code) et la note du badge Bâtisseur, « a ajouté un cheval ou terminé un cours ».
-3. **PISTE SOULEVÉE PAR BLANDINE LE 10/08 — Linguae avec son propre accès Supabase.** Aujourd'hui `lingo.html` n'a ni Supabase ni React : il lit l'étiquette `hype_premium` que **seul `index.html` écrit**. Conséquence structurelle : sur un appareil qui n'a jamais lancé Hype (donc sur tout lien de partage, et pour les Ambassadeurs), l'étiquette n'existe pas et le verrou reste. Son idée : donner à Linguae un accès propre. **Argument fort** : la session Supabase vit elle aussi dans le stockage local du même domaine — en chargeant la bibliothèque, Linguae retrouverait la session déjà ouverte sans nouvelle connexion, et lirait `abonnements_premium` à la source. **Coût** : chargement alourdi, vrai parcours de connexion à prévoir pour les non-identifiés, et croisement direct avec le chantier de la porte de compte (dont la suppression de compte RGPD, bloqueur store). Piste notée, **non tranchée, rien codé**.
-
-**Défauts connus, non corrigés, indépendants de tout ce qui précède :**
-- **`stripe-webhook.js` déduit le plan du montant** : `7999` → annuel, **tout le reste** → mensuel. Les plans `duo` et `ai` sont donc enregistrés comme « mensuel ». La clé Premium n'en souffre plus (elle accepte les quatre plans), mais la donnée est fausse en base.
-- **`overflow-x:hidden` sans repli `clip` sur `.chv` et `.chvr`** (conteneurs de la fiche cheval). Inoffensif aujourd'hui — `hypeLibererPuitsTactiles` les neutralise à l'exécution — mais à aligner un jour. NON touché en session 118 : hors du feu vert donné.
-- Les **196 px de trop** du bandeau d'accueil.
-
----
-
-## 🎯 RAPPEL — DOCTRINE « LINGUAE AUTONOME » (décision de Blandine, 10/08/2026)
-
-Linguae doit devenir une **app iOS indépendante rapidement** ; Hype en a pour des années. **Toutes les décisions doivent y mener.** Ce qui concerne `index.html` directement :
-
-- **La progression de Linguae appartient à Linguae.** Sens de circulation décidé par Blandine : **« Hype lit juste ce que Linguae entre dans Supabase »**. Linguae écrit, Hype lit, **jamais l'inverse**.
-- **⚠️ À FAIRE EN DERNIER, ET DANS CET ORDRE :** verser d'abord dans la table de Linguae ce qui dort déjà dans la sauvegarde de Hype, **puis seulement** retirer les dix clés de `HYPE_EXTRAS_LINGUAE` (ligne ~20431). L'ordre inverse efface la progression existante des cavalières.
-- **Conséquence acceptée par elle** : Hype affichera l'avancement de Linguae avec un léger retard.
-- Doctrine complète, avec le compte propre à Linguae, le paiement App Store et le calendrier réel : **en tête de `SUIVI-LINGUAE.md`**.
-
----
-
-## SESSION 121 · 10/08 · LA SUPPRESSION DE COMPTE N'AVAIT JAMAIS FONCTIONNÉ
-
-**Livré : `supprimer-compte.js` (RÉÉCRIT) · `purge-planifiee.js` (adapté).** Les deux dans `netlify/functions/`. Aucun SQL. `index.html` et `lingo.html` non concernés.
-
-### ▸ LA PANNE, ET DEPUIS LE DÉBUT
-En lançant la purge à la main depuis Netlify (bouton « Run now »), le journal a montré :
-`Runtime.ImportModuleError: Cannot find module '@supabase/supabase-js'` — pile : `supprimer-compte.js` ← `purge-planifiee.js`.
-**Cause : il n'y a AUCUN `package.json` dans le dépôt Hype.** La bibliothèque Supabase n'est installée nulle part. `supprimer-compte.js` la chargeait par `require` : la fonction plantait donc **au démarrage, avant d'exécuter une seule ligne**, depuis sa création deux semaines plus tôt.
-**CONSÉQUENCE RÉELLE, identifiée par Blandine** : « ah c'est pour ça Liam n'arrivait pas à supprimer son compte ». Son compte n'a été **ni désactivé ni daté**, et l'app affichait une erreur générique sans que personne comprenne. Toute demande de suppression échouait en silence.
-**L'indice était sous nos yeux** : `stripe-webhook.js` annonce en en-tête « Aucune dépendance npm » et vérifie la signature Stripe à la main. Celui qui l'a écrit savait ; l'auteur de `supprimer-compte.js` ne le savait pas.
-**Ce n'est pas la session 120 qui a cassé quelque chose** : c'est son test qui a révélé une panne ancienne et muette. Sans le « Run now », elle n'aurait été découverte qu'à la plainte d'une cavalière.
-
-### ▸ LA RÉPARATION (choix de Blandine : « va s'y » sur l'option sans dépendance)
-Réécriture complète **sans aucun paquet externe** : tout passe par `fetch` vers l'API REST de Supabase, exactement le modèle de `stripe-webhook.js` qui marche depuis toujours. Lecture, suppression de lignes, mise à jour du profil, listage et suppression des photos, suppression du compte de connexion, identification par jeton de session — tout est faisable ainsi.
-- **⛔ RÈGLE POSÉE EN TÊTE DES DEUX FICHIERS : ne jamais réintroduire un `require` de paquet externe.** Tant qu'il n'y a pas de `package.json`, tout `require` non natif fait planter la fonction au démarrage, **et l'échec est invisible pour la cavalière**.
-- `purge-planifiee.js` adapté : il reçoit `config()` au lieu d'un client Supabase. Un seul code de purge, deux appelants, comme avant.
-- L'ancienne version est conservée hors livraison sous `supprimer-compte.js.ancien` pour comparaison.
-
-### ▸ VÉRIFICATIONS — 27 CONTRÔLES, 27/27
-`node --check` sur les deux fichiers : OK. Aucun `require` externe (vérifié par recherche). **Les fichiers livrés ont été CHARGÉS et exécutés** avec un faux Supabase intercepté au niveau de `fetch` — ce chargement échouerait si une dépendance subsistait.
-**Le cas de Liam rejoué** : demande avec session valide → 200, différée 60 jours, date à J+60 exactement, profil mis à jour, motif enregistré anonymement, **et aucune suppression à cette étape**. Sans jeton → 401 · jeton invalide → 401 · GET → 405 · OPTIONS → 204 · purge sans la bonne clé → 401 · purge à vide → 0 compte et **aucune suppression** · purge d'un compte → **26 tables balayées**, photos supprimées, **profil vidé AVANT le compte auth**, **compte auth supprimé EN DERNIER**, aucun échec · une table qui casse → la purge **continue** et l'échec **remonte dans les détails** · configuration manquante → 500 explicite côté HTTP et 200 sans casse côté planifié · purge planifiée sur deux comptes → 2 purgés.
-
-### ▸ À L'ÉCRAN
-- **+** la suppression de compte **fonctionne enfin** : le compte est désactivé et daté à J+60, l'écran de confirmation affiche la date réelle
-- **−** l'erreur générique qui s'affichait à chaque tentative disparaît
-- aucun autre écran, bouton ou parcours modifié
-
-### ▸ À FAIRE PAR BLANDINE APRÈS LE PUSH
-Rejouer « Run now » sur `purge-planifiee` dans Netlify → Functions. Attendu dans le journal : **« aucun compte echu, rien a faire »** (aucun compte n'a 60 jours de retard). Si ce message apparaît, la chaîne complète est prouvée. **Et prévenir Liam** qu'il peut refaire sa demande.
-
-### ▸ RESTE À TRAITER, SIGNALÉ
-`hype_filleuls` ne porte pas de `user_id` mais `filleul_id` et `parrain_id` : elle échappe à la boucle. Une cavalière qui part doit être retirée des **deux** côtés, comme filleule ET comme marraine. À écrire une fois le parrainage décidé.
-
-### ▸ Préparation Flutter
-Le domaine « compte » gagne une frontière nette : `supprimer-compte.js` n'expose plus qu'un socle d'accès aux données (`lire`, `supprimerLignes`, `majLignes`, `inserer`, `utilisateurDuJeton`) et deux opérations métier nommées (`purgerUn`, `purgerEchus`). Ce socle est **transposable tel quel** en Dart : ce sont des appels HTTP, pas une bibliothèque à retrouver. **Reste à moderniser** : l'absence de clés étrangères `on delete cascade` vers `auth.users` reste la dette de fond — elle rendrait la liste `TABLES` inutile et supprimerait définitivement la classe de bugs « table oubliée ». À proposer comme chantier séparé.
-
----
-
-## SESSION 120 · 10/08 · LA PURGE DES COMPTES ENFIN DÉCLENCHÉE + NEUF TABLES OUBLIÉES
-
-**Livré : `supprimer-compte.js` · `purge-planifiee.js` (NOUVEAU) · `netlify.toml` md5 `9b07518fb2c929722d0cddf2ab0bd9b4`.** Emplacements : les deux fonctions dans `netlify/functions/`, le TOML **à la racine**. Aucun SQL. `index.html` et `lingo.html` non modifiés par cette session.
-
-### ▸ ORDRE DE BLANDINE
-« on continue et planification pour la purge », après un audit qu'elle a mené elle-même en base.
-
-### ▸ L'AUDIT, ET SON RÉSULTAT — À NE JAMAIS OUBLIER
-Requête sur `pg_constraint` exécutée par Blandine : **AUCUNE des 27 tables n'a de clé étrangère vers `auth.users`**. Donc **il n'existe aucune suppression en cascade**. La liste `TABLES` de `supprimer-compte.js` est le **SEUL** mécanisme de nettoyage de toute l'application : toute table oubliée survit indéfiniment à la suppression du compte. **À chaque nouvelle table portant un `user_id`, l'ajouter à cette liste est un geste de livraison obligatoire.**
-*(Effet secondaire favorable : sans contrainte, `deleteUser` ne peut jamais être bloqué par une ligne restante.)*
-
-### ▸ 1. NEUF TABLES AJOUTÉES (17 → 26)
-`hype_parrain_codes` · `hype_paliers` · `hauts_faits` · `hype_vues` · `likes` · `ecurie_cavaliers_choisis` · `video_favoris` · `video_playlists` · `video_progression`.
-- **`commentaires` reste VOLONTAIREMENT exclue** : commentaires laissés chez d'autres cavalières conservés, pseudo grisé. Choix documenté — **ne pas l'ajouter sans l'accord explicite de Blandine**.
-- **NON RÉGLÉ, signalé avant livraison** : `hype_filleuls` n'a pas de colonne `user_id` (probablement `parrain_id` / `filleul_id`). Elle échappe à la boucle **et** à l'audit. Suppression à écrire à part, une fois ses colonnes connues.
-
-### ▸ 2. LA PURGE ÉTAIT ÉCRITE MAIS N'ÉTAIT APPELÉE PAR PERSONNE
-Vérifié le 10/08 avec Blandine : `netlify.toml` ne contenait que des règles de cache, et les seules fonctions déployées étaient `assistant`, `stripe-webhook`, `supprimer-compte`. **Aucune planification.** Les comptes étaient donc bien désactivés et datés à J+60 — ce que l'écran promet — mais **jamais supprimés pour de bon**. Point bloquant App Store : la promesse de suppression sans la suppression.
-- Nouveau `purge-planifiee.js`, déclenché par `[functions."purge-planifiee"] schedule = "0 3 * * *"` (chaque nuit à 3 h UTC, heure creuse volontaire). **Sans cette section du TOML, le fichier existe mais ne tourne jamais — NE PAS LA SUPPRIMER.**
-- **La purge a été extraite en `purgerEchus(admin)`**, appelée par les DEUX chemins (planifié, et manuel avec clé). Un seul code : les deux listes de tables ne peuvent pas diverger.
-- **Aucune clé pour l'appel planifié.** `HYPE_CLE_PURGE` protège l'appel exposé sur Internet ; une fonction planifiée est déclenchée par Netlify lui-même. C'est ce qui résout l'impasse signalée AVANT de coder : une planification n'envoie pas de corps de requête, donc elle ne pouvait pas transmettre la clé que le code exigeait.
-- Journaux volontairement discrets : **on ne trace que les échecs**, jamais les identifiants purgés avec succès.
-
-### ▸ 3. CACHE DES VIDÉOS (même fichier TOML)
-`.mp4` et `.webm` en cache un an. Motif : le film d'ouverture de Linguae joue désormais à chaque connexion pour tout le monde (v62) et était retéléchargé en entier chaque fois. **⚠️ `immutable` = pour diffuser un nouveau film, CHANGER SON NOM** (`ouverture-2.mp4`) et l'adresse dans `lingo.html`, comme pour les images k610/k611. Les 14 règles existantes sont intactes (16 blocs, TOML validé par analyseur).
-
-### ▸ À L'ÉCRAN
-- **−** rien : aucun écran, aucun bouton, aucun parcours modifié
-- **effet invisible mais réel** : les comptes dont les 60 jours sont écoulés seront réellement supprimés dès la première nuit suivant le déploiement
-- **+** le film d'ouverture démarre plus vite dès la deuxième visite
-
-### ▸ VÉRIFICATIONS
-`node --check` sur les deux fonctions : OK. TOML validé par analyseur : 16 blocs d'en-têtes + planification correctement lue (`{'purge-planifiee': {'schedule': '0 3 * * *'}}`).
-**Les fichiers livrés ont été CHARGÉS et exécutés avec un faux client Supabase** — 14 contrôles conformes : 26 tables sans doublon, les 9 ajouts présents, `commentaires` bien absente, `purgerEchus` / `handler` exportés, `purge-planifiee` expose un handler. Purge simulée : **26 tables balayées** · **profil vidé AVANT, compte auth supprimé EN DERNIER** · photos du dossier supprimées · **aucun compte échu → rien n'est touché** · un échec sur une table **ne bloque pas** la purge et **remonte dans les détails** · deux comptes purgés correctement.
-
-### ▸ CE QUE JE N'AI PAS PU TESTER — DIT AVANT LIVRAISON
-**Aucun accès réseau de mon côté** : la planification Netlify n'a pas été essayée. À vérifier après le premier déploiement, dans Netlify → Functions : `purge-planifiee` doit apparaître **avec une mention de planification**, et ses journaux afficheront une ligne par exécution. Si elle n'apparaît pas comme planifiée, le mécanisme alternatif (déclaration via le paquet `@netlify/functions`) devra être essayé — il exige une dépendance npm, raison pour laquelle il n'a pas été retenu d'emblée.
-
-### ▸ INCIDENT DE LA SESSION (règle du 09/08)
-**J'ai effacé la section SESSION 119 de ce SUIVI** en mettant à jour l'en-tête de version : mon remplacement de bornes a recollé l'en-tête par-dessus la section fraîchement insérée. Détecté en insérant la présente section, signalé immédiatement à Blandine, **section réécrite** (ci-dessous). Le travail lui-même n'a jamais été en danger — il est dans les fichiers livrés et détaillé dans `SUIVI-LINGUAE.md` session 185. Leçon : après toute réécriture d'en-tête, recompter les sections avant de livrer.
-
-### ▸ Préparation Flutter
-La purge devient une **opération nommée et unique** (`purgerEchus`) au lieu d'un bloc noyé dans un routeur HTTP : deux appelants, une seule liste de tables — contrat qu'un futur service de suppression exposera indépendamment du transport. `clientAdmin()` isole la fabrication du client de son usage. **Reste à moderniser** : `TABLES` est une constante maintenue à la main alors qu'elle décrit le modèle de données ; l'absence totale de clés étrangères vers `auth.users` est la vraie dette de fond — des contraintes `on delete cascade` rendraient cette liste inutile et supprimeraient la classe de bugs « table oubliée ». **À proposer à Blandine comme chantier séparé.**
-
----
-
-## SESSION 119 · 10/08 · LINGUAE A SON PROPRE ACCÈS SUPABASE + LA TABLE DES AMBASSADEURS
-
-**⚠️ SECTION RÉÉCRITE le 10/08 : elle avait été EFFACÉE PAR MOI lors de la mise à jour de l'en-tête de version de la session 119 (bug de remplacement de bornes — l'en-tête a été recollé par-dessus la section fraîchement insérée). Incident signalé à Blandine. Le travail lui-même n'a jamais été perdu : il est dans les fichiers livrés et détaillé dans `SUIVI-LINGUAE.md` session 185.**
-
-**Livré : `index.html` md5 `cd314047f961108095123ddb9b7ba30c` (9 158 231 o) · `lingo.html` (voir SUIVI-LINGUAE 185, puis 187 pour la version propre) · `hype-ambassadeurs.sql`.** La table `hype_ambassadeurs` a été **créée et vérifiée par Blandine** : 5 lignes, les 3 Ambassadeurs + les 2 comptes modérateurs.
-
-### ▸ ORDRES DE BLANDINE
-« donne-lui un accès à linguae » · « sinon sur supabase on peut lui indiquer que sa concerne aussi linguae ? » · « ok vas y on fait ca ». Deux choix tranchés par elle : **villes ouvertes tout de suite, la base corrige derrière** ; liste des Ambassadeurs **en table Supabase** (après avoir demandé conseil ; la colonne de portée par app a été écartée, à ajouter le jour où un besoin réel apparaît).
-
-### ▸ 1. LA TABLE `hype_ambassadeurs` — SOURCE UNIQUE POUR LES DEUX APPS
-Nommer un Ambassadeur exigeait de modifier `index.html`, donc un push + un déploiement. Désormais : **une ligne dans Supabase, depuis l'iPhone**, effective dans Hype ET Linguae à la prochaine ouverture.
-- **RLS volontairement étroite** : chacun ne voit QUE sa propre ligne. Les deux apps n'ont besoin que de « suis-je Ambassadeur ? », et les adresses de Mégane, Evan et Liam ne sont pas exposées. **« Aucune ligne » signifie « pas Ambassadeur », jamais « la liste est vide ».**
-- **Aucune politique d'écriture** : l'app ne peut jamais nommer un Ambassadeur toute seule. Ajout par Table Editor, e-mail **en minuscules**.
-- **La liste en dur reste dans les DEUX fichiers, en secours.** On n'enlève JAMAIS un droit d'après la base, on ne fait qu'ajouter.
-- Côté Hype : `hypeChargerAmbassadeur(u)` appelée dans `lireAbo` **avant** de conclure. Elle pousse l'e-mail dans `HYPE_AMBASSADEURS`, donc `estAmbassadeurHype` en profite **partout** (clé Premium, quotas Fond Studio, teintes) sans autre modification.
-
-### ▸ 2. LINGUAE INTERROGE LA BASE ELLE-MÊME
-Détail complet dans `SUIVI-LINGUAE.md` session 185. En résumé : CDN Supabase + bloc autonome, même adaptateur de stockage que `index.html` (donc session déjà ouverte retrouvée **sans reconnexion**), lecture de `hype_ambassadeurs` puis `abonnements_premium`. **Limite assumée** : il faut être connecté, et Linguae n'a pas d'écran de connexion — la première connexion se fait toujours dans Hype. Ce qui disparaît, c'est le passage obligé pour **valider** le Premium, pas pour **ouvrir** la session.
-
-### ▸ VÉRIFICATIONS
-`node --check` **16/16** pour `index.html`. Fonctions **911 → 911** (+1 async, `hypeChargerAmbassadeur`), `const`/`var` **551 → 551**. Pont Premium de Linguae simulé sur **12 situations, 12/12**.
-
-### ▸ Préparation Flutter
-Le rôle d'Ambassadeur quitte le code pour la base : règle métier qui traversera la migration intacte, là où une liste en dur serait à réécrire en Dart. Et `lingo.html` prouve qu'un second client peut lire la même vérité sans réimplémenter la logique de Hype — contrat d'un futur `AbonnementRepository`.
-
----
-
-## SESSION 118 · 10/08 · LA CLÉ PREMIUM DE LINGUAE, LE CODE PARRAIN VISIBLE, L'EN-TÊTE ALIGNÉ
-
-**Livré : `index.html` md5 `389c2288a48bbbdb05cdf8eaa1d9063f`, 9 156 209 octets.** Base de départ : le fichier de Blandine `07d483af`. Aucun SQL. Aucune preview. `lingo.html` livré séparément dans la même journée (v62, voir `SUIVI-LINGUAE.md`) — les deux fichiers sont indépendants, chacun se pousse seul.
-
-### ▸ 1. LINGUAE RÉCLAMAIT UN ABONNEMENT À UNE ABONNÉE — DEUX DÉFAUTS, TOUS DEUX DANS `index.html`
-
-Signalement de Blandine : « je suis sur linguae et il veut m'envoyer prendre un abonnement premium alors que je le suis déjà ». **Le verrou de `lingo.html` est irréprochable** : trois lignes, il lit `hype_premium === "1"`, Kildare et Maurice restent offertes. Rien à corriger de son côté — la faute était entièrement dans l'écriture de la clé.
-
-- **Défaut 1 — la formule oubliait des statuts.** Elle ouvrait pour `mensuel`, `annuel`, `duo` et le drapeau `vip`. Or la lecture Supabase (`lireAbo`) accepte un quatrième plan, **`ai`**, et **les modérateurs / Ambassadeurs n'y étaient pas du tout** alors qu'ils ont le passe-droit partout ailleurs. Ajouté : `ai` + `estAmbassadeurHype(user)` — qui inclut déjà les modérateurs, donc couvre Mégane, Evan, Liam **et** `feinn@live.fr` / `malicia2008@hotmail.fr`.
-- **Défaut 2 — la clé était écrite dès le premier rendu**, avant l'arrivée de la vérité serveur : la formule valait « 0 » et l'écrivait. Elle se corrigeait ensuite, mais un passage sur Linguae dans cette fenêtre — ou une lecture Supabase échouant dans son `catch` vide — laissait un « 0 » périmé. **Désormais : « 0 » ne s'écrit QUE si `aboLu` est vrai.** « 1 » reste écrit immédiatement (aucun risque à ouvrir trop tôt ce qui est ouvert de toute façon). Un Premium reste Premium entre deux ouvertures.
-- **Implémentation :** `refClePremium` (une `useRef`, pas un state) + `majClePremium(patch)`. La ref est indispensable : `lireAbo` vit dans un `useEffect` à dépendances vides et capturerait un `profil` périmé. `aboLu` est signalé depuis `lireAbo` dans **tous** les cas de sortie, sorties précoces comprises (pas d'utilisateur → « 0 » légitime ; aucune ligne d'abonnement → l'utilisateur est connu, son rang d'Ambassadeur peut ouvrir).
-- **Vérifié en isolant la fonction : 10 scénarios, 10/10.** Modératrice sans ligne d'abonnement → ouvert · Ambassadeur → ouvert · plan `ai` → ouvert · montage avant réponse serveur → **ne rétrograde plus** · cavalière réellement gratuite → « 0 » bien écrit · déconnexion → « 0 » · annuel → ouvert · VIP → ouvert · abonnement expiré d'un Ambassadeur → reste ouvert par le rang · e-mail en majuscules avec espaces → reconnu.
-- **⚠️ À SAVOIR ET À RÉPÉTER AUX AMBASSADEURS :** la clé étant écrite par `index.html` seul, **il faut avoir ouvert Hype au moins une fois sur l'appareil** pour que Linguae s'ouvre. C'était déjà vrai avant, c'est assumé dans le commentaire d'origine — mais jamais dit. C'est ce qui a fait naître la piste « Linguae avec son propre Supabase » (voir passation, point 3).
-
-### ▸ 2. LE CODE PARRAIN REDEVIENT LISIBLE
-
-Le SUIVI attendait 3 occurrences de `codeParrain`, le fichier n'en avait que **2**. Diagnostic : des quatre apports de la session 116 (récupération/création du code, **affichage**, insertion dans le texte partagé, cache local), seul **l'affichage** manquait. Le code existait bien, était bien créé en base (`hype_parrain_codes`) et partait bien dans la feuille de partage iOS — mais restait **illisible à l'écran**, donc impossible à dicter ou recopier.
-
-- Rendu : sous les boutons Partager / Copier le lien, un cadre en verre fumé bordé turquoise — petit label en capitales espacées, le code en **Cinzel 23 px** interlettré large, ligne « Touche pour le copier ». Les **six langues**.
-- Un appui copie (Clipboard API, repli `execCommand` sur `<textarea>` hors écran), la ligne passe au turquoise avec un ✓ pendant 1,9 s.
-- **Le cadre n'apparaît que si le code est arrivé** : jamais de rectangle vide en attente. Condition vérifiée sur 5 cas (chaîne vide, `null`, `undefined`, code présent, code + retour de copie) — 5/5.
-- Rappel des **quatre chemins** vers `EcranPartager` : pastille en haut de l'Accueil (`EcranDashboard`), rangée dans Mon compte, barre de raccourcis en bas de Mon univers (`shortcuts`, rendue visible en session 116), et la page Communauté.
-
-### ▸ 3. L'EN-TÊTE ALIGNÉ SUR LA CEINTURE (mine dormante désamorcée)
-
-Le `<style>` d'en-tête portait encore `html,body{…overflow-x:hidden}` **sans le repli `clip`**, alors que la ceinture corrigée (ligne ~1563) porte `hidden` puis `clip` en `!important`. Aucun risque immédiat — la ceinture gagnait — mais le bug Android revenait au premier déplacement ou déclassement de cette ceinture, sans qu'aucun commentaire ne l'explique. Les deux endroits disent maintenant la même chose. **Aucun effet visible.**
-
-### ▸ À L'ÉCRAN
-
-- **+** le cadre du code parrain sur l'écran Partager, dès que le code est chargé
-- **+** dans Linguae : les villes non offertes s'ouvrent pour Blandine, les trois Ambassadeurs, les comptes `ai` et les modérateurs (après un passage sur Hype)
-- **−** le paywall Linguae disparaît pour ces comptes
-- **−** rien d'autre ne disparaît ; aucun écran de Hype ajouté ni retiré ; les autres cavalières ne voient aucun changement
-
-### ▸ VÉRIFICATIONS
-
-`node --check` sur les **16** blocs script inline : 16/16 valides. Fonctions de haut niveau **911 → 911**, `const`/`var` **551 → 551**, aucune perdue, aucune ajoutée. `codeParrain` 2 → **7**, `shortcuts` reste à **3** (parrainage de la session 116 préservé). Mode rapide appliqué (retouches ciblées, aucune page ni image nouvelle) : pas de rendu Playwright.
-
-### ▸ INCIDENTS DE LA SESSION (règle du 09/08 — tout signaler)
-
-- **Deux réponses parties VIDES** de mon côté : après l'envoi de `stripe-webhook.js`, et après le message de Blandine sur le double tap du film. Aucun fichier touché, aucune perte — deux tours perdus pour elle.
-- **Base de travail non fournie entre deux livraisons :** la deuxième livraison (`389c2288`) part de ma propre première livraison (`9c97e842`) et non d'un fichier de Blandine, faute de renvoi. Signalé dans le message de livraison. La règle reste de partir de SON fichier ; si une autre page a travaillé en parallèle, ces correctifs sont à réappliquer marqueur par marqueur (`majClePremium`, `refClePremium`, `aboLu`, `copierCode`, `copieCode`, `overflow-x:hidden;overflow-x:clip`).
-- **Contresens répétés** sur son signalement « passé en silence » : compris comme « son coupé » alors qu'elle parlait du film **caché aux nouveaux visiteurs**. Trois réponses à côté. Leçon : aller **lire le fichier** avant de bâtir une hypothèse.
-
-### ▸ Préparation Flutter
-
-Aucune amélioration d'architecture réalisée sur cette session, au sens des chantiers de la doctrine (aucun Repository, aucun Service, aucun composant mutualisé). Une clarification locale utile toutefois : la décision « ce compte est-il Premium ? » est passée d'une formule dupliquée en deux endroits (l'effet d'écriture de la clé, et le champ `premium` du contexte) à **une fonction unique** `majClePremium` alimentée par une ref d'état — c'est-à-dire l'embryon du contrat qu'un futur `AbonnementRepository` devra exposer côté Dart (`estPremium(user)`, source de vérité serveur + repli local jamais dégradant). Reste à moderniser, inchangé : le champ `premium` du contexte recalcule encore sa propre formule en parallèle de la clé — les deux devraient un jour dériver du même point. Le pont `localStorage` entre `index.html` et `lingo.html` est un couplage fragile identifié comme tel, dont la piste de sortie (Supabase propre à Linguae) est notée en passation.
-
----
-
-## 🔁 PASSATION → SESSION 118 (écrite le 09/08 tard, session 117)
-
-**Où on en est, en une phrase :** le blocage du défilement Android a une **cause prouvée par mesure** (la ceinture `overflow-x: hidden` du 02/08 rendait `body` accrochable d'un demi-pixel, `overscroll-behavior:none` interdisait le relais — détail complet dans la section 117), le correctif est livré (md5 `d23e8a9daf18e6b589226549591d7f23`, 9 163 189 octets), **mais la confirmation de Blandine sur son Samsung n'était pas encore arrivée à la fin de la session.** NE PAS écrire « réglé » sans son test — cette session a conclu trop vite deux fois, et une session antérieure avait enterré le bug à tort (« état figé côté appareil »).
-
-**✅ RÉSOLU EN FIN DE SESSION 117 :** Blandine a confirmé le défilement rétabli sur son Samsung. Le nettoyage (panneau + sonde) est FAIT — version `1315ccbe`, c'est elle qui doit être en ligne. Le point 2 ci-dessous est donc déjà exécuté ; il reste les chantiers ouverts plus bas.
-**Premier geste de la prochaine session (HISTORIQUE, exécuté) :**
-1. Demander à Blandine : le défilement fonctionne-t-il depuis le contenu (pas la barre du bas) ?
-2. **Si OUI** → nettoyage : (a) retirer le bloc panneau de diagnostic — fin de fichier, délimité par le commentaire `MODE DIAGNOSTIC DU DEFILEMENT`, juste avant le script serviceWorker ; (b) retirer la sonde compteur de rendus dans `Router` (useEffect `window.__hypeRenders`, commentaire `SONDE TEMPORAIRE`) ; (c) lui rappeler `?debug=off` si le bandeau est encore affiché chez elle ; (d) consigner la confirmation ici. Tout le reste (ceinture clip, overscroll html seul, verrou, captures pointeur, conteneurs libérés, balayage horizontal) est du correctif définitif et RESTE.
-3. **Si NON** → le panneau mesure désormais `defaultPrevented` dès le PREMIER touchmove (l'angle mort est comblé). Lire : `touchmove annulé`, `PAGE DEPLACEE`, la chaîne, et les lignes `rendus`/`cible`. Piste non explorée restante : spécificités du mode PWA installé (standalone) vs Chrome onglet — faire tester les deux.
-
-**Outillage construit cette session, à reconstruire au besoin (précieux, non versionné) :** reproduction locale en émulation Android — Playwright/Chromium, viewport 360×759 tactile, et un **simulacre `window.supabase`** injecté en `add_init_script` (un `createClient` renvoyant un Proxy chaînable dont le `then` résout `{data:[],error:null}`, plus `auth.getSession→session:null`, `channel()` chaînable, `storage.getPublicUrl→''`). Avec ça l'app boote hors-ligne, `#monecurie` ouvre un écran à barre de navigation, et les gestes s'envoient par CDP `Input.dispatchTouchEvent`. Limite connue : ne reproduit PAS l'accrochage du demi-pixel (arrondi différent) — s'en servir pour la non-régression, pas pour prouver un bug tactile négatif.
-
-**Chantiers ouverts, sans urgence :**
-- Source des ~190 px de trop du bandeau d'accueil (`header.hero.rv`, `sw` observé à 542/543/551/556 selon les captures — la largeur VARIE, probablement un rail interne). Séance dédiée, sans toucher au rendu.
-- Retirer un jour le balayage `hypeLibererPuitsTactiles` si le fil d'annonces reçoit un `touch-action` en dur (le CSS l'a déjà) — décision à proposer à Blandine, pas à prendre seul.
-- Numérotation : **le prochain numéro libre est 118.** Deux sessions ont déjà pris le 116 le 09/08.
-
-**Base de travail :** toujours partir du fichier que Blandine fournit en séance (elle fait tourner plusieurs pages). Vérifier `codeParrain` (3) et `shortcuts` (3) avant toute livraison — c'est le travail de la session 116 parallèle.
-
----
-
-**⚠️ COLLISION DE NUMÉROTATION 116 :** deux sessions ont pris le 116 le 09/08 — celle du parrainage (dans le fichier de Blandine) et la mienne (défilement Android). J'ai renuméroté la mienne en **117** et laissé le 116 à celle du parrainage. Le prochain numéro libre est **118**.
-
-**Note de numérotation :** l'en-tête est resté sur la 114 alors que la session 115 (retour au Voyage, `apresConnexion()`) était bien dans le fichier de Blandine. La 115 n'est donc pas perdue, seulement non consignée en tête. La présente session prend le 116.
-
-**Ancienne version (115) : dans le fichier de Blandine, en-tête non mis à jour — voir la section SESSION 115 plus bas.**
-
-**Ancienne version (113, JAMAIS POUSSÉE — remplacée par la 114) : (SESSION 113 · LA CLÉ `hype_premium` POUR LE VERROU DE LINGUAE) — md5 `6ccf8ed511efb7834c2153d5b8ece9ad`, 9133471 octets. Diff avec la 112 : 1 hunk, 12 lignes ajoutées, 0 supprimée. Aucune preview. Aucun SQL. À POUSSER AVANT `lingo.html` v37 (verrou Premium, détail dans `SUIVI-LINGUAE.md`). `hype-cours-baby.js` inchangé.****
-
-**Ancienne version (112) — 08/08/2026 (SESSION 112 · LA PROGRESSION DE LINGUAE ENTRE DANS LE COFFRE-FORT) — md5 `5b61adb5b51f7818f992e7b2be990726`, 9 132 715 octets. Voie A comprise DANS la 113 (la 113 est la 112 + 12 lignes).**
-
-**Ancienne version (111) — 08/08/2026 (SESSION 111 · CHEMINS DIRECTS, CADRAGE MEMORY, TÉMOIN DE VERSION) — md5 `0bec15cde7b3e253f23ce90293d27c97`, 9 127 282 octets. **`hype-cours-baby.js` md5 `bdcd692f0ca13be26583937a44e51e43`, 1 817 899 octets — À POUSSER.** **L'app affiche désormais sa version : « reprise 1.2 · baby 111 » sous Quoi de neuf.** Aucun SQL.**
+**Version actuelle de l'index.html : 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `37b82f076ea53a6d996c54999dea9ff7`, 9 079 285 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112) + `hype-memory-poney.js` (1, NOUVEAU). ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 + les 12 images renommées `-2` (voir COUVERTURES, ENFIN).**
 
 **Ancienne version (110) — 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
 
@@ -364,10 +114,7 @@ VIDÉO CARTE LINGUAE (Accueil) : Blandine a fourni `copy_47DFBC08....mov` (752×
 
 VÉRIFICATION : 15/15 node --check ; fonctions 1044→1044, const 551→551 ; allerVersGalop = 3 ; Playwright : 2 pageerror identiques, texte identique.
 
-### 🔴 À RÉGLER — signalé par Blandine le 9 août (capture à l'appui)
-Le problème des **cartes sur le chemin des poneys** (parcours Baby « Poney de Bronze », vignettes des étapes), supposé résolu, **ne l'est toujours pas** en ligne. À reprendre au prochain rendez-vous sur l'index : reproduire depuis sa capture (écran Galops → Poney de Bronze), identifier si c'est le chargement des images (retry), les clés HYPE_IMGS, ou le rendu des vignettes. Ne pas re-fermer sans vérification sur son téléphone.
-
-## Préparation Flutter (session 101)
+### Préparation Flutter (session 101)
 Aucune amélioration d'architecture réalisée sur cette session côté application : c'est un chantier de contenu. Une amélioration d'outillage en revanche, réutilisable pour toutes les langues et toutes les tables :
 
 - `lib_table.js` — isolement d'une table de cours et d'un chapitre par équilibrage de crochets, puis évaluation en objet JS. Remplace `injecter.js`, qui ne connaissait que `COURS_GALOP2_FR`.
@@ -378,142 +125,57 @@ Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js
 
 ---
 
-## SESSION 117 · 09/08 · LE BLOCAGE DU DÉFILEMENT SUR ANDROID — CAUSE RÉELLE TROUVÉE
+## SESSION 112 · LE MEMORY SORT DE L'INDEX, ET LA MATINÉE DES 30 PUSHS EXPLIQUÉE
 
-Signalé en urgence par Blandine : **plus de défilement sur Android, alors que tout va bien sur iPhone.** Symptôme affiné en cours de séance, et c'est lui qui a tout décidé : **le défilement ne répond que si le geste démarre sur la barre de menu du bas** ; depuis le contenu, image totalement figée. Sur **tous** les écrans. Constaté après une fermeture complète de l'appli.
+**index.html md5 `37b82f076ea53a6d996c54999dea9ff7`, 9 079 285 octets.** Part de la 111 (md5 `0bec15cde7b3e253f23ce90293d27c97`).
 
-### ⚠️ CORRECTION D'UNE CONCLUSION PRÉCÉDENTE
-La session qui avait tranché « bug scroll Android = état figé côté appareil, pas un bug de code » **avait tort**. Le redémarrage complet soignait le symptôme parce qu'il recharge le document et efface un style **inline** posé sur `<body>` — pas parce que l'appareil était en cause. D'où le retour du bug. La ligne du TODO « si le blocage revient, redemander d'abord un redémarrage » reste utile comme dépannage, mais ne doit plus servir de diagnostic.
+### LA MATINÉE PERDUE — CE QUI S'EST RÉELLEMENT PASSÉ (10/08, 8h→13h40)
 
-### DIAGNOSTIC 1 — le verrou de défilement fantôme (bug réel, corrigé)
-Un seul endroit de toute l'app touchait au défilement global : `PhotoZoomable`, qui posait `document.body.style.overflow = "hidden"` à l'ouverture d'une photo et **restaurait la valeur mémorisée** à la fermeture. Deux visionneuses superposées fermées dans le désordre, ou une sortie d'écran par le bouton retour physique pendant qu'une photo était ouverte, et un `hidden` fantôme restait collé sur `<body>`.
-**Asymétrie des plateformes, la clé de l'affaire :** `body { overflow: hidden }` bloque réellement le défilement sur **Android/Chrome**, et n'a **aucun effet** sur `body` en **iPhone/WebKit**. Un bug invisible sur iOS, bloquant sur Android.
-Vérifié : `document.body.*` n'est manipulé qu'en 7 endroits dans tout le fichier, et `body.style.overflow` en **un seul** (`PhotoZoomable`). Aucun autre verrou global. Les `touchAction: "none"` et les écouteurs `{passive:false}` sont tous confinés à des éléments précis (canvas, tracé au doigt, visionneuse pincée) et correctement retirés au démontage — écartés.
+Blandine a poussé ~30 fois en vérifiant chaque fois dans **l'app installée** : anciennes couvertures à chaque essai. Diagnostic mené avec le témoin de version (posé en 111, il a servi dès son premier jour) :
 
-**CORRECTIF :** trois helpers de haut niveau, `hypeVerrouScroll()` / `hypeDeverrouScroll()` / `hypeFiletScroll()`, posés juste avant `Router`.
-- Compteur global `window.__hypeScrollLock`, **plus aucune valeur mémorisée** : deux visionneuses empilées ne peuvent plus se marcher dessus.
-- `hypeFiletScroll()` reprend la vérité **dans le DOM** (`document.querySelectorAll("[data-hype-zoom]")`, attribut ajouté sur l'overlay de `PhotoZoomable`) et réaligne `body.overflow` dessus. Appelé à chaque changement d'écran (`useEffect` sur `[ecran]` dans `Router`) et au retour d'arrière-plan (`visibilitychange`, `pageshow`). **Le blocage se répare donc seul, sans redémarrage**, même si le compteur se désynchronise.
-- 5 scénarios testés en isolant les 3 fonctions avec des stubs : ouverture/fermeture simple, deux visionneuses fermées dans le désordre (l'ancien bug exact), verrou fantôme + filet, filet alors qu'une photo est réellement ouverte, déverrou en trop (pas de compteur négatif). Les 5 passent.
+1. **13:13, app installée : `reprise 1.1 · baby ?`** — l'app tournait encore sur l'index de la VEILLE.
+2. **13:15, Safari privé après un push : `reprise 1.2 · baby ?`** — le bon index était en ligne **deux minutes après le push**. Les pushs marchaient donc ; c'était le banc de test qui mentait.
+3. **`baby ?` persistant + anciennes couvertures dans l'app : le vrai coupable est `_headers`** — les `hype-cours-*.js` n'y avaient AUCUNE règle → cache navigateur par défaut (~1h sans revalidation). L'app avait téléchargé le vieux `hype-cours-baby.js` pendant les essais du matin et le resservait, avec le NOUVEL index. **Un appareil peut donc mélanger un index neuf et des données d'une heure d'avance.** Le témoin composite (`reprise X · baby Y · memo Z`) rend ce mélange visible d'un coup d'œil.
+4. **13:38, Safari privé : `reprise 1.2 · baby 111` + nouvelles couvertures + « Je brosse Apy » correcte.** Toute la livraison 111 fonctionnait depuis le début.
 
-### DIAGNOSTIC 2 — ce qui explique le symptôme décrit (le filigrane), et la cause probable
-Le verrou fantôme **ne peut pas** produire ce que Blandine décrit : une fermeture complète l'efface, et s'il était actif la barre du bas ne défilerait pas non plus. Le symptôme « tout est figé sauf en partant de la barre du bas, sur tous les écrans » désigne un **calque plein écran qui avale le geste, dans la coquille commune** — et dans `Router` il n'y en a qu'un : le **filigrane** (`PHOTOS.watermark` = `PHOTO_SAUT`, `position:fixed`, 100vh, largeur max 480, `zIndex:0`, opacité 0,18). La barre du bas est en `position:fixed` au-dessus de lui : d'où le seul geste qui fonctionne.
-Or dans le fichier de Blandine ce filigrane porte **déjà** `pointerEvents: "none"` : il est inoffensif en l'état. **Hypothèse retenue : l'Android n'exécutait pas cette version, mais un build plus ancien servi par le cache du service worker** — ce qui explique d'un coup l'iPhone à jour qui va bien, l'Android bloqué, et le « de nouveau ».
-Deux tests décisifs avaient été proposés (l'écran Galops, seul écran où le filigrane n'est volontairement pas rendu — `ecran !== "galops"` ; et le témoin de version `reprise 1.2 · baby …` en bas de l'accueil, à comparer entre les deux appareils). **Blandine n'avait pas le temps de tester**, décision assumée : on durcit le code pour rendre le symptôme impossible, et le remède côté cache est un geste unique de son côté (vider les données du site / réinstaller la PWA), qu'aucun code livré ne peut faire à sa place.
+**Vérifications qui ont fermé les fausses pistes** (à refaire dans cet ordre en cas de doute de version, ~2 min au total) : témoin dans l'app installée → témoin en Safari privé → fichier brut sur Netlify (`/hype-cours-baby.js`, le témoin est en ligne 5) → une image en direct avec `?x=1`. Le `sw.js` « de retrait » a été relu et comparé (téléphone vs ligne, identiques) : il n'intercepte rien, **innocent — pour la 2ᵉ fois, arrêter de le suspecter**.
 
-**CORRECTIF :** attribut `data-hype-filigrane` sur le calque + règle globale `[data-hype-filigrane] { pointer-events: none !important; }` dans `GlobalStyles`. Le `pointer-events:none` inline est conservé ; la règle CSS le verrouille en dur pour qu'aucune modification future ni aucun état partiel ne puisse le perdre. **Ne pas retirer cette règle.**
+**Correctif** : `_headers` gagne 2 règles `max-age=0, must-revalidate` pour `/hype-cours-baby.js` et `/hype-memory-poney.js`. Un push de contenu devient visible immédiatement partout. Fichier livré reconstruit depuis le `_headers` réel envoyé par Blandine (diff = strictement les 6 lignes ajoutées).
 
-### VÉRIFICATION
-`node --check` sur le bloc principal (25 300 lignes extraites entre les balises) : OK. Contrôle de non-régression de syntaxe sur **tous** les blocs inline, comparé au fichier de départ : signature d'erreurs identique (les seules « erreurs » sont les faux positifs du découpeur sur les `<script>` contenus dans les chaînes des iframes). `prevOverflow` : 0 occurrence restante. `hypeVerrouScroll` 4, `hypeDeverrouScroll` 2, `hypeFiletScroll` 4, `data-hype-zoom` 3, `data-hype-filigrane` 2. Pas de vérification Playwright (mode rapide, correctif ciblé sans nouvelle page ni nouvelle image).
+### EXTRACTION DU MEMORY → `hype-memory-poney.js` (NOUVEAU FICHIER, 49 Ko)
 
-### 🎯🎯 LA CAUSE — LA CEINTURE `overflow-x` DU 02/08 (troisième diagnostic, le bon, prouvé par mesure)
-Les puits tactiles ci-dessous étaient un vrai défaut mais PAS la cause : le blocage a survécu à leur correction (`overflow:clip` posé et vérifié à l'écran par Blandine, défilement toujours mort). Les sondes ont ensuite éliminé une à une : annulation JS (non), touch-action (auto partout), verrou (0), re-rendus sous le doigt (0), cible disparue (non), app pas à jour (non — le panneau évoluait à chaque push). Restait un geste parfaitement reçu (6–11 touchmove, doigt 125–260 px), 2 698 px à défiler, page immobile, et un `TOUCHCANCEL` occasionnel.
+À la demande de Blandine, « petit à petit » : le Memory d'abord, seul. Réponse au passage : **non, `MEMORY_PONEY_NIVEAUX` n'était PAS parti avec Baby** (0 occurrence dans `hype-cours-baby.js`, 11 dans l'index) — vérifié avant de répondre.
 
-**Le mécanisme, enfin :** la ceinture anti-décalage latéral ajoutée le 02/08 en tête de fichier — `html, body { overflow-x: hidden !important }` — a armé une bombe à retardement CSS :
-1. `overflow-x: hidden` force l'axe Y en `auto` (les deux axes ne peuvent pas mélanger `visible` et `hidden`). Visible dans TOUTES les captures de la session : `body: of=hidden auto`.
-2. `html` ayant son propre overflow non-visible, celui de `body` n'est plus remonté au viewport : **`body` devient un conteneur de défilement indépendant.**
-3. La hauteur de `body` est fractionnaire (`3457.55px`) contre un `scrollHeight` entier (`3458`) : sur l'appareil de Blandine, **`body` est défilable d'un demi-pixel d'arrondi.** Chrome Android ACCROCHE le geste à ce demi-pixel.
-4. `overscroll-behavior: none`, posé sur `html` ET `body` (GlobalStyles), **interdit le relais** de `body` vers la page. Geste intégralement avalé, sans aucune trace JS. Le `TOUCHCANCEL` occasionnel est Chrome qui jette l'éponge.
-5. **La barre du bas est en `position:fixed`** : son ancêtre de défilement est le viewport directement, `body` n'est pas sur son chemin — d'où le seul geste qui fonctionnait. Le symptôme le plus déroutant de la session, expliqué exactement.
-6. iPhone : WebKit n'accroche pas ainsi → invisible. Émulation Chromium : l'arrondi tombe juste (`2587/2587`) → `body` non défilable → irreproductible. La ceinture date du 02/08 → cohérent avec « on n'avait pas ce bug avant ».
+- **Leçon de l'incident du 02/08 appliquée EN PREMIER** : scan des constantes externes AVANT extraction. Résultat : `GALOPS_HERO`/`INFOG_*`/`COUV_*`/`PHOTO_*` = **0 référence**. Seule dépendance : `HYPE_IMGS` (116 clés distinctes : 101 des `hype-images-*.js`, 15 définies inline). **Contrôle de position** : les 119 balises `hype-images` ET les 15 définitions inline sont toutes AVANT le point d'insertion. Aucun identifiant ne peut être `undefined` au chargement.
+- La table (42 990 car., bornée par équilibrage de crochets hors chaînes) devient `window.MEMORY_PONEY_NIVEAUX` dans le nouveau fichier ; dans l'index : `const MEMORY_PONEY_NIVEAUX = window.MEMORY_PONEY_NIVEAUX || [];`. Balise insérée juste après celle de Baby.
+- **Témoin étendu** : « Quoi de neuf » affiche désormais `reprise X · baby Y · memo Z`. Le nouveau fichier porte `window.MEMORY_PONEY_VERSION = "1"` en ligne 4, à incrémenter à chaque modification.
+- **Contrôles passés** : 912 fonctions + 543 const/var top-level identiques · `allerVersGalop` = 3 (inchangé) · 16/16 blocs inline `node --check` OK · diff confiné aux 3 zones attendues (balise, témoin, table) · **preuve de rendu : table évaluée avant/après IDENTIQUE AU CARACTÈRE PRÈS** (45 732 octets, md5 `96317a5b…` des deux côtés, clés d'images résolues par proxy).
+- **Livré** : `index.html` + `hype-memory-poney.js` + `preview-memory.html` (`DEV_OUVRIR_PAGE = "jeu-galop"`) + `_headers`. **Test après push** : Safari privé → témoin `reprise 1.2 · baby 111 · memo 1` → Jeux du Galop → un niveau de Memory se joue.
 
-**CORRECTIF (3 zones) :**
-- Ceinture (tête de fichier) : `overflow-x: hidden !important; overflow-x: clip !important;` — `clip` découpe pareil mais **ne crée pas de conteneur** et, contrairement à `hidden`, **laisse l'axe Y en `visible`** : `body` ne peut structurellement plus accrocher un geste. `hidden` reste en repli pour les navigateurs sans `clip`.
-- GlobalStyles : `overscroll-behavior: none` **retiré de `body`**, conservé sur `html` seul (le tirer-pour-rafraîchir reste bloqué ; un geste accroché à `body` remonte désormais à la page).
-- Panneau : `defaultPrevented` mesuré dès le PREMIER `touchmove` (c'est lui qui décide du défilement sur Chrome ; l'échantillonnage à partir de 12 px pouvait rater une annulation décisive).
+### LES COUVERTURES, ENFIN : LE CACHE PROPRE À L'APP INSTALLÉE (résolu le soir même)
 
-**PREUVE PAR MESURE (émulation Chromium 141, avant/après) :** `body` passe de `of=hidden/auto + overscroll none` (accrochable, relais interdit) à `of=clip/visible + overscroll auto` (inaccrochable). App démarrée en émulation Android avec simulacre Supabase : boote, navigue, défile sur les trois zones testées, zéro touchcancel.
+À 20h52, Blandine voit ENCORE les anciennes couvertures — **capture décisive : Safari et l'app installée côte à côte, au même instant : Safari montre le brossage, l'app le poney pie.** Explication, et c'est la pièce qui manquait depuis trois sessions : **sur iOS, une PWA installée a son propre cache HTTP, séparé de Safari.** Effacer l'historique Safari ne la touche pas ; aucun bouton n'existe pour la vider. Les 12 couvertures étant sous `/images/*` = **un an immuable**, l'app ressert sa première copie POUR TOUJOURS, quels que soient les pushs. C'est pourquoi « changé dix fois et toujours rien » : chaque essai corrigeait le serveur, jamais la copie enfermée dans les apps installées (la sienne ET celles des utilisateurs).
 
-**⚠️ Incident en cours de correction (signalé conformément à la règle du 09/08) :** ma première insertion de la règle `overscroll` est tombée DANS l'interpolation `${COLORS.nuit}` du gabarit GlobalStyles — CSS produit invalide, `background` de body perdu. Détecté par relecture de la zone générée avant livraison, réparé, revérifié (accolades équilibrées, rendu contrôlé). Aucun fichier défectueux n'a été livré.
+**Correctif — celui que la règle du `_headers` prescrit depuis le début : un NOUVEAU nom.**
+- Les 12 images re-téléversées par Blandine avec suffixe `-2` : `baby-c3-brosse-2.jpg`, `baby-c4-en-main-2.jpg`, `baby-c5-avec-aide-2.jpg`, `baby-c6-le-pas-2.jpg`, `baby-c7-equilibre-2.jpg`, `baby-c12-licol-filet-2.jpg`, `baby-c13-range-materiel-2.jpg`, `baby-c14-terrain-2.jpg`, `baby-c16-arrete-2.jpg`, `baby-c17-repart-2.jpg`, `baby-c18-descend-2.jpg`, `baby-c20-nourriture-2.jpg` (mêmes fichiers, juste renommés).
+- **`hype-cours-baby.js` passe en version 112** : les 12 `src` pointent vers les noms `-2`, témoin `COURS_BABY_VERSION = "112"`. Preuve : diff = 14 lignes ; après neutralisation (`-2` et `112` retirés) le fichier est IDENTIQUE à la v111. `node --check` OK.
 
-### 🎯 CAUSE RÉELLE — LES PUITS TACTILES (trouvée avec le panneau, sur l'Android de Blandine)
-Mes deux premières hypothèses (verrou fantôme, filigrane) étaient des bugs réels mais **pas la cause**. Le panneau de diagnostic l'a établi en deux captures :
-- `touchmove annulé par du JS : non` → aucun `preventDefault` en cause.
-- `ta=auto` sur toute la chaîne → aucun `touch-action` en cause.
-- `body inline='' verrou=0` → le verrou était bien innocent.
-- et pourtant `scrollHeight=3387` contre `innerHeight=718`, soit 2 669 px à défiler, sans que la page bouge.
+**RÈGLE GÉNÉRALISÉE (à ne plus jamais réapprendre) : une image sous `/images/*` ou toute ressource « immutable » ne se corrige JAMAIS sous le même nom — on suffixe (`-2`, `-3`…) et on met à jour la référence.** Tester dans Safari ne dit RIEN de l'app installée : leurs caches sont étanches. Le témoin de version, lui, traverse les deux.
 
-**Le mécanisme :** une boîte en `overflow:hidden` dont le contenu **déborde vers la droite ou vers le bas** reste un conteneur de défilement aux yeux de **Chrome Android**. Le geste s'y accroche, la boîte ne peut pas défiler puisqu'elle est `hidden`, et Chrome **ne rend pas** le geste à la page : rien ne bouge, sans aucune trace ni en JS ni en `touch-action`. **WebKit (iPhone) ne s'accroche pas de cette façon** — d'où un bug totalement invisible sur iOS et bloquant sur Android. C'est l'asymétrie que je cherchais depuis le début.
+**Au passage, la question de Blandine « ce cache d'un an, on en a besoin ? » : OUI.** C'est lui qui a fait retomber la bande passante Netlify (1 750 crédits fin juillet, menace de coupure). Le supprimer = retour du problème en quelques semaines. Il n'est pas trop agressif, il exige juste son contrat : nom nouveau pour contenu nouveau.
 
-**Les deux puits identifiés en direct :**
-- `.filann-b .mask` — le fil d'annonces : piste en `width:max-content`, débordement énorme sous un `overflow:hidden`.
-- `header.hero.rv` — **le bandeau photo d'accueil : `sw/cw = 556/360`**, soit 196 px de débordement à droite, sur les 570 premiers pixels de l'écran. Tous les écrans commencent par un bandeau bâti sur ce modèle : voilà pourquoi le blocage paraissait universel, et pourquoi seule la barre du bas (qui n'est pas un de ces bandeaux) laissait défiler.
+### 🔴 SIGNALEMENT NON RÉSOLU : « bug des photos » dans le Memory
 
-**CORRECTIF GLOBAL — `hypeLibererPuitsTactiles()`** (posée avant `Router`, rejouée à chaque changement d'écran via `requestAnimationFrame` + deux relances à 900 ms et 2 600 ms pour les contenus qui arrivent de Supabase) : balayage du DOM qui repère toute boîte dont l'`overflow` est caché **alors que son contenu déborde**, et lui pose `touch-action: pan-y`. Le défilement vertical revient toujours à la page.
-Garde-fous, vérifiés par simulation sur 7 boîtes représentatives : les rails horizontaux volontaires (`overflow-x: auto/scroll` — manège, rail des chevaux, listes de modale) sont **ignorés** ; un `touch-action` déjà posé explicitement (canvas du globe, visionneuse pincée) est **respecté** ; une carte Spectral normale n'est même pas examinée puisque rien ne déborde ; les décors posés en négatif (les reflets à `left:-90px`) ne créent **pas** de puits, un débordement vers la gauche n'étant pas atteignable. Marquage `el.__hypePuits` pour ne traiter chaque nœud qu'une fois. **Aucune modification de design, aucune animation Spectral retirée.**
-En ceinture, `.filann-b .mask` et `.filann-b .trk` reçoivent aussi `touch-action: pan-y` directement en CSS.
+Blandine signale des photos toujours cassées dans le Memory (formulation dictée ambiguë : chemin OK mais Memory KO, probablement). **Mesuré dans la donnée : 0 src vide sur les 11 niveaux** — donc si des cartes cassent, une partie des 101 clés externes (plage k518-k614 surtout) n'est pas réellement définie en ligne (lot `hype-images-*.js` absent ou clé jamais poussée). **Info manquante demandée 2 fois, toujours pas obtenue : QUEL niveau, et carré cassé OU carte vide ?** Vérifier aussi que l'observation date d'APRÈS l'expiration du cache (~14h30) ou de Safari privé. Piste de fond si confirmé : migrer les paires du Memory vers des chemins directs `images/*.jpg` (même recette que les couvertures Baby en 111) — chaque carte devient testable en 5 s dans Safari. Compatible avec le nouveau fichier.
 
-**Sur le brief d'audit :** le `body { touch-action: pan-y }` qui y était suggéré n'a **pas** été appliqué — il aurait cassé tous les rails horizontaux de l'app. Le brief disait lui-même de ne pas l'appliquer aveuglément.
+### IDÉES ÉCARTÉES CETTE SESSION (notées, non validées)
 
-### PANNEAU DE DIAGNOSTIC — encore présent, dormant
-Bloc autonome en fin de fichier, **entièrement inerte** par défaut : aucun élément créé, aucun écouteur posé. Allumage par `?debug=scroll` (mémorisé, PWA comprise), extinction par `?debug=off`. Il rapporte : `defaultPrevented` sur `touchmove`, de quoi défiler (`scrollHeight` vs `innerHeight`), le conteneur qui porte le défilement, la chaîne complète sous le doigt avec `overflow` / `height` / `position` / `touch-action` / `pointer-events` / `sh-ch` / **`sw-cw`**, le premier parent qui interdit le vertical, et `<<< PUITS TACTILE` sur chaque boîte fautive. Verdict final au relâchement du doigt : `doigt Xpx, page déplacée de Ypx => OK/BLOQUÉ`.
-**Erreur de ma part corrigée en séance :** je mesurais d'abord le déplacement dès le premier `touchmove`, ce qui donnait un faux « BLOQUÉ » — Chrome n'a pas encore commencé à défiler à cet instant. La mesure se fait désormais au relâchement.
-- [x] **RETIRÉ** le 09/08 après confirmation par capture : `ta=pan-y` appliqué sur `header.hero.rv`, « aucun puits ni blocage touch-action dans cette chaîne », `scrollTop=56`. Le bloc entier (7 695 octets) est parti. Sa spécification complète reste écrite ci-dessus : il peut être reconstruit à l'identique en une intervention si un blocage tactile réapparaît.
+- **Entrées autonomes** « Chemin du Poney » / « Galops » (icônes séparées, type lingo.html) : 2 maquettes produites (`maquette-poney-autonome.html` — mode masqué de l'app, rejetée ; `maquette-monde-du-poney.html` — page vitrine théorie+jeux, direction préférée de Blandine avant abandon « pas grave »). À reprendre si l'envie revient ; aucune modification de l'index.
+- **Question posée** : « le Memory aurait-il moins de problèmes en réutilisant des images déjà en ligne ? » Réponse consignée : le vrai clivage n'est pas ancien/nouveau mais **clé base64 (casse en silence) vs chemin direct (404 visible et testable)**.
 
-### AUDIT COMPLET DU FICHIER (demandé par le brief, chiffres relevés)
-`body.style.overflow` manipulé : 1 seul endroit fonctionnel (la visionneuse). `documentElement.style.overflow` : jamais. Classes `no-scroll`/`modal-open` : 0. `preventDefault` sur `touchmove` : 1 écouteur, confiné au SVG du tracé et retiré au démontage ; sur `wheel` et `pointermove` : 0. `touch-action:none` : 2 en CSS + 5 en JS, tous sur des éléments précis, aucun sur un conteneur de page. `overscroll-behavior:none` : 1, sans effet sur la capacité à défiler. `height:100vh` figé : 9 (héros et scènes) contre 56 `minHeight` sains. Calques `position:fixed` couvrant l'écran : 64, dont **un seul monté en permanence** (le filigrane, verrouillé en `pointer-events:none`).
+### PROCHAIN COUP (validé par Blandine, à faire par la PROCHAINE page codeuse, jamais en fin de session)
 
-### ⚠️ CORRECTION DE MON PROPRE CORRECTIF (117b) — `touch-action` NE SUFFIT PAS
-Le premier remède posait `touch-action: pan-y` sur les puits. **Insuffisant, et démontré par Blandine :** sa capture montrait `ta=pan-y` bien appliqué sur `header.hero.rv`, et le défilement restait bloqué dès que le doigt partait du bandeau. `pan-y` autorise le geste vertical **sur** la boîte ; il ne l'empêche pas de rester un **conteneur de défilement**, auquel Chrome Android s'accroche pour n'en rien faire.
-**Le vrai remède : `overflow: clip`.** Même découpe visuelle que `hidden`, mais **aucun conteneur de défilement créé** — plus rien à quoi s'accrocher, le geste repart à la page. Écrit partout selon le motif `overflow:hidden;overflow:clip` : les navigateurs qui ignorent `clip` gardent `hidden`, les autres ne latchent plus. Côté JS, `clipDispo` teste `CSS.supports("overflow","clip")` une fois, et `pan-y` reste posé en repli.
-Appliqué en CSS sur les trois boîtes identifiées (`.uv3 .hero`, `.filann-b`, `.filann-b .mask`) **et** dans le balayage `hypeLibererPuitsTactiles()`, qui traite tous les autres cas au fil des écrans.
-
-### RESTE À FAIRE
-- [ ] **Confirmer sur l'Android** que le défilement part maintenant du bandeau d'accueil (c'est là que ça coinçait). Panneau toujours disponible par `?debug=scroll`, `?debug=off` pour l'éteindre. **À retirer** une fois confirmé.
-
-- [ ] **Les 196 px de trop du bandeau d'accueil** (`header.hero.rv`, `sw/cw = 556/360`) : le clip le rend invisible à l'œil, donc rien ne presse, mais c'est cette anomalie de largeur qui transformait le décor en piège tactile. À reprendre proprement, sur une séance dédiée, **sans toucher au rendu** — et vérifier au passage si d'autres bandeaux du même modèle débordent aussi. Le correctif `hypeLibererPuitsTactiles()` neutralise l'effet, il ne supprime pas la cause de mise en page.
-
-- [x] **Piste du cache écartée** : la cause n'était pas un vieux build. Le panneau tournait bien sur la version à jour. Si le blocage persiste **après** ça et avec le présent index, alors les deux diagnostics sont épuisés et il faut passer à l'outil de diagnostic proposé : un calque temporaire qui nomme à l'écran l'élément réellement sous le doigt (`document.elementFromPoint`). Il n'a pas été codé, Blandine ne l'a pas demandé.
-- [ ] Le témoin de version (`reprise 1.2 · baby …`) reste le moyen le plus court de savoir quel build tourne sur un appareil donné. À utiliser en premier réflexe sur tout bug « qui ne se reproduit que sur un téléphone ».
-
-## Préparation Flutter
-Une frontière technique a été isolée proprement : **la gestion du défilement global de l'application ne vit plus dans un composant**. Elle est désormais dans trois fonctions de haut niveau sans état React (`hypeVerrouScroll` / `hypeDeverrouScroll` / `hypeFiletScroll`), avec un invariant vérifiable de l'extérieur — l'état du verrou est déduit du DOM, pas d'une variable mémorisée. C'est exactement la forme d'un futur service `ScrollLockService` côté Flutter : une API à trois entrées, un compteur, et une réconciliation sur événement de cycle de vie (`visibilitychange`/`pageshow` deviendront `AppLifecycleState`). Aucun composant n'écrit plus directement dans `document.body.style`.
-Contrat de présentation également durci : le calque de filigrane est désormais identifié par un attribut de données (`data-hype-filigrane`) et gouverné par une règle du Design System, plus par un style inline isolé — un pas de plus vers des couches de fond décrites par tokens plutôt que par styles locaux.
-
----
-
-## SESSION 116 · 09/08 · LE PARRAINAGE (session parallèle — NE PAS ÉCRASER)
-
-Travail d'une autre page, trouvé dans le fichier que Blandine a fourni en fin de journée et **intégralement préservé** lors de la réapplication du correctif de défilement (vérifié marqueur par marqueur : `codeParrain` présent, barre `shortcuts` présente).
-- Le bloc parrainage complet (code personnel, saisie d'un code, compteur de filleuls) était **orphelin** : il a retrouvé son toit.
-- Le code parrain rejoint l'écran de partage : récupéré ou créé à l'ouverture, affiché sous les boutons, glissé dans le texte partagé, et mis en cache local pour que Linguae puisse le reprendre.
-- La barre `shortcuts` (Classement · Badges · Partager · Installer) était **construite mais jamais rendue** — du code mort, d'où le « on ne sait plus où trouver le bouton pour partager l'appli » signalé par Blandine. Elle est rendue.
-
-La page qui reprendra ce chantier est seule à pouvoir en détailler les vérifications ; ce résumé est reconstitué depuis les commentaires du code, il n'est pas de première main.
-
-## SESSION 115 · 09/08 · LE RETOUR AU VOYAGE (Linguae → connexion → Linguae)
-
-Base : session 114. Une seule zone touchée, dans `apresConnexion()` (le point unique par lequel passent connexion ET inscription-après-confirmation) : si `hype_retour_linguae` (posé par les portes du compte de lingo.html v45, valeur = Date.now()) a **moins d'une heure**, le cavalier est ramené vers `./lingo.html` au lieu du dashboard — sa carte l'attend. Le drapeau est **toujours effacé**, même périmé : les connexions suivantes vont normalement dans Hype. Matrice node 5/5 OK (retour frais, drapeau effacé, connexion suivante, périmé, périmé effacé). Pour mémoire, vérifié ce jour : la **suppression de compte existe déjà** (EcranSupprimerCompte, 60 j de grâce, 6 langues, Netlify supprimer-compte.js) — rien de bloquant stores.
-
-## Préparation Flutter
-Contrat inter-modules éclairci : la navigation croisée Hype ↔ Linguae passe par des drapeaux localStorage horodatés à durée de vie courte (`hype_retour_linguae`, 1 h), pas par des URLs à état — pattern réutilisable pour tout futur module satellite.
-
-# SESSION 112 · LA PROGRESSION DE LINGUAE ENTRE DANS LE COFFRE-FORT
-
-**Une seule zone touchée dans `index.html`** : le système de synchronisation des progressions annexes (~ligne 20356). 3 hunks, 89 lignes ajoutées, **0 supprimée**. Rien d'autre.
-
-**Le problème.** La progression de Hype Linguae (`lingo.html`) vivait **uniquement dans le `localStorage`**, jamais dans Supabase. Réinstaller le raccourci ou effacer les données Safari l'effaçait sans retour. **C'est arrivé à Blandine le 8 août** : sa collection est passée de 31 cartes à 1, sur ma consigne d'effacer, et sans que je l'aie prévenue. Le `localStorage` étant par appareil, aucune autre cavalière n'a été touchée.
-
-**Ce qui a été fait.** `index.html` possédait déjà tout le mécanisme : `HYPE_EXTRAS_CLES` / `HYPE_EXTRAS_PREFIXES` ramassent des clés du `localStorage`, les écrivent dans la table `progression`, et les refusionnent à la connexion avec la règle « le plus avancé gagne » (déjà en service pour les quêtes, les paliers Baby, le Mémory du Poney). Aucune clé Linguae n'y figurait. Comme Linguae est sur le **même domaine**, donc le même `localStorage`, il a suffi de l'y faire entrer :
-
-- `HYPE_EXTRAS_LINGUAE` — 10 clés (`hype_lingua_cartes`, `_faits`, `_quiz`, `hype_lingo_maitrise`, `_sprint`, `_voyage`, `_langue`, `_lecture`, `_intro`, `_muet`).
-- Leur collecte, avec un plafond propre (200 000 caractères) **et un `console.warn` en cas de dépassement**. Le garde-fou générique des préfixes est à 4000 caractères et laisse tomber la valeur **en silence** — or `hype_lingo_maitrise` (31 villes × 6 langues) peut le dépasser.
-- Une **règle de fusion par clé**, écrite sur la forme réelle vérifiée dans `lingo.html`, pour qu'aucune progression ne recule.
-
-⚠️ **`lingo.html` N'EST PAS MODIFIÉ par ce travail.** Il continue d'écrire son `localStorage` ; c'est Hype qui met à l'abri. (Les deux corrections livrées dans `lingo.html` aujourd'hui sont un sujet séparé — voir `SUIVI-LINGUAE.md`.)
-
-⚠️ **Limite assumée** : la sauvegarde se déclenche quand **Hype** se synchronise, pas à l'instant du gain dans Linguae. Couvrir ce dernier cas suppose un client Supabase dans `lingo.html` (« voie B »), ouvert comme chantier séparé et **qui dépend de la porte du compte**.
-
-**Établi au passage, et important pour qui coderait les quêtes** : **Linguae n'a jamais rapporté un seul XP.** `donnerXP()` y est appelée à 4 endroits mais ne fait rien sans `window.HYPE_LINGO_HOST`, qui n'est **défini nulle part** — et ne pouvait pas l'être, puisque `index.html` ouvre Linguae par **navigation** (`window.location.href = "lingo.html"`, ~ligne 27421), donc dans un autre document. Rien d'acquis n'est perdu ; la voie A rend la suite possible **sans pont**.
-
-**Décisions de Blandine à respecter côté Hype :**
-- **XP affichée uniquement côté Hype**, une seule échelle (200 XP = 1 niveau). Linguae ne compte rien.
-- Les quêtes Linguae s'écriront comme les 10 quêtes découverte (`fait(ctx)` déclaratif + paiement unique par `hypeEnregistrerPalier`). ⚠️ Ce système reconnaît **un jalon atteint, pas une accumulation** : « 2 XP par mot » n'est pas faisable ainsi.
-- **Paliers une fois pour toutes** (1 carte, 5, 10), plus **une seule quête d'ouverture sans nommer la langue** (« une deuxième langue »).
-- 🔴 **Compte Hype obligatoire pour Linguae** → l'**écran de suppression de compte** (RGPD + App Store, déjà dans la liste À FAIRE) devient **bloquant**.
-
-✅ **Vérifications** : syntaxe des **144 blocs `<script>`** validée un par un ; **912 fonctions** top-level identiques avant/après ; `allerVersGalop` ×3 ; diff confiné aux 3 zones voulues, 0 ligne supprimée. Et les règles de fusion ont été **exécutées** sur 20 cas — dont celui du 8 août (base en avance, local effacé → rien ne recule) et les deux sens de l'ancien format plat de la maîtrise. Tous passent.
-
-⚠️ **Non vérifié en rendu** : pas de test Playwright sur cette livraison. Le code touché ne s'exécute qu'à la connexion et à la synchronisation, donc invisible d'un rendu à froid ; à confirmer en usage réel (gagner une carte dans Linguae, ouvrir Hype, vider les données, se reconnecter).
+**Galops 4+5+6+7 → `hype-cours-galops-sup.js`** (~0,77 Mo). Dépendances DÉJÀ MESURÉES cette session sur le fichier réel : G4 693 060 car. / 15 refs `HYPE_IMGS` / 0 constante externe · G5 10 187 / 0 / 0 · G6 58 565 / 1 / 0 · G7 10 102 / 0 / 0. Bornes exactes dans l'index 112 à recalculer (elles ont bougé de −42 883 après le Memory). Même protocole exactement : scan des constantes d'abord, témoin `galops-sup 1` ajouté au libellé, règle `_headers`, preuve de rendu 6 langues. **G1/G2/G3 : NE PAS Y TOUCHER sans sortir leurs constantes d'affiches avec eux (cause de l'incident du 02/08).**
 
 ---
 
@@ -1665,38 +1327,6 @@ recherche de caractères latins dans les chaînes japonaises.
 **Ces deux contrôles sont désormais obligatoires avant chaque injection :**
 
 ```
-
-# 🛠️ SESSION 114 · HYPE (09/08) — RÉAPPLICATION 113 + LA COMMUNAUTÉ FERMÉE « PROCHAINEMENT »
-
-**Base de travail : l'index 112 fourni par Blandine** (règle de la base de travail — la 113 n'était pas dans son fichier). Deux choses :
-
-## ✅ LA CLÉ `hype_premium` REPOSÉE (le contenu exact de la session 113)
-Même useEffect, même endroit (avant `const value = {` de useApp), mêmes 12 lignes. Voir la section SESSION 113 pour le détail — tout y reste vrai.
-
-## ✅ LA COMMUNAUTÉ EN « PROCHAINEMENT » (décision de Blandine : « trop de trucs à refaire dessus »)
-- **Un seul point d'étranglement : le rendu.** `ecran === "communaute"` rend désormais `EcranCommunauteProchainement` — toutes les portes (nav, cartes, hash `#communaute`) mènent là, aucune n'a été touchée une par une.
-- **`EcranCommunaute` est CONSERVÉ intact** juste en dessous. Pour rouvrir : remettre `EcranCommunaute` sur la ligne du rendu (~21281). Une ligne.
-- L'écran : fond noir Hype, kick turquoise « Prochainement », titre Cinzel « La Communauté », phrase courte, bouton Retour (`retourEcran`, repli dashboard). **6 langues** (fr/en/es/it/ja/de), **exécuté** hors React (rendu ja vérifié + clic Retour).
-- Blocs script au découpage naïf : mêmes 9 faux positifs avant/après (des `</script>` dans des chaînes, cf. 112-113) — rien de cassé.
-
-## 📐 PRÉPARATION FLUTTER
-Le remplacement d'écran par point d'étranglement unique (une ligne au rendu, composant d'origine intact) est exactement le pattern « feature flag » qu'on transposera : aucune amélioration d'architecture nouvelle au-delà, dit honnêtement.
-
-# 🛠️ SESSION 113 · HYPE (09/08) — UNE SEULE CHOSE, POUR LE VERROU DE LINGUAE
-
-## ✅ LA CLÉ `hype_premium` (12 lignes, 1 hunk, 0 supprimée)
-
-`lingo.html` verrouille désormais ses leçons (voir `SUIVI-LINGUAE.md`, session 170) et doit savoir si le compte est Premium — il n'a ni Supabase ni React. `index.html` dépose donc le statut dans le `localStorage` partagé (même domaine) :
-
-- un `useEffect` dans `useApp`, juste avant `const value = {` : écrit `hype_premium` = `"1"`/`"0"`, **même formule que `premium`** (mensuel/annuel/duo/VIP), recalculé sur `[planAbo, profil]`, écriture seulement si la valeur change ;
-- **exécuté** hors React (planAbo="annuel" → pose bien `"1"`) ; le découpage naïf des blocs `<script>` donne les MÊMES 9 faux positifs avant/après (des `</script>` vivent dans des chaînes JS — méthode d'extraction à bornes réelles requise, cf. session 112).
-
-⚠️ Limite assumée : un abonné qui n'a jamais ouvert Hype sur l'appareil n'a pas la clé — il voit le verrou une fois, le bouton l'emmène sur la page d'abonnement où son statut se pose.
-
-## 📐 PRÉPARATION FLUTTER
-
-Un petit pas réel : le statut Premium devient un **contrat explicite inter-modules** (`hype_premium` dans le localStorage, écrit par Hype, lu par Linguae) au lieu d'un état interne — c'est exactement le genre de frontière (Academy/Community) qu'un Repository Flutter reprendra tel quel. Rien d'autre sur cette session.
-
 # 1. parité des jeux de clés
 python3 -c "import json; fr=json.load(open('fr-<id>-<lg>.json')); d=json.load(open('<lg>-<id>.json'));
 print(len(fr),len(d), [k for k in fr if k not in d], [k for k in d if k not in fr])"
@@ -5579,7 +5209,7 @@ Fichier `maquette-trace-V4.html` (autonome, aucun script distant, moteur et bibl
 - [x] **Roadmap "Les grandes écoles" — TERMINÉE** : les 4 écoles (Cadre Noir gratuit + École Portugaise/Vienne/Jerez Premium) sont livrées. Plus aucun stub "Bientôt sur Hype" dans l'app.
 - [ ] **Album participatif — décisions tranchées, à coder** : Blandine a validé le 27/07 : **sans modération** + **limite de 5 photos/vidéos par personne**. SQL + upload à coder — un album par école (Cadre Noir, École Portugaise, École Espagnole de Vienne, École Royale Andalouse), mêmes règles partout.
 - [ ] **Cartes "Voix contemporaines"** (Carde/Henriquet/Karl) dans l'article Cadre Noir : affichées en "Bientôt : son article →", pas encore de fiche/article dédié à brancher derrière.
-- [x] **Blocage scroll Android — CAUSE TROUVÉE en session 116, voir sa section.** Ce n'était PAS un état figé de l'appareil : un `body{overflow:hidden}` fantôme laissé par la visionneuse photo, qui bloque Android et n'a aucun effet sur iPhone, et que le redémarrage effaçait par simple rechargement du document. Corrigé (verrou compté + filet auto-réparateur). Le redémarrage complet reste un dépannage valable, mais **ne doit plus servir de diagnostic**. Premier réflexe désormais : lire le témoin de version (`reprise 1.2 · baby …`, bas de l'accueil) sur l'appareil qui bogue, pour savoir quel build il exécute réellement.
+- [ ] **Si le blocage scroll Android revient** : redemander d'abord un redémarrage complet de l'appli (fermeture depuis le multitâche, pas juste retour en arrière) avant toute autre investigation — c'est ce qui a résolu le cas de Gabrielle.
 - [ ] **Coller le bloc SQL des 4 annonces en 6 langues** — après déploiement (rappel des sessions précédentes).
 - [ ] **Localiser et appliquer l'image d'accueil Baby et l'image du puzzle**.
 - [ ] **~49 images encore en réserve** — décider de leur usage.
