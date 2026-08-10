@@ -2466,7 +2466,18 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    9:16 par Blandine puis recoupee ici. Meme nom de fichier a chaque fois,
    donc meme piege a chaque fois : sans cette montee, qui a deja pousse la
    version precedente garde l'ancienne video. */
-var VER = "?v=31";
+/* ⚠️ v65 : 31 -> 32. LA CARTE DE SANTA YNEZ NE S'AFFICHAIT PAS alors que le
+   fichier était en ligne depuis plusieurs heures et parfaitement valide
+   (vérifié : WebP 1050x1400, 248 Ko, correctement nommé
+   `carte-santaynez.webp`). Le fichier n'était donc PAS en cause : c'est le
+   service worker et Safari qui resservaient leur réponse d'avant son
+   arrivée — c'est-à-dire l'ABSENCE du fichier. Sans cette montée, l'app
+   pouvait rester des jours à afficher une carte vide, et `lingo-controle`
+   la comptait « présente » puisqu'elle l'est bel et bien en ligne.
+   C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
+   Contrepartie assumée, la même à chaque fois : tout le reste des images
+   se retélécharge une fois, pour tout le monde. */
+var VER = "?v=32";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)

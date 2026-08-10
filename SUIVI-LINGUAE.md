@@ -55,6 +55,227 @@
 
 ---
 
+# SESSION 194 · 10/08 · v65 — LA CARTE DE SANTA YNEZ : LE CACHE, PAS LE FICHIER
+
+**Livré : `lingo.html` md5 `089b3634b38b009c6bb327d250478bad`, un seul changement — `VER` 31 → 32.**
+
+## ▸ LE FICHIER N'ÉTAIT PAS EN CAUSE — VÉRIFIÉ
+Blandine a envoyé `carte-santaynez.webp` : **WebP valide, 1050 × 1400, 248 Ko, correctement nommé.** En ligne depuis plusieurs heures. Rien à corriger dessus, et **aucune table de correspondance de nom n'était nécessaire** — piste que j'avais proposée à tort.
+
+## ▸ LA VRAIE CAUSE : LE NUMÉRO DE VERSION DES ACTIFS
+Le service worker et Safari resservaient leur réponse d'**avant** l'arrivée du fichier — c'est-à-dire son absence. Sans montée de `VER`, l'app pouvait rester **des jours** à afficher une carte vide. Et `lingo-controle.html` la comptait « présente », ce qui est exact : elle l'est en ligne. **L'outil ne mentait pas, il ne voit simplement pas le cache de l'app.**
+**C'est le TROISIÈME épisode du même piège** (v46, v48, v50 — tous sur `ouverture.mp4`). L'avertissement était déjà écrit dans le fichier : « à incrémenter à chaque lot d'images remplacées, geste de livraison, pas option ». **Il n'a pas été appliqué au moment de pousser la carte.**
+
+## ▸ CE QUE J'AURAIS DÛ DIRE EN PREMIER
+J'ai fait tourner Blandine sur trois hypothèses — nom de fichier, fichier corrompu, table de correspondance — avant d'arriver au cache, **alors que le piège est documenté trois fois dans le fichier que je lisais**. Ses mots : « tout est trop long avec toi » · « c'est toi qui l'as nommée et t'as même créé un outil de vérification ». **RÈGLE : devant une image absente à l'écran mais présente en ligne, tester `VER` EN PREMIER, avant toute autre piste.**
+
+## ▸ CONTREPARTIE ASSUMÉE
+Tout le reste des images se retélécharge **une fois**, pour tout le monde. C'est le prix de chaque montée de `VER`, et il est connu.
+
+## ▸ À L'ÉCRAN
+- **+** la carte de Santa Ynez s'affiche
+- **−** rien
+- effet de bord : un rechargement d'images un peu plus long à la première ouverture après le push
+
+## ▸ VÉRIFICATIONS
+`node --check` 4/4. Fonctions 156 → 156. Un seul changement dans le fichier.
+
+## ▸ Vers l'App Store
+Rien. Mais à noter : dans une enveloppe native, ce mécanisme de cache sera à revoir entièrement — le suffixe `?v=` est un contournement de navigateur, pas une stratégie d'app.
+
+---
+
+# SESSION 193 · 10/08 · LES 31 OBJETS DE COLLECTION — ET UNE FAUTE DE MÉTHODE À NE PAS REFAIRE
+
+**Livré : `linguae-prompt-objets-collection.md` (nouveau) · `linguae-fichiers-attendus.md` et `linguae-prompts-avatars.md` NETTOYÉS. Aucun code touché.**
+
+## 🔴 LA FAUTE — MÉLANGER UNE NOTE INTERNE ET UN PROMPT DE PRODUCTION
+Blandine a demandé un **prompt à donner à ChatGPT** pour faire dessiner les objets de collection. J'ai livré un document truffé de mes **analyses internes** : la vidéo qui doit être muette et pourquoi, la carte de Santa Ynez qui ne s'affiche pas, l'angle mort de `lingo-controle.html`, mes réserves sur sa planche d'avatars et sur sa Bible — **et l'affirmation que les objets de collection existaient déjà**.
+Ses mots : « c'est quoi ton speech que t'envoies pour chat gpt qui a rien à voir avec la demande » · « tu balances sur la vidéo en silence et les cartes manquantes, et tu lui dis qu'on a déjà nos collections ».
+**Elle allait transmettre ce document tel quel.** Il aurait donné à un tiers l'état des défauts de son produit, ET **contredit sa propre commande** en affirmant que les objets existaient.
+**RÈGLE : un prompt de production ne contient QUE la commande.** Jamais l'état du produit, jamais mes diagnostics, jamais mes réserves. Ces choses vont dans le SUIVI ou dans le message, pas dans un fichier destiné à sortir. **Deux documents, deux usages, jamais mélangés.**
+*Aggravant : j'avais aussi mal compris la demande — j'ai vérifié que les ICÔNES du code existaient, alors qu'elle demandait des DESSINS d'objets. Les icônes vectorielles ne sont pas les objets.*
+
+## ▸ L'ÉTAT RÉEL, DIT PAR BLANDINE
+**Les 31 objets n'existent nulle part** : « ils sont stockés nulle part, n'ont même pas de page, et j'ai validé aucun dessin ». On part de zéro. Il n'y a donc **aucune page de collection** pour les afficher — à créer.
+
+## ▸ LE PROMPT LIVRÉ
+31 objets, **un par ville** (et non 21 comme les icônes actuelles, où plusieurs villes partagent le même dessin alors que leurs objets diffèrent — le fanion du Jumping et la flèche de yabusame partagent aujourd'hui l'icône `fanion`).
+**Format** : carré 1024 × 1024, un objet par image, fond transparent PNG, objet centré à ~70 %, aucun texte ni cadre ni main.
+**Contrainte de lisibilité, choix de Blandine : PETIT ET MOYEN** — affiché en 48 px et en 200 px. D'où l'exigence d'une **silhouette forte reconnaissable d'un coup d'œil**, avec du détail qui apparaît en grand sans brouiller la forme en petit.
+**Style** : objets réels, matière visible (cuir patiné, laiton, fer forgé, bois usé), éclairage rasant froid, pointe de turquoise discrète, objet légèrement usé jamais neuf. Nommage `objet-<ref>.png`.
+**Le document est transmissible tel quel** : aucun diagnostic, aucune réserve, rien sur l'état du produit.
+
+## ▸ NETTOYAGES FAITS
+`linguae-fichiers-attendus.md` : section « Si tu me demandes des visuels à produire » **retirée** — proposition non demandée, exactement le réflexe interdit le 10/08 au matin. `linguae-prompts-avatars.md` : mes deux réserves **retirées**, le document devient transmissible.
+
+## ▸ RESTE À FAIRE
+La **page de collection** pour afficher les 31 objets — elle n'existe pas. À dessiner après réception des objets, en cohérence avec la maquette parchemin du carnet.
+
+## ▸ Vers l'App Store
+Rien sur l'autonomie. Mais la leçon de méthode vaut pour la soumission : les documents destinés à sortir (fiche App Store, politique de confidentialité, textes de relecture) ne doivent porter **aucune** trace de diagnostic interne.
+
+---
+
+# SESSION 192 · 10/08 · L'AVATAR, ET LA VÉRIFICATION DES OBJETS DE COLLECTION
+
+**Livré : `linguae-fichiers-attendus.md` (nouveau) · maquette `6573df8b` inchangée. AUCUN code touché.**
+
+## ▸ CORRECTION D'UNE DEMANDE — LES OBJETS DE COLLECTION NE MANQUENT PAS
+Blandine demandait « le prompt pour les objets de collection manquants ». **Vérifié dans le fichier : il n'en manque aucun.** Les 31 villes ont été croisées avec les 21 icônes déclarées dans `ICONES` — **aucune ville ne réclame une icône absente, aucune n'est sans objet de collection.** Et ce ne sont pas des images : ce sont des **icônes vectorielles dessinées dans le code**. Rien à produire, pas de prompt à écrire. *(À retenir : toujours vérifier avant de générer — on aurait produit 31 visuels inutiles.)*
+
+## ▸ CE QUI MANQUE VRAIMENT : DES FICHIERS IMAGE
+Document livré avec les **trois fichiers par ville** et leurs formats : `carte-<ref>.webp` (WebP portrait 900×1200), `fond-<ref>.webp` (**1 à 3 Ko** — garde-fou mémoire du 04/08, pas une coquetterie : trois cartes 900×1200 décodées tuent l'onglet Safari au pincement), `arrivee-<ref>.mp4` (720 px, 3-5 s, **muette** — sans ça iOS refuse le démarrage automatique).
+**Les 31 références exactes** y figurent avec les pièges de nommage : `santaynez` (≠ santa-ynez), `lamotte` (≠ lamotte-beuvron), `oliva`, `aachen`, `buenos`, `spruce`, et les accents à retirer sur `edimbourg`, `seville`, `verone`, `golega`.
+
+## ▸ LE DÉFAUT DE SANTA YNEZ — CAUSE PROBABLE, ET UN ANGLE MORT À CONNAÎTRE
+Blandine : « une carte ne s'affiche pas alors qu'elle est signalée présente ». Le code construit `carte-santaynez.webp` depuis la référence. **Cause la plus probable : le fichier existe sous un autre nom** (`carte-santa-ynez.webp` ou variante). Santa Ynez est la seule ville dont le nom en deux mots est collé en un seul dans la référence.
+**⚠️ ANGLE MORT DE `lingo-controle.html`, à retenir définitivement : il compte comme « présent » un fichier qui existe SOUS UN AUTRE NOM.** Présent mais mal nommé = invisible dans l'app et pourtant compté bon. Vérifier `carte-santaynez.webp` **et** `fond-santaynez.webp` : l'app a besoin des deux.
+
+## ▸ L'AVATAR — TROIS TEMPS, ET UN AVERTISSEMENT SUR LA PLANCHE
+Décidé avec Blandine : **l'initiale maintenant** (gratuite, en Cinzel dans un cercle turquoise), **une collection ensuite**, **la photo plus tard si elle y tient** — la photo exige un stockage Supabase, un redimensionnement avant envoi (une photo d'iPhone fait 4 Mo) et surtout **une modération** : dès qu'on peut téléverser, il faut pouvoir signaler et retirer, et Apple y regarde de près sur une app avec des mineures.
+**Choix du moment** : le choix d'avatar se fera **depuis l'écran Mon compte**, pas à l'inscription — celle-ci a déjà quatre champs et deux pastilles, et c'est le seul écran où il ne faut décourager personne.
+**Blandine a une collection prête** (planche de 4 rangées × 7). **Je n'ai reçu qu'une capture d'écran : impossible de découper depuis elle** — chaque avatar y fait ~150 px de large là où il en faut 300 minimum pour un cercle net. **Il faut la planche en pleine résolution.**
+**Deux réserves signalées sur la planche :** (1) les rangées **Voyageurs** et **Explorateurs** sont des paysages et des objets — illisibles en cercle de 92 px sur l'écran de compte ; belles images, mauvais avatars. (2) les **Cavaliers** sont des visages humains photoréalistes, ce qui déplace le sujet alors que la Bible dit « le cheval est toujours le héros » — décision d'identité, pas un détail. **Recommandation : la rangée Chevaux seule**, sept robes, sujet fort, Bible respectée, lisible en petit.
+
+## ▸ PROMPTS DE PRODUCTION LIVRÉS (`linguae-prompts-avatars.md`)
+Deux prompts prêts à coller — Chevaux (7 robes) et Cavaliers (7 sujets) — avec le format à exiger.
+**LE POINT CAPITAL, écrit en tête du document : demander les avatars UN PAR UN, jamais en planche.** Sur une planche 4 × 7, chaque avatar fait ~150 px alors qu'il en faut 300 minimum (600 pour un écran Retina). Une planche sert à **choisir**, jamais à **produire**.
+**Format exigé** : carré 1024 × 1024, sujet centré et **entièrement contenu dans le cercle inscrit** (l'avatar est rogné en cercle), ~12 % de marge autour, fond sombre uni, **aucun texte ni cadre ni logo**, livraison PNG/JPEG pleine résolution. Conversion WebP 320 px + 640 px et nommage `avatar-cheval-01.webp` faits de mon côté.
+**Deux conseils pour que la collection fasse famille** : les demander **dans la même conversation** à la suite (le générateur garde la lumière et le style), et **les faire tous avant de juger** — un avatar seul paraît toujours réussi, c'est côte à côte qu'on voit celui qui jure.
+
+## ▸ EN ATTENTE DE BLANDINE
+La planche en pleine résolution + la ou les rangées retenues → je découpe (détection des cercles, découpe carrée centrée, sortie WebP) et je livre les fichiers nommés.
+
+## ▸ Vers l'App Store
+Rien ne bouge sur l'autonomie cette session : c'est du contenu et de la vérification. À noter tout de même que la décision « pas de téléversement de photo pour l'instant » **évite d'ouvrir un chantier de modération avant la soumission** — ce qui aurait été un mauvais ordre.
+
+---
+
+# SESSION 191 · 10/08 · LE COMPTE LINGUAE — MAQUETTE COMPLÈTE (6 écrans), DÉCISIONS PRISES
+
+**Livré : `maquette-compte-linguae.html` md5 `6573df8b…` — MAQUETTE SEULE, `lingo.html` N'EST PAS MODIFIÉ.** Six écrans commutables : la question, connexion, création, fin de chapitre, **mon compte (connectée)**, **la ligne d'accès dans ses deux états**.
+
+## ▸ DÉCISIONS DE BLANDINE, PRISES DANS CETTE SESSION
+- **La session reste ouverte, sans case à cocher.** Le pont Supabase passe déjà `persistSession` et `autoRefreshToken` : on reste connecté d'une ouverture à l'autre. **La case « Se rappeler de moi » du dessin de Hype est ÉCARTÉE** — expliqué à Blandine : cochée par défaut elle invite à être décochée, et une session qui meurt à la fermeture ferait retaper le mot de passe chaque jour, exactement l'inverse de ce qu'elle demandait (« qu'on ait pas besoin de se connecter à chaque déco »).
+- **Accès au compte : DEUX endroits.** Sur la **présentation** (après le film, vue par tout le monde y compris via le lien de partage) et sur le **carnet de route** (où l'on passe le plus de temps). Une seule ligne, **deux états** : non connectée « Me connecter ou créer un compte » · connectée « Connectée en tant que … · Se déconnecter ». ⚠️ La présentation s'affichant à chaque lancement (v57), la ligne doit rester **discrète**.
+- **La porte B est REMPLACÉE** par le nouvel écran : elle renvoyait vers Hype, ce qui est inacceptable pour une app indépendante.
+- **Déconnexion : elle n'existait nulle part** dans Linguae — normal sans connexion, mais indispensable dès qu'on en ajoute une (et défaut classique de relecture App Store qu'un parcours de compte sans sortie).
+- **À la déconnexion : sauvegarde FORCÉE d'abord, effacement du local seulement si elle a réussi.** Sinon on garde tout. Motif : la copie locale contient les cartes de la personne qui part, la suivante sur le même téléphone les verrait ; mais mieux vaut une copie de trop qu'une progression perdue. Phrase qui rassure : « Ta progression est sauvegardée sur ton compte, elle reviendra à ta prochaine connexion. » ⚠️ Rappel : le local reste la **copie de travail**, Supabase la sauvegarde — les deux coexistent volontairement, c'est ce qui permet de jouer sans réseau.
+- **Avatar : idée de Blandine, notée pour plus tard** (« on pourra même proposer de télécharger un avatar pour personnaliser l'expérience par la suite »). La maquette montre l'**initiale** en attendant, avec une pastille « prochainement ».
+
+## ▸ BOUTONS SOCIAUX — MASQUÉS DANS HYPE, PAS SUPPRIMÉS
+Blandine confirme qu'ils **ne sont pas branchés** dans Hype : trois cercles Apple/Google/Facebook purement décoratifs. Décision : **« masque-les, on verra plus tard »**. Ils seront désactivés derrière un commutateur, **le code restant en place** — donc rebasculables sans réécrire le dessin. **⚠️ Modification d'`index.html` non encore livrée.**
+**Pourquoi ils ne sont pas branchés maintenant, et l'ordre imposé** : le code est court (~30 lignes, natif Supabase) mais le travail est **administratif** — Google exige un projet Google Cloud, Facebook une revue Meta, et **Apple un compte développeur payant (99 $/an)** que Blandine n'a pas encore. **Et la règle qui décide de tout : dès qu'on propose Google, Apple EXIGE de proposer aussi « Se connecter avec Apple ».** Donc c'est Google **et** Apple ensemble, ou aucun. **À rebrancher quand le compte développeur Apple existera** — il est de toute façon le chemin critique de l'App Store.
+
+## ▸ CE QUI RESTE À ÉCRIRE (rien n'est codé)
+Les trois écrans dans `lingo.html` (`signInWithPassword`, `signUp`, `resetPasswordForEmail`), le rattrapage si l'adresse est déjà prise, la ligne d'accès aux deux endroits, la déconnexion sécurisée, le remplacement de la porte B, l'encart d'installation aux deux endroits décidés (session 189), et le masquage des boutons sociaux côté Hype.
+**La suppression de compte propre à Linguae reste hors périmètre** : elle va dans un réglage, pas dans un parcours d'entrée, et réutilisera `supprimer-compte.js` tel quel — qui ne demande qu'un jeton de session, et qui **fonctionne enfin** depuis la session 121.
+
+## ▸ Vers l'App Store
+Le parcours de compte est **entièrement dessiné et décidé** : entrée, connexion, création, état connecté, sortie. Il ne dépend plus de Hype sur aucun écran. Restent : l'écrire, puis la suppression de compte dans Linguae, puis le paiement — et le compte développeur Apple, qui commande à la fois la date de soumission et le branchement des connexions sociales.
+
+---
+
+# SESSION 190 · 10/08 · v64 — LA PROGRESSION SUIT LE COMPTE, ET LE CARNET NAÎT AVEC ELLE
+
+**Livré : `lingo.html` md5 `3f692f7a2a8cd7b68bec22ff8336b7f0` (543 187 o) · `hype-lingua-progression.sql`.** ⚠️ **LE SQL DOIT ÊTRE EXÉCUTÉ AVANT LE PUSH** : sans la table, la lecture échoue et le bloc ne touche à rien (aucune perte, mais aucune sauvegarde).
+
+## ▸ ORDRES DE BLANDINE
+« fais sauvegarde avant je croyais qu'elle était finie et intitulé dedans une page pour le carnet si tu veux » · pour le carnet : « traduction évidemment et pourquoi pas ville d'origine » · pour sa fusion : **« le plus récent gagne pour le carnet seulement »** · l'idée d'origine : « qu'on puisse designer dès lors qu'on souhaite ajouter à notre carnet, ceux qu'on ne connaît pas ou mal et dont on a tout le temps besoin ».
+*(Elle croyait la sauvegarde déjà écrite : elle l'avait été le matin même, puis RETIRÉE à sa demande en session 187 — « relivre le propre je préfère ». Ce v64 la réécrit d'après la spécification de la session 186, cette fois avec la structure tranchée.)*
+
+## ▸ SIX BLOCS, DEUX RÈGLES DE FUSION
+| bloc | clé locale | forme | fusion |
+|---|---|---|---|
+| cartes | `hype_lingua_cartes` | `{ ref:true }` | union |
+| maîtrise | `hype_lingo_maitrise` | `{ langue:{ mot:n } }` | max par mot |
+| villes faites | `hype_lingua_faits` | `{ langue:n }` | max par langue |
+| Sprint | `hype_lingua_sprint` | `{ best,parties,total }` | max par champ |
+| souvenirs | `hype_lingua_quiz` | `{ ref:{s,t} }` | meilleur score |
+| **carnet (v64)** | `hype_lingua_carnet` | `{ "ville\|mot":{v,d,a} }` | **le plus récent gagne** |
+
+**POURQUOI LE CARNET FAIT EXCEPTION** — et ce n'est pas un caprice : avec la fusion généreuse, un mot **retiré** du carnet reviendrait tout seul à la synchronisation suivante, et le retrait serait **impossible**. Le conflit a été signalé à Blandine avant d'écrire ; elle a tranché « le plus récent gagne ». **Risque assumé et dit** : un mot ajouté sur un téléphone et retiré sur un autre le même jour → la dernière synchronisation gagne, un des deux gestes est perdu. Un appui suffit à corriger.
+
+## ▸ CE QUE LE CARNET ENREGISTRE, ET POURQUOI PAS PLUS
+Il **ne recopie pas le mot** : il garde sa **référence** et sa **ville**. La traduction s'affiche depuis `HYPE_LINGO_LEX` au moment du rendu. **Bénéfice durable : tous les carnets suivent automatiquement toute correction de traduction ou ajout de langue.** Chaque entrée porte `v` (ville), `d` (date du dernier geste), `a` (`true` dans le carnet, `false` retiré).
+**Le retrait est MARQUÉ, pas effacé** : sans cette marque il ne pourrait pas se propager d'un appareil à l'autre. Un mot retiré laisse donc une trace en base — rien de sensible, c'est une référence de vocabulaire.
+
+## ▸ DÉFAUT TROUVÉ AU TEST, ET CORRIGÉ
+Deux mots ajoutés dans la **même milliseconde** portaient la même date : l'ordre du carnet (du plus récent au plus ancien) devenait arbitraire. **La date est maintenant strictement croissante** — forcée au-delà de la plus grande déjà posée. Bénéfice second, plus important : la fusion « le plus récent gagne » ne peut plus tomber sur une égalité entre un ajout et un retrait du même appareil.
+
+## ▸ TROIS GESTES EXPOSÉS POUR L'ÉCRAN À VENIR
+`carnetBasculer(ville, mot)` ajoute ou retire d'un appui et renvoie le nouvel état · `carnetContient(ville, mot)` pour l'état du signet · `carnetListe()` rend les mots du plus récent au plus ancien, les retirés exclus.
+**⚠️ LA PAGE DU CARNET ET LE SIGNET NE SONT PAS DANS CETTE LIVRAISON**, annoncé à Blandine avant d'écrire : le stockage d'abord, l'écran ensuite — sinon on livre une page qui affiche du vide. Décidé avec elle pour l'écran : une **petite icône dédiée** (signet, gris éteint / turquoise allumé), et **pas** un tap sur le mot — dans un texte, toucher un mot entre en conflit avec la sélection de Safari. Emplacement retenu : le **récapitulatif de fin de leçon**, où la grille des mots existe déjà.
+
+## ▸ CE QUI N'EST PAS FAIT, ET DOIT VENIR DANS CET ORDRE
+1. Vérifier que la sauvegarde **écrit bien** (une carte gagnée doit apparaître dans la table).
+2. **Verser une fois** dans cette table ce qui dort déjà dans la sauvegarde de Hype.
+3. **Alors seulement** retirer les dix clés de `HYPE_EXTRAS_LINGUAE` (`index.html`, ligne ~20431). **⚠️ L'ORDRE INVERSE EFFACE LA PROGRESSION DES CAVALIÈRES.** `index.html` n'est pas touché par cette livraison.
+
+## ▸ À L'ÉCRAN
+- **−** rien ne disparaît, aucun écran ni bouton modifié
+- **+** (invisible mais réel) la progression est sauvegardée sur le compte dès qu'une session est ouverte, et les gains d'avant connexion sont crédités à la première ouverture connectée
+- **sans compte : rien ne change**, la progression reste locale
+
+## ▸ VÉRIFICATIONS — 28 CONTRÔLES, 28/28
+`node --check` 4/4. Fonctions de haut niveau **156 → 156**, aucune perdue.
+**Fusions extraites du fichier livré et testées telles quelles, 14/14** : union de deux appareils · maîtrise au meilleur par mot · palier de villes max · records Sprint max · souvenirs au meilleur score · carnet, ajout récent bat la base · **carnet, RETRAIT récent bat l'ajout ancien** (le point crucial) · mots de deux appareils tous conservés · à date égale l'ajout gagne sur le retrait · versement d'un local seul · téléphone neuf qui récupère tout · données `null`/corrompues tolérées · idempotence.
+**Gestes du carnet testés avec le vrai code, 14/14** : ajout, état, présence dans la liste, ville et mot corrects, retrait, disparition de la liste, **trace du retrait conservée**, coexistence de plusieurs mots, **le plus récent d'abord même ajoutés dans la même milliseconde**, dates strictement croissantes, remise du mot, retour en tête.
+
+## ▸ Vers l'App Store
+Marche décisive : **la progression cesse de dépendre de Hype.** Linguae écrit sa propre table, ce qui était la condition première de l'autonomie — un cavalier qui n'installera jamais Hype garde désormais sa progression. Restent, dans l'ordre : l'écran de compte (maquette validée, session 189), la suppression de compte propre à Linguae, puis le paiement. **Reste à défaire** : les dix clés côté Hype, en dernier et dans l'ordre ci-dessus.
+
+---
+
+# SESSION 189 · 10/08 · LE COMPTE PROPRE À LINGUAE — MAQUETTE VALIDÉE À FAIRE VALIDER
+
+**Livré : `maquette-compte-linguae.html` — MAQUETTE SEULE. `lingo.html` N'EST PAS MODIFIÉ.** Aucun appel Supabase, aucun compte réel : les boutons ne servent qu'à parcourir les trois écrans.
+
+## ▸ CE QUI A DÉCLENCHÉ CE CHANTIER
+Blandine est arrivée sur Hype **par le lien depuis Linguae**, donc sans session : Hype l'a traitée comme une nouvelle visiteuse et lui a servi **quatre écrans** (accueil animé 3 s, bienvenue, âge, prénom) **avant** de pouvoir seulement saisir ses identifiants. Ses mots : « je me suis envoyé quatre pages à remplir avant de pouvoir seulement mettre les identifiants de mon compte » · « mes cavaliers vont s'y perdre ».
+**Défaut trouvé dans `index.html` : rien ne demande jamais « as-tu déjà un compte ? »** avant de faire remplir un formulaire d'inscription. Le texte `deja_compte` existe mais n'apparaît qu'en bas de l'écran d'inscription, après le reste.
+
+## ▸ LE PARCOURS, DÉCIDÉ PAR BLANDINE
+Ses mots : **« en gros c'est dire si tu as déjà un compte Hype ou Linguae connecte toi, ou crée en un »**.
+- **Écran 1** : la question, deux boutons — *Me connecter* / *Créer un compte*, avec la mention du compte unique.
+- **Connexion** : e-mail, mot de passe, mot de passe oublié.
+- **Création** : e-mail, mot de passe, prénom, **± 18 ans**. Rien d'autre.
+- **PAS D'ÉCURIE** : vérifié dans `index.html`, le club se choisit **sur le globe** (`GLOBE_ONBOARDING` → écran monde, le globe renvoie le club). Elle sera demandée le jour où la personne va sur Hype. Décision de Blandine : « sur le globe, sauf si on se ressert du globe où on a les destinations pour ajouter son club comme sur Hype ».
+- **Mot-symbole : LINGUAE** (décision de Blandine), avec la phrase du compte unique.
+
+## ▸ POURQUOI ON NE VÉRIFIE PAS SI L'ADRESSE EXISTE
+**Supabase ne le permet pas, volontairement** : c'est une protection contre l'énumération des comptes. Aucun appel ne répond « ce compte existe ». Le contournement par une fonction Netlify avec la clé service_role a été **écarté** : il exposerait un moyen de savoir qui est inscrit chez Blandine.
+**La solution retenue est meilleure que le contournement** : c'est la personne qui répond. Et **rattrapage prévu** — si la création échoue parce que l'adresse est déjà prise, on bascule vers la connexion au lieu d'afficher une erreur. Personne ne reste bloqué.
+
+## ▸ APP STORE — RÉPONSE À SA QUESTION
+Mentionner « un seul compte pour toutes les applications Hype » **ne pose aucun problème** : les éditeurs à plusieurs apps le font tous. Ce qui poserait problème, c'est de renvoyer vers Hype pour **s'abonner** ou **créer** le compte — lu comme une app compagnon, règle 3.1.1. **Tant que l'inscription et la connexion se font DANS Linguae, la mention est sans risque.** À éviter en revanche : en faire un argument commercial (« abonne-toi sur Hype pour débloquer Linguae » ne passerait pas).
+
+## ▸ VÉRIFICATION DE L'ADRESSE E-MAIL — À FAIRE, MAIS PAS MAINTENANT
+Blandine : « on vérifiait pas l'adresse email jusque là mais ça serait mieux non ». **Oui**, et l'enjeu est réel : sans vérification, un e-mail mal tapé rend le compte **irrécupérable** (réinitialisation envoyée dans le vide, aucun moyen d'aider la personne). Natif chez Supabase : Authentication → Providers → Email → « Confirm email », aucun code.
+**Trois conséquences à connaître avant d'activer** : (1) la personne n'est **pas connectée immédiatement** après inscription — marche réelle sur un parcours de découverte ; (2) le lien de confirmation doit **revenir sur Linguae**, à régler dans les URL de redirection Supabase, sinon la personne atterrit sur Hype sans comprendre ; (3) ça n'affecte **que les nouveaux comptes**.
+**Décision : à activer AVEC la vraie inscription Linguae, quand le trajet complet pourra être testé — pas avant.** L'activer aujourd'hui, alors que l'inscription passe encore par Hype et que Blandine diffuse le lien, ajouterait une marche sans que personne ait vérifié où mène le message.
+
+## ▸ LENTEUR DE CHARGEMENT DE HYPE — CAUSE MESURÉE, CHANTIER SÉPARÉ
+Blandine : « le lien vers Hype sur Linguae met super longtemps à charger à chaque fois ». **Cause : `index.html` fait 9,1 Mo** (fichier unique, images en base64 dedans) et `netlify.toml` interdit volontairement son cache pour que les mises à jour soient vues. Donc **9 Mo retéléchargés à chaque ouverture**, plusieurs secondes sur réseau mobile, et de la bande passante Netlify consommée. Sortir les paquets d'images du fichier principal les rendrait cachables un an et ramènerait l'index à quelques centaines de kilo-octets. **Chantier à part, non commencé.**
+
+## ▸ L'ENCART D'INSTALLATION — RÈGLE TRANCHÉE PAR BLANDINE
+Ses mots : **« on n'est pas obligé de le forcer à devoir faire quelque chose »** · **« faut proposer tant que c'est pas effectué »** · **« on va pas lui montrer trois fois en trois pages »**.
+- **AUCUNE ACTION ATTENDUE** : pas de bouton, pas de « Plus tard ». L'encart informe, on l'ignore sans rien faire.
+- **Conséquence directe et heureuse : le drapeau `hype_lingua_install_vu` disparaît.** Il n'existait que pour mémoriser un « plus tard », et c'est lui qui faisait perdre les gens ayant refusé une fois. Les **deux** conditions déjà en place (lignes ~8135-8136 : `display-mode:standalone` et `navigator.standalone`) suffisent : elles détectent l'installation de façon fiable, puisqu'une app lancée depuis l'écran d'accueil tourne forcément en mode autonome. ⚠️ La clé restera écrite chez les visiteurs actuels sans plus servir — sans effet, ne pas s'en inquiéter.
+- **DEUX ENDROITS, PAS TROIS** : (1) en **permanence sur l'écran de connexion** ; (2) sur la **fin de chapitre**, au moment où la carte postale est gagnée — seul moment du parcours où la personne possède quelque chose, et où la porte de compte s'ouvre déjà pour ceux qui n'en ont pas. **⚠️ Celui de l'écran de départ doit être RETIRÉ**, sinon on retombe à trois.
+- **Rappel de contrainte iOS** : aucune app ne peut déclencher l'installation. Safari n'expose pas ce bouton. L'encart ne peut donc QUE décrire le geste (Partager → Sur l'écran d'accueil). Ce n'est pas un choix, c'est une limite.
+
+## ▸ IMAGES — TOUT EXISTE DÉJÀ, RIEN À TÉLÉVERSER
+- **`apple-touch-icon-linguae.png`** (l'icône du raccourci) sur les écrans de connexion et de création, en 92 px, coins arrondis, halo turquoise qui respire. Déjà déclarée ligne 33 et déjà utilisée en 46 px dans l'encart d'installation (ligne ~8176). Crée la continuité avec ce que la personne verra sur son écran d'accueil.
+- **`lingua-affiche.webp`** en grand sur l'écran de la question, qui n'a que deux boutons et donc de la place. Déjà utilisée par le carnet de route.
+- Les deux seront mises en cache un an par la règle `.webp` / `.png` de `netlify.toml`.
+
+## ▸ Vers l'App Store
+Deux marches franchies vers l'autonomie : le parcours de compte est **dessiné** et ne dépend plus de Hype, et la question du compte partagé est **tranchée** (un seul compte, deux portes — recommandation suivie par Blandine). Restent, dans l'ordre : écrire cet écran dans `lingo.html`, **la suppression de compte propre à Linguae** (exigée par Apple ET le RGPD dès qu'on peut s'inscrire — elle peut réutiliser `supprimer-compte.js` tel quel, qui ne demande qu'un jeton de session), puis la question du paiement.
+
+---
+
 # 🔴 SESSION 188 · 10/08 · v63 — URGENCE : BLOCAGE SUR UNE PAGE GRISE ET FLOUE APRÈS L'ARRIVÉE
 
 **Livré : `lingo.html` md5 `7313b981a302549ef0d70c009f6d06ee`, 532 348 octets.** ⚠️ **À POUSSER TOUT DE SUITE** : Blandine venait d'envoyer le lien à beaucoup de monde, et le bug tue le parcours de tout visiteur.
