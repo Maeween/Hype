@@ -55,6 +55,40 @@
 
 ---
 
+# 🔴 SESSION 188 · 10/08 · v63 — URGENCE : BLOCAGE SUR UNE PAGE GRISE ET FLOUE APRÈS L'ARRIVÉE
+
+**Livré : `lingo.html` md5 `7313b981a302549ef0d70c009f6d06ee`, 532 348 octets.** ⚠️ **À POUSSER TOUT DE SUITE** : Blandine venait d'envoyer le lien à beaucoup de monde, et le bug tue le parcours de tout visiteur.
+
+## ▸ SIGNALEMENT DE BLANDINE
+« Urgent j'ai un énorme problème » · « je me co à linguae pour faire vidéo car j'ai envoyé lien à plein de monde » · **« je clique sur la baule et regarde la vidéo .. et après je reste bloquée sur une page toute grise sans rien »**.
+
+## ▸ CAUSE, TROUVÉE DANS LE FICHIER
+`ouvrirArrivee()` repasse **toutes** les cartes du carnet en fond flou de 1 Ko pour libérer la mémoire pendant que la vidéo joue — garde-fou iOS du 04/08 (dix images 900×1200 décodées simultanément font mourir l'onglet). Mais **`fermerArrivee()` ne les remettait jamais en net**, et `affiner()` ne se déclenche qu'au **défilement** du carnet. On retombait donc sur une carte floue sans texte lisible, et il fallait faire glisser le doigt horizontalement pour que la page revienne — geste que personne ne devine.
+
+## ▸ CORRECTIF
+Un appel à `affiner(courant)` à la fin de `fermerArrivee()`. Il couvre **les cinq sorties** de l'écran d'arrivée (geste de retour, bouton retour natif, fermeture directe, « Reprendre la route », et la fonction elle-même). **⛔ NE JAMAIS RETIRER CET APPEL** — toute fonction qui déclasse les cartes en flou doit avoir son pendant qui les rétablit. Le garde-fou mémoire reste entier : `affiner` ne remet en net que trois cartes au maximum.
+
+## ▸ À L'ÉCRAN
+- **+** le carnet redevient net et lisible dès la fermeture d'une arrivée
+- **−** le blocage sur page grise disparaît
+- inchangé : le garde-fou mémoire, la vidéo d'arrivée, le souvenir, la collection
+
+## ▸ VÉRIFICATIONS
+`node --check` 4/4. Fonctions 156 → 156, aucune perdue. Une seule occurrence de `affiner(courant)`, au bon endroit.
+
+## ▸ 2. LA BAULE PASSE EN VILLE OFFERTE (même livraison)
+**Ordre de Blandine** : « on devrait peut-être laisser La Baule gratuite non, du coup les gens la testent et paf bloquée comme c'est la première proposée » → « vas-y pour La Baule ».
+**Défaut de parcours, pas un bug** : La Baule est l'**étape 1** du voyage (« L'arrivée »). Les seules villes offertes étaient Le Morne (étape 2) et Kildare (étape 12). Tout visiteur arrivant par le lien de partage touchait donc La Baule et se heurtait au paywall **au premier geste**, alors que la ville suivante était gratuite — mais invisible. `VILLE_OFFERTE = { labaule:1, kildare:1, maurice:1 }`.
+**RÈGLE POSÉE DANS LE CODE : la PREMIÈRE ville du voyage doit toujours être offerte.** Si l'ordre des étapes change, vérifier que la nouvelle première ville y figure.
+
+## ▸ 3. PRÉCISION SUR LE PAYWALL (aucun code touché)
+Blandine : « il me demande pas de connecter un compte mais de m'abonner ». **Comportement normal** : la porte de compte (`porteB`) ne s'ouvre qu'**après avoir gagné une carte** sans compte — choix du 9 août, on ne demande le compte qu'au moment où il y a quelque chose à perdre. Le paywall, lui, s'affiche dès qu'on touche une ville verrouillée, sans se soucier de la connexion. **Conséquence : l'apparition du paywall ne renseigne pas sur l'état de connexion.** Sa non-reconnaissance comme abonnée reste non expliquée : soit le fichier n'était pas poussé (tampon de version à vérifier — doit dire v63), soit aucune session Supabase n'existe dans ce Safari. La Baule offerte rend le point non urgent pour les visiteurs.
+
+## ▸ Vers l'App Store
+Ce bug est exactement le genre de défaut qui fait échouer une relecture Apple : un parcours qui se bloque sans issue visible. À retenir pour la soumission — **tester chaque écran par toutes ses sorties**, pas seulement par le chemin principal.
+
+---
+
 # SESSION 187 · 10/08 · RETRAIT DU BLOC DE SYNCHRONISATION (nettoyage avant push)
 
 **Livré : `lingo.html` md5 `c11aa753bcf870f847618f780cf5bd20`, 531 123 octets** (−6 kO). Livré avec `index.html` `cd314047` (inchangé) et `netlify.toml` `6066522d`.

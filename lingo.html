@@ -5962,7 +5962,23 @@ function donnerXP(n, raison){
 function estPremium(){
   try{ return localStorage.getItem("hype_premium")==="1"; }catch(e){ return false; }
 }
-var VILLE_OFFERTE = { kildare:1, maurice:1 };
+/* ⚠️ v63 — 10/08/2026 — LA BAULE PASSE EN VILLE OFFERTE.
+   ORDRE DE BLANDINE : « on devrait peut-être laisser La Baule gratuite non,
+   du coup les gens la testent et paf bloquée comme c'est la première
+   proposée » → « vas-y pour La Baule ».
+
+   CE QUI CLOCHAIT, ET C'EST UN DÉFAUT DE PARCOURS, PAS UN BUG : La Baule
+   est l'ÉTAPE 1 du voyage (« L'arrivée »). Les seules villes offertes
+   étaient Le Morne (étape 2) et Kildare (étape 12). Donc tout visiteur
+   arrivant par le lien de partage tombait sur La Baule, la touchait, et se
+   heurtait au paywall AU PREMIER GESTE — alors que la ville juste après
+   était gratuite, mais que personne ne pouvait le savoir. On abandonnait
+   avant d'avoir rien vu.
+
+   RÈGLE À TENIR : la PREMIÈRE ville du voyage doit toujours être offerte.
+   Si l'ordre des étapes change un jour, vérifier que la nouvelle première
+   ville figure ici. */
+var VILLE_OFFERTE = { labaule:1, kildare:1, maurice:1 };
 function villeAutorisee(refVille){
   return estPremium() || !!VILLE_OFFERTE[refVille];
 }
