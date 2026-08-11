@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hype — Extraction du Memory v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  body{margin:0 auto;background:#07111F;color:#F4F7FA;font-family:-apple-system,Montserrat,sans-serif;
+    padding:calc(env(safe-area-inset-top) + 22px) 18px 70px;max-width:560px;}
+  h1{font-size:19px;color:#2DD4DE;margin:0 0 6px;}
+  p{font-size:13.5px;line-height:1.55;color:#9FB3C4;}
+  button{width:100%;padding:15px;border-radius:14px;border:none;font-size:15px;font-weight:800;
+    background:linear-gradient(135deg,#2DD4DE,#20b4c8);color:#03222B;margin-top:10px;}
+  button.sec{background:#122031;color:#8FD8E6;border:1px solid #1C3348;}
+  button:disabled{opacity:.35;}
+  #log{background:#0B1826;border:1px solid #16283A;border-radius:12px;padding:12px;
+    font-family:ui-monospace,monospace;font-size:11.5px;line-height:1.6;white-space:pre-wrap;
+    margin-top:16px;max-height:52vh;overflow:auto;overscroll-behavior:contain;color:#8FE3A6;}
+  .barre{height:6px;background:#122031;border-radius:3px;margin-top:12px;overflow:hidden;}
+  .barre i{display:block;height:100%;width:0%;background:#2DD4DE;border-radius:3px;transition:width .2s;}
+  .al{color:#FFC9A8;} .ko{color:#FF9C9C;}
+</style>
+</head>
+<body>
+<h1>Extraction du Memory — v2</h1>
+<p><b>Diagnostic seul</b> ne télécharge rien : il dit, carte par carte, quelle clé est introuvable, quel lot d'images n'a pas répondu et quel fichier <code>images/</code> manque vraiment. Rapide.<br>
+<b>Diagnostic + zip</b> fait la même chose et prépare en plus l'archive des images.</p>
+
+<button id="bDiag" onclick="lancer(false)">Diagnostic seul (rapide)</button>
+<button id="bZip" class="sec" onclick="lancer(true)">Diagnostic + zip des images</button>
+<button id="bCopie" class="sec" onclick="copier()" disabled>Copier le rapport</button>
+<div class="barre"><i id="prog"></i></div>
+<div id="log">Prêt.</div>
+
+<script>
+var LOG = document.getElementById("log");
+var RAPPORT = [];
+function log(t, cl) {
+  RAPPORT.push(t);
+  var s = document.createElement("span");
+  if (cl) s.className = cl;
+  s.textContent = t + "\n";
+  LOG.appendChild(s);
+  LOG.scrollTop = LOG.scrollHeight;
+}
+function prog(p) { document.getElementById("prog").style.width = Math.round(p * 100) + "%"; }
+function copier() {
+  var t = RAPPORT.join("\n");
+  if (navigator.clipboard) navigator.clipboard.writeText(t).then(function(){ alert("Rapport copié."); });
+  else { var a = document.createElement("textarea"); a.value = t; document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove(); alert("Rapport copié."); }
+}
+
+var CB = "?ext=" + Date.now();   // anti-cache : le service worker ne resservira pas ses vieilles reponses
+
+function chargerScript(src) {
+  return new Promise(function (res) {
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function () { res(true); };
+    s.onerror = function () { res(false); };
+    document.head.appendChild(s);
+  });
+}
+
+// WebP possible sur cet appareil ? Sinon repli JPEG de bonne qualite.
+var FORMAT = (function () {
+  try {
+    var c = document.createElement("canvas"); c.width = c.height = 2;
+    return c.toDataURL("image/webp").indexOf("data:image/webp") === 0
+      ? { mime: "image/webp", ext: "webp", q: 0.82, natif: true }
+      : { mime: "image/jpeg", ext: "jpg", q: 0.88, natif: false };
+  } catch (e) { return { mime: "image/jpeg", ext: "jpg", q: 0.88, natif: false }; }
+})();
+
+function versBlob(src) {
+  return new Promise(function (res, rej) {
+    var img = new Image();
+    img.onload = function () {
+      try {
+        var MAX = 1200;
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var r = Math.min(1, MAX / Math.max(w, h));
+        var c = document.createElement("canvas");
+        c.width = Math.round(w * r); c.height = Math.round(h * r);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { b ? res(b) : rej(new Error("blob nul")); }, FORMAT.mime, FORMAT.q);
+      } catch (e) { rej(e); }
+    };
+    img.onerror = function () { rej(new Error("chargement image")); };
+    img.src = src;
+  });
+}
+
+/* Rejoue les petits blocs <script> d'index.html qui declarent des cles d'images.
+   C'est la piece qui manquait a la v1 : une partie des cles n'est PAS dans les
+   lots mais ecrite directement dans l'index (assignations et boucles for). */
+async function clesInlineDeLIndex() {
+  var txt;
+  try {
+    var r = await fetch("index.html" + CB, { cache: "no-store" });
+    if (!r.ok) { log("  index.html : reponse " + r.status, "ko"); return 0; }
+    txt = await r.text();
+  } catch (e) { log("  index.html illisible : " + e, "ko"); return 0; }
+  log("  index.html lu (" + Math.round(txt.length / 1048576 * 10) / 10 + " Mo)");
+
+  var blocs = [], vus = {}, pos = 0, MOTIF = 'HYPE_IMGS["k';
+  while (true) {
+    var h = txt.indexOf(MOTIF, pos);
+    if (h < 0) break;
+    pos = h + 1;
+    var deb = txt.lastIndexOf("<script", h);
+    var fin = txt.indexOf("</scr" + "ipt>", h);
+    if (deb < 0 || fin < 0) continue;
+    var sup = txt.indexOf(">", deb);
+    if (sup < 0 || sup > h) continue;
+    if (txt.slice(deb, sup).indexOf(" src=") >= 0) continue;  // c'est un lot, deja charge
+    if (fin - sup > 20000) continue;                          // c'est le gros script de l'appli
+    if (vus[deb]) continue;
+    vus[deb] = 1;
+    blocs.push(txt.slice(sup + 1, fin));
+  }
+  var avant = Object.keys(window.HYPE_IMGS).length, joues = 0;
+  blocs.forEach(function (code) {
+    try { (new Function("window", code))(window); joues++; }
+    catch (e) { log("  bloc inline en echec : " + e, "ko"); }
+  });
+  var gain = Object.keys(window.HYPE_IMGS).length - avant;
+  log("  " + joues + "/" + blocs.length + " blocs inline rejoues -> " + gain + " cles ajoutees");
+  return gain;
+}
+
+/* Table cle-de-carte -> cle d'image (kNNN), lue dans le texte du fichier memory.
+   Indispensable au rapport : une fois le fichier evalue, le nom kNNN a disparu. */
+async function tableDesCles() {
+  var t = {};
+  try {
+    var r = await fetch("hype-memory-poney.js" + CB, { cache: "no-store" });
+    if (!r.ok) return t;
+    var txt = await r.text();
+    var niveaux = txt.split('{ id: "').slice(1);
+    niveaux.forEach(function (b) {
+      var nid = b.split('"')[0];
+      var mc = b.match(/couverture:\s*HYPE_IMGS\["(k\d+)"\]/);
+      if (mc) t[nid + "/couv"] = mc[1];
+      var re = /\{ cle: "([^"]+)", src: (?:HYPE_IMGS\["(k\d+)"\]|"([^"]+)")/g, m;
+      while ((m = re.exec(b))) t[nid + "/" + m[1]] = m[2] || m[3];
+    });
+  } catch (e) { }
+  return t;
+}
+
+var EN_COURS = false;
+async function lancer(avecZip) {
+  if (EN_COURS) return;
+  EN_COURS = true;
+  document.getElementById("bDiag").disabled = true;
+  document.getElementById("bZip").disabled = true;
+  LOG.textContent = ""; RAPPORT = [];
+  window.HYPE_IMGS = window.HYPE_IMGS || {};
+
+  log("=== HYPE · EXTRACTION MEMORY v2 · " + new Date().toISOString() + " ===");
+  log("Encodage WebP par cet appareil : " + (FORMAT.natif ? "OUI" : "NON -> repli " + FORMAT.ext.toUpperCase() + " qualite " + FORMAT.q));
+
+  // --- 1. les lots, avec anti-cache et compte-rendu des absents ---
+  log("");
+  log("[1] Lots hype-images-N.js (1 a 130)");
+  var lotsOk = 0, lotsKo = [], lotsVides = [], parLot = {};
+  for (var n = 1; n <= 130; n++) {
+    var avant = Object.keys(window.HYPE_IMGS).length;
+    var ok = await chargerScript("hype-images-" + n + ".js" + CB);
+    var ajout = Object.keys(window.HYPE_IMGS).length - avant;
+    if (ok) {
+      lotsOk++;
+      if (ajout === 0) lotsVides.push(n);
+      Object.keys(window.HYPE_IMGS).slice(avant).forEach(function (k) { parLot[k] = n; });
+    } else lotsKo.push(n);
+    if (n % 20 === 0) prog(0.35 * n / 130);
+  }
+  log("  " + lotsOk + " lots charges, " + Object.keys(window.HYPE_IMGS).length + " cles en memoire");
+  if (lotsKo.length) log("  lots sans reponse : " + lotsKo.join(", ") + (lotsKo.length > 20 ? "" : "  (normal au-dela du dernier lot existant)"), "al");
+  if (lotsVides.length) log("  lots charges mais n'ajoutant aucune cle : " + lotsVides.join(", "), "al");
+
+  // --- 2. les cles ecrites dans index.html ---
+  log("");
+  log("[2] Cles declarees dans index.html");
+  await clesInlineDeLIndex();
+  log("  total apres index : " + Object.keys(window.HYPE_IMGS).length + " cles");
+  prog(0.42);
+
+  // --- 3. le fichier memory ---
+  log("");
+  log("[3] hype-memory-poney.js");
+  var table = await tableDesCles();
+  delete window.MEMORY_PONEY_NIVEAUX;
+  if (!await chargerScript("hype-memory-poney.js" + CB + "&outil=2")) { log("ARRET : fichier memory introuvable.", "ko"); return fin(); }
+  var niveaux = (window.MEMORY_PONEY_NIVEAUX || []).filter(Boolean);
+  log("  version " + (window.MEMORY_PONEY_VERSION || "?") + " · " + niveaux.length + " niveaux");
+
+  var taches = [];
+  niveaux.forEach(function (nv) {
+    taches.push({ nv: nv.id, cle: "couv", src: nv.couverture });
+    (nv.paires || []).forEach(function (p) { taches.push({ nv: nv.id, cle: p.cle, src: p.src }); });
+  });
+  log("  " + taches.length + " images attendues (couvertures comprises)");
+
+  // --- 4. verification carte par carte ---
+  log("");
+  log("[4] Verification" + (avecZip ? " et conversion" : ""));
+  var zip = avecZip ? new JSZip() : null;
+  var manifest = [], pb = [];
+  var nbConv = 0, nbFich = 0, nbAbs = 0, nbCle = 0, nbVide = 0, nbEch = 0;
+
+  for (var i = 0; i < taches.length; i++) {
+    var t = taches[i], k = table[t.nv + "/" + t.cle] || null;
+    var e = { niveau: t.nv, cle: t.cle, image: k };
+
+    if (!t.src) {
+      // la cle existe dans le fichier memory mais ne resout sur rien
+      if (k && /^k\d+$/.test(k)) { e.statut = "CLE_INCONNUE"; nbCle++; pb.push(t.nv + " / " + t.cle + " -> " + k + " : clé introuvable partout"); }
+      else { e.statut = "SANS_IMAGE"; nbVide++; pb.push(t.nv + " / " + t.cle + " : aucune image déclarée"); }
+    } else if (typeof t.src === "string" && t.src.indexOf("data:") !== 0) {
+      // chemin de fichier : on verifie qu'il repond vraiment
+      var url = t.src, prop = url.split("?")[0], nomf = prop.split("/").pop();
+      try {
+        var r = await fetch(prop + CB, { cache: "no-store" });
+        if (!r.ok) { e.statut = "FICHIER_ABSENT"; e.src = prop; e.code = r.status; nbAbs++; pb.push(t.nv + " / " + t.cle + " -> " + prop + " : HTTP " + r.status); }
+        else {
+          var b = await r.blob();
+          e.statut = "FICHIER_OK"; e.src = prop; e.octets = b.size; e.fichier = nomf; nbFich++;
+          if (zip) zip.file("fichiers/" + nomf, b);   // copie telle quelle, sans reencodage
+        }
+      } catch (err) { e.statut = "FICHIER_ABSENT"; e.src = prop; e.erreur = String(err); nbAbs++; pb.push(t.nv + " / " + t.cle + " -> " + prop + " : " + err); }
+    } else if (zip) {
+      var nom = "memory-" + t.nv + "-" + t.cle + "." + FORMAT.ext;
+      try {
+        var bl = await versBlob(t.src);
+        zip.file(nom, bl);
+        e.statut = "CONVERTI"; e.fichier = nom; e.octets = bl.size; nbConv++;
+      } catch (err2) { e.statut = "ECHEC"; e.erreur = String(err2); nbEch++; pb.push(t.nv + " / " + t.cle + " : conversion en echec"); }
+    } else {
+      e.statut = "BASE64_OK"; nbConv++;
+    }
+    manifest.push(e);
+    prog(0.42 + (avecZip ? 0.45 : 0.55) * (i + 1) / taches.length);
+  }
+
+  log("  base64 " + (avecZip ? "convertis" : "presents") + " : " + nbConv);
+  log("  fichiers images/ verifies presents : " + nbFich);
+  if (nbAbs) log("  FICHIERS ABSENTS : " + nbAbs, "ko");
+  if (nbCle) log("  CLES INTROUVABLES : " + nbCle, "ko");
+  if (nbVide) log("  cartes sans image declaree : " + nbVide, "al");
+  if (nbEch) log("  conversions en echec : " + nbEch, "ko");
+
+  log("");
+  if (pb.length) { log("[5] A CORRIGER (" + pb.length + ")", "ko"); pb.forEach(function (l) { log("  - " + l, "ko"); }); }
+  else log("[5] Aucun probleme : les " + taches.length + " images du Memory repondent toutes.");
+
+  // --- 6. zip ---
+  if (zip) {
+    log("");
+    log("[6] Preparation du zip");
+    zip.file("manifest.json", JSON.stringify({ format: FORMAT.ext, webp_natif: FORMAT.natif, memory_version: window.MEMORY_PONEY_VERSION || null, date: new Date().toISOString(), lots_sans_reponse: lotsKo, entrees: manifest }, null, 2));
+    zip.file("rapport.txt", RAPPORT.join("\n"));
+    var blob = await zip.generateAsync({ type: "blob" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "memory-images-v2.zip";
+    a.textContent = "TELECHARGER LE ZIP (" + Math.round(blob.size / 1048576 * 10) / 10 + " Mo)";
+    a.style.cssText = "display:block;text-align:center;margin-top:14px;padding:16px;border-radius:14px;background:#2DD4DE;color:#03222B;font-weight:800;text-decoration:none;";
+    document.body.appendChild(a);
+    log("  zip pret : " + Math.round(blob.size / 1048576 * 10) / 10 + " Mo. Touche le bouton turquoise.");
+  }
+  prog(1);
+  log("");
+  log("=== FIN ===");
+  fin();
+}
+
+function fin() {
+  EN_COURS = false;
+  document.getElementById("bDiag").disabled = false;
+  document.getElementById("bZip").disabled = false;
+  document.getElementById("bCopie").disabled = false;
+}
+</script>
+</body>
+</html>
