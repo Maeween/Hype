@@ -1380,9 +1380,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  line-height:1.35;color:#2E2114;margin:0}
 .cvPas span{display:block;font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;
  color:#6A5A42;margin-top:4px}
-#cvTourner{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:auto;padding:6px 0 4px}
-#cvTourner button{width:30px;height:30px;border-radius:50%;border:1px solid rgba(122,94,46,.4);
- background:rgba(255,255,255,.25);color:#7A5E2E;font-size:13px;line-height:1;cursor:pointer}
+/* v77 : cibles de 44 px (Blandine : « on a du mal a cliquer sur le numero
+   de page ») — la taille minimale tactile d'Apple, et un fond plus present
+   pour que le doigt sache ou il est. */
+#cvTourner{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:auto;padding:8px 0 6px}
+#cvTourner button{width:44px;height:44px;border-radius:50%;border:1px solid rgba(122,94,46,.45);
+ background:rgba(255,255,255,.4);color:#7A5E2E;font-size:17px;line-height:1;cursor:pointer}
 #cvTourner span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:#6A5A42}
 /* le carnet vide : l'objet fermé */
 #cvVide{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;
@@ -2158,7 +2161,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v76 · le derby de Hickstead</p>
+    <p id="ouvVersion">v77 · le carnet réparé</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -7195,9 +7198,24 @@ var CV = { onglet:0, page:0 };
 var CV_PAR_PAGE = 8, CV_PAR_PAGE_PAS = 3;
 
 function cvConceptDe(refVille, refMot){
-  var ch = chapVirtuel(refVille); if(!ch) return null;
-  var n = (ch.concepts||[]).length;
-  for(var i=0;i<n;i++) if(ch.concepts[i].ref===refMot) return ch.concepts[i];
+  /* v77 — LES ORPHELINS (capture de Blandine : PARCOURS, CROISILLON, MUR,
+     GEL affiches SANS traduction). Un mot garde au carnet reste range sous
+     sa ville, mais le CHAPITRE de la ville peut changer (Hickstead est
+     passee d'obstacle a derby, Spruce Meadows a perdu gel et neige). On
+     cherche donc d'abord dans le chapitre actuel, puis dans TOUS les
+     lexiques : le mot garde sa traduction meme si sa ville a change de
+     chapitre. Un ref disparu de partout renvoie null — et cvEntrees
+     l'ecarte de l'affichage plutot que de montrer un ref nu. */
+  var ch = chapVirtuel(refVille);
+  if(ch){
+    var n = (ch.concepts||[]).length;
+    for(var i=0;i<n;i++) if(ch.concepts[i].ref===refMot) return ch.concepts[i];
+  }
+  var LEX = window.HYPE_LINGO_LEX || {}, k;
+  for(k in LEX){
+    var cs = LEX[k].concepts || [];
+    for(var j=0;j<cs.length;j++) if(cs[j].ref===refMot) return cs[j];
+  }
   return null;
 }
 function cvPhraseDe(refVille, rang){
@@ -7213,7 +7231,12 @@ function cvEntrees(){
   var tout = (window.carnetListe ? window.carnetListe() : []);
   var mots=[], pas=[];
   tout.forEach(function(e){
-    if(e.t==="mot") mots.push(e); else pas.push(e);
+    if(e.t==="mot"){
+      /* v77 : un ref disparu de tous les lexiques (gel, neige — retires a
+         la reecriture de Spruce Meadows) ne s'affiche pas nu : on l'ecarte
+         de la vue, sans toucher au stockage. */
+      if(cvConceptDe(e.ville, e.mot)) mots.push(e);
+    } else pas.push(e);
   });
   return CV.onglet===0 ? mots : pas;
 }
@@ -7239,7 +7262,14 @@ function cvDessiner(){
   for(var i=deb;i<fin;i++){
     (function(e){
       var el2;
+      /* v77 : largeur/hauteur EN DUR sur l'element — la vignette d'une
+         entree s'affichait en taille naturelle (l'image mangeait la page
+         et poussait les encarts suivants hors de vue : « la page 2 demarre
+         alors que la 1 n'est pas terminee »). La ceinture et les
+         bretelles : attributs + style en ligne + la classe CSS. */
       var vg = e.vis ? el("img",{class:"vg"+(e.vis==="objet"?" objet":""),
+        width:"30", height:"30",
+        style:"float:right;width:30px;height:30px;object-fit:"+(e.vis==="objet"?"contain":"cover")+";border-radius:4px;margin:0 0 3px 6px",
         src: cvCheminVisuel(e.vis, e.ville), alt:""}) : null;
       if(e.t==="mot"){
         var c=cvConceptDe(e.ville, e.mot);

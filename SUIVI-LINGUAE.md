@@ -76,6 +76,191 @@
 
 ---
 
+# ✅ SESSION 206 · 11/08 — LES 31 VUES SONT COMPLÈTES ET POUSSÉES
+
+**À pousser : le contenu de `vues-completes.zip` → RACINE du dépôt** (31 fichiers `vue-<ref>.webp` + `fenetre-arche.webp`). Décision de Blandine : en ligne tout de suite « pour ne pas les perdre », même si rien ne les appelle encore — elles dorment comme `arrivee-wellington.*`.
+
+## ▸ Le fil des dernières
+- **Burghley** : remplacée par la grande version (tronc dans l'eau devant la maison), ciel d'orage rogné. La vignette 341px est écrasée.
+- **Lamotte** : DÉFINITIVE au 4e essai — poney gris, enfant, pins de Sologne, tentes, **sans eau et sans marque**. Les 3 essais précédents : stade international, ruisseau absurde, « GENERALI » écrit sur la tente (marque = poubelle directe).
+- Choix d'images délégués à Claude et actés : nouvelles Warendorf/Windsor/Aberystwyth (la promenade et la jetée), Walsall conservée (la rue des selliers), Tokyo aux anneaux olympiques REFUSÉE (marque déposée).
+- **Dubaï** : version actuelle = skyline (belle mais l'endurance se court au désert, signalé) ; version désert proposée si Blandine régénère.
+
+## ▸ VERSAILLES — idée de Blandine, EN RÉSERVE (« on en reparle »)
+33e ville possible : le carrousel, l'équitation de spectacle, la Grande Écurie. ⚠️ Cadre posé avec elle : **jamais Bartabas** (personne réelle + compagnie privée), **jamais « olympique »/anneaux/« Paris 2024 »** (marques féroces) — mais le FAIT historique est libre (« les cavaliers du monde entier venus concourir un été dans les jardins »). Chapitre inédit possible : la haute école en musique, le travail aux longues rênes, le carrousel.
+
+## ▸ L'ORDRE DES CHANTIERS (état au 11/08 soir)
+1. **La sellerie** — À OUVRIR DANS UNE CONVERSATION NEUVE (décision : préserver le contexte). Tout est prêt : `fenetre-sellerie.webp` et `fenetre-arche.webp`, les 31 vues, les 31 objets, la démo du montage. MANQUE : l'image de la pièce elle-même, et le défi 60s par ville (décision de contenu). Le raccourci fin-de-leçon vers les objets viendra AVEC la page.
+2. **Wellington** (32e ville) — arrivée poussée, objet/fenêtre/scène découpés, chapitre = l'obstacle générique en réserve.
+3. **Versailles** (33e) — en réserve.
+Plus les chantiers de fond : quota GB/US, prérequis, phrases supplémentaires, doublons de refs, onglet Langues des épingles côté Hype.
+
+---
+
+# 🖼️ SESSION 205 · 11/08 — LA FENÊTRE ET LES DEUX PREMIÈRES VUES (Rome, La Baule)
+
+**Rien à pousser** — tout attend le chantier sellerie, dans `outputs/vues/`.
+
+## ▸ LE PRINCIPE VALIDÉ EN VRAI
+Question de Blandine : *« si on met plusieurs fenêtres à choisir, tu sauras réadapter l'image de la vue derrière ? »* → **Oui, démontré** : `demo-fenetre.webp` montre LA MÊME fenêtre avec Rome puis La Baule derrière. Règle de fabrication : **fenêtre = cadre aux carreaux transparents · vue = rectangle plein, SANS fenêtre cuite dedans**. N'importe quelle vue passe derrière n'importe quelle fenêtre.
+
+## ▸ ⚠️ LES DEUX PIÈGES DU GÉNÉRATEUR, RENCONTRÉS TOUS LES DEUX
+1. **Le faux damier** : la planche de Rome avait le damier de transparence **dessiné en pixels** (image RVB, aucun alpha). Repeint par inpainting (16 % de l'image) — le coin de l'arbre garde une légère trace. La planche de La Baule, elle, avait une **vraie transparence** : c'est sa fenêtre qui est retenue (`fenetre-arche.webp`, carreaux réellement transparents à 71 %).
+2. **Les vues à bords irréguliers** (arbre qui dépasse, encoche) : recadrées au plus grand rectangle plein.
+→ **Consigne pour les 29 vues restantes** : générer la vue SEULE, rectangulaire, plein cadre, sans fenêtre, sur vrai fond transparent ou sans fond du tout — et vérifier qu'un export garde l'alpha.
+
+## ▸ Fichiers (outputs/vues/) : `fenetre-arche.webp` · `vue-rome.webp` · `vue-labaule.webp` · `demo-fenetre.webp` (démo, ne se poussera jamais). Le manifeste s'étend : famille `vue-<ref>.webp` (statique) en plus de `vue-<ref>.mp4/.webm` (animée).
+
+---
+
+# 🏛️ SESSION 207 · 11/08 — LA SELLERIE : LA PIÈCE EST COMPLÈTE, LA MAQUETTE DE VISITE EST LIVRÉE
+
+**Rien à pousser** — maquette à valider (`maquette-sellerie.html`, ne se pousse jamais). Les murs sont dans `outputs/sellerie/`.
+
+## ▸ LA PIÈCE — générée par Blandine, arbitrée ensemble
+**Quatre murs DE FACE pour la pose** (les images de biais font l'ambiance, pas le placement — on ne pose bien que sur du plat) : `sellerie-fond` (la fenêtre en arche VIDE au centre — pile la consigne), `sellerie-gauche` (3 porte-selles **perpendiculaires** — corrigés sur remarque de Blandine : « un porte-selle pointe vers nous, pas le long du mur » ; la selle se range **de dos**, troussequin vers nous, son idée aussi), `sellerie-droite` (vitrine 8 casiers + rail 7 crochets + console), `sellerie-entree` (double porte, murs nus — **objets retirés à sa demande : banc et malle « on les fera gagner »**). Plus 2 variantes d'ambiance (`-gauche-biais`, `-entree-vue` grand angle) et `-gauche-v1`.
+
+## ▸ v5→v7 (corrections sur retours de Blandine, dans la foulée)
+La fenêtre passe à 29 % de largeur par recadrage central du mur (`-serre`, les appliques sortent — triche validée). v6 : **logique dansFenetre remise à l'endroit** (elle était inversée : tout objet repoussé partout, porte comprise — diagnostiqué sur son film). v7 : toucher la réserve sur un mur d'ambiance emmène au mur du fond au lieu de refuser. Pincement borné 8-38vw. **v7 livrée, en attente de son retest.**
+
+## ▸ LA MAQUETTE DE VISITE (idée de Blandine : « comme une visite virtuelle »)
+Balayage entre les 4 murs (points de position, nom du mur), **pose libre au doigt** depuis une réserve en bas (glisser · **pincer = taille** · **double-toucher = miroir** — la rotation libre est refusée : un objet penché fait autocollant), **la fenêtre s'ouvre en grand au toucher** (son idée) avec la vue du Morne en démonstration. 10 objets embarqués pour l'essai.
+
+## ▸ ⚠️ LA LEÇON DES ESSAIS DE POSE (« aïe aïe aïe rien ne va »)
+Mes premiers essais posaient une selle de trois quarts sur un porte-selle (de travers) et le fer DEVANT la vitre. Diagnostic partagé avec elle : **une image plate n'a qu'un seul angle** — on ne « tourne » pas un objet sans une autre image. Règle posée : certains objets auront **deux images** — la version « collection » (récompense, inchangée) et la version « posée » (pour la sellerie). À générer par Blandine : **selles vues DE DOS** (« je les fais faire de dos et de ¾, ça se met face au mur »), licol/bride **suspendus au crochet**, tapis et couverture **sur une barre, retombants — JAMAIS pliés** (correction de Blandine : « un tapis ça se plie pas, ça l'abîme »).
+Selles existantes : `objet-newmarket` (¾ sur support à pied → posable au sol), `objet-dubai` (¾), `objet-selle-tapis` (profil — irait au mur v1). Aucune de dos.
+
+## ▸ RESTE À FAIRE (le code, après validation de la maquette)
+L'écran dans `lingo.html` (calque `CALQUES_LINGUAE` + entrée carnet de route), le stockage des poses (`ref → {mur,x,y,taille,miroir}` dans la progression Linguae), la vue choisie derrière la fenêtre (menu « Mes vues », gagnées par le défi 60 s — **qui n'existe pas encore**, décision de contenu en suspens), le raccourci fin de leçon, et les fichiers murs → RACINE avec le manifeste étendu (famille `sellerie-*.webp`).
+
+---
+
+# 🗄️ SESSION 206 · 11/08 — LA COLLECTION DES VUES MISE À L'ABRI
+
+**À pousser : les 33 fichiers de `collection-vues.zip` → RACINE du dépôt.** (31 `vue-<ref>.webp` + `fenetre-arche.webp` + `fenetre-sellerie.webp`, 3,7 Mo.) Rien ne les appelle encore : **aucun risque**, aucun témoin à toucher — c'est une mise à l'abri, décidée par Blandine (« on met la collection en ligne pour pas la perdre »), pour que la sellerie puisse se construire dans n'importe quelle session avec le SUIVI + les fichiers en place.
+
+## ▸ LES 31 VUES, TOUTES DÉFINITIVES
+Lamotte enfin juste au 4e essai (poney gris, enfant, pins de Sologne, tentes — **sans eau ni marque** ; les 3 premiers essais avaient un canal absurde, et l'un portait « GENERALI » en toutes lettres). Burghley remplacée en grand (le tronc dans l'eau devant la maison, ciel d'orage rogné). Choix d'images arbitrés par Claude sur délégation (« s'il y en a que tu préfères ») : Warendorf ancien conservé, Windsor et Aberystwyth remplacées, Walsall gardée (la rue des selliers). Dubaï : version skyline conservée, version désert recommandée si régénérée (plus juste — l'endurance ne se court pas en ville).
+⚠️ **Refusées à jamais** : toute image portant les anneaux olympiques (vue Tokyo d'une mosaïque) ou une marque (« GENERALI »).
+
+## ▸ VERSAILLES — idée de Blandine, EN RÉSERVE (« on en reparle »)
+33e ville possible : le carrousel, l'équitation de spectacle, la Grande Écurie. ⚠️ **Bartabas et son Académie : personne réelle + compagnie privée = interdits** par la règle du 8/08. Les Jeux : le FAIT (épreuves dans les jardins en 2024) est libre, les mots « olympique »/logos ne le sont pas.
+
+## ▸ ORDRE DES CHANTIERS
+1. **La sellerie** (bloquée : l'image de la pièce manque toujours) — fenêtre ✓, 31 vues ✓, 31 objets ✓, palmier Wellington ✓.
+2. Wellington, 32e ville (arrivée + objets déjà à la racine).
+3. Versailles (réserve).
+
+---
+
+# 🪟 SESSION 204 · 11/08 · v77 — LE CARNET RÉPARÉ, ET LES PREMIÈRES PIÈCES DE LA SELLERIE
+
+**À pousser : `lingo.html` (v77) → RACINE.** Les images Wellington (ci-dessous) attendent la sellerie — rien à pousser encore.
+
+## ▸ 🔴 TROIS DÉFAUTS DU CARNET, relevés par Blandine sur captures
+1. **Mots sans traduction** (PARCOURS, CROISILLON, MUR, GEL) : des **orphelins** — mots gardés sous l'ancien chapitre de leur ville (Hickstead→derby a orphelin tout `obstacle` ; gel/neige ont disparu de `froid` à la réécriture). ✅ `cvConceptDe` cherche maintenant dans le chapitre actuel PUIS dans **tous les lexiques** — un mot garde sa traduction même si sa ville change de chapitre. Un ref disparu de partout est **écarté de l'affichage** (jamais du stockage). ⚠️ Règle apprise : **réaffecter un chapitre orpheline le carnet** — y penser à chaque réaffectation future.
+2. **« La page 2 démarre alors que la 1 n'est pas terminée »** : la vignette d'une entrée (carte de Hickstead) s'affichait en **taille naturelle** — l'image mangeait la page et poussait les encarts hors de vue. ✅ Taille en dur sur l'élément (attributs + style en ligne + classe) — plus aucune dépendance à la seule CSS.
+3. **Boutons de page durs à toucher** : passés à **44 px** (minimum tactile Apple), fond plus présent.
+
+## ▸ WELLINGTON — les premières pièces de la sellerie, découpées
+Blandine a envoyé : le **palmier en pot** (objet gagné de la Floride), la **fenêtre vide** (l'architecture de la sellerie), et la **scène complète** fenêtre+vue (référence de l'effet final). Découpés → `outputs/wellington/` : `objet-wellington.webp` · `fenetre-sellerie.webp` · `vue-wellington-scene.webp` (référence, ne se pousse pas). ⚠️ La vue ANIMÉE (`vue-wellington.mp4`) reste à générer — la scène statique en tiendra lieu au début si besoin. Wellington (32e ville) n'existe toujours pas dans `lingo.html` : `arrivee-wellington.*` et ces fichiers dorment jusqu'à son ouverture.
+
+---
+
+# 📦 LE MANIFESTE DU DÉTACHEMENT — TOUS LES FICHIERS DE LINGUAE
+### Écrit le 11/08/2026 sur décision de Blandine : « à un moment donné on doit détacher les deux applis ». Décision prise AVEC elle : on ne déplace RIEN aujourd'hui (réécrire les chemins casserait le cache installé de toutes les testeuses, pour un bénéfice nul avant le jour J). Le détachement se fera par NOUVEAU DÉPÔT + NOUVEAU SITE NETLIFY + domaine propre, en copiant les fichiers ci-dessous. Cette liste EST l'opération.
+
+## Fichiers de code (racine)
+`lingo.html` · `lingo-collection.html` (si présent au dépôt) · les 26 scripts :
+`hype-lingo-lex-ecurie.js` · `hype-lingo-lex-pansage.js` · `hype-lingo-lex-cheval.js` · `hype-lingo-lex-materiel.js` · `hype-lingo-lex-cours.js` · `hype-lingo-lex-dressage.js` · `hype-lingo-lex-obstacle.js` · `hype-lingo-lex-derby.js` · `hype-lingo-lex-concours.js` · `hype-lingo-lex-cross.js` · `hype-lingo-lex-horsemanship.js` · `hype-lingo-lex-urgences.js` · `hype-lingo-lex-poney.js` · `hype-lingo-lex-arrivee.js` · `hype-lingo-lex-tradition.js` · `hype-lingo-lex-western.js` · `hype-lingo-lex-polo.js` · `hype-lingo-lex-haras.js` · `hype-lingo-lex-froid.js` · `hype-lingo-lex-endurance.js` · `hype-lingo-lex-vente.js` · `hype-lingo-lex-elevage.js` · `hype-lingo-lex-balade.js` · `hype-lingo-phrases-monde.js` · `hype-lingo-villes.js` · `hype-lingo-villes-monde.js`
+
+## Images et vidéos par ville (racine) — motifs, pour les 31 refs
+Pour CHAQUE ref (labaule, maurice, connemara, newmarket, lambourn, walsall, aberystwyth, windsor, hickstead, badminton, burghley, kildare, edimbourg, saumur, lamotte, golega, jerez, seville, vejer, oliva, rome, verone, warendorf, aachen, dubai, tokyo, tamworth, buenos, lexington, santaynez, spruce) :
+`carte-<ref>.webp` · `fond-<ref>.webp` (quand il existe) · `objet-<ref>.webp` · `arrivee-<ref>.mp4` + `.webm` (quand ils existent) · demain `vue-<ref>.mp4` + `.webm`
+
+## Images hors villes (racine)
+`lingua-affiche.webp` · `themes-hero.webp` · `carnet-page.webp` · `carnet-ferme.webp` · `carnet-double.webp` (réserve) · le film d'ouverture de Linguae (`lingua-ouverture.mp4/.webm` ou nom en vigueur — vérifier dans lingo.html au jour J) · Wellington déjà poussé : `arrivee-wellington.mp4/.webm`
+
+## Côté serveur — NE SE COPIE PAS, SE REDÉCLARE
+- Supabase : le projet reste COMMUN (un seul compte pour tout Hype, doctrine v66). Seule l'URL du site change dans la config d'auth (redirections).
+- Netlify Functions : Linguae n'en utilise qu'UNE : `supprimer-compte.js` (et `purge-planifiee.js` qui va avec). À copier dans `netlify/functions/` du nouveau dépôt AVEC les variables d'environnement (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, HYPE_CLE_PURGE) et le bloc scheduled de `netlify.toml`.
+- `sw.js` : NE PAS copier celui de Hype — Linguae aura le sien, minimal, à écrire au jour J.
+
+## La commande du jour J (copie par motifs, à jouer à la racine du dépôt Hype)
+```
+cp lingo*.html hype-lingo-*.js lingua-*.* themes-hero.webp carnet-*.webp \
+   carte-*.webp fond-*.webp objet-*.webp arrivee-*.mp4 arrivee-*.webm \
+   vue-*.mp4 vue-*.webm  ../linguae/
+```
+⚠️ `carte-*` et `fond-*` attraperaient des fichiers de HYPE s'il en existe sous ces motifs — VÉRIFIER au jour J (`ls carte-* | grep -v` contre la liste des refs) avant de copier aveuglément.
+⚠️ Toute nouvelle famille de fichiers Linguae doit REJOINDRE CE MANIFESTE dans la livraison qui la crée. C'est une règle de livraison, comme le SUIVI.
+
+---
+
+# 🏇 SESSION 203 · 11/08 · v76 — LE DERBY DE HICKSTEAD, PREMIER CHAPITRE DU NOUVEAU FORMAT
+
+**À pousser : `hype-lingo-lex-derby.js` (NOUVEAU) → RACINE · `lingo.html` (v76) → RACINE · et si pas encore fait, `hype-lingo-lex-obstacle.js` → RACINE.**
+
+## ▸ POURQUOI (le raisonnement de Blandine, validé)
+*« Hickstead, on s'attend à apprendre des termes en rapport au derby — là il n'y a pas un seul terme »* et l'argument décisif : *« l'obstacle dans tous les cas va être traité dans tous les CSO »*. Le générique (vertical, oxer…) se rejouera à La Baule, Aix, Spruce Meadows — Hickstead était la SEULE ville à pouvoir enseigner le Derby. `obstacle` part en **réserve pour la future ville de la tournée californienne** (32e ville, chantier à part ; ⚠️ pas de « Longines » — règle des marques, les LIEUX sont libres : Thermal, Del Mar… et Wellington est en **Floride**).
+
+## ▸ LE CHAPITRE `derby` — 18 concepts, 10 phrases, six langues
+L'épreuve (le derby, la banque, descendre la banque, la butte irlandaise), les obstacles (fixe, naturel, le mur du derby, la haie vive, le passage d'eau, la berge), et — demande expresse : *« mets tous les termes spécifiques au derby, même niveau monté »* — **le monté** : lire le terrain, le galop de derby (hunting canter), l'équilibre en descente, laisser faire le cheval, l'appel en montée. Plus la foule sur la colline, le cheval de derby, le retour à la banque. ✅ Zéro collision sur 25 lexiques (`talus`, `mur`, `gue`, `descendre`, `assiette` pris ailleurs → refs distincts : `berge`, `murderby`, `passagedeau`, `descendrebanque`, `equilibredescente`). Hickstead rebranché (`ETAPE_SRC`, nom du chapitre « Le derby » en 6 langues, balise `?l=1`).
+
+## ▸ LE QUOTA DANS LE MOTEUR (« il faut appliquer à partir de là ce qu'on compte changer »)
+Après le tirage, `lancer()` **vérifie et corrige** : pas un écrit → le mot le plus simple (le plus court, hors JA, hors mots identiques) passe à l'écrit sur son dernier exercice ; pas une phrase → la première du chapitre est ajoutée ; niveau 2+ avec micro et son → **au moins un vocal**. Et les **phrases `rappel:[a,b]`** montent la maîtrise des DEUX mots à la réussite — *« si tu fais des rappels avec deux mots, ça peut aller plus vite »* : 4 des 10 phrases du derby en sont.
+🔴 **Défaut attrapé au rejeu AVANT livraison** : le vocal garanti exigeait un mot déjà maîtrisé — or tout est à zéro au moment du plan en première visite, il ne tombait donc **jamais**. Corrigé (le dernier exercice du plan suffit, sa découverte précède), rejoué : **écrire ✓ phrase ✓ dire ✓** sur le pire tirage possible.
+
+## ▸ À l'écran
+- **~** Hickstead : chapitre « Le derby », 18 mots neufs, ≈42 étapes (le double d'une ville ordinaire — conséquence annoncée et assumée du format 15-18)
+- **~** toute leçon garantit désormais un écrit, une phrase, et un vocal au niveau 2+
+- ⚠️ l'ancienne maîtrise des mots `obstacle` reste acquise — elle resservira à la ville californienne
+
+## ▸ EN ATTENTE
+Wellington (32e ville, Floride) : carte reçue, vidéo d'arrivée **verticale 1080×1920 H.264** demandée. La passe GB/US, les prérequis, la sellerie (image de pièce toujours attendue), l'onglet « Langues » des épingles Hey Baby côté Hype (index.html frais requis).
+
+---
+
+# 🩹 SESSION 202 · 11/08 — LE VERTICAL CORRIGÉ, ET DEUX DEMANDES NOTÉES
+
+**À pousser : `hype-lingo-lex-obstacle.js` → RACINE (remplace l'existant) · `lingo.html` (v75, témoin `?l=4`) → RACINE.**
+
+## ▸ 🔴 ERREUR DE FOND RELEVÉE PAR BLANDINE, EN JOUANT
+La définition du **vertical** disait « un abord plus rond et plus près qu'un oxer ». **C'est l'inverse** : la battue d'un vertical se prend plus loin (le sommet de l'arc doit tomber au-dessus de la barre) ; c'est à l'**oxer** qu'on vient plus près du premier plan, pour que le sommet tombe au milieu de la largeur. ✅ Corrigé **dans les six langues**, en-tête du fichier annoté, balise passée à `?l=4` (règle du cache).
+⚠️ Leçon pour tout contenu technique : Blandine est la relectrice équestre de référence — ses corrections priment sur le texte livré.
+
+## ▸ Variantes GB/US (demande de Blandine via Hey Baby : cross-pole/crossrail)
+Le mécanisme **existe déjà** : champ `var` des mots EN, affiché sous la phonétique — et `croisillon` porte déjà « cross-rail (US) ». À faire : **passe systématique** sur les entrées EN des 23 lexiques pour marquer les paires GB/US manquantes (rug/blanket, head collar/halter, plaits/braids, yard/barn, box/stall, numnah/saddle pad…). Programmée avec le chantier 15-18 mots.
+
+## ▸ Raccourci vers la collection d'objets en fin de leçon (demande sur capture)
+Comme « La retrouver dans ta collection » pour les cartes. ⚠️ **Bloqué** : la page des objets n'existe pas encore — maquette « cabinet » **rejetée** par Blandine (« beurk le marron », et rappel juste : on avait dit **placement libre dans une sellerie**). Le raccourci sera livré **avec** la page. **En attente : l'image de la pièce de sellerie**, qu'elle fait générer (bleu nuit et or, vide, surfaces nues, format vertical, fond propre).
+
+---
+
+# 🖼️ SESSION 201 · 11/08 · v75 — LE VIEUX LEXIQUE QUI COLLE, ET L'OBJET INVISIBLE
+
+**À pousser : `lingo.html` (v75) → RACINE.** Rien d'autre. Aucun SQL.
+
+## ▸ Deux constats de Blandine sur le v74 en ligne, deux causes trouvées
+**1. « Pas vu les changements de mots dans Spruce Meadows, c'est toujours les mêmes. »** Elle voit « la neige » — un mot qui N'EXISTE PLUS dans le lexique réécrit. C'est le **piège n°1** : la balise disait `hype-lingo-lex-froid.js` **sans témoin**, or le fichier a été REMPLACÉ le 10/08 — la PWA installée sert sa vieille copie. ✅ La balise passe à `?v=2`, avec le commentaire qui dit de l'incrémenter à chaque version. ⚠️ Les 22 autres lexiques portent `?l=N` figés : le même piège les attend au premier remplacement.
+**2. « L'objet gagné s'affiche pas. »** Les QUATRE écrans de récompense (arrivée, chapitre, gain de fin de leçon, récapitulatif) ne dessinaient que l'**icône SVG** (`ic:"seau"`) — code antérieur aux objets. ✅ `medaillonObjet(ref, ic)` : essaie `objet-<ref>.webp` (chargée en arrière-plan, remplace l'icône à l'arrivée), **icône en repli** si l'image manque — rien ne casse tant que les 31 webp ne sont pas poussés.
+
+## ▸ À l'écran
+- **+** un **troisième bandeau « Mon carnet de voyage »** sur le carnet de route, sous « Ma collection », avec le carnet fermé en vignette (demande de Blandine sur capture). Il s'ajoute au petit bouton du v74 — même doublon assumé que « Ma collection », qui a aussi bandeau + bouton.
+- **~** les récompenses montrent la **vraie image de l'objet** partout où l'icône apparaissait (les `objet-<ville>.webp` sont poussés, confirmé par Blandine)
+- **~** Spruce Meadows enseigne enfin ses 16 mots d'hiver (après push : vérifier en navigation privée d'abord, réflexe témoin)
+- rien n'apparaît ni ne disparaît par ailleurs
+
+## ▸ LE GESTE DU CARNET, RENDU VISIBLE (Blandine : « pour ajouter un mot faut comprendre que c'est la toute petite étoile, on peut faire mieux ? » → « ok les deux mais mets l'étoile plus grosse »)
+- L'étoile de barre passe de 32 à **40 px**, glyphe 21 px.
+- **« ☆ Garder dans mon carnet »** en toutes lettres sur la carte de chaque mot nouveau (→ « ★ Dans ton carnet » une fois gardé). Il fait exactement ce que fait l'étoile et la repeint — un seul stockage, deux commandes synchronisées. Six langues.
+- L'étoile **se présente une fois** : pulsation dorée (3 battements) au premier mot nouveau jamais affiché + une ligne « L'étoile garde un mot dans ton carnet de voyage ». Drapeau `hype_lingua_signet_vu`, à part, comme le filet du son. Plus jamais ensuite.
+
+## ▸ Vers l'App Store
+Rien de structurel ; mais un contenu qui ne se met pas à jour chez une cliente est un motif d'avis à une étoile — le témoin de version des lexiques devient un geste de livraison au même titre que `var VER` pour les images.
+
+---
+
 # 📔 SESSION 200 · 11/08 · v74 — LE CARNET DE VOYAGE EXISTE
 
 **À pousser : `lingo.html` (v74) → RACINE · `carnet-page.webp` et `carnet-ferme.webp` → RACINE.** Aucun SQL. `index.html` non modifié. La maquette `maquette-carnet.html` ne se pousse pas.
