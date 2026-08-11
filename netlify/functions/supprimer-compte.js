@@ -89,6 +89,13 @@ const TABLES = [
   "video_favoris",             // vidéos mises en favori
   "video_playlists",           // listes de lecture
   "video_progression",         // avancement dans les vidéos
+  // ---- ajoutée le 11/08/2026, avec la suppression de compte de Linguae ----
+  // ⚠️ OUBLIÉE à sa création le 10/08 : la progression de Linguae (villes
+  // faites, maîtrise des mots, cartes postales, carnet, sprint, quiz)
+  // survivait indéfiniment à la suppression du compte. Repérée en écrivant
+  // l'écran de suppression dans lingo.html. Voir l'avertissement ci-dessus :
+  // sans clé étrangère vers auth.users, cette liste est le seul nettoyage.
+  "hype_lingua_progression",   // toute la progression de Linguae
 ];
 
 // `commentaires` reste VOLONTAIREMENT hors de cette liste : les commentaires
@@ -101,6 +108,11 @@ const TABLES = [
 // boucle ci-dessous. Une cavalière qui part doit être retirée des DEUX côtés :
 // comme filleule ET comme marraine. À écrire une fois la décision prise sur
 // le parrainage.
+//
+// ⚠️ AUTRE TABLE À VÉRIFIER, signalée le 11/08/2026 : `hype_ambassadeurs`.
+// Si elle porte une colonne `user_id`, elle doit rejoindre la liste ; si elle
+// désigne les ambassadrices par leur adresse e-mail, elle y échappe comme
+// `hype_filleuls`. À contrôler en base — non fait.
 
 function log() {
   try {
