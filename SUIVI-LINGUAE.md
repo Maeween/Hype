@@ -92,7 +92,7 @@ La v1 (parchemin CSS) : « pas mal » mais elle voulait son visuel. La v2 a **br
 ## ▸ À l'écran
 - **+** « Mon carnet de voyage » sur le carnet de route · l'écran du carnet · une étoile sur la lettre de chaque ville · l'étoile de la barre fonctionne aussi sur les phrases
 - **−** rien
-- ⚠️ le choix du **visuel** d'une entrée (affiche/carte/objet) est STOCKÉ mais pas encore proposé dans la fiche — écran à venir
+- **+** le choix du **visuel** dans la fiche de chaque entrée (finalisé sur ordre de Blandine, « finalise-le tant qu'on y est ») : quatre vignettes — l'affiche, la carte postale, l'objet, aucun — et la vignette choisie s'affiche en coin de l'encart. Une image absente (objet pas encore poussé) masque sa vignette au lieu de casser. Six langues.
 
 ## ▸ EN ATTENTE
 La page **collection des objets** (« ensuite on fera la page collection pour ce qu'on gagne, pas les cartes, l'autre ») — les 31 `objet-<ville>.webp` sont poussés. Puis le **quota d'exercices** (après le carnet, ordre de Blandine), les prérequis, la sellerie.

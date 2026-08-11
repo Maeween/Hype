@@ -1397,6 +1397,22 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #cvFiche .actes button{flex:1;padding:11px 6px;border:1px solid rgba(122,94,46,.4);background:none;
  font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
  color:#7A5E2E;cursor:pointer}
+/* v74 : le visuel de l'entree — l'affiche, la carte postale ou l'objet de
+   la ville, choisis par Blandine (« affiche des villes ou carte postale ou
+   pourquoi pas objet de collection »). Trois vignettes + « aucun ». */
+#cvFiche .visuels{display:flex;gap:8px;margin-top:14px}
+.cvVis{flex:1;border:1px solid rgba(122,94,46,.35);background:rgba(255,255,255,.2);
+ border-radius:6px;padding:5px 4px 4px;cursor:pointer;text-align:center}
+.cvVis img{width:100%;height:52px;object-fit:cover;border-radius:4px;display:block}
+.cvVis.objet img{object-fit:contain}
+.cvVis span{display:block;font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
+ color:#6A5A42;margin-top:4px}
+.cvVis.choisi{border-color:var(--or);box-shadow:0 0 0 1px var(--or) inset}
+.cvVis.aucun{display:flex;align-items:center;justify-content:center;min-height:62px}
+/* la vignette choisie s'affiche sur l'encart et le passage, en petit */
+.cvEnc .vg, .cvPas .vg{float:right;width:30px;height:30px;object-fit:cover;border-radius:4px;
+ margin:0 0 3px 6px;border:1px solid rgba(122,94,46,.3)}
+.cvEnc .vg.objet, .cvPas .vg.objet{object-fit:contain;background:rgba(255,255,255,.3)}
 #cpVersSup{display:block;margin:22px auto 4px;background:none;border:0;
  font-family:inherit;font-size:11.5px;color:#6E7A84;text-decoration:underline;
  text-underline-offset:3px;cursor:pointer}
@@ -6030,6 +6046,10 @@ var UI = {
  phraseDeLecon:{fr:"Phrase de leçon", en:"Lesson sentence", es:"Frase de lección", it:"Frase di lezione", de:"Lektionssatz", ja:"レッスンの文"},
  ecouterMot:{fr:"Écouter", en:"Listen", es:"Escuchar", it:"Ascolta", de:"Anhören", ja:"聞く"},
  retirerDuCarnet:{fr:"Retirer", en:"Remove", es:"Quitar", it:"Togliere", de:"Entfernen", ja:"外す"},
+ visAffiche:{fr:"L'affiche", en:"The poster", es:"El cartel", it:"Il poster", de:"Das Poster", ja:"ポスター"},
+ visCarte:{fr:"La carte", en:"The postcard", es:"La postal", it:"La cartolina", de:"Die Postkarte", ja:"絵はがき"},
+ visObjet:{fr:"L'objet", en:"The keepsake", es:"El objeto", it:"L'oggetto", de:"Das Andenken", ja:"記念の品"},
+ visAucun:{fr:"Aucun", en:"None", es:"Ninguno", it:"Nessuno", de:"Keins", ja:"なし"},
  carnetVideTitre:{fr:"Ton carnet est encore fermé", en:"Your notebook is still closed",
    es:"Tu cuaderno sigue cerrado", it:"Il tuo quaderno è ancora chiuso",
    de:"Dein Heft ist noch geschlossen", ja:"手帳はまだ閉じたまま"},
@@ -7154,21 +7174,23 @@ function cvDessiner(){
   for(var i=deb;i<fin;i++){
     (function(e){
       var el2;
+      var vg = e.vis ? el("img",{class:"vg"+(e.vis==="objet"?" objet":""),
+        src: cvCheminVisuel(e.vis, e.ville), alt:""}) : null;
       if(e.t==="mot"){
         var c=cvConceptDe(e.ville, e.mot);
         var m1=c&&c.mots[lg]?c.mots[lg].m:e.mot, m2=c&&c.mots[ui]?c.mots[ui].m:"";
         el2=el("div",{class:"cvEnc"+(String(m1).length>16?" large":"")},
-          el("b",{text:m1}), el("i",{text:m2}));
+          vg, el("b",{text:m1}), el("i",{text:m2}));
       }else if(e.mot==="lettre"){
         var v=VILLES[e.ville], L=v&&v.lettre?(v.lettre[ui]||v.lettre.fr):null;
         el2=el("div",{class:"cvPas"},
-          el("p",{text: L?L[0]:"…"}),
+          vg, el("p",{text: L?L[0]:"…"}),
           el("span",{text: nomVille(e.ville)+" · "+T("lettreDeVille")}));
       }else{
         var rang=parseInt(String(e.mot).slice(2),10)||0;
         var p=cvPhraseDe(e.ville, rang);
         el2=el("div",{class:"cvPas"},
-          el("p",{text:cvPhraseTexte(p,lg)}),
+          vg, el("p",{text:cvPhraseTexte(p,lg)}),
           el("span",{text: nomVille(e.ville)+" · "+T("phraseDeLecon")}));
       }
       el2.addEventListener("click", function(){ cvFiche(e); });
@@ -7181,6 +7203,14 @@ function cvDessiner(){
   S("cvOngPassages").textContent = T("lesPassages")+" · "+(window.carnetListe().filter(function(x){return x.t!=="mot";}).length);
   S("cvOngMots").classList.toggle("actif", CV.onglet===0);
   S("cvOngPassages").classList.toggle("actif", CV.onglet===1);
+}
+/* v74 : les trois visuels possibles d'une entree — tous deja dans l'app,
+   charges par la seule ref de la ville (decision de Blandine, zero cout). */
+function cvCheminVisuel(vis, refVille){
+  if(vis==="carte")  return "carte-"+refVille+".webp"+VER;
+  if(vis==="objet")  return "objet-"+refVille+".webp"+VER;
+  if(vis==="affiche")return "fond-"+refVille+".webp"+VER;
+  return "";
 }
 function nomVille(ref){
   for(var i=0;i<ETAPES.length;i++) if(ETAPES[i].ref===ref) return eV(ETAPES[i]);
@@ -7201,6 +7231,7 @@ function cvFiche(e){
       el("button",{type:"button", onclick:function(){
         window.carnetBasculer(e.ville, e.mot); S("cvVoile").classList.remove("on"); cvDessiner();
       }}, "\u2605 "+T("retirerDuCarnet"))));
+  /* la rangee des visuels est ajoutee en fin de fiche, pour les deux genres */
   }else{
     var texte, sousTitre;
     if(e.mot==="lettre"){
@@ -7217,7 +7248,37 @@ function cvFiche(e){
         window.carnetBasculerPassage(e.ville, e.mot); S("cvVoile").classList.remove("on"); cvDessiner();
       }}, "\u2605 "+T("retirerDuCarnet"))));
   }
+  f.appendChild(cvRangeeVisuels(e));
   S("cvVoile").classList.add("on");
+}
+/* v74 : la rangee des visuels — l'affiche, la carte, l'objet, ou aucun.
+   L'image absente (objet pas encore pousse, par exemple) se masque toute
+   seule : on ne montre pas une vignette cassee. */
+function cvRangeeVisuels(e){
+  var cle=e.ville+"|"+e.mot;
+  var actuel=(e.vis||"");
+  var r=el("div",{class:"visuels"});
+  [["affiche",T("visAffiche")],["carte",T("visCarte")],["objet",T("visObjet")],["",T("visAucun")]]
+  .forEach(function(x){
+    var vis=x[0], b;
+    if(vis){
+      var im=el("img",{src:cvCheminVisuel(vis,e.ville), alt:""});
+      im.addEventListener("error",function(){ b.style.display="none"; });
+      b=el("button",{class:"cvVis"+(vis==="objet"?" objet":"")+(actuel===vis?" choisi":""), type:"button"},
+           im, el("span",{text:x[1]}));
+    }else{
+      b=el("button",{class:"cvVis aucun"+(actuel===""?" choisi":""), type:"button"},
+           el("span",{text:x[1]}));
+    }
+    b.addEventListener("click",function(){
+      window.carnetVisuel(cle, vis);
+      e.vis=vis;
+      S("cvVoile").classList.remove("on");
+      cvDessiner();
+    });
+    r.appendChild(b);
+  });
+  return r;
 }
 function ouvrirCarnetVoyage(){
   ["cvImg","cvVideImg"].forEach(function(id){
