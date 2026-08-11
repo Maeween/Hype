@@ -10,7 +10,13 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `3a097c0d18bca58b68472450e4764ef0`, 9083039 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (2, chargé via `?v=2`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
+**Ancienne version (112) — 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `3a097c0d18bca58b68472450e4764ef0`, 9083039 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (2, chargé via `?v=2`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
+
+**Version actuelle de l'index.html : 11/08/2026 (SESSION 113 · PONEY D'OR + LE MEMORY EN CHEMINS DIRECTS) — md5 `859e094501a396d4c0a6f4a946a7468d`, 9 086 253 octets.** Témoin attendu : **`reprise 1.4 · baby 112 · memo 3`**. `HYPE_VERSION_APP` 1.2 → **1.4** et balise `hype-memory-poney.js?v=`**3**.
+
+⚠️ **L'index intermédiaire md5 `4b6992e1…` (témoin 1.3) livré plus tôt le 11/08 est PÉRIMÉ — ne pas le pousser.** Celui-ci le contient en entier.
+
+**À pousser ensemble** : `index.html` + `hype-memory-poney.js` (v3, md5 `55fe37cd1050e525736730a8a4e98afc`, 52 465 octets) + **les 98 images de `memory-webp-v3.zip` dans `images/`**. `hype-cours-baby.js` inchangé (112). Aucun SQL. Indépendant : `extraire-memory-2.html` (outil, racine).
 
 **Ancienne version (110) — 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
 
@@ -124,6 +130,120 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
 
 ---
+
+## SESSION 113 · L'OUTIL D'EXTRACTION v2, ET LA FAUSSE ALERTE DES 21 CLÉS
+
+**Aucune livraison d'index.html, aucun fichier compagnon modifié.** Un seul fichier : `extraire-memory-2.html` (outil, racine). Nom neuf volontairement : réutiliser `extraire-memory.html` exposait au service worker qui resservirait la v1.
+
+### CE QUI S'EST PASSÉ
+
+Blandine a exécuté l'outil v1 le 11/08 au matin. Résultat : zip de **25,3 Mo**, **97 images en JPEG** (son Safari n'encode pas le WebP, l'outil est passé au repli prévu), 1200 px max, 267 Ko de moyenne — et un `manifest.json` annonçant **21 cartes « SANS_IMAGE »** sur les niveaux `vie-poney`, `evan`, `allures`, `obstacles`.
+
+**C'était une fausse alerte. Zéro image perdue.** Blandine l'a dit tout de suite (« on avait vérifié 100 % des images hier », puis « je viens de faire l'obstacle et il n'en manquait aucune ») et elle avait raison.
+
+**Cause exacte** : la v1 charge les 130 lots `hype-images-*.js` mais **jamais `index.html`**. Or l'index déclare des clés dans 4 petits blocs `<script>` inline :
+
+| Déclaration inline dans l'index | Résout en |
+|---|---|
+| boucle `for(_hk=547;_hk<=554)` | `images/kNNN.jpg` |
+| boucle `for(_hk3=615;_hk3<=628)` | `images/kNNN.jpeg` |
+| corrections explicites `k555`/`k556`/`k557`/`k603`… | `images/kNNN.jpeg` |
+| corrections explicites `k455`, `k457`, `k473`, `k474` | `images/kNNN.jpg?v=1` |
+
+Simulation faite hors ligne sur le vrai index : **les 21 clés résolvent toutes**. Le « ? » de la capture du 11/08 à 10h18 dans *Le saut d'obstacles* est une **carte face cachée**, pas une image morte. Le seul vrai défaut de ce niveau reste les **3 paires quasi identiques** (déjà consigné en session 112).
+
+### ERREUR DE MÉTHODE DE MA PART — À NE PAS REFAIRE
+
+Tout était **déjà dans ce SUIVI** : le compte des 116 clés (`101 externes + 15 inline`), la liste des images à pousser, et le fait qu'il ne resterait **qu'une seule** paire sans image (`eau2` / `k455`, l'abreuvoir à générer). J'ai lu la fin du fichier au lieu de le fouiller, et j'ai fait répéter Blandine deux fois. **Règle : chercher dans le SUIVI par mots-clés avant de demander quoi que ce soit à Blandine.** Idem pour la demande « les petits rappels du Poney d'Or », qui était écrite noir sur blanc en section 112.
+
+### CE QUE FAIT L'OUTIL v2 DE PLUS
+
+- **Deux modes** : « Diagnostic seul » (rapide, aucun téléchargement) et « Diagnostic + zip ».
+- **Anti-cache** `?ext=<horodatage>` sur *tous* les fichiers chargés : le service worker ne peut plus resservir de vieilles réponses (piège récurrent, cf. sessions 110-112).
+- **Rejoue les blocs inline de l'index** : `index.html` est lu en texte, les petits blocs `<script>` sans `src` (< 20 000 caractères) qui contiennent `HYPE_IMGS["k` sont réexécutés via `new Function`. C'est la pièce qui manquait à la v1.
+- **Reconstruit la table `niveau/carte → kNNN`** en relisant `hype-memory-poney.js` **en texte** : après évaluation, le nom `kNNN` a disparu, donc le rapport ne pouvait pas nommer la clé fautive.
+- **Vérifie en HTTP chaque chemin `images/…`** : un fichier non poussé ressort en `FICHIER_ABSENT` avec son code. C'est le seul point encore ouvert (voir ci-dessous).
+- **Copie les images déjà externes telles quelles** dans `fichiers/` du zip : aucun réencodage, aucune perte.
+- **Rapport copiable** (bouton) + `rapport.txt` et `manifest.json` dans le zip, avec la liste des lots sans réponse.
+
+**Piège technique rencontré** : la chaîne `"</script>"` écrite dans le JS de la page coupait le bloc au parsing. Écrite `"</scr" + "ipt>"`. `node --check` passé après correction.
+
+### CE QUI RESTE À VÉRIFIER (une exécution du diagnostic suffit)
+
+Les clés `k455`, `k457`, `k473`, `k474`, `k548`, `k550`, `k551`, `k552` pointent vers des fichiers `images/…` : **le diagnostic dira lesquels répondent vraiment**. La session 112 annonçait `eau2` (`k455`, abreuvoir) comme la seule image à générer — à confirmer par le HTTP, pas par déduction.
+
+**WebP** : le Safari de Blandine ne sait pas encoder le WebP. Le zip sortira en JPEG q 0,88 ; **la conversion WebP se fait côté Claude** (gain mesuré : −67 % sur un échantillon de 10, 473 Ko → 162 Ko). Ne pas reprocher à l'outil un repli qui est voulu.
+
+### LE MEMORY PASSE EN CHEMINS DIRECTS (v3) — ET DEUX DÉFAUTS TROUVÉS EN CHEMIN
+
+**98 des 120 cartes** pointent désormais sur `images/memory-<niveau>-<cle>.webp?v=1`. Lot livré : `memory-webp-v3.zip`, **9,3 Mo** pour 98 fichiers (1200 px maxi, qualité 84). Source : union du zip v1 (les ex-base64) et du zip v2 (les fichiers déjà en ligne, copiés sans réencodage).
+
+**22 cartes gardent `HYPE_IMGS`** — décision assumée, pas un oubli : 11 du niveau Evan, 5 de Vie du poney, 3 d'Allures, 3 d'Obstacles. Leurs images sont déjà de vrais fichiers dans `images/` sous un nom `kNNN`, et **ces clés peuvent être lues ailleurs dans l'app**. Les renommer sans auditer chaque clé dans tout l'index casserait une image ailleurs. À faire dans une session dédiée, clé par clé.
+
+#### 🔴 DÉFAUT 1 — la carte `vie-poney / dodo` affichait le bandeau de MESSAGERIE
+
+`HYPE_IMGS["k610"]` est déclarée **deux fois** : un lot la définit en base64 (le poney endormi, la bonne image) et l'index la réassigne ensuite à `images/k610.jpeg`, qui est **le bandeau bleu à bulles de messagerie** de l'Accueil. L'index gagnant, la carte du Memory affichait des bulles de chat. Même motif exact que l'incident `k558` de la session 112 : **une clé pour deux usages**. Corrigé : `dodo` pointe sur `images/memory-vie-poney-dodo.webp`, l'image d'origine récupérée du base64. `k610` reste libre pour la messagerie.
+
+**Leçon à retenir** : une clé `kNNN` réassignée dans l'index ne prévient pas quand elle est déjà prise. Le contrôle qui l'a trouvée : afficher côte à côte, en planche, le base64 du lot et le fichier de `images/` pour chaque clé définie deux fois.
+
+#### 🟠 DÉFAUT 2 — le niveau Evan est bâti sur trop d'images semblables
+
+Constaté sur planche : `evan3` (k617), `evan4` (k618) et `evan5` (k619) sont trois fois le même enfant à cheval sur le poney bai avec le même halo turquoise ; `evan8` (k622) et `evan9` (k623) sont deux câlins quasi identiques. Rien n'a été touché — signalement seul, Blandine n'a pas demandé cette reprise. Les images 9, 10 et 12 de son lot du 11/08 sont en réserve pour ça (la 10 est à éviter : trop proche du niveau Samuel).
+
+#### Obstacles : 6 paires, trois familles visuelles
+
+Décision de Blandine : « Mets 6 paires pour obstacle ». Composition finale et pourquoi elle tient :
+
+| carte | image | famille |
+|---|---|---|
+| `barre` → libellé **« En équilibre »** (validé Blandine) | bras écartés sur le poney à l'arrêt | nuit, poney alezan, au sol |
+| `envol` | le poney en l'air au-dessus de la croix | nuit, poney alezan, en l'air |
+| `bravo` | **poing levé sur le poney NOIR**, croissant de lune | nuit, poney noir |
+| `cavaletti` | poney **gris** mené à pied sur la barre au sol | arène de sable, poney gris |
+| `reception` | saut de la barre bleue, rendu 3D | arène de sable, poney clair |
+| `casque2` | câlin au poney bai sous la lanterne | box, poney bai |
+
+**Écartée volontairement** : l'image du tout-petit sautant la croix bleue (lot du 11/08). Vérifiée à l'œil contre `reception` : même poney clair, même barre bleu et blanc, même arène, même rendu. On aurait remplacé un jumeau par un autre.
+
+**`eau2` réglée sans rien générer** : la carte pointe sur l'image d'abreuvoir de `Matériel / Eau`. Autre niveau, donc aucune confusion dans Vie du poney. C'était la dernière carte sans image du Memory — **il n'y en a plus aucune**.
+
+#### Ce qu'il reste au chantier Memory
+
+1. Auditer les 22 clés `kNNN` restantes dans tout l'index, puis les basculer aussi.
+2. Une fois les 98 clés sorties du Memory, **inventorier les lots `hype-images-*.js` devenus inutiles** et les retirer du démarrage : c'est là qu'est le vrai gain de poids, pas dans la conversion elle-même.
+3. Reprendre le niveau Evan si Blandine le décide.
+
+### PONEY D'OR — LES QUESTIONS « PETIT RAPPEL » (demandé par Blandine, 11/08)
+
+`PALIERS_BABY_QUIZ` n'a pas d'entrée `poney_or` : la carte de fin du chemin affiche « Ce que tu as appris » (corrigé en 112) mais aucune question. **Blandine en veut 2**, comme Bronze et Argent (ses mots : « 2 ça va »).
+
+Les 9 chapitres du palier, relus dans `hype-cours-baby.js` v112 : `c19` tenue/espaces/promenade · `c20` paille ou foin · `c21` desseller et ranger · `c22` pansage du corps entier · `c23` prendre et curer les antérieurs · `c24` corps du poney, pas et trot · `c25` déplacer les hanches · `c26` tracé avec courbes et arrêt · `c27` diriger, transporter, découvrir le trot.
+
+**VALIDÉ ET LIVRÉ** (« Oui ok pour les questions », 11/08). Les deux questions retenues, dans le format des deux autres paliers (`{ q: {6 langues}, r: {6 langues} }`) :
+
+1. « Le foin, c'est ce qu'Apy... » → « mange ; la paille, c'est sa litière » — `baby-c20`.
+2. « Pour curer un pied d'Apy, je gratte... » → « du talon vers la pince, sans appuyer sur la fourchette » — `baby-c23`.
+
+**Motif du choix, écrit pour la prochaine page** : ce sont les deux seuls savoirs du palier où un enfant peut se tromper franchement et où la bonne réponse tient en une phrase. Les autres chapitres (mener sur un tracé, déplacer les hanches, reconnaître le trot) sont des gestes qui se vérifient à cheval. Une troisième question était prête sur `c21` (« je pose son tapis côté humide vers l'air ») — non retenue, Blandine a répondu « 2 ça va ».
+
+**Deux modifications dans l'index, rien d'autre :**
+
+- `PALIERS_BABY_QUIZ` reçoit une entrée `poney_or` de 2 questions en 6 langues.
+- `FinCheminBabyCarte` reçoit le bloc de rendu « Petit rappel », copié à l'identique de `PalierBabyCarte` (même libellé 6 langues, même « Touche pour voir la réponse », même comportement au toucher), avec la couleur or `#E8C887` au lieu de `meta.cadre`. **Point d'attention** : `React.useState` est déclaré **avant** le `if (!tousTermines) return null;` — un Hook appelé après un retour anticipé casserait le rendu dès qu'un enfant n'a pas fini les 27 chapitres.
+
+`PALIERS_BABY_QUIZ` a maintenant ses trois paliers ; il n'y a plus de trou dans la table.
+
+### Préparation Flutter (session 113)
+
+Rien n'a été ajouté à l'index, donc aucune dette nouvelle. Deux points gagnés indirectement :
+
+- **Le Memory est déjà une frontière propre** : `hype-memory-poney.js` est une donnée pure (aucune dépendance à l'index sauf `window.HYPE_IMGS`), donc transposable telle quelle en Dart. Le passage v3 en chemins directs supprimera même cette dernière dépendance — après quoi la table sera 100 % portable.
+- **Les blocs inline de déclaration d'images sont, eux, une dette nommée** : 4 blocs `<script>` dans l'index, dont deux boucles, qui n'existent nulle part ailleurs et que tout outil externe ignore. Ils ont coûté cette fausse alerte. À faire disparaître en les remplaçant par des chemins écrits dans la donnée (ce que fait déjà le Chemin Baby depuis la 111).
+
+**Liste nommée de ce qui reste à moderniser (inchangée depuis la 112, plus une ligne)** : G4-G7 vers `hype-cours-galops-sup.js` · les 97 images base64 du Memory vers `images/` en WebP · **les 4 blocs inline de déclaration de clés d'images dans l'index** · `EcranUnivers` (492 lignes, données et vue mélangées).
+
+---
+
 
 ## SESSION 112 · LE MEMORY SORT DE L'INDEX, ET LA MATINÉE DES 30 PUSHS EXPLIQUÉE
 
@@ -5872,6 +5992,7 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 
 | Date | Page/session | Résumé |
 |------|--------------|--------|
+| 11/08 (113) | Claude (page Memory) | **Fausse alerte des 21 images du Memory levée : zéro perte.** La v1 de l'outil ne lisait pas les 4 blocs `<script>` inline de l'index (boucles `k547-k554`, `k615-k628` + corrections `k455`/`k457`/`k473`/`k474`), d'où 21 faux « SANS_IMAGE ». Le « ? » de la capture Obstacles = carte face cachée. **`extraire-memory-2.html` livré** : diagnostic seul ou avec zip, anti-cache, rejoue les blocs inline, nomme la clé `kNNN` fautive, vérifie en HTTP chaque `images/…`, copie les fichiers déjà externes sans réencodage. **Poney d'Or : les 2 questions « Petit rappel » écrites en 6 langues et livrées** — entrée `poney_or` dans `PALIERS_BABY_QUIZ` (paille/foin `baby-c20`, sens du cure-pied `baby-c23`) + bloc de rendu ajouté à `FinCheminBabyCarte`, Hook déclaré avant le retour anticipé. Témoin `HYPE_VERSION_APP` 1.2 → **1.4**. **MEMORY v3 : 98 des 120 cartes en chemins directs `images/memory-<niveau>-<cle>.webp`** (lot de 9,3 Mo livré), `memo 3`. **Carte `vie-poney/dodo` réparée** : `k610` était déclarée deux fois, l'index la réassignait au bandeau de messagerie de l'Accueil — la carte affichait des bulles de chat. Obstacles gardé à 6 paires avec 3 familles visuelles distinctes (`bravo` → poney noir poing levé, `barre` → bras écartés, libellé « En équilibre » 6 langues). `eau2` réglée avec l'abreuvoir de Matériel : plus AUCUNE carte sans image. Niveau Evan signalé comme trop homogène (k617/k618/k619, k622/k623), non touché. |
 | 17/07 → 26/07 | Claude | "Mon Évolution", Poney d'Or (9/9), écran "Quoi de neuf", réorganisation accueil, bugfixes session/scroll, parrainage. |
 | Session suivante | Claude (Directeur Technique) | Correctif nom d'écurie (`monClubEc`) au lieu du texte en dur "Écurie Feinn". |
 | Session suivante | Claude (Directeur Technique) | **Bug scroll Android** résolu via outil de debug intégré révélant un état figé côté appareil (pas un bug de code). |
