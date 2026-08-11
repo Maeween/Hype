@@ -2158,7 +2158,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v75 · les objets en image</p>
+    <p id="ouvVersion">v76 · le derby de Hickstead</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -2413,7 +2413,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-materiel.js?l=3"></script>
 <script src="hype-lingo-lex-cours.js?l=2"></script>
 <script src="hype-lingo-lex-dressage.js?l=3"></script>
-<script src="hype-lingo-lex-obstacle.js?l=3"></script>
+<!-- ⚠️ ?l=4 : definition du vertical corrigee le 11/08 (erreur de fond
+     relevee par Blandine : on S'ELOIGNE d'un vertical, on ne s'en
+     rapproche pas — c'est a l'oxer qu'on vient plus pres). -->
+<script src="hype-lingo-lex-obstacle.js?l=4"></script>
+<!-- v76 : le chapitre du Derby de Hickstead — nouveau format 15-18 mots.
+     `obstacle` reste charge : il servira a la ville californienne. -->
+<script src="hype-lingo-lex-derby.js?l=1"></script>
 <script src="hype-lingo-lex-concours.js?l=5"></script>
 <script src="hype-lingo-lex-cross.js"></script>
 <!-- Santa Ynez, 31e etape (8 aout 2026). Le horsemanship : `timing`,
@@ -3112,7 +3118,7 @@ var ETAPES = [
  {ref:"walsall",   ch:"Le matériel",  v:"Walsall",     nat:"Angleterre",     h:"22 h 30", ciel:["#091320","#161F33"], forme:"ateliers", souv:"Une alêne de sellier",         ic:"alene"},
  {ref:"aberystwyth",ch:"En selle",    v:"Aberystwyth", nat:"Pays de Galles", h:"23 h 20", ciel:["#070F1A","#101828"], forme:"cote",     souv:"Un fer de cob gallois",        ic:"fer"},
  {ref:"windsor",   ch:"Le dressage",  v:"Windsor",     nat:"Angleterre",     h:"00 h 30", ciel:["#05090F","#0B1220"], forme:"chateau",  souv:"La lettre A",                  ic:"lettre"},
- {ref:"hickstead", ch:"L'obstacle",   v:"Hickstead",   nat:"Angleterre",     h:"01 h 40", ciel:["#060B12","#0D1524"], forme:"obstacles",souv:"Un fanion rouge",              ic:"fanion"},
+ {ref:"hickstead", ch:"Le derby",   v:"Hickstead",   nat:"Angleterre",     h:"01 h 40", ciel:["#060B12","#0D1524"], forme:"obstacles",souv:"Un fanion rouge",              ic:"fanion"},
  {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Une cocarde",                  ic:"cocarde"},
   {ref:"burghley",  ch:"Le cross",     v:"Burghley",    nat:"Angleterre",     h:"02 h 55", ciel:["#0A1424","#16263C"], forme:"manoir",   souv:"Une paire de crampons",        ic:"fer"},
  {ref:"kildare",   ch:"Les urgences", v:"Kildare",     nat:"Irlande",        h:"04 h 10", ciel:["#0C1A2C","#20344B"], forme:"haras",    souv:"Un stéthoscope",               ic:"stetho"},
@@ -3406,7 +3412,7 @@ var ETAPES_I18N = {
    v:{ja:"ウィンザー"},
    souv:{en:"The letter A", es:"La letra A", it:"La lettera A", de:"Der Buchstabe A", ja:"「A」の文字"}},
  hickstead:{
-   ch:{en:"Jumping", es:"El salto", it:"Il salto", de:"Das Springen", ja:"障害飛越"},
+   ch:{en:"The derby", es:"El derby", it:"Il derby", de:"Das Derby", ja:"ダービー"},
    v:{ja:"ヒクステッド"},
    souv:{en:"A red flag", es:"Un banderín rojo", it:"Una bandierina rossa",
          de:"Ein rotes Fähnchen", ja:"赤い旗"}},
@@ -5804,7 +5810,13 @@ var ETAPE_SRC = {
   walsall:     [["materiel",1]],
   aberystwyth: [["cours",1]],
   windsor:     [["dressage",1]],
-  hickstead:   [["obstacle",1]],
+  /* v76 : Hickstead enseigne LE DERBY (decision de Blandine, 11/08 : « on
+     s'attend a apprendre des termes en rapport au derby — la il n'y a pas
+     un seul terme »). L'obstacle generique part en reserve pour la future
+     ville californienne : chaque ville de CSO le redira de toute facon.
+     Premier chapitre du nouveau format : 18 mots, 10 phrases dont 4
+     rappels a deux mots. */
+  hickstead:   [["derby",1]],
   badminton:   [["concours",2]],
   burghley:    [["cross",1]],
   /* ⚠️ v36 (decision B de Blandine, 9 aout) : les termes les plus urgents
@@ -7770,6 +7782,54 @@ function lancer(L){
   if(niveauVille(LC.ville) < 2 && phrases[0]){
     plan.push({t:"phrase", p:phrases[0], rang:0});
   }
+  /* ==================================================================
+     v76 — LE QUOTA (décision de Blandine, 11/08 : « chaque leçon a au
+     moins un mot à écrire, une à remettre dans l'ordre, et une ou deux à
+     prononcer » — jusqu'ici RIEN n'était garanti, le tirage était pur
+     hasard conditionné, d'où sa première leçon sans un écrit ni un vocal).
+     Après le tirage, on VÉRIFIE et on CORRIGE :
+     · pas un seul « ecrire » → le mot le plus simple de la leçon (le plus
+       court, sans accent) déjà montré passe à l'écrit — « on peut faire
+       écrire un mot simple la première fois », son accord du 11/08.
+       Jamais en japonais, jamais si le mot est identique dans les deux
+       langues (règles existantes conservées).
+     · pas une seule phrase → la première du chapitre est ajoutée en fin.
+     · niveau 2+, micro là, son actif : pas un seul « dire » → le dernier
+       exercice d'un mot déjà vu passe au vocal. Un seul suffit ; deux
+       viennent naturellement du tirage sur les grandes leçons.
+     LES RAPPELS À DEUX MOTS (champ `rappel:[a,b]` des phrases, nouveau
+     format inauguré par le derby de Hickstead) comptent pour DEUX dans la
+     maîtrise : voir finExercice.
+     ================================================================== */
+  var aEcrire = plan.some(function(x){ return x.t==="ecrire"; });
+  if(!aEcrire && cible()!=="ja"){
+    var candidats = L.concepts.filter(function(c){
+      return motNu(c.mots[cible()].m)!==motNu(c.mots[langueUI()].m);
+    }).sort(function(a,b){ return a.mots[cible()].m.length - b.mots[cible()].m.length; });
+    var simple = candidats[0];
+    if(simple){
+      /* le DERNIER exercice de ce mot passe à l'écrit : il a été montré avant */
+      for(var i=plan.length-1;i>=0;i--){
+        if(plan[i].c===simple && plan[i].t!=="decouverte" && plan[i].t!=="phrase"){
+          plan[i].t = modeSilencieux() ? "ecrire" : "ecrire"; break;
+        }
+      }
+    }
+  }
+  if(!plan.some(function(x){ return x.t==="phrase"; }) && phrases[0]){
+    plan.push({t:"phrase", p:phrases[0], rang:0});
+  }
+  if(niveauVille(LC.ville)>=2 && vocalPossible() && !modeSilencieux()
+     && !plan.some(function(x){ return x.t==="dire"; })){
+    /* ⚠️ pas de condition de maitrise ici : en premiere visite tout est a
+       zero AU MOMENT DU PLAN, le vocal ne tombait donc jamais (defaut
+       attrape par le rejeu du 11/08 avant livraison). Le DERNIER exercice
+       du plan suffit : son mot a eu sa decouverte bien avant. */
+    for(var j=plan.length-1;j>=0;j--){
+      var x=plan[j];
+      if(x.c && x.t!=="decouverte" && x.t!=="phrase"){ x.t="dire"; break; }
+    }
+  }
   LC.L=L; LC.plan=plan; LC.i=0; LC.justes=0; LC.nouveaux=[];
   LC.aTester=plan.filter(function(x){ return x.t!=="decouverte"; }).length;
   etape();
@@ -8089,7 +8149,19 @@ function exPhrase(x){
     el("button",{class:"lcCta", onclick:function(){
       var juste = choisies.map(function(i){ return dispo[i]; }).join(" ")===attendue;
       if(juste) dire(attendue, lg);
-      verdict(zone, juste, attendue, function(){ suivant(juste, null); }, null);
+      /* v76 : une phrase `rappel:[a,b]` teste DEUX mots — sa reussite
+         monte la maitrise des deux (decision de Blandine : « des phrases
+         de revision mentionnant deux mots »). Une phrase ordinaire ne
+         monte rien, comme avant. */
+      verdict(zone, juste, attendue, function(){
+        if(juste && x.p && x.p.rappel && x.p.rappel.length){
+          x.p.rappel.forEach(function(r){
+            MAITRISE[r]=Math.min(5,(MAITRISE[r]||0)+1);
+          });
+          sauverMaitrise();
+        }
+        suivant(juste, null);
+      }, null);
     }}, ui==="en"?"Check":"Vérifier"),
     zone
   );

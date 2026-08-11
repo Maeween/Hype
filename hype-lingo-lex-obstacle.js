@@ -32,6 +32,12 @@
    fichier de doutes.
    ================================================================== */
 
+/* ⚠️ CORRECTION DU 11/08/2026, relevée par BLANDINE en jouant la leçon :
+   la définition du vertical disait « un abord plus près qu'un oxer » —
+   C'EST L'INVERSE. On s'éloigne du vertical (le sommet de l'arc doit
+   tomber au-dessus de la barre) ; c'est à l'oxer qu'on vient plus près du
+   premier plan, pour que le sommet tombe au milieu de la largeur.
+   Corrigé dans les six langues. Balise dans lingo.html passée à ?l+1. */
 window.HYPE_LINGO_LEX = window.HYPE_LINGO_LEX || {};
 
 window.HYPE_LINGO_LEX.obstacle = {
@@ -92,12 +98,12 @@ window.HYPE_LINGO_LEX.obstacle = {
     mots:{ fr:{m:"le vertical"}, en:{m:"the upright", p:"eup-raïte", var:"a vertical"},
            es:{m:"el vertical"}, it:{m:"il verticale"},
            de:{m:"der Steilsprung", p:"chtaïl-chproung"}, ja:{m:"垂直障害", p:"suichoku shōgai"} }, // ??
-    def:{ fr:"Un obstacle sans largeur, toutes les barres dans le même plan. Il demande un abord plus rond et plus près qu'un oxer : c'est la hauteur qu'il faut franchir, pas la distance.",
-          en:"A fence with no spread, all poles in one plane. It needs a rounder, closer approach than a spread.",
-          es:"Un obstáculo sin anchura, todas las barras en el mismo plano. Pide una llegada más redonda y más cerca que un oxer: es la altura lo que hay que franquear, no la distancia.",
-          it:"Un ostacolo senza larghezza, tutte le barriere sullo stesso piano. Chiede un arrivo più rotondo e più vicino di un oxer: è l'altezza da superare, non la distanza.",
-          de:"Ein Hindernis ohne Weite, alle Stangen in einer Ebene. Verlangt einen runderen, näheren Absprung als ein Oxer: Zu überwinden ist die Höhe, nicht die Weite.",
-          ja:"幅のない障害。バーはすべて同一面に。オクサーより丸く、近い踏み切りが必要です。越えるべきは距離ではなく高さなのです。" } },
+    def:{ fr:"Un obstacle sans largeur, toutes les barres dans le même plan. La battue se prend un peu plus loin qu'à l'oxer, pour que le sommet du saut tombe au-dessus de la barre : c'est la hauteur qu'il faut franchir, pas la distance.",
+          en:"A fence with no spread, all poles in one plane. The take-off comes slightly further away than at an oxer, so the arc peaks above the rail: it is height you must clear, not distance.",
+          es:"Un obstáculo sin anchura, todas las barras en el mismo plano. La batida se toma algo más lejos que en un oxer, para que la cima del salto caiga sobre la barra: es la altura lo que hay que franquear, no la distancia.",
+          it:"Un ostacolo senza larghezza, tutte le barriere sullo stesso piano. Lo stacco si prende un po' più lontano che sull'oxer, perché il culmine del salto cada sopra la barriera: è l'altezza da superare, non la distanza.",
+          de:"Ein Hindernis ohne Weite, alle Stangen in einer Ebene. Der Absprung liegt etwas weiter weg als beim Oxer, damit der Scheitel des Sprungs über der Stange liegt: Zu überwinden ist die Höhe, nicht die Weite.",
+          ja:"幅のない障害。バーはすべて同一面に。踏み切りはオクサーよりやや遠くに取り、跳躍の頂点がバーの真上に来るようにします。越えるべきは距離ではなく高さなのです。" } },
 
   { ref:"oxer", lecon:1, coll:"obstacles",
     mots:{ fr:{m:"l'oxer"}, en:{m:"the oxer", p:"ok-seur", var:"a spread · a parallel"},
