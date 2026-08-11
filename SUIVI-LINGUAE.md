@@ -1,3 +1,24 @@
+# 🟥🟥🟥 RÈGLE DES IMAGES D'OBJETS DE COLLECTION — À LIRE AVANT D'Y TOUCHER 🟥🟥🟥
+### Posée le 10/08/2026 sur ordre de Blandine : « note bien tout ça en gros dans le suivi et dans tes consignes à suivre »
+
+| | |
+|---|---|
+| **NOM DU FICHIER** | `objet-<ref de la ville>.webp` — ex. `objet-labaule.webp`, `objet-spruce.webp`, `objet-santaynez.webp` |
+| | Les refs sont celles du tableau **`ETAPES`** de `lingo.html`, **pas** les noms de villes. Même convention que `carte-<ref>.webp` et `fond-<ref>.webp` : **la page les charge sans liste à maintenir.** |
+| **OÙ POUSSER** | **À LA RACINE du dépôt.** Jamais dans un sous-dossier — c'est ce que fait déjà tout le reste des images de Linguae. |
+| **FORMAT** | **`.webp` OBLIGATOIRE**, qualité 88, 900 px max sur le grand côté, transparence conservée. **NE JAMAIS POUSSER LES PNG :** 31 objets = **16,7 Mo en PNG contre 1,75 Mo en webp**, facteur 10, sur une app qu'on ouvre en 5G au bord d'un paddock. |
+| **⚠️ VERSION** | À **chaque lot d'images remplacées**, incrémenter **`var VER`** dans `lingo.html`. Sinon le service worker resservira ses anciennes réponses **pendant des jours**. C'est le piège n°1 de la passation, **trois épisodes déjà**. À tester EN PREMIER devant toute image qui ne change pas. |
+| **PLANCHES** | Blandine envoie des **planches de plusieurs objets sur fond blanc** : c'est la bonne façon de faire, le découpage est automatisé (`decoupe.py`). |
+| **RÉSERVE** | Les objets **sans ville ne se jettent pas** — décision de Blandine : ils serviront aux **villes futures** et aux **« hauts faits »** (première ville sans faute, dix villes finies, carnet à cent mots). |
+
+**Pièges du découpage, appris à la dure le 10/08 :**
+- Fusionner deux zones **seulement si leurs boîtes se recouvrent de plus de 25 % de la plus petite**. Le critère de simple proximité a fusionné le licol et la selle, qui se touchaient de **5 pixels**.
+- Un objet et son accessoire (une alêne et **son étui**) = **UN** objet : leurs boîtes se recouvrent largement, la fusion est voulue.
+- Trois fichiers contenaient **deux objets empilés** (bottes/flot, coupe/gants, globe/médaillon) : les séparer à la **taille la plus fine** de la silhouette.
+- Une image à **halo flou coloré** (et non à fond uni) ne se détoure pas au seuil : il faut un contour (GrabCut), et **il reste un liseré**. → **Demander à Blandine de la régénérer sur fond blanc pur.** Concerne aujourd'hui `objet-aberystwyth` et `objet-hickstead`.
+
+---
+
 # 🎯 DOCTRINE « LINGUAE AUTONOME » — DÉCISION DE BLANDINE, 10/08/2026
 
 > **Pourquoi elle existe.** Blandine : *« je préférais la mettre seule au début le temps que l'autre passe, on en a pour des années alors que Linguae peut être vite prête »*. Hype mettra des années à arriver sur l'App Store ; Linguae peut y être bien avant. **Toutes les décisions doivent mener à cette autonomie.** Et elle a refusé net de la rendre gratuite pour faciliter la soumission : *« je suis pas pour la laisser gratuite, faut pas déconner »*.
@@ -90,6 +111,9 @@ Décision de Blandine : *« il y aura d'autres villes de toute façon et on pour
 Non tranché : (1) l'**image de la pièce** (pas encore fournie) ; (2) **pose libre au doigt** ou **emplacements prévus** où l'objet se cale — le second est bien plus agréable sur un écran de téléphone et laisse maîtriser la composition. ⚠️ À prévoir dès le premier jet : **la position de chaque objet est une donnée à sauvegarder**, et elle va dans la table de Linguae, pas celle de Hype.
 
 Plus les points hérités des sessions 196 et 197 : suppression réelle du chemin de nuit (à faire sur `lingo-essai.html`, idée de Blandine, pour ne rien risquer en ligne), prononciation notée, 15-18 mots par chapitre, la phrase à deux mots, la croix ou la flèche de la leçon, la page du carnet, et les **19 doublons de refs du lexique** (`poulain` en tête, sur lequel elle voulait regarder).
+
+## ▸ FORMAT DES FICHIERS LIVRÉS — décision de Blandine, appliquée
+Question d'elle : *« je push tout à la racine ? ou dans images ? »* → **à la racine**, comme toutes les images de Linguae. Et sur sa validation (*« oui ok »*), les 31 objets sont livrés **en `.webp`** : **16,7 Mo → 1,75 Mo**, facteur 9,6, 900 px max sur le grand côté, transparence conservée. Les PNG restent en archive locale, ils ne sont **pas** poussés. Voir la bannière rouge en tête de ce fichier.
 
 ## ▸ Vers l'App Store
 Neutre techniquement, mais la collection d'objets est un **argument de fiche App Store** : 31 récompenses illustrées se montrent en captures. La sellerie, si elle se fait, écrit dans la table de Linguae — **jamais dans celle de Hype**, doctrine inchangée.
