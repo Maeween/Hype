@@ -1020,6 +1020,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvAutres button{flex:1;padding:13px 10px;border-radius:15px;font-size:10.5px;font-weight:600;
  letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.05)}
 #ouvCollection{color:var(--or);border:1px solid rgba(212,175,55,.4)}
+#ouvCarnet{color:#C9A961;border:1px solid rgba(176,141,63,.45)}
 #ouvSprint{color:var(--turquoise);border:1px solid rgba(32,217,245,.4)}
 #ouvPartir{padding:16px 44px;border-radius:15px;background:var(--turquoise);color:#060709;
  font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
@@ -1208,6 +1209,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .plettre.ja{font-family:'Klee One',serif;font-size:14px;line-height:1.85;padding-right:70px}
 .plettre p{margin:0 0 9px}
 .plettre .sign{margin-top:12px}
+/* v74 : l'etoile de la lettre, dans le coin du verso */
+.plettreEtoile{position:absolute;right:10px;top:8px;width:36px;height:36px;border:0;
+ background:none;color:rgba(58,46,30,.4);font-size:19px;line-height:1;cursor:pointer;z-index:3}
+.plettreEtoile.dedans{color:var(--or)}
 .ptampon{position:absolute;right:16px;bottom:20px;width:88px;height:88px;border-radius:50%;
  border:2px solid rgba(32,110,140,.55);display:flex;flex-direction:column;align-items:center;
  justify-content:center;gap:3px;color:#26708C;transform:rotate(-11deg);opacity:.85}
@@ -1324,6 +1329,74 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  display:flex;align-items:center;justify-content:center}
 #lcSignetB.dedans{border-color:rgba(212,175,55,.5);background:rgba(212,175,55,.10);color:var(--or)}
 #lcSignetB.rien{opacity:0;pointer-events:none}
+/* ==================================================================
+   v74 — LE CARNET DE VOYAGE (maquette validée par Blandine : « ok
+   j'adore on peut garder »). Son carnet d'origine, INTACT : l'image est
+   affichée entière (aspect-ratio 933/1400, object-fit contain), jamais
+   étirée ni découpée — la v2 qui la broyait en textures a été rejetée
+   (« t'as massacré mon carnet »). La grille est posée dans la zone de
+   papier MESURÉE sur l'image : x 37–85,5 %, y 10–85 %. Et l'on TOURNE
+   LES PAGES (« quand la page est finie on passe sur la page 2 ») : la
+   page ne s'allonge jamais, 8 mots ou 3 passages par page. */
+#carnetV{position:fixed;inset:0;z-index:46;display:none;flex-direction:column;
+ background:radial-gradient(120% 90% at 50% 0%,#241A11,#17110C 60%);
+ padding-top:calc(env(safe-area-inset-top) + 8px)}
+#carnetV.on{display:flex}
+#cvHaut{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 4px}
+#cvHaut button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(232,220,192,.25);
+ background:none;color:#E8DCC0;font-size:16px;line-height:1;cursor:pointer}
+#cvHaut h1{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;
+ font-size:20px;color:#E8DCC0;margin:0}
+#cvOnglets{display:flex;justify-content:center;gap:26px;padding:2px 0 8px}
+.cvOnglet{background:none;border:0;cursor:pointer;font-family:'Montserrat',sans-serif;
+ font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#8D7B5F;padding:4px 2px}
+.cvOnglet.actif{color:#E8DCC0;border-bottom:2px solid var(--or)}
+#cvScene{position:relative;flex:1;max-width:430px;width:100%;margin:0 auto;min-height:0}
+#cvScene img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+ filter:drop-shadow(0 24px 50px rgba(0,0,0,.55))}
+/* la zone de papier de l'image — recalée sur le rendu contain par cvCaler() */
+#cvPapier{position:absolute;display:flex;flex-direction:column}
+.cvTitre{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;
+ font-size:15px;color:#7A5E2E;text-align:center;margin:0 0 6px}
+#cvGrille{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start;min-height:0}
+.cvEnc{border:1px solid rgba(122,94,46,.35);background:rgba(255,255,255,.14);
+ padding:7px 7px 6px;cursor:pointer;min-width:0}
+.cvEnc b{display:block;font-family:'Cinzel',serif;font-weight:600;font-size:10.5px;
+ line-height:1.25;color:#2E2114;overflow-wrap:break-word}
+.cvEnc i{display:block;font-family:'Cormorant Garamond',serif;font-size:11.5px;font-style:italic;
+ line-height:1.2;color:#7A5E2E;margin-top:2px}
+.cvEnc.large{grid-column:1 / -1}
+.cvPas{grid-column:1 / -1;border:1px solid rgba(122,94,46,.35);background:rgba(255,255,255,.14);
+ padding:8px 9px;cursor:pointer}
+.cvPas p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;
+ line-height:1.35;color:#2E2114;margin:0}
+.cvPas span{display:block;font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;
+ color:#6A5A42;margin-top:4px}
+#cvTourner{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:auto;padding:6px 0 4px}
+#cvTourner button{width:30px;height:30px;border-radius:50%;border:1px solid rgba(122,94,46,.4);
+ background:rgba(255,255,255,.25);color:#7A5E2E;font-size:13px;line-height:1;cursor:pointer}
+#cvTourner span{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:#6A5A42}
+/* le carnet vide : l'objet fermé */
+#cvVide{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;
+ padding:30px;text-align:center}
+#cvVide img{width:58%;max-width:240px;filter:drop-shadow(0 30px 60px rgba(0,0,0,.55))}
+#cvVide h2{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;
+ font-size:22px;color:#E8DCC0;margin:24px 0 8px}
+#cvVide p{font-size:12px;line-height:1.7;color:#9C8B70;margin:0;max-width:280px}
+/* la fiche d'une entree */
+#cvVoile{position:fixed;inset:0;z-index:48;background:rgba(10,7,4,.55);display:none;
+ align-items:flex-end;justify-content:center}
+#cvVoile.on{display:flex}
+#cvFiche{width:100%;max-width:430px;background:#F0E6CC;border-radius:14px 14px 0 0;
+ padding:20px 22px calc(env(safe-area-inset-bottom) + 20px);color:#2E2114}
+#cvFiche b{font-family:'Cinzel',serif;font-size:19px}
+#cvFiche .tr{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:#7A5E2E;margin:2px 0 0}
+#cvFiche .ph{font-size:10.5px;letter-spacing:.12em;color:#6A5A42;margin:6px 0 0}
+#cvFiche .ou{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#6A5A42;margin:10px 0 0}
+#cvFiche .actes{display:flex;gap:10px;margin-top:14px}
+#cvFiche .actes button{flex:1;padding:11px 6px;border:1px solid rgba(122,94,46,.4);background:none;
+ font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+ color:#7A5E2E;cursor:pointer}
 #cpVersSup{display:block;margin:22px auto 4px;background:none;border:0;
  font-family:inherit;font-size:11.5px;color:#6E7A84;text-decoration:underline;
  text-underline-offset:3px;cursor:pointer}
@@ -2054,7 +2127,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v73 · supprimer mon compte</p>
+    <p id="ouvVersion">v74 · le carnet de voyage</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -2089,6 +2162,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          du chemin. Le carnet etant devenu la racine, il porte leurs portes. -->
     <div id="ouvAutres">
       <button id="ouvCollection" data-t="laCollection">La collection</button>
+      <button id="ouvCarnet" data-t="monCarnet">Mon carnet de voyage</button>
       <button id="ouvSprint" data-t="sprint60">Sprint · 60 s</button>
       <button id="ouvPartager" data-t="partagerVoyage">Partager le voyage</button>
     </div>
@@ -2229,6 +2303,40 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <div class="cpMsg" id="cpSupMsg"></div>
     <button class="cpBtn" id="cpSupGo" type="button" style="margin-top:8px">Confirmer la suppression</button>
     <button class="cpBtn cpVide" id="cpSupNon" type="button">Annuler</button>
+  </div>
+</div>
+
+<!-- v74 : LE CARNET DE VOYAGE. L'image du carnet est chargee a l'ouverture
+     seulement (data-src), pas au demarrage de l'app. -->
+<div id="carnetV">
+  <div id="cvHaut">
+    <button id="cvFermer" type="button" aria-label="Fermer">&lsaquo;</button>
+    <h1 data-t="monCarnet">Mon carnet de voyage</h1>
+    <button type="button" style="opacity:0;pointer-events:none">&nbsp;</button>
+  </div>
+  <div id="cvOnglets">
+    <button class="cvOnglet actif" id="cvOngMots" type="button"></button>
+    <button class="cvOnglet" id="cvOngPassages" type="button"></button>
+  </div>
+  <div id="cvScene">
+    <img id="cvImg" alt="" data-src="carnet-page.webp">
+    <div id="cvPapier">
+      <p class="cvTitre" id="cvPageTitre"></p>
+      <div id="cvGrille"></div>
+      <div id="cvTourner">
+        <button id="cvPrec" type="button">&lsaquo;</button>
+        <span id="cvNum"></span>
+        <button id="cvSuiv" type="button">&rsaquo;</button>
+      </div>
+    </div>
+  </div>
+  <div id="cvVide">
+    <img id="cvVideImg" alt="" data-src="carnet-ferme.webp">
+    <h2 id="cvVideTitre"></h2>
+    <p id="cvVideTxt"></p>
+  </div>
+  <div id="cvVoile">
+    <div id="cvFiche"></div>
   </div>
 </div>
 
@@ -2766,11 +2874,63 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
         var e = obj(tout[k]);
         if(e.a === false) continue;           /* retiré : on ne l'affiche pas */
         var p = String(k).split("|");
-        out.push({ ville: e.v || p[0], mot: p[1], le: Number(e.d) || 0 });
+        out.push({ ville: e.v || p[0], mot: p[1], le: Number(e.d) || 0,
+                   t: e.t || "mot", vis: e.vis || "" });
       }
       out.sort(function(x,y){ return y.le - x.le; });   /* le plus récent d'abord */
     }catch(err){}
     return out;
+  };
+
+  /* ==================================================================
+     v74 — LES PASSAGES ET LE VISUEL (validés par Blandine le 11/08,
+     « ok go »). Les passages prennent des clés qui ne peuvent pas
+     croiser un mot : `ville|p:N` (la N-ième phrase de la leçon) et
+     `ville|lettre` (la lettre de la ville). Le texte n'est PAS recopié :
+     on garde la référence et l'affichage relit le lexique, la traduction
+     suit donc la langue du voyage. `vis` (affiche | carte | objet | "")
+     s'applique à toute entrée ; l'absence de `t` vaut « mot », rien à
+     migrer. La fusion Supabase marche telle quelle : clé par clé, sans
+     regarder dedans.
+     ================================================================== */
+  function carnetPoser(cle, ville, ajouter, type){
+    try{
+      var tout = lireLocal(CLES_PROG.carnet);
+      var maxi = 0;
+      for(var k in tout){ var d = Number(obj(tout[k]).d) || 0; if(d > maxi) maxi = d; }
+      var quand = Date.now(); if(quand <= maxi) quand = maxi + 1;
+      var e = obj(tout[cle]);
+      tout[cle] = { v:String(ville), d:quand, a:!!ajouter };
+      if(type) tout[cle].t = type;
+      if(e.vis) tout[cle].vis = e.vis;      /* le visuel survit au retrait */
+      ecrireLocal(CLES_PROG.carnet, tout);
+      return !!ajouter;
+    }catch(err){ return false; }
+  }
+  window.carnetContientCle = function(cle){
+    try{
+      var e = obj(lireLocal(CLES_PROG.carnet)[cle]);
+      return e.a !== false && typeof e.d !== "undefined";
+    }catch(err){ return false; }
+  };
+  window.carnetBasculerPassage = function(refVille, refPassage){
+    var cle = String(refVille) + "|" + String(refPassage);
+    return carnetPoser(cle, refVille, !window.carnetContientCle(cle),
+                       refPassage === "lettre" ? "lettre" : "phrase");
+  };
+  window.carnetVisuel = function(cle, vis){
+    try{
+      var tout = lireLocal(CLES_PROG.carnet);
+      if(!tout[cle]) return false;
+      var maxi = 0;
+      for(var k in tout){ var d = Number(obj(tout[k]).d) || 0; if(d > maxi) maxi = d; }
+      var e = obj(tout[cle]);
+      e.vis = String(vis || "");
+      e.d = Math.max(Date.now(), maxi + 1);   /* la fusion doit voir le changement */
+      tout[cle] = e;
+      ecrireLocal(CLES_PROG.carnet, tout);
+      return true;
+    }catch(err){ return false; }
   };
 
   try{ pont(); }catch(e){}
@@ -4817,6 +4977,25 @@ function ecrireLettre(v){
     L.map(function(x){ return "<p>"+x+"</p>"; }).join("") +
     '<p class="sign">' + (langue==="ja" ? "またね、Hype" : "À bientôt, Hype") + "</p>" +
     (manque ? '<p class="sign" style="font-size:12px;opacity:.6">(lettre non encore traduite)</p>' : "");
+  /* v74 : l'etoile qui garde la lettre au carnet de voyage. Posee ICI et pas
+     dans le HTML : le verso est reecrit a chaque ville, l'etoile doit l'etre
+     aussi. stopPropagation obligatoire — un appui sur la carte la retourne. */
+  var et = document.createElement("button");
+  et.type = "button"; et.className = "plettreEtoile";
+  var cle = courant + "|lettre";
+  function peindre(){
+    var dedans = window.carnetContientCle && window.carnetContientCle(cle);
+    et.textContent = dedans ? "\u2605" : "\u2606";
+    et.classList.toggle("dedans", !!dedans);
+    et.setAttribute("aria-label", dedans ? "Retirer de mon carnet" : "Garder dans mon carnet");
+  }
+  et.addEventListener("click", function(ev){
+    ev.stopPropagation();
+    window.carnetBasculerPassage(courant, "lettre");
+    peindre();
+  });
+  peindre();
+  S("plettre").appendChild(et);
 }
 
 
@@ -5845,6 +6024,24 @@ var UI = {
    de:"Der Ton ist aus. Du kannst ihn hier jederzeit wieder einschalten.",
    ja:"音はオフになっています。ここでいつでも戻せます。"},
  allerAccueil:{fr:"Accueil", en:"Home", es:"Inicio", it:"Home", de:"Start", ja:"ホーム"},
+ lesMots:{fr:"Les mots", en:"The words", es:"Las palabras", it:"Le parole", de:"Die Wörter", ja:"ことば"},
+ lesPassages:{fr:"Les passages", en:"The passages", es:"Los pasajes", it:"I passaggi", de:"Die Passagen", ja:"文章"},
+ lettreDeVille:{fr:"Lettre de ville", en:"City letter", es:"Carta de ciudad", it:"Lettera di città", de:"Stadtbrief", ja:"街の手紙"},
+ phraseDeLecon:{fr:"Phrase de leçon", en:"Lesson sentence", es:"Frase de lección", it:"Frase di lezione", de:"Lektionssatz", ja:"レッスンの文"},
+ ecouterMot:{fr:"Écouter", en:"Listen", es:"Escuchar", it:"Ascolta", de:"Anhören", ja:"聞く"},
+ retirerDuCarnet:{fr:"Retirer", en:"Remove", es:"Quitar", it:"Togliere", de:"Entfernen", ja:"外す"},
+ carnetVideTitre:{fr:"Ton carnet est encore fermé", en:"Your notebook is still closed",
+   es:"Tu cuaderno sigue cerrado", it:"Il tuo quaderno è ancora chiuso",
+   de:"Dein Heft ist noch geschlossen", ja:"手帳はまだ閉じたまま"},
+ carnetVideTxt:{fr:"Pose l'étoile sur un mot, une phrase ou une lettre de ville, et il viendra t'attendre ici.",
+   en:"Tap the star on a word, a sentence or a city letter, and it will be waiting for you here.",
+   es:"Toca la estrella en una palabra, una frase o una carta de ciudad, y te estará esperando aquí.",
+   it:"Tocca la stella su una parola, una frase o una lettera di città, e ti aspetterà qui.",
+   de:"Tippe auf den Stern bei einem Wort, einem Satz oder einem Stadtbrief, und es wartet hier auf dich.",
+   ja:"ことばや文、街の手紙に星をつけると、ここで待っています。"},
+ monCarnet:{fr:"Mon carnet de voyage", en:"My travel notebook",
+   es:"Mi cuaderno de viaje", it:"Il mio quaderno di viaggio",
+   de:"Mein Reiseheft", ja:"旅の手帳"},
  carnetAjoute:{fr:"Gardé dans ton carnet.", en:"Saved to your notebook.",
    es:"Guardado en tu cuaderno.", it:"Salvato nel tuo quaderno.",
    de:"In deinem Heft gespeichert.", ja:"手帳に保存しました。"},
@@ -6671,7 +6868,7 @@ function ouvrirCompte(){
    Elle est volontairement exhaustive et lue de haut en bas : ajouter un
    ecran a Linguae demain, c'est ajouter son identifiant a cette liste.
    ================================================================== */
-var CALQUES_LINGUAE = ["compte","paywall","porteA","porteB","depart","dest","intro",
+var CALQUES_LINGUAE = ["carnetV","compte","paywall","porteA","porteB","depart","dest","intro",
                        "sprint","globe","collection","lecon","themes"];
 function rienDessus(){
   for(var i=0;i<CALQUES_LINGUAE.length;i++){
@@ -6904,6 +7101,170 @@ async function cpSupprimer(){
   }
   cpOccupe("cpSupGo", false);
 }
+/* ==================================================================
+   v74 — LE CARNET DE VOYAGE, la logique. Tout se relit depuis les
+   lexiques : le carnet ne stocke que des references, jamais du texte —
+   changer la langue du voyage change donc aussi le carnet.
+   ================================================================== */
+var CV = { onglet:0, page:0 };
+var CV_PAR_PAGE = 8, CV_PAR_PAGE_PAS = 3;
+
+function cvConceptDe(refVille, refMot){
+  var ch = chapVirtuel(refVille); if(!ch) return null;
+  var n = (ch.concepts||[]).length;
+  for(var i=0;i<n;i++) if(ch.concepts[i].ref===refMot) return ch.concepts[i];
+  return null;
+}
+function cvPhraseDe(refVille, rang){
+  var ch = chapVirtuel(refVille); if(!ch) return null;
+  return (ch.phrases||[])[rang] || null;
+}
+function cvPhraseTexte(p, lg){
+  if(!p) return "";
+  var src = (p.p && typeof p.p==="object") ? p.p : p;   /* les deux ecritures, comme exPhrase */
+  return src[lg] || src.en || src.fr || "";
+}
+function cvEntrees(){
+  var tout = (window.carnetListe ? window.carnetListe() : []);
+  var mots=[], pas=[];
+  tout.forEach(function(e){
+    if(e.t==="mot") mots.push(e); else pas.push(e);
+  });
+  return CV.onglet===0 ? mots : pas;
+}
+function cvPages(){
+  var t = CV.onglet===0 ? CV_PAR_PAGE : CV_PAR_PAGE_PAS;
+  return Math.max(1, Math.ceil(cvEntrees().length / t));
+}
+function cvDessiner(){
+  var ui=langueUI(), lg=VOYAGE_LANGUE;
+  var liste=cvEntrees(), g=S("cvGrille");
+  videEl(g);
+  var vide = !(window.carnetListe ? window.carnetListe().length : 0);
+  S("cvScene").style.display = vide ? "none" : "block";
+  S("cvVide").style.display  = vide ? "flex" : "none";
+  if(vide){
+    S("cvVideTitre").textContent = T("carnetVideTitre");
+    S("cvVideTxt").textContent   = T("carnetVideTxt");
+    return;
+  }
+  var t = CV.onglet===0 ? CV_PAR_PAGE : CV_PAR_PAGE_PAS;
+  var n = cvPages(); if(CV.page>=n) CV.page=n-1;
+  var deb=CV.page*t, fin=Math.min(liste.length, deb+t);
+  for(var i=deb;i<fin;i++){
+    (function(e){
+      var el2;
+      if(e.t==="mot"){
+        var c=cvConceptDe(e.ville, e.mot);
+        var m1=c&&c.mots[lg]?c.mots[lg].m:e.mot, m2=c&&c.mots[ui]?c.mots[ui].m:"";
+        el2=el("div",{class:"cvEnc"+(String(m1).length>16?" large":"")},
+          el("b",{text:m1}), el("i",{text:m2}));
+      }else if(e.mot==="lettre"){
+        var v=VILLES[e.ville], L=v&&v.lettre?(v.lettre[ui]||v.lettre.fr):null;
+        el2=el("div",{class:"cvPas"},
+          el("p",{text: L?L[0]:"…"}),
+          el("span",{text: nomVille(e.ville)+" · "+T("lettreDeVille")}));
+      }else{
+        var rang=parseInt(String(e.mot).slice(2),10)||0;
+        var p=cvPhraseDe(e.ville, rang);
+        el2=el("div",{class:"cvPas"},
+          el("p",{text:cvPhraseTexte(p,lg)}),
+          el("span",{text: nomVille(e.ville)+" · "+T("phraseDeLecon")}));
+      }
+      el2.addEventListener("click", function(){ cvFiche(e); });
+      g.appendChild(el2);
+    })(liste[i]);
+  }
+  S("cvPageTitre").textContent = (CV.onglet===0?T("lesMots"):T("lesPassages"));
+  S("cvNum").textContent = (CV.page+1)+" / "+n;
+  S("cvOngMots").textContent = T("lesMots")+" · "+(window.carnetListe().filter(function(x){return x.t==="mot";}).length);
+  S("cvOngPassages").textContent = T("lesPassages")+" · "+(window.carnetListe().filter(function(x){return x.t!=="mot";}).length);
+  S("cvOngMots").classList.toggle("actif", CV.onglet===0);
+  S("cvOngPassages").classList.toggle("actif", CV.onglet===1);
+}
+function nomVille(ref){
+  for(var i=0;i<ETAPES.length;i++) if(ETAPES[i].ref===ref) return eV(ETAPES[i]);
+  return ref;
+}
+function cvFiche(e){
+  var ui=langueUI(), lg=VOYAGE_LANGUE, f=S("cvFiche");
+  videEl(f);
+  var cle = e.ville+"|"+e.mot;
+  if(e.t==="mot"){
+    var c=cvConceptDe(e.ville, e.mot);
+    f.appendChild(el("b",{text:c&&c.mots[lg]?c.mots[lg].m:e.mot}));
+    f.appendChild(el("p",{class:"tr", text:c&&c.mots[ui]?c.mots[ui].m:""}));
+    if(c&&c.mots[lg]&&c.mots[lg].p) f.appendChild(el("p",{class:"ph", text:c.mots[lg].p.toUpperCase()}));
+    f.appendChild(el("p",{class:"ou", text:nomVille(e.ville)}));
+    f.appendChild(el("div",{class:"actes"},
+      el("button",{type:"button", onclick:function(){ if(c&&c.mots[lg]) dire(c.mots[lg].m, lg); }}, "\u266A "+T("ecouterMot")),
+      el("button",{type:"button", onclick:function(){
+        window.carnetBasculer(e.ville, e.mot); S("cvVoile").classList.remove("on"); cvDessiner();
+      }}, "\u2605 "+T("retirerDuCarnet"))));
+  }else{
+    var texte, sousTitre;
+    if(e.mot==="lettre"){
+      var v=VILLES[e.ville], L=v&&v.lettre?(v.lettre[ui]||v.lettre.fr):[];
+      texte=(L||[]).join(" "); sousTitre=T("lettreDeVille");
+    }else{
+      var rang=parseInt(String(e.mot).slice(2),10)||0, p=cvPhraseDe(e.ville, rang);
+      texte=cvPhraseTexte(p,lg)+"\n"+cvPhraseTexte(p,ui); sousTitre=T("phraseDeLecon");
+    }
+    f.appendChild(el("p",{class:"tr", text:texte}));
+    f.appendChild(el("p",{class:"ou", text:nomVille(e.ville)+" · "+sousTitre}));
+    f.appendChild(el("div",{class:"actes"},
+      el("button",{type:"button", onclick:function(){
+        window.carnetBasculerPassage(e.ville, e.mot); S("cvVoile").classList.remove("on"); cvDessiner();
+      }}, "\u2605 "+T("retirerDuCarnet"))));
+  }
+  S("cvVoile").classList.add("on");
+}
+function ouvrirCarnetVoyage(){
+  ["cvImg","cvVideImg"].forEach(function(id){
+    var im=S(id); if(im && !im.src && im.getAttribute("data-src")) im.src=im.getAttribute("data-src");
+  });
+  CV.page=0;
+  S("carnetV").classList.add("on");
+  S("carnetV").scrollTop=0;          /* regle des ecrans ouverts */
+  S("ouverture").classList.add("parti");
+  cvDessiner();
+  requestAnimationFrame(cvCaler);
+}
+function fermerCarnetVoyage(){
+  S("carnetV").classList.remove("on");
+  S("cvVoile").classList.remove("on");
+  remonterSiVide();
+}
+/* la zone de papier de l'image, recalee sur le rendu `contain` reel :
+   l'image ne remplit pas la scene, il faut retrouver son rectangle. */
+function cvCaler(){
+  var sc=S("cvScene"), pap=S("cvPapier");
+  if(!sc||!pap) return;
+  var W=sc.clientWidth, H=sc.clientHeight, R=933/1400;
+  var w=Math.min(W, H*R), h=w/R;
+  var x0=(W-w)/2, y0=(H-h)/2;
+  pap.style.left  =(x0 + w*0.37 )+"px";
+  pap.style.top   =(y0 + h*0.10 )+"px";
+  pap.style.width =(w*0.485)+"px";
+  pap.style.height=(h*0.75 )+"px";
+}
+window.addEventListener("resize", cvCaler);
+S("ouvCarnet").addEventListener("click", ouvrirCarnetVoyage);
+S("cvFermer").addEventListener("click", fermerCarnetVoyage);
+S("cvOngMots").addEventListener("click", function(){ CV.onglet=0; CV.page=0; cvDessiner(); });
+S("cvOngPassages").addEventListener("click", function(){ CV.onglet=1; CV.page=0; cvDessiner(); });
+S("cvPrec").addEventListener("click", function(){ var n=cvPages(); CV.page=(CV.page-1+n)%n; cvDessiner(); });
+S("cvSuiv").addEventListener("click", function(){ var n=cvPages(); CV.page=(CV.page+1)%n; cvDessiner(); });
+S("cvVoile").addEventListener("click", function(ev){ if(ev.target===this) this.classList.remove("on"); });
+(function(){
+  var x0=null;
+  S("cvScene").addEventListener("touchstart",function(e){ x0=e.touches[0].clientX; },{passive:true});
+  S("cvScene").addEventListener("touchend",function(e){
+    if(x0===null) return; var dx=e.changedTouches[0].clientX-x0; x0=null;
+    if(Math.abs(dx)>48){ var n=cvPages(); CV.page=(CV.page+(dx<0?1:-1)+n)%n; cvDessiner(); }
+  },{passive:true});
+})();
+
 S("cpVersSup").addEventListener("click", cpOuvrirSup);
 S("cpSupNon").addEventListener("click", function(){ cpVue("cpMien"); });
 S("cpSupGo").addEventListener("click", cpSupprimer);
@@ -7264,7 +7625,7 @@ function lancer(L){
       /* les phrases à remettre en ordre n'apparaissent qu'à partir du
          niveau 2 : sur une ville de découverte, elles cassent l'élan. */
       if(niveauVille(LC.ville) >= 2 && phrases[nph]){
-        plan.push({t:"phrase", p:phrases[nph]}); nph++;
+        plan.push({t:"phrase", p:phrases[nph], rang:nph}); nph++;
       }
       vague=[];
     }
@@ -7276,7 +7637,7 @@ function lancer(L){
      Compromis : UNE phrase, en toute fin de lecon, quand le chapitre en
      a. On repart avec une vraie phrase en poche, sans casser l'elan. */
   if(niveauVille(LC.ville) < 2 && phrases[0]){
-    plan.push({t:"phrase", p:phrases[0]});
+    plan.push({t:"phrase", p:phrases[0], rang:0});
   }
   LC.L=L; LC.plan=plan; LC.i=0; LC.justes=0; LC.nouveaux=[];
   LC.aTester=plan.filter(function(x){ return x.t!=="decouverte"; }).length;
@@ -7400,19 +7761,25 @@ function verdict(zone, juste, bonne, apres, concept){
    après ». Le stockage existait deja depuis la v64 (`carnetBasculer`,
    `carnetContient`, cle `ville|mot`) et attendait son ecran : c'est ce
    signet-la qui manquait. La PAGE du carnet reste a construire. */
-/* le mot de l'exercice en cours, ou null (une phrase n'en porte pas un seul) */
-function motCourant(){
+/* v74 : ce que le signet designe — le mot de l'exercice en cours, OU la
+   phrase (les phrases se gardent aussi, decision de Blandine : « les deux »).
+   Un exercice de phrase porte son rang dans la lecon : cle `ville|p:N`. */
+function viseeSignet(){
   if(!LC || !LC.plan) return null;
   var x = LC.plan[LC.i];
-  return (x && x.c && x.c.ref) ? x.c : null;
+  if(x && x.c && x.c.ref) return { genre:"mot", ref:x.c.ref };
+  if(x && x.t==="phrase" && typeof x.rang==="number")
+    return { genre:"phrase", ref:"p:"+x.rang };
+  return null;
 }
 function peindreSignet(){
   var b=S("lcSignetB"); if(!b) return;
-  var c=motCourant();
-  if(!c){ b.classList.add("rien"); b.textContent=""; return; }
+  var v=viseeSignet();
+  if(!v){ b.classList.add("rien"); b.textContent=""; return; }
   b.classList.remove("rien");
-  var dedans = (typeof window.carnetContient==="function")
-             && window.carnetContient(LC.ville, c.ref);
+  var dedans = (v.genre==="mot")
+    ? (typeof window.carnetContient==="function" && window.carnetContient(LC.ville, v.ref))
+    : (typeof window.carnetContientCle==="function" && window.carnetContientCle(LC.ville+"|"+v.ref));
   b.classList.toggle("dedans", !!dedans);
   b.textContent = dedans ? "\u2605" : "\u2606";
   b.setAttribute("aria-label", dedans ? "Retirer de mon carnet" : "Ajouter à mon carnet");
@@ -8495,12 +8862,16 @@ function avisLecon(txt){
   AVIS_MINUTEUR=setTimeout(function(){ a.classList.remove("on"); }, 4200);
 }
 S("lcSignetB").addEventListener("click", function(){
-  var c=motCourant(); if(!c) return;
-  if(typeof window.carnetBasculer==="function") window.carnetBasculer(LC.ville, c.ref);
-  peindreSignet();
-  if(typeof window.carnetContient==="function" && window.carnetContient(LC.ville,c.ref)){
-    avisLecon(T("carnetAjoute"));
+  var v=viseeSignet(); if(!v) return;
+  var dedans;
+  if(v.genre==="mot"){
+    window.carnetBasculer && window.carnetBasculer(LC.ville, v.ref);
+    dedans = window.carnetContient && window.carnetContient(LC.ville, v.ref);
+  }else{
+    dedans = window.carnetBasculerPassage && window.carnetBasculerPassage(LC.ville, v.ref);
   }
+  peindreSignet();
+  if(dedans) avisLecon(T("carnetAjoute"));
 });
 S("lcSonB").addEventListener("click", function(){
   var versMuet = !modeSilencieux();

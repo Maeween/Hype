@@ -76,6 +76,32 @@
 
 ---
 
+# 📔 SESSION 200 · 11/08 · v74 — LE CARNET DE VOYAGE EXISTE
+
+**À pousser : `lingo.html` (v74) → RACINE · `carnet-page.webp` et `carnet-ferme.webp` → RACINE.** Aucun SQL. `index.html` non modifié. La maquette `maquette-carnet.html` ne se pousse pas.
+
+## ▸ LE CHEMIN DE LA MAQUETTE — trois versions, deux rejets de Blandine
+La v1 (parchemin CSS) : « pas mal » mais elle voulait son visuel. La v2 a **broyé son image en textures** — *« t'as massacré mon carnet, la marge est trop étroite, y'a même plus la tête de cheval ou le nœud »* — et c'est elle qui a posé les deux bonnes idées : *« quand la page est finie on passe sur la page 2 »* et *« des encadrés mot-traduction côte à côte »*. La v3, validée (*« ok j'adore on peut garder »*) : **son carnet d'origine intact** (jamais étiré ni découpé, zone de papier MESURÉE sur l'image : x 37–85,5 %, y 10–85 %), **des pages qu'on tourne** (flèches + balayage), **8 mots ou 3 passages par page**.
+
+## ▸ CE QUI EST DANS LA v74
+- **L'écran `#carnetV`** : onglets Mots / Passages avec compteurs, pagination, fiche au toucher (traduction, prononciation, ville, écouter, retirer), carnet fermé quand rien n'est gardé. Images chargées à l'ouverture seulement (`data-src`). Entrée : bouton **« Mon carnet de voyage »** sur le carnet de route. Inscrit dans `CALQUES_LINGUAE`.
+- **Le stockage étendu** (écritures montrées à Blandine avant, « ok go ») : passages sous `ville|p:N` et `ville|lettre` avec `t:"phrase"|"lettre"` ; champ `vis` (affiche | carte | objet) sur toute entrée — décision d'elle : les photos sont les **visuels déjà dans l'app**, donc zéro chantier serveur. Le texte n'est JAMAIS recopié : références seules, relues dans les lexiques — changer la langue du voyage change le carnet. Fusion Supabase **inchangée** (clé par clé). Rien à migrer : l'absence de `t` vaut « mot ».
+- **Trois gestes d'ajout** : l'étoile de la barre d'exercices sait maintenant garder **les phrases** (le plan porte `rang`) ; une étoile sur **la lettre de la ville** (verso de la carte, `stopPropagation` sinon la carte se retourne) ; les mots comme avant.
+- ✅ **Stockage rejoué hors navigateur** : dates strictement croissantes dans l'ordre d'insertion, le visuel survit au retrait, `carnetVisuel` repose la date (la fusion « le plus récent gagne » voit le changement). ⚠️ Premier test lu À L'ENVERS (la liste trie du plus récent au plus ancien) — faux défaut, contre-vérifié.
+
+## ▸ À l'écran
+- **+** « Mon carnet de voyage » sur le carnet de route · l'écran du carnet · une étoile sur la lettre de chaque ville · l'étoile de la barre fonctionne aussi sur les phrases
+- **−** rien
+- ⚠️ le choix du **visuel** d'une entrée (affiche/carte/objet) est STOCKÉ mais pas encore proposé dans la fiche — écran à venir
+
+## ▸ EN ATTENTE
+La page **collection des objets** (« ensuite on fera la page collection pour ce qu'on gagne, pas les cartes, l'autre ») — les 31 `objet-<ville>.webp` sont poussés. Puis le **quota d'exercices** (après le carnet, ordre de Blandine), les prérequis, la sellerie.
+
+## ▸ Vers l'App Store
+Le carnet est un argument de rétention et de fiche produit. Aucune dépendance créée ; `hype_lingua_progression` porte déjà le carnet dans sa colonne `carnet`, la suppression de compte le couvre donc. La règle des écrans défilables est respectée (`scrollTop=0` à l'ouverture).
+
+---
+
 # 🔐 SESSION 199 · 11/08 · v73 — SUPPRIMER MON COMPTE, ET LE SIGNET QUI NE SE VOYAIT PAS
 
 **Livré : `lingo.html` (v73) seul.** Aucun SQL. `index.html` non modifié.
