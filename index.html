@@ -37864,7 +37864,8 @@ function EnTeteNiveauBaby({ level, tr }) {
             React.createElement("p", { style: { margin: "1px 0 0", fontSize: 10.5, color: COLORS.encreDoux } }, tr(meta.sousTitre))),
         typeof BoutonReperesPedagogiquesNiveau === "function" && React.createElement(BoutonReperesPedagogiquesNiveau, { niveauId: level, modeEnseignant: modeEnseignant, statutsCompetences: null, onChangeStatutCompetence: () => {} }));
 }
-function FinCheminBabyCarte({ tousTermines, nbTermines, totalCours, totalEtoiles, tr }) {
+function FinCheminBabyCarte({ tousTermines, nbTermines, totalCours, totalEtoiles, coursNiveau, tr }) {
+    coursNiveau = coursNiveau || []; /* session 112 : recap "Ce que tu as appris" du Poney d'Or, comme les autres paliers (demande Blandine 11/08) */
     const { setEcran } = useApp();
     if (!tousTermines) return null;
     const imgFin = HYPE_IMGS["k517"] || GALOPS_HERO;
@@ -37877,6 +37878,9 @@ function FinCheminBabyCarte({ tousTermines, nbTermines, totalCours, totalEtoiles
             tr({ fr: "Bravo, tu as terminé tout le chemin Baby !", en: "Well done, you finished the whole Baby path!", es: "¡Bien hecho, terminaste todo el camino Baby!", it: "Bravo, hai terminato tutto il percorso Baby!", de: "Bravo, du hast den ganzen Baby-Weg geschafft!", ja: "やったね、ベイビーの道を歩き終えたよ！" })),
         React.createElement("p", { style: { margin: "0 0 16px", fontSize: 12.5, color: COLORS.encreDoux, lineHeight: 1.5 } },
             tr({ fr: "Apy est immensément fier de toi. Tu es prêt pour la suite de l'aventure.", en: "Apy is immensely proud of you. You're ready for the next adventure.", es: "Apy está inmensamente orgulloso de ti. Estás listo para la siguiente aventura.", it: "Apy è immensamente fiero di te. Sei pronto per la prossima avventura.", de: "Apy ist unglaublich stolz auf dich. Du bist bereit für das nächste Abenteuer.", ja: "アピーはとても誇らしく思っているよ。次の冒険への準備は万端だね。" })),
+        coursNiveau.length > 0 && React.createElement("div", { style: { textAlign: "left", background: COLORS.nuitElevee, borderRadius: 14, padding: "10px 14px", marginBottom: 16 } },
+            React.createElement("p", { style: { margin: "0 0 6px", fontSize: 10.5, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: COLORS.encreDoux } }, tr({ fr: "Ce que tu as appris", en: "What you learned", es: "Lo que aprendiste", it: "Cosa hai imparato", de: "Was du gelernt hast", ja: "まなんだこと" })),
+            coursNiveau.map((c) => React.createElement("p", { key: c.id, style: { margin: "2px 0", fontSize: 12, color: COLORS.encre } }, "\u2728 " + c.titre))),
         React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 22, marginBottom: 18 } },
             React.createElement("div", null,
                 React.createElement("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 20, fontWeight: 800, color: "#E8C887" } }, nbTermines + "/" + totalCours),
@@ -37973,7 +37977,8 @@ function CheminPoneyBaby({ coursListe, quizResultats, coursTermines, tr, onOuvri
             const tousTerminesFinal = g.cours.every((c) => coursTermines.includes(c.id));
             elements.push(React.createElement(FinCheminBabyCarte, {
                 key: "fin-chemin", tousTermines: tousTerminesFinal,
-                nbTermines: nbTermines, totalCours: coursListe.length, totalEtoiles: totalEtoiles, tr: tr,
+                nbTermines: nbTermines, totalCours: coursListe.length, totalEtoiles: totalEtoiles,
+                coursNiveau: g.cours, tr: tr,
             }));
         }
     });

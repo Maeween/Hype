@@ -10,7 +10,7 @@
 
 **Règle de base de travail : partir du fichier que Blandine fournit au moment de la session**, jamais d'une copie gardée d'une session précédente. Elle fait tourner plusieurs pages en parallèle : son fichier contient souvent le travail d'une autre. On réapplique ses correctifs par-dessus SON fichier, marqueur par marqueur — jamais l'inverse.
 
-**Version actuelle de l'index.html : 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `6c84de3bfd3294a8450bf9b43039ba78`, 9082826 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (1, NOUVEAU, chargé via `?v=1`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
+**Version actuelle de l'index.html : 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `3a097c0d18bca58b68472450e4764ef0`, 9083039 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (2, chargé via `?v=2`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
 
 **Ancienne version (110) — 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
 
@@ -191,7 +191,11 @@ Retours de Blandine après la victoire des couvertures, trois sujets :
 - **Memory « ? » : élucidation en cours.** Test fait par Blandine : **Safari privé montre les MÊMES « ? »** (niveau Saut d'obstacles notamment) → ce n'est PAS un cache : les clés de ces cartes ne sont définies dans AUCUN fichier réellement en ligne/chargé. Mesures faites sur l'index : les balises chargent les lots 1→122 avec **des trous en 3, 4, 5** (à vérifier : lots supprimés volontairement ou perdus ?). Le SUIVI liste de longue date des niveaux incomplets (Robes, Copains, Sécurité, Obstacles, Friandises, Pansage) — une partie des « ? » est peut-être simplement des paires jamais illustrées. **Piste de fond proposée (à valider par Blandine, chantier d'une session) : migrer les paires du Memory vers des chemins directs `images/memory-<niveau>-<n>.jpg?v=1`** — chaque carte devient testable en 5 s dans Safari, les images manquantes deviennent évidentes (404), et les futures corrections passent par `?v=N`. Compatible avec `hype-memory-poney.js`.
 - ⚠️ Le « ❌ N essais ratés » vu par Blandine à 21h58 était sur la version EN LIGNE : l'index de cette session (compteur retiré, sheet quitter réparé, image quiz entière) n'était **pas encore poussé** à ce moment-là.
 
-### AJOUT FIN DE SOIRÉE : COUVERTURES DU MEMORY EN ENTIER
+### AJOUT FIN DE SOIRÉE : COUVERTURES DU MEMORY — 2ᵉ ITÉRATION, PLEIN CADRE AGRANDI
+
+⚠️ Le traitement « image entière sur fond flou » (1ʳᵉ itération ci-dessous) a été JUGÉ PAS TERRIBLE par Blandine sur le Memory et RETIRÉ le soir même. Décision finale : **plein cadre (`cover`) agrandi — niveau 160→210px, accueil 220→250px — et Blandine ne mettra que des images HORIZONTALES en couverture du Memory.** Le traitement fond flou reste en place sur le héros des QUIZ uniquement (validé là-bas).
+
+### (annulé) COUVERTURES DU MEMORY EN ENTIER
 
 Sur demande de Blandine (même plainte que les quiz) : la couverture du **niveau** (160px) et celle de **l'accueil du Memory** (k452, 220px) passent de `cover` (recadrage) à **image entière `contain` sur la même image floutée en fond** — recette identique au héros des quiz. À noter : Blandine précise n'avoir testé QUE la carte en « ? » sur Obstacles (premiers clics dessus) — les autres cartes du niveau ne sont PAS confirmées réparées ; le memdiag reste indispensable.
 
@@ -214,6 +218,29 @@ Capture de l'encadré memdiag (liste des niveaux) : **vie-poney : eau2 (k455), f
 ### MÉMOIRE DE DÉFILEMENT PAR ÉCRAN (dernier ajout de la session)
 
 Plainte Blandine : sortir du Memory (swipe ou fin de partie) « revient en haut de la page des cours ». Le retour au menu des niveaux existait déjà dans le code (hook `__memoryPoneyRetour` + bouton de fin) — le vrai irritant était la **position de défilement perdue** au retour sur l'écran précédent. Correctif générique dans le provider de navigation : `__scrollMem` note `window.scrollY` de l'écran qu'on QUITTE (naviguer/retourEcran/avancerEcran) et le restaure (double rAF) quand on y REVIENT. Bénéficie à toute l'app (cours, chemin, communauté…), pas seulement au Memory. Si un écran doit au contraire toujours repartir en haut, l'exclure ici.
+
+### CLÔTURE MEMORY : LES 5 IMAGES LIVRÉES PRÊTES À TÉLÉVERSER + 2 PAIRES EVAN RENOUVELÉES
+
+Blandine a fourni 16 illustrations ; 5 retenues et livrées **converties en JPG aux noms exacts** (à téléverser telles quelles dans `images/`, sans les renommer) :
+`k457.jpg` (foin), `k474.jpg` (le pas avec maman), `k473.jpg` (la bombe/casque2), `memory-evan-maman-1.jpg` (le saut, maman applaudit), `memory-evan-maman-2.jpg` (câlin avec maman). Il ne restera qu'UNE paire sans image dans tout le Memory : **eau2 (k455)** — image d'abreuvoir à générer un jour.
+
+**`hype-memory-poney.js` passe en version 2** (validé) : les paires `evan2` (Câlin→**« Avec maman »**) et `evan6` (Toujours ensemble→**« Le premier saut »**) pointent vers les 2 nouvelles images en chemin direct `?v=1`, labels retraduits 6 langues. Balise de l'index passée à `?v=2` (la règle). Motif : Evan trouvait toutes ses images semblables ; 2 scènes avec sa maman + une scène d'action varient le niveau.
+
+**Images écartées pour le Baby (charte)** : texte intégré (n°12, 2, 3), fonds de jour/clair (1, 2, 3) — réutilisables hors Baby. En réserve conformes : 4,5,6,7,8,9,16 (la 9 « pomme » ira bien aux Friandises, la 6 à l'équilibre).
+
+### 🔵 PROCHAIN GROS CHANTIER (validé Blandine, session dédiée) : MEMORY → WEBP EN CHEMINS DIRECTS
+
+**Motif** : les ~116 images du Memory vivent en base64 dans les lots `hype-images-*.js` → chargées/décodées au DÉMARRAGE de l'app pour tout le monde (+33 % de poids du base64). Migration vers `images/memory-<niveau>-<cle>.webp` = chargement seulement à l'ouverture d'un niveau, WebP léger, cache un an sain. **Règle actée au passage : toute nouvelle image livrée par Claude sort désormais en WebP** (Linguae le fait déjà) ; les images déjà en ligne ne sont pas reconverties.
+
+**Outil livré : `extraire-memory.html`** — à pousser À LA RACINE. Blandine l'ouvre sur le site, touche « Tout extraire » : il charge les lots 1-130, convertit les images du Memory en WebP (repli JPEG si Safari refuse l'encodage WebP), et produit un **zip + manifest.json**. Elle envoie le zip (ou au moins le manifest) à la prochaine conversation.
+
+**À faire DANS la même session v3 (validé Blandine 11/08 matin)** : remplacer les paires TROP RESSEMBLANTES entre elles — le niveau Obstacles a 3 paires « saut de barre de nuit » quasi identiques (capture du 11/08 10h18), injouable de mémoire pour un enfant. Utiliser la réserve d'images validées de Blandine (conversation du 10/08 soir) : n°7 poney noir poing levé, n°16 bouquet de fleurs, n°6 équilibre bras écartés (+ n°9 pomme pour les Friandises si besoin). Vérifier au passage les autres niveaux avec le même œil : deux paires différentes ne doivent jamais se confondre en vignette. Constat positif au passage : **le lag du Memory est nettement réduit** depuis le retrait de mpGlowPulse (confirmé par Blandine) — ne pas réintroduire d'animation de filtre en boucle.
+
+**Étapes de la session dédiée** : (1) recevoir zip+manifest ; (2) Blandine dépose les fichiers du zip dans `images/` ; (3) livrer `hype-memory-poney.js` **v3** : toutes les clés `HYPE_IMGS[...]` remplacées par les chemins du manifest (`?v=1`), balise index `?v=3` ; (4) memdiag pour contrôle ; (5) inventorier les clés des lots devenues inutiles et voir quels lots peuvent sortir du démarrage (gain de poids réel). ⚠️ Ne pas oublier le chantier parallèle déjà préparé : **G4-G7 → `hype-cours-galops-sup.js`** (mesures dans la section PROCHAIN COUP plus haut).
+
+### DERNIER CORRECTIF (11/08 matin) : « CE QUE TU AS APPRIS » SUR LA FIN DU PONEY D'OR
+
+Signalement Blandine : les fins de Bronze et d'Argent listent « Ce que tu as appris » + rappels, mais la fin du chemin (après le Poney d'Or) affichait seulement les stats. Cause : le dernier niveau saute `PalierBabyCarte` (pas de niveau suivant) et monte `FinCheminBabyCarte`, qui n'avait pas le récapitulatif. Correctif : `FinCheminBabyCarte` reçoit `coursNiveau` (les cours du Poney d'Or) et affiche le même bloc « Ce que tu as appris » (6 langues) avant les stats. À noter : `PALIERS_BABY_QUIZ` n'a pas d'entrée `poney_or` — si Blandine veut aussi des questions « Petit rappel » sur cette carte finale, en rédiger 2-3 (contenu autorisé en continu).
 
 ### IDÉES ÉCARTÉES CETTE SESSION (notées, non validées)
 

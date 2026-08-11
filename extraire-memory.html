@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hype — Extraction des images du Memory</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  body{margin:0;background:#07111F;color:#F4F7FA;font-family:-apple-system,Montserrat,sans-serif;
+    padding:26px 18px 60px;max-width:560px;margin:0 auto;}
+  h1{font-size:19px;color:#2DD4DE;margin:0 0 6px;}
+  p{font-size:13.5px;line-height:1.55;color:#9FB3C4;}
+  button{width:100%;padding:16px;border-radius:14px;border:none;font-size:15px;font-weight:800;
+    background:linear-gradient(135deg,#2DD4DE,#20b4c8);color:#03222B;margin-top:14px;}
+  button:disabled{opacity:.4;}
+  #log{background:#0B1826;border:1px solid #16283A;border-radius:12px;padding:12px;
+    font-family:monospace;font-size:11.5px;line-height:1.6;white-space:pre-wrap;
+    margin-top:16px;max-height:45vh;overflow:auto;color:#8FE3A6;}
+  .barre{height:6px;background:#122031;border-radius:3px;margin-top:14px;overflow:hidden;}
+  .barre i{display:block;height:100%;width:0%;background:#2DD4DE;border-radius:3px;transition:width .2s;}
+</style>
+</head>
+<body>
+<h1>Extraction des images du Memory</h1>
+<p>Cet outil charge les lots d'images existants, convertit toutes les images du Memory en WebP, et te donne un zip à télécharger. Le zip contient aussi un fichier <b>manifest.json</b> à renvoyer à Claude avec le zip (ou au moins le manifest) pour préparer la version 3 du Memory.</p>
+<button id="btn" onclick="lancer()">Tout extraire</button>
+<div class="barre"><i id="prog"></i></div>
+<div id="log">Prêt.</div>
+
+<script>
+var LOG = document.getElementById("log");
+function log(t) { LOG.textContent += "\n" + t; LOG.scrollTop = LOG.scrollHeight; }
+function prog(p) { document.getElementById("prog").style.width = Math.round(p * 100) + "%"; }
+
+function chargerScript(src) {
+  return new Promise(function (res) {
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function () { res(true); };
+    s.onerror = function () { res(false); };
+    document.head.appendChild(s);
+  });
+}
+
+// WebP possible ? (sinon repli JPEG)
+var FORMAT = (function () {
+  try {
+    var c = document.createElement("canvas"); c.width = c.height = 2;
+    return c.toDataURL("image/webp").indexOf("data:image/webp") === 0
+      ? { mime: "image/webp", ext: "webp", q: 0.82 }
+      : { mime: "image/jpeg", ext: "jpg", q: 0.85 };
+  } catch (e) { return { mime: "image/jpeg", ext: "jpg", q: 0.85 }; }
+})();
+
+function versBlob(src) {
+  return new Promise(function (res, rej) {
+    var img = new Image();
+    img.onload = function () {
+      try {
+        var MAX = 1200;
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var r = Math.min(1, MAX / Math.max(w, h));
+        var c = document.createElement("canvas");
+        c.width = Math.round(w * r); c.height = Math.round(h * r);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { b ? res(b) : rej(new Error("blob nul")); }, FORMAT.mime, FORMAT.q);
+      } catch (e) { rej(e); }
+    };
+    img.onerror = function () { rej(new Error("chargement image")); };
+    img.src = src;
+  });
+}
+
+async function lancer() {
+  document.getElementById("btn").disabled = true;
+  window.HYPE_IMGS = window.HYPE_IMGS || {};
+  log("Format de sortie : " + FORMAT.ext.toUpperCase());
+  log("Chargement des lots d'images (1 à 130, les absents sont ignorés)...");
+  var ok = 0;
+  for (var n = 1; n <= 130; n++) {
+    if (await chargerScript("hype-images-" + n + ".js")) ok++;
+    if (n % 10 === 0) { prog(0.5 * n / 130); log("  ... lot " + n + " (" + ok + " charges)"); }
+  }
+  log(ok + " lots charges, " + Object.keys(window.HYPE_IMGS).length + " cles d'images en memoire.");
+
+  log("Chargement de hype-memory-poney.js...");
+  // recharger la table en re-evaluant le fichier avec les cles desormais presentes
+  delete window.MEMORY_PONEY_NIVEAUX;
+  if (!await chargerScript("hype-memory-poney.js?v=2&outil=1")) { log("ERREUR : fichier memory introuvable."); return; }
+  var niveaux = window.MEMORY_PONEY_NIVEAUX || [];
+  log(niveaux.length + " niveaux trouves.");
+
+  var zip = new JSZip();
+  var manifest = [];
+  var taches = [];
+  niveaux.forEach(function (nv) {
+    taches.push({ nv: nv.id, cle: "couv", src: nv.couverture });
+    (nv.paires || []).forEach(function (p) { taches.push({ nv: nv.id, cle: p.cle, src: p.src }); });
+  });
+
+  var faits = 0, convertis = 0, dejaDirects = 0, manquants = 0;
+  for (var i = 0; i < taches.length; i++) {
+    var t = taches[i];
+    var nom = "memory-" + t.nv + "-" + t.cle + "." + FORMAT.ext;
+    if (!t.src) {
+      manifest.push({ niveau: t.nv, cle: t.cle, statut: "SANS_IMAGE" }); manquants++;
+    } else if (typeof t.src === "string" && t.src.indexOf("data:") !== 0) {
+      manifest.push({ niveau: t.nv, cle: t.cle, statut: "DEJA_CHEMIN", src: t.src }); dejaDirects++;
+    } else {
+      try {
+        var b = await versBlob(t.src);
+        zip.file(nom, b);
+        manifest.push({ niveau: t.nv, cle: t.cle, statut: "CONVERTI", fichier: nom, octets: b.size });
+        convertis++;
+      } catch (e) {
+        manifest.push({ niveau: t.nv, cle: t.cle, statut: "ECHEC", erreur: String(e) });
+        log("  ECHEC " + t.nv + "/" + t.cle + " : " + e);
+      }
+    }
+    faits++; prog(0.5 + 0.45 * faits / taches.length);
+  }
+  log("Convertis : " + convertis + " · deja en chemin direct : " + dejaDirects + " · sans image : " + manquants);
+
+  zip.file("manifest.json", JSON.stringify({ format: FORMAT.ext, date: new Date().toISOString(), entrees: manifest }, null, 2));
+  log("Preparation du zip...");
+  var blob = await zip.generateAsync({ type: "blob" });
+  prog(1);
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "memory-images-webp.zip";
+  a.textContent = "TELECHARGER LE ZIP (" + Math.round(blob.size / 1024 / 1024 * 10) / 10 + " Mo)";
+  a.style.cssText = "display:block;text-align:center;margin-top:16px;padding:16px;border-radius:14px;background:#2DD4DE;color:#03222B;font-weight:800;text-decoration:none;";
+  document.body.appendChild(a);
+  log("Termine. Touche le bouton turquoise pour telecharger, puis envoie le zip (ou au moins manifest.json) a Claude.");
+}
+</script>
+</body>
+</html>
