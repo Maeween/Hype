@@ -1323,10 +1323,18 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    donc invisible dès qu'un mot était déjà connu, c'est-à-dire presque
    toujours. Dans la barre, il vaut pour le mot de l'exercice en cours, quel
    que soit le type d'exercice. Erreur de conception de ma part. */
-#lcSignetB{flex:0 0 auto;width:32px;height:32px;border-radius:50%;
- border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
- color:rgba(255,255,255,.42);font-size:15px;line-height:1;cursor:pointer;
+/* v75 : PLUS GROSSE (Blandine : « c'est la toute petite etoile, on peut
+   faire mieux ? ») et elle se presente : une pulsation la premiere fois
+   qu'un mot nouveau s'affiche, plus jamais ensuite. */
+#lcSignetB{flex:0 0 auto;width:40px;height:40px;border-radius:50%;
+ border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);
+ color:rgba(255,255,255,.55);font-size:21px;line-height:1;cursor:pointer;
  display:flex;align-items:center;justify-content:center}
+@keyframes signetPulse{
+ 0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(212,175,55,0)}
+ 50%{transform:scale(1.16);box-shadow:0 0 0 7px rgba(212,175,55,.14)}}
+#lcSignetB.pulse{animation:signetPulse 1.1s ease-in-out 3;border-color:rgba(212,175,55,.5);
+ color:var(--or)}
 #lcSignetB.dedans{border-color:rgba(212,175,55,.5);background:rgba(212,175,55,.10);color:var(--or)}
 #lcSignetB.rien{opacity:0;pointer-events:none}
 /* ==================================================================
@@ -1448,6 +1456,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  border:1px solid var(--bord);
  box-shadow:0 26px 60px -40px rgba(32,217,245,.5)}
 .lcMot{font-family:'Cinzel',serif;font-size:32px;font-weight:600;margin:0;line-height:1.15}
+/* v75 : le geste en toutes lettres, sur la carte du mot nouveau seulement.
+   L'etoile de barre prend le relais partout ailleurs. */
+.lcGarder{display:inline-flex;align-items:center;gap:8px;margin-top:16px;
+ padding:11px 18px;border:1px solid rgba(212,175,55,.4);border-radius:99px;
+ background:rgba(212,175,55,.07);color:var(--or);font-family:'Montserrat',sans-serif;
+ font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.lcGarder.dedans{background:rgba(212,175,55,.16);border-color:var(--or)}
 .lcPhon{font-size:12.5px;color:var(--turquoise);letter-spacing:.14em;margin:9px 0 0}
 .lcVar{font-size:11px;color:var(--gris);margin:7px 0 0;font-style:italic}
 .lcFil{width:32px;height:1px;background:var(--bord);margin:16px auto}
@@ -1941,7 +1956,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
   <div id="souvenir">
     <div class="carte">
-      <svg id="souvSvg" viewBox="0 0 60 60"></svg>
+      <span id="souvMed" style="display:block;width:100%;height:100%"><svg id="souvSvg" viewBox="0 0 60 60" style="width:100%;height:100%"></svg></span>
       <div>
         <p class="t" id="souvT">Souvenir de Newmarket</p>
         <p class="n" id="souvN">Une selle anglaise miniature</p>
@@ -2143,7 +2158,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v74 · le carnet de voyage</p>
+    <p id="ouvVersion">v75 · les objets en image</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -2441,7 +2456,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      pris quatre fois. Le froid est l'angle qui apporte des mots neufs — le
      module n'avait pas un seul mot d'hiver. Et il parle du froid de
      l'ECURIE, pas d'un concours sous la neige : la saison y est l'ete. -->
-<script src="hype-lingo-lex-froid.js"></script>
+<!-- ⚠️ v75 : `?v=2` OBLIGATOIRE — ce fichier a ete ENTIEREMENT REECRIT le
+     10/08 (16 mots du metier d'hiver au lieu de la meteo). Sans changement
+     d'adresse, la PWA installee sert sa vieille copie : Blandine a teste et
+     vu « la neige », un mot qui n'existe plus. Regle du cache du 10/08 :
+     tout fichier REMPLACE change d'adresse. A incrementer a chaque
+     nouvelle version du lexique. -->
+<script src="hype-lingo-lex-froid.js?v=2"></script>
 <!-- L'endurance : chapitre cree le 6 aout 2026 pour Dubai, etape 24 et
      PREMIERE etape hors d'Europe. La seule discipline ou l'on compte en
      kilometres et en battements par minute.
@@ -4594,6 +4615,23 @@ function pousserVille(){
     el("span",{class:"oT","data-t":"maCollection"}),
     "Tes cartes postales et tes souvenirs.",
     function(){ ouvrirCollection(); }));
+  /* v75 : LE TROISIEME BANDEAU (demande de Blandine, capture du carnet de
+     route a l'appui : « un onglet supplementaire avec mon carnet de voyage
+     qui emmene sur sa page »). Meme modele que les deux autres ; la
+     vignette est le carnet lui-meme, pas des cartes de villes. */
+  b.appendChild((function(){
+    var v=el("span",{class:"oEventail"});
+    var t=el("span");
+    t.style.backgroundImage='url("carnet-ferme.webp'+VER+'"),linear-gradient(160deg,#241A11,#17110C)';
+    t.style.backgroundSize="contain";
+    t.style.backgroundRepeat="no-repeat";
+    t.style.backgroundPosition="center";
+    v.appendChild(t);
+    return oBandeau("ouvCarnetB", true, v,
+      el("span",{class:"oT","data-t":"monCarnet"}),
+      "Les mots et les passages que tu gardes avec toi.",
+      function(){ ouvrirCarnetVoyage(); });
+  })());
 
   /* ⚠️ LE PLIEUR « COMMENT CA MARCHE ? » EST SUPPRIME (v34, decision de
      Blandine, 9 aout) : les deux bandeaux ci-dessus le remplacent. La
@@ -5048,7 +5086,11 @@ function ouvrirArrivee(i){
   var _obj = souvenirObtenu(e.ref);
   S("souvT").textContent = _obj ? T("souvenirDe",{v:eV(e)}) : T("souvAMeriter");
   S("souvN").textContent = _obj ? eSouv(e) : T("souvQuiz",{s:eSouv(e)});
-  S("souvSvg").innerHTML=ICONES[e.ic]||"";
+  /* v75 : l'image de l'objet si elle existe, l'icone sinon */
+  (function(){
+    var m=S("souvMed"); videEl(m);
+    m.appendChild(medaillonObjet(e.ref, e.ic));
+  })();
   S("souvenir").classList.toggle("apercu", !_obj);
   garnirVille(e);
   ecrire();
@@ -6062,6 +6104,17 @@ var UI = {
  monCarnet:{fr:"Mon carnet de voyage", en:"My travel notebook",
    es:"Mi cuaderno de viaje", it:"Il mio quaderno di viaggio",
    de:"Mein Reiseheft", ja:"旅の手帳"},
+ garderCarnet:{fr:"Garder dans mon carnet", en:"Keep in my notebook",
+   es:"Guardar en mi cuaderno", it:"Salvare nel mio quaderno",
+   de:"In mein Heft legen", ja:"手帳に入れる"},
+ motGarde:{fr:"Dans ton carnet", en:"In your notebook", es:"En tu cuaderno",
+   it:"Nel tuo quaderno", de:"In deinem Heft", ja:"手帳に入っています"},
+ signetPresente:{fr:"L'étoile garde un mot dans ton carnet de voyage.",
+   en:"The star keeps a word in your travel notebook.",
+   es:"La estrella guarda una palabra en tu cuaderno de viaje.",
+   it:"La stella salva una parola nel tuo quaderno di viaggio.",
+   de:"Der Stern legt ein Wort in dein Reiseheft.",
+   ja:"星をタップすると、ことばが旅の手帳に入ります。"},
  carnetAjoute:{fr:"Gardé dans ton carnet.", en:"Saved to your notebook.",
    es:"Guardado en tu cuaderno.", it:"Salvato nel tuo quaderno.",
    de:"In deinem Heft gespeichert.", ja:"手帳に保存しました。"},
@@ -7212,6 +7265,23 @@ function cvCheminVisuel(vis, refVille){
   if(vis==="affiche")return "fond-"+refVille+".webp"+VER;
   return "";
 }
+/* v75 : l'objet de collection en IMAGE (`objet-<ref>.webp`, pousses le
+   11/08), l'icone dessinee en REPLI si l'image manque encore. Blandine :
+   « l'objet gagne s'affiche pas » — les quatre ecrans de recompense ne
+   connaissaient que l'icone, anterieurs aux objets. */
+function medaillonObjet(refVille, ic){
+  var b = el("span",{});
+  b.innerHTML = '<svg viewBox="0 0 60 60">'+(ICONES[ic]||"")+'</svg>';
+  var noeud = b.firstChild;
+  var im = new Image();
+  im.onload = function(){
+    var img = el("img",{src:im.src, alt:"", style:
+      "width:100%;height:100%;object-fit:contain;display:block;padding:6%"});
+    if(noeud.parentNode) noeud.parentNode.replaceChild(img, noeud);
+  };
+  im.src = "objet-"+refVille+".webp"+VER;
+  return noeud;
+}
 function nomVille(ref){
   for(var i=0;i<ETAPES.length;i++) if(ETAPES[i].ref===ref) return eV(ETAPES[i]);
   return ref;
@@ -7611,7 +7681,7 @@ function choisirLecon(){
                   : (ui==="en"?"all words right, once":"tous les mots bons, une fois"))})));
   /* l'objet, dans son medaillon — le meme dessin que partout */
   var medC = el("span",{class:"med"});
-  medC.innerHTML='<svg viewBox="0 0 60 60">'+(ICONES[eC_&&eC_.ic]||"")+'</svg>';
+  medC.appendChild(medaillonObjet(LC.ville, eC_&&eC_.ic));   /* v75 : image d'abord */
   boite.appendChild(el("div",{class:"lgObj"+(objFait?" gagne":""), style:"margin-top:8px"}, medC,
     el("p",{html:"<b>"+((ui==="en"?"The keepsake ":"Le souvenir ")+(ui==="en"?("of "+LC.villeNom):deLaVille(LC.villeNom)))+"</b> — "+
       (objFait ? (ui==="en"?"yours":"obtenu")
@@ -7835,6 +7905,19 @@ function viseeSignet(){
 }
 function peindreSignet(){
   var b=S("lcSignetB"); if(!b) return;
+  /* v75 : l'etoile se presente UNE fois — pulsation sur le premier mot
+     nouveau jamais affiche, puis plus jamais (meme drapeau a part que le
+     filet du son). */
+  if(LC && LC.plan && LC.plan[LC.i] && LC.plan[LC.i].t==="decouverte"){
+    var vu=false;
+    try{ vu = localStorage.getItem("hype_lingua_signet_vu")==="1"; }catch(e){}
+    if(!vu){
+      try{ localStorage.setItem("hype_lingua_signet_vu","1"); }catch(e){}
+      b.classList.add("pulse");
+      setTimeout(function(){ b.classList.remove("pulse"); }, 3600);
+      avisLecon(T("signetPresente"));
+    }
+  }
   var v=viseeSignet();
   if(!v){ b.classList.add("rien"); b.textContent=""; return; }
   b.classList.remove("rien");
@@ -7857,7 +7940,24 @@ function exDecouverte(x){
       el("div",{class:"lcFil"}),
       el("p",{class:"lcTrad", text:mu.m}),
       el("button",{class:"lcSon", onclick:function(){ dire(mc.m, lg); }},
-        "\u266a  "+(ui==="en"?"Listen":"Écouter"))
+        "\u266a  "+(ui==="en"?"Listen":"Écouter")),
+      /* v75 : le geste en toutes lettres (choix de Blandine : « les deux »).
+         Il fait exactement ce que fait l'etoile de barre, et la repeint. */
+      (function(){
+        var g=el("button",{class:"lcGarder", type:"button"});
+        function peindre(){
+          var dedans = window.carnetContient && window.carnetContient(LC.ville, c.ref);
+          g.classList.toggle("dedans", !!dedans);
+          g.textContent = (dedans ? "\u2605 " : "\u2606 ") +
+            (dedans ? T("motGarde") : T("garderCarnet"));
+        }
+        g.addEventListener("click", function(){
+          window.carnetBasculer && window.carnetBasculer(LC.ville, c.ref);
+          peindre(); peindreSignet();
+        });
+        peindre();
+        return g;
+      })()
     ),
     el("p",{class:"lcDef", html:enrichirDef((c.def&&(c.def[ui]||c.def.fr))||"")}),
     el("button",{class:"lcCta", onclick:function(){
@@ -8246,9 +8346,7 @@ function finQuiz(){
   var med = el("div",{class:"lgMed"+(obj?"":" enAttente")});
   if(obj && avantObj) med.style.animation="none";   /* deja a toi : pas de rejeu */
   med.appendChild(el("span",{class:"anneau"}));
-  var svg = el("span",{});
-  svg.innerHTML='<svg viewBox="0 0 60 60">'+(ICONES[eV_&&eV_.ic]||"")+'</svg>';
-  med.appendChild(svg.firstChild);
+  med.appendChild(medaillonObjet(LC.ville, eV_&&eV_.ic));   /* v75 : image d'abord */
   zone.appendChild(med);
   zone.appendChild(el("p",{class:"lcGainV", style:"animation:none", text:eSouv(eV_)},
     el("i",{text: obj ? (avantObj ? T("dejaAToi") : T("gagneMaintenant"))
@@ -8330,9 +8428,7 @@ function blocRecompenses(){
   /* le souvenir */
   var lO = el("div",{class:"lgRLigne"+(obj?" ok":"")});
   var vO = el("span",{class:"lgRVig med"+(obj?"":" attente")});
-  var sv = el("span",{});
-  sv.innerHTML='<svg viewBox="0 0 60 60">'+(ICONES[eV_&&eV_.ic]||"")+'</svg>';
-  vO.appendChild(sv.firstChild);
+  vO.appendChild(medaillonObjet(LC.ville, eV_&&eV_.ic));   /* v75 : image d'abord */
   lO.appendChild(vO);
   lO.appendChild(el("p",{},
     el("b",{text:eSouv(eV_)}),
