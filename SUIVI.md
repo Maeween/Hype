@@ -12,7 +12,9 @@
 
 **Ancienne version (112) — 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `3a097c0d18bca58b68472450e4764ef0`, 9083039 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (2, chargé via `?v=2`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
 
-**Version actuelle de l'index.html : 11/08/2026 (SESSION 113 · PONEY D'OR + LE MEMORY EN CHEMINS DIRECTS) — md5 `859e094501a396d4c0a6f4a946a7468d`, 9 086 253 octets.** Témoin attendu : **`reprise 1.4 · baby 112 · memo 3`**. `HYPE_VERSION_APP` 1.2 → **1.4** et balise `hype-memory-poney.js?v=`**3**.
+**Version actuelle de l'index.html : 11/08/2026 (SESSION 113 · PONEY D'OR + LE MEMORY EN CHEMINS DIRECTS) — md5 `bcf326e690f4bc08f2472ad2b257f4e8`, 9 086 253 octets`.** Témoin attendu : **`reprise 1.5 · baby 112 · memo 4`**. `HYPE_VERSION_APP` 1.2 → **1.5** et balise `hype-memory-poney.js?v=`**4**.
+
+⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
 ⚠️ **L'index intermédiaire md5 `4b6992e1…` (témoin 1.3) livré plus tôt le 11/08 est PÉRIMÉ — ne pas le pousser.** Celui-ci le contient en entier.
 
