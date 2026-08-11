@@ -76,6 +76,65 @@
 
 ---
 
+# 🔐 SESSION 199 · 11/08 · v73 — SUPPRIMER MON COMPTE, ET LE SIGNET QUI NE SE VOYAIT PAS
+
+**Livré : `lingo.html` (v73) seul.** Aucun SQL. `index.html` non modifié.
+⚠️ **UNE LIGNE À AJOUTER À LA MAIN dans `netlify/functions/supprimer-compte.js`** — voir plus bas, c'est important.
+
+## ▸ ✅ LA SUPPRESSION DE COMPTE (point 2 de la passation, exigé par Apple)
+Feu vert de Blandine, 11/08 : *« ok pour mon compte, ok pour réécrire mot de passe »*. Règle Apple 5.1.1(v) : dès qu'on peut s'inscrire dans l'app, on doit pouvoir supprimer son compte **depuis l'app**. Sans ça, Linguae est refusée.
+
+- Un lien **discret** en bas de « mon compte » — petit, gris, souligné, **jamais** un bouton d'action rouge : on ne l'attrape pas par mégarde.
+- Un écran de confirmation qui **redemande le mot de passe** (choix de Blandine), vérifié par un `signInWithPassword` sur la même adresse. Protège du geste malheureux **et** du téléphone laissé sans surveillance.
+- Le texte dit la vérité : **soixante jours**, rien n'est effacé tout de suite, se reconnecter annule tout. **Six langues.**
+- Appelle `supprimer-compte.js` avec le seul jeton de session, `action:"demander"`. **Aucune dépendance ajoutée** — le `require` de paquet npm est ce qui a rendu cette fonction inopérante pendant des mois, sans que personne le sache.
+- ⚠️ **Le motif d'échec réel est affiché** à la cavalière, pas un message générique : c'est l'erreur générique qui avait masqué la panne (« Liam n'arrivait pas à supprimer son compte »).
+- Après succès : déconnexion, effacement du local, retour à l'écran d'entrée avec le message des soixante jours. `#cpMsgQ` a dû être **créé** — il n'existait pas, et `cpMsg` échoue en silence sur un identifiant absent.
+
+### 🔴 LA LIGNE À AJOUTER, ET POURQUOI ELLE COMPTE
+`hype_lingua_progression` **ne figure pas** dans la liste `TABLES` de `supprimer-compte.js`. Repéré en écrivant cet écran. Conséquence : **la progression Linguae d'une cavalière supprimée resterait en base indéfiniment** — villes faites, maîtrise des mots, cartes postales, carnet, sprint, quiz. Rappel de l'audit du 10/08 : **aucune** des 27 tables n'a de clé étrangère vers `auth.users`, cette liste est le **seul** mécanisme de nettoyage.
+
+À ajouter juste après `"video_progression",` :
+```
+  "hype_lingua_progression",
+```
+✅ **FAIT le 11/08** : `supprimer-compte.js` est livré avec la ligne, **28 tables** (27 + `hype_lingua_progression`).
+⚠️ **INCIDENT D'OUTIL À CONNAÎTRE** : ce fichier est arrivé **trois fois** dans la conversation sans jamais atteindre le disque de travail (les `.js` de lexique, eux, y arrivent). Il a donc été **reconstitué à partir de son texte**, puis vérifié : `node --check` valide, **13 fonctions** toutes présentes, **4 exports** (`handler`, `purgerEchus`, `config`, `TABLES`), `JOURS_DELAI = 60`, et **aucun `require` de paquet** — la seule occurrence du mot est dans le commentaire qui explique la panne d'origine. Si un doute subsiste, comparer avec la version GitHub avant de pousser.
+⚠️ **Signalé dans le fichier, non vérifié** : `hype_ambassadeurs` — si elle porte un `user_id`, elle doit rejoindre la liste ; si elle désigne les ambassadrices par leur e-mail, elle y échappe comme `hype_filleuls`. **À contrôler en base.**
+**RÈGLE À RETENIR** : toute nouvelle table portant un `user_id` s'ajoute à cette liste **dans la même livraison**. Ce n'est pas une option.
+
+## ▸ ✅ LE SIGNET DU CARNET DÉPLACÉ DANS LA BARRE
+Blandine, 11/08 : *« j'ai pas vu le bouton à côté des mots pour ajouter au bloc note »*. **Erreur de conception de ma part** : il n'était que sur la carte « un mot nouveau », donc invisible dès qu'un mot était déjà connu — c'est-à-dire presque toujours. Il est maintenant dans la **barre du haut**, à côté du son : il vaut pour le mot de l'exercice en cours, quel que soit le type d'exercice, et s'escamote proprement sur les phrases (qui ne portent pas un seul mot). Doré quand le mot est gardé, avec le petit mot « Gardé dans ton carnet » en six langues.
+
+## ▸ 🔴 CONSTAT GRAVE SUR LA COMPOSITION DES LEÇONS — RIEN N'EST GARANTI
+Question de Blandine : *« peux-tu t'assurer que chaque leçon a au moins un mot ou une phrase à écrire, une à remettre dans l'ordre, et une ou deux à prononcer ? »* → **Réponse : non, absolument rien ne l'est.** `exercicePour()` tire au hasard dans un panier conditionné :
+- **écrire** : jamais aux deux premiers passages d'un mot · jamais en japonais · jamais si le mot est identique dans les deux langues
+- **remettre dans l'ordre** : une seule fois, en fin de leçon, dans les villes de niveau 1
+- **prononcer** : **seulement** niveau 2+, **et** mot vu deux fois, **et** micro disponible, **et** hors mode muet
+
+**Conséquence réelle : une première leçon = 10 découvertes + 10 QCM + 1 phrase.** Rien à écrire, rien à prononcer. C'est exactement ce que Blandine a vécu à Spruce Meadows, et ça explique son *« on devrait avoir des trucs où on parle nous »*. Elle a elle-même diagnostiqué le mécanisme : *« on peut faire écrire un mot simple vu deux fois, là je l'ai fait à La Baule »* — elle y était déjà passée, d'où l'exercice d'écriture.
+
+### Décidé avec elle, PAS ENCORE CODÉ
+1. **Un quota par leçon** au lieu du hasard : au moins un mot à écrire, une phrase à remettre dans l'ordre, deux à prononcer. Le tirage ne remplit qu'après.
+2. **Écrire un mot simple dès la première visite** (accord de Blandine) : choisir le plus court de la leçon, sans accent ni caractère spécial, après qu'il a été montré.
+3. **Des phrases de révision testant DEUX mots** de la leçon (son idée, deux fois formulée). ⚠️ À mesurer d'abord sur les 23 lexiques : rien ne garantit qu'un chapitre possède une telle phrase.
+4. ⚠️ **En japonais** l'écriture est désactivée d'office : le quota devra l'ignorer pour cette langue.
+
+## ▸ 💡 IDÉE FORTE DE BLANDINE — LES MOTS PRÉREQUIS
+*« C'est justement le moment de les insérer, ces petits mots-là qui devraient être des prérequis. »* Les mots de liaison — *le, la, mon, chaque, sur, avec, il faut, ne pas* — ne sont **jamais enseignés**, alors que les phrases les emploient déjà : on remet « Chaque matin, on casse la glace » dans l'ordre sans savoir ce que « chaque » veut dire.
+Deux voies présentées, **non tranchée** : (1) un chapitre zéro commun à tout le voyage ; (2) deux ou trois semés par ville, choisis parmi ceux qu'emploient ses propres phrases — recommandation de Claude, aucun écran de plus et le mot arrive juste avant d'être utile.
+⚠️ Chantier de **contenu sur les 23 lexiques** : six langues, définitions, et vérification des collisions de `ref` (`le`, `la`, `sur` sont génériques, terrain idéal des faux rappels).
+
+## ▸ À l'écran
+- **+** un lien « Supprimer mon compte » en bas de « mon compte », et son écran de confirmation par mot de passe
+- **+** le signet du carnet dans la barre des exercices (étoile, dorée si le mot est gardé)
+- **−** le signet disparaît de la carte « un mot nouveau » (il y était inutile, on le retrouve dans la barre)
+
+## ▸ Vers l'App Store
+**Avancée réelle et bloquante levée** : la suppression de compte dans l'app était un **motif de refus certain** (règle 5.1.1(v)). Le point 2 de la passation est fait, côté application. ⚠️ Il ne sera **complet** qu'une fois la ligne ajoutée dans `supprimer-compte.js` : un relecteur ne le verra pas, mais le RGPD, si. Restent : les 31 objets et leur page, le signet du carnet et sa page, et la **question du paiement**, toujours non tranchée et commerciale.
+
+---
+
 # 🏺 SESSION 198 · 10/08 · v72 — LES 31 OBJETS DE COLLECTION SONT AU COMPLET
 
 **Livré : `lingo.html` (v72)** + le dossier `objets-villes/` (31 fichiers) et `objets-reserve/` (40 fichiers). Aucun SQL. `index.html` non modifié.

@@ -1309,6 +1309,24 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  color:#C3D0DA;font-size:12px;line-height:1.45;text-align:center;
  opacity:0;pointer-events:none;transition:opacity .34s ease,transform .34s ease}
 #lcAvis.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* v73 : le lien de suppression de compte. Discret par choix : petit, gris,
+   souligne, tout en bas de « mon compte ». Il ne doit pas rivaliser avec la
+   deconnexion, et surtout pas ressembler a un bouton d'action. */
+/* v73 : le signet du carnet passe de la carte de découverte à LA BARRE.
+   Blandine, 11/08 : « j'ai pas vu le bouton à côté des mots pour ajouter au
+   bloc note ». Il y était, mais uniquement sur la carte « un mot nouveau » —
+   donc invisible dès qu'un mot était déjà connu, c'est-à-dire presque
+   toujours. Dans la barre, il vaut pour le mot de l'exercice en cours, quel
+   que soit le type d'exercice. Erreur de conception de ma part. */
+#lcSignetB{flex:0 0 auto;width:32px;height:32px;border-radius:50%;
+ border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
+ color:rgba(255,255,255,.42);font-size:15px;line-height:1;cursor:pointer;
+ display:flex;align-items:center;justify-content:center}
+#lcSignetB.dedans{border-color:rgba(212,175,55,.5);background:rgba(212,175,55,.10);color:var(--or)}
+#lcSignetB.rien{opacity:0;pointer-events:none}
+#cpVersSup{display:block;margin:22px auto 4px;background:none;border:0;
+ font-family:inherit;font-size:11.5px;color:#6E7A84;text-decoration:underline;
+ text-underline-offset:3px;cursor:pointer}
 #lcSur{font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;
  color:var(--orTexte);text-align:center;margin:8px 0 0}
 #lcTitre.grand{font-family:'Cinzel',serif;font-size:27px;font-weight:600;letter-spacing:.05em;
@@ -1341,12 +1359,6 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  border:1px solid var(--bord);
  box-shadow:0 26px 60px -40px rgba(32,217,245,.5)}
 .lcMot{font-family:'Cinzel',serif;font-size:32px;font-weight:600;margin:0;line-height:1.15}
-/* v69 : le signet du carnet, dans le coin de la carte du mot. Discret tant
-   que le mot n'est pas gardé, doré une fois dedans. */
-.lcSignet{position:absolute;top:10px;right:10px;width:38px;height:38px;border:0;background:none;
- color:rgba(255,255,255,.34);font-size:20px;line-height:1;cursor:pointer;
- display:flex;align-items:center;justify-content:center}
-.lcSignet.dedans{color:var(--or)}
 .lcPhon{font-size:12.5px;color:var(--turquoise);letter-spacing:.14em;margin:9px 0 0}
 .lcVar{font-size:11px;color:var(--gris);margin:7px 0 0;font-style:italic}
 .lcFil{width:32px;height:1px;background:var(--bord);margin:16px auto}
@@ -2042,7 +2054,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          signale a nouveau et j'ai accuse le deploiement sans preuve.
          Cette ligne repond a la question en un coup d'oeil. A incrementer
          avec VER. -->
-    <p id="ouvVersion">v72 · les objets de collection</p>
+    <p id="ouvVersion">v73 · supprimer mon compte</p>
 
     <!-- ⚠️ v39 : l'intro est encadree par deux bandes grises (variante 3).
          La cle i18n `ouvIntro` et le <p> ne changent pas d'un iota : seul
@@ -2086,7 +2098,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="lecon">
   <div id="lcFond"><div id="lcFondImg"></div><div id="lcFondBas"></div></div>
   <div id="lcPage">
-    <div id="lcBarre"><button id="lcFermer" aria-label="Fermer">✕</button><div id="lcJauge"></div><button id="lcSonB" type="button" data-ta="reglerSon" aria-label="Le son"></button></div>
+    <div id="lcBarre"><button id="lcFermer" aria-label="Fermer">✕</button><div id="lcJauge"></div><button id="lcSignetB" type="button" aria-label="Ajouter à mon carnet"></button><button id="lcSonB" type="button" data-ta="reglerSon" aria-label="Le son"></button></div>
     <p id="lcTitre"></p>
     <div id="lcCorps"></div>
     <!-- v71 : le mot d'une ligne quand le son est coupe pour la premiere
@@ -2140,6 +2152,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <p class="cpGris">Tes progressions et tes collections te suivront.</p>
     <button class="cpBtn cpPlein" id="cpVersCo" type="button">Me connecter</button>
     <button class="cpBtn cpVide"  id="cpVersCr" type="button">Créer un compte</button>
+    <!-- v73 : porte les messages d'après-suppression. Il n'existait pas :
+         `cpMsg` échoue en silence sur un identifiant absent. -->
+    <div class="cpMsg" id="cpMsgQ"></div>
     <p class="cpEdit">Linguae, une application Hype</p>
   </div>
 
@@ -2192,7 +2207,28 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <div class="cpMsg" id="cpMienMsg"></div>
     <button class="cpBtn cpVide" id="cpSortir" type="button" style="margin-top:26px">Me déconnecter</button>
     <p class="cpGris" style="font-size:11.5px">Ta progression est sauvegardée sur ton compte : elle reviendra à ta prochaine connexion.</p>
+    <!-- v73 : la suppression de compte, EXIGÉE PAR APPLE des lors qu'on peut
+         s'inscrire dans l'application (regle 5.1.1(v)). Elle vit ici, dans un
+         reglage, jamais dans un parcours d'entree. Volontairement en bas,
+         petite et sans couleur d'alerte : on ne l'attrape pas par megarde. -->
+    <button id="cpVersSup" type="button">Supprimer mon compte</button>
     <p class="cpEdit">Linguae, une application Hype</p>
+  </div>
+
+  <!-- v73 : l'ecran de confirmation. Blandine a tranche le 11/08 : « ok pour
+       réécrire mot de passe » — on redemande donc le mot de passe, pas un
+       simple « es-tu sûre ? ». Le geste devient impossible par accident, et
+       impossible depuis un telephone laisse sans surveillance. -->
+  <div class="cpVue" id="cpSup">
+    <h1 class="cpMot" style="font-size:23px">SUPPRIMER MON COMPTE</h1>
+    <p class="cpDevise" id="cpSupSous">Soixante jours pour changer d'avis</p>
+    <p class="cpGris" id="cpSupTxt" style="font-size:12.5px;line-height:1.6;margin-top:18px"></p>
+    <div class="cpChamp" style="margin-top:20px">
+      <input id="cpSupMdp" type="password" autocomplete="current-password" placeholder="Ton mot de passe">
+    </div>
+    <div class="cpMsg" id="cpSupMsg"></div>
+    <button class="cpBtn" id="cpSupGo" type="button" style="margin-top:8px">Confirmer la suppression</button>
+    <button class="cpBtn cpVide" id="cpSupNon" type="button">Annuler</button>
   </div>
 </div>
 
@@ -5809,6 +5845,9 @@ var UI = {
    de:"Der Ton ist aus. Du kannst ihn hier jederzeit wieder einschalten.",
    ja:"音はオフになっています。ここでいつでも戻せます。"},
  allerAccueil:{fr:"Accueil", en:"Home", es:"Inicio", it:"Home", de:"Start", ja:"ホーム"},
+ carnetAjoute:{fr:"Gardé dans ton carnet.", en:"Saved to your notebook.",
+   es:"Guardado en tu cuaderno.", it:"Salvato nel tuo quaderno.",
+   de:"In deinem Heft gespeichert.", ja:"手帳に保存しました。"},
  reglerSon:{fr:"Le son", en:"Sound", es:"El sonido", it:"Il suono", de:"Der Ton", ja:"音"},
  continuerVoyage:{fr:"Continuer mon voyage", en:"Continue my journey",
    es:"Continuar mi viaje", it:"Continua il mio viaggio",
@@ -6596,7 +6635,7 @@ function estConnecte(){
 var CP_MAJEUR = true;          /* la pastille d'âge choisie */
 
 function cpVue(id){
-  ["cpQuestion","cpConnexion","cpCreation","cpMien"].forEach(function(v){
+  ["cpQuestion","cpConnexion","cpCreation","cpMien","cpSup"].forEach(function(v){
     var e = S(v); if(e) e.classList.toggle("on", v === id);
   });
   var p = S("compte"); if(p) p.scrollTop = 0;   /* remise à zéro du défilement */
@@ -6759,6 +6798,115 @@ function cpApresEntree(){
      sans compte dans le compte tout neuf (versement à la connexion). */
   try{ if(typeof pont === "function") pont(); }catch(e){}
 }
+
+/* ==================================================================
+   v73 — LA SUPPRESSION DE COMPTE. Exigée par Apple (règle 5.1.1(v)) dès
+   lors qu'on peut s'inscrire dans l'application : sans elle, Linguae est
+   refusée. C'était le point 2 de la passation.
+
+   ⚠️ CE N'EST PAS UNE SUPPRESSION IMMÉDIATE, et le texte le dit à la
+   cavalière : le compte est désactivé et la suppression fixée à J+60 par
+   `supprimer-compte.js`. Se reconnecter avant l'échéance annule tout.
+   Aucune donnée n'est effacée à cette étape.
+
+   ⚠️ ON REDEMANDE LE MOT DE PASSE — choix de Blandine, 11/08 : « ok pour
+   réécrire mot de passe ». La vérification passe par un `signInWithPassword`
+   sur la même adresse : c'est le seul moyen honnête de s'assurer que c'est
+   bien elle, et ça protège d'un téléphone laissé sans surveillance.
+
+   ⚠️ AUCUNE DÉPENDANCE AJOUTÉE côté serveur : on appelle la fonction
+   Netlify existante avec le jeton de session, rien de plus. Elle ne
+   demande que ça. Ne jamais y réintroduire un `require` de paquet npm —
+   il n'y a pas de package.json dans le dépôt, la fonction planterait au
+   démarrage et l'échec serait invisible (c'est ce qui l'a rendue
+   inopérante pendant des mois).
+   ================================================================== */
+function cpSupTextes(){
+  var ui = langueUI();
+  var t = {
+    fr:["Soixante jours pour changer d'avis",
+        "Ton compte va être désactivé. Rien n'est effacé tout de suite : tu as soixante jours pour revenir. Il te suffit de te reconnecter et tout repart — ta progression, ton carnet, tes cartes postales. Passé ce délai, tout est supprimé définitivement.",
+        "Ton mot de passe", "Confirmer la suppression", "Annuler"],
+    en:["Sixty days to change your mind",
+        "Your account will be deactivated. Nothing is erased right away: you have sixty days to come back. Just log in again and everything returns — your progress, your notebook, your postcards. After that, everything is permanently deleted.",
+        "Your password", "Confirm deletion", "Cancel"],
+    es:["Sesenta días para cambiar de opinión",
+        "Tu cuenta se desactivará. Nada se borra de inmediato: tienes sesenta días para volver. Solo tienes que iniciar sesión y todo regresa: tu progreso, tu cuaderno, tus postales. Pasado ese plazo, todo se elimina definitivamente.",
+        "Tu contraseña", "Confirmar la eliminación", "Cancelar"],
+    it:["Sessanta giorni per cambiare idea",
+        "Il tuo account sarà disattivato. Nulla viene cancellato subito: hai sessanta giorni per tornare. Basta accedere di nuovo e tutto torna — i tuoi progressi, il tuo quaderno, le tue cartoline. Dopo, tutto è eliminato definitivamente.",
+        "La tua password", "Conferma l'eliminazione", "Annulla"],
+    de:["Sechzig Tage, um es sich anders zu überlegen",
+        "Dein Konto wird deaktiviert. Es wird nichts sofort gelöscht: du hast sechzig Tage, um zurückzukommen. Melde dich einfach wieder an, und alles ist wieder da — dein Fortschritt, dein Heft, deine Postkarten. Danach wird alles endgültig gelöscht.",
+        "Dein Passwort", "Löschung bestätigen", "Abbrechen"],
+    ja:["考え直す時間は六十日",
+        "アカウントは停止されます。すぐに消えるものは何もありません。六十日のあいだに戻ってくれば、もう一度ログインするだけで学習の記録も手帳も絵はがきもすべて元に戻ります。その期間を過ぎると、すべてが完全に削除されます。",
+        "パスワード", "削除を確定する", "キャンセル"]
+  }[ui];
+  /* repli français si l'interface est dans une langue non prévue ici */
+  return t || ["Soixante jours pour changer d'avis",
+    "Ton compte va être désactivé. Rien n'est effacé tout de suite : tu as soixante jours pour revenir.",
+    "Ton mot de passe","Confirmer la suppression","Annuler"];
+}
+function cpOuvrirSup(){
+  var t = cpSupTextes();
+  S("cpSupSous").textContent = t[0];
+  S("cpSupTxt").textContent  = t[1];
+  S("cpSupMdp").placeholder  = t[2];
+  S("cpSupGo").textContent   = t[3];
+  S("cpSupNon").textContent  = t[4];
+  S("cpSupMdp").value = "";
+  cpMsg("cpSupMsg","");
+  cpVue("cpSup");
+  var e = S("compte"); if(e) e.scrollTop = 0;   /* règle des écrans défilables */
+}
+async function cpSupprimer(){
+  var sb = window.clientLingua && window.clientLingua();
+  var mdp = (S("cpSupMdp").value || "").trim();
+  if(!sb){ cpMsg("cpSupMsg","Connexion au serveur impossible."); return; }
+  if(!mdp){ cpMsg("cpSupMsg","Écris ton mot de passe pour confirmer."); return; }
+  cpOccupe("cpSupGo", true);
+  cpMsg("cpSupMsg","Vérification…", true);
+  try{
+    var g = await sb.auth.getUser();
+    var u = g && g.data && g.data.user;
+    if(!u || !u.email){ cpMsg("cpSupMsg","Session expirée. Reconnecte-toi."); cpOccupe("cpSupGo",false); return; }
+    /* le mot de passe est vérifié en se reconnectant sur la même adresse */
+    var v = await sb.auth.signInWithPassword({ email: u.email, password: mdp });
+    if(v && v.error){ cpMsg("cpSupMsg","Ce mot de passe ne correspond pas."); cpOccupe("cpSupGo",false); return; }
+    var ses = await sb.auth.getSession();
+    var jeton = ses && ses.data && ses.data.session && ses.data.session.access_token;
+    if(!jeton){ cpMsg("cpSupMsg","Session introuvable. Reconnecte-toi."); cpOccupe("cpSupGo",false); return; }
+    var r = await fetch("/.netlify/functions/supprimer-compte", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+jeton },
+      body: JSON.stringify({ action:"demander" })
+    });
+    var j = null; try{ j = await r.json(); }catch(e){}
+    if(!r.ok || !j || !j.ok){
+      /* ⚠️ on montre le motif réel : une erreur générique est exactement ce
+         qui a masqué la panne de cette fonction pendant des mois. */
+      cpMsg("cpSupMsg", (j && j.erreur) ? String(j.erreur).slice(0,140) : ("Échec ("+r.status+")."));
+      cpOccupe("cpSupGo",false); return;
+    }
+    /* le compte est daté : on efface le local et on déconnecte, sans
+       repousser la progression (elle appartient à un compte qui part). */
+    try{ await sb.auth.signOut(); }catch(e){}
+    ["hype_lingua_cartes","hype_lingo_maitrise","hype_lingua_faits",
+     "hype_lingua_sprint","hype_lingua_quiz","hype_lingua_carnet"].forEach(function(k){
+      try{ localStorage.removeItem(k); }catch(e){}
+    });
+    cpAccesMaj();
+    cpVue("cpQuestion");
+    cpMsg("cpMsgQ","Ton compte est désactivé. Reconnecte-toi dans les soixante jours pour tout retrouver.", true);
+  }catch(e){
+    cpMsg("cpSupMsg", String(e && e.message ? e.message : e).slice(0,140));
+  }
+  cpOccupe("cpSupGo", false);
+}
+S("cpVersSup").addEventListener("click", cpOuvrirSup);
+S("cpSupNon").addEventListener("click", function(){ cpVue("cpMien"); });
+S("cpSupGo").addEventListener("click", cpSupprimer);
 
 /* ---------- la déconnexion : sauvegarde FORCÉE d'abord ---------- */
 async function cpDeconnecter(){
@@ -7167,6 +7315,7 @@ function jauge(){
     b.classList.toggle("muet", muet);
     b.textContent = muet ? "\uD83D\uDD07" : "\uD83D\uDD0A";
   }
+  peindreSignet();
   var j=S("lcJauge"); videEl(j);
   LC.plan.forEach(function(x,i){
     j.appendChild(el("i",{class: i<LC.i ? "f" : (i===LC.i ? "a" : "")}));
@@ -7251,22 +7400,22 @@ function verdict(zone, juste, bonne, apres, concept){
    après ». Le stockage existait deja depuis la v64 (`carnetBasculer`,
    `carnetContient`, cle `ville|mot`) et attendait son ecran : c'est ce
    signet-la qui manquait. La PAGE du carnet reste a construire. */
-function signetCarnet(c){
-  var b=el("button",{class:"lcSignet", type:"button"});
-  function peindre(){
-    var dedans = (typeof window.carnetContient==="function")
-               && window.carnetContient(LC.ville, c.ref);
-    b.classList.toggle("dedans", !!dedans);
-    b.textContent = dedans ? "\u2605" : "\u2606";
-    b.setAttribute("aria-label", dedans ? "Retirer de mon carnet" : "Ajouter à mon carnet");
-  }
-  b.addEventListener("click", function(ev){
-    ev.stopPropagation();
-    if(typeof window.carnetBasculer==="function") window.carnetBasculer(LC.ville, c.ref);
-    peindre();
-  });
-  peindre();
-  return b;
+/* le mot de l'exercice en cours, ou null (une phrase n'en porte pas un seul) */
+function motCourant(){
+  if(!LC || !LC.plan) return null;
+  var x = LC.plan[LC.i];
+  return (x && x.c && x.c.ref) ? x.c : null;
+}
+function peindreSignet(){
+  var b=S("lcSignetB"); if(!b) return;
+  var c=motCourant();
+  if(!c){ b.classList.add("rien"); b.textContent=""; return; }
+  b.classList.remove("rien");
+  var dedans = (typeof window.carnetContient==="function")
+             && window.carnetContient(LC.ville, c.ref);
+  b.classList.toggle("dedans", !!dedans);
+  b.textContent = dedans ? "\u2605" : "\u2606";
+  b.setAttribute("aria-label", dedans ? "Retirer de mon carnet" : "Ajouter à mon carnet");
 }
 function exDecouverte(x){
   var c=x.c, ui=langueUI(), lg=cible();
@@ -7274,7 +7423,6 @@ function exDecouverte(x){
   return el("div",{},
     el("p",{class:"lcCons", text: ui==="en"?"A new word":"Un mot nouveau"}),
     el("div",{class:"lcCarte"},
-      signetCarnet(c),
       el("p",{class:"lcMot", text:mc.m}),
       mc.p ? el("p",{class:"lcPhon", text:"[ "+mc.p+" ]"}) : null,
       mc.var ? el("p",{class:"lcVar", text:mc.var}) : null,
@@ -8346,6 +8494,14 @@ function avisLecon(txt){
   if(AVIS_MINUTEUR) clearTimeout(AVIS_MINUTEUR);
   AVIS_MINUTEUR=setTimeout(function(){ a.classList.remove("on"); }, 4200);
 }
+S("lcSignetB").addEventListener("click", function(){
+  var c=motCourant(); if(!c) return;
+  if(typeof window.carnetBasculer==="function") window.carnetBasculer(LC.ville, c.ref);
+  peindreSignet();
+  if(typeof window.carnetContient==="function" && window.carnetContient(LC.ville,c.ref)){
+    avisLecon(T("carnetAjoute"));
+  }
+});
 S("lcSonB").addEventListener("click", function(){
   var versMuet = !modeSilencieux();
   try{ localStorage.setItem("hype_lingua_muet", modeSilencieux()?"0":"1"); }catch(e){}
