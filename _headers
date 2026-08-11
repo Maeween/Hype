@@ -1,16 +1,16 @@
-# ==========================================================================
-#  Hype — en-têtes de cache Netlify
-#  À placer à la RACINE du dépôt, à côté de index.html. Nom exact : _headers
+# =====================================================================
+#  _headers — Hype · règles de cache Netlify
+#  A placer à la RACINE du dépôt, à côté de index.html
 #  (pas d'extension, l'underscore compte)
 #
-#  Principe : ce qui ne change JAMAIS est mis en cache un an.
+#  Principe : ce qui ne change JAMAIS est mis en cache un an ;
 #             ce qui change à chaque push n'est jamais mis en cache.
-# ==========================================================================
+# =====================================================================
 
 
-# --------------------------------------------------------------------------
-#  JAMAIS EN CACHE — sinon un push ne parviendrait pas aux cavaliers
-# --------------------------------------------------------------------------
+# ---------------------------------------------------------------------
+#  JAMAIS EN CACHE — sinon un push ne parviendrait pas aux utilisateurs
+# ---------------------------------------------------------------------
 
 /
   Cache-Control: public, max-age=0, must-revalidate
@@ -34,11 +34,11 @@
   Cache-Control: public, max-age=0, must-revalidate
 
 
-# --------------------------------------------------------------------------
-#  CACHE UN AN, IMMUABLE — contenus adressés par clé, jamais réécrits
+# ---------------------------------------------------------------------
+#  CACHE UN AN, IMMUABLE — contenus adressés par clé, jamais réécrits :
 #  119 fichiers d'images + 3 fichiers de la base de clubs.
 #  C'est ici que se trouve l'essentiel du gain.
-# --------------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
 /hype-images-*.js
   Cache-Control: public, max-age=31536000, immutable
@@ -49,13 +49,73 @@
 /images/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Les 98 images du Memory du Poney (session 113, 11/08) vivent A LA RACINE et
+# non dans images/ : aucune regle ne les couvrait, le navigateur les
+# renegociait donc a chaque ouverture d'un niveau — d'ou le lag constate par
+# Blandine. Leur nom porte deja ?v=N et change quand l'image change.
+# Le jour du rangement en medias/baby/, garder cette ligne le temps que les
+# anciens chemins disparaissent des caches, puis la retirer.
+/memory-*.webp
+  Cache-Control: public, max-age=31536000, immutable
 
-# --------------------------------------------------------------------------
-#  LINGUAE — ses fichiers vivent A LA RACINE, pas dans images/
-#  C'est le plus gros poste du depot apres l'index : les 19 cartes postales
-#  et les 19 videos d'arrivee ne changent jamais une fois produites.
-#  Sans ces lignes, elles etaient renegociees a chaque ouverture du module.
-# --------------------------------------------------------------------------
+# Prepare le rangement en cinq dossiers (doctrine du 11/08) : medias/baby,
+# medias/galops, medias/linguae, medias/hype. Que du WebP, jamais reecrit.
+/medias/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ---------------------------------------------------------------------
+#  HYPE — MEDIAS DE LA RACINE (releve exhaustif du 11/08 au soir)
+#  Aucune de ces lignes n'existait : ces fichiers etaient renegocies a
+#  chaque affichage. Releve fait en lisant index.html, hype-memory-poney.js
+#  et hype-cours-baby.js, pas de memoire.
+# ---------------------------------------------------------------------
+
+/decor-*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/hero-reprises.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/cheval-dessus.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/hype-*.mp4
+  Cache-Control: public, max-age=31536000, immutable
+
+/palmares-*.mp4
+  Cache-Control: public, max-age=31536000, immutable
+
+/hype-*-poster*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/hype-encart-video.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/apple-touch-icon*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+
+# ---------------------------------------------------------------------
+#  LINGUAE — les images fixes, qui manquaient aussi
+#  (les 4 conventions de villes carte-/fond-/objet-/arrivee- sont plus haut)
+# ---------------------------------------------------------------------
+
+/carnet-*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/lingua-*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/themes-hero.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+
+# ---------------------------------------------------------------------
+#  LINGUAE — ses fichiers vivent A LA RACINE, pas dans un dossier.
+#  C'est le plus gros poste du depot apres l'index : les cartes, fonds
+#  et les 19 videos d'arrivee ne changent jamais une fois posés.
+#  Sans ces lignes, elles etaient renegociees a chaque visite.
+# ---------------------------------------------------------------------
 
 /carte-*.webp
   Cache-Control: public, max-age=31536000, immutable
@@ -64,6 +124,14 @@
   Cache-Control: public, max-age=31536000, immutable
 
 /vignette-*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+# Les objets de collection (regle du 10/08 : objet-<ref>.webp a la racine)
+# n'etaient pas couverts non plus.
+/objet-*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/depart.mp4
   Cache-Control: public, max-age=31536000, immutable
 
 /cheval.webp
@@ -88,11 +156,11 @@
   Cache-Control: public, max-age=31536000, immutable
 
 
-# --------------------------------------------------------------------------
-#  CACHE COURT AVEC REVALIDATION — fichiers susceptibles d'être corrigés
-#  Le navigateur les réutilise pendant une heure, puis demande au serveur
+# ---------------------------------------------------------------------
+#  CACHE COURT AVEC REVALIDATION — fichiers susceptibles d'evoluer.
+#  Le navigateur les réutilise pendant une heure, puis redemande
 #  s'ils ont changé. Une réponse « pas changé » ne coûte presque rien.
-# --------------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
 /hype-supabase.js
   Cache-Control: public, max-age=3600, must-revalidate
@@ -110,7 +178,7 @@
   Cache-Control: public, max-age=3600, must-revalidate
 
 
-# ==========================================================================
+# =====================================================================
 #  ATTENTION — LA RÈGLE QUI VA AVEC CE FICHIER
 #
 #  « immutable » veut dire : le navigateur ne revient JAMAIS vérifier
@@ -123,9 +191,31 @@
 #   · un lot d'images se complète en créant hype-images-123.js,
 #     jamais en modifiant hype-images-42.js.
 #
-#  C'est déjà la convention du projet (clés k555–k629 figées, nouveaux lots
+#  C'est déjà la convention du projet (clés k555-k629 figées, nouveaux lots
 #  ajoutés à la suite) — ce fichier ne fait que la rendre officielle.
 #
 #  Si un jour il FAUT vraiment réécrire un de ces fichiers sur place :
 #  retirer sa ligne d'ici, pousser, attendre une heure, puis remettre.
-# ==========================================================================
+#
+# =====================================================================
+#  🔴 CE FICHIER DOIT ETRE REMODIFIE LE JOUR DU RANGEMENT DES IMAGES
+#
+#  Les 98 images du Memory sont aujourd'hui a la RACINE (/memory-*.webp).
+#  Quand elles partiront dans medias/baby/, la regle /medias/* les couvrira
+#  deja — mais /memory-*.webp devra RESTER EN PLACE quelques semaines, le
+#  temps que les anciens chemins sortent des caches des appareils. Ne la
+#  retirer qu'ensuite.
+#
+#  Meme chose pour chaque lot deplace : la regle de l'ancien emplacement se
+#  garde le temps de la transition, puis se retire. Un chemin sans regle =
+#  renegociation a chaque affichage = le lag constate le 11/08 au soir.
+#
+#  A VERIFIER, non tranche : les couvertures de chapitres des Galops
+#  (couv-gN-cN-<langue>.jpg, citees 14 fois dans le SUIVI) ne sont pas dans
+#  ce fichier — je n'ai pas pu determiner si elles vivent a la racine ou
+#  dans images/. Si racine, il manque une ligne /couv-*.jpg.
+#
+#  VOLONTAIREMENT ABSENT : /photo.jpg. Ce n'est pas un fichier du depot mais
+#  le nom donne aux photos que l'utilisateur envoie (new File(..., "photo.jpg")).
+#  Le figer un an serait absurde et potentiellement dangereux.
+# =====================================================================

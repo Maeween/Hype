@@ -133,6 +133,84 @@ Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js
 
 ---
 
+## DOCTRINE · RANGEMENT DES IMAGES EN CINQ DOSSIERS (posée le 11/08, décision de Blandine)
+
+Les images ne se rangent plus par écran mais **par produit futur** : le jour où un module part en application séparée, on emporte son dossier et rien d'autre.
+
+| dossier | contenu | état |
+|---|---|---|
+| `images/` | l'existant : les `kNNN` en jpg/jpeg, les 12 couvertures `baby-cNN-*.jpg`, les 2 `memory-evan-maman-*.jpg` | **gelé** — se vide au fil des conversions, on n'y ajoute plus rien |
+| *(à nommer)* **Galops** | cours et affiches des Galops 1 à 7 | démarrera quasi vide : presque tout est encore en base64 dans les lots |
+| *(à nommer)* **Linguae** | les 4 conventions de villes + les 8 images fixes + les vidéos | **on n'y touche pas pour l'instant** (une autre page travaille sur `lingo.html`) |
+| *(à nommer)* **Baby** | les 27 chapitres, les personnages, **et ses jeux — dont le Memory du Poney** | premier dossier à se remplir : les 98 WebP du Memory |
+| *(à nommer)* **Hype** | Accueil, Premium, le Monde, l'Écurie, la Communauté | |
+
+**RÈGLE D'ENTRÉE, absolue : un fichier n'entre dans un de ces quatre dossiers que s'il est déjà en WebP.** Le dossier est donc propre par construction et on n'y repasse jamais. Ce qui n'est pas converti reste dans `images/` jusqu'à sa conversion. Décision de Blandine : « on met que celles dans le bon format dedans, ça sera ça de moins à faire ensuite ».
+
+**Conséquence assumée** : une image utilisée par deux produits sera **dupliquée** dans les deux dossiers. C'est le prix de l'autonomie — un dossier qui dépend du dossier voisin n'est pas emportable.
+
+**Le Memory du Poney appartient au Baby**, pas à Hype : c'est un jeu du Chemin Baby. C'est donc le dossier Baby qui s'ouvre en premier.
+
+### Ce qui est éligible aujourd'hui, chiffré
+
+- **98 fichiers** : les WebP du Memory, actuellement **à la racine du dépôt** → destination dossier Baby.
+- **0 autre**. Les 12 couvertures de chapitres du Baby (`images/baby-c3-brosse.jpg` etc.) sont en **jpg** : elles restent dans `images/` jusqu'à conversion. C'est le lot suivant tout désigné — 12 fichiers, un seul fichier de code à toucher (`hype-cours-baby.js`).
+
+### NOMS ARRÊTÉS — un dossier parent, quatre enfants
+
+Blandine a délégué le choix (« à toi de voir comment tu veux appeler et où on doit mettre les dossiers ») — **c'est donc un choix de Claude, sur délégation explicite** :
+
+```
+medias/baby/      medias/galops/
+medias/linguae/   medias/hype/
+images/           ← l'existant, gelé
+```
+
+Trois raisons : la racine est déjà saturée (120+ lots `hype-images-*.js`, les html, et maintenant 98 WebP posés dessus) et un seul dossier parent l'assainit au lieu de l'aggraver ; « emporter Linguae » devient littéral (un dossier, un produit, un geste) ; et `medias/` ne se confond pas avec `images/` dans la liste GitHub. Sans accent — un `é` dans une URL est une source d'ennuis silencieux. Au pluriel, car il y a aussi des vidéos.
+
+### 🔴 `_headers` DEVRA ÊTRE REMODIFIÉ À CHAQUE DÉPLACEMENT D'IMAGES
+
+**C'est la leçon de la soirée du 11/08 et elle est écrite aussi en pied du fichier `_headers` lui-même.**
+
+Un chemin qui n'est couvert par aucune règle de `_headers` est **renégocié à chaque affichage** : c'est le lag que Blandine a constaté après la bascule du Memory. Les 98 images sont arrivées à la racine sous `memory-*.webp`, et le fichier ne connaissait que `/images/*`.
+
+**Procédure, à chaque lot déplacé :**
+
+1. ajouter la règle du **nouvel** emplacement (pour `medias/`, c'est déjà fait) ;
+2. **garder la règle de l'ancien emplacement quelques semaines**, le temps que les anciens chemins sortent des caches des appareils ;
+3. ne la retirer qu'ensuite.
+
+Le piège symétrique : `immutable` veut dire que le navigateur ne revient **jamais** vérifier pendant un an. Un fichier de cette liste ne se corrige donc plus, il se **remplace par un nouveau nom**. C'est déjà la convention du projet.
+
+### `_headers` complété le 11/08 au soir — relevé exhaustif, pas de mémoire
+
+En lisant `index.html`, `hype-memory-poney.js` et `hype-cours-baby.js`, j'ai trouvé **une vingtaine de médias de la racine qui n'étaient couverts par aucune règle** : les 98 `memory-*.webp`, les `decor-*.webp` du Premium, `hero-reprises.webp`, `cheval-dessus.png`, les vidéos `hype-*.mp4` et `palmares-*.mp4`, les posters, les icônes, et côté Linguae `carnet-*.webp`, `lingua-*.webp`, `themes-hero.webp` et `objet-*.webp` (les objets de collection de la règle du 10/08). Tous ajoutés en `immutable` un an. `/medias/*` est ajouté d'avance.
+
+**Deux points laissés ouverts, volontairement :**
+
+- **`couv-gN-cN-<langue>.jpg`** — les couvertures de chapitres des Galops, citées 14 fois dans ce SUIVI. Je n'ai pas pu déterminer si elles vivent à la racine ou dans `images/` : les fichiers de cours des Galops ne sont pas dans cette conversation. Si elles sont à la racine, il manque une ligne `/couv-*.jpg`. **À vérifier.**
+- **`/photo.jpg` volontairement absent** : ce n'est pas un fichier du dépôt mais le nom donné aux photos que l'utilisateur envoie (`new File(..., "photo.jpg")`). Le figer un an serait absurde et potentiellement dangereux.
+
+### 🟠 DÉCOUVERTE : le service worker en ligne est celui de RETRAIT, pas le « réseau d'abord »
+
+Vérifié à l'adresse `/sw.js` le 11/08 au soir : le fichier déployé est le **service worker de retrait du 26/07**, celui qui vide ses caches, se désinscrit et n'installe **aucun** gestionnaire `fetch`. Le `sw.js` « réseau d'abord » (`hype-v4`, avec `cache: "no-store"`) existe dans les fichiers de Blandine mais **n'est pas en ligne**.
+
+**Conséquence pratique** : il n'y a aujourd'hui aucun service worker actif, donc aucune interception de requêtes. Tout le comportement de cache dépend **uniquement de `_headers`** — d'où l'importance de ce fichier. Et le piège du service worker qui « resservirait ses anciennes réponses » ne s'applique pas à Hype en ce moment (il reste valable pour Linguae, à vérifier séparément).
+
+**Je n'ai pas touché à `sw.js`** : mon hypothèse initiale (le `no-store` de la v4 causant le lag) était fausse, et remettre un service worker en circulation sans que Blandine le demande serait une décision qui ne m'appartient pas. Attention : Blandine a **six fichiers `sw.js`** dans ses téléchargements pour **trois versions distinctes** (retrait, `hype-v3`, `hype-v4`) — risque réel de pousser le mauvais.
+
+### Un carnet dédié au Baby
+
+**`SUIVI-BABY.md` ouvert le 11/08** sur demande de Blandine (« on peut commencer un suivi baby en plus non ? »). Il couvre le Chemin Baby, ses 27 chapitres, le Memory du Poney et les autres jeux Baby.
+
+⚠️ **Le Baby vit toujours dans `index.html`** : `SUIVI-BABY.md` est un carnet de **sujet**, pas de fichier. Toute livraison Baby doit rester tracée **ici aussi** (empreinte md5, témoin de version), sinon deux carnets décriront le même index sans se parler.
+
+### Linguae — relevé fait en lecture seule le 11/08, AUCUNE modification
+
+`lingo.html` ne contient **aucune** occurrence de `images/` : tout est chargé depuis la racine. Quatre endroits construisent les chemins dynamiquement — `"carte-"+ref+".webp"`, `"fond-"+ref+".webp"`, `"objet-"+ref+".webp"`, `"arrivee-"+ref+".mp4"` — sur 32 villes. Plus 8 images fixes (`carnet-ferme`, `carnet-page`, `fond-lingua`, `fond-newmarket`, `lingua-affiche`, `lingua-langues`, `themes-hero`, `apple-touch-icon-linguae.png`) et 2 vidéos (`ouverture.mp4`, `depart.mp4`). Déplacer Linguae = modifier ces 4 constructions + incrémenter `VER` (actuellement `?v=32`).
+
+---
+
 ## SESSION 113 · L'OUTIL D'EXTRACTION v2, ET LA FAUSSE ALERTE DES 21 CLÉS
 
 **Aucune livraison d'index.html, aucun fichier compagnon modifié.** Un seul fichier : `extraire-memory-2.html` (outil, racine). Nom neuf volontairement : réutiliser `extraire-memory.html` exposait au service worker qui resservirait la v1.
