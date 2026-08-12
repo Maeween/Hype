@@ -72,6 +72,10 @@ body{background:#0B0805;font-family:'Montserrat',sans-serif;color:#E8DCC0}
 .obj{position:absolute;z-index:6;touch-action:none;cursor:grab;filter:drop-shadow(4px 9px 8px rgba(0,0,0,.55))}
 .obj img{width:100%;height:auto;display:block;pointer-events:none}
 .obj.tenu{filter:drop-shadow(0 0 14px rgba(201,169,97,.7));z-index:14}
+/* le jumeau : le MEME objet, vu depuis l'autre angle. Il ne se saisit pas
+   (on le deplace depuis le mur ou il a ete pose) et il ne porte pas le
+   halo de l'objet tenu, pour qu'on comprenne lequel des deux on tient. */
+.obj.jumeau{cursor:default}
 #reserve{position:fixed;bottom:0;left:0;right:0;z-index:22;
  background:linear-gradient(0deg,rgba(11,8,5,.96) 70%,transparent);
  padding:12px 0 calc(env(safe-area-inset-bottom) + 10px)}
@@ -147,6 +151,87 @@ var MURS = [
   {id:"gauchebiais", f:"sellerie-gauche-biais.webp", biais:true}
 ];
 var FACES = [2,3,4,5,6,7];      /* le cercle, apres les DEUX vues d'arrivee */
+
+/* ==================================================================
+   LES DEUX MURS D'UN MEME MUR (12 aout 2026 — ORDRE DE BLANDINE :
+   « tout devait apparaitre, c'est pour ca que tu as les images de
+   profil »). Un objet pose sur le mur des selles doit se retrouver sur
+   l'angle des selles, a sa vraie place et vu sous son vrai angle.
+
+   La pose reste LIBRE au doigt : c'est le moteur qui calcule ou l'objet
+   tombe dans l'autre vue. Pour ca il faut quatre points qu'on reconnait
+   dans les DEUX images du meme mur — ici deux porte-selles et les deux
+   bouts de l'etagere — et une homographie, qui est la transformation
+   exacte d'un plan photographie sous deux angles. Une regle de trois ne
+   suffirait pas : la perspective n'est pas lineaire.
+
+   ⚠️ LES QUATRE POINTS CI-DESSOUS SONT RELEVES A L'OEIL sur les images
+   livrees, en % du mur. Ils sont justes a un ou deux pour cent pres, ce
+   qui suffit a tomber sur le bon porte-selle, mais ils demandent l'essai
+   de Blandine pour etre affines. C'est la seule valeur approchee de tout
+   l'ecran, et elle est ici, en clair, pour etre corrigee en une ligne.
+
+   ⚠️ LA VITRINE N'EST PAS APPARIEE : `sellerie-droite.webp` vient
+   d'arriver et n'a pas ete comparee a `sellerie-droite-biais.webp`. Tant
+   que la paire n'est pas mesuree, on ne la declare pas — un objet mal
+   place vaut moins qu'un objet absent. Signale, pas devine.
+   ================================================================== */
+var PAIRES = {
+  gauche: {
+    jumeau: "gauchebiais",
+    pts: [[31,51,17,50], [69,51,41,53], [21,27,10,22], [78,27,47,30]]
+  },
+  gauchebiais: { jumeau: "gauche", inverse: "gauche" }
+};
+/* resolution d'un systeme lineaire par pivot de Gauss : huit inconnues
+   pour les huit coefficients de l'homographie (le neuvieme vaut 1). */
+function resoudre(A, b){
+  var n = b.length, i, j, k;
+  for(i = 0; i < n; i++){
+    var p = i;
+    for(j = i + 1; j < n; j++){ if(Math.abs(A[j][i]) > Math.abs(A[p][i])) p = j; }
+    var t = A[i]; A[i] = A[p]; A[p] = t;
+    var u = b[i]; b[i] = b[p]; b[p] = u;
+    if(Math.abs(A[i][i]) < 1e-12) return null;
+    for(j = i + 1; j < n; j++){
+      var f = A[j][i] / A[i][i];
+      for(k = i; k < n; k++) A[j][k] -= f * A[i][k];
+      b[j] -= f * b[i];
+    }
+  }
+  var x = new Array(n);
+  for(i = n - 1; i >= 0; i--){
+    var so = b[i];
+    for(j = i + 1; j < n; j++) so -= A[i][j] * x[j];
+    x[i] = so / A[i][i];
+  }
+  return x;
+}
+function homographie(pts){
+  var A = [], b = [];
+  for(var i = 0; i < 4; i++){
+    var x = pts[i][0], y = pts[i][1], X = pts[i][2], Y = pts[i][3];
+    A.push([x, y, 1, 0, 0, 0, -x * X, -y * X]); b.push(X);
+    A.push([0, 0, 0, x, y, 1, -x * Y, -y * Y]); b.push(Y);
+  }
+  return resoudre(A, b);
+}
+var HOMO = {};
+Object.keys(PAIRES).forEach(function(id){
+  var P = PAIRES[id]; if(!P.pts) return;
+  var h = homographie(P.pts); if(!h) return;
+  HOMO[id + ">" + P.jumeau] = h;
+  /* et le chemin inverse, pour un objet pose depuis l'angle */
+  var inv = P.pts.map(function(q){ return [q[2], q[3], q[0], q[1]]; });
+  var h2 = homographie(inv); if(h2) HOMO[P.jumeau + ">" + id] = h2;
+});
+function projeter(depuis, vers, x, y){
+  var h = HOMO[depuis + ">" + vers]; if(!h) return null;
+  var d = h[6] * x + h[7] * y + 1;
+  if(Math.abs(d) < 1e-9) return null;
+  return {x:(h[0] * x + h[1] * y + h[2]) / d, y:(h[3] * x + h[4] * y + h[5]) / d};
+}
+function jumeauDe(idMur){ var P = PAIRES[idMur]; return P ? P.jumeau : null; }
 
 /* Chaque arche est mesuree sur l'image livree : [x, y, largeur, hauteur]
    en % du mur. Les cinq murs perces n'ont pas la meme fenetre. */
@@ -490,6 +575,42 @@ function repousser(p){
   p.x = (dg < dd) ? FENETRE.left - 6 : FENETRE.right + 6;
   aide(M('fenetre'));
 }
+/* LE JUMEAU. L'objet vit sur le mur ou il a ete pose (c'est lui qu'on
+   saisit) et une COPIE non saisissable est peinte sur l'autre vue du meme
+   mur, a la place calculee par l'homographie et avec la vue de trois
+   quarts quand elle existe. On ne stocke jamais le jumeau : il se
+   recalcule. C'est ce qui permettra d'ajouter des angles plus tard sans
+   toucher aux donnees deja enregistrees. */
+function majJumeau(r){
+  var p = POSES[r]; if(!p) return;
+  var idOwn = MURS[p.mur].id, idJ = jumeauDe(idOwn);
+  var vieux = S('jum-' + r); if(vieux) vieux.remove();
+  if(!idJ) return;
+  var q = projeter(idOwn, idJ, p.x, p.y); if(!q) return;
+  /* la largeur suit la perspective : on projette les deux bords et on
+     mesure ce qui reste entre eux. Un objet qui s'eloigne rapetit. */
+  var g = projeter(idOwn, idJ, p.x - p.l / 2, p.y);
+  var d = projeter(idOwn, idJ, p.x + p.l / 2, p.y);
+  var l = (g && d) ? Math.abs(d.x - g.x) : p.l;
+  l = Math.max(5, Math.min(70, l));
+  var hote = S('dedans-' + idJ); if(!hote) return;
+  var e = document.createElement('div');
+  e.className = 'obj jumeau'; e.id = 'jum-' + r;
+  e.style.pointerEvents = 'none';
+  var im = document.createElement('img'); im.alt = '';
+  im.src = imageObjet(r, idJ);
+  var o = objetDe(r);
+  im.onerror = function(){ if(o && o.repli && im.src !== img(o.repli)) im.src = img(o.repli); };
+  im.style.transform = p.mir ? 'scaleX(-1)' : '';
+  e.appendChild(im);
+  e.style.width = l + '%'; e.style.height = 'auto';
+  e.style.left = (q.x - l / 2) + '%';
+  e.style.top = q.y + '%';
+  e.style.transform = 'translateY(-50%)';
+  hote.appendChild(e);
+}
+function retirerJumeau(r){ var e = S('jum-' + r); if(e) e.remove(); }
+
 function poser(r, m, x, y, larg, mir){
   POSES[r] = {mur:m, x:x, y:y, l:larg, mir:!!mir};
   var d = document.createElement('div'); d.className = 'obj'; d.id = 'obj-' + r;
@@ -503,6 +624,7 @@ function poser(r, m, x, y, larg, mir){
 }
 function retirer(r){
   if(OBJ_ACTIF === r) cacherTaille();
+  retirerJumeau(r);
   var e = S('obj-' + r); if(e) e.remove();
   delete POSES[r];
   var v = S('res-' + r); if(v) v.classList.remove('pose');
@@ -524,11 +646,13 @@ function appliquer(r){
   im.style.transform = p.mir ? 'scaleX(-1)' : '';
   var voulue = imageObjet(r, MURS[p.mur].id);
   if(voulue && im.getAttribute('src') !== voulue) im.src = voulue;
+  majJumeau(r);
 }
 function transferer(r, sens){
   var p = POSES[r], e = S('obj-' + r);
   var i = FACES.indexOf(p.mur); if(i < 0) i = 0;
   var ni = FACES[(i + sens + FACES.length) % FACES.length];
+  retirerJumeau(r);       /* il appartenait a l'ancien mur */
   p.mur = ni;
   S('dedans-' + MURS[ni].id).appendChild(e);
   p.x = sens > 0 ? 16 : 84;        /* il entre par le bord oppose */

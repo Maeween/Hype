@@ -2729,8 +2729,33 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     faits:    "hype_lingua_faits",
     sprint:   "hype_lingua_sprint",
     quiz:     "hype_lingua_quiz",
-    carnet:   "hype_lingua_carnet"
+    carnet:   "hype_lingua_carnet",
+    /* ⚠️ AJOUT DU 12/08 (session 209) — ORDRE DE BLANDINE : « oui sql on
+       doit garder l'amenagement, certains resteront a terme que pour ca ».
+       L'amenagement de la sellerie devient donc une donnee de compte, pas
+       une donnee de telephone. SQL a executer, voir la note ci-dessous. */
+    sellerie: "hype_lingua_sellerie"
   };
+
+  /* ==================================================================
+     🟥 SQL A EXECUTER AVANT QUE CETTE LIGNE SERVE (session 209)
+
+       alter table public.hype_lingua_progression
+         add column if not exists sellerie jsonb not null default '{}'::jsonb;
+
+     Sans cette colonne, `select` renvoie une erreur et `progression()`
+     s'arrete tout de suite : « base muette : on ne touche a RIEN ». Rien
+     n'est perdu, mais RIEN ne se synchronise non plus, carnet compris.
+     C'est le seul endroit du fichier ou du SQL est necessaire.
+
+     ⚠️ ET LA FUSION N'EST PAS LA MEME QUE POUR LE RESTE.
+     Les cinq blocs de progression prennent LA PLUS GENEREUSE : personne ne
+     perd jamais une carte, et on ne peut plus rien effacer. Appliquee a un
+     amenagement, cette regle serait un piege : ranger un objet ne se
+     synchroniserait jamais, il reviendrait au mur a chaque connexion. La
+     sellerie suit donc la regle du CARNET — LE PLUS RECENT GAGNE — piece
+     par piece, sur l'horodatage `maj` ecrit a chaque changement.
+     ================================================================== */
 
   function lireLocal(cle){
     try{ var v = localStorage.getItem(cle); return v ? (JSON.parse(v) || {}) : {}; }
@@ -2814,8 +2839,28 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       faits:    fusionPalier(local.faits,     base.faits),
       sprint:   fusionSprint(local.sprint,    base.sprint),
       quiz:     fusionQuiz(local.quiz,        base.quiz),
-      carnet:   fusionCarnet(local.carnet,    base.carnet)
+      carnet:   fusionCarnet(local.carnet,    base.carnet),
+      sellerie: fusionSellerie(local.sellerie,  base.sellerie)
     };
+  }
+
+  /* PIECE PAR PIECE, LE PLUS RECENT GAGNE. On ne melange jamais deux
+     amenagements d'une meme piece : un objet a une seule place, et la
+     moitie d'un rangement ne veut rien dire. Une piece absente d'un cote
+     est reprise de l'autre telle quelle — c'est ce qui permettra a la
+     deuxieme sellerie d'arriver sans rien ecraser. */
+  function fusionSellerie(local, base){
+    var L = obj(local), B = obj(base);
+    var lp = obj(L.pieces), bp = obj(B.pieces);
+    var out = {pieces:{}}, k;
+    for(k in lp) out.pieces[k] = lp[k];
+    for(k in bp){
+      if(!out.pieces[k]){ out.pieces[k] = bp[k]; continue; }
+      var a1 = Number(obj(out.pieces[k]).maj || 0);
+      var b1 = Number(obj(bp[k]).maj || 0);
+      if(b1 > a1) out.pieces[k] = bp[k];
+    }
+    return out;
   }
 
   async function progression(sb, u){
@@ -2825,7 +2870,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
       var base = {}, ligneExiste = false;
       var r = await sb.from("hype_lingua_progression")
-                      .select("cartes,maitrise,faits,sprint,quiz,carnet")
+                      .select("cartes,maitrise,faits,sprint,quiz,carnet,sellerie")
                       .eq("user_id", u.id).maybeSingle();
       if(!r || r.error) return;               /* base muette : on ne touche à RIEN */
       if(r.data){ ligneExiste = true; base = r.data; }
@@ -2843,7 +2888,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
         try{
           await sb.from("hype_lingua_progression").upsert({
             user_id: u.id, cartes: f.cartes, maitrise: f.maitrise, faits: f.faits,
-            sprint: f.sprint, quiz: f.quiz, carnet: f.carnet,
+            sprint: f.sprint, quiz: f.quiz, carnet: f.carnet, sellerie: f.sellerie,
             maj_le: new Date().toISOString()
           }, { onConflict: "user_id" });
         }catch(e){}
@@ -2861,7 +2906,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
           f = g;
           sb.from("hype_lingua_progression").upsert({
             user_id: u.id, cartes: g.cartes, maitrise: g.maitrise, faits: g.faits,
-            sprint: g.sprint, quiz: g.quiz, carnet: g.carnet,
+            sprint: g.sprint, quiz: g.quiz, carnet: g.carnet, sellerie: g.sellerie,
             maj_le: new Date().toISOString()
           }, { onConflict: "user_id" });
         }catch(e){}
@@ -2888,14 +2933,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       for(k in CLES_PROG) local[k] = lireLocal(CLES_PROG[k]);
       var base = {};
       var r = await sb.from("hype_lingua_progression")
-                      .select("cartes,maitrise,faits,sprint,quiz,carnet")
+                      .select("cartes,maitrise,faits,sprint,quiz,carnet,sellerie")
                       .eq("user_id", u.id).maybeSingle();
       if(!r || r.error) return false;      /* base muette : on n'efface rien */
       if(r.data) base = r.data;
       var f = fusionner(local, base);
       var w = await sb.from("hype_lingua_progression").upsert({
         user_id: u.id, cartes: f.cartes, maitrise: f.maitrise, faits: f.faits,
-        sprint: f.sprint, quiz: f.quiz, carnet: f.carnet,
+        sprint: f.sprint, quiz: f.quiz, carnet: f.carnet, sellerie: f.sellerie,
         maj_le: new Date().toISOString()
       }, { onConflict: "user_id" });
       return !(w && w.error);
@@ -5763,6 +5808,13 @@ function sellerieLire(){
 function sellerieEcrire(o){
   try{ localStorage.setItem(CLE_SELLERIE, JSON.stringify(o)); }catch(e){}
 }
+/* l'horodatage de la piece touchee : c'est LUI qui tranche la fusion. */
+function sellerieDater(nom){
+  var o = sellerieLire();
+  if(!o.pieces[nom]) o.pieces[nom] = {poses:{}, vues:{}};
+  o.pieces[nom].maj = Date.now();
+  sellerieEcrire(o);
+}
 function selleriePiece(nom){
   var o = sellerieLire();
   if(!o.pieces[nom]) o.pieces[nom] = {poses:{}, vues:{}};
@@ -5846,6 +5898,7 @@ window.addEventListener("message", function(ev){
     if(!o.pieces[nom]) o.pieces[nom] = {poses:{}, vues:{}};
     o.pieces[nom].poses = d.poses || {};
     o.pieces[nom].vues  = d.vues  || {};
+    o.pieces[nom].maj   = Date.now();
     sellerieEcrire(o);
     return;
   }
