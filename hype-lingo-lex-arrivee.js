@@ -190,8 +190,18 @@ window.HYPE_LINGO_LEX.arrivee = {
           de:"Die Gangart im Zweitakt, die einen Anfänger am meisten durchschüttelt — und die auf dem Ausritt am häufigsten verlangt wird, um Strecke zu machen.",
           ja:"二拍子の歩法。初心者がいちばん揺さぶられる歩法であり、外乗で距離を稼ぐためにいちばんよく求められる歩法でもあります。" } },
 
+  /* ⚠️ AUCUN `var` SUR CE MOT — 12 août 2026, session 210.
+     Il portait `var:"a gallop"`. Deux dégâts : l'app affichait
+     « Aussi : a gallop », donc elle présentait le faux ami comme un
+     synonyme acceptable de « canter » ; et comme lingo.html teste
+     `if(mc.var) ... else if(c.def)` (ligne 8168), la présence du `var`
+     MASQUAIT l'avertissement `def` écrit en six langues — sur le mot
+     le plus dangereux du chapitre.
+     `gallop` reste nommé dans le `def`, là où il est expliqué comme un
+     piège et non proposé comme une variante.
+     ⚠️ NE PAS RÉINTRODUIRE de `var` ici. */
   { ref:"galop", lecon:1, coll:"inscrire",
-    mots:{ fr:{m:"au galop"}, en:{m:"at a canter", p:"kann-teur", var:"a gallop"},
+    mots:{ fr:{m:"au galop"}, en:{m:"at a canter", p:"kann-teur"},
            es:{m:"al galope"}, it:{m:"al galoppo"},
            de:{m:"im Galopp", p:"ga-lop"}, ja:{m:"駆歩で", p:"kakeho de"} },
     def:{ fr:"⚠️ Faux ami en anglais : « canter » est le galop tranquille de tous les jours ; « gallop » est le galop de course, à pleine vitesse. Dis « canter » si tu veux juste avancer.",
