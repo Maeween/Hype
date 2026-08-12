@@ -32234,7 +32234,7 @@ function FilAnnoncesC(){
    OverlayQuoiDeNeuf (1 fois par version) / LienQuoiDeNeuf
    + hypeTexteMulti : annonces Supabase en JSON multilingue
    ============================================================ */
-var HYPE_VERSION_APP = "1.5";
+var HYPE_VERSION_APP = "1.6";
 
 /* --- Annonces multilingues : le texte Supabase peut etre du JSON {fr,en,es,it,ja,de} --- */
 function hypeTexteMulti(txt, langue) {
@@ -35102,6 +35102,34 @@ function MemoryPoneyGrille({ paires, numeroNiveau, onTermine, tr, forcerTout }) 
     const [trouvees, setTrouvees] = React.useState([]);
     const [bloque, setBloque] = React.useState(false);
     const [erreurs, setErreurs] = React.useState(0);
+    /* session 113 (11/08) : PRECHARGEMENT DES IMAGES DU NIVEAU.
+       Depuis le passage en chemins directs, la balise <img> n'est creee qu'au
+       moment ou la carte est retournee (voir plus bas : `visible && carte.src`).
+       Le telechargement commencait donc au TOUCHER : 100 a 160 Ko a aller
+       chercher, et le retournement attendait le reseau. En base64 l'image etait
+       deja en memoire, d'ou l'impression de lenteur apparue apres la bascule
+       (constatee par Blandine le 11/08 au soir).
+       On declenche donc le chargement des sources DISTINCTES a l'ouverture de la
+       grille : 4 a 6 par niveau seulement, les deux cartes d'une paire partageant
+       la meme image. Le navigateur les tient ensuite dans son cache HTTP (regles
+       immutable de _headers), et chaque retournement devient instantane.
+       Les objets Image sont gardes dans un ref : sans cela le ramasse-miettes
+       peut les liberer avant que le chargement aboutisse. */
+    const prechargees = React.useRef([]);
+    React.useEffect(function () {
+        var vues = {};
+        var sources = [];
+        cartesInit.forEach(function (c) {
+            if (c.src && typeof c.src === "string" && !vues[c.src]) { vues[c.src] = 1; sources.push(c.src); }
+        });
+        prechargees.current = sources.map(function (s) {
+            var im = new Image();
+            try { im.decoding = "async"; } catch (e) { /* navigateur ancien */ }
+            im.src = s;
+            return im;
+        });
+        return function () { prechargees.current = []; };
+    }, [cartesInit]);
     const debut = React.useRef(Date.now());
     const finAppelee = React.useRef(false);
     const toucher = (carte) => {

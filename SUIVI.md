@@ -12,13 +12,15 @@
 
 **Ancienne version (112) — 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `3a097c0d18bca58b68472450e4764ef0`, 9083039 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (2, chargé via `?v=2`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
 
-**Version actuelle de l'index.html : 11/08/2026 (SESSION 113 · PONEY D'OR + LE MEMORY EN CHEMINS DIRECTS) — md5 `bcf326e690f4bc08f2472ad2b257f4e8`, 9 086 253 octets`.** Témoin attendu : **`reprise 1.5 · baby 112 · memo 4`**. `HYPE_VERSION_APP` 1.2 → **1.5** et balise `hype-memory-poney.js?v=`**4**.
+**Version actuelle de l'index.html : 12/08/2026 (SESSION 113 · PONEY D'OR, LE MEMORY EN CHEMINS DIRECTS, LAG CORRIGÉ) — md5 `17c334b8779dfd615c679e614d4ef161`, 9 087 825 octets.** Témoin attendu : **`reprise 1.6 · baby 112 · memo 4`**. `HYPE_VERSION_APP` 1.2 → **1.6** et balise `hype-memory-poney.js?v=`**4**.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
-⚠️ **L'index intermédiaire md5 `4b6992e1…` (témoin 1.3) livré plus tôt le 11/08 est PÉRIMÉ — ne pas le pousser.** Celui-ci le contient en entier.
+⚠️ **Trois index intermédiaires du 11/08 sont PÉRIMÉS — ne pas les pousser** : `4b6992e1…` (témoin 1.3), `859e0945…` (1.4), `bcf326e6…` (1.5). Le `17c334b8…` ci-dessus les contient tous.
 
-**À pousser ensemble** : `index.html` + `hype-memory-poney.js` (v3, md5 `55fe37cd1050e525736730a8a4e98afc`, 52 465 octets) + **les 98 images de `memory-webp-v3.zip` dans `images/`**. `hype-cours-baby.js` inchangé (112). Aucun SQL. Indépendant : `extraire-memory-2.html` (outil, racine).
+**À POUSSER, état au 12/08 :** `index.html` **seul** (le préchargement du Memory). Tout le reste est **déjà en ligne et vérifié par Blandine** : `hype-memory-poney.js` v4 (md5 `2b300aeb712b06e4fb4f826e31bbba46`), les 98 images à la racine, `_headers` complété, `extraire-memory-2.html`. `hype-cours-baby.js` inchangé (112). Aucun SQL.
+
+**NE PAS repousser `hype-memory-poney.js`** : il est en v4 et n'a pas bougé. La balise `?v=4` de l'index est donc correcte.
 
 **Ancienne version (110) — 08/08/2026 (SESSION 111 · COUVERTURES BABY EN CHEMIN DIRECT, CADRAGE DU MEMORY) — md5 `60b41ebf3ae1ca9bc4bf3375ca0c60d6`, 9 127 165 octets. **`hype-cours-baby.js` md5 `b4da44c9e0f13cb91b9135683844ed9c`, 1 817 594 octets — MODIFIÉ, à pousser.** Aucune preview. Aucun SQL.**
 
@@ -190,6 +192,31 @@ En lisant `index.html`, `hype-memory-poney.js` et `hype-cours-baby.js`, j'ai tro
 
 - **`couv-gN-cN-<langue>.jpg`** — les couvertures de chapitres des Galops, citées 14 fois dans ce SUIVI. Je n'ai pas pu déterminer si elles vivent à la racine ou dans `images/` : les fichiers de cours des Galops ne sont pas dans cette conversation. Si elles sont à la racine, il manque une ligne `/couv-*.jpg`. **À vérifier.**
 - **`/photo.jpg` volontairement absent** : ce n'est pas un fichier du dépôt mais le nom donné aux photos que l'utilisateur envoie (`new File(..., "photo.jpg")`). Le figer un an serait absurde et potentiellement dangereux.
+
+### 🔴 LE LAG DU MEMORY — LA VRAIE CAUSE ÉTAIT DANS LE CODE, PAS DANS LE CACHE
+
+**Constat de Blandine, 11/08 au soir** : « ça lagait plus et j'ai l'impression que ça relag à l'ouverture des images ». Après la bascule en chemins directs, l'app démarre bien plus vite mais chaque **retournement de carte** marque un temps d'arrêt.
+
+**Deux hypothèses fausses, à ne pas refaire :**
+
+1. *Le `no-store` du service worker* — faux : le `sw.js` en ligne est celui de **retrait**, il n'intercepte aucune requête (voir juste en dessous). Rien n'a été touché à `sw.js`.
+2. *L'absence de règles de cache* — vraie, mais insuffisante. `_headers` ne couvrait effectivement aucun média de la racine (corrigé, voir plus haut), mais le cache ne joue qu'à partir du **deuxième** affichage. À l'intérieur d'une partie, chaque première ouverture de carte restait un aller-retour réseau.
+
+**La vraie cause, trouvée en lisant `MemoryPoneyGrille`** : la balise `<img>` n'est créée **qu'au moment où la carte est retournée** —
+
+```
+visible && carte.src ? React.createElement("img", { src: carte.src, ...
+```
+
+Le téléchargement commençait donc **au toucher** : 100 à 160 Ko à aller chercher, et le retournement attendait le réseau. En base64, l'image était déjà en mémoire — d'où l'impression que la bascule avait « ajouté » de la lenteur. **Ce n'était pas une régression du chargement, mais un déplacement du coût : du démarrage vers le jeu.**
+
+**Correctif livré** (feu vert de Blandine : « Ok ») : un `React.useEffect` au montage de la grille précharge les **sources distinctes** du niveau — 4 à 6 seulement, les deux cartes d'une paire partageant la même image. Les objets `Image` sont conservés dans un `useRef` : sans cela le ramasse-miettes peut les libérer avant la fin du chargement. `decoding = "async"` posé dans un `try`, pour les navigateurs anciens. La dépendance de l'effet est `cartesInit`, donc le préchargement se rejoue à chaque nouveau tirage de niveau et à lui seul.
+
+**Compromis assumé, annoncé à Blandine AVANT de coder** : ouvrir un niveau charge maintenant 4 à 6 images d'un coup (~600 Ko) au lieu de les étaler. L'ouverture prend un instant, mais **chaque retournement devient instantané**. C'est le bon sens du jeu : on attend une fois avant de jouer, jamais pendant.
+
+**Aucun changement visuel, aucun changement de comportement.** Une quinzaine de lignes dans un seul composant. `node --check` passé sur les 16 blocs inline.
+
+**Si le lag persiste malgré ça** : la piste suivante n'est plus le réseau mais le **décodage** — 4 à 6 WebP de 1200 px décodés en même temps sur un iPhone. Le traitement serait alors de servir des vignettes (400 px pour la grille, l'image pleine réservée à l'album), pas de retoucher le chargement. **Ne pas s'acharner sur le cache**, cette piste est épuisée.
 
 ### 🟠 DÉCOUVERTE : le service worker en ligne est celui de RETRAIT, pas le « réseau d'abord »
 
@@ -6072,7 +6099,7 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 
 | Date | Page/session | Résumé |
 |------|--------------|--------|
-| 11/08 (113) | Claude (page Memory) | **Fausse alerte des 21 images du Memory levée : zéro perte.** La v1 de l'outil ne lisait pas les 4 blocs `<script>` inline de l'index (boucles `k547-k554`, `k615-k628` + corrections `k455`/`k457`/`k473`/`k474`), d'où 21 faux « SANS_IMAGE ». Le « ? » de la capture Obstacles = carte face cachée. **`extraire-memory-2.html` livré** : diagnostic seul ou avec zip, anti-cache, rejoue les blocs inline, nomme la clé `kNNN` fautive, vérifie en HTTP chaque `images/…`, copie les fichiers déjà externes sans réencodage. **Poney d'Or : les 2 questions « Petit rappel » écrites en 6 langues et livrées** — entrée `poney_or` dans `PALIERS_BABY_QUIZ` (paille/foin `baby-c20`, sens du cure-pied `baby-c23`) + bloc de rendu ajouté à `FinCheminBabyCarte`, Hook déclaré avant le retour anticipé. Témoin `HYPE_VERSION_APP` 1.2 → **1.4**. **MEMORY v3 : 98 des 120 cartes en chemins directs `images/memory-<niveau>-<cle>.webp`** (lot de 9,3 Mo livré), `memo 3`. **Carte `vie-poney/dodo` réparée** : `k610` était déclarée deux fois, l'index la réassignait au bandeau de messagerie de l'Accueil — la carte affichait des bulles de chat. Obstacles gardé à 6 paires avec 3 familles visuelles distinctes (`bravo` → poney noir poing levé, `barre` → bras écartés, libellé « En équilibre » 6 langues). `eau2` réglée avec l'abreuvoir de Matériel : plus AUCUNE carte sans image. Niveau Evan signalé comme trop homogène (k617/k618/k619, k622/k623), non touché. |
+| 11/08 (113) | Claude (page Memory) | **Fausse alerte des 21 images du Memory levée : zéro perte.** La v1 de l'outil ne lisait pas les 4 blocs `<script>` inline de l'index (boucles `k547-k554`, `k615-k628` + corrections `k455`/`k457`/`k473`/`k474`), d'où 21 faux « SANS_IMAGE ». Le « ? » de la capture Obstacles = carte face cachée. **`extraire-memory-2.html` livré** : diagnostic seul ou avec zip, anti-cache, rejoue les blocs inline, nomme la clé `kNNN` fautive, vérifie en HTTP chaque `images/…`, copie les fichiers déjà externes sans réencodage. **Poney d'Or : les 2 questions « Petit rappel » écrites en 6 langues et livrées** — entrée `poney_or` dans `PALIERS_BABY_QUIZ` (paille/foin `baby-c20`, sens du cure-pied `baby-c23`) + bloc de rendu ajouté à `FinCheminBabyCarte`, Hook déclaré avant le retour anticipé. Témoin `HYPE_VERSION_APP` 1.2 → **1.4**. **MEMORY v3 : 98 des 120 cartes en chemins directs `images/memory-<niveau>-<cle>.webp`** (lot de 9,3 Mo livré), `memo 3`. **Carte `vie-poney/dodo` réparée** : `k610` était déclarée deux fois, l'index la réassignait au bandeau de messagerie de l'Accueil — la carte affichait des bulles de chat. Obstacles gardé à 6 paires avec 3 familles visuelles distinctes (`bravo` → poney noir poing levé, `barre` → bras écartés, libellé « En équilibre » 6 langues). `eau2` réglée avec l'abreuvoir de Matériel : plus AUCUNE carte sans image. Niveau Evan signalé comme trop homogène (k617/k618/k619, k622/k623), non touché. **Puis, le 12/08 : lag du Memory diagnostiqué et corrigé** — la balise `<img>` n'était créée qu'au retournement de la carte, donc le téléchargement commençait au toucher ; préchargement des sources distinctes ajouté au montage de la grille (`useRef` + `decoding async`), témoin 1.5 → **1.6**. **`_headers` complété** : une vingtaine de médias de la racine n'étaient couverts par aucune règle. **`SUIVI-BABY.md` ouvert.** |
 | 17/07 → 26/07 | Claude | "Mon Évolution", Poney d'Or (9/9), écran "Quoi de neuf", réorganisation accueil, bugfixes session/scroll, parrainage. |
 | Session suivante | Claude (Directeur Technique) | Correctif nom d'écurie (`monClubEc`) au lieu du texte en dur "Écurie Feinn". |
 | Session suivante | Claude (Directeur Technique) | **Bug scroll Android** résolu via outil de debug intégré révélant un état figé côté appareil (pas un bug de code). |
