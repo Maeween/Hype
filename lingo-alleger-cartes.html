@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Linguae — alléger les cartes</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--noir:#060709;--anthracite:#111417;--turquoise:#20D9F5;--blanc:#F4F7FA;--gris:#94A3AF;
+  --rouge:#E8735C;--ambre:#E0B070}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--noir);overscroll-behavior:none;overflow-x:clip}
+body{margin:0;background:var(--noir);color:var(--blanc);
+  font-family:'Montserrat',system-ui,sans-serif;font-weight:300;overflow-x:clip;
+  padding:0 0 calc(env(safe-area-inset-bottom) + 30px)}
+
+header{padding:calc(env(safe-area-inset-top) + 18px) 16px 0;text-align:center}
+header .eyebrow{font-size:9px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--turquoise);font-weight:500}
+header h1{font-family:'Cinzel',serif;font-weight:600;font-size:23px;
+  letter-spacing:.04em;margin:9px 0 5px}
+header p{font-size:11.5px;color:var(--gris);margin:0 auto;max-width:315px;line-height:1.55}
+
+section{padding:16px}
+h2{font-family:'Cinzel',serif;font-weight:500;font-size:13px;letter-spacing:.13em;
+  text-transform:uppercase;margin:24px 0 10px}
+
+.choix{display:flex;gap:7px;margin-bottom:6px}
+.choix button{flex:1;background:var(--anthracite);color:var(--gris);
+  border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 4px;
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500}
+.choix button.on{color:var(--turquoise);border-color:rgba(32,217,245,.45);
+  background:rgba(32,217,245,.07)}
+.choix button i{display:block;font-style:normal;font-size:8.5px;color:var(--gris);margin-top:3px}
+.souschoix{font-size:10px;color:var(--gris);text-align:center;margin:0 0 16px;line-height:1.5}
+
+.actions{display:flex;gap:8px}
+.actions button{flex:1;border:1px solid rgba(255,255,255,.09);border-radius:10px;
+  padding:13px 6px;font-family:'Montserrat',sans-serif;font-size:11.5px;font-weight:500;
+  background:var(--anthracite);color:var(--blanc)}
+.actions button.go{background:linear-gradient(120deg,#0C5763,#38E2F8);color:#04252A;
+  border-color:transparent;font-weight:600}
+.actions button:disabled{opacity:.4}
+
+.barre{margin:14px 0 0;height:4px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.barre i{display:block;height:100%;width:0;background:var(--turquoise);transition:width .2s linear}
+.etat{text-align:center;font-size:10.5px;color:var(--gris);margin:9px 0 0}
+
+.bilan{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:4px}
+.bilan div{background:var(--anthracite);border:1px solid rgba(255,255,255,.07);
+  border-radius:11px;padding:12px 13px}
+.bilan b{display:block;font-family:'Cinzel',serif;font-size:20px;font-weight:600;line-height:1;
+  color:var(--turquoise)}
+.bilan i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--gris);margin-top:5px;line-height:1.4}
+
+.liste{margin-top:4px}
+.l{display:flex;align-items:center;gap:8px;font-size:10px;padding:5px 0;
+  border-bottom:1px solid rgba(255,255,255,.05)}
+.l .p{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:var(--turquoise)}
+.l .p.ko{background:var(--rouge)}
+.l .n{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-family:ui-monospace,Menlo,monospace;font-size:9.5px}
+.l .v{flex:0 0 auto;color:var(--gris);font-variant-numeric:tabular-nums;font-size:9.5px}
+
+.note{border-left:1px solid rgba(32,217,245,.4);padding:2px 0 2px 12px;
+  font-size:10.5px;color:var(--gris);line-height:1.6;margin:16px 0 0}
+.note b{color:var(--blanc);font-weight:500}
+.note.rouge{border-left-color:var(--rouge)}
+.cache{display:none}
+a.tele{display:block;text-align:center;margin-top:14px;padding:14px;border-radius:11px;
+  background:linear-gradient(120deg,#0C5763,#38E2F8);color:#04252A;text-decoration:none;
+  font-weight:600;font-size:12.5px;letter-spacing:.03em}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Linguae · outil</div>
+  <h1>Alléger les cartes</h1>
+  <p>Tout se passe sur ton téléphone. La page va chercher les cartes sur le site, les réduit, et te rend <b>un seul fichier .zip</b>. Aucune image ne passe par Claude.</p>
+</header>
+
+<section>
+  <h2>La taille des vignettes</h2>
+  <div class="choix" id="choix">
+    <button data-l="360" data-h="480">360 × 480<i>21 Mo au total</i></button>
+    <button class="on" data-l="450" data-h="600">450 × 600<i>33 Mo · net sur retina</i></button>
+    <button data-l="540" data-h="720">540 × 720<i>47 Mo · très net</i></button>
+  </div>
+  <p class="souschoix">Aujourd'hui les 31 cartes pleines demandent <b style="color:var(--rouge)">130 Mo</b> de décodage. C'est ce chiffre qui fait tomber l'onglet au zoom.</p>
+
+  <div class="actions">
+    <button class="go" id="lancer">Fabriquer les vignettes</button>
+  </div>
+
+  <div class="barre"><i id="jauge"></i></div>
+  <p class="etat" id="etat">31 cartes à traiter, une à la fois</p>
+
+  <div id="sortie" class="cache">
+    <h2>Bilan</h2>
+    <div class="bilan" id="bilan"></div>
+    <a class="tele" id="tele" download>Télécharger le .zip</a>
+    <p class="note" style="margin-top:14px"><b>Ensuite, sur ton téléphone :</b> ouvre le .zip depuis Fichiers (un appui suffit, iOS le décompresse), puis dépose les fichiers sur GitHub à la racine. Une seule fois, et c'est fini.</p>
+
+    <h2>Détail</h2>
+    <div class="liste" id="liste"></div>
+  </div>
+</section>
+
+<section>
+  <p class="note"><b>Ce que la page NE touche pas.</b> Les fichiers <i>carte-&lt;ref&gt;.webp</i> restent intacts sur le site — elle ne fait que les lire. Les vignettes portent un nom différent, <i>carte-&lt;ref&gt;-vignette.webp</i>, la même convention que les neuf qui existent déjà. Rien ne s'écrase, la carte postale récompense en plein écran garde sa finesse, et si le résultat ne te plaît pas tu supprimes les vignettes sans avoir rien perdu.</p>
+
+  <p class="note rouge"><b>⚠️ Elle remplace les neuf vignettes existantes</b> — connemara, newmarket, lambourn, walsall, aberystwyth, windsor, hickstead, kildare, edimbourg. C'est voulu : trois d'entre elles sont périmées, fabriquées depuis une carte qui a été refaite depuis. Hickstead était 2,7 fois plus sombre que sa carte actuelle.</p>
+
+  <p class="note"><b>⚠️ Elles ne servent à rien tant que le code ne les appelle pas.</b> Aujourd'hui <i>lingo.html</i> ne connaît que <i>carte-&lt;ref&gt;.webp</i>. Les pousser ne changera rien à l'écran ni au crash : il faudra ensuite une ligne dans la vignette de la page destination. Cette ligne t'attend, elle n'est pas écrite.</p>
+
+  <p class="note"><b>Une précaution.</b> Les cartes sont traitées <b>une par une</b> et relâchées aussitôt. Décoder 31 images de 900 × 1200 en même temps ferait planter l'onglet — c'est précisément le bug qu'on répare.</p>
+</section>
+
+<script>
+/* ================================================================
+   Les 31 villes — refs du tableau ETAPES de lingo.html.
+   ================================================================ */
+var REFS = ["labaule","maurice","connemara","newmarket","lambourn","walsall",
+"aberystwyth","windsor","hickstead","badminton","burghley","kildare","edimbourg",
+"saumur","lamotte","golega","jerez","seville","vejer","oliva","rome","verone",
+"warendorf","aachen","dubai","tokyo","tamworth","buenos","lexington","santaynez","spruce"];
+
+function S(id){ return document.getElementById(id); }
+function ko(o){ return Math.round(o/1024) + " Ko"; }
+
+var LARG = 450, HAUT = 600;
+
+Array.prototype.forEach.call(document.querySelectorAll("#choix button"), function(b){
+  b.addEventListener("click", function(){
+    Array.prototype.forEach.call(document.querySelectorAll("#choix button"),
+      function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    LARG = parseInt(b.dataset.l,10); HAUT = parseInt(b.dataset.h,10);
+  });
+});
+
+/* ----------------------------------------------------------------
+   ZIP en mode « stocké », sans compression et sans bibliothèque.
+   Les WebP sont déjà compressés : les recompresser ne gagnerait
+   rien et ajouterait une dépendance à charger en 5G.
+---------------------------------------------------------------- */
+var TABLE_CRC = (function(){
+  var t = new Uint32Array(256);
+  for(var n=0;n<256;n++){
+    var c = n;
+    for(var k=0;k<8;k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+
+function crc32(u8){
+  var c = 0xFFFFFFFF;
+  for(var i=0;i<u8.length;i++) c = TABLE_CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+function ecrire(vue, pos, val, octets){
+  for(var i=0;i<octets;i++){ vue[pos+i] = val & 0xFF; val >>>= 8; }
+}
+
+function fabriqueZip(entrees){
+  var enc = new TextEncoder();
+  var locaux = [], centraux = [], decalage = 0;
+
+  entrees.forEach(function(e){
+    var nom = enc.encode(e.nom);
+    var crc = crc32(e.data);
+    var t = e.data.length;
+
+    var loc = new Uint8Array(30 + nom.length);
+    ecrire(loc, 0, 0x04034B50, 4);   /* signature en-tête local */
+    ecrire(loc, 4, 20, 2);           /* version nécessaire */
+    ecrire(loc, 6, 0, 2);            /* drapeaux */
+    ecrire(loc, 8, 0, 2);            /* méthode 0 = stocké */
+    ecrire(loc, 10, 0, 2);           /* heure */
+    ecrire(loc, 12, 0, 2);           /* date */
+    ecrire(loc, 14, crc, 4);
+    ecrire(loc, 18, t, 4);           /* taille compressée */
+    ecrire(loc, 22, t, 4);           /* taille réelle */
+    ecrire(loc, 26, nom.length, 2);
+    ecrire(loc, 28, 0, 2);           /* champ extra */
+    loc.set(nom, 30);
+    locaux.push(loc, e.data);
+
+    var cen = new Uint8Array(46 + nom.length);
+    ecrire(cen, 0, 0x02014B50, 4);   /* signature répertoire central */
+    ecrire(cen, 4, 20, 2);
+    ecrire(cen, 6, 20, 2);
+    ecrire(cen, 8, 0, 2);
+    ecrire(cen, 10, 0, 2);
+    ecrire(cen, 12, 0, 2);
+    ecrire(cen, 14, 0, 2);
+    ecrire(cen, 16, crc, 4);
+    ecrire(cen, 20, t, 4);
+    ecrire(cen, 24, t, 4);
+    ecrire(cen, 28, nom.length, 2);
+    ecrire(cen, 30, 0, 2);
+    ecrire(cen, 32, 0, 2);
+    ecrire(cen, 34, 0, 2);
+    ecrire(cen, 36, 0, 2);
+    ecrire(cen, 38, 0, 4);
+    ecrire(cen, 42, decalage, 4);
+    cen.set(nom, 46);
+    centraux.push(cen);
+
+    decalage += loc.length + t;
+  });
+
+  var tailleCentral = centraux.reduce(function(a,c){ return a + c.length; }, 0);
+  var fin = new Uint8Array(22);
+  ecrire(fin, 0, 0x06054B50, 4);
+  ecrire(fin, 8, entrees.length, 2);
+  ecrire(fin, 10, entrees.length, 2);
+  ecrire(fin, 12, tailleCentral, 4);
+  ecrire(fin, 16, decalage, 4);
+
+  return new Blob(locaux.concat(centraux, [fin]), {type:"application/zip"});
+}
+
+/* ----------------------------------------------------------------
+   Une carte : on la lit, on la redessine plus petite, on relâche.
+---------------------------------------------------------------- */
+function traite(ref){
+  var url = "carte-" + ref + ".webp?t=" + Date.now();
+  return fetch(url, {cache:"no-store"}).then(function(r){
+    if(!r.ok) throw new Error("absente");
+    return r.blob();
+  }).then(function(blob){
+    var avant = blob.size;
+    return new Promise(function(res, rej){
+      var adr = URL.createObjectURL(blob);
+      var im = new Image();
+      im.onload = function(){
+        var c = document.createElement("canvas");
+        c.width = LARG; c.height = HAUT;
+        var x = c.getContext("2d");
+        x.imageSmoothingEnabled = true;
+        x.imageSmoothingQuality = "high";
+        /* recadrage « cover », comme la vignette à l'écran */
+        var rs = Math.max(LARG / im.naturalWidth, HAUT / im.naturalHeight);
+        var l = im.naturalWidth * rs, h = im.naturalHeight * rs;
+        x.drawImage(im, (LARG - l) / 2, (HAUT - h) / 2, l, h);
+        var srcL = im.naturalWidth, srcH = im.naturalHeight;
+        /* ⚠️ LES DEUX HANDLERS SONT COUPÉS AVANT DE VIDER `src`.
+           Vider `src` déclenche une nouvelle tentative de chargement sur
+           une URL vide, donc un `error` — qui rejetait la promesse avec
+           « illisible » AVANT que `toBlob` ait rendu son résultat. Les 31
+           cartes échouaient pour cette seule raison. Ne pas remettre
+           `im.src = ""` sans couper `onerror` d'abord. */
+        im.onload = null; im.onerror = null;
+        im.src = ""; URL.revokeObjectURL(adr);   /* relâché tout de suite */
+        c.toBlob(function(petit){
+          if(!petit){ rej(new Error("encodage refusé")); return; }
+          petit.arrayBuffer().then(function(buf){
+            res({ref:ref, avant:avant, apres:petit.size,
+                 srcL:srcL, srcH:srcH, data:new Uint8Array(buf)});
+          });
+        }, "image/webp", 0.88);
+      };
+      im.onerror = function(){ URL.revokeObjectURL(adr); rej(new Error("illisible")); };
+      im.src = adr;
+    });
+  });
+}
+
+S("lancer").addEventListener("click", function(){
+  var b = S("lancer");
+  b.disabled = true; b.textContent = "Fabrication…";
+  S("sortie").classList.add("cache");
+  S("liste").innerHTML = "";
+
+  var faits = [], ratés = [], i = 0;
+
+  function suivant(){
+    if(i >= REFS.length){ termine(faits, ratés); return; }
+    var ref = REFS[i++];
+    S("etat").textContent = "carte-" + ref + ".webp  (" + i + " / " + REFS.length + ")";
+    traite(ref).then(function(r){
+      faits.push(r);
+    }).catch(function(e){
+      ratés.push({ref:ref, pourquoi:e.message});
+    }).then(function(){
+      S("jauge").style.width = Math.round(i / REFS.length * 100) + "%";
+      setTimeout(suivant, 20);   /* laisse respirer le navigateur */
+    });
+  }
+  suivant();
+});
+
+function termine(faits, ratés){
+  var b = S("lancer");
+  b.disabled = false; b.textContent = "Refabriquer";
+  S("etat").textContent = faits.length + " vignettes fabriquées"
+    + (ratés.length ? " · " + ratés.length + " en échec" : "");
+
+  if(!faits.length){
+    S("etat").textContent = "Aucune carte trouvée. La page doit être ouverte depuis le site, au même endroit que les images.";
+    return;
+  }
+
+  var avant = faits.reduce(function(a,r){ return a + r.avant; }, 0);
+  var apres = faits.reduce(function(a,r){ return a + r.apres; }, 0);
+  var decodeAvant = faits.reduce(function(a,r){ return a + r.srcL * r.srcH * 4; }, 0);
+  var decodeApres = faits.length * LARG * HAUT * 4;
+
+  S("bilan").innerHTML =
+    '<div><b>' + faits.length + '</b><i>vignettes dans le zip</i></div>' +
+    '<div><b>' + LARG + '×' + HAUT + '</b><i>toutes au même format</i></div>' +
+    '<div><b>' + (apres/1048576).toFixed(1) + '</b><i>Mo de fichiers, contre ' +
+      (avant/1048576).toFixed(1) + '</i></div>' +
+    '<div><b>' + Math.round(decodeApres/1048576) + '</b><i>Mo de décodage, contre ' +
+      Math.round(decodeAvant/1048576) + '</i></div>';
+
+  var entrees = faits.map(function(r){
+    return {nom:"carte-" + r.ref + "-vignette.webp", data:r.data};
+  });
+  var zip = fabriqueZip(entrees);
+  var a = S("tele");
+  a.href = URL.createObjectURL(zip);
+  a.download = "vignettes-linguae-" + LARG + ".zip";
+  a.textContent = "Télécharger le .zip  ·  " + (zip.size/1048576).toFixed(1) + " Mo";
+
+  S("liste").innerHTML =
+    faits.map(function(r){
+      return '<div class="l"><span class="p"></span>' +
+        '<span class="n">carte-' + r.ref + '-vignette.webp</span>' +
+        '<span class="v">' + ko(r.avant) + ' → ' + ko(r.apres) + '</span></div>';
+    }).join("") +
+    ratés.map(function(r){
+      return '<div class="l"><span class="p ko"></span>' +
+        '<span class="n">carte-' + r.ref + '.webp</span>' +
+        '<span class="v">échec · ' + r.pourquoi + '</span></div>';
+    }).join("");
+
+  S("sortie").classList.remove("cache");
+}
+</script>
+</body>
+</html>
