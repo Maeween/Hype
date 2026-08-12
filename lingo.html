@@ -5826,9 +5826,9 @@ function selleriePiece(nom){
    Une seule vignette par objet — sa vue perpendiculaire. Le choix de la
    vue de trois quarts appartient au moteur de la sellerie, pas ici :
    c'est la regle posee par Blandine le 12/08. */
-var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1};
-var POSE_PROPRE = {walsall:1, dubai:1};   /* ceux qui ont leur propre vue posee */
-var GROS_POSE = {walsall:30, dubai:30, lambourn:27, connemara:27, newmarket:24};
+var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1};
+var POSE_PROPRE = {walsall:1, dubai:1, oliva:1};   /* ceux qui ont leur propre vue posee */
+var GROS_POSE = {walsall:30, dubai:30, lambourn:27, connemara:27, newmarket:24, oliva:34};
 function sellerieObjets(){
   var l = [];
   ETAPES.forEach(function(e){
