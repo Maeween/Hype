@@ -1962,7 +1962,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <span id="souvMed" style="display:block;width:100%;height:100%"><svg id="souvSvg" viewBox="0 0 60 60" style="width:100%;height:100%"></svg></span>
       <div>
         <p class="t" id="souvT">Souvenir de Newmarket</p>
-        <p class="n" id="souvN">Une selle anglaise miniature</p>
+        <p class="n" id="souvN">Une cagoule à œillères</p>
       </div>
     </div>
   </div>
@@ -3040,7 +3040,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=32";
+var VER = "?v=33";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -3116,9 +3116,9 @@ var ETAPES = [
  {ref:"labaule",   ch:"L'arrivée",    v:"La Baule",    nat:"France",         h:"19 h 30", ciel:["#16283F","#C58B45"], forme:"cote",     souv:"Un fanion du Jumping",         ic:"fanion"},
  {ref:"maurice",   ch:"La balade",    v:"Le Morne",    nat:"Maurice",        h:"19 h 55", ciel:["#08202A","#39C6C0"], forme:"cote",     souv:"Un coquillage du lagon",       ic:"coquillage"},
  {ref:"connemara", ch:"Le cheval",    v:"Connemara",   nat:"Irlande",        h:"20 h 10", ciel:["#0B1729","#1C2740"], forme:"lande",    souv:"Un licol de corde",            ic:"licol"},
- {ref:"newmarket", ch:"L'écurie",     v:"Newmarket",   nat:"Angleterre",     h:"20 h 55", ciel:["#12233C","#3A3A52"], forme:"ecuries",  souv:"Une selle anglaise miniature", ic:"selle"},
+ {ref:"newmarket", ch:"L'écurie",     v:"Newmarket",   nat:"Angleterre",     h:"20 h 55", ciel:["#12233C","#3A3A52"], forme:"ecuries",  souv:"Une cagoule à œillères",     ic:"selle"},
  {ref:"lambourn",  ch:"Le pansage",   v:"Lambourn",    nat:"Angleterre",     h:"21 h 40", ciel:["#0E1D33","#2A3049"], forme:"village",  souv:"Une étrille de cuivre",        ic:"etrille"},
- {ref:"walsall",   ch:"Le matériel",  v:"Walsall",     nat:"Angleterre",     h:"22 h 30", ciel:["#091320","#161F33"], forme:"ateliers", souv:"Une alêne de sellier",         ic:"alene"},
+ {ref:"walsall",   ch:"Le matériel",  v:"Walsall",     nat:"Angleterre",     h:"22 h 30", ciel:["#091320","#161F33"], forme:"ateliers", souv:"Une selle anglaise en cuir",   ic:"selle"},
  {ref:"aberystwyth",ch:"En selle",    v:"Aberystwyth", nat:"Pays de Galles", h:"23 h 20", ciel:["#070F1A","#101828"], forme:"cote",     souv:"Un fer de cob gallois",        ic:"fer"},
  {ref:"windsor",   ch:"Le dressage",  v:"Windsor",     nat:"Angleterre",     h:"00 h 30", ciel:["#05090F","#0B1220"], forme:"chateau",  souv:"La lettre A",                  ic:"lettre"},
  {ref:"hickstead", ch:"Le derby",   v:"Hickstead",   nat:"Angleterre",     h:"01 h 40", ciel:["#060B12","#0D1524"], forme:"obstacles",souv:"Un fanion rouge",              ic:"fanion"},
@@ -3343,9 +3343,9 @@ var ETAPES_I18N = {
  saumur:{
    ch:{en:"The Cadre Noir", es:"El Cadre Noir", it:"Il Cadre Noir", de:"Das Cadre Noir", ja:"カドル・ノワール"},
    v:{ja:"ソミュール"},
-   souv:{en:"A Cadre Noir cap badge", es:"Un distintivo del Cadre Noir",
-         it:"Un distintivo del Cadre Noir", de:"Ein Abzeichen des Cadre Noir",
-         ja:"カドル・ノワールの帽章"}},
+   souv:{en:"A Cadre Noir lantern", es:"Un farol del Cadre Noir",
+         it:"Una lanterna del Cadre Noir", de:"Eine Laterne des Cadre Noir",
+         ja:"カドル・ノワールのランタン"}},
  lamotte:{
    ch:{en:"The pony", es:"El poni", it:"Il pony", de:"Das Pony", ja:"ポニー"},
    v:{ja:"ラモット・ブーヴロン"},
@@ -3387,9 +3387,9 @@ var ETAPES_I18N = {
  newmarket:{
    ch:{en:"The yard", es:"La cuadra", it:"La scuderia", de:"Der Stall", ja:"厩舎"},
    v:{ja:"ニューマーケット"},
-   souv:{en:"A miniature English saddle", es:"Una silla inglesa en miniatura",
-         it:"Una sella inglese in miniatura", de:"Ein englischer Sattel in Miniatur",
-         ja:"ミニチュアの英国鞍"}},
+   souv:{en:"A racing hood with blinkers", es:"Una capucha con anteojeras",
+         it:"Un cappuccio con paraocchi", de:"Eine Blendkappe",
+         ja:"ブリンカー付きのメンコ"}},
  lambourn:{
    ch:{en:"Grooming", es:"El cepillado", it:"La pulizia", de:"Das Putzen", ja:"手入れ"},
    v:{ja:"ランボーン"},
@@ -3403,8 +3403,9 @@ var ETAPES_I18N = {
  walsall:{
    ch:{en:"The tack", es:"El equipo", it:"L'attrezzatura", de:"Die Ausrüstung", ja:"馬具"},
    v:{ja:"ウォルソール"},
-   souv:{en:"A saddler's awl", es:"Un punzón de guarnicionero", it:"Un punteruolo da sellaio",
-         de:"Eine Sattlerahle", ja:"馬具職人の菱錐"}},
+   souv:{en:"A leather English saddle", es:"Una silla inglesa de cuero",
+         it:"Una sella inglese in cuoio", de:"Ein englischer Ledersattel",
+         ja:"革の英国鞍"}},
  aberystwyth:{
    ch:{en:"In the saddle", es:"A caballo", it:"In sella", de:"Im Sattel", ja:"騎乗"},
    v:{ja:"アベリストゥイス"},
