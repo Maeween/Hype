@@ -220,7 +220,7 @@ h2:first-of-type{margin-top:8px}
 <!-- ============ 2. RAILS ============ -->
 <section id="rails">
   <h2>En rails</h2>
-  <p class="sub">Six rails, l'ordre du voyage conservé. Tu vois <b>un rail et demi</b> par écran au lieu de deux cartes.</p>
+  <p class="sub">Six rails, l'ordre du voyage conservé. La page passe de <b>3 870 px de haut à 1 520</b> — deux fois et demie plus courte, environ trois rails par écran.</p>
   <div id="zoneRails" class="zone"></div>
 
   <h2>La grille d'aujourd'hui</h2>
@@ -338,11 +338,17 @@ Array.prototype.forEach.call(document.querySelectorAll("nav button"), function(b
 });
 
 /* ---------------- fabrique de carte ---------------- */
+/* ⚠️ LES GUILLEMETS DES url() SONT ECHAPPES EN &quot; — obligatoire.
+   Ce bloc est injecte via innerHTML : l'attribut style est delimite par
+   des guillemets doubles, donc un " a l'interieur de url("...") ferme
+   l'attribut et l'image disparait. C'est exactement pour ca que
+   lingo.html ecrit &quot; a la ligne 4762. */
 function carte(e, i, opts){
   opts = opts || {};
   var d = document.createElement("div");
   d.className = "vc";
-  var fond = 'url("carte-'+e.ref+'.webp'+VER+'"),url("fond-'+e.ref+'.webp'+VER+'"),'
+  var fond = 'url(&quot;carte-'+e.ref+'.webp'+VER+'&quot;),'
+           + 'url(&quot;fond-'+e.ref+'.webp'+VER+'&quot;),'
            + 'linear-gradient(160deg,'+e.ciel[0]+','+e.ciel[1]+')';
   d.innerHTML =
     '<span class="vimg'+(opts.sansFiltre?'':' filtre')+'" style="background-image:'+fond+'"></span>'+
@@ -491,7 +497,7 @@ bascule("swZoom","zoom");
 function compte(){
   /* 31 cartes dans la page. Avec le differe, seules celles a l'ecran
      sont decodees : environ 4 en grille, environ 6 en rails (on voit
-     un rail et demi, et les cartes y sont plus etroites).            */
+     trois rails, avec des cartes plus etroites).                     */
   var n = 31;
   if(reg.lazy) n = reg.rails ? 6 : 4;
 
