@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Linguae — Maquette rails & luminosité</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noir:#060709;
+  --anthracite:#111417;
+  --turquoise:#20D9F5;
+  --blanc:#F4F7FA;
+  --gris:#94A3AF;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--noir);overscroll-behavior:none;overflow-x:clip}
+body{margin:0;background:var(--noir);color:var(--blanc);
+  font-family:'Montserrat',system-ui,sans-serif;font-weight:300;
+  overflow-x:clip;
+  padding:0 0 env(safe-area-inset-bottom)}
+
+/* ---------- en-tete ---------- */
+header{padding:calc(env(safe-area-inset-top) + 18px) 16px 0;text-align:center}
+header .eyebrow{font-size:9px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--turquoise);font-weight:500}
+header h1{font-family:'Cinzel',serif;font-weight:600;font-size:23px;
+  letter-spacing:.04em;margin:9px 0 4px}
+header p{font-size:11.5px;color:var(--gris);margin:0 auto;max-width:300px;line-height:1.5}
+
+/* ---------- onglets ---------- */
+nav{display:flex;gap:6px;padding:18px 16px 4px;justify-content:center}
+nav button{flex:1;max-width:120px;background:var(--anthracite);color:var(--gris);
+  border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:9px 4px;
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:500;
+  letter-spacing:.09em;text-transform:uppercase}
+nav button.on{color:var(--noir);background:var(--turquoise);border-color:var(--turquoise)}
+
+section{display:none;padding:14px 16px 40px}
+section.on{display:block}
+
+h2{font-family:'Cinzel',serif;font-weight:500;font-size:14px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--blanc);margin:22px 0 3px}
+h2:first-of-type{margin-top:8px}
+.sub{font-size:11px;color:var(--gris);line-height:1.55;margin:0 0 14px}
+.sub b{color:var(--blanc);font-weight:500}
+
+/* ---------- selecteur de ville ---------- */
+.picker{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.picker::-webkit-scrollbar{display:none}
+.picker button{flex:0 0 auto;background:var(--anthracite);color:var(--gris);
+  border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:7px 13px;
+  font-family:'Montserrat',sans-serif;font-size:10.5px;white-space:nowrap}
+.picker button.on{color:var(--turquoise);border-color:rgba(32,217,245,.45)}
+
+/* ---------- trois variantes ---------- */
+.trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.vari{min-width:0}
+.vari .lab{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--turquoise);font-weight:500;margin-bottom:5px;height:22px;line-height:1.3}
+.vari .lab i{display:block;font-style:normal;color:var(--gris);letter-spacing:.04em;
+  text-transform:none;font-size:8.5px}
+
+/* la carte, reprise a l'identique de lingo.html */
+.vc{position:relative;aspect-ratio:3/4;width:100%;border-radius:13px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.09);
+  background:linear-gradient(158deg,#141A21,#080B0F 72%)}
+.vimg{position:absolute;inset:0;background-size:cover;background-position:center 34%}
+.vimg.filtre{filter:brightness(1.12) saturate(1.06)}
+.vvoile{position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(6,7,9,.10) 0%,rgba(6,7,9,.34) 46%,rgba(6,7,9,.82) 100%)}
+.vhalo{position:absolute;left:-30%;top:-24%;width:160%;height:90%;
+  background:radial-gradient(46% 42% at 50% 50%,rgba(32,217,245,.11),transparent 72%)}
+.vn{position:absolute;left:8px;top:6px;font-family:'Cinzel',serif;font-size:10px;
+  color:var(--turquoise);letter-spacing:.08em;z-index:2;text-shadow:0 1px 6px rgba(0,0,0,.9)}
+.vtitre{position:absolute;left:8px;right:8px;bottom:7px;z-index:2}
+.vtitre b{display:block;font-family:'Cinzel',serif;font-weight:600;font-size:11.5px;
+  line-height:1.12;text-shadow:0 1px 8px rgba(0,0,0,.85)}
+.vtitre i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--gris);margin-top:3px}
+
+/* ---------- comparateur a rideau ---------- */
+.rideau{position:relative;aspect-ratio:3/4;width:100%;max-width:270px;margin:0 auto;
+  border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.09);
+  background:linear-gradient(158deg,#141A21,#080B0F 72%);touch-action:none}
+.rideau .cote{position:absolute;inset:0;
+  background:linear-gradient(158deg,#141A21,#080B0F 72%)}
+.rideau .droite{clip-path:inset(0 0 0 var(--x,50%))}
+.rideau .gauche{clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
+.rideau .trait{position:absolute;top:0;bottom:0;left:var(--x,50%);width:1px;
+  background:var(--turquoise);box-shadow:0 0 14px rgba(32,217,245,.7);z-index:4}
+.rideau .poignee{position:absolute;top:50%;left:var(--x,50%);z-index:5;
+  width:32px;height:32px;margin:-16px 0 0 -16px;border-radius:50%;
+  background:rgba(6,7,9,.72);border:1px solid var(--turquoise);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.rideau .poignee::before{content:"‹ ›";position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--turquoise);font-size:13px;letter-spacing:.06em}
+.rideau .tag{position:absolute;bottom:9px;z-index:4;font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--blanc);background:rgba(6,7,9,.66);
+  padding:4px 7px;border-radius:5px}
+.rideau .tg{left:9px}
+.rideau .td{right:9px}
+.legende{text-align:center;font-size:10px;color:var(--gris);margin:10px 0 0}
+
+/* ---------- rails ---------- */
+.rail{margin-bottom:20px}
+.rail .rtitre{display:flex;align-items:baseline;gap:9px;margin-bottom:9px}
+.rail .rtitre b{font-family:'Cinzel',serif;font-weight:500;font-size:13px;
+  letter-spacing:.07em;color:var(--blanc)}
+.rail .rtitre span{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--turquoise)}
+.rail .piste{display:flex;gap:9px;overflow-x:auto;padding:1px 16px 3px;
+  margin:0 -16px;-webkit-overflow-scrolling:touch;
+  scroll-snap-type:x proximity;scrollbar-width:none}
+.rail .piste::-webkit-scrollbar{display:none}
+.rail .piste .vc{flex:0 0 40vw;max-width:158px;scroll-snap-align:start}
+
+/* ---------- grille (comparaison) ---------- */
+.vgrille{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+
+/* ---------- memoire ---------- */
+.switchs{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--anthracite);border:1px solid rgba(255,255,255,.07);
+  border-radius:11px;padding:12px 13px}
+.sw .txt{min-width:0}
+.sw .txt b{display:block;font-size:11.5px;font-weight:500;letter-spacing:.02em}
+.sw .txt i{display:block;font-style:normal;font-size:9.5px;color:var(--gris);
+  margin-top:3px;line-height:1.45}
+.sw .bascule{flex:0 0 auto;width:46px;height:26px;border-radius:14px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);
+  position:relative;transition:background .18s ease,border-color .18s ease}
+.sw .bascule::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;
+  border-radius:50%;background:var(--gris);transition:transform .18s ease,background .18s ease}
+.sw.on .bascule{background:rgba(32,217,245,.22);border-color:rgba(32,217,245,.5)}
+.sw.on .bascule::after{transform:translateX(20px);background:var(--turquoise)}
+
+.jauge{background:var(--anthracite);border:1px solid rgba(255,255,255,.07);
+  border-radius:13px;padding:16px 15px}
+.jauge .gros{font-family:'Cinzel',serif;font-size:34px;font-weight:600;
+  letter-spacing:.01em;line-height:1}
+.jauge .gros.chaud{color:#E8735C}
+.jauge .gros.froid{color:var(--turquoise)}
+.jauge .unite{font-size:12px;color:var(--gris);margin-left:5px;font-family:'Montserrat',sans-serif}
+.jauge .quoi{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gris);margin-top:8px}
+.barre{height:5px;border-radius:3px;background:rgba(255,255,255,.08);
+  margin:15px 0 8px;overflow:hidden}
+.barre i{display:block;height:100%;border-radius:3px;transition:width .3s ease,background .3s ease}
+.seuil{font-size:9.5px;color:var(--gris);line-height:1.5}
+.seuil b{color:#E8735C;font-weight:500}
+.detail{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.detail div{background:rgba(255,255,255,.03);border-radius:9px;padding:10px 11px}
+.detail b{display:block;font-family:'Cinzel',serif;font-size:17px;font-weight:600}
+.detail i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--gris);margin-top:4px}
+
+.note{border-left:1px solid rgba(32,217,245,.4);padding:2px 0 2px 12px;
+  font-size:10.5px;color:var(--gris);line-height:1.6;margin:16px 0 0}
+.note b{color:var(--blanc);font-weight:500}
+.zone{min-height:60vh}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Linguae · maquette</div>
+  <h1>Rails &amp; luminosité</h1>
+  <p>Trois questions, trois écrans. Rien n'est codé dans l'app : ceci est une maquette de comparaison.</p>
+</header>
+
+<nav>
+  <button class="on" data-go="lum">Luminosité</button>
+  <button data-go="rails">Rails</button>
+  <button data-go="mem">Mémoire</button>
+</nav>
+
+<!-- ============ 1. LUMINOSITE ============ -->
+<section id="lum" class="on">
+  <h2>Le filtre, retiré ou cuit</h2>
+  <p class="sub">Choisis une ville. Les trois cartes ci-dessous sont la <b>même image</b>, traitée de trois façons.</p>
+
+  <div class="picker" id="pick"></div>
+
+  <div class="trio">
+    <div class="vari">
+      <div class="lab">A · Maintenant<i>filtre CSS</i></div>
+      <div class="vc" id="cA"></div>
+    </div>
+    <div class="vari">
+      <div class="lab">B · Cuit<i>aucun filtre</i></div>
+      <div class="vc" id="cB"></div>
+    </div>
+    <div class="vari">
+      <div class="lab">C · Retiré<i>image brute</i></div>
+      <div class="vc" id="cC"></div>
+    </div>
+  </div>
+
+  <h2>A contre C, au rideau</h2>
+  <p class="sub">Fais glisser le trait : à gauche l'écran d'aujourd'hui, à droite ce que donnerait le filtre simplement retiré, sans rien cuire.</p>
+
+  <div class="rideau" id="rid">
+    <div class="cote gauche" id="ridG"></div>
+    <div class="cote droite" id="ridD"></div>
+    <div class="trait"></div>
+    <div class="poignee"></div>
+    <span class="tag tg">A · aujourd'hui</span>
+    <span class="tag td">C · sans filtre</span>
+  </div>
+  <p class="legende">B n'est pas dans le rideau : il est identique à A, c'est justement son intérêt.</p>
+
+  <p class="note"><b>B est calculé, pas simulé.</b> La carte du milieu est fabriquée dans ton navigateur, pixel par pixel, avec exactement la formule du CSS — <i>brightness</i> 1,12 puis la matrice de <i>saturate</i> 1,06 (0,213 / 0,715 / 0,072). C'est le traitement que j'appliquerais aux fichiers. Si B et A se ressemblent au point de ne pas les distinguer, c'est la preuve que cuire ne coûte rien à l'image.</p>
+
+  <p class="note" id="avert" style="display:none"><b>Les cartes ne se chargent pas.</b> Ce fichier doit être ouvert depuis le site, au même endroit que les <i>carte-*.webp</i>. Ouvert seul depuis les Fichiers, il n'a accès à aucune image.</p>
+</section>
+
+<!-- ============ 2. RAILS ============ -->
+<section id="rails">
+  <h2>En rails</h2>
+  <p class="sub">Six rails, l'ordre du voyage conservé. Tu vois <b>un rail et demi</b> par écran au lieu de deux cartes.</p>
+  <div id="zoneRails" class="zone"></div>
+
+  <h2>La grille d'aujourd'hui</h2>
+  <p class="sub">Pour comparer : les 31 cartes en grille, telles qu'elles sont maintenant. Compte tes coups de pouce jusqu'en bas.</p>
+  <div class="vgrille" id="zoneGrille"></div>
+
+  <p class="note"><b>Le découpage des rails est le mien, à valider.</b> J'ai gardé l'ordre chronologique du voyage — La Baule reste l'étape 1, les heures montent — et coupé aux changements de région. Un autre découpage est possible : par niveau, par chapitre, par continent. C'est ton choix, pas le mien.</p>
+</section>
+
+<!-- ============ 3. MEMOIRE ============ -->
+<section id="mem">
+  <h2>Ce que le téléphone porte</h2>
+  <p class="sub">Bascule les réglages et regarde le chiffre bouger. C'est ce chiffre qui fait tomber l'onglet.</p>
+
+  <div class="switchs">
+    <div class="sw" id="swRails">
+      <div class="txt"><b>Disposition en rails</b><i>Six rails au lieu d'une grille</i></div>
+      <div class="bascule"></div>
+    </div>
+    <div class="sw" id="swLazy">
+      <div class="txt"><b>Chargement différé</b><i>Ne charger que ce qui est à l'écran</i></div>
+      <div class="bascule"></div>
+    </div>
+    <div class="sw" id="swPetit">
+      <div class="txt"><b>Vignettes en 450 px</b><i>Un jeu d'images à part, la récompense intacte</i></div>
+      <div class="bascule"></div>
+    </div>
+    <div class="sw" id="swZoom">
+      <div class="txt"><b>Pincer pour zoomer ×2</b><i>Le geste qui déclenche le crash</i></div>
+      <div class="bascule"></div>
+    </div>
+  </div>
+
+  <div class="jauge">
+    <div><span class="gros chaud" id="mo">134</span><span class="unite">Mo de bitmaps décodés</span></div>
+    <div class="barre"><i id="bar" style="width:100%;background:#E8735C"></i></div>
+    <p class="seuil">Safari iOS tue l'onglet aux alentours de <b>200 à 250 Mo</b> de couches sur un iPhone récent. La limite n'est pas publiée par Apple et varie selon le modèle et ce que le téléphone porte par ailleurs.</p>
+    <div class="quoi" id="etat">État actuel de l'app</div>
+    <div class="detail">
+      <div><b id="nImg">31</b><i>images décodées</i></div>
+      <div><b id="nCouche">31</b><i>couches composites</i></div>
+    </div>
+  </div>
+
+  <p class="note"><b>Le point important.</b> Active les rails seuls : le chiffre ne bouge pas. Les 31 cartes restent dans la page et Safari décode leurs images, qu'elles soient hors écran à droite ou plus bas. Ce qui fait baisser la mémoire, c'est le chargement différé — les rails le rendent seulement plus agréable, parce qu'une carte qui arrive un peu tard se voit moins dans un rail qu'en pleine grille.</p>
+
+  <p class="note"><b>Les couches composites.</b> Le <i>filter</i> sur <i>.vimg</i> force Safari à donner sa propre couche à chaque carte. Au zoom, il les recalcule toutes à la nouvelle échelle : la surface est multipliée par quatre. C'est la même maladie que le <i>rotateY</i> retiré le 6 août — « vingt-huit couches composites », « ça lag à mort ». Le correctif de ce jour-là a enlevé la 3D mais laissé le filtre.</p>
+
+  <p class="note"><b>Et ta propre règle le dit déjà.</b> La Bible Design interdit tout filtre sur les photos de chevaux. Le <i>brightness</i> sur <i>.vimg</i> en est un. Le cuire dans les fichiers remet le code d'accord avec la règle.</p>
+</section>
+
+<script>
+/* ---------------------------------------------------------------
+   Les 31 etapes, reprises telles quelles de lingo.html (ETAPES).
+   Seuls ref / v / nat / ciel servent ici.
+--------------------------------------------------------------- */
+var ETAPES = [
+ {ref:"labaule",    v:"La Baule",         nat:"France",         ciel:["#16283F","#C58B45"]},
+ {ref:"maurice",    v:"Le Morne",         nat:"Maurice",        ciel:["#08202A","#39C6C0"]},
+ {ref:"connemara",  v:"Connemara",        nat:"Irlande",        ciel:["#0B1729","#1C2740"]},
+ {ref:"newmarket",  v:"Newmarket",        nat:"Angleterre",     ciel:["#12233C","#3A3A52"]},
+ {ref:"lambourn",   v:"Lambourn",         nat:"Angleterre",     ciel:["#0E1D33","#2A3049"]},
+ {ref:"walsall",    v:"Walsall",          nat:"Angleterre",     ciel:["#091320","#161F33"]},
+ {ref:"aberystwyth",v:"Aberystwyth",      nat:"Pays de Galles", ciel:["#070F1A","#101828"]},
+ {ref:"windsor",    v:"Windsor",          nat:"Angleterre",     ciel:["#05090F","#0B1220"]},
+ {ref:"hickstead",  v:"Hickstead",        nat:"Angleterre",     ciel:["#060B12","#0D1524"]},
+ {ref:"badminton",  v:"Badminton",        nat:"Angleterre",     ciel:["#081020","#122036"]},
+ {ref:"burghley",   v:"Burghley",         nat:"Angleterre",     ciel:["#0A1424","#16263C"]},
+ {ref:"kildare",    v:"Kildare",          nat:"Irlande",        ciel:["#0C1A2C","#20344B"]},
+ {ref:"edimbourg",  v:"Édimbourg",        nat:"Écosse",         ciel:["#16283F","#C58B45"]},
+ {ref:"saumur",     v:"Saumur",           nat:"France",         ciel:["#0A1522","#2E3B4E"]},
+ {ref:"lamotte",    v:"Lamotte-Beuvron",  nat:"France",         ciel:["#0C1A27","#33455A"]},
+ {ref:"golega",     v:"Golegã",           nat:"Portugal",       ciel:["#101A1E","#CDA765"]},
+ {ref:"jerez",      v:"Jerez",            nat:"Espagne",        ciel:["#101B26","#4A4258"]},
+ {ref:"seville",    v:"Séville",          nat:"Espagne",        ciel:["#131C24","#5A4A4E"]},
+ {ref:"vejer",      v:"Vejer",            nat:"Espagne",        ciel:["#0E1A22","#4E5257"]},
+ {ref:"oliva",      v:"Oliva Nova",       nat:"Espagne",        ciel:["#0D1A24","#3E5566"]},
+ {ref:"rome",       v:"Rome",             nat:"Italie",         ciel:["#0D1620","#C97B4A"]},
+ {ref:"verone",     v:"Vérone",           nat:"Italie",         ciel:["#121A1C","#B8863F"]},
+ {ref:"warendorf",  v:"Warendorf",        nat:"Allemagne",      ciel:["#0B141E","#2F4256"]},
+ {ref:"aachen",     v:"Aix-la-Chapelle",  nat:"Allemagne",      ciel:["#0A1219","#354A5C"]},
+ {ref:"dubai",      v:"Dubaï",            nat:"Émirats",        ciel:["#120F14","#E0B070"]},
+ {ref:"tokyo",      v:"Tokyo",            nat:"Japon",          ciel:["#141018","#E2A6B4"]},
+ {ref:"tamworth",   v:"Tamworth",         nat:"Australie",      ciel:["#141110","#D98F4A"]},
+ {ref:"buenos",     v:"Buenos Aires",     nat:"Argentine",      ciel:["#101812","#D9A055"]},
+ {ref:"lexington",  v:"Lexington",        nat:"États-Unis",     ciel:["#0E1620","#C8A46A"]},
+ {ref:"santaynez",  v:"Santa Ynez",       nat:"États-Unis",     ciel:["#101418","#E0B27A"]},
+ {ref:"spruce",     v:"Spruce Meadows",   nat:"Canada",         ciel:["#0B1420","#8FB4C8"]}
+];
+
+/* Le decoupage en rails — proposition, ordre du voyage conserve. */
+var RAILS = [
+  {t:"Le départ",           s:"étapes 1 à 3",   n:3},
+  {t:"Les îles",            s:"étapes 4 à 12",  n:9},
+  {t:"L'Écosse et la France",s:"étapes 13 à 15", n:3},
+  {t:"La péninsule",        s:"étapes 16 à 20", n:5},
+  {t:"Le continent",        s:"étapes 21 à 24", n:4},
+  {t:"Le grand large",      s:"étapes 25 à 31", n:7}
+];
+
+var VER = "?v=34";
+function S(id){ return document.getElementById(id); }
+
+/* ---------------- onglets ---------------- */
+Array.prototype.forEach.call(document.querySelectorAll("nav button"), function(b){
+  b.addEventListener("click", function(){
+    Array.prototype.forEach.call(document.querySelectorAll("nav button"), function(x){ x.classList.remove("on"); });
+    Array.prototype.forEach.call(document.querySelectorAll("section"), function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    S(b.dataset.go).classList.add("on");
+    /* remise a zero du defilement a chaque ouverture */
+    window.scrollTo(0,0);
+    Array.prototype.forEach.call(document.querySelectorAll(".piste,.picker"), function(p){ p.scrollLeft = 0; });
+  });
+});
+
+/* ---------------- fabrique de carte ---------------- */
+function carte(e, i, opts){
+  opts = opts || {};
+  var d = document.createElement("div");
+  d.className = "vc";
+  var fond = 'url("carte-'+e.ref+'.webp'+VER+'"),url("fond-'+e.ref+'.webp'+VER+'"),'
+           + 'linear-gradient(160deg,'+e.ciel[0]+','+e.ciel[1]+')';
+  d.innerHTML =
+    '<span class="vimg'+(opts.sansFiltre?'':' filtre')+'" style="background-image:'+fond+'"></span>'+
+    '<span class="vhalo"></span><span class="vvoile"></span>'+
+    '<span class="vn">'+(i+1)+'</span>'+
+    '<span class="vtitre"><b>'+e.v+'</b><i>'+e.nat+'</i></span>';
+  return d;
+}
+
+/* ---------------- 1. luminosite ---------------- */
+var choisie = 0;
+
+(function(){
+  var p = S("pick");
+  ETAPES.forEach(function(e,i){
+    var b = document.createElement("button");
+    b.textContent = e.v;
+    if(i===0) b.className = "on";
+    b.addEventListener("click", function(){
+      Array.prototype.forEach.call(p.querySelectorAll("button"), function(x){ x.classList.remove("on"); });
+      b.classList.add("on");
+      choisie = i;
+      dessineTrio();
+    });
+    p.appendChild(b);
+  });
+})();
+
+/* La cuisson : exactement ce que fait le CSS, dans l'ordre du CSS.
+   1) brightness(1.12) — multiplication simple en sRGB
+   2) saturate(1.06)   — matrice de la spec Filter Effects            */
+function cuire(img){
+  var c = document.createElement("canvas");
+  c.width = img.naturalWidth; c.height = img.naturalHeight;
+  var x = c.getContext("2d");
+  x.drawImage(img,0,0);
+  var d, s = 1.06, b = 1.12;
+  try { d = x.getImageData(0,0,c.width,c.height); }
+  catch(err){ return null; }   /* image d'une autre origine : impossible de lire */
+  var p = d.data;
+  var r0=0.213+0.787*s, r1=0.715-0.715*s, r2=0.072-0.072*s;
+  var g0=0.213-0.213*s, g1=0.715+0.285*s, g2=0.072-0.072*s;
+  var b0=0.213-0.213*s, b1=0.715-0.715*s, b2=0.072+0.928*s;
+  for(var k=0;k<p.length;k+=4){
+    var R=p[k]*b, G=p[k+1]*b, B=p[k+2]*b;
+    var nR=r0*R+r1*G+r2*B, nG=g0*R+g1*G+g2*B, nB=b0*R+b1*G+b2*B;
+    p[k]  = nR<0?0:nR>255?255:nR;
+    p[k+1]= nG<0?0:nG>255?255:nG;
+    p[k+2]= nB<0?0:nB>255?255:nB;
+  }
+  x.putImageData(d,0,0);
+  return c.toDataURL("image/webp",0.88);
+}
+
+function dessineTrio(){
+  var e = ETAPES[choisie];
+
+  /* A — filtre CSS, comme aujourd'hui */
+  remplace("cA", carte(e,choisie));
+  /* C — image brute */
+  remplace("cC", carte(e,choisie,{sansFiltre:true}));
+  /* B — cuite au canvas, sans aucun filtre CSS */
+  remplace("cB", carte(e,choisie,{sansFiltre:true}));
+
+  var im = new Image();
+  im.onload = function(){
+    var url = cuire(im);
+    if(!url) return;                       /* lecture impossible : on laisse C */
+    var v = S("cB").querySelector(".vimg");
+    if(v) v.style.backgroundImage = 'url("'+url+'")';
+  };
+  im.onerror = function(){ S("avert").style.display = "block"; };
+  im.src = "carte-"+e.ref+".webp"+VER;
+
+  /* le rideau */
+  remplace("ridG", carte(e,choisie), "cote gauche");
+  remplace("ridD", carte(e,choisie,{sansFiltre:true}), "cote droite");
+}
+
+function remplace(id, noeud, cls){
+  var hote = S(id);
+  hote.innerHTML = noeud.innerHTML;
+  if(cls) hote.className = cls;
+}
+
+dessineTrio();
+
+/* ---------------- le rideau, au doigt ---------------- */
+(function(){
+  var r = S("rid"), actif = false;
+  function pose(ev){
+    var t = ev.touches ? ev.touches[0] : ev;
+    var b = r.getBoundingClientRect();
+    var pc = ((t.clientX - b.left) / b.width) * 100;
+    pc = pc < 2 ? 2 : pc > 98 ? 98 : pc;
+    r.style.setProperty("--x", pc + "%");
+    Array.prototype.forEach.call(r.querySelectorAll(".cote,.trait,.poignee"), function(n){
+      n.style.setProperty("--x", pc + "%");
+    });
+  }
+  r.addEventListener("touchstart", function(e){ actif=true; pose(e); }, {passive:true});
+  r.addEventListener("touchmove",  function(e){ if(actif){ pose(e); e.preventDefault(); } }, {passive:false});
+  r.addEventListener("touchend",   function(){ actif=false; });
+  r.addEventListener("mousedown",  function(e){ actif=true; pose(e); });
+  window.addEventListener("mousemove", function(e){ if(actif) pose(e); });
+  window.addEventListener("mouseup",   function(){ actif=false; });
+})();
+
+/* ---------------- 2. rails ---------------- */
+(function(){
+  var z = S("zoneRails"), k = 0;
+  RAILS.forEach(function(R){
+    var bloc = document.createElement("div");
+    bloc.className = "rail";
+    var ti = document.createElement("div");
+    ti.className = "rtitre";
+    ti.innerHTML = '<b>'+R.t+'</b><span>'+R.s+'</span>';
+    bloc.appendChild(ti);
+    var piste = document.createElement("div");
+    piste.className = "piste";
+    for(var j=0;j<R.n;j++){ piste.appendChild(carte(ETAPES[k], k)); k++; }
+    bloc.appendChild(piste);
+    z.appendChild(bloc);
+  });
+
+  var g = S("zoneGrille");
+  ETAPES.forEach(function(e,i){ g.appendChild(carte(e,i)); });
+})();
+
+/* ---------------- 3. memoire ---------------- */
+var reg = { rails:false, lazy:false, petit:false, zoom:false };
+
+function bascule(id, cle){
+  var el = S(id);
+  el.addEventListener("click", function(){
+    reg[cle] = !reg[cle];
+    el.classList.toggle("on", reg[cle]);
+    compte();
+  });
+}
+bascule("swRails","rails");
+bascule("swLazy","lazy");
+bascule("swPetit","petit");
+bascule("swZoom","zoom");
+
+function compte(){
+  /* 31 cartes dans la page. Avec le differe, seules celles a l'ecran
+     sont decodees : environ 4 en grille, environ 6 en rails (on voit
+     un rail et demi, et les cartes y sont plus etroites).            */
+  var n = 31;
+  if(reg.lazy) n = reg.rails ? 6 : 4;
+
+  /* une image 900x1200 en RVBA : 900 * 1200 * 4 octets */
+  var cote = reg.petit ? 450 : 900;
+  var parImage = cote * (cote*4/3) * 4;          /* rapport 3/4 conserve */
+  var octets = n * parImage;
+
+  /* au zoom x2, les couches composites sont recalculees : surface x4 */
+  var couches = n;                               /* le filter donne 1 couche par carte */
+  if(reg.zoom) octets = octets + couches * parImage * 3;
+
+  var mo = Math.round(octets / 1048576);
+  var g = S("mo");
+  g.textContent = mo;
+  var chaud = mo >= 200;
+  g.className = "gros " + (chaud ? "chaud" : "froid");
+
+  var pc = Math.min(100, Math.round(mo / 250 * 100));
+  var bar = S("bar");
+  bar.style.width = pc + "%";
+  bar.style.background = chaud ? "#E8735C" : "var(--turquoise)";
+
+  S("nImg").textContent = n;
+  S("nCouche").textContent = couches;
+
+  var mots = [];
+  if(reg.rails) mots.push("rails");
+  if(reg.lazy)  mots.push("différé");
+  if(reg.petit) mots.push("450 px");
+  if(reg.zoom)  mots.push("zoom ×2");
+  S("etat").textContent = mots.length ? mots.join(" · ") : "État actuel de l'app";
+}
+compte();
+</script>
+</body>
+</html>
