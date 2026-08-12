@@ -460,6 +460,18 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   pointer-events:none;transition:opacity .3s ease,visibility .3s ease}
 #collection.on{opacity:1;visibility:visible;pointer-events:auto}
 #collectionIf{position:absolute;inset:0;width:100%;height:100%;border:0;background:#060709}
+/* LA SELLERIE (session 209) — meme motif que la collection et le globe :
+   une page a part en iframe. z-index 41 comme la collection. */
+#sellerie{position:fixed;inset:0;z-index:41;background:#0B0805;opacity:0;visibility:hidden;
+  pointer-events:none;transition:opacity .3s ease,visibility .3s ease}
+#sellerie.on{opacity:1;visibility:visible;pointer-events:auto}
+#sellerieIf{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0B0805}
+/* le chemin vers la sellerie depuis l'ecran d'arrivee : meme dessin
+   discret que « Partager le voyage », il ne doit pas voler la vedette a
+   l'objet lui-meme. */
+#arrSellerie{display:block;margin:10px auto 0;background:none;border:0;
+  color:var(--turquoise);font-size:11.5px;letter-spacing:.06em;cursor:pointer;
+  font-family:inherit;padding:6px 10px}
 #outils{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 12px);z-index:11;
  display:flex;flex-direction:column;gap:6px}
 #outils button{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--turquoise);
@@ -1892,6 +1904,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="collection">
   <iframe id="collectionIf" src="lingo-collection.html" title="La collection"></iframe>
 </div>
+
+<!-- La sellerie : la piece ou la cavaliere installe les objets gagnes.
+     Chargee en iframe comme la collection et le globe. L'iframe n'est
+     posee qu'a la premiere ouverture (`src` vide au depart) : la page
+     charge huit murs, on ne les telecharge pas pour rien. -->
+<div id="sellerie">
+  <iframe id="sellerieIf" src="" title="Ma sellerie"></iframe>
+</div>
 <button id="bCollection" data-t="laCollection">La collection</button>
 
 <!-- ==================================================================
@@ -1966,6 +1986,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       </div>
     </div>
   </div>
+
+  <!-- v34 : le chemin vers la sellerie, sous l'objet gagne. Masque tant
+       que l'objet n'est pas acquis (voir `arrSellerieMaj`). -->
+  <button id="arrSellerie" data-t="rangerSellerie" style="display:none">Ranger cet objet dans ma sellerie</button>
 
   <div id="arrBas">
     <button id="arrPartir" data-t="reprendreRoute">Reprendre la route</button>
@@ -2196,6 +2220,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          du chemin. Le carnet etant devenu la racine, il porte leurs portes. -->
     <div id="ouvAutres">
       <button id="ouvCollection" data-t="laCollection">La collection</button>
+      <button id="ouvSellerie" data-t="maSellerie">Ma sellerie</button>
       <button id="ouvCarnet" data-t="monCarnet">Mon carnet de voyage</button>
       <button id="ouvSprint" data-t="sprint60">Sprint · 60 s</button>
       <button id="ouvPartager" data-t="partagerVoyage">Partager le voyage</button>
@@ -3040,7 +3065,21 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=33";
+var VER = "?v=34";   /* v34 : `objet-lambourn.webp` (l'etrille remplacee par
+                        le licol en cuir) et `sellerie-gauche.webp` (le rail du
+                        bas retire) sont des fichiers REMPLACES. Sans ce temoin,
+                        les telephones garderaient les anciens des jours. */
+
+/* ==================================================================
+   LE PREFIXE DES IMAGES (12 aout 2026, session 209)
+   Toutes les images de Linguae sont a la RACINE du depot ; cette variable
+   vaut donc "" aujourd'hui. Elle existe pour le jour ou elles partiront
+   dans un dossier propre (`medias/linguae/`) : une seule ligne a changer
+   au lieu des quatre constructions dynamiques et des treize noms fixes
+   disperses dans le fichier. Decision du 12/08 : racine pour l'instant,
+   a revoir. Premier pas vers un MediaRepository cote Flutter.
+   ================================================================== */
+var PREF_MEDIAS = "";
 
 /* ==================================================================
    LA LANGUE DE LECTURE (8 aout 2026, v22)
@@ -5102,6 +5141,8 @@ function ouvrirArrivee(i){
     m.appendChild(medaillonObjet(e.ref, e.ic));
   })();
   S("souvenir").classList.toggle("apercu", !_obj);
+  /* le chemin vers la sellerie n'existe que si l'objet est gagne */
+  S("arrSellerie").style.display = _obj ? "" : "none";
   garnirVille(e);
   ecrire();
 
@@ -5696,6 +5737,99 @@ function fermerCollection(){
 }
 
 S("bGlobe").addEventListener("click", ouvrirGlobe);
+/* ==================================================================
+   LA SELLERIE (12 aout 2026, session 209)
+   L'amenagement vit dans `hype_lingua_sellerie`, RANGE PAR PIECE :
+     { pieces: { classique: { poses:{ref->{mur,x,y,l,mir}}, vues:{ville->{z,ox,oy}} } } }
+   Le rangement par piece est une decision de Blandine du 12/08 (« oui ok
+   A ») : une deuxieme sellerie viendra, et chacune doit garder son
+   amenagement. Ecrit d'emblee sous cette forme, il n'y aura RIEN a migrer
+   le jour ou elle arrive — une migration sur une app deja publiee coute
+   infiniment plus cher.
+   ⚠️ POUR L'INSTANT L'AMENAGEMENT EST LOCAL AU TELEPHONE. Le porter d'un
+   appareil a l'autre demande une colonne `sellerie` dans la table
+   `hype_lingua_progression` et une ligne dans CLES_PROG : du SQL, donc une
+   decision de Blandine. Signale, pas fait.
+   ================================================================== */
+var CLE_SELLERIE = "hype_lingua_sellerie";
+function sellerieLire(){
+  try{
+    var v = localStorage.getItem(CLE_SELLERIE);
+    var o = v ? (JSON.parse(v) || {}) : {};
+    if(!o.pieces) o.pieces = {};
+    return o;
+  }catch(e){ return {pieces:{}}; }
+}
+function sellerieEcrire(o){
+  try{ localStorage.setItem(CLE_SELLERIE, JSON.stringify(o)); }catch(e){}
+}
+function selleriePiece(nom){
+  var o = sellerieLire();
+  if(!o.pieces[nom]) o.pieces[nom] = {poses:{}, vues:{}};
+  return o.pieces[nom];
+}
+
+/* LES OBJETS QU'ON PEUT INSTALLER SONT CEUX QU'ON A GAGNES, et rien de
+   plus : la sellerie ne montre jamais une recompense qu'on n'a pas eue.
+   Une seule vignette par objet — sa vue perpendiculaire. Le choix de la
+   vue de trois quarts appartient au moteur de la sellerie, pas ici :
+   c'est la regle posee par Blandine le 12/08. */
+var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1};
+var POSE_PROPRE = {walsall:1, dubai:1};   /* ceux qui ont leur propre vue posee */
+var GROS_POSE = {walsall:30, dubai:30, lambourn:27, connemara:27, newmarket:24};
+function sellerieObjets(){
+  var l = [];
+  ETAPES.forEach(function(e){
+    if(!souvenirObtenu(e.ref)) return;
+    l.push({
+      ref:  e.ref,
+      nom:  eSouv(e),
+      /* la vue posee quand elle existe, sinon l'image de collection :
+         pour Lambourn et Connemara elles sont la MEME image (un licol se
+         range comme il se photographie), donc pas de fichier en double. */
+      pose:   POSE_PROPRE[e.ref] ? ("pose-" + e.ref + ".webp") : ("objet-" + e.ref + ".webp"),
+      pose34: POSE_34[e.ref] ? ("pose-" + e.ref + "-34.webp") : null,
+      repli:  "objet-" + e.ref + ".webp",
+      gros:   GROS_POSE[e.ref] || 22
+    });
+  });
+  return l;
+}
+/* la vue derriere les arches : le pays de la derniere ville ouverte */
+function sellerieVue(){
+  var e = null;
+  ETAPES.forEach(function(x){ if(carteObtenue(x.ref) || souvenirObtenu(x.ref)) e = x; });
+  if(!e) e = ETAPES[0];
+  return {ref:e.ref, nom:eV(e), nation:eNat(e), img:PREF_MEDIAS + "fond-" + e.ref + ".webp" + VER};
+}
+
+function ouvrirSellerie(){
+  var f = S("sellerieIf");
+  if(!f.getAttribute("src")) f.setAttribute("src", "lingo-sellerie.html");
+  S("sellerie").classList.add("on");
+  f.style.display = "";
+  var p = selleriePiece("classique");
+  function envoyer(){
+    try{
+      f.contentWindow.postMessage({
+        t:"linguae-sellerie", l:langueUI(), ver:VER, prefixe:PREF_MEDIAS,
+        piece:"classique", objets:sellerieObjets(),
+        poses:p.poses || {}, vues:p.vues || {}, vue:sellerieVue()
+      }, "*");
+    }catch(e){}
+  }
+  envoyer();
+  f.addEventListener("load", envoyer, {once:true});
+  setTimeout(envoyer, 260);
+}
+function fermerSellerie(){
+  S("sellerie").classList.remove("on");
+  setTimeout(function(){
+    if(!S("sellerie").classList.contains("on")) S("sellerieIf").style.display = "none";
+  }, 320);
+}
+
+S("ouvSellerie").addEventListener("click", ouvrirSellerie);
 S("ouvCollection").addEventListener("click", ouvrirCollection);
 S("ouvSprint").addEventListener("click", ouvrirSprint);
 S("bCollection").addEventListener("click", ouvrirCollection);
@@ -5704,6 +5838,18 @@ S("globeX").addEventListener("click", function(){ fermerGlobe(); montrerCarnet()
 window.addEventListener("message", function(ev){
   var d = ev.data || {};
   if(d.t === "linguae-fermer"){ fermerGlobe(); montrerCarnet(); return; }
+  /* la sellerie renvoie son amenagement a chaque changement, et sa
+     fermeture par la fleche du haut. Elle ne parle jamais a Supabase :
+     l'ecriture est ici, un seul proprietaire de la donnee. */
+  if(d.t === "linguae-sellerie-poses"){
+    var o = sellerieLire(), nom = d.piece || "classique";
+    if(!o.pieces[nom]) o.pieces[nom] = {poses:{}, vues:{}};
+    o.pieces[nom].poses = d.poses || {};
+    o.pieces[nom].vues  = d.vues  || {};
+    sellerieEcrire(o);
+    return;
+  }
+  if(d.t === "linguae-fermer-sellerie"){ fermerSellerie(); remonterSiVide(); return; }
   if(d.t === "linguae-fermer-collection"){ fermerCollection();
     /* ⚠️ la collection s'ouvre aussi DEPUIS la fin de lecon (lien « la
        retrouver dans ta collection ») : si la lecon est encore ouverte,
@@ -6399,6 +6545,14 @@ var UI = {
    it:"Il giro del mondo", de:"Die Weltreise", ja:"世界一周"},
  laCollection:{fr:"La collection", en:"The collection", es:"La colección",
    it:"La collezione", de:"Die Sammlung", ja:"コレクション"},
+ maSellerie:{fr:"Ma sellerie", en:"My tack room", es:"Mi guadarnés",
+   it:"La mia selleria", de:"Meine Sattelkammer", ja:"私の馬具室"},
+ rangerSellerie:{fr:"Ranger cet objet dans ma sellerie",
+   en:"Put this object away in my tack room",
+   es:"Guardar este objeto en mi guadarnés",
+   it:"Riporre questo oggetto nella mia selleria",
+   de:"Dieses Objekt in meine Sattelkammer legen",
+   ja:"この道具を馬具室にしまう"},
  leGlobe:{fr:"Le globe", en:"The globe", es:"El globo", it:"Il globo",
    de:"Der Globus", ja:"地球儀"},
  chapEt:{fr:"Chapitre {n} · {t}", en:"Chapter {n} · {t}", es:"Capítulo {n} · {t}",
@@ -6958,7 +7112,7 @@ function ouvrirCompte(){
    ecran a Linguae demain, c'est ajouter son identifiant a cette liste.
    ================================================================== */
 var CALQUES_LINGUAE = ["carnetV","compte","paywall","porteA","porteB","depart","dest","intro",
-                       "sprint","globe","collection","lecon","themes"];
+                       "sprint","globe","collection","sellerie","lecon","themes"];
 function rienDessus(){
   for(var i=0;i<CALQUES_LINGUAE.length;i++){
     var e=S(CALQUES_LINGUAE[i]);
@@ -8540,6 +8694,13 @@ function blocRecompenses(){
   /* le chemin : TOUJOURS visible */
   bloc.appendChild(el("button",{class:"lgColl", style:"margin-top:12px",
     onclick:function(){ ouvrirCollection(); }}, T("versColl")));
+  /* ⚠️ AJOUT DU 12/08 (session 209) — decision de Blandine : « oui on
+     rajoute la phrase a l'ecran de recompense pour decouvrir sa
+     sellerie ». Une phrase sous l'objet gagne, comme pour la collection
+     et les cartes. Elle n'apparait QUE si l'objet est acquis : proposer
+     de ranger un objet qu'on n'a pas serait une promesse vide. */
+  if(obj) bloc.appendChild(el("button",{class:"lgColl", style:"margin-top:8px",
+    onclick:function(){ ouvrirSellerie(); }}, T("rangerSellerie")+" \u203A"));
   return bloc;
 }
 

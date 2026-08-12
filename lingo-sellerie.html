@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ma sellerie</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ==================================================================
+   MA SELLERIE — session 209, tiree de `maquette-sellerie.html` v31.
+   Meme motif que la collection et le globe : une page a part, chargee en
+   iframe par `lingo.html`, qui dialogue par postMessage. Ce n'est pas un
+   choix nouveau, c'est l'architecture deja en place pour les deux autres
+   grands ecrans de Linguae.
+
+   CE QUI VIENT DE lingo.html : la langue, le temoin de version, le
+   prefixe d'images, la liste des objets GAGNES, et l'amenagement deja
+   enregistre (poses + cadrages de vue).
+   CE QUI REPART VERS lingo.html : l'amenagement, a chaque changement.
+   La sellerie ne parle jamais a Supabase : c'est `lingo.html` qui ecrit,
+   dans la progression Linguae. Une seule frontiere, un seul proprietaire.
+   ================================================================== */
+:root{ --or:#C9A961; }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;padding:0;overflow:hidden;height:100%}
+body{background:#0B0805;font-family:'Montserrat',sans-serif;color:#E8DCC0}
+#haut{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;
+ justify-content:space-between;padding:calc(env(safe-area-inset-top) + 10px) 14px 8px;
+ background:linear-gradient(180deg,rgba(11,8,5,.85),transparent);pointer-events:none}
+/* v8 de la maquette : le bandeau avalait les doigts sur toute sa hauteur
+   (son degrade est transparent mais il capte quand meme). Seuls ses
+   boutons restent touchables ; un objet pose haut reste saisissable. */
+#haut button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(232,220,192,.3);
+ background:rgba(11,8,5,.4);color:#E8DCC0;font-size:16px;cursor:pointer;pointer-events:auto}
+#haut h1{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;margin:0}
+#scene{position:fixed;inset:0;display:flex;touch-action:none;
+ transition:transform .38s cubic-bezier(.25,.8,.3,1)}
+.mur{position:relative;flex:0 0 100vw;height:100vh;overflow:hidden}
+.mur > .dedans{position:absolute;left:50%;top:50%;transform-origin:50% 50%}
+.mur img.fondmur{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+#zoomBarre{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:23;
+ display:flex;flex-direction:column;gap:6px}
+#zoomBarre button{width:38px;height:38px;border-radius:10px;
+ border:1px solid rgba(201,169,97,.45);background:rgba(11,8,5,.8);color:#E8DCC0;
+ font-size:17px;line-height:1;cursor:pointer}
+#zoomBarre span{font-size:9px;text-align:center;color:rgba(232,220,192,.6)}
+#tailleBarre{position:fixed;left:50%;transform:translateX(-50%);
+ bottom:calc(env(safe-area-inset-bottom) + 150px);z-index:23;display:none;gap:10px}
+#tailleBarre.on{display:flex}
+#tailleBarre button{width:46px;height:46px;border-radius:12px;
+ border:1px solid rgba(201,169,97,.5);background:rgba(11,8,5,.9);color:#C9A961;
+ font-size:22px;line-height:1;cursor:pointer}
+#points{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 84px);left:0;right:0;
+ display:flex;justify-content:center;gap:8px;z-index:20;pointer-events:none}
+#points i{width:7px;height:7px;border-radius:50%;background:rgba(232,220,192,.3)}
+#points i.on{background:var(--or)}
+#nomMur{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 98px);left:0;right:0;
+ text-align:center;z-index:20;font-size:9px;letter-spacing:.24em;text-transform:uppercase;
+ color:rgba(232,220,192,.55);pointer-events:none}
+.fenZone{position:absolute;cursor:grab}
+#grandeVue{position:fixed;inset:0;z-index:40;background:#0B0805;display:none;
+ align-items:center;justify-content:center;flex-direction:column}
+#grandeVue.on{display:flex}
+#grandeVue img{max-width:94%;max-height:82%;border-radius:8px;
+ box-shadow:0 30px 80px rgba(0,0,0,.8)}
+#grandeVue p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;margin:16px 0 0}
+#grandeVue span{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,220,192,.5)}
+/* v8 de la maquette : sur un mur perce, l'image du mur est en z-index 1
+   (la vue passe DERRIERE, dans le percage) et la zone de la fenetre en 3.
+   Un objet sans z-index etait donc peint SOUS le mur : invisible et
+   intouchable. D'ou le 6 ci-dessous, et le 14 quand il est tenu. */
+.obj{position:absolute;z-index:6;touch-action:none;cursor:grab;filter:drop-shadow(4px 9px 8px rgba(0,0,0,.55))}
+.obj img{width:100%;height:auto;display:block;pointer-events:none}
+.obj.tenu{filter:drop-shadow(0 0 14px rgba(201,169,97,.7));z-index:14}
+#reserve{position:fixed;bottom:0;left:0;right:0;z-index:22;
+ background:linear-gradient(0deg,rgba(11,8,5,.96) 70%,transparent);
+ padding:12px 0 calc(env(safe-area-inset-bottom) + 10px)}
+#resTitre{text-align:center;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;
+ color:rgba(232,220,192,.5);margin:0 0 8px}
+#resListe{display:flex;gap:10px;overflow-x:auto;padding:0 14px;scrollbar-width:none}
+#resListe::-webkit-scrollbar{display:none}
+.resObj{flex:0 0 auto;width:58px;height:58px;border-radius:10px;border:1px solid rgba(201,169,97,.3);
+ background:rgba(232,220,192,.05);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.resObj img{max-width:80%;max-height:80%}
+.resObj.pose{opacity:.28}
+#resVide{text-align:center;font-size:11px;color:rgba(232,220,192,.45);padding:14px 24px;display:none}
+#resVide.on{display:block}
+#aide{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 118px);
+ z-index:21;background:rgba(11,8,5,.85);border:1px solid rgba(201,169,97,.3);border-radius:12px;
+ padding:9px 14px;font-size:10.5px;color:#C9AE6E;pointer-events:none;opacity:0;transition:opacity .3s}
+#aide.on{opacity:1}
+</style>
+</head>
+<body>
+<div id="haut">
+  <button type="button" id="bRetour">&lsaquo;</button>
+  <h1 id="titre">Ma sellerie</h1>
+  <button type="button" style="opacity:0;pointer-events:none">&nbsp;</button>
+</div>
+
+<div id="scene"></div>
+<p id="nomMur"></p>
+<div id="points"></div>
+
+<div id="reserve">
+  <p id="resTitre"></p>
+  <div id="resListe"></div>
+  <p id="resVide"></p>
+</div>
+<div id="aide"></div>
+<div id="zoomBarre">
+  <button type="button" id="zPlus">+</button>
+  <span id="zVal">1&#215;</span>
+  <button type="button" id="zMoins">&minus;</button>
+</div>
+<div id="tailleBarre">
+  <button type="button" id="tMoins">&minus;</button>
+  <button type="button" id="tPlus">+</button>
+</div>
+
+<div id="grandeVue">
+  <img id="gvImg" src="" alt="">
+  <p id="gvNom"></p>
+  <span id="gvSous"></span>
+</div>
+
+<script>
+/* ==================================================================
+   LES HUIT MURS, DANS L'ORDRE DE LA BANDE.
+   Le circuit et son sens sont ceux de la maquette v31, valides par
+   Blandine : arrivee de loin, un pas plus pres, puis le cercle des six
+   murs — la fenetre, l'angle de la vitrine, la vitrine, la porte, le mur
+   des selles, l'angle des selles — et on revient a la fenetre. En rond,
+   dans les deux sens. Les deux vues d'arrivee sont HORS du cercle : on y
+   revient par les points de navigation, qui sont cliquables.
+   `biais` marque les deux angles : c'est la que le moteur prend la vue
+   de trois quarts d'un objet, quand elle existe.
+   ================================================================== */
+var MURS = [
+  {id:"entreeloin",  f:"sellerie-entree-loin.webp",  arrivee:true},
+  {id:"entreevue",   f:"sellerie-entree-vue.webp",   arrivee:true},
+  {id:"fond",        f:"sellerie-fond-perce.webp"},
+  {id:"droitebiais", f:"sellerie-droite-biais.webp", biais:true},
+  {id:"droite",      f:"sellerie-droite.webp"},
+  {id:"entree",      f:"sellerie-entree.webp"},
+  {id:"gauche",      f:"sellerie-gauche.webp"},
+  {id:"gauchebiais", f:"sellerie-gauche-biais.webp", biais:true}
+];
+var FACES = [2,3,4,5,6,7];      /* le cercle, apres les DEUX vues d'arrivee */
+
+/* Chaque arche est mesuree sur l'image livree : [x, y, largeur, hauteur]
+   en % du mur. Les cinq murs perces n'ont pas la meme fenetre. */
+var ARCHES = {
+  fond:        [35.2, 25.9, 30.1, 34.6],
+  entreeloin:  [40.7, 27.3, 18.1, 24.5],
+  entreevue:   [38.0, 27.1, 23.7, 30.3],
+  gauchebiais: [81.7, 23.7, 18.3, 33.1],
+  droitebiais: [ 0.0, 23.9, 13.6, 34.6]
+};
+
+/* les mots de l'ecran, dans les six langues obligatoires */
+var MOTS = {
+  titre:{fr:"Ma sellerie",en:"My tack room",es:"Mi guadarnés",it:"La mia selleria",de:"Meine Sattelkammer",ja:"私の馬具室"},
+  consigne:{fr:"Touche pour poser · retouche pour ranger · glisse un objet ici pour le ranger",
+    en:"Tap to place · tap again to put away · drag an object here to put it away",
+    es:"Toca para colocar · vuelve a tocar para guardar · arrastra un objeto aquí para guardarlo",
+    it:"Tocca per posare · tocca di nuovo per riporre · trascina un oggetto qui per riporlo",
+    de:"Tippen zum Ablegen · nochmal tippen zum Wegräumen · Objekt hierher ziehen zum Wegräumen",
+    ja:"タップで置く・もう一度タップで片づける・ここにドラッグで片づける"},
+  vide:{fr:"Ta sellerie t'attend. Gagne des objets en voyageant, et tu pourras les installer ici.",
+    en:"Your tack room is waiting. Win objects as you travel, and you can arrange them here.",
+    es:"Tu guadarnés te espera. Gana objetos viajando y podrás colocarlos aquí.",
+    it:"La tua selleria ti aspetta. Vinci oggetti viaggiando e potrai sistemarli qui.",
+    de:"Deine Sattelkammer wartet. Gewinne Objekte auf der Reise, dann kannst du sie hier einrichten.",
+    ja:"馬具室が待っています。旅で道具を手に入れて、ここに並べましょう。"},
+  range:{fr:"Rangé dans tes objets",en:"Put away with your objects",es:"Guardado con tus objetos",
+    it:"Riposto tra i tuoi oggetti",de:"Zu deinen Objekten gelegt",ja:"道具にしまいました"},
+  gestes:{fr:"Glisse pour placer · pince pour la taille · double-touche pour retourner · tiens un bord pour changer de mur",
+    en:"Drag to place · pinch to resize · double-tap to flip · hold an edge to change wall",
+    es:"Arrastra para colocar · pellizca para el tamaño · doble toque para voltear · mantén un borde para cambiar de pared",
+    it:"Trascina per posizionare · pizzica per la dimensione · doppio tocco per capovolgere · tieni un bordo per cambiare parete",
+    de:"Ziehen zum Platzieren · zwei Finger für die Größe · Doppeltipp zum Spiegeln · Rand halten für Wandwechsel",
+    ja:"ドラッグで配置・ピンチでサイズ・ダブルタップで反転・端を長押しで壁を変更"},
+  fenetre:{fr:"La fenêtre reste dégagée — pose ton objet à côté",
+    en:"The window stays clear — place your object beside it",
+    es:"La ventana queda libre — coloca tu objeto al lado",
+    it:"La finestra resta libera — posa il tuo oggetto accanto",
+    de:"Das Fenster bleibt frei — lege dein Objekt daneben",
+    ja:"窓はふさがないで — 横に置いてください"},
+  avance:{fr:"Avance dans la pièce pour poser",en:"Step into the room to place it",
+    es:"Avanza en la sala para colocarlo",it:"Avanza nella stanza per posarlo",
+    de:"Geh in den Raum hinein, um es abzulegen",ja:"部屋の中に進んで置いてください"},
+  deplacer:{fr:"Glisse pour te déplacer dans la pièce",en:"Drag to move around the room",
+    es:"Arrastra para moverte por la sala",it:"Trascina per muoverti nella stanza",
+    de:"Ziehen, um dich im Raum zu bewegen",ja:"ドラッグで部屋を移動"},
+  tenir:{fr:"Continue de tenir pour passer au mur voisin",en:"Keep holding to move to the next wall",
+    es:"Sigue sosteniendo para pasar a la pared siguiente",it:"Continua a tenere per passare alla parete accanto",
+    de:"Weiter halten, um zur nächsten Wand zu wechseln",ja:"押し続けると隣の壁へ移ります"},
+  taVue:{fr:"Ta vue du moment",en:"Your view of the moment",es:"Tu vista del momento",
+    it:"La tua vista del momento",de:"Dein Blick des Augenblicks",ja:"いまの景色"}
+};
+var NOMS_MURS = {
+  entreeloin:{fr:"Ta sellerie",en:"Your tack room",es:"Tu guadarnés",it:"La tua selleria",de:"Deine Sattelkammer",ja:"あなたの馬具室"},
+  entreevue:{fr:"Tu avances",en:"You step closer",es:"Te acercas",it:"Ti avvicini",de:"Du kommst näher",ja:"近づく"},
+  fond:{fr:"Le mur de la fenêtre",en:"The window wall",es:"La pared de la ventana",it:"La parete della finestra",de:"Die Fensterwand",ja:"窓の壁"},
+  droitebiais:{fr:"L'angle de la vitrine",en:"The cabinet corner",es:"El rincón de la vitrina",it:"L'angolo della vetrina",de:"Die Vitrinenecke",ja:"棚の角"},
+  droite:{fr:"La vitrine",en:"The cabinet",es:"La vitrina",it:"La vetrina",de:"Die Vitrine",ja:"ガラス棚"},
+  entree:{fr:"L'entrée",en:"The doorway",es:"La entrada",it:"L'ingresso",de:"Der Eingang",ja:"入口"},
+  gauche:{fr:"Le mur des selles",en:"The saddle wall",es:"La pared de las sillas",it:"La parete delle selle",de:"Die Sattelwand",ja:"鞍の壁"},
+  gauchebiais:{fr:"L'angle des selles",en:"The saddle corner",es:"El rincón de las sillas",it:"L'angolo delle selle",de:"Die Sattelecke",ja:"鞍の角"}
+};
+
+/* ------------------------------------------------------------------
+   L'ETAT. Tout vient de lingo.html ; rien n'est invente ici.
+   POSES : ref -> {mur, x, y, l, mir}   (x, y, l en % DU MUR)
+   CADRAGE : ref de ville -> {z, ox, oy}  (le cadrage de la vue par ville)
+   ------------------------------------------------------------------ */
+var LANGUE = "fr", VER = "", PREF = "", PIECE = "classique";
+var OBJETS = [];             /* [{ref, nom, pose, pose34}] les objets gagnes */
+var POSES = {}, CADRAGE = {};
+var VUE_IMG = "", VUE_NOM = "", VUE_NAT = "";
+var mur = 0, pret = false;
+
+function S(i){ return document.getElementById(i); }
+function M(c){ var o = MOTS[c] || {}; return o[LANGUE] || o.fr || ""; }
+function nomMurDe(id){ var o = NOMS_MURS[id] || {}; return o[LANGUE] || o.fr || ""; }
+function img(nom){ return PREF + nom + VER; }
+function objetDe(r){ for(var i=0;i<OBJETS.length;i++){ if(OBJETS[i].ref===r) return OBJETS[i]; } return null; }
+
+/* LE MOTEUR CHOISIT LA VUE, PAS LA JOUEUSE (regle posee par Blandine le
+   12/08 : « c'est a toi d'utiliser les autres images »). Un objet n'a
+   qu'UNE vignette dans la reserve, sa vue perpendiculaire ; sur un mur
+   vu en biais, on prend sa vue de trois quarts quand elle existe, sinon
+   on retombe sur la perpendiculaire — jamais de trou. */
+function imageObjet(r, idMur){
+  var o = objetDe(r); if(!o) return "";
+  var m = null;
+  for(var i=0;i<MURS.length;i++){ if(MURS[i].id===idMur) m = MURS[i]; }
+  if(m && m.biais && o.pose34) return img(o.pose34);
+  return img(o.pose);
+}
+
+/* ------------------ la scene : un mur par ecran ------------------ */
+var sc = S('scene');
+MURS.forEach(function(m){
+  var d = document.createElement('div');
+  d.className = 'mur'; d.id = 'mur-' + m.id;
+  d.innerHTML = '<div class="dedans" id="dedans-' + m.id + '">'
+              + '<img class="fondmur" alt="" src=""></div>';
+  sc.appendChild(d);
+});
+
+/* ------------------ la fenetre et sa vue ------------------
+   Une image « percee » : l'arche est un vrai trou (alpha 0) et la vue
+   passe DERRIERE en calque plein. Aucun clip-path — la « fenetre de
+   merde » de la v1 de la maquette.
+   LE CADRAGE EST INSTALLE PAR LA JOUEUSE (« autant laisser le joueur
+   l'installer a sa guise ») : glisser + pincer jusqu'a 4x, borne pour
+   toujours couvrir l'arche. Memorise PAR VILLE, pas par mur : c'est le
+   pays qu'on voit, et il change avec le voyage. */
+function cadrageDe(ref){
+  if(!CADRAGE[ref]) CADRAGE[ref] = {z:1, ox:0, oy:0};
+  return CADRAGE[ref];
+}
+function appliquerVue(id){
+  var c = cadrageDe(VUE_NOM ? VUE_REF : "-"), v = S('vue-' + id);
+  if(!v) return;
+  var m = (c.z - 1) / 2 * 100;
+  c.ox = Math.max(-m, Math.min(m, c.ox));
+  c.oy = Math.max(-m, Math.min(m, c.oy));
+  v.style.width  = (c.z * 100) + '%';
+  v.style.height = (c.z * 100) + '%';
+  v.style.left   = (-(c.z - 1) / 2 * 100 + c.ox) + '%';
+  v.style.top    = (-(c.z - 1) / 2 * 100 + c.oy) + '%';
+}
+function appliquerToutesLesVues(){
+  Object.keys(ARCHES).forEach(function(id){ appliquerVue(id); });
+}
+var VUE_REF = "-";
+
+Object.keys(ARCHES).forEach(function(id){
+  var f = S('dedans-' + id); if(!f) return;
+  var A = ARCHES[id];
+  var cadre = document.createElement('div');
+  cadre.id = 'cadre-' + id;
+  cadre.style.cssText = 'position:absolute;left:' + A[0] + '%;top:' + A[1] + '%;width:' + A[2]
+                      + '%;height:' + A[3] + '%;overflow:hidden;z-index:0';
+  var v = document.createElement('img');
+  v.id = 'vue-' + id; v.alt = '';
+  v.style.cssText = 'position:absolute;object-fit:cover;object-position:center;'
+                  + 'width:100%;height:100%;left:0;top:0';
+  cadre.appendChild(v);
+  f.insertBefore(cadre, f.firstChild);
+  var fm = f.querySelector('img.fondmur');
+  fm.style.position = 'relative'; fm.style.zIndex = '1';
+
+  var z = document.createElement('div'); z.className = 'fenZone';
+  z.style.cssText = 'position:absolute;left:' + A[0] + '%;top:' + A[1] + '%;width:' + A[2]
+                  + '%;height:' + A[3] + '%;z-index:3;touch-action:none;cursor:grab';
+  f.appendChild(z);
+
+  var deb = null, pz = null, bouge = false;
+  z.addEventListener('touchstart', function(ev){
+    ev.stopPropagation();
+    var c = cadrageDe(VUE_REF); bouge = false;
+    if(ev.touches.length === 2){
+      ev.preventDefault();
+      pz = {d:Math.hypot(ev.touches[0].clientX - ev.touches[1].clientX,
+                         ev.touches[0].clientY - ev.touches[1].clientY), z:c.z};
+    } else {
+      deb = {x:ev.touches[0].clientX, y:ev.touches[0].clientY, ox:c.ox, oy:c.oy};
+    }
+  }, {passive:false});
+  z.addEventListener('touchmove', function(ev){
+    ev.stopPropagation(); ev.preventDefault();
+    var c = cadrageDe(VUE_REF);
+    if(pz && ev.touches.length === 2){
+      bouge = true;
+      var d = Math.hypot(ev.touches[0].clientX - ev.touches[1].clientX,
+                         ev.touches[0].clientY - ev.touches[1].clientY);
+      c.z = Math.max(1, Math.min(4, pz.z * d / pz.d));
+      appliquerToutesLesVues(); return;
+    }
+    if(!deb) return;
+    var b = S('cadre-' + id);
+    var L = b.offsetWidth * ZOOM, H = b.offsetHeight * ZOOM;
+    var dx = (ev.touches[0].clientX - deb.x), dy = (ev.touches[0].clientY - deb.y);
+    if(Math.abs(dx) > 6 || Math.abs(dy) > 6) bouge = true;
+    c.ox = deb.ox + dx / L * 100;
+    c.oy = deb.oy + dy / H * 100;
+    appliquerToutesLesVues();
+  }, {passive:false});
+  z.addEventListener('touchend', function(ev){
+    ev.stopPropagation();
+    deb = null; pz = null;
+    if(!bouge) ouvrirGrandeVue(); else enregistrer();
+  }, {passive:false});
+  z.addEventListener('mousedown', function(ev){
+    ev.stopPropagation(); ev.preventDefault();
+    var c = cadrageDe(VUE_REF); bouge = false;
+    var d0 = {x:ev.clientX, y:ev.clientY, ox:c.ox, oy:c.oy};
+    function mv(e2){
+      var b = S('cadre-' + id);
+      var L = b.offsetWidth * ZOOM, H = b.offsetHeight * ZOOM;
+      var dx = e2.clientX - d0.x, dy = e2.clientY - d0.y;
+      if(Math.abs(dx) > 6 || Math.abs(dy) > 6) bouge = true;
+      c.ox = d0.ox + dx / L * 100; c.oy = d0.oy + dy / H * 100;
+      appliquerToutesLesVues();
+    }
+    function up(){
+      document.removeEventListener('mousemove', mv);
+      document.removeEventListener('mouseup', up);
+      if(!bouge) ouvrirGrandeVue(); else enregistrer();
+    }
+    document.addEventListener('mousemove', mv);
+    document.addEventListener('mouseup', up);
+  });
+  z.addEventListener('wheel', function(ev){
+    ev.preventDefault(); ev.stopPropagation();
+    var c = cadrageDe(VUE_REF);
+    c.z = Math.max(1, Math.min(4, c.z + (ev.deltaY < 0 ? 0.12 : -0.12)));
+    appliquerToutesLesVues(); enregistrer();
+  }, {passive:false});
+});
+
+function ouvrirGrandeVue(){
+  if(!VUE_IMG) return;
+  S('gvImg').src = VUE_IMG;
+  S('gvNom').textContent = VUE_NOM;
+  S('gvSous').textContent = M('taVue') + (VUE_NAT ? ' — ' + VUE_NAT : '');
+  S('grandeVue').classList.add('on');
+}
+S('grandeVue').addEventListener('click', function(){ this.classList.remove('on'); });
+
+/* ------------------ les points de navigation ------------------ */
+var pts = S('points');
+MURS.forEach(function(m, i){
+  var p = document.createElement('i');
+  p.style.cursor = 'pointer'; p.style.margin = '0 3px'; p.style.padding = '6px';
+  p.style.backgroundClip = 'content-box'; p.title = nomMurDe(m.id);
+  p.onclick = function(ev){ ev.stopPropagation(); aller(i); };
+  pts.appendChild(p);
+});
+
+/* Safari a ses propres evenements de geste (gesturestart/change/end) qui
+   declenchent le zoom de la PAGE. On les refuse sur la scene seulement :
+   ailleurs, le zoom du navigateur doit rester disponible. */
+['gesturestart','gesturechange','gestureend'].forEach(function(n){
+  sc.addEventListener(n, function(ev){ ev.preventDefault(); }, false);
+});
+document.addEventListener('touchmove', function(ev){
+  if(ev.touches.length > 1 && ev.target.closest('#scene')) ev.preventDefault();
+}, {passive:false});
+
+function suivant(sens){
+  var i = FACES.indexOf(mur);
+  if(i < 0) return FACES[0];               /* on est sur une vue d'arrivee */
+  return FACES[(i + sens + FACES.length) % FACES.length];
+}
+/* Tout saut de plus d'un mur est instantane : sinon la scene traverse les
+   huit murs avec l'animation — « tout saute et ca ramene en arriere a
+   toute allure » (Blandine, v15 de la maquette). */
+function allerBrut(i){
+  var cible = (i + MURS.length) % MURS.length;
+  var saut = Math.abs(cible - mur) > 1;
+  if(saut) sc.style.transition = 'none';
+  mur = cible;
+  sc.style.transform = 'translateX(' + (-mur * 100) + 'vw)';
+  if(saut){ void sc.offsetWidth; sc.style.transition = ''; }
+  S('nomMur').textContent = nomMurDe(MURS[mur].id);
+  [].forEach.call(pts.children, function(p, j){ p.classList.toggle('on', j === mur); });
+}
+/* le zoom se remet a 1 quand on change de mur : chaque mur a son cadrage */
+function aller(i){ ZOOM = 1; ZX = 0; ZY = 0; allerBrut(i); appliquerZoom(); }
+
+var sx = null, sy = null;
+function surUnGeste(t){
+  return t.closest('.obj') || t.closest('#reserve') || t.closest('#grandeVue')
+      || t.closest('.fenZone') || t.closest('#zoomBarre') || t.closest('#tailleBarre')
+      || t.closest('#haut');
+}
+document.addEventListener('touchstart', function(e){
+  if(surUnGeste(e.target)) return;
+  sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+}, {passive:true});
+document.addEventListener('touchend', function(e){
+  if(sx === null) return;
+  var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+  sx = null;
+  if(ZOOM > 1) return;      /* zoomee, le glissement sert a se deplacer */
+  if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4) aller(suivant(dx < 0 ? 1 : -1));
+}, {passive:true});
+var mx = null;
+document.addEventListener('mousedown', function(e){
+  if(surUnGeste(e.target)) return;
+  mx = e.clientX;
+});
+document.addEventListener('mouseup', function(e){
+  if(mx === null) return; var dx = e.clientX - mx; mx = null;
+  if(ZOOM > 1) return;
+  if(Math.abs(dx) > 60) aller(suivant(dx < 0 ? 1 : -1));
+});
+
+/* ------------------ la reserve et la pose ------------------ */
+var rl = S('resListe');
+function construireReserve(){
+  rl.innerHTML = '';
+  S('resVide').textContent = M('vide');
+  S('resVide').classList.toggle('on', OBJETS.length === 0);
+  S('resTitre').textContent = OBJETS.length ? M('consigne') : '';
+  OBJETS.forEach(function(o){
+    var b = document.createElement('button');
+    b.className = 'resObj'; b.id = 'res-' + o.ref; b.type = 'button';
+    b.title = o.nom;
+    var im = document.createElement('img'); im.alt = ''; im.src = img(o.pose);
+    /* si la vue posee n'existe pas encore a la racine, on retombe sur
+       l'image de collection : la vignette n'est jamais vide. */
+    im.onerror = function(){ if(o.repli && im.src !== img(o.repli)) im.src = img(o.repli); };
+    b.appendChild(im);
+    b.onclick = function(){
+      if(POSES[o.ref]){ retirer(o.ref); aide(o.nom + ' — ' + M('range')); enregistrer(); return; }
+      var n = 0, k; for(k in POSES){ if(POSES[k].mur === mur) n++; }
+      if(MURS[mur].arrivee){ aller(2); aide(M('avance')); }
+      var bx = (MURS[mur].id === "fond" ? 22 : 34) + (n % 4) * 13;
+      var by = (MURS[mur].id === "fond" ? 62 : 42) + Math.floor(n / 4) * 11;
+      if(by > 80) by = 80;
+      poser(o.ref, mur, bx, by, o.gros || 22);
+      aide(o.nom + ' — ' + M('gestes'));
+      enregistrer();
+    };
+    rl.appendChild(b);
+  });
+  /* REGLE DU SCROLL RESET : tout panneau `overflow:auto` repart de son
+     debut a chaque ouverture. La reserve defile horizontalement. */
+  rl.scrollLeft = 0; rl.scrollTop = 0;
+}
+
+/* LA FENETRE EST INVIOLABLE (Blandine : « on ne devrait rien pouvoir
+   inserer sur ou dans la fenetre »). Vrai seulement DANS l'arche du mur
+   du fond : la v5 de la maquette avait cette logique inversee et
+   repoussait les objets partout, porte comprise. */
+var FENETRE = {left:31, right:69, top:19, bottom:53};
+function dansFenetre(m, p){
+  return MURS[m].id === "fond"
+      && p.x > FENETRE.left && p.x < FENETRE.right
+      && p.y > FENETRE.top  && p.y < FENETRE.bottom;
+}
+function repousser(p){
+  var dg = Math.abs(p.x - FENETRE.left), dd = Math.abs(FENETRE.right - p.x);
+  p.x = (dg < dd) ? FENETRE.left - 6 : FENETRE.right + 6;
+  aide(M('fenetre'));
+}
+function poser(r, m, x, y, larg, mir){
+  POSES[r] = {mur:m, x:x, y:y, l:larg, mir:!!mir};
+  var d = document.createElement('div'); d.className = 'obj'; d.id = 'obj-' + r;
+  var im = document.createElement('img'); im.alt = ''; im.src = imageObjet(r, MURS[m].id);
+  var o = objetDe(r);
+  im.onerror = function(){ if(o && o.repli && im.src !== img(o.repli)) im.src = img(o.repli); };
+  d.appendChild(im);
+  S('dedans-' + MURS[m].id).appendChild(d);
+  appliquer(r); brancher(r);
+  var v = S('res-' + r); if(v) v.classList.add('pose');
+}
+function retirer(r){
+  if(OBJ_ACTIF === r) cacherTaille();
+  var e = S('obj-' + r); if(e) e.remove();
+  delete POSES[r];
+  var v = S('res-' + r); if(v) v.classList.remove('pose');
+}
+function borner(p){
+  p.x = Math.max(3, Math.min(97, p.x));
+  p.y = Math.max(3, Math.min(97, p.y));
+}
+function appliquer(r){
+  var p = POSES[r], e = S('obj-' + r);
+  if(!p || !e) return;
+  borner(p);
+  e.style.width = p.l + '%';       /* taille en % DU MUR, pas de l'ecran */
+  e.style.height = 'auto';
+  e.style.left = (p.x - p.l / 2) + '%';
+  e.style.top = p.y + '%';
+  e.style.transform = 'translateY(-50%)';
+  var im = e.querySelector('img');
+  im.style.transform = p.mir ? 'scaleX(-1)' : '';
+  var voulue = imageObjet(r, MURS[p.mur].id);
+  if(voulue && im.getAttribute('src') !== voulue) im.src = voulue;
+}
+function transferer(r, sens){
+  var p = POSES[r], e = S('obj-' + r);
+  var i = FACES.indexOf(p.mur); if(i < 0) i = 0;
+  var ni = FACES[(i + sens + FACES.length) % FACES.length];
+  p.mur = ni;
+  S('dedans-' + MURS[ni].id).appendChild(e);
+  p.x = sens > 0 ? 16 : 84;        /* il entre par le bord oppose */
+  aller(ni); appliquer(r); enregistrer();
+  aide('« ' + nomMurDe(MURS[ni].id) + ' »');
+}
+function surLaReserve(y){
+  var res = S('reserve');
+  return y >= (window.innerHeight - res.offsetHeight);
+}
+function brancher(r){
+  var e = S('obj-' + r), p = POSES[r];
+  var t0 = 0, deb = null, pincement = null;
+  var dernier = null, bordT = null, bordCote = 0;
+  function quitterBord(){ if(bordT){ clearTimeout(bordT); bordT = null; } bordCote = 0; }
+  function gererBord(x){
+    var c = x < window.innerWidth * 0.10 ? -1 : (x > window.innerWidth * 0.90 ? 1 : 0);
+    if(c === 0){ quitterBord(); return; }
+    if(c === bordCote) return;
+    quitterBord(); bordCote = c;
+    aide(M('tenir'));
+    bordT = setTimeout(function(){ bordT = null; bordCote = 0; transferer(r, c); }, 600);
+  }
+  e.addEventListener('touchstart', function(ev){
+    if(ev.touches.length === 2){
+      ev.preventDefault();
+      pincement = {d:Math.hypot(ev.touches[0].clientX - ev.touches[1].clientX,
+                                ev.touches[0].clientY - ev.touches[1].clientY), l:p.l};
+      return;
+    }
+    var q = ev.touches[0]; deb = {x:q.clientX, y:q.clientY, px:p.x, py:p.y};
+    e.classList.add('tenu'); montrerTaille(r);
+    var t = Date.now();
+    /* ecouteur NON passif : le double-toucher (miroir) est le meme geste
+       que le zoom-au-double-tap de Safari, qui zoomait la page par-dessus. */
+    if(t - t0 < 320){ ev.preventDefault(); p.mir = !p.mir; appliquer(r); enregistrer(); }
+    t0 = t;
+  }, {passive:false});
+  e.addEventListener('touchmove', function(ev){
+    ev.preventDefault();
+    if(pincement && ev.touches.length === 2){
+      var d = Math.hypot(ev.touches[0].clientX - ev.touches[1].clientX,
+                         ev.touches[0].clientY - ev.touches[1].clientY);
+      p.l = Math.max(8, Math.min(60, pincement.l * d / pincement.d)); appliquer(r); return;
+    }
+    if(!deb) return;
+    var q = ev.touches[0];
+    dernier = {x:q.clientX, y:q.clientY};
+    /* les positions sont en % DU MUR : le deplacement du doigt se convertit
+       avec la taille du mur AFFICHE, zoom compris, sinon l'objet ne suit pas. */
+    var b = S('dedans-' + MURS[p.mur].id);
+    var bw = (b ? b.offsetWidth : window.innerWidth) * ZOOM;
+    var bh = (b ? b.offsetHeight : window.innerHeight) * ZOOM;
+    p.x = deb.px + (q.clientX - deb.x) / bw * 100;
+    p.y = deb.py + (q.clientY - deb.y) / bh * 100;
+    appliquer(r);
+    gererBord(q.clientX);
+  }, {passive:false});
+  e.addEventListener('touchend', function(){
+    quitterBord();
+    deb = null; pincement = null; e.classList.remove('tenu');
+    if(dernier && surLaReserve(dernier.y)){
+      dernier = null; retirer(r); aide(M('range')); enregistrer();
+      return;                       /* l'objet n'existe plus : on s'arrete la */
+    }
+    dernier = null;
+    if(POSES[r] && dansFenetre(POSES[r].mur, p)){ repousser(p); appliquer(r); }
+    enregistrer();
+  }, {passive:true});
+  e.addEventListener('mousedown', function(ev){
+    ev.preventDefault();
+    deb = {x:ev.clientX, y:ev.clientY, px:p.x, py:p.y}; e.classList.add('tenu');
+    montrerTaille(r);
+    var t = Date.now(); if(t - t0 < 320){ p.mir = !p.mir; appliquer(r); } t0 = t;
+    function mv(e2){
+      var b = S('dedans-' + MURS[p.mur].id);
+      var bw = (b ? b.offsetWidth : window.innerWidth) * ZOOM;
+      var bh = (b ? b.offsetHeight : window.innerHeight) * ZOOM;
+      p.x = deb.px + (e2.clientX - deb.x) / bw * 100;
+      p.y = deb.py + (e2.clientY - deb.y) / bh * 100;
+      appliquer(r); gererBord(e2.clientX);
+    }
+    function up(ev2){
+      document.removeEventListener('mousemove', mv);
+      document.removeEventListener('mouseup', up);
+      e.classList.remove('tenu'); quitterBord();
+      if(ev2 && surLaReserve(ev2.clientY)){ retirer(r); aide(M('range')); enregistrer(); return; }
+      if(POSES[r] && dansFenetre(POSES[r].mur, p)){ repousser(p); appliquer(r); }
+      enregistrer();
+    }
+    document.addEventListener('mousemove', mv);
+    document.addEventListener('mouseup', up);
+  });
+  e.addEventListener('wheel', function(ev){
+    ev.preventDefault();
+    p.l = Math.max(8, Math.min(60, p.l + (ev.deltaY < 0 ? 1.5 : -1.5)));
+    appliquer(r); enregistrer();
+  });
+}
+
+/* ------------------ le zoom de la piece ------------------
+   Le zoom du NAVIGATEUR reste bloque sur la scene (il deregle tout) ;
+   celui-ci est le notre : il agrandit le calque « dedans » du mur, objets
+   compris, puisqu'ils sont dedans et places en %. Le decalage est borne
+   par (z-1)/(2z) : avec (z-1)/2 on sortait du mur en plein noir. */
+var ZOOM = 1, ZX = 0, ZY = 0, ZMAX = 3;
+function bornerZoom(){
+  var m = (ZOOM - 1) / (2 * ZOOM) * 100;
+  ZX = Math.max(-m, Math.min(m, ZX));
+  ZY = Math.max(-m, Math.min(m, ZY));
+  if(ZOOM <= 1){ ZX = 0; ZY = 0; }
+}
+function appliquerZoom(){
+  bornerZoom();
+  var l = document.querySelectorAll('.mur > .dedans');
+  for(var i = 0; i < l.length; i++){
+    l[i].style.transform = 'translate(-50%,-50%) scale(' + ZOOM + ') translate(' + ZX + '%,' + ZY + '%)';
+  }
+  S('zVal').textContent = (Math.round(ZOOM * 10) / 10) + '\u00D7';
+}
+function zoomer(f){
+  var av = ZOOM;
+  ZOOM = Math.max(1, Math.min(ZMAX, ZOOM * f));
+  if(ZOOM === av) return;
+  appliquerZoom();
+}
+S('zPlus').onclick  = function(){ zoomer(1.4); if(ZOOM > 1) aide(M('deplacer')); };
+S('zMoins').onclick = function(){ zoomer(1 / 1.4); };
+(function(){
+  var pz = null, gd = null;
+  document.addEventListener('touchstart', function(ev){
+    if(surUnGeste(ev.target)) return;
+    if(ev.touches.length === 2){
+      pz = {d:Math.hypot(ev.touches[0].clientX - ev.touches[1].clientX,
+                         ev.touches[0].clientY - ev.touches[1].clientY), z:ZOOM};
+    } else if(ZOOM > 1){
+      gd = {x:ev.touches[0].clientX, y:ev.touches[0].clientY, zx:ZX, zy:ZY};
+    }
+  }, {passive:false});
+  document.addEventListener('touchmove', function(ev){
+    if(pz && ev.touches.length === 2){
+      ev.preventDefault();
+      var d = Math.hypot(ev.touches[0].clientX - ev.touches[1].clientX,
+                         ev.touches[0].clientY - ev.touches[1].clientY);
+      ZOOM = Math.max(1, Math.min(ZMAX, pz.z * d / pz.d)); appliquerZoom(); return;
+    }
+    if(gd && ev.touches.length === 1 && ZOOM > 1){
+      ev.preventDefault();
+      ZX = gd.zx + (ev.touches[0].clientX - gd.x) / window.innerWidth * 100 / ZOOM;
+      ZY = gd.zy + (ev.touches[0].clientY - gd.y) / window.innerHeight * 100 / ZOOM;
+      appliquerZoom();
+    }
+  }, {passive:false});
+  document.addEventListener('touchend', function(){ pz = null; gd = null; }, {passive:true});
+})();
+
+/* ------------------ les boutons de taille ------------------ */
+var OBJ_ACTIF = null;
+function montrerTaille(r){ OBJ_ACTIF = r; S('tailleBarre').classList.add('on'); }
+function cacherTaille(){ OBJ_ACTIF = null; S('tailleBarre').classList.remove('on'); }
+function retailler(d){
+  if(!OBJ_ACTIF || !POSES[OBJ_ACTIF]){ cacherTaille(); return; }
+  var p = POSES[OBJ_ACTIF];
+  p.l = Math.max(8, Math.min(60, p.l + d));
+  appliquer(OBJ_ACTIF); enregistrer();
+}
+S('tPlus').onclick  = function(){ retailler(3); };
+S('tMoins').onclick = function(){ retailler(-3); };
+
+var aideT = null;
+function aide(txt){
+  var a = S('aide'); a.textContent = txt; a.classList.add('on');
+  if(aideT) clearTimeout(aideT);
+  aideT = setTimeout(function(){ a.classList.remove('on'); }, 3800);
+}
+
+/* ------------------ un format mesure PAR MUR ------------------
+   La v17 de la maquette mesurait UNE image et imposait son format aux
+   autres : « la porte a retreci au seche-linge ». Et le mur ENTIER doit
+   tenir entre le bandeau et la reserve, sinon on ne peut pas poser a cote
+   de la porte, ni devant. Le zoom sert a s'approcher. */
+var FORMAT = {};
+function calerMurs(){
+  var vw = window.innerWidth, vh = window.innerHeight;
+  var haut = S('haut').offsetHeight;
+  var res  = S('reserve').offsetHeight;
+  var dispoH = Math.max(120, vh - haut - res);
+  var centre = haut + dispoH / 2;
+  MURS.forEach(function(m){
+    var f = FORMAT[m.id]; if(!f) return;
+    var d = S('dedans-' + m.id); if(!d) return;
+    var k = Math.min(vw / f.w, dispoH / f.h);
+    d.style.width  = (f.w * k) + 'px';
+    d.style.height = (f.h * k) + 'px';
+    d.style.top    = centre + 'px';
+  });
+  appliquerZoom();
+}
+window.addEventListener('resize', calerMurs);
+
+function chargerMurs(){
+  MURS.forEach(function(m){
+    var src = img(m.f);
+    var e = S('dedans-' + m.id).querySelector('img.fondmur');
+    e.src = src;
+    var t = new Image();
+    t.onload = function(){ FORMAT[m.id] = {w:t.naturalWidth, h:t.naturalHeight}; calerMurs(); };
+    t.src = src;
+  });
+}
+
+/* ------------------ le dialogue avec lingo.html ------------------ */
+var minuterie = null;
+function enregistrer(){
+  if(!pret) return;
+  if(minuterie) clearTimeout(minuterie);
+  /* on n'ecrit pas a chaque pixel : un objet glisse produirait des
+     centaines de messages. Une pause de 400 ms suffit au doigt. */
+  minuterie = setTimeout(function(){
+    minuterie = null;
+    try{
+      parent.postMessage({t:"linguae-sellerie-poses", piece:PIECE,
+                          poses:POSES, vues:CADRAGE}, "*");
+    }catch(e){}
+  }, 400);
+}
+function fermer(){
+  if(minuterie){ clearTimeout(minuterie); minuterie = null;
+    try{ parent.postMessage({t:"linguae-sellerie-poses", piece:PIECE,
+                             poses:POSES, vues:CADRAGE}, "*"); }catch(e){}
+  }
+  try{ parent.postMessage({t:"linguae-fermer-sellerie"}, "*"); }catch(e){}
+}
+S('bRetour').addEventListener('click', fermer);
+
+function installer(d){
+  LANGUE = d.l || "fr";
+  VER    = d.ver || "";
+  PREF   = d.prefixe || "";
+  PIECE  = d.piece || "classique";
+  OBJETS = d.objets || [];
+  POSES  = {};
+  CADRAGE = d.vues ? JSON.parse(JSON.stringify(d.vues)) : {};
+  VUE_IMG = d.vue && d.vue.img ? d.vue.img : "";
+  VUE_NOM = d.vue && d.vue.nom ? d.vue.nom : "";
+  VUE_NAT = d.vue && d.vue.nation ? d.vue.nation : "";
+  VUE_REF = d.vue && d.vue.ref ? d.vue.ref : "-";
+
+  S('titre').textContent = M('titre');
+  chargerMurs();
+  construireReserve();
+
+  /* la vue du pays derriere les arches */
+  Object.keys(ARCHES).forEach(function(id){
+    var v = S('vue-' + id); if(v) v.src = VUE_IMG || "";
+  });
+  appliquerToutesLesVues();
+
+  /* l'amenagement enregistre. La sellerie s'ouvre VIDE quand il n'y a
+     rien : les objets poses d'office etaient « les selles par terre »
+     que Blandine retrouvait a chaque ouverture. */
+  var enr = d.poses || {};
+  Object.keys(enr).forEach(function(r){
+    var p = enr[r], o = objetDe(r);
+    if(!o || !p) return;                       /* objet inconnu : on ignore */
+    var m = (typeof p.mur === "number" && MURS[p.mur]) ? p.mur : 2;
+    if(MURS[m].arrivee) m = 2;                 /* on ne pose pas sur une arrivee */
+    poser(r, m, p.x, p.y, p.l, p.mir);
+  });
+
+  pret = true;
+  aller(0);                                    /* on arrive de loin */
+}
+
+window.addEventListener('message', function(ev){
+  var d = ev.data || {};
+  if(d.t === "linguae-sellerie") installer(d);
+  if(d.t === "hype-lang" && d.l){ LANGUE = d.l; S('titre').textContent = M('titre');
+    S('nomMur').textContent = nomMurDe(MURS[mur].id); construireReserve(); }
+});
+try{ parent.postMessage({t:"linguae-sellerie-prete"}, "*"); }catch(e){}
+</script>
+</body>
+</html>
