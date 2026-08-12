@@ -14,9 +14,9 @@
 
 **Ancienne version (113) — 12/08/2026 (SESSION 113 · PONEY D'OR, LE MEMORY EN CHEMINS DIRECTS, LAG CORRIGÉ) — md5 `17c334b8779dfd615c679e614d4ef161`, 9 087 825 octets. Témoin `reprise 1.6 · baby 112 · memo 4`. ⚠️ CET INDEX N'A JAMAIS ÉTÉ POUSSÉ — son contenu (le préchargement du Memory) est intégralement repris dans le 114 ci-dessous. Ne pas le pousser après le 114.**
 
-**Version actuelle de l'index.html : 12/08/2026 (SESSION 114b · STORIES, CORRECTIF D'AFFICHAGE) — md5 `d62523c2e30dd651a780ed8980065dce`, 9 088 624 octets.** Témoin attendu : **`reprise 1.7 · baby 112 · memo 4 · stories 2`**. `HYPE_VERSION_APP` reste **1.7** (aucune fonctionnalité ajoutée, deux correctifs). **FICHIER COMPAGNON : `hype-stories.js` v2, md5 `6db13d183547200c5ab89b1e5c881aae`, 43 711 octets, chargé via `?v=2`.** **SQL DÉJÀ PASSÉ le 12/08 à 21h37 — 5 politiques confirmées, ne pas le repasser.**
+**Version actuelle de l'index.html : 12/08/2026 (SESSION 116 · STORIES v3 — CARTES SUR COMMUNAUTÉ, LES À LA UNE) — md5 `9a535785e840b00f9c6765935d5b3013`, 9 089 634 octets.** Témoin attendu : **`reprise 1.7 · baby 112 · memo 4 · stories 3`**. `HYPE_VERSION_APP` reste **1.7**. **FICHIER COMPAGNON : `hype-stories.js` v3, md5 `472ce735c5a67dcce42e038d350c2775`, 74 606 octets, chargé via `?v=3`.** **SQL : celui de la v2 (colonne `lieu`) reste à repasser s'il ne l'a pas été ; la v3 n'ajoute AUCUN SQL — les à la une réutilisent `albums_cheval`.**
 
-**À POUSSER, état au 12/08 (session 114b) :** `index.html` + `hype-stories.js` (v2). Le SQL est passé, rien à refaire en base. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image.
+**À POUSSER, état au 12/08 (session 116) :** `index.html` + `hype-stories.js` (v3). **SQL : `hype-stories.sql` si la colonne `lieu` n'a pas encore été passée** — repli explicite prévu sinon (la story part sans lieu, avec message à l'écran). Les à la une n'ont besoin de rien en base. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image. **La MUSIQUE est en attente des fichiers de Blandine** (3 à 6 morceaux libres de droits, mp3 ou m4a).
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -239,6 +239,148 @@ Vérifié à l'adresse `/sw.js` le 11/08 au soir : le fichier déployé est le *
 ### Linguae — relevé fait en lecture seule le 11/08, AUCUNE modification
 
 `lingo.html` ne contient **aucune** occurrence de `images/` : tout est chargé depuis la racine. Quatre endroits construisent les chemins dynamiquement — `"carte-"+ref+".webp"`, `"fond-"+ref+".webp"`, `"objet-"+ref+".webp"`, `"arrivee-"+ref+".mp4"` — sur 32 villes. Plus 8 images fixes (`carnet-ferme`, `carnet-page`, `fond-lingua`, `fond-newmarket`, `lingua-affiche`, `lingua-langues`, `themes-hero`, `apple-touch-icon-linguae.png`) et 2 vidéos (`ouverture.mp4`, `depart.mp4`). Déplacer Linguae = modifier ces 4 constructions + incrémenter `VER` (actuellement `?v=32`).
+
+---
+
+## SESSION 116 · STORIES v3 — CARTES SUR COMMUNAUTÉ, LES À LA UNE
+
+**Demandes de Blandine (12/08 au soir)** : « on peut garder en mémoire les story en faisant des story à la une comme insta peut être ? », « on peut ajouter de la musique ? », « pour la taille on peut les conserver plus petites sur la page ma communauté », puis « ou en rectangles verticaux sur un rail qui défile ? ». Décisions : **rectangles 116 × 145 sur Communauté**, **à la une sur Cavalier + Club + Écurie**, **« Garder » demande dans laquelle ranger**, **musique = bibliothèque libre de droits**.
+
+### 1. COMMUNAUTÉ EN RECTANGLES VERTICAUX
+
+Le bandeau prend un réglage de **forme** : `rond` par défaut, `carte` sur Communauté. **Un seul composant, deux présentations, aucune divergence possible.**
+
+Deux raisons, dans cet ordre — c'est un raisonnement, pas un goût :
+
+1. **Un rond rogne énormément.** Encolure, cheval de profil, cavalier en pied : le cercle coupe tout. Un 3:4 montre la photo à peu près telle qu'elle a été prise, ce qui va dans le sens de la règle absolue du projet sur les photos. Et sur Communauté on découvre des inconnus : c'est **l'image** qui compte. Sur Cavalier / Club / Écurie on sait déjà de qui il s'agit : le rond suffit, c'est un repère d'identité.
+2. **116 × 145 est exactement le format des cartes chevaux** de l'Écurie et de l'agenda du club. La page garde un seul rythme visuel au lieu d'en inventer un — le rond était emprunté à Instagram, le rectangle vertical est le langage de Hype.
+
+En forme carte, le non-vu devient un **contour lumineux** au lieu d'un anneau, et la pastille du nombre de stories se pose dans le coin. Aucun voile sur la photo, dans les deux formes.
+
+### 2. LES STORIES À LA UNE — AUCUNE TABLE NOUVELLE
+
+Hype a déjà des albums nommés (`albums_cheval`) avec couverture, `promu` et visibilité. **Une à la une, c'est un album de cible `cavalier:<id>` affiché en rond.** Deux conséquences heureuses, vérifiées avant d'écrire :
+
+- **Les albums sont PUBLICS par défaut** (modèle opt-out du 02/08, filtré à un seul endroit dans `listerAlbumsCheval`) : une à la une posée sur une page est bien vue par les autres cavaliers, et son auteur peut la passer en privé. **Donc aucun SQL, aucune politique à écrire.**
+- **La purge des 7 jours ne supprime pas le fichier du bucket** — point que j'avais signalé comme un coût de stockage en session 114 ; c'est lui qui permet à une story de survivre dans une à la une.
+
+Nouveau composant `RailALaUne` : titre « À la une », ronds de 74 px, couverture = `couverture` ou première photo. **Le rail ne s'affiche pas du tout s'il n'y a rien** — une page ne porte pas une rangée vide (règle d'espace de la Design Bible).
+
+**Une à la une se relit avec la MÊME visionneuse que les stories**, via un mode `album` : on fabrique un groupe à partir des photos, et le mode masque toutes les actions (garder / supprimer / signaler) — on relit un souvenir, on n'agit pas dessus. Pas de seconde visionneuse à maintenir.
+
+**DÉDUCTION DE CLAUDE — À VALIDER** : Blandine a dit « Cavalier club et écurie » sans préciser **de qui** sont les à la une sur le club et l'écurie, dont le sujet n'est pas une personne. J'ai pris **le cavalier connecté**, ce qui est le moins surprenant. Sur la page Cavalier, ce sont celles du cavalier **affiché** (visite ou soi-même).
+
+### 3. « GARDER » DEMANDE LA DESTINATION
+
+Nouveau composant `ChoixALaUne` : feuille basse listant les à la une existantes (couverture, nom, nombre de photos) + un champ pour en créer une. `hsGarderEnSouvenir(story, premium, destination)` accepte `{ albumId }` ou `{ nouveau: "Nom" }`.
+
+- **Sans destination, le comportement de la v1/v2 est conservé** (album « Mes stories ») : les photos gardées hier soir ne sont pas orphelines.
+- La **première photo d'une à la une neuve en devient la couverture** automatiquement.
+- La feuille **met le minuteur en pause** : sans ça la story défilerait pendant qu'on choisit sa destination.
+- Le message de confirmation nomme la destination : « Rangée dans Concours ».
+
+### 4. LA MUSIQUE — BLOQUÉE, ET POURQUOI
+
+Réponse donnée à Blandine, et elle mérite d'être écrite ici parce qu'elle reviendra : **il n'existe pas de chemin gratuit vers « la chanson du moment »**. Instagram paie des licences aux maisons de disques. Poser un titre du catalogue commercial sur Hype, c'est de la contrefaçon, et c'est typiquement ce qui fait retirer une application de l'App Store. Ce n'est pas une prudence, c'est le droit.
+
+Ce qui est possible, et ce que Blandine a choisi : **une petite bibliothèque libre de droits qu'elle sélectionne et qu'on héberge**. **Rien n'est codé** : il faut d'abord ses fichiers (3 à 6 morceaux, mp3 ou m4a, 15 à 30 s suffisent). Je ne livre pas un sélecteur vide. Quand ils arrivent : une colonne `musique`, une pastille son, une règle `_headers` pour l'audio.
+
+Deux limites techniques à connaître d'avance : **sur iPhone le son ne démarre pas tout seul**, il faut un geste du doigt (donc une pastille à toucher, pas de lecture automatique) ; et une story est une **photo**, le son tournerait sur une image fixe.
+
+### À L'ÉCRAN
+
+**~ Sur Ma communauté**, le bandeau passe de ronds de 104 px à des **rectangles verticaux 116 × 145** qui défilent.
+**~ Sur Cavalier, Club et Écurie**, les ronds restent à 104 px.
+**+ Un rail « À la une »** sur Cavalier, Mon Club et Écurie — **invisible tant qu'aucune à la une n'existe**, donc rien de neuf à l'écran avant la première.
+**+ Une feuille de choix** quand on touche « Garder en souvenir » : ranger dans une à la une existante ou en créer une.
+**~ Le témoin** passe de `stories 2` à `stories 3`.
+**− Rien ne disparaît.**
+
+### VÉRIFICATIONS
+
+- `node --check` : **16/16 blocs `<script>` inline** de l'index + `hype-stories.js`.
+- Harnais : **12 assertions du correctif 114b** (toujours vertes) **+ 14 assertions nouvelles** — forme carte = 2 rectangles 116 × 145 et zéro rond, forme par défaut = ronds à 104, rail invisible à vide, rail rendant ses deux à la une et son titre, mode album masquant les trois actions, actions revenant hors mode album, feuille de choix affichant le titre, l'à la une existante et la création. **40 clés de texte × 6 langues, aucune manquante.**
+- Index : balise `?v=3`, 4 appels de `RailALaUne`, `forme: "carte"` sur Communauté uniquement, chaque appel vérifié **dans** son composant (`EcranMonCavalier`, `EcranGuilde`, `EcranEcurie`) et non dans une fonction interne.
+- **Portée des variables contrôlée** au point d'appel de la page Cavalier : `__visitePub`, `profil` et `ctx` sont bien déclarés avant.
+- Rendu réel **non vérifié** (domaine fermé aux robots, module dépendant de Supabase) : **à regarder par Blandine**.
+
+### INCIDENTS
+
+Aucun. Une ancre d'insertion s'est révélée **ambiguë** (le même commentaire et le même appel existaient à l'identique sur la page Cavalier et sur Mon Club, à quatre espaces d'indentation) : le script a refusé d'écrire au lieu de remplacer au hasard, et les ancres ont été désambiguïsées par la ligne suivante. C'est le garde-fou qui a fonctionné, pas un incident.
+
+### Préparation Flutter (session 116)
+
+- **Réutilisation, encore, plutôt que création** : les à la une ne créent ni table, ni politique, ni visionneuse. Elles s'appuient sur un domaine existant (`albums_cheval`) et sur la visionneuse du module. C'est la meilleure session du projet sur ce critère.
+- **Le composant devient paramétrable au lieu d'être dupliqué** : `forme`, `taille`, `carteL`, `carteH`, `padding`, `mode`. Une page décide de sa présentation, le composant ne connaît pas les pages. C'est exactement la frontière qu'il faut avant un portage.
+- **Contrat de données étendu à neuf fonctions** : `hsPublierStory`, `hsListerStories`, `hsSupprimerStory`, `hsSignalerStory`, `hsGarderEnSouvenir`, `hsTagsDeStory`, `hsListerALaUne`, `hsMesALaUnePourRanger`, `hsMarquerVue`. C'est le Repository que Flutter réimplémentera à l'identique.
+- **Le harnais de test verrouille désormais 26 comportements.** Il ne sert plus à vérifier que ça se construit : il empêche de perdre des acquis. C'est le seul endroit du projet où c'est vrai.
+- Reste à moderniser : les 3 mécanismes de zoom photo coexistants (fiche cheval), les visionneuses photo à extraire en composant autonome, les cours des Galops encore en base64 dans l'index, le service worker.
+
+---
+
+## SESSION 115 · STORIES v2 — RONDS 104 PX, TAGS, LIEU · ET UN INCIDENT DE MA PART
+
+**Demandes de Blandine (12/08, après avoir vu les stories en ligne)** : « si on peut les faire plus grosses en affichage », « on doit voir la photo de la story pas celle du cavalier », « on peut signaler un lieu dessus ? ou taguer quelqu'un dedans ? » → réponses : ronds « le plus gros possible », **taguer + lieu tous les deux**. Feu vert explicite : « Oui ».
+
+### 🔴 INCIDENT — J'AI DÉTRUIT LE CORRECTIF DE LA SESSION 114b, PUIS JE L'AI RÉTABLI
+
+**Ce qui s'est passé.** La copie de travail de `hype-stories.js` ne correspondait plus à l'empreinte que j'avais annoncée : 43 711 octets au lieu de 40 350, sans que je puisse rendre compte de l'écart. J'ai décidé de **régénérer le fichier de zéro** plutôt que de rafistoler un fichier dont je ne retraçais pas l'histoire. **Erreur de méthode** : j'ai régénéré depuis la base v1, en ignorant que les 3 361 octets d'écart étaient précisément le travail de la 114b (minuteur, respiration, photo dans le rond). J'ai donc effacé un correctif validé et diagnostiqué sur l'enregistrement d'écran de Blandine.
+
+**Détecté** en relisant le SUIVI avant de livrer : la section 114b y était, décrivant un correctif absent de mon fichier.
+
+**Réparé intégralement** — le correctif 114b est rétabli à l'identique dans la v2 :
+- `onLoad` → marque « vue », démarre le minuteur, **précharge la story suivante** ;
+- `onError` → même chose + message « Photo indisponible » (6 langues) ;
+- avant chargement : barre à **zéro** et **respiration turquoise** au centre, image à opacité 0 ;
+- le marquage « vue » **n'a plus lieu au montage** : une story jamais affichée n'est pas comptée comme vue.
+
+**Garde-fou posé pour que ça ne se reproduise pas** : le harnais de test contient désormais **12 assertions dédiées à ce correctif** (présence de `onLoad`/`onError`, opacité 0 avant chargement, respiration présente puis absente, message d'erreur en japonais, absence de `hsMarquerVue` au montage, préchargement, dépendance du minuteur). Toute réécriture du module qui le supprimerait fait échouer le test. Un commentaire en capitales dans le code le signale également : « CORRECTIF DE LA SESSION 114b — À NE PLUS JAMAIS PERDRE ».
+
+**Deuxième anomalie, celle-là bénigne et expliquée** : mes scripts de modification se sont exécutés **deux fois**. Le premier passage écrit, le second ne trouve plus rien à remplacer et rapporte un échec. J'ai signalé à Blandine un « incident » sur `index.html` qui n'en était pas un : `?v=1` → `?v=2` change un seul caractère, d'où une taille identique et un md5 différent. Rectifié auprès d'elle dans la même conversation.
+
+### CE QUI EST LIVRÉ EN v2
+
+**1. Le rond montre la photo de la story.** `apercu` était `avatar_url || photo_url` — l'avatar passait devant. Ordre inversé, l'avatar n'est plus qu'un repli. (Déjà l'objet de la 114b, reconduit.)
+
+**2. Ronds à 104 px** au lieu de 62, soit 3 ronds visibles sur un iPhone. Constante `HS_TAILLE_ROND`, une seule valeur à changer. Le compteur de stories multiples devient une pastille posée en bas à droite du rond, au lieu d'un chiffre sous le nom. **DÉDUCTION DE CLAUDE sur la valeur exacte — À VALIDER** : Blandine a dit « le plus gros possible », au-delà de 104 on ne voit plus qu'un rond et demi et le bandeau cesse d'être un bandeau.
+
+**3. Le « + » dit « Ajouter »** (6 langues). En v1 le libellé « Ma story » était écrit deux fois côte à côte, sous le `+` et sous le rond — visible sur la capture de Blandine.
+
+**4. Taguer un cavalier ou un cheval — AUCUNE TABLE NOUVELLE.** La table `identifications` existe déjà dans Hype et est indexée par `photo_url` ; une story a une `photo_url`. On réutilise `identifierSouvenir()` tel quel, donc **le statut « attente » et l'acceptation par la personne taguée sont déjà là**, sans une ligne de mécanisme à écrire.
+- Dans le composeur : une rangée de puces « Mes chevaux » (chevaux possédés + rattachés, dédoublonnés, 12 max) et un champ de recherche de cavaliers (`rechercherCavaliersHype`, différé de 320 ms pour ne pas requêter à chaque lettre). 8 tags au maximum.
+- Dans la visionneuse : les tags **acceptés** sont visibles par tous ; les tags **en attente** ne sont visibles que par l'auteur de la story, avec la mention « en attente ». Vérifié par assertion.
+- Nouveau lecteur `hsTagsDeStory(photo_url)` : les helpers existants répondent à la question inverse (« où suis-je tagué ? »), il fallait « qui est sur cette photo ? ».
+
+**5. Le lieu.** Colonne `lieu`, 60 caractères, champ libre avec l'invite « Le club, la ville… ». **Volontairement court et libre** : un fil ouvert aux inconnus, avec des enfants du Poney Club parmi les utilisateurs, ne doit pas porter de position précise. Aucune géolocalisation.
+- **Repli explicite** si le SQL n'est pas repassé : l'insertion échoue sur la colonne inconnue, le code republie **sans le lieu** et affiche « Story en ligne, mais le lieu n'a pas été enregistré (SQL v2 à repasser) » en 6 langues. La story n'est pas perdue et l'oubli se voit.
+
+### À L'ÉCRAN
+
+**~ Les ronds du bandeau** passent de 62 à 104 px (3 visibles au lieu de 5) et montrent la photo de la story.
+**~ Le compteur** de stories multiples devient une pastille sur le rond.
+**~ Le libellé du `+`** devient « Ajouter » (il disait « Ma story », en doublon).
+**+ Un champ « Le lieu »** et **un bloc « Taguer »** (puces chevaux + recherche de cavaliers) dans la feuille de publication.
+**+ Le lieu et les tags** s'affichent sous la photo dans la visionneuse.
+**+ La respiration turquoise** et le message « Photo indisponible » (rétablis).
+**~ Le témoin** passe de `stories 1` à `stories 2`.
+**− Rien ne disparaît.**
+
+### VÉRIFICATIONS
+
+- `node --check` : **16/16 blocs `<script>` inline** de l'index + `hype-stories.js`.
+- Module : **14 fonctions, aucun doublon**, aucune pollution.
+- Harnais de rendu à blanc : les 3 composants construisent leur arbre sans exception, **32 clés de texte × 6 langues complètes** (contrôle sur TOUTES les clés, plus seulement un échantillon).
+- Contrôles ciblés passés : le rond utilise bien `STORY2.jpg` (la story la plus récente) et non l'avatar ; tailles à 104 ; libellés `+` / « Ajouter » / « Ma story » sans doublon ; lieu et tags rendus ; tag en attente **invisible** pour un visiteur, visible pour l'auteur.
+- **12 assertions du correctif 114b** — toutes passent.
+- Index : balise `?v=2` unique, 4 appels en place, dans les bons composants.
+- Rendu réel **non vérifié** (domaine fermé aux robots, module dépendant de Supabase) : **à regarder par Blandine**.
+
+### Préparation Flutter (session 115)
+
+- **Réutilisation plutôt que création** : le tag ne crée aucune table et aucun mécanisme. Le domaine « identifications » existait, avec son cycle attente → accepté ; les stories s'y branchent par `photo_url`. C'est exactement ce que la doctrine demande — un domaine métier, un seul mécanisme, plusieurs usages.
+- **Contrat de données étendu** : `hsPublierStory(fichier, legende, lieu, tags)` et `hsTagsDeStory(photoUrl)` rejoignent les cinq signatures du module. Ces sept fonctions sont le Repository que Flutter réimplémentera à l'identique.
+- **Le harnais de test devient un actif** : il ne vérifie plus seulement que ça se construit, il verrouille des comportements (le minuteur attend l'image). C'est le premier test de comportement du projet.
+- Reste à moderniser : les 3 mécanismes de zoom photo coexistants (fiche cheval), les visionneuses à extraire en composant autonome, les cours des Galops encore en base64 dans l'index, le service worker.
 
 ---
 

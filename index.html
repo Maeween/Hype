@@ -18747,7 +18747,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-stories.js?v=2"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-stories.js?v=3"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -20264,8 +20264,11 @@ function EcranCommunaute() {
           tabs.map(function(t,i){ return h("button", { key:i, onClick:(t.go||function(){}), style:{ background:"none", border:"none", display:"flex", flexDirection:"column", alignItems:"center", gap:5, cursor:(t.go?"pointer":"default"), color:"#E4ECEF", opacity:(t.go?1:0.7) } },
             h("span", { style:{ fontSize:19, filter:"drop-shadow(0 1px 3px rgba(10,26,36,0.132))" } }, t.ic),
             h("span", { style:{ fontSize:10, letterSpacing:0.6, textTransform:"uppercase", fontFamily:M } }, t.lab)); }))),
-      /* 12/08 (114) : bandeau des stories. Meme composant sur les 4 pages. */
-      (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
+      /* 12/08 (114) : bandeau des stories. Meme composant sur les 4 pages.
+         12/08 (116) : sur Communaute il passe en RECTANGLES VERTICAUX 116x145
+         (format des cartes chevaux) — un rond rogne trop, et sur cette page
+         c est l image qui compte, pas l identite. Decision de Blandine. */
+      (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, { forme: "carte" }) : null,
       h(CarteEvenementsC, null),
       h("div", { style:{ padding:"22px 16px 0" } },
          
@@ -24992,6 +24995,11 @@ function EcranMonCavalier() {
     !__estVisite ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "inline-flex", alignItems: "center", gap: 6, margin: "12px 16px 0", padding: "6px 12px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 11, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83c\udfc6 " + T("Voir mes qu\u00eates", "See my quests", "Ver mis misiones", "Vedi le mie missioni", "\u30ad\u30fc\u30af\u30b9\u3092\u898b\u308b") + " \u203a") : null,
     /* 12/08 (114) : bandeau des stories. */
     (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
+    /* 12/08 (116) : rail des A LA UNE du cavalier AFFICHE (visite ou soi-meme).
+       Une a la une est un album de cible cavalier:<id> — aucune table nouvelle. */
+    (typeof window !== "undefined" && window.RailALaUne)
+      ? h(window.RailALaUne, { userId: (__visitePub && __visitePub.id) || (profil && profil.id) || null })
+      : null,
     /* 28/07 : alerte « ta photo n est pas visible par les autres » (page profil, non visite). */
     !__estVisite ? h(EncartPhotoInvisible, { T: T, onRemettre: function () { try { if (typeof modifierPhoto === "function") { modifierPhoto(); return; } } catch (e) { } try { var inp = document.querySelector('input[type=file]'); if (inp) inp.click(); } catch (e2) { } } }) : null,
     ((function () {
@@ -25849,6 +25857,9 @@ function EcranGuilde() {
       peutEditerBanniere ? h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } }) : null),
     /* 12/08 (114) : bandeau des stories. */
     (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
+    /* 12/08 (116) : rail des A LA UNE. Sur une page dont le sujet n est pas une
+       personne, ce sont celles du cavalier CONNECTE (deduction a valider). */
+    (typeof window !== "undefined" && window.RailALaUne) ? h(window.RailALaUne, null) : null,
     (AFFICHER_GAMIF_CLUB && ecurieSecondaire && clefClub(ecurieSecondaire) !== clefClub(ecuriePrincipale)) ? h("div", { style: { display: "flex", justifyContent: "center", gap: 8, padding: "12px 16px 0" } },
       [ecuriePrincipale, ecurieSecondaire].map(function (nomE, iE) {
         var actifE = clefClub(monClub) === clefClub(nomE);
@@ -27960,6 +27971,8 @@ function EcranEcurie() {
 
         /* 12/08 (114) : bandeau des stories. */
         (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
+        /* 12/08 (116) : rail des A LA UNE du cavalier connecte. */
+        (typeof window !== "undefined" && window.RailALaUne) ? h(window.RailALaUne, null) : null,
         h(TableauxSpectralHype, { champVoix: "ecurie_voix", champHistoire: "ecurie_histoire", titreCourt: { fr: "La philosophie de l'écurie", en: "The stable's philosophy", es: "La filosofía de la cuadra", it: "La filosofia della scuderia", ja: "厩舎の哲学" }, titreLong: { fr: "L'histoire de l'écurie", en: "The stable's story", es: "La historia de la cuadra", it: "La storia della scuderia", ja: "厩舎の物語" }, editable: true }),
 
         eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬")),
