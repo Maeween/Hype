@@ -1,272 +1,80 @@
-# PASSATION — fil « Hype, Directeur Technique » du 8 août 2026
+# 🔁 PASSATION — 12/08/2026 · L'ÉCRAN SELLERIE EST ÉCRIT, LE DÉFI DE LA VILLE AUSSI
+### Va dans les FICHIERS DU PROJET CLAUDE, jamais sur GitHub. Remplace la passation de la nuit du 11 au 12/08.
+### Le SUIVI de référence est `SUIVI-LINGUAE.md` md5 `6a415fa77689…`, dernière session écrite : **209**.
 
-*À coller au début de la conversation suivante. Le SUIVI.md du projet contient le détail
-session par session ; ce document donne l'état vivant et les pièges de la journée.*
+## 1. À POUSSER → RACINE
+⚠️ `var VER = "?v=34"` : **deux fichiers du lot REMPLACENT des fichiers en ligne.** Sans le témoin, les téléphones garderaient les anciens des jours.
 
----
-
-## 1 · CE QUI EST LIVRÉ ET QUI ATTEND D'ÊTRE POUSSÉ
-
-| Fichier | md5 | Taille |
+| fichier | md5 (début) | remplace ? |
 |---|---|---|
-| `index.html` | `0bec15cde7b3e253f23ce90293d27c97` | 9 127 282 |
-| `hype-cours-baby.js` | `bdcd692f0ca13be26583937a44e51e43` | 1 817 899 |
-| `SUIVI.md` | — | — |
+| **lingo.html** (629 ko, `?v=34`) | `51decfb8656e` | oui |
+| **lingo-sellerie.html** (43 ko) | `0936a264a7ca` | **nom nouveau** |
+| **objet-lambourn.webp** (92 ko) — licol en cuir de face | `28e4486660ed` | **oui — l'étrille** |
+| **sellerie-gauche.webp** (80 ko) — sans le rail du bas | `62a9f932a8fc` | oui |
+| sellerie-entree.webp (97 ko) | `0132755061e4` | oui |
+| sellerie-droite.webp (79 ko) — le mur qui manquait | `b3263de14ec0` | oui |
+| pose-lambourn-34.webp (99 ko) | `1468ef7cad17` | nom nouveau |
+| pose-walsall.webp (92 ko) · pose-walsall-34.webp (97 ko) | `5a70de43c1c4` · `a154c179ddf5` | nom nouveau |
+| pose-dubai.webp (152 ko) · pose-dubai-34.webp (155 ko) | `ad78a7e71fa5` · `6d7bb962ab0b` | nom nouveau |
+| pose-connemara-34.webp (105 ko) | `592fe904a050` | nom nouveau |
+| pose-oliva.webp (149 ko) · pose-oliva-34.webp (124 ko) | `684b3e503501` · `49fd7501f8af` | nom nouveau |
 
-**Toujours livrer le SUIVI AVEC l'index, jamais seul** : l'ouvrir seul fait planter le téléphone
-de Blandine. Consigne explicite de sa part.
+**SQL : déjà exécuté** ✅ (« Success. No rows returned ») — `alter table public.hype_lingua_progression add column if not exists sellerie jsonb not null default '{}'::jsonb;`
 
-⚠️ **Le bump de `HYPE_VERSION_APP` avait été perdu** lors d'une restauration de l'index en cours de
-session, et retrouvé au moment d'écrire cette passation. Il est bien à `"1.2"` dans le fichier
-ci-dessus. **Vérifier ce genre de valeur après chaque restauration depuis une référence.**
+**24 fichiers de réserve** prêts, rien ne les appelle, aucun risque : `reserve-filet` ·`-34` ·`-34b` · `reserve-licol-cuir-34b` · `reserve-licol-corde-face` ·`-34b` · 6 `reserve-cagoule-hype-*` · 4 `reserve-cagoule-linguae-*` · `reserve-malle-cote-gauche` ·`-droit` ·`-dessus` · `reserve-sellerie-gauche-biais-v2` ·`-v3` · `reserve-sellerie-large-3murs`.
 
----
+⚠️ **NE PAS pousser l'ancien `sellerie-gauche.webp` depuis Claude** : la seule copie en ma possession venait de la maquette, réencodée à 32 ko contre 127 à l'original. **Il se conserve sur le téléphone de Blandine.**
 
-## 2 · LA PREMIÈRE CHOSE À FAIRE EN OUVRANT LA CONVERSATION
+## 2. LA PROCHAINE SESSION COMMENCE PAR LE RETOUR D'ESSAI
+Blandine teste la sellerie. Ce qui l'attend :
+- **les 4 points de calage du mur des selles** sont relevés à l'œil, à 1-2 % près. C'est **la seule valeur approchée de tout l'écran**, elle est en clair en tête de `lingo-sellerie.html`, corrigeable en une ligne. Contrôle hors calage : le porte-selle du milieu tombe à 29,5/51,6 pour 30/52 à l'œil.
+- **la vitrine** est appariée aussi (contrôles : étagère 58,6/40,2 pour 59/40 · milieu 84,5/50,5 pour 83/50 · ⚠️ au-dessus de y=20 % l'écart monte à 8 %).
+- **Rognage de `sellerie-gauche.webp`** proposé (20 px, pour revenir au 2:3 exact des sept autres murs) — non tranché.
 
-**Demander à Blandine ce qu'affiche le lien « Quoi de neuf ».**
+## 3. CE QUI A ÉTÉ ÉCRIT CETTE SESSION
+**L'écran sellerie** (`lingo-sellerie.html`, en iframe comme la collection et le globe) : 8 murs, circuit en rond dans les deux sens, pose libre au doigt, pincement, miroir, boutons de taille, transfert par les bords à 600 ms, zoom de pièce 3× borné, fenêtre inviolable, vue installée par la joueuse et **mémorisée par ville**, vue en grand au toucher, scroll reset, 6 langues, réserve limitée aux objets gagnés.
+**Un objet, plusieurs vues, le moteur choisit** : une vignette par objet ; sur un mur de biais il prend la vue ¾ et la **rétrécit selon l'éloignement** (une selle de 30 % sur la face fait 19 % dans l'angle). Le jumeau ne se stocke jamais, il se recalcule.
+**Le défi de la ville** : `reservoirVille()` + `ouvrirDefiVille()`, bouton **sous les leçons**, réservoir strictement la ville (jamais de complément), bilan « 14 / 18 », régime de la ville (`villeAutorisee`).
+**À l'écran : +** « Ma sellerie » dans les portes du carnet · **+** « Ranger cet objet dans ma sellerie » sous l'objet gagné (arrivée et récapitulatif, masquée si l'objet n'est pas acquis) · **+** « Le défi · 60 s » sur la page de chaque ville pourvue d'un lexique. **−** rien.
 
-Il doit dire : **« reprise 1.2 · baby 111 »**
+## 4. 🟥 EN ATTENTE DE BLANDINE
+1. **`objet-oliva.webp`** remplacé par la nouvelle vue de face de la malle ? (touche l'écran de récompense)
+2. **Warendorf** : « carnet d'échelle » ne veut rien dire, et c'est le **deuxième carnet** de la collection (Édimbourg a le sien, plus beau). Deux issues opposées, non tranchées.
+3. **Versailles** : ni chapitre ni objet. Bartabas et l'Académie interdits. Deux séries de propositions rejetées ; troisième piste = l'attelage, la vénerie, le travail à pied.
+4. **Le projet Supabase** : vérifier que le projet affiché « Hype » est bien `ldpjebgtskzdokrublfg`. Mise de côté par Blandine, notée au SUIVI.
+5. **Le rognage** de `sellerie-gauche.webp`.
 
-- Si c'est bien ça → les fichiers tournent, les problèmes restants ont une autre cause.
-- Si c'est `1.1`, ou `baby ?` → **le fichier n'est pas chargé, il n'y a rien d'autre à chercher.**
+## 5. 🟥 LE MODE DIALOGUE — DÉCIDÉ, PAS ÉCRIT
+**La règle qui commande tout, posée cette session :** un dialogue **n'emploie que les mots de son chapitre**, plus les universels. Sans elle il enseigne du vocabulaire neuf au lieu de faire parler celui qu'on vient d'apprendre — la v2 de La Baule employait 5 mots sur 12 et en introduisait 4 étrangers. **La v3 en emploie 12 sur 12.**
 
-**Pourquoi ce témoin existe.** Toute la journée a été perdue à deviner si les correctifs étaient
-réellement chargés. Quatre hypothèses successives, toutes fausses : noms de fichiers, cache
-navigateur, écrasement des clés d'images, ordre de chargement. À chaque fois la vérification locale
-était bonne et l'app affichait autre chose, et à chaque fois Blandine a dû aller vérifier sur
-GitHub — cinq fois, sur des fichiers qui étaient tous corrects.
+**La Baule est prête en français**, dans `DIALOGUE-labaule.md` (md5 `b35146b0d3c9`) : 21 phrases, 7 temps, dont 5 à comprendre sans les produire.
 
-**`HYPE_VERSION_APP` (index) et `window.COURS_BABY_VERSION` (fichier Baby) doivent être incrémentés
-à chaque modification.** C'est le seul moyen de savoir ce qui tourne.
+⚠️ **CE QUI EMPÊCHE LA MISE EN LIGNE :** les 21 phrases n'existent **qu'en français**. Six langues sont obligatoires, plus l'audio. Il manque **105 traductions et leurs enregistrements** pour cette seule ville — et 31 villes suivent. C'est le plus gros chantier de contenu de Linguae depuis les lexiques.
 
----
+**Décisions prises :**
+- **la famille « je me débrouille » sort de toutes les villes** → une **thématique universelle à part**, apprise une fois, disponible partout, gratuite sans discussion (même famille que les urgences de Kildare). ⚠️ Son **nom** et son **emplacement** restent à décider.
+- **le Galop est retiré**, mots de Blandine : « ceux qui sont capables de dire qu'ils sont Galop 4 en France n'ont pas besoin de traduction, et ailleurs personne ne saura à quoi ça correspond ». Règle générale qui en découle : **on n'enseigne pas un mot compris seulement dans sa langue d'origine** (Galops, licence FFE, BPJEPS). Ce qui exclut aussi « est-ce qu'il faut une licence ? ».
+- **`balade` porte la même `ref` dans `arrivee` et dans `balade`** — seule collision entre les deux fichiers, vérifiée. Blandine : « s'il dort, tant mieux ». Le mot reste aux deux endroits avec **deux phrases différentes** (La Baule : « proposez-vous aussi des balades ? », « réserver une balade pour cinq personnes, combien cela coûte ? » — Le Morne : la plage, l'eau, le cheval calme sur place). Aucun déplacement de lexique, donc rien à retraduire. Conséquence assumée : le mot arrivera **déjà acquis** au Morne.
+- **`cheval-calme` et `le-groupe` restent à La Baule.**
+- **Sortent de La Baule et vont à Newmarket** (« L'écurie ») : « Où est la sellerie ? » et « Savez-vous où est mon cheval ? ». *À confirmer.*
 
-## 3 · LES DEUX PROBLÈMES ENCORE OUVERTS
+## 6. 🟥 LE MOT DU GUIDE — À ÉCRIRE DANS UNE CONVERSATION NEUVE
+Décision de Blandine, après six essais successifs de ma main : « laisse tomber, tu es trop influencé par ce que je t'ai dit plus haut, je le ferai faire de cette conversation-là ».
+**Le nom est validé : « Le mot du guide »**, sous chaque phrase concernée, dans la **langue de lecture** seulement (c'est un commentaire, pas du vocabulaire).
+**Ce qu'il faut transmettre à celui qui les écrira, et qui est le vrai enseignement de la session :**
+- **ne rien affirmer d'un usage local.** Ce que les clubs **exigent** varie d'un pays à l'autre (exemple de Blandine : au Maroc on monte en baskets sans qu'on vous demande rien) ; ce qui est **prudent pour la cavalière** ne varie pas. Sur la sécurité on affirme, sur les usages commerciaux on suggère. Ne pas écrire « ça ne se loue pas » : certains clubs louent peut-être.
+- **ton du voyage, de l'apprentissage et du rêve** — pas un règlement intérieur, pas « c'est mal perçu de ».
+- proscrire « nulle part », « partout », « dans toutes les langues », « la seule qui ne se discute pas ».
 
-### 3.1 · Les couvertures Baby ne changent pas
+## 7. CE QUI A COÛTÉ DU TEMPS
+- **Six versions du mot du guide**, chacune corrigeant la remarque précédente au lieu de repartir de zéro. Résultat de plus en plus prudent et de moins en moins juste. **Quand deux essais de suite sont refusés, tout reprendre, pas retoucher.**
+- **Neuf messages pour trancher la destination des images** ; l'argument technique du cache, faux, n'a été vérifié qu'au neuvième. **Vérifier un argument avant de bâtir des options dessus.**
+- **Une divergence de murs annoncée trop large** (« les deux images ne montrent pas la même pièce ») alors qu'elle portait sur **un seul rail**. **Mesurer l'étendue d'un défaut avant de le nommer.**
+- **Un premier calage de la vitrine avec quatre points groupés en haut du mur** → 12 % d'erreur en bas. **Une homographie ne s'extrapole pas : répartir les points.**
+- **Une question posée trop tard** : « et si on retirait le rail de la vue de face ? » aurait dû venir avant de faire régénérer trois murs de biais. **Chercher l'image la moins nombreuse à refaire.**
+- **Deux réponses d'un mot (« B », « ok oui ») pour deux décisions posées dans le même message.** **Une question par message quand les options portent les mêmes lettres.**
+- **Une décision prêtée à Blandine** (session 205 : « les images de biais font l'ambiance, pas le placement » — c'était mon diagnostic). Rectification signalée au SUIVI, **pas encore portée dans le corps de la 205**.
 
-**Symptôme.** Les 12 nouvelles couvertures ne s'affichent pas : le chemin Baby et la page de cours
-montrent les anciennes images. Blandine avait déjà essayé de les changer par elle-même avant cette
-session, sans succès.
-
-**Ce qui a été prouvé correct**, chacun vérifié séparément :
-- les 13 images sont en ligne (`majestic-melba-997a68.netlify.app/images/baby-c3-brosse.jpg` répond) ;
-- `index.html` en ligne fait 8,7 Mo, c'est bien la version livrée ;
-- `hype-cours-baby.js` en ligne fait 1,73 Mo, avec les chapitres réécrits reconnaissables ;
-- la chaîne complète simulée localement rend `baby-c3 -> images/baby-c3-brosse.jpg` ;
-- le convertisseur `convertirCoursI18nVersInterne` **ne transforme pas** les blocs `couv-affiche`
-  (`return b;` final), donc `src` est préservé ;
-- `NoeudCheminPoney` lit bien `cours.blocs.find(b => b.type === "couv-affiche").src` ;
-- le cache a été vidé, l'app relancée.
-
-**Ce qui a été tenté, sans effet** : aligner les noms de fichiers sur les noms réels ;
-déplacer les déclarations `k644`–`k657` après tous les lots d'images ; écrire les chemins **en dur
-dans la donnée** (état actuel, plus aucune clé `HYPE_IMGS` pour ces 12 images).
-
-**HYPOTHÈSE MORTE, ne pas y revenir :** l'écrasement des clés par les lots chargés après.
-**Blandine : « le puzzle était fonctionnel ».** Le puzzle utilise `HYPE_IMGS["k645"]`, déclarée dans
-le même bloc, au même endroit, dans la même plage. S'il s'affiche, ces clés ne sont pas écrasées.
-Une observation qui contredit la théorie vaut mieux que dix qui la confirment.
-
-**Pistes non explorées** :
-- Le service worker `/sw.js` — jamais lu, jamais audité. Le SUIVI note qu'il a déjà servi des
-  versions périmées. **C'est la piste la plus sérieuse restante.**
-- Une copie des cours mise en cache côté client (localStorage) qui court-circuiterait la table.
-- Une seconde source de données Baby non identifiée. Une liste `{ id: "baby-c3", emoji: "🌿",
-  label: { fr: "Besoins" } }` existe vers la position 7 126 975 avec une numérotation qui **ne
-  correspond pas** aux titres réels (elle donne c2 = Pansage, c3 = Besoins, alors que la table dit
-  c2 = matériel, c3 = Je brosse Apy). Origine et usage non déterminés — **à examiner**.
-
-### 3.2 · Le Memory : images tronquées et cartes manquantes
-
-**Tronquées** : cause trouvée, `objectPosition: "center top"` alors que les illustrations ont leur
-sujet au centre. **Quatre occurrences corrigées** en `"center"` dans `MemoryGalop`,
-`MemoryPoneyGrille`, `MemoryPoneyJeu` (×2). Les trois autres du fichier (`rondSocial`,
-`menuDeroulant`, `EcranSante`) sont des portraits : ancrage haut volontairement conservé.
-**Blandine signale que ce n'est toujours pas corrigé après push** — donc même doute de version que
-ci-dessus, à trancher avec le témoin.
-
-**Manquantes** : les seuls niveaux touchés, « Les allures » et « Le saut d'obstacles », sont les
-seuls à utiliser des clés servies par de **vrais fichiers** : `k550`, `k552`, `k548`, `k551`.
-Blandine a **déjà déplacé** ces quatre fichiers de la racine vers `images/`. Si les cartes restent
-vides, chercher ailleurs.
-
-Un **filet de secours** a été posé en session 108 : un `onError` sur les cartes des deux grilles
-remplace une image absente par l'emoji du thème et journalise
-`[Hype] Memory : image absente -> <chemin>` dans la console. **Question utile à poser à Blandine :
-voit-elle le carré cassé du navigateur, ou l'emoji ?** Le carré signifie que l'index chargé ne
-contient pas le filet ; l'emoji signifie que le filet marche et que l'image manque vraiment.
-
-`liste-fichiers-images.txt` (généré, non poussé) recense les **62 fichiers** que `images/` doit
-contenir.
-
----
-
-## 4 · DEMANDES DE BLANDINE NON FAITES
-
-**Le Poney d'Or doit dérouler les cours appris**, comme les paliers Bronze et Argent.
-`FinCheminBabyCarte` (3 626 octets, vers la position 7 539 000) ne reçoit que `tousTermines`,
-`nbTermines`, `totalCours`, `totalEtoiles` — **pas la liste des cours**. Il faut lui passer
-`coursNiveau` depuis `CheminPoneyBaby` (l'appel est dans la branche `else` de la boucle sur les
-groupes) et ajouter la section « Ce que tu as appris », en reprenant le bloc de `PalierBabyCarte`.
-
-**Même défaut de cadrage que le quiz, non corrigé faute d'accord** : `EcranExamenBlanc`
-(3 occurrences de `minHeight: "100dvh"`), `EcranJeuGalop`, `EcranReprisesFiches`. Le quiz est passé
-en `calc(100dvh - 84px)` avec la zone d'image en `37%` au lieu de `37vh`. L'examen blanc a
-peut-être besoin de défiler : demander avant.
-
----
-
-## 5 · CE QUI A ÉTÉ FAIT AUJOURD'HUI ET QUI FONCTIONNE
-
-- **`_headers`** posé à la racine : cache d'un an sur les 119 `hype-images-*.js`, les 3
-  `hype-clubs-db-*.js`, `images/`, et **tous les fichiers de Linguae** (19 cartes, 19 vidéos,
-  8 lexiques) qui vivent à la racine et n'étaient pas couverts. `index.html`, `sw.js`, `lingo.html`
-  et `lingo-globe.html` restent hors cache. `/hype-cours-*.js` en cache court avec revalidation :
-  **jamais immuable**, ce sont des données qui changent.
-- **`COURS_BABY_I18N` sorti de l'index** dans `hype-cours-baby.js` : index 9,73 → 8,16 Mo.
-  Objet reconstruit identique bit pour bit, repli `|| []` testé avec `undefined`, `null`, `false`.
-- **Une barrière d'erreur par écran** (`BarriereEcran`) autour de la chaîne des 61 écrans de
-  `Router()`. Reprend l'écran « Un caillou dans le sabot » existant, six langues. `key: ecran` pour
-  que revenir sur la page la réessaie. **Se ferme avant `NavBar`**, qui est dans le même div — sans
-  ça la barre d'onglets tombait avec l'écran.
-- **Le pont Linguae → Hey Baby**, entièrement dans `index.html` : `assistant.js` n'est **pas** à
-  modifier, le relais reçoit `{ system, messages }` déjà construits côté client. Testé sur quatre
-  cas. **Ne pas utiliser `window.__hbCoursCtx`** : son consommateur fait
-  `return (c && c.titre) ? c : null`, un contexte sans `titre` est jeté silencieusement. Passer par
-  `window.__hbPrefill`.
-- **L'accueil entièrement en allemand** : 16 libellés `L5acc` complétés, 19 sur 19 ont désormais
-  l'allemand. `L5acc(fr, en, es, it, ja, de)` — l'allemand est le **sixième** argument.
-- **`GALOPS_I18N` en allemand** : 8 niveaux × titre, sousTitre, competences = 24 champs.
-  `Galopp` avec deux `p`, comme dans les 92 chapitres.
-- **La carte Linguae de l'accueil** : label, « HYPE LINGUAE », slogan **« Ride the world »** (jamais
-  traduit), puis « Un langage équestre universel. » (traduit). Une seule ligne descriptive : la
-  Bible impose deux lignes maximum.
-- **Les paliers Baby restent dépliés** : `PalierBabyCarte` ne se replie plus en pastille, seul le
-  bouton cède la place à une pastille de réussite. 19 éléments rendus contre 3 avant.
-- **Le cadrage des quiz** : `calc(100dvh - 84px)`, la convention de sept autres écrans.
-
----
-
-## 6 · L'ALLEMAND — ÉTAT ET ORDRE DE PRIORITÉ
-
-**498 libellés** encore sans clé `de`. Six blocs font l'essentiel :
-
-| Bloc | Nombre | Priorité |
-|---|---|---|
-| `I18N` | 317 | **1er** — connexion et onboarding, le premier écran qu'un Allemand voit |
-| `BADGES_I18N` | 59 | 3e — libellés courts, touche la récompense |
-| `LEGENDES_HYPE` | 50 | 4e — biographies, surestimé (noms propres, mots identiques) |
-| `GALOPS_I18N` | ~~24~~ | ✅ fait cette session |
-| `MEMORY_PONEY_NIVEAUX` | 8 | au fil de l'eau |
-| `TEINTES_FOND_STUDIO` | 6 | au fil de l'eau |
-
-Plus **13 affiches** dont la version allemande n'existe pas, et 47 expressions à examiner.
-
-`audit_de4.js` (dans `/home/claude/w/`) régénère ce tableau. ⚠️ Une première méthode d'attribution
-par composant donnait **400 libellés dans `BanniereFond`**, ce qui est faux : la détection décroche
-sur les fonctions fléchées. Le total est bon, la répartition ne l'était pas — la version qui
-rattache aux **constantes en capitales** est la bonne.
-
----
-
-## 7 · LE DÉCOUPAGE DE L'INDEX — SUITE
-
-Index à **8,16 Mo**. Les tables de cours restantes pèsent **3,09 Mo, soit 38 %**.
-
-| Table | Taille | Réfs images | Constantes du bloc inline |
-|---|---|---|---|
-| `COURS_GALOP4_FR` | 0,66 Mo | 15 | **aucune** |
-| `COURS_GALOP6_FR` | 0,06 Mo | 1 | **aucune** |
-| `COURS_GALOP5_FR` + `G7` | 0,02 Mo | 0 | **aucune** |
-| `MEMORY_PONEY_NIVEAUX` | 0,04 Mo | 120 | **aucune** |
-| `COURS_GALOP3_FR` | 1,01 Mo | 12 | 6 `INFOG_*` + `GALOPS_HERO` |
-| `COURS_GALOP2_FR` | 0,50 Mo | 3 | 7 constantes |
-| `COURS_GALOP1_I18N` | 0,84 Mo | 133 | `GALOPS_HERO`, `INFOG_SECURITE_G1`, `INFOG_SELLERBRIDER_G1` |
-
-**Prochain coup évident : G4 + G5 + G6 + G7 réunis, 0,74 Mo, aucune dépendance.** Même recette que
-Baby, un seul fichier. `MEMORY_PONEY_NIVEAUX` peut y être joint : sans dépendance malgré ses 120
-références. Les Galops 1, 2 et 3 en dernier, **en sortant leurs constantes d'affiches avec eux** —
-c'est ce couplage qui avait fait échouer la session 71.
-
-**Ne pas supprimer les commentaires** (0,53 Mo, 6 %) : ils expliquent pourquoi chaque correctif
-délicat est écrit comme il l'est, et plusieurs ont déjà évité de refaire un bug.
-
----
-
-## 8 · PIÈGES DÉCOUVERTS AUJOURD'HUI
-
-**La clé `id` n'ouvre pas toujours un chapitre.** Sur `baby-c16` et `baby-c17`, `type` la précède :
-`{ "type": {...}, "id": "baby-c16", ... }`. Un `lastIndexOf("{")` depuis l'identifiant tombe sur
-l'objet `type`. Il faut remonter d'accolade en accolade jusqu'à celle qui **couvre** l'identifiant
-**et** dont l'évaluation rend le bon `id`.
-
-**`equilibre()` de `lib_table.js` bute sur les accolades présentes dans les chaînes.** Pour
-délimiter une fonction du fichier compilé, se fier à l'indentation : la fermeture est en **colonne 0**,
-donc `s.indexOf("\\n}", debut) + 2`.
-
-**Compter les fermetures avant de remplacer un appel React.** `}));` ferme trois choses : l'objet
-de props, le `createElement` du composant, et le `createElement` parent dont il est le dernier
-enfant. Une régression est passée par là, rattrapée par `node --check`.
-
-**Le contrôle `count == 1` sauve, mais ne pas conclure qu'un composant est unique.** L'ancre du
-correctif Memory apparaissait **2 fois** : il existe deux jeux, `MemoryGalop` et
-`MemoryPoneyGrille`, avec le même code de carte et le même défaut.
-
-**Ne jamais demander à Blandine de chercher une chaîne dans un fichier de données.** 1,8 Mo de JS
-sur un téléphone, c'est impossible. Les repères utilisables : la **taille** et le **chemin** que
-GitHub affiche, lisibles en deux secondes.
-
-**Ne pas toucher à ce qui fonctionne, même pour uniformiser.** Le puzzle a été passé en chemin
-direct alors qu'il marchait, puis remis à l'identique.
-
-**Les deux boucles de convention `k547-k554` et `k615-k628` restent AVANT les lots d'images, c'est
-volontaire.** Ce sont des filets : elles déclarent un chemin, et si un lot définit ensuite la même
-clé en base64, le base64 gagne. Les déplacer casserait ce comportement.
-
-**Ne plus inventer de noms de fichiers d'images.** Revenir à `kNNN.jpg`, déclaré par la boucle de
-convention. Chaque nom descriptif est un intermédiaire de plus entre la livraison et le dépôt,
-donc une occasion de divergence — celle-ci a coûté une heure.
-
----
-
-## 9 · POUR LINGUAE
-
-`NOTE-POUR-LINGUAE.md` a été remis à Blandine pour l'autre fil. Résumé : `lingo.html` colle
-`VER = "?v=14"` à **11 adresses d'images sur 18**, si bien que `carte-saumur.webp` et
-`carte-saumur.webp?v=14` sont deux fichiers pour le navigateur — **chaque carte est téléchargée
-deux fois**. Décision à prendre : retirer `VER` des images (recommandé, mais alors une image se
-remplace en changeant son nom), ou sortir les images du cache immuable.
-
-⚠️ **Ne PAS mettre `defer` sur les 23 scripts de lexique** : le bloc inline lit `HYPE_LINGO_LEX`
-immédiatement, la table serait vide. C'est le motif qui a déjà mis `lingo.html` à terre plusieurs
-fois.
-
-Bonne nouvelle mesurée : le chargement des médias de Linguae est déjà soigné (fond flou de 1 à 2 Ko
-sur le chemin, carte nette seulement pour l'étape voisine, vidéos créées à l'ouverture de la ville).
-**Aucun préchargement massif** — ce n'était pas la cause des lenteurs.
-
----
-
-## 10 · OUTILLAGE DANS `/home/claude/w/`
-
-| Fichier | Rôle |
-|---|---|
-| `lib_table.js` | isolation d'une table, `equilibre`, `evaluer`, `lireTablePartout` |
-| `lireTablePartout(nom)` | **ajouté cette session** : cherche dans l'index puis dans les `hype-cours-*.js` |
-| `preuve_rendu.js` | compare le rendu champ par champ contre une référence, six langues |
-| `rendu.js`, `audit2.js` | simulation de résolution de langue, couverture linguistique |
-| `audit_de4.js` | **ajouté** : libellés sans allemand, rattachés aux constantes |
-| `test_final.js` | **ajouté** : chaîne complète `HYPE_IMGS` → fichier Baby → convertisseur |
-| `test_pont.js` | **ajouté** : recette du pont Linguae → Hey Baby, quatre cas |
-| `verif_de.js` | **ajouté** : rendu allemand de chaque appel `L5acc` |
-
-⚠️ **`lireTablePartout` : piège corrigé.** Une table sortie laisse dans l'index une ligne de repli
-contenant `|| []`. L'ancien `lireTable` y trouvait le crochet et renvoyait un tableau **vide** :
-l'audit annonçait « Baby 0/0 » et faisait croire à une perte totale du contenu.
-
-**Contrôles obligatoires avant chaque livraison** : `node --check` sur tous les blocs inline ;
-`preuve_rendu.js` contre la référence dans les six langues ; unicité de chaque ancre vérifiée
-**avant** écriture ; et compter les occurrences dans le fichier **écrit** — un « ok » affiché ne
-prouve pas que le disque a été touché.
+## 8. IMAGES ENCORE À GÉNÉRER
+La toise de Lamotte-Beuvron et la couverture de Spruce Meadows (**sur une barre, retombante, jamais pliée**) en vue ¾ — ce sont les deux seuls objets restants dont le resserrement ne suffira pas. Les objets de révolution (seau, jarre, coupe, cloche, lampion) n'en ont **pas besoin** : leur silhouette ne change pas avec l'angle (remarque de Blandine, ma liste initiale était mauvaise). Plus tard : licol/bride **suspendus sans le crochet**, selles de dos et ¾ arrière.
+⚠️ **Règle de sécurité posée cette session, à valider comme règle générale (Hype comprise) : jamais de cavalier tête nue, jamais de baskets, dans aucune image et dans aucune phrase.**

@@ -181,7 +181,21 @@ var PAIRES = {
     jumeau: "gauchebiais",
     pts: [[31,51,17,50], [69,51,41,53], [21,27,10,22], [78,27,47,30]]
   },
-  gauchebiais: { jumeau: "gauche", inverse: "gauche" }
+  gauchebiais: { jumeau: "gauche" },
+  /* LA VITRINE, mesuree le 12/08 apres l'arrivee de `sellerie-droite.webp`.
+     Points de calage : les deux bouts du rail de crochets, le haut droit de
+     la vitrine, et la console basse. Ils sont volontairement REPARTIS en
+     hauteur : un premier essai avec quatre points groupes dans le haut du
+     mur donnait 12 % d'erreur en bas — une homographie ne s'extrapole pas.
+     Controles hors calage : l'etagere tombe a 58,6/40,2 pour 59/40 a l'oeil,
+     le milieu de la vitrine a 84,5/50,5 pour 83/50. Juste au tout haut du
+     mur (y < 20 %) l'ecart monte a 8 % : c'est la ou la vitrine occupe
+     deja la place, donc peu de poses. */
+  droite: {
+    jumeau: "droitebiais",
+    pts: [[10,45,51,48], [38,45,67,47], [82,15,96,17], [22,74,58,72]]
+  },
+  droitebiais: { jumeau: "droite" }
 };
 /* resolution d'un systeme lineaire par pivot de Gauss : huit inconnues
    pour les huit coefficients de l'homographie (le neuvieme vaut 1). */

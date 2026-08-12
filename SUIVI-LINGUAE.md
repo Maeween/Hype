@@ -76,6 +76,141 @@
 
 ---
 
+# 🏇 SESSION 209 · 12/08 — LE MUR DES SELLES RÉCONCILIÉ, 23 VUES DÉCOUPÉES, HUIT DÉCISIONS PRISES
+
+**Aucun code écrit.** `lingo.html` n'a pas été ouvert : la session a servi à trancher ce qui bloquait, et à préparer les images. L'écran sellerie reste à écrire.
+
+**À pousser → RACINE, en une poussée.** ⚠️ `var VER` passera à **`?v=34`** dans le `lingo.html` à venir : deux fichiers du lot **remplacent** des fichiers en ligne.
+
+| fichier | md5 (début) | remplace ? |
+|---|---|---|
+| **objet-lambourn.webp** (92 ko) — licol en cuir, de face | `28e4486660ed` | **oui — l'étrille de cuivre** |
+| **sellerie-gauche.webp** (80 ko, 1020×1500) — sans le rail du bas | `62a9f932a8fc` | **oui** |
+| pose-lambourn-34.webp (99 ko) | `1468ef7cad17` | nom nouveau |
+| pose-walsall.webp (92 ko) — selle anglaise de face | `5a70de43c1c4` | nom nouveau |
+| pose-walsall-34.webp (97 ko) | `a154c179ddf5` | nom nouveau |
+| pose-dubai.webp (152 ko) — selle de randonnée de face | `ad78a7e71fa5` | nom nouveau |
+| pose-dubai-34.webp (155 ko) | `6d7bb962ab0b` | nom nouveau |
+| pose-connemara-34.webp (105 ko) | `592fe904a050` | nom nouveau |
+| sellerie-entree.webp (97 ko, 1000×1500) — la porte, refaite | `0132755061e4` | oui |
+| sellerie-droite.webp (79 ko, 1000×1500) — la vitrine de face, **le mur qui manquait** | `b3263de14ec0` | oui |
+
+⚠️ **Ne pas pousser une copie de l'ancien `sellerie-gauche.webp` depuis Claude** : la seule copie en ma possession venait de la maquette, réencodée à 32 ko contre 127 ko à l'original. **L'ancien se conserve sur le téléphone de Blandine**, pas ici.
+
+**19 fichiers de réserve** prêts, non livrés (Blandine dira quand) : `reserve-filet` ·`-34` ·`-34b` · `reserve-licol-cuir-34b` · `reserve-licol-corde-face` ·`-34b` · 6 `reserve-cagoule-hype-*` · 4 `reserve-cagoule-linguae-*` · `reserve-sellerie-gauche-biais-v2` ·`-v3` · `reserve-sellerie-large-3murs`.
+
+## ▸ 🟥 LE DÉBLOCAGE DE LA SESSION — UN OBJET, PLUSIEURS VUES, ET C'EST LE MOTEUR QUI CHOISIT
+
+**Mots de Blandine** : « les selles de 3/4 c'est pour toi que je les avais faites » · « c'est à toi d'utiliser les autres images pour que quand on change de mur ça corresponde à la réalité de ce qu'on a mis perpendiculairement » · « c'est pas nous de le faire normalement ».
+
+La maquette v31 exposait `selleface` **et** `selle34` comme **deux vignettes séparées** dans la réserve, avec deux noms distincts (« La selle de randonnée » / « … de trois quarts »). C'était une faute de conception de Claude : elle faisait faire à la joueuse le travail du moteur.
+
+**Règle posée** : dans la réserve, **un objet = une seule vignette**, sa vue perpendiculaire. Le moteur pioche la vue ¾ ou de dos selon l'angle du mur regardé. Si la variante manque, repli sur la vue perpendiculaire simplement resserrée — jamais de trou.
+
+**À l'écran (pour la livraison à venir) : −** la vignette « La selle de randonnée (de trois quarts) » disparaît de la réserve.
+
+## ▸ 🟥 CE QUI BLOQUAIT VRAIMENT : LE RAIL DU BAS
+
+En comparant `sellerie-gauche.webp` (de face) et `sellerie-gauche-biais.webp` (l'angle), une divergence géométrique : **le mur des selles de face portait un long rail de laiton à neuf crochets sous les trois porte-selles, et ce rail n'existait pas sur le même mur en vue de biais.** Un objet accroché à ce rail n'aurait eu nulle part où aller au changement d'angle.
+
+**Fausse alerte d'abord annoncée, puis retirée** : Claude avait cru que l'étagère, le rail et la console basse vus « sur le mur voisin » étaient des meubles déplacés. `sellerie-droite.webp` (envoyée dans la session) a montré qu'ils appartiennent **au mur de la vitrine**, aperçu au-delà de l'angle. La pièce était cohérente sur ce point.
+
+**Décision de Blandine** : « je vais le faire retirer de la photo du mur de face, ça sera plus simple ». Fait, reçu, converti → `sellerie-gauche.webp` 1020×1500, md5 `62a9f932a8fc`. **L'angle des selles reste celui de la maquette** — mots de Blandine : « je fais juste le mur de face sans rail c'est tout ». Les trois rendus de biais générés ce soir partent en réserve, **conservés** (« garde les images avec les trois, j'ai mis des heures à les avoir »).
+
+⚠️ **Format** : le nouveau mur est en **0,680** au lieu du 2:3 (0,667) des sept autres. Le code mesure un format par mur, donc ça fonctionne. **Rognage de 20 px proposé, non tranché.**
+
+## ▸ LE DÉCOUPAGE DES 23 VUES — 7 PLANCHES, AUCUN PIXEL RETOUCHÉ
+
+Inquiétude de Blandine, légitime : « on a dû les retoucher au moins 20 fois avant d'avoir ça, t'es sûr de ton truc ? »
+
+**Réponse mesurée : le découpage ne retouche rien.** Le fond était **déjà transparent** (alpha 0 aux quatre coins, 56 à 74 % de chaque planche) — la règle du fond transparent posée la nuit précédente a porté du premier coup, et le piège du damier dessiné n'y était pas. Il n'y a donc eu **ni seuil, ni contour, ni repeint** : un simple recadrage par composantes connexes, chaque composante voisine rendue transparente dans la boîte extraite.
+
+- **Aucune réduction de résolution** : chaque objet découpé fait 361 à 764 px de large, déjà sous la limite des 900 px. Rien à rétrécir.
+- **Aucun masquage nécessaire** : les boîtes ne se recouvraient pas (contrairement au 10/08).
+- **Vérifié à l'œil** : les **deux étriers** sont présents sur les deux selles — c'était le vrai risque, un étrier en composante séparée aurait été effacé.
+- **Poids** : 23 vues = **2,0 Mo en q88** contre **6,9 Mo sans perte**. q88 retenu.
+- Livré pour validation : `apercu-decoupe.html` (2,8 Mo), les 23 vues sur le noir de la sellerie.
+
+**Doublons constatés** (remarque de Blandine : « tu as deux fois le même ») : sur les trois planches à 3 vues (filet, licol de cuir, licol de corde), les vues 2 et 3 sont **le même trois-quarts du même côté**, pas deux angles. Conservées en réserve. Ce qui manque vraiment reste **la vue suspendue au crochet** — un licol posé à plat ne se lit pas sur un mur.
+
+## ▸ DÉCISIONS DE BLANDINE PRISES CETTE SESSION
+
+1. **Destination des images : RACINE**, avec un **préfixe centralisé** (variable vide en tête de `lingo.html`) pour déménager d'un geste plus tard. *Déduction de Claude, validée par elle.* Le conflit de doctrine avec `SUIVI.md` reste ouvert.
+2. **Aucun service worker dans Linguae** — vérifié, zéro occurrence dans `lingo.html`. L'argument « le cache empêche le dossier » était **faux** : un fichier déplacé a une adresse neuve, donc forcément fraîche. Seul vrai risque : supprimer la racine trop tôt. `_headers` à dupliquer le jour du déménagement.
+3. **Entrée sellerie depuis l'écran de récompense : validée.** Libellé FR arrêté : **« Ranger cet objet dans ma sellerie »**. **À l'écran : +** une phrase sous l'objet gagné, en plus de l'entrée par le carnet de route. Traductions à valider à la livraison.
+4. **Deuxième sellerie : décidée** (« je fais faire une deuxième sellerie, par la suite les gens pourront choisir, on le fera gagner »). **Stockage par pièce (option A) validé** : `sellerie: { pieces: { <ref>: { poses: {}, vues: {} } } }` — chaque pièce garde son aménagement, rien à migrer. Images **à ne pas envoyer maintenant** : elles passeraient devant le code. Contrainte transmise : même géométrie que la première (une face et un biais par angle, arche vraiment percée, même hauteur d'œil).
+5. **Licol en cuir → Lambourn.** Intitulé FR : **« Un licol EN cuir »** (correction de Blandine). L'**étrille de cuivre part en réserve**. La vue de face devient l'image de collection (`objet-lambourn.webp`) **et** sert de vue perpendiculaire. Traductions à valider : *A leather headcollar* · *Una cabezada de cuero* · *Una testiera in cuoio* · *Ein Lederhalfter* · 革製の頭絡 — ⚠️ pour le japonais, **無口** (*mukuchi*) désigne le licol, 頭絡 désigne le filet : à trancher. Le choix *headcollar* (GB) vs *halter* (US) touche la passe GB/US des 23 lexiques, toujours en attente.
+6. **Le filet reste en réserve**, sans ville (« garde-le de côté pour l'instant et on verra à qui on l'attribue par la suite »).
+7. **Nommage des vues posées : option A validée** — `objet-<ref>.webp` (collection) · `pose-<ref>.webp` (perpendiculaire) · `pose-<ref>-34.webp` (trois quarts). Le préfixe `pose-` se déplacera en bloc le jour de l'indépendance du dépôt. **Économie signalée** : quand l'image de collection *est* la vue perpendiculaire, `pose-<ref>.webp` n'existe pas et le code retombe sur `objet-<ref>.webp` — vrai pour Lambourn et Connemara. *Déduction de Claude — à valider.*
+8. **Diplôme d'enseignant : une image sans texte lisible (option A validée).** Idée de Blandine, née du « carnet d'échelle » de Warendorf : un diplôme par langue. Retenu **dans son principe**, comme **chantier à part, après la sellerie**. Prompt de génération transmis (papier ivoire, sceau de cire bleu nuit, ruban or, cavalier gravé en médaillon, **lignes de texte suggérées par des traits, aucun caractère lisible**, fond transparent). ⚠️ Deux pièges signalés : le générateur glisse du faux latin ; ne jamais employer de vrai sigle d'État (BPJEPS, BHS).
+
+## ▸ LE DÉFI DE LA VILLE — ÉCRIT ET LIVRÉ
+
+**Mots de Blandine** : « un défi propre à la ville, qu'on propose sur la même page qu'on propose le quiz, de façon à ce qu'un parent puisse vérifier que son enfant a bien appris les mots du cours, tout en jouant avec ».
+
+⚠️ **Diagnostic corrigé en cours de route.** J'ai d'abord annoncé un doublon avec le Sprint 60 s. Faux : le Sprint **brasse les 23 lexiques** et complète au hasard s'il manque de mots — il teste ce qu'on sait en général. Le défi teste **une ville**. Deux intentions différentes.
+
+**Trois différences, toutes voulues :**
+1. **Le réservoir est strictement la ville**, jamais de complément — un complément rendrait la vérification fausse.
+2. **Le résultat se lit comme un résultat** : « 14 mots sur 18 ». Un parent comprend ça ; « 14 points » ne lui dit rien.
+3. **Il suit le régime de la ville** (`villeAutorisee`), pas celui du Sprint : gratuit sur La Baule, Le Morne et Kildare, Premium ailleurs. Décision de Blandine : « de base premium, à part les villes gratuites offertes ». `estPremium()` reste le seul point de décision de paiement.
+
+**Et il enchaîne.** Mots de Blandine : « le quiz on peut prendre le temps d'expliquer pourquoi c'est juste, pas juste, mettre des anecdotes. Mais le défi, il faut que ça s'enchaîne. » Aucun retour entre deux mots, bilan à la fin seulement. C'est pour ça que le bouton est **en dessous** des leçons et non à côté : deux moments, pas deux options.
+
+**Écrit** : `DEFI_VILLE`, `reservoirVille(ref)`, `ouvrirDefiVille(ref)`, `demarrerSprint(reservoirImpose)`, bilan dédié dans `finSprint()`, trois libellés en six langues (`defiVille`, `defiResultat`, `defiRejouer`), bouton dans `choisirLecon()` affichant le nombre de mots. Scroll reset à l'ouverture.
+
+**À l'écran : +** « Le défi · 60 s » sur la page de chaque ville pourvue d'un lexique. **−** rien.
+
+**Reporté à plus tard, sur décision de Blandine** : les objets à gagner dans le défi (ils appartiendraient à la famille des « hauts faits », pas aux villes) et **l'invitation d'un membre non Premium à jouer avec nous**. ⚠️ Sur ce dernier point, une conséquence a été signalée et non tranchée : si l'invité joue les mots d'une ville payante, le défi devient une porte ouverte sur le contenu. Trois garde-fous proposés (pas de traductions après coup pour l'invité · invitations limitées · l'invité joue la ville offerte). Et deux formes très différentes se cachent derrière l'idée : **le partagé en différé** (un lien, les mêmes mots dans le même ordre, aucun serveur — réalisable) et **le duel en direct** (temps réel Supabase, salle d'attente — un chantier).
+
+## ▸ 🟥 À VÉRIFIER PLUS TARD — QUEL PROJET SUPABASE (mis de côté par Blandine, 12/08)
+
+Le `alter table ... add column sellerie` a été exécuté avec succès (« Success. No rows returned »), depuis un projet affiché **« Hype »**. `lingo.html` se connecte à **`ldpjebgtskzdokrublfg.supabase.co`** et `hype_lingua_progression` y vit. **Ce qui n'a PAS été vérifié** : que le projet affiché est bien celui-là — on voit son nom, pas sa référence.
+
+Deux cas, à trancher plus tard :
+- **un seul projet, des tables séparées** (ce que veut dire « Linguae a son propre accès ») → l'ALTER est au bon endroit, rien à refaire ;
+- **deux projets distincts** → la colonne est dans le mauvais, à recréer dans celui de Linguae.
+
+Vérification en dix secondes : comparer la référence du projet à `ldpjebgtskzdokrublfg`.
+
+**Mots de Blandine** : « il a toujours été prévu dans Linguae mais on l'ouvrira à Hype aussi oui » · « je comprends rien, note-le dans le suivi, on fera ça plus tard ». Sens de lecture retenu : **Linguae écrit l'aménagement, Hype le lit** — l'inverse serait la régression que la doctrine interdit.
+
+## ▸ 🟥 EN SUSPENS — RIEN N'A ÉTÉ TRANCHÉ SUR CES POINTS
+
+1. **Warendorf : « Un carnet d'échelle » ne veut rien dire en français** (intitulé de Claude, plus faible que les 5 points signalés au 11/08). L'image `objet-warendorf.webp` est **verrouillée sur la ville** (plaque gravée WARENDORF, ruban noir-rouge-or) : impossible à redéployer. **Second défaut découvert** : c'est le **deuxième carnet** de la collection, Édimbourg a déjà « Un carnet de mots » — et celui d'Édimbourg est la plus belle des deux images (tartan, couronne, breloque du château). Blandine : « effectivement un carnet suffit je pense ». **Deux issues opposées, non tranchées** : (A) Édimbourg garde le sien et Warendorf change d'objet · (B) l'inverse. Objets proposés pour Warendorf, aucun validé : **stick de dressage** (silhouette neuve, se suspend au mur — le meilleur des trois à mes yeux), cloche de bronze de la FN, plaque d'élevage, brevet gravé, ruban de mérite (⚠️ redouble la cocarde de Badminton), fer marqué (⚠️ redouble le fer d'Aberystwyth).
+2. **Versailles (ville en réserve) : aucun chapitre, aucun objet.** Contrainte rappelée : **Bartabas et l'Académie du spectacle équestre sont interdits**. Premières propositions (mors à la royale, clé de la Grande Écurie, éperon d'argent, plaque de stalle) **rejetées par Blandine** : « je suis pas emballée ». Deuxième série, non tranchée, organisée par **chapitre manquant** : **l'attelage** (rosette de harnais en laiton, mors de carrosse, fouet d'attelage) · **la vénerie** (trompe de chasse en cuivre lovée — la plus photogénique) · **le travail à pied** (caveçon, selle à piquer).
+3. **Rognage de `sellerie-gauche.webp`** de 20 px pour revenir au 2:3 exact : proposé, non tranché.
+4. **`pose-lambourn.webp` / `pose-connemara.webp` inexistants** (repli sur `objet-<ref>.webp`) : déduction à valider.
+5. **Vitrine de face / vitrine de biais non comparées.** `sellerie-droite.webp` vient d'arriver ; `sellerie-droite-biais.webp` existe depuis la session 208. **L'appariement de cette paire n'a pas été vérifié** — même piège possible que le rail du bas.
+6. **Points d'accroche non relevés.** L'appariement `gauche` ↔ `gauchebiais` (3 porte-selles, étagère) reste à mesurer image par image, une fois le nouveau mur de face en main. Les murs `fond` et `entree` n'ont pas de jumeau : leurs objets gardent une vue unique.
+7. Reliquat des sessions précédentes, intact : les 5 points de la revue des 31 objets · les vêtements et chapeaux à placer (⚠️ Tamworth et Santa Ynez ne peuvent pas avoir le même) · Hey Baby onglet « Langues » · la passe GB/US des 23 lexiques · « sirop » ES = jarabe · les images encore à générer (licol/bride **sans le crochet**, tapis et couverture **sur une barre, retombants, JAMAIS pliés**, selles de dos et ¾ arrière).
+
+## ▸ 🟥 UNE ERREUR DE CLAUDE À CORRIGER DANS CE FICHIER
+
+La session 205 écrit : « **les images de biais font l'ambiance, pas le placement — on ne pose bien que sur du plat** », présenté comme un cadre acquis. Blandine, cette session : « **non, j'ai pas validé ça pour le biais ou pas, volontairement** ». Elle a raison : cette phrase était le **diagnostic de Claude** après ses premiers essais ratés, pas une décision d'elle. **La seule phrase d'elle sur ce sujet** reste « je les fais faire de dos et de ¾, ça se met face au mur », qui ne dit rien de ce qu'on peut poser sur un mur de biais.
+→ **À rectifier dans la session 205 : remplacer par « diagnostic de Claude ».** Fait ici, pas encore dans le corps de la session 205.
+
+## ▸ CE QUI A COÛTÉ DU TEMPS CETTE SESSION
+
+- **Neuf messages pour trancher la destination des images.** Une orientation (« racine pour l'instant apparemment », « d'après l'autre conv c'était embêtant ») a été correctement refusée comme feu vert — mais l'argument technique du cache, faux, n'a été vérifié qu'au neuvième message. **Vérifier un argument technique avant de bâtir des options dessus.**
+- **Une divergence annoncée trop large** (« les deux images ne montrent pas la même pièce ») alors qu'elle portait sur **un seul rail**. Corrigé dans la même conversation, mais l'alerte a inquiété pour rien. **Mesurer l'étendue d'un défaut avant de le nommer.**
+- **Une décision prêtée à Blandine** (session 205, ci-dessus). C'est exactement ce que la règle en tête de ce fichier interdit.
+- **Une question posée trop tard** : « et si on retirait le rail de la face ? » aurait dû venir avant de faire régénérer trois murs de biais. **Chercher l'image la moins nombreuse à refaire.**
+- Deux fois de suite, une réponse d'un mot (« B », « ok oui ») a désigné **deux décisions différentes** posées dans le même message. **Une question par message quand les options portent les mêmes lettres.**
+
+## ▸ PRÉPARATION FLUTTER
+
+- **Le contrat de stockage de la sellerie est fixé avant d'écrire une ligne** : `sellerie: { pieces: { <ref> : { poses: { ref → {mur,x,y,taille,miroir} }, vues: { ville → {z,ox,oy} } } } }`. Ownership : **Linguae écrit, Hype ne lit pas.** Fusion Supabase inchangée, clé par clé. Flutter le réimplémentera à l'identique.
+- **Le préfixe centralisé des chemins d'images** est un premier pas vers un `MediaRepository` : une seule ligne à changer pour tout déplacer, au lieu de 4 constructions dynamiques et 13 noms fixes dispersés.
+- **La règle « un objet, plusieurs vues, le moteur choisit »** est une frontière de domaine, pas un détail d'affichage : le choix de la vue appartient au rendu, pas au stockage. Les poses ne mémorisent **jamais** quelle image est utilisée — seulement où l'objet est posé. C'est ce qui permettra d'ajouter des angles sans migrer les données.
+
+## ▸ VERS L'APP STORE
+
+Rien n'a bougé sur les points bloquants : **le paiement reste la seule décision commerciale non tranchée** (Apple in-app vs redirection web vs attendre Hype), le compte Apple Developer et le service de compilation restent à ouvrir, et la suppression de compte n'est complète qu'une fois la ligne ajoutée dans `supprimer-compte.js`.
+Deux effets indirects de cette session, tous deux favorables : le **préfixe centralisé** rapproche le jour où les images de Linguae se déplacent en bloc vers un dépôt propre, et le **stockage par pièce** évite une migration de données après publication — une migration sur une app déjà en ligne coûte infiniment plus cher qu'avant.
+
+---
+
 # 🏛️ SESSION 208 · 11-12/08 (nuit) — LES SIX MURS, QUATRE OBJETS DE VILLES REFAITS, ET LA MAQUETTE v31
 
 **À pousser → RACINE, en UNE seule poussée.** `lingo.html` md5 `75584387d9b629bf16c3224da5c96c2d` (`var VER = "?v=33"`) · `objet-newmarket.webp` · `objet-walsall.webp` · `objet-connemara.webp` · `objet-dubai.webp` · les 6 murs `sellerie-*` · `sellerie-gauche-rail.webp` (l'ancien conservé) · la réserve (facultative, rien ne l'appelle).

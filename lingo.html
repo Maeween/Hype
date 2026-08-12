@@ -6598,6 +6598,16 @@ var UI = {
    it:"Il giro del mondo", de:"Die Weltreise", ja:"世界一周"},
  laCollection:{fr:"La collection", en:"The collection", es:"La colección",
    it:"La collezione", de:"Die Sammlung", ja:"コレクション"},
+ defiVille:{fr:"Le défi · 60 s", en:"The challenge · 60 s", es:"El desafío · 60 s",
+   it:"La sfida · 60 s", de:"Die Challenge · 60 s", ja:"チャレンジ · 60秒"},
+ defiResultat:{fr:"{a} mots sur {n} retrouvés en soixante secondes.",
+   en:"{a} words out of {n} found in sixty seconds.",
+   es:"{a} palabras de {n} encontradas en sesenta segundos.",
+   it:"{a} parole su {n} trovate in sessanta secondi.",
+   de:"{a} von {n} Wörtern in sechzig Sekunden gefunden.",
+   ja:"60秒で{n}語のうち{a}語。"},
+ defiRejouer:{fr:"Recommencer", en:"Try again", es:"Volver a empezar",
+   it:"Ricominciare", de:"Noch einmal", ja:"もう一度"},
  maSellerie:{fr:"Ma sellerie", en:"My tack room", es:"Mi guadarnés",
    it:"La mia selleria", de:"Meine Sattelkammer", ja:"私の馬具室"},
  rangerSellerie:{fr:"Ranger cet objet dans ma sellerie",
@@ -7938,6 +7948,22 @@ function choisirLecon(){
                : (ui==="en"?"a perfect quiz":"le quiz sans faute"))})));
   S("lcCorps").appendChild(boite);
 
+  /* ⚠️ AJOUT DU 12/08 (session 209) — LE DEFI DE LA VILLE, EN DESSOUS DES
+     LECONS ET DU QUIZ, jamais a cote. Blandine : « le quiz on peut prendre
+     le temps d'expliquer pourquoi c'est juste, pas juste, mettre des
+     anecdotes. Mais le defi, il faut que ca s'enchaine. » Ce sont deux
+     moments, pas deux options : deux boutons de meme poids auraient laisse
+     croire qu'on choisit entre les deux.
+     Il n'apparait que si la ville a vraiment des mots a tester. */
+  (function(){
+    if(!LC || !LC.ville) return;
+    var res = reservoirVille(LC.ville);
+    if(res.length < 4) return;
+    S("lcCorps").appendChild(el("button",{class:"lgColl", style:"margin-top:16px",
+      onclick:function(){ ouvrirDefiVille(LC.ville); }},
+      T("defiVille")+" \u00b7 "+res.length+(langueUI()==="en"?" words":" mots")));
+  })();
+
   /* le chemin vers la collection, et le partage de l'appli — demandes
      de Blandine (8 août) : « proposer de partager l'appli depuis chaque
      chapitre » et « consulter ses collections ». */
@@ -8983,7 +9009,55 @@ function reservoirSprint(){
   var connus=t.filter(function(c){ return (MAITRISE[c.ref]||0)>0; });
   return (connus.length>=12) ? connus.concat(brasser(t).slice(0,20)) : t;
 }
+/* ==================================================================
+   LE DEFI DE LA VILLE (12 aout 2026, session 209)
+   ORDRE DE BLANDINE, et c'est ce qui en fait autre chose qu'un Sprint :
+   « un defi propre a la ville, qu'on propose sur la meme page que le quiz,
+   de facon a ce qu'un parent puisse verifier que son enfant a bien appris
+   les mots du cours, tout en jouant avec ».
+
+   TROIS DIFFERENCES AVEC LE SPRINT, toutes voulues :
+   1. LE RESERVOIR EST STRICTEMENT LA VILLE. Le Sprint brasse les 23
+      lexiques et COMPLETE au hasard s'il manque de mots ; ici on ne
+      complete jamais — un complement rendrait la verification fausse.
+   2. LE RESULTAT SE LIT COMME UN RESULTAT : « 14 mots sur 18 ». Un parent
+      comprend ca ; « 14 points » ne lui dit rien.
+   3. IL SUIT LE REGIME DE LA VILLE, pas celui du Sprint. Gratuit ou l'on
+      a la ville, Premium ailleurs (decision de Blandine : « de base
+      premium, a part les villes gratuites offertes »). `estPremium()`
+      reste le seul point de decision de paiement.
+   ET IL ENCHAINE : aucun retour entre deux mots, aucune anecdote. « Le
+   quiz on peut prendre le temps d'expliquer pourquoi c'est juste, pas
+   juste, mettre des anecdotes. Mais le defi, il faut que ca s'enchaine. »
+   Le bilan arrive a la fin, quand le chrono tombe.
+   ================================================================== */
+var DEFI_VILLE = null;      /* ref de la ville quand on est dans un defi */
+
+function reservoirVille(refVille){
+  var LEX = window.HYPE_LINGO_LEX || {}, t = [];
+  var src = ETAPE_SRC[refVille] || [];
+  src.forEach(function(paire){
+    var lex = LEX[paire[0]]; if(!lex) return;
+    (lex.concepts || []).forEach(function(c){
+      if(c.lecon === paire[1]) t.push(c);
+    });
+  });
+  return t;                 /* JAMAIS de complement : c'est une verification */
+}
+
+function ouvrirDefiVille(refVille){
+  if(!villeAutorisee(refVille)){ ouvrirPaywall(); return; }
+  var res = reservoirVille(refVille);
+  if(res.length < 4) return;          /* ville sans lexique : pas de defi */
+  DEFI_VILLE = refVille;
+  S("sprint").scrollTop = 0;          /* scroll reset a chaque ouverture */
+  S("sprint").classList.add("on");
+  amorcerVoix();
+  demarrerSprint(res);
+}
+
 function ouvrirSprint(){
+  DEFI_VILLE = null;
   if(!estPremium()){ ouvrirPaywall(); return; }   /* v36 : le Sprint solo est Premium */
   S("sprint").scrollTop=0; S("sprint").classList.add("on");
   amorcerVoix();
@@ -8991,7 +9065,7 @@ function ouvrirSprint(){
 }
 function fermerSprint(){
   if(SP && SP.minuteur){ clearInterval(SP.minuteur); SP.minuteur=null; }
-  SP=null;
+  SP=null; DEFI_VILLE=null;
   S("sprint").classList.remove("on","presse");
   S("spSec").textContent="60";
   S("spChrono").firstElementChild.style.width="100%";
@@ -9016,10 +9090,14 @@ function accueilSprint(){
       ui==="en" ? "Start" : "C'est parti")
   ));
 }
-function demarrerSprint(){
-  var res=reservoirSprint();
+function demarrerSprint(reservoirImpose){
+  var res=reservoirImpose || reservoirSprint();
   if(res.length<4){ accueilSprint(); return; }
-  SP={ pool:res, score:0, combo:0, meilleurCombo:0, reste:60, justes:[], minuteur:null };
+  /* `total` n'existe que pour le defi : c'est le denominateur du resultat
+     lisible (« 14 mots sur 18 »). Le Sprint global n'en a pas, son
+     reservoir n'a pas de fin. */
+  SP={ pool:res, score:0, combo:0, meilleurCombo:0, reste:60, justes:[], minuteur:null,
+       defi:DEFI_VILLE, total:(DEFI_VILLE ? res.length : 0) };
   S("sprint").classList.remove("presse");
   S("spScore").textContent="0";
   SP.minuteur=setInterval(function(){
@@ -9093,9 +9171,22 @@ function finSprint(){
   sauverRec();
   donnerXP(Math.round(score/3), "lingua-sprint");
   var mc=SP.meilleurCombo;
+  var estDefi=!!SP.defi, refDefi=SP.defi, totalDefi=SP.total, trouves=Object.keys(uniques).length;
   SP=null;
   S("spCombo").className="";
   videEl(S("spCorps"));
+  /* LE BILAN DU DEFI SE LIT COMME UN RESULTAT, pas comme un score : c'est
+     ce qu'un parent doit pouvoir comprendre d'un coup d'oeil. */
+  if(estDefi){
+    var e=ETAPES.filter(function(x){ return x.ref===refDefi; })[0];
+    S("spCorps").appendChild(el("div",{id:"spAccueil"},
+      el("p",{class:"sur", text: e ? eCh(e) : ""}),
+      el("h1",{text:trouves+" / "+totalDefi}),
+      el("p",{text:T("defiResultat",{a:trouves,n:totalDefi})}),
+      el("button",{id:"spGo", onclick:function(){ ouvrirDefiVille(refDefi); }}, T("defiRejouer"))
+    ));
+    return;
+  }
   S("spCorps").appendChild(el("div",{id:"spAccueil"},
     el("p",{class:"sur", text: record ? (ui==="en"?"New record":"Nouveau record")
                                       : (ui==="en"?"Time":"Terminé")}),
