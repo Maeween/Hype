@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Linguae — contrôle des images</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--noir:#060709;--anthracite:#111417;--turquoise:#20D9F5;--blanc:#F4F7FA;--gris:#94A3AF;
+  --rouge:#E8735C;--ambre:#E0B070}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--noir);overscroll-behavior:none;overflow-x:clip}
+body{margin:0;background:var(--noir);color:var(--blanc);
+  font-family:'Montserrat',system-ui,sans-serif;font-weight:300;overflow-x:clip;
+  padding:0 0 calc(env(safe-area-inset-bottom) + 30px)}
+
+header{padding:calc(env(safe-area-inset-top) + 18px) 16px 0;text-align:center}
+header .eyebrow{font-size:9px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--turquoise);font-weight:500}
+header h1{font-family:'Cinzel',serif;font-weight:600;font-size:23px;
+  letter-spacing:.04em;margin:9px 0 5px}
+header p{font-size:11.5px;color:var(--gris);margin:0 auto;max-width:310px;line-height:1.55}
+
+.actions{display:flex;gap:8px;padding:18px 16px 6px}
+.actions button{flex:1;background:var(--anthracite);color:var(--blanc);
+  border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:12px 6px;
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;letter-spacing:.04em}
+.actions button.go{background:linear-gradient(120deg,#0C5763,#38E2F8);color:#04252A;
+  border-color:transparent;font-weight:600}
+.actions button:disabled{opacity:.4}
+
+.barre{margin:14px 16px 0;height:4px;border-radius:3px;background:rgba(255,255,255,.08);
+  overflow:hidden}
+.barre i{display:block;height:100%;width:0;background:var(--turquoise);
+  transition:width .2s linear}
+.etat{text-align:center;font-size:10.5px;color:var(--gris);margin:9px 0 0}
+
+section{padding:16px}
+h2{font-family:'Cinzel',serif;font-weight:500;font-size:13px;letter-spacing:.13em;
+  text-transform:uppercase;margin:26px 0 10px}
+h2:first-child{margin-top:6px}
+
+/* ---- le bilan ---- */
+.bilan{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.bilan div{background:var(--anthracite);border:1px solid rgba(255,255,255,.07);
+  border-radius:11px;padding:12px 13px}
+.bilan b{display:block;font-family:'Cinzel',serif;font-size:21px;font-weight:600;line-height:1}
+.bilan i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--gris);margin-top:5px;line-height:1.4}
+.bilan .chaud b{color:var(--rouge)}
+.bilan .tiede b{color:var(--ambre)}
+.bilan .froid b{color:var(--turquoise)}
+
+/* ---- les anomalies ---- */
+.anos{list-style:none;padding:0;margin:0}
+.anos li{background:var(--anthracite);border:1px solid rgba(255,255,255,.07);
+  border-left:2px solid var(--ambre);border-radius:9px;padding:11px 12px;margin-bottom:8px;
+  font-size:11px;line-height:1.55;color:var(--blanc)}
+.anos li.grave{border-left-color:var(--rouge)}
+.anos li b{font-weight:600}
+.anos li span{display:block;color:var(--gris);font-size:10px;margin-top:4px}
+
+/* ---- le tableau ville par ville ---- */
+.ville{background:var(--anthracite);border:1px solid rgba(255,255,255,.07);
+  border-radius:11px;padding:11px 12px;margin-bottom:8px}
+.ville .tete{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  margin-bottom:8px}
+.ville .tete b{font-family:'Cinzel',serif;font-size:14px;font-weight:500}
+.ville .tete i{font-style:normal;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gris)}
+.f{display:flex;align-items:center;gap:8px;font-size:10.5px;padding:4px 0;
+  border-top:1px solid rgba(255,255,255,.05)}
+.f:first-of-type{border-top:0}
+.f .pastille{flex:0 0 auto;width:7px;height:7px;border-radius:50%}
+.f .ok{background:var(--turquoise)}
+.f .ko{background:var(--rouge)}
+.f .dort{background:var(--gris)}
+.f .nom{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-family:ui-monospace,Menlo,monospace;font-size:9.5px;color:var(--blanc)}
+.f .info{flex:0 0 auto;color:var(--gris);font-size:9.5px;font-variant-numeric:tabular-nums}
+.f .badge{flex:0 0 auto;font-size:8px;letter-spacing:.08em;text-transform:uppercase;
+  padding:2px 5px;border-radius:4px;background:rgba(255,255,255,.06);color:var(--gris)}
+.f .badge.att{background:rgba(224,176,112,.14);color:var(--ambre)}
+.f .badge.mal{background:rgba(232,115,92,.16);color:var(--rouge)}
+
+.note{border-left:1px solid rgba(32,217,245,.4);padding:2px 0 2px 12px;
+  font-size:10.5px;color:var(--gris);line-height:1.6;margin:16px 0 0}
+.note b{color:var(--blanc);font-weight:500}
+
+textarea{width:100%;height:170px;margin-top:10px;background:#0A0D10;color:var(--gris);
+  border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:10px;
+  font-family:ui-monospace,Menlo,monospace;font-size:10px;line-height:1.5}
+.cache{display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Linguae · outil de contrôle</div>
+  <h1>Les images, en vrai</h1>
+  <p>Cette page interroge le site lui-même. Elle ne se fie à aucun document : elle demande à chaque fichier s'il existe, sa taille et son poids.</p>
+</header>
+
+<div class="actions">
+  <button class="go" id="lancer">Lancer le contrôle</button>
+  <button id="copier" disabled>Copier le rapport</button>
+</div>
+
+<div class="barre"><i id="jauge"></i></div>
+<p class="etat" id="etat">31 villes · 4 familles de fichiers à vérifier</p>
+
+<section id="sortie" class="cache">
+  <h2>Bilan</h2>
+  <div class="bilan" id="bilan"></div>
+
+  <h2 id="hAnos">Ce qui cloche</h2>
+  <ul class="anos" id="anos"></ul>
+
+  <h2>Ville par ville</h2>
+  <div id="villes"></div>
+
+  <h2>Le rapport à me renvoyer</h2>
+  <p class="note" style="margin-top:0"><b>C'est le but de cette page.</b> Au lieu de me réenvoyer trente images, tu copies ce texte et tu me le colles. J'ai tout ce qu'il me faut pour travailler sans que tu aies à repêcher un seul fichier.</p>
+  <textarea id="rapport" readonly></textarea>
+</section>
+
+<section>
+  <p class="note"><b>Ce que la page vérifie vraiment.</b> Existence, largeur, hauteur, poids réel envoyé par le serveur, et luminance moyenne mesurée dans un canvas. Elle sait aussi quels fichiers le code appelle et lesquels dorment sans servir — cette liste est écrite en dur ici, d'après une lecture de <i>lingo.html</i> ; si le code change, elle vieillit.</p>
+
+  <p class="note"><b>Ce qu'elle ne peut PAS savoir.</b> Elle ne peut pas dire si une image a été cuite. Rien dans un fichier ne le dit, et deux fichiers de même nom sont indistinguables. La colonne luminance aide seulement à repérer une carte qui sort du lot par rapport aux autres. <b>La seule façon de rendre l'état lisible pour toujours, c'est de donner un nom différent aux images cuites.</b></p>
+
+  <p class="note"><b>Une précaution que j'ai prise.</b> Mesurer 31 images de 900 × 1200 en même temps ferait exactement planter l'onglet — c'est le bug qu'on répare. Les images sont donc décodées <b>deux à la fois</b>, dessinées dans un canvas minuscule, puis relâchées immédiatement.</p>
+</section>
+
+<script>
+/* ==================================================================
+   Les 31 villes, dans l'ordre du voyage (ETAPES de lingo.html).
+   ================================================================== */
+var VILLES = [
+ ["labaule","La Baule"],["maurice","Le Morne"],["connemara","Connemara"],
+ ["newmarket","Newmarket"],["lambourn","Lambourn"],["walsall","Walsall"],
+ ["aberystwyth","Aberystwyth"],["windsor","Windsor"],["hickstead","Hickstead"],
+ ["badminton","Badminton"],["burghley","Burghley"],["kildare","Kildare"],
+ ["edimbourg","Édimbourg"],["saumur","Saumur"],["lamotte","Lamotte-Beuvron"],
+ ["golega","Golegã"],["jerez","Jerez"],["seville","Séville"],["vejer","Vejer"],
+ ["oliva","Oliva Nova"],["rome","Rome"],["verone","Vérone"],["warendorf","Warendorf"],
+ ["aachen","Aix-la-Chapelle"],["dubai","Dubaï"],["tokyo","Tokyo"],["tamworth","Tamworth"],
+ ["buenos","Buenos Aires"],["lexington","Lexington"],["santaynez","Santa Ynez"],
+ ["spruce","Spruce Meadows"]
+];
+
+/* Ceux qui ont leur propre vue posee — POSE_PROPRE, lingo.html ~5830 */
+var POSE_PROPRE = {walsall:1, dubai:1, oliva:1};
+
+/* Les familles de fichiers, et si le CODE les appelle.
+   Releve dans lingo.html : `carte-` (vignette destination, carte postale
+   recompense, fonds), `fond-` (repli + sellerie), `objet-` (collection),
+   `pose-` (vue posee, trois villes). `carte-*-vignette` n'apparait
+   NULLE PART dans le code. */
+var FAMILLES = [
+  {cle:"carte",    nom:function(r){ return "carte-"+r+".webp"; },
+   attendu:[900,1200], appele:true,
+   quoi:"la carte postale, dix usages dont la recompense plein ecran"},
+  {cle:"vignette", nom:function(r){ return "carte-"+r+"-vignette.webp"; },
+   attendu:[360,480], appele:false,
+   quoi:"prevue par le SUIVI ligne 219, jamais branchee au code"},
+  {cle:"fond",     nom:function(r){ return "fond-"+r+".webp"; },
+   attendu:null, appele:true,
+   quoi:"le flou de repli, 420 px, cuit dans l'image"},
+  {cle:"objet",    nom:function(r){ return "objet-"+r+".webp"; },
+   attendu:null, appele:true,
+   quoi:"l'objet de collection"}
+];
+
+function S(id){ return document.getElementById(id); }
+function ko(o){ return o==null ? "?" : Math.round(o/1024)+" Ko"; }
+
+var resultats = [];   /* {ref, nom, fichiers:[{...}]} */
+
+/* ------------------------------------------------------------------
+   Une seule interrogation de fichier.
+   HEAD d'abord : existence + poids, sans rien telecharger.
+   Puis, seulement si le fichier existe, un decodage pour connaitre ses
+   dimensions et sa luminance — dessine dans un canvas de 60x80 puis
+   relache tout de suite, pour ne jamais garder plusieurs bitmaps
+   pleine taille en memoire.
+------------------------------------------------------------------- */
+function interroge(url){
+  return fetch(url, {method:"HEAD", cache:"no-store"}).then(function(r){
+    if(!r.ok) return {existe:false};
+    var len = r.headers.get("content-length");
+    return {existe:true, poids: len ? parseInt(len,10) : null};
+  }).catch(function(){
+    return {existe:false, reseau:true};
+  }).then(function(base){
+    if(!base.existe) return base;
+    return new Promise(function(res){
+      var im = new Image();
+      var fini = false;
+      var stop = setTimeout(function(){ if(!fini){ fini=true; im.src=""; res(base); } }, 9000);
+      im.onload = function(){
+        if(fini) return; fini = true; clearTimeout(stop);
+        base.l = im.naturalWidth; base.h = im.naturalHeight;
+        try{
+          var c = document.createElement("canvas");
+          c.width = 60; c.height = 80;
+          var x = c.getContext("2d", {willReadFrequently:true});
+          x.drawImage(im, 0, 0, 60, 80);
+          var d = x.getImageData(0,0,60,80).data, s = 0;
+          for(var k=0;k<d.length;k+=4){
+            s += 0.213*d[k] + 0.715*d[k+1] + 0.072*d[k+2];
+          }
+          base.lum = s / (d.length/4);
+        }catch(e){ /* lecture impossible : on garde le reste */ }
+        im.src = "";           /* relache le bitmap tout de suite */
+        res(base);
+      };
+      im.onerror = function(){
+        if(fini) return; fini = true; clearTimeout(stop);
+        base.casse = true; res(base);
+      };
+      im.src = url;
+    });
+  });
+}
+
+/* deux a la fois, jamais plus */
+function enFile(taches, surAvance){
+  var i = 0, faits = 0, total = taches.length;
+  return new Promise(function(fin){
+    function suivant(){
+      if(i >= total){ if(faits >= total) fin(); return; }
+      var t = taches[i++];
+      t().then(function(){
+        faits++; surAvance(faits, total);
+        if(faits >= total) fin(); else suivant();
+      });
+    }
+    suivant(); suivant();
+  });
+}
+
+S("lancer").addEventListener("click", function(){
+  var b = S("lancer");
+  b.disabled = true; b.textContent = "Contrôle en cours…";
+  resultats = [];
+  var taches = [];
+
+  VILLES.forEach(function(v){
+    var ligne = {ref:v[0], nom:v[1], fichiers:[]};
+    resultats.push(ligne);
+    FAMILLES.forEach(function(F){
+      if(F.cle === "objet" && POSE_PROPRE[v[0]]) {
+        /* ces trois villes ont aussi une pose- propre : on verifie les deux */
+        taches.push(function(){
+          var u = "pose-"+v[0]+".webp";
+          return interroge(u).then(function(r){
+            r.nomFichier = u; r.famille = "pose"; r.appele = true;
+            r.quoi = "vue posee propre (POSE_PROPRE)"; r.attendu = null;
+            ligne.fichiers.push(r);
+          });
+        });
+      }
+      taches.push(function(){
+        var u = F.nom(v[0]);
+        return interroge(u).then(function(r){
+          r.nomFichier = u; r.famille = F.cle; r.appele = F.appele;
+          r.quoi = F.quoi; r.attendu = F.attendu;
+          ligne.fichiers.push(r);
+        });
+      });
+    });
+  });
+
+  enFile(taches, function(f, t){
+    S("jauge").style.width = Math.round(f/t*100) + "%";
+    S("etat").textContent = f + " / " + t + " fichiers interrogés";
+  }).then(function(){
+    b.textContent = "Relancer le contrôle"; b.disabled = false;
+    S("copier").disabled = false;
+    S("etat").textContent = "Contrôle terminé";
+    affiche();
+  });
+});
+
+function affiche(){
+  var ordre = {carte:0, vignette:1, pose:2, fond:3, objet:4};
+  resultats.forEach(function(L){
+    L.fichiers.sort(function(a,b){ return ordre[a.famille] - ordre[b.famille]; });
+  });
+
+  var nCartes=0, nManque=0, nDort=0, poids=0, octetsDecodes=0, anos=[], manquantes=[];
+
+  resultats.forEach(function(L){
+    L.fichiers.forEach(function(f){
+      if(f.existe){
+        if(f.poids) poids += f.poids;
+        if(f.famille === "carte"){
+          nCartes++;
+          if(f.l) octetsDecodes += f.l * f.h * 4;
+        }
+        if(!f.appele) nDort++;
+        if(f.attendu && f.l && (f.l !== f.attendu[0] || f.h !== f.attendu[1])){
+          anos.push({grave:false, t:"<b>"+f.nomFichier+"</b> fait "+f.l+" × "+f.h,
+            s:"les autres de sa famille font "+f.attendu[0]+" × "+f.attendu[1]+
+              ". Elle décode "+(f.l*f.h*4/1048576).toFixed(1)+" Mo au lieu de "+
+              (f.attendu[0]*f.attendu[1]*4/1048576).toFixed(1)+" Mo."});
+        }
+        if(f.casse){
+          anos.push({grave:true, t:"<b>"+f.nomFichier+"</b> répond mais ne s'affiche pas",
+            s:"le serveur le sert, le navigateur n'arrive pas à le décoder. Fichier abîmé ou mauvais format."});
+        }
+      } else if(f.famille === "carte"){
+        nManque++;
+        manquantes.push(L.nom);
+      }
+    });
+  });
+
+  if(manquantes.length){
+    anos.push({grave:true,
+      t:"<b>"+manquantes.length+" carte(s) postale(s) absente(s)</b>",
+      s:manquantes.join(", ") + " — ces villes s'afficheront sur leur dégradé, sans photo."});
+  }
+
+  if(nDort){
+    anos.push({grave:false, t:"<b>"+nDort+" fichiers existent sans être appelés</b>",
+      s:"les carte-*-vignette. Ils occupent le dépôt et ne s'affichent jamais. Le SUIVI ligne 219 prévoyait de les brancher (400 px pour la grille, l'image pleine pour l'album) — ça n'a pas été fait."});
+  }
+
+  var lum = [];
+  resultats.forEach(function(L){
+    L.fichiers.forEach(function(f){
+      if(f.famille==="carte" && f.existe && f.lum!=null) lum.push({ref:L.ref, v:f.lum});
+    });
+  });
+  if(lum.length > 4){
+    var moy = lum.reduce(function(a,b){ return a+b.v; },0) / lum.length;
+    var hauts = lum.filter(function(x){ return x.v > moy*1.35; });
+    if(hauts.length && hauts.length < lum.length/2){
+      anos.push({grave:false,
+        t:"<b>"+hauts.length+" carte(s) nettement plus claire(s) que les autres</b>",
+        s:hauts.map(function(x){ return x.ref+" ("+Math.round(x.v)+")"; }).join(", ")+
+          " — la moyenne est à "+Math.round(moy)+". Ça peut être un choix d'image, ou une image déjà cuite mélangée aux autres. La page ne peut pas trancher."});
+    }
+  }
+
+  var mo = Math.round(octetsDecodes/1048576);
+  S("bilan").innerHTML =
+    '<div class="froid"><b>'+nCartes+'</b><i>cartes présentes sur 31</i></div>'+
+    '<div class="'+(nManque?'chaud':'froid')+'"><b>'+nManque+'</b><i>cartes absentes</i></div>'+
+    '<div class="'+(nDort?'tiede':'froid')+'"><b>'+nDort+'</b><i>fichiers qui dorment</i></div>'+
+    '<div class="froid"><b>'+(poids/1048576).toFixed(1)+'</b><i>Mo sur le dépôt</i></div>'+
+    '<div class="'+(mo>=200?'chaud':(mo>=120?'tiede':'froid'))+'"><b>'+mo+
+      '</b><i>Mo si les 31 cartes se décodent d\'un coup</i></div>'+
+    '<div class="'+(anos.length?'tiede':'froid')+'"><b>'+anos.length+'</b><i>anomalies</i></div>';
+
+  if(anos.length){
+    S("hAnos").style.display = "";
+    S("anos").innerHTML = anos.map(function(a){
+      return '<li class="'+(a.grave?'grave':'')+'">'+a.t+'<span>'+a.s+'</span></li>';
+    }).join("");
+  } else {
+    S("hAnos").style.display = "none";
+    S("anos").innerHTML = '<li style="border-left-color:var(--turquoise)">Rien à signaler.<span>Tous les fichiers appelés par le code sont là, aux bonnes dimensions.</span></li>';
+  }
+
+  S("villes").innerHTML = resultats.map(function(L,i){
+    var lignes = L.fichiers.map(function(f){
+      var p = f.existe ? (f.appele ? "ok" : "dort") : "ko";
+      var info = f.existe
+        ? ((f.l ? f.l+"×"+f.h+" · " : "") + ko(f.poids) + (f.lum!=null ? " · lum "+Math.round(f.lum) : ""))
+        : "absent";
+      var badge = "";
+      if(f.existe && !f.appele) badge = '<span class="badge">dort</span>';
+      if(f.existe && f.attendu && f.l && (f.l!==f.attendu[0]||f.h!==f.attendu[1]))
+        badge = '<span class="badge att">taille</span>';
+      if(!f.existe && f.famille==="carte") badge = '<span class="badge mal">manque</span>';
+      return '<div class="f"><span class="pastille '+p+'"></span>'+
+             '<span class="nom">'+f.nomFichier+'</span>'+
+             '<span class="info">'+info+'</span>'+badge+'</div>';
+    }).join("");
+    return '<div class="ville"><div class="tete"><b>'+L.nom+'</b><i>étape '+(i+1)+'</i></div>'+lignes+'</div>';
+  }).join("");
+
+  S("sortie").classList.remove("cache");
+  S("rapport").value = texteRapport(nCartes, nManque, nDort, poids, mo, anos);
+  window.scrollTo(0, 0);
+}
+
+function texteRapport(nCartes, nManque, nDort, poids, mo, anos){
+  var t = [];
+  t.push("CONTROLE DES IMAGES LINGUAE — " + new Date().toISOString().slice(0,16).replace("T"," "));
+  t.push("cartes presentes " + nCartes + "/31 · absentes " + nManque +
+         " · dorment " + nDort + " · depot " + (poids/1048576).toFixed(1) + " Mo · decodage total " + mo + " Mo");
+  t.push("");
+  t.push("ANOMALIES (" + anos.length + ")");
+  if(!anos.length) t.push("  aucune");
+  anos.forEach(function(a){
+    t.push("  - " + a.t.replace(/<[^>]+>/g,"") + " | " + a.s);
+  });
+  t.push("");
+  t.push("DETAIL  (fichier | LxH | poids | luminance | etat)");
+  resultats.forEach(function(L,i){
+    t.push("[" + (i+1) + "] " + L.nom + "  (" + L.ref + ")");
+    L.fichiers.forEach(function(f){
+      t.push("    " + f.nomFichier +
+        " | " + (f.l ? f.l+"x"+f.h : "-") +
+        " | " + ko(f.poids) +
+        " | " + (f.lum!=null ? Math.round(f.lum) : "-") +
+        " | " + (!f.existe ? "ABSENT" : (f.casse ? "ABIME" : (f.appele ? "utilise" : "DORT"))));
+    });
+  });
+  return t.join("\n");
+}
+
+S("copier").addEventListener("click", function(){
+  var z = S("rapport");
+  var b = S("copier");
+  function ok(){ b.textContent = "Copié ✓"; setTimeout(function(){ b.textContent = "Copier le rapport"; }, 2200); }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(z.value).then(ok, manuel);
+  } else manuel();
+  function manuel(){
+    z.removeAttribute("readonly");
+    z.focus(); z.setSelectionRange(0, z.value.length);
+    try{ document.execCommand("copy"); ok(); }
+    catch(e){ b.textContent = "Sélectionne le texte"; }
+    z.setAttribute("readonly","readonly");
+  }
+});
+</script>
+</body>
+</html>
