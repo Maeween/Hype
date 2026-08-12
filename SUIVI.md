@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 120 · STORIES v6 — MODIFIER, LIEUX SUGGÉRÉS, CÔTE À CÔTE) — md5 `7c08f4f3d9e75a485511fa9f19d92e6e`, 9 091 227 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 6`**. Seule modification de l'index : la balise passe en **`?v=6`**. **FICHIER COMPAGNON : `hype-stories.js` v6, md5 `07a2eec91784d5d0bf8bdddea815ae54`, 105 128 octets.** **AUCUN SQL.** ⚠️ La v6 CONTIENT la v5 (correctif du crash du zoom) : si le push v5 n'a pas encore été fait, pousser directement la v6. **MAQUETTE À REGARDER : `maquette-formes-stories.html`** — le choix de la forme (A rond / B icône / C carte / D galet) appartient à Blandine, rien n'est codé sur ce point.
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 121 · STORIES v7 — LA MUSIQUE, ET LES FEUILLES QUI ÉJECTAIENT) — md5 `1b4c5b4d4267051bf1237de1ab082459`, 9 091 227 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 7`**. Seule modification de l'index : la balise passe en **`?v=7`**. **FICHIER COMPAGNON : `hype-stories.js` v7, md5 `e94c039bbff5a5d6db08da6d1d42fc55`, 114 335 octets.** **11 FICHIERS AUDIO NOUVEAUX à pousser à la RACINE du dépôt** (`musique-<ref>.mp3`, ~469 Ko chacun, ~5,1 Mo au total). **UN SQL d'une ligne : `alter table public.hype_stories add column if not exists musique text;`** — repli codé si la colonne manque (la story part sans musique). ⚠️ La v7 contient un correctif de COMPORTEMENT constaté en ligne (les feuilles Modifier/Garder fermaient la visionneuse et éjectaient sur la page).
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 120) :** `index.html` + `hype-stories.js` (v6). AUCUN SQL. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image. **EN ATTENTE DE BLANDINE :** (1) le choix de la forme du bandeau sur la maquette ; (2) la décision à froid sur le bandeau de la page Cavalier visitée (« t'as peut-être raison » n'est pas un feu vert — rien n'a été changé) ; (3) les fichiers de musique libres de droits.
+**À POUSSER, état au 13/08 (session 121) :** `index.html` + `hype-stories.js` (v7) + **les 11 `musique-*.mp3` à la racine**. SQL : la ligne `musique` ci-dessus. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé (optionnel : ajouter une règle de cache pour `/musique-*.mp3` un jour). **EN ATTENTE DE BLANDINE :** le choix de la forme du bandeau (maquette livrée en 120) ; la décision à froid sur le bandeau de la page Cavalier visitée.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,65 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 121 · STORIES v7 — LA MUSIQUE, ET LES FEUILLES QUI ÉJECTAIENT
+
+**Signalement de Blandine (13/08, 01 h 40, enregistrement d'écran)** : « On ne peut pas faire les changements sur les story, ça saute et ça nous sort. » Et dans le même temps, ses 13 fichiers mp3 pour la musique.
+
+### 🔴 LE BUG — LES ÉVÉNEMENTS TACTILES REMONTENT À TRAVERS LES PORTAILS
+
+Vidéo lue image par image : Blandine tape dans le champ du lieu de la feuille « Modifier la story » ; la feuille ET la visionneuse se ferment, elle est éjectée sur la page derrière (celle de Gabrielle).
+
+**Cause** : React fait remonter les événements par l'arbre des **composants**, même quand l'élément est rendu ailleurs dans le DOM par un portail. Les feuilles `ModifierStory` et `ChoixALaUne` vivent dans l'arbre de la visionneuse : chaque toucher sur la feuille atteignait `toucheDebut/Bouge/Fin` — le glissé de fermeture. Taper + un léger déplacement du doigt vers le bas = dy > 110 = `fermer()`. Le composeur de publication, lui, n'était pas touché (il vit dans le bandeau, qui n'écoute pas les glissés).
+
+**Correctif, double ceinture** (les deux, parce qu'une seule serait un pari) :
+1. Les **deux feuilles coupent la remontée tactile à leur racine** (`stopPropagation` sur touchstart/move/end du voile) ;
+2. La **visionneuse n'arme plus jamais le glissé quand une feuille est ouverte** (`enEdition || choix` dans les trois handlers).
+
+Assertions posées sur les deux ceintures, séparément.
+
+### ♪ LA MUSIQUE — 11 MORCEAUX, LICENCE PROPRE
+
+Blandine a fourni 13 mp3 **Pixabay** (licence sans attribution, usage commercial permis). Deux doublons exacts écartés (md5 identiques) → **11 morceaux**. Preuve de provenance, identifiants Pixabay : Hype Beat 576250 · Warriors 571369 · Warriors III 571368 · Trap 455525 · London 583428 · House 583441 · Warehouse 537487 · Rave 564838 · Thunderwave 435383 · Still In My Heart 299668 · My Love 247200. (Le « In My Heart » de Cjbeards vu plus tôt sur YouTube a été **refusé** : licence BreakingCopyright « Free for YouTube » avec crédit obligatoire, pas couverte pour une app — et on ne télécharge jamais depuis YouTube. Blandine a trouvé un équivalent Pixabay.)
+
+**Préparation des fichiers** : extrait de 30 s par morceau (départ à 20 % pour sauter l'intro), fondu d'entrée 1 s / sortie 1,5 s, réencodage 128 kbps → **~469 Ko chacun** au lieu de 2 à 8 Mo. Nommés `musique-<ref>.mp3`, **à la racine du dépôt**. La story stocke la **référence** (colonne `musique`), jamais une URL.
+
+**Dans le composeur** : rangée de puces « ♪ » sous le lieu, « Sans musique » en tête (défaut). Toucher = choisir ET pré-écouter (un seul lecteur, coupé au changement, à la publication, au démontage).
+
+**Dans la visionneuse** : pastille « ♪ nom du morceau » sur la photo, en bas à droite. **JAMAIS d'autoplay — règle iOS, dite à Blandine avant** : le son ne démarre qu'au toucher de la pastille, boucle pendant la story (extrait 30 s ≥ story 20 s max), **suit la pause du minuteur** (doigt posé, « voir plus », feuille ouverte = musique suspendue), et **se coupe au changement de story et à la fermeture**. Asserté : le rendu ne crée aucun lecteur audio.
+
+**SQL, une ligne** : `alter table public.hype_stories add column if not exists musique text;` — repli codé si elle manque (story publiée sans musique, comme pour le lieu).
+
+### FONCTIONNEMENT DU HARNAIS — UN DÉCALAGE D'ÉTATS ATTRAPÉ
+
+Le harnais simule les `useState` **par position** : l'ajout des états musique a décalé les indices du composeur, et le test a planté sur `sugLieux`. **C'était le test, pas le code** — réaligné sur l'ordre réel (relevé par script, pas de tête), et l'ordre est désormais documenté en commentaire dans le test. Fragilité connue et acceptée du simulateur positionnel ; le jour où elle mord une troisième fois, on passera le simulateur sur des états nommés.
+
+### À L'ÉCRAN
+
+**+ Une rangée « ♪ La musique »** dans la feuille de publication : « Sans musique » + 11 morceaux, pré-écoute au toucher.
+**+ Une pastille son** sur les stories qui portent une musique — le son ne démarre qu'en la touchant, jamais seul.
+**~ Modifier une story et « Garder » ne font plus sauter la visionneuse** — le bug de l'enregistrement de Blandine.
+**~ Le témoin** passe de `stories 6` à `stories 7`.
+**− Rien ne disparaît.**
+
+### VÉRIFICATIONS
+
+- `node --check` : 16/16 blocs inline + le module. **95 assertions vertes** + 13 mentions.
+- Nouvelles (20) : bibliothèque de 11, url refusée sur référence inconnue, puces du composeur, pastille présente/absente selon la story, **zéro lecteur audio créé au rendu**, ceinture tactile des deux feuilles, glissé désarmé dans les trois handlers, son coupé au changement, boucle active.
+- Rendu réel non vérifié (domaine fermé aux robots) : **le test qui compte est le geste exact de la vidéo — modifier le lieu d'une story en tapant longtemps.**
+
+### INCIDENTS
+
+Un, mineur et sans dégât : l'insertion du bloc musique a d'abord **échoué proprement** (ancre `sugLieux` présente deux fois depuis que ModifierStory existe) — le script a refusé d'écrire, reprise avec une ancre unique (`mentionRes`). C'est le garde-fou d'unicité qui a fait son travail, comme en session 116.
+
+### Préparation Flutter (session 121)
+
+- **La leçon des portails est structurelle** : toute feuille posée par-dessus une surface à gestes doit couper la remontée tactile à sa racine. Consignée en commentaire dans les deux feuilles ; à reproduire pour toute feuille future.
+- `hsUrlMusique`/`hsNomMusique` : la bibliothèque est une **table de références**, pas des URL en dur — le stockage Supabase ne connaît que `"warriors"`, le client décide où vivent les fichiers. Portable tel quel.
+- Le contrat de données passe à **13 fonctions** (`hsPublierStory` étendu, mêmes replis).
+- Reste à moderniser : inchangé, plus la fragilité positionnelle du simulateur d'états du harnais (à passer en états nommés à la troisième morsure).
 
 ---
 

@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "6";
+var HYPE_STORIES_VERSION = "7";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -92,6 +92,39 @@ var HS_CARTE_L = 116;
 var HS_CARTE_H = 145;
 /* Nom de l'album de destination des souvenirs (DÉDUCTION DE CLAUDE — À VALIDER). */
 var HS_ALBUM_NOM = "Mes stories";
+
+/* ---------------------------------------------------------------------------
+   LA BIBLIOTHÈQUE MUSICALE (13/08)
+   11 extraits de 30 s choisis et fournis par Blandine, tous issus de Pixabay
+   (licence sans attribution, usage commercial permis — identifiants Pixabay
+   consignés au SUIVI comme preuve de provenance). Fichiers à la RACINE du
+   dépôt, nommés `musique-<ref>.mp3`, 128 kbps, fondu d'entrée/sortie.
+   La story stocke la RÉFÉRENCE (colonne `musique`), jamais une URL : si les
+   fichiers déménagent un jour, une seule constante à changer.
+   RÈGLE iOS : le son ne démarre JAMAIS seul — pastille à toucher. Dit à
+   Blandine avant qu'elle choisisse, c'est une contrainte d'Apple. */
+var HS_MUSIQUES = [
+  { ref: "hype-beat",   nom: "Hype Beat" },
+  { ref: "warriors",    nom: "Warriors" },
+  { ref: "warriors-3",  nom: "Warriors III" },
+  { ref: "trap",        nom: "Trap" },
+  { ref: "london",      nom: "London" },
+  { ref: "house",       nom: "House" },
+  { ref: "warehouse",   nom: "Warehouse" },
+  { ref: "rave",        nom: "Rave" },
+  { ref: "thunderwave", nom: "Thunderwave" },
+  { ref: "in-my-heart", nom: "Still In My Heart" },
+  { ref: "my-love",     nom: "My Love" }
+];
+function hsUrlMusique(ref) {
+  if (!ref) return null;
+  var ok = HS_MUSIQUES.some(function (m) { return m.ref === ref; });
+  return ok ? ("musique-" + ref + ".mp3") : null;
+}
+function hsNomMusique(ref) {
+  var m = HS_MUSIQUES.filter(function (x) { return x.ref === ref; })[0];
+  return m ? m.nom : "";
+}
 
 /* ---------------------------------------------------------------------------
    0. L'IMAGE ADAPTÉE À L'ÉCRAN — LE CORRECTIF DU CRASH DU 13/08
@@ -166,7 +199,7 @@ function hsMarquerVue(id) {
    via le système d'identifications existant. Un tag qui échoue ne fait pas
    échouer la publication : la story est déjà en ligne, on ne la perd pas
    pour un nom mal enregistré. */
-async function hsPublierStory(fichier, legende, lieu, tags) {
+async function hsPublierStory(fichier, legende, lieu, tags, musique) {
   try {
     if (typeof supa === "undefined" || !supa) return { data: null, error: "indisponible" };
     var user = await utilisateurActuel();
@@ -188,14 +221,16 @@ async function hsPublierStory(fichier, legende, lieu, tags) {
     };
     var lieuNet = (lieu ? String(lieu).trim().slice(0, HS_LIEU_MAX) : "");
     if (lieuNet) ligne.lieu = lieuNet;
+    if (musique && hsUrlMusique(musique)) ligne.musique = musique;
 
     var res = await supa.from("hype_stories").insert(ligne).select().single();
     if (res && res.error) {
       /* Repli : si la colonne `lieu` n'existe pas encore en base (SQL de la
          v2 pas repassé), on republie sans le lieu plutôt que d'échouer. Le
          message est explicite pour que l'oubli se voie. */
-      if (lieuNet) {
+      if (lieuNet || ligne.musique) {
         delete ligne.lieu;
+        delete ligne.musique;
         var res2 = await supa.from("hype_stories").insert(ligne).select().single();
         if (res2 && !res2.error) return { data: res2.data, error: null, lieuIgnore: true };
       }
@@ -654,6 +689,8 @@ var HS_TXT = {
   uneIntrouvable: { fr: "\u00c0 la une introuvable.", en: "Highlight not found.", es: "Destacada no encontrada.", it: "In evidenza non trovata.", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002", de: "Highlight nicht gefunden." },
   videUne: { fr: "Aucune \u00e0 la une pour l'instant.", en: "No highlight yet.", es: "Sin destacadas por ahora.", it: "Nessuna in evidenza per ora.", ja: "\u307e\u3060\u30cf\u30a4\u30e9\u30a4\u30c8\u306f\u3042\u308a\u307e\u305b\u3093\u3002", de: "Noch keine Highlights." },
   astuceArobase: { fr: "Tape @ pour identifier un cavalier.", en: "Type @ to tag a rider.", es: "Escribe @ para etiquetar a un jinete.", it: "Digita @ per taggare un cavaliere.", ja: "@\u3092\u5165\u529b\u3057\u3066\u9a0e\u624b\u3092\u30bf\u30b0\u4ed8\u3051", de: "Tippe @, um einen Reiter zu markieren." },
+  musiqueTitre: { fr: "La musique", en: "Music", es: "La m\u00fasica", it: "La musica", ja: "\u97f3\u697d", de: "Die Musik" },
+  sansMusique: { fr: "Sans musique", en: "No music", es: "Sin m\u00fasica", it: "Senza musica", ja: "\u97f3\u697d\u306a\u3057", de: "Ohne Musik" },
   modifier: { fr: "Modifier", en: "Edit", es: "Editar", it: "Modifica", ja: "\u7de8\u96c6", de: "Bearbeiten" },
   modifierTitre: { fr: "Modifier la story", en: "Edit the story", es: "Editar la story", it: "Modifica la story", ja: "\u30b9\u30c8\u30fc\u30ea\u30fc\u3092\u7de8\u96c6", de: "Story bearbeiten" },
   enregistrer: { fr: "Enregistrer", en: "Save", es: "Guardar", it: "Salva", ja: "\u4fdd\u5b58", de: "Speichern" },
@@ -885,6 +922,30 @@ function ComposeurStory(props) {
   var tgS = React.useState([]), tags = tgS[0], setTags = tgS[1];
   var cuS = React.useState(0), curseur = cuS[0], setCurseur = cuS[1];
   var mrS = React.useState([]), mentionRes = mrS[0], setMentionRes = mrS[1];
+  var muS = React.useState(null), musique = muS[0], setMusique = muS[1];
+  var ecS = React.useState(null), ecoute = ecS[0], setEcoute = ecS[1];
+  var audioRef = React.useRef(null);
+
+  /* Pré-écoute d'un morceau dans le composeur. Un seul lecteur, coupé au
+     changement de piste, à la publication et au démontage — jamais deux sons
+     en même temps. Le play() part d'un toucher : la règle iOS est respectée. */
+  function preEcouter(ref) {
+    try {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+      if (!ref || ecoute === ref) { setEcoute(null); return; }
+      var url = hsUrlMusique(ref);
+      if (!url || typeof Audio === "undefined") { setEcoute(null); return; }
+      var a = new Audio(url);
+      a.loop = false;
+      audioRef.current = a;
+      a.play().catch(function () { });
+      setEcoute(ref);
+      a.onended = function () { setEcoute(null); };
+    } catch (e) { setEcoute(null); }
+  }
+  React.useEffect(function () {
+    return function () { try { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } } catch (e) { } };
+  }, []);
   var slS = React.useState([]), sugLieux = slS[0], setSugLieux = slS[1];
   var corpsRef = React.useRef(null);
   var vivantRef = React.useRef(true);
@@ -991,7 +1052,8 @@ function ComposeurStory(props) {
     if (busy) return;
     setBusy(true);
     try {
-      var r = await hsPublierStory(props.fichier, legende, lieu, tags);
+      try { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } } catch (eA) { }
+      var r = await hsPublierStory(props.fichier, legende, lieu, tags, musique);
       setBusy(false);
       if (r && r.error) { if (props.onEchec) props.onEchec(); return; }
       if (props.onPublie) props.onPublie(!!(r && r.lieuIgnore));
@@ -1100,6 +1162,28 @@ function ComposeurStory(props) {
           : null,
 
         /* --- LES TAGS --- */
+        /* --- LA MUSIQUE (13/08, fichiers Pixabay fournis par Blandine) ---
+           Toucher une puce = choisir ET pré-écouter. Retoucher la même =
+           désélectionner. « Sans musique » en tête, sélectionné par défaut. */
+        titreBloc("\u266a " + hsT("musiqueTitre", lg)),
+        h("div", { "data-hscroll": "1", style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6, WebkitOverflowScrolling: "touch" } },
+          [h("button", {
+            key: "m0",
+            onClick: function () { preEcouter(null); setMusique(null); },
+            style: { padding: "9px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: musique === null ? 800 : 600, border: "1px solid " + (musique === null ? tA(0.7) : "rgba(255,255,255,0.18)"), background: musique === null ? "rgba(32,217,245,0.12)" : "transparent", color: musique === null ? tn : "#C9D3D8", flex: "0 0 auto", whiteSpace: "nowrap" }
+          }, hsT("sansMusique", lg))].concat(HS_MUSIQUES.map(function (m) {
+            var actif = (musique === m.ref);
+            var joue = (ecoute === m.ref);
+            return h("button", {
+              key: "m" + m.ref,
+              onClick: function () {
+                if (actif) { setMusique(null); preEcouter(null); }
+                else { setMusique(m.ref); preEcouter(m.ref); }
+              },
+              style: { padding: "9px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: actif ? 800 : 600, border: "1px solid " + (actif ? tA(0.7) : "rgba(255,255,255,0.18)"), background: actif ? "rgba(32,217,245,0.12)" : "transparent", color: actif ? tn : "#C9D3D8", flex: "0 0 auto", whiteSpace: "nowrap" }
+            }, (joue ? "\u25b6 " : "\u266a ") + m.nom);
+          }))),
+
         titreBloc(hsT("taguerTitre", lg)),
         h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", lineHeight: 1.45, marginBottom: 10 } }, hsT("tagAvis", lg)),
 
@@ -1259,6 +1343,10 @@ function ChoixALaUne(props) {
   return portail(
     h("div", {
       onClick: function () { if (!busy && props.onFermer) props.onFermer(); },
+      /* 13/08 01h40 : même ceinture tactile que ModifierStory (voir là-bas). */
+      onTouchStart: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
+      onTouchMove: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
+      onTouchEnd: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
       style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.9)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
     },
       h("div", {
@@ -1356,6 +1444,13 @@ function ModifierStory(props) {
   return portail(
     h("div", {
       onClick: function () { if (!busy && props.onFermer) props.onFermer(); },
+      /* 13/08 01h40 : couper la REMONTÉE TACTILE. Sans ça, les touches sur
+         cette feuille atteignaient le glissé de fermeture de la visionneuse
+         (React fait remonter les événements par l'arbre des composants, même
+         à travers un portail) : taper dans un champ fermait la story. */
+      onTouchStart: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
+      onTouchMove: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
+      onTouchEnd: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
       style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.9)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
     },
       h("div", {
@@ -1440,6 +1535,8 @@ function VisionneuseStories(props) {
   var nrS = React.useState(""), nomRange = nrS[0], setNomRange = nrS[1];
   var dpS = React.useState(false), deplie = dpS[0], setDeplie = dpS[1];
   var edS = React.useState(false), enEdition = edS[0], setEnEdition = edS[1];
+  var snS = React.useState(false), sonActif = snS[0], setSonActif = snS[1];
+  var lecteurRef = React.useRef(null);
   var loS = React.useState(null), localMod = loS[0], setLocalMod = loS[1];
   var pauseRef = React.useRef(false);
   var barreRef = React.useRef(null);
@@ -1453,6 +1550,41 @@ function VisionneuseStories(props) {
     story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu });
   }
   var estMoi = !!(groupe && props.moiId && groupe.user_id === props.moiId);
+
+  React.useEffect(function () {
+    return function () { try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current = null; } } catch (e) { } };
+  }, []);
+
+  /* Le son suit la pause du minuteur : feuille ouverte ou doigt posé =
+     musique suspendue, reprise au relâcher. Piloté par la boucle rAF. */
+  function synchroniserSon() {
+    try {
+      var a = lecteurRef.current;
+      if (!a) return;
+      if (pauseRef.current && !a.paused) a.pause();
+      else if (!pauseRef.current && a.paused && sonActifRef.current) a.play().catch(function () { });
+    } catch (e) { }
+  }
+  var sonActifRef = React.useRef(false);
+  React.useEffect(function () { sonActifRef.current = sonActif; }, [sonActif]);
+
+  function basculerSon() {
+    try {
+      var ref = story && story.musique;
+      var url = ref ? hsUrlMusique(ref) : null;
+      if (!url || typeof Audio === "undefined") return;
+      if (sonActif) {
+        if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current = null; }
+        setSonActif(false);
+        return;
+      }
+      var a = new Audio(url);
+      a.loop = true;   /* l'extrait fait 30 s, une story jusqu'à 20 s : la boucle couvre tout */
+      lecteurRef.current = a;
+      a.play().catch(function () { });
+      setSonActif(true);
+    } catch (e) { }
+  }
 
   function fermer() { if (props.onFermer) props.onFermer(); }
 
@@ -1486,6 +1618,11 @@ function VisionneuseStories(props) {
     setDeplie(false);
     setEnEdition(false);
     pauseRef.current = false;
+    /* Le son ne survit pas au changement de story : chaque photo a le sien
+       (ou n'en a pas). Le choix d'écoute reste à refaire — règle iOS : on ne
+       relance jamais un son sans geste. */
+    try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current = null; } } catch (eSn) { }
+    setSonActif(false);
     if (!story) return;
     if (!estAlbum && story.photo_url && typeof hsTagsDeStory === "function") {
       hsTagsDeStory(story.photo_url).then(function (r) {
@@ -1508,6 +1645,7 @@ function VisionneuseStories(props) {
     var debut = Date.now(); var reste = duree; var raf = 0; var vivant = true;
     function boucle() {
       if (!vivant) return;
+      synchroniserSon();
       if (pauseRef.current) {
         debut = Date.now() - (duree - reste);
         raf = requestAnimationFrame(boucle);
@@ -1548,6 +1686,9 @@ function VisionneuseStories(props) {
 
   function toucheDebut(e) {
     try {
+      /* 13/08 01h40 : une feuille ouverte (Modifier, Garder) = AUCUN glissé,
+         même si une remontée tactile passait la ceinture des feuilles. */
+      if (enEdition || choix) { glisseRef.current.actif = false; return; }
       pauseRef.current = true;
       /* CORRECTIF DU 13/08 : le glissé de fermeture ne s'arme qu'à UN doigt.
          Avant, un pincement de zoom était pris pour un glissé — c'est le
@@ -1560,6 +1701,7 @@ function VisionneuseStories(props) {
   }
   function toucheBouge(e) {
     try {
+      if (enEdition || choix) { glisseRef.current.actif = false; return; }
       if (e.touches && e.touches.length > 1) { glisseRef.current.actif = false; if (boiteRef.current) boiteRef.current.style.transform = "translateY(0px)"; return; }
       if (!glisseRef.current.actif) return;
       var t = e.touches && e.touches[0];
@@ -1570,6 +1712,7 @@ function VisionneuseStories(props) {
   }
   function toucheFin(e) {
     try {
+      if (enEdition || choix) { glisseRef.current.actif = false; return; }
       pauseRef.current = false;
       var dy = 0;
       var t = e.changedTouches && e.changedTouches[0];
@@ -1641,6 +1784,24 @@ function VisionneuseStories(props) {
           : null,
         (typeof PhotoZoomHype === "function" && chargee && !erreur)
           ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })
+          : null,
+        /* La pastille son : n'apparaît que si la story porte une musique.
+           JAMAIS d'autoplay (règle iOS) : c'est elle qu'on touche pour lancer
+           la boucle, la retoucher coupe. Elle respire quand le son joue. */
+        (story.musique && hsUrlMusique(story.musique))
+          ? h("button", {
+            onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); basculerSon(); },
+            style: {
+              position: "absolute", right: 14, bottom: 14, zIndex: 5,
+              display: "flex", alignItems: "center", gap: 7, padding: "9px 14px",
+              borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700,
+              border: "1px solid " + (sonActif ? tA(0.75) : "rgba(255,255,255,0.25)"),
+              background: sonActif ? "rgba(32,217,245,0.14)" : "rgba(6,7,9,0.72)",
+              color: sonActif ? tnL : "#DCE3E8",
+              boxShadow: sonActif ? ("0 0 18px " + tA(0.3)) : "none",
+              animation: sonActif ? "hsResp 2200ms ease-in-out infinite" : "none"
+            }
+          }, (sonActif ? "\u266b " : "\u266a ") + hsNomMusique(story.musique))
           : null,
         /* L'image de chargement : elle sert à déclencher onLoad/onError (le
            point de départ du minuteur, 114b) puis s'efface derrière
