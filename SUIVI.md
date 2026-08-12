@@ -12,7 +12,11 @@
 
 **Ancienne version (112) — 10/08/2026 (SESSION 112 · LE MEMORY SORT DE L'INDEX) — md5 `3a097c0d18bca58b68472450e4764ef0`, 9083039 octets (8,66 Mo GitHub). Témoin attendu : `reprise 1.2 · baby 112 · memo 1`. Fichiers compagnons : `hype-cours-baby.js` (112, chargé via `?v=112`) + `hype-memory-poney.js` (2, chargé via `?v=2`). **RÈGLE : à chaque livraison d'un de ces fichiers, incrémenter SON témoin interne ET le `?v=` de sa balise dans l'index.** ⚠️ À pousser ensemble : `_headers` (2 règles ajoutées) + `hype-memory-poney.js` + `index.html` + `hype-cours-baby.js` v112 — AUCUNE image à re-téléverser (voir COUVERTURES, ENFIN).**
 
-**Version actuelle de l'index.html : 12/08/2026 (SESSION 113 · PONEY D'OR, LE MEMORY EN CHEMINS DIRECTS, LAG CORRIGÉ) — md5 `17c334b8779dfd615c679e614d4ef161`, 9 087 825 octets.** Témoin attendu : **`reprise 1.6 · baby 112 · memo 4`**. `HYPE_VERSION_APP` 1.2 → **1.6** et balise `hype-memory-poney.js?v=`**4**.
+**Ancienne version (113) — 12/08/2026 (SESSION 113 · PONEY D'OR, LE MEMORY EN CHEMINS DIRECTS, LAG CORRIGÉ) — md5 `17c334b8779dfd615c679e614d4ef161`, 9 087 825 octets. Témoin `reprise 1.6 · baby 112 · memo 4`. ⚠️ CET INDEX N'A JAMAIS ÉTÉ POUSSÉ — son contenu (le préchargement du Memory) est intégralement repris dans le 114 ci-dessous. Ne pas le pousser après le 114.**
+
+**Version actuelle de l'index.html : 12/08/2026 (SESSION 114 · LES STORIES DES CAVALIERS) — md5 `5e79bda3f2759be70e02ba10ffd720a1`, 9 088 624 octets.** Témoin attendu : **`reprise 1.7 · baby 112 · memo 4 · stories 1`**. `HYPE_VERSION_APP` 1.6 → **1.7**. **NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-stories.js`, md5 `376181c1415e5d69370e065f4b8bd5a1`, 40 350 octets, chargé via `?v=1`.** **SQL À PASSER : `hype-stories.sql`.**
+
+**À POUSSER, état au 12/08 (session 114) :** `index.html` + `hype-stories.js` (nouveau). **Puis exécuter `hype-stories.sql` dans Supabase — sans lui, le bandeau reste vide et aucune publication n'est possible.** `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -235,6 +239,94 @@ Vérifié à l'adresse `/sw.js` le 11/08 au soir : le fichier déployé est le *
 ### Linguae — relevé fait en lecture seule le 11/08, AUCUNE modification
 
 `lingo.html` ne contient **aucune** occurrence de `images/` : tout est chargé depuis la racine. Quatre endroits construisent les chemins dynamiquement — `"carte-"+ref+".webp"`, `"fond-"+ref+".webp"`, `"objet-"+ref+".webp"`, `"arrivee-"+ref+".mp4"` — sur 32 villes. Plus 8 images fixes (`carnet-ferme`, `carnet-page`, `fond-lingua`, `fond-newmarket`, `lingua-affiche`, `lingua-langues`, `themes-hero`, `apple-touch-icon-linguae.png`) et 2 vidéos (`ouverture.mp4`, `depart.mp4`). Déplacer Linguae = modifier ces 4 constructions + incrémenter `VER` (actuellement `?v=32`).
+
+---
+
+## SESSION 114 · LES STORIES DES CAVALIERS
+
+**Demande de Blandine (12/08)** : « les stories qui puissent être visibles par tous les cavaliers qu'on connaît et également ceux qu'on ne connaît pas d'ailleurs ». Puis, sur les détails : « j'ai pas trop le temps de regarder ça, pour l'instant je voudrais juste que ce soit en ligne, on verra les détails plus tard », « y a pas assez de cavalier pour qu'on se pose des questions sur la modération », « en ligne partout », « la modération arrivera plus tard ».
+
+### DÉCISIONS DE BLANDINE (ses mots)
+
+| sujet | décision |
+|---|---|
+| audience | **tous les cavaliers, connus et inconnus** |
+| durée de vie | **7 jours** |
+| « garder en souvenir » | **album Hype Memories du cavalier** |
+| emplacement | **Cavalier, Communauté, Club, Écurie** |
+| modération | **plus tard** — « pas assez de cavaliers pour se poser la question » |
+
+### DÉDUCTIONS DE CLAUDE — À VALIDER
+
+Trois points n'ont pas été tranchés par Blandine, faute de temps. Ils sont signalés ici pour être repris à froid :
+
+1. **Sur la page Cavalier, le bandeau est le bandeau GLOBAL**, le même que sur les trois autres pages — et non les stories du cavalier dont on visite la fiche. Lecture littérale de « en ligne partout ». À rediscuter : sur la page d'un cavalier, on vient voir LUI, il serait plus logique de n'y montrer que ses stories.
+2. **Un bouton « Signaler » est présent** dans la visionneuse (table dédiée `hype_stories_signalements`, illisible depuis l'application). Raison : l'App Store refuse un flux de contenu généré par les utilisateurs sans moyen de signalement (guideline 1.2) — et Linguae comme Hype visent l'App Store. Retrait = une ligne dans `hype-stories.js`.
+3. **Le nom de l'album de destination est « Mes stories »**, en dur, non traduit.
+
+### CE QUI EST LIVRÉ
+
+**`hype-stories.js` (nouveau fichier compagnon, v1)** — helpers de données + trois composants. Pourquoi pas dans l'index : doctrine Flutter, une fonctionnalité neuve se pose dans une architecture plus propre que l'existant, et l'index fait déjà 8,7 Mo. Le module est autonome (ses données, ses composants, ses six langues) et s'emporte tel quel le jour d'une migration.
+
+- `BandeauStories` — un rail horizontal, **un seul composant, quatre appels**. Bouton `+` toujours visible (seul point d'entrée), puis un rond par auteur. Liseré turquoise = non vue, gris froid = déjà vue. Compteur si l'auteur a plusieurs stories.
+- `VisionneuseStories` — plein écran, barres de progression, tap gauche/droite, glissé vers le bas pour fermer, passage automatique à 6 s, pause tant que le doigt est posé.
+- `ComposeurStory` — feuille basse : aperçu, légende (140 caractères), publier.
+
+**Ordre du bandeau** : moi → mon écurie (correspondance par `noyauEcurie`, tolérante) → les cavaliers que je suis → tous les autres. À rang égal, les non vues d'abord. C'est le « en priorité les cavaliers qui les entourent » de la demande initiale : l'ouverture à tous change le PÉRIMÈTRE, pas l'ordre.
+
+**`hype-stories.sql`** — deux tables + RLS + `hype_purge_stories()`. Idempotent.
+
+**`index.html`** — 6 retouches seulement, toutes vérifiées présentes après écriture : la balise du compagnon, quatre appels d'une ligne, le témoin de version.
+
+### DÉCISIONS TECHNIQUES ET PIÈGES ÉVITÉS
+
+- **L'expiration est garantie par la BASE**, pas seulement par le code : la politique de lecture porte `expire_le > now()`. Une story périmée est invisible même par requête directe. La purge ne sert qu'à ne pas laisser gonfler la table.
+- **Les vues sont dans le localStorage, pas en base.** Une table de vues aurait voulu une ligne par cavalier et par story, donc de la RLS et une écriture à chaque ouverture, pour un simple confort d'affichage local. On ne stocke que des identifiants — jamais d'image, règle du projet.
+- **La barre de progression est écrite directement dans le style du DOM**, sans état React : un re-rendu à 60 images par seconde tuerait l'onglet sur iPhone. Leçon déjà payée sur ce projet (zoom photo, session 92 bis).
+- **Aucun `setPointerCapture`** : c'était une des causes du blocage de défilement Android. Le glissé de fermeture est en événements touch simples.
+- **Règle « aucun filtre sur les photos »** : la visionneuse pose la photo NUE sur du noir absolu. En-tête au-dessus, légende et actions en dessous, sur surfaces givrées. **Aucun dégradé, aucun voile posé sur l'image** — c'est la raison de cette mise en page, et pas un choix de commodité. Les zones de navigation gauche/droite sont transparentes.
+- **Filtre `blocages` à la lecture**, dans les deux sens, en deux requêtes pour toute la liste (et non un aller-retour par auteur : le bandeau peut afficher trente cavaliers).
+- **Plafond gratuit de 20 photos par album respecté** pour « garder en souvenir », comme partout ailleurs.
+- **Aucune notification n'est diffusée** à la publication. `hypeDiffusionEcurie` aurait produit un type `story` que la cloche ne sait pas libeller : elle aurait affiché une ligne muette. À brancher le jour où le libellé est écrit en six langues.
+- **Correctif attrapé au test** : la fonction de traduction retombait sur le français quand une valeur est **volontairement vide** (le préfixe « il y a » n'existe pas en anglais ni en japonais) → elle affichait « il y a 2d ago ». Elle teste maintenant la présence de la clé, pas sa valeur.
+
+### CHANGEMENT DE DOCTRINE À ASSUMER
+
+`hype_stories` est **la première table de Hype dont la lecture est ouverte à tout cavalier connecté**. Toutes les tables photo existantes filtrent sur `user_id` ou sur l'écurie. Un visiteur non connecté ne voit rien (rôle `anon` exclu). C'est la conséquence directe de « visibles par tous les cavaliers, connus et inconnus » — signalée à Blandine avant écriture, et assumée par elle.
+
+### POINT LAISSÉ OUVERT
+
+**La purge ne supprime pas le fichier du bucket `photos`.** La ligne part, la photo reste stockée. C'est volontaire : la même URL peut avoir été rangée dans un album souvenir, et supprimer le fichier viderait l'album. Le ménage du bucket est un chantier à part. Conséquence : le stockage grossit de façon monotone tant que ce chantier n'est pas fait.
+
+### À L'ÉCRAN
+
+**+ Un bandeau de stories** en haut de quatre pages : Cavalier (y compris en visite chez un autre cavalier), Communauté, Mon Club, Écurie.
+**+ Un bouton `+`** en tête de ce bandeau (visible même quand il n'y a aucune story).
+**+ Une visionneuse plein écran** et **une feuille basse de publication**.
+**+ Le témoin de version** affiche désormais `· stories 1` à la suite de `memo 4`.
+**− Rien ne disparaît.** Aucun écran, aucun bouton, aucun comportement existant n'est retiré ou déplacé.
+
+### VÉRIFICATIONS
+
+- `node --check` : **16/16 blocs `<script>` inline OK** + `hype-stories.js` OK.
+- Fonctions top-level **912 → 912**, const/var top-level **555 → 555** — aucune perte, aucun ajout parasite. `allerVersGalop` = 3.
+- Taille **9 087 825 → 9 088 624 octets** (+799) : cohérent avec 6 retouches d'une ligne.
+- Les 4 appels sont bien **dans** `EcranCommunaute`, `EcranMonCavalier`, `EcranGuilde`, `EcranEcurie` (remontée au `function Ecran…` précédent, pas une fonction interne).
+- Rendu réel **NON vérifié** : le domaine Netlify bloque l'accès automatisé et le module a besoin de Supabase. Les trois composants ont été construits à blanc sur un React stubbé (arbres produits sans exception, en 6 langues) — ça écarte les fautes de structure, pas les fautes visuelles. **À regarder par Blandine depuis Safari.**
+
+### INCIDENTS DE SESSION
+
+Un seul, corrigé avant livraison : **parenthèse fermante manquante** sur la div extérieure du composeur, attrapée par `node --check` au premier passage. Aucune perte de fichier, aucun échec d'outil, aucun retour arrière.
+
+### Préparation Flutter (session 114)
+
+C'est la première fonctionnalité du projet écrite d'emblée selon la doctrine :
+
+- **Frontière métier nette** : « les stories » sont un domaine à part entière, dans son propre fichier, avec ses propres helpers de données (`hsPublierStory`, `hsListerStories`, `hsSupprimerStory`, `hsGarderEnSouvenir`). Ces cinq signatures sont le **contrat de données** que Flutter réimplémentera à l'identique — c'est déjà un embryon de Repository.
+- **Aucune dépendance dans l'autre sens** : l'index ne connaît du module que `window.BandeauStories`. Les quatre appels sont identiques et testent la présence du module : si `hype-stories.js` n'est pas poussé, les quatre pages s'affichent exactement comme avant au lieu de planter.
+- **Un seul point de vérité pour l'affichage** : quatre pages, un composant. Pas de divergence possible.
+
+Reste à moderniser (liste nommée, sans pourcentage) : Horse (fiche cheval, 3 mécanismes de zoom coexistants), Academy (cours des Galops encore en base64 dans l'index), Community (le fil, trois mécanismes de photo), Hey Baby, les visionneuses photo à extraire en composant autonome, le service worker (celui en ligne est encore celui de retrait).
 
 ---
 

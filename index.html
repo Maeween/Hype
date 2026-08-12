@@ -18747,7 +18747,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-stories.js?v=1"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -20264,6 +20264,8 @@ function EcranCommunaute() {
           tabs.map(function(t,i){ return h("button", { key:i, onClick:(t.go||function(){}), style:{ background:"none", border:"none", display:"flex", flexDirection:"column", alignItems:"center", gap:5, cursor:(t.go?"pointer":"default"), color:"#E4ECEF", opacity:(t.go?1:0.7) } },
             h("span", { style:{ fontSize:19, filter:"drop-shadow(0 1px 3px rgba(10,26,36,0.132))" } }, t.ic),
             h("span", { style:{ fontSize:10, letterSpacing:0.6, textTransform:"uppercase", fontFamily:M } }, t.lab)); }))),
+      /* 12/08 (114) : bandeau des stories. Meme composant sur les 4 pages. */
+      (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
       h(CarteEvenementsC, null),
       h("div", { style:{ padding:"22px 16px 0" } },
          
@@ -24988,6 +24990,8 @@ function EcranMonCavalier() {
             __estVisite ? h("button", { onClick: ouvrirMessageAvecVisite, disabled: messageEnCours, style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(32,217,245,0.2)", border: "1px solid rgba(32,217,245,0.4)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", opacity: messageEnCours ? 0.6 : 1 } }, h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "#20D9F5", strokeWidth: 1.9 }, h("path", { d: "M4 5.5 h16 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H9 l-4 3.5 v-3.5 H4 a1 1 0 0 1-1-1 v-9 a1 1 0 0 1 1-1 z" }))) : null)),
         h("div", { style: { marginTop: 7, fontSize: 13, color: "#AEB8C0", fontStyle: "italic", fontFamily: "Georgia, serif", lineHeight: 1.4 } }, "\u201c" + citation + "\u201d"))),
     !__estVisite ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "inline-flex", alignItems: "center", gap: 6, margin: "12px 16px 0", padding: "6px 12px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 11, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83c\udfc6 " + T("Voir mes qu\u00eates", "See my quests", "Ver mis misiones", "Vedi le mie missioni", "\u30ad\u30fc\u30af\u30b9\u3092\u898b\u308b") + " \u203a") : null,
+    /* 12/08 (114) : bandeau des stories. */
+    (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
     /* 28/07 : alerte « ta photo n est pas visible par les autres » (page profil, non visite). */
     !__estVisite ? h(EncartPhotoInvisible, { T: T, onRemettre: function () { try { if (typeof modifierPhoto === "function") { modifierPhoto(); return; } } catch (e) { } try { var inp = document.querySelector('input[type=file]'); if (inp) inp.click(); } catch (e2) { } } }) : null,
     ((function () {
@@ -25843,6 +25847,8 @@ function EcranGuilde() {
           h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6"))) : null),
       peutEditerBanniere ? h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", right: 12, width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.28)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" } }, "\uD83D\uDCF7") : null,
       peutEditerBanniere ? h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } }) : null),
+    /* 12/08 (114) : bandeau des stories. */
+    (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
     (AFFICHER_GAMIF_CLUB && ecurieSecondaire && clefClub(ecurieSecondaire) !== clefClub(ecuriePrincipale)) ? h("div", { style: { display: "flex", justifyContent: "center", gap: 8, padding: "12px 16px 0" } },
       [ecuriePrincipale, ecurieSecondaire].map(function (nomE, iE) {
         var actifE = clefClub(monClub) === clefClub(nomE);
@@ -27952,6 +27958,8 @@ function EcranEcurie() {
               h("button", { onClick: function () { setEcran("guilde"); }, style: { marginLeft: 4, padding: "3px 10px", borderRadius: 999, border: "none", background: "rgba(32,217,245,0.9)", color: "#04252A", fontSize: 10.5, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Voir les membres", "See members", "Ver miembros", "Vedi membri", "\u30e1\u30f3\u30d0\u30fc"))) : null,
             h("div", { className: "ev" }, h("span", { className: "d" }), T("Concours ce week-end", "Show this weekend", "Concurso este fin de semana", "Concorso questo weekend", "今週末に競技会")))),
 
+        /* 12/08 (114) : bandeau des stories. */
+        (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
         h(TableauxSpectralHype, { champVoix: "ecurie_voix", champHistoire: "ecurie_histoire", titreCourt: { fr: "La philosophie de l'écurie", en: "The stable's philosophy", es: "La filosofía de la cuadra", it: "La filosofia della scuderia", ja: "厩舎の哲学" }, titreLong: { fr: "L'histoire de l'écurie", en: "The stable's story", es: "La historia de la cuadra", it: "La storia della scuderia", ja: "厩舎の物語" }, editable: true }),
 
         eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬")),
@@ -32234,7 +32242,7 @@ function FilAnnoncesC(){
    OverlayQuoiDeNeuf (1 fois par version) / LienQuoiDeNeuf
    + hypeTexteMulti : annonces Supabase en JSON multilingue
    ============================================================ */
-var HYPE_VERSION_APP = "1.6";
+var HYPE_VERSION_APP = "1.7";
 
 /* --- Annonces multilingues : le texte Supabase peut etre du JSON {fr,en,es,it,ja,de} --- */
 function hypeTexteMulti(txt, langue) {
@@ -32518,7 +32526,7 @@ function LienQuoiDeNeuf(props) {
     className: "qdnlien",
     style: props && props.compte ? { marginTop: 22 } : undefined,
     onClick: function () { ctx.setEcran("quoi-de-neuf"); }
-  }, majM("lien", langue), " \u00B7 ", h("b", null, majM("reprise", langue).toLowerCase() + " " + HYPE_VERSION_APP + " \u00B7 baby " + ((typeof window !== "undefined" && window.COURS_BABY_VERSION) ? window.COURS_BABY_VERSION : "?") + " \u00B7 memo " + ((typeof window !== "undefined" && window.MEMORY_PONEY_VERSION) ? window.MEMORY_PONEY_VERSION : "?")));
+  }, majM("lien", langue), " \u00B7 ", h("b", null, majM("reprise", langue).toLowerCase() + " " + HYPE_VERSION_APP + " \u00B7 baby " + ((typeof window !== "undefined" && window.COURS_BABY_VERSION) ? window.COURS_BABY_VERSION : "?") + " \u00B7 memo " + ((typeof window !== "undefined" && window.MEMORY_PONEY_VERSION) ? window.MEMORY_PONEY_VERSION : "?") + " \u00B7 stories " + ((typeof window !== "undefined" && window.HYPE_STORIES_VERSION) ? window.HYPE_STORIES_VERSION : "?")));
 }
 
 
