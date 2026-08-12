@@ -106,16 +106,50 @@ h2:first-of-type{margin-top:8px}
 
 /* ---------- rails ---------- */
 .rail{margin-bottom:20px}
-.rail .rtitre{display:flex;align-items:baseline;gap:9px;margin-bottom:9px}
-.rail .rtitre b{font-family:'Cinzel',serif;font-weight:500;font-size:13px;
+/* titre sur sa ligne, sous-titre sous lui : la liste des chapitres du
+   rangement thematique est trop longue pour tenir en ligne. */
+.rail .rtitre{margin-bottom:9px}
+.rail .rtitre b{display:block;font-family:'Cinzel',serif;font-weight:500;font-size:14px;
   letter-spacing:.07em;color:var(--blanc)}
-.rail .rtitre span{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--turquoise)}
-.rail .piste{display:flex;gap:9px;overflow-x:auto;padding:1px 16px 3px;
-  margin:0 -16px;-webkit-overflow-scrolling:touch;
+.rail .rtitre span{display:block;font-size:8.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--turquoise);margin-top:4px;line-height:1.5}
+.rail .pisteBoite{position:relative;margin:0 -16px}
+/* le fondu a droite : la seule facon honnete de signaler qu'il y a une
+   suite, une fois que la carte garde la largeur exacte de la grille.
+   Sans lui, il ne depasse que 16 px de la troisieme carte. */
+.rail .pisteBoite::after{content:"";position:absolute;top:0;bottom:3px;right:0;width:26px;
+  pointer-events:none;background:linear-gradient(90deg,rgba(6,7,9,0),var(--noir))}
+.rail .piste{display:flex;gap:11px;overflow-x:auto;padding:1px 16px 3px;
+  -webkit-overflow-scrolling:touch;
   scroll-snap-type:x proximity;scrollbar-width:none}
 .rail .piste::-webkit-scrollbar{display:none}
-.rail .piste .vc{flex:0 0 40vw;max-width:158px;scroll-snap-align:start}
+/* ⚠️ LARGEUR IDENTIQUE A LA GRILLE, decision de Blandine : deux cartes
+   visibles au format actuel. La grille fait 2 colonnes, gap 11, dans un
+   corps a 16 px de marge -> (100vw - 32 - 11) / 2. */
+.rail .piste .vc{flex:0 0 calc((100vw - 43px) / 2);scroll-snap-align:start}
+
+/* selecteur de rangement */
+.modes{display:flex;gap:7px;margin-bottom:16px}
+.modes button{flex:1;background:var(--anthracite);color:var(--gris);
+  border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:10px 4px;
+  font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:500;
+  letter-spacing:.05em}
+.modes button.on{color:var(--turquoise);border-color:rgba(32,217,245,.45);
+  background:rgba(32,217,245,.07)}
+.modes button i{display:block;font-style:normal;font-size:8.5px;color:var(--gris);
+  margin-top:3px;letter-spacing:.02em}
+.modes button.on i{color:rgba(244,247,250,.7)}
+
+/* etat de chargement d'une carte differee */
+.vc.attente .vimg{opacity:0}
+.vc .vimg{transition:opacity .22s ease}
+.vc.attente::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:16px;
+  margin:-8px 0 0 -8px;border-radius:50%;
+  border:1px solid rgba(32,217,245,.25);border-top-color:var(--turquoise);
+  animation:tourne .7s linear infinite}
+@keyframes tourne{to{transform:rotate(360deg)}}
+.compteur{font-size:10px;color:var(--gris);text-align:center;margin:0 0 14px}
+.compteur b{color:var(--turquoise);font-weight:500;font-family:'Cinzel',serif;font-size:13px}
 
 /* ---------- grille (comparaison) ---------- */
 .vgrille{display:grid;grid-template-columns:1fr 1fr;gap:11px}
@@ -219,15 +253,27 @@ h2:first-of-type{margin-top:8px}
 
 <!-- ============ 2. RAILS ============ -->
 <section id="rails">
-  <h2>En rails</h2>
-  <p class="sub">Six rails, l'ordre du voyage conservé. La page passe de <b>3 870 px de haut à 1 520</b> — deux fois et demie plus courte, environ trois rails par écran.</p>
+  <h2>Deux rangements</h2>
+  <p class="sub">Même contenu, deux façons de le ranger. Les cartes gardent <b>la largeur exacte de la grille</b> — 173,5 px sur cet écran : deux visibles, plus le bord de la troisième. La page passe de <b>3 870 px à 2 085</b>.</p>
+
+  <div class="modes">
+    <button class="on" data-mode="region">Par région<i>l'ordre du voyage</i></button>
+    <button data-mode="theme">Par thématique<i>ce qu'on y apprend</i></button>
+  </div>
+
+  <p class="compteur"><b id="cptCharge">0</b> images chargées sur 31 · marge de préchargement <b id="cptMarge">400 px</b></p>
+
   <div id="zoneRails" class="zone"></div>
 
+  <p class="note" id="noteRegion"><b>Par région, l'ordre du voyage est intact.</b> La Baule reste l'étape 1, les numéros montent sans sauter, les heures suivent. Le découpage tombe aux changements de pays.</p>
+
+  <p class="note" id="noteTheme" style="display:none"><b>⚠️ Par thématique, l'ordre du voyage est cassé.</b> Regarde les numéros d'étape : ils sautent. Le Morne est 2 et se retrouve avec Dubaï 25 et Spruce Meadows 31. Les heures ne veulent plus rien dire, et « La Baule est l'étape 1 » n'est plus lisible à l'écran.<br><br>Ce n'est pas un défaut du rangement, c'est un choix de produit : soit l'écran raconte un voyage, soit il propose un catalogue. Les deux se défendent — mais pas en même temps.</p>
+
   <h2>La grille d'aujourd'hui</h2>
-  <p class="sub">Pour comparer : les 31 cartes en grille, telles qu'elles sont maintenant. Compte tes coups de pouce jusqu'en bas.</p>
+  <p class="sub">Pour comparer : les 31 cartes en grille, telles qu'elles sont maintenant.</p>
   <div class="vgrille" id="zoneGrille"></div>
 
-  <p class="note"><b>Le découpage des rails est le mien, à valider.</b> J'ai gardé l'ordre chronologique du voyage — La Baule reste l'étape 1, les heures montent — et coupé aux changements de région. Un autre découpage est possible : par niveau, par chapitre, par continent. C'est ton choix, pas le mien.</p>
+  <p class="note"><b>Les deux découpages sont les miens, à valider.</b> Pour les régions j'ai coupé aux changements de pays. Pour les thématiques j'ai regroupé les chapitres réels des villes — sept familles, de trois à cinq villes chacune. Un autre découpage est possible : par niveau, par difficulté, par continent.</p>
 </section>
 
 <!-- ============ 3. MEMOIRE ============ -->
@@ -250,6 +296,10 @@ h2:first-of-type{margin-top:8px}
     </div>
     <div class="sw" id="swZoom">
       <div class="txt"><b>Pincer pour zoomer ×2</b><i>Le geste qui déclenche le crash</i></div>
+      <div class="bascule"></div>
+    </div>
+    <div class="sw on" id="swMarge">
+      <div class="txt"><b>Marge de préchargement</b><i>Charger 400 px avant que la carte arrive à l'écran</i></div>
       <div class="bascule"></div>
     </div>
   </div>
@@ -311,14 +361,37 @@ var ETAPES = [
  {ref:"spruce",     v:"Spruce Meadows",   nat:"Canada",         ciel:["#0B1420","#8FB4C8"]}
 ];
 
-/* Le decoupage en rails — proposition, ordre du voyage conserve. */
-var RAILS = [
-  {t:"Le départ",           s:"étapes 1 à 3",   n:3},
-  {t:"Les îles",            s:"étapes 4 à 12",  n:9},
-  {t:"L'Écosse et la France",s:"étapes 13 à 15", n:3},
-  {t:"La péninsule",        s:"étapes 16 à 20", n:5},
-  {t:"Le continent",        s:"étapes 21 à 24", n:4},
-  {t:"Le grand large",      s:"étapes 25 à 31", n:7}
+/* ---------------------------------------------------------------
+   DEUX DECOUPAGES. Tous les deux sont des propositions.
+   · region  : l'ordre du voyage est conserve, on coupe aux pays.
+   · theme   : on regroupe par chapitre reel. L'ORDRE EST CASSE.
+   Verifie : 31 villes dans chaque decoupage, aucune en double,
+   aucune oubliee.
+--------------------------------------------------------------- */
+var RAILS_REGION = [
+  {t:"Le départ",             s:"étapes 1 à 3",   refs:["labaule","maurice","connemara"]},
+  {t:"Les îles",              s:"étapes 4 à 12",  refs:["newmarket","lambourn","walsall","aberystwyth","windsor","hickstead","badminton","burghley","kildare"]},
+  {t:"L'Écosse et la France", s:"étapes 13 à 15", refs:["edimbourg","saumur","lamotte"]},
+  {t:"La péninsule",          s:"étapes 16 à 20", refs:["golega","jerez","seville","vejer","oliva"]},
+  {t:"Le continent",          s:"étapes 21 à 24", refs:["rome","verone","warendorf","aachen"]},
+  {t:"Le grand large",        s:"étapes 25 à 31", refs:["dubai","tokyo","tamworth","buenos","lexington","santaynez","spruce"]}
+];
+
+var RAILS_THEME = [
+  {t:"Arriver et s'installer",   s:"l'arrivée · l'écurie · le pansage · en selle · le matériel",
+   refs:["labaule","newmarket","lambourn","aberystwyth","walsall"]},
+  {t:"Connaître le cheval",      s:"le cheval · l'élevage · le haras · le commerce",
+   refs:["connemara","jerez","golega","lexington","verone"]},
+  {t:"Sortir dehors",            s:"la balade · l'endurance · le western · le froid · le horsemanship",
+   refs:["maurice","dubai","tamworth","spruce","santaynez"]},
+  {t:"Travailler et progresser", s:"le dressage · le Cadre Noir · la formation · le poney",
+   refs:["windsor","saumur","warendorf","lamotte"]},
+  {t:"Concourir",                s:"le derby · le concours · le cross · s'engager",
+   refs:["hickstead","badminton","burghley","oliva"]},
+  {t:"Les grands rendez-vous",   s:"la Coupe des Nations · le grand concours · le polo",
+   refs:["rome","aachen","buenos"]},
+  {t:"Parler, soigner, tenir",   s:"les dialogues · la tradition · la présentation · l'intendance · les urgences",
+   refs:["edimbourg","tokyo","seville","vejer","kildare"]}
 ];
 
 var VER = "?v=34";
@@ -458,22 +531,113 @@ dessineTrio();
 })();
 
 /* ---------------- 2. rails ---------------- */
-(function(){
-  var z = S("zoneRails"), k = 0;
-  RAILS.forEach(function(R){
+/* index d'une ville dans ETAPES, pour garder son vrai numero d'etape
+   meme quand le rangement thematique casse l'ordre. */
+var IDX = {};
+ETAPES.forEach(function(e,i){ IDX[e.ref] = i; });
+
+var MARGE = 400;          /* marge de prechargement, en px */
+var charges = {};         /* refs deja chargees */
+var observateur = null;
+
+function majCompteur(){
+  S("cptCharge").textContent = Object.keys(charges).length;
+  S("cptMarge").textContent  = MARGE + " px";
+}
+
+/* Le chargement differe, pour de vrai : l'image n'est posee que quand la
+   carte approche de l'ecran. IntersectionObserver avec root=null tient
+   compte du rognage par les conteneurs qui defilent, donc il marche
+   aussi bien pour le defilement horizontal d'un rail que pour le
+   defilement vertical de la page. */
+function armeObservateur(){
+  if(observateur) observateur.disconnect();
+  observateur = new IntersectionObserver(function(entrees){
+    entrees.forEach(function(x){
+      if(!x.isIntersecting) return;
+      var d = x.target, ref = d.dataset.ref;
+      var e = ETAPES[IDX[ref]];
+      var v = d.querySelector(".vimg");
+      if(v && !v.style.backgroundImage){
+        v.style.backgroundImage =
+          'url("carte-'+ref+'.webp'+VER+'"),url("fond-'+ref+'.webp'+VER+'"),'
+          + 'linear-gradient(160deg,'+e.ciel[0]+','+e.ciel[1]+')';
+      }
+      d.classList.remove("attente");
+      charges[ref] = 1;
+      majCompteur();
+      observateur.unobserve(d);
+    });
+  }, { root:null, rootMargin: MARGE+"px "+MARGE+"px", threshold:0 });
+
+  Array.prototype.forEach.call(document.querySelectorAll("#zoneRails .vc"), function(d){
+    observateur.observe(d);
+  });
+}
+
+/* une carte differee : tout le decor, pas encore la photo */
+function carteDifferee(ref){
+  var i = IDX[ref], e = ETAPES[i];
+  var d = document.createElement("div");
+  d.className = "vc attente";
+  d.dataset.ref = ref;
+  d.innerHTML =
+    '<span class="vimg filtre"></span>'+
+    '<span class="vhalo"></span><span class="vvoile"></span>'+
+    '<span class="vn">'+(i+1)+'</span>'+
+    '<span class="vtitre"><b>'+e.v+'</b><i>'+e.nat+'</i></span>';
+  return d;
+}
+
+var modeRails = "region";
+
+function dessineRails(){
+  var z = S("zoneRails");
+  z.innerHTML = "";
+  charges = {};
+  var jeu = (modeRails === "theme") ? RAILS_THEME : RAILS_REGION;
+
+  jeu.forEach(function(R){
     var bloc = document.createElement("div");
     bloc.className = "rail";
     var ti = document.createElement("div");
     ti.className = "rtitre";
     ti.innerHTML = '<b>'+R.t+'</b><span>'+R.s+'</span>';
     bloc.appendChild(ti);
+
+    var boite = document.createElement("div");
+    boite.className = "pisteBoite";
     var piste = document.createElement("div");
     piste.className = "piste";
-    for(var j=0;j<R.n;j++){ piste.appendChild(carte(ETAPES[k], k)); k++; }
-    bloc.appendChild(piste);
+    R.refs.forEach(function(ref){ piste.appendChild(carteDifferee(ref)); });
+    boite.appendChild(piste);
+    bloc.appendChild(boite);
     z.appendChild(bloc);
+    /* remise a zero du defilement a la creation du rail */
+    piste.scrollLeft = 0;
   });
 
+  S("noteRegion").style.display = (modeRails === "theme") ? "none" : "block";
+  S("noteTheme").style.display  = (modeRails === "theme") ? "block" : "none";
+
+  majCompteur();
+  armeObservateur();
+}
+
+Array.prototype.forEach.call(document.querySelectorAll(".modes button"), function(b){
+  b.addEventListener("click", function(){
+    Array.prototype.forEach.call(document.querySelectorAll(".modes button"), function(x){ x.classList.remove("on"); });
+    b.classList.add("on");
+    modeRails = b.dataset.mode;
+    dessineRails();
+    window.scrollTo(0,0);
+  });
+});
+
+dessineRails();
+
+/* la grille de comparaison, elle, charge tout d'un coup — comme l'app */
+(function(){
   var g = S("zoneGrille");
   ETAPES.forEach(function(e,i){ g.appendChild(carte(e,i)); });
 })();
@@ -493,6 +657,19 @@ bascule("swRails","rails");
 bascule("swLazy","lazy");
 bascule("swPetit","petit");
 bascule("swZoom","zoom");
+
+/* Celle-ci ne touche pas au compteur : elle change le comportement REEL
+   des rails, pour que la difference se sente au doigt. Marge large = la
+   photo est prete avant qu'on la voie. Marge nulle = elle arrive apres. */
+(function(){
+  var el = S("swMarge"), large = true;
+  el.addEventListener("click", function(){
+    large = !large;
+    el.classList.toggle("on", large);
+    MARGE = large ? 400 : 0;
+    dessineRails();
+  });
+})();
 
 function compte(){
   /* 31 cartes dans la page. Avec le differe, seules celles a l'ecran
