@@ -14,7 +14,11 @@
 
 **Ancienne version (113) — 12/08/2026 (SESSION 113 · PONEY D'OR, LE MEMORY EN CHEMINS DIRECTS, LAG CORRIGÉ) — md5 `17c334b8779dfd615c679e614d4ef161`, 9 087 825 octets. Témoin `reprise 1.6 · baby 112 · memo 4`. ⚠️ CET INDEX N'A JAMAIS ÉTÉ POUSSÉ — son contenu (le préchargement du Memory) est intégralement repris dans le 114 ci-dessous. Ne pas le pousser après le 114.**
 
-**Version actuelle de l'index.html : 12/08/2026 (SESSION 116 · STORIES v3 — CARTES SUR COMMUNAUTÉ, LES À LA UNE) — md5 `9a535785e840b00f9c6765935d5b3013`, 9 089 634 octets.** Témoin attendu : **`reprise 1.7 · baby 112 · memo 4 · stories 3`**. `HYPE_VERSION_APP` reste **1.7**. **FICHIER COMPAGNON : `hype-stories.js` v3, md5 `472ce735c5a67dcce42e038d350c2775`, 74 606 octets, chargé via `?v=3`.** **SQL : celui de la v2 (colonne `lieu`) reste à repasser s'il ne l'a pas été ; la v3 n'ajoute AUCUN SQL — les à la une réutilisent `albums_cheval`.**
+**Version actuelle de l'index.html : 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`, 9 091 227 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 3`**. `HYPE_VERSION_APP` 1.7 → **1.8**. Fichiers compagnons **tous inchangés** : `hype-cours-baby.js` (112), `hype-memory-poney.js` (4), `hype-stories.js` (3) — ne pas les repousser. Aucun SQL, aucune image.
+
+⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
+
+**L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
 **À POUSSER, état au 12/08 (session 116) :** `index.html` + `hype-stories.js` (v3). **SQL : `hype-stories.sql` si la colonne `lieu` n'a pas encore été passée** — repli explicite prévu sinon (la story part sans lieu, avec message à l'écran). Les à la une n'ont besoin de rien en base. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image. **La MUSIQUE est en attente des fichiers de Blandine** (3 à 6 morceaux libres de droits, mp3 ou m4a).
 
@@ -136,6 +140,96 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 117 · LE TIRAGE À GRAINE (12/08)
+
+**Livré : `index.html` seul.** Première brique du Memory à deux, et la seule qui devait obligatoirement se faire **dans** l'index. Tout le reste du duel ira dans un fichier à part.
+
+### Ce que c'est
+
+Deux téléphones doivent afficher **exactement la même grille**. Deux façons de le faire : transmettre la liste des cartes, ou transmettre **un seul nombre** et laisser chaque appareil reconstruire la grille. La seconde est incomparablement plus simple et plus robuste — rien à synchroniser, rien à désynchroniser.
+
+Ajouté juste avant `MemoryPoneyGrille` :
+
+- **`memoryPoneyTirage(graine)`** — générateur mulberry32, déterministe, sans dépendance. **Si la graine est `null` ou `undefined`, il renvoie `Math.random` : le solo se comporte donc exactement comme avant.** Ce n'est pas un générateur cryptographique et il n'a pas à l'être : il mélange des cartes.
+- **`memoryPoneyMelanger(liste, alea)`** — Fisher-Yates qui **ne mute pas** le tableau reçu (`liste.slice()`). Important : les données du Memory viennent de `hype-memory-poney.js` et ne doivent jamais être modifiées en place.
+- `MemoryPoneyGrille` accepte une prop **`graine`**, facultative.
+
+**Détail qui compte** : le choix des paires utilise `graine`, le mélange des cartes utilise `graine + 1`. Sans ça, les deux opérations puiseraient dans la même suite de nombres et les grilles seraient corrélées d'un niveau à l'autre.
+
+### Vérifications faites
+
+- même graine → grille identique, trois fois de suite ;
+- graines différentes → grilles différentes ;
+- sans graine → deux tirages successifs différents (le solo reste aléatoire) ;
+- la liste d'origine n'est jamais modifiée ;
+- répartition sur 60 000 mélanges : les 10 positions sont occupées, entre 5 891 et 6 165 pour 6 000 attendus — le générateur ne favorise aucune carte ;
+- `graine = 0` ne casse pas (replié sur 1, car `0 >>> 0` vaut 0 et casserait la suite) ;
+- `node --check` sur les 16 blocs inline.
+
+### À l'écran
+
+**Rien.** Aucun ajout, aucune suppression, aucun changement de comportement. Une partie solo se déroule exactement comme avant. C'est volontaire : cette brique doit pouvoir être poussée sans risque et vérifiée en jouant normalement.
+
+### Préparation Flutter (session 117)
+
+- **Deux fonctions pures ajoutées**, sans état ni dépendance à React : `memoryPoneyTirage` et `memoryPoneyMelanger`. Transposables en Dart à l'identique, et testables seules.
+- **Le hasard sort du composant.** `MemoryPoneyGrille` ne décide plus de son aléa : il le reçoit. C'est ce qui rendra la grille réutilisable en duel sans la dupliquer.
+- Reste à moderniser, inchangé par ailleurs : les 20 clés `kNNN` du Memory, les 4 blocs inline de déclaration d'images, `EcranUnivers`, G4-G7 vers `hype-cours-galops-sup.js`.
+
+### La suite, dans l'ordre
+
+1. **Le SQL** de la table du duel — testable seule, sans code.
+2. **`hype-memory-duel.js`** — tout le duel dans son fichier, monté dans l'index par une ligne de `<script>` et un point d'accroche gardé, **sur le modèle de `hype-stories.js`**. Décision d'architecture prise par Claude, validée par Blandine (« Oui si tu veux »), pour deux raisons : la surface de collision avec l'autre page tombe à une ligne, et le code naît déjà dans son fichier pour le futur détachement du Baby.
+3. **Le mode coopératif d'abord**, les grilles jumelles ensuite (décision de Blandine : « on peut faire les deux »).
+
+⚠️ **`SPEC-MEMORY-A-DEUX.md` est à refaire** : elle décrit un mode tour par tour que Blandine a écarté (« c'est chiant d'attendre que l'autre joue »). Le modèle de données, les cas de rupture et le tirage à graine y restent valables.
+
+---
+
+## DIRECTION · TROIS APPS AUTONOMES, RELIÉES PAR DES PONTS À SENS UNIQUE (12/08)
+
+> **Section restaurée le 12/08 au soir.** Elle avait été écrite dans le SUIVI puis perdue : la page qui a mené les sessions 114 à 116 travaillait sur une copie antérieure et l'a écrasée sans le savoir. **Ce n'est la faute de personne — c'est le risque structurel de deux pages qui éditent le même fichier en parallèle** (voir l'avertissement en fin de section).
+
+**Décision de Blandine, ses mots** : « Oui ainsi que les galops c'était prévu ainsi », « tout en gardant des ponts comme [il y a] entre linguae et hype », « prépare-toi à l'idée que tout doit être transféré ». Et, dans le même échange : « si c'est trop compliqué, laisse tomber on le fera plus tard ».
+
+**La cible** : Linguae, le Chemin Baby et les Galops deviennent des applications autonomes. Hype reste le salon commun — profil, écurie, communauté — qui donne des nouvelles des trois.
+
+**La règle du pont, celle qui sauve tout** : elle existe déjà entre Linguae et Hype et se généralise telle quelle → **chaque app écrit sa progression dans sa propre table, Hype lit. Jamais l'inverse.** C'est ce qui permet à une app de partir sans que Hype casse. Conséquence acceptée, la même que pour Linguae : un léger décalage d'affichage.
+
+### ⚠️ LE PIÈGE À NE PAS OUBLIER LE JOUR DU DÉTACHEMENT
+
+**Verser dans la nouvelle table ce qui dort déjà dans celle de Hype AVANT de couper le lien.** Dans l'autre ordre, on efface la progression des cavaliers. C'est mot pour mot l'avertissement écrit pour Linguae (SUIVI-LINGUAE session 186), et il vaut pour Baby et pour les Galops.
+
+### DEUX QUESTIONS SANS RÉPONSE, ET ELLES NE POURRONT PLUS ÊTRE REPORTÉES
+
+1. **Le compte.** Trois apps autonomes, mais un enfant ne veut pas trois mots de passe. Compte unique partagé, ou un par app avec rattachement ? C'est la question restée ouverte pour Linguae (« qui s'inscrit depuis Linguae obtient-il un compte Hype complet ? ») ; elle revient au carré.
+2. **Le Premium.** Un seul abonnement pour tout, ou un par app ? Apple prélève sur chaque achat intégré et un parent n'achètera pas trois fois. **Décision commerciale de Blandine.**
+
+### ÉTAT RÉEL DE LA MIGRATION — à lire avant d'affirmer quoi que ce soit
+
+Le 12/08, un malentendu a coûté plusieurs échanges : Blandine pensait le Baby déjà détaché, Claude a répondu « non » sans distinguer les données du code. **Les deux avaient raison sur une moitié.** Le tableau, pour ne plus s'y reprendre :
+
+| | données sorties de l'index | code d'affichage |
+|---|---|---|
+| **Chemin Baby** | ✅ `hype-cours-baby.js` (27 chapitres) + `hype-memory-poney.js` (Memory) | ❌ encore dans `index.html` |
+| **Galops** | ❌ G4–G7 encore dans l'index (`hype-cours-galops-sup.js` reste à créer) | ❌ encore dans `index.html` |
+| **Linguae** | ✅ `lingo.html`, table propre, comptes propres | ✅ séparé |
+| **Stories** | ✅ `hype-stories.js` (sessions 114-116) | ✅ dans son fichier — **le bon modèle à imiter** |
+
+**Le côté données du Baby est donc FAIT.** Ce qui reste dans l'index, ce sont les composants : `MemoryPoneyGrille`, `MemoryPoneyJeu`, `FinCheminBabyCarte`, `PalierBabyCarte`, `QuizEclairGalop`, le vrai/faux. **C'était prévu ainsi** : la doctrine du 02/08 dit de sortir les données d'abord et de ne déplacer le code que **quand on y touche déjà pour une autre raison** — jamais en chantier dédié.
+
+### L'AUTONOMIE COMPLÈTE N'EST PAS LANCÉE
+
+Pas de fichier propre, pas de comptes propres, pas de Premium séparé, pas de soumission App Store. Linguae y travaille depuis des semaines et n'y est pas encore. Priorité de Blandine : **« les enfants attendent pour y jouer »** — donc le Memory à deux d'abord.
+
+### 🔴 AVERTISSEMENT · DEUX PAGES ÉDITENT `index.html` EN PARALLÈLE
+
+Le 12/08, une page a livré les sessions 114 à 116 (les stories) pendant qu'une autre livrait la 113 (Poney d'Or, Memory, lag). **Résultat : une section entière de ce SUIVI a été perdue et a dû être réécrite.** L'index, lui, a tenu par chance — les modifications ne touchaient pas les mêmes lignes.
+
+**Règle à appliquer désormais** : quand deux chantiers avancent en même temps, chacun livre **son propre fichier compagnon** et ne touche à `index.html` que par une ligne de `<script>` et un point de montage gardé (`typeof window.X !== "undefined"`). C'est exactement ce que fait `hype-stories.js`. La surface de collision devient une ligne au lieu de dix mille.
 
 ---
 
@@ -595,6 +689,11 @@ Décision de Blandine : « Mets 6 paires pour obstacle ». Composition finale et
 1. Auditer les 22 clés `kNNN` restantes dans tout l'index, puis les basculer aussi.
 2. Une fois les 98 clés sorties du Memory, **inventorier les lots `hype-images-*.js` devenus inutiles** et les retirer du démarrage : c'est là qu'est le vrai gain de poids, pas dans la conversion elle-même.
 3. Reprendre le niveau Evan si Blandine le décide.
+
+### DEUX DOCUMENTS PRODUITS LE 12/08, À NE PAS PERDRE
+
+- **`SPEC-MEMORY-A-DEUX.md`** — spécification du Memory à deux. ⚠️ **À REFAIRE** : elle est bâtie sur un mode « tour par tour », que Blandine a écarté (« c'est chiant d'attendre que l'autre joue »). Elle a validé **deux modes** : **coopératif sur la même grille** (les deux jouent en même temps, score commun, pas de perdant) puis **grilles jumelles** (chacun la même grille, on voit l'autre avancer). Tout le reste du document reste valable : modèle de données, cas de rupture, tirage à graine.
+- **`PROPOSITIONS-QUIZ-VRAIFAUX.md`** — réécriture complète du Quiz Éclair et du Vrai/Faux, **en français, en attente de validation**. Constats vérifiés dans le code : le vrai/faux a **12 « vrai » sur 14** (un enfant qui tape toujours « vrai » fait 12/14) ; le Quiz Éclair enchaîne en **550 ms** sans qu'on puisse lire, n'a **aucun champ d'explication** dans ses données, retire le cœur au moment exact du changement d'écran, et a **4 bonnes réponses sur 5 en deuxième position**. Les cartes 13 et 14 du vrai/faux sont vides : `k515` et `k516`, avec `src: HYPE_IMGS[carte.src]` **sans garde-fou**. **Il manque à Claude les lots contenant `k503`–`k516`** pour vérifier que chaque énoncé colle à sa photo.
 
 ### PONEY D'OR — LES QUESTIONS « PETIT RAPPEL » (demandé par Blandine, 11/08)
 
@@ -6375,6 +6474,7 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 
 | Date | Page/session | Résumé |
 |------|--------------|--------|
+| 12/08 (117) | Claude (Memory) | **Tirage à graine** posé dans `MemoryPoneyGrille` : `memoryPoneyTirage` (mulberry32, replié sur `Math.random` sans graine) + `memoryPoneyMelanger` (Fisher-Yates sans mutation). Prop `graine` facultative ; paires tirées avec `graine`, cartes avec `graine+1` pour décorréler. **Rien ne change à l'écran, le solo est identique.** Première brique du Memory à deux ; la suite ira dans `hype-memory-duel.js` pour limiter la collision avec la page qui mène les stories. Témoin 1.7 → **1.8**. |
 | 11/08 (113) | Claude (page Memory) | **Fausse alerte des 21 images du Memory levée : zéro perte.** La v1 de l'outil ne lisait pas les 4 blocs `<script>` inline de l'index (boucles `k547-k554`, `k615-k628` + corrections `k455`/`k457`/`k473`/`k474`), d'où 21 faux « SANS_IMAGE ». Le « ? » de la capture Obstacles = carte face cachée. **`extraire-memory-2.html` livré** : diagnostic seul ou avec zip, anti-cache, rejoue les blocs inline, nomme la clé `kNNN` fautive, vérifie en HTTP chaque `images/…`, copie les fichiers déjà externes sans réencodage. **Poney d'Or : les 2 questions « Petit rappel » écrites en 6 langues et livrées** — entrée `poney_or` dans `PALIERS_BABY_QUIZ` (paille/foin `baby-c20`, sens du cure-pied `baby-c23`) + bloc de rendu ajouté à `FinCheminBabyCarte`, Hook déclaré avant le retour anticipé. Témoin `HYPE_VERSION_APP` 1.2 → **1.4**. **MEMORY v3 : 98 des 120 cartes en chemins directs `images/memory-<niveau>-<cle>.webp`** (lot de 9,3 Mo livré), `memo 3`. **Carte `vie-poney/dodo` réparée** : `k610` était déclarée deux fois, l'index la réassignait au bandeau de messagerie de l'Accueil — la carte affichait des bulles de chat. Obstacles gardé à 6 paires avec 3 familles visuelles distinctes (`bravo` → poney noir poing levé, `barre` → bras écartés, libellé « En équilibre » 6 langues). `eau2` réglée avec l'abreuvoir de Matériel : plus AUCUNE carte sans image. Niveau Evan signalé comme trop homogène (k617/k618/k619, k622/k623), non touché. **Puis, le 12/08 : lag du Memory diagnostiqué et corrigé** — la balise `<img>` n'était créée qu'au retournement de la carte, donc le téléchargement commençait au toucher ; préchargement des sources distinctes ajouté au montage de la grille (`useRef` + `decoding async`), témoin 1.5 → **1.6**. **`_headers` complété** : une vingtaine de médias de la racine n'étaient couverts par aucune règle. **`SUIVI-BABY.md` ouvert.** |
 | 17/07 → 26/07 | Claude | "Mon Évolution", Poney d'Or (9/9), écran "Quoi de neuf", réorganisation accueil, bugfixes session/scroll, parrainage. |
 | Session suivante | Claude (Directeur Technique) | Correctif nom d'écurie (`monClubEc`) au lieu du texte en dur "Écurie Feinn". |
