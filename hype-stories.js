@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "3";
+var HYPE_STORIES_VERSION = "5";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -50,7 +50,25 @@ var HS_JOURS = 7;
 var HS_DUREE_MS = HS_JOURS * 24 * 60 * 60 * 1000;
 /* Défilement automatique d'une story dans la visionneuse. */
 var HS_DUREE_VUE_MS = 6000;
-var HS_LEGENDE_MAX = 140;
+/* 12/08 (117) : la légende passe de 140 à 1000 caractères (décision de
+   Blandine — sa phrase sur les obstacles neufs était coupée). AUCUN SQL : la
+   colonne `legende` est un `text` Postgres, sans limite ; les 140 étaient un
+   plafond posé côté application, et rien d'autre. */
+var HS_LEGENDE_MAX = 1000;
+/* Au-delà de ce nombre de caractères, la légende est repliée sur 3 lignes
+   derrière un « voir plus », et la durée d'affichage s'allonge. */
+var HS_LEGENDE_REPLI = 180;
+/* Durée : 6 s de base, plus 1 s par tranche de 90 caractères, plafonnée à
+   20 s. Décision de Blandine : « les deux » — la durée s'allonge ET le texte
+   se replie derrière un « voir plus » qui met le minuteur en pause. */
+function hsDureeStory(story) {
+  try {
+    var n = ((story && story.legende) || "").length;
+    if (n <= HS_LEGENDE_REPLI) return HS_DUREE_VUE_MS;
+    var sup = Math.ceil((n - HS_LEGENDE_REPLI) / 90) * 1000;
+    return Math.min(HS_DUREE_VUE_MS + sup, 20000);
+  } catch (e) { return HS_DUREE_VUE_MS; }
+}
 /* Lieu volontairement court : un nom de club ou de ville, pas une adresse. */
 var HS_LIEU_MAX = 60;
 /* Taille des ronds. 104 px = 3 ronds visibles sur un iPhone. Blandine a
@@ -74,6 +92,37 @@ var HS_CARTE_L = 116;
 var HS_CARTE_H = 145;
 /* Nom de l'album de destination des souvenirs (DÉDUCTION DE CLAUDE — À VALIDER). */
 var HS_ALBUM_NOM = "Mes stories";
+
+/* ---------------------------------------------------------------------------
+   0. L'IMAGE ADAPTÉE À L'ÉCRAN — LE CORRECTIF DU CRASH DU 13/08
+   Blandine, première story, tentative de zoom : « toute plante encore une
+   fois ». Safari affichait « un problème récurrent est survenu » = onglet tué
+   par iOS faute de mémoire, pas une erreur JS.
+   CAUSE : la visionneuse chargeait la photo EN PLEINE RÉSOLUTION (une photo
+   d'iPhone fait 4000×3000, ~45 Mpx décodés) + préchargeait la SUIVANTE en
+   pleine résolution + le zoom n'existait pas (deux doigts = glissé de
+   fermeture). Même mécanique exacte que le crash du zoom photo de la session
+   92. La leçon était payée, l'outil existait (vignetteHype, plan Pro actif),
+   je ne l'avais pas utilisé : faute de ma part, consignée au SUIVI.
+   RÈGLE POSÉE : dans les stories, AUCUNE image ne se charge en résolution
+   d'origine. Tout passe par la transformation serveur, bornée à la taille de
+   l'écran, avec le repli existant sur l'original si elle échoue (replierVignette). */
+function hsImageEcran(u) {
+  try {
+    if (typeof vignetteHype !== "function") return u;
+    var dpr = 2;
+    try { dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1)); } catch (eD) { }
+    var L = 800, H = 1200;
+    try {
+      L = Math.min(1080, Math.round(window.innerWidth * dpr));
+      H = Math.min(1600, Math.round(window.innerHeight * dpr));
+    } catch (eW) { }
+    var v = vignetteHype(u, L, H);
+    /* resize=cover recadrerait la photo — interdit. On repasse en contain :
+       toute la photo, dans la boîte demandée. */
+    return String(v).replace("resize=cover", "resize=contain");
+  } catch (e) { return u; }
+}
 
 /* ---------------------------------------------------------------------------
    1. LES VUES — dans le localStorage, PAS en base.
@@ -183,6 +232,79 @@ async function hsSignalerStory(id, motif) {
       story_id: id, signale_par: user.id, motif: String(motif || "").slice(0, 500)
     });
   } catch (e) { return { error: String(e) }; }
+}
+
+/* ---------------------------------------------------------------------------
+   LES MENTIONS @ DANS LE TEXTE
+   Demande de Blandine du 12/08 : « on fait comment pour identifier qqun dans
+   le texte ? ». Elle écrivait « merci Ilona Delph Ambre » à la main.
+
+   AUCUNE TABLE : une mention est un tag comme un autre, enregistré dans
+   `identifications` par `photo_url`. Le cycle attente → accepté est donc déjà
+   là, sans une ligne de mécanisme à écrire.
+
+   RÈGLE D'AFFICHAGE (décision de Blandine) : le texte s'affiche TEL QU'ELLE
+   L'A ÉCRIT — on ne censure pas sa phrase — mais le LIEN vers le profil ne
+   s'active qu'une fois la personne d'accord. Avant l'accord, « @Ilona » est
+   du texte simple ; après, c'est un mot turquoise sur lequel on touche.
+
+   LIMITES ASSUMÉES, à connaître :
+   - si la personne change de pseudo plus tard, le texte garde l'ancien ;
+   - une mention ne marche que pour un cavalier inscrit sur Hype ; un prénom
+     écrit à la main reste du texte, ce qui est le comportement voulu.
+--------------------------------------------------------------------------- */
+
+/* Repère une mention en cours de frappe : « @ » suivi de lettres, collé à la
+   fin du texte saisi. Renvoie { debut, terme } ou null.
+   Les accents et le tiret sont acceptés (Anne-Sophie, Inès). */
+function hsMentionEnCours(texte, position) {
+  try {
+    var t = String(texte || "");
+    var p = (typeof position === "number") ? position : t.length;
+    var avant = t.slice(0, p);
+    var m = avant.match(/@([A-Za-z0-9\u00C0-\u024F_.\-]*)$/);
+    if (!m) return null;
+    return { debut: avant.length - m[0].length, terme: m[1] || "" };
+  } catch (e) { return null; }
+}
+
+/* Remplace la mention en cours par « @pseudo » et rend le texte complet. */
+function hsInsererMention(texte, position, pseudo) {
+  try {
+    var t = String(texte || "");
+    var p = (typeof position === "number") ? position : t.length;
+    var m = hsMentionEnCours(t, p);
+    if (!m) return t;
+    var propre = String(pseudo || "").replace(/\s+/g, "");
+    return t.slice(0, m.debut) + "@" + propre + " " + t.slice(p);
+  } catch (e) { return texte; }
+}
+
+/* Découpe une légende en morceaux : { texte } ou { mention, tag }.
+   `tags` est la liste des identifications de la story. Une mention n'est
+   reliée à un profil que si elle correspond à un tag ACCEPTÉ. */
+function hsDecouperLegende(legende, tags) {
+  var out = [];
+  try {
+    var t = String(legende || "");
+    if (!t) return out;
+    var accepte = {};
+    (tags || []).forEach(function (x) {
+      if (x && x.statut === "accepte" && x.cible_nom) {
+        accepte[String(x.cible_nom).replace(/\s+/g, "").toLowerCase()] = x;
+      }
+    });
+    var re = /@([A-Za-z0-9\u00C0-\u024F_.\-]+)/g;
+    var dernier = 0; var m;
+    while ((m = re.exec(t)) !== null) {
+      if (m.index > dernier) out.push({ texte: t.slice(dernier, m.index) });
+      var cle = String(m[1]).toLowerCase();
+      out.push({ mention: m[0], tag: accepte[cle] || null });
+      dernier = m.index + m[0].length;
+    }
+    if (dernier < t.length) out.push({ texte: t.slice(dernier) });
+  } catch (e) { return [{ texte: String(legende || "") }]; }
+  return out;
 }
 
 /* Les tags posés SUR une story. La table `identifications` est indexée par
@@ -426,6 +548,10 @@ try {
     window.hsSignalerStory = hsSignalerStory;
     window.hsGarderEnSouvenir = hsGarderEnSouvenir;
     window.hsTagsDeStory = hsTagsDeStory;
+    window.hsMentionEnCours = hsMentionEnCours;
+    window.hsInsererMention = hsInsererMention;
+    window.hsDecouperLegende = hsDecouperLegende;
+    window.hsDureeStory = hsDureeStory;
     window.hsListerALaUne = hsListerALaUne;
     window.hsMesALaUnePourRanger = hsMesALaUnePourRanger;
     window.hsMarquerVue = hsMarquerVue;
@@ -470,6 +596,9 @@ var HS_TXT = {
   rangee: { fr: "Rang\u00e9e dans ", en: "Saved to ", es: "Guardada en ", it: "Salvata in ", ja: "\u4fdd\u5b58\u3057\u307e\u3057\u305f\uff1a", de: "Gespeichert in " },
   uneIntrouvable: { fr: "\u00c0 la une introuvable.", en: "Highlight not found.", es: "Destacada no encontrada.", it: "In evidenza non trovata.", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002", de: "Highlight nicht gefunden." },
   videUne: { fr: "Aucune \u00e0 la une pour l'instant.", en: "No highlight yet.", es: "Sin destacadas por ahora.", it: "Nessuna in evidenza per ora.", ja: "\u307e\u3060\u30cf\u30a4\u30e9\u30a4\u30c8\u306f\u3042\u308a\u307e\u305b\u3093\u3002", de: "Noch keine Highlights." },
+  astuceArobase: { fr: "Tape @ pour identifier un cavalier.", en: "Type @ to tag a rider.", es: "Escribe @ para etiquetar a un jinete.", it: "Digita @ per taggare un cavaliere.", ja: "@\u3092\u5165\u529b\u3057\u3066\u9a0e\u624b\u3092\u30bf\u30b0\u4ed8\u3051", de: "Tippe @, um einen Reiter zu markieren." },
+  voirPlus: { fr: "voir plus", en: "see more", es: "ver m\u00e1s", it: "mostra pi\u00f9", ja: "\u3082\u3063\u3068\u898b\u308b", de: "mehr anzeigen" },
+  voirMoins: { fr: "voir moins", en: "see less", es: "ver menos", it: "mostra meno", ja: "\u9589\u3058\u308b", de: "weniger anzeigen" },
   photoIndispo: { fr: "Photo indisponible", en: "Photo unavailable", es: "Foto no disponible", it: "Foto non disponibile", ja: "写真を読み込めません", de: "Foto nicht verfügbar" },
   maintenant: { fr: "\u00e0 l'instant", en: "just now", es: "ahora mismo", it: "adesso", ja: "たった今", de: "gerade eben" },
   ilYa: { fr: "il y a ", en: "", es: "hace ", it: "", ja: "", de: "vor " },
@@ -570,10 +699,12 @@ function BandeauStories(props) {
      voile posé sur la photo. */
   function rond(g, i) {
     var derniere = g.stories[g.stories.length - 1];
-    var apercu = (derniere && derniere.photo_url) || g.avatar_url || null;
+    var apercuBrut = (derniere && derniere.photo_url) || g.avatar_url || null;
+    var apercu = apercuBrut;
+    if (apercu && typeof vignetteHype === "function") apercu = vignetteHype(apercu, 300, 380);
     var initiale = h("span", { style: { fontFamily: C, fontSize: carte ? 26 : 30, fontWeight: 700, color: tnL } }, String(g.pseudo || "?").charAt(0).toUpperCase());
     var photo = apercu
-      ? h("img", { src: apercu, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+      ? h("img", { src: apercu, alt: "", loading: "lazy", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, apercuBrut); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
       : initiale;
     var pastille = (g.stories.length > 1)
       ? h("div", { style: { position: "absolute", right: carte ? 6 : 1, bottom: carte ? 6 : 1, minWidth: 21, height: 21, padding: "0 5px", borderRadius: 999, background: "rgba(6,7,9,0.88)", border: "1px solid " + tA(0.6), color: tnL, fontSize: 10.5, fontWeight: 800, fontFamily: M, display: "flex", alignItems: "center", justifyContent: "center" } }, String(g.stories.length))
@@ -671,8 +802,25 @@ function ComposeurStory(props) {
   var rS = React.useState([]), resultats = rS[0], setResultats = rS[1];
   var chS = React.useState([]), mesCh = chS[0], setMesCh = chS[1];
   var tgS = React.useState([]), tags = tgS[0], setTags = tgS[1];
+  var cuS = React.useState(0), curseur = cuS[0], setCurseur = cuS[1];
+  var mrS = React.useState([]), mentionRes = mrS[0], setMentionRes = mrS[1];
   var corpsRef = React.useRef(null);
   var vivantRef = React.useRef(true);
+
+  /* Fait remonter le champ actif au-dessus du clavier iOS.
+     Défaut vu sur la capture de Blandine : le clavier recouvrait le champ de
+     recherche « Taguer » et masquait « Mes chevaux ». Le délai laisse le
+     clavier finir de monter — sans lui, la position est calculée sur
+     l'ancienne hauteur de fenêtre et le champ reste caché. */
+  function remonter(ev) {
+    try {
+      var cible = ev && ev.target;
+      if (!cible || !cible.scrollIntoView) return;
+      setTimeout(function () {
+        try { cible.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) { }
+      }, 320);
+    } catch (e) { }
+  }
 
   React.useEffect(function () {
     var url = null;
@@ -703,6 +851,24 @@ function ComposeurStory(props) {
     })();
     return function () { vivantRef.current = false; };
   }, []);
+
+  /* La frappe d'une mention @ déclenche sa propre recherche, indépendante du
+     champ « Taguer ». Même différé de 320 ms : on ne requête pas à chaque
+     lettre. */
+  React.useEffect(function () {
+    var m = hsMentionEnCours(legende, curseur);
+    if (!m || m.terme.length < 1) { setMentionRes([]); return; }
+    var minuteur = setTimeout(function () {
+      (async function () {
+        try {
+          if (typeof rechercherCavaliersHype !== "function") { setMentionRes([]); return; }
+          var r = await rechercherCavaliersHype(m.terme, 6);
+          if (vivantRef.current) setMentionRes((r && r.data) || []);
+        } catch (e) { }
+      })();
+    }, 320);
+    return function () { clearTimeout(minuteur); };
+  }, [legende, curseur]);
 
   /* Recherche de cavaliers, en léger différé pour ne pas requêter à chaque
      lettre tapée. */
@@ -785,17 +951,53 @@ function ComposeurStory(props) {
             h("img", { src: apercu, alt: "", style: { width: "100%", maxHeight: "38vh", objectFit: "contain", display: "block" } }))
           : null,
 
+        /* La légende. 1000 caractères, 5 lignes, compteur discret au-delà de
+           800 — et détection des mentions @ à la frappe.
+           onFocus fait remonter le champ : sur iPhone le clavier recouvrait la
+           zone « Taguer » (défaut vu sur la capture de Blandine). Le délai de
+           320 ms laisse le clavier finir de monter, sinon le navigateur calcule
+           la position sur l'ancienne hauteur de fenêtre. */
         h("textarea", {
-          value: legende, onChange: function (e) { setLegende(e.target.value); },
-          rows: 2, maxLength: HS_LEGENDE_MAX, placeholder: hsT("legende", lg),
-          style: { marginTop: 14, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none", resize: "none", lineHeight: 1.5 }
+          value: legende,
+          onChange: function (e) {
+            setLegende(e.target.value);
+            try { setCurseur(e.target.selectionStart); } catch (eC) { setCurseur(e.target.value.length); }
+          },
+          onFocus: remonter,
+          onKeyUp: function (e) { try { setCurseur(e.target.selectionStart); } catch (eK) { } }, 
+          rows: 5, maxLength: HS_LEGENDE_MAX, placeholder: hsT("legende", lg),
+          style: { marginTop: 14, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none", resize: "none", lineHeight: 1.55 }
         }),
+        h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginTop: 6 } },
+          h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", lineHeight: 1.4 } }, hsT("astuceArobase", lg)),
+          (legende.length > 800)
+            ? h("div", { style: { fontSize: 10, fontFamily: M, fontWeight: 700, color: (legende.length >= HS_LEGENDE_MAX ? "#E8A6A6" : tA(0.9)), flex: "0 0 auto" } }, legende.length + "/" + HS_LEGENDE_MAX)
+            : null),
+
+        /* Les cavaliers proposés pendant la frappe d'une mention. Toucher un
+           nom insère « @pseudo » dans le texte ET pose le tag. */
+        mentionRes.length
+          ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10, padding: "10px 11px", borderRadius: 14, border: "1px solid " + tA(0.34), background: "rgba(32,217,245,0.05)" } },
+            mentionRes.map(function (p) {
+              return h("button", {
+                key: "mn" + p.id,
+                onClick: function () {
+                  var t = hsInsererMention(legende, curseur, p.pseudo || "");
+                  setLegende(t);
+                  setCurseur(t.length);
+                  setMentionRes([]);
+                  if (!estTague("cavalier", p.id)) basculerTag("cavalier", p.id, p.pseudo || "");
+                },
+                style: { padding: "8px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: 700, border: "1px solid " + tA(0.6), background: "rgba(32,217,245,0.1)", color: tn, flex: "0 0 auto" }
+              }, "@" + (p.pseudo || "Cavalier"));
+            }))
+          : null,
 
         /* --- LE LIEU --- */
         titreBloc("\uD83D\uDCCD " + hsT("lieuTitre", lg)),
         h("input", {
           value: lieu, onChange: function (e) { setLieu(e.target.value); },
-          maxLength: HS_LIEU_MAX, placeholder: hsT("lieuChamp", lg),
+          maxLength: HS_LIEU_MAX, placeholder: hsT("lieuChamp", lg), onFocus: remonter,
           style: { width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none" }
         }),
 
@@ -814,7 +1016,7 @@ function ComposeurStory(props) {
 
         h("input", {
           value: requete, onChange: function (e) { setRequete(e.target.value); },
-          placeholder: hsT("chercherCav", lg),
+          placeholder: hsT("chercherCav", lg), onFocus: remonter,
           style: { marginTop: 10, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none" }
         }),
         (String(requete || "").trim().length >= 2 && !resultats.length)
@@ -883,7 +1085,9 @@ function RailALaUne(props) {
     h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.8, textTransform: "uppercase", color: tA(0.9), padding: "0 16px 9px" } }, hsT("aLaUne", lg)),
     h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 12, overflowX: "auto", overflowY: "hidden", padding: "0 16px 4px", WebkitOverflowScrolling: "touch" } },
       unes.map(function (a) {
-        var couv = a.couverture || (a.photos || [])[0] || null;
+        var couvBrut = a.couverture || (a.photos || [])[0] || null;
+        var couv = couvBrut;
+        if (couv && typeof vignetteHype === "function") couv = vignetteHype(couv, 200, 200);
         return h("button", {
           key: "une" + a.id,
           onClick: function () { setOuverte(a); },
@@ -892,7 +1096,7 @@ function RailALaUne(props) {
           h("div", { style: { width: T, height: T, borderRadius: "50%", margin: "0 auto", padding: 2, background: "linear-gradient(135deg, rgba(255,255,255,0.22), " + tA(0.42) + ")" } },
             h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", border: "2px solid #060709", background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } },
               couv
-                ? h("img", { src: couv, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+                ? h("img", { src: couv, alt: "", loading: "lazy", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, couvBrut); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
                 : h("span", { style: { fontFamily: C, fontSize: 20, fontWeight: 700, color: tnL } }, String(a.nom || "?").charAt(0).toUpperCase()))),
           h("div", { style: { fontSize: 10.5, marginTop: 7, fontFamily: M, fontWeight: 600, color: "#C9D3D8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, a.nom || ""));
       })),
@@ -978,7 +1182,7 @@ function ChoixALaUne(props) {
               },
                 h("div", { style: { width: 44, height: 44, borderRadius: "50%", overflow: "hidden", flex: "0 0 auto", background: "#111417", border: "1px solid " + tA(0.4), display: "flex", alignItems: "center", justifyContent: "center" } },
                   couv
-                    ? h("img", { src: couv, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } })
+                    ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(couv, 112, 112) : couv, alt: "", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, couv); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } })
                     : h("span", { style: { fontFamily: C, fontSize: 15, color: tnL, fontWeight: 700 } }, String(a.nom || "?").charAt(0).toUpperCase())),
                 h("div", { style: { minWidth: 0, flex: 1 } },
                   h("div", { style: { fontSize: 13, fontWeight: 700, fontFamily: M, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, a.nom || ""),
@@ -1015,6 +1219,7 @@ function ChoixALaUne(props) {
 --------------------------------------------------------------------------- */
 function VisionneuseStories(props) {
   var h = React.createElement;
+  var ctxV = (typeof useApp === "function") ? useApp() : null;
   var lg = props.langue || "fr";
   var M = "'Montserrat',sans-serif", C = "'Cinzel',Georgia,serif";
   var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
@@ -1040,6 +1245,7 @@ function VisionneuseStories(props) {
   var estAlbum = !!(props && props.mode === "album");
   var chS = React.useState(false), choix = chS[0], setChoix = chS[1];
   var nrS = React.useState(""), nomRange = nrS[0], setNomRange = nrS[1];
+  var dpS = React.useState(false), deplie = dpS[0], setDeplie = dpS[1];
   var pauseRef = React.useRef(false);
   var barreRef = React.useRef(null);
   var glisseRef = React.useRef({ y0: 0, actif: false });
@@ -1077,6 +1283,10 @@ function VisionneuseStories(props) {
     setTagsStory([]);
     setChargee(false);
     setErreur(false);
+    /* Sans cette remise a zero, la story suivante s'ouvrirait depliee ET le
+       minuteur resterait en pause : la visionneuse se figerait. */
+    setDeplie(false);
+    pauseRef.current = false;
     if (!story) return;
     if (!estAlbum && story.photo_url && typeof hsTagsDeStory === "function") {
       hsTagsDeStory(story.photo_url).then(function (r) {
@@ -1095,17 +1305,18 @@ function VisionneuseStories(props) {
       try { if (barreRef.current) barreRef.current.style.width = "0%"; } catch (e0) { }
       return;
     }
-    var debut = Date.now(); var reste = HS_DUREE_VUE_MS; var raf = 0; var vivant = true;
+    var duree = (typeof hsDureeStory === "function") ? hsDureeStory(story) : HS_DUREE_VUE_MS;
+    var debut = Date.now(); var reste = duree; var raf = 0; var vivant = true;
     function boucle() {
       if (!vivant) return;
       if (pauseRef.current) {
-        debut = Date.now() - (HS_DUREE_VUE_MS - reste);
+        debut = Date.now() - (duree - reste);
         raf = requestAnimationFrame(boucle);
         return;
       }
       var ecoule = Date.now() - debut;
-      reste = Math.max(0, HS_DUREE_VUE_MS - ecoule);
-      var pct = Math.min(100, (ecoule / HS_DUREE_VUE_MS) * 100);
+      reste = Math.max(0, duree - ecoule);
+      var pct = Math.min(100, (ecoule / duree) * 100);
       try { if (barreRef.current) barreRef.current.style.width = pct + "%"; } catch (e) { }
       if (pct >= 100) { vivant = false; suivante(); return; }
       raf = requestAnimationFrame(boucle);
@@ -1139,12 +1350,18 @@ function VisionneuseStories(props) {
   function toucheDebut(e) {
     try {
       pauseRef.current = true;
+      /* CORRECTIF DU 13/08 : le glissé de fermeture ne s'arme qu'à UN doigt.
+         Avant, un pincement de zoom était pris pour un glissé — c'est le
+         geste exact qui a fait planter la première story de Blandine. Deux
+         doigts appartiennent à PhotoZoomHype, la boîte ne bouge pas. */
+      if (e.touches && e.touches.length > 1) { glisseRef.current.actif = false; return; }
       var t = e.touches && e.touches[0];
       if (t) glisseRef.current = { y0: t.clientY, actif: true };
     } catch (er) { }
   }
   function toucheBouge(e) {
     try {
+      if (e.touches && e.touches.length > 1) { glisseRef.current.actif = false; if (boiteRef.current) boiteRef.current.style.transform = "translateY(0px)"; return; }
       if (!glisseRef.current.actif) return;
       var t = e.touches && e.touches[0];
       if (!t) return;
@@ -1199,7 +1416,7 @@ function VisionneuseStories(props) {
       h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "12px 14px 10px" } },
         h("div", { style: { width: 38, height: 38, borderRadius: "50%", overflow: "hidden", flex: "0 0 auto", border: "1px solid " + tA(0.5), background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } },
           groupe.avatar_url
-            ? h("img", { src: groupe.avatar_url, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } })
+            ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(groupe.avatar_url, 96, 96) : groupe.avatar_url, alt: "", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, groupe.avatar_url); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } })
             : h("span", { style: { fontFamily: C, fontSize: 15, fontWeight: 700, color: tnL } }, String(groupe.pseudo || "?").charAt(0).toUpperCase())),
         h("div", { style: { minWidth: 0, flex: 1 } },
           h("div", { style: { fontSize: 13, fontWeight: 700, fontFamily: M, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, groupe.pseudo || "Cavalier"),
@@ -1207,11 +1424,13 @@ function VisionneuseStories(props) {
             hsTempsRelatif(story.created_at, lg) + (groupe.ecurie ? (" \u00b7 " + groupe.ecurie) : ""))),
         h("button", { onClick: fermer, "aria-label": "Fermer", style: { width: 34, height: 34, borderRadius: "50%", flex: "0 0 auto", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", color: "#E4ECEF", fontSize: 15, cursor: "pointer", fontFamily: M } }, "\u2715")),
 
-      /* La photo, nue.
-         114b : c'est son chargement qui déclenche le minuteur, le marquage
-         « vue » et le préchargement de la suivante. Tant qu'elle descend, une
-         respiration turquoise occupe le centre (Design Bible : rien n'est
-         parfaitement statique, la lumière guide). */
+      /* La photo, nue — et depuis la v5, JAMAIS en résolution d'origine.
+         hsImageEcran() la demande à la taille de l'écran (transformation
+         serveur, repli sur l'original si elle échoue). Le zoom au pincement
+         est confié à PhotoZoomHype, le composant écrit après le crash de la
+         session 92 : aucun état React pendant le geste, plafond de zoom
+         calculé sur la densité de l'écran, couche GPU seulement pendant un
+         zoom réel. 114b conservé : le chargement déclenche le minuteur. */
       h("div", { style: { flex: 1, position: "relative", minHeight: 0, background: "#060709", display: "flex", alignItems: "center", justifyContent: "center" } },
         h("style", { dangerouslySetInnerHTML: { __html: "@keyframes hsResp{0%,100%{opacity:.28;transform:scale(.9)}50%{opacity:.85;transform:scale(1.06)}}" } }),
         (!chargee && !erreur)
@@ -1220,12 +1439,21 @@ function VisionneuseStories(props) {
         erreur
           ? h("div", { style: { position: "absolute", padding: "0 30px", textAlign: "center", fontFamily: M, fontSize: 12.5, color: "#8A929C", lineHeight: 1.5 } }, hsT("photoIndispo", lg))
           : null,
+        (typeof PhotoZoomHype === "function" && chargee && !erreur)
+          ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })
+          : null,
+        /* L'image de chargement : elle sert à déclencher onLoad/onError (le
+           point de départ du minuteur, 114b) puis s'efface derrière
+           PhotoZoomHype. Si PhotoZoomHype est absent (module chargé sans
+           l'index), elle reste visible : rien ne casse. */
         h("img", {
-          src: story.photo_url, alt: "", decoding: "async",
+          src: hsImageEcran(story.photo_url), alt: "", decoding: "async",
           onLoad: function () {
             setChargee(true);
             if (story.id && typeof hsMarquerVue === "function") hsMarquerVue(story.id);
-            /* Préchargement de la story suivante : elle sera déjà là au tap. */
+            /* Préchargement de la suivante — RÉDUITE elle aussi. C'était l'un
+               des deux étages du crash : la suivante descendait en pleine
+               résolution pendant le décodage de la courante. */
             try {
               var svt = null;
               if (groupe && groupe.stories[is + 1]) svt = groupe.stories[is + 1];
@@ -1233,15 +1461,29 @@ function VisionneuseStories(props) {
               if (svt && svt.photo_url && typeof Image !== "undefined") {
                 var pre = new Image();
                 pre.decoding = "async";
-                pre.src = svt.photo_url;
+                pre.src = hsImageEcran(svt.photo_url);
               }
             } catch (eP) { }
           },
-          onError: function () {
+          onError: function (ev) {
+            /* Le repli existant de l'index : on repose l'original UNE fois
+               (plan Free, format non géré, coupure), sans boucler. Si
+               l'original échoue aussi, onError retombe ici avec __repli déjà
+               posé, et on affiche « photo indisponible ». */
+            try {
+              var el = ev && (ev.currentTarget || ev.target);
+              if (el && !el.__repli && typeof replierVignette === "function") { replierVignette(ev, story.photo_url); return; }
+            } catch (eR) { }
             setErreur(true);
             if (story.id && typeof hsMarquerVue === "function") hsMarquerVue(story.id);
           },
-          style: { maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block", opacity: chargee ? 1 : 0, transition: "opacity 220ms ease-out" }
+          style: {
+            maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block",
+            opacity: (chargee && typeof PhotoZoomHype === "function") ? 0 : (chargee ? 1 : 0),
+            position: (chargee && typeof PhotoZoomHype === "function") ? "absolute" : "static",
+            pointerEvents: "none",
+            transition: "opacity 220ms ease-out"
+          }
         }),
         h("button", { onClick: precedente, "aria-label": "Pr\u00e9c\u00e9dente", style: { position: "absolute", left: 0, top: 0, bottom: 0, width: "32%", background: "transparent", border: "none", cursor: "pointer" } }, ""),
         h("button", { onClick: suivante, "aria-label": "Suivante", style: { position: "absolute", right: 0, top: 0, bottom: 0, width: "48%", background: "transparent", border: "none", cursor: "pointer" } }, "")),
@@ -1251,7 +1493,57 @@ function VisionneuseStories(props) {
           ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 700, color: tnL, marginBottom: 8, letterSpacing: 0.3 } }, "\uD83D\uDCCD " + story.lieu)
           : null,
         story.legende
-          ? h("div", { style: { fontSize: 13.5, lineHeight: 1.55, fontFamily: M, color: "#DCE3E8", marginBottom: 10, whiteSpace: "pre-line" } }, story.legende)
+          ? (function () {
+            /* Le texte s'affiche TEL QUE l'auteur l'a écrit ; seules les
+               mentions ACCEPTÉES deviennent des liens turquoise (décision de
+               Blandine). Au-delà de HS_LEGENDE_REPLI caractères, le texte est
+               replié sur 3 lignes derrière un « voir plus » qui MET LE
+               MINUTEUR EN PAUSE — sinon la story défilerait pendant la
+               lecture, ce qui est exactement le défaut corrigé en 114b. */
+            var longue = String(story.legende).length > HS_LEGENDE_REPLI;
+            var replie = longue && !deplie;
+            var morceaux = (typeof hsDecouperLegende === "function") ? hsDecouperLegende(story.legende, tagsStory) : [{ texte: story.legende }];
+            return h("div", { style: { marginBottom: 10 } },
+              h("div", {
+                style: Object.assign(
+                  { fontSize: 13.5, lineHeight: 1.55, fontFamily: M, color: "#DCE3E8", whiteSpace: "pre-line", wordBreak: "break-word" },
+                  replie ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" } : {})
+              },
+                morceaux.map(function (mo, i) {
+                  if (mo.texte !== undefined) return h("span", { key: "lg" + i }, mo.texte);
+                  if (mo.tag && mo.tag.cible_id && mo.tag.type === "cavalier") {
+                    return h("span", {
+                      key: "lg" + i,
+                      onClick: function (ev) {
+                        if (ev && ev.stopPropagation) ev.stopPropagation();
+                        /* Meme mecanisme que ouvrirProfilPublic() de la page
+                           Communaute : on ne reinvente pas la navigation. */
+                        try {
+                          if (typeof window !== "undefined") {
+                            window.__cavalierPublic = { id: mo.tag.cible_id, pseudo: mo.tag.cible_nom || "", photo: null, ecurie: "", club: "", ville: "" };
+                            window.__cavalierOuvert = "__public";
+                          }
+                        } catch (e) { }
+                        fermer();
+                        try { if (ctxV && ctxV.setEcran) ctxV.setEcran("cavalier"); } catch (e2) { }
+                      },
+                      style: { color: tn, fontWeight: 700, cursor: "pointer" }
+                    }, mo.mention);
+                  }
+                  /* En attente ou cavalier inconnu : le texte reste, sans lien. */
+                  return h("span", { key: "lg" + i }, mo.mention);
+                })),
+              longue
+                ? h("button", {
+                  onClick: function () {
+                    var v = !deplie;
+                    setDeplie(v);
+                    pauseRef.current = v;   /* déplié = minuteur en pause */
+                  },
+                  style: { marginTop: 6, background: "none", border: "none", padding: 0, color: tnL, fontSize: 11.5, fontWeight: 700, fontFamily: M, cursor: "pointer" }
+                }, deplie ? hsT("voirMoins", lg) : hsT("voirPlus", lg))
+                : null);
+          })()
           : null,
         tagsVisibles.length
           ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 11 } },

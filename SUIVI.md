@@ -14,13 +14,15 @@
 
 **Ancienne version (113) — 12/08/2026 (SESSION 113 · PONEY D'OR, LE MEMORY EN CHEMINS DIRECTS, LAG CORRIGÉ) — md5 `17c334b8779dfd615c679e614d4ef161`, 9 087 825 octets. Témoin `reprise 1.6 · baby 112 · memo 4`. ⚠️ CET INDEX N'A JAMAIS ÉTÉ POUSSÉ — son contenu (le préchargement du Memory) est intégralement repris dans le 114 ci-dessous. Ne pas le pousser après le 114.**
 
-**Version actuelle de l'index.html : 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`, 9 091 227 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 3`**. `HYPE_VERSION_APP` 1.7 → **1.8**. Fichiers compagnons **tous inchangés** : `hype-cours-baby.js` (112), `hype-memory-poney.js` (4), `hype-stories.js` (3) — ne pas les repousser. Aucun SQL, aucune image.
+**Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
+
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 119 · STORIES v5 — LE CRASH MÉMOIRE DU ZOOM, RÉPARÉ) — md5 `4432dea63429153b856c5fb3821cddfe`, 9 091 227 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 5`**. Seule modification de l'index : la balise passe en **`?v=5`**. **FICHIER COMPAGNON : `hype-stories.js` v5, md5 `d6fb0e6e1ca13c3eff0e832119fa91b2`, 91 729 octets.** **AUCUN SQL.** ⚠️ Ce push est un correctif de PLANTAGE constaté en ligne par Blandine (première story, tentative de zoom, onglet tué par iOS) : à pousser en priorité sur tout autre chantier.
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 12/08 (session 116) :** `index.html` + `hype-stories.js` (v3). **SQL : `hype-stories.sql` si la colonne `lieu` n'a pas encore été passée** — repli explicite prévu sinon (la story part sans lieu, avec message à l'écran). Les à la une n'ont besoin de rien en base. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image. **La MUSIQUE est en attente des fichiers de Blandine** (3 à 6 morceaux libres de droits, mp3 ou m4a).
+**À POUSSER, état au 13/08 (session 119) :** `index.html` + `hype-stories.js` (v5), **en priorité** — l'app en ligne plante au zoom d'une story tant que ce n'est pas poussé. AUCUN SQL. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image. La MUSIQUE reste en attente des fichiers de Blandine.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -140,6 +142,133 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 119 · STORIES v5 — LE CRASH MÉMOIRE DU ZOOM, RÉPARÉ
+
+**Signalement de Blandine (13/08, 00 h 28)** : « Première story, j'essaie de zoomer, toute plante encore une fois, ça saoule, ce n'est pas possible ça. » Capture : Safari affiche « Un problème récurrent est survenu » — c'est **l'onglet tué par iOS faute de mémoire**, pas une erreur JS (une erreur JS afficherait l'écran « Un caillou dans le sabot »).
+
+### 🔴 LA CAUSE, ET C'EST UNE FAUTE DE MA PART
+
+Trois étages, qui s'additionnent :
+
+1. **La visionneuse chargeait la photo EN RÉSOLUTION D'ORIGINE.** Une photo d'iPhone fait 4000 × 3000 : ~45 Mpx décodés en mémoire pour un écran qui en affiche 3.
+2. **Elle préchargeait la story SUIVANTE en pleine résolution aussi** (le préchargement de la 114b, vertueux pour la fluidité, doublait la facture mémoire).
+3. **Le zoom n'existait pas** : les deux doigts du pincement étaient pris pour le glissé de fermeture.
+
+**C'est la mécanique EXACTE du crash du zoom photo de la session 92** (« un pincement pris pour un balayage chargeait une autre photo pleine résolution pendant le décodage de la première — pic mémoire, onglet tué par iOS »). La leçon était payée, les outils existaient — `vignetteHype()` (transformations serveur, plan Pro actif depuis le 05/08) et `PhotoZoomHype` (le composant écrit précisément après ce crash) — et je ne les ai pas utilisés en écrivant la visionneuse. Faute consignée.
+
+### LE CORRECTIF — RÈGLE POSÉE : plus AUCUNE image en résolution d'origine dans le module
+
+- **`hsImageEcran(u)`** : toute photo de la visionneuse passe par la transformation serveur, bornée à la taille de l'écran (dpr plafonné à 2, max 1080 × 1600 ≈ 200 Ko au lieu de plusieurs Mo). **`resize=contain`, jamais `cover`** : la photo n'est pas recadrée — règle absolue du projet. Assertion posée sur ce point précis.
+- **Le préchargement de la suivante est réduit lui aussi** — c'était l'un des deux étages du crash.
+- **Le vrai zoom au pincement** : `PhotoZoomHype` monte sur la photo une fois chargée. Il apporte ce qui avait été appris en 92 et 06/08 : aucun état React pendant le geste, plafond de zoom calculé sur la densité de l'écran (couche GPU < 20 Mpx), couche 3D seulement pendant un zoom réel. **Il reçoit l'URL réduite, pas l'original** (asserté).
+- **Le glissé de fermeture ne s'arme qu'à UN doigt.** Deux doigts = zoom ; un second doigt posé en route annule le glissé et remet la boîte en place. C'est le geste exact qui a déclenché le plantage de Blandine.
+- **Toutes les images du module sont réduites** : ronds/cartes du bandeau (300 × 380), couvertures d'à la une (200 × 200), avatar de l'en-tête (96), vignettes de la feuille de choix (112). Chacune porte le **repli existant `replierVignette`** : si la transformation échoue, l'original est reposé UNE fois, sans boucle ; si l'original échoue aussi, « Photo indisponible ».
+- La 114b est intacte : le chargement de l'image réduite reste le point de départ du minuteur.
+
+### FONCTIONNEMENT DU HARNAIS, DEUX ENSEIGNEMENTS
+
+1. **Une assertion de la 114b a cassé pendant cette session — à raison sur la forme, à tort sur le fond** : elle vérifiait « `onLoad` avant `onError` » dans l'ordre du FICHIER entier, or le composeur (qui porte un `onError` de lecture) est désormais placé avant la visionneuse. Le comportement était intact. L'assertion a été **recadrée sur le composant** (elle découpe désormais le source à `function VisionneuseStories`). Leçon : une assertion de position doit viser un bloc, pas un fichier.
+2. **Une assertion neuve a attrapé un vrai oubli** : « aucune image en résolution d'origine dans la visionneuse » a échoué sur… l'avatar 38 px de l'en-tête, qui chargeait encore l'original. Corrigé dans la foulée. Le harnais a payé.
+
+### À L'ÉCRAN
+
+**+ Le zoom au pincement** fonctionne dans la visionneuse (double-tap compris), au lieu de faire planter l'application.
+**~ Les photos s'affichent plus vite** (elles pèsent ~10 fois moins) — visuellement identiques sur un écran de téléphone.
+**~ Le glissé vers le bas** ne réagit plus qu'à un seul doigt.
+**− Rien ne disparaît.**
+
+### VÉRIFICATIONS
+
+- `node --check` : 16/16 blocs inline + le module.
+- **59 assertions vertes** (12 × 114b recadrées + 14 × 116 + 20 × 117-118 + 13 nouvelles), plus les 13 des mentions à part.
+- Parmi les nouvelles : largeur bornée à écran × dpr(≤2) ; `resize=contain` présent et `cover` absent ; PhotoZoomHype monté et servi en URL réduite ; préchargement réduit ; premier échec → repli sur l'original ; deux doigts n'armant pas le glissé ; chaque image réduite portant son repli.
+- Rendu réel **non vérifié** (domaine fermé aux robots) : **le test qui compte est le pincement de Blandine sur sa story en ligne.**
+
+### Préparation Flutter (session 119)
+
+- **La règle « aucune image en résolution d'origine » est désormais structurelle** dans le module, gardée par des assertions — c'est une contrainte de plateforme (mémoire iOS) qui survivra telle quelle en Flutter.
+- **Réutilisation** : `vignetteHype`, `replierVignette` et `PhotoZoomHype` viennent de l'index ; le module les teste par `typeof` et dégrade proprement s'ils manquent. Zéro duplication.
+- À noter pour le portage : `PhotoZoomHype` est le composant le plus mûr du projet (leçons 92 + 06/08 incorporées) ; c'est lui qu'il faudra porter en premier, pas les trois mécanismes de zoom concurrents de la fiche cheval.
+
+---
+
+## SESSION 118 · STORIES v4 — LÉGENDE LONGUE ET MENTIONS @
+
+**Demandes de Blandine (12/08, 23 h 09, capture d'une story en cours de rédaction)** : « le texte est trop court on peut le mettre plus long », « on fait comment pour identifier qqun dans le texte ? ». Elle écrivait « De beaux obstacles tout neufs, merci Ilona Delph Ambre » à la main, et sa phrase était coupée. Consigne accompagnant la demande : « ne code pas pour l'instant prépare juste » — le plan a donc été présenté d'abord, puis codé après ses trois réponses et son « tu peux coder ».
+
+**Base de travail** : l'index revenu de l'autre conversation (session 117, tirage à graine du Memory). **Vérifié avant d'écrire une ligne** : balise `hype-stories.js?v=3` présente, 4 appels du bandeau dont `forme: "carte"`, 4 appels du rail des à la une, zéro fonction et zéro constante perdue par rapport à mon 116. Les deux fonctions du 117 (`memoryPoneyMelanger`, `memoryPoneyTirage`) et `HYPE_VERSION_APP` 1.8 sont conservées intactes.
+
+### DÉCISIONS DE BLANDINE
+
+| sujet | décision |
+|---|---|
+| longueur de la légende | **1000 caractères** |
+| texte long dans la visionneuse | **les deux** — la durée s'allonge ET « voir plus » met en pause |
+| la mention avant acceptation | **le texte s'affiche, le lien attend l'accord** |
+
+### 1. LA LÉGENDE À 1000 CARACTÈRES — AUCUN SQL
+
+Point important pour la suite : **la colonne `legende` est un `text` Postgres, elle n'a aucune limite.** Les 140 caractères étaient un plafond posé côté application, et rien d'autre. Passer à 1000 est donc une constante à changer, sans migration.
+
+- Le textarea passe de 2 à **5 lignes**, avec un compteur discret qui n'apparaît qu'au-delà de 800 caractères (rouge pâle à 1000).
+- **La durée d'affichage s'allonge avec le texte** : 6 s de base, +1 s par tranche de 90 caractères au-delà de 180, plafonnée à 20 s (`hsDureeStory`). Sans ce plafond, une légende de 1000 signes bloquerait le défilement une minute.
+- **Au-delà de 180 caractères, le texte est replié sur 3 lignes derrière un « voir plus »** qui **met le minuteur en pause**. C'est exactement le défaut corrigé en 114b qu'on éviterait sinon : la story défilerait pendant la lecture.
+- **Piège traité** : le dépliement et la pause sont remis à zéro à chaque changement de story. Sans ça, la story suivante s'ouvrirait dépliée **et le minuteur resterait en pause** — la visionneuse se figerait.
+
+### 2. LES MENTIONS @ — AUCUNE TABLE
+
+Trois fonctions pures, testées isolément avant tout branchement (`t_mention.js`, 13 assertions) :
+
+- `hsMentionEnCours(texte, position)` — repère un `@` suivi de lettres, collé au curseur. **Accents et tirets acceptés** (Inès, Anne-Sophie). Une mention terminée par un espace n'est plus « en cours ».
+- `hsInsererMention(texte, position, pseudo)` — remplace la saisie par `@pseudo`, **espaces du pseudo retirés** (« Marie Claire » → `@MarieClaire`, sinon la mention se couperait au premier espace).
+- `hsDecouperLegende(legende, tags)` — découpe le texte en morceaux `{texte}` ou `{mention, tag}`. Assertion posée : **le texte se reconstitue à l'identique**, rien n'est perdu au passage.
+
+Le stockage réutilise `identifications` par `photo_url`, comme le bloc « Taguer » : le cycle attente → accepté était déjà là. Toucher une suggestion insère `@pseudo` **et** pose le tag d'un seul geste.
+
+**Règle d'affichage appliquée (décision de Blandine)** : le texte s'affiche tel qu'elle l'a écrit — on ne censure pas sa phrase — mais seule une mention **acceptée** devient un mot turquoise cliquable. `@Delph` et `@Ambre`, en attente ou sans compte Hype, restent du texte simple. Vérifié par assertion dans les deux sens.
+
+La navigation réutilise le mécanisme existant de la page Communauté (`window.__cavalierPublic` + `window.__cavalierOuvert = "__public"` + `setEcran("cavalier")`) : **aucune route nouvelle**, aucune duplication.
+
+**Limites assumées, écrites dans le code** : si la personne change de pseudo, le texte garde l'ancien ; une mention ne fonctionne que pour un cavalier inscrit.
+
+### 3. 🟠 CORRECTIF — LE CLAVIER iOS RECOUVRAIT LES CHAMPS
+
+Défaut visible sur la capture de Blandine : le clavier masquait le champ de recherche « Taguer » et la rangée « Mes chevaux ». **Ce n'était pas une décision à prendre, c'était un bug** — corrigé sans le lui demander. Les **trois** champs de la feuille (légende, lieu, recherche) remontent au-dessus du clavier à la prise de focus. Le délai de 320 ms est nécessaire : sans lui, la position est calculée sur l'ancienne hauteur de fenêtre et le champ reste caché.
+
+### À L'ÉCRAN
+
+**~ La légende** passe de 140 à 1000 caractères, sur 5 lignes, avec compteur au-delà de 800.
+**+ Une astuce** « Tape @ pour identifier un cavalier » sous le champ.
+**+ Des suggestions de cavaliers** pendant la frappe d'une mention.
+**+ Un « voir plus »** sous les légendes longues dans la visionneuse, qui met le défilement en pause.
+**~ Les mentions acceptées** s'affichent en turquoise et ouvrent le profil du cavalier.
+**~ Les champs remontent** au-dessus du clavier (bug corrigé).
+**~ Le témoin** passe de `stories 3` à `stories 4`.
+**− Rien ne disparaît.**
+
+### VÉRIFICATIONS
+
+- `node --check` : **16/16 blocs `<script>` inline** de l'index + `hype-stories.js`.
+- **Les 3 fonctions de mention testées à part, avant branchement** : 13 assertions (détection, accents, tiret, espace terminal, insertion au milieu du texte, pseudo à espaces, lien seulement si accepté, texte reconstitué à l'identique).
+- Harnais principal : **47 assertions vertes**, dont les 12 du correctif 114b et les 14 du 116 — aucune régression.
+- **43 clés de texte × 6 langues**, aucune manquante.
+- Index : balise `?v=4`, aucun autre changement par rapport au 117.
+- Rendu réel **non vérifié** (domaine fermé aux robots, module dépendant de Supabase) : **à regarder par Blandine**.
+
+### INCIDENTS
+
+Aucun. À noter : le premier envoi de l'index n'était pas arrivé (Blandine avait écrit « je te redonne l'index » mais le fichier présent était encore celui du début de conversation, md5 `17c334b8`, sans aucune balise stories). **Vérifié avant de travailler et signalé immédiatement** au lieu de coder sur la mauvaise base — ce qui aurait effacé toutes les stories.
+
+### Préparation Flutter (session 118)
+
+- **Trois fonctions pures, sans React et sans réseau** : `hsMentionEnCours`, `hsInsererMention`, `hsDecouperLegende`. Elles se transposent en Dart **ligne pour ligne** et sont testables sans navigateur — c'est la première fois du projet qu'on écrit de la logique métier séparée de la vue ET testée séparément.
+- `hsDureeStory` suit le même modèle : une règle de gestion isolée, pas une valeur en dur dans un composant.
+- **Réutilisation, troisième session d'affilée** : les mentions ne créent ni table, ni route, ni mécanisme d'acceptation, ni navigation. Elles s'appuient sur `identifications` et sur `ouvrirProfilPublic` existants.
+- **Le harnais couvre 47 comportements + 13 sur les mentions.** Il empêche désormais de perdre : le correctif du minuteur (114b), la photo dans le rond, la forme carte, le mode album, la règle des mentions non acceptées.
+- Reste à moderniser : les 3 mécanismes de zoom photo coexistants (fiche cheval), les visionneuses à extraire en composant autonome, les cours des Galops encore en base64, le service worker.
 
 ---
 
