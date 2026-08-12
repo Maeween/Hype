@@ -76,9 +76,132 @@
 
 ---
 
+# 🏛️ SESSION 208 · 11-12/08 (nuit) — LES SIX MURS, QUATRE OBJETS DE VILLES REFAITS, ET LA MAQUETTE v31
+
+**À pousser → RACINE, en UNE seule poussée.** `lingo.html` md5 `75584387d9b629bf16c3224da5c96c2d` (`var VER = "?v=33"`) · `objet-newmarket.webp` · `objet-walsall.webp` · `objet-connemara.webp` · `objet-dubai.webp` · les 6 murs `sellerie-*` · `sellerie-gauche-rail.webp` (l'ancien conservé) · la réserve (facultative, rien ne l'appelle).
+⚠️ **NE PAS POUSSER `sellerie-gauche-v1.webp`** — doublon bit-identique (incident 1 ci-dessous).
+
+## ▸ QUATRE OBJETS DE VILLES CHANGÉS (décisions de Blandine)
+| ville | avant | après | motif, ses mots |
+|---|---|---|---|
+| **Newmarket** | selle anglaise miniature | **cagoule à œillères** (Linguae, bleu nuit + doré) | la selle anglaise « n'avait rien à faire » à Newmarket ; la selle de course a été abandonnée après cinq essais ratés |
+| **Walsall** | alêne de sellier | **selle anglaise en cuir**, vue de dos | l'alêne : « on sait pas trop ce que c'est ni où le ranger » |
+| **Connemara** | licol de corde (ancienne image) | **licol de corde**, nouvelle image, vue de face | libellé inchangé, seule l'image change |
+| **Dubaï** | selle d'endurance | **selle de randonnée**, vue de ¾ | |
+
+Libellés réécrits **en 6 langues** pour Newmarket (`A racing hood with blinkers` · `Una capucha con anteojeras` · `Un cappuccio con paraocchi` · `Eine Blendkappe` · ブリンカー付きのメンコ) et Walsall (`A leather English saddle` · `Una silla inglesa de cuero` · `Una sella inglese in cuoio` · `Ein englischer Ledersattel` · 革の英国鞍). Termes réels des courses : *Blendkappe*, *menko*.
+**L'alêne part en réserve**, fichier conservé, plus affiché. Son icône de repli passe de `alene` à `selle`.
+
+## ▸ SAUMUR — TROIS ANS D'INCOHÉRENCE CORRIGÉS
+Le français disait « un lampion du Cadre Noir », les **5 autres langues disaient « insigne de casquette »** (`cap badge`, `Abzeichen`, 帽章) : ce n'était pas le même objet. L'image `objet-saumur.webp` est une **lanterne de cuivre gravée CADRE NOIR**, et l'icône de repli dessinait déjà une lanterne — donc c'étaient les traductions qui étaient fausses. Blandine : « c'est joli on peut le garder ». Corrigé : `A Cadre Noir lantern` · `Un farol del Cadre Noir` · `Una lanterna del Cadre Noir` · `Eine Laterne des Cadre Noir` · カドル・ノワールのランタン.
+
+## ▸ 🟥 RÈGLE MAJEURE — LE DÉCOUPAGE DES OBJETS SE FAIT SUR FOND TRANSPARENT
+Six essais ratés avant de comprendre. **Toujours demander le fond TRANSPARENT, jamais blanc ni noir.**
+- **Blanc** : l'ombre portée descend à 179 de luminosité, dans la même plage que la gourde métal ou le cuir pâle. Inséparable → gros halo blanc sur le mur bleu nuit.
+- **Noir** : le creux entre les quartiers d'une selle est à 5-8 alors que le fond est à 20-33 — **l'objet est plus sombre que le fond**. Tout seuil le troue.
+- **Transparent** : composantes connexes directes, zéro halo, aucun réglage.
+- **Masquage obligatoire sur les planches à plusieurs objets** : les boîtes se recouvrent (les jugulaires dépassent) et chaque découpe volait les sangles de sa voisine. On rattache chaque petit morceau à l'objet dont le centre est le plus proche, puis on rend le reste transparent.
+- Rappel du 10/08 : fusion de deux zones **seulement** si recouvrement > 25 % de la plus petite.
+
+## ▸ 🟥 ET LES MURS : LES FENÊTRES SE DEMANDENT EN BLANC
+Une image « percée » = l'arche est un **vrai trou** (alpha 0), la vue passe **derrière** en calque plein. Aucun clip-path (la « fenêtre de merde » de la v1).
+Le générateur de Blandine a d'abord rendu un **damier dessiné** en RGB — la représentation de la transparence, pas la transparence. Puis il a produit du vrai transparent. Les deux marchent : **fenêtre blanche → Claude perce** (le blanc pur se détache à 59 333 px contre 126 pour la 2e zone, aucun risque pour les appliques), **ou déjà percée → rien à faire**.
+
+## ▸ LES SIX MURS, TOUS REFAITS PAR BLANDINE CETTE NUIT
+| fichier | format | trou | rôle |
+|---|---|---|---|
+| `sellerie-entree-loin.webp` (311 ko, **nom nouveau**) | 0,667 | 4,20 % | 1er écran, la pièce entière de loin, porte-selles + vitrine |
+| `sellerie-entree-vue.webp` (272 ko) | 0,667 | 6,83 % | 2e écran, un pas plus près |
+| `sellerie-fond-perce.webp` (240 ko) | 0,667 | 9,15 % | le mur de la fenêtre, fenêtre large (30 pts) |
+| `sellerie-gauche-biais.webp` (285 ko) | 0,667 | 5,72 % | l'angle des selles, fenêtre au **bord droit** |
+| `sellerie-droite-biais.webp` (256 ko) | 0,667 | 4,43 % | l'angle de la vitrine, fenêtre au **bord gauche** |
+| `sellerie-gauche.webp` (127 ko) | 0,667 | opaque | le mur des selles, **3 porte-selles individuels + 2 appliques** |
+Le **recadrage serré** `sellerie-fond-serre.webp` est abandonné : avec la règle « on voit le mur en entier » il s'affichait sur 266 px de 390. Blandine a tranché « fenêtre large comme ça on verra bien le paysage » → c'est la nouvelle image plein format qui l'assure.
+`sellerie-droite.webp` (la vitrine de face) est le **seul mur non refait**.
+
+## ▸ LE CIRCUIT DE LA PIÈCE (ses mots, puis « en rond c'est mieux »)
+**arrivée de loin → un pas plus près → le mur de la fenêtre → l'angle des selles → le mur des selles → la porte → la vitrine → l'angle de la vitrine → retour à la fenêtre.** En rond, dans les deux sens.
+Bande `MURS = [entreeloin, entreevue, fond, droitebiais, droite, entree, gauche, gauchebiais]`, cercle `FACES = [2..7]`. La bande est rangée **dans le sens du balayage vers la droite** — la v17 était en miroir (« je pousse pour aller vers le mur de gauche je pars vers celui de droite »). Les deux vues d'arrivée sont hors du cercle, on y revient par les **points de navigation, désormais cliquables**.
+
+## ▸ 🟥 LA VUE DU PAYS : C'EST LE JOUEUR QUI L'INSTALLE
+Blandine : « le cadrage foire depuis tout à l'heure alors autant laisser le joueur l'installer à sa guise ». Le cadrage automatique était condamné — une image large forcée dans une arche haute : rogner ou laisser du vide. Désormais la vue **se glisse et se pince** dans l'arche (jusqu'à 4×), bornée pour **toujours couvrir** l'arche, et son cadrage est **mémorisé par mur** (dans l'app : **par ville**). Un **simple toucher** sans déplacement ouvre la vue en grand.
+Chaque arche est mesurée sur l'image livrée : les cinq fenêtres n'ont ni la même largeur ni la même place. Tableau `ARCHES` dans la maquette.
+
+## ▸ LA MAQUETTE v31 — md5 `802e3353bd92fcfde60344150a2bbb08`, 1,6 Mo
+Fichier d'essai, **jamais poussé**. Corrections de la nuit, à ne pas défaire :
+- **Objets saisissables** : ils étaient peints SOUS le mur du fond (z-index) — invisibles et intouchables, et la v7 y menait justement. Plus le bandeau du haut qui avalait les doigts sur toute sa hauteur.
+- **Bornes de sécurité** : un objet ne peut plus se coincer sous la réserve.
+- **Ranger** : lâcher un objet sur la réserve, ou retoucher sa vignette. L'étiquette promettait « glisse pour ranger » depuis le début alors que le geste n'existait pas.
+- **Changer de mur** : tenir un objet contre un bord 600 ms.
+- **Zoom de la pièce** jusqu'à 3× (boutons `+`/`−` ou pincement d'un mur), déplacement au doigt. Borne de décalage `(z−1)/(2z)` et non `(z−1)/2` — sinon on sortait du mur en plein noir à 3×.
+- **Boutons de taille** `−`/`+` sur l'objet tenu.
+- **Zoom Safari bloqué sur la scène seulement** (il déréglait tout : murs en vw + transform).
+- **Sauts de plus d'un mur instantanés** (la scène traversait six murs « à toute allure »).
+- **Un format mesuré PAR MUR**, et le mur entier visible entre bandeau et réserve : positions et tailles des objets en **% DU MUR**, plus de l'écran. C'est ce qui faisait que rien ne tombait sur les crochets.
+- **Sellerie vide à l'ouverture.**
+- Tailles d'arrivée : selles 30 %, filet 28, licols 27, cagoule 24, reste 22 ; maximum 60 %.
+
+## ▸ 🟥 INCIDENTS
+1. **`sellerie-gauche-v1.webp` est un doublon bit-identique** de `sellerie-gauche.webp` (`209b0f00…`). La v1 « porte-selles le long du mur » n'existe plus nulle part.
+2. **L'ancien mur de droite en biais avait été écrasé** au lieu d'être conservé. Introuvable dans les 9 fichiers ni dans la maquette. **Récupéré depuis la pellicule de Blandine.** → Règle appliquée depuis : le mur des selles remplacé garde son ancien sous `sellerie-gauche-rail.webp`.
+3. **Déformation de tous les murs introduite par Claude** (un seul format mesuré, appliqué aux six) — « la porte a rétréci au sèche-linge ».
+4. **Zoom supprimé par Claude** : en bloquant le zoom Safari, j'ai supprimé toute possibilité d'agrandir. Réparé par le zoom de la pièce.
+5. Le premier `lingo.html` fourni n'était pas le bon (`bbd399d0…` au lieu de `1b3eb883…`). Toujours vérifier le md5.
+6. **🟥 MANQUEMENT DE CLAUDE — LE SUIVI N'A PAS ÉTÉ TENU.** Neuf heures de travail sans une ligne écrite : j'ai attendu une réponse sur les dossiers au lieu de tracer ce qui était déjà décidé. Et **je n'ai pas prévenu de la saturation approchante**, contrairement à la règle du 11/08 au soir. Conséquence directe : le début de la conversation est sorti de ma fenêtre, et **les villes du licol en cuir et du filet, décidées avec Blandine, sont perdues** (voir « en suspens »).
+7. **31 versions de maquette livrées en une nuit (v8 → v31)** sans que Blandine puisse tester tranquillement. Livrer moins, laisser tester, attendre le retour.
+
+## ▸ EN RÉSERVE (racine, rien ne les appelle, aucun risque)
+`objet-licol-cuir` ·`-2` ·`-3` (3 vues) · `objet-filet` ·`-2` ·`-3` · `objet-licol-corde-2` ·`-3` · `objet-selle-rando` (la vue de dos) · `objet-selle-anglaise` ·`-2` · `objet-selle-sport` · `cagoule-troisquarts` · `cagoule-profil-gauche` · `cagoule-profil-droit` · les 6 `cagoule-hype-*` (pour l'écurie de Hype, « avec un cheval arrêté de côté ») · `objet-walsall` ancien (l'alêne) · `sellerie-gauche-rail`.
+**Nommage déduit par Claude** d'après le précédent `objet-selle-tapis` / `-2` : préfixe `objet-`, description au lieu d'une ville, suffixe numéroté par vue. **À valider.**
+Rappel : le code ne charge QUE `objet-<ref de ville>.webp` — un objet de réserve est donc invisible dans l'app jusqu'à ce qu'il soit renommé avec une ref.
+
+## ▸ 🟥 EN SUSPENS
+1. **Le licol en cuir (3 vues) et le filet (3 vues) ont une ville, décidée avec Blandine en début de conversation — l'information est perdue.** À retrouver en remontant la conversation du 11-12/08, ou à retrancher.
+2. **La selle de sport reste sans emploi** : Blandine la voulait comme selle de course, mais elle a de grands quartiers, des taquets et des étrivières longues — l'inverse d'une selle de plat. Newmarket a la cagoule ; elle dort en réserve.
+3. **⚠️ CONFLIT DE DOCTRINE NON TRANCHÉ — DESTINATION DES IMAGES.** La bannière rouge de ce fichier dit **racine** ; la doctrine du 11/08 (tête de `SUIVI.md`) dit `medias/linguae/`, et précise « on ne touche pas à Linguae pour l'instant ». La raison de la racine est **technique** : `lingo.html` construit ses chemins sans aucun préfixe (« aucune occurrence de `images/` », ligne 97). Déménager coûte : 4 constructions dynamiques (`carte-`, `fond-`, `objet-`, `arrivee-`), 8 noms fixes, 2 vidéos, `var VER`, et `_headers` avec **l'ancienne règle gardée quelques semaines**. **Trois questions posées cette nuit, sans réponse** : on déménage maintenant ou plus tard ? les images de cette nuit vont où ? corrige-t-on la bannière ? **Tout a été annoncé « racine ».**
+4. **Un accès à la sellerie depuis l'écran de récompense** (idée de Blandine) : une phrase sous l'objet gagné, comme pour la collection et les cartes. Fait apparaître un bouton sur le chemin visible → à décider avant de coder.
+5. **Images encore à générer** (fond transparent, 2 objets par planche) : `sellerie-droite.webp` de face refait comme les autres · licol/bride suspendus **sans le crochet** · tapis et couverture **sur une barre, retombants, JAMAIS pliés** · selles **de dos et ¾ arrière**.
+6. **Revue des 31 objets faite cette nuit, 5 points signalés, aucun tranché** : Jerez « une jarre andalouse » est un pot à xérès dans le chapitre « Le cheval » (le plus faible) · **deux fanions** (La Baule + Hickstead) · Tamworth « corde tressée » pour le chapitre western alors que c'est l'Australie, et Santa Ynez a déjà un hackamore de crin · Lexington « numéro de lot ». Passe-partout sans être faux : l'étrille de Lambourn, le seau de zinc de Vejer.
+7. **Objets voulus par Blandine, à placer** : veste de concours, frac, gilet airbag, gilet de protection dorsale, bombe, toque de velours, haut-de-forme, Stetson, Akubra. Destinations **proposées, non validées** : veste → Badminton, airbag → Burghley, toque ou haut-de-forme → Windsor, Stetson → Santa Ynez, Akubra → Tamworth (ce qui réglerait la corde tressée). ⚠️ Tamworth et Santa Ynez ne peuvent pas avoir le même chapeau.
+
+## ▸ RESTE À FAIRE — LE CODE (dans une conv NEUVE, avec un `lingo.html` frais)
+L'écran sellerie dans `lingo.html` : calque `CALQUES_LINGUAE`, **règle du carnet** (z-index > 40 ou carnet escamoté), entrée par le carnet de route, stockage des poses `ref → {mur, x, y, taille, miroir}` **et du cadrage de vue par ville** dans la progression Linguae (fusion Supabase inchangée, clé par clé), menu **« Mes vues »**, vue en grand au toucher, **scroll reset** sur tout panneau `overflow:auto`. Puis le **défi 60 secondes par ville** (décision de contenu de Blandine, n'existe pas), le raccourci fin de leçon, et l'animation de déblocage carte→fenêtre en dernier.
+
+## ▸ VERS L'APP STORE
+Rien cette nuit qui rapproche ou éloigne l'indépendance de Linguae : tout le travail est en images et en maquette. La sellerie écrira dans la **progression Linguae** (jamais dans Hype), ce qui reste conforme à la doctrine. Aucune nouvelle dépendance à Hype créée.
+
+## ▸ PRÉPARATION FLUTTER
+Aucune amélioration d'architecture réalisée sur cette session (travail d'images et de maquette). Note pour le codage à venir : le **cadrage de vue par ville** et les **poses par objet** sont des données de progression — les définir d'emblée comme un contrat propre (`sellerie: { poses: {}, vues: {} }`) évitera une reprise, Flutter les réimplémentera à l'identique.
+
+---
+
 # ✅ SESSION 206 · 11/08 — LES 31 VUES SONT COMPLÈTES ET POUSSÉES
 
 **À pousser : le contenu de `vues-completes.zip` → RACINE du dépôt** (31 fichiers `vue-<ref>.webp` + `fenetre-arche.webp`). Décision de Blandine : en ligne tout de suite « pour ne pas les perdre », même si rien ne les appelle encore — elles dorment comme `arrivee-wellington.*`.
+
+## DOCTRINE · RANGEMENT DES IMAGES EN CINQ DOSSIERS (posée le 11/08 côté Hype, décision de Blandine)
+
+Reportée ici parce qu'elle engage Linguae directement, et sert la doctrine « Linguae autonome ».
+
+Les images se rangent désormais **par produit futur** : `images/` (l'existant, gelé), puis un dossier par produit — Galops, **Linguae**, Baby, Hype. Le jour où Linguae part en app iOS, **on emporte son dossier et rien d'autre**.
+
+**RÈGLE D'ENTRÉE** : un fichier n'entre dans ces dossiers que s'il est **déjà en WebP**. Linguae est donc en bonne position : tout son visuel est déjà en `.webp` (règle des objets de collection du 10/08).
+
+**Conséquence assumée** : une image partagée avec Hype sera **dupliquée**. Un dossier qui dépend du voisin n'est pas emportable.
+
+### DÉCISION DE BLANDINE, 11/08 : ON NE TOUCHE PAS À LINGUAE POUR L'INSTANT
+
+Une autre page travaille sur `lingo.html`. **Aucune modification faite** — seulement un relevé en lecture seule :
+
+- **aucune occurrence de `images/`** dans le fichier : tout est chargé depuis la **racine**
+- **4 constructions dynamiques** sur les 32 villes de `ETAPES` : `"carte-"+ref+".webp"`, `"fond-"+ref+".webp"`, `"objet-"+ref+".webp"`, `"arrivee-"+ref+".mp4"`
+- **8 images fixes** : `carnet-ferme.webp`, `carnet-page.webp`, `fond-lingua.webp`, `fond-newmarket.webp`, `lingua-affiche.webp`, `lingua-langues.webp`, `themes-hero.webp`, `apple-touch-icon-linguae.png`
+- **2 vidéos fixes** : `ouverture.mp4`, `depart.mp4`
+- version courante : `var VER = "?v=32"`
+
+**Le jour du déménagement** : modifier ces 4 constructions + les 8 noms fixes, puis **incrémenter `VER`** — sinon le service worker resservira ses anciennes réponses pendant des jours (piège n°1 de la passation, trois épisodes déjà). Le nom du dossier n'est pas encore arrêté : Blandine le nomme.
+
+---
 
 ## ▸ Le fil des dernières
 - **Burghley** : remplacée par la grande version (tronc dans l'eau devant la maison), ciel d'orage rogné. La vignette 341px est écrasée.
