@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 119 · STORIES v5 — LE CRASH MÉMOIRE DU ZOOM, RÉPARÉ) — md5 `4432dea63429153b856c5fb3821cddfe`, 9 091 227 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 5`**. Seule modification de l'index : la balise passe en **`?v=5`**. **FICHIER COMPAGNON : `hype-stories.js` v5, md5 `d6fb0e6e1ca13c3eff0e832119fa91b2`, 91 729 octets.** **AUCUN SQL.** ⚠️ Ce push est un correctif de PLANTAGE constaté en ligne par Blandine (première story, tentative de zoom, onglet tué par iOS) : à pousser en priorité sur tout autre chantier.
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 120 · STORIES v6 — MODIFIER, LIEUX SUGGÉRÉS, CÔTE À CÔTE) — md5 `7c08f4f3d9e75a485511fa9f19d92e6e`, 9 091 227 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 6`**. Seule modification de l'index : la balise passe en **`?v=6`**. **FICHIER COMPAGNON : `hype-stories.js` v6, md5 `07a2eec91784d5d0bf8bdddea815ae54`, 105 128 octets.** **AUCUN SQL.** ⚠️ La v6 CONTIENT la v5 (correctif du crash du zoom) : si le push v5 n'a pas encore été fait, pousser directement la v6. **MAQUETTE À REGARDER : `maquette-formes-stories.html`** — le choix de la forme (A rond / B icône / C carte / D galet) appartient à Blandine, rien n'est codé sur ce point.
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 119) :** `index.html` + `hype-stories.js` (v5), **en priorité** — l'app en ligne plante au zoom d'une story tant que ce n'est pas poussé. AUCUN SQL. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image. La MUSIQUE reste en attente des fichiers de Blandine.
+**À POUSSER, état au 13/08 (session 120) :** `index.html` + `hype-stories.js` (v6). AUCUN SQL. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image. **EN ATTENTE DE BLANDINE :** (1) le choix de la forme du bandeau sur la maquette ; (2) la décision à froid sur le bandeau de la page Cavalier visitée (« t'as peut-être raison » n'est pas un feu vert — rien n'a été changé) ; (3) les fichiers de musique libres de droits.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,50 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 120 · STORIES v6 — MODIFIER, LIEUX SUGGÉRÉS, CÔTE À CÔTE, MAQUETTE DES FORMES
+
+**Demandes de Blandine (13/08)** : « on peut supprimer ou modifier une story ? » (supprimer existait ; « oui code le modifier ») · « pour les lieux ça serait bien qu'on puisse [retrouver] les écuries déjà codées » · « quand on poste deux stories j'aimerais que les deux se voient côte à côte » · « je veux bien des formes différentes du cercle, tu peux me faire des maquettes ? genre pourquoi pas une forme d'icône, le carré aux coins arrondis ? ».
+
+### 1. MODIFIER UNE STORY — AUCUN SQL
+
+`hsModifierStory(id, legende, lieu)` : la politique RLS de mise à jour existait déjà (elle sert au marquage « gardée »). **La photo n'est pas modifiable** : changer l'image, c'est une autre story. Feuille `ModifierStory` pré-remplie (légende + lieu), bouton « Modifier » entre « Garder » et « Supprimer », **sur ses propres stories uniquement** (asserté dans les deux sens). La feuille met le minuteur en pause ; la modification s'applique à l'écran sans recharger le bandeau (surcharge locale). Même repli que la publication si la colonne `lieu` manquait. **Point d'honnêteté donné à Blandine avant son feu vert** : une story modifiée reste marquée « vue » chez ceux qui l'ont ouverte — comportement d'Instagram aussi.
+
+### 2. LES LIEUX SUGGÉRÉS — LES 131 CLUBS DE L'INDEX
+
+`hsSuggererLieux(terme)` puise dans la constante `CLUBS` de l'index (les 131 clubs du Monde Au Galop, nom + ville). Recherche par nom OU par ville, insensible à la casse et aux accents (via `noyauEcurie`), 6 propositions max, à partir de 2 caractères. Branché dans la publication ET la modification. **Le champ reste libre** : un lieu hors liste s'écrit à la main. Aucun SQL, aucune liste dupliquée — si les clubs de l'index évoluent, les suggestions suivent.
+
+### 3. LE CÔTE À CÔTE
+
+Jusqu'à **deux** stories du même cavalier s'affichent **accolées** — reliées par un fin trait de lumière turquoise, avec **UN seul nom** dessous. La pastille chiffrée disparaît quand tout est visible ; au-delà de deux, une pastille **« +N »** se pose sur le second visuel et la suite se découvre dans la visionneuse. **Deux photos maximum** : un cavalier à cinq stories occuperait tout l'écran (limite annoncée à Blandine sur la maquette, non contestée). Fonctionne dans les deux formes actuelles (rond et carte).
+
+### 4. LA MAQUETTE DES FORMES — DÉCISION DE BLANDINE, RIEN N'EST CODÉ
+
+`maquette-formes-stories.html`, autonome, **rendue et contrôlée à l'œil** (Playwright, 393 px). Quatre formes, chacune avec le « + », une story non vue, une vue, et le duo côte à côte :
+- **A · Le rond** (l'actuel, pour comparer) — rogne le plus ;
+- **B · L'icône** (le carré aux coins arrondis demandé par Blandine) — familier, ~20 % de photo en plus que le rond ;
+- **C · La carte verticale** (celle de Communauté) — la photo respire le plus ;
+- **D · Le galet** (ovale vertical) — la forme que personne d'autre n'a, avis de Claude clairement étiqueté comme tel sur la maquette.
+Le harnais du bandeau est paramétrable (`forme`), donc **le choix se branchera en une session courte** quelle que soit la forme retenue.
+
+### POINT LAISSÉ EN ATTENTE, À DESSEIN
+
+**Le bandeau de la page Cavalier visitée.** Blandine a elle-même repéré l'étrangeté (« pourquoi ma story apparaît sur le profil des autres joueurs ? ») — c'était la déduction n° 1 de la session 114, marquée à valider. Sa réponse : « je sais pas mais oui t'as peut-être raison » — **ce n'est pas un feu vert** (règle stricte du 09/08), puis « tkt, gère plutôt les demandes d'avant ». **Rien n'a donc été changé** ; la proposition reste : page visitée = ses stories seulement, sans « + » ; sa propre page = à trancher à froid.
+
+### VÉRIFICATIONS
+
+- `node --check` : 16/16 blocs inline + le module. **75 assertions vertes** + 13 mentions.
+- Nouvelles : trait de lumière unique, un seul nom, plus de pastille sur un duo complet, « +1 » à trois stories, deux photos max, lieux par nom et par ville, insensibilité aux accents, feuille pré-remplie, **photo absente de la feuille de modification**, Modifier présent pour l'auteur et absent pour un visiteur.
+- **Deux assertions du harnais ont dû être mises à jour, à juste titre** : celles du 116 assertaient l'ancien monde (« 2 rectangles ») devenu « 3 » avec le duo — changement de comportement VOULU, pas une régression. Et une assertion de la 119 testait un **nom de variable** au lieu du comportement ; rendue robuste (motif au lieu de littéral). Leçon consignée : une assertion teste un comportement, jamais une orthographe de code.
+- Rendu réel non vérifié (domaine fermé aux robots) : à regarder par Blandine.
+
+### Préparation Flutter (session 120)
+
+- `hsSuggererLieux` et `hsModifierStory` rejoignent le contrat de données : **12 fonctions** désormais, toutes documentées par des tests.
+- La maquette des formes est en HTML autonome : le choix visuel est découplé du code de l'app — c'est exactement la séparation vue/décision que demande la doctrine.
+- Reste à moderniser : inchangé (zooms de la fiche cheval, visionneuses, base64 des Galops, service worker).
 
 ---
 

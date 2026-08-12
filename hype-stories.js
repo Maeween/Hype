@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "5";
+var HYPE_STORIES_VERSION = "6";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -214,6 +214,31 @@ async function hsPublierStory(fichier, legende, lieu, tags) {
   } catch (e) { return { data: null, error: String(e) }; }
 }
 
+/* Modifie la légende et le lieu d'une story (13/08, décision de Blandine).
+   La PHOTO n'est pas modifiable : changer l'image, c'est une autre story.
+   La politique RLS de mise à jour existait déjà (elle sert au marquage
+   « gardée ») : AUCUN SQL. Même repli que la publication si la colonne
+   `lieu` manquait en base. */
+async function hsModifierStory(id, legende, lieu) {
+  try {
+    if (typeof supa === "undefined" || !supa) return { error: "indisponible" };
+    var user = await utilisateurActuel();
+    if (!user) return { error: "Pas connecté" };
+    var champs = {
+      legende: (legende ? String(legende).slice(0, HS_LEGENDE_MAX) : null),
+      lieu: (lieu ? String(lieu).trim().slice(0, HS_LIEU_MAX) : null)
+    };
+    var r = await supa.from("hype_stories").update(champs).eq("id", id).eq("user_id", user.id);
+    if (r && r.error) {
+      delete champs.lieu;
+      var r2 = await supa.from("hype_stories").update(champs).eq("id", id).eq("user_id", user.id);
+      if (r2 && !r2.error) return { error: null, lieuIgnore: true };
+      return { error: r.error };
+    }
+    return { error: null };
+  } catch (e) { return { error: String(e) }; }
+}
+
 async function hsSupprimerStory(id) {
   try {
     if (typeof supa === "undefined" || !supa) return { error: "indisponible" };
@@ -305,6 +330,36 @@ function hsDecouperLegende(legende, tags) {
     if (dernier < t.length) out.push({ texte: t.slice(dernier) });
   } catch (e) { return [{ texte: String(legende || "") }]; }
   return out;
+}
+
+/* Suggère des lieux pendant la frappe, à partir des 131 clubs du Monde Au
+   Galop (constante CLUBS de l'index : nom + ville). Demande de Blandine du
+   13/08 : « ça serait bien qu'on puisse [retrouver] les écuries déjà
+   codées ». Le champ RESTE LIBRE : un lieu hors liste s'écrit à la main.
+   Recherche insensible aux accents via noyauEcurie quand il existe. */
+function hsSuggererLieux(terme) {
+  try {
+    var t = String(terme || "").trim();
+    if (t.length < 2) return [];
+    var src = (typeof CLUBS !== "undefined" && CLUBS && CLUBS.length) ? CLUBS
+      : ((typeof window !== "undefined" && window.CLUBS && window.CLUBS.length) ? window.CLUBS : null);
+    if (!src) return [];
+    var nrm = function (x) {
+      try { return (typeof noyauEcurie === "function") ? noyauEcurie(String(x || "")) : String(x || "").toLowerCase(); }
+      catch (e) { return String(x || "").toLowerCase(); }
+    };
+    var q = nrm(t);
+    if (!q) return [];
+    var out = [];
+    for (var i = 0; i < src.length && out.length < 6; i++) {
+      var c = src[i];
+      if (!c || !c.nom) continue;
+      if (nrm(c.nom).indexOf(q) >= 0 || (c.ville && nrm(c.ville).indexOf(q) >= 0)) {
+        out.push({ nom: c.nom, ville: c.ville || "" });
+      }
+    }
+    return out;
+  } catch (e) { return []; }
 }
 
 /* Les tags posés SUR une story. La table `identifications` est indexée par
@@ -548,6 +603,8 @@ try {
     window.hsSignalerStory = hsSignalerStory;
     window.hsGarderEnSouvenir = hsGarderEnSouvenir;
     window.hsTagsDeStory = hsTagsDeStory;
+    window.hsModifierStory = hsModifierStory;
+    window.hsSuggererLieux = hsSuggererLieux;
     window.hsMentionEnCours = hsMentionEnCours;
     window.hsInsererMention = hsInsererMention;
     window.hsDecouperLegende = hsDecouperLegende;
@@ -597,6 +654,10 @@ var HS_TXT = {
   uneIntrouvable: { fr: "\u00c0 la une introuvable.", en: "Highlight not found.", es: "Destacada no encontrada.", it: "In evidenza non trovata.", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002", de: "Highlight nicht gefunden." },
   videUne: { fr: "Aucune \u00e0 la une pour l'instant.", en: "No highlight yet.", es: "Sin destacadas por ahora.", it: "Nessuna in evidenza per ora.", ja: "\u307e\u3060\u30cf\u30a4\u30e9\u30a4\u30c8\u306f\u3042\u308a\u307e\u305b\u3093\u3002", de: "Noch keine Highlights." },
   astuceArobase: { fr: "Tape @ pour identifier un cavalier.", en: "Type @ to tag a rider.", es: "Escribe @ para etiquetar a un jinete.", it: "Digita @ per taggare un cavaliere.", ja: "@\u3092\u5165\u529b\u3057\u3066\u9a0e\u624b\u3092\u30bf\u30b0\u4ed8\u3051", de: "Tippe @, um einen Reiter zu markieren." },
+  modifier: { fr: "Modifier", en: "Edit", es: "Editar", it: "Modifica", ja: "\u7de8\u96c6", de: "Bearbeiten" },
+  modifierTitre: { fr: "Modifier la story", en: "Edit the story", es: "Editar la story", it: "Modifica la story", ja: "\u30b9\u30c8\u30fc\u30ea\u30fc\u3092\u7de8\u96c6", de: "Story bearbeiten" },
+  enregistrer: { fr: "Enregistrer", en: "Save", es: "Guardar", it: "Salva", ja: "\u4fdd\u5b58", de: "Speichern" },
+  modifiee: { fr: "Story modifi\u00e9e.", en: "Story updated.", es: "Story modificada.", it: "Story modificata.", ja: "\u30b9\u30c8\u30fc\u30ea\u30fc\u3092\u66f4\u65b0\u3057\u307e\u3057\u305f\u3002", de: "Story aktualisiert." },
   voirPlus: { fr: "voir plus", en: "see more", es: "ver m\u00e1s", it: "mostra pi\u00f9", ja: "\u3082\u3063\u3068\u898b\u308b", de: "mehr anzeigen" },
   voirMoins: { fr: "voir moins", en: "see less", es: "ver menos", it: "mostra meno", ja: "\u9589\u3058\u308b", de: "weniger anzeigen" },
   photoIndispo: { fr: "Photo indisponible", en: "Photo unavailable", es: "Foto no disponible", it: "Foto non disponibile", ja: "写真を読み込めません", de: "Foto nicht verfügbar" },
@@ -698,40 +759,60 @@ function BandeauStories(props) {
      En forme CARTE, c'est un contour lumineux. Dans les deux cas, jamais un
      voile posé sur la photo. */
   function rond(g, i) {
-    var derniere = g.stories[g.stories.length - 1];
-    var apercuBrut = (derniere && derniere.photo_url) || g.avatar_url || null;
-    var apercu = apercuBrut;
-    if (apercu && typeof vignetteHype === "function") apercu = vignetteHype(apercu, 300, 380);
-    var initiale = h("span", { style: { fontFamily: C, fontSize: carte ? 26 : 30, fontWeight: 700, color: tnL } }, String(g.pseudo || "?").charAt(0).toUpperCase());
-    var photo = apercu
-      ? h("img", { src: apercu, alt: "", loading: "lazy", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, apercuBrut); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
-      : initiale;
-    var pastille = (g.stories.length > 1)
-      ? h("div", { style: { position: "absolute", right: carte ? 6 : 1, bottom: carte ? 6 : 1, minWidth: 21, height: 21, padding: "0 5px", borderRadius: 999, background: "rgba(6,7,9,0.88)", border: "1px solid " + tA(0.6), color: tnL, fontSize: 10.5, fontWeight: 800, fontFamily: M, display: "flex", alignItems: "center", justifyContent: "center" } }, String(g.stories.length))
-      : null;
-
-    var visuel;
-    if (carte) {
-      visuel = h("div", {
-        style: {
-          position: "relative", width: CL, height: CH_, borderRadius: 16, overflow: "hidden",
-          background: "#111417", display: "flex", alignItems: "center", justifyContent: "center",
-          border: "1px solid " + (g.toutesVues ? "rgba(255,255,255,0.14)" : tA(0.72)),
-          boxShadow: g.toutesVues ? "none" : ("0 0 16px " + tA(0.26) + ", inset 0 0 0 1px " + tA(0.18))
-        }
-      }, photo, pastille);
-    } else {
-      visuel = h("div", { style: { position: "relative", width: T, height: T, borderRadius: "50%", margin: "0 auto", padding: 3, background: g.toutesVues ? "rgba(255,255,255,0.16)" : ("linear-gradient(135deg," + tn + "," + tnL + ")"), boxShadow: g.toutesVues ? "none" : ("0 0 18px " + tA(0.32)) } },
-        h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", border: "2.5px solid #060709", background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } }, photo),
-        pastille);
+    /* LE CÔTE À CÔTE (13/08, demande de Blandine) : jusqu'à DEUX stories du
+       même cavalier s'affichent accolées — la plus ancienne non lue d'abord —
+       reliées par un fin trait de lumière turquoise, avec UN seul nom
+       dessous. Au-delà de deux : la pastille « +N » sur le second visuel,
+       et la suite se découvre dans la visionneuse. Deux photos maximum,
+       sinon un cavalier à cinq stories occuperait tout l'écran. */
+    function visuelPour(st, cle) {
+      var brut = (st && st.photo_url) || g.avatar_url || null;
+      var src = brut;
+      if (src && typeof vignetteHype === "function") src = vignetteHype(src, 300, 380);
+      var photo = src
+        ? h("img", { src: src, alt: "", loading: "lazy", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, brut); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+        : h("span", { style: { fontFamily: C, fontSize: carte ? 26 : 30, fontWeight: 700, color: tnL } }, String(g.pseudo || "?").charAt(0).toUpperCase());
+      if (carte) {
+        return h("div", {
+          key: cle,
+          style: {
+            position: "relative", width: CL, height: CH_, borderRadius: 16, overflow: "hidden", flex: "0 0 auto",
+            background: "#111417", display: "flex", alignItems: "center", justifyContent: "center",
+            border: "1px solid " + (g.toutesVues ? "rgba(255,255,255,0.14)" : tA(0.72)),
+            boxShadow: g.toutesVues ? "none" : ("0 0 16px " + tA(0.26) + ", inset 0 0 0 1px " + tA(0.18))
+          }
+        }, photo);
+      }
+      return h("div", { key: cle, style: { position: "relative", width: T, height: T, borderRadius: "50%", flex: "0 0 auto", padding: 3, background: g.toutesVues ? "rgba(255,255,255,0.16)" : ("linear-gradient(135deg," + tn + "," + tnL + ")"), boxShadow: g.toutesVues ? "none" : ("0 0 18px " + tA(0.32)) } },
+        h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", border: "2.5px solid #060709", background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } }, photo));
     }
+
+    var montrees = g.stories.slice(0, 2);
+    var enPlus = g.stories.length - montrees.length;
+    var visuels = montrees.map(function (st, k) { return visuelPour(st, "v" + k); });
+    if (enPlus > 0) {
+      /* La pastille « +N » se pose sur le DERNIER visuel affiché. */
+      visuels[visuels.length - 1] = h("div", { key: "vp", style: { position: "relative", flex: "0 0 auto" } },
+        visuels[visuels.length - 1],
+        h("div", { style: { position: "absolute", right: carte ? 6 : 4, bottom: carte ? 6 : 4, minWidth: 21, height: 21, padding: "0 5px", borderRadius: 999, background: "rgba(6,7,9,0.88)", border: "1px solid " + tA(0.6), color: tnL, fontSize: 10.5, fontWeight: 800, fontFamily: M, display: "flex", alignItems: "center", justifyContent: "center" } }, "+" + enPlus));
+    }
+
+    var duo = (visuels.length > 1);
+    var contenu = duo
+      ? h("div", { style: { position: "relative", display: "flex", gap: 4, alignItems: "center" } },
+        /* Le trait de lumière qui relie les deux photos. */
+        h("div", { style: { position: "absolute", left: "8%", right: "8%", top: "50%", height: 1, background: "linear-gradient(90deg, transparent, " + tA(0.5) + ", transparent)", pointerEvents: "none" } }),
+        visuels)
+      : visuels[0];
+
+    var largeurCel = duo ? ((carte ? CL : T) * 2 + 12) : (carte ? CL : LARGEUR);
 
     return h("button", {
       key: "st" + g.user_id,
       onClick: function () { setOuvert(i); },
-      style: { background: "none", border: "none", padding: 0, cursor: "pointer", flex: "0 0 auto", width: carte ? CL : LARGEUR, textAlign: carte ? "left" : "center" }
+      style: { background: "none", border: "none", padding: 0, cursor: "pointer", flex: "0 0 auto", width: largeurCel, textAlign: carte ? "left" : "center" }
     },
-      visuel,
+      contenu,
       h("div", { style: { fontSize: 11, marginTop: 7, fontFamily: M, fontWeight: g.toutesVues ? 500 : 700, color: g.toutesVues ? "#8A929C" : "#E4ECEF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
         g.moi ? hsT("ma", lg) : (g.pseudo || "Cavalier")));
   }
@@ -804,6 +885,7 @@ function ComposeurStory(props) {
   var tgS = React.useState([]), tags = tgS[0], setTags = tgS[1];
   var cuS = React.useState(0), curseur = cuS[0], setCurseur = cuS[1];
   var mrS = React.useState([]), mentionRes = mrS[0], setMentionRes = mrS[1];
+  var slS = React.useState([]), sugLieux = slS[0], setSugLieux = slS[1];
   var corpsRef = React.useRef(null);
   var vivantRef = React.useRef(true);
 
@@ -851,6 +933,12 @@ function ComposeurStory(props) {
     })();
     return function () { vivantRef.current = false; };
   }, []);
+
+  /* Les clubs déjà codés (les 131 du Monde Au Galop), suggérés pendant la
+     frappe du lieu. Le champ reste libre. */
+  React.useEffect(function () {
+    setSugLieux((typeof hsSuggererLieux === "function") ? hsSuggererLieux(lieu) : []);
+  }, [lieu]);
 
   /* La frappe d'une mention @ déclenche sa propre recherche, indépendante du
      champ « Taguer ». Même différé de 320 ms : on ne requête pas à chaque
@@ -1000,6 +1088,16 @@ function ComposeurStory(props) {
           maxLength: HS_LIEU_MAX, placeholder: hsT("lieuChamp", lg), onFocus: remonter,
           style: { width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none" }
         }),
+        sugLieux.length
+          ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 } },
+            sugLieux.map(function (c, i) {
+              return h("button", {
+                key: "sl" + i,
+                onClick: function () { setLieu(c.nom); setSugLieux([]); },
+                style: { padding: "8px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700, border: "1px solid " + tA(0.55), background: "rgba(32,217,245,0.08)", color: tn, flex: "0 0 auto", maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }
+              }, c.nom + (c.ville ? (" · " + c.ville) : ""));
+            }))
+          : null,
 
         /* --- LES TAGS --- */
         titreBloc(hsT("taguerTitre", lg)),
@@ -1208,6 +1306,101 @@ function ChoixALaUne(props) {
 }
 
 /* ---------------------------------------------------------------------------
+   8b. LA MODIFICATION D'UNE STORY (13/08, décision de Blandine)
+   Légende et lieu seulement — la photo n'est pas remplaçable : changer
+   l'image, c'est une autre story. Point d'honnêteté déjà donné à Blandine :
+   une story modifiée reste marquée « vue » chez ceux qui l'ont ouverte,
+   comme sur Instagram.
+--------------------------------------------------------------------------- */
+function ModifierStory(props) {
+  var h = React.createElement;
+  var lg = props.langue || "fr";
+  var M = "'Montserrat',sans-serif", C = "'Cinzel',Georgia,serif";
+  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
+  var tn = th.principal, tnL = th.lumineux;
+  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(32,217,245," + a + ")"); }
+
+  var st = props.story || {};
+  var lS = React.useState(st.legende || ""), legende = lS[0], setLegende = lS[1];
+  var liS = React.useState(st.lieu || ""), lieu = liS[0], setLieu = liS[1];
+  var slS = React.useState([]), sugLieux = slS[0], setSugLieux = slS[1];
+  var bS = React.useState(false), busy = bS[0], setBusy = bS[1];
+  var corpsRef = React.useRef(null);
+
+  /* RÈGLE DU PROJET : tout panneau défilant est remis en haut à l'ouverture. */
+  React.useEffect(function () { try { if (corpsRef.current) corpsRef.current.scrollTop = 0; } catch (e) { } }, []);
+
+  /* Les clubs déjà codés, suggérés pendant la frappe du lieu. */
+  React.useEffect(function () {
+    setSugLieux((typeof hsSuggererLieux === "function") ? hsSuggererLieux(lieu) : []);
+  }, [lieu]);
+
+  function remonter(ev) {
+    try {
+      var cible = ev && ev.target;
+      if (!cible || !cible.scrollIntoView) return;
+      setTimeout(function () { try { cible.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (e) { } }, 320);
+    } catch (e) { }
+  }
+
+  async function enregistrer() {
+    if (busy) return;
+    setBusy(true);
+    var r = await hsModifierStory(st.id, legende, lieu);
+    setBusy(false);
+    if (r && r.error) { if (props.onEchec) props.onEchec(); return; }
+    if (props.onFait) props.onFait({ legende: legende, lieu: lieu, lieuIgnore: !!(r && r.lieuIgnore) });
+  }
+
+  var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
+  return portail(
+    h("div", {
+      onClick: function () { if (!busy && props.onFermer) props.onFermer(); },
+      style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.9)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
+    },
+      h("div", {
+        onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
+        ref: corpsRef,
+        style: { width: "100%", maxWidth: 520, maxHeight: "86vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none", background: "linear-gradient(180deg, #111417, #060709)", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" }
+      },
+        h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.18)", margin: "0 auto 16px" } }),
+        h("div", { style: { fontFamily: C, fontSize: 13.5, letterSpacing: 1.6, textTransform: "uppercase", color: "#F4F7FA", textAlign: "center" } }, hsT("modifierTitre", lg)),
+
+        h("textarea", {
+          value: legende, onChange: function (e) { setLegende(e.target.value); },
+          onFocus: remonter,
+          rows: 5, maxLength: HS_LEGENDE_MAX, placeholder: hsT("legende", lg),
+          style: { marginTop: 16, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none", resize: "none", lineHeight: 1.55 }
+        }),
+        (legende.length > 800)
+          ? h("div", { style: { fontSize: 10, fontFamily: M, fontWeight: 700, color: (legende.length >= HS_LEGENDE_MAX ? "#E8A6A6" : tA(0.9)), textAlign: "right", marginTop: 5 } }, legende.length + "/" + HS_LEGENDE_MAX)
+          : null,
+
+        h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.7, textTransform: "uppercase", color: tA(0.92), margin: "16px 0 8px" } }, "\uD83D\uDCCD " + hsT("lieuTitre", lg)),
+        h("input", {
+          value: lieu, onChange: function (e) { setLieu(e.target.value); },
+          onFocus: remonter,
+          maxLength: HS_LIEU_MAX, placeholder: hsT("lieuChamp", lg),
+          style: { width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none" }
+        }),
+        sugLieux.length
+          ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 } },
+            sugLieux.map(function (c, i) {
+              return h("button", {
+                key: "sl" + i,
+                onClick: function () { setLieu(c.nom); setSugLieux([]); },
+                style: { padding: "8px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700, border: "1px solid " + tA(0.55), background: "rgba(32,217,245,0.08)", color: tn, flex: "0 0 auto", maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }
+              }, c.nom + (c.ville ? (" \u00b7 " + c.ville) : ""));
+            }))
+          : null,
+
+        h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
+          h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, hsT("annuler", lg)),
+          h("button", { onClick: enregistrer, disabled: busy, style: { flex: 1.2, padding: "13px 0", borderRadius: 999, border: "none", background: busy ? "rgba(32,217,245,0.35)" : ("linear-gradient(90deg," + tn + "," + tnL + ")"), color: "#04252A", fontSize: 13, fontWeight: 800, fontFamily: M, cursor: busy ? "default" : "pointer" } }, busy ? hsT("envoi", lg) : hsT("enregistrer", lg))))),
+    document.body);
+}
+
+/* ---------------------------------------------------------------------------
    9. LA VISIONNEUSE
    Photo nue au centre sur noir absolu. En-tête au-dessus, lieu / légende /
    tags / actions en dessous, sur surface givrée : la photo ne reçoit AUCUN
@@ -1246,6 +1439,8 @@ function VisionneuseStories(props) {
   var chS = React.useState(false), choix = chS[0], setChoix = chS[1];
   var nrS = React.useState(""), nomRange = nrS[0], setNomRange = nrS[1];
   var dpS = React.useState(false), deplie = dpS[0], setDeplie = dpS[1];
+  var edS = React.useState(false), enEdition = edS[0], setEnEdition = edS[1];
+  var loS = React.useState(null), localMod = loS[0], setLocalMod = loS[1];
   var pauseRef = React.useRef(false);
   var barreRef = React.useRef(null);
   var glisseRef = React.useRef({ y0: 0, actif: false });
@@ -1254,6 +1449,9 @@ function VisionneuseStories(props) {
 
   var groupe = groupes[ig] || null;
   var story = groupe ? (groupe.stories[is] || null) : null;
+  if (story && localMod && localMod.id === story.id) {
+    story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu });
+  }
   var estMoi = !!(groupe && props.moiId && groupe.user_id === props.moiId);
 
   function fermer() { if (props.onFermer) props.onFermer(); }
@@ -1286,6 +1484,7 @@ function VisionneuseStories(props) {
     /* Sans cette remise a zero, la story suivante s'ouvrirait depliee ET le
        minuteur resterait en pause : la visionneuse se figerait. */
     setDeplie(false);
+    setEnEdition(false);
     pauseRef.current = false;
     if (!story) return;
     if (!estAlbum && story.photo_url && typeof hsTagsDeStory === "function") {
@@ -1387,7 +1586,8 @@ function VisionneuseStories(props) {
   var messages = {
     gardee: hsT("gardee", lg), signale: hsT("signale", lg),
     quota: hsT("quota", lg), echec: hsT("echec", lg),
-    rangee: hsT("rangee", lg) + (nomRange || "")
+    rangee: hsT("rangee", lg) + (nomRange || ""),
+    modifiee: hsT("modifiee", lg)
   };
 
   /* Les tags visibles : acceptés pour tout le monde ; en attente, seulement
@@ -1565,8 +1765,26 @@ function VisionneuseStories(props) {
               ? h("button", { onClick: function () { pauseRef.current = true; setChoix(true); }, style: { flex: "1 1 auto", padding: "11px 14px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "rgba(32,217,245,0.08)", color: tn, fontSize: 12, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, "\u2726 " + ((story.garde || action === "rangee") ? hsT("gardee", lg) : hsT("garder", lg)))
               : h("button", { onClick: signaler, style: { flex: "1 1 auto", padding: "11px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#9AA5AD", fontSize: 12, fontWeight: 600, fontFamily: M, cursor: "pointer" } }, hsT("signaler", lg)),
             estMoi
+              ? h("button", { onClick: function () { pauseRef.current = true; setEnEdition(true); }, style: { flex: "0 0 auto", padding: "11px 16px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#9AA5AD", fontSize: 12, fontWeight: 600, fontFamily: M, cursor: "pointer" } }, hsT("modifier", lg))
+              : null,
+            estMoi
               ? h("button", { onClick: supprimer, style: { flex: "0 0 auto", padding: "11px 16px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#9AA5AD", fontSize: 12, fontWeight: 600, fontFamily: M, cursor: "pointer" } }, hsT("supprimer", lg))
               : null)),
+
+    /* La feuille de modification met le minuteur en pause, comme le choix
+       d'a la une : on ne defile pas pendant qu'on ecrit. */
+    enEdition
+      ? h(ModifierStory, {
+        story: story, langue: lg,
+        onFermer: function () { setEnEdition(false); pauseRef.current = false; },
+        onEchec: function () { setEnEdition(false); pauseRef.current = false; setAction("echec"); },
+        onFait: function (mod) {
+          setEnEdition(false); pauseRef.current = false;
+          setLocalMod({ id: story.id, legende: mod.legende, lieu: mod.lieu });
+          setAction("modifiee");
+        }
+      })
+      : null,
 
     /* La feuille de choix de l'à la une. Elle met le minuteur en pause : sans
        ça, la story défilerait pendant qu'on choisit sa destination. */
@@ -1585,6 +1803,7 @@ try {
     window.BandeauStories = BandeauStories;
     window.RailALaUne = RailALaUne;
     window.ChoixALaUne = ChoixALaUne;
+    window.ModifierStory = ModifierStory;
     window.VisionneuseStories = VisionneuseStories;
     window.ComposeurStory = ComposeurStory;
   }
