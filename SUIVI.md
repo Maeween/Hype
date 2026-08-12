@@ -14,9 +14,9 @@
 
 **Ancienne version (113) — 12/08/2026 (SESSION 113 · PONEY D'OR, LE MEMORY EN CHEMINS DIRECTS, LAG CORRIGÉ) — md5 `17c334b8779dfd615c679e614d4ef161`, 9 087 825 octets. Témoin `reprise 1.6 · baby 112 · memo 4`. ⚠️ CET INDEX N'A JAMAIS ÉTÉ POUSSÉ — son contenu (le préchargement du Memory) est intégralement repris dans le 114 ci-dessous. Ne pas le pousser après le 114.**
 
-**Version actuelle de l'index.html : 12/08/2026 (SESSION 114 · LES STORIES DES CAVALIERS) — md5 `5e79bda3f2759be70e02ba10ffd720a1`, 9 088 624 octets.** Témoin attendu : **`reprise 1.7 · baby 112 · memo 4 · stories 1`**. `HYPE_VERSION_APP` 1.6 → **1.7**. **NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-stories.js`, md5 `376181c1415e5d69370e065f4b8bd5a1`, 40 350 octets, chargé via `?v=1`.** **SQL À PASSER : `hype-stories.sql`.**
+**Version actuelle de l'index.html : 12/08/2026 (SESSION 114b · STORIES, CORRECTIF D'AFFICHAGE) — md5 `d62523c2e30dd651a780ed8980065dce`, 9 088 624 octets.** Témoin attendu : **`reprise 1.7 · baby 112 · memo 4 · stories 2`**. `HYPE_VERSION_APP` reste **1.7** (aucune fonctionnalité ajoutée, deux correctifs). **FICHIER COMPAGNON : `hype-stories.js` v2, md5 `6db13d183547200c5ab89b1e5c881aae`, 43 711 octets, chargé via `?v=2`.** **SQL DÉJÀ PASSÉ le 12/08 à 21h37 — 5 politiques confirmées, ne pas le repasser.**
 
-**À POUSSER, état au 12/08 (session 114) :** `index.html` + `hype-stories.js` (nouveau). **Puis exécuter `hype-stories.sql` dans Supabase — sans lui, le bandeau reste vide et aucune publication n'est possible.** `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image.
+**À POUSSER, état au 12/08 (session 114b) :** `index.html` + `hype-stories.js` (v2). Le SQL est passé, rien à refaire en base. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -239,6 +239,48 @@ Vérifié à l'adresse `/sw.js` le 11/08 au soir : le fichier déployé est le *
 ### Linguae — relevé fait en lecture seule le 11/08, AUCUNE modification
 
 `lingo.html` ne contient **aucune** occurrence de `images/` : tout est chargé depuis la racine. Quatre endroits construisent les chemins dynamiquement — `"carte-"+ref+".webp"`, `"fond-"+ref+".webp"`, `"objet-"+ref+".webp"`, `"arrivee-"+ref+".mp4"` — sur 32 villes. Plus 8 images fixes (`carnet-ferme`, `carnet-page`, `fond-lingua`, `fond-newmarket`, `lingua-affiche`, `lingua-langues`, `themes-hero`, `apple-touch-icon-linguae.png`) et 2 vidéos (`ouverture.mp4`, `depart.mp4`). Déplacer Linguae = modifier ces 4 constructions + incrémenter `VER` (actuellement `?v=32`).
+
+---
+
+## SESSION 114b · STORIES — CORRECTIF D'AFFICHAGE (12/08, 21h45)
+
+Première mise en ligne des stories faite par Blandine (push + SQL passé, 5 politiques confirmées). Deux défauts signalés dans la minute : « on peut pas dire que ça soit foudroyant, j'ai dû m'y reprendre à 4 fois pour voir ma story » et « l'image de Feinn de ma story est celle de mon profil au lieu de celle de la story ».
+
+**Diagnostic fait sur son enregistrement d'écran**, lu image par image (14 images à 1 i/s, ffmpeg) : la visionneuse s'ouvre, l'en-tête est correct (« Blandine · à l'instant · Écurie Feinn »), la légende est correcte, mais **la zone photo reste noire pendant que la barre de progression se remplit**, puis l'écran se referme seul. Le rond passe alors en gris « déjà vue » sans que rien n'ait été vu. Au 4ᵉ essai la photo s'affiche — elle est en cache.
+
+### 🔴 DÉFAUT 1 — le minuteur partait avant l'image (ma faute)
+
+Le compte à rebours de 6 s démarrait au **montage** du composant. Sur une connexion réelle, une photo Supabase met plusieurs secondes à descendre : la story se refermait avant que l'image n'apparaisse. Sur Wi-Fi de bureau ça ne se voit pas ; sur 5G à une barre, la fonctionnalité est inutilisable. **Le harnais de rendu à blanc ne pouvait pas l'attraper : il vérifie des arbres, pas du temps réseau.**
+
+**Correctif** : le chargement de l'image devient le point de départ de tout — le minuteur, la barre de progression **et** le marquage « vue ».
+
+- `onLoad` → marque vue, démarre le minuteur, **précharge la story suivante** (elle sera déjà là au tap).
+- `onError` → même chose + message « Photo indisponible » (6 langues), sinon la visionneuse resterait bloquée sur un fichier introuvable.
+- Avant le chargement : la barre reste à **zéro** (elle dit la vérité) et une **respiration turquoise** occupe le centre. Design Bible : rien de parfaitement statique, la lumière guide. Elle disparaît dès l'arrivée de la photo, l'image reçoit un fondu d'opacité et **aucun calque ne subsiste dessus**.
+
+### 🟠 DÉFAUT 2 — le rond montrait la photo de profil
+
+`apercu` était `avatar_url || photo_url`. Un bandeau de stories doit montrer ce qu'il y a **dedans** : l'ordre est inversé, l'avatar n'est plus qu'un repli si la photo manque.
+
+### CE QUI RESTE OUVERT (non touché, signalé)
+
+Sur une story **unique**, un tap dans la zone droite ferme la visionneuse (il n'y a pas de suivante). C'est le comportement d'Instagram, donc laissé tel quel — mais avec une seule story ça peut passer pour une fermeture accidentelle. **À trancher par Blandine** si ça la gêne à l'usage.
+
+### À L'ÉCRAN
+
+**+ Une respiration turquoise** au centre pendant la descente de la photo.
+**+ Un message « Photo indisponible »** si le fichier ne charge pas.
+**~ Le rond du bandeau** montre la photo de la story au lieu de l'avatar.
+**~ Le témoin** passe de `stories 1` à `stories 2`.
+**− Rien ne disparaît.**
+
+### VÉRIFICATIONS
+
+`node --check` 16/16 blocs inline + le module. Harnais de rendu rejoué (4 composants, 6 langues) et **complété de 5 assertions** sur ce correctif précis : dépendance du minuteur au chargement, `onLoad`/`onError` branchés, `chargee` dans les dépendances de l'effet, ordre de l'aperçu du rond, et absence de marquage « vue » au montage. Index inchangé sauf la balise `?v=2` — taille identique à l'octet près (9 088 624).
+
+### Préparation Flutter (session 114b)
+
+Aucune amélioration d'architecture réalisée sur cette session : deux correctifs de comportement dans le module déjà isolé. À noter tout de même que la leçon est portable telle quelle en Dart — **un minuteur d'affichage ne démarre jamais avant que le média soit là**. Elle vaut aussi pour les visionneuses photo de la fiche cheval, qui restent à extraire.
 
 ---
 

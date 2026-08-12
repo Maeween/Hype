@@ -38,7 +38,7 @@
      (guideline 1.2, contenu généré par les utilisateurs). Retrait = une ligne.
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "1";
+var HYPE_STORIES_VERSION = "2";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision Blandine du 12/08). */
@@ -298,6 +298,7 @@ var HS_TXT = {
   echec: { fr: "Enregistrement impossible \u2014 v\u00e9rifie ta connexion.", en: "Could not save \u2014 check your connection.", es: "No se pudo guardar.", it: "Salvataggio non riuscito.", ja: "保存できませんでした。", de: "Speichern nicht m\u00f6glich." },
   ajoutee: { fr: "Ta story est en ligne.", en: "Your story is live.", es: "Tu story est\u00e1 publicada.", it: "La tua story \u00e8 online.", ja: "ストーリーを公開しました。", de: "Deine Story ist online." },
   connecte: { fr: "Connecte-toi pour publier une story.", en: "Sign in to post a story.", es: "Inicia sesi\u00f3n para publicar.", it: "Accedi per pubblicare.", ja: "投稿するにはログインしてください。", de: "Melde dich an, um zu ver\u00f6ffentlichen." },
+  imgKo: { fr: "Photo indisponible", en: "Photo unavailable", es: "Foto no disponible", it: "Foto non disponibile", ja: "写真を読み込めません", de: "Foto nicht verf\u00fcgbar" },
   maintenant: { fr: "\u00e0 l'instant", en: "just now", es: "ahora mismo", it: "adesso", ja: "たった今", de: "gerade eben" },
   ilYa: { fr: "il y a ", en: "", es: "hace ", it: "", ja: "", de: "vor " },
   jour: { fr: " j", en: "d ago", es: " d", it: " g", ja: "日前", de: " T" },
@@ -387,7 +388,10 @@ function BandeauStories(props) {
     var taille = 62;
     var anneau = g.toutesVues ? "rgba(255,255,255,0.16)" : ("linear-gradient(135deg," + tn + "," + tnL + ")");
     var derniere = g.stories[g.stories.length - 1];
-    var apercu = (g.avatar_url || (derniere && derniere.photo_url) || null);
+    /* 12/08 (114b) — signalé par Blandine : le rond affichait la photo de
+       PROFIL et non la story. Un bandeau de stories montre ce qu'il y a
+       DEDANS ; l'avatar ne sert que de repli si la photo manque. */
+    var apercu = ((derniere && derniere.photo_url) || g.avatar_url || null);
     return h("button", {
       key: "st" + g.user_id,
       onClick: function () { setOuvert(i); },
@@ -545,6 +549,17 @@ function VisionneuseStories(props) {
   var story = groupe ? (groupe.stories[is] || null) : null;
   var estMoi = !!(groupe && props.moiId && groupe.user_id === props.moiId);
 
+  /* 12/08 (114b) — CORRECTIF DU DÉFAUT SIGNALÉ PAR BLANDINE.
+     Le minuteur de 6 s démarrait au MONTAGE. Sur une connexion réelle, la
+     photo met plusieurs secondes à descendre de Supabase : la story se
+     refermait avant que l'image n'apparaisse, et le rond passait en « déjà
+     vue » alors que rien n'avait été vu. Il fallait s'y reprendre à quatre
+     fois pour voir sa propre story.
+     Désormais le chargement de l'image est le point de départ de tout :
+     le minuteur, la barre de progression ET le marquage « vue ». */
+  var chS = React.useState(false), chargee = chS[0], setChargee = chS[1];
+  var erS = React.useState(false), erreurImg = erS[0], setErreurImg = erS[1];
+
   function fermer() { if (props.onFermer) props.onFermer(); }
 
   function suivante() {
@@ -561,15 +576,35 @@ function VisionneuseStories(props) {
     }
   }
 
-  /* Marquage « vue » dès l'affichage. */
+  /* Changement de story : on repart d'une image non chargée. Le marquage
+     « vue » n'est PLUS fait ici (voir surImageChargee). */
   React.useEffect(function () {
-    if (story && story.id && typeof hsMarquerVue === "function") hsMarquerVue(story.id);
-    setAction(null);
+    setChargee(false); setErreurImg(false); setAction(null);
   }, [(story && story.id) || ""]);
 
-  /* Barre de progression + passage automatique. */
+  /* L'image est arrivée : on marque la story vue, et le minuteur peut partir.
+     En cas d'échec de chargement on fait la même chose, sinon la visionneuse
+     resterait bloquée indéfiniment sur un fichier introuvable. */
+  function surImageChargee() {
+    if (story && story.id && typeof hsMarquerVue === "function") hsMarquerVue(story.id);
+    setChargee(true);
+    /* Préchargement de la suivante : elle sera déjà là au tap. */
+    try {
+      var apres = null;
+      if (groupe && groupe.stories[is + 1]) apres = groupe.stories[is + 1];
+      else if (groupes[ig + 1] && groupes[ig + 1].stories[0]) apres = groupes[ig + 1].stories[0];
+      if (apres && apres.photo_url) { var im = new Image(); im.src = apres.photo_url; }
+    } catch (e) { }
+  }
+  function surImageEchec() {
+    if (story && story.id && typeof hsMarquerVue === "function") hsMarquerVue(story.id);
+    setErreurImg(true); setChargee(true);
+  }
+
+  /* Barre de progression + passage automatique — seulement quand l'image
+     est là. Avant, la barre reste à zéro : elle dit la vérité. */
   React.useEffect(function () {
-    if (!story) return;
+    if (!story || !chargee) return;
     var debut = Date.now(); var reste = HS_DUREE_VUE_MS; var raf = 0; var vivant = true;
     function boucle() {
       if (!vivant) return;
@@ -584,7 +619,7 @@ function VisionneuseStories(props) {
     try { if (barreRef.current) barreRef.current.style.width = "0%"; } catch (e2) { }
     raf = requestAnimationFrame(boucle);
     return function () { vivant = false; if (raf) cancelAnimationFrame(raf); };
-  }, [(story && story.id) || "", ig, is]);
+  }, [(story && story.id) || "", ig, is, chargee]);
 
   async function garder() {
     if (!story) return;
@@ -668,7 +703,21 @@ function VisionneuseStories(props) {
 
       /* --- la photo, nue --- */
       h("div", { style: { flex: 1, position: "relative", minHeight: 0, background: "#060709", display: "flex", alignItems: "center", justifyContent: "center" } },
-        h("img", { src: story.photo_url, alt: "", style: { maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block" } }),
+        h("img", {
+          src: story.photo_url, alt: "",
+          onLoad: surImageChargee, onError: surImageEchec,
+          style: { maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block", opacity: chargee ? 1 : 0, transition: "opacity 220ms ease-out" }
+        }),
+        /* Attente : une respiration turquoise, pas un sablier. Design Bible —
+           rien de parfaitement statique, la lumière guide. Elle disparaît dès
+           que la photo est là. AUCUN calque ne reste sur l'image. */
+        (!chargee)
+          ? h("div", { style: { position: "absolute", left: "50%", top: "50%", transform: "translate(-50%,-50%)", width: 46, height: 46, borderRadius: "50%", border: "1px solid " + tA(0.45), boxShadow: "0 0 26px " + tA(0.22) + ", inset 0 0 18px " + tA(0.12), animation: "hsRespire 1600ms ease-in-out infinite" } })
+          : null,
+        erreurImg
+          ? h("div", { style: { position: "absolute", left: 0, right: 0, top: "56%", textAlign: "center", fontSize: 11.5, fontFamily: M, color: "#8A929C" } }, hsT("imgKo", lg))
+          : null,
+        h("style", { dangerouslySetInnerHTML: { __html: "@keyframes hsRespire{0%,100%{opacity:.35;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.13)}}" } }),
         /* Zones de navigation : transparentes, aucun assombrissement. */
         h("button", { onClick: precedente, "aria-label": "Pr\u00e9c\u00e9dente", style: { position: "absolute", left: 0, top: 0, bottom: 0, width: "32%", background: "transparent", border: "none", cursor: "pointer" } }, ""),
         h("button", { onClick: suivante, "aria-label": "Suivante", style: { position: "absolute", right: 0, top: 0, bottom: 0, width: "48%", background: "transparent", border: "none", cursor: "pointer" } }, "")),
