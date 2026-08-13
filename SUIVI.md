@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 124 · STORIES v10 — LA CHANSON DE MA PAGE) — md5 `e05edbc3b97121008ff32951f4a85725`, 9098414 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 10`**. Balise **`?v=10`**. **FICHIER COMPAGNON : `hype-stories.js` v10, md5 `d1f571f705c80479a42f7a03bf335e0c`, 129164 octets.** **UN SQL d'une ligne : `alter table public.profiles add column if not exists musique_page text;`** — repli codé si la colonne manque (message explicite à l'enregistrement, la pastille reste invisible).
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 125 · STORIES v11 — PLUS AUCUNE AVANCE FORCÉE) — md5 `de55b27225ab76321a805bd271a15302`, 9098414 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 11`**. Balise **`?v=11`**. **FICHIER COMPAGNON : `hype-stories.js` v11, md5 `ad271e5f53b481368f2a4a1e7fefa7b8`, 129741 octets.** **AUCUN SQL.**
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 124) :** `index.html` + `hype-stories.js` (v10) + le SQL `musique_page` ci-dessus. Aucun mp3 nouveau (les 11 de la v7 servent aussi à la chanson de page). Compagnons inchangés (baby 112, memory v4 — NE PAS repousser). **EN ATTENTE DE BLANDINE (design, à froid) :** la FORME (maquette 120), le BANDEAU de fond (maquette 122), la page Cavalier visitée.
+**À POUSSER, état au 13/08 (session 125) :** `index.html` + `hype-stories.js` (v11). AUCUN SQL. Compagnons inchangés. **EN ATTENTE DE BLANDINE (design, à froid) :** la présentation des stories (3 maquettes : formes 120, bandeaux 122, mises en scène 124 — constellation/boxes/cristal/affiche), la page Cavalier visitée. **À VÉRIFIER PAR BLANDINE :** la chanson de sa page (bouton en pointillés sous le rail À la une, page Cavalier, témoin stories ≥ 10 requis).
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,22 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 125 · STORIES v11 — PLUS AUCUNE AVANCE FORCÉE
+
+**Décision de Blandine (13/08, ~04 h)** : « Il y a pas mal de texte à lire par moment, on peut éviter de se faire projeter de force dans la story suivante ? À la limite on ne met pas de timer et on attend que la personne clique pour changer ? » — prise telle quelle. Son second signalement (« la deuxième story vient de sauter quand j'ai voulu cliquer sur la musique ») avait la même cause : texte court = 6 s, le temps expirait pendant qu'elle visait la pastille.
+
+**Le correctif tient en une ligne** : `pct >= 100` arrête la boucle **sans appeler `suivante()`**. La barre se remplit toujours (elle indique où on en est), mais arrivée au bout, rien ne bouge — la story attend le tap. Avancer reste possible par les zones (et elles seules). `hsDureeStory` ne sert plus qu'au rythme de remplissage ; le mécanisme de pause et la relance des feuilles restent en place et inoffensifs. Réversible en remettant l'appel si un jour un mode « défilement auto » revient en option.
+
+**Question de Blandine restée ouverte** : elle n'a pas trouvé où lancer la chanson de sa page. Réponse donnée : le bouton en pointillés « ♪ Choisir la chanson de ma page » est **sous le rail À la une** de la page Cavalier ; nécessite le témoin `stories 10` minimum (cache sinon). **À confirmer par elle** — si le bouton manque réellement avec la v11 en ligne, chercher côté montage (`EcranMonCavalier`, sous `RailALaUne`).
+
+### VÉRIFICATIONS
+16/16 blocs + module. **133 assertions** + 13 mentions. Nouvelles (3) : barre pleine sans avance, aucun `suivante()` du minuteur, le tap reste le seul moteur.
+
+### Préparation Flutter (session 125)
+Le retrait de l'avance automatique est une inversion de contrôle propre : le rythme appartient au lecteur, pas au composant. Rien d'autre.
 
 ---
 

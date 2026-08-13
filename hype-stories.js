@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "10";
+var HYPE_STORIES_VERSION = "11";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -1867,7 +1867,15 @@ function VisionneuseStories(props) {
       reste = Math.max(0, duree - ecoule);
       var pct = Math.min(100, (ecoule / duree) * 100);
       try { if (barreRef.current) barreRef.current.style.width = pct + "%"; } catch (e) { }
-      if (pct >= 100) { vivant = false; suivante(); return; }
+      /* 13/08 03h58 (décision de Blandine) : PLUS AUCUNE AVANCE FORCÉE.
+         « Il y a pas mal de texte à lire — on ne met pas de timer et on
+         attend que la personne clique pour changer. » La barre se remplit
+         encore, elle dit où on en est — mais arrivée au bout, RIEN ne bouge :
+         la story attend le tap. C'est aussi ce qui faisait « sauter » la
+         story 2 pendant qu'elle visait la pastille son : texte court, 6 s
+         écoulées, avance au moment du geste. hsDureeStory ne sert plus qu'au
+         rythme de remplissage de la barre. */
+      if (pct >= 100) { vivant = false; return; }
       raf = requestAnimationFrame(boucle);
     }
     try { if (barreRef.current) barreRef.current.style.width = "0%"; } catch (e2) { }
