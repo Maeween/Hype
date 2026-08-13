@@ -460,6 +460,17 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   pointer-events:none;transition:opacity .3s ease,visibility .3s ease}
 #collection.on{opacity:1;visibility:visible;pointer-events:auto}
 #collectionIf{position:absolute;inset:0;width:100%;height:100%;border:0;background:#060709}
+/* LA MISE EN SITUATION (session 210, 13/08) — meme motif que la
+   collection, la sellerie et le globe : une page a part en iframe.
+   ⚠️ CHOIX DELIBERE, ce n'est pas de la paresse : un fichier separe
+   peut etre LANCE ET VU dans un navigateur, ce que lingo.html ne
+   permet pas. C'est la lecon de la 209 — 700 lignes d'un ecran
+   jamais vu tourner. Le `src` reste vide au depart : la page ne se
+   charge qu'a la premiere ouverture.  */
+#situation{position:fixed;inset:0;z-index:41;background:#060709;opacity:0;visibility:hidden;
+  pointer-events:none;transition:opacity .3s ease,visibility .3s ease}
+#situation.on{opacity:1;visibility:visible;pointer-events:auto}
+#situationIf{position:absolute;inset:0;width:100%;height:100%;border:0;background:#060709}
 /* LA SELLERIE (session 209) — meme motif que la collection et le globe :
    une page a part en iframe. z-index 41 comme la collection. */
 #sellerie{position:fixed;inset:0;z-index:41;background:#0B0805;opacity:0;visibility:hidden;
@@ -1928,6 +1939,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <div id="sellerie">
   <iframe id="sellerieIf" src="" title="Ma sellerie"></iframe>
 </div>
+<!-- ==================================================================
+     LA MISE EN SITUATION (session 210, 13/08) — les phrases de la ville
+     jouees comme des micro-scenes. Chargee en iframe, `src` vide au
+     depart pour ne rien telecharger avant la premiere ouverture.
+     ================================================================== -->
+<div id="situation">
+  <iframe id="situationIf" src="" title="Mise en situation" allow="microphone"></iframe>
+</div>
+
 <button id="bCollection" data-t="laCollection">La collection</button>
 
 <!-- ==================================================================
@@ -5793,6 +5813,58 @@ function fermerGlobe(){
    ou non, objet gagné ou non, et la lettre dans la langue étudiée —
    exactement ce qu'affiche déjà l'écran d'arrivée, recalculé ici pour
    la vitrine plutôt que dupliqué à la main. */
+/* ==================================================================
+   LA MISE EN SITUATION (session 210, 13/08)
+   Les phrases de la ville, jouees en micro-scenes dans une iframe.
+
+   ⚠️ CE N'EST PAS UN CHATBOT. Le moteur enchaine des exercices
+   predefinis ; le joueur a l'impression d'une conversation. Aucune IA
+   en temps reel, donc aucune phrase fausse ne peut sortir.
+
+   ⚠️ AUCUN AUDIO ENREGISTRE n'existe : la voix vient de
+   `speechSynthesis`, dans la page fille. Le jour ou de vraies voix
+   arrivent, seule sa fonction `dis()` change.
+
+   Le double verrou de fermeture est celui de la collection (panne du
+   6 aout) : on retire la classe ET on vide le `src`, sinon l'iframe
+   continue de parler derriere.
+================================================================== */
+function ouvrirSituation(refVille){
+  var f = S("situationIf");
+  if(!f) return;
+  var lg = langueUI();
+  f.src = "lingo-dialogue.html?ville=" + encodeURIComponent(refVille) +
+          "&l=" + encodeURIComponent(lg) + "&v=" + encodeURIComponent(VER);
+  S("situation").classList.add("on");
+  /* 🟥 LE FILET. La page fille charge les lexiques elle-meme — une
+     iframe a son propre `window` et ne voit pas le notre. Si une de ses
+     balises echoue (nom de fichier change, service worker qui sert une
+     vieille reponse), on lui renvoie NOS donnees et elle se reconstruit.
+     Defaut trouve au banc le 13/08 : sans ca l'ecran s'ouvrait vide. */
+  var envoye = false;
+  function filet(){
+    if(envoye) return; envoye = true;
+    try{
+      f.contentWindow.postMessage({t:"linguae-situation", ville:refVille,
+        l:lg, lex:(window.HYPE_LINGO_LEX || {})}, "*");
+    }catch(e){}
+  }
+  f.addEventListener("load", filet, {once:true});
+  setTimeout(filet, 1200);
+}
+function fermerSituation(){
+  S("situation").classList.remove("on");
+  var f = S("situationIf");
+  /* verrou dur : sans vider le src, la synthese vocale de la page fille
+     peut continuer a parler apres la fermeture. */
+  if(f) f.src = "";
+}
+/* la page fille demande sa fermeture par message — elle n'a aucun autre
+   moyen d'agir sur le parent, et c'est voulu. */
+window.addEventListener("message", function(ev){
+  if(ev && ev.data && ev.data.t === "linguae-dialogue-fermer") fermerSituation();
+});
+
 function ouvrirCollection(){
   S("collection").classList.add("on");
   var f = S("collectionIf");
@@ -8003,6 +8075,30 @@ function choisirLecon(){
       (objFait ? (ui==="en"?"yours":"obtenu")
                : (ui==="en"?"a perfect quiz":"le quiz sans faute"))})));
   S("lcCorps").appendChild(boite);
+
+  /* ⚠️ AJOUT DU 13/08 (session 210) — LA MISE EN SITUATION, sous le
+     defi. Trois moments, pas trois options : les lecons, puis le defi
+     qui enchaine, puis les phrases en situation. Meme raisonnement que
+     le defi en 209 : des boutons de meme poids cote a cote laisseraient
+     croire qu'on choisit.
+     Il n'apparait QUE si la ville a un dialogue ecrit — aujourd'hui
+     La Baule et Le Morne. Ailleurs, rien ne s'affiche : pas de bouton
+     mort. */
+  (function(){
+    if(!LC || !LC.ville) return;
+    var aDialogue = false;
+    try{
+      var L = window.HYPE_LINGO_LEX || {};
+      for(var k in L){
+        var d = L[k] && L[k].dialogue;
+        if(d && d.ville === LC.ville && d.phrases && d.phrases.length){ aDialogue = true; break; }
+      }
+    }catch(e){}
+    if(!aDialogue) return;
+    S("lcCorps").appendChild(el("button",{class:"lgColl", style:"margin-top:10px",
+      onclick:function(){ ouvrirSituation(LC.ville); }},
+      langueUI()==="en" ? "Handle it on the spot" : "Me d\u00e9brouiller sur place"));
+  })();
 
   /* ⚠️ AJOUT DU 12/08 (session 209) — LE DEFI DE LA VILLE, EN DESSOUS DES
      LECONS ET DU QUIZ, jamais a cote. Blandine : « le quiz on peut prendre

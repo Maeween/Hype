@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Linguae — mise en situation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--noir:#060709;--anthracite:#111417;--turquoise:#20D9F5;--blanc:#F4F7FA;
+  --gris:#94A3AF;--ambre:#E0B070;--vert:#5FD3A6}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--noir);overscroll-behavior:none;overflow-x:clip}
+body{margin:0;background:var(--noir);color:var(--blanc);
+  font-family:'Montserrat',system-ui,sans-serif;font-weight:300;overflow-x:clip;
+  min-height:100dvh;display:flex;flex-direction:column}
+
+/* ---------- barre du haut ---------- */
+header{flex:0 0 auto;padding:calc(env(safe-area-inset-top) + 12px) 16px 10px;
+  display:flex;align-items:center;gap:10px}
+header .fermer{flex:0 0 auto;width:34px;height:34px;border-radius:50%;
+  background:var(--anthracite);border:1px solid rgba(255,255,255,.09);
+  color:var(--blanc);font-size:17px;line-height:1;padding:0}
+header .milieu{flex:1 1 auto;min-width:0;text-align:center}
+header .scene{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.06em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header .ville{font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--turquoise);margin-top:3px}
+header .sos{flex:0 0 auto;background:rgba(224,176,112,.12);color:var(--ambre);
+  border:1px solid rgba(224,176,112,.3);border-radius:8px;padding:7px 9px;
+  font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.08em}
+
+.progres{flex:0 0 auto;height:3px;background:rgba(255,255,255,.07);margin:0 16px;
+  border-radius:2px;overflow:hidden}
+.progres i{display:block;height:100%;width:0;background:var(--turquoise);
+  transition:width .3s ease}
+
+/* ---------- la scène ---------- */
+main{flex:1 1 auto;overflow-y:auto;padding:18px 16px 8px;-webkit-overflow-scrolling:touch}
+
+.consigne{display:flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--turquoise);font-weight:500;margin-bottom:14px}
+.consigne span.ic{font-size:15px;letter-spacing:0}
+
+/* le fil de la conversation */
+.fil{margin-bottom:16px}
+.bulle{max-width:88%;border-radius:14px;padding:11px 13px;margin-bottom:9px;
+  font-size:13.5px;line-height:1.45;position:relative}
+.bulle.eux{background:var(--anthracite);border:1px solid rgba(255,255,255,.07);
+  border-bottom-left-radius:4px}
+.bulle.moi{background:rgba(32,217,245,.09);border:1px solid rgba(32,217,245,.22);
+  margin-left:auto;border-bottom-right-radius:4px}
+.bulle .qui{font-size:8px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gris);margin-bottom:5px}
+.bulle .trad{display:block;font-size:11.5px;color:var(--gris);margin-top:6px;font-style:italic}
+.bulle .haut{background:none;border:0;color:var(--turquoise);font-size:14px;padding:0 0 0 6px}
+.bulle.pass{opacity:.5}
+
+/* la carte de l'exercice */
+.carte{background:var(--anthracite);border:1px solid rgba(255,255,255,.08);
+  border-radius:15px;padding:15px 14px;margin-bottom:14px}
+.carte .fr{font-size:15px;line-height:1.4;font-weight:400}
+.carte .fr b{color:var(--turquoise);font-weight:600}
+.carte .cible{font-size:15px;line-height:1.45;margin-top:4px}
+.carte .aussi{font-size:10.5px;color:var(--gris);margin-top:8px;font-style:italic}
+
+/* écoute : les significations à choisir */
+.choix{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.choix button{text-align:left;background:var(--anthracite);color:var(--blanc);
+  border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:12px 13px;
+  font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;line-height:1.4}
+.choix button.bon{border-color:rgba(95,211,166,.5);background:rgba(95,211,166,.1)}
+.choix button.faux{border-color:rgba(224,176,112,.4);opacity:.55}
+.choix button:disabled{pointer-events:none}
+
+/* remets en ordre */
+.zoneOrdre{min-height:52px;border:1px dashed rgba(32,217,245,.3);border-radius:11px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;margin-bottom:10px}
+.reserve{display:flex;flex-wrap:wrap;gap:7px}
+.jeton{background:rgba(32,217,245,.1);border:1px solid rgba(32,217,245,.3);
+  color:var(--blanc);border-radius:9px;padding:8px 11px;font-size:13px;
+  font-family:'Montserrat',sans-serif;font-weight:300}
+
+/* écris-le */
+textarea.saisie{width:100%;min-height:70px;background:#0A0D10;color:var(--blanc);
+  border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px;
+  font-family:'Montserrat',sans-serif;font-size:14px;font-weight:300;line-height:1.4}
+
+/* le verdict — jamais un échec */
+.verdict{border-radius:12px;padding:12px 13px;margin-top:12px;font-size:12.5px;
+  line-height:1.55;border-left:2px solid}
+.verdict.ok{background:rgba(95,211,166,.08);border-left-color:var(--vert)}
+.verdict.presque{background:rgba(224,176,112,.09);border-left-color:var(--ambre)}
+.verdict.flou{background:rgba(255,255,255,.04);border-left-color:var(--gris)}
+.verdict b{display:block;font-size:13.5px;font-weight:600;margin-bottom:5px}
+.verdict.ok b{color:var(--vert)}
+.verdict.presque b{color:var(--ambre)}
+.verdict .p{display:inline-block;background:rgba(32,217,245,.12);color:var(--turquoise);
+  border-radius:6px;padding:2px 7px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+.verdict .entendu{color:var(--gris);font-size:11px;margin-top:6px;font-style:italic}
+
+/* ---------- barre du bas ---------- */
+footer{flex:0 0 auto;padding:8px 16px calc(env(safe-area-inset-bottom) + 14px);
+  display:flex;flex-direction:column;gap:8px;
+  background:linear-gradient(180deg,rgba(6,7,9,0),var(--noir) 40%)}
+.rang{display:flex;gap:8px}
+.rang button{flex:1;border-radius:11px;padding:13px 8px;font-size:12.5px;font-weight:500;
+  font-family:'Montserrat',sans-serif;border:1px solid rgba(255,255,255,.1);
+  background:var(--anthracite);color:var(--blanc)}
+.rang button.go{background:linear-gradient(120deg,#0C5763,#38E2F8);color:#04252A;
+  border-color:transparent;font-weight:600}
+.rang button.micro{background:rgba(32,217,245,.12);border-color:rgba(32,217,245,.35);
+  color:var(--turquoise)}
+.rang button.micro.ecoute{background:var(--turquoise);color:#04252A;
+  animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.6}}
+.rang button:disabled{opacity:.38}
+.rang button .ic{font-size:15px;margin-right:5px}
+
+/* ---------- SOS ---------- */
+.sosPanneau{position:fixed;inset:0;z-index:60;background:rgba(6,7,9,.93);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:none;flex-direction:column;padding:calc(env(safe-area-inset-top) + 20px) 18px 20px;
+  overflow-y:auto}
+.sosPanneau.on{display:flex}
+.sosPanneau h2{font-family:'Cinzel',serif;font-size:16px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ambre);margin:0 0 4px}
+.sosPanneau .sst{font-size:11px;color:var(--gris);margin:0 0 20px}
+.sosPanneau .bloc{background:var(--anthracite);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:15px 14px;margin-bottom:12px}
+.sosPanneau .lab{font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gris);margin-bottom:7px}
+.sosPanneau .gros{font-size:15.5px;line-height:1.45}
+.sosPanneau .pron{font-family:ui-monospace,Menlo,monospace;font-size:13px;
+  color:var(--turquoise);line-height:1.7}
+.sosPanneau .pron i{display:block;font-style:normal;color:var(--gris);font-size:11px}
+
+.note{border-left:1px solid rgba(32,217,245,.35);padding:2px 0 2px 11px;
+  font-size:10.5px;color:var(--gris);line-height:1.6;margin:14px 0 0}
+.note b{color:var(--blanc);font-weight:500}
+.vide{text-align:center;color:var(--gris);font-size:12.5px;padding:40px 20px;line-height:1.6}
+.cache{display:none !important}
+</style>
+</head>
+<body>
+
+<header>
+  <button class="fermer" id="btFermer" title="Fermer">&#10005;</button>
+  <div class="milieu">
+    <div class="scene" id="hScene">…</div>
+    <div class="ville" id="hVille"></div>
+  </div>
+  <button class="sos" id="btSos">SOS</button>
+</header>
+<div class="progres"><i id="jauge"></i></div>
+
+<main id="corps"></main>
+
+<footer id="pied"></footer>
+
+<div class="sosPanneau" id="sos">
+  <h2>SOS — comment je dis ?</h2>
+  <p class="sst">Aucune pénalité. C'est fait pour être utilisé.</p>
+  <div id="sosCorps"></div>
+  <div class="rang" style="margin-top:6px">
+    <button id="sosFermer">Revenir à la scène</button>
+  </div>
+</div>
+
+<!-- 🟥 LES LEXIQUES SE CHARGENT ICI, DANS L'IFRAME.
+     Une iframe a son PROPRE `window` : elle ne voit pas le
+     `HYPE_LINGO_LEX` de la page parente. Sans ces deux lignes l'écran
+     s'ouvre VIDE — défaut trouvé au banc d'essai le 13/08 avant
+     livraison, et c'est exactement la panne de la session 209.
+     ⚠️ TOUT NOUVEAU CHAPITRE QUI REÇOIT UN `dialogue` DOIT ÊTRE AJOUTÉ
+     ICI. Un fichier absent est sans danger (le script échoue seul), mais
+     sa ville n'aura pas de scène.
+     Second filet : la page parente renvoie aussi les données par
+     postMessage — voir `ouvrirSituation()` dans lingo.html. Si ces
+     balises échouent, le message rattrape. -->
+<script src="hype-lingo-lex-arrivee.js"></script>
+<script src="hype-lingo-lex-balade.js"></script>
+<script>
+/* ==================================================================
+   LINGUAE — MISE EN SITUATION GUIDÉE
+   13 août 2026, session 210.
+
+   🟥 CE N'EST PAS UN CHATBOT, et c'est volontaire. Le joueur a
+   l'impression d'une conversation qui continue, alors que le moteur
+   n'enchaîne que des exercices prédéfinis. Aucune IA en temps réel,
+   donc aucune phrase fausse ne peut sortir devant un enfant.
+
+   FICHIER AUTONOME, chargé en iframe comme lingo-collection.html et
+   lingo-globe.html. Motif choisi pour une raison précise : il peut être
+   LANCÉ ET VU dans un navigateur, ce que lingo.html ne permet pas ici.
+   La leçon de la session 209 — 700 lignes d'un écran jamais vu tourner.
+
+   LES DONNÉES VIENNENT DES LEXIQUES, rien n'est dupliqué :
+   `HYPE_LINGO_LEX[<chapitre>].dialogue` porte les phrases, et les
+   `temps` SONT les micro-scènes. Le champ `dit` dit qui parle.
+
+   ⚠️ IL N'EXISTE AUCUN AUDIO ENREGISTRÉ. La voix vient de
+   `speechSynthesis`, comme la fonction `dire()` de lingo.html. Le jour
+   où de vraies voix arrivent, seule `dis()` change : elle cherchera un
+   fichier et retombera sur la synthèse s'il manque.
+
+   RÈGLES DE BLANDINE, INSCRITES DANS LE CODE :
+   · « on ne recale évidemment pas, l'idée c'est d'apprendre » — aucun
+     échec, aucune note de prononciation, « Continuer » toujours visible.
+   · La reconnaissance vocale rend du TEXTE, pas une analyse d'accent.
+     On ne prétend donc jamais juger l'accent : on dit seulement quel
+     mot n'a pas été reconnu. ⚠️ NE PAS AJOUTER de score de
+     prononciation, la technologie ne le permet pas.
+   · Les distracteurs de « Que réponds-tu ? » sont pris dans les VRAIES
+     phrases de la ville — tous crédibles, jamais de fausse réponse
+     absurde.
+================================================================== */
+
+var P = new URLSearchParams(location.search);
+var REF_VILLE = P.get("ville") || "labaule";
+var LG = P.get("l") || "fr";          /* langue de lecture */
+var VER = P.get("v") || "";
+
+/* Seuls FR et EN existent dans les phrases aujourd'hui. Une langue de
+   lecture autre retombe sur le français, et on le dit. */
+var LANGUES_PHRASES = ["fr","en"];
+var REPLI_LG = false;
+if(LANGUES_PHRASES.indexOf(LG) < 0){ REPLI_LG = true; LG = "fr"; }
+var CIBLE = (LG === "en") ? "fr" : "en";   /* la langue qu'on apprend */
+
+var VOIX = {fr:"fr-FR", en:"en-GB", es:"es-ES", it:"it-IT", de:"de-DE", ja:"ja-JP"};
+
+var TITRES = {
+  labaule: {nom:"La Baule",
+    t:{1:"J'arrive au club", 2:"Je demande ce qui existe", 3:"Mon niveau, les tarifs",
+       4:"On me pose des questions", 5:"L'équipement", 6:"Je réserve"}},
+  maurice: {nom:"Le Morne",
+    t:{1:"Je réserve la balade", 2:"Je dis où j'en suis", 3:"La marée et le sable",
+       4:"L'allure dans l'eau", 5:"À cru", 6:"Le soleil", 7:"Après la balade"}}
+};
+
+function S(id){ return document.getElementById(id); }
+function el(t, a, txt){
+  var n = document.createElement(t);
+  if(a) for(var k in a){ if(k==="class") n.className=a[k]; else n.setAttribute(k,a[k]); }
+  if(txt != null) n.textContent = txt;
+  return n;
+}
+function normalise(s){
+  return (s||"").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim();
+}
+
+/* ---------------- la voix ----------------
+   ⚠️ iOS refuse de parler si le premier appel ne vient pas d'un geste :
+   on amorce à volume nul au premier toucher, comme `amorcerVoix()`
+   dans lingo.html. */
+var voixPretes = false;
+function amorcerVoix(){
+  if(voixPretes || !("speechSynthesis" in window)) return;
+  try{ var u = new SpeechSynthesisUtterance(" "); u.volume = 0;
+       window.speechSynthesis.speak(u); voixPretes = true; }catch(e){}
+}
+document.addEventListener("touchstart", amorcerVoix, {once:true, passive:true});
+document.addEventListener("mousedown", amorcerVoix, {once:true});
+
+/* Le seul point de sortie du son. Le jour où de vraies voix existent,
+   c'est ICI qu'on cherche le fichier avant de parler — nulle part
+   ailleurs. Convention proposée : voix-<ville>-<ref>-<langue>.mp3 */
+function dis(txt, lg){
+  if(!("speechSynthesis" in window)) return;
+  try{
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(txt);
+    u.lang = VOIX[lg] || "en-GB"; u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ---------------- les données ---------------- */
+var LEX = window.HYPE_LINGO_LEX || {};
+var CHAP = null, DIAL = null, MOTS = {};
+
+function lireLexiques(){
+  DIAL = null; MOTS = {};
+  LEX = window.HYPE_LINGO_LEX || {};
+  for(var k in LEX){
+    var d = LEX[k] && LEX[k].dialogue;
+    if(d && d.ville === REF_VILLE && d.phrases && d.phrases.length){ CHAP = LEX[k]; DIAL = d; break; }
+  }
+  /* la table des mots, toutes langues, pour les conseils et le SOS.
+     On lit TOUS les chapitres : une phrase peut employer un mot d'une
+     autre ville, c'est le régime posé par Blandine le 13/08. */
+  for(var c in LEX){
+    ((LEX[c] && LEX[c].concepts) || []).forEach(function(x){ MOTS[x.ref] = x; });
+  }
+  return !!DIAL;
+}
+lireLexiques();
+
+/* 🟥 LE FILET. Si les balises de chargement échouent — nom de fichier
+   changé, chapitre non déclaré, service worker qui sert une vieille
+   réponse — la page parente nous renvoie ses données par message et
+   l'écran se reconstruit. Sans ce filet, un seul fichier manquant
+   donnait un écran vide et muet. */
+window.addEventListener("message", function(ev){
+  var d = ev && ev.data;
+  if(!d || d.t !== "linguae-situation") return;
+  if(d.lex){
+    window.HYPE_LINGO_LEX = window.HYPE_LINGO_LEX || {};
+    for(var k in d.lex){ if(!window.HYPE_LINGO_LEX[k]) window.HYPE_LINGO_LEX[k] = d.lex[k]; }
+  }
+  if(d.ville) REF_VILLE = d.ville;
+  if(!DIAL && lireLexiques()){ construireScenes(); iScene=0; iEtape=0; fil=[]; repondu=false; dessine(); }
+});
+
+/* ---------------- construction des scènes ----------------
+   Un `temps` = une micro-scène. Les phrases y gardent leur ordre.
+   Le type d'exercice se déduit de `dit`, puis tourne pour éviter la
+   succession scolaire « écoute → répète ». */
+var SCENES = [];
+function construireScenes(){
+  SCENES = [];
+  if(!DIAL) return;
+  var parTemps = {};
+  DIAL.phrases.forEach(function(p){
+    (parTemps[p.temps] = parTemps[p.temps] || []).push(p);
+  });
+  Object.keys(parTemps).sort(function(a,b){ return a-b; }).forEach(function(t){
+    var liste = parTemps[t], etapes = [], nEcrit = 0, tour = 0;
+    liste.forEach(function(p){
+      if(p.dit === "club"){
+        etapes.push({type:"ecoute", p:p});
+        return;
+      }
+      /* la joueuse produit : on alterne. `ecris` reste ponctuel — une
+         seule fois par scène, et jamais sur une phrase longue. */
+      var court = (p[CIBLE] || "").length <= 42;
+      var suite = ["parle","ordre","repondre"];
+      var type = suite[tour % suite.length]; tour++;
+      if(court && nEcrit === 0 && tour % 4 === 0){ type = "ecris"; nEcrit++; }
+      etapes.push({type:type, p:p});
+    });
+    SCENES.push({temps:+t, etapes:etapes});
+  });
+}
+construireScenes();
+
+var iScene = 0, iEtape = 0, fil = [], repondu = false;
+
+/* ---------------- rendu ---------------- */
+function scèneCourante(){ return SCENES[iScene]; }
+function étapeCourante(){ var s = scèneCourante(); return s && s.etapes[iEtape]; }
+
+function total(){ return SCENES.reduce(function(a,s){ return a + s.etapes.length; }, 0); }
+function faits(){
+  var n = 0;
+  for(var i=0;i<iScene;i++) n += SCENES[i].etapes.length;
+  return n + iEtape;
+}
+
+var CONSIGNES = {
+  ecoute:  ["\uD83D\uDC42", "Écoute et comprends"],
+  parle:   ["\uD83C\uDF99", "À toi de le dire"],
+  ordre:   ["\uD83E\uDDE9", "Remets la phrase en ordre"],
+  repondre:["\uD83D\uDCAC", "Que réponds-tu ?"],
+  ecris:   ["\u2328", "Écris-le"]
+};
+
+function dessine(){
+  var corps = S("corps"), pied = S("pied");
+  corps.innerHTML = ""; pied.innerHTML = "";
+  corps.scrollTop = 0;                /* remise à zéro à chaque étape */
+
+  if(!DIAL || !SCENES.length){
+    S("hScene").textContent = "Rien à jouer ici";
+    S("hVille").textContent = (TITRES[REF_VILLE] && TITRES[REF_VILLE].nom) || REF_VILLE;
+    corps.appendChild(el("p",{class:"vide"},
+      "Cette ville n'a pas encore de mise en situation."));
+    pied.appendChild(rang([el("button",{class:"go", id:"btVideFermer"}, "Revenir à la ville")]));
+    S("btVideFermer").addEventListener("click", fermer);
+    return;
+  }
+
+  var s = scèneCourante(), e = étapeCourante();
+  var titres = TITRES[REF_VILLE] || {nom:REF_VILLE, t:{}};
+  S("hScene").textContent = titres.t[s.temps] || ("Scène " + s.temps);
+  S("hVille").textContent = titres.nom;
+  S("jauge").style.width = Math.round(faits() / total() * 100) + "%";
+
+  /* le fil : ce qui a déjà été dit dans cette scène */
+  if(fil.length){
+    var f = el("div",{class:"fil"});
+    fil.forEach(function(b){
+      var d = el("div",{class:"bulle " + (b.moi ? "moi" : "eux") + " pass"});
+      d.appendChild(el("div",{class:"qui"}, b.moi ? "Moi" : "Le club"));
+      d.appendChild(document.createTextNode(b.cible));
+      d.appendChild(el("span",{class:"trad"}, b.lu));
+      f.appendChild(d);
+    });
+    corps.appendChild(f);
+  }
+
+  var c = CONSIGNES[e.type];
+  var cons = el("div",{class:"consigne"});
+  cons.appendChild(el("span",{class:"ic"}, c[0]));
+  cons.appendChild(document.createTextNode(c[1]));
+  corps.appendChild(cons);
+
+  ({ecoute:vueEcoute, parle:vueParle, ordre:vueOrdre,
+    repondre:vueRepondre, ecris:vueEcris})[e.type](e.p, corps, pied);
+
+  if(REPLI_LG){
+    corps.appendChild(el("p",{class:"note"},
+      "Les phrases n'existent pour l'instant qu'en français et en anglais. La scène se joue donc en français."));
+  }
+}
+
+/* ---------- 👂 ÉCOUTE : le club parle, je dois comprendre ---------- */
+function vueEcoute(p, corps, pied){
+  var carte = el("div",{class:"carte"});
+  carte.appendChild(el("div",{class:"lab", style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#94A3AF;margin-bottom:8px"},"On vous dit"));
+  var ligne = el("div",{class:"cible"});
+  ligne.appendChild(document.createTextNode("« " + p[CIBLE] + " »"));
+  var h = el("button",{class:"haut", title:"Écouter"}, "\uD83D\uDD0A");
+  h.addEventListener("click", function(){ dis(p[CIBLE], CIBLE); });
+  ligne.appendChild(h);
+  carte.appendChild(ligne);
+  corps.appendChild(carte);
+  dis(p[CIBLE], CIBLE);
+
+  /* trois significations, toutes crédibles : les deux fausses sont de
+     VRAIES phrases entendues dans cette ville. */
+  var bonnes = [p[LG]];
+  var autres = DIAL.phrases.filter(function(x){ return x.ref !== p.ref; })
+    .map(function(x){ return x[LG]; });
+  melange(autres);
+  var props = bonnes.concat(autres.slice(0,2));
+  melange(props);
+
+  var z = el("div",{class:"choix"});
+  props.forEach(function(txt){
+    var b = el("button",{}, txt);
+    b.addEventListener("click", function(){
+      if(repondu) return; repondu = true;
+      Array.prototype.forEach.call(z.querySelectorAll("button"), function(x){
+        x.disabled = true;
+        x.className = (x.textContent === p[LG]) ? "bon" : (x === b ? "faux" : "");
+      });
+      var juste = (txt === p[LG]);
+      corps.appendChild(verdict(juste ? "ok" : "presque",
+        juste ? "Compris !" : "Presque !",
+        juste ? "C'est bien ce qui a été dit."
+              : "Ce n'était pas tout à fait ça — la bonne réponse est en vert.", null, null));
+      pousseFil(p, false);
+      piedSuite(pied);
+    });
+    z.appendChild(b);
+  });
+  corps.appendChild(z);
+  pied.appendChild(rang([boutonEcouter(p)]));
+}
+
+/* ---------- 🎙️ À TOI : je prononce ---------- */
+function vueParle(p, corps, pied){
+  var carte = el("div",{class:"carte"});
+  carte.appendChild(el("div",{style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#94A3AF;margin-bottom:8px"},"Dis ceci"));
+  carte.appendChild(el("div",{class:"fr"}, p[LG]));
+  corps.appendChild(carte);
+
+  var zoneV = el("div",{});
+  corps.appendChild(zoneV);
+
+  var dispo = ("webkitSpeechRecognition" in window) || ("SpeechRecognition" in window);
+  var bMicro = el("button",{class:"micro"});
+  bMicro.innerHTML = '<span class="ic">\uD83C\uDF99</span>Parler';
+
+  if(!dispo){
+    /* ⚠️ REPLI OBLIGATOIRE : sans reconnaissance vocale l'écran doit
+       DÉGRADER, jamais s'éteindre. Leçon de la session 209. */
+    bMicro.disabled = true;
+    zoneV.appendChild(el("p",{class:"note"},
+      "Ce navigateur ne sait pas écouter. Tu peux entendre le modèle et le répéter à voix haute — la scène continue sans vérification."));
+  } else {
+    bMicro.addEventListener("click", function(){
+      if(repondu) return;
+      ecoute(p, bMicro, zoneV, pied);
+    });
+  }
+  pied.appendChild(rang([boutonEcouter(p), bMicro]));
+  pied.appendChild(rang([boutonContinuer("Continuer sans dire", p, false)]));
+}
+
+function ecoute(p, bMicro, zoneV, pied){
+  var R = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var r = new R();
+  r.lang = VOIX[CIBLE] || "en-GB";
+  r.interimResults = false; r.maxAlternatives = 3;
+  bMicro.classList.add("ecoute");
+  bMicro.innerHTML = '<span class="ic">\uD83C\uDF99</span>J\'écoute…';
+
+  var fini = false;
+  function rendre(entendu){
+    if(fini) return; fini = true;
+    bMicro.classList.remove("ecoute");
+    bMicro.innerHTML = '<span class="ic">\uD83C\uDF99</span>Parler';
+    juge(p, entendu, zoneV, pied);
+  }
+  r.onresult = function(ev){
+    var t = [];
+    for(var i=0;i<ev.results.length;i++)
+      for(var j=0;j<ev.results[i].length;j++) t.push(ev.results[i][j].transcript);
+    rendre(t.join(" "));
+  };
+  r.onerror = function(){ rendre(""); };
+  r.onend   = function(){ rendre(""); };
+  try{ r.start(); }catch(e){ rendre(""); }
+}
+
+/* 🟥 LE JUGEMENT — TROIS NIVEAUX DOUX, JAMAIS D'ÉCHEC.
+   La reconnaissance rend du texte : on compare des MOTS, on ne juge
+   jamais l'accent. Le conseil ne porte que sur ce qu'on sait vraiment —
+   quel mot attendu n'apparaît pas — et la prononciation affichée vient
+   du champ `p` du lexique, jamais d'une invention. */
+function juge(p, entendu, zoneV, pied){
+  repondu = true;
+  var attendu = normalise(p[CIBLE]);
+  var dit = normalise(entendu);
+  zoneV.innerHTML = "";
+
+  if(!dit){
+    zoneV.appendChild(verdict("flou", "Je n'ai pas bien compris",
+      "Rien n'a été capté. Ça arrive souvent dans un endroit bruyant, et ça ne dit rien de ta prononciation.",
+      null, null));
+    piedRessai(p, zoneV, pied);
+    return;
+  }
+
+  var motsAttendus = attendu.split(" ").filter(function(m){ return m.length > 2; });
+  var trouves = motsAttendus.filter(function(m){ return dit.indexOf(m) >= 0; });
+  var part = motsAttendus.length ? trouves.length / motsAttendus.length : 0;
+
+  /* les mots-clés du lexique : ceux qui comptent vraiment */
+  var cles = [];
+  (p.mots || []).concat(p.motsAilleurs || []).forEach(function(ref){
+    var c = MOTS[ref];
+    if(!c || !c.mots || !c.mots[CIBLE]) return;
+    cles.push({ref:ref, mot:c.mots[CIBLE].m, p:c.mots[CIBLE].p || null});
+  });
+  var manques = cles.filter(function(c){
+    var n = normalise(c.mot).split(" ").filter(function(m){ return m.length > 2; });
+    if(!n.length) return false;
+    return !n.some(function(m){ return dit.indexOf(m) >= 0; });
+  });
+
+  if(part >= 0.7 && !manques.length){
+    zoneV.appendChild(verdict("ok", "Compris !",
+      "La phrase a été reconnue. On continue.", null, entendu));
+    pousseFil(p, true);
+    piedSuite(pied);
+    return;
+  }
+
+  if(manques.length){
+    var m = manques[0];
+    zoneV.appendChild(verdict("presque", "Presque !",
+      "Le mot important n'a pas été reconnu : ", m, entendu));
+  } else {
+    zoneV.appendChild(verdict("presque", "Presque !",
+      "Une partie de la phrase est passée. Réécoute le modèle et redis-la d'un trait.",
+      null, entendu));
+  }
+  piedRessai(p, zoneV, pied);
+}
+
+function verdict(genre, titre, texte, mot, entendu){
+  var v = el("div",{class:"verdict " + genre});
+  v.appendChild(el("b",{}, titre));
+  v.appendChild(document.createTextNode(texte));
+  if(mot){
+    v.appendChild(el("span",{class:"p"}, mot.mot));
+    if(mot.p){
+      v.appendChild(document.createTextNode(" — ça se dit "));
+      v.appendChild(el("span",{class:"p"}, mot.p));
+    }
+  }
+  if(entendu){
+    v.appendChild(el("div",{class:"entendu"}, "Entendu : « " + entendu + " »"));
+  }
+  return v;
+}
+
+/* ---------- 🧩 REMETS EN ORDRE ---------- */
+function vueOrdre(p, corps, pied){
+  var carte = el("div",{class:"carte"});
+  carte.appendChild(el("div",{style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#94A3AF;margin-bottom:8px"},"Ce que tu veux dire"));
+  carte.appendChild(el("div",{class:"fr"}, p[LG]));
+  corps.appendChild(carte);
+
+  var vrais = p[CIBLE].split(/\s+/);
+  var zone = el("div",{class:"zoneOrdre"});
+  var reserve = el("div",{class:"reserve"});
+  corps.appendChild(zone); corps.appendChild(reserve);
+  var zoneV = el("div",{}); corps.appendChild(zoneV);
+
+  var melanges = vrais.slice(); melange(melanges);
+  /* si le hasard rend l'ordre exact, on décale */
+  if(melanges.join(" ") === vrais.join(" ") && vrais.length > 1) melanges.reverse();
+
+  melanges.forEach(function(mot){
+    var j = el("button",{class:"jeton"}, mot);
+    j.addEventListener("click", function(){
+      if(repondu) return;
+      (j.parentNode === reserve ? zone : reserve).appendChild(j);
+      maj();
+    });
+    reserve.appendChild(j);
+  });
+
+  var bVal = el("button",{class:"go"}, "Vérifier");
+  bVal.disabled = true;
+  bVal.addEventListener("click", function(){
+    if(repondu) return; repondu = true;
+    var mis = Array.prototype.map.call(zone.querySelectorAll(".jeton"),
+      function(x){ return x.textContent; }).join(" ");
+    var juste = normalise(mis) === normalise(p[CIBLE]);
+    Array.prototype.forEach.call(corps.querySelectorAll(".jeton"),
+      function(x){ x.disabled = true; });
+    if(juste){
+      zoneV.appendChild(verdict("ok","Compris !","La phrase est exacte.",null,null));
+      pousseFil(p, true);
+    } else {
+      var v = verdict("presque","Presque !","La bonne phrase est : ",null,null);
+      v.appendChild(el("span",{class:"p"}, p[CIBLE]));
+      zoneV.appendChild(v);
+      pousseFil(p, true);
+    }
+    dis(p[CIBLE], CIBLE);
+    S("pied").innerHTML = "";
+    piedSuite(S("pied"));
+  });
+
+  function maj(){
+    bVal.disabled = (zone.querySelectorAll(".jeton").length !== vrais.length);
+  }
+  pied.appendChild(rang([boutonEcouter(p), bVal]));
+}
+
+/* ---------- 💬 QUE RÉPONDS-TU ? ----------
+   Les distracteurs sont de VRAIES phrases de la ville : toutes
+   crédibles. Pas de fausse réponse absurde. */
+function vueRepondre(p, corps, pied){
+  var carte = el("div",{class:"carte"});
+  carte.appendChild(el("div",{style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#94A3AF;margin-bottom:8px"},"La situation"));
+  carte.appendChild(el("div",{class:"fr"}, p[LG]));
+  corps.appendChild(carte);
+
+  var autres = DIAL.phrases
+    .filter(function(x){ return x.ref !== p.ref && x.dit === "joueuse"; })
+    .map(function(x){ return x[CIBLE]; });
+  melange(autres);
+  var props = [p[CIBLE]].concat(autres.slice(0,2));
+  melange(props);
+
+  var zoneV = el("div",{});
+  var z = el("div",{class:"choix"});
+  props.forEach(function(txt){
+    var b = el("button",{}, txt);
+    b.addEventListener("click", function(){
+      if(repondu) return; repondu = true;
+      Array.prototype.forEach.call(z.querySelectorAll("button"), function(x){
+        x.disabled = true;
+        x.className = (x.textContent === p[CIBLE]) ? "bon" : (x === b ? "faux" : "");
+      });
+      var juste = (txt === p[CIBLE]);
+      zoneV.appendChild(verdict(juste ? "ok" : "presque",
+        juste ? "Compris !" : "Presque !",
+        juste ? "C'est ce qu'il faut dire."
+              : "L'autre tournure est plus juste ici — elle est en vert.", null, null));
+      dis(p[CIBLE], CIBLE);
+      pousseFil(p, true);
+      S("pied").innerHTML = "";
+      piedSuite(S("pied"));
+    });
+    z.appendChild(b);
+  });
+  corps.appendChild(z); corps.appendChild(zoneV);
+}
+
+/* ---------- ⌨️ ÉCRIS-LE ---------- */
+function vueEcris(p, corps, pied){
+  var carte = el("div",{class:"carte"});
+  carte.appendChild(el("div",{style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#94A3AF;margin-bottom:8px"},"Écris cette phrase"));
+  carte.appendChild(el("div",{class:"fr"}, p[LG]));
+  corps.appendChild(carte);
+
+  var ta = el("textarea",{class:"saisie", placeholder:"…", autocapitalize:"none", spellcheck:"false"});
+  corps.appendChild(ta);
+  var zoneV = el("div",{}); corps.appendChild(zoneV);
+
+  var bVal = el("button",{class:"go"}, "Vérifier");
+  bVal.addEventListener("click", function(){
+    if(repondu) return; repondu = true;
+    ta.disabled = true;
+    var juste = normalise(ta.value) === normalise(p[CIBLE]);
+    if(juste){
+      zoneV.appendChild(verdict("ok","Compris !","Écrit juste, au mot près.",null,null));
+    } else {
+      var v = verdict("presque","Presque !","La phrase exacte est : ",null,null);
+      v.appendChild(el("span",{class:"p"}, p[CIBLE]));
+      zoneV.appendChild(v);
+    }
+    dis(p[CIBLE], CIBLE);
+    pousseFil(p, true);
+    S("pied").innerHTML = "";
+    piedSuite(S("pied"));
+  });
+  pied.appendChild(rang([boutonEcouter(p), bVal]));
+  pied.appendChild(rang([boutonContinuer("Passer", p, true)]));
+}
+
+/* ---------------- barre du bas ---------------- */
+function rang(bs){
+  var r = el("div",{class:"rang"});
+  bs.forEach(function(b){ if(b) r.appendChild(b); });
+  return r;
+}
+function boutonEcouter(p){
+  var b = el("button",{});
+  b.innerHTML = '<span class="ic">\uD83D\uDD0A</span>Écouter';
+  b.addEventListener("click", function(){ dis(p[CIBLE], CIBLE); });
+  return b;
+}
+function boutonContinuer(txt, p, moi){
+  var b = el("button",{class:"go"}, txt);
+  b.addEventListener("click", function(){ pousseFil(p, moi); avance(); });
+  return b;
+}
+/* 🟥 « Continuer » est TOUJOURS là, à portée de pouce. Règle de
+   Blandine : on ne bloque jamais quelqu'un sur sa prononciation. */
+function piedRessai(p, zoneV, pied){
+  pied.innerHTML = "";
+  var bR = el("button",{class:"micro"});
+  bR.innerHTML = '<span class="ic">\uD83C\uDF99</span>Réessayer';
+  bR.addEventListener("click", function(){
+    repondu = false; zoneV.innerHTML = "";
+    ecoute(p, bR, zoneV, pied);
+  });
+  pied.appendChild(rang([boutonEcouter(p), bR]));
+  pied.appendChild(rang([boutonContinuer("Continuer", p, true)]));
+}
+function piedSuite(pied){
+  pied.innerHTML = "";
+  pied.appendChild(rang([el("button",{class:"go", id:"btSuite"}, "Continuer")]));
+  S("btSuite").addEventListener("click", avance);
+}
+
+function pousseFil(p, moi){
+  fil.push({moi:moi, cible:p[CIBLE], lu:p[LG]});
+  if(fil.length > 3) fil.shift();
+}
+
+function avance(){
+  repondu = false;
+  var s = scèneCourante();
+  if(iEtape + 1 < s.etapes.length){ iEtape++; dessine(); return; }
+  if(iScene + 1 < SCENES.length){ iScene++; iEtape = 0; fil = []; dessine(); return; }
+  fin();
+}
+
+function fin(){
+  var corps = S("corps"), pied = S("pied");
+  corps.innerHTML = ""; pied.innerHTML = "";
+  S("jauge").style.width = "100%";
+  S("hScene").textContent = "C'est fini";
+  var t = TITRES[REF_VILLE] || {nom:REF_VILLE};
+  var c = el("div",{class:"carte", style:"text-align:center;padding:26px 18px"});
+  c.appendChild(el("div",{style:"font-size:30px;margin-bottom:12px"},"\u2713"));
+  c.appendChild(el("div",{style:"font-family:'Cinzel',serif;font-size:17px;line-height:1.4"},
+    "Tu saurais gérer ça à " + t.nom));
+  c.appendChild(el("p",{style:"font-size:12px;color:#94A3AF;margin:12px 0 0;line-height:1.6"},
+    "Toutes les scènes sont passées. Rien n'est noté : ce qui compte est que tu saches te débrouiller sur place."));
+  corps.appendChild(c);
+  var b = el("button",{class:"go"}, "Refaire");
+  b.addEventListener("click", function(){
+    iScene = 0; iEtape = 0; fil = []; repondu = false; dessine();
+  });
+  pied.appendChild(rang([b]));
+  pied.appendChild(rang([el("button",{id:"btFin"}, "Revenir à la ville")]));
+  S("btFin").addEventListener("click", fermer);
+}
+
+/* ---------------- SOS ---------------- */
+S("btSos").addEventListener("click", function(){
+  var e = étapeCourante();
+  if(!e) return;
+  var p = e.p, z = S("sosCorps");
+  z.innerHTML = "";
+
+  var b1 = el("div",{class:"bloc"});
+  b1.appendChild(el("div",{class:"lab"},"Ce que tu veux dire"));
+  b1.appendChild(el("div",{class:"gros"}, p[LG]));
+  z.appendChild(b1);
+
+  var b2 = el("div",{class:"bloc"});
+  b2.appendChild(el("div",{class:"lab"}, CIBLE === "en" ? "En anglais" : "En français"));
+  var g = el("div",{class:"gros"});
+  g.appendChild(document.createTextNode(p[CIBLE]));
+  var h = el("button",{class:"haut", style:"background:none;border:0;color:#20D9F5;font-size:16px;padding-left:8px"},"\uD83D\uDD0A");
+  h.addEventListener("click", function(){ dis(p[CIBLE], CIBLE); });
+  g.appendChild(h);
+  b2.appendChild(g);
+  if(p.varEn && CIBLE === "en"){
+    b2.appendChild(el("div",{style:"font-size:11.5px;color:#94A3AF;margin-top:9px;font-style:italic"},
+      "Aussi : " + p.varEn));
+  }
+  z.appendChild(b2);
+
+  /* la prononciation vient du champ `p` du lexique, mot par mot.
+     ⚠️ On n'invente JAMAIS la phonétique d'une phrase entière : le
+     lexique ne la porte pas, et l'inventer serait enseigner faux. */
+  var lignes = [];
+  (p.mots || []).concat(p.motsAilleurs || []).forEach(function(ref){
+    var c = MOTS[ref];
+    if(c && c.mots && c.mots[CIBLE] && c.mots[CIBLE].p)
+      lignes.push([c.mots[CIBLE].m, c.mots[CIBLE].p]);
+  });
+  if(lignes.length){
+    var b3 = el("div",{class:"bloc"});
+    b3.appendChild(el("div",{class:"lab"},"Comment ça se dit"));
+    var pr = el("div",{class:"pron"});
+    lignes.forEach(function(l){
+      var d = el("div",{style:"margin-bottom:7px"});
+      d.appendChild(document.createTextNode(l[1]));
+      d.appendChild(el("i",{}, l[0]));
+      pr.appendChild(d);
+    });
+    b3.appendChild(pr);
+    z.appendChild(b3);
+  }
+
+  var b4 = el("div",{class:"rang"});
+  var bm = el("button",{class:"micro"});
+  bm.innerHTML = '<span class="ic">\uD83C\uDF99</span>La répéter';
+  bm.addEventListener("click", function(){
+    S("sos").classList.remove("on");
+    var e2 = étapeCourante();
+    if(e2 && e2.type !== "parle"){ dis(p[CIBLE], CIBLE); }
+  });
+  b4.appendChild(bm);
+  z.appendChild(b4);
+
+  S("sos").classList.add("on");
+  S("sos").scrollTop = 0;
+});
+S("sosFermer").addEventListener("click", function(){ S("sos").classList.remove("on"); });
+
+/* ---------------- fermeture ---------------- */
+function fermer(){
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  try{ parent.postMessage({t:"linguae-dialogue-fermer"}, "*"); }catch(e){}
+}
+S("btFermer").addEventListener("click", fermer);
+
+function melange(a){
+  for(var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var t = a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+
+dessine();
+</script>
+</body>
+</html>
