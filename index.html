@@ -20008,6 +20008,11 @@ function CarteEvenementsC(){
 }
 
 function EcranCommunaute() {
+    /* 13/08 (demande de Blandine) : le bloc « Sur place a Lamotte » est masque
+       — il etait fige (impossible de signaler son depart) et l'evenement est
+       passe. Pattern projet : rien n'est supprime, repasser a true pour le
+       rallumer tel quel. */
+    var AFFICHER_PRESENCE_LAMOTTE = false;
     var app = useApp(); var setEcran = app.setEcran; var lg = app.langue || "fr"; var tr = app.tr;
     var h = React.createElement;
     function T(fr,en,es,it,ja,de){ return lg==="en"?en : lg==="es"?(es||en) : lg==="it"?(it||en) : lg==="ja"?(ja||en) : lg==="de"?(de||en) : fr; }
@@ -20301,7 +20306,7 @@ function EcranCommunaute() {
             (bientotEv ? h("div", { style:{ position:"absolute", inset:0, background:"rgba(10,26,36,0.099)", display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(1.5px)", WebkitBackdropFilter:"blur(1.5px)" } },
               h("span", { style:{ transform:"rotate(-12deg)", border:"1px solid rgba(95,233,240,0.6)", color:"#CFF6F9", background:"rgba(10,26,36,0.132)", padding:"7px 16px", borderRadius:999, fontFamily:"'Montserrat',sans-serif", fontSize:11, fontWeight:800, letterSpacing:3, textTransform:"uppercase", whiteSpace:"nowrap" } }, T("Prochainement","Coming soon","Pr\u00f3ximamente","In arrivo","\u8fd1\u65e5\u516c\u958b","Demn\u00e4chst"))) : null));
         })),
-      h("div", { style:{ padding:"26px 16px 0" } },
+      (AFFICHER_PRESENCE_LAMOTTE ? h("div", { style:{ padding:"26px 16px 0" } },
         titreSec(T("Sur place \u00e0 Lamotte","On site at Lamotte","En Lamotte ahora","Sul posto a Lamotte","\u30e9\u30e2\u30c3\u30c8\u306b\u3044\u308b\u4eba","Vor Ort in Lamotte")),
         h("div", { style:{ display:"flex", alignItems:"center", gap:12, borderRadius:16, border:"1px solid rgba(32,217,245,0.28)", background:"linear-gradient(90deg, rgba(32,217,245,0.08), rgba(12,14,18,0.72))", padding:"11px 13px", backdropFilter:"blur(8px)", WebkitBackdropFilter:"blur(8px)" } },
           h("div", { style:{ display:"flex", flex:"0 0 auto" } },
@@ -20315,7 +20320,7 @@ function EcranCommunaute() {
             h("div", { style:{ fontSize:10.5, color:"#8A929C", fontFamily:M, marginTop:1 } }, T("sur le Parc en ce moment","at the Parc right now","en el Parque ahora","al Parco in questo momento","\u73fe\u5730\u306b\u3044\u307e\u3059","gerade auf dem Gel\u00e4nde"))),
           (!moiSurPlace
             ? h("button", { onClick:ouvrirLamotte, style:{ flex:"0 0 auto", padding:"9px 14px", borderRadius:999, border:"none", background:"linear-gradient(90deg,#0C5763,#38E2F8)", color:"#fff", fontFamily:M, fontSize:11.5, fontWeight:700, cursor:"pointer", boxShadow:"0 0 14px rgba(32,217,245,0.3)" } }, T("J'y suis \u203a","I'm there \u203a","Estoy all\u00ed \u203a","Ci sono \u203a","\u73fe\u5730\u306b\u3044\u308b \u203a","Ich bin dort \u203a"))
-            : h("span", { style:{ flex:"0 0 auto", padding:"8px 12px", borderRadius:999, border:"1px solid rgba(32,217,245,0.5)", color:"#5FE9F0", fontFamily:M, fontSize:11, fontWeight:700 } }, T("Tu y es \u2713","You're in \u2713","Est\u00e1s \u2713","Ci sei \u2713","\u2713","Du bist dort \u2713"))))),
+            : h("span", { style:{ flex:"0 0 auto", padding:"8px 12px", borderRadius:999, border:"1px solid rgba(32,217,245,0.5)", color:"#5FE9F0", fontFamily:M, fontSize:11, fontWeight:700 } }, T("Tu y es \u2713","You're in \u2713","Est\u00e1s \u2713","Ci sei \u2713","\u2713","Du bist dort \u2713"))))) : null),
       h("div", { ref:refCavaliers, style:{ padding:"26px 16px 0" } },
         h("div", { style:{ display:"flex", alignItems:"center", justifyContent:"space-between" } },
           titreSec(T("Personnes suivies","Following","Siguiendo","Seguiti","\u30d5\u30a9\u30ed\u30fc\u4e2d","Gefolgte Personen")),

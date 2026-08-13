@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 125 · STORIES v11 — PLUS AUCUNE AVANCE FORCÉE) — md5 `de55b27225ab76321a805bd271a15302`, 9098414 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 11`**. Balise **`?v=11`**. **FICHIER COMPAGNON : `hype-stories.js` v11, md5 `ad271e5f53b481368f2a4a1e7fefa7b8`, 129741 octets.** **AUCUN SQL.**
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 126 · COMMUNAUTÉ — LE BLOC LAMOTTE MASQUÉ) — md5 `c7de691ea0406dc148dad1d1d6929fa0`, 9098761 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 11`** (inchangé — le module stories n'est pas touché, balise `?v=11`, md5 module `ad271e5f53b481368f2a4a1e7fefa7b8`). **AUCUN SQL.**
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 125) :** `index.html` + `hype-stories.js` (v11). AUCUN SQL. Compagnons inchangés. **EN ATTENTE DE BLANDINE (design, à froid) :** la présentation des stories (3 maquettes : formes 120, bandeaux 122, mises en scène 124 — constellation/boxes/cristal/affiche), la page Cavalier visitée. **À VÉRIFIER PAR BLANDINE :** la chanson de sa page (bouton en pointillés sous le rail À la une, page Cavalier, témoin stories ≥ 10 requis).
+**À POUSSER, état au 13/08 (session 126) :** `index.html` SEUL (hype-stories.js v11 déjà en ligne, ne pas repousser — identique). AUCUN SQL. **EN ATTENTE DE BLANDINE :** (1) design stories (3 maquettes) et page Cavalier visitée, à froid ; (2) la CARTE DES CLUBS : décision sur qui branche les milliers de clubs (voir session 126) ; (3) la musique qui continue sur toute l'app : conséquences posées, feu vert non donné ; (4) la fin de sa phrase sur la localisation temps réel des cavaliers ; (5) la chanson de page : bouton trouvé ou pas (témoin ≥ stories 10).
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,55 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 126 · COMMUNAUTÉ — BLOC LAMOTTE MASQUÉ, DIAGNOSTIC DE LA CARTE DES CLUBS
+
+**Demandes de Blandine (13/08, 04 h 11, captures)** : (1) la carte des clubs « contient maintenant plusieurs milliers de clubs sauf erreur de ma part et en affiche 131 » ; (2) retirer le bloc « Sur place à Lamotte », figé (« on ne pouvait plus signaler qu'on en était partis ») ; (3) une idée coupée en fin de message — « ajouter une demande pour demander où les cavaliers se trouvent en temps réel et » — à reprendre avec elle.
+
+### 1. LE BLOC LAMOTTE — MASQUÉ (fait)
+
+`AFFICHER_PRESENCE_LAMOTTE = false` en tête d'`EcranCommunaute`, le bloc entier (titre, avatars, compteur « sur le Parc en ce moment », bouton « Tu y es ✓ ») enveloppé dans la constante. Rien n'est supprimé — pattern projet, une ligne pour rallumer à la prochaine édition de Lamotte. Première tentative avortée proprement (ancre de déclaration introuvable, AUCUNE écriture partielle — le script n'écrit qu'en fin de course).
+
+### 2. LA CARTE DES CLUBS — DIAGNOSTIC, RIEN N'EST CODÉ
+
+Blandine a raison sur les deux points, et voici la géographie exacte : la carte de France est une **iframe autonome** (`FRANCE_MAP_HTML`, 6,75 Mo) qui **embarque ses propres ~131 clubs** et le libellé **« 131 clubs en France » écrit en dur** (offset ~1778345). Les **milliers de clubs FFE** vivent ailleurs : `window.HYPE_CLUBS`, chargé par `hype-clubs-db-1/2/3.js` + `hype-clubs-loader.js` (fichiers d'une AUTRE conversation, absents de ce container — format non vérifiable d'ici, notamment la présence de lat/lng). **La carte n'a jamais été branchée sur la nouvelle base.** Aujourd'hui `HYPE_CLUBS` ne sert qu'aux infos de la page Mon Club.
+
+Branchement possible et propre : l'iframe est en même origine (`srcdoc`), donc `parent.HYPE_CLUBS` lui est accessible — la carte préférerait cette source avec repli sur sa liste interne, et le compteur deviendrait dynamique. **Deux préalables** : (a) obtenir le format réel des entrées (il faut le loader ou un fichier db) ; (b) une décision de rendu — des milliers de points lumineux ne s'affichent pas un à un sur un canvas d'iPhone, il faut agréger (par département ou par grille, points grossis selon la densité). Choix laissé à Blandine : envoyer les fichiers ici, ou confier le chantier à la conversation qui les possède.
+
+### 3. LA LOCALISATION TEMPS RÉEL — IDÉE NOTÉE, PHRASE À FINIR
+
+Sa phrase s'interrompt sur « et ». Avant toute discussion de fond, trois signaux à lui donner : **opt-in obligatoire** (jamais de position par défaut), **granularité club** (« à l'Écurie Feinn ») plutôt que GPS, et la présence probable de **mineurs** sur l'app qui impose la plus grande prudence sur toute fonctionnalité de localisation. L'ancien bloc Lamotte (présences déclaratives par événement, table `presences`) est d'ailleurs une base saine : du déclaratif, pas du suivi.
+
+### VÉRIFICATIONS
+16/16 blocs inline. **136 assertions** + 13 mentions. Nouvelles (3) : constante à false, bloc enveloppé non supprimé, code intact pour rallumage.
+
+### Préparation Flutter (session 126)
+Le diagnostic de la carte confirme une dette : `FRANCE_MAP_HTML` duplique des données de clubs au lieu de consommer la source unique `HYPE_CLUBS`. Le branchement futur supprimera cette duplication — noté comme frontière de données à unifier avant toute migration.
+
+---
+
+## SESSION 126 · COMMUNAUTÉ — LE BLOC LAMOTTE MASQUÉ, LA CARTE DES CLUBS ANALYSÉE
+
+**Demandes de Blandine (13/08, 04 h 11, deux captures)** : (1) la carte des clubs affiche « 131 clubs en France » alors que la base en contient désormais des milliers ; (2) retirer le bloc « Sur place à Lamotte » (figé, impossible de signaler son départ) ; (3) une idée coupée en fin de message — « ajouter une demande pour demander où les cavaliers se trouvent en temps réel et » — fin de phrase demandée, RIEN n'est codé (sujet sensible : opt-in, granularité, mineurs).
+
+### 1. LE BLOC « SUR PLACE À LAMOTTE » — MASQUÉ (demande explicite)
+
+Pattern du projet : constante `AFFICHER_PRESENCE_LAMOTTE = false`, le bloc entier (titre, avatars des présents, compteur, bouton « J'y suis / Tu y es ✓ ») passe dans un ternaire — rien n'est supprimé, une ligne à repasser à `true` pour le rallumer. La page événement Lamotte (« Tu es sur place ✨ », ligne ~19906) n'est PAS touchée : la demande visait le bloc de la page Communauté.
+
+**À l'écran : − le bloc « Sur place à Lamotte » disparaît de la page Communauté.** Rien d'autre ne bouge.
+
+### 2. LA CARTE DES CLUBS — ANALYSE, DÉCISION EN ATTENTE
+
+Le « 131 clubs en France » est **écrit en dur** dans `FRANCE_MAP_HTML` (l'iframe de la carte, 6,75 Mo), qui embarque **sa propre liste de ~131 clubs** — figée. Les milliers de clubs vivent ailleurs : `hype-clubs-db-1/2/3.js` + `hype-clubs-loader.js` (→ `window.HYPE_CLUBS`), fichiers d'une AUTRE conversation, aujourd'hui utilisés seulement pour les infos de la page Mon Club. **La carte n'a jamais été branchée sur la nouvelle base.** Deux chemins possibles, décision de Blandine : (a) l'autre conversation, propriétaire de ces fichiers, branche la carte ; (b) Blandine m'envoie `hype-clubs-loader.js` + un des `db` pour vérifier le format (lat/lng présents ?) et je branche ici — l'iframe étant same-origin, elle peut lire `parent.HYPE_CLUBS` ; le libellé devient dynamique. ⚠️ Dans les deux cas : des milliers de points lumineux sur un canvas iPhone imposent une **agrégation** (grappes par zone), pas un point par club.
+
+### 🟠 INCIDENT DE SESSION — ÉTAT RETROUVÉ APRÈS COMPACTION
+
+Le masquage Lamotte avait déjà été écrit dans la copie de travail juste avant la compaction du contexte de la conversation (02 h 19-02 h 20), sans annonce ni empreinte. Le script de ré-application a été **refusé par le garde-fou d'unicité** (la constante existait déjà) — c'est le comportement voulu, rien n'a été écrit en double. Intégrité vérifiée sur disque : ternaire bien fermé, `titreSec`/`ouvrirLamotte` exactement une fois dedans, 16/16 blocs `node --check`, delta de taille (+729 octets) cohérent avec la seule insertion. La version EN LIGNE (capture de Blandine, 04 h 11) montre encore le bloc : c'est la précédente (md5 `de55b272…`), aucune incohérence côté production.
+
+### Préparation Flutter (session 126)
+Aucune amélioration d'architecture réalisée sur cette session (masquage par constante, analyse de la carte).
 
 ---
 
