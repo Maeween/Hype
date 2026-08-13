@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "13";
+var HYPE_STORIES_VERSION = "14";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -124,6 +124,10 @@ var HS_MUSIQUES = [
    la story peut alors lancer sa musique toute seule à l'arrivée de la photo.
    Si iOS refuse malgré l'amorce, play() échoue proprement et la pastille
    reste le repli — rien ne casse. */
+/* 13/08 (feu vert de Blandine) : PLUSIEURS PHOTOS d'un coup — elles se
+   publient en chapelet et la visionneuse les déroule naturellement (elle
+   enchaîne déjà les stories d'un même cavalier). 10 photos max par envoi. */
+var HS_MULTI_MAX = 10;
 var HS_SILENCE = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
 function hsAmorcerAudio() {
   try {
@@ -723,6 +727,9 @@ var HS_TXT = {
   uneIntrouvable: { fr: "\u00c0 la une introuvable.", en: "Highlight not found.", es: "Destacada no encontrada.", it: "In evidenza non trovata.", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002", de: "Highlight nicht gefunden." },
   videUne: { fr: "Aucune \u00e0 la une pour l'instant.", en: "No highlight yet.", es: "Sin destacadas por ahora.", it: "Nessuna in evidenza per ora.", ja: "\u307e\u3060\u30cf\u30a4\u30e9\u30a4\u30c8\u306f\u3042\u308a\u307e\u305b\u3093\u3002", de: "Noch keine Highlights." },
   astuceArobase: { fr: "Tape @ pour identifier un cavalier.", en: "Type @ to tag a rider.", es: "Escribe @ para etiquetar a un jinete.", it: "Digita @ per taggare un cavaliere.", ja: "@\u3092\u5165\u529b\u3057\u3066\u9a0e\u624b\u3092\u30bf\u30b0\u4ed8\u3051", de: "Tippe @, um einen Reiter zu markieren." },
+  photosChoisies: { fr: "photos choisies", en: "photos selected", es: "fotos elegidas", it: "foto scelte", ja: "\u679a\u9078\u629e\u4e2d", de: "Fotos ausgew\u00e4hlt" },
+  envoiMulti: { fr: "Publication", en: "Publishing", es: "Publicando", it: "Pubblicazione", ja: "\u6295\u7a3f\u4e2d", de: "Ver\u00f6ffentlichung" },
+  partiel: { fr: "publi\u00e9es \u2014 certaines n'ont pas pu partir.", en: "published \u2014 some could not be sent.", es: "publicadas \u2014 algunas no pudieron enviarse.", it: "pubblicate \u2014 alcune non sono partite.", ja: "\u6295\u7a3f\u6e08\u307f \u2014 \u4e00\u90e8\u306f\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", de: "ver\u00f6ffentlicht \u2014 einige konnten nicht gesendet werden." },
   fondTitre: { fr: "Le fond", en: "Background", es: "El fondo", it: "Lo sfondo", ja: "\u80cc\u666f", de: "Der Hintergrund" },
   fondNoir: { fr: "Noir", en: "Black", es: "Negro", it: "Nero", ja: "\u30d6\u30e9\u30c3\u30af", de: "Schwarz" },
   fondImmersif: { fr: "Immersif", en: "Immersive", es: "Inmersivo", it: "Immersivo", ja: "\u30a4\u30de\u30fc\u30b7\u30d6", de: "Immersiv" },
@@ -815,8 +822,8 @@ function BandeauStories(props) {
   }
   function surFichier(ev) {
     try {
-      var f = ev && ev.target && ev.target.files && ev.target.files[0];
-      if (f) { setFichier(f); setComposer(true); }
+      var fs = ev && ev.target && ev.target.files ? Array.prototype.slice.call(ev.target.files, 0, HS_MULTI_MAX) : [];
+      if (fs.length) { setFichier(fs); setComposer(true); }
       if (ev && ev.target) ev.target.value = "";
     } catch (e) { }
   }
@@ -915,7 +922,7 @@ function BandeauStories(props) {
   var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
 
   return h("div", { style: { padding: (props && props.padding) || "16px 0 8px" } },
-    h("input", { ref: fileRef, type: "file", accept: "image/*", onChange: surFichier, style: { display: "none" } }),
+    h("input", { ref: fileRef, type: "file", accept: "image/*", multiple: true, onChange: surFichier, style: { display: "none" } }),
     h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "0 14px 6px", WebkitOverflowScrolling: "touch" } },
       rondAjout(),
       groupes.map(function (g, i) { return rond(g, i); })),
@@ -931,7 +938,7 @@ function BandeauStories(props) {
       ? h(ComposeurStory, {
         fichier: fichier, langue: lg,
         onFermer: function () { setComposer(false); setFichier(null); },
-        onPublie: function (lieuIgnore) { setComposer(false); setFichier(null); bip(lieuIgnore ? hsT("lieuIgnore", lg) : hsT("ajoutee", lg)); charger(); },
+        onPublie: function (lieuIgnore, messagePartiel) { setComposer(false); setFichier(null); bip(messagePartiel ? messagePartiel : (lieuIgnore ? hsT("lieuIgnore", lg) : hsT("ajoutee", lg))); charger(); },
         onEchec: function () { setComposer(false); setFichier(null); bip(hsT("echec", lg)); }
       })
       : null,
@@ -1010,11 +1017,19 @@ function ComposeurStory(props) {
     } catch (e) { }
   }
 
+  /* Une ou plusieurs photos : props.fichier peut etre un File OU un tableau
+     (selection multiple, 13/08). Tout devient une liste. */
+  var fichiers = [];
+  try {
+    if (props.fichier && typeof props.fichier.length === "number" && !props.fichier.type) fichiers = Array.prototype.slice.call(props.fichier, 0, HS_MULTI_MAX);
+    else if (props.fichier) fichiers = [props.fichier];
+  } catch (eF) { fichiers = props.fichier ? [props.fichier] : []; }
+
   React.useEffect(function () {
     var url = null;
     try {
-      if (props.fichier && window.URL && window.URL.createObjectURL) {
-        url = window.URL.createObjectURL(props.fichier);
+      if (fichiers[0] && window.URL && window.URL.createObjectURL) {
+        url = window.URL.createObjectURL(fichiers[0]);
         setApercu(url);
       }
     } catch (e) { }
@@ -1098,10 +1113,28 @@ function ComposeurStory(props) {
     setBusy(true);
     try {
       try { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } } catch (eA) { }
-      var r = await hsPublierStory(props.fichier, legende, lieu, tags, musique, fond);
+      /* LE CHAPELET (13/08) : chaque photo devient une story, dans l'ordre de
+         la sélection. La LÉGENDE et les TAGS vont à la PREMIÈRE seulement (un
+         texte répété dix fois n'a pas de sens) ; le LIEU, la MUSIQUE et le
+         FOND accompagnent TOUTES. Un échec au milieu n'arrête pas les
+         suivantes : on publie ce qui peut l'être et on le dit. */
+      var okN = 0, lieuIgn = false, dernierR = null;
+      for (var iF = 0; iF < fichiers.length; iF++) {
+        var rI = await hsPublierStory(
+          fichiers[iF],
+          iF === 0 ? legende : null,
+          lieu,
+          iF === 0 ? tags : [],
+          musique,
+          fond
+        );
+        dernierR = rI;
+        if (rI && !rI.error) { okN++; if (rI.lieuIgnore) lieuIgn = true; }
+      }
       setBusy(false);
-      if (r && r.error) { if (props.onEchec) props.onEchec(); return; }
-      if (props.onPublie) props.onPublie(!!(r && r.lieuIgnore));
+      if (okN === 0) { if (props.onEchec) props.onEchec(); return; }
+      if (okN < fichiers.length && props.onPublie) { props.onPublie(lieuIgn, okN + "/" + fichiers.length + " " + hsT("partiel", lg)); return; }
+      if (props.onPublie) props.onPublie(lieuIgn);
     } catch (e) {
       setBusy(false);
       if (props.onEchec) props.onEchec();
@@ -1154,6 +1187,12 @@ function ComposeurStory(props) {
               },
               style: { width: "100%", maxHeight: "38vh", objectFit: "contain", display: "block", position: "relative" }
             })))
+          : null,
+
+        (fichiers.length > 1)
+          ? h("div", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 8 } },
+            h("span", { style: { padding: "5px 11px", borderRadius: 999, fontSize: 11, fontFamily: M, fontWeight: 800, border: "1px solid " + tA(0.55), color: tn, background: "rgba(32,217,245,0.08)" } }, fichiers.length + " " + hsT("photosChoisies", lg)),
+            h("span", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C" } }, "\u2192"))
           : null,
 
         /* LE FOND (13/08, spec de Blandine) : une photo paysage ou carrée ne
@@ -1294,7 +1333,7 @@ function ComposeurStory(props) {
 
         h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
           h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, hsT("annuler", lg)),
-          h("button", { onClick: publier, disabled: busy, style: { flex: 1.4, padding: "13px 0", borderRadius: 999, border: "none", background: busy ? "rgba(32,217,245,0.35)" : ("linear-gradient(90deg," + tn + "," + tnL + ")"), color: "#04252A", fontSize: 13, fontWeight: 800, fontFamily: M, cursor: busy ? "default" : "pointer" } }, busy ? hsT("envoi", lg) : hsT("publier", lg))))),
+          h("button", { onClick: publier, disabled: busy, style: { flex: 1.4, padding: "13px 0", borderRadius: 999, border: "none", background: busy ? "rgba(32,217,245,0.35)" : ("linear-gradient(90deg," + tn + "," + tnL + ")"), color: "#04252A", fontSize: 13, fontWeight: 800, fontFamily: M, cursor: busy ? "default" : "pointer" } }, busy ? (fichiers.length > 1 ? (hsT("envoiMulti", lg) + "\u2026") : hsT("envoi", lg)) : (fichiers.length > 1 ? (hsT("publier", lg) + " (" + fichiers.length + ")") : hsT("publier", lg)))))),
     document.body);
 }
 

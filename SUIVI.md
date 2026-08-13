@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 128 · STORIES v13 — LE GLISSÉ COINCÉ, LE GESTE RETOUR) — md5 `753964c4aed1c0fc8728bf68ca574cee`, 9098961 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 13`**. Balise **`?v=13`**. **FICHIER COMPAGNON : `hype-stories.js` v13, md5 `03f10471842696bd3a8bff13c99ae939`, 139912 octets.** **AUCUN SQL nouveau** (le SQL `fond` de la session 127 reste dû s'il n'est pas passé).
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 129 · STORIES v14 — PLUSIEURS PHOTOS, LE CHAPELET) — md5 `b8726fbcb2c7f1ed839d4cb8ac3d2eb2`, 9098961 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 14`**. Balise **`?v=14`**. **FICHIER COMPAGNON : `hype-stories.js` v14, md5 `52d174a26a90a99dce985487085ea2ae`, 142946 octets.** **AUCUN SQL nouveau** (le SQL `fond` de la 127 reste dû s'il n'est pas passé).
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 128) :** `index.html` + `hype-stories.js` (v13). Le SQL `fond-stories.sql` (session 127) si pas encore passé. Cet index cumule : stories v13, bloc Lamotte masqué, Deborah ambassadrice, rail retour. **EN ATTENTE DE BLANDINE :** multi-photos/vidéos dans une story (avis donné, découpage proposé, pas de feu vert) ; carte des clubs (choix a/b) ; musique sur toute l'app (pastille flottante, pages visitées) ; fin de la phrase localisation temps réel ; design stories (3 maquettes) ; chanson de page trouvée ou pas.
+**À POUSSER, état au 13/08 (session 129) :** `index.html` + `hype-stories.js` (v14) + `fond-stories.sql` si pas encore passé. Cet index cumule : stories v14 (multi-photos, glissé, retour, fond, menu ⋯), Lamotte masqué, Deborah. **EN ATTENTE DE BLANDINE :** la VIDÉO 15 s (choix présentés session 129, pas de feu vert) ; carte des clubs (a/b) ; musique sur toute l'app ; localisation temps réel (phrase à finir) ; design stories (3 maquettes) ; chanson de page trouvée ou pas.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,31 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 129 · STORIES v14 — PLUSIEURS PHOTOS, LE CHAPELET
+
+**Feu vert de Blandine (13/08, ~13 h 30)** : « Ok vas-y » sur les photos multiples (son idée : « poster plusieurs vidéos ou photos… quand on l'ouvre ça se déroule »). Sa question vidéo (« réduite à 15 sec max ? ») : choix présentés, **pas codée** — voir bas de section.
+
+### LE CHAPELET
+
+- **Sélection** : l'entrée de fichiers du bandeau passe en `multiple` (plafond `HS_MULTI_MAX = 10`). Une seule photo : strictement rien ne change.
+- **Composeur** : `props.fichier` accepte un File OU un tableau (normalisé en liste, rétrocompatible). Compteur « N photos choisies » sous l'aperçu (aperçu = première photo), bouton « Publier (N) », libellé « Publication… » pendant l'envoi.
+- **Publication** : une story par photo, dans l'ordre de sélection, séquentiellement (l'ordre `created_at` suit — la visionneuse les déroule dans le bon sens). **Répartition (déduction de Claude, annoncée à Blandine, réversible en une ligne)** : la LÉGENDE et les TAGS vont à la PREMIÈRE photo seulement ; le LIEU, la MUSIQUE et le FOND accompagnent TOUTES.
+- **Échecs** : un raté au milieu n'arrête pas les suivantes — 0 réussite = échec franc ; réussite partielle = publication + message « n/N publiées — certaines n'ont pas pu partir » remonté au bandeau (2e argument optionnel d'`onPublie`, rétrocompatible).
+
+**À l'écran : + le sélecteur de photos accepte la multi-sélection · + compteur « N photos choisies » et bouton « Publier (N) » au composeur (uniquement si plusieurs).** Rien d'autre ne bouge.
+
+### LA VIDÉO 15 s — CHOIX PRÉSENTÉS À BLANDINE, RIEN N'EST CODÉ
+
+Sa question : une vidéo plafonnée à 15 s règle-t-elle le problème ? Réponse donnée : **le plafond de durée est facile et fiable** (lecture des métadonnées à la sélection : refus au-delà de 15 s avec message « raccourcis-la dans Photos ») ; **ce qui ne l'est pas, c'est la compression** — recompresser une vidéo dans Safari iPhone n'est pas raisonnable (pas d'outil natif, ffmpeg.wasm trop lourd), donc le fichier partirait tel quel : 15 s d'iPhone ≈ 15-40 Mo par story (contre ~300 Ko une photo), à multiplier par les cavaliers, sur le stockage Supabase. Trois décisions à prendre avant d'écrire : plafond de POIDS en plus de la durée (ex. 25 Mo) · lecture muette au démarrage + pastille pour le son (règle iOS, le son de la vidéo remplacerait la musique) · l'image du rond du bandeau (une vignette extraite de la première frame, à générer et stocker). Chantier réel mais faisable — sur son feu vert explicite avec ces trois réponses.
+
+### VÉRIFICATIONS
+16/16 blocs + module. **177 assertions** + 13 mentions. Nouvelles (11) : multi-sélection, plafond 10, boucle ordonnée, légende/tags à la première, lieu partout, échec franc, partiel annoncé, solo inchangé (compteur absent, bouton « Publier »), compteur ×3, bouton chiffré.
+
+### Préparation Flutter (session 129)
+`publier()` est devenu une boucle sur une liste normalisée : le passage à la vidéo (types mixtes) ou à un vrai batch ne touchera que cette fonction. Le contrat `hsPublierStory` n'a pas bougé.
 
 ---
 
