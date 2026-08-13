@@ -8165,48 +8165,6 @@ function choisirLecon(){
       langueUI()==="en" ? "Handle it on the spot" : "Me d\u00e9brouiller sur place"));
   })();
 
-  /* ⚠️ AJOUT DU 13/08 (session 210) — PARTAGER CETTE LECON.
-     Demande de Blandine : un lien qui ouvre la lecon, pas l'accueil.
-     Le lien est lu par `lireAncre()` : #lecon=<ville>.
-     Repli en cascade, obligatoire : `navigator.share` n'existe pas
-     partout (ni sur ordinateur, ni dans certaines vues web), et
-     `clipboard.writeText` echoue hors contexte securise. Sans ce repli
-     le bouton serait mort sans rien dire. */
-  (function(){
-    if(!LC || !LC.ville) return;
-    var ui = langueUI();
-    var b = el("button",{class:"lgColl", style:"margin-top:10px;opacity:.85"},
-      ui==="en" ? "Share this lesson" : "Partager cette le\u00e7on");
-    b.addEventListener("click", function(){
-      var lien = location.href.split("#")[0] + "#lecon=" + LC.ville;
-      var titre = (ui==="en" ? "Linguae \u2014 " : "Linguae \u2014 ") + (LC.villeNom || LC.ville);
-      var dit = function(txt){
-        b.textContent = txt;
-        setTimeout(function(){
-          b.textContent = ui==="en" ? "Share this lesson" : "Partager cette le\u00e7on";
-        }, 2200);
-      };
-      if(navigator.share){
-        navigator.share({title:titre, url:lien}).catch(function(){});
-        return;
-      }
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(lien).then(
-          function(){ dit(ui==="en" ? "Link copied \u2713" : "Lien copi\u00e9 \u2713"); },
-          function(){ manuel(); });
-        return;
-      }
-      manuel();
-      function manuel(){
-        /* dernier repli : on affiche le lien, selectionnable a la main. */
-        var z = el("p",{style:"font-size:11px;color:#94A3AF;word-break:break-all;margin:8px 0 0;-webkit-user-select:all;user-select:all"}, lien);
-        b.parentNode.insertBefore(z, b.nextSibling);
-        dit(ui==="en" ? "Copy it by hand" : "\u00c0 copier \u00e0 la main");
-      }
-    });
-    S("lcCorps").appendChild(b);
-  })();
-
   /* ⚠️ AJOUT DU 12/08 (session 209) — LE DEFI DE LA VILLE, EN DESSOUS DES
      LECONS ET DU QUIZ, jamais a cote. Blandine : « le quiz on peut prendre
      le temps d'expliquer pourquoi c'est juste, pas juste, mettre des
@@ -10689,7 +10647,69 @@ try{ appliquerLangue(); }catch(err){}
         break;
       case "ouvPartager":
       case "arrPartager":
-        partager(b);
+        /* 🟥 UN SEUL PARTAGE, ET IL SUIT LA PAGE — 13/08, session 210.
+           Regle posee par Blandine apres s'etre trompee deux fois :
+           « quand tu mets partager sur la page d'accueil que ca partage
+           la page d'accueil, ca semble normal. Mais si tu mets partager
+           sur la page de La Baule, on s'attend a arriver sur La Baule ».
+
+           AVANT : deux boutons aux libelles proches. « Partager le
+           voyage » envoyait `LIEN` ecrit en dur, donc toujours l'accueil,
+           quelle que soit la ville affichee. Et un « Partager cette
+           lecon » ajoute le meme jour au bas de la page des mots, que
+           personne ne trouvait. Le plus visible faisait la mauvaise
+           chose. Le second a ete SUPPRIME.
+
+           ⚠️ NE PAS RAJOUTER DE SECOND BOUTON DE PARTAGE. S'il faut
+           partager autre chose, c'est ce bouton-ci qui apprend a le
+           faire, en lisant l'ecran ouvert.
+
+           ⚠️ L'APERCU DU LIEN reste « Linguae · Le tour du monde » avec
+           l'image du globe, meme pour un lien de ville : les balises
+           Open Graph sont uniques dans le fichier et valent pour toutes
+           les adresses. Seul le TEXTE du message peut nommer la ville.
+           Y remedier demanderait une page par ville ou un service qui
+           genere l'apercu — hors sujet ici. */
+        (function(){
+          var ref = null, nom = null;
+          /* quelle page est ouverte ? l'ecran de ville d'abord (LC), puis
+             l'ecran d'arrivee (courant). Aucun des deux : l'accueil. */
+          try{
+            if(typeof LC !== "undefined" && LC && LC.ville){
+              ref = LC.ville; nom = LC.villeNom || LC.ville;
+            } else if(b.id === "arrPartager"){
+              var e = ETAPES[courant];
+              if(e && e.ref){ ref = e.ref; nom = eV(e); }
+            }
+          }catch(err){}
+          if(!ref){ partager(b); return; }          /* repli : l'app entiere */
+
+          var lienVille = LIEN + "#lecon=" + ref;
+          var ui = langueUI();
+          /* `deLaVille()` existe deja et gere les articles : « du Morne »,
+             « d'Aix-la-Chapelle », « de La Baule ». Ne pas recoller un
+             « de » a la main — c'est ce qui donnait « de Le Morne ». */
+          var txt = (ui==="en")
+            ? ("Learn the words of " + nom + " on Hype Linguae")
+            : ("Apprends les mots " + deLaVille(nom) + " sur Hype Linguae");
+          try{
+            if(navigator.share){
+              navigator.share({title:"Linguae \u00b7 " + nom, text:txt, url:lienVille})
+                .catch(function(){});
+              return;
+            }
+          }catch(err){}
+          var tout = txt + " " + lienVille;
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(tout).then(function(){
+              var av = b.textContent;
+              b.textContent = tUI("lienCopie");
+              setTimeout(function(){ b.textContent = av; }, 1700);
+            }, function(){ alert(tout); });
+            return;
+          }
+          alert(tout);
+        })();
         break;
     }
   });
