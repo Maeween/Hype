@@ -469,11 +469,50 @@ function vueEcoute(p, corps, pied){
 }
 
 /* ---------- 🎙️ À TOI : je prononce ---------- */
+/* ---------- 🎙️ À TOI : j'entends, je vois, puis je dis ----------
+   🟥 CORRIGÉ LE 13/08 APRÈS ESSAI DE BLANDINE : « avant de demander de
+   répéter, il faut que les gens entendent la phrase, mais il faudra
+   qu'ils la voient écrite aussi ».
+   La première version n'affichait QUE la phrase en langue de lecture :
+   on demandait de dire à voix haute quelque chose qu'on n'avait jamais
+   vu écrit, et qu'on ne pouvait attraper qu'à l'oreille. Impossible pour
+   une débutante, et contraire au but — se débrouiller sur place, pas
+   réussir une dictée.
+   ⚠️ NE PAS RETIRER LA PHRASE CIBLE ÉCRITE. Si un jour on veut un
+   exercice de rappel sans le texte, ce sera un SIXIÈME type, pas
+   celui-ci. */
 function vueParle(p, corps, pied){
   var carte = el("div",{class:"carte"});
-  carte.appendChild(el("div",{style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#94A3AF;margin-bottom:8px"},"Dis ceci"));
+  carte.appendChild(el("div",{style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#94A3AF;margin-bottom:8px"},"Ce que tu veux dire"));
   carte.appendChild(el("div",{class:"fr"}, p[LG]));
   corps.appendChild(carte);
+
+  /* la phrase à dire, ÉCRITE et sonore */
+  var cible = el("div",{class:"carte", style:"border-color:rgba(32,217,245,.3);background:rgba(32,217,245,.06)"});
+  cible.appendChild(el("div",{style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#20D9F5;margin-bottom:8px"},
+    CIBLE === "en" ? "\u00c0 dire en anglais" : "\u00c0 dire en fran\u00e7ais"));
+  var ligne = el("div",{class:"cible"});
+  ligne.appendChild(document.createTextNode(p[CIBLE]));
+  var h = el("button",{class:"haut", title:"Écouter"}, "\uD83D\uDD0A");
+  h.addEventListener("click", function(){ dis(p[CIBLE], CIBLE); });
+  ligne.appendChild(h);
+  cible.appendChild(ligne);
+
+  /* la prononciation des mots-clés, tirée du lexique — jamais inventée */
+  var pron = [];
+  (p.mots || []).concat(p.motsAilleurs || []).forEach(function(ref){
+    var c = MOTS[ref];
+    if(c && c.mots && c.mots[CIBLE] && c.mots[CIBLE].p)
+      pron.push(c.mots[CIBLE].p);
+  });
+  if(pron.length){
+    cible.appendChild(el("div",{class:"aussi", style:"font-family:ui-monospace,Menlo,monospace;color:#20D9F5;font-style:normal"},
+      pron.join(" \u00b7 ")));
+  }
+  corps.appendChild(cible);
+
+  /* on la fait entendre en arrivant : entendre PUIS voir PUIS dire */
+  dis(p[CIBLE], CIBLE);
 
   var zoneV = el("div",{});
   corps.appendChild(zoneV);
@@ -491,6 +530,8 @@ function vueParle(p, corps, pied){
   } else {
     bMicro.addEventListener("click", function(){
       if(repondu) return;
+      /* pendant l'écoute, ce même bouton devient « J'ai fini » */
+      if(bMicro.__arreter){ bMicro.__arreter(); return; }
       ecoute(p, bMicro, zoneV, pied);
     });
   }
@@ -498,29 +539,59 @@ function vueParle(p, corps, pied){
   pied.appendChild(rang([boutonContinuer("Continuer sans dire", p, false)]));
 }
 
+/* 🟥 CORRIGÉ LE 13/08 APRÈS ESSAI DE BLANDINE : « quand on a fini de
+   parler, ça s'arrête pas… il n'y a pas vraiment de moment où on dit
+   qu'on a fini de parler ».
+   La première version laissait la reconnaissance décider seule quand
+   s'arrêter. Sur iPhone elle peut attendre longtemps un silence, ou
+   couper au milieu d'une phrase — dans les deux cas on ne sait pas où
+   on en est, et le bouton pulsait sans rien proposer.
+   Maintenant : le bouton devient « J'ai fini » et l'arrête pour de bon.
+   ⚠️ NE PAS SUPPRIMER CE BOUTON. Sans lui, sur une phrase longue ou
+   dans un endroit bruyant, on reste bloqué.
+   Le résultat partiel est gardé au fil de l'eau (`interimResults`) :
+   si on appuie sur « J'ai fini » avant que la reconnaissance ait rendu
+   son verdict, on juge quand même ce qui a été entendu. */
 function ecoute(p, bMicro, zoneV, pied){
   var R = window.SpeechRecognition || window.webkitSpeechRecognition;
   var r = new R();
   r.lang = VOIX[CIBLE] || "en-GB";
-  r.interimResults = false; r.maxAlternatives = 3;
-  bMicro.classList.add("ecoute");
-  bMicro.innerHTML = '<span class="ic">\uD83C\uDF99</span>J\'écoute…';
+  r.interimResults = true; r.maxAlternatives = 3;
+  r.continuous = true;
 
-  var fini = false;
+  var fini = false, partiel = "", horloge = null;
+
+  bMicro.classList.add("ecoute");
+  bMicro.innerHTML = '<span class="ic">\u23F9</span>J\'ai fini';
+  /* le clic pendant l'écoute ARRÊTE, il ne relance pas */
+  var arreter = function(){
+    try{ r.stop(); }catch(e){}
+    /* si la reconnaissance ne rend rien dans la seconde, on juge le
+       partiel : mieux vaut un verdict imparfait qu'un écran figé. */
+    setTimeout(function(){ rendre(partiel); }, 900);
+  };
+  bMicro.__arreter = arreter;
+
   function rendre(entendu){
     if(fini) return; fini = true;
+    if(horloge){ clearTimeout(horloge); horloge = null; }
     bMicro.classList.remove("ecoute");
     bMicro.innerHTML = '<span class="ic">\uD83C\uDF99</span>Parler';
+    bMicro.__arreter = null;
+    try{ r.abort(); }catch(e){}
     juge(p, entendu, zoneV, pied);
   }
   r.onresult = function(ev){
     var t = [];
-    for(var i=0;i<ev.results.length;i++)
-      for(var j=0;j<ev.results[i].length;j++) t.push(ev.results[i][j].transcript);
-    rendre(t.join(" "));
+    for(var i=0;i<ev.results.length;i++) t.push(ev.results[i][0].transcript);
+    partiel = t.join(" ");
+    /* résultat définitif : on juge sans attendre */
+    for(var k=0;k<ev.results.length;k++) if(ev.results[k].isFinal){ rendre(partiel); return; }
   };
-  r.onerror = function(){ rendre(""); };
-  r.onend   = function(){ rendre(""); };
+  r.onerror = function(){ rendre(partiel); };
+  r.onend   = function(){ rendre(partiel); };
+  /* filet de sécurité : jamais plus de 15 secondes d'écoute */
+  horloge = setTimeout(function(){ try{ r.stop(); }catch(e){} rendre(partiel); }, 15000);
   try{ r.start(); }catch(e){ rendre(""); }
 }
 
@@ -750,6 +821,7 @@ function piedRessai(p, zoneV, pied){
   var bR = el("button",{class:"micro"});
   bR.innerHTML = '<span class="ic">\uD83C\uDF99</span>Réessayer';
   bR.addEventListener("click", function(){
+    if(bR.__arreter){ bR.__arreter(); return; }
     repondu = false; zoneV.innerHTML = "";
     ecoute(p, bR, zoneV, pied);
   });
