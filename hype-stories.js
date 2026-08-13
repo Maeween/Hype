@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "12";
+var HYPE_STORIES_VERSION = "13";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -1816,6 +1816,27 @@ function VisionneuseStories(props) {
     return function () { try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current.__hsJoue = false; lecteurRef.current = null; } } catch (e) { } };
   }, []);
 
+  /* Le geste retour (bord d'écran iOS, bouton Android) ferme le plus haut
+     d'abord : le menu ⋯, puis la feuille ouverte, puis la visionneuse.
+     Enregistré sur le rail retour de l'index (même famille que
+     __memoryPoneyRetour) ; retiré au démontage. */
+  var retourRef = React.useRef({});
+  retourRef.current = { menuOuvert: menuOuvert, enEdition: enEdition, choix: choix };
+  React.useEffect(function () {
+    if (typeof window === "undefined") return;
+    window.__hsStoriesRetour = function () {
+      try {
+        var r = retourRef.current;
+        if (r.menuOuvert) { setMenuOuvert(false); return true; }
+        if (r.enEdition) { setEnEdition(false); pauseRef.current = false; setRelance(function (x) { return x + 1; }); return true; }
+        if (r.choix) { setChoix(false); pauseRef.current = false; setRelance(function (x) { return x + 1; }); return true; }
+        fermer();
+        return true;
+      } catch (e) { return false; }
+    };
+    return function () { try { delete window.__hsStoriesRetour; } catch (e) { window.__hsStoriesRetour = null; } };
+  }, []);
+
   /* Le son suit la pause du minuteur : feuille ouverte ou doigt posé =
      musique suspendue, reprise au relâcher. Piloté par la boucle rAF. */
   function synchroniserSon() {
@@ -1986,6 +2007,9 @@ function VisionneuseStories(props) {
 
   function toucheDebut(e) {
     try {
+      /* Purge : si un glissé précédent n'a jamais reçu sa fin (touchend
+         avalé, appel entrant…), la boîte repart d'une position saine. */
+      if (boiteRef.current && boiteRef.current.style.transform && boiteRef.current.style.transform !== "translateY(0px)") boiteRef.current.style.transform = "translateY(0px)";
       /* 13/08 01h40 : une feuille ouverte (Modifier, Garder) = AUCUN glissé,
          même si une remontée tactile passait la ceinture des feuilles. */
       if (enEdition || choix || menuOuvert) { glisseRef.current.actif = false; return; }
@@ -2044,7 +2068,7 @@ function VisionneuseStories(props) {
   return portail(
     h("div", {
       ref: boiteRef,
-      onTouchStart: toucheDebut, onTouchMove: toucheBouge, onTouchEnd: toucheFin,
+      onTouchStart: toucheDebut, onTouchMove: toucheBouge, onTouchEnd: toucheFin, onTouchCancel: toucheFin,
       style: { position: "fixed", inset: 0, zIndex: 9300, background: "#060709", display: "flex", flexDirection: "column", transition: "transform 160ms ease-out" }
     },
       h("div", { style: { display: "flex", gap: 4, padding: "calc(env(safe-area-inset-top) + 12px) 14px 0" } },
@@ -2074,7 +2098,6 @@ function VisionneuseStories(props) {
           ? h("button", {
             onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); setMenuOuvert(true); },
             onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-            onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
             "aria-label": "Actions",
             style: { width: 34, height: 34, borderRadius: "50%", flex: "0 0 auto", marginRight: 8, background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", color: "#E4ECEF", fontSize: 17, lineHeight: "30px", cursor: "pointer", letterSpacing: 1 }
           }, "\u22ef")
@@ -2115,8 +2138,12 @@ function VisionneuseStories(props) {
         (story.musique && hsUrlMusique(story.musique))
           ? h("button", {
             onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); basculerSon(); },
+            /* 13/08 13h22 : touchend NE DOIT PLUS etre stoppe ici. Un glissé
+               armé sur la photo qui FINIT sur la pastille laissait la boîte
+               coincée en pleine transformation (le reset vit dans toucheFin,
+               qui ne recevait jamais la fin du toucher). touchstart reste
+               stoppé : le glissé ne s'arme pas depuis la pastille. */
             onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-            onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
             style: {
               position: "absolute", right: 14, bottom: 14, zIndex: 10,
               display: "flex", alignItems: "center", gap: 8, padding: "11px 17px",

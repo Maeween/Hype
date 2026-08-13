@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 127 · STORIES v12 — LE FOND AU CHOIX DE L'AUTEUR, LE MENU ⋯, + DEBORAH AMBASSADRICE) — md5 `639b0b215753b17276dc42e42a630ce5`, 9098789 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 12`**. Balise **`?v=12`**. **FICHIER COMPAGNON : `hype-stories.js` v12, md5 `963f5d44ca8c34b73cff18ef4c5b6ffb`, 138265 octets.** **UN SQL d'une ligne : `alter table public.hype_stories add column if not exists fond text;`** — replis codés si la colonne manque (publication et modification retombent sans le fond plutôt que d'échouer).
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 128 · STORIES v13 — LE GLISSÉ COINCÉ, LE GESTE RETOUR) — md5 `753964c4aed1c0fc8728bf68ca574cee`, 9098961 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 13`**. Balise **`?v=13`**. **FICHIER COMPAGNON : `hype-stories.js` v13, md5 `03f10471842696bd3a8bff13c99ae939`, 139912 octets.** **AUCUN SQL nouveau** (le SQL `fond` de la session 127 reste dû s'il n'est pas passé).
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 127) :** `index.html` + `hype-stories.js` (v12) + le SQL `fond` ci-dessus (fichier fond-stories.sql). La session 126 (bloc Lamotte) est INCLUSE dans cet index. Compagnons inchangés. **EN ATTENTE DE BLANDINE :** carte des clubs (choix a/b, session 126) ; musique sur toute l'app (pastille flottante + pages visitées, oui/non) ; fin de sa phrase sur la localisation temps réel ; design stories (3 maquettes) ; chanson de page trouvée ou pas.
+**À POUSSER, état au 13/08 (session 128) :** `index.html` + `hype-stories.js` (v13). Le SQL `fond-stories.sql` (session 127) si pas encore passé. Cet index cumule : stories v13, bloc Lamotte masqué, Deborah ambassadrice, rail retour. **EN ATTENTE DE BLANDINE :** multi-photos/vidéos dans une story (avis donné, découpage proposé, pas de feu vert) ; carte des clubs (choix a/b) ; musique sur toute l'app (pastille flottante, pages visitées) ; fin de la phrase localisation temps réel ; design stories (3 maquettes) ; chanson de page trouvée ou pas.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,28 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 128 · STORIES v13 — LE GLISSÉ COINCÉ, LE GESTE RETOUR
+
+**Signalements de Blandine (13/08, 13 h 20-13 h 26, capture)** : (1) swipe « vers l'arrière » pour la story précédente → retour à l'accueil ; (2) story « bloquée » après un appui sur la musique, impossible de scroller vers la légende — sa capture montre la boîte de la visionneuse **coincée en pleine transformation de glissé** (coins arrondis, photo rétrécie, barre d'onglets visible dans l'espace libéré). Diagnostic vérifié dans le code avant toute écriture.
+
+### 🟠 1. LE GLISSÉ COINCÉ — LA PASTILLE AVALAIT LE TOUCHEND
+
+Un glissé s'arme sur la photo ; si le doigt **se termine sur la pastille ♪**, le `stopPropagation` de touchend posé en v9 empêchait `toucheFin` de tourner : ni remise en place de la boîte, ni décision — état figé. Correctifs en trois ceintures : **touchend remonte à nouveau** depuis la pastille et le bouton ⋯ (touchstart reste stoppé : le glissé ne s'arme jamais SUR eux) ; **`onTouchCancel: toucheFin`** sur la racine (appel entrant, notification système) ; **purge en début de toucher** — toute transformation résiduelle est remise à zéro avant d'armer.
+
+### 2. LE GESTE RETOUR — LES STORIES SUR LE RAIL EXISTANT
+
+Le « swipe arrière » de Blandine est le geste retour d'iOS : l'app l'intercepte déjà (garde `pushState {ag:1}` + `onPop`) et ferme les modals via des crochets (`__memoryPoneyRetour`). La visionneuse s'enregistre pareil : **`window.__hsStoriesRetour`** ferme le plus haut d'abord — le menu ⋯, puis la feuille ouverte (Modifier/Garder, avec relance du minuteur), puis la visionneuse — et retourne `true` : l'écran ne change plus. Branche insérée dans l'`onPop` de l'index AVANT le Memory et le retour d'écran ; crochet retiré au démontage. Pour revenir à la story précédente : la zone gauche (32 %) reste le geste.
+
+### VÉRIFICATIONS
+
+16/16 blocs + module. **165 assertions** + 13 mentions. Nouvelles (10) ; 3 assertions historiques rendues **structurelles** (découpe de la fonction entière au lieu d'une fenêtre de caractères — 3e morsure de la fenêtre, règle appliquée) ; l'assertion 123 de la pastille **retournée** : touchend doit désormais remonter, c'est le correctif.
+
+### Préparation Flutter (session 128)
+
+Le rail retour à crochets (`__hsStoriesRetour`, `__memoryPoneyRetour`) est exactement le pattern d'un `Navigator.pop` : la pile de fermeture (menu → feuille → visionneuse) se transposera telle quelle.
 
 ---
 
