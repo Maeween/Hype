@@ -7026,3 +7026,29 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 | 06/08 (95) | Claude (page Accueil) | **Chemin Baby** : `baby-c17` scinde en `baby-c16` « J'arrete Apy » + `baby-c17` « Je repars et je retrouve mes renes ». Poney d'Argent repasse a 9 chapitres, sequence `baby-c1..c27` continue. « Le conseil du coach » retire du cours scinde (reste dans 22 autres). Validation retroactive de `c16` pour qui avait `c17`. |
 | 06/08 (94) | Claude (page Accueil) | **Accueil** : fente cristal a la place de l'emoji messagerie (pastille turquoise), Culture equestre + Videotheque en tuiles carrees via `carteVertAcc` remis en service, helper `trAcc` 6 langues. Encart messages et Lamotte etaient deja masques par constantes. |
 | 02/08 (72) | Claude (Directeur Technique) | **Visionneuse zoomable** (`PhotoZoomHype`, sans état React) corrigeant la sortie de l'appli au zoom ; vidéo de cérémonie figée sur la page Performances ; titre vertical « Liens & partage » désuperposé. Inventaire architectural de l'index (étape 1) : le contenu pèse plus que le code, extraction de `contenu_galop1_i18n` prête mais volontairement reportée après les bugs. En attente : passage Supabase en Pro. |
+
+
+## Session 134 — 13/08/2026 · stories 19 : LA STORY COMPOSÉE EST VIVANTE (H+D + modèles Premium)
+
+**Feux verts de Blandine (ses mots)** : « Oui HD tu peux faire déjà c'est sûr » · « on peut proposer usage des modèles en plus mais uniquement aux premium » · vidéo à valider/prévoir (déjà validée en spec, session 133).
+
+**Livré (stories 19)** :
+- `HS_COMPO_ACTIF = true` — la story composée s'allume.
+- Composeur : bloc « Présentation » (2 à 5 photos, hors mode ajout) — puces **Défiler | Composer**. Composer = disposition `hd` pour tous. Membres **Premium** : bande des **modèles** filtrée au nombre exact de fenêtres (tap = choisir, retap = revenir au H+D). Non-premium : phrase d'invitation, 6 langues. État 18 du composeur : `compoChoix`.
+- Publication : un `groupe` (hsUuid) partagé + `disposition` sur chaque photo du groupe.
+- Visionneuse : `CompositionStory` — **H+D** (grande photo, texte suspendu sous fil de lumière, table de tirages inclinés) et **modèles** (photos absolues aux bbox, découpées au **contour exact** en clip-path %, décor par-dessus). Dépliage 400 ms en cascade. **Tap une photo = plein écran** (PhotoZoomHype, minuteur en pause). UNE barre par groupe (repli v18).
+- **Garder en souvenir / À la une = TOUTES les photos du groupe** (décision de Blandine) — quota gratuit vérifié sur le total, `garde` posé sur tous les ids.
+- Nouveau fichier compagnon **`hype-modeles-db.js`** (données pures, 23 modèles, contours exacts) + index charge `hype-modeles-db.js?v=1` et `hype-stories.js?v=19`. Contours des 4 concours complétés depuis leurs coins (11 fenêtres).
+- Textes : `presentation`, `defiler`, `composer`, `modelesPremium` — 6 langues.
+
+**À l'écran** : + bloc « Présentation » au composeur (≥2 photos) · + bande des modèles (Premium) · + rendu composé dans la visionneuse (H+D ou modèle) · + plein écran au tap d'une photo composée · − rien ne disparaît (défiler reste le défaut, stories seules inchangées).
+
+**⚠️ Avant de tester** : le SQL `story-composee.sql` (v18 : colonnes `groupe`, `disposition`) doit être passé dans Supabase. À pousser : `index.html` + `hype-stories.js` + `hype-modeles-db.js` + les 23 `modele-*.webp` à la racine.
+
+**Incident (règle du 09/08, tracé)** : première écriture du catalogue JSON plantée sur un type numpy → fichier local tronqué ; restauré depuis la copie livrée (intacte), réécrit en types purs ; la chaîne écrit désormais en fichier temporaire relu puis remplacé (écriture atomique). Aucune perte.
+
+**Chantiers suivants** : vidéo 15 s dans la composée (spec validée : 25 Mo, muette + pastille ♪, vignette auto, grande place, durée entière) = **livraison suivante immédiate** (tuyauterie d'envoi vidéo + vignette + lecteur). Première disposition « modèles pour tous » vs premium : tranché premium ce jour.
+
+**Préparation Flutter** : le catalogue des modèles est un fichier de DONNÉES pur (`hype-modeles-db.js`), contrat réutilisable tel quel côté Flutter ; `CompositionStory` isole tout le rendu composé (aucune fuite dans la visionneuse hormis un branchement conditionnel) ; `hsModelesPourN` fixe le contrat de filtrage.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19**.

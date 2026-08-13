@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "18";
+var HYPE_STORIES_VERSION = "19";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -140,7 +140,18 @@ var HS_FOND_IMMERSIF_ACTIF = false;
    5 photos publiees ENSEMBLE, une disposition (« hd » : la grande en haut, le
    texte suspendu, la table de tirages dessous). INERTE tant que la visionneuse
    ne sait pas l'afficher : la constante s'allumera avec elle. */
-var HS_COMPO_ACTIF = false;
+var HS_COMPO_ACTIF = true;
+/* Le catalogue des MODELES (decors a fenetres) vit dans hype-modeles-db.js,
+   pousse a la racine avec les webp. Garde : sans le fichier, zero modele,
+   l'app vit tres bien. hsModelesPourN(n) = les modeles a exactement n
+   fenetres, pour filtrer le choix au composeur. */
+function hsModeles() { try { return (typeof window !== "undefined" && window.HYPE_MODELES) || {}; } catch (e) { return {}; } }
+function hsModelesPourN(n) {
+  try {
+    var d = hsModeles();
+    return Object.keys(d).filter(function (k) { return d[k] && d[k].fenetres && d[k].fenetres.length === n; }).sort();
+  } catch (e) { return []; }
+}
 var HS_COMPO_MAX = 5;
 function hsUuid() {
   try { if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID(); } catch (e) { }
@@ -701,18 +712,27 @@ async function hsGarderEnSouvenir(story, premium, destination) {
     }
     if (!alb) return { error: "Album indisponible" };
 
+    /* STORY COMPOSEE (13/08, decision de Blandine) : garder embarque TOUTES
+       les photos du groupe, pas seulement la couverture. */
+    var urls = (story.compo && story.compo.length > 1)
+      ? story.compo.map(function (x) { return x && x.photo_url; }).filter(function (u) { return !!u; })
+      : [story.photo_url];
     var photos = (alb.photos || []).slice();
-    if (photos.indexOf(story.photo_url) >= 0) return { deja: true, error: null };
-    if (!premium && photos.length >= 20) return { error: "quota" };
-    photos.push(story.photo_url);
+    var neuves = urls.filter(function (u) { return photos.indexOf(u) < 0; });
+    if (!neuves.length) return { deja: true, error: null };
+    if (!premium && photos.length + neuves.length > 20) return { error: "quota" };
+    photos = photos.concat(neuves);
 
     var champs = { photos: photos };
     /* Première photo d'une à la une neuve : elle en devient la couverture. */
-    if (!alb.couverture && photos.length === 1) champs.couverture = story.photo_url;
+    if (!alb.couverture && photos.length === neuves.length) champs.couverture = neuves[0];
 
     var rm = await majAlbumCheval(alb.id, champs);
     if (rm && rm.error) return { error: rm.error };
-    try { await supa.from("hype_stories").update({ garde: true }).eq("id", story.id).eq("user_id", user.id); } catch (eG) { }
+    try {
+      var ids = (story.compo && story.compo.length ? story.compo : [story]).map(function (x) { return x && x.id; }).filter(function (i) { return !!i; });
+      await supa.from("hype_stories").update({ garde: true }).in("id", ids).eq("user_id", user.id);
+    } catch (eG) { }
     return { error: null, nom: alb.nom || "" };
   } catch (e) { return { error: String(e) }; }
 }
@@ -757,6 +777,10 @@ var HS_TXT = {
   annuler: { fr: "Annuler", en: "Cancel", es: "Cancelar", it: "Annulla", ja: "キャンセル", de: "Abbrechen" },
   envoi: { fr: "Envoi\u2026", en: "Uploading\u2026", es: "Enviando\u2026", it: "Invio\u2026", ja: "送信中…", de: "Wird gesendet\u2026" },
   duree: { fr: "Visible 7 jours par tous les cavaliers.", en: "Visible for 7 days to all riders.", es: "Visible 7 d\u00edas para todos los jinetes.", it: "Visibile 7 giorni a tutti i cavalieri.", ja: "7日間、すべての騎手に表示されます。", de: "7 Tage f\u00fcr alle Reiter sichtbar." },
+  presentation: { fr: "Pr\u00e9sentation", en: "Layout", es: "Presentaci\u00f3n", it: "Presentazione", ja: "\u30ec\u30a4\u30a2\u30a6\u30c8", de: "Anordnung" },
+  defiler: { fr: "D\u00e9filer", en: "One by one", es: "Deslizar", it: "Scorrere", ja: "\u9806\u756a\u306b\u8868\u793a", de: "Nacheinander" },
+  composer: { fr: "Composer", en: "Compose", es: "Componer", it: "Comporre", ja: "\u7d44\u307f\u5408\u308f\u305b\u308b", de: "Komponieren" },
+  modelesPremium: { fr: "Les mod\u00e8les de d\u00e9cor sont r\u00e9serv\u00e9s aux membres Premium.", en: "Decor templates are for Premium members.", es: "Las plantillas de decorado son para miembros Premium.", it: "I modelli decorativi sono riservati ai membri Premium.", ja: "\u30c7\u30b3\u30ec\u30fc\u30b7\u30e7\u30f3\u30e2\u30c7\u30eb\u306f\u30d7\u30ec\u30df\u30a2\u30e0\u4f1a\u54e1\u9650\u5b9a\u3067\u3059\u3002", de: "Deko-Vorlagen sind Premium-Mitgliedern vorbehalten." },
   garder: { fr: "Garder en souvenir", en: "Keep as a memory", es: "Guardar como recuerdo", it: "Conserva come ricordo", ja: "思い出として保存", de: "Als Erinnerung behalten" },
   gardee: { fr: "Gard\u00e9e \u2713", en: "Kept \u2713", es: "Guardada \u2713", it: "Conservata \u2713", ja: "保存しました \u2713", de: "Behalten \u2713" },
   supprimer: { fr: "Supprimer", en: "Delete", es: "Eliminar", it: "Elimina", ja: "削除", de: "L\u00f6schen" },
@@ -1058,6 +1082,9 @@ function ComposeurStory(props) {
   var orS = React.useState(null), ordre = orS[0], setOrdre = orS[1];
   var vuS = React.useState(0), vue = vuS[0], setVue = vuS[1];
   var umS = React.useState([]), urlsMini = umS[0], setUrlsMini = umS[1];
+  /* Etat 18 (13/08, session 134) : le choix de PRESENTATION — null = defiler
+     (le chapelet), "hd" = story composee, "modele-X" = un modele Premium. */
+  var cpS = React.useState(null), compoChoix = cpS[0], setCompoChoix = cpS[1];
   var corpsRef = React.useRef(null);
   var vivantRef = React.useRef(true);
 
@@ -1208,6 +1235,10 @@ function ComposeurStory(props) {
          FOND accompagnent TOUTES. Un échec au milieu n'arrête pas les
          suivantes : on publie ce qui peut l'être et on le dit. */
       var okN = 0, lieuIgn = false, dernierR = null;
+      /* STORY COMPOSEE (13/08) : si l'auteur a choisi Composer ou un modele,
+         toutes les photos partagent un meme groupe ; la disposition part avec
+         chacune (la couverture du repli prend la premiere qui en porte). */
+      var grpId = (compoChoix && fichiersOrdonnes.length > 1 && fichiersOrdonnes.length <= HS_COMPO_MAX) ? hsUuid() : null;
       for (var iF = 0; iF < fichiersOrdonnes.length; iF++) {
         var rI = await hsPublierStory(
           fichiersOrdonnes[iF],
@@ -1215,7 +1246,9 @@ function ComposeurStory(props) {
           lieu,
           iF === 0 ? tags : [],
           musique,
-          fond
+          fond,
+          grpId,
+          grpId ? compoChoix : null
         );
         dernierR = rI;
         if (rI && !rI.error) { okN++; if (rI.lieuIgnore) lieuIgn = true; }
@@ -1317,6 +1350,35 @@ function ComposeurStory(props) {
                 },
                 style: { marginTop: 8, padding: "9px 14px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700, border: "1px solid " + tA(0.6), background: "rgba(32,217,245,0.1)", color: tn }
               }, "\u2b50 " + hsT("mettreDevant", lg))
+              : null)
+          : null,
+
+        /* LA PRESENTATION (13/08, feux verts de Blandine, session 134) :
+           2 a 5 nouvelles photos peuvent DEFILER (le chapelet) ou etre
+           COMPOSEES en une seule story. Composer = disposition H+D pour
+           tous ; les MODELES (decors a fenetres) sont reserves aux membres
+           Premium — decision de Blandine. Le mode ajout (origine) reste en
+           chapelet : on ne compose pas avec une story deja en ligne. */
+        (HS_COMPO_ACTIF && !props.origine && fichiersOrdonnes.length >= 2 && fichiersOrdonnes.length <= HS_COMPO_MAX)
+          ? h("div", null,
+            titreBloc(hsT("presentation", lg)),
+            h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
+              puce(!compoChoix, hsT("defiler", lg), function () { setCompoChoix(null); }, "cDef"),
+              puce(!!compoChoix, hsT("composer", lg), function () { setCompoChoix(compoChoix || "hd"); }, "cCmp")),
+            (compoChoix && props.premium && hsModelesPourN(fichiersOrdonnes.length).length)
+              ? h("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", padding: "10px 0 2px", WebkitOverflowScrolling: "touch" } },
+                hsModelesPourN(fichiersOrdonnes.length).map(function (refM) {
+                  var actifM = compoChoix === refM;
+                  return h("button", {
+                    key: refM,
+                    onClick: function () { setCompoChoix(actifM ? "hd" : refM); },
+                    style: { flex: "0 0 auto", padding: 0, border: "none", background: "none", cursor: "pointer" }
+                  },
+                    h("img", { src: refM + ".webp", alt: refM, loading: "lazy", style: { width: 52, height: 82, objectFit: "cover", borderRadius: 10, display: "block", background: "#111417", border: "2px solid " + (actifM ? tn : "rgba(255,255,255,0.16)"), boxShadow: actifM ? ("0 0 12px " + tA(0.35)) : "none" } }));
+                }))
+              : null,
+            (compoChoix && !props.premium)
+              ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, letterSpacing: 0.3 } }, hsT("modelesPremium", lg))
               : null)
           : null,
 
@@ -1932,6 +1994,90 @@ function ModifierStory(props) {
    - aucun setPointerCapture : c'était une des causes du blocage de
      défilement Android. Événements touch simples.
 --------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   LA STORY COMPOSEE A L'ECRAN (13/08, session 134, feux verts de Blandine).
+   Deux dispositions : "hd" (la grande en haut, le texte suspendu sous un fil
+   de lumiere, la table de tirages dessous — maquette validee) et "modele-X"
+   (les photos vivent DANS les fenetres du decor, decoupees a leurs contours
+   exacts, le decor par-dessus). Chaque photo se touche : PLEIN ECRAN avec le
+   zoom au pincement (PhotoZoomHype), le minuteur en pause pendant ce temps.
+   Le depliage : les tirages glissent un a un a l'ouverture (400 ms). */
+function CompositionStory(props) {
+  var story = props.story || {}; var lg = props.langue || "fr";
+  var membres = (story.compo && story.compo.length ? story.compo : [story]);
+  var plS = React.useState(null), plein = plS[0], setPlein = plS[1];
+  function ouvrirPlein(u) { try { if (props.pause) props.pause(true); } catch (e) { } setPlein(u); }
+  function fermerPlein() { try { if (props.pause) props.pause(false); } catch (e) { } setPlein(null); }
+  function src(st) { return (typeof hsImageEcran === "function") ? hsImageEcran(st.photo_url) : st.photo_url; }
+  function photoTouchable(st, ix, style) {
+    return h("button", {
+      key: "cp" + ix,
+      onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); ouvrirPlein(src(st)); },
+      onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+      style: Object.assign({ padding: 0, border: "none", background: "none", cursor: "pointer", animation: "hsDeplie 400ms ease both", animationDelay: (ix * 120) + "ms" }, style)
+    }, h("img", { src: src(st), alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" } }));
+  }
+  var surcouche = plein
+    ? h("div", {
+      onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); fermerPlein(); },
+      onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+      style: { position: "fixed", inset: 0, zIndex: 9420, background: "rgba(4,6,9,0.96)", display: "flex", alignItems: "center", justifyContent: "center" }
+    },
+      (typeof PhotoZoomHype === "function") ? h(PhotoZoomHype, { src: plein }) : h("img", { src: plein, alt: "", style: { maxWidth: "100%", maxHeight: "100%", objectFit: "contain" } }),
+      h("button", { onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); fermerPlein(); }, "aria-label": "Fermer", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 14, width: 34, height: 34, borderRadius: "50%", background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.2)", color: "#E4ECEF", fontSize: 15, cursor: "pointer" } }, "\u2715"))
+    : null;
+  var d = (story.disposition && story.disposition.indexOf("modele-") === 0) ? hsModeles()[story.disposition] : null;
+  var cadres = h("style", { dangerouslySetInnerHTML: { __html: "@keyframes hsDeplie{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:none}}" } });
+  if (d && d.fenetres && d.fenetres.length) {
+    /* LE MODELE : un plan aux proportions du decor, les photos posees dans
+       les bbox des fenetres et DECOUPEES a leur contour exact (clip-path en
+       pourcentage : la mise a l'echelle est gratuite). Le decor par-dessus,
+       intouchable — les fenetres, elles, s'ouvrent en plein ecran. */
+    var W = d.taille[0], H = d.taille[1];
+    return h("div", { style: { position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" } },
+      cadres,
+      h("div", { style: { position: "relative", aspectRatio: W + " / " + H, maxWidth: "100%", maxHeight: "100%", width: "auto", height: "100%" } },
+        d.fenetres.map(function (f, ix) {
+          var st = membres[ix]; if (!st) return null;
+          /* clip-path en % DE LA FENETRE : le contour (coordonnees decor)
+             est rapporte a la bbox, la mise a l'echelle devient gratuite. */
+          var pc = (f.contour || []).map(function (p) {
+            return (100 * (p[0] - f.bbox[0]) / f.bbox[2]).toFixed(2) + "% " + (100 * (p[1] - f.bbox[1]) / f.bbox[3]).toFixed(2) + "%";
+          }).join(", ");
+          return photoTouchable(st, ix, {
+            position: "absolute",
+            left: (100 * f.bbox[0] / W) + "%", top: (100 * f.bbox[1] / H) + "%",
+            width: (100 * f.bbox[2] / W) + "%", height: (100 * f.bbox[3] / H) + "%",
+            clipPath: pc ? ("polygon(" + pc + ")") : "none"
+          });
+        }),
+        h("img", { src: story.disposition + ".webp", alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" } })),
+      surcouche);
+  }
+  /* H+D : la grande, le texte suspendu sous le fil de lumiere, la table. */
+  var grande = membres[0]; var tirages = membres.slice(1);
+  return h("div", { style: { position: "relative", width: "100%", height: "100%", display: "flex", flexDirection: "column", padding: "8px 12px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
+    cadres,
+    photoTouchable(grande, 0, { flex: "1 1 58%", minHeight: 0, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)" }),
+    story.legende
+      ? h("div", { style: { textAlign: "center", animation: "hsDeplie 400ms ease both", animationDelay: "120ms" } },
+        h("div", { style: { width: 120, height: 1, margin: "0 auto 7px", background: "linear-gradient(90deg, transparent, rgba(32,217,245,0.75), transparent)", boxShadow: "0 0 10px rgba(32,217,245,0.4)" } }),
+        h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45, maxHeight: 54, overflow: "hidden", padding: "0 8px" } }, story.legende))
+      : null,
+    tirages.length
+      ? h("div", { style: { flex: "0 0 auto", display: "flex", gap: 8, justifyContent: "center", alignItems: "flex-end" } },
+        tirages.map(function (st, ix) {
+          return photoTouchable(st, ix + 1, {
+            width: (tirages.length >= 4 ? "21%" : tirages.length === 3 ? "27%" : "34%"),
+            aspectRatio: "3 / 4", borderRadius: 6, overflow: "hidden",
+            border: "3px solid #F4F7FA", boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
+            transform: "rotate(" + (ix % 2 === 0 ? -2.2 : 2.4) + "deg)"
+          });
+        }))
+      : null,
+    surcouche);
+}
+
 function VisionneuseStories(props) {
   var h = React.createElement;
   var ctxV = (typeof useApp === "function") ? useApp() : null;
@@ -2299,9 +2445,11 @@ function VisionneuseStories(props) {
         erreur
           ? h("div", { style: { position: "absolute", padding: "0 30px", textAlign: "center", fontFamily: M, fontSize: 12.5, color: "#8A929C", lineHeight: 1.5 } }, hsT("photoIndispo", lg))
           : null,
-        (typeof PhotoZoomHype === "function" && chargee && !erreur)
-          ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })
-          : null,
+        (chargee && !erreur && !estAlbum && story.compo && story.compo.length > 1)
+          ? h(CompositionStory, { story: story, langue: lg, pause: function (v) { try { pauseRef.current = !!v; } catch (eP) { } } })
+          : ((typeof PhotoZoomHype === "function" && chargee && !erreur)
+            ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })
+            : null),
         /* La pastille son : n'apparaît que si la story porte une musique.
            JAMAIS d'autoplay (règle iOS) : c'est elle qu'on touche pour lancer
            la boucle, la retoucher coupe. Elle respire quand le son joue. */
