@@ -8100,6 +8100,48 @@ function choisirLecon(){
       langueUI()==="en" ? "Handle it on the spot" : "Me d\u00e9brouiller sur place"));
   })();
 
+  /* ⚠️ AJOUT DU 13/08 (session 210) — PARTAGER CETTE LECON.
+     Demande de Blandine : un lien qui ouvre la lecon, pas l'accueil.
+     Le lien est lu par `lireAncre()` : #lecon=<ville>.
+     Repli en cascade, obligatoire : `navigator.share` n'existe pas
+     partout (ni sur ordinateur, ni dans certaines vues web), et
+     `clipboard.writeText` echoue hors contexte securise. Sans ce repli
+     le bouton serait mort sans rien dire. */
+  (function(){
+    if(!LC || !LC.ville) return;
+    var ui = langueUI();
+    var b = el("button",{class:"lgColl", style:"margin-top:10px;opacity:.85"},
+      ui==="en" ? "Share this lesson" : "Partager cette le\u00e7on");
+    b.addEventListener("click", function(){
+      var lien = location.href.split("#")[0] + "#lecon=" + LC.ville;
+      var titre = (ui==="en" ? "Linguae \u2014 " : "Linguae \u2014 ") + (LC.villeNom || LC.ville);
+      var dit = function(txt){
+        b.textContent = txt;
+        setTimeout(function(){
+          b.textContent = ui==="en" ? "Share this lesson" : "Partager cette le\u00e7on";
+        }, 2200);
+      };
+      if(navigator.share){
+        navigator.share({title:titre, url:lien}).catch(function(){});
+        return;
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(lien).then(
+          function(){ dit(ui==="en" ? "Link copied \u2713" : "Lien copi\u00e9 \u2713"); },
+          function(){ manuel(); });
+        return;
+      }
+      manuel();
+      function manuel(){
+        /* dernier repli : on affiche le lien, selectionnable a la main. */
+        var z = el("p",{style:"font-size:11px;color:#94A3AF;word-break:break-all;margin:8px 0 0;-webkit-user-select:all;user-select:all"}, lien);
+        b.parentNode.insertBefore(z, b.nextSibling);
+        dit(ui==="en" ? "Copy it by hand" : "\u00c0 copier \u00e0 la main");
+      }
+    });
+    S("lcCorps").appendChild(b);
+  })();
+
   /* ⚠️ AJOUT DU 12/08 (session 209) — LE DEFI DE LA VILLE, EN DESSOUS DES
      LECONS ET DU QUIZ, jamais a cote. Blandine : « le quiz on peut prendre
      le temps d'expliquer pourquoi c'est juste, pas juste, mettre des
@@ -9554,6 +9596,55 @@ function lireAncre(){
     S("intro").classList.remove("on"); S("dest").classList.remove("on");
     S("ouverture").classList.remove("joue");   /* idem : fermer le sprint retombe sur le carnet */
     ouvrirSprint(); return true;
+  }
+  /* ==================================================================
+     #lecon=<ville> et #situation=<ville> — AJOUT DU 13/08, session 210.
+     Le lien de partage d'une leçon : il ouvre directement la ville, au
+     lieu de retomber sur l'accueil.
+     Demande de Blandine : « la possibilité de pouvoir partager une leçon
+     donnée et pas simplement me donner un lien qui me ramène sur la page
+     d'accueil de l'appli ».
+
+     ⚠️ LE FILM N'EST PAS SAUTÉ, et c'est volontaire. #sprint et #duel le
+     sautent parce qu'ils précèdent le v62 ; l'ordre de Blandine du 10/08
+     est que le film joue à CHAQUE connexion, « à la tête des liens de
+     partage » compris. Ne pas ajouter d'exception ici.
+     Le film part au double-tap, puis la ville s'ouvre.
+
+     ⚠️ `ouvrirLecon()` porte déjà son propre verrou : une ville non
+     autorisée ouvre le paywall. Un lien partagé ne contourne donc aucun
+     accès — vérifié, rien à ajouter.
+  ================================================================== */
+  var v=/^#(lecon|situation)=([a-z0-9-]+)$/.exec(location.hash||"");
+  if(v){
+    var ref=v[2], quoi=v[1];
+    /* la ville doit exister : un lien abîmé ne doit pas ouvrir un écran
+       vide, il retombe sur l'accueil normal. */
+    var connue = ETAPES.some(function(x){ return x.ref===ref; });
+    if(!connue) return false;
+    var lancer = function(){
+      S("intro").classList.remove("on"); S("dest").classList.remove("on");
+      ouvrirLecon(ref);
+      /* la mise en situation ne s'ouvre que si la ville en a une */
+      if(quoi==="situation"){
+        var a=false, L=window.HYPE_LINGO_LEX||{};
+        for(var k in L){ var d=L[k]&&L[k].dialogue;
+          if(d&&d.ville===ref&&d.phrases&&d.phrases.length){ a=true; break; } }
+        if(a) ouvrirSituation(ref);
+      }
+    };
+    /* si le film tourne encore, on attend qu'il ait fini ou qu'on l'ait
+       coupé — sinon la ville s'ouvre derrière lui, invisible. */
+    if(S("ouverture") && S("ouverture").classList.contains("joue")){
+      var essais=0;
+      var attente=setInterval(function(){
+        essais++;
+        if(!S("ouverture").classList.contains("joue") || essais>60){
+          clearInterval(attente); lancer();
+        }
+      }, 400);
+    } else lancer();
+    return true;
   }
   return false;
 }
