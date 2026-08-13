@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "11";
+var HYPE_STORIES_VERSION = "12";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -222,7 +222,7 @@ function hsMarquerVue(id) {
    via le système d'identifications existant. Un tag qui échoue ne fait pas
    échouer la publication : la story est déjà en ligne, on ne la perd pas
    pour un nom mal enregistré. */
-async function hsPublierStory(fichier, legende, lieu, tags, musique) {
+async function hsPublierStory(fichier, legende, lieu, tags, musique, fond) {
   try {
     if (typeof supa === "undefined" || !supa) return { data: null, error: "indisponible" };
     var user = await utilisateurActuel();
@@ -245,15 +245,20 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique) {
     var lieuNet = (lieu ? String(lieu).trim().slice(0, HS_LIEU_MAX) : "");
     if (lieuNet) ligne.lieu = lieuNet;
     if (musique && hsUrlMusique(musique)) ligne.musique = musique;
+    /* 13/08 (spec de Blandine) : le FOND choisi par l'auteur voyage avec la
+       story — "immersif" ou rien. Absent = noir, comme toutes les stories
+       d'avant : aucune story existante ne change. */
+    if (fond === "immersif") ligne.fond = "immersif";
 
     var res = await supa.from("hype_stories").insert(ligne).select().single();
     if (res && res.error) {
       /* Repli : si la colonne `lieu` n'existe pas encore en base (SQL de la
          v2 pas repassé), on republie sans le lieu plutôt que d'échouer. Le
          message est explicite pour que l'oubli se voie. */
-      if (lieuNet || ligne.musique) {
+      if (lieuNet || ligne.musique || ligne.fond) {
         delete ligne.lieu;
         delete ligne.musique;
+        delete ligne.fond;
         var res2 = await supa.from("hype_stories").insert(ligne).select().single();
         if (res2 && !res2.error) return { data: res2.data, error: null, lieuIgnore: true };
       }
@@ -277,7 +282,7 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique) {
    La politique RLS de mise à jour existait déjà (elle sert au marquage
    « gardée ») : AUCUN SQL. Même repli que la publication si la colonne
    `lieu` manquait en base. */
-async function hsModifierStory(id, legende, lieu, musique) {
+async function hsModifierStory(id, legende, lieu, musique, fond) {
   try {
     if (typeof supa === "undefined" || !supa) return { error: "indisponible" };
     var user = await utilisateurActuel();
@@ -287,12 +292,14 @@ async function hsModifierStory(id, legende, lieu, musique) {
       lieu: (lieu ? String(lieu).trim().slice(0, HS_LIEU_MAX) : null),
       /* 13/08 : la musique se modifie aussi (décision de Blandine). null =
          retirer la musique — un champ explicite, pas une absence. */
-      musique: (musique && hsUrlMusique(musique)) ? musique : null
+      musique: (musique && hsUrlMusique(musique)) ? musique : null,
+      fond: (fond === "immersif") ? "immersif" : null
     };
     var r = await supa.from("hype_stories").update(champs).eq("id", id).eq("user_id", user.id);
     if (r && r.error) {
       delete champs.lieu;
       delete champs.musique;
+      delete champs.fond;
       var r2 = await supa.from("hype_stories").update(champs).eq("id", id).eq("user_id", user.id);
       if (r2 && !r2.error) return { error: null, lieuIgnore: true };
       return { error: r.error };
@@ -716,6 +723,9 @@ var HS_TXT = {
   uneIntrouvable: { fr: "\u00c0 la une introuvable.", en: "Highlight not found.", es: "Destacada no encontrada.", it: "In evidenza non trovata.", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002", de: "Highlight nicht gefunden." },
   videUne: { fr: "Aucune \u00e0 la une pour l'instant.", en: "No highlight yet.", es: "Sin destacadas por ahora.", it: "Nessuna in evidenza per ora.", ja: "\u307e\u3060\u30cf\u30a4\u30e9\u30a4\u30c8\u306f\u3042\u308a\u307e\u305b\u3093\u3002", de: "Noch keine Highlights." },
   astuceArobase: { fr: "Tape @ pour identifier un cavalier.", en: "Type @ to tag a rider.", es: "Escribe @ para etiquetar a un jinete.", it: "Digita @ per taggare un cavaliere.", ja: "@\u3092\u5165\u529b\u3057\u3066\u9a0e\u624b\u3092\u30bf\u30b0\u4ed8\u3051", de: "Tippe @, um einen Reiter zu markieren." },
+  fondTitre: { fr: "Le fond", en: "Background", es: "El fondo", it: "Lo sfondo", ja: "\u80cc\u666f", de: "Der Hintergrund" },
+  fondNoir: { fr: "Noir", en: "Black", es: "Negro", it: "Nero", ja: "\u30d6\u30e9\u30c3\u30af", de: "Schwarz" },
+  fondImmersif: { fr: "Immersif", en: "Immersive", es: "Inmersivo", it: "Immersivo", ja: "\u30a4\u30de\u30fc\u30b7\u30d6", de: "Immersiv" },
   maChanson: { fr: "La chanson de ma page", en: "My page song", es: "La canci\u00f3n de mi p\u00e1gina", it: "La canzone della mia pagina", ja: "\u30de\u30a4\u30da\u30fc\u30b8\u306e\u66f2", de: "Der Song meiner Seite" },
   choisirChanson: { fr: "Choisir la chanson de ma page", en: "Pick my page song", es: "Elegir la canci\u00f3n de mi p\u00e1gina", it: "Scegliere la canzone della mia pagina", ja: "\u30da\u30fc\u30b8\u306e\u66f2\u3092\u9078\u3076", de: "Den Song meiner Seite w\u00e4hlen" },
   chansonEnregistree: { fr: "Chanson enregistr\u00e9e.", en: "Song saved.", es: "Canci\u00f3n guardada.", it: "Canzone salvata.", ja: "\u66f2\u3092\u4fdd\u5b58\u3057\u307e\u3057\u305f\u3002", de: "Song gespeichert." },
@@ -978,6 +988,10 @@ function ComposeurStory(props) {
     return function () { try { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } } catch (e) { } };
   }, []);
   var slS = React.useState([]), sugLieux = slS[0], setSugLieux = slS[1];
+  /* Etats 13 et 14 — TOUJOURS declares apres tous les autres : le harnais
+     de tests adresse les etats par position. */
+  var fdS = React.useState(null), fond = fdS[0], setFond = fdS[1];
+  var dmS = React.useState(null), dimPhoto = dmS[0], setDimPhoto = dmS[1];
   var corpsRef = React.useRef(null);
   var vivantRef = React.useRef(true);
 
@@ -1084,7 +1098,7 @@ function ComposeurStory(props) {
     setBusy(true);
     try {
       try { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } } catch (eA) { }
-      var r = await hsPublierStory(props.fichier, legende, lieu, tags, musique);
+      var r = await hsPublierStory(props.fichier, legende, lieu, tags, musique, fond);
       setBusy(false);
       if (r && r.error) { if (props.onEchec) props.onEchec(); return; }
       if (props.onPublie) props.onPublie(!!(r && r.lieuIgnore));
@@ -1129,7 +1143,37 @@ function ComposeurStory(props) {
 
         apercu
           ? h("div", { style: { marginTop: 16, borderRadius: 16, overflow: "hidden", background: "#060709", border: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "center", maxHeight: "38vh" } },
-            h("img", { src: apercu, alt: "", style: { width: "100%", maxHeight: "38vh", objectFit: "contain", display: "block" } }))
+            h("div", { style: { position: "relative", overflow: "hidden" } },
+            (fond === "immersif")
+              ? h("div", { "aria-hidden": true, style: { position: "absolute", inset: -20, backgroundImage: "url(\"" + apercu + "\")", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(24px) brightness(0.5) saturate(1.05)", transform: "scale(1.12)", pointerEvents: "none" } })
+              : null,
+            h("img", {
+              src: apercu, alt: "",
+              onLoad: function (ev) {
+                try { var im = ev.target; if (im && im.naturalWidth) setDimPhoto({ w: im.naturalWidth, hh: im.naturalHeight }); } catch (eD) { }
+              },
+              style: { width: "100%", maxHeight: "38vh", objectFit: "contain", display: "block", position: "relative" }
+            })))
+          : null,
+
+        /* LE FOND (13/08, spec de Blandine) : une photo paysage ou carrée ne
+           remplit pas l'écran vertical — l'auteur choisit ce qu'il y a
+           derrière. Noir = l'existant (défaut). Immersif = la même photo en
+           fond flouté et assombri. Le sélecteur n'apparaît QUE pour ces
+           photos ; une photo verticale n'en a pas besoin. Visible
+           immédiatement dans l'aperçu ci-dessus. */
+        (apercu && dimPhoto && dimPhoto.w >= dimPhoto.hh)
+          ? h("div", { style: { marginTop: 10 } },
+            h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.7, textTransform: "uppercase", color: tA(0.92), marginBottom: 7 } }, hsT("fondTitre", lg)),
+            h("div", { style: { display: "flex", gap: 8 } },
+              [{ v: null, t: hsT("fondNoir", lg) }, { v: "immersif", t: hsT("fondImmersif", lg) }].map(function (o) {
+                var actif = (fond === o.v);
+                return h("button", {
+                  key: "fd" + (o.v || "noir"),
+                  onClick: function () { setFond(o.v); },
+                  style: { padding: "9px 15px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: actif ? 800 : 600, border: "1px solid " + (actif ? tA(0.7) : "rgba(255,255,255,0.18)"), background: actif ? "rgba(32,217,245,0.12)" : "transparent", color: actif ? tn : "#C9D3D8" }
+                }, o.t);
+              })))
           : null,
 
         /* La légende. 1000 caractères, 5 lignes, compteur discret au-delà de
@@ -1575,6 +1619,9 @@ function ModifierStory(props) {
   }, []);
   var slS = React.useState([]), sugLieux = slS[0], setSugLieux = slS[1];
   var bS = React.useState(false), busy = bS[0], setBusy = bS[1];
+  /* Etats 6 et 7 — apres tous les autres, le harnais adresse par position. */
+  var fdS = React.useState(st.fond || null), fond = fdS[0], setFond = fdS[1];
+  var dmS = React.useState(null), dimPhoto = dmS[0], setDimPhoto = dmS[1];
   var corpsRef = React.useRef(null);
 
   /* RÈGLE DU PROJET : tout panneau défilant est remis en haut à l'ouverture. */
@@ -1593,14 +1640,28 @@ function ModifierStory(props) {
     } catch (e) { }
   }
 
+  React.useEffect(function () {
+    /* La feuille ne montre jamais la photo : ses dimensions sont relevées en
+       la rechargeant (cache navigateur, coût nul en pratique) pour savoir si
+       le sélecteur de fond a une raison d'être. */
+    var vivant = true;
+    try {
+      if (typeof Image === "undefined" || !st.photo_url) return;
+      var im = new Image();
+      im.onload = function () { if (vivant && im.naturalWidth) setDimPhoto({ w: im.naturalWidth, hh: im.naturalHeight }); };
+      im.src = (typeof hsImageEcran === "function") ? hsImageEcran(st.photo_url) : st.photo_url;
+    } catch (eD) { }
+    return function () { vivant = false; };
+  }, []);
+
   async function enregistrer() {
     if (busy) return;
     setBusy(true);
     try { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } } catch (eA) { }
-    var r = await hsModifierStory(st.id, legende, lieu, musique);
+    var r = await hsModifierStory(st.id, legende, lieu, musique, fond);
     setBusy(false);
     if (r && r.error) { if (props.onEchec) props.onEchec(); return; }
-    if (props.onFait) props.onFait({ legende: legende, lieu: lieu, musique: musique, lieuIgnore: !!(r && r.lieuIgnore) });
+    if (props.onFait) props.onFait({ legende: legende, lieu: lieu, musique: musique, fond: fond, lieuIgnore: !!(r && r.lieuIgnore) });
   }
 
   var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
@@ -1655,6 +1716,19 @@ function ModifierStory(props) {
             }))
           : null,
 
+        (dimPhoto && dimPhoto.w >= dimPhoto.hh)
+          ? h("div", null,
+            h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.7, textTransform: "uppercase", color: tA(0.92), margin: "16px 0 8px" } }, hsT("fondTitre", lg)),
+            h("div", { style: { display: "flex", gap: 8 } },
+              [{ v: null, t: hsT("fondNoir", lg) }, { v: "immersif", t: hsT("fondImmersif", lg) }].map(function (o) {
+                var actif = (fond === o.v);
+                return h("button", {
+                  key: "fd" + (o.v || "noir"),
+                  onClick: function () { setFond(o.v); },
+                  style: { padding: "9px 15px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: actif ? 800 : 600, border: "1px solid " + (actif ? tA(0.7) : "rgba(255,255,255,0.18)"), background: actif ? "rgba(32,217,245,0.12)" : "transparent", color: actif ? tn : "#C9D3D8" }
+                }, o.t);
+              })))
+          : null,
         h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.7, textTransform: "uppercase", color: tA(0.92), margin: "16px 0 8px" } }, "\u266a " + hsT("musiqueTitre", lg)),
         h("div", { "data-hscroll": "1", style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6, WebkitOverflowScrolling: "touch" } },
           [h("button", {
@@ -1724,6 +1798,7 @@ function VisionneuseStories(props) {
   var rlS = React.useState(0), relance = rlS[0], setRelance = rlS[1];
   var lecteurRef = React.useRef(null);
   var loS = React.useState(null), localMod = loS[0], setLocalMod = loS[1];
+  var mnS = React.useState(false), menuOuvert = mnS[0], setMenuOuvert = mnS[1];
   var pauseRef = React.useRef(false);
   var barreRef = React.useRef(null);
   var glisseRef = React.useRef({ y0: 0, actif: false });
@@ -1733,7 +1808,7 @@ function VisionneuseStories(props) {
   var groupe = groupes[ig] || null;
   var story = groupe ? (groupe.stories[is] || null) : null;
   if (story && localMod && localMod.id === story.id) {
-    story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu, musique: localMod.musique });
+    story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu, musique: localMod.musique, fond: localMod.fond });
   }
   var estMoi = !!(groupe && props.moiId && groupe.user_id === props.moiId);
 
@@ -1913,7 +1988,7 @@ function VisionneuseStories(props) {
     try {
       /* 13/08 01h40 : une feuille ouverte (Modifier, Garder) = AUCUN glissé,
          même si une remontée tactile passait la ceinture des feuilles. */
-      if (enEdition || choix) { glisseRef.current.actif = false; return; }
+      if (enEdition || choix || menuOuvert) { glisseRef.current.actif = false; return; }
       pauseRef.current = true;
       /* CORRECTIF DU 13/08 : le glissé de fermeture ne s'arme qu'à UN doigt.
          Avant, un pincement de zoom était pris pour un glissé — c'est le
@@ -1926,7 +2001,7 @@ function VisionneuseStories(props) {
   }
   function toucheBouge(e) {
     try {
-      if (enEdition || choix) { glisseRef.current.actif = false; return; }
+      if (enEdition || choix || menuOuvert) { glisseRef.current.actif = false; return; }
       if (e.touches && e.touches.length > 1) { glisseRef.current.actif = false; if (boiteRef.current) boiteRef.current.style.transform = "translateY(0px)"; return; }
       if (!glisseRef.current.actif) return;
       var t = e.touches && e.touches[0];
@@ -1937,7 +2012,7 @@ function VisionneuseStories(props) {
   }
   function toucheFin(e) {
     try {
-      if (enEdition || choix) { glisseRef.current.actif = false; return; }
+      if (enEdition || choix || menuOuvert) { glisseRef.current.actif = false; return; }
       pauseRef.current = false;
       var dy = 0;
       var t = e.changedTouches && e.changedTouches[0];
@@ -1990,6 +2065,20 @@ function VisionneuseStories(props) {
           h("div", { style: { fontSize: 13, fontWeight: 700, fontFamily: M, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, groupe.pseudo || "Cavalier"),
           h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
             hsTempsRelatif(story.created_at, lg) + (groupe.ecurie ? (" \u00b7 " + groupe.ecurie) : ""))),
+        /* 13/08 (Blandine) : « rassemble tout dans le menu avec les ⋯ » —
+           toutes les ACTIONS de la story vivent derrière ce bouton. La
+           musique reste À PART sur la photo (sa parenthèse), la croix reste
+           aussi : c'est de la navigation, pas une action. Les albums à la
+           une n'ont pas d'actions : pas de ⋯. */
+        (!estAlbum)
+          ? h("button", {
+            onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); setMenuOuvert(true); },
+            onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+            onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+            "aria-label": "Actions",
+            style: { width: 34, height: 34, borderRadius: "50%", flex: "0 0 auto", marginRight: 8, background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", color: "#E4ECEF", fontSize: 17, lineHeight: "30px", cursor: "pointer", letterSpacing: 1 }
+          }, "\u22ef")
+          : null,
         h("button", { onClick: fermer, "aria-label": "Fermer", style: { width: 34, height: 34, borderRadius: "50%", flex: "0 0 auto", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.18)", color: "#E4ECEF", fontSize: 15, cursor: "pointer", fontFamily: M } }, "\u2715")),
 
       /* La photo, nue — et depuis la v5, JAMAIS en résolution d'origine.
@@ -1999,7 +2088,17 @@ function VisionneuseStories(props) {
          session 92 : aucun état React pendant le geste, plafond de zoom
          calculé sur la densité de l'écran, couche GPU seulement pendant un
          zoom réel. 114b conservé : le chargement déclenche le minuteur. */
-      h("div", { style: { flex: 1, position: "relative", minHeight: 0, background: "#060709", display: "flex", alignItems: "center", justifyContent: "center" } },
+      h("div", { style: { flex: 1, position: "relative", minHeight: 0, background: "#060709", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" } },
+        /* LE FOND IMMERSIF (13/08, spec de Blandine) : si l'AUTEUR l'a choisi,
+           la même photo remplit l'écran derrière, en cover, fortement floutée
+           et assombrie — la photo d'origine reste nette et ENTIÈRE devant
+           (contain, comme toujours : jamais de recadrage). inset négatif +
+           scale : le halo du flou ne laisse pas de bord clair. pointerEvents
+           none et AUCUN zIndex : les zones (1) et la pastille (10) restent
+           au-dessus. Une story sans fond garde le noir d'aujourd'hui. */
+        (story.fond === "immersif" && chargee && !erreur && !estAlbum)
+          ? h("div", { "aria-hidden": true, style: { position: "absolute", inset: -24, backgroundImage: "url(\"" + hsImageEcran(story.photo_url) + "\")", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(26px) brightness(0.5) saturate(1.05)", transform: "scale(1.12)", pointerEvents: "none" } })
+          : null,
         h("style", { dangerouslySetInnerHTML: { __html: "@keyframes hsResp{0%,100%{opacity:.28;transform:scale(.9)}50%{opacity:.85;transform:scale(1.06)}}" } }),
         (!chargee && !erreur)
           ? h("div", { style: { position: "absolute", width: 54, height: 54, borderRadius: "50%", border: "1px solid " + tA(0.5), boxShadow: "0 0 26px " + tA(0.3) + ", inset 0 0 20px " + tA(0.14), animation: "hsResp 1600ms ease-in-out infinite" } })
@@ -2150,18 +2249,42 @@ function VisionneuseStories(props) {
         action
           ? h("div", { style: { fontSize: 11.5, fontFamily: M, color: tnL, marginBottom: 10, lineHeight: 1.45 } }, messages[action] || "")
           : null,
-        estAlbum
-          ? null
-          : h("div", { style: { display: "flex", gap: 9, flexWrap: "wrap" } },
-            estMoi
-              ? h("button", { onClick: function () { pauseRef.current = true; setChoix(true); }, style: { flex: "1 1 auto", padding: "11px 14px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "rgba(32,217,245,0.08)", color: tn, fontSize: 12, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, "\u2726 " + ((story.garde || action === "rangee") ? hsT("gardee", lg) : hsT("garder", lg)))
-              : h("button", { onClick: signaler, style: { flex: "1 1 auto", padding: "11px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#9AA5AD", fontSize: 12, fontWeight: 600, fontFamily: M, cursor: "pointer" } }, hsT("signaler", lg)),
-            estMoi
-              ? h("button", { onClick: function () { pauseRef.current = true; setEnEdition(true); }, style: { flex: "0 0 auto", padding: "11px 16px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#9AA5AD", fontSize: 12, fontWeight: 600, fontFamily: M, cursor: "pointer" } }, hsT("modifier", lg))
-              : null,
-            estMoi
-              ? h("button", { onClick: supprimer, style: { flex: "0 0 auto", padding: "11px 16px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#9AA5AD", fontSize: 12, fontWeight: 600, fontFamily: M, cursor: "pointer" } }, hsT("supprimer", lg))
-              : null)),
+        /* 13/08 : la rangee de boutons a REJOINT le menu ⋯ de l'en-tete
+           (demande de Blandine). AUCUNE fonction supprimee : Garder en
+           souvenir, Modifier, Supprimer (proprietaire) et Signaler
+           (visiteur) vivent dans la feuille du menu, memes handlers. */
+        null),
+
+    /* LA FEUILLE DU MENU ⋯ : toutes les actions de la story, memes
+       permissions qu'avant (garder/modifier/supprimer = proprietaire,
+       signaler = visiteur). Ceinture tactile comme les autres feuilles. */
+    menuOuvert
+      ? h("div", {
+        onClick: function () { setMenuOuvert(false); },
+        onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+        onTouchMove: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+        onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+        style: { position: "fixed", inset: 0, zIndex: 9400, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
+      },
+        h("div", {
+          onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+          style: { width: "100%", boxSizing: "border-box", maxWidth: 520, borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none", background: "linear-gradient(180deg, #111417, #060709)", padding: "10px 16px calc(env(safe-area-inset-bottom) + 14px)" }
+        },
+          h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.22)", margin: "4px auto 12px" } }),
+          (estMoi ? [
+            { ic: "\u2726", txt: (story.garde || action === "rangee") ? hsT("gardee", lg) : hsT("garder", lg), on: function () { setMenuOuvert(false); pauseRef.current = true; setChoix(true); }, accent: true },
+            { ic: "\u270e", txt: hsT("modifier", lg), on: function () { setMenuOuvert(false); pauseRef.current = true; setEnEdition(true); } },
+            { ic: "", txt: hsT("supprimer", lg), on: function () { setMenuOuvert(false); supprimer(); } }
+          ] : [
+            { ic: "", txt: hsT("signaler", lg), on: function () { setMenuOuvert(false); signaler(); } }
+          ]).map(function (it, i) {
+            return h("button", {
+              key: "mn" + i,
+              onClick: it.on,
+              style: { display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", padding: "14px 10px", borderRadius: 12, border: "none", background: "transparent", color: it.accent ? tn : "#DCE3E8", fontSize: 13.5, fontWeight: it.accent ? 700 : 600, fontFamily: M, cursor: "pointer", borderBottom: "1px solid rgba(255,255,255,0.06)" }
+            }, (it.ic ? it.ic + "  " : "") + it.txt);
+          })))
+      : null,
 
     /* La feuille de modification met le minuteur en pause, comme le choix
        d'a la une : on ne defile pas pendant qu'on ecrit. */
@@ -2172,7 +2295,7 @@ function VisionneuseStories(props) {
         onEchec: function () { setEnEdition(false); pauseRef.current = false; setRelance(function (r) { return r + 1; }); setAction("echec"); },
         onFait: function (mod) {
           setEnEdition(false); pauseRef.current = false;
-          setLocalMod({ id: story.id, legende: mod.legende, lieu: mod.lieu, musique: mod.musique });
+          setLocalMod({ id: story.id, legende: mod.legende, lieu: mod.lieu, musique: mod.musique, fond: mod.fond });
           setRelance(function (r) { return r + 1; });
           setAction("modifiee");
         }

@@ -575,7 +575,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Team Ambassadeurs Hype : les modérateurs en font partie automatiquement + membres nommés
-const HYPE_AMBASSADEURS = ["liamroux0@gmail.com", "evan.roux.2014@icloud.com", "rizeamegane@gmail.com"];
+const HYPE_AMBASSADEURS = ["liamroux0@gmail.com", "evan.roux.2014@icloud.com", "rizeamegane@gmail.com", "deborah.guilmain@free.fr"];
 function estAmbassadeurHype(u) { try { if (estModerateurHype(u)) return true; return !!(u && u.email && HYPE_AMBASSADEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 // Fond Studio Premium : palette de teintes (noir actif pour tous, le reste réservé aux ambassadeurs pour l'instant)
 const TEINTES_FOND_STUDIO = [
@@ -18747,7 +18747,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-stories.js?v=11"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-stories.js?v=12"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
