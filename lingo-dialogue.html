@@ -298,6 +298,13 @@ function lireLexiques(){
 }
 lireLexiques();
 
+/* ⚠️ On ne reclame les donnees au parent QUE si nos propres fichiers
+   ont echoue. Avant, le parent poussait tout le lexique a chaque
+   ouverture, sans qu'on en ait besoin. */
+if(!DIAL){
+  try{ parent.postMessage({t:"linguae-situation-besoin", ville:REF_VILLE}, "*"); }catch(e){}
+}
+
 /* 🟥 LE FILET. Si les balises de chargement échouent — nom de fichier
    changé, chapitre non déclaré, service worker qui sert une vieille
    réponse — la page parente nous renvoie ses données par message et

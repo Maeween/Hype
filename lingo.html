@@ -1945,7 +1945,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      depart pour ne rien telecharger avant la premiere ouverture.
      ================================================================== -->
 <div id="situation">
-  <iframe id="situationIf" src="" title="Mise en situation" allow="microphone"></iframe>
+  <iframe id="situationIf" src="about:blank" title="Mise en situation" allow="microphone"></iframe>
 </div>
 
 <button id="bCollection" data-t="laCollection">La collection</button>
@@ -5841,23 +5841,40 @@ function ouvrirSituation(refVille){
      balises echoue (nom de fichier change, service worker qui sert une
      vieille reponse), on lui renvoie NOS donnees et elle se reconstruit.
      Defaut trouve au banc le 13/08 : sans ca l'ecran s'ouvrait vide. */
+  /* ⚠️ LE FILET N'ENVOIE PLUS TOUT LE LEXIQUE — 13/08, apres le lag.
+     La premiere version serialisait `window.HYPE_LINGO_LEX` ENTIER dans
+     un postMessage : les 23 chapitres copies a chaque ouverture. Un
+     postMessage clone l'objet, sur le fil principal. Ne JAMAIS y remettre
+     l'objet complet.
+     Desormais : uniquement le chapitre de la ville demandee, et
+     seulement si la page fille le reclame (elle ne le fait que si ses
+     propres fichiers ont echoue). */
   var envoye = false;
   function filet(){
     if(envoye) return; envoye = true;
     try{
+      var L = window.HYPE_LINGO_LEX || {}, mince = {};
+      for(var k in L){
+        var d = L[k] && L[k].dialogue;
+        if(d && d.ville === refVille){ mince[k] = L[k]; break; }
+      }
       f.contentWindow.postMessage({t:"linguae-situation", ville:refVille,
-        l:lg, lex:(window.HYPE_LINGO_LEX || {})}, "*");
+        l:lg, lex:mince}, "*");
     }catch(e){}
   }
-  f.addEventListener("load", filet, {once:true});
-  setTimeout(filet, 1200);
+  window.addEventListener("message", function ecouteDemande(ev){
+    if(ev && ev.data && ev.data.t === "linguae-situation-besoin"){
+      window.removeEventListener("message", ecouteDemande);
+      filet();
+    }
+  });
 }
 function fermerSituation(){
   S("situation").classList.remove("on");
   var f = S("situationIf");
   /* verrou dur : sans vider le src, la synthese vocale de la page fille
      peut continuer a parler apres la fermeture. */
-  if(f) f.src = "";
+  if(f) f.src = "about:blank";
 }
 /* la page fille demande sa fermeture par message — elle n'a aucun autre
    moyen d'agir sur le parent, et c'est voulu. */
@@ -9635,14 +9652,11 @@ function lireAncre(){
     };
     /* si le film tourne encore, on attend qu'il ait fini ou qu'on l'ait
        coupé — sinon la ville s'ouvre derrière lui, invisible. */
+    /* ⚠️ PAS DE setInterval — 13/08, apres le lag. La premiere version
+       sondait le DOM toutes les 400 ms pendant 24 secondes, meme quand
+       le film etait deja fini. Un seul rendez-vous suffit. */
     if(S("ouverture") && S("ouverture").classList.contains("joue")){
-      var essais=0;
-      var attente=setInterval(function(){
-        essais++;
-        if(!S("ouverture").classList.contains("joue") || essais>60){
-          clearInterval(attente); lancer();
-        }
-      }, 400);
+      setTimeout(lancer, 1200);
     } else lancer();
     return true;
   }
