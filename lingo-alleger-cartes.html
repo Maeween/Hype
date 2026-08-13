@@ -51,6 +51,7 @@ h2{font-family:'Cinzel',serif;font-weight:500;font-size:13px;letter-spacing:.13e
   border-radius:11px;padding:12px 13px}
 .bilan b{display:block;font-family:'Cinzel',serif;font-size:20px;font-weight:600;line-height:1;
   color:var(--turquoise)}
+.bilan .chaud b{color:var(--rouge)}
 .bilan i{display:block;font-style:normal;font-size:8.5px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--gris);margin-top:5px;line-height:1.4}
 
@@ -100,6 +101,7 @@ a.tele{display:block;text-align:center;margin-top:14px;padding:14px;border-radiu
   <div id="sortie" class="cache">
     <h2>Bilan</h2>
     <div class="bilan" id="bilan"></div>
+    <p class="note rouge" id="avertPoids" style="display:none"></p>
     <a class="tele" id="tele" download>Télécharger le .zip</a>
     <p class="note" style="margin-top:14px"><b>Ensuite, sur ton téléphone :</b> ouvre le .zip depuis Fichiers (un appui suffit, iOS le décompresse), puis dépose les fichiers sur GitHub à la racine. Une seule fois, et c'est fini.</p>
 
@@ -226,47 +228,115 @@ function fabriqueZip(entrees){
 }
 
 /* ----------------------------------------------------------------
+   ⚠️ SAFARI IGNORE LE PARAMÈTRE DE QUALITÉ POUR LE WEBP.
+   Première livraison : 31 fichiers de 480 Ko chacun, 14,9 Mo au total,
+   contre 4,3 Mo de cartes d'origine — pour QUATRE FOIS MOINS de pixels.
+   Safari avait produit du WebP SANS PERTE en ignorant le 0,88 demandé.
+   Chromium honore la demande, donc mon essai n'avait rien vu.
+
+   La page ne fait donc plus confiance au navigateur : elle ENCODE UNE
+   CARTE D'ESSAI dans les deux formats, MESURE ce qui sort, et garde le
+   plus léger pour les trente autres. Elle lit aussi les premiers octets
+   pour nommer le fichier d'après ce qu'il EST, pas d'après ce qu'on a
+   demandé. Ne jamais revenir à un simple toBlob("image/webp", 0.88).
+---------------------------------------------------------------- */
+var QUAL = 0.88;
+
+function encode(canvas, mime){
+  return new Promise(function(res){
+    canvas.toBlob(function(b){ res(b || null); }, mime, QUAL);
+  });
+}
+
+/* Lit la signature réelle des octets rendus. */
+function signature(u8){
+  if(u8.length > 12 &&
+     u8[0]===0x52 && u8[1]===0x49 && u8[2]===0x46 && u8[3]===0x46 &&
+     u8[8]===0x57 && u8[9]===0x45 && u8[10]===0x42 && u8[11]===0x50) return "webp";
+  if(u8.length > 3 && u8[0]===0xFF && u8[1]===0xD8 && u8[2]===0xFF) return "jpeg";
+  if(u8.length > 8 && u8[0]===0x89 && u8[1]===0x50 && u8[2]===0x4E && u8[3]===0x47) return "png";
+  return "inconnu";
+}
+
+var FORMAT = null;   /* {mime, ext, bpp} — décidé une fois, appliqué à tout */
+
+function choisitFormat(canvas){
+  var pixels = canvas.width * canvas.height;
+  return Promise.all([encode(canvas,"image/webp"), encode(canvas,"image/jpeg")])
+    .then(function(deux){
+      var essais = [];
+      return deux.reduce(function(chaine, b, k){
+        return chaine.then(function(){
+          if(!b) return;
+          return b.arrayBuffer().then(function(buf){
+            var u8 = new Uint8Array(buf);
+            essais.push({mime: k===0 ? "image/webp" : "image/jpeg",
+                         reel: signature(u8), octets: b.size, bpp: b.size / pixels});
+          });
+        });
+      }, Promise.resolve()).then(function(){
+        if(!essais.length) throw new Error("aucun encodage disponible");
+        essais.sort(function(a,b){ return a.octets - b.octets; });
+        var g = essais[0];
+        FORMAT = {mime:g.mime, reel:g.reel, ext:(g.reel==="jpeg"?"jpg":g.reel),
+                  bpp:g.bpp, essais:essais};
+        return FORMAT;
+      });
+    });
+}
+
+/* ----------------------------------------------------------------
    Une carte : on la lit, on la redessine plus petite, on relâche.
 ---------------------------------------------------------------- */
-function traite(ref){
+function dessine(im){
+  var c = document.createElement("canvas");
+  c.width = LARG; c.height = HAUT;
+  var x = c.getContext("2d");
+  x.imageSmoothingEnabled = true;
+  x.imageSmoothingQuality = "high";
+  /* recadrage « cover », comme la vignette à l'écran */
+  var rs = Math.max(LARG / im.naturalWidth, HAUT / im.naturalHeight);
+  var l = im.naturalWidth * rs, h = im.naturalHeight * rs;
+  x.drawImage(im, (LARG - l) / 2, (HAUT - h) / 2, l, h);
+  return c;
+}
+
+function charge(ref){
   var url = "carte-" + ref + ".webp?t=" + Date.now();
   return fetch(url, {cache:"no-store"}).then(function(r){
     if(!r.ok) throw new Error("absente");
     return r.blob();
   }).then(function(blob){
-    var avant = blob.size;
     return new Promise(function(res, rej){
       var adr = URL.createObjectURL(blob);
       var im = new Image();
       im.onload = function(){
-        var c = document.createElement("canvas");
-        c.width = LARG; c.height = HAUT;
-        var x = c.getContext("2d");
-        x.imageSmoothingEnabled = true;
-        x.imageSmoothingQuality = "high";
-        /* recadrage « cover », comme la vignette à l'écran */
-        var rs = Math.max(LARG / im.naturalWidth, HAUT / im.naturalHeight);
-        var l = im.naturalWidth * rs, h = im.naturalHeight * rs;
-        x.drawImage(im, (LARG - l) / 2, (HAUT - h) / 2, l, h);
+        var c = dessine(im);
         var srcL = im.naturalWidth, srcH = im.naturalHeight;
-        /* ⚠️ LES DEUX HANDLERS SONT COUPÉS AVANT DE VIDER `src`.
-           Vider `src` déclenche une nouvelle tentative de chargement sur
-           une URL vide, donc un `error` — qui rejetait la promesse avec
-           « illisible » AVANT que `toBlob` ait rendu son résultat. Les 31
-           cartes échouaient pour cette seule raison. Ne pas remettre
-           `im.src = ""` sans couper `onerror` d'abord. */
+        /* ⚠️ LES DEUX HANDLERS COUPÉS AVANT DE VIDER `src` : sinon
+           l'URL vide déclenche un `error` qui rejette la promesse. */
         im.onload = null; im.onerror = null;
-        im.src = ""; URL.revokeObjectURL(adr);   /* relâché tout de suite */
-        c.toBlob(function(petit){
-          if(!petit){ rej(new Error("encodage refusé")); return; }
-          petit.arrayBuffer().then(function(buf){
-            res({ref:ref, avant:avant, apres:petit.size,
-                 srcL:srcL, srcH:srcH, data:new Uint8Array(buf)});
-          });
-        }, "image/webp", 0.88);
+        im.src = ""; URL.revokeObjectURL(adr);
+        res({canvas:c, avant:blob.size, srcL:srcL, srcH:srcH});
       };
       im.onerror = function(){ URL.revokeObjectURL(adr); rej(new Error("illisible")); };
       im.src = adr;
+    });
+  });
+}
+
+function traite(ref){
+  return charge(ref).then(function(p){
+    var suite = FORMAT ? Promise.resolve() : choisitFormat(p.canvas);
+    return suite.then(function(){
+      return encode(p.canvas, FORMAT.mime);
+    }).then(function(petit){
+      if(!petit) throw new Error("encodage refusé");
+      return petit.arrayBuffer().then(function(buf){
+        var u8 = new Uint8Array(buf);
+        return {ref:ref, avant:p.avant, apres:petit.size, srcL:p.srcL, srcH:p.srcH,
+                reel:signature(u8), data:u8};
+      });
     });
   });
 }
@@ -277,6 +347,7 @@ S("lancer").addEventListener("click", function(){
   S("sortie").classList.add("cache");
   S("liste").innerHTML = "";
 
+  FORMAT = null;                 /* le format se redécide à chaque taille */
   var faits = [], ratés = [], i = 0;
 
   function suivant(){
@@ -311,27 +382,63 @@ function termine(faits, ratés){
   var decodeAvant = faits.reduce(function(a,r){ return a + r.srcL * r.srcH * 4; }, 0);
   var decodeApres = faits.length * LARG * HAUT * 4;
 
+  var moyen = apres / faits.length;
+  var bpp   = moyen / (LARG * HAUT);
+  var sain  = bpp <= 0.55;          /* au-delà, l'encodeur n'a pas comprimé */
+
   S("bilan").innerHTML =
     '<div><b>' + faits.length + '</b><i>vignettes dans le zip</i></div>' +
     '<div><b>' + LARG + '×' + HAUT + '</b><i>toutes au même format</i></div>' +
-    '<div><b>' + (apres/1048576).toFixed(1) + '</b><i>Mo de fichiers, contre ' +
-      (avant/1048576).toFixed(1) + '</i></div>' +
+    '<div class="' + (sain ? '' : 'chaud') + '"><b>' + (apres/1048576).toFixed(1) +
+      '</b><i>Mo de fichiers, contre ' + (avant/1048576).toFixed(1) + '</i></div>' +
     '<div><b>' + Math.round(decodeApres/1048576) + '</b><i>Mo de décodage, contre ' +
-      Math.round(decodeAvant/1048576) + '</i></div>';
+      Math.round(decodeAvant/1048576) + '</i></div>' +
+    '<div class="' + (sain ? '' : 'chaud') + '"><b>' + Math.round(moyen/1024) +
+      '</b><i>Ko par vignette en moyenne</i></div>' +
+    '<div><b style="font-size:15px">.' + (FORMAT ? FORMAT.ext : '?') +
+      '</b><i>format réellement produit</i></div>';
 
+  /* ⚠️ LE GARDE-FOU. C'est exactement ce qui manquait à la première
+     livraison : 480 Ko par fichier étaient partis sans que rien
+     ne s'en plaigne. */
+  var av = S("avertPoids");
+  if(!sain){
+    av.style.display = "";
+    av.innerHTML = '<b>⚠️ NE POUSSE PAS CE ZIP.</b> Chaque vignette pèse ' +
+      Math.round(moyen/1024) + ' Ko pour ' + LARG + ' × ' + HAUT + ' pixels — ' +
+      'environ dix fois trop. Ton navigateur a ignoré la qualité demandée et ' +
+      'encodé sans perte. Essais tentés : ' +
+      (FORMAT ? FORMAT.essais.map(function(e){
+         return e.mime.replace("image/","") + ' → ' + e.reel + ' ' + Math.round(e.octets/1024) + ' Ko';
+       }).join(' · ') : '—') +
+      '. Dis-le moi avec ces chiffres, je corrige.';
+  } else {
+    av.style.display = "none";
+  }
+
+  /* les fichiers dont le nom ne correspond pas à leur contenu */
+  var faux = faits.filter(function(r){ return r.reel !== (FORMAT && FORMAT.reel); });
+  if(faux.length){
+    av.style.display = "";
+    av.innerHTML += '<br><br><b>Et ' + faux.length + ' fichiers ne sont pas du format attendu.</b>';
+  }
+
+  /* le nom suit le format RÉEL : un fichier .webp qui contient du JPEG
+     serait servi avec le mauvais type par Netlify. */
+  var ext = (FORMAT && FORMAT.ext) || "webp";
   var entrees = faits.map(function(r){
-    return {nom:"carte-" + r.ref + "-vignette.webp", data:r.data};
+    return {nom:"carte-" + r.ref + "-vignette." + ext, data:r.data};
   });
   var zip = fabriqueZip(entrees);
   var a = S("tele");
   a.href = URL.createObjectURL(zip);
-  a.download = "vignettes-linguae-" + LARG + ".zip";
+  a.download = "vignettes-linguae-" + LARG + "-" + ext + ".zip";
   a.textContent = "Télécharger le .zip  ·  " + (zip.size/1048576).toFixed(1) + " Mo";
 
   S("liste").innerHTML =
     faits.map(function(r){
       return '<div class="l"><span class="p"></span>' +
-        '<span class="n">carte-' + r.ref + '-vignette.webp</span>' +
+        '<span class="n">carte-' + r.ref + '-vignette.' + ext + '</span>' +
         '<span class="v">' + ko(r.avant) + ' → ' + ko(r.apres) + '</span></div>';
     }).join("") +
     ratés.map(function(r){
