@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 131 · STORIES v16 — AJOUTER DES PHOTOS À SA STORY EN LIGNE) — md5 `65cdb46409387265aa9fb4d3f388036f`, 9098961 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 16`**. Balise **`?v=16`**. **FICHIER COMPAGNON : `hype-stories.js` v16, md5 `e81b7103b0e7a3f86cc01ee0b98acb50`, 145546 octets.** **AUCUN SQL.**
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 133 · STORIES v18 — FONDATIONS DE LA STORY COMPOSÉE, INERTES) — md5 `149d71d1d61fb26f861b274b40d02fae`, 9099119 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 18`**. Balise **`?v=18`**. **FICHIER COMPAGNON : `hype-stories.js` v18, md5 `95988f7b3347211f64758ffbc5f766ca`, 154125 octets.** **UN SQL (2 colonnes) : `story-composee.sql`** — à passer dès maintenant, il est inoffensif (les colonnes restent vides tant que la fonctionnalité est éteinte).
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 131) :** `index.html` + `hype-stories.js` (v16). AUCUN SQL. Cet index cumule tout depuis la 126. **EN ATTENTE DE BLANDINE :** vidéo 15 s (3 réponses) ; carte des clubs (a/b) ; musique sur toute l'app ; localisation temps réel ; design stories (3 maquettes) ; chanson de page trouvée ou pas.
+**À POUSSER, état au 13/08 (session 133) :** `index.html` + `hype-stories.js` (v18) + le SQL `story-composee.sql`. **RIEN NE CHANGE À L'ÉCRAN** (fondations éteintes, `HS_COMPO_ACTIF = false`). **CHANTIER EN COURS — STORY COMPOSÉE H+D, phase 1 (photos)** : reste la visionneuse (rendu de la composition + dépliage + tap plein écran + une barre par groupe + garder/à la une = tout le groupe + textes 6 langues) et le choix « Défiler | Composer » au composeur, puis allumage de la constante. Phase 2 ensuite : la vidéo (15 s · 25 Mo · muette au départ · vignette auto · toujours la grande place · joue sa durée entière). Décisions de Blandine actées : 5 éléments max dont 1 vidéo ; disposition adaptative au nombre ; tap = plein écran ; garder/à la une = TOUTES les photos ; le groupe garde sa disposition pour toujours. **EN ATTENTE :** carte des clubs (a/b) ; musique sur toute l'app ; localisation temps réel ; design du bandeau des stories (3 maquettes) ; chanson de page.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,48 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 133 · STORIES v18 — FONDATIONS DE LA STORY COMPOSÉE (INERTES)
+
+**Décisions de Blandine (13/08, ~16 h)** : la story composée H+D validée avec ses règles — **5 éléments max dont 1 vidéo** ; disposition **adaptative** au nombre (la grande + 1 à 4 tirages) ; **tap sur chaque photo = plein écran** ; **Garder en souvenir / À la une = toutes les photos du groupe** ; la vidéo (phase 2) prend **toujours la grande place, pleine hauteur, et joue sa durée entière** ; et la vision : « que ça soit vraiment un moment de souvenir où la journée se déplie, même des années plus tard » → **le groupe garde sa disposition pour toujours**. Question Canva/CapCut posée et répondue : leurs modèles interdits d'intégration (licences), mais une mise en page n'est pas protégeable — nos dispositions en code Hype sont libres et à nous ; ChatGPT utilisable plus tard pour des fonds de THÈME décoratifs.
+
+### CE QUI EST POSÉ (testé, ÉTEINT — `HS_COMPO_ACTIF = false`)
+
+- **SQL** (`story-composee.sql`) : `groupe text` + `disposition text` sur `hype_stories`. Inoffensif à passer tout de suite.
+- **`hsRegrouperCompos(stories)`** (pure, testée) : replie les lignes d'un même groupe en UNE story — la couverture (première publiée, porteuse de la disposition) reçoit `compo` = toutes les photos dans l'ordre ; repli « hd » si la disposition manque ; les stories seules ne bougent pas. Branchée dans `hsListerStories` (une barre par groupe en découlera naturellement).
+- **`hsPublierStory(..., groupe, disposition)`** : le groupe relie, la disposition ne part qu'avec un groupe et que sur la couverture ; replis colonne-manquante étendus. `hsUuid()` pour les identifiants de groupe.
+- Rien à l'écran : le choix « Composer » du composeur n'existe pas encore, aucune ligne ne peut recevoir un groupe.
+
+### VÉRIFICATIONS
+16/16 + module. **210 assertions** + 13 mentions. Nouvelles (13) sur les fondations ; 1 assertion 127 rendue inclusive (signature).
+
+### Préparation Flutter (session 133)
+Le regroupement est une fonction pure sur les données — le rendu (React aujourd'hui, Flutter demain) la consommera sans la connaître. La story composée est un cas d'école du découplage donnée/affichage.
+
+---
+
+## SESSION 132 · STORIES v17 — L'AJOUT MONTRE LA STORY EN LIGNE, L'ORDRE SE CHOISIT
+
+**Retours de Blandine après test du v16 (13/08, ~15 h 40)** : (1) « ça m'affiche plus celle d'origine… comme si c'était une nouvelle story, même mon texte disparaît » — le texte n'était PAS perdu (il reste sur la story en ligne), mais le composeur ne montrait rien de l'existant : défaut de présentation, pas de données ; (2) « quand je switchais d'une photo à l'autre pour voir laquelle mettre devant, ça ferme tout et ça revient en arrière » — le glissement horizontal déclenchait le geste retour d'iOS, et le composeur n'était pas sur le rail retour ; sa formulation révèle aussi le besoin : **choisir la photo de tête**.
+
+### 1. LE MODE AJOUT S'ASSUME
+Titre « **Ajouter à ma story** » (plus « Nouvelle story ») · la **story en ligne apparaît en tête de la bande de miniatures**, étiquetée « En ligne », non touchable · un indice sous la légende : « Ta story en ligne garde sa légende — celle-ci ira sur la première nouvelle photo. » Prop `origine` (photo passée par la visionneuse) ; sans `origine`, composeur inchangé.
+
+### 2. LA BANDE DE MINIATURES ET L'ORDRE (états 15-17, après tous les autres)
+Une miniature par photo choisie (URLs créées une fois, révoquées au départ) ; **tap = prévisualiser** dans l'aperçu ; si la photo vue n'est pas la première : bouton « ⭐ Mettre celle-ci en premier » (l'état `ordre` réordonne, `publier()` parcourt `fichiersOrdonnes`). Fonctionne aussi pour une publication multiple normale depuis le bandeau.
+
+### 3. LE COMPOSEUR SUR LE RAIL RETOUR
+`window.__hsComposeurRetour` (enregistré au montage, retiré au démontage) ; l'index le consulte **avant** `__hsStoriesRetour` : le geste retour ferme le composeur SEUL, la story reste ouverte derrière. Depuis le bandeau : ferme le composeur sans changer d'écran.
+
+**À l'écran : + le titre « Ajouter à ma story », la story en ligne en tête de bande, l'indice de légende (mode ajout) · + la bande de miniatures et « Mettre celle-ci en premier » (toute sélection multiple).** Rien ne disparaît.
+
+### VÉRIFICATIONS
+16/16 + module. **197 assertions** + 13 mentions. Nouvelles (10) ; 4 assertions 129/131 adaptées (`fichiersOrdonnes`, prop `origine`).
+
+### Préparation Flutter (session 132)
+L'ordre vit dans un état d'indices séparé des fichiers — le glisser-déposer futur (ou Flutter `ReorderableListView`) ne touchera que cet état. Rien d'autre.
 
 ---
 

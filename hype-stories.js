@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "16";
+var HYPE_STORIES_VERSION = "18";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -135,6 +135,38 @@ var HS_MULTI_MAX = 10;
    base et le contrat de donnees la porte toujours ; une story marquee
    "immersif" s'affiche simplement sur fond noir tant que c'est eteint. */
 var HS_FOND_IMMERSIF_ACTIF = false;
+/* 13/08 (decision de Blandine) : LA STORY COMPOSEE — « la journee se deplie
+   avec tous ses bons souvenirs, meme des annees plus tard ». Un groupe de 2 a
+   5 photos publiees ENSEMBLE, une disposition (« hd » : la grande en haut, le
+   texte suspendu, la table de tirages dessous). INERTE tant que la visionneuse
+   ne sait pas l'afficher : la constante s'allumera avec elle. */
+var HS_COMPO_ACTIF = false;
+var HS_COMPO_MAX = 5;
+function hsUuid() {
+  try { if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID(); } catch (e) { }
+  return "g" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+/* Pure : replie les lignes d'un meme groupe en UNE story (la couverture porte
+   `compo` = toutes les photos dans l'ordre). Les stories seules ne bougent pas. */
+function hsRegrouperCompos(stories) {
+  try {
+    var parGroupe = {}; var resultat = [];
+    (stories || []).forEach(function (st) {
+      var gid = st && st.groupe;
+      if (!gid) { resultat.push(st); return; }
+      var e = parGroupe[gid];
+      if (!e) { e = { membres: [] }; parGroupe[gid] = e; resultat.push(e); }
+      e.membres.push(st);
+    });
+    return resultat.map(function (e) {
+      if (!e || !e.membres) return e;
+      var m = e.membres.slice().sort(function (a, b) { return String(a.created_at) < String(b.created_at) ? -1 : 1; });
+      var couv = m.filter(function (x) { return x && x.disposition; })[0] || m[0];
+      var st2 = Object.assign({}, couv, { compo: m, disposition: couv.disposition || "hd" });
+      return st2;
+    }).filter(function (x) { return !!x; });
+  } catch (e) { return stories || []; }
+}
 var HS_SILENCE = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
 function hsAmorcerAudio() {
   try {
@@ -233,7 +265,7 @@ function hsMarquerVue(id) {
    via le système d'identifications existant. Un tag qui échoue ne fait pas
    échouer la publication : la story est déjà en ligne, on ne la perd pas
    pour un nom mal enregistré. */
-async function hsPublierStory(fichier, legende, lieu, tags, musique, fond) {
+async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, groupe, disposition) {
   try {
     if (typeof supa === "undefined" || !supa) return { data: null, error: "indisponible" };
     var user = await utilisateurActuel();
@@ -260,16 +292,22 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique, fond) {
        story — "immersif" ou rien. Absent = noir, comme toutes les stories
        d'avant : aucune story existante ne change. */
     if (fond === "immersif") ligne.fond = "immersif";
+    /* Story composee : le groupe relie les photos, la disposition ne va que
+       sur la couverture (la premiere publiee). */
+    if (groupe) ligne.groupe = String(groupe);
+    if (groupe && disposition) ligne.disposition = String(disposition);
 
     var res = await supa.from("hype_stories").insert(ligne).select().single();
     if (res && res.error) {
       /* Repli : si la colonne `lieu` n'existe pas encore en base (SQL de la
          v2 pas repassé), on republie sans le lieu plutôt que d'échouer. Le
          message est explicite pour que l'oubli se voie. */
-      if (lieuNet || ligne.musique || ligne.fond) {
+      if (lieuNet || ligne.musique || ligne.fond || ligne.groupe) {
         delete ligne.lieu;
         delete ligne.musique;
         delete ligne.fond;
+        delete ligne.groupe;
+        delete ligne.disposition;
         var res2 = await supa.from("hype_stories").insert(ligne).select().single();
         if (res2 && !res2.error) return { data: res2.data, error: null, lieuIgnore: true };
       }
@@ -544,6 +582,10 @@ async function hsListerStories() {
     groupes.forEach(function (g) {
       /* Dans un groupe on lit de la plus ancienne à la plus récente. */
       g.stories.sort(function (a, b) { return String(a.created_at) < String(b.created_at) ? -1 : 1; });
+      /* 13/08 : les photos d'une story COMPOSEE se replient en une seule
+         entree (la couverture porte `compo`). Inerte tant que rien n'est
+         publie avec un groupe. */
+      g.stories = hsRegrouperCompos(g.stories);
       g.toutesVues = g.stories.every(function (s) { return !!vues[String(s.id)]; });
       g.rang = g.moi ? 0 : (g.memeEcurie ? 1 : (g.suivi ? 2 : 3));
       g.dernier = g.stories[g.stories.length - 1].created_at || "";
@@ -734,6 +776,10 @@ var HS_TXT = {
   uneIntrouvable: { fr: "\u00c0 la une introuvable.", en: "Highlight not found.", es: "Destacada no encontrada.", it: "In evidenza non trovata.", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002", de: "Highlight nicht gefunden." },
   videUne: { fr: "Aucune \u00e0 la une pour l'instant.", en: "No highlight yet.", es: "Sin destacadas por ahora.", it: "Nessuna in evidenza per ora.", ja: "\u307e\u3060\u30cf\u30a4\u30e9\u30a4\u30c8\u306f\u3042\u308a\u307e\u305b\u3093\u3002", de: "Noch keine Highlights." },
   astuceArobase: { fr: "Tape @ pour identifier un cavalier.", en: "Type @ to tag a rider.", es: "Escribe @ para etiquetar a un jinete.", it: "Digita @ per taggare un cavaliere.", ja: "@\u3092\u5165\u529b\u3057\u3066\u9a0e\u624b\u3092\u30bf\u30b0\u4ed8\u3051", de: "Tippe @, um einen Reiter zu markieren." },
+  ajoutASaStory: { fr: "Ajouter \u00e0 ma story", en: "Add to my story", es: "A\u00f1adir a mi story", it: "Aggiungere alla mia story", ja: "\u30b9\u30c8\u30fc\u30ea\u30fc\u306b\u8ffd\u52a0", de: "Zu meiner Story hinzuf\u00fcgen" },
+  dejaEnLigne: { fr: "En ligne", en: "Live", es: "En l\u00ednea", it: "Online", ja: "\u516c\u958b\u4e2d", de: "Online" },
+  legendeReste: { fr: "Ta story en ligne garde sa l\u00e9gende \u2014 celle-ci ira sur la premi\u00e8re nouvelle photo.", en: "Your live story keeps its caption \u2014 this one goes on the first new photo.", es: "Tu story en l\u00ednea conserva su texto \u2014 este ir\u00e1 en la primera foto nueva.", it: "La tua story online conserva il testo \u2014 questo andr\u00e0 sulla prima nuova foto.", ja: "\u516c\u958b\u4e2d\u306e\u30b9\u30c8\u30fc\u30ea\u30fc\u306e\u672c\u6587\u306f\u6b8b\u308a\u307e\u3059\u3002", de: "Deine Online-Story beh\u00e4lt ihren Text \u2014 dieser kommt auf das erste neue Foto." },
+  mettreDevant: { fr: "Mettre celle-ci en premier", en: "Make this one first", es: "Poner esta primero", it: "Metti questa per prima", ja: "\u3053\u308c\u3092\u6700\u521d\u306b", de: "Diese zuerst zeigen" },
   ajouterPhotos: { fr: "Ajouter des photos", en: "Add photos", es: "A\u00f1adir fotos", it: "Aggiungere foto", ja: "\u5199\u771f\u3092\u8ffd\u52a0", de: "Fotos hinzuf\u00fcgen" },
   photosChoisies: { fr: "photos choisies", en: "photos selected", es: "fotos elegidas", it: "foto scelte", ja: "\u679a\u9078\u629e\u4e2d", de: "Fotos ausgew\u00e4hlt" },
   envoiMulti: { fr: "Publication", en: "Publishing", es: "Publicando", it: "Pubblicazione", ja: "\u6295\u7a3f\u4e2d", de: "Ver\u00f6ffentlichung" },
@@ -1007,6 +1053,11 @@ function ComposeurStory(props) {
      de tests adresse les etats par position. */
   var fdS = React.useState(null), fond = fdS[0], setFond = fdS[1];
   var dmS = React.useState(null), dimPhoto = dmS[0], setDimPhoto = dmS[1];
+  /* Etats 15-17 (13/08, session 132) : l'ORDRE des photos (null = ordre de
+     selection), la photo actuellement PREVISUALISEE, et les URLs miniatures. */
+  var orS = React.useState(null), ordre = orS[0], setOrdre = orS[1];
+  var vuS = React.useState(0), vue = vuS[0], setVue = vuS[1];
+  var umS = React.useState([]), urlsMini = umS[0], setUrlsMini = umS[1];
   var corpsRef = React.useRef(null);
   var vivantRef = React.useRef(true);
 
@@ -1033,15 +1084,45 @@ function ComposeurStory(props) {
     else if (props.fichier) fichiers = [props.fichier];
   } catch (eF) { fichiers = props.fichier ? [props.fichier] : []; }
 
+  /* Le geste retour (bord d'écran iOS) ferme le composeur SEUL — signalement
+     de Blandine (13/08, 15h40) : glisser entre les photos déclenchait le
+     retour système, qui fermait TOUT et changeait de page. Même rail que la
+     visionneuse, consulté avant elle. */
+  React.useEffect(function () {
+    if (typeof window === "undefined") return;
+    window.__hsComposeurRetour = function () {
+      try { if (props.onFermer) props.onFermer(); return true; } catch (e) { return false; }
+    };
+    return function () { try { delete window.__hsComposeurRetour; } catch (e) { window.__hsComposeurRetour = null; } };
+  }, []);
+
+  /* L'ordre effectif : `ordre` (indices) reordonne la selection ; null =
+     ordre d'origine. C'est CETTE liste que publier() parcourt. */
+  var fichiersOrdonnes = fichiers;
+  try { if (ordre && ordre.length === fichiers.length) fichiersOrdonnes = ordre.map(function (ix) { return fichiers[ix]; }); } catch (eO) { fichiersOrdonnes = fichiers; }
+  var vueSure = (vue >= 0 && vue < fichiersOrdonnes.length) ? vue : 0;
+
+  /* L'apercu suit la photo PREVISUALISEE (tap sur une miniature). */
   React.useEffect(function () {
     var url = null;
     try {
-      if (fichiers[0] && window.URL && window.URL.createObjectURL) {
-        url = window.URL.createObjectURL(fichiers[0]);
+      var f = fichiersOrdonnes[vueSure] || fichiers[0];
+      if (f && window.URL && window.URL.createObjectURL) {
+        url = window.URL.createObjectURL(f);
         setApercu(url);
       }
     } catch (e) { }
     return function () { try { if (url && window.URL && window.URL.revokeObjectURL) window.URL.revokeObjectURL(url); } catch (e2) { } };
+  }, [props.fichier, vueSure, ordre]);
+
+  /* Les miniatures : une URL par photo, creees une fois, revoquees au depart. */
+  React.useEffect(function () {
+    var urls = [];
+    try {
+      if (window.URL && window.URL.createObjectURL) urls = fichiers.map(function (f) { try { return window.URL.createObjectURL(f); } catch (e1) { return null; } });
+    } catch (e) { }
+    setUrlsMini(urls);
+    return function () { urls.forEach(function (u) { try { if (u && window.URL.revokeObjectURL) window.URL.revokeObjectURL(u); } catch (e2) { } }); };
   }, [props.fichier]);
 
   /* RÈGLE DU PROJET : tout panneau défilant est remis en haut à l'ouverture. */
@@ -1127,9 +1208,9 @@ function ComposeurStory(props) {
          FOND accompagnent TOUTES. Un échec au milieu n'arrête pas les
          suivantes : on publie ce qui peut l'être et on le dit. */
       var okN = 0, lieuIgn = false, dernierR = null;
-      for (var iF = 0; iF < fichiers.length; iF++) {
+      for (var iF = 0; iF < fichiersOrdonnes.length; iF++) {
         var rI = await hsPublierStory(
-          fichiers[iF],
+          fichiersOrdonnes[iF],
           iF === 0 ? legende : null,
           lieu,
           iF === 0 ? tags : [],
@@ -1141,7 +1222,7 @@ function ComposeurStory(props) {
       }
       setBusy(false);
       if (okN === 0) { if (props.onEchec) props.onEchec(); return; }
-      if (okN < fichiers.length && props.onPublie) { props.onPublie(lieuIgn, okN + "/" + fichiers.length + " " + hsT("partiel", lg)); return; }
+      if (okN < fichiersOrdonnes.length && props.onPublie) { props.onPublie(lieuIgn, okN + "/" + fichiersOrdonnes.length + " " + hsT("partiel", lg)); return; }
       if (props.onPublie) props.onPublie(lieuIgn);
     } catch (e) {
       setBusy(false);
@@ -1180,7 +1261,7 @@ function ComposeurStory(props) {
         style: { width: "100%", maxWidth: 520, maxHeight: "92vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none", background: "linear-gradient(180deg, #111417, #060709)", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" }
       },
         h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.18)", margin: "0 auto 16px" } }),
-        h("div", { style: { fontFamily: C, fontSize: 14, letterSpacing: 1.8, textTransform: "uppercase", color: "#F4F7FA", textAlign: "center" } }, hsT("ajouter", lg)),
+        h("div", { style: { fontFamily: C, fontSize: 14, letterSpacing: 1.8, textTransform: "uppercase", color: "#F4F7FA", textAlign: "center" } }, hsT(props.origine ? "ajoutASaStory" : "ajouter", lg)),
         h("div", { style: { fontSize: 10.5, fontFamily: M, color: tA(0.9), textAlign: "center", marginTop: 6, letterSpacing: 0.3 } }, hsT("duree", lg)),
 
         apercu
@@ -1198,10 +1279,45 @@ function ComposeurStory(props) {
             })))
           : null,
 
-        (fichiers.length > 1)
-          ? h("div", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 8 } },
-            h("span", { style: { padding: "5px 11px", borderRadius: 999, fontSize: 11, fontFamily: M, fontWeight: 800, border: "1px solid " + tA(0.55), color: tn, background: "rgba(32,217,245,0.08)" } }, fichiers.length + " " + hsT("photosChoisies", lg)),
-            h("span", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C" } }, "\u2192"))
+        (fichiers.length > 1 || props.origine)
+          ? h("div", null,
+            h("div", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 8 } },
+              h("span", { style: { padding: "5px 11px", borderRadius: 999, fontSize: 11, fontFamily: M, fontWeight: 800, border: "1px solid " + tA(0.55), color: tn, background: "rgba(32,217,245,0.08)" } }, fichiers.length + " " + hsT("photosChoisies", lg))),
+            /* La bande : la story EN LIGNE d'abord (en mode ajout, non
+               touchable, etiquetee), puis chaque nouvelle photo. Un tap
+               previsualise ; le bouton dessous met la photo vue en premier. */
+            h("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", padding: "10px 0 2px", WebkitOverflowScrolling: "touch" } },
+              (props.origine && props.origine.url
+                ? [h("div", { key: "orig", style: { flex: "0 0 auto", position: "relative", opacity: 0.6 } },
+                  h("img", { src: props.origine.url, alt: "", style: { width: 52, height: 68, objectFit: "cover", borderRadius: 10, border: "1px solid rgba(255,255,255,0.25)", display: "block" } }),
+                  h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 3, textAlign: "center", fontSize: 7.5, fontFamily: M, fontWeight: 800, letterSpacing: 0.5, textTransform: "uppercase", color: "#DCE3E8", textShadow: "0 1px 3px #000" } }, hsT("dejaEnLigne", lg)))]
+                : []).concat(fichiersOrdonnes.map(function (f, ix) {
+                  var actifV = (ix === vueSure);
+                  var uMini = null;
+                  try { var posBrut = fichiers.indexOf(f); uMini = urlsMini[posBrut] || null; } catch (eU) { }
+                  return h("button", {
+                    key: "th" + ix,
+                    onClick: function () { setVue(ix); },
+                    style: { flex: "0 0 auto", padding: 0, border: "none", background: "none", cursor: "pointer" }
+                  },
+                    uMini
+                      ? h("img", { src: uMini, alt: "", style: { width: 52, height: 68, objectFit: "cover", borderRadius: 10, display: "block", border: "2px solid " + (actifV ? tn : "rgba(255,255,255,0.16)"), boxShadow: actifV ? ("0 0 12px " + tA(0.35)) : "none" } })
+                      : h("div", { style: { width: 52, height: 68, borderRadius: 10, background: "#111417", border: "2px solid " + (actifV ? tn : "rgba(255,255,255,0.16)") } }));
+                }))),
+            (fichiersOrdonnes.length > 1 && vueSure > 0)
+              ? h("button", {
+                onClick: function () {
+                  try {
+                    var base = (ordre && ordre.length === fichiers.length) ? ordre.slice() : fichiers.map(function (_, k) { return k; });
+                    var pris = base.splice(vueSure, 1)[0];
+                    base.unshift(pris);
+                    setOrdre(base);
+                    setVue(0);
+                  } catch (eR) { }
+                },
+                style: { marginTop: 8, padding: "9px 14px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700, border: "1px solid " + tA(0.6), background: "rgba(32,217,245,0.1)", color: tn }
+              }, "\u2b50 " + hsT("mettreDevant", lg))
+              : null)
           : null,
 
         /* LE FOND (13/08, spec de Blandine) : une photo paysage ou carrée ne
@@ -1222,6 +1338,10 @@ function ComposeurStory(props) {
                   style: { padding: "9px 15px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: actif ? 800 : 600, border: "1px solid " + (actif ? tA(0.7) : "rgba(255,255,255,0.18)"), background: actif ? "rgba(32,217,245,0.12)" : "transparent", color: actif ? tn : "#C9D3D8" }
                 }, o.t);
               })))
+          : null,
+
+        props.origine
+          ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", lineHeight: 1.5, marginTop: 10 } }, hsT("legendeReste", lg))
           : null,
 
         /* La légende. 1000 caractères, 5 lignes, compteur discret au-delà de
@@ -2347,6 +2467,7 @@ function VisionneuseStories(props) {
     ajout
       ? h(ComposeurStory, {
         fichier: ajout, langue: lg, dessus: true,
+        origine: { url: hsImageEcran(story.photo_url) },
         lieuInitial: story.lieu || "", musiqueInitiale: story.musique || null,
         onFermer: function () { setAjout(null); pauseRef.current = false; setRelance(function (r) { return r + 1; }); },
         onEchec: function () { setAjout(null); pauseRef.current = false; setAction("echec"); },
