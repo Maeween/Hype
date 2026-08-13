@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "15";
+var HYPE_STORIES_VERSION = "16";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -734,6 +734,7 @@ var HS_TXT = {
   uneIntrouvable: { fr: "\u00c0 la une introuvable.", en: "Highlight not found.", es: "Destacada no encontrada.", it: "In evidenza non trovata.", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002", de: "Highlight nicht gefunden." },
   videUne: { fr: "Aucune \u00e0 la une pour l'instant.", en: "No highlight yet.", es: "Sin destacadas por ahora.", it: "Nessuna in evidenza per ora.", ja: "\u307e\u3060\u30cf\u30a4\u30e9\u30a4\u30c8\u306f\u3042\u308a\u307e\u305b\u3093\u3002", de: "Noch keine Highlights." },
   astuceArobase: { fr: "Tape @ pour identifier un cavalier.", en: "Type @ to tag a rider.", es: "Escribe @ para etiquetar a un jinete.", it: "Digita @ per taggare un cavaliere.", ja: "@\u3092\u5165\u529b\u3057\u3066\u9a0e\u624b\u3092\u30bf\u30b0\u4ed8\u3051", de: "Tippe @, um einen Reiter zu markieren." },
+  ajouterPhotos: { fr: "Ajouter des photos", en: "Add photos", es: "A\u00f1adir fotos", it: "Aggiungere foto", ja: "\u5199\u771f\u3092\u8ffd\u52a0", de: "Fotos hinzuf\u00fcgen" },
   photosChoisies: { fr: "photos choisies", en: "photos selected", es: "fotos elegidas", it: "foto scelte", ja: "\u679a\u9078\u629e\u4e2d", de: "Fotos ausgew\u00e4hlt" },
   envoiMulti: { fr: "Publication", en: "Publishing", es: "Publicando", it: "Pubblicazione", ja: "\u6295\u7a3f\u4e2d", de: "Ver\u00f6ffentlichung" },
   partiel: { fr: "publi\u00e9es \u2014 certaines n'ont pas pu partir.", en: "published \u2014 some could not be sent.", es: "publicadas \u2014 algunas no pudieron enviarse.", it: "pubblicate \u2014 alcune non sono partite.", ja: "\u6295\u7a3f\u6e08\u307f \u2014 \u4e00\u90e8\u306f\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", de: "ver\u00f6ffentlicht \u2014 einige konnten nicht gesendet werden." },
@@ -968,7 +969,7 @@ function ComposeurStory(props) {
   function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(32,217,245," + a + ")"); }
 
   var lS = React.useState(""), legende = lS[0], setLegende = lS[1];
-  var liS = React.useState(""), lieu = liS[0], setLieu = liS[1];
+  var liS = React.useState(props.lieuInitial || ""), lieu = liS[0], setLieu = liS[1];
   var bS = React.useState(false), busy = bS[0], setBusy = bS[1];
   var aS = React.useState(null), apercu = aS[0], setApercu = aS[1];
   var qS = React.useState(""), requete = qS[0], setRequete = qS[1];
@@ -977,7 +978,7 @@ function ComposeurStory(props) {
   var tgS = React.useState([]), tags = tgS[0], setTags = tgS[1];
   var cuS = React.useState(0), curseur = cuS[0], setCurseur = cuS[1];
   var mrS = React.useState([]), mentionRes = mrS[0], setMentionRes = mrS[1];
-  var muS = React.useState(null), musique = muS[0], setMusique = muS[1];
+  var muS = React.useState(props.musiqueInitiale || null), musique = muS[0], setMusique = muS[1];
   var ecS = React.useState(null), ecoute = ecS[0], setEcoute = ecS[1];
   var audioRef = React.useRef(null);
 
@@ -1170,7 +1171,8 @@ function ComposeurStory(props) {
   return portail(
     h("div", {
       onClick: function () { if (!busy && props.onFermer) props.onFermer(); },
-      style: { position: "fixed", inset: 0, zIndex: 9200, background: "rgba(4,6,9,0.86)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
+      /* dessus:true = ouvert DEPUIS la visionneuse (9300) : il passe devant. */
+      style: { position: "fixed", inset: 0, zIndex: (props.dessus ? 9450 : 9200), background: "rgba(4,6,9,0.86)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
     },
       h("div", {
         onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
@@ -1845,6 +1847,8 @@ function VisionneuseStories(props) {
   var lecteurRef = React.useRef(null);
   var loS = React.useState(null), localMod = loS[0], setLocalMod = loS[1];
   var mnS = React.useState(false), menuOuvert = mnS[0], setMenuOuvert = mnS[1];
+  var ajS = React.useState(null), ajout = ajS[0], setAjout = ajS[1];
+  var ajoutRef = React.useRef(null);
   var pauseRef = React.useRef(false);
   var barreRef = React.useRef(null);
   var glisseRef = React.useRef({ y0: 0, actif: false });
@@ -2058,7 +2062,7 @@ function VisionneuseStories(props) {
       if (boiteRef.current && boiteRef.current.style.transform && boiteRef.current.style.transform !== "translateY(0px)") boiteRef.current.style.transform = "translateY(0px)";
       /* 13/08 01h40 : une feuille ouverte (Modifier, Garder) = AUCUN glissé,
          même si une remontée tactile passait la ceinture des feuilles. */
-      if (enEdition || choix || menuOuvert) { glisseRef.current.actif = false; return; }
+      if (enEdition || choix || menuOuvert || ajout) { glisseRef.current.actif = false; return; }
       pauseRef.current = true;
       /* CORRECTIF DU 13/08 : le glissé de fermeture ne s'arme qu'à UN doigt.
          Avant, un pincement de zoom était pris pour un glissé — c'est le
@@ -2071,7 +2075,7 @@ function VisionneuseStories(props) {
   }
   function toucheBouge(e) {
     try {
-      if (enEdition || choix || menuOuvert) { glisseRef.current.actif = false; return; }
+      if (enEdition || choix || menuOuvert || ajout) { glisseRef.current.actif = false; return; }
       if (e.touches && e.touches.length > 1) { glisseRef.current.actif = false; if (boiteRef.current) boiteRef.current.style.transform = "translateY(0px)"; return; }
       if (!glisseRef.current.actif) return;
       var t = e.touches && e.touches[0];
@@ -2082,7 +2086,7 @@ function VisionneuseStories(props) {
   }
   function toucheFin(e) {
     try {
-      if (enEdition || choix || menuOuvert) { glisseRef.current.actif = false; return; }
+      if (enEdition || choix || menuOuvert || ajout) { glisseRef.current.actif = false; return; }
       pauseRef.current = false;
       var dy = 0;
       var t = e.changedTouches && e.changedTouches[0];
@@ -2328,6 +2332,30 @@ function VisionneuseStories(props) {
            (visiteur) vivent dans la feuille du menu, memes handlers. */
         null),
 
+    h("input", {
+      ref: ajoutRef, type: "file", accept: "image/*", multiple: true,
+      onChange: function (ev) {
+        try {
+          var fs = ev && ev.target && ev.target.files ? Array.prototype.slice.call(ev.target.files, 0, HS_MULTI_MAX) : [];
+          if (fs.length) setAjout(fs); else pauseRef.current = false;
+          if (ev && ev.target) ev.target.value = "";
+        } catch (eA) { pauseRef.current = false; }
+      },
+      style: { display: "none" }
+    }),
+
+    ajout
+      ? h(ComposeurStory, {
+        fichier: ajout, langue: lg, dessus: true,
+        lieuInitial: story.lieu || "", musiqueInitiale: story.musique || null,
+        onFermer: function () { setAjout(null); pauseRef.current = false; setRelance(function (r) { return r + 1; }); },
+        onEchec: function () { setAjout(null); pauseRef.current = false; setAction("echec"); },
+        /* Publie : la visionneuse se ferme, le bandeau recharge (son onFermer
+           appelle charger()) — la story rouverte contient les nouvelles photos. */
+        onPublie: function () { setAjout(null); fermer(); }
+      })
+      : null,
+
     /* LA FEUILLE DU MENU ⋯ : toutes les actions de la story, memes
        permissions qu'avant (garder/modifier/supprimer = proprietaire,
        signaler = visiteur). Ceinture tactile comme les autres feuilles. */
@@ -2345,7 +2373,11 @@ function VisionneuseStories(props) {
         },
           h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.22)", margin: "4px auto 12px" } }),
           (estMoi ? [
-            { ic: "\u2726", txt: (story.garde || action === "rangee") ? hsT("gardee", lg) : hsT("garder", lg), on: function () { setMenuOuvert(false); pauseRef.current = true; setChoix(true); }, accent: true },
+            /* 13/08 (demande de Blandine) : ajouter des photos A SA STORY en
+               ligne. Le composeur s'ouvre pre-rempli (lieu + musique de la
+               story) ; les nouvelles photos rejoignent la suite de son fil. */
+            { ic: "\uff0b", txt: hsT("ajouterPhotos", lg), on: function () { setMenuOuvert(false); pauseRef.current = true; try { if (ajoutRef.current) ajoutRef.current.click(); } catch (eC) { } }, accent: true },
+            { ic: "\u2726", txt: (story.garde || action === "rangee") ? hsT("gardee", lg) : hsT("garder", lg), on: function () { setMenuOuvert(false); pauseRef.current = true; setChoix(true); } },
             { ic: "\u270e", txt: hsT("modifier", lg), on: function () { setMenuOuvert(false); pauseRef.current = true; setEnEdition(true); } },
             { ic: "", txt: hsT("supprimer", lg), on: function () { setMenuOuvert(false); supprimer(); } }
           ] : [
