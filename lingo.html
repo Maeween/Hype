@@ -469,6 +469,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 /* le chemin vers la sellerie depuis l'ecran d'arrivee : meme dessin
    discret que « Partager le voyage », il ne doit pas voler la vedette a
    l'objet lui-meme. */
+#carnetPortes button.bientot{opacity:.42;pointer-events:none;cursor:default}
 #arrSellerie{display:block;margin:10px auto 0;background:none;border:0;
   color:var(--turquoise);font-size:11.5px;letter-spacing:.06em;cursor:pointer;
   font-family:inherit;padding:6px 10px}
@@ -970,8 +971,23 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    desormais une carte postale NETTE, exposee normalement. Le 1,95 servait a
    rattraper un flou volontairement assombri a 40 de luminance. Le laisser
    aurait delave les cartes nettes. */
+/* ⚠️ AUCUN `filter` SUR CETTE COUCHE — 13 août 2026, session 210.
+   Elle portait `filter:brightness(1.12) saturate(1.06)`. Un `filter`
+   force Safari a promouvoir l'element en COUCHE COMPOSITE separee :
+   31 cartes = 31 couches, que WebKit re-rasterise toutes a la nouvelle
+   echelle des qu'on pince. Surface x4 → l'onglet etait tue
+   (« Un probleme recurrent est survenu »), et la page repartait sur
+   l'accueil. Meme maladie que le `rotateY` retire le 6 aout : ce
+   correctif-la avait enleve la 3D mais laisse le filtre.
+   Les vignettes perdent 12 % de luminosite et 6 % de saturation.
+   Blandine, 12/08 : « si c'est 12 % plus claire ça me dérange pas au
+   contraire » — puis feu vert explicite sur le retrait.
+   Sa Bible Design interdit de toute façon tout filtre sur les photos
+   de chevaux : le code est enfin d'accord avec la regle.
+   ⚠️ NE PAS REMETTRE de `filter` ici, ni `opacity` inferieure a 1,
+   ni `transform` 3D : tous promeuvent en couche composite. */
 .vc .vrec .vimg{position:absolute;inset:0;background-size:cover;
- background-position:center 34%;filter:brightness(1.12) saturate(1.06)}
+ background-position:center 34%}
 .vc .vrec .vvoile{position:absolute;inset:0;
  background:linear-gradient(180deg,rgba(6,7,9,.10) 0%,rgba(6,7,9,.34) 46%,rgba(6,7,9,.82) 100%)}
 .vc .vrec .vhalo{position:absolute;left:-30%;top:-24%;width:160%;height:90%;
@@ -2220,7 +2236,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          du chemin. Le carnet etant devenu la racine, il porte leurs portes. -->
     <div id="ouvAutres">
       <button id="ouvCollection" data-t="laCollection">La collection</button>
-      <button id="ouvSellerie" data-t="maSellerie">Ma sellerie</button>
+      <!-- ⚠️ 12/08 SOIR — ACCÈS BLOQUÉ SUR ORDRE DE BLANDINE, après essai sur
+           son téléphone : « mettre son objet dans la sellerie c'est une
+           catastrophe, on peut pas présenter ça ». L'onglet reste VISIBLE et
+           porte « Prochainement » : il annonce sans mentir, et rien ne
+           s'ouvre. Le code de l'écran est intact (`lingo-sellerie.html`, non
+           poussé) — on ferme la porte, on ne jette rien.
+           NE PAS réactiver sans son feu vert explicite. -->
+      <button id="ouvSellerie" class="bientot" data-t="sellerieBientot" disabled>Ma sellerie · Prochainement</button>
       <button id="ouvCarnet" data-t="monCarnet">Mon carnet de voyage</button>
       <button id="ouvSprint" data-t="sprint60">Sprint · 60 s</button>
       <button id="ouvPartager" data-t="partagerVoyage">Partager le voyage</button>
@@ -3110,10 +3133,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=34";   /* v34 : `objet-lambourn.webp` (l'etrille remplacee par
+var VER = "?v=35";   /* v35 (13/08, session 210) : les 31 `carte-<ref>-vignette.jpg`
+                        arrivent, et les neuf anciennes `-vignette.webp` sont
+                        REMPLACEES — trois etaient perimees, fabriquees depuis une
+                        carte refaite depuis (hickstead etait 2,7 fois plus sombre
+                        que sa carte actuelle). Sans ce temoin, le service worker
+                        resservirait ses anciennes reponses pendant des jours.
+                        v34 : `objet-lambourn.webp` (l'etrille remplacee par
                         le licol en cuir) et `sellerie-gauche.webp` (le rail du
-                        bas retire) sont des fichiers REMPLACES. Sans ce temoin,
-                        les telephones garderaient les anciens des jours. */
+                        bas retire) sont des fichiers REMPLACES. */
 
 /* ==================================================================
    LE PREFIXE DES IMAGES (12 aout 2026, session 209)
@@ -4759,7 +4787,26 @@ function pousserVille(){
              n'est pas la meme chose : ici elle est rognee, assombrie et
              sert de fond ; la recompense reste la carte entiere, avec sa
              lettre au verso et son entree dans la collection. */
-          '<span class="vimg" style="background-image:url(&quot;carte-'+e.ref+'.webp'+VER+'&quot;),url(&quot;fond-'+e.ref+'.webp'+VER+'&quot;)"></span>'+
+          /* ⚠️ UNE SEULE COUCHE, LA VIGNETTE — 13 août 2026, session 210.
+             Avant : `carte-X.webp` (900x1200) devant `fond-X.webp`. Un
+             fond CSS multiple DECODE TOUTES ses couches, meme celles
+             qu'on ne voit pas : les 31 cartes demandaient 130 Mo de
+             bitmaps, et 500 Mo au zoom x2. C'est ce chiffre qui tuait
+             l'onglet.
+             Maintenant : `carte-X-vignette.jpg`, 450x600, fabriquee par
+             `lingo-alleger-cartes.html` depuis la carte pleine. 32 Mo au
+             total, et plus de multiplication au zoom puisque le filtre
+             est parti avec.
+             ⚠️ .jpg ET NON .webp, et c'est voulu : Safari ignore le
+             parametre de qualite du WebP et rendait des fichiers sans
+             perte de 480 Ko. Regle posee : .webp pour les objets
+             decoupes (transparence), .jpg pour les photos plein cadre.
+             ⚠️ PLUS DE REPLI VERS `fond-X.webp` : le flou coutait une
+             couche decodee pour rien. Les 31 villes ont leur vignette ;
+             s'il en manquait une, la carte tombe sur son degrade `ciel`,
+             ce qui reste presentable. Ne pas rajouter de couche ici
+             sans recompter la memoire. */
+          '<span class="vimg" style="background-image:url(&quot;carte-'+e.ref+'-vignette.jpg'+VER+'&quot;)"></span>'+
           '<span class="vhalo"></span><span class="vvoile"></span>'+
           '<span class="vn">'+(i+1)+'</span>'+
           barresNiveau(niveauVille(e.ref))+
@@ -5186,8 +5233,9 @@ function ouvrirArrivee(i){
     m.appendChild(medaillonObjet(e.ref, e.ic));
   })();
   S("souvenir").classList.toggle("apercu", !_obj);
-  /* le chemin vers la sellerie n'existe que si l'objet est gagne */
-  S("arrSellerie").style.display = _obj ? "" : "none";
+  /* ⚠️ 12/08 SOIR — chemin coupé. Même défaut de condition que le
+     récapitulatif : `_obj` = gagné à l'instant, pas acquis. */
+  S("arrSellerie").style.display = "none";
   garnirVille(e);
   ecrire();
 
@@ -5856,6 +5904,12 @@ function sellerieVue(){
 }
 
 function ouvrirSellerie(){
+  /* ⚠️ VERROU DU 12/08 SOIR. Les portes sont déjà coupées ; celui-ci est la
+     seconde barrière, au cas où un écouteur oublié appellerait la fonction.
+     Retirer les DEUX pour réactiver. */
+  return;
+}
+function ouvrirSellerieReparee(){
   var f = S("sellerieIf");
   if(!f.getAttribute("src")) f.setAttribute("src", "lingo-sellerie.html");
   S("sellerie").classList.add("on");
@@ -5881,7 +5935,6 @@ function fermerSellerie(){
   }, 320);
 }
 
-S("ouvSellerie").addEventListener("click", ouvrirSellerie);
 S("ouvCollection").addEventListener("click", ouvrirCollection);
 S("ouvSprint").addEventListener("click", ouvrirSprint);
 S("bCollection").addEventListener("click", ouvrirCollection);
@@ -6608,6 +6661,9 @@ var UI = {
    ja:"60秒で{n}語のうち{a}語。"},
  defiRejouer:{fr:"Recommencer", en:"Try again", es:"Volver a empezar",
    it:"Ricominciare", de:"Noch einmal", ja:"もう一度"},
+ sellerieBientot:{fr:"Ma sellerie · Prochainement", en:"My tack room · Coming soon",
+   es:"Mi guadarnés · Próximamente", it:"La mia selleria · Prossimamente",
+   de:"Meine Sattelkammer · Demnächst", ja:"私の馬具室 · 近日公開"},
  maSellerie:{fr:"Ma sellerie", en:"My tack room", es:"Mi guadarnés",
    it:"La mia selleria", de:"Meine Sattelkammer", ja:"私の馬具室"},
  rangerSellerie:{fr:"Ranger cet objet dans ma sellerie",
@@ -8778,8 +8834,11 @@ function blocRecompenses(){
      sellerie ». Une phrase sous l'objet gagne, comme pour la collection
      et les cartes. Elle n'apparait QUE si l'objet est acquis : proposer
      de ranger un objet qu'on n'a pas serait une promesse vide. */
-  if(obj) bloc.appendChild(el("button",{class:"lgColl", style:"margin-top:8px",
-    onclick:function(){ ouvrirSellerie(); }}, T("rangerSellerie")+" \u203A"));
+  /* ⚠️ 12/08 SOIR — chemin coupé avec l'accès à la sellerie. À remettre TEL
+     QUEL le jour de la réparation, EN CORRIGEANT la condition : elle doit
+     être `souvenirObtenu(...)` (objet ACQUIS) et non `obj` (objet gagné À
+     L'INSTANT). Défaut signalé par Blandine : « le lien ne fonctionne pas
+     même si on a l'objet, on est obligés de refaire tous les mots ». */
   return bloc;
 }
 
