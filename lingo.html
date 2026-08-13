@@ -1292,11 +1292,24 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #souvenir svg{width:46px;height:46px;flex:0 0 auto}
 #souvenir .t{font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:#E2C878;margin:0 0 5px}
 #souvenir .n{font-family:'Cinzel',serif;font-size:15px;margin:0;line-height:1.25}
-#arrBas{display:flex;gap:9px;padding:24px 22px calc(env(safe-area-inset-bottom) + 26px);
+/* ⚠️ `flex-wrap` AJOUTE LE 13/08 : avec le troisieme bouton (les
+   phrases), trois libelles en capitales ne tiennent pas sur 390 px.
+   Sans enroulement, le texte se tasse et devient illisible. */
+#arrBas{display:flex;flex-wrap:wrap;gap:9px;padding:24px 22px calc(env(safe-area-inset-bottom) + 26px);
  max-width:520px;margin:0 auto}
 #arrBas button{flex:1;padding:15px 12px;border-radius:14px;font-size:11.5px;font-weight:600;
  letter-spacing:.1em;text-transform:uppercase}
 #arrJouer{background:var(--turquoise);color:#060709;box-shadow:0 14px 34px -18px rgba(32,217,245,.9)}
+/* les phrases : pleine largeur sous les deux autres, en verre fume
+   borde de turquoise — le meme poids visuel que les mots sans leur
+   voler la vedette. */
+/* ⚠️ SELECTEUR `#arrBas #arrPhrases` ET NON `#arrPhrases` SEUL.
+   `#arrBas button` (un id + un element) a une specificite PLUS FORTE
+   qu'un id seul : ecrit `#arrPhrases{flex:1 0 100%}`, la regle etait
+   ecrasee et les trois boutons se tassaient sur une ligne de 110 px.
+   Attrape au banc le 13/08 avant livraison. */
+#arrBas #arrPhrases{flex:1 0 100%;background:rgba(32,217,245,.1);
+ color:var(--turquoise);border:1px solid rgba(32,217,245,.35)}
 #arrPartager{display:block;margin:0 auto;position:relative;z-index:1;
  padding:11px 22px calc(env(safe-area-inset-bottom)/2 + 11px);margin-bottom:10px;
  background:none;border:none;color:var(--or);font-size:10.5px;font-weight:600;
@@ -2030,6 +2043,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <div id="arrBas">
     <button id="arrPartir" data-t="reprendreRoute">Reprendre la route</button>
     <button id="arrJouer" data-t="motsChapitre">Les mots du chapitre</button>
+    <!-- ⚠️ AJOUT DU 13/08 (session 210) — LES PHRASES, DEPUIS L'ARRIVEE.
+         Demande de Blandine : « qu'on ne soit pas obligé de refaire une
+         fois encore les mots à chaque fois pour passer sur les phrases ».
+         Avant, la mise en situation n'etait accessible qu'au BAS de la
+         page des mots : il fallait la traverser chaque fois.
+         Masque par defaut : il ne s'affiche que si la ville a un
+         dialogue ecrit (voir `arrPhrasesMaj`), comme #arrSellerie. -->
+    <button id="arrPhrases" style="display:none">Les phrases</button>
   </div>
   <!-- v54 : partager juste apres une ville gagnee. -->
   <button id="arrPartager" data-t="partagerVoyage">Partager le voyage</button>
@@ -5256,6 +5277,14 @@ function ouvrirArrivee(i){
   /* ⚠️ 12/08 SOIR — chemin coupé. Même défaut de condition que le
      récapitulatif : `_obj` = gagné à l'instant, pas acquis. */
   S("arrSellerie").style.display = "none";
+  /* ⚠️ AJOUT DU 13/08 — le bouton des phrases n'apparait QUE si la ville
+     en a. Pas de bouton mort : aujourd'hui La Baule et Le Morne. */
+  (function(){
+    var b = S("arrPhrases");
+    if(!b) return;
+    if(aUnDialogue(e.ref)){ b.style.display = ""; b.textContent = T("lesPhrases"); }
+    else b.style.display = "none";
+  })();
   garnirVille(e);
   ecrire();
 
@@ -5829,6 +5858,20 @@ function fermerGlobe(){
    6 aout) : on retire la classe ET on vide le `src`, sinon l'iframe
    continue de parler derriere.
 ================================================================== */
+/* Une ville a-t-elle un dialogue ecrit ? Une seule reponse dans tout le
+   fichier — le bouton du bas de lecon, celui de l'arrivee et le routage
+   du lien la partagent. Trois copies du meme test auraient divergé. */
+function aUnDialogue(refVille){
+  try{
+    var L = window.HYPE_LINGO_LEX || {};
+    for(var k in L){
+      var d = L[k] && L[k].dialogue;
+      if(d && d.ville === refVille && d.phrases && d.phrases.length) return true;
+    }
+  }catch(e){}
+  return false;
+}
+
 function ouvrirSituation(refVille){
   var f = S("situationIf");
   if(!f) return;
@@ -6790,6 +6833,9 @@ var UI = {
    de:"{s} — alle {n} Wörter des Kapitels", ja:"{s}──この章の{n}語すべて"},
  raceIci:{fr:"La race d'ici", en:"The local breed", es:"La raza de aquí",
    it:"La razza di qui", de:"Die Rasse von hier", ja:"この土地の品種"},
+ lesPhrases:{fr:"Les phrases de la ville", en:"The city's phrases",
+   es:"Las frases de la ciudad", it:"Le frasi della citt\u00e0",
+   de:"Die S\u00e4tze der Stadt", ja:"この街のフレーズ"},
  reprendreRoute:{fr:"Reprendre la route", en:"Back on the road", es:"Seguir el camino",
    it:"Riprendi la strada", de:"Weiterreisen", ja:"旅を続ける"},
  motsChapitre:{fr:"Les mots du chapitre", en:"The words of this chapter",
@@ -8103,15 +8149,7 @@ function choisirLecon(){
      mort. */
   (function(){
     if(!LC || !LC.ville) return;
-    var aDialogue = false;
-    try{
-      var L = window.HYPE_LINGO_LEX || {};
-      for(var k in L){
-        var d = L[k] && L[k].dialogue;
-        if(d && d.ville === LC.ville && d.phrases && d.phrases.length){ aDialogue = true; break; }
-      }
-    }catch(e){}
-    if(!aDialogue) return;
+    if(!aUnDialogue(LC.ville)) return;
     S("lcCorps").appendChild(el("button",{class:"lgColl", style:"margin-top:10px",
       onclick:function(){ ouvrirSituation(LC.ville); }},
       langueUI()==="en" ? "Handle it on the spot" : "Me d\u00e9brouiller sur place"));
@@ -9643,12 +9681,7 @@ function lireAncre(){
       S("intro").classList.remove("on"); S("dest").classList.remove("on");
       ouvrirLecon(ref);
       /* la mise en situation ne s'ouvre que si la ville en a une */
-      if(quoi==="situation"){
-        var a=false, L=window.HYPE_LINGO_LEX||{};
-        for(var k in L){ var d=L[k]&&L[k].dialogue;
-          if(d&&d.ville===ref&&d.phrases&&d.phrases.length){ a=true; break; } }
-        if(a) ouvrirSituation(ref);
-      }
+      if(quoi==="situation" && aUnDialogue(ref)) ouvrirSituation(ref);
     };
     /* si le film tourne encore, on attend qu'il ait fini ou qu'on l'ait
        coupé — sinon la ville s'ouvre derrière lui, invisible. */
@@ -10162,6 +10195,21 @@ S("arrJouer").addEventListener("click",function(){
   var ref=ETAPES[courant].ref;
   fermerArrivee();
   setTimeout(function(){ ouvrirLecon(ref); },260);
+});
+/* ⚠️ AJOUT DU 13/08 (session 210) — LES PHRASES DEPUIS L'ARRIVEE.
+   Meme geste que `arrJouer` : on ferme l'arrivee, puis on ouvre. Sans le
+   delai, le calque de la mise en situation se pose sous l'arrivee encore
+   affichee et on ne voit rien.
+   ⚠️ Le bouton n'est visible que si la ville a un dialogue — donc pas
+   besoin de reverifier ici, mais on le fait quand meme : un lien de
+   partage peut amener sur une arrivee sans que `arrPhrasesMaj` ait
+   tourne. Un bouton qui ouvre un ecran vide est pire qu'un bouton
+   absent. */
+S("arrPhrases").addEventListener("click",function(){
+  var ref=ETAPES[courant].ref;
+  if(!aUnDialogue(ref)) return;
+  fermerArrivee();
+  setTimeout(function(){ ouvrirSituation(ref); },260);
 });
 S("arrPartir").addEventListener("click",function(){ fermerArrivee(); setTimeout(lancerDepart,240); });
 
