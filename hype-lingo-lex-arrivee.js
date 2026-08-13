@@ -373,7 +373,81 @@ window.HYPE_LINGO_LEX.arrivee = {
           es:"Lo que se dice a un jinete caído, y lo que hay que entender si te caes tú. No se levanta a nadie: se le pregunta si está bien, y se atrapa al caballo.",
           it:"Ciò che si dice a un cavaliere caduto, e ciò che va capito se cadi tu. Non si rialza nessuno: gli si chiede se sta bene, e si prende il cavallo.",
           de:"Was man einem gestürzten Reiter sagt — und verstehen muss, wenn man selbst fällt. Man richtet niemanden auf: Man fragt, ob alles gut ist, und fängt das Pferd ein.",
-          ja:"落ちた騎手にかける言葉であり、自分が落ちたときに理解すべき言葉。人を引き起こしてはいけません。大丈夫かを尋ね、そして馬を捕まえるのです。" } }
+          ja:"落ちた騎手にかける言葉であり、自分が落ちたときに理解すべき言葉。人を引き起こしてはいけません。大丈夫かを尋ね、そして馬を捕まえるのです。" } },
+
+  /* ==================================================================
+     TROIS MOTS AJOUTÉS LE 13/08/2026, session 210, à la demande de
+     Blandine.
+
+     ⚠️ `cavalier-confirme` EST UN COPIER-COLLER, PAS UNE CRÉATION.
+     Le mot vit déjà dans `hype-lingo-lex-balade.js`, leçon 1, avec ses
+     six traductions ET son audio. Il arrive ici parce que Blandine avait
+     demandé la phrase « Et pour les cavaliers confirmés ? » à La Baule,
+     et qu'un dialogue n'emploie que les mots de son chapitre.
+     🟥 LA LEÇON, à ne pas reperdre : quand une phrase de Blandine bute
+     sur la règle, on traite LE LEXIQUE, pas la phrase. Claude avait
+     proposé deux fois de retirer sa phrase — c'était l'inverse du bon
+     geste, elle l'a corrigé.
+     Le précédent est le sien : `balade` porte déjà la même `ref` dans
+     les deux fichiers (session 209, « s'il dort, tant mieux »).
+     Conséquence assumée, la même : le mot arrivera DÉJÀ ACQUIS au Morne.
+     ⚠️ Les `mots` sont identiques au fichier balade — NE PAS LES FAIRE
+     DIVERGER. Seul le `def` change, celui du Morne parlant du lagon,
+     ce qui n'a aucun sens ici.
+
+     `cheval-rapide` et `cheval-sympa` sont de VRAIS mots neufs. Avec
+     `cheval-calme` qui existait déjà, ils forment une famille de trois :
+     calme, sympa, rapide — les trois choses qu'une cavalière a besoin de
+     demander sur un cheval qu'elle ne connaît pas.
+     ⚠️ AUDIO À ENREGISTRER pour ces deux-là, six langues chacun.
+     ⚠️ ES / IT / DE / JA À FAIRE RELIRE par un cavalier de la langue.
+     C'est le vocabulaire des manuels, pas une traduction au son, mais
+     personne ne l'a entendu dire.
+  ================================================================== */
+
+  { ref:"cavalier-confirme", lecon:1, coll:"inscrire",
+    mots:{ fr:{m:"le cavalier confirmé"},
+           en:{m:"the experienced rider", p:"iks-pi-rieunst"},
+           es:{m:"el jinete experimentado"}, it:{m:"il cavaliere esperto"},
+           de:{m:"der erfahrene Reiter", p:"èr-fa-re-ne"},
+           ja:{m:"経験者", p:"keikensha"} },
+    def:{
+      fr:"Celui qui monte déjà, par opposition au débutant. ⚠️ Faux ami : « confirmed rider » ne veut rien dire en anglais. Un club range ses cours selon cette ligne, alors autant savoir de quel côté on se met. Le mot revient au Morne, où c'est lui qui ouvre le lagon.",
+      en:"Someone who already rides, as opposed to a beginner. A school sorts its lessons along this line, so it helps to know which side you are on. The word comes back at Le Morne, where it opens the lagoon.",
+      es:"El que ya monta, frente al principiante. ⚠️ Falso amigo: « confirmed rider » no significa nada en inglés. Un club ordena sus clases según esta línea, así que conviene saber de qué lado te pones. La palabra vuelve en Le Morne, donde es ella la que abre la laguna.",
+      it:"Chi già monta, a differenza del principiante. ⚠️ Falso amico: « confirmed rider » in inglese non vuol dire niente. Un club ordina i suoi corsi secondo questa linea, quindi conviene sapere da che parte ti metti. La parola ritorna a Le Morne, dove è lei ad aprire la laguna.",
+      de:"Wer schon reitet, im Gegensatz zum Anfänger. ⚠️ Falscher Freund: « confirmed rider » bedeutet im Englischen nichts. Ein Betrieb ordnet seine Stunden nach dieser Linie — es hilft zu wissen, auf welche Seite man sich stellt. Das Wort kommt in Le Morne wieder, dort öffnet es die Lagune.",
+      ja:"すでに乗れる人。初心者の反対です。⚠️ 英語で « confirmed rider » とは言いません。クラブはこの線でレッスンを分けるので、自分がどちら側かを言えると役に立ちます。この言葉はル・モルヌでまた出てきて、そこではラグーンを開く鍵になります。" } },
+
+  { ref:"cheval-rapide", lecon:1, coll:"inscrire",
+    mots:{ fr:{m:"un cheval rapide"},
+           en:{m:"a fast horse", p:"faste", var:"a forward horse"},
+           es:{m:"un caballo rápido", var:"un caballo con impulsión"},
+           it:{m:"un cavallo veloce", var:"un cavallo con impulso"},
+           de:{m:"ein schnelles Pferd", p:"chnè-less", var:"ein Pferd mit Schwung"},
+           ja:{m:"速い馬", p:"hayai uma", var:"前進気勢のある馬"} },
+    def:{
+      fr:"L'inverse du cheval calme, pour qui sait déjà monter. ⚠️ « Fast » se comprend partout, mais dans une écurie on dit plutôt « forward » : un cheval qui va de lui-même, sans qu'on ait à le pousser. Ce n'est pas un cheval qui s'emballe, c'est un cheval qui a de l'impulsion — Schwung en allemand, un des points de l'échelle de progression. Demander « a forward horse » dit qu'on sait monter ; « a fast horse » peut faire craindre qu'on veuille courir.",
+      en:"The opposite of a quiet horse, for someone who already rides. In a yard you would say « forward » rather than « fast »: a horse that goes of its own accord, without being pushed. Not a horse that runs away with you — a horse with impulsion.",
+      es:"Lo contrario del caballo tranquilo, para quien ya monta. ⚠️ « Fast » se entiende en todas partes, pero en una cuadra se dice más bien « forward »: un caballo que va solo, sin que haya que empujarlo. No es un caballo que se desboca, es un caballo con impulsión.",
+      it:"Il contrario del cavallo tranquillo, per chi già monta. ⚠️ « Fast » si capisce dappertutto, ma in scuderia si dice piuttosto « forward »: un cavallo che va da sé, senza doverlo spingere. Non è un cavallo che scappa, è un cavallo con impulso.",
+      de:"Das Gegenteil des ruhigen Pferdes, für wen schon reiten kann. ⚠️ « Fast » versteht man überall, im Stall sagt man aber eher « forward »: ein Pferd, das von selbst geht, ohne dass man treiben muss. Kein durchgehendes Pferd — ein Pferd mit Schwung.",
+      ja:"おとなしい馬の反対で、すでに乗れる人向けです。⚠️ « fast » はどこでも通じますが、馬房では « forward » と言うことが多い — 押さなくても自分から前に出る馬のことです。暴走する馬ではなく、前進気勢のある馬です。" } },
+
+  { ref:"cheval-sympa", lecon:1, coll:"inscrire",
+    mots:{ fr:{m:"un cheval sympa"},
+           en:{m:"a nice horse", p:"naïsse", var:"a kind horse"},
+           es:{m:"un caballo bueno", var:"un caballo noble"},
+           it:{m:"un cavallo buono", var:"un cavallo generoso"},
+           de:{m:"ein nettes Pferd", p:"nè-tess", var:"ein braves Pferd"},
+           ja:{m:"優しい馬", p:"yasashii uma", var:"素直な馬"} },
+    def:{
+      fr:"Celui qu'on demande quand on n'est pas très rassurée. ⚠️ « A nice horse » se dit, mais c'est le mot le plus ambigu de l'anglais équestre : il peut vouloir dire « gentil »… ou « beau, de belle origine ». Deux mots plus sûrs : « a kind horse » pour le caractère, et surtout « a genuine horse » — un cheval honnête, qui ne fait jamais de surprise. « He's genuine » est le plus grand compliment qu'on puisse faire à un cheval de club.",
+      en:"The horse you ask for when you are not feeling confident. « A nice horse » works, but it is the most ambiguous phrase in horse English — it can mean kind, or well-bred. « A kind horse » is safer, and « a genuine horse » safest of all: one that never surprises you.",
+      es:"El que se pide cuando no vas del todo tranquila. ⚠️ « A nice horse » se dice, pero es la expresión más ambigua del inglés ecuestre: puede querer decir « bueno de carácter »… o « de buena sangre ». Más seguro: « a kind horse », y sobre todo « a genuine horse » — un caballo honrado, que nunca te sorprende.",
+      it:"Quello che si chiede quando non ci si sente del tutto sicure. ⚠️ « A nice horse » si dice, ma è l'espressione più ambigua dell'inglese equestre: può voler dire « buono di carattere »… o « di bella razza ». Più sicuro: « a kind horse », e soprattutto « a genuine horse » — un cavallo onesto, che non ti sorprende mai.",
+      de:"Das Pferd, nach dem man fragt, wenn man sich nicht ganz sicher fühlt. ⚠️ « A nice horse » sagt man, aber es ist der vieldeutigste Ausdruck im Reit-Englischen: er kann « brav » heißen … oder « gut gezogen ». Sicherer: « a kind horse », und am sichersten « a genuine horse » — ein ehrliches Pferd, das nie überrascht.",
+      ja:"あまり自信がないときに頼む馬です。⚠️ « a nice horse » とも言いますが、馬の英語でいちばん曖昧な言い方です — 性格がいい、とも、血統がいい、とも取れます。« a kind horse » のほうが確実で、いちばん確実なのは « a genuine horse » — 絶対に驚かせない、正直な馬という意味です。" } }
 
   ],
 
@@ -481,7 +555,7 @@ window.HYPE_LINGO_LEX.arrivee = {
      et doit comprendre. 16 produites, 6 entendues.
   ================================================================== */
   dialogue: {
-    ville: "labaule", lecon: 1, temps: 6, langues: ["fr","en"],
+    ville: "labaule", lecon: 1, temps: 6, langues: ["fr","en"],   /* 25 phrases depuis le 13/08 */
 
     phrases: [
 
@@ -495,7 +569,10 @@ window.HYPE_LINGO_LEX.arrivee = {
         fr:"Est-ce qu'il y a des cours pour débutants ?",
         en:"Do you have lessons for beginners?" },
 
-      { ref:"d-cours-confirmes", temps:2, dit:"joueuse",
+      /* La phrase de Blandine. `cavalier-confirme` a rejoint le lexique de
+         La Baule le 13/08 pour qu'elle soit légitime — voir le commentaire
+         du concept. NE PAS RETIRER CETTE PHRASE. */
+      { ref:"d-cours-confirmes", temps:2, dit:"joueuse", mots:["cavalier-confirme"],
         fr:"Et pour les cavaliers confirmés ?",
         en:"And for more experienced riders?" },
 
@@ -582,7 +659,33 @@ window.HYPE_LINGO_LEX.arrivee = {
 
       { ref:"d-cheval-calme", temps:6, dit:"joueuse", mots:["cheval-calme"],
         fr:"Est-ce que vous avez un cheval calme ?",
-        en:"Have you got a quiet horse?" }
+        en:"Have you got a quiet horse?" },
+
+      /* ---- trois phrases ajoutées le 13/08, demandées par Blandine ---- */
+
+      /* 🟥 LE SEUL ENDROIT DE TOUTE L'APP OÙ « gallop » DOIT APPARAÎTRE
+         EN ANGLAIS, et c'est volontaire : il n'est pas donné comme
+         synonyme de « canter », il est MIS EN OPPOSITION. C'est la
+         différence entre enseigner le piège et le tendre. Partout
+         ailleurs, « canter » seul — voir le `def` de `galop`.
+         ⚠️ NE PAS « CORRIGER » CETTE PHRASE en retirant « gallop ». */
+      { ref:"d-canter-doux", temps:6, dit:"joueuse", mots:["galop"],
+        fr:"Est-ce qu'on peut galoper doucement, sans aller vite ?",
+        en:"Can we do a steady canter, not a gallop?" },
+
+      { ref:"d-cheval-rapide", temps:6, dit:"joueuse", mots:["cheval-rapide"],
+        fr:"Est-ce que je peux avoir un cheval rapide ?",
+        en:"Can I have a fast horse?",
+        varEn:"Can I have a forward horse?" },
+
+      /* Blandine : « c'est la phrase qui évite qu'on te mette sur un cheval
+         trop chaud ». « I'm not very confident » est ce qu'on dit vraiment
+         dans une écurie anglaise — PAS « I'm scared », trop fort, et qui
+         inquiète le club sur le niveau réel de la cavalière. */
+      { ref:"d-pas-rassuree", temps:6, dit:"joueuse", mots:["cheval-sympa"],
+        fr:"Je ne suis pas très rassurée à cheval. Est-ce que vous auriez un cheval sympa ?",
+        en:"I'm not very confident on a horse. Would you have a nice one?",
+        varEn:"I'm not very confident on a horse. Would you have a kind one?" }
     ]
   }
 };

@@ -187,7 +187,30 @@ window.HYPE_LINGO_LEX.balade = {
           es:"La ducha a la vuelta. La sal que se seca sobre el pelo irrita y lo endurece: aclarar no es una coquetería, forma parte de la salida.",
           it:"La doccia al rientro. Il sale che secca sul pelo irrita e irrigidisce: sciacquare non è un vezzo, fa parte dell'uscita.",
           de:"Die Dusche danach. Salz, das im Fell trocknet, reizt und macht es steif: Abspülen ist keine Kosmetik — es gehört zum Ritt dazu.",
-          ja:"帰ってからの水浴び。毛の上で乾いた塩は肌を刺激し、毛をごわつかせます。すすぎは身だしなみではなく、外乗の一部なのです。" } }
+          ja:"帰ってからの水浴び。毛の上で乾いた塩は肌を刺激し、毛をごわつかせます。すすぎは身だしなみではなく、外乗の一部なのです。" } },
+
+  /* ==================================================================
+     MOT AJOUTÉ LE 13/08/2026, session 210, demandé par Blandine.
+     ⚠️ AUDIO À ENREGISTRER, six langues.
+     ⚠️ ES / IT / DE / JA à faire relire par un cavalier de la langue.
+     Le Morne passe de 12 à 13 mots. La cible posée au SUIVI est
+     15 à 18 — il en manque encore deux à cinq, et ce sont les mots de
+     Blandine, pas à inventer ici.
+  ================================================================== */
+  { ref:"monter-a-cru", lecon:1, coll:"balade",
+    mots:{ fr:{m:"monter à cru"},
+           en:{m:"to ride bareback", p:"bèr-bak"},
+           es:{m:"montar a pelo"},
+           it:{m:"montare a pelo"},
+           de:{m:"ohne Sattel reiten", p:"o-ne za-tel", var:"blank reiten"},
+           ja:{m:"裸馬に乗る", p:"hadakauma ni noru"} },
+    def:{
+      fr:"Sans selle, à même le dos du cheval. ⚠️ « Bareback » est un mot unique en anglais, sans équivalent littéral en français — impossible à deviner, et c'est bien pour ça qu'il faut le connaître. Dans l'eau il prend tout son sens : le cuir d'une selle n'aime ni le sel ni le sable, alors la baignade se fait souvent à cru. On sent le cheval nager sous soi, et ça ne s'oublie pas.",
+      en:"Without a saddle, straight on the horse's back. In the water it makes particular sense: saddle leather does not take kindly to salt or sand, so the swim is often done bareback. You feel the horse swimming beneath you, and you never forget it.",
+      es:"Sin silla, directamente sobre el lomo del caballo. ⚠️ « Bareback » es una sola palabra en inglés, sin equivalente literal — imposible de adivinar, y por eso hay que conocerla. En el agua cobra todo su sentido: el cuero de una silla no soporta la sal ni la arena, así que el baño suele hacerse a pelo. Sientes al caballo nadar debajo de ti, y eso no se olvida.",
+      it:"Senza sella, direttamente sulla schiena del cavallo. ⚠️ « Bareback » è una sola parola in inglese, senza equivalente letterale — impossibile da indovinare, ed è per questo che va conosciuta. In acqua acquista tutto il suo senso: il cuoio di una sella non ama né il sale né la sabbia, così il bagno si fa spesso a pelo. Senti il cavallo nuotare sotto di te, e non lo dimentichi più.",
+      de:"Ohne Sattel, direkt auf dem Pferderücken. ⚠️ « Bareback » ist im Englischen ein einziges Wort, ohne wörtliche Entsprechung — nicht zu erraten, und genau darum muss man es kennen. Im Wasser bekommt es seinen ganzen Sinn: Sattelleder verträgt weder Salz noch Sand, also wird das Baden oft blank geritten. Man spürt das Pferd unter sich schwimmen, und das vergisst man nicht.",
+      ja:"鞍をつけず、馬の背に直接乗ること。⚠️ 英語の « bareback » は一語で、フランス語には直訳がありません — 推測できないからこそ、覚える値があります。水の中でこそ意味を持ちます：鞍の革は塩も砂も嫌うので、水浴は裸馬で行うことが多いのです。自分の下で馬が泳ぐのを感じる — 忘れられない経験です。" } }
 
   ],
 
@@ -225,5 +248,163 @@ window.HYPE_LINGO_LEX.balade = {
       de:"Ist das Baden nur für Erfahrene ?",
       ja:"水浴 は 経験者 だけ です か ?" }
 
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DU MORNE — 13 août 2026, session 210.
+
+     🟥 CLÉ INERTE. Aucun code ne la lit : le mode dialogue n'existe pas
+     encore. La poser ne change RIEN à l'écran.
+
+     🟥 LA RÈGLE DE LA SESSION 209 EST ABROGÉE. Elle disait « un dialogue
+     n'emploie que les mots de son chapitre » et le SUIVI l'appelait « la
+     règle qui commande tout ». Blandine l'a remplacée le 13/08 :
+     « on s'en fout du lexique, l'idée c'est d'être capable de se
+     débrouiller dans les conditions données et si c'est des nouveaux mots
+     bah tant mieux » · « on pourra pas tout couvrir avec 12 mots ».
+     Le lexique sert le dialogue, pas l'inverse. Un mot neuf dans une
+     phrase est un bonus, pas une dette : il s'apprend en situation, avec
+     l'audio de la phrase, sans avoir besoin d'entrée de lexique.
+
+     🟥 CONSÉQUENCE, et c'est celle qui compte : ON NE RETIRE JAMAIS UNE
+     PHRASE DE BLANDINE parce qu'un mot manque au lexique. Claude l'a
+     fait TROIS fois dans cette session — « et pour les cavaliers
+     confirmés ? », « galoper dans l'eau », « un cheval très calme » —
+     et elle a dû le corriger chaque fois : « je sais pas pourquoi tu
+     retires de toi-même des trucs qu'on a insérés ensemble ». Les trois
+     sont revenues.
+
+     `mots` = refs du chapitre · `motsAilleurs` = refs qui appartiennent
+     à un autre chapitre, employées quand même. Informatif, pas une
+     limite.
+
+     ÉTAT : français et anglais seulement, décision de Blandine
+     (« on avait dit qu'on mettait déjà que l'anglais en ligne pour
+     tester ajuster avant de traduire le reste »). Manquent es, it, de,
+     ja + tout l'audio.
+
+     AUCUN « mot du guide » ici : son écriture ne relève pas de cette
+     conversation (PASSATION §6). Règle de ton posée par Blandine : on ne
+     fait pas de déclarations sur la bienséance, on fait rêver et
+     apprendre.
+
+     `dit` : "joueuse" = elle produit · "club" = elle entend et comprend.
+  ================================================================== */
+  dialogue: {
+    ville: "maurice", lecon: 1, temps: 7, langues: ["fr","en"],   /* 21 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · je réserve la balade ---- */
+      { ref:"d-balade-lagon", temps:1, dit:"joueuse", mots:["balade","lagon"],
+        fr:"Je voudrais réserver une balade dans le lagon.",
+        en:"I'd like to book a hack in the lagoon.",
+        varEn:"I'd like to book a trail ride in the lagoon." },
+
+      { ref:"d-un-guide", temps:1, dit:"joueuse", mots:["guide"],
+        fr:"Est-ce qu'il y a un guide ?",
+        en:"Is there a guide?" },
+
+      { ref:"d-baignade-comprise", temps:1, dit:"joueuse", mots:["baignade"],
+        fr:"Est-ce que la baignade est comprise ?",
+        en:"Is the swim included?" },
+
+      { ref:"d-q-baignade-confirmes", temps:1, dit:"club", mots:["baignade","cavalier-confirme"],
+        fr:"La baignade est réservée aux cavaliers confirmés.",
+        en:"The swim is for experienced riders only." },
+
+      /* ---- temps 2 · je dis où j'en suis ---- */
+      { ref:"d-pas-confirmee", temps:2, dit:"joueuse", mots:["cavalier-confirme"],
+        fr:"Je ne suis pas une cavalière confirmée.",
+        en:"I'm not an experienced rider." },
+
+      { ref:"d-sais-nager", temps:2, dit:"joueuse", mots:["nager"],
+        fr:"Oui, je sais nager.",
+        en:"Yes, I can swim." },
+
+      { ref:"d-q-savez-nager", temps:2, dit:"club", mots:["nager"],
+        fr:"Vous savez nager ?",
+        en:"Can you swim?" },
+
+      /* Phrase de Blandine, remise après avoir été retirée à tort.
+         `cheval-calme` appartient au chapitre d'arrivée — et alors. */
+      { ref:"d-cheval-tres-calme", temps:2, dit:"joueuse", mots:[], motsAilleurs:["cheval-calme"],
+        fr:"Est-ce que vous avez un cheval très calme ?",
+        en:"Have you got a very quiet horse?" },
+
+      /* ---- temps 3 · la marée et le sable ---- */
+      { ref:"d-quelle-maree", temps:3, dit:"joueuse", mots:["maree"],
+        fr:"On part à quelle marée ?",
+        en:"What tide do we leave at?" },
+
+      { ref:"d-sable-mouille", temps:3, dit:"joueuse", mots:["sable-mouille"],
+        fr:"Est-ce qu'on passe sur le sable mouillé ?",
+        en:"Do we ride on the wet sand?" },
+
+      { ref:"d-q-maree-basse", temps:3, dit:"club", mots:["maree","sable-mouille"],
+        fr:"À marée basse, on passe sur le sable mouillé.",
+        en:"At low tide we ride on the wet sand." },
+
+      /* ---- temps 4 · l'allure, et le faux ami expliqué par l'eau ---- */
+      /* 🟥 LES DEUX FORMULATIONS SONT GARDÉES, décision de Blandine
+         (« tu peux les garder toutes les deux ? »). La première est la
+         sienne : elle DIT POURQUOI, et c'est ce qui fait comprendre la
+         différence entre les deux mots au lieu de la faire retenir. La
+         seconde est plus courte, donc plus facile à prononcer.
+         ⚠️ « gallop » apparaît ici volontairement, MIS EN OPPOSITION à
+         « canter » et jamais comme son synonyme. NE PAS « CORRIGER »
+         ces phrases en le retirant — voir le `def` de `galop` dans
+         hype-lingo-lex-arrivee.js. */
+      { ref:"d-canter-pourquoi", temps:4, dit:"joueuse", mots:[], motsAilleurs:["galop"],
+        fr:"Est-ce qu'on peut galoper doucement, pas à pleine vitesse ? Je ne veux pas aller trop vite.",
+        en:"Is it possible to canter, not to gallop? I don't want to go too fast." },
+
+      { ref:"d-canter-court", temps:4, dit:"joueuse", mots:[], motsAilleurs:["galop"],
+        fr:"Est-ce qu'on peut galoper doucement, sans aller vite ?",
+        en:"Can we do a steady canter, not a gallop?" },
+
+      /* Phrase de Blandine, remise après avoir été retirée à tort :
+         « c'est important le galop dans l'eau ». C'est l'image de la
+         ville, et l'eau explique le mot mieux qu'une définition —
+         elle freine, donc on n'y va pas à fond. */
+      { ref:"d-galoper-eau", temps:4, dit:"joueuse", mots:[], motsAilleurs:["galop"],
+        fr:"J'aimerais galoper dans l'eau.",
+        en:"I'd like to canter in the water." },
+
+      { ref:"d-pas-galoper", temps:4, dit:"joueuse", mots:[], motsAilleurs:["galop"],
+        fr:"Je ne veux pas galoper.",
+        en:"I don't want to canter." },
+
+      /* ---- temps 5 · à cru ---- */
+      { ref:"d-monter-cru", temps:5, dit:"joueuse", mots:["monter-a-cru","baignade"],
+        fr:"Est-ce qu'on peut monter à cru pour la baignade ?",
+        en:"Can we ride bareback for the swim?" },
+
+      { ref:"d-cru-jamais", temps:5, dit:"joueuse", mots:["monter-a-cru"],
+        fr:"Je n'ai jamais monté à cru.",
+        en:"I've never ridden bareback." },
+
+      /* ---- temps 6 · le soleil ---- */
+      /* Phrase de Blandine : « demander qu'on se mette un peu à l'ombre
+         parce que le cavalier a chaud ». Un cavalier qui a un coup de
+         chaud le dit rarement à temps — savoir le demander dans une
+         langue étrangère est exactement l'usage de cette app. */
+      { ref:"d-ombre-chaud", temps:6, dit:"joueuse", mots:["ombre"],
+        fr:"Est-ce qu'on peut s'arrêter à l'ombre ? J'ai trop chaud.",
+        en:"Can we stop in the shade? I'm too hot." },
+
+      { ref:"d-creme-solaire", temps:6, dit:"joueuse", mots:["creme-solaire"],
+        fr:"Est-ce qu'il faut de la crème solaire ?",
+        en:"Do I need sunscreen?" },
+
+      { ref:"d-maillot", temps:6, dit:"joueuse", mots:["maillot"],
+        fr:"Est-ce que je dois prendre un maillot de bain ?",
+        en:"Should I bring a swimsuit?" },
+
+      /* ---- temps 7 · après la balade ---- */
+      { ref:"d-eau-douce", temps:7, dit:"joueuse", mots:["eau-douce"],
+        fr:"Est-ce qu'il y a de l'eau douce pour rincer le cheval ?",
+        en:"Is there fresh water to rinse the horse?" }
+    ]
+  }
 };

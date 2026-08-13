@@ -76,6 +76,48 @@
 
 ---
 
+# 🟩 DÉCISIONS ACQUISES — NE PLUS LES ROUVRIR
+
+> **Pourquoi ce bloc existe.** Blandine, 13/08 : *« ça fait six fois qu'on a la même conversation, donc ça serait bien que tu l'écrives et que tu notes »*. Chacune de ces décisions a été prise, puis rouverte par Claude à une session suivante comme si elle était encore en débat. Les rouvrir coûte du temps à Blandine et lui donne le sentiment de tourner en rond. **Aucune de ces lignes ne se redemande. Elles se lisent.**
+
+### 1 · Le nombre de mots par chapitre : **15 à 18**
+Décidé, tracé depuis les sessions 196-197. Ne plus parler de 12.
+**La conséquence de durée est réglée, et Claude l'a soulevée au moins deux fois de trop.** Blandine, 13/08 : *« tu m'as déjà dit exactement la même chose pour la durée de la leçon et on avait convenu que certaines phrases contiendraient deux mots de façon à réduire le nombre de cours dispensés dans le même thème, et tu avais convenu que c'était suffisant »*.
+**Le traitement est donc acquis : les phrases `rappel:[a,b]` valident DEUX mots à la fois.** Le mécanisme existe déjà et tourne (4 des 10 phrases du derby en sont — session ~196). Ne plus présenter la durée comme un obstacle non tranché.
+
+### 2 · Le dialogue n'est PAS limité aux mots de son chapitre
+**La règle de la session 209 est abrogée.** Elle disait « un dialogue n'emploie que les mots de son chapitre » et ce SUIVI l'appelait « la règle qui commande tout ».
+Blandine, 13/08 : *« on s'en fout du lexique, l'idée c'est d'être capable de se débrouiller dans les conditions données et si c'est des nouveaux mots bah tant mieux »* · *« on pourra pas tout couvrir avec 12 mots »* · *« l'idée c'est que les gens soient capables de se débrouiller une fois sur place »*.
+**Le lexique sert le dialogue, pas l'inverse.** Les mots du module sont la vitrine ; le dialogue existe pour qu'on s'en sorte sur place. Un mot neuf dans une phrase est un **bonus, pas une dette** : il s'apprend en situation avec l'audio de la phrase, sans entrée de lexique obligatoire.
+Le « test des 12 mots » n'est plus un critère de validation — au mieux une information.
+
+### 3 · 🟥 ON NE RETIRE JAMAIS UNE PHRASE DE BLANDINE
+Quand une phrase bute sur le lexique, **on complète le lexique, ou on l'emploie telle quelle. On ne supprime pas la phrase.**
+Blandine, 13/08 : *« je sais pas pourquoi tu retires de toi-même des trucs qu'on a insérés ensemble »*.
+**Claude l'a fait trois fois dans la seule session 210** : « Et pour les cavaliers confirmés ? » (deux fois), « J'aimerais galoper dans l'eau », « Est-ce que vous avez un cheval très calme ? ». Les trois sont revenues. C'est le même défaut que le film d'ouverture, en plus petit : décider à sa place ce qui mérite d'être là.
+
+### 4 · Le mot du guide
+**Nom validé : « Le mot du guide ».** Son écriture ne relève pas des conversations techniques — décision de Blandine, PASSATION §6.
+**Sa règle de ton, dans ses mots (13/08) : *« on n'est pas là pour faire des déclarations sur la bienséance mais pour faire rêver et apprendre »***. Plus tranchante et plus applicable que la formule de la PASSATION (« ton du voyage, de l'apprentissage et du rêve »). Proscrits : « ça se voit », « c'est normal et attendu », « ça ne se loue pas », « nulle part », « partout ».
+
+### 5 · L'anglais d'abord, les autres langues ensuite
+Blandine, 12/08 : *« on avait dit qu'on mettait déjà que l'anglais en ligne pour tester ajuster avant de traduire le reste »*. ⚠️ Cette décision n'était **tracée nulle part** avant le 13/08.
+
+### 6 · Les deux formes d'un mot, quand elles existent
+Blandine, 12/08 : *« il faut préciser les deux »*. Mécanisme : le champ `var`, affiché « Aussi : … ». Une seule `ref`, deux formes.
+`hat` / `helmet` · `hack` / `trail ride` · `fast horse` / `forward horse` · `nice horse` / `kind horse`.
+
+### 7 · L'extension des fichiers image
+Blandine, 13/08, après une contradiction de Claude (*« un coup tu me fais jpg un coup non 🤷‍♀️ »*) :
+**`.webp` pour les objets découpés** (transparence nécessaire) · **`.jpg` pour les photos plein cadre**. Ne plus rediscuter.
+
+### 8 · Une même `ref` peut vivre dans deux lexiques
+Précédent posé en session 209 sur `balade` (*« s'il dort, tant mieux »*), appliqué le 13/08 à `cavalier-confirme`. Conséquence assumée à chaque fois : **le mot arrive déjà acquis dans la seconde ville**. C'est de la révision espacée, pas un bug.
+
+---
+
+---
+
 # 🏇 SESSION 210 · 12–13/08 — LE CRASH AU ZOOM TRAQUÉ, TROIS OUTILS NÉS, UN BUG EN PRODUCTION CORRIGÉ
 
 ## 🟥 CE QUI EST EN PRODUCTION ET NE DOIT PAS SE REPERDRE
@@ -178,6 +220,33 @@ Le 130 Mo n'était pas une estimation : `lingo-controle-images.html` l'a mesuré
 C'est la réponse concrète à « je sais plus lesquelles sont les bonnes ». Trois cartes ont été régénérées sans trace.
 
 **Quatre cartes nettement plus claires que la moyenne de 79** : hickstead 109, jerez 111, vejer 107, rome 124. Pour jerez, vejer et rome il n'existe pas de vignette de référence, donc **aucun moyen de savoir** si c'est un choix d'image ou une régénération. La page ne tranche pas et ne doit pas prétendre le faire.
+
+---
+
+## 🟥 LA RÈGLE DE LA 209 EST ABROGÉE — LE DIALOGUE PASSE AVANT LE LEXIQUE
+
+La règle « un dialogue n'emploie que les mots de son chapitre », que ce SUIVI appelait « la règle qui commande tout », est remplacée. Blandine, 13/08 : **« on s'en fout du lexique, l'idée c'est d'être capable de se débrouiller dans les conditions données et si c'est des nouveaux mots bah tant mieux »** · « on pourra pas tout couvrir avec 12 mots » · « l'idée c'est que les gens soient capables de se débrouiller une fois sur place ».
+
+Reportée dans le bloc « Décisions acquises » en tête de fichier, avec ses conséquences : le mot neuf est un bonus et non une dette, et **le test des mots n'est plus un critère de validation**.
+
+### 🟥 ET LA CONSÉQUENCE QUI M'A VALU TROIS RAPPELS
+**On ne retire jamais une phrase de Blandine parce qu'un mot manque au lexique.** J'ai supprimé trois fois du contenu qu'elle avait demandé, chaque fois avec le même raisonnement : « Et pour les cavaliers confirmés ? » (deux fois), « J'aimerais galoper dans l'eau », « Est-ce que vous avez un cheval très calme ? ». Ses mots : *« je sais pas pourquoi tu retires de toi-même des trucs qu'on a insérés ensemble »*. Les trois sont revenues. C'est le défaut du film d'ouverture en plus petit : décider à sa place ce qui mérite d'être là.
+
+---
+
+## LE CONTENU ÉCRIT — LA BAULE 25 PHRASES, LE MORNE 21
+
+**La Baule** (`hype-lingo-lex-arrivee.js`) — clé `dialogue` inerte, 25 phrases fr+en, **15 mots au lexique** (dans la cible 15-18).
+Trois mots ajoutés à sa demande : `cavalier-confirme` (copie exacte du fichier balade, **donc ni traduction ni audio à faire**), `cheval-rapide`, `cheval-sympa`. Avec `cheval-calme` qui existait, ils forment la famille des trois choses qu'on demande sur un cheval inconnu : calme, sympa, rapide.
+Trois phrases ajoutées à sa demande : le canter opposé au gallop, le cheval rapide, et **« Je ne suis pas très rassurée à cheval, est-ce que vous auriez un cheval sympa ? »** — celle-ci est la plus utile du chapitre, c'est elle qui évite qu'on mette une débutante sur un cheval trop chaud.
+
+**Le Morne** (`hype-lingo-lex-balade.js`) — clé `dialogue` inerte, **21 phrases**, 18 produites / 3 entendues, sur 7 temps. **13 mots au lexique** après ajout de `monter-a-cru` (bareback) à sa demande — il en manque deux à cinq pour la cible.
+⚠️ **Ce dialogue a été écrit trois fois.** La première version, faite sans le lexique sous les yeux, employait 2 mots sur 12. La deuxième respectait le lexique mais avait supprimé trois phrases de Blandine. La troisième les remet toutes et emploie les mots venus d'ailleurs (`galop`, `cheval-calme`) sans les rapatrier.
+⚠️ **Aucun concept du Morne n'a été modifié ni retiré** — vérifié par comparaison, les 12 d'origine sont identiques au caractère près.
+
+**Le faux ami `canter` / `gallop` est enseigné, pas seulement expliqué.** Trois phrases le mettent en opposition : deux au Morne (Blandine : *« tu peux les garder toutes les deux ? »*), une à La Baule. L'eau du lagon fait le travail d'une définition — elle freine, donc on n'y va pas à fond. Ce sont **les seuls endroits de l'app où « gallop » doit apparaître en anglais**, et chacun porte un commentaire pour qu'aucune session ne le « corrige ».
+
+⚠️ **Audio à enregistrer** : `cheval-rapide`, `cheval-sympa`, `monter-a-cru`, six langues chacun. **ES / IT / DE / JA à faire relire** par un cavalier de la langue — c'est le vocabulaire des manuels, pas une traduction au son, mais personne ne l'a entendu dire.
 
 ---
 
@@ -960,7 +1029,7 @@ Sur **510 refs**, **19 sont partagés entre deux chapitres ou plus** :
 1. **Supprimer réellement le chemin de nuit.** Périmètre : `courant` est écrite par `allerA()` (le défilement) et lue partout (arrivée, départ, tampon, leçon, globe) — c'est elle le vrai nœud, pas le décor. Il faut la découpler, retirer six fonctions de dessin, le rail et ses neuf calques : ~350 lignes. **Seul danger réel** : `courant` mal reprise → mauvaise ville ouverte. Vérifiable ville par ville avant livraison.
 2. **Le son** : muet par défaut à chaque leçon, ou dernier réglage mémorisé (état actuel) ?
 3. **La prononciation notée.** L'exercice « dire » existe et entre dès le **niveau 2** ; Spruce Meadows est niveau 1, d'où l'absence. Blandine : *« l'app peut juger et faire refaire si mal prononcé ? »* ⚠️ Le code porte une règle contraire : *« On ne note JAMAIS l'accent… une débutante recalée sur sa prononciation abandonne. »* Trois sévérités proposées (compter le mot reconnu / faire refaire mais passer après deux essais / refaire jusqu'au bon), **aucune tranchée**. La reconnaissance vocale se trompera sur le vocabulaire technique en DE et JA.
-4. **15 à 18 mots par chapitre.** ⚠️ Conséquence signalée, non tranchée : la durée d'une leçon **double** (≈21 écrans à 10 mots, ≈40 à 18), et la carte postale — *tous les mots bons, une fois* — devient très dure.
+4. ~~**15 à 18 mots par chapitre.**~~ 🟩 **TRANCHÉ — voir le bloc « Décisions acquises » en tête de fichier.** 15 à 18 est la cible ; la conséquence de durée est réglée par les phrases `rappel:[a,b]` qui valident deux mots à la fois. ⚠️ Claude a rouvert ce point au moins deux fois de trop. **Ne plus le présenter comme non tranché.**
 5. **Vérifier deux mots dans une même phrase** (idée de Blandine, non spécifiée).
 6. **La leçon garde-t-elle sa croix, ou une flèche comme les villes ?**
 7. **La page du carnet** (le stockage et le signet existent, l'écran non).
