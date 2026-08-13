@@ -7052,3 +7052,33 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 **Préparation Flutter** : le catalogue des modèles est un fichier de DONNÉES pur (`hype-modeles-db.js`), contrat réutilisable tel quel côté Flutter ; `CompositionStory` isole tout le rendu composé (aucune fuite dans la visionneuse hormis un branchement conditionnel) ; `hsModelesPourN` fixe le contrat de filtrage.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19**.
+
+
+## Session 135 — 14/08/2026 · stories 19b : LE PLANTAGE DE L'AJOUT, ET PUBLIER ENFIN VISIBLE
+
+**Feux verts de Blandine (ses mots)** : « Ok vas y » (après diagnostic présenté) · n°2 : « La proposer aussi (le groupe absorbe la story en ligne) » · n°4 : « Publier dans l'en-tête, en haut à droite ».
+
+**Signalement (règle du 09/08)** : le harnais du projet (`smoke.js`, `t_mention.js`) n'était PAS dans la conversation — les ~320 assertions n'ont pas pu être rejouées. Écrit à la place `t_19b.js` (56 assertions structurelles sur les correctifs + garde-fous : versions, canvas, veille, absorption, 6 langues, interdits CSS Android, aucune suppression ajoutée). `node --check` vert sur les trois fichiers.
+
+**Cause trouvée (le vrai bug de la 134)** — mots de Blandine : « Je n'ai pas encore réussi à en rajouter je me fais sortir à chaque fois avant la fin ». Le composeur affichait chaque fichier choisi en `<img src=objectURL>` : 52×68 à l'écran, mais Safari décodait les 12 Mpx du fichier d'origine. 5 photos d'iPhone = plusieurs centaines de Mo de bitmaps, l'aperçu en décodait une **sixième** en pleine résolution, et en mode ajout la **visionneuse restait montée dessous** (photo + jusqu'à 5 images d'une composition). iOS fermait l'onglet. Le « contenu de ma story qui disparaît » (problème n°1 de la passation) est très probablement l'appli qui recharge après ce plantage : **aucune ligne du chemin d'ajout ne touchait la story en base** (que des `insert`) — vérifié.
+
+**Livré (stories 19b)** :
+- `hsVignetteFichier(fichier, côté)` : décodage d'**une** image à la fois, réduction au canvas, `revokeObjectURL` + `img.src=""` immédiats, canvas ramené à 1×1. Miniatures à 200 px **séquentielles** ; aperçu à `hsCoteEcran()` (plafond 1600 px). `hsLibererUrl` ne révoque que des `blob:`.
+- **Veille de la visionneuse** (`enVeille = !!ajout`) : composition, `PhotoZoomHype` et l'image de chargement démontés pendant que le composeur d'ajout est ouvert ; ils reviennent à la fermeture.
+- **Plein écran d'une composition** : la composition est démontée pendant le zoom (`if (plein) return …`) — plus jamais 6 images vivantes. C'était le crash « tout a sauté et je me suis fait sortir de l'appli ».
+- **Publier dans l'en-tête**, collant en haut de la feuille (titre + durée à gauche, bouton turquoise à droite) ; **Annuler** reste seul en bas. Un seul bouton Publier dans tout le composeur.
+- **Présentation proposée en mode ajout** (`compoPossible`) : le plafond de 5 compte les photos **déjà en ligne** (story seule + 4, composée de 3 + 2) ; modèles filtrés sur `nTotalCompo`.
+- **Absorption** — `hsRattacherAuGroupe(ids, groupe, disposition)` : première écriture de l'appli sur une story publiée. `groupe` posé sur la story en ligne (toutes ses photos si elle est déjà composée), `disposition` sur la **couverture** = la plus ancienne, donc la grande. Groupe déjà existant réutilisé. **Échec de l'absorption = aucune insertion** et échec annoncé. Les nouvelles photos ne portent pas de disposition en mode ajout.
+- Textes 6 langues : `compoAbsorbe`, `compoLegende`.
+
+**À l'écran** : + Publier en haut à droite, toujours visible en défilant · + bloc « Présentation » quand on ajoute à une story en ligne, avec la phrase « ta story en ligne devient la grande photo » · + phrase sur la légende en composition · − le bouton Publier du bas de la feuille disparaît (Annuler reste) · − la bande de miniatures ne s'affiche plus d'un coup : elle se remplit photo par photo (une fraction de seconde chacune) · − rien d'autre ne disparaît.
+
+**Déduction de Claude — à valider** : en composition d'ajout, la légende affichée est celle de la story absorbée (elle est la couverture) ; le texte tapé dans le composeur part quand même avec la première nouvelle photo. Je n'ai **pas** touché à la légende de la story en ligne. À arbitrer : faut-il pouvoir réécrire la légende de la composition depuis là ?
+
+**Reste ouvert** : n°3a de la passation — une photo **paysage** en story seule s'affiche en bande fine (`contain`) ; l'immersif est toujours éteint (`HS_FOND_IMMERSIF_ACTIF = false`) depuis la 130. Deux options à présenter : rallumer l'immersif après diagnostic, ou zoom-cadrage à la publication. Rien codé, rien décidé.
+
+**À pousser** : `index.html` (`?v=19b`) + `hype-stories.js` (VERSION "19b"). `hype-modeles-db.js` inchangé (`?v=1`). **Aucun SQL** : `groupe` et `disposition` existent déjà.
+
+**Préparation Flutter** : `hsVignetteFichier` / `hsCoteEcran` / `hsLibererUrl` isolent toute la politique mémoire des images choisies en trois fonctions pures d'UI — côté Flutter elles se remplacent par un `resize` d'`image` sans toucher au reste ; `hsRattacherAuGroupe` complète le contrat de données du groupe (rattachement séparé de l'insertion) ; `enVeille` formalise la règle « une seule grande image vivante à l'écran », qui vaudra telle quelle en natif.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19b**.

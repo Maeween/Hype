@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19";
+var HYPE_STORIES_VERSION = "19b";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -235,6 +235,71 @@ function hsImageEcran(u) {
 }
 
 /* ---------------------------------------------------------------------------
+   19b (14/08) — LA VIGNETTE FABRIQUÉE AU CANVAS. LE CORRECTIF DU PLANTAGE.
+   Diagnostic : le composeur affichait chaque fichier CHOISI en <img src=
+   objectURL> — 52x68 à l'écran, mais Safari décodait les 12 Mpx du fichier
+   d'origine. Cinq photos d'iPhone = plusieurs centaines de mégaoctets de
+   bitmaps, l'aperçu en décodait une sixième en pleine résolution, et en mode
+   ajout la visionneuse restait montée dessous. iOS fermait l'onglet : « je me
+   fais sortir à chaque fois avant la fin » (Blandine, 14/08).
+   Ici : on décode UNE image à la fois, on la réduit au canvas, on relâche
+   aussitôt l'original (revokeObjectURL + src vidé) et on ne garde qu'une
+   petite image. Le canvas est ramené à 1x1 : sa mémoire part avec lui. */
+function hsVignetteFichier(fichier, cote) {
+  return new Promise(function (resolve) {
+    try {
+      if (!fichier || typeof window === "undefined" || !window.URL || !window.URL.createObjectURL) { resolve(null); return; }
+      var brut = window.URL.createObjectURL(fichier);
+      var img = new Image();
+      var fini = false;
+      function terminer(u) {
+        if (fini) return; fini = true;
+        try { img.src = ""; } catch (e1) { }
+        try { window.URL.revokeObjectURL(brut); } catch (e2) { }
+        resolve(u);
+      }
+      img.decoding = "async";
+      img.onload = function () {
+        try {
+          var L = img.naturalWidth || 1, H = img.naturalHeight || 1;
+          var f = Math.min(1, cote / Math.max(L, H));
+          var c = document.createElement("canvas");
+          c.width = Math.max(1, Math.round(L * f));
+          c.height = Math.max(1, Math.round(H * f));
+          var ctx = c.getContext("2d");
+          ctx.drawImage(img, 0, 0, c.width, c.height);
+          if (c.toBlob) {
+            c.toBlob(function (b) {
+              var u = null;
+              try { u = b ? window.URL.createObjectURL(b) : null; } catch (eB) { u = null; }
+              try { c.width = 1; c.height = 1; } catch (eC) { }
+              terminer(u);
+            }, "image/jpeg", 0.82);
+          } else {
+            var d = null;
+            try { d = c.toDataURL("image/jpeg", 0.82); } catch (eD) { d = null; }
+            try { c.width = 1; c.height = 1; } catch (eC2) { }
+            terminer(d);
+          }
+        } catch (e) { terminer(null); }
+      };
+      img.onerror = function () { terminer(null); };
+      img.src = brut;
+    } catch (e) { resolve(null); }
+  });
+}
+/* Le côté demandé pour l'aperçu : la taille de l'écran, jamais plus. */
+function hsCoteEcran() {
+  try {
+    var dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    return Math.min(1600, Math.round(Math.max(window.innerWidth, window.innerHeight) * dpr));
+  } catch (e) { return 1200; }
+}
+function hsLibererUrl(u) {
+  try { if (u && String(u).indexOf("blob:") === 0 && window.URL && window.URL.revokeObjectURL) window.URL.revokeObjectURL(u); } catch (e) { }
+}
+
+/* ---------------------------------------------------------------------------
    1. LES VUES — dans le localStorage, PAS en base.
    Une table de vues aurait voulu une ligne par cavalier et par story, donc de
    la RLS et une écriture à chaque ouverture, pour un simple confort
@@ -335,6 +400,31 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, group
     }
     return { data: res.data, error: null };
   } catch (e) { return { data: null, error: String(e) }; }
+}
+
+/* ---------------------------------------------------------------------------
+   19b (14/08, décision de Blandine : « la proposer aussi — le groupe absorbe
+   la story en ligne »). C'est la PREMIÈRE ÉCRITURE de l'application sur une
+   story déjà publiée : on lui pose le `groupe`, et la disposition va sur la
+   COUVERTURE, c'est-à-dire la plus ancienne (elle devient la grande du H+D ou
+   la première fenêtre du modèle). Rien n'est supprimé : la story garde sa
+   photo, sa légende, son lieu, sa musique — elle cesse seulement d'apparaître
+   seule dans le fil, puisqu'elle vit désormais dans la composition.
+   Si cette écriture échoue, l'appelant n'insère RIEN : mieux vaut ne rien
+   publier qu'une moitié de composition. */
+async function hsRattacherAuGroupe(ids, groupe, disposition) {
+  try {
+    if (typeof supa === "undefined" || !supa) return { error: "indisponible" };
+    var user = await utilisateurActuel();
+    if (!user) return { error: "Pas connecté" };
+    var liste = (ids || []).filter(function (x) { return !!x; });
+    if (!liste.length) return { error: "story introuvable" };
+    var r = await supa.from("hype_stories").update({ groupe: String(groupe), disposition: null }).in("id", liste).eq("user_id", user.id);
+    if (r && r.error) return { error: r.error };
+    var r2 = await supa.from("hype_stories").update({ disposition: String(disposition) }).eq("id", liste[0]).eq("user_id", user.id);
+    if (r2 && r2.error) return { error: r2.error };
+    return { error: null };
+  } catch (e) { return { error: String(e) }; }
 }
 
 /* Modifie la légende et le lieu d'une story (13/08, décision de Blandine).
@@ -780,6 +870,8 @@ var HS_TXT = {
   presentation: { fr: "Pr\u00e9sentation", en: "Layout", es: "Presentaci\u00f3n", it: "Presentazione", ja: "\u30ec\u30a4\u30a2\u30a6\u30c8", de: "Anordnung" },
   defiler: { fr: "D\u00e9filer", en: "One by one", es: "Deslizar", it: "Scorrere", ja: "\u9806\u756a\u306b\u8868\u793a", de: "Nacheinander" },
   composer: { fr: "Composer", en: "Compose", es: "Componer", it: "Comporre", ja: "\u7d44\u307f\u5408\u308f\u305b\u308b", de: "Komponieren" },
+  compoLegende: { fr: "En composition, c'est la l\u00e9gende de ta story en ligne qui s'affiche \u2014 ce texte-ci accompagne la premi\u00e8re nouvelle photo.", en: "In a composition, your live story's caption is the one shown \u2014 this text still travels with the first new photo.", es: "En composici\u00f3n se muestra el texto de tu story en l\u00ednea \u2014 este acompa\u00f1a a la primera foto nueva.", it: "In composizione si vede il testo della tua story online \u2014 questo accompagna la prima nuova foto.", ja: "\u69cb\u6210\u3067\u306f\u516c\u958b\u4e2d\u306e\u30b9\u30c8\u30fc\u30ea\u30fc\u306e\u672c\u6587\u304c\u8868\u793a\u3055\u308c\u307e\u3059\u3002", de: "In der Komposition wird der Text deiner Online-Story gezeigt \u2014 dieser begleitet das erste neue Foto." },
+  compoAbsorbe: { fr: "Ta story en ligne rejoint la composition : elle en devient la grande photo.", en: "Your live story joins the composition — it becomes the large photo.", es: "Tu story en l\u00ednea se une a la composici\u00f3n: pasa a ser la foto grande.", it: "La tua story online entra nella composizione: diventa la foto grande.", ja: "\u516c\u958b\u4e2d\u306e\u30b9\u30c8\u30fc\u30ea\u30fc\u304c\u69cb\u6210\u306b\u52a0\u308f\u308a\u3001\u5927\u304d\u3044\u5199\u771f\u306b\u306a\u308a\u307e\u3059\u3002", de: "Deine Online-Story kommt in die Komposition \u2014 sie wird das gro\u00dfe Foto." },
   modelesPremium: { fr: "Les mod\u00e8les de d\u00e9cor sont r\u00e9serv\u00e9s aux membres Premium.", en: "Decor templates are for Premium members.", es: "Las plantillas de decorado son para miembros Premium.", it: "I modelli decorativi sono riservati ai membri Premium.", ja: "\u30c7\u30b3\u30ec\u30fc\u30b7\u30e7\u30f3\u30e2\u30c7\u30eb\u306f\u30d7\u30ec\u30df\u30a2\u30e0\u4f1a\u54e1\u9650\u5b9a\u3067\u3059\u3002", de: "Deko-Vorlagen sind Premium-Mitgliedern vorbehalten." },
   garder: { fr: "Garder en souvenir", en: "Keep as a memory", es: "Guardar como recuerdo", it: "Conserva come ricordo", ja: "思い出として保存", de: "Als Erinnerung behalten" },
   gardee: { fr: "Gard\u00e9e \u2713", en: "Kept \u2713", es: "Guardada \u2713", it: "Conservata \u2713", ja: "保存しました \u2713", de: "Behalten \u2713" },
@@ -1129,27 +1221,53 @@ function ComposeurStory(props) {
   try { if (ordre && ordre.length === fichiers.length) fichiersOrdonnes = ordre.map(function (ix) { return fichiers[ix]; }); } catch (eO) { fichiersOrdonnes = fichiers; }
   var vueSure = (vue >= 0 && vue < fichiersOrdonnes.length) ? vue : 0;
 
-  /* L'apercu suit la photo PREVISUALISEE (tap sur une miniature). */
+  /* 19b (decision de Blandine du 14/08) : en MODE AJOUT, la presentation est
+     proposee aussi — « le groupe absorbe la story en ligne ». Le plafond de 5
+     compte donc les photos DEJA EN LIGNE : une story seule + 4 nouvelles, une
+     composee de 3 + 2 nouvelles. Au-dela, pas de bloc Presentation : c'est le
+     chapelet, comme avant. */
+  var nDejaEnLigne = (props.origine && props.origine.n) ? props.origine.n : (props.origine ? 1 : 0);
+  var nTotalCompo = nDejaEnLigne + fichiersOrdonnes.length;
+  var compoPossible = !!(HS_COMPO_ACTIF && nTotalCompo >= 2 && nTotalCompo <= HS_COMPO_MAX);
+
+  /* L'apercu suit la photo PREVISUALISEE (tap sur une miniature).
+     19b : plus jamais le fichier d'origine — une copie A LA TAILLE DE L'ECRAN,
+     fabriquee au canvas (hsVignetteFichier). C'etait le sixieme decodage plein
+     format du composeur. */
   React.useEffect(function () {
-    var url = null;
-    try {
-      var f = fichiersOrdonnes[vueSure] || fichiers[0];
-      if (f && window.URL && window.URL.createObjectURL) {
-        url = window.URL.createObjectURL(f);
-        setApercu(url);
-      }
-    } catch (e) { }
-    return function () { try { if (url && window.URL && window.URL.revokeObjectURL) window.URL.revokeObjectURL(url); } catch (e2) { } };
+    var vivant = true; var mien = null;
+    (async function () {
+      try {
+        var f = fichiersOrdonnes[vueSure] || fichiers[0];
+        if (!f) return;
+        var u = await hsVignetteFichier(f, hsCoteEcran());
+        if (!vivant) { hsLibererUrl(u); return; }
+        mien = u;
+        if (u) setApercu(u);
+      } catch (e) { }
+    })();
+    return function () { vivant = false; hsLibererUrl(mien); };
   }, [props.fichier, vueSure, ordre]);
 
-  /* Les miniatures : une URL par photo, creees une fois, revoquees au depart. */
+  /* Les miniatures : 19b — UNE PETITE IMAGE PAR PHOTO, fabriquee au canvas,
+     LES UNES APRES LES AUTRES. La bande se remplit photo par photo au lieu de
+     decoder dix fichiers d'iPhone d'un coup : c'etait la cause du plantage. */
   React.useEffect(function () {
-    var urls = [];
-    try {
-      if (window.URL && window.URL.createObjectURL) urls = fichiers.map(function (f) { try { return window.URL.createObjectURL(f); } catch (e1) { return null; } });
-    } catch (e) { }
-    setUrlsMini(urls);
-    return function () { urls.forEach(function (u) { try { if (u && window.URL.revokeObjectURL) window.URL.revokeObjectURL(u); } catch (e2) { } }); };
+    var vivant = true; var faites = [];
+    setUrlsMini([]);
+    (async function () {
+      var res = [];
+      for (var i = 0; i < fichiers.length; i++) {
+        if (!vivant) break;
+        var u = null;
+        try { u = await hsVignetteFichier(fichiers[i], 200); } catch (e) { u = null; }
+        if (!vivant) { hsLibererUrl(u); break; }
+        res.push(u);
+        if (u) faites.push(u);
+        setUrlsMini(res.slice());
+      }
+    })();
+    return function () { vivant = false; faites.forEach(hsLibererUrl); };
   }, [props.fichier]);
 
   /* RÈGLE DU PROJET : tout panneau défilant est remis en haut à l'ouverture. */
@@ -1238,7 +1356,19 @@ function ComposeurStory(props) {
       /* STORY COMPOSEE (13/08) : si l'auteur a choisi Composer ou un modele,
          toutes les photos partagent un meme groupe ; la disposition part avec
          chacune (la couverture du repli prend la premiere qui en porte). */
-      var grpId = (compoChoix && fichiersOrdonnes.length > 1 && fichiersOrdonnes.length <= HS_COMPO_MAX) ? hsUuid() : null;
+      var grpId = (compoChoix && compoPossible)
+        ? ((props.origine && props.origine.groupe) ? props.origine.groupe : hsUuid())
+        : null;
+      /* 19b : L'ABSORPTION. En mode ajout, la story DEJA EN LIGNE rejoint le
+         groupe AVANT toute insertion — elle est la plus ancienne, donc la
+         couverture, donc la grande. Si cette ecriture echoue, on n'insere
+         rien : une demi-composition serait pire que rien, et l'echec est dit. */
+      if (grpId && props.origine) {
+        var rAbs = await hsRattacherAuGroupe(
+          (props.origine.ids && props.origine.ids.length) ? props.origine.ids : [props.origine.id],
+          grpId, compoChoix);
+        if (rAbs && rAbs.error) { setBusy(false); if (props.onEchec) props.onEchec(); return; }
+      }
       for (var iF = 0; iF < fichiersOrdonnes.length; iF++) {
         var rI = await hsPublierStory(
           fichiersOrdonnes[iF],
@@ -1248,7 +1378,9 @@ function ComposeurStory(props) {
           musique,
           fond,
           grpId,
-          grpId ? compoChoix : null
+          /* 19b : en mode ajout la disposition vit deja sur la story absorbee
+             (la couverture) — les nouvelles n'en portent pas. */
+          (grpId && !props.origine) ? compoChoix : null
         );
         dernierR = rI;
         if (rI && !rI.error) { okN++; if (rI.lieuIgnore) lieuIgn = true; }
@@ -1293,9 +1425,35 @@ function ComposeurStory(props) {
         ref: corpsRef,
         style: { width: "100%", maxWidth: 520, maxHeight: "92vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none", background: "linear-gradient(180deg, #111417, #060709)", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" }
       },
-        h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.18)", margin: "0 auto 16px" } }),
-        h("div", { style: { fontFamily: C, fontSize: 14, letterSpacing: 1.8, textTransform: "uppercase", color: "#F4F7FA", textAlign: "center" } }, hsT(props.origine ? "ajoutASaStory" : "ajouter", lg)),
-        h("div", { style: { fontSize: 10.5, fontFamily: M, color: tA(0.9), textAlign: "center", marginTop: 6, letterSpacing: 0.3 } }, hsT("duree", lg)),
+        /* 19b (decision de Blandine, 14/08) : PUBLIER VIT DANS L'EN-TETE, en
+           haut a droite, et l'en-tete est COLLANT. Ses mots : « on voit pas
+           vraiment de bouton clairement pour valider, on sait pas trop ce
+           qu'on fait ». La feuille est longue (apercu + bande + presentation
+           + legende + lieu + musique) : le bouton ne doit plus attendre au
+           fond. Annuler reste en bas, la ou on abandonne. */
+        h("div", {
+          style: {
+            position: "sticky", top: 0, zIndex: 6,
+            margin: "-18px -16px 0", padding: "12px 16px 10px",
+            background: "linear-gradient(180deg, #111417 78%, rgba(17,20,23,0))"
+          }
+        },
+          h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.18)", margin: "0 auto 12px" } }),
+          h("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
+            h("div", { style: { flex: 1, minWidth: 0 } },
+              h("div", { style: { fontFamily: C, fontSize: 13.5, letterSpacing: 1.6, textTransform: "uppercase", color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, hsT(props.origine ? "ajoutASaStory" : "ajouter", lg)),
+              h("div", { style: { fontSize: 10.5, fontFamily: M, color: tA(0.9), marginTop: 5, letterSpacing: 0.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, hsT("duree", lg))),
+            h("button", {
+              onClick: publier, disabled: busy,
+              style: {
+                flex: "0 0 auto", padding: "11px 20px", borderRadius: 999, border: "none",
+                background: busy ? "rgba(32,217,245,0.35)" : ("linear-gradient(90deg," + tn + "," + tnL + ")"),
+                color: "#04252A", fontSize: 12.5, fontWeight: 800, fontFamily: M,
+                cursor: busy ? "default" : "pointer", boxShadow: busy ? "none" : ("0 0 18px " + tA(0.35))
+              }
+            }, busy
+              ? (fichiers.length > 1 ? (hsT("envoiMulti", lg) + "\u2026") : hsT("envoi", lg))
+              : (fichiers.length > 1 ? (hsT("publier", lg) + " (" + fichiers.length + ")") : hsT("publier", lg))))),
 
         apercu
           ? h("div", { style: { marginTop: 16, borderRadius: 16, overflow: "hidden", background: "#060709", border: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "center", maxHeight: "38vh" } },
@@ -1357,17 +1515,18 @@ function ComposeurStory(props) {
            2 a 5 nouvelles photos peuvent DEFILER (le chapelet) ou etre
            COMPOSEES en une seule story. Composer = disposition H+D pour
            tous ; les MODELES (decors a fenetres) sont reserves aux membres
-           Premium — decision de Blandine. Le mode ajout (origine) reste en
-           chapelet : on ne compose pas avec une story deja en ligne. */
-        (HS_COMPO_ACTIF && !props.origine && fichiersOrdonnes.length >= 2 && fichiersOrdonnes.length <= HS_COMPO_MAX)
+           Premium — decision de Blandine.
+           19b (14/08, decision de Blandine) : le MODE AJOUT y a droit aussi —
+           la story deja en ligne rejoint le groupe et devient la grande. */
+        compoPossible
           ? h("div", null,
             titreBloc(hsT("presentation", lg)),
             h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
               puce(!compoChoix, hsT("defiler", lg), function () { setCompoChoix(null); }, "cDef"),
               puce(!!compoChoix, hsT("composer", lg), function () { setCompoChoix(compoChoix || "hd"); }, "cCmp")),
-            (compoChoix && props.premium && hsModelesPourN(fichiersOrdonnes.length).length)
+            (compoChoix && props.premium && hsModelesPourN(nTotalCompo).length)
               ? h("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", padding: "10px 0 2px", WebkitOverflowScrolling: "touch" } },
-                hsModelesPourN(fichiersOrdonnes.length).map(function (refM) {
+                hsModelesPourN(nTotalCompo).map(function (refM) {
                   var actifM = compoChoix === refM;
                   return h("button", {
                     key: refM,
@@ -1379,6 +1538,11 @@ function ComposeurStory(props) {
               : null,
             (compoChoix && !props.premium)
               ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, letterSpacing: 0.3 } }, hsT("modelesPremium", lg))
+              : null,
+            /* 19b : dire A L'ECRAN ce que « Composer » fait a la story deja
+               en ligne — elle rejoint la composition et en devient la grande. */
+            (compoChoix && props.origine)
+              ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: tA(0.9), marginTop: 8, lineHeight: 1.5 } }, hsT("compoAbsorbe", lg))
               : null)
           : null,
 
@@ -1402,8 +1566,13 @@ function ComposeurStory(props) {
               })))
           : null,
 
+        /* 19b : en composition, c'est la legende de la story ABSORBEE qui
+           s'affiche (elle est la couverture) — le texte tape ici part quand
+           meme avec la premiere nouvelle photo, il n'est pas perdu.
+           DEDUCTION DE CLAUDE — A VALIDER : je ne touche pas a la legende de
+           ta story en ligne, je ne fais que le dire a l'ecran. */
         props.origine
-          ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", lineHeight: 1.5, marginTop: 10 } }, hsT("legendeReste", lg))
+          ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", lineHeight: 1.5, marginTop: 10 } }, hsT(compoChoix ? "compoLegende" : "legendeReste", lg))
           : null,
 
         /* La légende. 1000 caractères, 5 lignes, compteur discret au-delà de
@@ -1522,9 +1691,10 @@ function ComposeurStory(props) {
             }))
           : null,
 
+        /* 19b : le Publier du bas a REJOINT l'en-tete collant. Annuler reste
+           ici, seul, la ou on abandonne — aucune fonction perdue. */
         h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
-          h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, hsT("annuler", lg)),
-          h("button", { onClick: publier, disabled: busy, style: { flex: 1.4, padding: "13px 0", borderRadius: 999, border: "none", background: busy ? "rgba(32,217,245,0.35)" : ("linear-gradient(90deg," + tn + "," + tnL + ")"), color: "#04252A", fontSize: 13, fontWeight: 800, fontFamily: M, cursor: busy ? "default" : "pointer" } }, busy ? (fichiers.length > 1 ? (hsT("envoiMulti", lg) + "\u2026") : hsT("envoi", lg)) : (fichiers.length > 1 ? (hsT("publier", lg) + " (" + fichiers.length + ")") : hsT("publier", lg)))))),
+          h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, hsT("annuler", lg))))),
     document.body);
 }
 
@@ -2026,8 +2196,16 @@ function CompositionStory(props) {
       (typeof PhotoZoomHype === "function") ? h(PhotoZoomHype, { src: plein }) : h("img", { src: plein, alt: "", style: { maxWidth: "100%", maxHeight: "100%", objectFit: "contain" } }),
       h("button", { onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); fermerPlein(); }, "aria-label": "Fermer", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 14, width: 34, height: 34, borderRadius: "50%", background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.2)", color: "#E4ECEF", fontSize: 15, cursor: "pointer" } }, "\u2715"))
     : null;
+  /* 19b (14/08) : PENDANT LE PLEIN ECRAN, LA COMPOSITION EST DEMONTEE.
+     Le zoom montait une image plein format PAR-DESSUS les cinq photos de la
+     composition, deja decodees : six images vivantes, et iOS fermait l'onglet
+     (« quand j'ai voulu la regarder de plus pres tout a saute et je me suis
+     fait sortir de l'appli »). Une seule image a la fois, desormais. Rien
+     n'est perdu : la composition se remonte a la fermeture, l'animation de
+     depliage la fait revenir comme a l'ouverture. */
   var d = (story.disposition && story.disposition.indexOf("modele-") === 0) ? hsModeles()[story.disposition] : null;
   var cadres = h("style", { dangerouslySetInnerHTML: { __html: "@keyframes hsDeplie{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:none}}" } });
+  if (plein) return h("div", { style: { position: "relative", width: "100%", height: "100%" } }, cadres, surcouche);
   if (d && d.fenetres && d.fenetres.length) {
     /* LE MODELE : un plan aux proportions du decor, les photos posees dans
        les bbox des fenetres et DECOUPEES a leur contour exact (clip-path en
@@ -2127,6 +2305,8 @@ function VisionneuseStories(props) {
     story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu, musique: localMod.musique, fond: localMod.fond });
   }
   var estMoi = !!(groupe && props.moiId && groupe.user_id === props.moiId);
+  /* 19b : en veille = un composeur d'ajout est ouvert par-dessus. */
+  var enVeille = !!ajout;
 
   React.useEffect(function () {
     return function () { try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current.__hsJoue = false; lecteurRef.current = null; } } catch (e) { } };
@@ -2445,9 +2625,14 @@ function VisionneuseStories(props) {
         erreur
           ? h("div", { style: { position: "absolute", padding: "0 30px", textAlign: "center", fontFamily: M, fontSize: 12.5, color: "#8A929C", lineHeight: 1.5 } }, hsT("photoIndispo", lg))
           : null,
-        (chargee && !erreur && !estAlbum && story.compo && story.compo.length > 1)
+        /* 19b (14/08) : LA VISIONNEUSE SE MET EN VEILLE PENDANT LE COMPOSEUR.
+           Le composeur d'ajout s'ouvre PAR-DESSUS (dessus:true) : ses photos
+           choisies se decodaient pendant que la photo de la story — voire les
+           cinq d'une composition — restaient vivantes dessous. On les demonte
+           le temps de l'ajout ; elles reviennent a la fermeture. */
+        (chargee && !erreur && !enVeille && !estAlbum && story.compo && story.compo.length > 1)
           ? h(CompositionStory, { story: story, langue: lg, pause: function (v) { try { pauseRef.current = !!v; } catch (eP) { } } })
-          : ((typeof PhotoZoomHype === "function" && chargee && !erreur)
+          : ((typeof PhotoZoomHype === "function" && chargee && !erreur && !enVeille)
             ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })
             : null),
         /* La pastille son : n'apparaît que si la story porte une musique.
@@ -2478,7 +2663,7 @@ function VisionneuseStories(props) {
            point de départ du minuteur, 114b) puis s'efface derrière
            PhotoZoomHype. Si PhotoZoomHype est absent (module chargé sans
            l'index), elle reste visible : rien ne casse. */
-        h("img", {
+        enVeille ? null : h("img", {
           src: hsImageEcran(story.photo_url), alt: "", decoding: "async",
           onLoad: function () {
             setChargee(true);
@@ -2615,7 +2800,16 @@ function VisionneuseStories(props) {
     ajout
       ? h(ComposeurStory, {
         fichier: ajout, langue: lg, dessus: true,
-        origine: { url: hsImageEcran(story.photo_url) },
+        /* 19b : l'origine porte de quoi ABSORBER la story en ligne dans un
+           groupe — son id (ou ceux de sa composition, dans l'ordre) et le
+           groupe qu'elle a deja. */
+        origine: {
+          url: hsImageEcran(story.photo_url),
+          id: story.id,
+          groupe: story.groupe || null,
+          ids: (story.compo && story.compo.length ? story.compo : [story]).map(function (s2) { return s2 && s2.id; }).filter(function (x) { return !!x; }),
+          n: (story.compo && story.compo.length) ? story.compo.length : 1
+        },
         lieuInitial: story.lieu || "", musiqueInitiale: story.musique || null,
         onFermer: function () { setAjout(null); pauseRef.current = false; setRelance(function (r) { return r + 1; }); },
         onEchec: function () { setAjout(null); pauseRef.current = false; setAction("echec"); },
