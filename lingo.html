@@ -2526,7 +2526,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-poney.js?l=3"></script>
 <!-- L'arrivée dans un club : l'inscription et la sécurité, pour La Baule.
      ⚠️ La sécurité n'existait NULLE PART dans les 378 mots d'origine. -->
-<script src="hype-lingo-lex-arrivee.js?l=2"></script>
+<!-- ⚠️ ?l=4 DEPUIS LE 13/08 (session 210) — NE PAS OUBLIER CE NUMERO.
+     Ce fichier a change : trois mots ajoutes (cavalier-confirme,
+     cheval-rapide, cheval-sympa) et la cle `dialogue` avec les 25 phrases
+     de La Baule. Sans changer le numero, le telephone sert l'ANCIENNE
+     copie : pas de cle `dialogue`, donc `aUnDialogue()` repond non, donc
+     AUCUN bouton de mise en situation n'apparait — et on cherche
+     pourquoi pendant une heure.
+     REGLE : tout changement dans un lexique = incrementer son ?l=. -->
+<script src="hype-lingo-lex-arrivee.js?l=4"></script>
 <!-- La tradition : chapitre cree le 6 aout 2026 pour Tokyo.
      ⚠️ Le seul chapitre du module qui enseigne des CONVENTIONS et non des
      objets. Et le seul ou deux mots francais distincts se confondent en
@@ -2586,7 +2594,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      `balade` est un RAPPEL de hype-lingo-lex-arrivee.js (meme `ref`,
      memes mots) : la maitrise est par `ref`, donc le mot arrive deja
      acquis. Doit se charger APRES arrivee.js, jamais avant. -->
-<script src="hype-lingo-lex-balade.js?l=2"></script>
+<!-- ⚠️ ?l=4 DEPUIS LE 13/08 : `monter-a-cru` ajoute et la cle `dialogue`
+     avec les 21 phrases du Morne. Meme raison que pour arrivee.js. -->
+<script src="hype-lingo-lex-balade.js?l=4"></script>
 <!-- Les phrases manquantes de Saumur (dressage L2-L3) et de Vejer
      (ecurie L2-L3). Additif : refuse tout ref déjà présent. -->
 <script src="hype-lingo-phrases-monde.js"></script>
