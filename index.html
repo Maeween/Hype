@@ -18747,7 +18747,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-stories.js?v=7"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-stories.js?v=8"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -32202,6 +32202,13 @@ function useAnnonces(langue, cible){
     listerCommentaires(cle).then(function(r){
       if(!vivant) return;
       var liste=((r&&r.data)||[]).slice();
+      /* 13/08 (decision de Blandine) : une annonce s'eteint toute seule au
+         bout de 30 jours. Les vieilles lignes restent en base (nettoyables a
+         la main), le bandeau ne les montre simplement plus. */
+      try {
+        var seuil = Date.now() - 30*24*3600*1000;
+        liste = liste.filter(function(c){ var d = new Date(c.created_at).getTime(); return !(d > 0) || d >= seuil; });
+      } catch(eF) { }
       liste.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
       setAnn(liste.map(function(c){ return parseAnnonce(c.texte, langue); }));
     }).catch(function(){ if(vivant) setAnn([]); });
@@ -32209,7 +32216,11 @@ function useAnnonces(langue, cible){
   },[langue, cle]);
   return ann;
 }
-function ouvrirDepuisAnnonce(ctx){ try{ if(ctx&&ctx.setEcran) ctx.setEcran("galops"); }catch(e){} }
+/* 13/08 (Blandine) : le tap sur une annonce ouvre les NOTES DE MISE A JOUR —
+   l'annonce accroche l'oeil, la note donne le contexte et ses mouvements
+   emmenent vers les pages concernees (Linguae compris). Le renvoi direct vers
+   une page, envisage plus tot dans la soiree, n'a jamais ete pousse. */
+function ouvrirDepuisAnnonce(ctx){ try{ if(ctx&&ctx.setEcran) ctx.setEcran("quoi-de-neuf"); }catch(e){} }
 
 function FilAnnoncesB(props){
   /* cible : permet a chaque page d'avoir SES annonces.
@@ -32271,6 +32282,51 @@ function hypeTexteMulti(txt, langue) {
 }
 
 var HYPE_MAJ = [{
+  version: "1.8",
+  date: { fr: "13 ao\u00fbt", en: "13 August", es: "13 de agosto", it: "13 agosto", ja: "8\u670813\u65e5", de: "13. August" },
+  titre1: { fr: "Quoi de", en: "What's", es: "Qu\u00e9 hay de", it: "Cosa c'\u00e8 di", ja: "\u65b0\u7740", de: "Was ist" },
+  titre2: { fr: "neuf", en: "new", es: "nuevo", it: "nuovo", ja: "\u60c5\u5831", de: "neu" },
+  chapo: {
+    fr: "Cinq mouvements, dans l'ordre. Touche celui que tu veux voir de tes propres yeux.",
+    en: "Five movements, in order. Tap the one you want to see for yourself.",
+    es: "Cinco movimientos, en orden. Toca el que quieras ver con tus propios ojos.",
+    it: "Cinque movimenti, in ordine. Tocca quello che vuoi vedere con i tuoi occhi.",
+    ja: "5\u3064\u306e\u30e0\u30fc\u30d6\u30e1\u30f3\u30c8\u3092\u9806\u756a\u306b\u3002\u6c17\u306b\u306a\u308b\u3082\u306e\u3092\u30bf\u30c3\u30d7\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+    de: "F\u00fcnf Bewegungen, in dieser Reihenfolge. Tippe die an, die du selbst sehen willst."
+  },
+  mvts: [
+    {
+      t: { fr: "Les stories des cavaliers", en: "Rider stories", es: "Las stories de los jinetes", it: "Le stories dei cavalieri", ja: "\u30e9\u30a4\u30c0\u30fc\u30b9\u30c8\u30fc\u30ea\u30fc", de: "Die Reiter-Stories" },
+      p: { fr: "Partage tes moments \u00e0 cheval \u2014 visibles sept jours par toute la communaut\u00e9.", en: "Share your riding moments \u2014 visible to the whole community for seven days.", es: "Comparte tus momentos a caballo \u2014 visibles siete d\u00edas para toda la comunidad.", it: "Condividi i tuoi momenti a cavallo \u2014 visibili sette giorni a tutta la comunit\u00e0.", ja: "\u4e57\u99ac\u306e\u77ac\u9593\u3092\u30b7\u30a7\u30a2\u3002\u30b3\u30df\u30e5\u30cb\u30c6\u30a3\u5168\u54e1\u306b7\u65e5\u9593\u516c\u958b\u3002", de: "Teile deine Momente zu Pferd \u2014 sieben Tage f\u00fcr die ganze Community sichtbar." },
+      ou: { fr: "Ma communaut\u00e9", en: "My community", es: "Mi comunidad", it: "La mia comunit\u00e0", ja: "\u30de\u30a4\u30b3\u30df\u30e5\u30cb\u30c6\u30a3", de: "Meine Community" },
+      dest: { ecran: "communaute" }
+    },
+    {
+      t: { fr: "Une musique sur ta story", en: "Music on your story", es: "M\u00fasica en tu story", it: "Musica sulla tua story", ja: "\u30b9\u30c8\u30fc\u30ea\u30fc\u306b\u97f3\u697d", de: "Musik auf deiner Story" },
+      p: { fr: "Onze morceaux \u00e0 choisir en publiant \u2014 la pastille \u266a lance le son.", en: "Eleven tracks to pick when posting \u2014 the \u266a chip starts the sound.", es: "Once temas para elegir al publicar \u2014 la pastilla \u266a lanza el sonido.", it: "Undici brani da scegliere pubblicando \u2014 il tasto \u266a avvia il suono.", ja: "\u6295\u7a3f\u6642\u306b11\u66f2\u304b\u3089\u9078\u629e\u3002\u266a\u30dc\u30bf\u30f3\u3067\u518d\u751f\u3002", de: "Elf St\u00fccke beim Posten zur Wahl \u2014 der \u266a-Chip startet den Ton." },
+      ou: { fr: "Ma communaut\u00e9", en: "My community", es: "Mi comunidad", it: "La mia comunit\u00e0", ja: "\u30de\u30a4\u30b3\u30df\u30e5\u30cb\u30c6\u30a3", de: "Meine Community" },
+      dest: { ecran: "communaute" }
+    },
+    {
+      t: { fr: "Tes stories \u00e0 la une", en: "Your story highlights", es: "Tus stories destacadas", it: "Le tue stories in evidenza", ja: "\u30b9\u30c8\u30fc\u30ea\u30fc\u306e\u30cf\u30a4\u30e9\u30a4\u30c8", de: "Deine Story-Highlights" },
+      p: { fr: "Garde tes plus beaux moments pour toujours, en rond sur ta page.", en: "Keep your best moments forever, in a circle on your page.", es: "Guarda tus mejores momentos para siempre, en tu p\u00e1gina.", it: "Conserva i tuoi momenti pi\u00f9 belli per sempre, sulla tua pagina.", ja: "\u6700\u9ad8\u306e\u77ac\u9593\u3092\u30da\u30fc\u30b8\u306b\u305a\u3063\u3068\u4fdd\u5b58\u3002", de: "Bewahre deine sch\u00f6nsten Momente f\u00fcr immer auf deiner Seite." },
+      ou: { fr: "Ma page cavalier", en: "My rider page", es: "Mi p\u00e1gina de jinete", it: "La mia pagina", ja: "\u30de\u30a4\u30da\u30fc\u30b8", de: "Meine Reiterseite" },
+      dest: { ecran: "moncavalier" }
+    },
+    {
+      t: { fr: "Le lieu et les mentions @", en: "Places and @ mentions", es: "El lugar y las menciones @", it: "Il luogo e le menzioni @", ja: "\u5834\u6240\u3068@\u30e1\u30f3\u30b7\u30e7\u30f3", de: "Ort und @-Erw\u00e4hnungen" },
+      p: { fr: "Situe ta story dans ton club, et tague tes amis directement dans le texte.", en: "Set your story at your club and tag friends right in the text.", es: "Sit\u00faa tu story en tu club y etiqueta a tus amigos en el texto.", it: "Colloca la tua story nel tuo club e tagga gli amici nel testo.", ja: "\u30af\u30e9\u30d6\u3092\u5834\u6240\u306b\u8a2d\u5b9a\u3057\u3001\u672c\u6587\u3067\u53cb\u9054\u3092\u30bf\u30b0\u4ed8\u3051\u3002", de: "Verorte deine Story im Club und markiere Freunde direkt im Text." },
+      ou: { fr: "Ma communaut\u00e9", en: "My community", es: "Mi comunidad", it: "La mia comunit\u00e0", ja: "\u30de\u30a4\u30b3\u30df\u30e5\u30cb\u30c6\u30a3", de: "Meine Community" },
+      dest: { ecran: "communaute" }
+    },
+    {
+      t: { fr: "Linguae est op\u00e9rationnel", en: "Linguae is live", es: "Linguae ya funciona", it: "Linguae \u00e8 operativo", ja: "Linguae \u59cb\u52d5", de: "Linguae ist einsatzbereit" },
+      p: { fr: "Apprends le vocabulaire \u00e9questre en voyageant de ville en ville.", en: "Learn equestrian vocabulary as you travel from city to city.", es: "Aprende el vocabulario ecuestre viajando de ciudad en ciudad.", it: "Impara il vocabolario equestre viaggiando di citt\u00e0 in citt\u00e0.", ja: "\u8857\u304b\u3089\u8857\u3078\u65c5\u3057\u306a\u304c\u3089\u99ac\u8853\u7528\u8a9e\u3092\u5b66\u307c\u3046\u3002", de: "Lerne Reitvokabeln auf einer Reise von Stadt zu Stadt." },
+      ou: { fr: "Linguae", en: "Linguae", es: "Linguae", it: "Linguae", ja: "Linguae", de: "Linguae" },
+      dest: { url: "lingo.html" }
+    }
+  ]
+}, {
   version: "1.1",
   date: { fr: "26 juillet", en: "26 July", es: "26 de julio", it: "26 luglio", ja: "7月26日", de: "26. Juli" },
   titre1: { fr: "Quoi de", en: "What's", es: "Qué hay de", it: "Cosa c'è di", ja: "新着", de: "Was ist" },
@@ -32337,6 +32393,9 @@ function majLangueVoix(l) {
 function majOuvrirDest(ctx, d) {
   if (!ctx || !d) return;
   try {
+    /* 13/08 : un mouvement peut mener a une page HORS de l'index (Linguae).
+       d.url gagne sur d.ecran. */
+    if (d.url) { window.location.href = d.url; return; }
     if (d.galop !== undefined && typeof ctx.setGalopOuvert === "function") ctx.setGalopOuvert(d.galop);
     if (d.cours !== undefined && typeof ctx.setCoursOuvert === "function") ctx.setCoursOuvert(d.cours);
     ctx.setEcran(d.ecran || "dashboard");

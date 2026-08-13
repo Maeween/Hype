@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 121 · STORIES v7 — LA MUSIQUE, ET LES FEUILLES QUI ÉJECTAIENT) — md5 `1b4c5b4d4267051bf1237de1ab082459`, 9 091 227 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 7`**. Seule modification de l'index : la balise passe en **`?v=7`**. **FICHIER COMPAGNON : `hype-stories.js` v7, md5 `e94c039bbff5a5d6db08da6d1d42fc55`, 114 335 octets.** **11 FICHIERS AUDIO NOUVEAUX à pousser à la RACINE du dépôt** (`musique-<ref>.mp3`, ~469 Ko chacun, ~5,1 Mo au total). **UN SQL d'une ligne : `alter table public.hype_stories add column if not exists musique text;`** — repli codé si la colonne manque (la story part sans musique). ⚠️ La v7 contient un correctif de COMPORTEMENT constaté en ligne (les feuilles Modifier/Garder fermaient la visionneuse et éjectaient sur la page).
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 122 · STORIES v8 — RELANCE DU MINUTEUR, FEUILLES RECADRÉES, MUSIQUE DANS MODIFIER, REPRISE 1.8) — md5 `190d46638ffc3be3cbd5937c0f9a4328`, 9 098 032 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 8`**. `HYPE_VERSION_APP` reste **1.8** — la nouvelle note de mise à jour porte le même numéro, donc l'overlay « Quoi de neuf » s'affichera UNE fois à chaque cavalier (hype_maj_vue vaut encore « 1.1 »). **FICHIER COMPAGNON : `hype-stories.js` v8, md5 `1d12a6a15b58dac1efd3fa5eed9f6b31`, 118 300 octets, balise `?v=8`.** **AUCUN SQL nouveau** (la colonne `musique` est passée, confirmée 02h05). Les 11 mp3 sont déjà en ligne (v7).
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 121) :** `index.html` + `hype-stories.js` (v7) + **les 11 `musique-*.mp3` à la racine**. SQL : la ligne `musique` ci-dessus. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé (optionnel : ajouter une règle de cache pour `/musique-*.mp3` un jour). **EN ATTENTE DE BLANDINE :** le choix de la forme du bandeau (maquette livrée en 120) ; la décision à froid sur le bandeau de la page Cavalier visitée.
+**À POUSSER, état au 13/08 (session 122) :** `index.html` + `hype-stories.js` (v8). AUCUN SQL. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image, aucun mp3 nouveau. **SQL optionnel de nettoyage** (la clé `lien` ajoutée à l'annonce Linguae ce soir ne sert plus, elle est inoffensive) : `update public.commentaires set texte = replace(texte, '{"lien":"linguae",', '{') where cible = 'annonces-hype' and texte like '%"lien"%';` **EN ATTENTE DE BLANDINE :** le choix de la FORME (maquette 120) et le choix du BANDEAU de fond (`maquette-bandeaux-stories.html`, session 122) ; la décision à froid sur le bandeau de la page Cavalier visitée.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,54 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 122 · STORIES v8 — RELANCE DU MINUTEUR, FEUILLES RECADRÉES, MUSIQUE DANS MODIFIER, REPRISE 1.8
+
+**Retours de Blandine (13/08, 01 h 58 → 02 h 15)** : « J'ai pu modifier mais je me suis quand même fait sortir de la story pendant que je la relisais » · « on est décalés vers la droite quand on modifie » · « Je n'ai pas pu ajouter de musique en la modifiant ? » (feu vert « oui code-la ») · les annonces (« quand on en met un nouveau ça annule ceux d'avant non ? » → garde-fou 30 jours validé) · **correction de trajectoire** : « le tap sur les annonces devrait renvoyer vers les notes de mise à jour » avec « dans les mises à jour on met les liens vers les pages concernées » · demande de **maquettes de bandeaux** derrière les stories.
+
+### 1. 🟠 SORTIE PENDANT LA RELECTURE — LE MINUTEUR NE REPARTAIT PAS
+
+Après « Enregistrer », le minuteur reprenait sur son **reste** d'avant l'ouverture de la feuille : Blandine avait consommé ses secondes en lisant, modifiait longuement (en pause), enregistrait — et les secondes restantes expiraient pendant sa relecture. Dernière story → `fermer()`. Correctif : un état `relance` dans les dépendances de l'effet du minuteur, incrémenté **aux quatre fermetures de feuilles** (Modifier ×3 issues, Garder ×2) — la feuille cachait la photo, le lecteur retrouve son temps entier.
+
+### 2. 🟠 LE DÉCALAGE À DROITE — `box-sizing` MANQUANT
+
+Les feuilles faisaient `width:100%` PLUS leurs marges intérieures : 32 px de trop, le bouton Enregistrer sortait de l'écran (capture de Blandine). `boxSizing: border-box` posé sur les deux feuilles. (Le composeur de publication l'avait déjà.)
+
+### 3. LA MUSIQUE DANS MODIFIER (décision de Blandine)
+
+`hsModifierStory(id, legende, lieu, musique)` — `null` retire la musique, champ explicite. La feuille reçoit la même rangée de puces que la publication, avec pré-écoute (un seul lecteur, coupé à l'enregistrement et au démontage), et **le morceau de la story arrive pré-sélectionné**. La surcharge locale (`localMod`) porte la musique : le changement est visible sans recharger.
+
+### 4. LES ANNONCES — TAP VERS LES NOTES, EXTINCTION À 30 JOURS
+
+**Trajectoire corrigée par Blandine en cours de session, et c'est mieux** : le tap d'une annonce ouvre désormais l'écran « Quoi de neuf » (`quoi-de-neuf`), qui contextualise et dont **les mouvements emmènent vers les pages**. Le renvoi direct vers Linguae codé une heure plus tôt **n'avait jamais été poussé** : retiré proprement (parseAnnonce, les deux fils, `ouvrirDepuisAnnonce`). La clé `lien` que le SQL du soir a posée sur l'annonce Linguae en base est **inoffensive** (hypeTexteMulti l'ignore) ; un SQL optionnel de nettoyage est dans l'en-tête.
+
+**Garde-fou 30 jours** (décision de Blandine) : `useAnnonces` filtre `created_at` — une annonce s'éteint seule au bout de 30 jours, les lignes restent en base. Le modèle SQL « delete puis insert » pour ses futures publications lui a été donné en conversation.
+
+### 5. LA REPRISE 1.8 — LES NOTES DE MISE À JOUR AVEC LEURS LIENS
+
+Nouvelle entrée en tête de `HYPE_MAJ` (l'1.1 reste derrière), **version « 1.8 » = `HYPE_VERSION_APP`**, donc l'overlay se montrera une fois à chaque cavalier. Cinq mouvements, 6 langues, chacun avec sa destination : les stories → Ma communauté · la musique → Ma communauté · les à la une → Ma page cavalier · le lieu et les mentions @ → Ma communauté · **Linguae → `lingo.html`**, grâce à `majOuvrirDest` qui apprend `d.url` (prioritaire sur `d.ecran`).
+
+### 6. LA MAQUETTE DES BANDEAUX — DÉCISION DE BLANDINE, RIEN N'EST CODÉ
+
+`maquette-bandeaux-stories.html`, rendue et contrôlée à l'œil : **1 · Verre fumé** (bande d'anthracite, filets fins) · **2 · Souffle turquoise** (respiration de lumière, fil en tête) · **3 · Carte enveloppante** (encart avec titre, comme les autres blocs) · **4 · Sillon** (bande creusée, ombre intérieure). Chaque bandeau montré entre un titre et du contenu de page, plus les **combinaisons** verre fumé × formes B/C/D. Avis de Claude étiqueté : le verre fumé. Forme ET bandeau sont des réglages du même composant : n'importe quelle combinaison se branche en une session courte.
+
+### VÉRIFICATIONS
+
+- `node --check` : 16/16 blocs inline + le module. **110 assertions vertes** + 13 mentions.
+- Nouvelles (15) : relance dans les deps, 4 fermetures qui relancent, boxSizing sur les deux feuilles, signature de `hsModifierStory`, bloc musique de la feuille, morceau pré-sélectionné, tap → quoi-de-neuf, filtre 30 jours, reprise 1.8 en tête, mouvement Linguae en `url`, `majOuvrirDest` et l'URL, retrait propre de la clé `lien`.
+- Rendu réel non vérifié (domaine fermé aux robots) : à regarder par Blandine.
+
+### 🟠 INCIDENT — UN SCRIPT A ANNONCÉ « OK » SANS ÉCRIRE
+
+Le premier script de la passe « relance du minuteur » a échoué sur sa 2e ancre et s'est arrêté **avant d'écrire le fichier** : ses deux premières modifications, pourtant annoncées « OK » dans la sortie, n'existaient pas. Détecté au harnais (`relance is not defined`), signalé à Blandine dans la réponse, tout réappliqué et vérifié (`grep setRelance` = 6). **Leçon opérationnelle consignée : un « OK » de `rep()` n'est un fait qu'une fois le `write` final atteint** — les scripts multi-ancres doivent écrire après CHAQUE remplacement ou annoncer leurs OK seulement à la fin.
+
+### Préparation Flutter (session 122)
+
+- La note de mise à jour est **pilotée par les données** (`HYPE_MAJ` + `majOuvrirDest` avec `url`) : ajouter une reprise est une entrée de tableau, pas du code. Le pont vers Linguae passe par le même mécanisme que les écrans internes.
+- Le module `hype-stories.js` atteint **13 fonctions de contrat + 3 pures**, 110 comportements verrouillés.
+- Reste à moderniser : inchangé, plus la règle des scripts multi-ancres ci-dessus (outillage de session, pas code produit).
 
 ---
 

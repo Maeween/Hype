@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hype · Maquettes — le bandeau derrière les stories</title>
+<style>
+  :root{ --noir:#060709; --anth:#111417; --turq:#20D9F5; --turqL:#5FE9F0; --blanc:#F4F7FA; --gris:#8A929C; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; background:var(--noir); color:var(--blanc);
+    font-family:'Montserrat',-apple-system,sans-serif; overflow-x:clip; }
+  .page{ max-width:520px; margin:0 auto; padding:calc(env(safe-area-inset-top) + 26px) 0 90px; }
+
+  .entete{ text-align:center; padding:0 20px 4px; }
+  .entete .sur{ font-size:9.5px; letter-spacing:3px; font-weight:800; color:rgba(32,217,245,.85); text-transform:uppercase; }
+  .entete h1{ font-family:'Cinzel',Georgia,serif; font-size:23px; font-weight:700; letter-spacing:2px; margin:10px 0 6px; }
+  .entete p{ font-size:11.5px; color:var(--gris); line-height:1.6; max-width:340px; margin:0 auto; }
+
+  /* Un peu de "page" autour de chaque bandeau, pour juger la separation. */
+  .fauxtitre{ font-family:'Cinzel',Georgia,serif; font-size:15px; letter-spacing:1.5px; padding:20px 18px 10px; color:#DCE3E8; }
+  .fauxtexte{ font-size:11px; color:#5E666E; padding:0 18px 6px; line-height:1.5; }
+
+  .prop{ margin-top:34px; }
+  .prop .num{ display:flex; align-items:baseline; gap:10px; padding:0 18px 3px; }
+  .prop .num b{ font-family:'Cinzel',Georgia,serif; font-size:20px; color:var(--turqL); }
+  .prop .num span{ font-size:12.5px; font-weight:700; letter-spacing:.5px; }
+  .prop .note{ font-size:10.5px; color:var(--gris); line-height:1.55; padding:0 18px 12px; }
+  .prop .note em{ color:rgba(95,233,240,.9); font-style:normal; font-weight:700; }
+
+  .rail{ display:flex; gap:10px; overflow-x:auto; padding:14px 16px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .rail::-webkit-scrollbar{ display:none; }
+  .cel{ flex:0 0 auto; text-align:center; }
+  .nom{ font-size:10.5px; margin-top:7px; font-weight:700; color:#E4ECEF; white-space:nowrap; }
+  .nom.vue{ color:var(--gris); font-weight:500; }
+
+  .ph{ position:relative; overflow:hidden; }
+  .ph::after{ content:"🐎"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:24px; opacity:.55; }
+  .ph1{ background:linear-gradient(160deg,#27404a,#0d1a20 55%,#31241a); }
+  .ph2{ background:linear-gradient(200deg,#3a3128,#151312 60%,#0a0c10); }
+  .ph3{ background:linear-gradient(145deg,#1d3038,#0c1418 50%,#233043); }
+  .plus{ display:flex; align-items:center; justify-content:center; background:rgba(17,20,23,.85);
+    border:1px dashed rgba(32,217,245,.55); box-shadow:inset 0 0 26px rgba(32,217,245,.06); }
+  .plus span{ font-size:28px; font-weight:300; color:var(--turqL); line-height:1; }
+
+  /* Le rond actuel, taille reduite pour la maquette. */
+  .rond{ width:92px; height:92px; border-radius:50%; padding:3px;
+    background:linear-gradient(135deg,var(--turq),var(--turqL)); box-shadow:0 0 18px rgba(32,217,245,.32); }
+  .rond.vue{ background:rgba(255,255,255,.16); box-shadow:none; }
+  .rond .int{ width:100%; height:100%; border-radius:50%; border:2.5px solid var(--noir); overflow:hidden; }
+  .rond .int .ph{ width:100%; height:100%; }
+  .rond-plus{ width:92px; height:92px; border-radius:50%; }
+
+  /* Les autres formes pour les combinaisons. */
+  .icx{ width:88px; height:88px; border-radius:29px; padding:2.6px; background:linear-gradient(135deg,var(--turq),var(--turqL)); box-shadow:0 0 16px rgba(32,217,245,.3); }
+  .icx .int{ width:100%; height:100%; border-radius:26px; border:2.5px solid var(--noir); overflow:hidden; }
+  .icx .int .ph{ width:100%; height:100%; }
+  .cardx{ width:96px; height:120px; border-radius:16px; overflow:hidden; border:1px solid rgba(32,217,245,.72); box-shadow:0 0 16px rgba(32,217,245,.26); }
+  .cardx .ph{ width:100%; height:100%; }
+  .galx{ width:82px; height:110px; border-radius:41px; padding:2.6px; background:linear-gradient(160deg,var(--turq),var(--turqL)); box-shadow:0 0 16px rgba(32,217,245,.3); }
+  .galx .int{ width:100%; height:100%; border-radius:38px; border:2.5px solid var(--noir); overflow:hidden; }
+  .galx .int .ph{ width:100%; height:100%; }
+
+  /* ======== LES QUATRE BANDEAUX ======== */
+  /* 1 · Verre fume : une bande d'anthracite translucide, filets fins. */
+  .band-verre{ background:linear-gradient(180deg, rgba(17,20,23,.92), rgba(11,13,16,.88));
+    border-top:1px solid rgba(255,255,255,.07); border-bottom:1px solid rgba(255,255,255,.07); }
+
+  /* 2 · Souffle turquoise : le noir respire, un fil de lumiere en tete. */
+  .band-souffle{ position:relative;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(32,217,245,.085), rgba(6,7,9,0) 62%); }
+  .band-souffle::before{ content:""; position:absolute; top:0; left:10%; right:10%; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(32,217,245,.5), transparent); }
+
+  /* 3 · Carte enveloppante : le rail vit dans un encart, comme les autres blocs. */
+  .band-carte{ margin:0 14px; border-radius:20px;
+    background:linear-gradient(180deg, rgba(17,20,23,.9), rgba(6,7,9,.65));
+    border:1px solid rgba(32,217,245,.22); box-shadow:inset 0 0 30px rgba(32,217,245,.04); }
+  .band-carte .titrer{ font-size:9.5px; letter-spacing:2.4px; font-weight:800; text-transform:uppercase;
+    color:rgba(32,217,245,.9); padding:14px 16px 0; }
+
+  /* 4 · Sillon : la bande est CREUSEE dans la page, ombre interieure. */
+  .band-sillon{ background:#040507;
+    box-shadow:inset 0 10px 22px -14px rgba(0,0,0,.95), inset 0 -10px 22px -14px rgba(0,0,0,.95), inset 0 0 40px rgba(32,217,245,.035); }
+
+  .separ{ height:1px; margin:30px 22px 0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent); }
+
+  .conseil{ margin:36px 16px 0; padding:16px; border-radius:16px; border:1px solid rgba(32,217,245,.3);
+    background:linear-gradient(180deg,rgba(17,20,23,.9),rgba(6,7,9,.6)); }
+  .conseil .t{ font-size:9.5px; letter-spacing:2.5px; font-weight:800; color:rgba(32,217,245,.9); text-transform:uppercase; margin-bottom:8px; }
+  .conseil p{ font-size:11.5px; line-height:1.65; color:#C9D3D8; margin:0 0 8px; }
+  .conseil p:last-child{ margin-bottom:0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="entete">
+    <div class="sur">Maquette · aucune ligne de l'app modifiée</div>
+    <h1>LE BANDEAU DES STORIES</h1>
+    <p>Quatre fonds pour détacher les stories du reste de la page — chacun montré entre un titre et du contenu, comme en vrai. Puis les combinaisons avec les formes.</p>
+  </div>
+
+  <!-- 1 -->
+  <div class="prop">
+    <div class="num"><b>1</b><span>Le verre fumé</span></div>
+    <div class="note">Une bande d'anthracite translucide, deux filets fins. <em>Le plus sobre</em> — la matière de la Design Bible, le noir cesse d'être plat.</div>
+    <div class="fauxtitre">MON MONDE</div>
+    <div class="band-verre">
+      <div class="rail">
+        <div class="cel"><div class="rond-plus plus"><span>+</span></div><div class="nom" style="color:var(--turqL)">Ajouter</div></div>
+        <div class="cel"><div class="rond"><div class="int"><div class="ph ph1"></div></div></div><div class="nom">Ma story</div></div>
+        <div class="cel"><div class="rond vue"><div class="int"><div class="ph ph3"></div></div></div><div class="nom vue">Camille</div></div>
+        <div class="cel"><div class="rond"><div class="int"><div class="ph ph2"></div></div></div><div class="nom">Mathis</div></div>
+      </div>
+    </div>
+    <div class="fauxtexte">La suite de la page continue ici, sur le noir profond…</div>
+  </div>
+
+  <div class="separ"></div>
+
+  <!-- 2 -->
+  <div class="prop">
+    <div class="num"><b>2</b><span>Le souffle turquoise</span></div>
+    <div class="note">Pas de boîte : une respiration de lumière qui monte du bandeau, un fil turquoise en tête. <em>La lumière guide l'œil</em>, rien ne cloisonne.</div>
+    <div class="fauxtitre">MON MONDE</div>
+    <div class="band-souffle">
+      <div class="rail">
+        <div class="cel"><div class="rond-plus plus"><span>+</span></div><div class="nom" style="color:var(--turqL)">Ajouter</div></div>
+        <div class="cel"><div class="rond"><div class="int"><div class="ph ph1"></div></div></div><div class="nom">Ma story</div></div>
+        <div class="cel"><div class="rond vue"><div class="int"><div class="ph ph3"></div></div></div><div class="nom vue">Camille</div></div>
+        <div class="cel"><div class="rond"><div class="int"><div class="ph ph2"></div></div></div><div class="nom">Mathis</div></div>
+      </div>
+    </div>
+    <div class="fauxtexte">La suite de la page continue ici, sur le noir profond…</div>
+  </div>
+
+  <div class="separ"></div>
+
+  <!-- 3 -->
+  <div class="prop">
+    <div class="num"><b>3</b><span>La carte enveloppante</span></div>
+    <div class="note">Le rail vit dans un encart de verre taillé avec son petit titre, <em>comme les autres blocs de l'app</em> (Mon écurie, Hey Baby). Le plus « rangé ».</div>
+    <div class="fauxtitre">MON MONDE</div>
+    <div class="band-carte">
+      <div class="titrer">Les stories</div>
+      <div class="rail">
+        <div class="cel"><div class="rond-plus plus"><span>+</span></div><div class="nom" style="color:var(--turqL)">Ajouter</div></div>
+        <div class="cel"><div class="rond"><div class="int"><div class="ph ph1"></div></div></div><div class="nom">Ma story</div></div>
+        <div class="cel"><div class="rond vue"><div class="int"><div class="ph ph3"></div></div></div><div class="nom vue">Camille</div></div>
+        <div class="cel"><div class="rond"><div class="int"><div class="ph ph2"></div></div></div><div class="nom">Mathis</div></div>
+      </div>
+    </div>
+    <div class="fauxtexte">La suite de la page continue ici, sur le noir profond…</div>
+  </div>
+
+  <div class="separ"></div>
+
+  <!-- 4 -->
+  <div class="prop">
+    <div class="num"><b>4</b><span>Le sillon</span></div>
+    <div class="note">L'inverse du verre : la bande est <em>creusée dans la page</em>, un noir plus profond avec une ombre intérieure et une trace de turquoise. Les photos flottent dedans.</div>
+    <div class="fauxtitre">MON MONDE</div>
+    <div class="band-sillon">
+      <div class="rail">
+        <div class="cel"><div class="rond-plus plus"><span>+</span></div><div class="nom" style="color:var(--turqL)">Ajouter</div></div>
+        <div class="cel"><div class="rond"><div class="int"><div class="ph ph1"></div></div></div><div class="nom">Ma story</div></div>
+        <div class="cel"><div class="rond vue"><div class="int"><div class="ph ph3"></div></div></div><div class="nom vue">Camille</div></div>
+        <div class="cel"><div class="rond"><div class="int"><div class="ph ph2"></div></div></div><div class="nom">Mathis</div></div>
+      </div>
+    </div>
+    <div class="fauxtexte">La suite de la page continue ici, sur le noir profond…</div>
+  </div>
+
+  <div class="separ"></div>
+
+  <!-- COMBINAISONS -->
+  <div class="prop">
+    <div class="num"><b>+</b><span>Les combinaisons — un bandeau, chaque forme</span></div>
+    <div class="note">Le verre fumé (n° 1) porté par les quatre formes de la première maquette, pour juger l'ensemble.</div>
+
+    <div class="fauxtexte" style="padding-top:8px">B · L'icône (ta demande)</div>
+    <div class="band-verre"><div class="rail">
+      <div class="cel"><div class="plus" style="width:88px;height:88px;border-radius:29px"><span>+</span></div><div class="nom" style="color:var(--turqL)">Ajouter</div></div>
+      <div class="cel"><div class="icx"><div class="int"><div class="ph ph1"></div></div></div><div class="nom">Ma story</div></div>
+      <div class="cel"><div class="icx" style="background:rgba(255,255,255,.16);box-shadow:none"><div class="int"><div class="ph ph3"></div></div></div><div class="nom vue">Camille</div></div>
+    </div></div>
+
+    <div class="fauxtexte" style="padding-top:14px">C · La carte verticale</div>
+    <div class="band-verre"><div class="rail">
+      <div class="cel"><div class="plus" style="width:96px;height:120px;border-radius:16px"><span>+</span></div><div class="nom" style="color:var(--turqL)">Ajouter</div></div>
+      <div class="cel"><div class="cardx"><div class="ph ph1"></div></div><div class="nom">Ma story</div></div>
+      <div class="cel"><div class="cardx" style="border-color:rgba(255,255,255,.14);box-shadow:none"><div class="ph ph3"></div></div><div class="nom vue">Camille</div></div>
+    </div></div>
+
+    <div class="fauxtexte" style="padding-top:14px">D · Le galet</div>
+    <div class="band-verre"><div class="rail">
+      <div class="cel"><div class="plus" style="width:82px;height:110px;border-radius:41px"><span>+</span></div><div class="nom" style="color:var(--turqL)">Ajouter</div></div>
+      <div class="cel"><div class="galx"><div class="int"><div class="ph ph1"></div></div></div><div class="nom">Ma story</div></div>
+      <div class="cel"><div class="galx" style="background:rgba(255,255,255,.16);box-shadow:none"><div class="int"><div class="ph ph3"></div></div></div><div class="nom vue">Camille</div></div>
+    </div></div>
+  </div>
+
+  <div class="conseil">
+    <div class="t">Mon avis — tu décides</div>
+    <p><b>Le verre fumé (1)</b> est le plus juste : c'est la matière officielle des surfaces d'interface dans la Design Bible, il détache le rail sans crier, et il marche avec les quatre formes.</p>
+    <p><b>Le souffle (2)</b> est le plus « Hype Spectral » si tu veux de la lumière plutôt qu'une boîte. <b>La carte (3)</b> range les stories parmi les encarts — cohérent mais elles perdent leur statut spécial. <b>Le sillon (4)</b> est le plus original, à voir sur un vrai écran OLED.</p>
+    <p>N'importe quelle combinaison forme × bandeau se code en une session courte : les deux sont des réglages du même composant.</p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "7";
+var HYPE_STORIES_VERSION = "8";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -254,18 +254,22 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique) {
    La politique RLS de mise à jour existait déjà (elle sert au marquage
    « gardée ») : AUCUN SQL. Même repli que la publication si la colonne
    `lieu` manquait en base. */
-async function hsModifierStory(id, legende, lieu) {
+async function hsModifierStory(id, legende, lieu, musique) {
   try {
     if (typeof supa === "undefined" || !supa) return { error: "indisponible" };
     var user = await utilisateurActuel();
     if (!user) return { error: "Pas connecté" };
     var champs = {
       legende: (legende ? String(legende).slice(0, HS_LEGENDE_MAX) : null),
-      lieu: (lieu ? String(lieu).trim().slice(0, HS_LIEU_MAX) : null)
+      lieu: (lieu ? String(lieu).trim().slice(0, HS_LIEU_MAX) : null),
+      /* 13/08 : la musique se modifie aussi (décision de Blandine). null =
+         retirer la musique — un champ explicite, pas une absence. */
+      musique: (musique && hsUrlMusique(musique)) ? musique : null
     };
     var r = await supa.from("hype_stories").update(champs).eq("id", id).eq("user_id", user.id);
     if (r && r.error) {
       delete champs.lieu;
+      delete champs.musique;
       var r2 = await supa.from("hype_stories").update(champs).eq("id", id).eq("user_id", user.id);
       if (r2 && !r2.error) return { error: null, lieuIgnore: true };
       return { error: r.error };
@@ -1352,7 +1356,7 @@ function ChoixALaUne(props) {
       h("div", {
         onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
         ref: corpsRef,
-        style: { width: "100%", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none", background: "linear-gradient(180deg, #111417, #060709)", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" }
+        style: { width: "100%", boxSizing: "border-box", maxWidth: 520, maxHeight: "80vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none", background: "linear-gradient(180deg, #111417, #060709)", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" }
       },
         h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.18)", margin: "0 auto 16px" } }),
         h("div", { style: { fontFamily: C, fontSize: 13.5, letterSpacing: 1.6, textTransform: "uppercase", color: "#F4F7FA", textAlign: "center", lineHeight: 1.4 } }, hsT("rangerOu", lg)),
@@ -1411,6 +1415,26 @@ function ModifierStory(props) {
   var st = props.story || {};
   var lS = React.useState(st.legende || ""), legende = lS[0], setLegende = lS[1];
   var liS = React.useState(st.lieu || ""), lieu = liS[0], setLieu = liS[1];
+  var muS = React.useState(st.musique || null), musique = muS[0], setMusique = muS[1];
+  var ecS = React.useState(null), ecoute = ecS[0], setEcoute = ecS[1];
+  var audioRef = React.useRef(null);
+  function preEcouter(ref) {
+    try {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+      if (!ref || ecoute === ref) { setEcoute(null); return; }
+      var url = hsUrlMusique(ref);
+      if (!url || typeof Audio === "undefined") { setEcoute(null); return; }
+      var a = new Audio(url);
+      a.loop = false;
+      audioRef.current = a;
+      a.play().catch(function () { });
+      setEcoute(ref);
+      a.onended = function () { setEcoute(null); };
+    } catch (e) { setEcoute(null); }
+  }
+  React.useEffect(function () {
+    return function () { try { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } } catch (e) { } };
+  }, []);
   var slS = React.useState([]), sugLieux = slS[0], setSugLieux = slS[1];
   var bS = React.useState(false), busy = bS[0], setBusy = bS[1];
   var corpsRef = React.useRef(null);
@@ -1434,10 +1458,11 @@ function ModifierStory(props) {
   async function enregistrer() {
     if (busy) return;
     setBusy(true);
-    var r = await hsModifierStory(st.id, legende, lieu);
+    try { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } } catch (eA) { }
+    var r = await hsModifierStory(st.id, legende, lieu, musique);
     setBusy(false);
     if (r && r.error) { if (props.onEchec) props.onEchec(); return; }
-    if (props.onFait) props.onFait({ legende: legende, lieu: lieu, lieuIgnore: !!(r && r.lieuIgnore) });
+    if (props.onFait) props.onFait({ legende: legende, lieu: lieu, musique: musique, lieuIgnore: !!(r && r.lieuIgnore) });
   }
 
   var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
@@ -1456,7 +1481,10 @@ function ModifierStory(props) {
       h("div", {
         onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
         ref: corpsRef,
-        style: { width: "100%", maxWidth: 520, maxHeight: "86vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none", background: "linear-gradient(180deg, #111417, #060709)", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" }
+        /* 13/08 01h58 : boxSizing manquait — width:100% PLUS les marges
+           intérieures = 32 px de trop, la feuille débordait à droite et le
+           bouton Enregistrer sortait de l'écran (capture de Blandine). */
+        style: { width: "100%", boxSizing: "border-box", maxWidth: 520, maxHeight: "86vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none", background: "linear-gradient(180deg, #111417, #060709)", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" }
       },
         h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.18)", margin: "0 auto 16px" } }),
         h("div", { style: { fontFamily: C, fontSize: 13.5, letterSpacing: 1.6, textTransform: "uppercase", color: "#F4F7FA", textAlign: "center" } }, hsT("modifierTitre", lg)),
@@ -1488,6 +1516,25 @@ function ModifierStory(props) {
               }, c.nom + (c.ville ? (" \u00b7 " + c.ville) : ""));
             }))
           : null,
+
+        h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.7, textTransform: "uppercase", color: tA(0.92), margin: "16px 0 8px" } }, "\u266a " + hsT("musiqueTitre", lg)),
+        h("div", { "data-hscroll": "1", style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6, WebkitOverflowScrolling: "touch" } },
+          [h("button", {
+            key: "m0",
+            onClick: function () { preEcouter(null); setMusique(null); },
+            style: { padding: "9px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: musique === null ? 800 : 600, border: "1px solid " + (musique === null ? tA(0.7) : "rgba(255,255,255,0.18)"), background: musique === null ? "rgba(32,217,245,0.12)" : "transparent", color: musique === null ? tn : "#C9D3D8", flex: "0 0 auto", whiteSpace: "nowrap" }
+          }, hsT("sansMusique", lg))].concat(HS_MUSIQUES.map(function (m) {
+            var actif = (musique === m.ref);
+            var joue = (ecoute === m.ref);
+            return h("button", {
+              key: "m" + m.ref,
+              onClick: function () {
+                if (actif) { setMusique(null); preEcouter(null); }
+                else { setMusique(m.ref); preEcouter(m.ref); }
+              },
+              style: { padding: "9px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: actif ? 800 : 600, border: "1px solid " + (actif ? tA(0.7) : "rgba(255,255,255,0.18)"), background: actif ? "rgba(32,217,245,0.12)" : "transparent", color: actif ? tn : "#C9D3D8", flex: "0 0 auto", whiteSpace: "nowrap" }
+            }, (joue ? "\u25b6 " : "\u266a ") + m.nom);
+          }))),
 
         h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
           h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, hsT("annuler", lg)),
@@ -1536,6 +1583,7 @@ function VisionneuseStories(props) {
   var dpS = React.useState(false), deplie = dpS[0], setDeplie = dpS[1];
   var edS = React.useState(false), enEdition = edS[0], setEnEdition = edS[1];
   var snS = React.useState(false), sonActif = snS[0], setSonActif = snS[1];
+  var rlS = React.useState(0), relance = rlS[0], setRelance = rlS[1];
   var lecteurRef = React.useRef(null);
   var loS = React.useState(null), localMod = loS[0], setLocalMod = loS[1];
   var pauseRef = React.useRef(false);
@@ -1547,7 +1595,7 @@ function VisionneuseStories(props) {
   var groupe = groupes[ig] || null;
   var story = groupe ? (groupe.stories[is] || null) : null;
   if (story && localMod && localMod.id === story.id) {
-    story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu });
+    story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu, musique: localMod.musique });
   }
   var estMoi = !!(groupe && props.moiId && groupe.user_id === props.moiId);
 
@@ -1661,7 +1709,12 @@ function VisionneuseStories(props) {
     try { if (barreRef.current) barreRef.current.style.width = "0%"; } catch (e2) { }
     raf = requestAnimationFrame(boucle);
     return function () { vivant = false; if (raf) cancelAnimationFrame(raf); };
-  }, [(story && story.id) || "", ig, is, chargee, erreur]);
+    /* 13/08 01h58 : `relance` redémarre le minuteur à zéro quand une feuille
+       se ferme. Sans lui, il reprenait sur son RESTE d'avant la feuille :
+       Blandine modifiait sa story, enregistrait, et les secondes restantes
+       expiraient pendant sa relecture — dernière story, la visionneuse se
+       fermait, elle était « sortie ». */
+  }, [(story && story.id) || "", ig, is, chargee, erreur, relance]);
 
   async function garder(destination) {
     if (!story) return;
@@ -1937,11 +1990,12 @@ function VisionneuseStories(props) {
     enEdition
       ? h(ModifierStory, {
         story: story, langue: lg,
-        onFermer: function () { setEnEdition(false); pauseRef.current = false; },
-        onEchec: function () { setEnEdition(false); pauseRef.current = false; setAction("echec"); },
+        onFermer: function () { setEnEdition(false); pauseRef.current = false; setRelance(function (r) { return r + 1; }); },
+        onEchec: function () { setEnEdition(false); pauseRef.current = false; setRelance(function (r) { return r + 1; }); setAction("echec"); },
         onFait: function (mod) {
           setEnEdition(false); pauseRef.current = false;
-          setLocalMod({ id: story.id, legende: mod.legende, lieu: mod.lieu });
+          setLocalMod({ id: story.id, legende: mod.legende, lieu: mod.lieu, musique: mod.musique });
+          setRelance(function (r) { return r + 1; });
           setAction("modifiee");
         }
       })
@@ -1952,8 +2006,8 @@ function VisionneuseStories(props) {
     choix
       ? h(ChoixALaUne, {
         langue: lg,
-        onFermer: function () { setChoix(false); pauseRef.current = false; },
-        onChoix: function (dest) { setChoix(false); pauseRef.current = false; garder(dest); }
+        onFermer: function () { setChoix(false); pauseRef.current = false; setRelance(function (r) { return r + 1; }); },
+        onChoix: function (dest) { setChoix(false); pauseRef.current = false; setRelance(function (r) { return r + 1; }); garder(dest); }
       })
       : null),
     document.body);
