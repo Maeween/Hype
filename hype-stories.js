@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "8";
+var HYPE_STORIES_VERSION = "10";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -116,6 +116,29 @@ var HS_MUSIQUES = [
   { ref: "in-my-heart", nom: "Still In My Heart" },
   { ref: "my-love",     nom: "My Love" }
 ];
+/* L'AMORCE AUDIO (13/08, demande de Blandine : « elle peut pas se lancer
+   seule quand les gens ouvrent la story ? »). iOS interdit le son sans geste
+   — mais il accepte qu'un lecteur DÉJÀ AMORCÉ pendant un geste rejoue
+   ensuite. On amorce donc UN lecteur partagé, muet, au moment du toucher qui
+   ouvre la visionneuse (rond du bandeau, à la une, zones suivant/précédent) :
+   la story peut alors lancer sa musique toute seule à l'arrivée de la photo.
+   Si iOS refuse malgré l'amorce, play() échoue proprement et la pastille
+   reste le repli — rien ne casse. */
+var HS_SILENCE = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
+function hsAmorcerAudio() {
+  try {
+    if (typeof Audio === "undefined" || typeof window === "undefined") return;
+    if (!window.__hsLecteur) window.__hsLecteur = new Audio();
+    var a = window.__hsLecteur;
+    if (a.__hsJoue) return;   /* deja en train de jouer une musique : ne pas l'ecraser */
+    a.muted = true;
+    a.src = HS_SILENCE;
+    var p = a.play();
+    if (p && p.catch) p.catch(function () { });
+    try { a.pause(); } catch (eP) { }
+  } catch (e) { }
+}
+
 function hsUrlMusique(ref) {
   if (!ref) return null;
   var ok = HS_MUSIQUES.some(function (m) { return m.ref === ref; });
@@ -693,6 +716,10 @@ var HS_TXT = {
   uneIntrouvable: { fr: "\u00c0 la une introuvable.", en: "Highlight not found.", es: "Destacada no encontrada.", it: "In evidenza non trovata.", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002", de: "Highlight nicht gefunden." },
   videUne: { fr: "Aucune \u00e0 la une pour l'instant.", en: "No highlight yet.", es: "Sin destacadas por ahora.", it: "Nessuna in evidenza per ora.", ja: "\u307e\u3060\u30cf\u30a4\u30e9\u30a4\u30c8\u306f\u3042\u308a\u307e\u305b\u3093\u3002", de: "Noch keine Highlights." },
   astuceArobase: { fr: "Tape @ pour identifier un cavalier.", en: "Type @ to tag a rider.", es: "Escribe @ para etiquetar a un jinete.", it: "Digita @ per taggare un cavaliere.", ja: "@\u3092\u5165\u529b\u3057\u3066\u9a0e\u624b\u3092\u30bf\u30b0\u4ed8\u3051", de: "Tippe @, um einen Reiter zu markieren." },
+  maChanson: { fr: "La chanson de ma page", en: "My page song", es: "La canci\u00f3n de mi p\u00e1gina", it: "La canzone della mia pagina", ja: "\u30de\u30a4\u30da\u30fc\u30b8\u306e\u66f2", de: "Der Song meiner Seite" },
+  choisirChanson: { fr: "Choisir la chanson de ma page", en: "Pick my page song", es: "Elegir la canci\u00f3n de mi p\u00e1gina", it: "Scegliere la canzone della mia pagina", ja: "\u30da\u30fc\u30b8\u306e\u66f2\u3092\u9078\u3076", de: "Den Song meiner Seite w\u00e4hlen" },
+  chansonEnregistree: { fr: "Chanson enregistr\u00e9e.", en: "Song saved.", es: "Canci\u00f3n guardada.", it: "Canzone salvata.", ja: "\u66f2\u3092\u4fdd\u5b58\u3057\u307e\u3057\u305f\u3002", de: "Song gespeichert." },
+  chansonErreur: { fr: "La chanson n'a pas pu \u00eatre enregistr\u00e9e (la colonne existe-t-elle ?).", en: "The song could not be saved (does the column exist?).", es: "No se pudo guardar la canci\u00f3n.", it: "Impossibile salvare la canzone.", ja: "\u66f2\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", de: "Der Song konnte nicht gespeichert werden." },
   musiqueTitre: { fr: "La musique", en: "Music", es: "La m\u00fasica", it: "La musica", ja: "\u97f3\u697d", de: "Die Musik" },
   sansMusique: { fr: "Sans musique", en: "No music", es: "Sin m\u00fasica", it: "Senza musica", ja: "\u97f3\u697d\u306a\u3057", de: "Ohne Musik" },
   modifier: { fr: "Modifier", en: "Edit", es: "Editar", it: "Modifica", ja: "\u7de8\u96c6", de: "Bearbeiten" },
@@ -850,7 +877,7 @@ function BandeauStories(props) {
 
     return h("button", {
       key: "st" + g.user_id,
-      onClick: function () { setOuvert(i); },
+      onClick: function () { hsAmorcerAudio(); setOuvert(i); },
       style: { background: "none", border: "none", padding: 0, cursor: "pointer", flex: "0 0 auto", width: largeurCel, textAlign: carte ? "left" : "center" }
     },
       contenu,
@@ -1228,6 +1255,117 @@ function ComposeurStory(props) {
 }
 
 /* ---------------------------------------------------------------------------
+   6b. LA CHANSON DE MA PAGE (13/08, décision de Blandine : option A)
+   Une pastille ♪ sur la page cavalier, visible par tous : le toucher lance le
+   morceau en boucle, le retoucher coupe. Le propriétaire choisit son morceau
+   (les 11 de la bibliothèque) ; un visiteur ne voit la pastille que si un
+   morceau est choisi. JAMAIS de lecture automatique à l'arrivée sur la page
+   (« si on le souhaite » + règle iOS) — le toucher de la pastille est le
+   geste. Stockage : profiles.musique_page (une colonne, aucun SQL de plus).
+   Le lecteur est LE MÊME que celui des stories : ouvrir une story avec sa
+   propre musique prend la main, la chanson de la page ne reprend pas toute
+   seule après — un toucher la relance.
+--------------------------------------------------------------------------- */
+function PastilleMusiquePage(props) {
+  var h = React.createElement;
+  var app = (typeof useApp === "function") ? useApp() : {};
+  var lg = (app && app.langue) || "fr";
+  var M = "'Montserrat',sans-serif";
+  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
+  var tn = th.principal, tnL = th.lumineux;
+  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(32,217,245," + a + ")"); }
+
+  var mS = React.useState(null), morceau = mS[0], setMorceau = mS[1];
+  var jS = React.useState(false), joue = jS[0], setJoue = jS[1];
+  var cS = React.useState(false), choixOuvert = cS[0], setChoixOuvert = cS[1];
+  var msgS = React.useState(""), msg = msgS[0], setMsg = msgS[1];
+  var lecteurRef = React.useRef(null);
+  var vivantRef = React.useRef(true);
+
+  React.useEffect(function () {
+    vivantRef.current = true;
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa || !props.userId) return;
+        var r = await supa.from("profiles").select("musique_page").eq("id", props.userId).maybeSingle();
+        if (vivantRef.current && r && r.data && r.data.musique_page && hsUrlMusique(r.data.musique_page)) setMorceau(r.data.musique_page);
+      } catch (e) { }
+    })();
+    return function () {
+      vivantRef.current = false;
+      /* On quitte la page : la chanson s'arrête avec elle. */
+      try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current.__hsJoue = false; lecteurRef.current = null; } } catch (e) { }
+    };
+  }, [props.userId || ""]);
+
+  function basculer() {
+    try {
+      if (joue) {
+        if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current.__hsJoue = false; lecteurRef.current = null; }
+        setJoue(false);
+        return;
+      }
+      var url = hsUrlMusique(morceau);
+      if (!url || typeof Audio === "undefined") return;
+      var a = (typeof window !== "undefined" && window.__hsLecteur) ? window.__hsLecteur : new Audio();
+      a.muted = false; a.loop = true; a.src = url; a.__hsJoue = true;
+      lecteurRef.current = a;
+      var p = a.play();
+      if (p && p.catch) p.catch(function () { setJoue(false); a.__hsJoue = false; });
+      setJoue(true);
+    } catch (e) { }
+  }
+
+  async function enregistrer(ref) {
+    try {
+      setChoixOuvert(false);
+      if (typeof supa === "undefined" || !supa) return;
+      var user = await utilisateurActuel();
+      if (!user) return;
+      var r = await supa.from("profiles").update({ musique_page: ref || null }).eq("id", user.id);
+      if (r && r.error) { setMsg(hsT("chansonErreur", lg)); setTimeout(function () { if (vivantRef.current) setMsg(""); }, 4000); return; }
+      try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current.__hsJoue = false; lecteurRef.current = null; } } catch (e2) { }
+      setJoue(false);
+      setMorceau(ref || null);
+      setMsg(hsT("chansonEnregistree", lg));
+      setTimeout(function () { if (vivantRef.current) setMsg(""); }, 2500);
+    } catch (e) { }
+  }
+
+  /* Un visiteur sans morceau choisi : rien du tout. */
+  if (!morceau && !props.proprio) return null;
+
+  return h("div", { style: { padding: "2px 16px 10px" } },
+    h("div", { style: { display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" } },
+      morceau
+        ? h("button", {
+          onClick: basculer,
+          style: { display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: 700, border: "1px solid " + (joue ? tA(0.75) : "rgba(255,255,255,0.22)"), background: joue ? "rgba(32,217,245,0.13)" : "rgba(17,20,23,0.85)", color: joue ? tnL : "#DCE3E8", boxShadow: joue ? ("0 0 18px " + tA(0.28)) : "none" }
+        }, (joue ? "\u266b " : "\u266a ") + hsNomMusique(morceau))
+        : null,
+      props.proprio
+        ? h("button", {
+          onClick: function () { setChoixOuvert(!choixOuvert); },
+          style: { padding: "10px 14px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11, fontWeight: 600, border: "1px dashed " + tA(0.5), background: "transparent", color: tA(0.95) }
+        }, morceau ? "\u270e" : ("\u266a " + hsT("choisirChanson", lg)))
+        : null),
+    msg ? h("div", { style: { fontSize: 11, fontFamily: M, color: tnL, marginTop: 7 } }, msg) : null,
+    (choixOuvert && props.proprio)
+      ? h("div", { "data-hscroll": "1", style: { display: "flex", gap: 8, overflowX: "auto", padding: "10px 0 4px", WebkitOverflowScrolling: "touch" } },
+        [h("button", {
+          key: "pm0", onClick: function () { enregistrer(null); },
+          style: { padding: "9px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: morceau === null ? 800 : 600, border: "1px solid " + (morceau === null ? tA(0.7) : "rgba(255,255,255,0.18)"), background: "transparent", color: morceau === null ? tn : "#C9D3D8", flex: "0 0 auto", whiteSpace: "nowrap" }
+        }, hsT("sansMusique", lg))].concat(HS_MUSIQUES.map(function (m) {
+          var actif = (morceau === m.ref);
+          return h("button", {
+            key: "pm" + m.ref, onClick: function () { enregistrer(m.ref); },
+            style: { padding: "9px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: actif ? 800 : 600, border: "1px solid " + (actif ? tA(0.7) : "rgba(255,255,255,0.18)"), background: actif ? "rgba(32,217,245,0.12)" : "transparent", color: actif ? tn : "#C9D3D8", flex: "0 0 auto", whiteSpace: "nowrap" }
+          }, "\u266a " + m.nom);
+        })))
+      : null);
+}
+
+/* ---------------------------------------------------------------------------
    7. LE RAIL DES À LA UNE
    Sur la page Cavalier : les à la une DU CAVALIER AFFICHÉ (soi-même ou la
    personne visitée) — on vient voir cette page, donc ses à la une.
@@ -1276,7 +1414,7 @@ function RailALaUne(props) {
         if (couv && typeof vignetteHype === "function") couv = vignetteHype(couv, 200, 200);
         return h("button", {
           key: "une" + a.id,
-          onClick: function () { setOuverte(a); },
+          onClick: function () { hsAmorcerAudio(); setOuverte(a); },
           style: { background: "none", border: "none", padding: 0, cursor: "pointer", flex: "0 0 auto", width: T + 10, textAlign: "center" }
         },
           h("div", { style: { width: T, height: T, borderRadius: "50%", margin: "0 auto", padding: 2, background: "linear-gradient(135deg, rgba(255,255,255,0.22), " + tA(0.42) + ")" } },
@@ -1600,7 +1738,7 @@ function VisionneuseStories(props) {
   var estMoi = !!(groupe && props.moiId && groupe.user_id === props.moiId);
 
   React.useEffect(function () {
-    return function () { try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current = null; } } catch (e) { } };
+    return function () { try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current.__hsJoue = false; lecteurRef.current = null; } } catch (e) { } };
   }, []);
 
   /* Le son suit la pause du minuteur : feuille ouverte ou doigt posé =
@@ -1616,23 +1754,49 @@ function VisionneuseStories(props) {
   var sonActifRef = React.useRef(false);
   React.useEffect(function () { sonActifRef.current = sonActif; }, [sonActif]);
 
+  /* Coupure choisie : si le cavalier coupe le son, les stories suivantes ne
+     redémarrent pas toutes seules — son choix tient jusqu'à ce qu'il rallume
+     (comportement Instagram). */
+  var coupureRef = React.useRef(false);
+
+  function jouerMusique(ref) {
+    var url = ref ? hsUrlMusique(ref) : null;
+    if (!url || typeof Audio === "undefined") return false;
+    var a = (typeof window !== "undefined" && window.__hsLecteur) ? window.__hsLecteur : new Audio();
+    try {
+      a.muted = false;
+      a.loop = true;   /* l'extrait fait 30 s, une story jusqu'à 20 s : la boucle couvre tout */
+      a.src = url;
+      a.__hsJoue = true;
+      lecteurRef.current = a;
+      var p = a.play();
+      if (p && p.catch) p.catch(function () { setSonActif(false); a.__hsJoue = false; });
+      return true;
+    } catch (e) { return false; }
+  }
+  function couperMusique() {
+    try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current.__hsJoue = false; lecteurRef.current = null; } } catch (e) { }
+  }
+
   function basculerSon() {
     try {
-      var ref = story && story.musique;
-      var url = ref ? hsUrlMusique(ref) : null;
-      if (!url || typeof Audio === "undefined") return;
-      if (sonActif) {
-        if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current = null; }
-        setSonActif(false);
-        return;
-      }
-      var a = new Audio(url);
-      a.loop = true;   /* l'extrait fait 30 s, une story jusqu'à 20 s : la boucle couvre tout */
-      lecteurRef.current = a;
-      a.play().catch(function () { });
-      setSonActif(true);
+      if (sonActif) { couperMusique(); setSonActif(false); coupureRef.current = true; return; }
+      coupureRef.current = false;
+      if (jouerMusique(story && story.musique)) setSonActif(true);
     } catch (e) { }
   }
+
+  /* LE DÉMARRAGE AUTOMATIQUE (13/08, demande de Blandine) : la musique part
+     seule à l'arrivée de la photo, grâce au lecteur amorcé par le toucher
+     d'ouverture. Trois conditions : la story a une musique, la photo est là,
+     et le cavalier n'a pas coupé le son lui-même. Si iOS refuse, le catch de
+     play() remet la pastille sur ♪ : un toucher la relance. */
+  React.useEffect(function () {
+    if (!chargee || erreur || estAlbum) return;
+    var ref = story && story.musique;
+    if (!ref || coupureRef.current) return;
+    if (jouerMusique(ref)) setSonActif(true);
+  }, [chargee, (story && story.id) || ""]);
 
   function fermer() { if (props.onFermer) props.onFermer(); }
 
@@ -1669,7 +1833,7 @@ function VisionneuseStories(props) {
     /* Le son ne survit pas au changement de story : chaque photo a le sien
        (ou n'en a pas). Le choix d'écoute reste à refaire — règle iOS : on ne
        relance jamais un son sans geste. */
-    try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current = null; } } catch (eSn) { }
+    try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current.__hsJoue = false; lecteurRef.current = null; } } catch (eSn) { }
     setSonActif(false);
     if (!story) return;
     if (!estAlbum && story.photo_url && typeof hsTagsDeStory === "function") {
@@ -1844,9 +2008,11 @@ function VisionneuseStories(props) {
         (story.musique && hsUrlMusique(story.musique))
           ? h("button", {
             onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); basculerSon(); },
+            onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+            onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
             style: {
-              position: "absolute", right: 14, bottom: 14, zIndex: 5,
-              display: "flex", alignItems: "center", gap: 7, padding: "9px 14px",
+              position: "absolute", right: 14, bottom: 14, zIndex: 10,
+              display: "flex", alignItems: "center", gap: 8, padding: "11px 17px",
               borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700,
               border: "1px solid " + (sonActif ? tA(0.75) : "rgba(255,255,255,0.25)"),
               background: sonActif ? "rgba(32,217,245,0.14)" : "rgba(6,7,9,0.72)",
@@ -1899,8 +2065,12 @@ function VisionneuseStories(props) {
             transition: "opacity 220ms ease-out"
           }
         }),
-        h("button", { onClick: precedente, "aria-label": "Pr\u00e9c\u00e9dente", style: { position: "absolute", left: 0, top: 0, bottom: 0, width: "32%", background: "transparent", border: "none", cursor: "pointer" } }, ""),
-        h("button", { onClick: suivante, "aria-label": "Suivante", style: { position: "absolute", right: 0, top: 0, bottom: 0, width: "48%", background: "transparent", border: "none", cursor: "pointer" } }, "")),
+        h("button", { onClick: function () { hsAmorcerAudio(); precedente(); }, "aria-label": "Pr\u00e9c\u00e9dente", style: { position: "absolute", left: 0, top: 0, bottom: 74, width: "32%", zIndex: 1, background: "transparent", border: "none", cursor: "pointer" } }, ""),
+        /* 13/08 02h33 : les zones s'arretent A 74 px DU BAS de la photo — la
+           pastille son leur echappe. Blandine visait « ♪ Hype Beat », la zone
+           « suivante » prenait le tap : le son partait ET la story avancait,
+           d'ou « ca nous sort de force ». */
+        h("button", { onClick: function () { hsAmorcerAudio(); suivante(); }, "aria-label": "Suivante", style: { position: "absolute", right: 0, top: 0, bottom: 74, width: "48%", zIndex: 1, background: "transparent", border: "none", cursor: "pointer" } }, "")),
 
       h("div", { style: { padding: "12px 14px calc(env(safe-area-inset-bottom) + 14px)", background: "linear-gradient(180deg, rgba(17,20,23,0.9), #060709)", borderTop: "1px solid rgba(255,255,255,0.07)" } },
         story.lieu
@@ -2017,6 +2187,7 @@ try {
   if (typeof window !== "undefined") {
     window.BandeauStories = BandeauStories;
     window.RailALaUne = RailALaUne;
+    window.PastilleMusiquePage = PastilleMusiquePage;
     window.ChoixALaUne = ChoixALaUne;
     window.ModifierStory = ModifierStory;
     window.VisionneuseStories = VisionneuseStories;

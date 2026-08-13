@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 122 · STORIES v8 — RELANCE DU MINUTEUR, FEUILLES RECADRÉES, MUSIQUE DANS MODIFIER, REPRISE 1.8) — md5 `190d46638ffc3be3cbd5937c0f9a4328`, 9 098 032 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 8`**. `HYPE_VERSION_APP` reste **1.8** — la nouvelle note de mise à jour porte le même numéro, donc l'overlay « Quoi de neuf » s'affichera UNE fois à chaque cavalier (hype_maj_vue vaut encore « 1.1 »). **FICHIER COMPAGNON : `hype-stories.js` v8, md5 `1d12a6a15b58dac1efd3fa5eed9f6b31`, 118 300 octets, balise `?v=8`.** **AUCUN SQL nouveau** (la colonne `musique` est passée, confirmée 02h05). Les 11 mp3 sont déjà en ligne (v7).
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 124 · STORIES v10 — LA CHANSON DE MA PAGE) — md5 `e05edbc3b97121008ff32951f4a85725`, 9098414 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 10`**. Balise **`?v=10`**. **FICHIER COMPAGNON : `hype-stories.js` v10, md5 `d1f571f705c80479a42f7a03bf335e0c`, 129164 octets.** **UN SQL d'une ligne : `alter table public.profiles add column if not exists musique_page text;`** — repli codé si la colonne manque (message explicite à l'enregistrement, la pastille reste invisible).
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 122) :** `index.html` + `hype-stories.js` (v8). AUCUN SQL. `hype-cours-baby.js` inchangé (112), `hype-memory-poney.js` inchangé (v4, NE PAS repousser), `_headers` inchangé, aucune image, aucun mp3 nouveau. **SQL optionnel de nettoyage** (la clé `lien` ajoutée à l'annonce Linguae ce soir ne sert plus, elle est inoffensive) : `update public.commentaires set texte = replace(texte, '{"lien":"linguae",', '{') where cible = 'annonces-hype' and texte like '%"lien"%';` **EN ATTENTE DE BLANDINE :** le choix de la FORME (maquette 120) et le choix du BANDEAU de fond (`maquette-bandeaux-stories.html`, session 122) ; la décision à froid sur le bandeau de la page Cavalier visitée.
+**À POUSSER, état au 13/08 (session 124) :** `index.html` + `hype-stories.js` (v10) + le SQL `musique_page` ci-dessus. Aucun mp3 nouveau (les 11 de la v7 servent aussi à la chanson de page). Compagnons inchangés (baby 112, memory v4 — NE PAS repousser). **EN ATTENTE DE BLANDINE (design, à froid) :** la FORME (maquette 120), le BANDEAU de fond (maquette 122), la page Cavalier visitée.
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,59 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 124 · STORIES v10 — LA CHANSON DE MA PAGE
+
+**Demande de Blandine (13/08, ~02 h 45)** : « est-ce qu'on pourrait avoir un bouton pour avoir de la musique sur l'application si on le souhaite ? Genre sur sa page par exemple ? » Deux lectures présentées (A · la chanson de sa page, entendue par les visiteurs / B · une ambiance sur toute l'app), avec les conséquences de B (son coupé au verrouillage, règle de priorité avec les stories, batterie). **Décision de Blandine : A.**
+
+### LE COMPOSANT `PastilleMusiquePage` (module, exposé `window`)
+
+- **Pour tous** : si le cavalier affiché a choisi un morceau, une pastille « ♪ nom » sous le rail des à la une. Toucher = lecture en boucle, retoucher = coupure. **Jamais de lecture automatique à l'arrivée sur une page** — le « si on le souhaite » de Blandine + la règle iOS ; le toucher de la pastille est le geste, aucune amorce nécessaire.
+- **Pour le propriétaire** : un crayon (ou l'invitation « ♪ Choisir la chanson de ma page » s'il n'en a pas) ouvre la rangée des 12 puces (Sans musique + les 11 de la bibliothèque). L'enregistrement coupe la lecture en cours.
+- **Stockage** : `profiles.musique_page` (une colonne, la référence du morceau — jamais une URL). SQL d'une ligne, **repli codé** : si la colonne manque, message explicite à l'enregistrement, la pastille reste simplement invisible pour les visiteurs.
+- **Un seul lecteur dans toute l'app** (`window.__hsLecteur`, partagé avec les stories) : ouvrir une story à musique prend la main ; la chanson de la page **ne reprend pas toute seule** après — un toucher la relance. Quitter la page arrête la chanson (démontage).
+- Montée sur `EcranMonCavalier` sous le rail des à la une, cavalier affiché (visite ou soi), `proprio = !__visitePub`.
+
+### VÉRIFICATIONS
+
+- 16/16 blocs inline + module. **130 assertions** + 13 mentions. Nouvelles (10) : invitation du propriétaire, rien pour un visiteur sans morceau, pastille sans crayon pour un visiteur, 12 puces au choix ouvert, **zéro lecteur créé au rendu**, colonne `musique_page`, arrêt au départ de la page, montage et drapeau propriétaire dans l'index.
+- Rendu réel non vérifié : test de Blandine — SQL, push, choisir « Hype Beat » sur sa page, visiter la page de Gabrielle (rien ne doit s'afficher chez elle tant qu'elle n'a pas choisi).
+
+### Préparation Flutter (session 124)
+
+- Le domaine « musique » vit entièrement dans le module (bibliothèque, lecteur partagé, stories, chanson de page) : c'est une frontière propre, portable en un bloc.
+- Reste à moderniser : inchangé.
+
+---
+
+## SESSION 123 · STORIES v9 — LA MUSIQUE DÉMARRE SEULE, LES ZONES NE MANGENT PLUS LES BOUTONS
+
+**Retours de Blandine (13/08, ~02 h 30, v8 en ligne)** : la musique ne part pas à l'ouverture de la story · des stories « se ferment ou passent à la suivante » pendant qu'on « touche un bouton ou écrit » · « quand je clique sur le bouton de la chanson, ça m'emmène sur la story suivante » · puis, après y être arrivée : « elle peut pas se lancer seule quand les gens ouvrent la story ? » (feu vert du démarrage automatique).
+
+### 🟠 LA RACINE DES SORTIES FORCÉES — LES ZONES DE NAVIGATION MANGEAIENT LES BOUTONS
+
+Les deux zones invisibles précédent (32 %) / suivante (48 %) couvraient **toute la hauteur de la photo, pastille son comprise**. Blandine visait « ♪ Hype Beat », la zone « suivante » prenait le tap : la story avançait — et si une feuille venait de s'ouvrir, le changement de story la refermait (remise à zéro au changement), d'où l'impression d'être « sorti de force ». Correctif : **les zones s'arrêtent à 74 px du bas de la photo** (la rangée de la pastille leur échappe), zIndex explicites (zones 1, pastille 10), pastille **agrandie** (11×17 px de marges) et ses touchers ne remontent plus (`stopPropagation` sur touchstart/end aussi).
+
+### ♪ LE DÉMARRAGE AUTOMATIQUE — L'AMORCE PENDANT LE GESTE
+
+iOS interdit le son sans geste, mais accepte qu'un lecteur **déjà amorcé pendant un geste** rejoue ensuite. `hsAmorcerAudio()` amorce un lecteur partagé (`window.__hsLecteur`), muet, sur un fichier de silence — appelé au toucher du **rond du bandeau**, du **rail des à la une** et des **deux zones de navigation** (chaque tap est un geste, la story suivante peut donc démarrer aussi). À l'arrivée de la photo, si la story porte une musique : lecture automatique en boucle.
+
+- **Couper le son est un choix qui tient** : la pastille coupée, les stories suivantes ne redémarrent pas seules tant qu'on ne rallume pas (comportement Instagram, `coupureRef`).
+- **Repli honnête** : si iOS refuse malgré l'amorce, le `catch` de `play()` remet la pastille sur ♪ — un toucher la relance. Dit à Blandine avant livraison.
+- Un seul lecteur partagé, protégé contre l'écrasement pendant une lecture (`__hsJoue`) ; toutes les coupures (changement de story, fermeture, démontage) le libèrent.
+
+### VÉRIFICATIONS
+
+- `node --check` 16/16 + module. **120 assertions vertes** + 13 mentions. Nouvelles (10) : amorce présente et muette, appelée aux 4 points de geste, démarrage conditionné (photo là, pas d'erreur, pas d'album, pas de coupure choisie), repli sur échec de `play()`, les deux zones raccourcies, pastille au-dessus et agrandie, touchers non remontants, lecteur unique protégé.
+- **Leçon 122 appliquée** : les scripts multi-ancres écrivent après CHAQUE remplacement.
+- Rendu réel non vérifié : **le test de Blandine** — ouvrir une story avec musique depuis le rond (le son doit partir seul), toucher la pastille (couper, sans changer de story), passer à la suivante.
+
+### Préparation Flutter (session 123)
+
+- L'amorce audio est un pattern de plateforme documenté dans le code (geste → déblocage → lecture différée) : il se transpose tel quel (AVAudioSession côté natif).
+- Reste à moderniser : inchangé.
 
 ---
 

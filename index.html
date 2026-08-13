@@ -18747,7 +18747,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-stories.js?v=8"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-stories.js?v=10"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -24999,6 +24999,11 @@ function EcranMonCavalier() {
        Une a la une est un album de cible cavalier:<id> — aucune table nouvelle. */
     (typeof window !== "undefined" && window.RailALaUne)
       ? h(window.RailALaUne, { userId: (__visitePub && __visitePub.id) || (profil && profil.id) || null })
+      : null,
+    /* 13/08 (123-124) : la CHANSON DE MA PAGE (decision de Blandine, option A).
+       Pastille pour tous si un morceau est choisi ; le proprietaire choisit. */
+    (typeof window !== "undefined" && window.PastilleMusiquePage)
+      ? h(window.PastilleMusiquePage, { userId: (__visitePub && __visitePub.id) || (profil && profil.id) || null, proprio: !__visitePub })
       : null,
     /* 28/07 : alerte « ta photo n est pas visible par les autres » (page profil, non visite). */
     !__estVisite ? h(EncartPhotoInvisible, { T: T, onRemettre: function () { try { if (typeof modifierPhoto === "function") { modifierPhoto(); return; } } catch (e) { } try { var inp = document.querySelector('input[type=file]'); if (inp) inp.click(); } catch (e2) { } } }) : null,
