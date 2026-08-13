@@ -76,6 +76,181 @@
 
 ---
 
+# 🏇 SESSION 210 · 12–13/08 — LE CRASH AU ZOOM TRAQUÉ, TROIS OUTILS NÉS, UN BUG EN PRODUCTION CORRIGÉ
+
+## 🟥 CE QUI EST EN PRODUCTION ET NE DOIT PAS SE REPERDRE
+
+**`galop` affichait « Aussi : a gallop ».** Le concept portait `var:"a gallop"` en anglais. Deux dégâts simultanés, sur le mot le plus dangereux du chapitre :
+1. l'app présentait le faux ami comme **un synonyme acceptable** de `canter` ;
+2. `lingo.html` ligne 8168 teste `if(mc.var) … else if(c.def …)` — la présence du `var` **masquait l'avertissement `def`** écrit en six langues. Le texte « canter est le galop tranquille, gallop est le galop de course » ne s'affichait nulle part.
+
+**Corrigé** : `var` retiré, commentaire d'interdiction posé dans `hype-lingo-lex-arrivee.js`. Rendu simulé : l'app affiche désormais le `def`. Option A retenue (donnée seule) **parce qu'elle ne touche pas `lingo.html`**, alors pris par une autre conversation.
+
+⚠️ **LE MÊME MASQUAGE TOUCHE TROIS AUTRES MOTS** : `niveau` (var allemand `die Reitstufe`), `balade` (var anglais `the trail ride`), `attention` (var anglais `heads up!`). Ce sont de vrais synonymes, donc moins graves — mais **leurs `def` ne s'affichent pas non plus**, dont l'explication de `balade` (« hack est britannique, les Américains disent trail ride »). Le correctif de fond est le **C** : passer le `else if` en `if` pour afficher `var` ET `def`. Il attend que `lingo.html` soit libre. Décision de Blandine : « OK pour le galop, je te laisse gérer » — le choix de A est **une déduction de Claude**, C reste à valider.
+
+---
+
+## LE CRASH AU ZOOM — CE QU'ON SAIT MAINTENANT, CHIFFRES MESURÉS
+
+Symptôme rapporté par Blandine : « Un problème récurrent est survenu sur lingo.html », **au pincement, dès la page de choix de destination**, suivi d'un rechargement sur l'accueil.
+
+### Ce qui a été mesuré, pas supposé
+
+| objet | avant | après |
+|---|---|---|
+| décodage des 31 cartes de la page destination | **130 Mo** | **32 Mo** |
+| couches composites dues au `filter` | **31** | **0** |
+| couche de la page elle-même (1170 × 11695 px) | **55 Mo** | **55 Mo — INTACTE** |
+
+Le 130 Mo n'était pas une estimation : `lingo-controle-images.html` l'a mesuré fichier par fichier sur le site en ligne.
+
+### Les deux causes, et laquelle a été traitée
+
+**1. Le décodage — TRAITÉ.** La vignette empilait `carte-X.webp` (900×1200) **devant** `fond-X.webp`. Un fond CSS multiple **décode toutes ses couches**, même invisibles. Plus le `filter:brightness(1.12) saturate(1.06)` sur `.vimg`, qui promeut chaque carte en couche composite séparée — 31 couches re-rasterisées à chaque pincement, surface ×4.
+→ **Une seule couche désormais**, `carte-X-vignette.jpg` en 450×600, et plus de filtre.
+
+**2. La couche de la page — NON TRAITÉE.** Mesure au protocole LayerTree : la page destination est rasterisée dans **une couche de 1170 × 11695 pixels = 55 Mo**, soit **plus que les 31 images réunies**. Elle est proportionnelle à la **hauteur** de la page — 3 898 px CSS × 3 (rapport de pixels du téléphone de Blandine).
+
+⚠️ **RECTIFICATION D'UN CONSEIL FAUX DONNÉ À BLANDINE.** Il lui a été dit que les rails ne serviraient à rien contre le crash. **C'était vrai pour le décodage des images, faux pour cette couche** : les rails ramènent la page de 3 870 px à 2 085, donc **divisent ce poids par deux**. Blandine a écarté la bonne piste sur un conseil erroné. Erreur signalée.
+
+⚠️ **CE QU'ON NE SAIT TOUJOURS PAS.** Blandine a testé après le push : **« ça plante toujours au zoom »**. L'explosion de la couche de page au pincement est **la meilleure hypothèse restante, pas une certitude** : le pincement de Safari n'est pas reproductible dans l'environnement de travail (Chromium uniquement, et son `pageScaleFactor` émulé ne re-rasterise pas). `content-visibility:auto` a été essayé et **rejeté** : avec un `contain-intrinsic-size` inexact la page est passée de 3 898 à 5 210 px, donc pire.
+
+**DEUX VOIES POSÉES, AUCUNE TRANCHÉE :**
+- **A** · interdire le pincement sur cet écran — une ligne, plus de crash, mais plus de zoom ;
+- **B** · les rails — page à 2 085 px, le zoom redevient possible, mais c'est un changement de disposition.
+
+---
+
+## À L'ÉCRAN
+
+**− la page destination perd 12 % de luminosité et 6 % de saturation** sur ses vignettes (retrait du `filter`). Décision de Blandine : « en vrai si c'est 12 % plus claire ça me dérange pas au contraire », puis feu vert explicite sur le retrait.
+**− le flou de repli `fond-<ref>.webp` ne s'affiche plus** derrière les vignettes de la page destination. Il reste utilisé ailleurs. Conséquence annoncée avant livraison et acceptée : **s'il manque une vignette, la ville s'affiche sur son dégradé `ciel`, sans photo.**
+**+ rien.** Carte postale récompense, aperçu, collection, sellerie : inchangés.
+
+---
+
+## CE QUI A ÉTÉ LIVRÉ
+
+| fichier | quoi | à pousser ? |
+|---|---|---|
+| **`lingo.html`** md5 `cf7d0aa9` | 3 modifications, `?v=35` | oui, **après** les vignettes |
+| **`hype-lingo-lex-arrivee.js`** | `galop` corrigé + le dialogue de La Baule | oui |
+| **`lingo-controle-images.html`** | inventaire des images, en ligne | oui |
+| **`lingo-alleger-cartes.html`** | fabrique les vignettes sur le téléphone | oui |
+| `lingo-maquette-rails.html` | maquette de comparaison | **à supprimer** après décision |
+| `DIALOGUE-labaule-EN.md` · `-REDUIT.md` | documents de travail | non, l'app ne lit aucun `.md` |
+| 12 `carte-*.webp` cuites | **ne pas pousser** — voir plus bas | **non** |
+
+### Les trois modifications de `lingo.html`
+1. **ligne ~975** — `filter:brightness(1.12) saturate(1.06)` retiré de `.vc .vrec .vimg`, avec interdiction commentée d'y remettre `filter`, `opacity < 1` ou `transform` 3D.
+2. **ligne ~4809** — la vignette n'empile plus qu'une image, `carte-<ref>-vignette.jpg` + `VER`.
+3. **`var VER` → `?v=35`** — obligatoire, les neuf anciennes vignettes sont remplacées.
+
+**Vérifié en rendu réel** (Chromium, 390×844, ×2) sur banc reprenant le vrai CSS et la vraie ligne : 1 couche par vignette contre 2, 0 filtre contre 31, 31 URL résolues, aucune requête en échec, `node --check` sur les 31 blocs de script.
+
+---
+
+## LES TROIS OUTILS NÉS CETTE SESSION
+
+**`lingo-controle-images.html`** — interroge le site lui-même, ne croit aucun document. Pour chaque ville : quels fichiers existent, dimensions, poids réel, luminance mesurée, et **lesquels le code appelle contre lesquels dorment**. Bouton « Copier le rapport » : **c'est lui qui tue l'aller-retour d'images**. Décodage : deux images à la fois, canvas de 60×80, relâchées aussitôt — décoder les 31 d'un coup ferait planter l'onglet qu'on répare.
+
+**`lingo-alleger-cartes.html`** — fabrique les 31 vignettes **sur le téléphone de Blandine**, rend un `.zip` unique. Aucune image ne transite par Claude. ZIP en mode « stocké » écrit à la main (CRC32 + répertoire central), sans bibliothèque à charger en 5G.
+
+**`lingo-maquette-rails.html`** — comparateur à trois onglets : luminosité (rideau A/B/C, la carte « cuite » recalculée au canvas avec la matrice exacte du CSS), rails (deux rangements au choix, chargement différé réel par `IntersectionObserver`), mémoire (compteur de couches et de Mo). **Jetable.**
+
+---
+
+## CE QUE LE RAPPORT DE CONTRÔLE A RÉVÉLÉ
+
+**31/31 cartes présentes** · 9 fichiers dormaient · dépôt 6,7 Mo · **décodage 130 Mo**.
+
+**Trois cartes hors format**, non corrigées : `carte-labaule.webp` **1086×1448** (6,0 Mo décodés au lieu de 4,1), `carte-santaynez.webp` **1050×1400** (5,6 Mo), `carte-burghley.webp` **720×960** (2,6 Mo, donc **moins fine** que les autres à l'affichage). Les vignettes 450×600 règlent l'écart pour la page destination, **pas pour la carte postale plein écran**.
+
+**🟥 LES VIGNETTES SONT DES FOSSILES DATABLES — MÉTHODE À CONSERVER.** Les 9 anciennes `-vignette.webp` avaient été fabriquées depuis la carte de leur époque. En comparant leur luminance à celle de la carte actuelle, on sait si la carte a été refaite depuis :
+
+| ville | carte | vignette | verdict |
+|---|---|---|---|
+| connemara · lambourn · walsall · aberystwyth · windsor · kildare | = | = | inchangées |
+| edimbourg | 69 | 47 | refaite |
+| newmarket | 90 | 65 | refaite |
+| **hickstead** | **109** | **41** | **refaite, 2,7× plus claire** |
+
+C'est la réponse concrète à « je sais plus lesquelles sont les bonnes ». Trois cartes ont été régénérées sans trace.
+
+**Quatre cartes nettement plus claires que la moyenne de 79** : hickstead 109, jerez 111, vejer 107, rome 124. Pour jerez, vejer et rome il n'existe pas de vignette de référence, donc **aucun moyen de savoir** si c'est un choix d'image ou une régénération. La page ne tranche pas et ne doit pas prétendre le faire.
+
+---
+
+## DÉCISIONS DE BLANDINE (mots exacts)
+
+1. **Les deux formes régionales, pas une.** « Il faut préciser les deux ». `bombe` → *hat* 🇬🇧 + *helmet* 🇺🇸 · `balade` → *hack* 🇬🇧 + *trail ride* 🇺🇸. Le mécanisme **existait déjà** : le champ `var`, affiché « Aussi : … ». `balade` le portait correctement depuis le début.
+2. **Le filtre cuit accepté, puis abandonné.** « En vrai si c'est 12 % plus claire ça me dérange pas au contraire » → option A validée. **Puis Claude est revenu dessus** et Blandine a suivi : deux fichiers de même nom, un cuit un pas, sont indistinguables pour toujours — A fabriquait exactement le problème de « je sais plus lesquelles sont les bonnes ». **Les 12 cartes cuites livrées ne doivent pas être poussées.**
+3. **22 phrases pour La Baule.** « J'ai pas vu les phrases, mais les 22 et on fera du tri après s'il faut. »
+4. **Anglais seul d'abord.** « On avait dit qu'on mettait déjà que l'anglais en ligne pour tester ajuster avant de traduire le reste. » ⚠️ **Cette décision n'était tracée nulle part** — prise dans une autre conversation, jamais écrite. Elle l'est maintenant.
+5. **Le mot du guide retiré des documents.** « Oui retire les. » Puis la règle de ton, plus tranchante que celle de la PASSATION : **« on est pas là pour faire des déclarations sur la bienséance mais pour faire rêver et apprendre »**.
+6. **Les images de Linguae à part.** Demandé « dix fois » selon ses mots. ⚠️ **Toujours pas fait** — voir plus bas.
+7. **La règle d'extension, tranchée pour arrêter les contradictions** : `.webp` pour les objets découpés (transparence nécessaire), **`.jpg` pour les photos plein cadre**. « Un coup tu me fais jpg un coup non 🤷‍♀️ » — la faute est celle de Claude, qui a laissé deux règles se contredire.
+
+## DÉDUCTIONS DE CLAUDE — À VALIDER
+
+- **Option A plutôt que C** pour le `galop` (donnée seule, pour ne pas toucher `lingo.html`).
+- **450 × 600** pour les vignettes : 86 % de la finesse théorique d'un écran ×3, contre 69 % en 360 et 104 % en 540. 540 ramènerait à 188 Mo au zoom, dans la zone où l'onglet tombe.
+- **L'anglais suit le lexique** quand la traduction divergeait : `a hat is provided`, `at a canter`.
+- **Le dialogue posé dans une clé `dialogue` neuve**, et non dans `phrases` — y verser 22 phrases aurait modifié en silence un exercice qui tourne.
+- **Les découpages de rails** (par région et par thématique) sont de Claude.
+
+---
+
+## 🟥 LE DOSSIER `medias/linguae/` — POURQUOI DIX DEMANDES N'ONT RIEN PRODUIT
+
+`lingo.html` porte une variable **`PREF_MEDIAS`** (ligne ~3135) créée exactement pour ça. Son commentaire promet « une seule ligne à changer ». **C'est faux** : elle n'est utilisée qu'à **2 endroits sur 18**. Les seize autres appellent `carte-…`, `fond-…`, `objet-…` en dur. Changer la ligne ne déplacerait rien.
+
+⚠️ **Et le commentaire porte : « Décision du 12/08 : racine pour l'instant, à revoir. »** Le 12/08 est le jour où Blandine a redemandé le dossier. **Une session a donc décidé de garder la racine le jour même où elle demandait le contraire.** Ce n'était pas sa décision à prendre — c'est exactement l'interdit posé le 10/08.
+
+**Le vrai travail, en quatre étapes :** router les 16 appels restants par `PREF_MEDIAS` (mécanique, zéro changement visuel) · `PREF_MEDIAS = "medias/linguae/"` · déplacer les fichiers sur GitHub une fois · mettre à jour `_headers`.
+
+---
+
+## INCIDENTS DE CETTE SESSION — TOUS DE CLAUDE
+
+1. **Maquette livrée avec les images invisibles.** L'attribut `style` était écrit avec des guillemets doubles à l'intérieur d'un attribut lui-même délimité par des guillemets doubles : `style="background-image:url("carte-x.webp")"`. Le premier `"` intérieur fermait l'attribut. **`lingo.html` écrit `&quot;` précisément pour ça, ligne 4762 — c'était lu, et pas appliqué.** Détecté par une vidéo de Blandine, pas par Claude.
+2. **31 vignettes annoncées comme 24**, puis 24 corrigé en 31. Plage de fichier tronquée à la lecture.
+3. **« Un rail et demi par écran »** annoncé sans mesure ; c'est trois.
+4. **Page d'allègement livrée cassée** : `im.src = ""` pour libérer la mémoire déclenchait un `error` sur URL vide, qui rejetait la promesse **avant** la fin de l'encodage. Les 31 cartes échouaient. Trouvé avant livraison à Blandine.
+5. **🟥 14,9 Mo de vignettes livrées sans garde-fou.** Safari **ignore le paramètre de qualité du WebP** et a rendu du sans-perte : 480 Ko par fichier, contre 4,3 Mo pour les 31 cartes d'origine — pour quatre fois moins de pixels. **Chromium honore la demande, donc l'essai n'avait rien vu.** Détecté par Blandine sur une capture. Traitement : la page **encode une carte d'essai dans les deux formats, mesure ce qui sort, garde le plus léger**, nomme les fichiers d'après leur signature réelle, et **refuse au-delà de 0,55 octet par pixel** avec un bandeau rouge. Le déclenchement du garde-fou a été testé.
+6. **Un conseil faux sur les rails** (voir plus haut) qui a fait écarter la bonne piste.
+7. **Des notes « mot du guide » écrites alors que Blandine les avait retirées de ce périmètre**, et enfreignant ses propres règles : « a hat is lent, not hired » alors que « ne pas écrire *ça ne se loue pas* » était explicite.
+
+### LA LEÇON DE LA SESSION
+**`node --check` ne prouve que la syntaxe** — c'était déjà la leçon de la 209, et elle s'est reproduite deux fois. Nouveau cran, plus utile : **un environnement de test qui n'est pas celui de la cible ne prouve rien du comportement de la cible.** Chromium n'est pas Safari. Quand la vérification est impossible, **le contrôle doit être placé dans le produit livré**, pas dans l'essai : c'est ce qu'a fait le garde-fou de poids, et il a immédiatement servi.
+
+---
+
+## VERS L'APP STORE
+
+**Aucune régression d'indépendance.** Les quatre fichiers livrés sont autonomes ; aucun n'introduit de dépendance à Hype ; `hype-lingo-lex-arrivee.js` reste un fichier de données propre à Linguae.
+
+**Un pas en avant, indirect mais réel.** Le crash au pincement de la page destination était un **motif de rejet crédible** au titre de la règle 2.1 (Performance — App Completeness) : une app qui tue son onglet sur un geste standard ne passe pas une revue. Le décodage divisé par quatre y contribue ; **la couche de page de 55 Mo reste ouverte**, et avec elle le risque.
+
+**Deux outils qui survivront à la migration.** `lingo-controle-images.html` et `lingo-alleger-cartes.html` sont des outils d'atelier, hors de l'app : ils resteront utilisables quel que soit le socle technique. Le pipeline d'images (une source pleine, une vignette dérivée, un nom par état) est exactement le contrat qu'une app native réimplémentera à l'identique.
+
+**Restant à moderniser, par ordre de dette :** les 16 appels d'images en dur qui empêchent `PREF_MEDIAS` de servir · le `else if` de la ligne 8168 qui fait qu'un `var` masque un `def` · les deux autres écrans qui chargent encore les cartes pleines (thématiques et bandeau) et n'ont pas été touchés.
+
+---
+
+## EN ATTENTE DE BLANDINE
+
+1. **🟥 Le crash au zoom : A (interdire le pincement) ou B (les rails) ?** Rien d'autre n'avance tant que ce n'est pas tranché.
+2. **Le `else if` de la ligne 8168** (option C) — trois `def` restent masqués.
+3. **Le tri des 22 phrases**, si elle le veut : la version à 14 existe.
+4. **Les quatre langues manquantes** du dialogue + tout l'audio.
+5. **Les 9 anciennes `-vignette.webp`** : supprimables du dépôt, sans conséquence.
+6. **`_headers`** : les `.jpg` de vignettes n'y sont pas déclarés. Fichier non fourni.
+7. **`medias/linguae/`** : le vrai chantier en quatre étapes ci-dessus.
+8. **Les 12 cartes cuites** livrées : **à ne pas pousser**, et à supprimer des téléchargements pour ne pas les confondre plus tard.
+
+---
+
 # 🏇 SESSION 209 · 12/08 — LE MUR DES SELLES RÉCONCILIÉ, 23 VUES DÉCOUPÉES, HUIT DÉCISIONS PRISES
 
 **Aucun code écrit.** `lingo.html` n'a pas été ouvert : la session a servi à trancher ce qui bloquait, et à préparer les images. L'écran sellerie reste à écrire.
@@ -143,6 +318,29 @@ Inquiétude de Blandine, légitime : « on a dû les retoucher au moins 20 fois 
 6. **Le filet reste en réserve**, sans ville (« garde-le de côté pour l'instant et on verra à qui on l'attribue par la suite »).
 7. **Nommage des vues posées : option A validée** — `objet-<ref>.webp` (collection) · `pose-<ref>.webp` (perpendiculaire) · `pose-<ref>-34.webp` (trois quarts). Le préfixe `pose-` se déplacera en bloc le jour de l'indépendance du dépôt. **Économie signalée** : quand l'image de collection *est* la vue perpendiculaire, `pose-<ref>.webp` n'existe pas et le code retombe sur `objet-<ref>.webp` — vrai pour Lambourn et Connemara. *Déduction de Claude — à valider.*
 8. **Diplôme d'enseignant : une image sans texte lisible (option A validée).** Idée de Blandine, née du « carnet d'échelle » de Warendorf : un diplôme par langue. Retenu **dans son principe**, comme **chantier à part, après la sellerie**. Prompt de génération transmis (papier ivoire, sceau de cire bleu nuit, ruban or, cavalier gravé en médaillon, **lignes de texte suggérées par des traits, aucun caractère lisible**, fond transparent). ⚠️ Deux pièges signalés : le générateur glisse du faux latin ; ne jamais employer de vrai sigle d'État (BPJEPS, BHS).
+
+## ▸ 🟥🟥 L'ÉCRAN SELLERIE A ÉCHOUÉ À L'ESSAI — ACCÈS BLOQUÉ LE SOIR MÊME
+
+**Mots de Blandine, après essai sur son téléphone** : « je viens de tester la sellerie, c'est un véritable carnage » · « mettre son objet dans la sellerie c'est une catastrophe, on peut pas présenter ça » · « il manque un mur » · « le coquillage est déjà au milieu de la pièce quand j'arrive ».
+
+**DÉCISION : accès bloqué, code conservé.** L'onglet du carnet reste visible et porte « **Ma sellerie · Prochainement** », grisé et inerte, dans les 6 langues. Trois barrières : bouton `disabled`, écouteur retiré, `return` en tête de `ouvrirSellerie()`. `lingo-sellerie.html` **n'est plus appelé et ne doit pas être poussé**. Rien n'est jeté.
+**À l'écran : +** l'onglet « Prochainement ». **−** la phrase « Ranger cet objet dans ma sellerie », à l'écran d'arrivée **et** dans le récapitulatif.
+`lingo.html` md5 `267e28fb7e9c` (630 ko).
+
+### LES TROIS DÉFAUTS CONSTATÉS
+
+**1. Le chemin depuis la récompense ne s'ouvrait pas quand l'objet était déjà acquis.** Mots de Blandine : « le premier lien avant le cours pour le ranger dans la sellerie ne fonctionne pas même si on a l'objet, on est obligés de refaire tous les mots et là seulement le lien fonctionne après ». **Cause identifiée** : j'ai conditionné la phrase à `_obj` / `obj` — la variable qui dit « objet gagné **à l'instant**, dans cette session » — au lieu de `souvenirObtenu(ref)`, qui dit « objet **acquis** ». La collection, elle, teste la bonne. **Correction d'une ligne, à faire le jour de la réparation** ; la note est déjà écrite aux deux emplacements dans le fichier.
+
+**2. La scène devient noire après le premier mur.** Sur la vidéo, la première image est **correcte** — le mur du fond avec sa fenêtre, la réserve garnie. Ensuite tout disparaît : il ne reste que le bandeau et les boutons de zoom. Ce n'est donc pas un défaut de placement, **les murs cessent d'exister**. **Cause la plus probable** : dans `chargerMurs()`, le format d'un mur n'est enregistré que dans `t.onload`. Si l'image ne se charge pas (fichier absent en ligne, nom erroné), `FORMAT[id]` reste vide, et `calerMurs()` fait `if(!f) return;` — donc le calque `.dedans` ne reçoit **aucune dimension** : du vide. **Il n'existe AUCUN repli dans mon code, et c'est la faute de fond** : une image manquante doit donner un mur nu, jamais un écran noir. À écrire : un `onerror` qui pose un format par défaut (2:3) et un fond uni de la palette.
+
+**3. Un objet se trouve déjà posé à l'ouverture** (« le coquillage est déjà au milieu de la pièce quand j'arrive »). La sellerie devait s'ouvrir **VIDE** — c'est une règle établie en session 208, après « les selles par terre ». À instruire : soit un aménagement fantôme lu depuis la progression, soit ma boucle d'installation qui place sans pose enregistrée.
+
+### 🟥 CE QUE JE DOIS RECONNAÎTRE, ET QUI EST LA VRAIE LEÇON
+J'ai écrit **plus de 700 lignes d'un écran que je n'ai jamais vu tourner**, à partir d'une maquette que je ne peux pas ouvrir et de quatre points de calage relevés à l'œil, et je l'ai livré à Blandine comme s'il fonctionnait. Les `node --check` étaient verts : ils ne prouvent que la syntaxe, **rien du rendu**. Aucune de mes vérifications ne portait sur ce que voit la joueuse.
+**Règle à tenir** : sur un écran neuf entièrement visuel, ne pas annoncer « c'est écrit » mais « c'est écrit, non vu » — et prévoir un repli pour chaque ressource externe (image, iframe, police) AVANT la première livraison. Une ressource absente doit dégrader, jamais éteindre.
+
+### CE QU'IL FAUDRA POUR RÉPARER
+Blandine a fourni **deux captures vidéo** — la première montre le mur correct puis le noir, la seconde le retour au carnet. C'est la première fois que je vois cet écran tourner ; toute réparation doit repartir de là, pas de la maquette.
 
 ## ▸ LE DÉFI DE LA VILLE — ÉCRIT ET LIVRÉ
 

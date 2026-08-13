@@ -433,5 +433,156 @@ window.HYPE_LINGO_LEX.arrivee = {
       es:"No te muevas, cojo el caballo.",
       it:"Non muoverti, prendo il cavallo.",
       de:"Bleib liegen — ich fange das Pferd.",
-      ja:"動か ない で。 馬 は 捕まえ ます。" },]
+      ja:"動か ない で。 馬 は 捕まえ ます。" },],
+
+  /* ==================================================================
+     LE DIALOGUE DE LA BAULE — 13 août 2026, session 210.
+
+     🟥 CLÉ NOUVELLE, VOLONTAIREMENT INERTE. Aucun code ne la lit
+     aujourd'hui : le mode dialogue n'existe pas encore. La poser ici ne
+     change RIEN à l'écran, elle attend son moteur.
+
+     ⚠️ POURQUOI PAS DANS `phrases` : ce tableau alimente un exercice qui
+     tourne déjà. Y verser 22 phrases de dialogue aurait modifié cet
+     exercice en silence, sans que Blandine l'ait demandé.
+
+     LA RÈGLE DU CHAPITRE, posée session 209 : un dialogue n'emploie que
+     les mots de son chapitre, plus les universels. Les 12 mots de la
+     leçon 1 sont tous employés ci-dessous — c'est le test qui compte.
+
+     ÉTAT : français et anglais seulement. Décision de Blandine, 12/08 :
+     « on avait dit qu'on mettait déjà que l'anglais en ligne pour tester
+     ajuster avant de traduire le reste ». Manquent es, it, de, ja + tout
+     l'audio.
+
+     ⚠️ 22 PHRASES, et Blandine le sait : « les 22 et on fera du tri
+     après s'il faut ». Une version réduite à 14 existe dans
+     DIALOGUE-labaule-REDUIT.md, non retenue pour l'instant.
+
+     ⚠️ L'ANGLAIS SUIT LE LEXIQUE, PAS MES PRÉFÉRENCES. Là où ma
+     traduction divergeait des mots déjà enregistrés, le lexique gagne :
+     « a hat is provided » et non « hats are provided », « at a canter »
+     et non « at canter ». Sinon l'app enseignerait un mot et le dialogue
+     en emploierait un autre.
+
+     ⚠️ REGISTRE : anglais britannique d'écurie — sept étapes anglaises
+     suivent La Baule. `canter` JAMAIS `gallop` (voir le `def` de
+     `galop`), `hat` JAMAIS `helmet` dans la phrase, `hack` JAMAIS
+     `trail ride`. Les formes américaines vivent en `varEn`, décision de
+     Blandine du 12/08 : « il faut préciser les deux ».
+
+     🟥 AUCUN « MOT DU GUIDE » ICI. Son écriture ne relève pas de cette
+     conversation — décision de Blandine, PASSATION §6. Le nom est
+     tranché (« Le mot du guide ») et sa règle de ton est posée : on
+     n'écrit pas de déclarations sur la bienséance, on fait rêver et
+     apprendre. Mes essais ont été retirés pour cette raison.
+
+     `dit` : "joueuse" = elle produit la phrase · "club" = elle l'entend
+     et doit comprendre. 16 produites, 6 entendues.
+  ================================================================== */
+  dialogue: {
+    ville: "labaule", lecon: 1, temps: 6, langues: ["fr","en"],
+
+    phrases: [
+
+      /* ---- temps 1 · j'entre et j'explique pourquoi je suis là ---- */
+      { ref:"d-info-annee", temps:1, dit:"joueuse",
+        fr:"Bonjour, j'aimerais avoir des informations sur le centre équestre pour l'année prochaine.",
+        en:"Hello — I'd like some information about the riding school for next year." },
+
+      /* ---- temps 2 · je demande ce qui existe ---- */
+      { ref:"d-cours-debutants", temps:2, dit:"joueuse", mots:["debutant"],
+        fr:"Est-ce qu'il y a des cours pour débutants ?",
+        en:"Do you have lessons for beginners?" },
+
+      { ref:"d-cours-confirmes", temps:2, dit:"joueuse",
+        fr:"Et pour les cavaliers confirmés ?",
+        en:"And for more experienced riders?" },
+
+      { ref:"d-reserver-mercredi", temps:2, dit:"joueuse", mots:["reserver"],
+        fr:"Est-ce qu'on peut réserver le mercredi après-midi ?",
+        en:"Can I book for Wednesday afternoons?" },
+
+      /* ---- temps 3 · je dis mon niveau, je demande le tarif ---- */
+      { ref:"d-trois-ans", temps:3, dit:"joueuse",
+        fr:"Je monte depuis trois ans.",
+        en:"I've been riding for three years." },
+
+      { ref:"d-jamais-monte", temps:3, dit:"joueuse", mots:["debutant"],
+        fr:"Je suis débutante, je ne suis jamais montée.",
+        en:"I'm a beginner — I've never ridden before." },
+
+      { ref:"d-tarifs-annee", temps:3, dit:"joueuse", mots:["tarif"],
+        fr:"Quels sont vos tarifs pour l'année ?",
+        en:"What are your prices for the year?" },
+
+      /* ---- temps 4 · je comprends ce qu'on me demande ---- */
+      { ref:"d-q-niveau", temps:4, dit:"club", mots:["niveau"],
+        fr:"Quel est votre niveau ?",
+        en:"What level are you riding at?" },
+
+      { ref:"d-q-depuis-quand", temps:4, dit:"club",
+        fr:"Depuis combien de temps montez-vous ?",
+        en:"How long have you been riding?" },
+
+      { ref:"d-q-debutante", temps:4, dit:"club", mots:["debutant"],
+        fr:"Vous êtes débutante ?",
+        en:"Are you a complete beginner?" },
+
+      { ref:"d-q-allures", temps:4, dit:"club", mots:["pas","trot","galop"],
+        fr:"Vous êtes à l'aise au pas, au trot, au galop ?",
+        en:"Are you happy at a walk, a trot and a canter?" },
+
+      { ref:"d-q-deja-galope", temps:4, dit:"club", mots:["galop"],
+        fr:"Vous avez déjà galopé ?",
+        en:"Have you cantered before?" },
+
+      /* ---- temps 5 · l'équipement obligatoire ---- */
+      { ref:"d-bottes-bombe", temps:5, dit:"joueuse", mots:["bottes","bombe-fournie"],
+        fr:"Est-ce qu'il faut des bottes et une bombe ?",
+        en:"Do I need boots and a hat?",
+        varEn:"Do I need boots and a helmet?" },
+
+      { ref:"d-pas-de-bombe", temps:5, dit:"joueuse", mots:["bombe-fournie"],
+        fr:"Je n'ai pas encore de bombe — est-ce que vous en prêtez ?",
+        en:"I haven't got a hat yet — do you lend them?",
+        varEn:"I don't have a helmet yet — do you lend them?" },
+
+      { ref:"d-preter-bottes", temps:5, dit:"joueuse", mots:["bottes"],
+        fr:"Est-ce que vous prêtez des bottes aussi ?",
+        en:"Do you lend boots as well?" },
+
+      { ref:"d-bombe-fournie", temps:5, dit:"club", mots:["bombe-fournie"],
+        fr:"La bombe est fournie.",
+        en:"A hat is provided.",
+        varEn:"A helmet is provided." },
+
+      /* ---- temps 6 · je réserve ---- */
+      { ref:"d-cours-essai", temps:6, dit:"joueuse",
+        fr:"Est-ce que vous proposez des cours d'essai ?",
+        en:"Do you do trial lessons?" },
+
+      { ref:"d-quelles-conditions", temps:6, dit:"joueuse",
+        fr:"Si oui, dans quelles conditions ?",
+        en:"If so, how does that work?" },
+
+      { ref:"d-aussi-balades", temps:6, dit:"joueuse", mots:["balade"],
+        fr:"Est-ce que vous proposez aussi des balades ?",
+        en:"Do you do hacks as well?",
+        varEn:"Do you offer trail rides too?" },
+
+      { ref:"d-balade-cinq", temps:6, dit:"joueuse", mots:["reserver","balade","le-groupe"],
+        fr:"Je voudrais réserver une balade pour cinq personnes.",
+        en:"I'd like to book a hack for a group of five.",
+        varEn:"I'd like to book a trail ride for a group of five." },
+
+      { ref:"d-combien-coute", temps:6, dit:"joueuse", mots:["tarif"],
+        fr:"Combien est-ce que cela coûte ?",
+        en:"How much does that cost?" },
+
+      { ref:"d-cheval-calme", temps:6, dit:"joueuse", mots:["cheval-calme"],
+        fr:"Est-ce que vous avez un cheval calme ?",
+        en:"Have you got a quiet horse?" }
+    ]
+  }
 };
