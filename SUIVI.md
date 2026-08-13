@@ -16,13 +16,13 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 129 · STORIES v14 — PLUSIEURS PHOTOS, LE CHAPELET) — md5 `b8726fbcb2c7f1ed839d4cb8ac3d2eb2`, 9098961 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 14`**. Balise **`?v=14`**. **FICHIER COMPAGNON : `hype-stories.js` v14, md5 `52d174a26a90a99dce985487085ea2ae`, 142946 octets.** **AUCUN SQL nouveau** (le SQL `fond` de la 127 reste dû s'il n'est pas passé).
+**Version actuelle de l'index.html : 13/08/2026 (SESSION 130 · STORIES v15 — FOND IMMERSIF DÉSACTIVÉ) — md5 `8adef80ddfe5911ae91d2923c7464c2a`, 9098961 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 15`**. Balise **`?v=15`**. **FICHIER COMPAGNON : `hype-stories.js` v15, md5 `de69966381e7008b4a94b1e631b721df`, 143534 octets.** **AUCUN SQL** (la colonne `fond` reste en base, inoffensive et prête pour un éventuel retour).
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
 **L'ancienne 116** : md5 `9a535785e840b00f9c6765935d5b3013`, témoin `reprise 1.7 · stories 3`.
 
-**À POUSSER, état au 13/08 (session 129) :** `index.html` + `hype-stories.js` (v14) + `fond-stories.sql` si pas encore passé. Cet index cumule : stories v14 (multi-photos, glissé, retour, fond, menu ⋯), Lamotte masqué, Deborah. **EN ATTENTE DE BLANDINE :** la VIDÉO 15 s (choix présentés session 129, pas de feu vert) ; carte des clubs (a/b) ; musique sur toute l'app ; localisation temps réel (phrase à finir) ; design stories (3 maquettes) ; chanson de page trouvée ou pas.
+**À POUSSER, état au 13/08 (session 130) :** `index.html` + `hype-stories.js` (v15). AUCUN SQL. **EN ATTENTE DE BLANDINE :** vidéo 15 s (3 réponses attendues) ; carte des clubs (a/b) ; musique sur toute l'app ; localisation temps réel (phrase à finir) ; design stories (3 maquettes) ; chanson de page trouvée ou pas. **CHANTIER SUSPENDU :** fond immersif (bug : photo nette absente au-dessus du calque — diagnostic à faire sur téléphone si Blandine veut le rouvrir un jour).
 
 ⚠️ **LES 98 IMAGES DU MEMORY SONT À LA RACINE DU DÉPÔT, PAS DANS `images/`.** Elles y ont été poussées le 11/08 au soir, le code v3 les cherchait dans `images/` → 404 sur les 98, Memory dégradé une dizaine de minutes en ligne. Corrigé en **v4** du fichier Memory : les chemins sont `memory-<niveau>-<cle>.webp?v=1`, sans préfixe. **Ne pas « corriger » ce préfixe sans déplacer les fichiers d'abord.** Les anciens `kNNN` et les deux `memory-evan-maman-*.jpg` restent, eux, dans `images/` : les deux emplacements coexistent.
 
@@ -142,6 +142,26 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 130 · STORIES v15 — FOND IMMERSIF DÉSACTIVÉ (demande de Blandine)
+
+**Signalement de Blandine (13/08, 15 h 24, capture)** : « le fond immersif ne fonctionne pas, regarde ce que ça donne, il faut le retirer. » Sa capture : le calque flouté occupe tout l'écran, **la photo nette a disparu** au lieu de rester devant en contain. Cause non identifiée à distance (le calque est pourtant premier enfant, sans zIndex, pointerEvents none — la photo aurait dû peindre au-dessus ; hypothèses : interaction avec PhotoZoomHype ou compositing Safari du filter/transform). **Décision : extinction, pas de débogage à l'aveugle.**
+
+- `HS_FOND_IMMERSIF_ACTIF = false` verrouille les 4 points : sélecteur du composeur, calque de l'aperçu, sélecteur du Modifier, calque de la visionneuse. Rien n'est supprimé.
+- Le **contrat de données reste intact** : `hsPublierStory`/`hsModifierStory` portent toujours `fond`, les replis aussi, la colonne reste en base. La story « immersif » déjà publiée par Blandine (Santa Ponsa) s'affiche à nouveau sur fond noir, sans aucune action de sa part.
+- Pour rouvrir un jour : repasser la constante à `true` et diagnostiquer SUR téléphone (sa capture est la seule observation du bug).
+
+**À l'écran : − le sélecteur « Le fond » disparaît du composeur et de Modifier · les stories marquées « immersif » reviennent au fond noir.** Rien d'autre ne bouge.
+
+**Question de Blandine dans le même message** : « modifier la story déjà en ligne pour ajouter plusieurs [photos], c'est possible ? » Réponse donnée sans code : c'est déjà la nature du système — chaque photo est une story, publier de nouvelles photos les AJOUTE à la suite de son fil ; le chapelet v14 le fait en un geste. « Modifier » reste pour le texte/lieu/musique de chaque photo. Seule nuance dite : les nouvelles photos portent leur propre horodatage (« il y a X min »).
+
+### VÉRIFICATIONS
+16/16 + module. **178 assertions** + 13 mentions : 3 assertions de rendu de la 127 retournées (sélecteur absent même en paysage, aucun calque même si l'état porte « immersif », calque visionneuse verrouillé derrière la constante à false) ; les assertions du contrat de données inchangées.
+
+### Préparation Flutter (session 130)
+L'extinction par constante sur un paramètre porté par la donnée montre le découplage voulu : la donnée survit au retrait de l'interface. Rien d'autre.
 
 ---
 

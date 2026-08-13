@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "14";
+var HYPE_STORIES_VERSION = "15";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -128,6 +128,13 @@ var HS_MUSIQUES = [
    publient en chapelet et la visionneuse les déroule naturellement (elle
    enchaîne déjà les stories d'un même cavalier). 10 photos max par envoi. */
 var HS_MULTI_MAX = 10;
+/* 13/08 15h24 (demande de Blandine) : FOND IMMERSIF DESACTIVE. Sa capture
+   montrait le calque floute SEUL, la photo nette absente au lieu de rester
+   devant — retire en attendant un vrai diagnostic sur telephone. Pattern
+   projet : une constante, rien n'est supprime. La colonne `fond` reste en
+   base et le contrat de donnees la porte toujours ; une story marquee
+   "immersif" s'affiche simplement sur fond noir tant que c'est eteint. */
+var HS_FOND_IMMERSIF_ACTIF = false;
 var HS_SILENCE = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
 function hsAmorcerAudio() {
   try {
@@ -1177,7 +1184,7 @@ function ComposeurStory(props) {
         apercu
           ? h("div", { style: { marginTop: 16, borderRadius: 16, overflow: "hidden", background: "#060709", border: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "center", maxHeight: "38vh" } },
             h("div", { style: { position: "relative", overflow: "hidden" } },
-            (fond === "immersif")
+            (HS_FOND_IMMERSIF_ACTIF && fond === "immersif")
               ? h("div", { "aria-hidden": true, style: { position: "absolute", inset: -20, backgroundImage: "url(\"" + apercu + "\")", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(24px) brightness(0.5) saturate(1.05)", transform: "scale(1.12)", pointerEvents: "none" } })
               : null,
             h("img", {
@@ -1201,7 +1208,7 @@ function ComposeurStory(props) {
            fond flouté et assombri. Le sélecteur n'apparaît QUE pour ces
            photos ; une photo verticale n'en a pas besoin. Visible
            immédiatement dans l'aperçu ci-dessus. */
-        (apercu && dimPhoto && dimPhoto.w >= dimPhoto.hh)
+        (HS_FOND_IMMERSIF_ACTIF && apercu && dimPhoto && dimPhoto.w >= dimPhoto.hh)
           ? h("div", { style: { marginTop: 10 } },
             h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.7, textTransform: "uppercase", color: tA(0.92), marginBottom: 7 } }, hsT("fondTitre", lg)),
             h("div", { style: { display: "flex", gap: 8 } },
@@ -1755,7 +1762,7 @@ function ModifierStory(props) {
             }))
           : null,
 
-        (dimPhoto && dimPhoto.w >= dimPhoto.hh)
+        (HS_FOND_IMMERSIF_ACTIF && dimPhoto && dimPhoto.w >= dimPhoto.hh)
           ? h("div", null,
             h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.7, textTransform: "uppercase", color: tA(0.92), margin: "16px 0 8px" } }, hsT("fondTitre", lg)),
             h("div", { style: { display: "flex", gap: 8 } },
@@ -2158,7 +2165,7 @@ function VisionneuseStories(props) {
            scale : le halo du flou ne laisse pas de bord clair. pointerEvents
            none et AUCUN zIndex : les zones (1) et la pastille (10) restent
            au-dessus. Une story sans fond garde le noir d'aujourd'hui. */
-        (story.fond === "immersif" && chargee && !erreur && !estAlbum)
+        (HS_FOND_IMMERSIF_ACTIF && story.fond === "immersif" && chargee && !erreur && !estAlbum)
           ? h("div", { "aria-hidden": true, style: { position: "absolute", inset: -24, backgroundImage: "url(\"" + hsImageEcran(story.photo_url) + "\")", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(26px) brightness(0.5) saturate(1.05)", transform: "scale(1.12)", pointerEvents: "none" } })
           : null,
         h("style", { dangerouslySetInnerHTML: { __html: "@keyframes hsResp{0%,100%{opacity:.28;transform:scale(.9)}50%{opacity:.85;transform:scale(1.06)}}" } }),
