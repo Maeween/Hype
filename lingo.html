@@ -532,8 +532,31 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    retombe en bandes noires sans prevenir. Le film d'ouverture est desormais
    plein ecran par contrat, quel que soit le clip.
    ⚠️ `pointer-events:none` reste : c'est #ouvFilm qui recoit les taps. */
+/* ==================================================================
+   L'AFFICHE DE REPLI — 13 août 2026, session 210.
+
+   🟥 CE N'EST PAS UN REMPLACEMENT DU FILM. Blandine : « l'idée c'est
+   vraiment de rebrancher la vidéo ». Le film reste la regle ; l'affiche
+   ne se voit que s'il ne peut PAS jouer, et disparait des qu'il demarre.
+
+   POURQUOI ELLE EXISTE : iOS bloque toute lecture automatique quand le
+   MODE ECONOMIE D'ENERGIE est actif — meme une video muette et
+   `playsinline`. Le code posait alors la classe `refuse` et affichait un
+   bouton de lecture sur un ECRAN NOIR : ca ressemblait a une panne.
+   Aucun moyen de detecter ce mode, Safari ne le dit pas ; mais on n'en a
+   pas besoin, `refuse` est deja le bon signal quelle qu'en soit la cause.
+
+   Elle sert aussi pendant le TELECHARGEMENT du film en reseau lent : elle
+   est posee des le depart, sous la video, et celle-ci la recouvre en
+   fondu quand elle joue.
+
+   ⚠️ IMAGE TEMPORAIRE, a refaire (Blandine, 13/08 : « on verra plus tard
+   pour faire mieux »). Le rendu genere se voit sur la vegetation.
+================================================================== */
+#ouvAffiche{position:absolute;inset:0;background-size:cover;background-position:center;
+ pointer-events:none;z-index:1}
 #ouvVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
- pointer-events:none;transition:opacity .8s ease}
+ pointer-events:none;transition:opacity .8s ease;z-index:2}
 #ouvFilm.joue #ouvVid{opacity:1}
 
 /* ⚠️ v49 — LE VOILE NE COUVRE PLUS LE FILM PENDANT QU'IL JOUE. Il posait un
@@ -1096,6 +1119,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvRelance i{display:block;width:0;height:0;margin-left:6px;
  border-left:18px solid var(--turquoise);border-top:12px solid transparent;
  border-bottom:12px solid transparent}
+/* ⚠️ UN LIBELLE SOUS LE BOUTON — 13/08. Un triangle nu sur un ecran noir
+   se lit « la video est cassee ». Avec l'affiche derriere et ce texte,
+   on comprend qu'il y a un film a lancer. Traduit via `data-t`. */
+#ouvRelanceTxt{position:absolute;z-index:4;left:50%;top:50%;
+ transform:translate(-50%,calc(-50% + 66px));display:none;
+ font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:500;
+ letter-spacing:.16em;text-transform:uppercase;color:var(--blanc);
+ text-shadow:0 2px 12px rgba(0,0,0,.9);white-space:nowrap}
+#ouvFilm.refuse #ouvRelanceTxt{display:block}
 
 
 /* ==================================================================
@@ -2069,6 +2101,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      hauteur totale du carnet au lieu de l'écran, et son z-index la faisait
      passer par-dessus les boutons — le tap n'atteignait jamais « Entrer ». -->
 <div id="ouvFilm">
+  <div id="ouvAffiche"></div>
   <video id="ouvVid" muted playsinline webkit-playsinline preload="auto"></video>
   <div id="ouvVoile"></div>
   <button id="ouvPasser" data-t="passer">Passer</button>
@@ -2080,6 +2113,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <button id="ouvAccueil" type="button" data-t="allerAccueil">Accueil</button>
   <button id="ouvSuite" data-t="commenceVoyage">Commence ton voyage</button>
   <button id="ouvRelance" type="button" aria-label="Lancer le film"><i></i></button>
+  <span id="ouvRelanceTxt" data-t="lancerFilm">Lancer le film</span>
 </div>
 
 <!-- ==================================================================
@@ -5894,8 +5928,13 @@ function ouvrirSituation(refVille){
   var f = S("situationIf");
   if(!f) return;
   var lg = langueUI();
+  /* ⚠️ `c` = la langue APPRISE, celle du voyage (`cible()` -> VOYAGE_LANGUE).
+     Sans elle, la page fille rededuisait une cible de son cote et pouvait
+     contredire le reste de l'app. Une seule regle, celle d'ici. */
+  var cbl = ""; try{ cbl = cible() || ""; }catch(e){}
   f.src = "lingo-dialogue.html?ville=" + encodeURIComponent(refVille) +
-          "&l=" + encodeURIComponent(lg) + "&v=" + encodeURIComponent(VER);
+          "&l=" + encodeURIComponent(lg) + "&c=" + encodeURIComponent(cbl) +
+          "&v=" + encodeURIComponent(VER);
   S("situation").classList.add("on");
   /* 🟥 LE FILET. La page fille charge les lexiques elle-meme — une
      iframe a son propre `window` et ne voit pas le notre. Si une de ses
@@ -6854,6 +6893,8 @@ var UI = {
  lesPhrases:{fr:"Les phrases de la ville", en:"The city's phrases",
    es:"Las frases de la ciudad", it:"Le frasi della citt\u00e0",
    de:"Die S\u00e4tze der Stadt", ja:"この街のフレーズ"},
+ lancerFilm:{fr:"Lancer le film", en:"Play the film", es:"Ver la pel\u00edcula",
+   it:"Guarda il filmato", de:"Film starten", ja:"ムービーを再生"},
  reprendreRoute:{fr:"Reprendre la route", en:"Back on the road", es:"Seguir el camino",
    it:"Riprendi la strada", de:"Weiterreisen", ja:"旅を続ける"},
  motsChapitre:{fr:"Les mots du chapitre", en:"The words of this chapter",
@@ -10280,6 +10321,11 @@ function lancerFilm(){
      et revu l'ancienne, sans aucun moyen de comprendre pourquoi. C'est
      exactement le defaut documente en tete du SUIVI, reste vivant sur les
      deux seuls clips non parametres. */
+  /* l'affiche se pose EN MEME TEMPS que la source : elle couvre le noir
+     pendant le telechargement, et le film la recouvre en fondu. */
+  var aff=S("ouvAffiche");
+  if(aff && !aff.style.backgroundImage)
+    aff.style.backgroundImage = 'url("ouverture-affiche.webp'+VER+'")';
   v.src="ouverture.mp4"+VER;
   /* ⚠️ v46 : `ajusterCadrage(v)` RETIRE ICI. Il posait `object-fit` en style
      en ligne, donc il gagnait contre le `cover` de la feuille de style et
