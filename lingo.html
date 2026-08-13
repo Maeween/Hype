@@ -1161,7 +1161,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  width:38px;height:38px;border:1px solid rgba(255,255,255,.1);border-radius:50%;
  background:rgba(6,7,9,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
  color:var(--blanc);opacity:.82;font-size:26px;line-height:1;padding:0 3px 3px 0;cursor:pointer}
-#vue{position:relative;height:52svh;min-height:280px;overflow:hidden;
+/* ⚠️ 62svh DEPUIS LE 13/08 (etait 52svh). Blandine : « augmente la
+   taille de l'encart des videos d'arrivee car elles sont beaucoup
+   tronquees et en bas de la page t'as juste le debut du titre
+   suivant ». Les clips sont cadres a la verticale ; a 52svh avec
+   `object-fit:cover`, on en perdait le haut et le bas.
+   ⚠️ NE PAS DEPASSER ~65svh : au-dela, le titre de la ville et le
+   chapitre passent sous la ligne de flottaison sur un petit iPhone, et
+   on n'a plus aucun texte a l'ouverture. */
+#vue{position:relative;height:62svh;min-height:330px;overflow:hidden;
  background:linear-gradient(165deg,#16222E,#0A1016 70%)}
 #vue video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   /* ⚠️ Ajouté le 6 août 2026 — hypothèse sur « La Baule ne se lit pas en
@@ -9606,6 +9614,10 @@ S("chSortie").addEventListener("click", function(){
    ⚠️ Écouté aussi sur hashchange : quand on est DÉJÀ sur la page, ouvrir un
    lien de duel ne change que l'ancre et le script ne se relance pas — sans
    ça, un frère qui clique le lien depuis Linguae ne voyait rien se passer. */
+/* La ville demandee par un lien de partage, gardee de cote tant que le
+   film d'ouverture occupe l'ecran. Lancee par `terminerOuverture()`. */
+var VILLE_EN_ATTENTE = null;
+
 function lireAncre(){
   var m=/^#duel=([a-z0-9]+)(?:-(\d+))?$/.exec(location.hash||"");
   if(m){
@@ -9650,15 +9662,34 @@ function lireAncre(){
       ouvrirLecon(ref);
       /* la mise en situation ne s'ouvre que si la ville en a une */
       if(quoi==="situation" && aUnDialogue(ref)) ouvrirSituation(ref);
+      /* l'ancre est consommee : sans ca, un retour arriere du navigateur
+         rouvrirait la ville en boucle. */
+      try{ history.replaceState(null, "", location.pathname + location.search); }catch(e){}
     };
     /* si le film tourne encore, on attend qu'il ait fini ou qu'on l'ait
        coupé — sinon la ville s'ouvre derrière lui, invisible. */
-    /* ⚠️ PAS DE setInterval — 13/08, apres le lag. La premiere version
-       sondait le DOM toutes les 400 ms pendant 24 secondes, meme quand
-       le film etait deja fini. Un seul rendez-vous suffit. */
-    if(S("ouverture") && S("ouverture").classList.contains("joue")){
-      setTimeout(lancer, 1200);
-    } else lancer();
+    /* 🟥 CORRIGE LE 13/08 APRES ESSAI DE BLANDINE : « quand je clique sur
+       le lien de La Baule ca me remet encore a l'accueil ».
+       CE QUI N'ALLAIT PAS : j'attendais 1,2 s en supposant que le film
+       demarre tout seul. Or l'ecran d'ouverture attend un appui sur
+       « Commence ton voyage » et peut rester la indefiniment. Au bout de
+       1,2 s la ville s'ouvrait DERRIERE le film, puis l'ouverture
+       reprenait la main et deposait sur l'accueil.
+       ⚠️ NE JAMAIS DEVINER LA DUREE DE L'OUVERTURE. On met la ville EN
+       ATTENTE, et c'est `terminerOuverture()` — le seul endroit qui
+       retire la classe `joue` a la fin du film — qui la lance. */
+    /* 🟥 LE FILM EST SAUTE SUR UN LIEN DE VILLE — 13/08, session 210.
+       ⚠️ CECI CHANGE LA DECISION DU 10/08 (v62), qui disait que le film
+       joue a CHAQUE connexion, « a la tete des liens de partage »
+       comprise. Blandine, 13/08, mots exacts : « le film de l'accueil on
+       s'en fout mets nous directement sur la page La Baule ».
+       La regle du 10/08 reste entiere pour une connexion NORMALE et pour
+       le lien de partage GENERAL : seul un lien qui vise une ville
+       precise saute le film. Quelqu'un a qui on partage La Baule veut
+       voir La Baule, pas un film de trente secondes.
+       ⚠️ NE PAS ETENDRE CE SAUT aux autres entrees. */
+    S("ouverture").classList.remove("joue");
+    lancer();
     return true;
   }
   return false;
@@ -10364,6 +10395,23 @@ function terminerOuverture(){
   if(window.__introApresFilm){
     window.__introApresFilm=false;
     try{ montrerIntro(); }catch(e){}
+  }
+  /* ⚠️ AJOUT DU 13/08 — LA VILLE D'UN LIEN DE PARTAGE.
+     C'est ici, et nulle part ailleurs, qu'on sait que l'ouverture est
+     vraiment finie. Un lien #lecon=<ville> a mis sa ville de cote ; on
+     l'ouvre maintenant, apres la presentation eventuelle, pour qu'elle
+     ne se pose pas derriere.
+     ⚠️ On efface l'ancre : sans ca, un retour arriere du navigateur
+     rouvrirait la ville en boucle. */
+  /* filet : si un jour une entree remet une ville en attente au lieu de
+     la lancer tout de suite, elle s'ouvrira ici. */
+  if(VILLE_EN_ATTENTE){
+    var aLancer = VILLE_EN_ATTENTE;
+    VILLE_EN_ATTENTE = null;
+    setTimeout(function(){
+      try{ aLancer(); }catch(e){}
+      try{ history.replaceState(null, "", location.pathname + location.search); }catch(e){}
+    }, 320);
   }
 }
 
