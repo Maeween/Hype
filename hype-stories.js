@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19n";
+var HYPE_STORIES_VERSION = "19o";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -992,6 +992,7 @@ var HS_TXT = {
   presentation: { fr: "Pr\u00e9sentation", en: "Layout", es: "Presentaci\u00f3n", it: "Presentazione", ja: "\u30ec\u30a4\u30a2\u30a6\u30c8", de: "Anordnung" },
   defiler: { fr: "D\u00e9filer", en: "One by one", es: "Deslizar", it: "Scorrere", ja: "\u9806\u756a\u306b\u8868\u793a", de: "Nacheinander" },
   composer: { fr: "Composer", en: "Compose", es: "Componer", it: "Comporre", ja: "\u7d44\u307f\u5408\u308f\u305b\u308b", de: "Komponieren" },
+  retirerPhoto: { fr: "Retirer cette photo", en: "Remove this photo", es: "Quitar esta foto", it: "Togliere questa foto", ja: "\u3053\u306e\u5199\u771f\u3092\u524a\u9664", de: "Dieses Foto entfernen" },
   decorDemande: { fr: "Ce d\u00e9cor demande %n photos.", en: "This frame needs %n photos.", es: "Este marco necesita %n fotos.", it: "Questa cornice richiede %n foto.", ja: "\u3053\u306e\u30d5\u30ec\u30fc\u30e0\u306b\u306f\u5199\u771f%n\u679a\u304c\u5fc5\u8981\u3067\u3059\u3002", de: "Dieser Rahmen braucht %n Fotos." },
   decorDemande1: { fr: "Ce d\u00e9cor demande une seule photo.", en: "This frame needs a single photo.", es: "Este marco necesita una sola foto.", it: "Questa cornice richiede una sola foto.", ja: "\u3053\u306e\u30d5\u30ec\u30fc\u30e0\u306b\u306f\u5199\u771f1\u679a\u304c\u5fc5\u8981\u3067\u3059\u3002", de: "Dieser Rahmen braucht ein einzelnes Foto." },
   decor: { fr: "Le d\u00e9cor", en: "The frame", es: "El marco", it: "La cornice", ja: "\u30d5\u30ec\u30fc\u30e0", de: "Der Rahmen" },
@@ -1355,6 +1356,23 @@ function ComposeurStory(props) {
     else if (props.fichier) fichiers = [props.fichier];
   } catch (eF) { fichiers = props.fichier ? [props.fichier] : []; }
 
+  /* 19o (14/08, signalement de Blandine) : « quand on met les photos on peut
+     plus en retirer une pour passer de 4 a 3, meme avant de publier ». Il
+     fallait tout annuler et recommencer la selection. On garde donc les
+     photos ECARTEES (par leur index d'origine) et on les retire de la liste. */
+  var ecS = React.useState({}), ecartees = ecS[0], setEcartees = ecS[1];
+  var fichiersBruts = fichiers;                       /* la selection d'origine */
+  fichiers = fichiersBruts.filter(function (f, ix) { return !ecartees[String(ix)]; });
+  function ecarterPhoto(f) {
+    try {
+      if (fichiers.length <= 1) return;               /* jamais la derniere */
+      var ixBrut = fichiersBruts.indexOf(f);
+      if (ixBrut < 0) return;
+      setEcartees(function (anc) { var n = Object.assign({}, anc); n[String(ixBrut)] = true; return n; });
+      setOrdre(null); setVue(0); setCadrages({});     /* les rangs changent */
+    } catch (e) { }
+  }
+
   /* Le geste retour (bord d'écran iOS) ferme le composeur SEUL — signalement
      de Blandine (13/08, 15h40) : glisser entre les photos déclenchait le
      retour système, qui fermait TOUT et changeait de page. Même rail que la
@@ -1409,10 +1427,10 @@ function ComposeurStory(props) {
     setUrlsMini([]);
     (async function () {
       var res = [];
-      for (var i = 0; i < fichiers.length; i++) {
+      for (var i = 0; i < fichiersBruts.length; i++) {
         if (!vivant) break;
         var u = null;
-        try { u = await hsVignetteFichier(fichiers[i], 200); } catch (e) { u = null; }
+        try { u = await hsVignetteFichier(fichiersBruts[i], 200); } catch (e) { u = null; }
         if (!vivant) { hsLibererUrl(u); break; }
         res.push(u);
         if (u) faites.push(u);
@@ -1789,15 +1807,29 @@ function ComposeurStory(props) {
                 : []).concat(fichiersOrdonnes.map(function (f, ix) {
                   var actifV = (ix === vueSure);
                   var uMini = null;
-                  try { var posBrut = fichiers.indexOf(f); uMini = urlsMini[posBrut] || null; } catch (eU) { }
-                  return h("button", {
-                    key: "th" + ix,
+                  try { var posBrut = fichiersBruts.indexOf(f); uMini = urlsMini[posBrut] || null; } catch (eU) { }
+                  return h("div", { key: "th" + ix, style: { flex: "0 0 auto", position: "relative" } },
+                    /* 19o : la croix de retrait. Elle n'apparait qu'a partir
+                       de deux photos — on ne retire pas la derniere. */
+                    (fichiersOrdonnes.length > 1)
+                      ? h("button", {
+                        onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); ecarterPhoto(f); },
+                        "aria-label": hsT("retirerPhoto", lg),
+                        style: {
+                          position: "absolute", top: -5, right: -5, zIndex: 2,
+                          width: 21, height: 21, borderRadius: 999, cursor: "pointer",
+                          border: "1px solid rgba(255,255,255,0.3)", background: "rgba(10,12,14,0.92)",
+                          color: "#F4F7FA", fontFamily: M, fontSize: 12, fontWeight: 700, lineHeight: "19px", padding: 0
+                        }
+                      }, "\u00d7")
+                      : null,
+                    h("button", {
                     onClick: function () { setVue(ix); },
-                    style: { flex: "0 0 auto", padding: 0, border: "none", background: "none", cursor: "pointer" }
+                    style: { padding: 0, border: "none", background: "none", cursor: "pointer", display: "block" }
                   },
                     uMini
                       ? h("img", { src: uMini, alt: "", style: { width: 52, height: 68, objectFit: "cover", borderRadius: 10, display: "block", border: "2px solid " + (actifV ? tn : "rgba(255,255,255,0.16)"), boxShadow: actifV ? ("0 0 12px " + tA(0.35)) : "none" } })
-                      : h("div", { style: { width: 52, height: 68, borderRadius: 10, background: "#111417", border: "2px solid " + (actifV ? tn : "rgba(255,255,255,0.16)") } }));
+                      : h("div", { style: { width: 52, height: 68, borderRadius: 10, background: "#111417", border: "2px solid " + (actifV ? tn : "rgba(255,255,255,0.16)") } })));
                 }))),
             (fichiersOrdonnes.length > 1 && vueSure > 0)
               ? h("button", {
