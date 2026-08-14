@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19h";
+var HYPE_STORIES_VERSION = "19i";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -2504,6 +2504,12 @@ function CompositionStory(props) {
      hype-stories.js:2457:17, la colonne 17 tombe exactement sur ce `h(`.
      Cause de « la 3e story ne s'affiche pas et bug ». */
   var h = React.createElement;
+  /* 19i (14/08) : `M` manquait AUSSI. Meme faute que le `h` de la 19e, et mon
+     audit ne surveillait que `h` — il couvre desormais toutes les variables de
+     rendu du module. Ne plantait que si la story portait une LEGENDE : la
+     composition de Blandine en a herite en absorbant sa story en ligne, d'ou
+     le plantage a hype-stories.js:2581:42 (colonne 42 = `fontFamily: M`). */
+  var M = "'Montserrat',sans-serif", C = "'Cinzel',Georgia,serif";
   var story = props.story || {}; var lg = props.langue || "fr";
   var membres = (story.compo && story.compo.length ? story.compo : [story]);
   var plS = React.useState(null), plein = plS[0], setPlein = plS[1];

@@ -7229,3 +7229,31 @@ Catalogue : **26 modèles** — 14 à une fenêtre, 2 à deux, 8 à trois, 1 à 
 **Préparation Flutter** : `hsVignetteCassee` centralise la politique d'échec d'image du module en une seule fonction — en natif, elle devient le `errorBuilder` unique du widget image.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19f** · modèles 28.
+
+### Session 140b — stories 19g : tout le catalogue, toujours visible
+
+**Décision de Blandine** (ses mots) : « On montre tout je pense ». Option A retenue.
+
+**Le problème** : un décor n'apparaissait que s'il avait **exactement** autant de fenêtres que de photos choisies. Avec 2 photos, 2 décors sur 28 ; d'où sa réaction « normalement il y en a beaucoup plus !! » et l'impression que la moitié du catalogue avait disparu.
+
+**Livré** : `hsTousModeles(n)` — tout le catalogue, **les compatibles en tête**, puis les autres par nombre de fenêtres croissant. `hsFenetresDe(ref)`. Une **bande commune** (`bandeModeles`) sert désormais les deux endroits : le bloc « Le décor » (1 photo, avec la puce **Aucun** conservée) et la bande sous « Composer » (2 à 5). Un décor incompatible est **grisé** (opacité 0,35 + `grayscale`), porte son **chiffre** dans une pastille, et ne se sélectionne pas : une phrase apparaît alors — « Ce décor demande 3 photos. » (ou « une seule photo »). Textes en 6 langues : `decorDemande`, `decorDemande1`.
+
+**À l'écran** : + les 28 décors visibles quel que soit le nombre de photos · + une pastille chiffrée sur chaque vignette · + la phrase d'explication au tap d'un décor grisé · − plus aucune vignette masquée.
+
+**Déduction de Claude — à valider** : un décor grisé n'est pas sélectionnable (il informe au lieu de se choisir). L'autre voie serait de le choisir et de réclamer les photos manquantes — c'était l'option B, écartée.
+
+Harnais : **188 assertions vertes** (dont la puce « Aucun », qui avait sauté au recâblage et que le harnais a rattrapée avant livraison). `index.html` : `hype-stories.js?v=19g`.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19g** · modèles 28.
+
+### Session 140c — stories 19h puis 19i : le tap, puis le `M` manquant
+
+**19h** — le tap sur une photo de composition **fermait** la story (« quand je vais cliquer sur la troisième story pour la fermer ou l'agrandir ça la ferme »). Arrêter `touchstart` ne suffisait pas : la visionneuse décide à la **fin** du geste. `touchend`, `pointerdown` et `pointerup` sont désormais arrêtés eux aussi. Ajouté `WebkitClipPath` à côté de `clipPath` par prudence Safari.
+
+**19i — LE `M` MANQUANT, même faute que le `h` de la 19e.** Trace de Blandine (11h38) : `CompositionStory@hype-stories.js:2581:42` — la colonne 42 tombe sur `fontFamily: M`. `CompositionStory` déclarait `h` (corrigé en 19e) mais **pas `M`**. Le plantage ne survenait que si la story portait une **légende** : sa composition en a hérité en absorbant sa story en ligne, d'où la découverte tardive. Correctif : `var M`, `var C` en tête du composant.
+
+**L'audit posé en 19e ne surveillait que `h` — c'est ma vraie faute.** Remplacé par `audit_vars.js` : il retire commentaires et chaînes, puis vérifie que chaque fonction déclare **h, M, C, tn, tnL, tA, th, lg** quand elle les utilise (déclarations en cascade et fonctions locales reconnues). Testé à l'envers : en retirant volontairement le `M` de `CompositionStory`, l'audit l'attrape. Branché dans le harnais — **191 assertions vertes**.
+
+**Toujours en attente** : le décor de sa capture de 06h15 (lune, mer, deux cadres inclinés) a des photos qui débordent des cadres — la géométrie enregistrée ne correspond pas à l'image affichée. Il faut identifier le décor et me passer son `.webp` pour relancer la découpe. Rien deviné, rien touché.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19i** · modèles 28.
