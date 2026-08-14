@@ -9758,7 +9758,29 @@ function lireAncre(){
     if(!connue) return false;
     var lancer = function(){
       S("intro").classList.remove("on"); S("dest").classList.remove("on");
-      ouvrirLecon(ref);
+      /* 🟥 14/08 — ON ARRIVE SUR LA PAGE DE LA VILLE, PAS SUR LE PREMIER MOT.
+         Blandine, apres essai : « maintenant j'arrive sur le premier mot au
+         lieu d'arriver sur la page de La Baule ».
+
+         `ouvrirLecon()` entre directement dans la lecon la ou l'on en est —
+         c'est sa raison d'etre depuis ta decision du 10/08 (« on peut les
+         retirer ces deuxiemes pages la »). Sur un appareil neuf, « la ou
+         l'on en est » vaut donc le premier mot. Ce n'est pas un defaut de
+         `ouvrirLecon()`, c'est qu'un lien de partage ne veut pas la meme
+         chose qu'un cavalier qui reprend son voyage.
+
+         L'ecran voulu est l'ARRIVEE, et son chemin existe deja :
+         `partirVersVille(i)` = `allerA(i)` + `ouvrirArrivee(i)` + escamotage
+         du carnet. On s'en sert tel quel plutot que de le recopier.
+         ⚠️ Effets nommes a Blandine avant codage, et acceptes : le rail se
+         positionne sur la ville visee, et l'arrivee joue le clip de la ville
+         (`arrivee-<ref>.mp4`) — pas le film d'ouverture.
+         ⚠️ `partirVersVille()` pose `parti` lui-meme au bout de 340 ms ;
+         celui qu'on pose plus haut reste utile pour l'intervalle. */
+      var iVille = -1;
+      ETAPES.forEach(function(x,k){ if(x.ref===ref) iVille=k; });
+      if(iVille>=0) partirVersVille(iVille);
+      else ouvrirLecon(ref);   /* filet : jamais atteint, `connue` l'a deja verifie */
       /* la mise en situation ne s'ouvre que si la ville en a une */
       if(quoi==="situation" && aUnDialogue(ref)) ouvrirSituation(ref);
       /* l'ancre est consommee : sans ca, un retour arriere du navigateur
