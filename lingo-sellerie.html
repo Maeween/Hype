@@ -93,6 +93,21 @@ body{background:#0B0805;font-family:'Montserrat',sans-serif;color:#E8DCC0}
  z-index:21;background:rgba(11,8,5,.85);border:1px solid rgba(201,169,97,.3);border-radius:12px;
  padding:9px 14px;font-size:10.5px;color:#C9AE6E;pointer-events:none;opacity:0;transition:opacity .3s}
 #aide.on{opacity:1}
+/* ⚠️ AJOUT DU 14/08 — LE BANDEAU D'INCIDENT.
+   Le 12/08 la page est morte en silence : ecran noir, aucun message. Une
+   page qui meurt sans rien dire est un defaut en soi. Ce bandeau affiche
+   l'erreur EN CLAIR, par-dessus tout, et ne se ferme qu'au doigt. Il ne
+   coute rien tant que rien ne casse. A retirer quand la sellerie sera
+   sereine — c'est un filet, pas un meuble. */
+#incident{position:fixed;left:0;right:0;bottom:0;z-index:99;
+ background:#3A1414;border-top:1px solid #C9A961;color:#F0DCC0;
+ font-size:11px;line-height:1.5;padding:12px 16px calc(env(safe-area-inset-bottom) + 12px);
+ display:none;max-height:45vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#incident.on{display:block}
+#incident b{color:#E8B04B;display:block;font-size:9px;letter-spacing:.2em;
+ text-transform:uppercase;margin-bottom:6px}
+#incident i{display:block;font-style:normal;margin-top:5px;
+ color:rgba(240,220,192,.6);font-size:10px}
 </style>
 </head>
 <body>
@@ -112,6 +127,35 @@ body{background:#0B0805;font-family:'Montserrat',sans-serif;color:#E8DCC0}
   <p id="resVide"></p>
 </div>
 <div id="aide"></div>
+<div id="incident"><b>Incident</b><span id="incidentTxt"></span><i>Touche pour fermer</i></div>
+
+<script>
+/* ⚠️ AJOUT DU 14/08 — L'ATTRAPE-ERREUR, POSE AVANT TOUT LE RESTE.
+   Il est ici, en tete de page, pour saisir aussi les erreurs qui
+   surviendraient pendant la construction de l'ecran. `signaler()` est
+   volontairement autonome : il ne depend d'aucune fonction du fichier,
+   pour rester vivant meme quand le reste est tombe. */
+function signaler(t){
+  try{
+    var b = document.getElementById('incident');
+    var s = document.getElementById('incidentTxt');
+    if(!b || !s) return;
+    s.textContent = (s.textContent ? s.textContent + ' · ' : '') + t;
+    b.classList.add('on');
+  }catch(e){}
+}
+window.addEventListener('error', function(ev){
+  signaler((ev.message || 'erreur') +
+           (ev.lineno ? ' (ligne ' + ev.lineno + ')' : ''));
+});
+window.addEventListener('unhandledrejection', function(ev){
+  signaler('promesse rejetee : ' + (ev.reason && ev.reason.message ? ev.reason.message : ev.reason));
+});
+document.addEventListener('DOMContentLoaded', function(){
+  var b = document.getElementById('incident');
+  if(b) b.addEventListener('click', function(){ this.classList.remove('on'); });
+});
+</script>
 <div id="zoomBarre">
   <button type="button" id="zPlus">+</button>
   <span id="zVal">1&#215;</span>
@@ -848,6 +892,16 @@ function aide(txt){
    autres : « la porte a retreci au seche-linge ». Et le mur ENTIER doit
    tenir entre le bandeau et la reserve, sinon on ne peut pas poser a cote
    de la porte, ni devant. Le zoom sert a s'approcher. */
+/* ⚠️ AJOUT DU 14/08 — LE FORMAT DE REPLI.
+   Jusqu'ici `FORMAT` n'etait rempli que par le `onload` de l'image. Une
+   image absente (la porte du fond, le 12/08) laissait donc `FORMAT[id]`
+   vide, `calerMurs` sortait par le `return`, et le `.dedans` gardait une
+   taille NULLE. Or les objets sont positionnes en % DE CE CONTENEUR :
+   pourcentage de zero = zero. Tous les objets s'empilaient en un point,
+   invisibles. Desormais chaque mur nait avec le format 2:3 de la piece ;
+   la vraie mesure le remplace des que l'image arrive. Un mur sans image
+   est un cadre vide, plus un trou noir. */
+var REPLI = {w:1024, h:1536};
 var FORMAT = {};
 function calerMurs(){
   var vw = window.innerWidth, vh = window.innerHeight;
@@ -856,7 +910,7 @@ function calerMurs(){
   var dispoH = Math.max(120, vh - haut - res);
   var centre = haut + dispoH / 2;
   MURS.forEach(function(m){
-    var f = FORMAT[m.id]; if(!f) return;
+    var f = FORMAT[m.id] || REPLI;
     var d = S('dedans-' + m.id); if(!d) return;
     var k = Math.min(vw / f.w, dispoH / f.h);
     d.style.width  = (f.w * k) + 'px';
@@ -867,14 +921,32 @@ function calerMurs(){
 }
 window.addEventListener('resize', calerMurs);
 
+/* ⚠️ AJOUT DU 14/08 — CHAQUE MUR CHARGE SEUL.
+   Un mur qui echoue ne doit faire tomber que lui. Le `try` isole la
+   boucle et le `onerror` NOMME le fichier manquant a l'ecran, au lieu
+   du silence noir du 12/08. */
+var MANQUANTS = [];
 function chargerMurs(){
   MURS.forEach(function(m){
-    var src = img(m.f);
-    var e = S('dedans-' + m.id).querySelector('img.fondmur');
-    e.src = src;
-    var t = new Image();
-    t.onload = function(){ FORMAT[m.id] = {w:t.naturalWidth, h:t.naturalHeight}; calerMurs(); };
-    t.src = src;
+    try{
+      var src = img(m.f);
+      var d = S('dedans-' + m.id); if(!d) return;
+      var e = d.querySelector('img.fondmur'); if(!e) return;
+      e.src = src;
+      var t = new Image();
+      t.onload = function(){
+        FORMAT[m.id] = {w:t.naturalWidth, h:t.naturalHeight};
+        calerMurs();
+      };
+      t.onerror = function(){
+        MANQUANTS.push(m.f);
+        signaler('Image absente : ' + MANQUANTS.join(', '));
+        calerMurs();                 /* le mur garde son format de repli */
+      };
+      t.src = src;
+    }catch(err){
+      signaler('Mur « ' + m.id + " » : " + err.message);
+    }
   });
 }
 
