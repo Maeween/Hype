@@ -1987,10 +1987,24 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
 <!-- La sellerie : la piece ou la cavaliere installe les objets gagnes.
      Chargee en iframe comme la collection et le globe. L'iframe n'est
-     posee qu'a la premiere ouverture (`src` vide au depart) : la page
-     charge huit murs, on ne les telecharge pas pour rien. -->
+     posee qu'a la premiere ouverture : la page charge huit murs, on ne
+     les telecharge pas pour rien.
+
+     🟥 14/08 — `src=""` REMPLACE PAR `about:blank`. Un `src` vide ne veut
+     pas dire « rien » dans WebKit : il vaut l'ADRESSE DE LA PAGE EN COURS.
+     L'iframe rechargeait donc `lingo.html` a l'interieur d'elle-meme —
+     toutes les images, tous les scripts, et les deux autres iframes une
+     seconde fois. D'ou « il y a un lag de dingue, partout, c'est
+     inutilisable ». Le defaut dormait depuis le 12/08 : l'iframe de la
+     mise en situation avait ete corrigee ce jour-la, celle-ci avait ete
+     SIGNALEE dans le SUIVI (« a regarder si un lag revient ») et laissee
+     telle quelle parce que la sellerie etait verrouillee. La livraison du
+     14/08 l'a rebranchee, et le lag est revenu avec elle.
+     ⚠️ `ouvrirSellerieReparee()` a ete change en meme temps : son test
+     `if(!f.getAttribute("src"))` devenait faux avec `about:blank` et la
+     sellerie ne se serait plus jamais ouverte. Les deux vont ensemble. -->
 <div id="sellerie">
-  <iframe id="sellerieIf" src="" title="Ma sellerie"></iframe>
+  <iframe id="sellerieIf" src="about:blank" title="Ma sellerie"></iframe>
 </div>
 <!-- ==================================================================
      LA MISE EN SITUATION (session 210, 13/08) — les phrases de la ville
@@ -6135,7 +6149,12 @@ function ouvrirSellerie(){
 }
 function ouvrirSellerieReparee(){
   var f = S("sellerieIf");
-  if(!f.getAttribute("src")) f.setAttribute("src", "lingo-sellerie.html");
+  /* 🟥 14/08 — `about:blank` compte comme « pas encore chargee ».
+     L'iframe part desormais sur `about:blank` (voir le commentaire du HTML) :
+     sans ce second test, `getAttribute("src")` renvoyait une valeur non
+     vide et la sellerie ne se serait plus jamais ouverte. */
+  var srcActuel = f.getAttribute("src");
+  if(!srcActuel || srcActuel === "about:blank") f.setAttribute("src", "lingo-sellerie.html");
   S("sellerie").classList.add("on");
   f.style.display = "";
   var p = selleriePiece("classique");
@@ -10917,14 +10936,28 @@ try{ appliquerLangue(); }catch(err){}
           var txt = (ui==="en")
             ? ("Learn the words of " + nom + " on Hype Linguae")
             : ("Apprends les mots " + deLaVille(nom) + " sur Hype Linguae");
+          /* 🟥 14/08 — L'ADRESSE ENTRE DANS LA PHRASE.
+             Blandine : « quand je fais copier ça m'a copié "apprends les
+             mots de La Baule" au lieu de me donner l'adresse ».
+             iOS, quand on lui donne `text` ET `url`, fait recopier le SEUL
+             texte par le bouton « Copier » de sa feuille de partage —
+             l'adresse est perdue. Envoyer par Messages ou WhatsApp marchait,
+             copier non.
+             On garde donc `url` (les applications de messagerie s'en servent
+             pour l'apercu) ET on remet l'adresse dans le texte, qui est ce
+             que « Copier » emporte.
+             ⚠️ CONSEQUENCE NOMMEE ET ACCEPTEE (choix A de Blandine) : dans
+             WhatsApp le lien apparaitra deux fois, une fois dans la phrase
+             et une fois dans la vignette d'apercu. */
+          var phrase = txt + " \u2014 " + lienVille;
           try{
             if(navigator.share){
-              navigator.share({title:"Linguae \u00b7 " + nom, text:txt, url:lienVille})
+              navigator.share({title:"Linguae \u00b7 " + nom, text:phrase, url:lienVille})
                 .catch(function(){});
               return;
             }
           }catch(err){}
-          var tout = txt + " " + lienVille;
+          var tout = phrase;
           if(navigator.clipboard && navigator.clipboard.writeText){
             navigator.clipboard.writeText(tout).then(function(){
               var av = b.textContent;
