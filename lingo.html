@@ -9659,13 +9659,13 @@ S("chSortie").addEventListener("click", function(){
    film d'ouverture occupe l'ecran. Lancee par `terminerOuverture()`. */
 var VILLE_EN_ATTENTE = null;
 
-/* 🟥 14/08 — VRAI, TANT QUE LE FILM D'OUVERTURE N'EST PAS FINI.
-   Il sert a savoir si `lireAncre()` tourne au CHARGEMENT de la page (le
-   film va jouer, la ville doit attendre) ou sur un simple changement
-   d'ancre alors que l'app est deja ouverte (la ville s'ouvre tout de
-   suite). Seul `terminerOuverture()` le passe a faux — c'est le seul
-   endroit du fichier qui sait que l'ouverture est vraiment finie. */
-var OUVERTURE_EN_COURS = true;
+/* 🟥 14/08 — LE LIEN DE LECON A OUVERT SA VILLE, LE DEMARRAGE NE DOIT PAS
+   LANCER LE FILM PAR-DESSUS.
+   C'est la moitie qui manquait au correctif du 13/08. Voir le detail dans
+   `lireAncre()` et dans le bloc de demarrage, plus bas.
+   ⚠️ Un drapeau, et pas un test sur `location.hash` : `lancer()` efface
+   l'ancre en la consommant, un test sur l'ancre serait toujours faux. */
+var LIEN_DIRECT_LECON = false;
 
 function lireAncre(){
   var m=/^#duel=([a-z0-9]+)(?:-(\d+))?$/.exec(location.hash||"");
@@ -9738,27 +9738,22 @@ function lireAncre(){
        voir La Baule, pas un film de trente secondes.
        ⚠️ NE PAS ETENDRE CE SAUT aux autres entrees. */
 
-    /* 🟥 14/08 — LE SAUT DU FILM EST RETIRE, LA VILLE PASSE EN ATTENTE.
-       DECISION DE BLANDINE, 14/08 : le film joue, PUIS la lecon s'ouvre.
-       Elle remplace celle du 13/08 (« mets-nous directement sur la page
-       La Baule ») ; ses mots : « ca me derange pas qu'il y ait le film
-       tant qu'il se lance ».
+    /* 🟥 14/08 — CE SAUT NE SUFFISAIT PAS, ET VOICI POURQUOI.
+       Blandine, 14/08 : « ca fait 24 h qu'on est sur un simple lien de
+       partage », « envoie directement sur la lecon ».
 
-       CE QUI N'ALLAIT PAS, ET QUI EXPLIQUE « le lien ramene toujours a
-       l'accueil » : retirer la classe `joue` ici ne suffisait pas. Le
-       bloc de demarrage (plus bas dans ce meme script, ~20 000 lignes
-       apres) s'execute APRES `lireAncre()` et rappelle `lancerFilm()`
-       sans regarder qu'une lecon vient d'etre ouverte — son garde-fou ne
-       connait que `#sprint` et `#duel=`. Le film repassait donc PAR
-       DESSUS la ville, et `terminerOuverture()` deposait sur l'accueil.
-       ⚠️ NE PAS « corriger » en ajoutant `#lecon=` a ce garde-fou : a ce
-       moment-la l'ancre est deja effacee par `lancer()`, le test serait
-       toujours faux. C'est ce drapeau-ci qui porte l'information.
+       Retirer la classe `joue` ici ne fait qu'ecarter le film UNE fois.
+       Le bloc de demarrage — plus bas dans ce meme script, ~20 000 lignes
+       apres — s'execute APRES `lireAncre()` et rappelle `lancerFilm()`
+       sans savoir qu'une lecon vient d'etre ouverte : son garde-fou ne
+       connait que `#sprint` et `#duel=`. Le film revenait donc PAR-DESSUS
+       la ville, s'arretait sur « Commence ton voyage », et l'appui
+       suivant deposait sur l'accueil. C'est le « ca me remet encore a
+       l'accueil » du 13/08 comme celui du 14/08 : meme cause, jamais
+       traitee des deux cotes.
 
-       Au chargement : on ne touche PAS a `joue` (le film doit jouer) et
-       on garde la ville de cote. Sur un changement d'ancre alors que
-       l'app tourne deja : rien n'occupe l'ecran, on ouvre tout de suite. */
-    if(OUVERTURE_EN_COURS){ VILLE_EN_ATTENTE = lancer; return true; }
+       On leve donc un drapeau que le demarrage lira. */
+    LIEN_DIRECT_LECON = true;
     S("ouverture").classList.remove("joue");
     lancer();
     return true;
@@ -10193,6 +10188,15 @@ dessinerPaire();
     S("ouverture").classList.remove("joue");
     return;
   }
+  /* 🟥 14/08 — UN LIEN DE LECON PASSE DEVANT LE FILM.
+     `lireAncre()`, plus haut, vient d'ouvrir la ville et a leve ce
+     drapeau. Sans ce test, `lancerFilm()` recouvrait la lecon et l'appui
+     sur « Commence ton voyage » deposait l'arrivant sur l'accueil.
+     ⚠️ Ne pas remplacer par un test sur `location.hash` : `lancer()` a
+     deja consomme l'ancre, il serait toujours faux.
+     La classe `joue` de `#ouverture` a ete retiree par `lireAncre()` —
+     le carnet est donc bien decouvert sous la lecon. */
+  if(LIEN_DIRECT_LECON) return;
   /* ==================================================================
      v62 — 10/08/2026 — LE FILM REVIENT EN TETE, POUR TOUT LE MONDE.
      ORDRE DE BLANDINE, mot pour mot : « tu vas me remettre le film de la
@@ -10465,18 +10469,12 @@ function terminerOuverture(){
   S("ouvFilm").classList.remove("joue","fini","refuse");
   S("ouverture").classList.remove("joue","parti");
   S("ouverture").scrollTop=0;
-  /* 🟥 14/08 — l'ouverture est finie : un lien de lecon qui arriverait
-     apres ce point ne doit plus attendre. */
-  OUVERTURE_EN_COURS = false;
   /* v58 : apres le film d'un habitue, la presentation prend le relais.
      Drapeau une-fois : la premiere visite (film lance a la sortie du choix
      de langue) ne le pose pas — aucune double presentation. */
-  /* 🟥 14/08 — SAUF SI UNE VILLE ATTEND. Sans ce test, on voyait l'accueil
-     s'afficher puis la lecon le recouvrir 320 ms plus tard : un clignotement
-     qui donne exactement l'impression « ca m'a ramene a l'accueil ». */
   if(window.__introApresFilm){
     window.__introApresFilm=false;
-    if(!VILLE_EN_ATTENTE){ try{ montrerIntro(); }catch(e){} }
+    try{ montrerIntro(); }catch(e){}
   }
   /* ⚠️ AJOUT DU 13/08 — LA VILLE D'UN LIEN DE PARTAGE.
      C'est ici, et nulle part ailleurs, qu'on sait que l'ouverture est
