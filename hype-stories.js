@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19q";
+var HYPE_STORIES_VERSION = "19r";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -324,7 +324,7 @@ function hsVignetteFichier(fichier, cote) {
    `cx` = centre horizontal voulu, de 0 (bord gauche) a 1 (bord droit). */
 var HS_CADRE_RATIO = 9 / 16;
 var HS_CADRE_HMAX = 2000;
-function hsRecadrerFichier(fichier, cx) {
+function hsRecadrerFichier(fichier, cx, ratioVoulu, cy) {
   return new Promise(function (resolve) {
     try {
       if (!fichier || typeof window === "undefined" || !window.URL) { resolve(fichier); return; }
@@ -341,16 +341,22 @@ function hsRecadrerFichier(fichier, cx) {
       img.onload = function () {
         try {
           var L = img.naturalWidth || 1, H = img.naturalHeight || 1;
-          if (L / H <= HS_CADRE_RATIO) { terminer(fichier); return; }  /* deja debout */
-          var sw = H * HS_CADRE_RATIO;
+          /* 19r : le ratio peut etre celui d'une FENETRE de decor (rond,
+             arche, bande) et non plus seulement le 9/16 de l'ecran. On coupe
+             alors dans la largeur OU dans la hauteur, selon l'exces. */
+          var R = (typeof ratioVoulu === "number" && ratioVoulu > 0) ? ratioVoulu : HS_CADRE_RATIO;
           var centre = Math.max(0, Math.min(1, (typeof cx === "number" ? cx : 0.5)));
-          var sx = Math.max(0, Math.min(L - sw, centre * L - sw / 2));
-          var hs = Math.min(H, HS_CADRE_HMAX);
+          var centreV = Math.max(0, Math.min(1, (typeof cy === "number" ? cy : 0.5)));
+          var sw, sh, sx, sy;
+          if (L / H > R) { sh = H; sw = H * R; sy = 0; sx = Math.max(0, Math.min(L - sw, centre * L - sw / 2)); }
+          else if (L / H < R) { sw = L; sh = L / R; sx = 0; sy = Math.max(0, Math.min(H - sh, centreV * H - sh / 2)); }
+          else { terminer(fichier); return; }
+          var hs = Math.min(sh, HS_CADRE_HMAX);
           var c = document.createElement("canvas");
           c.height = Math.round(hs);
-          c.width = Math.round(hs * HS_CADRE_RATIO);
+          c.width = Math.round(hs * R);
           var ctx = c.getContext("2d");
-          ctx.drawImage(img, sx, 0, sw, H, 0, 0, c.width, c.height);
+          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height);
           if (!c.toBlob) { try { c.width = 1; c.height = 1; } catch (eX) { } terminer(fichier); return; }
           c.toBlob(function (b) {
             var sortie = fichier;
@@ -993,6 +999,7 @@ var HS_TXT = {
   defiler: { fr: "D\u00e9filer", en: "One by one", es: "Deslizar", it: "Scorrere", ja: "\u9806\u756a\u306b\u8868\u793a", de: "Nacheinander" },
   composer: { fr: "Composer", en: "Compose", es: "Componer", it: "Comporre", ja: "\u7d44\u307f\u5408\u308f\u305b\u308b", de: "Komponieren" },
   ajouterPhotos: { fr: "Ajouter des photos", en: "Add photos", es: "A\u00f1adir fotos", it: "Aggiungere foto", ja: "\u5199\u771f\u3092\u8ffd\u52a0", de: "Fotos hinzuf\u00fcgen" },
+  cadrerFenetre: { fr: "Touche une fen\u00eatre, puis d\u00e9place la photo dedans.", en: "Tap a window, then move the photo inside it.", es: "Toca una ventana y mueve la foto dentro.", it: "Tocca una finestra e sposta la foto all'interno.", ja: "\u7a93\u3092\u30bf\u30c3\u30d7\u3057\u3066\u5199\u771f\u3092\u52d5\u304b\u3057\u307e\u3059\u3002", de: "Tippe ein Fenster an und verschiebe das Foto darin." },
   retirerPhoto: { fr: "Retirer cette photo", en: "Remove this photo", es: "Quitar esta foto", it: "Togliere questa foto", ja: "\u3053\u306e\u5199\u771f\u3092\u524a\u9664", de: "Dieses Foto entfernen" },
   decorDemande: { fr: "Ce d\u00e9cor demande %n photos.", en: "This frame needs %n photos.", es: "Este marco necesita %n fotos.", it: "Questa cornice richiede %n foto.", ja: "\u3053\u306e\u30d5\u30ec\u30fc\u30e0\u306b\u306f\u5199\u771f%n\u679a\u304c\u5fc5\u8981\u3067\u3059\u3002", de: "Dieser Rahmen braucht %n Fotos." },
   decorDemande1: { fr: "Ce d\u00e9cor demande une seule photo.", en: "This frame needs a single photo.", es: "Este marco necesita una sola foto.", it: "Questa cornice richiede una sola foto.", ja: "\u3053\u306e\u30d5\u30ec\u30fc\u30e0\u306b\u306f\u5199\u771f1\u679a\u304c\u5fc5\u8981\u3067\u3059\u3002", de: "Dieser Rahmen braucht ein einzelnes Foto." },
@@ -1031,7 +1038,6 @@ var HS_TXT = {
   dejaEnLigne: { fr: "En ligne", en: "Live", es: "En l\u00ednea", it: "Online", ja: "\u516c\u958b\u4e2d", de: "Online" },
   legendeReste: { fr: "Ta story en ligne garde sa l\u00e9gende \u2014 celle-ci ira sur la premi\u00e8re nouvelle photo.", en: "Your live story keeps its caption \u2014 this one goes on the first new photo.", es: "Tu story en l\u00ednea conserva su texto \u2014 este ir\u00e1 en la primera foto nueva.", it: "La tua story online conserva il testo \u2014 questo andr\u00e0 sulla prima nuova foto.", ja: "\u516c\u958b\u4e2d\u306e\u30b9\u30c8\u30fc\u30ea\u30fc\u306e\u672c\u6587\u306f\u6b8b\u308a\u307e\u3059\u3002", de: "Deine Online-Story beh\u00e4lt ihren Text \u2014 dieser kommt auf das erste neue Foto." },
   mettreDevant: { fr: "Mettre celle-ci en premier", en: "Make this one first", es: "Poner esta primero", it: "Metti questa per prima", ja: "\u3053\u308c\u3092\u6700\u521d\u306b", de: "Diese zuerst zeigen" },
-  ajouterPhotos: { fr: "Ajouter des photos", en: "Add photos", es: "A\u00f1adir fotos", it: "Aggiungere foto", ja: "\u5199\u771f\u3092\u8ffd\u52a0", de: "Fotos hinzuf\u00fcgen" },
   photosChoisies: { fr: "photos choisies", en: "photos selected", es: "fotos elegidas", it: "foto scelte", ja: "\u679a\u9078\u629e\u4e2d", de: "Fotos ausgew\u00e4hlt" },
   envoiMulti: { fr: "Publication", en: "Publishing", es: "Publicando", it: "Pubblicazione", ja: "\u6295\u7a3f\u4e2d", de: "Ver\u00f6ffentlichung" },
   partiel: { fr: "publi\u00e9es \u2014 certaines n'ont pas pu partir.", en: "published \u2014 some could not be sent.", es: "publicadas \u2014 algunas no pudieron enviarse.", it: "pubblicate \u2014 alcune non sono partite.", ja: "\u6295\u7a3f\u6e08\u307f \u2014 \u4e00\u90e8\u306f\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", de: "ver\u00f6ffentlicht \u2014 einige konnten nicht gesendet werden." },
@@ -1331,6 +1337,17 @@ function ComposeurStory(props) {
      modeles a une fenetre dormaient depuis toujours. Le decor devient ici sa
      propre question, posee des UNE photo. */
   var dcS = React.useState(null), decorChoix = dcS[0], setDecorChoix = dcS[1];
+  /* 19r (14/08, demande de Blandine) : « qu'on puisse previsualiser nos photos
+     dans la story choisie et qu'on puisse les recadrer, parce que si c'est
+     pour avoir juste une oreille du cheval sur une des photos puis le pied
+     tout seul sur une autre ca sert a rien ». Chaque FENETRE a son propre
+     format : le cadrage ne se decide donc qu'APRES le choix du decor.
+     { "<rang de fenetre>": { cx, cy } }, 0,5 = centre. */
+  var cfS = React.useState({}), cadresFen = cfS[0], setCadresFen = cfS[1];
+  var fvS = React.useState(0), fenVue = fvS[0], setFenVue = fvS[1];
+  function ratioFenetre(ref, ix) {
+    try { var m = hsModeles()[ref]; var f = m && m.fenetres && m.fenetres[ix]; return (f && f.bbox && f.bbox[3]) ? (f.bbox[2] / f.bbox[3]) : 1; } catch (e) { return 1; }
+  }
   var corpsRef = React.useRef(null);
   var vivantRef = React.useRef(true);
 
@@ -1656,8 +1673,20 @@ function ComposeurStory(props) {
            touche, mais ce qui sort du cadre ne part pas. */
         var fEnvoi = fichiersOrdonnes[iF];
         try {
-          var cad = cadrageDe(iF);
-          if (cad && cad.actif) fEnvoi = await hsRecadrerFichier(fEnvoi, cad.cx);
+          /* 19r : dans un DECOR, chaque photo est decoupee au format exact de
+             SA fenetre, avec le placement choisi au doigt. Sinon, le cadrage
+             plein ecran 9/16 s'applique comme avant. */
+          var refDeco = (grpId && compoChoix && String(compoChoix).indexOf("modele-") === 0) ? compoChoix
+            : ((!grpId && decorChoix && fichiersOrdonnes.length === 1) ? decorChoix : null);
+          if (refDeco) {
+            var rangFen = iF + ((props.origine && props.origine.n) ? props.origine.n : 0);
+            var rr = ratioFenetre(refDeco, rangFen);
+            var cf = cadresFen[String(rangFen)] || { cx: 0.5, cy: 0.5 };
+            if (rr > 0) fEnvoi = await hsRecadrerFichier(fEnvoi, cf.cx, rr, cf.cy);
+          } else {
+            var cad = cadrageDe(iF);
+            if (cad && cad.actif) fEnvoi = await hsRecadrerFichier(fEnvoi, cad.cx);
+          }
         } catch (eCd) { fEnvoi = fichiersOrdonnes[iF]; }
         var rI = await hsPublierStory(
           fEnvoi,
@@ -1917,6 +1946,65 @@ function ComposeurStory(props) {
               : null,
             (compoChoix && !props.premium)
               ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, letterSpacing: 0.3 } }, hsT("modelesPremium", lg))
+              : null,
+            /* 19r : L'APERCU DANS LE VRAI DECOR. Les photos sont posees dans
+               les fenetres EXACTES du modele (bbox a l'echelle + clip-path du
+               contour), le decor par-dessus. Un tap choisit une fenetre, le
+               curseur deplace la photo A L'INTERIEUR de celle-ci. */
+            (compoChoix && String(compoChoix).indexOf("modele-") === 0 && props.premium)
+              ? (function () {
+                var mod = hsModeles()[compoChoix];
+                if (!mod || !mod.fenetres || !mod.fenetres.length) return null;
+                var LARG = 168, ech = LARG / (mod.taille[0] || 941);
+                var HAUT = Math.round((mod.taille[1] || 1672) * ech);
+                var vign = (props.origine && props.origine.url ? [props.origine.url] : []).concat(urlsMini.filter(function (u) { return !!u; }));
+                var fenSure = (fenVue >= 0 && fenVue < mod.fenetres.length) ? fenVue : 0;
+                var cad = cadresFen[String(fenSure)] || { cx: 0.5, cy: 0.5 };
+                var rF = ratioFenetre(compoChoix, fenSure);
+                return h("div", { style: { marginTop: 12 } },
+                  h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.6, textTransform: "uppercase", color: tA(0.92), marginBottom: 8 } }, hsT("apercuCompo", lg)),
+                  h("div", { style: { position: "relative", width: LARG, height: HAUT, borderRadius: 12, overflow: "hidden", background: "#060709", border: "1px solid " + tA(0.3) } },
+                    mod.fenetres.map(function (f, ix) {
+                      var u = vign[ix] || null;
+                      var c2 = cadresFen[String(ix)] || { cx: 0.5, cy: 0.5 };
+                      var pc = (f.contour || []).map(function (p) {
+                        return (((p[0] - f.bbox[0]) / f.bbox[2]) * 100).toFixed(2) + "% " + (((p[1] - f.bbox[1]) / f.bbox[3]) * 100).toFixed(2) + "%";
+                      }).join(", ");
+                      return h("button", {
+                        key: "fn" + ix,
+                        onClick: function () { setFenVue(ix); },
+                        style: {
+                          position: "absolute", left: Math.round(f.bbox[0] * ech), top: Math.round(f.bbox[1] * ech),
+                          width: Math.round(f.bbox[2] * ech), height: Math.round(f.bbox[3] * ech),
+                          padding: 0, border: "none", cursor: "pointer",
+                          background: u ? "none" : tA(0.12),
+                          clipPath: pc ? ("polygon(" + pc + ")") : "none",
+                          WebkitClipPath: pc ? ("polygon(" + pc + ")") : "none",
+                          outline: (ix === fenSure) ? ("2px solid " + tn) : "none"
+                        }
+                      }, u ? h("img", {
+                        src: u, alt: "",
+                        style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: Math.round(c2.cx * 100) + "% " + Math.round(c2.cy * 100) + "%", display: "block" }
+                      }) : null);
+                    }),
+                    h("img", { src: compoChoix + ".webp", alt: "", style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", pointerEvents: "none" } })),
+                  h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, lineHeight: 1.5 } }, hsT("cadrerFenetre", lg)),
+                  h("input", {
+                    type: "range", min: 0, max: 100, step: 1,
+                    value: Math.round((rF >= 1 ? cad.cx : cad.cy) * 100),
+                    "aria-label": hsT("cadrerFenetre", lg),
+                    onChange: function (ev) {
+                      var v = (Number(ev.target.value) || 0) / 100;
+                      setCadresFen(function (anc) {
+                        var n = Object.assign({}, anc);
+                        var d = Object.assign({ cx: 0.5, cy: 0.5 }, n[String(fenSure)] || {});
+                        if (rF >= 1) d.cx = v; else d.cy = v;
+                        n[String(fenSure)] = d; return n;
+                      });
+                    },
+                    style: { width: LARG, accentColor: tn, marginTop: 4 }
+                  }));
+              })()
               : null,
             /* 19c : L'APERCU DU H+D. « Sur composer il n'y a rien » (Blandine,
                14/08) : la puce se cochait et l'ecran ne bougeait pas. Ici, une

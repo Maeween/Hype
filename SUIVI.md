@@ -7267,3 +7267,52 @@ Harnais : **188 assertions vertes** (dont la puce « Aucun », qui avait sauté 
 Harnais : **193 assertions vertes** + `audit_vars.js` vert. `index.html` : `hype-stories.js?v=19j`.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19j** · modèles 28.
+
+### Session 140e — stories 19l et 19m : vignettes agrandies, bande qui défile enfin
+
+**19l** — demande de Blandine : « les fonds de story sont trop petits on peut franchement les agrandir ». Vignettes de décors **52 × 82 → 84 × 132** (2,6 fois la surface), pastille chiffrée et puce « Aucun » à l'échelle. Avant : « ne grise pas les fonds qui n'ont pas le bon nombre car on ne les voit plus du tout » → opacité réduite et `grayscale` **supprimés** (19k), la pastille chiffrée reste le seul repère.
+
+**19m — LA BANDE NE DÉFILAIT PAS.** Cause : il manquait `data-hscroll="1"` sur le conteneur. Le gestionnaire de swipe de `index.html` (ligne 21151) avale tout geste horizontal **sauf** dans un élément marqué ainsi. Toutes les autres bandes du module l'avaient ; celle écrite en 19g ne l'avait pas — donc 28 décors dont seuls les trois premiers étaient atteignables. Ajouté, avec `scrollSnapType: "x proximity"`. **Nouvelle assertion de harnais** : aucune bande `overflowX: auto` du fichier ne peut être livrée sans `data-hscroll` (8 bandes vérifiées, 0 manquante).
+
+**À l'écran** : + les vignettes deux fois et demie plus grandes · + la bande défile jusqu'au 28ᵉ décor · − plus rien de grisé.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19m** · modèles 28.
+
+### Session 140f — stories 19n et 19o, page club, chevaux du club
+
+**19n** — mot de Blandine : « le + pour ajouter une story faut qu'il soit toujours en dernier sur le rail pas en premier ». `rondAjout()` passe **après** `groupes.map(...)` : les stories occupent le rail dès la première place, le + ferme la marche.
+
+**19o** — signalement : « quand on met les photos on peut plus en retirer une pour passer de 4 à 3, même avant de publier ». Il fallait tout annuler. Ajouté : état `ecartees` (indexé sur la sélection d'ORIGINE, `fichiersBruts`), fonction `ecarterPhoto`, **croix** sur chaque vignette de la bande — visible seulement à partir de 2 photos, jamais sur la dernière. Au retrait : `ordre`, `vue` et `cadrages` remis à zéro (les rangs changent). Les vignettes restent indexées sur `fichiersBruts`, sinon la miniature affichée ne correspondrait plus au fichier. Texte `retirerPhoto` en 6 langues.
+
+**Page Mon Club (index.html seul)** :
+- **Chevaux du club** : le rail défilant de vignettes 108 px (3 visibles sur 18, et il ne défilait pas) devient la **même grille que « Mes chevaux »** de la page cavalier — 3 colonnes, cartes 4/5, nom + race dessous, tous les chevaux affichés. Demande de Blandine : « c'est LÀ pour le coup où ils doivent apparaître en grand ! Reprends l'encodage que tu as sur la page cavalier ».
+- **Bannière du club** : l'alerte « vérifie ta connexion » était trompeuse — la connexion marchait. `hypeEnregistrerPhoto` (branche `club`) tente l'`upsert`, puis un **repli lire-puis-écrire** (l'`upsert` exige une contrainte UNIQUE sur `tableaux_clubs.cle` ; si elle manque, PostgREST renvoie 42P10 et tout échoue). En cas d'échec persistant, l'alerte affiche désormais **le code et le message Postgres exacts**, et précise que la bannière reste visible sur le téléphone. **En attente du retour de Blandine avec le code d'erreur** pour savoir si c'est un SQL d'une ligne (contrainte unique) ou une règle RLS.
+
+**Contrôles** : les **16 scripts inline** de `index.html` vérifiés un par un (`node --check`), tous verts. `t_19o.js` : **211 assertions vertes**. `audit_vars.js` vert.
+
+**Catalogue** : 28 décors — 14 à une photo, 4 à deux, 8 à trois, **1** à quatre, **1** à cinq. Blandine enverra d'autres décors en pleine taille ; la chaîne (`decoupe.py`) est en place et livrée.
+
+**Préparation Flutter** : la sélection de photos du composeur a désormais un état explicite (`fichiersBruts` + `ecartees`) au lieu de dépendre d'un `FileList` immuable — modèle directement transposable à un `List<XFile>` natif.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19o** · modèles 28.
+
+### Session 140g — stories 19p à 19r : ajouter, sortir, cadrer dans le décor
+
+**19p** — question de Blandine : « je vais où pour ajouter d'autres photos sur ma story ? ». Nulle part : il fallait tout annuler. Bouton **« + Ajouter des photos »** dans le composeur (entrée fichier multiple, plafond `HS_MULTI_MAX` = 10), et la bande des vignettes s'affiche **dès une photo** — sinon le bouton restait invisible là où il sert le plus.
+
+**19q — ON RESTAIT COINCÉE DANS LA FEUILLE.** Ses mots : « le bouton annuler est hors cadre tout en bas, même en scrollant au max on n'arrive pas à cliquer dessus, on est obligé de quitter l'appli ». Trois causes cumulées : `boxSizing: border-box` **manquait** sur cette feuille (le rembourrage s'ajoutait à la hauteur max et poussait le bas hors écran — les deux autres feuilles du module l'avaient), la réserve du bas ignorait la barre d'onglets (portée à `env(safe-area-inset-bottom) + 104px`), et il n'existait aucune sortie ailleurs qu'en bas. **Une croix vit désormais dans l'en-tête collant.** Assertion ajoutée : toute feuille défilante du module doit être en `border-box`.
+
+**19r — PRÉVISUALISER ET CADRER DANS LE DÉCOR** (demande de Blandine : « si c'est pour avoir juste une oreille du cheval sur une des photos puis le pied tout seul sur une autre ça sert à rien »).
+- L'aperçu montre les photos dans les **fenêtres exactes** du modèle : bbox à l'échelle, `clip-path` du contour, décor par-dessus.
+- Un tap choisit une fenêtre (liseré turquoise), le curseur déplace la photo **à l'intérieur** de celle-ci. État `cadresFen` = `{ "<rang>": { cx, cy } }`.
+- `hsRecadrerFichier` généralisé : il accepte désormais **n'importe quel format** (celui de la fenêtre, via `bbox[2]/bbox[3]`) et coupe dans la largeur **ou** dans la hauteur selon l'excès, avec centre horizontal et vertical.
+- À la publication, chaque photo est découpée au format exact de sa fenêtre avec le placement choisi. Toujours **aucun SQL** — cohérent avec sa décision « recadrer à l'envoi ».
+- Texte `cadrerFenetre` en 6 langues.
+
+**Incident signalé** : ma clé `ajouterPhotos` de 19p faisait **doublon** avec une clé existante de la table des textes. Retirée. Nouvelle assertion : aucune clé de texte ne peut être déclarée deux fois.
+
+**À l'écran** : + bouton « Ajouter des photos » · + croix de sortie en haut de feuille · + aperçu des photos dans les vraies fenêtres du décor · + curseur de cadrage par fenêtre · − plus de blocage en bas de feuille.
+
+Harnais : **243 assertions vertes** · `audit_vars.js` vert.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19r** · modèles 28.
