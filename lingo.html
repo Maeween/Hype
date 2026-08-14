@@ -1078,24 +1078,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
 .regles p{font-size:12px;line-height:1.7;color:var(--gris);margin:0 0 12px}
 .regles b{color:#DCE5EC;font-weight:600}
-/* 🟥 14/08 SOIR — LE RAIL DEBORDAIT ET N'ETAIT PAS ATTEIGNABLE.
-   Les cinq boutons etaient en `flex:1` dans 340 px. Un element flex ne
-   descend jamais sous la largeur de son MOT LE PLUS LONG
-   (`min-width:auto`) : « PROCHAINEMENT », « COLLECTION », « PARTAGER »
-   additionnes depassaient de loin les 340 px, la ligne debordait des
-   DEUX cotes, et sans `overflow-x` les bouts etaient hors d'atteinte —
-   « Partager le voyage », le cinquieme, sortait a droite.
-   ⚠️ `justify-content:center` est REMPLACE par `flex-start` : un flex
-   centre qui deborde rend son debordement de GAUCHE inatteignable au
-   defilement (defaut connu de WebKit). Centrer et defiler ne vont pas
-   ensemble. */
-#ouvAutres{display:flex;gap:10px;justify-content:flex-start;margin-top:14px;
- width:100%;max-width:340px;overflow-x:auto;overflow-y:hidden;
- -webkit-overflow-scrolling:touch;scrollbar-width:none;
- scroll-snap-type:x proximity;padding-bottom:2px}
-#ouvAutres::-webkit-scrollbar{display:none}
-#ouvAutres button{flex:0 0 auto;min-width:92px;scroll-snap-align:center;
- padding:13px 10px;border-radius:15px;font-size:10.5px;font-weight:600;
+#ouvAutres{display:flex;gap:10px;justify-content:center;margin-top:14px;width:100%;max-width:340px}
+#ouvAutres button{flex:1;padding:13px 10px;border-radius:15px;font-size:10.5px;font-weight:600;
  letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.05)}
 #ouvCollection{color:var(--or);border:1px solid rgba(212,175,55,.4)}
 #ouvCarnet{color:#C9A961;border:1px solid rgba(176,141,63,.45)}
@@ -2348,16 +2332,20 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          la collection et le sprint n'etaient joignables QUE depuis l'ecran
          du chemin. Le carnet etant devenu la racine, il porte leurs portes. -->
     <div id="ouvAutres">
-      <button id="ouvCollection" data-t="laCollection">La collection</button>
-      <!-- ⚠️ 12/08 SOIR — ACCÈS BLOQUÉ SUR ORDRE DE BLANDINE, après essai sur
-           son téléphone : « mettre son objet dans la sellerie c'est une
-           catastrophe, on peut pas présenter ça ». L'onglet reste VISIBLE et
-           porte « Prochainement » : il annonce sans mentir, et rien ne
-           s'ouvre. Le code de l'écran est intact (`lingo-sellerie.html`, non
-           poussé) — on ferme la porte, on ne jette rien.
-           NE PAS réactiver sans son feu vert explicite. -->
+      <!-- 🟥 14/08 SOIR — LES DEUX DOUBLONS SONT RETIRES (constat de
+           Blandine : « c'est deja ce qui est en haut »).
+           `ouvCollection` et `ouvCarnet` appelaient EXACTEMENT les memes
+           fonctions que les bandeaux illustres du haut de ce meme ecran
+           (`ouvColl` → ouvrirCollection, `ouvCarnetB` → ouvrirCarnetVoyage).
+           Ils dataient du 7 aout, quand la collection n'etait joignable que
+           depuis l'ecran du chemin ; le bandeau du carnet est arrive en v75,
+           APRES, et personne n'est revenu retirer la porte devenue double.
+           ⚠️ Leurs deux ecouteurs sont retires AVEC eux (blocs plus bas) :
+           `S("ouvCollection").addEventListener` n'a aucune garde, et sur un
+           bouton disparu il leve une erreur qui tue tout le bloc de script.
+           CONSEQUENCE ASSUMEE : depuis le bas de l'ecran, la collection et
+           le carnet demandent de remonter aux bandeaux. -->
       <button id="ouvSellerie" class="bientot" data-t="sellerieBientot" disabled>Ma sellerie · Prochainement</button>
-      <button id="ouvCarnet" data-t="monCarnet">Mon carnet de voyage</button>
       <button id="ouvSprint" data-t="sprint60">Sprint · 60 s</button>
       <button id="ouvPartager" data-t="partagerVoyage">Partager le voyage</button>
     </div>
@@ -6194,7 +6182,8 @@ function fermerSellerie(){
   }, 320);
 }
 
-S("ouvCollection").addEventListener("click", ouvrirCollection);
+/* 🟥 14/08 : `S("ouvCollection")` retire — le bouton en double n'existe plus.
+   Sans garde, la ligne levait une erreur et emportait tout ce bloc. */
 S("ouvSprint").addEventListener("click", ouvrirSprint);
 S("bCollection").addEventListener("click", ouvrirCollection);
 S("globeX").addEventListener("click", function(){ fermerGlobe(); montrerCarnet(); });
@@ -7960,7 +7949,8 @@ function cvCaler(){
   pap.style.height=(h*0.75 )+"px";
 }
 window.addEventListener("resize", cvCaler);
-S("ouvCarnet").addEventListener("click", ouvrirCarnetVoyage);
+/* 🟥 14/08 : `S("ouvCarnet")` retire — meme raison. La porte du carnet reste
+   ouverte par son bandeau illustre (`ouvCarnetB`), en haut du meme ecran. */
 S("cvFermer").addEventListener("click", fermerCarnetVoyage);
 S("cvOngMots").addEventListener("click", function(){ CV.onglet=0; CV.page=0; cvDessiner(); });
 S("cvOngPassages").addEventListener("click", function(){ CV.onglet=1; CV.page=0; cvDessiner(); });
