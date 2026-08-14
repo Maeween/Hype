@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19u";
+var HYPE_STORIES_VERSION = "19v";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -1467,31 +1467,46 @@ function ComposeurStory(props) {
     return function () { vivant = false; hsLibererUrl(mien); };
   }, [props.fichier, vueSure, ordre]);
 
-  /* Les miniatures : 19b — UNE PETITE IMAGE PAR PHOTO, fabriquee au canvas,
-     LES UNES APRES LES AUTRES. La bande se remplit photo par photo au lieu de
-     decoder dix fichiers d'iPhone d'un coup : c'etait la cause du plantage. */
+  /* Les miniatures — 19v (14/08). DEUX FAUTES CORRIGEES D'UN COUP.
+     (1) L'effet se relancait DEPUIS ZERO a chaque changement de selection :
+         ajouter deux photos refabriquait toute la serie, et les anciennes
+         images n'etaient jamais relachees. « J'ai ajoute deux photos et paf »
+         (Blandine, 21e sortie de l'appli). Desormais on ne fabrique que les
+         MANQUANTES et on garde les autres.
+     (2) Le repli de la 19s affichait la photo D'ORIGINE quand la fabrication
+         echouait — donc un fichier d'iPhone plein format decode dans une
+         vignette de 52 px. C'etait exactement la cause du plantage que la 19b
+         avait supprimee : je l'avais reintroduite. Le repli est maintenant une
+         case neutre, qui garde sa croix de retrait. */
+  var minisRef = React.useRef([]);
   React.useEffect(function () {
-    var vivant = true; var faites = [];
-    setUrlsMini([]);
+    var vivant = true;
     (async function () {
-      var res = [];
+      /* on repart de ce qui existe deja, on ne refait que ce qui manque */
+      var res = minisRef.current.slice(0, fichiersBruts.length);
       for (var i = 0; i < fichiersBruts.length; i++) {
         if (!vivant) break;
+        if (res[i]) continue;
         var u = null;
         try { u = await hsVignetteFichier(fichiersBruts[i], 200); } catch (e) { u = null; }
-        /* 19s : si la fabrication echoue (memoire courte au-dela de quelques
-           fichiers), on montre la photo telle quelle plutot qu'une case noire.
-           Blandine, 18h46 : « il manque les cinq autres, on peut pas les
-           retirer ». Une vignette absente empechait de reduire la selection. */
-        if (!u) { try { u = window.URL.createObjectURL(fichiersBruts[i]); } catch (eR) { u = null; } }
         if (!vivant) { hsLibererUrl(u); break; }
-        res.push(u);
-        if (u) faites.push(u);
+        res[i] = u || null;
+        minisRef.current = res;
         setUrlsMini(res.slice());
       }
+      if (vivant) { minisRef.current = res; setUrlsMini(res.slice()); }
     })();
-    return function () { vivant = false; faites.forEach(hsLibererUrl); };
-  }, [props.fichier]);
+    return function () { vivant = false; };
+  }, [props.fichier, fichiersBruts.length]);
+
+  /* Les images ne sont relachees qu'a la FERMETURE de la feuille : pendant
+     qu'elle est ouverte, chaque vignette gardee est une image de moins a
+     refabriquer. */
+  React.useEffect(function () {
+    return function () {
+      try { minisRef.current.forEach(hsLibererUrl); minisRef.current = []; } catch (e) { }
+    };
+  }, []);
 
   /* RÈGLE DU PROJET : tout panneau défilant est remis en haut à l'ouverture. */
   React.useEffect(function () { try { if (corpsRef.current) corpsRef.current.scrollTop = 0; } catch (e) { } }, []);
@@ -1915,7 +1930,17 @@ function ComposeurStory(props) {
                   },
                     uMini
                       ? h("img", { src: uMini, alt: "", style: { width: 52, height: 68, objectFit: "cover", borderRadius: 10, display: "block", border: "2px solid " + (actifV ? tn : "rgba(255,255,255,0.16)"), boxShadow: actifV ? ("0 0 12px " + tA(0.35)) : "none" } })
-                      : h("div", { style: { width: 52, height: 68, borderRadius: 10, background: "#111417", border: "2px solid " + (actifV ? tn : "rgba(255,255,255,0.16)") } })));
+                      /* 19v : la case d'attente porte son RANG, pour qu'on
+                         sache quelle photo on retire meme si sa vignette
+                         n'est pas encore prete. */
+                      : h("div", {
+                        style: {
+                          width: 52, height: 68, borderRadius: 10, background: "#111417",
+                          border: "2px solid " + (actifV ? tn : "rgba(255,255,255,0.16)"),
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          color: "#5C666F", fontFamily: M, fontSize: 15, fontWeight: 700
+                        }
+                      }, String(ix + 1))));
                 }))),
             h("input", {
               ref: entreePlusRef, type: "file", accept: "image/*", multiple: true,
