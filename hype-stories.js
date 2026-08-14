@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19c";
+var HYPE_STORIES_VERSION = "19d";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -459,6 +459,9 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, group
          remonte l'echec nomme. Le repli d'origine ne vaut plus que pour les
          colonnes de confort (lieu, musique, fond). */
       if (ligne.groupe) return { data: null, error: res.error, compoRefusee: true };
+      /* 19d : un DECOR sur une photo seule est une disposition sans groupe —
+         il ne doit pas davantage etre jete en silence. */
+      if (ligne.disposition) return { data: null, error: res.error, decorRefuse: true };
       if (lieuNet || ligne.musique || ligne.fond) {
         delete ligne.lieu;
         delete ligne.musique;
@@ -472,6 +475,9 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, group
        ignoree en silence par la base ne passera plus inapercue. */
     if (ligne.groupe && res && res.data && !res.data.groupe) {
       return { data: res.data, error: "groupe non enregistre", compoRefusee: true };
+    }
+    if (ligne.disposition && res && res.data && !res.data.disposition) {
+      return { data: res.data, error: "disposition non enregistree", decorRefuse: true };
     }
 
     /* Les tags, un par un, sans bloquer. */
@@ -954,6 +960,9 @@ var HS_TXT = {
   presentation: { fr: "Pr\u00e9sentation", en: "Layout", es: "Presentaci\u00f3n", it: "Presentazione", ja: "\u30ec\u30a4\u30a2\u30a6\u30c8", de: "Anordnung" },
   defiler: { fr: "D\u00e9filer", en: "One by one", es: "Deslizar", it: "Scorrere", ja: "\u9806\u756a\u306b\u8868\u793a", de: "Nacheinander" },
   composer: { fr: "Composer", en: "Compose", es: "Componer", it: "Comporre", ja: "\u7d44\u307f\u5408\u308f\u305b\u308b", de: "Komponieren" },
+  decor: { fr: "Le d\u00e9cor", en: "The frame", es: "El marco", it: "La cornice", ja: "\u30d5\u30ec\u30fc\u30e0", de: "Der Rahmen" },
+  aucunDecor: { fr: "Aucun", en: "None", es: "Ninguno", it: "Nessuna", ja: "\u306a\u3057", de: "Keiner" },
+  decorImpossible: { fr: "Le d\u00e9cor n'a pas pu \u00eatre enregistr\u00e9 (la base a refus\u00e9 la colonne \u00ab disposition \u00bb). Rien n'a \u00e9t\u00e9 publi\u00e9.", en: "The frame could not be saved (the database refused the \u201cdisposition\u201d column). Nothing was published.", es: "No se pudo guardar el marco (la base rechaz\u00f3 la columna \u00abdisposition\u00bb). No se public\u00f3 nada.", it: "Impossibile salvare la cornice (il database ha rifiutato la colonna \u00abdisposition\u00bb). Non \u00e8 stato pubblicato nulla.", ja: "\u30d5\u30ec\u30fc\u30e0\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u4f55\u3082\u6295\u7a3f\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002", de: "Der Rahmen konnte nicht gespeichert werden (die Datenbank hat die Spalte \u201edisposition\u201c abgelehnt). Es wurde nichts ver\u00f6ffentlicht." },
   compoImpossible: { fr: "La composition n'a pas pu \u00eatre cr\u00e9\u00e9e (la base a refus\u00e9 la colonne \u00ab groupe \u00bb). Rien n'a \u00e9t\u00e9 publi\u00e9 \u2014 tes photos sont intactes.", en: "The composition could not be created (the database refused the \u201cgroup\u201d column). Nothing was published \u2014 your photos are intact.", es: "No se pudo crear la composici\u00f3n (la base rechaz\u00f3 la columna \u00abgrupo\u00bb). No se public\u00f3 nada.", it: "Impossibile creare la composizione (il database ha rifiutato la colonna \u00abgruppo\u00bb). Non \u00e8 stato pubblicato nulla.", ja: "\u69cb\u6210\u3092\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff08\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9\u304c\u300c\u30b0\u30eb\u30fc\u30d7\u300d\u5217\u3092\u62d2\u5426\uff09\u3002\u4f55\u3082\u6295\u7a3f\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002", de: "Die Komposition konnte nicht erstellt werden (die Datenbank hat die Spalte \u201eGruppe\u201c abgelehnt). Es wurde nichts ver\u00f6ffentlicht." },
   apercuCompo: { fr: "\u00c0 quoi \u00e7a ressemblera", en: "How it will look", es: "C\u00f3mo se ver\u00e1", it: "Come apparir\u00e0", ja: "\u5b8c\u6210\u30a4\u30e1\u30fc\u30b8", de: "So wird es aussehen" },
   cadrer: { fr: "Le cadrage", en: "Framing", es: "Encuadre", it: "Inquadratura", ja: "\u30c8\u30ea\u30df\u30f3\u30b0", de: "Bildausschnitt" },
@@ -1275,6 +1284,14 @@ function ComposeurStory(props) {
      { "<index>": { actif: true, cx: 0.5 } } — seules les photos plus LARGES
      que hautes en recoivent un ; les autres n'en ont pas besoin. */
   var cdS = React.useState({}), cadrages = cdS[0], setCadrages = cdS[1];
+  /* 19d (14/08, feu vert de Blandine) : LE DECOR D'UNE PHOTO SEULE.
+     Sa question : « pourquoi il n'apparait qu'a partir de 2 photos alors que
+     la moitie ne propose qu'une photo ? ». Les modeles avaient ete greffes
+     DANS le bloc Presentation, qui repond a une autre question (plusieurs
+     photos : chapelet ou assemblees ?) et exigeait donc 2 photos. Les 13
+     modeles a une fenetre dormaient depuis toujours. Le decor devient ici sa
+     propre question, posee des UNE photo. */
+  var dcS = React.useState(null), decorChoix = dcS[0], setDecorChoix = dcS[1];
   var corpsRef = React.useRef(null);
   var vivantRef = React.useRef(true);
 
@@ -1497,8 +1514,11 @@ function ComposeurStory(props) {
           fond,
           grpId,
           /* 19b : en mode ajout la disposition vit deja sur la story absorbee
-             (la couverture) — les nouvelles n'en portent pas. */
-          (grpId && !props.origine) ? compoChoix : null
+             (la couverture) — les nouvelles n'en portent pas.
+             19d : sans groupe, une photo seule porte son DECOR. */
+          grpId
+            ? ((!props.origine) ? compoChoix : null)
+            : ((!props.origine && fichiersOrdonnes.length === 1 && iF === 0) ? decorChoix : null)
         );
         dernierR = rI;
         /* 19c : une composition refusee ARRETE TOUT, immediatement et par son
@@ -1506,6 +1526,11 @@ function ComposeurStory(props) {
         if (rI && rI.compoRefusee) {
           setBusy(false);
           if (props.onEchec) props.onEchec(hsT("compoImpossible", lg));
+          return;
+        }
+        if (rI && rI.decorRefuse) {
+          setBusy(false);
+          if (props.onEchec) props.onEchec(hsT("decorImpossible", lg));
           return;
         }
         if (rI && !rI.error) { okN++; if (rI.lieuIgnore) lieuIgn = true; }
@@ -1598,6 +1623,35 @@ function ComposeurStory(props) {
                 ? { height: "38vh", aspectRatio: "9 / 16", objectFit: "cover", objectPosition: (Math.round(cadrageVue.cx * 100) + "% 50%"), display: "block", position: "relative" }
                 : { width: "100%", maxHeight: "38vh", objectFit: "contain", display: "block", position: "relative" }
             })))
+          : null,
+
+        /* 19d — LE DECOR, des UNE photo. Question distincte de la
+           disposition : celle-ci arrange plusieurs photos, celui-la encadre
+           une photo. Reserve aux membres Premium comme les autres modeles. */
+        (HS_COMPO_ACTIF && !props.origine && fichiersOrdonnes.length === 1)
+          ? h("div", { style: { marginTop: 14 } },
+            titreBloc(hsT("decor", lg)),
+            props.premium
+              ? h("div", { style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4, WebkitOverflowScrolling: "touch" } },
+                h("button", {
+                  onClick: function () { setDecorChoix(null); },
+                  style: {
+                    flex: "0 0 auto", width: 52, height: 82, borderRadius: 10, cursor: "pointer",
+                    background: "#111417", color: decorChoix ? "#8A929C" : tn,
+                    border: "2px solid " + (decorChoix ? "rgba(255,255,255,0.16)" : tn),
+                    fontFamily: M, fontSize: 9.5, fontWeight: 700, letterSpacing: 0.3, padding: 2
+                  }
+                }, hsT("aucunDecor", lg)),
+                hsModelesPourN(1).map(function (refD) {
+                  var actifD = decorChoix === refD;
+                  return h("button", {
+                    key: refD,
+                    onClick: function () { setDecorChoix(actifD ? null : refD); },
+                    style: { flex: "0 0 auto", padding: 0, border: "none", background: "none", cursor: "pointer" }
+                  },
+                    h("img", { src: refD + ".webp", alt: refD, loading: "lazy", style: { width: 52, height: 82, objectFit: "cover", borderRadius: 10, display: "block", background: "#111417", border: "2px solid " + (actifD ? tn : "rgba(255,255,255,0.16)"), boxShadow: actifD ? ("0 0 12px " + tA(0.35)) : "none" } }));
+                }))
+              : h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", letterSpacing: 0.3 } }, hsT("modelesPremium", lg)))
           : null,
 
         /* 19c — LE CADRAGE (choix de Blandine du 14/08). N'apparait QUE pour
@@ -2358,6 +2412,16 @@ function ModifierStory(props) {
    exacts, le decor par-dessus). Chaque photo se touche : PLEIN ECRAN avec le
    zoom au pincement (PhotoZoomHype), le minuteur en pause pendant ce temps.
    Le depliage : les tirages glissent un a un a l'ouverture (400 ms). */
+/* 19d : cette story demande-t-elle le rendu a fenetres ? Soit elle assemble
+   plusieurs photos, soit elle est seule dans un decor. */
+function hsAvecDecor(st) {
+  try {
+    if (!st) return false;
+    if (st.compo && st.compo.length > 1) return true;
+    return !!(st.disposition && String(st.disposition).indexOf("modele-") === 0);
+  } catch (e) { return false; }
+}
+
 function CompositionStory(props) {
   var story = props.story || {}; var lg = props.langue || "fr";
   var membres = (story.compo && story.compo.length ? story.compo : [story]);
@@ -2827,7 +2891,11 @@ function VisionneuseStories(props) {
         /* 19c : LA COUCHE DE LA PHOTO NETTE. C'est elle qui manquait — sans
            zIndex, un <img> non positionne passe SOUS le calque floute. */
         h("div", { style: { position: "relative", zIndex: 1, width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 0 } },
-          (chargee && !erreur && !enVeille && !estAlbum && story.compo && story.compo.length > 1)
+          /* 19d : une story SEULE portant un decor (`disposition: modele-*`)
+             passe elle aussi par CompositionStory — sans quoi elle
+             s'afficherait nue, sans son cadre. C'est ce qui manquait pour que
+             les modeles a une fenetre servent enfin. */
+          (chargee && !erreur && !enVeille && !estAlbum && hsAvecDecor(story))
             ? h(CompositionStory, { story: story, langue: lg, pause: function (v) { try { pauseRef.current = !!v; } catch (eP) { } } })
             : ((typeof PhotoZoomHype === "function" && chargee && !erreur && !enVeille)
               ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })

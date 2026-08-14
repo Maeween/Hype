@@ -7117,3 +7117,27 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 **Préparation Flutter** : la politique image du composeur est maintenant entièrement dans quatre fonctions pures (`hsVignetteFichier`, `hsRecadrerFichier`, `hsImageFlou`, `hsCoteEcran`) — côté natif elles se remplacent une par une sans toucher aux composants ; `compoRefusee` entre au contrat de retour de la publication (l'échec est une donnée, plus un effet de bord) ; la règle « la photo nette possède sa propre couche » est notée pour le rendu natif, où l'ordre de peinture obéit aux mêmes pièges.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19c**.
+
+
+## Session 137 — 14/08/2026 · stories 19d : LE DÉCOR DEVIENT SA PROPRE QUESTION
+
+**Feu vert de Blandine** : « Oui c'est ça fais le stp », après sa question — « pourquoi il n'apparaît qu'à partir de 2 photos alors que la moitié ne propose qu'une photo ? »
+
+**La faute de conception (à moi)** : les modèles avaient été greffés **dans** le bloc « Présentation », qui répond à une tout autre question — *plusieurs photos : en chapelet ou assemblées ?* — et exige donc 2 photos. Les **13 modèles à une fenêtre** étaient inatteignables depuis toujours. Deux idées distinctes vivaient dans le même tiroir : la **disposition** (comment plusieurs photos cohabitent) et le **décor** (un cadre autour d'une photo, seule ou non).
+
+**Livré (stories 19d)** :
+- Nouveau bloc **« Le décor »** dans le composeur, affiché dès **une** photo (hors mode ajout) : puce « Aucun » + les modèles à une fenêtre, réservés aux membres Premium comme les autres.
+- Publication : une photo seule porte sa `disposition` **sans groupe**.
+- `hsAvecDecor(story)` : la visionneuse monte le rendu à fenêtres soit pour une composition (≥ 2 photos), soit pour une story **seule portant un `modele-*`**. Sans ça la photo s'affichait nue, sans son cadre — c'était le vrai travail, pas la condition d'affichage. `CompositionStory` tolérait déjà un membre unique (`membres = story.compo || [story]`).
+- Le **décor non plus n'est jamais jeté en silence** : `decorRefuse` si la base refuse la colonne `disposition`, vérification de la ligne revenue, arrêt franc de `publier()` et message nommé.
+- Textes 6 langues : `decor`, `aucunDecor`, `decorImpossible`.
+
+**À l'écran** : + bloc « Le décor » dès une photo, avec les 13 modèles jusqu'ici invisibles · + une story seule s'affiche dans son cadre · + un message précis si le décor est refusé · − rien ne disparaît (le bloc Présentation garde son rôle à partir de 2 photos).
+
+**Signalement** : harnais du projet toujours absent ; `t_19d.js` écrit à la place — **153 assertions vertes**. `node --check` vert sur les trois fichiers.
+
+**Reste ouvert** : le décor de nuit envoyé par Blandine (PNG 940×1672, trou transparent circulaire de 862×847, 36 % du visuel) n'est **pas** intégré : il attend son nom (`modele-…`), sa conversion `.webp` à la racine, et son entrée dans `hype-modeles-db.js` — le script de découpe n'est pas dans la conversation, la détection serait la mienne · les modèles à **5 fenêtres** (ajouter une fenêtre horizontale sous un décor existant : `modele-concours-4` a 327 px libres en bas) attendent les fichiers `.webp` correspondants, absents ici · le défaut du fond pour une photo large est toujours « Noir ».
+
+**Préparation Flutter** : `hsAvecDecor` isole la question « cette story se dessine-t-elle dans un cadre ? » en un prédicat unique — côté natif, un seul point de branchement entre le rendu simple et le rendu à fenêtres ; le décor rejoint le contrat de données comme une propriété de la story, pas comme une propriété du groupe.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19d**.
