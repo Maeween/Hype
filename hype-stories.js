@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19w";
+var HYPE_STORIES_VERSION = "19x";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -1653,7 +1653,17 @@ function ComposeurStory(props) {
             }
           },
             h("img", {
-              src: ref + ".webp", alt: ref, loading: "lazy", decoding: "async",
+              /* 19x : la bande charge `modele-XX-mini.webp` — 176 px de large,
+                 0,21 Mo decode au lieu de 6,0. Si la vignette n'est pas encore
+                 poussee a la racine, on retombe sur le decor plein format :
+                 le catalogue reste affichable pendant la mise en place. */
+              src: ref + "-mini.webp", alt: ref, loading: "lazy", decoding: "async",
+              onError: function (ev) {
+                try {
+                  var im = ev && ev.target; if (!im || im.__pleine) return;
+                  im.__pleine = 1; im.src = ref + ".webp";
+                } catch (eM) { }
+              },
               /* 19j (14/08) : « on voit rien pour les modeles ». Evidemment :
                  un decor est un dessin NOIR dont les fenetres sont des TROUS,
                  pose sur un fond noir — il n'y avait rien a voir. La vignette
