@@ -393,6 +393,38 @@ MURS.forEach(function(m){
   sc.appendChild(d);
 });
 
+/* ------------------ LA BANDE TOURNE (14/08) ------------------
+   La bande est un ruban droit : `translateX(-place x 100vw)`. Du dernier
+   mur du cercle au premier il y avait cinq murs a remonter, donc un saut
+   instantane a chaque tour complet.
+   Remede : `mur` reste l'INDICE DANS `MURS` (tout le reste du fichier
+   s'appuie dessus — `POSES[r].mur`, `MURS[p.mur].id`, les points de
+   navigation), et une table `PLACE` dit ou chaque mur se range dans le
+   ruban. Avant un pas qui boucle, on fait tourner les six murs du cercle
+   par la propriete `order` du flex : aucun clone, aucune image
+   rechargee, les objets poses suivent leur mur. Le mur courant garde sa
+   place sous les yeux pendant la rotation — elle est donc invisible.
+   Les deux vues d'arrivee gardent les places 0 et 1 : elles sont hors du
+   cercle et ne tournent pas. */
+var PLACE = MURS.map(function(_, i){ return i; });
+function poserOrdre(){
+  MURS.forEach(function(m, i){
+    var d = S('mur-' + m.id);
+    if(d) d.style.order = PLACE[i];
+  });
+}
+poserOrdre();
+/* range les six murs du cercle a partir de `ancre`, qui prend `place`,
+   les suivants dans le sens donne. */
+function tournerCercle(ancre, place, sens){
+  var n = FACES.length, pos = FACES.indexOf(ancre);
+  if(pos < 0) return;
+  for(var k = 0; k < n; k++){
+    PLACE[FACES[(pos + sens * k + n * n) % n]] = place + sens * k;
+  }
+  poserOrdre();
+}
+
 /* ------------------ la fenetre et sa vue ------------------
    Une image « percee » : l'arche est un vrai trou (alpha 0) et la vue
    passe DERRIERE en calque plein. Aucun clip-path — la « fenetre de
@@ -545,10 +577,25 @@ function suivant(sens){
    toute allure » (Blandine, v15 de la maquette). */
 function allerBrut(i){
   var cible = (i + MURS.length) % MURS.length;
-  var saut = Math.abs(cible - mur) > 1;
+  /* un pas d'un seul cran DANS le cercle : on remet le ruban dans une
+     forme ou les deux murs se touchent, sans que rien ne bouge a
+     l'ecran, puis on laisse l'animation faire son cran. */
+  var n = FACES.length, pc = FACES.indexOf(mur), pt = FACES.indexOf(cible);
+  if(pc >= 0 && pt >= 0){
+    var ecart = (pt - pc + n) % n;
+    if((ecart === 1 || ecart === n - 1) && Math.abs(PLACE[cible] - PLACE[mur]) > 1){
+      var avant = (ecart === 1);
+      sc.style.transition = 'none';
+      tournerCercle(mur, avant ? 2 : (2 + n - 1), avant ? 1 : -1);
+      sc.style.transform = 'translateX(' + (-PLACE[mur] * 100) + 'vw)';
+      void sc.offsetWidth;
+      sc.style.transition = '';
+    }
+  }
+  var saut = Math.abs(PLACE[cible] - PLACE[mur]) > 1;
   if(saut) sc.style.transition = 'none';
   mur = cible;
-  sc.style.transform = 'translateX(' + (-mur * 100) + 'vw)';
+  sc.style.transform = 'translateX(' + (-PLACE[mur] * 100) + 'vw)';
   if(saut){ void sc.offsetWidth; sc.style.transition = ''; }
   S('nomMur').textContent = nomMurDe(MURS[mur].id);
   [].forEach.call(pts.children, function(p, j){ p.classList.toggle('on', j === mur); });

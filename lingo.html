@@ -1078,8 +1078,24 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
 .regles p{font-size:12px;line-height:1.7;color:var(--gris);margin:0 0 12px}
 .regles b{color:#DCE5EC;font-weight:600}
-#ouvAutres{display:flex;gap:10px;justify-content:center;margin-top:14px;width:100%;max-width:340px}
-#ouvAutres button{flex:1;padding:13px 10px;border-radius:15px;font-size:10.5px;font-weight:600;
+/* 🟥 14/08 SOIR — LE RAIL DEBORDAIT ET N'ETAIT PAS ATTEIGNABLE.
+   Les cinq boutons etaient en `flex:1` dans 340 px. Un element flex ne
+   descend jamais sous la largeur de son MOT LE PLUS LONG
+   (`min-width:auto`) : « PROCHAINEMENT », « COLLECTION », « PARTAGER »
+   additionnes depassaient de loin les 340 px, la ligne debordait des
+   DEUX cotes, et sans `overflow-x` les bouts etaient hors d'atteinte —
+   « Partager le voyage », le cinquieme, sortait a droite.
+   ⚠️ `justify-content:center` est REMPLACE par `flex-start` : un flex
+   centre qui deborde rend son debordement de GAUCHE inatteignable au
+   defilement (defaut connu de WebKit). Centrer et defiler ne vont pas
+   ensemble. */
+#ouvAutres{display:flex;gap:10px;justify-content:flex-start;margin-top:14px;
+ width:100%;max-width:340px;overflow-x:auto;overflow-y:hidden;
+ -webkit-overflow-scrolling:touch;scrollbar-width:none;
+ scroll-snap-type:x proximity;padding-bottom:2px}
+#ouvAutres::-webkit-scrollbar{display:none}
+#ouvAutres button{flex:0 0 auto;min-width:92px;scroll-snap-align:center;
+ padding:13px 10px;border-radius:15px;font-size:10.5px;font-weight:600;
  letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.05)}
 #ouvCollection{color:var(--or);border:1px solid rgba(212,175,55,.4)}
 #ouvCarnet{color:#C9A961;border:1px solid rgba(176,141,63,.45)}
