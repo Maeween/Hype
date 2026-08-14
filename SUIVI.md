@@ -7165,3 +7165,42 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 **Préparation Flutter** : `decoupe.py` fait entrer la géométrie des décors dans un format déclaratif pur (aucune dépendance au navigateur) — côté natif, `contour` se lit comme un `Path` et `bbox` comme un `Rect`, sans retoucher les données.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · stories 19d · **modèles 25**.
+
+### Session 138b — le modèle à cinq fenêtres
+
+**Décision de Blandine** (ses mots) : « La signature peut être effacée on s'en fout ». J'avais refusé de percer `modele-concours-4` pour préserver la couronne, le fer et le HYPE du bas ; elle tranche l'inverse.
+
+**`modele-26`** — copie de `modele-concours-4` avec une **cinquième fenêtre horizontale** : bande de 799 × 215 px (ratio 3,7), alignée sur les bords extrêmes des quatre fenêtres existantes (x 81 → 880), posée sous la dernière (y 1385 → 1600), coins arrondis 8 px. Zone signature remplacée par le fond local mesuré à la médiane des bords (2,2,2). Liseré clair de 3 px + lueur turquoise floutée, comme les autres cadres. 51,7 Ko. Découpe rejouée : **5 fenêtres** détectées, les quatre premières inchangées au pixel près.
+
+**`modele-concours-4` reste intact** à côté, avec ses 4 fenêtres — rien n'est supprimé, Blandine jettera celui qu'elle veut.
+
+**À l'écran** : + un modèle proposé à **5 photos**, là où le catalogue n'en avait aucun (c'était la cause de « sur composer il n'y a rien » avec 5 photos) · − la signature HYPE disparaît du bas de `modele-26` uniquement.
+
+Catalogue : **26 modèles** — 14 à une fenêtre, 2 à deux, 8 à trois, 1 à quatre, **1 à cinq**. `index.html` : `hype-modeles-db.js?v=3`. Harnais : **163 assertions vertes**.
+
+
+## Session 139 — 14/08/2026 · stories 19e : LA LIGNE MANQUANTE DEPUIS LA 134
+
+**Incident signalé par Blandine** (05h45) : « 3ème story ne s'affiche pas et bug » · « ça m'a proposé un seul modèle pas plusieurs, le dernier je l'ai utilisé mais ça n'a pas marché ». Capture de l'écran d'erreur avec la trace complète.
+
+**LA CAUSE, exacte** : `CompositionStory` appelle `h(...)` **sans jamais déclarer `h`**, et aucun `h` global n'existe — celui de `index.html` (ligne 32886) vit **à l'intérieur** d'une fonction. Le tout premier appel exécuté du composant, `var cadres = h("style", …)`, lève donc une `ReferenceError`. La trace de Blandine le dit au caractère près : `CompositionStory@hype-stories.js:2457:17` — la colonne 17 tombe exactement sur ce `h(`.
+
+**Conséquence** : **`CompositionStory` n'a JAMAIS fonctionné** depuis sa création en session 134. Toute composition et tout décor faisaient tomber l'application sur « Un caillou dans le sabot ». Les corrections de 19b à 19d étaient justes mais s'arrêtaient toutes au même mur invisible.
+
+**Correctif (une ligne)** : `var h = React.createElement;` en tête de `CompositionStory`.
+
+**Garde posée** : audit automatique dans le harnais — *aucune fonction du fichier n'utilise `h(` sans le déclarer*. Le seul manquant était `CompositionStory` ; la règle est désormais verrouillée pour tous les composants à venir.
+
+**« Un seul modèle proposé »** : c'est correct, pas un bug. Avec **5 photos**, le catalogue ne contient qu'un seul modèle à cinq fenêtres — `modele-26`, créé cette nuit. Les autres modèles existent pour 1, 2, 3 et 4 photos.
+
+**À l'écran** : + les compositions et les décors s'affichent enfin · − plus d'écran d'erreur en ouvrant une story composée.
+
+**Sa composition à 5 photos n'est pas perdue** : le groupe est bien en base (le bandeau la montre en 3ᵉ story), seul l'affichage plantait.
+
+**Reste à surveiller** : dans la bulle du bandeau, une photo cassée s'affiche avec l'icône de Safari plutôt qu'un repli propre — à traiter si ça se reproduit après ce correctif.
+
+**Signalement** : harnais du projet toujours absent ; `t_19e.js` — **165 assertions vertes**. `node --check` vert.
+
+**Préparation Flutter** : l'audit « chaque composant déclare ses dépendances de rendu » devient une règle du fichier, contrôlée à chaque livraison — en natif, l'équivalent est l'import explicite, et cette discipline évitera la même classe d'erreur au portage.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19e** · modèles 26.

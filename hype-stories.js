@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19d";
+var HYPE_STORIES_VERSION = "19e";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -2423,6 +2423,16 @@ function hsAvecDecor(st) {
 }
 
 function CompositionStory(props) {
+  /* 19e (14/08) — LA LIGNE QUI MANQUAIT DEPUIS LA SESSION 134.
+     CompositionStory appelait `h(...)` sans jamais declarer `h`, et aucun `h`
+     global n'existe (celui de l'index vit DANS une fonction). Resultat :
+     ReferenceError au tout premier appel — `var cadres = h("style", ...)` —
+     donc l'ecran « Un caillou dans le sabot » a CHAQUE affichage d'une
+     composition ou d'un decor. Autrement dit : ce composant n'a JAMAIS
+     fonctionne. Trace de Blandine (14/08, 05h46) : CompositionStory@
+     hype-stories.js:2457:17, la colonne 17 tombe exactement sur ce `h(`.
+     Cause de « la 3e story ne s'affiche pas et bug ». */
+  var h = React.createElement;
   var story = props.story || {}; var lg = props.langue || "fr";
   var membres = (story.compo && story.compo.length ? story.compo : [story]);
   var plS = React.useState(null), plein = plS[0], setPlein = plS[1];
