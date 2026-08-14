@@ -18747,7 +18747,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=1"></script><script src="hype-stories.js?v=19b"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=1"></script><script src="hype-stories.js?v=19c"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -20810,6 +20810,13 @@ function HypeApp() {
     // et il ne quitte jamais l'appli (on re-arme une garde à chaque fois).
     const navRetourRef = useRef({});
     navRetourRef.current = { zoomImg, merciVIP, impression, histLen: historiqueEcrans.length, retourEcran, setZoomImg, setMerciVIP, setImpression };
+    // 14/08 (19c) — LE GESTE RETOUR QUI RAMENAIT A L'ACCUEIL. Un swipe rapide
+    // sur iOS consomme DEUX entrees d'historique : la premiere fermait bien la
+    // story, la seconde arrivait avant que la garde soit reposee et declenchait
+    // la navigation de l'appli. Mots de Blandine : « j'ai juste swipe changer
+    // d'image et ca me ramene a l'accueil ». On ignore donc un second retour
+    // survenu dans les 450 ms — un humain ne recule pas deux fois si vite.
+    const popTsRef = useRef(0);
     useEffect(() => {
         const armer = () => { try {
             window.history.pushState({ ag: 1 }, "");
@@ -20818,6 +20825,9 @@ function HypeApp() {
         armer();
         const onPop = () => {
             const s = navRetourRef.current;
+            const t = Date.now();
+            if (t - (popTsRef.current || 0) < 450) { popTsRef.current = t; armer(); return; }
+            popTsRef.current = t;
             if (s.zoomImg)
                 s.setZoomImg(null);
             else if (s.impression)

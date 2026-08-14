@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19b";
+var HYPE_STORIES_VERSION = "19c";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -134,7 +134,14 @@ var HS_MULTI_MAX = 10;
    projet : une constante, rien n'est supprime. La colonne `fond` reste en
    base et le contrat de donnees la porte toujours ; une story marquee
    "immersif" s'affiche simplement sur fond noir tant que c'est eteint. */
-var HS_FOND_IMMERSIF_ACTIF = false;
+/* 19c (14/08) : RALLUME, apres diagnostic. Il n'etait pas casse au hasard :
+   le calque floute est en position:absolute avec un filter (donc positionne),
+   tandis que la photo nette de PhotoZoomHype est un <img> NON positionne — le
+   flou se peignait par-dessus, d'ou la capture du 13/08 « le flou seul, la
+   photo absente ». La photo nette a desormais sa propre couche (zIndex 1) et
+   le flou est servi depuis une VIGNETTE de 220 px : a ce niveau de flou
+   personne ne voit la difference, et le calque rasterise devient minuscule. */
+var HS_FOND_IMMERSIF_ACTIF = true;
 /* 13/08 (decision de Blandine) : LA STORY COMPOSEE — « la journee se deplie
    avec tous ses bons souvenirs, meme des annees plus tard ». Un groupe de 2 a
    5 photos publiees ENSEMBLE, une disposition (« hd » : la grande en haut, le
@@ -288,6 +295,73 @@ function hsVignetteFichier(fichier, cote) {
     } catch (e) { resolve(null); }
   });
 }
+/* ---------------------------------------------------------------------------
+   19c (14/08, choix de Blandine : « recadrer a l'envoi, sans SQL ») — LE
+   CADRAGE. Une photo paysage tient dans un ecran debout en bande de 4 cm ; ici
+   on la remplit, et l'auteur choisit AU DOIGT la bande verticale qu'il garde.
+   CONSEQUENCE ASSUMEE ET DITE A L'ECRAN : ce qui sort du cadre est perdu, le
+   fichier envoye est refabrique au canvas (2000 px de haut au plus, qualite
+   0,9) — ce n'est plus le fichier d'origine de l'iPhone.
+   `cx` = centre horizontal voulu, de 0 (bord gauche) a 1 (bord droit). */
+var HS_CADRE_RATIO = 9 / 16;
+var HS_CADRE_HMAX = 2000;
+function hsRecadrerFichier(fichier, cx) {
+  return new Promise(function (resolve) {
+    try {
+      if (!fichier || typeof window === "undefined" || !window.URL) { resolve(fichier); return; }
+      var brut = window.URL.createObjectURL(fichier);
+      var img = new Image();
+      var fini = false;
+      function terminer(r) {
+        if (fini) return; fini = true;
+        try { img.src = ""; } catch (e1) { }
+        try { window.URL.revokeObjectURL(brut); } catch (e2) { }
+        resolve(r || fichier);   /* le moindre pepin : on envoie l'original */
+      }
+      img.decoding = "async";
+      img.onload = function () {
+        try {
+          var L = img.naturalWidth || 1, H = img.naturalHeight || 1;
+          if (L / H <= HS_CADRE_RATIO) { terminer(fichier); return; }  /* deja debout */
+          var sw = H * HS_CADRE_RATIO;
+          var centre = Math.max(0, Math.min(1, (typeof cx === "number" ? cx : 0.5)));
+          var sx = Math.max(0, Math.min(L - sw, centre * L - sw / 2));
+          var hs = Math.min(H, HS_CADRE_HMAX);
+          var c = document.createElement("canvas");
+          c.height = Math.round(hs);
+          c.width = Math.round(hs * HS_CADRE_RATIO);
+          var ctx = c.getContext("2d");
+          ctx.drawImage(img, sx, 0, sw, H, 0, 0, c.width, c.height);
+          if (!c.toBlob) { try { c.width = 1; c.height = 1; } catch (eX) { } terminer(fichier); return; }
+          c.toBlob(function (b) {
+            var sortie = fichier;
+            try {
+              if (b) {
+                var nom = (fichier.name ? String(fichier.name).replace(/\.[^.]+$/, "") : "story") + "-cadre.jpg";
+                sortie = (typeof File === "function") ? new File([b], nom, { type: "image/jpeg" }) : b;
+              }
+            } catch (eF) { sortie = b || fichier; }
+            try { c.width = 1; c.height = 1; } catch (eC) { }
+            terminer(sortie);
+          }, "image/jpeg", 0.9);
+        } catch (e) { terminer(fichier); }
+      };
+      img.onerror = function () { terminer(fichier); };
+      img.src = brut;
+    } catch (e) { resolve(fichier); }
+  });
+}
+
+/* 19c : l'image du FOND FLOUTE — minuscule par choix. Un blur(26px) sur un
+   calque plein ecran est de la meme famille que les plantages memoire ; une
+   vignette de 220 px etiree donne exactement le meme flou pour presque rien. */
+function hsImageFlou(u) {
+  try {
+    if (typeof vignetteHype !== "function") return u;
+    return vignetteHype(u, 220, 330);
+  } catch (e) { return u; }
+}
+
 /* Le côté demandé pour l'aperçu : la taille de l'écran, jamais plus. */
 function hsCoteEcran() {
   try {
@@ -375,19 +449,29 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, group
 
     var res = await supa.from("hype_stories").insert(ligne).select().single();
     if (res && res.error) {
-      /* Repli : si la colonne `lieu` n'existe pas encore en base (SQL de la
-         v2 pas repassé), on republie sans le lieu plutôt que d'échouer. Le
-         message est explicite pour que l'oubli se voie. */
-      if (lieuNet || ligne.musique || ligne.fond || ligne.groupe) {
+      /* 19c — LE REPLI NE JETTE PLUS LA COMPOSITION EN SILENCE.
+         Jusqu'ici, une insertion refusee faisait tomber D'UN BLOC le lieu, la
+         musique, le fond, le groupe ET la disposition, puis republiait : les
+         cinq photos de Blandine sont parties en cinq stories separees, et le
+         seul message possible parlait du lieu. Ses mots (14/08) : « elle me
+         l'a decoupe en autant de stories sans un mot ».
+         Desormais : si la ligne portait un GROUPE, on n'insere rien et on
+         remonte l'echec nomme. Le repli d'origine ne vaut plus que pour les
+         colonnes de confort (lieu, musique, fond). */
+      if (ligne.groupe) return { data: null, error: res.error, compoRefusee: true };
+      if (lieuNet || ligne.musique || ligne.fond) {
         delete ligne.lieu;
         delete ligne.musique;
         delete ligne.fond;
-        delete ligne.groupe;
-        delete ligne.disposition;
         var res2 = await supa.from("hype_stories").insert(ligne).select().single();
         if (res2 && !res2.error) return { data: res2.data, error: null, lieuIgnore: true };
       }
       return { data: null, error: res.error };
+    }
+    /* 19c : ceinture — la ligne REVENUE doit porter son groupe. Une colonne
+       ignoree en silence par la base ne passera plus inapercue. */
+    if (ligne.groupe && res && res.data && !res.data.groupe) {
+      return { data: res.data, error: "groupe non enregistre", compoRefusee: true };
     }
 
     /* Les tags, un par un, sans bloquer. */
@@ -870,6 +954,12 @@ var HS_TXT = {
   presentation: { fr: "Pr\u00e9sentation", en: "Layout", es: "Presentaci\u00f3n", it: "Presentazione", ja: "\u30ec\u30a4\u30a2\u30a6\u30c8", de: "Anordnung" },
   defiler: { fr: "D\u00e9filer", en: "One by one", es: "Deslizar", it: "Scorrere", ja: "\u9806\u756a\u306b\u8868\u793a", de: "Nacheinander" },
   composer: { fr: "Composer", en: "Compose", es: "Componer", it: "Comporre", ja: "\u7d44\u307f\u5408\u308f\u305b\u308b", de: "Komponieren" },
+  compoImpossible: { fr: "La composition n'a pas pu \u00eatre cr\u00e9\u00e9e (la base a refus\u00e9 la colonne \u00ab groupe \u00bb). Rien n'a \u00e9t\u00e9 publi\u00e9 \u2014 tes photos sont intactes.", en: "The composition could not be created (the database refused the \u201cgroup\u201d column). Nothing was published \u2014 your photos are intact.", es: "No se pudo crear la composici\u00f3n (la base rechaz\u00f3 la columna \u00abgrupo\u00bb). No se public\u00f3 nada.", it: "Impossibile creare la composizione (il database ha rifiutato la colonna \u00abgruppo\u00bb). Non \u00e8 stato pubblicato nulla.", ja: "\u69cb\u6210\u3092\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff08\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9\u304c\u300c\u30b0\u30eb\u30fc\u30d7\u300d\u5217\u3092\u62d2\u5426\uff09\u3002\u4f55\u3082\u6295\u7a3f\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002", de: "Die Komposition konnte nicht erstellt werden (die Datenbank hat die Spalte \u201eGruppe\u201c abgelehnt). Es wurde nichts ver\u00f6ffentlicht." },
+  apercuCompo: { fr: "\u00c0 quoi \u00e7a ressemblera", en: "How it will look", es: "C\u00f3mo se ver\u00e1", it: "Come apparir\u00e0", ja: "\u5b8c\u6210\u30a4\u30e1\u30fc\u30b8", de: "So wird es aussehen" },
+  cadrer: { fr: "Le cadrage", en: "Framing", es: "Encuadre", it: "Inquadratura", ja: "\u30c8\u30ea\u30df\u30f3\u30b0", de: "Bildausschnitt" },
+  photoEntiere: { fr: "Photo enti\u00e8re", en: "Whole photo", es: "Foto entera", it: "Foto intera", ja: "\u5199\u771f\u5168\u4f53", de: "Ganzes Foto" },
+  remplirEcran: { fr: "Remplir l'\u00e9cran", en: "Fill the screen", es: "Llenar la pantalla", it: "Riempire lo schermo", ja: "\u753b\u9762\u3044\u3063\u3071\u3044", de: "Bildschirm f\u00fcllen" },
+  cadrageCoupe: { fr: "La partie hors cadre sera perdue \u00e0 l'envoi.", en: "Whatever falls outside the frame is lost on upload.", es: "Lo que quede fuera del encuadre se pierde al enviar.", it: "Ci\u00f2 che resta fuori inquadratura andr\u00e0 perso.", ja: "\u67a0\u306e\u5916\u306f\u9001\u4fe1\u6642\u306b\u5931\u308f\u308c\u307e\u3059\u3002", de: "Was au\u00dferhalb des Rahmens liegt, geht beim Hochladen verloren." },
   compoLegende: { fr: "En composition, c'est la l\u00e9gende de ta story en ligne qui s'affiche \u2014 ce texte-ci accompagne la premi\u00e8re nouvelle photo.", en: "In a composition, your live story's caption is the one shown \u2014 this text still travels with the first new photo.", es: "En composici\u00f3n se muestra el texto de tu story en l\u00ednea \u2014 este acompa\u00f1a a la primera foto nueva.", it: "In composizione si vede il testo della tua story online \u2014 questo accompagna la prima nuova foto.", ja: "\u69cb\u6210\u3067\u306f\u516c\u958b\u4e2d\u306e\u30b9\u30c8\u30fc\u30ea\u30fc\u306e\u672c\u6587\u304c\u8868\u793a\u3055\u308c\u307e\u3059\u3002", de: "In der Komposition wird der Text deiner Online-Story gezeigt \u2014 dieser begleitet das erste neue Foto." },
   compoAbsorbe: { fr: "Ta story en ligne rejoint la composition : elle en devient la grande photo.", en: "Your live story joins the composition — it becomes the large photo.", es: "Tu story en l\u00ednea se une a la composici\u00f3n: pasa a ser la foto grande.", it: "La tua story online entra nella composizione: diventa la foto grande.", ja: "\u516c\u958b\u4e2d\u306e\u30b9\u30c8\u30fc\u30ea\u30fc\u304c\u69cb\u6210\u306b\u52a0\u308f\u308a\u3001\u5927\u304d\u3044\u5199\u771f\u306b\u306a\u308a\u307e\u3059\u3002", de: "Deine Online-Story kommt in die Komposition \u2014 sie wird das gro\u00dfe Foto." },
   modelesPremium: { fr: "Les mod\u00e8les de d\u00e9cor sont r\u00e9serv\u00e9s aux membres Premium.", en: "Decor templates are for Premium members.", es: "Las plantillas de decorado son para miembros Premium.", it: "I modelli decorativi sono riservati ai membri Premium.", ja: "\u30c7\u30b3\u30ec\u30fc\u30b7\u30e7\u30f3\u30e2\u30c7\u30eb\u306f\u30d7\u30ec\u30df\u30a2\u30e0\u4f1a\u54e1\u9650\u5b9a\u3067\u3059\u3002", de: "Deko-Vorlagen sind Premium-Mitgliedern vorbehalten." },
@@ -1106,10 +1196,14 @@ function BandeauStories(props) {
 
     composer
       ? h(ComposeurStory, {
-        fichier: fichier, langue: lg,
+        /* 19c : LE PREMIUM N'ARRIVAIT PAS. La bande des modeles ne pouvait
+           donc JAMAIS s'afficher, quel que soit l'abonnement, et « Composer »
+           ne montrait que la phrase « reserves aux membres Premium ».
+           Erreur de la 134, signalee a Blandine le 14/08. */
+        fichier: fichier, langue: lg, premium: premium,
         onFermer: function () { setComposer(false); setFichier(null); },
         onPublie: function (lieuIgnore, messagePartiel) { setComposer(false); setFichier(null); bip(messagePartiel ? messagePartiel : (lieuIgnore ? hsT("lieuIgnore", lg) : hsT("ajoutee", lg))); charger(); },
-        onEchec: function () { setComposer(false); setFichier(null); bip(hsT("echec", lg)); }
+        onEchec: function (msg) { setComposer(false); setFichier(null); bip(msg || hsT("echec", lg)); }
       })
       : null,
 
@@ -1177,6 +1271,10 @@ function ComposeurStory(props) {
   /* Etat 18 (13/08, session 134) : le choix de PRESENTATION — null = defiler
      (le chapelet), "hd" = story composee, "modele-X" = un modele Premium. */
   var cpS = React.useState(null), compoChoix = cpS[0], setCompoChoix = cpS[1];
+  /* Etat 19 (14/08, session 136) : LE CADRAGE, photo par photo.
+     { "<index>": { actif: true, cx: 0.5 } } — seules les photos plus LARGES
+     que hautes en recoivent un ; les autres n'en ont pas besoin. */
+  var cdS = React.useState({}), cadrages = cdS[0], setCadrages = cdS[1];
   var corpsRef = React.useRef(null);
   var vivantRef = React.useRef(true);
 
@@ -1342,6 +1440,18 @@ function ComposeurStory(props) {
     setTags(tags.concat([{ type: type, id: id, nom: nom || "" }]));
   }
 
+  /* Le cadrage de la photo actuellement previsualisee. */
+  function cadrageDe(ix) { try { return cadrages[String(ix)] || null; } catch (e) { return null; } }
+  function poserCadrage(ix, val) {
+    setCadrages(function (anc) {
+      var n = Object.assign({}, anc);
+      if (val) n[String(ix)] = val; else delete n[String(ix)];
+      return n;
+    });
+  }
+  var cadrageVue = cadrageDe(vueSure);
+  var photoLarge = !!(dimPhoto && dimPhoto.w > dimPhoto.hh);
+
   async function publier() {
     if (busy) return;
     setBusy(true);
@@ -1370,8 +1480,16 @@ function ComposeurStory(props) {
         if (rAbs && rAbs.error) { setBusy(false); if (props.onEchec) props.onEchec(); return; }
       }
       for (var iF = 0; iF < fichiersOrdonnes.length; iF++) {
+        /* 19c : le cadrage choisi est applique ICI, juste avant l'envoi. La
+           photo partante est refabriquee ; l'original de l'iPhone n'est pas
+           touche, mais ce qui sort du cadre ne part pas. */
+        var fEnvoi = fichiersOrdonnes[iF];
+        try {
+          var cad = cadrageDe(iF);
+          if (cad && cad.actif) fEnvoi = await hsRecadrerFichier(fEnvoi, cad.cx);
+        } catch (eCd) { fEnvoi = fichiersOrdonnes[iF]; }
         var rI = await hsPublierStory(
-          fichiersOrdonnes[iF],
+          fEnvoi,
           iF === 0 ? legende : null,
           lieu,
           iF === 0 ? tags : [],
@@ -1383,6 +1501,13 @@ function ComposeurStory(props) {
           (grpId && !props.origine) ? compoChoix : null
         );
         dernierR = rI;
+        /* 19c : une composition refusee ARRETE TOUT, immediatement et par son
+           nom. Plus jamais un chapelet muet a la place d'une composition. */
+        if (rI && rI.compoRefusee) {
+          setBusy(false);
+          if (props.onEchec) props.onEchec(hsT("compoImpossible", lg));
+          return;
+        }
         if (rI && !rI.error) { okN++; if (rI.lieuIgnore) lieuIgn = true; }
       }
       setBusy(false);
@@ -1466,8 +1591,35 @@ function ComposeurStory(props) {
               onLoad: function (ev) {
                 try { var im = ev.target; if (im && im.naturalWidth) setDimPhoto({ w: im.naturalWidth, hh: im.naturalHeight }); } catch (eD) { }
               },
-              style: { width: "100%", maxHeight: "38vh", objectFit: "contain", display: "block", position: "relative" }
+              /* 19c : quand le cadrage est actif, l'apercu montre EXACTEMENT
+                 la bande verticale qui sera envoyee — meme ratio, meme
+                 centre. Aucun filtre n'est pose sur la photo. */
+              style: (cadrageVue && cadrageVue.actif)
+                ? { height: "38vh", aspectRatio: "9 / 16", objectFit: "cover", objectPosition: (Math.round(cadrageVue.cx * 100) + "% 50%"), display: "block", position: "relative" }
+                : { width: "100%", maxHeight: "38vh", objectFit: "contain", display: "block", position: "relative" }
             })))
+          : null,
+
+        /* 19c — LE CADRAGE (choix de Blandine du 14/08). N'apparait QUE pour
+           une photo plus large que haute : une photo debout n'en a pas besoin.
+           Facultatif : sans y toucher, la photo part entiere. */
+        photoLarge
+          ? h("div", { style: { marginTop: 14 } },
+            titreBloc(hsT("cadrer", lg)),
+            h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
+              puce(!(cadrageVue && cadrageVue.actif), hsT("photoEntiere", lg), function () { poserCadrage(vueSure, null); }, "cdN"),
+              puce(!!(cadrageVue && cadrageVue.actif), hsT("remplirEcran", lg), function () { poserCadrage(vueSure, { actif: true, cx: (cadrageVue && typeof cadrageVue.cx === "number") ? cadrageVue.cx : 0.5 }); }, "cdO")),
+            (cadrageVue && cadrageVue.actif)
+              ? h("div", { style: { marginTop: 10 } },
+                h("input", {
+                  type: "range", min: 0, max: 100, step: 1,
+                  value: Math.round(cadrageVue.cx * 100),
+                  "aria-label": hsT("cadrer", lg),
+                  onChange: function (ev) { try { poserCadrage(vueSure, { actif: true, cx: (Number(ev.target.value) || 0) / 100 }); } catch (eS) { } },
+                  style: { width: "100%", accentColor: tn }
+                }),
+                h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 6, lineHeight: 1.5 } }, hsT("cadrageCoupe", lg)))
+              : null)
           : null,
 
         (fichiers.length > 1 || props.origine)
@@ -1538,6 +1690,40 @@ function ComposeurStory(props) {
               : null,
             (compoChoix && !props.premium)
               ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, letterSpacing: 0.3 } }, hsT("modelesPremium", lg))
+              : null,
+            /* 19c : L'APERCU DU H+D. « Sur composer il n'y a rien » (Blandine,
+               14/08) : la puce se cochait et l'ecran ne bougeait pas. Ici, une
+               maquette VIVANTE faite avec ses propres vignettes — la grande en
+               haut, le fil de lumiere, la table de tirages dessous. */
+            (compoChoix === "hd")
+              ? h("div", { style: { marginTop: 12 } },
+                h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.6, textTransform: "uppercase", color: tA(0.92), marginBottom: 8 } }, hsT("apercuCompo", lg)),
+                (function () {
+                  var vign = (props.origine && props.origine.url ? [props.origine.url] : []).concat(urlsMini.filter(function (u) { return !!u; }));
+                  var grandeU = vign[0] || null, petites = vign.slice(1, 5);
+                  return h("div", {
+                    style: {
+                      width: 128, aspectRatio: "9 / 16", borderRadius: 12, overflow: "hidden",
+                      border: "1px solid " + tA(0.3), background: "#060709",
+                      display: "flex", flexDirection: "column", gap: 5, padding: 6, boxSizing: "border-box"
+                    }
+                  },
+                    h("div", { style: { flex: "1 1 58%", minHeight: 0, borderRadius: 7, overflow: "hidden", background: "#111417", border: "1px solid rgba(255,255,255,0.1)" } },
+                      grandeU ? h("img", { src: grandeU, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null),
+                    h("div", { style: { height: 1, background: "linear-gradient(90deg, transparent, " + tA(0.75) + ", transparent)", flex: "0 0 auto" } }),
+                    h("div", { style: { flex: "0 0 auto", display: "flex", gap: 4, justifyContent: "center", alignItems: "flex-end" } },
+                      petites.map(function (u, ix) {
+                        return h("div", {
+                          key: "ap" + ix,
+                          style: {
+                            width: (petites.length >= 4 ? "21%" : petites.length === 3 ? "27%" : "34%"),
+                            aspectRatio: "3 / 4", borderRadius: 2, overflow: "hidden",
+                            border: "1.5px solid #F4F7FA", background: "#111417",
+                            transform: "rotate(" + (ix % 2 === 0 ? -2.2 : 2.4) + "deg)"
+                          }
+                        }, h("img", { src: u, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+                      })));
+                })())
               : null,
             /* 19b : dire A L'ECRAN ce que « Composer » fait a la story deja
                en ligne — elle rejoint la composition et en devient la grande. */
@@ -2292,6 +2478,9 @@ function VisionneuseStories(props) {
   var loS = React.useState(null), localMod = loS[0], setLocalMod = loS[1];
   var mnS = React.useState(false), menuOuvert = mnS[0], setMenuOuvert = mnS[1];
   var ajS = React.useState(null), ajout = ajS[0], setAjout = ajS[1];
+  /* 19c : un message PRECIS venu du composeur (ex. composition refusee par la
+     base) plutot que le « echec » generique. */
+  var nlS = React.useState(null), noteLibre = nlS[0], setNoteLibre = nlS[1];
   var ajoutRef = React.useRef(null);
   var pauseRef = React.useRef(false);
   var barreRef = React.useRef(null);
@@ -2607,7 +2796,12 @@ function VisionneuseStories(props) {
          session 92 : aucun état React pendant le geste, plafond de zoom
          calculé sur la densité de l'écran, couche GPU seulement pendant un
          zoom réel. 114b conservé : le chargement déclenche le minuteur. */
-      h("div", { style: { flex: 1, position: "relative", minHeight: 0, background: "#060709", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" } },
+      /* 19c : touchAction "none" sur TOUTE la zone photo. Le geste de retour
+         d'iOS partait du NOIR autour d'une photo paysage (la photo, elle,
+         etait deja protegee) : « j'ai juste swipe changer d'image et ca me
+         ramene a l'accueil » (Blandine, 14/08). Les gestes de la visionneuse
+         sont en JavaScript : ils continuent de fonctionner. */
+      h("div", { style: { flex: 1, position: "relative", minHeight: 0, background: "#060709", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", touchAction: "none" } },
         /* LE FOND IMMERSIF (13/08, spec de Blandine) : si l'AUTEUR l'a choisi,
            la même photo remplit l'écran derrière, en cover, fortement floutée
            et assombrie — la photo d'origine reste nette et ENTIÈRE devant
@@ -2616,7 +2810,7 @@ function VisionneuseStories(props) {
            none et AUCUN zIndex : les zones (1) et la pastille (10) restent
            au-dessus. Une story sans fond garde le noir d'aujourd'hui. */
         (HS_FOND_IMMERSIF_ACTIF && story.fond === "immersif" && chargee && !erreur && !estAlbum)
-          ? h("div", { "aria-hidden": true, style: { position: "absolute", inset: -24, backgroundImage: "url(\"" + hsImageEcran(story.photo_url) + "\")", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(26px) brightness(0.5) saturate(1.05)", transform: "scale(1.12)", pointerEvents: "none" } })
+          ? h("div", { "aria-hidden": true, style: { position: "absolute", inset: -24, zIndex: 0, backgroundImage: "url(\"" + hsImageFlou(story.photo_url) + "\")", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(26px) brightness(0.5) saturate(1.05)", transform: "scale(1.12)", pointerEvents: "none" } })
           : null,
         h("style", { dangerouslySetInnerHTML: { __html: "@keyframes hsResp{0%,100%{opacity:.28;transform:scale(.9)}50%{opacity:.85;transform:scale(1.06)}}" } }),
         (!chargee && !erreur)
@@ -2630,11 +2824,14 @@ function VisionneuseStories(props) {
            choisies se decodaient pendant que la photo de la story — voire les
            cinq d'une composition — restaient vivantes dessous. On les demonte
            le temps de l'ajout ; elles reviennent a la fermeture. */
-        (chargee && !erreur && !enVeille && !estAlbum && story.compo && story.compo.length > 1)
-          ? h(CompositionStory, { story: story, langue: lg, pause: function (v) { try { pauseRef.current = !!v; } catch (eP) { } } })
-          : ((typeof PhotoZoomHype === "function" && chargee && !erreur && !enVeille)
-            ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })
-            : null),
+        /* 19c : LA COUCHE DE LA PHOTO NETTE. C'est elle qui manquait — sans
+           zIndex, un <img> non positionne passe SOUS le calque floute. */
+        h("div", { style: { position: "relative", zIndex: 1, width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 0 } },
+          (chargee && !erreur && !enVeille && !estAlbum && story.compo && story.compo.length > 1)
+            ? h(CompositionStory, { story: story, langue: lg, pause: function (v) { try { pauseRef.current = !!v; } catch (eP) { } } })
+            : ((typeof PhotoZoomHype === "function" && chargee && !erreur && !enVeille)
+              ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })
+              : null)),
         /* La pastille son : n'apparaît que si la story porte une musique.
            JAMAIS d'autoplay (règle iOS) : c'est elle qu'on touche pour lancer
            la boucle, la retoucher coupe. Elle respire quand le son joue. */
@@ -2776,8 +2973,8 @@ function VisionneuseStories(props) {
               }, (t.type === "cheval" ? "\uD83D\uDC0E " : "") + (t.cible_nom || "?") + (attente ? (" \u00b7 " + hsT("enAttente", lg)) : ""));
             }))
           : null,
-        action
-          ? h("div", { style: { fontSize: 11.5, fontFamily: M, color: tnL, marginBottom: 10, lineHeight: 1.45 } }, messages[action] || "")
+        (action || noteLibre)
+          ? h("div", { style: { fontSize: 11.5, fontFamily: M, color: tnL, marginBottom: 10, lineHeight: 1.45 } }, noteLibre || messages[action] || "")
           : null,
         /* 13/08 : la rangee de boutons a REJOINT le menu ⋯ de l'en-tete
            (demande de Blandine). AUCUNE fonction supprimee : Garder en
@@ -2799,7 +2996,7 @@ function VisionneuseStories(props) {
 
     ajout
       ? h(ComposeurStory, {
-        fichier: ajout, langue: lg, dessus: true,
+        fichier: ajout, langue: lg, dessus: true, premium: !!props.premium,
         /* 19b : l'origine porte de quoi ABSORBER la story en ligne dans un
            groupe — son id (ou ceux de sa composition, dans l'ordre) et le
            groupe qu'elle a deja. */
@@ -2812,7 +3009,7 @@ function VisionneuseStories(props) {
         },
         lieuInitial: story.lieu || "", musiqueInitiale: story.musique || null,
         onFermer: function () { setAjout(null); pauseRef.current = false; setRelance(function (r) { return r + 1; }); },
-        onEchec: function () { setAjout(null); pauseRef.current = false; setAction("echec"); },
+        onEchec: function (msg) { setAjout(null); pauseRef.current = false; setNoteLibre(msg || null); setAction("echec"); },
         /* Publie : la visionneuse se ferme, le bandeau recharge (son onFermer
            appelle charger()) — la story rouverte contient les nouvelles photos. */
         onPublie: function () { setAjout(null); fermer(); }

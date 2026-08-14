@@ -7082,3 +7082,38 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 **Préparation Flutter** : `hsVignetteFichier` / `hsCoteEcran` / `hsLibererUrl` isolent toute la politique mémoire des images choisies en trois fonctions pures d'UI — côté Flutter elles se remplacent par un `resize` d'`image` sans toucher au reste ; `hsRattacherAuGroupe` complète le contrat de données du groupe (rattachement séparé de l'insertion) ; `enVeille` formalise la règle « une seule grande image vivante à l'écran », qui vaudra telle quelle en natif.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19b**.
+
+
+## Session 136 — 14/08/2026 · stories 19c : LA COMPOSITION QUI NE MARCHAIT PAS, ET POURQUOI
+
+**Feu vert de Blandine** : « Vas y règle moi ce bordel stp ». Décisions de sa part ce soir : cadrage **recadré à l'envoi, sans SQL** (« la largeur est perdue », acceptée explicitement) · fond immersif **et** cadrage à tester tous les deux.
+
+**Constat de départ (ses mots, 01h15)** : « sur composer il n'y a rien » · « quand j'ai validé la story avec plusieurs images elle me l'a découpé en autant de stories sans un mot » · « j'ai juste swipé changer d'image et ça me ramène à l'accueil ». Sa capture montre 19b en ligne, 5 photos, ✓ Composer, et sous la puce : la seule phrase « réservés aux membres Premium ».
+
+**Les causes, nommées** :
+1. **`premium` n'était jamais transmis à `ComposeurStory`** — ni depuis le bandeau, ni depuis le mode ajout. `props.premium` toujours faux ⇒ la bande des modèles ne pouvait s'afficher pour PERSONNE. Erreur de la session 134.
+2. **Aucun modèle à 5 fenêtres** dans le catalogue (13 à 1, 1 à 2, 8 à 3, 1 à 4, 0 à 5). À 5 photos il n'y a rien à proposer, même Premium. Les 13 modèles à une fenêtre ne servent jamais à une composition : il n'en reste réellement que 10.
+3. **Composer ne montrait pas ce qu'il fait** : aucune vignette du H+D.
+4. **Le repli de `hsPublierStory` dégradait la composition en silence** : une insertion refusée faisait tomber d'un bloc lieu + musique + fond + groupe + disposition, puis republiait ⇒ 5 stories séparées, et le seul message possible parlait du lieu.
+5. **Geste retour** : un seul cran de garde dans l'historique ; un swipe rapide sur iOS consomme deux entrées, la seconde arrivait avant le réarmement ⇒ retour à l'Accueil. Aggravé par la photo paysage : le doigt part du **noir autour**, non protégé (la photo l'était).
+
+**Livré (stories 19c)** :
+- `premium` transmis aux deux composeurs.
+- **Repli parlant** : si la ligne porte un `groupe` et que la base refuse, **aucune insertion** et échec nommé ; vérification que la ligne revenue porte bien son `groupe` ; `publier()` s'arrête au premier refus. Le repli d'origine ne vaut plus que pour lieu/musique/fond. `onEchec(msg)` porte le message jusqu'au bandeau et jusqu'à la visionneuse (`noteLibre`).
+- **Aperçu vivant du H+D** sous la puce Composer, fait avec ses propres vignettes (grande, fil de lumière, table de tirages).
+- **Fond immersif réparé et rallumé** : la photo nette a sa propre couche (`zIndex: 1`) — sans elle, un `<img>` non positionné passe **sous** le calque flouté (`position:absolute` + `filter`), d'où la capture du 13/08. Le flou est servi par `hsImageFlou` (vignette 220 px) : même rendu, calque minuscule.
+- **Cadrage à l'envoi** (`hsRecadrerFichier`, 9/16, hauteur ≤ 2000 px, qualité 0,9) : bloc « Le cadrage » sous l'aperçu, **uniquement pour une photo plus large que haute**, facultatif (« Photo entière » par défaut), curseur au doigt, aperçu au ratio exact, phrase disant que le hors-cadre est perdu. Le moindre incident ⇒ l'original est envoyé.
+- **Geste retour** : second `popstate` ignoré dans les 450 ms + `touchAction:"none"` sur toute la zone photo.
+- Textes 6 langues : `compoImpossible`, `apercuCompo`, `cadrer`, `photoEntiere`, `remplirEcran`, `cadrageCoupe`.
+
+**À l'écran** : + la bande des modèles enfin visible pour un membre Premium (2, 3 ou 4 photos) · + aperçu du H+D dès qu'on touche Composer · + bloc « Le cadrage » sur une photo paysage · + fond flouté derrière les photos marquées « Immersif » · + un message précis quand une composition est refusée · − plus de découpage muet en stories séparées · − le swipe ne ramène plus à l'Accueil.
+
+**Incidents de la session (règle du 09/08)** : deux coquilles de ma main, prises par `node --check` avant livraison — une séquence Unicode japonaise invalide dans `remplirEcran`, et `aria-label` écrit sans guillemets. Corrigées, aucune conséquence.
+
+**Signalement** : le harnais du projet (`smoke.js`, `t_mention.js`) est toujours absent de la conversation. `t_19c.js` écrit à la place : **121 assertions vertes**. `node --check` vert sur les trois fichiers.
+
+**Reste ouvert** : dessiner des modèles à **5 fenêtres** (chantier graphique, non ouvert) · le défaut du fond pour une photo large est toujours « Noir », c'est-à-dire qu'il faut choisir Immersif à chaque fois — **à valider par Blandine** : faut-il qu'Immersif devienne le défaut des photos larges ?
+
+**Préparation Flutter** : la politique image du composeur est maintenant entièrement dans quatre fonctions pures (`hsVignetteFichier`, `hsRecadrerFichier`, `hsImageFlou`, `hsCoteEcran`) — côté natif elles se remplacent une par une sans toucher aux composants ; `compoRefusee` entre au contrat de retour de la publication (l'échec est une donnée, plus un effet de bord) ; la règle « la photo nette possède sa propre couche » est notée pour le rendu natif, où l'ordre de peinture obéit aux mêmes pièges.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19c**.
