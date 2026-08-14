@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19v";
+var HYPE_STORIES_VERSION = "19w";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -1585,15 +1585,38 @@ function ComposeurStory(props) {
      de fenetres ne colle pas est grise, porte son chiffre, et ne se choisit
      pas — une phrase dit alors ce qu'il demande. */
   var rfS = React.useState(null), refuse = rfS[0], setRefuse = rfS[1];
+  /* 19w (14/08) — LA VRAIE CAUSE DES SORTIES D'APPLI. « J'essayais d'utiliser
+     un des fonds de story et hop » (Blandine, 22e sortie).
+     Chaque decor est un 941x1672 avec transparence : SIX MEGAOCTETS une fois
+     decode. La bande en montait VINGT-HUIT a la file — 168 Mo de bitmaps pour
+     des vignettes de 84 px. iOS fermait l'onglet. Et c'est moi qui ai agrandi
+     cette bande cet apres-midi puis ajoute cinq decors : chaque amelioration
+     rendait la sortie plus certaine.
+     Ici : seuls quelques decors sont montes a la fois, la fenetre suit le
+     defilement. Le catalogue reste entier, la memoire non. */
+  var vfS = React.useState(6), voletFin = vfS[0], setVoletFin = vfS[1];
   function bandeModeles(nCible, valeur, choisir, avecAucun) {
-    var liste = hsTousModeles(nCible);
+    var listeTotale = hsTousModeles(nCible);
+    var liste = listeTotale.slice(0, voletFin);
     return h("div", null,
       /* 19m (14/08) : « le rail ne defile pas, on ne voit pas les suivantes ».
          Il manquait `data-hscroll` : sans lui, le gestionnaire de swipe de
          l'index (ligne 21151) avale le geste horizontal et la bande reste
          bloquee sur les premieres vignettes. Toutes les autres bandes du
          module l'avaient ; celle-ci, ecrite en 19g, ne l'avait pas. */
-      h("div", { "data-hscroll": "1", style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4, WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity" } },
+      h("div", {
+        "data-hscroll": "1",
+        /* la fenetre s'agrandit quand on approche du bout, jamais d'un bloc */
+        onScroll: function (ev) {
+          try {
+            var el = ev.target;
+            if (el.scrollLeft + el.clientWidth > el.scrollWidth - 220) {
+              setVoletFin(function (n) { return Math.min(n + 4, listeTotale.length); });
+            }
+          } catch (e) { }
+        },
+        style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4, WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity" }
+      },
         avecAucun
           ? h("button", {
             key: "aucun",
@@ -1630,7 +1653,7 @@ function ComposeurStory(props) {
             }
           },
             h("img", {
-              src: ref + ".webp", alt: ref, loading: "lazy",
+              src: ref + ".webp", alt: ref, loading: "lazy", decoding: "async",
               /* 19j (14/08) : « on voit rien pour les modeles ». Evidemment :
                  un decor est un dessin NOIR dont les fenetres sont des TROUS,
                  pose sur un fond noir — il n'y avait rien a voir. La vignette
@@ -1652,7 +1675,19 @@ function ComposeurStory(props) {
                 border: "1px solid rgba(255,255,255,0.22)", padding: "0 3px"
               }
             }, String(nf)));
-        })),
+        }),
+        /* 19w : dire qu'il en reste, sans les monter. */
+        (listeTotale.length > liste.length)
+          ? h("button", {
+            key: "plus",
+            onClick: function () { setVoletFin(function (n) { return Math.min(n + 6, listeTotale.length); }); },
+            style: {
+              flex: "0 0 auto", width: 84, height: 132, borderRadius: 12, cursor: "pointer",
+              background: "#111417", border: "2px dashed rgba(255,255,255,0.22)",
+              color: tnL, fontFamily: M, fontSize: 12, fontWeight: 700
+            }
+          }, "+" + (listeTotale.length - liste.length))
+          : null),
       refuse
         ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, lineHeight: 1.5 } },
           refuse === 1 ? hsT("decorDemande1", lg) : hsT("decorDemande", lg).replace("%n", String(refuse)))
@@ -2029,7 +2064,7 @@ function ComposeurStory(props) {
                         style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: Math.round(c2.cx * 100) + "% " + Math.round(c2.cy * 100) + "%", display: "block" }
                       }) : null);
                     }),
-                    h("img", { src: compoChoix + ".webp", alt: "", style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", pointerEvents: "none" } })),
+                    h("img", { src: compoChoix + ".webp", alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", pointerEvents: "none" } })),
                   h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, lineHeight: 1.5 } }, hsT("cadrerFenetre", lg)),
                   h("input", {
                     type: "range", min: 0, max: 100, step: 1,
