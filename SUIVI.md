@@ -7141,3 +7141,27 @@ Blandine demande de chercher des videos pour tous les cours du Galop 1, de les m
 **Préparation Flutter** : `hsAvecDecor` isole la question « cette story se dessine-t-elle dans un cadre ? » en un prédicat unique — côté natif, un seul point de branchement entre le rendu simple et le rendu à fenêtres ; le décor rejoint le contrat de données comme une propriété de la story, pas comme une propriété du groupe.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19d**.
+
+
+## Session 138 — 14/08/2026 · deux décors entrent au catalogue (25 modèles)
+
+**Feu vert de Blandine** : « Ajoute moi ça en modèle » · « N'importe appelle le comme tu veux je m'en fous moi » (noms délégués) · fichiers `modele-concours-1/2/3/4.webp` envoyés.
+
+**Chaîne de découpe** : le script d'origine n'existe pas (« je n'ai pas de script »). Écrit `decoupe.py` : trou = alpha nul (repli sur le damier incrusté si le fichier arrive aplati), composantes connexes (`scipy.ndimage.label`), enveloppe convexe + Douglas-Peucker pour le contour, rectangle d'aire minimale (calipers tournants) pour les coins, tri des fenêtres en ordre de lecture. **Vérifié contre `modele-concours-4`** : mêmes 4 fenêtres, même ordre, écart de 2 px (mon masque inclut le liseré d'anticrénelage), aires à 0,2 point près.
+
+**Ajoutés** :
+- **`modele-24`** — les deux cadres arrondis inclinés, ruban turquoise, signature HYPE. 2 fenêtres (22,0 % et 20,0 %). Première version reçue **sans canal alpha** (damier incrusté) ; la seconde, signée, avait sa vraie transparence — c'est elle qui est retenue. Rendu de contrôle vérifié : les photos tombent dans les cadres, aucun débordement sur le liseré.
+- **`modele-25`** — la nuit au rond (palme, néon, mer). 1 fenêtre circulaire de 35,9 %, contour à 49 points. Réencodé en qualité 86 : **400 → 301 Ko**, canal alpha strictement identique (écart max 0).
+- `hype-modeles-db.js` : **23 → 25 modèles**, en-tête daté, aucune ligne de code (une seule affectation globale). `index.html` : `hype-modeles-db.js?v=2`.
+
+**À l'écran** : + `modele-24` proposé dès **2 photos** (il n'y avait qu'un seul modèle à 2 fenêtres jusqu'ici) · + `modele-25` proposé dans le bloc « Le décor » à **une** photo · − rien ne disparaît, `modele-concours-4` n'est pas touché.
+
+**Refusé, et pourquoi** : la **cinquième fenêtre horizontale** sous `modele-concours-4`. Les 326 px libres sous ses quatre fenêtres ne sont pas vides : ils portent la couronne de laurier, le fer à cheval et la signature **HYPE** (vérifié à l'image). Y percer une bande effacerait la signature du décor. Même constat sur `modele-concours-1` (rosette / fer / trophée + HYPE). **Un modèle à 5 fenêtres doit être dessiné comme tel**, pas troué après coup — à générer, puis je le découpe en une passe.
+
+**Signalement** : harnais du projet toujours absent ; `t_19d.js` étendu au catalogue — **160 assertions vertes** (dont : 25 modèles, contour et bbox présents sur chaque fenêtre, db sans code). `node --check` vert sur les trois fichiers JS.
+
+**Reste ouvert** : le décor à 5 fenêtres · le défaut du fond pour une photo large (toujours « Noir »).
+
+**Préparation Flutter** : `decoupe.py` fait entrer la géométrie des décors dans un format déclaratif pur (aucune dépendance au navigateur) — côté natif, `contour` se lit comme un `Path` et `bbox` comme un `Rect`, sans retoucher les données.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · stories 19d · **modèles 25**.
