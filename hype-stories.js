@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19l";
+var HYPE_STORIES_VERSION = "19n";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -1227,8 +1227,11 @@ function BandeauStories(props) {
   return h("div", { style: { padding: (props && props.padding) || "16px 0 8px" } },
     h("input", { ref: fileRef, type: "file", accept: "image/*", multiple: true, onChange: surFichier, style: { display: "none" } }),
     h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "0 14px 6px", WebkitOverflowScrolling: "touch" } },
-      rondAjout(),
-      groupes.map(function (g, i) { return rond(g, i); })),
+      /* 19n (14/08, mot de Blandine) : « le + pour ajouter une story faut
+         qu'il soit toujours en dernier sur le rail pas en premier ». Les
+         stories passent devant, le + ferme la marche. */
+      groupes.map(function (g, i) { return rond(g, i); }),
+      rondAjout()),
 
     (ouvert >= 0 && groupes[ouvert])
       ? h(VisionneuseStories, {
@@ -1499,7 +1502,12 @@ function ComposeurStory(props) {
   function bandeModeles(nCible, valeur, choisir, avecAucun) {
     var liste = hsTousModeles(nCible);
     return h("div", null,
-      h("div", { style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4, WebkitOverflowScrolling: "touch" } },
+      /* 19m (14/08) : « le rail ne defile pas, on ne voit pas les suivantes ».
+         Il manquait `data-hscroll` : sans lui, le gestionnaire de swipe de
+         l'index (ligne 21151) avale le geste horizontal et la bande reste
+         bloquee sur les premieres vignettes. Toutes les autres bandes du
+         module l'avaient ; celle-ci, ecrite en 19g, ne l'avait pas. */
+      h("div", { "data-hscroll": "1", style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4, WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity" } },
         avecAucun
           ? h("button", {
             key: "aucun",
