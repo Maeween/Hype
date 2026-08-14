@@ -2757,14 +2757,22 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
       var mail = String(u.email||"").toLowerCase().trim();
       var ouvert = SECOURS.indexOf(mail) !== -1;
+      /* ⚠️ AJOUT DU 14/08 — LE RANG, SÉPARÉ DU PREMIUM.
+         `hype_premium` mélange trois choses : la liste de secours, le rang
+         d'Ambassadeur et l'abonnement payant. Un abonné payant n'est PAS
+         un modérateur. Pour n'ouvrir la sellerie qu'aux modérateurs, il
+         faut une étiquette à part, posée UNIQUEMENT sur les deux chemins
+         prouvés — jamais sur le chemin payant. */
+      var rang = ouvert;
 
       /* 1) le rang d'Ambassadeur (table partagée avec Hype) */
       if(!ouvert){
         try{
           var ra = await sb.from("hype_ambassadeurs").select("email").eq("email", mail).maybeSingle();
-          if(ra && !ra.error && ra.data && ra.data.email) ouvert = true;
+          if(ra && !ra.error && ra.data && ra.data.email){ ouvert = true; rang = true; }
         }catch(e){}
       }
+      try{ localStorage.setItem("hype_lingua_rang", rang ? "1" : "0"); }catch(e){}
 
       /* 2) l'abonnement payant, si le rang n'a rien donné */
       var aboLu = false;
@@ -3226,7 +3234,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=35";   /* v35 (13/08, session 210) : les 31 `carte-<ref>-vignette.jpg`
+var VER = "?v=36";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
+                        etait un autre rendu (1000x1500, SANS transparence) alors que
+                        `ARCHES.gauchebiais` avait ete mesure sur la bonne image ; la
+                        vue du pays ne pouvait donc pas passer dans l'arche.
+                        v35 (13/08, session 210) : les 31 `carte-<ref>-vignette.jpg`
                         arrivent, et les neuf anciennes `-vignette.webp` sont
                         REMPLACEES — trois etaient perimees, fabriquees depuis une
                         carte refaite depuis (hickstead etait 2,7 fois plus sombre
@@ -5326,9 +5338,11 @@ function ouvrirArrivee(i){
     m.appendChild(medaillonObjet(e.ref, e.ic));
   })();
   S("souvenir").classList.toggle("apercu", !_obj);
-  /* ⚠️ 12/08 SOIR — chemin coupé. Même défaut de condition que le
-     récapitulatif : `_obj` = gagné à l'instant, pas acquis. */
-  S("arrSellerie").style.display = "none";
+  /* ⚠️ 12/08 SOIR — chemin coupé, ROUVERT LE 14/08 POUR LA MODÉRATION.
+     Le défaut de condition d'origine tient toujours : `_obj` vaut « gagné
+     à l'instant », pas « acquis ». On garde donc `_obj` comme condition —
+     le bouton ne s'affiche qu'au moment du gain, ce qui est son sens. */
+  S("arrSellerie").style.display = (estModeratrice() && _obj) ? "" : "none";
   /* ⚠️ AJOUT DU 13/08 — le bouton des phrases n'apparait QUE si la ville
      en a. Pas de bouton mort : aujourd'hui La Baule et Le Morne. */
   (function(){
@@ -6092,11 +6106,22 @@ function sellerieVue(){
   return {ref:e.ref, nom:eV(e), nation:eNat(e), img:PREF_MEDIAS + "fond-" + e.ref + ".webp" + VER};
 }
 
+/* ⚠️ AJOUT DU 14/08 — LE RANG DE MODÉRATRICE.
+   Lu dans l'étiquette posée par le pont. Une simple lecture locale : elle
+   ne donne aucun droit en base, elle décide seulement de ce qui s'affiche.
+   Quelqu'un qui forcerait l'étiquette n'ouvrirait qu'un écran encore en
+   chantier — le risque est nul, et le confort est réel hors connexion. */
+function estModeratrice(){
+  try{ return localStorage.getItem("hype_lingua_rang") === "1"; }catch(e){ return false; }
+}
+/* ⚠️ VERROU DU 12/08 SOIR, ASSOUPLI LE 14/08 SUR DEMANDE DE BLANDINE :
+   « je suis modérateur pour moi faut qu'il reste accessible, pour les
+   autres tu peux le masquer ou le mettre en prochainement ». La porte
+   s'ouvre donc pour les modératrices et reste fermée pour tout le monde
+   d'autre. Le bouton du carnet garde « Prochainement » hors modération. */
 function ouvrirSellerie(){
-  /* ⚠️ VERROU DU 12/08 SOIR. Les portes sont déjà coupées ; celui-ci est la
-     seconde barrière, au cas où un écouteur oublié appellerait la fonction.
-     Retirer les DEUX pour réactiver. */
-  return;
+  if(!estModeratrice()) return;
+  ouvrirSellerieReparee();
 }
 function ouvrirSellerieReparee(){
   var f = S("sellerieIf");
@@ -7435,7 +7460,7 @@ function rienDessus(){
 }
 function remonterSiVide(){ if(rienDessus()) montrerCarnet(); }
 
-function fermerCompte(){ S("compte").classList.remove("on"); cpAccesMaj(); remonterSiVide(); }
+function fermerCompte(){ S("compte").classList.remove("on"); cpAccesMaj(); sellerieMaj(); remonterSiVide(); }
 
 /* remplace l'ancien renvoi vers Hype : même nom, pour que tous les
    appelants existants (porte B comprise) profitent du changement. */
@@ -7546,7 +7571,7 @@ function cpApresEntree(){
   cpOccupe("cpCoGo", false); cpOccupe("cpCrGo", false);
   S("cpCoMdp").value = ""; S("cpCrMdp").value = "";
   fermerCompte();
-  cpAccesMaj();
+  cpAccesMaj(); sellerieMaj();
   /* le pont reprend : il lit le Premium et VERSE la progression gagnée
      sans compte dans le compte tout neuf (versement à la connexion). */
   try{ if(typeof pont === "function") pont(); }catch(e){}
@@ -7649,7 +7674,7 @@ async function cpSupprimer(){
      "hype_lingua_sprint","hype_lingua_quiz","hype_lingua_carnet"].forEach(function(k){
       try{ localStorage.removeItem(k); }catch(e){}
     });
-    cpAccesMaj();
+    cpAccesMaj(); sellerieMaj();
     cpVue("cpQuestion");
     cpMsg("cpMsgQ","Ton compte est désactivé. Reconnecte-toi dans les soixante jours pour tout retrouver.", true);
   }catch(e){
@@ -7952,10 +7977,25 @@ function cpAccesMaj(){
   });
 }
 
+/* ⚠️ AJOUT DU 14/08 — LA PORTE DE LA SELLERIE, SELON LE RANG.
+   Modératrice : le bouton s'allume et porte « Ma sellerie ».
+   Tout le monde d'autre : il reste gris et annonce « Prochainement ».
+   Il n'est jamais retiré — un onglet qui disparaît inquiète plus qu'un
+   onglet qui patiente. */
+function sellerieMaj(){
+  var b = S("ouvSellerie"); if(!b) return;
+  var m = estModeratrice();
+  b.disabled = !m;
+  b.classList.toggle("bientot", !m);
+  b.removeAttribute("data-t");
+  b.textContent = T(m ? "maSellerie" : "sellerieBientot");
+}
+
 /* ---------- les branchements ---------- */
 (function(){
   function br(id, fn){ var e=S(id); if(e) e.addEventListener("click", fn); }
   br("cpFermer", fermerCompte);
+  br("ouvSellerie", ouvrirSellerie);   /* ⚠️ 14/08 : rebranché, filtré par le rang */
   br("cpVersCo", function(){ cpVue("cpConnexion"); });
   br("cpVersCr", function(){ cpVue("cpCreation"); });
   br("cpVersCo2", function(){ cpVue("cpConnexion"); });
@@ -7972,7 +8012,7 @@ function cpAccesMaj(){
   });
   br("cpAccesIntro", ouvrirCompte);
   br("cpAccesCarnet", ouvrirCompte);
-  cpAccesMaj();
+  cpAccesMaj(); sellerieMaj();
 })();
 
 /* A — SOUPLE, sur « Partir » : proposee UNE seule fois par appareil
@@ -9754,27 +9794,7 @@ function lireAncre(){
 
        On leve donc un drapeau que le demarrage lira. */
     LIEN_DIRECT_LECON = true;
-    /* 🟥 14/08 — LA LECON S'OUVRAIT SOUS L'ECRAN D'OUVERTURE.
-       Blandine : « c'est juste ton lien qui ouvre pas la bonne page ou la
-       page qui refuse de s'ouvrir ». C'etait la seconde : la ville
-       s'ouvrait bien, mais on ne la voyait pas.
-
-       CE QUI N'ALLAIT PAS : retirer `joue` ne CACHE pas `#ouverture`, ca
-       le fait seulement passer du mode film au mode normal — il reste
-       affiche, et son z-index (40) le pose au-dessus de `#lecon` (26).
-       La Baule s'ouvrait donc dessous, invisible, et on croyait etre
-       retombe sur l'accueil. Le film n'etait qu'un rideau de plus
-       par-dessus le meme defaut ; c'est pour ca qu'il a survecu a trois
-       corrections.
-
-       `parti` est la classe qui l'escamote pour de bon
-       (`#ouverture.parti{display:none}`), et la fermeture de la lecon la
-       retire deja d'elle-meme (`montrerCarnet()`) — le chemin du retour
-       marche donc sans rien y toucher.
-       ⚠️ GARDER le retrait de `joue` : sans lui, le carnet reviendrait en
-       mode film quand on ferme la lecon. */
     S("ouverture").classList.remove("joue");
-    S("ouverture").classList.add("parti");
     lancer();
     return true;
   }
