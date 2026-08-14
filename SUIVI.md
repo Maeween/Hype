@@ -7257,3 +7257,13 @@ Harnais : **188 assertions vertes** (dont la puce « Aucun », qui avait sauté 
 **Toujours en attente** : le décor de sa capture de 06h15 (lune, mer, deux cadres inclinés) a des photos qui débordent des cadres — la géométrie enregistrée ne correspond pas à l'image affichée. Il faut identifier le décor et me passer son `.webp` pour relancer la découpe. Rien deviné, rien touché.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19i** · modèles 28.
+
+### Session 140d — stories 19j : les vignettes de décors enfin lisibles
+
+**Constat de Blandine** : « au passage les story on voit rien pour les modèles ». Exact, et évident une fois dit : un décor est un dessin **noir** dont les fenêtres sont des **trous transparents** ; posé sur le fond noir de la feuille (`#111417`), il ne restait qu'un rectangle sombre. Les 28 vignettes étaient illisibles.
+
+**Livré** : la vignette reçoit un **fond clair** — dégradé `#F4F7FA → #C9D3D8 → #8A929C`. Le dessin ressort en noir, les fenêtres apparaissent en argent, la composition de chaque décor se lit d'un coup d'œil. Vérifié en rendu sur `modele-24`, `25`, `27`, `28` : avant, quatre rectangles noirs ; après, quatre décors reconnaissables.
+
+Harnais : **193 assertions vertes** + `audit_vars.js` vert. `index.html` : `hype-stories.js?v=19j`.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19j** · modèles 28.

@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19i";
+var HYPE_STORIES_VERSION = "19l";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -1505,10 +1505,13 @@ function ComposeurStory(props) {
             key: "aucun",
             onClick: function () { setRefuse(null); choisir(null); },
             style: {
-              flex: "0 0 auto", width: 52, height: 82, borderRadius: 10, cursor: "pointer",
+              /* 19l (14/08, demande de Blandine : « les fonds de story sont
+                 trop petits on peut franchement les agrandir ») : 52x82 ->
+                 84x132. On voit enfin la composition de chaque decor. */
+              flex: "0 0 auto", width: 84, height: 132, borderRadius: 12, cursor: "pointer",
               background: "#111417", color: valeur ? "#8A929C" : tn,
               border: "2px solid " + (valeur ? "rgba(255,255,255,0.16)" : tn),
-              fontFamily: M, fontSize: 9.5, fontWeight: 700, letterSpacing: 0.3, padding: 2
+              fontFamily: M, fontSize: 11, fontWeight: 700, letterSpacing: 0.3, padding: 2
             }
           }, hsT("aucunDecor", lg))
           : null,
@@ -1524,26 +1527,34 @@ function ComposeurStory(props) {
             },
             style: {
               flex: "0 0 auto", padding: 0, border: "none", background: "none",
-              cursor: "pointer", position: "relative",
-              opacity: compatible ? 1 : 0.35
+              cursor: "pointer", position: "relative"
+              /* 19k (14/08, mot de Blandine) : « ne grise pas les fonds qui
+                 n'ont pas le bon nombre car on ne les voit plus du tout ».
+                 Plus d'opacite reduite ni de grayscale : tous les decors se
+                 voient en entier. Seule la PASTILLE chiffree les distingue —
+                 turquoise quand le compte colle, sombre sinon. */
             }
           },
             h("img", {
               src: ref + ".webp", alt: ref, loading: "lazy",
+              /* 19j (14/08) : « on voit rien pour les modeles ». Evidemment :
+                 un decor est un dessin NOIR dont les fenetres sont des TROUS,
+                 pose sur un fond noir — il n'y avait rien a voir. La vignette
+                 recoit donc un fond clair : le dessin ressort en noir et les
+                 fenetres apparaissent en argent. */
               style: {
-                width: 52, height: 82, objectFit: "cover", borderRadius: 10, display: "block",
-                background: "#111417",
+                width: 84, height: 132, objectFit: "cover", borderRadius: 12, display: "block",
+                background: "linear-gradient(155deg, #F4F7FA 0%, #C9D3D8 55%, #8A929C 100%)",
                 border: "2px solid " + (actif ? tn : "rgba(255,255,255,0.16)"),
-                boxShadow: actif ? ("0 0 12px " + tA(0.35)) : "none",
-                filter: compatible ? "none" : "grayscale(1)"
+                boxShadow: actif ? ("0 0 12px " + tA(0.35)) : "none"
               }
             }),
             h("span", {
               style: {
-                position: "absolute", right: 3, bottom: 3, minWidth: 15, height: 15, borderRadius: 999,
+                position: "absolute", right: 5, bottom: 5, minWidth: 19, height: 19, borderRadius: 999,
                 background: compatible ? tA(0.9) : "rgba(10,12,14,0.85)",
                 color: compatible ? "#04252A" : "#C9D3D8",
-                fontFamily: M, fontSize: 9, fontWeight: 800, lineHeight: "15px", textAlign: "center",
+                fontFamily: M, fontSize: 11, fontWeight: 800, lineHeight: "19px", textAlign: "center",
                 border: "1px solid rgba(255,255,255,0.22)", padding: "0 3px"
               }
             }, String(nf)));
