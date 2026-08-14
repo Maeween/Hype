@@ -2703,6 +2703,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      d'après la base, on ne fait qu'ajouter. */
   var SECOURS = ["liamroux0@gmail.com","evan.roux.2014@icloud.com","rizeamegane@gmail.com",
                  "feinn@live.fr","malicia2008@hotmail.fr"];
+  /* ⚠️ AJOUT DU 14/08 — LES MODÉRATRICES, ET ELLES SEULES.
+     Recopiée de `HYPE_MODERATEURS` d'index.html, qui tient déjà cette
+     liste SÉPARÉE de `HYPE_AMBASSADEURS`. `SECOURS` ne convenait pas :
+     c'est un filet de panne Premium, qui mélange modératrices ET
+     ambassadeurs — s'y appuyer aurait ouvert la sellerie à Liam, Evan
+     et Rizeamegane. Décision de Blandine (14/08) : « seulement
+     modérateur pour l'instant ». */
+  var MODERATRICES = ["feinn@live.fr","malicia2008@hotmail.fr"];
   var PLANS_OUVRANTS = ["mensuel","annuel","duo","ai"];
 
   function poser(v){
@@ -2763,13 +2771,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          un modérateur. Pour n'ouvrir la sellerie qu'aux modérateurs, il
          faut une étiquette à part, posée UNIQUEMENT sur les deux chemins
          prouvés — jamais sur le chemin payant. */
-      var rang = ouvert;
+      /* Le rang ne suit PAS `ouvert` : un ambassadeur ou une abonnée
+         payante ouvre le Premium, pas la sellerie. */
+      var rang = MODERATRICES.indexOf(mail) !== -1;
 
       /* 1) le rang d'Ambassadeur (table partagée avec Hype) */
       if(!ouvert){
         try{
           var ra = await sb.from("hype_ambassadeurs").select("email").eq("email", mail).maybeSingle();
-          if(ra && !ra.error && ra.data && ra.data.email){ ouvert = true; rang = true; }
+          if(ra && !ra.error && ra.data && ra.data.email) ouvert = true;
         }catch(e){}
       }
       try{ localStorage.setItem("hype_lingua_rang", rang ? "1" : "0"); }catch(e){}
