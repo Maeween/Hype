@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19f";
+var HYPE_STORIES_VERSION = "19h";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -153,6 +153,25 @@ var HS_COMPO_ACTIF = true;
    l'app vit tres bien. hsModelesPourN(n) = les modeles a exactement n
    fenetres, pour filtrer le choix au composeur. */
 function hsModeles() { try { return (typeof window !== "undefined" && window.HYPE_MODELES) || {}; } catch (e) { return {}; } }
+/* 19g (14/08, decision de Blandine : « On montre tout je pense ») — TOUT LE
+   CATALOGUE, TOUJOURS. Un decor n'apparaissait que s'il avait exactement
+   autant de fenetres que de photos choisies : la moitie de la collection
+   semblait avoir disparu. Desormais on montre tout, les compatibles en tete,
+   les autres grises avec leur nombre de photos. */
+function hsTousModeles(n) {
+  try {
+    var d = hsModeles();
+    return Object.keys(d).filter(function (k) { return d[k] && d[k].fenetres && d[k].fenetres.length; }).sort(function (a, b) {
+      var na = d[a].fenetres.length, nb = d[b].fenetres.length;
+      if ((na === n) !== (nb === n)) return na === n ? -1 : 1;   /* compatibles d'abord */
+      if (na !== nb) return na - nb;
+      return a < b ? -1 : 1;
+    });
+  } catch (e) { return []; }
+}
+function hsFenetresDe(ref) {
+  try { var m = hsModeles()[ref]; return (m && m.fenetres) ? m.fenetres.length : 0; } catch (e) { return 0; }
+}
 function hsModelesPourN(n) {
   try {
     var d = hsModeles();
@@ -973,6 +992,8 @@ var HS_TXT = {
   presentation: { fr: "Pr\u00e9sentation", en: "Layout", es: "Presentaci\u00f3n", it: "Presentazione", ja: "\u30ec\u30a4\u30a2\u30a6\u30c8", de: "Anordnung" },
   defiler: { fr: "D\u00e9filer", en: "One by one", es: "Deslizar", it: "Scorrere", ja: "\u9806\u756a\u306b\u8868\u793a", de: "Nacheinander" },
   composer: { fr: "Composer", en: "Compose", es: "Componer", it: "Comporre", ja: "\u7d44\u307f\u5408\u308f\u305b\u308b", de: "Komponieren" },
+  decorDemande: { fr: "Ce d\u00e9cor demande %n photos.", en: "This frame needs %n photos.", es: "Este marco necesita %n fotos.", it: "Questa cornice richiede %n foto.", ja: "\u3053\u306e\u30d5\u30ec\u30fc\u30e0\u306b\u306f\u5199\u771f%n\u679a\u304c\u5fc5\u8981\u3067\u3059\u3002", de: "Dieser Rahmen braucht %n Fotos." },
+  decorDemande1: { fr: "Ce d\u00e9cor demande une seule photo.", en: "This frame needs a single photo.", es: "Este marco necesita una sola foto.", it: "Questa cornice richiede una sola foto.", ja: "\u3053\u306e\u30d5\u30ec\u30fc\u30e0\u306b\u306f\u5199\u771f1\u679a\u304c\u5fc5\u8981\u3067\u3059\u3002", de: "Dieser Rahmen braucht ein einzelnes Foto." },
   decor: { fr: "Le d\u00e9cor", en: "The frame", es: "El marco", it: "La cornice", ja: "\u30d5\u30ec\u30fc\u30e0", de: "Der Rahmen" },
   aucunDecor: { fr: "Aucun", en: "None", es: "Ninguno", it: "Nessuna", ja: "\u306a\u3057", de: "Keiner" },
   decorImpossible: { fr: "Le d\u00e9cor n'a pas pu \u00eatre enregistr\u00e9 (la base a refus\u00e9 la colonne \u00ab disposition \u00bb). Rien n'a \u00e9t\u00e9 publi\u00e9.", en: "The frame could not be saved (the database refused the \u201cdisposition\u201d column). Nothing was published.", es: "No se pudo guardar el marco (la base rechaz\u00f3 la columna \u00abdisposition\u00bb). No se public\u00f3 nada.", it: "Impossibile salvare la cornice (il database ha rifiutato la colonna \u00abdisposition\u00bb). Non \u00e8 stato pubblicato nulla.", ja: "\u30d5\u30ec\u30fc\u30e0\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u4f55\u3082\u6295\u7a3f\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002", de: "Der Rahmen konnte nicht gespeichert werden (die Datenbank hat die Spalte \u201edisposition\u201c abgelehnt). Es wurde nichts ver\u00f6ffentlicht." },
@@ -1470,6 +1491,69 @@ function ComposeurStory(props) {
     setTags(tags.concat([{ type: type, id: id, nom: nom || "" }]));
   }
 
+  /* 19g : LA BANDE DE DECORS, commune au bloc « Le decor » (1 photo) et a
+     « Composer » (2 a 5). Tout le catalogue defile ; un decor dont le nombre
+     de fenetres ne colle pas est grise, porte son chiffre, et ne se choisit
+     pas — une phrase dit alors ce qu'il demande. */
+  var rfS = React.useState(null), refuse = rfS[0], setRefuse = rfS[1];
+  function bandeModeles(nCible, valeur, choisir, avecAucun) {
+    var liste = hsTousModeles(nCible);
+    return h("div", null,
+      h("div", { style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4, WebkitOverflowScrolling: "touch" } },
+        avecAucun
+          ? h("button", {
+            key: "aucun",
+            onClick: function () { setRefuse(null); choisir(null); },
+            style: {
+              flex: "0 0 auto", width: 52, height: 82, borderRadius: 10, cursor: "pointer",
+              background: "#111417", color: valeur ? "#8A929C" : tn,
+              border: "2px solid " + (valeur ? "rgba(255,255,255,0.16)" : tn),
+              fontFamily: M, fontSize: 9.5, fontWeight: 700, letterSpacing: 0.3, padding: 2
+            }
+          }, hsT("aucunDecor", lg))
+          : null,
+        liste.map(function (ref) {
+          var nf = hsFenetresDe(ref);
+          var compatible = (nf === nCible);
+          var actif = (valeur === ref);
+          return h("button", {
+            key: ref,
+            onClick: function () {
+              if (!compatible) { setRefuse(nf); return; }
+              setRefuse(null); choisir(actif ? null : ref);
+            },
+            style: {
+              flex: "0 0 auto", padding: 0, border: "none", background: "none",
+              cursor: "pointer", position: "relative",
+              opacity: compatible ? 1 : 0.35
+            }
+          },
+            h("img", {
+              src: ref + ".webp", alt: ref, loading: "lazy",
+              style: {
+                width: 52, height: 82, objectFit: "cover", borderRadius: 10, display: "block",
+                background: "#111417",
+                border: "2px solid " + (actif ? tn : "rgba(255,255,255,0.16)"),
+                boxShadow: actif ? ("0 0 12px " + tA(0.35)) : "none",
+                filter: compatible ? "none" : "grayscale(1)"
+              }
+            }),
+            h("span", {
+              style: {
+                position: "absolute", right: 3, bottom: 3, minWidth: 15, height: 15, borderRadius: 999,
+                background: compatible ? tA(0.9) : "rgba(10,12,14,0.85)",
+                color: compatible ? "#04252A" : "#C9D3D8",
+                fontFamily: M, fontSize: 9, fontWeight: 800, lineHeight: "15px", textAlign: "center",
+                border: "1px solid rgba(255,255,255,0.22)", padding: "0 3px"
+              }
+            }, String(nf)));
+        })),
+      refuse
+        ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, lineHeight: 1.5 } },
+          refuse === 1 ? hsT("decorDemande1", lg) : hsT("decorDemande", lg).replace("%n", String(refuse)))
+        : null);
+  }
+
   /* Le cadrage de la photo actuellement previsualisee. */
   function cadrageDe(ix) { try { return cadrages[String(ix)] || null; } catch (e) { return null; } }
   function poserCadrage(ix, val) {
@@ -1645,25 +1729,7 @@ function ComposeurStory(props) {
           ? h("div", { style: { marginTop: 14 } },
             titreBloc(hsT("decor", lg)),
             props.premium
-              ? h("div", { style: { display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4, WebkitOverflowScrolling: "touch" } },
-                h("button", {
-                  onClick: function () { setDecorChoix(null); },
-                  style: {
-                    flex: "0 0 auto", width: 52, height: 82, borderRadius: 10, cursor: "pointer",
-                    background: "#111417", color: decorChoix ? "#8A929C" : tn,
-                    border: "2px solid " + (decorChoix ? "rgba(255,255,255,0.16)" : tn),
-                    fontFamily: M, fontSize: 9.5, fontWeight: 700, letterSpacing: 0.3, padding: 2
-                  }
-                }, hsT("aucunDecor", lg)),
-                hsModelesPourN(1).map(function (refD) {
-                  var actifD = decorChoix === refD;
-                  return h("button", {
-                    key: refD,
-                    onClick: function () { setDecorChoix(actifD ? null : refD); },
-                    style: { flex: "0 0 auto", padding: 0, border: "none", background: "none", cursor: "pointer" }
-                  },
-                    h("img", { src: refD + ".webp", alt: refD, loading: "lazy", style: { width: 52, height: 82, objectFit: "cover", borderRadius: 10, display: "block", background: "#111417", border: "2px solid " + (actifD ? tn : "rgba(255,255,255,0.16)"), boxShadow: actifD ? ("0 0 12px " + tA(0.35)) : "none" } }));
-                }))
+              ? bandeModeles(1, decorChoix, function (v) { setDecorChoix(v); }, true)
               : h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", letterSpacing: 0.3 } }, hsT("modelesPremium", lg)))
           : null,
 
@@ -1743,17 +1809,9 @@ function ComposeurStory(props) {
             h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
               puce(!compoChoix, hsT("defiler", lg), function () { setCompoChoix(null); }, "cDef"),
               puce(!!compoChoix, hsT("composer", lg), function () { setCompoChoix(compoChoix || "hd"); }, "cCmp")),
-            (compoChoix && props.premium && hsModelesPourN(nTotalCompo).length)
-              ? h("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", padding: "10px 0 2px", WebkitOverflowScrolling: "touch" } },
-                hsModelesPourN(nTotalCompo).map(function (refM) {
-                  var actifM = compoChoix === refM;
-                  return h("button", {
-                    key: refM,
-                    onClick: function () { setCompoChoix(actifM ? "hd" : refM); },
-                    style: { flex: "0 0 auto", padding: 0, border: "none", background: "none", cursor: "pointer" }
-                  },
-                    h("img", { src: refM + ".webp", alt: refM, loading: "lazy", style: { width: 52, height: 82, objectFit: "cover", borderRadius: 10, display: "block", background: "#111417", border: "2px solid " + (actifM ? tn : "rgba(255,255,255,0.16)"), boxShadow: actifM ? ("0 0 12px " + tA(0.35)) : "none" } }));
-                }))
+            (compoChoix && props.premium)
+              ? h("div", { style: { marginTop: 10 } },
+                bandeModeles(nTotalCompo, (compoChoix === "hd" ? null : compoChoix), function (v) { setCompoChoix(v || "hd"); }))
               : null,
             (compoChoix && !props.premium)
               ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, letterSpacing: 0.3 } }, hsT("modelesPremium", lg))
@@ -2455,8 +2513,14 @@ function CompositionStory(props) {
   function photoTouchable(st, ix, style) {
     return h("button", {
       key: "cp" + ix,
+      /* 19h (14/08) : le tap sur une photo de composition FERMAIT la story.
+         Arreter `touchstart` ne suffit pas : la visionneuse decide a la FIN du
+         geste (touchend) et sur le pointeur. On arrete les trois. */
       onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); ouvrirPlein(src(st)); },
       onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+      onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+      onPointerDown: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+      onPointerUp: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
       style: Object.assign({ padding: 0, border: "none", background: "none", cursor: "pointer", animation: "hsDeplie 400ms ease both", animationDelay: (ix * 120) + "ms" }, style)
     }, h("img", { src: src(st), alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" } }));
   }
@@ -2499,7 +2563,8 @@ function CompositionStory(props) {
             position: "absolute",
             left: (100 * f.bbox[0] / W) + "%", top: (100 * f.bbox[1] / H) + "%",
             width: (100 * f.bbox[2] / W) + "%", height: (100 * f.bbox[3] / H) + "%",
-            clipPath: pc ? ("polygon(" + pc + ")") : "none"
+            clipPath: pc ? ("polygon(" + pc + ")") : "none",
+            WebkitClipPath: pc ? ("polygon(" + pc + ")") : "none"
           });
         }),
         h("img", { src: story.disposition + ".webp", alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" } })),
