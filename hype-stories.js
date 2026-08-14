@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19t";
+var HYPE_STORIES_VERSION = "19u";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -2901,6 +2901,39 @@ function VisionneuseStories(props) {
      resterait sur la valeur du montage et continuerait d'avancer. */
   var panneauRef = React.useRef(false);
   panneauRef.current = !!(menuOuvert || choix || enEdition || ajout);
+
+  /* 19u (14/08) — LA STORY SE FERMAIT PENDANT QU'ELLE EN CREAIT UNE.
+     Le composeur s'ouvre PAR-DESSUS la story regardee ; celle-ci continuait
+     son cycle derriere la feuille et se fermait au bout de sa duree, emportant
+     photos, legende et cadrage. Le gel de la 19s couvrait `ajout`, mais le
+     selecteur de photos d'iOS s'ouvre AVANT que l'appli le sache : il restait
+     un intervalle ou la story tournait encore.
+     Ici : la page qui perd le focus (selecteur systeme, appel, notification)
+     fige le minuteur, et le rend au retour. */
+  var fondRef = React.useRef(false);
+  React.useEffect(function () {
+    function surVisibilite() {
+      try { fondRef.current = (typeof document !== "undefined" && document.hidden === true); } catch (e) { fondRef.current = false; }
+    }
+    function surSortie() { fondRef.current = true; }
+    function surRetour() { fondRef.current = false; }
+    try {
+      document.addEventListener("visibilitychange", surVisibilite);
+      window.addEventListener("blur", surSortie);
+      window.addEventListener("focus", surRetour);
+      window.addEventListener("pagehide", surSortie);
+      window.addEventListener("pageshow", surRetour);
+    } catch (e) { }
+    return function () {
+      try {
+        document.removeEventListener("visibilitychange", surVisibilite);
+        window.removeEventListener("blur", surSortie);
+        window.removeEventListener("focus", surRetour);
+        window.removeEventListener("pagehide", surSortie);
+        window.removeEventListener("pageshow", surRetour);
+      } catch (e2) { }
+    };
+  }, []);
   React.useEffect(function () {
     if (typeof window === "undefined") return;
     window.__hsStoriesRetour = function () {
@@ -3037,7 +3070,7 @@ function VisionneuseStories(props) {
          « il faut monter pour atteindre le menu, redescendre pour arriver a
          Supprimer, et un coup sur deux la photo lache entre les deux ».
          C'etait la story qui avançait pendant qu'elle cherchait le bouton. */
-      if (pauseRef.current || panneauRef.current) {
+      if (pauseRef.current || panneauRef.current || fondRef.current) {
         debut = Date.now() - (duree - reste);
         raf = requestAnimationFrame(boucle);
         return;
