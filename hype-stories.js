@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19s";
+var HYPE_STORIES_VERSION = "19t";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -2798,9 +2798,29 @@ function CompositionStory(props) {
         h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45, maxHeight: 54, overflow: "hidden", padding: "0 8px" } }, story.legende))
       : null,
     tirages.length
-      ? h("div", { style: { flex: "0 0 auto", display: "flex", gap: 8, justifyContent: "center", alignItems: "flex-end" } },
+      /* 19t (14/08, demande de Blandine : « on aimerait pouvoir faire defiler
+         les photos en bas de la story, elles sont fixes »). La table de
+         tirages debordait a droite sans qu'on puisse l'atteindre. Elle defile
+         desormais : `data-hscroll` pour que la navigation de l'index laisse
+         passer le geste, `touchAction: pan-x` pour lever le `none` pose sur la
+         zone photo en 19h, et le geste arrete ici pour que la visionneuse ne
+         le prenne pas pour un changement de story. */
+      ? h("div", {
+        "data-hscroll": "1",
+        onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+        onTouchMove: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+        onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+        style: {
+          flex: "0 0 auto", display: "flex", gap: 8, alignItems: "flex-end",
+          justifyContent: tirages.length >= 4 ? "flex-start" : "center",
+          overflowX: "auto", overflowY: "hidden", touchAction: "pan-x",
+          WebkitOverflowScrolling: "touch", scrollbarWidth: "none",
+          paddingBottom: 2
+        }
+      },
         tirages.map(function (st, ix) {
           return photoTouchable(st, ix + 1, {
+            flex: "0 0 auto",
             width: (tirages.length >= 4 ? "21%" : tirages.length === 3 ? "27%" : "34%"),
             aspectRatio: "3 / 4", borderRadius: 6, overflow: "hidden",
             border: "3px solid #F4F7FA", boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
