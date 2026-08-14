@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19y";
+var HYPE_STORIES_VERSION = "19aa";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -1016,6 +1016,8 @@ var HS_TXT = {
   apercuCompo: { fr: "\u00c0 quoi \u00e7a ressemblera", en: "How it will look", es: "C\u00f3mo se ver\u00e1", it: "Come apparir\u00e0", ja: "\u5b8c\u6210\u30a4\u30e1\u30fc\u30b8", de: "So wird es aussehen" },
   cadrer: { fr: "Le cadrage", en: "Framing", es: "Encuadre", it: "Inquadratura", ja: "\u30c8\u30ea\u30df\u30f3\u30b0", de: "Bildausschnitt" },
   photoEntiere: { fr: "Photo enti\u00e8re", en: "Whole photo", es: "Foto entera", it: "Foto intera", ja: "\u5199\u771f\u5168\u4f53", de: "Ganzes Foto" },
+  changerCadrage: { fr: "Changer le cadrage", en: "Change the framing", es: "Cambiar el encuadre", it: "Cambia l'inquadratura", ja: "\u30c8\u30ea\u30df\u30f3\u30b0\u3092\u5909\u66f4", de: "Bildausschnitt \u00e4ndern" },
+  cadrageAuto: { fr: "Tes photos partent enti\u00e8res \u2014 rien n'est coup\u00e9.", en: "Your photos are sent whole \u2014 nothing is cropped.", es: "Tus fotos se env\u00edan enteras: no se recorta nada.", it: "Le tue foto partono intere \u2014 nulla viene tagliato.", ja: "\u5199\u771f\u306f\u305d\u306e\u307e\u307e\u9001\u3089\u308c\u307e\u3059\u3002", de: "Deine Fotos werden ganz gesendet \u2014 nichts wird beschnitten." },
   remplirEcran: { fr: "Remplir l'\u00e9cran", en: "Fill the screen", es: "Llenar la pantalla", it: "Riempire lo schermo", ja: "\u753b\u9762\u3044\u3063\u3071\u3044", de: "Bildschirm f\u00fcllen" },
   cadrageCoupe: { fr: "La partie hors cadre sera perdue \u00e0 l'envoi.", en: "Whatever falls outside the frame is lost on upload.", es: "Lo que quede fuera del encuadre se pierde al enviar.", it: "Ci\u00f2 che resta fuori inquadratura andr\u00e0 perso.", ja: "\u67a0\u306e\u5916\u306f\u9001\u4fe1\u6642\u306b\u5931\u308f\u308c\u307e\u3059\u3002", de: "Was au\u00dferhalb des Rahmens liegt, geht beim Hochladen verloren." },
   compoLegende: { fr: "En composition, c'est la l\u00e9gende de ta story en ligne qui s'affiche \u2014 ce texte-ci accompagne la premi\u00e8re nouvelle photo.", en: "In a composition, your live story's caption is the one shown \u2014 this text still travels with the first new photo.", es: "En composici\u00f3n se muestra el texto de tu story en l\u00ednea \u2014 este acompa\u00f1a a la primera foto nueva.", it: "In composizione si vede il testo della tua story online \u2014 questo accompagna la prima nuova foto.", ja: "\u69cb\u6210\u3067\u306f\u516c\u958b\u4e2d\u306e\u30b9\u30c8\u30fc\u30ea\u30fc\u306e\u672c\u6587\u304c\u8868\u793a\u3055\u308c\u307e\u3059\u3002", de: "In der Komposition wird der Text deiner Online-Story gezeigt \u2014 dieser begleitet das erste neue Foto." },
@@ -1340,6 +1342,16 @@ function ComposeurStory(props) {
      { "<index>": { actif: true, cx: 0.5 } } — seules les photos plus LARGES
      que hautes en recoivent un ; les autres n'en ont pas besoin. */
   var cdS = React.useState({}), cadrages = cdS[0], setCadrages = cdS[1];
+  /* 19aa (14/08, decision de Blandine) — LE CADRAGE SE DEVINE, IL NE SE
+     DEMANDE PLUS. Ses mots : « je lui ai donne deux photos horizontales et
+     quand il m'a montre ce que ca donnera il m'en a passe une en verticale »,
+     puis « ca peut pas etre revele de facon intuitive sinon » et « oui c'est
+     ca » sur la detection automatique.
+     Desormais l'app REGARDE les photos : une photo plus large que haute part
+     ENTIERE (fond immersif derriere), une photo debout remplit l'ecran. Aucune
+     case a cocher. Le bloc de reglage reste accessible, mais REPLIE : il ne
+     s'ouvre que si Blandine veut forcer autre chose. */
+  var ocS = React.useState(false), cadrageOuvert = ocS[0], setCadrageOuvert = ocS[1];
   /* 19d (14/08, feu vert de Blandine) : LE DECOR D'UNE PHOTO SEULE.
      Sa question : « pourquoi il n'apparait qu'a partir de 2 photos alors que
      la moitie ne propose qu'une photo ? ». Les modeles avaient ete greffes
@@ -1914,26 +1926,44 @@ function ComposeurStory(props) {
               : h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", letterSpacing: 0.3 } }, hsT("modelesPremium", lg)))
           : null,
 
-        /* 19c — LE CADRAGE (choix de Blandine du 14/08). N'apparait QUE pour
-           une photo plus large que haute : une photo debout n'en a pas besoin.
-           Facultatif : sans y toucher, la photo part entiere. */
+        /* 19aa (14/08, decision de Blandine) — LE CADRAGE SE DEVINE.
+           Avant : un bloc ouvert demandait « Photo entiere ou Remplir l'ecran »
+           pour la SEULE photo previsualisee. Blandine reglait la premiere,
+           passait a la seconde, et decouvrait a l'apercu que la seconde n'avait
+           rien recu : « je lui ai donne deux photos horizontales et il m'en a
+           passe une en verticale ».
+           Desormais l'app REGARDE : une photo plus large que haute part ENTIERE
+           (le fond immersif habille les cotes), une photo debout remplit
+           l'ecran. Aucun geste, aucune case. Le reglage reste atteignable mais
+           REPLIE — il ne s'ouvre que pour forcer autre chose. */
         photoLarge
           ? h("div", { style: { marginTop: 14 } },
-            titreBloc(hsT("cadrer", lg)),
-            h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
-              puce(!(cadrageVue && cadrageVue.actif), hsT("photoEntiere", lg), function () { poserCadrage(vueSure, null); }, "cdN"),
-              puce(!!(cadrageVue && cadrageVue.actif), hsT("remplirEcran", lg), function () { poserCadrage(vueSure, { actif: true, cx: (cadrageVue && typeof cadrageVue.cx === "number") ? cadrageVue.cx : 0.5 }); }, "cdO")),
-            (cadrageVue && cadrageVue.actif)
-              ? h("div", { style: { marginTop: 10 } },
-                h("input", {
-                  type: "range", min: 0, max: 100, step: 1,
-                  value: Math.round(cadrageVue.cx * 100),
-                  "aria-label": hsT("cadrer", lg),
-                  onChange: function (ev) { try { poserCadrage(vueSure, { actif: true, cx: (Number(ev.target.value) || 0) / 100 }); } catch (eS) { } },
-                  style: { width: "100%", accentColor: tn }
-                }),
-                h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 6, lineHeight: 1.5 } }, hsT("cadrageCoupe", lg)))
-              : null)
+            cadrageOuvert
+              ? h("div", null,
+                titreBloc(hsT("cadrer", lg)),
+                h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
+                  puce(!(cadrageVue && cadrageVue.actif), hsT("photoEntiere", lg), function () { poserCadrage(vueSure, null); }, "cdN"),
+                  puce(!!(cadrageVue && cadrageVue.actif), hsT("remplirEcran", lg), function () { poserCadrage(vueSure, { actif: true, cx: (cadrageVue && typeof cadrageVue.cx === "number") ? cadrageVue.cx : 0.5 }); }, "cdO")),
+                (cadrageVue && cadrageVue.actif)
+                  ? h("div", { style: { marginTop: 10 } },
+                    h("input", {
+                      type: "range", min: 0, max: 100, step: 1,
+                      defaultValue: Math.round(cadrageVue.cx * 100),
+                      key: "cdr" + vueSure,
+                      "aria-label": hsT("cadrer", lg),
+                      /* Meme regle qu'au curseur des decors : rien n'est ecrit
+                         pendant le glisse, l'etat n'est pose qu'au relachement. */
+                      onChange: function (ev) { try { poserCadrage(vueSure, { actif: true, cx: (Number(ev.target.value) || 0) / 100 }); } catch (eS) { } },
+                      style: { width: "100%", accentColor: tn }
+                    }),
+                    h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 6, lineHeight: 1.5 } }, hsT("cadrageCoupe", lg)))
+                  : null)
+              : h("div", null,
+                h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", lineHeight: 1.5 } }, hsT("cadrageAuto", lg)),
+                h("button", {
+                  onClick: function () { setCadrageOuvert(true); },
+                  style: { marginTop: 8, padding: "8px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700, border: "1px solid " + tA(0.45), background: "transparent", color: tn }
+                }, hsT("changerCadrage", lg))))
           : null,
 
         /* 19p : la bande s'affiche DES UNE photo, sinon le bouton
@@ -2074,12 +2104,57 @@ function ComposeurStory(props) {
                         style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: Math.round(c2.cx * 100) + "% " + Math.round(c2.cy * 100) + "%", display: "block" }
                       }) : null);
                     }),
-                    h("img", { src: compoChoix + ".webp", alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", pointerEvents: "none" } })),
+                    /* 19aa (14/08) — ⚠️ LA CAUSE DES FERMETURES D'APPLI SUR LE
+                       CURSEUR DE CADRAGE. Blandine : « le bouton pour modifier
+                       une photo, il fait tout sauter dès qu'on y touche et ne
+                       modifie rien en plus ». Cet apercu chargeait le decor en
+                       PLEIN FORMAT — 6 Mo decodes — pour l'afficher dans 168 px.
+                       La bande, elle, avait ete corrigee en 19x et prend deja
+                       `-mini.webp` (0,21 Mo). L'apercu etait reste en arriere.
+                       Meme repli que la bande : si la vignette n'est pas encore
+                       poussee a la racine, on retombe sur le plein format. */
+                    h("img", {
+                      src: compoChoix + "-mini.webp", alt: "", loading: "lazy", decoding: "async",
+                      onError: function (ev) {
+                        try { var im = ev && ev.target; if (!im || im.__pleine) return; im.__pleine = 1; im.src = compoChoix + ".webp"; } catch (eMp) { }
+                      },
+                      style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", pointerEvents: "none" }
+                    })),
                   h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, lineHeight: 1.5 } }, hsT("cadrerFenetre", lg)),
                   h("input", {
                     type: "range", min: 0, max: 100, step: 1,
-                    value: Math.round((rF >= 1 ? cad.cx : cad.cy) * 100),
+                    defaultValue: Math.round((rF >= 1 ? cad.cx : cad.cy) * 100),
+                    key: "cadr" + compoChoix + "-" + fenSure,
                     "aria-label": hsT("cadrerFenetre", lg),
+                    /* 19aa — ⚠️ SECOND ETAGE DE LA MEME PANNE. Avant, chaque
+                       micro-mouvement du doigt appelait setCadresFen : React
+                       reconstruisait TOUT le bloc — decor compris — des dizaines
+                       de fois par seconde. C'est ce qui saturait la memoire et
+                       faisait fermer l'appli.
+                       Desormais : pendant le glisse, on deplace la photo
+                       DIRECTEMENT dans le DOM (aucun rendu React). L'etat n'est
+                       ecrit qu'au RELACHEMENT du doigt. Blandine voit bouger en
+                       temps reel, React ne travaille qu'une fois.
+                       ⚠️ Ne pas remettre `value` + `onChange` sur cet element :
+                       ce serait revenir exactement au defaut. */
+                    onInput: function (ev) {
+                      try {
+                        var v = (Number(ev.target.value) || 0) / 100;
+                        var boite = ev.target.parentNode;
+                        /* ⚠️ On passe par les BOUTONS et non par les images :
+                           une fenetre sans photo ne produit aucune image, et
+                           les rangs se decaleraient. Chaque fenetre a toujours
+                           son bouton, meme vide. */
+                        var bt = boite ? boite.querySelectorAll("button") : null;
+                        var im = (bt && bt[fenSure]) ? bt[fenSure].querySelector("img") : null;
+                        if (im) {
+                          var d0 = cadresFen[String(fenSure)] || { cx: 0.5, cy: 0.5 };
+                          var px = (rF >= 1 ? v : (typeof d0.cx === "number" ? d0.cx : 0.5));
+                          var py = (rF >= 1 ? (typeof d0.cy === "number" ? d0.cy : 0.5) : v);
+                          im.style.objectPosition = Math.round(px * 100) + "% " + Math.round(py * 100) + "%";
+                        }
+                      } catch (eIn) { }
+                    },
                     onChange: function (ev) {
                       var v = (Number(ev.target.value) || 0) / 100;
                       setCadresFen(function (anc) {
@@ -3206,7 +3281,12 @@ function VisionneuseStories(props) {
          doigts appartiennent à PhotoZoomHype, la boîte ne bouge pas. */
       if (e.touches && e.touches.length > 1) { glisseRef.current.actif = false; return; }
       var t = e.touches && e.touches[0];
-      if (t) glisseRef.current = { y0: t.clientY, actif: true };
+      /* 19z (14/08, signalement de Blandine) : « je regarde mes stories, je
+         swipe vers la gauche, je veux revenir en arriere je swipe vers la
+         droite, je suis dehors ». On retient desormais x0 en plus de y0 :
+         il sert au glisse horizontal (voir toucheFin) ET au blocage du geste
+         de retour d'iOS, qui part TOUJOURS du bord. */
+      if (t) glisseRef.current = { y0: t.clientY, x0: t.clientX, actif: true, horiz: false };
     } catch (er) { }
   }
   function toucheBouge(e) {
@@ -3217,6 +3297,22 @@ function VisionneuseStories(props) {
       var t = e.touches && e.touches[0];
       if (!t) return;
       var dy = t.clientY - glisseRef.current.y0;
+      var dx = t.clientX - (glisseRef.current.x0 || 0);
+      /* 19z — LE BLOCAGE DU RETOUR D'iOS, EN JAVASCRIPT.
+         Mon correctif 19y avait remplace touchAction "none" par "pan-y" pour
+         rendre le defilement vertical. ERREUR DE CLAUDE, signalee a Blandine :
+         "pan-y" ne suffit PAS a retenir le geste de retour d'iOS, qui est
+         reparti. Le CSS ne sait pas faire la difference entre "glisser vers la
+         droite dans la page" et "revenir en arriere" ; le JavaScript, si.
+         preventDefault sur un mouvement horizontal ample ANNULE le geste
+         systeme. Le defilement vertical reste entier : on ne touche a rien
+         tant que le mouvement est vertical. */
+      if (!glisseRef.current.horiz && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.4) glisseRef.current.horiz = true;
+      if (glisseRef.current.horiz) {
+        try { if (e.cancelable) e.preventDefault(); } catch (eP) { }
+        if (boiteRef.current) boiteRef.current.style.transform = "translateY(0px)";
+        return;   /* un glisse horizontal n'est plus un glisse de fermeture */
+      }
       if (dy > 0 && boiteRef.current) boiteRef.current.style.transform = "translateY(" + Math.min(dy, 260) + "px)";
     } catch (er) { }
   }
@@ -3224,14 +3320,45 @@ function VisionneuseStories(props) {
     try {
       if (enEdition || choix || menuOuvert || ajout) { glisseRef.current.actif = false; return; }
       pauseRef.current = false;
-      var dy = 0;
+      var dy = 0, dx = 0;
       var t = e.changedTouches && e.changedTouches[0];
-      if (t) dy = t.clientY - glisseRef.current.y0;
-      glisseRef.current.actif = false;
+      if (t) { dy = t.clientY - glisseRef.current.y0; dx = t.clientX - (glisseRef.current.x0 || 0); }
+      var etaitHoriz = !!glisseRef.current.horiz;
+      glisseRef.current.actif = false; glisseRef.current.horiz = false;
       if (boiteRef.current) boiteRef.current.style.transform = "translateY(0px)";
+      /* 19z (demande de Blandine, 14/08) : le glisse horizontal NAVIGUE.
+         Vers la GAUCHE = story suivante. Vers la DROITE = story precedente —
+         « oui revenir en arriere », ses mots. Le seuil de 55 px evite qu'un
+         tap legerement traine soit pris pour un glisse : les zones de tap
+         gauche/droite gardent tout leur role. */
+      if (etaitHoriz && Math.abs(dx) > 55) {
+        hsAmorcerAudio();
+        if (dx < 0) suivante(); else precedente();
+        return;
+      }
       if (dy > 110) fermer();
     } catch (er) { }
   }
+
+  /* 19z — ⚠️ PIEGE A NE PAS OUBLIER. React attache ses ecouteurs tactiles en
+     mode PASSIF : un preventDefault ecrit dans onTouchMove est purement et
+     simplement IGNORE par le navigateur (avertissement en console, geste
+     systeme non retenu). Le seul moyen d'annuler le retour d'iOS est un
+     ecouteur NATIF pose avec { passive: false }.
+     Il ne fait qu'une chose : quand toucheBouge a reconnu un glisse
+     horizontal, il annule le geste systeme. Toute la logique reste dans les
+     gestionnaires React — celui-ci n'est qu'un interrupteur.
+     ⚠️ Ne pas "simplifier" en remettant preventDefault dans onTouchMove :
+     ca ne marchera pas, et le defaut reviendra sans bruit. */
+  React.useEffect(function () {
+    var el = boiteRef.current;
+    if (!el) return;
+    function bloquer(ev) {
+      try { if (glisseRef.current && glisseRef.current.horiz && ev.cancelable) ev.preventDefault(); } catch (eB) { }
+    }
+    el.addEventListener("touchmove", bloquer, { passive: false });
+    return function () { try { el.removeEventListener("touchmove", bloquer, { passive: false }); } catch (eR) { } };
+  }, []);
 
   var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
   if (!groupe || !story) return null;
