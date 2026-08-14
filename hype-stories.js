@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19r";
+var HYPE_STORIES_VERSION = "19s";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -127,7 +127,12 @@ var HS_MUSIQUES = [
 /* 13/08 (feu vert de Blandine) : PLUSIEURS PHOTOS d'un coup — elles se
    publient en chapelet et la visionneuse les déroule naturellement (elle
    enchaîne déjà les stories d'un même cavalier). 10 photos max par envoi. */
-var HS_MULTI_MAX = 10;
+/* 19s (14/08, decisions de Blandine) : « il ne faut pas que ca parte l'une
+   apres l'autre, jamais » et « ok pour 5 ». Le plafond descend de 10 a 5 :
+   c'est le nombre maximum de fenetres d'un decor (modele-26). Au-dela, il n'y
+   avait aucun decor a proposer et les photos partaient en stories separees —
+   ce qui lui a coute sa nuit. On previent AVANT, on ne decoupe plus APRES. */
+var HS_MULTI_MAX = 5;
 /* 13/08 15h24 (demande de Blandine) : FOND IMMERSIF DESACTIVE. Sa capture
    montrait le calque floute SEUL, la photo nette absente au lieu de rester
    devant — retire en attendant un vrai diagnostic sur telephone. Pattern
@@ -999,6 +1004,7 @@ var HS_TXT = {
   defiler: { fr: "D\u00e9filer", en: "One by one", es: "Deslizar", it: "Scorrere", ja: "\u9806\u756a\u306b\u8868\u793a", de: "Nacheinander" },
   composer: { fr: "Composer", en: "Compose", es: "Componer", it: "Comporre", ja: "\u7d44\u307f\u5408\u308f\u305b\u308b", de: "Komponieren" },
   ajouterPhotos: { fr: "Ajouter des photos", en: "Add photos", es: "A\u00f1adir fotos", it: "Aggiungere foto", ja: "\u5199\u771f\u3092\u8ffd\u52a0", de: "Fotos hinzuf\u00fcgen" },
+  plafondPhotos: { fr: "%n photos maximum par story. Les suivantes n'ont pas \u00e9t\u00e9 ajout\u00e9es \u2014 publie celles-ci, puis recommence.", en: "%n photos maximum per story. The others were not added \u2014 publish these, then start again.", es: "M\u00e1ximo %n fotos por story. Las dem\u00e1s no se a\u00f1adieron.", it: "Massimo %n foto per story. Le altre non sono state aggiunte.", ja: "1\u3064\u306e\u30b9\u30c8\u30fc\u30ea\u30fc\u306b\u5199\u771f\u306f%n\u679a\u307e\u3067\u3067\u3059\u3002", de: "Maximal %n Fotos pro Story. Die \u00fcbrigen wurden nicht hinzugef\u00fcgt." },
   cadrerFenetre: { fr: "Touche une fen\u00eatre, puis d\u00e9place la photo dedans.", en: "Tap a window, then move the photo inside it.", es: "Toca una ventana y mueve la foto dentro.", it: "Tocca una finestra e sposta la foto all'interno.", ja: "\u7a93\u3092\u30bf\u30c3\u30d7\u3057\u3066\u5199\u771f\u3092\u52d5\u304b\u3057\u307e\u3059\u3002", de: "Tippe ein Fenster an und verschiebe das Foto darin." },
   retirerPhoto: { fr: "Retirer cette photo", en: "Remove this photo", es: "Quitar esta foto", it: "Togliere questa foto", ja: "\u3053\u306e\u5199\u771f\u3092\u524a\u9664", de: "Dieses Foto entfernen" },
   decorDemande: { fr: "Ce d\u00e9cor demande %n photos.", en: "This frame needs %n photos.", es: "Este marco necesita %n fotos.", it: "Questa cornice richiede %n foto.", ja: "\u3053\u306e\u30d5\u30ec\u30fc\u30e0\u306b\u306f\u5199\u771f%n\u679a\u304c\u5fc5\u8981\u3067\u3059\u3002", de: "Dieser Rahmen braucht %n Fotos." },
@@ -1133,7 +1139,10 @@ function BandeauStories(props) {
   }
   function surFichier(ev) {
     try {
-      var fs = ev && ev.target && ev.target.files ? Array.prototype.slice.call(ev.target.files, 0, HS_MULTI_MAX) : [];
+      var brutes = ev && ev.target && ev.target.files ? Array.prototype.slice.call(ev.target.files) : [];
+      var fs = brutes.slice(0, HS_MULTI_MAX);
+      /* 19s : dire franchement qu'on s'arrete a 5, au lieu de couper en silence. */
+      if (brutes.length > HS_MULTI_MAX) { try { bip(hsT("plafondPhotos", lg).replace("%n", String(HS_MULTI_MAX))); } catch (eB) { } }
       if (fs.length) { setFichier(fs); setComposer(true); }
       if (ev && ev.target) ev.target.value = "";
     } catch (e) { }
@@ -1324,7 +1333,9 @@ function ComposeurStory(props) {
   var umS = React.useState([]), urlsMini = umS[0], setUrlsMini = umS[1];
   /* Etat 18 (13/08, session 134) : le choix de PRESENTATION — null = defiler
      (le chapelet), "hd" = story composee, "modele-X" = un modele Premium. */
-  var cpS = React.useState(null), compoChoix = cpS[0], setCompoChoix = cpS[1];
+  /* 19s : plus de chapelet — des 2 photos, la composition est le comportement
+     par defaut et non plus une option. */
+  var cpS = React.useState("hd"), compoChoix = cpS[0], setCompoChoix = cpS[1];
   /* Etat 19 (14/08, session 136) : LE CADRAGE, photo par photo.
      { "<index>": { actif: true, cx: 0.5 } } — seules les photos plus LARGES
      que hautes en recoivent un ; les autres n'en ont pas besoin. */
@@ -1468,6 +1479,11 @@ function ComposeurStory(props) {
         if (!vivant) break;
         var u = null;
         try { u = await hsVignetteFichier(fichiersBruts[i], 200); } catch (e) { u = null; }
+        /* 19s : si la fabrication echoue (memoire courte au-dela de quelques
+           fichiers), on montre la photo telle quelle plutot qu'une case noire.
+           Blandine, 18h46 : « il manque les cinq autres, on peut pas les
+           retirer ». Une vignette absente empechait de reduire la selection. */
+        if (!u) { try { u = window.URL.createObjectURL(fichiersBruts[i]); } catch (eR) { u = null; } }
         if (!vivant) { hsLibererUrl(u); break; }
         res.push(u);
         if (u) faites.push(u);
@@ -1937,9 +1953,10 @@ function ComposeurStory(props) {
         compoPossible
           ? h("div", null,
             titreBloc(hsT("presentation", lg)),
-            h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
-              puce(!compoChoix, hsT("defiler", lg), function () { setCompoChoix(null); }, "cDef"),
-              puce(!!compoChoix, hsT("composer", lg), function () { setCompoChoix(compoChoix || "hd"); }, "cCmp")),
+            /* 19s : « tu peux retirer Defiler ». La puce servait a publier en
+               chapelet — plusieurs stories l'une apres l'autre. Le chapelet
+               n'existe plus : une publication, une story. Il ne reste donc
+               aucun choix a poser ici, seulement le decor. */
             (compoChoix && props.premium)
               ? h("div", { style: { marginTop: 10 } },
                 bandeModeles(nTotalCompo, (compoChoix === "hd" ? null : compoChoix), function (v) { setCompoChoix(v || "hd"); }))
@@ -2739,13 +2756,17 @@ function CompositionStory(props) {
   var d = (story.disposition && story.disposition.indexOf("modele-") === 0) ? hsModeles()[story.disposition] : null;
   var cadres = h("style", { dangerouslySetInnerHTML: { __html: "@keyframes hsDeplie{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:none}}" } });
   if (plein) return h("div", { style: { position: "relative", width: "100%", height: "100%" } }, cadres, surcouche);
+  /* 19s : « les stories sont trop collees a droite ». La composition etait
+     dessinee pleine largeur alors que tout le reste de l'ecran respire :
+     legende rognee, pastille musique coupee, tirages hors cadre. */
+  var MARGE_COMPO = 14;
   if (d && d.fenetres && d.fenetres.length) {
     /* LE MODELE : un plan aux proportions du decor, les photos posees dans
        les bbox des fenetres et DECOUPEES a leur contour exact (clip-path en
        pourcentage : la mise a l'echelle est gratuite). Le decor par-dessus,
        intouchable — les fenetres, elles, s'ouvrent en plein ecran. */
     var W = d.taille[0], H = d.taille[1];
-    return h("div", { style: { position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" } },
+    return h("div", { style: { position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 " + MARGE_COMPO + "px", boxSizing: "border-box" } },
       cadres,
       h("div", { style: { position: "relative", aspectRatio: W + " / " + H, maxWidth: "100%", maxHeight: "100%", width: "auto", height: "100%" } },
         d.fenetres.map(function (f, ix) {
@@ -2768,7 +2789,7 @@ function CompositionStory(props) {
   }
   /* H+D : la grande, le texte suspendu sous le fil de lumiere, la table. */
   var grande = membres[0]; var tirages = membres.slice(1);
-  return h("div", { style: { position: "relative", width: "100%", height: "100%", display: "flex", flexDirection: "column", padding: "8px 12px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
+  return h("div", { style: { position: "relative", width: "100%", height: "100%", display: "flex", flexDirection: "column", padding: "8px " + MARGE_COMPO + "px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
     cadres,
     photoTouchable(grande, 0, { flex: "1 1 58%", minHeight: 0, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)" }),
     story.legende
@@ -2855,6 +2876,11 @@ function VisionneuseStories(props) {
      __memoryPoneyRetour) ; retiré au démontage. */
   var retourRef = React.useRef({});
   retourRef.current = { menuOuvert: menuOuvert, enEdition: enEdition, choix: choix };
+  /* 19s : le minuteur tourne dans un effet qui ne se relance pas a chaque
+     ouverture de panneau — il doit donc lire l'etat par REFERENCE, sinon il
+     resterait sur la valeur du montage et continuerait d'avancer. */
+  var panneauRef = React.useRef(false);
+  panneauRef.current = !!(menuOuvert || choix || enEdition || ajout);
   React.useEffect(function () {
     if (typeof window === "undefined") return;
     window.__hsStoriesRetour = function () {
@@ -2987,7 +3013,11 @@ function VisionneuseStories(props) {
     function boucle() {
       if (!vivant) return;
       synchroniserSon();
-      if (pauseRef.current) {
+      /* 19s : LE MINUTEUR SE FIGE DES QU'UN PANNEAU EST OUVERT. Blandine :
+         « il faut monter pour atteindre le menu, redescendre pour arriver a
+         Supprimer, et un coup sur deux la photo lache entre les deux ».
+         C'etait la story qui avançait pendant qu'elle cherchait le bouton. */
+      if (pauseRef.current || panneauRef.current) {
         debut = Date.now() - (duree - reste);
         raf = requestAnimationFrame(boucle);
         return;
