@@ -7204,3 +7204,28 @@ Catalogue : **26 modèles** — 14 à une fenêtre, 2 à deux, 8 à trois, 1 à 
 **Préparation Flutter** : l'audit « chaque composant déclare ses dépendances de rendu » devient une règle du fichier, contrôlée à chaque livraison — en natif, l'équivalent est l'import explicite, et cette discipline évitera la même classe d'erreur au portage.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19e** · modèles 26.
+
+
+## Session 140 — 14/08/2026 · stories 19f · catalogue à 28 modèles
+
+**Ajoutés au catalogue** :
+- **`modele-27`** — les deux ronds (têtes de cheval, feuillage, néon). 2 fenêtres circulaires, contours à 32 et 30 points, 15,4 % et 15,6 %.
+- **`modele-28`** — les deux arches (cheval, fer à cheval, rubans). 2 fenêtres, 21,0 % et 15,9 %. **Deux passes nécessaires** : le blanc des arches n'était pas un trou franc mais un **voile semi-transparent** (21 % des pixels entre alpha 20 et 230) ; la première détection mordait trop court et les photos ne remplissaient pas les arches. Règle corrigée : *fenêtre = trou franc **ou** voile clair*, puis fermeture morphologique et bouchage des trous.
+
+`hype-modeles-db.js` : **28 modèles** — 14 à une fenêtre, **4** à deux, 8 à trois, 1 à quatre, 1 à cinq. `index.html` : `hype-modeles-db.js?v=5`.
+
+**Les planches ne sont pas des sources — constat mesuré**. Six planches reçues (10, 10, 9, 6, 5 et 2 décors). `planche.py` détecte les panneaux : ils font **230 × 573** et **298 × 478 px** contre 941 × 1672 pour un décor réel. Une planche est une vignette de présentation ; découpée, elle produirait des décors trois fois trop petits, flous à l'écran. **Rien n'a été intégré depuis les planches.** Seule voie : les décors un par un, en pleine taille, de préférence à fond transparent.
+
+**stories 19f** — `hsVignetteCassee` : une vignette qui échoue tente d'abord `replierVignette` (l'original), et si celui-là tombe aussi, l'image est **effacée** au lieu de laisser le carré bleu « ? » d'iOS (vu sur la capture de 05h45). Posé sur les 4 vignettes du module : bulle du bandeau, couverture de groupe, à la une, avatar de la visionneuse.
+
+**À l'écran** : + 2 décors de plus dans le bloc « Le décor » et sous Composer à 2 photos · + un rond sombre propre à la place de l'icône d'image cassée · − rien ne disparaît.
+
+**Signalement** : harnais du projet toujours absent ; `t_19f.js` — **169 assertions vertes**. `node --check` vert sur les trois fichiers.
+
+**Deux décisions toujours en attente de Blandine** :
+1. **Le fond par défaut d'une photo large** : aujourd'hui « Noir », donc il faut choisir « Immersif » à chaque fois. Faut-il inverser ?
+2. **Les décors filtrés par le nombre de photos** : un décor n'apparaît que s'il a exactement autant de fenêtres que de photos choisies. Option A — tout montrer, grisé, avec la mention « 3 photos ». Option B — choisir le décor d'abord, le composeur réclame les photos manquantes. Rien codé.
+
+**Préparation Flutter** : `hsVignetteCassee` centralise la politique d'échec d'image du module en une seule fonction — en natif, elle devient le `errorBuilder` unique du widget image.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19f** · modèles 28.

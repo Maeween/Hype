@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19e";
+var HYPE_STORIES_VERSION = "19f";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -360,6 +360,19 @@ function hsImageFlou(u) {
     if (typeof vignetteHype !== "function") return u;
     return vignetteHype(u, 220, 330);
   } catch (e) { return u; }
+}
+
+/* 19f (14/08) — UNE VIGNETTE CASSEE NE LAISSE PLUS L'ICONE DE SAFARI.
+   `replierVignette` reessaie deja l'original ; si celui-la tombe aussi, on
+   efface l'image et le rond garde son fond sombre, propre. Vu sur la capture
+   du 14/08 : une bulle du bandeau affichait le carre bleu « ? » d'iOS. */
+function hsVignetteCassee(ev, brut) {
+  try {
+    var im = ev && ev.target; if (!im) return;
+    var dejaTente = !!im.__repli;
+    if (!dejaTente && typeof replierVignette === "function") { replierVignette(ev, brut); return; }
+    im.style.display = "none";
+  } catch (e) { }
 }
 
 /* Le côté demandé pour l'aperçu : la taille de l'écran, jamais plus. */
@@ -1124,7 +1137,7 @@ function BandeauStories(props) {
       var src = brut;
       if (src && typeof vignetteHype === "function") src = vignetteHype(src, 300, 380);
       var photo = src
-        ? h("img", { src: src, alt: "", loading: "lazy", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, brut); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+        ? h("img", { src: src, alt: "", loading: "lazy", onError: function (ev) { try { hsVignetteCassee(ev, brut); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
         : h("span", { style: { fontFamily: C, fontSize: carte ? 26 : 30, fontWeight: 700, color: tnL } }, String(g.pseudo || "?").charAt(0).toUpperCase());
       if (carte) {
         return h("div", {
@@ -2104,7 +2117,7 @@ function RailALaUne(props) {
           h("div", { style: { width: T, height: T, borderRadius: "50%", margin: "0 auto", padding: 2, background: "linear-gradient(135deg, rgba(255,255,255,0.22), " + tA(0.42) + ")" } },
             h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", border: "2px solid #060709", background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } },
               couv
-                ? h("img", { src: couv, alt: "", loading: "lazy", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, couvBrut); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+                ? h("img", { src: couv, alt: "", loading: "lazy", onError: function (ev) { try { hsVignetteCassee(ev, couvBrut); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
                 : h("span", { style: { fontFamily: C, fontSize: 20, fontWeight: 700, color: tnL } }, String(a.nom || "?").charAt(0).toUpperCase()))),
           h("div", { style: { fontSize: 10.5, marginTop: 7, fontFamily: M, fontWeight: 600, color: "#C9D3D8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, a.nom || ""));
       })),
@@ -2194,7 +2207,7 @@ function ChoixALaUne(props) {
               },
                 h("div", { style: { width: 44, height: 44, borderRadius: "50%", overflow: "hidden", flex: "0 0 auto", background: "#111417", border: "1px solid " + tA(0.4), display: "flex", alignItems: "center", justifyContent: "center" } },
                   couv
-                    ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(couv, 112, 112) : couv, alt: "", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, couv); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } })
+                    ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(couv, 112, 112) : couv, alt: "", onError: function (ev) { try { hsVignetteCassee(ev, couv); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } })
                     : h("span", { style: { fontFamily: C, fontSize: 15, color: tnL, fontWeight: 700 } }, String(a.nom || "?").charAt(0).toUpperCase())),
                 h("div", { style: { minWidth: 0, flex: 1 } },
                   h("div", { style: { fontSize: 13, fontWeight: 700, fontFamily: M, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, a.nom || ""),
@@ -2842,7 +2855,7 @@ function VisionneuseStories(props) {
       h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "12px 14px 10px" } },
         h("div", { style: { width: 38, height: 38, borderRadius: "50%", overflow: "hidden", flex: "0 0 auto", border: "1px solid " + tA(0.5), background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } },
           groupe.avatar_url
-            ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(groupe.avatar_url, 96, 96) : groupe.avatar_url, alt: "", onError: function (ev) { try { if (typeof replierVignette === "function") replierVignette(ev, groupe.avatar_url); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } })
+            ? h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(groupe.avatar_url, 96, 96) : groupe.avatar_url, alt: "", onError: function (ev) { try { hsVignetteCassee(ev, groupe.avatar_url); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover" } })
             : h("span", { style: { fontFamily: C, fontSize: 15, fontWeight: 700, color: tnL } }, String(groupe.pseudo || "?").charAt(0).toUpperCase())),
         h("div", { style: { minWidth: 0, flex: 1 } },
           h("div", { style: { fontSize: 13, fontWeight: 700, fontFamily: M, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, groupe.pseudo || "Cavalier"),
