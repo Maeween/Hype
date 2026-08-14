@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19x";
+var HYPE_STORIES_VERSION = "19y";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -3301,8 +3301,13 @@ function VisionneuseStories(props) {
          d'iOS partait du NOIR autour d'une photo paysage (la photo, elle,
          etait deja protegee) : « j'ai juste swipe changer d'image et ca me
          ramene a l'accueil » (Blandine, 14/08). Les gestes de la visionneuse
-         sont en JavaScript : ils continuent de fonctionner. */
-      h("div", { style: { flex: 1, position: "relative", minHeight: 0, background: "#060709", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", touchAction: "none" } },
+         sont en JavaScript : ils continuent de fonctionner.
+         19y (14/08, REGRESSION SIGNALEE PAR BLANDINE) : le "none" de 19c a
+         tue le defilement vertical — « on peut plus scroll pour voir le texte
+         en dessous ». On repasse en "pan-y" : le geste VERTICAL redevient
+         possible, et le retour d'iOS reste bloque puisqu'il est HORIZONTAL.
+         C'est le seul reglage qui satisfait les deux besoins a la fois. */
+      h("div", { style: { flex: 1, position: "relative", minHeight: 0, background: "#060709", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", touchAction: "pan-y" } },
         /* LE FOND IMMERSIF (13/08, spec de Blandine) : si l'AUTEUR l'a choisi,
            la même photo remplit l'écran derrière, en cover, fortement floutée
            et assombrie — la photo d'origine reste nette et ENTIÈRE devant
@@ -3526,11 +3531,24 @@ function VisionneuseStories(props) {
        signaler = visiteur). Ceinture tactile comme les autres feuilles. */
     menuOuvert
       ? h("div", {
-        onClick: function () { setMenuOuvert(false); },
+        /* 19y (14/08, REGRESSION GRAVE SIGNALEE PAR BLANDINE) : « mon fils a
+           appuye sur les trois petits points, ca a fige sa page avec le bouton
+           signaler mais il ne pouvait plus sortir ». Un cul-de-sac : le
+           minuteur etait gele par 19s ET le tap en dehors ne fermait pas.
+           Cause : onTouchEnd ne faisait que stopPropagation, et sur iOS le
+           click de synthese ne repart pas toujours d'un simple div. On ferme
+           donc DES la fin du toucher, mais SEULEMENT si le doigt a fini sur le
+           voile lui-meme (ev.target === ev.currentTarget) : un tap sur la
+           feuille ne ferme rien et laisse le bouton faire son travail.
+           Le onClick reste pour la souris et le clavier. */
+        onClick: function (ev) { if (!ev || ev.target === ev.currentTarget) setMenuOuvert(false); },
         onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
         onTouchMove: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-        onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-        style: { position: "fixed", inset: 0, zIndex: 9400, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
+        onTouchEnd: function (ev) {
+          if (ev && ev.stopPropagation) ev.stopPropagation();
+          if (ev && ev.target === ev.currentTarget) setMenuOuvert(false);
+        },
+        style: { position: "fixed", inset: 0, zIndex: 9400, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "flex-end", justifyContent: "center", cursor: "pointer" }
       },
         h("div", {
           onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
@@ -3553,7 +3571,16 @@ function VisionneuseStories(props) {
               onClick: it.on,
               style: { display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", padding: "14px 10px", borderRadius: 12, border: "none", background: "transparent", color: it.accent ? tn : "#DCE3E8", fontSize: 13.5, fontWeight: it.accent ? 700 : 600, fontFamily: M, cursor: "pointer", borderBottom: "1px solid rgba(255,255,255,0.06)" }
             }, (it.ic ? it.ic + "  " : "") + it.txt);
-          })))
+          }),
+          /* 19y : une sortie VISIBLE, en plus du tap en dehors. Un enfant qui
+             ouvre le menu par curiosite doit voir comment en sortir sans
+             deviner un geste. Ceinture et bretelles : si un jour le tap en
+             dehors casse encore, ce bouton reste. */
+          h("button", {
+            key: "mnAnn",
+            onClick: function () { setMenuOuvert(false); },
+            style: { display: "block", width: "100%", marginTop: 4, padding: "14px 10px", borderRadius: 12, border: "none", borderTop: "1px solid rgba(255,255,255,0.10)", background: "transparent", color: "rgba(220,227,232,0.62)", fontSize: 13.5, fontWeight: 600, fontFamily: M, cursor: "pointer" }
+          }, hsT("annuler", lg))))
       : null,
 
     /* La feuille de modification met le minuteur en pause, comme le choix
