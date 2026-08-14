@@ -19604,11 +19604,94 @@ const AppContext = createContext(null);
 const useApp = () => useContext(AppContext);
 const DEV_OUVRIR_PAGE = ""; // raccourci : "" = app normale | "compte" | "parcours" | "licence" | "parc" | ...
 const LIEN_APP = "https://majestic-melba-997a68.netlify.app"; // lien public de l'appli — vide pour l'instant. Le bouton Partager ET le QR code le lisent.
+
+/* ================= 14/08 — PARTAGER (feu vert de Blandine) =================
+   UNE seule fonction pour tout Hype : « chaque partie importante de Hype
+   puisse être partagée, chaque fois sur la page d'où il est envoyé ».
+   Elle fabrique l'adresse de la page courante a partir des familles posees
+   dans CIBLE_DIRECTE, puis passe la main au partage du systeme. Repli sur le
+   presse-papier quand navigator.share n'existe pas (ordinateur de bureau).
+
+   Elle ne DECIDE de rien : l'appelant lui donne la famille, la valeur et le
+   titre. C'est volontaire — une seule fonction a corriger le jour ou le
+   format des adresses changera.
+
+   hypePartager("g", "g3-c2", "Le départ sur le bon pied")
+   hypePartager("c", "monde", "Le Monde Au Galop")                       */
+async function hypePartager(famille, valeur, titre, options) {
+    var o = options || {};
+    try {
+        var base = (typeof location !== "undefined" && location.origin) ? (location.origin + location.pathname) : LIEN_APP;
+        var u = base + "#" + famille + "=" + encodeURIComponent(String(valeur || ""));
+        var tx = (titre ? String(titre) : "Hype") + " \u2014 Hype \uD83D\uDC0E";
+        /* Une image quand l'appelant en fournit une : c'est ce qui fait la
+           difference dans WhatsApp et Instagram. Meme garde-fou de taille que
+           partagerFiche (31/07) : au-dela de 8 Mo, on partage le lien seul. */
+        if (o.image) {
+            try {
+                if (navigator.share && navigator.canShare) {
+                    var rIm = await fetch(o.image); var bIm = await rIm.blob();
+                    if (bIm && bIm.size > 0 && bIm.size < 8000000) {
+                        var nom = String(titre || "hype").replace(/[^\w-]+/g, "-").slice(0, 40);
+                        var fIm = new File([bIm], nom + (bIm.type.indexOf("png") >= 0 ? ".png" : ".jpg"), { type: bIm.type || "image/jpeg" });
+                        if (navigator.canShare({ files: [fIm] })) { await navigator.share({ files: [fIm], title: tx, text: tx + "\n" + u }); return true; }
+                    }
+                }
+            } catch (eIm) { }
+        }
+        try { if (navigator.share) { await navigator.share({ title: tx, text: tx, url: u }); return true; } } catch (eSh) { return false; }
+        try { await navigator.clipboard.writeText(u); if (typeof o.onCopie === "function") o.onCopie(u); return true; } catch (eCp) { }
+        if (typeof o.onCopie === "function") o.onCopie(u);
+        return false;
+    } catch (e) { return false; }
+}
+try { if (typeof window !== "undefined") window.hypePartager = hypePartager; } catch (eHP) { }
 const CIBLE_DIRECTE = (function () {
     try {
         let cle = DEV_OUVRIR_PAGE || "";
         const h = ((typeof window !== "undefined" && window.location && window.location.hash) || "").replace(/^#/, "").trim();
         if (h && h.indexOf("album-invite=") === 0) { try { window.__albumInvite = h.slice("album-invite=".length); } catch (eInv) { } return { ecran: "album-invite" }; }
+        /* ================= 14/08 — FAMILLES D'ADRESSES (feu vert de Blandine)
+           Chaque univers de Hype recoit son PREFIXE. Objectif nomme par
+           Blandine : « les galops et baby peuvent etre amenes a etre separes ».
+           Le jour ou Baby part sur l'App Store, ses adresses #b= partent d'un
+           bloc, sans rien demeler. Choix valide : fichiers separes A LA RACINE
+           (option A), vrais dossiers plus tard (option B).
+
+             #g=g3-c2   un chapitre de Galop        #g=3   la page du Galop 3
+             #b=baby-c12 une carte du chemin Baby
+             #s=<id>    une story                   #c=monde  la communaute
+             #a=<id>    un article                  #v=<id>   une video
+
+           Les anciennes cles (#monclub, #contact, #cheval-…) passent EN PREMIER
+           et ne bougent pas : aucun lien deja partage ne casse. Une adresse
+           inconnue retombe sur null, donc sur l'accueil — jamais d'ecran blanc,
+           c'est le comportement d'origine et on le garde. */
+        if (h && h.indexOf("=") > 0) {
+            var fam = h.slice(0, h.indexOf("=")), val = h.slice(h.indexOf("=") + 1).trim();
+            if (val) {
+                /* Galop : soit un chapitre (g3-c2), soit un numero de galop (3). */
+                if (fam === "g") {
+                    var mg = val.match(/^g(\d)-/);
+                    if (mg) return { galop: parseInt(mg[1], 10), cours: val, page: 0 };
+                    if (/^[1-7]$/.test(val)) return { ecran: "galop-detail", galop: parseInt(val, 10) };
+                }
+                /* Baby : meme forme que les cles babyXX deja en place. */
+                if (fam === "b" && val.indexOf("baby-") === 0) return { galop: "baby", cours: val, page: 0 };
+                if (fam === "b" && /^(bronze|argent|or)$/.test(val)) return { ecran: "galop-detail", galop: "baby" };
+                /* Story : l'ouverture est confiee au module compagnon. */
+                if (fam === "s") { try { window.__storyOuverte = val; } catch (eSt) { } return { ecran: "communaute" }; }
+                /* Communaute : le globe, le mémento, la videotheque, la culture. */
+                if (fam === "c") {
+                    var MC = { monde: "monde", globe: "monde", stories: "communaute", memento: "memoirescavalier", videos: "videos", culture: "articles" };
+                    if (MC[val]) return { ecran: MC[val] };
+                }
+                if (fam === "a") { try { window.__articleOuvert = val; } catch (eAr) { } return { ecran: "article-detail" }; }
+                if (fam === "v") { try { window.__videoOuverte = val; } catch (eVi) { } return { ecran: "videos" }; }
+                if (fam === "u") { try { window.__cavalierOuvert = val; } catch (eCv) { } return { ecran: "profil" }; }
+                if (fam === "e") { try { window.__clubOuvert = val; } catch (eCl) { } return { ecran: "guilde" }; }
+            }
+        }
         if (h) cle = h;
         const MAP = { "monecurie": { ecran: "ecurie" }, "monclub": { ecran: "guilde" }, "contact": { galop: 4, cours: "g4-contact", page: 0 }, "aides": { galop: 4, cours: "g4-aides", page: 0 }, "transitions": { galop: 4, cours: "g4-transitions", page: 0 }, "incurvation": { galop: 4, cours: "g4-incurvation", page: 0 }, "vitesse": { galop: 4, cours: "g4-vitesse", page: 0 }, "epaules-hanches": { galop: 4, cours: "g4-epaules-hanches", page: 0 }, "protections": { galop: 4, cours: "g4-protections", page: 0 }, "obstacles-equilibre": { galop: 4, cours: "g4-obstacles-equilibre", page: 0 }, "soins-travail": { galop: 4, cours: "g4-soins-travail", page: 0 }, "identite": { galop: 4, cours: "g4-identite", page: 0 }, "nourrir": { galop: 4, cours: "g4-nourrir", page: 0 }, "exterieur": { galop: 4, cours: "g4-exterieur", page: 0 }, "abord": { galop: 3, cours: "g3-c3", page: 0 }, "phases": { galop: 3, cours: "g3-saut", page: 0 }, "sante": { galop: 4, cours: "g4-c5", page: 0 }, "impulsion": { galop: 6, cours: "g6-c2", page: 0 }, "biomeca": { galop: 4, cours: "g4-biomeca", page: 0 }, "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, "phases-saut": { ecran: "phases-saut" }, phasessaut: { ecran: "phases-saut" }, "entrainer-tracer": { ecran: "entrainer-tracer" }, tracer: { ecran: "entrainer-tracer" }, "challenge-reprise": { ecran: "challenge-reprise" }, challenge: { ecran: "challenge-reprise" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, /* 06/08 : deux cibles pour les cours issus de la scission. Les libelles
        babypaille, babydescend, etc. ne correspondent plus aux titres reels
