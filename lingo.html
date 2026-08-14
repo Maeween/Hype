@@ -9754,7 +9754,27 @@ function lireAncre(){
 
        On leve donc un drapeau que le demarrage lira. */
     LIEN_DIRECT_LECON = true;
+    /* 🟥 14/08 — LA LECON S'OUVRAIT SOUS L'ECRAN D'OUVERTURE.
+       Blandine : « c'est juste ton lien qui ouvre pas la bonne page ou la
+       page qui refuse de s'ouvrir ». C'etait la seconde : la ville
+       s'ouvrait bien, mais on ne la voyait pas.
+
+       CE QUI N'ALLAIT PAS : retirer `joue` ne CACHE pas `#ouverture`, ca
+       le fait seulement passer du mode film au mode normal — il reste
+       affiche, et son z-index (40) le pose au-dessus de `#lecon` (26).
+       La Baule s'ouvrait donc dessous, invisible, et on croyait etre
+       retombe sur l'accueil. Le film n'etait qu'un rideau de plus
+       par-dessus le meme defaut ; c'est pour ca qu'il a survecu a trois
+       corrections.
+
+       `parti` est la classe qui l'escamote pour de bon
+       (`#ouverture.parti{display:none}`), et la fermeture de la lecon la
+       retire deja d'elle-meme (`montrerCarnet()`) — le chemin du retour
+       marche donc sans rien y toucher.
+       ⚠️ GARDER le retrait de `joue` : sans lui, le carnet reviendrait en
+       mode film quand on ferme la lecon. */
     S("ouverture").classList.remove("joue");
+    S("ouverture").classList.add("parti");
     lancer();
     return true;
   }
