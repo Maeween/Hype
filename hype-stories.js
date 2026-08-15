@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19al";
+var HYPE_STORIES_VERSION = "19am";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1189,13 +1189,32 @@ async function hsListerStories() {
          publie avec un groupe. */
       g.stories = hsRegrouperCompos(g.stories);
       g.toutesVues = g.stories.every(function (s) { return !!vues[String(s.id)]; });
-      g.rang = g.moi ? 0 : (g.memeEcurie ? 1 : (g.suivi ? 2 : 3));
-      g.dernier = g.stories[g.stories.length - 1].created_at || "";
+      /* ⚠️ 19am (15/08) — L'ORDRE DU RAIL, REFAIT SUR LES MOTS DE BLANDINE.
+         AVANT : `g.rang = g.moi ? 0 : (memeEcurie ? 1 : (suivi ? 2 : 3))`.
+         Blandine passait donc TOUJOURS en tete, meme en ayant publie trois
+         jours apres tout le monde, et la date n'arrivait qu'en dernier
+         recours. Ses mots : « c'est pas une question de moi ou pas moi, un
+         post arrive a un moment donne, il y a un ordre chronologique a
+         suivre » et « ce qui me gene c'est que les gens qui ont pris une
+         place dans la file la perdent ».
+         MAINTENANT, deux regles et rien d'autre :
+         1. Ce qui n'a PAS ete vu passe devant ce qui a ete vu — « quand une
+            story a ete vue elle peut repasser en dernier sur le rail, le rail
+            avance au fur et a mesure qu'elles ont ete vues ».
+         2. A egalite, l'ORDRE DE PUBLICATION, du plus ancien au plus recent.
+            La file avance par l'arriere : une story ne double jamais une
+            autre, personne ne perd sa place.
+         Plus aucun privilege : ni pour Blandine, ni pour l'ecurie, ni pour
+         les cavaliers suivis. `memeEcurie` et `suivi` restent calcules, ils
+         servent ailleurs.
+         ⚠️ POUR INVERSER LE SENS (le plus recent en premier), il n'y a QUE
+         cette ligne a retourner : mettre `> 0 ? -1 : 1`. Blandine : « on
+         avisera par la suite quitte a intervertir l'ordre ». */
+      g.premier = (g.stories[0] && g.stories[0].created_at) || "";
     });
     groupes.sort(function (a, b) {
-      if (a.rang !== b.rang) return a.rang - b.rang;
       if (a.toutesVues !== b.toutesVues) return a.toutesVues ? 1 : -1;
-      return String(a.dernier) < String(b.dernier) ? 1 : -1;
+      return String(a.premier) < String(b.premier) ? -1 : 1;
     });
 
     return { data: groupes, moiId: moiId, error: null };
@@ -1496,6 +1515,9 @@ function BandeauStories(props) {
   var gS = React.useState([]), groupes = gS[0], setGroupes = gS[1];
   var mS = React.useState(null), moiId = mS[0], setMoiId = mS[1];
   var oS = React.useState(-1), ouvert = oS[0], setOuvert = oS[1];
+  /* 19am : rang de la story a ouvrir DANS le groupe touche. Sans lui, la
+     visionneuse repartait toujours de la premiere. */
+  var dsS = React.useState(0), departS = dsS[0], setDepartS = dsS[1];
   var cS = React.useState(false), composer = cS[0], setComposer = cS[1];
   var fS = React.useState(null), fichier = fS[0], setFichier = fS[1];
   var tS = React.useState(null), toast = tS[0], setToast = tS[1];
@@ -1598,12 +1620,31 @@ function BandeauStories(props) {
         h("div", { style: { position: "absolute", right: carte ? 6 : 4, bottom: carte ? 6 : 4, minWidth: 21, height: 21, padding: "0 5px", borderRadius: 999, background: "rgba(6,7,9,0.88)", border: "1px solid " + tA(0.6), color: tnL, fontSize: 10.5, fontWeight: 800, fontFamily: M, display: "flex", alignItems: "center", justifyContent: "center" } }, "+" + enPlus));
     }
 
+    /* ⚠️ 19am — « QUAND ON CLIQUE CA N'OUVRE PAS LA BONNE STORY » (Blandine).
+       Le rail n'avait qu'UN bouton par cavalier : quel que soit le medaillon
+       touche, la visionneuse demarrait sur `is = 0`, donc sur la PREMIERE
+       story du groupe. Le defaut existait avant, mais avec deux medaillons au
+       plus il ne se voyait pas ; depuis que la 19aj les affiche tous, toucher
+       le quatrieme ouvrait le premier.
+       Chaque medaillon porte desormais son propre toucher et transmet SON
+       rang (`setDepartS(k)`), lu par la visionneuse. */
     var duo = (visuels.length > 1);
+    function medaillonTapable(vis, k) {
+      return h("span", {
+        key: "md" + k,
+        role: "button",
+        onClick: function (ev) {
+          if (ev && ev.stopPropagation) ev.stopPropagation();
+          hsAmorcerAudio(); setDepartS(k); setOuvert(i);
+        },
+        style: { display: "inline-flex", flex: "0 0 auto", cursor: "pointer" }
+      }, vis);
+    }
     var contenu = duo
       ? h("div", { style: { position: "relative", display: "flex", gap: 4, alignItems: "center" } },
-        /* Le trait de lumière qui relie les deux photos. */
+        /* Le trait de lumière qui relie les photos. */
         h("div", { style: { position: "absolute", left: "8%", right: "8%", top: "50%", height: 1, background: "linear-gradient(90deg, transparent, " + tA(0.5) + ", transparent)", pointerEvents: "none" } }),
-        visuels)
+        visuels.map(medaillonTapable))
       : visuels[0];
 
     /* 19aj : la cellule suit le NOMBRE de medaillons montres, plus seulement
@@ -1615,7 +1656,10 @@ function BandeauStories(props) {
 
     return h("button", {
       key: "st" + g.user_id,
-      onClick: function () { hsAmorcerAudio(); setOuvert(i); },
+      /* Le bouton du groupe reste : il couvre le nom sous les medaillons et
+         le cas d'une seule story. Sur un groupe multiple, chaque medaillon
+         arrete le toucher avant lui (19am) et impose son propre rang. */
+      onClick: function () { hsAmorcerAudio(); setDepartS(0); setOuvert(i); },
       style: { background: "none", border: "none", padding: 0, cursor: "pointer", flex: "0 0 auto", width: largeurCel, textAlign: carte ? "left" : "center" }
     },
       contenu,
@@ -1653,8 +1697,10 @@ function BandeauStories(props) {
 
     (ouvert >= 0 && groupes[ouvert])
       ? h(VisionneuseStories, {
-        groupes: groupes, depart: ouvert, moiId: moiId, premium: premium, langue: lg,
-        onFermer: function () { setOuvert(-1); charger(); }
+        groupes: groupes, depart: ouvert, departStory: departS, moiId: moiId, premium: premium, langue: lg,
+        /* Le rail se reclasse A LA FERMETURE, jamais pendant : sinon il se
+           reorganise sous les doigts au moment ou on regarde (19am). */
+        onFermer: function () { setOuvert(-1); setDepartS(0); charger(); }
       })
       : null,
 
@@ -2928,7 +2974,7 @@ function ComposeurStory(props) {
                       onChange: function (ev) { try { poserCadrage(vueSure, { actif: true, cx: (Number(ev.target.value) || 0) / 100 }); } catch (eS) { } },
                       style: { width: "100%", accentColor: tn }
                     }),
-                    h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 6, lineHeight: 1.5 } }, hsT("cadrageCoupe", lg)))
+                    h("div", { style: { fontSize: 16, fontFamily: M, color: "#8A929C", marginTop: 6, lineHeight: 1.5 } }, hsT("cadrageCoupe", lg)))
                   : null)
               : h("div", null,
                 h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", lineHeight: 1.5 } }, hsT("cadrageAuto", lg)),
@@ -3246,7 +3292,7 @@ function ComposeurStory(props) {
           onFocus: remonter,
           onKeyUp: function (e) { try { setCurseur(e.target.selectionStart); } catch (eK) { } }, 
           rows: 5, maxLength: HS_LEGENDE_MAX, placeholder: hsT("legende", lg),
-          style: { marginTop: 14, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none", resize: "none", lineHeight: 1.55 }
+          style: { marginTop: 14, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 16, fontFamily: M, outline: "none", resize: "none", lineHeight: 1.55 }
         }),
         h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginTop: 6 } },
           h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", lineHeight: 1.4 } }, hsT("astuceArobase", lg)),
@@ -3278,7 +3324,7 @@ function ComposeurStory(props) {
         h("input", {
           value: lieu, onChange: function (e) { setLieu(e.target.value); },
           maxLength: HS_LIEU_MAX, placeholder: hsT("lieuChamp", lg), onFocus: remonter,
-          style: { width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none" }
+          style: { width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 16, fontFamily: M, outline: "none" }
         }),
         sugLieux.length
           ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 } },
@@ -3329,7 +3375,7 @@ function ComposeurStory(props) {
         h("input", {
           value: requete, onChange: function (e) { setRequete(e.target.value); },
           placeholder: hsT("chercherCav", lg), onFocus: remonter,
-          style: { marginTop: 10, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none" }
+          style: { marginTop: 10, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", color: "#F4F7FA", fontSize: 16, fontFamily: M, outline: "none" }
         }),
         (String(requete || "").trim().length >= 2 && !resultats.length)
           ? h("div", { style: { fontSize: 11.5, fontFamily: M, color: "#8A929C", marginTop: 9 } }, hsT("aucunResultat", lg))
@@ -3700,7 +3746,7 @@ function ChoixALaUne(props) {
         h("input", {
           value: nom, onChange: function (e) { setNom(e.target.value); },
           maxLength: 40, placeholder: hsT("nomUne", lg),
-          style: { width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none" }
+          style: { width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 16, fontFamily: M, outline: "none" }
         }),
         h("div", { style: { display: "flex", gap: 10, marginTop: 14 } },
           h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, hsT("annuler", lg)),
@@ -3839,7 +3885,7 @@ function ModifierStory(props) {
           value: legende, onChange: function (e) { setLegende(e.target.value); },
           onFocus: remonter,
           rows: 5, maxLength: HS_LEGENDE_MAX, placeholder: hsT("legende", lg),
-          style: { marginTop: 16, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none", resize: "none", lineHeight: 1.55 }
+          style: { marginTop: 16, width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 16, fontFamily: M, outline: "none", resize: "none", lineHeight: 1.55 }
         }),
         (legende.length > 800)
           ? h("div", { style: { fontSize: 10, fontFamily: M, fontWeight: 700, color: (legende.length >= HS_LEGENDE_MAX ? "#E8A6A6" : tA(0.9)), textAlign: "right", marginTop: 5 } }, legende.length + "/" + HS_LEGENDE_MAX)
@@ -3850,7 +3896,7 @@ function ModifierStory(props) {
           value: lieu, onChange: function (e) { setLieu(e.target.value); },
           onFocus: remonter,
           maxLength: HS_LIEU_MAX, placeholder: hsT("lieuChamp", lg),
-          style: { width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 13.5, fontFamily: M, outline: "none" }
+          style: { width: "100%", boxSizing: "border-box", padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid " + tA(0.28), color: "#F4F7FA", fontSize: 16, fontFamily: M, outline: "none" }
         }),
         sugLieux.length
           ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 } },
@@ -3949,6 +3995,32 @@ function CompositionStory(props) {
   var story = props.story || {}; var lg = props.langue || "fr";
   var membres = (story.compo && story.compo.length ? story.compo : [story]);
   var plS = React.useState(null), plein = plS[0], setPlein = plS[1];
+  /* 19am (disposition « B ») : la legende vit desormais ICI, avec son propre
+     deplie. Teinte et longueur calculees une fois pour tout le bloc. */
+  var dpS = React.useState(false), deplie = dpS[0], setDeplie = dpS[1];
+  var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { lumineux: "#5FE9F0" };
+  var tnL = thC.lumineux || "#5FE9F0";
+  var longue = String(story.legende || "").length > (typeof HS_LEGENDE_REPLI === "number" ? HS_LEGENDE_REPLI : 140);
+  /* Les mentions @ ACCEPTEES deviennent des liens turquoise, comme dans le
+     panneau du bas d'ou le texte vient. Sans ce report, changer de place la
+     legende leur aurait fait perdre leur lien (signale a Blandine avant). */
+  var morceauxLegende = (function () {
+    var t = story.legende || "";
+    if (!t) return null;
+    var tg = props.tags || [];
+    var mo = (typeof hsDecouperLegende === "function") ? hsDecouperLegende(t, tg) : [{ texte: t }];
+    return mo.map(function (m, i) {
+      if (m.texte !== undefined) return h("span", { key: "lc" + i }, m.texte);
+      if (m.tag && m.tag.cible_id && m.tag.type === "cavalier" && props.onCavalier) {
+        return h("span", {
+          key: "lc" + i,
+          onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); props.onCavalier(m.tag); },
+          style: { color: (thC.principal || "#20D9F5"), fontWeight: 700, cursor: "pointer" }
+        }, m.mention);
+      }
+      return h("span", { key: "lc" + i }, m.mention);
+    });
+  })();
   function ouvrirPlein(u) { try { if (props.pause) props.pause(true); } catch (e) { } setPlein(u); }
   function fermerPlein() { try { if (props.pause) props.pause(false); } catch (e) { } setPlein(null); }
   function src(st) { return (typeof hsImageEcran === "function") ? hsImageEcran(st.photo_url) : st.photo_url; }
@@ -4058,7 +4130,37 @@ function CompositionStory(props) {
            evite qu'un mot tres long elargisse le bloc.
            La hauteur passe de 54 a 96 px : avec des retours a la ligne, trois
            lignes etaient atteintes tout de suite. */
-        h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45, maxHeight: 96, overflow: "hidden", padding: "0 8px", whiteSpace: "pre-wrap", overflowWrap: "break-word" } }, story.legende))
+        /* ⚠️ 19am — DISPOSITION « B », choisie par Blandine sur maquette :
+           « si tu fais le deroule dans la composition tu mets plus le texte en
+           bas ». La legende ENTIERE vit ici, le panneau du bas ne garde que
+           le lieu. Plus de double ecriture.
+           LA COUPE : `-webkit-line-clamp` coupe sur des LIGNES ENTIERES et
+           pose les points de suspension. L'ancien `maxHeight: 96` tranchait au
+           pixel — on voyait la moitie haute des lettres (« essaye de couper
+           proprement ! »). `line-clamp` ne se combine PAS avec `pre-wrap`
+           dans toutes les versions de Safari, donc le repli utilise
+           `pre-line` (retours a la ligne gardes) et le deplie `pre-wrap`
+           (retours ET espaces, comme demande en 19aj).
+           LE DEROULE met le minuteur en PAUSE : sans ca la story defile
+           pendant la lecture — defaut deja corrige en 114b, ne pas le
+           reintroduire. */
+        h("div", {
+          style: Object.assign(
+            { fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45, padding: "0 8px", overflowWrap: "break-word", textAlign: "left" },
+            deplie
+              ? { whiteSpace: "pre-wrap", maxHeight: "42vh", overflowY: "auto", WebkitOverflowScrolling: "touch" }
+              : { whiteSpace: "pre-line", display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden" })
+        }, morceauxLegende),
+        longue
+          ? h("button", {
+            onClick: function (ev) {
+              if (ev && ev.stopPropagation) ev.stopPropagation();
+              var v = !deplie; setDeplie(v);
+              try { if (props.pause) props.pause(v); } catch (eP) { }
+            },
+            style: { marginTop: 6, background: "none", border: "none", padding: "2px 6px", color: tnL, fontSize: 11, fontWeight: 700, fontFamily: M, cursor: "pointer" }
+          }, hsT(deplie ? "voirMoins" : "voirPlus", lg))
+          : null)
       : null,
     tirages.length
       /* 19t (14/08, demande de Blandine : « on aimerait pouvoir faire defiler
@@ -4081,6 +4183,12 @@ function CompositionStory(props) {
              contenu plus large que sa boite rend le debut inatteignable. */
           flex: "0 0 auto", display: "flex", gap: 8, alignItems: "flex-end",
           width: "100%", maxWidth: "100%", minWidth: 0,
+          /* 19am : a partir de 3 tirages la rangee deborde — le dernier etait
+             coupe net par le bord, ce qui ressemblait a un defaut plutot qu'a
+             une rangee qu'on fait glisser. Le bord droit s'estompe donc : il
+             DIT que ca continue. Pose seulement quand ca peut deborder. */
+          WebkitMaskImage: (tirages.length >= 3 ? "linear-gradient(90deg, #000 86%, transparent 100%)" : "none"),
+          maskImage: (tirages.length >= 3 ? "linear-gradient(90deg, #000 86%, transparent 100%)" : "none"),
           justifyContent: tirages.length >= 3 ? "flex-start" : "center",
           overflowX: "auto", overflowY: "hidden", touchAction: "pan-x",
           WebkitOverflowScrolling: "touch", scrollbarWidth: "none",
@@ -4119,7 +4227,7 @@ function VisionneuseStories(props) {
 
   var groupes = props.groupes || [];
   var gS = React.useState(props.depart || 0), ig = gS[0], setIg = gS[1];
-  var sS = React.useState(0), is = sS[0], setIs = sS[1];
+  var sS = React.useState(props.departStory || 0), is = sS[0], setIs = sS[1];
   var aS = React.useState(null), action = aS[0], setAction = aS[1];
   var tgS = React.useState([]), tagsStory = tgS[0], setTagsStory = tgS[1];
   /* CORRECTIF DE LA SESSION 114b — À NE PLUS JAMAIS PERDRE.
@@ -4623,7 +4731,22 @@ function VisionneuseStories(props) {
              s'afficherait nue, sans son cadre. C'est ce qui manquait pour que
              les modeles a une fenetre servent enfin. */
           (chargee && !erreur && !enVeille && !estAlbum && hsAvecDecor(story))
-            ? h(CompositionStory, { story: story, langue: lg, pause: function (v) { try { pauseRef.current = !!v; } catch (eP) { } } })
+            /* 19am : la composition recoit les mentions et l'ouvreur de profil,
+               puisque la legende a demenage chez elle (disposition « B »). */
+            ? h(CompositionStory, {
+              story: story, langue: lg, tags: tagsStory,
+              pause: function (v) { try { pauseRef.current = !!v; } catch (eP) { } },
+              onCavalier: function (tag) {
+                try {
+                  if (typeof window !== "undefined") {
+                    window.__cavalierPublic = { id: tag.cible_id, pseudo: tag.cible_nom || "", photo: null, ecurie: "", club: "", ville: "" };
+                    window.__cavalierOuvert = "__public";
+                  }
+                } catch (e) { }
+                fermer();
+                try { if (ctxV && ctxV.setEcran) ctxV.setEcran("cavalier"); } catch (e2) { }
+              }
+            })
             : ((typeof PhotoZoomHype === "function" && chargee && !erreur && !enVeille)
               ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })
               : null)),
@@ -4701,18 +4824,37 @@ function VisionneuseStories(props) {
             transition: "opacity 220ms ease-out"
           }
         }),
-        h("button", { onClick: function () { hsAmorcerAudio(); precedente(); }, "aria-label": "Pr\u00e9c\u00e9dente", style: { position: "absolute", left: 0, top: 0, bottom: 74, width: "32%", zIndex: 1, background: "transparent", border: "none", cursor: "pointer" } }, ""),
-        /* 13/08 02h33 : les zones s'arretent A 74 px DU BAS de la photo — la
-           pastille son leur echappe. Blandine visait « ♪ Hype Beat », la zone
-           « suivante » prenait le tap : le son partait ET la story avancait,
-           d'ou « ca nous sort de force ». */
-        h("button", { onClick: function () { hsAmorcerAudio(); suivante(); }, "aria-label": "Suivante", style: { position: "absolute", right: 0, top: 0, bottom: 74, width: "48%", zIndex: 1, background: "transparent", border: "none", cursor: "pointer" } }, "")),
+        /* ⚠️ 19am — LES DEUX ZONES DE TOUCHER SONT SUPPRIMEES.
+           Deux boutons transparents couvraient la story (32 % a gauche pour
+           reculer, 48 % a droite pour avancer). Ils passaient DEVANT les
+           photos : toucher une photo d'une composition faisait avancer la
+           story au lieu de l'ouvrir — signale trois fois par Blandine.
+           Sa decision : « la story pour avancer ou reculer on devrait swipe
+           pas toucher » et, sur la question de garder le toucher sur les
+           stories a une seule photo, « non qu'il ouvre partout sinon on s'y
+           perd ». Une regle, aucune exception :
+             — le GLISSE horizontal navigue (deja en place depuis la 19z,
+               seuil 55 px, voir toucheFin) ;
+             — le TOUCHER ouvre la photo.
+           ⚠️ NE JAMAIS remettre de zone tactile plein cadre ici : c'est ce
+           qui a rendu les photos, le coeur et la musique inatteignables. */
+        null),
 
-      h("div", { style: { padding: "12px 14px calc(env(safe-area-inset-bottom) + 14px)", background: "linear-gradient(180deg, rgba(17,20,23,0.9), #060709)", borderTop: "1px solid rgba(255,255,255,0.07)" } },
+      /* 19am : « en bas tout est entasse » (Blandine). Le panneau respire —
+         plus d'air autour du lieu, interligne releve dans le texte des stories
+         qui en gardent un (celles sans composition). */
+      h("div", { style: { padding: "15px 14px calc(env(safe-area-inset-bottom) + 18px)", background: "linear-gradient(180deg, rgba(17,20,23,0.9), #060709)", borderTop: "1px solid rgba(255,255,255,0.07)" } },
         story.lieu
-          ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 700, color: tnL, marginBottom: 8, letterSpacing: 0.3 } }, "\uD83D\uDCCD " + story.lieu)
+          ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 700, color: tnL, marginBottom: 12, letterSpacing: 0.3 } }, "\uD83D\uDCCD " + story.lieu)
           : null,
-        story.legende
+        /* ⚠️ 19am — DISPOSITION « B ». La legende n'est plus ecrite ici QUAND
+           la story porte une composition : elle vit dans la composition
+           elle-meme, avec son propre « voir plus » (choix de Blandine sur
+           maquette : « si tu fais le deroule dans la composition tu mets plus
+           le texte en bas »). Le panneau ne garde alors que le LIEU.
+           Une story SANS composition n'a pas de bloc ou loger son texte : sa
+           legende reste ici, sinon elle disparaitrait. */
+        (story.legende && !hsAvecDecor(story))
           ? (function () {
             /* Le texte s'affiche TEL QUE l'auteur l'a écrit ; seules les
                mentions ACCEPTÉES deviennent des liens turquoise (décision de
@@ -4730,7 +4872,7 @@ function VisionneuseStories(props) {
                      repliait les espaces. `pre-wrap` garde les deux — c'est ce
                      que Blandine a demande : « des espaces des retours a la
                      ligne etc ». */
-                  { fontSize: 13.5, lineHeight: 1.55, fontFamily: M, color: "#DCE3E8", whiteSpace: "pre-wrap", wordBreak: "break-word" },
+                  { fontSize: 13.5, lineHeight: 1.75, fontFamily: M, color: "#DCE3E8", whiteSpace: "pre-wrap", wordBreak: "break-word" },
                   replie ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" } : {})
               },
                 morceaux.map(function (mo, i) {

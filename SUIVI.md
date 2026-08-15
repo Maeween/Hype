@@ -8178,3 +8178,92 @@ Chantier annoncé par Blandine et non commencé : **les localisations de personn
 Cette faute n'existe pas en Flutter : un `GestureDetector` apparie lui-même `onPanStart` et `onPanEnd`, et un widget qui absorbe le début du geste absorbe la fin. La classe entière de bugs — début et fin lus par deux propriétaires différents — disparaît avec la migration. À inscrire dans la frontière « Présentation » comme argument de priorité : les trois fautes des sessions 151 à 154 sont toutes de cette famille.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19al** · modèles 28.
+
+---
+
+## Session 155 — 15/08/2026 · stories **19am** · le geste, la légende, la file
+
+Session menée sur maquette : `maquette-legende.html` (trois dispositions comparées côte à côte), Blandine a choisi **B**.
+
+### 👆 Un geste, un rôle
+
+Décision de Blandine : *« la story pour avancer ou reculer on devrait swipe pas toucher »*, puis, sur la question de garder le toucher là où il n'y a rien à ouvrir : *« non qu'il ouvre partout sinon on s'y perd »*.
+
+Les **deux zones tactiles sont supprimées**. Elles couvraient toute la story (32 % à gauche pour reculer, 48 % à droite pour avancer) et passaient **devant** les photos : toucher une photo d'une composition faisait avancer la story au lieu de l'ouvrir. Signalé trois fois en deux jours, contourné deux fois, jamais réglé à la racine.
+
+Désormais : **le glissé navigue** (déjà en place depuis la 19z, seuil 55 px), **le toucher ouvre la photo**. Une règle, aucune exception.
+
+⚠️ Ne jamais remettre de zone tactile plein cadre : c'est ce qui a rendu les photos, le cœur et la musique inatteignables.
+
+**Conséquence à surveiller** : sur une story à une seule photo, le toucher n'ouvre rien de plus (la photo occupe déjà l'écran, `PhotoZoomHype` gère le pincement). Ce n'est pas un oubli, c'est qu'il n'y a rien à ouvrir.
+
+### 📝 La légende déménage — disposition « B »
+
+Mots de Blandine : *« si tu fais le déroulé dans la composition tu mets plus le texte en bas »*.
+
+La légende **entière** vit maintenant dans la composition, avec son propre « voir plus » qui déplie sur place et met le minuteur en pause. Le panneau du bas ne garde que le **lieu**. Plus de double écriture.
+
+**La coupe est propre.** `-webkit-line-clamp` coupe sur des **lignes entières** et pose les points de suspension ; l'ancien `maxHeight: 96` tranchait au pixel et laissait voir la moitié haute des lettres. Repli en `pre-line`, déplié en `pre-wrap` (`line-clamp` ne se combine pas avec `pre-wrap` sur toutes les versions de Safari) — les retours à la ligne sont gardés dans les deux états.
+
+**Les mentions @ ont suivi.** `hsDecouperLegende` et l'ouverture de profil sont portés dans `CompositionStory` (props `tags` et `onCavalier`) : sans ce report, déplacer le texte leur aurait fait perdre leur lien. Signalé à Blandine avant de coder.
+
+**Une story sans composition garde sa légende en bas** (`!hsAvecDecor(story)`) : elle n'a aucun bloc où la loger.
+
+### 🎞️ La file
+
+Mots de Blandine : *« c'est pas une question de moi ou pas moi, un post arrive à un moment donné, il y a un ordre chronologique à suivre »* et *« ce qui me gêne c'est que les gens qui ont pris une place dans la file la perdent »*.
+
+Le rang est **supprimé** (`g.moi ? 0 : memeEcurie ? 1 : suivi ? 2 : 3`). Blandine passait toujours en tête, même en ayant publié trois jours après tout le monde. Deux règles et rien d'autre :
+
+1. **Ce qui n'a pas été vu passe devant ce qui a été vu** — *« le rail avance au fur et à mesure qu'elles ont été vues »*.
+2. À égalité, **l'ordre de publication**, du plus ancien au plus récent. La file avance par l'arrière : personne ne double personne.
+
+La place d'un cavalier est celle de sa **première** story, pas de la dernière — la place appartient à la personne, pas au dernier geste. Le reclassement se fait **à la fermeture** de la visionneuse, jamais pendant (déduction de Claude, validée : sinon le rail se réorganise sous les doigts).
+
+⚠️ **Pour inverser le sens** (le plus récent en tête) : une seule ligne à retourner, marquée `SENS` dans le code. Mots de Blandine : *« on avisera par la suite quitte à intervertir l'ordre »*. Rappel de l'arbitrage : en « plus récents d'abord », chaque publication décale tout le monde d'un cran — c'est exactement ce qu'elle voulait éviter.
+
+### 🟥 « Ça n'ouvre pas la bonne story » — faute de Claude (19aj)
+
+Le rail n'avait qu'**un bouton par cavalier** : quel que soit le médaillon touché, la visionneuse démarrait sur `is = 0`. Le défaut préexistait, mais avec deux médaillons au plus il ne se voyait pas ; depuis que la 19aj les affiche tous, toucher le quatrième ouvrait le premier. Chaque médaillon porte désormais son propre toucher et transmet son rang (`departStory`).
+
+### 📱 Le zoom d'iOS
+
+Symptômes de Blandine après modification d'une story : *« on est coincés à droite, le bouton des musiques était inaccessible et on pouvait pas complètement scroll en bas »*. Ce n'était pas un débordement : **Safari agrandit la page dès qu'on touche un champ de moins de 16 px**, et ne dézoome pas toujours en sortant. Les sept champs du module étaient à 13,5 px et 10,5 px — tous relevés à **16 px**. Le viewport n'est pas touché (interdire le zoom priverait l'app du pincement partout).
+
+### 🖥️ À l'écran : + / −
+
+**+** La légende entière au milieu, avec « voir plus » qui déplie sur place.
+**+** Un voile sur le bord droit des tirages dès 3 photos : la rangée dit qu'elle continue.
+**+** Le panneau du bas respire (padding et interligne relevés).
+**−** Plus de légende en bas sur les stories composées : elle est au milieu, une seule fois.
+**−** Plus de zones tactiles : toucher n'avance plus la story, toucher une photo l'ouvre.
+**−** Plus de demi-lettres en fin de légende.
+**−** Plus de place réservée à qui que ce soit sur le rail.
+**−** Plus de zoom coincé après une saisie.
+**~** Le texte des champs de saisie est plus grand (16 px) — c'est la contrepartie du point précédent.
+
+### Page Écurie (livré en même temps, préparé à midi)
+
+Retirés sur demande de Blandine : la ligne de démonstration **« Itteville · 5 chevaux · 2 pensions »** (écrite en dur, visible du seul compte `feinn@live.fr`) et **« Concours ce week-end »** (décor de maquette affiché à tout le monde, aucun agenda derrière). Le surtitre devient **« Ton écurie perso »** dans les cinq langues — *« comme ça plus de doute possible avec celle d'un club »*. La pilule « Voir les membres » est **conservée** (elle est réelle) ; Blandine la trouve mal présentée, refonte à faire.
+
+**🟥 Correction d'une erreur de Claude** : j'ai affirmé que `malicia2008@hotmail.fr` était l'adresse de Mégane. Faux — c'est la seconde adresse de Blandine. Mégane est ambassadrice, pas modératrice. Aucune conséquence sur le SQL, mais l'affirmation était une déduction présentée comme un fait.
+
+### Contrôles
+
+`node --check` sur `hype-stories.js` et sur le script principal extrait d'`index.html` : passés. Vérifiés à la main : accord `19am` entre le module et le cache-buster, plus aucune zone tactile plein cadre, `departStory` transmis, 7 champs à 16 px, légende présente une seule fois par story. **Non vérifié** : le rendu réel — Blandine seule peut tester.
+
+### 📋 Reste ouvert
+
+- **L'éjection de fin** : la vidéo montre une sortie sur la **dernière** story du groupe de Blandine alors qu'Evan suivait sur le rail. À confirmer avec elle : attendait-elle d'enchaîner sur la story d'Evan ? Si oui, l'enchaînement d'un groupe au suivant est à revoir.
+- **La pilule « Voir les membres »** : à repenser visuellement.
+- **Le partage externe** (lien + miniature via fonction Netlify, repli souvenir sinon invitation) : la question de la **portée publique** d'une story partagée n'est toujours pas tranchée.
+- **La durée au choix (7 jours / un mois)** : `expire_le` existe déjà. Restent l'emplacement du compteur discret, son libellé, et si le mois est Premium. Rappel de l'arbitrage du rail : à un mois, un rail strictement chronologique devient illisible — la question du plafond journalier reviendra.
+- **Les commentaires de stories** : chantier séparé (modération).
+- **Généraliser le geste à toute l'app** : Blandine l'a évoqué (*« c'est valable pour toute l'appli »*) sans trancher entre le toucher qui ouvre et le glissé qui navigue. Non commencé.
+- **Inchangé** : vignettes des modèles, photos de profil, notifications, carte Communauté, accès Communauté, flou du décor plein écran, allègement de `index.html`.
+
+### Préparation Flutter
+
+La suppression des zones tactiles est la bonne leçon d'architecture de la journée : **un calque invisible qui capture un geste pour le compte d'un autre est toujours une dette**. Il masque les cibles réelles, il se voit uniquement à l'usage, et chaque correction locale (îlots, `stopPropagation`, `data-noswipe`) ne fait que déplacer le problème. En Flutter, la navigation d'un carrousel passe par un `PageView` : le geste appartient au widget, il n'y a pas de calque à poser. À inscrire dans la frontière « Présentation » : **aucun élément interactif ne recouvre un contenu interactif**.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19am** · modèles 28.

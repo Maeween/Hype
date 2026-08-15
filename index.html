@@ -18778,7 +18778,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19al"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19am"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -28177,7 +28177,9 @@ function EcranEcurie() {
             h("div", { className: "av", style: premium ? null : { borderColor: "#20D9F5", boxShadow: "0 0 14px rgba(32,217,245,0.74)", color: "#5FE9F0" } }, ((ctx.profil && (ctx.profil.ecurie_perso || ctx.profil.ecurie || ctx.profil.club)) ? (titreEcuriePerso || "").trim().charAt(0).toUpperCase() : "\uD83D\uDC0E")),
             premium ? h("div", { className: "pill" }, "\u2605 " + T("Membre premium", "Premium member", "Miembro premium", "Membro premium", "プレミアム会員")) : null),
           h("div", { className: "info" },
-            h("div", { className: "e" }, T("Ton écurie", "Your stable", "Tu cuadra", "La tua scuderia", "あなたの厩舎")),
+            /* 15/08 (mot de Blandine) : « rajouter perso apres mon ecurie comme ca plus
+   de doute possible avec celle d un club ». */
+            h("div", { className: "e" }, T("Ton écurie perso", "Your personal stable", "Tu cuadra personal", "La tua scuderia personale", "あなたの個人厩舎")),
             h("h1", { style: { display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" } },
               h("span", null, titreEcuriePerso),
               h("button", {
@@ -28197,12 +28199,21 @@ function EcranEcurie() {
                   background: "rgba(32,217,245,0.07)", border: "1px solid rgba(32,217,245,0.34)",
                   color: "#5FE9F0", fontSize: 13, lineHeight: 1, padding: 0 }
               }, "\u270E")),
-            h("div", { className: "meta" }, estCompteFeinnEc ? ("Itteville · " + T("5 chevaux · 2 pensions", "5 horses · 2 liveries", "5 caballos · 2 pensiones", "5 cavalli · 2 pensioni", "馬5頭 · 預託2")) : ((chevauxEc && chevauxEc.length) ? (chevauxEc.length + " " + T(chevauxEc.length > 1 ? "chevaux" : "cheval", chevauxEc.length > 1 ? "horses" : "horse", chevauxEc.length > 1 ? "caballos" : "caballo", chevauxEc.length > 1 ? "cavalli" : "cavallo", "馬" + chevauxEc.length + "頭")) : T("Aucun cheval pour l'instant", "No horses yet", "Todavía sin caballos", "Ancora nessun cavallo", "まだ馬はいません"))),
+            /* 15/08 (demande de Blandine) : la ligne « Itteville · 5 chevaux · 2 pensions »
+   etait de la DEMONSTRATION ecrite en dur, affichee sur le seul compte
+   feinn@live.fr. Ni la ville, ni les pensions ne venaient de quoi que ce
+   soit. Retiree : le compte de Blandine voit desormais le meme compteur
+   reel que toutes les cavalieres. */
+            h("div", { className: "meta" }, ((chevauxEc && chevauxEc.length) ? (chevauxEc.length + " " + T(chevauxEc.length > 1 ? "chevaux" : "cheval", chevauxEc.length > 1 ? "horses" : "horse", chevauxEc.length > 1 ? "caballos" : "caballo", chevauxEc.length > 1 ? "cavalli" : "cavallo", "馬" + chevauxEc.length + "頭")) : T("Aucun cheval pour l'instant", "No horses yet", "Todavía sin caballos", "Ancora nessun cavallo", "まだ馬はいません"))),
             ((ctx.profil && (ctx.profil.ecurie || ctx.profil.club)) ? true : false) ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 7, marginTop: 8, padding: "6px 12px", borderRadius: 999, background: "rgba(32,217,245,0.12)", border: "1px solid rgba(32,217,245,0.5)" } },
               /* 06/08 : le label "Club officiel" est retire de la page perso (il appartient a la page Mon Club) ; la pilule garde "Voir les membres" et affiche le NOM DU CLUB pour rappeler vers quoi elle pointe */
               h("span", { style: { color: "#EAF7FA", fontSize: 11.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", letterSpacing: "0.02em" } }, monClubEc),
               h("button", { onClick: function () { setEcran("guilde"); }, style: { marginLeft: 4, padding: "3px 10px", borderRadius: 999, border: "none", background: "rgba(32,217,245,0.9)", color: "#04252A", fontSize: 10.5, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Voir les membres", "See members", "Ver miembros", "Vedi membri", "\u30e1\u30f3\u30d0\u30fc"))) : null,
-            h("div", { className: "ev" }, h("span", { className: "d" }), T("Concours ce week-end", "Show this weekend", "Concurso este fin de semana", "Concorso questo weekend", "今週末に競技会")))),
+            /* 15/08 (demande de Blandine) : « Concours ce week-end » etait un
+               decor de maquette affiche A TOUT LE MONDE en permanence, sans
+               aucun concours derriere. Retire. Le jour ou un vrai agenda
+               existera, il se rebranchera ici — mais avec une vraie donnee. */
+            null)),
 
         /* 12/08 (114) : bandeau des stories. */
         (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
