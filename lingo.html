@@ -939,6 +939,45 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    ⚠️ Les 26 px de la bande et les 18 px d'air sont portes par ce bloc, PAS
    par la marge de .intro : c'est ce qui garantit que le dessus et le dessous
    sont strictement egaux. Ne pas remettre de margin sur .intro ici. */
+/* ==================================================================
+   LA CARTE HORS LIGNE (15/08/2026). Verre fumé, bordure turquoise,
+   reflet lent qui balaie — repris de l'encart « HYPE dans ta poche »
+   d'index.html pour que les deux apps se ressemblent.
+   ⚠️ Le voile ne concerne QUE la surface de verre : l'image d'Apy n'a
+   AUCUN filtre ni assombrissement (règle absolue du projet).
+   ================================================================== */
+#ouvPoche{position:relative;max-width:330px;margin:26px auto 4px;overflow:hidden;
+  border-radius:20px;border:1px solid rgba(32,217,245,.32);text-align:left;
+  background:linear-gradient(150deg,rgba(32,217,245,.10),rgba(17,20,23,.88));
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+#ouvPoche::after{content:"";position:absolute;inset:0 auto 0 0;width:46%;pointer-events:none;
+  background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.12) 48%,transparent 100%);
+  animation:pocheReflet 6.5s ease-in-out infinite}
+@keyframes pocheReflet{0%{transform:translateX(-180%) skewX(-18deg)}42%,100%{transform:translateX(320%) skewX(-18deg)}}
+#pocheFermer{position:absolute;top:8px;right:8px;z-index:3;width:30px;height:30px;
+  border:0;border-radius:50%;background:rgba(6,7,9,.55);color:var(--blanc);
+  font-size:13px;line-height:1;cursor:pointer}
+#pocheImg{position:relative;line-height:0}
+#pocheImgEl{width:100%;height:auto;display:block}
+#pocheImg::after{content:"";position:absolute;left:0;right:0;bottom:0;height:38%;
+  background:linear-gradient(to bottom,transparent,rgba(17,20,23,.92))}
+#pocheTxt{position:relative;z-index:2;padding:2px 18px 18px}
+#pocheKick{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--turquoise);margin:0 0 5px}
+#pocheTitre{font-family:'Cinzel',serif;font-size:18px;letter-spacing:.04em;color:var(--blanc);margin:0 0 7px;line-height:1.25}
+#pochePhrase{font-size:12px;line-height:1.5;color:var(--gris);margin:0}
+#pocheEtapes{margin-top:11px;display:flex;flex-direction:column;gap:7px}
+#pocheEtapes .pEt{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--blanc)}
+#pocheEtapes .pNum{flex:0 0 19px;height:19px;border-radius:50%;font-size:9.5px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(32,217,245,.5);color:var(--turquoise)}
+#pocheAction{margin-top:14px;width:100%;padding:12px 16px;border:0;border-radius:14px;
+  background:var(--turquoise);color:#060709;font-weight:600;font-size:13px;
+  letter-spacing:.04em;cursor:pointer}
+#pocheAction:disabled{opacity:.55;cursor:default}
+#pocheJauge{margin-top:11px;height:3px;border-radius:2px;background:rgba(244,247,250,.14);overflow:hidden}
+#pocheJaugeIn{display:block;height:100%;width:0;background:var(--turquoise);transition:width .3s ease}
+
 #ouvIntroB{max-width:330px;margin:30px auto 26px}
 #ouvIntroB .oBande{display:block;height:26px;background:#15181C;border-radius:6px}
 #ouvIntroB .intro{margin:18px auto}
@@ -2318,6 +2357,49 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       du cheval.</b> Des endroits où l'équitation n'est pas un loisir mais le métier de tout le monde,
       et où le vocabulaire que tu vas apprendre s'entend vraiment.</p>
       <span class="oBande"></span>
+    </div>
+
+    <!-- ==================================================================
+         LA CARTE HORS LIGNE — 15/08/2026, session 211.
+         Demande de Blandine : « on peut mettre un encart sur la première
+         page après la vidéo proposant de télécharger l'appli afin de
+         pouvoir en profiter hors connexion ».
+
+         🟥 DEUX ÉTATS, JAMAIS LES DEUX À LA FOIS. `cartePocheMaj()` décide :
+         · PAS INSTALLÉE → l'INSTALLATION D'ABORD. Décision de Blandine :
+           « l'installation est impérative pour moi, la PWA tient déjà pas
+           sur le bureau mais en ligne direct c'est pire ». Une PWA ouverte
+           dans Safari garde la barre d'adresse et le geste de retour qui
+           sort de l'app — le hors-ligne ne sert à rien si l'app s'ouvre
+           dans un navigateur. Image `installer.webp` (Apy tenant un iPhone,
+           l'icône posée sur l'écran d'accueil).
+         · INSTALLÉE, contenu incomplet → « Emporter le voyage », image
+           `hors-ligne.webp`.
+         · INSTALLÉE + contenu à bord → la carte DISPARAÎT.
+         🟥 « Si les gens l'ont déjà fait » : la ligne d'installation ne
+         s'affiche JAMAIS à qui a déjà installé (test display-mode).
+         ⚠️ Une fois fermée, elle ne revient pas (`lingua_poche_ferme`).
+
+         ⚠️ LE CHARGEMENT DISCRET TOURNE DANS TOUS LES CAS, carte vue,
+         fermée ou absente — décision de Blandine (« dans tous les cas
+         téléchargement hors connexion derrière non ? »). La carte n'est
+         qu'un accélérateur. Voir `emporterLeVoyage()` plus bas.
+
+         ⚠️ Les deux images sont facultatives : si elles manquent, la carte
+         s'affiche sans visuel et rien ne casse (même règle que
+         `themes-hero.webp` et `tour-monde.webp`).
+         ================================================================== -->
+    <div id="ouvPoche" hidden>
+      <button id="pocheFermer" type="button" aria-label="fermer">&#10005;</button>
+      <div id="pocheImg"><img id="pocheImgEl" alt=""></div>
+      <div id="pocheTxt">
+        <p class="kick" id="pocheKick"></p>
+        <h3 id="pocheTitre"></h3>
+        <p id="pochePhrase"></p>
+        <div id="pocheEtapes" hidden></div>
+        <button id="pocheAction" type="button" hidden></button>
+        <div id="pocheJauge" hidden><span id="pocheJaugeIn"></span></div>
+      </div>
     </div>
 
     <div class="carnet" id="carnet"></div>
@@ -10576,7 +10658,237 @@ S("ouvAccueil").addEventListener("click", function(){
   /* « Partir », sur le carnet, est maintenant la DERNIERE marche de la
      sequence : il ouvre le globe. Ce n'est plus lui qui lance le film. */
   S("ouvPartir").addEventListener("click",partirVersGlobe);
+  /* ⚠️ DIFFÉRÉ D'UN TOUR : `POCHE_CLE_FERME` et les autres `var` du bloc
+     hors-ligne sont déclarées plus bas dans ce même script — `var` hisse
+     la déclaration, pas la valeur. Appeler ici en direct lirait
+     `undefined` (exactement le piège déjà documenté pour `LANGUES_UI`
+     dans langueUI()). Un setTimeout 0 suffit : tout est assigné. */
+  setTimeout(function(){ try{ cartePocheMaj(); }catch(ePo){} }, 0);
 })();
+
+/* ==================================================================
+   LE HORS LIGNE — 15 août 2026, session 211.
+   Demande de Blandine : « comment on peut rendre Linguae utilisable
+   sans réseau, dans l'avion par exemple », puis « gère juste le hors
+   ligne », puis « aucun moyen de charger les villes non ouvertes ?
+   sinon pas trop d'intérêt ».
+
+   🟥 TROIS DÉCISIONS D'ELLE, VALIDÉES LE 15/08 :
+   1. CHARGEMENT DISCRET À L'USAGE. Pendant que Linguae est ouverte et
+      que le réseau est bon, les villes descendent une par une, en
+      silence, dans l'ordre du voyage. Au bout de quelques visites
+      normales, tout est à bord sans qu'elle ait rien fait.
+      ⚠️ ON LANCE PAR DÉFAUT (correctif du 15/08, même session :
+      « lancer par défaut ça serait cool »). On ne s'abstient que sur un
+      refus explicite du téléphone — économiseur de données, cellulaire
+      annoncé, 2g. Voir `pocheReseauLarge()`.
+      ⚠️ iOS N'A PAS D'ARRIÈRE-PLAN pour le web : si elle ferme
+      Linguae, ça s'arrête et ça reprend à la prochaine ouverture. Ce
+      sera différent le jour de l'app native. NE PAS promettre à
+      l'écran un téléchargement qui continue téléphone fermé.
+   2. AUCUNE VIDÉO. Les `arrivee-<ville>.mp4` sont hors de tout ça —
+      des dizaines de Mo. Le repli vidéo de lingo.html suffit.
+   3. LE PREMIUM NE TOMBE PAS HORS RÉSEAU. Rien à faire ici : le code
+      du 14/08 ne pose « 0 » que si la base a VRAIMENT répondu.
+      Vérifié ligne à ligne le 15/08. NE PAS « simplifier » ce test.
+
+   ⚠️ On ne descend QUE les images des villes (carte, fond, objet) et
+   les lexiques sont déjà pris par le socle du service worker. Une
+   ville = 3 fichiers. `VER` est ajouté à chaque adresse, sinon on
+   remplirait le cache d'adresses périmées (piège n°1 de la passation).
+   ================================================================== */
+var POCHE_CLE_FERME = "lingua_poche_ferme";
+var pocheEnCours = false;
+
+function pocheInstallee(){
+  try{
+    return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches)
+        || navigator.standalone === true;
+  }catch(e){ return false; }
+}
+
+/* 🟥 ON LANCE PAR DÉFAUT — décision de Blandine, 15/08 : « lancer par
+   défaut ça serait cool ». Le premier réglage s'abstenait quand le type
+   de réseau était inconnu ; or `navigator.connection` N'EXISTE PAS sur
+   Safari iOS, donc le chargement discret n'aurait jamais démarré sur
+   iPhone — c'est-à-dire chez elle et chez la plupart des cavalières.
+   On ne s'abstient donc plus QUE sur un refus explicite du téléphone :
+   · `saveData` (économiseur de données activé) → jamais ;
+   · type « cellular » clairement annoncé → jamais ;
+   · `2g` / `slow-2g` → jamais, ce serait interminable.
+   Tout le reste, y compris l'inconnu, descend. ⚠️ NE PAS revenir à
+   « inconnu = non » : ça éteint la fonction sur tout l'écosystème Apple. */
+function pocheReseauLarge(){
+  try{
+    var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if(!c) return true;                                    /* inconnu (iOS) → on y va */
+    if(c.saveData) return false;                           /* refus explicite */
+    if(c.type === "cellular") return false;                /* forfait : jamais d'office */
+    if(c.effectiveType === "2g" || c.effectiveType === "slow-2g") return false;
+    return true;
+  }catch(e){ return true; }
+}
+
+/* les 3 images d'une ville, avec leur version */
+function pocheAdressesVille(ref){
+  return ["carte-"+ref+".webp"+VER, "fond-"+ref+".webp"+VER, "objet-"+ref+".webp"+VER];
+}
+
+/* combien de villes sont déjà à bord ? (lecture du cache du SW) */
+async function pocheCompte(){
+  try{
+    if(!window.caches) return null;
+    var c = await caches.open("linguae-v1");
+    var n = 0;
+    for(var i=0;i<ETAPES.length;i++){
+      var r = await c.match("carte-"+ETAPES[i].ref+".webp"+VER);
+      if(r) n++;
+    }
+    return n;
+  }catch(e){ return null; }
+}
+
+/* le téléchargement lui-même. `discret` = on s'arrête si le réseau
+   se dégrade ; sinon on va au bout (bouton pressé par Blandine). */
+async function emporterLeVoyage(discret, surAvance){
+  if(pocheEnCours) return;
+  if(!window.caches) return;
+  pocheEnCours = true;
+  try{
+    var c = await caches.open("linguae-v1"), faites = 0;
+    for(var i=0;i<ETAPES.length;i++){
+      if(discret && !pocheReseauLarge()) break;
+      if(!navigator.onLine) break;
+      var ref = ETAPES[i].ref, adr = pocheAdressesVille(ref);
+      var dejaLa = await c.match(adr[0]);
+      if(!dejaLa){
+        for(var j=0;j<adr.length;j++){
+          try{
+            var rep = await fetch(adr[j], {cache:"no-cache"});
+            if(rep && rep.ok) await c.put(adr[j], rep.clone());
+          }catch(eF){ /* image absente du dépôt : on continue */ }
+        }
+      }
+      faites++;
+      if(surAvance) try{ surAvance(faites, ETAPES.length); }catch(eA){}
+      /* on laisse respirer : le fil principal doit rester fluide */
+      if(discret) await new Promise(function(r){ setTimeout(r, 400); });
+    }
+  }catch(e){}
+  pocheEnCours = false;
+}
+
+async function cartePocheMaj(){
+  var boite = S("ouvPoche");
+  if(!boite) return;
+
+  /* fermée une fois = fermée pour de bon */
+  try{ if(localStorage.getItem(POCHE_CLE_FERME) === "1") return; }catch(e){}
+
+  var installee = pocheInstallee();
+  var n = await pocheCompte();
+  var tout = (n !== null && n >= ETAPES.length);
+
+  /* installée ET tout à bord → la carte n'a plus rien à dire */
+  if(installee && tout) return;
+
+  var lg = langueUI();
+  function T6(o){ return o[lg] || o.fr; }
+
+  var img = S("pocheImgEl");
+  var etapes = S("pocheEtapes"), action = S("pocheAction");
+
+  if(!installee){
+    /* ---- état 1 : l'installation d'abord (décision de Blandine) ---- */
+    img.src = "installer.webp" + VER;
+    S("pocheKick").textContent = T6({fr:"Linguae dans ta poche",en:"Linguae in your pocket",
+      es:"Linguae en tu bolsillo",it:"Linguae in tasca",de:"Linguae in deiner Tasche",ja:"ポケットの中のLinguae"});
+    S("pocheTitre").textContent = T6({fr:"Installe l'application",en:"Install the app",
+      es:"Instala la aplicación",it:"Installa l'app",de:"App installieren",ja:"アプリを追加"});
+    S("pochePhrase").textContent = T6({
+      fr:"Sur ton écran d'accueil, Linguae s'ouvre en plein écran — et tu pourras l'emporter là où il n'y a pas de réseau.",
+      en:"On your Home Screen, Linguae opens full screen — and you can take it where there's no signal.",
+      es:"En tu pantalla de inicio, Linguae se abre a pantalla completa, y podrás llevarla donde no hay cobertura.",
+      it:"Sulla schermata Home, Linguae si apre a schermo intero — e potrai portarla dove non c'è rete.",
+      de:"Auf dem Startbildschirm öffnet sich Linguae im Vollbild — und du kannst sie mitnehmen, wo es kein Netz gibt.",
+      ja:"ホーム画面から全画面で開きます。電波のない場所にも持って行けます。"});
+
+    /* le geste, expliqué : sur iPhone aucune app web ne s'installe
+       toute seule, c'est Apple qui l'interdit. */
+    var pas = /iphone|ipad|ipod/i.test(navigator.userAgent||"")
+      ? [T6({fr:"Touche « Partager » en bas de Safari",en:"Tap “Share” at the bottom of Safari",
+             es:"Toca «Compartir» abajo en Safari",it:"Tocca «Condividi» in basso su Safari",
+             de:"Tippe unten in Safari auf „Teilen“",ja:"Safari下部の「共有」をタップ"}),
+         T6({fr:"Choisis « Sur l'écran d'accueil »",en:"Choose “Add to Home Screen”",
+             es:"Elige «Añadir a pantalla de inicio»",it:"Scegli «Aggiungi a Home»",
+             de:"Wähle „Zum Home-Bildschirm“",ja:"「ホーム画面に追加」を選ぶ"})]
+      : [T6({fr:"Ouvre le menu de ton navigateur",en:"Open your browser menu",
+             es:"Abre el menú del navegador",it:"Apri il menu del browser",
+             de:"Öffne das Browser-Menü",ja:"ブラウザのメニューを開く"}),
+         T6({fr:"Choisis « Installer l'application »",en:"Choose “Install app”",
+             es:"Elige «Instalar aplicación»",it:"Scegli «Installa app»",
+             de:"Wähle „App installieren“",ja:"「アプリをインストール」を選ぶ"})];
+    etapes.innerHTML = "";
+    for(var k=0;k<pas.length;k++){
+      var l = document.createElement("div"); l.className = "pEt";
+      var num = document.createElement("span"); num.className = "pNum"; num.textContent = (k+1);
+      var tx = document.createElement("span"); tx.textContent = pas[k];
+      l.appendChild(num); l.appendChild(tx); etapes.appendChild(l);
+    }
+    etapes.hidden = false;
+    action.hidden = true;
+
+  } else {
+    /* ---- état 2 : emporter le voyage ---- */
+    img.src = "hors-ligne.webp" + VER;
+    S("pocheKick").textContent = T6({fr:"Sans réseau",en:"Offline",es:"Sin conexión",
+      it:"Senza rete",de:"Ohne Netz",ja:"オフライン"});
+    S("pocheTitre").textContent = T6({fr:"Emporte le voyage",en:"Take the journey with you",
+      es:"Llévate el viaje",it:"Porta con te il viaggio",de:"Nimm die Reise mit",ja:"旅を持って行く"});
+    S("pochePhrase").textContent = T6({
+      fr:"Les villes descendent toutes seules pendant que tu lis. Tu peux aussi tout emporter maintenant, pour le vol de demain.",
+      en:"Cities download on their own while you read. You can also take everything now, for tomorrow's flight.",
+      es:"Las ciudades se descargan solas mientras lees. También puedes llevártelo todo ahora, para el vuelo de mañana.",
+      it:"Le città si scaricano da sole mentre leggi. Puoi anche portare tutto adesso, per il volo di domani.",
+      de:"Die Städte laden von selbst, während du liest. Du kannst auch jetzt alles mitnehmen, für den Flug morgen.",
+      ja:"読んでいる間に街が少しずつ保存されます。明日の便のために今すぐ全部持って行くこともできます。"});
+    etapes.hidden = true;
+    action.hidden = false;
+    action.textContent = T6({fr:"Emporter tout maintenant",en:"Take everything now",
+      es:"Llevarlo todo ahora",it:"Porta tutto adesso",de:"Jetzt alles mitnehmen",ja:"今すぐ全部保存"});
+    action.addEventListener("click", function(){
+      action.disabled = true;
+      S("pocheJauge").hidden = false;
+      /* discret = false : elle a appuyé, on passe outre le wifi */
+      emporterLeVoyage(false, function(f, t){
+        S("pocheJaugeIn").style.width = Math.round(f*100/t) + "%";
+        if(f >= t){
+          action.textContent = T6({fr:"Le voyage est à bord",en:"The journey is on board",
+            es:"El viaje está a bordo",it:"Il viaggio è a bordo",de:"Die Reise ist an Bord",
+            ja:"旅の準備ができました"});
+        }
+      });
+    });
+  }
+
+  boite.hidden = false;
+  S("pocheFermer").addEventListener("click", function(){
+    boite.hidden = true;
+    try{ localStorage.setItem(POCHE_CLE_FERME, "1"); }catch(e){}
+  });
+}
+
+/* 🟥 LE CHARGEMENT DISCRET TOURNE DANS TOUS LES CAS — carte vue, fermée
+   ou jamais affichée. Décision de Blandine : « dans tous les cas
+   téléchargement hors connexion derrière non ? ». On laisse d'abord la
+   première ville s'afficher : personne n'attend derrière un écran vide
+   pendant qu'on télécharge Tokyo. */
+setTimeout(function(){
+  try{
+    if(!pocheReseauLarge()) return;
+    emporterLeVoyage(true, null);
+  }catch(e){}
+}, 12000);
 
 /* ==================================================================
    ⚠️ LE CHEMIN DE NUIT EST COURT-CIRCUITE depuis le 7 aout 2026,
