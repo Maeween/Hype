@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19aj";
+var HYPE_STORIES_VERSION = "19ak";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -232,6 +232,69 @@ function hsCadreForme(props) {
    publiee utilise, puisque chaque photo d'une composition s'ouvre en plein
    ecran d'un toucher. Les cinq gardes de la 19h sont conservees telles
    quelles — sans elles, le toucher d'une photo FERME la story. */
+/* ---------------------------------------------------------------------------
+   19ak — LA PASTILLE CŒUR de la visionneuse.
+   OÙ ELLE VIT, ET POURQUOI LÀ (question de Blandine : « le cœur peut pas être
+   mis en dessous de ça, on a pas tout cassé ? » — si, et c'est la bonne
+   façon) : les deux zones transparentes qui font avancer et reculer la story
+   s'arrêtent à 74 px du bas (`bottom: 74`). Une pastille posée à 14 px du bas
+   est donc SOUS elles : elle répond au doigt sans qu'on touche à la
+   navigation. C'est exactement où vit déjà la pastille musique, à droite ;
+   le cœur prend la gauche.
+   ⚠️ NE PAS la remonter au-dessus de 74 px sans réduire les zones : elle
+   deviendrait un bouton « story suivante » déguisé.
+   Le compteur est optimiste — il bouge au doigt, la base suit ; si l'écriture
+   échoue, on relit et l'affichage se remet d'aplomb.
+--------------------------------------------------------------------------- */
+function CoeurStory(props) {
+  var h = React.createElement;
+  var M = "'Montserrat',sans-serif";
+  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
+  var tn = th.principal;
+  var etS = React.useState({ count: 0, jaiLike: false }), et = etS[0], setEt = etS[1];
+  var occupeRef = React.useRef(false);
+
+  function relire() {
+    if (!props.storyId) return;
+    hsChargerLikesStory(props.storyId).then(function (r) {
+      setEt({ count: (r && r.count) || 0, jaiLike: !!(r && r.jaiLike) });
+    }).catch(function () { setEt({ count: 0, jaiLike: false }); });
+  }
+  React.useEffect(function () { setEt({ count: 0, jaiLike: false }); relire(); }, [props.storyId]);
+
+  async function basculer() {
+    if (!props.storyId || occupeRef.current) return;
+    occupeRef.current = true;
+    var avant = et;
+    setEt({ count: Math.max(0, avant.count + (avant.jaiLike ? -1 : 1)), jaiLike: !avant.jaiLike });
+    var r = await hsBasculerLikeStory(props.storyId, avant.jaiLike);
+    occupeRef.current = false;
+    if (r && r.error) relire();
+  }
+
+  return h("button", {
+    onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); basculer(); },
+    /* Même règle que la pastille musique (13/08) : on arrête `touchstart`
+       pour que le glissé ne s'arme pas ici, mais JAMAIS `touchend` — sinon un
+       glissé parti de la photo et fini sur la pastille laisse la boîte
+       coincée en pleine transformation. */
+    onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+    "aria-label": hsT("jaime", props.langue || "fr"),
+    style: {
+      position: "absolute", left: 14, bottom: 14, zIndex: 10,
+      display: "flex", alignItems: "center", gap: 7, padding: "11px 16px",
+      borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12.5, fontWeight: 700,
+      border: "1px solid " + (et.jaiLike ? "rgba(240,92,116,0.85)" : "rgba(255,255,255,0.25)"),
+      background: et.jaiLike ? "rgba(240,92,116,0.16)" : "rgba(6,7,9,0.72)",
+      color: et.jaiLike ? "#F05C74" : "#DCE3E8",
+      boxShadow: et.jaiLike ? "0 0 18px rgba(240,92,116,0.3)" : "none",
+      transition: "background 160ms ease-out, border-color 160ms ease-out"
+    }
+  },
+    h("span", { style: { fontSize: 15, lineHeight: 1 } }, et.jaiLike ? "\u2665" : "\u2661"),
+    et.count > 0 ? h("span", null, String(et.count)) : null);
+}
+
 function hsBoutonForme(props) {
   var h = React.createElement;
   var rS = React.useState(null), r = rS[0], setR = rS[1];
@@ -870,6 +933,41 @@ async function hsSupprimerStory(id) {
   } catch (e) { return { error: String(e) }; }
 }
 
+/* ---------------------------------------------------------------------------
+   19ak (15/08, feu vert de Blandine) — LE CŒUR SUR UNE STORY
+   Table `hype_stories_likes` (SQL passé par Blandine le 15/08 à 10h38) :
+   `story_id` référence `hype_stories(id)` en CASCADE — quand une story
+   expire et disparaît, ses cœurs partent avec elle, aucun ménage à écrire.
+   La contrainte d'unicité (story_id, user_id) empêche le double comptage si
+   le doigt part deux fois.
+   DÉCISION DE BLANDINE : « tous c'est mieux » — le compteur est PUBLIC,
+   chacun voit combien de cœurs porte une story.
+   ⚠️ Le cœur ne porte JAMAIS sur une photo mais sur LA STORY : une
+   composition à cinq photos a un seul compteur, pas cinq.
+--------------------------------------------------------------------------- */
+async function hsChargerLikesStory(storyId) {
+  try {
+    if (typeof supa === "undefined" || !supa || !storyId) return { count: 0, jaiLike: false };
+    var user = await utilisateurActuel();
+    var r = await supa.from("hype_stories_likes").select("user_id").eq("story_id", storyId);
+    var lignes = (r && r.data) || [];
+    return {
+      count: lignes.length,
+      jaiLike: !!(user && lignes.some(function (l) { return l.user_id === user.id; })),
+      error: r && r.error
+    };
+  } catch (e) { return { count: 0, jaiLike: false, error: String(e) }; }
+}
+async function hsBasculerLikeStory(storyId, dejaLike) {
+  try {
+    if (typeof supa === "undefined" || !supa || !storyId) return { error: "indisponible" };
+    var user = await utilisateurActuel();
+    if (!user) return { error: "Pas connecté" };
+    if (dejaLike) return await supa.from("hype_stories_likes").delete().eq("story_id", storyId).eq("user_id", user.id);
+    return await supa.from("hype_stories_likes").insert({ story_id: storyId, user_id: user.id });
+  } catch (e) { return { error: String(e) }; }
+}
+
 async function hsSignalerStory(id, motif) {
   try {
     if (typeof supa === "undefined" || !supa) return { error: "indisponible" };
@@ -1346,6 +1444,8 @@ var HS_TXT = {
   enregistrer: { fr: "Enregistrer", en: "Save", es: "Guardar", it: "Salva", ja: "\u4fdd\u5b58", de: "Speichern" },
   modifiee: { fr: "Story modifi\u00e9e.", en: "Story updated.", es: "Story modificada.", it: "Story modificata.", ja: "\u30b9\u30c8\u30fc\u30ea\u30fc\u3092\u66f4\u65b0\u3057\u307e\u3057\u305f\u3002", de: "Story aktualisiert." },
   voirPlus: { fr: "voir plus", en: "see more", es: "ver m\u00e1s", it: "mostra pi\u00f9", ja: "\u3082\u3063\u3068\u898b\u308b", de: "mehr anzeigen" },
+  /* 19ak : libelle du coeur — sert d'aria-label, jamais affiche en toutes lettres. */
+  jaime: { fr: "J'aime", en: "Like", es: "Me gusta", it: "Mi piace", ja: "\u3044\u3044\u306d", de: "Gef\u00e4llt mir" },
   voirMoins: { fr: "voir moins", en: "see less", es: "ver menos", it: "mostra meno", ja: "\u9589\u3058\u308b", de: "weniger anzeigen" },
   photoIndispo: { fr: "Photo indisponible", en: "Photo unavailable", es: "Foto no disponible", it: "Foto non disponibile", ja: "写真を読み込めません", de: "Foto nicht verfügbar" },
   maintenant: { fr: "\u00e0 l'instant", en: "just now", es: "ahora mismo", it: "adesso", ja: "たった今", de: "gerade eben" },
@@ -4511,6 +4611,13 @@ function VisionneuseStories(props) {
             : ((typeof PhotoZoomHype === "function" && chargee && !erreur && !enVeille)
               ? h(PhotoZoomHype, { src: hsImageEcran(story.photo_url) })
               : null)),
+        /* 19ak (feu vert de Blandine) : LE CŒUR, en bas à gauche, sous les
+           zones de navigation qui s'arrêtent à 74 px du bas. `key` sur
+           l'identifiant : changer de story remonte la pastille, donc son
+           compteur repart de la bonne story et jamais de la précédente. */
+        (story && story.id)
+          ? h(CoeurStory, { key: "cr" + story.id, storyId: story.id, langue: lg })
+          : null,
         /* La pastille son : n'apparaît que si la story porte une musique.
            JAMAIS d'autoplay (règle iOS) : c'est elle qu'on touche pour lancer
            la boucle, la retoucher coupe. Elle respire quand le son joue. */

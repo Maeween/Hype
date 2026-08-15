@@ -8084,3 +8084,53 @@ Le débordement de ce matin est un cas d'école de ce que la migration supprime 
 Le SQL de cette session relève d'un autre chantier : **la frontière Données**. Trois tables dormaient sans que rien ne le signale, parce que chaque appel se rattrapait en silence dans son `try/catch`. Un Repository nommé aurait rendu l'absence visible au premier appel.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19aj** · modèles 28.
+
+---
+
+## Session 153 — 15/08/2026 · stories **19ak** · le cœur sur les stories
+
+### 🗄️ Les tables, passées par Blandine
+
+Trois tables créées et vérifiées (« 3 rows » sur la requête de contrôle) : `photo_likes`, `photo_comments`, `signalements_commentaires_photos`. Les cœurs et commentaires des photos d'album n'attendaient que ça — **aucune ligne de code à livrer de ce côté**, tout était déjà écrit.
+
+Puis `hype_stories_likes`, passée à 10h38. Le SQL détecte lui-même le type de `hype_stories.id` pour poser la clé étrangère. `on delete cascade` : quand une story expire et disparaît, ses cœurs partent avec elle — pas de code de ménage.
+
+**🟥 Correction d'une erreur de Claude.** J'ai affirmé à Blandine que `malicia2008@hotmail.fr`, seconde adresse de `HYPE_MODERATEURS`, était celle de Mégane. C'était une déduction, présentée comme un fait, et elle était fausse — c'est la seconde adresse de Blandine. Mégane est ambassadrice (`rizeamegane@gmail.com`), pas modératrice. Les politiques SQL sont donc correctes en l'état : seule Blandine peut supprimer un commentaire qui n'est pas le sien.
+
+### ❤️ Le cœur
+
+**Décisions de Blandine** : compteur *« tous c'est mieux »* — public, chacun voit le nombre. Et sur l'emplacement, ses mots : *« le cœur peut pas être mis en dessous de ça on a pas tout casser ? »* — si, et c'est la bonne façon.
+
+Les deux zones transparentes qui font avancer et reculer une story s'arrêtent à **74 px du bas**. Une pastille posée à 14 px du bas est donc **sous** elles : elle répond au doigt sans qu'on touche à la navigation. C'est exactement où vit déjà la pastille musique, à droite ; le cœur prend la gauche. Aucune zone modifiée, aucun risque sur ce qui marchait.
+
+⚠️ **Ne jamais remonter cette pastille au-dessus de 74 px** sans réduire les zones : elle deviendrait un bouton « story suivante » déguisé.
+
+Ajouts : `hsChargerLikesStory` / `hsBasculerLikeStory`, composant `CoeurStory` (compteur optimiste — il bouge au doigt, la base suit ; si l'écriture échoue, on relit et l'affichage se remet d'aplomb), libellé `jaime` en 6 langues (aria-label seulement, jamais écrit en toutes lettres). `key` sur l'identifiant de la story : changer de story remonte la pastille, le compteur ne peut pas rester sur la précédente.
+
+Le cœur porte sur **la story**, jamais sur une photo : une composition à cinq photos a un seul compteur.
+
+### 🖥️ À l'écran : + / −
+
+**+** Une pastille cœur en bas à gauche de chaque story, avec son compteur dès le premier j'aime.
+**+** (après le SQL, déjà passé) Le cœur et les commentaires fonctionnent sur les photos d'album.
+**−** Rien ne disparaît. Aucune zone de navigation touchée.
+
+### Contrôles
+
+`node --check` sur `hype-stories.js` : passé. Vérifiés à la main : accord `19ak` entre le module et le cache-buster de `index.html`, pastille sous la limite des 74 px, `touchend` volontairement NON stoppé (règle du 13/08), `key` présente. **Non vérifié** : le comportement réel du cœur en base — Blandine seule peut tester.
+
+### 📋 Reste ouvert
+
+- **Le tap sur une photo de composition fait avancer la story.** Défaut au *milieu* de l'écran, indépendant du cœur, non tranché. Deux sorties présentées : (a) les éléments tactiles passent devant, on avance en tapant à côté ; (b) les zones se réduisent à deux bandes sur les bords.
+- **Les commentaires de stories** : chantier séparé, c'est la modération qui coûte, pas le stockage.
+- **La durée au choix (7 jours / un mois)** : principe validé, `expire_le` existe déjà. Restent l'emplacement du compteur discret, son libellé, et si le mois est Premium.
+- **Le partage externe** avec miniature : fonction Netlify servant les `og:`. Repli tranché (souvenir s'il existe, sinon invitation à rejoindre Hype). **Non tranché** : une story partagée devient publique alors qu'elle est aujourd'hui réservée aux cavaliers.
+- **Inchangé** : vignettes des modèles, photos de profil, notifications, carte Communauté, accès Communauté, flou du décor plein écran, allègement de `index.html`.
+
+### Préparation Flutter
+
+Le cœur est le premier objet de ce module à avoir sa donnée dans une table dédiée, son composant isolé et ses deux seules fonctions d'accès — c'est la forme que doit prendre chaque brique : `CoeurStory` ne sait rien de la visionneuse, la visionneuse ne sait rien de Supabase. À reprendre tel quel comme gabarit de Repository.
+
+L'affaire des trois tables absentes confirme le besoin : elles dormaient depuis des mois sans que rien ne le signale, chaque appel se rattrapant en silence dans son `try/catch`. Un Repository nommé aurait fait remonter l'absence au premier appel au lieu d'un cœur qui ne s'allume pas.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ak** · modèles 28.
