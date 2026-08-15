@@ -7679,3 +7679,44 @@ Pas de rendu Playwright : le domaine refuse l'accès automatisé, seule Blandine
 `EditeurDecorHype` est écrit sur exactement la contrainte que Flutter impose : **aucune reconstruction pendant le geste**. Là où React tolère les mauvaises habitudes jusqu'à ce que la mémoire cède, Flutter reconstruit l'arbre à chaque `setState` sans discussion. Le composant se transposera presque tel quel en `GestureDetector` + `Transform`, et la séparation déjà faite — géométrie pure dans `hsPertePhoto` / `hsAccordModele`, geste dans le composant, découpe dans `hsRecadrerFichier` — est la frontière métier que la migration demandait.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ac** · modèles 28.
+
+---
+
+## Session 144b — 15/08/2026 · 🟥 INCIDENT : quatre livraisons jamais arrivées sur le téléphone
+
+### Ce que montre l'enregistrement de 06h52
+
+Blandine a filmé son écran. Quatre photos choisies, et la bande **Présentation** affiche des décors portant les pastilles **4 · 1 · 1 · 1**. L'enregistrement se termine sur un **écran blanc** — l'application est morte une fois de plus.
+
+**C'est impossible en 19ab.** Le filtre écrit en 19ab ne laisse passer que les décors ayant exactement le nombre de fenêtres voulu : avec quatre photos, aucun décor à une seule fenêtre ne peut apparaître. Un tap sur un décor n'ouvrait pas non plus l'écran plein format de la 19ac.
+
+Conclusion : **le téléphone n'exécutait pas le code livré.**
+
+### 🟥 La cause, et c'est une faute de Claude
+
+`index.html` appelle le module ainsi :
+
+    <script src="hype-stories.js?v=19x">
+
+Le numéro de version dans l'adresse — le seul élément qui force Safari à retélécharger le fichier — **était resté figé sur `19x`**. Il n'a été incrémenté ni en **19y**, ni en **19z**, ni en **19aa**, ni en **19ab**, ni en **19ac**.
+
+Blandine a donc poussé cinq versions successives et testé **cinq fois le même fichier, celui de la 19x**. Safari servait sa copie en cache, exactement comme prévu. Tout ce qu'elle a signalé depuis — le curseur qui fait tout planter, les décors au mauvais nombre, l'aperçu bloqué à cinq photos, l'écran plein format absent — décrivait fidèlement **la 19x**, pas ce qui lui était livré.
+
+Ses phrases prennent tout leur sens rétrospectivement : *« ça devait déjà avoir été codé ça non ? »*, *« je vois rien de tout ça non plus »*. Elle avait raison à chaque fois. Le code existait ; il n'arrivait pas jusqu'à elle.
+
+Corrigé : `hype-stories.js?v=19ac`.
+
+### Ce qu'il faut en retenir
+
+⚠️ **Le témoin de version affiché dans l'application ne suffit pas à prouver qu'une livraison est arrivée** — encore faut-il le lire, et il n'a pas été demandé avec assez d'insistance. Il avait été demandé deux fois dans la nuit, sans réponse, et le travail a continué sans cette vérification. C'était une erreur : diagnostiquer un module dont on n'a pas confirmé la version en ligne revient à commenter un fichier qu'on n'a pas ouvert.
+
+**Assertions posées :**
+1. **Toute livraison d'un fichier compagnon impose la mise à jour de son `?v=` dans `index.html`**, et `index.html` part alors dans la livraison. Un module livré sans son cache-buster n'est pas livré.
+2. **Avant tout diagnostic**, exiger le témoin de version. Sans témoin confirmé, ne pas qualifier un comportement observé.
+3. Les cache-busters actuels, à vérifier à chaque fois : `hype-cours-baby.js?v=112` · `hype-memory-poney.js?v=4` · `hype-modeles-db.js?v=5` · `hype-stories.js?v=19ac`.
+
+### 🖥️ À l'écran : + / −
+
+Aucun changement de code applicatif dans cet incident. En revanche, **tout ce qui a été annoncé aux sessions 141 à 144 va apparaître d'un coup** au premier chargement réel : disparition du curseur, filtre des décors sur le nombre, aperçu qui suit enfin les photos retirées, classement des décors par forme, et l'écran plein format à l'ouverture d'un décor.
+
+**Témoin attendu** : reprise 1.8 · baby 112 · memo 4 · **stories 19ac** · modèles 28.
