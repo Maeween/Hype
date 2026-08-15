@@ -951,9 +951,18 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   background:linear-gradient(150deg,rgba(32,217,245,.10),rgba(17,20,23,.88));
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+/* ⚠️ LE REFLET S'ARRÊTE APRÈS 3 PASSAGES — correctif du 15/08, session
+   214, après le lag signalé par Blandine (« ça revient mais ça lag très
+   fort »). Une animation INFINIE re-rasterise une couche composite en
+   permanence ; avec `backdrop-filter` par-dessus, c'est exactement le
+   mal documenté par le SUIVI pour le crash de lingo.html (31 couches,
+   130 Mo de bitmaps). Trois passages suffisent à attirer l'œil.
+   ⚠️ NE PAS remettre `infinite`. Et `.charge` coupe tout pendant le
+   téléchargement, quand le téléphone a besoin de toutes ses forces. */
 #ouvPoche::after{content:"";position:absolute;inset:0 auto 0 0;width:46%;pointer-events:none;
   background:linear-gradient(105deg,transparent 0%,rgba(255,255,255,.12) 48%,transparent 100%);
-  animation:pocheReflet 6.5s ease-in-out infinite}
+  animation:pocheReflet 6.5s ease-in-out 3;animation-fill-mode:forwards}
+#ouvPoche.charge::after{animation:none;opacity:0}
 @keyframes pocheReflet{0%{transform:translateX(-180%) skewX(-18deg)}42%,100%{transform:translateX(320%) skewX(-18deg)}}
 #pocheFermer{position:absolute;top:8px;right:8px;z-index:3;width:30px;height:30px;
   border:0;border-radius:50%;background:rgba(6,7,9,.55);color:var(--blanc);
@@ -2359,8 +2368,24 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <span class="oBande"></span>
     </div>
 
+    </div>
+
+    <div class="carnet" id="carnet"></div>
+
+    <div class="regles">
+      <p data-th="regle1"><b>Tu choisis ta prochaine étape.</b> Sur le globe, ou parmi celles que la ville que tu quittes te fait au doigt, d'une ville
+      à la suivante.</p>
+      <p data-th="regle2"><b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale
+      à retourner, un souvenir, et une étoile de plus dans ton ciel.</p>
+      <p data-th="regle3"><b>Les mots de l'urgence sont offerts</b> — savoir dire « il boite » ou « appelez le
+      vétérinaire » à l'étranger ne se monnaie pas.</p>
+    </div>
+
     <!-- ==================================================================
          LA CARTE HORS LIGNE — 15/08/2026, session 214.
+         ⚠️ PLACÉE EN BAS DE L'OUVERTURE, sous les règles et juste avant
+         « Partir » — corrigé le 15/08 : elle était au-dessus du carnet,
+         Blandine la voulait « sur la page d'avant en bas ».
          Demande de Blandine : « on peut mettre un encart sur la première
          page après la vidéo proposant de télécharger l'appli afin de
          pouvoir en profiter hors connexion ».
@@ -2400,18 +2425,6 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
         <button id="pocheAction" type="button" hidden></button>
         <div id="pocheJauge" hidden><span id="pocheJaugeIn"></span></div>
       </div>
-    </div>
-
-    <div class="carnet" id="carnet"></div>
-
-    <div class="regles">
-      <p data-th="regle1"><b>Tu choisis ta prochaine étape.</b> Sur le globe, ou parmi celles que la ville que tu quittes te fait au doigt, d'une ville
-      à la suivante.</p>
-      <p data-th="regle2"><b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale
-      à retourner, un souvenir, et une étoile de plus dans ton ciel.</p>
-      <p data-th="regle3"><b>Les mots de l'urgence sont offerts</b> — savoir dire « il boite » ou « appelez le
-      vétérinaire » à l'étranger ne se monnaie pas.</p>
-    </div>
 
     <button id="ouvPartir" data-t="partir">Partir</button>
     <!-- v66 : LA LIGNE D'ACCÈS AU COMPTE, premier des deux endroits décidés
@@ -2653,9 +2666,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-ecurie.js?l=2"></script>
 <script src="hype-lingo-lex-pansage.js?l=3"></script>
 <script src="hype-lingo-lex-cheval.js?l=4"></script>
-<script src="hype-lingo-lex-materiel.js?l=3"></script>
-<script src="hype-lingo-lex-cours.js?l=2"></script>
-<script src="hype-lingo-lex-dressage.js?l=3"></script>
+<script src="hype-lingo-lex-materiel.js?l=4"></script>
+<script src="hype-lingo-lex-cours.js?l=3"></script>
+<script src="hype-lingo-lex-dressage.js?l=4"></script>
 <!-- ⚠️ ?l=4 : definition du vertical corrigee le 11/08 (erreur de fond
      relevee par Blandine : on S'ELOIGNE d'un vertical, on ne s'en
      rapproche pas — c'est a l'oxer qu'on vient plus pres). -->
@@ -10748,31 +10761,52 @@ async function pocheCompte(){
   }catch(e){ return null; }
 }
 
-/* le téléchargement lui-même. `discret` = on s'arrête si le réseau
-   se dégrade ; sinon on va au bout (bouton pressé par Blandine). */
+/* 🟥 LE BOUTON A FIGÉ L'APP LE 15/08 — INCIDENT, ET CE QUI L'A CAUSÉ.
+   Blandine : « j'ai eu le malheur de cliquer dessus tout est parti en
+   cacahuète », « figée, toutes les images ont sauté », puis « ça
+   revient mais ça lag très fort ».
+   LA FAUTE : la pause de 400 ms n'existait QU'EN MODE DISCRET. Au
+   bouton, 31 villes × 3 images partaient à la file — 93 téléchargements
+   sans respiration, le fil principal étranglé, l'affichage qui lâche.
+   Et le fil continuait de tourner après avoir quitté l'écran, d'où le
+   lag persistant.
+   CE QUI EST FAIT MAINTENANT, dans les DEUX modes :
+   · une IMAGE à la fois, jamais trois d'un coup ;
+   · une pause après CHAQUE image (courte au bouton, longue en discret) ;
+   · un compteur visible « ville 4 sur 31 » — une barre muette ne dit
+     pas si ça travaille ;
+   · un bouton ARRÊTER, parce qu'on doit pouvoir sortir ;
+   · `pocheStop` coupe la boucle proprement.
+   ⚠️ NE JAMAIS retirer la pause « parce qu'elle a choisi ». C'est
+   exactement le raisonnement qui a causé l'incident. */
+var pocheStop = false;
+
 async function emporterLeVoyage(discret, surAvance){
   if(pocheEnCours) return;
   if(!window.caches) return;
-  pocheEnCours = true;
+  pocheEnCours = true; pocheStop = false;
+  var repos = discret ? 400 : 120;   /* jamais zéro, dans aucun mode */
   try{
     var c = await caches.open("linguae-v1"), faites = 0;
     for(var i=0;i<ETAPES.length;i++){
+      if(pocheStop) break;
       if(discret && !pocheReseauLarge()) break;
       if(!navigator.onLine) break;
       var ref = ETAPES[i].ref, adr = pocheAdressesVille(ref);
       var dejaLa = await c.match(adr[0]);
       if(!dejaLa){
         for(var j=0;j<adr.length;j++){
+          if(pocheStop) break;
           try{
             var rep = await fetch(adr[j], {cache:"no-cache"});
             if(rep && rep.ok) await c.put(adr[j], rep.clone());
           }catch(eF){ /* image absente du dépôt : on continue */ }
+          /* 🟥 respiration APRÈS CHAQUE IMAGE, pas après chaque ville */
+          await new Promise(function(r){ setTimeout(r, repos); });
         }
       }
       faites++;
       if(surAvance) try{ surAvance(faites, ETAPES.length); }catch(eA){}
-      /* on laisse respirer : le fil principal doit rester fluide */
-      if(discret) await new Promise(function(r){ setTimeout(r, 400); });
     }
   }catch(e){}
   pocheEnCours = false;
@@ -10857,15 +10891,32 @@ async function cartePocheMaj(){
     action.textContent = T6({fr:"Emporter tout maintenant",en:"Take everything now",
       es:"Llevarlo todo ahora",it:"Porta tutto adesso",de:"Jetzt alles mitnehmen",ja:"今すぐ全部保存"});
     action.addEventListener("click", function(){
-      action.disabled = true;
+      /* 🟥 deuxième appui = ARRÊTER. Il faut pouvoir sortir. */
+      if(pocheEnCours){
+        pocheStop = true;
+        action.textContent = T6({fr:"Arrêté",en:"Stopped",es:"Detenido",
+          it:"Fermato",de:"Angehalten",ja:"停止しました"});
+        boite.classList.remove("charge");
+        return;
+      }
+      boite.classList.add("charge");          /* coupe le reflet pendant l'effort */
       S("pocheJauge").hidden = false;
-      /* discret = false : elle a appuyé, on passe outre le wifi */
+      action.textContent = T6({fr:"Arrêter",en:"Stop",es:"Detener",
+        it:"Ferma",de:"Anhalten",ja:"停止"});
+      /* discret = false : elle a appuyé, on va plus vite — mais on
+         respire quand même entre chaque image (voir emporterLeVoyage) */
       emporterLeVoyage(false, function(f, t){
         S("pocheJaugeIn").style.width = Math.round(f*100/t) + "%";
+        /* 🟥 un compteur, pas une barre muette : on doit VOIR que ça
+           travaille. C'est ce qui manquait le 15/08. */
+        S("pochePhrase").textContent = T6({fr:"Ville ",en:"City ",es:"Ciudad ",
+          it:"Città ",de:"Stadt ",ja:"街 "}) + f + " / " + t;
         if(f >= t){
+          boite.classList.remove("charge");
           action.textContent = T6({fr:"Le voyage est à bord",en:"The journey is on board",
             es:"El viaje está a bordo",it:"Il viaggio è a bordo",de:"Die Reise ist an Bord",
             ja:"旅の準備ができました"});
+          action.disabled = true;
         }
       });
     });
