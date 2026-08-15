@@ -251,47 +251,49 @@ window.HYPE_LINGO_LEX.balade = {
   ],
 
   /* ==================================================================
-     LE DIALOGUE DU MORNE — 13 août 2026, session 210.
+     LE DIALOGUE DU MORNE — réécrit le 15 août 2026, session 211.
 
-     🟥 CLÉ INERTE. Aucun code ne la lit : le mode dialogue n'existe pas
-     encore. La poser ne change RIEN à l'écran.
+     🟥 PREMIÈRE VERSION RÉELLEMENT LUE ET VALIDÉE PAR BLANDINE. La
+     version du 13/08 (21 phrases) n'avait jamais été relue par elle :
+     « Je les avais pas encore lues elles sont nulles ». Sa consigne de
+     réécriture : « On s'en fout de la crème solaire etc on doit
+     apprendre les termes équestres !! ». 23 phrases, 7 temps.
 
-     🟥 LA RÈGLE DE LA SESSION 209 EST ABROGÉE. Elle disait « un dialogue
-     n'emploie que les mots de son chapitre » et le SUIVI l'appelait « la
-     règle qui commande tout ». Blandine l'a remplacée le 13/08 :
-     « on s'en fout du lexique, l'idée c'est d'être capable de se
-     débrouiller dans les conditions données et si c'est des nouveaux mots
-     bah tant mieux » · « on pourra pas tout couvrir avec 12 mots ».
-     Le lexique sert le dialogue, pas l'inverse. Un mot neuf dans une
-     phrase est un bonus, pas une dette : il s'apprend en situation, avec
-     l'audio de la phrase, sans avoir besoin d'entrée de lexique.
+     RETIRÉES (7) : savoir nager ×2, crème solaire, maillot de bain,
+     « la baignade est comprise », « passe-t-on sur le sable » (devenue
+     « trotte-t-on »), le doublon du galop doux.
+     AJOUTÉES (9) : nager avec les chevaux, licol/filet, resangler,
+     étriers, enlever la selle, file indienne + distances, galoper
+     rapidement, crinière/rênes, desseller/doucher.
 
-     🟥 CONSÉQUENCE, et c'est celle qui compte : ON NE RETIRE JAMAIS UNE
-     PHRASE DE BLANDINE parce qu'un mot manque au lexique. Claude l'a
-     fait TROIS fois dans cette session — « et pour les cavaliers
-     confirmés ? », « galoper dans l'eau », « un cheval très calme » —
-     et elle a dû le corriger chaque fois : « je sais pas pourquoi tu
-     retires de toi-même des trucs qu'on a insérés ensemble ». Les trois
-     sont revenues.
+     ⚠️ 9 PHRASES SONT EN FRANÇAIS SEUL : les nouvelles n'ont pas encore
+     leur anglais — il sera proposé à Blandine séparément, pour relecture,
+     avant es/it/de/ja. Mieux vaut une absence qu'une erreur.
 
-     `mots` = refs du chapitre · `motsAilleurs` = refs qui appartiennent
-     à un autre chapitre, employées quand même. Informatif, pas une
-     limite.
+     ⚠️ « resangler » : le mot d'écurie, exigé par Blandine à la place de
+     « resserrer la sangle ». ⚠️ « Je ne suis JAMAIS MONTÉE à cru » :
+     auxiliaire être + accord, corrigé par Blandine (l'ancien fichier
+     portait « j'ai jamais monté »).
 
-     ÉTAT : français et anglais seulement, décision de Blandine
-     (« on avait dit qu'on mettait déjà que l'anglais en ligne pour
-     tester ajuster avant de traduire le reste »). Manquent es, it, de,
-     ja + tout l'audio.
+     🟥 ON NE RETIRE JAMAIS UNE PHRASE DE BLANDINE (règle de la session
+     210, toujours en vigueur). Ses phrases ici : cheval très calme,
+     galoper doucement (longue), galoper dans l'eau, l'ombre.
 
-     AUCUN « mot du guide » ici : son écriture ne relève pas de cette
-     conversation (PASSATION §6). Règle de ton posée par Blandine : on ne
-     fait pas de déclarations sur la bienséance, on fait rêver et
-     apprendre.
+     🟥 L'OPPOSITION canter/gallop du temps 4 est désormais VÉCUE : une
+     phrase demande le galop lent, une le galop rapide. En anglais
+     l'une donnera « canter », l'autre « gallop » — c'est le seul
+     endroit où « gallop » a le droit d'apparaître. NE PAS « CORRIGER ».
+
+     `mots` = refs du chapitre · `motsAilleurs` = refs d'un autre
+     chapitre. Les mots neufs sans entrée de lexique (licol, filet,
+     sangle, étriers, selle, file indienne, crinière, rênes, desseller,
+     doucher) sont un bonus, pas une dette — règle du 13/08.
 
      `dit` : "joueuse" = elle produit · "club" = elle entend et comprend.
+     5 entendues, 18 produites.
   ================================================================== */
   dialogue: {
-    ville: "maurice", lecon: 1, temps: 7, langues: ["fr","en"],   /* 21 phrases */
+    ville: "maurice", lecon: 1, temps: 7, langues: ["fr","en","es","it","de","ja"],   /* 23 phrases */
 
     phrases: [
 
@@ -299,90 +301,193 @@ window.HYPE_LINGO_LEX.balade = {
       { ref:"d-balade-lagon", temps:1, dit:"joueuse", mots:["balade","lagon"],
         fr:"Je voudrais réserver une balade dans le lagon.",
         en:"I'd like to book a hack in the lagoon.",
-        varEn:"I'd like to book a trail ride in the lagoon." },
+        varEn:"I'd like to book a trail ride in the lagoon.",
+        es:"Quisiera reservar un paseo por la laguna.",
+        it:"Vorrei prenotare una passeggiata nella laguna.",
+        de:"Ich möchte einen Ausritt in der Lagune buchen.",
+        ja:"ラグーン の 外乗 を 予約 し たい です。" },
 
       { ref:"d-un-guide", temps:1, dit:"joueuse", mots:["guide"],
         fr:"Est-ce qu'il y a un guide ?",
-        en:"Is there a guide?" },
+        en:"Is there a guide?",
+        es:"¿Hay un guía?",
+        it:"C'è una guida?",
+        de:"Gibt es einen Führer?",
+        ja:"ガイド は い ます か ?" },
 
-      { ref:"d-baignade-comprise", temps:1, dit:"joueuse", mots:["baignade"],
-        fr:"Est-ce que la baignade est comprise ?",
-        en:"Is the swim included?" },
+      /* Phrase de Blandine, 15/08 : « est-ce qu'il est possible de nager
+         avec les chevaux ? » — remplace « la baignade est comprise »,
+         qui parlait d'organisation ; celle-ci parle de ce qu'on va vivre.
+         EN à venir. */
+      { ref:"d-nager-chevaux", temps:1, dit:"joueuse", mots:["nager","baignade"],
+        fr:"Est-ce qu'il est possible de nager avec les chevaux ?",
+        en:"Is it possible to swim with the horses?",
+        es:"¿Es posible nadar con los caballos?",
+        it:"È possibile nuotare con i cavalli?",
+        de:"Kann man mit den Pferden schwimmen?",
+        ja:"馬 と 一緒 に 泳ぐ こと は でき ます か ?" },
 
       { ref:"d-q-baignade-confirmes", temps:1, dit:"club", mots:["baignade","cavalier-confirme"],
         fr:"La baignade est réservée aux cavaliers confirmés.",
-        en:"The swim is for experienced riders only." },
+        en:"The swim is for experienced riders only.",
+        es:"El baño es solo para jinetes experimentados.",
+        it:"Il bagno è riservato ai cavalieri esperti.",
+        de:"Das Baden ist erfahrenen Reitern vorbehalten.",
+        ja:"水浴 は 経験者 だけ です。" },
 
-      /* ---- temps 2 · je dis où j'en suis ---- */
-      { ref:"d-pas-confirmee", temps:2, dit:"joueuse", mots:["cavalier-confirme"],
-        fr:"Je ne suis pas une cavalière confirmée.",
-        en:"I'm not an experienced rider." },
-
-      { ref:"d-sais-nager", temps:2, dit:"joueuse", mots:["nager"],
-        fr:"Oui, je sais nager.",
-        en:"Yes, I can swim." },
-
-      { ref:"d-q-savez-nager", temps:2, dit:"club", mots:["nager"],
-        fr:"Vous savez nager ?",
-        en:"Can you swim?" },
-
-      /* Phrase de Blandine, remise après avoir été retirée à tort.
-         `cheval-calme` appartient au chapitre d'arrivée — et alors. */
-      { ref:"d-cheval-tres-calme", temps:2, dit:"joueuse", mots:[], motsAilleurs:["cheval-calme"],
+      /* Phrase de Blandine (session 210). Remontée du temps 2 au temps 1 :
+         c'est une demande de réservation. `cheval-calme` appartient au
+         chapitre d'arrivée — et alors. */
+      { ref:"d-cheval-tres-calme", temps:1, dit:"joueuse", mots:[], motsAilleurs:["cheval-calme"],
         fr:"Est-ce que vous avez un cheval très calme ?",
-        en:"Have you got a very quiet horse?" },
+        en:"Have you got a very quiet horse?",
+        es:"¿Tienen un caballo muy tranquilo?",
+        it:"Avete un cavallo molto tranquillo?",
+        de:"Haben Sie ein ganz braves Pferd?",
+        ja:"とても おとなしい 馬 は い ます か ?" },
+
+      /* ---- temps 2 · l'équipement du bord de mer ---- */
+      { ref:"d-licol-filet", temps:2, dit:"joueuse", mots:[],
+        fr:"Est-ce qu'on monte en licol ou avec un filet ?",
+        en:"Do we ride in a headcollar or a bridle?",
+        varEn:"Do we ride in a halter or a bridle?",
+        es:"¿Montamos con cabezada o con brida?",
+        it:"Montiamo con la capezza o con la briglia?",
+        de:"Reiten wir mit Halfter oder mit Trense?",
+        ja:"無口 で 乗り ます か、 頭絡 で 乗り ます か ?" },
+
+      /* « resangler » : le mot d'écurie, demandé par Blandine. Et c'est
+         un vrai geste du bord de mer : une sangle mouillée se détend. */
+      { ref:"d-resangler", temps:2, dit:"joueuse", mots:[],
+        fr:"Est-ce qu'il faut resangler avant d'entrer dans l'eau ?",
+        en:"Do we need to tighten the girth before going into the water?",
+        es:"¿Hay que apretar la cincha antes de entrar en el agua?",
+        it:"Bisogna stringere il sottopancia prima di entrare in acqua?",
+        de:"Muss man vor dem Wasser nachgurten?",
+        ja:"水 に 入る 前 に 腹帯 を 締め 直し ます か ?" },
+
+      { ref:"d-q-etriers", temps:2, dit:"club", mots:["baignade"],
+        fr:"Raccourcissez vos étriers pour la baignade.",
+        en:"Shorten your stirrups for the swim.",
+        es:"Acorten los estribos para el baño.",
+        it:"Accorciate le staffe per il bagno.",
+        de:"Schnallen Sie die Steigbügel fürs Baden kürzer.",
+        ja:"水浴 の 前 に 鐙 を 短く し て ください。" },
+
+      { ref:"d-enlever-selle", temps:2, dit:"joueuse", mots:["baignade"],
+        fr:"Est-ce qu'on enlève la selle pour la baignade ?",
+        en:"Do we take the saddle off for the swim?",
+        es:"¿Quitamos la silla para el baño?",
+        it:"Togliamo la sella per il bagno?",
+        de:"Nehmen wir den Sattel fürs Baden ab?",
+        ja:"水浴 の とき は 鞍 を 外し ます か ?" },
 
       /* ---- temps 3 · la marée et le sable ---- */
       { ref:"d-quelle-maree", temps:3, dit:"joueuse", mots:["maree"],
         fr:"On part à quelle marée ?",
-        en:"What tide do we leave at?" },
+        en:"What tide do we leave at?",
+        es:"¿Con qué marea salimos?",
+        it:"Con quale marea partiamo?",
+        de:"Bei welcher Tide reiten wir los?",
+        ja:"どの 潮 で 出発 し ます か ?" },
 
-      { ref:"d-sable-mouille", temps:3, dit:"joueuse", mots:["sable-mouille"],
-        fr:"Est-ce qu'on passe sur le sable mouillé ?",
-        en:"Do we ride on the wet sand?" },
+      /* « trotte » remplace « passe » : une allure de plus dans le
+         dialogue. EN à venir. */
+      { ref:"d-trotter-sable", temps:3, dit:"joueuse", mots:["sable-mouille"],
+        fr:"Est-ce qu'on trotte sur le sable mouillé ?",
+        en:"Do we trot on the wet sand?",
+        es:"¿Trotamos por la arena mojada?",
+        it:"Trottiamo sulla sabbia bagnata?",
+        de:"Traben wir auf dem nassen Sand?",
+        ja:"濡れた 砂 の 上 を 速歩 で 行き ます か ?" },
 
       { ref:"d-q-maree-basse", temps:3, dit:"club", mots:["maree","sable-mouille"],
         fr:"À marée basse, on passe sur le sable mouillé.",
-        en:"At low tide we ride on the wet sand." },
+        en:"At low tide we ride on the wet sand.",
+        es:"Con marea baja pasamos por la arena mojada.",
+        it:"Con la bassa marea passiamo sulla sabbia bagnata.",
+        de:"Bei Niedrigwasser reiten wir über den nassen Sand.",
+        ja:"引き潮 の とき は 濡れた 砂 の 上 を 通り ます。" },
 
-      /* ---- temps 4 · l'allure, et le faux ami expliqué par l'eau ---- */
-      /* 🟥 LES DEUX FORMULATIONS SONT GARDÉES, décision de Blandine
-         (« tu peux les garder toutes les deux ? »). La première est la
-         sienne : elle DIT POURQUOI, et c'est ce qui fait comprendre la
-         différence entre les deux mots au lieu de la faire retenir. La
-         seconde est plus courte, donc plus facile à prononcer.
-         ⚠️ « gallop » apparaît ici volontairement, MIS EN OPPOSITION à
-         « canter » et jamais comme son synonyme. NE PAS « CORRIGER »
-         ces phrases en le retirant — voir le `def` de `galop` dans
-         hype-lingo-lex-arrivee.js. */
+      { ref:"d-q-file-indienne", temps:3, dit:"club", mots:[],
+        fr:"Restez en file indienne et gardez vos distances.",
+        en:"Stay in single file and keep your distance.",
+        es:"Quédense en fila india y guarden las distancias.",
+        it:"Restate in fila indiana e mantenete le distanze.",
+        de:"Bleiben Sie hintereinander und halten Sie Abstand.",
+        ja:"一列 に なっ て、 前 の 馬 と 距離 を 取っ て ください。" },
+
+      /* ---- temps 4 · l'allure, et le faux ami vécu des deux côtés ---- */
+      /* 🟥 Phrase de Blandine : elle DIT POURQUOI, et c'est ce qui fait
+         comprendre canter/gallop au lieu de le faire retenir.
+         ⚠️ « gallop » y est MIS EN OPPOSITION à « canter », jamais donné
+         comme synonyme — voir le `def` de `galop` dans arrivee.js.
+         NE PAS « CORRIGER » en le retirant. */
       { ref:"d-canter-pourquoi", temps:4, dit:"joueuse", mots:[], motsAilleurs:["galop"],
         fr:"Est-ce qu'on peut galoper doucement, pas à pleine vitesse ? Je ne veux pas aller trop vite.",
-        en:"Is it possible to canter, not to gallop? I don't want to go too fast." },
+        en:"Is it possible to canter, not to gallop? I don't want to go too fast.",
+        es:"¿Podemos galopar despacio, no a toda velocidad? No quiero ir demasiado rápido.",
+        it:"Possiamo galoppare piano, non a tutta velocità? Non voglio andare troppo veloce.",
+        de:"Können wir langsam galoppieren, nicht in vollem Tempo? Ich will nicht zu schnell reiten.",
+        ja:"ゆっくり 駆歩 で 行け ます か ? あまり 速く 走り たく ない です。" },
 
-      { ref:"d-canter-court", temps:4, dit:"joueuse", mots:[], motsAilleurs:["galop"],
-        fr:"Est-ce qu'on peut galoper doucement, sans aller vite ?",
-        en:"Can we do a steady canter, not a gallop?" },
+      /* Demandée par Blandine le 15/08, à la place du doublon du galop
+         doux : la joueuse demande aussi le galop RAPIDE. En anglais ce
+         sera « gallop » — l'autre moitié du faux ami. EN à venir. */
+      { ref:"d-galop-rapide", temps:4, dit:"joueuse", mots:[], motsAilleurs:["galop"],
+        fr:"Est-ce qu'il est possible de galoper rapidement ?",
+        en:"Is it possible to gallop?",
+        es:"¿Es posible galopar rápido?",
+        it:"È possibile galoppare veloce?",
+        de:"Kann man auch schnell galoppieren?",
+        ja:"速く 駆歩 を する こと は でき ます か ?" },
 
-      /* Phrase de Blandine, remise après avoir été retirée à tort :
-         « c'est important le galop dans l'eau ». C'est l'image de la
-         ville, et l'eau explique le mot mieux qu'une définition —
-         elle freine, donc on n'y va pas à fond. */
+      /* Phrase de Blandine : « c'est important le galop dans l'eau ».
+         C'est l'image de la ville, et l'eau explique le mot mieux qu'une
+         définition — elle freine, donc on n'y va pas à fond. */
       { ref:"d-galoper-eau", temps:4, dit:"joueuse", mots:[], motsAilleurs:["galop"],
         fr:"J'aimerais galoper dans l'eau.",
-        en:"I'd like to canter in the water." },
+        en:"I'd like to canter in the water.",
+        es:"Me gustaría galopar en el agua.",
+        it:"Mi piacerebbe galoppare nell'acqua.",
+        de:"Ich möchte gern im Wasser galoppieren.",
+        ja:"水 の 中 で 駆歩 を し て み たい です。" },
 
       { ref:"d-pas-galoper", temps:4, dit:"joueuse", mots:[], motsAilleurs:["galop"],
         fr:"Je ne veux pas galoper.",
-        en:"I don't want to canter." },
+        en:"I don't want to canter.",
+        es:"No quiero galopar.",
+        it:"Non voglio galoppare.",
+        de:"Ich möchte nicht galoppieren.",
+        ja:"駆歩 は し たく ない です。" },
 
-      /* ---- temps 5 · à cru ---- */
+      /* ---- temps 5 · à cru et dans l'eau ---- */
       { ref:"d-monter-cru", temps:5, dit:"joueuse", mots:["monter-a-cru","baignade"],
         fr:"Est-ce qu'on peut monter à cru pour la baignade ?",
-        en:"Can we ride bareback for the swim?" },
+        en:"Can we ride bareback for the swim?",
+        es:"¿Podemos montar a pelo para el baño?",
+        it:"Possiamo montare a pelo per il bagno?",
+        de:"Können wir fürs Baden ohne Sattel reiten?",
+        ja:"水浴 の とき、 裸馬 に 乗っ て も いい です か ?" },
 
+      /* Accord corrigé par Blandine le 15/08 : « Je ne suis jamais
+         montée » — auxiliaire être, féminin. L'anglais ne bouge pas. */
       { ref:"d-cru-jamais", temps:5, dit:"joueuse", mots:["monter-a-cru"],
-        fr:"Je n'ai jamais monté à cru.",
-        en:"I've never ridden bareback." },
+        fr:"Je ne suis jamais montée à cru.",
+        en:"I've never ridden bareback.",
+        es:"Nunca he montado a pelo.",
+        it:"Non ho mai montato a pelo.",
+        de:"Ich bin noch nie ohne Sattel geritten.",
+        ja:"裸馬 に 乗っ た こと は あり ませ ん。" },
+
+      /* LA consigne réelle d'une baignade à cheval. EN à venir. */
+      { ref:"d-q-criniere", temps:5, dit:"club", mots:[],
+        fr:"Tenez-vous à la crinière, lâchez les rênes.",
+        en:"Hold on to the mane and let the reins go loose.",
+        es:"Agárrense a las crines y suelten las riendas.",
+        it:"Tenetevi alla criniera e lasciate le redini.",
+        de:"Halten Sie sich an der Mähne fest und lassen Sie die Zügel locker.",
+        ja:"たてがみ に つかまっ て、 手綱 は ゆるめ て ください。" },
 
       /* ---- temps 6 · le soleil ---- */
       /* Phrase de Blandine : « demander qu'on se mette un peu à l'ombre
@@ -391,20 +496,28 @@ window.HYPE_LINGO_LEX.balade = {
          langue étrangère est exactement l'usage de cette app. */
       { ref:"d-ombre-chaud", temps:6, dit:"joueuse", mots:["ombre"],
         fr:"Est-ce qu'on peut s'arrêter à l'ombre ? J'ai trop chaud.",
-        en:"Can we stop in the shade? I'm too hot." },
-
-      { ref:"d-creme-solaire", temps:6, dit:"joueuse", mots:["creme-solaire"],
-        fr:"Est-ce qu'il faut de la crème solaire ?",
-        en:"Do I need sunscreen?" },
-
-      { ref:"d-maillot", temps:6, dit:"joueuse", mots:["maillot"],
-        fr:"Est-ce que je dois prendre un maillot de bain ?",
-        en:"Should I bring a swimsuit?" },
+        en:"Can we stop in the shade? I'm too hot.",
+        es:"¿Podemos parar a la sombra? Tengo mucho calor.",
+        it:"Possiamo fermarci all'ombra? Ho troppo caldo.",
+        de:"Können wir im Schatten anhalten? Mir ist zu heiß.",
+        ja:"日陰 で 止まっ て も いい です か ? 暑 すぎ ます。" },
 
       /* ---- temps 7 · après la balade ---- */
       { ref:"d-eau-douce", temps:7, dit:"joueuse", mots:["eau-douce"],
         fr:"Est-ce qu'il y a de l'eau douce pour rincer le cheval ?",
-        en:"Is there fresh water to rinse the horse?" }
+        en:"Is there fresh water to rinse the horse?",
+        es:"¿Hay agua dulce para enjuagar al caballo?",
+        it:"C'è acqua dolce per sciacquare il cavallo?",
+        de:"Gibt es Süßwasser, um das Pferd abzuspülen?",
+        ja:"馬 を 洗う 真水 は あり ます か ?" },
+
+      { ref:"d-desseller-doucher", temps:7, dit:"joueuse", mots:[],
+        fr:"Est-ce que je peux le desseller et le doucher ?",
+        en:"Can I untack him and hose him down?",
+        es:"¿Puedo desensillarlo y ducharlo?",
+        it:"Posso togliergli la sella e fargli la doccia?",
+        de:"Kann ich ihn absatteln und abduschen?",
+        ja:"鞍 を 外し て、 シャワー で 洗っ て も いい です か ?" }
     ]
   }
 };
