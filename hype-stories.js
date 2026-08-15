@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19an";
+var HYPE_STORIES_VERSION = "19ao";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -4106,6 +4106,20 @@ function CompositionStory(props) {
   var dpS = React.useState(false), deplie = dpS[0], setDeplie = dpS[1];
   var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { lumineux: "#5FE9F0" };
   var tnL = thC.lumineux || "#5FE9F0";
+  /* ⚠️ 19ao (15/08) — AJOUTÉ EN DERNIER, comme tout nouvel état de ce module.
+     LA NAVIGATION DANS LA PHOTO OUVERTE. Signalé par Blandine : « quand on a
+     ouvert le milieu on peut plus les descendre ou remonter ». Exact — la
+     surcouche n'affichait QUE la photo touchée, sans suivante ni précédente :
+     il fallait fermer, viser, rouvrir. Vrai dès DEUX photos, pas seulement à
+     cinq.
+     Ce n'était pas un choix : la 19b a démonté la composition pendant le plein
+     écran pour ne garder qu'UNE image vivante (six décodages simultanés
+     tuaient l'onglet sur iOS), et la navigation est partie avec elle. Elle
+     revient SANS revenir au plantage — on continue de n'afficher qu'une seule
+     image, on change seulement laquelle. */
+  var pxS = React.useState(0), pleinIx = pxS[0], setPleinIx = pxS[1];
+  var refCouche = React.useRef(null);
+  var gesteRef = React.useRef({ actif: false, multi: false, x: 0, y: 0, bouge: false });
   var longue = String(story.legende || "").length > (typeof HS_LEGENDE_REPLI === "number" ? HS_LEGENDE_REPLI : 140);
   /* Les mentions @ ACCEPTEES deviennent des liens turquoise, comme dans le
      panneau du bas d'ou le texte vient. Sans ce report, changer de place la
@@ -4127,7 +4141,7 @@ function CompositionStory(props) {
       return h("span", { key: "lc" + i }, m.mention);
     });
   })();
-  function ouvrirPlein(u) { try { if (props.pause) props.pause(true); } catch (e) { } setPlein(u); }
+  function ouvrirPlein(u, ix) { try { if (props.pause) props.pause(true); } catch (e) { } setPleinIx(typeof ix === "number" ? ix : 0); setPlein(u); }
   function fermerPlein() { try { if (props.pause) props.pause(false); } catch (e) { } setPlein(null); }
   function src(st) { return (typeof hsImageEcran === "function") ? hsImageEcran(st.photo_url) : st.photo_url; }
   function photoTouchable(st, ix, style) {
@@ -4136,7 +4150,7 @@ function CompositionStory(props) {
       /* 19h (14/08) : le tap sur une photo de composition FERMAIT la story.
          Arreter `touchstart` ne suffit pas : la visionneuse decide a la FIN du
          geste (touchend) et sur le pointeur. On arrete les trois. */
-      onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); ouvrirPlein(src(st)); },
+      onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); ouvrirPlein(src(st), ix); },
       onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
       onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
       onPointerDown: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
@@ -4144,10 +4158,66 @@ function CompositionStory(props) {
       style: Object.assign({ padding: 0, border: "none", background: "none", cursor: "pointer", animation: "hsDeplie 400ms ease both", animationDelay: (ix * 120) + "ms" }, style)
     }, h("img", { src: src(st), alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" } }));
   }
+  /* 19ao — LA NAVIGATION ENTRE LES PHOTOS DE LA COMPOSITION.
+     Trois garde-fous, chacun paye une panne connue de ce module :
+       1. UN `touchend` SANS `touchstart` CHEZ SOI N'EST PAS UN GESTE. Sans le
+          drapeau `actif`, un doigt levé au retour d'un autre calque compterait
+          comme un glissé.
+       2. DEUX DOIGTS ANNULENT TOUT. Un pincement appartient à PhotoZoomHype ;
+          le lui voler, c'est le crash mémoire de la 19b par un autre chemin.
+       3. PHOTO ZOOMÉE = ON NE NAVIGUE PAS. Le déplacement à un doigt sert
+          alors à promener l'image. On lit l'échelle dans le `transform` que
+          PhotoZoomHype écrit lui-même — aucune modification de son code, donc
+          aucun risque de le déséquilibrer. */
+  function estZoomee() {
+    try {
+      var c = refCouche.current; if (!c) return false;
+      var im = c.querySelector("img"); if (!im) return false;
+      return String(im.style.transform || "").indexOf("scale(") >= 0;
+    } catch (e) { return false; }
+  }
+  function allerPhoto(pas) {
+    try {
+      var n = membres.length; if (n < 2) return;
+      var suiv = ((pleinIx + pas) % n + n) % n;
+      setPleinIx(suiv);
+      setPlein(src(membres[suiv]));
+    } catch (e) { }
+  }
   var surcouche = plein
     ? h("div", {
-      onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); fermerPlein(); },
-      onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+      ref: refCouche,
+      onClick: function (ev) {
+        if (ev && ev.stopPropagation) ev.stopPropagation();
+        /* le glissé ne doit pas se terminer par une fermeture */
+        if (gesteRef.current.bouge) { gesteRef.current.bouge = false; return; }
+        fermerPlein();
+      },
+      onTouchStart: function (ev) {
+        if (ev && ev.stopPropagation) ev.stopPropagation();
+        var g = gesteRef.current;
+        if (!ev.touches || ev.touches.length !== 1) { g.multi = true; g.actif = false; return; }
+        g.actif = true; g.multi = false; g.bouge = false;
+        g.x = ev.touches[0].clientX; g.y = ev.touches[0].clientY;
+      },
+      onTouchMove: function (ev) {
+        var g = gesteRef.current;
+        if (ev && ev.touches && ev.touches.length > 1) { g.multi = true; }
+      },
+      onTouchEnd: function (ev) {
+        if (ev && ev.stopPropagation) ev.stopPropagation();
+        var g = gesteRef.current;
+        if (!g.actif) return;                      /* résidu, pas un geste */
+        g.actif = false;
+        if (g.multi) { g.multi = false; g.bouge = true; return; }
+        if (estZoomee()) { g.bouge = true; return; }
+        var t = ev.changedTouches && ev.changedTouches[0]; if (!t) return;
+        var dy = t.clientY - g.y, dx = t.clientX - g.x;
+        if (Math.abs(dy) > 60 && Math.abs(dy) > Math.abs(dx) * 1.4) {
+          g.bouge = true;
+          allerPhoto(dy < 0 ? 1 : -1);
+        }
+      },
       /* ⚠️ 19ai — LE NAVIGATEUR PAR SWIPE DE L'INDEX PASSAIT ENCORE ICI.
          La 19ah avait pose `data-noswipe` sur le SEUL ecran plein format ;
          le composeur, ses feuilles et la visionneuse ne le portaient pas. Un
@@ -4161,6 +4231,10 @@ function CompositionStory(props) {
       style: { position: "fixed", inset: 0, zIndex: 9420, background: "rgba(4,6,9,0.96)", display: "flex", alignItems: "center", justifyContent: "center" }
     },
       (typeof PhotoZoomHype === "function") ? h(PhotoZoomHype, { src: plein }) : h("img", { src: plein, alt: "", style: { maxWidth: "100%", maxHeight: "100%", objectFit: "contain" } }),
+      /* le rang, pour savoir où l'on est — seulement s'il y a de quoi naviguer */
+      (membres.length > 1)
+        ? h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 18px)", left: 16, padding: "5px 11px", borderRadius: 999, background: "rgba(6,7,9,0.62)", border: "1px solid rgba(255,255,255,0.14)", color: "#E4ECEF", fontFamily: M, fontSize: 11.5, fontWeight: 700, letterSpacing: 0.4, pointerEvents: "none" } }, (pleinIx + 1) + " / " + membres.length)
+        : null,
       h("button", { onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); fermerPlein(); }, "aria-label": "Fermer", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 14, width: 34, height: 34, borderRadius: "50%", background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.2)", color: "#E4ECEF", fontSize: 15, cursor: "pointer" } }, "\u2715"))
     : null;
   /* 19b (14/08) : PENDANT LE PLEIN ECRAN, LA COMPOSITION EST DEMONTEE.
