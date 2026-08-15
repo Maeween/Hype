@@ -550,5 +550,217 @@ window.HYPE_LINGO_LEX.ecurie = {
       it:"Posso legare il mio cavallo qui ?",
       de:"Kann ich mein Pferd hier anbinden ?",
       ja:"ここ に 馬 を 繋いで も いい です か ?" }
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE NEWMARKET — 15 août 2026, session 211.
+
+     LA SCÈNE : on t'accueille dans l'écurie, tu cherches ton chemin et
+     on te confie des tâches. 21 phrases, 6 temps, 5 entendues.
+
+     🟥 LE CRITÈRE DE BLANDINE (15/08) : une phrase n'existe QUE si on
+     la dit vraiment sur place — « en dehors d'un achat de cheval j'ai
+     jamais eu à poser une telle question ». Un mot du lexique n'a PAS
+     besoin d'une phrase : il s'apprend en lisant.
+     LAISSÉS AU LEXIQUE SEUL, exprès : l'allée, la grange, l'abreuvoir,
+     la mangeoire, l'avoine, le son, la pierre à sel, l'anneau, le
+     balai, la pelle, le tuyau, le seau, le crottin. On les lit, on ne
+     les demande pas. NE PAS « compléter » le dialogue avec eux.
+
+     ⚠️ « Où est la sellerie ? » existe déjà dans `phrases`
+     (`ou-sellerie`). Ce n'est pas un doublon accidentel : là c'est un
+     exercice de phrase, ici c'est la question d'ouverture de la scène.
+     Signalé à Blandine, gardé sur son « ok vas-y ».
+
+     ⚠️ REGISTRE ANGLAIS D'ÉCURIE, comme les autres villes :
+     `to muck out`, `the muck heap`, `the haynet`, `to turn out`,
+     `to bring in`, `to hose down`, `the rug`, `the headcollar`.
+     Formes américaines en `varEn` seulement. `the indoor school` /
+     `the outdoor school` — jamais « the ménage », faute courante déjà
+     signalée dans le `def` de `carriere`.
+
+     `dit` : "joueuse" = elle produit · "club" = elle entend et comprend.
+  ================================================================== */
+  dialogue: {
+    ville: "newmarket", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 21 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · j'arrive et je cherche mon chemin ---- */
+      { ref:"d-ou-sellerie", temps:1, dit:"joueuse", mots:["sellerie"],
+        fr:"Où est la sellerie ?",
+        en:"Where's the tack room?",
+        es:"¿Dónde está el guadarnés?",
+        it:"Dov'è la selleria?",
+        de:"Wo ist die Sattelkammer?",
+        ja:"馬具庫 は どこ です か ?" },
+
+      { ref:"d-quel-box", temps:1, dit:"joueuse", mots:["box"],
+        fr:"Dans quel box est mon cheval ?",
+        en:"Which stable is my horse in?",
+        es:"¿En qué box está mi caballo?",
+        it:"In quale box è il mio cavallo?",
+        de:"In welcher Box steht mein Pferd?",
+        ja:"私 の 馬 は どの 馬房 です か ?" },
+
+      { ref:"d-r-au-pre", temps:1, dit:"club", mots:["pre","rentrer"],
+        fr:"Il est au pré, je vais le rentrer.",
+        en:"He's out in the field — I'll bring him in.",
+        es:"Está en el prado, voy a meterlo.",
+        it:"È al prato, lo riporto in box.",
+        de:"Er ist auf der Weide, ich hole ihn herein.",
+        ja:"放牧地 に い ます。 馬房 に 戻し ます ね。" },
+
+      { ref:"d-manege-carriere", temps:1, dit:"joueuse", mots:["manege","carriere"],
+        fr:"Est-ce qu'on travaille au manège ou en carrière ?",
+        en:"Are we working in the indoor school or the outdoor school?",
+        es:"¿Trabajamos en el picadero cubierto o en la pista?",
+        it:"Lavoriamo nel maneggio coperto o nel campo?",
+        de:"Arbeiten wir in der Reithalle oder auf dem Reitplatz?",
+        ja:"屋内馬場 と 屋外馬場、 どちら で 乗り ます か ?" },
+
+      /* ---- temps 2 · on me confie le box ---- */
+      { ref:"d-r-curer-box", temps:2, dit:"club", mots:["curer","box"],
+        fr:"Tu peux curer le box, s'il te plaît ?",
+        en:"Could you muck out the stable, please?",
+        es:"¿Puedes limpiar el box, por favor?",
+        it:"Puoi pulire il box, per favore?",
+        de:"Kannst du bitte die Box ausmisten?",
+        ja:"馬房 を 掃除 し て もらえ ます か ?" },
+
+      { ref:"d-ou-fourche", temps:2, dit:"joueuse", mots:["fourche","brouette"],
+        fr:"Où sont la fourche et la brouette ?",
+        en:"Where are the muck fork and the wheelbarrow?",
+        es:"¿Dónde están la horca y la carretilla?",
+        it:"Dove sono la forca e la carriola?",
+        de:"Wo sind die Mistgabel und die Schubkarre?",
+        ja:"フォーク と 一輪車 は どこ です か ?" },
+
+      { ref:"d-vider-brouette", temps:2, dit:"joueuse", mots:["brouette"],
+        fr:"Où est-ce que je vide la brouette ?",
+        en:"Where do I empty the wheelbarrow?",
+        es:"¿Dónde vacío la carretilla?",
+        it:"Dove svuoto la carriola?",
+        de:"Wo leere ich die Schubkarre aus?",
+        ja:"一輪車 は どこ に 空け ます か ?" },
+
+      { ref:"d-r-tas-fumier", temps:2, dit:"club", mots:["tas-fumier","cour"],
+        fr:"Le tas de fumier est au fond de la cour.",
+        en:"The muck heap is at the far end of the yard.",
+        es:"El estercolero está al fondo del patio.",
+        it:"La concimaia è in fondo al cortile.",
+        de:"Der Misthaufen ist hinten im Hof.",
+        ja:"堆肥場 は 中庭 の 奥 に あり ます。" },
+
+      /* ---- temps 3 · la litière ---- */
+      { ref:"d-paille-copeaux", temps:3, dit:"joueuse", mots:["paille","copeaux"],
+        fr:"Est-ce qu'il est sur paille ou sur copeaux ?",
+        en:"Is he on straw or on shavings?",
+        es:"¿Está sobre paja o sobre virutas?",
+        it:"Sta sulla paglia o sui trucioli?",
+        de:"Steht er auf Stroh oder auf Sägespänen?",
+        ja:"藁 です か、 おがくず です か ?" },
+
+      { ref:"d-remettre-litiere", temps:3, dit:"joueuse", mots:["litiere"],
+        fr:"Est-ce que je remets de la litière ?",
+        en:"Shall I put down more bedding?",
+        es:"¿Le pongo más cama?",
+        it:"Aggiungo della lettiera?",
+        de:"Soll ich neue Einstreu nachlegen?",
+        ja:"敷料 を 足し ます か ?" },
+
+      /* ---- temps 4 · la nourriture ---- */
+      { ref:"d-deja-mange", temps:4, dit:"joueuse", mots:["nourrir"],
+        fr:"Est-ce qu'il a déjà mangé ?",
+        en:"Has he been fed?",
+        es:"¿Ya ha comido?",
+        it:"Ha già mangiato?",
+        de:"Hat er schon gefressen?",
+        ja:"もう 食べ まし た か ?" },
+
+      { ref:"d-quelle-ration", temps:4, dit:"joueuse", mots:["ration"],
+        fr:"Quelle est sa ration ?",
+        en:"What's his feed?",
+        es:"¿Cuál es su ración?",
+        it:"Qual è la sua razione?",
+        de:"Wie sieht seine Futterration aus?",
+        ja:"飼料 は どのくらい です か ?" },
+
+      { ref:"d-plus-eau", temps:4, dit:"joueuse", mots:["eau"],
+        fr:"Il n'a plus d'eau.",
+        en:"He's out of water.",
+        es:"Se ha quedado sin agua.",
+        it:"Non ha più acqua.",
+        de:"Er hat kein Wasser mehr.",
+        ja:"水 が なくなっ て い ます。" },
+
+      { ref:"d-remplir-filet", temps:4, dit:"joueuse", mots:["filet-foin","foin"],
+        fr:"Est-ce que je remplis le filet à foin ?",
+        en:"Shall I fill the haynet?",
+        es:"¿Relleno la red de heno?",
+        it:"Riempio la rete per il fieno?",
+        de:"Soll ich das Heunetz füllen?",
+        ja:"干し草 ネット に 入れ ます か ?" },
+
+      { ref:"d-r-mesure-granules", temps:4, dit:"club", mots:["granules","foin"],
+        fr:"Une mesure de granulés le matin, du foin le soir.",
+        en:"One scoop of nuts in the morning, hay at night.",
+        es:"Una medida de pienso por la mañana, heno por la noche.",
+        it:"Una misura di mangime la mattina, fieno la sera.",
+        de:"Morgens eine Kelle Kraftfutter, abends Heu.",
+        ja:"朝 は ペレット を 一杯、 夜 は 干し草 です。" },
+
+      /* ---- temps 5 · le matériel et l'attache ---- */
+      { ref:"d-ou-licol", temps:5, dit:"joueuse", mots:["licol"],
+        fr:"Où est son licol ?",
+        en:"Where's his headcollar?",
+        varEn:"Where's his halter?",
+        es:"¿Dónde está su cabestro?",
+        it:"Dov'è la sua capezza?",
+        de:"Wo ist sein Halfter?",
+        ja:"ハルター は どこ です か ?" },
+
+      { ref:"d-ou-attacher", temps:5, dit:"joueuse", mots:["attacher"],
+        fr:"Où est-ce que je peux l'attacher ?",
+        en:"Where can I tie him up?",
+        es:"¿Dónde puedo atarlo?",
+        it:"Dove posso legarlo?",
+        de:"Wo kann ich ihn anbinden?",
+        ja:"どこ に 繋い で も いい です か ?" },
+
+      { ref:"d-couverture", temps:5, dit:"joueuse", mots:["couverture"],
+        fr:"Est-ce qu'il faut lui mettre une couverture ?",
+        en:"Does he need a rug on?",
+        varEn:"Does he need a blanket on?",
+        es:"¿Hay que ponerle la manta?",
+        it:"Bisogna mettergli la coperta?",
+        de:"Muss er eine Decke bekommen?",
+        ja:"馬着 を 着せ た ほう が いい です か ?" },
+
+      /* ---- temps 6 · sortir, rentrer, doucher ---- */
+      { ref:"d-sortir-paddock", temps:6, dit:"joueuse", mots:["sortir","paddock"],
+        fr:"Est-ce que je le sors au paddock ?",
+        en:"Shall I turn him out in the paddock?",
+        es:"¿Lo saco al paddock?",
+        it:"Lo mando al paddock?",
+        de:"Soll ich ihn aufs Paddock bringen?",
+        ja:"パドック に 放牧 し ます か ?" },
+
+      { ref:"d-r-rentre-avant-nuit", temps:6, dit:"club", mots:["rentrer"],
+        fr:"Rentre-le avant la nuit.",
+        en:"Bring him in before dark.",
+        es:"Métalo antes de que anochezca.",
+        it:"Riportalo in box prima che faccia buio.",
+        de:"Hol ihn herein, bevor es dunkel wird.",
+        ja:"暗く なる 前 に 馬房 に 戻し て ください。" },
+
+      { ref:"d-doucher-apres", temps:6, dit:"joueuse", mots:["doucher"],
+        fr:"Est-ce que je peux le doucher après ?",
+        en:"Can I hose him down afterwards?",
+        es:"¿Puedo ducharlo después?",
+        it:"Posso docciarlo dopo?",
+        de:"Kann ich ihn danach abspritzen?",
+        ja:"その あと 水 を かけ て も いい です か ?" }
+    ]
+  }
 };
