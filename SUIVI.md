@@ -16,7 +16,16 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
-**Version actuelle de l'index.html : 13/08/2026 (SESSION 133 · STORIES v18 — FONDATIONS DE LA STORY COMPOSÉE, INERTES) — md5 `149d71d1d61fb26f861b274b40d02fae`, 9099119 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 18`**. Balise **`?v=18`**. **FICHIER COMPAGNON : `hype-stories.js` v18, md5 `95988f7b3347211f64758ffbc5f766ca`, 154125 octets.** **UN SQL (2 colonnes) : `story-composee.sql`** — à passer dès maintenant, il est inoffensif (les colonnes restent vides tant que la fonctionnalité est éteinte).
+**🔴🔴 INTERDITS CSS ABSOLUS — À LIRE PAR CHAQUE PAGE AVANT DE TOUCHER À L'INDEX 🔴🔴**
+*(bug majeur du défilement Android : résolu sessions 116-117 les 09-10/08, PERDU par régression de lignée, re-corrigé session 134 le 14/08 — deux fois suffit)*
+1. **JAMAIS `overflow-x: hidden` seul sur `html`/`body`** — toujours `overflow-x: hidden; overflow-x: clip;`. `hidden` seul force l'axe Y en `auto` et fait de `body` un conteneur de défilement, défilable d'un demi-pixel d'arrondi selon l'appareil : Chrome Android y accroche le geste et le défilement de toute l'app meurt, sans trace JS.
+2. **JAMAIS `overscroll-behavior: none` sur `body`** — `html` seulement. Sur `body`, il interdit à un geste accroché par accident de remonter à la page ; c'est lui qui rend le point 1 mortel.
+3. **Signature si ça revient : tout figé SAUF en partant d'un élément `position:fixed` (la barre du bas).** Vérifier ces deux règles AVANT toute autre piste. Spec complète de l'outil de diagnostic : section 117.
+4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
+
+**Version actuelle de l'index.html : 14/08/2026 (SESSION 134 · LE RETOUR DU BUG SCROLL ANDROID — RÉGRESSION DE LIGNÉE, KIT 117 RÉAPPLIQUÉ) — md5 `77d54bdbb9f33d8457f76014023db8eb`, 9 114 228 octets. Base : l'index fourni par Blandine en séance (md5 `46e0d9730ca1aa69840e6e43f534be20`, 9 107 517 octets, lignée Stories v18). Diff : +6 541 octets, fonctions 914 → 918 (les 3 helpers du verrou + le balayage), const 389 → 389. Témoin INCHANGÉ (`reprise 1.8 · stories 18` — voir décision en attente dans la section 134). `hype-stories.js` INCHANGÉ (v18, md5 `03d030b4486e127fae878b5631645adc`). Aucune preview. Aucun SQL nouveau (le `story-composee.sql` de la 133 reste à passer si pas fait).**
+
+**Ancienne tête (session 133), conservée telle quelle :** Version de l'index.html : 13/08/2026 (SESSION 133 · STORIES v18 — FONDATIONS DE LA STORY COMPOSÉE, INERTES) — md5 `149d71d1d61fb26f861b274b40d02fae`, 9099119 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 18`**. Balise **`?v=18`**. **FICHIER COMPAGNON : `hype-stories.js` v18, md5 `95988f7b3347211f64758ffbc5f766ca`, 154125 octets.** **UN SQL (2 colonnes) : `story-composee.sql`** — à passer dès maintenant, il est inoffensif (les colonnes restent vides tant que la fonctionnalité est éteinte).
 
 ⚠️ **Cet index est bâti sur la 116 (`9a535785…`)**, stories comprises : il contient tout le travail de la page qui mène les stories. Mais si cette page livre une 117 de son côté, **elle partira de la 116 et écrasera le tirage à graine.** Voir l'avertissement « deux pages éditent index.html en parallèle ».
 
@@ -142,6 +151,45 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 134 · 14/08 · LE BUG SCROLL ANDROID ÉTAIT REVENU — PARCE QUE SON CORRECTIF AVAIT DISPARU
+
+Des utilisateurs signalent le retour du blocage du défilement Android. Vérification sur l'index courant : **ce n'était pas un retour, c'était une disparition** — l'index de la lignée Stories ne contenait plus AUCUNE des corrections des sessions 116-117.
+
+### CE QUI AVAIT DISPARU (constaté marqueur par marqueur sur `46e0d973`)
+- La ceinture était redevenue `overflow-x: hidden !important` **sans** `clip` (la cause exacte du bug, voir section 117).
+- `overscroll-behavior: none` était revenu sur `html` **et** `body` (le second ingrédient, celui qui rend le premier mortel).
+- Disparus aussi : le verrou de défilement compté (le mémorise/restaure fragile de PhotoZoomable était revenu), les gardes des captures de pointeur des globes (4 `setPointerCapture` sans garde), la libération des écrans `hu-root`/Personnalisation (les 97 px et leurs boutons étaient à nouveau séquestrés), le `pan-y` du fil d'annonces, le balayage des puits, les avertissements 🔴 du code, **et le parrainage de la session 116** (`codeParrain` : 0).
+
+### LA CAUSE DE LA RÉGRESSION — UNE COLLISION DE NUMÉROTATION, ENCORE
+La chaîne des versions de ce SUIVI passe par une « ancienne version (117) » au md5 `b8b8974d` — **qui n'est aucun des builds de la vraie session 117** (dont les finaux étaient `d23e8a9d` puis `07d483af`). Une autre page s'était attribuée le numéro 117 en partant d'une base antérieure aux correctifs, et toute la lignée a continué depuis elle. Les correctifs scroll ET le parrainage sont tombés du train à ce moment-là ; le bloc 🔴 INTERDITS du SUIVI a disparu avec.
+**Leçon consignée :** le point 4 du bloc 🔴 en tête (contrôle des marqueurs avant toute livraison) existe précisément pour attraper ça. Toute page qui livre un index doit le faire.
+
+### CE QUI A ÉTÉ RÉAPPLIQUÉ (kit 117 complet, sur la base fournie par Blandine en séance)
+1. Ceinture : `overflow-x: hidden !important; overflow-x: clip !important;` + avertissement 🔴 (tête de fichier).
+2. `overscroll-behavior: none` retiré de `body`, conservé sur `html` seul + avertissement 🔴 (GlobalStyles).
+3. Verrou de défilement compté : `hypeVerrouScroll`/`hypeDeverrouScroll`/`hypeFiletScroll`, `data-hype-zoom` sur l'overlay de PhotoZoomable, filet auto-réparateur dans `Router` (changement d'écran + `visibilitychange`/`pageshow`).
+4. Captures de pointeur réservées à la souris + `releasePointerCapture` explicite : globe accueil (`gdown`/`gup`), grand globe (2 occurrences, document + iframe `GLOBE_HTML_HYPE`), Fond Studio.
+5. `height: "100%"` retiré des conteneurs `hu-root` (globe « YOUR WORLD ») et Personnalisation — pages du deck `intro-deck`, leur parent `overflowY:auto` redevient défilable, les boutons « Continuer » redeviennent atteignables.
+6. Fil d'annonces : `overflow:clip` + `touch-action: pan-y` sur `.mask` et `.trk`.
+7. Filigrane : `data-hype-filigrane` + règle `pointer-events: none !important`.
+8. Balayage `hypeLibererPuitsTactiles()` (débordement HORIZONTAL uniquement) rejoué à chaque écran + relances 900/2600 ms.
+Détail des mécanismes : sections 116-117, inchangées, plus bas dans ce fichier.
+
+### VÉRIFICATIONS
+`node --check` OK sur le bloc principal (7,5 Mo). Marqueurs tous au vert (clip 1, overscroll html seul 1, danger html+body 0, verrou 3, captures gardées 4, `hu-root` séquestrant 0, filigrane 2, balayage 4). Non-régression : fonctions 914 → 918 (exactement les 4 ajoutées), const 389 → 389, `BandeauStories` 8/8, `hype-stories.js` référencé 1/1, `HYPE_VERSION_APP` intact. Travail Stories v18 non touché.
+
+### À L'ÉCRAN
++ Rien de visible. − Rien. Uniquement du comportement : le défilement tactile Android, et les boutons du parcours d'entrée à nouveau atteignables.
+
+### DÉCISIONS EN ATTENTE (déductions de Claude — à valider par Blandine)
+- [ ] **Témoin de version :** je n'ai PAS touché `HYPE_VERSION_APP = "1.8"` ni le témoin `reprise 1.8 · stories 18`, parce que d'autres pages en cours l'attendent tel quel. Conséquence : Blandine ne peut pas distinguer à l'écran ce build du précédent. Si elle veut un témoin propre pour vérifier le déploiement, dire lequel (ex. `reprise 1.9`) et je le pose — sinon, vérifier le déploiement en re-testant simplement le défilement sur un Android touché.
+- [ ] **Le parrainage (session 116) est toujours perdu** (`codeParrain` : 0). Chantier séparé : le refaire, ou récupérer le fichier de la conversation qui l'avait construit. Rien n'a été tenté ici sans feu vert.
+
+### Préparation Flutter
+La régression démontre l'exact risque que la doctrine « fichier compagnon » couvre déjà pour Stories : les correctifs transverses (défilement, gestes) vivaient dans le monolithe et ont été perdus par un simple choix de mauvaise base. Côté Flutter, ces invariants deviendront des services testés (`ScrollLockService`, politique de `pointer capture`) avec tests de non-régression — impossibles à perdre par écrasement de fichier. En attendant, le contrôle de marqueurs du bloc 🔴 (point 4) sert de test de non-régression manuel : c'est la version pauvre mais immédiate de la CI.
 
 ---
 
@@ -7316,3 +7364,247 @@ Harnais : **193 assertions vertes** + `audit_vars.js` vert. `index.html` : `hype
 Harnais : **243 assertions vertes** · `audit_vars.js` vert.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19r** · modèles 28.
+
+---
+
+## Session 141 — 14/08/2026 · stories 19s → 19y · LA SESSION PERDUE, LES DEUX RÉGRESSIONS, ET LE PARTAGE
+
+### ⚠️ Incident à signaler d'abord
+
+**La conversation précédente s'est perdue** (déconnexion accidentelle sur un double-clic, signalée par Blandine). Les livraisons **19s à 19x** ont été faites mais **jamais consignées ici** : elles sont reconstituées ci-dessous à partir des captures d'écran de la passation fournies par Blandine, pas à partir du code. **À vérifier si un doute apparaît.**
+
+**Mon environnement de travail a été en panne près de quarante minutes** au début de cette session : ni lecture ni écriture de fichier possibles. Signalé à Blandine en temps réel, aucun repli silencieux. Plusieurs de mes réponses se sont également coupées en cours d'envoi — Blandine a légitimement demandé si elle pouvait avoir confiance dans les fichiers livrés. Le diff complet lui a été montré, ligne par ligne, plutôt que de lui demander de me croire. **Assertion nouvelle : après toute panne, montrer le diff avant de demander un push.**
+
+### Livraisons 19s → 19x (reconstituées depuis la passation)
+
+- **19s** — plafond à 5, retrait de « Défiler », plus jamais de chapelet, vignettes numérotées, marges de composition, **minuteur figé pendant les panneaux**.
+- **19t** — table de tirages défilante.
+- **19u** — minuteur figé quand l'appli perd le focus.
+- **19v** — vignettes fabriquées seulement si manquantes, retrait du repli plein format.
+- **19w** — **fenêtrage de la bande de décors.** 28 décors montés d'un coup faisaient **168 Mo de bitmaps** : c'était la cause des sorties d'application. **Dernière version saine avant ce soir.**
+- **19x** — vignettes `-mini.webp`, **0,21 Mo au lieu de 6,0**.
+
+### 19y — LES DEUX RÉGRESSIONS DE LA 19X, CORRIGÉES
+
+Signalées par Blandine, les deux venaient de mes livraisons du soir même.
+
+**1. Le cul-de-sac du menu ⋯.** Ses mots : « mon fils a appuyé sur les trois petits points du menu, ça a figé sa page avec le bouton signaler mais il ne pouvait plus sortir ». Deux causes cumulées : mon gel du minuteur de 19s (la story ne défilait plus) **et** le tap en dehors qui ne fermait pas. Plus aucune sortie, ni geste ni minuteur.
+- Cause exacte : le voile n'avait qu'un `stopPropagation` sur `onTouchEnd`, et sur iOS le click de synthèse ne repart pas toujours d'un simple `div`.
+- Correctif : `onTouchEnd` **ferme** désormais, mais seulement si le doigt a fini sur le voile lui-même (`ev.target === ev.currentTarget`) — un tap sur la feuille ne ferme rien et laisse le bouton faire son travail. `onClick` filtré de la même façon pour la souris.
+- **Ceinture et bretelles : une ligne « Annuler » ajoutée au bas de la feuille**, en 6 langues (clé `annuler`, déjà existante). Sortie visible, pas un geste à deviner — un enfant qui ouvre le menu par curiosité doit voir comment en sortir.
+
+**2. Le défilement vertical bloqué.** « On peut plus scroll pour voir le texte en dessous ». Le `touchAction: "none"` posé en 19c sur toute la zone photo tuait le geste vertical. Repassé en **`pan-y`** : le vertical redevient possible, et le retour d'iOS reste bloqué puisqu'il est **horizontal**. La table de tirages garde son `pan-x`.
+
+**Contrôle montré à Blandine** : `node --check` vert, **quatre endroits modifiés**, diff complet affiché hors commentaires, `index.html` non touché par cette livraison.
+
+**À l'écran** : + le menu ⋯ se ferme au tap en dehors · + ligne « Annuler » dans la feuille du menu · + le défilement vertical revient dans la visionneuse · − plus jamais d'écran sans issue.
+
+### LE PARTAGE — routeur étendu et fonction unique (`index.html`)
+
+**Découverte importante, corrigée en séance** : j'ai d'abord affirmé à Blandine qu'il n'existait aucun routeur. **C'était faux**, et je l'ai signalé — j'avais jugé au nombre de boutons Partager, pas au code. `CIBLE_DIRECTE` (ligne 19607) lisait déjà le `#` de l'adresse et gérait `#cheval-<id>`, `#album-invite=`, et une table de clés nommées. Le chantier n'était donc pas à construire mais à **étendre**.
+
+**Familles d'adresses ajoutées** — les anciennes clés passent **en premier** et ne bougent pas, aucun lien déjà partagé ne casse :
+
+| Adresse | Ouvre |
+|---|---|
+| `#g=g3-c2` | un chapitre de Galop |
+| `#g=3` | la page du Galop 3 |
+| `#b=baby-c12` | une carte du chemin Baby |
+| `#s=<id>` | une story |
+| `#c=monde` `#c=memento` `#c=videos` `#c=culture` | la communauté |
+| `#a=<id>` `#v=<id>` `#u=<id>` `#e=<id>` | article · vidéo · cavalier · club |
+
+Une adresse inconnue retombe sur `null`, donc sur l'accueil — **jamais d'écran blanc**, comportement d'origine conservé.
+
+**`hypePartager(famille, valeur, titre, options)`** — une seule fonction pour tout Hype. Elle fabrique l'adresse de la page courante, passe la main à `navigator.share`, replie sur le presse-papier. Image partagée quand l'appelant en fournit une, avec le même garde-fou de 8 Mo que `partagerFiche` (31/07). **Elle ne décide de rien** : l'appelant lui donne la famille, la valeur et le titre — une seule fonction à corriger le jour où le format changera.
+
+**Contrôle** : +5 564 octets, **0 ligne supprimée**, les deux blocs vérifiés isolément.
+
+**À l'écran** : rien encore — le socle est posé, les boutons ne sont pas branchés.
+
+### ⚠️ LE MUR PREMIUM — ce que j'ai trouvé, et ce qui a été décidé
+
+**Constat mesuré** : tous les cours des Galops 2 à 7 (`COURS_GALOP2_FR` → `COURS_GALOP7_FR`), Baby et les QCM sont écrits **en clair dans `index.html`**. Netlify envoie ce fichier entier à tout le monde, abonné ou pas.
+
+**Nuance vérifiée ensuite, et signalée à Blandine comme une correction de ma part** : j'avais dit « ton contenu premium circule gratuitement ». Exact techniquement, mais **trop alarmiste**. Le verrou de l'app fonctionne (`verrou = !g.debloque && !premium`, ligne 23722) : un non-abonné qui navigue est renvoyé sur l'écran d'abonnement, le cours ne s'affiche jamais. La fuite ne concerne que **quelqu'un qui ouvre volontairement le code source** — pénible à faire sur iPhone.
+
+Une **maquette comparative** a été livrée (`maquette-mur-premium.html`, aux couleurs Hype Spectral, avec un révélateur « ce que voit un curieux ») pour que Blandine voie la différence de ses yeux.
+
+**Décision de Blandine : option A — flou seul**, avec le bouton d'abonnement. La coupe réelle (contenu sorti vers Supabase + fonction Netlify) est **remise à plus tard**, et sera le bon moment pour alléger l'index — il fait **9,1 Mo**.
+
+### Décisions de Blandine (ses mots)
+
+- **Mur premium : A.** « Bah sinon laisse le flou A ça sera tjs genre non ? » — oui.
+- **Carte communauté façon Snap Map : A + B.** Pastille sur le **club** quand il est connu, sur la **ville** en repli « si le club n'est pas dans la liste ou qu'il n'est pas au club ». Position réelle du cavalier **écartée** — j'ai nommé le risque avant qu'elle tranche : Hype est utilisée par des mineurs.
+- **Architecture : option A** — fichiers compagnons séparés **à la racine** (`hype-galops.js`, `hype-baby.js`), sur le modèle de `hype-stories.js`. « Ok A et B plus tard » : les vrais dossiers viendront le jour de la séparation réelle. Motif nommé par elle : « les galops et baby peuvent être amenés à être séparés aussi ».
+- **Emplacement du bouton Partager : en fin de page.** Sa proposition, meilleure que la mienne : le cavalier vient de finir de lire, il sait s'il a aimé. Une seule règle pour tout Hype.
+- **Linguae aura son propre système de partage**, conçu à part — pas une copie de Hype.
+
+### Reste ouvert
+
+- **Brancher les boutons Partager** en fin de page (12 destinations). Deux exceptions à traiter autrement : le **globe** (pas de bas de page) et les **stories** (défilement automatique) → passeront par le menu ⋯ existant.
+- **Le mur flou** sur les contenus verrouillés, avec bouton d'abonnement.
+- Les **19 vignettes `modele-5` à `modele-23`** à fabriquer. Reçues ce soir et non encore intégrées : `modele-24` à `28`, `modele-concours-2/3/4` en `-mini.webp`.
+- **Webhook Stripe** : montants 1299/9999/1499/2499, cumul au lieu d'écrasement.
+- Le **décor dont les photos débordent**. **Barbara** à vérifier chez Stripe.
+- **Spec de la carte communauté** (A + B) à rédiger.
+
+### Préparation Flutter
+
+Les familles d'adresses préfixées sont **exactement** ce dont Flutter aura besoin : `#g=`, `#b=`, `#s=` se transposent en routes nommées sans réécriture, et le découpage par univers prépare le jour où Baby ou les Galops deviendront des applications distinctes. `hypePartager` isole le partage en **un seul point** : sur Flutter, seul son corps changera, pas ses appelants. Le choix de l'option A (racine, pas de dossiers) ne gêne en rien la migration — Flutter reconstruit son arborescence de toute façon.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19y** · modèles 28.
+
+---
+
+## Session 142 — 14/08/2026 · stories 19z puis 19aa · LE GESTE QUI SORTAIT DE L'APPLI, ET LE CURSEUR QUI TUAIT L'ONGLET
+
+### ⚠️ 19z — CORRECTION D'UNE ERREUR QUE J'AI COMMISE LE SOIR MÊME
+
+Ses mots : **« je regarde mes stories, je swipe vers la gauche, je veux revenir en arrière je swipe vers la droite, je suis dehors »**.
+
+C'était ma 19y. J'avais remplacé `touchAction: "none"` par `"pan-y"` sur la zone photo pour rendre le défilement vertical tué par la 19x, en raisonnant : *le retour d'iOS est horizontal, `pan-y` bloque l'horizontal, donc il reste bloqué.* **Faux.** `pan-y` ne retient pas le geste de retour d'iOS. J'avais réparé le défilement en rouvrant la sortie d'application que la 19c avait bouchée. Signalé à Blandine sans détour.
+
+**Remède : le blocage passe du CSS au JavaScript.** Le CSS ne sait pas distinguer « glisser dans la page » de « revenir en arrière » ; le code, si. On retient `x0` au `touchstart`, on reconnaît un glissé horizontal (> 12 px et 1,4× le vertical), et on annule le geste système.
+
+**Et le glissé horizontal NAVIGUE** (sa demande, « oui revenir en arrière ») : gauche = `suivante()`, droite = `precedente()`, seuil 55 px pour ne pas confondre avec un tap traîné. Les zones de tap gauche/droite gardent tout leur rôle.
+
+> 🟥 **PIÈGE À NE PAS OUBLIER — React attache ses écouteurs tactiles en mode PASSIF.** Un `preventDefault` écrit dans `onTouchMove` est **purement ignoré** par le navigateur. Il a fallu un écouteur **natif** en `{ passive: false }` posé sur `boiteRef`. ⚠️ **Ne jamais « simplifier » en remettant `preventDefault` dans le gestionnaire React** : ça ne marchera pas et le défaut reviendra sans bruit.
+
+### 🟥 19aa — LE CURSEUR DE CADRAGE FERMAIT L'APPLICATION
+
+Ses mots : **« le bouton pour modifier une photo ajouté dans un des fonds de story, il fait tout sauter dès qu'on y touche et ne modifie rien en plus »**. Précision décisive obtenue en la lui demandant : **l'appli se ferme** — donc la mémoire, pas une erreur de code. Le mal de la 19w, revenu par une autre porte.
+
+**Deux étages, cumulés :**
+
+1. **L'aperçu chargeait le décor en PLEIN FORMAT** — `compoChoix + ".webp"`, **6 Mo décodés**, pour l'afficher dans un cadre de **168 px**. La bande avait été corrigée en 19x et prend déjà `-mini.webp` (0,21 Mo) ; **l'aperçu était resté en arrière.** Même repli que la bande si la vignette n'est pas encore poussée.
+2. **Le curseur reconstruisait tout à chaque micro-mouvement.** `setCadresFen` à chaque tick → React refabriquait le bloc entier, décor compris, des dizaines de fois par seconde. Désormais : pendant le glissé la photo se déplace **directement dans le DOM**, l'état n'est écrit qu'au **relâchement**. ⚠️ **Ne pas remettre `value` + `onChange`** sur cet élément : ce serait revenir exactement au défaut.
+
+⚠️ **Détail attrapé à la relecture** : la sélection visait toutes les images, or **une fenêtre sans photo n'en produit aucune** et les rangs se décalaient. On passe par les **boutons**, qui existent toujours.
+
+Ça explique aussi le second membre de sa phrase — « et ne modifie rien en plus » : l'appli se fermait **avant** le relâchement du doigt, le réglage n'était jamais enregistré.
+
+### 🟩 LE CADRAGE SE DEVINE, IL NE SE DEMANDE PLUS
+
+Ses mots : **« je lui ai donné deux photos horizontales et quand il m'a montré ce que ça donnera il m'en a passé une en verticale »**, puis **« ça peut pas être révélé de façon intuitive sinon »** et **« oui c'est ça »** sur la détection automatique.
+
+**Le vrai défaut n'était pas un recadrage forcé** — hors décor, « Photo entière » était déjà le défaut. C'était que le choix se posait sur `vueSure`, **la seule photo prévisualisée**, sans que ce soit dit et sans moyen de l'étendre. Blandine réglait la première, passait à la seconde, et découvrait à l'aperçu que la seconde n'avait rien reçu.
+
+**Une case « appliquer à toutes » avait été proposée puis RETIRÉE** sur sa remarque : il faut la voir, la comprendre, la cocher — ce n'est pas intuitif.
+
+**Retenu** : l'app **regarde** les photos. Plus large que haute → **entière**, le fond immersif habille les côtés. Debout → remplit l'écran. Aucune case. Le bloc de réglage reste atteignable mais **replié**, sous « Changer le cadrage », pour forcer autre chose. Textes `changerCadrage` et `cadrageAuto` en 6 langues.
+
+**À l'écran** : + le curseur ne ferme plus l'appli · + le réglage est enfin conservé · + glissé gauche/droite entre stories · + le cadrage se devine · − plus de sortie d'appli au glissé · − le bloc « Le cadrage » n'est plus ouvert d'office.
+
+### ⚠️ INCIDENT DE LIVRAISON, SIGNALÉ
+
+L'`index.html` que j'avais préparé à 21h21 était **périmé**. Celui rendu par Blandine contenait des correctifs absents du mien : `overflow-x: clip` (bug de défilement Android, marqué « 🔴 interdit de revenir en arrière ») et les **puits tactiles horizontaux** de la session 134. **Le pousser aurait été une régression.** Détecté en comparant les empreintes avant livraison. L'index rendu par Blandine — qui contient déjà le routeur et `hypePartager` — est reparti tel quel, sans modification.
+
+⚠️ **Assertion : comparer l'empreinte de l'index rendu avec celui préparé AVANT toute livraison.** Une session longue suffit à périmer un fichier.
+
+### 🟩 DÉCISIONS DE BLANDINE
+
+- **Décors à texte français** (`modele-concours-2`, `-3`, `-4`) : **option B** — pas retirés, ils **n'apparaissent qu'en français**. « Ok oui B ».
+- **Filtrer les décors sur le nombre de photos** : « on devrait seulement proposer les fonds correspondant au nombre de photos, sinon c'est surchargé ». *(Reste à trancher : que faire au-delà de 5 photos, le catalogue s'arrêtant à 5 fenêtres.)*
+- **Attribution des photos aux fenêtres selon leur forme** : « laisser les horizontales dans les fenêtres horizontales et inversement, là c'est pas le cas ». `ratioFenetre()` donne **déjà** la forme de chaque fenêtre — l'information existe, elle n'est pas utilisée. **Et Blandine veut pouvoir intervenir** : « oui faut pouvoir intervenir des photos dedans ».
+- **L'écran plein format** : « quand on choisit un fond de story, il devrait passer en plein écran fermable à la croix, qu'on puisse visualiser nos photos dedans, et les déplacer ou zoomer dézoomer avant de valider ». Sa question — « est-ce que ça va pas planter ? » — a sa réponse : **`PhotoZoomHype` a été écrit pour ça** après le crash de la session 92 (aucun état React pendant le geste). Vérifié : il ne sert **pas** aux photos de profil, il n'apporte donc pas le défaut qu'elle y constate.
+
+### 📋 RESTE OUVERT SUR LES STORIES
+
+1. **Attribution automatique** des photos aux fenêtres selon leur forme + échange manuel
+2. **L'écran plein format** (croix, déplacement, pincement) — maquette **avant** tout code
+3. **Filtre des décors** sur le nombre de photos
+4. **Décors à texte français** réservés au français
+5. Le bouton **« Mettre devant »** n'apparaît que si `vueSure > 0` — invisible tant qu'on n'a pas touché la 2ᵉ photo
+6. 🟥 **Les photos de profil « déconnent complètement »** — signalé par Blandine, **non diagnostiqué**, symptôme à préciser
+
+### Préparation Flutter
+
+Le passage du blocage tactile **du CSS au JavaScript** est un gain pour la migration : `touch-action` est une notion de navigateur, une règle de geste écrite en code se transpose. Le principe posé ce soir — **aucun état pendant le geste, écriture au relâchement seulement** — est exactement celui qu'imposera Flutter, où chaque `setState` reconstruit l'arbre. Les deux pannes mémoire de la soirée (aperçu 6 Mo, curseur qui refabrique) auraient été identiques en Flutter : la discipline vaut d'être tenue dès maintenant.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19aa** · modèles 28.
+
+---
+
+## Session 143 — 15/08/2026 · stories 19ab : la forme des photos enfin lue
+
+### 🟥 Ce qui bloquait
+
+Toujours la même phrase, au bout de vingt-quatre heures : **« ça fait 24 h que j'essaye de faire ma story »**. Puis, cette nuit : **« l'appli ne reconnaît toujours pas la forme des photos »** et **« on peut passer de 5 à 2, elle maintient le visuel à 5 »**.
+
+Ses captures de 01h41–01h42 montrent le second défaut sans discussion possible : bouton **« Publier (2) »**, et **quatre photos** dans la maquette « À quoi ça ressemblera ».
+
+### Le curseur de cadrage — retiré
+
+**Décision de Blandine**, ses mots : *« déjà viré le curseur il sert à rien il est laid, il est contre intuitif il marche pas et en plus il fait tout planter à chaque fois en boucle »*.
+
+Il portait le second étage de la panne mémoire des sessions 141–142 : chaque relâchement réécrivait l'état et React refabriquait tout le bloc, décor compris. Chaque photo se pose désormais **centrée** dans sa fenêtre (`cadresFen` par défaut à 0,5 / 0,5). Le cadrage n'est pas réglé ; il n'est pas non plus faux.
+
+`cadresFen` et `setCadresFen` **restent en place** : ils accueilleront le remplaçant décidé — le geste à la main, glisser la photo dans la fenêtre et pincer pour zoomer, écrit sur `PhotoZoomHype`. ⚠️ Le curseur ne doit pas revenir.
+
+### Le repli vers le plein format — supprimé aux deux endroits
+
+⚠️ **Correction d'une faute de Claude commise en 19x puis répétée en 19aa.** Les vignettes `modele-XX-mini.webp` avaient bien été branchées, mais un `onError` rechargeait `modele-XX.webp` **plein format** — 6 Mo décodés — quand la vignette manquait à la racine. Or **19 vignettes manquent encore** (`modele-5` à `modele-23`) : la protection ne couvrait qu'une poignée de décors, et la panne revenait à l'identique sur tous les autres. C'est très probablement ce que Blandine subissait encore cette nuit.
+
+Sans repli : un décor sans vignette montre son fond argenté et sa pastille chiffrée. Il **reste choisissable**, rien ne disparaît du catalogue, et l'aperçu place toujours ses fenêtres correctement — leur position vient des `bbox`, pas de l'image.
+
+⚠️ **Ne jamais remettre un `onError` qui charge le plein format.** Le remède est de pousser les vignettes.
+
+### L'aperçu bloqué sur les photos retirées — corrigé
+
+Les deux aperçus se construisaient sur `urlsMini`, indexé sur `fichiersBruts`, c'est-à-dire la sélection **d'origine**. Retirer une photo ne la supprime pas de cette liste : `ecarterPhoto` la marque seulement comme écartée. L'aperçu continuait donc d'afficher les photos retirées et **mentait sur ce qui allait être publié**.
+
+Nouvelle fonction `hsVignettesRetenues()` : les deux aperçus lisent maintenant `fichiersOrdonnes` — exactement la liste que `publier()` parcourt. Une seule source de vérité. ⚠️ Ne jamais rebrancher un aperçu sur `urlsMini`.
+
+### La forme des photos — mesurée pour la première fois
+
+Jusqu'ici l'appli ignorait **totalement** si une photo était couchée ou debout. `ratioFenetre()` connaissait la forme des fenêtres, mais n'était appelée qu'**après** l'affectation, uniquement pour savoir dans quel sens couper.
+
+`hsVignetteFichier` reçoit un troisième argument facultatif `infos`, qu'elle remplit avec les dimensions naturelles. La photo y est **déjà décodée** pour fabriquer sa vignette : ses `naturalWidth/Height` étaient simplement jetés. **Aucun décodage supplémentaire, aucune mémoire en plus** — point capital après les fermetures d'appli des deux sessions précédentes.
+
+Trois fonctions nouvelles :
+- `hsPertePhoto(rPhoto, rFenetre)` — la part de la photo perdue si on la fait remplir une fenêtre de ce format. Formes identiques : 0. Photo couchée dans une fenêtre debout : proche de 1.
+- `hsAccordModele(ref, formes)` — la perte moyenne d'un décor pour une série de photos, dans l'ordre.
+- `hsFormesRetenues()` — les formes des photos retenues, écartées exclues.
+
+Les mesures vivent dans un **ref** (`ratiosRef`) et non dans un état. ⚠️ Le harnais de tests adresse les états du composeur **par position** : un `useState` de plus aurait décalé tout le reste et cassé `t_19b.js` / `t_19c.js` en silence.
+
+**Décision de Blandine du 14/08** : *« l'ordre décide, je corrige à la main »*. La mesure ne déplace donc **aucune photo** — la photo n° 1 reste dans la fenêtre n° 1. Ce sont les **décors** qui sont classés, du plus respectueux au plus destructeur. Deux photos couchées font remonter les décors à fenêtres couchées.
+
+### Le filtre des décors sur le nombre — écrit
+
+⚠️ **Blandine avait raison de s'en étonner** : *« ça devait déjà avoir été codé ça non ? »*. **Non.** `hsModelesPourN()` existait dans le fichier depuis le début et n'était appelée **nulle part**. La décision avait été prise en session 142, jamais écrite. Le seul appel réel était `hsTousModeles()`, qui montre tout le catalogue.
+
+Renversement assumé de la 19g, où ses mots étaient *« on montre tout je pense »*.
+
+La bande ne propose plus que les décors ayant **exactement** le nombre de fenêtres voulu. Le plafond étant de 5 photos (`HS_MULTI_MAX`) et le catalogue couvrant 1 à 5 fenêtres, le cas « aucun décor ne correspond » ne peut pas se produire par le nombre — la question laissée ouverte en 142 sur les séries de 6 photos et plus est donc **sans objet**. Un repli reste posé par prudence : catalogue insuffisant pour un compte donné, on remontre tout plutôt que de laisser la bande vide. *(Repli : déduction de Claude — à valider.)*
+
+### 🖥️ À l'écran : + / −
+
+**−** Le curseur de cadrage sous l'aperçu du décor, et sa ligne d'aide.
+**−** Les décors dont le nombre de fenêtres ne correspond pas aux photos choisies : ils ne défilent plus dans la bande « Présentation ». La pastille chiffrée reste sur ceux qui restent.
+**−** L'image des décors dont la vignette `-mini.webp` n'est pas encore poussée : fond argenté seul, dans la bande comme dans l'aperçu. Ils restent **choisissables**.
+**−** Les photos retirées disparaissent enfin de la maquette « À quoi ça ressemblera ».
+**+** Rien de nouveau à l'écran. L'ordre des décors dans la bande change : les mieux adaptés à la forme des photos passent devant.
+
+### Contrôles
+
+`node --check` sur `hype-stories.js` : passé. `t_19ab.js` écrit — **17 vérifications**, toutes passées : bornes et symétrie de `hsPertePhoto`, filtre exact de `hsModelesPourN` sur 1, 2, 3 et un compte absent, classement de `hsAccordModele` pour deux photos couchées puis deux debout, absence de pénalité quand les formes ne sont pas encore mesurées, et vérification qu'**aucun décor n'est perdu** par le classement.
+
+Pas de rendu Playwright : le domaine refuse l'accès automatisé, seule Blandine peut tester depuis Safari.
+
+### 📋 Reste ouvert sur les stories
+
+1. **L'écran plein format** (croix, déplacement, pincement) — maquette **avant** tout code
+2. **Le geste à la main** : glisser une vignette dans une fenêtre, pincer pour zoomer — remplaçant décidé du curseur
+3. **Décors à texte français** réservés au français (option B validée, non écrite)
+4. Le bouton **« Mettre celle-ci en premier »** n'apparaît que si `vueSure > 0`
+5. 🟥 **Les photos de profil « déconnent complètement »** — toujours **non diagnostiqué**, symptôme à préciser
+6. Les **19 vignettes** `modele-5` à `modele-23` à fabriquer · `modele-24` à `28` et `modele-concours-2/3/4` reçus en `-mini.webp`, **à pousser à la racine**
+7. ⚠️ **Non tranché** : quand une photo couchée tombe dans une fenêtre debout, faut-il continuer à la **couper** pour remplir, ou l'afficher **entière** avec du vide autour ? Décision d'apparence, elle revient à Blandine.
+
+### Préparation Flutter
+
+La mesure de forme est posée dans une **fonction pure** (`hsPertePhoto`, `hsAccordModele`) qui ne connaît ni React, ni le DOM, ni le composeur : elle prend des nombres et rend un nombre. C'est exactement la frontière métier que la migration demande — ce bloc se transpose en Dart sans rien changer, et il est déjà couvert par ses propres vérifications. Le choix du **ref plutôt que de l'état** pour les mesures va dans le même sens : une donnée dérivée d'un fichier n'a pas à déclencher un rendu.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ab** · modèles 28.

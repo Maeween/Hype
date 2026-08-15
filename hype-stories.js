@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19aa";
+var HYPE_STORIES_VERSION = "19ab";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -183,6 +183,46 @@ function hsModelesPourN(n) {
     return Object.keys(d).filter(function (k) { return d[k] && d[k].fenetres && d[k].fenetres.length === n; }).sort();
   } catch (e) { return []; }
 }
+/* 19ab (14/08, demande de Blandine : « l'appli ne reconnait toujours pas la
+   forme des photos ») — L'ACCORD DES FORMES.
+   Jusqu'ici l'appli ignorait TOTALEMENT si une photo etait couchee ou debout :
+   la photo n° 1 allait dans la fenetre n° 1 et se faisait couper au format de
+   celle-ci, d'ou « je mets deux photos horizontales, il met la deuxieme en
+   vertical de force en decoupant tout ».
+   `hsPertePhoto` = la part de la photo PERDUE si on la fait remplir une
+   fenetre de ce format. Deux formes identiques : 0. Une photo couchee dans
+   une fenetre debout : proche de 1.
+   ⚠️ Cette mesure NE DEPLACE AUCUNE PHOTO. Decision de Blandine du 14/08 :
+   « l'ordre decide, je corrige a la main ». La photo n° 1 reste dans la
+   fenetre n° 1 ; ce sont les DECORS qui sont classes, du plus respectueux au
+   plus destructeur. Le jour ou le geste a la main sera ecrit, il s'appuiera
+   sur la meme mesure. */
+function hsPertePhoto(rPhoto, rFenetre) {
+  try {
+    if (!rPhoto || !rFenetre || !isFinite(rPhoto) || !isFinite(rFenetre)) return 0;
+    var a = Math.min(rPhoto, rFenetre), b = Math.max(rPhoto, rFenetre);
+    if (b <= 0) return 0;
+    return 1 - (a / b);
+  } catch (e) { return 0; }
+}
+/* La perte MOYENNE d'un decor pour une serie de photos donnee, dans l'ordre.
+   `formes` = [ratio photo 1, ratio photo 2, ...], null quand la mesure n'est
+   pas encore arrivee (on ne penalise pas ce qu'on ne connait pas). */
+function hsAccordModele(ref, formes) {
+  try {
+    var m = hsModeles()[ref];
+    if (!m || !m.fenetres || !m.fenetres.length) return 1;
+    var tot = 0, n = 0;
+    for (var i = 0; i < m.fenetres.length; i++) {
+      var r = (formes && typeof formes[i] === "number") ? formes[i] : null;
+      if (r === null) continue;
+      var f = m.fenetres[i];
+      var rf = (f && f.bbox && f.bbox[3]) ? (f.bbox[2] / f.bbox[3]) : 1;
+      tot += hsPertePhoto(r, rf); n++;
+    }
+    return n ? (tot / n) : 0;
+  } catch (e) { return 1; }
+}
 var HS_COMPO_MAX = 5;
 function hsUuid() {
   try { if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID(); } catch (e) { }
@@ -276,7 +316,15 @@ function hsImageEcran(u) {
    Ici : on décode UNE image à la fois, on la réduit au canvas, on relâche
    aussitôt l'original (revokeObjectURL + src vidé) et on ne garde qu'une
    petite image. Le canvas est ramené à 1x1 : sa mémoire part avec lui. */
-function hsVignetteFichier(fichier, cote) {
+/* 19ab (14/08) — TROISIEME ARGUMENT `infos` : un objet que la fonction
+   REMPLIT avec les dimensions naturelles de la photo (`{ L: , H: , r: }`).
+   La photo est deja decodee ici pour fabriquer la vignette : ses
+   `naturalWidth/Height` etaient simplement jetes. Les recuperer ne coute
+   AUCUN decodage, AUCUNE memoire — point capital apres les fermetures
+   d'appli des sessions 141-142.
+   C'est ce qui permet enfin de savoir qu'une photo est COUCHEE ou DEBOUT.
+   Argument facultatif : les autres appels du fichier ne bougent pas. */
+function hsVignetteFichier(fichier, cote, infos) {
   return new Promise(function (resolve) {
     try {
       if (!fichier || typeof window === "undefined" || !window.URL || !window.URL.createObjectURL) { resolve(null); return; }
@@ -293,6 +341,7 @@ function hsVignetteFichier(fichier, cote) {
       img.onload = function () {
         try {
           var L = img.naturalWidth || 1, H = img.naturalHeight || 1;
+          try { if (infos) { infos.L = L; infos.H = H; infos.r = L / H; } } catch (eI) { }
           var f = Math.min(1, cote / Math.max(L, H));
           var c = document.createElement("canvas");
           c.width = Math.max(1, Math.round(L * f));
@@ -1491,18 +1540,29 @@ function ComposeurStory(props) {
          avait supprimee : je l'avais reintroduite. Le repli est maintenant une
          case neutre, qui garde sa croix de retrait. */
   var minisRef = React.useRef([]);
+  /* 19ab — LA FORME DE CHAQUE PHOTO, mesuree ici et nulle part ailleurs.
+     `ratiosRef.current[i]` = largeur / hauteur de la photo brute n° i.
+     > 1 = couchee, < 1 = debout, = 1 = carree.
+     ⚠️ C'est volontairement un REF et non un etat : le harnais de tests
+     adresse les etats du composeur PAR POSITION (voir le commentaire des
+     etats 13-14). Ajouter un `useState` ici decalerait tout et casserait
+     `t_19b.js` / `t_19c.js` en silence. Le rendu est declenche de toute
+     facon par `setUrlsMini`, qui suit la meme boucle. */
+  var ratiosRef = React.useRef([]);
   React.useEffect(function () {
     var vivant = true;
     (async function () {
       /* on repart de ce qui existe deja, on ne refait que ce qui manque */
       var res = minisRef.current.slice(0, fichiersBruts.length);
+      ratiosRef.current = ratiosRef.current.slice(0, fichiersBruts.length);
       for (var i = 0; i < fichiersBruts.length; i++) {
         if (!vivant) break;
         if (res[i]) continue;
-        var u = null;
-        try { u = await hsVignetteFichier(fichiersBruts[i], 200); } catch (e) { u = null; }
+        var u = null; var inf = {};
+        try { u = await hsVignetteFichier(fichiersBruts[i], 200, inf); } catch (e) { u = null; }
         if (!vivant) { hsLibererUrl(u); break; }
         res[i] = u || null;
+        if (inf && inf.r) ratiosRef.current[i] = inf.r;
         minisRef.current = res;
         setUrlsMini(res.slice());
       }
@@ -1510,6 +1570,39 @@ function ComposeurStory(props) {
     })();
     return function () { vivant = false; };
   }, [props.fichier, fichiersBruts.length]);
+
+  /* 19ab (14/08, signalement de Blandine : « on peut passer de 5 a 2, elle
+     maintient le visuel a 5 ») — ⚠️ DEFAUT REEL, VISIBLE SUR SA CAPTURE :
+     « Publier (2) » et QUATRE photos dans la maquette.
+     Les deux apercus se construisaient sur `urlsMini`, qui est indexe sur
+     `fichiersBruts` — la selection D'ORIGINE. Or retirer une photo ne la
+     supprime pas de cette liste : `ecarterPhoto` la marque seulement comme
+     ecartee. L'apercu continuait donc d'afficher les photos retirees, et
+     mentait sur ce qui allait etre publie.
+     Desormais les deux apercus lisent `fichiersOrdonnes` — EXACTEMENT la
+     liste que `publier()` parcourt (~ligne 1772). Une seule source de verite.
+     ⚠️ Ne jamais rebrancher un apercu sur `urlsMini` directement. */
+  function hsVignettesRetenues() {
+    try {
+      return fichiersOrdonnes.map(function (f) {
+        var ix = fichiersBruts.indexOf(f);
+        return (ix >= 0) ? (urlsMini[ix] || null) : null;
+      }).filter(function (u) { return !!u; });
+    } catch (e) { return []; }
+  }
+
+  /* 19ab — les formes des photos RETENUES, dans l'ordre d'affichage.
+     Les photos ecartees sont exclues : c'est bien la liste que l'on va
+     comparer aux fenetres d'un decor. */
+  function hsFormesRetenues() {
+    try {
+      return fichiersOrdonnes.map(function (f) {
+        var ix = fichiersBruts.indexOf(f);
+        var r = (ix >= 0) ? ratiosRef.current[ix] : null;
+        return (typeof r === "number" && isFinite(r) && r > 0) ? r : null;
+      });
+    } catch (e) { return []; }
+  }
 
   /* Les images ne sont relachees qu'a la FERMETURE de la feuille : pendant
      qu'elle est ouverte, chaque vignette gardee est une image de moins a
@@ -1608,7 +1701,37 @@ function ComposeurStory(props) {
      defilement. Le catalogue reste entier, la memoire non. */
   var vfS = React.useState(6), voletFin = vfS[0], setVoletFin = vfS[1];
   function bandeModeles(nCible, valeur, choisir, avecAucun) {
-    var listeTotale = hsTousModeles(nCible);
+    /* 19ab (14/08, feu vert de Blandine : « on devrait seulement proposer les
+       fonds correspondant au nombre de photos, sinon c'est surcharge »).
+       ⚠️ RENVERSEMENT ASSUME DE LA 19g. Ce jour-la, ses mots etaient « on
+       montre tout je pense » : tout le catalogue defilait, les incompatibles
+       portant seulement une pastille chiffree. Elle a demande l'inverse hier
+       soir. `hsModelesPourN` existait depuis le debut et n'etait appelee
+       NULLE PART — la decision avait ete prise, jamais ecrite.
+       Le plafond etant de 5 photos (HS_MULTI_MAX) et le catalogue couvrant
+       1 a 5 fenetres, le cas « aucun decor ne correspond » ne peut pas se
+       produire par le nombre. Le repli reste pose par prudence : si le
+       catalogue venait a manquer pour un compte donne, on remontre tout
+       plutot que de laisser la bande VIDE. */
+    var listeTotale = hsModelesPourN(nCible);
+    if (!listeTotale.length) listeTotale = hsTousModeles(nCible);
+    /* Puis le classement par ACCORD DES FORMES : a nombre de fenetres egal,
+       le decor qui coupe le moins tes photos passe devant. Deux photos
+       couchees font remonter les decors a fenetres couchees.
+       ⚠️ Classement seulement, aucun decor n'est retire : le choix reste
+       entier, il est juste presente dans le bon ordre. */
+    try {
+      var formes = hsFormesRetenues();
+      var connu = formes.some(function (r) { return typeof r === "number"; });
+      if (connu) {
+        var score = {};
+        listeTotale.forEach(function (k) { score[k] = hsAccordModele(k, formes); });
+        listeTotale = listeTotale.slice().sort(function (a, b) {
+          if (score[a] !== score[b]) return score[a] - score[b];
+          return a < b ? -1 : 1;
+        });
+      }
+    } catch (eF) { }
     var liste = listeTotale.slice(0, voletFin);
     return h("div", null,
       /* 19m (14/08) : « le rail ne defile pas, on ne voit pas les suivantes ».
@@ -1666,16 +1789,18 @@ function ComposeurStory(props) {
           },
             h("img", {
               /* 19x : la bande charge `modele-XX-mini.webp` — 176 px de large,
-                 0,21 Mo decode au lieu de 6,0. Si la vignette n'est pas encore
-                 poussee a la racine, on retombe sur le decor plein format :
-                 le catalogue reste affichable pendant la mise en place. */
+                 0,21 Mo decode au lieu de 6,0.
+                 19ab (14/08, feu vert de Blandine) : ⚠️ LE REPLI EST SUPPRIME.
+                 Il rechargeait `modele-XX.webp` PLEIN FORMAT quand la vignette
+                 manquait — 6 Mo decodes, exactement la panne memoire que la 19x
+                 pretendait avoir refermee. Or 19 vignettes manquent encore
+                 (`modele-5` a `modele-23`) : la protection ne couvrait qu'une
+                 poignee de decors. Sans repli, un decor sans vignette montre son
+                 fond argente et sa pastille chiffree — il reste CHOISISSABLE,
+                 rien ne disparait, et l'appli ne peut plus fermer.
+                 ⚠️ NE JAMAIS REMETTRE DE `onError` QUI CHARGE LE PLEIN FORMAT.
+                 Le remede est de pousser les vignettes, pas de recharger lourd. */
               src: ref + "-mini.webp", alt: ref, loading: "lazy", decoding: "async",
-              onError: function (ev) {
-                try {
-                  var im = ev && ev.target; if (!im || im.__pleine) return;
-                  im.__pleine = 1; im.src = ref + ".webp";
-                } catch (eM) { }
-              },
               /* 19j (14/08) : « on voit rien pour les modeles ». Evidemment :
                  un decor est un dessin NOIR dont les fenetres sont des TROUS,
                  pose sur un fond noir — il n'y avait rien a voir. La vignette
@@ -2074,10 +2199,11 @@ function ComposeurStory(props) {
                 if (!mod || !mod.fenetres || !mod.fenetres.length) return null;
                 var LARG = 168, ech = LARG / (mod.taille[0] || 941);
                 var HAUT = Math.round((mod.taille[1] || 1672) * ech);
-                var vign = (props.origine && props.origine.url ? [props.origine.url] : []).concat(urlsMini.filter(function (u) { return !!u; }));
+                var vign = (props.origine && props.origine.url ? [props.origine.url] : []).concat(hsVignettesRetenues());
                 var fenSure = (fenVue >= 0 && fenVue < mod.fenetres.length) ? fenVue : 0;
-                var cad = cadresFen[String(fenSure)] || { cx: 0.5, cy: 0.5 };
-                var rF = ratioFenetre(compoChoix, fenSure);
+                /* 19ab : `cad` et `rF` ne servaient QU'au curseur retire.
+                   `ratioFenetre` reste utilisee a la publication (~1772) pour
+                   couper chaque photo au format de sa fenetre. */
                 return h("div", { style: { marginTop: 12 } },
                   h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.6, textTransform: "uppercase", color: tA(0.92), marginBottom: 8 } }, hsT("apercuCompo", lg)),
                   h("div", { style: { position: "relative", width: LARG, height: HAUT, borderRadius: 12, overflow: "hidden", background: "#060709", border: "1px solid " + tA(0.3) } },
@@ -2111,61 +2237,34 @@ function ComposeurStory(props) {
                        PLEIN FORMAT — 6 Mo decodes — pour l'afficher dans 168 px.
                        La bande, elle, avait ete corrigee en 19x et prend deja
                        `-mini.webp` (0,21 Mo). L'apercu etait reste en arriere.
-                       Meme repli que la bande : si la vignette n'est pas encore
-                       poussee a la racine, on retombe sur le plein format. */
+                       19ab : ⚠️ LE REPLI EST SUPPRIME ICI AUSSI. Il rechargeait
+                       le plein format quand la vignette manquait — la panne
+                       revenait a l'identique sur les 19 decors non pourvus.
+                       Sans vignette, le decor ne se dessine simplement pas
+                       par-dessus les photos ; le placement des fenetres, lui,
+                       vient des `bbox` et reste juste. */
                     h("img", {
                       src: compoChoix + "-mini.webp", alt: "", loading: "lazy", decoding: "async",
-                      onError: function (ev) {
-                        try { var im = ev && ev.target; if (!im || im.__pleine) return; im.__pleine = 1; im.src = compoChoix + ".webp"; } catch (eMp) { }
-                      },
                       style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", pointerEvents: "none" }
                     })),
-                  h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, lineHeight: 1.5 } }, hsT("cadrerFenetre", lg)),
-                  h("input", {
-                    type: "range", min: 0, max: 100, step: 1,
-                    defaultValue: Math.round((rF >= 1 ? cad.cx : cad.cy) * 100),
-                    key: "cadr" + compoChoix + "-" + fenSure,
-                    "aria-label": hsT("cadrerFenetre", lg),
-                    /* 19aa — ⚠️ SECOND ETAGE DE LA MEME PANNE. Avant, chaque
-                       micro-mouvement du doigt appelait setCadresFen : React
-                       reconstruisait TOUT le bloc — decor compris — des dizaines
-                       de fois par seconde. C'est ce qui saturait la memoire et
-                       faisait fermer l'appli.
-                       Desormais : pendant le glisse, on deplace la photo
-                       DIRECTEMENT dans le DOM (aucun rendu React). L'etat n'est
-                       ecrit qu'au RELACHEMENT du doigt. Blandine voit bouger en
-                       temps reel, React ne travaille qu'une fois.
-                       ⚠️ Ne pas remettre `value` + `onChange` sur cet element :
-                       ce serait revenir exactement au defaut. */
-                    onInput: function (ev) {
-                      try {
-                        var v = (Number(ev.target.value) || 0) / 100;
-                        var boite = ev.target.parentNode;
-                        /* ⚠️ On passe par les BOUTONS et non par les images :
-                           une fenetre sans photo ne produit aucune image, et
-                           les rangs se decaleraient. Chaque fenetre a toujours
-                           son bouton, meme vide. */
-                        var bt = boite ? boite.querySelectorAll("button") : null;
-                        var im = (bt && bt[fenSure]) ? bt[fenSure].querySelector("img") : null;
-                        if (im) {
-                          var d0 = cadresFen[String(fenSure)] || { cx: 0.5, cy: 0.5 };
-                          var px = (rF >= 1 ? v : (typeof d0.cx === "number" ? d0.cx : 0.5));
-                          var py = (rF >= 1 ? (typeof d0.cy === "number" ? d0.cy : 0.5) : v);
-                          im.style.objectPosition = Math.round(px * 100) + "% " + Math.round(py * 100) + "%";
-                        }
-                      } catch (eIn) { }
-                    },
-                    onChange: function (ev) {
-                      var v = (Number(ev.target.value) || 0) / 100;
-                      setCadresFen(function (anc) {
-                        var n = Object.assign({}, anc);
-                        var d = Object.assign({ cx: 0.5, cy: 0.5 }, n[String(fenSure)] || {});
-                        if (rF >= 1) d.cx = v; else d.cy = v;
-                        n[String(fenSure)] = d; return n;
-                      });
-                    },
-                    style: { width: LARG, accentColor: tn, marginTop: 4 }
-                  }));
+                  /* 19ab (14/08, decision de Blandine) — LE CURSEUR EST RETIRE.
+                     Ses mots : « déjà viré le curseur il sert à rien il est
+                     laid, il est contre intuitif il marche pas et en plus il
+                     fait tout planter à chaque fois en boucle ».
+                     Il portait le SECOND etage de la panne memoire : chaque
+                     relachement reecrivait l'etat et React refabriquait tout le
+                     bloc, decor compris. Plus de curseur, plus de reconstruction.
+                     Chaque photo se pose CENTREE dans sa fenetre (cx = cy = 0,5,
+                     le defaut de `cadresFen`) : le cadrage n'est pas regle, il
+                     n'est pas non plus faux.
+                     ⚠️ NE PAS LE REMETTRE. Le remplacant decide est le geste a
+                     la main — glisser la photo dans la fenetre, pincer pour
+                     zoomer — ecrit sur `PhotoZoomHype`, qui ne pose AUCUN etat
+                     React pendant le geste. `cadresFen` et `setCadresFen`
+                     restent en place pour l'accueillir ; la publication les lit
+                     deja (ligne ~1772). Le texte `cadrerFenetre` reste au
+                     dictionnaire, il decrit ce geste-la. */
+                  null);
               })()
               : null,
             /* 19c : L'APERCU DU H+D. « Sur composer il n'y a rien » (Blandine,
@@ -2176,7 +2275,7 @@ function ComposeurStory(props) {
               ? h("div", { style: { marginTop: 12 } },
                 h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.6, textTransform: "uppercase", color: tA(0.92), marginBottom: 8 } }, hsT("apercuCompo", lg)),
                 (function () {
-                  var vign = (props.origine && props.origine.url ? [props.origine.url] : []).concat(urlsMini.filter(function (u) { return !!u; }));
+                  var vign = (props.origine && props.origine.url ? [props.origine.url] : []).concat(hsVignettesRetenues());
                   var grandeU = vign[0] || null, petites = vign.slice(1, 5);
                   return h("div", {
                     style: {
