@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ag";
+var HYPE_STORIES_VERSION = "19ah";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1751,6 +1751,20 @@ function EditeurDecorHype(props) {
 
   return h("div", {
     ref: racineRef,
+    /* ⚠️ 19ah — LA VRAIE CAUSE DE L'EJECTION, trouvee sur la video de 09h04.
+       Ce n'etait pas iOS : c'est le NAVIGATEUR PAR SWIPE DE HYPE (index.html
+       ~21341, `onNavTouchEnd`). Au relacher, un geste horizontal > 65 px
+       declenche `retourEcran()` — l'ecran change, le composeur se demonte,
+       Blandine retombe sur son profil. Elle a bouge sa premiere photo
+       (geste vertical, rien), touche la seconde en glissant en horizontal :
+       « tout a plante ».
+       `data-noswipe` est le marqueur que ce navigateur respecte. Le meme
+       piege avait deja ete paye en 19m sur la bande de decors (data-hscroll).
+       ⚠️ TOUT NOUVEL ECRAN TACTILE DU MODULE DOIT PORTER `data-noswipe`.
+       Le preventDefault de la 19af reste : il bloque, LUI, le geste de
+       retour d'iOS. Les deux protections sont necessaires, elles ne
+       couvrent pas la meme chose. */
+    "data-noswipe": "1",
     style: {
       position: "fixed", inset: 0, zIndex: 100000, background: "#060709",
       touchAction: "none",
