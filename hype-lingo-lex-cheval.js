@@ -643,7 +643,7 @@ window.HYPE_LINGO_LEX.cheval = {
   ],
 
   /* ==================================================================
-     LE DIALOGUE DU CONNEMARA — 15 août 2026, session 211.
+     LE DIALOGUE DU CONNEMARA — 15 août 2026, session 214.
 
      🟥 CLÉ INERTE au moment où elle est posée : le moteur
      (lingo-dialogue.html) la lira, mais rien d'autre. Poser la clé ne

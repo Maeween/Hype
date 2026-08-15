@@ -1,6 +1,6 @@
 /* sw-linguae.js — Hype Linguae · le hors-ligne
    ==================================================================
-   Écrit le 15 août 2026, session 211, sur ordre de Blandine :
+   Écrit le 15 août 2026, session 214, sur ordre de Blandine :
    « comment on peut rendre Linguae utilisable sans réseau, dans
    l'avion par exemple » puis « gère juste le hors ligne ».
 

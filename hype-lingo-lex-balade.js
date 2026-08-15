@@ -251,7 +251,7 @@ window.HYPE_LINGO_LEX.balade = {
   ],
 
   /* ==================================================================
-     LE DIALOGUE DU MORNE — réécrit le 15 août 2026, session 211.
+     LE DIALOGUE DU MORNE — réécrit le 15 août 2026, session 214.
 
      🟥 PREMIÈRE VERSION RÉELLEMENT LUE ET VALIDÉE PAR BLANDINE. La
      version du 13/08 (21 phrases) n'avait jamais été relue par elle :

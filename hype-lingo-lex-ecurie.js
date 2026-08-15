@@ -553,7 +553,7 @@ window.HYPE_LINGO_LEX.ecurie = {
   ],
 
   /* ==================================================================
-     LE DIALOGUE DE NEWMARKET — 15 août 2026, session 211.
+     LE DIALOGUE DE NEWMARKET — 15 août 2026, session 214.
 
      LA SCÈNE : on t'accueille dans l'écurie, tu cherches ton chemin et
      on te confie des tâches. 21 phrases, 6 temps, 5 entendues.

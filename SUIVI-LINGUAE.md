@@ -173,6 +173,133 @@ Précédent posé en session 209 sur `balade` (*« s'il dort, tant mieux »*), a
 
 ---
 
+# ✈️ SESSION 214 · 15/08 — CINQ DIALOGUES EN SIX LANGUES, LE VERROU DES TROIS ESSAIS, ET LE HORS LIGNE
+
+## ⚠️ INCIDENT DE NUMÉROTATION, SIGNALÉ ET CORRIGÉ
+
+Tout le travail du jour a d'abord été daté **« session 211 »** dans les sept fichiers livrés. Faux : la 211 existe déjà (14/08, les deux selleries) et la dernière consignée était la **213**. Corrigé dans les sept fichiers avant livraison, syntaxe revérifiée.
+✅ **RÈGLE : lire le dernier numéro de session DANS le SUIVI avant d'écrire une date dans un fichier.** Ne jamais le déduire de mémoire.
+
+---
+
+## 🟥 LE CRITÈRE QUI A TOUT TAILLÉ — DÉCISION DE BLANDINE
+
+> *« On s'en fout de la crème solaire etc on doit apprendre les termes équestres !! »*
+> *« C'est juste que dans les phrases à prononcer pour pouvoir se débrouiller sur place, en dehors d'un achat de cheval j'ai jamais eu à poser une telle question. »*
+
+**Une phrase n'existe QUE si on la dit vraiment sur place. Un mot du lexique n'a PAS besoin d'une phrase : il s'apprend en lisant.**
+
+⚠️ Et le fait déclencheur, qu'il faut retenir : **Blandine n'avait jamais lu les dialogues de la session 210.** *« Je les avais pas encore lues elles sont nulles »*, puis *« les fichiers de l'époque, je ne les ai pas lus en fait »*. Seule La Baule était passée entre ses mains. Ce qui a été écrit sans elle n'est pas acquis — le relire avec elle avant de le traduire ou de le construire dessus.
+
+---
+
+## LES CINQ DIALOGUES — 111 PHRASES × 6 LANGUES
+
+| ville | phrases | état |
+|---|---|---|
+| **La Baule** (`arrivee`) | 25 | fr/en existaient → **es/it/de/ja ajoutés** |
+| **Le Morne** (`balade`) | 23 | **entièrement réécrit** puis 6 langues |
+| **Connemara** (`cheval`) | 22 | **créé**, 6 langues |
+| **Newmarket** (`ecurie`) | 21 | **créé**, 6 langues |
+| **Lambourn** (`pansage`) | 20 | **créé**, 6 langues |
+
+Contrôle machine à chaque livraison : aucune case vide, japonais espacé (découpable en tuiles), refs `mots` valides, lexiques et `phrases` d'exercice intacts.
+
+### Le Morne, réécrit avec elle, phrase par phrase
+**Sorties (7)** : savoir nager ×2, crème solaire, maillot de bain, « la baignade est comprise », le doublon du galop doux.
+**Entrées (9)** : nager avec les chevaux, licol/filet, **resangler**, étriers, enlever la selle, file indienne + distances, **galoper rapidement**, crinière/rênes, desseller/doucher.
+**Ses corrections, mot pour mot** : « est-ce qu'il est possible de nager avec les chevaux ? » (remplace une question d'organisation par une question de vécu) · **« resangler »**, le mot d'écurie, au lieu de « resserrer la sangle » · **« Je ne suis jamais montée à cru »** — auxiliaire être, féminin ; l'ancien fichier portait « j'ai jamais monté ».
+
+🟥 **Le faux ami canter/gallop est désormais VÉCU DES DEUX CÔTÉS.** Sur son constat que deux phrases disaient la même chose, l'une demande le galop lent, l'autre le galop **rapide**. En anglais : `canter` puis `gallop`. C'est le seul endroit où `gallop` a le droit d'apparaître. **NE PAS « corriger ».**
+
+### Ce qui a été déplacé, sur sa décision
+`passeport` + `puce` → **Vérone** (on ne demande pas le passeport d'un cheval de club) · `fer` perdu + `marechal` → **Lambourn** · boulet chaud → **Kildare** (c'est une alerte) · `poulain` et foal/colt/filly → **Golegã** (*« on devrait peut-être voir ça plutôt en élevage »*).
+
+### Le choix C du Connemara
+Question : « C'est un hongre, une jument ou un **entier** ? » → réponse du club : « C'est un hongre : un mâle castré. Un entier qui fait la saillie, on l'appelle un **étalon**. » **`entier` n'est PAS au lexique** (qui porte `etalon`) et c'est voulu : la nuance s'enseigne dans la réponse, sans entrée neuve à traduire en six langues.
+⚠️ En allemand `Hengst` = entier ET étalon (la nuance passe par `Deckhengst`) ; en japonais, périphrase. Signalé à Blandine, non tranché.
+
+### Piège attrapé au banc
+`off hind` = postérieur **DROIT** en anglais ; le français disait gauche → corrigé en **`near hind`**. Et en espagnol **`mano` désigne un ANTÉRIEUR** : un postérieur se dit `pata`. **NE PAS « corriger » à l'envers.**
+
+---
+
+## 🟥 LA RECONNAISSANCE VOCALE — TROIS ESSAIS MAXIMUM
+
+> *« J'ai répété 10 fois le même mot j'ai cru que j'allais câbler et j'ai tjs pas compris pourquoi pas validé. »*
+> *« Deux fois répète et on propose de continuer on refuse pas 10 fois. »* → monté à trois sur proposition validée (*« à la limite trois max »*).
+> *« Sans forcément remettre un gros trait vert pour dire valide si vraiment c'est incompréhensible. »*
+
+**Écart doc/code trouvé :** le SUIVI annonçait « 2 essais max » ; le code offrait « Réessayer » **à l'infini**. Rien ne comptait les tentatives.
+
+**Câblé dans `lingo-dialogue.html`** : raté 1 → Presque + Réessayer · raté 2 → **le modèle est rejoué automatiquement**, dernier essai annoncé · raté 3 → **plus de micro**, « on passe, la phrase reviendra » + Continuer. Un essai où rien n'est capté **compte comme un essai** (c'est le cas qu'elle a vécu). « Continuer » reste visible dès le premier essai. Compteur remis à zéro à chaque phrase.
+
+---
+
+## ✈️ LE HORS LIGNE — `sw-linguae.js`
+
+> *« Comment on peut rendre Linguae utilisable sans réseau, dans l'avion par exemple ? »*
+> *« Aucun moyen de charger les villes non ouvertes ? Sinon pas trop d'intérêt. »*
+
+### 🟥 CE SUIVI AVAIT TORT, ET ÇA A BLOQUÉ LE CHANTIER POUR RIEN
+Il était écrit à deux endroits que le hors-ligne **« exige le dossier `linguae/` »** parce qu'« un service worker ne met en cache que ce qui est dans SA portée ». **C'EST FAUX.** La portée décide quelles **PAGES** il contrôle, pas quelles ressources il garde. Une page contrôlée qui demande `/carte-labaule.webp` à la racine passe par le service worker même si la racine est hors portée.
+✅ **Les 31 cartes, 31 fonds, 31 objets et les 26 lexiques RESTENT À LA RACINE.** Le dossier `linguae/` n'est pas un prérequis. Les deux commentaires faux de `lingo.html` ont été réécrits.
+
+### Ce qui est posé
+`sw-linguae.js`, enregistré avec **`scope:"/lingo"`** : il ne contrôle que `lingo.html`, `lingo-dialogue.html`, `lingo-sellerie.html`, `lingo-collection.html`, `lingo-globe.html`. **`index.html` (Hype) et son `sw.js` ne sont jamais touchés.** ⚠️ **NE PAS remonter ce scope à `"/"`** — Hype a déjà trois versions de `sw.js` en circulation.
+· Supabase / CDN : **réseau seul, jamais de cache**. · Vidéos `.mp4` : **jamais** (des dizaines de Mo — décision de Blandine). · Lexiques, images, polices : cache d'abord. · Pages : réseau d'abord, cache en secours.
+· Mise en cache **par URL complète, `VER` compris** : une adresse neuve est retéléchargée. Si une image s'entête, **incrémenter `VER` reste le premier geste, pas vider le cache**.
+
+### Le premium hors réseau : rien à faire, c'était déjà juste
+Vérifié ligne à ligne : le code du 14/08 ne pose `"0"` **que si la base a vraiment répondu**. Hors ligne, l'appel échoue, le statut ne tombe pas. ⚠️ **NE PAS « simplifier » ce test.** Une abonnée qui perd ses villes en plein vol est le pire scénario.
+
+### Le chargement discret, et le défaut inversé
+Les villes descendent une par une, 12 s après l'ouverture, avec une pause entre chacune. **Il tourne dans tous les cas** — carte vue, fermée ou absente (*« dans tous les cas téléchargement hors connexion derrière non ? »*).
+🟥 **ON LANCE PAR DÉFAUT** (*« lancer par défaut ça serait cool »*). Le premier réglage s'abstenait quand le réseau était inconnu — or `navigator.connection` **n'existe pas sur Safari iOS**, donc rien n'aurait jamais démarré sur iPhone. On ne s'abstient plus que sur refus explicite : `saveData`, `cellular` annoncé, 2g. **NE PAS revenir à « inconnu = non ».**
+⚠️ **iOS n'a pas d'arrière-plan pour le web** : app fermée, ça s'arrête et reprend à la prochaine ouverture. Ne rien promettre d'autre à l'écran.
+⚠️ **`"linguae-v1"` est écrit dans `sw-linguae.js` ET dans `lingo.html`.** Changer l'un sans l'autre = le bouton remplit un cache que le service worker ne lit pas.
+
+---
+
+## 📱 LA CARTE HORS LIGNE SUR L'ACCUEIL — `#ouvPoche`
+
+> *« On peut mettre un encart sur la première page après la vidéo proposant de télécharger l'appli afin de pouvoir en profiter hors connexion. »*
+> 🟥 *« L'installation est impérative pour moi, la PWA tient déjà pas sur le bureau mais en ligne direct c'est pire. »*
+
+**Constat : `lingo.html` n'invitait NULLE PART à installer l'app.** Le manifeste et les icônes existaient, rien ne disait le geste. Cette carte est la seule porte d'entrée.
+
+**Trois états, jamais deux à la fois :**
+1. **Pas installée** → l'installation d'abord, `installer.webp` (Apy tenant un iPhone, l'icône sur l'écran d'accueil), le geste expliqué en deux marches (Partager → Sur l'écran d'accueil sur iOS ; menu → Installer ailleurs).
+2. **Installée, contenu incomplet** → `hors-ligne.webp`, « Emporte le voyage » + bouton (qui passe outre le réglage réseau : elle a choisi) et barre de progression.
+3. **Installée + tout à bord** → **la carte disparaît**.
+
+🟥 *« Fais pas qu'elle soit proposée si les gens l'ont déjà fait »* : la ligne d'installation ne s'affiche **jamais** à qui a déjà installé (test `display-mode: standalone`). Fermée une fois → `lingua_poche_ferme`, elle ne revient pas.
+Verre fumé + reflet lent repris de l'encart **« HYPE dans ta poche »** d'`index.html`, pour que les deux apps se ressemblent. ⚠️ Aucun filtre sur l'image d'Apy — le verre ne concerne que la surface UI.
+
+### La mascotte
+**APY**, en réserve, planches reçues le 15/08. Piste **non figée** de Blandine : *« on peut l'avoir plus claire sur Hype et plus foncée sur Linguae ? »* — même mascotte, deux tempéraments de lumière. À valider avant d'en faire une règle.
+⚠️ **L'icône Apy-valise-globe est RÉSERVÉE** à un autre usage à venir (*« on va l'utiliser bientôt sur autre chose »*) — ne pas la câbler ailleurs. La photo avec le garçon est **écartée**, ne pas la réutiliser.
+⚠️ Claude **ne peut pas générer d'images** : toute nouvelle mascotte vient de Blandine.
+
+---
+
+## À L'ÉCRAN : + / −
+
+**+** la carte hors-ligne sur l'accueil (deux états) · **+** sa barre de progression · **+** la note « dernier essai » après le 2ᵉ raté vocal et « on passe » après le 3ᵉ · **+** le bouton de mise en situation sur **Connemara**, **Newmarket** et **Lambourn** (`aUnDialogue()` détecte la clé) · La Baule et Le Morne passent de **2 à 6 langues**.
+**−** le bouton « Réessayer » après le 3ᵉ raté vocal.
+
+## AU DÉPLOIEMENT
+`lingo.html` porte **6 numéros de version** : `ecurie ?l=2`, `pansage ?l=3`, `cheval ?l=4`, `arrivee ?l=5`, `balade ?l=5`, `VER v37`.
+**Un seul push** (règle de coût en tête de ce fichier) : `lingo.html` · `sw-linguae.js` · `installer.webp` · `hors-ligne.webp` · les 5 lexiques · `lingo-dialogue.html`.
+⚠️ **Rien n'a pu être testé** : pas de navigateur au banc, le domaine refuse l'accès automatisé. Test à faire par Blandine — installer sur l'écran d'accueil, visiter deux villes, mode avion, rouvrir.
+
+## VERS L'APP STORE
+Le hors-ligne est **la répétition générale de l'app native** : une vraie app iOS embarque tout par nature. Ce qui est acquis aujourd'hui — inventaire des ressources d'une ville, cache par version, statut premium qui survit à l'absence de réseau — se transpose tel quel.
+**Ce qui reste web et devra changer :** iOS n'autorise aucun téléchargement en arrière-plan pour une PWA (résolu nativement) · l'installation par le geste Safari disparaît au profit de l'App Store · `navigator.connection` absent sur Safari sera remplacé par les API réseau natives.
+**Aucun recul de dépendance envers Hype cette session** : les cinq dialogues vivent dans les lexiques Linguae, le service worker ignore Hype par construction. Le seul emprunt est **visuel** (la maquette de l'encart, la mascotte APY) — sans effet sur l'autonomie technique.
+
+---
+
 # 🔗 SESSION 213 · 14/08 — LINGUAE GARDE SON PARTAGE À ELLE · LE VERROU DES VILLES TRANCHÉ : VITRINE
 
 **Aucun code livré sur Linguae.** Une décision, une erreur de ma part corrigée, et un rappel : **une question posée en 212 n'est toujours pas tranchée.**

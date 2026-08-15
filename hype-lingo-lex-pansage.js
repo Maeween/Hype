@@ -563,5 +563,201 @@ window.HYPE_LINGO_LEX.pansage = {
       it:"Ha sudato, lo faccio camminare.",
       de:"Er hat geschwitzt, ich führe ihn.",
       ja:"汗 を かい た ので 歩か せ ます。" }
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE LAMBOURN — 15 août 2026, session 214.
+
+     LA SCÈNE : on te confie un cheval à préparer, et on te dit comment
+     il va. 20 phrases, 6 temps, 5 entendues.
+
+     🟥 LE CRITÈRE DE BLANDINE (15/08) : une phrase n'existe QUE si on
+     la dit vraiment sur place. Un mot du lexique n'a PAS besoin d'une
+     phrase — il s'apprend en lisant.
+     LAISSÉS AU LEXIQUE SEUL, exprès : la brosse à eau, la tondeuse, le
+     toupet, la sole, la fourchette, la poussière, la mue, la tache,
+     l'éclat, la tique. NE PAS « compléter » le dialogue avec eux.
+
+     ⚠️ REGISTRE ANGLAIS D'ÉCURIE : `the dandy brush`, `the curry comb`,
+     `the hoof pick`, `to pick out the feet`, `the sweat scraper`,
+     `to plait` (prononcé « platt » — `to braid` en varEn américain).
+     Pièges déjà portés par le fichier : `frog` pour la fourchette,
+     `clippers` jamais `mower`, et en espagnol `casco` = le sabot ET le
+     casque.
+
+     `dit` : "joueuse" = elle produit · "club" = elle entend et comprend.
+  ================================================================== */
+  dialogue: {
+    ville: "lambourn", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 20 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · on me confie le cheval ---- */
+      { ref:"d-panser-avant", temps:1, dit:"club", mots:["panser"],
+        fr:"Tu peux le panser avant la reprise ?",
+        en:"Could you groom him before the lesson?",
+        es:"¿Puedes limpiarlo antes de la clase?",
+        it:"Puoi pulirlo prima della lezione?",
+        de:"Kannst du ihn vor der Stunde putzen?",
+        ja:"レッスン の 前 に 手入れ を し て もらえ ます か ?" },
+
+      { ref:"d-ou-boite-pansage", temps:1, dit:"joueuse", mots:["boite-pansage"],
+        fr:"Où est la boîte de pansage ?",
+        en:"Where's the grooming kit?",
+        es:"¿Dónde está la caja de limpieza?",
+        it:"Dov'è la cassetta della pulizia?",
+        de:"Wo ist der Putzkasten?",
+        ja:"手入れ用具入れ は どこ です か ?" },
+
+      { ref:"d-emprunter-etrille", temps:1, dit:"joueuse", mots:["etrille"],
+        fr:"Est-ce que je peux emprunter une étrille ?",
+        en:"Could I borrow a curry comb?",
+        es:"¿Puedo coger prestada una rasqueta?",
+        it:"Posso prendere in prestito una striglia?",
+        de:"Kann ich mir einen Striegel leihen?",
+        ja:"ゴムブラシ を 借り て も いい です か ?" },
+
+      /* ---- temps 2 · il est sale ---- */
+      { ref:"d-couvert-boue", temps:2, dit:"joueuse", mots:["boue"],
+        fr:"Il est couvert de boue.",
+        en:"He's covered in mud.",
+        es:"Está cubierto de barro.",
+        it:"È coperto di fango.",
+        de:"Er ist voller Schlamm.",
+        ja:"泥 だらけ です。" },
+
+      { ref:"d-r-etrille-puis-brosse", temps:2, dit:"club", mots:["etrille","brosse-dure"],
+        fr:"Commence par l'étrille, ensuite la brosse dure.",
+        en:"Start with the curry comb, then the dandy brush.",
+        es:"Empieza con la rasqueta, después el cepillo duro.",
+        it:"Comincia con la striglia, poi la brusca.",
+        de:"Fang mit dem Striegel an, dann die Wurzelbürste.",
+        ja:"まず ゴムブラシ、 次 に 泥落とし ブラシ です。" },
+
+      { ref:"d-brosser-avant-pieds", temps:2, dit:"joueuse", mots:["brosser","curer-pieds"],
+        fr:"Est-ce que je le brosse avant ou après les pieds ?",
+        en:"Do I brush him before or after picking out his feet?",
+        es:"¿Lo cepillo antes o después de limpiarle los cascos?",
+        it:"Lo spazzolo prima o dopo aver pulito gli zoccoli?",
+        de:"Bürste ich ihn vor oder nach dem Hufeauskratzen?",
+        ja:"裏掘り の 前 に ブラシ を かけ ます か、 あと です か ?" },
+
+      /* ---- temps 3 · les pieds ---- */
+      { ref:"d-curer-pieds", temps:3, dit:"joueuse", mots:["curer-pieds","cure-pied"],
+        fr:"Est-ce que je cure les pieds ?",
+        en:"Shall I pick out his feet?",
+        es:"¿Le limpio los cascos?",
+        it:"Gli pulisco gli zoccoli?",
+        de:"Soll ich die Hufe auskratzen?",
+        ja:"裏掘り を し ます か ?" },
+
+      { ref:"d-r-quatre-pieds", temps:3, dit:"club", mots:["curer-pieds"],
+        fr:"Toujours les quatre pieds, avant de seller.",
+        en:"Always all four feet, before you tack up.",
+        es:"Siempre los cuatro cascos, antes de ensillar.",
+        it:"Sempre tutti e quattro gli zoccoli, prima di sellare.",
+        de:"Immer alle vier Hufe, bevor du sattelst.",
+        ja:"必ず 四本 とも、 鞍 を 置く 前 に。" },
+
+      { ref:"d-pierre-sabot", temps:3, dit:"joueuse", mots:["sabot"],
+        fr:"Il y a une pierre dans le sabot.",
+        en:"There's a stone in his hoof.",
+        es:"Tiene una piedra en el casco.",
+        it:"C'è un sasso nello zoccolo.",
+        de:"Da ist ein Stein im Huf.",
+        ja:"蹄 に 石 が 挟まっ て い ます。" },
+
+      { ref:"d-graisser-pieds", temps:3, dit:"joueuse", mots:["graisser","graisse-pieds"],
+        fr:"Est-ce qu'il faut graisser les pieds ?",
+        en:"Do the hooves need oiling?",
+        es:"¿Hay que engrasar los cascos?",
+        it:"Bisogna ingrassare gli zoccoli?",
+        de:"Müssen die Hufe eingefettet werden?",
+        ja:"蹄油 を 塗り ます か ?" },
+
+      /* ---- temps 4 · la crinière et la queue ---- */
+      { ref:"d-queue-noeuds", temps:4, dit:"joueuse", mots:["queue","noeud"],
+        fr:"Sa queue est pleine de nœuds.",
+        en:"His tail is full of tangles.",
+        es:"Tiene la cola llena de enredos.",
+        it:"Ha la coda piena di nodi.",
+        de:"Sein Schweif ist völlig verknotet.",
+        ja:"尻尾 が 絡まっ て い ます。" },
+
+      { ref:"d-demeler-peigne", temps:4, dit:"joueuse", mots:["demeler","peigne"],
+        fr:"Est-ce que je peux démêler avec un peigne ?",
+        en:"Can I comb it out with a mane comb?",
+        es:"¿Puedo desenredarla con un peine?",
+        it:"Posso districarla con un pettine?",
+        de:"Kann ich ihn mit einem Mähnenkamm auskämmen?",
+        ja:"くし で ほどい て も いい です か ?" },
+
+      { ref:"d-tresser-concours", temps:4, dit:"joueuse", mots:["tresser","criniere"],
+        fr:"Est-ce qu'il faut le tresser pour le concours ?",
+        en:"Does he need plaiting for the show?",
+        varEn:"Does he need braiding for the show?",
+        es:"¿Hay que trenzarlo para el concurso?",
+        it:"Bisogna intrecciarlo per il concorso?",
+        de:"Muss er für das Turnier eingeflochten werden?",
+        ja:"競技 の ため に たてがみ を 編み ます か ?" },
+
+      /* ---- temps 5 · ce qu'il ne faut pas faire ---- */
+      { ref:"d-sensible-quelque-part", temps:5, dit:"joueuse", mots:[],
+        fr:"Est-ce qu'il est sensible quelque part ?",
+        en:"Is he ticklish anywhere?",
+        es:"¿Es sensible en alguna parte?",
+        it:"È sensibile da qualche parte?",
+        de:"Ist er irgendwo empfindlich?",
+        ja:"どこか 敏感 な ところ が あり ます か ?" },
+
+      { ref:"d-r-attention-membres", temps:5, dit:"club", mots:["membres"],
+        fr:"Fais attention aux membres, il n'aime pas.",
+        en:"Mind his legs — he doesn't like it.",
+        es:"Ten cuidado con las patas, no le gusta.",
+        it:"Attenta agli arti, non gli piace.",
+        de:"Pass bei den Beinen auf, das mag er nicht.",
+        ja:"肢 に は 気 を つけ て。 嫌がり ます。" },
+
+      { ref:"d-eponger-yeux", temps:5, dit:"joueuse", mots:["eponger-yeux","eponge"],
+        fr:"Est-ce que je peux lui éponger les yeux ?",
+        en:"Can I sponge his eyes?",
+        es:"¿Puedo limpiarle los ojos?",
+        it:"Posso pulirgli gli occhi?",
+        de:"Kann ich ihm die Augen auswaschen?",
+        ja:"目 を 拭い て も いい です か ?" },
+
+      /* ---- temps 6 · après le travail ---- */
+      { ref:"d-en-sueur", temps:6, dit:"joueuse", mots:["sueur"],
+        fr:"Il est en sueur.",
+        en:"He's sweating.",
+        es:"Está sudando.",
+        it:"È sudato.",
+        de:"Er schwitzt.",
+        ja:"汗 を かい て い ます。" },
+
+      { ref:"d-couteau-chaleur", temps:6, dit:"joueuse", mots:["couteau-chaleur"],
+        fr:"Est-ce que je passe le couteau de chaleur ?",
+        en:"Shall I use the sweat scraper?",
+        es:"¿Le paso la rasqueta de sudor?",
+        it:"Passo il raschiatoio?",
+        de:"Soll ich das Schweißmesser nehmen?",
+        ja:"汗取り を 使い ます か ?" },
+
+      { ref:"d-r-secher-avant-rentrer", temps:6, dit:"club", mots:["secher"],
+        fr:"Sèche-le bien avant de le rentrer.",
+        en:"Dry him off properly before you bring him in.",
+        es:"Sécalo bien antes de meterlo.",
+        it:"Asciugalo bene prima di riportarlo in box.",
+        de:"Trockne ihn gut ab, bevor du ihn hereinholst.",
+        ja:"馬房 に 戻す 前 に、 しっかり 乾かし て ください。" },
+
+      { ref:"d-assez-propre", temps:6, dit:"joueuse", mots:["propre"],
+        fr:"Est-ce qu'il est assez propre ?",
+        en:"Is he clean enough?",
+        es:"¿Está lo bastante limpio?",
+        it:"È abbastanza pulito?",
+        de:"Ist er sauber genug?",
+        ja:"これ で 十分 きれい です か ?" }
+    ]
+  }
 };
