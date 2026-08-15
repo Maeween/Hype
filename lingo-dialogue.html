@@ -481,7 +481,26 @@ function vueEcoute(p, corps, pied){
    ⚠️ NE PAS RETIRER LA PHRASE CIBLE ÉCRITE. Si un jour on veut un
    exercice de rappel sans le texte, ce sera un SIXIÈME type, pas
    celui-ci. */
+/* 🟥 TROIS ESSAIS MAXIMUM — décision de Blandine, 15/08/2026, session 211.
+   Elle l'a vécu : « j'ai répété 10 fois le même mot j'ai cru que
+   j'allais câbler et j'ai tjs pas compris pourquoi pas validé ».
+   Sa règle : « deux fois répète et on propose de continuer on refuse
+   pas 10 fois », montée à trois sur proposition validée (« À la limite
+   trois max ») avec REJEU DU MODÈLE avant le dernier essai — les deux
+   premiers on répète ce qu'on croit avoir entendu, le troisième ce
+   qu'on vient de réentendre.
+   · raté 1 → « Presque » + Réessayer ;
+   · raté 2 → le modèle est REJOUÉ automatiquement, dernier essai ;
+   · raté 3 → plus de micro : « On passe » + Continuer seulement.
+   Le verdict reste honnête jusqu'au bout — jamais de vert immérité
+   (sa règle du même jour : « sans forcément remettre un gros trait
+   vert pour dire valide si vraiment c'est incompréhensible ») — et
+   « Continuer » reste visible dès le premier essai, comme avant.
+   Compteur remis à zéro à chaque nouvelle phrase vocale. */
+var essaisVocal = 0;
+
 function vueParle(p, corps, pied){
+  essaisVocal = 0;
   var carte = el("div",{class:"carte"});
   carte.appendChild(el("div",{style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#94A3AF;margin-bottom:8px"},"Ce que tu veux dire"));
   carte.appendChild(el("div",{class:"fr"}, p[LG]));
@@ -607,6 +626,7 @@ function juge(p, entendu, zoneV, pied){
   zoneV.innerHTML = "";
 
   if(!dit){
+    essaisVocal++;                       /* un essai vide est un essai */
     zoneV.appendChild(verdict("flou", "Je n'ai pas bien compris",
       "Rien n'a été capté. Ça arrive souvent dans un endroit bruyant, et ça ne dit rien de ta prononciation.",
       null, null));
@@ -639,6 +659,7 @@ function juge(p, entendu, zoneV, pied){
     return;
   }
 
+  essaisVocal++;                         /* raté compté : presque, mais pas assez */
   if(manques.length){
     var m = manques[0];
     zoneV.appendChild(verdict("presque", "Presque !",
@@ -815,9 +836,32 @@ function boutonContinuer(txt, p, moi){
   return b;
 }
 /* 🟥 « Continuer » est TOUJOURS là, à portée de pouce. Règle de
-   Blandine : on ne bloque jamais quelqu'un sur sa prononciation. */
+   Blandine : on ne bloque jamais quelqu'un sur sa prononciation.
+   🟥 ET TROIS ESSAIS MAXIMUM (15/08, session 211) :
+   après le 2e raté le modèle est REJOUÉ avant le dernier essai ;
+   après le 3e, plus de micro — on propose de continuer, on ne
+   refuse pas dix fois. Voir le commentaire au-dessus de vueParle. */
 function piedRessai(p, zoneV, pied){
   pied.innerHTML = "";
+
+  if(essaisVocal >= 3){
+    /* plus de micro : on passe, sans vert immérité et sans jugement */
+    zoneV.appendChild(el("p",{class:"note"},
+      "On passe — cette phrase reviendra une autre fois. Tu peux la réécouter avant de continuer."));
+    pied.appendChild(rang([boutonEcouter(p)]));
+    pied.appendChild(rang([boutonContinuer("Continuer", p, true)]));
+    return;
+  }
+
+  if(essaisVocal === 2){
+    /* avant le dernier essai, on fait RÉENTENDRE le modèle : les deux
+       premiers on répète ce qu'on croit avoir entendu, le troisième
+       ce qu'on vient de réentendre */
+    dis(p[CIBLE], CIBLE);
+    zoneV.appendChild(el("p",{class:"note"},
+      "Réécoute bien — dernier essai, puis on continue quoi qu'il arrive."));
+  }
+
   var bR = el("button",{class:"micro"});
   bR.innerHTML = '<span class="ic">\uD83C\uDF99</span>Réessayer';
   bR.addEventListener("click", function(){
