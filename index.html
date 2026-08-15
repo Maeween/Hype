@@ -42884,195 +42884,244 @@ function EcranProfil() {
     };
     const fondCheval = profil.chevalPhoto || (typeof CHEVAL_DEFAUT !== "undefined" ? CHEVAL_DEFAUT : PHOTOS.hero_dashboard);
     const avatarSrc = profil.avatar || (typeof LOGO_DATA !== "undefined" ? LOGO_DATA : null);
-    return (React.createElement("div", { style: { padding: "0 20px 8px" } },
-        React.createElement("div", { style: { position: "relative", overflow: "hidden", margin: "0 -20px 16px" } },
-            React.createElement("div", { style: { position: "absolute", inset: 0, /* ⚠️ 15/08 — DÉCISION DE BLANDINE, formulée deux fois : « empile pas l'icône sur la photo ça c'est la seule solution pas possible ». La page superposait la photo du CHEVAL en fond et l'avatar de la cavalière par-dessus : deux images qui se disputaient la même place. Le fond cheval est retiré, la photo de profil devient la seule image du haut. ⚠️ NE JAMAIS remettre une image derrière l'avatar. */ background: COLORS.nuitElevee } }),
-            React.createElement("div", { style: { position: "absolute", inset: 0, background: `linear-gradient(100deg, ${COLORS.nuit} 16%, ${COLORS.nuit}33 36%, ${COLORS.nuit}15 60%, ${COLORS.nuit}06 92%)` } }),
-            React.createElement("div", { style: { position: "absolute", inset: 0, background: `linear-gradient(to bottom, ${COLORS.nuit}06 28%, ${COLORS.nuit}33 82%, ${COLORS.nuit} 100%)` } }),
-            false /* 15/08 : le bouton « 📷 Photo cheval » changeait le fond retiré juste au-dessus — il n'a plus d'objet ici. La photo du cheval reste modifiable depuis sa fiche. */ && React.createElement("button", { onClick: () => chevalRef.current && chevalRef.current.click(), title: t("changer_photo"), style: { position: "absolute", top: 14, right: 56, zIndex: 3, display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(8,10,13,0.55)", border: `1px solid ${COLORS.blanc}33`, borderRadius: 999, padding: "5px 11px", color: COLORS.blanc, fontSize: 11, fontWeight: 700 } },
-                "\uD83D\uDCF7 ",
-                t("photo_cheval")),
-            React.createElement("input", { ref: chevalRef, type: "file", accept: "image/*", onChange: choisirCheval, style: { display: "none" } }),
-            React.createElement("button", { onClick: () => { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "connexion"; setEcran("connexion"); }, title: t("se_deconnecter"), "aria-label": t("se_deconnecter"), style: { position: "absolute", top: 14, right: 14, zIndex: 3, width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(8,10,13,0.55)", border: `1px solid ${COLORS.blanc}33`, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", cursor: "pointer" } },
-                React.createElement("svg", { viewBox: "0 0 24 24", width: 15, height: 15, fill: "none", stroke: "rgba(255,255,255,0.85)", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
-                    React.createElement("path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }),
-                    React.createElement("path", { d: "M16 17l5-5-5-5" }),
-                    React.createElement("path", { d: "M21 12H9" }))),
+    /* ═══════════════════════════════════════════════════════════════════
+       15/08 — LA PAGE CAVALIER REDEVIENT UN ÉCRAN DE RÉGLAGES.
+       Report de la maquette validée par Blandine (maquette-mon-compte-v3).
 
-            React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: "72%", pointerEvents: "none", background: "radial-gradient(60% 80% at 50% 118%, rgba(32,217,245,0.42), rgba(32,217,245,0.10) 42%, transparent 68%)", mixBlendMode: "screen" } }),
-            React.createElement("div", { style: { position: "relative", padding: "18px 20px 16px", display: "flex", flexDirection: "column", minHeight: 270, boxSizing: "border-box" } },
-                React.createElement("h1", { style: { fontSize: 21, color: COLORS.blanc, margin: "0 0 18px", fontWeight: 800, textShadow: "0 1px 8px rgba(10,26,36,0.165)" } }, t("mon_cavalier")),
-                React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14 } },
-                    React.createElement("div", { style: { position: "relative", flexShrink: 0 } },
-                        React.createElement("button", { onClick: () => fileRef.current && fileRef.current.click(), title: t("changer_photo"), style: { width: 98, height: 98, borderRadius: "50%", overflow: "hidden", padding: 0, background: COLORS.nuitElevee, color: COLORS.blanc, fontSize: 38, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 0 3px ${COLORS.acier}, 0 0 18px ${COLORS.acier}66` } }, avatarSrc ? React.createElement("img", { src: avatarSrc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : React.createElement(AvatarRond)),
-                        React.createElement("div", { onClick: () => fileRef.current && fileRef.current.click(), style: { position: "absolute", bottom: 0, right: 0, width: 30, height: 30, borderRadius: "50%", background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, cursor: "pointer" } }, "\uD83D\uDCF7"),
-                        React.createElement("input", { ref: fileRef, type: "file", accept: "image/*", onChange: choisirPhoto, style: { display: "none" } })),
-                    React.createElement("div", { style: { minWidth: 0 } },
-                        React.createElement("p", { style: { margin: 0, fontSize: 23, fontWeight: 800, color: COLORS.blanc, lineHeight: 1.1, textShadow: "0 1px 8px rgba(10,26,36,0.176)" } }, profil.prenom || t("cavalier_defaut")),
-                        false /* 15/08 : « Galop 1 » et l'étoile retirés — le galop venait du champ mort `galopActuel` et affichait 1 alors que Blandine est Galop 7. */ && React.createElement("p", { style: { margin: "4px 0 0", fontSize: 15, fontWeight: 800, color: COLORS.turquoise, textShadow: "0 1px 6px rgba(10,26,36,0.165)" } },
-                            galopMot,
-                            " ",
-                            profil.galopActuel,
-                            estAbonne && React.createElement("span", { style: { color: COLORS.acier } }, " \u00B7 \u2605"),
-                            profil.vip && React.createElement("span", { style: { color: COLORS.or } }, " \u00B7 \uD83D\uDC51")),
-                        false /* 15/08 : le lieu 📍 retiré de cette ligne. */ && React.createElement("p", { style: { margin: "5px 0 0", fontSize: 12.5, color: COLORS.creme, textShadow: "0 1px 6px rgba(0,0,0,0.85)" } },
-                            "\uD83D\uDCCD ",
-                            profil.club))),
-                React.createElement("div", { style: { display: "flex", marginTop: "auto", paddingTop: 18 } }, [
-                    { ic: React.createElement("svg", { viewBox: "0 0 24 24", width: 17, height: 17 },
-                            React.createElement("path", { d: "M12 2 L20 5 V11 C20 16 16 20 12 22 C8 20 4 16 4 11 V5 Z", fill: COLORS.acier })), v: scoreCl, l: t("indice_label") },
-                    { ic: React.createElement("svg", { viewBox: "0 0 24 24", width: 17, height: 17 },
-                            React.createElement("path", { d: "M7 4 h10 v3 a5 5 0 0 1 -10 0 z M5.2 4.2 h1.8 v1.7 a2.1 2.1 0 0 1 -1.8-1.7 z M18.8 4.2 h-1.8 v1.7 a2.1 2.1 0 0 0 1.8-1.7 z M11 11.4 h2 v3.6 h-2 z M8.4 17 h7.2 v2 h-7.2 z", fill: COLORS.acier })), v: `#${rangCl}`, l: t("classement_ton_rang") },
-                    { ic: React.createElement("svg", { viewBox: "0 0 24 24", width: 17, height: 17 },
-                            React.createElement("circle", { cx: "12", cy: "15", r: "5.2", fill: "none", stroke: COLORS.acier, strokeWidth: "2" }),
-                            React.createElement("path", { d: "M9 2.5 l3 6 -2 1 -3-6z M15 2.5 l-3 6 2 1 3-6z", fill: COLORS.acier })), v: xp, l: t("points_label") },
-                ].slice(0, 0) /* 15/08 (Blandine) : le triptyque Indice · Ton rang · Points a quitté cette page — ce sont des mesures de progression, pas des réglages. Le tableau est vidé plutôt que supprimé : sa structure porte les fermetures du bloc parent. */.map((s, i) => (React.createElement("button", { key: i, onClick: () => setEcran("classement"), style: { flex: 1, textAlign: "center", background: "none", borderLeft: i ? `1px solid ${COLORS.blanc}22` : "none" } },
-                    React.createElement("div", { style: { height: 18, marginBottom: 4, display: "flex", alignItems: "center", justifyContent: "center", filter: "drop-shadow(0 1px 2px rgba(10,26,36,0.154))" } }, s.ic),
-                    React.createElement("div", { style: { fontSize: 11, color: "rgba(255,255,255,0.82)", fontWeight: 600, marginBottom: 3, textShadow: "0 1px 5px rgba(0,0,0,0.95)" } }, s.l),
-                    React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: COLORS.acier, fontFamily: "'Baloo 2', sans-serif", lineHeight: 1, textShadow: "0 1px 6px rgba(0,0,0,0.9)" } }, s.v))))))),
-        /* 15/08 (décisions de Blandine, une par une) : « les étapes de galop ça
-           vire », « chemin équestre aussi », « flots gagnés aussi », et les hauts
-           faits partent vers la page Quêtes. Cette page ne garde plus que des
-           RÉGLAGES : ce qui se gagne vit là où on le gagne. */
-        !edition ? (React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 18, padding: 4, marginBottom: 16 } },
-            /* 15/08 : « vire les galops actuels et visés on s'en fout » (Blandine).
-               Les deux LigneInfo sont retirées ; le club devient la dernière.
-               ⚠️ DETTE SIGNALÉE AU SUIVI : `galopActuel` n'est plus modifiable
-                  NULLE PART. Il ouvre pourtant le bon niveau dans la
-                  bibliothèque et il est transmis à Hey Baby — il restera donc à
-                  1 pour toute nouvelle cavalière. À rendre modifiable ailleurs,
-                  ou à déduire des chapitres validés. */
-            React.createElement(LigneInfo, { label: t("club_label"), valeur: profil.club || t("non_renseigne") }),
-            /* 15/08 — LA POSITION, ET SON INTERRUPTEUR. Le lieu affiché est le club
-               s'il est renseigné, la ville sinon (règle de la spec carte). */
-            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "13px 0 2px" } },
-                React.createElement("div", { style: { flex: 1, minWidth: 0 } },
-                    React.createElement("div", { style: { fontSize: 12.5, fontWeight: 700, color: COLORS.blanc } },
-                        "\uD83D\uDCCD " + (profil.club || profil.ville || tr({ fr: "Lieu non renseigné", en: "No place set", es: "Sin lugar", it: "Nessun luogo", ja: "場所未設定", de: "Kein Ort" }))),
-                    React.createElement("div", { style: { fontSize: 10.5, color: COLORS.grisDoux, marginTop: 3, lineHeight: 1.45 } },
+       CE QU'ELLE A DIT, ET QUI COMMANDE TOUT :
+         « juste les réglages de compte changer email éventuellement
+           signaler un bug ou faire une suggestion et basta »
+       La page vendait trois fois — abonnement, Crystal, offre Pro — alors
+       qu'un onglet Premium existe dans la barre du bas et que c'est son
+       métier. Ses mots : « raison de plus pour que ce qui devrait vraiment
+       être dessus y soit, et pas renvoyer vers une autre page pour ça ».
+
+       PHOTO DU CHEVAL : Blandine a choisi l'option 2 — bande EN HAUT,
+       plein cadre, NETTE, le contenu commence DESSOUS. Aucun voile, aucun
+       vignettage (règle absolue). L'avatar n'est PAS posé dessus : il vit
+       dans le pavé identité, en dessous. La règle « jamais d'image derrière
+       l'avatar » est donc respectée.
+
+       RIEN N'EST SUPPRIMÉ : Crystal, l'offre Pro, la ligne Premium et la
+       version imprimable sont conservées ci-dessous, neutralisées par
+       `false &&`. Retirer le `false &&` les fait revenir telles quelles.
+       ⚠️ Version imprimable n'a PLUS AUCUNE PORTE tant qu'elle n'est pas
+          posée dans les Galops — signalé à Blandine, tracé au SUIVI.
+       ═══════════════════════════════════════════════════════════════════ */
+    const CY = "#20D9F5", GRIS = "#8B96A0", GRIS_S = "#5E6871", LIGNE = "rgba(244,247,250,0.08)";
+    const styleTuile = (large) => ({
+        position: "relative", overflow: "hidden", display: "flex",
+        flexDirection: large ? "row" : "column",
+        alignItems: large ? "center" : "flex-start",
+        justifyContent: large ? "flex-start" : "space-between",
+        gap: large ? 15 : 0, minHeight: large ? 0 : 112,
+        padding: large ? "17px 16px" : 15, borderRadius: 20, cursor: "pointer",
+        background: "linear-gradient(160deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015))",
+        border: "1px solid " + LIGNE, textAlign: "left", color: COLORS.blanc,
+        gridColumn: large ? "1 / -1" : "auto", width: "100%", boxSizing: "border-box",
+    });
+    const styleIco = (accent) => ({
+        flex: "0 0 auto", width: 36, height: 36, borderRadius: 12,
+        background: accent ? "rgba(32,217,245,0.12)" : "rgba(255,255,255,0.05)",
+        border: "1px solid " + (accent ? "rgba(32,217,245,0.26)" : LIGNE),
+        display: "flex", alignItems: "center", justifyContent: "center",
+    });
+    const svgTuile = (accent, enfants) => React.createElement("svg", {
+        viewBox: "0 0 24 24", width: 17, height: 17, fill: "none",
+        stroke: accent ? CY : GRIS, strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round",
+    }, enfants);
+    const eyebrow = (texte) => React.createElement("div", {
+        style: { fontSize: 9.5, letterSpacing: "0.26em", textTransform: "uppercase", color: GRIS_S, fontWeight: 700, margin: "30px 20px 12px" },
+    }, texte);
+    const grille = (cle, enfants) => React.createElement("div", {
+        key: cle, style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, padding: "0 20px" },
+    }, enfants);
+    /* Une tuile. `large` = pleine largeur. `accent` = la seule qui porte le turquoise. */
+    const tuile = (o) => React.createElement("button", {
+        key: o.cle, onClick: o.onClick || null, disabled: !o.onClick,
+        style: Object.assign(styleTuile(o.large), o.style || {}),
+    },
+        React.createElement("span", { style: styleIco(o.accent) }, svgTuile(o.accent, o.ico)),
+        React.createElement("span", { style: { flex: 1, minWidth: 0, marginTop: o.large ? 0 : "auto" } },
+            React.createElement("b", { style: { display: "block", fontSize: 14, fontWeight: 600, lineHeight: 1.25, color: o.couleur || COLORS.blanc } }, o.titre),
+            o.sous ? React.createElement("span", { style: { display: "block", fontSize: 11, color: o.accent ? CY : GRIS_S, marginTop: 4, lineHeight: 1.4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: o.multi ? "normal" : "nowrap" } }, o.sous) : null),
+        o.pastille ? React.createElement("span", { style: { flex: "0 0 auto", alignSelf: "center", padding: "6px 12px", borderRadius: 999, border: "1px solid " + LIGNE, background: "rgba(255,255,255,0.03)", fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: GRIS_S } }, o.pastille) : null,
+        (o.large && o.onClick) ? React.createElement("span", { style: { flex: "0 0 auto", color: GRIS_S, fontSize: 16, lineHeight: 1 } }, "\u203A") : null);
+
+    return (React.createElement("div", { style: { padding: "0 0 8px" } },
+        /* ---------- 1. LA BANDE PHOTO ---------- */
+        React.createElement("div", { style: { position: "relative", width: "100%", height: "33vh", minHeight: 205, maxHeight: 280, overflow: "hidden", background: COLORS.nuitElevee } },
+            React.createElement("img", { src: fondCheval, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+            /* le filet turquoise qui referme la bande — sur le bord, jamais sur la photo */
+            React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, background: `linear-gradient(90deg, transparent, ${CY}, transparent)`, opacity: 0.5 } }),
+            /* ⚠️ SAFE AREA : le titre passait sous l'heure de l'iPhone (signalé par
+               Blandine, capture de 22h17). Le bloc n'avait aucun env(safe-area-inset-top),
+               contrairement au reste de l'app. */
+            React.createElement("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", left: 18, right: 18, display: "flex", alignItems: "center", justifyContent: "space-between" } },
+                React.createElement("span", { style: { fontFamily: "'Cinzel', serif", fontSize: 11.5, letterSpacing: "0.30em", color: "rgba(244,247,250,0.94)", textShadow: "0 1px 10px rgba(0,0,0,0.7)" } }, t("mon_cavalier"))),
+            React.createElement("input", { ref: chevalRef, type: "file", accept: "image/*", onChange: choisirCheval, style: { display: "none" } })),
+
+        /* ---------- 2. LE PAVÉ IDENTITÉ ----------
+           ⚠️ minHeight 270 RETIRÉ. L'ancien en-tête réservait cette hauteur pour la
+           rangée Indice · Ton rang · Points, vidée hier : il restait un grand trou
+           sous le prénom (« il y a un vide énorme »). */
+        React.createElement("div", { style: { padding: "24px 20px 0", display: "flex", alignItems: "center", gap: 16 } },
+            React.createElement("div", { style: { position: "relative", flexShrink: 0 } },
+                React.createElement("button", { onClick: () => fileRef.current && fileRef.current.click(), title: t("changer_photo"), style: { width: 88, height: 88, borderRadius: "50%", overflow: "hidden", padding: 0, background: COLORS.nuitElevee, color: COLORS.blanc, fontSize: 34, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 0 0 1px ${CY}73, 0 0 24px ${CY}29` } }, avatarSrc ? React.createElement("img", { src: avatarSrc, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : React.createElement(AvatarRond)),
+                React.createElement("div", { onClick: () => fileRef.current && fileRef.current.click(), style: { position: "absolute", right: -1, bottom: -1, width: 27, height: 27, borderRadius: "50%", background: "rgba(6,7,9,0.94)", border: `1px solid ${CY}52`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
+                    React.createElement("svg", { viewBox: "0 0 24 24", width: 12, height: 12, fill: "none", stroke: CY, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" },
+                        React.createElement("path", { d: "M3 8.5A1.5 1.5 0 0 1 4.5 7h2L8 5h8l1.5 2h2A1.5 1.5 0 0 1 21 8.5v9A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z" }),
+                        React.createElement("circle", { cx: "12", cy: "13", r: "3.2" }))),
+                React.createElement("input", { ref: fileRef, type: "file", accept: "image/*", onChange: choisirPhoto, style: { display: "none" } })),
+            React.createElement("div", { style: { minWidth: 0 } },
+                React.createElement("p", { style: { margin: 0, fontSize: 27, fontWeight: 700, letterSpacing: "-0.02em", color: COLORS.blanc, lineHeight: 1.05 } }, profil.prenom || t("cavalier_defaut")),
+                React.createElement("p", { style: { margin: "7px 0 0", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: GRIS } }, profil.club || t("non_renseigne")),
+                React.createElement("button", { onClick: () => { if (edition) setProfil(local); setEdition(!edition); }, style: { display: "inline-flex", alignItems: "center", gap: 5, margin: "12px 0 0", background: "none", border: 0, padding: 0, cursor: "pointer", fontSize: 12.5, fontWeight: 600, color: CY } },
+                    edition ? t("enregistrer_modifs") : t("modifier_profil"),
+                    React.createElement("svg", { viewBox: "0 0 24 24", width: 10, height: 10, fill: "none", stroke: CY, strokeWidth: 2.6, strokeLinecap: "round", strokeLinejoin: "round" },
+                        React.createElement("path", { d: "M9 6l6 6-6 6" }))))),
+
+        /* ---------- LE FORMULAIRE D'ÉDITION, inchangé ---------- */
+        edition ? React.createElement("div", { style: { margin: "18px 20px 0", background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 18, padding: 16, display: "flex", flexDirection: "column", gap: 12 } },
+            React.createElement(ChampTexte, { placeholder: t("prenom_placeholder"), value: local.prenom, onChange: (v) => setLocal({ ...local, prenom: v }), fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
+            React.createElement(ChampTexte, { placeholder: t("club_placeholder"), value: local.club, onChange: (v) => setLocal({ ...local, club: v }), fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" })) : null,
+
+        /* ---------- COMPTE ---------- */
+        eyebrow(tr({ fr: "Compte", en: "Account", es: "Cuenta", it: "Account", ja: "アカウント", de: "Konto" })),
+        grille("g-compte", [
+            /* LA POSITION — tuile large, avec son interrupteur.
+               ⚠️ Correction de Blandine à respecter mot pour mot : désactiver ne
+               retire PAS la cavalière des membres de son écurie. */
+            React.createElement("div", { key: "pos", style: Object.assign(styleTuile(true), { cursor: "default" }) },
+                React.createElement("span", { style: styleIco(surCarte) },
+                    React.createElement("svg", { viewBox: "0 0 24 24", width: 17, height: 17, fill: "none", stroke: surCarte ? CY : GRIS_S, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" },
+                        React.createElement("path", { d: "M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11z" }),
+                        React.createElement("circle", { cx: "12", cy: "10", r: "2.6" }))),
+                React.createElement("span", { style: { flex: 1, minWidth: 0 } },
+                    React.createElement("b", { style: { display: "block", fontSize: 14, fontWeight: 600 } }, profil.club || profil.ville || tr({ fr: "Lieu non renseigné", en: "No place set", es: "Sin lugar", it: "Nessun luogo", ja: "場所未設定", de: "Kein Ort" })),
+                    React.createElement("span", { style: { display: "block", fontSize: 11, color: GRIS, marginTop: 4, lineHeight: 1.4 } },
                         surCarte
                             ? tr({ fr: "Ta position apparaît sur la carte de la communauté.", en: "Your location appears on the community map.", es: "Tu ubicación aparece en el mapa de la comunidad.", it: "La tua posizione appare sulla mappa della community.", ja: "コミュニティのマップに表示されます。", de: "Dein Ort erscheint auf der Community-Karte." })
                             : tr({ fr: "Ta position n'apparaît pas sur la carte. Tu restes membre de ton écurie.", en: "Your location is hidden from the map. You remain a member of your stable.", es: "Tu ubicación no aparece en el mapa. Sigues siendo miembro de tu cuadra.", it: "La tua posizione non appare sulla mappa. Resti membro della tua scuderia.", ja: "マップには表示されません。厩舎のメンバーであることは変わりません。", de: "Dein Ort erscheint nicht auf der Karte. Du bleibst Mitglied deines Stalls." }))),
                 React.createElement("button", {
-                    onClick: () => {
-                        const v = !surCarte;
-                        setSurCarte(v);
-                        setProfil((pr) => ({ ...pr, sur_carte: v }));
-                        try { syncProfilDistant({ sur_carte: v }).catch(function () { }); } catch (e) { }
-                    },
+                    onClick: () => { const v = !surCarte; setSurCarte(v); setProfil((pr) => ({ ...pr, sur_carte: v })); try { syncProfilDistant({ sur_carte: v }).catch(function () { }); } catch (e) { } },
                     "aria-label": tr({ fr: "Apparaître sur la carte", en: "Appear on the map", es: "Aparecer en el mapa", it: "Apparire sulla mappa", ja: "マップに表示", de: "Auf der Karte erscheinen" }),
-                    style: { flex: "0 0 auto", width: 46, height: 27, borderRadius: 999, cursor: "pointer", position: "relative", border: "1px solid " + (surCarte ? "rgba(32,217,245,0.7)" : "rgba(255,255,255,0.2)"), background: surCarte ? "rgba(32,217,245,0.22)" : "rgba(255,255,255,0.06)", transition: "background 160ms ease-out" }
+                    style: { flex: "0 0 auto", width: 46, height: 27, borderRadius: 999, cursor: "pointer", position: "relative", border: "1px solid " + (surCarte ? "rgba(32,217,245,0.7)" : "rgba(255,255,255,0.16)"), background: surCarte ? "rgba(32,217,245,0.22)" : "rgba(255,255,255,0.05)", transition: "background 160ms ease-out" },
                 },
-                    React.createElement("span", { style: { position: "absolute", top: 2, left: surCarte ? 21 : 2, width: 21, height: 21, borderRadius: "50%", background: surCarte ? COLORS.acier : "rgba(255,255,255,0.45)", transition: "left 160ms ease-out" } }))))) : (React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 18, padding: 16, marginBottom: 16, display: "flex", flexDirection: "column", gap: 12 } },
-            React.createElement(ChampTexte, { placeholder: t("prenom_placeholder"), value: local.prenom, onChange: (v) => setLocal({ ...local, prenom: v }), fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
-            React.createElement(ChampTexte, { placeholder: t("club_placeholder"), value: local.club, onChange: (v) => setLocal({ ...local, club: v }), fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
-            React.createElement("div", null,
-                React.createElement("p", { style: { fontSize: 12, fontWeight: 700, color: COLORS.encre, marginBottom: 8 } }, t("galop_actuel_label")),
-                React.createElement("div", { style: { display: "flex", gap: 6, flexWrap: "wrap" } }, [1, 2, 3, 4, 5, 6, 7].map((g) => (React.createElement("button", { key: g, onClick: () => setLocal({ ...local, galopActuel: g }), style: { width: 36, height: 36, borderRadius: 10, background: local.galopActuel === g ? COLORS.turquoise : COLORS.creme, color: local.galopActuel === g ? COLORS.nuit : COLORS.grisDoux, fontWeight: 700, fontSize: 13 } }, g))))))),
-        React.createElement("button", { onClick: () => { if (edition)
-                setProfil(local); setEdition(!edition); }, style: { width: "100%", padding: "13px 0", borderRadius: 14, background: COLORS.creme, color: COLORS.encre, fontWeight: 700, fontSize: 14, marginBottom: 20 } }, edition ? t("enregistrer_modifs") : t("modifier_profil")),
-        /* 15/08 : « les chevaux ça saute » — ils ont leur page Écurie. */
-        /* 15/08 : « Conseils de Hey Baby ça saute » — appartient au profil et à
-           la fiche cheval, pas aux réglages. */
-        /* 15/08 : les hauts faits rejoignent la page Quêtes — « ils devraient
-           plutôt aller sur la page quêtes » (Blandine). L'écran `badges` existe
-           toujours, il change simplement de porte d'entrée. */
-        /* 15/08 — MISE EN FORME. « Essaye de rendre tout ça présentable avec des
-           mosaïques s'il faut. » La liste continue de lignes grises devient des
-           GROUPES nommés : chaque sujet a son intitulé, l'œil sait où il est.
-           Les `MenuLigne` sont conservées telles quelles — on ajoute des titres
-           entre elles plutôt que de réécrire des composants qui marchent. */
-        React.createElement("div", { style: { fontSize: 9.5, letterSpacing: "0.24em", textTransform: "uppercase", color: COLORS.grisDoux, fontWeight: 700, margin: "22px 0 8px" } },
-            tr({ fr: "Mon abonnement", en: "My subscription", es: "Mi suscripción", it: "Il mio abbonamento", ja: "サブスクリプション", de: "Mein Abo" })),
-        React.createElement(MenuLigne, { icone: "\uD83D\uDDA8\uFE0F", texte: t("impr_bouton"), onClick: () => setImpression(true) }),
-        premium ? (React.createElement(MenuLigne, { icone: "\u2605", texte: t("gerer_abonnement"), onClick: () => setEcran("premium") })) : (React.createElement("button", { onClick: () => setEcran("premium"), style: { width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 13, padding: "15px 15px", borderRadius: 18, margin: "6px 0 12px", background: `linear-gradient(135deg, ${COLORS.turquoiseDim}, ${COLORS.nuitElevee})`, border: `1px solid ${COLORS.turquoise}55`, boxShadow: `0 4px 18px ${COLORS.turquoise}22` } },
-            React.createElement("span", { style: { width: 44, height: 44, borderRadius: 13, background: `${COLORS.turquoise}26`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 23, color: COLORS.turquoise, flexShrink: 0 } }, "\u2605"),
-            React.createElement("div", { style: { flex: 1 } },
-                React.createElement("p", { style: { margin: 0, fontSize: 16.5, fontWeight: 800, color: COLORS.blanc } }, t("passer_premium")),
-                React.createElement("p", { style: { margin: "3px 0 0", fontSize: 12.5, color: "rgba(255,255,255,0.72)", lineHeight: 1.35 } }, t("premium_avantage_court"))),
-            React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 20, fontWeight: 700 } }, "\u2192"))),
-        !profil.vip && (React.createElement("button", { onClick: ouvrirDonVIP, style: { width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 13, padding: "15px 15px", borderRadius: 18, margin: "0 0 10px", background: `linear-gradient(135deg, ${COLORS.acier}26, ${COLORS.nuitElevee})`, border: `1px solid ${COLORS.acier}66`, boxShadow: `0 4px 18px ${COLORS.acier}1F` } },
-            React.createElement("span", { style: { width: 44, height: 44, borderRadius: 13, background: `${COLORS.acier}26`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } },
-                React.createElement("svg", { viewBox: "0 0 24 24", width: 23, height: 23 },
-                    React.createElement("path", { d: "M4 18 L3 8 L8 11.5 L12 5.5 L16 11.5 L21 8 L20 18 Z", fill: COLORS.acier }),
-                    React.createElement("rect", { x: "4", y: "18", width: "16", height: "2.4", rx: "1.2", fill: COLORS.acier }))),
+                    React.createElement("span", { style: { position: "absolute", top: 2, left: surCarte ? 21 : 2, width: 21, height: 21, borderRadius: "50%", background: surCarte ? CY : "rgba(255,255,255,0.42)", boxShadow: surCarte ? `0 0 10px ${CY}80` : "none", transition: "left 160ms ease-out" } }))),
+
+            /* ADRESSE E-MAIL et MOT DE PASSE.
+               ⚠️ DÉDUCTION DE CLAUDE — À VALIDER PAR BLANDINE.
+               En branchant ces deux tuiles j'ai découvert que l'écran `moncompte`
+               n'est PAS un écran de réglages : c'est l'écran de connexion et
+               d'inscription. AUCUN flux de changement d'e-mail n'existe dans Hype,
+               et le mot de passe ne se change que par lien de réinitialisation.
+               Blandine a tranché le principe sur les tuiles de statut : quand une
+               mécanique n'existe pas, on met « Prochainement » plutôt qu'une
+               promesse creuse. J'applique la même règle ici, à valider. */
+            tuile({
+                cle: "mail", large: true, accent: true,
+                titre: tr({ fr: "Adresse e-mail", en: "Email address", es: "Correo electrónico", it: "Indirizzo email", ja: "メールアドレス", de: "E-Mail-Adresse" }),
+                sous: (profil && profil.email) || tr({ fr: "Non renseignée", en: "Not set", es: "Sin definir", it: "Non impostata", ja: "未設定", de: "Nicht angegeben" }),
+                pastille: tr({ fr: "Prochainement", en: "Coming soon", es: "Próximamente", it: "Prossimamente", ja: "近日公開", de: "Demnächst" }),
+                ico: [React.createElement("rect", { key: "a", x: "3", y: "5.5", width: "18", height: "13", rx: "2" }), React.createElement("path", { key: "b", d: "M3.4 7l8.6 6 8.6-6" })],
+            }),
+            tuile({
+                cle: "mdp",
+                titre: tr({ fr: "Mot de passe", en: "Password", es: "Contraseña", it: "Password", ja: "パスワード", de: "Passwort" }),
+                sous: tr({ fr: "Recevoir un lien", en: "Get a reset link", es: "Recibir un enlace", it: "Ricevi un link", ja: "リンクを受け取る", de: "Link erhalten" }),
+                onClick: () => setEcran("moncompte"),
+                ico: [React.createElement("rect", { key: "a", x: "4.5", y: "10.5", width: "15", height: "9.5", rx: "2.2" }), React.createElement("path", { key: "b", d: "M8.2 10.5V7.8a3.8 3.8 0 0 1 7.6 0v2.7" })],
+            }),
+            tuile({
+                cle: "deco", couleur: COLORS.corail,
+                titre: t("se_deconnecter"),
+                sous: tr({ fr: "Sur cet appareil", en: "On this device", es: "En este dispositivo", it: "Su questo dispositivo", ja: "この端末で", de: "Auf diesem Gerät" }),
+                onClick: () => { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "connexion"; setEcran("connexion"); },
+                ico: [React.createElement("path", { key: "a", d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }), React.createElement("path", { key: "b", d: "M16 17l5-5-5-5" }), React.createElement("path", { key: "c", d: "M21 12H9" })],
+            }),
+        ]),
+
+        /* ---------- TARIF RÉDUIT ----------
+           Demande de Blandine : deux tuiles côte à côte, étudiante et
+           professionnelle. Le DÉPÔT DU JUSTIFICATIF dans l'app (table,
+           bucket privé, écran de modération, suppression après décision)
+           est un chantier à part — d'où « Prochainement », son choix, pour
+           ne pas ouvrir un envoi de diplômes vers une boîte mail perso.
+           ⚠️ Les MONTANTS des tarifs réduits ne sont pas décidés. */
+        eyebrow(tr({ fr: "Tarif réduit", en: "Reduced rate", es: "Tarifa reducida", it: "Tariffa ridotta", ja: "割引料金", de: "Ermäßigter Tarif" })),
+        grille("g-tarif", [
+            tuile({
+                cle: "etu",
+                titre: tr({ fr: "Étudiante", en: "Student", es: "Estudiante", it: "Studente", ja: "学生", de: "Studierend" }),
+                sous: tr({ fr: "Prochainement", en: "Coming soon", es: "Próximamente", it: "Prossimamente", ja: "近日公開", de: "Demnächst" }),
+                ico: [React.createElement("path", { key: "a", d: "M12 4L2.8 8.4 12 12.8l9.2-4.4z" }), React.createElement("path", { key: "b", d: "M6.4 10.6v4.6c0 1.6 2.5 2.9 5.6 2.9s5.6-1.3 5.6-2.9v-4.6" })],
+            }),
+            tuile({
+                cle: "pro",
+                titre: tr({ fr: "Professionnelle", en: "Professional", es: "Profesional", it: "Professionista", ja: "プロ", de: "Profi" }),
+                sous: tr({ fr: "Prochainement", en: "Coming soon", es: "Próximamente", it: "Prossimamente", ja: "近日公開", de: "Demnächst" }),
+                ico: [React.createElement("path", { key: "a", d: "M4 8.5h16v11.5H4z" }), React.createElement("path", { key: "b", d: "M9 8.5V6.2A1.7 1.7 0 0 1 10.7 4.5h2.6A1.7 1.7 0 0 1 15 6.2v2.3" }), React.createElement("path", { key: "c", d: "M4 13h16" })],
+            }),
+        ]),
+
+        /* ---------- AIDE ---------- */
+        eyebrow(tr({ fr: "Aide", en: "Help", es: "Ayuda", it: "Aiuto", ja: "ヘルプ", de: "Hilfe" })),
+        grille("g-aide", [
+            tuile({
+                cle: "bug",
+                titre: tr({ fr: "Signaler un bug", en: "Report a bug", es: "Informar de un error", it: "Segnala un bug", ja: "不具合を報告", de: "Fehler melden" }),
+                sous: tr({ fr: "Quelque chose cloche", en: "Something's wrong", es: "Algo no funciona", it: "Qualcosa non va", ja: "うまく動かない", de: "Etwas stimmt nicht" }),
+                onClick: () => { try { window.hypeOuvrirLien("mailto:contact@hypequestrian.app?subject=" + encodeURIComponent("Hype — signalement de bug")); } catch (e) { } },
+                ico: [React.createElement("path", { key: "a", d: "M12 3.5l9 15.5H3z" }), React.createElement("path", { key: "b", d: "M12 10v4" }), React.createElement("path", { key: "c", d: "M12 16.6v.1" })],
+            }),
+            tuile({
+                cle: "sug",
+                titre: tr({ fr: "Faire une suggestion", en: "Make a suggestion", es: "Hacer una sugerencia", it: "Fai un suggerimento", ja: "提案する", de: "Vorschlag machen" }),
+                sous: tr({ fr: "Une idée pour la suite", en: "An idea for what's next", es: "Una idea para el futuro", it: "Un'idea per il futuro", ja: "今後のアイデア", de: "Eine Idee für später" }),
+                onClick: () => { try { if (typeof ouvrirSuggestions === "function") ouvrirSuggestions(); else window.hypeOuvrirLien("mailto:contact@hypequestrian.app?subject=" + encodeURIComponent("Hype — suggestion")); } catch (e) { } },
+                ico: [React.createElement("path", { key: "a", d: "M12 3a6 6 0 0 1 3.6 10.8c-.6.5-1 1.2-1.1 2H9.5c-.1-.8-.5-1.5-1.1-2A6 6 0 0 1 12 3z" }), React.createElement("path", { key: "b", d: "M9.6 19h4.8" })],
+            }),
+        ]),
+
+        /* ---------- MODÉRATION ----------
+           🟥 Le verrou du 15/08 est conservé : la ligne ne s'affiche qu'aux
+           modératrices, et EcranAdmin refuse de se monter pour les autres. */
+        estModAdmin ? React.createElement(React.Fragment, null,
+            eyebrow(tr({ fr: "Modération", en: "Moderation", es: "Moderación", it: "Moderazione", ja: "モデレーション", de: "Moderation" })),
+            grille("g-mod", [
+                tuile({
+                    cle: "bo", large: true,
+                    titre: t("acces_admin"),
+                    sous: tr({ fr: "Signalements et modération", en: "Reports and moderation", es: "Informes y moderación", it: "Segnalazioni e moderazione", ja: "通報と管理", de: "Meldungen und Moderation" }),
+                    onClick: () => setEcran("admin"),
+                    ico: [React.createElement("path", { key: "a", d: "M12 3l7.5 3v5.5c0 4.4-3.1 8.2-7.5 9.5-4.4-1.3-7.5-5.1-7.5-9.5V6z" }), React.createElement("path", { key: "b", d: "M9.4 12.2l1.9 1.9 3.6-3.8" })],
+                }),
+            ])) : null,
+
+        /* ---------- PIED ---------- */
+        React.createElement("div", { style: { margin: "34px 20px 0", textAlign: "center" } },
+            React.createElement("button", { onClick: () => setEcran("moncompte"), style: { background: "none", border: 0, padding: 8, cursor: "pointer", fontSize: 11.5, color: GRIS_S, textDecoration: "underline", textUnderlineOffset: 3 } },
+                tr({ fr: "Supprimer mon compte", en: "Delete my account", es: "Eliminar mi cuenta", it: "Elimina il mio account", ja: "アカウントを削除", de: "Mein Konto löschen" }))),
+
+        /* ═══ CONSERVÉ, NEUTRALISÉ — retirer le `false &&` pour rallumer ═══ */
+        false && React.createElement(MenuLigne, { icone: "\uD83D\uDDA8\uFE0F", texte: t("impr_bouton"), onClick: () => setImpression(true) }),
+        false && React.createElement(MenuLigne, { icone: "\u2605", texte: t("gerer_abonnement"), onClick: () => setEcran("premium") }),
+        false && React.createElement("button", { onClick: ouvrirDonVIP, style: { width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 13, padding: "15px 15px", borderRadius: 18, margin: "0 0 10px", background: `linear-gradient(135deg, ${COLORS.acier}26, ${COLORS.nuitElevee})`, border: `1px solid ${COLORS.acier}66` } },
             React.createElement("div", { style: { flex: 1 } },
                 React.createElement("p", { style: { margin: 0, fontSize: 16.5, fontWeight: 800, color: COLORS.blanc } }, t("don_vip_titre")),
-                React.createElement("p", { style: { margin: "3px 0 0", fontSize: 12.5, color: "rgba(255,255,255,0.72)", lineHeight: 1.35 } }, t("don_vip_sous"))),
-            React.createElement("span", { style: { color: COLORS.acier, fontSize: 20, fontWeight: 700 } }, "\u2192"))),
-        profil.vip ? (React.createElement(React.Fragment, null,
-            React.createElement(MenuLigne, { icone: React.createElement("svg", { viewBox: "0 0 24 24", width: 17, height: 17 },
-                    React.createElement("path", { d: "M12 3 a6 6 0 0 1 3.8 10.6 c-.7.6-1.1 1.3-1.2 2.2 h-5.2 c-.1-.9-.5-1.6-1.2-2.2 A6 6 0 0 1 12 3 Z", fill: COLORS.acier }),
-                    React.createElement("rect", { x: "9.4", y: "17", width: "5.2", height: "1.7", rx: "0.85", fill: COLORS.acier }),
-                    React.createElement("rect", { x: "10.2", y: "19.6", width: "3.6", height: "1.5", rx: "0.75", fill: COLORS.acier })), texte: t("don_vip_suggerer"), couleurTexte: COLORS.acier, onClick: ouvrirSuggestions }),
-            React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 4px", borderBottom: `1px solid ${COLORS.ligne}` } },
-                React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
-                    React.createElement("span", { style: { fontSize: 17, width: 20, textAlign: "center" } }, "\uD83D\uDFE1"),
-                    React.createElement("p", { style: { margin: 0, fontSize: 14.5, fontWeight: 600, color: COLORS.encre } }, t("don_vip_cercle"))),
-                React.createElement("button", { onClick: () => { const v = !profil.cercleVIP; setProfil({ ...profil, cercleVIP: v }); try {
-                        localStorage.setItem("augalop_cercleVIP", v ? "1" : "0");
-                    }
-                    catch (e) { } }, style: { width: 46, height: 26, borderRadius: 13, background: profil.cercleVIP ? COLORS.or : COLORS.nuitBordure, position: "relative" } },
-                    React.createElement("span", { style: { position: "absolute", top: 3, left: profil.cercleVIP ? 23 : 3, width: 20, height: 20, borderRadius: "50%", background: COLORS.blanc, transition: "left .2s" } }))))) : (React.createElement("button", { onClick: () => { setProfil({ ...profil, vip: true }); try {
-                localStorage.setItem("augalop_vip", "1");
-            }
-            catch (e) { } setMerciVIP(true); }, style: { width: "100%", textAlign: "left", padding: "10px 4px 6px", color: COLORS.grisDoux, fontSize: 12.5 } }, t("don_vip_deja"))),
-        React.createElement("div", { style: { padding: "14px 4px", borderBottom: `1px solid ${COLORS.ligne}` } },
-            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: profil.estPro || profil.demandePro ? 0 : 10 } },
-                React.createElement("span", { style: { fontSize: 17, width: 20, textAlign: "center" } }, "\uD83C\uDF93"),
-                React.createElement("div", null,
-                    React.createElement("p", { style: { margin: 0, fontSize: 14.5, fontWeight: 600, color: COLORS.encre } }, tr({ fr: "Professionnel ou enseignant", en: "Professional or instructor", es: "Profesional o profesor", it: "Professionista o istruttore", de: "Profi oder Ausbilder", ja: "プロ・指導者" })),
-                    React.createElement("p", { style: { margin: "2px 0 0", fontSize: 11, color: COLORS.encreDoux } }, profil.estPro ? tr({ fr: "Statut vérifié \u2713 \u2014 l'offre Hype Pro est débloquée", en: "Verified status \u2713 \u2014 Hype Pro is unlocked", es: "Estado verificado \u2713 \u2014 Hype Pro está desbloqueado", it: "Stato verificato \u2713 \u2014 Hype Pro è sbloccato", de: "Status verifiziert \u2713 \u2014 Hype Pro ist freigeschaltet", ja: "確認済み \u2713 \u2014 Hype Pro が利用できます" }) : profil.demandePro ? tr({ fr: "Demande envoyée, en attente de vérification", en: "Request sent, awaiting verification", es: "Solicitud enviada, pendiente de verificación", it: "Richiesta inviata, in attesa di verifica", de: "Anfrage gesendet, Prüfung ausstehend", ja: "申請済み、確認をお待ちください" }) : tr({ fr: "Accès à l'offre Hype Pro sur vérification (club, SIRET...)", en: "Access to Hype Pro after verification (club, business ID...)", es: "Acceso a Hype Pro tras verificación (club, NIF...)", it: "Accesso a Hype Pro dopo verifica (club, P.IVA...)", de: "Zugang zu Hype Pro nach Prüfung (Verein, Gewerbe...)", ja: "確認後にHype Proへアクセス可能（クラブ・登録番号など）" }))),
-            /* 15/08 (demande de Blandine) : « mets prochainement dessus pour
-               l'offre pro, on verra ça plus tard ». Le bouton « Faire ma
-               demande » ouvrait un prompt puis un mail — mais l'offre Hype Pro
-               n'existe pas : aucune vérification, aucun droit particulier dans
-               l'app. C'était une promesse sans contenu.
-               Le bouton est remplacé par une PASTILLE INERTE « Prochainement ».
-               ⚠️ Le bouton d'origine est conservé juste en dessous, neutralisé
-               par `false &&` : le jour où l'offre existera, il suffira de
-               retirer ce `false &&` et la pastille. Rien n'est perdu. */
-            !profil.estPro && !profil.demandePro && React.createElement("div", {
-                style: { marginTop: 10, width: "100%", textAlign: "center", padding: "10px 0", borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.12)", color: COLORS.grisDoux, fontSize: 12.5, fontWeight: 700, letterSpacing: 0.3 }
-            }, tr({ fr: "Prochainement", en: "Coming soon", es: "Pr\u00f3ximamente", it: "Prossimamente", ja: "\u8fd1\u65e5\u516c\u958b", de: "Demn\u00e4chst" })),
-            false && !profil.estPro && !profil.demandePro && React.createElement("button", { onClick: () => {
-                    const nom = window.prompt(tr({ fr: "Nom de ton école/club d'équitation :", en: "Name of your riding school/club:", es: "Nombre de tu escuela/club hípico:", it: "Nome della tua scuola/club ippico:", de: "Name deiner Reitschule/deines Vereins:", ja: "乗馬クラブ・学校名：" })); if (!nom) return;
-                    setProfil({ ...profil, demandePro: true, estPro: HYPE_PRO_AUTODEBLOQUE, demandeProInfos: { nom: nom, date: new Date().toISOString() } });
-                    try { localStorage.setItem("augalop_demandePro", "1"); } catch (e) { }
-                    try { window.hypeOuvrirLien("mailto:contact@hypequestrian.app?subject=" + encodeURIComponent("Demande Hype Pro - " + nom) + "&body=" + encodeURIComponent("Structure : " + nom + "\nCavalier : " + (profil.prenom || "") + "\nEmail : " + (profil.email || ""))); } catch (e) { }
-                }, style: { marginTop: 10, width: "100%", textAlign: "center", padding: "10px 0", borderRadius: 12, background: `${COLORS.turquoise}18`, border: `1px solid ${COLORS.turquoise}55`, color: COLORS.turquoise, fontSize: 12.5, fontWeight: 700 } }, tr({ fr: "Faire ma demande", en: "Send my request", es: "Enviar mi solicitud", it: "Invia la mia richiesta", de: "Anfrage senden", ja: "申請する" })))),
-        /* 15/08 : « Notifications de révision · Activées · tous les jours à 18h00 »
-           était du DÉCOR — aucun onClick, aucun réglage, aucune notification jamais
-           envoyée. Retiré plutôt que de laisser une promesse fausse à l'écran. */
-        /* 🟥 15/08 — TROU DE SÉCURITÉ, trouvé en vérifiant à la demande de
-           Blandine. La ligne s'affichait pour TOUTES les cavalières, sans
-           aucune condition, et l'écran admin lui-même n'avait AUCUN verrou :
-           ni test de modératrice, ni mot de passe. N'importe qui ouvrant sa
-           page Mon compte pouvait y entrer.
-           Les règles d'accès de Supabase tenaient le mur du fond (pas de fuite
-           de données), mais la mécanique de l'app était exposée.
-           Ceinture ET bretelles : la ligne ne s'affiche plus qu'aux
-           modératrices, et `EcranAdmin` refuse de se monter pour les autres
-           (voir sa première ligne) — on peut aussi y arriver par l'adresse. */
-        React.createElement("div", { style: { fontSize: 9.5, letterSpacing: "0.24em", textTransform: "uppercase", color: COLORS.grisDoux, fontWeight: 700, margin: "22px 0 8px" } },
-            tr({ fr: "Mon compte", en: "My account", es: "Mi cuenta", it: "Il mio account", ja: "アカウント", de: "Mein Konto" })),
-        estModAdmin ? React.createElement(MenuLigne, { icone: "\u2699", texte: t("acces_admin"), onClick: () => setEcran("admin") }) : null,
-        React.createElement(MenuLigne, { icone: "\uD83D\uDC64", texte: tr({ fr: "Mon compte", en: "My account", ja: "アカウント", es: "Mi cuenta", it: "Il mio account", de: "Mein Konto" }), sousTexte: tr({ fr: "Se connecter ou créer un compte", en: "Log in or create an account", ja: "ログインまたはアカウント作成", es: "Iniciar sesión o crear cuenta", it: "Accedi o crea un account", de: "Anmelden oder ein Konto erstellen" }), onClick: () => setEcran("moncompte") }),
-        React.createElement(MenuLigne, { icone: "\u21AA", texte: t("se_deconnecter"), couleurTexte: COLORS.corail, onClick: () => { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "connexion"; setEcran("connexion"); } }),
+                React.createElement("p", { style: { margin: "3px 0 0", fontSize: 12.5, color: "rgba(255,255,255,0.72)", lineHeight: 1.35 } }, t("don_vip_sous")))),
+        false && React.createElement("button", { onClick: () => { setProfil({ ...profil, vip: true }); try { localStorage.setItem("augalop_vip", "1"); } catch (e) { } setMerciVIP(true); }, style: { width: "100%", textAlign: "left", padding: "10px 4px 6px", color: COLORS.grisDoux, fontSize: 12.5 } }, t("don_vip_deja")),
+        false && React.createElement(MenuLigne, { icone: "\uD83C\uDF93", texte: tr({ fr: "Professionnel ou enseignant", en: "Professional or instructor", es: "Profesional o profesor", it: "Professionista o istruttore", de: "Profi oder Ausbilder", ja: "プロ・指導者" }), sousTexte: tr({ fr: "Accès à l'offre Hype Pro sur vérification (club, SIRET...)", en: "Access to Hype Pro after verification (club, business ID...)", es: "Acceso a Hype Pro tras verificación (club, NIF...)", it: "Accesso a Hype Pro dopo verifica (club, P.IVA...)", de: "Zugang zu Hype Pro nach Prüfung (Verein, Gewerbe...)", ja: "確認後にHype Proへアクセス可能（クラブ・登録番号など）" }) }),
+        false && React.createElement(LigneInfo, { label: t("club_label"), valeur: profil.club || t("non_renseigne") }),
+
+        /* ---------- LES MODALES, inchangées ---------- */
         chevalVu && React.createElement(ModaleFicheCheval, { cheval: chevalVu, onClose: () => setChevalVu(null) }),
-        ajoutCheval && React.createElement(ModaleAjoutCheval, { onClose: () => setAjoutCheval(false), onAjouter: async (c) => { let idServeur = null; try { if (typeof ajouterChevalPerso === "function" && typeof supa !== "undefined") { const rP = await ajouterChevalPerso({ nom: c.nom, discipline: c.discipline, robe: c.robe, age: c.age, note: c.note, photoDataUrl: c.photo }); if (rP && rP.error) { alert(tr({ fr: "Impossible d\u2019enregistrer le cheval : ", en: "Could not save the horse: ", es: "No se pudo guardar el caballo: ", it: "Impossibile salvare il cavallo: ", ja: "\u99ac\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a", de: "Pferd konnte nicht gespeichert werden: " }) + (rP.error.message || String(rP.error))); return; } idServeur = rP && rP.data && rP.data.id; } } catch (e) { alert(tr({ fr: "Impossible d\u2019enregistrer le cheval : ", en: "Could not save the horse: ", es: "No se pudo guardar el caballo: ", it: "Impossibile salvare il cavallo: ", ja: "\u99ac\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u307e\u305b\u3093\u3067\u3057\u305f\uff1a", de: "Pferd konnte nicht gespeichert werden: " }) + String(e)); return; } /* 07/08 : plafond de 3 en dur remplace par le quota reel. Sans cela un premium a 6 chevaux voyait le 4e refuse silencieusement apres son enregistrement en base. */ setChevaux((l) => { const sansDemo = l.filter((x) => x.id !== "ch-demo"); var qC = (typeof hypeQuotaChevaux === "function") ? hypeQuotaChevaux(premium, ambassadeurCav) : (premium ? 6 : 1); return sansDemo.length >= qC ? sansDemo : [...sansDemo, Object.assign({}, c, idServeur ? { id: idServeur } : {})]; }); } }),
         limiteCheval && React.createElement("div", { onClick: () => setLimiteCheval(false), style: { position: "fixed", inset: 0, zIndex: 8500, background: "rgba(4,6,9,0.75)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 } },
             React.createElement("div", { onClick: (e) => e.stopPropagation(), style: { width: "100%", maxWidth: 340, borderRadius: 22, border: "1px solid rgba(32,217,245,0.45)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "26px 22px", textAlign: "center" } },
-                React.createElement("div", { style: { fontSize: 26, marginBottom: 10 } }, "\uD83D\uDC0E"),
-                React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17, fontWeight: 700, color: "#EDF2F5", letterSpacing: 0.8, marginBottom: 8 } }, tr({ fr: "Un cheval, puis Premium", en: "One horse, then Premium", es: "Un caballo, luego Premium", it: "Un cavallo, poi Premium", ja: "1\u982d\u76ee\u306f\u7121\u6599", de: "Ein Pferd, dann Premium" })),
-                React.createElement("p", { style: { color: "#9AA6AD", fontSize: 13, lineHeight: 1.55, margin: "0 0 18px" } }, /* 07/08 : le texte promettait « 2 chevaux de plus », le premium en autorise
-                   desormais 6 au total. Le message dit aussi ce qui arrive en cas
-                   d arret de l abonnement : rien n est supprime, les chevaux au-dela
-                   du quota passent simplement en pause. L allemand manquait sur cette
-                   chaine, il est ajoute. */
-                tr({ fr: "Ton premier cheval est offert. Avec Hype Premium, ton \u00e9curie personnelle peut accueillir jusqu\u2019\u00e0 6 chevaux. Si tu arr\u00eates l\u2019abonnement, aucun cheval n\u2019est supprim\u00e9 : ceux au-del\u00e0 du premier se mettent simplement en pause.", en: "Your first horse is free. With Hype Premium, your personal stable holds up to 6 horses. If you stop your subscription, no horse is ever deleted: those beyond the first are simply paused.", es: "Tu primer caballo es gratis. Con Hype Premium, tu cuadra personal admite hasta 6 caballos. Si dejas la suscripci\u00f3n, no se borra ning\u00fan caballo: los que pasan del primero quedan en pausa.", it: "Il primo cavallo \u00e8 gratis. Con Hype Premium, la tua scuderia personale accoglie fino a 6 cavalli. Se interrompi l abbonamento, nessun cavallo viene eliminato: quelli oltre il primo restano in pausa.", ja: "\u6700\u521d\u306e1\u982d\u306f\u7121\u6599\u3002Hype Premium \u306a\u3089\u81ea\u5206\u306e\u99ac\u5c4b\u306b\u6700\u5927 6 \u982d\u307e\u3067\u3002\u89e3\u7d04\u3057\u3066\u3082\u99ac\u306f\u524a\u9664\u3055\u308c\u305a\u30012\u982d\u76ee\u4ee5\u964d\u304c\u4f11\u6b62\u306b\u306a\u308b\u3060\u3051\u3067\u3059\u3002", de: "Dein erstes Pferd ist kostenlos. Mit Hype Premium fasst dein pers\u00f6nlicher Stall bis zu 6 Pferde. Wenn du das Abo beendest, wird kein Pferd gel\u00f6scht: die ab dem zweiten werden nur pausiert." })),
-                React.createElement("button", { onClick: () => { setLimiteCheval(false); setEcran("premium"); }, style: { width: "100%", border: "none", borderRadius: 999, padding: "13px 0", fontSize: 14, fontWeight: 800, background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", cursor: "pointer" } }, tr({ fr: "D\u00e9couvrir Premium", en: "Discover Premium", es: "Descubrir Premium", it: "Scopri Premium", ja: "Premium\u3092\u898b\u308b", de: "Premium entdecken" })),
-                React.createElement("button", { onClick: () => setLimiteCheval(false), style: { marginTop: 12, background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, tr({ fr: "Plus tard", en: "Later", es: "M\u00e1s tarde", it: "Pi\u00f9 tardi", ja: "\u5f8c\u3067", de: "Sp\u00e4ter" }))))));
+                React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 17, fontWeight: 700, color: "#EDF2F5", letterSpacing: 0.8, marginBottom: 8 } }, tr({ fr: "Un cheval, puis Premium", en: "One horse, then Premium", es: "Un caballo, luego Premium", it: "Un cavallo, poi Premium", ja: "1頭目は無料", de: "Ein Pferd, dann Premium" })),
+                React.createElement("button", { onClick: () => { setLimiteCheval(false); setEcran("premium"); }, style: { width: "100%", border: "none", borderRadius: 999, padding: "13px 0", fontSize: 14, fontWeight: 800, background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", cursor: "pointer" } }, tr({ fr: "Découvrir Premium", en: "Discover Premium", es: "Descubrir Premium", it: "Scopri Premium", ja: "Premiumを見る", de: "Premium entdecken" })),
+                React.createElement("button", { onClick: () => setLimiteCheval(false), style: { marginTop: 12, background: "none", border: "none", color: "#5B646E", fontSize: 12.5, cursor: "pointer", textDecoration: "underline" } }, tr({ fr: "Plus tard", en: "Later", es: "Más tarde", it: "Più tardi", ja: "後で", de: "Später" }))))));
 }
 function LigneInfo({ label, valeur, dernier }) {
     return (React.createElement("div", { style: { display: "flex", justifyContent: "space-between", padding: "12px 14px", borderBottom: dernier ? "none" : `1px solid ${COLORS.ligne}` } },
