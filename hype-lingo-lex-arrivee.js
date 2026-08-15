@@ -555,111 +555,199 @@ window.HYPE_LINGO_LEX.arrivee = {
      et doit comprendre. 16 produites, 6 entendues.
   ================================================================== */
   dialogue: {
-    ville: "labaule", lecon: 1, temps: 6, langues: ["fr","en"],   /* 25 phrases depuis le 13/08 */
+    ville: "labaule", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 25 phrases depuis le 13/08 */
 
     phrases: [
 
       /* ---- temps 1 · j'entre et j'explique pourquoi je suis là ---- */
       { ref:"d-info-annee", temps:1, dit:"joueuse",
         fr:"Bonjour, j'aimerais avoir des informations sur le centre équestre pour l'année prochaine.",
-        en:"Hello — I'd like some information about the riding school for next year." },
+        en:"Hello — I'd like some information about the riding school for next year.",
+        es:"Buenos días, quisiera información sobre el centro ecuestre para el año que viene.",
+        it:"Buongiorno, vorrei delle informazioni sul centro equestre per l'anno prossimo.",
+        de:"Guten Tag, ich hätte gern Informationen über die Reitschule für nächstes Jahr.",
+        ja:"こんにちは。 来年 の 乗馬 クラブ に ついて 教え て ください。" },
 
       /* ---- temps 2 · je demande ce qui existe ---- */
       { ref:"d-cours-debutants", temps:2, dit:"joueuse", mots:["debutant"],
         fr:"Est-ce qu'il y a des cours pour débutants ?",
-        en:"Do you have lessons for beginners?" },
+        en:"Do you have lessons for beginners?",
+        es:"¿Hay clases para principiantes?",
+        it:"Ci sono lezioni per principianti?",
+        de:"Gibt es Stunden für Anfänger?",
+        ja:"初心者 の レッスン は あり ます か ?" },
 
       /* La phrase de Blandine. `cavalier-confirme` a rejoint le lexique de
          La Baule le 13/08 pour qu'elle soit légitime — voir le commentaire
          du concept. NE PAS RETIRER CETTE PHRASE. */
       { ref:"d-cours-confirmes", temps:2, dit:"joueuse", mots:["cavalier-confirme"],
         fr:"Et pour les cavaliers confirmés ?",
-        en:"And for more experienced riders?" },
+        en:"And for more experienced riders?",
+        es:"¿Y para los jinetes experimentados?",
+        it:"E per i cavalieri esperti?",
+        de:"Und für erfahrene Reiter?",
+        ja:"経験者 向け の レッスン も あり ます か ?" },
 
       { ref:"d-reserver-mercredi", temps:2, dit:"joueuse", mots:["reserver"],
         fr:"Est-ce qu'on peut réserver le mercredi après-midi ?",
-        en:"Can I book for Wednesday afternoons?" },
+        en:"Can I book for Wednesday afternoons?",
+        es:"¿Se puede reservar los miércoles por la tarde?",
+        it:"Si può prenotare il mercoledì pomeriggio?",
+        de:"Kann man am Mittwochnachmittag buchen?",
+        ja:"水曜日 の 午後 に 予約 でき ます か ?" },
 
       /* ---- temps 3 · je dis mon niveau, je demande le tarif ---- */
       { ref:"d-trois-ans", temps:3, dit:"joueuse",
         fr:"Je monte depuis trois ans.",
-        en:"I've been riding for three years." },
+        en:"I've been riding for three years.",
+        es:"Monto a caballo desde hace tres años.",
+        it:"Vado a cavallo da tre anni.",
+        de:"Ich reite seit drei Jahren.",
+        ja:"乗馬 を 始め て 三年 に なり ます。" },
 
       { ref:"d-jamais-monte", temps:3, dit:"joueuse", mots:["debutant"],
         fr:"Je suis débutante, je ne suis jamais montée.",
-        en:"I'm a beginner — I've never ridden before." },
+        en:"I'm a beginner — I've never ridden before.",
+        es:"Soy principiante, nunca he montado.",
+        it:"Sono principiante, non sono mai andata a cavallo.",
+        de:"Ich bin Anfängerin, ich bin noch nie geritten.",
+        ja:"初心者 です。 馬 に 乗っ た こと が あり ませ ん。" },
 
       { ref:"d-tarifs-annee", temps:3, dit:"joueuse", mots:["tarif"],
         fr:"Quels sont vos tarifs pour l'année ?",
-        en:"What are your prices for the year?" },
+        en:"What are your prices for the year?",
+        es:"¿Cuáles son sus tarifas para el año?",
+        it:"Quali sono le vostre tariffe per l'anno?",
+        de:"Wie sind Ihre Preise für das Jahr?",
+        ja:"一年 の 料金 は いくら です か ?" },
 
       /* ---- temps 4 · je comprends ce qu'on me demande ---- */
       { ref:"d-q-niveau", temps:4, dit:"club", mots:["niveau"],
         fr:"Quel est votre niveau ?",
-        en:"What level are you riding at?" },
+        en:"What level are you riding at?",
+        es:"¿Cuál es su nivel?",
+        it:"Qual è il suo livello?",
+        de:"Auf welchem Niveau reiten Sie?",
+        ja:"レベル は どのくらい です か ?" },
 
       { ref:"d-q-depuis-quand", temps:4, dit:"club",
         fr:"Depuis combien de temps montez-vous ?",
-        en:"How long have you been riding?" },
+        en:"How long have you been riding?",
+        es:"¿Cuánto tiempo lleva montando?",
+        it:"Da quanto tempo va a cavallo?",
+        de:"Wie lange reiten Sie schon?",
+        ja:"乗馬歴 は どのくらい です か ?" },
 
       { ref:"d-q-debutante", temps:4, dit:"club", mots:["debutant"],
         fr:"Vous êtes débutante ?",
-        en:"Are you a complete beginner?" },
+        en:"Are you a complete beginner?",
+        es:"¿Es usted principiante?",
+        it:"È principiante?",
+        de:"Sind Sie Anfängerin?",
+        ja:"まったく の 初心者 です か ?" },
 
       { ref:"d-q-allures", temps:4, dit:"club", mots:["pas","trot","galop"],
         fr:"Vous êtes à l'aise au pas, au trot, au galop ?",
-        en:"Are you happy at a walk, a trot and a canter?" },
+        en:"Are you happy at a walk, a trot and a canter?",
+        es:"¿Se siente cómoda al paso, al trote y al galope?",
+        it:"Si sente a suo agio al passo, al trotto e al galoppo?",
+        de:"Fühlen Sie sich im Schritt, im Trab und im Galopp sicher?",
+        ja:"常歩、 速歩、 駆歩 は 大丈夫 です か ?" },
 
       { ref:"d-q-deja-galope", temps:4, dit:"club", mots:["galop"],
         fr:"Vous avez déjà galopé ?",
-        en:"Have you cantered before?" },
+        en:"Have you cantered before?",
+        es:"¿Ha galopado alguna vez?",
+        it:"Ha già galoppato?",
+        de:"Sind Sie schon einmal galoppiert?",
+        ja:"駆歩 を し た こと は あり ます か ?" },
 
       /* ---- temps 5 · l'équipement obligatoire ---- */
       { ref:"d-bottes-bombe", temps:5, dit:"joueuse", mots:["bottes","bombe-fournie"],
         fr:"Est-ce qu'il faut des bottes et une bombe ?",
         en:"Do I need boots and a hat?",
-        varEn:"Do I need boots and a helmet?" },
+        varEn:"Do I need boots and a helmet?",
+        es:"¿Hacen falta botas y casco?",
+        it:"Servono stivali e cap?",
+        de:"Braucht man Stiefel und eine Kappe?",
+        ja:"ブーツ と ヘルメット は 必要 です か ?" },
 
       { ref:"d-pas-de-bombe", temps:5, dit:"joueuse", mots:["bombe-fournie"],
         fr:"Je n'ai pas encore de bombe — est-ce que vous en prêtez ?",
         en:"I haven't got a hat yet — do you lend them?",
-        varEn:"I don't have a helmet yet — do you lend them?" },
+        varEn:"I don't have a helmet yet — do you lend them?",
+        es:"Todavía no tengo casco, ¿los prestan?",
+        it:"Non ho ancora il cap, li prestate?",
+        de:"Ich habe noch keine Kappe — verleihen Sie welche?",
+        ja:"まだ ヘルメット を 持っ て い ませ ん。 貸し て もらえ ます か ?" },
 
       { ref:"d-preter-bottes", temps:5, dit:"joueuse", mots:["bottes"],
         fr:"Est-ce que vous prêtez des bottes aussi ?",
-        en:"Do you lend boots as well?" },
+        en:"Do you lend boots as well?",
+        es:"¿Prestan botas también?",
+        it:"Prestate anche gli stivali?",
+        de:"Verleihen Sie auch Stiefel?",
+        ja:"ブーツ も 貸し て もらえ ます か ?" },
 
       { ref:"d-bombe-fournie", temps:5, dit:"club", mots:["bombe-fournie"],
         fr:"La bombe est fournie.",
         en:"A hat is provided.",
-        varEn:"A helmet is provided." },
+        varEn:"A helmet is provided.",
+        es:"El casco está incluido.",
+        it:"Il cap è fornito.",
+        de:"Eine Kappe wird gestellt.",
+        ja:"ヘルメット の 貸し出し が あり ます。" },
 
       /* ---- temps 6 · je réserve ---- */
       { ref:"d-cours-essai", temps:6, dit:"joueuse",
         fr:"Est-ce que vous proposez des cours d'essai ?",
-        en:"Do you do trial lessons?" },
+        en:"Do you do trial lessons?",
+        es:"¿Ofrecen clases de prueba?",
+        it:"Offrite lezioni di prova?",
+        de:"Bieten Sie Probestunden an?",
+        ja:"体験 レッスン は あり ます か ?" },
 
       { ref:"d-quelles-conditions", temps:6, dit:"joueuse",
         fr:"Si oui, dans quelles conditions ?",
-        en:"If so, how does that work?" },
+        en:"If so, how does that work?",
+        es:"Si es así, ¿en qué condiciones?",
+        it:"Se sì, a quali condizioni?",
+        de:"Wenn ja, wie läuft das ab?",
+        ja:"ある 場合、 どんな 条件 です か ?" },
 
       { ref:"d-aussi-balades", temps:6, dit:"joueuse", mots:["balade"],
         fr:"Est-ce que vous proposez aussi des balades ?",
         en:"Do you do hacks as well?",
-        varEn:"Do you offer trail rides too?" },
+        varEn:"Do you offer trail rides too?",
+        es:"¿Ofrecen también paseos?",
+        it:"Organizzate anche passeggiate?",
+        de:"Bieten Sie auch Ausritte an?",
+        ja:"外乗 も あり ます か ?" },
 
       { ref:"d-balade-cinq", temps:6, dit:"joueuse", mots:["reserver","balade","le-groupe"],
         fr:"Je voudrais réserver une balade pour cinq personnes.",
         en:"I'd like to book a hack for a group of five.",
-        varEn:"I'd like to book a trail ride for a group of five." },
+        varEn:"I'd like to book a trail ride for a group of five.",
+        es:"Quisiera reservar un paseo para cinco personas.",
+        it:"Vorrei prenotare una passeggiata per cinque persone.",
+        de:"Ich möchte einen Ausritt für fünf Personen buchen.",
+        ja:"五人 で 外乗 を 予約 し たい です。" },
 
       { ref:"d-combien-coute", temps:6, dit:"joueuse", mots:["tarif"],
         fr:"Combien est-ce que cela coûte ?",
-        en:"How much does that cost?" },
+        en:"How much does that cost?",
+        es:"¿Cuánto cuesta?",
+        it:"Quanto costa?",
+        de:"Was kostet das?",
+        ja:"いくら です か ?" },
 
       { ref:"d-cheval-calme", temps:6, dit:"joueuse", mots:["cheval-calme"],
         fr:"Est-ce que vous avez un cheval calme ?",
-        en:"Have you got a quiet horse?" },
+        en:"Have you got a quiet horse?",
+        es:"¿Tienen un caballo tranquilo?",
+        it:"Avete un cavallo tranquillo?",
+        de:"Haben Sie ein braves Pferd?",
+        ja:"おとなしい 馬 は い ます か ?" },
 
       /* ---- trois phrases ajoutées le 13/08, demandées par Blandine ---- */
 
@@ -671,12 +759,20 @@ window.HYPE_LINGO_LEX.arrivee = {
          ⚠️ NE PAS « CORRIGER » CETTE PHRASE en retirant « gallop ». */
       { ref:"d-canter-doux", temps:6, dit:"joueuse", mots:["galop"],
         fr:"Est-ce qu'on peut galoper doucement, sans aller vite ?",
-        en:"Can we do a steady canter, not a gallop?" },
+        en:"Can we do a steady canter, not a gallop?",
+        es:"¿Podemos galopar tranquilos, sin correr?",
+        it:"Possiamo galoppare tranquilli, senza correre?",
+        de:"Können wir ruhig galoppieren, ohne zu rennen?",
+        ja:"ゆっくり 駆歩 を し て も いい です か ?" },
 
       { ref:"d-cheval-rapide", temps:6, dit:"joueuse", mots:["cheval-rapide"],
         fr:"Est-ce que je peux avoir un cheval rapide ?",
         en:"Can I have a fast horse?",
-        varEn:"Can I have a forward horse?" },
+        varEn:"Can I have a forward horse?",
+        es:"¿Me pueden dar un caballo rápido?",
+        it:"Posso avere un cavallo veloce?",
+        de:"Kann ich ein schnelles Pferd haben?",
+        ja:"速い 馬 に 乗れ ます か ?" },
 
       /* Blandine : « c'est la phrase qui évite qu'on te mette sur un cheval
          trop chaud ». « I'm not very confident » est ce qu'on dit vraiment
@@ -685,7 +781,11 @@ window.HYPE_LINGO_LEX.arrivee = {
       { ref:"d-pas-rassuree", temps:6, dit:"joueuse", mots:["cheval-sympa"],
         fr:"Je ne suis pas très rassurée à cheval. Est-ce que vous auriez un cheval sympa ?",
         en:"I'm not very confident on a horse. Would you have a nice one?",
-        varEn:"I'm not very confident on a horse. Would you have a kind one?" }
+        varEn:"I'm not very confident on a horse. Would you have a kind one?",
+        es:"No voy muy tranquila a caballo. ¿Tendrían un caballo bueno?",
+        it:"Non sono molto tranquilla a cavallo. Avreste un cavallo buono?",
+        de:"Ich fühle mich auf dem Pferd nicht sehr sicher. Hätten Sie ein nettes Pferd?",
+        ja:"馬 の 上 で あまり 自信 が あり ませ ん。 優しい 馬 は い ます か ?" }
     ]
   }
 };
