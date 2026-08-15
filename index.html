@@ -19285,7 +19285,8 @@ const I18N = {
     gerer_abonnement: { fr: "Gérer mon abonnement Premium", en: "Manage my Premium subscription", ja: "プレミアム会員を管理", es: "Gestionar mi suscripción Premium", it: "Gestisci il mio abbonamento Premium" },
     notifs_revision: { fr: "Notifications de révision", en: "Study reminders", ja: "復習通知", es: "Notificaciones de repaso", it: "Notifiche di ripasso" },
     notifs_actives: { fr: "Activées · Tous les jours à 18h00", en: "On · Every day at 6:00 PM", ja: "オン・毎日18時", es: "Activadas · Todos los días a las 18:00", it: "Attive · Tutti i giorni alle 18:00" },
-    acces_admin: { fr: "Accès back-office (démo)", en: "Admin access (demo)", ja: "管理画面アクセス（デモ）", es: "Acceso al panel admin (demo)", it: "Accesso back-office (demo)" },
+    /* 15/08 : « démo » laissait croire à du faux alors que l'écran est réel. */
+    acces_admin: { fr: "Back-office", en: "Back office", ja: "管理画面", es: "Panel de administración", it: "Back-office" },
     se_deconnecter: { fr: "Se déconnecter", en: "Sign out", ja: "ログアウト", es: "Cerrar sesión", it: "Esci" },
     mes_badges_titre: { fr: "Mes hauts faits", en: "My achievements", ja: "マイ実績", es: "Mis logros", it: "Le mie imprese" },
     badges_debloques: { fr: "hauts faits débloqués", en: "achievements unlocked", ja: "個の実績を獲得", es: "logros desbloqueados", it: "imprese sbloccate" },
@@ -42787,6 +42788,16 @@ function EcranProfil() {
       return () => { vif = false; };
     }, []);
     const [chevalVu, setChevalVu] = useState(null);
+    /* 15/08 — RÉGLAGE DE POSITION. Idée de Blandine, qui donne enfin un sens à la
+       ligne du lieu : « le lieu par contre on pouvait le garder, c'était l'endroit
+       où choisir de le rendre public ou non ».
+       ⚠️ Sa correction, à respecter mot pour mot : désactiver ne retire PAS la
+       cavalière des membres de son écurie — « elle reste comptée dans les
+       cavaliers de l'écurie mais sa position n'apparaît pas c'est tout ».
+       Colonne attendue : `profiles.sur_carte` (booléen, défaut true). Le SQL est
+       livré à part ; sans la colonne, l'interrupteur s'affiche et l'écriture
+       échoue en silence — donc À PASSER AVANT de pousser. */
+    const [surCarte, setSurCarte] = useState(profil.sur_carte !== false);
     const [local, setLocal] = useState(profil);
     /* 🟥 15/08 : droit d'accès au back-office. Lu une fois au montage, comme
        l'ambassadeur juste au-dessus. Voir la ligne du menu plus bas. */
@@ -42875,10 +42886,10 @@ function EcranProfil() {
     const avatarSrc = profil.avatar || (typeof LOGO_DATA !== "undefined" ? LOGO_DATA : null);
     return (React.createElement("div", { style: { padding: "0 20px 8px" } },
         React.createElement("div", { style: { position: "relative", overflow: "hidden", margin: "0 -20px 16px" } },
-            React.createElement("div", { style: { position: "absolute", inset: 0, background: fondCheval ? `url(${fondCheval}) center 32%/cover no-repeat` : COLORS.nuitElevee } }),
+            React.createElement("div", { style: { position: "absolute", inset: 0, /* ⚠️ 15/08 — DÉCISION DE BLANDINE, formulée deux fois : « empile pas l'icône sur la photo ça c'est la seule solution pas possible ». La page superposait la photo du CHEVAL en fond et l'avatar de la cavalière par-dessus : deux images qui se disputaient la même place. Le fond cheval est retiré, la photo de profil devient la seule image du haut. ⚠️ NE JAMAIS remettre une image derrière l'avatar. */ background: COLORS.nuitElevee } }),
             React.createElement("div", { style: { position: "absolute", inset: 0, background: `linear-gradient(100deg, ${COLORS.nuit} 16%, ${COLORS.nuit}33 36%, ${COLORS.nuit}15 60%, ${COLORS.nuit}06 92%)` } }),
             React.createElement("div", { style: { position: "absolute", inset: 0, background: `linear-gradient(to bottom, ${COLORS.nuit}06 28%, ${COLORS.nuit}33 82%, ${COLORS.nuit} 100%)` } }),
-            React.createElement("button", { onClick: () => chevalRef.current && chevalRef.current.click(), title: t("changer_photo"), style: { position: "absolute", top: 14, right: 56, zIndex: 3, display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(8,10,13,0.55)", border: `1px solid ${COLORS.blanc}33`, borderRadius: 999, padding: "5px 11px", color: COLORS.blanc, fontSize: 11, fontWeight: 700 } },
+            false /* 15/08 : le bouton « 📷 Photo cheval » changeait le fond retiré juste au-dessus — il n'a plus d'objet ici. La photo du cheval reste modifiable depuis sa fiche. */ && React.createElement("button", { onClick: () => chevalRef.current && chevalRef.current.click(), title: t("changer_photo"), style: { position: "absolute", top: 14, right: 56, zIndex: 3, display: "inline-flex", alignItems: "center", gap: 5, background: "rgba(8,10,13,0.55)", border: `1px solid ${COLORS.blanc}33`, borderRadius: 999, padding: "5px 11px", color: COLORS.blanc, fontSize: 11, fontWeight: 700 } },
                 "\uD83D\uDCF7 ",
                 t("photo_cheval")),
             React.createElement("input", { ref: chevalRef, type: "file", accept: "image/*", onChange: choisirCheval, style: { display: "none" } }),
@@ -42898,13 +42909,13 @@ function EcranProfil() {
                         React.createElement("input", { ref: fileRef, type: "file", accept: "image/*", onChange: choisirPhoto, style: { display: "none" } })),
                     React.createElement("div", { style: { minWidth: 0 } },
                         React.createElement("p", { style: { margin: 0, fontSize: 23, fontWeight: 800, color: COLORS.blanc, lineHeight: 1.1, textShadow: "0 1px 8px rgba(10,26,36,0.176)" } }, profil.prenom || t("cavalier_defaut")),
-                        React.createElement("p", { style: { margin: "4px 0 0", fontSize: 15, fontWeight: 800, color: COLORS.turquoise, textShadow: "0 1px 6px rgba(10,26,36,0.165)" } },
+                        false /* 15/08 : « Galop 1 » et l'étoile retirés — le galop venait du champ mort `galopActuel` et affichait 1 alors que Blandine est Galop 7. */ && React.createElement("p", { style: { margin: "4px 0 0", fontSize: 15, fontWeight: 800, color: COLORS.turquoise, textShadow: "0 1px 6px rgba(10,26,36,0.165)" } },
                             galopMot,
                             " ",
                             profil.galopActuel,
                             estAbonne && React.createElement("span", { style: { color: COLORS.acier } }, " \u00B7 \u2605"),
                             profil.vip && React.createElement("span", { style: { color: COLORS.or } }, " \u00B7 \uD83D\uDC51")),
-                        profil.club && React.createElement("p", { style: { margin: "5px 0 0", fontSize: 12.5, color: COLORS.creme, textShadow: "0 1px 6px rgba(0,0,0,0.85)" } },
+                        false /* 15/08 : le lieu 📍 retiré de cette ligne. */ && React.createElement("p", { style: { margin: "5px 0 0", fontSize: 12.5, color: COLORS.creme, textShadow: "0 1px 6px rgba(0,0,0,0.85)" } },
                             "\uD83D\uDCCD ",
                             profil.club))),
                 React.createElement("div", { style: { display: "flex", marginTop: "auto", paddingTop: 18 } }, [
@@ -42915,7 +42926,7 @@ function EcranProfil() {
                     { ic: React.createElement("svg", { viewBox: "0 0 24 24", width: 17, height: 17 },
                             React.createElement("circle", { cx: "12", cy: "15", r: "5.2", fill: "none", stroke: COLORS.acier, strokeWidth: "2" }),
                             React.createElement("path", { d: "M9 2.5 l3 6 -2 1 -3-6z M15 2.5 l-3 6 2 1 3-6z", fill: COLORS.acier })), v: xp, l: t("points_label") },
-                ].map((s, i) => (React.createElement("button", { key: i, onClick: () => setEcran("classement"), style: { flex: 1, textAlign: "center", background: "none", borderLeft: i ? `1px solid ${COLORS.blanc}22` : "none" } },
+                ].slice(0, 0) /* 15/08 (Blandine) : le triptyque Indice · Ton rang · Points a quitté cette page — ce sont des mesures de progression, pas des réglages. Le tableau est vidé plutôt que supprimé : sa structure porte les fermetures du bloc parent. */.map((s, i) => (React.createElement("button", { key: i, onClick: () => setEcran("classement"), style: { flex: 1, textAlign: "center", background: "none", borderLeft: i ? `1px solid ${COLORS.blanc}22` : "none" } },
                     React.createElement("div", { style: { height: 18, marginBottom: 4, display: "flex", alignItems: "center", justifyContent: "center", filter: "drop-shadow(0 1px 2px rgba(10,26,36,0.154))" } }, s.ic),
                     React.createElement("div", { style: { fontSize: 11, color: "rgba(255,255,255,0.82)", fontWeight: 600, marginBottom: 3, textShadow: "0 1px 5px rgba(0,0,0,0.95)" } }, s.l),
                     React.createElement("div", { style: { fontSize: 20, fontWeight: 800, color: COLORS.acier, fontFamily: "'Baloo 2', sans-serif", lineHeight: 1, textShadow: "0 1px 6px rgba(0,0,0,0.9)" } }, s.v))))))),
@@ -42931,8 +42942,28 @@ function EcranProfil() {
                   bibliothèque et il est transmis à Hey Baby — il restera donc à
                   1 pour toute nouvelle cavalière. À rendre modifiable ailleurs,
                   ou à déduire des chapitres validés. */
-            React.createElement(LigneInfo, { label: t("club_label"), valeur: profil.club || t("non_renseigne"), dernier: true }),
-            null)) : (React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 18, padding: 16, marginBottom: 16, display: "flex", flexDirection: "column", gap: 12 } },
+            React.createElement(LigneInfo, { label: t("club_label"), valeur: profil.club || t("non_renseigne") }),
+            /* 15/08 — LA POSITION, ET SON INTERRUPTEUR. Le lieu affiché est le club
+               s'il est renseigné, la ville sinon (règle de la spec carte). */
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "13px 0 2px" } },
+                React.createElement("div", { style: { flex: 1, minWidth: 0 } },
+                    React.createElement("div", { style: { fontSize: 12.5, fontWeight: 700, color: COLORS.blanc } },
+                        "\uD83D\uDCCD " + (profil.club || profil.ville || tr({ fr: "Lieu non renseigné", en: "No place set", es: "Sin lugar", it: "Nessun luogo", ja: "場所未設定", de: "Kein Ort" }))),
+                    React.createElement("div", { style: { fontSize: 10.5, color: COLORS.grisDoux, marginTop: 3, lineHeight: 1.45 } },
+                        surCarte
+                            ? tr({ fr: "Ta position apparaît sur la carte de la communauté.", en: "Your location appears on the community map.", es: "Tu ubicación aparece en el mapa de la comunidad.", it: "La tua posizione appare sulla mappa della community.", ja: "コミュニティのマップに表示されます。", de: "Dein Ort erscheint auf der Community-Karte." })
+                            : tr({ fr: "Ta position n'apparaît pas sur la carte. Tu restes membre de ton écurie.", en: "Your location is hidden from the map. You remain a member of your stable.", es: "Tu ubicación no aparece en el mapa. Sigues siendo miembro de tu cuadra.", it: "La tua posizione non appare sulla mappa. Resti membro della tua scuderia.", ja: "マップには表示されません。厩舎のメンバーであることは変わりません。", de: "Dein Ort erscheint nicht auf der Karte. Du bleibst Mitglied deines Stalls." }))),
+                React.createElement("button", {
+                    onClick: () => {
+                        const v = !surCarte;
+                        setSurCarte(v);
+                        setProfil((pr) => ({ ...pr, sur_carte: v }));
+                        try { syncProfilDistant({ sur_carte: v }).catch(function () { }); } catch (e) { }
+                    },
+                    "aria-label": tr({ fr: "Apparaître sur la carte", en: "Appear on the map", es: "Aparecer en el mapa", it: "Apparire sulla mappa", ja: "マップに表示", de: "Auf der Karte erscheinen" }),
+                    style: { flex: "0 0 auto", width: 46, height: 27, borderRadius: 999, cursor: "pointer", position: "relative", border: "1px solid " + (surCarte ? "rgba(32,217,245,0.7)" : "rgba(255,255,255,0.2)"), background: surCarte ? "rgba(32,217,245,0.22)" : "rgba(255,255,255,0.06)", transition: "background 160ms ease-out" }
+                },
+                    React.createElement("span", { style: { position: "absolute", top: 2, left: surCarte ? 21 : 2, width: 21, height: 21, borderRadius: "50%", background: surCarte ? COLORS.acier : "rgba(255,255,255,0.45)", transition: "left 160ms ease-out" } }))))) : (React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 18, padding: 16, marginBottom: 16, display: "flex", flexDirection: "column", gap: 12 } },
             React.createElement(ChampTexte, { placeholder: t("prenom_placeholder"), value: local.prenom, onChange: (v) => setLocal({ ...local, prenom: v }), fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
             React.createElement(ChampTexte, { placeholder: t("club_placeholder"), value: local.club, onChange: (v) => setLocal({ ...local, club: v }), fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
             React.createElement("div", null,
@@ -42940,52 +42971,19 @@ function EcranProfil() {
                 React.createElement("div", { style: { display: "flex", gap: 6, flexWrap: "wrap" } }, [1, 2, 3, 4, 5, 6, 7].map((g) => (React.createElement("button", { key: g, onClick: () => setLocal({ ...local, galopActuel: g }), style: { width: 36, height: 36, borderRadius: 10, background: local.galopActuel === g ? COLORS.turquoise : COLORS.creme, color: local.galopActuel === g ? COLORS.nuit : COLORS.grisDoux, fontWeight: 700, fontSize: 13 } }, g))))))),
         React.createElement("button", { onClick: () => { if (edition)
                 setProfil(local); setEdition(!edition); }, style: { width: "100%", padding: "13px 0", borderRadius: 14, background: COLORS.creme, color: COLORS.encre, fontWeight: 700, fontSize: 14, marginBottom: 20 } }, edition ? t("enregistrer_modifs") : t("modifier_profil")),
-        React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", margin: "0 0 4px" } },
-            React.createElement("p", { style: { fontSize: 15, fontWeight: 700, color: COLORS.encre, margin: 0 } }, t("mes_chevaux")),
-            /* 07/08 : le compteur etait « n/3 » en dur et n apparaissait que pour
-               les premium. Il suit maintenant le quota reel, et reste visible pour
-               tous — un compte gratuit doit voir 1/1 pour comprendre sa limite.
-               Rien n est affiche pour un ambassadeur, qui n a pas de plafond. */
-            React.createElement("span", { style: { fontSize: 13, color: COLORS.turquoiseDark, fontWeight: 700 } },
-                chevaux.filter((c) => c.id !== "ch-demo").length,
-                ((typeof hypeQuotaChevaux === "function" ? hypeQuotaChevaux(premium, ambassadeurCav) : (premium ? 6 : 1)) === Infinity)
-                  ? "" : ("/" + (typeof hypeQuotaChevaux === "function" ? hypeQuotaChevaux(premium, ambassadeurCav) : (premium ? 6 : 1)))),),
-        React.createElement("p", { style: { fontSize: 12, color: COLORS.encreDoux, margin: "0 0 12px", lineHeight: 1.5 } }, t("chevaux_note")),
-        /* 07/08 : la grille etait conditionnee a `premium`, donc un compte gratuit ne
-           voyait AUCUNE carte — le grise etait impossible a montrer. Elle s affiche
-           desormais pour tous, et ce sont les cartes au-dela du quota qui se grisent.
-           On ne cache rien, on ne supprime rien : decision de Blandine. */
-        (React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, marginBottom: 22 } },
-            chevaux.map((c) => (React.createElement("div", { key: c.id, "data-bloque": ((typeof hypeChevalBloque === "function") && hypeChevalBloque(chevaux, c, premium, ambassadeurCav)) ? "1" : null, onClick: () => { if ((typeof hypeChevalBloque === "function") && hypeChevalBloque(chevaux, c, premium, ambassadeurCav)) { setLimiteCheval(true); return; } setChevalVu(c); }, style: { position: "relative", opacity: ((typeof hypeChevalBloque === "function") && hypeChevalBloque(chevaux, c, premium, ambassadeurCav)) ? 0.38 : 1, filter: ((typeof hypeChevalBloque === "function") && hypeChevalBloque(chevaux, c, premium, ambassadeurCav)) ? "grayscale(1)" : "none", background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 18, padding: "18px 12px", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, minHeight: 188, cursor: "pointer" } },
-                React.createElement("button", { onClick: (e) => { e.stopPropagation(); setChevaux((l) => l.filter((x) => x.id !== c.id)); }, title: t("retirer_ami"), style: { position: "absolute", top: 6, right: 6, width: 22, height: 22, borderRadius: "50%", background: `${COLORS.corail}1A`, border: `1px solid ${COLORS.corail}55`, color: COLORS.corail, fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center" } }, "\u2715"),
-                React.createElement("div", { style: { width: 72, height: 72, borderRadius: "50%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: c.photo ? "transparent" : COLORS.creme, border: `2px solid ${COLORS.nuitBordure}` } }, c.photo ? React.createElement("img", { src: c.photo, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : "🐴"),
-                React.createElement("p", { style: { margin: 0, fontSize: 15, fontWeight: 700, color: COLORS.encre, textAlign: "center", lineHeight: 1.2, maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, c.nom),
-                c.discipline ? React.createElement("span", { style: { fontSize: 10, fontWeight: 700, color: COLORS.turquoiseDark, background: `${COLORS.turquoise}1A`, padding: "1px 7px", borderRadius: 999 } }, c.discipline) : null,
-                c.robe ? React.createElement("span", { style: { fontSize: 10, color: COLORS.encreDoux } }, c.robe) : null,
-                c.aussiMontePar ? React.createElement("span", { style: { fontSize: 9.5, color: COLORS.encreDoux, textAlign: "center", lineHeight: 1.2 } },
-                    "\uD83D\uDC65 ",
-                    t("cheval_aussi_monte"),
-                    " ",
-                    c.aussiMontePar) : null))),
-            /* 07/08 : le bouton etait plafonne a 3 en dur et la modale se declenchait sur `!premium && >= 1`. Les deux suivent maintenant le quota (1 / 6 / illimite). Le bouton reste visible tant que le quota n est pas atteint ; au-dela il disparait, et la modale n apparait donc que si on force le passage. */ (chevaux.filter((c) => c.id !== "ch-demo").length < (typeof hypeQuotaChevaux === "function" ? hypeQuotaChevaux(premium, ambassadeurCav) : (premium ? 6 : 1))) && (React.createElement("button", { onClick: () => { var qA = (typeof hypeQuotaChevaux === "function") ? hypeQuotaChevaux(premium, ambassadeurCav) : (premium ? 6 : 1); if (chevaux.filter((c) => c.id !== "ch-demo").length >= qA) { setLimiteCheval(true); } else if (window.__ouvrirCreationCheval) { window.__ouvrirCreationCheval(); } else { setAjoutCheval(true); } }, style: { background: `${COLORS.turquoise}0D`, border: `1px dashed ${COLORS.turquoise}77`, borderRadius: 16, padding: "12px 8px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, minHeight: 132, color: COLORS.turquoiseDark } },
-                React.createElement("span", { style: { fontSize: 26 } }, "\uFF0B"),
-                React.createElement("span", { style: { fontSize: 11, fontWeight: 700, textAlign: "center", lineHeight: 1.2 } }, t("cheval_ajouter")))))), /* 07/08 : l ancienne structure etait un ternaire — grille pour les premium, invitation pour les autres. La grille etant desormais visible par tous, l invitation devient un element frere affiche aux seuls comptes non premium. */ !premium && (React.createElement("div", { onClick: () => setEcran("premium"), style: { position: "relative", marginBottom: 22, cursor: "pointer" } },
-            React.createElement("div", { style: { filter: "grayscale(1)", opacity: 0.4, pointerEvents: "none", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 } },
-                chevaux.slice(0, 2).map((c) => (React.createElement("div", { key: c.id, style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 16, padding: "12px 8px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, minHeight: 132 } },
-                    React.createElement("div", { style: { width: 72, height: 72, borderRadius: "50%", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: c.photo ? "transparent" : COLORS.creme, border: `2px solid ${COLORS.nuitBordure}` } }, c.photo ? React.createElement("img", { src: c.photo, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : "🐴"),
-                    React.createElement("p", { style: { margin: 0, fontSize: 12.5, fontWeight: 700, color: COLORS.encre } }, c.nom),
-                    c.discipline ? React.createElement("span", { style: { fontSize: 10, fontWeight: 700, color: COLORS.turquoiseDark, background: `${COLORS.turquoise}1A`, padding: "1px 7px", borderRadius: 999 } }, c.discipline) : null))),
-                React.createElement("div", { style: { background: `${COLORS.turquoise}0D`, border: `1px dashed ${COLORS.turquoise}77`, borderRadius: 16, padding: "12px 8px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, minHeight: 132, color: COLORS.turquoiseDark } },
-                    React.createElement("span", { style: { fontSize: 26 } }, "\uFF0B"),
-                    React.createElement("span", { style: { fontSize: 11, fontWeight: 700 } }, t("cheval_ajouter")))),
-            React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: 12 } },
-                React.createElement("span", { style: { display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(8,10,13,0.82)", border: `1px solid ${COLORS.soleil}66`, borderRadius: 999, padding: "9px 16px", fontSize: 12.5, fontWeight: 800, color: COLORS.blanc, textAlign: "center", lineHeight: 1.3 } },
-                    "\uD83D\uDD12 ",
-                    t("chevaux_premium"))))),
-        React.createElement(EncartConseilsHB, { chevalId: null }),
+        /* 15/08 : « les chevaux ça saute » — ils ont leur page Écurie. */
+        /* 15/08 : « Conseils de Hey Baby ça saute » — appartient au profil et à
+           la fiche cheval, pas aux réglages. */
         /* 15/08 : les hauts faits rejoignent la page Quêtes — « ils devraient
            plutôt aller sur la page quêtes » (Blandine). L'écran `badges` existe
            toujours, il change simplement de porte d'entrée. */
+        /* 15/08 — MISE EN FORME. « Essaye de rendre tout ça présentable avec des
+           mosaïques s'il faut. » La liste continue de lignes grises devient des
+           GROUPES nommés : chaque sujet a son intitulé, l'œil sait où il est.
+           Les `MenuLigne` sont conservées telles quelles — on ajoute des titres
+           entre elles plutôt que de réécrire des composants qui marchent. */
+        React.createElement("div", { style: { fontSize: 9.5, letterSpacing: "0.24em", textTransform: "uppercase", color: COLORS.grisDoux, fontWeight: 700, margin: "22px 0 8px" } },
+            tr({ fr: "Mon abonnement", en: "My subscription", es: "Mi suscripción", it: "Il mio abbonamento", ja: "サブスクリプション", de: "Mein Abo" })),
         React.createElement(MenuLigne, { icone: "\uD83D\uDDA8\uFE0F", texte: t("impr_bouton"), onClick: () => setImpression(true) }),
         premium ? (React.createElement(MenuLigne, { icone: "\u2605", texte: t("gerer_abonnement"), onClick: () => setEcran("premium") })) : (React.createElement("button", { onClick: () => setEcran("premium"), style: { width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 13, padding: "15px 15px", borderRadius: 18, margin: "6px 0 12px", background: `linear-gradient(135deg, ${COLORS.turquoiseDim}, ${COLORS.nuitElevee})`, border: `1px solid ${COLORS.turquoise}55`, boxShadow: `0 4px 18px ${COLORS.turquoise}22` } },
             React.createElement("span", { style: { width: 44, height: 44, borderRadius: 13, background: `${COLORS.turquoise}26`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 23, color: COLORS.turquoise, flexShrink: 0 } }, "\u2605"),
@@ -43056,6 +43054,8 @@ function EcranProfil() {
            Ceinture ET bretelles : la ligne ne s'affiche plus qu'aux
            modératrices, et `EcranAdmin` refuse de se monter pour les autres
            (voir sa première ligne) — on peut aussi y arriver par l'adresse. */
+        React.createElement("div", { style: { fontSize: 9.5, letterSpacing: "0.24em", textTransform: "uppercase", color: COLORS.grisDoux, fontWeight: 700, margin: "22px 0 8px" } },
+            tr({ fr: "Mon compte", en: "My account", es: "Mi cuenta", it: "Il mio account", ja: "アカウント", de: "Mein Konto" })),
         estModAdmin ? React.createElement(MenuLigne, { icone: "\u2699", texte: t("acces_admin"), onClick: () => setEcran("admin") }) : null,
         React.createElement(MenuLigne, { icone: "\uD83D\uDC64", texte: tr({ fr: "Mon compte", en: "My account", ja: "アカウント", es: "Mi cuenta", it: "Il mio account", de: "Mein Konto" }), sousTexte: tr({ fr: "Se connecter ou créer un compte", en: "Log in or create an account", ja: "ログインまたはアカウント作成", es: "Iniciar sesión o crear cuenta", it: "Accedi o crea un account", de: "Anmelden oder ein Konto erstellen" }), onClick: () => setEcran("moncompte") }),
         React.createElement(MenuLigne, { icone: "\u21AA", texte: t("se_deconnecter"), couleurTexte: COLORS.corail, onClick: () => { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "connexion"; setEcran("connexion"); } }),
