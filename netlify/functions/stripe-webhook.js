@@ -283,6 +283,33 @@ export default async (req) => {
             }
         }
 
+        // ----- Échec de paiement -----
+        /* ⚠️ AJOUT DU 15/08, sur une objection de Blandine : « si ça se trouve
+           Barbara va même pas renouveler dans 3 jours ». Elle avait raison —
+           il manquait le cas du paiement qui ÉCHOUE sans que personne
+           n'annule. `customer.subscription.deleted` ne couvre que la
+           résiliation volontaire ; une carte expirée ou refusée ne
+           déclenchait RIEN, et l'accès continuait jusqu'à la date écrite.
+           ⚠️ CET ÉVÉNEMENT DOIT ÊTRE COCHÉ CÔTÉ STRIPE : il ne l'est pas
+           aujourd'hui (seuls checkout.session.completed, invoice.paid et
+           customer.subscription.deleted le sont). Sans la case, ce bloc ne
+           servira jamais.
+           Le statut passe à "impaye" mais `expire_le` n'est PAS avancé : la
+           période déjà payée reste due. Stripe réessaie plusieurs fois avant
+           d'abandonner ; une relance réussie repassera par invoice.paid et
+           remettra "actif". */
+        else if (evenement.type === "invoice.payment_failed" && objet) {
+            const subId = abonnementDeFacture(objet);
+            const email = objet.customer_email || null;
+            if (!subId) {
+                log("ALERTE : payment_failed sans identifiant d'abonnement — email :", email);
+                return new Response("OK (abonnement introuvable)", { status: 200 });
+            }
+            const n = await majParAbonnement(service, subId, { statut: "impaye", maj_le: new Date().toISOString() });
+            if (!n) log("ALERTE : échec de paiement sans ligne correspondante —", subId, "—", email);
+            else log("Paiement échoué, statut passé à impayé :", email);
+        }
+
         // ----- Annulation définitive -----
         else if (evenement.type === "customer.subscription.deleted" && objet && objet.id) {
             const n = await majParAbonnement(service, objet.id, { statut: "annule", maj_le: new Date().toISOString() });
