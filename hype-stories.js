@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ae";
+var HYPE_STORIES_VERSION = "19ag";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -202,6 +202,15 @@ function hsModelesPourN(n) {
    fenetre n° 1 ; ce sont les DECORS qui sont classes, du plus respectueux au
    plus destructeur. Le jour ou le geste a la main sera ecrit, il s'appuiera
    sur la meme mesure. */
+/* 19af — LE SEUIL DE LA COUPE. En dessous, la photo remplit sa fenetre
+   (on perd peu). Au-dessus — photo couchee dans une fenetre debout, ou
+   l'inverse — la photo entre ENTIERE et le vide est comble par son propre
+   flou, le fond immersif que Blandine a valide pour les paysages.
+   Feu vert du 15/08 : « tu devais le coder pour que l'appli reconnaisse le
+   format de la photo et s'adapte ». Plus JAMAIS de coupe de force.
+   0,30 = un carre dans du 4:5 est encore rempli (perte 0,2), un 4:3 dans du
+   3:4 passe entier (perte 0,44). Ajustable ici, a un seul endroit. */
+var HS_SEUIL_COUPE = 0.30;
 function hsPertePhoto(rPhoto, rFenetre) {
   try {
     if (!rPhoto || !rFenetre || !isFinite(rPhoto) || !isFinite(rFenetre)) return 0;
@@ -210,6 +219,46 @@ function hsPertePhoto(rPhoto, rFenetre) {
     return 1 - (a / b);
   } catch (e) { return 0; }
 }
+/* 19ag (15/08) — LA FORME DECIDE DE L'AFFECTATION. Mots de Blandine :
+   « adapte ton encart !!! Ta photo est debout, ben mets un encart vertical ».
+   ⚠️ RENVERSEMENT EXPLICITE de sa decision du 14/08 (« l'ordre decide, je
+   corrige a la main ») — acte, sur ses mots du 15/08.
+   Pour un decor donne, on essaie TOUTES les repartitions photos->fenetres
+   (5 photos au plus = 120 combinaisons, instantane) et on garde celle qui
+   coupe le moins. La photo debout va dans la fenetre debout. En cas
+   d'egalite parfaite, l'ordre de Blandine est conserve (l'identite est
+   generee en premier et gagne les ex aequo). Elle peut toujours echanger a
+   la main dans l'ecran plein format ensuite. */
+function hsMeilleureAffectation(ref, formes) {
+  try {
+    var m = hsModeles()[ref];
+    if (!m || !m.fenetres || !m.fenetres.length) return null;
+    var n = m.fenetres.length;
+    if (!formes || formes.length !== n || n > 6) return null;
+    if (!formes.some(function (r) { return typeof r === "number"; })) return null;
+    var rf = m.fenetres.map(function (f) {
+      return (f && f.bbox && f.bbox[3]) ? (f.bbox[2] / f.bbox[3]) : 1;
+    });
+    var idx = []; for (var q = 0; q < n; q++) idx.push(q);
+    var meilleur = null, coutMin = Infinity;
+    (function gen(cur, reste) {
+      if (!reste.length) {
+        var c = 0;
+        for (var i = 0; i < n; i++) {
+          var r = formes[cur[i]];
+          if (typeof r === "number") c += hsPertePhoto(r, rf[i]);
+        }
+        if (c < coutMin - 1e-9) { coutMin = c; meilleur = cur.slice(); }
+        return;
+      }
+      for (var j = 0; j < reste.length; j++) {
+        gen(cur.concat(reste[j]), reste.slice(0, j).concat(reste.slice(j + 1)));
+      }
+    })([], idx);
+    return meilleur;
+  } catch (e) { return null; }
+}
+
 /* La perte MOYENNE d'un decor pour une serie de photos donnee, dans l'ordre.
    `formes` = [ratio photo 1, ratio photo 2, ...], null quand la mesure n'est
    pas encore arrivee (on ne penalise pas ce qu'on ne connait pas). */
@@ -450,6 +499,76 @@ function hsRecadrerFichier(fichier, cx, ratioVoulu, cy, zoom) {
 /* 19c : l'image du FOND FLOUTE — minuscule par choix. Un blur(26px) sur un
    calque plein ecran est de la meme famille que les plantages memoire ; une
    vignette de 220 px etiree donne exactement le meme flou pour presque rien. */
+/* 19af — LA PHOTO ENTIERE SUR SON PROPRE FLOU, au format de la fenetre.
+   Utilisee a la publication quand la forme de la photo est trop eloignee de
+   celle de sa fenetre (perte > HS_SEUIL_COUPE) : rien n'est coupe, le vide
+   est comble par la photo elle-meme, agrandie et adoucie — le meme principe
+   que le fond immersif valide par Blandine.
+   Le flou est obtenu par double reduction (dessin en 1/12e puis etirement) :
+   pas de filter=blur, que Safari iOS applique de facon inegale au canvas. */
+function hsEntierFichier(fichier, ratioVoulu, zoom) {
+  return new Promise(function (resolve) {
+    try {
+      if (!fichier || typeof window === "undefined" || !window.URL) { resolve(fichier); return; }
+      var brut = window.URL.createObjectURL(fichier);
+      var img = new Image();
+      var fini = false;
+      function terminer(r) {
+        if (fini) return; fini = true;
+        try { img.src = ""; } catch (e1) { }
+        try { window.URL.revokeObjectURL(brut); } catch (e2) { }
+        resolve(r || fichier);
+      }
+      img.decoding = "async";
+      img.onload = function () {
+        try {
+          var L = img.naturalWidth || 1, H = img.naturalHeight || 1;
+          var R = (typeof ratioVoulu === "number" && ratioVoulu > 0) ? ratioVoulu : (L / H);
+          var haut = Math.min(HS_CADRE_HMAX, Math.max(H, 900));
+          var c = document.createElement("canvas");
+          c.height = Math.round(haut);
+          c.width = Math.round(haut * R);
+          var ctx = c.getContext("2d");
+          /* le fond : la photo en couverture, reduite puis etiree = flou doux */
+          var p = document.createElement("canvas");
+          p.width = Math.max(1, Math.round(c.width / 12));
+          p.height = Math.max(1, Math.round(c.height / 12));
+          var pctx = p.getContext("2d");
+          var rF = c.width / c.height, sw, sh, sx, sy;
+          if (L / H > rF) { sh = H; sw = H * rF; sx = (L - sw) / 2; sy = 0; }
+          else { sw = L; sh = L / rF; sx = 0; sy = (H - sh) / 2; }
+          pctx.drawImage(img, sx, sy, sw, sh, 0, 0, p.width, p.height);
+          ctx.imageSmoothingEnabled = true;
+          ctx.drawImage(p, 0, 0, c.width, c.height);
+          ctx.fillStyle = "rgba(6,7,9,0.42)";       /* assombri pour que la photo nette porte */
+          ctx.fillRect(0, 0, c.width, c.height);
+          /* la photo, ENTIERE, centree — le zoom de l'editeur reste honore */
+          var z = (typeof zoom === "number" && zoom > 1) ? Math.min(4, zoom) : 1;
+          var dw, dh;
+          if (L / H > rF) { dw = c.width * z; dh = dw * H / L; }
+          else { dh = c.height * z; dw = dh * L / H; }
+          ctx.drawImage(img, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh);
+          try { p.width = 1; p.height = 1; } catch (eP) { }
+          if (!c.toBlob) { try { c.width = 1; c.height = 1; } catch (eX) { } terminer(fichier); return; }
+          c.toBlob(function (b) {
+            var sortie = fichier;
+            try {
+              if (b) {
+                var nom = (fichier.name ? String(fichier.name).replace(/\.[^.]+$/, "") : "story") + "-entier.jpg";
+                sortie = (typeof File === "function") ? new File([b], nom, { type: "image/jpeg" }) : b;
+              }
+            } catch (eF) { sortie = b || fichier; }
+            try { c.width = 1; c.height = 1; } catch (eC) { }
+            terminer(sortie);
+          }, "image/jpeg", 0.9);
+        } catch (e) { terminer(fichier); }
+      };
+      img.onerror = function () { terminer(fichier); };
+      img.src = brut;
+    } catch (e0) { resolve(fichier); }
+  });
+}
+
 function hsImageFlou(u) {
   try {
     if (typeof vignetteHype !== "function") return u;
@@ -1402,6 +1521,9 @@ function EditeurDecorHype(props) {
   var g = React.useRef(null);
   if (!g.current) {
     var dep = [], ord = [];
+    /* 19ag : l'ecran s'ouvre deja range par la forme — la photo debout dans
+       la fenetre debout. props.affectation vient de hsMeilleureAffectation. */
+    var aff = (props.affectation && props.affectation.length === fenetres.length) ? props.affectation : null;
     for (var i0 = 0; i0 < fenetres.length; i0++) {
       var d0 = (props.cadres && props.cadres[String(i0)]) || {};
       dep.push({
@@ -1409,7 +1531,7 @@ function EditeurDecorHype(props) {
         cy: (typeof d0.cy === "number") ? d0.cy : 0.5,
         z: (typeof d0.z === "number" && d0.z >= 1) ? d0.z : 1
       });
-      ord.push(i0);
+      ord.push(aff ? aff[i0] : i0);
     }
     g.current = { cadres: dep, ordre: ord, active: 0, source: -1, pinch: null, glisse: null, minuteur: null, bouge: false };
   }
@@ -1458,6 +1580,17 @@ function EditeurDecorHype(props) {
     var r = 1;
     try { if (im && im.naturalWidth && im.naturalHeight) r = im.naturalWidth / im.naturalHeight; } catch (e) { }
     var rf = t.w / t.h;
+    /* 19af — LA FORME DECIDE, ici comme a la publication. Perte forte :
+       la photo tient ENTIERE dans la fenetre (contain) au lieu de la
+       couvrir ; le fond immersif viendra derriere a la publication.
+       L'ecran montre donc ce qui partira vraiment. Le zoom et le glisse
+       marchent pareil : a l'echelle 1 la photo entiere ne deborde pas,
+       donc le glisse ne fait rien — c'est le comportement attendu. */
+    var perte = 1 - (Math.min(r, rf) / Math.max(r, rf));
+    if (perte > HS_SEUIL_COUPE) {
+      if (r > rf) return { w: t.w, h: t.w / r };
+      return { w: t.h * r, h: t.h };
+    }
     if (r > rf) return { w: t.h * r, h: t.h };
     return { w: t.w, h: t.w / r };
   }
@@ -1508,8 +1641,20 @@ function EditeurDecorHype(props) {
     } catch (e) { }
   }
 
+  /* ⚠️ 19af — CORRECTION D'UNE FAUTE DE CLAUDE, LA MEME QU'EN 19z.
+     Les ecouteurs etaient poses sur LA BOITE DU DECOR seulement : un glisse
+     commence hors de la boite (titre, fond noir, bords de l'ecran) partait
+     dans le geste de retour d'iOS et EJECTAIT Blandine de l'application.
+     Sa video de 08h48 le montre : elle ouvre l'ecran, glisse, retour profil.
+     Les ecouteurs natifs `{ passive: false }` couvrent desormais TOUT
+     l'ecran (racineRef) : l'editeur n'a aucun defilement, on peut donc
+     retenir chaque mouvement sans rien casser. Les taps sur les boutons ne
+     produisent pas de touchmove et passent normalement.
+     ⚠️ La lecon, pour la troisieme fois : le blocage du retour iOS se pose
+     sur la SURFACE ENTIERE de l'ecran qu'on protege, jamais sur une zone. */
+  var racineRef = React.useRef(null);
   React.useEffect(function () {
-    var b = boiteRef.current; if (!b || typeof window === "undefined") return;
+    var b = racineRef.current; if (!b || typeof window === "undefined") return;
     var s = g.current;
     function debut(ev) {
       try {
@@ -1534,8 +1679,10 @@ function EditeurDecorHype(props) {
     }
     function bouge(ev) {
       try {
+        /* 19af : TOUT mouvement est retenu, meme hors des fenetres — c'est ce
+           qui neutralise le geste de retour d'iOS sur l'ecran entier. */
+        if (ev.cancelable) ev.preventDefault();
         if (s.pinch && ev.touches.length >= 2) {
-          if (ev.cancelable) ev.preventDefault();
           s.bouge = true;
           var k = ecart(ev.touches[0], ev.touches[1]) / (s.pinch.d || 1);
           s.cadres[s.pinch.i].z = Math.max(1, Math.min(4, (s.pinch.z0 || 1) * k));
@@ -1543,7 +1690,6 @@ function EditeurDecorHype(props) {
           return;
         }
         if (s.glisse && ev.touches.length === 1) {
-          if (ev.cancelable) ev.preventDefault();
           var dx = ev.touches[0].clientX - s.glisse.x;
           var dy = ev.touches[0].clientY - s.glisse.y;
           if (Math.abs(dx) > 4 || Math.abs(dy) > 4) s.bouge = true;
@@ -1604,8 +1750,10 @@ function EditeurDecorHype(props) {
   }
 
   return h("div", {
+    ref: racineRef,
     style: {
       position: "fixed", inset: 0, zIndex: 100000, background: "#060709",
+      touchAction: "none",
       display: "flex", flexDirection: "column", alignItems: "center",
       paddingTop: "calc(env(safe-area-inset-top) + 8px)",
       paddingBottom: "calc(env(safe-area-inset-bottom) + 10px)"
@@ -1981,6 +2129,21 @@ function ComposeurStory(props) {
       }).filter(function (u) { return !!u; });
     } catch (e) { return []; }
   }
+  /* ⚠️ 19af — CORRECTION D'UNE FAUTE DE CLAUDE (19ac). L'editeur plein ecran
+     recevait la liste FILTREE ci-dessus : une seule vignette pas encore prete
+     et toutes les suivantes se DECALAIENT d'un rang — la photo 3 dans la
+     fenetre 2, ou une fenetre vide. Sur la video de 08h48, des fenetres
+     restaient vides pour cette raison. L'editeur recoit desormais la liste
+     ALIGNEE, trous compris : `vign[i]` correspond TOUJOURS a la photo i.
+     Les apercus du composeur, eux, gardent la liste filtree (pas de rangs). */
+  function hsVignettesAlignees() {
+    try {
+      return fichiersOrdonnes.map(function (f) {
+        var ix = fichiersBruts.indexOf(f);
+        return (ix >= 0) ? (urlsMini[ix] || null) : null;
+      });
+    } catch (e) { return []; }
+  }
 
   /* 19ab — les formes des photos RETENUES, dans l'ordre d'affichage.
      Les photos ecartees sont exclues : c'est bien la liste que l'on va
@@ -2318,8 +2481,24 @@ function ComposeurStory(props) {
             var cf = cadresFen[String(rangFen)] || { cx: 0.5, cy: 0.5 };
             /* 19ac : le zoom pose dans l'ecran plein format part avec la
                photo. Sans lui, Blandine placait sa photo a l'ecran et
-               retrouvait le cadrage d'origine une fois publiee. */
-            if (rr > 0) fEnvoi = await hsRecadrerFichier(fEnvoi, cf.cx, rr, cf.cy, cf.z);
+               retrouvait le cadrage d'origine une fois publiee.
+               19af (feu vert du 15/08) : LA FORME DECIDE DU REMPLISSAGE.
+               Perte faible = la photo couvre sa fenetre, comme avant.
+               Perte forte (photo couchee dans une fenetre debout, ou
+               l'inverse) = la photo part ENTIERE sur son propre flou —
+               plus JAMAIS de coupe de force. */
+            if (rr > 0) {
+              var rBrut = null;
+              try {
+                var ixB = fichiersBruts.indexOf(fichiersOrdonnes[iF]);
+                rBrut = (ixB >= 0) ? ratiosRef.current[ixB] : null;
+              } catch (eRb) { rBrut = null; }
+              var coupe = (typeof rBrut === "number" && isFinite(rBrut) && rBrut > 0)
+                ? hsPertePhoto(rBrut, rr) : 0;
+              fEnvoi = (coupe > HS_SEUIL_COUPE)
+                ? await hsEntierFichier(fEnvoi, rr, cf.z)
+                : await hsRecadrerFichier(fEnvoi, cf.cx, rr, cf.cy, cf.z);
+            }
           } else {
             var cad = cadrageDe(iF);
             if (cad && cad.actif) fEnvoi = await hsRecadrerFichier(fEnvoi, cad.cx);
@@ -2928,7 +3107,8 @@ function ComposeurStory(props) {
         ? h(EditeurDecorHype, {
           reference: editeur,
           modele: hsModeles()[editeur],
-          vignettes: hsVignettesRetenues(),
+          affectation: hsMeilleureAffectation(editeur, hsFormesRetenues()),
+          vignettes: hsVignettesAlignees(),
           cadres: cadresFen,
           langue: lg,
           onFermer: function () { setEditeur(null); },

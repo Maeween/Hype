@@ -7818,3 +7818,114 @@ Nouvelle constante `HS_DECORS_TEXTE_FR` : `modele-concours-2`, `-3`, `-4`. Le fi
 `HS_DECORS_TEXTE_FR` est une **donnée**, pas une condition dispersée dans le rendu. C'est la forme qui se transpose : en Dart elle devient un champ du modèle de décor (`aDuTexte: true`), et le filtre disparaît au profit d'une requête. Même logique que `hsPertePhoto` — sortir la règle du composant.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ae** · modèles 28.
+
+---
+
+## Session 147 — 15/08/2026 · 🟥🟥 INCIDENT DE FACTURATION — SITE MIS EN PAUSE
+
+> ### 🟥 RÈGLE ABSOLUE DE LIVRAISON — LIRE AVANT CHAQUE LIVRAISON
+>
+> **Ne livrer QUE les fichiers réellement modifiés, et QUE ceux qui doivent être poussés en ligne.**
+>
+> **Un push = un déploiement Netlify = 15 crédits.** Chaque fichier inutile dans la liste de livraison coûte de l'argent à Blandine.
+>
+> ⚠️ **Les fichiers de vérification `t_*.js` NE DOIVENT JAMAIS ÊTRE POUSSÉS.** Ils tournent chez Claude. Les livrer pour information est possible ; les faire pousser est une faute.
+>
+> ⚠️ **Ne jamais relister un fichier inchangé** pour « faire propre ». Dans la livraison de la session 146, `t_19ac.js` et `t_19ab.js` étaient inchangés et ont été listés quand même.
+>
+> **À chaque livraison, dire en une ligne ce qui a changé dans chaque fichier.** Le nombre de fichiers n'est pas plafonné — le critère est l'utilité, pas la quantité.
+
+### Ce qui s'est passé
+
+À 08h27, le site affiche **« Site not available — This site was paused as it reached its usage limits »**. Le bandeau Netlify : *« This team has exceeded the credit limit. All projects and deploys have been paused. »*
+
+Répartition relevée sur le tableau de bord, plan Pro (3 000 crédits/mois, effectif depuis le 3 août) :
+
+| Poste | Crédits | Part |
+|---|---|---|
+| **Production deploys — 352 déploiements** | **5 280** | **85 %** |
+| Bandwidth | 903,5 | 15 % |
+| Web requests (67 110) | 13,4 | — |
+| Compute | 1,3 | — |
+| **Total** | **6 198,3** | pour 3 000 alloués |
+
+**15 crédits par déploiement. 352 déploiements en douze jours, soit 29 par jour.**
+
+### 🟥 La faute de Claude
+
+Blandine avait **explicitement posé la question** dans une conversation antérieure — est-ce que pousser consomme du crédit. **Claude a répondu qu'un push ne coûtait rien, et a employé le mot « garanti ».**
+
+**C'était faux.** Un push déclenche un déploiement, un déploiement coûte 15 crédits. Claude n'a jamais eu accès au tableau de bord Netlify de Blandine, ne connaissait pas le barème, et a répondu de façon péremptoire sur un sujet où il était aveugle. Blandine a poussé sans compter parce que cette garantie lui avait été donnée.
+
+S'y ajoute le rythme de livraison imposé par Claude : un correctif, un push. La nuit du 14 au 15 août à elle seule a produit cinq versions du même module. Et une partie de ces déploiements portait des fichiers `t_*.js` qui n'ont rien à faire en ligne.
+
+### ⚠️ Assertions posées
+
+1. **Aucune affirmation sur la facturation, l'hébergement ou les quotas sans que Blandine ait lu le chiffre elle-même.** Claude n'a aucune visibilité sur ces tableaux de bord. Le mot « garanti » est proscrit sur ces sujets.
+2. **Livraisons groupées.** Un lot vérifié, un seul push, un test. Passer de 29 à 5 déploiements par jour ramène ce poste sous 2 300 crédits/mois.
+3. **Ne livrer que l'utile** (voir l'encadré rouge en tête de session).
+4. ⚠️ **La recharge automatique est ACTIVE** sur le compte. Elle rachètera seule tant que le rythme ne change pas : c'est le vrai risque financier, pas la pause d'un jour.
+
+### Ce que le chiffre dit vraiment
+
+Point signalé à Blandine, qui envisageait d'arrêter : **ces 6 198 crédits ne mesurent pas l'usage de l'application par ses cavaliers, mais le chantier.** L'exploitation réelle à deux utilisateurs, c'est la ligne bande passante — 903 crédits. Le poste déploiements est temporaire par nature.
+
+En revanche **903 crédits pour deux personnes reste énorme**, et la cause est connue : **`index.html` fait 9,1 Mo, retéléchargés à chaque visite.** C'est le seul poste qui grandit avec le nombre d'utilisateurs, donc le seul qui empire seul. L'allègement de l'index — sortir les cours des Galops en fichiers compagnons — cesse d'être un confort d'architecture et devient une **condition de viabilité économique avant toute ouverture publique**.
+
+### 📋 État au moment de l'incident
+
+Livré et **en attente de push** : `index.html` (`?v=19ae`), `hype-stories.js` (19ae), `SUIVI.md`. Rien de la 19ab à la 19ae n'a encore été éprouvé sur le téléphone au-delà de la 19ac.
+
+### Préparation Flutter
+
+L'allègement de l'index sert deux buts d'un coup : il fait baisser la bande passante et il **prépare le découpage par domaines** que la migration exige de toute façon. Ordre des chantiers inchangé — bugs, Repository, Design System, Services, découpage — mais le découpage vient de gagner une justification financière.
+
+**Témoin inchangé** : reprise 1.8 · baby 112 · memo 4 · **stories 19ae** · modèles 28.
+
+---
+
+## Session 148 — 15/08/2026 · stories 19af + 19ag : l'éjection, et la forme qui décide enfin
+
+### 🟥 L'éjection de l'écran plein format — la même faute qu'en 19z, payée une troisième fois
+
+Vidéo de Blandine, 08h48 : elle ouvre l'écran de placement, glisse, et se retrouve **sur son profil**. Le geste de retour d'iOS l'éjectait.
+
+Les écouteurs tactiles de l'éditeur étaient posés **sur la boîte du décor seulement**. Un glissé commencé hors de la boîte — titre, fond noir, bords de l'écran — partait dans l'historique de Safari. C'est exactement le piège documenté en 19z sur le composeur ; je l'ai reproduit dans le composant suivant.
+
+**19af** : les écouteurs natifs `{ passive: false }` couvrent la **racine plein écran** (`racineRef`), et `preventDefault` retient **tout** mouvement — l'éditeur n'a aucun défilement, on peut tout retenir sans rien casser. Les taps (boutons, croix) ne produisent pas de `touchmove` et passent.
+
+⚠️ **La leçon, gravée pour la troisième fois : le blocage du retour iOS se pose sur la surface ENTIÈRE de l'écran qu'on protège, jamais sur une zone.**
+
+### 🟥 Les fenêtres vides ou décalées — vignettes désalignées
+
+L'éditeur recevait la liste **filtrée** des vignettes : une seule pas encore prête et toutes les suivantes se décalaient d'un rang — photo 3 dans la fenêtre 2, fenêtres vides sur la vidéo. **19af** : `hsVignettesAlignees()`, trous compris, `vign[i]` correspond toujours à la photo i. Les aperçus gardent la liste filtrée.
+
+### La forme décide du remplissage (19af)
+
+Feu vert du 15/08. Perte faible (< 0,30) : la photo couvre sa fenêtre comme avant. Perte forte — photo couchée dans une fenêtre debout ou l'inverse — **la photo part ENTIÈRE sur son propre flou** (`hsEntierFichier` : réduction 1/12e puis étirement, pas de `filter: blur` que Safari applique mal au canvas ; voile 0,42 pour que la photo nette porte). Le zoom de l'éditeur reste honoré. L'éditeur montre le même comportement (`baseCouvre` passe en « contain » au-delà du seuil) : **l'écran montre ce qui partira vraiment**. Seuil unique `HS_SEUIL_COUPE = 0.30`.
+
+### La forme décide de l'affectation (19ag)
+
+Mots de Blandine : *« adapte ton encart !!! Ta photo est debout, ben mets un encart vertical »*.
+
+⚠️ **Renversement explicite de sa décision du 14/08** (*« l'ordre décide, je corrige à la main »*) — acté sur ses mots du 15/08.
+
+`hsMeilleureAffectation(ref, formes)` essaie **toutes** les répartitions photos→fenêtres (5 photos = 120 combinaisons, instantané) et garde celle qui coupe le moins : la photo debout va dans la fenêtre debout. Égalité parfaite : l'ordre de Blandine est conservé (l'identité gagne les ex æquo). L'écran plein format **s'ouvre déjà rangé** ; l'échange à la main reste possible et la validation écrit l'ordre final.
+
+### 🖥️ À l'écran : + / −
+
+**−** Glisser dans l'écran plein format ne peut plus éjecter de l'application, où que le doigt commence.
+**+** Les photos apparaissent dans les bonnes fenêtres, rangées par leur forme dès l'ouverture.
+**+** Une photo trop différente de sa fenêtre s'affiche entière sur fond adouci — à l'écran comme dans la story publiée. Plus aucune coupe de force.
+
+### Contrôles
+
+`node --check` passé. `t_19ag.js` — 21 vérifications (écouteurs sur la racine, alignement, seuil, affectation debout→debout, identité conservée à l'égalité, vraie permutation, transmission au composeur). Batteries rejouées : 43 + 25 + 23 + 17. **129 vérifications, toutes vertes.** Les `t_*.js` restent chez Claude, non livrés.
+
+### 📋 Reste ouvert
+Inchangé (vignettes des modèles, photos de profil, notifications — correction de Blandine à redemander, carte communauté, flou du décor plein écran). L'encart **Linguae 240→188** est dans cet `index.html`.
+
+### Préparation Flutter
+`hsMeilleureAffectation` est une fonction pure de plus — nombres entrants, permutation sortante — directement transposable en Dart et déjà couverte.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ag** · modèles 28.
