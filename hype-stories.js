@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ak";
+var HYPE_STORIES_VERSION = "19al";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -4451,6 +4451,22 @@ function VisionneuseStories(props) {
   function toucheFin(e) {
     try {
       if (enEdition || choix || menuOuvert || ajout) { glisseRef.current.actif = false; return; }
+      /* ⚠️ 19al — FAUTE DE CLAUDE, TROUVEE PAR BLANDINE : « je peux pas
+         appuyer sur le coeur ca ferme la story direct ».
+         Les pastilles du bas (musique depuis le 13/08, coeur depuis la 19ak)
+         arretent `touchstart` pour qu'un glisse ne parte pas d'elles, mais
+         laissent passer `touchend` — c'est voulu, stopper `touchend` laissait
+         la boite coincee en pleine transformation.
+         Seulement `toucheFin` ne verifiait JAMAIS que le glisse avait ete
+         arme : il mesurait la fin du toucher contre le point de depart d'un
+         toucher PRECEDENT, reste en memoire. Un appui sur une pastille en bas
+         d'ecran, compare a un depart situe plus haut, donnait une descente de
+         bien plus de 110 px — soit le geste qui FERME la story.
+         Le garde est ici, a la racine, et non sur chaque pastille : toute
+         pastille future en est protegee d'office.
+         ⚠️ NE JAMAIS retirer ce test sans arreter `touchend` partout, ce qui
+         reintroduirait le defaut du 13/08. */
+      if (!glisseRef.current.actif) { glisseRef.current.horiz = false; return; }
       pauseRef.current = false;
       var dy = 0, dx = 0;
       var t = e.changedTouches && e.changedTouches[0];

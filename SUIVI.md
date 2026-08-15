@@ -8134,3 +8134,47 @@ Le cœur est le premier objet de ce module à avoir sa donnée dans une table d�
 L'affaire des trois tables absentes confirme le besoin : elles dormaient depuis des mois sans que rien ne le signale, chaque appel se rattrapant en silence dans son `try/catch`. Un Repository nommé aurait fait remonter l'absence au premier appel au lieu d'un cœur qui ne s'allume pas.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ak** · modèles 28.
+
+---
+
+## Session 154 — 15/08/2026 · stories **19al** · le cœur fermait la story
+
+### 🟥 Faute de Claude, trouvée par Blandine
+
+Ses mots : *« je peux pas appuyer sur le cœur ça ferme la story direct »*.
+
+Les pastilles du bas — musique depuis le 13/08, cœur depuis la 19ak — arrêtent `touchstart` pour qu'un glissé ne parte pas d'elles, mais laissent passer `touchend`. C'est **voulu** : stopper `touchend` laissait la boîte coincée en pleine transformation, défaut corrigé le 13/08.
+
+Seulement `toucheFin` ne vérifiait **jamais** que le glissé avait été armé. Il mesurait la fin du toucher contre le point de départ d'un toucher **précédent**, resté en mémoire dans `glisseRef`. Un appui sur une pastille en bas d'écran, comparé à un départ situé plus haut, donnait une descente de bien plus de 110 px — soit exactement le geste qui ferme la story.
+
+Un seul garde, posé **à la racine** et non sur chaque pastille : `if (!glisseRef.current.actif) return;`. Toute pastille future en est protégée d'office. La pastille musique portait le même défaut depuis le 13/08 sans qu'on l'ait vu — elle est réparée par la même ligne.
+
+⚠️ Ne jamais retirer ce test sans arrêter `touchend` partout, ce qui réintroduirait le défaut du 13/08.
+
+### 🧭 La leçon, troisième occurrence en deux jours
+
+Trois fautes de suite ont la même forme : **un événement lu hors de son contexte**. Le fond de feuille qui se fermait sur le clic d'un enfant (19ai), le navigateur par swipe qui lisait des touchers d'un autre écran (19ai), et maintenant une fin de toucher mesurée contre un départ qui ne lui appartenait pas.
+
+Règle à retenir : **tout gestionnaire de fin de geste doit d'abord vérifier que le geste a commencé chez lui.** Un `touchend` sans `touchstart` correspondant n'est pas un geste, c'est un résidu.
+
+### 🖥️ À l'écran : + / −
+
+**−** Le cœur ne ferme plus la story ; il compte.
+**−** La pastille musique ne peut plus fermer la story non plus (même défaut, jamais signalé).
+**+** Rien de nouveau.
+
+### Contrôles
+
+`node --check` : passé. Vérifiés à la main : accord `19al` entre le module et le cache-buster, `actif` bien posé à `true` dans `toucheDebut` et remis à `false` dans les trois sorties, garde placé **après** le test des feuilles ouvertes pour ne pas en changer le comportement.
+
+### 📋 Reste ouvert
+
+Inchangé depuis la 153. Toujours en tête : le tap sur une photo de composition qui fait avancer la story (non tranché), les commentaires de stories, la durée au choix, le partage externe et sa question de portée publique.
+
+Chantier annoncé par Blandine et non commencé : **les localisations de personnes et de stories**. Deux lectures possibles ont été présentées, sans réponse à ce jour — le lieu réel porté sur le globe (`lieu` est aujourd'hui du texte libre rattaché à rien, le globe connaît 131 clubs et 38 villes), ou le positionnement des visages et des stories dans la carte Communauté de l'accueil.
+
+### Préparation Flutter
+
+Cette faute n'existe pas en Flutter : un `GestureDetector` apparie lui-même `onPanStart` et `onPanEnd`, et un widget qui absorbe le début du geste absorbe la fin. La classe entière de bugs — début et fin lus par deux propriétaires différents — disparaît avec la migration. À inscrire dans la frontière « Présentation » comme argument de priorité : les trois fautes des sessions 151 à 154 sont toutes de cette famille.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19al** · modèles 28.
