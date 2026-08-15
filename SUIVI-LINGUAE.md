@@ -173,7 +173,7 @@ Précédent posé en session 209 sur `balade` (*« s'il dort, tant mieux »*), a
 
 ---
 
-# ✈️ SESSION 214 · 15/08 — CINQ DIALOGUES EN SIX LANGUES, LE VERROU DES TROIS ESSAIS, ET LE HORS LIGNE
+# ✈️ SESSION 214 · 15/08 — NEUF DIALOGUES EN SIX LANGUES, LE VERROU DES TROIS ESSAIS, LE HORS LIGNE (ET SON INCIDENT), DEUX TABLES À NAÎTRE
 
 ## ⚠️ INCIDENT DE NUMÉROTATION, SIGNALÉ ET CORRIGÉ
 
@@ -202,8 +202,11 @@ Tout le travail du jour a d'abord été daté **« session 211 »** dans les sep
 | **Connemara** (`cheval`) | 22 | **créé**, 6 langues |
 | **Newmarket** (`ecurie`) | 21 | **créé**, 6 langues |
 | **Lambourn** (`pansage`) | 20 | **créé**, 6 langues |
+| **Walsall** (`materiel`) | 20 | **créé**, 6 langues + **4 concepts ajoutés** |
+| **Aberystwyth** (`cours`) | 24 | **créé**, 6 langues — **18 entendues** |
+| **Windsor** (`dressage`) | 21 | **créé**, 6 langues + **2 concepts ajoutés** |
 
-Contrôle machine à chaque livraison : aucune case vide, japonais espacé (découpable en tuiles), refs `mots` valides, lexiques et `phrases` d'exercice intacts.
+**176 phrases au total, neuf villes.** Contrôle machine à chaque livraison : aucune case vide, japonais espacé (découpable en tuiles), refs `mots` valides, lexiques et `phrases` d'exercice intacts.
 
 ### Le Morne, réécrit avec elle, phrase par phrase
 **Sorties (7)** : savoir nager ×2, crème solaire, maillot de bain, « la baignade est comprise », le doublon du galop doux.
@@ -283,14 +286,142 @@ Verre fumé + reflet lent repris de l'encart **« HYPE dans ta poche »** d'`ind
 
 ---
 
+## 🛍️ WALSALL — LE MATÉRIEL · 20 phrases, 6 temps, 5 entendues
+
+**Le lexique a été COMPLÉTÉ, choix A de Blandine** sur sa question *« et les parties de la selle genre pommeau troussequin quartier étrivière ? »*. Le chapitre portait `selle`, `sangle`, `etriers`, `etrivieres`, `pommeau` — et rien d'autre. **42 → 46 concepts :**
+
+| ref | fr | en | à ne pas « corriger » |
+|---|---|---|---|
+| `troussequin` | le troussequin | the cantle | traductions reprises du `def` de `pommeau`, qui les annonçait déjà en 6 langues |
+| `quartier` | le quartier | the saddle flap | avancé/court pour l'obstacle, droit/long pour le dressage |
+| `siege` | le siège | the seat | c'est lui qui donne la taille d'une selle, **en pouces** |
+| `arcon` | l'arçon | **the tree** | 🟥 le piège du chapitre — rien à voir avec un arbre. Ni `arch` ni `bow`. L'allemand dit la même image : *Sattelbaum* |
+
+⚠️ **Faute signalée AVANT écriture, puis réparée à la source** : la première version du dialogue employait « arçon » alors que le mot n'existait nulle part dans le fichier.
+
+⚠️ **DOUTES MARQUÉS `// ??` dans le fichier**, en plus de ceux qu'il portait déjà (guêtres, cloches, muserolle, tapis) : `il seggio` (siège, it), `il fusto` (arçon, it), et les deux emprunts japonais `サドルフラップ` et `ツリー`. Défendables et employés dans le commerce, mais une **relecture native** les confirmerait. Marquer le doute plutôt que faire semblant — règle de Blandine.
+
+---
+
+## 👕 LA TENUE DU CAVALIER — UNE TABLE À PART · DÉCISION DE BLANDINE
+
+Trajet de la décision, dans l'ordre : *« la tenue ailleurs »* → Aberystwyth envisagé → *« sinon on fera une table spéciale tenue de cavalier ou matériel »* → 🟥 ***« note ça on va plutôt faire ça »***.
+
+**Une TABLE À PART accueillera** `culotte`, `bottes`, `minichaps`, `gants`, `cravache`, `eperons`, `tenue` — et les phrases correspondantes.
+⚠️ **LES MOTS RESTENT DANS `hype-lingo-lex-materiel.js` pour l'instant.** Les déplacer coûterait une retraduction en six langues. 🟥 **Le jour du déménagement : les verser d'abord dans la nouvelle table AVANT de les retirer d'ici** (même doctrine que `HYPE_EXTRAS_LINGUAE`).
+⚠️ **Ne pas ressortir la piste Aberystwyth** : elle a été écartée par elle au profit de la table.
+**Pas encore tranché** : le nom de cette table · rattachée à une ville ou hors voyage · si elle accueille aussi la famille **« je me débrouille »**, l'autre orphelin qui attend au même endroit depuis la session 209.
+
+---
+
+## 🎓 L'ENSEIGNEMENT — UNE 32ᵉ VILLE, NEUVE · DÉCISION DE BLANDINE
+
+`hype-lingo-lex-cours.js` prévoit **deux rôles** : élève (reconnaître l'ordre au vol) et **enseignant** (le produire — exercice vocal Premium). Aucune ville ne portait le second.
+
+**Écartées par elle, avec ses raisons :**
+· **Saumur** — *« Saumur est déjà bien avec son vocabulaire »*. Ne pas la détourner.
+· **Lamotte-Beuvron** — *« Lamotte c'est les poneys »* (`hype-lingo-lex-poney.js`, le poney-club et les enfants). Rien à voir avec l'enseignement adulte.
+
+🟥 **DÉCISION : *« on prendra une nouvelle ville proposée en une »*** — une **32ᵉ ville** dédiée à l'enseignement.
+⚠️ Ce que ça coûte, signalé à elle : une carte, un fond, un objet de collection, une entrée dans `ETAPES`, une place dans l'ordre du voyage, le nom en six langues. Propre, mais pas gratuit.
+**Question ouverte, posée deux fois, jamais tranchée : ENSEIGNE-T-ON DANS LA LANGUE ÉTRANGÈRE ?** Produire « talons bas, regardez devant vous » en allemand est bien plus dur que tout le reste de l'app — c'est ce qui justifie le Premium, et aussi ce qui peut décourager. **À trancher avant d'écrire cette ville.**
+
+### La répartition qui en découle
+· **Aberystwyth** → côté **élève** : on entend, on comprend, on exécute.
+· **La 32ᵉ ville** → côté **enseignant** : on dit l'ordre.
+Les mêmes ordres du lexique servent deux fois, dans les deux sens. De la révision qui ne se voit pas.
+
+---
+
+## 🗺️ ABERYSTWYTH — CE QU'IL FAUT SAVOIR AVANT D'Y TOUCHER
+
+🟥 **IL N'EXISTE AUCUN FICHIER « EN SELLE ».** Blandine, 15/08 : *« je trouve nulle part de lex en selle »* — elle avait raison. « En selle » est le **nom d'affichage de la ville**, pas celui du lexique.
+**La table qui commande est `CHAPITRE_DE` dans `lingo.html`** (vers la ligne 6265) : `aberystwyth:"cours"`, `windsor:"dressage"`, `newmarket:"ecurie"`, `lambourn:"pansage"`, `connemara:"cheval"`, `walsall:"materiel"`, `hickstead:"obstacle"`, `badminton:"concours"`, `kildare:"urgences"`, `edimbourg:"dialogues"`.
+✅ **RÈGLE : lire `CHAPITRE_DE` avant de chercher un lexique par le nom du chapitre.** Claude s'est trompé deux fois d'affilée en déduisant la ville de l'en-tête du fichier (`lex-cours` attribué à Windsor, puis `lex-poney` supposé pour Aberystwyth).
+
+**Le dialogue d'Aberystwyth est PROPOSÉ, PAS ÉCRIT** — 20 phrases, 6 temps, dont **13 entendues** : renversement voulu, ici on doit surtout comprendre ce qu'on nous crie. Produites (7) : tenir le cheval, la longueur des étriers, « je n'ai pas compris », « répéter plus lentement », « je préfère ne pas galoper », « rester au trot », « je descends ici ». **En attente de la relecture de Blandine.**
+
+---
+
+## 🐎 WINDSOR — LE DRESSAGE · 21 phrases, 6 temps, 10 entendues
+
+🟥🟥 **LE CHAPITRE OÙ CLAUDE S'EST LE PLUS TROMPÉ — TROIS FAUTES DE FOND** dans la première version, toutes dans la mécanique du concours. Il l'a signalé lui-même en séance : sur ce terrain, il est moins fiable que sur l'écurie ou le pansage. **RELIRE SÉVÈREMENT tout dialogue de concours à venir** (Hickstead, Badminton, Burghley, Oliva Nova, Aix-la-Chapelle).
+
+**Supprimé par Blandine — NE PAS REMETTRE :**
+· *« Vous montez la reprise numéro trois »* → 🟥 **« ça veut rien dire »**. Une reprise a un **nom de protocole** (Amateur 1, Club 1), pas un numéro. Sa formulation : « Vous êtes engagée sur la reprise de l'Amateur 1. » L'horaire se dit à part : « Vous passez à quatorze heures dix, sur la carrière deux. » **Les deux gardées.**
+· *« Est-ce que je peux reconnaître le rectangle à pied ? »* → 🟥 **« on reconnaît pas un rectangle à pied »**. La reconnaissance à pied, c'est le **cross et l'obstacle**. En dressage on connaît le tracé par cœur.
+· *« Est-ce que je peux redemander le tracé ? »* → ne veut rien dire (faute reconnue par Claude avant qu'elle ne la relève). Remplacée par **« Est-ce que je peux reprendre où j'en étais ? »**
+· *« Est-ce que ma tenue est réglementaire ? »* → vague. Remplacée par sa règle : 🟥 **« Attention, les guêtres ET LES BANDES sont interdites en concours de dressage. »** (les bandes, c'est elle qui les a ajoutées ; le mot revient de Walsall).
+
+**Ses formulations, et pourquoi elles sont meilleures :**
+· 🟥 **« Est-ce que quelqu'un a le droit de me dicter la reprise ? »** — **« lecteur » est un mot d'initié.** Celle qui découvre ne le connaît pas, mais elle sait ce qu'elle veut demander. Et la question porte sur le **droit**, qui est le vrai doute. `lecteur` reste au lexique, il s'apprend en lisant.
+· **« saluer LES DEUX rênes dans une main »** — la formule exacte.
+· **« La rectitude était bonne, mais ça manquait un peu d'incurvation à main droite »** — un juge commente **au passé**, avec « un peu », et dit **« à main droite »**, pas « à droite ». Écho à `main-droite` appris à Aberystwyth. La phrase sur la décontraction a été récrite sur ce modèle.
+· **Ordre du temps 5 inversé** sur sa demande : on se trompe, **on demande**, puis le juge répond.
+
+**Lexique complété, 42 → 44 :** `veste` (*the show jacket*) et `haut-de-forme` (*the top hat*), à côté de `queue-de-pie` qui y était seul.
+🟥 **« LE VESTON » ÉCARTÉ** — *« veston ? ça se dit ça ? »*. C'est le mot du **règlement** (la FFE écrit « veste ou veston »), pas celui du paddock, et il évoque le costume de ville. **Les cavaliers disent LA VESTE. NE PAS « corriger ».**
+La règle enseignée : queue-de-pie + haut-de-forme aux niveaux hauts **ensemble** ; veste + bombe en dessous. ⚠️ Le haut-de-forme recule partout au profit de la bombe — ne pas l'enseigner comme obligatoire.
+
+**Le faux ami du chapitre est en jeu :** « la reprise » = le **test** ici (*the test*) et le **groupe d'élèves** à Aberystwyth (*the ride*). Les deux villes se suivent dans le voyage — c'est voulu.
+
+---
+
+## 🏇 ABERYSTWYTH — EN SELLE · 24 phrases, 6 temps, **18 entendues**
+
+🟥 **RENVERSEMENT VOULU : 18 phrases sur 24 sont ENTENDUES.** Partout ailleurs la joueuse produit ; ici elle doit surtout **comprendre** ce qu'on lui crie, en temps réel, sans pouvoir demander. C'est la nature du chapitre — des ordres, pas des objets. ⚠️ **NE PAS « rééquilibrer »** en ajoutant des questions.
+
+🟥 **SEIZE PHRASES SUR VINGT-QUATRE VIENNENT DE BLANDINE**, dictées pendant la relecture. Elles remplacent des formulations plus plates de Claude. Notées dans le fichier une par une avec leur raison, pour qu'on ne les « corrige » jamais :
+· **« raccourcissez vos étrivières d'un trou »** — le verbe du manège.
+· **« faites une volte en A, puis vous remarchez large »** — la volte est **située à une lettre**, comme un vrai moniteur ; « marcher large » est du vocabulaire de reprise, pas de manuel.
+· **« commencez à préparer vos aides pour le départ au galop »** — nomme **les aides**, notion centrale que « préparez le galop » n'enseignait pas.
+· **« est-ce que je peux ralentir ou repasser au pas ? »** — ce qu'on dit quand on est dépassée **maintenant**, pas une négociation d'allure.
+· **« on passe rênes longues, on les laisse récupérer »** — le **« on » collectif** : le moniteur parle à la reprise entière.
+· **la position**, qui manquait entièrement : « on tient son dos, on se grandit vers le haut » · « gardez les mains basses et fixes » · « on plie et on déplie les coudes pour accompagner au galop ».
+· **« attention à bien resangler »** — le geste qu'on oublie. Le mot **revient du Morne** : répétition à deux endroits différents, c'est ce qui l'installe.
+· 🟥 **les DEUX réglages opposés, gardés ensemble sur sa demande** : on raccourcit **pour sauter**, on rallonge **pour le dressage**. Chaque phrase dit son motif. Seul endroit du voyage où les deux verbes se répondent. **NE PAS en supprimer un.**
+
+⚠️ **Mots employés sans être au lexique, volontairement** : les **lettres du manège** (A), **les aides**, les **coudes**, « marcher large », « resangler ». Ils s'apprennent par la phrase. ⚠️ **« les aides » mériterait une entrée un jour** — c'est le cœur du métier — ici ou à Windsor. Signalé, non tranché.
+⚠️ **Étriers / étrivières** : l'alternance est celle de Blandine et elle est réaliste (en manège on règle « ses étriers » par raccourci). **Ne pas uniformiser sans son accord.**
+
+---
+
+## 🔴 INCIDENT — LE BOUTON « EMPORTER TOUT MAINTENANT » A FIGÉ L'APP
+
+> *« J'ai eu le malheur de cliquer dessus, tout est parti en cacahuète »* · *« figée, toutes les images ont sauté, c'était la fin du monde »* · *« ça revient mais ça lag très fort »*
+
+**LA FAUTE, nommée :** la pause de 400 ms n'existait **qu'en mode discret**. Au bouton, 31 villes × 3 images partaient à la file — **93 téléchargements sans respiration**, le fil principal étranglé, l'affichage qui lâche. Et la boucle continuait après avoir quitté l'écran, d'où le lag persistant.
+🟥 **Le raisonnement fautif était : « elle a choisi, on va au bout ». NE JAMAIS retirer la pause pour cette raison.**
+
+**Aggravant, débusqué par la question de Blandine — *« t'as pas remis un truc interdit du suivi ? »*** : la carte cumulait `backdrop-filter` **et** une **animation infinie** de 6,5 s. Une animation sans fin re-rasterise une couche composite en permanence ; avec le décodage d'images en masse par-dessus, c'est **exactement le mal documenté par ce SUIVI pour le crash de `lingo.html`** (31 couches, 130 Mo de bitmaps).
+⚠️ Aucun interdit CSS écrit n'avait été violé — c'est l'**erreur de fond** qui a été reproduite. **Poser la question du SUIVI est ce qui l'a trouvée.**
+
+**Corrigé :**
+· **une image à la fois** (jamais trois d'un coup) et une **respiration après chaque image, dans les deux modes** (400 ms en discret, 120 ms au bouton — **jamais zéro**) ;
+· **bouton ARRÊTER** au deuxième appui (`pocheStop`) — on doit pouvoir sortir ;
+· **compteur « Ville 4 / 31 »** à la place de la phrase : une barre muette ne dit pas si ça travaille ;
+· **le reflet ne tourne plus sans fin** — 3 passages puis arrêt, et coupé entièrement pendant le téléchargement (`.charge`). 🟥 **NE PAS remettre `infinite`.**
+⚠️ **Si le lag persiste**, regarder du côté du service worker qui met en cache pendant la navigation.
+
+---
+
+## 📐 LA CARTE HORS LIGNE — PLACE ET TAILLE CORRIGÉES
+
+**Place :** elle était au-dessus du carnet ; Blandine la voulait *« sur la page d'avant en bas »*. **Descendue en bas de l'ouverture, sous les règles, juste avant « Partir ».**
+**Taille :** *« fais son encart un peu plus petit il est énorme »*. Largeur 330 → **296 px**, et surtout l'image est **cadrée à 92 px de haut** par `object-fit:cover` — elle occupait sa hauteur naturelle, soit 450 px pour 900 de large, la moitié de l'écran. ⚠️ **L'image n'est ni déformée ni filtrée** : seul le cadrage change (règle absolue sur les photos).
+
+⚠️ **Confirmé par sa capture :** l'état « emporte le voyage » s'affiche bien, et « Linguae dans ta poche » ne s'affiche **pas** — parce qu'elle a déjà installé l'app. La détection `display-mode: standalone` fonctionne.
+
+---
+
 ## À L'ÉCRAN : + / −
 
-**+** la carte hors-ligne sur l'accueil (deux états) · **+** sa barre de progression · **+** la note « dernier essai » après le 2ᵉ raté vocal et « on passe » après le 3ᵉ · **+** le bouton de mise en situation sur **Connemara**, **Newmarket** et **Lambourn** (`aUnDialogue()` détecte la clé) · La Baule et Le Morne passent de **2 à 6 langues**.
+**+** la carte hors-ligne sur l'accueil (deux états) · **+** sa barre de progression · **+** la note « dernier essai » après le 2ᵉ raté vocal et « on passe » après le 3ᵉ · **+** le bouton de mise en situation sur **Connemara**, **Newmarket**, **Lambourn**, **Walsall**, **Aberystwyth** et **Windsor** (`aUnDialogue()` détecte la clé) · La Baule et Le Morne passent de **2 à 6 langues**.
 **−** le bouton « Réessayer » après le 3ᵉ raté vocal.
 
 ## AU DÉPLOIEMENT
-`lingo.html` porte **6 numéros de version** : `ecurie ?l=2`, `pansage ?l=3`, `cheval ?l=4`, `arrivee ?l=5`, `balade ?l=5`, `VER v37`.
-**Un seul push** (règle de coût en tête de ce fichier) : `lingo.html` · `sw-linguae.js` · `installer.webp` · `hors-ligne.webp` · les 5 lexiques · `lingo-dialogue.html`.
+`lingo.html` porte **9 numéros de version** : `ecurie ?l=2`, `pansage ?l=3`, `cours ?l=3`, `cheval ?l=4`, `materiel ?l=4`, `dressage ?l=4`, `arrivee ?l=5`, `balade ?l=5`, `VER v37`.
+**Un seul push** (règle de coût en tête de ce fichier) : `lingo.html` · `sw-linguae.js` · `installer.webp` · `hors-ligne.webp` · les **8 lexiques** (arrivee, balade, cheval, ecurie, pansage, materiel, cours, dressage) · `lingo-dialogue.html`.
 ⚠️ **Rien n'a pu être testé** : pas de navigateur au banc, le domaine refuse l'accès automatisé. Test à faire par Blandine — installer sur l'écran d'accueil, visiter deux villes, mode avion, rouvrir.
 
 ## VERS L'APP STORE
