@@ -8,6 +8,35 @@
 //
 // Événements Stripe à cocher lors de la création du webhook :
 //   checkout.session.completed · invoice.paid · customer.subscription.deleted
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// 🟥 SESSION DU 15/08/2026 — POURQUOI CE FICHIER A ÉTÉ REPRIS
+//
+// Signalement de Blandine : Dominique et Barbara payaient et n'avaient plus le
+// Premium. Vérifications faites avec elle, dans l'ordre :
+//   · Stripe : les deux abonnements ACTIFS (14 et 16 juillet). Elles paient.
+//   · Supabase : les deux lignes existent, statut "actif" — donc le paiement
+//     initial avait bien été rattaché au compte.
+//   · MAIS `expire_le` valait le 15/08 12h16 pour Dominique (dépassé de trois
+//     heures au moment du diagnostic) et le 17/08 pour Barbara — soit
+//     exactement les 32 jours du filet de sécurité posés à la souscription.
+//     Aucun renouvellement n'avait jamais prolongé ces dates.
+//   · Webhook Stripe : les trois événements écoutés, `invoice.paid` compris.
+//     ZÉRO échec, réponse en 1167 ms. L'événement du 14/08 marqué « Envoyé ».
+//
+// Le tuyau marchait donc parfaitement — et le code ne faisait rien. La cause,
+// lisible dans le JSON de l'événement : en API 2026-06-24.dahlia,
+// l'identifiant d'abonnement n'est PLUS à la racine de la facture. Il est sous
+//     parent.subscription_details.subscription
+// Le test `objet.subscription` valait donc `undefined`, le bloc de
+// renouvellement était sauté, et la fonction répondait 200 sans rien écrire.
+// Un échec parfaitement SILENCIEUX : invisible dans les tableaux de bord de
+// Stripe comme de Netlify, puisque tout répondait « OK ».
+//
+// ⚠️ LEÇON À NE PAS PERDRE : un `if` qui ne matche pas n'est pas une erreur.
+// Tout chemin qui décide de NE RIEN FAIRE doit le dire dans les logs — c'est
+// la seule raison pour laquelle ce défaut a pu vivre un mois.
+// ─────────────────────────────────────────────────────────────────────────────
 
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 
@@ -45,6 +74,64 @@ function entetesSupabase(service) {
     };
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// LECTURE DES CHAMPS QUI ONT CHANGÉ DE PLACE
+//
+// Stripe déplace des champs d'une version d'API à l'autre. Ces trois fonctions
+// regardent TOUS les emplacements connus, du plus récent au plus ancien, pour
+// qu'une prochaine version ne casse pas les renouvellements en silence.
+// ⚠️ NE JAMAIS revenir à un accès direct du type `objet.subscription`.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// L'identifiant d'abonnement d'une facture.
+//   2026-06+ : parent.subscription_details.subscription   ← LA CAUSE DU BUG
+//   plus ancien : objet.subscription
+function abonnementDeFacture(f) {
+    try {
+        if (!f) return null;
+        const p = f.parent && f.parent.subscription_details && f.parent.subscription_details.subscription;
+        if (p) return p;
+        if (typeof f.subscription === "string" && f.subscription) return f.subscription;
+        if (f.subscription && f.subscription.id) return f.subscription.id;
+        const l = f.lines && f.lines.data && f.lines.data[0];
+        const ls = l && l.parent && l.parent.subscription_item_details && l.parent.subscription_item_details.subscription;
+        if (ls) return ls;
+        return null;
+    } catch (e) { return null; }
+}
+
+// La fin de la période payée, en secondes Unix.
+function finDePeriode(f) {
+    try {
+        if (!f) return null;
+        const l = f.lines && f.lines.data && f.lines.data[0];
+        const fin = l && l.period && l.period.end;
+        if (fin) return fin;
+        if (f.period_end) return f.period_end;   // repli
+        return null;
+    } catch (e) { return null; }
+}
+
+// Le plan, déduit de l'INTERVALLE réel de facturation et non d'un montant.
+// ⚠️ L'ancien code testait `amount_total === 7999`. Les tarifs ont changé
+// depuis (annuel passé à 99,99 €, Pack Duo à 24,99 €/mois) : l'annuel était
+// donc étiqueté « mensuel » et ne recevait que 32 jours. Un prix bouge, un
+// intervalle non — c'est lui qui doit décider.
+function planDepuisIntervalle(f, replis) {
+    try {
+        const l = f && f.lines && f.lines.data && f.lines.data[0];
+        const pd = l && l.pricing && l.pricing.price_details;
+        const rec = (pd && pd.recurring) || (l && l.price && l.price.recurring);
+        if (rec && rec.interval === "year") return "annuel";
+        if (rec && rec.interval === "month") return "mensuel";
+        // Repli : la durée réelle de la période facturée.
+        const d = finDePeriode(f);
+        const deb = (l && l.period && l.period.start) || f.period_start;
+        if (d && deb) return ((d - deb) > 200 * 86400) ? "annuel" : "mensuel";
+    } catch (e) { }
+    return replis || "mensuel";
+}
+
 // Crée ou met à jour la ligne d'abonnement d'un cavalier (clé : user_id)
 async function upsertAbonnement(service, ligne) {
     const r = await fetch(SUPABASE_URL + "/rest/v1/abonnements_premium?on_conflict=user_id", {
@@ -56,15 +143,52 @@ async function upsertAbonnement(service, ligne) {
     return r.ok;
 }
 
-// Met à jour par identifiant d'abonnement Stripe (renouvellements, annulations)
+// Met à jour par identifiant d'abonnement Stripe (renouvellements, annulations).
+// `Prefer: return=representation` fait renvoyer les lignes touchées : sans ça,
+// une mise à jour qui ne trouve AUCUNE ligne répond 200 comme si tout allait
+// bien. C'est ce silence qui a coûté un mois.
 async function majParAbonnement(service, subId, champs) {
     const r = await fetch(SUPABASE_URL + "/rest/v1/abonnements_premium?stripe_subscription=eq." + encodeURIComponent(subId), {
         method: "PATCH",
-        headers: entetesSupabase(service),
+        headers: { ...entetesSupabase(service), Prefer: "return=representation" },
         body: JSON.stringify(champs),
     });
-    if (!r.ok) log("maj KO", r.status, (await r.text().catch(() => "")).slice(0, 300));
-    return r.ok;
+    if (!r.ok) { log("maj KO", r.status, (await r.text().catch(() => "")).slice(0, 300)); return 0; }
+    try {
+        const lignes = await r.json();
+        return Array.isArray(lignes) ? lignes.length : 0;
+    } catch (e) { return 0; }
+}
+
+// Repli : mise à jour par identifiant CLIENT Stripe. Sert quand la ligne a été
+// créée sans `stripe_subscription` (activation manuelle, paiement hors app).
+async function majParClient(service, custId, champs) {
+    const r = await fetch(SUPABASE_URL + "/rest/v1/abonnements_premium?stripe_customer=eq." + encodeURIComponent(custId), {
+        method: "PATCH",
+        headers: { ...entetesSupabase(service), Prefer: "return=representation" },
+        body: JSON.stringify(champs),
+    });
+    if (!r.ok) { log("maj client KO", r.status, (await r.text().catch(() => "")).slice(0, 300)); return 0; }
+    try {
+        const lignes = await r.json();
+        return Array.isArray(lignes) ? lignes.length : 0;
+    } catch (e) { return 0; }
+}
+
+// Dernier repli : mise à jour par ADRESSE E-MAIL, et au passage on inscrit
+// l'identifiant d'abonnement pour que les fois suivantes passent par le
+// chemin normal. Sans ça, une ligne mal raccrochée le reste à vie.
+async function majParEmail(service, email, champs) {
+    const r = await fetch(SUPABASE_URL + "/rest/v1/abonnements_premium?email=eq." + encodeURIComponent(email), {
+        method: "PATCH",
+        headers: { ...entetesSupabase(service), Prefer: "return=representation" },
+        body: JSON.stringify(champs),
+    });
+    if (!r.ok) { log("maj email KO", r.status, (await r.text().catch(() => "")).slice(0, 300)); return 0; }
+    try {
+        const lignes = await r.json();
+        return Array.isArray(lignes) ? lignes.length : 0;
+    } catch (e) { return 0; }
 }
 
 export default async (req) => {
@@ -88,12 +212,18 @@ export default async (req) => {
         if (evenement.type === "checkout.session.completed" && objet && objet.mode === "subscription") {
             const userId = objet.client_reference_id || null;
             const email = (objet.customer_details && objet.customer_details.email) || objet.customer_email || null;
-            const plan = objet.amount_total === 7999 ? "annuel" : "mensuel";
-            const dureeJours = plan === "annuel" ? 367 : 32; // filet de sécurité, affiné par invoice.paid
+            /* Le plan ne peut pas être lu ici (la session ne porte pas
+               l'intervalle) : on repart du montant, mais SANS le figer sur un
+               tarif précis — au-dessus de 50 € c'est forcément une formule
+               annuelle. `invoice.paid` corrigera de toute façon dans la
+               seconde qui suit, avec la vraie période. */
+            const montant = Number(objet.amount_total || 0);
+            const plan = montant >= 5000 ? "annuel" : "mensuel";
+            const dureeJours = plan === "annuel" ? 367 : 32; // filet, affiné par invoice.paid
             const expire = new Date(Date.now() + dureeJours * 86400000).toISOString();
             if (!userId) {
                 // Client non identifié (paiement hors app) : à activer manuellement via l'email
-                log("ALERTE : paiement sans client_reference_id — email :", email);
+                log("ALERTE : paiement sans client_reference_id — email :", email, "— montant :", montant);
                 return new Response("OK (non identifié)", { status: 200 });
             }
             await upsertAbonnement(service, {
@@ -106,26 +236,65 @@ export default async (req) => {
                 expire_le: expire,
                 maj_le: new Date().toISOString(),
             });
-            log("Premium activé :", plan, "—", email);
+            log("Premium activé :", plan, "—", email, "— expire (provisoire)", expire);
         }
 
         // ----- Renouvellement (chaque paiement de facture) -----
-        else if (evenement.type === "invoice.paid" && objet && objet.subscription) {
-            let expire = null;
-            try {
-                const fin = objet.lines && objet.lines.data && objet.lines.data[0] && objet.lines.data[0].period && objet.lines.data[0].period.end;
-                if (fin) expire = new Date((fin + 2 * 86400) * 1000).toISOString(); // +2 jours de grâce
-            } catch (e) { }
+        else if (evenement.type === "invoice.paid" && objet) {
+            const subId = abonnementDeFacture(objet);
+            const email = objet.customer_email || null;
+            const custId = objet.customer || null;
+
+            /* ⚠️ C'EST ICI QUE TOUT SE JOUAIT. L'ancien code exigeait
+               `objet.subscription` : depuis l'API 2026-06, ce champ est sous
+               `parent`, la condition était donc toujours fausse et la facture
+               repartait sans rien avoir mis à jour. */
+            if (!subId) {
+                log("ALERTE : invoice.paid SANS identifiant d'abonnement trouvable — email :", email, "— client :", custId);
+                return new Response("OK (abonnement introuvable)", { status: 200 });
+            }
+
+            const fin = finDePeriode(objet);
+            const expire = fin ? new Date((fin + 2 * 86400) * 1000).toISOString() : null; // +2 jours de grâce
+            const plan = planDepuisIntervalle(objet, null);
+
             const champs = { statut: "actif", maj_le: new Date().toISOString() };
             if (expire) champs.expire_le = expire;
-            await majParAbonnement(service, objet.subscription, champs);
-            log("Renouvellement enregistré, expire le", expire || "(période inconnue)");
+            if (plan) champs.plan = plan;
+
+            let touchees = await majParAbonnement(service, subId, champs);
+
+            /* Aucune ligne touchée = la ligne existe sous un autre repère.
+               On rattrape par client, puis par e-mail — et on RACCROCHE
+               l'identifiant d'abonnement au passage, pour que la fois
+               suivante passe par le chemin normal. */
+            if (!touchees && custId) {
+                touchees = await majParClient(service, custId, Object.assign({ stripe_subscription: subId }, champs));
+                if (touchees) log("rattrapé par stripe_customer");
+            }
+            if (!touchees && email) {
+                touchees = await majParEmail(service, email, Object.assign({ stripe_subscription: subId, stripe_customer: custId }, champs));
+                if (touchees) log("rattrapé par e-mail");
+            }
+            if (!touchees) {
+                log("ALERTE : aucune ligne d'abonnement mise à jour — abonnement :", subId, "— email :", email);
+            } else {
+                log("Renouvellement enregistré :", plan || "(plan inchangé)", "— expire le", expire || "(période inconnue)", "—", email);
+            }
         }
 
         // ----- Annulation définitive -----
         else if (evenement.type === "customer.subscription.deleted" && objet && objet.id) {
-            await majParAbonnement(service, objet.id, { statut: "annule", maj_le: new Date().toISOString() });
-            log("Abonnement annulé :", objet.id);
+            const n = await majParAbonnement(service, objet.id, { statut: "annule", maj_le: new Date().toISOString() });
+            if (!n) log("ALERTE : annulation sans ligne correspondante —", objet.id);
+            else log("Abonnement annulé :", objet.id);
+        }
+
+        // ----- Tout le reste : on le DIT. -----
+        /* Un événement ignoré en silence est exactement ce qui a masqué le
+           défaut pendant un mois. Désormais chaque chemin laisse une trace. */
+        else {
+            log("événement non traité :", evenement.type);
         }
     } catch (e) {
         log("erreur de traitement :", e && e.message);
