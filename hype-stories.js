@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ac";
+var HYPE_STORIES_VERSION = "19ad";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -1418,8 +1418,16 @@ function EditeurDecorHype(props) {
     try {
       var TL = (mod && mod.taille && mod.taille[0]) || 941;
       var TH = (mod && mod.taille && mod.taille[1]) || 1672;
-      var dispoL = (typeof window !== "undefined" ? window.innerWidth : 390);
-      var dispoH = (typeof window !== "undefined" ? window.innerHeight : 780) - 128;
+      /* ⚠️ 19ad — CORRECTION D'UNE FAUTE DE CLAUDE (19ac). Je ne reservais que
+         128 px pour le titre, la ligne d'aide, la barre de boutons ET la zone
+         morte du bas de l'iPhone. Insuffisant : la barre passait sous l'ecran.
+         Blandine : « on n'atteint pas le bouton du bas qui est avale dans la
+         zone morte ». 236 px, mesures a la louche mais LARGES — mieux vaut un
+         decor un peu plus petit qu'un bouton inatteignable.
+         La barre de boutons est en plus ancree en bas (voir plus loin) : deux
+         protections, pas une. */
+      var dispoL = (typeof window !== "undefined" ? window.innerWidth : 390) - 16;
+      var dispoH = (typeof window !== "undefined" ? window.innerHeight : 780) - 236;
       var e = Math.min(dispoL / TL, dispoH / TH);
       return { L: Math.round(TL * e), H: Math.round(TH * e), e: e, TL: TL, TH: TH };
     } catch (e) { return { L: 320, H: 568, e: 0.34, TL: 941, TH: 1672 }; }
@@ -1622,14 +1630,25 @@ function EditeurDecorHype(props) {
         var t = tailleFenetre(ix);
         var iPhoto = g.current.ordre[ix];
         var u = vign[iPhoto] || null;
+        /* ⚠️ 19ad — CORRECTION D'UNE FAUTE DE CLAUDE (19ac). J'avais ecrit
+           `p[0] * 100`, en supposant le contour exprime de 0 a 1. FAUX : les
+           points du contour sont en COORDONNEES DU DECOR, comme les bbox. Il
+           faut les rapporter a la fenetre. Le clip-path produit etait donc
+           absurde et DECOUPAIT TOUT : les fenetres s'ouvraient vides.
+           C'est le defaut signale par Blandine — « on ouvre plein ecran mais
+           les photos ne se mettent pas dedans ».
+           Formule identique a celle de `CompositionStory` (~3431) et de
+           l'apercu du composeur (~2586). ⚠️ Ne jamais la reecrire de tete :
+           la recopier depuis l'un de ces deux endroits. */
         var pc = "";
         try {
-          if (f.contour && f.contour.length) {
+          if (f.contour && f.contour.length && f.bbox && f.bbox[2] && f.bbox[3]) {
             pc = f.contour.map(function (p) {
-              return Math.round(p[0] * 100) + "% " + Math.round(p[1] * 100) + "%";
-            }).join(",");
+              return (((p[0] - f.bbox[0]) / f.bbox[2]) * 100).toFixed(2) + "% "
+                + (((p[1] - f.bbox[1]) / f.bbox[3]) * 100).toFixed(2) + "%";
+            }).join(", ");
           }
-        } catch (eC) { }
+        } catch (eC) { pc = ""; }
         return h("div", {
           key: "f" + ix, "data-fen": String(ix),
           style: {
@@ -1656,6 +1675,7 @@ function EditeurDecorHype(props) {
       (props.reference)
         ? h("img", {
           src: props.reference + "-mini.webp", alt: "", decoding: "async",
+          onError: function (ev) { try { if (ev && ev.target) ev.target.style.visibility = "hidden"; } catch (eD) { } },
           style: { position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }
         })
         : null),
@@ -1663,8 +1683,19 @@ function EditeurDecorHype(props) {
     h("div", {
       style: { fontFamily: M, fontSize: 10.5, color: "#8A929C", marginTop: 8, textAlign: "center", lineHeight: 1.5, padding: "0 18px" }
     }, hsT("gestesDecor", lg)),
+    /* 19ad : une cale de la hauteur de la barre ancree, pour que la ligne
+       d'aide ne finisse jamais dessous. */
+    h("div", { style: { height: 72, flex: "0 0 auto" } }),
 
-    h("div", { style: { display: "flex", gap: 10, marginTop: "auto", paddingTop: 10 } },
+    /* 19ad : la barre est ANCREE au bas de l'ecran, au-dessus de la zone
+       morte. Elle ne peut plus etre poussee hors de vue par un decor haut. */
+    h("div", {
+      style: {
+        position: "fixed", left: 0, right: 0,
+        bottom: "calc(env(safe-area-inset-bottom) + 12px)",
+        display: "flex", gap: 10, justifyContent: "center", zIndex: 4
+      }
+    },
       h("button", {
         onClick: function () { if (props.onFermer) props.onFermer(); },
         style: {
@@ -2159,7 +2190,19 @@ function ComposeurStory(props) {
                  rien ne disparait, et l'appli ne peut plus fermer.
                  ⚠️ NE JAMAIS REMETTRE DE `onError` QUI CHARGE LE PLEIN FORMAT.
                  Le remede est de pousser les vignettes, pas de recharger lourd. */
-              src: ref + "-mini.webp", alt: ref, loading: "lazy", decoding: "async",
+              /* ⚠️ 19ad — CORRECTION D'UNE FAUTE DE CLAUDE (19ac). En retirant le
+                 repli vers le plein format, j'ai laisse le navigateur afficher
+                 son ICONE D'IMAGE CASSEE, plus le nom du fichier ecrit en bleu
+                 par `alt`. Blandine : « beaucoup de cadres story n'apparaissent
+                 plus et laissent un fond bizarre ». Je lui avais annonce un
+                 fond argente propre ; je ne l'avais pas ecrit.
+                 Desormais : vignette absente = l'image s'efface, la carte garde
+                 son degrade argente et sa pastille chiffree. Le decor reste
+                 choisissable. `alt` vide : plus aucun nom de fichier a l'ecran.
+                 ⚠️ Ce `onError` NE CHARGE RIEN — il masque. Ne jamais y remettre
+                 un `im.src = ref + ".webp"` : ce serait 6 Mo et la fermeture. */
+              src: ref + "-mini.webp", alt: "", loading: "lazy", decoding: "async",
+              onError: function (ev) { try { if (ev && ev.target) ev.target.style.visibility = "hidden"; } catch (eM) { } },
               /* 19j (14/08) : « on voit rien pour les modeles ». Evidemment :
                  un decor est un dessin NOIR dont les fenetres sont des TROUS,
                  pose sur un fond noir — il n'y avait rien a voir. La vignette
@@ -2554,7 +2597,13 @@ function ComposeurStory(props) {
                   try {
                     if (!v) { setCompoChoix("hd"); return; }
                     var mv = hsModeles()[v];
-                    if (mv && mv.fenetres && mv.fenetres.length) { setEditeur(v); return; }
+                    /* 19ad : l'editeur n'accepte que les decors dont le nombre
+                       de fenetres EGALE le nombre de photos. Le filtre de la
+                       19ab garantit deja ce cas, mais son repli (catalogue
+                       insuffisant) peut laisser passer autre chose — et c'est
+                       exactement la situation qui faisait planter la
+                       validation. Ceinture en plus de la bretelle. */
+                    if (mv && mv.fenetres && mv.fenetres.length === nTotalCompo) { setEditeur(v); return; }
                   } catch (eEd) { }
                   setCompoChoix(v || "hd");
                 }))
@@ -2618,6 +2667,8 @@ function ComposeurStory(props) {
                        vient des `bbox` et reste juste. */
                     h("img", {
                       src: compoChoix + "-mini.webp", alt: "", loading: "lazy", decoding: "async",
+                      /* 19ad : idem — on masque, on ne recharge pas. */
+                      onError: function (ev) { try { if (ev && ev.target) ev.target.style.visibility = "hidden"; } catch (eMp) { } },
                       style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", pointerEvents: "none" }
                     })),
                   /* 19ab (14/08, decision de Blandine) — LE CURSEUR EST RETIRE.
@@ -2850,15 +2901,39 @@ function ComposeurStory(props) {
                  sur `ordre`, qui indexe `fichiers` — c'est CETTE liste que
                  publier() parcourt. Une permutation d'identite ne touche a
                  rien : on ne reecrit `ordre` que s'il a vraiment change. */
-              if (perm && perm.length === fichiersOrdonnes.length) {
+              /* ⚠️ 19ad — CORRECTION D'UNE FAUTE DE CLAUDE (19ac). Blandine :
+                 « quand on essaye de cliquer sur le bouton de la story masque
+                 tout en bas, ca plante ».
+                 `perm` a la longueur du nombre de FENETRES du decor, pas du
+                 nombre de PHOTOS. Un decor a 4 fenetres avec 2 photos donnait
+                 `socle[2]` et `socle[3]` = undefined, donc un `ordre` contenant
+                 des trous ; `fichiersOrdonnes` renvoyait alors des fichiers
+                 undefined et la publication mourait dessus.
+                 Trois verrous desormais : meme longueur, valeurs entieres dans
+                 les bornes, et permutation SANS DOUBLON. Au moindre doute on
+                 ne touche pas a l'ordre — une photo mal placee se rattrape,
+                 une photo perdue non. */
+              var permOk = false;
+              try {
+                if (perm && perm.length === fichiersOrdonnes.length) {
+                  var vus = {}; permOk = true;
+                  for (var q = 0; q < perm.length; q++) {
+                    var v = perm[q];
+                    if (typeof v !== "number" || v < 0 || v >= perm.length || vus[v]) { permOk = false; break; }
+                    vus[v] = 1;
+                  }
+                }
+              } catch (eP) { permOk = false; }
+              if (permOk) {
                 var change = false;
-                for (var q = 0; q < perm.length; q++) { if (perm[q] !== q) { change = true; break; } }
+                for (var q4 = 0; q4 < perm.length; q4++) { if (perm[q4] !== q4) { change = true; break; } }
                 if (change) {
                   var socle = (ordre && ordre.length === fichiers.length)
                     ? ordre.slice()
                     : fichiers.map(function (x, q2) { return q2; });
-                  setOrdre(perm.map(function (q3) { return socle[q3]; }));
-                  setVue(0);
+                  var neuf = perm.map(function (q3) { return socle[q3]; });
+                  var sain = neuf.every(function (v2) { return typeof v2 === "number" && v2 >= 0 && v2 < fichiers.length; });
+                  if (sain && neuf.length === fichiers.length) { setOrdre(neuf); setVue(0); }
                 }
               }
               setCompoChoix(editeur);

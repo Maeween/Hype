@@ -7720,3 +7720,54 @@ Corrigé : `hype-stories.js?v=19ac`.
 Aucun changement de code applicatif dans cet incident. En revanche, **tout ce qui a été annoncé aux sessions 141 à 144 va apparaître d'un coup** au premier chargement réel : disparition du curseur, filtre des décors sur le nombre, aperçu qui suit enfin les photos retirées, classement des décors par forme, et l'écran plein format à l'ouverture d'un décor.
 
 **Témoin attendu** : reprise 1.8 · baby 112 · memo 4 · **stories 19ac** · modèles 28.
+
+---
+
+## Session 145 — 15/08/2026 · stories 19ad : quatre défauts, quatre fautes de Claude
+
+### D'abord, ce qui est acquis
+
+Le `?v=` débloqué a fait effet : la 19ac **s'exécutait bien** sur le téléphone. Preuve à l'écran sur la capture de 07h03 — avec une seule photo, la bande ne propose plus que des décors à **une** fenêtre (`modele-15`, `modele-25`, `modele-20`, pastille 1). Le filtre de la 19ab tourne. Blandine : *« ça a le point positif d'être plus rapide. Pour planter… »*
+
+Vingt-quatre heures de diagnostic sur un fichier qui n'était pas celui qui tournait : c'est fini.
+
+### 🟥 Les quatre défauts, tous introduits par moi en 19ac
+
+**1. Les fenêtres s'ouvraient vides.** *« On ouvre plein écran mais les photos ne se mettent pas dedans. »*
+J'avais écrit le clip-path avec `p[0] * 100`, en supposant le contour exprimé de 0 à 1. **Faux** : les points du contour sont en **coordonnées du décor**, comme les `bbox`. Le polygone produit était absurde et découpait tout. La formule juste existait déjà à **deux endroits** du fichier — `CompositionStory` et l'aperçu du composeur — je l'ai réécrite de tête au lieu de la recopier. ⚠️ Ne plus jamais la réécrire de tête.
+
+**2. La barre de boutons passait sous l'écran.** *« On n'atteint pas le bouton du bas qui est avalé dans la zone morte. »*
+Je ne réservais que 128 px pour le titre, la ligne d'aide, la barre **et** la zone morte de l'iPhone. Porté à 236 px, largement. Et la barre est désormais **ancrée en bas** en `position: fixed`, au-dessus de `safe-area-inset-bottom` : deux protections, pas une. Une cale de 72 px empêche la ligne d'aide de finir dessous.
+
+**3. Les décors sans vignette affichaient une image cassée.** *« Beaucoup de cadres story n'apparaissent plus et laissent un fond bizarre. »*
+En retirant le repli vers le plein format en 19ab, j'ai laissé le navigateur afficher son icône d'image cassée **plus le nom du fichier**, écrit en bleu par l'attribut `alt`. Je lui avais annoncé un fond argenté propre ; je ne l'avais pas écrit. Désormais `alt` est vide et un `onError` **masque** l'image : la carte garde son dégradé argenté et sa pastille. Le décor reste choisissable. ⚠️ Ce `onError` ne charge rien — ne jamais y remettre le plein format.
+
+**4. Valider faisait planter l'application.** *« Quand on essaye de cliquer sur le bouton de la story masqué tout en bas, ça plante. »*
+`perm` a la longueur du nombre de **fenêtres**, pas du nombre de **photos**. Un décor à 4 fenêtres avec 2 photos donnait un `ordre` contenant des trous, `fichiersOrdonnes` renvoyait des fichiers `undefined`, et la publication mourait dessus. Trois verrous posés : même longueur, valeurs entières dans les bornes, permutation sans doublon. Au moindre doute l'ordre n'est pas touché — **une photo mal placée se rattrape, une photo perdue non.** Garde supplémentaire à l'ouverture : l'éditeur n'accepte que les décors dont le nombre de fenêtres égale le nombre de photos.
+
+### 🖥️ À l'écran : + / −
+
+**+** Les photos apparaissent enfin dans les fenêtres de l'écran plein format.
+**+** Les boutons **Annuler** / **Utiliser ce décor** sont ancrés en bas, toujours atteignables.
+**−** L'icône d'image cassée et le nom de fichier bleu sur les décors sans vignette : remplacés par la carte argentée seule.
+**−** L'écran plein format ne s'ouvre plus sur un décor dont le nombre de fenêtres ne correspond pas aux photos choisies.
+
+### Contrôles
+
+`node --check` passé. **`t_19ad.js` — 25 vérifications** ciblées sur les quatre défauts : géométrie du contour rapportée à la bbox (coins et centre), absence de l'ancienne formule, hauteur réservée et ancrage de la barre, absence de tout repli plein format **dans le code exécutable**, et six cas de permutation dont quatre à rejeter (longueurs différentes, trou, doublon, hors bornes). `t_19ac.js` : 43/43. `t_19ab.js` : 17/17.
+
+### 📋 Reste ouvert
+
+1. 🟥 Les **vignettes** `modele-5` à `modele-23` n'existent pas — ces décors s'affichent en carte argentée muette. `modele-24` à `28` sont **reçus, non poussés**. C'est le prochain vrai blocage visuel
+2. Le **flou du décor** en plein écran (vignette 176 px étirée) — lot `-moyen.webp` à décider
+3. **Décors à texte français** réservés au français
+4. Le bouton **« Mettre celle-ci en premier »** invisible si `vueSure = 0`
+5. 🟥 **Photos de profil** — toujours non diagnostiqué
+6. **Notifications « Ta communauté »** : les pastilles se comparent à `hype_notifs_comm_vu`, une date locale écrite **uniquement** par « Tout marquer comme lu ». Ouvrir l'onglet n'enregistre rien. ⚠️ Blandine signale que ma lecture d'une session précédente était fausse et que je l'avais poursuivie malgré sa correction — **sa correction est perdue avec la conversation, à lui redemander avant tout code**
+7. **Carte communauté** : maquette sommaire validée dans son principe, à refaire avec le contenu réel du globe et de la page cavalier. `SPEC-CARTE-COMMUNAUTE.md` et les images des mascottes **manquent** — à renvoyer
+
+### Préparation Flutter
+
+Les quatre défauts de la nuit ont un point commun : **du calcul géométrique réécrit au lieu d'être réutilisé**. Le clip-path existait à deux endroits, la conversion bbox→écran à trois. En Dart cela deviendra une seule fonction, testée une fois. La leçon vaut avant la migration : chaque formule de géométrie doit vivre à **un seul endroit** du fichier.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ad** · modèles 28.
