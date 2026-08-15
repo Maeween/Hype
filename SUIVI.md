@@ -8328,3 +8328,129 @@ Ajouté : **proposer de garder la story en souvenir le dernier jour** — le com
 La durée est le premier réglage de ce module qui soit à la fois **un choix d'auteur** et **un droit d'abonnement**. Les deux vérifications (affichage, publication) doivent survivre à la migration au même endroit : la règle appartient au domaine, pas à l'écran. À inscrire dans la frontière « Métier » : `dureeAutorisee(abonnement)` est une fonction du domaine, jamais une condition d'interface.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19an** · modèles 28.
+
+---
+
+## Session 157 — 15/08/2026 · 🟥 **Les abonnées payaient sans avoir le Premium**
+
+Signalement de Blandine : Dominique et Barbara sont abonnées et n'ont plus l'accès. Diagnostic mené avec elle, capture par capture.
+
+### Ce qui a été vérifié, dans l'ordre
+
+- **Stripe** : les deux abonnements **actifs** (Dominique 14/07, Barbara 16/07). Elles paient bien.
+- **Supabase** : les deux lignes existent, `statut = actif`. Le paiement initial avait donc été correctement rattaché au compte — `client_reference_id` n'était pas en cause.
+- **Mais** `expire_le` valait **15/08 12h16** pour Dominique (dépassé de trois heures au moment du diagnostic) et **17/08** pour Barbara. Soit exactement les 32 jours du filet de sécurité posés à la souscription : **aucun renouvellement n'avait jamais prolongé ces dates.**
+- **Webhook Stripe** : les trois événements écoutés, `invoice.paid` compris. **Zéro échec**, réponse en 1167 ms, événement du 14/08 marqué « Envoyé ».
+
+Le tuyau marchait parfaitement. C'est le code qui ne faisait rien.
+
+### La cause
+
+Lisible dans le JSON de l'événement : en API **2026-06-24.dahlia**, l'identifiant d'abonnement n'est plus à la racine de la facture mais sous `parent.subscription_details.subscription`. Le test `objet.subscription` valait donc `undefined`, le bloc de renouvellement était sauté, et la fonction répondait **200 sans rien écrire**.
+
+**Un échec parfaitement silencieux** : invisible dans les tableaux de bord de Stripe comme de Netlify, puisque tout répondait « OK ».
+
+⚠️ **Leçon gravée dans le fichier** : un `if` qui ne matche pas n'est pas une erreur. Tout chemin qui décide de NE RIEN FAIRE doit le dire dans les logs — c'est la seule raison pour laquelle ce défaut a vécu un mois.
+
+### Réparation immédiate (SQL passé par Blandine à 15h29)
+
+```sql
+update abonnements_premium
+set expire_le = now() + interval '1 year', statut = 'actif', maj_le = now()
+where email in ('basia.baster@poczta.fm','dominique.wirtschafter@orange.fr');
+```
+
+Blandine voulait un mois ; argument retenu contre : un mois ramenait au même mur le 15 septembre, sans que personne n'aille vérifier. L'année est un **filet**, pas un cadeau — le premier renouvellement correct l'écrasera par la vraie période.
+
+### Correctifs de `stripe-webhook.js`
+
+1. **`abonnementDeFacture()`** — lit l'identifiant à tous les emplacements connus : `parent.subscription_details`, puis la racine, puis la ligne de facture. Une prochaine version d'API ne cassera plus les renouvellements en silence. ⚠️ Ne jamais revenir à un accès direct `objet.subscription`.
+2. **`planDepuisIntervalle()`** — le plan se déduit de l'**intervalle réel** et non d'un montant. L'ancien `amount_total === 7999` ne reconnaissait plus l'annuel passé à 99,99 € : il était étiqueté « mensuel » et ne recevait que 32 jours. Un prix bouge, un intervalle non.
+3. **Replis en cascade** : si la mise à jour par abonnement ne touche aucune ligne, on rattrape par `stripe_customer`, puis par e-mail — **en raccrochant au passage l'identifiant d'abonnement**, pour que la fois suivante passe par le chemin normal.
+4. **`Prefer: return=representation`** sur les PATCH : sans ça, une mise à jour qui ne trouve aucune ligne répond 200 comme si tout allait bien. C'est ce silence qui a coûté un mois.
+5. **Tout événement non traité est journalisé.**
+
+### Contrôles
+
+`node --check` : passé. Testé sur l'**événement réel** de Dominique du 14/08 : identifiant d'abonnement correctement lu (`sub_1Tt5Fk…`), fin de période au **14/09/2026**, plan « mensuel » ; un cas annuel de synthèse renvoie bien « annuel ». **Non vérifié en production** — il faut pousser la fonction et attendre le prochain renouvellement, ou utiliser « Renvoyer » sur l'événement du 14/08 depuis Stripe pour le tester tout de suite.
+
+**Conséquence attendue** : au prochain paiement de Dominique, la vraie date écrasera l'année posée en secours et repassera à **mi-septembre**. C'est correct.
+
+### 📋 Reste ouvert (facturation)
+
+- **L'annuel du Pack Duo n'existe pas** — ni créé, ni en ligne. Blandine signale qu'il serait bien plus cher que le tarif actuel. Décision de prix à prendre à froid, non faite.
+- **Quatre produits Premium actifs en double** (annuel 79,99 **et** 99,99 ; mensuel 9,99 **et** 12,99). Le webhook ne les distingue plus, donc ce n'est pas un bug — mais d'anciens liens circulent toujours. Les tarifs abandonnés seraient à désactiver.
+- **🟥 Erreur de Claude à corriger dans les notes** : j'ai d'abord affirmé que le webhook ne reconnaissait qu'une série de tarifs et que les doublons étaient la cause. C'était faux, dit trop vite, avant d'avoir lu le fichier.
+
+### Préparation Flutter
+
+Cet incident ne concerne pas l'interface mais il vaut pour toute la frontière **Données** : un contrat externe (l'API Stripe) a changé de forme et rien ne l'a signalé, parce que le code lisait un champ **en supposant** sa place. Les fonctions `abonnementDeFacture` / `finDePeriode` / `planDepuisIntervalle` sont le gabarit à généraliser : **une fonction nommée par intention, qui connaît tous les emplacements possibles et journalise quand elle ne trouve rien.** À reprendre pour chaque lecture d'une source externe.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · stories 19an · modèles 28.
+
+---
+
+## Session 158 — 15/08/2026 · la page **Mon compte**, et un trou de sécurité
+
+Mot de Blandine sur cette page : *« tout est laid et trop formel »*, puis, en la parcourant : *« tout est faux dessus »*. Elle avait raison sur les deux.
+
+### 🟥 LE BACK-OFFICE ÉTAIT OUVERT À TOUT LE MONDE
+
+Vérifié à sa demande. La ligne « Accès back-office » s'affichait **sans aucune condition** pour toutes les cavalières, et `EcranAdmin` n'avait **aucun verrou** : ni test de modératrice, ni mot de passe.
+
+Deux nuances, pour être exact : les règles d'accès de Supabase tenaient le mur du fond — **pas de fuite de données**. Mais la mécanique de l'app était exposée à qui n'a rien à y faire.
+
+Corrigé avec **deux verrous**, volontairement redondants :
+1. la ligne du menu ne s'affiche qu'aux modératrices (`estModAdmin`) ;
+2. `EcranAdmin` refuse de se monter sans le droit, et affiche une page sobre « Réservé à l'équipe » — on peut arriver ici par l'adresse ou par un état laissé en mémoire.
+
+⚠️ Ne jamais retirer le second en se disant que la ligne est déjà cachée.
+
+### 🧹 Ce qui a été retiré, sur ses mots
+
+- **Hauts faits** → vers la page Quêtes (*« ils devraient plutôt aller sur la page quêtes »*). Ce qui se gagne vit là où on le gagne.
+- **Flots gagnés**, **frise des sept galops**, **chemin équestre** → même famille : des récompenses, pas des réglages.
+- **Galop actuel et visé** → *« on s'en fout »*.
+- **Notifications de révision** → c'était du **décor** : aucun `onClick`, aucun réglage, aucune notification jamais envoyée, mais la ligne affirmait « Activées · tous les jours à 18h00 ».
+- **La promesse des six mois de Premium** dans l'encart Crystal → *« ah non on gagne pas 6 mois Crystal lol »*. Aucun don n'a jamais débloqué quoi que ce soit.
+
+Nouveau texte, écrit par Blandine, traduit en 5 langues : *« Si Hype t'a apporté quelque chose, tu peux l'aider à grandir. Ton soutien guidera son évolution 💜 »*. Il ne promet que ce qui est vrai — j'avais proposé « tes idées comptent », écarté faute de canal réel pour les recevoir.
+
+### ⚠️ DETTE OUVERTE — `galopActuel` n'est plus modifiable
+
+Signalée trois fois avant d'agir, et à ne pas perdre : `galopActuel` **ouvre le bon niveau** dans la bibliothèque des Galops, sert à la progression, et est transmis à Hey Baby pour qu'il adapte ses réponses. Son seul écran de réglage vient d'être retiré : **il restera donc à 1 pour toute nouvelle cavalière**, que l'app traitera en débutante quoi qu'elle fasse.
+
+Trois issues, à trancher plus tard : le rendre modifiable ailleurs · le **déduire des chapitres validés** (la solution propre) · le remettre en deux lignes sobres.
+
+### 🟥 Deux erreurs de Claude dans cette session
+
+1. **Doublon de déclaration** : `estModAdmin` déclaré deux fois dans `EcranProfil`. Détecté par le contrôle de syntaxe, retiré.
+2. **Page cassée** : en retirant les deux `LigneInfo` des galops, j'ai emporté la **fermeture d'une branche ternaire** — la page ne compilait plus. Détecté par le contrôle, version saine restaurée depuis la livraison précédente, reprise bloc par bloc avec un `node --check` après **chaque** étape. C'est cette méthode qu'il faut garder sur un fichier de 9 Mo sans rendu de vérification.
+
+### 🖥️ À l'écran : + / −
+
+**−** Hauts faits, flots, frise des galops, chemin équestre, galop actuel et visé, notifications de révision — tous disparus de Mon compte.
+**−** La ligne back-office n'apparaît plus qu'aux modératrices.
+**+** Une page « Réservé à l'équipe » si quelqu'un force l'accès à l'admin.
+**~** Le texte de l'encart Crystal change.
+
+### 📋 Maquette livrée, pas encore codée
+
+`maquette-mon-compte.html` — deux directions, **A validée par Blandine** : son portrait en grand en tête (une seule image, plus d'avatar posé sur une photo de cheval), réglages groupés par sujet (**mes écuries · mon abonnement · mon compte**), second club à sa place, offre Pro en Prochainement.
+
+**Reste à coder** : la mise en forme A elle-même. Cette session n'a fait que les retraits et les textes — le regroupement visuel est un chantier à part, sur un fichier qu'on ne peut pas tester au rendu.
+
+### 📋 Reste ouvert (facturation)
+
+- **Pousser le webhook**, puis « Renvoyer » l'événement `invoice.paid` du 14/08 depuis Stripe et vérifier que la date de Dominique passe à mi-septembre.
+- ⚠️ **Cocher `invoice.payment_failed`** dans la destination Stripe : le bloc qui traite les échecs de paiement a été ajouté, mais l'événement n'est pas écouté aujourd'hui — sans la case, il ne servira jamais.
+- **Resserrer les dates** de Barbara et Dominique une fois le webhook testé : l'année posée en secours ne doit pas survivre. Objection juste de Blandine : *« si ça se trouve Barbara va même pas renouveler dans 3 jours »*.
+- **L'annuel du Pack Duo** n'existe pas. Prix à décider à froid.
+
+### Préparation Flutter
+
+Cette page est le cas d'école de ce qu'il ne faut pas reproduire : **un écran qui accumule sans jamais trier**. Progression, récompenses, réglages, compte et administration au même endroit, ajoutés au fil des sessions. En Flutter, la séparation en routes par domaine rend l'accumulation visible — un écran « Réglages » qui importerait le domaine Progression sauterait aux yeux à la relecture.
+
+Le trou du back-office relève de la même racine : **aucune frontière ne portait le droit d'accès**. À inscrire dans la frontière « Métier » : `peutAdministrer(utilisateur)` est une règle du domaine, vérifiée à l'entrée de la route, jamais une condition d'affichage.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · stories 19an · modèles 28.
