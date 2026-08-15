@@ -1,3 +1,24 @@
+# 🟥🟥🟥 UN LOT VÉRIFIÉ, UN SEUL PUSH — RÈGLE DE COÛT 🟥🟥🟥
+### Posée le 15/08/2026 sur ordre de Blandine : « on doit limiter les push inutiles normalement t'as un truc écrit dans le suivi là-dessus » · « indique-le dans le suivi Linguae aussi »
+### Reprise de `SUIVI.md` (incident crédits Netlify), pour qu'elle vive AUSSI du côté Linguae.
+
+**CHAQUE PUSH DÉCLENCHE UN DÉPLOIEMENT NETLIFY. UN DÉPLOIEMENT COÛTE 15 CRÉDITS.**
+352 déploiements en douze jours = 6 198 crédits pour 3 000 alloués, **recharge automatique active**.
+⚠️ Claude avait affirmé qu'un push ne coûtait rien, avec le mot « garanti ». **C'était faux**, et Blandine a poussé sans compter sur cette garantie. Aucune affirmation sur la facturation, l'hébergement ou les quotas sans qu'elle ait lu le chiffre elle-même.
+
+| | |
+|---|---|
+| **LA RÈGLE** | **Un lot vérifié, un seul push, un test.** Jamais « un correctif, un push ». |
+| **CE QUE CLAUDE DOIT FAIRE** | Écrire, vérifier, **accumuler en silence**, et ne présenter les fichiers **qu'une fois le chantier entier terminé**. |
+| **INTERDIT** | Re-présenter à chaque étape la liste complète des fichiers déjà livrés. Blandine, 15/08 : *« arrête de me donner en boucle les fichiers à remettre 10 fois »*. Elle a déjà eu cette conversation plusieurs fois. |
+| **QUAND CLAUDE LIVRE** | Il indique **explicitement lesquels sont NEUFS** depuis le dernier push, et ne redonne pas les autres. |
+| **PLUSIEURS VILLES / ÉCRANS** | Les écrire **toutes** avant de pousser : même coût de déploiement pour un ou vingt fichiers. |
+| **NE LIVRER QUE L'UTILE** | Pas de fichiers `t_*.js` ni d'outils de travail en ligne. |
+
+**Ce que le chiffre dit vraiment** : ces crédits mesurent le chantier, pas l'usage par les cavalières. Le poste déploiements est temporaire par nature — mais la recharge automatique rachètera seule tant que le rythme ne change pas. C'est le vrai risque financier.
+
+---
+
 # 🟥🟥🟥 RÈGLE DES IMAGES D'OBJETS DE COLLECTION — À LIRE AVANT D'Y TOUCHER 🟥🟥🟥
 ### Posée le 10/08/2026 sur ordre de Blandine : « note bien tout ça en gros dans le suivi et dans tes consignes à suivre »
 
@@ -51,6 +72,40 @@
 >
 > ## GESTE DE FIN DE SESSION
 > Chaque session Linguae se clôt par une section **« Vers l'App Store »** : ce qui a rapproché de l'autonomie, ce qui l'a éloignée, ce qui reste à faire. Au même titre que « Préparation Flutter » dans `SUIVI.md`.
+
+---
+
+# 🟥🟥🟥 `lingo.html` — QUATRE LIGNES À NE JAMAIS EFFACER 🟥🟥🟥
+### Posé le 14/08/2026 sur ordre de Blandine : « note le bien en rouge en gros sur le suivi », « et de ne pas effacer »
+
+## ⛔ AVANT DE TOUCHER À `lingo.html`, VÉRIFIER QUE CES QUATRE CHOSES Y SONT
+
+**Le fichier de référence du 14/08 au soir est le md5 `d0d81b99`.**
+**NE JAMAIS repartir d'un `lingo.html` plus ancien, même s'il paraît complet.**
+
+| | À CHERCHER DANS LE FICHIER | SI ÇA MANQUE |
+|---|---|---|
+| **1** | `var LIEN_DIRECT_LECON` | Le démarrage relance le film **par-dessus** un lien de leçon, et son bouton de fin dépose sur l'accueil. |
+| **2** | `S("ouverture").classList.add("parti")` dans la branche `#lecon=` de `lireAncre()` | La leçon s'ouvre **SOUS** l'écran d'ouverture (z-index 26 contre 40) : elle est là, invisible. **C'est le défaut qui a coûté 28 heures.** |
+| **3** | `partirVersVille(iVille)` dans cette même branche | Le lien tombe sur **le premier mot** au lieu de la page de la ville. |
+| **4** | `<iframe id="sellerieIf" src="about:blank">` **ET** le test `srcActuel === "about:blank"` dans `ouvrirSellerieReparee()` | 🟥 **L'APP REDEVIENT INUTILISABLE.** Voir le bandeau ci-dessous. Les deux vont ensemble : `src=""` ramène le lag, l'ancien test empêche la sellerie de s'ouvrir. |
+
+## 🟥 `src=""` SUR UNE IFRAME = L'APP ENTIÈRE RECHARGÉE DANS ELLE-MÊME
+
+**Dans WebKit, un `src` vide ne vaut pas « rien » : il vaut L'ADRESSE DE LA PAGE EN COURS.**
+`#sellerieIf` rechargeait donc `lingo.html` à l'intérieur de lui-même — toutes les images, tous les scripts, **et les deux autres iframes une seconde fois**. Mots de Blandine : « ça lag à mort », « partout », « on ne peut plus du tout utiliser ».
+
+⚠️ **Ce défaut avait été SIGNALÉ le 12/08 et laissé en place** — la note disait mot pour mot « `#sellerieIf` porte le même `src=""` : à regarder si un lag revient » — parce que la sellerie était alors verrouillée. La livraison du 14/08 l'a rebranchée, et le lag est revenu **le jour même**.
+✅ **RÈGLE : un `src` signalé comme dangereux se corrige au moment où on le voit, pas quand il redevient atteignable.**
+✅ **RÈGLE : les quatre iframes de `lingo.html` portent une adresse explicite. Aucune ne doit repasser à `src=""`.**
+
+## 🟥 DEUX CONVERSATIONS SUR LE MÊME FICHIER : LA COLLISION DU 14/08
+
+**Ma correction n°2 a été effacée sans que personne s'en aperçoive**, par une livraison faite en parallèle (la sellerie des modératrices, `VER v36`) qui était **repartie d'une version antérieure**. Blandine a poussé, testé, constaté que rien n'avait changé — et on a cherché ailleurs pendant des heures.
+
+✅ **RÈGLE : avant toute livraison de `lingo.html`, demander à Blandine le fichier EN COURS et vérifier les quatre lignes ci-dessus.**
+✅ **RÈGLE : toute livraison de `lingo.html` annonce son md5. Sans md5, on ne sait pas ce qui tourne.**
+✅ **RÈGLE : ne jamais toucher `var VER` pour une image isolée** — il est collé à **toutes** les URL d'images, le changer les fait toutes se retélécharger. C'est ce qui a brouillé le diagnostic du lag pendant une heure.
 
 ---
 
@@ -115,6 +170,278 @@ Blandine, 13/08, après une contradiction de Claude (*« un coup tu me fais jpg 
 Précédent posé en session 209 sur `balade` (*« s'il dort, tant mieux »*), appliqué le 13/08 à `cavalier-confirme`. Conséquence assumée à chaque fois : **le mot arrive déjà acquis dans la seconde ville**. C'est de la révision espacée, pas un bug.
 
 ---
+
+---
+
+# 🔗 SESSION 213 · 14/08 — LINGUAE GARDE SON PARTAGE À ELLE · LE VERROU DES VILLES TRANCHÉ : VITRINE
+
+**Aucun code livré sur Linguae.** Une décision, une erreur de ma part corrigée, et un rappel : **une question posée en 212 n'est toujours pas tranchée.**
+
+## 🟩 La demande de Blandine
+En pleine séance sur le partage de Hype : « et fais lingo en même temps si tu veux bien qu'il ait le sien autonome ».
+
+**Réponse : oui pour l'autonomie, non pour le "en même temps".**
+
+## 🟥 Mon erreur, signalée
+J'ai d'abord répondu comme si Linguae n'avait **aucun** système de partage à concevoir de zéro. **C'est faux** — la session 212, le jour même, a livré le lien `lingo.html#lecon=<ref>` après 28 heures de travail. Je l'ai découvert en relisant ce SUIVI avant d'écrire, pas avant de parler. ⚠️ **Assertion : relire le SUIVI de l'app concernée AVANT de qualifier l'existant, jamais après.**
+
+## 🟩 Pourquoi Linguae ne réutilise pas le travail fait sur Hype ce soir
+Hype a reçu ce soir des **familles d'adresses** (`#g=`, `#b=`, `#s=`, `#c=`…) et une fonction unique `hypePartager`. Rien de tout cela ne descend dans Linguae, et c'est **voulu** :
+
+1. **Un routeur partagé serait un recul.** Doctrine d'autonomie : toute décision qui recrée une dépendance à Hype se signale comme telle. Linguae a déjà son `lireAncre()` et son `#lecon=` — ils lui appartiennent.
+2. **Linguae ne partage pas la même chose.** Hype partage du contenu qu'on **lit** — un chapitre, un article : la moitié floutée y a du sens. Linguae partage une **ville et ses exercices**. Le partage y est déjà résolu autrement, et mieux : le lien ouvre **l'écran d'arrivée de la ville** (décision de Blandine, 14/08), pas un texte tronqué.
+3. **Hype est une PWA, Linguae part sur l'App Store.** Le `#` restera valable pour la version web, mais l'app native passera par un **lien universel**. Deux mécaniques, deux codes.
+
+## 🟢 TRANCHÉ — LE VERROU DES VILLES : **VITRINE** (décision de Blandine, 14/08)
+
+Question ouverte en 212, **fermée ce soir**. Décision de Blandine : « si c'est juste la première page pourquoi pas ». La page de la ville reste ouverte à tous ; la leçon reste fermée.
+
+### ✅ Vérifié dans le code AVANT de trancher (lecture de `lingo.html`, 14/08)
+Blandine a posé la bonne question : « mais après ils ont pas accès aux mots sans abonnement si ? ». Je ne l'ai pas prise de mémoire — le fichier a été relu.
+
+**Ce qu'un non-abonné voit sur une ville payante partagée**, via `ouvrirArrivee()` puis `garnirVille()` :
+- la vidéo d'arrivée, le nom de la ville, la nation ;
+- la **carte postale en aperçu assombri** — `S("postal").classList.toggle("apercu", !_carte)` — avec « à gagner » ;
+- l'**objet de collection en aperçu** — `S("souvenir").classList.toggle("apercu", !_obj)` — avec « à mériter » ;
+- les trois volets de récit et la lettre au verso.
+
+**AUCUN MOT.** `garnirVille()` ne touche qu'au décor, à la carte, au souvenir et aux volets : elle ne lit jamais le lexique. Les mots ne sortent que par deux portes, et les deux sont gardées :
+- `ouvrirLecon(ref)` → `if(!villeAutorisee(ref)){ ouvrirPaywall(); return; }`
+- `ouvrirDefiVille(ref)` → même verrou. **Le Défi de la ville est fermé lui aussi.**
+
+`villeAutorisee()` = `estPremium() || VILLE_OFFERTE[ref]`, avec `VILLE_OFFERTE = { labaule, kildare, maurice }`.
+
+### 💡 Ce que la vérification a appris
+La vitrine **existait déjà**, et bien mieux construite qu'on ne le pensait : la carte et l'objet sont en **aperçu assombri**, ce qui est exactement la logique du **flou** choisie le même soir pour Hype. La cohérence entre les deux apps était déjà là — **rien à coder**. La décision ne fait qu'entériner l'état du code.
+
+### ⚠️ À surveiller (pas un défaut aujourd'hui)
+Le bouton **« Les phrases »** ne s'affiche que sur les villes qui ont un dialogue — aujourd'hui **La Baule** et **Le Morne**, toutes deux offertes. **Le jour où un dialogue est ajouté à une ville payante**, vérifier que `lingo-dialogue.html` porte son propre verrou : `aUnDialogue()` ne consulte pas `villeAutorisee()`. Rien à faire tant qu'aucune ville payante n'a de dialogue.
+
+## 🟩 Ce qui a été retenu
+- Linguae garde et fait évoluer **son propre partage**. Rien n'est recopié de Hype.
+- **Hype d'abord** (routeur étendu + `hypePartager` livrés ce soir).
+- `lingo.html` et les fichiers lexicaux **inchangés** cette session.
+
+## 📋 Reste ouvert
+- La relecture native des mots. L'île Maurice à finaliser. La page de collection (cartes qui se retournent), toujours pas commencée.
+- **La vidéo de Newmarket** en bande horizontale — fichier jamais reçu, à vérifier dès qu'il arrive.
+
+## 🧭 Vers l'App Store
+Le partage est l'endroit précis où Linguae doit **cesser** de ressembler à un morceau de Hype. Une app de l'App Store partage par **lien universel**, pas par `#` : le `#lecon=` d'aujourd'hui restera pour le web, mais la version native demandera deux choses qu'on ne peut pas figer maintenant — l'**identifiant d'app** (indisponible tant que Linguae n'est pas soumise) et le **fichier d'association** sur le domaine. Le partage natif est donc **bloqué par la soumission, pas par le code** : à traiter dans cet ordre, et surtout à ne pas anticiper en bricolant un format qu'il faudrait défaire.
+
+---
+
+# 🔗 SESSION 212 · 14/08 — LE LIEN DE PARTAGE, APRÈS 28 HEURES. ET LE LAG, EXPLIQUÉ.
+
+**Mots de Blandine : « 28 h de travail pour avoir un lien fonctionnel merci ….. »**
+Elle a raison sur le chiffre, et l'essentiel du retard est de mon fait. Le détail est plus bas, dans « mes fautes ».
+
+## 🟥 LE DÉFAUT DE FOND : LA LEÇON S'OUVRAIT SOUS L'ÉCRAN D'OUVERTURE
+
+`lireAncre()` retirait la classe `joue` de `#ouverture` en croyant l'écarter. **Retirer `joue` ne cache pas cet écran** : ça le fait seulement passer du mode film au mode normal. Il reste affiché, et son `z-index:40` le pose **au-dessus** de `#lecon` (`z-index:26`).
+
+La ville s'ouvrait donc à chaque fois, correctement, **et restait invisible**. Blandine voyait l'écran du globe et concluait — logiquement — que le lien la ramenait à l'accueil.
+
+⚠️ **C'est pour ça que le défaut a survécu à trois corrections successives** : chacune enlevait un rideau (le film, puis le relancement du film), sans voir qu'il y en avait un autre derrière. Blandine l'a formulé mieux que moi : « c'est juste ton lien qui ouvre pas la bonne page **ou la page qui refuse de s'ouvrir** ». C'était la seconde.
+
+✅ **Remède** : `S("ouverture").classList.add("parti")` — la classe qui l'escamote pour de bon (`#ouverture.parti{display:none}`). Elle existait déjà, et `montrerCarnet()` la retire d'elle-même à la fermeture de la leçon : le chemin du retour n'a rien demandé.
+💡 **`partirVersVille()` faisait déjà exactement ça** depuis toujours (`allerA` + `ouvrirArrivee` + `parti`). La bonne mécanique était sous mes yeux depuis le début.
+
+## 🟩 LES TROIS AUTRES CORRECTIONS DU LIEN
+
+1. **Le démarrage relançait le film** — le bloc de démarrage s'exécute **après** `lireAncre()` et rappelait `lancerFilm()` sans savoir qu'une leçon venait de s'ouvrir ; son garde-fou ne connaissait que `#sprint` et `#duel=`. → drapeau `LIEN_DIRECT_LECON`. ⚠️ **Ne pas « corriger » en testant `location.hash` dans le bloc de démarrage : `lancer()` a déjà consommé l'ancre, le test serait toujours faux.**
+2. **On atterrissait sur le premier mot** — `ouvrirLecon()` entre directement dans la leçon là où l'on en est (décision du 10/08) ; sur un appareil neuf, « là où l'on en est » vaut le premier mot. → le lien appelle `partirVersVille()`, donc **l'écran d'arrivée de la ville**. Décision de Blandine, 14/08.
+3. **⚠️ CONSÉQUENCE NON TRANCHÉE — LE VERROU PREMIUM.** Le paywall (`villeAutorisee`) est posé dans `ouvrirLecon`, **pas** dans `ouvrirArrivee`. Depuis le point 2, un lien vers une ville non offerte **ouvre sa page** sans abonnement. Les 28 villes payantes sont concernées ; seules `labaule`, `kildare` et `maurice` sont offertes. La leçon, elle, reste verrouillée : le bouton « Jouer » rappelle `ouvrirLecon` et déclenche le paywall. **Deux options présentées à Blandine — vitrine (laisser) ou verrou (deux lignes) — AUCUNE TRANCHÉE À CE JOUR.**
+
+## 🟩 LE PARTAGE — CE QUI MARCHE, ET LE PIÈGE D'iOS
+
+Le bouton fabrique bien `…/lingo.html#lecon=<ref>`, vérifié sur le fichier en ligne. Deux fausses alertes ont fait perdre du temps :
+- ⚠️ **L'en-tête de la feuille de partage iOS n'affiche JAMAIS le chemin ni le `#`**, seulement le domaine. On ne peut rien en conclure. **Ne plus juger un lien là-dessus : faire coller.**
+- ⚠️ **L'aperçu du lien reste « Linguae · Le tour du monde » avec le globe**, même pour une ville : les balises Open Graph sont uniques pour tout le fichier.
+
+**Défaut réel restant, NON CORRIGÉ :** quand on donne à iOS un `text` **et** un `url`, le bouton **Copier** recopie le seul texte et **perd l'adresse**. Trois options présentées (A : l'adresse dans la phrase — mais alors le collage dans une barre d'adresse devient une recherche ; B : l'adresse seule ; C : l'adresse puis la phrase, mauvais compromis). **Blandine a hésité A → B → C, rien n'est tranché. Ne pas coder avant sa décision.**
+
+## 🟥 LE LAG — RÉSOLU, ET IL ÉTAIT ÉCRIT D'AVANCE
+
+Voir le bandeau en tête du fichier : `#sellerieIf` portait `src=""`, signalé le 12/08 et laissé en place. Correction : `about:blank` + adaptation du test d'ouverture.
+⚠️ **Mes deux premières hypothèses étaient fausses** (le bump de `VER`, puis la batterie à 14 %). Ce qui a mené à la bonne, c'est **la relecture du SUIVI**, pas le raisonnement : la note du 12/08 nommait le coupable. **Lire le SUIVI avant de chercher.**
+
+## 🔴 MES FAUTES DU JOUR — toutes de Claude
+
+1. **Trois livraisons de correctifs incomplets**, chacune annoncée comme la bonne. À chaque fois je n'avais retiré qu'un rideau sur trois.
+2. **J'ai accusé un push tronqué qui ne l'était pas.** Le bandeau de téléchargement de Safari annonçait « 235 ko » ; j'en ai conclu que GitHub servait un fichier amputé et j'ai fait refaire l'envoi. GitHub affichait 654 KB. ⚠️ **Un chiffre lu sur une capture n'est pas une mesure.**
+3. **J'ai fait pousser en disant « c'est tout ce qui manque »** alors que je ne peux pas lancer l'app. Répétition exacte de la faute du 12/08.
+4. **« Les adresses possibles sont… »** — Blandine : « quand on me demande où j'habite je réponds pas *mes adresses possibles sont*, j'en ai une et elle est sûre ». ✅ **Donner l'adresse, une seule, sans hedging.**
+5. **J'ai laissé filer deux fois la question du déploiement Netlify** au lieu d'insister quand c'était la seule inconnue.
+
+## ⏳ CE QUI RESTE OUVERT
+
+1. **Le verrou Premium sur les liens partagés** — décision de Blandine (vitrine ou verrou).
+2. **Le « Copier » d'iOS** — décision de Blandine (A, B ou C).
+3. **Les liens vers Hype** (`#baby`, `#galops`, `#moncavalier`, `#monde`) : les clés existent dans `index.html`, **aucune n'a jamais été ouverte**. Rien ne dit que Hype n'a pas son propre écran qui se pose par-dessus, comme Linguae. À lire avant de les proposer.
+4. **`choisirLecon()`** — plus appelée depuis la v69, toujours dans le fichier, et elle porte un **troisième bouton de partage** (`lcPartage` → `partagerHype()`) qui envoie l'app entière. Mort aujourd'hui ; le rallumer réintroduirait le second bouton que Blandine a fait supprimer.
+
+## 🍎 VERS L'APP STORE
+
+Le `#lecon=` réparé est la première brique d'un vrai schéma d'URL : c'est lui qui deviendra un lien profond `linguae://lecon/<ville>` le jour de l'app native. La leçon du jour vaut pour iOS comme pour le web — **un lien profond n'est jamais fini tant qu'on n'a pas vérifié quelle vue est au-dessus à l'arrivée.**
+
+---
+
+# 🏇 SESSION 211 · 14/08 — DEUX SELLERIES, LE PLANTAGE DU 12/08 EXPLIQUÉ, LA SELLERIE ROUVERTE POUR LES MODÉRATRICES
+
+**Session menée depuis Majorque, Blandine en vacances : ni ordinateur ni Mac.** Aucune console Safari possible — tout diagnostic doit désormais s'afficher **à l'écran**. À garder en tête pour toute la période.
+
+## 🟥 LA DÉCISION QUI CHANGE LA SUITE : IL Y AURA DEUX SELLERIES
+
+Blandine, en cours de session : *« attention ça sera la deuxième sellerie d'option elle doit pas remplacer la première »*.
+
+| clé | nom | matière |
+|---|---|---|
+| `anglaise` | ex-« classique » | boiseries bleu nuit, laiton, parquet à chevrons |
+| `espagnole` | nouvelle | plâtre crème, arches, carrelage beige |
+
+**Renommage décidé (ses mots) : `classique` → `anglaise`**, puis `ecole` → **`espagnole`**. `ecole` n'a jamais été écrit nulle part.
+
+🟥 **LE RENOMMAGE N'EST PAS FAIT.** `classique` est encore en dur dans `lingo.html` (`selleriePiece("classique")`) et dans le rangement `hype_lingua_sellerie`. **Gratuit tant que la sellerie est verrouillée** — personne n'a jamais rien enregistré. **Migration sur comptes vivants après ouverture.** À faire avant, pas après.
+
+**L'aménagement est CONSERVÉ au changement de pièce.** Blandine avait proposé un avertissement « remets les objets dans la malle de voyage » — inutile : le rangement par pièce du 12/08 fait que chaque pièce garde le sien. Pas de malle, pas de choix imposé.
+⚠️ **Conséquence acceptée** : les positions étant en % du mur et les meubles n'étant pas aux mêmes endroits, un objet posé pile sur son porte-selle dans l'anglaise tombera à quelques % à côté dans l'espagnole.
+
+**Son idée, retenue :** *« on peut proposer de visualiser l'autre sellerie avant que le joueur ne décide de valider son changement à chaque fois »*. Presque gratuite puisque chaque pièce garde son aménagement — « visiter » et « habiter » deviennent le même écran, seul le bouton change.
+
+## 🟥 POURQUOI LA SELLERIE A ÉTÉ FERMÉE LE 12/08 — DIAGNOSTIC ENFIN FAIT
+
+Établi à partir de sa capture d'écran (`ScreenRecording_08-12-2026_22-50-17_1.mp4`, 12 s), qu'elle a fournie en disant : *« en gros déjà il manquait la porte du fond et on se faisait ramener en dehors à l'accueil »*.
+
+**Ce que montre la vidéo, mesuré image par image :** à **0,33 s** l'écran est parfait — mur de la fenêtre, arche percée avec le pays derrière, réserve garnie de six objets, consigne lisible. À **0,42 s, tout est noir.** Une seule image entre les deux. Puis retour au carnet.
+
+🟥 **Ce n'est PAS un mur vide : la réserve disparaît aussi**, alors qu'elle est en `position:fixed`. Puis le bandeau. **C'est toute la page qui s'effondre**, d'un coup. Signature d'une exception JavaScript, ou d'un effondrement de couches composites Safari (même mal que le crash de `lingo.html`, réglé en réduisant les couches).
+
+**Les cinq causes, par gravité :**
+
+1. **LE FORMAT NUL — la vraie.** `FORMAT[id]` n'était rempli que par le `onload` de l'image. Une image absente → `calerMurs` sortait par un `return` → le `.dedans` gardait une **taille NULLE**. Or les objets sont positionnés en **% de ce conteneur** : pourcentage de zéro = zéro. **Tous les objets s'empilaient en un point, invisibles.** Aucun repli prévu. ✅ **CORRIGÉ** (repli 1024×1536).
+2. **La porte du fond manquait** — c'est ce qui déclenchait 1.
+3. **Le saut au bouclage du cercle.** `allerBrut` passe en `transition:none` dès que l'écart dépasse un mur ; du 7 au 2 l'écart vaut **5** → téléportation à chaque tour complet. ❌ **NON corrigé.**
+4. **La vitrine n'est appariée avec rien.** `droite` n'a jamais été comparée à `droitebiais` : un objet posé sur la vitrine **n'a aucun jumeau**. ❌ **NON corrigé.**
+5. **Points de calage relevés à l'œil**, justes à 1-2 % près. ❌ **NON remesurés.**
+
+⚠️ **Blandine n'a jamais eu le temps de poser un objet** (ses mots). Les homographies ne sont donc **pas** en cause dans ce plantage — elles restent à vérifier par ailleurs.
+
+## 🟥 LA MAUVAISE IMAGE PORTAIT LE BON NOM
+
+`ARCHES.gauchebiais` déclare `81.7 · 23.7 · 18.3 · 33.1`.
+L'image fournie le 14/08 mesure `81.7 · 23.7 · 18.2 · 33.1`. **Écart : un dixième de pour cent.** C'est sur elle que les arches ont été mesurées.
+
+Or le fichier qui portait le nom `sellerie-gauche-biais.webp` était **un autre rendu** : 1000×1500, **sans aucune transparence**. La vue du pays ne pouvait donc pas passer dans l'arche de ce mur. ✅ **REMPLACÉ.**
+
+⚠️ **Leçon générale : un nom de fichier juste ne prouve rien.** Mesurer l'image contre les constantes avant de conclure.
+
+## LE RANG DE MODÉRATRICE — LA SELLERIE ROUVERTE, MAIS POUR ELLES SEULES
+
+Blandine : *« je suis modérateur pour moi faut qu'il reste accessible, pour les autres tu peux le masquer ou le mettre en prochainement »*, puis, après signalement : *« non seulement modérateur pour l'instant »*.
+
+**Nouvelle liste `MODERATRICES`** dans `lingo.html`, recopiée de `HYPE_MODERATEURS` d'`index.html` : `feinn@live.fr`, `malicia2008@hotmail.fr`.
+
+🟥 **NE PAS S'APPUYER SUR `SECOURS`.** C'est un **filet de panne Premium** (si la base ne répond pas, personne ne perd ses accès) qui mélange modératrices ET ambassadeurs. S'y appuyer ouvrait la sellerie à Liam, Evan et Rizeamegane — signalé et corrigé dans la même session.
+
+Étiquette **`hype_lingua_rang`**, distincte de `hype_premium` (qui mélange secours + ambassadeurs + abonnement payant). Un abonné payant n'est pas une modératrice.
+
+**Comportement :** modératrice → bouton du carnet allumé « Ma sellerie » + « Ranger cet objet » réapparaît sur l'écran d'arrivée au moment du gain. Tout le monde d'autre → bouton gris **« Prochainement »**, inchangé. Le bouton n'est jamais retiré : *un onglet qui disparaît inquiète plus qu'un onglet qui patiente*.
+
+⚠️ **Verrou d'affichage, PAS de sécurité.** Quelqu'un qui forcerait l'étiquette ouvrirait l'écran — il n'y trouverait qu'un chantier.
+⚠️ **L'étiquette se pose à la connexion.** Sur un téléphone neuf, il faut se connecter une fois avant que le bouton s'allume.
+
+## L'ATTRAPE-ERREUR — parce qu'il n'y a pas de Mac
+
+Posé dans `lingo-sellerie.html`, en **tête de page dans son propre `<script>`**, pour saisir aussi ce qui casserait pendant la construction de l'écran. `signaler()` ne dépend d'aucune autre fonction du fichier, exprès : il doit rester vivant quand le reste est tombé.
+
+- `window.onerror` + `unhandledrejection` → bandeau rouge sombre en bas, message **en clair**, se ferme au doigt.
+- Chaque mur chargé dans son `try`, `onerror` qui **nomme** le fichier manquant.
+- Format de repli → un mur sans image devient un cadre vide, plus un trou noir.
+
+⚠️ **Il ne se déclenchera pas tant que la sellerie est fermée aux non-modératrices.** Il attend la réouverture.
+⚠️ **À retirer quand la sellerie sera sereine** — c'est un filet, pas un meuble.
+
+## LES IMAGES
+
+### Espagnole — 8 faces prêtes, jamais poussées
+Livrées en `sellerie-espagnole-<role>.webp`, 1024×1536, 64 à 119 Ko.
+
+🟥 **J'ai failli écraser la première sellerie.** Mes faces s'appelaient d'abord `sellerie-fond`, `sellerie-gauche`… — **exactement les noms de l'anglaise**. Poussées à la racine, elles détruisaient ses fichiers. C'est Blandine qui a arrêté le geste. **Toute nouvelle pièce doit porter son préfixe dès la première minute.**
+
+**Quatre défauts trouvés à la réception, tous corrigés :** damier gris **peint** dans une baie (fausse transparence en RGB) · un ratio 3:4 au lieu de 2:3 · transparences PNG à combler · murs de 30 à 69 de chaleur R−B. Cible commune : **`209/185/165`**.
+
+**Méthode qui a débloqué le circuit :** les vues en enfilade **ne sont pas des doublons, ce sont les pans obliques déjà rendus**. `droitebiais` et `gauchebiais` obtenus en découpant leur moitié droite / gauche. Validé visuellement, à réutiliser.
+
+⚠️ **`entree` de l'espagnole reste hors vocabulaire** : appliques en tissu, pas de voûte, pas de gorge lumineuse. **Non tranché.**
+
+### Anglaise — 8 faces nommées, en place
+**Critères de tri (consigne de Blandine) :** écarter les images à **rail bas sur le mur de gauche**, et celles où **des selles sont déjà posées** — un mur qui arrive meublé interdit à la joueuse de le meubler.
+
+**Porte retenue : la version SANS coffre ni banc.**
+
+**Lampes : deux familles, pas trois** (j'avais annoncé trois en regardant le lot en vrac). Cinq murs ont une platine ronde, `gauche` a une platine plus étroite et un bras plus court. **Écart jugé négligeable à l'usage, non tranché.**
+
+🟥 **`sellerie-gauche.webp` est en 1020×1500, ratio 0,680** au lieu de 0,667. Seul fichier hors norme du lot — **et c'est le mur qui porte l'homographie mesurée**. L'écart de 2 % se répercute directement sur la position du jumeau. **À refaire.**
+
+## LA VIDÉO
+
+`sellerie-ouverture.mp4`. Source : 834×1112, HEVC, 5,1 s, 8,27 Mbit/s, **5,27 Mo**, avec piste audio.
+Sortie : H.264 profil main, `+faststart`, **muette**, **668 Ko** — dix fois plus léger.
+✅ **Filigrane « Ai » retiré** (`delogo`, coin haut gauche), sur son *« vire AI oui »*.
+
+⚠️ Elle montre bien **l'anglaise**, fidèlement. J'avais d'abord annoncé une dérive du générateur en la comparant aux images crème — **erreur de ma part** : les crème sont l'espagnole, pas la première sellerie. Signalé et corrigé dans la session.
+
+**Place à trancher :** film d'ouverture, ou écran de choix entre les deux pièces. Si c'est un choix, il doit montrer la bonne pièce. Restent à savoir : une fois ou à chaque changement, ce qu'elle montre, sa durée, si elle se saute.
+
+## ÉCART HYPE ↔ LINGUAE CONSTATÉ (non corrigé)
+
+Hype tient **deux listes séparées** — bonne architecture :
+- `HYPE_MODERATEURS` = feinn, malicia
+- `HYPE_AMBASSADEURS` = liamroux, evan.roux.2014, rizeamegane, **deborah.guilmain@free.fr**
+
+Linguae les a **aplaties en une seule** `SECOURS`, qui contient les cinq autres **mais pas Deborah**. Elle garde donc son rang hors connexion sur Hype, pas sur Linguae. Bénin aujourd'hui ; invisible le jour où ça gênera. **Le jour où on y touche, adopter la séparation de Hype plutôt que rallonger `SECOURS`.**
+
+## À POUSSER → RACINE
+
+| fichier | note |
+|---|---|
+| `lingo.html` | `VER` → **`?v=36`** |
+| `lingo-sellerie.html` | ⚠️ **n'a JAMAIS été poussé** |
+| `sellerie-gauche-biais.webp` | **remplace** l'existante |
+| `sellerie-ouverture.mp4` | |
+| `sellerie-espagnole-*.webp` (×8) | **à plat, pas dans un dossier** |
+
+**Non poussés :** `planche-lampes.jpg`, les deux maquettes de circuit, `PASSATION.md`.
+**`index.html` de Hype : NON MODIFIÉ** — seulement lu, pour comparer les listes.
+
+🟥 **RIEN N'A ÉTÉ TESTÉ EN LIGNE.** `node --check` valide la syntaxe des 31 blocs JS, pas le comportement. Netlify refuse l'accès automatisé — seule Blandine peut voir si ça marche.
+
+## VERS L'APP STORE
+
+**Rien n'a rapproché de l'autonomie cette session, et rien ne l'a éloignée.** Tout le travail est intérieur à Linguae : aucune dépendance nouvelle à Hype n'a été créée.
+
+**Un point de vigilance quand même** : `MODERATRICES` est une liste recopiée d'`index.html`. C'est une **troisième** copie de la même vérité (Hype, `SECOURS`, `MODERATRICES`). Acceptable pour un verrou temporaire de chantier ; **à supprimer le jour où la sellerie s'ouvre à tous** — une app autonome ne doit pas embarquer la liste des modérateurs de l'autre.
+
+**Le film de la sellerie est muet et en H.264** : conforme à la contrainte n°6 de la doctrine.
+
+## EN ATTENTE DE BLANDINE (ajouts de cette session)
+
+9. **La vidéo** : film d'ouverture, ou écran de choix entre les deux pièces ?
+10. **`entree` de l'espagnole** : garder malgré les appliques tissu, ou refaire ?
+11. **Les lampes de l'anglaise** : laisser, ou uniformiser ?
+12. **Rouvrir les verrous du 12/08 en grand**, un jour — et quand ?
+
+## À FAIRE, PAR ORDRE DE COÛT CROISSANT SI ON ATTEND
+
+- [ ] **`classique` → `anglaise`** dans les deux fichiers — *gratuit maintenant, migration après ouverture*
+- [ ] **Poses rangées par NOM de mur** au lieu du numéro — *idem, et ça casse silencieusement le jour où une troisième pièce a un mur de plus*
+- [ ] Tables par pièce : `MURS`/`PAIRES`/`ARCHES` → `PIECES.anglaise` / `PIECES.espagnole` (`NOMS_MURS` reste commun, les six rôles sont identiques)
+- [ ] Refaire `sellerie-gauche.webp` au ratio 0,667
+- [ ] Remesurer les points de calage de `droite`/`droitebiais` (erreur de 12 % notée le 12/08) et les arches de l'espagnole
+- [ ] Apparier la vitrine
+- [ ] Corriger le saut au bouclage du cercle
+- [ ] Écran de choix + visite préalable avant validation
 
 ---
 

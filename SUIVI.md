@@ -8026,3 +8026,61 @@ Inchangé. Toujours : vignettes des modèles à pousser, photos de profil non di
 Les deux fautes de cette session ont la même racine : **des surfaces qui se ferment sur un événement remonté d'un enfant**. En Flutter, une modale est une route du `Navigator` et un `GestureDetector` d'écran ne voit pas les gestes de la route au-dessus — les deux pièges disparaissent par construction. À noter dans la frontière « Présentation » : une feuille ne doit jamais décider de sa fermeture à partir d'un événement dont elle n'est pas la cible.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ai** · modèles 28.
+
+---
+
+## Session 152 — 15/08/2026 · stories **19aj** · le débordement, le rail, le texte, et le SQL manquant
+
+### 🟥 « Tout est collé à droite » — faute de Claude (19ai), corrigée
+
+En donnant ce matin aux tirages une largeur qui suit la photo, je n'ai borné **ni la rangée ni le bloc**. Trois tirages couchés font plus large que l'écran ; la rangée imposait alors sa largeur au bloc entier, qui se centrait en débordant. D'où la grande photo coupée à droite et la légende tronquée — ce n'était pas la grande photo qui était trop large, c'était le bloc qui l'était devenu.
+
+Corrigé en deux endroits : `maxWidth: 100%` + `minWidth: 0` + `overflow: hidden` sur le bloc, et les trois mêmes gardes sur la rangée, qui défile déjà depuis la 19t. Le seuil de `justifyContent: flex-start` descend de 4 à 3 tirages : centrer un contenu plus large que sa boîte rend le début inatteignable au doigt.
+
+### 🎞️ Le rail montre toutes les stories
+
+Mots de Blandine : *« on aimerait voir la story de mettre sur les rails plutôt qu'un +1, pour l'instant pas besoin de limiter »*. Le bandeau n'affichait que **deux** stories par cavalier et posait une pastille `+N` sur la seconde. Toutes sont désormais sur le rail, côte à côte, reliées par le même fil de lumière ; la cellule s'élargit du nombre de médaillons.
+
+**Aucune limite, pour l'instant — ses mots.** Le bloc `+N` est conservé inerte (`enPlus = 0`) : il redevient vivant le jour où un plafond sera décidé, en remettant un `slice`. Un seul endroit à toucher.
+
+### ✍️ La mise en page du texte est conservée
+
+Sans règle, le navigateur replie tous les blancs et le texte saisi devient un pavé. Deux endroits corrigés : la légende sous la composition (`pre-wrap`, hauteur 54 → 96 px, car avec des retours à la ligne trois lignes étaient atteintes tout de suite) et le panneau du bas de la visionneuse, qui était en `pre-line` — les retours étaient gardés, **les espaces non**. `pre-wrap` garde les deux.
+
+### 🗄️ Les likes et commentaires de photos : les tables n'existaient pas
+
+Signalement de Blandine : les j'aime et les commentaires des photos d'album ne fonctionnent pas. **Le code de l'application est complet** — `chargerLikesPhoto`, `toggleLikePhoto`, `listerCommentairesPhoto`, `ajouterCommentairePhoto`, `supprimerCommentairePhoto`, `signalerCommentairePhoto`, dans les deux visionneuses. Ce sont les **tables** qui n'ont jamais été créées côté Supabase. L'application le disait elle-même : « Commentaire impossible — table à ajouter côté base ». C'était le travail de Liam, parti depuis.
+
+`photos-likes-commentaires.sql` livré : `photo_likes`, `photo_comments`, `signalements_commentaires_photos`, avec index et RLS (lecture publique, écriture en son propre nom, suppression par l'auteur ou un modérateur, pile de signalements réservée aux modérateurs). **Idempotent** — relançable sans risque, aucune table existante touchée.
+
+⚠️ **Non vérifié par Claude** : je n'ai pas accès à la base. Blandine exécute et confirme. La liste des modérateurs est écrite en dur dans les politiques : tout ajout côté application doit être répercuté dans le SQL.
+
+### 🖥️ À l'écran : + / −
+
+**−** Plus de débordement à droite : la grande photo, la légende et les tirages tiennent dans l'écran.
+**−** Plus de pastille `+N` sur le bandeau.
+**+** Toutes les stories d'un cavalier apparaissent sur le rail, côte à côte.
+**+** Les retours à la ligne et les espaces des légendes s'affichent tels qu'ils ont été écrits.
+**+** (après exécution du SQL) Le cœur et les commentaires deviennent fonctionnels sur les photos d'album.
+
+### Contrôles
+
+`node --check` sur `hype-stories.js` : passé. Vérifiés à la main : accord `19aj` entre `hype-stories.js` et le cache-buster de `index.html`, plus aucun `pre-line` sur une légende, `enPlus` neutralisé sans suppression du bloc, gardes de confinement présentes sur le bloc et sur la rangée. Le SQL n'a pas pu être exécuté ni testé — c'est à Blandine.
+
+### 📋 Reste ouvert
+
+**Décisions en attente de Blandine :**
+- **Le tap sur une photo de composition ouvre la story suivante.** Deux zones transparentes (32 % à gauche, 48 % à droite) couvrent la visionneuse pour avancer et reculer, et captent tout sur une composition. Deux sorties possibles : (a) les photos passent devant, on avance en tapant à côté ; (b) sous une composition seulement, les zones se réduisent à deux bandes fines. **Choix non fait, rien codé.**
+- **Le partage externe** : lien avec miniature via une fonction Netlify servant les balises `og:`. Expiration tranchée par Blandine — *invitation à rejoindre Hype, ou lien vers le souvenir conservé s'il existe encore*. Deux réserves signalées et non tranchées : un lien partagé rend la photo **publique** alors qu'une story est aujourd'hui réservée aux cavaliers, et un souvenir est aujourd'hui privé et rangé manuellement, donc le second étage sera rare.
+- **La durée au choix (7 jours ou un mois)** : validée dans son principe. La colonne `expire_le` existe déjà, aucun SQL. Restent : où se pose le compteur discret pour le créateur, ce qu'il dit, et si le mois est ouvert à tous ou réservé Premium.
+- **Les likes sur les stories** : une table de plus, pas de modération. À faire avec le SQL ci-dessus si Blandine le décide. Les commentaires sont un chantier séparé (modération, notifications).
+
+**Inchangé** : vignettes des modèles à pousser, photos de profil non diagnostiquées, notifications (correction de Blandine à redire), carte Communauté (spec + images à renvoyer), accès Communauté (aucun verrou trouvé), flou du décor plein écran, allègement de `index.html`.
+
+### Préparation Flutter
+
+Le débordement de ce matin est un cas d'école de ce que la migration supprime : en CSS, un enfant peut **dicter sa largeur à son parent** ; en Flutter, une `Row` dans une `Column` est contrainte par le parent et le débordement est signalé au développeur, pas silencieusement peint hors écran. À noter dans la frontière « Présentation » : tout conteneur de composition déclare ses contraintes, il ne les subit pas.
+
+Le SQL de cette session relève d'un autre chantier : **la frontière Données**. Trois tables dormaient sans que rien ne le signale, parce que chaque appel se rattrapait en silence dans son `try/catch`. Un Repository nommé aurait rendu l'absence visible au premier appel.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19aj** · modèles 28.

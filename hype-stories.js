@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ai";
+var HYPE_STORIES_VERSION = "19aj";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1477,8 +1477,19 @@ function BandeauStories(props) {
         h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", border: "2.5px solid #060709", background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } }, photo));
     }
 
-    var montrees = g.stories.slice(0, 2);
-    var enPlus = g.stories.length - montrees.length;
+    /* 19aj (demande de Blandine) : « on aimerait voir la story de mettre sur
+       les rails plutot qu'un +1, pour l'instant pas besoin de limiter ».
+       Le bandeau n'affichait que DEUX stories par cavalier et posait une
+       pastille « +N » sur la seconde : les suivantes n'existaient pas a
+       l'ecran. Elles sont desormais TOUTES sur le rail, cote a cote, reliees
+       par le meme fil de lumiere. Le rail defile deja (`data-hscroll`), la
+       cellule s'elargit simplement d'autant.
+       ⚠️ Aucune limite POUR L'INSTANT — mot de Blandine. Si un cavalier
+       publie beaucoup, c'est ici qu'un plafond se poserait (ce `slice`
+       retire), pas ailleurs. Le bloc « +N » ci-dessous est conserve INERTE :
+       il redeviendra vivant le jour ou un plafond sera decide. */
+    var montrees = g.stories;
+    var enPlus = 0;
     var visuels = montrees.map(function (st, k) { return visuelPour(st, "v" + k); });
     if (enPlus > 0) {
       /* La pastille « +N » se pose sur le DERNIER visuel affiché. */
@@ -1495,7 +1506,12 @@ function BandeauStories(props) {
         visuels)
       : visuels[0];
 
-    var largeurCel = duo ? ((carte ? CL : T) * 2 + 12) : (carte ? CL : LARGEUR);
+    /* 19aj : la cellule suit le NOMBRE de medaillons montres, plus seulement
+       deux — un cavalier a 4 stories occupe 4 medaillons sur le rail. */
+    var nVis = visuels.length;
+    var largeurCel = duo
+      ? ((carte ? CL : T) * nVis + 4 * (nVis - 1) + 8)
+      : (carte ? CL : LARGEUR);
 
     return h("button", {
       key: "st" + g.user_id,
@@ -3918,7 +3934,14 @@ function CompositionStory(props) {
      `justifyContent: center` remplace l'etirement : ce qui n'est plus pris en
      hauteur devient du vide, pas du rognage. */
   var grande = membres[0]; var tirages = membres.slice(1);
-  return h("div", { style: { position: "relative", width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "8px " + MARGE_COMPO + "px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
+  /* ⚠️ 19aj — FAUTE DE CLAUDE (19ai), corrigee. En donnant aux tirages une
+     largeur qui suit la photo, je n'ai borne NI la rangee NI le bloc : trois
+     tirages couches font plus large que l'ecran, la rangee imposait sa
+     largeur au bloc entier, et TOUT debordait a droite — grande photo coupee,
+     legende tronquee. Mots de Blandine : « tout est colle a droite ».
+     `maxWidth: 100%` et `minWidth: 0` confinent le bloc ; la rangee, elle,
+     est bornee plus bas. */
+  return h("div", { style: { position: "relative", width: "100%", maxWidth: "100%", minWidth: 0, height: "100%", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", padding: "8px " + MARGE_COMPO + "px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
     cadres,
     h(hsBoutonForme, {
       src: src(grande), base: 1, borne: [0.62, 1.9],
@@ -3928,7 +3951,14 @@ function CompositionStory(props) {
     story.legende
       ? h("div", { style: { textAlign: "center", animation: "hsDeplie 400ms ease both", animationDelay: "120ms" } },
         h("div", { style: { width: 120, height: 1, margin: "0 auto 7px", background: "linear-gradient(90deg, transparent, rgba(32,217,245,0.75), transparent)", boxShadow: "0 0 10px rgba(32,217,245,0.4)" } }),
-        h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45, maxHeight: 54, overflow: "hidden", padding: "0 8px" } }, story.legende))
+        /* 19aj (demande de Blandine) : « quand on fait un texte avec des
+           espaces des retours a la ligne etc on peut garder la disposition ».
+           Sans regle, le navigateur replie tous les blancs et le texte devient
+           un pave. `pre-wrap` garde les retours et les espaces ; `break-word`
+           evite qu'un mot tres long elargisse le bloc.
+           La hauteur passe de 54 a 96 px : avec des retours a la ligne, trois
+           lignes etaient atteintes tout de suite. */
+        h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45, maxHeight: 96, overflow: "hidden", padding: "0 8px", whiteSpace: "pre-wrap", overflowWrap: "break-word" } }, story.legende))
       : null,
     tirages.length
       /* 19t (14/08, demande de Blandine : « on aimerait pouvoir faire defiler
@@ -3944,8 +3974,14 @@ function CompositionStory(props) {
         onTouchMove: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
         onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
         style: {
+          /* 19aj : `width/maxWidth/minWidth` = la rangee ne peut plus dicter
+             sa largeur au bloc. Elle defile deja (19t), le contenu trop large
+             se rejoint donc du doigt au lieu de deborder de l'ecran.
+             `justifyContent: flex-start` des que ca deborderait : centrer un
+             contenu plus large que sa boite rend le debut inatteignable. */
           flex: "0 0 auto", display: "flex", gap: 8, alignItems: "flex-end",
-          justifyContent: tirages.length >= 4 ? "flex-start" : "center",
+          width: "100%", maxWidth: "100%", minWidth: 0,
+          justifyContent: tirages.length >= 3 ? "flex-start" : "center",
           overflowX: "auto", overflowY: "hidden", touchAction: "pan-x",
           WebkitOverflowScrolling: "touch", scrollbarWidth: "none",
           paddingBottom: 2
@@ -4567,7 +4603,11 @@ function VisionneuseStories(props) {
             return h("div", { style: { marginBottom: 10 } },
               h("div", {
                 style: Object.assign(
-                  { fontSize: 13.5, lineHeight: 1.55, fontFamily: M, color: "#DCE3E8", whiteSpace: "pre-line", wordBreak: "break-word" },
+                  /* 19aj : `pre-line` gardait les retours a la ligne mais
+                     repliait les espaces. `pre-wrap` garde les deux — c'est ce
+                     que Blandine a demande : « des espaces des retours a la
+                     ligne etc ». */
+                  { fontSize: 13.5, lineHeight: 1.55, fontFamily: M, color: "#DCE3E8", whiteSpace: "pre-wrap", wordBreak: "break-word" },
                   replie ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" } : {})
               },
                 morceaux.map(function (mo, i) {
