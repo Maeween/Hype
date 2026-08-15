@@ -13,21 +13,30 @@
      depuis la v22 (tous les appels au pont sont gardes, la langue de
      lecture est sa propre donnee) ; il ne lui manquait que l'emballage.
 
-     ⚠️ CE N'EST PAS ENCORE UNE APPLI HORS LIGNE. Il n'y a pas de service
-     worker a Linguae : sans reseau, l'icone ouvrira une page d'erreur.
-     Le hors-ligne demande le dossier `linguae/` — un service worker ne
-     peut mettre en cache que ce qui est dans SA portee, donc les cartes,
-     les fonds, les clips et les 21 lexiques doivent y descendre. A faire
-     apres la serie de cartes, comme decide.
+     🟥 HORS LIGNE : FAIT LE 15/08/2026, SANS DEMENAGEMENT. Le service
+     worker `sw-linguae.js` est enregistre plus bas avec scope "/lingo".
+     CE QUI ETAIT ECRIT ICI ETAIT FAUX et a bloque le chantier pour
+     rien : « un SW ne peut mettre en cache que ce qui est dans SA
+     portee ». NON — la portee decide quelles PAGES il controle, pas
+     quelles ressources il garde. Une page controlee qui demande
+     `/carte-labaule.webp` a la racine passe par le SW, meme si la
+     racine est hors portee. LES IMAGES RESTENT DONC A LA RACINE,
+     conformement a la regle des images du SUIVI. Le dossier `linguae/`
+     n'est PAS un prerequis du hors-ligne.
 
      ⚠️ MEME DOMAINE QUE HYPE, ET C'EST VOULU : meme origine = meme
      localStorage, donc la progression suit d'une icone a l'autre, et la
      session Supabase est deja la (pas de reconnexion). Deux domaines
      separeraient definitivement les deux avancements.
 
-     ⚠️ `scope` est volontairement absent : il vaudrait donc "/" et
-     recouvrirait celui de Hype. A poser sur "/linguae/" le jour du
-     deplacement, pas avant — un scope errone empeche l'installation.
+     🟥 `scope: "/lingo"` — IL NE FAUT PAS LE REMONTER A "/". Il ne
+     controle que lingo.html, lingo-dialogue.html, lingo-sellerie.html,
+     lingo-collection.html et lingo-globe.html : `index.html` (Hype) et
+     son propre sw.js ne sont jamais touches. Un script pose a la racine
+     peut toujours REDUIRE sa portee sans en-tete particulier — c'est
+     l'elargir qui exigerait `Service-Worker-Allowed`. Deux SW au meme
+     scope se marcheraient dessus, et Hype a deja trois versions de
+     sw.js en circulation.
      ================================================================== -->
 <link rel="manifest" href="linguae.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon-linguae.png">
@@ -2560,7 +2569,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      Le chapitre 10 (Les dialogues) n'est pas encore ecrit.
      ================================================================== -->
 <script src="hype-lingo-lex-ecurie.js?l=2"></script>
-<script src="hype-lingo-lex-pansage.js?l=2"></script>
+<script src="hype-lingo-lex-pansage.js?l=3"></script>
 <script src="hype-lingo-lex-cheval.js?l=4"></script>
 <script src="hype-lingo-lex-materiel.js?l=3"></script>
 <script src="hype-lingo-lex-cours.js?l=2"></script>
@@ -10979,6 +10988,37 @@ try{ appliquerLangue(); }catch(err){}
   });
   var cadre=document.getElementById("ouvCadre");
   if(cadre) cadre.style.cursor="pointer";
+})();
+</script>
+<script>
+/* ==================================================================
+   HORS LIGNE — 15/08/2026, session 211, ordre de Blandine :
+   « comment on peut rendre Linguae utilisable sans reseau, dans l'avion
+   par exemple » puis « gere juste le hors ligne ».
+
+   🟥 `scope: "/lingo"` OBLIGATOIRE. Sans lui le scope vaudrait "/" et
+   recouvrirait le service worker de Hype. Voir l'en-tete du fichier et
+   les commentaires de `sw-linguae.js`.
+
+   ⚠️ ENREGISTREMENT SILENCIEUX : un echec ne doit jamais empecher
+   Linguae de s'ouvrir. Safari en navigation privee, un iOS ancien ou un
+   `file://` n'ont pas de service worker — l'app doit tourner pareil,
+   simplement sans hors-ligne.
+
+   ⚠️ APRES `load` : enregistrer pendant le chargement ferait concourir
+   le telechargement du SW avec celui des images de la premiere ville.
+   ================================================================== */
+(function(){
+  if(!("serviceWorker" in navigator)) return;
+  window.addEventListener("load", function(){
+    try{
+      navigator.serviceWorker.register("sw-linguae.js", {scope:"/lingo"})
+        .catch(function(e){
+          /* trace en console seulement : aucun ecran, aucun blocage */
+          try{ console.log("Linguae hors-ligne indisponible :", e && e.message); }catch(e2){}
+        });
+    }catch(e){}
+  });
 })();
 </script>
 </body>
