@@ -42,8 +42,13 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ad";
+var HYPE_STORIES_VERSION = "19ae";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
+
+/* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
+   Ils restent au catalogue et ne sont proposés qu'aux cavaliers en français.
+   ⚠️ À COMPLÉTER à chaque nouveau décor comportant du texte. */
+var HS_DECORS_TEXTE_FR = ["modele-concours-2", "modele-concours-3", "modele-concours-4"];
 
 /* Durée de vie : 7 jours (décision de Blandine). */
 var HS_JOURS = 7;
@@ -1116,6 +1121,8 @@ var HS_TXT = {
   ajoutASaStory: { fr: "Ajouter \u00e0 ma story", en: "Add to my story", es: "A\u00f1adir a mi story", it: "Aggiungere alla mia story", ja: "\u30b9\u30c8\u30fc\u30ea\u30fc\u306b\u8ffd\u52a0", de: "Zu meiner Story hinzuf\u00fcgen" },
   dejaEnLigne: { fr: "En ligne", en: "Live", es: "En l\u00ednea", it: "Online", ja: "\u516c\u958b\u4e2d", de: "Online" },
   legendeReste: { fr: "Ta story en ligne garde sa l\u00e9gende \u2014 celle-ci ira sur la premi\u00e8re nouvelle photo.", en: "Your live story keeps its caption \u2014 this one goes on the first new photo.", es: "Tu story en l\u00ednea conserva su texto \u2014 este ir\u00e1 en la primera foto nueva.", it: "La tua story online conserva il testo \u2014 questo andr\u00e0 sulla prima nuova foto.", ja: "\u516c\u958b\u4e2d\u306e\u30b9\u30c8\u30fc\u30ea\u30fc\u306e\u672c\u6587\u306f\u6b8b\u308a\u307e\u3059\u3002", de: "Deine Online-Story beh\u00e4lt ihren Text \u2014 dieser kommt auf das erste neue Foto." },
+  /* 19ae — l'etat grise du bouton, quand la photo regardee est deja la premiere */
+  dejaPremiere: { fr: "Déjà en premier", en: "Already first", es: "Ya es la primera", it: "Già per prima", ja: "すでに最初", de: "Bereits zuerst" },
   mettreDevant: { fr: "Mettre celle-ci en premier", en: "Make this one first", es: "Poner esta primero", it: "Metti questa per prima", ja: "\u3053\u308c\u3092\u6700\u521d\u306b", de: "Diese zuerst zeigen" },
   photosChoisies: { fr: "photos choisies", en: "photos selected", es: "fotos elegidas", it: "foto scelte", ja: "\u679a\u9078\u629e\u4e2d", de: "Fotos ausgew\u00e4hlt" },
   envoiMulti: { fr: "Publication", en: "Publishing", es: "Publicando", it: "Pubblicazione", ja: "\u6295\u7a3f\u4e2d", de: "Ver\u00f6ffentlichung" },
@@ -2105,6 +2112,18 @@ function ComposeurStory(props) {
        plutot que de laisser la bande VIDE. */
     var listeTotale = hsModelesPourN(nCible);
     if (!listeTotale.length) listeTotale = hsTousModeles(nCible);
+    /* 19ae — LES DECORS A TEXTE FRANCAIS, reserves au francais.
+       Option B, validee par Blandine le 14/08 : « on peut virer les modeles
+       avec du texte francais » puis, apres discussion, on ne les RETIRE PAS —
+       ils n'apparaissent QU'EN FRANCAIS. Rien n'est jete.
+       ⚠️ Liste tenue a la main : un decor portant du texte en dur doit etre
+       ajoute ICI le jour ou il entre au catalogue, sinon un cavalier japonais
+       verra du francais dans sa story. */
+    try {
+      if (String(lg || "fr").slice(0, 2) !== "fr") {
+        listeTotale = listeTotale.filter(function (k) { return HS_DECORS_TEXTE_FR.indexOf(k) < 0; });
+      }
+    } catch (eTx) { }
     /* Puis le classement par ACCORD DES FORMES : a nombre de fenetres egal,
        le decor qui coupe le moins tes photos passe devant. Deux photos
        couchees font remonter les decors a fenetres couchees.
@@ -2557,10 +2576,21 @@ function ComposeurStory(props) {
                 style: { marginTop: 8, marginRight: 8, padding: "9px 14px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700, border: "1px solid " + tA(0.5), background: "transparent", color: tnL }
               }, "+ " + hsT("ajouterPhotos", lg))
               : null,
-            (fichiersOrdonnes.length > 1 && vueSure > 0)
+            /* 19ae — LE BOUTON EST DESORMAIS TOUJOURS LA des qu'il y a
+               plusieurs photos. Avant, la condition `vueSure > 0` le rendait
+               INVISIBLE tant que Blandine n'avait pas touche une autre photo
+               que la premiere : le seul moyen de decouvrir qu'on pouvait
+               choisir l'ordre etait d'avoir deja devine qu'il existait.
+               Son signalement du 14/08 : « je peux plus decider de laquelle
+               va en haut et en bas ».
+               Sur la premiere photo il est simplement DESACTIVE — visible,
+               grise, explicite : elle est deja en premier. */
+            (fichiersOrdonnes.length > 1)
               ? h("button", {
+                disabled: (vueSure <= 0),
                 onClick: function () {
                   try {
+                    if (vueSure <= 0) return;
                     var base = (ordre && ordre.length === fichiers.length) ? ordre.slice() : fichiers.map(function (_, k) { return k; });
                     var pris = base.splice(vueSure, 1)[0];
                     base.unshift(pris);
@@ -2568,8 +2598,16 @@ function ComposeurStory(props) {
                     setVue(0);
                   } catch (eR) { }
                 },
-                style: { marginTop: 8, padding: "9px 14px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700, border: "1px solid " + tA(0.6), background: "rgba(32,217,245,0.1)", color: tn }
-              }, "\u2b50 " + hsT("mettreDevant", lg))
+                style: {
+                  marginTop: 8, padding: "9px 14px", borderRadius: 999,
+                  cursor: (vueSure > 0) ? "pointer" : "default",
+                  fontFamily: M, fontSize: 11.5, fontWeight: 700,
+                  border: "1px solid " + ((vueSure > 0) ? tA(0.6) : "rgba(255,255,255,0.14)"),
+                  background: (vueSure > 0) ? "rgba(32,217,245,0.1)" : "transparent",
+                  color: (vueSure > 0) ? tn : "#6C757D",
+                  opacity: (vueSure > 0) ? 1 : 0.75
+                }
+              }, "\u2b50 " + ((vueSure > 0) ? hsT("mettreDevant", lg) : hsT("dejaPremiere", lg)))
               : null)
           : null,
 

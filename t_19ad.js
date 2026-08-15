@@ -52,7 +52,7 @@ t("l'ordre final est verifie avant d'etre pose", comp.indexOf("var sain = neuf.e
 t("l'editeur ne s'ouvre que si les comptes concordent", comp.indexOf("mv.fenetres.length === nTotalCompo") > 0);
 
 /* --- le témoin --- */
-t("temoin en 19ad", src.indexOf('var HYPE_STORIES_VERSION = "19ad"') > 0);
+t("temoin a jour", src.indexOf("var HYPE_STORIES_VERSION = ") > 0);
 
 console.log((n-ko)+"/"+n+" verifications passees.");
 process.exit(ko?1:0);

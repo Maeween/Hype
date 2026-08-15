@@ -7771,3 +7771,50 @@ En retirant le repli vers le plein format en 19ab, j'ai laissé le navigateur af
 Les quatre défauts de la nuit ont un point commun : **du calcul géométrique réécrit au lieu d'être réutilisé**. Le clip-path existait à deux endroits, la conversion bbox→écran à trois. En Dart cela deviendra une seule fonction, testée une fois. La leçon vaut avant la migration : chaque formule de géométrie doit vivre à **un seul endroit** du fichier.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ad** · modèles 28.
+
+---
+
+## Session 146 — 15/08/2026 · stories 19ae : l'ordre des photos, et les décors français
+
+Deux points de la liste ouverte, tous deux déjà tranchés par Blandine, jamais écrits.
+
+### Le bouton « Mettre celle-ci en premier »
+
+Son signalement du 14/08 : *« je peux plus décider de laquelle va en haut et en bas »*.
+
+Le bouton existait. Sa condition d'affichage était `fichiersOrdonnes.length > 1 && vueSure > 0` : il restait **invisible** tant qu'on n'avait pas touché une photo autre que la première. Autrement dit, le seul moyen de découvrir qu'on pouvait choisir l'ordre était d'avoir déjà deviné que la fonction existait.
+
+Il apparaît maintenant dès qu'il y a plusieurs photos. Sur la première, il est **désactivé plutôt qu'absent** : visible, grisé, et son libellé change en « Déjà en premier » (6 langues). Double verrou — l'attribut `disabled` et un retour anticipé dans le clic.
+
+### Les décors à texte français
+
+**Option B, validée par Blandine le 14/08.** Ses mots d'abord : *« on peut virer les modèles avec du texte français »* ; après discussion, on ne les retire pas — ils **n'apparaissent qu'en français**. Rien n'est jeté.
+
+Nouvelle constante `HS_DECORS_TEXTE_FR` : `modele-concours-2`, `-3`, `-4`. Le filtre s'applique dans `bandeModeles`, après le filtre par nombre et avant le classement par forme. Un code de langue long (`fr-FR`) est reconnu.
+
+⚠️ **Liste tenue à la main.** Tout décor portant du texte en dur doit y être ajouté le jour où il entre au catalogue, faute de quoi un cavalier japonais verra du français dans sa story.
+
+### 🖥️ À l'écran : + / −
+
+**+** Le bouton « Mettre celle-ci en premier » est visible dès deux photos, grisé et intitulé « Déjà en premier » sur la première.
+**−** `modele-concours-2`, `-3` et `-4` disparaissent de la bande pour tout cavalier qui n'est pas en français. En français, rien ne change.
+
+### Contrôles
+
+`node --check` passé. **`t_19ae.js` — 23 vérifications** : disparition de l'ancienne condition, présence des deux verrous, six langues sur `dejaPremiere`, permutation qui ne perd aucune photo y compris sur un ordre déjà modifié, filtre inactif en français et actif dans les cinq autres langues, reconnaissance de `fr-FR`, et vérification que **rien n'est retiré du catalogue**. `t_19ad.js` : 25/25 · `t_19ac.js` : 43/43 · `t_19ab.js` : 17/17.
+
+### 📋 Reste ouvert
+
+1. 🟥 Les **vignettes** `modele-5` à `modele-23` n'existent pas · `modele-24` à `28` reçus, **non poussés** — prochain blocage visuel, ne se règle pas dans le code
+2. Le **flou du décor** en plein écran — lot `-moyen.webp` à décider
+3. 🟥 **Photos de profil** — non diagnostiqué, symptôme à préciser
+4. **Notifications « Ta communauté »** — ⚠️ ne rien coder avant que Blandine ait redit sa correction, perdue avec la conversation
+5. **Carte communauté** — maquette à refaire avec le contenu réel ; `SPEC-CARTE-COMMUNAUTE.md` et les images des mascottes manquent
+6. **Non tranché** : photo couchée dans une fenêtre debout — couper pour remplir, ou afficher entière avec du vide autour
+7. Badge de messagerie à 45 s · boutons Partager en fin de page · webhook Stripe
+
+### Préparation Flutter
+
+`HS_DECORS_TEXTE_FR` est une **donnée**, pas une condition dispersée dans le rendu. C'est la forme qui se transpose : en Dart elle devient un champ du modèle de décor (`aDuTexte: true`), et le filtre disparaît au profit d'une requête. Même logique que `hsPertePhoto` — sortir la règle du composant.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ae** · modèles 28.
