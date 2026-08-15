@@ -7608,3 +7608,74 @@ Pas de rendu Playwright : le domaine refuse l'accès automatisé, seule Blandine
 La mesure de forme est posée dans une **fonction pure** (`hsPertePhoto`, `hsAccordModele`) qui ne connaît ni React, ni le DOM, ni le composeur : elle prend des nombres et rend un nombre. C'est exactement la frontière métier que la migration demande — ce bloc se transpose en Dart sans rien changer, et il est déjà couvert par ses propres vérifications. Le choix du **ref plutôt que de l'état** pour les mesures va dans le même sens : une donnée dérivée d'un fichier n'a pas à déclencher un rendu.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ab** · modèles 28.
+
+---
+
+## Session 144 — 15/08/2026 · stories 19ac : l'écran plein format
+
+### La demande
+
+Mot pour mot : *« normalement on était supposé pouvoir voir les fonds de story proposés en plein écran pour zoomer / dézoomer / déplacer les photos dans les cadres avant de pouvoir valider mais je vois rien de tout ça non plus »*.
+
+⚠️ **Ce n'était pas un défaut : rien n'avait jamais été écrit.** La règle posée en session 142 était « maquette avant tout code », et la maquette n'était jamais venue. Elle a été présentée cette nuit et validée — *« commence à le coder »*.
+
+Le curseur ayant été retiré en 19ab, cet écran n'était plus un confort : il était devenu **le seul moyen d'ajuster une photo dans son cadre**.
+
+### `EditeurDecorHype` — le composant
+
+Un tap sur un décor de la bande « Présentation » n'applique plus le décor directement : il **ouvre l'écran plein format**. Le décor y est à sa taille maximale, format conservé, les photos dedans. Deux boutons en bas : **Annuler** et **Utiliser ce décor**. Croix en haut à gauche, sous l'encoche.
+
+Les gestes, tels que validés :
+- tap sur une fenêtre → elle devient active (liseré turquoise)
+- glissé **dans** la fenêtre → déplace la photo à l'intérieur
+- pincement → grossit ou rétrécit la photo (1 à 4)
+- **appui long** sur une fenêtre puis tap sur une autre → **les deux photos s'échangent**
+
+L'échange passe par l'appui long parce que le glissé est déjà pris par le déplacement : c'était le seul geste qui ne se marche pas dessus.
+
+### ⚠️ La discipline du geste
+
+**Aucun état React pendant le mouvement.** C'est la leçon des sessions 141–142 et du crash de la session 92 : chaque `setState` sous le doigt refabrique l'arbre, et sur iOS l'onglet finit par fermer. Tout le geste vit dans un `useRef` et s'écrit **directement dans le style** des éléments. React n'est rappelé qu'au poser du doigt (le liseré) et à la validation.
+
+**Écouteurs tactiles natifs en `{ passive: false }`.** React les attache en mode passif, où `preventDefault` est **ignoré** — piège déjà payé en 19z. Sans cela, le pincement ferait zoomer la page et le glissé vers la droite ferait sortir de l'application. ⚠️ Ne jamais « simplifier » en repassant sur les gestionnaires React.
+
+**Le décor est chargé en `-mini.webp`, jamais en plein format**, même en plein écran. ⚠️ Conséquence assumée à signaler : la vignette fait 176 px de large, affichée ici autour de 390 px — **le décor sera légèrement flou**. Le remède serait un intermédiaire `-moyen.webp` d'environ 420 px (~1 Mo décodé). Charger le plein format serait revenir à la panne mémoire : c'est exclu.
+
+Le geste retour d'iOS ferme **l'éditeur seul**, pas le composeur en dessous : `__hsComposeurRetour` est sauvegardé puis restitué au démontage.
+
+### Ce qui part à la publication
+
+`hsRecadrerFichier` reçoit un **cinquième argument `zoom`** : grossir revient à prendre une zone source plus petite avant de la redessiner. Borné à 4, au-delà on redessinerait de la bouillie. `zoom = 1` : comportement d'avant, strictement inchangé.
+
+À la validation, l'éditeur écrit d'un coup le décor choisi, les cadrages (`cx`, `cy`, `z`) et — si Blandine a échangé deux photos — le nouvel `ordre`, qui est bien la liste que `publier()` parcourt. Une permutation d'identité ne touche à rien.
+
+⚠️ **L'état `editeur` est déclaré EN DERNIER** dans le composeur. Le harnais de tests adresse les états **par position** : l'insérer plus haut aurait décalé `cadrages`, `cadresFen` et les suivants, et cassé `t_19b.js` / `t_19c.js` **en silence**.
+
+### 🖥️ À l'écran : + / −
+
+**+** Un écran plein format s'ouvre au tap sur un décor de la bande « Présentation » : décor en grand, photos dedans, croix en haut à gauche, ligne d'aide, boutons **Annuler** / **Utiliser ce décor**.
+**−** Le tap sur un décor n'applique plus le décor immédiatement. Il faut désormais **valider** dans l'écran plein format. « Aucun décor » reste immédiat.
+**+** Un liseré turquoise plein marque la fenêtre active ; un liseré **tireté** marque la fenêtre désignée pour un échange.
+**−** Rien d'autre ne disparaît. La bande de décors du mode **une seule photo** n'est **pas** touchée : elle applique toujours directement.
+
+### Contrôles
+
+`node --check` : passé. **`t_19ac.js` — 43 vérifications, toutes passées** : écouteurs natifs présents et retirés au démontage, `passive: false` posé, aucun `setState` dans la fonction de mouvement, écriture par le style, décor jamais chargé en plein format, croix sous l'encoche, zoom borné, état `editeur` bien en dernier position, `hsRecadrerFichier` à cinq arguments, zone source divisée par le zoom, échange qui ne perd aucune photo et se compose correctement avec un ordre déjà posé, six langues sur les trois nouveaux libellés. `t_19ab.js` rejoué : 17/17.
+
+Pas de rendu Playwright : le domaine refuse l'accès automatisé, seule Blandine peut tester depuis Safari.
+
+### 📋 Reste ouvert sur les stories
+
+1. ⚠️ **Le flou du décor en plein écran** — décision à prendre : vivre avec, ou fabriquer un lot `-moyen.webp`
+2. **Décors à texte français** réservés au français (option B validée, non écrite)
+3. Le bouton **« Mettre celle-ci en premier »** n'apparaît que si `vueSure > 0`
+4. 🟥 **Les photos de profil « déconnent complètement »** — toujours **non diagnostiqué**
+5. Les **19 vignettes** `modele-5` à `modele-23` à fabriquer · `modele-24` à `28` et `modele-concours-2/3/4` reçus, **à pousser à la racine**
+6. ⚠️ **Non tranché** : photo couchée dans une fenêtre debout — la **couper** pour remplir, ou l'afficher **entière** avec du vide autour ? L'écran plein format rend la question moins urgente, il ne la referme pas
+7. L'écran plein format n'est pas branché sur la bande du mode **une seule photo** — à faire si Blandine le veut
+
+### Préparation Flutter
+
+`EditeurDecorHype` est écrit sur exactement la contrainte que Flutter impose : **aucune reconstruction pendant le geste**. Là où React tolère les mauvaises habitudes jusqu'à ce que la mémoire cède, Flutter reconstruit l'arbre à chaque `setState` sans discussion. Le composant se transposera presque tel quel en `GestureDetector` + `Transform`, et la séparation déjà faite — géométrie pure dans `hsPertePhoto` / `hsAccordModele`, geste dans le composant, découpe dans `hsRecadrerFichier` — est la frontière métier que la migration demandait.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ac** · modèles 28.

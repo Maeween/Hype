@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ab";
+var HYPE_STORIES_VERSION = "19ac";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* Durée de vie : 7 jours (décision de Blandine). */
@@ -378,7 +378,11 @@ function hsVignetteFichier(fichier, cote, infos) {
    `cx` = centre horizontal voulu, de 0 (bord gauche) a 1 (bord droit). */
 var HS_CADRE_RATIO = 9 / 16;
 var HS_CADRE_HMAX = 2000;
-function hsRecadrerFichier(fichier, cx, ratioVoulu, cy) {
+/* 19ac (15/08) — CINQUIEME ARGUMENT `zoom`. L'editeur plein ecran permet de
+   GROSSIR une photo dans sa fenetre : a la publication, grossir revient a
+   prendre une zone SOURCE plus petite avant de la redessiner a la meme
+   taille. `zoom` = 1 : comportement d'avant, inchange. */
+function hsRecadrerFichier(fichier, cx, ratioVoulu, cy, zoom) {
   return new Promise(function (resolve) {
     try {
       if (!fichier || typeof window === "undefined" || !window.URL) { resolve(fichier); return; }
@@ -402,9 +406,16 @@ function hsRecadrerFichier(fichier, cx, ratioVoulu, cy) {
           var centre = Math.max(0, Math.min(1, (typeof cx === "number" ? cx : 0.5)));
           var centreV = Math.max(0, Math.min(1, (typeof cy === "number" ? cy : 0.5)));
           var sw, sh, sx, sy;
-          if (L / H > R) { sh = H; sw = H * R; sy = 0; sx = Math.max(0, Math.min(L - sw, centre * L - sw / 2)); }
-          else if (L / H < R) { sw = L; sh = L / R; sx = 0; sy = Math.max(0, Math.min(H - sh, centreV * H - sh / 2)); }
-          else { terminer(fichier); return; }
+          if (L / H > R) { sh = H; sw = H * R; }
+          else if (L / H < R) { sw = L; sh = L / R; }
+          else { sw = L; sh = H; }
+          /* 19ac : le zoom retrecit la zone prise dans la photo d'origine.
+             Borne haute a 4 : au-dela on redessinerait de la bouillie. */
+          var z = (typeof zoom === "number" && zoom > 1) ? Math.min(4, zoom) : 1;
+          if (z > 1) { sw = sw / z; sh = sh / z; }
+          if (sw >= L && sh >= H && z === 1) { terminer(fichier); return; }
+          sx = Math.max(0, Math.min(L - sw, centre * L - sw / 2));
+          sy = Math.max(0, Math.min(H - sh, centreV * H - sh / 2));
           var hs = Math.min(sh, HS_CADRE_HMAX);
           var c = document.createElement("canvas");
           c.height = Math.round(hs);
@@ -1047,6 +1058,17 @@ var HS_TXT = {
   enAttente: { fr: "en attente", en: "pending", es: "pendiente", it: "in attesa", ja: "承認待ち", de: "ausstehend" },
   publier: { fr: "Publier", en: "Publish", es: "Publicar", it: "Pubblica", ja: "投稿する", de: "Ver\u00f6ffentlichen" },
   annuler: { fr: "Annuler", en: "Cancel", es: "Cancelar", it: "Annulla", ja: "キャンセル", de: "Abbrechen" },
+  /* 19ac — l'ecran plein format */
+  placerPhotos: { fr: "Place tes photos", en: "Place your photos", es: "Coloca tus fotos", it: "Sistema le tue foto", ja: "写真を配置", de: "Fotos platzieren" },
+  gestesDecor: {
+    fr: "Glisse pour déplacer, pince pour zoomer. Appui long sur une fenêtre, puis touche une autre : les deux photos s'échangent.",
+    en: "Drag to move, pinch to zoom. Press and hold one window, then tap another: the two photos swap.",
+    es: "Arrastra para mover, pellizca para ampliar. Mantén pulsada una ventana y toca otra: las dos fotos se intercambian.",
+    it: "Trascina per spostare, pizzica per ingrandire. Tieni premuta una finestra, poi toccane un'altra: le due foto si scambiano.",
+    ja: "ドラッグで移動、ピンチで拡大。枠を長押ししてから別の枠をタップすると、2枚の写真が入れ替わります。",
+    de: "Ziehen zum Verschieben, Pinch zum Zoomen. Ein Fenster lange drücken, dann ein anderes antippen: Die beiden Fotos tauschen den Platz."
+  },
+  utiliserDecor: { fr: "Utiliser ce décor", en: "Use this frame", es: "Usar este marco", it: "Usa questa cornice", ja: "この背景を使う", de: "Diesen Rahmen verwenden" },
   envoi: { fr: "Envoi\u2026", en: "Uploading\u2026", es: "Enviando\u2026", it: "Invio\u2026", ja: "送信中…", de: "Wird gesendet\u2026" },
   duree: { fr: "Visible 7 jours par tous les cavaliers.", en: "Visible for 7 days to all riders.", es: "Visible 7 d\u00edas para todos los jinetes.", it: "Visibile 7 giorni a tutti i cavalieri.", ja: "7日間、すべての騎手に表示されます。", de: "7 Tage f\u00fcr alle Reiter sichtbar." },
   presentation: { fr: "Pr\u00e9sentation", en: "Layout", es: "Presentaci\u00f3n", it: "Presentazione", ja: "\u30ec\u30a4\u30a2\u30a6\u30c8", de: "Anordnung" },
@@ -1330,6 +1352,337 @@ function BandeauStories(props) {
    5. LE COMPOSEUR — aperçu, légende, lieu, tags.
    La photo d'aperçu est posée NUE sur du noir.
 --------------------------------------------------------------------------- */
+/* ══════════════════════════════════════════════════════════════════════════
+   19ac (15/08, feu vert de Blandine) — L'ECRAN PLEIN FORMAT.
+   Sa demande, mot pour mot : « on etait suppose pouvoir voir les fonds de
+   story proposes en plein ecran pour zoomer / dezoomer / deplacer les photos
+   dans les cadres avant de pouvoir valider ». Ce n'etait pas un defaut : rien
+   n'avait jamais ete ecrit, la regle etant « maquette avant tout code ». La
+   maquette a ete validee cette nuit, la voici.
+
+   ⚠️ REGLE ABSOLUE DE CE COMPOSANT — AUCUN ETAT REACT PENDANT LE GESTE.
+   C'est la lecon des sessions 141-142 et du crash de la session 92 : chaque
+   `setState` sous le doigt refabrique l'arbre, et sur iOS l'onglet finit par
+   fermer. Ici tout le geste vit dans un `useRef` et s'ecrit DIRECTEMENT dans
+   le style des elements. React n'est rappele qu'a la validation.
+   ⚠️ Les ecouteurs tactiles sont NATIFS en `{ passive: false }` : React les
+   attache en mode passif, ou `preventDefault` est IGNORE (piege deja paye en
+   19z). Sans cela, le pincement fait zoomer la PAGE et le glisse vers la
+   droite fait sortir de l'application.
+
+   Les gestes :
+   · tap sur une fenetre        → elle devient active (liseré turquoise)
+   · glisse dans la fenetre     → deplace la photo A L'INTERIEUR
+   · pincement                  → grossit / retrecit la photo (1 a 4)
+   · appui long puis tap ailleurs → ECHANGE les deux photos
+   Le glisse est reserve au deplacement : l'echange passe donc par l'appui
+   long, seul geste qui ne se marche pas dessus. Decision de Blandine.
+   ══════════════════════════════════════════════════════════════════════════ */
+function EditeurDecorHype(props) {
+  var h = React.createElement;
+  var lg = props.langue || "fr";
+  var tn = "#20D9F5";
+  var M = "Montserrat, system-ui, -apple-system, sans-serif";
+  var C = "Cinzel, Georgia, serif";
+  var mod = props.modele || null;
+  var fenetres = (mod && mod.fenetres) ? mod.fenetres : [];
+  var vign = props.vignettes || [];
+
+  var boiteRef = React.useRef(null);
+  /* g.cadres[i] = { cx, cy, z } — la position de la photo dans la fenetre i.
+     g.ordre[i]  = quelle PHOTO occupe la fenetre i (permutation).
+     Tout vit ici, jamais dans un etat. */
+  var g = React.useRef(null);
+  if (!g.current) {
+    var dep = [], ord = [];
+    for (var i0 = 0; i0 < fenetres.length; i0++) {
+      var d0 = (props.cadres && props.cadres[String(i0)]) || {};
+      dep.push({
+        cx: (typeof d0.cx === "number") ? d0.cx : 0.5,
+        cy: (typeof d0.cy === "number") ? d0.cy : 0.5,
+        z: (typeof d0.z === "number" && d0.z >= 1) ? d0.z : 1
+      });
+      ord.push(i0);
+    }
+    g.current = { cadres: dep, ordre: ord, active: 0, source: -1, pinch: null, glisse: null, minuteur: null, bouge: false };
+  }
+  /* `active` et `source` sont doubles dans un etat MINIMAL : ils ne changent
+     qu'au POSER du doigt, jamais pendant le mouvement. Le liseré doit se
+     redessiner, la photo non. */
+  var acS = React.useState(0), active = acS[0], setActive = acS[1];
+  var srS = React.useState(-1), source = srS[0], setSource = srS[1];
+  var vsS = React.useState(0), version = vsS[0], setVersion = vsS[1];
+
+  /* La mise a l'echelle : le decor entier tient dans l'ecran, format garde. */
+  var dim = React.useMemo(function () {
+    try {
+      var TL = (mod && mod.taille && mod.taille[0]) || 941;
+      var TH = (mod && mod.taille && mod.taille[1]) || 1672;
+      var dispoL = (typeof window !== "undefined" ? window.innerWidth : 390);
+      var dispoH = (typeof window !== "undefined" ? window.innerHeight : 780) - 128;
+      var e = Math.min(dispoL / TL, dispoH / TH);
+      return { L: Math.round(TL * e), H: Math.round(TH * e), e: e, TL: TL, TH: TH };
+    } catch (e) { return { L: 320, H: 568, e: 0.34, TL: 941, TH: 1672 }; }
+  }, [mod]);
+
+  function elPhoto(i) {
+    try {
+      var b = boiteRef.current; if (!b) return null;
+      return b.querySelector('[data-fen="' + i + '"] img');
+    } catch (e) { return null; }
+  }
+  function tailleFenetre(i) {
+    var f = fenetres[i];
+    if (!f || !f.bbox) return { w: 1, h: 1 };
+    return { w: Math.max(1, f.bbox[2] * dim.e), h: Math.max(1, f.bbox[3] * dim.e) };
+  }
+  /* Le format "couvre" : la photo remplit la fenetre sans bande vide, a
+     l'echelle 1. Le zoom part de la. */
+  function baseCouvre(i) {
+    var im = elPhoto(i), t = tailleFenetre(i);
+    var r = 1;
+    try { if (im && im.naturalWidth && im.naturalHeight) r = im.naturalWidth / im.naturalHeight; } catch (e) { }
+    var rf = t.w / t.h;
+    if (r > rf) return { w: t.h * r, h: t.h };
+    return { w: t.w, h: t.w / r };
+  }
+  function poser(i) {
+    try {
+      var im = elPhoto(i); if (!im) return;
+      var c = g.current.cadres[i], t = tailleFenetre(i), b = baseCouvre(i);
+      var z = Math.max(1, Math.min(4, c.z || 1));
+      var lg2 = b.w * z, ht = b.h * z;
+      /* cx/cy = le point de la photo amene au centre de la fenetre. */
+      var dx = (0.5 - c.cx) * lg2;
+      var dy = (0.5 - c.cy) * ht;
+      var mx = Math.max(0, (lg2 - t.w) / 2), my = Math.max(0, (ht - t.h) / 2);
+      dx = Math.max(-mx, Math.min(mx, dx));
+      dy = Math.max(-my, Math.min(my, dy));
+      c.cx = 0.5 - dx / lg2; c.cy = 0.5 - dy / ht;
+      im.style.width = Math.round(lg2) + "px";
+      im.style.height = Math.round(ht) + "px";
+      im.style.transform = "translate(-50%,-50%) translate(" + Math.round(dx) + "px," + Math.round(dy) + "px)";
+    } catch (e) { }
+  }
+  function poserTout() { for (var i = 0; i < fenetres.length; i++) poser(i); }
+
+  React.useEffect(function () { poserTout(); }, [version, dim.L]);
+  React.useEffect(function () {
+    var t = setTimeout(poserTout, 60);     /* apres l'arrivee des images */
+    return function () { clearTimeout(t); };
+  }, []);
+
+  function ecart(a, b) { var x = a.clientX - b.clientX, y = a.clientY - b.clientY; return Math.sqrt(x * x + y * y); }
+  function fenetreDe(cible) {
+    try {
+      var n = cible;
+      while (n && n !== document.body) {
+        if (n.getAttribute && n.getAttribute("data-fen") !== null) return parseInt(n.getAttribute("data-fen"), 10);
+        n = n.parentNode;
+      }
+    } catch (e) { }
+    return -1;
+  }
+  function echanger(a, b) {
+    try {
+      var s = g.current;
+      var t = s.ordre[a]; s.ordre[a] = s.ordre[b]; s.ordre[b] = t;
+      var c = s.cadres[a]; s.cadres[a] = s.cadres[b]; s.cadres[b] = c;
+      s.source = -1; setSource(-1);
+      setVersion(function (v) { return v + 1; });
+    } catch (e) { }
+  }
+
+  React.useEffect(function () {
+    var b = boiteRef.current; if (!b || typeof window === "undefined") return;
+    var s = g.current;
+    function debut(ev) {
+      try {
+        var i = fenetreDe(ev.target); if (i < 0) return;
+        s.bouge = false;
+        if (ev.touches.length >= 2) {
+          s.glisse = null;
+          s.pinch = { i: i, d: ecart(ev.touches[0], ev.touches[1]), z0: s.cadres[i].z || 1 };
+          if (s.minuteur) { clearTimeout(s.minuteur); s.minuteur = null; }
+          return;
+        }
+        if (i !== s.active) { s.active = i; setActive(i); }
+        s.glisse = { i: i, x: ev.touches[0].clientX, y: ev.touches[0].clientY, cx: s.cadres[i].cx, cy: s.cadres[i].cy };
+        /* appui long = je designe cette fenetre pour un echange */
+        if (s.minuteur) clearTimeout(s.minuteur);
+        s.minuteur = setTimeout(function () {
+          if (s.bouge) return;
+          s.source = i; setSource(i);
+          try { if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(12); } catch (eV) { }
+        }, 500);
+      } catch (e) { }
+    }
+    function bouge(ev) {
+      try {
+        if (s.pinch && ev.touches.length >= 2) {
+          if (ev.cancelable) ev.preventDefault();
+          s.bouge = true;
+          var k = ecart(ev.touches[0], ev.touches[1]) / (s.pinch.d || 1);
+          s.cadres[s.pinch.i].z = Math.max(1, Math.min(4, (s.pinch.z0 || 1) * k));
+          poser(s.pinch.i);
+          return;
+        }
+        if (s.glisse && ev.touches.length === 1) {
+          if (ev.cancelable) ev.preventDefault();
+          var dx = ev.touches[0].clientX - s.glisse.x;
+          var dy = ev.touches[0].clientY - s.glisse.y;
+          if (Math.abs(dx) > 4 || Math.abs(dy) > 4) s.bouge = true;
+          var i = s.glisse.i, bse = baseCouvre(i), c = s.cadres[i];
+          var z = Math.max(1, Math.min(4, c.z || 1));
+          c.cx = s.glisse.cx - dx / (bse.w * z);
+          c.cy = s.glisse.cy - dy / (bse.h * z);
+          poser(i);
+        }
+      } catch (e) { }
+    }
+    function fin(ev) {
+      try {
+        if (s.minuteur) { clearTimeout(s.minuteur); s.minuteur = null; }
+        var etaitPinch = !!s.pinch;
+        s.pinch = null;
+        var gl = s.glisse; s.glisse = null;
+        /* un TAP franc (sans deplacement) sur une AUTRE fenetre alors qu'une
+           source est designee : on echange les deux photos. */
+        if (!s.bouge && !etaitPinch && gl && s.source >= 0 && s.source !== gl.i) { echanger(s.source, gl.i); return; }
+        if (!s.bouge && !etaitPinch && gl && s.source === gl.i) { s.source = -1; setSource(-1); }
+      } catch (e) { }
+    }
+    b.addEventListener("touchstart", debut, { passive: false });
+    b.addEventListener("touchmove", bouge, { passive: false });
+    b.addEventListener("touchend", fin, { passive: false });
+    b.addEventListener("touchcancel", fin, { passive: false });
+    return function () {
+      try {
+        b.removeEventListener("touchstart", debut);
+        b.removeEventListener("touchmove", bouge);
+        b.removeEventListener("touchend", fin);
+        b.removeEventListener("touchcancel", fin);
+      } catch (e) { }
+    };
+  }, [fenetres.length, version]);
+
+  /* ⚠️ Le geste retour d'iOS ferme l'editeur SEUL, pas l'application ni le
+     composeur en dessous. Meme rail que la visionneuse et le composeur. */
+  React.useEffect(function () {
+    if (typeof window === "undefined") return;
+    var anc = window.__hsComposeurRetour;
+    window.__hsComposeurRetour = function () {
+      try { if (props.onFermer) props.onFermer(); return true; } catch (e) { return false; }
+    };
+    return function () { try { window.__hsComposeurRetour = anc || null; } catch (e) { } };
+  }, []);
+
+  function valider() {
+    try {
+      var s = g.current, cad = {}, perm = [];
+      for (var i = 0; i < fenetres.length; i++) {
+        cad[String(i)] = { cx: s.cadres[i].cx, cy: s.cadres[i].cy, z: s.cadres[i].z };
+        perm.push(s.ordre[i]);
+      }
+      if (props.onValider) props.onValider(cad, perm);
+    } catch (e) { if (props.onValider) props.onValider({}, null); }
+  }
+
+  return h("div", {
+    style: {
+      position: "fixed", inset: 0, zIndex: 100000, background: "#060709",
+      display: "flex", flexDirection: "column", alignItems: "center",
+      paddingTop: "calc(env(safe-area-inset-top) + 8px)",
+      paddingBottom: "calc(env(safe-area-inset-bottom) + 10px)"
+    }
+  },
+    /* la croix, sous l'encoche */
+    h("button", {
+      "aria-label": hsT("annuler", lg),
+      onClick: function () { if (props.onFermer) props.onFermer(); },
+      style: {
+        position: "absolute", left: 14, top: "calc(env(safe-area-inset-top) + 10px)",
+        width: 40, height: 40, borderRadius: 999, zIndex: 3,
+        background: "rgba(17,20,23,0.82)", color: "#F4F7FA",
+        border: "1px solid rgba(255,255,255,0.18)", fontSize: 19, cursor: "pointer"
+      }
+    }, "\u2715"),
+    h("div", {
+      style: { fontFamily: C, fontSize: 14, letterSpacing: 2.4, color: "#F4F7FA", marginBottom: 8, textTransform: "uppercase" }
+    }, hsT("placerPhotos", lg)),
+
+    h("div", {
+      ref: boiteRef,
+      style: {
+        position: "relative", width: dim.L, height: dim.H, flex: "0 0 auto",
+        background: "#060709", touchAction: "none", overflow: "hidden", borderRadius: 6
+      }
+    },
+      fenetres.map(function (f, ix) {
+        var t = tailleFenetre(ix);
+        var iPhoto = g.current.ordre[ix];
+        var u = vign[iPhoto] || null;
+        var pc = "";
+        try {
+          if (f.contour && f.contour.length) {
+            pc = f.contour.map(function (p) {
+              return Math.round(p[0] * 100) + "% " + Math.round(p[1] * 100) + "%";
+            }).join(",");
+          }
+        } catch (eC) { }
+        return h("div", {
+          key: "f" + ix, "data-fen": String(ix),
+          style: {
+            position: "absolute",
+            left: Math.round(f.bbox[0] * dim.e), top: Math.round(f.bbox[1] * dim.e),
+            width: Math.round(t.w), height: Math.round(t.h),
+            overflow: "hidden", background: u ? "#060709" : "rgba(32,217,245,0.12)",
+            clipPath: pc ? ("polygon(" + pc + ")") : "none",
+            WebkitClipPath: pc ? ("polygon(" + pc + ")") : "none",
+            outline: (ix === source) ? ("3px dashed " + tn) : ((ix === active) ? ("2px solid " + tn) : "none"),
+            outlineOffset: -2
+          }
+        }, u ? h("img", {
+          src: u, alt: "", draggable: false,
+          onLoad: function () { poser(ix); },
+          style: {
+            position: "absolute", left: "50%", top: "50%",
+            transform: "translate(-50%,-50%)", maxWidth: "none", display: "block",
+            pointerEvents: "none", userSelect: "none"
+          }
+        }) : null);
+      }),
+      /* le decor par-dessus — vignette allegee, JAMAIS le plein format */
+      (props.reference)
+        ? h("img", {
+          src: props.reference + "-mini.webp", alt: "", decoding: "async",
+          style: { position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }
+        })
+        : null),
+
+    h("div", {
+      style: { fontFamily: M, fontSize: 10.5, color: "#8A929C", marginTop: 8, textAlign: "center", lineHeight: 1.5, padding: "0 18px" }
+    }, hsT("gestesDecor", lg)),
+
+    h("div", { style: { display: "flex", gap: 10, marginTop: "auto", paddingTop: 10 } },
+      h("button", {
+        onClick: function () { if (props.onFermer) props.onFermer(); },
+        style: {
+          padding: "12px 22px", borderRadius: 999, background: "rgba(17,20,23,0.9)",
+          color: "#C9D3D8", border: "1px solid rgba(255,255,255,0.18)",
+          fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer"
+        }
+      }, hsT("annuler", lg)),
+      h("button", {
+        onClick: valider,
+        style: {
+          padding: "12px 26px", borderRadius: 999, border: "none",
+          background: "linear-gradient(120deg,#20D9F5,#7FE9FA)", color: "#04252A",
+          fontFamily: M, fontSize: 13, fontWeight: 800, cursor: "pointer"
+        }
+      }, hsT("utiliserDecor", lg))));
+}
+
 function ComposeurStory(props) {
   var h = React.createElement;
   var lg = props.langue || "fr";
@@ -1700,6 +2053,12 @@ function ComposeurStory(props) {
      Ici : seuls quelques decors sont montes a la fois, la fenetre suit le
      defilement. Le catalogue reste entier, la memoire non. */
   var vfS = React.useState(6), voletFin = vfS[0], setVoletFin = vfS[1];
+  /* 19ac — DERNIER ETAT DU COMPOSEUR : quel decor est ouvert en plein format
+     (null = aucun). ⚠️ Declare EN DERNIER, apres tous les autres : le harnais
+     de tests adresse les etats du composeur PAR POSITION, l'inserer plus haut
+     decalerait `cadrages`, `cadresFen` et les suivants, et casserait
+     `t_19b.js` / `t_19c.js` EN SILENCE. */
+  var edS = React.useState(null), editeur = edS[0], setEditeur = edS[1];
   function bandeModeles(nCible, valeur, choisir, avecAucun) {
     /* 19ab (14/08, feu vert de Blandine : « on devrait seulement proposer les
        fonds correspondant au nombre de photos, sinon c'est surcharge »).
@@ -1895,7 +2254,10 @@ function ComposeurStory(props) {
             var rangFen = iF + ((props.origine && props.origine.n) ? props.origine.n : 0);
             var rr = ratioFenetre(refDeco, rangFen);
             var cf = cadresFen[String(rangFen)] || { cx: 0.5, cy: 0.5 };
-            if (rr > 0) fEnvoi = await hsRecadrerFichier(fEnvoi, cf.cx, rr, cf.cy);
+            /* 19ac : le zoom pose dans l'ecran plein format part avec la
+               photo. Sans lui, Blandine placait sa photo a l'ecran et
+               retrouvait le cadrage d'origine une fois publiee. */
+            if (rr > 0) fEnvoi = await hsRecadrerFichier(fEnvoi, cf.cx, rr, cf.cy, cf.z);
           } else {
             var cad = cadrageDe(iF);
             if (cad && cad.actif) fEnvoi = await hsRecadrerFichier(fEnvoi, cad.cx);
@@ -2184,7 +2546,18 @@ function ComposeurStory(props) {
                aucun choix a poser ici, seulement le decor. */
             (compoChoix && props.premium)
               ? h("div", { style: { marginTop: 10 } },
-                bandeModeles(nTotalCompo, (compoChoix === "hd" ? null : compoChoix), function (v) { setCompoChoix(v || "hd"); }))
+                bandeModeles(nTotalCompo, (compoChoix === "hd" ? null : compoChoix), function (v) {
+                  /* 19ac : un tap sur un decor n'applique plus le decor
+                     directement — il OUVRE L'ECRAN PLEIN FORMAT, ou Blandine
+                     place ses photos avant de valider. « Aucun decor » (v nul)
+                     et les decors sans fenetres exploitables restent immediats. */
+                  try {
+                    if (!v) { setCompoChoix("hd"); return; }
+                    var mv = hsModeles()[v];
+                    if (mv && mv.fenetres && mv.fenetres.length) { setEditeur(v); return; }
+                  } catch (eEd) { }
+                  setCompoChoix(v || "hd");
+                }))
               : null,
             (compoChoix && !props.premium)
               ? h("div", { style: { fontSize: 10.5, fontFamily: M, color: "#8A929C", marginTop: 8, letterSpacing: 0.3 } }, hsT("modelesPremium", lg))
@@ -2456,7 +2829,45 @@ function ComposeurStory(props) {
         /* 19b : le Publier du bas a REJOINT l'en-tete collant. Annuler reste
            ici, seul, la ou on abandonne — aucune fonction perdue. */
         h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
-          h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, hsT("annuler", lg))))),
+          h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, hsT("annuler", lg)))),
+
+      /* 19ac — L'ECRAN PLEIN FORMAT, par-dessus le composeur.
+         Il n'est monte QUE pendant qu'on place ses photos : ferme, il ne
+         coute rien. A la validation il ecrit d'un coup le decor choisi, les
+         cadrages et, si Blandine a echange deux photos, le nouvel ordre. */
+      (editeur && typeof EditeurDecorHype === "function")
+        ? h(EditeurDecorHype, {
+          reference: editeur,
+          modele: hsModeles()[editeur],
+          vignettes: hsVignettesRetenues(),
+          cadres: cadresFen,
+          langue: lg,
+          onFermer: function () { setEditeur(null); },
+          onValider: function (cad, perm) {
+            try {
+              setCadresFen(cad || {});
+              /* `perm[i]` = quelle photo occupe la fenetre i. On la reporte
+                 sur `ordre`, qui indexe `fichiers` — c'est CETTE liste que
+                 publier() parcourt. Une permutation d'identite ne touche a
+                 rien : on ne reecrit `ordre` que s'il a vraiment change. */
+              if (perm && perm.length === fichiersOrdonnes.length) {
+                var change = false;
+                for (var q = 0; q < perm.length; q++) { if (perm[q] !== q) { change = true; break; } }
+                if (change) {
+                  var socle = (ordre && ordre.length === fichiers.length)
+                    ? ordre.slice()
+                    : fichiers.map(function (x, q2) { return q2; });
+                  setOrdre(perm.map(function (q3) { return socle[q3]; }));
+                  setVue(0);
+                }
+              }
+              setCompoChoix(editeur);
+              setFenVue(0);
+            } catch (eV) { setCompoChoix(editeur); }
+            setEditeur(null);
+          }
+        })
+        : null),
     document.body);
 }
 
