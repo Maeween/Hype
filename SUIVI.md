@@ -7929,3 +7929,100 @@ Inchangé (vignettes des modèles, photos de profil, notifications — correctio
 `hsMeilleureAffectation` est une fonction pure de plus — nombres entrants, permutation sortante — directement transposable en Dart et déjà couverte.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ag** · modèles 28.
+
+---
+
+## Session 149 — 15/08/2026 · stories 19ah + encart Hey Baby des profils
+
+### 🟥 L'éjection de l'écran plein format — la VRAIE cause, enfin
+
+Vidéo de 09h04 : Blandine bouge sa première photo (geste vertical — rien), touche la seconde en glissant en horizontal — **« tout a planté »**, retour au profil.
+
+Ce n'était **ni un plantage, ni iOS** : c'est le **navigateur par swipe de Hype lui-même** (`onNavTouchEnd`, `index.html` ~21341). Au relâcher, un geste horizontal de plus de 65 px déclenche `retourEcran()` — l'écran change, le composeur se démonte sous les doigts. Il épargne les zones marquées `data-hscroll` ou `data-noswipe` ; l'éditeur de la 19ac ne portait **aucun des deux**. Le correctif 19af (preventDefault natif) bloquait le retour d'iOS, pas celui de Hype — les deux gestes se ressemblent, ils n'ont pas le même auteur.
+
+**19ah** : `data-noswipe: "1"` sur la racine de l'éditeur. Une ligne. Le preventDefault de la 19af **reste** : les deux protections ne couvrent pas la même chose.
+
+⚠️ **Règle gravée : tout nouvel écran tactile du module DOIT porter `data-noswipe`.** C'est la troisième fois que ce navigateur avale un geste du module (19m : la bande de décors ; 19af/19ah : l'éditeur). Le piège était documenté dans le fichier même, au commentaire de la 19m.
+
+### 🟥 L'encart « Conseils de Hey Baby » sur les profils visités
+
+Signalement de Blandine, capture du profil de Laëtitia à l'appui : *« le conseil de Hey Baby apparaît partout sur les profils, c'est la dernière question que j'ai posée »*.
+
+`chargerEpinglesHB` charge **toujours les épingles du compte connecté** — jamais celles de la personne visitée. Sur le profil d'une autre cavalière, l'encart affichait donc les conversations privées **du visiteur**, hors de tout contexte. Personne d'autre ne les voyait, mais l'encart mentait sur ce qu'il était.
+
+Corrigé dans `index.html` :
+- `EncartConseilsHB` reçoit `visite` : **en visite, aucune épingle n'est chargée** — la carte par défaut s'affiche. Les épingles restent sur ses propres pages.
+- La carte par défaut hors fiche cheval devient **l'invitation pédagogique demandée** : « Une question sur ton cheval ? Envie d'un regard équestre sur une photo ? — Pose ta question à Hey Baby, ton coach virtuel. » 5 langues. *(Formulation de Claude sur le canevas de Blandine — « ou qqch du genre » — à ajuster sur un mot.)*
+- La fiche cheval garde « Ton coach connaît ce cheval », inchangée.
+
+### 🖥️ À l'écran : + / −
+
+**−** Glisser en horizontal dans l'écran plein format ne renvoie plus au profil.
+**−** Tes questions Hey Baby n'apparaissent plus sur les profils des autres cavaliers.
+**+** Sur un profil visité (et sur le tien tant que rien n'est épinglé), l'encart affiche l'invitation pédagogique.
+
+### Contrôles
+
+`node --check` sur `hype-stories.js` : passé. `t_19ah.js` — 5 vérifications (marqueur sur la racine, preventDefault conservé). Batteries rejouées : 21 + 23 + 25 + 43 + 17. Pour `index.html` : présence unique du `visite: !!__estVisite`, textes 5 langues vérifiés.
+
+### 📋 Reste ouvert
+
+Inchangé, moins l'éjection. Toujours : vignettes des modèles à pousser, photos de profil non diagnostiquées, notifications (correction de Blandine à redire), carte communauté (spec + images à renvoyer), flou du décor plein écran.
+
+### Préparation Flutter
+
+Le navigateur par swipe global est exactement le genre de singleton implicite que la migration devra tuer : en Flutter, la navigation appartient au `Navigator` et un écran modal bloque naturellement les gestes du dessous. D'ici là, la règle `data-noswipe` est le contrat à respecter — elle est maintenant écrite aux deux endroits.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ah** · modèles 28.
+
+---
+
+## Session 151 — 15/08/2026 · stories **19ai** · l'éjection, et la forme des photos
+
+### 🟥 « Je me fais sortir » — la vraie cause, cette fois
+
+Deux fautes distinctes, toutes deux de Claude. La 19ah n'avait traité qu'un tiers du problème.
+
+**Faute 1 — le fond du composeur fermait la story depuis n'importe quel toucher.**
+Vidéo de 09h29 : Blandine touche **Annuler** dans l'écran plein format, et c'est **toute la story** qui disparaît — retour au profil, photos perdues, tout à refaire.
+
+Le composeur est bâti ainsi : un `div` plein écran (le fond sombre) dont le `onClick` ferme la feuille, et dedans la feuille, qui arrête le clic. L'écran plein format, lui, était monté **dans ce même fond** sans rien arrêter. Chaque toucher dans l'éditeur remontait donc jusqu'au fond et fermait le composeur : annuler, valider, déplacer une photo, choisir un décor — tous fermaient la story.
+
+Corrigé par la seule garde qui vaut pour la suite : `e.target === e.currentTarget`. **On ne ferme que si le doigt a touché le fond lui-même.** Posée sur le composeur et sur les deux autres feuilles du module.
+
+**Faute 2 — le navigateur par swipe de l'index passait encore partout.**
+Mots de Blandine : *« j'effleure du doigt une photo tout saute »*. La 19ah avait posé `data-noswipe` sur le **seul** écran plein format. Le composeur, ses feuilles, la visionneuse et le plein écran d'une composition ne le portaient pas. Un glissé horizontal de plus de 65 px n'importe où dedans déclenchait `retourEcran()` : l'écran change **sous** la feuille, elle se démonte, la story est perdue.
+
+`data-noswipe` est désormais posé sur **les six écrans fixes du module**. C'est la 4ᵉ fois que ce piège est payé — la règle est réécrite en tête de chaque bloc.
+
+### 🎯 Le mode H+D ignorait la forme des photos
+
+Mots de Blandine : *« je te mets deux photos horizontales tu me sors deux encarts verticaux, même statistiquement en étant aveugle t'as plus de chance de tomber juste »*. Elle avait raison, et ce n'était pas de la malchance.
+
+Le H+D — la disposition par défaut dès deux photos — avait sa géométrie **écrite en dur** : le tirage en `3 / 4` (aux **deux** endroits : la maquette du composeur et la story publiée), la grande à 58 % de hauteur, les photos étirées en `cover` dedans. Le H+D n'étant pas un `modele-*`, **rien** de la mécanique de forme construite hier ne l'atteignait : ni le classement de la 19ab, ni l'affectation de la 19ag, ni la photo entière sur son flou de la 19af. Deux photos couchées donnaient donc mécaniquement deux fenêtres debout.
+
+Deux composants nouveaux, `hsCadreForme` (maquette) et `hsBoutonForme` (story publiée, touchable) : chacun **mesure sa photo au rendu** (`naturalWidth/naturalHeight`) et donne au cadre le rapport de la photo. Aucune plomberie entre composeur et visionneuse — les deux appellent la même chose, donc **l'aperçu montre vraiment ce qui sera publié**.
+
+- La grande prend la forme de sa photo, bornée entre 0,62 et 1,9, hauteur plafonnée à 62 % — ce qui n'est plus pris en hauteur devient du **vide**, pas du rognage.
+- Les tirages : hauteur commune, largeur donnée par la photo. Un tirage couché est **large**, un tirage debout est **haut**.
+
+### 🖥️ À l'écran : + / −
+
+**−** Toucher Annuler, valider un décor ou déplacer une photo ne ferme plus la story.
+**−** Effleurer ou glisser en horizontal dans le composeur, ses feuilles ou la visionneuse ne renvoie plus au profil.
+**−** Plus aucun encart vertical imposé à une photo horizontale : la fenêtre suit la photo, dans la maquette comme dans la story publiée.
+**+** Du vide autour de la grande quand la photo est couchée (la composition est centrée en hauteur).
+
+### Contrôles
+
+`node --check` sur `hype-stories.js` : passé. Vérifiés à la main : 6 poses de `data-noswipe`, 3 gardes `target === currentTarget`, plus aucun `3 / 4` en dur dans le module, témoin `19ai` accordé entre `hype-stories.js` et le cache-buster de `index.html`.
+
+### 📋 Reste ouvert
+
+Inchangé. Toujours : vignettes des modèles à pousser, photos de profil non diagnostiquées, notifications (correction de Blandine à redire), carte Communauté (spec + images à renvoyer), accès Communauté (aucun verrou trouvé — que voit un cavalier non modérateur ?), flou du décor plein écran, allègement de `index.html`.
+
+### Préparation Flutter
+
+Les deux fautes de cette session ont la même racine : **des surfaces qui se ferment sur un événement remonté d'un enfant**. En Flutter, une modale est une route du `Navigator` et un `GestureDetector` d'écran ne voit pas les gestes de la route au-dessus — les deux pièges disparaissent par construction. À noter dans la frontière « Présentation » : une feuille ne doit jamais décider de sa fermeture à partir d'un événement dont elle n'est pas la cible.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19ai** · modèles 28.

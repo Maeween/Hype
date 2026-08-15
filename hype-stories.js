@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ah";
+var HYPE_STORIES_VERSION = "19ai";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -178,6 +178,92 @@ function hsTousModeles(n) {
       return a < b ? -1 : 1;
     });
   } catch (e) { return []; }
+}
+/* ---------------------------------------------------------------------------
+   19ai (15/08, mots de Blandine) — LA FENETRE PREND LA FORME DE LA PHOTO.
+   « je te mets deux photos horizontales tu me sors deux encarts verticaux ».
+   Elle avait raison et ce n'etait pas de la malchance : la disposition H+D
+   avait sa geometrie ECRITE EN DUR — le tirage en `3 / 4` (aux DEUX endroits,
+   l'apercu du composeur et la story publiee) et la grande a 58 % de hauteur,
+   les photos etirees en `cover` dedans. Le H+D n'est pas un `modele-*` : ni
+   le classement par forme de la 19ab, ni l'affectation de la 19ag, ni la
+   photo entiere sur son flou de la 19af ne l'atteignaient. Deux photos
+   couchees donnaient donc mecaniquement deux fenetres debout, a chaque fois.
+
+   `hsCadreForme` mesure la photo AU RENDU (`naturalWidth/naturalHeight`, ce
+   que le navigateur connait deja) et donne au cadre le rapport de la photo.
+   Aucun etat a faire circuler, aucune plomberie entre le composeur et la
+   visionneuse : les deux appellent la meme chose, donc l'apercu montre
+   VRAIMENT ce qui sera publie.
+   `base` = le rapport avant mesure (evite le sursaut au chargement).
+   `borne` = [min, max] facultatif, pour qu'une photo tres allongee ne mange
+   pas tout l'ecran.
+--------------------------------------------------------------------------- */
+function hsCadreForme(props) {
+  var h = React.createElement;
+  var rS = React.useState(null), r = rS[0], setR = rS[1];
+  var base = (typeof props.base === "number" && props.base > 0) ? props.base : 1;
+  var val = (typeof r === "number" && isFinite(r) && r > 0) ? r : base;
+  try {
+    if (props.borne && props.borne.length === 2) {
+      if (val < props.borne[0]) val = props.borne[0];
+      if (val > props.borne[1]) val = props.borne[1];
+    }
+  } catch (eB) { }
+  var st = Object.assign({}, props.style || {}, { aspectRatio: String(val) });
+  return h("div", { style: st },
+    props.src
+      ? h("img", {
+        src: props.src, alt: "", decoding: "async",
+        onLoad: function (ev) {
+          try {
+            var im = ev && ev.target;
+            if (!im || !im.naturalWidth || !im.naturalHeight) return;
+            var nr = im.naturalWidth / im.naturalHeight;
+            if (isFinite(nr) && nr > 0) setR(nr);
+          } catch (eL) { }
+        },
+        onError: function (ev) { try { if (ev && ev.target) ev.target.style.visibility = "hidden"; } catch (eE) { } },
+        style: { width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" }
+      })
+      : null);
+}
+/* 19ai — la meme chose, mais TOUCHABLE : c'est la version que la story
+   publiee utilise, puisque chaque photo d'une composition s'ouvre en plein
+   ecran d'un toucher. Les cinq gardes de la 19h sont conservees telles
+   quelles — sans elles, le toucher d'une photo FERME la story. */
+function hsBoutonForme(props) {
+  var h = React.createElement;
+  var rS = React.useState(null), r = rS[0], setR = rS[1];
+  var base = (typeof props.base === "number" && props.base > 0) ? props.base : 1;
+  var val = (typeof r === "number" && isFinite(r) && r > 0) ? r : base;
+  try {
+    if (props.borne && props.borne.length === 2) {
+      if (val < props.borne[0]) val = props.borne[0];
+      if (val > props.borne[1]) val = props.borne[1];
+    }
+  } catch (eB) { }
+  var st = Object.assign({ padding: 0, border: "none", background: "none", cursor: "pointer" }, props.style || {}, { aspectRatio: String(val) });
+  return h("button", {
+    onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); if (props.onOuvrir) props.onOuvrir(); },
+    onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+    onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+    onPointerDown: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+    onPointerUp: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+    style: st
+  },
+    h("img", {
+      src: props.src, alt: "", decoding: "async",
+      onLoad: function (ev) {
+        try {
+          var im = ev && ev.target;
+          if (!im || !im.naturalWidth || !im.naturalHeight) return;
+          var nr = im.naturalWidth / im.naturalHeight;
+          if (isFinite(nr) && nr > 0) setR(nr);
+        } catch (eL) { }
+      },
+      style: { width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" }
+    }));
 }
 function hsFenetresDe(ref) {
   try { var m = hsModeles()[ref]; return (m && m.fenetres) ? m.fenetres.length : 0; } catch (e) { return 0; }
@@ -2579,8 +2665,36 @@ function ComposeurStory(props) {
   var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
   return portail(
     h("div", {
-      onClick: function () { if (!busy && props.onFermer) props.onFermer(); },
+      /* ⚠️ 19ai (15/08) — LA CAUSE DE « JE ME FAIS SORTIR ». Trouvee sur la
+         video de 09h29 : Blandine touche « Annuler » dans l'ecran plein
+         format, et c'est TOUTE la story qui disparait — retour au profil,
+         photos perdues, tout a refaire.
+         Ce `div` est le FOND du composeur : son `onClick` ferme la feuille.
+         Or il n'est pas seulement le fond, il est aussi le PARENT de tout ce
+         qui est monte ici — la feuille (qui, elle, arrete le clic ligne 2617)
+         mais AUSSI l'ecran plein format (~3125), qui ne l'arretait pas. Le
+         moindre toucher dans l'editeur remontait donc jusqu'ici et fermait le
+         composeur. Annuler, valider, deplacer une photo, choisir un fond :
+         tous fermaient la story.
+         `e.target === e.currentTarget` = on ne ferme QUE si le doigt a touche
+         le fond lui-meme, jamais un enfant. C'est la protection qui vaut pour
+         tout ce qu'on montera ici a l'avenir, sans avoir a y penser.
+         ⚠️ NE JAMAIS revenir a un `onClick` nu sur un fond de feuille. */
+      onClick: function (e) {
+        try { if (e && e.target !== e.currentTarget) return; } catch (eF) { }
+        if (!busy && props.onFermer) props.onFermer();
+      },
       /* dessus:true = ouvert DEPUIS la visionneuse (9300) : il passe devant. */
+      /* ⚠️ 19ai — LE NAVIGATEUR PAR SWIPE DE L'INDEX PASSAIT ENCORE ICI.
+         La 19ah avait pose `data-noswipe` sur le SEUL ecran plein format ;
+         le composeur, ses feuilles et la visionneuse ne le portaient pas. Un
+         glisse horizontal de plus de 65 px n'importe ou dedans — effleurer
+         une photo, la deplacer, faire defiler une bande — declenchait
+         `retourEcran()` : l'ecran change SOUS la feuille, elle se demonte, la
+         story est perdue. Mots de Blandine : « j'effleure du doigt une photo
+         tout saute ».
+         ⚠️ REGLE : TOUT ecran fixe de ce module porte `data-noswipe`. */
+      "data-noswipe": "1",
       style: { position: "fixed", inset: 0, zIndex: (props.dessus ? 9450 : 9200), background: "rgba(4,6,9,0.86)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
     },
       h("div", {
@@ -2939,20 +3053,29 @@ function ComposeurStory(props) {
                       display: "flex", flexDirection: "column", gap: 5, padding: 6, boxSizing: "border-box"
                     }
                   },
-                    h("div", { style: { flex: "1 1 58%", minHeight: 0, borderRadius: 7, overflow: "hidden", background: "#111417", border: "1px solid rgba(255,255,255,0.1)" } },
-                      grandeU ? h("img", { src: grandeU, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null),
+                    /* 19ai : la grande prend la FORME de la photo. Bornee entre
+                       0,62 (une photo tres allongee en hauteur ne mange pas
+                       toute la maquette) et 1,9. */
+                    h(hsCadreForme, {
+                      src: grandeU, base: 1, borne: [0.62, 1.9],
+                      style: { flex: "0 0 auto", width: "100%", maxHeight: "60%", borderRadius: 7, overflow: "hidden", background: "#111417", border: "1px solid rgba(255,255,255,0.1)" }
+                    }),
                     h("div", { style: { height: 1, background: "linear-gradient(90deg, transparent, " + tA(0.75) + ", transparent)", flex: "0 0 auto" } }),
                     h("div", { style: { flex: "0 0 auto", display: "flex", gap: 4, justifyContent: "center", alignItems: "flex-end" } },
                       petites.map(function (u, ix) {
-                        return h("div", {
-                          key: "ap" + ix,
+                        /* 19ai : le tirage aussi. Hauteur commune, largeur
+                           donnee par la photo : un tirage couche est LARGE,
+                           un tirage debout est HAUT. Plus de `3 / 4` impose. */
+                        return h(hsCadreForme, {
+                          key: "ap" + ix, src: u, base: 0.75, borne: [0.55, 1.75],
                           style: {
-                            width: (petites.length >= 4 ? "21%" : petites.length === 3 ? "27%" : "34%"),
-                            aspectRatio: "3 / 4", borderRadius: 2, overflow: "hidden",
+                            flex: "0 0 auto",
+                            height: (petites.length >= 4 ? 30 : petites.length === 3 ? 36 : 44),
+                            borderRadius: 2, overflow: "hidden",
                             border: "1.5px solid #F4F7FA", background: "#111417",
                             transform: "rotate(" + (ix % 2 === 0 ? -2.2 : 2.4) + "deg)"
                           }
-                        }, h("img", { src: u, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+                        });
                       })));
                 })())
               : null,
@@ -3408,11 +3531,25 @@ function ChoixALaUne(props) {
   var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
   return portail(
     h("div", {
-      onClick: function () { if (!busy && props.onFermer) props.onFermer(); },
+      /* 19ai : meme garde que le composeur — on ne ferme que sur le fond. */
+      onClick: function (e) {
+        try { if (e && e.target !== e.currentTarget) return; } catch (eF) { }
+        if (!busy && props.onFermer) props.onFermer();
+      },
       /* 13/08 01h40 : même ceinture tactile que ModifierStory (voir là-bas). */
       onTouchStart: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
       onTouchMove: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
       onTouchEnd: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
+      /* ⚠️ 19ai — LE NAVIGATEUR PAR SWIPE DE L'INDEX PASSAIT ENCORE ICI.
+         La 19ah avait pose `data-noswipe` sur le SEUL ecran plein format ;
+         le composeur, ses feuilles et la visionneuse ne le portaient pas. Un
+         glisse horizontal de plus de 65 px n'importe ou dedans — effleurer
+         une photo, la deplacer, faire defiler une bande — declenchait
+         `retourEcran()` : l'ecran change SOUS la feuille, elle se demonte, la
+         story est perdue. Mots de Blandine : « j'effleure du doigt une photo
+         tout saute ».
+         ⚠️ REGLE : TOUT ecran fixe de ce module porte `data-noswipe`. */
+      "data-noswipe": "1",
       style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.9)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
     },
       h("div", {
@@ -3547,7 +3684,11 @@ function ModifierStory(props) {
   var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
   return portail(
     h("div", {
-      onClick: function () { if (!busy && props.onFermer) props.onFermer(); },
+      /* 19ai : meme garde que le composeur — on ne ferme que sur le fond. */
+      onClick: function (e) {
+        try { if (e && e.target !== e.currentTarget) return; } catch (eF) { }
+        if (!busy && props.onFermer) props.onFermer();
+      },
       /* 13/08 01h40 : couper la REMONTÉE TACTILE. Sans ça, les touches sur
          cette feuille atteignaient le glissé de fermeture de la visionneuse
          (React fait remonter les événements par l'arbre des composants, même
@@ -3555,6 +3696,16 @@ function ModifierStory(props) {
       onTouchStart: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
       onTouchMove: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
       onTouchEnd: function (e) { if (e && e.stopPropagation) e.stopPropagation(); },
+      /* ⚠️ 19ai — LE NAVIGATEUR PAR SWIPE DE L'INDEX PASSAIT ENCORE ICI.
+         La 19ah avait pose `data-noswipe` sur le SEUL ecran plein format ;
+         le composeur, ses feuilles et la visionneuse ne le portaient pas. Un
+         glisse horizontal de plus de 65 px n'importe ou dedans — effleurer
+         une photo, la deplacer, faire defiler une bande — declenchait
+         `retourEcran()` : l'ecran change SOUS la feuille, elle se demonte, la
+         story est perdue. Mots de Blandine : « j'effleure du doigt une photo
+         tout saute ».
+         ⚠️ REGLE : TOUT ecran fixe de ce module porte `data-noswipe`. */
+      "data-noswipe": "1",
       style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.9)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
     },
       h("div", {
@@ -3703,6 +3854,16 @@ function CompositionStory(props) {
     ? h("div", {
       onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); fermerPlein(); },
       onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+      /* ⚠️ 19ai — LE NAVIGATEUR PAR SWIPE DE L'INDEX PASSAIT ENCORE ICI.
+         La 19ah avait pose `data-noswipe` sur le SEUL ecran plein format ;
+         le composeur, ses feuilles et la visionneuse ne le portaient pas. Un
+         glisse horizontal de plus de 65 px n'importe ou dedans — effleurer
+         une photo, la deplacer, faire defiler une bande — declenchait
+         `retourEcran()` : l'ecran change SOUS la feuille, elle se demonte, la
+         story est perdue. Mots de Blandine : « j'effleure du doigt une photo
+         tout saute ».
+         ⚠️ REGLE : TOUT ecran fixe de ce module porte `data-noswipe`. */
+      "data-noswipe": "1",
       style: { position: "fixed", inset: 0, zIndex: 9420, background: "rgba(4,6,9,0.96)", display: "flex", alignItems: "center", justifyContent: "center" }
     },
       (typeof PhotoZoomHype === "function") ? h(PhotoZoomHype, { src: plein }) : h("img", { src: plein, alt: "", style: { maxWidth: "100%", maxHeight: "100%", objectFit: "contain" } }),
@@ -3749,11 +3910,21 @@ function CompositionStory(props) {
         h("img", { src: story.disposition + ".webp", alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" } })),
       surcouche);
   }
-  /* H+D : la grande, le texte suspendu sous le fil de lumiere, la table. */
+  /* H+D : la grande, le texte suspendu sous le fil de lumiere, la table.
+     ⚠️ 19ai — LA GEOMETRIE N'EST PLUS ECRITE A L'AVANCE. Elle etait fixe et
+     verticale (grande a 58 % de hauteur, tirages en `3 / 4`), donc deux
+     photos couchees ressortaient dans deux fenetres debout, rognees. Chaque
+     cadre prend desormais le rapport de SA photo (`hsBoutonForme`). Le
+     `justifyContent: center` remplace l'etirement : ce qui n'est plus pris en
+     hauteur devient du vide, pas du rognage. */
   var grande = membres[0]; var tirages = membres.slice(1);
-  return h("div", { style: { position: "relative", width: "100%", height: "100%", display: "flex", flexDirection: "column", padding: "8px " + MARGE_COMPO + "px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
+  return h("div", { style: { position: "relative", width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "8px " + MARGE_COMPO + "px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
     cadres,
-    photoTouchable(grande, 0, { flex: "1 1 58%", minHeight: 0, borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)" }),
+    h(hsBoutonForme, {
+      src: src(grande), base: 1, borne: [0.62, 1.9],
+      onOuvrir: function () { ouvrirPlein(src(grande)); },
+      style: { flex: "0 0 auto", width: "100%", maxHeight: "62%", borderRadius: 18, overflow: "hidden", border: "1px solid rgba(255,255,255,0.1)", animation: "hsDeplie 400ms ease both" }
+    }),
     story.legende
       ? h("div", { style: { textAlign: "center", animation: "hsDeplie 400ms ease both", animationDelay: "120ms" } },
         h("div", { style: { width: 120, height: 1, margin: "0 auto 7px", background: "linear-gradient(90deg, transparent, rgba(32,217,245,0.75), transparent)", boxShadow: "0 0 10px rgba(32,217,245,0.4)" } }),
@@ -3781,12 +3952,20 @@ function CompositionStory(props) {
         }
       },
         tirages.map(function (st, ix) {
-          return photoTouchable(st, ix + 1, {
-            flex: "0 0 auto",
-            width: (tirages.length >= 4 ? "21%" : tirages.length === 3 ? "27%" : "34%"),
-            aspectRatio: "3 / 4", borderRadius: 6, overflow: "hidden",
-            border: "3px solid #F4F7FA", boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
-            transform: "rotate(" + (ix % 2 === 0 ? -2.2 : 2.4) + "deg)"
+          /* 19ai : hauteur commune, largeur donnee par la photo. Un tirage
+             couche est LARGE, un tirage debout est HAUT — plus de format
+             impose qui coupe la moitie de l'obstacle. */
+          return h(hsBoutonForme, {
+            key: "tg" + ix, src: src(st), base: 0.75, borne: [0.55, 1.75],
+            onOuvrir: function () { ouvrirPlein(src(st)); },
+            style: {
+              flex: "0 0 auto",
+              height: (tirages.length >= 4 ? 96 : tirages.length === 3 ? 116 : 142),
+              borderRadius: 6, overflow: "hidden",
+              border: "3px solid #F4F7FA", boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
+              transform: "rotate(" + (ix % 2 === 0 ? -2.2 : 2.4) + "deg)",
+              animation: "hsDeplie 400ms ease both", animationDelay: ((ix + 1) * 120) + "ms"
+            }
           });
         }))
       : null,
@@ -4199,6 +4378,16 @@ function VisionneuseStories(props) {
     h("div", {
       ref: boiteRef,
       onTouchStart: toucheDebut, onTouchMove: toucheBouge, onTouchEnd: toucheFin, onTouchCancel: toucheFin,
+      /* ⚠️ 19ai — LE NAVIGATEUR PAR SWIPE DE L'INDEX PASSAIT ENCORE ICI.
+         La 19ah avait pose `data-noswipe` sur le SEUL ecran plein format ;
+         le composeur, ses feuilles et la visionneuse ne le portaient pas. Un
+         glisse horizontal de plus de 65 px n'importe ou dedans — effleurer
+         une photo, la deplacer, faire defiler une bande — declenchait
+         `retourEcran()` : l'ecran change SOUS la feuille, elle se demonte, la
+         story est perdue. Mots de Blandine : « j'effleure du doigt une photo
+         tout saute ».
+         ⚠️ REGLE : TOUT ecran fixe de ce module porte `data-noswipe`. */
+      "data-noswipe": "1",
       style: { position: "fixed", inset: 0, zIndex: 9300, background: "#060709", display: "flex", flexDirection: "column", transition: "transform 160ms ease-out" }
     },
       h("div", { style: { display: "flex", gap: 4, padding: "calc(env(safe-area-inset-top) + 12px) 14px 0" } },

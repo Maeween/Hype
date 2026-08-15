@@ -640,5 +640,248 @@ window.HYPE_LINGO_LEX.cheval = {
       it:"Nodello caldo: chiama il maniscalco.",
       de:"Die Fessel ist warm — ruf den Schmied.",
       ja:"球節 が 熱い です。 装蹄師 を 呼ん で。" }
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DU CONNEMARA — 15 août 2026, session 211.
+
+     🟥 CLÉ INERTE au moment où elle est posée : le moteur
+     (lingo-dialogue.html) la lira, mais rien d'autre. Poser la clé ne
+     change RIEN à l'écran du chapitre.
+
+     LA SCÈNE : on te présente le cheval que tu vas monter, et tu
+     apprends à le lire. 22 phrases, 7 temps, 8 entendues.
+
+     🟥 LE CRITÈRE DE BLANDINE, 15/08, celui qui a taillé cette liste :
+     « c'est juste que dans les phrases à prononcer pour pouvoir se
+     débrouiller sur place, en dehors d'un achat de cheval j'ai jamais
+     eu à poser une telle question ». Une phrase n'existe QUE si on la
+     dit vraiment sur place. Un mot du lexique n'a PAS besoin d'une
+     phrase : il s'apprend en lisant.
+
+     PARTIS AILLEURS, sur sa décision :
+     · `passeport` et `puce` → VÉRONE (le commerce). On ne demande pas
+       le passeport d'un cheval de club — seulement quand on l'achète.
+     · `fer` perdu et `marechal` → LAMBOURN (le pansage).
+     · boulet chaud → KILDARE (les urgences). C'est une alerte.
+     · `poulain` + foal/colt/filly → GOLEGÃ (l'élevage) : « on devrait
+       peut-être voir ça plutôt en élevage ». Le chapitre garde les
+       mots, la scène du poulain se jouera là où il naît.
+
+     🟥 LA PHRASE 5-6, DÉCISION DE BLANDINE (choix C proposé, validé
+     « C ») : la question dit « un entier », la réponse du club explique
+     qu'un entier qui fait la saillie s'appelle un étalon. ENTIER n'est
+     PAS au lexique (qui porte `etalon`) — et c'est voulu : la nuance
+     s'enseigne dans la réponse, sans ajouter une entrée à traduire en
+     six langues. ⚠️ En anglais : « entire » pour le non castré,
+     « stallion » réservé au reproducteur. NE PAS uniformiser.
+
+     ⚠️ LES HANDS (temps 4) sont le vrai piège du chapitre, déjà signalé
+     en tête de fichier. On l'apprend en l'ENTENDANT puis en demandant
+     la conversion — « fourteen two », sans le mot « hands », comme le
+     disent les Irlandais.
+
+     ⚠️ « race » → « breed » en anglais, JAMAIS « race » (= la course).
+     Piège déjà porté par le fichier.
+
+     ⚠️ FRANÇAIS SEUL. Ni anglais ni es/it/de/ja : ils seront proposés à
+     Blandine pour relecture, l'anglais d'abord, comme pour Le Morne.
+     Règle : mieux vaut une absence qu'une erreur.
+
+     `dit` : "joueuse" = elle produit · "club" = elle entend et comprend.
+  ================================================================== */
+  dialogue: {
+    ville: "connemara", lecon: 4, temps: 7, langues: ["fr","en","es","it","de","ja"],   /* 22 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · on me présente le cheval ---- */
+      { ref:"d-voici-cheval", temps:1, dit:"club", mots:[],
+        fr:"Voici ton cheval pour aujourd'hui.",
+        en:"This is your horse for today.",
+        es:"Este es tu caballo para hoy.",
+        it:"Ecco il tuo cavallo per oggi.",
+        de:"Das ist dein Pferd für heute.",
+        ja:"これ が 今日 の あなた の 馬 です。" },
+
+      { ref:"d-son-nom", temps:1, dit:"joueuse", mots:[],
+        fr:"Comment s'appelle-t-il ?",
+        en:"What's his name?",
+        es:"¿Cómo se llama?",
+        it:"Come si chiama?",
+        de:"Wie heißt er?",
+        ja:"名前 は 何 です か ?" },
+
+      { ref:"d-poney-cheval", temps:1, dit:"joueuse", mots:["poney"],
+        fr:"C'est un poney ou un cheval ?",
+        en:"Is he a pony or a horse?",
+        es:"¿Es un poni o un caballo?",
+        it:"È un pony o un cavallo?",
+        de:"Ist er ein Pony oder ein Pferd?",
+        ja:"ポニー です か、 馬 です か ?" },
+
+      { ref:"d-quel-age", temps:1, dit:"joueuse", mots:["age"],
+        fr:"Quel âge a-t-il ?",
+        en:"How old is he?",
+        es:"¿Cuántos años tiene?",
+        it:"Quanti anni ha?",
+        de:"Wie alt ist er?",
+        ja:"何歳 です か ?" },
+
+      /* 🟥 Choix C de Blandine : la question pose les trois mots, la
+         réponse enseigne la nuance entier / étalon. */
+      { ref:"d-hongre-jument-entier", temps:1, dit:"joueuse", mots:["hongre","jument"],
+        fr:"C'est un hongre, une jument ou un entier ?",
+        en:"Is he a gelding, a mare or entire?",
+        es:"¿Es un caballo castrado, una yegua o un entero?",
+        it:"È un castrone, una cavalla o un intero?",
+        de:"Ist es ein Wallach, eine Stute oder ein Hengst?",
+        ja:"せん馬 です か、 牝馬 です か、 それとも 去勢 し て い ない 牡馬 です か ?" },
+
+      { ref:"d-r-hongre", temps:1, dit:"club", mots:["hongre","etalon"],
+        fr:"C'est un hongre : un mâle castré. Un entier qui fait la saillie, on l'appelle un étalon.",
+        en:"He's a gelding — a castrated male. An entire horse used for breeding is called a stallion.",
+        es:"Es un caballo castrado. Un entero que cubre se llama semental.",
+        it:"È un castrone: un maschio castrato. Un intero che monta si chiama stallone.",
+        de:"Es ist ein Wallach, ein kastrierter Hengst. Ein unkastrierter Hengst in der Zucht heißt Deckhengst.",
+        ja:"せん馬 です。 去勢 し た 牡馬 の こと。 繁殖 に 使う 牡馬 は 種牡馬 と 呼び ます。" },
+
+      /* ---- temps 2 · sa robe ---- */
+      { ref:"d-quelle-robe", temps:2, dit:"joueuse", mots:["robe"],
+        fr:"De quelle robe est-il ?",
+        en:"What colour is he?",
+        es:"¿De qué capa es?",
+        it:"Di che mantello è?",
+        de:"Welche Fellfarbe hat er?",
+        ja:"毛色 は 何 です か ?" },
+
+      { ref:"d-r-gris", temps:2, dit:"club", mots:["gris"],
+        fr:"C'est un gris : il est né foncé et il blanchit avec l'âge.",
+        en:"He's a grey — born dark, he whitens with age.",
+        es:"Es un tordo: nace oscuro y se aclara con la edad.",
+        it:"È un grigio: nasce scuro e sbianca con l'età.",
+        de:"Er ist ein Schimmel: dunkel geboren, wird er mit den Jahren weiß.",
+        ja:"芦毛 です。 生まれ た とき は 暗く て、 年 と ともに 白く なり ます。" },
+
+      { ref:"d-bai-criniere", temps:2, dit:"joueuse", mots:["bai"],
+        fr:"Le bai, c'est celui qui a la crinière noire ?",
+        en:"A bay is the one with a black mane, isn't it?",
+        es:"El castaño es el que tiene las crines negras, ¿verdad?",
+        it:"Il baio è quello con la criniera nera, vero?",
+        de:"Der Brauner ist der mit der schwarzen Mähne, oder?",
+        ja:"鹿毛 は たてがみ が 黒い 馬 です よ ね ?" },
+
+      /* ---- temps 3 · ses marques ---- */
+      { ref:"d-liste-etoile", temps:3, dit:"joueuse", mots:["liste","etoile"],
+        fr:"Est-ce qu'il a une liste ou une étoile ?",
+        en:"Has he got a blaze or a star?",
+        es:"¿Tiene lista o lucero?",
+        it:"Ha una lista o una stella?",
+        de:"Hat er eine Blesse oder einen Stern?",
+        ja:"流星 が あり ます か、 星 が あり ます か ?" },
+
+      { ref:"d-r-balzane", temps:3, dit:"club", mots:["balzane"],
+        fr:"Il a une balzane au postérieur gauche.",
+        en:"He's got a sock on his near hind leg.",
+        es:"Tiene un calzado en la pata trasera izquierda.",
+        it:"Ha un balzano al posteriore sinistro.",
+        de:"Er hat ein weißes Beinabzeichen hinten links.",
+        ja:"左 の 後肢 に 白斑 が あり ます。" },
+
+      /* ---- temps 4 · sa taille, et les hands ---- */
+      { ref:"d-combien-garrot", temps:4, dit:"joueuse", mots:["taille","garrot"],
+        fr:"Il fait combien au garrot ?",
+        en:"How tall is he?",
+        es:"¿Cuánta alzada tiene?",
+        it:"Quanto è alto al garrese?",
+        de:"Welches Stockmaß hat er?",
+        ja:"体高 は どのくらい です か ?" },
+
+      { ref:"d-r-quatorze-deux", temps:4, dit:"club", mots:["taille"],
+        fr:"Il fait quatorze mains deux.",
+        en:"He's fourteen two.",
+        es:"Mide catorce dos en manos.",
+        it:"È quattordici e due in mani.",
+        de:"Er hat vierzehn zwei in Hands.",
+        ja:"十四 ハンド 二 です。" },
+
+      { ref:"d-en-centimetres", temps:4, dit:"joueuse", mots:["taille"],
+        fr:"Ça fait combien en centimètres ?",
+        en:"How much is that in centimetres?",
+        es:"¿Cuánto es eso en centímetros?",
+        it:"Quanto fa in centimetri?",
+        de:"Wie viel ist das in Zentimetern?",
+        ja:"それ は 何 センチ です か ?" },
+
+      /* ---- temps 5 · son caractère ---- */
+      { ref:"d-calme-ou-chaud", temps:5, dit:"joueuse", mots:["calme","chaud","caractere"],
+        fr:"Est-ce qu'il est calme ou est-ce qu'il est chaud ?",
+        en:"Is he quiet, or is he hot?",
+        es:"¿Es tranquilo o es nervioso?",
+        it:"È tranquillo o è caldo?",
+        de:"Ist er brav oder ist er heiß?",
+        ja:"おとなしい です か、 気性 が 強い です か ?" },
+
+      { ref:"d-r-cheval-ecole", temps:5, dit:"club", mots:["cheval-ecole"],
+        fr:"C'est un cheval d'école, il est très sage.",
+        en:"He's a school horse — a real schoolmaster.",
+        es:"Es un caballo de escuela, muy formal.",
+        it:"È un cavallo da scuola, molto tranquillo.",
+        de:"Es ist ein Schulpferd, sehr brav.",
+        ja:"練習馬 です。 とても おとなしい です。" },
+
+      { ref:"d-habitude-debutants", temps:5, dit:"joueuse", mots:[], motsAilleurs:["debutant"],
+        fr:"Est-ce qu'il a l'habitude des débutants ?",
+        en:"Is he used to beginners?",
+        es:"¿Está acostumbrado a los principiantes?",
+        it:"È abituato ai principianti?",
+        de:"Ist er an Anfänger gewöhnt?",
+        ja:"初心者 に 慣れ て い ます か ?" },
+
+      { ref:"d-peur-de-quelque-chose", temps:5, dit:"joueuse", mots:["caractere"],
+        fr:"Est-ce qu'il a peur de quelque chose ?",
+        en:"Is there anything he's afraid of?",
+        es:"¿Hay algo que le dé miedo?",
+        it:"C'è qualcosa di cui ha paura?",
+        de:"Gibt es etwas, wovor er Angst hat?",
+        ja:"何か 怖がる もの は あり ます か ?" },
+
+      /* ---- temps 6 · sa race ---- */
+      { ref:"d-quelle-race", temps:6, dit:"joueuse", mots:["race"],
+        fr:"Quelle est sa race ?",
+        en:"What breed is he?",
+        es:"¿De qué raza es?",
+        it:"Di che razza è?",
+        de:"Welche Rasse ist er?",
+        ja:"品種 は 何 です か ?" },
+
+      { ref:"d-r-connemara", temps:6, dit:"club", mots:["race","connemara"],
+        fr:"C'est un connemara, la seule race de poney native d'Irlande.",
+        en:"He's a Connemara pony, the only native pony breed in Ireland.",
+        es:"Es un poni Connemara, la única raza de poni autóctona de Irlanda.",
+        it:"È un pony Connemara, l'unica razza di pony autoctona d'Irlanda.",
+        de:"Er ist ein Connemara-Pony, die einzige einheimische Ponyrasse Irlands.",
+        ja:"コネマラポニー です。 アイルランド 唯一 の 在来 ポニー 品種 です。" },
+
+      { ref:"d-pur-sang", temps:6, dit:"joueuse", mots:["pur-sang"],
+        fr:"Est-ce que c'est un pur-sang ?",
+        en:"Is he a Thoroughbred?",
+        es:"¿Es un pura sangre inglés?",
+        it:"È un purosangue inglese?",
+        de:"Ist er ein Englisches Vollblut?",
+        ja:"サラブレッド です か ?" },
+
+      /* ---- temps 7 · ce que je dois vraiment savoir ---- */
+      /* La phrase de Blandine, et la vraie question qu'on pose devant un
+         cheval qu'on ne connaît pas. Elle remplace « demi-sang ou cheval
+         de trait ? », question de catalogue. */
+      { ref:"d-me-mefier", temps:7, dit:"joueuse", mots:["caractere"],
+        fr:"Est-ce que je dois me méfier, ou est-ce qu'il est sympa ?",
+        en:"Do I need to be careful with him, or is he kind?",
+        es:"¿Tengo que tener cuidado con él, o es bueno?",
+        it:"Devo stare attenta con lui, o è buono?",
+        de:"Muss ich bei ihm aufpassen, oder ist er nett?",
+        ja:"気 を つけ た ほう が いい です か、 それとも 優しい 馬 です か ?" }
+    ]
+  }
 };
