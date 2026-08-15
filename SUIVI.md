@@ -8267,3 +8267,64 @@ Retirés sur demande de Blandine : la ligne de démonstration **« Itteville · 
 La suppression des zones tactiles est la bonne leçon d'architecture de la journée : **un calque invisible qui capture un geste pour le compte d'un autre est toujours une dette**. Il masque les cibles réelles, il se voit uniquement à l'usage, et chaque correction locale (îlots, `stopPropagation`, `data-noswipe`) ne fait que déplacer le problème. En Flutter, la navigation d'un carrousel passe par un `PageView` : le geste appartient au widget, il n'y a pas de calque à poser. À inscrire dans la frontière « Présentation » : **aucun élément interactif ne recouvre un contenu interactif**.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19am** · modèles 28.
+
+---
+
+## Session 156 — 15/08/2026 · stories **19an** · la durée au choix
+
+Session menée sur maquette : `maquette-duree.html` (le choix à la publication, deux variantes ; le compteur, trois formulations). Blandine a choisi **le mois en Premium** et **« encore 5 jours » / « dernier jour » doré**.
+
+### ⏳ Sept jours ou un mois
+
+Deux pastilles dans le composeur, sous le lieu. **7 jours par défaut** ; **1 mois** avec le liseré doré du Cercle Crystal. Sans abonnement, la pastille du mois reste visible mais conduit à la page Premium — montrer ce qu'on gagne vaut mieux que cacher ce qui existe, et un verrou muet ne se comprend pas.
+
+⚠️ **Le droit se vérifie deux fois** : à l'affichage, et à la publication (`dureeLongue && props.premium`). Un état d'interface ne décide jamais d'un droit.
+
+Aucun SQL : `expire_le` existait déjà et n'était qu'écrit avec une constante. `hsPublierStory` reçoit désormais une durée en dernier argument, avec repli sur le socle — **toutes les publications d'avant restent identiques**.
+
+### 🕐 Le temps qu'il reste
+
+Sous le nom, là où vit « il y a 4 h », et **visible du seul auteur** (`estMoi`) : personne d'autre n'a à savoir quand une story s'efface. « encore 5 jours », puis **« dernier jour » en doré** — doré et pas rouge, c'est un rappel et non une alarme. C'est aussi le bon moment pour proposer de garder la story en souvenir (non fait, à voir).
+
+### 💬 L'arbitrage Premium, en entier
+
+Blandine a proposé un socle gratuit à **une journée**, avec 7 jours et 1 mois en Premium. Argument retenu contre :
+
+- Le module est **vide** — une story qui meurt en 24 h dans un rail vide n'est vue de personne, et un rail vide donne l'impression que l'app est morte. On amorce un module social en gardant les contenus visibles, pas en les raccourcissant.
+- Un abonnement se vend sur ce qu'il **ajoute**, pas sur ce qu'il rend à ceux qu'on a amputés.
+- Les décors sont **déjà** Premium. Deux verrous sur un écran est le maximum avant que la story cesse d'être la vitrine qui fait venir les gens pour devenir une caisse.
+
+Sa question de fond — *« à un moment donné si tout est gratuit tout le temps »* — reste juste, mais se règle ailleurs : les Galops 2–7, Hey Baby, les chevaux au-delà du quota sont déjà payants, et les idées en attente (certificat, rétrospective, révision intelligente, concours photo, fond studio) sont toutes des ajouts. **Le socle gratuit, l'ambition payante.**
+
+### ⚠️ HS_JOURS est un socle TEMPORAIRE
+
+Mot de Blandine : *« temporaire »*. Sept jours tiennent tant que le rail est vide. Mais **retirer des jours à des gens qui les avaient se paie toujours**, même annoncé. Les trois sorties, écrites dans le code, dans l'ordre recommandé :
+
+1. **Ne pas descendre** — maîtriser le stockage par le **poids** des images plutôt que par la durée. C'est le vrai levier : l'`index.html` de 9 Mo coûte déjà plus que toutes les stories réunies.
+2. Descendre pour les **nouvelles arrivantes** seulement — personne ne perd rien, mais deux règles cohabitent et ça se voit.
+3. Descendre pour tout le monde — le plus simple, le plus mal vécu.
+
+Baisser le socle = **ce chiffre, et rien d'autre**. Les stories publiées gardent leur `expire_le` : aucune migration, aucun risque rétroactif.
+
+### 🖥️ À l'écran : + / −
+
+**+** Deux pastilles « Combien de temps ? » dans le composeur, sous le lieu.
+**+** Le temps restant sous ton nom dans la visionneuse, sur tes stories seulement.
+**+** Le dernier jour s'affiche en doré.
+**−** Rien ne disparaît.
+
+### Contrôles
+
+`node --check` sur `hype-stories.js` et sur le script principal extrait d'`index.html` : passés. Vérifiés à la main : accord `19an`, `expire_le` bien lu (`select("*")`), 10 libellés ajoutés en 6 langues, compteur sous `estMoi`, **nouvel état `useState` posé EN DERNIER** dans `ComposeurStory` (le harnais de tests lit les états dans l'ordre — en insérer un au milieu casse les vérifications en silence). **Non vérifié** : le rendu réel et le comportement Premium — Blandine seule peut tester.
+
+### 📋 Reste ouvert
+
+Inchangé depuis la 155, moins la durée. Toujours : la pilule « Voir les membres » à repenser, le partage externe et sa question de portée publique, la carte Communauté (images à renvoyer), l'accès Communauté, les commentaires de stories, la généralisation du geste à toute l'app, les vignettes des modèles, les photos de profil, les notifications, l'allègement de `index.html`.
+
+Ajouté : **proposer de garder la story en souvenir le dernier jour** — le compteur crée le moment, rien ne l'exploite encore.
+
+### Préparation Flutter
+
+La durée est le premier réglage de ce module qui soit à la fois **un choix d'auteur** et **un droit d'abonnement**. Les deux vérifications (affichage, publication) doivent survivre à la migration au même endroit : la règle appartient au domaine, pas à l'écran. À inscrire dans la frontière « Métier » : `dureeAutorisee(abonnement)` est une fonction du domaine, jamais une condition d'interface.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · **stories 19an** · modèles 28.

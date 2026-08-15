@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19am";
+var HYPE_STORIES_VERSION = "19an";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -50,9 +50,47 @@ try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STOR
    ⚠️ À COMPLÉTER à chaque nouveau décor comportant du texte. */
 var HS_DECORS_TEXTE_FR = ["modele-concours-2", "modele-concours-3", "modele-concours-4"];
 
-/* Durée de vie : 7 jours (décision de Blandine). */
+/* ---------------------------------------------------------------------------
+   DURÉE DE VIE D'UNE STORY — 19an (15/08, décisions de Blandine)
+
+   ⚠️ `HS_JOURS` EST UN SOCLE TEMPORAIRE, ET ELLE L'A DIT AINSI. Mot exact :
+   « temporaire ». Sept jours tiennent tant que le rail est vide ; le jour où
+   il y aura du monde, la question du resserrement reviendra.
+
+   ⚠️ MAIS RETIRER DES JOURS À DES GENS QUI LES AVAIENT SE PAIE TOUJOURS,
+   même annoncé, même justifié. Les trois sorties possibles, dans l'ordre où
+   je les recommande :
+     1. NE PAS DESCENDRE. Maîtriser le stockage par le POIDS des images
+        plutôt que par la durée — c'est le vrai levier (l'`index.html` de
+        9 Mo coûte déjà plus que toutes les stories réunies).
+     2. Descendre pour les NOUVELLES ARRIVANTES seulement. Personne ne perd
+        rien, mais deux règles cohabitent et ça se voit entre cavalières.
+     3. Descendre pour tout le monde. Le plus simple, le plus mal vécu.
+
+   Baisser le socle = CE CHIFFRE, et rien d'autre. Les stories déjà publiées
+   gardent leur `expire_le` : aucune migration, aucun risque rétroactif. */
 var HS_JOURS = 7;
 var HS_DUREE_MS = HS_JOURS * 24 * 60 * 60 * 1000;
+/* Le mois, réservé Premium (décision de Blandine : « le socle gratuit,
+   l'ambition payante »). C'est le SECOND et DERNIER verrou de ce module —
+   les décors sont déjà Premium, et au-delà la story cesse d'être la vitrine
+   qui fait venir les gens pour devenir une caisse. */
+var HS_JOURS_LONG = 30;
+var HS_DUREE_LONG_MS = HS_JOURS_LONG * 24 * 60 * 60 * 1000;
+
+/* Ce qu'il reste à vivre à une story, écrit pour son AUTEUR seul.
+   Choix de Blandine sur maquette (rangées 1 et 3) : « encore 5 jours », qui
+   bascule en « dernier jour » doré sur la fin. Jamais de date exacte. */
+function hsResteAVivre(expireLe, lg) {
+  try {
+    if (!expireLe) return null;
+    var ms = new Date(expireLe).getTime() - Date.now();
+    if (!isFinite(ms) || ms <= 0) return null;
+    var jours = Math.ceil(ms / (24 * 60 * 60 * 1000));
+    if (jours <= 1) return { texte: hsT("dernierJour", lg), chaud: true };
+    return { texte: hsT("encoreJours", lg).replace("{n}", String(jours)), chaud: false };
+  } catch (e) { return null; }
+}
 /* Défilement automatique d'une story dans la visionneuse. */
 var HS_DUREE_VUE_MS = 6000;
 /* 12/08 (117) : la légende passe de 140 à 1000 caractères (décision de
@@ -791,7 +829,7 @@ function hsMarquerVue(id) {
    via le système d'identifications existant. Un tag qui échoue ne fait pas
    échouer la publication : la story est déjà en ligne, on ne la perd pas
    pour un nom mal enregistré. */
-async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, groupe, disposition) {
+async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, groupe, disposition, dureeMs) {
   try {
     if (typeof supa === "undefined" || !supa) return { data: null, error: "indisponible" };
     var user = await utilisateurActuel();
@@ -809,7 +847,10 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, group
       photo_url: r.url,
       legende: (legende ? String(legende).slice(0, HS_LEGENDE_MAX) : null),
       ecurie: ecurie,
-      expire_le: new Date(Date.now() + HS_DUREE_MS).toISOString()
+      /* 19an : la durée vient de l'auteur (7 jours, ou 1 mois en Premium).
+         Repli sur le socle si rien n'est transmis — toutes les publications
+         d'avant restent identiques. */
+      expire_le: new Date(Date.now() + ((typeof dureeMs === "number" && dureeMs > 0) ? dureeMs : HS_DUREE_MS)).toISOString()
     };
     var lieuNet = (lieu ? String(lieu).trim().slice(0, HS_LIEU_MAX) : "");
     if (lieuNet) ligne.lieu = lieuNet;
@@ -1465,6 +1506,15 @@ var HS_TXT = {
   voirPlus: { fr: "voir plus", en: "see more", es: "ver m\u00e1s", it: "mostra pi\u00f9", ja: "\u3082\u3063\u3068\u898b\u308b", de: "mehr anzeigen" },
   /* 19ak : libelle du coeur — sert d'aria-label, jamais affiche en toutes lettres. */
   jaime: { fr: "J'aime", en: "Like", es: "Me gusta", it: "Mi piace", ja: "\u3044\u3044\u306d", de: "Gef\u00e4llt mir" },
+  /* 19an — la durée au choix. */
+  dureeTitre: { fr: "Combien de temps ?", en: "How long?", es: "\u00bfCu\u00e1nto tiempo?", it: "Per quanto tempo?", ja: "\u3069\u308c\u304f\u3089\u3044\uff1f", de: "Wie lange?" },
+  duree7: { fr: "7 jours", en: "7 days", es: "7 d\u00edas", it: "7 giorni", ja: "7\u65e5\u9593", de: "7 Tage" },
+  duree7Sous: { fr: "La dur\u00e9e habituelle", en: "The usual", es: "La duraci\u00f3n habitual", it: "La durata abituale", ja: "\u901a\u5e38\u306e\u9577\u3055", de: "Die \u00fcbliche Dauer" },
+  duree30: { fr: "1 mois", en: "1 month", es: "1 mes", it: "1 mese", ja: "1\u30f6\u6708", de: "1 Monat" },
+  duree30Sous: { fr: "Garde tes annonces plus longtemps", en: "Keep your news up longer", es: "Conserva tus anuncios m\u00e1s tiempo", it: "Conserva i tuoi annunci pi\u00f9 a lungo", ja: "\u304a\u77e5\u3089\u305b\u3092\u9577\u304f\u6b8b\u3059", de: "Behalte deine News l\u00e4nger" },
+  duree30Aide: { fr: "Le mois fait partie du Cercle Crystal. Sept jours restent offerts \u00e0 tous.", en: "The month is part of the Crystal Circle. Seven days stay free for everyone.", es: "El mes forma parte del C\u00edrculo Crystal. Siete d\u00edas siguen siendo gratis para todos.", it: "Il mese fa parte del Cerchio Crystal. Sette giorni restano gratuiti per tutti.", ja: "1\u30f6\u6708\u306f\u30af\u30ea\u30b9\u30bf\u30eb\u30b5\u30fc\u30af\u30eb\u306e\u7279\u5178\u3067\u3059\u30027\u65e5\u9593\u306f\u5168\u54e1\u7121\u6599\u3067\u3059\u3002", de: "Der Monat geh\u00f6rt zum Crystal Circle. Sieben Tage bleiben f\u00fcr alle kostenlos." },
+  encoreJours: { fr: "encore {n} jours", en: "{n} days left", es: "quedan {n} d\u00edas", it: "ancora {n} giorni", ja: "\u3042\u3068{n}\u65e5", de: "noch {n} Tage" },
+  dernierJour: { fr: "dernier jour", en: "last day", es: "\u00faltimo d\u00eda", it: "ultimo giorno", ja: "\u6700\u7d42\u65e5", de: "letzter Tag" },
   voirMoins: { fr: "voir moins", en: "see less", es: "ver menos", it: "mostra meno", ja: "\u9589\u3058\u308b", de: "weniger anzeigen" },
   photoIndispo: { fr: "Photo indisponible", en: "Photo unavailable", es: "Foto no disponible", it: "Foto non disponibile", ja: "写真を読み込めません", de: "Foto nicht verfügbar" },
   maintenant: { fr: "\u00e0 l'instant", en: "just now", es: "ahora mismo", it: "adesso", ja: "たった今", de: "gerade eben" },
@@ -2257,6 +2307,13 @@ function ComposeurStory(props) {
      fallait tout annuler et refaire la selection depuis le rond +. On peut
      desormais en ajouter sans quitter le composeur. */
   var apS = React.useState([]), ajoutees = apS[0], setAjoutees = apS[1];
+  /* ⚠️ 19an — AJOUTÉ EN DERNIER, VOLONTAIREMENT. Le harnais de tests lit les
+     `useState` de ce composant DANS L'ORDRE : insérer un état au milieu
+     casserait les vérifications en silence. Tout nouvel état se pose ICI. */
+  var duS = React.useState(false), dureeLongue = duS[0], setDureeLongue = duS[1];
+  /* 19an : pour conduire à la page Premium quand le mois est touché sans
+     abonnement. Le module y accède déjà ailleurs de la même façon. */
+  var appCompo = (typeof useApp === "function") ? useApp() : null;
   var entreePlusRef = React.useRef(null);
   fichiers = fichiers.concat(ajoutees);
   function surPhotosEnPlus(ev) {
@@ -2779,7 +2836,11 @@ function ComposeurStory(props) {
              19d : sans groupe, une photo seule porte son DECOR. */
           grpId
             ? ((!props.origine) ? compoChoix : null)
-            : ((!props.origine && fichiersOrdonnes.length === 1 && iF === 0) ? decorChoix : null)
+            : ((!props.origine && fichiersOrdonnes.length === 1 && iF === 0) ? decorChoix : null),
+          /* 19an : la durée choisie. Le mois n'est retenu que si l'abonnement
+             est bien là — un état d'interface ne suffit pas à décider d'un
+             droit. */
+          (dureeLongue && props.premium) ? HS_DUREE_LONG_MS : HS_DUREE_MS
         );
         dernierR = rI;
         /* 19c : une composition refusee ARRETE TOUT, immediatement et par son
@@ -3336,6 +3397,51 @@ function ComposeurStory(props) {
               }, c.nom + (c.ville ? (" · " + c.ville) : ""));
             }))
           : null,
+
+        /* --- COMBIEN DE TEMPS (19an, maquette validée par Blandine) ---
+           Deux pastilles, 7 jours par défaut. Le mois porte le liseré doré du
+           Cercle Crystal ; sans abonnement il reste visible mais inerte —
+           montrer ce qu'on gagne vaut mieux que cacher ce qui existe.
+           ⚠️ Le droit se vérifie DEUX FOIS : ici pour l'affichage, et à la
+           publication (`dureeLongue && props.premium`). Un état d'interface ne
+           décide pas d'un droit. */
+        titreBloc("\u23F3 " + hsT("dureeTitre", lg)),
+        h("div", { style: { display: "flex", gap: 8 } },
+          h("button", {
+            onClick: function () { setDureeLongue(false); },
+            style: {
+              flex: 1, borderRadius: 13, padding: "12px 10px", textAlign: "center", cursor: "pointer",
+              fontFamily: M, border: "1px solid " + (!dureeLongue ? tA(0.75) : "rgba(255,255,255,0.14)"),
+              background: !dureeLongue ? "rgba(32,217,245,0.13)" : "rgba(255,255,255,0.035)",
+              boxShadow: !dureeLongue ? ("0 0 20px " + tA(0.14)) : "none"
+            }
+          },
+            h("div", { style: { fontSize: 13.5, fontWeight: 800, color: !dureeLongue ? tnL : "#E4ECEF" } }, hsT("duree7", lg)),
+            h("div", { style: { fontSize: 9.5, color: "#8A929C", marginTop: 3, lineHeight: 1.4 } }, hsT("duree7Sous", lg))),
+          h("button", {
+            onClick: function () {
+              /* Sans abonnement, la pastille conduit à la page Premium au lieu
+                 de ne rien faire : un verrou muet ne se comprend pas. */
+              if (!props.premium) {
+                try {
+                  if (props.onPremium) { props.onPremium(); return; }
+                  if (appCompo && appCompo.setEcran) { if (props.onFermer) props.onFermer(); appCompo.setEcran("premium"); return; }
+                } catch (ePr) { }
+                return;
+              }
+              setDureeLongue(true);
+            },
+            style: {
+              flex: 1, borderRadius: 13, padding: "12px 10px", textAlign: "center", cursor: "pointer",
+              fontFamily: M, opacity: props.premium ? 1 : 0.62,
+              border: "1px solid " + (dureeLongue ? "rgba(232,199,122,0.85)" : "rgba(232,199,122,0.5)"),
+              background: dureeLongue ? "rgba(232,199,122,0.14)" : "rgba(232,199,122,0.07)"
+            }
+          },
+            h("div", { style: { fontSize: 9, color: "#E8C77A", fontWeight: 800, letterSpacing: "0.1em", marginBottom: 4 } }, "\u25C6 PREMIUM"),
+            h("div", { style: { fontSize: 13.5, fontWeight: 800, color: "#E8C77A" } }, hsT("duree30", lg)),
+            h("div", { style: { fontSize: 9.5, color: "#8A929C", marginTop: 3, lineHeight: 1.4 } }, hsT("duree30Sous", lg)))),
+        h("div", { style: { fontSize: 10, color: "#8A929C", lineHeight: 1.55, marginTop: 10 } }, hsT("duree30Aide", lg)),
 
         /* --- LES TAGS --- */
         /* --- LA MUSIQUE (13/08, fichiers Pixabay fournis par Blandine) ---
@@ -4667,7 +4773,19 @@ function VisionneuseStories(props) {
         h("div", { style: { minWidth: 0, flex: 1 } },
           h("div", { style: { fontSize: 13, fontWeight: 700, fontFamily: M, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, groupe.pseudo || "Cavalier"),
           h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
-            hsTempsRelatif(story.created_at, lg) + (groupe.ecurie ? (" \u00b7 " + groupe.ecurie) : ""))),
+            hsTempsRelatif(story.created_at, lg) + (groupe.ecurie ? (" \u00b7 " + groupe.ecurie) : ""),
+            /* 19an — LE TEMPS QU'IL RESTE, POUR L'AUTEUR SEUL.
+               `estMoi` : personne d'autre n'a à savoir quand une story
+               s'efface. Choix de Blandine sur maquette (rangées 1 et 3) :
+               « encore 5 jours », qui bascule en « dernier jour » DORÉ sur la
+               fin — doré et pas rouge, c'est un rappel, pas une alarme, et
+               c'est le bon moment pour penser à garder la story en souvenir. */
+            (function () {
+              if (!estMoi) return null;
+              var r = hsResteAVivre(story.expire_le, lg);
+              if (!r) return null;
+              return h("span", { style: { color: r.chaud ? "#E8C77A" : tnL, fontWeight: 700 } }, " \u00b7 " + r.texte);
+            })())),
         /* 13/08 (Blandine) : « rassemble tout dans le menu avec les ⋯ » —
            toutes les ACTIONS de la story vivent derrière ce bouton. La
            musique reste À PART sur la photo (sa parenthèse), la croix reste
