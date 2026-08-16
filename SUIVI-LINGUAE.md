@@ -19,6 +19,27 @@
 
 ---
 
+# 🟥🟥🟥 LES OBJETS D'ÉQUIPEMENT ONT TROIS ÉTATS 🟥🟥🟥
+### Posée le 16/08/2026 par Blandine : « garde bien les images même s'il est pas plié car par la suite faudra qu'on puisse en équiper un cheval » · « en fait il faut les deux, pliés pour sellerie et déployés pour utilisation » · « donne un nom pour objet porté tout de suite ».
+
+Un objet qui **se porte** (couverture, couvre-reins, tapis, bonnet, guêtres, licol) n'est pas un objet qu'on pose sur une étagère. Il lui faut **trois images**, et la convention est fixée **maintenant** pour ne pas avoir à renommer plus tard :
+
+| état | fichier | où il sert |
+|---|---|---|
+| **déployé** | `objet-<ville>.webp` | la vitrine de collection · l'objet à plat, entier, détouré |
+| **plié** | `pose-<ville>.webp` | **la sellerie** — rangé sur une étagère ou une malle |
+| **porté** | 🟥 **`porte-<ville>.webp`** | **habiller un cheval** — mécanisme À CONSTRUIRE |
+
+🟥 **`porte-<ville>.webp` EST LE NOM RETENU.** Sans accent, comme toutes les autres conventions du dépôt (`objet-`, `pose-`, `carte-`, `fond-`, `arrivee-`). ⚠️ NE PAS l'écrire `porté-`, `porte_`, ni `sur-cheval-`.
+
+⚠️ **LE MÉCANISME D'HABILLAGE N'EXISTE PAS ENCORE.** Le fichier est produit et poussé d'avance, sur décision de Blandine, pour que le jour venu il n'y ait rien à régénérer. Il n'est lu par aucun code aujourd'hui — ce n'est pas un oubli.
+
+⚠️ **UN OBJET PORTÉ DOIT RESTER DÉPLOYÉ, À PLAT, SANS PLI NI RACCOURCI**, transparence et orientation intactes. Une image pliée serait inutilisable pour habiller.
+
+**Premier objet à trois états : Versailles** (le couvre-reins royal, 16/08). Les objets déjà en place (fanion, flot, palmier, malle…) ne se portent pas : ils gardent leurs deux états habituels.
+
+---
+
 # 🟥🟥🟥 RÈGLE DES IMAGES D'OBJETS DE COLLECTION — À LIRE AVANT D'Y TOUCHER 🟥🟥🟥
 ### Posée le 10/08/2026 sur ordre de Blandine : « note bien tout ça en gros dans le suivi et dans tes consignes à suivre »
 
@@ -205,8 +226,12 @@ Tout le travail du jour a d'abord été daté **« session 211 »** dans les sep
 | **Walsall** (`materiel`) | 20 | **créé**, 6 langues + **4 concepts ajoutés** |
 | **Aberystwyth** (`cours`) | 24 | **créé**, 6 langues — **18 entendues** |
 | **Windsor** (`dressage`) | 21 | **créé**, 6 langues + **2 concepts ajoutés** |
+| **Wellington** (`obstacle`) | 24 | **créé**, 6 langues — 32ᵉ ville créée pour lui |
+| **Hickstead** (`derby`) | 22 | **créé**, 6 langues + **3 concepts ajoutés** |
+| **Versailles** (`dressage`) | 26 | **créé** — 33ᵉ ville, 2ᵉ dialogue du fichier |
+| **Saumur** (`enseignant`) | 25 | **créé** — fichier neuf, 40 concepts |
 
-**176 phrases au total, neuf villes.** Contrôle machine à chaque livraison : aucune case vide, japonais espacé (découpable en tuiles), refs `mots` valides, lexiques et `phrases` d'exercice intacts.
+**273 phrases au total, treize villes.** Contrôle machine à chaque livraison : aucune case vide, japonais espacé (découpable en tuiles), refs `mots` valides, lexiques et `phrases` d'exercice intacts.
 
 ### Le Morne, réécrit avec elle, phrase par phrase
 **Sorties (7)** : savoir nager ×2, crème solaire, maillot de bain, « la baignade est comprise », le doublon du galop doux.
@@ -440,13 +465,109 @@ La règle enseignée : queue-de-pie + haut-de-forme aux niveaux hauts **ensemble
 
 ---
 
+## 🏰 VERSAILLES — 33ᵉ VILLE · ET LA GRANDE REDISTRIBUTION DU DRESSAGE
+
+**Le raisonnement de Blandine, en trois temps** (16/08) :
+1. L'enseignement cherchait une ville. Saumur écartée d'abord (« déjà pas mal pris »), puis Versailles proposée par elle — mais : *« Versailles avec le saut bof »*.
+2. Le retournement : 🟥 ***« sinon on envoie le dressage à Versailles et l'enseignement à Saumur »***.
+3. Le constat qui tranche tout : 🟥 ***« le dressage de Saumur porte sur des thèmes bcp plus techniques et Windsor traitait de concours de dressage »*** — le fichier `dressage` contenait DÉJÀ les deux, séparés par leçon.
+
+**LA RÉPARTITION, À NE PAS DÉFAIRE :**
+| ville | ce qu'elle porte |
+|---|---|
+| **Windsor** | LE CONCOURS de dressage (rectangle, lettres, juge, protocole, erreur de parcours, pourcentage). **Inchangée**, son dialogue du 15/08 tient. |
+| **Versailles** | LA **LEÇON 3** de `dressage` — les notions d'art équestre : cadence, décontraction, contact, impulsion, rectitude, rassembler, incurvation, légèreté, soumission, perméabilité. `ETAPE_SRC` modifié : `versailles: [["dressage",3]]`. |
+| **Saumur** | 🟥 **PLUS RIEN pour l'instant** — elle a perdu la leçon 3 et attend son fichier `enseignant`. ⚠️ **Si on déploie avant qu'il existe, sa carte s'affiche sans mots à apprendre.** |
+
+⚠️ Versailles et Saumur portent des choses **proches** — l'art d'un côté, sa transmission de l'autre. Veiller à ce que leurs dialogues ne se marchent pas dessus.
+
+**La ville** : `versailles`, chapitre « L'art équestre », placée **juste avant Saumur** sur sa demande (l'art et sa transmission se suivent). Niveau 3, technicité **5/5**. Ciel bleu nuit + or. Souvenir : **un couvre-reins royal** — 🟥 « couvre-reins » et NON « caparaçon » : le mot d'écurie, pas le mot d'apparat.
+Déclarée dans `POSE_PROPRE` (vue pliée distincte). **PAS dans `POSE_34`** : un fichier `pose-versailles-34.webp` avait été produit puis **supprimé**, il n'aurait jamais été lu.
+
+---
+
+## 🎓 LE CHAPITRE « ENSEIGNANT » — PROPOSÉ, PAS ÉCRIT
+
+**Pourquoi il ne peut pas vivre dans un chapitre de discipline** — constat de Blandine : *« après le problème c'est qu'on enseigne aussi en saut »*. L'enseignement est **transversal**, comme « je me débrouille » et la tenue du cavalier.
+
+**Les 40 mots proposés, EN ATTENTE DE SA RELECTURE**, en quatre leçons :
+· **la voix et la consigne** : donner une consigne · répéter · plus fort · à ma voix · au commandement · l'échauffement · la reprise (le groupe) · en piste · rassembler le groupe · dire ce qu'on va faire
+· **corriger sans casser** : la correction · reprendre · c'est mieux · tu y es presque · recommence · doucement · regarde-moi · ce n'est pas grave · encore une fois · c'est bien
+· **la sécurité** : arrête-toi · descends · écarte-toi · ne passe pas derrière · attends-moi · au pas tout le monde · tenez-vous à la crinière · qui a peur ? · est-ce que ça va ? · appelle-moi si tu ne te sens pas bien
+· **l'élève** : l'élève · le débutant · celui qui a peur · il va trop vite · elle est bloquée · le niveau du groupe · adapter · encourager · faire confiance · laisser essayer
+
+⚠️ **Beaucoup sont des PHRASES, pas des mots** — c'est le propre de l'enseignement : on ne nomme pas des objets, on dit des ordres. Le chapitre ressemblera à `cours`, pas à `materiel`.
+🟥 **DEUX QUESTIONS SANS RÉPONSE, à trancher avant d'écrire :**
+1. **Le tutoiement ou le vouvoiement ?** Proposition : tutoiement par défaut (on enseigne surtout à des enfants), vouvoiement en variante sur quelques phrases.
+2. **On enseigne DANS LA LANGUE ÉTRANGÈRE** — confirmé par elle (« ben oui là c'est le chapitre pour l'enseignant »). C'est le chapitre le plus exigeant de l'app, donc **Premium**, et à placer **tard** dans le voyage (après Aberystwyth, qui donne les ordres côté élève).
+
+---
+
+## 🖼️ CE QUI MANQUE ENCORE EN IMAGES
+
+| ville | manque | conséquence |
+|---|---|---|
+| **Wellington** | rien | complète (carte, fond, objet, vidéo) |
+| **Versailles** | rien | complète (carte, fond, objet, pose, porte, vidéo) |
+| **Lamotte-Beuvron** | rien | le flot remplace la toise |
+
+⚠️ **AUCUNE IMAGE NE MANQUE** pour les villes créées. Ce qui reste est du **contenu**, pas du visuel : le fichier `hype-lingo-lex-enseignant.js` (Saumur), et les dialogues des 21 villes non encore écrites.
+
+---
+
+## 🏰 VERSAILLES — SON DIALOGUE · 26 phrases, 6 temps
+
+🟥 **UN FICHIER PEUT DÉSORMAIS PORTER PLUSIEURS DIALOGUES.** `dressage` en a deux : `dialogue` = **Windsor** (le concours), `dialogueVersailles` = **Versailles** (l'art). Le moteur a dû être étendu **des deux côtés** — `aUnDialogue()` dans `lingo.html` et `lireLexiques()` dans `lingo-dialogue.html` balaient maintenant toutes les clés commençant par `dialogue`.
+⚠️ **LES DEUX FICHIERS DOIVENT RESTER D'ACCORD.** Si l'un revient à la lecture de la seule clé `dialogue`, le bouton s'affiche et la page fille ne trouve rien. Toute clé future `dialogueXxx` marchera sans rien toucher.
+
+🟥 **SEUL DIALOGUE OÙ L'ON NE DEMANDE RIEN DE PRATIQUE** — ni horaire, ni réservation, ni matériel. On pose des questions sur des **notions**, on reçoit des réponses qui font **sentir**.
+🟥 **« Chaque notion doit avoir une phrase »** — sa règle. **Les dix mots de la leçon 3 sont tous employés** (vérifié : 10/10).
+
+**Ce qu'elle a fait retirer** : « combien de temps il faut pour arriver là ? », « des années, et on ne finit jamais », « est-ce que je peux revenir voir ? » — ***« on s'en fout »***. De la philosophie, pas de la langue. Remplacé par **les figures**. NE PAS remettre.
+
+**Les trois définitions officielles, à sa demande :**
+· **RASSEMBLER** — elle a **refusé** la version courte : *« garde celle plus complète avec l'abaissement des hanches c'est indispensable »*. Sans les hanches, on ne dit pas COMMENT le poids passe derrière. **NE PAS raccourcir.**
+· **SOUMISSION** — ce n'est PAS l'obéissance : attention et confiance, acceptation sans tension ni résistance.
+· **PERMÉABILITÉ** — laisser passer l'aide À TRAVERS le corps. *Durchlässigkeit* = « laisser-passer ».
+
+🟥 **CORRECTION DE BLANDINE sur l'appuyer / la cession** : *« dans l'appuyer il regarde dans la direction dans laquelle il va ; dans la cession il conserve son pli du côté de l'incurvation »*. La première version disait « il regarde ailleurs » — vague et faux. **La vraie différence est LE PLI** : l'appuyer incurvé VERS le déplacement, la cession CONTRE.
+
+**Lexique :** `tete-au-mur` ajoutée (45 concepts), en **leçon 2 donc chez Windsor** — choix B : Versailles emploie les figures sans les posséder, pour ne rien retirer à Windsor. Le voyage passe par Windsor AVANT.
+
+---
+
+## 🎓 SAUMUR — « L'ENSEIGNANT » · fichier neuf · 40 concepts + 25 phrases
+
+`hype-lingo-lex-enseignant.js`, chapitre 23, **quatre leçons de dix mots** : la voix et la consigne · corriger sans casser · la sécurité · l'élève. Branché sur Saumur via `ETAPE_SRC` (les quatre leçons). Le rôle « enseignant » était annoncé depuis le 6 août dans `lex-cours.js` et n'avait **aucune ville**.
+
+🟥 **RENVERSEMENT COMPLET D'ABERYSTWYTH** : là-bas 18 phrases sur 24 sont ENTENDUES ; ici la joueuse **produit 24 sur 25**. Seul endroit de l'app où elle commande. ⚠️ NE PAS « rééquilibrer ».
+
+🟥 **LE TUTOIEMENT** (sa décision) : tutoiement en fr/es/it/de, l'anglais ne distingue pas.
+🟥 **SAUF EN JAPONAIS** — sa question, et elle était juste : *« sauf peut-être en japonais ? »*. Le japonais n'a pas de tutoiement, la politesse passe par **la forme du verbe**. Un moniteur japonais emploie le style poli 〜てください même avec des enfants ; le direct passerait pour brutal.
+⚠️ **DEUX EXCEPTIONS AU STYLE POLI**, où la sécurité prime : `arrete-toi` (止まって) et `descends` (降りて). **NE PAS uniformiser.**
+
+**Neuf phrases sont d'elle**, chacune notée dans le fichier avec sa raison :
+· *« Si vous ne comprenez pas un terme, n'hésitez pas à me redemander »* — **la phrase du module** : un enseignant dont les élèves ne parlent pas tous la même langue commence par là.
+· *« Comme on dit en France, on conserve la taille d'un cheval imaginaire »* — le « en France » enseigne que la formule est **culturelle**.
+· *« On les laisse s'étendre, rênes longues »* — le vrai geste d'échauffement.
+· **La position, DÉCOUPÉE EN TROIS sur sa demande** (« sépare-la en plusieurs phrases s'il faut ») : sa phrase donnait cinq corrections d'un coup, ce qui **contredisait la règle du chapitre**. Le rappel au groupe va en T2, les corrections individuelles en T3. NE PAS refusionner.
+· *« Au pas et au galop… en pliant et dépliant ses coudes, pour permettre au cheval de se servir de son mouvement de balancier »* — elle EXPLIQUE au lieu de commander. ⚠️ **Le pas et le galop, PAS le trot** : au trot il n'y a pas d'oscillation d'encolure. La même phrase existe à Aberystwyth, **entendue** ; ici **produite**.
+· *« Ne le laisse pas accélérer… et recède dans la main dès qu'il revient »* — la plus enseignante des vingt-cinq : **on relâche au moment où ça marche**, sinon le cheval n'apprend rien. ⚠️ « recéder » n'est à aucun lexique.
+· *« Quand on fait une transition, on doit sentir monter le garrot »* — le seul repère physique d'une transition réussie, et ça boucle le cours annoncé sur les transitions.
+
+🟥 **PHRASE RETIRÉE PAR ELLE** : « à ma voix, tout le monde ensemble, au commandement : trois, deux, un » — ***« tu peux la virer elle est nulle »***. Elle récitait deux entrées du lexique bout à bout sans rien dire. **NE PAS la remettre.**
+
+⚠️ **DEUX FAUTES ATTRAPÉES AU CONTRÔLE** : une coquille `p::` qui empêchait le fichier de se charger, et **un caractère coréen** (질) glissé dans une définition japonaise. Corrigés. ✅ Contrôler les caractères hangul dans les définitions japonaises.
+
+---
+
 ## À L'ÉCRAN : + / −
 
-**+** la carte hors-ligne sur l'accueil (deux états) · **+** sa barre de progression · **+** la note « dernier essai » après le 2ᵉ raté vocal et « on passe » après le 3ᵉ · **+** le bouton de mise en situation sur **Connemara**, **Newmarket**, **Lambourn**, **Walsall**, **Aberystwyth** et **Windsor** (`aUnDialogue()` détecte la clé) · La Baule et Le Morne passent de **2 à 6 langues**.
+**+** la carte hors-ligne sur l'accueil (deux états) · **+** sa barre de progression · **+** la note « dernier essai » après le 2ᵉ raté vocal et « on passe » après le 3ᵉ · **+** le bouton de mise en situation sur **Connemara**, **Newmarket**, **Lambourn**, **Walsall**, **Aberystwyth**, **Windsor**, **Wellington**, **Hickstead**, **Versailles** et **Saumur** · **+ deux villes neuves** dans le voyage : Wellington (9ᵉ) et Versailles (15ᵉ) (`aUnDialogue()` détecte la clé) · La Baule et Le Morne passent de **2 à 6 langues**.
 **−** le bouton « Réessayer » après le 3ᵉ raté vocal.
 
 ## AU DÉPLOIEMENT
-`lingo.html` porte **9 numéros de version** : `ecurie ?l=2`, `pansage ?l=3`, `cours ?l=3`, `cheval ?l=4`, `materiel ?l=4`, `dressage ?l=4`, `arrivee ?l=5`, `balade ?l=5`, `VER v37`.
+`lingo.html` porte **11 numéros de version** (dont `obstacle ?l=5`, `derby ?l=2`, `dressage ?l=5`, `enseignant ?l=1`) et **`VER` v39**. Anciennement : **9** : `ecurie ?l=2`, `pansage ?l=3`, `cours ?l=3`, `cheval ?l=4`, `materiel ?l=4`, `dressage ?l=4`, `arrivee ?l=5`, `balade ?l=5`, `VER v37`.
 **Un seul push** (règle de coût en tête de ce fichier) : `lingo.html` · `sw-linguae.js` · `installer.webp` · `hors-ligne.webp` · les **8 lexiques** (arrivee, balade, cheval, ecurie, pansage, materiel, cours, dressage) · `lingo-dialogue.html`.
 ⚠️ **Rien n'a pu être testé** : pas de navigateur au banc, le domaine refuse l'accès automatisé. Test à faire par Blandine — installer sur l'écran d'accueil, visiter deux villes, mode avion, rouvrir.
 
