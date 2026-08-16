@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19aq";
+var HYPE_STORIES_VERSION = "19as";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -118,7 +118,7 @@ var HS_LIEU_MAX = 60;
    demandé « le plus gros possible » ; au-delà de 104 on ne voit plus qu'un
    rond et demi et le bandeau cesse d'être un bandeau.
    DÉDUCTION DE CLAUDE sur la valeur exacte — À VALIDER. */
-var HS_TAILLE_ROND = 104;
+var HS_TAILLE_ROND = 132;
 /* Sur MA COMMUNAUTÉ, le bandeau passe en RECTANGLES VERTICAUX (décision de
    Blandine du 12/08). Deux raisons, dans cet ordre :
    1. Un rond rogne énormément — encolure, cheval de profil, cavalier en pied :
@@ -3826,6 +3826,326 @@ function RailALaUne(props) {
 }
 
 /* ---------------------------------------------------------------------------
+   7 bis. LE MUR IMMERSIF (19as — 17/08/2026)
+
+   Un bloc CARRÉ sur la page Cavalier, entre le Mur des Songes et les tuiles
+   club, qui remplace le rail « À la une » SUR CETTE PAGE UNIQUEMENT (mots de
+   Blandine : « pour l'instant on va faire uniquement en bleu sur la page
+   Cavalier, on verra le reste ensuite »). Communauté, Club et Écurie gardent
+   RailALaUne tel quel.
+
+   COMMENT ÇA MARCHE. Le décor est un PNG PERCÉ — quatre trous à alpha 0. Les
+   photos passent DERRIÈRE, les liserés restent PAR-DESSUS. Trois couches, dans
+   cet ordre :
+     1. le décor FLOU ET AGRANDI (114 %), qui bouche les trous vides ;
+     2. les encarts (photo + voile + nappe), posés aux coordonnées des trous ;
+     3. le décor NET, qui rend ses liserés et masque tout ce qui déborde.
+   Le décor net est en pointerEvents:none : les encarts restent tapables.
+
+   L'EXCEPTION AU VOILE. La règle « aucun voile sur une photo de cheval » n'est
+   PAS amendée. Ce qui justifie l'exception ici, ce sont les mots de Blandine :
+   « histoire de limiter la casse si il y a des story orange ou vert fluo ».
+   C'est un garde-fou, pas un goût, et il vaut pour le mur immersif et lui seul.
+
+   CE QUI RESTE OUVERT, non tranché, donc non décidé ici :
+   - PLUS DE QUATRE à la une : le surplus n'est pas affiché (aucun défilement,
+     aucune rotation). À trancher avec Blandine.
+   - Le FONDU ADAPTATIF (le petit emplacement du centre est presque effacé en
+     « Large ») est proposé en interrupteur dans le panneau, ÉTEINT par défaut :
+     éteint = le comportement connu, rien ne change sans son geste.
+--------------------------------------------------------------------------- */
+
+var HS_MUR_IMAGE = "Hype_mur_immersif_encarts_transparents.png";
+
+/* Trous mesurés sur le fichier natif 1254 × 1254 (composantes connexes à
+   alpha 0), convertis en pourcentage du côté. Ordre d'attribution : les deux
+   grands d'abord, puis le bandeau bas, puis le petit du centre — la première à
+   la une (les promues d'abord, cf. hsListerALaUne) prend donc la plus grande
+   place. Une seule ligne à réordonner si Blandine veut un autre ordre. */
+var HS_MUR_TROUS = [
+  { l: 6.54, t: 41.15, w: 25.36, h: 44.34 },   /* grand gauche  (82,516  → 318×556) */
+  { l: 69.94, t: 13.88, w: 24.48, h: 38.12 },  /* grand droite  (877,174 → 307×478) */
+  { l: 48.17, t: 70.65, w: 26.24, h: 16.19 },  /* bandeau bas   (604,886 → 329×203) */
+  { l: 38.28, t: 47.37, w: 17.22, h: 18.82 }   /* petit centre  (480,594 → 216×236) */
+];
+
+/* Le fondu des bords. Ce qu'on a appris en réglant : l'écart de luminosité
+   avec le décor est indépassable, le levier utile est le FONDU, pas la
+   couleur. e = taille de l'ellipse, s = où le noir plein s'arrête. */
+var HS_MUR_FONDUS = [
+  { nom: "Aucun", e: 0, s: 0 },
+  { nom: "Doux", e: 100, s: 70 },
+  { nom: "Moyen", e: 86, s: 55 },
+  { nom: "Large", e: 72, s: 40 }
+];
+
+/* La nappe. Le turquoise franc est à proscrire en nappe — c'est une lumière,
+   pas une matière — mais il reste proposé pour que Blandine le constate
+   elle-même plutôt que sur parole. */
+var HS_MUR_COULEURS = [
+  { nom: "Nuit", hex: "#0F2A38" },
+  { nom: "Ardoise", hex: "#12506A" },
+  { nom: "Pétrole", hex: "#166F8C" },
+  { nom: "Lagune", hex: "#1BA8C8" },
+  { nom: "Turquoise", hex: "#20D9F5" }
+];
+
+/* Réglage de départ = celui retenu en fin de session 135 bis, à reconfirmer :
+   fondu large · voile 22 % · désaturation 80 % · nappe 50 % · pétrole. */
+var HS_MUR_DEFAUTS = { voile: 22, desat: 80, nappe: 50, couleur: 2, fondu: 3, adapt: false };
+var HS_MUR_CLE = "hype_mur_immersif_v1";
+
+function hsMurReglages() {
+  var d = { voile: HS_MUR_DEFAUTS.voile, desat: HS_MUR_DEFAUTS.desat, nappe: HS_MUR_DEFAUTS.nappe, couleur: HS_MUR_DEFAUTS.couleur, fondu: HS_MUR_DEFAUTS.fondu, adapt: HS_MUR_DEFAUTS.adapt };
+  try {
+    var brut = localStorage.getItem(HS_MUR_CLE);
+    if (!brut) return d;
+    var o = JSON.parse(brut);
+    if (!o || typeof o !== "object") return d;
+    if (typeof o.voile === "number") d.voile = o.voile;
+    if (typeof o.desat === "number") d.desat = o.desat;
+    if (typeof o.nappe === "number") d.nappe = o.nappe;
+    if (typeof o.couleur === "number") d.couleur = o.couleur;
+    if (typeof o.fondu === "number") d.fondu = o.fondu;
+    if (typeof o.adapt === "boolean") d.adapt = o.adapt;
+    return d;
+  } catch (e) { return d; }
+}
+
+function hsMurEnregistrer(r) { try { localStorage.setItem(HS_MUR_CLE, JSON.stringify(r)); } catch (e) { } }
+
+/* Le masque du fondu. Le voile et la nappe le portent AUSSI — ils vivent dans
+   le même conteneur masqué — sinon un bord net réapparaît là où la photo, elle,
+   s'est éteinte. */
+function hsMurMasque(f, adoucir) {
+  if (!f || !f.e) return "";
+  var e = f.e, s = f.s;
+  if (adoucir) { e = Math.min(100, e + 16); s = Math.min(92, s + 22); }
+  return "radial-gradient(ellipse " + e + "% " + e + "% at 50% 50%, #000 " + s + "%, rgba(0,0,0,0) 100%)";
+}
+
+function MurImmersif(props) {
+  var h = React.createElement;
+  var app = (typeof useApp === "function") ? useApp() : {};
+  var lg = (app && app.langue) || "fr";
+  var M = "'Montserrat',sans-serif", C = "'Cinzel',Georgia,serif";
+  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
+  var tn = th.principal, tnL = th.lumineux;
+  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(32,217,245," + a + ")"); }
+
+  var uS = React.useState([]), unes = uS[0], setUnes = uS[1];
+  var oS = React.useState(null), ouverte = oS[0], setOuverte = oS[1];
+  var gS = React.useState(hsMurReglages()), reg = gS[0], setReg = gS[1];
+  var pS = React.useState(false), panneau = pS[0], setPanneau = pS[1];
+  var fS = React.useState(false), estFeinn = fS[0], setEstFeinn = fS[1];
+  var vivantRef = React.useRef(true);
+
+  React.useEffect(function () {
+    vivantRef.current = true;
+    if (typeof hsListerALaUne === "function") {
+      hsListerALaUne(props && props.userId).then(function (r) {
+        if (!vivantRef.current) return;
+        setUnes((r && r.data) || []);
+      });
+    }
+    return function () { vivantRef.current = false; };
+  }, [(props && props.userId) || ""]);
+
+  /* Le panneau de réglages est réservé au compte de Blandine — pas aux
+     modérateurs : c'est un outil de mise au point, pas une fonctionnalité. */
+  React.useEffect(function () {
+    var vivant = true;
+    try {
+      if (typeof utilisateurActuel === "function") {
+        utilisateurActuel().then(function (u) {
+          if (!vivant) return;
+          setEstFeinn(typeof estCompteFeinnHype === "function" ? !!estCompteFeinnHype(u) : false);
+        }).catch(function () { });
+      }
+    } catch (e) { }
+    return function () { vivant = false; };
+  }, []);
+
+  function poser(champ, valeur) {
+    var n = { voile: reg.voile, desat: reg.desat, nappe: reg.nappe, couleur: reg.couleur, fondu: reg.fondu, adapt: reg.adapt };
+    n[champ] = valeur;
+    setReg(n); hsMurEnregistrer(n);
+  }
+
+  /* Rien à montrer : le mur ne s'affiche pas du tout, comme le rail. Une page
+     ne porte pas un bloc vide (règle d'espace de la Design Bible) — et un
+     décor seul, sans une seule photo, ne raconte rien du cavalier. */
+  if (!unes.length) return null;
+
+  var fondu = HS_MUR_FONDUS[reg.fondu] || HS_MUR_FONDUS[3];
+  var coul = HS_MUR_COULEURS[reg.couleur] || HS_MUR_COULEURS[2];
+
+  function chips(libelle, champ, valeurs, courant, etiquettes) {
+    return h("div", { style: { marginBottom: 13 } },
+      h("div", { style: { fontSize: 9, fontFamily: M, fontWeight: 800, letterSpacing: 1.5, textTransform: "uppercase", color: tA(0.9), marginBottom: 7 } }, libelle),
+      h("div", { style: { display: "flex", gap: 6 } },
+        valeurs.map(function (v, i) {
+          var actif = (courant === v);
+          return h("button", {
+            key: champ + v,
+            onClick: function () { poser(champ, v); },
+            style: {
+              flex: "1 1 0", minWidth: 0, padding: "9px 2px", borderRadius: 11, cursor: "pointer",
+              fontFamily: M, fontSize: 11.5, fontWeight: 700,
+              color: actif ? tnL : "#8A969C",
+              border: "1px solid " + (actif ? tA(0.75) : "rgba(255,255,255,0.10)"),
+              background: actif ? tA(0.14) : "rgba(255,255,255,0.03)"
+            }
+          }, etiquettes ? etiquettes[i] : String(v));
+        })));
+  }
+
+  var lignes = unes.slice(0, 4).map(function (a, i) {
+    var tr = HS_MUR_TROUS[i];
+    if (!tr) return null;
+    var couvBrut = a.couverture || (a.photos || [])[0] || null;
+    var couv = couvBrut;
+    if (couv && typeof vignetteHype === "function") couv = vignetteHype(couv, 520, 700);
+    var petit = (tr.w * tr.h) < 380;                 /* seul le petit du centre */
+    var mk = hsMurMasque(fondu, !!reg.adapt && petit);
+
+    return h("button", {
+      key: "mur" + a.id,
+      onClick: function () { hsAmorcerAudio(); setOuverte(a); },
+      style: {
+        position: "absolute", left: tr.l + "%", top: tr.t + "%", width: tr.w + "%", height: tr.h + "%",
+        padding: 0, margin: 0, border: "none", background: "none", cursor: "pointer",
+        overflow: "hidden", borderRadius: "5%", WebkitAppearance: "none"
+      }
+    },
+      h("div", {
+        style: {
+          position: "absolute", left: 0, top: 0, width: "100%", height: "100%",
+          isolation: "isolate",
+          WebkitMaskImage: mk || "none", maskImage: mk || "none"
+        }
+      },
+        couv
+          ? h("img", {
+            src: couv, alt: "", loading: "lazy",
+            onError: function (ev) { try { hsVignetteCassee(ev, couvBrut); } catch (e) { } },
+            style: { width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "saturate(" + Math.max(0, 1 - (reg.desat / 100)) + ")" }
+          })
+          : h("div", { style: { width: "100%", height: "100%", background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } },
+            h("span", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, color: tnL } }, String(a.nom || "?").charAt(0).toUpperCase())),
+        h("div", { style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", background: "#070A0E", opacity: reg.voile / 100, pointerEvents: "none" } }),
+        h("div", { style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", background: coul.hex, opacity: reg.nappe / 100, mixBlendMode: "color", pointerEvents: "none" } })),
+
+      /* Le nom vit HORS du conteneur masqué : sinon le fondu l'éteindrait. */
+      h("div", {
+        style: {
+          position: "absolute", left: 0, right: 0, bottom: "6%", textAlign: "center",
+          fontFamily: M, fontSize: 11, fontWeight: 700, color: "#F4F7FA",
+          textShadow: "0 2px 10px rgba(0,0,0,0.78)", padding: "0 7px",
+          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", pointerEvents: "none"
+        }
+      }, a.nom || ""));
+  });
+
+  return h("div", { style: { padding: (props && props.padding) || "6px 0 10px" } },
+    h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0 16px 9px" } },
+      h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.8, textTransform: "uppercase", color: tA(0.9) } }, hsT("aLaUne", lg)),
+      estFeinn
+        ? h("button", {
+          onClick: function () { setPanneau(true); },
+          style: { background: "none", border: "none", padding: "0 0 0 10px", cursor: "pointer", fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 0.6, color: tA(0.55) }
+        }, "réglages")
+        : null),
+
+    /* Le carré. paddingTop 100 % plutôt qu'aspect-ratio : le format tient sur
+       tous les Safari, sans dépendre d'une version. */
+    h("div", { style: { position: "relative", margin: "0 16px", borderRadius: 20, overflow: "hidden", background: "#060709" } },
+      h("div", { style: { width: "100%", paddingTop: "100%" } }),
+
+      /* 1. Le décor flou et agrandi : c'est lui qui BOUCHE les trous restés
+            vides (choix de Blandine : « décor plein »). Agrandi de 14 % pour
+            qu'un trou du fond ne retombe jamais sur un trou du dessus. */
+      h("img", {
+        src: HS_MUR_IMAGE, alt: "", "aria-hidden": "true",
+        style: { position: "absolute", left: "-7%", top: "-7%", width: "114%", height: "114%", objectFit: "cover", filter: "blur(16px) saturate(0.88)", pointerEvents: "none" }
+      }),
+
+      /* 2. Les encarts. */
+      lignes,
+
+      /* 3. Le décor net et ses liserés, par-dessus tout, non tapable. */
+      h("img", {
+        src: HS_MUR_IMAGE, alt: "",
+        style: { position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none" }
+      })),
+
+    /* LE PANNEAU DE RÉGLAGES — compte de Blandine uniquement. En position
+       fixed, jamais en absolute : un z-index ne vaut que dans son propre plan. */
+    (panneau && estFeinn)
+      ? ReactDOM.createPortal(
+        h("div", {
+          onClick: function () { setPanneau(false); },
+          style: { position: "fixed", left: 0, top: 0, right: 0, bottom: 0, zIndex: 9200, background: "rgba(4,6,8,0.62)", display: "flex", alignItems: "flex-end" }
+        },
+          h("div", {
+            onClick: function (ev) { ev.stopPropagation(); },
+            style: {
+              width: "100%", maxHeight: "76vh", overflowY: "auto",
+              padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)",
+              borderTopLeftRadius: 22, borderTopRightRadius: 22,
+              borderTop: "1px solid " + tA(0.28),
+              background: "linear-gradient(180deg, rgba(19,24,29,0.99), rgba(8,11,15,0.99))"
+            }
+          },
+            h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 15 } },
+              h("div", { style: { fontFamily: C, fontSize: 17, fontWeight: 700, color: "#F4F7FA" } }, "Le mur immersif"),
+              h("button", { onClick: function () { setPanneau(false); }, style: { background: "none", border: "none", cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: 700, color: tA(0.85) } }, "Fermer")),
+
+            chips("Voile · assombrit", "voile", [0, 15, 22, 35, 50, 60], reg.voile),
+            chips("Désature · retire la couleur", "desat", [0, 25, 40, 60, 80, 100], reg.desat),
+            chips("Nappe · au-delà de 60 elle efface", "nappe", [0, 20, 40, 60, 80, 100], reg.nappe),
+            chips("Couleur de la nappe", "couleur", [0, 1, 2, 3, 4], reg.couleur, ["Nuit", "Ardoise", "Pétrole", "Lagune", "Turquoise"]),
+            chips("Fondu des bords", "fondu", [0, 1, 2, 3], reg.fondu, ["Aucun", "Doux", "Moyen", "Large"]),
+
+            h("button", {
+              onClick: function () { poser("adapt", !reg.adapt); },
+              style: {
+                width: "100%", padding: "11px 12px", borderRadius: 13, cursor: "pointer", marginTop: 2,
+                textAlign: "left", fontFamily: M, fontSize: 11.5, fontWeight: 600,
+                color: reg.adapt ? tnL : "#8A969C",
+                border: "1px solid " + (reg.adapt ? tA(0.7) : "rgba(255,255,255,0.10)"),
+                background: reg.adapt ? tA(0.12) : "rgba(255,255,255,0.03)"
+              }
+            }, (reg.adapt ? "◉  " : "○  ") + "Fondu adouci sur le petit emplacement"),
+
+            h("div", { style: { fontFamily: M, fontSize: 10.5, lineHeight: 1.5, color: "#79858B", margin: "12px 2px 14px" } },
+              "Le réglage est gardé sur cet appareil et ne change rien pour les autres cavaliers. Le panneau n'est visible que par toi."),
+
+            h("button", {
+              onClick: function () { var d = { voile: HS_MUR_DEFAUTS.voile, desat: HS_MUR_DEFAUTS.desat, nappe: HS_MUR_DEFAUTS.nappe, couleur: HS_MUR_DEFAUTS.couleur, fondu: HS_MUR_DEFAUTS.fondu, adapt: HS_MUR_DEFAUTS.adapt }; setReg(d); hsMurEnregistrer(d); },
+              style: { width: "100%", padding: "11px 12px", borderRadius: 13, cursor: "pointer", fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "#8A969C", border: "1px solid rgba(255,255,255,0.10)", background: "rgba(255,255,255,0.03)" }
+            }, "Rétablir le réglage de départ"))),
+        document.body)
+      : null,
+
+    /* Une à la une se relit avec la MÊME visionneuse que les stories, en mode
+       album — exactement comme le rail. Aucune seconde visionneuse. */
+    ouverte
+      ? h(VisionneuseStories, {
+        groupes: [{
+          user_id: "album:" + ouverte.id,
+          pseudo: ouverte.nom || hsT("aLaUne", lg),
+          avatar_url: ouverte.couverture || null,
+          ecurie: "",
+          stories: (ouverte.photos || []).map(function (u, k) { return { id: "alb" + ouverte.id + "-" + k, photo_url: u }; })
+        }],
+        depart: 0, moiId: null, premium: !!(app && app.premium), langue: lg, mode: "album",
+        onFermer: function () { setOuverte(null); }
+      })
+      : null);
+}
+
+/* ---------------------------------------------------------------------------
    8. LE CHOIX DE L'À LA UNE AU MOMENT DE GARDER
    Décision de Blandine du 12/08 : « Garder demande dans laquelle ranger ».
 --------------------------------------------------------------------------- */
@@ -5365,6 +5685,7 @@ try {
   if (typeof window !== "undefined") {
     window.BandeauStories = BandeauStories;
     window.RailALaUne = RailALaUne;
+    window.MurImmersif = MurImmersif;
     window.PastilleMusiquePage = PastilleMusiquePage;
     window.ChoixALaUne = ChoixALaUne;
     window.ModifierStory = ModifierStory;
