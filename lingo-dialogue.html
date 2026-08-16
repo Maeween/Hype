@@ -284,9 +284,22 @@ var CHAP = null, DIAL = null, MOTS = {};
 function lireLexiques(){
   DIAL = null; MOTS = {};
   LEX = window.HYPE_LINGO_LEX || {};
+  /* 🟥 16/08 : UN FICHIER PEUT PORTER PLUSIEURS DIALOGUES. `dressage`
+     en a deux — `dialogue` pour WINDSOR (le concours) et
+     `dialogueVersailles` pour VERSAILLES (l'art equestre). On balaie
+     donc toutes les cles commencant par `dialogue`.
+     ⚠️ Le meme correctif existe dans `aUnDialogue()` de lingo.html :
+     les deux doivent rester d'accord, sinon le bouton s'affiche et la
+     page fille ne trouve rien. NE PAS revenir a la seule cle
+     `dialogue` d'un cote sans l'autre. */
   for(var k in LEX){
-    var d = LEX[k] && LEX[k].dialogue;
-    if(d && d.ville === REF_VILLE && d.phrases && d.phrases.length){ CHAP = LEX[k]; DIAL = d; break; }
+    if(!LEX[k]) continue;
+    for(var c in LEX[k]){
+      if(c.indexOf("dialogue") !== 0) continue;
+      var d = LEX[k][c];
+      if(d && d.ville === REF_VILLE && d.phrases && d.phrases.length){ CHAP = LEX[k]; DIAL = d; break; }
+    }
+    if(DIAL) break;
   }
   /* la table des mots, toutes langues, pour les conseils et le SOS.
      On lit TOUS les chapitres : une phrase peut employer un mot d'une

@@ -370,6 +370,30 @@ window.HYPE_LINGO_LEX.dressage = {
           de:"Eine eigene Note im Protokoll. ⚠️ Das Wort täuscht in jeder Sprache: Gemeint ist nicht passiver Gehorsam, sondern Aufmerksamkeit und Durchlässigkeit — ein erloschenes Pferd bekommt hier schlechte Noten.",
           ja:"採点表の独立した項目。⚠️ この言葉はどの言語でも誤解を招きます。受け身の服従ではなく、注意深さと応じる姿勢のこと — 覇気のない馬は、むしろこの項目で減点されます。" } },
 
+  /* ================================================================
+     LA TÊTE AU MUR — ajoutée le 16/08/2026, session 214, pour
+     VERSAILLES (33e ville, qui reçoit la leçon 3). Blandine voulait des
+     phrases sur les mouvements latéraux : cession, appuyer, épaule en
+     dedans ET tête au mur. Les trois premiers existaient déjà en
+     leçon 2 ; la tête au mur, NON — seule entrée manquante.
+     🟥 LEÇON 2 ET NON 3, exprès : elle va avec l'épaule en dedans dont
+     elle est le miroir, et elle reste donc chez WINDSOR. Versailles
+     l'emploie dans son dialogue sans la posséder — choix B de Blandine,
+     pour ne RIEN retirer à Windsor. Le voyage passe par Windsor AVANT
+     Versailles : le mot arrive donc déjà croisé.
+     ================================================================ */
+
+  { ref:"tete-au-mur", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"la tête au mur"}, en:{m:"travers", p:"tra-vèr", var:"head to the wall"},
+           es:{m:"la grupa adentro"}, it:{m:"il travers"},
+           de:{m:"das Traversale", p:"tra-vèr-za-le", var:"Kruppeherein"}, ja:{m:"トラバース", p:"torabāsu"} },
+    def:{ fr:"L'inverse de l'épaule en dedans : ce sont les HANCHES qui rentrent, les épaules restant sur la piste. Le cheval regarde où il va, incurvé du côté du déplacement. ⚠️ L'anglais garde le mot FRANÇAIS, « travers » — comme pour « appuyer » qui devient « half-pass ». Le français dit aussi « croupe au mur », c'est le même mouvement.",
+          en:"The opposite of shoulder-in: the HIPS come in, the shoulders stay on the track, and the horse looks where he's going. English keeps the French word, « travers ».",
+          es:"Lo contrario de la espalda adentro: entra la GRUPA, las espaldas se quedan en la pista, y el caballo mira hacia donde va.",
+          it:"Il contrario della spalla in dentro: entrano le ANCHE, le spalle restano in pista, e il cavallo guarda dove va.",
+          de:"Das Gegenteil vom Schulterherein: die HANKEN kommen herein, die Schultern bleiben auf dem Hufschlag, und das Pferd schaut in die Bewegungsrichtung.",
+          ja:"ショルダーインの逆。肩は蹄跡に残したまま、腰を内側に入れます。馬は進行方向を見ます。" } },
+
   { ref:"permeabilite", lecon:3, coll:"qualites",
     mots:{ fr:{m:"la perméabilité aux aides"}, en:{m:"throughness", p:"srou-neuss", var:"Durchlässigkeit"},
            es:{m:"la permeabilidad"}, it:{m:"la permeabilità"},
@@ -867,6 +891,262 @@ window.HYPE_LINGO_LEX.dressage = {
         it:"Che percentuale ho fatto?",
         de:"Wie viel Prozent habe ich bekommen?",
         ja:"得点率 は 何 パーセント でし た か ?" }
+    ]
+  },
+  /* ==================================================================
+     LE DIALOGUE DE VERSAILLES — 16 août 2026, session 214.
+     ⚠️ CE FICHIER PORTE DEUX DIALOGUES. `dialogue` = WINDSOR (le
+     concours). `dialogueVersailles` = VERSAILLES (l'art équestre).
+     C'est voulu : le fichier contenait déjà les deux matières, séparées
+     par leçon. NE PAS fusionner les deux dialogues.
+
+     LA SCÈNE : une leçon à l'Académie équestre, dans la Grande Écurie
+     du Roi. 🟥 SEUL DIALOGUE OÙ L'ON NE DEMANDE RIEN DE PRATIQUE — ni
+     horaire, ni réservation, ni matériel. On pose des questions sur des
+     NOTIONS et on reçoit des réponses qui font SENTIR. C'est ce que le
+     code disait déjà de Saumur : « le chapitre porte sur des notions
+     (timing, ressenti), pas sur des objets à nommer. On y parle. »
+
+     🟥 CE QUE BLANDINE A FAIT RETIRER : « combien de temps il faut pour
+     arriver là ? », « des années, et on ne finit jamais », « est-ce que
+     je peux revenir voir ? » — « on s'en fout ». De la philosophie, pas
+     de la langue. Remplacé par LES FIGURES, à sa demande.
+     NE PAS remettre les phrases philosophiques.
+
+     🟥 « CHAQUE NOTION DOIT AVOIR UNE PHRASE » — sa règle. Les DIX mots
+     de la leçon 3 sont tous employés.
+
+     ⚠️ LES TROIS DÉFINITIONS OFFICIELLES, demandées par elle :
+     · RASSEMBLER — elle a REFUSÉ la version courte (« le report du poids
+       sur l'arrière-main ») : « garde celle plus complète avec
+       l'abaissement des hanches c'est indispensable ». Sans les hanches
+       on ne dit pas COMMENT le poids passe derrière. NE PAS raccourcir.
+     · SOUMISSION — ce n'est PAS l'obéissance : attention et confiance,
+       acceptation sans tension ni résistance. C'est ainsi que le
+       protocole la note.
+     · PERMÉABILITÉ — laisser passer l'aide À TRAVERS le corps.
+       Allemand : Durchlässigkeit, « laisser-passer ». Anglais :
+       throughness.
+
+     ⚠️ LES FIGURES SONT EN LEÇON 2, DONC CHEZ WINDSOR — choix B de
+     Blandine : Versailles les emploie sans les posséder, pour ne rien
+     retirer à Windsor. Le voyage passe par Windsor AVANT Versailles.
+     `tete-au-mur` ajoutée le même jour (seule des cinq qui manquait).
+
+     `dit` : "joueuse" = elle produit · "club" = l'écuyère qui enseigne.
+  ================================================================== */
+  dialogueVersailles: {
+    ville: "versailles", lecon: 3, temps: 6, langues: ["fr","en","es","it","de","ja"],
+
+    phrases: [
+
+      { ref:"dv-assister-reprise", temps:1, dit:"joueuse", mots:[],
+        fr:"Est-ce qu'on peut assister à la reprise ?",
+        en:"Can we watch the lesson?",
+        es:"¿Se puede asistir a la clase?",
+        it:"Si può assistere alla ripresa?",
+        de:"Kann man bei der Stunde zuschauen?",
+        ja:"稽古 を 見学 でき ます か ?" },
+
+      { ref:"dv-r-en-silence", temps:1, dit:"club", mots:[],
+        fr:"On travaille en silence, vous vous asseyez où vous voulez.",
+        en:"We work in silence — sit wherever you like.",
+        es:"Trabajamos en silencio, siéntese donde quiera.",
+        it:"Si lavora in silenzio, si sieda dove vuole.",
+        de:"Wir arbeiten in Stille, setzen Sie sich, wohin Sie möchten.",
+        ja:"静か に 稽古 し ます。 どこ に 座っ て も 構い ませ ん。" },
+
+      { ref:"dv-r-ecoutez-cadence", temps:2, dit:"club", mots:["cadence"],
+        fr:"Écoutez la cadence : c'est elle qui doit rester la même, pas la vitesse.",
+        en:"Listen to the rhythm — that's what has to stay the same, not the speed.",
+        es:"Escuche la cadencia: es ella la que debe quedar igual, no la velocidad.",
+        it:"Ascolti la cadenza: è lei che deve restare uguale, non la velocità.",
+        de:"Hören Sie auf den Takt — er muss gleich bleiben, nicht das Tempo.",
+        ja:"リズム を 聴い て ください。 同じ に 保つ の は リズム で あっ て、 速さ で は あり ませ ん。" },
+
+      { ref:"dv-trop-vite", temps:2, dit:"joueuse", mots:["cadence"],
+        fr:"Est-ce que je vais trop vite ?",
+        en:"Am I going too fast?",
+        es:"¿Voy demasiado rápido?",
+        it:"Sto andando troppo veloce?",
+        de:"Reite ich zu schnell?",
+        ja:"速 すぎ ます か ?" },
+
+      { ref:"dv-r-pas-decontracte", temps:2, dit:"club", mots:["decontraction"],
+        fr:"Vous allez vite parce qu'il n'est pas décontracté. Ralentissez dans votre tête d'abord.",
+        en:"You're fast because he isn't relaxed. Slow down in your own head first.",
+        es:"Va rápido porque él no está relajado. Frene primero en su cabeza.",
+        it:"Va veloce perché lui non è decontratto. Rallenti prima nella sua testa.",
+        de:"Sie sind schnell, weil er nicht losgelassen ist. Werden Sie erst im Kopf langsamer.",
+        ja:"馬 が リラックス し て い ない から 速い の です。 まず 自分 の 頭 の 中 で ゆっくり に し て ください。" },
+
+      { ref:"dv-impression-tirer", temps:3, dit:"joueuse", mots:["contact"],
+        fr:"J'ai l'impression de tirer.",
+        en:"I feel like I'm pulling.",
+        es:"Tengo la impresión de tirar.",
+        it:"Ho l'impressione di tirare.",
+        de:"Ich habe das Gefühl, dass ich ziehe.",
+        ja:"引っ張っ て いる 気 が し ます。" },
+
+      { ref:"dv-r-il-vient-chercher", temps:3, dit:"club", mots:["contact"],
+        fr:"Le contact, c'est lui qui vient le chercher — vous, vous le tenez, vous ne le prenez pas.",
+        en:"He's the one who goes looking for the contact — you hold it, you don't take it.",
+        es:"El contacto es él quien lo busca: usted lo sostiene, no lo toma.",
+        it:"Il contatto è lui che lo cerca: lei lo tiene, non lo prende.",
+        de:"Die Anlehnung sucht er — Sie halten sie, Sie nehmen sie nicht.",
+        ja:"ハミ受け は 馬 の ほう から 求め て くる もの です。 あなた は 保つ だけ で、 取り に いく の で は あり ませ ん。" },
+
+      { ref:"dv-r-impulsion-pas-vitesse", temps:4, dit:"club", mots:["impulsion"],
+        fr:"L'impulsion, ce n'est pas la vitesse. C'est l'envie d'aller en avant.",
+        en:"Impulsion isn't speed. It's the wish to go forward.",
+        es:"La impulsión no es la velocidad. Es el deseo de ir hacia adelante.",
+        it:"L'impulso non è la velocità. È la voglia di andare avanti.",
+        de:"Schwung ist nicht Tempo. Es ist der Wille, vorwärts zu gehen.",
+        ja:"推進 は 速さ で は あり ませ ん。 前 に 出 たい と いう 気持ち です。" },
+
+      { ref:"dv-comment-savoir-impulsion", temps:4, dit:"joueuse", mots:["impulsion"],
+        fr:"Comment je sais qu'il a de l'impulsion ?",
+        en:"How do I know he has impulsion?",
+        es:"¿Cómo sé que tiene impulsión?",
+        it:"Come faccio a sapere se ha impulso?",
+        de:"Woran merke ich, dass er Schwung hat?",
+        ja:"推進 が ある か どう か、 どう やって わかり ます か ?" },
+
+      { ref:"dv-r-ferme-la-jambe", temps:4, dit:"club", mots:["impulsion"],
+        fr:"Quand vous fermez la jambe et qu'il répond sans que vous ayez à insister.",
+        en:"When you close your leg and he answers without you having to insist.",
+        es:"Cuando cierra la pierna y responde sin que tenga que insistir.",
+        it:"Quando chiude la gamba e lui risponde senza che debba insistere.",
+        de:"Wenn Sie den Schenkel schließen und er antwortet, ohne dass Sie nachfassen müssen.",
+        ja:"脚 を 使っ た とき、 念 を 押さ なく て も 反応 する とき です。" },
+
+      { ref:"dv-permeabilite", temps:4, dit:"joueuse", mots:["permeabilite"],
+        fr:"Et la perméabilité ?",
+        en:"And throughness?",
+        es:"¿Y la permeabilidad?",
+        it:"E la permeabilità?",
+        de:"Und die Durchlässigkeit?",
+        ja:"透過性 と は 何 です か ?" },
+
+      { ref:"dv-r-aide-traverse", temps:4, dit:"club", mots:["permeabilite"],
+        fr:"Que l'aide passe à travers lui sans qu'il la bloque. De la main jusqu'aux postérieurs, et retour.",
+        en:"That the aid goes through him without being blocked — from your hand to his hind legs, and back.",
+        es:"Que la ayuda lo atraviese sin que la bloquee: de la mano a los posteriores, y de vuelta.",
+        it:"Che l'aiuto lo attraversi senza che lui lo blocchi: dalla mano ai posteriori, e ritorno.",
+        de:"Dass die Hilfe durch ihn hindurchgeht, ohne blockiert zu werden — von der Hand bis zur Hinterhand und zurück.",
+        ja:"扶助 が 馬 の 体 を 通り抜け、 止め られ ない こと。 手 から 後肢 まで、 そして 戻っ て くる まで。" },
+
+      { ref:"dv-legerete-cest-quoi", temps:5, dit:"joueuse", mots:["legerete"],
+        fr:"Qu'est-ce que ça veut dire, la légèreté ?",
+        en:"What does lightness actually mean?",
+        es:"¿Qué quiere decir la ligereza?",
+        it:"Che cosa vuol dire la leggerezza?",
+        de:"Was bedeutet Leichtigkeit eigentlich?",
+        ja:"軽さ と は どう いう こと です か ?" },
+
+      { ref:"dv-r-tout-lacher", temps:5, dit:"club", mots:["legerete"],
+        fr:"Que vous pourriez tout lâcher, et qu'il continuerait pareil.",
+        en:"That you could let everything go, and he'd carry on just the same.",
+        es:"Que podría soltarlo todo y él seguiría igual.",
+        it:"Che potrebbe lasciare tutto, e lui continuerebbe uguale.",
+        de:"Dass Sie alles loslassen könnten und er genauso weiterginge.",
+        ja:"すべて を 手放し て も、 馬 が そのまま 続け られる、 と いう こと です。" },
+
+      { ref:"dv-il-est-droit", temps:5, dit:"joueuse", mots:["rectitude"],
+        fr:"Il est droit, là ?",
+        en:"Is he straight now?",
+        es:"¿Está derecho ahora?",
+        it:"È dritto, adesso?",
+        de:"Ist er jetzt gerade?",
+        ja:"今、 まっすぐ です か ?" },
+
+      { ref:"dv-r-pousse-a-gauche", temps:5, dit:"club", mots:["rectitude","incurvation"],
+        fr:"Presque. Il pousse un peu plus à gauche, vous le sentez ?",
+        en:"Almost. He's pushing a little more to the left — can you feel it?",
+        es:"Casi. Empuja un poco más a la izquierda, ¿lo siente?",
+        it:"Quasi. Spinge un po' di più a sinistra, lo sente?",
+        de:"Fast. Er schiebt etwas mehr nach links — spüren Sie das?",
+        ja:"ほぼ。 左 に 少し 押し て い ます。 感じ ます か ?" },
+
+      { ref:"dv-rassembler-cest-quoi", temps:5, dit:"joueuse", mots:["rassembler"],
+        fr:"Le rassembler, c'est quoi exactement ?",
+        en:"What exactly is collection?",
+        es:"¿Qué es exactamente la reunión?",
+        it:"Che cos'è esattamente il raccogliere?",
+        de:"Was genau ist Versammlung?",
+        ja:"収縮 と は 具体的 に 何 です か ?" },
+
+      { ref:"dv-r-def-rassembler", temps:5, dit:"club", mots:["rassembler","impulsion"],
+        fr:"Il engage plus ses postérieurs, il abaisse les hanches, et son avant-main s'allège. Il devient plus court et plus haut — mais jamais plus lent.",
+        en:"He engages his hind legs more, lowers his haunches, and his forehand lightens. He becomes shorter and taller — but never slower.",
+        es:"Engancha más los posteriores, baja las ancas y su tercio anterior se aligera. Se hace más corto y más alto, pero nunca más lento.",
+        it:"Impegna di più i posteriori, abbassa le anche e l'avantreno si alleggerisce. Diventa più corto e più alto — ma mai più lento.",
+        de:"Er tritt mehr unter, senkt die Hanken, und die Vorhand wird leichter. Er wird kürzer und höher — aber nie langsamer.",
+        ja:"後肢 を より 深く 踏み込み、 腰 を 下げ、 前躯 が 軽く なり ます。 短く 高く なり ます が、 遅く は なり ませ ん。" },
+
+      { ref:"dv-soumission-obeit", temps:5, dit:"joueuse", mots:["soumission"],
+        fr:"La soumission, ça veut dire qu'il obéit ?",
+        en:"Does submission mean he obeys?",
+        es:"¿La sumisión quiere decir que obedece?",
+        it:"La sottomissione vuol dire che obbedisce?",
+        de:"Heißt Gehorsam, dass er folgt?",
+        ja:"従順 と は、 命令 に 従う と いう こと です か ?" },
+
+      { ref:"dv-r-def-soumission", temps:5, dit:"club", mots:["soumission","decontraction"],
+        fr:"Non : qu'il accepte. Attention et confiance, sans tension ni résistance. Un cheval qui obéit contraint n'est pas soumis.",
+        en:"No — that he accepts. Attention and confidence, without tension or resistance. A horse who obeys under duress isn't submissive.",
+        es:"No: que acepta. Atención y confianza, sin tensión ni resistencia. Un caballo que obedece forzado no es sumiso.",
+        it:"No: che accetta. Attenzione e fiducia, senza tensione né resistenza. Un cavallo che obbedisce costretto non è sottomesso.",
+        de:"Nein — dass er annimmt. Aufmerksamkeit und Vertrauen, ohne Spannung oder Widerstand. Ein Pferd, das gezwungen folgt, ist nicht gehorsam.",
+        ja:"いいえ、 受け入れる と いう こと です。 緊張 も 抵抗 も なく、 注意 と 信頼 が ある 状態。 強い られ て 従う 馬 は 従順 で は あり ませ ん。" },
+
+      { ref:"dv-commence-cession", temps:6, dit:"joueuse", mots:[], motsAilleurs:["cession-jambe"],
+        fr:"On commence par la cession à la jambe ?",
+        en:"Do we start with leg-yield?",
+        es:"¿Empezamos por la cesión a la pierna?",
+        it:"Cominciamo con la cessione alla gamba?",
+        de:"Fangen wir mit Schenkelweichen an?",
+        ja:"脚に譲る 運動 から 始め ます か ?" },
+
+      { ref:"dv-r-cession-puis-epaule", temps:6, dit:"club", mots:["rectitude"], motsAilleurs:["cession-jambe","epaule-dedans"],
+        fr:"Cession d'abord, puis épaule en dedans quand il sera droit.",
+        en:"Leg-yield first, then shoulder-in once he's straight.",
+        es:"Primero cesión, después espalda adentro cuando esté derecho.",
+        it:"Prima cessione, poi spalla in dentro quando sarà dritto.",
+        de:"Erst Schenkelweichen, dann Schulterherein, wenn er gerade ist.",
+        ja:"まず 脚に譲る 運動、 まっすぐ に なっ たら ショルダーイン です。" },
+
+      { ref:"dv-appuyer-pareil", temps:6, dit:"joueuse", mots:[], motsAilleurs:["appuyer","cession-jambe"],
+        fr:"Est-ce que l'appuyer se demande de la même façon ?",
+        en:"Is half-pass asked for in the same way?",
+        es:"¿La apoyada se pide de la misma manera?",
+        it:"L'appoggiata si chiede allo stesso modo?",
+        de:"Verlangt man die Traversale genauso?",
+        ja:"ハーフパス も 同じ よう に 求め ます か ?" },
+
+      { ref:"dv-r-regarde-ou-il-va", temps:6, dit:"club", mots:["incurvation"], motsAilleurs:["appuyer","cession-jambe"],
+        fr:"Non : dans l'appuyer il regarde où il va, dans la cession il regarde ailleurs.",
+        en:"No — in half-pass he looks where he's going; in leg-yield he looks away.",
+        es:"No: en la apoyada mira hacia donde va, en la cesión mira al otro lado.",
+        it:"No: nell'appoggiata guarda dove va, nella cessione guarda altrove.",
+        de:"Nein — in der Traversale schaut er in die Richtung, im Schenkelweichen schaut er weg.",
+        ja:"いいえ。 ハーフパス で は 進む 方向 を 見 ます が、 脚に譲る 運動 で は 反対 を 向き ます。" },
+
+      { ref:"dv-tete-au-mur-inverse", temps:6, dit:"joueuse", mots:[], motsAilleurs:["tete-au-mur","epaule-dedans"],
+        fr:"La tête au mur, c'est l'inverse de l'épaule en dedans ?",
+        en:"Is travers the opposite of shoulder-in?",
+        es:"¿La grupa adentro es lo contrario de la espalda adentro?",
+        it:"Il travers è il contrario della spalla in dentro?",
+        de:"Ist das Traversale das Gegenteil vom Schulterherein?",
+        ja:"トラバース は ショルダーイン の 逆 です か ?" },
+
+      { ref:"dv-r-hanches-interieur", temps:6, dit:"club", mots:["incurvation"], motsAilleurs:["tete-au-mur","epaule-dedans"],
+        fr:"Oui, les hanches à l'intérieur au lieu des épaules.",
+        en:"Yes — the hips come in instead of the shoulders.",
+        es:"Sí, la grupa adentro en lugar de las espaldas.",
+        it:"Sì, le anche all'interno invece delle spalle.",
+        de:"Ja, die Hanken kommen herein statt der Schultern.",
+        ja:"はい。 肩 の 代わり に 腰 が 内側 に 入り ます。" }
     ]
   }
 };

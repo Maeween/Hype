@@ -2694,7 +2694,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-cheval.js?l=4"></script>
 <script src="hype-lingo-lex-materiel.js?l=4"></script>
 <script src="hype-lingo-lex-cours.js?l=3"></script>
-<script src="hype-lingo-lex-dressage.js?l=4"></script>
+<script src="hype-lingo-lex-dressage.js?l=5"></script>
+<!-- 🟥 16/08 : LE CHAPITRE DE L'ENSEIGNANT, pour SAUMUR. Le role
+     « enseignant » etait annonce depuis le 6 aout dans lex-cours.js
+     mais n'avait aucune ville. Saumur a perdu la lecon 3 de dressage
+     (partie a Versailles) le meme jour : sans ce fichier elle serait
+     VIDE. -->
+<script src="hype-lingo-lex-enseignant.js?l=1"></script>
 <!-- ⚠️ ?l=4 : definition du vertical corrigee le 11/08 (erreur de fond
      relevee par Blandine : on S'ELOIGNE d'un vertical, on ne s'en
      rapproche pas — c'est a l'oxer qu'on vient plus pres). -->
@@ -3393,7 +3399,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=38";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
+var VER = "?v=39";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
                         etait un autre rendu (1000x1500, SANS transparence) alors que
                         `ARCHES.gauchebiais` avait ete mesure sur la bonne image ; la
                         vue du pays ne pouvait donc pas passer dans l'arche.
@@ -3523,6 +3529,31 @@ var ETAPES = [
     `forme` et `ic` réutilisent les silhouettes et icônes existantes — il n'y
     en a que dix, et en créer huit de plus n'apporterait rien tant que le
     dessin du chemin n'est pas remplacé. */
+ /* 🟥 VERSAILLES — 33e ville, creee le 16/08/2026, session 214.
+    Decision de Blandine, apres un raisonnement qui a demele trois
+    chapitres : « on envoie le dressage a Versailles et l'enseignement
+    a Saumur ». Puis, decisif : « le dressage de Saumur porte sur des
+    themes bcp plus techniques et Windsor traitait de concours de
+    dressage ».
+    LA REPARTITION QUI EN DECOULE, a ne pas defaire :
+    · WINDSOR garde LE CONCOURS de dressage (rectangle, lettres, juge,
+      protocole, erreur de parcours, pourcentage). Inchangee.
+    · VERSAILLES recoit la LECON 3 de `dressage` — les notions d'art
+      equestre : cadence, decontraction, contact, impulsion, rectitude,
+      rassembler, incurvation, legerete, soumission, permeabilite.
+      C'est l'Academie equestre de Bartabas, dans la Grande Ecurie du
+      Roi : une ECOLE, ou la transmission est le sujet meme.
+    · SAUMUR perd cette lecon et recevra L'ENSEIGNEMENT, dans un
+      fichier neuf. Le Cadre noir est l'ecole des enseignants francais.
+    ⚠️ Versailles et Saumur portent des choses PROCHES — l'art d'un
+    cote, sa transmission de l'autre. Veiller a ce que leurs dialogues
+    ne se marchent pas dessus.
+    ⚠️ PLACEE JUSTE AVANT SAUMUR, sur sa demande : l'art et sa
+    transmission se suivent.
+    Souvenir : un couvre-reins royal. ⚠️ « couvre-reins » et non
+    « caparaçon » — le mot d'ecurie, celui qu'une cavaliere emploie
+    vraiment, pas le mot d'apparat. */
+ {ref:"versailles",ch:"L\'art équestre", v:"Versailles",  nat:"France",         h:"06 h 35", ciel:["#0B1220","#C9A24A"], forme:"chateau",  souv:"Un couvre-reins royal",        ic:"couvrerein"},
  {ref:"saumur",    ch:"Le Cadre Noir", v:"Saumur",      nat:"France",         h:"06 h 40", ciel:["#0A1522","#2E3B4E"], forme:"chateau",  souv:"Un lampion du Cadre Noir",     ic:"lampion"},
  {ref:"lamotte",   ch:"Le poney",      v:"Lamotte-Beuvron", nat:"France",     h:"07 h 30", ciel:["#0C1A27","#33455A"], forme:"lande",    souv:"Un flot des championnats",     ic:"flot"}   /* 16/08 : le flot remplace la toise. Blandine : « ou un gros flot des championnats plutot ? » — Lamotte, ce sont les Generali Open de France, et c est exactement ce qu on vient y chercher. La toise etait un instrument de controle, et elle portait le logo FFE. */,
  /* ⚠️ VÉRONE ajoutée le 6 août 2026, étape 21. Le chapitre du COMMERCE
@@ -3731,6 +3762,12 @@ var ETAPES_I18N = {
    souv:{en:"A show jumping flag", es:"Un banderín del concurso",
          it:"Un bandierino del concorso", de:"Ein Turnierfähnchen",
          ja:"障害飛越大会の小旗"}},
+ versailles:{
+   ch:{en:"The art of riding", es:"El arte ecuestre", it:"L'arte equestre",
+       de:"Die Reitkunst", ja:"馬術の芸術"},
+   v:{ja:"ヴェルサイユ"},
+   souv:{en:"A royal quarter sheet", es:"Un cubrerriñones real",
+         it:"Un copri-reni reale", de:"Eine königliche Nierendecke", ja:"王家の腰当て"}},
  saumur:{
    ch:{en:"The Cadre Noir", es:"El Cadre Noir", it:"Il Cadre Noir", de:"Das Cadre Noir", ja:"カドル・ノワール"},
    v:{ja:"ソミュール"},
@@ -4500,6 +4537,8 @@ var ICONES = {
     changement de souvenir de Lamotte (le flot remplace la toise).
     ⚠️ `toise` reste dans cette table : plus utilisee, mais une icone
     orpheline ne coute rien et servira si la toise revient ailleurs. */
+ /* 16/08 : icone du couvre-reins royal (Versailles, 33e ville). */
+ couvrerein:'<path d="M14 18 h32 l-4 22 q-1 6 -12 6 q-11 0 -12 -6 Z M22 26 h16 M30 22 v12 M26 30 h8" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  palmier:'<path d="M30 26 v22 M30 26 q-14 -8 -18 2 M30 26 q14 -8 18 2 M30 26 q-8 -14 2 -16 M30 26 q10 -12 16 -4 M22 48 h16" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/>',
  flot:'<circle cx="30" cy="20" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="20" r="4" fill="none" stroke="#D4AF37" stroke-width="2"/><path d="M24 30 l-3 20 l9 -6 l9 6 l-3 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  cocarde:'<circle cx="30" cy="22" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="22" r="4" fill="#D4AF37"/><path d="M24 32 l-4 20 l10 -7 l10 7 l-4 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
@@ -4541,6 +4580,12 @@ var POURQUOI = {
   it:"Un concorso internazionale in un giardino, dal 1926, tra i pini di Villa Borghese.",
   de:"Ein internationales Turnier in einem Garten, seit 1926, zwischen den Pinien der Villa Borghese.",
   ja:"一九二六年から続く、庭園のなかの国際大会。ボルゲーゼ公園の松のあいだで。"},
+ versailles:{fr:"La Grande Écurie du Roi, et une école où l'équitation est un art qui se transmet.",
+  en:"The King's Great Stables, and a school where riding is an art that is handed down.",
+  es:"La Gran Caballeriza del Rey, y una escuela donde la equitación es un arte que se transmite.",
+  it:"La Grande Scuderia del Re, e una scuola dove l'equitazione è un'arte che si tramanda.",
+  de:"Der Große Marstall des Königs, und eine Schule, in der Reiten eine überlieferte Kunst ist.",
+  ja:"王の大厩舎。馬術が受け継がれる芸術である学校。"},
  saumur:{fr:"Le Cadre Noir, et une équitation qui se transmet depuis deux siècles.",
   en:"The Cadre Noir, and a way of riding handed down for two centuries.",
   es:"El Cadre Noir, y una equitación que se transmite desde dos siglos.",
@@ -4726,7 +4771,7 @@ var NIVEAU_VILLE = {
   kildare:1, jerez:1, vejer:1,
   wellington:2, hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
   warendorf:2, aachen:2, lamotte:2, golega:2, dubai:2, lexington:2, spruce:1, buenos:2, tamworth:2,
-  saumur:3, edimbourg:3, verone:3, tokyo:3,
+  versailles:3, saumur:3, edimbourg:3, verone:3, tokyo:3,
   /* niveau 3 : le chapitre porte sur des notions (timing, ressenti), pas
      sur des objets a nommer. On y parle. */
   santaynez:3
@@ -4833,7 +4878,7 @@ var TH_TXT = {
 var TH_TECH = {
   labaule:2, maurice:1, connemara:2, newmarket:3, lambourn:3, aberystwyth:2,
   kildare:3, walsall:3, wellington:4, hickstead:4, badminton:4, windsor:4, burghley:4,
-  edimbourg:3, saumur:5, lamotte:2, golega:4, jerez:4, seville:3, vejer:2,
+  edimbourg:3, versailles:5, saumur:5, lamotte:2, golega:4, jerez:4, seville:3, vejer:2,
   oliva:3, rome:3, verone:3, dubai:4, tokyo:4, tamworth:3, buenos:4,
   lexington:4, santaynez:5, spruce:4, warendorf:4, aachen:5
 };
@@ -6138,12 +6183,29 @@ function fermerGlobe(){
 /* Une ville a-t-elle un dialogue ecrit ? Une seule reponse dans tout le
    fichier — le bouton du bas de lecon, celui de l'arrivee et le routage
    du lien la partagent. Trois copies du meme test auraient divergé. */
+/* 🟥 16/08 : UN FICHIER PEUT PORTER PLUSIEURS DIALOGUES. `dressage`
+   en a deux — `dialogue` pour WINDSOR (le concours) et
+   `dialogueVersailles` pour VERSAILLES (l'art equestre, lecon 3).
+   La boucle balaie donc TOUTES les cles commencant par `dialogue`.
+   ⚠️ Toute cle future `dialogueXxx` sera trouvee sans rien changer ici.
+   NE PAS revenir a la lecture de la seule cle `dialogue`. */
+function dialoguesDe(lex){
+  var out = [];
+  for(var c in lex){
+    if(c.indexOf("dialogue") !== 0) continue;
+    var d = lex[c];
+    if(d && d.ville && d.phrases && d.phrases.length) out.push(d);
+  }
+  return out;
+}
+
 function aUnDialogue(refVille){
   try{
     var L = window.HYPE_LINGO_LEX || {};
     for(var k in L){
-      var d = L[k] && L[k].dialogue;
-      if(d && d.ville === refVille && d.phrases && d.phrases.length) return true;
+      if(!L[k]) continue;
+      var ds = dialoguesDe(L[k]);
+      for(var i=0;i<ds.length;i++){ if(ds[i].ville === refVille) return true; }
     }
   }catch(e){}
   return false;
@@ -6289,7 +6351,11 @@ function selleriePiece(nom){
    vue de trois quarts appartient au moteur de la sellerie, pas ici :
    c'est la regle posee par Blandine le 12/08. */
 var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1};
-var POSE_PROPRE = {walsall:1, dubai:1, oliva:1};   /* ceux qui ont leur propre vue posee */
+var POSE_PROPRE = {walsall:1, dubai:1, oliva:1, versailles:1};
+/* 16/08 : versailles ajoutee — le couvre-reins royal a une vraie vue
+   PLIEE pour la sellerie (`pose-versailles.webp`), distincte de la vue
+   deployee de la vitrine. Voir la regle des TROIS ETATS en tete du
+   SUIVI : deploye / plie / porte. */   /* ceux qui ont leur propre vue posee */
 var GROS_POSE = {walsall:30, dubai:30, lambourn:27, connemara:27, newmarket:24, oliva:34};
 function sellerieObjets(){
   var l = [];
@@ -6525,7 +6591,11 @@ var ETAPE_SRC = {
      — les mots memes de la promesse du carnet. */
   kildare:     [["urgences",1],["urgences",3],["urgences",4]],
   edimbourg:   [["urgences",2]],
-  saumur:      [["dressage",3]],
+  /* 🟥 16/08 : la lecon 3 de `dressage` (les notions d'art equestre)
+     PASSE DE SAUMUR A VERSAILLES. Saumur recevra `enseignant`, fichier
+     neuf. NE PAS rendre la lecon 3 a Saumur. */
+  versailles:  [["dressage",3]],
+  saumur:      [["enseignant",1],["enseignant",2],["enseignant",3],["enseignant",4]],
   lamotte:     [["poney",1]],
   golega:      [["elevage",1]],
   jerez:       [["cheval",4]],
