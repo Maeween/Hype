@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19as";
+var HYPE_STORIES_VERSION = "19at";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -3939,6 +3939,11 @@ function MurImmersif(props) {
   var pS = React.useState(false), panneau = pS[0], setPanneau = pS[1];
   var fS = React.useState(false), estFeinn = fS[0], setEstFeinn = fS[1];
   var vivantRef = React.useRef(true);
+  /* 19at — LE MÊME GARDE-FOU QUE PARTOUT AILLEURS DANS CE FICHIER. En 19as
+     j'avais appelé ReactDOM.createPortal en direct : la méthode n'existe pas à
+     l'exécution, la page Cavalier plantait à l'ouverture du panneau. Les six
+     autres portails du module passent tous par cette ligne — je m'y aligne. */
+  var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
 
   React.useEffect(function () {
     vivantRef.current = true;
@@ -4082,7 +4087,7 @@ function MurImmersif(props) {
     /* LE PANNEAU DE RÉGLAGES — compte de Blandine uniquement. En position
        fixed, jamais en absolute : un z-index ne vaut que dans son propre plan. */
     (panneau && estFeinn)
-      ? ReactDOM.createPortal(
+      ? portail(
         h("div", {
           onClick: function () { setPanneau(false); },
           style: { position: "fixed", left: 0, top: 0, right: 0, bottom: 0, zIndex: 9200, background: "rgba(4,6,8,0.62)", display: "flex", alignItems: "flex-end" }
