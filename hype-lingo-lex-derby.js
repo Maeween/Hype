@@ -161,6 +161,55 @@ window.HYPE_LINGO_LEX.derby = {
 
   /* ---------- monter un derby ---------- */
 
+  /* ================================================================
+     LE SOL — trois entrées ajoutées le 16/08/2026, session 214, sur
+     demande de Blandine (« pareil il faudrait parler de crampons etc »,
+     puis « oui ajoute-les au lexique »).
+     Le chapitre portait `liredessol` — savoir LIRE le terrain — mais
+     pas le terrain lui-même. Or Hickstead EST le grand terrain d'herbe,
+     et « ça donne quoi, le terrain ? » est la première question qu'on
+     pose en arrivant sur un concours.
+
+     🟥 LE PIÈGE DU CHAPITRE, à la hauteur de « faults » : en anglais le
+     terrain se dit **THE GOING**, jamais « the ground ». « What's the
+     going like? » est LA question. `the ground`, c'est le sol au sens
+     physique ; `the going`, c'est son état pour galoper dessus.
+     NE PAS uniformiser sur `ground`.
+     ================================================================ */
+
+  { ref:"herbe", lecon:1, coll:"derby",
+    mots:{ fr:{m:"l'herbe"}, en:{m:"the grass", p:"ze grass", var:"the turf"},
+           es:{m:"la hierba"}, it:{m:"l'erba"},
+           de:{m:"das Gras", p:"dass grass"}, ja:{m:"芝", p:"shiba"} },
+    def:{ fr:"Le terrain de Hickstead, et de presque tous les grands derbys. L'herbe rend une foulée plus longue que le sable, elle amortit moins, et elle change avec la pluie et avec les chevaux qui sont passés avant. C'est pour ça qu'on la lit.",
+          en:"The surface at Hickstead, and at almost every great derby. Grass gives a longer stride than sand, cushions less, and changes with the rain and with the horses that went before. That's why you read it.",
+          es:"El terreno de Hickstead y de casi todos los grandes derbys. La hierba da un tranco más largo que la arena, amortigua menos y cambia con la lluvia y con los caballos que ya han pasado.",
+          it:"Il terreno di Hickstead e di quasi tutti i grandi derby. L'erba dà una falcata più lunga della sabbia, ammortizza meno e cambia con la pioggia e con i cavalli passati prima.",
+          de:"Der Boden in Hickstead und bei fast allen großen Derbys. Gras gibt einen längeren Galoppsprung als Sand, federt weniger und verändert sich mit dem Regen und mit den Pferden davor.",
+          ja:"ヒクステッドの、そしてほとんどの大きなダービーの馬場。芝は砂より歩幅が伸び、衝撃を吸収しにくく、雨と先に走った馬によって刻々と変わります。だから「読む」のです。" } },
+
+  { ref:"crampons", lecon:1, coll:"derby",
+    mots:{ fr:{m:"les crampons"}, en:{m:"the studs", p:"ze steuds"},
+           es:{m:"los ramplones"}, it:{m:"i ramponi"},
+           de:{m:"die Stollen", p:"di chto-lène"}, ja:{m:"蹄鉄の滑り止め", p:"teitetsu no suberidome"} },
+    def:{ fr:"⚠️ On les visse dans le fer AVANT de partir, et on les retire après — un cheval ne rentre jamais au box avec. Sur l'herbe, ils empêchent de glisser dans les tournants et à la réception. Petits et carrés par temps sec, gros et pointus sur terrain gras.",
+          en:"You screw them into the shoe before you go and take them out afterwards — a horse never goes back to its stable with studs in. On grass they stop him slipping in the turns and on landing. Small and square when it's dry, big and pointed when it's soft.",
+          es:"Se atornillan en la herradura antes de salir y se quitan después: un caballo nunca vuelve al box con ellos. En hierba evitan que resbale en los giros y al caer. Pequeños y cuadrados en seco, grandes y puntiagudos en terreno blando.",
+          it:"Si avvitano nel ferro prima di partire e si tolgono dopo: un cavallo non torna mai in box con i ramponi. Sull'erba evitano che scivoli nelle curve e in atterraggio. Piccoli e quadrati se è asciutto, grandi e appuntiti se è pesante.",
+          de:"Man schraubt sie vor dem Start ins Eisen und nimmt sie danach heraus — kein Pferd kommt mit Stollen in die Box zurück. Auf Gras verhindern sie das Rutschen in den Wendungen und bei der Landung. Klein und eckig bei trockenem, groß und spitz bei tiefem Boden.",
+          ja:"出走前に蹄鉄にねじ込み、終わったら必ず外します。装着したまま馬房に戻すことはありません。芝ではコーナーと着地の滑りを防ぎます。乾いていれば小さく四角いもの、重馬場では大きく尖ったものを使います。" } },
+
+  { ref:"terrainglissant", lecon:1, coll:"derby",
+    mots:{ fr:{m:"le terrain glissant"}, en:{m:"slippery going", p:"sli-peuri gô-ingue"},
+           es:{m:"el terreno resbaladizo"}, it:{m:"il terreno scivoloso"},
+           de:{m:"rutschiger Boden", p:"rout-chi-gueur bô-den"}, ja:{m:"滑りやすい馬場", p:"suberiyasui baba"} },
+    def:{ fr:"🟥 EN ANGLAIS LE TERRAIN SE DIT **THE GOING**, jamais « the ground » : « what's the going like? » veut dire « ça donne quoi, le terrain ? ». On dit *good going*, *soft going*, *heavy going*, *slippery going*. C'est le mot des courses passé au concours, et il n'a pas d'équivalent direct en français.",
+          en:"Grass after rain, on a slope, is where derbies are won and lost. **The going** is the word: good going, soft going, heavy going. Not « the ground », which is just the earth itself.",
+          es:"La hierba después de la lluvia, en pendiente, es donde se ganan y se pierden los derbys. En inglés se dice *the going*, no *the ground*.",
+          it:"L'erba dopo la pioggia, in pendenza, è dove si vincono e si perdono i derby. In inglese si dice *the going*, non *the ground*.",
+          de:"Gras nach Regen, im Gefälle: dort werden Derbys gewonnen und verloren. Im Englischen heißt es *the going*, nicht *the ground*.",
+          ja:"雨のあとの傾斜した芝——ダービーの勝敗はここで決まります。英語では the ground ではなく **the going** と言い、good going / heavy going のように使います。" } },
+
   { ref:"liredessol", lecon:1, coll:"derby", v:true,
     mots:{ fr:{m:"lire le terrain"}, en:{m:"to read the ground", p:"tou riide ze graound"},
            es:{m:"leer el terreno"}, it:{m:"leggere il terreno"},
@@ -337,5 +386,251 @@ window.HYPE_LINGO_LEX.derby = {
              de:"Hier schlagen die weisen Alten die jungen Talente.",
              ja:"ここでは老練が若い才能を打ち負かす。" }
 
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE HICKSTEAD — 16 août 2026, session 214.
+
+     LA SCÈNE : le Derby anglais, de la reconnaissance au tour d'honneur.
+     22 phrases, 6 temps, 11 entendues.
+
+     🟥 HICKSTEAD, C'EST LE DERBY, PAS LE CSO. Le CSO générique est
+     parti à WELLINGTON (32e ville, créée le 16/08). `CHAPITRE_DE`
+     disait encore `hickstead:"obstacle"` — corrigé le même jour.
+     ⚠️ NE PAS réintroduire ici l'oxer, le vertical, le barrage, les
+     foulées de ligne : ils s'apprennent à Wellington, AVANT, et ce
+     chapitre ajoute ce qu'elle seule possède — la banque, les
+     obstacles fixes et naturels, le galop de derby, le terrain.
+
+     🟥 HUIT PHRASES VIENNENT DE BLANDINE. Notées avec leur raison :
+     · « attention à laisser votre cheval récupérer par moments : le
+       tour est long, il faut qu'il respire » — elle a REFUSÉ « un galop
+       plus rond » et « plus porté » : « je connais pas ces
+       expressions ». Elle a raison : ce sont des mots de spécialiste, et
+       sa phrase dit QUOI FAIRE au lieu de décrire un état.
+       ⚠️ NE PAS remettre « rond », « porté », « rassemblé ».
+     · « enclenche bien le galop AVANT la montée, qu'il l'aborde avec de
+       la dynamique. En descente au contraire, rééquilibre-le, reprends-
+       le, et attends bien son saut » — la dynamique se prépare AVANT la
+       côte, pas dedans. Remplace une explication descriptive de Claude.
+     · « la main accompagne, mais elle ne le laisse pas dans le vide » —
+       la sensation exacte. « Elle ne lâche pas » était technique.
+     · 🟥 ELLE A FAIT RETIRER « rênes longues, poids en arrière, et vous
+       le laissez faire » : cette phrase de Claude CONTREDISAIT sa propre
+       consigne du temps 5 (« rééquilibre-le, reprends-le »). Son
+       instinct : « j'ai tendance à penser qu'ils gardent le contact même
+       dans des sauts descendants » — et c'est juste : un cheval lâché en
+       bas de pente se met sur les épaules.
+       ⚠️ NE JAMAIS remettre une phrase disant de lâcher en descente.
+
+     ⚠️ LA BANQUE FAIT 3,05 M (dix pieds anglais) : on la monte, on
+     marque un temps en haut, on redescend une face presque verticale.
+     Aucun autre concours au monde n'a ça.
+
+     🟥 « ATTENDRE » TRAVERSE TROIS VILLES : « six foulées en attendant »
+     et « attendre vos sauts » à Wellington, « attends bien son saut »
+     ici. Même verbe, trois contextes — c'est ce qui l'installe.
+     NE PAS le remplacer par un synonyme.
+
+     ⚠️ LE SOL : `herbe`, `crampons` et `terrainglissant` ont été ajoutés
+     au lexique le même jour (demande de Blandine). En anglais le terrain
+     se dit **THE GOING**, jamais « the ground ». Voir leurs `def`.
+
+     `dit` : "joueuse" = elle produit · "club" = un autre cavalier ou le
+     chef de piste, elle entend et comprend.
+  ================================================================== */
+  dialogue: {
+    ville: "hickstead", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 22 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · ce n'est pas un parcours de CSO ---- */
+      { ref:"d-different-normal", temps:1, dit:"joueuse", mots:["parcoursderby"],
+        fr:"C'est très différent d'un parcours normal ?",
+        en:"Is it very different from a normal course?",
+        es:"¿Es muy diferente de un recorrido normal?",
+        it:"È molto diverso da un percorso normale?",
+        de:"Ist das sehr anders als ein normaler Parcours?",
+        ja:"普通 の コース と は かなり 違い ます か ?" },
+
+      { ref:"d-r-fixe-ne-tombe-pas", temps:1, dit:"club", mots:["fixe","naturel"],
+        fr:"Presque tout est fixe et naturel, ça ne tombe pas.",
+        en:"Almost everything is permanent and natural — nothing comes down.",
+        es:"Casi todo es fijo y natural, no se cae nada.",
+        it:"Quasi tutto è fisso e naturale, non cade niente.",
+        de:"Fast alles ist fest und natürlich — da fällt nichts.",
+        ja:"ほとんど が 固定 障害 と 自然 障害 で、 落ちる こと は あり ませ ん。" },
+
+      { ref:"d-combien-avant-banque", temps:1, dit:"joueuse", mots:["banque"],
+        fr:"Il y a combien d'obstacles avant la banque ?",
+        en:"How many fences are there before the bank?",
+        es:"¿Cuántos obstáculos hay antes del banco?",
+        it:"Quanti ostacoli ci sono prima della banchina?",
+        de:"Wie viele Sprünge kommen vor dem Wall?",
+        ja:"バンク の 前 に 障害 は いくつ あり ます か ?" },
+
+      /* ---- temps 2 · la banque ---- */
+      { ref:"d-comment-aborder-banque", temps:2, dit:"joueuse", mots:["banque","descendrebanque"],
+        fr:"Comment on aborde la banque ?",
+        en:"How do you ride into the bank?",
+        es:"¿Cómo se aborda el banco?",
+        it:"Come si affronta la banchina?",
+        de:"Wie reitet man den Wall an?",
+        ja:"バンク に は どう 入り ます か ?" },
+
+      { ref:"d-r-pas-ou-petit-galop", temps:2, dit:"club", mots:["descendrebanque","laisserfaire"],
+        fr:"Au pas ou au petit galop, mais surtout laissez-le descendre tout seul.",
+        en:"In walk or a short canter — but above all, let him come down on his own.",
+        es:"Al paso o a un galope corto, pero sobre todo déjelo bajar solo.",
+        it:"Al passo o a un galoppo corto, ma soprattutto lascialo scendere da solo.",
+        de:"Im Schritt oder kurzen Galopp — vor allem: lass ihn allein hinunter.",
+        ja:"常歩 か 短い 駈歩 で。 何より、 馬 に 任せ て 下ろし て ください。" },
+
+      { ref:"d-r-trois-metres-cinq", temps:2, dit:"club", mots:["banque","descendrebanque"],
+        fr:"Elle fait trois mètres cinq. On la monte, on marque un temps en haut, et on redescend.",
+        en:"It's ten foot six. You go up, you take a moment at the top, and you drop down.",
+        es:"Mide tres metros cinco. Se sube, se marca un tiempo arriba y se baja.",
+        it:"È alta tre metri e cinque. Si sale, si segna un tempo in cima e si scende.",
+        de:"Er ist drei Meter fünf hoch. Man reitet hinauf, hält oben kurz an und geht hinunter.",
+        ja:"高さ は 三 メートル 五。 上っ て、 頂上 で 一 呼吸 置い て、 下り ます。" },
+
+      { ref:"d-pencher-arriere", temps:2, dit:"joueuse", mots:["equilibredescente"],
+        fr:"Il faut se pencher en arrière dans la descente ?",
+        en:"Should I sit back on the way down?",
+        es:"¿Hay que echarse hacia atrás en la bajada?",
+        it:"Bisogna portarsi indietro in discesa?",
+        de:"Muss man sich beim Hinunterreiten zurücklegen?",
+        ja:"下り は 上体 を 後ろ に 倒し ます か ?" },
+
+      /* 🟥 Phrase de Blandine, en remplacement d'une phrase de Claude
+         qui disait de LÂCHER en descente — contresens. */
+      { ref:"d-r-main-pas-le-vide", temps:2, dit:"club", mots:["equilibredescente"],
+        fr:"Le buste en arrière, mais tu gardes le contact : la main accompagne, mais elle ne le laisse pas dans le vide.",
+        en:"Sit back, but keep the contact — your hand goes with him, it doesn't leave him with nothing.",
+        es:"El torso atrás, pero mantén el contacto: la mano acompaña, no lo deja en el vacío.",
+        it:"Busto indietro, ma mantieni il contatto: la mano accompagna, non lo lascia nel vuoto.",
+        de:"Oberkörper zurück, aber halte die Anlehnung — die Hand geht mit, sie lässt ihn nicht ins Leere fallen.",
+        ja:"上体 は 後ろ に。 でも コンタクト は 保ち ます。 手 は ついて いき ます が、 馬 を 空 に 放り出し て は いけ ませ ん。" },
+
+      { ref:"d-jamais-vu-talus", temps:2, dit:"joueuse", mots:["banque"],
+        fr:"Il n'a jamais vu de talus comme ça.",
+        en:"He's never seen a bank like that.",
+        es:"Nunca ha visto un talud así.",
+        it:"Non ha mai visto una banchina simile.",
+        de:"So einen Wall hat er noch nie gesehen.",
+        ja:"こんな バンク は 見 た こと が あり ませ ん。" },
+
+      /* ---- temps 3 · le terrain ---- */
+      { ref:"d-terrain-donne-quoi", temps:3, dit:"joueuse", mots:["liredessol","terrainglissant"],
+        fr:"Le terrain donne quoi ?",
+        en:"What's the going like?",
+        es:"¿Cómo está el terreno?",
+        it:"Com'è il terreno?",
+        de:"Wie ist der Boden?",
+        ja:"馬場 の 状態 は どう です か ?" },
+
+      { ref:"d-r-herbe-glisse", temps:3, dit:"club", mots:["herbe","terrainglissant"],
+        fr:"C'est de l'herbe, et ça glisse un peu après la pluie.",
+        en:"It's grass, and it gets a bit slippery after rain.",
+        es:"Es hierba, y resbala un poco después de la lluvia.",
+        it:"È erba, e scivola un po' dopo la pioggia.",
+        de:"Es ist Gras, und nach Regen wird es etwas rutschig.",
+        ja:"芝 です。 雨 の あと は 少し 滑り ます。" },
+
+      { ref:"d-faut-crampons", temps:3, dit:"joueuse", mots:["crampons"],
+        fr:"Est-ce qu'il faut mettre des crampons ?",
+        en:"Do I need to put studs in?",
+        es:"¿Hay que poner ramplones?",
+        it:"Bisogna mettere i ramponi?",
+        de:"Muss man Stollen eindrehen?",
+        ja:"滑り止め を 付け た ほう が いい です か ?" },
+
+      { ref:"d-r-crampons-arriere", temps:3, dit:"club", mots:["crampons","herbe"],
+        fr:"Des crampons à l'arrière au minimum, sur ce terrain.",
+        en:"Studs behind at the very least, on this going.",
+        es:"Ramplones detrás como mínimo, en este terreno.",
+        it:"Ramponi dietro come minimo, su questo terreno.",
+        de:"Mindestens hinten Stollen, bei diesem Boden.",
+        ja:"この 馬場 なら、 少なくとも 後肢 に は 付け て ください。" },
+
+      /* ---- temps 4 · les obstacles du derby ---- */
+      { ref:"d-mur-quelle-hauteur", temps:4, dit:"joueuse", mots:["murderby"],
+        fr:"Le mur du derby, il fait quelle hauteur ?",
+        en:"How high is the derby wall?",
+        es:"¿Qué altura tiene el muro del derby?",
+        it:"Quanto è alto il muro del derby?",
+        de:"Wie hoch ist die Derby-Mauer?",
+        ja:"ダービー ウォール は 何 センチ です か ?" },
+
+      { ref:"d-eau-dessus-ou-dedans", temps:4, dit:"joueuse", mots:["passagedeau"],
+        fr:"Est-ce qu'on passe dans l'eau ou par-dessus ?",
+        en:"Do we go through the water or over it?",
+        es:"¿Se pasa por el agua o por encima?",
+        it:"Si passa nell'acqua o sopra?",
+        de:"Reiten wir durchs Wasser oder darüber?",
+        ja:"水 の 中 を 通り ます か、 飛び越し ます か ?" },
+
+      { ref:"d-r-butte-irlandaise", temps:4, dit:"club", mots:["butteirlandaise","appelmontee"],
+        fr:"La butte irlandaise se monte à l'appel, on ne la saute pas.",
+        en:"You ride up onto the Irish bank — you don't jump it.",
+        es:"El banco irlandés se sube en la batida, no se salta.",
+        it:"La banchina irlandese si sale allo stacco, non si salta.",
+        de:"Auf die irische Bank reitet man hinauf, man springt sie nicht.",
+        ja:"アイリッシュ バンク は 踏み切っ て 上る もの で、 飛び越す もの で は あり ませ ん。" },
+
+      /* ---- temps 5 · le galop de derby ---- */
+      { ref:"d-meme-galop-tout-du-long", temps:5, dit:"joueuse", mots:["galopderby"],
+        fr:"On garde le même galop tout du long ?",
+        en:"Do you keep the same canter all the way round?",
+        es:"¿Se mantiene el mismo galope todo el recorrido?",
+        it:"Si tiene lo stesso galoppo per tutto il percorso?",
+        de:"Behält man denselben Galopp die ganze Runde?",
+        ja:"最後 まで 同じ 駈歩 で 行き ます か ?" },
+
+      /* 🟥 Phrase de Blandine. Elle a refusé « rond » et « porté » :
+         « je connais pas ces expressions ». NE PAS les remettre. */
+      { ref:"d-r-laisser-recuperer", temps:5, dit:"club", mots:["galopderby"],
+        fr:"Attention à laisser votre cheval récupérer par moments : le tour est long, il faut qu'il respire.",
+        en:"Make sure you let him come back to you at times — it's a long track, he needs to breathe.",
+        es:"Cuidado con dejar que el caballo recupere de vez en cuando: la vuelta es larga, necesita respirar.",
+        it:"Attenta a lasciare che il cavallo recuperi ogni tanto: il giro è lungo, deve respirare.",
+        de:"Achte darauf, dein Pferd zwischendurch verschnaufen zu lassen — die Runde ist lang, es muss atmen.",
+        ja:"ときどき 馬 を 休ま せ て ください。 コース は 長い ので、 呼吸 さ せる こと が 大切 です。" },
+
+      { ref:"d-ajuster-foulee-cote", temps:5, dit:"joueuse", mots:["foulecolline","appelmontee"],
+        fr:"Comment on ajuste la foulée en côte ?",
+        en:"How do you adjust the stride uphill?",
+        es:"¿Cómo se ajusta el tranco en subida?",
+        it:"Come si regola la falcata in salita?",
+        de:"Wie stellt man den Galoppsprung bergauf ein?",
+        ja:"上り坂 で は 歩幅 を どう 調整 し ます か ?" },
+
+      /* 🟥 Phrase de Blandine : la dynamique se prépare AVANT la montée.
+         Et « attends bien son saut » referme le verbe de Wellington. */
+      { ref:"d-r-avant-la-montee", temps:5, dit:"club", mots:["appelmontee","equilibredescente"],
+        fr:"Enclenche bien le galop avant la montée, qu'il l'aborde avec de la dynamique. En descente au contraire, rééquilibre-le, reprends-le, et attends bien son saut.",
+        en:"Get him properly going before the climb, so he meets it with real energy. Coming down it's the opposite: rebalance him, take a hold, and really wait for the fence.",
+        es:"Lanza bien el galope antes de la subida, para que la aborde con dinámica. En bajada al contrario: reequilíbralo, recógelo y espera bien el salto.",
+        it:"Lancia bene il galoppo prima della salita, così l'affronta con dinamismo. In discesa al contrario: riequilibralo, riprendilo e aspetta bene il salto.",
+        de:"Bring ihn vor dem Anstieg richtig in Gang, damit er ihn mit Schwung angeht. Bergab umgekehrt: neu ausbalancieren, wieder aufnehmen und den Sprung wirklich abwarten.",
+        ja:"上り の 前 に しっかり 駈歩 を 出し て、 勢い を 持っ て 入ら せ ます。 下り は 逆 に、 立て直し て、 抑え て、 踏み切り を よく 待ち ます。" },
+
+      /* ---- temps 6 · après ---- */
+      { ref:"d-quatrieme-derby", temps:6, dit:"joueuse", mots:["veteran"],
+        fr:"C'est son quatrième derby ici.",
+        en:"This is his fourth derby here.",
+        es:"Es su cuarto derby aquí.",
+        it:"È il suo quarto derby qui.",
+        de:"Das ist sein viertes Derby hier.",
+        ja:"ここ で は 四 回目 の ダービー です。" },
+
+      { ref:"d-r-tour-honneur-tous", temps:6, dit:"club", mots:["tourdhonneurderby","foulecolline"],
+        fr:"Tour d'honneur pour tout le monde, c'est la tradition du derby.",
+        en:"Everyone goes round for the lap of honour — that's the derby tradition.",
+        es:"Vuelta de honor para todos, es la tradición del derby.",
+        it:"Giro d'onore per tutti, è la tradizione del derby.",
+        de:"Ehrenrunde für alle — das ist die Derby-Tradition.",
+        ja:"全員 で ウィニング ラン。 それ が ダービー の 伝統 です。" }
+    ]
+  }
 };
