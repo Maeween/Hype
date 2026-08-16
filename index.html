@@ -20388,25 +20388,22 @@ function EcranCommunaute() {
           tabs.map(function(t,i){ return h("button", { key:i, onClick:(t.go||function(){}), style:{ background:"none", border:"none", display:"flex", flexDirection:"column", alignItems:"center", gap:5, cursor:(t.go?"pointer":"default"), color:"#E4ECEF", opacity:(t.go?1:0.7) } },
             h("span", { style:{ fontSize:19, filter:"drop-shadow(0 1px 3px rgba(10,26,36,0.132))" } }, t.ic),
             h("span", { style:{ fontSize:10, letterSpacing:0.6, textTransform:"uppercase", fontFamily:M } }, t.lab)); }))),
-    /* 15/08 (demande de Blandine) : « à la limite remonte mon Mur des Songes
-       au-dessus des story ». Le bloc est déplacé TEL QUEL, sans une ligne
-       modifiée — il porte son propre état d'édition et son portail. */
-    ((function () {
-      var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
-      function rgb(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thC.principal, a) : thC.principal; }
-      var recitTxt = __estVisite ? ((profil && profil.histoire) || "") : ((profRecit && profRecit.histoire) || (profil && profil.histoire) || "");
-      var voixTxt = __estVisite ? ((profil && profil.ma_voix) || "") : ((profRecit && profRecit.ma_voix) || "");
-      function sauverVoix() { var txt = (voixLocal || "").trim(); setEditVoix(false); try { majProfil({ ma_voix: txt || null }).then(function (r) { if (r && !r.error && r.data) setProfRecit(r.data); }).catch(function () { }); } catch (eSV) { } }
-      var dark = { border: "1px solid " + rgb(0.24), background: "rgba(7,26,31,.6)", color: thC.principal, boxShadow: "inset 0 0 14px " + rgb(0.05) };
-      return h("div", { style: { margin: "24px 0 0" } },
-        h("style", null, "@keyframes hycSpin{to{transform:rotate(1turn)}}.hyc-cristal{position:relative;border-radius:20px;padding:1.6px;overflow:hidden;isolation:isolate}.hyc-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + thC.principal + " 82%,#BFF4F8 90%,transparent 100%);animation:hycSpin 4.5s linear infinite}.hyc-cristal>.hyc-cristal-cc{position:relative;z-index:1;border-radius:18px;overflow:hidden}@keyframes hycBlink{50%{opacity:0}}.hyc-caret{display:inline-block;width:2px;height:1.05em;background:" + thC.principal + ";box-shadow:0 0 8px " + thC.principal + ";vertical-align:-2px;margin-left:1px;animation:hycBlink 1s step-end infinite}"),
-        h("div", { style: { position: "relative", margin: "0 16px 14px", padding: "20px 18px 18px", borderRadius: 20, background: "linear-gradient(180deg,#0b1219,#080c11)", border: "1px solid rgba(255,255,255,0.08)", overflow: "hidden" } },
-          h("div", { style: { position: "absolute", right: 14, top: -8, fontFamily: "Georgia, serif", fontSize: 110, color: rgb(0.08), lineHeight: 1, pointerEvents: "none" } }, "\u201c"),
-          h("div", { style: { position: "relative", fontSize: 10, letterSpacing: "0.28em", color: thC.principal, textTransform: "uppercase", fontWeight: 700, fontFamily: M, marginBottom: 12 } }, "\u2726 " + T("Le mur des songes", "The wall of dreams", "El muro de los sue\u00f1os", "Il muro dei sogni", "\u5922\u306e\u58c1")),
-          h("div", { style: { position: "relative", minHeight: 54 } }, voixTxt ? h("div", { style: { fontFamily: "Georgia, serif", fontSize: 17, lineHeight: 1.55, color: "#E9F1F3" } }, h(EncreLumineuse, { text: voixTxt })) : h("div", { style: { fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: 15.5, lineHeight: 1.55, color: "rgba(234,242,244,.34)" } }, T("\u00c9cris ton histoire, laisse ta citation pr\u00e9f\u00e9r\u00e9e, ou partage ta philosophie \u00e9questre\u2026", "Write your story, favorite quote, or riding philosophy\u2026", "Escribe tu historia o tu cita favorita\u2026", "Scrivi la tua storia o citazione\u2026", "\u3042\u306a\u305f\u306e\u7269\u8a9e\u3084\u5ea7\u53f3\u306e\u9298\u3092"))),
-          !__estVisite ? h("button", { onClick: function () { setVoixLocal(voixTxt || ""); setEditVoix(true); }, style: Object.assign({ position: "relative", marginTop: 14, padding: "9px 16px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M }, dark) }, "\u270E " + (voixTxt ? T("Modifier", "Edit", "Editar", "Modifica", "\u7de8\u96c6") : T("\u00c9crire", "Write", "Escribir", "Scrivi", "\u66f8\u304f"))) : null),
-        editVoix ? ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; })(h("div", { onClick: function () { setEditVoix(false); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } }, h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "90%", maxWidth: 420, borderRadius: 20, border: "1px solid " + rgb(0.4), background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } }, h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Le mur des songes", "The wall of dreams", "El muro de los sue\u00f1os", "Il muro dei sogni", "\u5922\u306e\u58c1")), h("div", { style: { fontSize: 11, color: "rgba(234,242,244,.45)", textAlign: "center", marginBottom: 12, fontFamily: M } }, T("Citation, histoire ou philosophie \u2014 6 lignes max.", "Quote, story or philosophy \u2014 6 lines max.", "Cita, historia o filosof\u00eda \u2014 6 l\u00edneas.", "Citazione, storia o filosofia \u2014 6 righe.", "6\u884c\u307e\u3067")), h("textarea", { value: voixLocal, onChange: function (eI) { var v = eI.target.value; if ((v.match(/\n/g) || []).length > 5) return; setVoixLocal(v.slice(0, 260)); }, rows: 5, maxLength: 260, placeholder: T("\u00c9cris ici\u2026", "Write here\u2026", "Escribe aqu\u00ed\u2026", "Scrivi qui\u2026", "\u3053\u3053\u306b"), style: { width: "100%", boxSizing: "border-box", padding: "13px 14px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 15, fontFamily: "Georgia, serif", outline: "none", resize: "vertical", lineHeight: 1.5 } }), h("div", { style: { display: "flex", gap: 10, marginTop: 16 } }, h("button", { onClick: function () { setEditVoix(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")), h("button", { onClick: function () { sauverVoix(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg," + thC.principal + "," + thC.principal + ")", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: M } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58"))))), document.body) : null);
-    })()),
+       /* ⚠️ 16/08 — LE MUR DES SONGES EST RETIRÉ D'ICI.
+          Il avait été déplacé sur cette page le 15/08 en lisant la demande de
+          Blandine — « remonte mon Mur des Songes au-dessus des story » — comme
+          visant Communauté. Ce n'était pas ça : elle parlait de SA page, au-dessus
+          du bandeau de stories qui s'y trouve aussi. Ses mots ce soir : « j'avais
+          demandé à ce qu'elle soit remontée au-dessus des story sur SA page dans
+          la page cavalier ».
+          Le bloc a été déplacé « TEL QUEL » — mais SEPT variables sont restées
+          derrière : __estVisite, profil, profRecit, setProfRecit, editVoix,
+          setEditVoix, voixLocal, setVoixLocal. Aucune n'existe ici. Résultat :
+          ReferenceError au premier rendu, et TOUTE la page Communauté hors
+          service pendant 24 h — fil, carte et signalements compris. Personne
+          ne l'a su : la page n'a pas été rouverte après le déplacement, et
+          `node --check` ne voit pas une variable absente.
+          ⚠️ RÈGLE : un bloc de rendu ne se déplace jamais seul. Il part avec
+             ses états et ses variables, ou il ne part pas. */
       /* 12/08 (114) : bandeau des stories. Meme composant sur les 4 pages.
          12/08 (116) : sur Communaute il passe en RECTANGLES VERTICAUX 116x145
          (format des cartes chevaux) — un rond rogne trop, et sur cette page
@@ -21390,7 +21387,7 @@ function Router() {
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
         React.createElement("div", { style: { maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: showNav ? 84 : 0, overflow: "hidden" } },
-            PHOTOS.watermark && ecran !== "galops" && (React.createElement("div", { "data-hype-filigrane": "1", style: {
+            PHOTOS.watermark && ecran !== "galops" && ecran !== "profil" && (React.createElement("div", { "data-hype-filigrane": "1", style: {
                     position: "fixed",
                     top: 0, left: "50%", transform: "translateX(-50%)",
                     width: "100%", maxWidth: 480, height: "100vh",
@@ -42916,14 +42913,16 @@ function EcranProfil() {
         justifyContent: large ? "flex-start" : "space-between",
         gap: large ? 15 : 0, minHeight: large ? 0 : 112,
         padding: large ? "17px 16px" : 15, borderRadius: 20, cursor: "pointer",
-        background: "linear-gradient(160deg, rgba(255,255,255,0.055), rgba(255,255,255,0.015))",
-        border: "1px solid " + LIGNE, textAlign: "left", color: COLORS.blanc,
+        background: "linear-gradient(158deg, #151A20 0%, #10151A 52%, #0C1116 100%)",
+        border: "1px solid rgba(244,247,250,0.055)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.045), 0 1px 3px rgba(0,0,0,0.35)",
+        textAlign: "left", color: COLORS.blanc,
         gridColumn: large ? "1 / -1" : "auto", width: "100%", boxSizing: "border-box",
     });
     const styleIco = (accent) => ({
         flex: "0 0 auto", width: 36, height: 36, borderRadius: 12,
-        background: accent ? "rgba(32,217,245,0.12)" : "rgba(255,255,255,0.05)",
-        border: "1px solid " + (accent ? "rgba(32,217,245,0.26)" : LIGNE),
+        background: accent ? "rgba(32,217,245,0.13)" : "rgba(244,247,250,0.055)",
+        border: "1px solid " + (accent ? "rgba(32,217,245,0.30)" : "rgba(244,247,250,0.07)"),
         display: "flex", alignItems: "center", justifyContent: "center",
     });
     const svgTuile = (accent, enfants) => React.createElement("svg", {
