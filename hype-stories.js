@@ -3648,6 +3648,21 @@ function PastilleMusiquePage(props) {
   var lecteurRef = React.useRef(null);
   var vivantRef = React.useRef(true);
 
+  /* 19aq (feu vert de Blandine : « on peut peut-etre ajouter la musique
+     quelque part dans le bouton ? »). LE SELECTEUR S'OUVRE DE L'EXTERIEUR.
+     Le menu de la page Cavalier doit pouvoir ouvrir le choix de chanson, mais
+     le composant NE PEUT PAS demenager dans ce menu : il porte aussi la
+     pastille de lecture, celle dont les VISITEURS se servent pour ecouter la
+     musique -- et le menu n'existe que pour la proprietaire.
+     `ouvrirChoix` est donc un compteur : chaque incrementation ouvre le
+     selecteur. Un booleen ne permettrait pas de rouvrir apres fermeture sans
+     remise a zero.
+     `sansBoutonChoix` retire le bouton pointille de la page quand le menu
+     s'en charge -- sinon on refait le doublon des quetes. */
+  React.useEffect(function () {
+    if (props.ouvrirChoix) setChoixOuvert(true);
+  }, [props.ouvrirChoix]);
+
   React.useEffect(function () {
     vivantRef.current = true;
     (async function () {
@@ -3709,7 +3724,7 @@ function PastilleMusiquePage(props) {
           style: { display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: 700, border: "1px solid " + (joue ? tA(0.75) : "rgba(255,255,255,0.22)"), background: joue ? "rgba(32,217,245,0.13)" : "rgba(17,20,23,0.85)", color: joue ? tnL : "#DCE3E8", boxShadow: joue ? ("0 0 18px " + tA(0.28)) : "none" }
         }, (joue ? "\u266b " : "\u266a ") + hsNomMusique(morceau))
         : null,
-      props.proprio
+      (props.proprio && !props.sansBoutonChoix)
         ? h("button", {
           onClick: function () { setChoixOuvert(!choixOuvert); },
           style: { padding: "10px 14px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 11, fontWeight: 600, border: "1px dashed " + tA(0.5), background: "transparent", color: tA(0.95) }

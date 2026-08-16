@@ -24974,6 +24974,16 @@ function EcranMonCavalier() {
   var _pr = React.useState(null), profRecit = _pr[0], setProfRecit = _pr[1];
   var _ev = React.useState(false), editVoix = _ev[0], setEditVoix = _ev[1];
   var _vl = React.useState(""), voixLocal = _vl[0], setVoixLocal = _vl[1];
+  /* 16/08 (feu vert de Blandine) : les etats du menu de l'en-tete. Poses EN
+     DERNIER de ce trio, comme la regle du module stories l'impose pour le
+     composeur -- meme discipline partout, un nouvel etat ne s'intercale
+     jamais au milieu d'une liste existante.
+     `menuOuvertProfil` : le panneau des actions.
+     `demandeMusique` : un compteur, incremente a chaque demande du selecteur
+     de chanson. Un compteur plutot qu'un booleen, pour pouvoir rouvrir le
+     selecteur apres l'avoir ferme sans remise a zero. */
+  var _mo = React.useState(false), menuOuvertProfil = _mo[0], setMenuOuvertProfil = _mo[1];
+  var _dm = React.useState(0), demandeMusique = _dm[0], setDemandeMusique = _dm[1];
   React.useEffect(function () { (async function () { try { var u = await utilisateurActuel(); if (!u) return; var r = await supa.from("profiles").select("*").eq("id", u.id).single(); if (r && r.data) setProfRecit(r.data); } catch (ePV) { } })(); }, []);
   var h = React.createElement;
   var ctx = useApp();
@@ -25231,10 +25241,48 @@ function EcranMonCavalier() {
             h("div", { style: { fontFamily: C, fontSize: 26, fontWeight: 700, letterSpacing: 1, color: "#F4F6F7", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, prenom),
             (!__estVisite) ? h("button", { onClick: function (ePs) { if (ePs && ePs.stopPropagation) ePs.stopPropagation(); setPseudoLocal((profil.prenom || profil.pseudo || "").trim()); setEditPseudo(true); }, "aria-label": "Modifier mon pseudo", style: { flexShrink: 0, width: 26, height: 26, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.18)", color: "#EDF2F5", fontSize: 11, cursor: "pointer" } }, "\u270E") : null),
           h("div", { style: { display: "flex", gap: 6, flexShrink: 0 } },
-            (!__estVisite) ? h("button", { onClick: function () { fileRef.current && fileRef.current.click(); }, title: T("Photo", "Photo", "Foto", "Foto", "写真"), style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "#C7CFD6", strokeWidth: 1.8 }, h("path", { d: "M4 8 h3 l1.4-2 h7.2 L17 8 h3 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H4 a1 1 0 0 1-1-1 V9 a1 1 0 0 1 1-1 z" }), h("circle", { cx: 12, cy: 13, r: 3.1 }))) : null,
-            (!__estVisite && (profil.avatar || profil.avatar_url)) ? h("button", { onClick: modifierPhoto, title: T("Modifier", "Edit", "Modificar", "Modifica", "編集"), style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, h("svg", { viewBox: "0 0 24 24", width: 12, height: 12, fill: "none", stroke: "#C7CFD6", strokeWidth: 1.9 }, h("path", { d: "M12 20h9" }), h("path", { d: "M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" }))) : null,
-            h("button", { onClick: function () { setAlbumOuvert(true); }, title: T("Album", "Album", "Álbum", "Album", "アルバム"), style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "#C7CFD6", strokeWidth: 1.7 }, h("rect", { x: 3.5, y: 4.5, width: 17, height: 15, rx: 2.4 }), h("circle", { cx: 8.6, cy: 10, r: 1.6 }), h("path", { d: "M4 17.2 L9 12.4 L12.2 15.4 L15.6 11.2 L20 16" }))),
-            (!__estVisite) ? h("button", { onClick: function () { setEcran("messagerie"); }, title: T("Messages", "Messages", "Mensajes", "Messaggi", "メッセージ"), style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "#C7CFD6", strokeWidth: 1.7 }, h("path", { d: "M4 5.5 h16 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H9 l-4 3.5 v-3.5 H4 a1 1 0 0 1-1-1 v-9 a1 1 0 0 1 1-1 z" }))) : null,
+            /* ══════════════════════════════════════════════════════════════
+               16/08 (feu vert de Blandine) — LES QUATRE RONDS RENTRENT SOUS UN
+               SEUL. Ses mots : « le menu de ma photo de profil était supposé
+               être rassemblé sous un seul bouton ».
+               Photo, Modifier la photo, Album et Messages étaient quatre icônes
+               muettes alignées à côté du prénom. Elles vivent désormais dans un
+               panneau où chaque entrée porte son LIBELLÉ ÉCRIT : une icône
+               seule se devine, un libellé se lit.
+               NE SONT PAS ENTRÉS DANS LE MENU, volontairement :
+                 - le crayon du pseudo, collé au nom : il modifie le nom, le
+                   cacher rendrait l'action introuvable ;
+                 - en visite, le bouton turquoise « écrire à ce cavalier » :
+                   une action principale ne se cache pas.
+               « Modifier ma photo » n'apparaît que s'il y a une photo, comme
+               avant. La musique est la cinquième entrée.
+               Le fond ferme le panneau et ne recouvre rien d'interactif.
+               ⚠️ Préparation Flutter : le panneau ne fait qu'appeler des
+               actions déjà existantes. Aucune logique nouvelle à porter. */
+            (!__estVisite) ? h("div", { style: { position: "relative" } },
+              h("button", {
+                onClick: function (eM) { if (eM && eM.stopPropagation) eM.stopPropagation(); setMenuOuvertProfil(!menuOuvertProfil); },
+                "aria-label": T("Mes actions", "My actions", "Mis acciones", "Le mie azioni", "\u30e1\u30cb\u30e5\u30fc"),
+                style: { width: 28, height: 28, borderRadius: "50%", background: menuOuvertProfil ? "rgba(32,217,245,0.16)" : "rgba(255,255,255,0.06)", border: "1px solid " + (menuOuvertProfil ? "rgba(32,217,245,0.42)" : "rgba(255,255,255,0.14)"), display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: menuOuvertProfil ? "#20D9F5" : "#C7CFD6", fontSize: 15, lineHeight: 1, paddingBottom: 3 }
+              }, "\u22EF"),
+              menuOuvertProfil ? h("div", { onClick: function (eF) { if (eF && eF.stopPropagation) eF.stopPropagation(); setMenuOuvertProfil(false); }, style: { position: "fixed", inset: 0, zIndex: 40 } }) : null,
+              menuOuvertProfil ? h("div", { style: { position: "absolute", top: 36, right: 0, zIndex: 41, minWidth: 208, borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.12)", background: "linear-gradient(180deg, rgba(19,24,29,0.99), rgba(10,13,17,0.99))", boxShadow: "0 18px 40px rgba(0,0,0,0.55)" } },
+                (function () {
+                  var entrees = [];
+                  entrees.push({ cle: "photo", txt: T("Changer ma photo", "Change my photo", "Cambiar mi foto", "Cambiare la mia foto", "\u5199\u771f\u3092\u5909\u66f4"), act: function () { fileRef.current && fileRef.current.click(); } });
+                  if (profil.avatar || profil.avatar_url) entrees.push({ cle: "modif", txt: T("Modifier ma photo", "Edit my photo", "Editar mi foto", "Modifica la mia foto", "\u5199\u771f\u3092\u7de8\u96c6"), act: function () { modifierPhoto(); } });
+                  entrees.push({ cle: "album", txt: T("Mon album", "My album", "Mi \u00e1lbum", "Il mio album", "\u30a2\u30eb\u30d0\u30e0"), act: function () { setAlbumOuvert(true); } });
+                  entrees.push({ cle: "msg", txt: T("Mes messages", "My messages", "Mis mensajes", "I miei messaggi", "\u30e1\u30c3\u30bb\u30fc\u30b8"), act: function () { setEcran("messagerie"); } });
+                  entrees.push({ cle: "zik", txt: T("Ma musique", "My music", "Mi m\u00fasica", "La mia musica", "\u97f3\u697d"), act: function () { setDemandeMusique(function (n) { return n + 1; }); } });
+                  return entrees.map(function (e, ix) {
+                    return h("button", {
+                      key: e.cle,
+                      onClick: function (eC) { if (eC && eC.stopPropagation) eC.stopPropagation(); setMenuOuvertProfil(false); try { e.act(); } catch (eX) { } },
+                      style: { display: "block", width: "100%", textAlign: "left", padding: "12px 15px", background: "none", border: "none", borderTop: ix ? "1px solid rgba(255,255,255,0.07)" : "none", color: "#E4ECEF", fontSize: 12.5, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" }
+                    }, e.txt);
+                  });
+                })())
+              : null) : null,
             __estVisite ? h("button", { onClick: ouvrirMessageAvecVisite, disabled: messageEnCours, style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(32,217,245,0.2)", border: "1px solid rgba(32,217,245,0.4)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", opacity: messageEnCours ? 0.6 : 1 } }, h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "#20D9F5", strokeWidth: 1.9 }, h("path", { d: "M4 5.5 h16 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H9 l-4 3.5 v-3.5 H4 a1 1 0 0 1-1-1 v-9 a1 1 0 0 1 1-1 z" }))) : null)),
         (citation ? h("div", { style: { marginTop: 7, fontSize: 13, color: "#AEB8C0", fontStyle: "italic", fontFamily: "Georgia, serif", lineHeight: 1.4 } }, "\u201c" + citation + "\u201d") : null))),
     /* 16/08 (décision de Blandine) : LA PASTILLE « Voir mes quêtes » EST RETIRÉE.
@@ -25344,7 +25392,7 @@ function EcranMonCavalier() {
     /* 13/08 (123-124) : la CHANSON DE MA PAGE (decision de Blandine, option A).
        Pastille pour tous si un morceau est choisi ; le proprietaire choisit. */
     (typeof window !== "undefined" && window.PastilleMusiquePage)
-      ? h(window.PastilleMusiquePage, { userId: (__visitePub && __visitePub.id) || (profil && profil.id) || null, proprio: !__visitePub })
+      ? h(window.PastilleMusiquePage, { userId: (__visitePub && __visitePub.id) || (profil && profil.id) || null, proprio: !__visitePub, sansBoutonChoix: !__visitePub, ouvrirChoix: demandeMusique })
       : null,
     /* 28/07 : alerte « ta photo n est pas visible par les autres » (page profil, non visite). */
     !__estVisite ? h(EncartPhotoInvisible, { T: T, onRemettre: function () { try { if (typeof modifierPhoto === "function") { modifierPhoto(); return; } } catch (e) { } try { var inp = document.querySelector('input[type=file]'); if (inp) inp.click(); } catch (e2) { } } }) : null,
