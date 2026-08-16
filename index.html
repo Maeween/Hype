@@ -18778,7 +18778,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19ao"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19ap"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -20408,7 +20408,7 @@ function EcranCommunaute() {
          12/08 (116) : sur Communaute il passe en RECTANGLES VERTICAUX 116x145
          (format des cartes chevaux) — un rond rogne trop, et sur cette page
          c est l image qui compte, pas l identite. Decision de Blandine. */
-      (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, { forme: "carte" }) : null,
+      (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, { forme: "libre-carte" }) : null,
       h(CarteEvenementsC, null),
       h("div", { style:{ padding:"22px 16px 0" } },
          
@@ -25314,7 +25314,23 @@ function EcranMonCavalier() {
                 T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58")))))) : null);
     })()),
     /* 12/08 (114) : bandeau des stories. */
-    (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
+    /* 16/08 (demande de Blandine) : LES DEUX BANDES GRISES, reprises de
+       Linguae. Relevees dans lingo.html, regle #ouvIntroB .oBande :
+       hauteur 26px, fond #15181C, rayon 6px, 18px d'ecart avec le contenu.
+       Elles y encadrent un texte ; ici elles encadrent le rail de stories.
+       ⚠️ Deduction de Claude — a valider : dans Linguae elles font 330px
+       centrees, calees sur la largeur du texte. Le rail, lui, defile bord a
+       bord. Je les ai calees sur les GOUTTIERES DE LA PAGE (16px de chaque
+       cote), comme les autres blocs de cette page, plutot que sur 330px qui
+       n'aurait correspondu a rien ici. Un mot et je passe a l'autre.
+       Page Cavalier UNIQUEMENT — ta demande. Les trois autres pages gardent
+       le rail nu. */
+    (typeof window !== "undefined" && window.BandeauStories)
+      ? h("div", { style: { margin: "18px 0 0" } },
+          h("span", { style: { display: "block", height: 26, background: "#15181C", borderRadius: 6, margin: "0 16px" } }),
+          h(window.BandeauStories, { forme: "libre", padding: "18px 0 18px" }),
+          h("span", { style: { display: "block", height: 26, background: "#15181C", borderRadius: 6, margin: "0 16px" } }))
+      : null,
     /* 12/08 (116) : rail des A LA UNE du cavalier AFFICHE (visite ou soi-meme).
        Une a la une est un album de cible cavalier:<id> — aucune table nouvelle. */
     (typeof window !== "undefined" && window.RailALaUne)
@@ -26178,7 +26194,7 @@ function EcranGuilde() {
       peutEditerBanniere ? h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", right: 12, width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.28)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" } }, "\uD83D\uDCF7") : null,
       peutEditerBanniere ? h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } }) : null),
     /* 12/08 (114) : bandeau des stories. */
-    (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
+    (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, { forme: "libre" }) : null,
     /* 12/08 (116) : rail des A LA UNE. Sur une page dont le sujet n est pas une
        personne, ce sont celles du cavalier CONNECTE (deduction a valider). */
     (typeof window !== "undefined" && window.RailALaUne) ? h(window.RailALaUne, null) : null,
@@ -28317,7 +28333,7 @@ function EcranEcurie() {
             null)),
 
         /* 12/08 (114) : bandeau des stories. */
-        (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
+        (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, { forme: "libre" }) : null,
         /* 12/08 (116) : rail des A LA UNE du cavalier connecte. */
         (typeof window !== "undefined" && window.RailALaUne) ? h(window.RailALaUne, null) : null,
         h(TableauxSpectralHype, { champVoix: "ecurie_voix", champHistoire: "ecurie_histoire", titreCourt: { fr: "La philosophie de l'écurie", en: "The stable's philosophy", es: "La filosofía de la cuadra", it: "La filosofia della scuderia", ja: "厩舎の哲学" }, titreLong: { fr: "L'histoire de l'écurie", en: "The stable's story", es: "La historia de la cuadra", it: "La storia della scuderia", ja: "厩舎の物語" }, editable: true }),

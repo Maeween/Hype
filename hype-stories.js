@@ -1611,6 +1611,39 @@ function BandeauStories(props) {
      Le choix est passé par la page appelante, pas décidé ici : un seul
      composant, deux présentations, zéro divergence. */
   var carte = !!(props && props.forme === "carte");
+  /* ======================================================================
+     19ap (16/08, feu vert de Blandine) -- LA FORME « LIBRE », LE ROND SANS
+     CADRE. Sa demande depuis le 15/08 : « photos SANS CADRE — les bords
+     doivent se fondre dans le noir, pas etre encadres », puis, maquette en
+     main, le choix du fondu large et de la forme ronde.
+     /!\ CE N'EST PAS UN DEGRADE POSE SUR LA PHOTO. Un degrade recouvre
+     l'image mais laisse son bord net -- c'est l'echec de la maquette du
+     15/08. Ici le fondu est un MASQUE : il retire la matiere de l'image,
+     il ne reste donc aucun bord a border.
+     Le masque est un SVG floute, en gabarit CARRE dans une case CARREE :
+     echelles identiques en x et en y, sinon le cercle s'aplatit et le flou
+     s'etire (defaut corrige pendant la maquette).
+     La regle « aucun filtre sur une photo de cheval » tient : on ne pose
+     rien sur l'image, on en retire.
+     Les formes "rond" et "carte" restent intactes juste en dessous :
+     repasser la propriete `forme` les rallume telles quelles.
+     /!\ Preparation Flutter : la forme reste une PROPRIETE de la page
+     appelante, jamais une decision de ce composant. Un seul rendu, trois
+     habits, zero divergence entre les quatre pages.
+     ====================================================================== */
+  var libre = !!(props && props.forme === "libre");
+  /* 19ap bis (demande de Blandine) : « laisse sur la communaute en rectangle
+     mais avec le fondu, ca permettra de voir ce que ca donne ».
+     Meme principe exactement -- un masque, pas un degrade -- mais decoupe
+     rectangulaire verticale. Gabarit 200x250 dans une case 116x145 : le
+     rapport est le meme, donc le fondu reste regulier sur les quatre bords
+     (c'est la faute qui avait aplati le rond pendant la maquette).
+     Communaute est ainsi la SEULE page a garder le rectangle : c'est un
+     essai, pas une divergence. Repasser sa `forme` a "libre" l'aligne sur
+     les trois autres. */
+  var libreRect = !!(props && props.forme === "libre-carte");
+  var MASQUE_LIBRE = 'url("' + 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20200%20200%27%20preserveAspectRatio%3D%27none%27%3E%3Cdefs%3E%3Cfilter%20id%3D%27f%27%20x%3D%27-40%25%27%20y%3D%27-40%25%27%20width%3D%27180%25%27%20height%3D%27180%25%27%3E%3CfeGaussianBlur%20stdDeviation%3D%2717%27%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Cpath%20d%3D%27M100%2C26%20A74%2C74%200%200%201%20100%2C174%20A74%2C74%200%200%201%20100%2C26%20Z%27%20fill%3D%27%23fff%27%20filter%3D%27url%28%23f%29%27%2F%3E%3C%2Fsvg%3E' + '")';
+  var MASQUE_RECT = 'url("' + 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20200%20250%27%20preserveAspectRatio%3D%27none%27%3E%3Cdefs%3E%3Cfilter%20id%3D%27g%27%20x%3D%27-40%25%27%20y%3D%27-40%25%27%20width%3D%27180%25%27%20height%3D%27180%25%27%3E%3CfeGaussianBlur%20stdDeviation%3D%2717%27%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Cpath%20d%3D%27M26%2C26%20H174%20V224%20H26%20Z%27%20fill%3D%27%23fff%27%20filter%3D%27url%28%23g%29%27%2F%3E%3C%2Fsvg%3E' + '")';
   var CL = (props && props.carteL) || HS_CARTE_L;
   var CH_ = (props && props.carteH) || HS_CARTE_H;
 
@@ -1634,6 +1667,23 @@ function BandeauStories(props) {
       var photo = src
         ? h("img", { src: src, alt: "", loading: "lazy", onError: function (ev) { try { hsVignetteCassee(ev, brut); } catch (e) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
         : h("span", { style: { fontFamily: C, fontSize: carte ? 26 : 30, fontWeight: 700, color: tnL } }, String(g.pseudo || "?").charAt(0).toUpperCase());
+      if (libre || libreRect) {
+        var LM = libreRect ? MASQUE_RECT : MASQUE_LIBRE;
+        var LW = libreRect ? CL : T, LH = libreRect ? CH_ : T;
+        /* Aucun anneau, aucun contour, aucun fond : la photo s'arrete
+           d'elle-meme. Le signal « non lue » est descendu SOUS la vignette,
+           avec le nom (voir plus bas) -- jamais pose sur la photo. */
+        return h("div", {
+          key: cle,
+          style: {
+            position: "relative", width: LW, height: LH, flex: "0 0 auto",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            WebkitMaskImage: LM, maskImage: LM,
+            WebkitMaskSize: "100% 100%", maskSize: "100% 100%",
+            WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat"
+          }
+        }, photo);
+      }
       if (carte) {
         return h("div", {
           key: cle,
@@ -1701,8 +1751,8 @@ function BandeauStories(props) {
        deux — un cavalier a 4 stories occupe 4 medaillons sur le rail. */
     var nVis = visuels.length;
     var largeurCel = duo
-      ? ((carte ? CL : T) * nVis + 4 * (nVis - 1) + 8)
-      : (carte ? CL : LARGEUR);
+      ? (((carte || libreRect) ? CL : T) * nVis + 4 * (nVis - 1) + 8)
+      : ((carte || libreRect) ? CL : LARGEUR);
 
     return h("button", {
       key: "st" + g.user_id,
@@ -1714,6 +1764,7 @@ function BandeauStories(props) {
     },
       contenu,
       h("div", { style: { fontSize: 11, marginTop: 7, fontFamily: M, fontWeight: g.toutesVues ? 500 : 700, color: g.toutesVues ? "#8A929C" : "#E4ECEF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+        ((libre || libreRect) && !g.toutesVues) ? h("span", { style: { display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: tn, boxShadow: "0 0 6px " + tA(0.9), marginRight: 5, verticalAlign: "middle" } }) : null,
         g.moi ? hsT("ma", lg) : (g.pseudo || "Cavalier")));
   }
 
