@@ -577,5 +577,297 @@ window.HYPE_LINGO_LEX.obstacle = {
       it:"Rosso a destra, bianco a sinistra.",
       de:"Rot rechts, weiß links.",
       ja:"赤 は 右、 白 は 左。" }
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE WELLINGTON — 16 août 2026, session 214.
+
+     🟥 CE CHAPITRE A CHANGÉ DE VILLE. Écrit pour Hickstead, il a dormi
+     en réserve après la décision du 11/08 (Hickstead prend LE DERBY).
+     Constat de Blandine le 16/08 : « parce qu'on a écrit pour le CSO
+     là en fait », puis « qui a le CSO ? » — personne. WELLINGTON, en
+     Floride, a été créée pour lui : le Winter Equestrian Festival,
+     douze semaines de janvier à avril, le vrai lieu du CSO mondial.
+     ⚠️ `CHAPITRE_DE` disait encore `hickstead:"obstacle"` : la table
+     n'avait jamais suivi la décision du 11/08. Corrigé le 16/08.
+     ⚠️ PLACÉE AVANT HICKSTEAD dans le voyage, sur sa demande : la
+     tournée d'hiver est en janvier-avril, Hickstead en été. Et
+     l'obstacle générique s'apprend AVANT le derby, qui y ajoute la
+     banque et les obstacles naturels.
+
+     LA SCÈNE : un concours de saut, de la reconnaissance au barrage.
+     24 phrases, 7 temps, 10 entendues.
+
+     🟥 SEPT PHRASES VIENNENT DE BLANDINE, dictées pendant la relecture.
+     Notées ici avec leur raison — NE PAS les « corriger » :
+     · « cinq foulées EN AVANÇANT un peu, ou six foulées EN ATTENDANT » :
+       on ne dit pas « raccourcir » sur une ligne. C'est le contrat de
+       foulées, et la vraie décision qu'on prend en marchant.
+     · « est-ce que dans la combinaison il y a UNE FOULÉE OU DEUX ? » :
+       le double ou le triple, on le VOIT ; ce qu'on demande, c'est la
+       DISTANCE dedans. En anglais la distance nomme l'obstacle :
+       a one-stride double, a two-stride.
+     · « les deux combinaisons sont un peu courtes… attendre vos sauts
+       et RECOMPACTER vos chevaux entre deux » : un vrai conseil de
+       reconnaissance, qui dit le défaut, le geste et le pourquoi. Et
+       « attendre » y répond à « en attendant » du temps 1.
+     · « huit chevaux maximum au paddock, vous pourrez rentrer DANS DEUX
+       CHEVAUX » : on compte en chevaux, pas en minutes. Vrai idiome.
+     · « un tour sans faute en vingt-neuf secondes et TRENTE-QUATRE
+       CENTIÈMES, qui prend la tête du classement provisoire » : la voix
+       du speaker. Remplace une question sur le temps accordé qui
+       n'apprenait rien. ⚠️ Les centièmes décident tout au barrage.
+     · « IL S'EST ARRÊTÉ sur le 2 » : ce qu'on dit vraiment. « Il a
+       refusé » est le mot du règlement, celui du protocole. Et « sur
+       le 2 », pas « au deux ».
+     · « quatre points de temps dépassé, plus huit points sur la piste :
+       douze points au total » : 🟥 ON NE COMPTE PAS EN SECONDES, on
+       annonce des POINTS. Sa correction.
+     · « la remise des prix aura lieu À CHEVAL, tour d'honneur pour les
+       HUIT premiers » : « à cheval » est l'information utile — on ne
+       desselle pas. Et huit, pas trois : c'est le nombre réel.
+     · « on coupe où POUR le barrage ? » : sans virgule, telle quelle.
+
+     🟥 LE FAUX AMI DU CHAPITRE : « points » → **faults** en anglais,
+     JAMAIS « points ». Quatre points = four faults. NE PAS uniformiser.
+     🟥 ROUGE À DROITE, BLANC À GAUCHE : la seule règle qui ne change
+     nulle part au monde. Dite par un autre cavalier — c'est comme ça
+     qu'on l'apprend vraiment, quelqu'un vous le dit une fois.
+
+     LAISSÉS AU LEXIQUE SEUL : la palanque, le mur, le cavaletti, la
+     puissance, l'abandon, l'élimination, le tour d'honneur.
+
+     `dit` : "joueuse" = elle produit · "club" = un autre cavalier, le
+     chef de piste, le commissaire au paddock ou le speaker.
+  ================================================================== */
+  dialogue: {
+    ville: "wellington", lecon: 1, temps: 7, langues: ["fr","en","es","it","de","ja"],   /* 24 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · la reconnaissance ---- */
+      { ref:"d-reconnaitre-ensemble", temps:1, dit:"joueuse", mots:["reconnaissance"],
+        fr:"On va reconnaître ensemble ?",
+        en:"Shall we walk the course together?",
+        es:"¿Reconocemos juntas el recorrido?",
+        it:"Facciamo insieme la ricognizione?",
+        de:"Gehen wir den Parcours zusammen ab?",
+        ja:"一緒 に コース を 下見 し ませ ん か ?" },
+
+      { ref:"d-combien-foulees", temps:1, dit:"joueuse", mots:["foulee","ligne"],
+        fr:"Combien de foulées entre les deux ?",
+        en:"How many strides between the two?",
+        es:"¿Cuántos trancos entre los dos?",
+        it:"Quante falcate tra i due?",
+        de:"Wie viele Galoppsprünge zwischen den beiden?",
+        ja:"二つ の 間 は 何 歩 です か ?" },
+
+      /* 🟥 Phrase de Blandine : le contrat de foulées, nommé par ses
+         deux options. « Raccourcir » ne se dit pas sur une ligne. */
+      { ref:"d-r-cinq-ou-six", temps:1, dit:"club", mots:["contrat-foulees","foulee"],
+        fr:"Cinq foulées en avançant un peu, ou six foulées en attendant.",
+        en:"Five if you move up a bit, or six if you wait.",
+        es:"Cinco trancos yendo un poco hacia adelante, o seis esperando.",
+        it:"Cinque falcate allungando un po', o sei aspettando.",
+        de:"Fünf Sprünge, wenn du zulegst, oder sechs, wenn du wartest.",
+        ja:"少し 前 に 出れ ば 五 歩、 待て ば 六 歩 です。" },
+
+      { ref:"d-quelle-hauteur", temps:1, dit:"joueuse", mots:["hauteur-obstacle","parcours"],
+        fr:"C'est quelle hauteur ce parcours ?",
+        en:"What height is this course?",
+        es:"¿De qué altura es este recorrido?",
+        it:"Di che altezza è questo percorso?",
+        de:"Welche Höhe hat dieser Parcours?",
+        ja:"この コース は 何 センチ です か ?" },
+
+      /* ---- temps 2 · lire la piste ---- */
+      /* 🟥 La seule règle qui ne change nulle part au monde. */
+      { ref:"d-r-rouge-droite", temps:2, dit:"club", mots:["fanions"],
+        fr:"Rouge à droite, blanc à gauche — toujours.",
+        en:"Red on the right, white on the left — always.",
+        es:"Rojo a la derecha, blanco a la izquierda — siempre.",
+        it:"Rosso a destra, bianco a sinistra — sempre.",
+        de:"Rot rechts, weiß links — immer.",
+        ja:"赤 は 右、 白 は 左。 これ は どこ でも 同じ です。" },
+
+      { ref:"d-oxer-ou-vertical", temps:2, dit:"joueuse", mots:["numero","oxer","vertical"],
+        fr:"Le numéro 7, c'est l'oxer ou le vertical ?",
+        en:"Is number seven the oxer or the upright?",
+        varEn:"Is number seven the oxer or the vertical?",
+        es:"El número siete, ¿es el óxer o la vertical?",
+        it:"Il numero sette è l'oxer o il verticale?",
+        de:"Ist Nummer sieben der Oxer oder der Steilsprung?",
+        ja:"七番 は オクサー です か、 垂直 障害 です か ?" },
+
+      /* 🟥 Phrase de Blandine : ce qu'on demande, c'est la DISTANCE. */
+      { ref:"d-une-ou-deux-foulees", temps:2, dit:"joueuse", mots:["combinaison","foulee"],
+        fr:"Est-ce que dans la combinaison il y a une foulée ou deux foulées ?",
+        en:"Is it one stride or two in the combination?",
+        es:"En la combinación, ¿hay un tranco o dos?",
+        it:"Nella combinazione c'è una falcata o due?",
+        de:"Ist die Kombination auf einen oder zwei Sprünge gestellt?",
+        ja:"コンビネーション は 一 歩 です か、 二 歩 です か ?" },
+
+      /* 🟥 Phrase de Blandine : le défaut, le geste, et le pourquoi. */
+      { ref:"d-r-combinaisons-courtes", temps:2, dit:"club", mots:["combinaison","abord"],
+        fr:"Les deux combinaisons sont un peu courtes, le double et le triple. Attention à bien attendre vos sauts et à recompacter vos chevaux entre deux.",
+        en:"Both combinations are a little short, the double and the treble. Make sure you wait for your fences and rebalance in between.",
+        es:"Las dos combinaciones son algo cortas, la doble y la triple. Cuidado con esperar los saltos y volver a reunir a los caballos entre medias.",
+        it:"Le due combinazioni sono un po' corte, la doppia e la tripla. Attente ad aspettare i salti e a riequilibrare i cavalli in mezzo.",
+        de:"Beide Kombinationen sind etwas kurz, die zweifache und die dreifache. Wartet auf eure Sprünge und versammelt die Pferde dazwischen wieder.",
+        ja:"ダブル も トリプル も 距離 が やや 短い です。 踏み切り を よく 待っ て、 間 で 馬 を もう一度 まとめ て ください。" },
+
+      /* ---- temps 3 · la détente ---- */
+      /* 🟥 Phrase de Blandine : on compte EN CHEVAUX, pas en minutes. */
+      { ref:"d-r-huit-chevaux", temps:3, dit:"club", mots:["paddock-detente"],
+        fr:"Huit chevaux maximum en même temps au paddock. Vous pourrez rentrer dans deux chevaux.",
+        en:"Eight horses maximum in the collecting ring — you can come in in two horses' time.",
+        es:"Ocho caballos como máximo en el paddock. Podrá entrar dentro de dos caballos.",
+        it:"Otto cavalli al massimo nel campo prova. Potrà entrare tra due cavalli.",
+        de:"Höchstens acht Pferde gleichzeitig auf dem Abreiteplatz. Sie können in zwei Pferden hereinkommen.",
+        ja:"下見 場 に は 同時 に 八 頭 まで です。 二 頭 後 に 入っ て ください。" },
+
+      { ref:"d-croisillon-commencer", temps:3, dit:"joueuse", mots:["croisillon"],
+        fr:"Est-ce que je peux mettre un croisillon pour commencer ?",
+        en:"Can I start over a cross-pole?",
+        es:"¿Puedo empezar con un cruzado?",
+        it:"Posso cominciare con un incrociato?",
+        de:"Kann ich mit einem Kreuz anfangen?",
+        ja:"まず クロス から 始め て も いい です か ?" },
+
+      { ref:"d-monter-la-barre", temps:3, dit:"joueuse", mots:["barre"],
+        fr:"Tu peux me monter la barre, s'il te plaît ?",
+        en:"Could you put the pole up for me, please?",
+        es:"¿Me puedes subir la barra, por favor?",
+        it:"Puoi alzarmi la barriera, per favore?",
+        de:"Kannst du mir die Stange höher legen, bitte?",
+        ja:"バー を 上げ て もらえ ます か ?" },
+
+      { ref:"d-r-vertical-puis-oxer", temps:3, dit:"club", mots:["vertical","oxer"],
+        fr:"Un vertical d'abord, l'oxer après.",
+        en:"An upright first, the oxer after.",
+        es:"Primero una vertical, después el óxer.",
+        it:"Prima un verticale, poi l'oxer.",
+        de:"Erst ein Steilsprung, dann der Oxer.",
+        ja:"まず 垂直、 その あと オクサー です。" },
+
+      /* ---- temps 4 · j'attends mon tour ---- */
+      /* 🟥 Phrase de Blandine : la voix du speaker, et les centièmes. */
+      { ref:"d-r-speaker-sans-faute", temps:4, dit:"club", mots:["sans-faute","chrono"],
+        fr:"C'est un tour sans faute en vingt-neuf secondes et trente-quatre centièmes, qui prend donc la tête du classement provisoire.",
+        en:"That's a clear round in twenty-nine point three four — and that puts her at the top of the leaderboard.",
+        es:"Es un recorrido sin falta en veintinueve segundos treinta y cuatro, y pasa a encabezar la clasificación provisional.",
+        it:"È un percorso netto in ventinove secondi e trentaquattro centesimi, e passa in testa alla classifica provvisoria.",
+        de:"Das ist eine Nullrunde in neunundzwanzig Komma drei vier — damit setzt sie sich an die Spitze.",
+        ja:"二十九 秒 三四 の クリア ラウンド。 暫定 首位 に 立ち まし た。" },
+
+      { ref:"d-quelle-position", temps:4, dit:"joueuse", mots:["numero"],
+        fr:"Je passe en quelle position ?",
+        en:"What number am I going in?",
+        es:"¿En qué puesto salgo?",
+        it:"In che ordine parto?",
+        de:"An welcher Startnummer bin ich dran?",
+        ja:"私 は 何 番目 に 出 ます か ?" },
+
+      { ref:"d-r-dix-septieme", temps:4, dit:"club", mots:["numero"],
+        fr:"Vous êtes la dix-septième à partir.",
+        en:"You're seventeenth to go.",
+        es:"Sale en decimoséptimo lugar.",
+        it:"Parte diciassettesima.",
+        de:"Sie sind als Siebzehnte dran.",
+        ja:"十七 番目 の 出番 です。" },
+
+      /* ---- temps 5 · ce qui s'est passé ---- */
+      /* 🟥 Phrase de Blandine : « il s'est arrêté », pas « il a refusé ». */
+      { ref:"d-sest-arrete", temps:5, dit:"joueuse", mots:["refus","numero"],
+        fr:"Il s'est arrêté sur le 2.",
+        en:"He stopped at number two.",
+        es:"Se ha parado en el dos.",
+        it:"Si è fermato sul due.",
+        de:"Er ist an der Zwei stehengeblieben.",
+        ja:"二番 で 止まっ て しまい まし た。" },
+
+      { ref:"d-barre-tombee", temps:5, dit:"joueuse", mots:["barre-tombee","barre"],
+        fr:"J'ai fait tomber une barre.",
+        en:"I had a pole down.",
+        es:"He tirado una barra.",
+        it:"Ho fatto cadere una barriera.",
+        de:"Ich hatte eine Stange.",
+        ja:"バー を 一本 落とし まし た。" },
+
+      /* 🟥 Correction de Blandine : ON ANNONCE DES POINTS, pas des
+         secondes. Et en anglais ce sont des FAULTS, jamais des points. */
+      { ref:"d-r-douze-points", temps:5, dit:"club", mots:["penalites","temps-depasse"],
+        fr:"Quatre points de temps dépassé, plus huit points sur la piste : douze points au total.",
+        en:"Four time faults plus eight jumping faults — twelve faults in total.",
+        es:"Cuatro puntos de tiempo más ocho puntos en pista: doce puntos en total.",
+        it:"Quattro penalità di tempo più otto penalità sul percorso: dodici in totale.",
+        de:"Vier Zeitfehler plus acht Hindernisfehler — zwölf Fehlerpunkte insgesamt.",
+        ja:"タイム 減点 四、 障害 減点 八、 合計 十二 減点 です。" },
+
+      { ref:"d-derobade-ou-refus", temps:5, dit:"joueuse", mots:["derobade","refus","desobeissance"],
+        fr:"Est-ce que c'était une dérobade ou un refus ?",
+        en:"Was that a run-out or a refusal?",
+        es:"¿Ha sido un escape o un rehúse?",
+        it:"È stata una scappata o un rifiuto?",
+        de:"War das ein Vorbeilaufen oder eine Verweigerung?",
+        ja:"逃避 でし た か、 拒止 でし た か ?" },
+
+      /* ---- temps 6 · le barrage ---- */
+      { ref:"d-r-qualifiee-barrage", temps:6, dit:"club", mots:["sans-faute","barrage"],
+        fr:"Sans-faute, vous êtes qualifiée pour le barrage.",
+        en:"Clear round — you're through to the jump-off.",
+        es:"Sin falta, está clasificada para el desempate.",
+        it:"Percorso netto, è qualificata per il barrage.",
+        de:"Nullrunde — Sie sind im Stechen.",
+        ja:"クリア ラウンド です。 ジャンプオフ に 進み ます。" },
+
+      /* Formulation de Blandine, telle quelle. */
+      { ref:"d-on-coupe-ou", temps:6, dit:"joueuse", mots:["barrage","trace"],
+        fr:"On coupe où pour le barrage ?",
+        en:"Where do we cut for the jump-off?",
+        es:"¿Por dónde recortamos en el desempate?",
+        it:"Dove si taglia per il barrage?",
+        de:"Wo kürzen wir im Stechen ab?",
+        ja:"ジャンプオフ で は どこ で 短く 回り ます か ?" },
+
+      /* 🟥 Phrase de Blandine : « À CHEVAL » est l'information utile —
+         on ne desselle pas. Et HUIT premiers, pas trois. */
+      { ref:"d-r-remise-a-cheval", temps:6, dit:"club", mots:["tour-honneur"],
+        fr:"La remise des prix aura lieu à cheval, tour d'honneur pour les huit premiers.",
+        en:"Prize-giving will be mounted — lap of honour for the first eight.",
+        es:"La entrega de premios será a caballo, vuelta de honor para los ocho primeros.",
+        it:"La premiazione sarà a cavallo, giro d'onore per i primi otto.",
+        de:"Die Siegerehrung findet beritten statt — Ehrenrunde für die ersten acht.",
+        ja:"表彰式 は 騎乗 の まま 行い ます。 上位 八 名 で ウィニング ラン です。" },
+
+      /* ---- temps 7 · la semaine, et la plage ---- */
+      /* 🟥 DEUX PHRASES DE BLANDINE, 16/08. Elles apportent ce qui
+         manquait entièrement : un concours n'est pas UN TOUR, c'est UNE
+         SEMAINE. À Wellington on reste douze semaines — la gestion du
+         cheval sur plusieurs jours EST le sujet.
+         ⚠️ « TOURNER » (= disputer une épreuve) n'est pas au lexique.
+         Il s'apprend par la phrase, comme « resangler » à Aberystwyth.
+         En anglais : « he's competing / he competed », il n'y a pas
+         d'équivalent direct du « tourner » français. NE PAS forcer.
+         ⚠️ LA PLAGE est vraie : Palm Beach est à vingt minutes, et on y
+         marche les chevaux dans l'eau entre deux jours d'épreuve. C'est
+         ce qui distingue Wellington de tous les autres concours. */
+      { ref:"d-recupere-tourne", temps:7, dit:"joueuse", mots:[],
+        fr:"Mon cheval récupère aujourd'hui : il tourne demain, et il a déjà tourné hier.",
+        en:"My horse is having an easy day: he's competing tomorrow, and he competed yesterday.",
+        es:"Mi caballo descansa hoy: compite mañana y ya compitió ayer.",
+        it:"Il mio cavallo recupera oggi: gareggia domani e ha già gareggiato ieri.",
+        de:"Mein Pferd hat heute Pause: morgen geht es wieder, und gestern ist es schon gegangen.",
+        ja:"今日 は 休養 日 です。 明日 出 ます し、 昨日 も 出 まし た。" },
+
+      { ref:"d-chemin-plage", temps:7, dit:"joueuse", mots:[],
+        fr:"Tu sais par quel chemin on accède à la plage ?",
+        en:"Do you know the way down to the beach?",
+        es:"¿Sabes por dónde se baja a la playa?",
+        it:"Sai da che parte si arriva alla spiaggia?",
+        de:"Weißt du, wo es zum Strand runtergeht?",
+        ja:"ビーチ に は どの 道 から 行け ます か ?" }
+    ]
+  }
 };

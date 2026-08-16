@@ -2698,9 +2698,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <!-- ⚠️ ?l=4 : definition du vertical corrigee le 11/08 (erreur de fond
      relevee par Blandine : on S'ELOIGNE d'un vertical, on ne s'en
      rapproche pas — c'est a l'oxer qu'on vient plus pres). -->
-<script src="hype-lingo-lex-obstacle.js?l=4"></script>
+<script src="hype-lingo-lex-obstacle.js?l=5"></script>
 <!-- v76 : le chapitre du Derby de Hickstead — nouveau format 15-18 mots.
-     `obstacle` reste charge : il servira a la ville californienne. -->
+     `obstacle` EST BRANCHE SUR WELLINGTON depuis le 16/08/2026 (32e ville,
+     la tournee d'hiver de Floride). Il ne dort plus. -->
 <script src="hype-lingo-lex-derby.js?l=1"></script>
 <script src="hype-lingo-lex-concours.js?l=5"></script>
 <script src="hype-lingo-lex-cross.js"></script>
@@ -3392,7 +3393,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=37";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
+var VER = "?v=38";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
                         etait un autre rendu (1000x1500, SANS transparence) alors que
                         `ARCHES.gauchebiais` avait ete mesure sur la bonne image ; la
                         vue du pays ne pouvait donc pas passer dans l'arche.
@@ -3496,6 +3497,21 @@ var ETAPES = [
  {ref:"walsall",   ch:"Le matériel",  v:"Walsall",     nat:"Angleterre",     h:"22 h 30", ciel:["#091320","#161F33"], forme:"ateliers", souv:"Une selle anglaise en cuir",   ic:"selle"},
  {ref:"aberystwyth",ch:"En selle",    v:"Aberystwyth", nat:"Pays de Galles", h:"23 h 20", ciel:["#070F1A","#101828"], forme:"cote",     souv:"Un fer de cob gallois",        ic:"fer"},
  {ref:"windsor",   ch:"Le dressage",  v:"Windsor",     nat:"Angleterre",     h:"00 h 30", ciel:["#05090F","#0B1220"], forme:"chateau",  souv:"La lettre A",                  ic:"lettre"},
+ /* 🟥 WELLINGTON — 32e ville, creee le 16/08/2026, session 214.
+    Decision de Blandine : le CSO n'avait PLUS DE VILLE depuis que
+    Hickstead a pris le derby (11/08). `hype-lingo-lex-obstacle.js`
+    dormait en reserve « pour la ville californienne » ; Wellington
+    (Floride) est le vrai lieu du CSO mondial — le Winter Equestrian
+    Festival, douze semaines de janvier a avril.
+    ⚠️ PLACEE AVANT HICKSTEAD, sur sa demande (« ou meme avant
+    hickstead ») : la tournee d'hiver est en janvier-avril, Hickstead
+    en ete — on suit l'annee. Et l'obstacle generique s'apprend AVANT
+    le derby, qui y ajoute la banque et les obstacles naturels.
+    Souvenir : le palmier en pot. ⚠️ Le pot est NU, sans nom de ville,
+    comme tous les autres objets — « sans le logo, reconnait-on
+    l'univers ? ». Une premiere version portait « OLIVA NOVA · SPAIN »
+    grave : rattrape avant livraison. */
+ {ref:"wellington",ch:"La tournée d'hiver", v:"Wellington", nat:"États-Unis",  h:"15 h 40", ciel:["#0A1420","#C98B4A"], forme:"obstacles",souv:"Un palmier en pot",           ic:"palmier"},
  {ref:"hickstead", ch:"Le derby",   v:"Hickstead",   nat:"Angleterre",     h:"01 h 40", ciel:["#060B12","#0D1524"], forme:"obstacles",souv:"Un fanion rouge",              ic:"fanion"},
  {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Une cocarde",                  ic:"cocarde"},
   {ref:"burghley",  ch:"Le cross",     v:"Burghley",    nat:"Angleterre",     h:"02 h 55", ciel:["#0A1424","#16263C"], forme:"manoir",   souv:"Une paire de crampons",        ic:"fer"},
@@ -3508,7 +3524,7 @@ var ETAPES = [
     en a que dix, et en créer huit de plus n'apporterait rien tant que le
     dessin du chemin n'est pas remplacé. */
  {ref:"saumur",    ch:"Le Cadre Noir", v:"Saumur",      nat:"France",         h:"06 h 40", ciel:["#0A1522","#2E3B4E"], forme:"chateau",  souv:"Un lampion du Cadre Noir",     ic:"lampion"},
- {ref:"lamotte",   ch:"Le poney",      v:"Lamotte-Beuvron", nat:"France",     h:"07 h 30", ciel:["#0C1A27","#33455A"], forme:"lande",    souv:"Une toise de bois",            ic:"toise"},
+ {ref:"lamotte",   ch:"Le poney",      v:"Lamotte-Beuvron", nat:"France",     h:"07 h 30", ciel:["#0C1A27","#33455A"], forme:"lande",    souv:"Un flot des championnats",     ic:"flot"}   /* 16/08 : le flot remplace la toise. Blandine : « ou un gros flot des championnats plutot ? » — Lamotte, ce sont les Generali Open de France, et c est exactement ce qu on vient y chercher. La toise etait un instrument de controle, et elle portait le logo FFE. */,
  /* ⚠️ VÉRONE ajoutée le 6 août 2026, étape 21. Le chapitre du COMMERCE
     (`hype-lingo-lex-vente.js`), prévu pour elle depuis le début par
     hype-linguae-production-suite.txt. Placée entre Rome et Warendorf : on
@@ -3724,8 +3740,8 @@ var ETAPES_I18N = {
  lamotte:{
    ch:{en:"The pony", es:"El poni", it:"Il pony", de:"Das Pony", ja:"ポニー"},
    v:{ja:"ラモット・ブーヴロン"},
-   souv:{en:"A wooden measuring stick", es:"Un hipómetro de madera",
-         it:"Un ippometro di legno", de:"Ein hölzernes Stockmaß", ja:"木の測尺"}},
+   souv:{en:"A championship rosette", es:"Una escarapela de campeonato",
+         it:"Una coccarda dei campionati", de:"Eine Meisterschaftsschleife", ja:"選手権のロゼット"}},
  jerez:{
    ch:{en:"The horse", es:"El caballo", it:"Il cavallo", de:"Das Pferd", ja:"馬"},
    v:{ja:"ヘレス"},
@@ -3790,6 +3806,12 @@ var ETAPES_I18N = {
    ch:{en:"Dressage", es:"La doma", it:"Il dressage", de:"Die Dressur", ja:"馬場馬術"},
    v:{ja:"ウィンザー"},
    souv:{en:"The letter A", es:"La letra A", it:"La lettera A", de:"Der Buchstabe A", ja:"「A」の文字"}},
+ wellington:{
+   ch:{en:"The winter circuit", es:"La gira de invierno", it:"Il circuito invernale",
+       de:"Die Wintertour", ja:"ウィンターサーキット"},
+   v:{ja:"ウェリントン"},
+   souv:{en:"A potted palm", es:"Una palmera en maceta", it:"Una palma in vaso",
+         de:"Eine Palme im Topf", ja:"鉢植えのヤシ"}},
  hickstead:{
    ch:{en:"The derby", es:"El derby", it:"Il derby", de:"Das Derby", ja:"ダービー"},
    v:{ja:"ヒクステッド"},
@@ -4006,6 +4028,25 @@ var RECITS = {
   ja:["奥に塔、掻き均された砂、静けさ。一頭の馬、一つの馬場、いくつかの文字。",
       "ここでは、正確さは礼儀のかたちだ。",
       {f:"九世紀のあいだ人が住み続ける城と、それに伴う馬術の伝統。"}]},
+ wellington:{
+  fr:["Douze semaines de janvier à avril, et le monde entier du saut passe l'hiver ici.",
+      "Les palmiers, le sable arrosé, et des barres qui tombent sous vingt-huit degrés.",
+      {f:"Le plus long circuit de concours de la planète : trois mois sans interruption."}],
+  en:["Twelve weeks from January to April, and the whole jumping world winters here.",
+      "Palm trees, watered sand, and poles coming down in twenty-eight degrees.",
+      {f:"The longest show circuit on earth: three months without a break."}],
+  es:["Doce semanas de enero a abril, y todo el mundo del salto pasa aquí el invierno.",
+      "Palmeras, arena regada y barras que caen a veintiocho grados.",
+      {f:"El circuito de concursos más largo del planeta: tres meses sin interrupción."}],
+  it:["Dodici settimane da gennaio ad aprile, e tutto il mondo del salto sverna qui.",
+      "Palme, sabbia bagnata e barriere che cadono con ventotto gradi.",
+      {f:"Il circuito di concorsi più lungo del pianeta: tre mesi senza sosta."}],
+  de:["Zwölf Wochen von Januar bis April, und die ganze Springwelt überwintert hier.",
+      "Palmen, gewässerter Sand und Stangen, die bei achtundzwanzig Grad fallen.",
+      {f:"Die längste Turnierserie der Welt: drei Monate ohne Unterbrechung."}],
+  ja:["一月から四月までの十二週間、世界中の障害馬術関係者がここで冬を越します。",
+      "ヤシの木、水を撒いた砂、そして二十八度の中で落ちる障害バー。",
+      {f:"世界最長の競技サーキット。三か月間、休みなく続きます。"}]},
  hickstead:{
   fr:["L'herbe est courte et le talus fait peur vu d'en haut. Les barres claquent, le public retient son souffle.",
       "On descend le Derby Bank sans savoir si on a eu raison.",
@@ -4455,6 +4496,12 @@ var ICONES = {
  fer:'<path d="M30 10 q-18 0 -18 20 q0 14 6 22 M30 10 q18 0 18 20 q0 14 -6 22 M18 26 h4 M42 26 h4 M20 38 h4 M40 38 h4" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/>',
  lettre:'<path d="M18 46 L30 14 L42 46 M23 34 h14" fill="none" stroke="#D4AF37" stroke-width="2.4" stroke-linejoin="round"/>',
  fanion:'<path d="M18 10 v40 M18 12 h24 l-7 8 l7 8 h-24" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ /* 16/08 : deux icones ajoutees avec Wellington (32e ville) et le
+    changement de souvenir de Lamotte (le flot remplace la toise).
+    ⚠️ `toise` reste dans cette table : plus utilisee, mais une icone
+    orpheline ne coute rien et servira si la toise revient ailleurs. */
+ palmier:'<path d="M30 26 v22 M30 26 q-14 -8 -18 2 M30 26 q14 -8 18 2 M30 26 q-8 -14 2 -16 M30 26 q10 -12 16 -4 M22 48 h16" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/>',
+ flot:'<circle cx="30" cy="20" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="20" r="4" fill="none" stroke="#D4AF37" stroke-width="2"/><path d="M24 30 l-3 20 l9 -6 l9 6 l-3 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  cocarde:'<circle cx="30" cy="22" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="22" r="4" fill="#D4AF37"/><path d="M24 32 l-4 20 l10 -7 l10 7 l-4 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  stetho:'<path d="M20 10 v12 q0 10 10 10 q10 0 10 -10 v-12 M30 32 v10 q0 6 8 6" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="42" cy="48" r="6" fill="none" stroke="#D4AF37" stroke-width="2"/>',
  carnet:'<path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
@@ -4626,6 +4673,12 @@ var POURQUOI = {
   it:"Nove secoli di tradizione equestre ai piedi di un castello abitato.",
   de:"Neun Jahrhunderte Reittradition am Fuß eines bewohnten Schlosses.",
   ja:"人が住み続ける城のふもとに、九世紀分の馬術の伝統。"},
+ wellington:{fr:"Le rendez-vous d'hiver du saut mondial, sous les palmiers de Floride.",
+  en:"Where the jumping world spends its winter, under the Florida palms.",
+  es:"La cita invernal del salto mundial, bajo las palmeras de Florida.",
+  it:"L'appuntamento invernale del salto mondiale, sotto le palme della Florida.",
+  de:"Der Wintertreffpunkt der Springreiterwelt, unter Floridas Palmen.",
+  ja:"フロリダのヤシの木の下、世界の障害馬術が冬を過ごす場所。"},
  hickstead:{fr:"Le Derby Bank : la plus haute butte de compétition au monde.",
   en:"The Derby Bank: the highest competition bank in the world.",
   es:"El Derby Bank: el talud de competición más alto del mundo.",
@@ -4671,7 +4724,7 @@ var POURQUOI = {
 var NIVEAU_VILLE = {
   labaule:1, maurice:1, newmarket:1, lambourn:1, connemara:1, walsall:1, aberystwyth:1,
   kildare:1, jerez:1, vejer:1,
-  hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
+  wellington:2, hickstead:2, badminton:2, windsor:2, seville:2, oliva:2, rome:2,
   warendorf:2, aachen:2, lamotte:2, golega:2, dubai:2, lexington:2, spruce:1, buenos:2, tamworth:2,
   saumur:3, edimbourg:3, verone:3, tokyo:3,
   /* niveau 3 : le chapitre porte sur des notions (timing, ressenti), pas
@@ -4779,7 +4832,7 @@ var TH_TXT = {
 
 var TH_TECH = {
   labaule:2, maurice:1, connemara:2, newmarket:3, lambourn:3, aberystwyth:2,
-  kildare:3, walsall:3, hickstead:4, badminton:4, windsor:4, burghley:4,
+  kildare:3, walsall:3, wellington:4, hickstead:4, badminton:4, windsor:4, burghley:4,
   edimbourg:3, saumur:5, lamotte:2, golega:4, jerez:4, seville:3, vejer:2,
   oliva:3, rome:3, verone:3, dubai:4, tokyo:4, tamworth:3, buenos:4,
   lexington:4, santaynez:5, spruce:4, warendorf:4, aachen:5
@@ -6394,7 +6447,16 @@ S("pimg").addEventListener("load",function(){ S("pcarte").classList.remove("sans
    ================================================================== */
 var CHAPITRE_DE = {
   newmarket:"ecurie", lambourn:"pansage", connemara:"cheval", walsall:"materiel",
-  aberystwyth:"cours", windsor:"dressage", hickstead:"obstacle", badminton:"concours",
+  aberystwyth:"cours", windsor:"dressage", wellington:"obstacle", hickstead:"derby", badminton:"concours",
+  /* 🟥 hickstead : "obstacle" → "derby" le 16/08/2026, session 214.
+     La table n'avait JAMAIS été mise à jour après la décision du 11/08
+     (« Hickstead, on s'attend à apprendre des termes en rapport au derby
+     — là il n'y a pas un seul terme en rapport avec le derby »).
+     `hype-lingo-lex-derby.js` existait et était chargé, mais le moteur
+     continuait de servir `obstacle` à Hickstead. Constat de Blandine le
+     16/08 : « parce qu'on a écrit pour le CSO là en fait ».
+     ⚠️ `obstacle` RESTE EN RÉSERVE, sans ville — il attend la ville du
+     CSO. NE PAS le rebrancher sur Hickstead. */
   kildare:"urgences", edimbourg:"dialogues"
 };
 
