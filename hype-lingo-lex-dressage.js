@@ -1124,13 +1124,19 @@ window.HYPE_LINGO_LEX.dressage = {
         de:"Verlangt man die Traversale genauso?",
         ja:"ハーフパス も 同じ よう に 求め ます か ?" },
 
+      /* 🟥 CORRIGÉ PAR BLANDINE le 16/08. La première version disait
+         « dans la cession il regarde ailleurs » — vague et faux. La
+         vraie différence est LE PLI : l'appuyer est incurvé VERS le
+         déplacement, la cession CONTRE, du côté de la jambe qui pousse.
+         NE PAS revenir à une formulation sur la direction du regard
+         seule. */
       { ref:"dv-r-regarde-ou-il-va", temps:6, dit:"club", mots:["incurvation"], motsAilleurs:["appuyer","cession-jambe"],
-        fr:"Non : dans l'appuyer il regarde où il va, dans la cession il regarde ailleurs.",
-        en:"No — in half-pass he looks where he's going; in leg-yield he looks away.",
-        es:"No: en la apoyada mira hacia donde va, en la cesión mira al otro lado.",
-        it:"No: nell'appoggiata guarda dove va, nella cessione guarda altrove.",
-        de:"Nein — in der Traversale schaut er in die Richtung, im Schenkelweichen schaut er weg.",
-        ja:"いいえ。 ハーフパス で は 進む 方向 を 見 ます が、 脚に譲る 運動 で は 反対 を 向き ます。" },
+        fr:"Non : dans l'appuyer il regarde dans la direction où il va. Dans la cession, il conserve son pli du côté de l'incurvation.",
+        en:"No — in half-pass he looks in the direction he's travelling. In leg-yield he keeps his flexion to the side he's bending from.",
+        es:"No: en la apoyada mira hacia donde va. En la cesión conserva su pliegue del lado de la incurvación.",
+        it:"No: nell'appoggiata guarda dove va. Nella cessione conserva la piega dal lato dell'incurvamento.",
+        de:"Nein — in der Traversale schaut er in die Bewegungsrichtung. Im Schenkelweichen behält er die Stellung zur Seite der Biegung.",
+        ja:"いいえ。 ハーフパス で は 進む 方向 を 見 ます。 脚に譲る 運動 で は、 屈曲 し て いる 側 の 頭頸 の 向き を 保ち ます。" },
 
       { ref:"dv-tete-au-mur-inverse", temps:6, dit:"joueuse", mots:[], motsAilleurs:["tete-au-mur","epaule-dedans"],
         fr:"La tête au mur, c'est l'inverse de l'épaule en dedans ?",

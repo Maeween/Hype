@@ -630,7 +630,7 @@ window.HYPE_LINGO_LEX.enseignant = {
   /* ==================================================================
      LE DIALOGUE DE SAUMUR — 16 août 2026, session 214.
 
-     LA SCÈNE : elle donne son premier cours. 20 phrases, 6 temps.
+     LA SCÈNE : elle donne son premier cours. 25 phrases, 6 temps.
      🟥 RENVERSEMENT COMPLET PAR RAPPORT À ABERYSTWYTH : là-bas 18
      phrases sur 24 étaient ENTENDUES ; ici c'est l'inverse — la
      joueuse PRODUIT presque tout. C'est le seul dialogue de l'app où
@@ -645,12 +645,21 @@ window.HYPE_LINGO_LEX.enseignant = {
      deux ordres de sécurité. Voir l'en-tête du fichier.
   ================================================================== */
   dialogue: {
-    ville: "saumur", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 20 phrases */
+    ville: "saumur", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 25 phrases */
 
     phrases: [
 
+      /* 🟥 VINGT-TROIS PHRASES, DONT NEUF ÉCRITES PAR BLANDINE le 16/08
+         pendant la relecture. Notées une par une ci-dessous. Elle a
+         aussi FAIT RETIRER « à ma voix, tout le monde ensemble, au
+         commandement : trois, deux, un » — « tu peux la virer elle est
+         nulle ». Elle avait raison : la phrase récitait deux entrées du
+         lexique bout à bout sans rien dire. `a-ma-voix` et
+         `au-commandement` restent au lexique, ils s'apprennent en
+         lisant. NE PAS remettre cette phrase. */
+
       /* ---- temps 1 · j'ouvre le cours ---- */
-      { ref:"de-bonjour-groupe", temps:1, dit:"joueuse", mots:["la-reprise-groupe"],
+      { ref:"de-bonjour-groupe", temps:1, dit:"joueuse", mots:["la-reprise-groupe","dire-ce-quon-va-faire"],
         fr:"Bonjour à tous. On va travailler les transitions aujourd'hui.",
         en:"Morning everyone. We're going to work on transitions today.",
         es:"Buenos días a todos. Hoy vamos a trabajar las transiciones.",
@@ -658,13 +667,25 @@ window.HYPE_LINGO_LEX.enseignant = {
         de:"Guten Morgen zusammen. Heute arbeiten wir an den Übergängen.",
         ja:"皆さん、 おはよう ござい ます。 今日 は 移行 を 練習 し ます。" },
 
+      /* 🟥 Phrase de Blandine, en remplacement de « si vous ne vous
+         sentez pas bien, appelez-moi ». C'est LA phrase de ce module :
+         un enseignant dont les élèves ne parlent pas tous la même
+         langue commence par là. */
+      { ref:"de-terme-incompris", temps:1, dit:"joueuse", mots:["repeter"],
+        fr:"Si vous ne comprenez pas un terme, n'hésitez pas à me redemander.",
+        en:"If you don't understand a word, don't hesitate to ask me again.",
+        es:"Si no entendéis alguna palabra, no dudéis en volver a preguntarme.",
+        it:"Se non capite un termine, non esitate a richiedermelo.",
+        de:"Wenn ihr ein Wort nicht versteht, fragt ruhig noch einmal nach.",
+        ja:"わから ない 用語 が あっ たら、 遠慮 なく また 聞い て ください。" },
+
       { ref:"de-appelez-moi", temps:1, dit:"joueuse", mots:["appelle-moi"],
-        fr:"Si vous ne vous sentez pas bien, vous m'appelez tout de suite.",
-        en:"If you don't feel right, call me straight away.",
-        es:"Si no os encontráis bien, llamadme enseguida.",
-        it:"Se non vi sentite bene, chiamatemi subito.",
-        de:"Wenn ihr euch nicht wohlfühlt, ruft mich sofort.",
-        ja:"具合 が 悪く なっ たら、 すぐ に 呼ん で ください。" },
+        fr:"Et si vous ne vous sentez pas bien, vous m'appelez tout de suite.",
+        en:"And if you don't feel right, call me straight away.",
+        es:"Y si no os encontráis bien, llamadme enseguida.",
+        it:"E se non vi sentite bene, chiamatemi subito.",
+        de:"Und wenn ihr euch nicht wohlfühlt, ruft mich sofort.",
+        ja:"それ から、 具合 が 悪く なっ たら すぐ に 呼ん で ください。" },
 
       { ref:"de-qui-a-peur", temps:1, dit:"joueuse", mots:["qui-a-peur"],
         fr:"Est-ce que quelqu'un a peur, ou n'est pas à l'aise ?",
@@ -682,39 +703,91 @@ window.HYPE_LINGO_LEX.enseignant = {
         de:"Ich ein bisschen. Ich bin letzte Woche gestürzt.",
         ja:"少し 怖い です。 先週 落馬 し まし た。" },
 
-      /* ---- temps 2 · j'échauffe ---- */
-      { ref:"de-en-piste-pas", temps:2, dit:"joueuse", mots:["en-piste","echauffement"],
-        fr:"En piste au pas, on s'échauffe dix minutes.",
-        en:"Onto the track at walk — ten minutes to warm up.",
-        es:"A la pista al paso, calentamos diez minutos.",
-        it:"In pista al passo, riscaldiamo dieci minuti.",
-        de:"Auf den Hufschlag im Schritt, zehn Minuten warm reiten.",
-        ja:"常歩 で 蹄跡 に 入り、 十分 ほど ウォーミング アップ し ます。" },
+      /* ---- temps 2 · j'échauffe, et je rappelle la position ---- */
+      /* 🟥 Phrase de Blandine. « S'étendre » est le terme consacré :
+         le cheval baisse l'encolure et allonge sa foulée. */
+      { ref:"de-piste-main-gauche", temps:2, dit:"joueuse", mots:["en-piste","echauffement"],
+        fr:"On va se mettre en piste à main gauche. On les laisse s'étendre quelques minutes, rênes longues, le temps qu'ils s'échauffent.",
+        en:"We'll go onto the track on the left rein. Let them stretch for a few minutes on a long rein while they warm up.",
+        es:"Vamos a la pista a mano izquierda. Los dejamos estirarse unos minutos con riendas largas mientras calientan.",
+        it:"Andiamo in pista a mano sinistra. Lasciamoli distendersi qualche minuto a redini lunghe mentre si riscaldano.",
+        de:"Wir gehen auf dem Hufschlag auf der linken Hand. Lasst sie sich ein paar Minuten am langen Zügel dehnen, während sie warm werden.",
+        ja:"左手前 で 蹄跡 に 入り ます。 手綱 を 長く し て、 数分 馬 を 伸ば さ せ ながら 温め ます。" },
 
-      { ref:"de-gardez-distances", temps:2, dit:"joueuse", mots:[],
-        fr:"Gardez vos distances : une longueur de cheval entre chacun.",
-        en:"Keep your distance — a horse's length between each of you.",
-        es:"Guardad las distancias: un cuerpo de caballo entre cada uno.",
-        it:"Mantenete le distanze: una lunghezza di cavallo tra ciascuno.",
-        de:"Haltet Abstand: eine Pferdelänge zwischen euch.",
-        ja:"間隔 を 空け て ください。 馬 一 頭分 です。" },
+      /* 🟥 Phrase de Blandine. Le « comme on dit en France » est voulu :
+         il enseigne que la formule est CULTURELLE, pas universelle. */
+      { ref:"de-cheval-imaginaire", temps:2, dit:"joueuse", mots:[],
+        fr:"N'oubliez pas de garder les distances. Comme on dit en France, on conserve la taille d'un cheval imaginaire entre chaque cheval.",
+        en:"Don't forget your distances. In France we say you keep an imaginary horse between each of you.",
+        es:"No olvidéis guardar las distancias. Como decimos en Francia, se conserva un caballo imaginario entre cada uno.",
+        it:"Non dimenticate le distanze. Come si dice in Francia, si conserva un cavallo immaginario tra un cavallo e l'altro.",
+        de:"Vergesst die Abstände nicht. In Frankreich sagt man: ein unsichtbares Pferd zwischen jedem Pferd.",
+        ja:"間隔 を 忘れ ない で ください。 フランス で は 「 馬 と 馬 の 間 に 見え ない 馬 を 一 頭 置く 」 と 言い ます。" },
 
-      { ref:"de-annonce-voix", temps:2, dit:"joueuse", mots:["a-ma-voix","au-commandement"],
-        fr:"À ma voix, tout le monde ensemble. Au commandement : trois, deux, un.",
-        en:"On my call, all together. On the command: three, two, one.",
-        es:"A mi voz, todos juntos. A la orden: tres, dos, uno.",
-        it:"Alla mia voce, tutti insieme. Al comando: tre, due, uno.",
-        de:"Auf mein Kommando, alle zusammen. Auf Kommando: drei, zwei, eins.",
-        ja:"私 の 合図 で、 全員 一緒 に。 号令 で、 三、 二、 一。" },
+      /* 🟥 Phrase de Blandine, DÉCOUPÉE EN TROIS sur sa demande
+         (« sépare-la en plusieurs phrases s'il faut ») : la règle du
+         chapitre est UNE SEULE CORRECTION À LA FOIS, et sa phrase
+         d'origine en donnait cinq. Ce premier tiers est un rappel de
+         position au GROUPE, pas une correction individuelle.
+         NE PAS les refusionner. */
+      { ref:"de-regard-et-dos", temps:2, dit:"joueuse", mots:[],
+        fr:"On regarde loin devant, et on tient son dos.",
+        en:"Look well ahead, and hold your back.",
+        es:"Mirad lejos hacia delante, y sujetad la espalda.",
+        it:"Guardate lontano davanti, e tenete la schiena.",
+        de:"Weit nach vorne schauen, und den Rücken halten.",
+        ja:"遠く 前 を 見 て、 背中 を 支え ます。" },
+
+      /* 🟥 Phrase de Blandine : elle EXPLIQUE, elle ne commande pas.
+         Le balancier d'encolure est la raison, et c'est ce qui manquait
+         partout. ⚠️ LE PAS ET LE GALOP, PAS LE TROT — elle a raison :
+         au trot il n'y a pas d'oscillation d'encolure. NE PAS ajouter
+         le trot. La même phrase existe à Aberystwyth, entendue côté
+         élève ; ici elle est produite. Deux villes, deux rôles. */
+      { ref:"de-coudes-balancier", temps:2, dit:"joueuse", mots:[],
+        fr:"Au pas et au galop, on pense à accompagner avec son bassin, et surtout en pliant et dépliant ses coudes, pour permettre au cheval de se servir de son mouvement de balancier.",
+        en:"At walk and canter, follow with your seat and above all open and close your elbows, so the horse can use the swing of his neck.",
+        es:"Al paso y al galope, acompañad con la pelvis y sobre todo abriendo y cerrando los codos, para que el caballo pueda usar su balanceo.",
+        it:"Al passo e al galoppo, accompagnate con il bacino e soprattutto aprendo e chiudendo i gomiti, perché il cavallo possa usare il suo bilanciere.",
+        de:"Im Schritt und im Galopp mit dem Becken mitgehen und vor allem die Ellbogen öffnen und schließen, damit das Pferd seine Halsschwingung nutzen kann.",
+        ja:"常歩 と 駈歩 で は、 骨盤 で ついて いき、 とくに 肘 を 開い たり 閉じ たり し て、 馬 が 首 の 振り を 使える よう に し ます。" },
 
       /* ---- temps 3 · je corrige ---- */
       { ref:"de-une-seule-chose", temps:3, dit:"joueuse", mots:["la-correction"],
-        fr:"Une seule chose à la fois : pour l'instant, juste les talons.",
-        en:"One thing at a time — for now, just your heels.",
-        es:"Una sola cosa a la vez: por ahora, solo los talones.",
-        it:"Una cosa alla volta: per ora, solo i talloni.",
-        de:"Eine Sache nach der anderen: erst mal nur die Absätze.",
-        ja:"一度 に 一つ ずつ。 今 は かかと だけ です。" },
+        fr:"Une seule chose à la fois. Toi, pour l'instant, ne t'occupe que de ça.",
+        en:"One thing at a time. You, for now, think of nothing else.",
+        es:"Una sola cosa a la vez. Tú, por ahora, no te ocupes de nada más.",
+        it:"Una cosa alla volta. Tu, per ora, pensa solo a questo.",
+        de:"Eine Sache nach der anderen. Du kümmerst dich vorerst nur darum.",
+        ja:"一度 に 一つ ずつ。 今 は これ だけ 考え て ください。" },
+
+      /* deuxième tiers de la phrase de position */
+      { ref:"de-poids-talons", temps:3, dit:"joueuse", mots:[],
+        fr:"Laisse ton poids descendre dans les talons, menton horizontal.",
+        en:"Let your weight drop into your heels, chin level.",
+        es:"Deja que tu peso baje a los talones, el mentón horizontal.",
+        it:"Lascia scendere il peso nei talloni, mento orizzontale.",
+        de:"Lass dein Gewicht in die Absätze sinken, Kinn waagerecht.",
+        ja:"体重 を かかと に 落とし て、 あご は 水平 に。" },
+
+      /* troisième tiers */
+      { ref:"de-mains-garrot", temps:3, dit:"joueuse", mots:[],
+        fr:"Les mains au-dessus et en avant du garrot.",
+        en:"Hands above and in front of the withers.",
+        es:"Las manos por encima y por delante de la cruz.",
+        it:"Le mani sopra e davanti al garrese.",
+        de:"Die Hände über und vor dem Widerrist.",
+        ja:"手 は 鬐甲 の 上、 やや 前 に。" },
+
+      /* 🟥 Phrase de Blandine : le SEUL repère physique d'une transition
+         réussie. Elle boucle le cours, annoncé sur les transitions. */
+      { ref:"de-garrot-qui-monte", temps:3, dit:"joueuse", mots:[],
+        fr:"Quand on fait une transition, montante ou descendante, on doit sentir monter le garrot de son cheval.",
+        en:"In every transition, up or down, you should feel his withers come up underneath you.",
+        es:"En cada transición, ascendente o descendente, hay que sentir subir la cruz del caballo.",
+        it:"In ogni transizione, ascendente o discendente, si deve sentire salire il garrese del cavallo.",
+        de:"Bei jedem Übergang, aufwärts wie abwärts, muss man den Widerrist des Pferdes steigen spüren.",
+        ja:"移行 の とき は、 上げる とき も 下げる とき も、 馬 の 鬐甲 が 上がる の を 感じる はず です。" },
 
       { ref:"de-cest-mieux", temps:3, dit:"joueuse", mots:["cest-mieux"],
         fr:"Là, c'est mieux ! Tu sens la différence ?",
@@ -749,13 +822,19 @@ window.HYPE_LINGO_LEX.enseignant = {
         de:"Du machst es im Schritt. Es ist dieselbe Übung.",
         ja:"あなた は 常歩 で やっ て ください。 課題 は 同じ です。" },
 
-      { ref:"de-ne-laisse-pas-accelerer", temps:4, dit:"joueuse", mots:["va-trop-vite"],
-        fr:"Ne le laisse pas accélérer. Redresse-toi, il ralentira tout seul.",
-        en:"Don't let him speed up. Sit up, and he'll slow down by himself.",
-        es:"No le dejes acelerar. Enderézate y frenará solo.",
-        it:"Non lasciarlo accelerare. Raddrizzati e rallenterà da solo.",
-        de:"Lass ihn nicht schneller werden. Setz dich auf, dann wird er von selbst langsamer.",
-        ja:"馬 を 速く さ せ ない で ください。 上体 を 起こせ ば、 自然 に 落ち着き ます。" },
+      /* 🟥 Phrase de Blandine, la plus enseignante du chapitre. Elle
+         donne LA SÉQUENCE COMPLÈTE, et surtout LA CESSION DÈS QU'IL
+         REVIENT — ce que personne ne dit aux débutants : on relâche au
+         moment où ça marche, sinon le cheval n'apprend rien.
+         ⚠️ « recéder » n'est à aucun lexique : il s'apprend par la
+         phrase, comme « resangler ». NE PAS simplifier en « relâche ». */
+      { ref:"de-activite-reguliere", temps:4, dit:"joueuse", mots:["va-trop-vite"],
+        fr:"Ne le laisse pas accélérer, essaie de conserver une activité régulière. Si tu as besoin de le faire ralentir : grandis-toi dans le dos, reprends gentiment contact avec sa bouche, et recède dans la main dès qu'il revient.",
+        en:"Don't let him speed up — try to keep the activity regular. If you need to slow him: grow tall through your back, take a gentle contact with his mouth, and give again as soon as he comes back to you.",
+        es:"No le dejes acelerar, intenta conservar una actividad regular. Si necesitas frenarlo: crece en la espalda, retoma suavemente el contacto con su boca, y cede en la mano en cuanto vuelva.",
+        it:"Non lasciarlo accelerare, cerca di mantenere un'attività regolare. Se devi rallentarlo: cresci nella schiena, riprendi dolcemente il contatto con la bocca, e cedi nella mano appena torna.",
+        de:"Lass ihn nicht schneller werden, halte die Aktivität gleichmäßig. Wenn du ihn verlangsamen musst: mach dich im Rücken groß, nimm sanft Anlehnung auf, und gib sofort wieder nach, sobald er zurückkommt.",
+        ja:"馬 を 速く さ せ ず、 一定 の 活発 さ を 保ち ます。 遅く し たい とき は、 背中 を 伸ばし、 やさしく ハミ に 触れ、 馬 が 戻っ て き たら すぐ に 手 を 譲り ます。" },
 
       { ref:"de-fais-lui-confiance", temps:4, dit:"joueuse", mots:["faire-confiance"],
         fr:"Fais-lui confiance, il connaît son métier mieux que nous.",
@@ -774,7 +853,8 @@ window.HYPE_LINGO_LEX.enseignant = {
         de:"Alle in den Schritt !",
         ja:"全員、 常歩 に 落とし て ください !" },
 
-      /* 🟥 Style DIRECT en japonais : l'urgence prime sur la politesse. */
+      /* 🟥 Style DIRECT en japonais : l'urgence prime sur la politesse.
+         Voir l'en-tête du fichier. NE PAS uniformiser en 〜てください. */
       { ref:"de-arrete-descends", temps:5, dit:"joueuse", mots:["arrete-toi","descends"],
         fr:"Arrête-toi. Descends, tout de suite.",
         en:"Whoa — stop. Get off, right now.",
@@ -783,7 +863,7 @@ window.HYPE_LINGO_LEX.enseignant = {
         de:"Halt an. Steig ab, sofort.",
         ja:"止まっ て。 すぐ に 降り て。" },
 
-      { ref:"de-ecarte-toi", temps:5, dit:"joueuse", mots:["ecarte-toi"],
+      { ref:"de-ecarte-toi", temps:5, dit:"joueuse", mots:["ecarte-toi","pas-derriere"],
         fr:"Écarte-toi vers l'intérieur, ne reste pas derrière lui.",
         en:"Move away towards the middle — don't stay behind him.",
         es:"Apártate hacia el centro, no te quedes detrás de él.",
