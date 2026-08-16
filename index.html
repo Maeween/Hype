@@ -18778,7 +18778,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19ap"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19aq"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -25289,7 +25289,7 @@ function EcranMonCavalier() {
         } catch (e) { }
       }
       var corpsS = voixTxtS
-        ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 20.5, lineHeight: 1.5, color: "#E9F1F3" } }, h(EncreLumineuse, { text: voixTxtS }))
+        ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 18, lineHeight: 1.5, color: "#E9F1F3" } }, h(EncreLumineuse, { text: voixTxtS }))
         : h("div", { style: { fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: 15.5, lineHeight: 1.55, color: "rgba(234,242,244,.34)" } },
           T("\u00c9cris une citation, une devise, la phrase qui te porte\u2026", "Write a quote, a motto, the line that carries you\u2026", "Escribe una cita, un lema, la frase que te sostiene\u2026", "Scrivi una citazione, un motto, la frase che ti porta\u2026", "\u3042\u306a\u305f\u3092\u652f\u3048\u308b\u8a00\u8449\u3092\u66f8\u3053\u3046\u2026"));
       return h("div", { style: { margin: "18px 0 0" } },
@@ -25298,8 +25298,13 @@ function EcranMonCavalier() {
           h("div", { style: { position: "relative", fontSize: 10, letterSpacing: "0.28em", color: thS.principal, textTransform: "uppercase", fontWeight: 700, fontFamily: M, marginBottom: 12 } },
             "\u2726 " + T("Le mur des songes", "The wall of dreams", "El muro de los sue\u00f1os", "Il muro dei sogni", "\u5922\u306e\u58c1")),
           h("div", { style: { position: "relative", minHeight: 54 } }, corpsS),
-          editableS ? h("button", { onClick: function () { setVoixLocal(voixTxtS || ""); setEditVoix(true); }, style: { position: "relative", marginTop: 14, padding: "9px 16px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, fontFamily: M, cursor: "pointer", border: "1px solid " + rgbS(0.24), background: "rgba(7,26,31,.6)", color: thS.principal, boxShadow: "inset 0 0 14px " + rgbS(0.05) } },
-            "\u270e " + T("\u00c9crire", "Write", "Escribir", "Scrivere", "\u66f8\u304f")) : null),
+          /* 16/08 (demande de Blandine) : le bouton passe en GRIS, DISCRET, EN BAS
+           A DROITE. Il etait turquoise et cale a gauche, donc il tirait l'oeil
+           avant le texte. Ses mots : « qu'il soit plus discret ». Le texte
+           redevient le sujet de la carte ; le bouton n'est plus qu'une porte. */
+        editableS ? h("div", { style: { position: "relative", display: "flex", justifyContent: "flex-end", marginTop: 12 } },
+          h("button", { onClick: function () { setVoixLocal(voixTxtS || ""); setEditVoix(true); }, style: { padding: "7px 13px", borderRadius: 999, fontSize: 10.5, fontWeight: 600, fontFamily: M, cursor: "pointer", border: "1px solid rgba(255,255,255,0.13)", background: "transparent", color: "rgba(234,242,244,0.45)", letterSpacing: "0.04em" } },
+            "\u270e " + T("\u00c9crire", "Write", "Escribir", "Scrivere", "\u66f8\u304f"))) : null),
         (editableS && editVoix) ? PortalS(h("div", { onClick: function () { setEditVoix(false); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 60px) 0 0" } },
           h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "90%", maxWidth: 420, borderRadius: 20, border: "1px solid " + rgbS(0.4), background: "linear-gradient(180deg, rgba(14,22,28,0.98), rgba(8,11,15,0.98))", padding: 18 } },
             h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } },

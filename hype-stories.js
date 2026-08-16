@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ao";
+var HYPE_STORIES_VERSION = "19aq";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -5000,6 +5000,40 @@ function VisionneuseStories(props) {
         (story && story.id)
           ? h(CoeurStory, { key: "cr" + story.id, storyId: story.id, langue: lg })
           : null,
+        /* 19aq (feu vert de Blandine : « rajoute-le »). LE PARTAGE, absent du
+           module alors que la famille d'adresses etait deja prevue : `#s=<id>`
+           pose `window.__storyOuverte` et ouvre Communaute (CIBLE_DIRECTE,
+           index.html). On passe par hypePartager, la fonction unique de l'app
+           -- rien n'est redecide ici, et le jour ou le format des adresses
+           change, un seul endroit bouge.
+           La photo est jointe : c'est ce qui fait la difference dans WhatsApp
+           et Instagram. hypePartager retombe seul sur le lien nu si l'image
+           depasse 8 Mo, puis sur le presse-papier sans partage systeme.
+           Pose a 14px du bas A DROITE, en miroir du coeur, sous les zones de
+           navigation qui s'arretent a 74px du bas.
+           touchstart arrete, touchend JAMAIS -- regle du 13/08 : un glisse
+           parti de la photo et fini sur une pastille laisserait la boite
+           coincee en pleine transformation. */
+        (story && story.id && typeof window !== "undefined" && typeof window.hypePartager === "function")
+          ? h("button", {
+              onClick: function (ev) {
+                if (ev && ev.stopPropagation) ev.stopPropagation();
+                try {
+                  var titP = (story.pseudo ? (story.pseudo + " \u2014 ") : "") + (story.lieu || "Story");
+                  window.hypePartager("s", story.id, titP, { image: story.photo_url || null });
+                } catch (eP) { }
+              },
+              onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+              "aria-label": "Partager",
+              style: {
+                position: "absolute", right: 14, bottom: 14, zIndex: 10,
+                width: 42, height: 42, borderRadius: 999, cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                border: "1px solid rgba(255,255,255,0.25)", background: "rgba(6,7,9,0.72)",
+                color: "#DCE3E8", fontSize: 17, lineHeight: 1, padding: 0
+              }
+            }, "\u21AA")
+          : null,
         /* La pastille son : n'apparaît que si la story porte une musique.
            JAMAIS d'autoplay (règle iOS) : c'est elle qu'on touche pour lancer
            la boucle, la retoucher coupe. Elle respire quand le son joue. */
@@ -5086,7 +5120,27 @@ function VisionneuseStories(props) {
       /* 19am : « en bas tout est entasse » (Blandine). Le panneau respire —
          plus d'air autour du lieu, interligne releve dans le texte des stories
          qui en gardent un (celles sans composition). */
-      h("div", { style: { padding: "15px 14px calc(env(safe-area-inset-bottom) + 18px)", background: "linear-gradient(180deg, rgba(17,20,23,0.9), #060709)", borderTop: "1px solid rgba(255,255,255,0.07)" } },
+      /* /!\ 19aq (16/08, panne signalee par Blandine : « on est coinces sur la
+           story on peut plus liker ou partager », « on peut tjs pas remonter
+           ou descendre »).
+           LE PANNEAU DU BAS N'ETAIT BORNE PAR RIEN. La visionneuse est une
+           colonne de trois blocs : en-tete, zone photo (flex:1, minHeight:0),
+           panneau. Une longue legende depliee faisait grandir le panneau sans
+           limite ; la zone photo etant la seule elastique, c'est ELLE qui
+           s'ecrasait. Deux degats :
+             - le COEUR disparait : il est pose a 14px du bas A L'INTERIEUR de
+               la zone photo. Zone ecrasee, coeur hors de vue -- d'ou « on peut
+               plus liker », alors que le bouton n'a jamais ete casse ;
+             - le bas est COUPE : lieu et photos sortent de l'ecran, et rien ne
+               defile pour aller les chercher.
+           La legende avait bien son defilement (42vh), mais tout ce qui vient
+           APRES elle en etait exclu.
+           Correctif : le panneau ne depasse plus 52% de la hauteur d'ecran et
+           defile chez lui. La zone photo garde donc toujours de quoi exister.
+           `overscrollBehavior: contain` : son defilement ne se propage pas
+           derriere. `touchAction: pan-y` : le vertical lui appartient,
+           l'horizontal reste au module (retour iOS bloque, regle 19c/19y). */
+        h("div", { style: { flexShrink: 0, maxHeight: "52vh", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", touchAction: "pan-y", padding: "15px 14px calc(env(safe-area-inset-bottom) + 18px)", background: "linear-gradient(180deg, rgba(17,20,23,0.9), #060709)", borderTop: "1px solid rgba(255,255,255,0.07)" } },
         story.lieu
           ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 700, color: tnL, marginBottom: 12, letterSpacing: 0.3 } }, "\uD83D\uDCCD " + story.lieu)
           : null,
