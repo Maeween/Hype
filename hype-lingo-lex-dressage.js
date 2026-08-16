@@ -493,6 +493,47 @@ window.HYPE_LINGO_LEX.dressage = {
           de:"Ausgehängt nach dem letzten Starter. In der Dressur vergleicht man sich zuerst mit dem eigenen letzten Prozentsatz — die Platzierung hängt davon ab, wer an dem Tag gemeldet hat.",
           ja:"最後の出場者が終わってから掲示されます。馬場馬術でまず比べる相手は、前回の自分のパーセンテージ。順位のほうは、その日に誰がエントリーしたか次第です。" } },
 
+  /* ================================================================
+     LA TENUE DE DRESSAGE — ajoutee le 15/08/2026, session 214, sur
+     question puis accord de Blandine (« aussi leur veste et chapeau
+     ont un nom specifique non ? » → « oui veste ok et haut de forme »).
+     Le chapitre ne portait que `queue-de-pie`.
+
+     🟥 « LE VESTON » A ETE ECARTE. Blandine : « veston ? ca se dit
+     ca ? ». C'est le mot du REGLEMENT (la FFE ecrit « veste ou
+     veston »), pas celui du paddock — et il evoque le costume de
+     ville. Les cavaliers disent LA VESTE. NE PAS « corriger » en
+     veston.
+
+     LA REGLE QUE CES TROIS MOTS ENSEIGNENT : queue-de-pie et
+     haut-de-forme vont ENSEMBLE, aux niveaux hauts seulement ; en
+     dessous, veste et bombe. On ne melange pas. ⚠️ Le haut-de-forme
+     recule partout au profit de la bombe, pour des raisons de
+     securite — ne pas l'enseigner comme obligatoire.
+     ================================================================ */
+
+  { ref:"veste", lecon:4, coll:"tenue",
+    mots:{ fr:{m:"la veste"}, en:{m:"the show jacket", p:"cho djè-kite", var:"the competition jacket"},
+           es:{m:"la chaqueta"}, it:{m:"la giacca"},
+           de:{m:"das Turnierjackett", p:"tour-nir-ja-kète", var:"der Turnierrock"}, ja:{m:"競技用ジャケット", p:"kyōgiyō jaketto"} }, // ?? ja
+    def:{ fr:"La veste courte des niveaux club et amateur, portée avec la bombe. C'est la tenue de la très grande majorité des concours : la queue-de-pie ne vient qu'ensuite.",
+          en:"The short jacket worn at club and amateur level, with a hat. It's what almost everyone competes in — the tailcoat comes much later.",
+          es:"La chaqueta corta de los niveles club y amateur, con casco. Es la ropa de la gran mayoría de los concursos: el frac viene después.",
+          it:"La giacca corta dei livelli club e amatoriale, con il cap. È l'abbigliamento della grande maggioranza dei concorsi: il frac viene dopo.",
+          de:"Das kurze Jackett für Club- und Amateurniveau, mit Kappe. So startet die große Mehrheit — der Frack kommt erst viel später.",
+          ja:"クラブ・アマチュア級で着る短い上着。ヘルメットと合わせます。ほとんどの競技会はこの服装で、燕尾服はもっと上の級からです。" } },
+
+  { ref:"haut-de-forme", lecon:4, coll:"tenue",
+    mots:{ fr:{m:"le haut-de-forme"}, en:{m:"the top hat", p:"top hatt"},
+           es:{m:"la chistera"}, it:{m:"il cilindro"},
+           de:{m:"der Zylinder", p:"tsu-linn-deur"}, ja:{m:"シルクハット", p:"shiruku hatto"} },
+    def:{ fr:"Il se porte avec la queue-de-pie, aux niveaux élevés seulement — jamais avec la veste. ⚠️ Il recule partout au profit de la bombe : plusieurs fédérations l'ont interdit, et beaucoup de cavaliers de haut niveau y ont renoncé d'eux-mêmes.",
+          en:"Worn with the tailcoat, at the top levels only — never with a show jacket. It's disappearing in favour of a hat: several federations have banned it, and many top riders gave it up themselves.",
+          es:"Se lleva con el frac, solo en los niveles altos — nunca con la chaqueta. Está desapareciendo en favor del casco: varias federaciones lo han prohibido.",
+          it:"Si porta con il frac, solo ai livelli alti — mai con la giacca. Sta sparendo a favore del cap: diverse federazioni l'hanno vietato.",
+          de:"Wird zum Frack getragen, nur in den höheren Klassen — nie zum Turnierjackett. Er verschwindet zugunsten der Kappe: mehrere Verbände haben ihn verboten.",
+          ja:"燕尾服と合わせ、上級でのみ着用します。ジャケットとは合わせません。安全のためヘルメットに置き換わりつつあり、禁止した連盟もあります。" } },
+
   { ref:"queue-de-pie", lecon:4, coll:"notation",
     mots:{ fr:{m:"la queue-de-pie"}, en:{m:"the tailcoat", p:"téïl-kôte", var:"shadbelly (US)"},
            es:{m:"el frac"}, it:{m:"il frac"},
@@ -574,5 +615,258 @@ window.HYPE_LINGO_LEX.dressage = {
       it:"Resta a cavallo per il controllo.",
       de:"Bleib sitzen für die Kontrolle.",
       ja:"検査 まで 馬 に 乗っ た まま で。" }
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE WINDSOR — 15 août 2026, session 214.
+
+     LA SCÈNE : un concours de dressage, de l'arrivée au protocole
+     récupéré. 21 phrases, 6 temps, 9 entendues.
+
+     🟥🟥 CE DIALOGUE A ÉTÉ LOURDEMENT CORRIGÉ PAR BLANDINE, et c'est
+     le chapitre où Claude s'est le plus trompé — TROIS FAUTES DE FOND
+     dans la première version, toutes dans la mécanique du concours.
+     Signalé par lui-même en séance : sur ce terrain, il est moins
+     fiable que sur l'écurie ou le pansage. RELIRE SÉVÈREMENT.
+
+     CE QU'ELLE A SUPPRIMÉ, ET POURQUOI — NE PAS LES REMETTRE :
+     · « Vous montez la reprise numéro trois » → 🟥 « ça veut rien
+       dire ». Une reprise a un NOM DE PROTOCOLE (Amateur 1, Club 1),
+       pas un numéro. Sa formulation : « Vous êtes engagée sur la
+       reprise de l'Amateur 1. » Et l'horaire se dit à part : « Vous
+       passez à quatorze heures dix, sur la carrière deux » — les deux
+       gardées, elles ne disent pas la même chose.
+     · « C'est laquelle exactement, la trois ? » → tombe avec la
+       précédente.
+     · « Est-ce que je peux reconnaître le rectangle à pied ? » →
+       🟥 « on reconnaît pas un rectangle à pied ». La reconnaissance
+       à pied, c'est le CROSS et l'OBSTACLE. En dressage on connaît le
+       tracé par cœur avant d'arriver.
+     · « Est-ce que je peux redemander le tracé ? » → ne veut rien
+       dire non plus (faute reconnue par Claude avant qu'elle ne le
+       relève). Remplacée par sa phrase : « Est-ce que je peux
+       reprendre où j'en étais ? »
+     · « Est-ce que ma tenue est réglementaire ? » → vague. Remplacée
+       par sa règle, bien plus utile : les guêtres ET LES BANDES sont
+       interdites en concours de dressage.
+
+     SES FORMULATIONS, MEILLEURES ET POURQUOI :
+     · « Est-ce que quelqu'un a le droit de me dicter la reprise ? »
+       au lieu de « ai-je droit à un lecteur ? » : 🟥 LECTEUR EST UN
+       MOT D'INITIÉ. Celle qui découvre ne le connaît pas — mais elle
+       sait ce qu'elle veut demander. Et la question porte sur le
+       DROIT, qui est le vrai doute. `lecteur` reste au lexique, il
+       s'apprend en lisant.
+     · « saluer LES DEUX rênes dans une main » : la formule exacte.
+     · « La rectitude était bonne, mais ça manquait un peu
+       d'incurvation À MAIN DROITE » : un juge commente AU PASSÉ, avec
+       « un peu ». Et « à main droite » — pas « à droite » — fait
+       écho à `main-droite` appris à Aberystwyth.
+     · Ordre du temps 5 inversé sur sa demande : on se trompe, ON
+       DEMANDE, puis le juge répond. La question ne vient pas après
+       la réponse.
+
+     🟥 LE FAUX AMI DU CHAPITRE EST EN JEU : « la reprise » = le TEST
+     ici (`reprise-test`, en anglais *the test*) et le GROUPE d'élèves
+     à Aberystwyth (`toute-reprise`, *the ride*). Les deux villes se
+     suivent dans le voyage — c'est voulu.
+
+     LAISSÉS AU LEXIQUE SEUL : piaffer, passage, pirouette, changement
+     de pied, kür, classement. Ce sont les niveaux hauts, on les lit
+     sans les jouer à ce stade.
+
+     `dit` : "joueuse" = elle produit · "club" = l'organisation ou le
+     juge, elle entend et comprend.
+  ================================================================== */
+  dialogue: {
+    ville: "windsor", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 21 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · j'arrive sur le concours ---- */
+      { ref:"d-r-engagee-amateur", temps:1, dit:"club", mots:["reprise-test"],
+        fr:"Vous êtes engagée sur la reprise de l'Amateur 1.",
+        en:"You're entered for the Amateur 1 test.",
+        es:"Está inscrita en la prueba de Amateur 1.",
+        it:"È iscritta alla ripresa di Amatori 1.",
+        de:"Sie sind für die Aufgabe Amateur 1 genannt.",
+        ja:"アマチュア 1 の 課目 に エントリー さ れ て い ます。" },
+
+      { ref:"d-r-passage-carriere", temps:1, dit:"club", mots:[],
+        fr:"Vous passez à quatorze heures dix, sur la carrière deux.",
+        en:"You're on at ten past two, in arena two.",
+        es:"Pasa a las dos y diez, en la pista dos.",
+        it:"Passa alle quattordici e dieci, sul campo due.",
+        de:"Sie starten um vierzehn Uhr zehn, auf Viereck zwei.",
+        ja:"十四時 十分、 第二 馬場 で 出番 です。" },
+
+      /* 🟥 Formulation de Blandine : pas le mot d'initié « lecteur ». */
+      { ref:"d-dicter-reprise", temps:1, dit:"joueuse", mots:["reprise-test"], motsAilleurs:["lecteur"],
+        fr:"Est-ce que quelqu'un a le droit de me dicter la reprise ?",
+        en:"Is someone allowed to read the test for me?",
+        es:"¿Alguien tiene derecho a dictarme la prueba?",
+        it:"Qualcuno può leggermi la ripresa?",
+        de:"Darf mir jemand die Aufgabe ansagen?",
+        ja:"課目 を 読み上げ て もらっ て も いい です か ?" },
+
+      /* ---- temps 2 · avant d'entrer ---- */
+      /* 🟥 Règle de Blandine, à la place d'une question vague sur la
+         tenue. LES BANDES AUSSI — elle les a ajoutées. Le mot revient
+         de Walsall (`bandes`). */
+      { ref:"d-r-guetres-interdites", temps:2, dit:"club", mots:[],
+        fr:"Attention, les guêtres et les bandes sont interdites en concours de dressage.",
+        en:"Careful — boots and bandages aren't allowed in a dressage test.",
+        es:"Ojo, las protecciones y las vendas están prohibidas en concurso de doma.",
+        it:"Attenzione, paracolpi e fasce sono vietati in gara di dressage.",
+        de:"Achtung, Gamaschen und Bandagen sind in der Dressurprüfung verboten.",
+        ja:"注意 — 馬場 競技 で は プロテクター と バンテージ は 禁止 です。" },
+
+      { ref:"d-r-cloche-45s", temps:2, dit:"club", mots:["cloche-juge","entree"],
+        fr:"La cloche du juge : vous avez quarante-cinq secondes pour entrer.",
+        en:"That's the bell — you have forty-five seconds to enter.",
+        es:"La campana del juez: tiene cuarenta y cinco segundos para entrar.",
+        it:"La campana del giudice: ha quarantacinque secondi per entrare.",
+        de:"Die Glocke: Sie haben fünfundvierzig Sekunden bis zum Eintritt.",
+        ja:"合図 の 鐘 です。 四十五 秒 以内 に 入場 し て ください。" },
+
+      { ref:"d-entree-en-a", temps:2, dit:"joueuse", mots:["entree","lettre"],
+        fr:"On entre en A, c'est bien ça ?",
+        en:"We come in at A, don't we?",
+        es:"Se entra por A, ¿verdad?",
+        it:"Si entra in A, giusto?",
+        de:"Man reitet bei A ein, richtig?",
+        ja:"A から 入場 です よ ね ?" },
+
+      { ref:"d-r-entree-salut-x", temps:2, dit:"club", mots:["entree","salut","lettre"],
+        fr:"Entrée en A au trot de travail, salut en X.",
+        en:"Enter at A in working trot, halt and salute at X.",
+        es:"Entrada en A al trote de trabajo, saludo en X.",
+        it:"Entrata in A al trotto di lavoro, saluto in X.",
+        de:"Einritt bei A im Arbeitstrab, Halten und Grüßen bei X.",
+        ja:"A から 作業速歩 で 入場、 X で 停止 敬礼。" },
+
+      /* Formulation de Blandine : « LES DEUX rênes ». */
+      { ref:"d-saluer-deux-renes", temps:2, dit:"joueuse", mots:["salut"],
+        fr:"Est-ce qu'il faut saluer les deux rênes dans une main ?",
+        en:"Do I have to salute with both reins in one hand?",
+        es:"¿Hay que saludar con las dos riendas en una mano?",
+        it:"Bisogna salutare con entrambe le redini in una mano?",
+        de:"Muss man mit beiden Zügeln in einer Hand grüßen?",
+        ja:"手綱 を 片手 に まとめ て 敬礼 し ます か ?" },
+
+      /* ---- temps 3 · ce que la reprise demande ---- */
+      { ref:"d-cession-dans-reprise", temps:3, dit:"joueuse", mots:["cession-jambe","reprise-test"],
+        fr:"Il y a une cession à la jambe dans cette reprise ?",
+        en:"Is there a leg-yield in this test?",
+        es:"¿Hay una cesión a la pierna en esta prueba?",
+        it:"C'è una cessione alla gamba in questa ripresa?",
+        de:"Kommt in dieser Aufgabe ein Schenkelweichen vor?",
+        ja:"この 課目 に 脚に譲る 運動 は あり ます か ?" },
+
+      { ref:"d-r-epaule-appuyer", temps:3, dit:"club", mots:["epaule-dedans","appuyer","grand-cote"],
+        fr:"Épaule en dedans sur le grand côté, puis appuyer vers B.",
+        en:"Shoulder-in down the long side, then half-pass to B.",
+        es:"Espalda adentro por el lado largo, luego apoyada hacia B.",
+        it:"Spalla in dentro sul lato lungo, poi appoggiata verso B.",
+        de:"Schulterherein auf der langen Seite, dann Traversale nach B.",
+        ja:"長蹄 で ショルダーイン、 その あと B へ ハーフパス。" },
+
+      { ref:"d-contre-galop-niveau", temps:3, dit:"joueuse", mots:["contre-galop"],
+        fr:"Le contre-galop, c'est demandé à quel niveau ?",
+        en:"At what level do they ask for counter-canter?",
+        es:"¿A qué nivel se pide el galope a la contra?",
+        it:"A che livello si chiede il galoppo rovesciato?",
+        de:"Ab welcher Klasse wird Konter-Galopp verlangt?",
+        ja:"反対駈歩 は どの 級 から 求め られ ます か ?" },
+
+      { ref:"d-reculer-reprise", temps:3, dit:"joueuse", mots:["reculer","reprise-test"],
+        fr:"Est-ce qu'on recule sur cette reprise ?",
+        en:"Is there a rein-back in this test?",
+        es:"¿Hay paso atrás en esta prueba?",
+        it:"C'è l'indietreggiare in questa ripresa?",
+        de:"Wird in dieser Aufgabe rückwärts gerichtet?",
+        ja:"この 課目 に 後退 は あり ます か ?" },
+
+      /* ---- temps 4 · ce que le juge regarde ---- */
+      /* Récrit AU PASSÉ sur le modèle de la phrase de Blandine
+         ci-dessous : un juge commente ce qui vient d'être fait. */
+      { ref:"d-r-decontraction-contact", temps:4, dit:"club", mots:["decontraction","contact"],
+        fr:"Le cheval manquait un peu de décontraction, le contact n'était pas stable.",
+        en:"The horse lacked a little suppleness, and the contact wasn't steady.",
+        es:"Al caballo le faltaba algo de relajación y el contacto no era estable.",
+        it:"Al cavallo mancava un po' di decontrazione e il contatto non era stabile.",
+        de:"Dem Pferd fehlte etwas Losgelassenheit, die Anlehnung war nicht konstant.",
+        ja:"馬 の リラックス が やや 足り ず、 ハミ受け が 安定 し て い ませ ん でし た。" },
+
+      { ref:"d-ameliorer-impulsion", temps:4, dit:"joueuse", mots:["impulsion"],
+        fr:"Qu'est-ce que je peux améliorer sur l'impulsion ?",
+        en:"What can I improve on the impulsion?",
+        es:"¿Qué puedo mejorar en la impulsión?",
+        it:"Che cosa posso migliorare sull'impulso?",
+        de:"Was kann ich beim Schwung verbessern?",
+        ja:"推進 に ついて 何 を 直せ ば いい です か ?" },
+
+      /* 🟥 Phrase de Blandine, mot pour mot. Un juge parle au passé,
+         avec « un peu », et dit « À MAIN DROITE » — pas « à droite ». */
+      { ref:"d-r-rectitude-incurvation", temps:4, dit:"club", mots:["rectitude","incurvation"],
+        fr:"La rectitude était bonne, mais ça manquait un peu d'incurvation à main droite.",
+        en:"Straightness was good, but it needed a little more bend on the right rein.",
+        es:"La rectitud era buena, pero faltaba algo de incurvación a mano derecha.",
+        it:"La rettitudine era buona, ma mancava un po' d'incurvamento a mano destra.",
+        de:"Die Geraderichtung war gut, aber auf der rechten Hand fehlte etwas Biegung.",
+        ja:"直進性 は 良かっ た です が、 右手前 の 屈曲 が 少し 足り ませ ん でし た。" },
+
+      /* ---- temps 5 · l'erreur (ordre inversé sur sa demande) ---- */
+      { ref:"d-trompee-parcours", temps:5, dit:"joueuse", mots:["erreur-parcours"],
+        fr:"Je me suis trompée de parcours.",
+        en:"I went wrong in the test.",
+        es:"Me he equivocado de recorrido.",
+        it:"Ho sbagliato percorso.",
+        de:"Ich habe einen Bahnfehler gemacht.",
+        ja:"コース を 間違え まし た。" },
+
+      /* Formulation de Blandine, à la place d'un « redemander le
+         tracé » qui ne voulait rien dire. */
+      { ref:"d-reprendre-ou-jen-etais", temps:5, dit:"joueuse", mots:[],
+        fr:"Est-ce que je peux reprendre où j'en étais ?",
+        en:"Can I pick up where I left off?",
+        es:"¿Puedo retomar donde lo dejé?",
+        it:"Posso riprendere da dove ero rimasta?",
+        de:"Kann ich dort weitermachen, wo ich aufgehört habe?",
+        ja:"止まっ た ところ から 続け て も いい です か ?" },
+
+      { ref:"d-r-deux-points-en-c", temps:5, dit:"club", mots:["erreur-parcours","lettre"],
+        fr:"Erreur de parcours, deux points en moins : reprenez en C.",
+        en:"Error of course, two marks off — start again from C.",
+        es:"Error de recorrido, dos puntos menos: retome en C.",
+        it:"Errore di percorso, due punti in meno: riprenda da C.",
+        de:"Bahnfehler, zwei Punkte Abzug: nehmen Sie bei C wieder auf.",
+        ja:"コース違い、 二点 減点 です。 C から 再開 し て ください。" },
+
+      /* ---- temps 6 · après ---- */
+      { ref:"d-recuperer-protocole", temps:6, dit:"joueuse", mots:["protocole"],
+        fr:"Où est-ce que je récupère mon protocole ?",
+        en:"Where do I collect my test sheet?",
+        es:"¿Dónde recojo mi hoja de puntuación?",
+        it:"Dove ritiro il mio foglio di giudizio?",
+        de:"Wo bekomme ich mein Protokoll?",
+        ja:"採点表 は どこ で 受け取れ ます か ?" },
+
+      { ref:"d-r-controle-embouchures", temps:6, dit:"club", mots:["controle-embouchures"],
+        fr:"Contrôle des embouchures à la sortie, ne descendez pas.",
+        en:"Tack check on the way out — stay mounted.",
+        es:"Control de embocaduras a la salida, no desmonte.",
+        it:"Controllo delle imboccature all'uscita, non smonti.",
+        de:"Ausrüstungskontrolle am Ausgang, bitte aufsitzen bleiben.",
+        ja:"出口 で 馬具 検査 が あり ます。 下馬 し ない で ください。" },
+
+      { ref:"d-combien-pourcentage", temps:6, dit:"joueuse", mots:["pourcentage"],
+        fr:"J'ai fait combien en pourcentage ?",
+        en:"What percentage did I get?",
+        es:"¿Qué porcentaje he sacado?",
+        it:"Che percentuale ho fatto?",
+        de:"Wie viel Prozent habe ich bekommen?",
+        ja:"得点率 は 何 パーセント でし た か ?" }
+    ]
+  }
 };

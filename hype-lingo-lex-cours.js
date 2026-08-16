@@ -675,5 +675,303 @@ window.HYPE_LINGO_LEX.cours = {
       it:"Può ripetere ?",
       de:"Können Sie das wiederholen ?",
       ja:"もう一度 言っ て ください。" }
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE D'ABERYSTWYTH — 15 août 2026, session 214.
+
+     🟥 ABERYSTWYTH UTILISE CE FICHIER. Le nom d'affichage de la ville
+     est « En selle » — IL N'EXISTE AUCUN `lex-en-selle.js`. Blandine a
+     cherché : « je trouve nulle part de lex en selle ». La table qui
+     commande est `CHAPITRE_DE` dans lingo.html : aberystwyth:"cours",
+     windsor:"dressage". ✅ LIRE `CHAPITRE_DE` AVANT de chercher un
+     lexique par le nom du chapitre. Claude s'est trompé deux fois de
+     suite en déduisant la ville de l'en-tête du fichier.
+
+     LA SCÈNE : une reprise au bord de la mer. 24 phrases, 6 temps.
+     🟥 RENVERSEMENT VOULU : 17 phrases sur 24 sont ENTENDUES. Partout
+     ailleurs la joueuse produit ; ici elle doit surtout COMPRENDRE ce
+     qu'on lui crie, en temps réel, sans pouvoir demander. C'est la
+     nature même du chapitre — des ordres, pas des objets.
+     ⚠️ NE PAS « rééquilibrer » en ajoutant des questions.
+
+     🟥 SEIZE PHRASES SUR VINGT-QUATRE VIENNENT DE BLANDINE, dictées le
+     15/08 pendant la relecture. Elles remplacent des formulations plus
+     plates de Claude, et elles sont MEILLEURES pour des raisons
+     précises — notées ici pour qu'on ne les « corrige » jamais :
+     · « raccourcissez vos étrivières d'un trou » : le verbe du manège.
+     · « faites une volte en A, puis vous remarchez large » : la volte
+       est SITUÉE À UNE LETTRE, comme un vrai moniteur. Et « marcher
+       large » est du vocabulaire de reprise, pas de manuel.
+     · « commencez à préparer vos aides pour le départ au galop » :
+       nomme LES AIDES, notion centrale que « préparez le galop »
+       n'enseignait pas.
+     · « est-ce que je peux ralentir ou repasser au pas ? » : ce qu'on
+       dit quand on est dépassée MAINTENANT, pas une négociation
+       d'allure.
+     · « on passe rênes longues, on les laisse récupérer » : le « on »
+       collectif — le moniteur parle à la reprise entière.
+     · « on tient son dos, on se grandit vers le haut » · « gardez les
+       mains basses et fixes » · « on plie et on déplie les coudes pour
+       accompagner au galop » : LA POSITION, qui manquait entièrement.
+     · « attention à bien resangler » : le geste qu'on oublie. Le mot
+       revient du Morne (avant la baignade) — répétition à deux
+       endroits différents, c'est ce qui l'installe.
+     · les DEUX réglages opposés, gardés ensemble sur sa demande
+       (« on peut la rajouter et garder raccourcissez vos étriers on va
+       sauter ») : on raccourcit POUR SAUTER, on rallonge POUR LE
+       DRESSAGE. Chaque phrase dit son motif. C'est le seul endroit du
+       voyage où les deux verbes se répondent. NE PAS en supprimer un.
+
+     ⚠️ MOTS EMPLOYÉS SANS ÊTRE AU LEXIQUE, volontairement : les LETTRES
+     du manège (A), LES AIDES, les COUDES, « marcher large »,
+     « resangler ». Ils s'apprennent par la phrase, comme « entier » au
+     Connemara. ⚠️ « les aides » mériterait une entrée un jour — c'est
+     le cœur du métier — ici ou à Windsor. Signalé, non tranché.
+
+     ⚠️ ÉTRIERS / ÉTRIVIÈRES : l'alternance est celle de Blandine et
+     elle est RÉALISTE (en manège on règle « ses étriers » par
+     raccourci). Signalé, elle n'a pas demandé d'uniformiser.
+     NE PAS uniformiser sans son accord.
+
+     ⚠️ Plusieurs de ces ordres existent DÉJÀ comme `phrases`
+     d'exercice dans ce fichier (`renes-trot`, `main-gauche-piste`,
+     `changez-diagonale`, `talons-regard`, `pas-renes-longues`,
+     `je-nai-pas-compris`). Ce n'est pas un doublon : autre exercice,
+     autre rôle. C'est de la révision espacée.
+
+     🟥 LE CÔTÉ ENSEIGNANT N'EST PAS ICI. Ce fichier prévoit deux rôles
+     (reconnaître / produire l'ordre). Décision de Blandine, 15/08 :
+     l'enseignement ira à une 32ᵉ VILLE NEUVE — « on prendra une
+     nouvelle ville proposée en une ». Saumur écartée (« déjà bien avec
+     son vocabulaire »), Lamotte-Beuvron écartée (« c'est les poneys »).
+     ⚠️ Question ouverte AVANT d'écrire cette ville : enseigne-t-on dans
+     la langue étrangère ?
+
+     `dit` : "joueuse" = elle produit · "club" = le moniteur, elle
+     entend et comprend.
+  ================================================================== */
+  dialogue: {
+    ville: "aberystwyth", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 24 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · je monte ---- */
+      { ref:"d-tenir-cheval", temps:1, dit:"joueuse", mots:["monter"],
+        fr:"Est-ce que vous pouvez me tenir le cheval ?",
+        en:"Could you hold the horse for me?",
+        es:"¿Puede sujetarme el caballo?",
+        it:"Può tenermi il cavallo?",
+        de:"Können Sie mir das Pferd halten?",
+        ja:"馬 を 押さえ て もらえ ます か ?" },
+
+      { ref:"d-r-pied-gauche", temps:1, dit:"club", mots:["monter"],
+        fr:"Mettez le pied gauche à l'étrier.",
+        en:"Left foot in the stirrup.",
+        es:"Pie izquierdo en el estribo.",
+        it:"Piede sinistro nella staffa.",
+        de:"Linken Fuß in den Steigbügel.",
+        ja:"左足 を 鐙 に 入れ て ください。" },
+
+      /* Phrase de Blandine. `resangler` revient du Morne : deux villes,
+         deux moments, le même geste — c'est ce qui l'installe. */
+      { ref:"d-r-resangler", temps:1, dit:"club", mots:["attention"],
+        fr:"Attention à bien resangler.",
+        en:"Don't forget to tighten your girth.",
+        es:"Ojo, aprieta bien la cincha.",
+        it:"Attenzione a stringere bene il sottopancia.",
+        de:"Denk daran, richtig nachzugurten.",
+        ja:"腹帯 を しっかり 締め 直し て ください。" },
+
+      /* 🟥 LES DEUX RÉGLAGES OPPOSÉS, chacun avec son motif. */
+      { ref:"d-r-raccourcir-sauter", temps:1, dit:"club", mots:["raccourcissez"],
+        fr:"Raccourcissez vos étriers, on va sauter.",
+        en:"Take your stirrups up — we're jumping today.",
+        es:"Suban los estribos, hoy vamos a saltar.",
+        it:"Accorciate le staffe, oggi si salta.",
+        de:"Schnallt die Bügel kürzer, heute wird gesprungen.",
+        ja:"今日 は 障害 な ので、 鐙 を 短く し て ください。" },
+
+      { ref:"d-r-rallonger-dressage", temps:1, dit:"club", mots:["allongez"],
+        fr:"Aujourd'hui on va faire du dressage, vous pouvez rallonger vos étrivières de deux trous.",
+        en:"We're doing dressage today, so you can let your leathers down two holes.",
+        es:"Hoy hacemos doma, pueden bajar las aciones dos agujeros.",
+        it:"Oggi facciamo dressage, potete allungare gli staffili di due buchi.",
+        de:"Heute machen wir Dressur, ihr könnt die Steigbügelriemen zwei Löcher länger schnallen.",
+        ja:"今日 は 馬場 な ので、 鐙革 を 二つ 分 長く し て も いい です。" },
+
+      { ref:"d-bonne-longueur", temps:1, dit:"joueuse", mots:[],
+        fr:"Est-ce que mes étriers sont à la bonne longueur ?",
+        en:"Are my stirrups the right length?",
+        es:"¿Están mis estribos a la altura correcta?",
+        it:"Le mie staffe sono della lunghezza giusta?",
+        de:"Sind meine Steigbügel richtig lang?",
+        ja:"鐙 の 長さ は これ で いい です か ?" },
+
+      /* ---- temps 2 · les premiers ordres, et la position ---- */
+      { ref:"d-r-marche-au-pas", temps:2, dit:"club", mots:["au-pas"],
+        fr:"On marche au pas.",
+        en:"Walk on.",
+        es:"Al paso.",
+        it:"Al passo.",
+        de:"Schritt.",
+        ja:"常歩 で 進み ます。" },
+
+      { ref:"d-r-main-gauche", temps:2, dit:"club", mots:["main-gauche","piste"],
+        fr:"Prenez la piste à main gauche.",
+        en:"On the left rein, go large.",
+        es:"A mano izquierda, a la pista.",
+        it:"A mano sinistra, in pista.",
+        de:"Auf der linken Hand, ganze Bahn.",
+        ja:"左手前 で 蹄跡 に 入っ て ください。" },
+
+      { ref:"d-r-file-indienne", temps:2, dit:"club", mots:["file-indienne","distance"],
+        fr:"Gardez vos distances, en file indienne.",
+        en:"Keep your distance, single file.",
+        es:"Guarden las distancias, en fila india.",
+        it:"Mantenete le distanze, in fila indiana.",
+        de:"Abstand halten, hintereinander.",
+        ja:"一列 に なっ て、 距離 を 保っ て ください。" },
+
+      { ref:"d-r-talons-regard", temps:2, dit:"club", mots:["talons-bas","regardez"],
+        fr:"Talons bas, regardez devant vous.",
+        en:"Heels down, look up.",
+        es:"Talones abajo, mirad al frente.",
+        it:"Talloni bassi, guardate avanti.",
+        de:"Absätze tief, Blick geradeaus.",
+        ja:"かかと を 下げ て、 前 を 見 て。" },
+
+      /* Phrase de Blandine : la position, qui manquait entièrement. */
+      { ref:"d-r-dos-grandir", temps:2, dit:"club", mots:["dos-droit"],
+        fr:"On tient son dos, on se grandit vers le haut.",
+        en:"Hold your back, sit up tall.",
+        es:"Sujetad la espalda, creced hacia arriba.",
+        it:"Tenete la schiena, cresciamo verso l'alto.",
+        de:"Rücken halten, groß machen.",
+        ja:"背中 を 支え て、 上 に 伸び て ください。" },
+
+      /* Phrase de Blandine. */
+      { ref:"d-r-mains-basses", temps:2, dit:"club", mots:[],
+        fr:"Gardez les mains basses et fixes.",
+        en:"Keep your hands low and still.",
+        es:"Mantened las manos bajas y quietas.",
+        it:"Tenete le mani basse e ferme.",
+        de:"Hände tief und ruhig halten.",
+        ja:"手 は 低く、 動かさ ない で。" },
+
+      /* ---- temps 3 · je ne comprends pas ---- */
+      /* Formulation de Blandine, en UNE phrase : dans une reprise on
+         n'attend pas qu'on nous demande quoi, on retarde le groupe. */
+      { ref:"d-pas-compris", temps:3, dit:"joueuse", mots:[],
+        fr:"Excusez-moi, je n'ai pas compris. Pourriez-vous répéter plus lentement ?",
+        en:"Sorry, I didn't catch that — could you say it again more slowly?",
+        es:"Perdone, no he entendido. ¿Podría repetirlo más despacio?",
+        it:"Scusi, non ho capito. Potrebbe ripetere più lentamente?",
+        de:"Entschuldigung, das habe ich nicht verstanden. Könnten Sie es langsamer wiederholen?",
+        ja:"すみません、 わかり ませ ん でし た。 もう少し ゆっくり 言っ て いただけ ます か ?" },
+
+      { ref:"d-r-raccourcir-renes", temps:3, dit:"club", mots:["raccourcir-renes"],
+        fr:"Raccourcissez vos rênes.",
+        en:"Shorten your reins.",
+        es:"Acortad las riendas.",
+        it:"Accorciate le redini.",
+        de:"Zügel kürzer nehmen.",
+        ja:"手綱 を 短く 持っ て ください。" },
+
+      /* ---- temps 4 · le travail ---- */
+      { ref:"d-r-trot-enleve", temps:4, dit:"club", mots:["au-trot","trot-enleve"],
+        fr:"Au trot ! Trot enlevé.",
+        en:"Trot on! Rising trot.",
+        varEn:"Trot on! Posting trot.",
+        es:"¡ Al trote ! Trote levantado.",
+        it:"Al trotto ! Trotto battuto.",
+        de:"Antraben! Leichttraben.",
+        ja:"速歩 !  軽速歩 で。" },
+
+      { ref:"d-r-changer-diagonale", temps:4, dit:"club", mots:["changer-main","diagonale"],
+        fr:"Changez de main par la diagonale.",
+        en:"Change the rein across the diagonal.",
+        es:"Cambiad de mano por la diagonal.",
+        it:"Cambiate mano per la diagonale.",
+        de:"Handwechsel durch die ganze Bahn.",
+        ja:"斜線 で 手前 を 変え て ください。" },
+
+      /* 🟥 Phrase de Blandine : la volte est SITUÉE À UNE LETTRE, et
+         « marcher large » est le vrai mot de reprise. Les lettres du
+         manège ne sont pas au lexique — elles s'apprennent ici. */
+      { ref:"d-r-volte-en-a", temps:4, dit:"club", mots:["volte","piste"],
+        fr:"Faites une volte en A, puis vous remarchez large.",
+        en:"Ten-metre circle at A, then go large again.",
+        es:"Una vuelta pequeña en A, y luego seguid por la pista.",
+        it:"Una volta ad A, poi riprendete la pista.",
+        de:"Volte bei A, danach wieder ganze Bahn.",
+        ja:"A で 輪乗り を し て、 それ から また 蹄跡 に 戻り ます。" },
+
+      /* 🟥 Phrase de Blandine : nomme LES AIDES. */
+      { ref:"d-r-preparer-aides", temps:4, dit:"club", mots:["preparez","au-galop"],
+        fr:"Commencez à préparer vos aides pour le départ au galop.",
+        en:"Start preparing your aids for the canter transition.",
+        es:"Empezad a preparar las ayudas para la partida al galope.",
+        it:"Cominciate a preparare gli aiuti per la partenza al galoppo.",
+        de:"Bereitet eure Hilfen für das Angaloppieren vor.",
+        ja:"駆歩 発進 の 扶助 の 準備 を 始め て ください。" },
+
+      /* Phrase de Blandine : les coudes, qui accompagnent. */
+      { ref:"d-r-coudes-galop", temps:4, dit:"club", mots:["au-galop"],
+        fr:"On plie et on déplie les coudes pour accompagner au galop.",
+        en:"Open and close your elbows to follow the canter.",
+        es:"Abrid y cerrad los codos para acompañar el galope.",
+        it:"Aprite e chiudete i gomiti per accompagnare il galoppo.",
+        de:"Ellbogen öffnen und schließen, um dem Galopp zu folgen.",
+        ja:"肘 を 開い たり 閉じ たり し て、 駆歩 に ついて いき ます。" },
+
+      /* ---- temps 5 · je dis ce que je peux faire ---- */
+      { ref:"d-pas-galoper-aujourdhui", temps:5, dit:"joueuse", mots:["au-galop"],
+        fr:"Je préfère ne pas galoper aujourd'hui.",
+        en:"I'd rather not canter today.",
+        es:"Hoy prefiero no galopar.",
+        it:"Oggi preferisco non galoppare.",
+        de:"Heute möchte ich lieber nicht galoppieren.",
+        ja:"今日 は 駆歩 は やめ て おき たい です。" },
+
+      /* 🟥 Phrase de Blandine : ce qu'on dit quand on est dépassée. */
+      { ref:"d-ralentir-repasser-pas", temps:5, dit:"joueuse", mots:["au-pas","doucement"],
+        fr:"Est-ce que je peux ralentir ou repasser au pas ?",
+        en:"Can I slow down, or come back to walk?",
+        es:"¿Puedo ir más despacio o volver al paso?",
+        it:"Posso rallentare o tornare al passo?",
+        de:"Kann ich langsamer machen oder zurück in den Schritt?",
+        ja:"ゆっくり に する か、 常歩 に 戻し て も いい です か ?" },
+
+      { ref:"d-r-doucement-au-pas", temps:5, dit:"club", mots:["doucement","au-pas"],
+        fr:"Doucement, revenez au pas.",
+        en:"Easy — back to walk.",
+        es:"Despacio, volved al paso.",
+        it:"Piano, tornate al passo.",
+        de:"Ruhig, zurück in den Schritt.",
+        ja:"ゆっくり、 常歩 に 戻り ます。" },
+
+      /* ---- temps 6 · la fin de la reprise ---- */
+      /* 🟥 Phrase de Blandine : le « on » collectif, le moniteur parle
+         à la reprise entière. Et le cheval S'ÉTIRE en anglais. */
+      { ref:"d-r-renes-longues-recup", temps:6, dit:"club", mots:["renes-longues","recuperation"],
+        fr:"On passe rênes longues, on les laisse récupérer.",
+        en:"Long reins now — let them stretch and get their breath back.",
+        es:"Riendas largas, dejadlos recuperar.",
+        it:"Redini lunghe, lasciateli recuperare.",
+        de:"Am langen Zügel, lasst sie sich erholen.",
+        ja:"手綱 を 長く し て、 馬 を 休ま せ ます。" },
+
+      /* Formulation de Blandine. Dite par la JOUEUSE : elle est montée
+         en demandant qu'on lui tienne le cheval, elle redescend en
+         demandant si c'est le moment — la scène se boucle. */
+      { ref:"d-pied-a-terre", temps:6, dit:"joueuse", mots:["descendre"],
+        fr:"On met pied à terre ?",
+        en:"Shall I get off here?",
+        es:"¿Echamos pie a tierra?",
+        it:"Smontiamo?",
+        de:"Sollen wir absitzen?",
+        ja:"ここ で 下馬 し ます か ?" }
+    ]
+  }
 };

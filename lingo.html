@@ -583,6 +583,29 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouvDebut{position:relative;text-align:center;padding:0 22px;width:100%;max-width:520px;
  transition:opacity .5s}
 #ouverture.joue #ouvDebut{opacity:0;pointer-events:none}
+/* 🟥 LE FLASH AVANT LE FILM — corrigé le 16/08, session 214, sur constat
+   de Blandine : « à l'arrivée y a plein de flashs d'autres pages avant et
+   après la vidéo ».
+   LA CAUSE : `#ouvFilm` est en `display:none` tant que `lancerFilm()`
+   n'a pas tourné — donc entre l'affichage du HTML et l'exécution du
+   script, on voit le BAS de #ouverture : le carnet, les règles, la carte
+   hors-ligne, « Partir », la ligne de compte. Seul `#ouvDebut` était
+   masqué par `.joue`.
+   ⚠️ AGGRAVÉ PAR LE SERVICE WORKER (15/08) : le HTML arrive désormais
+   instantanément depuis le cache tandis que les 26 lexiques restent à
+   charger — la fenêtre du flash s'est élargie d'autant.
+   LE REMÈDE : `#ouverture` part avec `class="joue"` DANS LE HTML, donc
+   tout est masqué dès le premier pixel ; `terminerOuverture()` retire la
+   classe et tout apparaît. Aucun JS ajouté.
+   ⚠️ Si `terminerOuverture()` ne s'exécutait pas, l'écran resterait noir
+   — mais c'était DÉJÀ le cas avant ce correctif (défaut du 8 août,
+   reproduit deux fois, documenté plus bas). Rien n'est aggravé. */
+#ouverture.joue .carnet,
+#ouverture.joue .regles,
+#ouverture.joue #ouvPoche,
+#ouverture.joue #ouvPartir,
+#ouverture.joue .cpAcces,
+#ouverture.joue #ouvAutres{opacity:0;pointer-events:none}
 #ouvDebut .sur{font-size:10px;letter-spacing:.36em;text-transform:uppercase;
  color:var(--turquoise);margin:0 0 14px}
 #ouvDebut h1{font-family:'Cinzel',serif;font-weight:600;font-size:40px;margin:0;line-height:1.05}
@@ -2372,8 +2395,6 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <span class="oBande"></span>
     </div>
 
-    </div>
-
     <div class="carnet" id="carnet"></div>
 
     <div class="regles">
@@ -2429,6 +2450,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
         <button id="pocheAction" type="button" hidden></button>
         <div id="pocheJauge" hidden><span id="pocheJaugeIn"></span></div>
       </div>
+    </div>
 
     <button id="ouvPartir" data-t="partir">Partir</button>
     <!-- v66 : LA LIGNE D'ACCÈS AU COMPTE, premier des deux endroits décidés

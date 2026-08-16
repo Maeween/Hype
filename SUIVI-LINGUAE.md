@@ -414,6 +414,32 @@ La règle enseignée : queue-de-pie + haut-de-forme aux niveaux hauts **ensemble
 
 ---
 
+## 🔴 INCIDENT — LA LIGNE DU BAS AVAIT DISPARU (faute de Claude, 16/08)
+
+> Blandine : *« où sont passées la ligne en bas avec le défi etc de la page où on choisit sa destination ? »*
+
+**LA FAUTE :** en déplaçant la carte hors-ligne vers le bas de l'ouverture, le script de découpage a **laissé son `</div>` de fermeture à l'ancien emplacement**. `#ouvPoche` restait donc ouvert jusqu'au bas de la page et **avalait tout ce qui suivait** — bouton « Partir », ligne de compte, `#ouvAutres`. Comme la carte est `hidden`, **tout ce qu'elle englobait devenait invisible**.
+⚠️ **Le comptage global des `<div>` était équilibré** (le `</div>` orphelin compensait) : un contrôle d'équilibre global ne suffit pas. ✅ **Vérifier l'équilibre DU SEGMENT entre le bloc déplacé et l'élément suivant**, pas seulement le total du fichier.
+**Réparé :** orphelin retiré, `#ouvPoche` refermé au bon endroit, segment vérifié à 0.
+
+---
+
+## ✨ LES FLASHS AVANT LE FILM — EXPLIQUÉS ET CORRIGÉS
+
+> *« À l'arrivée y a plein de flashs d'autres pages avant et après la vidéo. »* — enregistrement d'écran analysé image par image (20 s, extraction à 5 i/s).
+
+**Ce qu'on voit vraiment :** un écran gris uni (lancement iOS), puis **l'écran d'ouverture avec le texte des règles** une fraction de seconde, puis le noir, puis le film.
+
+**LA CAUSE :** `#ouvFilm` est en `display:none` tant que `lancerFilm()` n'a pas tourné, et **`#ouverture.joue` ne masquait que `#ouvDebut`** — pas le carnet, pas les règles, pas « Partir », pas `#ouvAutres`. Entre l'affichage du HTML et l'exécution du script, tout ce bas d'écran est visible.
+🟥 **AGGRAVÉ PAR LE SERVICE WORKER** posé la veille : le HTML arrive désormais **instantanément** depuis le cache tandis que les 26 lexiques restent à charger — la fenêtre du flash s'est élargie d'autant. Effet de bord du hors-ligne, pas un hasard.
+
+**LE REMÈDE, CSS pur, aucun JS ajouté :** `.carnet`, `.regles`, `#ouvPoche`, `#ouvPartir`, `.cpAcces` et `#ouvAutres` rejoignent `#ouvDebut` dans le masquage de `.joue`. `#ouverture` part déjà avec `class="joue"` dans le HTML, donc tout est masqué **dès le premier pixel** ; `terminerOuverture()` retire la classe et tout apparaît.
+⚠️ Si `terminerOuverture()` ne s'exécutait pas, écran noir — mais **c'était déjà le cas avant** (défaut du 8 août, reproduit deux fois). Rien n'est aggravé.
+
+**APRÈS le film : ce n'est pas un flash.** La page d'intro se construit à vue — textes d'abord, vignettes des villes ensuite. C'est du chargement d'images progressif, et **le hors-ligne le réglera de lui-même** une fois les cartes en cache.
+
+---
+
 ## À L'ÉCRAN : + / −
 
 **+** la carte hors-ligne sur l'accueil (deux états) · **+** sa barre de progression · **+** la note « dernier essai » après le 2ᵉ raté vocal et « on passe » après le 3ᵉ · **+** le bouton de mise en situation sur **Connemara**, **Newmarket**, **Lambourn**, **Walsall**, **Aberystwyth** et **Windsor** (`aUnDialogue()` détecte la clé) · La Baule et Le Morne passent de **2 à 6 langues**.
