@@ -25237,7 +25237,82 @@ function EcranMonCavalier() {
             (!__estVisite) ? h("button", { onClick: function () { setEcran("messagerie"); }, title: T("Messages", "Messages", "Mensajes", "Messaggi", "メッセージ"), style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "#C7CFD6", strokeWidth: 1.7 }, h("path", { d: "M4 5.5 h16 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H9 l-4 3.5 v-3.5 H4 a1 1 0 0 1-1-1 v-9 a1 1 0 0 1 1-1 z" }))) : null,
             __estVisite ? h("button", { onClick: ouvrirMessageAvecVisite, disabled: messageEnCours, style: { width: 28, height: 28, borderRadius: "50%", background: "rgba(32,217,245,0.2)", border: "1px solid rgba(32,217,245,0.4)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", opacity: messageEnCours ? 0.6 : 1 } }, h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "#20D9F5", strokeWidth: 1.9 }, h("path", { d: "M4 5.5 h16 a1 1 0 0 1 1 1 v9 a1 1 0 0 1-1 1 H9 l-4 3.5 v-3.5 H4 a1 1 0 0 1-1-1 v-9 a1 1 0 0 1 1-1 z" }))) : null)),
         (citation ? h("div", { style: { marginTop: 7, fontSize: 13, color: "#AEB8C0", fontStyle: "italic", fontFamily: "Georgia, serif", lineHeight: 1.4 } }, "\u201c" + citation + "\u201d") : null))),
-    !__estVisite ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "inline-flex", alignItems: "center", gap: 6, margin: "12px 16px 0", padding: "6px 12px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 11, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83c\udfc6 " + T("Voir mes qu\u00eates", "See my quests", "Ver mis misiones", "Vedi le mie missioni", "\u30ad\u30fc\u30af\u30b9\u3092\u898b\u308b") + " \u203a") : null,
+    /* 16/08 (décision de Blandine) : LA PASTILLE « Voir mes quêtes » EST RETIRÉE.
+       Elle faisait doublon avec la carte « Tes quêtes » — même action
+       (setEcran("quetes")), mais elle ne montrait rien, là où la carte porte le
+       badge de niveau, la barre d'XP et le compte de points. Ses mots :
+       « pourquoi on a deux trucs au lieu d'un ».
+       NEUTRALISÉE SUR PLACE, pas coupée (règle du 15/08 : dans du React sans
+       JSX, une ligne entière emporte souvent des fermetures du bloc parent).
+       Repasser la condition à !__estVisite la fait revenir. */
+    false && !__estVisite ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "inline-flex", alignItems: "center", gap: 6, margin: "12px 16px 0", padding: "6px 12px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 11, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83c\udfc6 " + T("Voir mes qu\u00eates", "See my quests", "Ver mis misiones", "Vedi le mie missioni", "\u30ad\u30fc\u30af\u30b9\u3092\u898b\u308b") + " \u203a") : null,
+    /* ══════════════════════════════════════════════════════════════════════
+       16/08 — LE MUR DES SONGES, REECRIT SUR SA PAGE.
+       Demande de Blandine, ses mots : « j'avais demandé à ce qu'elle soit
+       remontée au-dessus des story sur SA page dans la page cavalier ».
+       Le bloc avait été DEPLACE sur Communauté le 15/08 (où il plantait,
+       ses variables étant restées ici), puis retiré de Communauté le 16/08
+       pour réparer la page. Entre les deux, personne ne l'a remis ici : il
+       n'était plus affiché nulle part. Le texte, lui, n'a jamais bougé —
+       il vit dans profiles.ma_voix.
+       Il est donc RECRIT, pas déplacé, et posé AU-DESSUS du bandeau de
+       stories comme demandé.
+       Les états editVoix / voixLocal (déclarés en tête de cette fonction)
+       redeviennent vivants : ce sont eux d'origine, ils étaient orphelins.
+       En visite, on lit ma_voix du profil VISITE et l'édition est fermée —
+       exactement la règle de « Mon récit » juste en dessous, aucune fuite
+       d'un cavalier à l'autre. Rien ne s'affiche si le visité n'a rien écrit.
+       ⚠️ Préparation Flutter : ce bloc ne parle qu'à majProfil (Repository
+       profil). Aucune requête directe, aucune connaissance du schéma.
+       ══════════════════════════════════════════════════════════════════════ */
+    ((function () {
+      var thS = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
+      function rgbS(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thS.principal, a) : thS.principal; }
+      var voixTxtS = __estVisite ? ((profil && profil.ma_voix) || "") : ((profRecit && profRecit.ma_voix) || (profil && profil.ma_voix) || "");
+      var editableS = !__estVisite;
+      if (!editableS && !voixTxtS) return null;
+      var PortalS = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
+      function sauverVoixS() {
+        var txt = (voixLocal || "").trim();
+        setEditVoix(false);
+        /* Garde-fou repris du 06/08 : valider un champ vide n'efface jamais
+           silencieusement un texte existant. */
+        if (!txt && (((profRecit && profRecit.ma_voix) || (profil && profil.ma_voix) || "").trim())) { return; }
+        try {
+          majProfil({ ma_voix: txt || null }).then(function (r) {
+            if (r && r.error) { try { console.warn("[Hype] echec enregistrement ma_voix", r.error); } catch (eW) { } return; }
+            if (r && r.data) {
+              setProfRecit(r.data);
+              try { if (ctx && typeof ctx.setProfil === "function") { var dd = r.data; ctx.setProfil(function (pp) { var np = Object.assign({}, pp); np.ma_voix = dd.ma_voix; return np; }); } } catch (eS2) { }
+            }
+          }).catch(function (eC) { try { console.warn("[Hype] echec enregistrement ma_voix", eC); } catch (eW2) { } });
+        } catch (e) { }
+      }
+      var corpsS = voixTxtS
+        ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 20.5, lineHeight: 1.5, color: "#E9F1F3" } }, h(EncreLumineuse, { text: voixTxtS }))
+        : h("div", { style: { fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: 15.5, lineHeight: 1.55, color: "rgba(234,242,244,.34)" } },
+          T("\u00c9cris une citation, une devise, la phrase qui te porte\u2026", "Write a quote, a motto, the line that carries you\u2026", "Escribe una cita, un lema, la frase que te sostiene\u2026", "Scrivi una citazione, un motto, la frase che ti porta\u2026", "\u3042\u306a\u305f\u3092\u652f\u3048\u308b\u8a00\u8449\u3092\u66f8\u3053\u3046\u2026"));
+      return h("div", { style: { margin: "18px 0 0" } },
+        h("div", { style: { position: "relative", margin: "0 16px", padding: "20px 18px 18px", borderRadius: 20, background: "linear-gradient(180deg,#0b1219,#080c11)", border: "1px solid rgba(255,255,255,0.08)", overflow: "hidden" } },
+          h("div", { style: { position: "absolute", right: 14, top: -8, fontFamily: "Georgia, serif", fontSize: 110, color: rgbS(0.08), lineHeight: 1, pointerEvents: "none" } }, "\u201c"),
+          h("div", { style: { position: "relative", fontSize: 10, letterSpacing: "0.28em", color: thS.principal, textTransform: "uppercase", fontWeight: 700, fontFamily: M, marginBottom: 12 } },
+            "\u2726 " + T("Le mur des songes", "The wall of dreams", "El muro de los sue\u00f1os", "Il muro dei sogni", "\u5922\u306e\u58c1")),
+          h("div", { style: { position: "relative", minHeight: 54 } }, corpsS),
+          editableS ? h("button", { onClick: function () { setVoixLocal(voixTxtS || ""); setEditVoix(true); }, style: { position: "relative", marginTop: 14, padding: "9px 16px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, fontFamily: M, cursor: "pointer", border: "1px solid " + rgbS(0.24), background: "rgba(7,26,31,.6)", color: thS.principal, boxShadow: "inset 0 0 14px " + rgbS(0.05) } },
+            "\u270e " + T("\u00c9crire", "Write", "Escribir", "Scrivere", "\u66f8\u304f")) : null),
+        (editableS && editVoix) ? PortalS(h("div", { onClick: function () { setEditVoix(false); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 60px) 0 0" } },
+          h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "90%", maxWidth: 420, borderRadius: 20, border: "1px solid " + rgbS(0.4), background: "linear-gradient(180deg, rgba(14,22,28,0.98), rgba(8,11,15,0.98))", padding: 18 } },
+            h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } },
+              T("Le mur des songes", "The wall of dreams", "El muro de los sue\u00f1os", "Il muro dei sogni", "\u5922\u306e\u58c1")),
+            h("div", { style: { fontSize: 11, color: "rgba(234,242,244,.45)", textAlign: "center", marginBottom: 12, fontFamily: M } },
+              T("Citation, devise ou philosophie \u2014 6 lignes max", "Quote, motto or philosophy \u2014 6 lines max", "Cita, lema o filosof\u00eda \u2014 6 l\u00edneas m\u00e1x", "Citazione, motto o filosofia \u2014 max 6 righe", "\u5f15\u7528\u30fb\u5ea7\u53f3\u9298\u30fb\u54f2\u5b66 \u2014 \u6700\u59276\u884c")),
+            h("textarea", { value: voixLocal, onChange: function (eI) { var v = eI.target.value; if ((v.match(/\n/g) || []).length > 5) return; setVoixLocal(v.slice(0, 260)); }, rows: 5, maxLength: 260, placeholder: T("\u00c9cris ici\u2026", "Write here\u2026", "Escribe aqu\u00ed\u2026", "Scrivi qui\u2026", "\u3053\u3053\u306b\u66f8\u304f\u2026"), style: { width: "100%", boxSizing: "border-box", borderRadius: 14, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.04)", color: "#EDF2F5", padding: "12px 13px", fontSize: 14, lineHeight: 1.55, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", resize: "none", outline: "none" } }),
+            h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
+              h("button", { onClick: function () { setEditVoix(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C7D0D6", fontSize: 12.5, fontWeight: 600, fontFamily: M, cursor: "pointer" } },
+                T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
+              h("button", { onClick: function () { sauverVoixS(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg," + thS.principal + "," + thS.lumineux + ")", color: "#04252A", fontSize: 12.5, fontWeight: 800, fontFamily: M, cursor: "pointer" } },
+                T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58")))))) : null);
+    })()),
     /* 12/08 (114) : bandeau des stories. */
     (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, null) : null,
     /* 12/08 (116) : rail des A LA UNE du cavalier AFFICHE (visite ou soi-meme).
@@ -25267,15 +25342,6 @@ function EcranMonCavalier() {
         : h("button", { onClick: function () { setClub2Local({ club: "" }); setEditClub2(true); }, style: { minHeight: 118, borderRadius: 18, border: "1.5px dashed rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.05)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", color: "#5FE9F0", fontFamily: M, fontSize: 10.5, fontWeight: 600, padding: 10, textAlign: "center" } },
             h("span", { style: { width: 28, height: 28, borderRadius: "50%", border: "1.5px solid #5FE9F0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 } }, "+"),
             T("Ajouter une \u00e9curie", "Add a stable", "A\u00f1adir una cuadra", "Aggiungi una scuderia", "\u53a9\u820e\u3092\u8ffd\u52a0"))),
-    (!__estVisite ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "block", width: "calc(100% - 32px)", textAlign: "left", margin: "18px 16px 0", padding: "15px 16px", borderRadius: 20, border: "1px solid rgba(32,217,245,0.42)", background: "linear-gradient(120deg, rgba(32,217,245,0.10), rgba(10,14,18,0.75))", cursor: "pointer" } },
-      h("div", { style: { display: "flex", alignItems: "center", gap: 13 } },
-        h("img", { src: hypeBadgeNiveau(Math.floor((ctx.xp || 0) / 200) + 1), alt: "", style: { height: 44, width: "auto", flex: "0 0 auto", filter: "drop-shadow(0 0 6px rgba(32,217,245,.55))" } }),
-        h("div", { style: { minWidth: 0 } },
-          h("div", { style: { fontFamily: C, fontSize: 15.5, fontWeight: 600, color: "#EDF2F5" } }, tr({ fr: "Tes qu\u00eates", en: "Your quests", es: "Tus misiones", it: "Le tue missioni", ja: "\u30af\u30a8\u30b9\u30c8", de: "Deine Quests" })),
-          h("div", { style: { height: 5, borderRadius: 99, background: "rgba(255,255,255,0.08)", overflow: "hidden", marginTop: 7 } },
-            h("div", { style: { height: "100%", width: (((ctx.xp || 0) % 200) / 200 * 100) + "%", borderRadius: 99, background: "linear-gradient(90deg,#17A8B3,#20D9F5)" } })),
-          h("div", { style: { fontSize: 10, color: "#8A99A1", marginTop: 5, fontFamily: M } }, ((ctx.xp || 0) % 200) + " / 200 XP")),
-        h("span", { style: { color: "#5FE9F0", fontSize: 20, flex: "0 0 auto" } }, "\u203a"))) : null),
     ((function () {
       var thC = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
       function rgb(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(thC.principal, a) : thC.principal; }
@@ -25371,6 +25437,20 @@ function EcranMonCavalier() {
     ((estModAdm && AFFICHER_SECTIONS_BIENTOT) ? sectionBientot(T("Troph\u00e9es", "Trophies", "Trofeos", "Trofei", "\u30c8\u30ed\u30d5\u30a3\u30fc")) : null),
     ((estModAdm && AFFICHER_SECTIONS_BIENTOT) ? sectionBientot(T("Badges", "Badges", "Insignias", "Distintivi", "\u30d0\u30c3\u30b8")) : null),
     h(MurHype, { cibleMoi: true }),
+    /* 16/08 (demande de Blandine) : la carte « Tes quêtes » (niveau + barre
+       d'XP) DESCEND EN BAS DE LA PAGE. Elle occupait le haut, entre les clubs
+       et le récit. Rien d'autre ne change : même carte, même action, même
+       calcul d'XP. Le petit bouton « Voir mes quêtes » de l'en-tête n'a PAS
+       été touché — il n'était pas dans la demande. */
+    (!__estVisite ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "block", width: "calc(100% - 32px)", textAlign: "left", margin: "18px 16px 0", padding: "15px 16px", borderRadius: 20, border: "1px solid rgba(32,217,245,0.42)", background: "linear-gradient(120deg, rgba(32,217,245,0.10), rgba(10,14,18,0.75))", cursor: "pointer" } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 13 } },
+        h("img", { src: hypeBadgeNiveau(Math.floor((ctx.xp || 0) / 200) + 1), alt: "", style: { height: 44, width: "auto", flex: "0 0 auto", filter: "drop-shadow(0 0 6px rgba(32,217,245,.55))" } }),
+        h("div", { style: { minWidth: 0 } },
+          h("div", { style: { fontFamily: C, fontSize: 15.5, fontWeight: 600, color: "#EDF2F5" } }, tr({ fr: "Tes qu\u00eates", en: "Your quests", es: "Tus misiones", it: "Le tue missioni", ja: "\u30af\u30a8\u30b9\u30c8", de: "Deine Quests" })),
+          h("div", { style: { height: 5, borderRadius: 99, background: "rgba(255,255,255,0.08)", overflow: "hidden", marginTop: 7 } },
+            h("div", { style: { height: "100%", width: (((ctx.xp || 0) % 200) / 200 * 100) + "%", borderRadius: 99, background: "linear-gradient(90deg,#17A8B3,#20D9F5)" } })),
+          h("div", { style: { fontSize: 10, color: "#8A99A1", marginTop: 5, fontFamily: M } }, ((ctx.xp || 0) % 200) + " / 200 XP")),
+        h("span", { style: { color: "#5FE9F0", fontSize: 20, flex: "0 0 auto" } }, "\u203a"))) : null),
     h("div", { style: { textAlign: "center", color: "rgba(160,170,178,0.4)", fontSize: 9, letterSpacing: "0.12em", margin: "20px 0 6px", fontFamily: "'Montserrat',sans-serif" } }, "HYPE \u00b7 version 14.07 \u00b7 16h40"),
     editPseudo ? h("div", { onClick: function () { setEditPseudo(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 80px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
