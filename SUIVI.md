@@ -342,6 +342,57 @@ Demande de Blandine sur capture de 19 h 17, ses mots : « réduis encore tout ç
 
 ---
 
+### QUATRIÈME PASSE — LES IDENTIFIANTS UNIQUES, ÉTAPE 1 : LE SQL SEUL
+
+**Décision de Blandine**, après maquette (`maquette-pseudos.html`) et une objection décisive de sa part : « si quelqu'un change d'écurie on peut facilement changer de nom et ne plus apparaître pour qui on est vraiment non ». Elle a raison, et ça a retourné le problème.
+
+**Ce que j'avais mal posé.** Je lui avais présenté le sujet comme un problème d'**unicité** — distinguer deux personnes à un instant donné. Son objection ajoute la dimension que j'avais manquée : la **stabilité dans le temps**, reconnaître la même personne demain. La solution B (nom + écurie) reposait entièrement sur l'écurie, c'est-à-dire sur le champ le plus facile à changer du profil. C'était un pansement. **Retenu : solution A.**
+
+**Fait découvert en chemin, non lié au choix** : les mentions déjà publiées enregistrent le nom **figé** (`cible_nom`). Après un renommage, elles affichent l'ancien nom tout en menant au bon profil. Les liens restent justes, l'affichage mentait déjà, indépendamment de A ou B. **Blandine a demandé de le traiter dans le même lot** — donc à l'étape 2.
+
+**Ses six décisions** : identifiant unique en plus du nom · nom affiché inchangé pour tous · généré automatiquement · le compte le plus ancien prend la forme courte · modifiable mais rare, ancien réservé 6 mois · premier changement gratuit · affiché partout où un cavalier apparaît · message d'invitation aux seuls noms qui étaient en double · libellé « rarement modifiable » et **non** « définitif », parce que promettre le définitif serait faux.
+
+**L'état réel de la base, relevé par Blandine** (requête de lecture, capture de 20 h 07) : trois noms en double. `blandine` (feinn@live.fr + fzinn@live.fr, coquille) · `liam` (liamroux0@gmail.com + liamroux0@gmail.**fr**, coquille) · `dominique` — **qui n'est PAS un doublon** : deux personnes réelles, Wirtschafter et Hadjadj. Ne jamais supprimer l'une des deux.
+
+⚠️ **ERREUR DE CLAUDE, corrigée dans la conversation.** J'avais écrit que le ménage des deux comptes fantômes était un **préalable bloquant** à la migration. Faux, et affirmé avant de regarder l'ordre de création : les deux vrais comptes étant les plus anciens de leurs paires, ils prennent `@blandine` et `@liam`, les coquilles n'héritant que des formes suffixées. Le ménage peut se faire avant ou après, indifféremment. **Encore une conclusion tirée avant mesure.**
+
+**Exception nommée, sur demande explicite de Blandine** : `hadjadj.dominique@gmail.com` est renommée « Dominique H », ce qui lui donne `@dominique.h` au lieu de `@dominique2` — plus lisible qu'un numéro. C'est la **seule** fois où ce fichier change un nom affiché. Wirtschafter, « premier abonné », garde « Dominique » et `@dominique`.
+
+⚠️ **L'ORDRE DES ÉTAPES 4 ET 5 EST OBLIGATOIRE.** Le marquage des noms en double passe **avant** le renommage : après lui, « Dominique » n'est plus un doublon et **aucune des deux** ne verrait le message, alors que c'est le couple qui en a le plus besoin.
+
+### Ce que le SQL fait (`identifiants-uniques.sql`)
+
+Une seule transaction, idempotent, aucun `delete`/`drop table`/`truncate` — vérifié mécaniquement. Colonnes `handle` / `handle_a_valider` / `handle_change_le` / `handle_gratuit_fait` · fonction `hype_handle_normalise` · tables `hype_handles_interdits` et `hype_handles_reserves` (réservation 6 mois) · marquage · renommage · génération par ancienneté · index unique **sur `lower(handle)`** · contrainte de format · RLS lecture seule · trois requêtes de vérification en fin de fichier.
+
+**`handle` reste NULLABLE, volontairement** : l'app de l'étape 2 sera écrite pour tolérer un identifiant vide, donc l'ordre des pushs (SQL avant ou après `index.html`) n'a aucune importance. Blandine pousse depuis son téléphone, l'ordre peut glisser.
+
+**L'index est créé APRÈS la génération, volontairement** : si la génération avait produit un doublon, la création échoue et la transaction entière est annulée. Échec bruyant plutôt que doublon silencieux.
+
+### 🔴 RÈGLES ET DÉFAUTS PAYÉS PAR CETTE PASSE
+
+10. **`translate()` EXIGE DEUX CHAÎNES DE LONGUEUR ÉGALE**, sinon elle tronque en silence. Les deux font 59 caractères — **compté par script, pas supposé**. Les ligatures (Æ, Œ, ß) valent deux lettres et ne peuvent donc pas y passer : traitées avant, par `replace()`.
+11. **DEUX GARDES QUI NE DISENT PAS LA MÊME CHOSE, C'EST UN BUG QUI ATTEND.** Défaut n° 1 attrapé avant livraison : ma contrainte acceptait `ambre.` que la normalisation retire toujours. Défaut n° 2, plus grave : « Ambre._Rose » produisait `ambre._rose`, **que ma propre contrainte refusait** — la migration aurait échoué sur un nom banal. Corrigé dans la fonction (toute suite de séparateurs se réduit au premier), pas en assouplissant le garde.
+12. **UN FUZZ VAUT MIEUX QU'UNE LISTE DE CAS.** Mes 24 cas nommés ne montraient qu'un des deux défauts. 40 000 noms tirés au hasard — accents, emoji, apostrophes, séparateurs collés — ont confirmé zéro divergence après correction. C'est ce test qui donne le droit de livrer, pas la relecture.
+13. **NE JAMAIS AFFIRMER L'ÉTAT DE LA BASE.** Claude n'a aucun accès à Supabase ni au domaine. Une confirmation inventée sur le nombre de comptes aurait pu faire supprimer un compte payant. Toujours livrer la requête et attendre le résultat.
+
+### ⚠️ Ce que je n'ai PAS pu vérifier
+
+**Le fichier SQL n'a été ni exécuté ni analysé grammaticalement** : l'environnement n'a ni Postgres ni réseau (`pglast` non installable). Vérifié seulement : parenthèses équilibrées (79/79), `begin`/`commit` appariés, délimiteurs `$$` pairs, longueurs de `translate`, absence de destruction, les 8 étapes présentes, et la logique simulée à l'identique en Python. **La grammaire repose sur ma relecture seule.** En cas d'erreur, la transaction annule tout : la base reste intacte.
+
+### À l'écran : + / − (quatrième passe)
+
+**Rien ne change à l'écran.** Aucun fichier de l'app n'est modifié, l'app ne lit pas encore la colonne. C'est délibéré : Blandine vérifie les six identifiants générés dans Supabase avant qu'une seule ligne d'interface en dépende.
+
+### Préparation Flutter (quatrième passe)
+
+**Une vraie amélioration d'architecture.** La normalisation vit désormais **en base** (`hype_handle_normalise`), pas dans l'app : la règle de formation d'un identifiant devient indépendante du client. Un futur client Flutter n'aura rien à réimplémenter, et surtout ne pourra pas diverger de la règle — l'index unique et la contrainte de format sont côté serveur. C'est le premier morceau d'identité de ce projet qui ne dépend plus de `index.html`.
+
+### Étape 2, à venir (rien n'est écrit)
+
+`majProfil` étendu à `handle` · affichage partout où un cavalier apparaît, petit et peu contrasté · sélecteur de mention et mention rendue passant par l'identifiant · message d'invitation non bloquant, récurrent tant que rien n'est validé · écran de changement avec contrôle « déjà pris », premier changement gratuit puis délai de 60 jours, ancien identifiant versé dans `hype_handles_reserves` · relecture du nom des mentions déjà publiées (`cible_nom` figé).
+
+---
+
 ### Reste ouvert (inchangé, aucun feu vert demandé)
 
 Tout ce que la PASSATION-138 listait sous « ce qui attend une décision de Blandine » reste ouvert : onglets de la page Cavalier, teinte de l'Écurie, photo d'écurie en double, zone libre de Fond Studio, code mort du détourage, fond flou cuit dans `srcNue`, la musique, plus de quatre à la une, panneau de réglages du mur immersif à graver. **Le « chaînage des à la une » est retiré de la liste des correctifs prêts : sa cause était fausse.** La question de fond reste posée — faut-il pouvoir passer d'une à la une à la suivante ? — mais c'est une demande produit, pas un bug.
