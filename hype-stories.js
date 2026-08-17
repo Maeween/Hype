@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19ay";
+var HYPE_STORIES_VERSION = "19az";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -4892,7 +4892,25 @@ function CompositionStory(props) {
      legende tronquee. Mots de Blandine : « tout est colle a droite ».
      `maxWidth: 100%` et `minWidth: 0` confinent le bloc ; la rangee, elle,
      est bornee plus bas. */
-  return h("div", { style: { position: "relative", width: "100%", maxWidth: "100%", minWidth: 0, height: "100%", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", padding: "8px " + MARGE_COMPO + "px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
+  /* 19az (17/08, signalement de Blandine, capture de 10 h 38 : « quand elle
+     est en story ca fait ca et je peux plus bouger »). LA COMPOSITION DEFILE.
+     Ce qui n'allait pas : `overflow: hidden` + `justifyContent: center`. Une
+     legende depliee pousse la colonne — photo, texte, vignettes, lieu — bien
+     au-dela de l'ecran ; le centrage la coupait alors AUX DEUX BOUTS et le
+     `hidden` interdisait tout deplacement. Le doigt montait, rien ne bougeait.
+     Le correctif tient en trois reglages :
+     - `overflowY: auto` : la colonne devient defilante quand elle deborde ;
+     - `justifyContent: flex-start` au lieu de `center` : un contenu centre ET
+       debordant a son HAUT rendu inatteignable — c'est un piege connu du flex.
+       La composition est donc calee en haut, sous l'en-tete.
+     - `touchAction: pan-y` : le vertical appartient au defilement, l'horizontal
+       reste au module — les glisses gauche/droite continuent de changer de
+       story, et le retour d'iOS reste bloque (regle 19c/19y/19z).
+     `overscrollBehavior: contain` empeche le defilement de se propager a la
+     page derriere. On ne touche NI a PhotoZoomHype NI au verrou multi-doigts :
+     aucun calque n'est ajoute au-dessus de la photo (regle du 02/08). */
+  return h("div", { style: { position: "relative", width: "100%", maxWidth: "100%", minWidth: 0, height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", touchAction: "pan-y", display: "flex", flexDirection: "column", justifyContent: "flex-start", padding: "8px " + MARGE_COMPO + "px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
+
     cadres,
     h(hsBoutonForme, {
       src: src(grande), base: 1, borne: [0.62, 1.9],
