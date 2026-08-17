@@ -3497,7 +3497,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=40";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
+var VER = "?v=41";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
                         etait un autre rendu (1000x1500, SANS transparence) alors que
                         `ARCHES.gauchebiais` avait ete mesure sur la bonne image ; la
                         vue du pays ne pouvait donc pas passer dans l'arche.
@@ -3597,7 +3597,7 @@ var ETAPES = [
  {ref:"maurice",   ch:"La balade",    v:"Le Morne",    nat:"Maurice",        h:"19 h 55", ciel:["#08202A","#39C6C0"], forme:"cote",     souv:"Un coquillage du lagon",       ic:"coquillage"},
  {ref:"connemara", ch:"Le cheval",    v:"Connemara",   nat:"Irlande",        h:"20 h 10", ciel:["#0B1729","#1C2740"], forme:"lande",    souv:"Un licol de corde",            ic:"licol"},
  {ref:"newmarket", ch:"L'écurie",     v:"Newmarket",   nat:"Angleterre",     h:"20 h 55", ciel:["#12233C","#3A3A52"], forme:"ecuries",  souv:"Une cagoule à œillères",     ic:"selle"},
- {ref:"lambourn",  ch:"Le pansage",   v:"Lambourn",    nat:"Angleterre",     h:"21 h 40", ciel:["#0E1D33","#2A3049"], forme:"village",  souv:"Une étrille de cuivre",        ic:"etrille"},
+ {ref:"lambourn",  ch:"Le pansage",   v:"Lambourn",    nat:"Angleterre",     h:"21 h 40", ciel:["#0E1D33","#2A3049"], forme:"village",  souv:"Un licol de cuir tressé",   /* 🟥 17/08 : l'etrille de cuivre est REMPLACEE par le licol de cuir tresse. Blandine : « Lambourn on avait vire l'etrille normalement » — le changement avait ete decide mais JAMAIS fait dans le code. ⚠️ Connemara garde le licol de CORDE : ce n'est pas un doublon, corde = travail a pied, cuir = ecurie et presentoir. */        ic:"licol"},
  {ref:"walsall",   ch:"Le matériel",  v:"Walsall",     nat:"Angleterre",     h:"22 h 30", ciel:["#091320","#161F33"], forme:"ateliers", souv:"Une selle anglaise en cuir",   ic:"selle"},
  {ref:"aberystwyth",ch:"En selle",    v:"Aberystwyth", nat:"Pays de Galles", h:"23 h 20", ciel:["#070F1A","#101828"], forme:"cote",     souv:"Un fer de cob gallois",        ic:"fer"},
  {ref:"windsor",   ch:"Le dressage",  v:"Windsor",     nat:"Angleterre",     h:"00 h 30", ciel:["#05090F","#0B1220"], forme:"chateau",  souv:"La lettre A",                  ic:"lettre"},
@@ -3617,9 +3617,9 @@ var ETAPES = [
     grave : rattrape avant livraison. */
  {ref:"wellington",ch:"La tournée d'hiver", v:"Wellington", nat:"États-Unis",  h:"15 h 40", ciel:["#0A1420","#C98B4A"], forme:"obstacles",souv:"Un palmier en pot",           ic:"palmier"},
  {ref:"hickstead", ch:"Le derby",   v:"Hickstead",   nat:"Angleterre",     h:"01 h 40", ciel:["#060B12","#0D1524"], forme:"obstacles",souv:"Un fanion rouge",              ic:"fanion"},
- {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Une cocarde",                  ic:"cocarde"},
+ {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Le trophée de Badminton",                  ic:"trophee"},
   {ref:"burghley",  ch:"Le cross",     v:"Burghley",    nat:"Angleterre",     h:"02 h 55", ciel:["#0A1424","#16263C"], forme:"manoir",   souv:"Une paire de crampons",        ic:"fer"},
- {ref:"kildare",   ch:"Les urgences", v:"Kildare",     nat:"Irlande",        h:"04 h 10", ciel:["#0C1A2C","#20344B"], forme:"haras",    souv:"Un stéthoscope",               ic:"stetho"},
+ {ref:"kildare",   ch:"Les urgences", v:"Kildare",     nat:"Irlande",        h:"04 h 10", ciel:["#0C1A2C","#20344B"], forme:"haras",    souv:"Une trousse de secours",               ic:"trousse"},
  {ref:"edimbourg", ch:"Les dialogues",v:"Édimbourg",   nat:"Écosse",         h:"05 h 25", ciel:["#16283F","#C58B45"], forme:"edim",     souv:"Un carnet de mots",            ic:"carnet"},
  /* ---- les huit destinations du tour du monde, ajoutées le 5 août 2026 ----
     Le champ `h` est un reste du chemin d'une nuit, abandonné avec lui : il
@@ -3919,8 +3919,10 @@ var ETAPES_I18N = {
  lambourn:{
    ch:{en:"Grooming", es:"El cepillado", it:"La pulizia", de:"Das Putzen", ja:"手入れ"},
    v:{ja:"ランボーン"},
-   souv:{en:"A copper curry comb", es:"Una almohaza de cobre", it:"Una striglia di rame",
-         de:"Ein Striegel aus Kupfer", ja:"銅の毛櫛"}},
+   /* 🟥 17/08 : l'etrille de cuivre remplacee par le licol de cuir tresse. */
+   souv:{en:"A plaited leather headcollar", es:"Un cabestro de cuero trenzado",
+         it:"Una capezza in cuoio intrecciato", de:"Ein geflochtenes Lederhalfter",
+         ja:"編み革のハルター"}},
  connemara:{
    ch:{en:"The horse", es:"El caballo", it:"Il cavallo", de:"Das Pferd", ja:"馬"},
    v:{ja:"コネマラ"},
@@ -3955,12 +3957,31 @@ var ETAPES_I18N = {
  badminton:{
    ch:{en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会"},
    v:{ja:"バドミントン"},
-   souv:{en:"A rosette", es:"Una escarapela", it:"Una coccarda", de:"Eine Schleife", ja:"ロゼット"}},
+   /* 🟥 17/08 : « UNE COCARDE » REMPLACÉE PAR LE TROPHÉE. Blandine,
+      16/08 : « cocarde ça se dit pas » — on dit LE FLOT en français, et
+      le flot est déjà le souvenir de Lamotte-Beuvron. Elle voulait la
+      coupe : c'est un trophée sculpté (le cheval franchissant le tronc,
+      la colline fleurie, le château gravé sur le socle de marbre).
+      ⚠️ En anglais « a rosette » n'avait rien de faux — celles de
+      Badminton sont des objets qu'on garde toute sa vie. C'est le
+      FRANÇAIS qui clochait. */
+   souv:{en:"The Badminton trophy", es:"El trofeo de Badminton",
+         it:"Il trofeo di Badminton", de:"Die Badminton-Trophäe",
+         ja:"バドミントンのトロフィー"}},
  kildare:{
    ch:{en:"Emergencies", es:"Las urgencias", it:"Le emergenze", de:"Notfälle", ja:"緊急時"},
    v:{ja:"キルデア"},
-   souv:{en:"A stethoscope", es:"Un estetoscopio", it:"Uno stetoscopio",
-         de:"Ein Stethoskop", ja:"聴診器"}},
+   /* 🟥 17/08 : le STÉTHOSCOPE remplacé par LA TROUSSE DE SECOURS.
+      Blandine : « je voulais changer le stéthoscope pour Kildare, on peut
+      trouver autre chose en rapport avec les soins ». Le stéthoscope
+      n'était pas faux (on l'applique au flanc pour écouter les bruits
+      intestinaux d'une colique) mais il sonnait médecin humain. La
+      trousse rassemble tout le chapitre en un objet, et c'est ce que le
+      lexique enseigne : « savoir demander OÙ ELLE EST vaut mieux que
+      savoir ce qu'elle contient ». */
+   souv:{en:"An equine first aid kit", es:"Un botiquín equino",
+         it:"Una cassetta di pronto soccorso", de:"Ein Verbandskasten fürs Pferd",
+         ja:"馬用の救急箱"}},
  edimbourg:{
    ch:{en:"Conversations", es:"Las conversaciones", it:"I dialoghi", de:"Gespräche", ja:"会話"},
    v:{en:"Edinburgh", es:"Edimburgo", it:"Edimburgo", de:"Edinburgh", ja:"エディンバラ"},
@@ -4640,7 +4661,11 @@ var ICONES = {
  palmier:'<path d="M30 26 v22 M30 26 q-14 -8 -18 2 M30 26 q14 -8 18 2 M30 26 q-8 -14 2 -16 M30 26 q10 -12 16 -4 M22 48 h16" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/>',
  flot:'<circle cx="30" cy="20" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="20" r="4" fill="none" stroke="#D4AF37" stroke-width="2"/><path d="M24 30 l-3 20 l9 -6 l9 6 l-3 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  cocarde:'<circle cx="30" cy="22" r="11" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="30" cy="22" r="4" fill="#D4AF37"/><path d="M24 32 l-4 20 l10 -7 l10 7 l-4 -20" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
- stetho:'<path d="M20 10 v12 q0 10 10 10 q10 0 10 -10 v-12 M30 32 v10 q0 6 8 6" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="42" cy="48" r="6" fill="none" stroke="#D4AF37" stroke-width="2"/>',
+ /* 17/08 : icone de la trousse de secours (Kildare). L'ancienne `stetho`
+    est conservee juste apres — une icone orpheline ne coute rien. */
+ /* 17/08 : icone du trophee (Badminton). */
+ trophee:'<path d="M20 12 h20 v10 q0 10 -10 10 q-10 0 -10 -10 Z M20 16 h-6 q0 8 6 8 M40 16 h6 q0 8 -6 8 M30 32 v8 M22 44 h16 q2 0 2 4 h-20 q0 -4 2 -4" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ trousse:'<path d="M14 24 h32 v22 q0 4 -4 4 h-24 q-4 0 -4 -4 Z M24 24 v-5 q0 -3 3 -3 h6 q3 0 3 3 v5 M30 30 v10 M25 35 h10" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>', stetho:'<path d="M20 10 v12 q0 10 10 10 q10 0 10 -10 v-12 M30 32 v10 q0 6 8 6" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="42" cy="48" r="6" fill="none" stroke="#D4AF37" stroke-width="2"/>',
  carnet:'<path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  /* la coupe de Piazza di Siena (Rome, 6 août) : une vasque à deux anses
     sur son pied, comme celles qu'on remet devant les tribunes. */
@@ -6452,7 +6477,12 @@ function selleriePiece(nom){
    Une seule vignette par objet — sa vue perpendiculaire. Le choix de la
    vue de trois quarts appartient au moteur de la sellerie, pas ici :
    c'est la regle posee par Blandine le 12/08. */
-var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1};
+/* 🟥 17/08 : kildare ajoutee — la trousse de secours a une vraie vue de
+   biais (`pose-kildare-34.webp`), la boite ouverte vue de l'autre cote.
+   ⚠️ UNE VILLE DECLAREE ICI SANS SON FICHIER retombe silencieusement sur
+   `objet-<ville>.webp` : la vue annoncee n'existe pas, sans erreur
+   visible. Ne declarer une ville qu'avec son image en main. */
+var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1, kildare:1, badminton:1};
 var POSE_PROPRE = {walsall:1, dubai:1, oliva:1, versailles:1};
 /* 16/08 : versailles ajoutee — le couvre-reins royal a une vraie vue
    PLIEE pour la sellerie (`pose-versailles.webp`), distincte de la vue
