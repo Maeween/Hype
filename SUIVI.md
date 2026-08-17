@@ -24,7 +24,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08) — md5 `9239e503a3a6f996dac41ad4df16ab18`, 9 127 965 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bc, md5 `36bdf729c4a68e62562abb93b9691987`, 367 678 octets, `?v=19bc`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bc`. Apercu EN PLUS : `index-apercu-mur.html` md5 `f673f1fa45040e5b9e697e2c097daf25`.**
+**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08) — md5 `ffab2e9080e8e51e0dd07ee3f05c792c`, 9 128 165 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bc, md5 `36bdf729c4a68e62562abb93b9691987`, 367 678 octets, `?v=19bc`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bc`. Apercu EN PLUS : `index-apercu-mur.html` md5 `95a9bd5bd2dff253e47a733be25e46a1`.**
+
+⚠️ **ETATS PERIMES DU JOUR, NE PAS POUSSER :** index `eb968bee…` `b45c1890…` `b6146ef8…` `e5bc960c…` `7885467a…` `9239e503…` ; stories `bb90bb68…` (19az) `a10828b6…` (19ba) `73b57b7c…` (19bb). Le couple ci-dessus les contient tous.
 
 ⚠️ **ETATS PERIMES DU JOUR, NE PAS POUSSER :** index `eb968bee…` `b45c1890…` `b6146ef8…` `e5bc960c…` `7885467a…` ; stories `bb90bb68…` (19az) `a10828b6…` (19ba) `73b57b7c…` (19bb). Le couple ci-dessus les contient tous.
 
@@ -352,6 +354,20 @@ passe 3 : tA(0.05) 0%  · tA(0.14) 76%  · tA(0.06) 88%  · tA(0) 100%  · 1,32x
 ⚠️ **CONSEQUENCE ASSUMEE :** à 1,32× les halos de deux vignettes voisines **se chevauchent** (174 px de diamètre, cellules de 132 espacées de 4) et forment une légère chaîne. C'était déjà le cas en passe 1 et Blandine n'a pas objeté — elle n'a parlé que d'intensité. À 40 % la chaîne est d'autant plus discrète. **Si elle gêne un jour : élargir l'écart entre médaillons (`gap: 4`), pas réduire l'étendue** — la réduire ramène l'erreur de la passe 2.
 
 ⚠️ **ET LE MODELE DE COMPOSITION SOUS-ESTIME TOUJOURS D'UN FACTEUR DEUX** (modèle (15,78,89) contre (26,165,186) mesuré en passe 1). L'estimation de la passe 3 est donc extrapolée du **rapport mesuré**, pas du calcul : 0,14/0,34 × (26,165,186). **Toujours calibrer sur une mesure réelle.**
+
+### 5quinquies. 🟩 LES DEUX BARRES GRISES VIDES — RETIREES
+
+**Le diagnostic de la PASSATION-137 était faux.** Elle disait : « ressemblent à des composants qui se rendent sans contenu, peut-être la chanson de la page ». Non. `PastilleMusiquePage` est plus bas dans le composant et rend `null` quand aucun morceau n'est choisi. Les barres, elles, étaient **inconditionnelles**.
+
+**C'étaient deux `span` décoratifs** posés le 16/08 de part et d'autre du rail de stories, reprises de Linguae (`#ouvIntroB .oBande` : 26 px, `#15181C`, rayon 6). **Le commentaire d'origine portait lui-même la mention « Déduction de Claude — à valider »** : Blandine ne les avait jamais validées.
+
+**POURQUOI ÇA NE POUVAIT PAS MARCHER ICI — à retenir avant de reprendre un motif de Linguae :** dans Linguae la bande est un **soulignement**, elle borne un bloc de texte de **largeur connue** (330 px centrés, calés sur le texte). Le rail de stories **défile bord à bord** : il n'a pas de fin visible, la bande ne borne rien, elle flotte. Et sur du `#060709`, un aplat `#15181C` sans contenu ni bord **se lit comme un champ de saisie vide**, pas comme un ornement. Design Bible, pilier « espace = luxe » : on retire plutôt qu'on ajoute.
+
+**Livré :** les deux `span` retirés. **Le conteneur et son écart de 18 px sont conservés — le rail ne bouge pas d'un pixel.** Remettre les bandes ne demande que de réinsérer les deux `span`.
+
+**Deux autres sorties avaient été proposées et ne sont pas retenues :** les affiner en **filets de 1 px** avec un dégradé qui s'éteint aux extrémités (même famille que le trait de lumière entre médaillons) ; ou les caler à **330 px centrés** comme dans Linguae — écartée, ça accentuerait l'effet de bloc vide au milieu du noir.
+
+**À l'écran : + / −** — **+** deux aplats gris vides disparaissent de la page Cavalier. **−** les deux bandes décoratives du 16/08. Aucun déplacement de contenu.
 
 ### 6. 🟩 LES SIX APPELS AU RECADREUR — DIVERGENCES CORRIGEES
 

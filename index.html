@@ -25410,22 +25410,27 @@ function EcranMonCavalier() {
                 T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58")))))) : null);
     })()),
     /* 12/08 (114) : bandeau des stories. */
-    /* 16/08 (demande de Blandine) : LES DEUX BANDES GRISES, reprises de
-       Linguae. Relevees dans lingo.html, regle #ouvIntroB .oBande :
-       hauteur 26px, fond #15181C, rayon 6px, 18px d'ecart avec le contenu.
-       Elles y encadrent un texte ; ici elles encadrent le rail de stories.
-       ⚠️ Deduction de Claude — a valider : dans Linguae elles font 330px
-       centrees, calees sur la largeur du texte. Le rail, lui, defile bord a
-       bord. Je les ai calees sur les GOUTTIERES DE LA PAGE (16px de chaque
-       cote), comme les autres blocs de cette page, plutot que sur 330px qui
-       n'aurait correspondu a rien ici. Un mot et je passe a l'autre.
-       Page Cavalier UNIQUEMENT — ta demande. Les trois autres pages gardent
-       le rail nu. */
+    /* ⚠️ 17/08 (session 138) — LES DEUX BANDES GRISES SONT RETIREES.
+       Blandine les signalait comme « deux barres grises vides » sur la page
+       Cavalier. Elles n etaient PAS des composants se rendant sans contenu (le
+       diagnostic de la PASSATION-137 etait faux) : c etaient deux `span`
+       decoratifs poses ici le 16/08, reprises de Linguae (`#ouvIntroB .oBande`,
+       26 px, #15181C, rayon 6). Le commentaire d origine portait lui-meme la
+       mention « Deduction de Claude — a valider » : elles n ont jamais ete
+       validees.
+       POURQUOI CA NE POUVAIT PAS MARCHER ICI : dans Linguae la bande est un
+       SOULIGNEMENT, elle borne un bloc de texte de largeur connue (330 px
+       centres). Un rail qui defile bord a bord n a pas de fin visible — la bande
+       ne borne rien, elle flotte. Et sur du #060709, un aplat #15181C sans
+       contenu ni bord se lit comme un champ de saisie vide, pas comme un
+       ornement.
+       Design Bible, pilier « espace = luxe » : on retire plutot qu on ajoute.
+       Le conteneur et son ecart de 18 px sont CONSERVES : le rail ne bouge pas
+       d un pixel. Remettre les bandes ne demande que de reinserer les deux
+       `span`. */
     (typeof window !== "undefined" && window.BandeauStories)
       ? h("div", { style: { margin: "18px 0 0" } },
-          h("span", { style: { display: "block", height: 26, background: "#15181C", borderRadius: 6, margin: "0 16px" } }),
-          h(window.BandeauStories, { forme: "libre", padding: "18px 0 18px" }),
-          h("span", { style: { display: "block", height: 26, background: "#15181C", borderRadius: 6, margin: "0 16px" } }))
+          h(window.BandeauStories, { forme: "libre", padding: "18px 0 18px" }))
       : null,
     /* 12/08 (116) : rail des A LA UNE du cavalier AFFICHE (visite ou soi-meme).
        Une a la une est un album de cible cavalier:<id> — aucune table nouvelle. */
