@@ -153,6 +153,115 @@ window.HYPE_LINGO_LEX.concours = {
           de:"Dein Andenken aus Badminton. ⚠️ Zwei Fallen: Amerikaner sagen **ribbon** — und vor allem **wechselt die Farbe des ersten Platzes das Land**: Rot in Großbritannien und Irland, Blau in den USA. Ein Brite, stolz auf seine rote Schleife, hat gewonnen — nicht Zweiter.",
           ja:"バドミントンから持ち帰る記念品。⚠️ 罠がふたつ。アメリカでは **ribbon** と言うこと、そして何より**一位の色が国によって違う**こと — 英愛では赤、アメリカでは青。赤いロゼットを誇らしげに掲げるイギリスの騎手は優勝者です。二位ではありません。" } },
 
+  /* ================================================================
+     S'ENGAGER — huit entrées ajoutées le 17/08/2026 pour OLIVA NOVA,
+     d'après le lexique fourni par Blandine. La leçon 1 avait
+     `engagement` et `epreuve` mais rien de la mécanique réelle du
+     bureau du concours.
+
+     🟥 LE PIÈGE DU CHAPITRE, ET IL EST DOUBLE :
+     · **S'ENGAGER N'EST PAS *TO ENGAGE***. On dit **to enter**.
+       « Mon cheval est engagé » se dit *my horse is entered* — et
+       surtout PAS *my horse is engaged*, qui veut dire qu'il est
+       fiancé. C'est la faute la plus drôle et la plus fréquente.
+     · **UNE ÉPREUVE SE DIT *A CLASS***, jamais *a test* (qui est le
+       protocole de dressage) ni *an event* (qui est le concours entier,
+       ou le complet). *What class are you entered in ?*
+
+     🟥 LA SÉQUENCE DU BUREAU DU CONCOURS, posée par Blandine :
+     **ENTRY → CONFIRMATION → START LIST → STARTING NUMBER → CLASS**
+     C'est l'ordre du dialogue, et c'est l'ordre réel d'un matin de
+     concours à l'étranger.
+     ================================================================ */
+
+  { ref:"frais-engagement", lecon:1, coll:"engager",
+    mots:{ fr:{m:"les frais d'engagement"}, en:{m:"the entry fee", p:"èn-tri fii"},
+           es:{m:"los derechos de inscripción"}, it:{m:"la quota d'iscrizione"},
+           de:{m:"das Nenngeld", p:"nènn-guèlt"}, ja:{m:"参加料", p:"sankaryō"} },
+    def:{ fr:"⚠️ Ils se paient à l'engagement, pas à l'arrivée, et ils NE SONT PAS REMBOURSÉS en cas de forfait tardif — c'est la règle partout. L'allemand dit *Nenngeld*, « l'argent de la nomination ».",
+          en:"Paid when you enter, not on arrival, and not refunded if you withdraw late — that's the rule everywhere.",
+          es:"Se pagan al inscribirse, no al llegar, y no se devuelven en caso de retirada tardía.",
+          it:"Si pagano all'iscrizione, non all'arrivo, e non si rimborsano in caso di ritiro tardivo.",
+          de:"Wird bei der Nennung fällig, nicht bei der Ankunft, und bei später Abmeldung nicht erstattet.",
+          ja:"申し込み時に支払い、到着時ではありません。直前の欠場では返金されないのが世界共通の規則です。" } },
+
+  { ref:"cloture-engagements", lecon:1, coll:"engager",
+    mots:{ fr:{m:"la clôture des engagements"}, en:{m:"the closing date", p:"klô-zinng déïte", var:"the entry deadline"},
+           es:{m:"el cierre de inscripciones"}, it:{m:"la chiusura delle iscrizioni"},
+           de:{m:"der Nennungsschluss", p:"nèn-noungs-chlouss"}, ja:{m:"申込 締切", p:"mōshikomi shimekiri"} },
+    def:{ fr:"🟥 LA QUESTION À SAVOIR POSER EN PREMIER : « les engagements sont-ils encore ouverts ? ». Après la clôture on peut parfois entrer en **engagement tardif**, mais plus cher et sans garantie de place. ⚠️ L'allemand *Nennungsschluss* est un mot qu'on voit affiché partout sur les concours germanophones.",
+          en:"The first question to know how to ask: « Are entries still open? ». After the deadline you can sometimes get in as a late entry, but it costs more and there's no guarantee of a place.",
+          es:"La primera pregunta que hay que saber hacer: « ¿siguen abiertas las inscripciones? ». Después del cierre se puede entrar como inscripción tardía, más cara.",
+          it:"La prima domanda da saper fare: « le iscrizioni sono ancora aperte? ». Dopo la chiusura si può entrare come iscrizione tardiva, più cara.",
+          de:"Die erste Frage: « Sind die Nennungen noch offen? ». Nach dem Nennungsschluss geht manchmal eine Nachnennung, teurer und ohne Platzgarantie.",
+          ja:"最初に覚えるべき質問：「申し込みはまだ受け付けていますか」。締切後は追加申込ができることもありますが、割高で出場の保証はありません。" } },
+
+  { ref:"engagement-tardif", lecon:1, coll:"engager",
+    mots:{ fr:{m:"l'engagement tardif"}, en:{m:"a late entry", p:"léïte èn-tri"},
+           es:{m:"la inscripción tardía"}, it:{m:"l'iscrizione tardiva"},
+           de:{m:"die Nachnennung", p:"nakh-nèn-noung"}, ja:{m:"追加申込", p:"tsuika mōshikomi"} },
+    def:{ fr:"Engagement accepté après la clôture, contre un supplément. ⚠️ Il n'est pas automatique : il dépend des places restantes, et sur un grand concours il n'y en a pas.",
+          en:"An entry taken after the deadline, for a supplement. It isn't automatic: it depends on remaining places, and at a big show there are none.",
+          es:"Inscripción aceptada tras el cierre, con recargo. No es automática: depende de las plazas que queden.",
+          it:"Iscrizione accettata dopo la chiusura, con supplemento. Non è automatica: dipende dai posti rimasti.",
+          de:"Nennung nach dem Nennungsschluss, gegen Aufpreis. Nicht automatisch: es hängt von freien Plätzen ab.",
+          ja:"締切後に受け付けられる申込で、追加料金がかかります。自動ではなく、残席次第です。大きな大会では空きがありません。" } },
+
+  { ref:"liste-engages", lecon:1, coll:"engager",
+    mots:{ fr:{m:"la liste des engagés"}, en:{m:"the entry list", p:"èn-tri liste"},
+           es:{m:"la lista de inscritos"}, it:{m:"l'elenco degli iscritti"},
+           de:{m:"die Nennungsliste", p:"nèn-noungs-liss-te"}, ja:{m:"出場申込 一覧", p:"shutsujō mōshikomi ichiran"} },
+    def:{ fr:"⚠️ NE PAS CONFONDRE AVEC LA LISTE DE DÉPART : la liste des engagés dit QUI s'est inscrit, la liste de départ dit DANS QUEL ORDRE on passe. La première sort des semaines avant, la seconde la veille au soir ou le matin même.",
+          en:"Not to be confused with the start list: the entry list says WHO has entered, the start list says IN WHAT ORDER you go. The first comes out weeks ahead, the second the night before or the same morning.",
+          es:"No confundir con la lista de salida: la de inscritos dice QUIÉN se ha inscrito, la de salida DICE EN QUÉ ORDEN se pasa.",
+          it:"Da non confondere con la lista di partenza: quella degli iscritti dice CHI si è iscritto, quella di partenza IN CHE ORDINE si passa.",
+          de:"Nicht mit der Startliste verwechseln: die Nennungsliste sagt WER genannt hat, die Startliste IN WELCHER REIHENFOLGE geritten wird.",
+          ja:"出走順のリストとは別物です。申込一覧は「誰が申し込んだか」、出走リストは「どの順で走るか」を示します。前者は数週間前、後者は前夜か当日朝に出ます。" } },
+
+  { ref:"numero-tetiere", lecon:1, coll:"engager",
+    mots:{ fr:{m:"le numéro de têtière"}, en:{m:"the bridle number", p:"braï-deul neum-beur"},
+           es:{m:"el número de cabezada"}, it:{m:"il numero da testiera"},
+           de:{m:"die Kopfnummer", p:"kopf-nou-meur"}, ja:{m:"頭絡 番号", p:"tōraku bangō"} },
+    def:{ fr:"🟥 EN ANGLAIS C'EST **THE BRIDLE NUMBER**, jamais « the head number ». Deux petits numéros qui se fixent de chaque côté du filet — c'est le cheval qui est identifié, pas le cavalier. ⚠️ Le monter sans est un motif d'élimination sur beaucoup de concours : à récupérer au bureau AVANT de seller.",
+          en:"« The bridle number », never « the head number ». Two small numbers clipped either side of the bridle — it identifies the horse, not the rider. Riding without them is grounds for elimination at many shows.",
+          es:"En inglés « bridle number ». Dos números pequeños a cada lado de la cabezada: identifican al caballo, no al jinete.",
+          it:"In inglese « bridle number ». Due numeretti ai lati della testiera: identificano il cavallo, non il cavaliere.",
+          de:"Englisch « bridle number ». Zwei kleine Nummern beidseitig am Zaum — sie kennzeichnen das Pferd, nicht den Reiter.",
+          ja:"英語では bridle number と言います。頭絡の両側につける小さな番号で、識別されるのは騎手ではなく馬です。多くの大会では、これなしで走ると失格の理由になります。事務局で受け取ってから鞍を置きます。" } },
+
+  { ref:"changer-epreuve", lecon:1, coll:"engager", v:true,
+    mots:{ fr:{m:"changer d'épreuve"}, en:{m:"to move to another class", p:"mouve tou e-neu-zeur klass"},
+           es:{m:"cambiar de prueba"}, it:{m:"cambiare prova"},
+           de:{m:"in eine andere Prüfung wechseln", p:"vèk-seulne"}, ja:{m:"競技を変更する", p:"kyōgi o henkō suru"} },
+    def:{ fr:"⚠️ L'ANGLAIS DIT **TO MOVE**, pas « to change » : *I'd like to move him to the 1.35*. Possible jusqu'à une heure limite, souvent la veille au soir. Monter d'une hauteur est plus simple que descendre — descendre demande parfois une justification.",
+          en:"English says « to move », not « to change »: I'd like to move him to the 1.35. Possible up to a deadline, often the evening before. Moving up is easier than moving down.",
+          es:"El inglés dice « to move », no « to change ». Posible hasta una hora límite, a menudo la víspera por la noche.",
+          it:"L'inglese dice « to move », non « to change ». Possibile fino a un orario limite, spesso la sera prima.",
+          de:"Englisch sagt « to move », nicht « to change ». Möglich bis zu einer Frist, oft am Vorabend.",
+          ja:"英語では change ではなく move を使います。多くは前夜までの期限内なら変更できます。高いクラスへ上げるほうが、下げるより簡単です。" } },
+
+  { ref:"declarer-forfait", lecon:1, coll:"engager", v:true,
+    mots:{ fr:{m:"déclarer forfait"}, en:{m:"to withdraw", p:"ouiz-drô", var:"to scratch (US)"},
+           es:{m:"retirarse"}, it:{m:"ritirarsi"},
+           de:{m:"abmelden", p:"app-mel-den"}, ja:{m:"出場を取り消す", p:"shutsujō o torikesu"} },
+    def:{ fr:"⚠️ TROIS MOTS POUR TROIS MOMENTS EN ANGLAIS : **to withdraw** avant l'épreuve, **to retire** pendant (on sort de la piste), **to be eliminated** quand le jury décide. Ne pas les confondre. Les Américains disent aussi *to scratch*. 🟥 Déclarer forfait n'est pas un aveu : sur un cheval qui n'est pas bien, c'est la seule bonne décision.",
+          en:"Three words for three moments: « to withdraw » before the class, « to retire » during it, « to be eliminated » when the judge decides. Americans also say « to scratch ». Withdrawing isn't an admission — on a horse who isn't right, it's the only good call.",
+          es:"Tres palabras para tres momentos: retirarse antes, abandonar durante, ser eliminado por el jurado.",
+          it:"Tre parole per tre momenti: ritirarsi prima, abbandonare durante, essere eliminati dalla giuria.",
+          de:"Drei Wörter für drei Momente: vorher abmelden, währenddessen aufgeben, vom Richter ausgeschlossen werden.",
+          ja:"英語では三つの場面で三つの語を使い分けます。競技前は to withdraw、競技中に自らやめるのは to retire、審判の判断によるものは to be eliminated。棄権は敗北ではありません。調子の悪い馬では唯一の正しい判断です。" } },
+
+  { ref:"engagement-confirme", lecon:1, coll:"engager",
+    mots:{ fr:{m:"l'engagement confirmé"}, en:{m:"the entry confirmed", p:"keune-feurmd"},
+           es:{m:"la inscripción confirmada"}, it:{m:"l'iscrizione confermata"},
+           de:{m:"die bestätigte Nennung", p:"be-chtè-tich-te"}, ja:{m:"申込 確認済み", p:"mōshikomi kakuninzumi"} },
+    def:{ fr:"🟥 LA QUESTION QUI SAUVE UN WEEK-END : « mon engagement a-t-il bien été enregistré ? ». Un engagement payé n'est pas toujours un engagement enregistré — un formulaire perdu, un virement non rapproché, et le nom n'est pas sur la liste. ⚠️ On vérifie au bureau la veille, pas le matin de l'épreuve.",
+          en:"The question that saves a weekend: « Has my entry been confirmed? ». A paid entry isn't always a recorded entry — a lost form, an unmatched transfer, and your name isn't on the list. Check at the office the day before, not on the morning of the class.",
+          es:"La pregunta que salva un fin de semana: « ¿se ha registrado bien mi inscripción? ». Una inscripción pagada no siempre está registrada.",
+          it:"La domanda che salva un weekend: « la mia iscrizione è stata registrata? ». Un'iscrizione pagata non è sempre un'iscrizione registrata.",
+          de:"Die Frage, die ein Wochenende rettet: « Ist meine Nennung bestätigt? ». Eine bezahlte Nennung ist nicht immer eine eingetragene.",
+          ja:"週末を救う質問：「申し込みは登録されていますか」。支払い済みでも登録されていないことがあります。書類の紛失、振込の未照合。前日に事務局で確認します。当日の朝では遅いのです。" } },
+
   { ref:"prix", lecon:1, coll:"engager",
     mots:{ fr:{m:"le prix"}, en:{m:"the prize money", p:"praïz meu-ni"},
            es:{m:"el premio"}, it:{m:"il premio"},
@@ -1343,6 +1452,211 @@ window.HYPE_LINGO_LEX.concours = {
         it:"È la prima volta che monto per il mio paese.",
         de:"Es ist das erste Mal, dass ich für mein Land reite.",
         ja:"国 を 代表 し て 乗る の は 今日 が 初めて です。" }
+    ]
+  }
+,
+
+  /* ==================================================================
+     LE DIALOGUE D'OLIVA NOVA — 17 août 2026, session 214.
+     ⚠️ CE FICHIER PORTE TROIS DIALOGUES : `dialogue` = BADMINTON,
+     `dialogueRome` = ROME, `dialogueOliva` = OLIVA NOVA. Le moteur
+     balaie toutes les clés commençant par `dialogue`. NE PAS fusionner.
+
+     LA SCÈNE : le bureau du concours, un matin d'hiver en Espagne.
+     20 phrases, 6 temps.
+
+     🟥 DIX-HUIT PHRASES SUR VINGT SONT DE BLANDINE, avec leur traduction
+     anglaise, et sa séquence structure les temps :
+     **ENTRY → CONFIRMATION → START LIST → STARTING NUMBER → CLASS**
+
+     🟥 LE PIÈGE DU CHAPITRE, ET IL EST DOUBLE :
+     · **S'ENGAGER N'EST PAS *TO ENGAGE*** — on dit *to enter*. « Mon
+       cheval est engagé » se dit *my horse is entered*, jamais *my horse
+       is engaged*, qui voudrait dire qu'il est fiancé.
+     · **UNE ÉPREUVE SE DIT *A CLASS***, jamais *a test* (le protocole de
+       dressage, chez Windsor) ni *an event* (le concours entier, ou le
+       complet, chez Badminton). Trois mots français, trois anglais qui
+       ne se recouvrent pas.
+     ⚠️ NE PAS « corriger » vers *to engage* ni vers *a test*.
+
+     ⚠️ CE CHAPITRE EST LE PLUS DIRECTEMENT UTILE DE L'APP : ses phrases
+     servent le lendemain matin, au guichet d'un vrai concours
+     international. Elles sont donc toutes COURTES et toutes des
+     QUESTIONS — c'est ce qu'on dit à un secrétariat, pas ce qu'on
+     raconte.
+
+     `dit` : "joueuse" = elle produit · "club" = le secrétariat.
+  ================================================================== */
+  dialogueOliva: {
+    ville: "oliva", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 20 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · m'engager ---- */
+      { ref:"do-engager-demain", temps:1, dit:"joueuse", mots:["engagement","epreuve"],
+        fr:"Je voudrais m'engager dans l'épreuve de demain.",
+        en:"I'd like to enter tomorrow's class.",
+        es:"Quisiera inscribirme en la prueba de mañana.",
+        it:"Vorrei iscrivermi alla prova di domani.",
+        de:"Ich möchte für die morgige Prüfung nennen.",
+        ja:"明日 の 競技 に 申し込み たい の です が。" },
+
+      { ref:"do-encore-ouverts", temps:1, dit:"joueuse", mots:["engagement","cloture-engagements"],
+        fr:"Les engagements sont-ils encore ouverts ?",
+        en:"Are entries still open?",
+        es:"¿Siguen abiertas las inscripciones?",
+        it:"Le iscrizioni sono ancora aperte?",
+        de:"Sind die Nennungen noch offen?",
+        ja:"申し込み は まだ 受け付け て い ます か ?" },
+
+      { ref:"do-date-cloture", temps:1, dit:"joueuse", mots:["cloture-engagements"],
+        fr:"Quelle est la date de clôture des engagements ?",
+        en:"When is the closing date for entries?",
+        es:"¿Cuál es la fecha de cierre de las inscripciones?",
+        it:"Qual è la data di chiusura delle iscrizioni?",
+        de:"Wann ist Nennungsschluss?",
+        ja:"申込 締切 は いつ です か ?" },
+
+      { ref:"do-quelle-epreuve", temps:1, dit:"joueuse", mots:["epreuve","engagement"],
+        fr:"Dans quelle épreuve mon cheval peut-il s'engager ?",
+        en:"Which class can my horse enter?",
+        es:"¿En qué prueba puede inscribirse mi caballo?",
+        it:"In quale prova può iscriversi il mio cavallo?",
+        de:"In welcher Prüfung kann mein Pferd starten?",
+        ja:"私 の 馬 は どの 競技 に 出 られ ます か ?" },
+
+      /* ---- temps 2 · quelle épreuve, à quel prix ---- */
+      { ref:"do-130", temps:2, dit:"joueuse", mots:["epreuve","hauteur-obstacle"],
+        fr:"Je voudrais l'engager dans l'épreuve à 1,30 m.",
+        en:"I'd like to enter him in the 1.30-metre class.",
+        es:"Quisiera inscribirlo en la prueba de 1,30 m.",
+        it:"Vorrei iscriverlo nella prova di 1,30 m.",
+        de:"Ich möchte ihn in der 1,30-Meter-Prüfung nennen.",
+        ja:"一メートル 三十 の 競技 に 申し込み たい です。" },
+
+      { ref:"do-chrono-ou-bareme", temps:2, dit:"joueuse", mots:["epreuve"], motsAilleurs:["chrono","bareme"],
+        fr:"Est-ce une épreuve au chronomètre ou au barème A ?",
+        en:"Is it a speed class or a Table A class?",
+        es:"¿Es una prueba al cronómetro o al baremo A?",
+        it:"È una prova a tempo o a barema A?",
+        de:"Ist das eine Zeitspringprüfung oder eine nach Fehlern und Zeit?",
+        ja:"タイム 競技 です か、 それとも 減点 方式 A です か ?" },
+
+      { ref:"do-combien-engagement", temps:2, dit:"joueuse", mots:["frais-engagement","epreuve"],
+        fr:"Combien coûte l'engagement dans cette épreuve ?",
+        en:"How much is the entry fee for this class?",
+        es:"¿Cuánto cuesta la inscripción en esta prueba?",
+        it:"Quanto costa l'iscrizione a questa prova?",
+        de:"Wie hoch ist das Nenngeld für diese Prüfung?",
+        ja:"この 競技 の 参加 料 は いくら です か ?" },
+
+      { ref:"do-deux-chevaux", temps:2, dit:"joueuse", mots:["engagement","epreuve"],
+        fr:"Puis-je engager deux chevaux dans la même épreuve ?",
+        en:"Can I enter two horses in the same class?",
+        es:"¿Puedo inscribir dos caballos en la misma prueba?",
+        it:"Posso iscrivere due cavalli nella stessa prova?",
+        de:"Kann ich zwei Pferde in derselben Prüfung nennen?",
+        ja:"同じ 競技 に 二 頭 申し込め ます か ?" },
+
+      /* ---- temps 3 · vérifier que c'est bien passé ---- */
+      { ref:"do-bien-enregistre", temps:3, dit:"joueuse", mots:["engagement-confirme","engagement"],
+        fr:"Mon engagement a-t-il bien été enregistré ?",
+        en:"Has my entry been confirmed?",
+        es:"¿Se ha registrado bien mi inscripción?",
+        it:"La mia iscrizione è stata registrata?",
+        de:"Ist meine Nennung bestätigt?",
+        ja:"私 の 申し込み は 登録 され て い ます か ?" },
+
+      { ref:"do-liste-engages", temps:3, dit:"joueuse", mots:["liste-engages"],
+        fr:"Où puis-je consulter la liste des engagés ?",
+        en:"Where can I check the list of entries?",
+        es:"¿Dónde puedo consultar la lista de inscritos?",
+        it:"Dove posso consultare l'elenco degli iscritti?",
+        de:"Wo kann ich die Nennungsliste einsehen?",
+        ja:"出場 申込 一覧 は どこ で 見 られ ます か ?" },
+
+      { ref:"do-trois-epreuves", temps:3, dit:"joueuse", mots:["engagement","epreuve"],
+        fr:"Mon cheval est engagé pour trois épreuves cette semaine.",
+        en:"My horse is entered in three classes this week.",
+        es:"Mi caballo está inscrito en tres pruebas esta semana.",
+        it:"Il mio cavallo è iscritto a tre prove questa settimana.",
+        de:"Mein Pferd ist diese Woche für drei Prüfungen genannt.",
+        ja:"今週、 私 の 馬 は 三 つ の 競技 に 出 ます。" },
+
+      /* ---- temps 4 · la liste de départ ---- */
+      { ref:"do-liste-depart-heure", temps:4, dit:"joueuse", mots:["liste-depart"],
+        fr:"À quelle heure la liste de départ sera-t-elle publiée ?",
+        en:"What time will the starting list be published?",
+        es:"¿A qué hora se publicará la lista de salida?",
+        it:"A che ora sarà pubblicata la lista di partenza?",
+        de:"Wann wird die Startliste veröffentlicht?",
+        ja:"出走 リスト は 何 時 に 発表 され ます か ?" },
+
+      { ref:"do-numero-depart", temps:4, dit:"joueuse", mots:["liste-depart"], motsAilleurs:["ordre-depart"],
+        fr:"Quel est mon numéro de départ ?",
+        en:"What is my starting number?",
+        es:"¿Cuál es mi número de salida?",
+        it:"Qual è il mio numero di partenza?",
+        de:"Welche Startnummer habe ich?",
+        ja:"私 の 出走 番号 は 何 番 です か ?" },
+
+      { ref:"do-ou-tetiere", temps:4, dit:"joueuse", mots:["numero-tetiere"],
+        fr:"Où dois-je récupérer mon numéro de têtière ?",
+        en:"Where do I collect my bridle number?",
+        es:"¿Dónde recojo el número de cabezada?",
+        it:"Dove ritiro il numero da testiera?",
+        de:"Wo bekomme ich meine Kopfnummer?",
+        ja:"頭絡 番号 は どこ で 受け取り ます か ?" },
+
+      /* ---- temps 5 · changer d'avis ---- */
+      { ref:"do-changer-epreuve", temps:5, dit:"joueuse", mots:["changer-epreuve","epreuve"],
+        fr:"Puis-je changer mon cheval d'épreuve ?",
+        en:"Can I move my horse to a different class?",
+        es:"¿Puedo cambiar de prueba a mi caballo?",
+        it:"Posso spostare il mio cavallo in un'altra prova?",
+        de:"Kann ich mein Pferd in eine andere Prüfung umnennen?",
+        ja:"馬 を 別 の 競技 に 移せ ます か ?" },
+
+      { ref:"do-130-vers-135", temps:5, dit:"joueuse", mots:["changer-epreuve"], motsAilleurs:["hauteur-obstacle"],
+        fr:"Je voudrais passer de la 1,30 m à la 1,35 m.",
+        en:"I'd like to move from the 1.30-metre class to the 1.35-metre class.",
+        es:"Quisiera pasar de la prueba de 1,30 m a la de 1,35 m.",
+        it:"Vorrei passare dalla prova di 1,30 m a quella di 1,35 m.",
+        de:"Ich möchte von der 1,30 in die 1,35 wechseln.",
+        ja:"一メートル 三十 から 一メートル 三十五 に 変え たい です。" },
+
+      { ref:"do-encore-modifier", temps:5, dit:"joueuse", mots:["changer-epreuve","engagement"],
+        fr:"Est-il encore possible de modifier mon engagement ?",
+        en:"Is it still possible to change my entry?",
+        es:"¿Todavía es posible modificar mi inscripción?",
+        it:"È ancora possibile modificare la mia iscrizione?",
+        de:"Kann ich meine Nennung noch ändern?",
+        ja:"申し込み の 変更 は まだ でき ます か ?" },
+
+      { ref:"do-engagement-tardif", temps:5, dit:"joueuse", mots:["engagement-tardif","cloture-engagements"],
+        fr:"Est-ce que vous acceptez encore les engagements tardifs ?",
+        en:"Do you still take late entries?",
+        es:"¿Aceptan todavía inscripciones tardías?",
+        it:"Accettate ancora iscrizioni tardive?",
+        de:"Nehmen Sie noch Nachnennungen an?",
+        ja:"追加 申込 は まだ 受け付け て い ます か ?" },
+
+      /* ---- temps 6 · renoncer ---- */
+      { ref:"do-forfait", temps:6, dit:"joueuse", mots:["declarer-forfait","epreuve"],
+        fr:"Je dois déclarer forfait pour cette épreuve.",
+        en:"I need to withdraw from this class.",
+        es:"Tengo que retirarme de esta prueba.",
+        it:"Devo ritirarmi da questa prova.",
+        de:"Ich muss mich von dieser Prüfung abmelden.",
+        ja:"この 競技 は 棄権 し なけれ ば なり ませ ん。" },
+
+      { ref:"do-r-pas-rembourse", temps:6, dit:"club", mots:["declarer-forfait","frais-engagement"],
+        fr:"Après la clôture, les frais d'engagement ne sont pas remboursés.",
+        en:"After the closing date, entry fees are not refunded.",
+        es:"Después del cierre, los derechos de inscripción no se devuelven.",
+        it:"Dopo la chiusura, le quote d'iscrizione non si rimborsano.",
+        de:"Nach Nennungsschluss wird das Nenngeld nicht erstattet.",
+        ja:"締切 後 は、 参加 料 は 返金 され ませ ん。" }
     ]
   }
 };

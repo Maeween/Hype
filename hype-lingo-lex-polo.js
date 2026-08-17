@@ -40,6 +40,80 @@ window.HYPE_LINGO_LEX.polo = {
 
   /* ============ LEÇON 1 · LE POLO ============ */
 
+  /* ================================================================
+     CINQ ENTRÉES AJOUTÉES le 17/08/2026, d'après le lexique fourni par
+     Blandine. Le chapitre avait les objets et les règles, mais il lui
+     manquait L'ÉQUIPE — or le polo est le seul sport d'équipe de tout le
+     module, et c'est ce qui le rend unique.
+
+     🟥 LES QUATRE POSTES, ET CE QU'ILS FONT — sa remarque, et elle est
+     juste : chaque numéro a un rôle, ce n'est pas un simple rang.
+       N°1 → plutôt offensif        N°2 → attaque et soutien
+       N°3 → l'organisateur, le pivot du jeu, souvent le meilleur
+       N°4 → plutôt défensif, il ferme derrière
+     ⚠️ On dit « je joue numéro trois », jamais « je suis le troisième ».
+
+     🟥 ET LE SYSTÈME DU HANDICAP, à ne pas confondre avec autre chose :
+       joueur 1 + joueur 2 + joueur 3 + joueur 4 = handicap d'équipe
+     Quand l'écart entre deux équipes est trop grand, le règlement
+     attribue des buts d'avance pour équilibrer le match.
+     ================================================================ */
+
+  { ref:"equipe-polo", lecon:1, coll:"polo",
+    mots:{ fr:{m:"l'équipe"}, en:{m:"the team", p:"tiime"},
+           es:{m:"el equipo"}, it:{m:"la squadra"},
+           de:{m:"die Mannschaft", p:"mann-chaft"}, ja:{m:"チーム", p:"chīmu"} },
+    def:{ fr:"🟥 QUATRE JOUEURS, ET C'EST LE SEUL SPORT D'ÉQUIPE DE TOUT LE MODULE. Chacun a un poste numéroté, chacun a plusieurs chevaux, et le handicap de l'équipe est la somme des quatre. ⚠️ Ne pas confondre avec la Coupe des Nations de Rome : là on additionne des scores individuels, ici on joue ensemble, en même temps, sur le même terrain.",
+          en:"Four players, and the only team sport in the whole module. Each has a numbered position, each has several horses, and the team handicap is the sum of the four. Not the same as a Nations Cup: there you add up individual scores, here you play together, at the same time, on the same field.",
+          es:"Cuatro jugadores, y el único deporte de equipo del módulo. Cada uno tiene un puesto numerado y varios caballos, y el hándicap del equipo es la suma de los cuatro.",
+          it:"Quattro giocatori, e l'unico sport di squadra del modulo. Ognuno ha un ruolo numerato e più cavalli, e l'handicap della squadra è la somma dei quattro.",
+          de:"Vier Spieler, und die einzige Mannschaftssportart des Moduls. Jeder hat eine nummerierte Position und mehrere Pferde; das Team-Handicap ist die Summe der vier.",
+          ja:"四人。このアプリで唯一の団体競技です。各自が番号のついたポジションを持ち、複数の馬を用意します。チームのハンディキャップは四人の合計です。" } },
+
+  { ref:"joueur-polo", lecon:1, coll:"polo",
+    mots:{ fr:{m:"le joueur de polo"}, en:{m:"the polo player", p:"pô-lô plé-yeur"},
+           es:{m:"el jugador de polo"}, it:{m:"il giocatore di polo"},
+           de:{m:"der Polospieler", p:"pô-lô-chpî-leur"}, ja:{m:"ポロ選手", p:"poro senshu"} },
+    def:{ fr:"⚠️ EN ARGENTINE ON DIT AUSSI **el polista**, un mot qui n'existe qu'en espagnol et qui dit tout : quelqu'un dont c'est le métier. Le pays compte les meilleurs joueurs du monde, et les seuls handicap 10 en activité y sont presque tous nés.",
+          en:"In Argentina they also say « el polista », a word that exists only in Spanish and says everything: someone whose trade this is. The country has the best players in the world.",
+          es:"En Argentina se dice también « el polista », palabra que solo existe en español y lo dice todo: alguien cuyo oficio es este.",
+          it:"In Argentina si dice anche « el polista », parola che esiste solo in spagnolo e dice tutto: qualcuno il cui mestiere è questo.",
+          de:"In Argentinien sagt man auch « el polista » — ein Wort, das es nur im Spanischen gibt und alles sagt: jemand, dessen Beruf das ist.",
+          ja:"アルゼンチンでは el polista とも言います。スペイン語にしかない語で、それを職業とする人を指します。世界最高の選手たちがこの国にいます。" } },
+
+  { ref:"poste-polo", lecon:1, coll:"polo",
+    mots:{ fr:{m:"le poste", var:"la position"}, en:{m:"the position", p:"pe-zi-cheune"},
+           es:{m:"la posición"}, it:{m:"il ruolo"},
+           de:{m:"die Position", p:"pô-zi-tsione"}, ja:{m:"ポジション", p:"pojishon"} },
+    def:{ fr:"🟥 CHAQUE NUMÉRO A UN RÔLE, ce n'est pas un rang. **Le 1** joue devant et cherche le but. **Le 2** attaque et soutient. **Le 3** est le pivot : il organise le jeu, et c'est souvent le meilleur handicap de l'équipe. **Le 4** ferme derrière. ⚠️ On dit « je joue numéro trois », jamais « je suis le troisième ».",
+          en:"Each number is a role, not a rank. Number one plays forward and looks for goal. Number two attacks and supports. Number three is the pivot who organises the game, usually the highest handicap. Number four closes at the back. Say « I play number three », never « I'm the third ».",
+          es:"Cada número es un papel, no un rango. El uno juega adelante, el dos ataca y apoya, el tres organiza el juego, el cuatro cierra atrás.",
+          it:"Ogni numero è un ruolo, non un rango. L'uno gioca avanti, il due attacca e sostiene, il tre organizza il gioco, il quattro chiude dietro.",
+          de:"Jede Nummer ist eine Rolle, kein Rang. Die Eins spielt vorne, die Zwei greift an und unterstützt, die Drei organisiert das Spiel, die Vier sichert hinten.",
+          ja:"番号は順位ではなく役割です。1 番は前線で得点を狙い、2 番は攻撃と支援、3 番は試合を組み立てる要でたいてい最も強い選手、4 番は後方を締めます。「三番を務める」と言い、「三番目だ」とは言いません。" } },
+
+  { ref:"marquer-joueur", lecon:1, coll:"polo", v:true,
+    mots:{ fr:{m:"marquer un joueur"}, en:{m:"to mark a player", p:"mark e plé-yeur"},
+           es:{m:"marcar a un jugador"}, it:{m:"marcare un giocatore"},
+           de:{m:"einen Spieler decken", p:"dè-keune"}, ja:{m:"相手をマークする", p:"aite o māku suru"} },
+    def:{ fr:"⚠️ PIÈGE DU FRANÇAIS : « marquer » veut dire deux choses opposées — marquer un BUT, et marquer un JOUEUR pour l'empêcher d'en marquer. L'anglais sépare : *to score* pour le but, *to mark* pour le joueur. L'allemand aussi : *treffen* et *decken*. 🟥 Au polo on marque son homologue : le 1 marque le 4 adverse, le 2 marque le 3.",
+          en:"A French trap: « marquer » means both to score a goal and to mark a player. English separates them: to score, to mark. In polo you mark your opposite number: the one marks the other side's four, the two marks the three.",
+          es:"Trampa del francés: « marquer » significa marcar un gol y marcar a un jugador. En polo se marca al opuesto: el uno al cuatro contrario, el dos al tres.",
+          it:"Trappola del francese: « marquer » vuol dire segnare e marcare. Nel polo si marca il proprio omologo: l'uno marca il quattro avversario.",
+          de:"Falle im Französischen: « marquer » heißt sowohl ein Tor erzielen als auch einen Spieler decken. Im Polo deckt man seinen Gegenüber.",
+          ja:"フランス語の罠。marquer は「得点する」と「相手をマークする」の両方を意味します。英語では score と mark に分かれます。ポロでは対応する番号の相手をマークします。1 番は相手の 4 番を、2 番は 3 番を見ます。" } },
+
+  { ref:"cloche-polo", lecon:1, coll:"polo",
+    mots:{ fr:{m:"la cloche"}, en:{m:"the bell", p:"bèl"},
+           es:{m:"la campana"}, it:{m:"la campana"},
+           de:{m:"die Glocke", p:"glo-ke"}, ja:{m:"ベル", p:"beru"} },
+    def:{ fr:"🟥 ELLE SONNE DEUX FOIS, et c'est ce qui surprend. La première annonce la fin du temps réglementaire du chukka — sept minutes en Argentine — mais **le jeu continue** jusqu'à trente secondes de plus, ou jusqu'à ce que la balle sorte ou qu'une faute soit sifflée. La seconde cloche arrête vraiment. ⚠️ D'où les buts marqués « juste avant la cloche », qui sont parfaitement valables.",
+          en:"It rings twice, and that's what surprises. The first bell ends the chukka's regulation time — seven minutes in Argentina — but play continues for up to thirty seconds more, or until the ball goes out or a foul is called. The second bell really stops it.",
+          es:"Suena dos veces. La primera acaba el tiempo reglamentario del chukka — siete minutos en Argentina — pero el juego sigue hasta treinta segundos más.",
+          it:"Suona due volte. La prima chiude il tempo regolamentare del chukka — sette minuti in Argentina — ma il gioco continua fino a trenta secondi in più.",
+          de:"Sie läutet zweimal. Die erste beendet die reguläre Zeit des Chukkas — sieben Minuten in Argentinien — aber gespielt wird bis zu dreißig Sekunden weiter.",
+          ja:"鐘は二度鳴ります。これが意外なところです。一度目はチャッカの規定時間（アルゼンチンでは七分）の終わりを告げますが、最大三十秒は試合が続きます。二度目で本当に終了です。だから「ベルの直前の得点」は有効なのです。" } },
+
   { ref:"maillet", lecon:1, coll:"polo",
     mots:{ fr:{m:"le maillet"}, en:{m:"the mallet", p:"ma-lette", var:"the stick"},
            es:{m:"el taco", var:"el mazo"}, it:{m:"la stecca"},
@@ -212,5 +286,218 @@ window.HYPE_LINGO_LEX.polo = {
       de:"Wie hoch ist dein Handicap ?",
       ja:"ハンディキャップ は いくつ です か ?" }
 
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE BUENOS AIRES — 17 août 2026, session 214.
+
+     LA SCÈNE : un match, du premier chukka à la dernière cloche.
+     20 phrases, 6 temps.
+
+     🟥 DIX-HUIT PHRASES SUR VINGT SONT DE BLANDINE, avec leur traduction
+     anglaise, et son lexique complet du polo.
+
+     🟥 CE QUI REND CE CHAPITRE UNIQUE : c'est LE SEUL SPORT D'ÉQUIPE de
+     tout le module — quatre joueurs sur le terrain en même temps, contre
+     quatre autres. Rome est une épreuve par équipe, mais on y passe l'un
+     après l'autre. Ici on joue ensemble.
+     ⚠️ Et c'est le seul chapitre où LE CHEVAL SE CHANGE EN COURS DE
+     PARTIE : un par chukka, parfois plus. Le cheval n'est pas seulement
+     la monture, c'est une ressource qu'on gère.
+
+     🟥🟥 LE PIÈGE DU CHAPITRE, souligné par elle :
+     **« HE IS A TEN-GOAL PLAYER » NE VEUT PAS DIRE QU'IL MARQUE DIX
+     BUTS.** *Goal* désigne ici sa valeur de HANDICAP, de -2 à 10. Le
+     handicap n'a rien d'un handicap au sens ordinaire : c'est une note
+     de niveau, et la somme des quatre donne celui de l'équipe.
+       joueur 1 + joueur 2 + joueur 3 + joueur 4 = handicap d'équipe
+     ⚠️ Il n'y a jamais eu plus d'une douzaine de joueurs à 10 dans le
+     monde en même temps, et presque tous sont argentins.
+
+     ⚠️ SECOND PIÈGE, en français celui-là : **MARQUER** veut dire deux
+     choses opposées — marquer un BUT, et marquer un JOUEUR pour
+     l'empêcher d'en marquer. L'anglais sépare : *to score* et *to mark*.
+     Deux phrases du dialogue les mettent à trois lignes d'écart, exprès.
+
+     ⚠️ ET LA LIGNE DE LA BALLE est la règle de sécurité du polo, pas une
+     règle de jeu : la couper, c'est risquer une collision à quarante à
+     l'heure. « Ne coupe pas la ligne, c'est dangereux » est la phrase la
+     plus importante du chapitre.
+
+     `dit` : "joueuse" = elle produit · "club" = un coéquipier, le
+     capitaine.
+  ================================================================== */
+  dialogue: {
+    ville: "buenos", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 20 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · l'équipe ---- */
+      { ref:"dp-combien-joueurs", temps:1, dit:"joueuse", mots:["equipe-polo","joueur-polo"],
+        fr:"Combien de joueurs y a-t-il dans chaque équipe ?",
+        en:"How many players are there on each team?",
+        es:"¿Cuántos jugadores hay en cada equipo?",
+        it:"Quanti giocatori ci sono in ogni squadra?",
+        de:"Wie viele Spieler hat jede Mannschaft?",
+        ja:"各 チーム に は 何 人 の 選手 が い ます か ?" },
+
+      { ref:"dp-r-quatre-joueurs", temps:1, dit:"club", mots:["equipe-polo","joueur-polo"],
+        fr:"Chaque équipe est composée de quatre joueurs.",
+        en:"Each team is made up of four players.",
+        es:"Cada equipo está formado por cuatro jugadores.",
+        it:"Ogni squadra è composta da quattro giocatori.",
+        de:"Jede Mannschaft besteht aus vier Spielern.",
+        ja:"各 チーム は 四 人 の 選手 で 構成 さ れ ます。" },
+
+      { ref:"dp-quel-poste", temps:1, dit:"joueuse", mots:["poste-polo","equipe-polo"],
+        fr:"Quel poste joues-tu dans l'équipe ?",
+        en:"What position do you play on the team?",
+        es:"¿Qué puesto juegas en el equipo?",
+        it:"Che ruolo giochi in squadra?",
+        de:"Welche Position spielst du in der Mannschaft?",
+        ja:"チーム で は どの ポジション を 務め ます か ?" },
+
+      { ref:"dp-r-numero-trois", temps:1, dit:"club", mots:["poste-polo"],
+        fr:"Je joue numéro trois aujourd'hui.",
+        en:"I'm playing number three today.",
+        es:"Hoy juego de número tres.",
+        it:"Oggi gioco numero tre.",
+        de:"Heute spiele ich die Drei.",
+        ja:"今日 は 三 番 を 務め ます。" },
+
+      /* ---- temps 2 · le handicap ---- */
+      { ref:"dp-ton-handicap", temps:2, dit:"joueuse", mots:["handicap"],
+        fr:"Quel est ton handicap au polo ?",
+        en:"What is your polo handicap?",
+        es:"¿Cuál es tu hándicap de polo?",
+        it:"Qual è il tuo handicap nel polo?",
+        de:"Wie hoch ist dein Polo-Handicap?",
+        ja:"ポロ の ハンディキャップ は いくつ です か ?" },
+
+      { ref:"dp-r-handicap-total", temps:2, dit:"club", mots:["handicap","equipe-polo"],
+        fr:"Le handicap total de notre équipe est plus élevé.",
+        en:"Our team has a higher total handicap.",
+        es:"El hándicap total de nuestro equipo es más alto.",
+        it:"L'handicap totale della nostra squadra è più alto.",
+        de:"Unser Team hat ein höheres Gesamthandicap.",
+        ja:"私たち の チーム の 合計 ハンディキャップ の ほう が 高い です。" },
+
+      /* ---- temps 3 · les chukkas et les chevaux ---- */
+      { ref:"dp-troisieme-chukka", temps:3, dit:"club", mots:["chukka"],
+        fr:"Nous commençons le troisième chukka.",
+        en:"We're starting the third chukka.",
+        es:"Empezamos el tercer chukker.",
+        it:"Iniziamo il terzo chukka.",
+        de:"Wir beginnen den dritten Chukka.",
+        ja:"第 三 チャッカ を 始め ます。" },
+
+      { ref:"dp-deux-chukkas", temps:3, dit:"club", mots:["chukka"],
+        fr:"Il reste deux chukkas à jouer.",
+        en:"There are two chukkas left to play.",
+        es:"Quedan dos chukkers por jugar.",
+        it:"Restano due chukka da giocare.",
+        de:"Es sind noch zwei Chukkas zu spielen.",
+        ja:"あと 二 チャッカ 残っ て い ます。" },
+
+      { ref:"dp-changer-cheval", temps:3, dit:"joueuse", mots:["changement-cheval","chukka","monte-polo"],
+        fr:"Je vais changer de cheval pour le prochain chukka.",
+        en:"I'm going to change horses for the next chukka.",
+        es:"Voy a cambiar de caballo para el próximo chukker.",
+        it:"Cambio cavallo per il prossimo chukka.",
+        de:"Für den nächsten Chukka wechsle ich das Pferd.",
+        ja:"次 の チャッカ で は 馬 を 替え ます。" },
+
+      { ref:"dp-garde-pour-fin", temps:3, dit:"joueuse", mots:["monte-polo","changement-cheval"],
+        fr:"Ce cheval est plus rapide, je le garde pour la fin du match.",
+        en:"This horse is faster, so I'm saving him for the end of the match.",
+        es:"Este caballo es más rápido: lo guardo para el final del partido.",
+        it:"Questo cavallo è più veloce: lo tengo per la fine della partita.",
+        de:"Dieses Pferd ist schneller — ich spare es für das Spielende auf.",
+        ja:"この 馬 は 速い ので、 試合 の 終盤 に 取っ て おき ます。" },
+
+      /* ---- temps 4 · la ligne de la balle ---- */
+      { ref:"dp-reste-sur-ligne", temps:4, dit:"club", mots:["ligne-de-balle","balle-polo"],
+        fr:"Reste sur la ligne de la balle.",
+        en:"Stay on the line of the ball.",
+        es:"Quédate en la línea de la bocha.",
+        it:"Resta sulla linea della palla.",
+        de:"Bleib auf der Linie des Balls.",
+        ja:"ボール の ライン 上 に 留まっ て ください。" },
+
+      /* 🟥 La phrase la plus importante du chapitre. */
+      { ref:"dp-pas-couper-ligne", temps:4, dit:"club", mots:["ligne-de-balle"],
+        fr:"Ne coupe pas la ligne, c'est dangereux.",
+        en:"Don't cross the line; it's dangerous.",
+        es:"No cruces la línea: es peligroso.",
+        it:"Non tagliare la linea: è pericoloso.",
+        de:"Kreuze die Linie nicht, das ist gefährlich.",
+        ja:"ライン を 横切ら ない で。 危険 です。" },
+
+      { ref:"dp-marquage-joueur", temps:4, dit:"club", mots:["marquer-joueur","joueur-polo"],
+        fr:"Prends le marquage de ce joueur.",
+        en:"Mark that player.",
+        es:"Marca a ese jugador.",
+        it:"Marca quel giocatore.",
+        de:"Deck diesen Spieler.",
+        ja:"あの 選手 を マーク し て ください。" },
+
+      { ref:"dp-envoie-avant", temps:4, dit:"club", mots:["balle-polo","maillet"],
+        fr:"Envoie la balle vers l'avant.",
+        en:"Hit the ball forward.",
+        es:"Manda la bocha hacia adelante.",
+        it:"Manda la palla in avanti.",
+        de:"Spiel den Ball nach vorn.",
+        ja:"ボール を 前 に 送っ て ください。" },
+
+      /* ---- temps 5 · le score ---- */
+      { ref:"dp-but-avant-cloche", temps:5, dit:"club", mots:["but-polo","cloche-polo"],
+        fr:"Il a marqué un but juste avant la cloche.",
+        en:"He scored a goal just before the bell.",
+        es:"Marcó un gol justo antes de la campana.",
+        it:"Ha segnato un gol appena prima della campana.",
+        de:"Er hat kurz vor der Glocke ein Tor erzielt.",
+        ja:"ベル の 直前 に 得点 し まし た。" },
+
+      { ref:"dp-menons-un-but", temps:5, dit:"club", mots:["but-polo","equipe-polo"],
+        fr:"Nous menons d'un but.",
+        en:"We're leading by one goal.",
+        es:"Vamos ganando por un gol.",
+        it:"Siamo in vantaggio di un gol.",
+        de:"Wir führen mit einem Tor.",
+        ja:"一 点 リード し て い ます。" },
+
+      { ref:"dp-garde-possession", temps:5, dit:"club", mots:["balle-polo","cloche-polo"],
+        fr:"Il reste très peu de temps, garde la possession.",
+        en:"There's very little time left; keep possession.",
+        es:"Queda muy poco tiempo: mantén la posesión.",
+        it:"Resta pochissimo tempo: mantieni il possesso.",
+        de:"Es bleibt sehr wenig Zeit — halte den Ball.",
+        ja:"時間 が ほとんど あり ませ ん。 ボール を 保持 し て ください。" },
+
+      { ref:"dp-marquer-ce-chukka", temps:5, dit:"club", mots:["but-polo","chukka"],
+        fr:"Nous devons marquer dans ce chukka pour revenir au score.",
+        en:"We need to score in this chukka to get back into the game.",
+        es:"Tenemos que marcar en este chukker para volver al partido.",
+        it:"Dobbiamo segnare in questo chukka per rientrare in partita.",
+        de:"Wir müssen in diesem Chukka treffen, um zurückzukommen.",
+        ja:"この チャッカ で 得点 し て、 試合 に 戻ら なけれ ば なり ませ ん。" },
+
+      /* ---- temps 6 · après le match ---- */
+      { ref:"dp-dix-goals", temps:6, dit:"joueuse", mots:["handicap","joueur-polo"],
+        fr:"Il est handicap dix ; cela ne veut pas dire qu'il marque dix buts.",
+        en:"He's a ten-goal player — that doesn't mean he scores ten goals.",
+        es:"Es un jugador de hándicap diez: no significa que marque diez goles.",
+        it:"È un giocatore handicap dieci: non vuol dire che segna dieci gol.",
+        de:"Er ist ein Zehn-Goal-Spieler — das heißt nicht, dass er zehn Tore schießt.",
+        ja:"彼 は ハンディキャップ 十 の 選手 です。 十 点 取る と いう 意味 で は あり ませ ん。" },
+
+      { ref:"dp-combien-chevaux", temps:6, dit:"joueuse", mots:["monte-polo","changement-cheval","chukka"],
+        fr:"Combien de chevaux faut-il pour jouer un match entier ?",
+        en:"How many horses do you need to play a whole match?",
+        es:"¿Cuántos caballos hacen falta para jugar un partido entero?",
+        it:"Quanti cavalli servono per giocare una partita intera?",
+        de:"Wie viele Pferde braucht man für ein ganzes Spiel?",
+        ja:"一 試合 を 通し て 戦う に は、 何 頭 の 馬 が 必要 です か ?" }
+    ]
+  }
 };
