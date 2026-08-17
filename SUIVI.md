@@ -18,12 +18,31 @@
 
 **🔴🔴 INTERDITS CSS ABSOLUS — À LIRE PAR CHAQUE PAGE AVANT DE TOUCHER À L'INDEX 🔴🔴**
 *(bug majeur du défilement Android : résolu sessions 116-117 les 09-10/08, PERDU par régression de lignée, re-corrigé session 134 le 14/08 — deux fois suffit)*
-1. **JAMAIS `overflow-x: hidden` seul sur `html`/`body`** — toujours `overflow-x: hidden; overflow-x: clip;`. `hidden` seul force l'axe Y en `auto` et fait de `body` un conteneur de défilement, défilable d'un demi-pixel d'arrondi selon l'appareil : Chrome Android y accroche le geste et le défilement de toute l'app meurt, sans trace JS.
+1. **JAMAIS `overflow-x: hidden` seul sur `html`/`body`** — **LES DEUX REGLES DU FICHIER SONT MAINTENANT DOUBLEES (17/08, session 138)** : celle de la feuille de demarrage (tout en haut du `<style>` du `<head>`) ET celle en `!important` en bas de cette meme feuille. Un marqueur rouge est pose devant chacune et elles se citent l'une l'autre. Avant le 17/08 la premiere portait `hidden` NU : elle etait ecrasee par la seconde et l'app allait bien, mais le jour ou la seconde bougeait le bug revenait sans explication. — toujours `overflow-x: hidden; overflow-x: clip;`. `hidden` seul force l'axe Y en `auto` et fait de `body` un conteneur de défilement, défilable d'un demi-pixel d'arrondi selon l'appareil : Chrome Android y accroche le geste et le défilement de toute l'app meurt, sans trace JS.
 2. **JAMAIS `overscroll-behavior: none` sur `body`** — `html` seulement. Sur `body`, il interdit à un geste accroché par accident de remonter à la page ; c'est lui qui rend le point 1 mortel.
 3. **Signature si ça revient : tout figé SAUF en partant d'un élément `position:fixed` (la barre du bas).** Vérifier ces deux règles AVANT toute autre piste. Spec complète de l'outil de diagnostic : section 117.
+4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 14/08/2026 (SESSION 134 · LE RETOUR DU BUG SCROLL ANDROID — RÉGRESSION DE LIGNÉE, KIT 117 RÉAPPLIQUÉ) — md5 `77d54bdbb9f33d8457f76014023db8eb`, 9 114 228 octets. Base : l'index fourni par Blandine en séance (md5 `46e0d9730ca1aa69840e6e43f534be20`, 9 107 517 octets, lignée Stories v18). Diff : +6 541 octets, fonctions 914 → 918 (les 3 helpers du verrou + le balayage), const 389 → 389. Témoin INCHANGÉ (`reprise 1.8 · stories 18` — voir décision en attente dans la section 134). `hype-stories.js` INCHANGÉ (v18, md5 `03d030b4486e127fae878b5631645adc`). Aucune preview. Aucun SQL nouveau (le `story-composee.sql` de la 133 reste à passer si pas fait).**
+**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08 · VERROU CSS, MUR IMMERSIF VERIFIE, RECADREUR MIS A NU, HALO RALLUME) — md5 `b45c18904071a2e9b7dd079fee48be83`, 9 119 872 octets. **FICHIER COMPAGNON OBLIGATOIRE : `hype-stories.js` v19ba, md5 `a10828b63e35b4d901dda55af313aff1`, 366 282 octets, charge via `?v=19ba`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** A pousser ENSEMBLE. Aucun SQL. Temoin attendu : `reprise 1.8 · baby 112 · memo 4 · stories 19ba`. Copie d'apercu EN PLUS : `index-apercu-mur.html` (md5 `8ffa6add5be6a7a256d2a1bb103e01bc`), jamais a pousser.**
+
+**Etat precedent du jour (19az, verrou CSS seul) :** index md5 `eb968bee74ef8790df831ec4754801e7`, `hype-stories.js` v19az md5 `bb90bb6862461e8295ad5e8ffea60701` — remplace par le 19ba ci-dessus, ne plus pousser.
+
+⚠️ **LE TEMOIN NE CONTIENT PLUS `modeles`.** La tete de la 135 bis annonce `reprise 1.8 · baby 112 · memo 4 · stories 19ar · modeles 28`. Verification faite dans l'index du 17/08 : la chaine est composee de `HYPE_VERSION_APP` + `baby` + `memo` + `stories`, et **rien d'autre** — aucun `MODELES_VERSION` n'existe dans le fichier, alors que `hype-modeles-db.js?v=5` est bien charge. Le `modeles 28` de la 135 bis est donc soit un reste d'une lignee anterieure, soit une erreur de redaction. **Ne pas chercher `modeles` dans le temoin a l'ecran : il n'y sera pas.** Deduction de Claude — a valider par Blandine.
+
+**Ancienne tete (session 135 bis), conservee telle quelle :** Version de l'index.html : 16/08/2026 (SESSION 135 BIS · 16/08 · LE MUR DES SONGES REVIENT, LES STORIES PERDENT LEUR CADRE, LA STORY SE DÉBLOQUE) — md5 `385f0269c4c3ed0f5b3297c17860c947`, 9 117 191 octets. **FICHIER COMPAGNON OBLIGATOIRE : `hype-stories.js` v19ar, md5 `6a25d45f88e15fc863ecd3e1e9cff65e`, 329 383 octets, chargé via `?v=19ar`.** À pousser ENSEMBLE — l'un sans l'autre ne marche pas. Aucun SQL. Aucune image. Témoin attendu : `reprise 1.8 · baby 112 · memo 4 · stories 19ar · modèles 28`.**
+
+⚠️ **POURQUOI « 135 BIS » ET PAS UN NUMÉRO PLEIN — décision de Blandine, 16/08.**
+
+Ce fichier s'arrêtait à la **session 134** (14/08). Or le travail a continué jusqu'à **160+** le 15/08 au soir : environ vingt-six sessions dont il ne reste aucune trace ici, seulement dans la PASSATION. Le SUIVI a donc un trou, et ce trou est un piège de numérotation.
+
+Deux mauvaises réponses ont été écartées. **Prendre 135** ferait croire que la séance suit directement la 134, alors que vingt-six sessions les séparent — et écraserait le numéro d'une séance réelle du 15/08. **Prendre 161** supposerait connaître le dernier numéro attribué, ce qui est faux : la PASSATION dit « 160+ », sans plus. Poser un numéro à l'aveugle rejouerait la collision du 28/07, où trois pages ont utilisé 22, 23 et 24 en parallèle et où la section « M'entraîner à tracer » a disparu du SUIVI alors que son code était bien dans l'index.
+
+**« 135 bis » dit exactement ce qui s'est passé** : la séance reprend le fil là où le SUIVI l'avait lâché, sans prétendre occuper un rang qui appartient peut-être à une autre page. Le « bis » est la marque du trou, pas un détail de forme.
+
+**Règle qui en découle** : tant que les sessions 135 à 160 ne sont pas reconstituées ici, toute nouvelle séance prend un **bis** adossé au dernier numéro sûr du SUIVI, jamais un numéro plein. Le jour où le trou est comblé, la numérotation pleine reprend.
+
+**Ancienne tête (session 134), conservée telle quelle :** Version de l'index.html : 14/08/2026 (SESSION 134 · LE RETOUR DU BUG SCROLL ANDROID — RÉGRESSION DE LIGNÉE, KIT 117 RÉAPPLIQUÉ) — md5 `77d54bdbb9f33d8457f76014023db8eb`, 9 114 228 octets. Base : l'index fourni par Blandine en séance (md5 `46e0d9730ca1aa69840e6e43f534be20`, 9 107 517 octets, lignée Stories v18). Diff : +6 541 octets, fonctions 914 → 918 (les 3 helpers du verrou + le balayage), const 389 → 389. Témoin INCHANGÉ (`reprise 1.8 · stories 18` — voir décision en attente dans la section 134). `hype-stories.js` INCHANGÉ (v18, md5 `03d030b4486e127fae878b5631645adc`). Aucune preview. Aucun SQL nouveau (le `story-composee.sql` de la 133 reste à passer si pas fait).**
 
 **Ancienne tête (session 133), conservée telle quelle :** Version de l'index.html : 13/08/2026 (SESSION 133 · STORIES v18 — FONDATIONS DE LA STORY COMPOSÉE, INERTES) — md5 `149d71d1d61fb26f861b274b40d02fae`, 9099119 octets.** Témoin attendu : **`reprise 1.8 · baby 112 · memo 4 · stories 18`**. Balise **`?v=18`**. **FICHIER COMPAGNON : `hype-stories.js` v18, md5 `95988f7b3347211f64758ffbc5f766ca`, 154125 octets.** **UN SQL (2 colonnes) : `story-composee.sql`** — à passer dès maintenant, il est inoffensif (les colonnes restent vides tant que la fonctionnalité est éteinte).
 
@@ -151,6 +170,444 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 138 · 17/08 · LE VERROU CSS SCELLÉ, LE MUR IMMERSIF VÉRIFIÉ, LE RECADREUR MIS À NU
+
+⚠️ **NUMÉRO = DÉDUCTION DE CLAUDE, À VALIDER.** La PASSATION de la nuit se nomme elle-même « session 137 », donc 138 suit. Mais la règle posée en tête de ce fichier (ligne 34) dit de prendre un « bis » tant que le trou 135-160 n'est pas comblé. Les deux documents se contredisaient. Choix retenu : combler une partie du trou (voir la section 136-137 juste en dessous) pour que la numérotation pleine redevienne légitime. Si Blandine préfère « 135 ter », un seul mot à changer ici.
+
+**Base de travail :** les fichiers fournis par Blandine en séance — `index.html` (md5 `73e86d89d07d382b0a0f96c787fa0b5e`, 9 119 409 octets, lignée 19az), `hype-stories.js` (md5 `bb90bb6862461e8295ad5e8ffea60701`, 364 421 octets, v19az), `index-apercu-mur.html`, `Hype_mur_immersif_encarts_transparents.png`, `SUIVI.md`, PASSATION-137, et un enregistrement d'écran du recadreur (31 s, 11 h 08).
+
+⚠️ **INCIDENT D'ENVOI, signalé immédiatement.** Au premier message, `index.html`, `hype-stories.js` et `index-apercu-mur.html` étaient annoncés mais **absents du disque** — seul le texte de la PASSATION était présent. Aucune vérification n'a été lancée à l'aveugle, rien n'a été déduit d'un fichier manquant. Les fichiers sont arrivés en trois envois successifs. Rien n'a été perdu.
+
+### 1. VÉRIFICATION D'ENTRÉE DE LA LIGNÉE 19az (avant toute modification)
+
+Tout est conforme. Détail, parce que c'est exactement ce qui manquait le 14/08 quand la régression est passée :
+
+- `HYPE_STORIES_VERSION = "19az"` ligne 45 de `hype-stories.js` ✅ · `hype-stories.js?v=19az` ligne 18781 de l'index ✅
+- **Seize blocs `<script>` inline extraits un par un, `node --check` sur chacun : 16/16.** `node --check` sur le `.html` ne dit rien, il faut découper.
+- `overflow-x` : deux règles, la ligne 1592 correctement doublée `hidden !important` + `clip !important` ✅ · `overscroll-behavior:none` ligne 21474 sur `html` seulement ✅
+- **Garde-fou portail** : 13 occurrences de `ReactDOM.createPortal` dans le module stories = 6 gardes (deux mentions chacune) + 1 dans un commentaire. **Aucun appel direct.** ✅
+- Les **trois** appels `window.RailALaUne` sont intacts (26294 et 28432 pour Club/Écurie, 25431 pour la visite publique). Le mur immersif n'a mangé que celui de la page Cavalier, comme prévu.
+- `index-apercu-mur.html` = même fichier avec `DEV_OUVRIR_PAGE = "moncavalier"` ; l'index livrable a bien `""`.
+
+### 2. 🟩 LE VERROU CSS SCELLÉ — LIVRÉ
+
+**Le problème trouvé :** il restait un `overflow-x:hidden` **nu** dans le fichier, dans la feuille de démarrage tout en haut du `<head>`. Il était écrasé par la règle `!important` de la ligne 1592, donc l'app allait bien — mais c'était une mine posée en tête de fichier : le jour où la règle du bas bouge, le bug Android revient sans que personne comprenne d'où.
+
+**Livré :** `overflow-x:hidden;overflow-x:clip` sur la règle de démarrage, plus un marqueur rouge devant elle qui renvoie explicitement à celle du bas. **Les deux règles se citent maintenant l'une l'autre.**
+
+⚠️ **POURQUOI DOUBLER ET NON SUPPRIMER LE `hidden`.** Supprimer aurait été plus propre à lire. Écarté pour une raison nommée avant la décision : l'index fait 9 Mo et le bloc de style court sur 1 594 lignes. Sur une connexion lente, la règle de démarrage peut être active **avant** que la ligne 1592 soit analysée. Sans `hidden` ni `clip` sur ces premières lignes, il existe une fenêtre où `html`/`body` n'ont aucun confinement — donc un défilement latéral possible pendant le chargement. En doublant sur place, `clip` s'applique dès la première ligne lue.
+
+**Écarté aussi : le garde JS au chargement** (lire le style calculé et forcer `clip`). Il masque le problème au lieu de l'empêcher, et `getComputedStyle` ne rapporte pas `clip` de façon homogène selon le navigateur.
+
+**Et la vraie protection : le contrôle automatique avant livraison** (voir point 4bis des INTERDITS CSS en tête de fichier). Le bug n'est jamais revenu parce qu'on avait touché ces lignes : il est revenu **par régression de lignée**, une séance repartie d'un index périmé. Un marqueur n'attrape pas ça, un contrôle systématique oui.
+
+**À l'écran : rien.** Aucun pixel ne change, ni iPhone ni Android. C'est une pose de verrou, pas une retouche.
+
+**+** règle de démarrage doublée · marqueur rouge posé et croisé avec l'autre · fenêtre de chargement bouchée · contrôle automatique en place.
+**−** rien retiré.
+
+### 3. LE PNG DU MUR IMMERSIF — MESURÉ, CONFORME
+
+`Hype_mur_immersif_encarts_transparents.png`, 1254 × 1254, RGBA. Les quatre trous ont été mesurés par détection de composantes connexes sur le canal alpha (seuil α ≤ 16), pas lus dans le code :
+
+| trou | x | y | largeur | hauteur | remplissage |
+|---|---|---|---|---|---|
+| grand gauche | 6,54 % | 41,15 % | 25,36 % | 44,34 % | 100 % |
+| grand droite | 69,94 % | 13,88 % | 24,48 % | 38,12 % | 100 % |
+| bandeau bas | 48,17 % | 70,65 % | 26,24 % | 16,19 % | 99 % |
+| petit centre | 38,28 % | 47,37 % | 17,22 % | 18,82 % | 99 % |
+
+**Identiques au centième aux coordonnées de la PASSATION.** Exactement quatre zones transparentes de plus de 3 000 px, aucune zone parasite. Le fichier est bon — il ne manquait qu'à la racine du dépôt.
+
+### 4. 🟥 LE RECADREUR — CE QUE L'ENREGISTREMENT PROUVE, ET CE QU'IL DÉMENT
+
+31 secondes filmées à 11 h 08 sur la photo de profil, découpées en 32 images.
+
+**PROUVÉ : le cadre est dans les pixels.** À la seconde 20, quand Blandine tourne à 8° et dézoome, **un rectangle turquoise incliné tourne AVEC la photo**, le bordeaux débordant autour. Un cadre dessiné à l'affichage resterait droit dans sa boîte. Celui-là est de la matière. **C'est la preuve visuelle qu'aucun `grep` ne pouvait donner.**
+
+**PROUVÉ : deux couches empilées.** Liseré turquoise **et** arcs bordeaux à gauche, visibles alors que la pastille **« Aucun » est sélectionnée**. Le fichier stocké porte l'habillage d'au moins deux époques.
+
+**MAIS LE RECADREUR EST CORRECT AUJOURD'HUI.** Lecture du code, pas déduction :
+
+- ligne 29092 — `srcNue = out.toDataURL(...)` est capturée **avant** tout dessin
+- lignes 29093-29115 — `spectral` et `halo` ne sont dessinés qu'**après**
+- ligne 29138 — `finaliser()` : `if (!estFS && srcNue) aEnvoyer = srcNue` → c'est bien la nue qui part
+- `apercuHabille` (ligne 29147) n'est consommé par **aucun** écran appelant : 4 occurrences en tout, toutes internes au recadreur
+
+Le correctif du 02/08 est donc en place et il fonctionne. **Ce qui est à l'écran ne peut pas venir de ce trajet.**
+
+**HYPOTHÈSE À TESTER — déduction de Claude, non validée.** Dans la vidéo, Blandine passe par **« Modifier ma photo »**, qui rouvre le recadreur sur le **fichier déjà stocké**. Ce fichier est un vieux fichier cuit de l'époque Crimson. `srcNue` recadre alors une image **déjà habillée** : la nudité est respectée, mais l'original n'a jamais été nu. Aucun recadrage ne retire ces pixels, on peut seulement les rogner.
+
+**LE TEST QUI TRANCHE, 30 SECONDES** : « Changer ma photo » → photo **neuve prise dans la pellicule** → pastille « Aucun » → Valider. Propre ⇒ le bug est un vieux fichier, pas du code, et la réponse est de remplacer la photo. Avec liseré ⇒ c'est vivant, et il faut chercher ailleurs que dans `finaliser()`.
+
+**DEUX POINTS NON CONFIRMÉS, volontairement laissés ouverts** (pour ne pas rejouer les quatre erreurs de conclusion hâtive de la nuit) :
+
+- **« Le zoom ne se dézoome plus » ne s'est PAS reproduit.** À la seconde 24 le dézoom fonctionne, la photo devient minuscule. Le bug de la PASSATION reste donc non observé.
+- **« Remplir » et « Photo entière » donnent un rendu qui paraît identique.** À confirmer par Blandine, pas par moi.
+
+**Le chantier resté en plan depuis le 02/08 est toujours en plan** : le dessin du cadre **à l'affichage** n'est pas branché. Le choix voyage dans le fragment (`#cadre=spectral|halo`), personne ne le dessine. Tant que ce n'est pas fait, la demande « un bleu un peu moins voyant tout en restant lumineux » est **impossible** : ce sont des pixels, pas un réglage.
+
+### 5. 🟩 LE HALO DES VIGNETTES — IL N'ETAIT PAS ABSENT, IL ETAIT AU MAUVAIS ENDROIT (19ba)
+
+**Mots de Blandine :** « on voit pas trop le halo sur les story t'es sûr qu'il est là ? » — puis, après diagnostic, « pose-le déjà en léger et on voit après ».
+
+⚠️ **J'avais d'abord répondu « il est là » sur la seule lecture du code. Blandine avait raison de me reprendre.** Mesure faite sur sa capture de 11 h 29, par détection de teinte pixel par pixel : **zéro pixel turquoise dans toute la bande des stories**, à six hauteurs différentes. Le même détecteur trouve 115 pixels turquoise sur la pastille Premium, 120 sur la ligne « réglages » et 352 sur le liseré de l'encart Élevage — il fonctionne. **Règle confirmée une cinquième fois : ne jamais conclure d'un `grep`, mesurer le rendu.**
+
+**Hypothèse éliminée :** le halo vit dans la branche `if (libre || libreRect)`. Vérification des quatre pages appelantes — Cavalier `libre` (index 25418), Club `libre` (26291), Écurie `libre` (28430), Communauté `libre-carte` (20411). Aucune ne tombe dans les branches `carte` ou rond classique, qui n'ont pas de halo. Le calque était donc bien construit.
+
+**LA CAUSE RÉELLE : un problème de PLACEMENT, pas d'opacité.** `closest-side` met le maximum du dégradé **au centre**, donc **derrière la photo**, là où il ne sera jamais vu. Avec l'ancienne étendue de 1,24×, le bord de la photo tombait à **81 %** du rayon du dégradé : sur l'anneau visible, l'opacité n'était plus que de **3 % environ**, soit du (7, 13, 16) sur du #060709. Indiscernable du noir. **80 % de la lumière était dépensée sous une photo opaque.**
+
+**Livré (niveau « léger ») :** étendue 1,24× → **1,32×**, et le pic **recalé sur le bord de la photo** — qui tombe précisément à 76 % avec cette étendue.
+
+```
+avant : tA(0.20) 0%   · tA(0.09) 44%  · tA(0) 100%
+apres : tA(0.12) 0%   · tA(0.34) 76%  · tA(0.14) 88%  · tA(0) 100%
+```
+
+Les trois points de vigilance d'origine tiennent : calque **séparé posé dessous** (jamais un filtre sur la photo, la règle absolue n'est pas entamée), vivant **hors** du conteneur masqué, couleur issue de `tA()` donc **suivant la teinte du cavalier**.
+
+⚠️ **CONSEQUENCE TRAITEE, ET C'EST LE PIEGE DEJA PAYE EN 19au :** le débordement passe de 15,8 px à **21,1 px** sur un rond de 132. Le retrait **haut** du rail devait donc monter de **18 à 22 px**, sinon `overflowY: hidden` tranchait le halo net en haut. Fait. Le retrait bas reste à 6 px : le débordement inférieur tombe derrière le libellé, à l'intérieur du bouton, donc il n'est pas coupé.
+
+**Deux niveaux plus forts sont prêts si le léger ne suffit pas** — « présent » (0,48 / 0,24 / 1,40×) et « affirmé » (0,62 / 0,32 / 1,50×). Trois valeurs à changer, plus le retrait haut à recalculer : **à 1,40× il faut 27 px, à 1,50× il faut 33 px.** Ne pas oublier ce recalcul.
+
+**À l'écran : + / −**
+**+** le halo devient visible autour des vignettes, dans la teinte du cavalier · la bande respire 4 px de plus en haut.
+**−** rien retiré. Aucune photo touchée.
+
+### 6. ⏸ L'ORDRE DU RAIL — CHANTIER OUVERT, RIEN LIVRE
+
+Diagnostic fait, **code écrit puis ÉCARTÉ**, sur les derniers mots de Blandine : « sinon passe pas derrière celles lues mais laisse les dans l'ordre de postage au moins », puis « et on verra plus tard ».
+
+**LA CAUSE, établie :** `g.premier` (ligne 1254) est la date de la story **la plus ancienne** du cavalier, et le rail groupe par `user_id`. Le cavalier le plus prolifique tient donc la tête **en permanence**, sa plus vieille story survivante datant toujours de six ou sept jours. Blandine passait devant Evan quoi qu'ils publient. **Ce n'était pas un privilège écrit** — celui du 19am a bien été retiré — c'était un effet du groupement.
+
+⚠️ **ET MA PREMIERE EXPLICATION ETAIT FAUSSE.** J'avais dit que ses stories restaient éternellement « non lues » faute d'être ouvertes. Blandine : « mais j'ai ouvert 10000 fois plus les miennes lol ». Vérification : `hsMarquerVue` (ligne 5653) est appelée au `onLoad` de l'image **sans aucun garde `moi`**. Ses stories sont donc bien marquées lues. L'étage « vu/non vu » n'était pas la cause.
+
+**CE QUI EST VALIDÉ par elle, à implémenter quand elle rouvrira le sujet :**
+- **une cellule = une story**, plus un cavalier (les compositions restant indivisibles, groupées par `st.groupe`) ;
+- ordre par **jour et heure de mise en ligne** de chaque story ;
+- **PAS** de renvoi des stories lues à la fin — sa dernière consigne annule la règle 1 ;
+- conséquences nommées et acceptées : son nom apparaîtra autant de fois qu'elle a de stories, et le fil de lumière qui relie les photos d'un même cavalier disparaît (il n'a plus rien à relier).
+
+**PIEGE REPÉRÉ POUR L'IMPLÉMENTATION :** `key: "st" + g.user_id` (ligne 1799) devient non unique dès qu'un cavalier occupe plusieurs cellules. Prévoir une clé de cellule (`g.groupe || g.id`), avec repli sur `user_id` pour les groupes fabriqués à la main par les à la une (lignes 3991 et 4353).
+
+### 5. EN ATTENTE D'UNE OBSERVATION DE BLANDINE (repris de la 137, non traité)
+
+- **Le halo des vignettes de stories** : Blandine dit ne pas le voir. Question posée, réponse non encore donnée en séance.
+- **La musique** : trois « musique » dans l'app (pastille ♪ d'une story, chanson de la page, choix du morceau au composeur). Laquelle ne marche pas ?
+- **Deux barres grises vides** sur la page Cavalier, une sous le Mur des Songes, une au-dessus de « À LA UNE ». Visibles sur la capture de 11 h 29. Ressemblent à des composants qui se rendent sans contenu.
+- **Le simple tap sur la photo** : le zoom existe en pincement et double-tap. Un tap simple doit-il agrandir aussi ?
+- **Plus de quatre à la une** : le surplus n'est pas affiché. Non tranché.
+- **Le crayon et le ⋯ suivent le prénom** hors de la carte : déduction de Claude, à valider.
+- **La boîte ne suit plus le doigt vers le bas** : déduction de Claude, à valider.
+- **Maquette des clubs** : demandée, pas faite.
+- **Le panneau de réglages du mur immersif** attend « c'est celui-là ». À ce moment-là : graver les valeurs en dur, retirer le panneau.
+
+### Préparation Flutter (session 138)
+
+**Aucune amélioration d'architecture réalisée.** Les deux règles CSS scellées cette séance n'ont aucun équivalent Flutter : le défilement y est porté par les widgets, pas par le document — `SingleChildScrollView` et `CustomScrollView` ne peuvent pas produire ce bug, qui naît de la chaîne `html` → `body` du navigateur. Le contrôle automatique de livraison, lui, reste utile tel quel : sa partie `node --check` s'appliquera à n'importe quel fichier JS résiduel, et sa partie CSS deviendra sans objet le jour où l'index disparaît.
+
+**Note d'architecture, sans action :** le recadreur est le seul endroit de l'app où une décoration est **cuite dans un fichier** au lieu d'être un paramètre. C'est précisément ce genre de pièce qui coûte cher à porter, parce que l'état est dans les pixels et non dans les données. Brancher le dessin du cadre à l'affichage (chantier du 02/08) n'est donc pas seulement une réponse à la demande de teinte : c'est un pas de préparation Flutter.
+
+---
+
+## SESSIONS 136-137 · nuit du 16 au 17/08 · RECONSTITUTION DEPUIS LA PASSATION
+
+⚠️ **Section écrite le 17/08 pour combler le trou du SUIVI**, à partir de PASSATION-137. Ces séances n'avaient laissé aucune trace ici. Le contenu est fiable (il vient de la passation de la séance elle-même) mais **les md5 et tailles intermédiaires sont perdus** : seul l'état final 19az est connu. Le découpage exact entre 136 et 137 est inconnu, d'où la section commune.
+
+**Livré de 19as à 19az.** Résumé de ce qui est en ligne :
+
+- **Le mur immersif** remplace le rail « À la une » sur la page Cavalier. Décor percé de quatre trous aux coordonnées mesurées (vérifiées le 17/08, voir session 138 point 3). Emplacements vides bouchés par le décor flou agrandi de 14 %. Ordre d'attribution : grand gauche → grand droite → bandeau bas → petit centre. Communauté, Club et Écurie gardent `RailALaUne`.
+- **Panneau de réglages du mur**, réservé à `estCompteFeinnHype`, lien « réglages » à droite du titre, valeurs en `localStorage`, sans effet pour les autres cavaliers. Départ : fondu large · voile 22 · désaturation 80 · nappe 50 · pétrole. **Attend « c'est celui-là »** pour être gravé et retiré.
+- **🟩 DÉCOUVERTE MAJEURE : RIEN N'EFFACE LES STORIES.** Les 7 jours sont un **filtre à la lecture** (`gt("expire_le")` dans `hsListerStories`), **pas une purge**. `hsGroupeALaUne` retrouve donc la ligne `hype_stories` par son `photo_url` : texte, lieu, musique, fond, et surtout le **vrai identifiant** — les J'aime continuent de monter indéfiniment. Aucune colonne, aucun SQL. Les identifications reviennent seules. **La composition H+D n'est PAS restituée** : `disposition` et `compo` sont retirés de la story reconstituée, sinon `CompositionStory` avalait tous les gestes.
+- **Halo des vignettes de stories** : lumière posée **derrière** le fondu, jamais un filtre sur la photo. Couleur issue de `tA()`, elle suit la teinte du cavalier. Coût assumé : le rail du bandeau descend de 18 px (retrait haut porté à 18, sinon `overflowY: hidden` trancherait le halo). **Blandine dit ne pas le voir — à reprendre.**
+- **Le ⋯ revient dans les à la une**, une seule entrée « Retirer de cette à la une », avec confirmation et Annuler en premier réflexe. Visible seulement sur ses propres à la une (`onRetirerAlbum` fourni si `album.user_id === moi`). Retirer ne supprime **ni** la story **ni** le fichier ; une à la une vidée cesse d'être affichée mais reste en base.
+- **Page Cavalier** : photo du bandeau plus rognée (vraie `<img>` à sa taille naturelle au lieu d'un bloc 16/11 en `cover`) ; dégradé du bas retiré ; prénom, crayon et ⋯ sortis de la carte.
+- **Gestes** : le glissé vers le bas ne ferme plus (« je te demande juste de ne pas mettre celui vers le bas »). Gauche et droite restent. La croix est le seul moyen de sortir.
+- **La composition défile** (19az) : sa racine était en `overflow: hidden` + `justifyContent: center`, une légende dépliée était coupée aux deux bouts et rien ne bougeait. Passée en `overflowY: auto` + `touchAction: pan-y` + `justifyContent: flex-start` (ligne 4912 de `hype-stories.js`). **Code vérifié présent le 17/08, mais toujours pas vu à l'écran.**
+
+### 🔴 RÈGLES PAYÉES CES SÉANCES — À NE PAS REDÉCOUVRIR
+
+1. **JAMAIS de calque au-dessus de la photo d'une story.** Le calque de balayage a été retiré le 02/08 parce qu'il lisait `changedTouches` **sans compter les doigts** : un pincement passait pour un balayage, chargeait une autre photo pleine résolution pendant le décodage de la première, et iOS tuait l'onglet. Même mécanique que le crash de la session 92. **La leçon a été payée deux fois.** Les zones de tap sont **écartées** — proposées trois fois dans la nuit sans vérification, Blandine a dû reprendre.
+2. **Aucun glissé exotique.** Décision de Blandine : pas de geste qui ne fonctionnerait qu'à un seul endroit. Horizontal pour naviguer, oui. Vertical pour fermer, non.
+3. **`ReactDOM.createPortal` n'existe pas à l'exécution.** Les six portails du module passent tous par le garde-fou maison `var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ... : function (x) { return x; }`. L'appeler en direct plante la page (incident 19as, corrigé en 19at).
+4. **Valider l'index en extrayant ses seize blocs `<script>`** et en passant `node --check` sur chacun. Cette vérification a rattrapé une parenthèse en trop qui aurait fait tomber toute l'app.
+5. **NE PAS CONCLURE D'UN `grep`.** Quatre erreurs dans la nuit faute d'avoir lu le rendu réel : un anneau turquoise présenté comme « référence » alors que c'est du code mort (les formes en ligne sont `libre` et `libre-carte` depuis le 16/08) ; un glissé vers le bas annoncé comme un ajout alors qu'il existait depuis le 14/08 ; la photo du bandeau crue en `contain` alors qu'elle est en pleine largeur ; les stories gardées affirmées perdues alors que rien ne les efface.
+
+---
+
+## SESSION 135 BIS · 16/08 · LE MUR DES SONGES REVIENT, LES STORIES PERDENT LEUR CADRE, LA STORY SE DÉBLOQUE
+
+**Base de travail :** l'`index.html` fourni par Blandine en séance (9 102 614 octets, lignée « Tarif réduit », `hype-stories.js?v=19ao`) + `hype-stories.js` 19ao (317 017 octets). Livré en trois lots successifs, tous poussés par Blandine dans la séance.
+
+### 1. 🟥 LE MUR DES SONGES N'ÉTAIT PLUS AFFICHÉ NULLE PART — INCIDENT
+
+Le bloc avait été **déplacé** de `EcranMonCavalier` vers Communauté le 15/08, où il plantait (ses sept variables étaient restées derrière), puis **retiré** de Communauté le 16/08 pour réparer la page. Entre les deux, personne ne l'a remis sur la page Cavalier. Le mot « songes » ne subsistait que dans quatre commentaires.
+
+**Une conversation parallèle avait conclu l'inverse** — « il n'a jamais quitté ta page, ligne 25282, avec `recitTxt`, `voixTxt` ». Vérification faite : la ligne 25282 ne porte que `recitTxt`, c'est **Mon récit**. `voixTxt` n'existait qu'à la ligne 25457, **à l'intérieur de `TableauxSpectralHype`**, composant appelé uniquement depuis le Club (26139) et l'Écurie (28243), jamais depuis la page Cavalier. Erreur classique : chercher un motif dans un fichier de 9 Mo sans regarder dans quelle fonction on tombe. 175 lignes plus bas, ce n'est plus la même page. La conversation parallèle a reconnu son erreur.
+
+⚠️ **RÈGLE CONFIRMÉE : un `grep` dans ce fichier ne prouve rien tant qu'on n'a pas établi les BORNES de la fonction où le résultat tombe.** `EcranMonCavalier` va de 24961 à 25405 ; tout ce qui est au-delà appartient à autre chose.
+
+**Le texte n'a jamais été perdu** : il vit dans `profiles.ma_voix`. C'est l'affichage qui manquait. Le bloc a donc été **réécrit**, pas déplacé, et posé **au-dessus du bandeau de stories** — la demande d'origine de Blandine, jamais exécutée au bon endroit. Les états `editVoix` / `voixLocal`, orphelins depuis le 15/08, redeviennent vivants : ce sont ceux d'origine.
+
+En visite : lecture de `ma_voix` du profil **visité**, édition fermée, rien si le visité n'a rien écrit — exactement la règle de « Mon récit » juste en dessous. Aucune fuite d'un cavalier à l'autre.
+
+Réglages arrêtés en séance : texte **18 px** (Cormorant italique — 20,5 jugé trop gros), bouton « Écrire » **gris, discret, en bas à droite** (il était turquoise et à gauche, il tirait l'œil avant la citation). L'encre lumineuse fonctionne et n'a pas été touchée : `EncreLumineuse` écrit lettre par lettre, 20 ms par caractère, curseur qui s'efface à la fin.
+
+### 2. LES QUÊTES — UN DOUBLON SUPPRIMÉ
+
+La carte « Tes quêtes » (badge de niveau + barre d'XP) **descend en bas de page**, après le mur de publications. La pastille « 🏆 Voir mes quêtes » de l'en-tête est **retirée** : même action (`setEcran("quetes")`), mais elle ne montrait rien là où la carte porte le niveau, l'XP et les points. Mots de Blandine : « pourquoi on a deux trucs au lieu d'un ».
+
+**Neutralisée sur place** (`false && !__estVisite ? …`), pas coupée — règle du 15/08 sur ce fichier. Repasser la condition à `!__estVisite` la fait revenir.
+
+### 3. LES STORIES SANS CADRE — FORME « LIBRE » (19ap)
+
+Après l'échec de la maquette du 15/08 (« je comprends pas la différence entre les maquettes ni le rapport avec le sans cadre »), la cause a été identifiée : **un dégradé posé PAR-DESSUS l'image ne supprime pas son bord.** Le vrai sans-cadre est un **masque appliqué à l'image elle-même** — il retire la matière, il ne reste donc rien à border.
+
+Deux maquettes livrées, puis choix de Blandine : **fondu large**, forme **ronde** (forme G).
+
+⚠️ **PIÈGE PAYÉ PENDANT LA MAQUETTE** : un masque SVG en gabarit VERTICAL écrasé dans une case CARRÉE donne une ellipse aplatie et un flou étiré — large sur les côtés, serré en haut et en bas. Blandine l'a vu immédiatement (« en rond on devait en avoir partout autour du flou non »). **Le gabarit du masque doit avoir le MÊME RAPPORT que la case qui le porte.** Corrigé : gabarit carré 200×200 dans une case carrée.
+
+Implémentation : `hype-stories.js` gagne **`forme: "libre"`** (rond dissous) et **`forme: "libre-carte"`** (rectangle vertical dissous, gabarit 200×250 dans une case 116×145). `"rond"` et `"carte"` restent **intactes et réversibles** juste en dessous.
+
+Les quatre appels d'`index.html` : Communauté (20411) en `libre-carte` — essai demandé par Blandine, « ça permettra de voir ce que ça donne » ; Cavalier (25317), Club (26181), Écurie (28320) en `libre`.
+
+**Le signal « non lue » a dû déménager.** L'anneau turquoise le portait ; sans anneau, il est descendu **sous** la vignette : point turquoise devant le nom, nom blanc gras si non lue, gris si vue. Rien n'est posé sur la photo — la règle absolue tient.
+
+**Taille : 104 → 132 px (19ar).** Le masque efface les bords, donc la photo réellement vue ne fait plus que les trois quarts de la case : à 104 il restait moins de 80 px de photo lisible. 132 lui rend la présence que l'anneau lui donnait. Le rectangle de Communauté (116×145) n'est pas touché : il est calé sur le format des cartes chevaux.
+
+### 4. LES BANDES GRISES DE LINGUAE — PAGE CAVALIER SEULEMENT
+
+Malentendu de vocabulaire résolu en séance. Blandine parlait du « trait gros » ; j'avais posé des filets de 1 px en blanc à 11 % — invisibles. Relevé dans `lingo.html`, règle `#ouvIntroB .oBande` : **hauteur 26 px, fond `#15181C`, rayon 6 px, 18 px d'écart avec le contenu**.
+
+Reprises telles quelles, une au-dessus et une en dessous du rail, **page Cavalier uniquement**.
+
+⚠️ **Déduction de Claude — à valider** : dans Linguae elles font 330 px centrées, calées sur la largeur du texte ; le rail défile bord à bord, donc 330 px ne correspondrait à rien ici. Calées sur les **gouttières de la page** (16 px de chaque côté). Alternative disponible en un mot : 330 px centrées.
+
+### 5. 🟥 LA STORY OUVERTE ÉTAIT BLOQUÉE (19aq)
+
+Signalé par Blandine : « on peut tjs pas remonter ou descendre une fois sur une story », puis « on est coincés sur la story on peut plus liker ou partager ».
+
+**Fausse piste écartée d'abord** : le geste vertical de la 19ao ne vit que sur la photo ouverte en plein écran, pas sur la story.
+
+**Cause réelle : le panneau du bas n'était borné par rien.** La visionneuse est une colonne de trois blocs — en-tête, zone photo (`flex: 1`, `minHeight: 0`), panneau. Une longue légende dépliée faisait grandir le panneau sans limite ; la zone photo étant la seule élastique, c'est **elle** qui s'écrasait. Deux dégâts :
+
+- **le cœur disparaissait** — il est posé à 14 px du bas **à l'intérieur** de la zone photo. Zone écrasée, cœur hors de vue. **Le bouton « aimer » n'a jamais été cassé** ;
+- **le bas était coupé** — lieu et photos sortaient de l'écran, sans rien pour aller les chercher. La légende avait bien son défilement (`42vh`), mais tout ce qui vient APRÈS elle en était exclu.
+
+Correctif : le panneau ne dépasse plus **52 vh** et défile chez lui, `overscrollBehavior: contain`, `touchAction: pan-y`. La zone photo garde toujours de quoi exister.
+
+⚠️ **RÈGLE : dans une colonne flex, tout bloc dont le contenu peut grandir doit être borné.** Sinon c'est le bloc élastique qui paie, et le défaut se manifeste ailleurs que là où il est causé.
+
+### 6. LE PARTAGE D'UNE STORY — IL N'EXISTAIT PAS (19aq)
+
+Aucun bouton de partage dans le module, alors que **la famille d'adresses était déjà prévue** : `#s=<id>` pose `window.__storyOuverte` et ouvre Communauté (`CIBLE_DIRECTE`, `index.html`). Bouton ajouté en bas à droite, en miroir du cœur, branché sur **`hypePartager`** — la fonction unique de l'app, avec la photo jointe (ce qui fait la différence dans WhatsApp et Instagram). Repli automatique sur le lien nu au-delà de 8 Mo, puis sur le presse-papier.
+
+`touchstart` arrêté, `touchend` **jamais** — règle du 13/08 : un glissé parti de la photo et fini sur une pastille laisserait la boîte coincée en pleine transformation.
+
+### 7. LE MENU DE L'EN-TÊTE — QUATRE RONDS SOUS UN SEUL
+
+Demande de Blandine : « le menu de ma photo de profil était supposé être rassemblé sous un seul bouton ». Photo, Modifier la photo, Album et Messages étaient quatre icônes muettes. Elles rentrent sous un rond **⋯** qui ouvre un panneau où chaque entrée porte son **libellé écrit**.
+
+**Volontairement laissés dehors :** le crayon du pseudo (il modifie le nom, le cacher rendrait l'action introuvable) et, en visite, le bouton turquoise « écrire à ce cavalier » (une action principale ne se cache pas).
+
+**La musique est la cinquième entrée.** Le composant `PastilleMusiquePage` **ne pouvait pas déménager dans le menu** : il porte aussi la pastille de lecture, celle dont les **visiteurs** se servent, et le menu n'existe que pour la propriétaire. Deux propriétés ajoutées : `sansBoutonChoix` (efface le bouton pointillé chez la propriétaire, sinon on refait le doublon des quêtes) et `ouvrirChoix` (**un compteur**, pas un booléen — pour pouvoir rouvrir le sélecteur après fermeture sans remise à zéro).
+
+### 🔑 LE PROMPT À RENVOYER POUR OBTENIR UNE IMAGE PERCÉE
+
+**Six heures perdues le 16/08 sur ce seul point.** Onze fichiers reçus, trois exploitables. Le générateur dessinait des cadres au lieu de les découper, ou peignait un faux damier gris pour *représenter* la transparence. Ce prompt, donné par Blandine, a produit le bon fichier du premier coup. **À renvoyer tel quel la prochaine fois :**
+
+> Je t'envoie une image contenant plusieurs cadres destinés à recevoir des photos.
+>
+> ⚠️ IMPORTANT : NE RECRÉE PAS L'IMAGE AVEC LE GÉNÉRATEUR D'IMAGES.
+>
+> Je veux une MODIFICATION TECHNIQUE DU FICHIER ORIGINAL :
+>
+> * conserve mon image originale strictement à l'identique ;
+> * ne modifie ni les couleurs, ni l'éclairage, ni le décor, ni les objets, ni la composition, ni la position ou la taille des cadres ;
+> * repère l'intérieur de chaque cadre ;
+> * découpe UNIQUEMENT l'intérieur des cadres ;
+> * mets les pixels de ces zones en TRANSPARENCE RÉELLE : canal alpha = 0 ;
+> * conserve parfaitement les contours/liserés des cadres ;
+> * ne mets AUCUN remplissage dans les cadres : ni noir, ni blanc, ni gris, ni paysage ;
+> * surtout, NE DESSINE PAS DE DAMIER pour simuler la transparence.
+>
+> Le décor situé derrière les cadres ne doit plus être visible à l'intérieur : ces zones doivent être de véritables trous transparents permettant de placer ensuite une photo derrière l'image.
+>
+> Effectue la découpe techniquement sur le fichier (par exemple avec Python/Pillow ou un outil de traitement d'image), et PAS avec une génération IA.
+>
+> Exporte le résultat en PNG RGBA avec canal alpha.
+>
+> ⚠️ NE PAS EXPORTER EN JPEG/JPG : ce format ne prend pas en charge la transparence.
+>
+> Avant de me donner le fichier, vérifie que :
+>
+> 1. l'extérieur des cadres est toujours opaque ;
+> 2. seuls les intérieurs des cadres ont alpha = 0 ;
+> 3. les bordures des cadres sont intactes ;
+> 4. aucun damier n'a été dessiné ;
+> 5. le fichier final est bien un PNG avec transparence réelle.
+
+#### ⚠️ ET LE PIÈGE QUI A COÛTÉ LE PLUS CHER — IL N'EST PAS DANS LE PROMPT
+
+**Ne jamais renvoyer une CAPTURE D'ÉCRAN d'une image transparente.** L'iPhone affiche la transparence sous forme de damier gris ; la capture **fige ce damier dans les pixels**, et le fichier arrive opaque. Trois fichiers ont été perdus ainsi le 16/08 : `IMG_6879`, `IMG_6882`, `IMG_6883` — tous des captures d'un fichier qui, lui, était bon.
+
+**Signe qui ne trompe pas : un nom en `IMG_`.** C'est une capture, pas le fichier d'origine. Il faut l'envoyer depuis **Fichiers**, jamais depuis la galerie.
+
+#### Les trois formes de faux perçage rencontrées
+
+| Ce qu'on voit | Ce que dit le fichier | Récupérable ? |
+|---|---|---|
+| Damier gris | RGB, motif peint | Parfois — voir plus bas |
+| Encarts blancs opaques | Alpha 229-233, quasi blancs | ✅ Oui, faciles à isoler |
+| Encarts noirs | JPEG, noir absolu | ✅ Oui, mais le JPEG ne portera jamais d'alpha |
+| Cadres vides, décor visible | Alpha oscillant 18-251, jamais 0 | ❌ Non — voile général, pas de découpe |
+
+**Sur le damier peint** : il n'est pas posé à opacité pleine, il se superpose au décor. Sur les zones claires il oscille nettement et se détecte par corrélation avec un motif de même période et de même phase. **Sur les zones noires son amplitude tombe à presque rien** — il n'y a plus d'oscillation à mesurer. On récupère alors deux encarts sur quatre, jamais les quatre. Les liserés ne sauvent pas la mise : trop discontinus pour fermer un contour.
+
+**Contrôle à faire à la réception de tout cadre**, avant d'espérer quoi que ce soit :
+
+```python
+from PIL import Image
+import numpy as np
+a = np.asarray(Image.open(f).convert("RGBA"))
+print(Image.open(f).mode, a.shape, "| alpha min", a[:,:,3].min(),
+      "| pixels transparents", int((a[:,:,3] < 40).sum()))
+```
+
+`mode` doit être **RGBA**, `alpha min` doit être **0**, et le compte de pixels transparents se compter en **centaines de milliers**. Sinon le fichier n'est pas percé, quoi qu'affiche le téléphone.
+
+### 8. LE MUR IMMERSIF POUR « À LA UNE » — DÉCIDÉ, PAS ENCORE CODÉ
+
+Blandine veut remplacer le rail « À la une » par un **mur immersif** : un bloc **carré** posé dans la page Cavalier, entre le Mur des Songes et les tuiles club. Ses mots : « au-dessus et en dessous tu as d'autres encarts, et caetera pour la page » — ce n'est PAS un décor plein écran.
+
+**Le principe.** Le décor est une image PNG **percée** (RGBA, quatre trous à alpha 0). Les photos passent DERRIÈRE ; l'image garde ses liserés et ses ombres par-dessus. Rien n'est découpé, rien n'est superposé à la photo pour la faire tenir.
+
+**Fichier retenu** : `Hype_mur_immersif_encarts_transparents.png` — 1254 × 1254, carré natif, quatre trous relevés au pixel :
+
+| Emplacement | Position (x, y) | Taille |
+|---|---|---|
+| Grand vertical gauche | 82, 516 | 317 × 555 |
+| Grand vertical droit | 877, 174 | 306 × 477 |
+| Horizontal bas | 604, 886 | 328 × 202 |
+| Petit carré centre | 480, 594 | 215 × 235 |
+
+Deux autres fichiers marchent aussi (`E2F2B712`, `BEB50DA6`) mais demandent un recadrage ; celui-ci est carré d'origine.
+
+#### ⚠️ LE VOILE — UNE EXCEPTION NOMMÉE À LA RÈGLE ABSOLUE
+
+La règle « aucun filtre, aucun voile, aucun assombrissement sur une photo de cheval » **tient partout ailleurs et n'est pas amendée**. Elle a d'ailleurs été refusée deux fois dans la journée quand l'argument était esthétique.
+
+**Ce qui a justifié l'exception, ce sont les mots de Blandine** : « histoire de limiter la casse si il y a des story orange ou vert fluo ». Ce n'est pas un choix de goût, c'est un garde-fou : les photos viennent des cavalières, elle ne les choisit pas, et une seule story fluo troue un décor nocturne.
+
+**L'exception vaut pour le mur immersif, et lui seul.**
+
+**Le réglage retenu — à reconfirmer par Blandine avant de coder :**
+
+| Levier | Valeur | Ce qu'il fait |
+|---|---|---|
+| Fondu des bords | **Large** (masque à 40 %, ellipse 72 %) | dissout les bords ; c'est LUI qui intègre la photo au décor |
+| Voile | **22 %** | assombrit légèrement |
+| Désaturation | **80 %** | retire la couleur — c'est elle qui range vraiment un fluo |
+| Nappe | **50 %** | recolore sans assombrir (`mix-blend-mode: color`) |
+| Couleur | **Pétrole `#166F8C`** | à mi-chemin entre le noir et le turquoise |
+
+**Ce qu'on a appris en réglant, et qui vaut plus que les chiffres :**
+
+- **Le voile seul ne sert à rien contre un fluo.** Un orange sombre reste orange. C'est la DÉSATURATION qui neutralise.
+- **La nappe au-delà de 60 % efface la photo** au lieu de la teinter. En « Nuit » à 80 %, les quatre emplacements sont devenus noirs — Blandine a cru la maquette cassée, et c'était le réglage. La plage est donc bornée à 60 %.
+- **Le turquoise franc en nappe est à proscrire** : le turquoise est une lumière, pas une matière (Design Bible). À 80 % les emplacements devenaient des rectangles cyan plus clairs que le décor — l'inverse de l'unité recherchée.
+- **L'écart de luminosité est indépassable** : le décor est presque noir, toute photo sera plus claire. Le levier utile n'est pas d'égaliser mais de supprimer le BORD, par le fondu. Une photo claire à bords dissous appartient au décor ; une photo sombre à bords nets reste collée dessus.
+- **Argument de Blandine, retenu** : « une fois qu'ils seront ouverts les gens auront les vrais albums ». La vignette est une couverture, pas la photo. Elle peut être désaturée à condition de rester **lisible** et que l'ouverture donne bien la photo en pleine couleur.
+
+#### La recette des thèmes
+
+Pour les autres teintes, on ne retient PAS une couleur mais **une recette** : **la nappe se pose à mi-chemin entre le noir du fond et la couleur principale du thème**, calculée en **teinte-saturation-luminosité** (un mélange direct des valeurs RVB passerait par un gris sale). Les quatre autres leviers ne dépendent d'aucune couleur.
+
+⚠️ **Les teintes de l'app ne sont pas là où on croit.** `TEINTES_HYPE` (ligne 570) ne contient que turquoise `#20D9F5` et crimson `#B22752`. Les **quatre** teintes que Blandine utilise vivent dans le menu de la fiche cheval, ligne 31650 : `#20D9F5` turquoise, `#D9B56C` doré, `#C64B5C` rose, `#5C7A5E` vert. Une maquette a été faite avec un vert et un doré INVENTÉS avant que l'erreur soit vue — à refaire avec les vraies valeurs.
+
+#### 🟥 DÉCISION DE BLANDINE, FIN DE SESSION
+
+**« Pour l'instant on va faire uniquement en bleu sur la page Cavalier, on verra le reste ensuite. »**
+
+Donc : **un seul décor, bleu nuit, une seule page.** Communauté, Club et Écurie gardent `RailALaUne` tel quel. Aucune image par thème à produire pour l'instant.
+
+#### Restant à trancher avant de coder
+
+- **Le nombre d'emplacements** : quatre trous pour un nombre variable d'« à la une ». Deux → deux replis ; six → deux qui ne s'affichent pas. Ignorer le surplus, ou faire défiler ? **Piste de Blandine** : « on choisira des vignettes à remplacer en cas d'absence de story ».
+- **Le fondu devrait s'adapter à la taille** : à « Large », le petit emplacement du centre est presque effacé alors que les grands rendent bien.
+
+### 9. LE MENU ⋯ PASSAIT SOUS LE MUR DES SONGES — CORRIGÉ (19ar)
+
+Signalé par Blandine : « on dirait qu'il pop sous le mur des songes ». Le panneau était en `position: absolute` avec `z-index: 41` **à l'intérieur de l'en-tête**.
+
+⚠️ **RÈGLE : un `z-index` ne vaut que dans son propre plan.** La carte du Mur des Songes, posée plus bas dans la page, crée son propre contexte d'empilement et recouvre tout ce qui vient avant elle — quel que soit le z-index du panneau. **Un panneau qui doit flotter au-dessus de la page ne se met JAMAIS en `absolute` dans son parent.** Passé en `position: fixed`, z-index 8801, aux étages qu'utilisent déjà les feuilles du module stories.
+
+`node --check` ne voit pas ce genre de faute : elle ne se manifeste qu'à l'écran.
+
+### 10. LES ÉPINGLES HEY BABY — DIAGNOSTIC PARTIEL
+
+Dominique : « Hey Baby n'a pas conservé les questions que j'ai épinglé les jours précédents, seulement celle d'aujourd'hui. »
+
+- **`purge-planifiee.js` est HORS DE CAUSE.** Vérifié : il n'appelle que `purgerEchus`, qui ne touche qu'aux comptes marqués supprimés et échus. Un compte actif ne passe jamais par là.
+- **Aucun filtre de date dans le code de lecture.** `chargerEpinglesHB` (ligne 952) prend les 20 dernières, tous jours confondus.
+- **Le seul filtre est PAR CHEVAL**, ligne 957 : `req = chevalId ? req.eq("cheval_id", chevalId) : req.is("cheval_id", null)`. Ouvert sans cheval, on ne voit que les épingles posées sans cheval ; ouvert depuis une fiche, seulement les siennes. **Rien n'est perdu, c'est un problème d'affichage.**
+- **À faire** : demander à Dominique si elle épingle depuis la fiche d'un cheval ou depuis Hey Baby en général. Si ça varie, c'est ça. Décision à prendre ensuite : tout afficher avec le nom du cheval en étiquette, ou garder la séparation mais l'annoncer.
+
+### À l'écran : + / −
+
+- **+** Le Mur des Songes réapparaît sur la page Cavalier, au-dessus des stories.
+- **+** Sur le profil d'un autre cavalier, son Mur des Songes apparaît s'il en a un.
+- **+** Deux bandes grises encadrent le rail de stories, page Cavalier seulement.
+- **+** Un point turquoise devant le nom des stories non lues.
+- **+** Un bouton de partage ↪ en bas à droite de la story ouverte.
+- **+** Le panneau du bas de la story devient défilable ; le cœur redevient visible.
+- **+** Un rond ⋯ et son panneau dans l'en-tête de la page Cavalier.
+- **+** La carte « Tes quêtes » réapparaît en bas de page.
+- **−** L'anneau turquoise des vignettes disparaît sur les quatre pages.
+- **−** La pastille « 🏆 Voir mes quêtes » disparaît de l'en-tête.
+- **−** Le bouton pointillé « ♪ Choisir la chanson de ma page » disparaît de la page (il est dans le menu).
+- **−** Les quatre ronds photo / modifier / album / messages disparaissent de l'en-tête.
+- **−** La carte « Tes quêtes » quitte le haut de page.
+- **+** Les vignettes de stories passent de 104 à 132 px (19ar).
+- **+** Le panneau du menu ⋯ devient réellement visible (il s'ouvrait sous le Mur des Songes).
+- **Non touché, signalé** : le fin trait turquoise qui relie deux stories d'un même cavalier. Il n'était pas dans la demande mais se voit davantage depuis la disparition des anneaux.
+
+### Incidents de séance
+
+- **L'`index.html` d'origine a disparu de l'espace de réception en cours de travail.** Copie de travail prise avant, rien perdu — mais le recomptage avant/après contre l'original n'a pas pu être fait sur le premier lot. Remplacé par des comptages internes.
+- **Quatre réponses parties vides** côté Claude, sans contenu affiché. Signalées à chaque fois.
+- **Trois scripts d'édition arrêtés sur une ancre introuvable.** Aucun n'a écrit : les assertions sont posées avant l'écriture. Ancres retrouvées et réappliquées.
+- **Confusion Hype / Linguae** : une vidéo destinée à l'arrivée de Versailles (Linguae) a été prise pour le fond du mur immersif (Hype). Aucune conséquence — lecture des caractéristiques et deux images de contrôle, rien de modifié ni livré.
+
+### Décisions de Blandine actées
+
+- Fondu large, forme ronde, sur les quatre pages.
+- Communauté garde le rectangle, mais dissous — essai.
+- Bandes grises page Cavalier seulement.
+- Pastille des quêtes supprimée, carte gardée.
+- Texte du Mur des Songes à 18 px, bouton « Écrire » gris en bas à droite.
+- Vignettes de stories à 132 px.
+- **Refusé et maintenu** : aucun voile ni assombrissement sur une photo de cheval, y compris pour le mur immersif. Blandine avait proposé « exceptionnellement on va s'adapter » ; la règle a été tenue, et il a été montré qu'elle n'est pas nécessaire (choix de photo, zones calmes, libellés hors image, recadrage).
+
+### En attente
+
+- **Le mur immersif pour « À la une »** — structure entièrement différente du rail. Blandine fournit la photo de fond ; vignettes de formes et tailles variées à composer dedans.
+- **Les bandes grises** : gouttières de page (posé) ou 330 px centrées comme dans Linguae — à valider.
+- **Le trait turquoise entre deux stories d'un même cavalier** — le garder ou non.
+- **Le mur immersif** — décidé, réglé, pas codé. Bleu nuit, page Cavalier uniquement.
+- **La maquette des thèmes** à refaire avec les vraies teintes (`#D9B56C`, `#C64B5C`, `#5C7A5E`).
+- **Les épingles Hey Baby** — question à poser à Dominique avant de coder quoi que ce soit.
+- **Les sessions 135 à 160 sont absentes du SUIVI** — elles ne vivent que dans la PASSATION. À reconstituer pour que la numérotation pleine puisse reprendre.
+
+### Préparation Flutter
+
+- **`forme` reste une propriété de la page appelante**, jamais une décision du composant. Un seul rendu de bandeau, trois habits, zéro divergence entre les quatre pages — c'est la frontière à garder au portage.
+- **Le menu de l'en-tête n'ajoute aucune logique** : il n'appelle que des actions existantes. Rien de plus à porter.
+- **`ouvrirChoix` en compteur** est un motif à reprendre partout où un composant doit être piloté de l'extérieur sans qu'on lui vole son état : l'appelant demande, le composant décide.
+- **Le Mur des Songes ne parle qu'à `majProfil`** (Repository profil). Aucune requête directe, aucune connaissance du schéma.
 
 ---
 
@@ -8452,5 +8909,72 @@ Trois issues, à trancher plus tard : le rendre modifiable ailleurs · le **déd
 Cette page est le cas d'école de ce qu'il ne faut pas reproduire : **un écran qui accumule sans jamais trier**. Progression, récompenses, réglages, compte et administration au même endroit, ajoutés au fil des sessions. En Flutter, la séparation en routes par domaine rend l'accumulation visible — un écran « Réglages » qui importerait le domaine Progression sauterait aux yeux à la relecture.
 
 Le trou du back-office relève de la même racine : **aucune frontière ne portait le droit d'accès**. À inscrire dans la frontière « Métier » : `peutAdministrer(utilisateur)` est une règle du domaine, vérifiée à l'entrée de la route, jamais une condition d'affichage.
+
+**Témoin** : reprise 1.8 · baby 112 · memo 4 · stories 19an · modèles 28.
+
+---
+
+## Session 159 — 15/08/2026 · fin de journée · facturation réparée et vérifiée
+
+### ✅ LA PANNE DE FACTURATION EST RÉPARÉE, ET PROUVÉE
+
+Enchaînement fait avec Blandine, dans l'ordre :
+
+1. **Webhook poussé** dans `netlify/functions/`.
+2. **`invoice.payment_failed` coché** dans la destination Stripe → « Écoute : 4 événements ».
+3. **Événement `invoice.paid` du 14/08 renvoyé** depuis l'onglet « Événements envoyés ».
+4. **Vérification en base** : la date de Dominique est passée de `2027-08-15` (le filet) à **`2026-09-16`** — la vraie période Stripe.
+
+**Le correctif fonctionne.** L'identifiant d'abonnement, déplacé sous `parent.subscription_details` par l'API 2026-06-24, est désormais lu correctement.
+
+**Barbara reste à `2027-08-15`** : c'est normal, son événement n'a pas été rejoué. Son renouvellement du **16/08** doit écraser la date tout seul — c'est la vérification à faire, et elle vaut mieux qu'un renvoi : elle prouve le correctif sur un **vrai** paiement.
+
+⚠️ **À vérifier le 16/08** :
+```sql
+select email, statut, plan, expire_le
+from abonnements_premium
+where email in ('basia.baster@poczta.fm','dominique.wirtschafter@orange.fr');
+```
+
+Question posée par Blandine et tranchée : **oui, le prélèvement passera** même si la base la croit abonnée jusqu'en 2027. Stripe ne lit pas la base, et le webhook fait un `update` qui écrase la date quelle qu'elle soit.
+
+### 🗺️ La carte Communauté — spec rédigée
+
+`SPEC-CARTE-COMMUNAUTE.md` livré, remplaçant celui perdu le matin. Il reprend les décisions déjà écrites (pastille sur le club, repli ville, position réelle **écartée**) et comble ce qui manquait.
+
+**Décisions ajoutées ce soir :**
+- La cavalière peut **retirer sa position**. Correction de Blandine à respecter mot pour mot : *« elle reste comptée dans les cavaliers de l'écurie mais sa position n'apparaît pas c'est tout »*.
+- Icône d'entrée **carrée à côté de la messagerie**, avec la **mascotte au courrier** (poney tenant l'enveloppe scellée au H).
+- **Pins** : bleu / rose évoqués, non tranchés — j'ai signalé que ces couleurs sont étrangères à la palette Spectral et qu'il faut une troisième pastille neutre (le genre n'est pas toujours renseigné). **Personnalisation possible plus tard** : une colonne `pin` suffira, rien de ce qui est fait ne la bloque.
+
+**Quatre questions attendent une réponse** (fin de la spec) : visages ou nombres sur les pastilles · avertissement aux mineures à la première visite · badge sur l'icône · confirmation de la mascotte.
+
+### 🚫 Position entre amis / entre parent et enfants — ÉCARTÉ
+
+Blandine a demandé si on pouvait activer le partage de position entre amies avec double consentement, puis pour ses enfants. **Écarté, avec ses motifs :**
+- une app web ne connaît la position que **fenêtre ouverte au premier plan** — Safari coupe tout en arrière-plan, donc l'usage voulu (suivre ses enfants) ne marcherait tout simplement pas ;
+- position de mineures = donnée sensible RGPD : consentement parental, durée de conservation, effacement, et responsabilité en cas de fuite ;
+- écritures constantes en base sur un projet dont on a vu ce matin qu'un déploiement de trop met le site en pause ;
+- une fonction construite « pour trois personnes » finit toujours par être ouverte à toutes.
+
+**Renvoyé vers Localiser d'Apple**, qui le fait mieux et gratuitement. Piste gardée pour Hype : *« ta copine monte aussi à l'Écurie Feinn »* — se retrouver par le club, pas par le GPS.
+
+### 🖼️ Vignettes des modèles
+
+Reçues et fabriquées ce soir : **`modele-14-mini.webp`** et **`modele-20-mini.webp`** (176 px de large, WebP qualité 88 — norme du bandeau). Livrées.
+
+**Rappel de ce qui manque** : `modele-5` à `modele-23` en dehors de ces deux-là, et `modele-24` à `28` + les trois `modele-concours` que Blandine a chez elle **sans les avoir poussées**. Le plus rentable : pousser d'abord celles qu'elle a déjà.
+
+### 🖥️ À l'écran : + / −
+
+Rien de nouveau côté app dans cette session — tout s'est joué côté Stripe, Supabase et images.
+
+### 📋 Reste ouvert
+
+Voir `PASSATION-stories.md`, remis à jour.
+
+### Préparation Flutter
+
+La réparation de ce soir valide le gabarit posé à la session 157 : **une fonction nommée par intention, qui connaît tous les emplacements possibles d'un champ et journalise quand elle ne trouve rien**. `abonnementDeFacture` a résisté à un changement d'API qui avait cassé le code précédent en silence. À reprendre pour chaque lecture d'une source externe — c'est la frontière Données qui se dessine.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · stories 19an · modèles 28.

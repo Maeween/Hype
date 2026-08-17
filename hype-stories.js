@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19az";
+var HYPE_STORIES_VERSION = "19ba";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1695,7 +1695,32 @@ function BandeauStories(props) {
            Etendue « legere » : 1,24x le cote, soit 16 px de debordement pour
            un rond de 132. Le retrait haut du rail est releve d'autant, sinon
            overflowY:hidden couperait le halo net en haut (voir plus bas). */
-        var HD = Math.round((libreRect ? 150 : LW) * 1.24);
+        /* ⚠️ 17/08 (session 138) — LE HALO ETAIT INVISIBLE, ET CE N ETAIT PAS
+           UN PROBLEME D OPACITE MAIS DE PLACEMENT. Blandine : « on voit pas
+           trop le halo sur les story t es sur qu il est la ? ». Mesure faite
+           sur sa capture de 11 h 29 : ZERO pixel turquoise dans la bande, alors
+           que le meme detecteur en trouve 115 sur la pastille Premium et 352
+           sur le lisere de l encart Elevage. Il etait donc bien construit, mais
+           eteint a l ecran.
+           LE CALCUL. `closest-side` place le maximum du degrade AU CENTRE, donc
+           DERRIERE la photo, la ou il ne sera jamais vu. Avec l ancienne
+           etendue de 1,24x, le bord de la photo tombait a 81 % du rayon du
+           degrade : sur l anneau visible, la seule partie qui depasse, l opacite
+           n etait plus que de 3 % environ. Soit du (7,13,16) sur du #060709 —
+           indiscernable du noir. 80 % de la lumiere etait depensee sous une
+           photo opaque.
+           LE CORRECTIF (« pose-le deja en leger », feu vert du 17/08) : le
+           maximum est RECALE sur le bord de la photo. Avec 1,32x d etendue, ce
+           bord tombe a 76 % — c est donc la qu on met le pic. L interieur reste
+           bas (12 %) puisqu il est masque de toute facon.
+           Les trois points de vigilance d origine tiennent : calque SEPARE pose
+           DESSOUS (jamais un filtre sur la photo), vivant HORS du conteneur
+           masque, couleur issue de tA() donc suivant la teinte du cavalier.
+           ⚠️ CONSEQUENCE TRAITEE JUSTE EN DESSOUS : le debordement passe de
+           15,8 px a 21,1 px sur un rond de 132. Le retrait HAUT du rail devait
+           donc monter de 18 a 22, sinon `overflowY: hidden` tranchait le halo
+           net — exactement le piege paye en 19au. */
+        var HD = Math.round((libreRect ? 150 : LW) * 1.32);
         return h("div", {
           key: cle,
           style: { position: "relative", width: LW, height: LH, flex: "0 0 auto" }
@@ -1706,7 +1731,7 @@ function BandeauStories(props) {
               position: "absolute", left: "50%", top: "50%",
               width: HD, height: HD, marginLeft: -(HD / 2), marginTop: -(HD / 2),
               borderRadius: "50%", pointerEvents: "none",
-              background: "radial-gradient(circle closest-side, " + tA(0.2) + " 0%, " + tA(0.09) + " 44%, " + tA(0) + " 100%)"
+              background: "radial-gradient(circle closest-side, " + tA(0.12) + " 0%, " + tA(0.34) + " 76%, " + tA(0.14) + " 88%, " + tA(0) + " 100%)"
             }
           }),
           h("div", {
@@ -1824,7 +1849,7 @@ function BandeauStories(props) {
 
   return h("div", { style: { padding: (props && props.padding) || "16px 0 8px" } },
     h("input", { ref: fileRef, type: "file", accept: "image/*", multiple: true, onChange: surFichier, style: { display: "none" } }),
-    h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "18px 14px 6px", WebkitOverflowScrolling: "touch" } },
+    h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "22px 14px 6px", WebkitOverflowScrolling: "touch" } },
       /* 19n (14/08, mot de Blandine) : « le + pour ajouter une story faut
          qu'il soit toujours en dernier sur le rail pas en premier ». Les
          stories passent devant, le + ferme la marche. */
