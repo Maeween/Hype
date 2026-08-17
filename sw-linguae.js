@@ -110,7 +110,9 @@ var SOCLE_JS = [
   "hype-lingo-lex-ecurie.js", "hype-lingo-lex-pansage.js", "hype-lingo-lex-materiel.js",
   "hype-lingo-lex-cours.js", "hype-lingo-lex-dressage.js", "hype-lingo-lex-enseignant.js",
   "hype-lingo-lex-obstacle.js", "hype-lingo-lex-derby.js", "hype-lingo-lex-concours.js",
-  "hype-lingo-lex-cross.js", "hype-lingo-lex-horsemanship.js", "hype-lingo-lex-urgences.js",
+  "hype-lingo-lex-cross.js", "hype-lingo-lex-horsemanship.js",
+  /* 16/08 : les urgences separees en deux fichiers */
+  "hype-lingo-lex-urgences-vet.js", "hype-lingo-lex-urgences-med.js",
   "hype-lingo-lex-poney.js", "hype-lingo-lex-tradition.js", "hype-lingo-lex-western.js",
   "hype-lingo-lex-polo.js", "hype-lingo-lex-haras.js", "hype-lingo-lex-froid.js",
   "hype-lingo-lex-endurance.js", "hype-lingo-lex-vente.js", "hype-lingo-lex-elevage.js"

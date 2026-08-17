@@ -2755,7 +2755,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      et la colonne francaise donne en meme temps le vocabulaire des
      savoirs ethologiques de la FFE. -->
 <script src="hype-lingo-lex-horsemanship.js"></script>
-<script src="hype-lingo-lex-urgences.js?l=2"></script>
+<!-- 🟥 16/08 : LES URGENCES SONT SÉPARÉES EN DEUX CHAPITRES.
+     `hype-lingo-lex-urgences.js` mélangeait le cheval et le cavalier en
+     42 mots sur quatre leçons, dont TROIS pour Kildare — ce qui a fait
+     perdre des mots à Blandine pendant son vol. Décision : un fichier
+     par type d'urgence, une ville et un cours chacun.
+     ⚠️ L'ANCIEN FICHIER N'EST PLUS CHARGÉ. Le laisser au dépôt ne gêne
+     pas, mais ne pas le rebrancher. -->
+<script src="hype-lingo-lex-urgences-vet.js?l=1"></script>
+<script src="hype-lingo-lex-urgences-med.js?l=1"></script>
 <!-- Le poney : chapitre créé le 5 août 2026 pour Lamotte-Beuvron.
      Six de ses dix entrées sont des RAPPELS partageant le `ref` d'entrées
      de hype-lingo-lex-cheval.js — voulu, la maîtrise est par `ref`. -->
@@ -3480,7 +3488,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=39";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
+var VER = "?v=40";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
                         etait un autre rendu (1000x1500, SANS transparence) alors que
                         `ARCHES.gauchebiais` avait ete mesure sur la bonne image ; la
                         vue du pays ne pouvait donc pas passer dans l'arche.
@@ -4904,7 +4912,11 @@ function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
    defile deja, cinq y tiennent. Le compteur de themes ne change pas (22
    cles, elles sont juste rangees autrement). */
 var TH_FAMILLES = [
-  { cles:["arrivee","balade","urgences","vente"],
+  /* ⚠️ 16/08 : « urgences » → « urgences-vet » et « urgences-med ». La
+     famille passe donc de 4 à 5 clés, et le compteur de thèmes de 22 à
+     23. Rien d'autre à toucher : tuiles, onglets et ancres se génèrent
+     depuis cette table. */
+  { cles:["arrivee","balade","urgences-vet","urgences-med","vente"],
     nom:{fr:"Au club", en:"At the club", es:"En el club", it:"Al club", de:"Im Verein", ja:"クラブで"} },
   { cles:["pansage","materiel","ecurie","cheval","horsemanship","elevage","haras"],
     nom:{fr:"À pied", en:"On the ground", es:"A pie", it:"Da terra", de:"Am Boden", ja:"地上から"} },
@@ -6604,7 +6616,7 @@ var CHAPITRE_DE = {
      16/08 : « parce qu'on a écrit pour le CSO là en fait ».
      ⚠️ `obstacle` RESTE EN RÉSERVE, sans ville — il attend la ville du
      CSO. NE PAS le rebrancher sur Hickstead. */
-  kildare:"urgences", edimbourg:"dialogues"
+  kildare:"urgences-vet", edimbourg:"urgences-med"
 };
 
 /* ==================================================================
@@ -6670,12 +6682,35 @@ var ETAPE_SRC = {
      lecons 2 et 3 etaient jusqu'ici PLACEES NULLE PART : 22 mots
      d'urgence dormaient, dont « il boite » et « appelez le veterinaire »
      — les mots memes de la promesse du carnet. */
-  kildare:     [["urgences",1],["urgences",3],["urgences",4]],
-  edimbourg:   [["urgences",2]],
+  /* 🟥 16/08 : UNE SEULE LEÇON CHACUNE. Kildare en avait TROIS et
+     Édimbourg une seule leçon du même fichier — c'est ce qui a fait
+     perdre des mots à Blandine en vol : « bof non, c'est justement ce
+     qui a fait que ça a foiré pendant mon vol ». Chaque ville a
+     maintenant son propre chapitre, complet, en une leçon.
+     ⚠️ Kildare = LE CHEVAL (39 mots), Édimbourg = LE CAVALIER (37). */
+  kildare:     [["urgences-vet",1]],
+  edimbourg:   [["urgences-med",1]],
   /* 🟥 16/08 : la lecon 3 de `dressage` (les notions d'art equestre)
      PASSE DE SAUMUR A VERSAILLES. Saumur recevra `enseignant`, fichier
      neuf. NE PAS rendre la lecon 3 a Saumur. */
   versailles:  [["dressage",3]],
+  /* 🟥 16/08 : CORRIGE. Claude avait mis les QUATRE lecons d'un coup,
+     sans le dire et sans le demander, alors que TOUTES les autres villes
+     n'en ont qu'UNE. Faute reconnue. Saumur = UNE lecon, comme le reste.
+     ⚠️ Les 40 concepts et les 25 phrases du fichier restent INTACTS. */
+  /* 🟥 SAUMUR : LES QUATRE LEÇONS, sur décision de Blandine (16/08) —
+     « tu mets tout, et je viendrai voir après comment séparer ».
+     HISTORIQUE, ET DEUX FAUTES DE CLAUDE À NE PAS REFAIRE :
+     1. Il avait mis les quatre leçons SANS LE DIRE, alors que toutes les
+        autres villes n'en ont qu'une. Initiative silencieuse.
+     2. Puis il a corrigé à UNE leçon, également sans dire que cela
+        rendait TRENTE MOTS INVISIBLES — les trois autres leçons du
+        fichier (corriger sans casser, la sécurité, l'élève) étaient
+        écrites, traduites, et personne ne les aurait vues.
+        « C'est encore pire — tu pensais me le dire quand, si je
+        t'avais pas posé la question ? »
+     ✅ ÉTAT ACTUEL : les 40 mots sont accessibles. La répartition en
+     plusieurs villes reste À DÉCIDER PAR BLANDINE. NE PAS trancher. */
   saumur:      [["enseignant",1],["enseignant",2],["enseignant",3],["enseignant",4]],
   lamotte:     [["poney",1]],
   golega:      [["elevage",1]],
