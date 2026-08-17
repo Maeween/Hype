@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bd";
+var HYPE_STORIES_VERSION = "19be";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -4843,6 +4843,12 @@ function CompositionStory(props) {
   var pxS = React.useState(0), pleinIx = pxS[0], setPleinIx = pxS[1];
   var refCouche = React.useRef(null);
   var gesteRef = React.useRef({ actif: false, multi: false, x: 0, y: 0, bouge: false });
+  /* ⚠️ 19be — DECLARE ICI, ET SURTOUT PAS PLUS BAS. Le ref de la bande de
+     tirages sert dans le rendu final, mais il y a un `if (plein) return` entre
+     les deux : un `useRef` pose apres cette sortie ne serait appele qu une fois
+     sur deux, ce qui casse l ordre des Hooks de React. C est la meme raison qui
+     fait que TOUT etat de ce module est declare en tete (voir 19ao). */
+  var glisseTirRef = React.useRef({ x0: 0, y0: 0, garde: false, doigts: 1 });
   var longue = String(story.legende || "").length > (typeof HS_LEGENDE_REPLI === "number" ? HS_LEGENDE_REPLI : 140);
   /* Les mentions @ ACCEPTEES deviennent des liens turquoise, comme dans le
      panneau du bas d'ou le texte vient. Sans ce report, changer de place la
@@ -5093,11 +5099,39 @@ function CompositionStory(props) {
            LE DEROULE met le minuteur en PAUSE : sans ca la story defile
            pendant la lecture — defaut deja corrige en 114b, ne pas le
            reintroduire. */
+        /* ⚠️ 19be (17/08, session 138 bis) — SOLUTION 1, CHOISIE PAR BLANDINE
+           (« Oui, solution 1 — vas-y »). LE TEXTE DEPLIE N A PLUS DE ZONE DE
+           DEFILEMENT A LUI.
+           SES MOTS, LA PANNE : « des qu on deplie le texte on peut plus
+           remonter ou descendre voir les photos », « le texte est fige au
+           milieu et on peut plus scroll voir les photos qui sont coupees a
+           moitie en bas et en haut ».
+           LA CAUSE, MESUREE DANS LE CODE : le deplie posait
+           `maxHeight: 42vh` + `overflowY: auto` ICI, c est-a-dire une SECONDE
+           zone defilante A L INTERIEUR de la colonne de composition, qui
+           defile deja depuis 19az. Deux zones imbriquees. Le texte deplie
+           devient le plus gros element de l ecran : le doigt tombe donc
+           presque toujours sur LUI, il consomme le geste vertical, et la
+           colonne ne bouge plus. La grande photo au-dessus et les tirages en
+           dessous restent alors coupes, inatteignables. Les photos n ont
+           jamais ete cassees — c est le geste qui n arrivait pas jusqu a la
+           colonne.
+           CE QUI CHANGE : le texte deplie grandit librement et POUSSE la
+           colonne. Il n y a plus qu UNE surface qui glisse — photo, texte,
+           tirages, lieu — et elle appartient a la colonne (19az).
+           LE PRIX, NOMME AVANT ET ACCEPTE : sur une legende tres longue,
+           descendre pour lire fait remonter la grande photo hors de l ecran.
+           On remonte pour la revoir. C est le compromis retenu contre le
+           figeage.
+           ⚠️ NE PAS REMETTRE `maxHeight` + `overflowY` ICI. Ce serait
+           reintroduire l imbrication, donc la panne. Si une limite de hauteur
+           redevient necessaire un jour, elle doit se poser SANS creer de
+           second defilement (coupe au nombre de lignes, comme le repli). */
         h("div", {
           style: Object.assign(
             { fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45, padding: "0 8px", overflowWrap: "break-word", textAlign: "left" },
             deplie
-              ? { whiteSpace: "pre-wrap", maxHeight: "42vh", overflowY: "auto", WebkitOverflowScrolling: "touch" }
+              ? { whiteSpace: "pre-wrap", flex: "0 0 auto" }
               : { whiteSpace: "pre-line", display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden" })
         }, morceauxLegende),
         longue
@@ -5119,11 +5153,75 @@ function CompositionStory(props) {
          passer le geste, `touchAction: pan-x` pour lever le `none` pose sur la
          zone photo en 19h, et le geste arrete ici pour que la visionneuse ne
          le prenne pas pour un changement de story. */
+      /* ⚠️ 19be (17/08, session 138 bis) — LA TROISIEME SERIE DE
+         `stopPropagation` AVEUGLES, OUBLIEE PAR 19bd.
+         SES MOTS : « dans story a la une [...] je reste bloquee sur la premiere
+         de toute facon », photo encore a l ecran, plus rien qui repond.
+         CE QUI N ALLAIT PAS. 19bd a corrige les huit `stopPropagation` sans
+         condition de `hsBoutonForme` et de `photoTouchable` — donc les tirages
+         EUX-MEMES et la grande photo. Mais la BANDE qui porte les tirages en
+         posait trois de plus, ici, et ils sont restes. Elle arretait
+         `touchstart` SANS CONDITION : la visionneuse n armait donc jamais son
+         geste (`glisseRef.actif` restait faux), et `toucheFin` sortait par son
+         garde du 19al. Un glisse parti de la bande ne produisait RIEN — ni
+         suivante, ni precedente. Dans une a la une composee, cette bande plus
+         le texte couvrent l essentiel de l ecran : d ou l impression d etre
+         bloquee des la premiere photo.
+         ⚠️ LA LECON : arreter `touchstart` est bien plus grave qu arreter
+         `touchmove`. C est lui qui ARME le geste du parent. Un composant qui le
+         bloque rend le parent sourd pour tout le reste du toucher, y compris
+         les gestes qui ne le concernent pas.
+         CE QUI CHANGE. La bande ne reclame plus que ce qui lui appartient :
+         un glisse HORIZONTAL, et seulement quand elle DEBORDE vraiment
+         (3 tirages et plus — en dessous elle est centree et n a rien a faire
+         defiler, son droit de rangee scrollable du 19t ne s applique pas).
+         Tout le reste passe : le vertical va a la colonne (19az), l horizontal
+         d une bande courte va a la visionneuse.
+         ⚠️ LE SEUIL EST A 10 px, DELIBEREMENT SOUS LES 12 px du parent
+         (`toucheBouge`). La bande se declare donc AVANT que la visionneuse ne
+         reconnaisse un glisse horizontal : sans cet ecart, le parent poserait
+         `horiz = true`, son ecouteur natif annulerait le geste, et la bande ne
+         defilerait plus. Ne pas egaliser ces deux valeurs.
+         ⚠️ ON COMPTE LES DOIGTS (regle payee deux fois : session 92, puis
+         02/08). Des qu il y en a plus d un, la bande abandonne : le pincement
+         appartient au zoom.
+         ⚠️ `preventDefault` N EST JAMAIS APPELE ICI. Le defilement horizontal
+         de la bande est fait par le navigateur ; le lui interdire la figerait. */
       ? h("div", {
         "data-hscroll": "1",
-        onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-        onTouchMove: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-        onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+        onTouchStart: function (ev) {
+          try {
+            var t = ev && ev.touches;
+            var un = !!(t && t.length === 1);
+            glisseTirRef.current = {
+              x0: un ? t[0].clientX : 0,
+              y0: un ? t[0].clientY : 0,
+              garde: false,
+              doigts: t ? t.length : 1
+            };
+          } catch (eTs) { glisseTirRef.current = { x0: 0, y0: 0, garde: false, doigts: 9 }; }
+          /* AUCUN stopPropagation ICI : c est tout le correctif. */
+        },
+        onTouchMove: function (ev) {
+          try {
+            var g = glisseTirRef.current;
+            if (!g || g.doigts !== 1) return;
+            var t = ev && ev.touches;
+            if (!t || t.length !== 1) { g.garde = false; return; }
+            if (!g.garde && tirages.length >= 3) {
+              var dx = t[0].clientX - g.x0, dy = t[0].clientY - g.y0;
+              if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.4) g.garde = true;
+            }
+            if (g.garde && ev.stopPropagation) ev.stopPropagation();
+          } catch (eTm) { }
+        },
+        onTouchEnd: function (ev) {
+          try {
+            var g = glisseTirRef.current;
+            if (g && g.garde && ev && ev.stopPropagation) ev.stopPropagation();
+            if (g) g.garde = false;
+          } catch (eTe) { }
+        },
         style: {
           /* 19aj : `width/maxWidth/minWidth` = la rangee ne peut plus dicter
              sa largeur au bloc. Elle defile deja (19t), le contenu trop large
