@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19at";
+var HYPE_STORIES_VERSION = "19au";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1672,17 +1672,45 @@ function BandeauStories(props) {
         var LW = libreRect ? CL : T, LH = libreRect ? CH_ : T;
         /* Aucun anneau, aucun contour, aucun fond : la photo s'arrete
            d'elle-meme. Le signal « non lue » est descendu SOUS la vignette,
-           avec le nom (voir plus bas) -- jamais pose sur la photo. */
+           avec le nom (voir plus bas) -- jamais pose sur la photo.
+
+           19au (feu vert de Blandine, « fais l'effet leger ») -- LE HALO.
+           Une lumiere DERRIERE le fondu, pour que la photo ne se dissolve pas
+           dans le vide. Trois points de vigilance tenus ici :
+           1. Le halo est un CALQUE SEPARE POSE DESSOUS, jamais un filtre ni un
+              degrade sur l'image : la regle « aucun voile sur une photo de
+              cheval » n'est pas entamee, on n'ajoute rien SUR la photo.
+           2. Il vit HORS du conteneur masque -- dedans, le masque l'eteindrait
+              en meme temps que la photo, et il ne resterait rien.
+           3. Sa couleur vient de tA(), donc de teinteHypeActive() : il SUIT la
+              teinte du cavalier (turquoise, dore, rose, vert) sans une seule
+              valeur ecrite en dur. Changer de theme change le halo.
+           Etendue « legere » : 1,24x le cote, soit 16 px de debordement pour
+           un rond de 132. Le retrait haut du rail est releve d'autant, sinon
+           overflowY:hidden couperait le halo net en haut (voir plus bas). */
+        var HD = Math.round((libreRect ? 150 : LW) * 1.24);
         return h("div", {
           key: cle,
-          style: {
-            position: "relative", width: LW, height: LH, flex: "0 0 auto",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            WebkitMaskImage: LM, maskImage: LM,
-            WebkitMaskSize: "100% 100%", maskSize: "100% 100%",
-            WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat"
-          }
-        }, photo);
+          style: { position: "relative", width: LW, height: LH, flex: "0 0 auto" }
+        },
+          h("div", {
+            "aria-hidden": "true",
+            style: {
+              position: "absolute", left: "50%", top: "50%",
+              width: HD, height: HD, marginLeft: -(HD / 2), marginTop: -(HD / 2),
+              borderRadius: "50%", pointerEvents: "none",
+              background: "radial-gradient(circle closest-side, " + tA(0.2) + " 0%, " + tA(0.09) + " 44%, " + tA(0) + " 100%)"
+            }
+          }),
+          h("div", {
+            style: {
+              position: "relative", width: "100%", height: "100%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              WebkitMaskImage: LM, maskImage: LM,
+              WebkitMaskSize: "100% 100%", maskSize: "100% 100%",
+              WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat"
+            }
+          }, photo));
       }
       if (carte) {
         return h("div", {
@@ -1789,7 +1817,7 @@ function BandeauStories(props) {
 
   return h("div", { style: { padding: (props && props.padding) || "16px 0 8px" } },
     h("input", { ref: fileRef, type: "file", accept: "image/*", multiple: true, onChange: surFichier, style: { display: "none" } }),
-    h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "0 14px 6px", WebkitOverflowScrolling: "touch" } },
+    h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "18px 14px 6px", WebkitOverflowScrolling: "touch" } },
       /* 19n (14/08, mot de Blandine) : « le + pour ajouter une story faut
          qu'il soit toujours en dernier sur le rail pas en premier ». Les
          stories passent devant, le + ferme la marche. */
