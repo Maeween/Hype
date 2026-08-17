@@ -253,6 +253,31 @@ if(LANGUES.indexOf(CIBLE) < 0 || CIBLE === LG) CIBLE = (LG === "en") ? "fr" : "e
    on retombe sur l'anglais — plutot que d'afficher « undefined ».
    ⚠️ Le repli se decide APRES lecture du lexique : voir verifierLangues(). */
 var REPLI_DEPUIS = null;
+
+/* 🟥 17/08 — LE VERROU DES VILLES PAYANTES, COTE PAGE FILLE.
+   Le parent verrouille deja `ouvrirSituation()` (il appelle
+   `villeAutorisee()` et ouvre le paywall), mais CETTE PAGE s'ouvre AUSSI
+   par son URL directe — `lingo-dialogue.html?ville=golega` — et n'avait
+   aucun verrou. GOLEGA est la premiere ville PAYANTE a recevoir un
+   dialogue : sans ces lignes, sa scene entiere etait atteignable
+   gratuitement par l'adresse.
+   ⚠️ CETTE LISTE ET CETTE CLE DOIVENT RESTER D'ACCORD avec
+   `VILLE_OFFERTE` et `estPremium()` de lingo.html. Si une ville devient
+   offerte la-bas, l'ajouter ICI aussi — sinon elle se ferme dans
+   l'iframe alors qu'elle est ouverte partout ailleurs.
+   ⚠️ CE N'EST PAS UNE SECURITE, C'EST UNE PORTE. Les phrases sont dans un
+   `.js` public : qui lit le source les a. Regime assume depuis la
+   doctrine VITRINE (14/08) — « la page de la ville reste ouverte a tous,
+   la lecon reste fermee ». Un dialogue EST une lecon.
+   ⚠️ `localStorage` est lisible ici parce que cette page est servie
+   depuis la MEME ORIGINE que lingo.html. Si elle passe un jour sur une
+   autre origine, ce verrou devient aveugle et c'est le parent qui devra
+   passer l'etat. */
+var VILLE_OFFERTE_D = { labaule:1, kildare:1, maurice:1, edimbourg:1 };
+function autorisee(ref){
+  if(VILLE_OFFERTE_D[ref]) return true;
+  try{ return localStorage.getItem("hype_premium") === "1"; }catch(e){ return false; }
+}
 function verifierLangues(){
   REPLI_DEPUIS = null;
   if(!DIAL || !DIAL.phrases) return;
@@ -440,6 +465,19 @@ function dessine(){
   var corps = S("corps"), pied = S("pied");
   corps.innerHTML = ""; pied.innerHTML = "";
   corps.scrollTop = 0;                /* remise à zéro à chaque étape */
+
+  /* 🟥 LE VERROU, AVANT TOUT LE RESTE. On ne construit rien, on ne parle
+     pas, on ne revele aucune phrase. Voir le commentaire de `autorisee()`. */
+  if(!autorisee(REF_VILLE)){
+    S("hScene").textContent = "Réservé aux abonnées";
+    S("hVille").textContent = (TITRES[REF_VILLE] && TITRES[REF_VILLE].nom) || REF_VILLE;
+    S("jauge").style.width = "0%";
+    corps.appendChild(el("p",{class:"vide"},
+      "Les mises en situation de cette ville font partie de l'abonnement."));
+    pied.appendChild(rang([el("button",{class:"go", id:"btVerrouFermer"}, "Revenir à la ville")]));
+    S("btVerrouFermer").addEventListener("click", fermer);
+    return;
+  }
 
   if(!DIAL || !SCENES.length){
     S("hScene").textContent = "Rien à jouer ici";

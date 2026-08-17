@@ -275,8 +275,8 @@ Précédent posé en session 209 sur `balade` (*« s'il dort, tant mieux »*), a
 
 # 🇵🇹 SESSION 215 · 17/08 — GOLEGÃ REÇOIT SON DIALOGUE · LE VERROU DES VILLES PAYANTES ENFIN POSÉ · UN NUMÉRO DE CACHE QUI MANQUAIT
 
-**Livré : `hype-lingo-lex-elevage.js` (neuf), `lingo.html` (trois gestes) et `lingo-dialogue.html` (trois gestes).** DEUX push dans la journée — le premier lot (lexique + `lingo.html`) était déjà poussé quand la suite a été écrite.
-`lingo.html` md5 **`e8e2c64d…`** au premier push, **`af3a8da4d9db72523e12638ab5138f82`** après le filet de Versailles — parti du fichier en cours de Blandine (`b547e6eb…`). `lingo-dialogue.html` parti de `4882bbee17119135aa9fa37260d50679`. Les **quatre lignes témoins** ont été vérifiées avant et après : `LIEN_DIRECT_LECON` ✅ · `classList.add("parti")` dans `#lecon=` ✅ · `partirVersVille(iVille)` ✅ · les deux moitiés de l'`about:blank` de la sellerie ✅. Les **quatre iframes** portent toujours une adresse explicite.
+**Livré : `hype-lingo-lex-elevage.js` (neuf), `lingo.html` (trois gestes) et `lingo-dialogue.html` (quatre gestes).** DEUX push dans la journée — le premier lot (lexique + `lingo.html`) était déjà poussé quand la suite a été écrite.
+`lingo.html` md5 **`e8e2c64d…`** au premier push, **`af3a8da4d9db72523e12638ab5138f82`** après le filet de Versailles — parti du fichier en cours de Blandine (`b547e6eb…`). `lingo-dialogue.html` parti de `4882bbee…`, livré en `3824b62769a0f3740e55f96d4407c208`. Les **quatre lignes témoins** ont été vérifiées avant et après : `LIEN_DIRECT_LECON` ✅ · `classList.add("parti")` dans `#lecon=` ✅ · `partirVersVille(iVille)` ✅ · les deux moitiés de l'`about:blank` de la sellerie ✅. Les **quatre iframes** portent toujours une adresse explicite.
 
 ---
 
@@ -390,7 +390,7 @@ J'ai constaté que `ouvrirSituation()` passe `&c=` à l'iframe alors que la page
 
 ---
 
-## 🟢 LES QUATRE GESTES FAITS — feu vert de Blandine, *« Oui ok »*
+## 🟢 LES CINQ GESTES FAITS — feu vert de Blandine, *« Oui ok »* puis *« Ok tu peux faire vas y »*
 
 ### 1 · 🟥 LES SIX LANGUES, ET LA CIBLE VIENT ENFIN DU PARENT — **le vrai défaut de la journée**
 
@@ -417,10 +417,23 @@ Le 16/08, la lecture des clés `dialogue*` avait été étendue dans `aUnDialogu
 
 ---
 
-## 📌 CE QUI RESTE — UN GESTE, ET UNE OBSERVATION
+### 5 · 🟢 LE VERROU DE LA PAGE FILLE — POSÉ, sur feu vert de Blandine (*« Ok tu peux faire vas y »*)
 
-**LE VERROU DE LA PAGE FILLE, TOUJOURS PAS POSÉ.** Le parent est verrouillé, mais `lingo-dialogue.html?ville=golega` s'ouvre **par son URL directe**, sans rien demander. Golegã est la première ville payante à avoir un dialogue : sa scène entière est atteignable gratuitement par l'adresse. Le code est prêt dans `PATCH-lingo-dialogue-golega.md`, **non appliqué faute d'avoir été explicitement demandé** — il ne figurait pas dans les quatre gestes annoncés.
-⚠️ Ce ne serait pas une sécurité, seulement une porte : les phrases sont dans un `.js` public. C'est le régime assumé depuis la doctrine VITRINE.
+Le parent était verrouillé depuis le matin, mais `lingo-dialogue.html?ville=golega` s'ouvrait **par son URL directe**, sans rien demander : la scène entière d'une ville payante était atteignable par l'adresse. Golegã est la première ville payante à avoir un dialogue — le trou s'ouvrait le jour même où il devenait exploitable.
+
+**Posé** : `VILLE_OFFERTE_D` + `autorisee()`, et le test **en tout premier dans `dessine()`** — vérifié : aucune scène construite, aucune phrase lue, **aucune voix prononcée** avant le verrou. L'écran affiche « Réservé aux abonnées » et un seul bouton, « Revenir à la ville ». Jauge à zéro.
+
+**Simulé** : Golegã sans abonnement → écran réservé · Golegã abonnée → scène · La Baule, Édimbourg, Le Morne, Kildare sans abonnement → scène (villes offertes) · Versailles sans abonnement → écran réservé.
+
+⚠️ **`VILLE_OFFERTE_D` doit rester d'accord avec `VILLE_OFFERTE` de `lingo.html`.** Si une ville devient offerte là-bas et pas ici, elle se ferme dans l'iframe alors qu'elle est ouverte partout ailleurs. **Deux listes, un seul régime** — c'est le prix de l'iframe autonome.
+⚠️ **Ce n'est pas une sécurité, c'est une porte.** Les phrases sont dans un `.js` public : qui lit le source les a. Régime assumé depuis la doctrine VITRINE.
+⚠️ `localStorage` est lisible ici parce que la page fille est servie depuis la **même origine**. Si elle change d'origine un jour, le verrou devient aveugle et c'est au parent de passer l'état.
+
+---
+
+## 📌 CE QUI RESTE — DEUX OBSERVATIONS, AUCUN GESTE URGENT
+
+**`TITRES` NE CONNAÎT QUE TROIS VILLES SUR LES DIX QUI ONT UN DIALOGUE.** Connemara, Newmarket, Lambourn, Walsall, Aberystwyth, Windsor, Wellington, Hickstead, Versailles et Saumur affichent « Scène 1 » et leur `ref` en minuscules. **Ce n'est pas une régression** — la table n'a jamais été complétée depuis le 15/08. À faire un lexique à la fois : il faut lire les `temps` de chaque dialogue pour nommer ses scènes.
 
 **OBSERVATION, À REGARDER UN JOUR** : en japonais, « remets la phrase en ordre » découpe jusqu'à **19 jetons** (le japonais est espacé par groupes, pour cet exercice précisément). Sur un écran de téléphone, dix-neuf tuiles à replacer, c'est probablement trop — l'exercice change de nature. Rien n'est cassé. À trancher : plafonner le nombre de jetons, ou regrouper plus large.
 
