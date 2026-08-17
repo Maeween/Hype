@@ -35,7 +35,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 BIS · 17/08 · LES DEUX FIGEAGES DE STORY, PUIS L'À LA UNE) — md5 `237cad0b62669ffc8b37bf5970b6ad73`, 9 143 958 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bf, md5 `bedd52aece21d4417ce0b9be7f906248`, 386 779 octets, `?v=19bf`.** **IMAGE A LA RACINE, TOUJOURS REQUISE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Aucune image nouvelle. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bf`.**
+**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 BIS · 17/08 · LES DEUX FIGEAGES DE STORY, L'À LA UNE, PUIS LA PAGE CAVALIER RESSERRÉE) — md5 `b5097956b193f3e8103c14bdfcdced5d`, 9 145 010 octets.
+
+⚠️ **ETAT PERIME :** index `237cad0b…` (meme session, avant la retouche de taille). `hype-stories.js` v19bf est INCHANGE et reste le compagnon. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bf, md5 `bedd52aece21d4417ce0b9be7f906248`, 386 779 octets, `?v=19bf`.** **IMAGE A LA RACINE, TOUJOURS REQUISE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Aucune image nouvelle. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bf`.**
 
 ⚠️ **ETATS PERIMES, NE PLUS POUSSER :** index `2392d97c…` / stories `6d0488d6…` (19bd) ; index `524bfede…` / stories `95f05492…` (19be, livre puis remplace dans la meme session). Le couple ci-dessus les contient tous les deux.
 
@@ -300,6 +302,43 @@ Correctif : arrondi au palier supérieur. **Table calculée sur dix hauteurs d'�
 3. Les trois petits tirages doivent rester nets et garder leur orientation.
 4. Taper un tirage : plein écran net, pas flou.
 5. Une à la une contenant des photos simples **et** une composition doit montrer les simples séparément et la composition une seule fois.
+
+---
+
+### TROISIÈME PASSE — TAILLES DE LA PAGE CAVALIER (retouche visuelle, mode rapide)
+
+Demande de Blandine sur capture de 19 h 17, ses mots : « réduis encore tout ça stp la taille de mon nom ainsi que l'écriture et de l'encart du mur des songes ». Traité en **mode rapide** (petite retouche visuelle : taille, espacement) — livré directement, sans maquette, avec les valeurs exactes pour qu'elle puisse demander plus ou moins en un mot. **`hype-stories.js` n'est pas touché.**
+
+| élément | avant | après |
+|---|---|---|
+| nom du cavalier (Cinzel) | 26 px, interlettrage 1 | **21 px, 0,8** |
+| crayon collé au nom | 26 px, glyphe 11 | **22 px, glyphe 10** |
+| air de la carte du nom | 16 / 18 px | **12 / 14 px** |
+| citation du Mur des songes | 18 px, interligne 1,5 | **15,5 px, 1,45** |
+| texte d'invite (si vide) | 15,5 px | **13,5 px** |
+| encart : padding | 20 / 18 / 18 | **15 / 15 / 13** |
+| encart : rayon | 20 | **17** |
+| encart : marge haute du bloc | 18 px | **14 px** |
+| gros guillemet décoratif | 110 px | **84 px** |
+| libellé « LE MUR DES SONGES » | 10 px, 0,28em, air 12 | **9 px, 0,26em, air 9** |
+| hauteur minimale du corps | 54 px | **40 px** |
+| bouton « Écrire » | 10,5 px, padding 7/13, air 12 | **10 px, 6/11, air 9** |
+
+**Le guillemet décoratif a maigri en même temps que la carte, délibérément** : laissé à 110 px dans un encart resserré, il aurait occupé la moitié du bloc et serait devenu le sujet à la place du texte — contraire au pilier « le vide est un luxe » et au test « masquer le texte mentalement ».
+**Les gouttières de 16 px ne bougent pas** : c'est le calage commun à toute la page, y compris les deux bandes du bandeau de stories (18 px, choix du 17/08). Les toucher désalignerait l'encart du rail.
+**Non touché** : la photo de profil, le rond « ⋯ », la modale d'édition (ses tailles servent la saisie, pas l'affichage), et le bloc « Mon récit » juste en dessous — elle n'a pas parlé de lui. **À signaler** : « Mon récit » garde donc ses anciennes tailles et paraîtra désormais plus gros que le Mur des songes. Un mot d'elle et je l'aligne.
+
+### À l'écran : + / − (troisième passe)
+
+**+** Nom, citation et encart du Mur des songes nettement plus discrets ; la photo de profil domine davantage la page.
+**+** Environ 40 px de hauteur gagnés en haut de page : les stories remontent d'autant.
+**−** « Mon récit » n'est pas réduit et paraîtra plus imposant que le Mur des songes.
+**−** Rien d'autre : aucune couleur, aucune donnée, aucun autre écran.
+**Non vérifié au rendu** (mode rapide, pas de capture de ma part) : contrôle syntaxique des 16 blocs `<script>` et des marqueurs de lignée seulement.
+
+### Préparation Flutter (troisième passe)
+
+**Aucune amélioration d'architecture réalisée.** Retouche de valeurs littérales. Constat noté, sans action : ces tailles sont écrites en dur dans le rendu, comme partout ailleurs sur cette page ; une échelle typographique nommée (`HYPE_TYPO`) rendrait ce genre de demande instantané et cohérent d'un écran à l'autre. À proposer, jamais à décider.
 
 ---
 
