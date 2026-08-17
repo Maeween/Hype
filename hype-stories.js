@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19au";
+var HYPE_STORIES_VERSION = "19av";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -3784,6 +3784,59 @@ function PastilleMusiquePage(props) {
    Le sujet de ces deux pages n'est pas une personne, j'ai donc pris le
    cavalier connecté, ce qui est le moins surprenant.
 --------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   19av (17/08, feu vert de Blandine) — UNE À LA UNE RETROUVE SA VRAIE STORY.
+
+   Ce qui n'allait pas : une à la une ne garde que des URLs de photos, et la
+   relecture fabriquait des objets { id, photo_url }. La légende, le lieu, la
+   musique, le fond et le décor semblaient perdus — et le cœur, monté sur un
+   identifiant inventé, ne comptait jamais rien.
+
+   Ils n'étaient PAS perdus. Vérifié dans le code : RIEN n'efface les stories.
+   Les sept jours sont un FILTRE À LA LECTURE (`gt("expire_le", ...)` dans
+   hsListerStories), pas une purge. La ligne `hype_stories` reste en base
+   indéfiniment ; elle cesse seulement d'être proposée dans le bandeau.
+
+   Donc aucune colonne nouvelle, aucun SQL, aucune copie à geler : il suffit
+   de RETROUVER la ligne à partir de son `photo_url`. Le cœur reçoit alors le
+   vrai identifiant, et les likes continuent de vivre — ce que Blandine
+   voulait : « ça me dérange pas au contraire que les like continuent ».
+
+   Repli : une photo dont la story a réellement été supprimée par son auteur
+   retombe sur l'objet fabriqué d'avant. Elle s'affiche nue, elle ne plante pas.
+--------------------------------------------------------------------------- */
+async function hsStoriesDesPhotos(urls) {
+  try {
+    if (typeof supa === "undefined" || !supa) return {};
+    var liste = (urls || []).filter(function (u) { return !!u; }).slice(0, 200);
+    if (!liste.length) return {};
+    var r = await supa.from("hype_stories").select("*").in("photo_url", liste);
+    var par = {};
+    ((r && r.data) || []).forEach(function (s) {
+      if (s && s.photo_url && !par[s.photo_url]) par[s.photo_url] = s;
+    });
+    return par;
+  } catch (e) { return {}; }
+}
+
+/* Fabrique le groupe que la visionneuse attend. Résout TOUJOURS, même si la
+   lecture échoue : dans ce cas on rend exactement ce que rendait la version
+   précédente, jamais une à la une qui refuse de s'ouvrir. */
+async function hsGroupeALaUne(album, lg) {
+  var photos = (album && album.photos) || [];
+  var par = {};
+  try { par = await hsStoriesDesPhotos(photos); } catch (e) { par = {}; }
+  return {
+    user_id: "album:" + (album && album.id),
+    pseudo: (album && album.nom) || hsT("aLaUne", lg || "fr"),
+    avatar_url: (album && album.couverture) || null,
+    ecurie: "",
+    stories: photos.map(function (u, k) {
+      return par[u] || { id: "alb" + (album && album.id) + "-" + k, photo_url: u };
+    })
+  };
+}
+
 function RailALaUne(props) {
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
@@ -3795,6 +3848,8 @@ function RailALaUne(props) {
 
   var uS = React.useState([]), unes = uS[0], setUnes = uS[1];
   var oS = React.useState(null), ouverte = oS[0], setOuverte = oS[1];
+  /* 19av : le groupe de l'à la une ouverte, chargé depuis hype_stories. */
+  var aS = React.useState(null), grpAlb = aS[0], setGrpAlb = aS[1];
   var vivantRef = React.useRef(true);
 
   React.useEffect(function () {
@@ -3807,6 +3862,17 @@ function RailALaUne(props) {
     }
     return function () { vivantRef.current = false; };
   }, [(props && props.userId) || ""]);
+
+  /* 19av — À L'OUVERTURE, ON VA CHERCHER LES VRAIES STORIES.
+     hsGroupeALaUne résout toujours : en cas d'échec de lecture il rend le
+     groupe d'avant, fabriqué depuis les URLs. Une à la une ne reste donc
+     jamais bloquée sur un écran vide. */
+  React.useEffect(function () {
+    if (!ouverte) { setGrpAlb(null); return; }
+    var vivant = true;
+    hsGroupeALaUne(ouverte, lg).then(function (g) { if (vivant) setGrpAlb(g); });
+    return function () { vivant = false; };
+  }, [ouverte && ouverte.id]);
 
   /* Rien à montrer : le rail ne s'affiche pas du tout. Une page ne porte pas
      une rangée vide (règle d'espace de la Design Bible). */
@@ -3834,19 +3900,15 @@ function RailALaUne(props) {
           h("div", { style: { fontSize: 10.5, marginTop: 7, fontFamily: M, fontWeight: 600, color: "#C9D3D8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, a.nom || ""));
       })),
 
-    ouverte
+    (ouverte && grpAlb)
       ? h(VisionneuseStories, {
-        /* Une à la une se lit avec la MÊME visionneuse que les stories : on
-           fabrique un groupe à partir des photos de l'album. mode "album"
-           masque les actions (garder / supprimer / signaler) — on relit un
-           souvenir, on n'agit pas dessus. */
-        groupes: [{
-          user_id: "album:" + ouverte.id,
-          pseudo: ouverte.nom || hsT("aLaUne", lg),
-          avatar_url: ouverte.couverture || null,
-          ecurie: "",
-          stories: (ouverte.photos || []).map(function (u, k) { return { id: "alb" + ouverte.id + "-" + k, photo_url: u }; })
-        }],
+        /* Une à la une se lit avec la MÊME visionneuse que les stories.
+           19av : le groupe n'est plus fabriqué à partir des seules URLs, il
+           est CHARGÉ — chaque photo retrouve sa story, donc sa légende, son
+           lieu, sa musique, son fond, son décor et son vrai identifiant (le
+           cœur compte de nouveau). mode "album" ne masque plus que le ⋯ :
+           on relit un souvenir, on n'agit pas dessus. */
+        groupes: [grpAlb],
         depart: 0, moiId: null, premium: !!(app && app.premium), langue: lg, mode: "album",
         onFermer: function () { setOuverte(null); }
       })
@@ -3963,6 +4025,8 @@ function MurImmersif(props) {
 
   var uS = React.useState([]), unes = uS[0], setUnes = uS[1];
   var oS = React.useState(null), ouverte = oS[0], setOuverte = oS[1];
+  /* 19av : le groupe de l'à la une ouverte, chargé depuis hype_stories. */
+  var aS = React.useState(null), grpAlb = aS[0], setGrpAlb = aS[1];
   var gS = React.useState(hsMurReglages()), reg = gS[0], setReg = gS[1];
   var pS = React.useState(false), panneau = pS[0], setPanneau = pS[1];
   var fS = React.useState(false), estFeinn = fS[0], setEstFeinn = fS[1];
@@ -3983,6 +4047,17 @@ function MurImmersif(props) {
     }
     return function () { vivantRef.current = false; };
   }, [(props && props.userId) || ""]);
+
+  /* 19av — À L'OUVERTURE, ON VA CHERCHER LES VRAIES STORIES.
+     hsGroupeALaUne résout toujours : en cas d'échec de lecture il rend le
+     groupe d'avant, fabriqué depuis les URLs. Une à la une ne reste donc
+     jamais bloquée sur un écran vide. */
+  React.useEffect(function () {
+    if (!ouverte) { setGrpAlb(null); return; }
+    var vivant = true;
+    hsGroupeALaUne(ouverte, lg).then(function (g) { if (vivant) setGrpAlb(g); });
+    return function () { vivant = false; };
+  }, [ouverte && ouverte.id]);
 
   /* Le panneau de réglages est réservé au compte de Blandine — pas aux
      modérateurs : c'est un outil de mise au point, pas une fonctionnalité. */
@@ -4162,16 +4237,10 @@ function MurImmersif(props) {
       : null,
 
     /* Une à la une se relit avec la MÊME visionneuse que les stories, en mode
-       album — exactement comme le rail. Aucune seconde visionneuse. */
-    ouverte
+       album — exactement comme le rail, et par le même chargeur (19av). */
+    (ouverte && grpAlb)
       ? h(VisionneuseStories, {
-        groupes: [{
-          user_id: "album:" + ouverte.id,
-          pseudo: ouverte.nom || hsT("aLaUne", lg),
-          avatar_url: ouverte.couverture || null,
-          ecurie: "",
-          stories: (ouverte.photos || []).map(function (u, k) { return { id: "alb" + ouverte.id + "-" + k, photo_url: u }; })
-        }],
+        groupes: [grpAlb],
         depart: 0, moiId: null, premium: !!(app && app.premium), langue: lg, mode: "album",
         onFermer: function () { setOuverte(null); }
       })
@@ -4984,7 +5053,8 @@ function VisionneuseStories(props) {
      et le cavalier n'a pas coupé le son lui-même. Si iOS refuse, le catch de
      play() remet la pastille sur ♪ : un toucher la relance. */
   React.useEffect(function () {
-    if (!chargee || erreur || estAlbum) return;
+    /* 19av : la musique joue aussi dans une a la une — la story est la vraie. */
+    if (!chargee || erreur) return;
     var ref = story && story.musique;
     if (!ref || coupureRef.current) return;
     if (jouerMusique(ref)) setSonActif(true);
@@ -5028,7 +5098,8 @@ function VisionneuseStories(props) {
     try { if (lecteurRef.current) { lecteurRef.current.pause(); lecteurRef.current.__hsJoue = false; lecteurRef.current = null; } } catch (eSn) { }
     setSonActif(false);
     if (!story) return;
-    if (!estAlbum && story.photo_url && typeof hsTagsDeStory === "function") {
+    /* 19av : les identifications survivent (table indexee par photo_url). */
+    if (story.photo_url && typeof hsTagsDeStory === "function") {
       hsTagsDeStory(story.photo_url).then(function (r) {
         if (!vivantRef.current) return;
         setTagsStory((r && r.data) || []);
@@ -5319,7 +5390,7 @@ function VisionneuseStories(props) {
            scale : le halo du flou ne laisse pas de bord clair. pointerEvents
            none et AUCUN zIndex : les zones (1) et la pastille (10) restent
            au-dessus. Une story sans fond garde le noir d'aujourd'hui. */
-        (HS_FOND_IMMERSIF_ACTIF && story.fond === "immersif" && chargee && !erreur && !estAlbum)
+        (HS_FOND_IMMERSIF_ACTIF && story.fond === "immersif" && chargee && !erreur)
           ? h("div", { "aria-hidden": true, style: { position: "absolute", inset: -24, zIndex: 0, backgroundImage: "url(\"" + hsImageFlou(story.photo_url) + "\")", backgroundSize: "cover", backgroundPosition: "center", filter: "blur(26px) brightness(0.5) saturate(1.05)", transform: "scale(1.12)", pointerEvents: "none" } })
           : null,
         h("style", { dangerouslySetInnerHTML: { __html: "@keyframes hsResp{0%,100%{opacity:.28;transform:scale(.9)}50%{opacity:.85;transform:scale(1.06)}}" } }),
@@ -5341,7 +5412,7 @@ function VisionneuseStories(props) {
              passe elle aussi par CompositionStory — sans quoi elle
              s'afficherait nue, sans son cadre. C'est ce qui manquait pour que
              les modeles a une fenetre servent enfin. */
-          (chargee && !erreur && !enVeille && !estAlbum && hsAvecDecor(story))
+          (chargee && !erreur && !enVeille && hsAvecDecor(story))
             /* 19am : la composition recoit les mentions et l'ouvreur de profil,
                puisque la legende a demenage chez elle (disposition « B »). */
             ? h(CompositionStory, {
