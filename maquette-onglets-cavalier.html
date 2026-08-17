@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060709">
+<title>Hype — Page Cavalier, onglets et écuries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@1,500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+html, body { overflow-x: hidden; overflow-x: clip; max-width: 100%; }
+html { overscroll-behavior: none; }
+:root{--noir:#060709;--matiere:#111417;--turq:#20D9F5;--clair:#F4F7FA;--gris:#8A929C}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--noir);color:var(--clair);font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+
+/* ── Panneau de réglages ─────────────────────────────────── */
+.reg{position:sticky;top:0;z-index:30;padding:calc(env(safe-area-inset-top) + 11px) 14px 11px;
+  background:rgba(6,7,9,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.08)}
+.reg .q{font-size:8.5px;letter-spacing:.26em;text-transform:uppercase;color:rgba(244,247,250,.36);font-weight:600;margin:0 0 7px}
+.reg .q + .q{margin-top:12px}
+.rg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.rg::-webkit-scrollbar{display:none}
+.pc{flex:0 0 auto;padding:7px 12px;border-radius:999px;font-size:11px;font-weight:600;
+  color:rgba(244,247,250,.6);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);white-space:nowrap}
+.pc.on{color:#06181A;background:var(--turq);border-color:var(--turq);font-weight:700}
+.pc:focus-visible{outline:2px solid var(--turq);outline-offset:2px}
+.note{margin-top:11px;font-size:10.5px;line-height:1.5;color:var(--gris)}
+.note b{color:var(--turq);font-weight:600}
+
+/* ── Carte d'identité, au-dessus des onglets ─────────────── */
+.hero{position:relative;height:210px;overflow:hidden;background:linear-gradient(150deg,#16222c,#0a1016 70%)}
+.hero .grain{position:absolute;inset:0;background:
+  repeating-linear-gradient(118deg,rgba(255,255,255,.028) 0 2px,transparent 2px 5px)}
+.hero .mq{position:absolute;left:0;right:0;bottom:9px;text-align:center;font-size:9.5px;
+  letter-spacing:.2em;text-transform:uppercase;color:rgba(244,247,250,.28)}
+
+.ident{padding:15px 16px 0}
+.ligne1{display:flex;align-items:center;gap:11px}
+.ligne1 h1{font-family:'Cinzel',serif;font-weight:600;font-size:28px;margin:0;letter-spacing:.5px}
+.rond{width:34px;height:34px;border-radius:50%;flex:0 0 auto;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);color:rgba(244,247,250,.72);font-size:14px;line-height:1}
+.ligne1 .pousse{margin-left:auto}
+
+/* LA LIGNE DES ECURIES — trois variantes */
+.ecuries{margin-top:8px;min-height:19px}
+.ecuries.v-simple{font-size:12.5px;color:var(--gris)}
+.ecuries.v-simple b{color:rgba(244,247,250,.82);font-weight:600}
+.ecuries.v-taps{display:flex;flex-wrap:wrap;gap:7px}
+.ecuries.v-taps button{padding:5px 11px;border-radius:999px;font-size:11.5px;font-weight:600;
+  color:var(--turq);background:rgba(32,217,245,.09);border:1px solid rgba(32,217,245,.34)}
+.ecuries.v-eyebrow .lb{font-size:8.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--turq);font-weight:600}
+.ecuries.v-eyebrow .vl{font-size:13px;color:rgba(244,247,250,.8);margin-top:4px;font-weight:500}
+
+/* ── Onglets ─────────────────────────────────────────────── */
+.onglets{display:flex;gap:0;margin:19px 16px 0;border-bottom:1px solid rgba(255,255,255,.09)}
+.onglets button{flex:1;padding:11px 4px 10px;background:none;border:none;position:relative;
+  font-family:'Cinzel',serif;font-size:12px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;
+  color:rgba(244,247,250,.42)}
+.onglets button.on{color:var(--clair)}
+.onglets button.on::after{content:"";position:absolute;left:14%;right:14%;bottom:-1px;height:2px;
+  background:var(--turq);box-shadow:0 0 10px rgba(32,217,245,.7);border-radius:2px}
+
+/* ── Blocs de contenu ────────────────────────────────────── */
+.corps{padding-bottom:calc(env(safe-area-inset-bottom) + 54px)}
+.bloc{margin:22px 16px 0;padding:17px 17px 14px;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.042),rgba(255,255,255,.016));
+  border:1px solid rgba(255,255,255,.085);position:relative}
+.bloc .lb{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--turq);font-weight:600}
+.bloc .cit{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;
+  line-height:1.55;color:rgba(244,247,250,.88);margin-top:11px}
+.bloc p{font-size:13px;line-height:1.62;color:rgba(244,247,250,.68);margin:10px 0 0}
+.bloc .guill{position:absolute;right:13px;top:5px;font-family:'Cinzel',serif;font-size:46px;color:rgba(32,217,245,.12);line-height:1}
+
+/* le rail, valeurs livrées : bandes 18px, air intermédiaire, halo 19bc */
+.env{margin:12px 0 0;padding:10px 0 10px}
+.bande{display:block;height:18px;background:var(--matiere);border-radius:6px;margin:0 16px}
+.rail{display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:22px 14px 6px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.med{display:flex;gap:4px;position:relative}
+.med .tr{position:absolute;left:8%;right:8%;top:50%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(32,217,245,.5),transparent)}
+.vig{position:relative;width:114px;height:114px;flex:0 0 auto}
+.vig::before{content:"";position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;
+  border-radius:50%;background:radial-gradient(circle closest-side,
+  rgba(32,217,245,.05) 0%,rgba(32,217,245,.14) 76%,rgba(32,217,245,.06) 88%,rgba(32,217,245,0) 100%)}
+.vig i{position:relative;display:block;width:100%;height:100%;
+  -webkit-mask-image:radial-gradient(circle closest-side,#000 52%,transparent 96%);
+  mask-image:radial-gradient(circle closest-side,#000 52%,transparent 96%)}
+.a i{background:linear-gradient(170deg,#c88b3a,#3d5a70 62%,#101a22)}
+.b i{background:linear-gradient(20deg,#5a6b52,#c9c2b4 48%,#3a3730)}
+.c i{background:linear-gradient(200deg,#7a4a2c,#d8cfc2 55%,#1d2a20)}
+.mastory{font-size:11px;font-weight:700;color:#E4ECEF;text-align:center;margin-top:7px}
+
+.titre{display:flex;align-items:baseline;justify-content:space-between;margin:24px 16px 0}
+.titre .t{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--turq);font-weight:600}
+.titre .r{font-size:12px;color:var(--turq)}
+.faux{margin:12px 16px 0;border-radius:16px;border:1px solid rgba(255,255,255,.075);
+  background:linear-gradient(160deg,#0f1a24,#070c11 72%);display:grid;place-items:center;text-align:center;padding:22px}
+.faux span{font-size:10.5px;color:rgba(244,247,250,.32);letter-spacing:.08em;line-height:1.6}
+.h150{height:150px}.h190{height:190px}.h110{height:110px}
+
+.deplace{margin:22px 16px 0;padding:14px 15px;border-radius:14px;
+  border:1px dashed rgba(32,217,245,.32);background:rgba(32,217,245,.045)}
+.deplace .lb{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--turq);font-weight:700}
+.deplace p{font-size:12px;line-height:1.55;color:rgba(244,247,250,.66);margin:7px 0 0}
+</style>
+</head>
+<body>
+
+<div class="reg">
+  <p class="q">Découpage des onglets</p>
+  <div class="rg" id="rD"></div>
+  <p class="q">La ligne des écuries, sous le nom</p>
+  <div class="rg" id="rE"></div>
+  <p class="note" id="note"></p>
+</div>
+
+<div class="hero"><div class="grain"></div><div class="mq">photo de profil</div></div>
+
+<div class="ident">
+  <div class="ligne1">
+    <h1>Blandine</h1>
+    <button class="rond" aria-label="Modifier">✎</button>
+    <button class="rond pousse" aria-label="Plus">⋯</button>
+  </div>
+  <div class="ecuries" id="ecuries"></div>
+</div>
+
+<div class="onglets" id="onglets"></div>
+<div class="corps" id="corps"></div>
+
+<script>
+/* ── Les blocs, écrits une fois ─────────────────────────── */
+var B = {
+  songes: '<div class="bloc"><div class="guill">“</div><div class="lb">✦ Le mur des songes</div>'
+        + '<div class="cit">Hello ! Merci d’avoir rejoint la team Hype ✌️ et pour l’attention portée à l’appli 🙏❤️</div></div>',
+  recit:  '<div class="bloc"><div class="lb">✦ Mon récit</div>'
+        + '<p>Écurie Feinn, Itteville. Vingt ans de concours, deux juments et un poulain qui ne tient pas en place.</p></div>',
+  quetes: '<div class="faux h110"><span>Mes quêtes<br>niveau · XP · points</span></div>',
+  stories:'<div class="env"><span class="bande"></span>'
+        + '<div class="rail"><div><div class="med"><div class="tr"></div>'
+        + '<div class="vig a"><i></i></div><div class="vig b"><i></i></div><div class="vig c"><i></i></div>'
+        + '</div><div class="mastory">• Ma story</div></div></div>'
+        + '<span class="bande"></span></div>',
+  une:    '<div class="titre"><div class="t">À la une</div><div class="r">réglages</div></div>'
+        + '<div class="faux h190"><span>mur immersif</span></div>',
+  publis: '<div class="titre"><div class="t">Mes publications</div></div>'
+        + '<div class="faux h150"><span>mur de publications</span></div>',
+  commu:  '<div class="titre"><div class="t">Ma communauté</div></div>'
+        + '<div class="faux h110"><span>cavaliers de mon écurie</span></div>',
+  chevaux:'<div class="titre"><div class="t">Mes chevaux</div></div>'
+        + '<div class="faux h150"><span>7 chevaux</span></div>',
+  parti:  '<div class="deplace"><div class="lb">Parti sur la page Écurie</div>'
+        + '<p>Les encarts « Mon club » et « Ma deuxième écurie » ne sont plus ici. Sous le nom, ils tiennent en une ligne ; leur contenu détaillé vit sur la page Écurie.</p></div>'
+};
+
+/* ── Les découpages proposés ────────────────────────────── */
+var DECOUPAGES = [
+  { id:"trois", nom:"3 onglets",
+    pourquoi:"Trois natures séparées : qui tu es · ce que tu publies · ce qui t’entoure.",
+    onglets:[
+      { t:"Portrait", blocs:["songes","recit","quetes","parti"] },
+      { t:"Journal",  blocs:["stories","une","publis"] },
+      { t:"Autour",   blocs:["commu","chevaux"] }
+    ]},
+  { id:"deux", nom:"2 onglets",
+    pourquoi:"Les écuries parties, « Autour » devient maigre : on le fond dans Portrait.",
+    onglets:[
+      { t:"Portrait", blocs:["songes","recit","commu","chevaux","quetes","parti"] },
+      { t:"Journal",  blocs:["stories","une","publis"] }
+    ]},
+  { id:"media", nom:"3 onglets · par média",
+    pourquoi:"Coupé par ce qu’on regarde, pas par le sujet : mots · images · échanges.",
+    onglets:[
+      { t:"Moi",    blocs:["songes","recit","quetes","parti"] },
+      { t:"Photos", blocs:["stories","une"] },
+      { t:"Le fil", blocs:["publis","commu","chevaux"] }
+    ]}
+];
+
+/* ── Les variantes de la ligne d'écuries ────────────────── */
+var ECURIES = [
+  { id:"simple", nom:"Une phrase",
+    cls:"v-simple",
+    html:'<b>Écurie Feinn</b> · Les Écuries du Val' },
+  { id:"taps", nom:"Deux pastilles",
+    cls:"v-taps",
+    html:'<button>Écurie Feinn</button><button>Les Écuries du Val</button>' },
+  { id:"eyebrow", nom:"Libellé + valeur",
+    cls:"v-eyebrow",
+    html:'<div class="lb">Ses écuries</div><div class="vl">Écurie Feinn · Les Écuries du Val</div>' },
+  { id:"aucune", nom:"Rien", cls:"", html:'' }
+];
+
+var dActif = "trois", eActif = "simple", oActif = 0;
+
+function puces(cible, liste, actif, clic){
+  var el = document.getElementById(cible); el.innerHTML = "";
+  liste.forEach(function(o){
+    var b = document.createElement("button");
+    b.className = "pc" + (o.id === actif ? " on" : "");
+    b.type = "button"; b.textContent = o.nom;
+    b.setAttribute("aria-pressed", o.id === actif ? "true" : "false");
+    b.onclick = function(){ clic(o.id); };
+    el.appendChild(b);
+  });
+}
+
+function rendre(){
+  var d = DECOUPAGES.filter(function(o){ return o.id === dActif; })[0];
+  var e = ECURIES.filter(function(o){ return o.id === eActif; })[0];
+  if (oActif >= d.onglets.length) oActif = 0;
+
+  var ec = document.getElementById("ecuries");
+  ec.className = "ecuries " + e.cls;
+  ec.innerHTML = e.html;
+
+  var og = document.getElementById("onglets"); og.innerHTML = "";
+  d.onglets.forEach(function(o, i){
+    var b = document.createElement("button");
+    b.className = (i === oActif ? "on" : ""); b.type = "button"; b.textContent = o.t;
+    b.setAttribute("aria-selected", i === oActif ? "true" : "false");
+    b.onclick = function(){ oActif = i; rendre(); };
+    og.appendChild(b);
+  });
+
+  var corps = document.getElementById("corps");
+  corps.innerHTML = d.onglets[oActif].blocs.map(function(k){ return B[k]; }).join("");
+  /* Règle Hype : tout écran ou panneau défilable repart en haut à l'ouverture. */
+  corps.scrollTop = 0;
+  window.scrollTo({ top: document.querySelector(".hero").offsetTop - 0, behavior: "auto" });
+
+  document.getElementById("note").innerHTML =
+    "<b>" + d.nom + "</b> — " + d.pourquoi + " Onglet ouvert : <b>" + d.onglets[oActif].t + "</b>.";
+
+  puces("rD", DECOUPAGES, dActif, function(id){ dActif = id; oActif = 0; rendre(); });
+  puces("rE", ECURIES, eActif, function(id){ eActif = id; rendre(); });
+}
+
+rendre();
+</script>
+</body>
+</html>

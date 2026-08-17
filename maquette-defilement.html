@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060709">
+<title>Hype — Deux comportements de défilement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* 🔴🔴 Règles Hype respectées : overflow-x TOUJOURS doublé hidden PUIS clip sur
+   html/body ; overscroll-behavior:none sur html SEULEMENT, jamais sur body. */
+html, body { overflow-x: hidden; overflow-x: clip; max-width: 100%; }
+html { overscroll-behavior: none; }
+
+:root{
+  --noir:#060709;
+  --matiere:#111417;
+  --turq:#20D9F5;
+  --clair:#F4F7FA;
+  --gris:#8A929C;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;background:var(--noir);color:var(--clair);
+  font-family:'Montserrat',system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── En-tête ─────────────────────────────────────────────── */
+.tete{padding:calc(env(safe-area-inset-top) + 34px) 22px 0}
+.eyebrow{
+  font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--turq);font-weight:600;display:flex;align-items:center;gap:9px
+}
+.eyebrow::before{content:"";width:22px;height:1px;background:linear-gradient(90deg,var(--turq),transparent)}
+h1{
+  font-family:'Cinzel',Georgia,serif;font-weight:600;font-size:27px;
+  line-height:1.1;letter-spacing:.4px;margin:13px 0 0
+}
+.chapo{font-size:13.5px;line-height:1.6;color:var(--gris);margin:14px 0 0;max-width:33em}
+
+/* ── Les deux cartes de choix ────────────────────────────── */
+.choix{padding:30px 22px 0;display:flex;flex-direction:column;gap:13px}
+.cas{
+  display:block;width:100%;text-align:left;cursor:pointer;
+  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.022));
+  border:1px solid rgba(255,255,255,.10);border-radius:19px;padding:19px;
+  color:inherit;font:inherit;position:relative;overflow:hidden;
+  transition:border-color .2s ease,transform .12s ease
+}
+.cas:active{transform:scale(.988)}
+.cas:focus-visible{outline:2px solid var(--turq);outline-offset:3px}
+.cas .lettre{
+  font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:.22em;
+  color:var(--turq);text-transform:uppercase
+}
+.cas .titre{font-family:'Cinzel',serif;font-size:19px;font-weight:600;margin-top:7px;letter-spacing:.02em}
+.cas .desc{font-size:12.5px;line-height:1.55;color:var(--gris);margin-top:8px}
+.cas .ou{font-size:11px;color:rgba(244,247,250,.5);margin-top:11px;font-weight:500}
+.cas .fleche{position:absolute;right:18px;top:19px;color:var(--turq);font-size:19px;font-weight:300}
+
+/* ── Contenu derrière, pour tester si la page bouge ──────── */
+.fond{padding:34px 22px calc(env(safe-area-inset-bottom) + 50px)}
+.fond .lbl{
+  font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(244,247,250,.34);font-weight:600;margin-bottom:14px
+}
+.ligne{
+  display:flex;align-items:center;gap:14px;padding:15px 0;
+  border-top:1px solid rgba(255,255,255,.07)
+}
+.ligne .num{
+  font-family:'Cinzel',serif;font-size:14px;color:var(--turq);
+  width:30px;flex:0 0 auto;opacity:.75
+}
+.ligne .txt{font-size:13px;color:rgba(244,247,250,.72);line-height:1.45}
+
+/* ── La visionneuse ─────────────────────────────────────── */
+.vue{
+  position:fixed;inset:0;z-index:9300;background:var(--noir);
+  display:none;flex-direction:column
+}
+.vue.on{display:flex}
+
+.barre{display:flex;gap:4px;padding:calc(env(safe-area-inset-top) + 12px) 14px 0}
+.barre i{flex:1;height:2.5px;border-radius:999px;background:rgba(255,255,255,.2)}
+.barre i.f{background:var(--turq)}
+
+.hautvue{display:flex;align-items:center;gap:11px;padding:13px 14px 11px}
+.pastille{
+  width:38px;height:38px;border-radius:50%;flex:0 0 auto;
+  border:1px solid rgba(32,217,245,.5);background:var(--matiere);
+  display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:600;
+  font-size:15px;color:var(--turq)
+}
+.hautvue .qui{flex:1;min-width:0}
+.hautvue .nom{font-size:13px;font-weight:700}
+.hautvue .cas-en-cours{font-size:10px;color:var(--turq);margin-top:2px;letter-spacing:.04em}
+.croix{
+  width:36px;height:36px;border-radius:50%;flex:0 0 auto;cursor:pointer;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+  color:var(--clair);font-size:17px;line-height:1
+}
+
+/* Zone « photo » : structure identique à la ligne 5573 du module stories —
+   flex:1, overflow:hidden, touch-action:pan-y. Elle NE défile pas. */
+.photo{
+  flex:1;position:relative;min-height:0;background:var(--noir);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;touch-action:pan-y
+}
+.faux{
+  width:78%;max-width:330px;aspect-ratio:4/5;border-radius:14px;
+  background:
+    repeating-linear-gradient(135deg,rgba(32,217,245,.07) 0 12px,transparent 12px 24px),
+    linear-gradient(160deg,#1a2630,#0b1218);
+  border:1px solid rgba(255,255,255,.09);
+  display:grid;place-items:center;text-align:center;padding:20px
+}
+.faux span{font-size:11px;color:rgba(244,247,250,.4);line-height:1.5;letter-spacing:.04em}
+
+/* Panneau de texte : structure identique à la ligne 5770 —
+   max-height 52vh, overflow-y auto, overscroll-behavior contain, touch-action pan-y. */
+.texte{
+  flex-shrink:0;max-height:52vh;overflow-y:auto;
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;
+  padding:15px 16px calc(env(safe-area-inset-bottom) + 20px);
+  background:linear-gradient(180deg,rgba(17,20,23,.92),var(--noir));
+  border-top:1px solid rgba(255,255,255,.08)
+}
+.texte h2{font-family:'Cinzel',serif;font-size:15px;font-weight:600;margin:0 0 10px;letter-spacing:.03em}
+.texte p{font-size:13px;line-height:1.65;color:rgba(244,247,250,.72);margin:0 0 11px}
+.texte .fin{color:var(--turq);font-weight:600;font-size:12px;letter-spacing:.04em}
+
+/* Témoin d'état, en bas de la visionneuse */
+.temoin{
+  position:absolute;left:50%;transform:translateX(-50%);
+  bottom:calc(env(safe-area-inset-bottom) + 12px);z-index:5;
+  padding:8px 15px;border-radius:999px;font-size:10.5px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;pointer-events:none;
+  background:rgba(6,7,9,.82);border:1px solid rgba(32,217,245,.42);color:var(--turq);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)
+}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="tete">
+  <div class="eyebrow">Maquette · à trancher</div>
+  <h1>Deux façons<br>de bloquer la page</h1>
+  <p class="chapo">Ouvre chaque cas et essaie de faire défiler <strong>le texte sous l'image</strong>, puis de remonter. C'est là que tout se joue. La structure est identique à celle de la visionneuse de stories : même hauteur de panneau, même <em>overscroll-behavior</em>, même <em>touch-action</em>.</p>
+</div>
+
+<div class="choix">
+  <button class="cas" onclick="ouvrir('A')">
+    <span class="fleche">›</span>
+    <div class="lettre">Cas A</div>
+    <div class="titre">La page derrière est figée</div>
+    <div class="desc">Pendant que l'image est ouverte, la page du dessous ne bouge plus. Seul le texte de l'image défile.</div>
+    <div class="ou">Aujourd'hui : les images des cours, du Mag, des événements — onze écrans.</div>
+  </button>
+
+  <button class="cas" onclick="ouvrir('B')">
+    <span class="fleche">›</span>
+    <div class="lettre">Cas B</div>
+    <div class="titre">La page derrière défile</div>
+    <div class="desc">La page du dessous reste libre. Deux zones défilantes coexistent : le texte, et la page derrière lui.</div>
+    <div class="ou">Aujourd'hui : la fiche cheval, et tes stories.</div>
+  </button>
+</div>
+
+<div class="fond">
+  <div class="lbl">Contenu de la page, pour voir si elle bouge</div>
+  <div class="ligne"><div class="num">01</div><div class="txt">Repère-toi sur ces numéros. S'ils défilent pendant que l'image est ouverte, tu es dans le cas B.</div></div>
+  <div class="ligne"><div class="num">02</div><div class="txt">Dans le cas A, ils resteront parfaitement immobiles.</div></div>
+  <div class="ligne"><div class="num">03</div><div class="txt">Fais défiler le texte jusqu'en bas, puis essaie de remonter d'un seul geste continu.</div></div>
+  <div class="ligne"><div class="num">04</div><div class="txt">Si le geste meurt, lève le doigt et retouche : note si ça se débloque.</div></div>
+  <div class="ligne"><div class="num">05</div><div class="txt">C'est cette observation qui tranchera ton blocage dans les stories.</div></div>
+  <div class="ligne"><div class="num">06</div><div class="txt">Cette maquette ne touche à rien dans l'app. Aucune donnée, aucun réglage.</div></div>
+</div>
+
+<!-- ── La visionneuse ───────────────────────────────────── -->
+<div class="vue" id="vue" data-noswipe="1">
+  <div class="barre"><i class="f"></i><i></i><i></i></div>
+  <div class="hautvue">
+    <div class="pastille">B</div>
+    <div class="qui">
+      <div class="nom">Blandine</div>
+      <div class="cas-en-cours" id="etiquette">Cas A</div>
+    </div>
+    <button class="croix" onclick="fermer()" aria-label="Fermer">✕</button>
+  </div>
+
+  <div class="photo">
+    <div class="faux"><span>Emplacement photo<br>— la maquette ne charge<br>aucune image —</span></div>
+  </div>
+
+  <div class="texte" id="texte">
+    <h2>La légende dépliée</h2>
+    <p>Ce panneau fait la même hauteur maximale que celui des stories : 52 % de l'écran. Il porte les mêmes trois réglages, à l'identique.</p>
+    <p><strong>overscroll-behavior: contain</strong> — son défilement ne se propage pas à ce qu'il y a derrière. C'est voulu : sans lui, arriver au bout du texte ferait bouger la page.</p>
+    <p><strong>touch-action: pan-y</strong> — le geste vertical lui appartient. Le geste horizontal reste libre pour la navigation entre photos, et le retour d'iOS reste bloqué puisqu'il est horizontal.</p>
+    <p><strong>-webkit-overflow-scrolling: touch</strong> — l'inertie d'iOS.</p>
+    <p>Fais défiler jusqu'ici. Tu es maintenant au bout. Essaie de continuer vers le bas, puis de remonter, sans lever le doigt.</p>
+    <p>Puis recommence en levant le doigt entre les deux gestes. La différence entre les deux, c'est le diagnostic.</p>
+    <p>Si le geste continu ne remonte pas mais que le geste relevé fonctionne, alors le blocage vient de la limite du panneau, et non de la structure. C'est un défaut connu d'iOS avec <em>contain</em>.</p>
+    <p class="fin">Fin du texte. Referme avec la croix en haut.</p>
+  </div>
+
+  <div class="temoin" id="temoin">Page derrière : figée</div>
+</div>
+
+<script>
+/* Verrou de défilement — reprise du principe du kit Android du 09/08 :
+   compteur global, aucune valeur mémorisée, la vérité finale est le DOM. */
+var compteur = 0;
+function verrou(){ compteur++; document.body.style.overflow = "hidden"; }
+function deverrou(){ compteur = Math.max(0, compteur - 1); if (!compteur) document.body.style.overflow = ""; }
+
+function ouvrir(cas){
+  var vue = document.getElementById("vue");
+  var texte = document.getElementById("texte");
+  document.getElementById("etiquette").textContent = "Cas " + cas + (cas === "A" ? " — page figée" : " — page défilable");
+  document.getElementById("temoin").textContent = "Page derrière : " + (cas === "A" ? "figée" : "libre");
+  vue.classList.add("on");
+  /* Règle Hype : tout panneau défilable repart à zéro à chaque ouverture. */
+  texte.scrollTop = 0;
+  if (cas === "A") verrou();
+  vue.dataset.cas = cas;
+}
+
+function fermer(){
+  var vue = document.getElementById("vue");
+  if (vue.dataset.cas === "A") deverrou();
+  vue.classList.remove("on");
+  /* Filet auto-réparateur : si un verrou fantôme subsiste, on le lève. */
+  if (!document.querySelector(".vue.on")) { compteur = 0; document.body.style.overflow = ""; }
+}
+</script>
+</body>
+</html>

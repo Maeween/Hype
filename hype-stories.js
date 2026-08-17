@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bc";
+var HYPE_STORIES_VERSION = "19bd";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -345,12 +345,53 @@ function hsBoutonForme(props) {
     }
   } catch (eB) { }
   var st = Object.assign({ padding: 0, border: "none", background: "none", cursor: "pointer" }, props.style || {}, { aspectRatio: String(val) });
+  /* ⚠️ 17/08 (session 138) — TAP OU GLISSE. C EST ICI QU ETAIT LA CAUSE REELLE
+     de « on peut rien faire en fait », et donc de la composition sacrifiee.
+     AVANT : quatre stopPropagation SANS CONDITION — touchstart, touchend,
+     pointerdown, pointerup. Ils avalaient TOUT. Des qu une composition
+     s affichait, le glisse de la visionneuse ne recevait plus rien : ni pour
+     avancer, ni pour fermer. La reponse de 19ax avait ete de retirer la
+     composition ENTIERE des a la une (`disposition` et `compo` mis a null), ce
+     qui a coute la fidelite : Blandine retrouvait « une pale copie separee a 5
+     endroits ». Le vrai coupable etait ces quatre lignes, pas la composition.
+     MAINTENANT : on n intercepte que ce qui nous appartient — le TAP. On mesure
+     le deplacement entre le debut et la fin du toucher. Sous le seuil de 10 px
+     c est un tap : on ouvre le tirage et on arrete la propagation. Au-dela c est
+     un glisse : on ne fait RIEN, tout passe a la visionneuse.
+     ⚠️ ON COMPTE LES DOIGTS, ET CE N EST PAS NEGOCIABLE. La lecon a ete payee
+     DEUX FOIS (crash de la session 92, puis retrait du calque de balayage le
+     02/08) : un gestionnaire qui lit `changedTouches` sans compter prend un
+     pincement pour un balayage, charge une autre photo pleine resolution pendant
+     le decodage de la premiere, et iOS tue l onglet. Des qu il y a plus d UN
+     doigt on abandonne : le pincement appartient au zoom de la visionneuse.
+     ⚠️ AUCUN CALQUE N EST AJOUTE AU-DESSUS DE LA PHOTO : ce sont les memes
+     gestionnaires, sur le meme bouton, avec une condition. La regle absolue
+     n est pas entamee.
+     ⚠️ `pointerdown` / `pointerup` SONT RETIRES. Sur iOS ils doublent les
+     evenements tactiles ; les garder aurait rendu le comptage de doigts
+     inoperant. La souris passe par `onClick`, qui est conserve. */
+  var tapRef = React.useRef(null);
   return h("button", {
     onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); if (props.onOuvrir) props.onOuvrir(); },
-    onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-    onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-    onPointerDown: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-    onPointerUp: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+    onTouchStart: function (ev) {
+      try {
+        var t = ev && ev.touches;
+        if (!t || t.length !== 1) { tapRef.current = null; return; }
+        tapRef.current = { x: t[0].clientX, y: t[0].clientY };
+      } catch (eTs) { tapRef.current = null; }
+    },
+    onTouchEnd: function (ev) {
+      try {
+        var d = tapRef.current; tapRef.current = null;
+        if (!d) return;
+        var t = ev && ev.changedTouches;
+        if (!t || t.length !== 1) return;
+        if (Math.abs(t[0].clientX - d.x) > 10 || Math.abs(t[0].clientY - d.y) > 10) return;
+        if (ev.stopPropagation) ev.stopPropagation();
+        if (ev.preventDefault) ev.preventDefault();
+        if (props.onOuvrir) props.onOuvrir();
+      } catch (eTe) { }
+    },
     style: st
   },
     h("img", {
@@ -3899,6 +3940,58 @@ async function hsGroupeALaUne(album, lg) {
   var photos = (album && album.photos) || [];
   var par = {};
   try { par = await hsStoriesDesPhotos(photos); } catch (e) { par = {}; }
+
+  /* ⚠️ 17/08 (session 138) — LA COMPOSITION EST RESTITUEE. REVIREMENT ASSUME.
+     Mots de Blandine : « quand j ouvre la story a la une elle n est plus du tout
+     ressemblante a elle-meme, elle a les images separees [...] je veux retrouver
+     exactement la story mise en ligne la meme, pas une pale copie separee a 5
+     endroits ».
+     CE QUE FAISAIT LA VERSION 19ax, ET POURQUOI. Elle mettait `disposition` et
+     `compo` a null. Raison de l epoque, elle aussi sur ses mots (« on peut rien
+     faire en fait ») : `CompositionStory` posait quatre stopPropagation SANS
+     CONDITION sur chaque tirage — touchstart, touchend, pointerdown, pointerup.
+     Des que le decor s affichait, plus AUCUN glisse n atteignait la visionneuse :
+     ni pour avancer, ni pour fermer. Le choix a donc ete de sacrifier la mise en
+     page pour rendre les gestes. Le prix etait la fidelite, et il est trop cher.
+     CE QUI CHANGE : on ne sacrifie plus rien. La cause reelle etait les
+     stopPropagation aveugles, PAS la composition — ils sont corriges dans
+     `CompositionStory` (voir le bloc « TAP OU GLISSE » plus bas). On peut donc
+     rendre `disposition` ET `compo`.
+     COMMENT `compo` EST RECONSTITUEE : les photos d une meme composition
+     partagent `st.groupe`, et `hsStoriesDesPhotos` fait `select("*")` — la valeur
+     arrive donc deja. On collecte les `groupe` distincts, on recharge TOUS leurs
+     membres en UNE requete, on les trie par date, et chaque story de l a la une
+     retrouve son tableau `compo`.
+     ⚠️ COUT EN REQUETES : UNE seule de plus, et seulement s il y a au moins une
+     composition dans l album. Aucune si l album ne contient que des photos
+     simples.
+     ⚠️ REPLI : si la seconde lecture echoue, on retombe sur le comportement de
+     19ax — `compo` a null, photos separees. Une a la une degradee vaut mieux
+     qu une a la une qui refuse de s ouvrir. */
+  var membresParGroupe = {};
+  try {
+    var cles = {};
+    Object.keys(par).forEach(function (u) {
+      var g = par[u] && par[u].groupe;
+      if (g) cles[String(g)] = 1;
+    });
+    var listeG = Object.keys(cles).slice(0, 60);
+    if (listeG.length && typeof supa !== "undefined" && supa) {
+      var rG = await supa.from("hype_stories").select("*").in("groupe", listeG);
+      ((rG && rG.data) || []).forEach(function (st) {
+        if (!st || !st.groupe) return;
+        var k = String(st.groupe);
+        if (!membresParGroupe[k]) membresParGroupe[k] = [];
+        membresParGroupe[k].push(st);
+      });
+      Object.keys(membresParGroupe).forEach(function (k) {
+        membresParGroupe[k].sort(function (a, b) {
+          return String(a.created_at) < String(b.created_at) ? -1 : 1;
+        });
+      });
+    }
+  } catch (eG) { membresParGroupe = {}; }
+
   return {
     user_id: "album:" + (album && album.id),
     pseudo: (album && album.nom) || hsT("aLaUne", lg || "fr"),
@@ -3907,25 +4000,13 @@ async function hsGroupeALaUne(album, lg) {
     stories: photos.map(function (u, k) {
       var vraie = par[u];
       if (!vraie) return { id: "alb" + (album && album.id) + "-" + k, photo_url: u };
-      /* 19ax (BUG SIGNALE PAR BLANDINE, 17/08 : « on peut rien faire en fait »).
-         ON NE REJOUE PAS LA COMPOSITION dans une a la une. `CompositionStory`
-         arrete les gestes (stopPropagation sur touchstart ET touchend) : des
-         que le decor s'affichait, le glisse de la visionneuse ne recevait plus
-         rien — ni vers la gauche pour avancer, ni vers le bas pour fermer.
-         Or ici la composition n'a RIEN a faire defiler : les photos du groupe
-         sont a plat dans l'album, `compo` n'est pas reconstitue. Elle avalait
-         donc les gestes sans rien apporter, et repoussait la photo dans un
-         petit cadre au milieu du noir.
-         On retire donc `disposition` et `compo` de la story reconstituee : la
-         photo redevient pleine, la legende reapparait (la composition la prend
-         en charge quand elle est la), et le glisse revient.
-         CE QUE CA COUTE, dit franchement : la mise en page H+D n'est pas
-         restituee dans une a la une. Le texte, le lieu, la musique, le fond et
-         les J'aime le sont. La composition reste un chantier a part. */
       var copie = {};
       for (var kk in vraie) { if (Object.prototype.hasOwnProperty.call(vraie, kk)) copie[kk] = vraie[kk]; }
-      copie.disposition = null;
-      copie.compo = null;
+      var mg = vraie.groupe ? membresParGroupe[String(vraie.groupe)] : null;
+      /* `compo` n a de sens qu a partir de DEUX membres : une composition d un
+         seul tirage n est pas une composition, et `CompositionStory` retombe de
+         toute facon sur `[story]` quand `compo` est vide. */
+      copie.compo = (mg && mg.length > 1) ? mg : null;
       return copie;
     })
   };
@@ -4786,17 +4867,45 @@ function CompositionStory(props) {
   function ouvrirPlein(u, ix) { try { if (props.pause) props.pause(true); } catch (e) { } setPleinIx(typeof ix === "number" ? ix : 0); setPlein(u); }
   function fermerPlein() { try { if (props.pause) props.pause(false); } catch (e) { } setPlein(null); }
   function src(st) { return (typeof hsImageEcran === "function") ? hsImageEcran(st.photo_url) : st.photo_url; }
+  /* 17/08 : memoire du debut de toucher pour distinguer tap et glisse. Un seul
+     ref suffit : on abandonne des qu il y a plus d un doigt. */
+  var tapPhotoRef = React.useRef(null);
   function photoTouchable(st, ix, style) {
     return h("button", {
       key: "cp" + ix,
       /* 19h (14/08) : le tap sur une photo de composition FERMAIT la story.
          Arreter `touchstart` ne suffit pas : la visionneuse decide a la FIN du
-         geste (touchend) et sur le pointeur. On arrete les trois. */
+         geste (touchend) et sur le pointeur.
+         ⚠️ 17/08 (session 138) — MAIS LES ARRETER TOUS SANS CONDITION AVALAIT
+         AUSSI LE GLISSE. C est ce qui a mene, le 17/08, a retirer la composition
+         entiere des a la une (`disposition` et `compo` a null) — et donc a la
+         « pale copie separee a 5 endroits » que Blandine a retrouvee. Meme
+         correctif qu en `hsBoutonForme` : on distingue le TAP du GLISSE, seuil de
+         10 px, et ON COMPTE LES DOIGTS (lecon payee deux fois : session 92, puis
+         02/08 — un pincement pris pour un balayage charge une seconde photo
+         pleine resolution pendant le decodage de la premiere, et iOS tue
+         l onglet). `pointerdown`/`pointerup` sont retires : sur iOS ils doublent
+         les evenements tactiles et rendaient le comptage inoperant. */
       onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); ouvrirPlein(src(st), ix); },
-      onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-      onTouchEnd: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-      onPointerDown: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-      onPointerUp: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+      onTouchStart: function (ev) {
+        try {
+          var t0 = ev && ev.touches;
+          if (!t0 || t0.length !== 1) { tapPhotoRef.current = null; return; }
+          tapPhotoRef.current = { x: t0[0].clientX, y: t0[0].clientY, ix: ix };
+        } catch (eA) { tapPhotoRef.current = null; }
+      },
+      onTouchEnd: function (ev) {
+        try {
+          var d0 = tapPhotoRef.current; tapPhotoRef.current = null;
+          if (!d0 || d0.ix !== ix) return;
+          var t1 = ev && ev.changedTouches;
+          if (!t1 || t1.length !== 1) return;
+          if (Math.abs(t1[0].clientX - d0.x) > 10 || Math.abs(t1[0].clientY - d0.y) > 10) return;
+          if (ev.stopPropagation) ev.stopPropagation();
+          if (ev.preventDefault) ev.preventDefault();
+          ouvrirPlein(src(st), ix);
+        } catch (eB) { }
+      },
       style: Object.assign({ padding: 0, border: "none", background: "none", cursor: "pointer", animation: "hsDeplie 400ms ease both", animationDelay: (ix * 120) + "ms" }, style)
     }, h("img", { src: src(st), alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" } }));
   }

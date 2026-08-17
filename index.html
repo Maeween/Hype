@@ -18779,7 +18779,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19bc"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19bd"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -29266,12 +29266,30 @@ function RecadrageHype() {
         var teinteObj = (TEINTES_FOND_STUDIO.filter(function (t2) { return t2.id === fsParams.teinteId; })[0] || TEINTES_FOND_STUDIO[0]).rgb;
         if (fsParams.mode === "auto" && fsParams.maskUrl) {
           var maskImg = new Image();
-          maskImg.onload = function () { try { fsAppliquerDetourage(cx2, OW, OH, maskImg, teinteObj, fsParams.intensity); } catch (eMk) { } finaliser(); };
+          maskImg.onload = function () {
+            /* 17/08 : meme correctif que ci-dessus. `finaliser()` reste appele
+               dans tous les cas — la photo n est jamais perdue. */
+            try { fsAppliquerDetourage(cx2, OW, OH, maskImg, teinteObj, fsParams.intensity); }
+            catch (eMk) {
+              try { window.alert(TR("Le d\u00e9tourage n\u2019a pas pu s\u2019appliquer : la photo est enregistr\u00e9e sans l\u2019effet.", "Cut-out could not be applied: the photo is saved without the effect.", "No se pudo aplicar el recorte: la foto se guarda sin el efecto.", "Scontorno non applicato: la foto \u00e8 salvata senza l\u2019effetto.", "\u5207\u308a\u629c\u304d\u3092\u9069\u7528\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u5199\u771f\u306f\u52b9\u679c\u306a\u3057\u3067\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002")); } catch (e2) { }
+            }
+            finaliser();
+          };
           maskImg.onerror = function () { finaliser(); };
           maskImg.src = fsParams.maskUrl;
           return;
         } else {
-          try { fsAppliquerZoneLibre(cx2, OW, OH, fsParams.ellipse, teinteObj, fsParams.intensity); } catch (eZl) { }
+          /* ⚠️ 17/08 (session 138) — DERNIERS CATCH VIDES DE `valider()`.
+             Ils avalaient l echec du Fond Studio AU MOMENT DE L ENREGISTREMENT :
+             la photo partait alors SANS l effet, sans un mot, et Blandine ne
+             pouvait pas savoir si elle avait mal regle ou si ca avait rate. On le
+             dit maintenant. `finaliser()` est appele dans TOUS les cas : la photo
+             est enregistree quoi qu il arrive, on ne perd jamais une photo pour
+             un effet rate. */
+          try { fsAppliquerZoneLibre(cx2, OW, OH, fsParams.ellipse, teinteObj, fsParams.intensity); }
+          catch (eZl) {
+            try { window.alert(TR("Le Fond Studio n\u2019a pas pu s\u2019appliquer : la photo est enregistr\u00e9e sans l\u2019effet.", "Studio Background could not be applied: the photo is saved without the effect.", "No se pudo aplicar el Fondo Studio: la foto se guarda sin el efecto.", "Sfondo Studio non applicato: la foto \u00e8 salvata senza l\u2019effetto.", "\u30b9\u30bf\u30b8\u30aa\u80cc\u666f\u3092\u9069\u7528\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u5199\u771f\u306f\u52b9\u679c\u306a\u3057\u3067\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002")); } catch (e2) { }
+          }
         }
       }
       finaliser();
@@ -29287,6 +29305,36 @@ function RecadrageHype() {
         return React.createElement("button", { key: mo[0], onClick: function () { setModeCadre(mo[0]); setPos({ x: 0, y: 0, z: 1 }); }, style: { padding: "7px 14px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, border: "1px solid " + (on ? "rgba(32,217,245,0.8)" : "rgba(255,255,255,0.2)"), background: on ? "rgba(32,217,245,0.15)" : "transparent", color: on ? "#5FE9F0" : "rgba(237,242,245,0.7)", cursor: "pointer" } }, mo[1]);
       })),
     React.createElement("div", { onTouchStart: pStart, onTouchMove: pMove, onTouchEnd: pEnd, onMouseDown: pStart, onMouseMove: pMove, onMouseUp: pEnd, onMouseLeave: pEnd, style: { background: "#06070A", width: FW, height: FH, overflow: "hidden", position: "relative", borderRadius: 18, border: "1.5px solid rgba(32,217,245,0.7)", touchAction: "none", background: "#0a0e12" } },
+      /* ⚠️ 17/08 (session 138) — L APERCU MENTAIT, ET C EST POURQUOI « REMPLIR »
+         ET « PHOTO ENTIERE » SEMBLAIENT IDENTIQUES.
+         Constat de Blandine sur enregistrement (11 h 08) : les deux modes donnent
+         le meme rendu a l ecran. Verifie : c est faux dans le FICHIER, vrai dans
+         l APERCU. En mode « entier », `valider()` remplit le cadre avec un
+         AGRANDISSEMENT FLOU ET ASSOMBRI de la photo elle-meme
+         (`blur(OW*0.045) brightness(0.42) saturate(1.05)`, `coverS * 1.18`) —
+         mais l apercu, lui, posait la photo sur un `#0a0e12` PLAT. On ne voyait
+         donc pas la difference a l ecran, on la decouvrait dans le fichier.
+         CORRECTIF : le meme fond est desormais dessine dans l apercu, avec les
+         MEMES valeurs, de sorte que ce qu on voit soit ce qu on obtient.
+         ⚠️ LA REGLE « AUCUN FILTRE SUR UNE PHOTO DE CHEVAL » N EST PAS ENTAMEE :
+         ce calque est pose DERRIERE la photo, jamais dessus, et la photo reste
+         nette et entiere devant. On n ajoute AUCUNE transformation — ce flou
+         existe deja dans le resultat depuis toujours ; on cesse simplement de le
+         cacher. Meme logique que le fond immersif des stories.
+         ⚠️ SI CE FOND EST JUGE INDESIRABLE, ce n est pas ici qu il faut le
+         retirer mais dans `valider()` — et alors les photos en « Photo entiere »
+         apparaitront sur du noir plat tant que le dessin du fond A L AFFICHAGE
+         n est pas branche (chantier en plan depuis le 02/08). */
+      (img && modeCadre === "entier") ? React.createElement("div", {
+        "aria-hidden": "true",
+        style: {
+          position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden",
+          backgroundImage: "url(" + img.url + ")",
+          backgroundSize: "cover", backgroundPosition: "center",
+          transform: "scale(1.18)",
+          filter: "blur(" + Math.max(6, Math.round(FW * 0.045)) + "px) brightness(0.42) saturate(1.05)"
+        }
+      }) : null,
       img ? React.createElement("img", { src: img.url, alt: "", draggable: false, style: { position: "absolute", left: "50%", top: "50%", width: dw, height: dh, maxWidth: "none", transform: "translate(calc(-50% + " + pos.x + "px), calc(-50% + " + pos.y + "px)) rotate(" + rot + "deg)", userSelect: "none", pointerEvents: "none" } }) : React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#5B646E", fontSize: 13 } }, "\u2026"),
       filtre === "spectral" ? React.createElement("div", { style: { position: "absolute", inset: 0, pointerEvents: "none", boxShadow: "inset 0 0 54px 20px rgba(7,8,10,0.6)", border: "5px double rgba(32,217,245,0.75)", borderRadius: 16 } }) : null,
       filtre === "halo" ? React.createElement("div", { style: { position: "absolute", inset: 0, pointerEvents: "none", boxShadow: "inset 0 0 70px 26px rgba(7,8,10,0.62), inset 0 0 34px 4px rgba(32,217,245,0.5)", borderRadius: 16 } }) : null),

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060709">
+<title>Hype — Les bandes autour du rail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Règles Hype : overflow-x TOUJOURS doublé hidden PUIS clip sur html/body ;
+   overscroll-behavior:none sur html SEULEMENT. */
+html, body { overflow-x: hidden; overflow-x: clip; max-width: 100%; }
+html { overscroll-behavior: none; }
+
+:root{
+  --noir:#060709; --matiere:#111417; --turq:#20D9F5; --clair:#F4F7FA; --gris:#8A929C;
+  /* variables pilotées par les boutons */
+  --bh:0px;        /* hauteur de bande */
+  --bm:16px;       /* marge latérale de bande */
+  --bo:1;          /* opacité (0 = absente) */
+  --air-h:6px;     /* marge de l'enveloppe */
+  --air-p:4px;     /* padding haut du module */
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--noir);color:var(--clair);font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+/* ── Barre de réglages, collante ─────────────────────────── */
+.reglages{
+  position:sticky;top:0;z-index:20;
+  padding:calc(env(safe-area-inset-top) + 12px) 14px 12px;
+  background:linear-gradient(180deg,rgba(6,7,9,.97) 70%,rgba(6,7,9,.86));
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,.07)
+}
+.reglages .quoi{
+  font-size:9px;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(244,247,250,.38);font-weight:600;margin:0 0 8px
+}
+.rangee{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.rangee::-webkit-scrollbar{display:none}
+.rangee + .quoi{margin-top:14px}
+.puce{
+  flex:0 0 auto;cursor:pointer;font:inherit;
+  padding:8px 13px;border-radius:999px;font-size:11.5px;font-weight:600;
+  color:rgba(244,247,250,.62);background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);white-space:nowrap
+}
+.puce.on{color:#06181A;background:var(--turq);border-color:var(--turq);font-weight:700}
+.puce:focus-visible{outline:2px solid var(--turq);outline-offset:2px}
+
+.lecture{
+  margin-top:13px;font-size:10.5px;color:var(--gris);line-height:1.5;
+  font-variant-numeric:tabular-nums
+}
+.lecture b{color:var(--turq);font-weight:600}
+
+/* ── Reproduction de la page Cavalier ────────────────────── */
+.page{padding-bottom:calc(env(safe-area-inset-bottom) + 60px)}
+
+.songes{
+  margin:26px 16px 0;padding:19px 18px 15px;border-radius:19px;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018));
+  border:1px solid rgba(255,255,255,.09);position:relative;overflow:hidden
+}
+.songes .lbl{
+  font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--turq);font-weight:600
+}
+.songes .cit{
+  font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;
+  font-size:18px;line-height:1.55;color:rgba(244,247,250,.9);margin:13px 0 0
+}
+.songes .guill{
+  position:absolute;right:14px;top:6px;font-family:'Cinzel',serif;font-size:52px;
+  color:rgba(32,217,245,.13);line-height:1
+}
+
+/* L'enveloppe du rail — les deux valeurs pilotées */
+.enveloppe{margin:var(--air-h) 0 0;padding:var(--air-p) 0 10px}
+
+/* Les bandes */
+.bande{
+  display:block;height:var(--bh);margin:0 var(--bm);border-radius:6px;
+  background:var(--matiere);opacity:var(--bo);
+  transition:height .18s ease,margin .18s ease,opacity .18s ease
+}
+.bande.filet{
+  background:linear-gradient(90deg,transparent,rgba(32,217,245,.5),transparent);
+  border-radius:0
+}
+
+/* Le rail : padding haut 22px = débordement du halo, INTOUCHABLE */
+.rail{
+  display:flex;align-items:flex-start;gap:10px;
+  overflow-x:auto;overflow-y:hidden;padding:22px 14px 6px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none
+}
+.rail::-webkit-scrollbar{display:none}
+.cellule{flex:0 0 auto;text-align:center}
+.medaillons{display:flex;gap:4px;align-items:center;position:relative}
+.medaillons .trait{
+  position:absolute;left:8%;right:8%;top:50%;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(32,217,245,.5),transparent)
+}
+.vig{position:relative;width:132px;height:132px;flex:0 0 auto}
+/* Le halo : étendue 1,32× et pic à 76 %, valeurs livrées en 19bc */
+.vig::before{
+  content:"";position:absolute;left:50%;top:50%;width:174px;height:174px;
+  margin-left:-87px;margin-top:-87px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle closest-side,
+    rgba(32,217,245,.05) 0%, rgba(32,217,245,.14) 76%,
+    rgba(32,217,245,.06) 88%, rgba(32,217,245,0) 100%)
+}
+.vig i{
+  position:relative;display:block;width:100%;height:100%;
+  -webkit-mask-image:radial-gradient(circle closest-side,#000 52%,transparent 96%);
+  mask-image:radial-gradient(circle closest-side,#000 52%,transparent 96%)
+}
+.v1 i{background:linear-gradient(170deg,#c88b3a,#3d5a70 62%,#101a22)}
+.v2 i{background:linear-gradient(20deg,#5a6b52,#c9c2b4 48%,#3a3730)}
+.v3 i{background:linear-gradient(200deg,#7a4a2c,#d8cfc2 55%,#1d2a20)}
+.cellule .nom{
+  font-size:11px;margin-top:7px;font-weight:700;color:#E4ECEF;
+  display:flex;align-items:center;justify-content:center;gap:5px
+}
+.cellule .nom u{width:5px;height:5px;border-radius:50%;background:var(--turq);box-shadow:0 0 6px rgba(32,217,245,.9)}
+
+.une{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin:0 16px;padding-top:2px
+}
+.une .t{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--turq);font-weight:600}
+.une .r{font-size:12px;color:var(--turq)}
+.mur{
+  margin:14px 16px 0;height:180px;border-radius:16px;
+  background:linear-gradient(160deg,#101c26,#070c11 70%);
+  border:1px solid rgba(255,255,255,.07);
+  display:grid;place-items:center
+}
+.mur span{font-size:10.5px;color:rgba(244,247,250,.3);letter-spacing:.1em}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="reglages">
+  <p class="quoi">Épaisseur et largeur des bandes</p>
+  <div class="rangee" id="r1"></div>
+  <p class="quoi">Air autour du rail</p>
+  <div class="rangee" id="r2"></div>
+  <p class="lecture" id="lecture"></p>
+</div>
+
+<div class="page">
+  <div class="songes">
+    <div class="guill">“</div>
+    <div class="lbl">✦ Le mur des songes</div>
+    <div class="cit">Hello ! Merci d’avoir rejoint la team Hype ✌️ et pour l’attention portée à l’appli 🙏❤️</div>
+  </div>
+
+  <div class="enveloppe">
+    <span class="bande" id="b1"></span>
+    <div class="rail">
+      <div class="cellule">
+        <div class="medaillons">
+          <div class="trait"></div>
+          <div class="vig v1"><i></i></div>
+          <div class="vig v2"><i></i></div>
+          <div class="vig v3"><i></i></div>
+        </div>
+        <div class="nom"><u></u>Ma story</div>
+      </div>
+    </div>
+    <span class="bande" id="b2"></span>
+  </div>
+
+  <div class="une"><div class="t">À la une</div><div class="r">réglages</div></div>
+  <div class="mur"><span>mur immersif</span></div>
+</div>
+
+<script>
+var FORMES = [
+  { id:"sans", nom:"Sans bande",        h:0,  m:16, filet:false },
+  { id:"o26",  nom:"26 px · gouttières", h:26, m:16, filet:false },
+  { id:"h18",  nom:"18 px · gouttières", h:18, m:16, filet:false },
+  { id:"h12",  nom:"12 px · plus court", h:12, m:44, filet:false },
+  { id:"h8",   nom:"8 px · court",       h:8,  m:70, filet:false },
+  { id:"h4",   nom:"4 px · très court",  h:4,  m:96, filet:false },
+  { id:"fil",  nom:"Filet 1 px",         h:1,  m:70, filet:true }
+];
+var AIRS = [
+  { id:"serre",  nom:"Resserré",  h:6,  p:4  },
+  { id:"moyen",  nom:"Intermédiaire", h:12, p:10 },
+  { id:"origine",nom:"D’origine", h:18, p:18 }
+];
+
+var formeActive = "o26", airActif = "serre";
+
+function puces(cible, liste, actifId, surClic){
+  var el = document.getElementById(cible);
+  el.innerHTML = "";
+  liste.forEach(function(o){
+    var b = document.createElement("button");
+    b.className = "puce" + (o.id === actifId ? " on" : "");
+    b.type = "button";
+    b.textContent = o.nom;
+    b.setAttribute("aria-pressed", o.id === actifId ? "true" : "false");
+    b.onclick = function(){ surClic(o.id); };
+    el.appendChild(b);
+  });
+}
+
+function appliquer(){
+  var f = FORMES.filter(function(o){ return o.id === formeActive; })[0];
+  var a = AIRS.filter(function(o){ return o.id === airActif; })[0];
+  var s = document.documentElement.style;
+  s.setProperty("--bh", f.h + "px");
+  s.setProperty("--bm", f.m + "px");
+  s.setProperty("--bo", f.h ? "1" : "0");
+  s.setProperty("--air-h", a.h + "px");
+  s.setProperty("--air-p", a.p + "px");
+  document.getElementById("b1").className = "bande" + (f.filet ? " filet" : "");
+  document.getElementById("b2").className = "bande" + (f.filet ? " filet" : "");
+
+  var total = a.h + a.p + 22 + (f.h ? f.h : 0);
+  document.getElementById("lecture").innerHTML =
+    "Bande <b>" + (f.h ? f.h + " px" : "aucune") + "</b>, retrait latéral <b>" + f.m + " px</b>. " +
+    "Air avant la première photo : " + a.h + " + " + a.p + " + 22" + (f.h ? " + " + f.h : "") +
+    " = <b>" + total + " px</b>. " +
+    "Les 22 px sont le débordement du halo — intouchables.";
+
+  puces("r1", FORMES, formeActive, function(id){ formeActive = id; appliquer(); });
+  puces("r2", AIRS, airActif, function(id){ airActif = id; appliquer(); });
+}
+
+appliquer();
+</script>
+</body>
+</html>
