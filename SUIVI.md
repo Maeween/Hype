@@ -16,6 +16,17 @@
 
 **Ancienne version (117) — 12/08/2026 (SESSION 117 · LE TIRAGE À GRAINE, PREMIÈRE BRIQUE DU MEMORY À DEUX) — md5 `b8b8974d6df7760de6cbe39f287262f4`. Reprise telle quelle comme base du 118 : les deux fonctions `memoryPoneyMelanger` et `memoryPoneyTirage` sont conservées intactes, ainsi que `HYPE_VERSION_APP` 1.8.**
 
+**🔴 REGLE DE NON-DUPLICATION — POSEE LE 17/08 (session 138), SUR LES MOTS DE BLANDINE : « pas un bug différent à chaque page c'est usant, on a tous les problèmes x 5 ou 6 ».**
+
+**Compte réel relevé ce jour :** 6 appels au recadreur pour 3 comportements · 4 visionneuses de photos distinctes (+ une 5e dans `hype-stories.js`) · 4 redéclarations locales de la même variable de teinte · 1 page (Écurie) avec sa propre clé de couleur.
+
+**Les trois bugs de la journée n'étaient PAS des bugs de fond** — liséré bordeaux, teinte manquante, photo en double : **trois copies qui avaient dérivé**. Et le correctif du 02/08 sur la fiche cheval n'a jamais atteint l'Écurie pour cette seule raison.
+
+1. **AUCUNE nouveauté ne s'écrit page par page.** Si une fonctionnalité doit vivre sur deux écrans, elle naît sur `window` **dès le premier** — modèle `RailALaUne` / `MurImmersif` / `BandeauStories` / `PhotoZoomHype`. C'est ce qui empêche la 6e copie de naître pendant qu'on nettoie les 5 premières.
+2. **COPIER ≠ EXTRAIRE.** Copier un système qui marche sur les autres pages **refait le problème** : n exemplaires à corriger, et au 3e oubli une page diverge. Extraire une fois puis appeler : un seul endroit à changer.
+3. **ORDRE D'UNIFICATION ARRETE** (du moins au plus risqué) : **(1) la visionneuse** — lecture seule, si ça casse rien n'est perdu ; **(2) la teinte** — un seul `tA()` global, Écurie alignée sur `teinteHypeActive()` ; **(3) le recadreur** — en dernier, c'est la seule pièce qui **écrit**, et celle qui a tué l'onglet deux fois.
+4. **Doctrine tenue à chaque étape** : on garde les anciennes fonctions en place et on les vide **une par une**, chaque écran vérifiable seul, poussable seul. Jamais de réécriture, jamais un gros lot.
+
 **🔴🔴 INTERDITS CSS ABSOLUS — À LIRE PAR CHAQUE PAGE AVANT DE TOUCHER À L'INDEX 🔴🔴**
 *(bug majeur du défilement Android : résolu sessions 116-117 les 09-10/08, PERDU par régression de lignée, re-corrigé session 134 le 14/08 — deux fois suffit)*
 1. **JAMAIS `overflow-x: hidden` seul sur `html`/`body`** — **LES DEUX REGLES DU FICHIER SONT MAINTENANT DOUBLEES (17/08, session 138)** : celle de la feuille de demarrage (tout en haut du `<style>` du `<head>`) ET celle en `!important` en bas de cette meme feuille. Un marqueur rouge est pose devant chacune et elles se citent l'une l'autre. Avant le 17/08 la premiere portait `hidden` NU : elle etait ecrasee par la seconde et l'app allait bien, mais le jour ou la seconde bougeait le bug revenait sans explication. — toujours `overflow-x: hidden; overflow-x: clip;`. `hidden` seul force l'axe Y en `auto` et fait de `body` un conteneur de défilement, défilable d'un demi-pixel d'arrondi selon l'appareil : Chrome Android y accroche le geste et le défilement de toute l'app meurt, sans trace JS.
@@ -24,7 +35,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08) — md5 `ffab2e9080e8e51e0dd07ee3f05c792c`, 9 128 165 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bc, md5 `36bdf729c4a68e62562abb93b9691987`, 367 678 octets, `?v=19bc`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bc`. Apercu EN PLUS : `index-apercu-mur.html` md5 `95a9bd5bd2dff253e47a733be25e46a1`.**
+**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08) — md5 `5681cc46e2078c396315d3a0f2b070b3`, 9 140 259 octets. **COMPAGNON : `hype-stories.js` v19bc, md5 `36bdf729c4a68e62562abb93b9691987`, `?v=19bc`.** **IMAGE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bc`.**
+
+⚠️ **ETATS PERIMES DU JOUR :** index `eb968bee…` `b45c1890…` `b6146ef8…` `e5bc960c…` `7885467a…` `9239e503…` `ffab2e90…` ; stories `bb90bb68…` `a10828b6…` `73b57b7c…`.
 
 ⚠️ **ETATS PERIMES DU JOUR, NE PAS POUSSER :** index `eb968bee…` `b45c1890…` `b6146ef8…` `e5bc960c…` `7885467a…` `9239e503…` ; stories `bb90bb68…` (19az) `a10828b6…` (19ba) `73b57b7c…` (19bb). Le couple ci-dessus les contient tous.
 
@@ -368,6 +381,117 @@ passe 3 : tA(0.05) 0%  · tA(0.14) 76%  · tA(0.06) 88%  · tA(0) 100%  · 1,32x
 **Deux autres sorties avaient été proposées et ne sont pas retenues :** les affiner en **filets de 1 px** avec un dégradé qui s'éteint aux extrémités (même famille que le trait de lumière entre médaillons) ; ou les caler à **330 px centrés** comme dans Linguae — écartée, ça accentuerait l'effet de bloc vide au milieu du noir.
 
 **À l'écran : + / −** — **+** deux aplats gris vides disparaissent de la page Cavalier. **−** les deux bandes décoratives du 16/08. Aucun déplacement de contenu.
+
+### 5sexies. 🟩 FOND STUDIO — LA ZONE LIBRE REPAREE, ET DEUX DE MES DIAGNOSTICS ANNULES
+
+⚠️ **DIAGNOSTIC N°1 ANNULE — IL N'Y A AUCUN PROBLEME DE CORS.** J'avais conclu à une `SecurityError` sur canvas contaminé. **Faux.** Ligne 29055 : `l.readAsDataURL(job.fichier)` — `img.url` est une URL **`data:`**, de même origine, qui **ne taint jamais** un canvas. Et `hypeRecadrerDepuisSource` récupère les photos Supabase en `fetch` puis les convertit en `File` avant d'appeler le recadreur. **`crossOrigin` ne réparerait rien, et la dépendance au CORS du bucket n'existe pas.** Conséquence : le message d'erreur ajouté dans les deux `catch` **ne se déclenchera jamais** — il reste comme filet, il ne réglait rien.
+
+⚠️ **DIAGNOSTIC N°2 ANNULE — LE DETOURAGE AUTOMATIQUE EST DEJA MORT.** J'avais décrit OpenCV comme un risque actif (plusieurs Mo, 10 s d'attente). **Faux : la chaîne entiere est orpheline.** `choisirMode` = **1 seule occurrence**, sa définition, jamais appelée. `setMode` n'est appelé qu'à l'intérieur de `choisirMode`, donc jamais. `mode` est figé à `"libre"`. Il n'existe **aucune rangée d'onglets** dans le panneau : la ligne 29437 écrit « Zone libre ✨ » en dur. **OpenCV n'est donc jamais téléchargé.** Rien à retirer — la demande de Blandine (« tu peux retirer complètement le détourage ») est **déjà satisfaite de fait**. Le nettoyage du code mort reste à faire, sans urgence : retirer du code jamais exécuté ne change rien à l'écran.
+
+**CE QUI RESTE REELLEMENT DANS FOND STUDIO : la zone libre, et rien d'autre.** Un ovale posé à la main ; tout ce qui est dehors se fond vers la teinte. L'intérieur de 85 % de l'ovale n'est **jamais** touché. `fsBgmPixel` module en plus par pixel : **froid / clair / neutre = du fond**, assombri davantage ; **chaud = du sujet**, épargné — d'où un résultat inégal selon la photo (un ciel pâle s'efface, une robe alezane résiste même hors de l'ovale).
+
+**LA VRAIE CAUSE DU « ça ne fait rien » : UN POINT MORT DANS LA PLAGE DES CURSEURS.** `prot` annule tout en dessous de `nd = 0,85`, `outside` ne démarre qu'au-delà de `nd = 1,0`. Les curseurs montaient à **1,30** : au-delà d'environ 0,81 l'ovale dépasse la photo, **il n'y a plus de « dehors » et l'effet est mathématiquement nul**, quelle que soit la teinte, quelle que soit l'intensité. Simulé sur ses réglages filmés (0,92 / 0,58 / 0,55) : **2,6 %** au bord latéral.
+
+**LE PLAFOND SE CALCULE, IL NE S'ESTIME PAS.** C'est l'**axe court** qui contraint : `nd = 0,8065 / sw`.
+
+| plafond | nd axe court | assombrissement |
+|---|---|---|
+| 0,80 | 1,008 | **0,0 %** ← mon premier essai, **il ne corrigeait rien** |
+| 0,72 | 1,120 | 1,5 % |
+| 0,68 | 1,186 | 4,6 % |
+| 0,65 | 1,241 | 8,3 % |
+| **0,62** | **1,301** | **13,1 %** ← retenu |
+| 0,58 (défaut du code) | 1,391 | 20,6 % |
+
+⚠️ **J'AVAIS D'ABORD POSE 0,80, ET LA SIMULATION L'A REJETE** : sur une photo **carrée** il laissait encore 0 % aux bords, et sur un paysage le bord haut restait à 0 %. Le point mort n'était pas supprimé, seulement rétréci. **Leçon : vérifier un plafond sur le format le plus défavorable, pas sur celui de la capture.**
+
+**Livré, deux corrections :**
+1. **`FS_OVALE_MAX = 0.62`** sur les curseurs Largeur et Hauteur (était 1,30). **Ne jamais remonter au-delà de 0,68.**
+2. **L'ovale est visible en permanence.** Avant, le contour n'était tracé **que pendant la manipulation au doigt** : en bougeant les **curseurs**, Blandine réglait la taille et la position d'une forme **qu'elle ne voyait pas**. Contour discret (turquoise 55 %, 1,5 px, tirets) tracé après le rendu.
+
+⚠️ **LA REGLE « AUCUN FILTRE SUR UNE PHOTO DE CHEVAL » N'EST PAS ENTAMEE** par le point 2 : le trait est posé sur le **canvas d'aperçu** et **ne part jamais dans le fichier** — `valider()` redessine tout depuis `baseImg` sur son propre canvas. C'est un repère d'outil, comme les poignées d'un recadreur.
+
+**À l'écran : + / −** — **+** les curseurs ne peuvent plus atteindre le point mort ; l'ovale est visible en permanence, donc l'outil devient compréhensible. **−** la plage 0,62–1,30 des curseurs, qui ne produisait rien.
+
+### 5septies. 🟩 UNIFICATION DES VISIONNEUSES — ETAPE 1/2 : `PhotoZoomHype` EXPOSE
+
+**Inventaire des visionneuses (releve ce jour) :**
+
+| composant | définie | appelée par | sait faire |
+|---|---|---|---|
+| **`PhotoZoomHype`** | 28606 | **la fiche cheval SEULEMENT** (31816) | pincement, double-tap, déplacement, **compte les doigts** |
+| `PhotoZoomable` | 34413 | **11 endroits** (cours, Mag, événement, logo) | zoom simple, pose `body{overflow:hidden}` |
+| `EcranAlbumPhotos` | 29478 | Cavalier 25608 · Écurie 28434 · Cheval 31924 | grille + plein écran |
+| `BlocMagazine` | 41523 | le Mag seulement | son propre zoom |
+| `VisionneuseStories` | `hype-stories.js` | rail + à la une | balayage, musique, ⋯, minuteur |
+
+**POURQUOI `PhotoZoomHype` EST LA REFERENCE : c'est la seule qui COMPTE LES DOIGTS.** C'est ce comptage qui a corrigé le crash du 02/08 — l'ancien calque de balayage lisait `changedTouches` sans compter, un pincement passait pour un balayage, chargeait une **autre** photo pleine résolution pendant le décodage de la première, et iOS tuait l'onglet. `PhotoZoomable`, utilisé **11 fois**, est l'ancien et **n'a pas ce verrou**.
+
+**Livré — UNE SEULE LIGNE EXECUTABLE :**
+```
+try { if (typeof window !== "undefined") window.PhotoZoomHype = PhotoZoomHype; } catch (ePZH) { }
+```
+Le composant était **enfermé dans son bloc `<script>`** et appelé une seule fois. Posé sur `window`, il devient appelable depuis les autres blocs et depuis les modules compagnons.
+
+**À l'écran : RIEN.** Aucun appel changé, aucun rendu modifié. La fiche cheval doit se comporter exactement comme avant — c'est le seul point à vérifier.
+
+**CE QUE ÇA DEBLOQUE, et c'est un vrai manque encore ouvert** : le SUIVI du 02/08 note « la visionneuse vit à l'intérieur de FicheCheval, le fil / l'Écurie / le club ne peuvent donc pas encore l'appeler ». La fiche cheval sait ouvrir une vidéo en plein écran ; les autres pages non. **La porte est maintenant ouverte.**
+
+**ETAPE 2, A VENIR :** basculer les **11 appels** de `PhotoZoomable` un par un, en gardant `PhotoZoomable` en place.
+
+⚠️ **CONSEQUENCE A VERIFIER A CHAQUE BASCULE, NOMMEE D'AVANCE :** `PhotoZoomable` pose `body{overflow:hidden}` pendant le zoom (voir l'historique ligne 21295 : mémorisation de position), **`PhotoZoomHype` non**. Le comportement de défilement changera donc **écran par écran** — probablement en mieux, mais à voir à l'écran, jamais d'un coup. Et **jamais `overscroll-behavior:none` sur `body`** en chemin.
+
+### 5octies. 🟩 `VignetteZoom` — L'ENVELOPPE, ET UN PREMIER ECRAN BASCULE
+
+⚠️ **DEUX DE MES AFFIRMATIONS DE LA SEANCE ETAIENT FAUSSES. Corrigées ici.**
+
+**(1) `PhotoZoomHype` n'était pas « enfermé dans son bloc ».** Les trois fonctions concernées sont déclarées à **indentation zéro**, donc au niveau global — et les blocs `<script>` d'une page **partagent la portée globale**. Preuve dans le code existant : `PhotoZoomable` (bloc 24) appelle déjà `hypeVerrouScroll` (bloc 17). Mon `window.PhotoZoomHype` de l'étape 1 **ne débloquait donc rien** ; il reste comme déclaration explicite de dépendance, mais je l'avais présenté comme « la porte ouverte » — la porte n'était pas fermée.
+
+**(2) La fiche cheval n'est PAS « défilable » au sens où je l'ai dit, et elle n'a rien à changer.** Sa visionneuse vit dans **son propre panneau défilant** (`panneauCheval`, voir son `scrollTo`), pas dans le défilement du corps de la page : **ce n'est pas le même mécanisme** que les onze autres. J'ai fait choisir Blandine entre « figé » et « défilable » pour la fiche cheval pendant trois messages **alors que ce choix ne se posait pas**. Ses mots : « c'est la seule que j'aime bien ». **On n'y touche pas.** (J'avais aussi annoncé l'appel à `PhotoZoomHype` en 31816 : faux, c'est 31898 — 31816 est « Écrire son histoire ».)
+
+**CE N'EST PAS UNE SUBSTITUTION, ET C'EST TOUT LE POINT.** Les deux composants ne font pas le même métier :
+
+| | `PhotoZoomHype` | `PhotoZoomable` |
+|---|---|---|
+| props | `src`, `className`, `onAller`, `onFermer` | `src`, `alt`, `style`, `onClicSurAgrandi` |
+| rôle | attend d'être **déjà en plein écran** — le **projecteur** | **vignette dans le flux** qui ouvre son propre plein écran — la **salle** |
+
+**Aucune prop commune au-delà de `src`.** Remplacer l'un par l'autre casserait les onze endroits. On écrit donc **la salle une fois**, et dedans il y a toujours le même projecteur.
+
+**Livré : `VignetteZoom`**, posé juste avant `PhotoZoomable`, **interface strictement identique** — les appels ne changent pas d'un caractère, seul le nom du composant change. Exposé aussi sur `window` pour les autres blocs.
+
+**LE COMPORTEMENT DE DEFILEMENT NE CHANGE POUR PERSONNE :** l'enveloppe appelle `hypeVerrouScroll` / `hypeDeverrouScroll` et porte **`data-hype-zoom`**. Donc les onze écrans gardent leur page figée comme aujourd'hui, et **le kit Android du 09/08 reste APPELE**.
+
+⚠️ **POURQUOI LE DÉFILABLE A ETE ECARTE — quatre raisons, dont trois lues dans le code :** (a) `overscroll-behavior: contain` bloque au bout du texte, le retirer fait glisser la page **sous** la photo ouverte : deux défauts qui s'échangent ; (b) la visionneuse est en `position: fixed; inset: 0` — sur iPhone, le corps qui défile **redimensionne la zone visible** et l'élément est redisposé **en plein geste** ; (c) **le défilable retire le seul appelant de `hypeVerrouScroll`** — les trois fonctions du kit resteraient définies et mortes, et **le contrôle de lignée du SUIVI, qui compte les occurrences, donnerait un feu vert sur un mécanisme inerte. Pire qu'absent.** ; (d) cette zone a déjà changé d'avis deux fois (19c `none` → 19y `pan-y`). **Argument de Blandine, décisif : généraliser le défilable répandrait son blocage de stories sur onze écrans au lieu d'en réparer un.**
+
+**CE QUE LES ONZE GAGNENT : le verrou multi-doigts.** Aujourd'hui un pincement sur une image de cours peut encore être lu comme un balayage — exactement la mécanique du crash du 02/08, dont la fiche cheval est protégée et eux non.
+
+**UN SEUL ECRAN BASCULE POUR L'ESSAI :** l'image `HYPE_IMGS["k607"]`. **10 appels restent sur `PhotoZoomable`**, qui est **conservé intact**. Retour en arrière = remettre le nom.
+
+**Marqueurs après livraison :** `hypeVerrouScroll` 5 (min. 3 exigé par le SUIVI) · `data-hype-zoom` 6 · `PhotoZoomable` appelé 10 · `VignetteZoom` appelé 1.
+
+**À l'écran : + / −** — **+** un écran de cours passe au moteur qui compte les doigts. **−** rien. **Aucun changement visible attendu** : même vignette, même plein écran, même page figée derrière. **La fiche cheval : zéro modification.**
+
+**À VERIFIER A L'ESSAI, un seul point :** ouvrir cette image de cours, pincer, double-taper, déplacer, refermer — et confirmer que la page derrière reste bien figée.
+
+### 5nonies. 🟩 RESSERRAGE AUTOUR DU RAIL DE STORIES
+
+**Blandine, capture de 15 h 25 :** « on peut resserrer un peu ça ? ça respire presque un peu trop ». **Conséquence directe du retrait des deux bandes grises** : elles occupaient 26 px chacune et **remplissaient** cet espace. En les enlevant, l'air qui existait déjà est devenu visible.
+
+**TROIS espacements s'empilaient** au-dessus des photos, dans deux fichiers différents :
+
+```
+  18 px   marge de l'enveloppe          (index.html, page Cavalier)
++ 18 px   padding haut du module        (prop `padding`)
++ 22 px   padding haut du rail defilant (hype-stories.js)
+= 58 px   avant la premiere photo
+```
+
+⚠️ **LES 22 px SONT INTOUCHABLES.** C'est le débordement du halo (21,1 px à l'étendue 1,32×). En dessous, `overflowY: hidden` **tranche le halo net en haut** — piège déjà payé en 19au. **Ne jamais descendre ce padding sans avoir d'abord réduit l'étendue du halo**, et réduire l'étendue ramène l'erreur du hublot (passe 2).
+
+**Livré :** les deux autres seulement. Marge 18 → **6**, padding 18/18 → **4 / 10**. Nouveau total **32 px** au-dessus au lieu de 58 — gain de 26 px en haut, 8 en bas, soit exactement la hauteur d'une des deux bandes retirées.
+
+**À l'écran : + / −** — **+** le rail se recolle au Mur des Songes et à « À LA UNE ». **−** 26 px d'air en haut, 8 en bas. Le halo n'est pas touché.
 
 ### 6. 🟩 LES SIX APPELS AU RECADREUR — DIVERGENCES CORRIGEES
 

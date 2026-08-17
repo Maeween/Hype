@@ -25429,8 +25429,22 @@ function EcranMonCavalier() {
        d un pixel. Remettre les bandes ne demande que de reinserer les deux
        `span`. */
     (typeof window !== "undefined" && window.BandeauStories)
-      ? h("div", { style: { margin: "18px 0 0" } },
-          h(window.BandeauStories, { forme: "libre", padding: "18px 0 18px" }))
+      /* ⚠️ 17/08 (session 138) — RESSERRAGE, demande de Blandine : « ca respire
+         presque un peu trop ». C est la consequence directe du retrait des deux
+         bandes grises : elles occupaient 26 px chacune et REMPLISSAIENT cet
+         espace. En les enlevant, l air qui existait deja est devenu visible.
+         TROIS espacements s empilaient au-dessus des photos :
+             18 px  marge de cette enveloppe
+           + 18 px  padding haut du module (prop ci-dessous)
+           + 22 px  padding haut du rail defilant, DANS hype-stories.js
+           = 58 px  avant la premiere photo
+         ⚠️ LES 22 px SONT INTOUCHABLES : c est le debordement du halo (21,1 px a
+         l etendue 1,32x). En dessous, `overflowY: hidden` tranche le halo net en
+         haut — piege deja paye en 19au. On resserre donc les DEUX AUTRES
+         seulement : 18 -> 6 et 18 -> 4 en haut, 18 -> 10 en bas.
+         Nouveau total : 6 + 4 + 22 = 32 px au-dessus (au lieu de 58). */
+      ? h("div", { style: { margin: "6px 0 0" } },
+          h(window.BandeauStories, { forme: "libre", padding: "4px 0 10px" }))
       : null,
     /* 12/08 (116) : rail des A LA UNE du cavalier AFFICHE (visite ou soi-meme).
        Une a la une est un album de cible cavalier:<id> — aucune table nouvelle. */
@@ -28743,6 +28757,34 @@ function PhotoZoomHype(props) {
     style: { maxWidth: "100%", maxHeight: "90%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)", transformOrigin: "50% 50%", willChange: "auto", touchAction: "none", WebkitTouchCallout: "none" }
   });
 }
+/* ⚠️ 17/08 (session 138) — ETAPE 1 DE L UNIFICATION DES VISIONNEUSES.
+   Constat de Blandine : « pas un bug different a chaque page c est usant, on a
+   tous les problemes x 5 ou 6 ». Compte reel dans ce fichier : 6 appels au
+   recadreur pour 3 comportements, 4 visionneuses de photos distinctes (plus une
+   cinquieme dans hype-stories.js), 4 redeclarations locales de la meme variable
+   de teinte. Les trois bugs de la journee — lisere bordeaux, teinte manquante,
+   photo en double — n etaient PAS des bugs de fond : trois copies qui avaient
+   derive. Et le correctif du 02/08 sur la fiche cheval n a jamais atteint
+   l ecurie pour cette seule raison.
+   POURQUOI PhotoZoomHype EST LA REFERENCE : c est la seule visionneuse qui COMPTE
+   LES DOIGTS. C est ce comptage qui a corrige le crash du 02/08 — l ancien calque
+   de balayage lisait `changedTouches` sans compter, un pincement passait pour un
+   balayage, chargeait une AUTRE photo pleine resolution pendant le decodage de la
+   premiere, et iOS tuait l onglet. `PhotoZoomable` (34413, utilise 11 fois) est
+   l ancien et n a pas ce verrou.
+   CETTE ETAPE NE CHANGE RIEN A L ECRAN. Elle ne fait qu ouvrir la porte : le
+   composant etait enferme dans son bloc <script> et appele UNE SEULE FOIS, par la
+   fiche cheval (31816). Pose sur `window`, il devient appelable depuis les autres
+   blocs et depuis les modules compagnons — meme mecanique que `RailALaUne`,
+   `MurImmersif` et `BandeauStories`.
+   ETAPE 2, A VENIR : basculer les 11 appels de `PhotoZoomable` un par un, en
+   gardant `PhotoZoomable` en place. Doctrine : on vide progressivement, jamais de
+   reecriture, chaque ecran verifiable seul.
+   ⚠️ CONSEQUENCE A VERIFIER A CHAQUE BASCULE : `PhotoZoomable` pose
+   `body{overflow:hidden}` pendant le zoom, `PhotoZoomHype` non. Le comportement de
+   defilement changera donc ecran par ecran — probablement en mieux, mais a voir a
+   l ecran. Et JAMAIS `overscroll-behavior:none` sur `body` en chemin. */
+try { if (typeof window !== "undefined") window.PhotoZoomHype = PhotoZoomHype; } catch (ePZH) { }
 
 /* ===================== FICHE CHEVAL ===================== */
 /* ===== FICHE CHEVAL — CSS scopé .chv ===== */
@@ -28981,6 +29023,36 @@ function hypeRecadrerDepuisSource(src, aspect, opts) {
   });
 }
 /* ===== FOND STUDIO (filtre Premium du recadreur) : rendu pixel ===== */
+/* ⚠️ 17/08 (session 138) — LE POINT MORT DES CURSEURS DE LA ZONE LIBRE.
+   Blandine : « plein de choses du studio photo ne marchent pas ». Verifie par
+   simulation sur ses reglages filmes a 12h45 (largeur ~0,92, hauteur ~0,58,
+   intensite ~0,55, photo paysage) : l assombrissement au bord lateral tombait a
+   2,6 %. Invisible. Ce n etait pas une panne, c etait un REGLAGE MORT.
+   POURQUOI : le moteur assombrit ce qui est HORS de l ovale. `prot` annule tout
+   effet en dessous de nd = 0,85, et `outside` ne demarre qu au-dela de nd = 1,0.
+   Les curseurs montaient a 1,30 : au-dela d environ 1,0 l ovale DEPASSE la photo,
+   il n y a plus de « dehors », et l effet est mathematiquement NUL quelle que soit
+   la teinte et quelle que soit l intensite. L interface laissait donc atteindre,
+   sans le moindre avertissement, une zone ou le produit ne peut rien produire.
+   Table de simulation (photo 4/3, m = min(PW,PH)) :
+     0,58 / 0,58 / 0,75 (defaut) -> 62 % au bord lateral, 21 % en haut
+     0,92 / 0,58 / 0,55 (video)  ->  2,6 %              , 15 %
+     0,35 / 0,35 / 0,90          -> 86 %                , 86 %
+   LE PLAFOND SE CALCULE, IL NE S ESTIME PAS. C est l AXE COURT de la photo qui
+   contraint : nd = 0,5 / (0,62 x sw) = 0,8065 / sw. Il faut nd nettement > 1,0
+   pour que `outside` produise quelque chose. Table calculee (intensite 0,75) :
+     plafond 0,80 -> nd 1,008 ->  0,0 %   (un premier essai a 0,80 ne corrigeait
+     plafond 0,72 -> nd 1,120 ->  1,5 %    RIEN : encore 0 % sur photo carree)
+     plafond 0,68 -> nd 1,186 ->  4,6 %
+     plafond 0,65 -> nd 1,241 ->  8,3 %
+     plafond 0,62 -> nd 1,301 -> 13,1 %   <- RETENU
+     defaut 0,58  -> nd 1,391 -> 20,6 %   (le reglage d ouverture reste confortable)
+   CORRECTIF : plafond a 0,62. Meme au maximum des curseurs, et sur le format le
+   plus defavorable (carre), il reste toujours du « dehors » a assombrir.
+   ⚠️ NE PAS REMONTER CE PLAFOND. Au-dela de 0,68 l effet redevient imperceptible
+   sur l axe court, et au-dela de 0,81 il est mathematiquement nul. */
+var FS_OVALE_MAX = 0.62;
+
 function fsBgmPixel(r, g, b) {
   var warmth = (r - Math.max(g, b)) / 255;
   var warm = Math.min(1, Math.max(0, (warmth + 0.015) * 12));
@@ -29344,6 +29416,30 @@ function FondStudioPanel(props) {
           } catch (e2) { }
         }
       }
+      /* ⚠️ 17/08 (session 138) — L OVALE EST DESORMAIS VISIBLE EN PERMANENCE.
+         Avant, le contour n etait trace QUE pendant la manipulation au doigt
+         (branche `manipRef.current` juste au-dessus). En bougeant les CURSEURS,
+         Blandine reglait donc la taille et la position d une forme qu elle ne
+         voyait pas — et comme ses reglages l avaient agrandie au point de couvrir
+         presque toute la photo, il ne restait plus de « dehors » a assombrir.
+         Le contour est trace ici, apres le rendu, a chaque dessin. Tres discret
+         (turquoise a 55 %, 1,5 px, tirets) pour ne pas etre pris pour un cadre.
+         ⚠️ AUCUN PIXEL DE LA PHOTO N EST TOUCHE : c est un trait pose PAR-DESSUS
+         le canvas d apercu, qui ne part JAMAIS dans le fichier — `valider()`
+         redessine tout depuis `baseImg` sur son propre canvas. La regle « aucun
+         filtre ni voile sur une photo de cheval » n est pas entamee : ce n est pas
+         un habillage, c est un repere d outil, comme les poignees d un recadreur. */
+      try {
+        var mR = Math.min(PW, PH);
+        var rxR = ellipse.sw * 0.62 * mR, ryR = ellipse.sh * 0.62 * mR;
+        ctx.save();
+        ctx.setLineDash([6, 5]);
+        ctx.strokeStyle = "rgba(32,217,245,0.55)"; ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.ellipse(ellipse.cx * PW, ellipse.cy * PH, rxR, ryR, ellipse.rot, 0, 6.2832);
+        ctx.stroke();
+        ctx.restore();
+      } catch (eOv) { }
     } else if (mode === "auto" && maskImgEl) {
       /* 17/08 : meme catch vide, meme cause (getImageData sur canvas contamine). */
       try { fsAppliquerDetourage(ctx, PW, PH, maskImgEl, teinte, intensity); }
@@ -29440,9 +29536,9 @@ function FondStudioPanel(props) {
       busy ? h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(4,6,9,0.6)", color: "#5FE9F0", fontSize: 12.5, fontWeight: 700, textAlign: "center", padding: 20 } }, "\u2728 " + TR("D\u00e9tourage en cours\u2026", "Cutting out\u2026", "Recortando\u2026", "Ritaglio in corso\u2026", "切り抜き中…")) : null),
     mode === "libre" ? h("div", { style: { width: PW, marginTop: 14, display: "flex", flexDirection: "column", gap: 8 } },
       h("div", { style: { fontSize: 10.5, fontWeight: 700, color: "#8A929C", textTransform: "uppercase", letterSpacing: 0.6 } }, TR("Largeur", "Width", "Ancho", "Larghezza", "幅")),
-      h("input", { type: "range", min: 0.10, max: 1.30, step: 0.01, value: ellipse.sw, onChange: function (e) { var v = parseFloat(e.target.value); setEllipse(function (el) { return Object.assign({}, el, { sw: v }); }); }, style: { accentColor: "#20D9F5" } }),
+      h("input", { type: "range", min: 0.10, max: FS_OVALE_MAX, step: 0.01, value: ellipse.sw, onChange: function (e) { var v = parseFloat(e.target.value); setEllipse(function (el) { return Object.assign({}, el, { sw: v }); }); }, style: { accentColor: "#20D9F5" } }),
       h("div", { style: { fontSize: 10.5, fontWeight: 700, color: "#8A929C", textTransform: "uppercase", letterSpacing: 0.6 } }, TR("Hauteur", "Height", "Alto", "Altezza", "高さ")),
-      h("input", { type: "range", min: 0.10, max: 1.30, step: 0.01, value: ellipse.sh, onChange: function (e) { var v = parseFloat(e.target.value); setEllipse(function (el) { return Object.assign({}, el, { sh: v }); }); }, style: { accentColor: "#20D9F5" } })) : null,
+      h("input", { type: "range", min: 0.10, max: FS_OVALE_MAX, step: 0.01, value: ellipse.sh, onChange: function (e) { var v = parseFloat(e.target.value); setEllipse(function (el) { return Object.assign({}, el, { sh: v }); }); }, style: { accentColor: "#20D9F5" } })) : null,
     h("div", { style: { width: PW, marginTop: 14, display: "flex", flexDirection: "column", gap: 8 } },
       h("div", { style: { fontSize: 10.5, fontWeight: 700, color: "#8A929C", textTransform: "uppercase", letterSpacing: 0.6 } }, TR("Intensit\u00e9", "Intensity", "Intensidad", "Intensit\u00e0", "強さ")),
       h("input", { type: "range", min: 0, max: 1, step: 0.01, value: intensity, onChange: function (e) { setIntensity(parseFloat(e.target.value)); }, style: { accentColor: "#20D9F5" } })),
@@ -34410,6 +34506,104 @@ function EcranCours() {
             React.createElement("button", { onClick: precedent, "aria-label": "Page pr\u00e9c\u00e9dente", style: { width: 46, borderRadius: 14, background: "#0D1114", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(234,242,244,0.7)", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "0 0 auto" } }, "\u2190"),
             React.createElement("button", { onClick: suivant, style: { flex: 1, padding: "12px", borderRadius: 14, border: "1px solid rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.12)", color: "#BFF2FA", fontSize: 14, fontWeight: 600, fontFamily: "'Montserrat',-apple-system,sans-serif", cursor: "pointer" } }, estDernier ? t("terminer_cours") : t("suivant")))));
 }
+/* ==========================================================================
+   VignetteZoom — 17/08 (session 138). L ENVELOPPE.
+   Mots de Blandine : « pas un bug different a chaque page c est usant, on a tous
+   les problemes x 5 ou 6 » et « on fait un jeu unique depuis celui de la page
+   cheval ».
+
+   LE PROBLEME QU ELLE RESOUT. Il y a DEUX moteurs de zoom dans l app :
+     - `PhotoZoomHype` (28606) — le bon. Il COMPTE LES DOIGTS. C est ce comptage
+       qui a corrige le crash du 02/08 : l ancien calque lisait `changedTouches`
+       sans compter, un pincement passait pour un balayage, chargeait une AUTRE
+       photo pleine resolution pendant le decodage de la premiere, iOS tuait
+       l onglet. Utilise a UN SEUL endroit : la fiche cheval (31898).
+     - `PhotoZoomable` (juste en dessous) — l ancien, SANS ce verrou. Utilise
+       ONZE fois : cours, Mag, evenement, logo.
+
+   ⚠️ CE N EST PAS UNE SUBSTITUTION, ET C EST TOUT LE POINT. Les deux composants
+   ne font pas le meme metier :
+     - `PhotoZoomHype` attend d etre DEJA en plein ecran. Props : src, className,
+       onAller, onFermer. C est le PROJECTEUR.
+     - `PhotoZoomable` est une VIGNETTE DANS LE FLUX qui ouvre son propre plein
+       ecran. Props : src, alt, style, onClicSurAgrandi. C est la SALLE.
+   Remplacer l un par l autre casserait les onze endroits. On ecrit donc la salle
+   UNE FOIS, et dedans il y a toujours le meme projecteur.
+
+   INTERFACE STRICTEMENT IDENTIQUE a `PhotoZoomable` : les onze appels ne changent
+   pas d un caractere, seul le nom du composant change. Bascule possible ecran par
+   ecran, retour en arriere immediat.
+
+   ⚠️ LE COMPORTEMENT DE DEFILEMENT NE CHANGE POUR PERSONNE. On garde le verrou
+   `hypeVerrouScroll` / `hypeDeverrouScroll` + l attribut `data-hype-zoom`, donc :
+     - les onze ecrans gardent leur page figee pendant le zoom, comme aujourd hui ;
+     - le KIT ANDROID du 09/08 (compteur global, filet auto-reparateur
+       `hypeFiletScroll` qui relit la verite dans le DOM) reste APPELE. Le retirer
+       aurait laisse ses trois fonctions definies et mortes — et le controle de
+       lignee du SUIVI, qui compte les occurrences, aurait donne un feu vert sur un
+       mecanisme inerte. Pire qu absent.
+     - la FICHE CHEVAL n est PAS touchee. Sa visionneuse vit dans son propre
+       panneau defilant (`panneauCheval`), pas dans le defilement du corps de la
+       page : ce n est pas le meme mecanisme. Blandine : « c est la seule que
+       j aime bien ». On n y touche pas.
+
+   CE QUE LES ONZE GAGNENT : le verrou multi-doigts. Aujourd hui un pincement sur
+   une image de cours peut encore etre lu comme un balayage. C est exactement la
+   mecanique du crash du 02/08, dont la fiche cheval est protegee et eux non.
+
+   ⚠️ `data-hype-zoom` EST OBLIGATOIRE sur le plein ecran : c est lui que
+   `hypeFiletScroll` compte pour reparer un verrou fantome. Ne jamais le retirer.
+   ========================================================================== */
+function VignetteZoom({ src, alt, style, onClicSurAgrandi }) {
+  const [ouvert, setOuvert] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!ouvert) return;
+    hypeVerrouScroll();
+    const onKey = (e) => { if (e.key === "Escape") setOuvert(false); };
+    window.addEventListener("keydown", onKey);
+    return () => { window.removeEventListener("keydown", onKey); hypeDeverrouScroll(); };
+  }, [ouvert]);
+
+  /* Le projecteur : `PhotoZoomHype` est global (declaration de premier niveau,
+     portee partagee entre blocs <script>). Repli sur une simple image si le
+     module n est pas la — aucun ecran nu. */
+  const Moteur = (typeof PhotoZoomHype === "function")
+    ? PhotoZoomHype
+    : ((typeof window !== "undefined" && window.PhotoZoomHype) || null);
+
+  return React.createElement(React.Fragment, null,
+    React.createElement("img", {
+      src: src, alt: alt || "", style: style, loading: "lazy",
+      onClick: () => setOuvert(true)
+    }),
+    ouvert ? React.createElement("div", {
+      "data-hype-zoom": "1",
+      "data-noswipe": "1",
+      role: "dialog", "aria-modal": "true", "aria-label": alt || "Photo",
+      style: {
+        position: "fixed", inset: 0, zIndex: 9400, background: "#060709",
+        display: "flex", alignItems: "center", justifyContent: "center"
+      }
+    },
+      Moteur
+        ? React.createElement(Moteur, { src: src, onFermer: () => setOuvert(false) })
+        : React.createElement("img", { src: src, alt: alt || "", style: { maxWidth: "100%", maxHeight: "100%", objectFit: "contain" } }),
+      React.createElement("button", {
+        onClick: () => { setOuvert(false); if (typeof onClicSurAgrandi === "function") onClicSurAgrandi(); },
+        "aria-label": "Fermer",
+        style: {
+          position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 14,
+          width: 38, height: 38, borderRadius: "50%", cursor: "pointer",
+          background: "rgba(6,7,9,0.72)", border: "1px solid rgba(255,255,255,0.18)",
+          color: "#F4F7FA", fontSize: 17, lineHeight: 1
+        }
+      }, "\u2715")
+    ) : null
+  );
+}
+try { if (typeof window !== "undefined") window.VignetteZoom = VignetteZoom; } catch (eVZ) { }
+
 function PhotoZoomable({ src, alt, style, onClicSurAgrandi }) {
     const [ouvert, setOuvert] = useState(false);
     useEffect(() => {
@@ -34868,7 +35062,7 @@ function CavalierEquilibre() {
         React.createElement("h3", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontSize: 24, fontWeight: 600, color: COLORS.encre, textAlign: "center", margin: "0 0 8px", lineHeight: 1.22 } }, L.titre),
         React.createElement("p", { style: { fontSize: 14.5, color: COLORS.encre, lineHeight: 1.7, textAlign: "center", maxWidth: 410, margin: "0 auto 22px" } }, L.lead),
         React.createElement("div", { style: { position: "relative", border: `1px solid ${COLORS.ligne}`, borderRadius: 18, overflow: "hidden", background: COLORS.nuitClaire } },
-            React.createElement(PhotoZoomable, { src: HYPE_IMGS["k607"], alt: L.titre, style: { width: "100%", display: "block", opacity: 0.92 } }),
+            React.createElement(VignetteZoom, /* 17/08 : PREMIER ECRAN BASCULE sur l enveloppe. Interface identique, rien d autre ne change. Les 10 autres appels restent sur PhotoZoomable jusqu a verification de celui-ci. */ { src: HYPE_IMGS["k607"], alt: L.titre, style: { width: "100%", display: "block", opacity: 0.92 } }),
             React.createElement("div", { style: { position: "absolute", top: 0, bottom: 0, left: 0, width: "50%", pointerEvents: "none", transition: "background 0.9s cubic-bezier(.4,0,.2,1)", background: `linear-gradient(270deg, transparent, rgba(32,217,245,${(0.16 - inten * 0.10).toFixed(3)}))` } }),
             React.createElement("div", { style: { position: "absolute", top: 0, bottom: 0, right: 0, width: "50%", pointerEvents: "none", transition: "background 0.9s cubic-bezier(.4,0,.2,1)", background: `linear-gradient(90deg, transparent, rgba(240,99,122,${(0.10 + inten * 0.22).toFixed(3)}))` } }),
             React.createElement("div", { style: { position: "absolute", top: 0, bottom: 0, left: "50%", width: 1, background: "rgba(148,180,210,0.25)" } }),
