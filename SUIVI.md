@@ -24,7 +24,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08 · VERROU CSS, MUR IMMERSIF VERIFIE, RECADREUR MIS A NU, HALO EN ANNEAU) — md5 `b6146ef85c23c6ed81793b4891371577`, 9 119 860 octets. **FICHIER COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bb, md5 `73b57b7cae30939caf38df2e6c60e3d8`, 366 665 octets, charge via `?v=19bb`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** A pousser ENSEMBLE. Aucun SQL. Temoin attendu : `reprise 1.8 · baby 112 · memo 4 · stories 19bb`. Copie d'apercu EN PLUS : `index-apercu-mur.html` (md5 `2c502a2d5619578dda02db63a6a1bedc`), jamais a pousser.**
+**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08 · VERROU CSS, MUR IMMERSIF, RECADREUR MIS A NU, HALO EN ANNEAU, LES SIX APPELS ALIGNES) — md5 `e5bc960cfe57ea2f3cee9dad67f2dcdf`, 9 126 363 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bb, md5 `73b57b7cae30939caf38df2e6c60e3d8`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bb`. Apercu EN PLUS : `index-apercu-mur.html` md5 `80256591c9d0671a524630d61a7a30eb`.**
+
+⚠️ **ETATS PERIMES DU JOUR, NE PAS POUSSER :** `eb968bee…` (19az verrou seul), `b45c1890…` (19ba halo violent), `b6146ef8…` (19bb halo seul). Le md5 ci-dessus les contient tous.
 
 ⚠️ **DEUX ETATS INTERMEDIAIRES DU JOUR SONT PERIMES — NE PAS LES POUSSER :** 19az verrou CSS seul (index `eb968bee74ef8790df831ec4754801e7`), et 19ba halo trop fort (index `b45c18904071a2e9b7dd079fee48be83`, `hype-stories.js` `a10828b63e35b4d901dda55af313aff1`). Le 19bb ci-dessus les contient tous les deux.
 
@@ -298,6 +300,61 @@ passe 2: tA(0)    0%  · tA(0)    78%  · tA(0.09) 89%  · tA(0.03) 95%  · tA(0
 **À l'écran : + / −**
 **+** une respiration de lumière de 11 px autour des vignettes, dans la teinte du cavalier.
 **−** rien retiré. Aucune photo touchée, aucune mise en page déplacée (le retrait du rail est inchangé par rapport à l'index de Blandine).
+
+### 6. 🟩 LES SIX APPELS AU RECADREUR — DIVERGENCES CORRIGEES
+
+**Constat de Blandine :** « les images de profil ne sont pas toutes codées pareil, celle de la page d'écurie perso a des bugs que l'autre n'a pas ». **Elle avait raison.** Inventaire des six appels :
+
+| ligne | écran | ratio | `teinte` | original gardé | reprise possible |
+|---|---|---|---|---|---|
+| 25115 / 25124 | avatar / profil | 1 | ❌ → ✅ **corrigé** | ✅ `hype_avatar_original` | oui |
+| 26076 | bannière de club | 16/10 | ❌ → ✅ **corrigé** | ❌ → ✅ **ajouté** | **non, aucun bouton Modifier** |
+| 28250 | photo d'écurie | mesuré sur `.hero` | ✅ | ✅ | oui |
+| 31042 / 31097 | photo de cheval | 4/5 | ✅ | ✅ par cheval | oui |
+
+**LA CAUSE : six copies de la même séquence.** Il n'y a pas UN composant photo, il y a six appels qui refont chacun à leur manière : relire l'original, appeler le recadreur, sauver le nouvel original, téléverser, afficher. Six occasions de divergence. **Le correctif du 02/08 sur la fiche cheval n'a jamais atteint l'écurie pour cette seule raison.**
+
+**Livré :** `{ teinte: TURQ }` posé sur les trois appels qui n'en avaient pas. Sans elle, `HB` retombait sur `"#20D9F5"` en dur (ligne 29089) : le cadre de l'avatar et de la bannière de club restait turquoise **quel que soit le thème du cavalier**. Plus l'original conservé pour la bannière (`hype_club_banniere_orig` + témoin `_pour`).
+
+⚠️ **HONNETE SUR LA PORTÉE** : l'original de la bannière **n'a aucun effet visible aujourd'hui** — elle n'a pas de bouton « Modifier », donc elle n'est jamais reprise depuis sa source. C'est une brique posée pour l'unification, pas une réparation.
+
+⚠️ **DEUX DE MES AFFIRMATIONS DE LA SEANCE ETAIENT FAUSSES, corrigées ici :** (1) j'avais dit que le zoom de la bannière de club était « irréversible par construction » — faux, il n'y a **aucune** reprise du tout ; (2) j'avais annoncé le ratio de l'écurie comme un défaut à corriger — faux, il a déjà un repli propre (`16/9` par défaut, bornes `isFinite`, `> 0.35`, `< 4`). Travail retiré plutôt qu'exécuté pour rien.
+
+### 7. 🟩 FOND STUDIO NE FAISAIT RIEN — DEUX CATCH VIDES ET UN MESSAGE JAMAIS AFFICHÉ
+
+**Enregistrement de 12 h 45 :** Blandine bouge largeur, hauteur, intensité, passe Noir → Turquoise → Bleu foncé. **L'image ne change jamais**, sur 20 images consécutives.
+
+**LA CAUSE, en trois étages :**
+
+1. **`crossOrigin` manque** aux lignes du chargement de `props.imgUrl` (Fond Studio) et de `valider()` (recadreur). Le même fichier le pose pourtant correctement ailleurs (`hypeRecadrerDepuisSource`, fonction `secours()`). Une image distante chargée sans lui **contamine le canvas**.
+2. **`fsAppliquerZoneLibre` commence par `getImageData`** → sur canvas contaminé, le navigateur lève une **SecurityError**.
+3. **Les deux appels étaient enveloppés dans `catch (e) { }`** — vides. L'erreur était levée à chaque rendu, avalée à chaque fois. D'où « ça ne fait rien » au lieu de « c'est cassé ».
+
+**Ce qui explique que ça marchait parfois** : une photo tout juste choisie dans la pellicule arrive en `data:` — pas d'origine distante, pas de contamination. Une photo **reprise** depuis Supabase éteint tout.
+
+⚠️ **ET UN QUATRIEME ETAGE, TROUVE EN CODANT LE CORRECTIF :** `erreurFs` était **déclaré et jamais affiché** — une seule occurrence de la valeur dans les 9 Mo, sa déclaration. Poser un message dedans n'aurait rien changé. **Signalé à Blandine avant livraison.**
+
+**Livré :** les deux catch vides remplacés par un message qui distingue la SecurityError des autres échecs (5 langues), **plus la ligne d'affichage de `erreurFs`** au-dessus des boutons du panneau.
+
+⚠️ **LE CORRECTIF DE FOND N'EST PAS POSE, ET C'EST VOLONTAIRE.** `im.crossOrigin = "anonymous"` dépend de l'en-tête **CORS du bucket Supabase**. Sans cet en-tête, `crossOrigin` fait échouer le **chargement** au lieu de la **lecture** : on échangerait un effet muet contre une **photo absente**. À vérifier côté Supabase AVANT. Le `_headers` du dépôt couvre Netlify, pas Supabase.
+
+⚠️ **DEUX AUTRES CATCH VIDES SUBSISTENT, dans `valider()`** (`catch (eZl)` et `catch (eMk)`) — même cause, même silence, mais ils sont dans la fonction qui a tué l'onglet deux fois en juillet. **Session dédiée.**
+
+### 8. 🟥 LE RECADREUR : UNE SEULE CAUSE, TROIS SYMPTOMES — NON CORRIGE
+
+**Le test de la photo neuve est concluant** (enregistrement de 12 h 45, dernière image) : photo prise dans la pellicule, pastille « Aucun », Valider → **plus aucun bordeaux**. Le liseré venait donc du **vieux fichier stocké**, pas du code vivant. Il se règle en remplaçant la photo, pas par un correctif.
+
+**MAIS une cause structurelle reste, et elle explique les trois symptomes d'un coup.** En mode « Photo entière », `valider()` remplit le cadre avec **un agrandissement flou et assombri de la photo elle-même** (`blur(OW*0.045) brightness(0.42) saturate(1.05)`, `coverS * 1.18`). Or **`srcNue` est capturée APRES ce fond**. L'image dite « nue » n'est pas nue.
+
+- **le liseré « indélébile »** = ce fond flou, pas un cadre. Aucune pastille ne le pose, donc aucune ne le retire.
+- **le zoom qui ne se dézoome plus** = en dézoomant on révèle le champ flou déjà cuit, pas plus de photo d'origine.
+- **« Remplir » et « Photo entière » qui se ressemblent** = l'aperçu affiche la photo sur du `#06070A` **plat**, sans fond flou. **L'aperçu et le résultat ne montrent pas la même chose.**
+
+**LA CAUSE UNIQUE : le recadreur n'a aucune mémoire du fichier d'origine.** `srcNue` veut dire « recadrée sans le cadre spectral », pas « originale ». **Chaque validation devient l'original de la suivante.** Destructif par construction. Le correctif du 02/08 ne pouvait pas le voir : il ne visait que le cadre décoratif.
+
+**TROIS SORTIES PRESENTEES A BLANDINE, aucune tranchée :** (A) capturer `srcNue` **avant** le fond flou, qui devient un habillage d'affichage — exige de brancher le dessin à l'affichage, chantier en plan depuis le 02/08 ; (B) **conserver le vrai fichier d'origine** côté serveur — le zoom redevient réversible, la teinte du cadre changeable, coût d'un second fichier par photo ; (C) A puis B.
+
+**ET L'UNIFICATION**, proposée par Blandine elle-même (« s'ils sont tous codés différemment on les remplacerait pas tous par celui qui marche ? ») : **une seule fonction** portant la séquence, paramétrée par clé de stockage / ratio / teinte, les quatre écrans devenant quatre lignes d'appel. La référence est **la fiche cheval**, seule à avoir les quatre briques. **Doctrine respectée : progressif, jamais réécriture** — garder les six fonctions et les vider une par une, vérifiable écran par écran. **Limite à nommer : ça ne répare aucun fichier déjà cuit en ligne.**
 
 ### 6. ⏸ L'ORDRE DU RAIL — CHANTIER OUVERT, RIEN LIVRE
 

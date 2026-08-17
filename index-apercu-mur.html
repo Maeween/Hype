@@ -25113,7 +25113,14 @@ function EcranMonCavalier() {
       try { window.alert(tr(HYPE_TXT_RECADREUR)); } catch (eA) { }
       return;
     }
-    hypeRecadrer(f, 1).then(function (res) {
+    /* ⚠️ 17/08 (session 138) — LA TEINTE MANQUAIT ICI. Constat de Blandine :
+       « les images de profil ne sont pas toutes codees pareil ». Verifie : sur les
+       SIX appels au recadreur, l ecurie (28250) et le cheval (31097) passent une
+       teinte, l avatar et la banniere de club n en passaient AUCUNE. Sans elle,
+       `HB` retombe sur la valeur en dur "#20D9F5" (ligne 29089) et le cadre de ces
+       deux ecrans reste turquoise QUEL QUE SOIT le theme du cavalier. TURQ est la
+       teinte de la page, deja calculee plus haut dans ce meme composant. */
+    hypeRecadrer(f, 1, { teinte: TURQ }).then(function (res) {
       if (!res) return;                 /* annulation volontaire : rien a dire */
       appliquerNouvelAvatar(res);
     });
@@ -25122,7 +25129,8 @@ function EcranMonCavalier() {
     var origSauve = null; try { origSauve = localStorage.getItem("hype_avatar_original"); var avAct = (ctx.profil && (ctx.profil.avatar_url || ctx.profil.avatar)) || ""; var pourAv = localStorage.getItem("hype_avatar_original_pour"); if (origSauve && pourAv && String(avAct).slice(0, 100) !== pourAv) { localStorage.removeItem("hype_avatar_original"); localStorage.removeItem("hype_avatar_original_pour"); origSauve = null; } } catch (eO2) { } /* 30/07 : plus de photo fantome */
     var src = origSauve || (ctx.profil && ctx.profil.avatar_url) || (ctx.profil && ctx.profil.avatar);
     if (!src || typeof hypeRecadrerDepuisSource !== "function") return;
-    hypeRecadrerDepuisSource(src, 1).then(function (res) { if (res) appliquerNouvelAvatar(res); });
+    /* 17/08 : meme correctif que choisirPhoto — la teinte manquait aussi a la reprise. */
+    hypeRecadrerDepuisSource(src, 1, { teinte: TURQ }).then(function (res) { if (res) appliquerNouvelAvatar(res); });
   }
   var _mr = React.useState([]), resReels = _mr[0], setResReels = _mr[1];
   React.useEffect(function () { (async function () { try { if (typeof mesResultats === "function" && typeof supa !== "undefined") { var r = await mesResultats(); if (r && r.data && r.data.length) setResReels(r.data); } } catch (e) {} })(); }, []);
@@ -26074,10 +26082,22 @@ function EcranGuilde() {
     var f = e.target.files && e.target.files[0]; e.target.value = "";
     if (!f) return;
     var ancienneBan = banniere || null;
-    hypeRecadrer(f, 16 / 10).then(function (res) {
+    /* ⚠️ 17/08 (session 138) — DEUX MANQUES ICI, meme cause que sur l avatar.
+       (a) la teinte n etait pas transmise : cadre turquoise en dur, insensible au
+       theme. (b) l original n etait pas conserve, alors que les trois autres
+       ecrans le font (`hype_avatar_original`, `hype_ecurie_photo_orig`,
+       `hype_cheval_photo_orig_<id>`).
+       ⚠️ HONNETE : (b) n a AUCUN EFFET VISIBLE AUJOURD HUI. La banniere de club n a
+       pas de bouton « Modifier » — zero occurrence dans le fichier — elle n est
+       donc jamais reprise depuis sa source, seulement posee depuis un fichier
+       neuf. On garde l original pour que le jour ou ce bouton existe, et pour
+       l unification des six appels en une fonction commune, la brique soit la. */
+    hypeRecadrer(f, 16 / 10, { teinte: TURQ }).then(function (res) {
       if (!res) return;
       setBanniere(res.dataUrl);
       try { localStorage.setItem("hype_club_banniere", res.dataUrl); } catch (eB) { }
+      /* 17/08 : original conserve, sur le modele exact des trois autres ecrans. */
+      try { if (res.original) localStorage.setItem("hype_club_banniere_orig", res.original); if (res.dataUrl) localStorage.setItem("hype_club_banniere_orig_pour", String(res.dataUrl).slice(0, 100)); } catch (eBo) { }
       if (typeof hypeEnregistrerPhoto === "function") {
         hypeEnregistrerPhoto("club", clefBanniereClub, res, ancienneBan).then(function (urlFinale) {
           setBanniere(urlFinale);
@@ -29271,10 +29291,41 @@ function FondStudioPanel(props) {
         ctx.beginPath(); ctx.ellipse(pcx0, pcy0, rx0, ry0, ellipse.rot, 0, 6.2832); ctx.stroke();
         ctx.restore();
       } else {
-        try { fsAppliquerZoneLibre(ctx, PW, PH, ellipse, teinte, intensity); } catch (e) { }
+        /* ⚠️ 17/08 (session 138) — LE CATCH ETAIT VIDE, ET C EST POURQUOI FOND
+           STUDIO PASSAIT POUR « ca ne fait rien » AU LIEU DE « c est casse ».
+           `fsAppliquerZoneLibre` commence par `getImageData`. Si le canvas est
+           CONTAMINE par une image d origine distante chargee sans `crossOrigin`
+           (c est le cas du chargement de `props.imgUrl` plus haut, et de celui de
+           `valider()` dans le recadreur), le navigateur LEVE une SecurityError et
+           interdit toute lecture de pixels. L erreur etait avalee ici : la photo
+           restait intacte, curseurs et teintes semblaient sans effet, et aucune
+           trace n apparaissait nulle part.
+           Ca explique aussi pourquoi ca marchait parfois : une photo tout juste
+           choisie dans la pellicule arrive en `data:`, sans origine distante, donc
+           sans contamination. Une photo REPRISE depuis Supabase eteint tout.
+           ⚠️ LE CORRECTIF DE FOND (`im.crossOrigin = "anonymous"`) N EST PAS POSE :
+           il depend de l en-tete CORS du bucket Supabase. Sans cet en-tete,
+           `crossOrigin` fait echouer le CHARGEMENT au lieu de la LECTURE — on
+           echangerait un effet muet contre une photo absente. A verifier cote
+           Supabase AVANT, en session dediee au recadreur.
+           En attendant, on DIT ce qui se passe au lieu de le taire. */
+        try { fsAppliquerZoneLibre(ctx, PW, PH, ellipse, teinte, intensity); }
+        catch (e) {
+          try {
+            var estSecu = !!(e && (e.name === "SecurityError" || /taint|cross-origin|insecure/i.test(String(e.message || ""))));
+            setErreurFs(estSecu ? TR("Cette photo vient du serveur : le navigateur interdit de lire ses pixels, l\u2019effet ne peut pas s\u2019appliquer. Reprends la photo depuis ta pellicule.", "This photo comes from the server: the browser blocks reading its pixels, so the effect cannot apply. Pick the photo from your library again.", "Esta foto viene del servidor: el navegador impide leer sus p\u00edxeles. Vuelve a elegirla desde tu galer\u00eda.", "Questa foto viene dal server: il browser vieta di leggerne i pixel. Riprendila dalla tua galleria.", "\u3053\u306e\u5199\u771f\u306f\u30b5\u30fc\u30d0\u30fc\u4e0a\u306b\u3042\u308b\u305f\u3081\u3001\u52b9\u679c\u3092\u9069\u7528\u3067\u304d\u307e\u305b\u3093\u3002") : TR("L\u2019effet n\u2019a pas pu s\u2019appliquer sur cette photo.", "The effect could not be applied to this photo.", "No se pudo aplicar el efecto a esta foto.", "Non \u00e8 stato possibile applicare l\u2019effetto.", "\u3053\u306e\u5199\u771f\u306b\u52b9\u679c\u3092\u9069\u7528\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002"));
+          } catch (e2) { }
+        }
       }
     } else if (mode === "auto" && maskImgEl) {
-      try { fsAppliquerDetourage(ctx, PW, PH, maskImgEl, teinte, intensity); } catch (e) { }
+      /* 17/08 : meme catch vide, meme cause (getImageData sur canvas contamine). */
+      try { fsAppliquerDetourage(ctx, PW, PH, maskImgEl, teinte, intensity); }
+      catch (e) {
+        try {
+          var estSecu2 = !!(e && (e.name === "SecurityError" || /taint|cross-origin|insecure/i.test(String(e.message || ""))));
+          setErreurFs(estSecu2 ? TR("Cette photo vient du serveur : le navigateur interdit de lire ses pixels, l\u2019effet ne peut pas s\u2019appliquer. Reprends la photo depuis ta pellicule.", "This photo comes from the server: the browser blocks reading its pixels, so the effect cannot apply. Pick the photo from your library again.", "Esta foto viene del servidor: el navegador impide leer sus p\u00edxeles. Vuelve a elegirla desde tu galer\u00eda.", "Questa foto viene dal server: il browser vieta di leggerne i pixel. Riprendila dalla tua galleria.", "\u3053\u306e\u5199\u771f\u306f\u30b5\u30fc\u30d0\u30fc\u4e0a\u306b\u3042\u308b\u305f\u3081\u3001\u52b9\u679c\u3092\u9069\u7528\u3067\u304d\u307e\u305b\u3093\u3002") : TR("L\u2019effet n\u2019a pas pu s\u2019appliquer sur cette photo.", "The effect could not be applied to this photo.", "No se pudo aplicar el efecto a esta foto.", "Non \u00e8 stato possibile applicare l\u2019effetto.", "\u3053\u306e\u5199\u771f\u306b\u52b9\u679c\u3092\u9069\u7528\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002"));
+        } catch (e2) { }
+      }
     }
   }
   React.useEffect(function () { dessiner(); }, [baseImg, mode, teinteId, intensity, ellipse, maskImgEl, PW, PH, tick]);
@@ -29378,6 +29429,19 @@ function FondStudioPanel(props) {
           h("button", { onClick: function () { if (verrou) return; setTeinteId(t.id); }, style: { width: 38, height: 38, borderRadius: "50%", background: rgbCss, border: "2px solid " + (actif ? "#20D9F5" : "rgba(255,255,255,0.25)"), boxShadow: actif ? "0 0 10px rgba(32,217,245,0.6)" : "none", cursor: verrou ? "default" : "pointer" } }, verrou ? h("span", { style: { fontSize: 12 } }, "\ud83d\udd12") : null),
           h("span", { style: { fontSize: 8.5, fontWeight: 700, color: "#8A929C", textAlign: "center", maxWidth: 54 } }, verrou ? TR("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "近日公開") : (t.nom.fr && props.tr({ fr: t.nom.fr, en: t.nom.en, es: t.nom.es, it: t.nom.it, ja: t.nom.ja }))));
       }))),
+    /* ⚠️ 17/08 (session 138) — `erreurFs` ETAIT DECLARE ET JAMAIS AFFICHE.
+       Une seule occurrence dans les 9 Mo : sa declaration. Poser un message dedans
+       ne servait donc a rien — le panneau serait reste muet meme avec les catch
+       corriges. La ligne d erreur est ajoutee ici, juste au-dessus des boutons.
+       Elle ne s affiche que s il y a quelque chose a dire. */
+    erreurFs ? h("div", {
+      role: "alert",
+      style: {
+        marginTop: 18, padding: "11px 13px", borderRadius: 12,
+        background: "rgba(255,180,168,0.08)", border: "1px solid rgba(255,180,168,0.28)",
+        color: "#FFC9BF", fontSize: 12, lineHeight: 1.45, fontWeight: 500
+      }
+    }, erreurFs) : null,
     h("div", { style: { display: "flex", gap: 12, marginTop: 22 } },
       h("button", { onClick: function () { props.onConfirm({ mode: "libre", teinteId: "noir", intensity: 0, ellipse: ellipse, maskUrl: null }); }, style: { padding: "11px 20px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.25)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer" } }, TR("Original", "Original", "Original", "Originale", "オリジナル")),
       h("button", { onClick: function () { props.onConfirm({ mode: mode, teinteId: teinteId, intensity: intensity, ellipse: ellipse, maskUrl: maskUrl }); }, style: { padding: "11px 26px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#0C5763,#38E2F8)", color: "#04252A", fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "\u2728 " + TR("Publier", "Publish", "Publicar", "Pubblica", "公開"))));
