@@ -15,7 +15,7 @@ Aucun dégât : les dialogues vivent dans les lexiques, pas dans cette page.
 
 ---
 
-## ✅ LES CINQ GESTES APPLIQUÉS
+## ✅ LES SIX GESTES APPLIQUÉS
 
 **1 · Les six langues, et la cible vient du parent.** `LANGUES` à six · `CIBLE` lue dans `c` · `verifierLangues()` nomme une langue manquante au lieu d'afficher « undefined » · libellés construits depuis `NOM_LANGUE`. **C'était le vrai défaut** : toute mise en situation enseignait l'anglais, quelle que soit la langue du voyage. ⚠️ **NE PAS redéduire une cible dans l'iframe. Le voyage décide.**
 
@@ -25,7 +25,9 @@ Aucun dégât : les dialogues vivent dans les lexiques, pas dans cette page.
 
 **4 · Le filet de Versailles**, dans `lingo.html` : il balaie toutes les clés commençant par `dialogue`. ⚠️ **TROIS ENDROITS DOIVENT RESTER D'ACCORD** : `aUnDialogue()`, ce filet, et `lireLexiques()` de la page fille.
 
-**5 · Le verrou des villes payantes**, côté page fille : `VILLE_OFFERTE_D` + `autorisee()`, testé **en tout premier dans `dessine()`** — aucune scène construite, aucune phrase lue, aucune voix prononcée avant. ⚠️ **`VILLE_OFFERTE_D` doit rester d'accord avec `VILLE_OFFERTE` de `lingo.html`** : deux listes, un seul régime. ⚠️ Ce n'est pas une sécurité, c'est une porte — les phrases sont dans un `.js` public.
+**5 · Le verrou des villes payantes**, côté page fille : `autorisee()`, testé **en tout premier dans `dessine()`** — aucune scène construite, aucune phrase lue, aucune voix prononcée avant.
+
+**6 · Une seule liste de villes offertes.** La première version du verrou recopiait `VILLE_OFFERTE` dans la page fille ; la copie a été retirée le soir même. Le parent tranche et passe `&ok=1` dans l'URL de l'iframe, après `villeAutorisee()`. ⚠️ **UNE SEULE LISTE DANS TOUT LE PROJET : `VILLE_OFFERTE` dans `lingo.html`. NE PAS EN RECRÉER ICI.** Repli si `ok` manque : `localStorage`, comme `estPremium()` — au prix d'une ville offerte ouverte par URL brute qui s'affichera « Réservé » à tort, chemin qui n'existe pas dans l'app. ⚠️ Ce n'est pas une sécurité, c'est une porte : `&ok=1` se tape à la main et les phrases sont dans un `.js` public.
 
 ---
 

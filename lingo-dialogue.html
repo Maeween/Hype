@@ -255,27 +255,37 @@ if(LANGUES.indexOf(CIBLE) < 0 || CIBLE === LG) CIBLE = (LG === "en") ? "fr" : "e
 var REPLI_DEPUIS = null;
 
 /* 🟥 17/08 — LE VERROU DES VILLES PAYANTES, COTE PAGE FILLE.
-   Le parent verrouille deja `ouvrirSituation()` (il appelle
-   `villeAutorisee()` et ouvre le paywall), mais CETTE PAGE s'ouvre AUSSI
-   par son URL directe — `lingo-dialogue.html?ville=golega` — et n'avait
-   aucun verrou. GOLEGA est la premiere ville PAYANTE a recevoir un
-   dialogue : sans ces lignes, sa scene entiere etait atteignable
-   gratuitement par l'adresse.
-   ⚠️ CETTE LISTE ET CETTE CLE DOIVENT RESTER D'ACCORD avec
-   `VILLE_OFFERTE` et `estPremium()` de lingo.html. Si une ville devient
-   offerte la-bas, l'ajouter ICI aussi — sinon elle se ferme dans
-   l'iframe alors qu'elle est ouverte partout ailleurs.
+   Cette page s'ouvre AUSSI par son URL directe —
+   `lingo-dialogue.html?ville=golega` — et n'avait aucun verrou. GOLEGA
+   est la premiere ville PAYANTE a recevoir un dialogue : sans ces lignes,
+   sa scene entiere etait atteignable gratuitement par l'adresse.
+
+   🟥 UNE SEULE LISTE DE VILLES OFFERTES DANS TOUT LE PROJET, ET ELLE EST
+   DANS `lingo.html`. La premiere version d'ici en recopiait une
+   (`VILLE_OFFERTE_D`) parce qu'une iframe ne voit pas le `window` du
+   parent. Deux listes a tenir d'accord = un oubli garanti le jour ou une
+   ville devient offerte, et un oubli INVISIBLE : la ville reste ouverte
+   partout et se ferme dans la seule mise en situation. Sur le mot de
+   Blandine, 17/08 — « le plus simple est le mieux » — c'est le parent qui
+   tranche et qui passe le resultat dans l'URL : `&ok=1`.
+   ⚠️ NE PAS RECREER DE LISTE DE VILLES ICI. Si le verrou doit changer,
+   il change dans `villeAutorisee()` de lingo.html, nulle part ailleurs.
+
+   LE REPLI, ET CE QU'IL COUTE. Si `ok` est absent — page ouverte a la
+   main, ou vieux `lingo.html` servi par le cache — on retombe sur
+   `localStorage`, exactement ce que lit `estPremium()`. Consequence
+   assumee : une ville OFFERTE ouverte par son URL brute, sans
+   abonnement, affichera « Reserve aux abonnees » a tort. C'est le seul
+   chemin ou le repli se voit, et il n'existe pas dans l'app.
    ⚠️ CE N'EST PAS UNE SECURITE, C'EST UNE PORTE. Les phrases sont dans un
    `.js` public : qui lit le source les a. Regime assume depuis la
    doctrine VITRINE (14/08) — « la page de la ville reste ouverte a tous,
    la lecon reste fermee ». Un dialogue EST une lecon.
-   ⚠️ `localStorage` est lisible ici parce que cette page est servie
-   depuis la MEME ORIGINE que lingo.html. Si elle passe un jour sur une
-   autre origine, ce verrou devient aveugle et c'est le parent qui devra
-   passer l'etat. */
-var VILLE_OFFERTE_D = { labaule:1, kildare:1, maurice:1, edimbourg:1 };
-function autorisee(ref){
-  if(VILLE_OFFERTE_D[ref]) return true;
+   ⚠️ `localStorage` n'est lisible ici que parce que cette page est servie
+   depuis la MEME ORIGINE que lingo.html. Si elle change d'origine, seul
+   `&ok=` subsiste — et c'est tres bien ainsi. */
+function autorisee(){
+  if(P.get("ok") === "1") return true;      /* le parent a deja tranche */
   try{ return localStorage.getItem("hype_premium") === "1"; }catch(e){ return false; }
 }
 function verifierLangues(){
@@ -468,7 +478,7 @@ function dessine(){
 
   /* 🟥 LE VERROU, AVANT TOUT LE RESTE. On ne construit rien, on ne parle
      pas, on ne revele aucune phrase. Voir le commentaire de `autorisee()`. */
-  if(!autorisee(REF_VILLE)){
+  if(!autorisee()){
     S("hScene").textContent = "Réservé aux abonnées";
     S("hVille").textContent = (TITRES[REF_VILLE] && TITRES[REF_VILLE].nom) || REF_VILLE;
     S("jauge").style.width = "0%";

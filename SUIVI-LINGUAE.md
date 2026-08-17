@@ -275,8 +275,8 @@ Précédent posé en session 209 sur `balade` (*« s'il dort, tant mieux »*), a
 
 # 🇵🇹 SESSION 215 · 17/08 — GOLEGÃ REÇOIT SON DIALOGUE · LE VERROU DES VILLES PAYANTES ENFIN POSÉ · UN NUMÉRO DE CACHE QUI MANQUAIT
 
-**Livré : `hype-lingo-lex-elevage.js` (neuf), `lingo.html` (trois gestes) et `lingo-dialogue.html` (quatre gestes).** DEUX push dans la journée — le premier lot (lexique + `lingo.html`) était déjà poussé quand la suite a été écrite.
-`lingo.html` md5 **`e8e2c64d…`** au premier push, **`af3a8da4d9db72523e12638ab5138f82`** après le filet de Versailles — parti du fichier en cours de Blandine (`b547e6eb…`). `lingo-dialogue.html` parti de `4882bbee…`, livré en `3824b62769a0f3740e55f96d4407c208`. Les **quatre lignes témoins** ont été vérifiées avant et après : `LIEN_DIRECT_LECON` ✅ · `classList.add("parti")` dans `#lecon=` ✅ · `partirVersVille(iVille)` ✅ · les deux moitiés de l'`about:blank` de la sellerie ✅. Les **quatre iframes** portent toujours une adresse explicite.
+**Livré : `hype-lingo-lex-elevage.js` (neuf), `lingo.html` (trois gestes) et `lingo-dialogue.html` (cinq gestes).** DEUX push dans la journée — le premier lot (lexique + `lingo.html`) était déjà poussé quand la suite a été écrite.
+`lingo.html` md5 **`e8e2c64d…`** au premier push, **`f7dc5c63eed4e3392e11939ed227958a`** en fin de session — parti du fichier en cours de Blandine (`b547e6eb…`). `lingo-dialogue.html` parti de `4882bbee…`, livré en `1abc1a4280afe9ff3f8ae84d8e9bbebd`. Les **quatre lignes témoins** ont été vérifiées avant et après : `LIEN_DIRECT_LECON` ✅ · `classList.add("parti")` dans `#lecon=` ✅ · `partirVersVille(iVille)` ✅ · les deux moitiés de l'`about:blank` de la sellerie ✅. Les **quatre iframes** portent toujours une adresse explicite.
 
 ---
 
@@ -390,7 +390,7 @@ J'ai constaté que `ouvrirSituation()` passe `&c=` à l'iframe alors que la page
 
 ---
 
-## 🟢 LES CINQ GESTES FAITS — feu vert de Blandine, *« Oui ok »* puis *« Ok tu peux faire vas y »*
+## 🟢 LES SIX GESTES FAITS — feu vert de Blandine, *« Oui ok »* puis *« Ok tu peux faire vas y »*
 
 ### 1 · 🟥 LES SIX LANGUES, ET LA CIBLE VIENT ENFIN DU PARENT — **le vrai défaut de la journée**
 
@@ -423,11 +423,22 @@ Le parent était verrouillé depuis le matin, mais `lingo-dialogue.html?ville=go
 
 **Posé** : `VILLE_OFFERTE_D` + `autorisee()`, et le test **en tout premier dans `dessine()`** — vérifié : aucune scène construite, aucune phrase lue, **aucune voix prononcée** avant le verrou. L'écran affiche « Réservé aux abonnées » et un seul bouton, « Revenir à la ville ». Jauge à zéro.
 
-**Simulé** : Golegã sans abonnement → écran réservé · Golegã abonnée → scène · La Baule, Édimbourg, Le Morne, Kildare sans abonnement → scène (villes offertes) · Versailles sans abonnement → écran réservé.
+### 6 · 🟢 UNE SEULE LISTE DE VILLES OFFERTES — la duplication retirée le soir même
 
-⚠️ **`VILLE_OFFERTE_D` doit rester d'accord avec `VILLE_OFFERTE` de `lingo.html`.** Si une ville devient offerte là-bas et pas ici, elle se ferme dans l'iframe alors qu'elle est ouverte partout ailleurs. **Deux listes, un seul régime** — c'est le prix de l'iframe autonome.
-⚠️ **Ce n'est pas une sécurité, c'est une porte.** Les phrases sont dans un `.js` public : qui lit le source les a. Régime assumé depuis la doctrine VITRINE.
-⚠️ `localStorage` est lisible ici parce que la page fille est servie depuis la **même origine**. Si elle change d'origine un jour, le verrou devient aveugle et c'est au parent de passer l'état.
+**La première version du verrou recopiait la liste** dans la page fille (`VILLE_OFFERTE_D`), faute de mieux : une iframe a son propre `window` et ne voit pas `VILLE_OFFERTE`. Signalé à Blandine comme un piège à retardement — **un oubli invisible**, où une ville nouvellement offerte resterait ouverte partout et se fermerait dans la seule mise en situation. Sa réponse : *« Le plus simple est le mieux oui tu peux régler ça »*.
+
+**Retenu, le plus simple des trois** : le parent tranche et passe le résultat dans l'URL, `&ok=1`, ajouté dans `ouvrirSituation()` **après** `villeAutorisee()`. La page fille n'a plus de liste du tout, seulement `autorisee()` qui lit le paramètre.
+
+⚠️ **UNE SEULE LISTE DANS TOUT LE PROJET, `VILLE_OFFERTE` dans `lingo.html`. NE PAS EN RECRÉER dans la page fille.** Si le verrou doit changer, il change dans `villeAutorisee()`, nulle part ailleurs.
+
+**Les deux autres options, écartées** : un troisième fichier partagé `hype-lingo-acces.js` chargé par les deux — la vraie réponse propre, et celle qui va dans le sens de Flutter (un service d'accès), mais elle touche `lingo.html`, la page fille **et** le socle du service worker ; et laisser les deux listes avec un avertissement, ce qui revenait à parier sur la mémoire.
+
+**LE REPLI, ET CE QU'IL COÛTE.** Si `ok` est absent — URL tapée à la main, ou vieux `lingo.html` servi par le cache — on retombe sur `localStorage`, ce que lit déjà `estPremium()`. **Conséquence assumée** : une ville **offerte** ouverte par son URL brute, sans abonnement, affichera « Réservé aux abonnées » à tort. C'est le seul chemin où le repli se voit, et **il n'existe pas dans l'app** : le bouton passe toujours par le parent.
+
+**Simulé, six chemins** — par le parent : Golegã abonnée ou non → scène (le parent a déjà filtré), La Baule → scène. Par URL brute : Golegã sans abonnement → écran réservé, Golegã abonnée → scène, La Baule sans abonnement → écran réservé (le repli, ci-dessus).
+
+⚠️ **Ce n'est pas une sécurité, c'est une porte.** `&ok=1` se tape à la main, et les phrases sont dans un `.js` public : qui lit le source les a. Régime assumé depuis la doctrine VITRINE.
+⚠️ `localStorage` n'est lisible ici que parce que la page fille est servie depuis la **même origine**. Le jour où elle change d'origine, seul `&ok=` subsiste — et c'est très bien ainsi.
 
 ---
 

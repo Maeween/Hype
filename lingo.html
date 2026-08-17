@@ -6360,9 +6360,20 @@ function ouvrirSituation(refVille){
      ⚠️ ON NE CACHE PAS LE BOUTON — doctrine VITRINE, tranchee le 14/08 :
      « la page de la ville reste ouverte a tous, la lecon reste fermee ».
      Le dialogue est une lecon : il se montre, il ne se joue pas.
-     ⚠️ CE VERROU NE PROTEGE QUE LA PORTE D'ICI. `lingo-dialogue.html`
-     reste ouvrable par son URL directe et doit porter le sien. */
+     ⚠️ LA PAGE FILLE EST OUVRABLE PAR SON URL DIRECTE : elle porte son
+     propre verrou depuis le 17/08, et c'est `&ok=` ci-dessous qui le
+     nourrit. */
   if(!villeAutorisee(refVille)){ ouvrirPaywall(); return; }
+
+  /* 🟥 17/08 — L'AUTORISATION PART DANS L'URL, `&ok=1`.
+     POURQUOI : la page fille avait sa PROPRE COPIE de la liste des villes
+     offertes — une iframe a son propre `window` et ne voit pas
+     `VILLE_OFFERTE`. Deux listes a tenir d'accord, c'est un oubli garanti
+     le jour ou une ville devient offerte, et un oubli INVISIBLE : la ville
+     reste ouverte partout et se ferme dans la seule mise en situation.
+     Desormais UNE SEULE LISTE, celle d'ici. On est apres
+     `villeAutorisee()` : si on lit cette ligne, la ville EST autorisee.
+     ⚠️ NE PAS RECREER de liste de villes dans lingo-dialogue.html. */
   var lg = langueUI();
   /* ⚠️ `c` = la langue APPRISE, celle du voyage (`cible()` -> VOYAGE_LANGUE).
      Sans elle, la page fille rededuisait une cible de son cote et pouvait
@@ -6370,6 +6381,7 @@ function ouvrirSituation(refVille){
   var cbl = ""; try{ cbl = cible() || ""; }catch(e){}
   f.src = "lingo-dialogue.html?ville=" + encodeURIComponent(refVille) +
           "&l=" + encodeURIComponent(lg) + "&c=" + encodeURIComponent(cbl) +
+          "&ok=1" +
           "&v=" + encodeURIComponent(VER);
   S("situation").classList.add("on");
   /* 🟥 LE FILET. La page fille charge les lexiques elle-meme — une
