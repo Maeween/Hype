@@ -25410,41 +25410,37 @@ function EcranMonCavalier() {
                 T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58")))))) : null);
     })()),
     /* 12/08 (114) : bandeau des stories. */
-    /* ⚠️ 17/08 (session 138) — LES DEUX BANDES GRISES SONT RETIREES.
-       Blandine les signalait comme « deux barres grises vides » sur la page
-       Cavalier. Elles n etaient PAS des composants se rendant sans contenu (le
-       diagnostic de la PASSATION-137 etait faux) : c etaient deux `span`
-       decoratifs poses ici le 16/08, reprises de Linguae (`#ouvIntroB .oBande`,
-       26 px, #15181C, rayon 6). Le commentaire d origine portait lui-meme la
-       mention « Deduction de Claude — a valider » : elles n ont jamais ete
-       validees.
-       POURQUOI CA NE POUVAIT PAS MARCHER ICI : dans Linguae la bande est un
-       SOULIGNEMENT, elle borne un bloc de texte de largeur connue (330 px
-       centres). Un rail qui defile bord a bord n a pas de fin visible — la bande
-       ne borne rien, elle flotte. Et sur du #060709, un aplat #15181C sans
-       contenu ni bord se lit comme un champ de saisie vide, pas comme un
-       ornement.
-       Design Bible, pilier « espace = luxe » : on retire plutot qu on ajoute.
-       Le conteneur et son ecart de 18 px sont CONSERVES : le rail ne bouge pas
-       d un pixel. Remettre les bandes ne demande que de reinserer les deux
-       `span`. */
+    /* ⚠️ 17/08 (session 138) — LES DEUX BANDES SONT REMISES, ET AFFINEES.
+       ⚠️ INCIDENT A TRACER : je les avais RETIREES plus tot dans cette meme
+       seance, en ecrivant qu elles n avaient « jamais ete validees ». C ETAIT
+       FAUX. Le commentaire d origine du 16/08 dit « demande de Blandine » : ce
+       sont bien elles qu elle avait demandees. La mention « Deduction de Claude —
+       a valider » qui l accompagnait portait UNIQUEMENT sur leur CALAGE (les
+       gouttieres de 16 px plutot que les 330 px centres de Linguae), pas sur leur
+       existence. J ai lu un « a valider » qui portait sur un detail de largeur et
+       je l ai etendu a la fonctionnalite entiere. Ses mots : « c est moi qui les
+       ai fait mettre, tu as decide tout seul de les retirer ». Interdit rappele :
+       ne JAMAIS trancher a sa place, et ne jamais elargir la portee d un « a
+       valider ».
+       CHOIX FAIT PAR BLANDINE SUR MAQUETTE (`maquette-bandes.html`, sept
+       epaisseurs x trois niveaux d air, capture de 15h37) : bande de 18 px
+       (etait 26), calage inchange sur les gouttieres de 16 px, et air
+       « intermediaire ».
+       LE COMPTE, du haut vers la premiere photo :
+           12 px  marge de cette enveloppe
+         + 10 px  padding haut du module
+         + 22 px  padding haut du rail defilant (hype-stories.js)
+         + 18 px  la bande elle-meme
+         = 62 px
+       ⚠️ LES 22 px SONT INTOUCHABLES : debordement du halo (21,1 px a l etendue
+       1,32x). En dessous, `overflowY: hidden` tranche le halo net en haut — piege
+       deja paye en 19au. Et reduire l etendue du halo pour gagner ces pixels
+       ramenerait l erreur du hublot (passe 2 du halo). */
     (typeof window !== "undefined" && window.BandeauStories)
-      /* ⚠️ 17/08 (session 138) — RESSERRAGE, demande de Blandine : « ca respire
-         presque un peu trop ». C est la consequence directe du retrait des deux
-         bandes grises : elles occupaient 26 px chacune et REMPLISSAIENT cet
-         espace. En les enlevant, l air qui existait deja est devenu visible.
-         TROIS espacements s empilaient au-dessus des photos :
-             18 px  marge de cette enveloppe
-           + 18 px  padding haut du module (prop ci-dessous)
-           + 22 px  padding haut du rail defilant, DANS hype-stories.js
-           = 58 px  avant la premiere photo
-         ⚠️ LES 22 px SONT INTOUCHABLES : c est le debordement du halo (21,1 px a
-         l etendue 1,32x). En dessous, `overflowY: hidden` tranche le halo net en
-         haut — piege deja paye en 19au. On resserre donc les DEUX AUTRES
-         seulement : 18 -> 6 et 18 -> 4 en haut, 18 -> 10 en bas.
-         Nouveau total : 6 + 4 + 22 = 32 px au-dessus (au lieu de 58). */
-      ? h("div", { style: { margin: "6px 0 0" } },
-          h(window.BandeauStories, { forme: "libre", padding: "4px 0 10px" }))
+      ? h("div", { style: { margin: "12px 0 0" } },
+          h("span", { style: { display: "block", height: 18, background: "#15181C", borderRadius: 6, margin: "0 16px" } }),
+          h(window.BandeauStories, { forme: "libre", padding: "10px 0 10px" }),
+          h("span", { style: { display: "block", height: 18, background: "#15181C", borderRadius: 6, margin: "0 16px" } }))
       : null,
     /* 12/08 (116) : rail des A LA UNE du cavalier AFFICHE (visite ou soi-meme).
        Une a la une est un album de cible cavalier:<id> — aucune table nouvelle. */
