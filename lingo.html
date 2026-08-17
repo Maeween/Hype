@@ -2841,7 +2841,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      `etalon`, `jument`) sont des RAPPELS de lex-cheval.js.
      ⚠️ La VENTE n'est pas ici : elle est reservee a Verone, et les ventes
      de yearlings a Lexington. -->
-<script src="hype-lingo-lex-elevage.js?l=1"></script>
+<!-- ⚠️ ?l=2 DEPUIS LE 17/08 : la cle `dialogue` avec les 18 phrases de
+     GOLEGA (5 temps) et quatre entrees neuves au lexique (`temperament`,
+     `produit`, `marcher-en-main`, `selection`). SANS CE NUMERO CHANGE,
+     le service worker sert l'ancien fichier et le bouton n'apparait pas. -->
+<script src="hype-lingo-lex-elevage.js?l=2"></script>
 <!-- La balade : chapitre cree le 6 aout 2026 pour Le Morne (ile Maurice),
      l'etape 2. Reserver une sortie et entrer dans l'eau. Son entree
      `balade` est un RAPPEL de hype-lingo-lex-arrivee.js (meme `ref`,
@@ -6348,6 +6352,17 @@ function aUnDialogue(refVille){
 function ouvrirSituation(refVille){
   var f = S("situationIf");
   if(!f) return;
+  /* 🟥 17/08 — LE VERROU DES VILLES PAYANTES, POSE LE JOUR OU LA PREMIERE
+     VILLE PAYANTE A RECU UN DIALOGUE (Golega). Avertissement ecrit dans
+     le SUIVI depuis le 13/08 : `aUnDialogue()` ne consulte PAS
+     `villeAutorisee()`, donc sans cette ligne la scene d'une ville
+     payante s'ouvrait entierement, gratuitement.
+     ⚠️ ON NE CACHE PAS LE BOUTON — doctrine VITRINE, tranchee le 14/08 :
+     « la page de la ville reste ouverte a tous, la lecon reste fermee ».
+     Le dialogue est une lecon : il se montre, il ne se joue pas.
+     ⚠️ CE VERROU NE PROTEGE QUE LA PORTE D'ICI. `lingo-dialogue.html`
+     reste ouvrable par son URL directe et doit porter le sien. */
+  if(!villeAutorisee(refVille)){ ouvrirPaywall(); return; }
   var lg = langueUI();
   /* ⚠️ `c` = la langue APPRISE, celle du voyage (`cible()` -> VOYAGE_LANGUE).
      Sans elle, la page fille rededuisait une cible de son cote et pouvait
