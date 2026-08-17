@@ -554,19 +554,103 @@ window.HYPE_LINGO_LEX.arrivee = {
      `dit` : "joueuse" = elle produit la phrase · "club" = elle l'entend
      et doit comprendre. 16 produites, 6 entendues.
   ================================================================== */
+  /* ==================================================================
+     🟥 REFONTE DU 17/08/2026 — LA BAULE PASSE D'UN CATALOGUE À UNE
+     DÉMARCHE.
+
+     Blandine a fourni dix-huit phrases et son jugement : *« ses phrases
+     sont mieux que les notées pour La Baule »*. Elle avait raison, et
+     pour une raison précise : les siennes suivent le PARCOURS RÉEL d'une
+     cavalière de passage — je me renseigne → je dis mon niveau → je
+     réserve → je paie → je prépare → je reviens. Les anciennes étaient
+     un catalogue de questions sans progression.
+     🟥 SA CONSIGNE : *« on peut en piquer quelques-unes »*, puis *« ou
+     retirer les moins bonnes »* — donc UNE FUSION, PAS UN REMPLACEMENT.
+     Elle a elle-même écarté sa phrase sur le prêt du cheval compris dans
+     le tarif (évident dans un club).
+
+     ⚠️ QUATORZE PHRASES RETIRÉES, et pourquoi — NE PAS les remettre :
+     · « je monte depuis trois ans », « quel est votre niveau ? »,
+       « depuis combien de temps montez-vous ? », « vous êtes
+       débutante ? » → quatre façons de dire la même chose. Sa phrase
+       « je monte régulièrement dans mon pays » les remplace toutes.
+     · « quels sont vos tarifs pour l'année ? », « réserver le mercredi
+       après-midi » → un cavalier de passage ne s'inscrit pas à l'année
+       et ne raisonne pas en semaine scolaire.
+     · « est-ce qu'il faut des bottes et une bombe ? », « prêtez-vous des
+       bottes ? » → sa phrase « dois-je apporter mon propre casque et mon
+       matériel ? » dit les deux.
+     · « cours d'essai », « dans quelles conditions », « proposez-vous
+       aussi des balades », « combien est-ce que cela coûte »,
+       « avez-vous un cheval calme », « un cheval rapide » → tous
+       remplacés par des phrases plus précises.
+
+     🟥 SIX PHRASES GARDÉES CONTRE VENTS ET MARÉES, parce qu'elles
+     portent ce que les nouvelles n'ont pas :
+     · « je ne suis jamais montée » — avec l'accord féminin qu'elle avait
+       corrigé le 15/08 (être + accord, pas « j'ai jamais monté ») ;
+     · « vous êtes à l'aise au pas, au trot, au galop ? » et « vous avez
+       déjà galopé ? » — les deux portent CANTER ;
+     · 🟥 « est-ce qu'on peut galoper doucement, sans aller vite ? » →
+       *a steady canter, not a gallop*. C'EST LE FAUX AMI LE PLUS UTILE
+       DE L'APP, et le seul endroit où il se vit des deux côtés. NE
+       JAMAIS retirer cette phrase.
+     · « la bombe est fournie » · « un cheval sympa » · « une balade pour
+       cinq personnes ».
+
+     ⚠️ « CALME MAIS AVEC UN PEU DE SANG » est intraduisible mot à mot :
+     « du sang » se dit *energy* ou *a bit of go*, JAMAIS *blood*. C'est
+     la demande d'une cavalière confirmée : ni un cheval éteint, ni un
+     cheval dur.
+
+     ⚠️ TROIS MOTS DU LEXIQUE N'ONT PLUS DE PHRASE : `cours-particulier`,
+     `duree-reprise`, `annuler`. Ils restent au lexique et s'apprennent
+     en lisant — c'est le régime posé le 15/08 : « un mot du lexique n'a
+     pas besoin d'une phrase ».
+
+     🟥 LA DERNIÈRE PHRASE EST À SA PLACE, EN DERNIER : « j'ai beaucoup
+     aimé le cours, est-ce que je peux réserver une autre séance ? ». On
+     ne quitte pas un club en posant une question, on le quitte en
+     revenant. NE PAS la déplacer.
+  ================================================================== */
   dialogue: {
     ville: "labaule", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 25 phrases depuis le 13/08 */
 
     phrases: [
 
       /* ---- temps 1 · j'entre et j'explique pourquoi je suis là ---- */
-      { ref:"d-info-annee", temps:1, dit:"joueuse",
-        fr:"Bonjour, j'aimerais avoir des informations sur le centre équestre pour l'année prochaine.",
-        en:"Hello — I'd like some information about the riding school for next year.",
-        es:"Buenos días, quisiera información sobre el centro ecuestre para el año que viene.",
-        it:"Buongiorno, vorrei delle informazioni sul centro equestre per l'anno prossimo.",
-        de:"Guten Tag, ich hätte gern Informationen über die Reitschule für nächstes Jahr.",
-        ja:"こんにちは。 来年 の 乗馬 クラブ に ついて 教え て ください。" },
+      /* 🟥 PHRASE DE BLANDINE, 17/08. Remplace « des informations pour
+         l'année prochaine » : un cavalier de passage ne s'inscrit pas à
+         l'année, il veut monter cette semaine. Voir l'en-tête. */
+      { ref:"d-renseignements", temps:1, dit:"joueuse",
+        fr:"Bonjour, je voudrais quelques renseignements sur votre centre équestre.",
+        en:"Hello, I'd like some information about your riding centre.",
+        es:"Buenos días, quisiera algo de información sobre su centro ecuestre.",
+        it:"Buongiorno, vorrei alcune informazioni sul vostro centro equestre.",
+        de:"Guten Tag, ich hätte gern einige Informationen über Ihren Reitbetrieb.",
+        ja:"こんにちは。 こちら の 乗馬 クラブ に ついて 少し 伺い たい の です が。" },
+
+      /* 🟥 PHRASE DE BLANDINE : LA situation de l'app. Une cavalière en
+         voyage n'est ni membre ni débutante — elle est de passage, et
+         c'est le premier mot à savoir dire. */
+      { ref:"d-cavalier-passage", temps:1, dit:"joueuse", mots:["cavalier-confirme"],
+        fr:"Est-ce que vous acceptez les cavaliers de passage ?",
+        en:"Do you accept visiting riders?",
+        es:"¿Aceptan jinetes de paso?",
+        it:"Accettate cavalieri di passaggio?",
+        de:"Nehmen Sie auch Gastreiter an?",
+        ja:"ビジター の 騎乗 は 受け付け て い ます か ?" },
+
+      /* 🟥 PHRASE DE BLANDINE. Elle remplace « je monte depuis trois
+         ans » : dire qu'on monte RÉGULIÈREMENT renseigne mieux qu'une
+         durée, et c'est ce qu'un club veut savoir. */
+      { ref:"d-monte-regulierement", temps:1, dit:"joueuse", mots:["niveau"],
+        fr:"Je monte régulièrement à cheval dans mon pays.",
+        en:"I ride regularly in my country.",
+        es:"Monto a caballo con regularidad en mi país.",
+        it:"Monto regolarmente a cavallo nel mio paese.",
+        de:"Ich reite regelmäßig in meinem Land.",
+        ja:"自分 の 国 で 定期的 に 乗っ て い ます。" },
 
       /* ---- temps 2 · je demande ce qui existe ---- */
       { ref:"d-cours-debutants", temps:2, dit:"joueuse", mots:["debutant"],
@@ -580,6 +664,17 @@ window.HYPE_LINGO_LEX.arrivee = {
       /* La phrase de Blandine. `cavalier-confirme` a rejoint le lexique de
          La Baule le 13/08 pour qu'elle soit légitime — voir le commentaire
          du concept. NE PAS RETIRER CETTE PHRASE. */
+      /* 🟥 PHRASE DE BLANDINE. Remplace « quel est votre niveau ? » posée
+         par le club : c'est la JOUEUSE qui doit savoir demander le niveau
+         requis, pas subir la question. */
+      { ref:"d-quel-niveau-requis", temps:2, dit:"joueuse", mots:["niveau","cours-collectif"],
+        fr:"Quel niveau faut-il avoir pour participer à ce cours ?",
+        en:"What level do I need to take part in this lesson?",
+        es:"¿Qué nivel hace falta para participar en esta clase?",
+        it:"Che livello serve per partecipare a questa lezione?",
+        de:"Welches Niveau braucht man für diese Stunde?",
+        ja:"この レッスン に 参加 する に は どの くらい の レベル が 必要 です か ?" },
+
       { ref:"d-cours-confirmes", temps:2, dit:"joueuse", mots:["cavalier-confirme"],
         fr:"Et pour les cavaliers confirmés ?",
         en:"And for more experienced riders?",
@@ -588,22 +683,33 @@ window.HYPE_LINGO_LEX.arrivee = {
         de:"Und für erfahrene Reiter?",
         ja:"経験者 向け の レッスン も あり ます か ?" },
 
-      { ref:"d-reserver-mercredi", temps:2, dit:"joueuse", mots:["reserver"],
-        fr:"Est-ce qu'on peut réserver le mercredi après-midi ?",
-        en:"Can I book for Wednesday afternoons?",
-        es:"¿Se puede reservar los miércoles por la tarde?",
-        it:"Si può prenotare il mercoledì pomeriggio?",
-        de:"Kann man am Mittwochnachmittag buchen?",
-        ja:"水曜日 の 午後 に 予約 でき ます か ?" },
+      /* ---- temps 3 · je réserve ---- */
+      /* 🟥 TROIS PHRASES DE BLANDINE. Elles remplacent « les tarifs pour
+         l'année » et « réserver le mercredi après-midi » : un cavalier de
+         passage réserve UNE séance, pour DEMAIN. */
+      { ref:"d-inscrire-demain", temps:3, dit:"joueuse", mots:["reserver","cours-collectif"],
+        fr:"Je voudrais m'inscrire pour un cours demain matin.",
+        en:"I'd like to book a lesson for tomorrow morning.",
+        es:"Quisiera inscribirme en una clase para mañana por la mañana.",
+        it:"Vorrei iscrivermi a una lezione per domani mattina.",
+        de:"Ich würde gern eine Stunde für morgen Vormittag buchen.",
+        ja:"明日 の 午前 の レッスン に 申し込み たい の です が。" },
 
-      /* ---- temps 3 · je dis mon niveau, je demande le tarif ---- */
-      { ref:"d-trois-ans", temps:3, dit:"joueuse",
-        fr:"Je monte depuis trois ans.",
-        en:"I've been riding for three years.",
-        es:"Monto a caballo desde hace tres años.",
-        it:"Vado a cavallo da tre anni.",
-        de:"Ich reite seit drei Jahren.",
-        ja:"乗馬 を 始め て 三年 に なり ます。" },
+      { ref:"d-une-seule-seance", temps:3, dit:"joueuse", mots:["reserver"],
+        fr:"Est-ce que je peux réserver seulement une séance ?",
+        en:"Can I book just one session?",
+        es:"¿Puedo reservar solo una sesión?",
+        it:"Posso prenotare solo una lezione?",
+        de:"Kann ich nur eine einzelne Stunde buchen?",
+        ja:"一 回 だけ の 予約 も でき ます か ?" },
+
+      { ref:"d-combien-une-heure", temps:3, dit:"joueuse", mots:["tarif"],
+        fr:"Combien coûte une heure de cours ?",
+        en:"How much does a one-hour lesson cost?",
+        es:"¿Cuánto cuesta una hora de clase?",
+        it:"Quanto costa un'ora di lezione?",
+        de:"Was kostet eine Reitstunde?",
+        ja:"一 時間 の レッスン は いくら です か ?" },
 
       { ref:"d-jamais-monte", temps:3, dit:"joueuse", mots:["debutant"],
         fr:"Je suis débutante, je ne suis jamais montée.",
@@ -612,39 +718,6 @@ window.HYPE_LINGO_LEX.arrivee = {
         it:"Sono principiante, non sono mai andata a cavallo.",
         de:"Ich bin Anfängerin, ich bin noch nie geritten.",
         ja:"初心者 です。 馬 に 乗っ た こと が あり ませ ん。" },
-
-      { ref:"d-tarifs-annee", temps:3, dit:"joueuse", mots:["tarif"],
-        fr:"Quels sont vos tarifs pour l'année ?",
-        en:"What are your prices for the year?",
-        es:"¿Cuáles son sus tarifas para el año?",
-        it:"Quali sono le vostre tariffe per l'anno?",
-        de:"Wie sind Ihre Preise für das Jahr?",
-        ja:"一年 の 料金 は いくら です か ?" },
-
-      /* ---- temps 4 · je comprends ce qu'on me demande ---- */
-      { ref:"d-q-niveau", temps:4, dit:"club", mots:["niveau"],
-        fr:"Quel est votre niveau ?",
-        en:"What level are you riding at?",
-        es:"¿Cuál es su nivel?",
-        it:"Qual è il suo livello?",
-        de:"Auf welchem Niveau reiten Sie?",
-        ja:"レベル は どのくらい です か ?" },
-
-      { ref:"d-q-depuis-quand", temps:4, dit:"club",
-        fr:"Depuis combien de temps montez-vous ?",
-        en:"How long have you been riding?",
-        es:"¿Cuánto tiempo lleva montando?",
-        it:"Da quanto tempo va a cavallo?",
-        de:"Wie lange reiten Sie schon?",
-        ja:"乗馬歴 は どのくらい です か ?" },
-
-      { ref:"d-q-debutante", temps:4, dit:"club", mots:["debutant"],
-        fr:"Vous êtes débutante ?",
-        en:"Are you a complete beginner?",
-        es:"¿Es usted principiante?",
-        it:"È principiante?",
-        de:"Sind Sie Anfängerin?",
-        ja:"まったく の 初心者 です か ?" },
 
       { ref:"d-q-allures", temps:4, dit:"club", mots:["pas","trot","galop"],
         fr:"Vous êtes à l'aise au pas, au trot, au galop ?",
@@ -663,14 +736,36 @@ window.HYPE_LINGO_LEX.arrivee = {
         ja:"駆歩 を し た こと は あり ます か ?" },
 
       /* ---- temps 5 · l'équipement obligatoire ---- */
-      { ref:"d-bottes-bombe", temps:5, dit:"joueuse", mots:["bottes","bombe-fournie"],
-        fr:"Est-ce qu'il faut des bottes et une bombe ?",
-        en:"Do I need boots and a hat?",
-        varEn:"Do I need boots and a helmet?",
-        es:"¿Hacen falta botas y casco?",
-        it:"Servono stivali e cap?",
-        de:"Braucht man Stiefel und eine Kappe?",
-        ja:"ブーツ と ヘルメット は 必要 です か ?" },
+      /* 🟥 TROIS PHRASES DE BLANDINE sur le cheval qu'on reçoit. Elles
+         remplacent « avez-vous un cheval calme ? » et « puis-je avoir un
+         cheval rapide ? », toutes deux trop plates.
+         ⚠️ « CALME MAIS AVEC UN PEU DE SANG » est intraduisible mot à mot :
+         « du sang » se dit « energy » ou « a bit of go » en anglais, jamais
+         « blood ». C'est ce qu'une cavalière confirmée demande vraiment —
+         ni un cheval éteint, ni un cheval dur. */
+      { ref:"d-calme-avec-du-sang", temps:5, dit:"joueuse", mots:["cheval-calme","cheval-rapide"],
+        fr:"Pouvez-vous me proposer un cheval calme mais avec un peu de sang ?",
+        en:"Can you give me a calm horse with a bit of energy?",
+        es:"¿Me puede dar un caballo tranquilo pero con algo de sangre?",
+        it:"Può darmi un cavallo tranquillo ma con un po' di sangue?",
+        de:"Können Sie mir ein ruhiges Pferd mit etwas Temperament geben?",
+        ja:"落ち着い て いる けれど、 少し 気持ち の ある 馬 を お願い でき ます か ?" },
+
+      { ref:"d-cheval-plutot-grand", temps:5, dit:"joueuse", mots:[],
+        fr:"Je préfère monter un cheval plutôt grand.",
+        en:"I'd prefer to ride a fairly tall horse.",
+        es:"Prefiero montar un caballo bastante alto.",
+        it:"Preferisco montare un cavallo piuttosto alto.",
+        de:"Ich würde lieber ein eher großes Pferd reiten.",
+        ja:"どちら か と いえ ば 大きめ の 馬 に 乗り たい です。" },
+
+      { ref:"d-quel-cheval-attribue", temps:5, dit:"joueuse", mots:[],
+        fr:"Quel cheval allez-vous m'attribuer pour le cours ?",
+        en:"Which horse will I be riding for the lesson?",
+        es:"¿Qué caballo me van a asignar para la clase?",
+        it:"Quale cavallo mi assegnate per la lezione?",
+        de:"Welches Pferd bekomme ich für die Stunde?",
+        ja:"レッスン で は どの 馬 に 乗る こと に なり ます か ?" },
 
       { ref:"d-pas-de-bombe", temps:5, dit:"joueuse", mots:["bombe-fournie"],
         fr:"Je n'ai pas encore de bombe — est-ce que vous en prêtez ?",
@@ -680,14 +775,6 @@ window.HYPE_LINGO_LEX.arrivee = {
         it:"Non ho ancora il cap, li prestate?",
         de:"Ich habe noch keine Kappe — verleihen Sie welche?",
         ja:"まだ ヘルメット を 持っ て い ませ ん。 貸し て もらえ ます か ?" },
-
-      { ref:"d-preter-bottes", temps:5, dit:"joueuse", mots:["bottes"],
-        fr:"Est-ce que vous prêtez des bottes aussi ?",
-        en:"Do you lend boots as well?",
-        es:"¿Prestan botas también?",
-        it:"Prestate anche gli stivali?",
-        de:"Verleihen Sie auch Stiefel?",
-        ja:"ブーツ も 貸し て もらえ ます か ?" },
 
       { ref:"d-bombe-fournie", temps:5, dit:"club", mots:["bombe-fournie"],
         fr:"La bombe est fournie.",
@@ -699,30 +786,43 @@ window.HYPE_LINGO_LEX.arrivee = {
         ja:"ヘルメット の 貸し出し が あり ます。" },
 
       /* ---- temps 6 · je réserve ---- */
-      { ref:"d-cours-essai", temps:6, dit:"joueuse",
-        fr:"Est-ce que vous proposez des cours d'essai ?",
-        en:"Do you do trial lessons?",
-        es:"¿Ofrecen clases de prueba?",
-        it:"Offrite lezioni di prova?",
-        de:"Bieten Sie Probestunden an?",
-        ja:"体験 レッスン は あり ます か ?" },
+      /* 🟥 QUATRE PHRASES DE BLANDINE — CE QUI MANQUAIT ENTIÈREMENT :
+         l'heure d'arrivée, seller soi-même, où sont la sellerie et le
+         pansage. Un cavalier de passage ne sait rien de tout cela, et
+         c'est ce qui l'angoisse le plus en arrivant.
+         ⚠️ La dernière est la plus belle du chapitre : on ne quitte pas
+         un club en posant une question, on le quitte en revenant. */
+      { ref:"d-heure-arrivee", temps:6, dit:"joueuse", mots:[],
+        fr:"À quelle heure dois-je arriver pour préparer mon cheval ?",
+        en:"What time should I arrive to get my horse ready?",
+        es:"¿A qué hora debo llegar para preparar mi caballo?",
+        it:"A che ora devo arrivare per preparare il cavallo?",
+        de:"Wann soll ich kommen, um mein Pferd fertig zu machen?",
+        ja:"馬 の 支度 を する に は 何 時 に 着け ば いい です か ?" },
 
-      { ref:"d-quelles-conditions", temps:6, dit:"joueuse",
-        fr:"Si oui, dans quelles conditions ?",
-        en:"If so, how does that work?",
-        es:"Si es así, ¿en qué condiciones?",
-        it:"Se sì, a quali condizioni?",
-        de:"Wenn ja, wie läuft das ab?",
-        ja:"ある 場合、 どんな 条件 です か ?" },
+      { ref:"d-seller-moi-meme", temps:6, dit:"joueuse", mots:[],
+        fr:"Est-ce que je dois seller le cheval moi-même ?",
+        en:"Do I need to tack up the horse myself?",
+        es:"¿Tengo que ensillar el caballo yo misma?",
+        it:"Devo sellare il cavallo da sola?",
+        de:"Muss ich das Pferd selbst satteln?",
+        ja:"馬 に 鞍 を つける の は 自分 で し ます か ?" },
 
-      { ref:"d-aussi-balades", temps:6, dit:"joueuse", mots:["balade"],
-        fr:"Est-ce que vous proposez aussi des balades ?",
-        en:"Do you do hacks as well?",
-        varEn:"Do you offer trail rides too?",
-        es:"¿Ofrecen también paseos?",
-        it:"Organizzate anche passeggiate?",
-        de:"Bieten Sie auch Ausritte an?",
-        ja:"外乗 も あり ます か ?" },
+      { ref:"d-ou-sellerie-pansage", temps:6, dit:"joueuse", mots:[],
+        fr:"Où puis-je trouver la sellerie et le matériel de pansage ?",
+        en:"Where can I find the tack room and the grooming equipment?",
+        es:"¿Dónde puedo encontrar la guadarnés y el material de limpieza?",
+        it:"Dove posso trovare la selleria e il materiale per la pulizia?",
+        de:"Wo finde ich die Sattelkammer und das Putzzeug?",
+        ja:"馬具 部屋 と 手入れ 道具 は どこ に あり ます か ?" },
+
+      { ref:"d-balade-plage", temps:6, dit:"joueuse", mots:["balade"],
+        fr:"Est-il possible de faire une balade sur la plage ?",
+        en:"Is it possible to go for a ride on the beach?",
+        es:"¿Es posible hacer un paseo por la playa?",
+        it:"È possibile fare una passeggiata sulla spiaggia?",
+        de:"Ist ein Ausritt am Strand möglich?",
+        ja:"浜辺 で の 外乗 は でき ます か ?" },
 
       { ref:"d-balade-cinq", temps:6, dit:"joueuse", mots:["reserver","balade","le-groupe"],
         fr:"Je voudrais réserver une balade pour cinq personnes.",
@@ -733,30 +833,6 @@ window.HYPE_LINGO_LEX.arrivee = {
         de:"Ich möchte einen Ausritt für fünf Personen buchen.",
         ja:"五人 で 外乗 を 予約 し たい です。" },
 
-      { ref:"d-combien-coute", temps:6, dit:"joueuse", mots:["tarif"],
-        fr:"Combien est-ce que cela coûte ?",
-        en:"How much does that cost?",
-        es:"¿Cuánto cuesta?",
-        it:"Quanto costa?",
-        de:"Was kostet das?",
-        ja:"いくら です か ?" },
-
-      { ref:"d-cheval-calme", temps:6, dit:"joueuse", mots:["cheval-calme"],
-        fr:"Est-ce que vous avez un cheval calme ?",
-        en:"Have you got a quiet horse?",
-        es:"¿Tienen un caballo tranquilo?",
-        it:"Avete un cavallo tranquillo?",
-        de:"Haben Sie ein braves Pferd?",
-        ja:"おとなしい 馬 は い ます か ?" },
-
-      /* ---- trois phrases ajoutées le 13/08, demandées par Blandine ---- */
-
-      /* 🟥 LE SEUL ENDROIT DE TOUTE L'APP OÙ « gallop » DOIT APPARAÎTRE
-         EN ANGLAIS, et c'est volontaire : il n'est pas donné comme
-         synonyme de « canter », il est MIS EN OPPOSITION. C'est la
-         différence entre enseigner le piège et le tendre. Partout
-         ailleurs, « canter » seul — voir le `def` de `galop`.
-         ⚠️ NE PAS « CORRIGER » CETTE PHRASE en retirant « gallop ». */
       { ref:"d-canter-doux", temps:6, dit:"joueuse", mots:["galop"],
         fr:"Est-ce qu'on peut galoper doucement, sans aller vite ?",
         en:"Can we do a steady canter, not a gallop?",
@@ -765,19 +841,6 @@ window.HYPE_LINGO_LEX.arrivee = {
         de:"Können wir ruhig galoppieren, ohne zu rennen?",
         ja:"ゆっくり 駆歩 を し て も いい です か ?" },
 
-      { ref:"d-cheval-rapide", temps:6, dit:"joueuse", mots:["cheval-rapide"],
-        fr:"Est-ce que je peux avoir un cheval rapide ?",
-        en:"Can I have a fast horse?",
-        varEn:"Can I have a forward horse?",
-        es:"¿Me pueden dar un caballo rápido?",
-        it:"Posso avere un cavallo veloce?",
-        de:"Kann ich ein schnelles Pferd haben?",
-        ja:"速い 馬 に 乗れ ます か ?" },
-
-      /* Blandine : « c'est la phrase qui évite qu'on te mette sur un cheval
-         trop chaud ». « I'm not very confident » est ce qu'on dit vraiment
-         dans une écurie anglaise — PAS « I'm scared », trop fort, et qui
-         inquiète le club sur le niveau réel de la cavalière. */
       { ref:"d-pas-rassuree", temps:6, dit:"joueuse", mots:["cheval-sympa"],
         fr:"Je ne suis pas très rassurée à cheval. Est-ce que vous auriez un cheval sympa ?",
         en:"I'm not very confident on a horse. Would you have a nice one?",
@@ -785,7 +848,17 @@ window.HYPE_LINGO_LEX.arrivee = {
         es:"No voy muy tranquila a caballo. ¿Tendrían un caballo bueno?",
         it:"Non sono molto tranquilla a cavallo. Avreste un cavallo buono?",
         de:"Ich fühle mich auf dem Pferd nicht sehr sicher. Hätten Sie ein nettes Pferd?",
-        ja:"馬 の 上 で あまり 自信 が あり ませ ん。 優しい 馬 は い ます か ?" }
+        ja:"馬 の 上 で あまり 自信 が あり ませ ん。 優しい 馬 は い ます か ?" },
+
+      /* 🟥 LA DERNIÈRE PHRASE, et la plus belle du chapitre. */
+      { ref:"d-aime-le-cours", temps:6, dit:"joueuse", mots:["reserver"],
+        fr:"J'ai beaucoup aimé le cours. Est-ce que je peux réserver une autre séance cette semaine ?",
+        en:"I really enjoyed the lesson. Can I book another session this week?",
+        es:"Me ha gustado mucho la clase. ¿Puedo reservar otra sesión esta semana?",
+        it:"Mi è piaciuta molto la lezione. Posso prenotare un'altra sessione questa settimana?",
+        de:"Die Stunde hat mir sehr gefallen. Kann ich diese Woche noch eine buchen?",
+        ja:"レッスン が とても 楽しかっ た です。 今週 中 に もう 一 回 予約 でき ます か ?" },
+
     ]
   }
 };
