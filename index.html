@@ -28206,7 +28206,29 @@ function EcranEcurie() {
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
   var _ecCh = React.useState(null), chevauxEc = _ecCh[0], setChevauxEc = _ecCh[1];
   var _ecU = React.useState(null), moiEc = _ecU[0], setMoiEc = _ecU[1];
-  var tEcSt = React.useState(function () { try { return localStorage.getItem("hype_teinte_ecurie") || ""; } catch (e) { return ""; } }); /* 31/07 : teinte de la page ecurie (demande Blandine) */
+  /* ⚠️ 17/08 (session 138) — LE LISERE BORDEAUX DE LA BANNIERE D ECURIE.
+     Blandine : « celle de la page d ecurie perso a des bugs que l autre n a pas ».
+     Le cadre dessine plus bas dans ce composant prend sa couleur de `tAe()`, donc
+     de `TQe`, donc de cette cle locale. Or le 31/07 les pastilles de choix de
+     teinte ont ete RETIREES (teinte Ecurie passee « Prochainement ») — mais la
+     cle n a jamais ete effacee. `choisirTeinteEc`, la seule fonction qui pouvait
+     l ecrire, est desormais definie et JAMAIS APPELEE : une seule occurrence dans
+     tout le fichier. La cle ne peut donc plus contenir qu une valeur PERIMEE, ici
+     le Crimson choisi a l epoque du theme bordeaux.
+     Consequence verifiable : le bordeaux n appartient qu au telephone de Blandine.
+     Un autre cavalier, ou elle sur un appareil neuf, voit le repli turquoise.
+     Le liseré n est PAS dans les pixels : il est dans une cle locale devenue
+     inaccessible.
+     CORRECTIF : on purge la cle au montage et on repart du repli. Tant que la
+     teinte Ecurie reste « Prochainement », cette cle n a aucune raison d exister.
+     ⚠️ DEDUCTION DE CLAUDE — A VALIDER. Deux autres sorties ont ete presentees et
+     restent ouvertes : (B) rebrancher les pastilles de teinte, ce qui rouvre une
+     fonctionnalite volontairement fermee le 31/07 ; (C) aligner `TQe` sur le
+     theme du cavalier (`__thh`) et supprimer l idee d une teinte par ecurie —
+     plus coherent avec la Design Bible (une seule lumiere), mais c est un choix
+     produit. `choisirTeinteEc` est CONSERVEE intacte : rebrancher B ne demande
+     que de reafficher les pastilles. */
+  var tEcSt = React.useState(function () { try { localStorage.removeItem("hype_teinte_ecurie"); } catch (e) { } return ""; });
   var teinteEc = tEcSt[0], setTeinteEc = tEcSt[1];
   var TQe = teinteEc || "#20D9F5";
   function tAe(aE) { var hE = TQe.replace("#", ""); return "rgba(" + parseInt(hE.substr(0, 2), 16) + "," + parseInt(hE.substr(2, 2), 16) + "," + parseInt(hE.substr(4, 2), 16) + "," + aE + ")"; }

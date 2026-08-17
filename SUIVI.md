@@ -24,7 +24,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08 · VERROU CSS, MUR IMMERSIF, RECADREUR MIS A NU, HALO EN ANNEAU, LES SIX APPELS ALIGNES) — md5 `e5bc960cfe57ea2f3cee9dad67f2dcdf`, 9 126 363 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bb, md5 `73b57b7cae30939caf38df2e6c60e3d8`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bb`. Apercu EN PLUS : `index-apercu-mur.html` md5 `80256591c9d0671a524630d61a7a30eb`.**
+**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08 · VERROU CSS, MUR IMMERSIF, RECADREUR MIS A NU, HALO EN ANNEAU, LES SIX APPELS ALIGNES, LISERE ECURIE) — md5 `7885467abfccabbe29014958ae8c457b`, 9 127 965 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bb, md5 `73b57b7cae30939caf38df2e6c60e3d8`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bb`. Apercu EN PLUS : `index-apercu-mur.html` md5 `85d24fc760023c9c68b16cd25dba9c4f`.**
+
+⚠️ **ETATS PERIMES DU JOUR, NE PAS POUSSER :** `eb968bee…`, `b45c1890…`, `b6146ef8…`, `e5bc960c…`. Le md5 ci-dessus les contient tous.
 
 ⚠️ **ETATS PERIMES DU JOUR, NE PAS POUSSER :** `eb968bee…` (19az verrou seul), `b45c1890…` (19ba halo violent), `b6146ef8…` (19bb halo seul). Le md5 ci-dessus les contient tous.
 
@@ -300,6 +302,28 @@ passe 2: tA(0)    0%  · tA(0)    78%  · tA(0.09) 89%  · tA(0.03) 95%  · tA(0
 **À l'écran : + / −**
 **+** une respiration de lumière de 11 px autour des vignettes, dans la teinte du cavalier.
 **−** rien retiré. Aucune photo touchée, aucune mise en page déplacée (le retrait du rail est inchangé par rapport à l'index de Blandine).
+
+### 5bis. 🟩 LE LISERE BORDEAUX DE LA BANNIERE D'ECURIE — UNE CLE LOCALE ORPHELINE
+
+**Ce n'était ni un cadre cuit, ni le recadreur.** Le cadre visible sur la bannière est dessiné **à l'affichage**, en CSS, par un bloc `absolute` posé à 12 px des bords du hero : `border: "1px solid " + tAe(0.5)` plus un double `inset boxShadow`. Sa couleur vient de `tAe()`, donc de `TQe`, donc de **`localStorage["hype_teinte_ecurie"]`**.
+
+**LA CAUSE :** le 31/07, les pastilles de choix de teinte ont été retirées du bandeau (teinte Écurie passée « Prochainement », décision de Blandine). **Mais la clé n'a jamais été effacée.** Preuve décisive : `choisirTeinteEc`, la seule fonction capable de l'écrire, est **définie et jamais appelée** — une seule occurrence dans les 9 Mo. La clé ne peut donc plus contenir qu'une **valeur périmée**, ici le Crimson choisi à l'époque du thème bordeaux.
+
+**Conséquence vérifiable, et elle explique tout :** le bordeaux n'appartient qu'au téléphone de Blandine. Un autre cavalier, ou elle sur un appareil neuf, voit le repli turquoise. **Le liseré n'est pas dans les pixels, il est dans une préférence locale devenue inaccessible** — impossible à corriger en remplaçant la photo, ce qui explique le « quoi qu'on fasse ».
+
+**Livré (option A) :** la clé est purgée au montage, la page repart du repli. `choisirTeinteEc` est **conservée intacte**.
+
+⚠️ **DEDUCTION DE CLAUDE — A VALIDER.** Deux autres sorties ont été présentées et restent ouvertes : **(B)** rebrancher les pastilles de teinte — ne demande que de réafficher les pastilles, mais rouvre une fonctionnalité volontairement fermée ; **(C)** aligner `TQe` sur le thème du cavalier (`__thh`) et supprimer l'idée d'une teinte par écurie — plus cohérent avec la Design Bible (« la lumière est turquoise, une seule lumière »), mais c'est un choix produit.
+
+**À l'écran : + / −** — **+** le liseré de la bannière d'écurie repasse dans la teinte de référence au lieu du bordeaux hérité. **−** rien retiré, aucune photo touchée.
+
+### 5ter. ❓ LA PHOTO D'ECURIE EN DOUBLE — NON EXPLIQUEE, NON TOUCHEE
+
+Capture de 12 h 52 : la bannière montre le sujet **deux fois**, une grande et une plus petite au-dessus. **Je n'ai pas trouvé la cause et je ne l'invente pas.**
+
+Ce qui est établi : le hero est en `object-fit: cover` sur une hauteur fixe (`52vh`, min `360px`) — **cela ne peut pas dupliquer une image**. Le balisage ne contient que l'`img`, le cadre CSS, un `halo` et un `grad` : **aucun calque de fond**. C'est donc différent du bug du 02/08 sur la fiche cheval, où la cause était un `contain` laissant un vide où apparaîsait un calque.
+
+**DEUX HYPOTHESES, LE TEST DEMANDE A BLANDINE :** ouvrir la bannière dans l'album « Anciennes bannières », ou fournir le fichier tel qu'il est sur le serveur. **Si le doublon y est déjà, c'est le fichier** (capture d'écran d'une capture d'écran). **S'il est propre, la cause est ailleurs et reste à chercher.** Réponse non encore donnée.
 
 ### 6. 🟩 LES SIX APPELS AU RECADREUR — DIVERGENCES CORRIGEES
 
