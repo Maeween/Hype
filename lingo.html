@@ -2907,11 +2907,53 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 
   async function pont(){
     try{
+      /* 🟥 HORS LIGNE : ON NE FAIT RIEN DU TOUT. Correctif du 16/08.
+         Inutile d'interroger une base injoignable, et surtout dangereux :
+         chaque appel qui échoue est une occasion de mal conclure. Sans
+         réseau, l'étiquette en place EST la vérité la plus récente
+         connue. ⚠️ NE PAS retirer ce test en croyant « simplifier ». */
+      if(navigator.onLine === false) return;
       var sb = window.clientLingua();
       if(!sb) return;   /* CDN injoignable : l'étiquette reste telle quelle */
-      var u = null;
-      try{ var g = await sb.auth.getUser(); u = g && g.data && g.data.user; }catch(e){}
-      if(!u){ poser("0"); return; }   /* personne n'est connecté : « 0 » est la vérité */
+      /* 🟥🟥 LE BUG DU 16/08 — LE PREMIUM PERDU DANS L'AVION.
+         Blandine, après son vol : « il avait pas pris en compte que
+         j'étais premium donc j'étais bloquée ».
+         LA FAUTE ÉTAIT ICI. L'ancienne version écrivait :
+             if(!u){ poser("0"); return; }
+         avec le commentaire « personne n'est connecté : 0 est la
+         vérité ». C'EST FAUX HORS RÉSEAU : `sb.auth.getUser()` essaie
+         de joindre Supabase pour valider le jeton. Sans réseau il
+         ÉCHOUE, le `catch` avale l'erreur, `u` reste null — et le code
+         concluait à une déconnexion. Une abonnée perdait son Premium
+         en plein vol.
+         ⚠️ Le garde-fou existait pour l'abonnement (`aboLu`) mais PAS
+         pour cette vérification-ci, qui vient AVANT et retourne tout de
+         suite. Un seul chemin oublié suffisait.
+         LA RÈGLE, désormais appliquée aux DEUX étages : on ne pose
+         « 0 » que si la base a VRAIMENT RÉPONDU. Un échec réseau,
+         un timeout, un CDN injoignable : on ne touche à rien.
+         🟥 NE JAMAIS écrire `poser("0")` sans avoir la preuve d'une
+         réponse serveur. Une abonnée qui perd ses villes hors ligne est
+         le pire scénario de l'app. */
+      var u = null, authRepondu = false;
+      try{
+        var g = await sb.auth.getUser();
+        /* une réponse est arrivée : `data` existe, même vide. C'est ce
+           qui distingue « pas de session » de « pas de réseau ». */
+        if(g && g.data) authRepondu = true;
+        u = g && g.data && g.data.user;
+        /* ⚠️ une erreur d'authentification EST une réponse (jeton
+           expiré, session révoquée) ; une erreur réseau n'en est pas
+           une. Supabase remplit `error.status` dans le premier cas. */
+        if(g && g.error && g.error.status) authRepondu = true;
+      }catch(e){ /* réseau : authRepondu reste false */ }
+
+      if(!u){
+        /* pas de session ET la base a répondu → « 0 » est la vérité.
+           Pas de session mais AUCUNE réponse → on ne touche à rien. */
+        if(authRepondu && navigator.onLine) poser("0");
+        return;
+      }
 
       /* v64 : la progression part en parallèle, sans bloquer le verrou.
          Les deux sont indépendants — un échec de l'un ne doit pas
