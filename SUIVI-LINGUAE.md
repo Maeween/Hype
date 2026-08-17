@@ -273,6 +273,179 @@ Précédent posé en session 209 sur `balade` (*« s'il dort, tant mieux »*), a
 
 ---
 
+# 🇵🇹 SESSION 215 · 17/08 — GOLEGÃ REÇOIT SON DIALOGUE · LE VERROU DES VILLES PAYANTES ENFIN POSÉ · UN NUMÉRO DE CACHE QUI MANQUAIT
+
+**Livré : `hype-lingo-lex-elevage.js` (neuf), `lingo.html` (trois gestes) et `lingo-dialogue.html` (trois gestes).** DEUX push dans la journée — le premier lot (lexique + `lingo.html`) était déjà poussé quand la suite a été écrite.
+`lingo.html` md5 **`e8e2c64d…`** au premier push, **`af3a8da4d9db72523e12638ab5138f82`** après le filet de Versailles — parti du fichier en cours de Blandine (`b547e6eb…`). `lingo-dialogue.html` parti de `4882bbee17119135aa9fa37260d50679`. Les **quatre lignes témoins** ont été vérifiées avant et après : `LIEN_DIRECT_LECON` ✅ · `classList.add("parti")` dans `#lecon=` ✅ · `partirVersVille(iVille)` ✅ · les deux moitiés de l'`about:blank` de la sellerie ✅. Les **quatre iframes** portent toujours une adresse explicite.
+
+---
+
+## 🟩 CE QUE BLANDINE A APPORTÉ
+
+Le contenu entier vient d'elle : **18 phrases** (fr + en), **15 mots** de lexique, une **notion** à enseigner, et le **fil narratif** de la ville. Ses mots sur l'intention : *« moins grand haras de pur-sang et ventes, plus élevage lusitanien, sélection morphologique, modèle, allures, tempérament, lignées et présentation des jeunes chevaux »*.
+
+Le fil qu'elle a posé, devenu les cinq temps de la scène : **arrivée parmi les poulinières → observation des poulains → examen d'un jeune cheval → présentation en main → discussion avec l'éleveur sur le choix des lignées.**
+
+**Sa notion** — celle qui différencie Golegã de tout le reste du module : la différence entre *« beau cheval »* et *sélection d'élevage*. Un éleveur dit **« he has good conformation »**, jamais *« he has a beautiful morphology »*, qui trahit immédiatement le français. Et devant un jeune cheval il pèse cinq choses : **conformation** (la construction), **movement** (la qualité des allures), **temperament** (le caractère), **functionality** (est-ce que ce modèle fonctionnera sous la selle), **bloodline** (ce que la lignée transmet).
+
+**Ses trois mots de décision, verbatim** : *« Fusionne »* (sur `modele-allures`) · *« Traduis tout »* (les six langues) · *« Note les termes où tu as un doute et je demanderai à chat »*.
+
+---
+
+## 🟩 CE QUI EST DANS `hype-lingo-lex-elevage.js`
+
+| | |
+|---|---|
+| **La clé `dialogue`** | `ville:"golega"`, **18 phrases**, 5 temps. **9 entendues / 9 produites.** |
+| **Quatre entrées neuves** | `temperament` · `produit` · `marcher-en-main` · `selection` — six langues, `def:` complète, aucune relue par un natif. |
+| **La notion** | dans le `def:` de `modele-allures`, six langues. |
+| **Dix des quinze mots existaient déjà** | élevage, lusitanien, lignée, poulinière, étalon, poulain, sevrage, présenté en main, et `modele-allures` qui porte à lui seul « modèle / morphologie » **et** « allures ». |
+
+**Vérifié au banc** : `node --check` · les six langues présentes sur les **24** concepts et les **18** phrases · aucune `ref` en double · **toutes** les refs de `mots` existent dans le fichier · japonais espacé par groupes partout · construction des scènes du moteur **simulée dans les deux sens de lecture**.
+
+---
+
+## 🟥 `?l=1` → `?l=2` — LE GESTE QUI AURAIT FAIT CROIRE À UNE PANNE
+
+Chaque balise de lexique de `lingo.html` porte **son propre numéro de cache** (`?l=`), incrémenté quand le fichier change : `dressage l=5`, `concours l=6`, `balade l=6`… **`elevage` était resté à `l=1` depuis le 6 août.**
+
+Sans le passer à `l=2`, le service worker sert l'ancien fichier : le lexique neuf est en ligne, et **le bouton n'apparaît pas**. On aurait cherché le défaut dans le dialogue, dans `aUnDialogue()`, partout sauf là.
+
+✅ **RÈGLE : tout lexique modifié fait avancer son `?l=` dans `lingo.html`. Le fichier seul ne suffit jamais.**
+
+---
+
+## 🟢 LE VERROU DES VILLES PAYANTES — POSÉ, APRÈS AVOIR ÉTÉ ANNONCÉ LE 13/08
+
+**Golegã est la PREMIÈRE ville payante à recevoir un dialogue.** Ce SUIVI l'avait prévu et écrit : *« le jour où un dialogue est ajouté à une ville payante, vérifier que `lingo-dialogue.html` porte son propre verrou : `aUnDialogue()` ne consulte pas `villeAutorisee()` »*. Sans rien faire, la scène entière de Golegã s'ouvrait **gratuitement**.
+
+**Posé à l'entrée de `ouvrirSituation()`** : `if(!villeAutorisee(refVille)){ ouvrirPaywall(); return; }`. Une seule ligne couvre les **quatre** portes d'appel (le bouton de l'écran d'arrivée, le panneau de ville, la reprise d'état, le lien de partage).
+
+⚠️ **LE BOUTON N'EST PAS CACHÉ** — doctrine **VITRINE** tranchée par Blandine le 14/08 (*« si c'est juste la première page pourquoi pas »*) : la page de la ville reste ouverte à tous, la leçon reste fermée. Un dialogue **est** une leçon : il se montre, il ne se joue pas.
+
+⚠️ **CE VERROU NE FERME QUE LA PORTE DU PARENT.** `lingo-dialogue.html` reste ouvrable par son URL directe et doit porter le sien — voir le reste à faire.
+
+---
+
+## 🔴 UN DÉFAUT LATENT SIGNALÉ, NON CORRIGÉ (VERSAILLES)
+
+Le 16/08, la lecture des clés `dialogue*` a été étendue **des deux côtés** (`aUnDialogue()` et `lireLexiques()`). **Il existe un TROISIÈME endroit, jamais corrigé** : le filet de `ouvrirSituation()` ne lit que `L[k].dialogue` et **ignore `dialogueVersailles`**.
+
+Conséquence : si les balises de `lingo-dialogue.html` échouent, **Versailles ouvre un écran vide** — le filet ne lui renvoie rien. Golegã n'est pas concernée (elle prend la clé `dialogue`).
+
+**Non corrigé ce jour, faute de feu vert.** Le correctif est d'une ligne : balayer les clés commençant par `dialogue`, comme les deux autres endroits.
+
+---
+
+## 🟢 LA RÉPARTITION, TROUVÉE FAUSSE PUIS RÉÉQUILIBRÉE — **9 ENTENDUES / 9 PRODUITES**
+
+**Feu vert de Blandine** : *« Oui réadapte si tu veux la répartition »*.
+
+### Ce qui clochait, et pourquoi ça ne se voit pas à la lecture
+Le moteur ne choisit pas les exercices au hasard, et **il compte par scène, pas sur le chapitre** : dans chaque `temps`, la 1ʳᵉ phrase produite reçoit « à toi de le dire », la 2ᵉ « remets en ordre », la 3ᵉ « que réponds-tu ? », la 4ᵉ « écris-le » si elle est courte. Une scène sans phrase produite ne fait donc **que** de l'écoute, et un chapitre dont aucune scène n'atteint trois phrases produites ne déclenche **jamais** « Que réponds-tu ? ».
+
+Première version, 12 entendues / 6 produites : **deux des cinq exercices ne sortaient jamais**, et le temps 4 (la présentation en main) se traversait entièrement sans rien dire.
+
+⚠️ **Ce défaut ne se voit pas en relisant le fichier** — il n'apparaît qu'en simulant `construireScenes()`. ✅ **RÈGLE : tout dialogue neuf se simule avant livraison, et on lit la liste des exercices scène par scène.**
+
+### Le geste
+Trois phrases passées de `club` à `joueuse` — `encolure-dos`, `ce-que-voient-les-juges`, `aptitude-dressage`. Aucune phrase ajoutée, aucune retirée, aucun texte modifié : **seul l'attributeur de parole change**, et les trois sont des phrases qu'une visiteuse avertie dit très bien elle-même. La deuxième, en particulier, est la notion en action : « les juges vont observer son modèle, ses allures et son impression générale. »
+
+### Résultat, simulé dans les deux sens de lecture
+| temps | exercices produits |
+|---|---|
+| **1** · Parmi les poulinières | écoute · écoute · **parle** · écoute |
+| **2** · Les poulains de l'année | écoute · **parle** · **ordre** · écoute |
+| **3** · L'examen d'un jeune cheval | **parle** · écoute · **ordre** · **repondre** |
+| **4** · La présentation en main | écoute · **parle** |
+| **5** · Le choix des lignées | **parle** · écoute · **ordre** · écoute |
+
+**écoute ×9 · parle ×5 · ordre ×3 · repondre ×1.** Chaque scène fait parler.
+
+🔴 **« ÉCRIS-LE » NE SORT TOUJOURS PAS, ET NE PEUT PAS.** Il exige **quatre** phrases produites dans une même scène, la quatrième courte (≤ 42 signes). Les 18 phrases de Blandine n'en donnent pas la matière : le temps 3 en a trois, et sa quatrième candidate n'existe pas. **Il faudrait une phrase courte de plus dans une scène** — à lui demander, pas à inventer. La seule phrase assez courte du lot (« De quel étalon est pleine cette jument ? », 39 signes) appartient au temps 1, auprès des poulinières, et n'a rien à faire ailleurs.
+
+---
+
+## ⚠️ UN CHOIX RESTE UNE DÉDUCTION DE CLAUDE — À VALIDER
+
+Ils sont marqués comme tels **dans l'en-tête du fichier**, pas seulement ici.
+
+**1 · `pedigree` reste hors du lexique de Golegã — ✅ TRANCHÉ PAR BLANDINE, 17/08.** Ses mots : *« Et pedigree on s'en fout pas grave retire le sinon »*, après que la réserve du 6 août lui a été rappelée (*« le yearling, les ventes, le pedigree, la jument suitée sont réservés à LEXINGTON. Golegã fait naître, elle ne vend pas »*).
+**Ce n'est plus une déduction de Claude.** Le mot appartient à Lexington. La phrase `ph-golega-papiers` l'emploie quand même — un mot venu d'ailleurs dans une phrase est un **bonus** (régime du 13/08) — et **la phrase de Blandine n'a pas été touchée** : on ne retire pas une phrase qu'elle a écrite. ⚠️ Si elle veut aussi le mot hors de la phrase, c'est un geste distinct, à demander.
+
+**2 · La notion est dans le `def:` de `modele-allures`**, et non dans un encart neuf du moteur. Motif : aucune ligne de code, donc aucune dépendance à la page fille périmée, et la notion se lit au moment où l'on rencontre le mot. L'encart d'ouverture de scène reste possible plus tard (~15 lignes).
+
+---
+
+## 🔴 MON ERREUR : `lingo-dialogue.html` N'ÉTAIT PAS PÉRIMÉ, IL ÉTAIT EN RETARD
+
+**À lire en tête de la prochaine session : la conclusion inverse a fait pousser un fichier pour rien.**
+
+J'ai constaté que `ouvrirSituation()` passe `&c=` à l'iframe alors que la page fille ne lit pas ce paramètre, et j'en ai déduit que **la page devait exister ailleurs en version plus récente**. Blandine, croyant restaurer, **a poussé** — puis a récupéré le fichier sur GitHub : **c'était le même**, md5 `4882bbee…`, mêmes marqueurs (verrou des trois essais du 15/08, « J'ai fini », correctif `dialogueVersailles` du 16/08).
+
+**La vérité est l'inverse de ma déduction : c'est `lingo.html` qui a avancé, et la page fille qui n'a jamais suivi.**
+
+✅ **RÈGLE : une divergence entre deux fichiers prouve qu'ils ne s'accordent pas — PAS que l'un est périmé.** Dire « ces deux fichiers ne s'accordent plus, lequel est le bon ? », jamais « celui-ci n'est pas le bon ».
+⚠️ **Aucun dégât** : les dialogues vivent dans les lexiques, pas dans cette page. Le push était sans effet.
+
+---
+
+## 🟢 LES QUATRE GESTES FAITS — feu vert de Blandine, *« Oui ok »*
+
+### 1 · 🟥 LES SIX LANGUES, ET LA CIBLE VIENT ENFIN DU PARENT — **le vrai défaut de la journée**
+
+**Toute mise en situation enseignait l'ANGLAIS, quelle que soit la langue du voyage.** La page recalculait seule : `CIBLE = (LG === "en") ? "fr" : "en"`. Une cavalière qui apprend le japonais ou l'espagnol traversait la scène **en anglais**, avec en bas une note affirmant que les phrases n'existaient qu'en français et en anglais — **faux depuis le 15/08**, où les 111 phrases sont passées à six langues.
+
+Le parent passait déjà `&c=`, et son commentaire le disait : *« Une seule regle, celle d'ici »*. La page ne lisait pas le paramètre.
+
+**Posé** : `LANGUES` à six · `CIBLE` lue dans `c` · repli sur l'ancien calcul **seulement** si `c` manque (page ouverte à la main, ou vieux parent) · `verifierLangues()` appelée après chaque lecture de lexique — si une phrase du dialogue n'a pas la langue demandée, on retombe sur l'anglais **et on le dit en nommant la langue manquante**, au lieu d'afficher « undefined ».
+**Les libellés codés en dur sur anglais/français sont partis** : « À dire en <langue> » et l'en-tête du SOS se construisent depuis `NOM_LANGUE`.
+⚠️ **NE PAS redéduire une cible dans l'iframe.** Le voyage décide.
+
+**Banc d'essai** : les **30 combinaisons** langue de lecture × langue apprise, passées sur le dialogue de Golegã — aucun trou, aucun repli déclenché. Les neuf autres dialogues n'ont pas pu être testés, leurs lexiques n'étaient pas dans la conversation ; le repli les couvre proprement.
+
+### 2 · La balise du lexique élevage
+`<script src="hype-lingo-lex-elevage.js?l=4"></script>`. ⚠️ Le `?l=` d'ici est **indépendant** de celui de `lingo.html` (`?l=2` pour le même fichier) : chacun casse le cache de sa propre page, **ne pas les « harmoniser »**.
+
+### 3 · Les cinq titres de scènes de Golegã
+⚠️ **`TITRES` ne connaît que TROIS villes sur les DIX qui ont un dialogue.** Connemara, Newmarket, Lambourn, Walsall, Aberystwyth, Windsor, Wellington, Hickstead, Versailles et Saumur affichent « Scène 1 » et leur `ref` en minuscules. **Ce n'est pas une régression** — la table n'a jamais été complétée depuis le 15/08. À faire un lexique à la fois : il faut lire les `temps` de chaque dialogue pour nommer ses scènes.
+
+### 4 · 🟢 LE FILET DE VERSAILLES — le troisième endroit, enfin d'accord
+Le 16/08, la lecture des clés `dialogue*` avait été étendue dans `aUnDialogue()` et `lireLexiques()`. **Le filet de `ouvrirSituation()` n'avait pas été touché** : il ne lisait que `L[k].dialogue` et ignorait `dialogueVersailles`. Or la page fille **ne déclare pas** le lexique `dressage` — elle dépend entièrement de ce message. **Versailles ouvrait donc un écran mort**, et pas seulement en cas de panne de cache.
+
+⚠️ **TROIS ENDROITS DOIVENT RESTER D'ACCORD** : `aUnDialogue()`, le filet de `ouvrirSituation()` (tous deux dans `lingo.html`), `lireLexiques()` (page fille).
+
+---
+
+## 📌 CE QUI RESTE — UN GESTE, ET UNE OBSERVATION
+
+**LE VERROU DE LA PAGE FILLE, TOUJOURS PAS POSÉ.** Le parent est verrouillé, mais `lingo-dialogue.html?ville=golega` s'ouvre **par son URL directe**, sans rien demander. Golegã est la première ville payante à avoir un dialogue : sa scène entière est atteignable gratuitement par l'adresse. Le code est prêt dans `PATCH-lingo-dialogue-golega.md`, **non appliqué faute d'avoir été explicitement demandé** — il ne figurait pas dans les quatre gestes annoncés.
+⚠️ Ce ne serait pas une sécurité, seulement une porte : les phrases sont dans un `.js` public. C'est le régime assumé depuis la doctrine VITRINE.
+
+**OBSERVATION, À REGARDER UN JOUR** : en japonais, « remets la phrase en ordre » découpe jusqu'à **19 jetons** (le japonais est espacé par groupes, pour cet exercice précisément). Sur un écran de téléphone, dix-neuf tuiles à replacer, c'est probablement trop — l'exercice change de nature. Rien n'est cassé. À trancher : plafonner le nombre de jetons, ou regrouper plus large.
+
+---
+
+## 📖 LES DOUTES DE TRADUCTION — UN FICHIER À PART
+
+`DOUTES-golega-elevage.md`, **treize entrées**, sur demande de Blandine (*« Note les termes où tu as un doute et je demanderai à chat »*). Chaque entrée donne la phrase, ce qui a été écrit, et **la question exacte à poser** — pas « est-ce juste ? », qui ne rapporte rien.
+
+Les trois plus sérieux : **`to lead in hand`** (le défaut est dans l'anglais d'origine — le sujet est le poulain, or « to lead » a pour sujet celui qui mène) · **`Losgelassenheit`** en allemand (terme technique de l'échelle de progression : un **état obtenu par le travail**, employé ici comme une qualité **transmissible** — possible contresens complet) · **l'espacement du japonais**, jamais vérifié, alors qu'une coupe fausse enseigne une segmentation fausse.
+
+⚠️ **Ce fichier ne se pousse pas** — l'app ne lit aucun `.md`.
+
+---
+
+## ✈️ VERS L'APP STORE
+
+**Aucun recul d'autonomie.** Le dialogue de Golegã vit dans un lexique Linguae, le verrou s'appuie sur `estPremium()` / `villeAutorisee()` qui sont déjà locaux à `lingo.html`, et rien n'a été emprunté à Hype cette session.
+
+**Un progrès, petit mais réel** : la règle du `?l=` écrite ci-dessus. Sur l'App Store il n'y aura plus de service worker à contourner, mais le raisonnement reste — un fichier de contenu modifié doit être **déclaré** modifié quelque part, sinon l'ancien continue d'être servi. C'est la même leçon que le cache, sous une autre forme.
+
+**Un point de vigilance pour la version native** : `lingo-dialogue.html` est chargé en iframe et communique par `postMessage`. Le motif est bon pour le web, mais **le filet postMessage n'existera pas** dans une app native — les données devront arriver par le même chemin que le reste. Ne pas laisser ce filet devenir la voie normale : c'est pourquoi la balise du geste 1 doit être posée, même si tout fonctionne sans elle.
+
+---
+
 # ✈️ SESSION 214 · 15/08 — NEUF DIALOGUES EN SIX LANGUES, LE VERROU DES TROIS ESSAIS, LE HORS LIGNE (ET SON INCIDENT), DEUX TABLES À NAÎTRE
 
 ## ⚠️ INCIDENT DE NUMÉROTATION, SIGNALÉ ET CORRIGÉ

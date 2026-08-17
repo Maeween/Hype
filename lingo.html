@@ -6390,9 +6390,24 @@ function ouvrirSituation(refVille){
     if(envoye) return; envoye = true;
     try{
       var L = window.HYPE_LINGO_LEX || {}, mince = {};
+      /* 🟥 17/08 — LE TROISIEME ENDROIT, ENFIN D'ACCORD AVEC LES DEUX
+         AUTRES. Le 16/08, la lecture des cles `dialogue*` a ete etendue
+         dans `aUnDialogue()` (ici) et dans `lireLexiques()` (page fille).
+         CE FILET, LUI, N'AVAIT PAS ETE TOUCHE : il ne lisait que
+         `L[k].dialogue` et ignorait donc `dialogueVersailles`. VERSAILLES
+         recevait un filet VIDE et ouvrait un ecran mort — la page fille
+         ne declare pas son lexique, elle depend entierement de ce message.
+         ⚠️ TROIS ENDROITS DOIVENT RESTER D'ACCORD : `aUnDialogue()`, ce
+         filet, et `lireLexiques()` de lingo-dialogue.html. Si l'un revient
+         a la seule cle `dialogue`, le bouton s'affiche et l'ecran est vide. */
       for(var k in L){
-        var d = L[k] && L[k].dialogue;
-        if(d && d.ville === refVille){ mince[k] = L[k]; break; }
+        var trouve = null;
+        for(var cle in (L[k] || {})){
+          if(cle.indexOf("dialogue") !== 0) continue;
+          var dd = L[k][cle];
+          if(dd && dd.ville === refVille){ trouve = dd; break; }
+        }
+        if(trouve){ mince[k] = L[k]; break; }
       }
       f.contentWindow.postMessage({t:"linguae-situation", ville:refVille,
         l:lg, lex:mince}, "*");

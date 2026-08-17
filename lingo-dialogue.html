@@ -179,6 +179,14 @@ footer{flex:0 0 auto;padding:8px 16px calc(env(safe-area-inset-bottom) + 14px);
      balises échouent, le message rattrape. -->
 <script src="hype-lingo-lex-arrivee.js?l=4"></script>
 <script src="hype-lingo-lex-balade.js?l=4"></script>
+<!-- L'elevage : GOLEGA, 18 phrases sur 5 temps, ajoutees le 17/08.
+     ⚠️ VILLE PAYANTE — la premiere a recevoir un dialogue. Le parent
+     verrouille `ouvrirSituation()` depuis le 17/08, mais CETTE PAGE
+     s'ouvre aussi par son URL directe et n'a PAS de verrou. A poser.
+     ⚠️ Le `?l=` d'ici est independant de celui de lingo.html (qui porte
+     `?l=2` pour ce meme fichier) : chacun casse le cache de sa page. Ne
+     pas les « harmoniser ». -->
+<script src="hype-lingo-lex-elevage.js?l=4"></script>
 <script>
 /* ==================================================================
    LINGUAE — MISE EN SITUATION GUIDÉE
@@ -220,12 +228,41 @@ var REF_VILLE = P.get("ville") || "labaule";
 var LG = P.get("l") || "fr";          /* langue de lecture */
 var VER = P.get("v") || "";
 
-/* Seuls FR et EN existent dans les phrases aujourd'hui. Une langue de
-   lecture autre retombe sur le français, et on le dit. */
-var LANGUES_PHRASES = ["fr","en"];
-var REPLI_LG = false;
-if(LANGUES_PHRASES.indexOf(LG) < 0){ REPLI_LG = true; LG = "fr"; }
-var CIBLE = (LG === "en") ? "fr" : "en";   /* la langue qu'on apprend */
+/* 🟥 17/08 — LES SIX LANGUES, ET LA CIBLE VIENT ENFIN DU PARENT.
+   CE QUI CLOCHAIT, et c'etait invisible depuis l'ecran : cette page
+   recalculait seule la langue apprise — `CIBLE = (LG==="en") ? "fr" :
+   "en"` — donc TOUTE mise en situation enseignait l'ANGLAIS, quelle que
+   soit la langue du voyage. Une cavaliere qui apprend le japonais
+   traversait la scene en anglais, avec en bas une note affirmant que les
+   phrases n'existaient qu'en francais et en anglais. C'etait faux depuis
+   le 15/08 : les dialogues portent SIX langues.
+   `ouvrirSituation()` de lingo.html passait déjà `&c=` (la langue du
+   voyage) et son commentaire l'ecrivait : « Une seule regle, celle
+   d'ici ». Cette page ne lisait pas le parametre.
+   ⚠️ NE PAS revenir a une cible deduite ici. Le voyage decide, pas
+   l'iframe. Si `c` manque (page ouverte a la main, vieux parent), on
+   retombe sur l'ancien comportement — c'est un repli, pas la regle. */
+var LANGUES = ["fr","en","es","it","de","ja"];
+var NOM_LANGUE = { fr:"français", en:"anglais", es:"espagnol",
+                   it:"italien", de:"allemand", ja:"japonais" };
+if(LANGUES.indexOf(LG) < 0) LG = "fr";
+var CIBLE = P.get("c") || "";
+if(LANGUES.indexOf(CIBLE) < 0 || CIBLE === LG) CIBLE = (LG === "en") ? "fr" : "en";
+
+/* Si une phrase de CE dialogue n'a pas la langue demandee, on le DIT et
+   on retombe sur l'anglais — plutot que d'afficher « undefined ».
+   ⚠️ Le repli se decide APRES lecture du lexique : voir verifierLangues(). */
+var REPLI_DEPUIS = null;
+function verifierLangues(){
+  REPLI_DEPUIS = null;
+  if(!DIAL || !DIAL.phrases) return;
+  function complet(l){ return DIAL.phrases.every(function(p){ return !!p[l]; }); }
+  if(!complet(LG) && LG !== "fr" && complet("fr")) LG = "fr";
+  if(!complet(CIBLE)){
+    var secours = (LG === "en") ? "fr" : "en";
+    if(complet(secours)){ REPLI_DEPUIS = CIBLE; CIBLE = secours; }
+  }
+}
 
 var VOIX = {fr:"fr-FR", en:"en-GB", es:"es-ES", it:"it-IT", de:"de-DE", ja:"ja-JP"};
 
@@ -235,7 +272,18 @@ var TITRES = {
        4:"On me pose des questions", 5:"L'équipement", 6:"Je réserve"}},
   maurice: {nom:"Le Morne",
     t:{1:"Je réserve la balade", 2:"Je dis où j'en suis", 3:"La marée et le sable",
-       4:"L'allure dans l'eau", 5:"À cru", 6:"Le soleil", 7:"Après la balade"}}
+       4:"L'allure dans l'eau", 5:"À cru", 6:"Le soleil", 7:"Après la balade"}},
+  /* 🟥 17/08 : GOLEGA. ⚠️ CETTE TABLE NE CONNAIT QUE TROIS VILLES sur les
+     DIX qui ont un dialogue. Les sept autres — Connemara, Newmarket,
+     Lambourn, Walsall, Aberystwyth, Windsor, Wellington, Hickstead,
+     Versailles, Saumur — affichent donc « Scene 1 » et leur `ref` en
+     minuscules. Ce n'est PAS une regression : la table n'a jamais ete
+     completee depuis le 15/08. A faire, un lexique a la fois : il faut
+     lire les `temps` de chaque dialogue pour nommer ses scenes. */
+  golega: {nom:"Golegã",
+    t:{1:"Parmi les poulinières", 2:"Les poulains de l'année",
+       3:"L'examen d'un jeune cheval", 4:"La présentation en main",
+       5:"Le choix des lignées"}}
 };
 
 function S(id){ return document.getElementById(id); }
@@ -310,6 +358,7 @@ function lireLexiques(){
   return !!DIAL;
 }
 lireLexiques();
+verifierLangues();   /* 17/08 : la langue apprise vient du parent, on la valide ici */
 
 /* ⚠️ On ne reclame les donnees au parent QUE si nos propres fichiers
    ont echoue. Avant, le parent poussait tout le lexique a chaque
@@ -331,7 +380,7 @@ window.addEventListener("message", function(ev){
     for(var k in d.lex){ if(!window.HYPE_LINGO_LEX[k]) window.HYPE_LINGO_LEX[k] = d.lex[k]; }
   }
   if(d.ville) REF_VILLE = d.ville;
-  if(!DIAL && lireLexiques()){ construireScenes(); iScene=0; iEtape=0; fil=[]; repondu=false; dessine(); }
+  if(!DIAL && lireLexiques()){ verifierLangues(); construireScenes(); iScene=0; iEtape=0; fil=[]; repondu=false; dessine(); }
 });
 
 /* ---------------- construction des scènes ----------------
@@ -430,9 +479,10 @@ function dessine(){
   ({ecoute:vueEcoute, parle:vueParle, ordre:vueOrdre,
     repondre:vueRepondre, ecris:vueEcris})[e.type](e.p, corps, pied);
 
-  if(REPLI_LG){
+  if(REPLI_DEPUIS){
     corps.appendChild(el("p",{class:"note"},
-      "Les phrases n'existent pour l'instant qu'en français et en anglais. La scène se joue donc en français."));
+      "Cette ville n'a pas encore ses phrases en " + (NOM_LANGUE[REPLI_DEPUIS] || REPLI_DEPUIS) +
+      ". La scène se joue donc en " + (NOM_LANGUE[CIBLE] || CIBLE) + "."));
   }
 }
 
@@ -522,7 +572,7 @@ function vueParle(p, corps, pied){
   /* la phrase à dire, ÉCRITE et sonore */
   var cible = el("div",{class:"carte", style:"border-color:rgba(32,217,245,.3);background:rgba(32,217,245,.06)"});
   cible.appendChild(el("div",{style:"font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#20D9F5;margin-bottom:8px"},
-    CIBLE === "en" ? "\u00c0 dire en anglais" : "\u00c0 dire en fran\u00e7ais"));
+    "\u00c0 dire en " + (NOM_LANGUE[CIBLE] || CIBLE)));
   var ligne = el("div",{class:"cible"});
   ligne.appendChild(document.createTextNode(p[CIBLE]));
   var h = el("button",{class:"haut", title:"Écouter"}, "\uD83D\uDD0A");
@@ -939,7 +989,7 @@ S("btSos").addEventListener("click", function(){
   z.appendChild(b1);
 
   var b2 = el("div",{class:"bloc"});
-  b2.appendChild(el("div",{class:"lab"}, CIBLE === "en" ? "En anglais" : "En français"));
+  b2.appendChild(el("div",{class:"lab"}, "En " + (NOM_LANGUE[CIBLE] || CIBLE)));
   var g = el("div",{class:"gros"});
   g.appendChild(document.createTextNode(p[CIBLE]));
   var h = el("button",{class:"haut", style:"background:none;border:0;color:#20D9F5;font-size:16px;padding-left:8px"},"\uD83D\uDD0A");
