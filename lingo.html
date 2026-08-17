@@ -2757,8 +2757,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      `obstacle` EST BRANCHE SUR WELLINGTON depuis le 16/08/2026 (32e ville,
      la tournee d'hiver de Floride). Il ne dort plus. -->
 <script src="hype-lingo-lex-derby.js?l=2"></script>
-<script src="hype-lingo-lex-concours.js?l=5"></script>
-<script src="hype-lingo-lex-cross.js"></script>
+<script src="hype-lingo-lex-concours.js?l=6"></script>
+<script src="hype-lingo-lex-cross.js?l=1"></script>
 <!-- Santa Ynez, 31e etape (8 aout 2026). Le horsemanship : `timing`,
      `feel` et `release` n'ont pas de traduction francaise satisfaisante,
      et la colonne francaise donne en meme temps le vocabulaire des
@@ -3617,8 +3617,15 @@ var ETAPES = [
     grave : rattrape avant livraison. */
  {ref:"wellington",ch:"La tournée d'hiver", v:"Wellington", nat:"États-Unis",  h:"15 h 40", ciel:["#0A1420","#C98B4A"], forme:"obstacles",souv:"Un palmier en pot",           ic:"palmier"},
  {ref:"hickstead", ch:"Le derby",   v:"Hickstead",   nat:"Angleterre",     h:"01 h 40", ciel:["#060B12","#0D1524"], forme:"obstacles",souv:"Un fanion rouge",              ic:"fanion"},
- {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Le trophée de Badminton",                  ic:"trophee"},
+/* 🟥 17/08 : BURGHLEY (le cross) PASSE AVANT BADMINTON (le complet).
+    Constat de Blandine : « en fait ça devrait être la ville d'avant du
+    coup ». Le complet CUMULE les trois epreuves — il doit venir quand
+    les trois sont apprises : Windsor le dressage, Wellington le saut,
+    Burghley le cross, ET ENSUITE Badminton. Meme raisonnement que
+    Wellington avant Hickstead (l'obstacle avant le derby).
+    ⚠️ NE PAS remettre Badminton avant Burghley. */
   {ref:"burghley",  ch:"Le cross",     v:"Burghley",    nat:"Angleterre",     h:"02 h 55", ciel:["#0A1424","#16263C"], forme:"manoir",   souv:"Une paire de crampons",        ic:"fer"},
+ {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Le trophée de Badminton",                  ic:"trophee"},
  {ref:"kildare",   ch:"Les urgences", v:"Kildare",     nat:"Irlande",        h:"04 h 10", ciel:["#0C1A2C","#20344B"], forme:"haras",    souv:"Une trousse de secours",               ic:"trousse"},
  {ref:"edimbourg", ch:"Les dialogues",v:"Édimbourg",   nat:"Écosse",         h:"05 h 25", ciel:["#16283F","#C58B45"], forme:"edim",     souv:"Un carnet de mots",            ic:"carnet"},
  /* ---- les huit destinations du tour du monde, ajoutées le 5 août 2026 ----

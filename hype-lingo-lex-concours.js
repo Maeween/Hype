@@ -221,39 +221,6 @@ window.HYPE_LINGO_LEX.concours = {
           de:"Es fällt nicht. Das ist der ganze Unterschied zum Springhindernis — und der Grund, warum Schutzweste und geprüfter Helm im Gelände überall Pflicht sind.",
           ja:"倒れない障害。障害馬術の障害との違いはそこにあり、クロスでプロテクターベストと規格ヘルメットが世界じゅう義務である理由もそこにあります。" } },
 
-  { ref:"talus", lecon:2, coll:"complet",
-    mots:{ fr:{m:"le talus"}, en:{m:"the bank", p:"bannk"},
-           es:{m:"el talud"}, it:{m:"la banchina", var:"il gradino"}, /* it precise (rapport 07/08) */
-           de:{m:"der Wall", p:"val"}, ja:{m:"バンク", p:"banku"} },
-    def:{ fr:"Une butte à monter ou à descendre, parfois avec une barre au sommet. Le plus célèbre du monde est le Derby Bank de Hickstead — la ville de l'étape précédente.",
-          en:"A mound to climb or drop off, sometimes with a rail on top. The most famous is Hickstead's Derby Bank.",
-          es:"Una loma que subir o bajar, a veces con una barra en la cima. El más célebre del mundo es el Derby Bank de Hickstead — la ciudad de la etapa anterior.",
-          it:"Una collinetta da salire o scendere, a volte con una barriera in cima. Il più celebre al mondo è il Derby Bank di Hickstead — la città della tappa precedente.",
-          de:"Ein Wall zum Hinauf- oder Hinabreiten, manchmal mit Stange auf der Kuppe. Der berühmteste der Welt ist die Derby Bank von Hickstead — der Stadt der vorigen Etappe.",
-          ja:"登り、あるいは下る土手。頂上にバーが載ることもあります。世界一有名なのはヒックステッドのダービー・バンク — ひとつ前の街のあれです。" } },
-
-  { ref:"contre-bas", lecon:2, coll:"complet",
-    mots:{ fr:{m:"le contre-bas"}, en:{m:"the drop", p:"drop", var:"a drop fence"},
-           es:{m:"el salto en bajada", var:"el escalón de bajada"}, it:{m:"il salto in discesa"}, /* es precise (rapport 07/08) */
-           de:{m:"der Tiefsprung", p:"tif-chproung"}, ja:{m:"ドロップ", p:"doroppu"} },
-    def:{ fr:"La réception est plus basse que la battue. Le cavalier laisse filer les rênes et reste en arrière : c'est le seul obstacle où l'on s'interdit d'anticiper.",
-          en:"The landing is lower than the take-off. Let the reins slip and stay behind the movement.",
-          es:"La recepción es más baja que la batida. El jinete deja correr las riendas y se queda atrás: es el único obstáculo donde uno se prohíbe anticipar.",
-          it:"La ricezione è più bassa dello stacco. Il cavaliere lascia scorrere le redini e resta indietro: è l'unico ostacolo dove ci si vieta di anticipare.",
-          de:"Die Landung liegt tiefer als der Absprung. Der Reiter lässt die Zügel gleiten und bleibt zurück: das einzige Hindernis, an dem man sich das Vorgreifen verbietet.",
-          ja:"着地が踏切より低い障害。騎手は手綱を滑らせ、上体を後ろに残します。先回りを自分に禁じる、唯一の障害です。" } },
-
-  { ref:"gue", lecon:2, coll:"complet",
-    mots:{ fr:{m:"le gué"}, en:{m:"the water", p:"ouo-teur", var:"the water complex"},
-           es:{m:"el paso de agua"}, it:{m:"il passaggio d'acqua"},
-           de:{m:"die Wasserdurchfahrt", p:"va-seur-dourh-fart"}, ja:{m:"水中障害", p:"suichū shōgai"} }, // ??
-    def:{ fr:"On y entre dans l'eau, on n'y saute pas au-dessus : c'est ce qui le distingue de la rivière du concours hippique. Toujours au pas ou au petit galop, et c'est le point du parcours où le public se masse.",
-          en:"You ride into it rather than over it, unlike the show-jumping water. Always the spot where the crowd gathers.",
-          es:"Se entra en el agua, no se salta por encima: eso lo distingue de la ría del salto. Siempre al paso o al galope corto, y es el punto del recorrido donde se agolpa el público.",
-          it:"Ci si entra nell'acqua, non ci si salta sopra: è ciò che lo distingue dalla riviera del salto ostacoli. Sempre al passo o al piccolo galoppo, ed è il punto del percorso dove si ammassa il pubblico.",
-          de:"Man reitet ins Wasser hinein, nicht darüber: Das unterscheidet ihn vom Wassergraben des Springens. Immer im Schritt oder ruhigen Galopp — und der Punkt, an dem sich das Publikum drängt.",
-          ja:"水の中へ入っていく障害。上を跳び越すのではありません — 障害馬術の水濠との違いはそこです。常歩か抑えた駈歩で。そして観客がいちばん集まるのも、この地点です。" } },
-
   { ref:"option", lecon:2, coll:"complet",
     mots:{ fr:{m:"l'option"}, en:{m:"the long route", p:"long route", var:"the alternative"},
            es:{m:"la opción"}, it:{m:"l'opzione"},
@@ -275,6 +242,120 @@ window.HYPE_LINGO_LEX.concours = {
           it:"Il tempo di riferimento del cross, calcolato su distanza e velocità imposta. Oltre, si prendono penalità secondo per secondo. Non è dunque una corsa: è un esercizio di regolarità, cronometro al polso.",
           de:"Die Referenzzeit des Geländes, aus Distanz und vorgegebenem Tempo errechnet. Darüber gibt es Strafpunkte Sekunde für Sekunde. Kein Rennen also — eine Übung in Gleichmaß, mit der Uhr am Handgelenk.",
           ja:"距離と規定速度から計算される、クロスの基準タイム。超えれば一秒ごとに減点。つまり競走ではなく、腕時計を頼りに刻む、一定さの試験なのです。" } },
+
+  /* ================================================================
+     QUATRE ENTRÉES POUR BADMINTON — 17/08/2026, demandées par Blandine
+     après le départ du talus, du contre-bas et du gué vers Burghley :
+     « on va en rajouter à Badminton alors — reprise de dressage
+     justement ? parcours d'obstacle ? quel est le barème sur le
+     parcours d'obstacle ? protocole de dressage ? », puis
+     « classement provisoire à l'issue du dressage ».
+
+     🟥 SA CONSIGNE SUR LES DÉFINITIONS : « une bonne occasion pour
+     t'apprendre tout ça à ce moment-là ». Ces définitions n'expliquent
+     donc pas seulement les mots, elles enseignent LE SYSTÈME du
+     complet — le seul sport où l'on additionne trois épreuves et où
+     LE SCORE LE PLUS BAS GAGNE.
+
+     ⚠️ AUCUN CHIFFRE DE BARÈME N'EST DONNÉ. Ils changent selon le
+     niveau, la fédération et l'année, et Claude ne les connaît pas avec
+     certitude. Consigne de Blandine, après trois fautes de fond sur
+     Windsor : « invente surtout pas des trucs ». Les phrases POSENT la
+     question du barème ; elles n'y répondent pas.
+     ⚠️ NE PAS ajouter de chiffres sans source vérifiée.
+     ================================================================ */
+
+  { ref:"reprise-dressage", lecon:2, coll:"complet",
+    mots:{ fr:{m:"la reprise de dressage"}, en:{m:"the dressage test", p:"drè-sadj tèst"},
+           es:{m:"la prueba de doma"}, it:{m:"la ripresa di dressage"},
+           de:{m:"die Dressurprüfung", p:"drè-sour-pru-foung"}, ja:{m:"馬場馬術の課目", p:"bababajutsu no kamoku"} },
+    def:{ fr:"La PREMIÈRE des trois épreuves du complet, et celle qui donne le score de départ. 🟥 Elle ne se note pas en points gagnés mais CONVERTIE EN PÉNALITÉS : mieux on la fait, moins on en a. C'est ce qui déroute tout le monde au début — au complet, on cherche le score le plus BAS. ⚠️ « La reprise » ici désigne l'ÉPREUVE ; à Windsor le même mot désigne le protocole, et à Aberystwyth le groupe d'élèves. Trois sens, un mot.",
+          en:"The first of the three phases, and the one that sets your starting score. It isn't marked in points won but CONVERTED INTO PENALTIES: the better you go, the fewer you carry. In eventing you want the LOWEST score.",
+          es:"La primera de las tres pruebas, y la que fija la puntuación de partida. No se anota en puntos ganados sino CONVERTIDA EN PENALIZACIONES: cuanto mejor, menos se arrastra.",
+          it:"La prima delle tre prove, quella che fissa il punteggio di partenza. Non si segna in punti guadagnati ma CONVERTITA IN PENALITÀ: meglio si fa, meno se ne porta.",
+          de:"Die erste der drei Teilprüfungen, und die, die den Startwert festlegt. Sie wird nicht in Gewinnpunkten gewertet, sondern IN STRAFPUNKTE UMGERECHNET: je besser, desto weniger.",
+          ja:"三つの競技の最初で、出発点の得点を決めます。得点ではなく減点に換算されるため、良く走れば減点が少なくなります。総合馬術では最も低い点が勝ちます。" } },
+
+  { ref:"parcours-obstacle", lecon:2, coll:"complet",
+    mots:{ fr:{m:"le parcours d'obstacle"}, en:{m:"the showjumping round", p:"chô-djeum-pinng raound", var:"the showjumping"},
+           es:{m:"el recorrido de salto"}, it:{m:"il percorso di salto ostacoli"},
+           de:{m:"das Springen", p:"chprin-gueune"}, ja:{m:"障害飛越の走行", p:"shōgai hietsu no sōkō"} },
+    def:{ fr:"⚠️ LA DERNIÈRE ÉPREUVE, et c'est voulu : elle se court après le cross, sur un cheval fatigué, et c'est là que les classements se retournent. ⚠️ En anglais on dit **showjumping** en un mot pour la discipline, jamais « obstacle » — et au complet on dit souvent simplement *the jumping*.",
+          en:"The last phase, and deliberately so: it's ridden after the cross-country, on a tired horse, and that's where placings turn over. « Showjumping » is one word; in eventing you often just say « the jumping ».",
+          es:"La última prueba, y a propósito: se corre después del cross, con un caballo cansado. Ahí se dan la vuelta las clasificaciones.",
+          it:"L'ultima prova, e volutamente: si corre dopo il cross, su un cavallo stanco. È lì che le classifiche si ribaltano.",
+          de:"Die letzte Teilprüfung, und das mit Absicht: sie kommt nach dem Geländeritt, auf einem müden Pferd. Dort drehen sich die Platzierungen.",
+          ja:"最後の競技。これは意図的で、クロスカントリーのあと、疲れた馬で走ります。ここで順位がひっくり返ります。" } },
+
+  { ref:"bareme", lecon:2, coll:"complet",
+    mots:{ fr:{m:"le barème"}, en:{m:"the scoring", p:"skô-rinng", var:"the penalty system"},
+           es:{m:"el baremo"}, it:{m:"il barème"}, // ?? it
+           de:{m:"die Wertung", p:"vèr-toung"}, ja:{m:"減点方式", p:"genten hōshiki"} },
+    def:{ fr:"🟥 LE MOT À SAVOIR POSER EN QUESTION, parce que la réponse change selon le niveau, le pays et l'année : « quel barème s'applique ? » est une question légitime même pour un cavalier expérimenté. ⚠️ Ce que le barème du complet a de particulier : les pénalités des trois épreuves S'ADDITIONNENT, et le total le plus bas gagne. Un sans-faute au cross ne fait pas gagner de points — il n'en fait pas perdre, ce qui n'est pas la même chose.",
+          en:"The word to know how to ask about, because the answer changes with the level, the country and the year: « what's the scoring? » is a fair question even for an experienced rider. What makes eventing scoring particular: penalties from all three phases ADD UP, and the lowest total wins.",
+          es:"La palabra que hay que saber preguntar, porque la respuesta cambia según el nivel, el país y el año. Lo particular del completo: las penalizaciones de las tres pruebas SE SUMAN y gana el total más bajo.",
+          it:"La parola da saper chiedere, perché la risposta cambia col livello, il paese e l'anno. La particolarità del completo: le penalità delle tre prove SI SOMMANO e vince il totale più basso.",
+          de:"Das Wort, nach dem man fragen können muss, denn die Antwort ändert sich mit Klasse, Land und Jahr. Das Besondere der Vielseitigkeit: die Strafpunkte aller drei Teilprüfungen ADDIEREN SICH, und der niedrigste Gesamtwert gewinnt.",
+          ja:"尋ね方を覚えておくべき語です。答えは級、国、年によって変わるからです。総合馬術の特徴は、三つの競技の減点が合算され、合計が最も低い者が勝つことです。" } },
+
+  { ref:"classement-provisoire", lecon:2, coll:"complet",
+    mots:{ fr:{m:"le classement provisoire"}, en:{m:"the leaderboard", p:"lii-deur-bord", var:"the interim standings"},
+           es:{m:"la clasificación provisional"}, it:{m:"la classifica provvisoria"},
+           de:{m:"die Zwischenwertung", p:"tsvi-cheune-vèr-toung"}, ja:{m:"暫定順位", p:"zantei jun'i"} },
+    def:{ fr:"🟥 LA NOTION PROPRE AU COMPLET : on est classé alors que deux épreuves restent à courir. Être troisième après le dressage ne veut presque rien dire — le cross rebat tout. ⚠️ EN ANGLAIS ON NE DIT PAS « I am third » MAIS **I'm lying third** — « je suis couché troisième », une tournure qui surprend et qu'on entend partout sur un concours. *The interim standings* est le terme officiel, *the leaderboard* celui qu'on emploie.",
+          en:"The notion that belongs to eventing: you're placed while two phases are still to come. Lying third after the dressage means almost nothing — the cross-country changes everything. Note « I'm lying third », not « I am third ».",
+          es:"La noción propia del completo: se está clasificado cuando quedan dos pruebas. Ser tercero después de la doma no significa casi nada.",
+          it:"La nozione propria del completo: si è classificati quando restano due prove. Essere terzi dopo il dressage non significa quasi niente.",
+          de:"Der Begriff, der zur Vielseitigkeit gehört: man ist platziert, während zwei Teilprüfungen noch kommen. Dritter nach der Dressur heißt fast nichts.",
+          ja:"総合馬術ならではの考え方。まだ二つの競技を残した段階での順位です。馬場馬術のあとで三位でも、ほとんど意味がありません。クロスカントリーがすべてを塗り替えます。" } },
+
+  /* ================================================================
+     TROIS ENTRÉES DE PLUS POUR BADMINTON — 17/08/2026, tirées de la
+     liste de vocabulaire-clé de Blandine (hindquarters, marker, steady
+     rhythm, hilly ground, make up time, drop into water, ditch, direct
+     route, line, warm-up, clear round, keep the poles up, final
+     standings).
+     ⚠️ DIX DE CES TREIZE MOTS EXISTAIENT DÉJÀ et s'emploient en
+     `motsAilleurs` — c'est voulu, et c'est ce qui fait la révision :
+     `engagement` (Versailles, créé le même jour) · `lettre` (Windsor) ·
+     `cadence` (Versailles) · `fossé` et `voie-directe` et `ligne`
+     (Burghley) · `detente` (Aberystwyth) · `sans-faute` (Wellington) ·
+     `classement-provisoire` (ici, créé le même jour).
+     ⚠️ NE PAS les redupliquer ici.
+     ================================================================ */
+
+  { ref:"terrain-vallonne", lecon:2, coll:"complet",
+    mots:{ fr:{m:"le terrain vallonné"}, en:{m:"hilly ground", p:"hi-li graound"},
+           es:{m:"el terreno ondulado"}, it:{m:"il terreno mosso"},
+           de:{m:"das hügelige Gelände", p:"hu-gue-li-gue gue-lèn-de"}, ja:{m:"起伏のある地形", p:"kifuku no aru chikei"} },
+    def:{ fr:"⚠️ CE QUI ÉPUISE UN CHEVAL SUR UN CROSS, bien plus que la hauteur des obstacles. Badminton et Burghley sont des parcs anglais tout en montées et descentes : on économise son cheval au début, on récupère du temps sur le plat. ⚠️ En anglais on dit **hilly ground**, et « the going » pour l'état du sol — deux notions différentes qu'un seul mot français recouvre.",
+          en:"What tires a horse on a cross-country course, far more than the height of the fences. Badminton and Burghley are English parks all up and down: you save your horse early and make up time on the flat. Note « hilly ground » for the shape and « the going » for the state of the surface.",
+          es:"Lo que agota a un caballo en un cross, mucho más que la altura de los obstáculos. Se economiza el caballo al principio y se recupera tiempo en lo llano.",
+          it:"Ciò che sfinisce un cavallo in un cross, molto più dell'altezza degli ostacoli. Si risparmia il cavallo all'inizio e si recupera tempo in piano.",
+          de:"Was ein Pferd im Gelände erschöpft, viel mehr als die Höhe der Sprünge. Man schont das Pferd am Anfang und holt die Zeit im Flachen.",
+          ja:"クロスカントリーで馬を最も疲れさせるのは、障害の高さではなく起伏です。序盤は馬を節約し、平坦な区間で時間を取り戻します。" } },
+
+  { ref:"rattraper-temps", lecon:2, coll:"complet",
+    mots:{ fr:{m:"rattraper du temps"}, en:{m:"to make up time", p:"méïk eup taïm"},
+           es:{m:"recuperar tiempo"}, it:{m:"recuperare tempo"},
+           de:{m:"Zeit aufholen", p:"tsaïte aouf-hô-leune"}, ja:{m:"時間を取り戻す", p:"jikan o torimodosu"} },
+    def:{ fr:"⚠️ On ne rattrape PAS du temps en allant plus vite entre deux obstacles difficiles : on le rattrape sur les longues lignes droites et en ne perdant rien dans les tournants. La formule anglaise **to make up time** s'entend sur tous les crossses du monde, et son contraire est *to be behind the clock*.",
+          en:"You don't make up time by going faster between two difficult fences: you make it up on the long straight stretches and by losing nothing in the turns. The opposite is « to be behind the clock ».",
+          es:"No se recupera tiempo yendo más rápido entre dos obstáculos difíciles: se recupera en las rectas largas y no perdiendo nada en los giros.",
+          it:"Non si recupera tempo andando più veloci tra due ostacoli difficili: si recupera sui lunghi rettilinei e non perdendo niente nelle curve.",
+          de:"Zeit holt man nicht auf, indem man zwischen zwei schweren Sprüngen schneller wird, sondern auf den langen Geraden und indem man in den Wendungen nichts verliert.",
+          ja:"難しい障害の間で速く走っても時間は取り戻せません。長い直線と、曲がりで一切失わないことで取り戻します。" } },
+
+  { ref:"garder-les-barres", lecon:2, coll:"complet",
+    mots:{ fr:{m:"garder les barres"}, en:{m:"to keep the poles up", p:"kiipe ze pôlz eup"},
+           es:{m:"no tirar las barras"}, it:{m:"non far cadere le barriere"},
+           de:{m:"die Stangen oben halten", p:"chtan-gueune"}, ja:{m:"バーを落とさない", p:"bā o otosanai"} },
+    def:{ fr:"🟥 L'ENJEU DU TROISIÈME JOUR, et la formule exacte des coachs : **keep the poles up**. Le parcours d'obstacle d'un complet se court sur un cheval qui a couru le cross la veille — il est fatigué, ses barres tombent plus facilement, et un sans-faute peut retourner tout le classement. ⚠️ Ce n'est pas la même équitation qu'un concours de saut : on ne cherche pas la vitesse, on cherche à ne rien faire tomber.",
+          en:"The whole point of the third day, and the coaches' exact phrase. The showjumping of a three-day event is ridden on a horse who ran cross-country the day before — he's tired, poles come down more easily, and a clear round can turn the whole leaderboard over.",
+          es:"Lo que se juega el tercer día. El recorrido de salto de un completo se corre sobre un caballo que hizo el cross el día antes: está cansado y las barras caen más fácilmente.",
+          it:"La posta in gioco del terzo giorno. Il percorso di salto di un completo si corre su un cavallo che ha fatto il cross il giorno prima: è stanco e le barriere cadono più facilmente.",
+          de:"Worum es am dritten Tag geht. Das Springen einer Vielseitigkeit reitet man auf einem Pferd, das am Tag davor das Gelände gelaufen ist — es ist müde, die Stangen fallen leichter.",
+          ja:"三日目の勝負どころ。総合馬術の障害飛越は、前日にクロスカントリーを走った馬で行います。疲れているためバーが落ちやすく、クリアラウンドが順位をひっくり返します。" } },
 
   { ref:"carton-jaune", lecon:2, coll:"complet",
     mots:{ fr:{m:"le carton jaune"}, en:{m:"the yellow warning card", p:"yè-lô ouor-ning karde"},
@@ -399,18 +480,147 @@ window.HYPE_LINGO_LEX.concours = {
           de:"Jede Sprache wählte ihr Bild: Das Englische hat Schmetterlinge im Bauch (*butterflies*), das Deutsche das Lampenfieber — das des Theaters. Und ein Pferd spürt die Nervosität seines Reiters, bevor der sie sich eingesteht.",
           ja:"言語ごとにイメージが違います。英語はお腹の中の蝶（*butterflies*）、ドイツ語は「ランプの熱」— 舞台のあがり症です。そして馬は、騎手本人が認めるより先に、その緊張を感じ取っています。" } },
 
-  { ref:"bonne-chance", lecon:3, coll:"jour-j",
-    mots:{ fr:{m:"bonne chance"}, en:{m:"good luck", p:"goude leuk", var:"⚠️ jamais « break a leg » à cheval"},
-           es:{m:"buena suerte", var:"mucha suerte"}, it:{m:"buona fortuna", var:"in bocca al lupo"},
-           de:{m:"viel Glück", p:"fil gluk", var:"Hals- und Beinbruch"}, ja:{m:"頑張って", p:"ganbatte"} },
-    def:{ fr:"Le piège le plus savoureux du module. L'allemand souhaite littéralement **« que tu te casses le cou et la jambe »** (*Hals- und Beinbruch*), l'italien envoie **« dans la gueule du loup »** (*in bocca al lupo*, auquel on répond *crepi il lupo*), et l'anglais a bien *break a leg* — mais au théâtre seulement, jamais à un cavalier.",
-          en:"The best trap in the module: German literally wishes you a broken neck and leg, Italian sends you into the wolf's mouth, and English keeps « break a leg » for the theatre.",
-          es:"La trampa más sabrosa del módulo. El alemán desea literalmente **« que te rompas el cuello y la pierna »** (*Hals- und Beinbruch*), el italiano manda **« a la boca del lobo »** (*in bocca al lupo*, al que se responde *crepi il lupo*), y el inglés tiene *break a leg* — pero solo en el teatro, jamás a un jinete.",
-          it:"La trappola più gustosa del modulo. Il tedesco augura alla lettera **« che tu ti rompa il collo e la gamba »** (*Hals- und Beinbruch*), l'italiano manda **« in bocca al lupo »** (a cui si risponde *crepi il lupo*), e l'inglese ha *break a leg* — ma solo a teatro, mai a un cavaliere.",
-          de:"Die köstlichste Falle des Moduls. Das Deutsche wünscht wörtlich **Hals- und Beinbruch**, das Italienische schickt einen **« in den Rachen des Wolfs »** (*in bocca al lupo* — Antwort: *crepi il lupo*), und das Englische hat *break a leg* — aber nur im Theater, nie für Reiter.",
-          ja:"この教材でいちばん味わい深い罠。ドイツ語は文字どおり**「首と脚を折れ」**（*Hals- und Beinbruch*）と願い、イタリア語は**「狼の口の中へ」**（*in bocca al lupo* — 返事は *crepi il lupo*）と送り出します。英語の *break a leg* は劇場だけの言葉 — 騎手には決して言いません。" } },
+  /* ================================================================
+     LA COUPE DES NATIONS — dix entrées ajoutées le 17/08/2026, avec le
+     lexique fourni par Blandine pour ROME.
+     🟥 LA LEÇON 4 NE PARLAIT QUE DU CONCURRENT INDIVIDUEL : concurrent,
+     propriétaire, entraîneur, jury, réclamation, règlement, minima,
+     championnat, trophée, esprit sportif. AUCUN mot d'équipe, alors que
+     Rome EST la Coupe des Nations. Le chapitre était à côté de son
+     sujet.
 
-  /* ============ LEÇON 4 · LES GENS ET LES RÈGLES ============ */
+     🟥 SA FORMULE, à garder telle quelle pour la première mini-leçon :
+     **4 riders → 3 scores count → 2 rounds → 1 nation wins**
+     Quatre cavaliers, trois scores comptent, deux manches, une nation
+     gagne. Tout le système en une ligne. ⚠️ NE PAS la reformuler.
+
+     ⚠️ ET LE MOT LE PLUS ÉTRANGE DU LEXIQUE : **le chef d'équipe** se
+     dit « chef d'équipe » EN ANGLAIS AUSSI — les Britanniques ont gardé
+     le français, comme pour « travers » et « appuyer ». On dit aussi
+     *team manager*, mais sur un concours international c'est « the chef »
+     tout court qu'on entend.
+     ================================================================ */
+
+  { ref:"coupe-nations", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"la Coupe des Nations"}, en:{m:"the Nations Cup", p:"néï-cheunz keup"},
+           es:{m:"la Copa de las Naciones"}, it:{m:"la Coppa delle Nazioni"},
+           de:{m:"der Nationenpreis", p:"na-tsio-neune-praïss"}, ja:{m:"ネーションズカップ", p:"nēshonzu kappu"} },
+    def:{ fr:"🟥 QUATRE CAVALIERS, TROIS SCORES COMPTENT, DEUX MANCHES, UNE NATION GAGNE. C'est la seule épreuve d'équipe du saut d'obstacles, et elle change tout : on ne monte plus pour soi. Le plus mauvais score des quatre est écarté — ce qui veut dire qu'un cavalier peut sauver son équipe, et qu'un autre peut la porter. ⚠️ L'allemand dit *Nationenpreis*, « le prix des nations ».",
+          en:"Four riders, three scores count, two rounds, one nation wins. It's the only team competition in showjumping, and it changes everything: you're no longer riding for yourself. The worst of the four scores is dropped.",
+          es:"Cuatro jinetes, tres resultados cuentan, dos mangas, gana una nación. Es la única prueba por equipos del salto, y lo cambia todo: ya no se monta para uno mismo.",
+          it:"Quattro cavalieri, tre punteggi contano, due manche, vince una nazione. È l'unica prova a squadre del salto ostacoli, e cambia tutto: non si monta più per sé.",
+          de:"Vier Reiter, drei Ergebnisse zählen, zwei Umläufe, eine Nation gewinnt. Der einzige Teamwettbewerb im Springen — und er ändert alles: man reitet nicht mehr für sich.",
+          ja:"四人の騎手、上位三つの成績が有効、二回の走行、勝つのは一つの国。障害馬術で唯一の団体戦であり、すべてが変わります。もはや自分のために乗るのではありません。四人のうち最も悪い成績は除外されます。" } },
+
+  { ref:"equipe-nationale", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"l'équipe nationale"}, en:{m:"the national team", p:"na-cheu-neul tiime"},
+           es:{m:"el equipo nacional"}, it:{m:"la squadra nazionale"},
+           de:{m:"die Nationalmannschaft", p:"na-tsio-nal-mann-chaft"}, ja:{m:"代表チーム", p:"daihyō chīmu"} },
+    def:{ fr:"Quatre couples cavalier-cheval, une veste aux couleurs du pays, et un ordre de passage décidé par le chef d'équipe. ⚠️ On ne choisit pas sa place : le premier à partir n'a pas le même travail que le dernier — voir `ordre-depart`.",
+          en:"Four horse-and-rider combinations, a jacket in the national colours, and a running order decided by the chef d'équipe. You don't choose your slot: going first is not the same job as going last.",
+          es:"Cuatro combinaciones jinete-caballo, una chaqueta con los colores del país y un orden de salida decidido por el jefe de equipo.",
+          it:"Quattro binomi cavaliere-cavallo, una giacca coi colori del paese e un ordine di partenza deciso dal capo equipe.",
+          de:"Vier Reiter-Pferd-Paare, ein Jackett in den Landesfarben und eine Startfolge, die der Chef d'équipe festlegt.",
+          ja:"四つの人馬コンビ、国の色のジャケット、そして監督が決める出場順。順番は選べません。一番目と最後では役割が違います。" } },
+
+  { ref:"chef-equipe", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"le chef d'équipe"}, en:{m:"the chef d'équipe", p:"chèf dé-kipe", var:"the team manager"},
+           es:{m:"el jefe de equipo"}, it:{m:"il capo equipe"},
+           de:{m:"der Equipechef", p:"é-kipe-chèf"}, ja:{m:"監督", p:"kantoku"} },
+    def:{ fr:"🟥 L'ANGLAIS A GARDÉ LE FRANÇAIS : on dit **the chef d'équipe**, ou simplement « the chef » sur un concours international. Comme « travers » et « appuyer » en dressage, c'est un mot que l'équitation a exporté. ⚠️ C'est lui qui décide de l'ordre de passage, de la stratégie entre les deux manches, et qui désigne le cavalier du barrage.",
+          en:"English kept the French: « the chef d'équipe », or just « the chef ». Like « travers » and « appuyer » in dressage, riding exported this word. He decides the running order, the strategy between rounds, and who jumps off.",
+          es:"El inglés conservó el francés: « the chef d'équipe ». Él decide el orden de salida, la estrategia entre mangas y quién salta el desempate.",
+          it:"L'inglese ha conservato il francese: « the chef d'équipe ». Decide l'ordine di partenza, la strategia tra le manche e chi va al barrage.",
+          de:"Englisch hat das Französische behalten: « the chef d'équipe ». Er bestimmt die Startfolge, die Strategie zwischen den Umläufen und den Reiter fürs Stechen.",
+          ja:"英語もフランス語をそのまま使い、the chef d'équipe と言います。馬場馬術の travers や appuyer と同じく、馬術が輸出した言葉です。出場順、二回目の戦略、そしてジャンプオフに出る騎手を決めます。" } },
+
+  { ref:"coequipier", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"le coéquipier"}, en:{m:"the teammate", p:"tiime-méïte"},
+           es:{m:"el compañero de equipo"}, it:{m:"il compagno di squadra"},
+           de:{m:"der Teamkollege", p:"tiime-ko-lé-gue"}, ja:{m:"チームメイト", p:"chīmumeito"} },
+    def:{ fr:"⚠️ UN MOT QUI N'EXISTE PRESQUE PAS AILLEURS EN ÉQUITATION. Le reste de l'année on est concurrent de tout le monde ; en Coupe des Nations, trois personnes ont besoin qu'on réussisse. C'est ce qui rend l'épreuve si particulière — et si dure.",
+          en:"A word that barely exists elsewhere in riding. The rest of the year everyone is your rival; in a Nations Cup, three people need you to go well. That's what makes it so particular, and so hard.",
+          es:"Una palabra que casi no existe en el resto de la equitación. El resto del año todos son rivales; en la Copa de las Naciones, tres personas necesitan que salga bien.",
+          it:"Una parola che quasi non esiste altrove nell'equitazione. Il resto dell'anno tutti sono rivali; in Coppa delle Nazioni, tre persone hanno bisogno che tu vada bene.",
+          de:"Ein Wort, das es im Reitsport sonst kaum gibt. Das ganze Jahr sind alle Konkurrenten; im Nationenpreis brauchen drei Menschen, dass du gut gehst.",
+          ja:"馬術ではほとんど使われない言葉です。普段は誰もが競争相手ですが、ネーションズカップでは三人があなたの成功を必要としています。それがこの競技の特別さであり、厳しさです。" } },
+
+  { ref:"couple", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"le couple cavalier-cheval"}, en:{m:"the horse-and-rider combination", p:"kom-bi-néï-cheune"},
+           es:{m:"la combinación jinete-caballo"}, it:{m:"il binomio cavaliere-cavallo"},
+           de:{m:"das Reiter-Pferd-Paar", p:"raï-teur-pfèrt-pare"}, ja:{m:"人馬のコンビ", p:"jinba no konbi"} },
+    def:{ fr:"⚠️ EN ANGLAIS ON DIT **a combination**, mot à mot « une combinaison » — le même mot qu'une combinaison d'obstacles, ce qui prête à confusion. L'italien a le plus beau terme : *un binomio*, « un binôme ». Ce qui compte, c'est que le classement note le couple, jamais le cavalier seul.",
+          en:"English says « a combination » — the same word as a combination of fences, which can confuse. Italian has the finest term: un binomio. What matters is that the score belongs to the pair, never the rider alone.",
+          es:"En inglés se dice « a combination », la misma palabra que una combinación de obstáculos. El italiano tiene el término más bello: un binomio.",
+          it:"In inglese si dice « a combination », la stessa parola di una combinazione di ostacoli. L'italiano ha il termine più bello: un binomio.",
+          de:"Englisch sagt « a combination » — dasselbe Wort wie eine Hindernis-Kombination, was verwirren kann. Italienisch hat den schönsten Ausdruck: un binomio.",
+          ja:"英語では a combination と言い、障害の組み合わせと同じ語なので混乱しやすいです。イタリア語の un binomio（二人組）が最も美しい表現です。順位は騎手個人ではなく、常に人馬のコンビに与えられます。" } },
+
+  { ref:"premiere-manche", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"la première manche"}, en:{m:"the first round", p:"feurst raound"},
+           es:{m:"la primera manga"}, it:{m:"la prima manche"},
+           de:{m:"der erste Umlauf", p:"èrs-te oum-laouf"}, ja:{m:"第一回走行", p:"daiichi-kai sōkō"} },
+    def:{ fr:"Les quatre cavaliers passent une première fois, dans l'ordre décidé par le chef d'équipe. ⚠️ Le premier à partir a un rôle particulier : il donne un « parcours de référence » — les autres sauront ce que vaut le tracé. En anglais on dit *a good opening round*.",
+          en:"All four go once, in the order the chef d'équipe decides. The first to go has a particular job: a good opening round tells the others what the course is worth.",
+          es:"Los cuatro pasan una primera vez, en el orden decidido por el jefe de equipo. El primero da un recorrido de referencia.",
+          it:"I quattro passano una prima volta, nell'ordine deciso dal capo equipe. Il primo dà un percorso di riferimento.",
+          de:"Alle vier gehen einmal, in der Reihenfolge, die der Chef d'équipe festlegt. Der Erste hat eine besondere Aufgabe: er zeigt, was der Parcours wert ist.",
+          ja:"四人が監督の決めた順で一度ずつ走ります。一番目には特別な役割があります。基準となる走行を見せ、他の三人にコースの難易度を伝えるのです。" } },
+
+  { ref:"deuxieme-manche", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"la deuxième manche"}, en:{m:"the second round", p:"sè-keunde raound"},
+           es:{m:"la segunda manga"}, it:{m:"la seconda manche"},
+           de:{m:"der zweite Umlauf", p:"tsvaï-te oum-laouf"}, ja:{m:"第二回走行", p:"daini-kai sōkō"} },
+    def:{ fr:"🟥 SEULES LES MEILLEURES ÉQUIPES Y REVIENNENT, et **dans l'ordre inverse du classement** : la nation en tête passe en dernier. C'est ce qui rend la fin insoutenable — on sait exactement ce qu'il faut faire, et tout le monde le sait aussi. ⚠️ Le nombre d'équipes qualifiées varie selon l'épreuve : ne pas l'inventer, le demander.",
+          en:"Only the best teams come back, and in reverse order of the standings: the leading nation goes last. That's what makes the end unbearable — you know exactly what you have to do, and so does everyone else.",
+          es:"Solo vuelven los mejores equipos, y en orden inverso a la clasificación: la nación líder pasa última.",
+          it:"Solo le squadre migliori tornano, e in ordine inverso alla classifica: la nazione in testa passa per ultima.",
+          de:"Nur die besten Teams kommen zurück, und in umgekehrter Reihenfolge der Wertung: die führende Nation reitet zuletzt.",
+          ja:"上位のチームだけが戻り、順位の逆順で走ります。首位の国が最後です。だから終盤は耐えがたい。何をすべきか正確にわかっていて、周りもみな知っているからです。" } },
+
+  { ref:"score-ecarte", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"le score écarté"}, en:{m:"the drop score", p:"drop skor"},
+           es:{m:"el resultado descartado"}, it:{m:"il punteggio scartato"},
+           de:{m:"das Streichergebnis", p:"chtraï-che-èr-guèb-niss"}, ja:{m:"除外される成績", p:"jogai sareru seiseki"} },
+    def:{ fr:"🟥 LE MÉCANISME QUI FAIT TOUT LE SEL DE L'ÉPREUVE. Sur quatre scores, le plus mauvais est écarté : trois seulement comptent. Un cavalier peut donc rater complètement son parcours sans faire perdre son équipe — une fois. La deuxième erreur coûte la victoire. ⚠️ C'est ce qui explique les stratégies : « ne prends pas de risques, le temps n'est pas notre priorité ».",
+          en:"The mechanism that makes the whole thing. Of four scores the worst is dropped: only three count. A rider can have a disaster without costing the team — once. The second mistake costs the win.",
+          es:"El mecanismo que da todo su sabor a la prueba. De cuatro resultados se descarta el peor: solo cuentan tres. Un jinete puede fallar del todo sin hacer perder al equipo, una vez.",
+          it:"Il meccanismo che dà tutto il sale alla prova. Di quattro punteggi il peggiore è scartato: solo tre contano. Un cavaliere può sbagliare tutto senza far perdere la squadra, una volta sola.",
+          de:"Der Mechanismus, der alles ausmacht. Von vier Ergebnissen fällt das schlechteste weg: nur drei zählen. Ein Reiter darf einmal scheitern, ohne das Team zu kosten.",
+          ja:"この競技の面白さを生む仕組み。四つの成績のうち最悪の一つが除外され、三つだけが有効です。一人が完全に失敗してもチームは負けません。ただし一度だけ。二つ目の失敗は勝利を失わせます。" } },
+
+  { ref:"barre-tombee", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"une barre"}, en:{m:"a rail down", p:"réïl daoune", var:"a fence down"},
+           es:{m:"una barra"}, it:{m:"una barriera"},
+           de:{m:"ein Abwurf", p:"app-vourf"}, ja:{m:"バー一本の落下", p:"bā ippon no rakka"} },
+    def:{ fr:"⚠️ EN ANGLAIS ON NE DIT PAS « a bar » MAIS **a rail** — et « une barre » se dit *a rail down*, avec le « down » qui porte tout le sens. La formule des chefs d'équipe : *we can still afford one rail, but no more*. En allemand un abattage se dit *ein Abwurf*, littéralement « un jet ».",
+          en:"Not « a bar » but « a rail », and you say « a rail down » — the « down » carries the meaning. The chef d'équipe's phrase: we can still afford one rail, but no more.",
+          es:"En inglés no se dice « a bar » sino « a rail », y se dice « a rail down ».",
+          it:"In inglese non si dice « a bar » ma « a rail », e si dice « a rail down ».",
+          de:"Englisch sagt nicht « a bar », sondern « a rail down ». Deutsch: ein Abwurf, wörtlich « ein Wurf ».",
+          ja:"英語では a bar ではなく a rail と言い、落下は a rail down と表します。down が意味の中心です。ドイツ語の Abwurf は「投げ落とすこと」という意味です。" } },
+
+  { ref:"ordre-depart", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"l'ordre de départ"}, en:{m:"the starting order", p:"star-tinng or-deur"},
+           es:{m:"el orden de salida"}, it:{m:"l'ordine di partenza"},
+           de:{m:"die Startfolge", p:"chtart-fol-gue"}, ja:{m:"出場順", p:"shutsujō jun"} },
+    def:{ fr:"⚠️ CE N'EST PAS UN TIRAGE AU SORT, C'EST UNE DÉCISION. Le chef d'équipe place son cavalier le plus régulier en premier — il ouvre et rassure — et son meilleur en dernier, parce que c'est lui qui devra faire le score sous pression. En deuxième manche, l'ordre s'inverse selon le classement.",
+          en:"It isn't a draw, it's a decision. The chef d'équipe puts the most reliable rider first — to open and to reassure — and the best one last, because that's the score made under pressure.",
+          es:"No es un sorteo, es una decisión. El jefe de equipo pone al jinete más regular primero y al mejor al final, porque es el resultado bajo presión.",
+          it:"Non è un sorteggio, è una decisione. Il capo equipe mette il cavaliere più regolare per primo e il migliore per ultimo, perché è il punteggio sotto pressione.",
+          de:"Es ist keine Auslosung, sondern eine Entscheidung. Der Chef d'équipe setzt den zuverlässigsten Reiter zuerst und den besten zuletzt.",
+          ja:"抽選ではなく判断です。監督は最も安定した騎手を先頭に置き、最も強い騎手を最後に置きます。重圧の中で成績を出すのは最後の走行だからです。" } },
+
+  { ref:"representer-pays", lecon:4, coll:"equipe",
+    mots:{ fr:{m:"représenter son pays"}, en:{m:"to represent your country", p:"rè-pri-zènte"},
+           es:{m:"representar a su país"}, it:{m:"rappresentare il proprio paese"},
+           de:{m:"sein Land vertreten", p:"feur-tré-teune"}, ja:{m:"国を代表する", p:"kuni o daihyō suru"} },
+    def:{ fr:"🟥 CE QUI CHANGE TOUT, et la première phrase du chapitre : « aujourd'hui, tu ne montes pas seulement pour toi, tu montes pour ton pays ». On porte la veste nationale, l'hymne joue si l'on gagne, et une faute ne coûte plus seulement un classement. ⚠️ C'est aussi la seule fois de l'année où un cavalier n'a pas le droit de choisir sa stratégie seul.",
+          en:"What changes everything, and the chapter's first sentence: today you're not just riding for yourself, you're riding for your country. You wear the national jacket, the anthem plays if you win, and a mistake no longer costs only a placing.",
+          es:"Lo que lo cambia todo: hoy no montas solo para ti, montas para tu país. Se lleva la chaqueta nacional y suena el himno si se gana.",
+          it:"Ciò che cambia tutto: oggi non monti solo per te, monti per il tuo paese. Si indossa la giacca nazionale e suona l'inno se si vince.",
+          de:"Was alles ändert: heute reitest du nicht nur für dich, sondern für dein Land. Man trägt das Nationaljackett, und die Hymne spielt, wenn man gewinnt.",
+          ja:"すべてを変えるもの。この章の最初の一文です。「今日は自分のためだけに乗るのではなく、国のために乗る」。国の色のジャケットを着て、勝てば国歌が流れます。ミスはもう順位だけの問題ではありません。" } },
 
   { ref:"concurrent", lecon:4, coll:"gens",
     mots:{ fr:{m:"le concurrent"}, en:{m:"the competitor", p:"kom-pè-ti-teur"},
@@ -596,5 +806,543 @@ window.HYPE_LINGO_LEX.concours = {
       it:"Bravissima, bel percorso !",
       de:"Toll geritten, schöne Runde !",
       ja:"お見事 でした 、 いい 走行 でした !" }
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE BADMINTON — 17 août 2026, session 214.
+
+     LA SCÈNE : les trois jours d'un concours complet, dans l'ordre —
+     l'arrivée, le dressage, le cross, l'obstacle. 27 phrases, 6 temps.
+
+     🟥 DIX-HUIT PHRASES SUR VINGT-DEUX SONT DE BLANDINE, écrites avec
+     leur traduction anglaise. Sa consigne : « pour Badminton je ferais
+     un chapitre encore plus complet que Burghley, en couvrant les 3
+     tests du concours complet : dressage, cross et hippique, avec des
+     phrases vraiment utiles en situation ».
+     ⚠️ C'EST LA STRUCTURE QUI FAIT LE CHAPITRE : un temps par épreuve,
+     dans l'ordre où elles se courent. NE PAS mélanger les temps.
+
+     🟥 CE QUE SES PHRASES APPORTENT, et que rien n'expliquait :
+     · LE DRESSAGE — préparer la transition AVANT la lettre, la cadence
+       régulière, l'engagement des postérieurs, et « laisse-le respirer
+       avant d'entrer sur le carré » : un cheval tendu ne se détend pas
+       dans le rectangle.
+     · LE CROSS — économiser sur le terrain vallonné, rattraper du temps
+       sur les portions plates, rééquilibrer sans casser le galop, et
+       surtout « regarde déjà l'obstacle suivant pendant que tu
+       franchis celui-ci ».
+     · 🟥 LE TROISIÈME JOUR — ce que personne ne dit : le cheval a couru
+       le cross la veille. « Il a beaucoup donné hier, regarde comment
+       il se sent à la détente » · « aujourd'hui il faut préserver les
+       barres, le cheval peut être fatigué » · « un sans-faute peut
+       complètement changer le classement final ».
+     ⚠️ NE PAS déplacer le temps 5 avant le temps 4 : l'obstacle vient
+     APRÈS le cross dans un complet, et c'est tout l'intérêt.
+
+     ⚠️ AUCUN CHIFFRE DE BARÈME. Consigne de Blandine après trois fautes
+     de fond sur Windsor : « invente surtout pas des trucs ». Le mot
+     `bareme` existe pour qu'on sache POSER la question.
+     ⚠️ `bonne-chance` a été RETIRÉ du lexique le même jour, sur sa
+     demande : la formule porte malheur dans le monde équestre, comme au
+     théâtre. On dit « bon courage », les Britanniques « have a good
+     ride », les Allemands « Hals- und Beinbruch ». NE PAS le remettre.
+
+     ⚠️ MOTS EMPLOYÉS SANS ÊTRE DANS CETTE LEÇON, volontairement — c'est
+     de la révision, les villes précédentes les ont donnés :
+     `lettre` (Windsor) · `cadence` et `engagement` (Versailles) ·
+     `detente` (Aberystwyth) · `sans-faute` (Wellington) · `fosse`,
+     `contre-bas`, `gue`, `voie-directe`, `ligne`, `complexe-eau`
+     (Burghley, qui vient JUSTE AVANT depuis l'interversion du 17/08).
+
+     `dit` : "joueuse" = elle produit · "club" = le secrétariat, un
+     coach, le speaker.
+  ================================================================== */
+  dialogue: {
+    ville: "badminton", lecon: 2, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 27 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · j'arrive sur le concours ---- */
+      { ref:"dbd-secretariat", temps:1, dit:"joueuse", mots:[], motsAilleurs:["secretariat"],
+        fr:"Où est le secrétariat ? Je viens retirer mon dossard.",
+        en:"Where's the secretary's office? I've come to collect my number.",
+        es:"¿Dónde está la secretaría? Vengo a recoger mi dorsal.",
+        it:"Dov'è la segreteria? Vengo a ritirare il mio numero.",
+        de:"Wo ist das Meldebüro? Ich möchte meine Startnummer holen.",
+        ja:"事務局 は どこ です か ? ゼッケン を 受け取り に 来 まし た。" },
+
+      { ref:"dbd-r-licence-passeport", temps:1, dit:"club", mots:[], motsAilleurs:["licence"],
+        fr:"Il me faut votre licence et le passeport du cheval.",
+        en:"I need your licence and the horse's passport.",
+        es:"Necesito su licencia y el pasaporte del caballo.",
+        it:"Mi servono la sua licenza e il passaporto del cavallo.",
+        de:"Ich brauche Ihre Lizenz und den Pferdepass.",
+        ja:"ライセンス と 馬 の パスポート が 必要 です。" },
+
+      { ref:"dbd-licence-etrangere", temps:1, dit:"joueuse", mots:[], motsAilleurs:["licence"],
+        fr:"Ma licence est étrangère, est-ce qu'elle est valable ici ?",
+        en:"My licence is foreign — is it valid here?",
+        es:"Mi licencia es extranjera, ¿es válida aquí?",
+        it:"La mia licenza è straniera, è valida qui?",
+        de:"Meine Lizenz ist ausländisch — gilt sie hier?",
+        ja:"外国 の ライセンス です が、 ここ で 有効 です か ?" },
+
+      { ref:"dbd-epreuves-ou", temps:1, dit:"joueuse", mots:["concours-complet","reprise-dressage","parcours-obstacle","cross"],
+        fr:"Savez-vous comment et où vont se dérouler les épreuves de dressage, obstacle et cross ?",
+        en:"Do you know how and where the dressage, showjumping and cross-country will be run?",
+        es:"¿Sabe cómo y dónde se van a disputar las pruebas de doma, salto y cross?",
+        it:"Sa come e dove si svolgeranno le prove di dressage, salto e cross?",
+        de:"Wissen Sie, wie und wo Dressur, Springen und Gelände ausgetragen werden?",
+        ja:"馬場、 障害、 クロスカントリー の 各 競技 が いつ どこ で 行わ れる か ご存じ です か ?" },
+
+      { ref:"dbd-r-trois-jours", temps:1, dit:"club", mots:["reprise-dressage","cross","parcours-obstacle"],
+        fr:"Dressage aujourd'hui, cross demain, obstacle dimanche.",
+        en:"Dressage today, cross-country tomorrow, showjumping on Sunday.",
+        es:"Doma hoy, cross mañana, salto el domingo.",
+        it:"Dressage oggi, cross domani, salto domenica.",
+        de:"Heute Dressur, morgen Gelände, Sonntag Springen.",
+        ja:"今日 は 馬場、 明日 は クロスカントリー、 日曜 は 障害 です。" },
+
+      /* ---- temps 2 · la reprise de dressage ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-laisse-respirer", temps:2, dit:"club", mots:["reprise-dressage"],
+        fr:"Il est un peu tendu, laisse-le respirer avant d'entrer sur le carré.",
+        en:"He's a little tense, let him breathe before you enter the arena.",
+        es:"Está algo tenso, déjalo respirar antes de entrar en la pista.",
+        it:"È un po' teso, lascialo respirare prima di entrare nel quadrato.",
+        de:"Er ist etwas angespannt — lass ihn atmen, bevor du ins Viereck reitest.",
+        ja:"少し 緊張 し て い ます。 馬場 に 入る 前 に 息 を つか せ て ください。" },
+
+      /* 🟥 Phrase de Blandine. Emploie `lettre`, de Windsor. */
+      { ref:"dbd-r-transition-lettre", temps:2, dit:"club", mots:[], motsAilleurs:["lettre"],
+        fr:"Prépare ta transition avant la lettre, pas au dernier moment.",
+        en:"Prepare your transition before the marker, not at the last second.",
+        es:"Prepara la transición antes de la letra, no en el último momento.",
+        it:"Prepara la transizione prima della lettera, non all'ultimo momento.",
+        de:"Bereite den Übergang vor dem Buchstaben vor, nicht in der letzten Sekunde.",
+        ja:"移行 は 文字 の 手前 で 準備 し ます。 直前 で は 遅い です。" },
+
+      /* 🟥 Phrase de Blandine. Emploie `cadence`, de Versailles. */
+      { ref:"dbd-r-cadence-reguliere", temps:2, dit:"club", mots:[], motsAilleurs:["cadence"],
+        fr:"Garde une cadence régulière et ne le laisse pas accélérer.",
+        en:"Keep a steady rhythm and don't let him rush.",
+        es:"Mantén una cadencia regular y no le dejes acelerar.",
+        it:"Mantieni una cadenza regolare e non lasciarlo accelerare.",
+        de:"Halte einen gleichmäßigen Takt und lass ihn nicht eilen.",
+        ja:"一定 の リズム を 保ち、 急がせ ない で ください。" },
+
+      /* 🟥 Phrase de Blandine. `engagement` créé le même jour. */
+      { ref:"dbd-r-engagement", temps:2, dit:"club", mots:["reprise-dressage"], motsAilleurs:["engagement"],
+        fr:"Il faut davantage d'engagement des postérieurs dans cette reprise.",
+        en:"We need more engagement from the hindquarters in this test.",
+        es:"Hace falta más enganche de los posteriores en esta prueba.",
+        it:"Serve più impegno dei posteriori in questa ripresa.",
+        de:"In dieser Aufgabe braucht es mehr Untertreten der Hinterhand.",
+        ja:"この 課目 で は、 後肢 の 踏み込み を もっと 出す 必要 が あり ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-troisieme-provisoire", temps:2, dit:"joueuse", mots:["classement-provisoire","reprise-dressage"],
+        fr:"Je suis troisième au classement provisoire après le dressage.",
+        en:"I'm lying third after the dressage.",
+        es:"Voy tercera en la clasificación provisional después de la doma.",
+        it:"Sono terza nella classifica provvisoria dopo il dressage.",
+        de:"Nach der Dressur liege ich auf dem dritten Platz.",
+        ja:"馬場 の あと、 暫定 三位 です。" },
+
+      /* ---- temps 3 · le cross, l'économie du cheval ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-terrain-vallonne", temps:3, dit:"club", mots:["terrain-vallonne","cross"],
+        fr:"Le terrain est vallonné, économise ton cheval au début du cross.",
+        en:"The ground is hilly, so save your horse at the beginning of the cross-country.",
+        es:"El terreno es ondulado: economiza tu caballo al principio del cross.",
+        it:"Il terreno è mosso: risparmia il cavallo all'inizio del cross.",
+        de:"Das Gelände ist hügelig — schone dein Pferd am Anfang.",
+        ja:"起伏 が ある 地形 です。 クロス の 序盤 は 馬 を 節約 し て ください。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-galoper-recuperer", temps:3, dit:"club", mots:["rattraper-temps"],
+        fr:"Laisse-le galoper sur les portions où tu peux récupérer du temps.",
+        en:"Let him gallop on the stretches where you can make up time.",
+        es:"Déjalo galopar en los tramos donde puedas recuperar tiempo.",
+        it:"Lascialo galoppare nei tratti dove puoi recuperare tempo.",
+        de:"Lass ihn auf den Strecken galoppieren, wo du Zeit aufholen kannst.",
+        ja:"時間 を 取り戻せる 区間 で は 走ら せ て ください。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-rebalance-galop", temps:3, dit:"club", mots:["obstacle-fixe"],
+        fr:"Rééquilibre avant le gros obstacle, mais ne casse pas ton galop.",
+        en:"Rebalance before the big fence, but don't kill the gallop.",
+        es:"Reequilibra antes del obstáculo grande, pero no rompas el galope.",
+        it:"Riequilibra prima dell'ostacolo grande, ma non rompere il galoppo.",
+        de:"Balanciere vor dem großen Sprung neu, aber zerstöre den Galopp nicht.",
+        ja:"大きな 障害 の 前 で 立て直し ます が、 ギャロップ を 殺さ ない で。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-regarde-suivant", temps:3, dit:"club", mots:[], motsAilleurs:["ligne"],
+        fr:"Regarde déjà l'obstacle suivant pendant que tu franchis celui-ci.",
+        en:"Look for the next fence while you're jumping this one.",
+        es:"Mira ya el obstáculo siguiente mientras saltas este.",
+        it:"Guarda già l'ostacolo successivo mentre salti questo.",
+        de:"Schau schon zum nächsten Sprung, während du diesen springst.",
+        ja:"この 障害 を 飛び ながら、 すでに 次 の 障害 を 見 ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-drop-dans-eau", temps:3, dit:"club", mots:[], motsAilleurs:["contre-bas","complexe-eau"],
+        fr:"Il y a un gros contre-bas dans l'eau, reste bien derrière ton cheval.",
+        en:"There's a big drop into the water, stay well behind your horse.",
+        es:"Hay un gran contrabajo en el agua: quédate bien detrás de tu caballo.",
+        it:"C'è un grosso salto in discesa nell'acqua: resta bene dietro al cavallo.",
+        de:"Es gibt einen großen Absprung ins Wasser — bleib gut hinter dem Pferd.",
+        ja:"水 の 中 へ の 大きな ドロップ が あり ます。 体 を しっかり 後ろ に 残し て。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-jambes-fosse", temps:3, dit:"club", mots:[], motsAilleurs:["fosse"],
+        fr:"Garde tes jambes au contact s'il regarde le fossé.",
+        en:"Keep your leg on if he looks at the ditch.",
+        es:"Mantén las piernas en contacto si mira la zanja.",
+        it:"Tieni le gambe in contatto se guarda il fosso.",
+        de:"Halte den Schenkel dran, wenn er den Graben anschaut.",
+        ja:"溝 を 見 たら、 脚 を つけ た まま に し て ください。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-voie-directe-precision", temps:3, dit:"club", mots:[], motsAilleurs:["voie-directe"],
+        fr:"La voie directe est plus rapide, mais elle demande beaucoup de précision.",
+        en:"The direct route is quicker, but it requires a lot of accuracy.",
+        es:"La vía directa es más rápida, pero exige mucha precisión.",
+        it:"La via diretta è più rapida, ma richiede molta precisione.",
+        de:"Der direkte Weg ist schneller, verlangt aber viel Präzision.",
+        ja:"直線 ルート の ほう が 速い です が、 高い 正確 さ が 必要 です。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-pas-couper-virage", temps:3, dit:"club", mots:[], motsAilleurs:["ligne"],
+        fr:"Ne coupe pas ton virage, tu risques de perdre ta ligne sur le deuxième élément.",
+        en:"Don't cut the turn or you might lose your line to the second element.",
+        es:"No cortes el giro: puedes perder la línea en el segundo elemento.",
+        it:"Non tagliare la curva: rischi di perdere la linea sul secondo elemento.",
+        de:"Schneide die Wendung nicht ab, sonst verlierst du die Linie zum zweiten Element.",
+        ja:"回転 を 内側 に 切ら ない で。 二番目 の 要素 で ライン を 失い ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-trouve-sa-foulee", temps:3, dit:"club", mots:["obstacle-fixe"],
+        fr:"Laisse-le trouver sa foulée devant le gros oxer de cross.",
+        en:"Let him find his stride to the big cross-country oxer.",
+        es:"Déjalo encontrar su tranco ante el gran óxer de cross.",
+        it:"Lascialo trovare la sua falcata davanti al grande oxer da cross.",
+        de:"Lass ihn seinen Galoppsprung zum großen Gelände-Oxer selbst finden.",
+        ja:"クロス の 大きな オクサー の 前 で は、 馬 に 歩 を 見つけ さ せ て ください。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-retard-chrono", temps:3, dit:"club", mots:["temps-optimum","rattraper-temps"],
+        fr:"On est légèrement en retard sur le chronomètre, il faut avancer maintenant.",
+        en:"We're slightly behind the clock, so we need to move on now.",
+        es:"Vamos algo retrasados con el cronómetro: hay que avanzar ahora.",
+        it:"Siamo leggermente in ritardo sul cronometro: bisogna avanzare adesso.",
+        de:"Wir sind leicht hinter der Zeit — jetzt müssen wir vorwärts.",
+        ja:"タイム が やや 遅れ て い ます。 今 から 前 へ 出 なけれ ば なり ませ ん。" },
+
+      /* ---- temps 4 · le lendemain, la détente ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-donne-hier", temps:4, dit:"club", mots:[], motsAilleurs:["detente"],
+        fr:"Il a beaucoup donné hier, regarde comment il se sent à la détente.",
+        en:"He gave a lot yesterday, so see how he feels in the warm-up.",
+        es:"Ayer dio mucho: mira cómo se siente en el calentamiento.",
+        it:"Ieri ha dato molto: guarda come si sente nel riscaldamento.",
+        de:"Er hat gestern viel gegeben — schau, wie er sich beim Abreiten anfühlt.",
+        ja:"昨日 は かなり 頑張り まし た。 ウォーミング アップ で 様子 を 見 て ください。" },
+
+      { ref:"dbd-trot-presentation", temps:4, dit:"joueuse", mots:["trot-presentation"],
+        fr:"Est-ce qu'il a passé le trot de présentation ?",
+        en:"Has he passed the trot-up?",
+        es:"¿Ha pasado la inspección al trote?",
+        it:"Ha superato la visita al trotto?",
+        de:"Hat er die Verfassungsprüfung bestanden?",
+        ja:"獣医 検査 の 常歩 速歩 検査 は 通り まし た か ?" },
+
+      /* ---- temps 5 · le parcours d'obstacle, sur un cheval fatigué ---- */
+      /* 🟥 Phrase de Blandine. LE cœur du troisième jour. */
+      { ref:"dbd-r-garder-les-barres", temps:5, dit:"club", mots:["garder-les-barres","parcours-obstacle","cross"],
+        fr:"Aujourd'hui, il faut préserver les barres : le cheval peut être fatigué après le cross.",
+        en:"Today we need to keep the poles up; the horse may be tired after the cross-country.",
+        es:"Hoy hay que no tirar las barras: el caballo puede estar cansado después del cross.",
+        it:"Oggi bisogna non far cadere le barriere: il cavallo può essere stanco dopo il cross.",
+        de:"Heute müssen die Stangen oben bleiben — das Pferd kann nach dem Gelände müde sein.",
+        ja:"今日 は バー を 落とさ ない こと が 大切 です。 クロス の あと で 馬 は 疲れ て いる かも しれ ませ ん。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-attends-distance", temps:5, dit:"club", mots:["parcours-obstacle"],
+        fr:"Attends ta distance et garde-le droit entre tes deux rênes.",
+        en:"Wait for your distance and keep him straight between both reins.",
+        es:"Espera tu distancia y mantenlo derecho entre las dos riendas.",
+        it:"Aspetta la tua distanza e tienilo dritto tra le due redini.",
+        de:"Warte auf die Distanz und halte ihn gerade zwischen beiden Zügeln.",
+        ja:"距離 を 待っ て、 両手 の 手綱 の 間 で まっすぐ 保っ て ください。" },
+
+      /* ---- temps 6 · le classement final ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dbd-r-sans-faute-classement", temps:6, dit:"club", mots:["classement-provisoire"], motsAilleurs:["sans-faute"],
+        fr:"Un sans-faute aujourd'hui peut complètement changer le classement final.",
+        en:"A clear round today could completely change the final standings.",
+        es:"Un recorrido sin falta hoy puede cambiar por completo la clasificación final.",
+        it:"Un percorso netto oggi può cambiare completamente la classifica finale.",
+        de:"Eine Nullrunde heute kann die Endplatzierung völlig verändern.",
+        ja:"今日 の クリア ラウンド が、 最終 順位 を まったく 変える こと が あり ます。" },
+
+      { ref:"dbd-points-de-temps", temps:6, dit:"joueuse", mots:["temps-optimum","bareme"],
+        fr:"Est-ce que j'ai eu des points de temps ? Quel barème s'applique ici ?",
+        en:"Did I get any time penalties? Which scoring applies here?",
+        es:"¿He tenido puntos de tiempo? ¿Qué baremo se aplica aquí?",
+        it:"Ho preso penalità di tempo? Quale barème si applica qui?",
+        de:"Habe ich Zeitfehler bekommen? Welche Wertung gilt hier?",
+        ja:"タイム 減点 は あり まし た か ? ここ で は どの 減点 方式 です か ?" },
+
+      { ref:"dbd-r-remise-prix", temps:6, dit:"club", mots:[], motsAilleurs:["trophee"],
+        fr:"Remise des prix à seize heures. Tu viendras récupérer ta coupe, ta plaque et ton flot !",
+        en:"Prize-giving at four. Come and collect your cup, your plaque and your rosette !",
+        es:"Entrega de premios a las cuatro. ¡ Ven a recoger tu copa, tu placa y tu escarapela !",
+        it:"Premiazione alle sedici. Vieni a ritirare la coppa, la placca e la coccarda !",
+        de:"Siegerehrung um sechzehn Uhr. Hol deinen Pokal, dein Schild und deine Schleife !",
+        ja:"表彰式 は 十六 時 です。 カップ、 プレート、 ロゼット を 受け取り に 来 て ください !" }
+    ]
+  },
+  /* ==================================================================
+     LE DIALOGUE DE ROME — 17 août 2026, session 214.
+     ⚠️ CE FICHIER PORTE DEUX DIALOGUES. `dialogue` = BADMINTON (le
+     complet). `dialogueRome` = ROME (la Coupe des Nations). Le moteur
+     balaie toutes les clés commençant par `dialogue` depuis le 16/08.
+     NE PAS fusionner.
+
+     LA SCÈNE : une Coupe des Nations. 21 phrases, 6 temps.
+     🟥 LE SEUL DIALOGUE DE L'APP OÙ L'ON NE MONTE PAS POUR SOI.
+     Sa première phrase le dit : « aujourd'hui, tu ne montes pas
+     seulement pour toi, tu montes pour ton pays ».
+
+     🟥 DIX-HUIT PHRASES SUR VINGT-ET-UNE SONT DE BLANDINE, avec leur
+     traduction anglaise. Elle a aussi fourni le lexique entier de la
+     Coupe des Nations (onze entrées ajoutées le même jour) et la
+     formule d'ouverture du chapitre :
+     🟥 **4 riders → 3 scores count → 2 rounds → 1 nation wins**
+     ⚠️ NE PAS la reformuler : tout le système est dans cette ligne.
+
+     CE QUE SES PHRASES ENSEIGNENT, et que rien d'autre n'explique :
+     · LE MÉCANISME — quatre couples, trois scores comptent, le plus
+       mauvais est écarté. D'où les stratégies : « on peut encore se
+       permettre une barre, mais pas davantage ».
+     · LE RÔLE DE CHACUN — le premier donne un parcours de référence
+       (*a good opening round*), le dernier fait le score sous pression.
+     · LA DEUXIÈME MANCHE — dans l'ORDRE INVERSE du classement, ce qui
+       rend la fin insoutenable.
+     · LE BARRAGE — un seul cavalier représente l'équipe.
+
+     ⚠️ AUCUN CHIFFRE INVENTÉ. « Les huit meilleures équipes se
+     qualifieront » est la phrase de Blandine et vient d'elle ; le
+     nombre varie selon l'épreuve, et la définition de
+     `deuxieme-manche` dit de le demander plutôt que de le supposer.
+
+     ⚠️ LE MOT LE PLUS ÉTRANGE DU CHAPITRE : **le chef d'équipe** se dit
+     « chef d'équipe » EN ANGLAIS AUSSI. Comme « travers » et
+     « appuyer » en dressage, l'équitation a exporté ce mot.
+     NE PAS traduire par « team leader ».
+
+     `dit` : "joueuse" = elle produit · "club" = le chef d'équipe ou un
+     coéquipier.
+  ================================================================== */
+  dialogueRome: {
+    ville: "rome", lecon: 4, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 21 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · on monte pour son pays ---- */
+      /* 🟥 Phrase de Blandine : la première du chapitre. */
+      { ref:"dr-pour-ton-pays", temps:1, dit:"club", mots:["representer-pays","coupe-nations"],
+        fr:"Aujourd'hui, tu ne montes pas seulement pour toi, tu montes pour ton pays.",
+        en:"Today, you're not just riding for yourself, you're riding for your country.",
+        es:"Hoy no montas solo para ti: montas para tu país.",
+        it:"Oggi non monti solo per te: monti per il tuo paese.",
+        de:"Heute reitest du nicht nur für dich, sondern für dein Land.",
+        ja:"今日 は 自分 の ため だけ で は なく、 国 の ため に 乗り ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-plusieurs-couples", temps:1, dit:"club", mots:["equipe-nationale","couple"],
+        fr:"Chaque équipe est composée de plusieurs couples cavalier-cheval.",
+        en:"Each team is made up of several horse-and-rider combinations.",
+        es:"Cada equipo está formado por varias combinaciones jinete-caballo.",
+        it:"Ogni squadra è composta da più binomi cavaliere-cavallo.",
+        de:"Jede Mannschaft besteht aus mehreren Reiter-Pferd-Paaren.",
+        ja:"各 チーム は 複数 の 人馬 コンビ で 構成 され ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-trois-meilleurs", temps:1, dit:"club", mots:["coupe-nations"],
+        fr:"Les trois meilleurs scores de l'équipe sont pris en compte.",
+        en:"The three best scores of the team count.",
+        es:"Se tienen en cuenta los tres mejores resultados del equipo.",
+        it:"Contano i tre migliori punteggi della squadra.",
+        de:"Die drei besten Ergebnisse der Mannschaft zählen.",
+        ja:"チーム の 上位 三 つ の 成績 が 有効 に なり ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-score-ecarte", temps:1, dit:"club", mots:["score-ecarte"],
+        fr:"Notre moins bon score pourra être écarté.",
+        en:"Our worst score can be dropped.",
+        es:"Nuestro peor resultado podrá descartarse.",
+        it:"Il nostro punteggio peggiore potrà essere scartato.",
+        de:"Unser schlechtestes Ergebnis kann gestrichen werden.",
+        ja:"最も 悪い 成績 は 除外 でき ます。" },
+
+      /* ---- temps 2 · mon rôle dans l'équipe ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-premier-reference", temps:2, dit:"club", mots:["ordre-depart","premiere-manche"],
+        fr:"Tu passes en premier pour l'équipe, alors donne-nous un parcours de référence.",
+        en:"You're first to go for the team, so give us a good opening round.",
+        es:"Sales primera por el equipo, así que danos un recorrido de referencia.",
+        it:"Parti prima per la squadra, quindi dacci un percorso di riferimento.",
+        de:"Du gehst als Erste für die Mannschaft — gib uns eine gute Eröffnungsrunde.",
+        ja:"チーム の 一番手 です。 基準 に なる 走行 を 見せ て ください。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-sans-faute-tete", temps:2, dit:"club", mots:[], motsAilleurs:["sans-faute"],
+        fr:"Nous avons besoin d'un sans-faute pour rester en tête.",
+        en:"We need a clear round to stay in the lead.",
+        es:"Necesitamos un recorrido sin falta para seguir en cabeza.",
+        it:"Ci serve un percorso netto per restare in testa.",
+        de:"Wir brauchen eine Nullrunde, um in Führung zu bleiben.",
+        ja:"首位 を 守る に は クリア ラウンド が 必要 です。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-une-barre-pas-plus", temps:2, dit:"club", mots:["barre-tombee"],
+        fr:"Nous pouvons encore nous permettre une barre, mais pas davantage.",
+        en:"We can still afford one rail, but no more.",
+        es:"Todavía podemos permitirnos una barra, pero no más.",
+        it:"Possiamo ancora permetterci una barriera, ma non di più.",
+        de:"Einen Abwurf können wir uns noch erlauben, aber nicht mehr.",
+        ja:"バー 一本 まで は 許容 でき ます が、 それ 以上 は 無理 です。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-apres-troisieme", temps:2, dit:"club", mots:["coequipier","ordre-depart"],
+        fr:"Après le parcours du troisième cavalier, nous saurons exactement ce dont tu as besoin.",
+        en:"After our third rider, we'll know exactly what you need to do.",
+        es:"Después del recorrido del tercer jinete sabremos exactamente lo que necesitas.",
+        it:"Dopo il percorso del terzo cavaliere sapremo esattamente cosa ti serve.",
+        de:"Nach unserem dritten Reiter wissen wir genau, was du brauchst.",
+        ja:"三 番手 の 走行 が 終われ ば、 あなた に 必要 な こと が 正確 に わかり ます。" },
+
+      /* ---- temps 3 · le classement ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-italie-egalite", temps:3, dit:"club", mots:["equipe-nationale"], motsAilleurs:["classement-provisoire"],
+        fr:"L'équipe italienne est actuellement à égalité avec la France.",
+        en:"The Italian team is currently tied with France.",
+        es:"El equipo italiano está actualmente empatado con Francia.",
+        it:"La squadra italiana è attualmente a pari merito con la Francia.",
+        de:"Die italienische Mannschaft liegt derzeit gleichauf mit Frankreich.",
+        ja:"イタリア チーム は 現在 フランス と 同点 です。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-quatre-points-avance", temps:3, dit:"club", mots:[], motsAilleurs:["classement-provisoire","penalites"],
+        fr:"Nous avons quatre points de pénalité d'avance sur l'équipe suivante.",
+        en:"We're four penalties ahead of the next team.",
+        es:"Llevamos cuatro puntos de penalización de ventaja sobre el equipo siguiente.",
+        it:"Abbiamo quattro penalità di vantaggio sulla squadra successiva.",
+        de:"Wir haben vier Strafpunkte Vorsprung auf die nächste Mannschaft.",
+        ja:"次 の チーム に 減点 四 の 差 で リード し て い ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-huit-qualifiees", temps:3, dit:"club", mots:["deuxieme-manche","equipe-nationale"],
+        fr:"Les huit meilleures équipes se qualifieront pour la deuxième manche.",
+        en:"The top eight teams will qualify for the second round.",
+        es:"Los ocho mejores equipos se clasificarán para la segunda manga.",
+        it:"Le prime otto squadre si qualificheranno per la seconda manche.",
+        de:"Die besten acht Mannschaften qualifizieren sich für den zweiten Umlauf.",
+        ja:"上位 八 チーム が 第二 回 走行 に 進み ます。" },
+
+      /* ---- temps 4 · la deuxième manche ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-ordre-inverse", temps:4, dit:"club", mots:["deuxieme-manche","ordre-depart"],
+        fr:"Nous repartirons dans l'ordre inverse du classement.",
+        en:"We'll start again in reverse order of the standings.",
+        es:"Volveremos a salir en orden inverso a la clasificación.",
+        it:"Ripartiremo in ordine inverso alla classifica.",
+        de:"Wir starten erneut in umgekehrter Reihenfolge der Wertung.",
+        ja:"順位 の 逆順 で 再 スタート し ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-chaque-faute-compte", temps:4, dit:"club", mots:["barre-tombee"],
+        fr:"Chaque faute compte maintenant, nous n'avons plus de marge d'erreur.",
+        en:"Every fault counts now; we have no room for error.",
+        es:"Ahora cada falta cuenta: ya no tenemos margen de error.",
+        it:"Adesso ogni penalità conta: non abbiamo più margine d'errore.",
+        de:"Jetzt zählt jeder Fehler — wir haben keinen Spielraum mehr.",
+        ja:"もう 一つ の ミス も 許され ませ ん。 余裕 は あり ませ ん。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-chef-strategie", temps:4, dit:"club", mots:["chef-equipe","deuxieme-manche"],
+        fr:"Le chef d'équipe a décidé de modifier notre stratégie pour la deuxième manche.",
+        en:"The chef d'équipe has decided to change our strategy for the second round.",
+        es:"El jefe de equipo ha decidido cambiar nuestra estrategia para la segunda manga.",
+        it:"Il capo equipe ha deciso di cambiare la nostra strategia per la seconda manche.",
+        de:"Der Equipechef hat entschieden, unsere Strategie für den zweiten Umlauf zu ändern.",
+        ja:"監督 が 第二 回 走行 の 戦略 を 変える と 決め まし た。" },
+
+      /* ---- temps 5 · le barrage ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-egalite-barrage", temps:5, dit:"club", mots:["equipe-nationale"], motsAilleurs:["barrage","penalites"],
+        fr:"Si les deux nations terminent avec le même nombre de points, il y aura un barrage.",
+        en:"If both nations finish on the same number of penalties, there will be a jump-off.",
+        es:"Si las dos naciones terminan con el mismo número de puntos, habrá desempate.",
+        it:"Se le due nazioni finiscono con lo stesso numero di penalità, ci sarà un barrage.",
+        de:"Wenn beide Nationen mit gleicher Fehlerzahl abschließen, gibt es ein Stechen.",
+        ja:"両国 が 同じ 減点 で 終わっ た 場合、 ジャンプオフ に なり ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dr-r-un-seul-barrage", temps:5, dit:"club", mots:["equipe-nationale","chef-equipe"], motsAilleurs:["barrage"],
+        fr:"Un seul cavalier représentera l'équipe au barrage.",
+        en:"Only one rider will represent the team in the jump-off.",
+        es:"Un solo jinete representará al equipo en el desempate.",
+        it:"Un solo cavaliere rappresenterà la squadra al barrage.",
+        de:"Nur ein Reiter vertritt die Mannschaft im Stechen.",
+        ja:"ジャンプオフ で は 一 人 だけ が チーム を 代表 し ます。" },
+
+      /* 🟥 Phrase de Blandine. Elle a fait RETIRER « ne prends pas de
+         risques inutiles, le temps n'est pas notre priorité » — voir
+         le commentaire d'en-tête. */
+      { ref:"dr-r-sans-faute-victoire", temps:5, dit:"club", mots:["coupe-nations"], motsAilleurs:["sans-faute"],
+        fr:"Un sans-faute nous offrirait la victoire dans la Coupe des Nations de Rome.",
+        en:"A clear round would give us victory in the Nations Cup in Rome.",
+        es:"Un recorrido sin falta nos daría la victoria en la Copa de las Naciones de Roma.",
+        it:"Un percorso netto ci darebbe la vittoria nella Coppa delle Nazioni di Roma.",
+        de:"Eine Nullrunde würde uns den Sieg im Nationenpreis von Rom bringen.",
+        ja:"クリア ラウンド なら、 ローマ の ネーションズ カップ で 優勝 でき ます。" },
+
+      /* ---- temps 6 · ce que je peux dire, moi ---- */
+      { ref:"dr-je-passe-quand", temps:6, dit:"joueuse", mots:["ordre-depart","premiere-manche"],
+        fr:"Je passe à quel rang dans la première manche ?",
+        en:"Where am I in the running order for the first round?",
+        es:"¿En qué puesto salgo en la primera manga?",
+        it:"In che ordine parto nella prima manche?",
+        de:"An welcher Stelle starte ich im ersten Umlauf?",
+        ja:"第一 回 走行 で は 何 番目 に 出 ます か ?" },
+
+      { ref:"dr-combien-il-faut", temps:6, dit:"joueuse", mots:["score-ecarte"], motsAilleurs:["sans-faute"],
+        fr:"Il me faut un sans-faute, ou est-ce qu'on peut écarter mon score ?",
+        en:"Do I need a clear round, or can my score be dropped?",
+        es:"¿Necesito un sin falta, o se puede descartar mi resultado?",
+        it:"Mi serve un percorso netto, o il mio punteggio può essere scartato?",
+        de:"Brauche ich eine Nullrunde, oder kann mein Ergebnis gestrichen werden?",
+        ja:"クリア ラウンド が 必要 です か、 それとも 私 の 成績 は 除外 でき ます か ?" },
+
+      { ref:"dr-desole-equipe", temps:6, dit:"joueuse", mots:["coequipier","barre-tombee"],
+        fr:"Je suis désolée pour l'équipe, j'ai fait tomber une barre.",
+        en:"I'm sorry for the team — I had a rail down.",
+        es:"Lo siento por el equipo, he tirado una barra.",
+        it:"Mi dispiace per la squadra, ho fatto cadere una barriera.",
+        de:"Es tut mir leid für die Mannschaft, ich hatte einen Abwurf.",
+        ja:"チーム に 申し訳 あり ませ ん。 バー を 一本 落とし まし た。" },
+
+      { ref:"dr-fiere-de-monter", temps:6, dit:"joueuse", mots:["representer-pays","equipe-nationale"],
+        fr:"C'est la première fois que je monte pour mon pays.",
+        en:"It's the first time I've ridden for my country.",
+        es:"Es la primera vez que monto para mi país.",
+        it:"È la prima volta che monto per il mio paese.",
+        de:"Es ist das erste Mal, dass ich für mein Land reite.",
+        ja:"国 を 代表 し て 乗る の は 今日 が 初めて です。" }
+    ]
+  }
 };

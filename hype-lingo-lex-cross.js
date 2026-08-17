@@ -47,12 +47,19 @@ window.HYPE_LINGO_LEX.cross = {
     mots:{ fr:{m:"le piano"}, en:{m:"the steps", p:"stèps", var:"the staircase"},
            es:{m:"el piano"}, it:{m:"il piano"},
            de:{m:"die Treppe", p:"trè-pe"}, ja:{m:"ステップ", p:"suteppu"} },
-    def:{ fr:"Une suite de marches montantes ou descendantes, sautées d'un tempo. ⚠️ Le joli mot « piano » est surtout continental : au bord d'un cross britannique on entend « the steps ». En montée il demande du moteur, en descente de l'équilibre — jamais de vitesse.",
-          en:"A run of steps ridden up or down in one rhythm. The pretty word « piano » is mostly continental: on a British course you hear « the steps ». Uphill it asks for engine, downhill for balance — never for speed.",
-          es:"Una serie de escalones que se saltan subiendo o bajando, a un solo tempo. ⚠️ La bonita palabra « piano » es sobre todo continental: al borde de un cross británico se oye « the steps ». Subiendo pide motor, bajando equilibrio — nunca velocidad.",
-          it:"Una serie di gradini saltati in salita o in discesa, su un solo tempo. ⚠️ La bella parola « piano » è soprattutto continentale: a bordo di un cross britannico si sente « the steps ». In salita chiede motore, in discesa equilibrio — mai velocità.",
-          de:"Eine Folge von Stufen, bergauf oder bergab in einem Rhythmus gesprungen. ⚠️ Das hübsche Wort « piano » ist vor allem kontinental: An einer britischen Strecke hört man « the steps ». Bergauf verlangt es Motor, bergab Balance — nie Tempo.",
-          ja:"ひとつのリズムで駆け上がり、駆け下りる階段状の障害。⚠️ 「ピアノ」という洒落た名は主に大陸のもの。イギリスのコース脇で聞こえるのは « the steps » です。上りはエンジンを、下りはバランスを求めます — 速さは決して。" } },
+    /* 🟥 CORRIGÉ le 17/08 par Blandine : « LE PIANO SE DESCEND TOUJOURS ».
+       L'ancienne définition disait « montantes ou descendantes » — faux.
+       Et sa phrase, gardée dans le dialogue : « quand tu arrives sur la
+       première marche, tu as l'impression que tu vas sauter dans le
+       vide ». C'est la sensation que personne ne dit avant, et c'est ce
+       qui prépare vraiment. ⚠️ NE PAS réintroduire l'idée d'un piano
+       montant. */
+    def:{ fr:"🟥 UNE SUITE DE MARCHES QUI SE DESCEND — toujours, jamais en montée. On les enchaîne d'un seul tempo, en équilibre, sans vitesse. ⚠️ Ce qu'il faut savoir avant d'y arriver : au bord de la première marche, on ne voit pas la suivante, et on a l'impression de sauter dans le vide. Le cheval, lui, voit très bien. ⚠️ Le joli mot « piano » est surtout continental : sur un cross britannique on entend « the steps ».",
+          en:"A run of steps ridden DOWNWARDS, always down and never up. You take them in one rhythm, in balance, without speed. At the edge of the first one you cannot see the next, and it feels like jumping into thin air. The horse can see perfectly well. The pretty word « piano » is mostly continental: on a British course you hear « the steps ». Uphill it asks for engine, downhill for balance — never for speed.",
+          es:"Una serie de escalones que SE BAJA, siempre bajando y nunca subiendo. Se enlazan a un solo tempo, en equilibrio, sin velocidad. Al borde del primero no se ve el siguiente y parece que se salta al vacío. ⚠️ La bonita palabra « piano » es sobre todo continental: al borde de un cross británico se oye « the steps ». Subiendo pide motor, bajando equilibrio — nunca velocidad.",
+          it:"Una serie di gradini che SI SCENDE, sempre in discesa e mai in salita. Si concatenano su un solo tempo, in equilibrio, senza velocità. Sul bordo del primo non si vede il successivo e sembra di saltare nel vuoto. ⚠️ La bella parola « piano » è soprattutto continentale: a bordo di un cross britannico si sente « the steps ». In salita chiede motore, in discesa equilibrio — mai velocità.",
+          de:"Eine Folge von Stufen, die man HINUNTERREITET, immer abwärts und nie aufwärts. In einem Rhythmus, im Gleichgewicht, ohne Tempo. An der Kante der ersten sieht man die nächste nicht, und es fühlt sich an, als spränge man ins Leere. ⚠️ Das hübsche Wort « piano » ist vor allem kontinental: An einer britischen Strecke hört man « the steps ». Bergauf verlangt es Motor, bergab Balance — nie Tempo.",
+          ja:"🟥 下るための階段状の障害です。常に下りで、上ることはありません。ひとつのリズムで、バランスを保ち、速さを出さずに降ります。⚠️ 一段目の縁に立つと次の段が見えず、宙に飛び込むように感じます。馬にはちゃんと見えています。⚠️ 「ピアノ」という洒落た名は主に大陸のもの。イギリスのコース脇で聞こえるのは « the steps » です。上りはエンジンを、下りはバランスを求めます — 速さは決して。" } },
 
   { ref:"trakehner", lecon:1, coll:"cross",
     mots:{ fr:{m:"le trakehner"}, en:{m:"the trakehner", p:"tra-ké-neur"},
@@ -121,6 +128,132 @@ window.HYPE_LINGO_LEX.cross = {
           ja:"上に植え込みのブラシを載せた、土台の詰まった障害。馬はブラシをかすめて通り抜けてかまいません。⚠️ ブラシが高すぎて着地が見えないまま「突き抜けて」跳ぶとき、英語には見事な言葉があります — « the bullfinch »、ウソという小鳥の名です。" } },
 
   /* ---- l'équipement du cross ---- */
+
+  /* ================================================================
+     TROIS OBSTACLES VENUS DU CHAPITRE « LE CONCOURS » — 17/08/2026.
+     Le talus, le contre-bas et le gué étaient en leçon 2 de
+     `hype-lingo-lex-concours.js`, donc chez BADMINTON. Or ce sont des
+     obstacles de CROSS : ils appartiennent à Burghley.
+     Décision de Blandine : « déplace-les et on va en rajouter à
+     Badminton alors ». Badminton garde ce qui lui est propre — le
+     format, le barème, le classement provisoire.
+     ⚠️ Le voyage passe par BURGHLEY AVANT BADMINTON depuis le 17/08
+     (interversion faite le même jour, voir ETAPES) : les obstacles
+     s'apprennent donc bien avant le complet qui les cumule.
+     ⚠️ NE PAS les rendre au chapitre du concours.
+     ================================================================ */
+
+  { ref:"talus", lecon:2, coll:"complet",
+    mots:{ fr:{m:"le talus"}, en:{m:"the bank", p:"bannk"},
+           es:{m:"el talud"}, it:{m:"la banchina", var:"il gradino"}, /* it precise (rapport 07/08) */
+           de:{m:"der Wall", p:"val"}, ja:{m:"バンク", p:"banku"} },
+    def:{ fr:"Une butte à monter ou à descendre, parfois avec une barre au sommet. Le plus célèbre du monde est le Derby Bank de Hickstead — la ville de l'étape précédente.",
+          en:"A mound to climb or drop off, sometimes with a rail on top. The most famous is Hickstead's Derby Bank.",
+          es:"Una loma que subir o bajar, a veces con una barra en la cima. El más célebre del mundo es el Derby Bank de Hickstead — la ciudad de la etapa anterior.",
+          it:"Una collinetta da salire o scendere, a volte con una barriera in cima. Il più celebre al mondo è il Derby Bank di Hickstead — la città della tappa precedente.",
+          de:"Ein Wall zum Hinauf- oder Hinabreiten, manchmal mit Stange auf der Kuppe. Der berühmteste der Welt ist die Derby Bank von Hickstead — der Stadt der vorigen Etappe.",
+          ja:"登り、あるいは下る土手。頂上にバーが載ることもあります。世界一有名なのはヒックステッドのダービー・バンク — ひとつ前の街のあれです。" } },
+
+  { ref:"contre-bas", lecon:2, coll:"complet",
+    mots:{ fr:{m:"le contre-bas"}, en:{m:"the drop", p:"drop", var:"a drop fence"},
+           es:{m:"el salto en bajada", var:"el escalón de bajada"}, it:{m:"il salto in discesa"}, /* es precise (rapport 07/08) */
+           de:{m:"der Tiefsprung", p:"tif-chproung"}, ja:{m:"ドロップ", p:"doroppu"} },
+    def:{ fr:"La réception est plus basse que la battue. Le cavalier laisse filer les rênes et reste en arrière : c'est le seul obstacle où l'on s'interdit d'anticiper.",
+          en:"The landing is lower than the take-off. Let the reins slip and stay behind the movement.",
+          es:"La recepción es más baja que la batida. El jinete deja correr las riendas y se queda atrás: es el único obstáculo donde uno se prohíbe anticipar.",
+          it:"La ricezione è più bassa dello stacco. Il cavaliere lascia scorrere le redini e resta indietro: è l'unico ostacolo dove ci si vieta di anticipare.",
+          de:"Die Landung liegt tiefer als der Absprung. Der Reiter lässt die Zügel gleiten und bleibt zurück: das einzige Hindernis, an dem man sich das Vorgreifen verbietet.",
+          ja:"着地が踏切より低い障害。騎手は手綱を滑らせ、上体を後ろに残します。先回りを自分に禁じる、唯一の障害です。" } },
+
+  { ref:"gue", lecon:2, coll:"complet",
+    mots:{ fr:{m:"le gué"}, en:{m:"the water", p:"ouo-teur", var:"the water complex"},
+           es:{m:"el paso de agua"}, it:{m:"il passaggio d'acqua"},
+           de:{m:"die Wasserdurchfahrt", p:"va-seur-dourh-fart"}, ja:{m:"水中障害", p:"suichū shōgai"} }, // ??
+    def:{ fr:"On y entre dans l'eau, on n'y saute pas au-dessus : c'est ce qui le distingue de la rivière du concours hippique. Toujours au pas ou au petit galop, et c'est le point du parcours où le public se masse.",
+          en:"You ride into it rather than over it, unlike the show-jumping water. Always the spot where the crowd gathers.",
+          es:"Se entra en el agua, no se salta por encima: eso lo distingue de la ría del salto. Siempre al paso o al galope corto, y es el punto del recorrido donde se agolpa el público.",
+          it:"Ci si entra nell'acqua, non ci si salta sopra: è ciò che lo distingue dalla riviera del salto ostacoli. Sempre al passo o al piccolo galoppo, ed è il punto del percorso dove si ammassa il pubblico.",
+          de:"Man reitet ins Wasser hinein, nicht darüber: Das unterscheidet ihn vom Wassergraben des Springens. Immer im Schritt oder ruhigen Galopp — und der Punkt, an dem sich das Publikum drängt.",
+          ja:"水の中へ入っていく障害。上を跳び越すのではありません — 障害馬術の水濠との違いはそこです。常歩か抑えた駈歩で。そして観客がいちばん集まるのも、この地点です。" } },
+
+
+  /* ================================================================
+     SIX ENTRÉES DE PLUS — 17/08/2026, tirées de la liste de
+     vocabulaire-clé de Blandine pour Burghley : « drop / ditch / brush /
+     corner / narrow fence / water complex / direct route / long route /
+     stride / landing / optimum time / course walk », et de sa remarque :
+     « ça sonne très Burghley : drop, long route, direct route, keep your
+     line, stay straight, three strides, water, make up time ».
+     Le chapitre n'avait que 12 mots — le plus maigre du voyage.
+     ⚠️ `drop`, `ditch`, `brush` et `corner` existaient déjà, ainsi que
+     `talus` et `gué` arrivés du chapitre du concours le même jour.
+     ================================================================ */
+
+  { ref:"voie-directe", lecon:1, coll:"cross",
+    mots:{ fr:{m:"la voie directe"}, en:{m:"the direct route", p:"daï-rekte route"},
+           es:{m:"la vía directa"}, it:{m:"la via diretta"},
+           de:{m:"der direkte Weg", p:"di-rek-te vék"}, ja:{m:"直線ルート", p:"chokusen rūto"} },
+    def:{ fr:"🟥 LE CHOIX QUI DÉCIDE D'UN CROSS. La voie directe est plus courte et plus difficile : elle demande de la précision, souvent un obstacle étroit ou un angle. On la prend pour rester dans le temps. ⚠️ Son contraire n'est pas « la voie facile » mais **l'option longue** — plus sûre, mais elle coûte des secondes qu'on ne rattrape pas toujours.",
+          en:"The choice that decides a cross-country round. The direct route is shorter and harder: it asks for accuracy, often a narrow fence or an angle. You take it to stay inside the time. Its opposite is the long route — safer, but it costs seconds you can't always make back.",
+          es:"La elección que decide un cross. La vía directa es más corta y más difícil: exige precisión. Se toma para quedarse dentro del tiempo.",
+          it:"La scelta che decide un cross. La via diretta è più corta e più difficile: chiede precisione. Si prende per restare nel tempo.",
+          de:"Die Entscheidung, die einen Geländeritt bestimmt. Der direkte Weg ist kürzer und schwerer: er verlangt Präzision. Man nimmt ihn, um in der Zeit zu bleiben.",
+          ja:"クロスカントリーの勝敗を決める選択。直線ルートは短く難しく、正確さを要求します。規定時間内に収めるために選びます。" } },
+
+  { ref:"option-longue", lecon:1, coll:"cross",
+    mots:{ fr:{m:"l'option longue"}, en:{m:"the long route", p:"lonng route", var:"the alternative"},
+           es:{m:"la opción larga"}, it:{m:"l'opzione lunga"},
+           de:{m:"der Umweg", p:"oum-vék"}, ja:{m:"迂回ルート", p:"ukai rūto"} },
+    def:{ fr:"Le chemin plus long autorisé par le chef de piste sur les obstacles difficiles. ⚠️ IL N'EST PAS PÉNALISÉ EN LUI-MÊME — il coûte seulement du temps. C'est un vrai choix tactique, pas un aveu : beaucoup de grands cavaliers prennent l'option sur un jeune cheval, ou quand le classement ne l'exige pas. ⚠️ L'allemand dit *Umweg*, « le détour ».",
+          en:"The longer way allowed by the course designer at difficult fences. It isn't penalised in itself — it only costs time. It's a tactical choice, not an admission: plenty of top riders take the long route on a young horse.",
+          es:"El camino más largo autorizado por el jefe de pista en los obstáculos difíciles. No está penalizado en sí: solo cuesta tiempo.",
+          it:"Il percorso più lungo autorizzato dal direttore di percorso sugli ostacoli difficili. Non è penalizzato in sé: costa solo tempo.",
+          de:"Der längere Weg, den der Parcourschef an schweren Sprüngen erlaubt. Er wird nicht selbst bestraft — er kostet nur Zeit.",
+          ja:"難しい障害でコースデザイナーが用意した遠回りの経路。それ自体は減点になりません。時間がかかるだけです。若い馬では一流選手も選びます。" } },
+
+  { ref:"complexe-eau", lecon:1, coll:"cross",
+    mots:{ fr:{m:"le complexe d'eau"}, en:{m:"the water complex", p:"oua-teur kom-plexe"},
+           es:{m:"el complejo de agua"}, it:{m:"il complesso d'acqua"},
+           de:{m:"die Wasserkombination", p:"va-sseur-kom-bi-na-tsione"}, ja:{m:"水濠コンビネーション", p:"suigō konbinēshon"} },
+    def:{ fr:"⚠️ PAS UN OBSTACLE MAIS UN ENSEMBLE : on entre dans l'eau, on saute dedans, on en ressort — souvent trois ou quatre efforts enchaînés. C'est le point du parcours où le public s'installe, et celui où l'on perd le plus de temps. Le plus célèbre du monde est le **Trout Hatchery** de Burghley. ⚠️ L'eau freine beaucoup plus qu'on ne l'imagine : elle mange la foulée.",
+          en:"Not one fence but a set: you go in, you jump in the water, you come out — often three or four efforts linked. It's where the crowd gathers and where most time is lost. The most famous in the world is Burghley's Trout Hatchery. Water slows a horse far more than you'd think.",
+          es:"No es un obstáculo sino un conjunto: se entra, se salta dentro, se sale. Es donde se pierde más tiempo. El más famoso del mundo es el Trout Hatchery de Burghley.",
+          it:"Non un ostacolo ma un insieme: si entra, si salta nell'acqua, si esce. È dove si perde più tempo. Il più famoso al mondo è il Trout Hatchery di Burghley.",
+          de:"Kein Sprung, sondern eine Folge: man reitet hinein, springt im Wasser, kommt heraus. Dort verliert man am meisten Zeit. Der berühmteste der Welt ist Burghleys Trout Hatchery.",
+          ja:"単一の障害ではなく一連の組み合わせです。水に入り、水中で飛び、出る。三つ四つの動作が続きます。最も時間を失う場所で、世界一有名なのはバーリーの Trout Hatchery です。水は想像よりずっと脚を止めます。" } },
+
+  { ref:"obstacle-etroit", lecon:1, coll:"cross",
+    mots:{ fr:{m:"l'obstacle étroit"}, en:{m:"a narrow fence", p:"na-rô fènss", var:"a skinny"},
+           es:{m:"el obstáculo estrecho"}, it:{m:"l'ostacolo stretto"},
+           de:{m:"der schmale Sprung", p:"chma-le chproung"}, ja:{m:"細い障害", p:"hosoi shōgai"} },
+    def:{ fr:"⚠️ CE N'EST PAS LA HAUTEUR QUI COMPTE, C'EST LA LIGNE. Un obstacle étroit peut faire un mètre de large : le cheval peut passer à côté sans le vouloir, et c'est une dérobade. Il demande un galop droit et un œil fixé loin devant. ⚠️ Les Britanniques l'appellent familièrement **a skinny** — un mot qu'on entend beaucoup plus que « narrow fence » sur un cross.",
+          en:"It isn't the height that matters, it's the line. A narrow fence can be a metre wide: the horse can slip past without meaning to, and that's a run-out. British riders call it « a skinny », which you hear far more than « narrow fence ».",
+          es:"No importa la altura sino la línea. Un obstáculo estrecho puede medir un metro: el caballo puede pasar al lado sin querer, y es un escape.",
+          it:"Non conta l'altezza ma la linea. Un ostacolo stretto può essere larga un metro: il cavallo può passare accanto senza volerlo, ed è una scappata.",
+          de:"Nicht die Höhe zählt, sondern die Linie. Ein schmaler Sprung kann einen Meter breit sein: das Pferd kann daneben vorbeilaufen, ohne es zu wollen.",
+          ja:"高さではなく「ライン」が問題になる障害。幅が一メートルしかないこともあり、馬は意図せず横をすり抜けてしまいます。それは逃避です。" } },
+
+  { ref:"reception", lecon:1, coll:"cross",
+    mots:{ fr:{m:"la réception"}, en:{m:"the landing", p:"lann-dinng"},
+           es:{m:"la recepción"}, it:{m:"l'atterraggio"},
+           de:{m:"die Landung", p:"lann-doung"}, ja:{m:"着地", p:"chakuchi"} },
+    def:{ fr:"🟥 EN CROSS, LA RÉCEPTION EST LE DÉBUT DU SAUT SUIVANT. On raccourcit ses rênes dès qu'on touche le sol, on regarde déjà l'obstacle d'après, on prépare son virage. Un cavalier qui admire son saut a perdu deux foulées. ⚠️ En anglais **the landing** s'oppose à *the take-off*, l'appel.",
+          en:"In cross-country the landing is the start of the next fence. You shorten your reins as soon as you touch down, you're already looking at the next one, you set up your turn. A rider who admires the jump has lost two strides.",
+          es:"En cross la recepción es el comienzo del salto siguiente. Se acortan las riendas al tocar el suelo y ya se mira el próximo obstáculo.",
+          it:"Nel cross l'atterraggio è l'inizio del salto successivo. Si accorciano le redini appena si tocca terra e si guarda già l'ostacolo dopo.",
+          de:"Im Gelände ist die Landung der Beginn des nächsten Sprungs. Man verkürzt die Zügel, sobald man aufsetzt, und schaut schon zum nächsten Hindernis.",
+          ja:"クロスカントリーでは、着地が次の障害の始まりです。地面に触れた瞬間に手綱を詰め、すでに次の障害を見て、回転の準備をします。自分の飛越に見入る騎手は二歩分を失います。" } },
+
+  { ref:"ligne", lecon:1, coll:"cross",
+    mots:{ fr:{m:"garder sa ligne"}, en:{m:"to keep your line", p:"kiipe your laïne"},
+           es:{m:"mantener la línea"}, it:{m:"mantenere la linea"},
+           de:{m:"die Linie halten", p:"li-ni-e hal-teune"}, ja:{m:"ラインを保つ", p:"rain o tamotsu"} },
+    def:{ fr:"🟥 LA PHRASE LA PLUS RÉPÉTÉE D'UN CROSS, et l'une des plus utiles à comprendre : **keep your line**. La ligne est le chemin qu'on a décidé à pied, et la tenir compte plus que le saut lui-même — sur un obstacle étroit ou un coin, c'est elle qui fait passer ou dérober. ⚠️ On l'entend avec **stay straight** : ne pas tourner trop tôt, garder le cheval droit entre les deux rênes.",
+          en:"The most repeated phrase on a cross-country course, and one of the most useful to understand. The line is the path you decided on foot, and holding it matters more than the jump itself. You'll hear it with « stay straight »: don't turn early, keep him straight between both reins.",
+          es:"La frase más repetida en un cross. La línea es el camino que se decidió a pie, y mantenerla importa más que el salto en sí.",
+          it:"La frase più ripetuta in un cross. La linea è il percorso deciso a piedi, e mantenerla conta più del salto stesso.",
+          de:"Der häufigste Satz auf einer Geländestrecke. Die Linie ist der Weg, den man zu Fuß festgelegt hat, und sie zu halten zählt mehr als der Sprung selbst.",
+          ja:"クロスカントリーで最も繰り返される言葉。ラインとは下見で決めた進路のことで、それを守ることは飛越そのものより重要です。細い障害やコーナーでは、ラインが通過と逃避を分けます。" } },
 
   { ref:"crampons", lecon:1, coll:"cross",
     mots:{ fr:{m:"les crampons"}, en:{m:"the studs", p:"steudz"},
@@ -214,5 +347,250 @@ window.HYPE_LINGO_LEX.cross = {
       de:"Schau nicht in den Graben.",
       ja:"ディッチ の 中 を 見 ない で。" }
 
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE BURGHLEY — 17 août 2026, session 214.
+
+     LA SCÈNE : la reconnaissance du cross à pied, puis le parcours.
+     21 phrases, 6 temps. 🎧 = un autre cavalier, un coach, le chef de
+     piste.
+
+     🟥 ONZE PHRASES SUR VINGT-ET-UNE SONT DE BLANDINE, écrites avec
+     leur traduction anglaise. Elles apportent ce que Claude ne pouvait
+     pas inventer — les CONSIGNES RÉELLES d'une reconnaissance :
+     · « ne va pas trop vite dans la descente, tu dois pouvoir
+       rééquilibrer avant le contre-bas » ;
+     · « il y a une option longue, mais elle va nous faire perdre
+       beaucoup de temps » ;
+     · « après le saut dans l'eau, tu n'as que trois foulées avant le
+       prochain obstacle » ;
+     · « raccourcis tes rênes dès la réception et prépare ton virage » ;
+     · « il faut arriver avec un galop puissant, mais rester en
+       contrôle » ;
+     · 🟥 « NE TOURNE PAS TROP TÔT : VISE LE MILIEU DU CORNER ET RESTE
+       DROIT » — Claude avait écrit l'inverse (viser le piquet, aborder
+       de biais) et l'avait signalé comme incertain. C'était FAUX.
+       NE JAMAIS réintroduire l'idée d'aborder un coin de biais.
+     · « laisse-le avancer entre les obstacles, on doit rattraper
+       quelques secondes » ;
+     · « s'il hésite devant l'eau, garde tes jambes et monte franchement
+       vers l'avant » ;
+     · « on prend la voie directe : elle est plus difficile, mais elle
+       nous permet de rester dans le temps » ;
+     · 🟥 LE PIANO : « le piano est impressionnant, quand tu arrives sur
+       la première marche tu as l'impression que tu vas sauter dans le
+       vide ». Et sa correction du lexique : LE PIANO SE DESCEND
+       TOUJOURS — l'ancienne définition disait « montantes ou
+       descendantes », c'était faux.
+
+     🟥 CE QUE CLAUDE A RETIRÉ DE LUI-MÊME, faute de certitude, sur
+     consigne de Blandine (« invente surtout pas des trucs ») : une
+     phrase sur la haie de cross qu'on traverserait, une sur la
+     profondeur du fossé, une sur l'entrée dans le gué. Elles étaient
+     plausibles mais non vérifiées. ⚠️ NE PAS les réinventer : demander.
+
+     ⚠️ LES BARÈMES CHIFFRÉS SONT ABSENTS À DESSEIN. « Combien de refus
+     avant l'élimination ? » est une question qu'on POSE ; la réponse
+     dépend du niveau, du pays et de l'année, et Claude ne la connaît
+     pas avec certitude.
+
+     ⚠️ Le vocabulaire anglais vient d'elle et sonne juste : *stay
+     inside the time*, *ride positively forward*, *keep your leg on*,
+     *let him travel*, *make up time*, *keep your line*, *stay
+     straight*. NE PAS « corriger » vers un anglais plus scolaire.
+
+     `dit` : "joueuse" = elle produit · "club" = un autre cavalier, un
+     coach ou le chef de piste.
+  ================================================================== */
+  dialogue: {
+    ville: "burghley", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 21 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · la reconnaissance à pied ---- */
+      { ref:"db-reconnaitre-combien", temps:1, dit:"joueuse", mots:[],
+        fr:"On peut reconnaître le parcours combien de fois ?",
+        en:"How many times can we walk the course?",
+        es:"¿Cuántas veces se puede reconocer el recorrido?",
+        it:"Quante volte si può fare la ricognizione del percorso?",
+        de:"Wie oft darf man die Strecke abgehen?",
+        ja:"コース の 下見 は 何 回 でき ます か ?" },
+
+      { ref:"db-gue-ou-contre-bas", temps:1, dit:"joueuse", mots:["gue","contre-bas"],
+        fr:"Le 14, c'est le gué ou le contre-bas ?",
+        en:"Is fourteen the water or the drop?",
+        es:"¿El catorce es el agua o el contrabajo?",
+        it:"Il quattordici è l'acqua o il salto in discesa?",
+        de:"Ist die Vierzehn das Wasser oder der Absprung?",
+        ja:"十四番 は 水濠 です か、 ドロップ です か ?" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"db-r-pas-vite-descente", temps:1, dit:"club", mots:["contre-bas"],
+        fr:"Ne va pas trop vite dans la descente, tu dois pouvoir rééquilibrer avant le contre-bas.",
+        en:"Don't go too fast downhill; you need to be able to rebalance before the drop.",
+        es:"No vayas demasiado rápido en la bajada: tienes que poder reequilibrar antes del contrabajo.",
+        it:"Non andare troppo veloce in discesa: devi poter riequilibrare prima del salto in discesa.",
+        de:"Reite bergab nicht zu schnell — du musst vor dem Absprung neu ausbalancieren können.",
+        ja:"下り で 速く 行き すぎ ない で。 ドロップ の 前 に 立て直せる 速さ で。" },
+
+      { ref:"db-combien-refus", temps:1, dit:"joueuse", mots:[],
+        fr:"Combien de refus avant l'élimination ?",
+        en:"How many refusals before elimination?",
+        es:"¿Cuántos rehúses antes de la eliminación?",
+        it:"Quanti rifiuti prima dell'eliminazione?",
+        de:"Wie viele Verweigerungen bis zum Ausschluss?",
+        ja:"何 回 拒止 する と 失格 に なり ます か ?" },
+
+      /* ---- temps 2 · le choix des voies ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"db-r-option-longue-temps", temps:2, dit:"club", mots:["option-longue"],
+        fr:"Il y a une option longue, mais elle va nous faire perdre beaucoup de temps.",
+        en:"There's a long route, but it's going to cost us a lot of time.",
+        es:"Hay una opción larga, pero nos va a hacer perder mucho tiempo.",
+        it:"C'è un'opzione lunga, ma ci farà perdere molto tempo.",
+        de:"Es gibt einen Umweg, aber er kostet uns viel Zeit.",
+        ja:"迂回 ルート も あり ます が、 かなり 時間 を 失い ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"db-voie-directe-temps", temps:2, dit:"joueuse", mots:["voie-directe"],
+        fr:"On prend la voie directe : elle est plus difficile, mais elle nous permet de rester dans le temps.",
+        en:"We're taking the direct route: it's more difficult, but it gives us the best chance of staying inside the time.",
+        es:"Tomamos la vía directa: es más difícil, pero nos permite quedarnos dentro del tiempo.",
+        it:"Prendiamo la via diretta: è più difficile, ma ci permette di restare nel tempo.",
+        de:"Wir nehmen den direkten Weg: er ist schwerer, gibt uns aber die beste Chance, in der Zeit zu bleiben.",
+        ja:"直線 ルート で 行き ます。 難しい です が、 規定 時間 内 に 収まる 可能性 が 一番 高い です。" },
+
+      /* 🟥 Phrase de Blandine : Claude avait écrit l'inverse. */
+      { ref:"db-r-coin-milieu", temps:2, dit:"club", mots:["coin","ligne"],
+        fr:"Ne tourne pas trop tôt : vise le milieu du corner et reste droit.",
+        en:"Don't turn too early: aim for the middle of the corner and stay straight.",
+        es:"No gires demasiado pronto: apunta al centro del corner y quédate derecha.",
+        it:"Non girare troppo presto: mira al centro del corner e resta dritta.",
+        de:"Wende nicht zu früh: ziele auf die Mitte des Corners und bleib gerade.",
+        ja:"早く 回り すぎ ない で。 コーナー の 中央 を 狙い、 まっすぐ 保っ て。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"db-r-galop-puissant", temps:2, dit:"club", mots:[],
+        fr:"Il faut arriver avec un galop puissant, mais rester en contrôle.",
+        en:"You need to come in with a powerful canter, but stay in control.",
+        es:"Hay que llegar con un galope potente, pero manteniendo el control.",
+        it:"Bisogna arrivare con un galoppo potente, ma restando in controllo.",
+        de:"Du musst mit einem kraftvollen Galopp ankommen, aber die Kontrolle behalten.",
+        ja:"力強い 駈歩 で 入り ながら、 制御 は 保ち ます。" },
+
+      /* ---- temps 3 · l'eau ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"db-r-trois-foulees-eau", temps:3, dit:"club", mots:["complexe-eau","gue"],
+        fr:"Après le saut dans l'eau, tu n'as que trois foulées avant le prochain obstacle.",
+        en:"After the jump into the water, you've only got three strides before the next fence.",
+        es:"Después del salto en el agua, solo tienes tres trancos antes del próximo obstáculo.",
+        it:"Dopo il salto nell'acqua, hai solo tre falcate prima dell'ostacolo successivo.",
+        de:"Nach dem Sprung ins Wasser hast du nur drei Galoppsprünge bis zum nächsten Hindernis.",
+        ja:"水 の 中 に 飛び込ん だ あと、 次 の 障害 まで 三 歩 しか あり ませ ん。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"db-r-hesite-eau", temps:3, dit:"club", mots:["complexe-eau"],
+        fr:"S'il hésite devant l'eau, garde tes jambes et monte franchement vers l'avant.",
+        en:"If he hesitates at the water, keep your leg on and ride positively forward.",
+        es:"Si duda ante el agua, mantén las piernas y monta francamente hacia adelante.",
+        it:"Se esita davanti all'acqua, tieni le gambe e monta francamente in avanti.",
+        de:"Wenn er vor dem Wasser zögert, halte den Schenkel dran und reite entschlossen vorwärts.",
+        ja:"水 の 前 で ためらっ たら、 脚 を 保っ て、 はっきり 前 へ 出し ます。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"db-r-renes-reception", temps:3, dit:"club", mots:["reception"],
+        fr:"Raccourcis tes rênes dès la réception et prépare ton virage.",
+        en:"Shorten your reins as soon as you land and prepare for the turn.",
+        es:"Acorta las riendas en cuanto caigas y prepara el giro.",
+        it:"Accorcia le redini appena atterri e prepara la curva.",
+        de:"Verkürze die Zügel, sobald du landest, und stelle die Wendung ein.",
+        ja:"着地 し たら すぐ 手綱 を 詰め、 回転 の 準備 を し ます。" },
+
+      /* ---- temps 4 · les obstacles fixes ---- */
+      /* 🟥 Phrase de Blandine, et sa correction du lexique. */
+      { ref:"db-r-piano-vide", temps:4, dit:"club", mots:["piano"],
+        fr:"Le piano est impressionnant : quand tu arrives sur la première marche, tu as l'impression que tu vas sauter dans le vide.",
+        en:"The steps are frightening: as you come to the first one, it feels like you're jumping into thin air.",
+        es:"El piano impresiona: cuando llegas al primer escalón, parece que vas a saltar al vacío.",
+        it:"Il piano fa impressione: quando arrivi sul primo gradino, sembra di saltare nel vuoto.",
+        de:"Die Treppe ist beeindruckend: an der ersten Stufe fühlt es sich an, als spränge man ins Leere.",
+        ja:"ピアノ は 迫力 が あり ます。 一段目 に 近づく と、 宙 に 飛び込む よう な 感じ が し ます。" },
+
+      { ref:"db-trakehner-fosse", temps:4, dit:"joueuse", mots:["trakehner","fosse"],
+        fr:"Le trakehner, c'est le rondin au-dessus du fossé ?",
+        en:"Is the trakehner the log over the ditch?",
+        es:"¿El trakehner es el tronco sobre la zanja?",
+        it:"Il trakehner è il tronco sopra il fosso?",
+        de:"Ist der Trakehner der Baumstamm über dem Graben?",
+        ja:"トラケナー と は、 溝 の 上 に 渡し た 丸太 の こと です か ?" },
+
+      { ref:"db-obstacle-etroit-ligne", temps:4, dit:"joueuse", mots:["obstacle-etroit","ligne"],
+        fr:"Sur l'obstacle étroit, il faut vraiment garder sa ligne ?",
+        en:"On the narrow fence, do I really have to keep my line?",
+        es:"En el obstáculo estrecho, ¿hay que mantener la línea?",
+        it:"Sull'ostacolo stretto, bisogna davvero mantenere la linea?",
+        de:"Muss man beim schmalen Sprung wirklich die Linie halten?",
+        ja:"細い 障害 で は、 やはり ライン を 保た なけれ ば なり ませ ん か ?" },
+
+      /* ---- temps 5 · le chrono ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"db-r-laisse-avancer", temps:5, dit:"club", mots:[],
+        fr:"Laisse-le avancer entre les obstacles, on doit rattraper quelques secondes.",
+        en:"Let him travel between the fences; we need to make up a few seconds.",
+        es:"Déjalo avanzar entre los obstáculos: hay que recuperar unos segundos.",
+        it:"Lascialo avanzare tra gli ostacoli: dobbiamo recuperare qualche secondo.",
+        de:"Lass ihn zwischen den Sprüngen laufen — wir müssen einige Sekunden aufholen.",
+        ja:"障害 の 間 は 進ま せ て ください。 数 秒 取り戻す 必要 が あり ます。" },
+
+      { ref:"db-temps-optimum", temps:5, dit:"joueuse", mots:["chronometre"],
+        fr:"Le temps optimum, c'est combien ?",
+        en:"What's the optimum time?",
+        es:"¿Cuál es el tiempo óptimo?",
+        it:"Qual è il tempo ottimale?",
+        de:"Wie hoch ist die Idealzeit?",
+        ja:"基準 タイム は 何 分 です か ?" },
+
+      { ref:"db-tenir-chrono", temps:5, dit:"joueuse", mots:["chronometre"],
+        fr:"Tu peux me tenir le chronomètre ?",
+        en:"Can you hold the stopwatch for me?",
+        es:"¿Me puedes sostener el cronómetro?",
+        it:"Mi puoi tenere il cronometro?",
+        de:"Kannst du mir die Stoppuhr halten?",
+        ja:"ストップ ウォッチ を 持っ て い て もらえ ます か ?" },
+
+      /* ---- temps 6 · l'équipement et l'après ---- */
+      { ref:"db-crampons-terrain", temps:6, dit:"joueuse", mots:["crampons"],
+        fr:"Il me faut des crampons pour ce terrain ?",
+        en:"Do I need studs for this going?",
+        es:"¿Necesito ramplones para este terreno?",
+        it:"Mi servono i ramponi per questo terreno?",
+        de:"Brauche ich Stollen für diesen Boden?",
+        ja:"この 馬場 に は 滑り止め が 必要 です か ?" },
+
+      { ref:"db-oublie-bavette", temps:6, dit:"joueuse", mots:["sangle-bavette"],
+        fr:"J'ai oublié ma sangle bavette.",
+        en:"I've forgotten my stud girth.",
+        es:"He olvidado la cincha con peto.",
+        it:"Ho dimenticato il sottopancia con paracolpi.",
+        de:"Ich habe meinen Sattelgurt mit Schutz vergessen.",
+        ja:"腹帯 の プロテクター を 忘れ まし た。" },
+
+      { ref:"db-r-toque-numero", temps:6, dit:"club", mots:["toque","numero-cheval"],
+        fr:"Ta toque et ton numéro sont obligatoires au départ.",
+        en:"Your hat cover and your bridle number are compulsory at the start.",
+        es:"El forro del casco y el número son obligatorios en la salida.",
+        it:"Il copricap e il numero sono obbligatori alla partenza.",
+        de:"Kappenüberzug und Kopfnummer sind am Start Pflicht.",
+        ja:"スタート で は ヘルメット カバー と ゼッケン 番号 が 必須 です。" },
+
+      { ref:"db-arrete-contre-bas", temps:6, dit:"joueuse", mots:["contre-bas"],
+        fr:"Il s'est arrêté au contre-bas.",
+        en:"He stopped at the drop.",
+        es:"Se ha parado en el contrabajo.",
+        it:"Si è fermato al salto in discesa.",
+        de:"Er ist am Absprung stehengeblieben.",
+        ja:"ドロップ で 止まっ て しまい まし た。" }
+    ]
+  }
 };

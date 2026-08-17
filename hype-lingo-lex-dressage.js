@@ -394,6 +394,29 @@ window.HYPE_LINGO_LEX.dressage = {
           de:"Das Gegenteil vom Schulterherein: die HANKEN kommen herein, die Schultern bleiben auf dem Hufschlag, und das Pferd schaut in die Bewegungsrichtung.",
           ja:"ショルダーインの逆。肩は蹄跡に残したまま、腰を内側に入れます。馬は進行方向を見ます。" } },
 
+  /* ================================================================
+     L'ENGAGEMENT DES POSTÉRIEURS — ajouté le 17/08/2026 sur demande de
+     Blandine : « il faut rajouter la lettre au dressage et l'engagement
+     des postérieurs à Versailles ».
+     Sa phrase pour Badminton l'employait sans qu'il existe : « il faut
+     davantage d'engagement des postérieurs dans cette reprise ».
+     🟥 LEÇON 3, DONC VERSAILLES : c'est une notion d'art équestre, pas
+     de concours. Badminton et Windsor l'emploieront en `motsAilleurs`.
+     ⚠️ `la lettre` existait déjà (leçon 1, chez Windsor) avec les huit
+     lettres et le moyen mnémotechnique britannique — rien à ajouter.
+     ================================================================ */
+
+  { ref:"engagement", lecon:3, coll:"qualites",
+    mots:{ fr:{m:"l'engagement des postérieurs"}, en:{m:"engagement of the hindquarters", p:"inn-guédj-meunt", var:"hind leg engagement"},
+           es:{m:"el enganche de los posteriores"}, it:{m:"l'impegno dei posteriori"},
+           de:{m:"das Untertreten der Hinterhand", p:"oun-teur-tré-teune"}, ja:{m:"後肢の踏み込み", p:"kōshi no fumikomi"} },
+    def:{ fr:"🟥 CE QUI REND TOUT LE RESTE POSSIBLE. Le postérieur se pose plus loin sous la masse, l'articulation se plie davantage, et le cheval se porte de derrière au lieu de se tirer de devant. Sans engagement, pas de rassembler, pas d'allègement, pas de légèreté — c'est la base de l'échelle. ⚠️ On le VOIT à la trace : le postérieur dépasse l'empreinte de l'antérieur. Et l'allemand le dit mieux que le français : *Untertreten*, « marcher sous soi ».",
+          en:"What makes everything else possible. The hind leg lands further under the body, the joints flex more, and the horse carries himself from behind instead of pulling from in front. Without engagement there is no collection and no lightness. You can SEE it in the tracks: the hind foot passes the print of the front one. German says it best: Untertreten, « stepping under ».",
+          es:"Lo que hace posible todo lo demás. El posterior se posa más adelante bajo la masa, la articulación se flexiona más, y el caballo se lleva desde atrás en lugar de tirar desde delante. Se VE en las huellas: el posterior pasa la pisada del anterior.",
+          it:"Ciò che rende possibile tutto il resto. Il posteriore si appoggia più avanti sotto la massa, l'articolazione si flette di più, e il cavallo si porta da dietro invece di tirarsi da davanti. Si VEDE nelle tracce: il posteriore supera l'impronta dell'anteriore.",
+          de:"Was alles andere erst möglich macht. Der Hinterfuß tritt weiter unter den Körper, die Gelenke beugen sich mehr, und das Pferd trägt sich von hinten statt sich vorn zu ziehen. Man SIEHT es an der Spur: der Hinterfuß tritt über den Abdruck des Vorderfußes.",
+          ja:"ほかのすべてを可能にするもの。後肢が体の下により深く入り、関節がより曲がり、馬は前で引くのではなく後ろで自分を支えます。踏み跡を見ればわかります。後肢が前肢の跡を越えるのです。ドイツ語の Untertreten（体の下に踏み込む）が最もよく言い表しています。" } },
+
   { ref:"permeabilite", lecon:3, coll:"qualites",
     mots:{ fr:{m:"la perméabilité aux aides"}, en:{m:"throughness", p:"srou-neuss", var:"Durchlässigkeit"},
            es:{m:"la permeabilidad"}, it:{m:"la permeabilità"},
