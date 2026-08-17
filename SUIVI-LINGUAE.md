@@ -1,3 +1,13 @@
+# 🟥🟥🟥 LE SUIVI PART AVEC CHAQUE LIVRAISON DE `lingo.html` 🟥🟥🟥
+### Posée le 17/08/2026 par Blandine : *« il manque le Linguae, note en obligatoire de le remettre à chaque fois que tu rends le lingo »*.
+
+**DÈS QUE `lingo.html` EST LIVRÉ, `SUIVI-LINGUAE.md` EST LIVRÉ AVEC.** Sans exception, même pour une retouche d'une ligne.
+**POURQUOI** : `lingo.html` est le fichier qui porte les décisions — les tables de villes, les souvenirs, les branchements de chapitres. Le SUIVI est le seul endroit qui dit POURQUOI elles sont ainsi. Livrer l'un sans l'autre, c'est livrer un état sans sa raison, et la session suivante défait le travail sans le savoir.
+⚠️ Le SUIVI **ne se pousse pas** sur Netlify — il vit chez Blandine. Mais il doit être **présenté** à chaque fois.
+⚠️ Et il doit être **à jour** au moment de la livraison : un SUIVI livré périmé est pire qu'un SUIVI absent.
+
+---
+
 # 🟥🟥🟥 UN LOT VÉRIFIÉ, UN SEUL PUSH — RÈGLE DE COÛT 🟥🟥🟥
 ### Posée le 15/08/2026 sur ordre de Blandine : « on doit limiter les push inutiles normalement t'as un truc écrit dans le suivi là-dessus » · « indique-le dans le suivi Linguae aussi »
 ### Reprise de `SUIVI.md` (incident crédits Netlify), pour qu'elle vive AUSSI du côté Linguae.
@@ -16,6 +26,75 @@
 | **NE LIVRER QUE L'UTILE** | Pas de fichiers `t_*.js` ni d'outils de travail en ligne. |
 
 **Ce que le chiffre dit vraiment** : ces crédits mesurent le chantier, pas l'usage par les cavalières. Le poste déploiements est temporaire par nature — mais la recharge automatique rachètera seule tant que le rythme ne change pas. C'est le vrai risque financier.
+
+---
+
+# 🟥🟥🟥 L'ÉTAT DES OBJETS DE COLLECTION — LA LISTE, ENFIN ÉCRITE 🟥🟥🟥
+### Posée le 17/08/2026. Blandine : *« tu avais une liste, tu l'as perdue ? »* — **NON : elle n'a JAMAIS été écrite ici.** Elle vivait dans une conversation, et une conversation ne se relit pas. C'est exactement le trou que ce SUIVI doit boucher. ⚠️ **METTRE CETTE SECTION À JOUR À CHAQUE OBJET AJOUTÉ.**
+
+## LES 33 OBJETS DE VILLES — 33 SUR 33, AUCUN NE MANQUE
+Vérifié par comparaison entre `ETAPES` et les fichiers réels. **Tous ont une transparence utilisable** (canal alpha présent, fond transparent sur plus de 2 % de l'image — contrôlé un par un).
+
+`objet-labaule` fanion du Jumping · `objet-maurice` coquillage du lagon · `objet-connemara` licol de corde · `objet-newmarket` cagoule à œillères · `objet-lambourn` étrille de cuivre · `objet-walsall` selle anglaise · `objet-aberystwyth` fer de cob gallois · `objet-windsor` la lettre A · `objet-wellington` **palmier en pot (16/08)** · `objet-hickstead` fanion rouge · `objet-badminton` cocarde · `objet-burghley` crampons · `objet-kildare` stéthoscope · `objet-edimbourg` carnet de mots · `objet-versailles` **couvre-reins royal (16/08)** · `objet-saumur` lampion du Cadre Noir · `objet-lamotte` **flot des championnats (16/08)** · `objet-golega` page de stud-book · `objet-jerez` jarre andalouse · `objet-seville` peigne de tresses · `objet-vejer` seau de zinc · `objet-oliva` malle de tournée · `objet-rome` coupe de Piazza di Siena · `objet-verone` contrat de foire · `objet-warendorf` carnet d'échelle · `objet-aachen` cloche de barrage · `objet-dubai` selle de randonnée · `objet-tokyo` flèche de yabusame · `objet-tamworth` corde tressée · `objet-buenos` maillet de bambou · `objet-lexington` numéro de lot · `objet-santaynez` hackamore de crin · `objet-spruce` couverture d'hiver
+
+## ✅ LES VUES POSÉES ET DE BIAIS — COMPLÈTES AU 17/08
+
+· **`POSE_PROPRE`** (l'objet rangé, `pose-<ville>.webp`) : walsall · dubai · oliva · versailles — **4 sur 4** ✅
+· **`POSE_34`** (l'objet de biais, `pose-<ville>-34.webp`) : walsall · dubai · lambourn · connemara · oliva · **kildare** · **badminton** · **tamworth** — **8 sur 8** ✅
+
+⚠️ **UNE VILLE DÉCLARÉE DANS UNE TABLE SANS SON FICHIER retombe silencieusement sur `objet-<ville>.webp`** : la vue annoncée n'existe pas, et rien ne le signale. **Ne déclarer une ville qu'avec son image en main.**
+
+## 🔄 LES CHANGEMENTS D'OBJETS DU 17/08 — QUATRE VILLES
+
+| ville | avant | après | la raison de Blandine |
+|---|---|---|---|
+| **Kildare** | un stéthoscope | **une trousse de secours** (malle de soins ouverte) | *« je voulais changer le stéthoscope, on peut trouver autre chose en rapport avec les soins »*. Le stéthoscope n'était pas faux — on l'applique au flanc pour écouter une colique — mais il sonnait médecin humain. La trousse rassemble tout le chapitre, et le lexique dit déjà : « savoir demander OÙ ELLE EST vaut mieux que savoir ce qu'elle contient ». |
+| **Lambourn** | une étrille de cuivre | **un licol de cuir tressé** | *« Lambourn on avait viré l'étrille normalement »* — décidé avant, **jamais fait dans le code**. ⚠️ Connemara garde le licol de CORDE : ce n'est pas un doublon, corde = travail à pied, cuir = écurie et présentoir. |
+| **Badminton** | une cocarde | **le trophée de Badminton** | *« cocarde ça se dit pas »* (16/08) — on dit LE FLOT, et le flot est déjà à Lamotte. ⚠️ En anglais « a rosette » n'avait rien de faux : celles de Badminton se gardent toute une vie. C'est le FRANÇAIS qui clochait. |
+| **Tamworth** | une corde tressée | **un Akubra** | Doublon avec le hackamore de crin de Santa Ynez, et surtout **Tamworth est en Australie** : un Australien ne dit jamais « cowboy hat », il dit Akubra — la marque de feutre de 1874 devenue nom commun. 🟥 **L'AKUBRA N'EST PAS UN STETSON** : bord plus large et plat, relevé sur les côtés, calotte moins pincée. NE PAS traduire par « cowboy hat » ni « Stetson ». |
+
+Les quatre ont leur libellé changé **en six langues**, leur icône SVG dorée, et une **vue de biais** produite en même temps.
+
+## ⚠️ POINTS D'OBJETS ENCORE OUVERTS — NON TRANCHÉS
+· **Deux fanions** : La Baule (du Jumping) et Hickstead (rouge).
+· **Deux coupes** : Rome (Piazza di Siena) et Badminton (le trophée, depuis aujourd'hui).
+· 🔴 **Dubaï annonce « une selle d'endurance » mais l'image est une SELLE DE RANDONNÉE** — changée en session 208, le libellé n'a jamais suivi. **Vraie incohérence à corriger.**
+· **Jerez « une jarre andalouse »** — un pot à xérès dans un chapitre « Le cheval ».
+· **Lexington « un numéro de lot »** — un bout de papier, faible pour un haras.
+· **Connemara** : Blandine cherchait autre chose, la piste des chaps a été écartée (c'est du western, en Irlande on monte en bottes). Idées restées en l'air : le passeport équin (l'objet qui contient tout ce que le chapitre enseigne : robe, marques, épis), une planche des robes, une toise.
+· **Vejer** : elle trouve « l'intendance » et le seau de zinc mauvais. Le chapitre est bien la gestion du quotidien (leçon 3 de `ecurie` : avoine, son, pierre à sel, mangeoire, abreuvoir), sa description dit « le quotidien d'un grand campement ». Noms proposés : **« Nourrir »**, « Le quotidien », « Faire tourner l'écurie ». Objet possible : une mesure à grain.
+· **Deux villes ont le même nom de chapitre** : Connemara et Jerez, tous deux « Le cheval ».
+
+## LES ANCIENNES VUES POSÉES — HISTORIQUE
+
+_(état d'avant le 17/08, conservé pour mémoire)_
+
+## VUES POSÉES, ANCIEN ÉTAT
+Le code lit deux tables dans `lingo.html` (vers la ligne 6455) :
+· **`POSE_PROPRE = {walsall, dubai, oliva, versailles}`** → attend `pose-<ville>.webp`
+  ✅ `pose-walsall` · ✅ `pose-oliva` · ✅ `pose-versailles` (16/08) · 🔴 **`pose-dubai` MANQUE**
+· **`POSE_34 = {walsall, dubai, lambourn, connemara, oliva}`** → attend `pose-<ville>-34.webp`
+  🔴 **LES CINQ MANQUENT** : `pose-walsall-34` · `pose-dubai-34` · `pose-lambourn-34` · `pose-connemara-34` · `pose-oliva-34`
+⚠️ **Une ville déclarée dans une table sans son fichier tombe sur le repli** (`objet-<ville>.webp`) — ce n'est pas une panne, mais la vue posée annoncée n'existe pas. **Soit produire les fichiers, soit retirer la ville de la table.** NE PAS laisser en l'état sans le savoir.
+
+## L'ÉTAT « PORTÉ » — 1 SEUL EXISTE
+`porte-<ville>.webp`, convention fixée le 16/08 (voir la règle des trois états ci-dessous).
+✅ `porte-versailles` — 🔴 aucun autre. **Le mécanisme d'habillage n'existe pas encore** : ce n'est pas un manque, c'est de l'avance.
+
+## LA RÉSERVE — 40 OBJETS, AUCUN N'EST DANS LE JEU
+⚠️ **Le code ne charge QUE `objet-<ref de ville>.webp`.** Un objet de réserve est donc invisible dans l'app tant qu'il n'est pas renommé avec une ref de ville.
+`bandes` · `bombe-2` · `bottes` ·`-3` · `bride` ·`-3` · `brosse-a-main` ·`-3` · `brosse-bois` ·`-3` · `coupe-2` · `cravache` · `cristal` · `eperons` ·`-2` · `etriers` · `fer-trophee` ·`-3` · `flot-tartan` · `gants` · `globe` ·`-2` · `longue-vue` · `medaille` · `medaillon` · `mors` · `obstacle` · `olivanova-badge-seul` · `olivanova-dossard` · `olivanova-malle-seule` · `plume-encrier` · `poncho` · `sacoche` · `selle-tapis` ·`-2` · `spruce-obstacle` · `statuette` · `tapis` ·`-2` · `valise`
+
+## 🔴 INCOHÉRENCE : LA RÉSERVE ANNONCÉE EN SESSION 208 N'EXISTE PAS
+La session 208 listait en réserve : `objet-licol-cuir` ·`-2` ·`-3` · `objet-filet` ·`-2` ·`-3` · `objet-licol-corde-2` ·`-3` · `objet-selle-rando` · `objet-selle-anglaise` ·`-2` · `objet-selle-sport` · les `cagoule-*` · l'ancien `objet-walsall` (l'alêne) · `sellerie-gauche-rail`.
+🔴 **AUCUN de ces fichiers n'est dans l'archive de réserve d'aujourd'hui.** Soit ils n'ont jamais été produits, soit ils ont été perdus, soit ils sont ailleurs. **À trancher avec Blandine.** Et le point resté en suspens depuis le 12/08 tient toujours : *« le licol en cuir et le filet ont une ville, décidée avec Blandine — l'information est perdue »*.
+
+## ⚠️ POINTS DE CONTENU SIGNALÉS, JAMAIS TRANCHÉS
+· **Badminton = « une cocarde »** alors que Blandine a dit le 16/08 que **cocarde ne se dit pas** (on dit le flot) et qu'elle voulait **la coupe**. Le changement N'EST PAS FAIT.
+· **Deux fanions** : La Baule et Hickstead.
+· **Tamworth « corde tressée »** pour un chapitre western alors que c'est l'Australie, et Santa Ynez a déjà un hackamore de crin.
+· **Jerez « jarre andalouse »** est un pot à xérès dans un chapitre « Le cheval ».
+· **Objets voulus par Blandine, sans destination validée** : veste de concours, frac, gilet airbag, dorsale, bombe, toque de velours, haut-de-forme, Stetson, Akubra. ⚠️ Tamworth et Santa Ynez ne peuvent pas avoir le même chapeau.
 
 ---
 
@@ -558,6 +637,33 @@ Déclarée dans `POSE_PROPRE` (vue pliée distincte). **PAS dans `POSE_34`** : u
 🟥 **PHRASE RETIRÉE PAR ELLE** : « à ma voix, tout le monde ensemble, au commandement : trois, deux, un » — ***« tu peux la virer elle est nulle »***. Elle récitait deux entrées du lexique bout à bout sans rien dire. **NE PAS la remettre.**
 
 ⚠️ **DEUX FAUTES ATTRAPÉES AU CONTRÔLE** : une coquille `p::` qui empêchait le fichier de se charger, et **un caractère coréen** (질) glissé dans une définition japonaise. Corrigés. ✅ Contrôler les caractères hangul dans les définitions japonaises.
+
+---
+
+## 💡 IDÉE À FAIRE — LA PAUSE À MI-PARCOURS D'UN LONG COURS
+
+**Idée de Blandine, 16/08** : *« comme le cours est super long, est-ce qu'à mi-chemin on peut proposer au cavalier de faire une pause en visualisant quelque chose ? Une image ou une petite vidéo par exemple ? Et que sa progression soit sauvegardée à mi-chemin ? »* Puis : *« on peut la suggérer en proposant peut-être une petite vidéo en rapport ? »*
+
+**Le besoin est réel** : Kildare passe à **37 mots** dans une seule leçon (sa décision : *« bof non, c'est justement ce qui a fait que ça a foiré pendant mon vol »* — les villes à plusieurs leçons sont précisément celles où elle a vu des mots manquer). Trente-sept mots d'affilée, personne ne tient.
+
+**Trois volets, à trancher avant de coder :**
+1. **La pause proposée**, pas imposée — elle a dit « suggérer ».
+2. **La progression sauvegardée à mi-chemin.** ⚠️ Touche à la progression Supabase : à ne pas coder sans avoir lu le moteur de leçon de bout en bout.
+3. **Une vidéo en rapport.** Sur ce chapitre ce serait très fort — une colique qui gratte et se regarde les flancs s'apprend en la VOYANT. ⚠️ **MAIS** : Claude ne peut pas générer de vidéo, et sur un sujet médical **une vidéo inventée serait pire que rien** — un cavalier qui apprend à reconnaître une colique sur une image fausse est en danger. Il faut de vraies images. ⚠️ Et le poids : une vidéo par chapitre, c'est plusieurs Mo de plus pour le hors-ligne, réglé le jour même — décider si elle entre au cache ou reste en ligne seulement.
+
+**Non commencé. Rien n'a été codé.** À reprendre après Kildare et Édimbourg.
+
+---
+
+## 📋 À FAIRE — ANNONCER LES DEUX VILLES OFFERTES SÉPARÉMENT
+
+Demande de Blandine, 16/08 : *« faudra citer les deux dans l'onglet chapitres offerts au début en préciant bien quoi trouver où »*.
+
+Depuis la séparation des urgences en deux chapitres, l'écran des villes offertes doit dire **ce qu'on trouve où** :
+· **Kildare** → les urgences **du cheval** (colique, boiterie, plaie, coup de sang, bouchon œsophagien)
+· **Édimbourg** → les urgences **du cavalier** (chute, commotion, fracture, ne pas remonter)
+
+⚠️ À faire **une fois les deux chapitres écrits**, pour que l'écran les annonce d'un coup. `VILLE_OFFERTE = { labaule:1, kildare:1, maurice:1 }` — vérifier si Édimbourg doit y entrer.
 
 ---
 
