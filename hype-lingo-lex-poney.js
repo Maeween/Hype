@@ -16,6 +16,31 @@
    natif : la toise, le poney-club, la catégorie de taille, le shetland.
    `das Stockmaß` et `測尺` sont les deux plus à confirmer.
    À reporter dans hype-linguae-doutes.md.
+
+   ------------------------------------------------------------------
+   ✔ FUSION DU 17 AOÛT 2026 — LOT BLANDINE (« Pareil mélangé avec ce
+   qu'on avait déjà », « Fais comme tu sens »). Versé depuis le kit
+   PREPARE-lamotte-poney.js une fois le fichier enfin reçu :
+   · 3 concepts neufs : `classe-cm`, `dans-la-taille`, `hors-taille`
+     (measure in / measure out — les mots du règlement FEI, vérifié :
+     limite 148 cm sans fers / 149 ferré).
+   · 22 phrases neuves `ph-poney-*` : ses n° 5–18, ses 6 phrases
+     « catégories », et ses 2 phrases-pièges (le C de 1,40 m qui devient
+     un 148 en Irlande ; le B qui n'est pas forcément un 128). fr/en =
+     ses mots. Les n° 1–4 existaient déjà (ph-poney-taille, -debutant,
+     -calme, -jeux) — non dupliquées.
+   · Un champ `intro` (encart « un poney n'est pas classé pareil
+     partout ») — INERTE tant que lingo.html ne lit pas ce champ, même
+     statut que l'intro de Dubaï.
+   Ses 15 termes étaient déjà tous là (le « poney d'école » vit ici
+   sous `cheval-ecole` / the school horse — rappel probable, mots non
+   touchés). RIEN RETIRÉ : `calme` reste, candidat au retrait évoqué
+   par Blandine mais jamais tranché par elle.
+   ⚠️ Bornes FFE des phrases-pièges (B jusqu'à 1,30 m, C jusqu'à
+   1,40 m) : issues de sa recherche, cohérentes avec la FEI vérifiée,
+   texte FFE non relu — à recontrôler avant relecture native.
+   ⚠️ À faire relire : `estar en la talla` / `pasarse de talla` (es),
+   `im Maß sein` / `über dem Maß sein` (de), `規定内` / `規定外` (ja).
    ================================================================== */
 
 window.HYPE_LINGO_LEX = window.HYPE_LINGO_LEX || {};
@@ -26,6 +51,14 @@ window.HYPE_LINGO_LEX.poney = {
   titre: { fr:"Le poney", en:"The pony", es:"El poni", it:"Il pony",
            de:"Das Pony", ja:"ポニー" },
   lecons: 1,
+
+  /* ⚠️ champ pas encore lu par le moteur — cf. note de fusion. */
+  intro: { fr:"Un poney n'est pas classé pareil partout : donne sa taille exacte, elle parle toutes les langues.",
+           en:"A pony isn't classed the same way everywhere: give his exact height — it speaks every language.",
+           es:"Un poni no se clasifica igual en todas partes: da su alzada exacta, habla todos los idiomas.",
+           it:"Un pony non è classificato allo stesso modo ovunque: dai la sua altezza esatta, parla tutte le lingue.",
+           de:"Ein Pony wird nicht überall gleich eingeteilt: Nenn sein genaues Stockmaß — das versteht jede Sprache.",
+           ja:"ポニーの区分は国によって違います。正確な体高を言えば、どの言語でも通じます。" },
 
   concepts: [
 
@@ -248,8 +281,42 @@ window.HYPE_LINGO_LEX.poney = {
           es:"Las riendas por tramos de colores de los pequeños jinetes. El profesor ya no dice « acorta diez centímetros » sino « coge en el azul »: cada color es una referencia de mano. El inglés tiene el nombre-imagen: rainbow reins.",
           it:"Le redini a tratti colorati dei piccoli cavalieri. L'istruttore non dice più « accorcia di dieci centimetri » ma « prendi sul blu »: ogni colore è un riferimento di mano. L'inglese ha il nome-immagine: rainbow reins.",
           de:"Die farbig unterteilten Zügel der kleinen Reiter. Der Reitlehrer sagt nicht mehr « zehn Zentimeter kürzer », sondern « greif auf Blau »: Jede Farbe ist eine Handmarke. Das Englische hat den Bildnamen: rainbow reins.",
-          ja:"小さな騎手のための、色分けされた手綱。先生は「十センチ詰めて」ではなく「青を持って」と言えばいい。色のひとつひとつが、手の位置の目印なのです。英語の名前が絵のようです — rainbow reins、虹の手綱。" } }
+          ja:"小さな騎手のための、色分けされた手綱。先生は「十センチ詰めて」ではなく「青を持って」と言えばいい。色のひとつひとつが、手の位置の目印なのです。英語の名前が絵のようです — rainbow reins、虹の手綱。" } },
 
+  /* ---- les trois entrées « mesure » du 17 août 2026 ---- */
+
+  { ref:"classe-cm", lecon:1, coll:"poney",
+    mots:{ fr:{m:"la catégorie 138 cm"}, en:{m:"the 138 cm pony class", p:"kla-ss"},
+           es:{m:"la categoría de 138 cm"}, it:{m:"la categoria dei 138 cm"},
+           de:{m:"die 138-cm-Klasse", p:"kla-sse"}, ja:{m:"138センチクラス", p:"hyaku-sanjū-hachi senchi kurasu"} },
+    def:{ fr:"En Irlande et au Royaume-Uni, les catégories portent la taille en clair : 128 cm, 138 cm, 148 cm. ⚠️ Et les bornes ne recouvrent pas les lettres françaises : le B monte jusqu'à 1,30 m, donc un B de 1,29 m est déjà un 138 — et un C de 1,40 m, déjà un 148.",
+          en:"In Ireland and the UK, the classes wear the height itself: 128 cm, 138 cm, 148 cm. And the limits do not line up with the French letters: B runs to 1.30 m, so a 1.29 m B is already a 138 — and a 1.40 m C is already a 148.",
+          es:"En Irlanda y el Reino Unido, las categorías llevan la alzada en claro: 128 cm, 138 cm, 148 cm. ⚠️ Y los límites no coinciden con las letras francesas: la B llega a 1,30 m, así que un B de 1,29 m ya es un 138 — y un C de 1,40 m, ya un 148.",
+          it:"In Irlanda e nel Regno Unito, le categorie portano la taglia in chiaro: 128 cm, 138 cm, 148 cm. ⚠️ E i limiti non coincidono con le lettere francesi: la B arriva a 1,30 m, quindi un B di 1,29 m è già un 138 — e un C di 1,40 m, già un 148.",
+          de:"In Irland und Großbritannien tragen die Klassen das Maß im Namen: 128 cm, 138 cm, 148 cm. ⚠️ Und die Grenzen decken sich nicht mit den französischen Buchstaben: B geht bis 1,30 m — ein B von 1,29 m ist also schon ein 138er, ein C von 1,40 m schon ein 148er.",
+          ja:"アイルランドとイギリスでは、区分の名前が体高そのもの。128センチ、138センチ、148センチ。⚠️ しかも境界はフランスの文字と一致しません。B は1.30メートルまでなので、1.29メートルの B はもう138クラス。1.40メートルの C は、もう148クラスです。" } },
+
+  { ref:"dans-la-taille", lecon:1, coll:"poney", v:true,
+    mots:{ fr:{m:"être dans la taille"}, en:{m:"to measure in", p:"mè-jeur ine"},
+           es:{m:"estar en la talla"}, it:{m:"rientrare nella taglia"},
+           de:{m:"im Maß sein", p:"ime mâss"}, ja:{m:"規定内に収まる", p:"kiteinai ni osamaru"} },
+    def:{ fr:"Passer la toise et rester poney : c'est le mot du règlement international. La limite : 148 cm sans fers, 149 ferré — 14,2 mains chez les anglo-saxons. « The pony measured in » : il est dans la taille.",
+          en:"To pass the measuring stick and stay a pony: the word of the international rulebook. The limit: 148 cm without shoes, 149 shod — 14.2 hands. « The pony measured in »: he is within the height.",
+          es:"Pasar la medición y seguir siendo poni: es la palabra del reglamento internacional. El límite: 148 cm sin herraduras, 149 herrado — 14,2 manos. « The pony measured in »: está en la talla.",
+          it:"Passare la misurazione e restare pony: è la parola del regolamento internazionale. Il limite: 148 cm senza ferri, 149 ferrato — 14,2 mani. « The pony measured in »: è nella taglia.",
+          de:"Gemessen werden und Pony bleiben: das Wort des internationalen Reglements. Die Grenze: 148 cm ohne Eisen, 149 beschlagen — 14,2 Hands. « The pony measured in »: er ist im Maß.",
+          ja:"測尺を受けてポニーのままでいること。国際規則の言葉です。上限は蹄鉄なしで148センチ、装蹄して149センチ — 英語圏では14.2ハンド。« The pony measured in » は「規定内だった」という意味です。" } },
+
+  { ref:"hors-taille", lecon:1, coll:"poney", v:true,
+    mots:{ fr:{m:"être hors taille"}, en:{m:"to measure out", p:"mè-jeur aoutte"},
+           es:{m:"pasarse de talla"}, it:{m:"essere fuori taglia"},
+           de:{m:"über dem Maß sein", p:"u-beur déme mâss"}, ja:{m:"規定外になる", p:"kiteigai ni naru"} },
+    def:{ fr:"Dépasser la toise : « the pony measured out ». Il ne redescendra pas — il devient officiellement un cheval, et change de monde en un centimètre.",
+          en:"To go over the stick: « the pony measured out ». He will not shrink back — he officially becomes a horse, and changes worlds by one centimetre.",
+          es:"Superar la medición: « the pony measured out ». No volverá a bajar — se convierte oficialmente en caballo, y cambia de mundo por un centímetro.",
+          it:"Superare la misurazione: « the pony measured out ». Non tornerà indietro — diventa ufficialmente un cavallo, e cambia mondo per un centimetro.",
+          de:"Über das Maß gehen: « the pony measured out ». Er wird nicht wieder kleiner — er wird offiziell ein Pferd und wechselt die Welt um einen Zentimeter.",
+          ja:"測尺で上限を超えること。« The pony measured out »。もう縮むことはなく、正式に「馬」となります。一センチで世界が変わるのです。" } }
   ],
 
   phrases: [
@@ -284,6 +351,439 @@ window.HYPE_LINGO_LEX.poney = {
       es:"¿Hacemos los juegos esta tarde?",
       it:"Facciamo i giochi questo pomeriggio?",
       de:"Machen wir heute Nachmittag die Spiele?",
-      ja:"今日 の 午後 は ゲーム を し ます か ?" }
-  ]
+      ja:"今日 の 午後 は ゲーム を し ます か ?" },
+
+  /* ---- les 22 phrases du 17 août 2026 (Blandine, fr/en) ---- */
+
+  { ref:"ph-poney-toise", lecon:1,
+      fr:"Est-ce qu'il doit être toisé avant l'épreuve ?",
+      en:"Does he need to be measured before the class?",
+      es:"¿Hay que medirlo antes de la prueba?",
+      it:"Deve essere misurato prima della prova?",
+      de:"Muss er vor der Prüfung gemessen werden?",
+      ja:"競技 の 前 に 測尺 が 必要 です か ?" },
+
+  { ref:"ph-poney-quelle-categorie", lecon:1,
+      fr:"Dans quelle catégorie de taille concourt-il ?",
+      en:"Which height category does he compete in?",
+      es:"¿En qué categoría de alzada compite?",
+      it:"In quale categoria di taglia gareggia?",
+      de:"In welcher Größenklasse startet er?",
+      ja:"どの 体高 区分 で 出場 します か ?" },
+
+  { ref:"ph-poney-146", lecon:1,
+      fr:"Il mesure un mètre quarante-six au garrot.",
+      en:"He is one metre forty-six at the withers.",
+      es:"Mide un metro cuarenta y seis a la cruz.",
+      it:"Misura un metro e quarantasei al garrese.",
+      de:"Er misst eins sechsundvierzig am Widerrist.",
+      ja:"体高 は 百四十六センチ です。" },
+
+  { ref:"ph-poney-grand-facile", lecon:1,
+      fr:"C'est un grand poney, mais il est très facile à monter.",
+      en:"He's a large pony, but he's very easy to ride.",
+      es:"Es un poni grande, pero es muy fácil de montar.",
+      it:"È un pony grande, ma è molto facile da montare.",
+      de:"Er ist ein Großpony, aber sehr leicht zu reiten.",
+      ja:"大きな ポニー です が、 とても 乗りやすい です。" },
+
+  { ref:"ph-poney-double-pony", lecon:1,
+      fr:"Attention, « double poney » ne se dit pas en anglais.",
+      en:"Be careful, \"double pony\" isn't used in English.",
+      es:"Cuidado, « double pony » no se dice en inglés.",
+      it:"Attenzione, « double pony » non si dice in inglese.",
+      de:"Achtung, « double pony » sagt man im Englischen nicht.",
+      ja:"注意 ! « double pony » は 英語 では 使いません。" },
+
+  { ref:"ph-poney-poneys-ecole", lecon:1,
+      fr:"Les enfants montent principalement des poneys d'école.",
+      en:"The children mainly ride school ponies.",
+      es:"Los niños montan sobre todo ponis de escuela.",
+      it:"I bambini montano soprattutto pony di scuola.",
+      de:"Die Kinder reiten vor allem Schulponys.",
+      ja:"子ども たち は 主に レッスンポニー に 乗ります。" },
+
+  { ref:"ph-poney-equipe-demain", lecon:1,
+      fr:"On participe à l'épreuve par équipe demain matin.",
+      en:"We're competing in the team competition tomorrow morning.",
+      es:"Participamos en la prueba por equipos mañana por la mañana.",
+      it:"Partecipiamo alla prova a squadre domani mattina.",
+      de:"Wir starten morgen früh in der Mannschaftswertung.",
+      ja:"明日 の 朝 団体戦 に 出ます。" },
+
+  { ref:"ph-poney-quatre-cavaliers", lecon:1,
+      fr:"Notre équipe est composée de quatre cavaliers.",
+      en:"Our team is made up of four riders.",
+      es:"Nuestro equipo está formado por cuatro jinetes.",
+      it:"La nostra squadra è composta da quattro cavalieri.",
+      de:"Unser Team besteht aus vier Reitern.",
+      ja:"私たち の チーム は 四人 の 騎手 です。" },
+
+  { ref:"ph-poney-games-ou-equifun", lecon:1,
+      fr:"Tu participes aux Mounted Games ou à l'Equifun ?",
+      en:"Are you competing in the Mounted Games or the Equifun?",
+      es:"¿Participas en los Mounted Games o en el Equifun?",
+      it:"Partecipi ai Mounted Games o all'Equifun?",
+      de:"Startest du bei den Mounted Games oder beim Equifun?",
+      ja:"マウンテッドゲームズ と エキファン、 どちら に 出ます か ?" },
+
+  { ref:"ph-poney-carrousel-musique", lecon:1,
+      fr:"Le carrousel se déroule en musique avec plusieurs cavaliers.",
+      en:"The quadrille is performed to music with several riders.",
+      es:"El carrusel se desarrolla con música y varios jinetes.",
+      it:"Il carosello si svolge in musica con più cavalieri.",
+      de:"Die Quadrille wird zur Musik mit mehreren Reitern geritten.",
+      ja:"クアドリール は 音楽 に 合わせて 数人 で 演技 します。" },
+
+  { ref:"ph-poney-synchronises", lecon:1,
+      fr:"Il faut rester parfaitement synchronisés pendant toute la reprise.",
+      en:"We need to stay perfectly synchronised throughout the display.",
+      es:"Hay que mantenerse perfectamente sincronizados durante toda la reprise.",
+      it:"Bisogna restare perfettamente sincronizzati per tutta la ripresa.",
+      de:"Wir müssen die ganze Vorführung über perfekt synchron bleiben.",
+      ja:"演技 の 間 ずっと 完璧に 揃って いなければ なりません。" },
+
+  { ref:"ph-poney-cru-detente", lecon:1,
+      fr:"Est-ce que je peux le monter à cru pour la détente ?",
+      en:"Can I ride him bareback for the warm-up?",
+      es:"¿Puedo montarlo a pelo para el calentamiento?",
+      it:"Posso montarlo a pelo per il riscaldamento?",
+      de:"Darf ich ihn zum Abreiten ohne Sattel reiten?",
+      ja:"ウォーミングアップ で 裸馬 に 乗って も いい です か ?" },
+
+  { ref:"ph-poney-partie-bleue", lecon:1,
+      fr:"Prends les rênes au niveau de la partie bleue.",
+      en:"Hold the reins on the blue section.",
+      es:"Coge las riendas por la parte azul.",
+      it:"Prendi le redini sulla parte blu.",
+      de:"Nimm die Zügel am blauen Abschnitt.",
+      ja:"手綱 の 青い ところ を 持って。" },
+
+  { ref:"ph-poney-shetland", lecon:1,
+      fr:"C'est un Shetland, il est petit mais très costaud.",
+      en:"He's a Shetland pony; he's small but very strong.",
+      es:"Es un shetland: es pequeño pero muy fuerte.",
+      it:"È uno Shetland: è piccolo ma fortissimo.",
+      de:"Er ist ein Shetlandpony: klein, aber sehr kräftig.",
+      ja:"シェットランドポニー です。 小さい けれど とても 力持ち です。" },
+
+  /* ---- les six phrases « un poney n'est pas classé pareil partout » ---- */
+
+  { ref:"ph-poney-irlande-classe", lecon:1,
+      fr:"En Irlande, dans quelle catégorie de taille concourt ce poney ?",
+      en:"What height class does this pony compete in in Ireland?",
+      es:"En Irlanda, ¿en qué categoría de alzada compite este poni?",
+      it:"In Irlanda, in quale categoria di taglia gareggia questo pony?",
+      de:"In welcher Größenklasse startet dieses Pony in Irland?",
+      ja:"アイルランド では この ポニー は どの 区分 で 出場 します か ?" },
+
+  { ref:"ph-poney-classe-138", lecon:1,
+      fr:"Il concourt dans la catégorie des 138 cm.",
+      en:"He competes in the 138 cm pony class.",
+      es:"Compite en la categoría de 138 cm.",
+      it:"Gareggia nella categoria dei 138 cm.",
+      de:"Er startet in der 138-cm-Klasse.",
+      ja:"百三十八センチ の クラス に 出場 して います。" },
+
+  { ref:"ph-poney-autre-categorie", lecon:1,
+      fr:"En France, ce poney serait classé dans une autre catégorie.",
+      en:"In France, this pony would be in a different category.",
+      es:"En Francia, este poni estaría en otra categoría.",
+      it:"In Francia, questo pony sarebbe in un'altra categoria.",
+      de:"In Frankreich wäre dieses Pony in einer anderen Kategorie.",
+      ja:"フランス では この ポニー は 別 の 区分 に 入ります。" },
+
+  { ref:"ph-poney-abcd", lecon:1,
+      fr:"Les catégories françaises A, B, C et D ne sont pas utilisées partout.",
+      en:"The French A, B, C and D pony categories are not used everywhere.",
+      es:"Las categorías francesas A, B, C y D no se usan en todas partes.",
+      it:"Le categorie francesi A, B, C e D non si usano dappertutto.",
+      de:"Die französischen Kategorien A, B, C und D werden nicht überall verwendet.",
+      ja:"フランス の A B C D の 区分 は どこ でも 使われる わけ では ありません。" },
+
+  { ref:"ph-poney-taille-exacte", lecon:1,
+      fr:"À l'étranger, donne plutôt la taille exacte du poney.",
+      en:"Abroad, it's better to give the pony's exact height.",
+      es:"En el extranjero, da mejor la alzada exacta del poni.",
+      it:"All'estero, meglio dare l'altezza esatta del pony.",
+      de:"Im Ausland nennst du besser das genaue Stockmaß.",
+      ja:"外国 では ポニー の 正確な 体高 を 言う ほう が いい です。" },
+
+  { ref:"ph-poney-piege-140", lecon:1,
+      fr:"Mon poney mesure 1,40 m. En France, c'est un poney C. En Irlande, il concourrait dans la catégorie 148 cm.",
+      en:"My pony is 1.40 metres tall. In France, he's a category C pony. In Ireland, he would compete in the 148 cm pony category.",
+      es:"Mi poni mide 1,40 m. En Francia es un poni C. En Irlanda competiría en la categoría de 148 cm.",
+      it:"Il mio pony misura 1,40 m. In Francia è un pony C. In Irlanda gareggerebbe nella categoria dei 148 cm.",
+      de:"Mein Pony misst 1,40 m. In Frankreich ist er ein C-Pony. In Irland würde er in der 148-cm-Klasse starten.",
+      ja:"私 の ポニー は 体高 1.40メートル。 フランス では C ポニー です が、 アイルランド では 148センチ の クラス に 出ます。" },
+
+  { ref:"ph-poney-piege-b", lecon:1,
+      fr:"Un poney B français n'est pas forcément un 128 cm pony en Irlande.",
+      en:"A French category B pony isn't necessarily a 128 cm pony in Ireland.",
+      es:"Un poni B francés no es necesariamente un poni de 128 cm en Irlanda.",
+      it:"Un pony B francese non è per forza un pony da 128 cm in Irlanda.",
+      de:"Ein französisches B-Pony ist in Irland nicht unbedingt ein 128-cm-Pony.",
+      ja:"フランス の B ポニー が アイルランド で 必ず 128センチ の クラス と は 限りません。" },
+
+  { ref:"ph-poney-limite-internationale", lecon:1,
+      fr:"Il mesure 1,47 m, donc il reste dans la limite internationale poney.",
+      en:"He measures 1.47 metres, so he is still within the international pony height limit.",
+      es:"Mide 1,47 m, así que sigue dentro del límite internacional de poni.",
+      it:"Misura 1,47 m, quindi resta nel limite internazionale dei pony.",
+      de:"Er misst 1,47 m und bleibt damit unter der internationalen Ponygrenze.",
+      ja:"体高 1.47メートル なので 国際 の ポニー 規定 内 に 収まって います。" }
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE LAMOTTE-BEUVRON — 17 août 2026, session 214.
+
+     LA SCÈNE : les Generali Open de France, le plus grand rassemblement
+     équestre du monde. 26 phrases, 6 temps.
+
+     🟥 AUCUNE PHRASE N'A ÉTÉ ÉCRITE POUR CE DIALOGUE, comme pour Dubaï :
+     les vingt-six existaient déjà dans ce fichier comme phrases
+     d'exercice. Il n'y avait qu'à leur donner un temps et un locuteur.
+     ⚠️ LES PHRASES D'EXERCICE RESTENT EN PLACE, inchangées.
+
+     🟥 LE VRAI SUJET DU CHAPITRE EST AU TEMPS 4, et c'est ce qui le rend
+     unique dans l'app : LES CATÉGORIES DE TAILLE NE SE TRADUISENT PAS.
+     Un poney C français n'est pas un « C pony » ailleurs — les lettres
+     A, B, C, D sont une invention française. En Irlande et en
+     Grande-Bretagne on compte en centimètres : 128, 138, 148.
+     ⚠️ D'où la consigne qui traverse le chapitre : À L'ÉTRANGER, DONNER
+     LA TAILLE EXACTE, jamais la lettre. C'est la seule ville où la bonne
+     réponse est de renoncer à son propre vocabulaire.
+
+     🟥 ET « DOUBLE PONEY » NE SE DIT PAS EN ANGLAIS. C'est un faux ami
+     complet : on dit **a large pony**. Une phrase entière du chapitre ne
+     sert qu'à l'avertir. NE PAS la retirer.
+
+     ⚠️ Le chapitre est celui des ENFANTS, mais les phrases sont celles
+     d'un adulte qui accompagne — une monitrice, un parent, un cavalier
+     de passage. C'est cohérent : Lamotte est aussi la ville de
+     l'enseignement au poney (voir Saumur pour l'enseignement adulte).
+
+     `dit` : "joueuse" = elle produit · "club" = un moniteur, un
+     commissaire à la toise, un autre cavalier.
+  ================================================================== */
+  dialogue: {
+    ville: "lamotte", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 26 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · j'arrive au poney-club ---- */
+      { ref:"dl-poneys-ecole", temps:1, dit:"club", mots:["poney-club","cheval-ecole","poney"],
+        fr:"Les enfants montent principalement des poneys d'école.",
+        en:"The children mainly ride school ponies.",
+        es:"Los niños montan sobre todo ponis de escuela.",
+        it:"I bambini montano soprattutto pony di scuola.",
+        de:"Die Kinder reiten vor allem Schulponys.",
+        ja:"子ども たち は 主に レッスンポニー に 乗ります。" },
+
+      { ref:"dl-debutant", temps:1, dit:"joueuse", mots:["poney","caractere"],
+        fr:"C'est un poney pour débuter ?",
+        en:"Is he a beginner's pony?",
+        es:"¿Es un poni para principiantes?",
+        it:"È un pony per principianti?",
+        de:"Ist es ein Pony für Anfänger?",
+        ja:"初心者 向け の ポニー です か。" },
+
+      { ref:"dl-calme", temps:1, dit:"club", mots:["calme","caractere"],
+        fr:"Il est très calme.",
+        en:"He is very quiet.",
+        es:"Es muy tranquilo.",
+        it:"È molto tranquillo.",
+        de:"Es ist sehr brav.",
+        ja:"とても おとなしい です。" },
+
+      { ref:"dl-shetland", temps:1, dit:"club", mots:["shetland"],
+        fr:"C'est un Shetland, il est petit mais très costaud.",
+        en:"He's a Shetland pony; he's small but very strong.",
+        es:"Es un shetland: es pequeño pero muy fuerte.",
+        it:"È uno Shetland: è piccolo ma fortissimo.",
+        de:"Er ist ein Shetlandpony: klein, aber sehr kräftig.",
+        ja:"シェットランドポニー です。 小さい けれど とても 力持ち です。" },
+
+      /* ---- temps 2 · la taille, et le piège des catégories ---- */
+      { ref:"dl-taille", temps:2, dit:"joueuse", mots:["taille-garrot"],
+        fr:"Quelle est sa taille au garrot ?",
+        en:"How tall is he?",
+        es:"¿Cuánto mide de alzada?",
+        it:"Quanto misura al garrese?",
+        de:"Wie groß ist er?",
+        ja:"体高 は どれ くらい です か。" },
+
+      { ref:"dl-146", temps:2, dit:"club", mots:["taille-garrot"],
+        fr:"Il mesure un mètre quarante-six au garrot.",
+        en:"He is one metre forty-six at the withers.",
+        es:"Mide un metro cuarenta y seis a la cruz.",
+        it:"Misura un metro e quarantasei al garrese.",
+        de:"Er misst eins sechsundvierzig am Widerrist.",
+        ja:"体高 は 百四十六センチ です。" },
+
+      { ref:"dl-grand-facile", temps:2, dit:"club", mots:["double-poney","caractere"],
+        fr:"C'est un grand poney, mais il est très facile à monter.",
+        en:"He's a large pony, but he's very easy to ride.",
+        es:"Es un poni grande, pero es muy fácil de montar.",
+        it:"È un pony grande, ma è molto facile da montare.",
+        de:"Er ist ein Großpony, aber sehr leicht zu reiten.",
+        ja:"大きな ポニー です が、 とても 乗りやすい です。" },
+
+      { ref:"dl-double-pony", temps:2, dit:"club", mots:["double-poney"],
+        fr:"Attention, « double poney » ne se dit pas en anglais.",
+        en:"Be careful, \"double pony\" isn't used in English.",
+        es:"Cuidado, « double pony » no se dice en inglés.",
+        it:"Attenzione, « double pony » non si dice in inglese.",
+        de:"Achtung, « double pony » sagt man im Englischen nicht.",
+        ja:"注意 ! « double pony » は 英語 では 使いません。" },
+
+      { ref:"dl-limite-internationale", temps:2, dit:"club", mots:["taille-garrot","categorie-taille"],
+        fr:"Il mesure 1,47 m, donc il reste dans la limite internationale poney.",
+        en:"He measures 1.47 metres, so he is still within the international pony height limit.",
+        es:"Mide 1,47 m, así que sigue dentro del límite internacional de poni.",
+        it:"Misura 1,47 m, quindi resta nel limite internazionale dei pony.",
+        de:"Er misst 1,47 m und bleibt damit unter der internationalen Ponygrenze.",
+        ja:"体高 1.47メートル なので 国際 の ポニー 規定 内 に 収まって います。" },
+
+      /* ---- temps 3 · toiser, et concourir dans sa catégorie ---- */
+      { ref:"dl-toise", temps:3, dit:"joueuse", mots:["toise","dans-la-taille"],
+        fr:"Est-ce qu'il doit être toisé avant l'épreuve ?",
+        en:"Does he need to be measured before the class?",
+        es:"¿Hay que medirlo antes de la prueba?",
+        it:"Deve essere misurato prima della prova?",
+        de:"Muss er vor der Prüfung gemessen werden?",
+        ja:"競技 の 前 に 測尺 が 必要 です か ?" },
+
+      { ref:"dl-quelle-categorie", temps:3, dit:"joueuse", mots:["categorie-taille"],
+        fr:"Dans quelle catégorie de taille concourt-il ?",
+        en:"Which height category does he compete in?",
+        es:"¿En qué categoría de alzada compite?",
+        it:"In quale categoria di taglia gareggia?",
+        de:"In welcher Größenklasse startet er?",
+        ja:"どの 体高 区分 で 出場 します か ?" },
+
+      { ref:"dl-classe-138", temps:3, dit:"club", mots:["classe-cm"],
+        fr:"Il concourt dans la catégorie des 138 cm.",
+        en:"He competes in the 138 cm pony class.",
+        es:"Compite en la categoría de 138 cm.",
+        it:"Gareggia nella categoria dei 138 cm.",
+        de:"Er startet in der 138-cm-Klasse.",
+        ja:"百三十八センチ の クラス に 出場 して います。" },
+
+      { ref:"dl-abcd", temps:3, dit:"club", mots:["categorie-taille"],
+        fr:"Les catégories françaises A, B, C et D ne sont pas utilisées partout.",
+        en:"The French A, B, C and D pony categories are not used everywhere.",
+        es:"Las categorías francesas A, B, C y D no se usan en todas partes.",
+        it:"Le categorie francesi A, B, C e D non si usano dappertutto.",
+        de:"Die französischen Kategorien A, B, C und D werden nicht überall verwendet.",
+        ja:"フランス の A B C D の 区分 は どこ でも 使われる わけ では ありません。" },
+
+      /* ---- temps 4 · d'un pays à l'autre ---- */
+      { ref:"dl-irlande-classe", temps:4, dit:"joueuse", mots:["categorie-taille"],
+        fr:"En Irlande, dans quelle catégorie de taille concourt ce poney ?",
+        en:"What height class does this pony compete in in Ireland?",
+        es:"En Irlanda, ¿en qué categoría de alzada compite este poni?",
+        it:"In Irlanda, in quale categoria di taglia gareggia questo pony?",
+        de:"In welcher Größenklasse startet dieses Pony in Irland?",
+        ja:"アイルランド では この ポニー は どの 区分 で 出場 します か ?" },
+
+      { ref:"dl-autre-categorie", temps:4, dit:"club", mots:["categorie-taille"],
+        fr:"En France, ce poney serait classé dans une autre catégorie.",
+        en:"In France, this pony would be in a different category.",
+        es:"En Francia, este poni estaría en otra categoría.",
+        it:"In Francia, questo pony sarebbe in un'altra categoria.",
+        de:"In Frankreich wäre dieses Pony in einer anderen Kategorie.",
+        ja:"フランス では この ポニー は 別 の 区分 に 入ります。" },
+
+      { ref:"dl-piege-140", temps:4, dit:"club", mots:["taille-garrot","categorie-taille"],
+        fr:"Mon poney mesure 1,40 m. En France, c'est un poney C. En Irlande, il concourrait dans la catégorie 148 cm.",
+        en:"My pony is 1.40 metres tall. In France, he's a category C pony. In Ireland, he would compete in the 148 cm pony category.",
+        es:"Mi poni mide 1,40 m. En Francia es un poni C. En Irlanda competiría en la categoría de 148 cm.",
+        it:"Il mio pony misura 1,40 m. In Francia è un pony C. In Irlanda gareggerebbe nella categoria dei 148 cm.",
+        de:"Mein Pony misst 1,40 m. In Frankreich ist er ein C-Pony. In Irland würde er in der 148-cm-Klasse starten.",
+        ja:"私 の ポニー は 体高 1.40メートル。 フランス では C ポニー です が、 アイルランド では 148センチ の クラス に 出ます。" },
+
+      { ref:"dl-piege-b", temps:4, dit:"club", mots:["categorie-taille","classe-cm"],
+        fr:"Un poney B français n'est pas forcément un 128 cm pony en Irlande.",
+        en:"A French category B pony isn't necessarily a 128 cm pony in Ireland.",
+        es:"Un poni B francés no es necesariamente un poni de 128 cm en Irlanda.",
+        it:"Un pony B francese non è per forza un pony da 128 cm in Irlanda.",
+        de:"Ein französisches B-Pony ist in Irland nicht unbedingt ein 128-cm-Pony.",
+        ja:"フランス の B ポニー が アイルランド で 必ず 128センチ の クラス と は 限りません。" },
+
+      { ref:"dl-taille-exacte", temps:4, dit:"club", mots:["taille-garrot"],
+        fr:"À l'étranger, donne plutôt la taille exacte du poney.",
+        en:"Abroad, it's better to give the pony's exact height.",
+        es:"En el extranjero, da mejor la alzada exacta del poni.",
+        it:"All'estero, meglio dare l'altezza esatta del pony.",
+        de:"Im Ausland nennst du besser das genaue Stockmaß.",
+        ja:"外国 では ポニー の 正確な 体高 を 言う ほう が いい です。" },
+
+      /* ---- temps 5 · les épreuves ---- */
+      { ref:"dl-jeux", temps:5, dit:"joueuse", mots:["jeux-poney"],
+        fr:"On fait les jeux cet après-midi ?",
+        en:"Are we doing the games this afternoon?",
+        es:"¿Hacemos los juegos esta tarde?",
+        it:"Facciamo i giochi questo pomeriggio?",
+        de:"Machen wir heute Nachmittag die Spiele?",
+        ja:"今日 の 午後 は ゲーム を し ます か ?" },
+
+      { ref:"dl-games-ou-equifun", temps:5, dit:"club", mots:["jeux-poney","equifun"],
+        fr:"Tu participes aux Mounted Games ou à l'Equifun ?",
+        en:"Are you competing in the Mounted Games or the Equifun?",
+        es:"¿Participas en los Mounted Games o en el Equifun?",
+        it:"Partecipi ai Mounted Games o all'Equifun?",
+        de:"Startest du bei den Mounted Games oder beim Equifun?",
+        ja:"マウンテッドゲームズ と エキファン、 どちら に 出ます か ?" },
+
+      { ref:"dl-equipe-demain", temps:5, dit:"joueuse", mots:["epreuve-equipe"],
+        fr:"On participe à l'épreuve par équipe demain matin.",
+        en:"We're competing in the team competition tomorrow morning.",
+        es:"Participamos en la prueba por equipos mañana por la mañana.",
+        it:"Partecipiamo alla prova a squadre domani mattina.",
+        de:"Wir starten morgen früh in der Mannschaftswertung.",
+        ja:"明日 の 朝 団体戦 に 出ます。" },
+
+      { ref:"dl-quatre-cavaliers", temps:5, dit:"club", mots:["epreuve-equipe"],
+        fr:"Notre équipe est composée de quatre cavaliers.",
+        en:"Our team is made up of four riders.",
+        es:"Nuestro equipo está formado por cuatro jinetes.",
+        it:"La nostra squadra è composta da quattro cavalieri.",
+        de:"Unser Team besteht aus vier Reitern.",
+        ja:"私たち の チーム は 四人 の 騎手 です。" },
+
+      { ref:"dl-carrousel-musique", temps:5, dit:"club", mots:["carrousel"],
+        fr:"Le carrousel se déroule en musique avec plusieurs cavaliers.",
+        en:"The quadrille is performed to music with several riders.",
+        es:"El carrusel se desarrolla con música y varios jinetes.",
+        it:"Il carosello si svolge in musica con più cavalieri.",
+        de:"Die Quadrille wird zur Musik mit mehreren Reitern geritten.",
+        ja:"クアドリール は 音楽 に 合わせて 数人 で 演技 します。" },
+
+      { ref:"dl-synchronises", temps:5, dit:"club", mots:["carrousel","epreuve-equipe"],
+        fr:"Il faut rester parfaitement synchronisés pendant toute la reprise.",
+        en:"We need to stay perfectly synchronised throughout the display.",
+        es:"Hay que mantenerse perfectamente sincronizados durante toda la reprise.",
+        it:"Bisogna restare perfettamente sincronizzati per tutta la ripresa.",
+        de:"Wir müssen die ganze Vorführung über perfekt synchron bleiben.",
+        ja:"演技 の 間 ずっと 完璧に 揃って いなければ なりません。" },
+
+      /* ---- temps 6 · monter autrement ---- */
+      { ref:"dl-cru-detente", temps:6, dit:"joueuse", mots:["a-cru"],
+        fr:"Est-ce que je peux le monter à cru pour la détente ?",
+        en:"Can I ride him bareback for the warm-up?",
+        es:"¿Puedo montarlo a pelo para el calentamiento?",
+        it:"Posso montarlo a pelo per il riscaldamento?",
+        de:"Darf ich ihn zum Abreiten ohne Sattel reiten?",
+        ja:"ウォーミングアップ で 裸馬 に 乗って も いい です か ?" },
+
+      { ref:"dl-partie-bleue", temps:6, dit:"club", mots:["renes-couleur"],
+        fr:"Prends les rênes au niveau de la partie bleue.",
+        en:"Hold the reins on the blue section.",
+        es:"Coge las riendas por la parte azul.",
+        it:"Prendi le redini sulla parte blu.",
+        de:"Nimm die Zügel am blauen Abschnitt.",
+        ja:"手綱 の 青い ところ を 持って。" },
+    ]
+  }
 };

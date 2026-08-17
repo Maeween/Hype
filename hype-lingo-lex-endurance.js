@@ -540,5 +540,233 @@ window.HYPE_LINGO_LEX.endurance = {
       de:"Wir haben die hundertsechzig Kilometer geschafft und das Pferd ist in bester Verfassung.",
       ja:"百六十キロ を 走りきり、 馬 は 完璧な 状態 です。" }
 
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE DUBAÏ — 17 août 2026, session 214.
+
+     LA SCÈNE : une course d'endurance de cent soixante kilomètres, du
+     départ au contrôle vétérinaire final. 22 phrases, 6 temps.
+
+     🟥 AUCUNE PHRASE N'A ÉTÉ ÉCRITE POUR CE DIALOGUE. Les vingt-deux
+     phrases existaient DÉJÀ dans ce fichier comme phrases d'exercice, et
+     elles racontaient la journée dans l'ordre. Il n'y avait qu'à leur
+     donner un temps et un locuteur. Décision de Blandine, 17/08, sur la
+     proposition de découpage : « ok vas-y ».
+     ⚠️ LES PHRASES D'EXERCICE RESTENT EN PLACE, inchangées. Le dialogue
+     les rejoue dans une scène ; ce n'est pas un doublon mais un autre
+     exercice, comme partout ailleurs dans l'app.
+
+     🟥 CE QUE CE CHAPITRE A D'UNIQUE : c'est le seul où LE TEMPS EST LE
+     SUJET. Ailleurs on saute, on présente, on soigne ; ici on dure. La
+     voix qui parle est celle de l'assistance — un coach à la radio, une
+     équipe au point d'assistance — et son travail est d'empêcher la
+     cavalière d'aller trop vite.
+     ⚠️ D'où le déséquilibre voulu : 17 phrases sur 22 sont ENTENDUES.
+     En endurance on écoute son crew, on ne discute pas. NE PAS
+     « rééquilibrer » en ajoutant des questions.
+
+     🟥 LE MOT LE PLUS IMPORTANT DU CHAPITRE EST UN CHIFFRE : la
+     fréquence cardiaque. Elle décide de tout — on n'entre au Vet Gate
+     que lorsqu'elle est redescendue, et le chronomètre tourne pendant
+     ce temps. C'est la seule discipline où l'on gagne en refroidissant
+     son cheval vite.
+
+     ⚠️ TROIS TERMES ANGLAIS SONT EMPLOYÉS TELS QUELS DANS TOUTES LES
+     LANGUES, y compris en français : **Vet Gate**, **crew**, **FTQ**
+     (failed to qualify). Voir leurs `def`. Ce ne sont pas des
+     anglicismes paresseux : ce sont les mots officiels de la discipline,
+     employés à Dubaï comme à Compiègne. NE PAS les traduire.
+
+     `dit` : "joueuse" = elle produit · "club" = le coach, l'équipe
+     d'assistance ou le vétérinaire.
+  ================================================================== */
+  dialogue: {
+    ville: "dubai", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 22 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · le départ ---- */
+      { ref:"de-160km", temps:1, dit:"club", mots:["endurance","kilometre","boucle"],
+        fr:"La course fait cent soixante kilomètres et elle est divisée en plusieurs boucles.",
+        en:"The ride is one hundred and sixty kilometres long and is divided into several loops.",
+        es:"La carrera es de ciento sesenta kilómetros y está dividida en varias vueltas.",
+        it:"La gara è di centosessanta chilometri ed è divisa in più giri.",
+        de:"Der Ritt geht über hundertsechzig Kilometer und ist in mehrere Schleifen geteilt.",
+        ja:"レース は 百六十キロ で、 複数の ループ に 分かれています。" },
+
+      { ref:"de-depart", temps:1, dit:"club", mots:["economiser-cheval","vitesse-moyenne"],
+        fr:"Ne pars pas trop vite, la journée va être très longue.",
+        en:"Don't start too fast; it's going to be a very long day.",
+        es:"No salgas demasiado rápido, el día va a ser muy largo.",
+        it:"Non partire troppo veloce, la giornata sarà molto lunga.",
+        de:"Reite nicht zu schnell los, der Tag wird sehr lang.",
+        ja:"最初から 飛ばさないで。 今日は とても 長い 一日 に なります。" },
+
+      { ref:"de-rythme", temps:1, dit:"club", mots:["vitesse-moyenne","economiser-cheval"],
+        fr:"Trouve un rythme régulier que ton cheval peut maintenir sans se fatiguer.",
+        en:"Find a steady pace that your horse can maintain without getting tired.",
+        es:"Busca un ritmo regular que tu caballo pueda mantener sin cansarse.",
+        it:"Trova un ritmo regolare che il tuo cavallo possa mantenere senza affaticarsi.",
+        de:"Finde ein gleichmäßiges Tempo, das dein Pferd halten kann, ohne zu ermüden.",
+        ja:"馬が 疲れずに 続けられる 一定の ペース を 見つけて ください。" },
+
+      /* ---- temps 2 · sur la boucle ---- */
+      { ref:"de-restekm", temps:2, dit:"club", mots:["kilometre","boucle"],
+        fr:"Il reste encore vingt kilomètres avant la fin de cette boucle.",
+        en:"There are still twenty kilometres to go before the end of this loop.",
+        es:"Todavía quedan veinte kilómetros antes del final de esta vuelta.",
+        it:"Restano ancora venti chilometri prima della fine di questo giro.",
+        de:"Es bleiben noch zwanzig Kilometer bis zum Ende dieser Schleife.",
+        ja:"この ループ の 終わり まで あと 二十キロ あります。" },
+
+      { ref:"de-boucle", temps:2, dit:"joueuse", mots:["kilometre","boucle"],
+        fr:"Il reste combien de kilomètres ?",
+        en:"How many kilometres are left ?",
+        es:"¿ Cuántos kilómetros quedan ?",
+        it:"Quanti chilometri restano ?",
+        de:"Wie viele Kilometer bleiben ?",
+        ja:"あと 何 キロ 残っ て い ます か ?" },
+
+      { ref:"de-sable", temps:2, dit:"club", mots:["sable-profond","economiser-cheval"],
+        fr:"Ralentis dans le sable profond pour économiser ses membres.",
+        en:"Slow down in the deep sand to save his legs.",
+        es:"Reduce el ritmo en la arena profunda para cuidar sus miembros.",
+        it:"Rallenta nella sabbia profonda per risparmiare i suoi arti.",
+        de:"Werde im Tiefsand langsamer, um seine Beine zu schonen.",
+        ja:"深い砂 では ペース を 落として 脚 を 守って ください。" },
+
+      { ref:"de-boire", temps:2, dit:"club", mots:[],
+        fr:"Fais-le boire dès qu'il en a envie, surtout avec cette chaleur.",
+        en:"Let him drink whenever he wants to, especially in this heat.",
+        es:"Déjalo beber cuando quiera, sobre todo con este calor.",
+        it:"Fallo bere ogni volta che ne ha voglia, soprattutto con questo caldo.",
+        de:"Lass ihn trinken, wann er will, besonders bei dieser Hitze.",
+        ja:"飲みたがったら いつでも 飲ませて ください。 この 暑さ です から。" },
+
+      /* ---- temps 3 · le point d'assistance ---- */
+      { ref:"de-crewpoint", temps:3, dit:"club", mots:["point-assistance","assistance","refroidir"],
+        fr:"Nous arrivons au point d'assistance, préparez l'eau pour le refroidir.",
+        en:"We're coming into the crew point; get the water ready to cool him down.",
+        es:"Llegamos al punto de asistencia, preparad el agua para refrescarlo.",
+        it:"Stiamo arrivando al punto di assistenza, preparate l'acqua per rinfrescarlo.",
+        de:"Wir kommen zum Betreuungspunkt, macht das Wasser bereit, um ihn zu kühlen.",
+        ja:"サポート地点 に 入ります。 冷やす ため の 水 を 用意して ください。" },
+
+      { ref:"de-eau", temps:3, dit:"joueuse", mots:["refroidir"],
+        fr:"De l'eau, il faut le refroidir !",
+        en:"Water — he needs cooling now !",
+        es:"¡ Agua, hay que refrescarlo !",
+        it:"Acqua, bisogna rinfrescarlo !",
+        de:"Wasser — er muss gekühlt werden !",
+        ja:"水 を ! すぐ 冷やし ます。" },
+
+      /* ---- temps 4 · le Vet Gate ---- */
+      { ref:"de-fc-descendre", temps:4, dit:"club", mots:["rythme-cardiaque","vet-gate"],
+        fr:"Sa fréquence cardiaque doit redescendre avant de pouvoir entrer au Vet Gate.",
+        en:"His heart rate needs to come down before we can enter the Vet Gate.",
+        es:"Su frecuencia cardíaca tiene que bajar antes de poder entrar al Vet Gate.",
+        it:"La sua frequenza cardiaca deve scendere prima di poter entrare al Vet Gate.",
+        de:"Seine Herzfrequenz muss sinken, bevor wir in die Vetgate dürfen.",
+        ja:"ベットゲート に 入る 前 に 心拍数 を 下げなければ なりません。" },
+
+      { ref:"de-cardiaque", temps:4, dit:"joueuse", mots:["rythme-cardiaque"],
+        fr:"Il est descendu à combien ?",
+        en:"What did he come down to ?",
+        es:"¿ A cuánto bajó ?",
+        it:"A quanto è sceso ?",
+        de:"Auf wie viel ist er runter ?",
+        ja:"心拍 は いくつ です か ?" },
+
+      { ref:"de-recupere-vite", temps:4, dit:"club", mots:["recuperation","presenter-veterinaire"],
+        fr:"Il récupère très vite, nous pouvons le présenter au vétérinaire maintenant.",
+        en:"He's recovering very quickly; we can present him to the vet now.",
+        es:"Recupera muy rápido, podemos presentarlo al veterinario ahora.",
+        it:"Recupera molto in fretta, possiamo presentarlo al veterinario adesso.",
+        de:"Er erholt sich sehr schnell, wir können ihn jetzt dem Tierarzt vorstellen.",
+        ja:"回復 が とても 速い です。 今 獣医 に 呈示 できます。" },
+
+      { ref:"de-controle-quoi", temps:4, dit:"club", mots:["controle-veterinaire"],
+        fr:"Le vétérinaire va contrôler son cœur, son état général et ses allures.",
+        en:"The vet will check his heart rate, general condition and gait.",
+        es:"El veterinario va a controlar su corazón, su estado general y sus aires.",
+        it:"Il veterinario controllerà il cuore, lo stato generale e le andature.",
+        de:"Der Tierarzt prüft Herzfrequenz, Allgemeinzustand und Gänge.",
+        ja:"獣医 が 心拍 と 全身の状態 と 歩様 を 調べます。" },
+
+      { ref:"de-trotter", temps:4, dit:"club", mots:["controle-veterinaire","presenter-veterinaire"],
+        fr:"Fais-le trotter en ligne droite pour le contrôle vétérinaire.",
+        en:"Trot him in a straight line for the veterinary inspection.",
+        es:"Hazlo trotar en línea recta para el control veterinario.",
+        it:"Fallo trottare in linea retta per il controllo veterinario.",
+        de:"Lass ihn für die Verfassungsprüfung geradeaus vortraben.",
+        ja:"検査 の ため に 直線 で 速歩 を させて ください。" },
+
+      /* ---- temps 5 · apte à continuer ---- */
+      { ref:"de-apte", temps:5, dit:"club", mots:["apte-a-continuer"],
+        fr:"Le cheval est déclaré apte à continuer la course.",
+        en:"The horse has been declared fit to continue.",
+        es:"El caballo es declarado apto para continuar la carrera.",
+        it:"Il cavallo è dichiarato idoneo a continuare la gara.",
+        de:"Das Pferd darf weiterreiten — es ist fit to continue.",
+        ja:"馬 は 継続可 と 判定 されました。" },
+
+      { ref:"de-hold", temps:5, dit:"club", mots:["temps-repos-obligatoire"],
+        fr:"Nous avons un temps de repos obligatoire avant de repartir.",
+        en:"We have a mandatory hold time before we can start again.",
+        es:"Tenemos una parada obligatoria antes de volver a salir.",
+        it:"Abbiamo una sosta obbligatoria prima di ripartire.",
+        de:"Wir haben eine Pflichtpause, bevor wir wieder losreiten.",
+        ja:"出発 の 前 に 義務休憩 が あります。" },
+
+      { ref:"de-pause-boire", temps:5, dit:"club", mots:["temps-repos-obligatoire","recuperation"],
+        fr:"Profite de la pause pour le faire boire et manger un peu.",
+        en:"Use the break to let him drink and eat a little.",
+        es:"Aprovecha la parada para que beba y coma un poco.",
+        it:"Approfitta della sosta per farlo bere e mangiare un po'.",
+        de:"Nutze die Pause, um ihn trinken und etwas fressen zu lassen.",
+        ja:"休憩の間 に 水 と 餌 を 少し あげて ください。" },
+
+      /* ---- temps 6 · la fin, ou l'abandon ---- */
+      { ref:"de-bien-place", temps:6, dit:"club", mots:["vitesse-moyenne"],
+        fr:"Nous sommes bien placés, mais il ne faut pas accélérer trop tôt.",
+        en:"We're in a good position, but we mustn't speed up too early.",
+        es:"Vamos bien colocados, pero no hay que acelerar demasiado pronto.",
+        it:"Siamo ben piazzati, ma non bisogna accelerare troppo presto.",
+        de:"Wir liegen gut, aber wir dürfen nicht zu früh zulegen.",
+        ja:"順位 は 良い です が、 早すぎる 加速 は いけません。" },
+
+      { ref:"de-derniere-boucle", temps:6, dit:"club", mots:["boucle","vitesse-moyenne"],
+        fr:"Sur la dernière boucle, nous pourrons augmenter progressivement l'allure s'il se sent bien.",
+        en:"On the final loop, we can gradually increase the pace if he feels good.",
+        es:"En la última vuelta podremos aumentar el ritmo poco a poco si se siente bien.",
+        it:"Nell'ultimo giro potremo aumentare gradualmente il ritmo se sta bene.",
+        de:"Auf der letzten Schleife können wir das Tempo langsam steigern, wenn er sich gut anfühlt.",
+        ja:"最後の ループ で 調子 が 良ければ 少しずつ ペース を 上げられます。" },
+
+      { ref:"de-abandon", temps:6, dit:"joueuse", mots:["abandon"],
+        fr:"Je préfère abandonner, il n'est pas régulier.",
+        en:"I would rather retire, he is not level.",
+        es:"Prefiero retirarme, no está regular.",
+        it:"Preferisco ritirarmi, non è regolare.",
+        de:"Ich gebe lieber auf, er geht nicht klar.",
+        ja:"棄権 し ます。 歩様 が 揃っ て い ませ ん。" },
+
+      { ref:"de-controle-final", temps:6, dit:"club", mots:["controle-veterinaire"],
+        fr:"Il faut encore passer le contrôle vétérinaire final pour être classé.",
+        en:"We still have to pass the final veterinary inspection to be classified.",
+        es:"Todavía hay que pasar el control veterinario final para ser clasificado.",
+        it:"Bisogna ancora superare il controllo veterinario finale per essere classificati.",
+        de:"Wir müssen noch die Schlussuntersuchung bestehen, um platziert zu werden.",
+        ja:"完走 と 認められる に は 最終検査 に 合格 しなければ なりません。" },
+
+      { ref:"de-termine", temps:6, dit:"joueuse", mots:["kilometre","endurance"],
+        fr:"Nous avons terminé les cent soixante kilomètres et le cheval est en parfaite condition.",
+        en:"We've completed the one hundred and sixty kilometres and the horse is in excellent condition.",
+        es:"Hemos terminado los ciento sesenta kilómetros y el caballo está en perfecto estado.",
+        it:"Abbiamo finito i centosessanta chilometri e il cavallo è in perfette condizioni.",
+        de:"Wir haben die hundertsechzig Kilometer geschafft und das Pferd ist in bester Verfassung.",
+        ja:"百六十キロ を 走りきり、 馬 は 完璧な 状態 です。" },
+    ]
+  }
 };

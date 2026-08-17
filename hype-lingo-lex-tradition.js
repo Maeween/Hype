@@ -43,6 +43,55 @@ window.HYPE_LINGO_LEX.tradition = {
 
   /* ============ LEÇON 1 · LA TRADITION ET LE RESPECT ============ */
 
+  /* ================================================================
+     TROIS ENTRÉES AJOUTÉES le 17/08/2026, d'après le lexique fourni par
+     Blandine pour Tokyo. Le chapitre n'avait que douze mots — et il lui
+     manquait son mot-titre.
+     🟥 SA LECTURE DU CHAPITRE, à garder en tête pour tout ce qu'on y
+     écrira : *« ici le vocabulaire seul ne suffit pas. Il faut
+     comprendre QUAND faire les choses et DANS QUEL ORDRE. Une erreur
+     peut devenir une maladresse de comportement, pas seulement une
+     faute de langue. »*
+     🟥 L'ORDRE QU'ELLE A POSÉ, et qui structure le dialogue :
+     **entrer → saluer → observer → attendre son tour → pratiquer →
+     remercier → saluer en partant.**
+     ⚠️ NE PAS réordonner les temps du dialogue : la séquence EST le
+     contenu, comme pour l'examen d'Édimbourg.
+     ================================================================ */
+
+  { ref:"tradition", lecon:1, coll:"tradition",
+    mots:{ fr:{m:"la tradition"}, en:{m:"tradition", p:"tra-di-cheune"},
+           es:{m:"la tradición"}, it:{m:"la tradizione"},
+           de:{m:"die Tradition", p:"tra-di-tsione"}, ja:{m:"伝統", p:"dentō"} },
+    def:{ fr:"🟥 LE MOT-TITRE DU CHAPITRE, et il ne veut pas dire ici ce qu'il veut dire en Europe. Une tradition occidentale se raconte ; une tradition japonaise SE FAIT — on la transmet par le geste répété, pas par l'explication. C'est pourquoi on observe avant d'essayer, et pourquoi le maître montre plus qu'il ne parle. ⚠️ Dans ce chapitre, ignorer la tradition n'est pas une faute de langue mais une maladresse de comportement.",
+          en:"The chapter's key word, and it doesn't mean here what it means in Europe. A Western tradition is told; a Japanese tradition is DONE — passed on by the repeated gesture, not by explanation. That's why you watch before you try, and why the master shows more than he speaks.",
+          es:"La palabra clave del capítulo, y no significa aquí lo que significa en Europa. Una tradición occidental se cuenta; una tradición japonesa SE HACE — se transmite por el gesto repetido.",
+          it:"La parola chiave del capitolo, e qui non significa quel che significa in Europa. Una tradizione occidentale si racconta; una tradizione giapponese SI FA — si trasmette col gesto ripetuto.",
+          de:"Das Schlüsselwort des Kapitels, und es bedeutet hier nicht dasselbe wie in Europa. Eine westliche Tradition wird erzählt; eine japanische Tradition wird GETAN — weitergegeben durch die wiederholte Bewegung.",
+          ja:"この章の中心となる語。ヨーロッパでの意味とは異なります。西洋の伝統は語られるものですが、日本の伝統は「行う」もの。説明ではなく、繰り返される所作によって受け継がれます。だから試す前に見るのであり、師は語るより示すのです。" } },
+
+  { ref:"attendre-son-tour", lecon:1, coll:"tradition",
+    mots:{ fr:{m:"respecter son tour"}, en:{m:"to wait your turn", p:"ouéïte your teurne"},
+           es:{m:"respetar su turno"}, it:{m:"rispettare il proprio turno"},
+           de:{m:"warten, bis man dran ist", p:"var-teune"}, ja:{m:"順番を待つ", p:"junban o matsu"} },
+    def:{ fr:"⚠️ CE N'EST PAS DE LA POLITESSE, C'EST LA STRUCTURE MÊME DE LA SÉANCE. L'ordre de passage n'est ni annoncé ni tiré au sort : il se lit — l'ancienneté, la place dans le rang, un signe du maître. Prendre son tour trop tôt est plus grave qu'un mauvais geste. 🟥 Le mot `attendre` traverse quatre villes de l'app : attendre un saut à Wellington et Hickstead, attendre son moniteur à Aberystwyth, attendre son tour ici. Même verbe, quatre sens.",
+          en:"Not politeness but the structure of the session. The running order is neither announced nor drawn: you read it — seniority, your place in the line, a sign from the master. Taking your turn too early is worse than a poor movement.",
+          es:"No es cortesía, es la estructura misma de la sesión. El orden no se anuncia ni se sortea: se lee — la antigüedad, el lugar en la fila, una señal del maestro.",
+          it:"Non è cortesia, è la struttura stessa della seduta. L'ordine non si annuncia né si sorteggia: si legge — l'anzianità, il posto nella fila, un segno del maestro.",
+          de:"Keine Höflichkeit, sondern die Struktur der Übungsstunde selbst. Die Reihenfolge wird nicht angekündigt und nicht ausgelost: man liest sie — Dienstalter, Platz in der Reihe, ein Zeichen des Meisters.",
+          ja:"礼儀ではなく、稽古そのものの構造です。順番は告げられも抽選されもしません。年功、列の位置、師の合図から読み取ります。順番を先取りすることは、動作の不出来より重い過ちです。" } },
+
+  { ref:"repeter", lecon:1, coll:"tradition",
+    mots:{ fr:{m:"répéter le geste"}, en:{m:"to practise", p:"prak-tiss", var:"to practice (US)"},
+           es:{m:"repetir el gesto"}, it:{m:"ripetere il gesto"},
+           de:{m:"üben", p:"u-beune"}, ja:{m:"稽古する", p:"keiko suru"} },
+    def:{ fr:"🟥 LE CŒUR DU CHAPITRE, ET LE CŒUR DU MOT KEIKO. On ne répète pas pour progresser mais pour que le geste cesse d'être une décision — jusqu'à ce qu'il devienne naturel. ⚠️ Piège d'orthographe anglaise : le VERBE s'écrit **to practise** avec un s en Grande-Bretagne, **to practice** avec un c aux États-Unis ; le NOM s'écrit *practice* des deux côtés. Une des rares différences orthographiques qui change selon la fonction du mot.",
+          en:"The heart of the chapter and of the word keiko. You don't repeat to improve but so the movement stops being a decision — until it feels natural. Spelling trap: the verb is « to practise » with an s in Britain, « to practice » with a c in America; the noun is « practice » in both.",
+          es:"El corazón del capítulo y de la palabra keiko. No se repite para progresar, sino para que el gesto deje de ser una decisión, hasta que resulte natural.",
+          it:"Il cuore del capitolo e della parola keiko. Non si ripete per progredire, ma perché il gesto smetta di essere una decisione, fino a diventare naturale.",
+          de:"Das Herz des Kapitels und des Wortes Keiko. Man wiederholt nicht, um besser zu werden, sondern damit die Bewegung keine Entscheidung mehr ist — bis sie natürlich wird.",
+          ja:"この章の、そして「稽古」という語の核心。上達のために繰り返すのではありません。その動作が判断を要さなくなるまで、自然になるまで繰り返すのです。" } },
+
   { ref:"salut", lecon:1, coll:"tradition",
     mots:{ fr:{m:"le salut"}, en:{m:"the bow", p:"baou"},
            es:{m:"el saludo"}, it:{m:"il saluto"},
@@ -216,5 +265,232 @@ window.HYPE_LINGO_LEX.tradition = {
       de:"Danke, dass ich dabei sein durfte.",
       ja:"受け入れ て くださり ありがとう ござい まし た。" }
 
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE TOKYO — 17 août 2026, session 214.
+
+     LA SCÈNE : une séance de yabusame, du seuil au remerciement.
+     20 phrases, 7 temps.
+
+     🟥 LA LECTURE DE BLANDINE, qui commande tout le chapitre :
+     *« ici le vocabulaire seul ne suffit pas. Il faut comprendre QUAND
+     faire les choses et DANS QUEL ORDRE. Une erreur peut devenir une
+     maladresse de comportement, pas seulement une faute de langue. »*
+     🟥 ET L'ORDRE QU'ELLE A POSÉ, qui EST la structure des temps :
+     **entrer → saluer → observer → attendre son tour → pratiquer →
+     remercier → saluer en partant.**
+     ⚠️ NE PAS RÉORDONNER LES TEMPS. C'est le seul chapitre de l'app,
+     avec l'examen d'Édimbourg, où la séquence est le contenu.
+
+     🟥 DIX-HUIT PHRASES SUR VINGT SONT DE BLANDINE, avec leur traduction
+     anglaise. Les quatre premières existaient déjà comme phrases
+     d'exercice dans ce fichier — elles deviennent le socle du dialogue.
+
+     ⚠️ CE QUE CE CHAPITRE A D'UNIQUE DANS L'APP : presque tout est
+     PRODUIT par la joueuse, et presque tout est une QUESTION sur la
+     conduite à tenir — « est-ce que je dois saluer », « est-ce que je
+     peux me placer ici », « dois-je remercier ». Ailleurs elle demande
+     des choses ; ici elle demande la permission.
+
+     🟥 LE PIÈGE DU CHAPITRE, déjà dans le lexique et employé deux fois
+     dans le dialogue : **BOW** s'écrit pareil pour LE SALUT et POUR
+     L'ARC, et ne se prononce pas pareil — « baou » pour l'inclinaison,
+     « bô » pour l'arc. Deux phrases le mettent côte à côte exprès
+     (temps 2 et temps 6). ⚠️ NE PAS les séparer.
+
+     ⚠️ ET LE KEIKO : `repeter` ne veut pas dire progresser. On répète
+     jusqu'à ce que le geste cesse d'être une décision. La phrase « je
+     vais recommencer jusqu'à ce que le geste devienne naturel » est
+     exactement cela, et elle vient d'elle.
+
+     `dit` : "joueuse" = elle produit · "club" = le maître ou un élève.
+  ================================================================== */
+  dialogue: {
+    ville: "tokyo", lecon: 1, temps: 7, langues: ["fr","en","es","it","de","ja"],   /* 20 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · le seuil ---- */
+      { ref:"dt-dechausser", temps:1, dit:"joueuse", mots:["dechausser"],
+        fr:"On se déchausse avant d'entrer ?",
+        en:"Do we take our shoes off before going in?",
+        es:"¿Nos descalzamos antes de entrar?",
+        it:"Ci si toglie le scarpe prima di entrare?",
+        de:"Zieht man die Schuhe aus, bevor man hineingeht?",
+        ja:"入る 前 に 靴 を 脱ぎ ます か ?" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-saluer-avant", temps:1, dit:"joueuse", mots:["salut"],
+        fr:"Est-ce que je dois saluer avant d'entrer ?",
+        en:"Should I bow before going in?",
+        es:"¿Debo saludar antes de entrar?",
+        it:"Devo salutare prima di entrare?",
+        de:"Soll ich mich verbeugen, bevor ich hineingehe?",
+        ja:"入る 前 に 礼 を し た ほう が いい です か ?" },
+
+      /* ---- temps 2 · le salut, et le piège du mot ---- */
+      /* 🟥 Phrase de Blandine. Le premier des deux « bow ». */
+      { ref:"dt-saluer-sortant", temps:2, dit:"joueuse", mots:["salut"],
+        fr:"Est-ce que je dois également saluer en sortant ?",
+        en:"Should I bow when I leave as well?",
+        es:"¿Debo saludar también al salir?",
+        it:"Devo salutare anche uscendo?",
+        de:"Soll ich mich auch beim Hinausgehen verbeugen?",
+        ja:"出る とき も 礼 を し ます か ?" },
+
+      { ref:"dt-r-on-salue-le-lieu", temps:2, dit:"club", mots:["salut","tradition"],
+        fr:"On salue le lieu autant que les personnes, en entrant et en sortant.",
+        en:"You bow to the place as much as to the people, coming in and going out.",
+        es:"Se saluda al lugar tanto como a las personas, al entrar y al salir.",
+        it:"Si saluta il luogo tanto quanto le persone, entrando e uscendo.",
+        de:"Man verbeugt sich vor dem Ort so wie vor den Menschen, beim Kommen und beim Gehen.",
+        ja:"人 に 対し て と 同じ よう に、 場 に 対し て も 礼 を し ます。 入る とき も 出る とき も。" },
+
+      /* ---- temps 3 · observer avant de faire ---- */
+      { ref:"dt-regarder-avant", temps:3, dit:"joueuse", mots:["observer"],
+        fr:"Je peux regarder avant d'essayer ?",
+        en:"May I watch before I try?",
+        es:"¿Puedo mirar antes de intentarlo?",
+        it:"Posso guardare prima di provare?",
+        de:"Darf ich zuschauen, bevor ich es versuche?",
+        ja:"やっ て みる 前 に、 見 て い て も いい です か ?" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-observer-une-fois", temps:3, dit:"joueuse", mots:["observer","apprentissage"],
+        fr:"Je préfère observer une première fois avant de le faire moi-même.",
+        en:"I'd rather watch once before doing it myself.",
+        es:"Prefiero observar una primera vez antes de hacerlo yo misma.",
+        it:"Preferisco osservare una prima volta prima di farlo io.",
+        de:"Ich schaue lieber erst einmal zu, bevor ich es selbst mache.",
+        ja:"自分 で やる 前 に、 一 度 見 て おき たい です。" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-suivre-les-autres", temps:3, dit:"joueuse", mots:["observer","tradition"],
+        fr:"Je vais suivre ce que font les autres.",
+        en:"I'll follow what the others do.",
+        es:"Voy a seguir lo que hacen los demás.",
+        it:"Seguirò quello che fanno gli altri.",
+        de:"Ich mache das nach, was die anderen tun.",
+        ja:"ほか の 方 の やり方 に 従い ます。" },
+
+      /* ---- temps 4 · l'ordre et le silence ---- */
+      { ref:"dt-quel-ordre", temps:4, dit:"joueuse", mots:["ordre"],
+        fr:"Dans quel ordre passe-t-on ?",
+        en:"In what order do we go?",
+        es:"¿En qué orden pasamos?",
+        it:"In che ordine si passa?",
+        de:"In welcher Reihenfolge geht es?",
+        ja:"どの 順番 で 行い ます か ?" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-me-placer-ici", temps:4, dit:"joueuse", mots:["attendre-son-tour","ordre"],
+        fr:"Est-ce que je peux me placer ici, ou dois-je attendre mon tour ?",
+        en:"May I stand here, or should I wait for my turn?",
+        es:"¿Puedo colocarme aquí o debo esperar mi turno?",
+        it:"Posso mettermi qui, o devo aspettare il mio turno?",
+        de:"Darf ich mich hierhin stellen, oder soll ich warten, bis ich dran bin?",
+        ja:"ここ に 立っ て い て も いい です か。 それとも 順番 を 待ち ます か ?" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-qui-passe-premier", temps:4, dit:"joueuse", mots:["ordre","attendre-son-tour"],
+        fr:"Qui passe en premier ?",
+        en:"Who goes first?",
+        es:"¿Quién pasa primero?",
+        it:"Chi passa per primo?",
+        de:"Wer ist zuerst dran?",
+        ja:"最初 に 行う の は どなた です か ?" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-rester-silencieux", temps:4, dit:"joueuse", mots:["silence"],
+        fr:"Est-ce qu'on doit rester silencieux pendant la séance ?",
+        en:"Should we remain quiet during the session?",
+        es:"¿Hay que permanecer en silencio durante la sesión?",
+        it:"Bisogna restare in silenzio durante la seduta?",
+        de:"Soll man während der Übungsstunde still bleiben?",
+        ja:"稽古 の 間 は 静か に し て いる べき です か ?" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-pas-interrompre", temps:4, dit:"joueuse", mots:["silence","maitre"],
+        fr:"Je ne veux pas interrompre le maître pendant qu'il explique.",
+        en:"I don't want to interrupt the instructor while he is explaining.",
+        es:"No quiero interrumpir al maestro mientras explica.",
+        it:"Non voglio interrompere il maestro mentre spiega.",
+        de:"Ich möchte den Meister nicht unterbrechen, während er erklärt.",
+        ja:"師 が 説明 し て いる 間 は、 遮り たく あり ませ ん。" },
+
+      /* ---- temps 5 · pratiquer, le keiko ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-montrer-encore", temps:5, dit:"joueuse", mots:["maitre","repeter"],
+        fr:"Pouvez-vous me montrer le geste une nouvelle fois ?",
+        en:"Could you show me the movement one more time?",
+        es:"¿Puede mostrarme el gesto una vez más?",
+        it:"Può mostrarmi il gesto ancora una volta?",
+        de:"Könnten Sie mir die Bewegung noch einmal zeigen?",
+        ja:"もう一度 その 動き を 見せ て いただけ ます か ?" },
+
+      /* 🟥 Phrase de Blandine : C'EST LA DÉFINITION DU KEIKO. */
+      { ref:"dt-jusqua-naturel", temps:5, dit:"joueuse", mots:["repeter","apprentissage"],
+        fr:"Je vais recommencer jusqu'à ce que le geste devienne naturel.",
+        en:"I'll keep practising until the movement feels natural.",
+        es:"Voy a repetirlo hasta que el gesto resulte natural.",
+        it:"Ricomincerò finché il gesto non diventerà naturale.",
+        de:"Ich übe weiter, bis die Bewegung natürlich wird.",
+        ja:"自然 に できる よう に なる まで、 繰り返し 稽古 し ます。" },
+
+      { ref:"dt-r-keiko", temps:5, dit:"club", mots:["repeter","maitre","apprentissage"],
+        fr:"C'est cela, le keiko : refaire la même chose jusqu'à ce qu'elle cesse d'être une décision.",
+        en:"That is keiko: doing the same thing until it stops being a decision.",
+        es:"Eso es el keiko: repetir lo mismo hasta que deje de ser una decisión.",
+        it:"Questo è il keiko: rifare la stessa cosa finché non smette di essere una decisione.",
+        de:"Das ist Keiko: dasselbe tun, bis es keine Entscheidung mehr ist.",
+        ja:"それ が 稽古 です。 同じ こと を、 判断 で なく なる まで 繰り返す こと。" },
+
+      /* ---- temps 6 · le yabusame, et le second « bow » ---- */
+      /* 🟥 Phrase de Blandine. Le second des deux « bow ». */
+      { ref:"dt-tenir-arc", temps:6, dit:"joueuse", mots:["arc","yabusame"],
+        fr:"Comment tient-on cet arc à cheval ?",
+        en:"How do you hold this bow on horseback?",
+        es:"¿Cómo se sostiene este arco a caballo?",
+        it:"Come si tiene questo arco a cavallo?",
+        de:"Wie hält man diesen Bogen zu Pferd?",
+        ja:"馬上 で この 弓 は どう 持ち ます か ?" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-toujours-galop", temps:6, dit:"joueuse", mots:["yabusame","cible"],
+        fr:"Le yabusame se pratique-t-il toujours au galop ?",
+        en:"Is yabusame always performed at the gallop?",
+        es:"¿El yabusame se practica siempre al galope?",
+        it:"Lo yabusame si pratica sempre al galoppo?",
+        de:"Wird Yabusame immer im Galopp geritten?",
+        ja:"流鏑馬 は いつも 駈歩 で 行う の です か ?" },
+
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-tenue-ceremonies", temps:6, dit:"joueuse", mots:["tenue-ceremonie"],
+        fr:"Est-ce que cette tenue est réservée aux cérémonies ?",
+        en:"Is this outfit only worn for ceremonies?",
+        es:"¿Esta indumentaria se lleva solo en las ceremonias?",
+        it:"Questo abito si porta solo per le cerimonie?",
+        de:"Wird diese Tracht nur zu Zeremonien getragen?",
+        ja:"この 装束 は 儀式 の とき だけ 着る もの です か ?" },
+
+      /* ---- temps 7 · remercier, et saluer en partant ---- */
+      /* 🟥 Phrase de Blandine. */
+      { ref:"dt-remercier-maitre", temps:7, dit:"joueuse", mots:["remercier","maitre"],
+        fr:"Dois-je remercier le maître à la fin de la séance ?",
+        en:"Should I thank the instructor at the end of the session?",
+        es:"¿Debo dar las gracias al maestro al final de la sesión?",
+        it:"Devo ringraziare il maestro alla fine della seduta?",
+        de:"Soll ich mich am Ende der Stunde beim Meister bedanken?",
+        ja:"稽古 の 最後 に、 師 に お礼 を 言う べき です か ?" },
+
+      { ref:"dt-merci-accueillie", temps:7, dit:"joueuse", mots:["remercier","salut"],
+        fr:"Merci de m'avoir accueillie.",
+        en:"Thank you for having me.",
+        es:"Gracias por acogerme.",
+        it:"Grazie per avermi accolta.",
+        de:"Vielen Dank, dass ich dabei sein durfte.",
+        ja:"お迎え いただき、 ありがとう ござい まし た。" }
+    ]
+  }
 };
