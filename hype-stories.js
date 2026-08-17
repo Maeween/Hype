@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19av";
+var HYPE_STORIES_VERSION = "19ay";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1472,6 +1472,13 @@ var HS_TXT = {
   ajoutee: { fr: "Ta story est en ligne.", en: "Your story is live.", es: "Tu story est\u00e1 publicada.", it: "La tua story \u00e8 online.", ja: "ストーリーを公開しました。", de: "Deine Story ist online." },
   lieuIgnore: { fr: "Story en ligne, mais le lieu n'a pas \u00e9t\u00e9 enregistr\u00e9 (SQL v2 \u00e0 repasser).", en: "Story live, but the location was not saved.", es: "Story publicada, pero el lugar no se guard\u00f3.", it: "Story online, ma il luogo non \u00e8 stato salvato.", ja: "ストーリーは公開されましたが、場所は保存されませんでした。", de: "Story online, aber der Ort wurde nicht gespeichert." },
   connecte: { fr: "Connecte-toi pour publier une story.", en: "Sign in to post a story.", es: "Inicia sesi\u00f3n para publicar.", it: "Accedi per pubblicare.", ja: "投稿するにはログインしてください。", de: "Melde dich an, um zu ver\u00f6ffentlichen." },
+  /* 19aw (feu vert de Blandine) : retirer une photo d'une a la une, avec
+     confirmation — « es-tu sure de vouloir supprimer ». */
+  retirerUne: { fr: "Retirer de cette \u00e0 la une", en: "Remove from this highlight", es: "Quitar de esta destacada", it: "Togli da questa in evidenza", ja: "\u3053\u306e\u30cf\u30a4\u30e9\u30a4\u30c8\u304b\u3089\u524a\u9664", de: "Aus diesem Highlight entfernen" },
+  retirerT: { fr: "Retirer cette photo ?", en: "Remove this photo?", es: "\u00bfQuitar esta foto?", it: "Togliere questa foto?", ja: "\u3053\u306e\u5199\u771f\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f", de: "Dieses Foto entfernen?" },
+  retirerP: { fr: "Elle quittera cette \u00e0 la une. Ta story et ses J'aime ne sont pas supprim\u00e9s.", en: "It will leave this highlight. Your story and its likes are not deleted.", es: "Saldr\u00e1 de esta destacada. Tu historia y sus me gusta no se eliminan.", it: "Uscir\u00e0 da questa in evidenza. La tua storia e i suoi mi piace non vengono eliminati.", ja: "\u3053\u306e\u30cf\u30a4\u30e9\u30a4\u30c8\u304b\u3089\u5916\u308c\u307e\u3059\u3002\u30b9\u30c8\u30fc\u30ea\u30fc\u3068\u3044\u3044\u306d\u306f\u524a\u9664\u3055\u308c\u307e\u305b\u3093\u3002", de: "Es verl\u00e4sst dieses Highlight. Deine Story und ihre Likes bleiben erhalten." },
+  retirerOui: { fr: "Retirer", en: "Remove", es: "Quitar", it: "Togli", ja: "\u524a\u9664", de: "Entfernen" },
+  retiree: { fr: "Retir\u00e9e de l'\u00e0 la une", en: "Removed from the highlight", es: "Quitada de la destacada", it: "Tolta dalla in evidenza", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8\u304b\u3089\u524a\u9664\u3057\u307e\u3057\u305f", de: "Aus dem Highlight entfernt" },
   aLaUne: { fr: "\u00c0 la une", en: "Highlights", es: "Destacadas", it: "In evidenza", ja: "\u30cf\u30a4\u30e9\u30a4\u30c8", de: "Highlights" },
   rangerOu: { fr: "Ranger dans quelle \u00e0 la une ?", en: "Save to which highlight?", es: "\u00bfEn qu\u00e9 destacada?", it: "In quale in evidenza?", ja: "\u3069\u306e\u30cf\u30a4\u30e9\u30a4\u30c8\u306b\u4fdd\u5b58\u3057\u307e\u3059\u304b\uff1f", de: "In welches Highlight?" },
   nouvelleUne: { fr: "Nouvelle \u00e0 la une", en: "New highlight", es: "Nueva destacada", it: "Nuova in evidenza", ja: "\u65b0\u3057\u3044\u30cf\u30a4\u30e9\u30a4\u30c8", de: "Neues Highlight" },
@@ -3822,6 +3829,29 @@ async function hsStoriesDesPhotos(urls) {
 /* Fabrique le groupe que la visionneuse attend. Résout TOUJOURS, même si la
    lecture échoue : dans ce cas on rend exactement ce que rendait la version
    précédente, jamais une à la une qui refuse de s'ouvrir. */
+/* 19aw — RETIRER UNE PHOTO D'UNE À LA UNE. On ne touche QUE l'album : la
+   story reste en base avec ses J'aime, et le fichier reste dans le bucket.
+   Si la photo retirée était la couverture, la suivante prend sa place.
+   Une à la une vidée disparaît d'elle-même : hsListerALaUne écarte déjà les
+   albums sans photo. Rien n'est supprimé en cascade — décision volontaire,
+   je ne détruis pas un album sur un geste destiné à une seule photo. */
+async function hsRetirerDeLaUne(album, url) {
+  try {
+    if (!album || !url) return { error: "invalide" };
+    if (typeof majAlbumCheval !== "function") return { error: "indisponible" };
+    var restantes = (album.photos || []).filter(function (x) { return x !== url; });
+    var champs = { photos: restantes };
+    if (album.couverture === url) champs.couverture = restantes[0] || null;
+    var r = await majAlbumCheval(album.id, champs);
+    if (r && r.error) return { error: r.error };
+    var maj = {};
+    for (var k in album) { if (Object.prototype.hasOwnProperty.call(album, k)) maj[k] = album[k]; }
+    maj.photos = restantes;
+    if (album.couverture === url) maj.couverture = restantes[0] || null;
+    return { album: maj, error: null };
+  } catch (e) { return { error: String(e) }; }
+}
+
 async function hsGroupeALaUne(album, lg) {
   var photos = (album && album.photos) || [];
   var par = {};
@@ -3832,7 +3862,28 @@ async function hsGroupeALaUne(album, lg) {
     avatar_url: (album && album.couverture) || null,
     ecurie: "",
     stories: photos.map(function (u, k) {
-      return par[u] || { id: "alb" + (album && album.id) + "-" + k, photo_url: u };
+      var vraie = par[u];
+      if (!vraie) return { id: "alb" + (album && album.id) + "-" + k, photo_url: u };
+      /* 19ax (BUG SIGNALE PAR BLANDINE, 17/08 : « on peut rien faire en fait »).
+         ON NE REJOUE PAS LA COMPOSITION dans une a la une. `CompositionStory`
+         arrete les gestes (stopPropagation sur touchstart ET touchend) : des
+         que le decor s'affichait, le glisse de la visionneuse ne recevait plus
+         rien — ni vers la gauche pour avancer, ni vers le bas pour fermer.
+         Or ici la composition n'a RIEN a faire defiler : les photos du groupe
+         sont a plat dans l'album, `compo` n'est pas reconstitue. Elle avalait
+         donc les gestes sans rien apporter, et repoussait la photo dans un
+         petit cadre au milieu du noir.
+         On retire donc `disposition` et `compo` de la story reconstituee : la
+         photo redevient pleine, la legende reapparait (la composition la prend
+         en charge quand elle est la), et le glisse revient.
+         CE QUE CA COUTE, dit franchement : la mise en page H+D n'est pas
+         restituee dans une a la une. Le texte, le lieu, la musique, le fond et
+         les J'aime le sont. La composition reste un chantier a part. */
+      var copie = {};
+      for (var kk in vraie) { if (Object.prototype.hasOwnProperty.call(vraie, kk)) copie[kk] = vraie[kk]; }
+      copie.disposition = null;
+      copie.compo = null;
+      return copie;
     })
   };
 }
@@ -3850,6 +3901,8 @@ function RailALaUne(props) {
   var oS = React.useState(null), ouverte = oS[0], setOuverte = oS[1];
   /* 19av : le groupe de l'à la une ouverte, chargé depuis hype_stories. */
   var aS = React.useState(null), grpAlb = aS[0], setGrpAlb = aS[1];
+  /* 19aw : mon identifiant, pour n'offrir le retrait que sur MES à la une. */
+  var miS = React.useState(null), moiIdA = miS[0], setMoiIdA = miS[1];
   var vivantRef = React.useRef(true);
 
   React.useEffect(function () {
@@ -3868,11 +3921,38 @@ function RailALaUne(props) {
      groupe d'avant, fabriqué depuis les URLs. Une à la une ne reste donc
      jamais bloquée sur un écran vide. */
   React.useEffect(function () {
+    var vivantM = true;
+    try {
+      if (typeof utilisateurActuel === "function") {
+        utilisateurActuel().then(function (u) { if (vivantM) setMoiIdA((u && u.id) || null); }).catch(function () { });
+      }
+    } catch (eM) { }
+    return function () { vivantM = false; };
+  }, []);
+
+  /* 19aw : retirer une photo de l'à la une ouverte. L'état local suit tout de
+     suite ; une à la une vidée se referme et quitte la page d'elle-même. */
+  function retirerDeLaUne(url) {
+    var alb = ouverte;
+    if (!alb || !url) return;
+    hsRetirerDeLaUne(alb, url).then(function (r) {
+      if (!r || r.error || !r.album) return;
+      var maj = r.album;
+      setUnes(function (liste) {
+        return (liste || []).map(function (x) { return (x && String(x.id) === String(maj.id)) ? maj : x; })
+          .filter(function (x) { return x && (x.photos || []).length > 0; });
+      });
+      if (!(maj.photos || []).length) { setOuverte(null); return; }
+      setOuverte(maj);
+    });
+  }
+
+  React.useEffect(function () {
     if (!ouverte) { setGrpAlb(null); return; }
     var vivant = true;
     hsGroupeALaUne(ouverte, lg).then(function (g) { if (vivant) setGrpAlb(g); });
     return function () { vivant = false; };
-  }, [ouverte && ouverte.id]);
+  }, [(ouverte && ouverte.id) || "", (ouverte && (ouverte.photos || []).length) || 0]);
 
   /* Rien à montrer : le rail ne s'affiche pas du tout. Une page ne porte pas
      une rangée vide (règle d'espace de la Design Bible). */
@@ -3910,6 +3990,7 @@ function RailALaUne(props) {
            on relit un souvenir, on n'agit pas dessus. */
         groupes: [grpAlb],
         depart: 0, moiId: null, premium: !!(app && app.premium), langue: lg, mode: "album",
+        onRetirerAlbum: (moiIdA && ouverte.user_id === moiIdA) ? retirerDeLaUne : null,
         onFermer: function () { setOuverte(null); }
       })
       : null);
@@ -4027,6 +4108,8 @@ function MurImmersif(props) {
   var oS = React.useState(null), ouverte = oS[0], setOuverte = oS[1];
   /* 19av : le groupe de l'à la une ouverte, chargé depuis hype_stories. */
   var aS = React.useState(null), grpAlb = aS[0], setGrpAlb = aS[1];
+  /* 19aw : mon identifiant, pour n'offrir le retrait que sur MES à la une. */
+  var miS = React.useState(null), moiIdA = miS[0], setMoiIdA = miS[1];
   var gS = React.useState(hsMurReglages()), reg = gS[0], setReg = gS[1];
   var pS = React.useState(false), panneau = pS[0], setPanneau = pS[1];
   var fS = React.useState(false), estFeinn = fS[0], setEstFeinn = fS[1];
@@ -4053,11 +4136,38 @@ function MurImmersif(props) {
      groupe d'avant, fabriqué depuis les URLs. Une à la une ne reste donc
      jamais bloquée sur un écran vide. */
   React.useEffect(function () {
+    var vivantM = true;
+    try {
+      if (typeof utilisateurActuel === "function") {
+        utilisateurActuel().then(function (u) { if (vivantM) setMoiIdA((u && u.id) || null); }).catch(function () { });
+      }
+    } catch (eM) { }
+    return function () { vivantM = false; };
+  }, []);
+
+  /* 19aw : retirer une photo de l'à la une ouverte. L'état local suit tout de
+     suite ; une à la une vidée se referme et quitte la page d'elle-même. */
+  function retirerDeLaUne(url) {
+    var alb = ouverte;
+    if (!alb || !url) return;
+    hsRetirerDeLaUne(alb, url).then(function (r) {
+      if (!r || r.error || !r.album) return;
+      var maj = r.album;
+      setUnes(function (liste) {
+        return (liste || []).map(function (x) { return (x && String(x.id) === String(maj.id)) ? maj : x; })
+          .filter(function (x) { return x && (x.photos || []).length > 0; });
+      });
+      if (!(maj.photos || []).length) { setOuverte(null); return; }
+      setOuverte(maj);
+    });
+  }
+
+  React.useEffect(function () {
     if (!ouverte) { setGrpAlb(null); return; }
     var vivant = true;
     hsGroupeALaUne(ouverte, lg).then(function (g) { if (vivant) setGrpAlb(g); });
     return function () { vivant = false; };
-  }, [ouverte && ouverte.id]);
+  }, [(ouverte && ouverte.id) || "", (ouverte && (ouverte.photos || []).length) || 0]);
 
   /* Le panneau de réglages est réservé au compte de Blandine — pas aux
      modérateurs : c'est un outil de mise au point, pas une fonctionnalité. */
@@ -4242,6 +4352,7 @@ function MurImmersif(props) {
       ? h(VisionneuseStories, {
         groupes: [grpAlb],
         depart: 0, moiId: null, premium: !!(app && app.premium), langue: lg, mode: "album",
+        onRetirerAlbum: (moiIdA && ouverte.user_id === moiIdA) ? retirerDeLaUne : null,
         onFermer: function () { setOuverte(null); }
       })
       : null);
@@ -4919,6 +5030,8 @@ function VisionneuseStories(props) {
   var lecteurRef = React.useRef(null);
   var loS = React.useState(null), localMod = loS[0], setLocalMod = loS[1];
   var mnS = React.useState(false), menuOuvert = mnS[0], setMenuOuvert = mnS[1];
+  /* 19aw : la confirmation avant de retirer une photo d'une a la une. */
+  var crS = React.useState(false), confRetirer = crS[0], setConfRetirer = crS[1];
   var ajS = React.useState(null), ajout = ajS[0], setAjout = ajS[1];
   /* 19c : un message PRECIS venu du composeur (ex. composition refusee par la
      base) plutot que le « echec » generique. */
@@ -4948,12 +5061,12 @@ function VisionneuseStories(props) {
      Enregistré sur le rail retour de l'index (même famille que
      __memoryPoneyRetour) ; retiré au démontage. */
   var retourRef = React.useRef({});
-  retourRef.current = { menuOuvert: menuOuvert, enEdition: enEdition, choix: choix };
+  retourRef.current = { menuOuvert: menuOuvert, enEdition: enEdition, choix: choix, confRetirer: confRetirer };
   /* 19s : le minuteur tourne dans un effet qui ne se relance pas a chaque
      ouverture de panneau — il doit donc lire l'etat par REFERENCE, sinon il
      resterait sur la valeur du montage et continuerait d'avancer. */
   var panneauRef = React.useRef(false);
-  panneauRef.current = !!(menuOuvert || choix || enEdition || ajout);
+  panneauRef.current = !!(menuOuvert || choix || enEdition || ajout || confRetirer);
 
   /* 19u (14/08) — LA STORY SE FERMAIT PENDANT QU'ELLE EN CREAIT UNE.
      Le composeur s'ouvre PAR-DESSUS la story regardee ; celle-ci continuait
@@ -4992,6 +5105,7 @@ function VisionneuseStories(props) {
     window.__hsStoriesRetour = function () {
       try {
         var r = retourRef.current;
+        if (r.confRetirer) { setConfRetirer(false); return true; }
         if (r.menuOuvert) { setMenuOuvert(false); return true; }
         if (r.enEdition) { setEnEdition(false); pauseRef.current = false; setRelance(function (x) { return x + 1; }); return true; }
         if (r.choix) { setChoix(false); pauseRef.current = false; setRelance(function (x) { return x + 1; }); return true; }
@@ -5223,7 +5337,10 @@ function VisionneuseStories(props) {
         if (boiteRef.current) boiteRef.current.style.transform = "translateY(0px)";
         return;   /* un glisse horizontal n'est plus un glisse de fermeture */
       }
-      if (dy > 0 && boiteRef.current) boiteRef.current.style.transform = "translateY(" + Math.min(dy, 260) + "px)";
+      /* 19ay — DEDUCTION DE CLAUDE, A VALIDER : la boite ne suit plus le doigt
+         vers le bas. Ce mouvement etait l'annonce du geste de fermeture ; le
+         garder ferait bouger l'ecran pour rien, ce qui est exactement le doute
+         que Blandine veut supprimer. Un mot d'elle et je le remets. */
     } catch (er) { }
   }
   function toucheFin(e) {
@@ -5262,7 +5379,13 @@ function VisionneuseStories(props) {
         if (dx < 0) suivante(); else precedente();
         return;
       }
-      if (dy > 110) fermer();
+      /* 19ay (17/08, mots de Blandine : « je te demande juste de ne pas mettre
+         celui vers le bas qui fermerait la page »). LE GLISSE VERS LE BAS NE
+         FERME PLUS. Il datait du 14/08. Son raisonnement, retenu : c'est un
+         geste d'iOS qu'on ne trouve nulle part ailleurs dans Hype, il sème le
+         doute. Les glisses HORIZONTAUX restent — gauche = suivante, droite =
+         precedente, sa demande du 14/08 tient toujours. La croix devient le
+         seul moyen de sortir, et elle est visible en permanence. */
     } catch (er) { }
   }
 
@@ -5355,7 +5478,11 @@ function VisionneuseStories(props) {
            musique reste À PART sur la photo (sa parenthèse), la croix reste
            aussi : c'est de la navigation, pas une action. Les albums à la
            une n'ont pas d'actions : pas de ⋯. */
-        (!estAlbum)
+        /* 19aw (feu vert de Blandine) : le ⋯ revient dans les a la une, avec
+           UNE SEULE entree — retirer la photo du souvenir. Il n'apparait que
+           si la page a fourni onRetirerAlbum, c'est-a-dire seulement sur SA
+           PROPRE a la une : un visiteur ne peut rien retirer chez l'autre. */
+        (!estAlbum || (estAlbum && props.onRetirerAlbum))
           ? h("button", {
             onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); setMenuOuvert(true); },
             onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
@@ -5729,7 +5856,9 @@ function VisionneuseStories(props) {
           style: { width: "100%", boxSizing: "border-box", maxWidth: 520, borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none", background: "linear-gradient(180deg, #111417, #060709)", padding: "10px 16px calc(env(safe-area-inset-bottom) + 14px)" }
         },
           h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.22)", margin: "4px auto 12px" } }),
-          (estMoi ? [
+          (estAlbum ? [
+            { ic: "\u2715", txt: hsT("retirerUne", lg), on: function () { setMenuOuvert(false); pauseRef.current = true; setConfRetirer(true); } }
+          ] : estMoi ? [
             /* 13/08 (demande de Blandine) : ajouter des photos A SA STORY en
                ligne. Le composeur s'ouvre pre-rempli (lieu + musique de la
                story) ; les nouvelles photos rejoignent la suite de son fil. */
@@ -5754,6 +5883,48 @@ function VisionneuseStories(props) {
             key: "mnAnn",
             onClick: function () { setMenuOuvert(false); },
             style: { display: "block", width: "100%", marginTop: 4, padding: "14px 10px", borderRadius: 12, border: "none", borderTop: "1px solid rgba(255,255,255,0.10)", background: "transparent", color: "rgba(220,227,232,0.62)", fontSize: 13.5, fontWeight: 600, fontFamily: M, cursor: "pointer" }
+          }, hsT("annuler", lg))))
+      : null,
+
+    /* 19aw — LA CONFIRMATION AVANT DE RETIRER. Demande de Blandine : « demande
+       confirmation qu'on les supprime pas par erreur ». Meme feuille basse que
+       le menu, memes ceintures tactiles, et le bouton d'annulation en premier
+       reflexe : le geste destructeur n'est jamais celui qui tombe sous le
+       pouce par defaut. */
+    confRetirer
+      ? h("div", {
+        onClick: function (ev) { if (!ev || ev.target === ev.currentTarget) { setConfRetirer(false); pauseRef.current = false; } },
+        onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+        onTouchMove: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+        onTouchEnd: function (ev) {
+          if (ev && ev.stopPropagation) ev.stopPropagation();
+          if (ev && ev.target === ev.currentTarget) { setConfRetirer(false); pauseRef.current = false; }
+        },
+        style: { position: "fixed", left: 0, top: 0, right: 0, bottom: 0, zIndex: 9500, background: "rgba(0,0,0,0.62)", display: "flex", alignItems: "flex-end", justifyContent: "center" }
+      },
+        h("div", {
+          onClick: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+          style: {
+            width: "100%", boxSizing: "border-box", maxWidth: 520,
+            padding: "18px 16px calc(env(safe-area-inset-bottom) + 16px)",
+            borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.34), borderBottom: "none",
+            background: "linear-gradient(180deg, rgba(19,24,29,0.99), rgba(8,11,15,0.99))"
+          }
+        },
+          h("div", { style: { width: 44, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.22)", margin: "4px auto 14px" } }),
+          h("div", { style: { fontFamily: C, fontSize: 18, fontWeight: 700, color: "#F4F7FA", marginBottom: 8 } }, hsT("retirerT", lg)),
+          h("div", { style: { fontFamily: M, fontSize: 12.5, lineHeight: 1.55, color: "#8A969C", marginBottom: 18 } }, hsT("retirerP", lg)),
+          h("button", {
+            onClick: function () {
+              setConfRetirer(false);
+              pauseRef.current = false;
+              try { if (props.onRetirerAlbum) props.onRetirerAlbum(story && story.photo_url); } catch (e) { }
+            },
+            style: { display: "block", width: "100%", padding: "14px 10px", borderRadius: 13, cursor: "pointer", fontFamily: M, fontSize: 13.5, fontWeight: 700, color: "#F05C74", border: "1px solid rgba(240,92,116,0.5)", background: "rgba(240,92,116,0.12)" }
+          }, hsT("retirerOui", lg)),
+          h("button", {
+            onClick: function () { setConfRetirer(false); pauseRef.current = false; },
+            style: { display: "block", width: "100%", marginTop: 8, padding: "14px 10px", borderRadius: 13, cursor: "pointer", fontFamily: M, fontSize: 13.5, fontWeight: 700, color: "#C9D3D8", border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)" }
           }, hsT("annuler", lg))))
       : null,
 
