@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19be";
+var HYPE_STORIES_VERSION = "19bf";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -570,6 +570,39 @@ function hsNomMusique(ref) {
    RÈGLE POSÉE : dans les stories, AUCUNE image ne se charge en résolution
    d'origine. Tout passe par la transformation serveur, bornée à la taille de
    l'écran, avec le repli existant sur l'original si elle échoue (replierVignette). */
+/* ⚠️ 19bf (17/08, session 138 bis) — LA TAILLE DEMANDEE EST FIGEE PAR PALIERS.
+   PANNE SIGNALEE PAR BLANDINE, enregistrement d ecran de 18 h 31 : « ca met
+   beaucoup de temps a charger ca bug », et surtout « quand je ferme et que je
+   reviens ca recommence a buger pour charger ».
+   CE QUI N ALLAIT PAS. La largeur et la hauteur demandees etaient calculees
+   depuis `window.innerWidth/innerHeight` AU PIXEL. Or `vignetteHype` ecrit ces
+   deux nombres DANS l URL (`?width=...&height=...`). Sur iPhone la hauteur de
+   la fenetre bouge — barre d outils, barre d etat, retour d arriere-plan,
+   clavier : la moindre variation d UN pixel produit donc une URL DIFFERENTE,
+   c est-a-dire une transformation d image que le serveur n a jamais calculee et
+   que ni le navigateur ni le CDN n ont en cache. Chaque reouverture repartait
+   donc de zero. C est exactement le symptome decrit.
+   ⚠️ DEDUCTION DE CLAUDE — A CONFIRMER PAR L EFFET. Le mecanisme est lu dans le
+   code (l URL porte bien les deux nombres), mais je n ai pas acces a la console
+   de Blandine : je ne peux pas prouver que la hauteur variait chez elle. Si le
+   chargement reste long apres ce correctif, la cause est ailleurs.
+   CE QUI CHANGE. Les deux valeurs sont arrondies au palier de 160 px SUPERIEUR.
+   Il n existe donc plus qu une poignee d URL possibles au lieu d une infinite,
+   et la deuxieme ouverture tombe sur une image deja calculee.
+   ⚠️ ARRONDIR VERS LE HAUT, jamais vers le bas : une image plus petite que
+   l ecran serait etiree, donc floue. Le palier ne coute au pire que 159 px de
+   marge, et il est plafonne comme avant.
+   ⚠️ NE PAS "AFFINER" EN REMETTANT LA VALEUR EXACTE. Ce serait recreer une URL
+   par pixel de hauteur, donc la panne. */
+function hsPalier(v, pas, plafond) {
+  try {
+    var p = pas || 160;
+    var n = Math.ceil((Number(v) || 0) / p) * p;
+    if (n < p) n = p;
+    if (plafond && n > plafond) n = plafond;
+    return n;
+  } catch (e) { return plafond || 800; }
+}
 function hsImageEcran(u) {
   try {
     if (typeof vignetteHype !== "function") return u;
@@ -577,12 +610,49 @@ function hsImageEcran(u) {
     try { dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1)); } catch (eD) { }
     var L = 800, H = 1200;
     try {
-      L = Math.min(1080, Math.round(window.innerWidth * dpr));
-      H = Math.min(1600, Math.round(window.innerHeight * dpr));
+      /* ⚠️ LES DEUX PAS SONT DIFFERENTS, ET C EST MESURE, PAS ESTIME.
+         La LARGEUR ne bouge qu a la rotation : un pas de 160 suffit, et sur
+         tous les telephones et tablettes testes il ne produit que quatre
+         valeurs possibles (640 / 800 / 960 / 1080).
+         La HAUTEUR, elle, bouge en permanence sur iOS. Table calculee sur dix
+         hauteurs d ecran reelles (667 a 932 pt) : pas de 160 -> DEUX URL encore
+         possibles (1440 et 1600) ; pas de 320 -> UNE SEULE (1600). C est ce
+         qu il faut, sinon une reouverture sur deux repart d une image jamais
+         calculee. Cout au pire : 319 px de marge, 20 % de la boite plafond.
+         ⚠️ NE PAS BAISSER LE PAS DE LA HAUTEUR A 160 POUR "GAGNER" CES 20 % :
+         la table ci-dessus dit que ca ramene deux URL, donc la panne. */
+      L = hsPalier(window.innerWidth * dpr, 160, 1080);
+      H = hsPalier(window.innerHeight * dpr, 320, 1600);
     } catch (eW) { }
     var v = vignetteHype(u, L, H);
     /* resize=cover recadrerait la photo — interdit. On repasse en contain :
        toute la photo, dans la boîte demandée. */
+    return String(v).replace("resize=cover", "resize=contain");
+  } catch (e) { return u; }
+}
+
+/* ⚠️ 19bf — LE FORMAT DES PETITS TIRAGES PENCHES.
+   PANNE MESUREE : les tirages de la cascade s affichent a 96, 116 ou 142 px de
+   HAUT, et ils etaient demandes par `hsImageEcran`, donc en TAILLE PLEIN ECRAN
+   (800 x 1600 sur son telephone, jusqu a 1080 x 1600 ailleurs). Mesure :
+   1 280 000 px demandes contre 140 800 utiles, soit 9,1 fois trop, et autant de
+   transformations lourdes a calculer, trois fois par composition. C est le
+   gaspillage le plus net de l ouverture d une a la une.
+   ⚠️ CHIFFRE CORRIGE EN COURS DE SESSION : j avais d abord annonce « 25 fois »
+   a Blandine en comparant a la mauvaise taille de reference. La valeur juste
+   est 9,1. Calculer AVANT d annoncer, pas apres.
+   Taille retenue : 320 x 440, soit le plus grand tirage (142 px) en ecran
+   Retina avec de la marge — aucun tirage ne peut etre etire.
+   ⚠️ `resize=contain` OBLIGATOIRE, comme partout ailleurs dans ce module : en
+   `cover` le serveur recadrerait la photo, ce qui est interdit. Et le rapport
+   naturel doit rester intact, sinon `hsBoutonForme` — qui lit
+   `naturalWidth / naturalHeight` pour donner au cadre la forme de SA photo
+   (19ai/19aj) — retomberait sur un format faux et les tirages couches
+   redeviendraient droits. */
+function hsImageTirage(u) {
+  try {
+    if (typeof vignetteHype !== "function") return u;
+    var v = vignetteHype(u, 320, 440);
     return String(v).replace("resize=cover", "resize=contain");
   } catch (e) { return u; }
 }
@@ -3997,18 +4067,57 @@ async function hsGroupeALaUne(album, lg) {
     pseudo: (album && album.nom) || hsT("aLaUne", lg || "fr"),
     avatar_url: (album && album.couverture) || null,
     ecurie: "",
-    stories: photos.map(function (u, k) {
-      var vraie = par[u];
-      if (!vraie) return { id: "alb" + (album && album.id) + "-" + k, photo_url: u };
-      var copie = {};
-      for (var kk in vraie) { if (Object.prototype.hasOwnProperty.call(vraie, kk)) copie[kk] = vraie[kk]; }
-      var mg = vraie.groupe ? membresParGroupe[String(vraie.groupe)] : null;
-      /* `compo` n a de sens qu a partir de DEUX membres : une composition d un
-         seul tirage n est pas une composition, et `CompositionStory` retombe de
-         toute facon sur `[story]` quand `compo` est vide. */
-      copie.compo = (mg && mg.length > 1) ? mg : null;
-      return copie;
-    })
+    /* ⚠️ 19bf (17/08, session 138 bis) — UNE COMPOSITION NE COMPTE QUE POUR UNE
+       ENTREE. C EST LA PANNE DES « TROIS AUTRES AVEC QUE LES PHOTOS ».
+       SES MOTS, enregistrement d ecran de 18 h 31 : « il y a une story qui est
+       bien et bouge mais ensuite trois autres avec que les photos ».
+       CE QUI SE PASSAIT. Quand Blandine range une story COMPOSEE dans une a la
+       une, l album enregistre les URL de TOUTES ses photos — quatre dans son
+       cas. Cette fonction fabriquait alors UNE story par URL : la premiere
+       rendait la composition entiere (legende, musique, cascade), et les trois
+       suivantes rendaient chacune UN MEMBRE de cette meme composition, tout nu.
+       Ce n etaient pas trois autres stories : c etaient trois morceaux de la
+       premiere, reaffiches un par un. La barre de progression montrait donc
+       quatre segments pour une seule story reelle.
+       C est la meme faute de fond que le 17/08 au matin, sous une autre forme —
+       ses mots d alors : « pas une pale copie separee a 5 endroits ».
+       CE QUI CHANGE. On regroupe : la premiere photo d une composition ouvre la
+       piste, les suivantes de la MEME composition sont absorbees. L album de
+       Blandine passe de 4 entrees a 1.
+       ⚠️ L ENTREE RETENUE EST `mg[0]`, LE MEMBRE LE PLUS ANCIEN — c est-a-dire
+       LA STORY REELLEMENT MISE EN LIGNE, celle qui porte la legende, le lieu et
+       la musique. Prendre la premiere URL de l album donnerait un membre au
+       hasard, donc potentiellement une composition sans son texte. Et
+       l affichage ne change pas d un pixel : `CompositionStory` prend de toute
+       facon `membres[0]` comme grande photo.
+       ⚠️ LA POSITION DANS L ALBUM EST CELLE DE LA PREMIERE PHOTO DU GROUPE :
+       l ordre voulu par Blandine est conserve.
+       ⚠️ REPLI INTACT : une photo dont la story n a pas ete retrouvee reste
+       affichee seule (`{ id, photo_url }`), et une photo SANS `groupe` n est
+       jamais regroupee. Une a la une ne peut donc pas se vider. */
+    stories: (function () {
+      var sortie = [], groupesVus = {};
+      photos.forEach(function (u, k) {
+        var vraie = par[u];
+        if (!vraie) { sortie.push({ id: "alb" + (album && album.id) + "-" + k, photo_url: u }); return; }
+        var g = vraie.groupe ? String(vraie.groupe) : "";
+        var mg = g ? membresParGroupe[g] : null;
+        /* `compo` n a de sens qu a partir de DEUX membres : une composition d un
+           seul tirage n est pas une composition, et `CompositionStory` retombe de
+           toute facon sur `[story]` quand `compo` est vide. */
+        var estCompo = !!(mg && mg.length > 1);
+        if (estCompo) {
+          if (groupesVus[g]) return;      /* deja ouverte plus haut : on absorbe */
+          groupesVus[g] = 1;
+        }
+        var source = estCompo ? (mg[0] || vraie) : vraie;
+        var copie = {};
+        for (var kk in source) { if (Object.prototype.hasOwnProperty.call(source, kk)) copie[kk] = source[kk]; }
+        copie.compo = estCompo ? mg : null;
+        sortie.push(copie);
+      });
+      return sortie;
+    })()
   };
 }
 
@@ -4873,6 +4982,9 @@ function CompositionStory(props) {
   function ouvrirPlein(u, ix) { try { if (props.pause) props.pause(true); } catch (e) { } setPleinIx(typeof ix === "number" ? ix : 0); setPlein(u); }
   function fermerPlein() { try { if (props.pause) props.pause(false); } catch (e) { } setPlein(null); }
   function src(st) { return (typeof hsImageEcran === "function") ? hsImageEcran(st.photo_url) : st.photo_url; }
+  /* 19bf : la taille des petits tirages penches. Repli sur `src` si le helper
+     manque (module charge sans l index) — jamais de vignette vide. */
+  function srcPetit(st) { return (typeof hsImageTirage === "function") ? hsImageTirage(st.photo_url) : src(st); }
   /* 17/08 : memoire du debut de toucher pour distinguer tap et glisse. Un seul
      ref suffit : on abandonne des qu il y a plus d un doigt. */
   var tapPhotoRef = React.useRef(null);
@@ -5247,7 +5359,13 @@ function CompositionStory(props) {
              couche est LARGE, un tirage debout est HAUT — plus de format
              impose qui coupe la moitie de l'obstacle. */
           return h(hsBoutonForme, {
-            key: "tg" + ix, src: src(st), base: 0.75, borne: [0.55, 1.75],
+            /* ⚠️ 19bf — LE TIRAGE SE CHARGE EN PETIT, MAIS S OUVRE EN GRAND.
+               `srcPetit` sert la vignette de 96 a 142 px ; `ouvrirPlein` continue
+               de recevoir la TAILLE ECRAN, sinon le plein ecran serait flou.
+               Ne pas unifier les deux : ce sont deux usages differents de la
+               meme photo, et c est precisement la confusion qui coutait 25 fois
+               trop de pixels. */
+            key: "tg" + ix, src: srcPetit(st), base: 0.75, borne: [0.55, 1.75],
             onOuvrir: function () { ouvrirPlein(src(st)); },
             style: {
               flex: "0 0 auto",

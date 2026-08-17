@@ -35,7 +35,11 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08) — md5 `48b3816e62c1f10f50767ac7aa57865b`, 9 140 026 octets. **COMPAGNON : `hype-stories.js` v19bc, md5 `36bdf729c4a68e62562abb93b9691987`, `?v=19bc`.** **IMAGE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bc`.**
+**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 BIS · 17/08 · LES DEUX FIGEAGES DE STORY, PUIS L'À LA UNE) — md5 `237cad0b62669ffc8b37bf5970b6ad73`, 9 143 958 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bf, md5 `bedd52aece21d4417ce0b9be7f906248`, 386 779 octets, `?v=19bf`.** **IMAGE A LA RACINE, TOUJOURS REQUISE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Aucune image nouvelle. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bf`.**
+
+⚠️ **ETATS PERIMES, NE PLUS POUSSER :** index `2392d97c…` / stories `6d0488d6…` (19bd) ; index `524bfede…` / stories `95f05492…` (19be, livre puis remplace dans la meme session). Le couple ci-dessus les contient tous les deux.
+
+**Ancienne version (138, 19bd) : 17/08/2026 (SESSION 138 · 17/08) — md5 `2392d97c29024af40f9ec59ba4dcec71`, 9 143 958 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bd, md5 `6d0488d60184369fa16b6db83621ba4c`, 373 400 octets, `?v=19bd`.** **IMAGE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bd`.**
 
 ⚠️ **ETATS PERIMES DU JOUR :** index `eb968bee…` `b45c1890…` `b6146ef8…` `e5bc960c…` `7885467a…` `9239e503…` `ffab2e90…` ; stories `bb90bb68…` `a10828b6…` `73b57b7c…`.
 
@@ -193,6 +197,115 @@ Aucune amélioration d'architecture réalisée sur cette session côté applicat
 - `extraire.js` / `injecter2.js` / `controle.js` / `audit2.js` — extraction, injection, contrôle de non-perte et audit, **sur les huit tables**, pour **n'importe quelle langue**. Passer `es` ou `it` au lieu de `de` suffit.
 
 Ces quatre outils sont ceux à reprendre pour la suite du chantier. `injecter.js` et `controle_de.js` (Galop 2 seulement) sont périmés.
+
+---
+
+## SESSION 138 BIS · 17/08 · DEUX FIGEAGES, UNE MÊME MÉCANIQUE : LE GESTE MOURAIT DANS UNE SOUS-ZONE
+
+⚠️ **NUMÉRO « 138 BIS » = DÉDUCTION DE CLAUDE — À VALIDER.** La règle en tête de ce fichier demande un « bis » tant que le trou 135-160 n'est pas comblé, et le numéro 138 lui-même était déjà noté comme non validé dans la PASSATION-138. Si Blandine préfère autre chose, un mot à changer ici et dans la PASSATION.
+
+### Ce que la passation affirmait, et pourquoi c'était faux
+
+La PASSATION-138 listait « le blocage à la fin d'une à la une » avec une cause donnée pour trouvée : `groupes: [grpAlb]`, un tableau d'un seul élément, donc pas de suivante à atteindre. **Le correctif prévu (chaîner tous les albums) n'aurait rien réparé.**
+
+Vérification faite dans le code avant d'écrire une ligne : au bout du dernier tirage, `suivante()` (`hype-stories.js` 5352-5353) n'attend pas, elle appelle `fermer()`. Le code **referme**. Or les mots de Blandine sont : « ça se fige vraiment, plus rien ne répond », puis, décisif : « **je reste bloquée sur la première de toute façon** ». Ce n'était donc pas un problème de fin de parcours, et le chantier annoncé partait dans la mauvaise direction.
+
+**Règle qui vient de se payer une fois de plus : ne pas hériter d'un diagnostic sans le remesurer.** Deux questions tappables ont suffi à retourner complètement la cause.
+
+### Les deux pannes, et leur mécanique commune
+
+Le geste mourait dans une sous-zone qui le gardait pour elle.
+
+**1. La story avec composition — le texte déplié volait le défilement.** Ses mots : « dès qu'on déplie le texte on peut plus remonter ou descendre voir les photos », « le texte est figé au milieu et on peut plus scroll voir les photos qui sont coupées à moitié en bas et en haut ».
+
+Le déplié posait `maxHeight: 42vh` + `overflowY: auto` **sur le texte lui-même**, c'est-à-dire une SECONDE zone défilante à l'intérieur de la colonne de composition, qui défile déjà depuis 19az. Deux zones imbriquées. Le texte déplié devient le plus gros élément de l'écran : le doigt tombe donc presque toujours sur lui, il consomme le geste vertical, et la colonne ne bouge plus. La grande photo au-dessus et les tirages en dessous restent coupés, inatteignables. **Les photos n'ont jamais été cassées — c'est le geste qui n'arrivait pas jusqu'à la colonne.**
+
+**Correctif 19be (solution 1, choisie par Blandine sur ses mots « Oui, solution 1 — vas-y ») :** le texte déplié n'a plus de zone à lui. Il grandit et POUSSE la colonne. Il n'y a plus qu'UNE surface qui glisse.
+**Prix nommé avant et accepté :** sur une légende très longue, descendre pour lire fait remonter la grande photo hors de l'écran ; on remonte pour la revoir.
+⚠️ **Ne pas remettre `maxHeight` + `overflowY` sur ce texte.** Ce serait réintroduire l'imbrication, donc la panne. Une future limite de hauteur devra se poser sans créer de second défilement (coupe au nombre de lignes, comme le replié).
+
+**2. L'à la une — la bande de tirages avalait tous les touchers.** Ses mots : « dans story à la une [...] je reste bloquée sur la première ».
+
+19bd a corrigé les huit `stopPropagation` sans condition de `hsBoutonForme` et de `photoTouchable` — donc les tirages eux-mêmes et la grande photo. **Mais la BANDE qui porte les tirages en posait trois de plus, et ils sont restés.** Elle arrêtait `touchstart` sans condition : la visionneuse n'armait donc jamais son geste (`glisseRef.actif` restait faux), et `toucheFin` sortait par son garde du 19al. Un glissé parti de la bande ne produisait rien — ni suivante, ni précédente. Dans une à la une composée, cette bande plus le texte couvrent l'essentiel de l'écran : d'où l'impression d'être bloquée dès la première photo.
+
+**Correctif 19be :** la bande ne réclame plus que ce qui lui appartient — un glissé horizontal, et seulement quand elle déborde vraiment (3 tirages et plus ; en dessous elle est centrée et n'a rien à faire défiler). Le vertical va à la colonne, l'horizontal d'une bande courte va à la visionneuse.
+
+### 🔴 RÈGLES PAYÉES CETTE SESSION
+
+1. **ARRÊTER `touchstart` EST BIEN PLUS GRAVE QU'ARRÊTER `touchmove`.** C'est `touchstart` qui ARME le geste du parent. Un composant qui le bloque rend le parent sourd pour **tout le reste du toucher**, y compris les gestes qui ne le concernent pas. C'est la cause des deux retraits de fonctionnalité de la semaine (composition sacrifiée en 19ax, puis « bloquée sur la première » ici).
+2. **JAMAIS DEUX ZONES DÉFILANTES IMBRIQUÉES SUR LE MÊME AXE.** La plus intérieure gagne toujours, et c'est presque toujours la plus grande à l'écran. Si un contenu doit être borné, le borner **sans** lui donner son propre défilement.
+3. **CHERCHER LA TROISIÈME COPIE.** 19bd a traité deux composants sur trois. Quand un motif fautif est corrigé, compter **toutes** ses occurrences dans le fichier, pas seulement celles des composants nommés dans le rapport.
+4. **UN SEUIL QUI ARBITRE ENTRE DEUX NIVEAUX DOIT ÊTRE PLUS BAS EN BAS.** La bande se déclare à 10 px, le parent à 12 px (`toucheBouge`). Sans cet écart, le parent poserait `horiz = true`, son écouteur natif annulerait le geste, et la bande ne défilerait plus. Ne pas égaliser ces deux valeurs.
+5. **NE PAS HÉRITER D'UN DIAGNOSTIC.** Celui de la passation était faux et aurait coûté un push pour rien.
+
+### À l'écran : + / −
+
+**+ Dans une story composée avec une longue légende :** « voir plus » déplie le texte entier, et un seul doigt fait maintenant remonter et descendre toute la story — photo, texte, tirages, lieu. Les photos coupées en haut et en bas redeviennent atteignables.
+**+ Dans une à la une :** un glissé qui part de la cascade de petits tirages penchés change de photo au lieu de ne rien faire. Taper un tirage l'ouvre toujours.
+**+ Une bande de 3 tirages ou plus se fait toujours défiler du doigt** comme avant (demande du 14/08 préservée).
+**− Sur une légende très longue dépliée :** la grande photo remonte hors de l'écran pendant la lecture. Il faut remonter pour la revoir. **C'est le prix accepté de la solution 1.**
+**− Rien d'autre ne change.** Aucun écran, aucune couleur, aucune donnée, aucune image, aucun SQL.
+
+### À vérifier à l'essai (non vu à l'écran — Claude n'a pas accès au domaine)
+
+1. Ouvrir une story composée à longue légende, déplier, faire monter et descendre : la photo et les tirages doivent défiler.
+2. Ouvrir une à la une composée, glisser gauche/droite **en partant de la bande de tirages** : doit changer de photo.
+3. Taper un tirage : doit l'ouvrir en plein écran.
+4. Une à la une à 3 tirages ou plus : la bande doit encore se faire défiler latéralement.
+5. Pincer pour zoomer : le verrou multi-doigts est conservé, aucun crash attendu.
+
+### Préparation Flutter
+
+**Aucune amélioration d'architecture réalisée.** Session de correction ciblée sur deux gestionnaires tactiles. Constat noté pour plus tard, sans action : le module compte désormais **trois** endroits distincts qui arbitrent tap contre glissé (`hsBoutonForme`, `photoTouchable`, la bande de tirages), avec chacun leur seuil écrit en dur. Un arbitre unique posé sur `window` — dans l'esprit de la règle de non-duplication du 17/08 — supprimerait la quatrième copie avant qu'elle naisse. À proposer à Blandine, jamais à décider.
+
+### DEUXIÈME PASSE (19bf) — CE QUE L'ENREGISTREMENT D'ÉCRAN DE 18 H 31 A MONTRÉ
+
+**Le correctif de la story est confirmé à l'écran.** Texte déplié, la colonne défile, la photo reste atteignable, « voir moins » revient. Panne 1 close.
+
+L'à la une, elle, restait mauvaise. Trois causes, séparées, toutes traitées en 19bf. **Enregistrement lu image par image** (une extraction toutes les 2 s) : en-tête, avatar, « il y a 2j », pastille musique, cœur et lieu s'affichent instantanément — mais l'écran reste noir avec le rond de chargement pendant environ **14 secondes**. Les données arrivent donc vite ; c'est l'IMAGE qui manque. Et la barre de progression montre **4 segments**.
+
+**1. « Trois autres avec que les photos » — cause certaine, corrigée.**
+Ranger une story COMPOSÉE dans une à la une enregistre les URL de **toutes** ses photos. `hsGroupeALaUne` fabriquait alors une story par URL : la première rendait la composition entière, les trois suivantes rendaient chacune **un membre de cette même composition**, tout nu. Ce n'étaient pas trois autres stories — c'étaient trois morceaux de la première. D'où les 4 segments pour une seule story réelle.
+Correctif : regroupement par `groupe`. L'entrée retenue est `mg[0]`, **le membre le plus ancien, donc la story réellement mise en ligne**, celle qui porte légende, lieu et musique — prendre la première URL de l'album aurait pu donner un membre sans texte. La position dans l'album est celle de la première photo du groupe : l'ordre voulu par Blandine est conservé.
+**Simulé avant livraison, six cas** : 4 photos d'une même composition → 1 entrée avec la légende ✓ · album démarrant sur un membre → 1 entrée, légende retrouvée ✓ · photo simple + composition → 2 ✓ · photo dont la story a disparu + composition → 2, repli conservé ✓ · groupe à un seul membre → pas une composition, `compo` à null ✓ · deux compositions distinctes → 2 ✓.
+
+**2. Les tirages demandés en taille plein écran — mesuré, corrigé.**
+Les petits tirages penchés s'affichent à 96, 116 ou 142 px de haut et étaient demandés par `hsImageEcran`, donc à **800 × 1600**. Mesure : 1 280 000 px demandés contre 140 800 utiles, soit **9,1 fois trop**, trois fois par composition. Nouveau helper `hsImageTirage` à 320 × 440, `resize=contain` obligatoire (en `cover` le serveur recadrerait — interdit) et rapport naturel préservé, sans quoi `hsBoutonForme` donnerait au cadre une forme fausse et les tirages couchés redeviendraient droits. **`ouvrirPlein` continue de recevoir la taille écran** : le plein écran ne devient pas flou.
+
+**3. « Ça recommence quand je reviens » — déduction de Claude, à confirmer par l'effet.**
+`vignetteHype` écrit la largeur et la hauteur demandées **dans l'URL**. Elles étaient calculées au pixel depuis `window.innerWidth/innerHeight`. Sur iPhone la hauteur de fenêtre bouge (barre d'outils, retour d'arrière-plan) : une variation d'un pixel = une URL différente = une transformation jamais calculée, absente du cache du navigateur **et** du CDN. Chaque réouverture repartait de zéro.
+Correctif : arrondi au palier supérieur. **Table calculée sur dix hauteurs d'écran réelles (667 à 932 pt)** — pas de 160 : deux URL encore possibles (1440 et 1600) ; **pas de 320 : une seule (1600)**. La largeur garde un pas de 160, elle ne bouge qu'à la rotation (quatre valeurs : 640 / 800 / 960 / 1080). Coût au pire : 319 px de marge, 20 % de la boîte plafond.
+⚠️ **Non prouvé.** Le mécanisme est lu dans le code, mais sans accès à la console de Blandine je ne peux pas établir que la hauteur variait chez elle. Si le chargement reste long, la cause est ailleurs — pistes non explorées : 9 transformations distinctes des 4 mêmes photos par ouverture de page (4 en taille écran, 4 pour le mur immersif en 520 × 700, 1 pour le rail en 200 × 200), et le coût de calcul à froid côté Supabase.
+
+### 🔴 RÈGLES PAYÉES PAR CETTE DEUXIÈME PASSE
+
+6. **UNE VALEUR QUI ENTRE DANS UNE URL DOIT ÊTRE QUANTIFIÉE.** Toute dimension lue dans le navigateur et écrite dans une adresse d'image crée une URL par pixel, donc un cache inutilisable. Arrondir par paliers, toujours vers le haut.
+7. **DEUX USAGES DE LA MÊME PHOTO NE SONT PAS LE MÊME BESOIN.** Vignette et plein écran partageaient un seul helper : c'est ce qui coûtait 9 fois trop de pixels. Séparer les tailles, pas les sources.
+8. **CALCULER AVANT D'ANNONCER, PAS APRÈS.** J'ai annoncé « 25 fois » à Blandine, puis mesuré 9,1 en écrivant le correctif. C'est la même faute que la session 138 confessait déjà (« je calculais après avoir écrit »). Corrigé auprès d'elle dans le message même.
+9. **UN PALIER SE VÉRIFIE SUR UNE TABLE, PAS AU JUGÉ.** Mon premier pas de 160 laissait deux URL possibles — il ne réglait la panne qu'une fois sur deux. Seule la table de dix hauteurs l'a montré.
+
+### À l'écran : + / − (19bf)
+
+**+** Une à la une contenant une story composée affiche **une** story au lieu de quatre. Plus de morceaux nus à la suite.
+**+** L'ouverture doit être nettement plus rapide : trois transformations lourdes sur quatre disparaissent, et la deuxième ouverture doit tomber sur des images déjà calculées.
+**+** Les tirages gardent leur forme réelle (couché reste couché) et s'ouvrent toujours nets en plein écran.
+**−** Une à la une qui contenait 4 photos d'une même composition n'affichera plus qu'un segment dans la barre du haut. **C'est voulu** : il n'y avait qu'une story.
+**−** Sur très grand écran, la photo est demandée avec jusqu'à 319 px de marge de hauteur en trop. Invisible à l'œil, c'est le prix de la stabilité du cache.
+**−** Aucune donnée, aucune image, aucun SQL, aucun autre écran touché.
+
+### À vérifier à l'essai (19bf)
+
+1. Ouvrir l'à la une de la vidéo : **une seule** story, avec sa légende « Spoiler alert », sa musique et sa cascade.
+2. Chronométrer l'apparition de la photo — puis **fermer et rouvrir** : la deuxième fois doit être quasi immédiate. C'est le test du point 3.
+3. Les trois petits tirages doivent rester nets et garder leur orientation.
+4. Taper un tirage : plein écran net, pas flou.
+5. Une à la une contenant des photos simples **et** une composition doit montrer les simples séparément et la composition une seule fois.
+
+---
+
+### Reste ouvert (inchangé, aucun feu vert demandé)
+
+Tout ce que la PASSATION-138 listait sous « ce qui attend une décision de Blandine » reste ouvert : onglets de la page Cavalier, teinte de l'Écurie, photo d'écurie en double, zone libre de Fond Studio, code mort du détourage, fond flou cuit dans `srcNue`, la musique, plus de quatre à la une, panneau de réglages du mur immersif à graver. **Le « chaînage des à la une » est retiré de la liste des correctifs prêts : sa cause était fausse.** La question de fond reste posée — faut-il pouvoir passer d'une à la une à la suivante ? — mais c'est une demande produit, pas un bug.
 
 ---
 
@@ -503,6 +616,74 @@ Le composant était **enfermé dans son bloc `<script>`** et appelé une seule f
 **Livré :** les deux autres seulement. Marge 18 → **6**, padding 18/18 → **4 / 10**. Nouveau total **32 px** au-dessus au lieu de 58 — gain de 26 px en haut, 8 en bas, soit exactement la hauteur d'une des deux bandes retirées.
 
 **À l'écran : + / −** — **+** le rail se recolle au Mur des Songes et à « À LA UNE ». **−** 26 px d'air en haut, 8 en bas. Le halo n'est pas touché.
+
+### 5decies. 🟩 L'APERCU DU RECADREUR MENTAIT — CORRIGE
+
+**Constat de Blandine (enregistrement de 11 h 08) : « Remplir » et « Photo entière » donnent le même rendu.** Vérifié : **faux dans le fichier, vrai dans l'aperçu.**
+
+En mode « entier », `valider()` remplit le cadre avec **un agrandissement flou et assombri de la photo elle-même** (`blur(OW*0.045) brightness(0.42) saturate(1.05)`, `coverS * 1.18`). Mais l'aperçu posait la photo sur un `#0a0e12` **plat**. **On ne voyait donc pas la différence à l'écran, on la découvrait dans le fichier.** C'est aussi ce qui rendait le mode incompréhensible : on réglait sans voir le résultat.
+
+**Livré :** le même fond est dessiné dans l'aperçu, **avec les mêmes valeurs**. Ce qu'on voit est ce qu'on obtient.
+
+⚠️ **LA REGLE « AUCUN FILTRE SUR UNE PHOTO DE CHEVAL » N'EST PAS ENTAMEE :** le calque est posé **derrière** la photo, jamais dessus, et la photo reste nette et entière devant. **Aucune transformation n'est ajoutée** — ce flou existe déjà dans le résultat depuis toujours, on cesse simplement de le cacher. Même logique que le fond immersif des stories. **Si ce fond est jugé indésirable, ce n'est pas dans l'aperçu qu'il faut le retirer mais dans `valider()`** — et alors les photos en « Photo entière » apparaîtront sur du noir plat tant que le dessin du fond à l'affichage n'est pas branché (chantier en plan depuis le 02/08).
+
+### 5undecies. 🟩 LES DEUX DERNIERS CATCH VIDES DE `valider()`
+
+Ils avalaient l'échec du Fond Studio **au moment de l'enregistrement** : la photo partait alors **sans l'effet, sans un mot**. Impossible de savoir si le réglage était mauvais ou si l'opération avait raté.
+
+**Livré :** un message explicite en 5 langues, qui dit exactement ce qui s'est passé — « la photo est enregistrée sans l'effet ». **`finaliser()` reste appelé dans tous les cas : on ne perd JAMAIS une photo pour un effet raté.**
+
+**État des catch vides de Fond Studio : 4 trouvés ce jour, 4 traités.** Deux dans `dessiner()` (le panneau), deux dans `valider()` (l'enregistrement).
+
+⚠️ **CE QUI RESTE NON CORRIGE, ET POURQUOI :** le fond flou est **cuit dans `srcNue`** — `srcNue` est capturée **après** le remplissage. L'image dite « nue » ne l'est donc pas, et chaque validation devient l'original de la suivante. C'est la cause unique du liseré « indélébile » ET du zoom irréversible. **Trois sorties présentées, aucune tranchée :** (A) capturer `srcNue` avant le fond — exige de brancher le dessin à l'affichage ; (B) conserver le vrai fichier d'origine côté serveur ; (C) A puis B. **Ce point demande une décision produit, pas un correctif.**
+
+### 0. 📌 CLOTURE DE LA SESSION 138 — PASSATION ECRITE
+
+Passation complète : **`PASSATION-138.md`**. Elle porte les md5 à pousser, les neuf règles payées, **mes huit erreurs de la session** nommées une par une, la liste de ce qui attend une décision de Blandine, et l'ordre arrêté du chantier de non-duplication.
+
+**Trois maquettes livrées, aucune ne touche à l'app** : `maquette-onglets-cavalier.html` (en attente de choix), `maquette-bandes.html` (choix fait : 18 px, gouttieres, intermédiaire), `maquette-defilement.html` (en attente d'observation).
+
+### Préparation Flutter (clôture session 138)
+
+**Deux avancées réelles, pour la première fois de la journée.**
+
+**`VignetteZoom` est une brique portable.** Un composant unique, interface stable, qui encapsule le plein écran et délègue le zoom à un moteur. C'est exactement la forme qu'un widget Flutter prendra. À l'inverse, **six variantes d'un même appel ne se portent pas — elles se réécrivent** : c'est le coût caché de la duplication, et il se paiera au portage.
+
+**La règle de non-duplication est la vraie préparation Flutter.** Chaque fonctionnalité qui naît sur `window` au lieu de naître dans une page est un candidat direct au portage. Chaque copie évitée aujourd'hui est une réécriture évitée demain.
+
+**Note d'architecture, sans action :** le recadreur reste le seul endroit où une décoration est **cuite dans un fichier** au lieu d'être un paramètre. L'état vit dans les pixels, pas dans les données — c'est le pire cas à porter. Brancher le dessin du cadre à l'affichage (chantier du 02/08) n'est donc pas seulement une réponse à la demande de teinte : **c'est un pas de préparation Flutter.**
+
+**Les règles CSS scellées ce jour n'ont, elles, aucun équivalent Flutter** : le défilement y est porté par les widgets, pas par le document. `hypeVerrouScroll` et son filet disparaîtront avec l'index.
+
+---
+
+### 5duodecies. 🟩 LA STORY A LA UNE RETROUVE SA COMPOSITION (19bd) — REVIREMENT ASSUME
+
+**Mots de Blandine :** « quand j'ouvre la story à la une elle n'est plus du tout ressemblante à elle-même, elle a les images séparées [...] **je veux retrouver exactement la story mise en ligne la même. Pas une pâle copie séparée à 5 endroits.** »
+
+**CE QUE FAISAIT 19ax, ET POURQUOI.** `hsGroupeALaUne` mettait `disposition` **et** `compo` à `null`. La raison de l'époque était aussi sur ses mots (« on peut rien faire en fait ») : dès qu'une composition s'affichait, **plus aucun glissé n'atteignait la visionneuse** — ni pour avancer, ni pour fermer. Le choix avait été de **sacrifier la mise en page pour rendre les gestes**.
+
+⚠️ **MAIS LA COMPOSITION N'ÉTAIT PAS LA COUPABLE.** Les vrais coupables étaient **huit `stopPropagation` sans condition**, dans **deux** composants :
+- **`hsBoutonForme`** — chaque tirage : `touchstart`, `touchend`, `pointerdown`, `pointerup`
+- **`photoTouchable`** (dans `CompositionStory`) — chaque photo : les quatre mêmes, posés le 19h (14/08) pour empêcher un tap de fermer la story
+
+Ils avalaient **tout**, y compris le glissé horizontal. On a donc retiré une fonctionnalité entière pour un bug de huit lignes.
+
+**LE CORRECTIF : TAP OU GLISSE.** On n'intercepte plus que ce qui nous appartient. Le déplacement est mesuré entre `touchstart` et `touchend` : **sous 10 px c'est un tap** (on ouvre le tirage, on arrête la propagation), **au-delà c'est un glissé** (on ne fait rien, tout passe à la visionneuse).
+
+⚠️ **ON COMPTE LES DOIGTS, ET CE N'EST PAS NEGOCIABLE.** La leçon a été payée **deux fois** — crash de la session 92, puis retrait du calque de balayage le 02/08. Un gestionnaire qui lit `changedTouches` **sans compter** prend un pincement pour un balayage, charge une autre photo pleine résolution pendant le décodage de la première, et **iOS tue l'onglet**. Dès qu'il y a plus d'UN doigt : on abandonne, le pincement appartient au zoom.
+
+⚠️ **`pointerdown` / `pointerup` SONT RETIRES.** Sur iOS ils **doublent** les événements tactiles ; les garder aurait rendu le comptage de doigts inopérant. La souris passe par `onClick`, conservé.
+
+⚠️ **AUCUN CALQUE N'EST AJOUTE AU-DESSUS DE LA PHOTO** : mêmes gestionnaires, mêmes éléments, avec une condition. La règle absolue n'est pas entamée.
+
+**COMMENT `compo` EST RECONSTITUEE.** Les photos d'une même composition partagent **`st.groupe`**, et `hsStoriesDesPhotos` fait `select("*")` — la valeur arrivait déjà. On collecte les `groupe` distincts, on recharge tous leurs membres en **UNE** requête `.in("groupe", ...)`, on trie par `created_at`, et chaque story de l'à la une retrouve son tableau `compo`. `disposition` est rendu aussi.
+
+**Coût : une seule requête de plus**, et seulement si l'album contient au moins une composition. **Repli** : si la lecture échoue, on retombe sur le comportement de 19ax — une à la une dégradée vaut mieux qu'une à la une qui refuse de s'ouvrir. `compo` n'est posé qu'à partir de **deux** membres.
+
+⚠️ **CE QUI RESTE : LE BLOCAGE A LA FIN, NON CORRIGE.** « On reste toujours coincé à la fin sans pouvoir passer à la suivante. » **Cause trouvée, ce n'est pas un geste qui échoue** : les deux visionneuses d'à la une reçoivent `groupes: [grpAlb]`, un tableau d'**un seul** élément. La navigation teste `ig + 1 < groupes.length` — faux à la dernière photo. **Il n'y a pas de suivante à atteindre.** Correctif prévu : construire les groupes de **tous** les albums (une seule requête suffit, `hsStoriesDesPhotos` accepte 200 URL) et passer `depart` sur l'album ouvert. **A faire.**
+
+**À l'écran : + / −** — **+** une à la une composée s'ouvre avec sa vraie mise en page H+D, son décor, sa légende ; le glissé gauche/droite fonctionne par-dessus ; le tap sur un tirage l'ouvre en grand. **−** rien. **A VERIFIER A L'ESSAI** : ouvrir une à la une composée, glisser, taper un tirage, pincer.
 
 ### 6. 🟩 LES SIX APPELS AU RECADREUR — DIVERGENCES CORRIGEES
 

@@ -2286,7 +2286,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <div class="pt"><b data-t="pt2t">Une ville, un chapitre</b><i data-t="pt2d">De Buenos Aires à Tokyo, dans la langue que tu apprends.</i></div>
       <div class="pt"><b data-t="pt3t">Comprendre un enseignant</b><i data-t="pt3d">Les ordres qu'on crie en reprise, à reconnaître au vol.</i></div>
       <div class="pt"><b data-t="pt5t">Une collection à rapporter</b><i data-t="pt5d">Une carte postale et un souvenir par ville, gagnés, pas donnés.</i></div>
-      <div class="pt large"><b data-t="pt4t">L'essentiel en cas d'urgence</b><i data-t="pt4d">« Il boite », « appelez le vétérinaire ». Ces mots sont offerts, partout.</i>
+      <div class="pt large"><b data-t="pt4t">L'essentiel en cas d'urgence</b><i data-t="pt4d">Kildare pour le cheval, Édimbourg pour le cavalier. Ces mots sont offerts, partout.</i>
         <span class="ptOu" id="inOuKildare" data-t="ouKildare">S'apprend à Kildare · Irlande ›</span></div>
     </div>
     <button id="inSuite" data-t="choisirDest">Choisir ma destination</button>
@@ -2441,8 +2441,17 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       à la suivante.</p>
       <p data-th="regle2"><b>Chaque ville laisse une trace :</b> un tampon sur ton passeport, une carte postale
       à retourner, un souvenir, et une étoile de plus dans ton ciel.</p>
-      <p data-th="regle3"><b>Les mots de l'urgence sont offerts</b> — savoir dire « il boite » ou « appelez le
-      vétérinaire » à l'étranger ne se monnaie pas.</p>
+      <!-- 🟥 16/08 : LES DEUX VILLES D'URGENCE SONT ANNONCÉES SÉPARÉMENT,
+           sur demande de Blandine : « faudra citer les deux dans l'onglet
+           chapitres offerts au début en précisant bien quoi trouver où ».
+           Depuis la séparation des urgences en deux chapitres, il faut
+           dire CE QU'ON TROUVE OÙ — sinon on cherche « il boite » à
+           Édimbourg et « ne la bougez pas » à Kildare.
+           ⚠️ Les deux villes sont dans VILLE_OFFERTE : les urgences ne se
+           monnaient pas, ni celles du cheval ni celles du cavalier. -->
+      <p data-th="regle3"><b>Les mots de l'urgence sont offerts</b> — à <b>Kildare</b> ceux du cheval
+      (« il boite », « appelez le vétérinaire »), à <b>Édimbourg</b> ceux du cavalier
+      (« ne la bougez pas », « appelez une ambulance »). Savoir le dire à l'étranger ne se monnaie pas.</p>
     </div>
 
     <!-- ==================================================================
@@ -5184,7 +5193,7 @@ function pousserVille(){
   b.appendChild(oBandeau("ouvThemes", false,
     oVignette(["labaule","windsor","saumur","tokyo"],"mosa"),
     el("span",{class:"oT", text:thL(TH_TXT.titre)}),
-    "22 thèmes, 31 villes. Trouve où s'apprend ce dont tu as besoin.",
+    "23 thèmes, 33 villes. Trouve où s'apprend ce dont tu as besoin.",   /* 16/08 : 22→23 thèmes (les urgences séparées en deux) et 31→33 villes (Wellington, Versailles) */
     function(){ ouvrirThemes(); }));
   b.appendChild(oBandeau("ouvColl", true,
     oVignette(["labaule","maurice","connemara"],"eventail"),
@@ -6937,12 +6946,14 @@ var UI = {
  pt4t:{fr:"L'essentiel en cas d'urgence", en:"The essentials in an emergency",
    es:"Lo esencial en una emergencia", it:"L'essenziale in caso di emergenza",
    de:"Das Wichtigste im Notfall", ja:"緊急時に必要な言葉"},
- pt4d:{fr:"« Il boite », « appelez le vétérinaire ». Ces mots sont offerts, partout.",
-   en:"\u201CHe\u2019s lame\u201D, \u201Ccall the vet\u201D. These words are free, everywhere.",
-   es:"«Cojea», «llamad al veterinario». Estas palabras son gratis, en todas partes.",
-   it:"«Zoppica», «chiamate il veterinario». Queste parole sono gratuite, sempre.",
-   de:"\u201EEr lahmt\u201C, \u201Eruft den Tierarzt\u201C. Diese Wörter sind überall kostenlos.",
-   ja:"「跛行している」「獣医を呼んで」。この言葉は、どの言語でも無料。"},
+ /* 🟥 16/08 : DEUX VILLES CITÉES, pour dire quoi trouver où. Kildare =
+    le cheval, Édimbourg = le cavalier. Même raison que `regle3`. */
+ pt4d:{fr:"Kildare pour le cheval, Édimbourg pour le cavalier. Ces mots sont offerts, partout.",
+   en:"Kildare for the horse, Edinburgh for the rider. These words are free, everywhere.",
+   es:"Kildare para el caballo, Edimburgo para el jinete. Estas palabras son gratis, en todas partes.",
+   it:"Kildare per il cavallo, Edimburgo per il cavaliere. Queste parole sono gratuite, sempre.",
+   de:"Kildare fürs Pferd, Edinburgh für den Reiter. Diese Wörter sind überall kostenlos.",
+   ja:"馬のためのキルデア、騎手のためのエディンバラ。この言葉は、どの言語でも無料。"},
  pt5t:{fr:"Une collection à rapporter", en:"A collection to bring home",
    es:"Una colección para traer de vuelta", it:"Una collezione da portare a casa",
    de:"Eine Sammlung für den Heimweg", ja:"持ち帰るコレクション"},
@@ -7056,12 +7067,12 @@ var UI = {
    it:"<b>Ogni città lascia una traccia:</b> un timbro sul passaporto, una cartolina da girare, un souvenir, e una stella in più nel tuo cielo.",
    de:"<b>Jede Stadt lässt eine Spur:</b> einen Stempel im Pass, eine Postkarte zum Umdrehen, ein Andenken und einen Stern mehr an deinem Himmel.",
    ja:"<b>街はそれぞれ跡を残す。</b>パスポートの消印、裏返せる絵はがき、記念品、そして夜空にもう一つの星。"},
- regle3:{fr:"<b>Les mots de l'urgence sont offerts</b> — savoir dire « il boite » ou « appelez le vétérinaire » à l'étranger ne se monnaie pas.",
-   en:"<b>The emergency words are free</b> — knowing how to say \u201Che\u2019s lame\u201D or \u201Ccall the vet\u201D abroad is not for sale.",
-   es:"<b>Las palabras de urgencia son gratis</b>: saber decir «cojea» o «llamad al veterinario» en el extranjero no se cobra.",
-   it:"<b>Le parole dell'emergenza sono gratuite</b> — saper dire «zoppica» o «chiamate il veterinario» all'estero non si vende.",
-   de:"<b>Die Notfallwörter sind kostenlos</b> — zu wissen, wie man im Ausland \u201Eer lahmt\u201C oder \u201Eruft den Tierarzt\u201C sagt, ist nicht verkäuflich.",
-   ja:"<b>緊急時の言葉は無料。</b>海外で「跛行している」「獣医を呼んで」と言えること。これは売り物ではない。"},
+ regle3:{fr:"<b>Les mots de l'urgence sont offerts</b> — à <b>Kildare</b> ceux du cheval (« il boite », « appelez le vétérinaire »), à <b>Édimbourg</b> ceux du cavalier (« ne la bougez pas », « appelez une ambulance »). Savoir le dire à l'étranger ne se monnaie pas.",
+   en:"<b>The emergency words are free</b> — at <b>Kildare</b> the horse's (\u201Che\u2019s lame\u201D, \u201Ccall the vet\u201D), at <b>Edinburgh</b> the rider's (\u201Cdon\u2019t move her\u201D, \u201Ccall an ambulance\u201D). Knowing how to say it abroad is not for sale.",
+   es:"<b>Las palabras de urgencia son gratis</b>: en <b>Kildare</b> las del caballo («cojea», «llamad al veterinario»), en <b>Edimburgo</b> las del jinete («no la muevan», «llamad a una ambulancia»). Saber decirlo en el extranjero no se cobra.",
+   it:"<b>Le parole dell'emergenza sono gratuite</b> — a <b>Kildare</b> quelle del cavallo («zoppica», «chiamate il veterinario»), a <b>Edimburgo</b> quelle del cavaliere («non muovetela», «chiamate un'ambulanza»). Saperlo dire all'estero non si vende.",
+   de:"<b>Die Notfallwörter sind kostenlos</b> — in <b>Kildare</b> die des Pferdes (\u201Eer lahmt\u201C, \u201Eruft den Tierarzt\u201C), in <b>Edinburgh</b> die des Reiters (\u201Ebewegt sie nicht\u201C, \u201Eruft einen Krankenwagen\u201C). Das im Ausland sagen zu können, ist nicht verkäuflich.",
+   ja:"<b>緊急時の言葉は無料。</b><b>キルデア</b>では馬のための言葉（「跛行している」「獣医を呼んで」）、<b>エディンバラ</b>では騎手のための言葉（「動かさないで」「救急車を呼んで」）。海外でこれが言えること。売り物ではありません。"},
  /* Les trois paliers portes par la ville (voir NIVEAU_VILLE) : ils
     existaient depuis le 5 aout mais n'avaient jamais de nom affichable.
     Demande de Blandine le 6 aout : « on avait dit aussi qu'on mettrait
@@ -7779,7 +7790,13 @@ function estPremium(){
    RÈGLE À TENIR : la PREMIÈRE ville du voyage doit toujours être offerte.
    Si l'ordre des étapes change un jour, vérifier que la nouvelle première
    ville figure ici. */
-var VILLE_OFFERTE = { labaule:1, kildare:1, maurice:1 };
+/* 🟥 16/08 : ÉDIMBOURG REJOINT LES VILLES OFFERTES. Les urgences ont été
+   séparées en deux chapitres (Kildare = le cheval, Édimbourg = le
+   cavalier) : si seule Kildare restait offerte, la moitié des mots
+   d'urgence deviendrait payante. « Les mots de l'urgence sont offerts »
+   ne se coupe pas en deux. ⚠️ NE PAS retirer Édimbourg d'ici sans
+   remettre les deux chapitres dans une seule ville. */
+var VILLE_OFFERTE = { labaule:1, kildare:1, maurice:1, edimbourg:1 };
 function villeAutorisee(refVille){
   return estPremium() || !!VILLE_OFFERTE[refVille];
 }
