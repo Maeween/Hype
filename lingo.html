@@ -360,9 +360,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #voyage{position:fixed;left:0;right:0;top:0;z-index:9;pointer-events:none;
  padding:calc(env(safe-area-inset-top) + 13px) 88px 0;text-align:center}
 #voyage b{font-family:'Cinzel',serif;font-size:12px;font-weight:500;letter-spacing:.3em;
- color:var(--turquoise);display:block}
+ color:var(--turquoise);display:block;line-height:1.5}
 #voyage span{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:12px;
- color:var(--gris);display:block;margin-top:2px}
+ color:var(--gris);display:block;margin-top:2px;line-height:1.4}
 #bSprint{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom) + 96px);z-index:12;
  padding:11px 16px;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
  color:#060709;background:var(--turquoise);border-radius:99px;
@@ -509,7 +509,26 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 /* le carnet de route respire : la carte de Newmarket, floutée, en fond */
 #ouvFond{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
  transition:opacity .6s}
-#ouverture.joue #ouvFond{opacity:0}
+/* 🟥 LE FLASH DU FOND AVANT LA VIDÉO — corrigé le 16/08 sur constat de
+   Blandine : « j'ai encore un flash de la photo de fond avant le
+   lancement de la vidéo ».
+   LA CAUSE : `#ouvFond` porte `transition:opacity .6s`. `#ouverture`
+   part bien avec `class="joue"` dans le HTML, donc l'opacité VISÉE est
+   0 — mais Safari applique la transition DEPUIS L'ÉTAT INITIAL au
+   premier rendu : le fond apparaît, puis s'éteint en six dixièmes de
+   seconde. C'est le flash.
+   LE REMÈDE : pendant `.joue`, `transition:none` — l'opacité 0 est
+   appliquée SÈCHEMENT, sans passer par 1. La transition douce reste
+   pour la sortie du film (quand `.joue` est retirée), qui est le seul
+   moment où elle sert.
+   ⚠️ AGGRAVANT, réglé au passage : `#ouvFondImg` porte DEUX animations
+   INFINIES (fvKen, fvSouffle). Une couche composite animée en
+   permanence derrière un film qui démarre, c'est le mal documenté par
+   ce SUIVI pour le crash de lingo.html. Elles sont SUSPENDUES pendant
+   `.joue` — invisibles de toute façon — et reprennent après.
+   🟥 NE PAS retirer ces deux règles en croyant « simplifier ». */
+#ouverture.joue #ouvFond{opacity:0;transition:none}
+#ouverture.joue #ouvFondImg{animation-play-state:paused}
 #ouvFondImg{position:absolute;inset:-12%;width:124%;height:124%;
  background-image:url("fond-newmarket.webp");background-size:cover;background-position:center;
  animation:fvKen 18s ease-in-out infinite alternate, fvSouffle 14s ease-in-out infinite;
@@ -1999,10 +2018,30 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .cpRang span:last-child{color:var(--gris);font-size:13px;text-align:right}
 .cpDur{color:#E0796B !important;text-decoration-color:rgba(224,121,107,.3) !important}
 /* la ligne d'accès, sur la présentation et sur le carnet de route */
-.cpAcces{display:flex;align-items:center;justify-content:center;gap:9px;margin:18px auto 0;
+/* 🟥 LE CHEVAUCHEMENT DU 16/08 — corrigé sur constat de Blandine :
+   « en haut les écritures sont toutes tassées on lit rien », vu à la
+   fin des chapitres, HORS LIGNE.
+   LA CAUSE : `#voyage` (« Le tour du monde / anglais ») est en
+   `position:fixed; top:0`, donc HORS DU FLUX — il ne pousse rien. Un
+   `.cpAcces` placé en haut d'un écran vient donc SOUS lui, et les deux
+   textes se superposent. Rien ne le séparait.
+   ⚠️ La bande N'EST PAS masquée : Blandine la garde — « on peut
+   souhaiter revenir au globe si on veut ». Elle sert de repère et de
+   retour. NE PAS la cacher pour régler ce problème.
+   LE REMÈDE : une marge minimale sous la bande, calculée depuis
+   l'encoche. Deux lignes, aucun risque, et ça vaut partout où
+   `.cpAcces` apparaît — y compris sur les écrans de fin de chapitre.
+   ⚠️ Hors ligne, une police manquante aggravait l'effet : les textes
+   perdaient leur hauteur de ligne. Les garde-fous du service worker
+   (socle complet) règlent ça de leur côté. */
+.cpAcces{display:flex;align-items:center;justify-content:center;gap:9px;
+  margin:calc(env(safe-area-inset-top) + 52px) auto 0;
   max-width:330px;padding:11px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.09);
   background:rgba(255,255,255,.028);font-size:12.5px;color:var(--gris);cursor:pointer;
-  font-family:inherit}
+  font-family:inherit;line-height:1.35}
+/* sur les écrans qui n'ont PAS la bande du voyage (ouverture, carnet),
+   la marge redevient normale : rien à esquiver au-dessus. */
+#ouverture .cpAcces{margin-top:18px}
 .cpAcces b{color:var(--encre);font-weight:600}
 .cpAcces img{width:24px;height:24px;border-radius:7px;flex-shrink:0}
 </style>
@@ -10910,6 +10949,12 @@ S("ouvAccueil").addEventListener("click", function(){
    ville = 3 fichiers. `VER` est ajouté à chaque adresse, sinon on
    remplirait le cache d'adresses périmées (piège n°1 de la passation).
    ================================================================== */
+/* 🟥 LE NOM DU CACHE EST ÉCRIT ICI **ET** DANS . Les deux
+   doivent rester d'accord : si l'un change sans l'autre, le bouton
+   remplit un cache que le service worker ne lit pas. Passé à v2 le
+   16/08 avec les trois garde-fous du hors-ligne.
+   ⚠️ À CHANGER DANS LES DEUX FICHIERS, JAMAIS DANS UN SEUL. */
+var NOM_CACHE = "linguae-v2";
 var POCHE_CLE_FERME = "lingua_poche_ferme";
 var pocheEnCours = false;
 
@@ -10951,7 +10996,7 @@ function pocheAdressesVille(ref){
 async function pocheCompte(){
   try{
     if(!window.caches) return null;
-    var c = await caches.open("linguae-v1");
+    var c = await caches.open(NOM_CACHE);
     var n = 0;
     for(var i=0;i<ETAPES.length;i++){
       var r = await c.match("carte-"+ETAPES[i].ref+".webp"+VER);
@@ -10987,7 +11032,7 @@ async function emporterLeVoyage(discret, surAvance){
   pocheEnCours = true; pocheStop = false;
   var repos = discret ? 400 : 120;   /* jamais zéro, dans aucun mode */
   try{
-    var c = await caches.open("linguae-v1"), faites = 0;
+    var c = await caches.open(NOM_CACHE), faites = 0;
     for(var i=0;i<ETAPES.length;i++){
       if(pocheStop) break;
       if(discret && !pocheReseauLarge()) break;

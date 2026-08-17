@@ -68,7 +68,53 @@
    déclenche le ménage des anciennes versions.
    ================================================================== */
 
-var CACHE = "linguae-v1";
+var CACHE = "linguae-v2";   /* v2 le 16/08 : les trois garde-fous. Changer CACHE force le menage des anciennes versions. */
+
+/* 🟥🟥 LE DÉFAUT DU 16/08 — L'APP CASSÉE HORS LIGNE APRÈS UN DÉPLOIEMENT.
+   Blandine, revenue de son vol : « j'aurais dû pouvoir accéder sans
+   connexion mais rien ne marche », puis « faut pas refaire ça la
+   prochaine fois ».
+
+   CE QUI S'EST PASSÉ, et c'est une FAUTE DE CONCEPTION, pas un aléa :
+   1. Elle appuie sur « emporter le voyage ». Tout descend. ✅
+   2. On pousse un nouveau `lingo.html` qui réclame un fichier NEUF
+      (`hype-lingo-lex-enseignant.js`).
+   3. Elle rouvre l'app AVEC réseau. La stratégie « réseau d'abord »
+      pour les pages télécharge la nouvelle version et l'installe DANS
+      LE CACHE, par-dessus l'ancienne qui marchait.
+   4. Elle décolle. La page en cache réclame un script qui n'a jamais
+      été mis en cache — il n'existait pas au moment du téléchargement.
+      Rien ne démarre.
+
+   TROIS GARDE-FOUS, posés le 16/08 :
+   · A. LES SCRIPTS SONT DANS LE SOCLE. `SOCLE_JS` liste TOUS les
+     lexiques. Ils descendent à l'installation du service worker, sans
+     attendre qu'une ville soit visitée.
+     ⚠️ TOUT LEXIQUE AJOUTÉ À `lingo.html` DOIT ÊTRE AJOUTÉ ICI. C'est
+     exactement l'oubli qui a causé le défaut.
+   · B. UNE PAGE NE REMPLACE L'ANCIENNE QUE SI ELLE EST COMPLÈTE. Voir
+     `pageComplete()` : on lit la nouvelle page, on relève ses `<script
+     src>`, et on ne la met en cache QUE si tous sont déjà là ou
+     descendent avec succès. Une page qu'on ne peut pas servir
+     entièrement ne mérite pas d'écraser une page qui marchait.
+   · C. UN SCRIPT MANQUANT NE TUE PLUS L'APP. Un script introuvable
+     hors ligne renvoie un fichier VIDE avec un commentaire, plutôt
+     qu'une erreur 504. La ville concernée manquera, l'app tournera.
+     ⚠️ Un `.js` en 504 arrête l'exécution ; un `.js` vide, non.
+
+   🟥 NE JAMAIS revenir à « réseau d'abord » sans le test de complétude.
+   Une abonnée dans un avion ne peut pas recharger. */
+var SOCLE_JS = [
+  "hype-lingo-villes.js", "hype-lingo-villes-monde.js", "hype-lingo-phrases-monde.js",
+  "hype-lingo-lex-arrivee.js", "hype-lingo-lex-balade.js", "hype-lingo-lex-cheval.js",
+  "hype-lingo-lex-ecurie.js", "hype-lingo-lex-pansage.js", "hype-lingo-lex-materiel.js",
+  "hype-lingo-lex-cours.js", "hype-lingo-lex-dressage.js", "hype-lingo-lex-enseignant.js",
+  "hype-lingo-lex-obstacle.js", "hype-lingo-lex-derby.js", "hype-lingo-lex-concours.js",
+  "hype-lingo-lex-cross.js", "hype-lingo-lex-horsemanship.js", "hype-lingo-lex-urgences.js",
+  "hype-lingo-lex-poney.js", "hype-lingo-lex-tradition.js", "hype-lingo-lex-western.js",
+  "hype-lingo-lex-polo.js", "hype-lingo-lex-haras.js", "hype-lingo-lex-froid.js",
+  "hype-lingo-lex-endurance.js", "hype-lingo-lex-vente.js", "hype-lingo-lex-elevage.js"
+];
 
 /* Le socle : ce qui doit être là même si la ville n'a jamais été
    ouverte. Volontairement SANS `?l=` — lingo.html les demandera avec
@@ -81,7 +127,7 @@ var SOCLE = [
   "lingo-globe.html",
   "lingo-sellerie.html",
   "linguae.webmanifest"
-];
+].concat(SOCLE_JS);
 
 /* ---------- installation ---------- */
 /* `addAll` échoue en bloc si UN SEUL fichier manque — c'est trop
@@ -128,6 +174,35 @@ function estPageLinguae(u){
   return /\.html$/i.test(u.pathname) && u.pathname.indexOf("/lingo") >= 0;
 }
 
+/* 🟥 GARDE-FOU B — UNE PAGE NE REMPLACE L'ANCIENNE QUE SI ELLE EST
+   COMPLÈTE. On relève les `<script src>` de la nouvelle page et on
+   s'assure que chacun est en cache ou descend avec succès. Une page
+   qu'on ne pourrait pas servir entièrement hors ligne ne mérite pas
+   d'écraser une page qui marchait. C'est le correctif du défaut du
+   16/08 : voir l'en-tête. ⚠️ NE PAS mettre en cache une page sans
+   passer par ici. */
+async function pageComplete(rep, cache){
+  try{
+    var html = await rep.clone().text();
+    var srcs = [], m, re = /<script[^>]+src=["']([^"']+)["']/gi;
+    while((m = re.exec(html))){
+      var u = m[1];
+      if(/^https?:/i.test(u)) continue;      /* CDN : hors de notre ressort */
+      srcs.push(u);
+    }
+    for(var i=0;i<srcs.length;i++){
+      var deja = await cache.match(srcs[i]);
+      if(deja) continue;
+      try{
+        var r = await fetch(srcs[i], {cache:"no-cache"});
+        if(!r || !r.ok) return false;         /* un script manque : on renonce */
+        await cache.put(srcs[i], r.clone());
+      }catch(e){ return false; }
+    }
+    return true;
+  }catch(e){ return false; }
+}
+
 self.addEventListener("fetch", function(e){
   var req = e.request;
 
@@ -159,8 +234,20 @@ self.addEventListener("fetch", function(e){
           }
           return net;
         }).catch(function(){
-          /* hors ligne et jamais vu : on rend une erreur douce, la page
-             a déjà ses replis (image manquante, lexique absent) */
+          /* 🟥 GARDE-FOU C — UN SCRIPT MANQUANT NE TUE PLUS L'APP.
+             Correctif du 16/08. Un `.js` renvoyé en 504 ARRÊTE
+             l'exécution du navigateur ; un `.js` VIDE, non. La ville
+             concernée manquera, mais l'app tournera — c'est toujours
+             mieux qu'un écran noir dans un avion.
+             ⚠️ NE PAS « simplifier » en renvoyant une erreur pour les
+             scripts : c'est exactement ce qui a cassé l'app. */
+          if(/\.js$/i.test(u.pathname)){
+            return new Response(
+              "/* hors ligne : ce fichier n'etait pas en cache. */\n",
+              {status:200, headers:{"Content-Type":"application/javascript"}});
+          }
+          /* images et polices : une erreur douce suffit, la page a déjà
+             ses replis (image manquante, fond de secours) */
           return new Response("", {status:504, statusText:"hors ligne"});
         });
       })
@@ -174,7 +261,17 @@ self.addEventListener("fetch", function(e){
       fetch(req).then(function(net){
         if(net && net.ok){
           var copie = net.clone();
-          caches.open(CACHE).then(function(c){ c.put(req, copie); });
+          /* 🟥 GARDE-FOU B : on ne remplace la page en cache QUE si tous
+             ses scripts sont servables hors ligne. Sinon on rend la
+             nouvelle page à l'écran (le réseau est là, elle marchera)
+             mais on GARDE l'ancienne en cache — celle qui, elle,
+             fonctionne sans réseau. C'est le correctif du 16/08.
+             ⚠️ NE PAS remettre un `c.put()` inconditionnel ici. */
+          caches.open(CACHE).then(async function(c){
+            try{
+              if(await pageComplete(copie, c)) await c.put(req, copie);
+            }catch(e2){}
+          });
         }
         return net;
       }).catch(function(){
