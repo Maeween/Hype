@@ -24,7 +24,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08 · VERROU CSS, MUR IMMERSIF VERIFIE, RECADREUR MIS A NU, HALO RALLUME) — md5 `b45c18904071a2e9b7dd079fee48be83`, 9 119 872 octets. **FICHIER COMPAGNON OBLIGATOIRE : `hype-stories.js` v19ba, md5 `a10828b63e35b4d901dda55af313aff1`, 366 282 octets, charge via `?v=19ba`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** A pousser ENSEMBLE. Aucun SQL. Temoin attendu : `reprise 1.8 · baby 112 · memo 4 · stories 19ba`. Copie d'apercu EN PLUS : `index-apercu-mur.html` (md5 `8ffa6add5be6a7a256d2a1bb103e01bc`), jamais a pousser.**
+**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 · 17/08 · VERROU CSS, MUR IMMERSIF VERIFIE, RECADREUR MIS A NU, HALO EN ANNEAU) — md5 `b6146ef85c23c6ed81793b4891371577`, 9 119 860 octets. **FICHIER COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bb, md5 `73b57b7cae30939caf38df2e6c60e3d8`, 366 665 octets, charge via `?v=19bb`.** **IMAGE OBLIGATOIRE A LA RACINE : `Hype_mur_immersif_encarts_transparents.png`.** A pousser ENSEMBLE. Aucun SQL. Temoin attendu : `reprise 1.8 · baby 112 · memo 4 · stories 19bb`. Copie d'apercu EN PLUS : `index-apercu-mur.html` (md5 `2c502a2d5619578dda02db63a6a1bedc`), jamais a pousser.**
+
+⚠️ **DEUX ETATS INTERMEDIAIRES DU JOUR SONT PERIMES — NE PAS LES POUSSER :** 19az verrou CSS seul (index `eb968bee74ef8790df831ec4754801e7`), et 19ba halo trop fort (index `b45c18904071a2e9b7dd079fee48be83`, `hype-stories.js` `a10828b63e35b4d901dda55af313aff1`). Le 19bb ci-dessus les contient tous les deux.
 
 **Etat precedent du jour (19az, verrou CSS seul) :** index md5 `eb968bee74ef8790df831ec4754801e7`, `hype-stories.js` v19az md5 `bb90bb6862461e8295ad5e8ffea60701` — remplace par le 19ba ci-dessus, ne plus pousser.
 
@@ -271,11 +273,31 @@ Les trois points de vigilance d'origine tiennent : calque **séparé posé desso
 
 ⚠️ **CONSEQUENCE TRAITEE, ET C'EST LE PIEGE DEJA PAYE EN 19au :** le débordement passe de 15,8 px à **21,1 px** sur un rond de 132. Le retrait **haut** du rail devait donc monter de **18 à 22 px**, sinon `overflowY: hidden` tranchait le halo net en haut. Fait. Le retrait bas reste à 6 px : le débordement inférieur tombe derrière le libellé, à l'intérieur du bouton, donc il n'est pas coupé.
 
-**Deux niveaux plus forts sont prêts si le léger ne suffit pas** — « présent » (0,48 / 0,24 / 1,40×) et « affirmé » (0,62 / 0,32 / 1,50×). Trois valeurs à changer, plus le retrait haut à recalculer : **à 1,40× il faut 27 px, à 1,50× il faut 33 px.** Ne pas oublier ce recalcul.
+⚠️ **PASSE 2 — LE « LEGER » ETAIT VIOLENT. ECARTE.** Verdict de Blandine sur capture de 12 h 33 : « le halo dégradé est un peu violent non je voulais qqch de plus subtil ». Mesure : l'anneau montait à **(26, 165, 186)**, aussi lumineux qu'un élément d'interface. **Trois fautes à ne pas refaire :**
+
+1. **À 76 % le masque de fondu a déjà dissout la photo.** Je croyais poser la lumière SOUS son bord ; je l'ai posée DANS LE VIDE, pleinement exposée.
+2. **La montée de 0 à 76 % éclairait tout l'intérieur** — ce n'était pas un anneau mais un **disque**. D'où les ronds turquoise pleins.
+3. **À 1,32× les halos se chevauchaient.** 174 px de diamètre pour des cellules de 132 espacées de 4 : une **chaîne de bulles**. Invisible dans un calcul sur une vignette isolée, évident à l'écran. **Toujours vérifier un effet de vignette SUR LE RAIL ENTIER, jamais sur une cellule seule.**
+
+**LIVRE (19bb) — anneau étroit, « subtil et discret », ses mots :**
+
+```
+avant  : tA(0.20) 0%  · tA(0.09) 44%  · tA(0) 100%                          · 1,24x
+passe 1: tA(0.12) 0%  · tA(0.34) 76%  · tA(0.14) 88%  · tA(0) 100%          · 1,32x  ECARTE
+passe 2: tA(0)    0%  · tA(0)    78%  · tA(0.09) 89%  · tA(0.03) 95%  · tA(0) 100%  · 1,16x
+```
+
+**LA REGLE DE CALCUL A RETENIR : le bord de la photo tombe à `1 / etendue` du rayon du dégradé.** À 1,16× il est à 86,2 % — la bande lumineuse ne vit donc que sur les 14 % suivants, environ 11 px. Rien à l'intérieur (deux arrêts à zéro jusqu'à 78 %), donc plus de disque.
+
+**Le retrait haut du rail revient à 18 px**, sa valeur d'origine : le débordement redescend à 10,6 px. **Il ne faut le relever qu'au-delà de 1,27×.**
+
+⚠️ **MON MODELE DE COMPOSITION SOUS-ESTIME D'UN FACTEUR DEUX.** Il prédisait (15, 78, 89) pour la passe 1, la mesure a donné (26, 165, 186) — le chevauchement des halos et la photo qui bave à travers le masque s'additionnent. **Viser bas et mesurer sur capture, jamais faire confiance au calcul seul.** Attendu pour la passe 2 : (8, 26, 30) au modèle, donc sans doute autour de (16, 55, 62) réel, et (10, 43, 49) au modèle dans les 4 px entre deux vignettes voisines.
+
+**Si c'est encore trop** : baisser le pic à 0,06 et l'étendue à 1,12×. **Si c'est invisible** : monter le pic à 0,13 en gardant 1,16× — ne PAS élargir l'étendue, c'est elle qui crée la chaîne de bulles. **Troisième sortie proposée et non retenue** : revenir à l'ancien réglage et laisser le halo invisible — invisible ne dérange personne, un halo trop fort si.
 
 **À l'écran : + / −**
-**+** le halo devient visible autour des vignettes, dans la teinte du cavalier · la bande respire 4 px de plus en haut.
-**−** rien retiré. Aucune photo touchée.
+**+** une respiration de lumière de 11 px autour des vignettes, dans la teinte du cavalier.
+**−** rien retiré. Aucune photo touchée, aucune mise en page déplacée (le retrait du rail est inchangé par rapport à l'index de Blandine).
 
 ### 6. ⏸ L'ORDRE DU RAIL — CHANTIER OUVERT, RIEN LIVRE
 
