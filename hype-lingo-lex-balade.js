@@ -67,27 +67,25 @@ window.HYPE_LINGO_LEX.balade = {
 
   /* ---- entrées neuves, non relues par un natif ---- */
 
+  /* 🟥 REFORMULÉE le 16/08 sur demande de Blandine : « se baigner avec
+     son cheval plutôt que se baigner ». « La baignade » tout court peut
+     se comprendre comme la piscine de l'hôtel ; l'entrée dit maintenant
+     ce qu'on apprend vraiment, et c'est ce qui distingue Le Morne de
+     n'importe quelle plage.
+     ⚠️ LES PHRASES GARDENT « la baignade » — c'est le français naturel
+     dans une phrase parlée. Seule l'ENTRÉE du lexique est explicite.
+     On apprend « se baigner avec son cheval », on l'entend dit « la
+     baignade » dans la scène. NE PAS uniformiser. */
   { ref:"baignade", lecon:1, coll:"balade",
-    mots:{ fr:{m:"la baignade"}, en:{m:"the swim", p:"souim"},
-           es:{m:"el baño"}, it:{m:"il bagno"},
-           de:{m:"das Baden", p:"ba-deune"}, ja:{m:"水浴", p:"suiyoku"} },
+    mots:{ fr:{m:"se baigner avec son cheval", var:"la baignade"}, en:{m:"to swim with your horse", p:"souim ouiz your hors"},
+           es:{m:"bañarse con el caballo"}, it:{m:"fare il bagno con il cavallo"},
+           de:{m:"mit dem Pferd baden", p:"mitt dème pfèrt ba-deune"}, ja:{m:"馬と一緒に水に入る", p:"uma to issho ni mizu ni hairu"} },
     def:{ fr:"Entrer dans l'eau avec le cheval, en restant en selle. ⚠️ Ce n'est pas la même chose que le faire nager : on peut se baigner jusqu'au poitrail sans jamais que le cheval nage.",
           en:"Going into the water with the horse, staying in the saddle. Not the same as making it swim: you can wade in chest-deep without the horse ever swimming.",
           es:"Entrar en el agua con el caballo, sin bajarse de la silla. ⚠️ No es lo mismo que hacerlo nadar: se puede entrar hasta el pecho sin que el caballo nade nunca.",
           it:"Entrare in acqua con il cavallo, restando in sella. ⚠️ Non è la stessa cosa che farlo nuotare: si può entrare fino al petto senza che il cavallo nuoti mai.",
           de:"Mit dem Pferd ins Wasser gehen, im Sattel bleibend. ⚠️ Nicht dasselbe wie schwimmen lassen: Man kann bis zur Brust hineinwaten, ohne dass das Pferd je schwimmt.",
           ja:"鞍に座ったまま、馬と水に入ること。⚠️ 泳がせるのとは別物です。馬が一度も泳がないまま、胸の深さまで入ることもできます。" } },
-
-  { ref:"nager", lecon:1, coll:"balade",
-    mots:{ fr:{m:"nager"}, en:{m:"to swim", p:"tou souim"},
-           es:{m:"nadar"}, it:{m:"nuotare"},
-           de:{m:"schwimmen", p:"chvi-meune"}, ja:{m:"泳ぐ", p:"oyogu"} },
-    def:{ fr:"Le moment où les pieds du cheval ne touchent plus. L'eau monte jusqu'à la selle et il nage avec toi dessus. Il nage naturellement, mais il faut lui lâcher la tête : la rêne qui retient le noie.",
-          en:"The moment the horse's feet leave the bottom. The water rises to the saddle and it swims with you on its back. It swims naturally, but its head must be free: a restraining rein drowns it.",
-          es:"El momento en que los pies del caballo dejan de tocar. El agua sube hasta la silla y nada contigo encima. Nada de forma natural, pero hay que soltarle la cabeza: la rienda que retiene lo ahoga.",
-          it:"Il momento in cui i piedi del cavallo non toccano più. L'acqua sale fino alla sella e lui nuota con te sopra. Nuota naturalmente, ma bisogna lasciargli la testa: la redine che trattiene lo annega.",
-          de:"Der Moment, in dem die Hufe den Grund verlieren. Das Wasser steigt bis zum Sattel, und es schwimmt mit dir darauf. Es schwimmt von Natur aus — aber der Kopf muss frei sein: Ein haltender Zügel ertränkt es.",
-          ja:"馬の脚が底を離れる瞬間。水は鞍まで上がり、馬はきみを乗せたまま泳ぎます。泳ぎは生まれつきできますが、頭は自由にしてやること。引き止める手綱は、馬を溺れさせます。" } },
 
   { ref:"lagon", lecon:1, coll:"balade",
     mots:{ fr:{m:"le lagon"}, en:{m:"the lagoon", p:"la-goune"},
@@ -145,39 +143,6 @@ window.HYPE_LINGO_LEX.balade = {
           de:"Wer den Ritt anführt und den Grund kennt. Man überholt ihn nicht: Er weiß, wo der Sand nachgibt.",
           ja:"先頭を行き、海底を知り尽くしている人。追い越してはいけません。砂がどこで崩れるかを知っているのは、この人だけです。" } },
 
-  { ref:"maillot", lecon:1, coll:"balade",
-    mots:{ fr:{m:"le maillot de bain"}, en:{m:"the swimsuit", p:"souim-siout"},
-           es:{m:"el bañador"}, it:{m:"il costume da bagno"},
-           de:{m:"die Badehose", p:"ba-de-hô-ze"}, ja:{m:"水着", p:"mizugi"} },
-    def:{ fr:"À mettre sous la tenue avant de partir : il n'y a pas de vestiaire sur la plage. La bombe reste obligatoire dans l'eau.",
-          en:"Put it on under your clothes before you leave: there is no changing room on the beach. The hat stays on in the water.",
-          es:"Ponérselo bajo la ropa antes de salir: no hay vestuario en la playa. El casco sigue siendo obligatorio en el agua.",
-          it:"Da mettere sotto i vestiti prima di partire: non c'è spogliatoio sulla spiaggia. Il cap resta obbligatorio in acqua.",
-          de:"Vor dem Aufbruch unter die Kleidung ziehen: Am Strand gibt es keine Umkleide. Der Helm bleibt auch im Wasser Pflicht.",
-          ja:"出発前に服の下へ着ておくこと。浜辺に更衣室はありません。そして水の中でも、ヘルメットは必須のままです。" } },
-
-  { ref:"creme-solaire", lecon:1, coll:"balade",
-    mots:{ fr:{m:"la crème solaire"}, en:{m:"the sunscreen", p:"seune-skrine"},
-           es:{m:"la crema solar"}, it:{m:"la crema solare"},
-           de:{m:"die Sonnencreme", p:"zo-neune-krème"}, ja:{m:"日焼け止め", p:"hiyakedome"} },
-    def:{ fr:"Sous les tropiques, le sable et l'eau renvoient le soleil par-dessous : on brûle aussi à l'ombre du casque.",
-          en:"In the tropics, sand and water throw the sun back up at you: you burn even in the shade of your hat.",
-          es:"En los trópicos, la arena y el agua devuelven el sol desde abajo: uno se quema incluso a la sombra del casco.",
-          it:"Ai tropici, la sabbia e l'acqua rimandano il sole da sotto: ci si brucia anche all'ombra del cap.",
-          de:"In den Tropen werfen Sand und Wasser die Sonne von unten zurück: Man verbrennt selbst im Schatten des Helms.",
-          ja:"熱帯では、砂と水が太陽を下から照り返します。ヘルメットの陰にいても、日焼けするのです。" } },
-
-  { ref:"ombre", lecon:1, coll:"balade",
-    mots:{ fr:{m:"l'ombre"}, en:{m:"the shade", p:"chéd"},
-           es:{m:"la sombra"}, it:{m:"l'ombra"},
-           de:{m:"der Schatten", p:"cha-teune"}, ja:{m:"日陰", p:"hikage"} },
-    def:{ fr:"Ce qu'on cherche pour le cheval autant que pour soi. Une balade tropicale se fait tôt le matin ou en fin de journée, jamais à midi.",
-          en:"What you look for, for the horse as much as for yourself. A tropical ride goes out early or late, never at midday.",
-          es:"Lo que se busca para el caballo tanto como para uno mismo. Un paseo tropical sale temprano o al final del día, jamás a mediodía.",
-          it:"Ciò che si cerca per il cavallo quanto per sé. Una passeggiata tropicale parte presto o a fine giornata, mai a mezzogiorno.",
-          de:"Was man für das Pferd ebenso sucht wie für sich selbst. Ein Tropenritt startet früh oder spät am Tag — nie mittags.",
-          ja:"自分のためだけでなく、馬のために探すもの。熱帯の外乗は朝早くか夕方に出ます。真昼には決して。" } },
-
   { ref:"eau-douce", lecon:1, coll:"balade",
     mots:{ fr:{m:"l'eau douce"}, en:{m:"the fresh water", p:"frèch"},
            es:{m:"el agua dulce"}, it:{m:"l'acqua dolce"},
@@ -210,7 +175,94 @@ window.HYPE_LINGO_LEX.balade = {
       es:"Sin silla, directamente sobre el lomo del caballo. ⚠️ « Bareback » es una sola palabra en inglés, sin equivalente literal — imposible de adivinar, y por eso hay que conocerla. En el agua cobra todo su sentido: el cuero de una silla no soporta la sal ni la arena, así que el baño suele hacerse a pelo. Sientes al caballo nadar debajo de ti, y eso no se olvida.",
       it:"Senza sella, direttamente sulla schiena del cavallo. ⚠️ « Bareback » è una sola parola in inglese, senza equivalente letterale — impossibile da indovinare, ed è per questo che va conosciuta. In acqua acquista tutto il suo senso: il cuoio di una sella non ama né il sale né la sabbia, così il bagno si fa spesso a pelo. Senti il cavallo nuotare sotto di te, e non lo dimentichi più.",
       de:"Ohne Sattel, direkt auf dem Pferderücken. ⚠️ « Bareback » ist im Englischen ein einziges Wort, ohne wörtliche Entsprechung — nicht zu erraten, und genau darum muss man es kennen. Im Wasser bekommt es seinen ganzen Sinn: Sattelleder verträgt weder Salz noch Sand, also wird das Baden oft blank geritten. Man spürt das Pferd unter sich schwimmen, und das vergisst man nicht.",
-      ja:"鞍をつけず、馬の背に直接乗ること。⚠️ 英語の « bareback » は一語で、フランス語には直訳がありません — 推測できないからこそ、覚える値があります。水の中でこそ意味を持ちます：鞍の革は塩も砂も嫌うので、水浴は裸馬で行うことが多いのです。自分の下で馬が泳ぐのを感じる — 忘れられない経験です。" } }
+      ja:"鞍をつけず、馬の背に直接乗ること。⚠️ 英語の « bareback » は一語で、フランス語には直訳がありません — 推測できないからこそ、覚える値があります。水の中でこそ意味を持ちます：鞍の革は塩も砂も嫌うので、水浴は裸馬で行うことが多いのです。自分の下で馬が泳ぐのを感じる — 忘れられない経験です。" } },
+
+  /* ================================================================
+     LES GESTES DU CAVALIER EN BALADE — cinq entrées ajoutées le
+     16/08/2026, session 214, dictées par Blandine.
+
+     🟥 POURQUOI ELLES, ET PAS LE MATÉRIEL. Le chapitre avait été
+     nettoyé le même jour de ses mots non équestres (maillot, crème
+     solaire, nager, ombre — retirés sur son ordre : « le maillot de
+     bain la crème solaire ça vire », « nager c'est pas un terme
+     équestre à apprendre !! », « l'ombre ça peut être dans une phrase
+     mais pas dans le lexique non plus »). Ces mots restent EMPLOYÉS
+     dans les phrases du dialogue — ils s'y apprennent par l'usage.
+     ⚠️ NE PAS les remettre au lexique.
+
+     🟥 ET PAS DE MATÉRIEL ICI : licol, filet, sangle, étriers, selle,
+     rênes s'apprennent à WALSALL (« Le matériel », 46 concepts). Le
+     dialogue du Morne les emploie sans les posséder. Constat de
+     Blandine : « normalement on a une ville pour le matériel non ».
+     Même règle pour `galop` (La Baule, avec l'avertissement
+     canter/gallop) : « galop et canter on les a déjà vus en lexique ».
+     ⚠️ NE PAS étoffer ce chapitre avec du vocabulaire d'une autre ville.
+
+     CE QUI LUI APPARTIENT VRAIMENT : Le Morne n'est pas une ville de
+     matériel, c'est une ville de POSITION — comment se tenir quand ça
+     bouge sous soi, dans l'eau et sur le sable.
+
+     ⚠️ `trot-enleve` EXISTE AUSSI à ABERYSTWYTH (`cours`), où le
+     moniteur le CRIE. Doublon assumé par Blandine (« garde-en en
+     double oui ») : ici c'est une position qu'on CHOISIT en balade,
+     là-bas un ordre qu'on REÇOIT. Et Le Morne est l'étape 2,
+     Aberystwyth la 7e — c'est ici qu'on l'apprend d'abord.
+     ================================================================ */
+
+  { ref:"faire-entrer-eau", lecon:1, coll:"balade",
+    mots:{ fr:{m:"faire entrer son cheval dans l'eau"}, en:{m:"to get your horse into the water", p:"guètt into ze oua-teur"},
+           es:{m:"meter el caballo en el agua"}, it:{m:"far entrare il cavallo in acqua"},
+           de:{m:"das Pferd ins Wasser bringen", p:"inss va-sseur"}, ja:{m:"馬を水に入れる", p:"uma o mizu ni ireru"} },
+    def:{ fr:"🟥 LE GESTE CENTRAL DE CETTE VILLE, et le plus difficile : beaucoup de chevaux refusent l'eau. On n'y va pas de face en poussant — on suit un autre cheval, on laisse le temps, on avance au pas et on cède dès qu'il avance. Un cheval forcé apprend à refuser.",
+          en:"The key move here, and the hardest: many horses refuse water. You don't drive them straight in — you follow another horse, take your time, walk forward and give as soon as he steps in. A horse that's forced learns to refuse.",
+          es:"El gesto clave de esta ciudad, y el más difícil: muchos caballos rechazan el agua. No se entra de frente empujando: se sigue a otro caballo, se da tiempo, se avanza al paso y se cede en cuanto entra.",
+          it:"Il gesto centrale di questa città, e il più difficile: molti cavalli rifiutano l'acqua. Non ci si entra di forza — si segue un altro cavallo, si dà tempo, si avanza al passo e si cede appena entra.",
+          de:"Der zentrale Moment hier, und der schwerste: viele Pferde verweigern das Wasser. Man treibt sie nicht frontal hinein — man folgt einem anderen Pferd, lässt Zeit, geht im Schritt vor und gibt nach, sobald es hineintritt.",
+          ja:"この街の中心となる、そして最も難しい動作。水を嫌う馬は少なくありません。正面から押し込むのではなく、他の馬について行き、時間をかけ、常歩で進み、一歩入った瞬間に譲ります。無理に入れられた馬は、拒むことを覚えます。" } },
+
+  { ref:"trot-enleve", lecon:1, coll:"balade",
+    mots:{ fr:{m:"le trot enlevé"}, en:{m:"rising trot", p:"raï-zingue trot", var:"posting trot (US)"},
+           es:{m:"el trote levantado"}, it:{m:"il trotto battuto"},
+           de:{m:"das Leichttraben", p:"laïcht-tra-beune"}, ja:{m:"軽速歩", p:"keihayaashi"} },
+    def:{ fr:"Se lever et s'asseoir en alternance, au rythme du trot. C'est ce qui permet de trotter longtemps sans fatiguer le dos du cheval — indispensable en balade. ⚠️ Les Britanniques disent **rising trot**, les Américains **posting trot** : deux mots pour le même geste.",
+          en:"Rising and sitting in rhythm with the trot. It lets you trot for a long time without tiring the horse's back — essential on a hack. British riders say « rising », Americans « posting ».",
+          es:"Levantarse y sentarse al ritmo del trote. Permite trotar mucho tiempo sin cansar la espalda del caballo — indispensable en paseo.",
+          it:"Alzarsi e sedersi al ritmo del trotto. Permette di trottare a lungo senza affaticare il dorso del cavallo — indispensabile in passeggiata.",
+          de:"Im Rhythmus des Trabes aufstehen und sitzen. So kann man lange traben, ohne den Pferderücken zu ermüden — auf dem Ausritt unverzichtbar.",
+          ja:"速歩のリズムに合わせて立ったり座ったりします。馬の背を疲れさせずに長く速歩できるので、外乗には欠かせません。" } },
+
+  { ref:"galop-equilibre", lecon:1, coll:"balade",
+    mots:{ fr:{m:"galoper en équilibre"}, en:{m:"to gallop in a light seat", p:"laïte sitt", var:"two-point"},
+           es:{m:"galopar en equilibrio"}, it:{m:"galoppare in equilibrio"},
+           de:{m:"im leichten Sitz galoppieren", p:"laïch-teune zitts"}, ja:{m:"軽く腰を浮かせて駆歩する", p:"karuku koshi o ukasete kakeho suru"} },
+    def:{ fr:"Les fesses hors de la selle, le poids dans les étriers, le buste un peu en avant. C'est ainsi qu'on galope longtemps sur le sable sans peser sur le dos du cheval. ⚠️ L'anglais dit **light seat** ou **two-point** — deux points d'appui, les deux jambes, au lieu de trois.",
+          en:"Seat out of the saddle, weight in the stirrups, body slightly forward. That's how you gallop for a long time on sand without weighing on the horse's back. Also called « two-point »: two points of contact instead of three.",
+          es:"El trasero fuera de la silla, el peso en los estribos, el busto algo adelantado. Así se galopa mucho tiempo en la arena sin cargar el dorso.",
+          it:"Il sedere fuori dalla sella, il peso nelle staffe, il busto un po' avanti. Così si galoppa a lungo sulla sabbia senza pesare sul dorso.",
+          de:"Das Gesäß aus dem Sattel, das Gewicht in den Bügeln, der Oberkörper leicht vor. So galoppiert man lange über Sand, ohne den Rücken zu belasten.",
+          ja:"腰を鞍から浮かせ、体重を鐙に預け、上体を少し前に。こうすれば砂の上を長く駆歩しても、馬の背に負担がかかりません。" } },
+
+  { ref:"galop-assis", lecon:1, coll:"balade",
+    mots:{ fr:{m:"galoper assis"}, en:{m:"to sit to the canter", p:"sitt tou ze kann-teur"},
+           es:{m:"galopar sentado"}, it:{m:"galoppare seduto"},
+           de:{m:"im Sitz galoppieren", p:"imm zitts"}, ja:{m:"座って駆歩する", p:"suwatte kakeho suru"} },
+    def:{ fr:"L'assiette dans la selle, le bassin qui accompagne. On l'emploie quand il faut contrôler — dans l'eau, sur un terrain qui change, ou quand le cheval s'excite. ⚠️ L'inverse du galop en équilibre : l'un pour aller loin, l'autre pour tenir.",
+          en:"Seat in the saddle, hips following the movement. Used when you need control — in water, on changing ground, or when the horse gets keen. The opposite of the light seat: one to go far, one to hold.",
+          es:"El asiento en la silla, la pelvis acompañando. Se usa cuando hay que controlar: en el agua, en terreno cambiante, o cuando el caballo se excita.",
+          it:"L'assetto nella sella, il bacino che accompagna. Si usa quando serve controllo: in acqua, su terreno che cambia, o quando il cavallo si accende.",
+          de:"Der Sitz im Sattel, das Becken geht mit. Man braucht ihn zur Kontrolle — im Wasser, auf wechselndem Boden, oder wenn das Pferd heiß wird.",
+          ja:"鞍に座り、骨盤で動きについていきます。制御が必要なとき — 水の中、変わりやすい地面、馬が興奮したとき — に使います。" } },
+
+  { ref:"attraper-criniere", lecon:1, coll:"balade",
+    mots:{ fr:{m:"attraper la crinière"}, en:{m:"to grab the mane", p:"grab ze méïn"},
+           es:{m:"agarrarse a las crines"}, it:{m:"afferrare la criniera"},
+           de:{m:"die Mähne greifen", p:"mè-ne graï-feune"}, ja:{m:"たてがみをつかむ", p:"tategami o tsukamu"} },
+    def:{ fr:"🟥 POUR SE STABILISER SANS TIRER SUR LA BOUCHE. La crinière n'a pas de nerfs : s'y accrocher ne fait rien au cheval, alors que se rattraper aux rênes le fait accélérer ou lui abîme la bouche. C'est le geste à apprendre AVANT d'en avoir besoin — dans l'eau, à cru, ou sur un écart.",
+          en:"To steady yourself without pulling on the mouth. The mane has no nerves: holding it does nothing to the horse, while grabbing the reins makes him speed up or hurts his mouth. Learn it BEFORE you need it — in water, bareback, or on a spook.",
+          es:"Para estabilizarse sin tirar de la boca. Las crines no tienen nervios: agarrarse a ellas no le hace nada, mientras que sujetarse de las riendas lo acelera o le daña la boca.",
+          it:"Per stabilizzarsi senza tirare sulla bocca. La criniera non ha nervi: afferrarla non fa niente al cavallo, mentre aggrapparsi alle redini lo accelera o gli rovina la bocca.",
+          de:"Um sich zu stabilisieren, ohne am Maul zu ziehen. Die Mähne hat keine Nerven: sich daran festzuhalten tut dem Pferd nichts, während Festhalten an den Zügeln es antreibt oder das Maul verletzt.",
+          ja:"口を引っ張らずに体勢を保つための動作。たてがみには神経がないので、つかんでも馬は痛くありません。手綱にしがみつくと、馬は速くなるか口を痛めます。必要になる前に覚えておく動作です。" } }
 
   ],
 
@@ -319,7 +371,7 @@ window.HYPE_LINGO_LEX.balade = {
          avec les chevaux ? » — remplace « la baignade est comprise »,
          qui parlait d'organisation ; celle-ci parle de ce qu'on va vivre.
          EN à venir. */
-      { ref:"d-nager-chevaux", temps:1, dit:"joueuse", mots:["nager","baignade"],
+      { ref:"d-nager-chevaux", temps:1, dit:"joueuse", mots:["baignade"],   /* 16/08 : `nager` retire du lexique (pas un terme equestre) — la phrase reste, le mot s'apprend par elle */
         fr:"Est-ce qu'il est possible de nager avec les chevaux ?",
         en:"Is it possible to swim with the horses?",
         es:"¿Es posible nadar con los caballos?",
@@ -494,7 +546,7 @@ window.HYPE_LINGO_LEX.balade = {
          parce que le cavalier a chaud ». Un cavalier qui a un coup de
          chaud le dit rarement à temps — savoir le demander dans une
          langue étrangère est exactement l'usage de cette app. */
-      { ref:"d-ombre-chaud", temps:6, dit:"joueuse", mots:["ombre"],
+      { ref:"d-ombre-chaud", temps:6, dit:"joueuse", mots:[],   /* 16/08 : `ombre` retire du lexique — decision de Blandine : « l'ombre ca peut etre dans une phrase mais pas dans le lexique non plus ». La phrase, elle, EST D'ELLE et reste. */
         fr:"Est-ce qu'on peut s'arrêter à l'ombre ? J'ai trop chaud.",
         en:"Can we stop in the shade? I'm too hot.",
         es:"¿Podemos parar a la sombra? Tengo mucho calor.",
