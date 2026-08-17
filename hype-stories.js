@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bb";
+var HYPE_STORIES_VERSION = "19bc";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1723,7 +1723,22 @@ function BandeauStories(props) {
            ⚠️ LE DEBORDEMENT redescend a 10,6 px : le retrait haut du rail revient
            donc a 18 px, sa valeur d origine. Le relever n est necessaire qu au
            dela de 1,27x — ne pas oublier ce recalcul si le niveau remonte. */
-        var HD = Math.round((libreRect ? 150 : LW) * 1.16);
+        /* ⚠️ 17/08 — TROISIEME PASSE, ET LA BONNE LECON.
+           Passe 1 : pic 0,34 a 76 %, etendue 1,32x -> « un peu violent »,
+           anneau mesure a (26,165,186).
+           Passe 2 : anneau ETROIT, pic 0,09, etendue 1,16x -> « on voit plus
+           rien ». Mesure sur la capture de 13 h 12 : UN SEUL pixel turquoise a
+           (35,52,62) sur toute la largeur de la bande.
+           MON ERREUR : Blandine avait demande « le meme mais plus leger ». J ai
+           change la FORME (disque -> anneau) au lieu de baisser l INTENSITE. Le
+           hublot qui en resultait n etait pas ce qu elle avait valide.
+           PASSE 3 : on reprend EXACTEMENT la geometrie de la passe 1 — meme
+           etendue 1,32x, meme pic a 76 % — et on descend l opacite a 40 %.
+           Anneau attendu autour de (11,68,77), soit entre le violent et
+           l invisible.
+           REGLE : « plus leger » = baisser l opacite, JAMAIS toucher a la
+           geometrie. La forme etait validee des la passe 1. */
+        var HD = Math.round((libreRect ? 150 : LW) * 1.32);
         return h("div", {
           key: cle,
           style: { position: "relative", width: LW, height: LH, flex: "0 0 auto" }
@@ -1734,7 +1749,7 @@ function BandeauStories(props) {
               position: "absolute", left: "50%", top: "50%",
               width: HD, height: HD, marginLeft: -(HD / 2), marginTop: -(HD / 2),
               borderRadius: "50%", pointerEvents: "none",
-              background: "radial-gradient(circle closest-side, " + tA(0) + " 0%, " + tA(0) + " 78%, " + tA(0.09) + " 89%, " + tA(0.03) + " 95%, " + tA(0) + " 100%)"
+              background: "radial-gradient(circle closest-side, " + tA(0.05) + " 0%, " + tA(0.14) + " 76%, " + tA(0.06) + " 88%, " + tA(0) + " 100%)"
             }
           }),
           h("div", {
@@ -1852,7 +1867,7 @@ function BandeauStories(props) {
 
   return h("div", { style: { padding: (props && props.padding) || "16px 0 8px" } },
     h("input", { ref: fileRef, type: "file", accept: "image/*", multiple: true, onChange: surFichier, style: { display: "none" } }),
-    h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "18px 14px 6px", WebkitOverflowScrolling: "touch" } },
+    h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "22px 14px 6px", WebkitOverflowScrolling: "touch" } },
       /* 19n (14/08, mot de Blandine) : « le + pour ajouter une story faut
          qu'il soit toujours en dernier sur le rail pas en premier ». Les
          stories passent devant, le + ferme la marche. */
