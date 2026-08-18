@@ -2757,6 +2757,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      ni bombe ni gilet airbag.
      ⚠️ NE PAS la rebrancher sur `materiel`. -->
 <script src="hype-lingo-lex-parade.js?l=1"></script>
+<script src="hype-lingo-lex-jeunes.js?l=1"></script>
 <script src="hype-lingo-lex-cours.js?l=3"></script>
 <script src="hype-lingo-lex-dressage.js?l=5"></script>
 <!-- 🟥 16/08 : LE CHAPITRE DE L'ENSEIGNANT, pour SAUMUR. Le role
@@ -3700,6 +3701,22 @@ var ETAPES = [
     ⚠️ `arrivee-golega.mp4` existe déjà (reçu le 6 août). Manquent
     `carte-golega.webp` et `fond-golega.webp` — les replis les couvrent. */
  {ref:"golega",    ch:"L'élevage",     v:"Golegã",      nat:"Portugal",       h:"07 h 55", ciel:["#101A1E","#CDA765"], forme:"haras",    souv:"Une page du stud-book",        ic:"carnet"},
+ /* 🟥 34e VILLE, créée le 17/08/2026 : FONTAINEBLEAU, les jeunes chevaux.
+    Blandine : « on ne peut pas rater la Grande Semaine » — la finale
+    nationale des jeunes chevaux au Grand Parquet, l'aboutissement du
+    circuit SHF. Rien dans le voyage ne parlait du JEUNE CHEVAL EN
+    COMPÉTITION, alors que c'est la moitié du métier.
+    ⚠️ PLACE PROVISOIRE, assumée : « laisse-leur une place au pif pour
+    l'instant, dans tous les cas si par la suite on les classe par thème
+    on devra peut-être les présenter dans le désordre ». Elle voulait
+    remonter Lexington près d'ici pour faire un bloc élevage → haras →
+    jeunes chevaux → art équestre. NON FAIT : déplacer Lexington
+    demandait de vérifier tous les récits d'arrivée.
+    ⚠️ Souvenir : LA PLAQUE DE BOX, son choix — « ultra identifiable,
+    collectionnable, ça évoque vraiment la Grande Semaine ». La
+    couverture de remise des prix a été écartée : doublon avec le
+    couvre-reins de Versailles et la couverture d'hiver de Spruce. */
+ {ref:"fontainebleau", ch:"Les jeunes chevaux", v:"Fontainebleau", nat:"France", h:"08 h 05", ciel:["#141C18","#B8A66E"], forme:"foret",    souv:"Une plaque de box",            ic:"plaque"},
  {ref:"jerez",     ch:"Le cheval",     v:"Jerez",       nat:"Espagne",        h:"08 h 15", ciel:["#101B26","#4A4258"], forme:"haras",    souv:"Une jarre andalouse",          ic:"jarre"},
  {ref:"seville",   ch:"La présentation",v:"Séville",    nat:"Espagne",        h:"09 h 05", ciel:["#131C24","#5A4A4E"], forme:"village",  souv:"Un peigne de tresses",         ic:"peigne"},
  {ref:"vejer",     ch:"L'intendance",  v:"Vejer",       nat:"Espagne",        h:"09 h 50", ciel:["#0E1A22","#4E5257"], forme:"cote",     souv:"Un seau de zinc",              ic:"seau"},
@@ -4692,6 +4709,9 @@ var ICONES = {
     est conservee juste apres — une icone orpheline ne coute rien. */
  /* 17/08 : icone du trophee (Badminton). */
  trophee:'<path d="M20 12 h20 v10 q0 10 -10 10 q-10 0 -10 -10 Z M20 16 h-6 q0 8 6 8 M40 16 h6 q0 8 -6 8 M30 32 v8 M22 44 h16 q2 0 2 4 h-20 q0 -4 2 -4" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ /* 17/08 : icone de la plaque de box (Fontainebleau). Plaque emaillee
+    avec sa vis dans chaque coin, comme sur une porte de box. */
+ plaque:'<rect x="12" y="18" width="36" height="24" rx="3" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="17" cy="23" r="1.5" fill="#D4AF37"/><circle cx="43" cy="23" r="1.5" fill="#D4AF37"/><circle cx="17" cy="37" r="1.5" fill="#D4AF37"/><circle cx="43" cy="37" r="1.5" fill="#D4AF37"/><path d="M22 32 q4 -6 8 -6 q4 0 8 6" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linecap="round"/>',
  trousse:'<path d="M14 24 h32 v22 q0 4 -4 4 h-24 q-4 0 -4 -4 Z M24 24 v-5 q0 -3 3 -3 h6 q3 0 3 3 v5 M30 30 v10 M25 35 h10" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>', stetho:'<path d="M20 10 v12 q0 10 10 10 q10 0 10 -10 v-12 M30 32 v10 q0 6 8 6" fill="none" stroke="#D4AF37" stroke-width="2"/><circle cx="42" cy="48" r="6" fill="none" stroke="#D4AF37" stroke-width="2"/>',
  carnet:'<path d="M14 12 h30 q4 0 4 5 v30 q0 5 -4 5 h-30 Z M14 12 v40 M22 22 h18 M22 30 h18 M22 38 h12" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  /* la coupe de Piazza di Siena (Rome, 6 août) : une vasque à deux anses
@@ -6818,7 +6838,17 @@ var ETAPE_SRC = {
   saumur:      [["enseignant",1],["enseignant",2],["enseignant",3],["enseignant",4]],
   lamotte:     [["poney",1]],
   golega:      [["elevage",1]],
-  jerez:       [["cheval",4]],
+  /* 🟥 17/08 : LA LEÇON 4 DE `cheval` PASSE DE JEREZ À FONTAINEBLEAU.
+     Elle contient le hongre, l'étalon, la jument, le poulain, l'âge, le
+     caractère, calme, chaud, la race, le sang chaud — le vocabulaire du
+     SEXE, DE L'ÂGE ET DU TYPE. Il ne disait rien de Jerez, et il dit
+     tout du jeune cheval. Constat de Blandine : « si on prend des mots
+     de Jerez pour mettre dans Fontainebleau, ça libérerait Jerez pour
+     autre chose ».
+     ⚠️ JEREZ REÇOIT DONC UN FICHIER NEUF : `hype-lingo-lex-andalou.js`,
+     l'école royale, le PRE, la doma vaquera, les airs relevés. */
+  fontainebleau: [["cheval",4],["jeunes",1]],
+  jerez:       [["andalou",1]],
   /* 🔴 17/08 : SÉVILLE EST SANS CHAPITRE. Elle pointait sur `materiel` 3,
      que VEJER a reçue le même jour. Laisser les deux dessus donnerait la
      même leçon à deux villes.
@@ -6860,7 +6890,7 @@ var ETAPE_SRC = {
    enseigne bien les dialogues, et c'est ce qu'il faut annoncer au joueur. */
 /* `rome` puise dans `concours` mais n'enseigne pas s'engager : elle
    enseigne les gens du concours. Le mot d'accueil doit dire ça. */
-var ACCUEIL_VILLE = { labaule:"arrivee", edimbourg:"dialogues", lamotte:"poney", seville:"parade", rome:"gens",
+var ACCUEIL_VILLE = { labaule:"arrivee", edimbourg:"dialogues", lamotte:"poney", seville:"parade", fontainebleau:"jeunes", rome:"gens",
                       /* 🟥 17/08 : vejer "ecurie" -> "materiel" (elle a reçu materiel 3+4)
                          et warendorf "materiel" -> "formation" (fichier neuf le même jour).
                          ⚠️ CETTE TABLE EST DISTINCTE DE `ETAPE_SRC` : elle dit ce qu'on ANNONCE
