@@ -68,11 +68,12 @@
    déclenche le ménage des anciennes versions.
    ================================================================== */
 
-var CACHE = "linguae-v6";   /* 🟥 v6 le 18/08 : FLYINGE, nouvelle ville (maréchalerie), fichier neuf
-                               ajoute au socle.
-                               v5 : cheval -> connemara + fontainebleau(fusionne dans jeunes). v4 :
-                               obstacle -> wellington+aachen ; concours -> badminton+oliva+rome+
-                               concours-reserve. v3 : cinq lexiques ajoutes. v2 : les trois garde-fous. */
+var CACHE = "linguae-v7";   /* 🟥 v7 le 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE, dressage + materiel
+                               -> walsall, vejer, materiel-reserve, windsor, versailles,
+                               dressage-reserve. TOUTES LES VILLES ONT DESORMAIS UN FICHIER ET UN
+                               SEUL.
+                               v6 : Flyinge. v5 : cheval -> connemara + jeunes. v4 : obstacle ->
+                               wellington+aachen ; concours -> badminton+oliva+rome+reserve. */
 
 /* 🟥🟥 LE DÉFAUT DU 16/08 — L'APP CASSÉE HORS LIGNE APRÈS UN DÉPLOIEMENT.
    Blandine, revenue de son vol : « j'aurais dû pouvoir accéder sans
@@ -111,8 +112,8 @@ var CACHE = "linguae-v6";   /* 🟥 v6 le 18/08 : FLYINGE, nouvelle ville (maré
 var SOCLE_JS = [
   "hype-lingo-villes.js", "hype-lingo-villes-monde.js", "hype-lingo-phrases-monde.js",
   "hype-lingo-lex-arrivee.js", "hype-lingo-lex-balade.js",
-  "hype-lingo-lex-ecurie.js", "hype-lingo-lex-pansage.js", "hype-lingo-lex-materiel.js",
-  "hype-lingo-lex-cours.js", "hype-lingo-lex-dressage.js", "hype-lingo-lex-enseignant.js",
+  "hype-lingo-lex-ecurie.js", "hype-lingo-lex-pansage.js",
+  "hype-lingo-lex-cours.js", "hype-lingo-lex-enseignant.js",
   "hype-lingo-lex-derby.js",
   "hype-lingo-lex-cross.js", "hype-lingo-lex-horsemanship.js",
   /* 16/08 : les urgences separees en deux fichiers */
@@ -147,7 +148,12 @@ var SOCLE_JS = [
      dupliquait `jeunes.js`. */
   "hype-lingo-lex-connemara.js",
   /* 18/08 : Flyinge, 36e ville, « Le pied et la maréchalerie ». */
-  "hype-lingo-lex-flyinge.js"
+  "hype-lingo-lex-flyinge.js",
+  /* 🟥🟥 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE, dressage.js et materiel.js.
+     Ces deux fichiers sont RETIRES ci-dessus. Toutes les villes ont
+     desormais un fichier et un seul. */
+  "hype-lingo-lex-walsall.js", "hype-lingo-lex-vejer.js", "hype-lingo-lex-materiel-reserve.js",
+  "hype-lingo-lex-windsor.js", "hype-lingo-lex-versailles.js", "hype-lingo-lex-dressage-reserve.js"
 ];
 
 /* Le socle : ce qui doit être là même si la ville n'a jamais été
