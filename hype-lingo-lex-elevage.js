@@ -467,7 +467,16 @@ window.HYPE_LINGO_LEX.elevage = {
      ================================================================== */
 
   dialogue: {
-    ville: "golega",
+    /* ⚠️ 18/08 : TROIS CHAMPS AJOUTÉS par cohérence avec les 33 autres
+       dialogues — `lecon`, `temps`, `langues`. Même correction qu'à
+       Lexington le même jour.
+       🟥 LE MOTEUR N'EN A PAS BESOIN : `lingo-dialogue.html` ne lit que
+       `p.temps` sur CHAQUE PHRASE et regroupe les scènes à partir de là.
+       Golegã fonctionnait donc déjà. Mais l'absence créait une
+       divergence de forme dont une session future aurait pu se fier.
+       ⚠️ `temps: 5` ici, contre 6 partout ailleurs : c'est la valeur
+       réelle des phrases, vérifiée. NE PAS l'aligner sur 6. */
+    ville: "golega", lecon: 1, temps: 5, langues: ["fr","en","es","it","de","ja"],
     titres: { 1:"Parmi les poulinières", 2:"Les poulains de l'année",
               3:"L'examen d'un jeune cheval", 4:"La présentation en main",
               5:"Le choix des lignées" },

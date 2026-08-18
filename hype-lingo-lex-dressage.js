@@ -124,6 +124,119 @@ window.HYPE_LINGO_LEX.dressage = {
           de:"Die Person, die die Aufgabe laut vorliest — in den meisten Clubprüfungen erlaubt. ⚠️ Auf Englisch heißt sie **commander**, was nichts mit Befehlen zu tun hat.",
           ja:"経路を声に出して読み上げる係。ほとんどのクラブ競技で認められています。⚠️ 英語では **commander** — 命令とは何の関係もない言葉です。" } },
 
+  /* ================================================================
+     NEUF ENTRÉES AJOUTÉES le 18/08/2026 pour WINDSOR, d'après le lexique
+     fourni par Blandine.
+     🟥 SA REMARQUE, ET ELLE EST JUSTE : « certains termes deviennent
+     beaucoup plus intéressants que lice ou même entrée en A ». `lice` et
+     `grand-cote` décrivent le DÉCOR ; le coin, la diagonale, rééquilibrer
+     et tomber sur les épaules sont ce qu'on ENTEND VRAIMENT au bord d'un
+     rectangle. ⚠️ Les deux anciens sont conservés : ils ne gênent pas et
+     s'apprennent en lisant.
+     ⚠️ `protocole` est en LEÇON 4 et `epaule-dedans`, `appuyer`,
+     `changement-pied`, `trot-allonge` en LEÇON 2 : ils s'emploient en
+     `motsAilleurs`, pas de duplication.
+     ================================================================ */
+
+  { ref:"ligne-milieu", lecon:1, coll:"rectangle",
+    mots:{ fr:{m:"la ligne du milieu"}, en:{m:"the centre line", p:"sènn-teur laïne", var:"center line (US)"},
+           es:{m:"la línea media"}, it:{m:"la linea mediana"},
+           de:{m:"die Mittellinie", p:"mi-teul-li-ni-e"}, ja:{m:"中央線", p:"chūōsen"} },
+    def:{ fr:"🟥 LA SEULE LIGNE OÙ LE JUGE VOUS VOIT DE FACE, et c'est ce qui la rend redoutable : de face, la moindre déviation se voit, et un cheval qui n'est pas droit ne peut plus le cacher. ⚠️ Elle ouvre et ferme toutes les reprises — on entre en A et on ressort en A ou en G. Une reprise se joue beaucoup sur ses deux lignes du milieu.",
+          en:"The only line where the judge sees you head-on, and that's what makes it fearsome: from the front the slightest drift shows, and a horse who isn't straight can no longer hide it. It opens and closes every test.",
+          es:"La única línea donde el juez le ve de frente: la menor desviación se nota y un caballo que no está derecho no puede ocultarlo.",
+          it:"L'unica linea dove il giudice ti vede di fronte: la minima deviazione si vede e un cavallo non dritto non può nasconderlo.",
+          de:"Die einzige Linie, auf der der Richter Sie von vorn sieht: jede Abweichung zeigt sich, und ein nicht gerades Pferd kann es nicht mehr verbergen.",
+          ja:"審判が正面から見る唯一の線。それゆえ手強いのです。正面からは わずかな ずれ も 見え、まっすぐでない馬はもう隠せません。すべての演技はこの線で始まり、この線で終わります。" } },
+
+  { ref:"diagonale", lecon:1, coll:"rectangle",
+    mots:{ fr:{m:"la diagonale"}, en:{m:"the diagonal", p:"daï-a-ge-neul"},
+           es:{m:"la diagonal"}, it:{m:"la diagonale"},
+           de:{m:"die Diagonale", p:"di-a-go-na-le"}, ja:{m:"斜線", p:"shasen"} },
+    def:{ fr:"La ligne qui traverse le rectangle d'un coin à l'autre. ⚠️ C'est là qu'on montre les allongements — c'est la plus longue ligne droite disponible. 🟥 ET L'ERREUR CLASSIQUE : préparer sa transition DANS le coin au lieu de la préparer AVANT la fin de la diagonale. Le juge voit alors un cheval qui se déséquilibre en tournant.",
+          en:"The line crossing the arena corner to corner. That's where extensions are shown — it's the longest straight line available. The classic mistake: preparing the transition in the corner instead of before the end of the diagonal.",
+          es:"La línea que cruza el rectángulo de una esquina a otra. Ahí se muestran los alargamientos. El error clásico: preparar la transición en la esquina.",
+          it:"La linea che attraversa il rettangolo da un angolo all'altro. È lì che si mostrano gli allunghi. L'errore classico: preparare la transizione nell'angolo.",
+          de:"Die Linie quer durchs Viereck. Dort werden die Verstärkungen gezeigt. Der klassische Fehler: den Übergang in der Ecke vorzubereiten statt vor dem Ende der Diagonale.",
+          ja:"馬場を角から角へ横切る線。伸長を見せるのはここで、使える最も長い直線です。よくある誤りは、斜線の終わりの前ではなく、角に入ってから移行を準備してしまうことです。" } },
+
+  { ref:"coin", lecon:1, coll:"rectangle",
+    mots:{ fr:{m:"le coin"}, en:{m:"the corner", p:"kor-neur"},
+           es:{m:"la esquina"}, it:{m:"l'angolo"},
+           de:{m:"die Ecke", p:"è-ke"}, ja:{m:"隅角", p:"gūkaku"} },
+    def:{ fr:"🟥 LE COIN N'EST PAS UN PASSAGE OBLIGÉ, C'EST UN OUTIL. On y va chercher l'incurvation, on y rééquilibre, on y prépare le mouvement suivant. ⚠️ **NE PAS COUPER LE VIRAGE** — *don't cut the corner* — est la remarque la plus fréquente d'un juge : un cheval qui coupe gagne du temps mais perd son équilibre, et ça se voit sur tout ce qui suit.",
+          en:"A corner isn't something to get through, it's a tool. You go into it for bend, you rebalance there, you set up the next movement. « Don't cut the corner » is a judge's commonest remark: a horse who cuts saves time but loses balance.",
+          es:"La esquina no es un paso obligado sino una herramienta: se busca la incurvación, se reequilibra, se prepara el movimiento siguiente. No cortar el giro.",
+          it:"L'angolo non è un passaggio obbligato ma uno strumento: ci si va a cercare l'incurvamento, si riequilibra, si prepara il movimento dopo.",
+          de:"Die Ecke ist kein Durchgang, sondern ein Werkzeug: dort holt man Biegung, balanciert neu, bereitet die nächste Lektion vor. Ecken nicht schneiden.",
+          ja:"隅角は通過点ではなく道具です。そこで湾曲を求め、立て直し、次の運動を準備します。「隅角を切るな」は審判が最もよく言う言葉です。切れば時間は稼げますが、バランスを失い、その後のすべてに響きます。" } },
+
+  { ref:"piste", lecon:1, coll:"rectangle",
+    mots:{ fr:{m:"la piste"}, en:{m:"the track", p:"trak"},
+           es:{m:"la pista"}, it:{m:"la pista"},
+           de:{m:"der Hufschlag", p:"houf-chlak"}, ja:{m:"蹄跡", p:"teiseki"} },
+    def:{ fr:"⚠️ L'ALLEMAND EST LE PLUS PARLANT : **der Hufschlag**, « le coup de sabot » — la trace laissée le long de la lice, à un mètre de la barrière. C'est la référence de tout : être sur la piste, quitter la piste, revenir sur la piste. 🟥 Et dans l'épaule en dedans, ce sont LES HANCHES qui y restent pendant que les épaules la quittent.",
+          en:"German says it best: der Hufschlag, the hoof-beat — the line worn along the boards, a metre from the edge. Everything refers to it: on the track, off the track, back to the track. In shoulder-in it's the hindquarters that stay on it.",
+          es:"El alemán es el más elocuente: Hufschlag, la huella dejada a lo largo de la valla. Todo se refiere a ella: estar en la pista, dejarla, volver.",
+          it:"Il tedesco è il più eloquente: Hufschlag, l'orma lasciata lungo la staccionata. Tutto si riferisce a lei.",
+          de:"Der Hufschlag: die Spur entlang der Bande, einen Meter vom Rand. Alles bezieht sich darauf. Beim Schulterherein bleibt die Hinterhand darauf.",
+          ja:"ドイツ語の Hufschlag（蹄の跡）が最も的確です。柵に沿って一メートル内側に残る跡のこと。すべてがこれを基準にします。蹄跡上にいる、外れる、戻る。肩を内に入れる運動では、蹄跡に残るのは後躯のほうです。" } },
+
+  { ref:"transition-descendante", lecon:1, coll:"rectangle",
+    mots:{ fr:{m:"la transition descendante"}, en:{m:"the downward transition", p:"daoun-weurd"},
+           es:{m:"la transición descendente"}, it:{m:"la transizione discendente"},
+           de:{m:"der Übergang abwärts", p:"u-beur-gann"}, ja:{m:"減速の移行", p:"gensoku no ikō"} },
+    def:{ fr:"🟥 LA PLUS DIFFICILE DES DEUX, et la plus révélatrice. ⚠️ **ON NE TIRE PAS POUR RALENTIR** : on se grandit, on rééquilibre, et on garde l'activité des postérieurs. Un cheval qu'on tire tombe sur les épaules et raccourtit par-devant au lieu de s'asseoir par-derrière. C'est là qu'un juge voit tout de suite si le cheval est vraiment porté.",
+          en:"The harder of the two, and the most revealing. You don't pull to slow down: you sit tall, rebalance, and keep the hind legs active. A horse you pull falls onto the forehand and shortens in front instead of sitting behind.",
+          es:"La más difícil de las dos y la más reveladora. No se tira para frenar: uno se yergue, reequilibra y mantiene la actividad de los posteriores.",
+          it:"La più difficile delle due e la più rivelatrice. Non si tira per rallentare: ci si allunga, si riequilibra, si tiene attivo il posteriore.",
+          de:"Die schwerere der beiden und die aufschlussreichste. Man zieht nicht zum Verlangsamen: man wächst, balanciert neu und hält die Hinterhand aktiv.",
+          ja:"二つの移行のうち難しいほうで、最も多くを露わにします。減速のために引いてはいけません。上体を伸ばし、立て直し、後肢の活動を保ちます。引かれた馬は前躯に落ち、後ろで座る代わりに前で縮みます。" } },
+
+  { ref:"reequilibrer", lecon:1, coll:"rectangle", v:true,
+    mots:{ fr:{m:"rééquilibrer"}, en:{m:"to rebalance", p:"ri-ba-leunss"},
+           es:{m:"reequilibrar"}, it:{m:"riequilibrare"},
+           de:{m:"neu ausbalancieren", p:"aouss-ba-lann-sii-reune"}, ja:{m:"立て直す", p:"tatenaosu"} },
+    def:{ fr:"⚠️ LE VERBE LE PLUS EMPLOYÉ AU BORD D'UN RECTANGLE. Rééquilibrer, ce n'est pas ralentir : c'est reporter le poids vers l'arrière-main sans perdre l'activité. Une demi-parade, un coin, une reprise de contact — trois façons de faire la même chose. 🟥 On rééquilibre AVANT le mouvement, jamais pendant.",
+          en:"The most-used verb at the edge of an arena. Rebalancing isn't slowing down: it's shifting weight back without losing activity. A half-halt, a corner, a renewed contact — three ways of doing the same thing. You rebalance BEFORE the movement, never during.",
+          es:"El verbo más usado al borde de un rectángulo. Reequilibrar no es frenar: es llevar el peso atrás sin perder actividad. Se reequilibra antes del movimiento.",
+          it:"Il verbo più usato a bordo campo. Riequilibrare non è rallentare: è riportare il peso indietro senza perdere attività.",
+          de:"Das meistgebrauchte Verb am Viereckrand. Neu ausbalancieren heißt nicht langsamer werden, sondern Gewicht zurückverlagern, ohne Aktivität zu verlieren.",
+          ja:"馬場の脇で最もよく使われる動詞。立て直すとは減速することではなく、活動を失わずに重心を後ろへ移すことです。ハーフホルト、隅角、コンタクトの取り直し — 同じことをする三つの方法。運動の「前」に行い、途中では行いません。" } },
+
+  { ref:"tomber-epaules", lecon:1, coll:"rectangle", v:true,
+    mots:{ fr:{m:"tomber sur les épaules"}, en:{m:"to fall onto the forehand", p:"for-hannd"},
+           es:{m:"caer sobre las espaldas"}, it:{m:"cadere sulle spalle"},
+           de:{m:"auf die Vorhand fallen", p:"for-hannt"}, ja:{m:"前躯に落ちる", p:"zenku ni ochiru"} },
+    def:{ fr:"🟥 LE DÉFAUT QUE TOUT LE MONDE VOIT SANS SAVOIR LE NOMMER. Le cheval reporte son poids devant, s'appuie sur la main, et son encolure descend au lieu de se soutenir. ⚠️ Ça arrive surtout dans les transitions descendantes et après les allongements — c'est-à-dire aux moments où le juge regarde le plus. La correction n'est pas de relever la tête mais de rééquilibrer avant.",
+          en:"The fault everyone sees without knowing its name. The horse shifts weight forward, leans on the hand, and the neck drops instead of carrying itself. It happens mostly in downward transitions and after extensions — exactly when the judge is watching hardest.",
+          es:"El defecto que todos ven sin saber nombrarlo. El caballo lleva el peso adelante, se apoya en la mano y el cuello baja en lugar de sostenerse.",
+          it:"Il difetto che tutti vedono senza saperlo nominare. Il cavallo porta il peso avanti, si appoggia alla mano e il collo scende invece di sostenersi.",
+          de:"Der Fehler, den jeder sieht, ohne ihn benennen zu können. Das Pferd verlagert Gewicht nach vorn, stützt sich auf die Hand, und der Hals fällt, statt sich zu tragen.",
+          ja:"誰もが目にしながら、名前を知らない欠点。馬が重心を前に移し、手にもたれ、首が自ら支える代わりに落ちてしまうこと。減速の移行のあとや、伸長のあとに起きます。つまり審判が最も注視している瞬間です。" } },
+
+  { ref:"garrot", lecon:1, coll:"rectangle",
+    mots:{ fr:{m:"le garrot"}, en:{m:"the withers", p:"oui-zeurz"},
+           es:{m:"la cruz"}, it:{m:"il garrese"},
+           de:{m:"der Widerrist", p:"vi-deur-rist"}, ja:{m:"き甲", p:"kikō"} },
+    def:{ fr:"⚠️ **WITHERS** EST TOUJOURS AU PLURIEL en anglais, jamais « a wither ». 🟥 Et c'est le point qu'on regarde pour savoir si un cheval se porte : dans une bonne transition, on doit SENTIR MONTER LE GARROT sous soi. S'il s'affaisse, le cheval tombe sur les épaules. ⚠️ Piège français : « garrot » désigne aussi le lien qui comprime une hémorragie — deux mots sans rapport, et l'anglais les sépare (*withers* / *tourniquet*).",
+          en:"« Withers » is always plural, never « a wither ». It's the point you watch to know whether a horse is carrying himself: in a good transition you should FEEL THE WITHERS LIFT beneath you. If they drop, the horse falls onto the forehand.",
+          es:"En inglés « withers » va siempre en plural. Es el punto que se mira para saber si un caballo se lleva: en una buena transición se siente subir la cruz.",
+          it:"In inglese « withers » è sempre plurale. È il punto che si guarda per sapere se un cavallo si porta: in una buona transizione si sente salire il garrese.",
+          de:"Englisch « withers » steht immer im Plural. Man achtet darauf, ob sich ein Pferd trägt: in einem guten Übergang spürt man den Widerrist steigen.",
+          ja:"英語の withers は常に複数形です。馬が自ら体を支えているかを見る要所で、良い移行では、き甲が持ち上がるのを体で感じます。沈めば前躯に落ちます。フランス語の garrot は「止血帯」も意味しますが、英語では別語です。" } },
+
+  { ref:"amplitude", lecon:1, coll:"rectangle",
+    mots:{ fr:{m:"l'amplitude"}, en:{m:"ground cover", p:"graound keu-veur", var:"length of stride"},
+           es:{m:"la amplitud"}, it:{m:"l'ampiezza"},
+           de:{m:"die Raumgriff", p:"raoum-grif"}, ja:{m:"歩幅の伸び", p:"hohaba no nobi"} },
+    def:{ fr:"🟥 CE QU'ON CHERCHE DANS UN ALLONGEMENT, ET CE QUI SE CONFOND TOUJOURS AVEC LA VITESSE. Allonger, c'est couvrir plus de terrain à CHAQUE foulée — pas faire plus de foulées. Le rythme ne change pas. ⚠️ L'anglais **ground cover** dit exactement cela : « couvrir du terrain ». L'allemand *Raumgriff*, « la prise d'espace », est encore plus imagé.",
+          en:"What you're after in an extension, and what everyone confuses with speed. Lengthening means covering more ground with EACH stride — not taking more strides. The rhythm doesn't change. « Ground cover » says exactly that.",
+          es:"Lo que se busca en un alargamiento, y lo que siempre se confunde con la velocidad. Alargar es cubrir más terreno en cada tranco, no dar más trancos.",
+          it:"Ciò che si cerca in un allungo, e ciò che si confonde sempre con la velocità. Allungare è coprire più terreno a ogni falcata, non fare più falcate.",
+          de:"Was man in einer Verstärkung sucht, und was immer mit Tempo verwechselt wird. Verlängern heißt, mit JEDEM Tritt mehr Boden zu greifen — nicht mehr Tritte zu machen.",
+          ja:"伸長で求めるもので、いつも「速さ」と混同されるもの。伸ばすとは、一歩ごとにより多くの地面を覆うことであり、歩数を増やすことではありません。リズムは変わりません。" } },
+
   { ref:"bande", lecon:1, coll:"rectangle",
     mots:{ fr:{m:"la lice"}, en:{m:"the boards", p:"bordz", var:"the arena fence"},
            es:{m:"la valla"}, it:{m:"la staccionata"},
@@ -718,257 +831,204 @@ window.HYPE_LINGO_LEX.dressage = {
   ],
 
   /* ==================================================================
-     LE DIALOGUE DE WINDSOR — 15 août 2026, session 214.
+     LE DIALOGUE DE WINDSOR — RETRAVAILLÉ LE 18/08/2026.
 
-     LA SCÈNE : un concours de dressage, de l'arrivée au protocole
-     récupéré. 21 phrases, 6 temps, 9 entendues.
+     🟥 LES 18 PHRASES SONT DE BLANDINE. Sa consigne : *« moitié concours,
+     moitié conseils de monte »* — et c'est ce qui change tout. L'ancien
+     dialogue décrivait le décor ; celui-ci enseigne À MONTER une reprise.
 
-     🟥🟥 CE DIALOGUE A ÉTÉ LOURDEMENT CORRIGÉ PAR BLANDINE, et c'est
-     le chapitre où Claude s'est le plus trompé — TROIS FAUTES DE FOND
-     dans la première version, toutes dans la mécanique du concours.
-     Signalé par lui-même en séance : sur ce terrain, il est moins
-     fiable que sur l'écurie ou le pansage. RELIRE SÉVÈREMENT.
+     🟥 SA REMARQUE SUR LE LEXIQUE, ET ELLE ÉTAIT JUSTE : *« certains
+     termes deviennent beaucoup plus intéressants que lice ou même entrée
+     en A »*. Neuf entrées ont été ajoutées le même jour — la ligne du
+     milieu, la diagonale, le coin, la piste, la transition descendante,
+     rééquilibrer, tomber sur les épaules, le garrot, l'amplitude. Ce
+     sont les mots qu'on ENTEND VRAIMENT au bord d'un rectangle.
+     ⚠️ `lice` et `grand-cote` sont conservés sans phrase : ils ne gênent
+     pas et s'apprennent en lisant.
 
-     CE QU'ELLE A SUPPRIMÉ, ET POURQUOI — NE PAS LES REMETTRE :
-     · « Vous montez la reprise numéro trois » → 🟥 « ça veut rien
-       dire ». Une reprise a un NOM DE PROTOCOLE (Amateur 1, Club 1),
-       pas un numéro. Sa formulation : « Vous êtes engagée sur la
-       reprise de l'Amateur 1. » Et l'horaire se dit à part : « Vous
-       passez à quatorze heures dix, sur la carrière deux » — les deux
-       gardées, elles ne disent pas la même chose.
-     · « C'est laquelle exactement, la trois ? » → tombe avec la
-       précédente.
-     · « Est-ce que je peux reconnaître le rectangle à pied ? » →
-       🟥 « on reconnaît pas un rectangle à pied ». La reconnaissance
-       à pied, c'est le CROSS et l'OBSTACLE. En dressage on connaît le
-       tracé par cœur avant d'arriver.
-     · « Est-ce que je peux redemander le tracé ? » → ne veut rien
-       dire non plus (faute reconnue par Claude avant qu'elle ne le
-       relève). Remplacée par sa phrase : « Est-ce que je peux
-       reprendre où j'en étais ? »
-     · « Est-ce que ma tenue est réglementaire ? » → vague. Remplacée
-       par sa règle, bien plus utile : les guêtres ET LES BANDES sont
-       interdites en concours de dressage.
+     🟥 LA PHRASE QU'ELLE VOULAIT ABSOLUMENT (temps 3) : *« après une
+     diagonale, va chercher ton coin : ne coupe pas le virage »*. Son
+     mot : elle apprend en même temps *diagonal*, *corner* et *cut the
+     corner*. NE PAS la retirer.
 
-     SES FORMULATIONS, MEILLEURES ET POURQUOI :
-     · « Est-ce que quelqu'un a le droit de me dicter la reprise ? »
-       au lieu de « ai-je droit à un lecteur ? » : 🟥 LECTEUR EST UN
-       MOT D'INITIÉ. Celle qui découvre ne le connaît pas — mais elle
-       sait ce qu'elle veut demander. Et la question porte sur le
-       DROIT, qui est le vrai doute. `lecteur` reste au lexique, il
-       s'apprend en lisant.
-     · « saluer LES DEUX rênes dans une main » : la formule exacte.
-     · « La rectitude était bonne, mais ça manquait un peu
-       d'incurvation À MAIN DROITE » : un juge commente AU PASSÉ, avec
-       « un peu ». Et « à main droite » — pas « à droite » — fait
-       écho à `main-droite` appris à Aberystwyth.
-     · Ordre du temps 5 inversé sur sa demande : on se trompe, ON
-       DEMANDE, puis le juge répond. La question ne vient pas après
-       la réponse.
+     ⚠️ TROIS NOTIONS QUE PERSONNE N'EXPLIQUE AILLEURS :
+     · **ne pas tirer pour la transition** — on se grandit, on rééquilibre,
+       on garde l'activité des postérieurs. Tirer fait tomber sur les
+       épaules.
+     · **sentir monter le garrot** — c'est à ça qu'on sait qu'un cheval se
+       porte. `withers` est toujours au pluriel en anglais.
+     · **l'amplitude n'est pas la vitesse** — allonger, c'est couvrir plus
+       de terrain à CHAQUE foulée, pas en faire plus. L'anglais *ground
+       cover* le dit exactement.
 
-     🟥 LE FAUX AMI DU CHAPITRE EST EN JEU : « la reprise » = le TEST
-     ici (`reprise-test`, en anglais *the test*) et le GROUPE d'élèves
-     à Aberystwyth (`toute-reprise`, *the ride*). Les deux villes se
-     suivent dans le voyage — c'est voulu.
+     ⚠️ Les figures du temps 6 (épaule en dedans, appuyer, changement de
+     pied) sont en LEÇON 2, qui n'est attribuée à aucune ville : elles
+     s'emploient en `motsAilleurs`. Et `protocole` est en leçon 4.
 
-     LAISSÉS AU LEXIQUE SEUL : piaffer, passage, pirouette, changement
-     de pied, kür, classement. Ce sont les niveaux hauts, on les lit
-     sans les jouer à ce stade.
+     ⚠️ NE PAS CONFONDRE AVEC VERSAILLES, l'autre ville de ce fichier :
+     Windsor monte une reprise EN CONCOURS, Versailles travaille les
+     QUALITÉS du dressage. Deux dialogues, deux angles.
 
-     `dit` : "joueuse" = elle produit · "club" = l'organisation ou le
-     juge, elle entend et comprend.
+     `dit` : "joueuse" = elle produit · "club" = son coach au bord.
   ================================================================== */
   dialogue: {
-    ville: "windsor", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 21 phrases */
+    ville: "windsor", lecon: 1, temps: 7, langues: ["fr","en","es","it","de","ja"],   /* 18 phrases */
 
     phrases: [
 
-      /* ---- temps 1 · j'arrive sur le concours ---- */
-      { ref:"d-r-engagee-amateur", temps:1, dit:"club", mots:["reprise-test"],
-        fr:"Vous êtes engagée sur la reprise de l'Amateur 1.",
-        en:"You're entered for the Amateur 1 test.",
-        es:"Está inscrita en la prueba de Amateur 1.",
-        it:"È iscritta alla ripresa di Amatori 1.",
-        de:"Sie sind für die Aufgabe Amateur 1 genannt.",
-        ja:"アマチュア 1 の 課目 に エントリー さ れ て い ます。" },
+      /* ---- temps 1 · l'engagement et le lecteur ---- */
+      { ref:"dw2-engagee-amateur", temps:1, dit:"joueuse", mots:["reprise-test"],
+        fr:"Je suis engagée sur la reprise de l'Amateur 1.",
+        en:"I'm entered for the Amateur 1 dressage test.",
+        es:"Estoy inscrita en la prueba de Amateur 1.",
+        it:"Sono iscritta alla ripresa Amateur 1.",
+        de:"Ich bin für die Amateur-1-Dressuraufgabe genannt.",
+        ja:"アマチュア 1 の 課目 に 出場 し ます。" },
 
-      { ref:"d-r-passage-carriere", temps:1, dit:"club", mots:[],
-        fr:"Vous passez à quatorze heures dix, sur la carrière deux.",
-        en:"You're on at ten past two, in arena two.",
-        es:"Pasa a las dos y diez, en la pista dos.",
-        it:"Passa alle quattordici e dieci, sul campo due.",
-        de:"Sie starten um vierzehn Uhr zehn, auf Viereck zwei.",
-        ja:"十四時 十分、 第二 馬場 で 出番 です。" },
+      { ref:"dw2-droit-lecteur", temps:1, dit:"joueuse", mots:["lecteur","reprise-test"],
+        fr:"Est-ce que j'ai le droit d'avoir un lecteur pour cette reprise ?",
+        en:"Am I allowed to have a caller for this test?",
+        es:"¿Puedo tener un lector para esta prueba?",
+        it:"Posso avere un lettore per questa ripresa?",
+        de:"Darf ich für diese Aufgabe einen Ansager haben?",
+        ja:"この 課目 で は 読み手 を つけ て も よい です か ?" },
 
-      /* 🟥 Formulation de Blandine : pas le mot d'initié « lecteur ». */
-      { ref:"d-dicter-reprise", temps:1, dit:"joueuse", mots:["reprise-test"], motsAilleurs:["lecteur"],
-        fr:"Est-ce que quelqu'un a le droit de me dicter la reprise ?",
-        en:"Is someone allowed to read the test for me?",
-        es:"¿Alguien tiene derecho a dictarme la prueba?",
-        it:"Qualcuno può leggermi la ripresa?",
-        de:"Darf mir jemand die Aufgabe ansagen?",
-        ja:"課目 を 読み上げ て もらっ て も いい です か ?" },
+      { ref:"dw2-entre-en-a", temps:1, dit:"joueuse", mots:["entree","juge"], motsAilleurs:["lettre"],
+        fr:"J'entre en A après la cloche du juge.",
+        en:"I enter at A after the judge's bell.",
+        es:"Entro en A después de la campana del juez.",
+        it:"Entro in A dopo la campana del giudice.",
+        de:"Ich reite nach dem Glockenzeichen des Richters bei A ein.",
+        ja:"審判 の 合図 の 鐘 の あと、 A から 入場 し ます。" },
 
-      /* ---- temps 2 · avant d'entrer ---- */
-      /* 🟥 Règle de Blandine, à la place d'une question vague sur la
-         tenue. LES BANDES AUSSI — elle les a ajoutées. Le mot revient
-         de Walsall (`bandes`). */
-      { ref:"d-r-guetres-interdites", temps:2, dit:"club", mots:[],
-        fr:"Attention, les guêtres et les bandes sont interdites en concours de dressage.",
-        en:"Careful — boots and bandages aren't allowed in a dressage test.",
-        es:"Ojo, las protecciones y las vendas están prohibidas en concurso de doma.",
-        it:"Attenzione, paracolpi e fasce sono vietati in gara di dressage.",
-        de:"Achtung, Gamaschen und Bandagen sind in der Dressurprüfung verboten.",
-        ja:"注意 — 馬場 競技 で は プロテクター と バンテージ は 禁止 です。" },
+      /* ---- temps 2 · la ligne du milieu et l'arrêt ---- */
+      { ref:"dw2-ligne-milieu", temps:2, dit:"club", mots:["ligne-milieu","juge"],
+        fr:"Soigne ta ligne du milieu : le juge te regarde de face.",
+        en:"Ride your centre line accurately: the judge is looking at you head-on.",
+        es:"Cuida tu línea media: el juez te mira de frente.",
+        it:"Cura la linea mediana: il giudice ti guarda di fronte.",
+        de:"Reite die Mittellinie genau: der Richter sieht dich von vorn.",
+        ja:"中央 線 を 丁寧 に。 審判 は 正面 から 見 て い ます。" },
 
-      { ref:"d-r-cloche-45s", temps:2, dit:"club", mots:["cloche-juge","entree"],
-        fr:"La cloche du juge : vous avez quarante-cinq secondes pour entrer.",
-        en:"That's the bell — you have forty-five seconds to enter.",
-        es:"La campana del juez: tiene cuarenta y cinco segundos para entrar.",
-        it:"La campana del giudice: ha quarantacinque secondi per entrare.",
-        de:"Die Glocke: Sie haben fünfundvierzig Sekunden bis zum Eintritt.",
-        ja:"合図 の 鐘 です。 四十五 秒 以内 に 入場 し て ください。" },
+      { ref:"dw2-prepare-arret", temps:2, dit:"club", mots:["ligne-milieu"], motsAilleurs:["lettre"],
+        fr:"Prépare ton arrêt plusieurs foulées avant X.",
+        en:"Prepare your halt several strides before X.",
+        es:"Prepara tu parada varios trancos antes de X.",
+        it:"Prepara l'arresto diverse falcate prima di X.",
+        de:"Bereite die Halt mehrere Tritte vor X vor.",
+        ja:"停止 は X の 数 歩 手前 から 準備 し ます。" },
 
-      { ref:"d-entree-en-a", temps:2, dit:"joueuse", mots:["entree","lettre"],
-        fr:"On entre en A, c'est bien ça ?",
-        en:"We come in at A, don't we?",
-        es:"Se entra por A, ¿verdad?",
-        it:"Si entra in A, giusto?",
-        de:"Man reitet bei A ein, richtig?",
-        ja:"A から 入場 です よ ね ?" },
+      /* ---- temps 3 · le coin ---- */
+      { ref:"dw2-coupe-pas-virage", temps:3, dit:"club", mots:["diagonale","coin"],
+        fr:"Après une diagonale, va chercher ton coin : ne coupe pas le virage.",
+        en:"After a diagonal, ride deep into the corner: don't cut the turn.",
+        es:"Después de una diagonal, ve a buscar la esquina: no cortes el giro.",
+        it:"Dopo una diagonale, vai a cercare l'angolo: non tagliare la curva.",
+        de:"Nach einer Diagonale reite tief in die Ecke: schneide die Wendung nicht ab.",
+        ja:"斜線 の あと は 隅角 まで しっかり 入り ます。 曲がり を 切ら ない こと。" },
 
-      { ref:"d-r-entree-salut-x", temps:2, dit:"club", mots:["entree","salut","lettre"],
-        fr:"Entrée en A au trot de travail, salut en X.",
-        en:"Enter at A in working trot, halt and salute at X.",
-        es:"Entrada en A al trote de trabajo, saludo en X.",
-        it:"Entrata in A al trotto di lavoro, saluto in X.",
-        de:"Einritt bei A im Arbeitstrab, Halten und Grüßen bei X.",
-        ja:"A から 作業速歩 で 入場、 X で 停止 敬礼。" },
+      { ref:"dw2-coin-reequilibrer", temps:3, dit:"club", mots:["coin","reequilibrer"],
+        fr:"Utilise le coin pour rééquilibrer ton cheval avant le mouvement suivant.",
+        en:"Use the corner to rebalance your horse before the next movement.",
+        es:"Usa la esquina para reequilibrar al caballo antes del movimiento siguiente.",
+        it:"Usa l'angolo per riequilibrare il cavallo prima del movimento successivo.",
+        de:"Nutze die Ecke, um dein Pferd vor der nächsten Lektion neu auszubalancieren.",
+        ja:"次 の 運動 の 前 に、 隅角 を 使っ て 立て直し ます。" },
 
-      /* Formulation de Blandine : « LES DEUX rênes ». */
-      { ref:"d-saluer-deux-renes", temps:2, dit:"joueuse", mots:["salut"],
-        fr:"Est-ce qu'il faut saluer les deux rênes dans une main ?",
-        en:"Do I have to salute with both reins in one hand?",
-        es:"¿Hay que saludar con las dos riendas en una mano?",
-        it:"Bisogna salutare con entrambe le redini in una mano?",
-        de:"Muss man mit beiden Zügeln in einer Hand grüßen?",
-        ja:"手綱 を 片手 に まとめ て 敬礼 し ます か ?" },
+      /* ---- temps 4 · les transitions ---- */
+      { ref:"dw2-grandis-toi", temps:4, dit:"club", mots:["transition-descendante","reequilibrer"],
+        fr:"Avant une transition descendante, grandis-toi et rééquilibre ton cheval.",
+        en:"Before a downward transition, sit tall and rebalance your horse.",
+        es:"Antes de una transición descendente, yérguete y reequilibra al caballo.",
+        it:"Prima di una transizione discendente, allungati e riequilibra il cavallo.",
+        de:"Vor einem Übergang abwärts: wachse und balanciere dein Pferd neu aus.",
+        ja:"減速 の 移行 の 前 に、 上体 を 伸ばし、 馬 を 立て直し ます。" },
 
-      /* ---- temps 3 · ce que la reprise demande ---- */
-      { ref:"d-cession-dans-reprise", temps:3, dit:"joueuse", mots:["cession-jambe","reprise-test"],
-        fr:"Il y a une cession à la jambe dans cette reprise ?",
-        en:"Is there a leg-yield in this test?",
-        es:"¿Hay una cesión a la pierna en esta prueba?",
-        it:"C'è una cessione alla gamba in questa ripresa?",
-        de:"Kommt in dieser Aufgabe ein Schenkelweichen vor?",
-        ja:"この 課目 に 脚に譲る 運動 は あり ます か ?" },
+      { ref:"dw2-tire-pas", temps:4, dit:"club", mots:["transition-descendante"], motsAilleurs:["engagement","arriere-main"],
+        fr:"Ne tire pas pour faire la transition : garde l'activité des postérieurs.",
+        en:"Don't pull for the transition: keep the hind legs active.",
+        es:"No tires para hacer la transición: mantén la actividad de los posteriores.",
+        it:"Non tirare per la transizione: mantieni l'attività dei posteriori.",
+        de:"Zieh nicht für den Übergang: halte die Hinterbeine aktiv.",
+        ja:"移行 の ため に 引か ない こと。 後肢 の 活動 を 保ち ます。" },
 
-      { ref:"d-r-epaule-appuyer", temps:3, dit:"club", mots:["epaule-dedans","appuyer","grand-cote"],
-        fr:"Épaule en dedans sur le grand côté, puis appuyer vers B.",
-        en:"Shoulder-in down the long side, then half-pass to B.",
-        es:"Espalda adentro por el lado largo, luego apoyada hacia B.",
-        it:"Spalla in dentro sul lato lungo, poi appoggiata verso B.",
-        de:"Schulterherein auf der langen Seite, dann Traversale nach B.",
-        ja:"長蹄 で ショルダーイン、 その あと B へ ハーフパス。" },
+      { ref:"dw2-manque-garrot", temps:4, dit:"club", mots:["garrot","tomber-epaules","reequilibrer","transition-descendante"],
+        fr:"Si ton cheval manque de garrot, redresse-le avant la transition pour éviter qu'il tombe sur les épaules.",
+        en:"If your horse lacks lift through the withers, rebalance him before the transition so he doesn't fall onto the forehand.",
+        es:"Si a tu caballo le falta cruz, reequilíbralo antes de la transición para que no caiga sobre las espaldas.",
+        it:"Se al tuo cavallo manca il garrese, riequilibralo prima della transizione perché non cada sulle spalle.",
+        de:"Fehlt deinem Pferd der Widerrist, balanciere es vor dem Übergang neu aus, damit es nicht auf die Vorhand fällt.",
+        ja:"き甲 の 持ち上がり が 足り なけれ ば、 移行 の 前 に 立て直し ます。 前躯 に 落ち ない ため です。" },
 
-      { ref:"d-contre-galop-niveau", temps:3, dit:"joueuse", mots:["contre-galop"],
-        fr:"Le contre-galop, c'est demandé à quel niveau ?",
-        en:"At what level do they ask for counter-canter?",
-        es:"¿A qué nivel se pide el galope a la contra?",
-        it:"A che livello si chiede il galoppo rovesciato?",
-        de:"Ab welcher Klasse wird Konter-Galopp verlangt?",
-        ja:"反対駈歩 は どの 級 から 求め られ ます か ?" },
+      /* ---- temps 5 · les allongements ---- */
+      { ref:"dw2-trot-allonge", temps:5, dit:"club", mots:["amplitude"], motsAilleurs:["trot-allonge","cadence"],
+        fr:"Dans le trot allongé, cherche l'amplitude sans accélérer le rythme.",
+        en:"In extended trot, look for more ground cover without quickening the rhythm.",
+        es:"En el trote alargado, busca amplitud sin acelerar el ritmo.",
+        it:"Nel trotto allungato, cerca l'ampiezza senza accelerare il ritmo.",
+        de:"Im starken Trab such den Raumgriff, ohne den Takt zu beschleunigen.",
+        ja:"伸長 速歩 で は、 リズム を 速め ず に 歩幅 の 伸び を 求め ます。" },
 
-      { ref:"d-reculer-reprise", temps:3, dit:"joueuse", mots:["reculer","reprise-test"],
-        fr:"Est-ce qu'on recule sur cette reprise ?",
-        en:"Is there a rein-back in this test?",
-        es:"¿Hay paso atrás en esta prueba?",
-        it:"C'è l'indietreggiare in questa ripresa?",
-        de:"Wird in dieser Aufgabe rückwärts gerichtet?",
-        ja:"この 課目 に 後退 は あり ます か ?" },
+      { ref:"dw2-avant-fin-diagonale", temps:5, dit:"club", mots:["diagonale","coin"],
+        fr:"Prépare ta transition avant la fin de la diagonale, pas dans le coin.",
+        en:"Prepare your transition before the end of the diagonal, not in the corner.",
+        es:"Prepara la transición antes del final de la diagonal, no en la esquina.",
+        it:"Prepara la transizione prima della fine della diagonale, non nell'angolo.",
+        de:"Bereite den Übergang vor dem Ende der Diagonale vor, nicht in der Ecke.",
+        ja:"移行 は 斜線 の 終わり の 前 に 準備 し ます。 隅角 に 入っ て から で は 遅い です。" },
 
-      /* ---- temps 4 · ce que le juge regarde ---- */
-      /* Récrit AU PASSÉ sur le modèle de la phrase de Blandine
-         ci-dessous : un juge commente ce qui vient d'être fait. */
-      { ref:"d-r-decontraction-contact", temps:4, dit:"club", mots:["decontraction","contact"],
-        fr:"Le cheval manquait un peu de décontraction, le contact n'était pas stable.",
-        en:"The horse lacked a little suppleness, and the contact wasn't steady.",
-        es:"Al caballo le faltaba algo de relajación y el contacto no era estable.",
-        it:"Al cavallo mancava un po' di decontrazione e il contatto non era stabile.",
-        de:"Dem Pferd fehlte etwas Losgelassenheit, die Anlehnung war nicht konstant.",
-        ja:"馬 の リラックス が やや 足り ず、 ハミ受け が 安定 し て い ませ ん でし た。" },
+      /* ---- temps 6 · les figures ---- */
+      { ref:"dw2-epaule-dedans", temps:6, dit:"club", mots:["piste"], motsAilleurs:["epaule-dedans","arriere-main"],
+        fr:"Dans l'épaule en dedans, garde les hanches sur la piste et contrôle les épaules.",
+        en:"In shoulder-in, keep the hindquarters on the track and control the shoulders.",
+        es:"En la espalda adentro, mantén las ancas en la pista y controla las espaldas.",
+        it:"Nella spalla in dentro, tieni le anche sulla pista e controlla le spalle.",
+        de:"Im Schulterherein bleibt die Hinterhand auf dem Hufschlag, die Schultern führst du.",
+        ja:"肩 を 内 に 入れる 運動 で は、 腰 を 蹄跡 に 残し、 肩 を 導き ます。" },
 
-      { ref:"d-ameliorer-impulsion", temps:4, dit:"joueuse", mots:["impulsion"],
-        fr:"Qu'est-ce que je peux améliorer sur l'impulsion ?",
-        en:"What can I improve on the impulsion?",
-        es:"¿Qué puedo mejorar en la impulsión?",
-        it:"Che cosa posso migliorare sull'impulso?",
-        de:"Was kann ich beim Schwung verbessern?",
-        ja:"推進 に ついて 何 を 直せ ば いい です か ?" },
+      { ref:"dw2-appuyer-incurvation", temps:6, dit:"club", mots:["incurvation"], motsAilleurs:["appuyer","equilibre"],
+        fr:"Dans l'appuyer, pense d'abord à l'incurvation et à l'équilibre, pas à aller de côté.",
+        en:"In half-pass, think about bend and balance first, not just moving sideways.",
+        es:"En el apoyo, piensa primero en la incurvación y el equilibrio, no en ir de lado.",
+        it:"Nell'appoggiata, pensa prima all'incurvamento e all'equilibrio, non ad andare di lato.",
+        de:"Im Traversale denk zuerst an Biegung und Gleichgewicht, nicht ans Seitwärts.",
+        ja:"斜 め 横 歩 で は、 横 に 動く こと より、 まず 湾曲 と バランス を 考え ます。" },
 
-      /* 🟥 Phrase de Blandine, mot pour mot. Un juge parle au passé,
-         avec « un peu », et dit « À MAIN DROITE » — pas « à droite ». */
-      { ref:"d-r-rectitude-incurvation", temps:4, dit:"club", mots:["rectitude","incurvation"],
-        fr:"La rectitude était bonne, mais ça manquait un peu d'incurvation à main droite.",
-        en:"Straightness was good, but it needed a little more bend on the right rein.",
-        es:"La rectitud era buena, pero faltaba algo de incurvación a mano derecha.",
-        it:"La rettitudine era buona, ma mancava un po' d'incurvamento a mano destra.",
-        de:"Die Geraderichtung war gut, aber auf der rechten Hand fehlte etwas Biegung.",
-        ja:"直進性 は 良かっ た です が、 右手前 の 屈曲 が 少し 足り ませ ん でし た。" },
+      { ref:"dw2-changement-droit", temps:6, dit:"club", mots:["rectitude"], motsAilleurs:["changement-pied"],
+        fr:"Dans le changement de pied, garde le cheval droit avant, pendant et après le changement.",
+        en:"In a flying change, keep the horse straight before, during and after the change.",
+        es:"En el cambio de pie, mantén al caballo derecho antes, durante y después del cambio.",
+        it:"Nel cambio di piede, tieni il cavallo dritto prima, durante e dopo il cambio.",
+        de:"Beim fliegenden Wechsel bleibt das Pferd davor, dabei und danach gerade.",
+        ja:"フライング チェンジ で は、 その 前 も、 最中 も、 あと も、 馬 を まっすぐ 保ち ます。" },
 
-      /* ---- temps 5 · l'erreur (ordre inversé sur sa demande) ---- */
-      { ref:"d-trompee-parcours", temps:5, dit:"joueuse", mots:["erreur-parcours"],
-        fr:"Je me suis trompée de parcours.",
-        en:"I went wrong in the test.",
-        es:"Me he equivocado de recorrido.",
-        it:"Ho sbagliato percorso.",
-        de:"Ich habe einen Bahnfehler gemacht.",
-        ja:"コース を 間違え まし た。" },
+      /* ---- temps 7 · la fin de la reprise ---- */
+      { ref:"dw2-erreur-gache-pas", temps:7, dit:"club", mots:["reprise-test"],
+        fr:"Si tu rates une figure, ne laisse pas l'erreur gâcher le reste de ta reprise.",
+        en:"If you make a mistake in a movement, don't let it spoil the rest of your test.",
+        es:"Si fallas una figura, no dejes que el error estropee el resto de la prueba.",
+        it:"Se sbagli una figura, non lasciare che l'errore rovini il resto della ripresa.",
+        de:"Wenn dir eine Lektion misslingt, lass den Fehler nicht die ganze Aufgabe verderben.",
+        ja:"ひとつ の 運動 を 失敗 し て も、 その 誤り に 演技 の 残り を 台無し に さ せ ない こと。" },
 
-      /* Formulation de Blandine, à la place d'un « redemander le
-         tracé » qui ne voulait rien dire. */
-      { ref:"d-reprendre-ou-jen-etais", temps:5, dit:"joueuse", mots:[],
-        fr:"Est-ce que je peux reprendre où j'en étais ?",
-        en:"Can I pick up where I left off?",
-        es:"¿Puedo retomar donde lo dejé?",
-        it:"Posso riprendere da dove ero rimasta?",
-        de:"Kann ich dort weitermachen, wo ich aufgehört habe?",
-        ja:"止まっ た ところ から 続け て も いい です か ?" },
+      { ref:"dw2-dernier-salut", temps:7, dit:"club", mots:["salut","reprise-test"],
+        fr:"À la fin, soigne ton dernier arrêt et ton salut : la reprise n'est pas terminée avant.",
+        en:"At the end, ride your final halt and salute carefully: the test isn't over until then.",
+        es:"Al final, cuida la última parada y el saludo: la prueba no acaba antes.",
+        it:"Alla fine, cura l'ultimo arresto e il saluto: la ripresa non è finita prima.",
+        de:"Am Ende reite Halt und Gruß sorgfältig: die Aufgabe ist vorher nicht zu Ende.",
+        ja:"最後 の 停止 と 敬礼 を 丁寧 に。 それ まで 演技 は 終わっ て い ませ ん。" },
 
-      { ref:"d-r-deux-points-en-c", temps:5, dit:"club", mots:["erreur-parcours","lettre"],
-        fr:"Erreur de parcours, deux points en moins : reprenez en C.",
-        en:"Error of course, two marks off — start again from C.",
-        es:"Error de recorrido, dos puntos menos: retome en C.",
-        it:"Errore di percorso, due punti in meno: riprenda da C.",
-        de:"Bahnfehler, zwei Punkte Abzug: nehmen Sie bei C wieder auf.",
-        ja:"コース違い、 二点 減点 です。 C から 再開 し て ください。" },
-
-      /* ---- temps 6 · après ---- */
-      { ref:"d-recuperer-protocole", temps:6, dit:"joueuse", mots:["protocole"],
-        fr:"Où est-ce que je récupère mon protocole ?",
-        en:"Where do I collect my test sheet?",
-        es:"¿Dónde recojo mi hoja de puntuación?",
-        it:"Dove ritiro il mio foglio di giudizio?",
-        de:"Wo bekomme ich mein Protokoll?",
-        ja:"採点表 は どこ で 受け取れ ます か ?" },
-
-      { ref:"d-r-controle-embouchures", temps:6, dit:"club", mots:["controle-embouchures"],
-        fr:"Contrôle des embouchures à la sortie, ne descendez pas.",
-        en:"Tack check on the way out — stay mounted.",
-        es:"Control de embocaduras a la salida, no desmonte.",
-        it:"Controllo delle imboccature all'uscita, non smonti.",
-        de:"Ausrüstungskontrolle am Ausgang, bitte aufsitzen bleiben.",
-        ja:"出口 で 馬具 検査 が あり ます。 下馬 し ない で ください。" },
-
-      { ref:"d-combien-pourcentage", temps:6, dit:"joueuse", mots:["pourcentage"],
-        fr:"J'ai fait combien en pourcentage ?",
-        en:"What percentage did I get?",
-        es:"¿Qué porcentaje he sacado?",
-        it:"Che percentuale ho fatto?",
-        de:"Wie viel Prozent habe ich bekommen?",
-        ja:"得点率 は 何 パーセント でし た か ?" }
+      { ref:"dw2-ou-protocole", temps:7, dit:"joueuse", mots:["juge"], motsAilleurs:["protocole"],
+        fr:"Où est-ce que je récupère mon protocole pour lire les commentaires du juge ?",
+        en:"Where do I collect my test sheet to read the judge's comments?",
+        es:"¿Dónde recojo mi hoja para leer los comentarios del juez?",
+        it:"Dove ritiro il mio protocollo per leggere i commenti del giudice?",
+        de:"Wo bekomme ich meinen Protokollbogen, um die Richterbemerkungen zu lesen?",
+        ja:"審判 の 講評 を 読む ため の 採点 表 は どこ で 受け取り ます か ?" },
     ]
   },
+
   /* ==================================================================
      LE DIALOGUE DE VERSAILLES — RETRAVAILLÉ LE 18/08/2026.
 
