@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bg";
+var HYPE_STORIES_VERSION = "19bh";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -5401,6 +5401,35 @@ function CompositionStory(props) {
             }
           });
         }))
+      : null,
+    /* 18/08 (feu vert de Blandine, demande urgente : "je n'ai pas de bouton
+       pour partager ailleurs") — LE COEUR ET LE PARTAGE, absents de cette
+       visionneuse-ci alors qu'ils existent depuis le 14/08 dans l'autre
+       (VisionneuseStories, story simple). CompositionStory (photo + tirages)
+       n'a jamais recu ces deux boutons. Meme code, meme position, meme
+       fonction hypePartager unique (index.html) — rien n'est redecide ici. */
+    (story && story.id)
+      ? h(CoeurStory, { key: "cr" + story.id, storyId: story.id, langue: lg })
+      : null,
+    (story && story.id && typeof window !== "undefined" && typeof window.hypePartager === "function")
+      ? h("button", {
+          onClick: function (ev) {
+            if (ev && ev.stopPropagation) ev.stopPropagation();
+            try {
+              var titP = (story.pseudo ? (story.pseudo + " \u2014 ") : "") + (story.lieu || "Story");
+              window.hypePartager("s", story.id, titP, { image: (grande && src(grande)) || story.photo_url || null });
+            } catch (eP) { }
+          },
+          onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
+          "aria-label": "Partager",
+          style: {
+            position: "absolute", right: 14, bottom: 14, zIndex: 10,
+            width: 42, height: 42, borderRadius: 999, cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            border: "1px solid rgba(255,255,255,0.25)", background: "rgba(6,7,9,0.72)",
+            color: "#DCE3E8", fontSize: 17, lineHeight: 1, padding: 0
+          }
+        }, "\u21AA")
       : null,
     surcouche);
 }
