@@ -1,7 +1,12 @@
 /* hype-lingo-lex-pansage-reserve.js — Hype Lingo · RÉSERVE DU PANSAGE
    ==================================================================
-   🟥 CRÉÉ LE 19/08/2026. Neuf concepts retirés de `hype-lingo-lex-pansage.js`
-   quand LAMBOURN a été ramenée à 30 notions, sur décision de Blandine.
+   🟥 CRÉÉ LE 19/08/2026. Six concepts retirés de `hype-lingo-lex-pansage.js`
+   quand LAMBOURN a été ramenée à 33 notions, sur décision de Blandine.
+
+   🟢 `brosse-eau`, `toupet` et `tondre` sont REPARTIS AU CHAPITRE le même
+   jour — Blandine les a jugés trop utiles pour dormir ici.
+   ⚠️ `tondeuse` RESTE, alors que `tondre` est parti : décision explicite.
+   Le verbe est enseigné sans son outil, seul cas du chapitre.
 
    ⚠️ CE FICHIER N'EST CHARGÉ PAR PERSONNE. Aucune balise dans `lingo.html`,
    aucune entrée dans `SOCLE_JS`. Il attend une ville, exactement comme
@@ -25,17 +30,6 @@ window.HYPE_LINGO_LEX["pansage-reserve"] = {
            it:"La pulizia — riserva", de:"Das Putzen — Reserve", ja:"手入れ — 予備" },
   lecons: 1,
   concepts: [
-  { ref:"brosse-eau", lecon:1, coll:"outils",
-    mots:{ fr:{m:"la brosse à eau"}, en:{m:"the water brush", p:"ouo-teur broche"},
-           es:{m:"el cepillo de agua"}, it:{m:"la spazzola per l'acqua"}, // ??
-           de:{m:"die Wasserbürste", p:"va-seur-bur-ste"}, ja:{m:"水ブラシ", p:"mizu burashi"} },
-    def:{ fr:"Mouillée, elle couche la crinière et lave la paroi du sabot avant le graissage.",
-          en:"Used damp, it lays the mane down and washes the hoof wall before oiling.",
-          es:"Mojada, asienta la crin y lava la pared del casco antes del engrase.",
-          it:"Bagnata, appiattisce la criniera e lava la parete dello zoccolo prima dell'ingrassaggio.",
-          de:"Nass legt sie die Mähne an und wäscht die Hufwand vor dem Einfetten.",
-          ja:"濡らして使い、たてがみを寝かせ、油を塗る前に蹄の壁を洗います。" } },
-
   { ref:"tondeuse", lecon:1, coll:"outils",
     mots:{ fr:{m:"la tondeuse"}, en:{m:"the clippers", p:"kli-peurz"},
            es:{m:"la esquiladora", var:"la máquina de esquilar"}, it:{m:"la tosatrice"},
@@ -46,28 +40,6 @@ window.HYPE_LINGO_LEX["pansage-reserve"] = {
           it:"Si tosa il cavallo che lavora d'inverno perché asciughi in fretta. La parola inglese è sempre al plurale: « the clippers ».",
           de:"Ein Pferd, das im Winter arbeitet, wird geschoren, damit es schnell trocknet. Das englische Wort steht immer im Plural: « the clippers ».",
           ja:"冬も運動する馬は、早く乾くように毛を刈ります。英語は必ず複数形で « the clippers » と言います。" } },
-
-  { ref:"toupet", lecon:1, coll:"corps",
-    mots:{ fr:{m:"le toupet"}, en:{m:"the forelock", p:"for-lok"},
-           es:{m:"el tupé", var:"el copete"}, it:{m:"il ciuffo"},
-           de:{m:"der Schopf", p:"chopf"}, ja:{m:"前髪", p:"maegami"} },
-    def:{ fr:"La mèche qui tombe entre les oreilles. On la ramène par-dessus le frontal quand on met le filet.",
-          en:"The lock falling between the ears, brought over the browband when bridling.",
-          es:"El mechón que cae entre las orejas. Se echa por encima de la frontalera al poner la cabezada.",
-          it:"Il ciuffo che cade tra le orecchie. Si porta sopra il frontale quando si mette la testiera.",
-          de:"Die Strähne zwischen den Ohren. Beim Auftrensen legt man sie über das Stirnband.",
-          ja:"両耳のあいだに垂れる房。頭絡をつけるとき、額革の上へ出します。" } },
-
-  { ref:"tondre", lecon:1, coll:"gestes", v:true,
-    mots:{ fr:{m:"tondre"}, en:{m:"to clip", p:"klipp"},
-           es:{m:"esquilar"}, it:{m:"tosare"},
-           de:{m:"scheren", p:"ché-reune"}, ja:{m:"毛刈りをする", p:"kegari o suru"} }, // ??
-    def:{ fr:"Raser tout ou partie du poil d'hiver pour que le cheval sèche vite. ⚠️ En anglais c'est « to clip » ; « to shear » est réservé aux moutons.",
-          en:"Taking off all or part of the winter coat so the horse dries quickly. English says « to clip »; « to shear » belongs to sheep.",
-          es:"Rapar todo o parte del pelo de invierno para que el caballo se seque rápido. ⚠️ En inglés es « to clip »; « to shear » se reserva a las ovejas.",
-          it:"Rasare tutto o parte del pelo invernale perché il cavallo asciughi in fretta. ⚠️ In inglese è « to clip »; « to shear » è riservato alle pecore.",
-          de:"Das Winterfell ganz oder teilweise scheren, damit das Pferd schnell trocknet. ⚠️ Auf Englisch « to clip »; « to shear » gehört den Schafen.",
-          ja:"早く乾くように、冬毛の全部または一部を刈ること。⚠️ 英語では « to clip »。« to shear » は羊のための言葉です。" } },
 
   { ref:"poussiere", lecon:1, coll:"etat",
     mots:{ fr:{m:"la poussière"}, en:{m:"the dust", p:"deust"},

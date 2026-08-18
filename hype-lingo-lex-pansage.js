@@ -1,6 +1,6 @@
 /* hype-lingo-lex-pansage.js — Hype Lingo · Chapitre 2 · « Le pansage »
    ==================================================================
-   30 CONCEPTS, QUATRE LEÇONS.
+   33 CONCEPTS, QUATRE LEÇONS.
 
    🟥 19/08/2026 — CHAPITRE ALLÉGÉ SUR DÉCISION DE BLANDINE. Il portait
    42 concepts sur quatre leçons alors que LAMBOURN n'en lisait qu'une :
@@ -10,8 +10,9 @@
        la maréchalerie). NE PAS LES RECRÉER ICI : un concept = un `ref`
        global. ⚠️ Chez Flyinge, `sabot` se dit « le pied » et non « le
        sabot » — même `ref`, libellé français différent, à trancher.
-     · `brosse-eau`, `tondeuse`, `toupet`, `tondre`, `poussiere`, `mue`,
-       `tache`, `eclat`, `tique` — sans ville, en attente.
+     · `tondeuse`, `poussiere`, `mue`, `tache`, `eclat`, `tique` — sans ville.
+     🟢 `brosse-eau`, `toupet` et `tondre` ONT ÉTÉ REMIS le 19/08 sur
+       décision de Blandine : 33 concepts, pas 30.
    `ETAPE_SRC.lambourn` lit désormais LES QUATRE LEÇONS.
 
    UN CONCEPT = UN OBJET DU MONDE ÉQUESTRE avec ses 6 langues côte à côte.
@@ -143,6 +144,19 @@ window.HYPE_LINGO_LEX.pansage = {
           de:"Kamm aus Metall oder Plastik, nur für die Mähne. Der Schweif wird mit den Fingern entwirrt: Der Kamm bricht die Haare, die Jahre zum Nachwachsen brauchen.",
           ja:"金属やプラスチックの櫛は、たてがみ専用。尾は指でほぐします。櫛は尾の毛を切ってしまい、生えそろうまで何年もかかるのです。" } },
 
+/* 🟥 19/08 : REMIS PAR BLANDINE. Il fait paire avec `couteau-chaleur`,
+     `sueur` et `secher` — le temps 6 du dialogue, après le travail. */
+  { ref:"brosse-eau", lecon:1, coll:"outils",
+    mots:{ fr:{m:"la brosse à eau"}, en:{m:"the water brush", p:"ouo-teur broche"},
+           es:{m:"el cepillo de agua"}, it:{m:"la spazzola per l'acqua"}, // ??
+           de:{m:"die Wasserbürste", p:"va-seur-bur-ste"}, ja:{m:"水ブラシ", p:"mizu burashi"} },
+    def:{ fr:"Mouillée, elle couche la crinière et lave la paroi du sabot avant le graissage.",
+          en:"Used damp, it lays the mane down and washes the hoof wall before oiling.",
+          es:"Mojada, asienta la crin y lava la pared del casco antes del engrase.",
+          it:"Bagnata, appiattisce la criniera e lava la parete dello zoccolo prima dell'ingrassaggio.",
+          de:"Nass legt sie die Mähne an und wäscht die Hufwand vor dem Einfetten.",
+          ja:"濡らして使い、たてがみを寝かせ、油を塗る前に蹄の壁を洗います。" } },
+
   { ref:"couteau-chaleur", lecon:1, coll:"outils",
     mots:{ fr:{m:"le couteau de chaleur"}, en:{m:"the sweat scraper", p:"souètt skré-peur"},
            es:{m:"la rasqueta de sudor"}, it:{m:"il raschiatoio"}, // ??
@@ -190,6 +204,19 @@ window.HYPE_LINGO_LEX.pansage = {
           it:"I crini dell'incollatura. Nella tradizione classica si portano sul lato destro.",
           de:"Das Langhaar am Hals. In der klassischen Tradition liegt es auf der rechten Seite.",
           ja:"首すじの長い毛。古典的な伝統では、右側に寝かせます。" } },
+
+/* 🟥 19/08 : REMIS PAR BLANDINE. Le quatrième crin brossé, avec `poil`,
+     `criniere` et `queue` — et un mot qu'aucune autre ville n'enseigne. */
+  { ref:"toupet", lecon:2, coll:"corps",
+    mots:{ fr:{m:"le toupet"}, en:{m:"the forelock", p:"for-lok"},
+           es:{m:"el tupé", var:"el copete"}, it:{m:"il ciuffo"},
+           de:{m:"der Schopf", p:"chopf"}, ja:{m:"前髪", p:"maegami"} },
+    def:{ fr:"La mèche qui tombe entre les oreilles. On la ramène par-dessus le frontal quand on met le filet.",
+          en:"The lock falling between the ears, brought over the browband when bridling.",
+          es:"El mechón que cae entre las orejas. Se echa por encima de la frontalera al poner la cabezada.",
+          it:"Il ciuffo che cade tra le orecchie. Si porta sopra il frontale quando si mette la testiera.",
+          de:"Die Strähne zwischen den Ohren. Beim Auftrensen legt man sie über das Stirnband.",
+          ja:"両耳のあいだに垂れる房。頭絡をつけるとき、額革の上へ出します。" } },
 
   { ref:"queue", lecon:2, coll:"corps",
     mots:{ fr:{m:"la queue"}, en:{m:"the tail", p:"téïl"},
@@ -304,6 +331,20 @@ window.HYPE_LINGO_LEX.pansage = {
           it:"⚠️ Doppia trappola: « to plait » si pronuncia « platt » in Gran Bretagna, e gli americani dicono « to braid ». Due parole per lo stesso gesto da concorso.",
           de:"⚠️ Doppelte Falle: « to plait » spricht sich in Großbritannien « platt », und die Amerikaner sagen « to braid ». Zwei Wörter für denselben Turnierhandgriff.",
           ja:"⚠️ 二重の罠：イギリスの « to plait » は「プラット」と発音し、アメリカでは « to braid » と言います。競技会の同じ作業に、二つの言葉。" } },
+
+/* 🟥 19/08 : REMIS PAR BLANDINE. ⚠️ `tondeuse`, son outil, RESTE EN
+     RÉSERVE — décision explicite : le verbe seul. C'est le seul geste du
+     chapitre dont l'outil n'est pas enseigné. */
+  { ref:"tondre", lecon:3, coll:"gestes", v:true,
+    mots:{ fr:{m:"tondre"}, en:{m:"to clip", p:"klipp"},
+           es:{m:"esquilar"}, it:{m:"tosare"},
+           de:{m:"scheren", p:"ché-reune"}, ja:{m:"毛刈りをする", p:"kegari o suru"} }, // ??
+    def:{ fr:"Raser tout ou partie du poil d'hiver pour que le cheval sèche vite. ⚠️ En anglais c'est « to clip » ; « to shear » est réservé aux moutons.",
+          en:"Taking off all or part of the winter coat so the horse dries quickly. English says « to clip »; « to shear » belongs to sheep.",
+          es:"Rapar todo o parte del pelo de invierno para que el caballo se seque rápido. ⚠️ En inglés es « to clip »; « to shear » se reserva a las ovejas.",
+          it:"Rasare tutto o parte del pelo invernale perché il cavallo asciughi in fretta. ⚠️ In inglese è « to clip »; « to shear » è riservato alle pecore.",
+          de:"Das Winterfell ganz oder teilweise scheren, damit das Pferd schnell trocknet. ⚠️ Auf Englisch « to clip »; « to shear » gehört den Schafen.",
+          ja:"早く乾くように、冬毛の全部または一部を刈ること。⚠️ 英語では « to clip »。« to shear » は羊のための言葉です。" } },
 
   { ref:"secher", lecon:3, coll:"gestes", v:true,
     mots:{ fr:{m:"sécher"}, en:{m:"to dry off", p:"draï off"},
@@ -545,21 +586,23 @@ window.HYPE_LINGO_LEX.pansage = {
         de:"Immer alle vier Hufe, bevor du sattelst.",
         ja:"必ず 四本 とも、 鞍 を 置く 前 に。" },
 
-      /* 🟥 19/08 : `mots:["sabot"]` RETIRÉ — `sabot` est parti à FLYINGE
-         (« le pied », chapitre du pied et de la maréchalerie). La phrase
-         reste, elle est naturelle et elle amène `curer-pieds` juste
-         après ; elle n'enseigne simplement plus de mot.
-         ⚠️ CHOIX PROVISOIRE DE CLAUDE, NON VALIDÉ PAR BLANDINE. Deux
-         autres options étaient posées : garder `sabot` en révision (mais
-         Lambourn est l'étape 5 et Flyinge la 36e, le mot serait inconnu),
-         ou réécrire la phrase vers un mot conservé. */
+      /* 🟥 19/08 : PHRASE REMPLACÉE SUR BRIEF DE BLANDINE. Elle disait
+         « Il y a une pierre dans le sabot. » — `sabot` est parti à
+         FLYINGE, la phrase enseignait donc un mot que Lambourn n'a plus.
+         La nouvelle reste au même temps, au même endroit du récit, et
+         ramène `boue` (déjà vue au temps 2) : contexte, pas acquisition.
+         ⚠️ `ref` INCHANGÉE À DESSEIN : `lingo-dialogue.html` ne m'a pas
+         été envoyé et je ne sais pas si les `ref` de phrases y servent
+         de clé de progression. Renommer en `d-boue-pieds` serait plus
+         propre — à faire quand ce fichier sera sous les yeux.
+         ⚠️ ES/IT/DE/JA ÉCRITS PAR CLAUDE, jamais relus par un natif. */
       { ref:"d-pierre-sabot", temps:3, dit:"joueuse", mots:[],
-        fr:"Il y a une pierre dans le sabot.",
-        en:"There's a stone in his hoof.",
-        es:"Tiene una piedra en el casco.",
-        it:"C'è un sasso nello zoccolo.",
-        de:"Da ist ein Stein im Huf.",
-        ja:"蹄 に 石 が 挟まっ て い ます。" },
+        fr:"Il reste encore de la boue autour des pieds.",
+        en:"There's still some mud around his feet.",
+        es:"Todavía queda barro alrededor de los cascos.",
+        it:"C'è ancora del fango intorno agli zoccoli.",
+        de:"Um die Hufe herum ist noch Schlamm.",
+        ja:"まだ 足元 に 泥 が 残っ て い ます。" },
 
       { ref:"d-graisser-pieds", temps:3, dit:"joueuse", mots:["graisser","graisse-pieds"],
         fr:"Est-ce qu'il faut graisser les pieds ?",
@@ -579,7 +622,7 @@ window.HYPE_LINGO_LEX.pansage = {
         ja:"尻尾 が 絡まっ て い ます。" },
 
       { ref:"d-demeler-peigne", temps:4, dit:"joueuse", mots:["demeler","peigne"],
-        fr:"Est-ce que je peux démêler avec un peigne ?",
+        fr:"Est-ce que je peux la démêler avec un peigne ?",
         en:"Can I comb it out with a mane comb?",
         es:"¿Puedo desenredarla con un peine?",
         it:"Posso districarla con un pettine?",
