@@ -6906,7 +6906,12 @@ var ETAPE_SRC = {
      Premier chapitre du nouveau format : 18 mots, 10 phrases dont 4
      rappels a deux mots. */
   hickstead:   [["derby",1]],
-  badminton:   [["concours",2]],
+  /* 🟥 18/08 : DÉCOUPAGE UN-FICHIER-PAR-VILLE. `concours` → `badminton`.
+     DEUX paires car les 5 concepts déplacés depuis la leçon 3 orpheline
+     (speaker, appel, resultat, remise-prix, groom) ont gardé leur tag
+     `lecon:3` d'origine dans hype-lingo-lex-badminton.js — sans cette
+     seconde paire, ils resteraient invisibles. */
+  badminton:   [["badminton",2],["badminton",3]],
   burghley:    [["cross",1]],
   /* ⚠️ v36 (decision B de Blandine, 9 aout) : les termes les plus urgents
      regroupes dans UNE ville offerte. Kildare recoit les lecons 1 (les
@@ -6981,8 +6986,10 @@ var ETAPE_SRC = {
      regrouper « l'entretien des chevaux, les box, la nourriture, le foin »
      dans UNE ville — à faire. */
   vejer:       [["materiel",3],["materiel",4]],
-  oliva:       [["concours",1]],
-  rome:        [["concours",4]],
+  /* 🟥 18/08 : découpage un-fichier-par-ville. `concours` → `oliva`. */
+  oliva:       [["oliva",1]],
+  /* 🟥 18/08 : découpage un-fichier-par-ville. `concours` → `rome`. */
+  rome:        [["rome",4]],
   verone:      [["vente",1]],
   dubai:       [["endurance",1]],
   tokyo:       [["tradition",1]],
@@ -6992,7 +6999,8 @@ var ETAPE_SRC = {
   santaynez:   [["horsemanship",1]],
   spruce:      [["froid",1]],
   warendorf:   [["formation",1]],
-  aachen:      [["obstacle",4]],
+  /* 🟥 18/08 : découpage un-fichier-par-ville. `obstacle` → `aachen`. */
+  aachen:      [["aachen",4]],
   /* 🔴 18/08 : WELLINGTON N'AVAIT AUCUNE LIGNE ICI. Elle figurait dans
      `ETAPES` et dans `CHAPITRE_DE` ("obstacle"), elle avait son dialogue et
      son bouton de mise en situation — mais `chapVirtuel("wellington")`
@@ -7005,7 +7013,8 @@ var ETAPE_SRC = {
      ⚠️ Si Blandine ramène Wellington à UNE leçon, les mots des leçons 2 et
      3 redeviennent invisibles. C'est la faute commise sur Saumur : ne pas
      réduire sans le dire. */
-  wellington:  [["obstacle",1],["obstacle",2],["obstacle",3]],
+  /* 🟥 18/08 : découpage un-fichier-par-ville. `obstacle` → `wellington`. */
+  wellington:  [["wellington",1],["wellington",2],["wellington",3]],
   /* 🟥 18/08 : TAUPŌ, fichier neuf `hype-lingo-lex-liberte.js`, une leçon.
      ⚠️ NE PAS lui donner de leçon d'un autre fichier : ses quatre rappels
      reprennent les `ref` du Morne et de Santa Ynez, ils arrivent donc déjà

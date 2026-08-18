@@ -68,11 +68,13 @@
    déclenche le ménage des anciennes versions.
    ================================================================== */
 
-var CACHE = "linguae-v3";   /* 🟥 v3 le 18/08 : CINQ LEXIQUES AJOUTES AU SOCLE (voir SOCLE_JS).
-                               QUATRE D'ENTRE EUX MANQUAIENT DEJA — c'est le defaut du 16/08 qui
-                               se rejouait a l'identique. Changer CACHE force le menage des
+var CACHE = "linguae-v4";   /* 🟥 v4 le 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE (obstacle -> wellington
+                               + aachen ; concours -> badminton + oliva + rome + concours-reserve).
+                               hype-lingo-lex-obstacle.js et hype-lingo-lex-concours.js RETIRES du
+                               socle, six fichiers neufs AJOUTES. Changer CACHE force le menage des
                                anciennes versions ; sans ce changement, rien ne se met a jour.
-                               v2 le 16/08 : les trois garde-fous. */
+                               v3 le 18/08 : cinq lexiques ajoutes au socle (liberte, andalou,
+                               formation, jeunes, parade). v2 le 16/08 : les trois garde-fous. */
 
 /* 🟥🟥 LE DÉFAUT DU 16/08 — L'APP CASSÉE HORS LIGNE APRÈS UN DÉPLOIEMENT.
    Blandine, revenue de son vol : « j'aurais dû pouvoir accéder sans
@@ -113,7 +115,7 @@ var SOCLE_JS = [
   "hype-lingo-lex-arrivee.js", "hype-lingo-lex-balade.js", "hype-lingo-lex-cheval.js",
   "hype-lingo-lex-ecurie.js", "hype-lingo-lex-pansage.js", "hype-lingo-lex-materiel.js",
   "hype-lingo-lex-cours.js", "hype-lingo-lex-dressage.js", "hype-lingo-lex-enseignant.js",
-  "hype-lingo-lex-obstacle.js", "hype-lingo-lex-derby.js", "hype-lingo-lex-concours.js",
+  "hype-lingo-lex-derby.js",
   "hype-lingo-lex-cross.js", "hype-lingo-lex-horsemanship.js",
   /* 16/08 : les urgences separees en deux fichiers */
   "hype-lingo-lex-urgences-vet.js", "hype-lingo-lex-urgences-med.js",
@@ -131,7 +133,14 @@ var SOCLE_JS = [
   "hype-lingo-lex-andalou.js", "hype-lingo-lex-formation.js",
   "hype-lingo-lex-jeunes.js", "hype-lingo-lex-parade.js",
   /* 18/08 : Taupo, 35e ville, chapitre « Free riding » */
-  "hype-lingo-lex-liberte.js"
+  "hype-lingo-lex-liberte.js",
+  /* 🟥🟥 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE. `hype-lingo-lex-obstacle.js`
+     et `hype-lingo-lex-concours.js` sont RETIRES ci-dessus (fusionnes dans
+     ces six fichiers neufs). NE PAS les remettre : le contenu a demenage,
+     pas ete duplique. */
+  "hype-lingo-lex-wellington.js", "hype-lingo-lex-aachen.js",
+  "hype-lingo-lex-badminton.js", "hype-lingo-lex-oliva.js",
+  "hype-lingo-lex-rome.js", "hype-lingo-lex-concours-reserve.js"
 ];
 
 /* Le socle : ce qui doit être là même si la ville n'a jamais été
