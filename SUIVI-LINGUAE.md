@@ -1,3 +1,77 @@
+# 🧱 DÉCOUPAGE UN-FICHIER-PAR-VILLE — 18/08/2026, session du soir
+
+**Chantier annoncé dans la passation, commencé le soir même** : *« c'est un vrai bordel, je n'arrête pas de le dire »*. Deux chapitres partagés entre plusieurs villes (`obstacle`, `concours`) découpés en six fichiers, un par ville, plus une réserve.
+
+## CE QUI A ÉTÉ FAIT
+
+**Diagnostic préalable, avant tout code** : vérification que ni `chapVirtuel()` (`lingo.html`) ni `lireLexiques()`/`aUnDialogue()` (`lingo-dialogue.html`) ne lisent le nom de la clé de chapitre — la maîtrise (par `ref`) et le routage du dialogue (par `ville`) sont entièrement indépendants du nom de fichier. Renommer une clé de chapitre est donc sûr.
+
+**Méthode** : extraction ligne par ligne (`sed -n 'X,Yp'`), jamais par script de motifs — conformément à la règle posée après la casse de `balade.js`. Chaque plage de lignes repérée à la main via `grep -n` avant extraction.
+
+🟥 **`hype-lingo-lex-obstacle.js` → deux fichiers, contenu identique, aucun `ref` touché :**
+· `hype-lingo-lex-wellington.js` — leçons 1+2+3 (31 concepts, 6 phrases, dialogue 22 phrases)
+· `hype-lingo-lex-aachen.js` — leçon 4 (19 concepts, 2 phrases, dialogue 20 phrases — `dialogueAachen` renommé `dialogue`)
+
+⚠️ **Comptage corrigé en cours de route** : le tout premier comptage annoncé en conversation (« obstacle = 42 concepts », « concours = 42 concepts », « 58 concepts au total ») était **faux** — un grep initial confondait les tags `lecon:` des concepts ET des phrases. Comptage réel vérifié après coup : obstacle = 50 concepts (31+19), concours = 65 concepts (19+21+9+21) hors `formats-complet` déjà inclus dans les 21 de badminton. Les en-têtes des DEUX fichiers d'origine annonçaient déjà « 42 concepts » avant même le découpage — c'était donc **une erreur préexistante dans les fichiers**, pas une introduite ce soir.
+
+🟥 **`hype-lingo-lex-concours.js` → quatre fichiers :**
+· `hype-lingo-lex-oliva.js` — leçon 1 (19 concepts, 3 phrases, dialogue 20 phrases)
+· `hype-lingo-lex-badminton.js` — leçon 2 (16 concepts, 2 phrases) **+ 5 concepts déplacés depuis la leçon 3 orpheline** (`speaker`, `appel`, `resultat`, `remise-prix`, `groom`, sur décision de Blandine) **+ 2 phrases qui les emploient** (`tu-passes`, `resultats-ou`, déplacées car elles utilisent littéralement ces mots — hypothèse posée, pas confirmée mot pour mot par Blandine). Total 21 concepts, 4 phrases, dialogue 27 phrases.
+· `hype-lingo-lex-rome.js` — leçon 4 (21 concepts, 1 phrase, dialogue 21 phrases)
+· `hype-lingo-lex-concours-reserve.js` — les 4 concepts restants de la leçon 3 orpheline (`van`, `embarquer`, `tableau`, `trac`), **sans ville, sur décision de Blandine** (18/08 : *« un fichier à part, en réserve, sans ville pour l'instant »*). Pas de phrases, pas de dialogue.
+
+⚠️ **`titre` de `concours-reserve.js` INVENTÉ, faute d'original** (« Le jour J » / « Show day »...) — ce regroupement n'existait pas avant le découpage, donc rien à reprendre. Comme aucune ville n'y est branchée, il n'est probablement jamais affiché, mais Blandine doit le savoir : c'est la seule chaîne de ce chantier qui n'est pas une copie exacte de l'existant.
+
+**`ETAPE_SRC` mis à jour** (`lingo.html`) pour les 5 villes concernées :
+```
+wellington:  [["wellington",1],["wellington",2],["wellington",3]]
+aachen:      [["aachen",4]]
+badminton:   [["badminton",2],["badminton",3]]   /* deux paires : la leçon 2 d'origine + la 3 déplacée */
+oliva:       [["oliva",1]]
+rome:        [["rome",4]]
+```
+
+**`sw-linguae.js` passé en v4** : `hype-lingo-lex-obstacle.js` et `hype-lingo-lex-concours.js` retirés du `SOCLE_JS`, les 6 fichiers neufs ajoutés.
+
+## CE QUI N'EST PAS FAIT
+
+🔴 **`hype-lingo-lex-obstacle.js` et `hype-lingo-lex-concours.js` sont TOUJOURS SUR LE DÉPÔT GITHUB**, inchangés. Ils ne sont plus chargés (retirés du socle et d'`ETAPE_SRC`), mais pas supprimés — à faire une fois le lot vérifié en ligne.
+
+🔴 **Le rattachement des phrases `tu-passes`/`resultats-ou` à Badminton n'a pas été confirmé mot pour mot par Blandine** — déduction de Claude à partir du contenu des phrases, signalée comme telle au moment de la proposer, mais jamais explicitement validée après coup.
+
+⚠️ **Aucun test Playwright, aucun rendu visuel** — seuls `node --check` et les comptages ont vérifié ce lot. Vérification complète recommandée avant push, vu l'ampleur du remaniement (8 fichiers touchés).
+
+---
+
+# 🐴 CONNEMARA — DIAGNOSTIC D'UN DÉCALAGE, PAS ENCORE CORRIGÉ — 18/08/2026
+
+Blandine a repéré une incohérence : `ETAPE_SRC.connemara` pointe sur `cheval` leçon **1** (les robes), mais le dialogue de `cheval.js` (`ville:"connemara"`) porte `lecon:4`.
+
+**Diagnostic posé, rien corrigé** (Blandine va refaire elle-même) :
+· Le `lecon:4` du dialogue n'est lu par AUCUNE fonction de routage — seul `ville:"connemara"` compte. Ce n'est donc pas une erreur mécanique.
+· Mais le contenu réel du dialogue (20 `mots:[...]` croisés avec leur leçon d'origine) : seulement **3 mots de la leçon 1** enseignée (`robe`, `gris`, `bai`), et **9 mots de la leçon 4** (âge, sexe, caractère). Le dialogue raconte majoritairement autre chose que ce qu'apprend la leçon assignée.
+· 🔴 **Deux `ref` utilisées dans le dialogue n'existent nulle part dans le fichier** : `mots:["connemara"]` et `mots:["pur-sang"]`. Le surlignage de ces mots restera muet dans l'app. Non corrigé, à vérifier si ces `ref` vivent ailleurs ou sont une vraie faute.
+
+**Contenu complet des deux leçons orphelines de `cheval.js` sorti pour Blandine** (elle refait le chapitre) :
+· Leçon 2 — les marques d'identité (10 concepts : `liste`, `etoile`, `balzane`, `epi`, `puce`, `passeport`, `taille`, `poney`, `fer`, `marechal`). La définition de `poney` **nomme Connemara explicitement** — le seul lien direct trouvé entre une leçon et cette ville.
+· Leçon 3 — l'anatomie (10 concepts : `tete`, `garrot`, `epaule`, `croupe`, `jarret`, `boulet`, `paturon`, `ventre`, `naseaux`, `oreilles`) — générique, aucun lien à Connemara.
+
+---
+
+# 🔍 TAUPŌ — LES 4 `ref` À VÉRIFIER, RÉSULTAT NÉGATIF — 18/08/2026
+
+Vérification demandée par la passation pour les 4 rappels de Taupō (`equilibre`, `voix`, `confiance`, `recompenser`) : **aucun des quatre n'existe** comme `ref` dans `hype-lingo-lex-cours.js` ni `hype-lingo-lex-poney.js`, en `ref` comme en texte libre. Seule trace : les mots « confiance » et « voix » apparaissent en texte libre dans la définition de `monter-licol` (poney.js), sans être une `ref`.
+
+⚠️ Ces deux fichiers étaient ceux désignés par la passation comme lieu probable ; le point reste ouvert — soit les 4 `ref` sont à créer, soit elles vivent dans un fichier non consulté ce soir.
+
+---
+
+# ✅ `sw-linguae.js` — LES TROIS MODIFICATIONS DU 18/08, VÉRIFIÉES DÉJÀ FAITES
+
+À l'ouverture de session, `sw-linguae.js` (reçu en contenu texte, l'upload binaire ayant échoué) contenait **déjà** les trois modifications annoncées « non faites » par la passation du matin : `CACHE` en v3, et les 5 lexiques (`liberte`, `andalou`, `formation`, `jeunes`, `parade`) déjà dans `SOCLE_JS`. Croisement avec `lingo.html` (v44) : les 30 lexiques réellement chargés correspondent tous à `SOCLE_JS`, sans manque. (Ce fichier est ensuite passé en v4 par le découpage un-fichier-par-ville ci-dessus.)
+
+---
+
 # 🟥🟥 RÈGLE ABSOLUE — UN FICHIER ABÎMÉ SE REFAIT DEPUIS L'ORIGINAL
 
 **Posée par Blandine le 18/08/2026, après deux casses successives de `hype-lingo-lex-urgences-med.js` :**

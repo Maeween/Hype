@@ -6895,7 +6895,9 @@ var ETAPE_SRC = {
   maurice:     [["balade",1]],
   newmarket:   [["ecurie",1]],
   lambourn:    [["pansage",1]],
-  connemara:   [["cheval",1]],
+  /* 🟥 18/08 : découpage un-fichier-par-ville. `cheval` → `connemara`
+     (leçons 1+2+3 + races gb-irl, tout dans une seule leçon-fichier). */
+  connemara:   [["connemara",1],["connemara",2],["connemara",3]],
   walsall:     [["materiel",1]],
   aberystwyth: [["cours",1]],
   windsor:     [["dressage",1]],
@@ -6962,7 +6964,11 @@ var ETAPE_SRC = {
      autre chose ».
      ⚠️ JEREZ REÇOIT DONC UN FICHIER NEUF : `hype-lingo-lex-andalou.js`,
      l'école royale, le PRE, la doma vaquera, les airs relevés. */
-  fontainebleau: [["cheval",4],["jeunes",1]],
+  /* 🟥 18/08 : FUSION. `hype-lingo-lex-fontainebleau.js` (créé plus tôt
+     dans la session) est abandonné — son contenu (leçon 4) a rejoint
+     `hype-lingo-lex-jeunes.js` à la place, pour n'avoir plus qu'un seul
+     fichier par ville. Deux paires, même clé, tags de leçon inchangés. */
+  fontainebleau: [["jeunes",4],["jeunes",1]],
   jerez:       [["andalou",1]],
   /* 🔴 17/08 : SÉVILLE EST SANS CHAPITRE. Elle pointait sur `materiel` 3,
      que VEJER a reçue le même jour. Laisser les deux dessus donnerait la

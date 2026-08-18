@@ -1,6 +1,16 @@
 /* hype-lingo-lex-jeunes.js — Hype Linguae · Fontainebleau · « Les jeunes chevaux »
    ==================================================================
-   13 CONCEPTS, UNE LEÇON. Ville : FONTAINEBLEAU, 34e étape.
+   25 CONCEPTS, DEUX LEÇONS. Ville : FONTAINEBLEAU, 34e étape.
+
+   🟥 18/08/2026 : FUSION. Fontainebleau puisait dans DEUX FICHIERS
+   séparés (`cheval` leçon 4 + ce fichier), ce qui l'a fait disparaître
+   sans erreur visible pendant le découpage un-fichier-par-ville du
+   soir même — Blandine : « il y a plein d'autres phrases sur le
+   lexique jeunes je crois ». Les deux sources sont maintenant DANS CE
+   SEUL FICHIER, sur deux leçons distinctes, pour qu'il n'y ait plus
+   qu'un seul endroit à ouvrir pour toute la ville.
+   ⚠️ AUCUN `ref` DE CONCEPT NI DE PHRASE N'A CHANGÉ dans l'opération —
+   copie ligne à ligne depuis les deux fichiers d'origine.
 
    🟥 POURQUOI CETTE VILLE EXISTE — 17 août 2026, session 214.
    Blandine : *« on ne peut pas rater la Grande Semaine »*. Rien dans le
@@ -8,14 +18,15 @@
    moitié du métier : un cheval de sport passe ses quatre premières
    années à être formé avant qu'on sache ce qu'il vaut.
 
-   ⚠️ FONTAINEBLEAU PUISE DANS DEUX SOURCES :
-   · `cheval` leçon 4 — le hongre, l'étalon, la jument, le poulain,
-     l'âge, le caractère, calme, chaud, la race, le sang chaud. Ces
-     douze mots appartenaient à JEREZ, où ils ne disaient rien du lieu.
-     Constat de Blandine : *« si on prend des mots de Jerez pour mettre
-     dans Fontainebleau, ça libérerait Jerez pour autre chose »*.
-   · ce fichier — le circuit, les cycles, la finale, la valorisation.
-   Jerez a reçu en échange un fichier neuf : `hype-lingo-lex-andalou.js`.
+   LES DEUX LEÇONS :
+   · leçon 1 — le circuit, les cycles, la finale, la valorisation (13
+     concepts, propres à ce fichier depuis l'origine).
+   · leçon 4 — le hongre, l'étalon, la jument, le poulain, l'âge, le
+     caractère, calme, chaud, la race, le sang chaud (12 concepts,
+     hérités de `cheval.js` le 17/08 — ils appartenaient à JEREZ, où ils
+     ne disaient rien du lieu. Jerez a reçu en échange un fichier neuf :
+     `hype-lingo-lex-andalou.js`). Numéro de leçon conservé tel quel,
+     sans renumérotation, pour ne rien casser côté `ETAPE_SRC`.
 
    🟥 LA LOGIQUE DU CHAPITRE, posée par elle :
      **4 ANS → APPRENDRE · 5 ANS → DÉVELOPPER · 6 ANS → CONFIRMER**
@@ -50,7 +61,7 @@ window.HYPE_LINGO_LEX.jeunes = {
   chapitre: 26,
   titre: { fr:"Les jeunes chevaux", en:"Young horses", es:"Los caballos jóvenes",
            it:"I cavalli giovani", de:"Die jungen Pferde", ja:"若馬" },
-  lecons: 1,
+  lecons: 2,
 
   concepts: [
 
@@ -197,8 +208,145 @@ window.HYPE_LINGO_LEX.jeunes = {
           de:"Ein französisches Wort, das Englisch nicht wiedergibt: es meint zugleich die Arbeit, die Präsentation und den Wertzuwachs.",
           ja:"英語に対応語のないフランス語。development は作業を、showcasing は見せ方を表しますが、valorisation はその両方に加えて「市場価値が上がること」まで含みます。競技の語に見せかけた商いの語であり、グランド・スメーヌはまさにそれです。" } }
 
+,
+
+  /* ============ LEÇON 4 · ÂGE, SEXE, CARACTÈRE (venue de cheval.js le 17/08) ============ */
+
+
+  { ref:"hongre", lecon:4, coll:"identite",
+    mots:{ fr:{m:"le hongre"}, en:{m:"the gelding", p:"guel-ding"},
+           es:{m:"el caballo castrado"}, it:{m:"il castrone"},
+           de:{m:"der Wallach", p:"va-larh"}, ja:{m:"せん馬", p:"senba"} },
+    def:{ fr:"Le mâle castré, monture la plus courante en club pour son égalité de caractère. Le mot français vient de la Hongrie, où la pratique était courante.",
+          en:"The castrated male, the commonest riding-school mount for its even temper.",
+          es:"El macho castrado, la montura más común en un club por su igualdad de carácter. La palabra francesa viene de Hungría, donde la práctica era corriente.",
+          it:"Il maschio castrato, la cavalcatura più comune in un club per l'uniformità di carattere. La parola francese viene dall'Ungheria, dove la pratica era corrente.",
+          de:"Der kastrierte Wallach, wegen seines ausgeglichenen Wesens das häufigste Clubpferd. Das französische Wort kommt aus Ungarn, wo die Praxis üblich war.",
+          ja:"去勢された牡馬。気性が安定しているため、クラブで最もよく使われます。フランス語の hongre はハンガリーに由来 — 去勢が盛んな土地だったのです。" } },
+
+  { ref:"etalon", lecon:4, coll:"identite",
+    mots:{ fr:{m:"l'étalon"}, en:{m:"the stallion", p:"sta-li-eune"},
+           es:{m:"el semental"}, it:{m:"lo stallone"},
+           de:{m:"der Hengst", p:"hèn-gst"}, ja:{m:"牡馬", p:"ouma", var:"種牡馬 = étalon reproducteur"} },
+    def:{ fr:"Le mâle entier. Jamais confié à un débutant, et souvent séparé du reste de l'écurie. Le japonais distingue le mâle (牡馬) de l'étalon d'élevage (種牡馬).",
+          en:"The entire male, never given to a beginner and often stabled apart. Japanese separates « male horse » from « breeding stallion ».",
+          es:"El macho entero. Jamás confiado a un principiante, y a menudo separado del resto de la cuadra. El japonés distingue el macho (牡馬) del semental de cría (種牡馬).",
+          it:"Il maschio intero. Mai affidato a un principiante, e spesso separato dal resto della scuderia. Il giapponese distingue il maschio (牡馬) dallo stallone da razza (種牡馬).",
+          de:"Der Hengst. Nie einem Anfänger anvertraut, oft vom Rest des Stalls getrennt. Das Japanische unterscheidet das männliche Tier (牡馬) vom Zuchthengst (種牡馬).",
+          ja:"去勢していない牡馬。初心者に任されることは決してなく、厩舎でも他の馬と離されがちです。日本語は牡馬と、繁殖用の種牡馬とを区別します。" } },
+
+  { ref:"jument", lecon:4, coll:"identite",
+    mots:{ fr:{m:"la jument"}, en:{m:"the mare", p:"mèr"},
+           es:{m:"la yegua"}, it:{m:"la cavalla", var:"la giumenta"},
+           de:{m:"die Stute", p:"chtou-te"}, ja:{m:"牝馬", p:"hinba"} },
+    def:{ fr:"La femelle. Aucune langue ne se contente de dire « cheval femelle » : chacune a son mot, et c'est l'un des premiers à connaître à l'étranger.",
+          en:"The female. No language settles for « female horse »: each has its own word, and it is one of the first to learn abroad.",
+          es:"La hembra. Ninguna lengua se contenta con decir « caballo hembra »: cada una tiene su palabra, y es una de las primeras que hay que saber en el extranjero.",
+          it:"La femmina. Nessuna lingua si accontenta di dire « cavallo femmina »: ognuna ha la sua parola, ed è una delle prime da sapere all'estero.",
+          de:"Das weibliche Pferd. Keine Sprache begnügt sich mit « weibliches Pferd »: Jede hat ihr eigenes Wort — eines der ersten, die man im Ausland braucht.",
+          ja:"メスの馬。どの言語も「メスの馬」とは言わず、固有の言葉を持っています。海外で最初に覚えるべき言葉のひとつです。" } },
+
+  { ref:"poulain", lecon:4, coll:"identite",
+    mots:{ fr:{m:"le poulain"}, en:{m:"the foal", p:"fôle", var:"colt = mâle · filly = femelle"},
+           es:{m:"el potro"}, it:{m:"il puledro"},
+           de:{m:"das Fohlen", p:"fô-leune"}, ja:{m:"子馬", p:"kouma"} },
+    def:{ fr:"⚠️ L'anglais a trois mots là où le français en a un : **foal** (le poulain de l'année, des deux sexes), **colt** (jeune mâle), **filly** (jeune femelle). Sur les hippodromes britanniques, on n'entend que colt et filly.",
+          en:"English has three words where French has one: foal for the youngster of either sex, colt for a young male, filly for a young female.",
+          es:"⚠️ El inglés tiene tres palabras donde el francés una: **foal** (el potro del año, de ambos sexos), **colt** (macho joven), **filly** (hembra joven). En los hipódromos británicos solo se oye colt y filly.",
+          it:"⚠️ L'inglese ha tre parole dove il francese ne ha una: **foal** (il puledro dell'anno, dei due sessi), **colt** (giovane maschio), **filly** (giovane femmina). Sugli ippodromi britannici si sentono solo colt e filly.",
+          de:"⚠️ Das Englische hat drei Wörter, wo das Französische eines hat: **foal** (das Fohlen des Jahrgangs, beide Geschlechter), **colt** (junger Hengst), **filly** (junge Stute). Auf britischen Rennbahnen hört man nur colt und filly.",
+          ja:"⚠️ フランス語がひとつで済ませるところを、英語は三語で言い分けます。**foal**（当歳仔、雌雄問わず）、**colt**（若い牡）、**filly**（若い牝）。イギリスの競馬場で聞こえるのは colt と filly ばかりです。" } },
+
+  { ref:"age", lecon:4, coll:"identite",
+    mots:{ fr:{m:"l'âge"}, en:{m:"the age", p:"éïdj"},
+           es:{m:"la edad"}, it:{m:"l'età"},
+           de:{m:"das Alter", p:"al-teur"}, ja:{m:"馬齢", p:"barei", var:"年齢"} },
+    def:{ fr:"Curiosité mondiale : dans les papiers, tous les chevaux prennent un an le 1er janvier, quelle que soit leur date de naissance réelle. Un poulain né en mai a « un an » en janvier suivant.",
+          en:"A worldwide oddity: on paper every horse gains a year on 1 January, whatever its real birthday.",
+          es:"Curiosidad mundial: en los papeles, todos los caballos cumplen un año el 1 de enero, sea cual sea su fecha real de nacimiento. Un potro nacido en mayo tiene « un año » el enero siguiente.",
+          it:"Curiosità mondiale: sui documenti, tutti i cavalli compiono un anno il 1° gennaio, qualunque sia la data reale di nascita. Un puledro nato a maggio ha « un anno » il gennaio successivo.",
+          de:"Weltweite Kuriosität: Auf dem Papier werden alle Pferde am 1. Januar ein Jahr älter, egal wann sie geboren sind. Ein Maifohlen ist im folgenden Januar « einjährig ».",
+          ja:"世界共通の不思議：書類の上では、実際の誕生日にかかわらず、すべての馬が1月1日に歳をとります。5月生まれの仔馬は、翌年の1月に「一歳」です。" } },
+
+  { ref:"caractere", lecon:4, coll:"identite",
+    mots:{ fr:{m:"le caractère"}, en:{m:"the temperament", p:"tèm-pra-meune"},
+           es:{m:"el carácter"}, it:{m:"il carattere"},
+           de:{m:"das Temperament", p:"tèm-pé-ra-mènt"}, ja:{m:"気性", p:"kishō"} },
+    def:{ fr:"Ce qu'on demande avant de monter un cheval inconnu. La question qui marche partout : « comment est-il ? » plutôt que « est-il gentil ? ».",
+          en:"What you ask before riding an unknown horse. The question that works everywhere is « what's he like ? », not « is he nice ? ».",
+          es:"Lo que se pregunta antes de montar un caballo desconocido. La pregunta que funciona en todas partes: « ¿cómo es? » mejor que « ¿es bueno? ».",
+          it:"Ciò che si chiede prima di montare un cavallo sconosciuto. La domanda che funziona ovunque: « com'è? » piuttosto che « è buono? ».",
+          de:"Wonach man fragt, bevor man ein fremdes Pferd reitet. Die Frage, die überall funktioniert: « Wie ist er? » statt « Ist er brav? ».",
+          ja:"知らない馬に乗る前に尋ねること。どこでも通じる聞き方は「この馬、どんな子ですか？」— 「おとなしいですか？」よりも。" } },
+
+  { ref:"calme", lecon:4, coll:"identite",
+    mots:{ fr:{m:"calme"}, en:{m:"quiet", p:"kouaï-eutte", var:"steady · a schoolmaster"},
+           es:{m:"tranquilo"}, it:{m:"tranquillo"},
+           de:{m:"brav", p:"braf"}, ja:{m:"おとなしい", p:"otonashii"} },
+    def:{ fr:"Le mot qu'on espère entendre pour un cheval de location. ⚠️ En Grande-Bretagne, « he's a real schoolmaster » est le plus grand compliment possible pour un cheval d'école : il enseigne au cavalier.",
+          en:"The word you hope to hear about a hire horse. In Britain, « a real schoolmaster » is the highest praise for a school horse: it teaches the rider.",
+          es:"La palabra que uno espera oír para un caballo alquilado. ⚠️ En Gran Bretaña, « he's a real schoolmaster » es el mayor cumplido posible para un caballo de escuela: enseña al jinete.",
+          it:"La parola che si spera di sentire per un cavallo a noleggio. ⚠️ In Gran Bretagna « he's a real schoolmaster » è il più grande complimento possibile per un cavallo da scuola: insegna al cavaliere.",
+          de:"Das Wort, das man beim Leihpferd hören will. ⚠️ In Großbritannien ist « he's a real schoolmaster » das größte Lob für ein Schulpferd: Es unterrichtet den Reiter.",
+          ja:"借りる馬について、いちばん聞きたい言葉。⚠️ イギリスで « he's a real schoolmaster » は学校馬への最高の賛辞です。騎手に教えてくれる馬、という意味です。" } },
+
+  { ref:"chaud", lecon:4, coll:"identite",
+    mots:{ fr:{m:"chaud"}, en:{m:"hot", p:"hott", var:"sharp · fizzy"},
+           es:{m:"nervioso", var:"caliente"}, it:{m:"caldo", var:"nervoso"},
+           de:{m:"heiß", p:"haïss", var:"nervös"}, ja:{m:"気性難", p:"kishōnan", var:"神経質 = nerveux"} },
+    def:{ fr:"Un cheval chaud n'est pas méchant : il réagit vite et fort. L'anglais a les images les plus parlantes — **sharp** (vif comme une lame), **fizzy** (pétillant).",
+          en:"A hot horse is not a mean one: it reacts fast and strongly. English has the liveliest images: sharp, fizzy.",
+          es:"Un caballo caliente no es malo: reacciona rápido y fuerte. El inglés tiene las imágenes más elocuentes — **sharp** (vivo como una hoja), **fizzy** (burbujeante).",
+          it:"Un cavallo caldo non è cattivo: reagisce veloce e forte. L'inglese ha le immagini più parlanti — **sharp** (vivo come una lama), **fizzy** (frizzante).",
+          de:"Ein heißes Pferd ist nicht böse: Es reagiert schnell und heftig. Das Englische hat die sprechendsten Bilder — **sharp** (scharf wie eine Klinge), **fizzy** (sprudelnd).",
+          ja:"「熱い」馬は悪い馬ではありません。反応が速く、強いだけです。英語のたとえがいちばん雄弁です — **sharp**（刃のように鋭い）、**fizzy**（炭酸のようにはじける）。" } },
+
+  { ref:"cheval-ecole", lecon:4, coll:"identite",
+    mots:{ fr:{m:"le cheval d'école"}, en:{m:"the school horse", p:"skoul horss", var:"riding school horse"},
+           es:{m:"el caballo de escuela", var:"el caballo de picadero"}, it:{m:"il cavallo da scuola"},
+           de:{m:"das Schulpferd", p:"choul-pfèrt"}, ja:{m:"練習馬", p:"renshūba"} }, // ??
+    def:{ fr:"Celui qu'on te confiera à l'étranger. Le demander par son nom exact, dans la langue du pays, change complètement l'accueil.",
+          en:"The horse you will be given abroad. Asking for it by its proper local name changes the welcome entirely.",
+          es:"El que te confiarán en el extranjero. Pedirlo por su nombre exacto, en la lengua del país, cambia por completo la acogida.",
+          it:"Quello che ti affideranno all'estero. Chiederlo con il suo nome esatto, nella lingua del paese, cambia completamente l'accoglienza.",
+          de:"Das Pferd, das man dir im Ausland anvertraut. Es mit dem richtigen Wort in der Landessprache zu erbitten, verändert den Empfang völlig.",
+          ja:"海外で任されるのは、この馬です。その国の言葉で、正確な名前で頼めるかどうかで、迎えられ方がまるで変わります。" } },
+
+  { ref:"race", lecon:4, coll:"identite",
+    mots:{ fr:{m:"la race"}, en:{m:"the breed", p:"bride"},
+           es:{m:"la raza"}, it:{m:"la razza"},
+           de:{m:"die Rasse", p:"ra-se"}, ja:{m:"品種", p:"hinshu", var:"馬種"} }, // ??
+    def:{ fr:"⚠️ Faux ami redoutable : en anglais c'est **the breed**, jamais « the race » — race veut dire la course. « What race is he ? » fera comprendre « dans quelle course court-il ? ».",
+          en:"A nasty false friend: it is the breed, never the race. « What race is he ? » will be heard as « which race does he run in ? ».",
+          es:"⚠️ Falso amigo temible: en inglés es **the breed**, jamás « the race » — race significa la carrera. « What race is he ? » se entenderá como « ¿en qué carrera corre? ».",
+          it:"⚠️ Falso amico temibile: in inglese è **the breed**, mai « the race » — race significa la corsa. « What race is he ? » sarà capito come « in che corsa corre? ».",
+          de:"⚠️ Gefährlicher falscher Freund: Auf Englisch heißt es **the breed**, nie « the race » — race ist das Rennen. « What race is he ? » versteht man als « In welchem Rennen läuft er? ».",
+          ja:"⚠️ 恐るべき偽りの友：英語では **the breed** であって、決して « the race » ではありません — race は競走の意味。« What race is he ? » は「どのレースに出るの？」と受け取られます。" } },
+
+  { ref:"demi-sang", lecon:4, coll:"identite",
+    mots:{ fr:{m:"le sang chaud", var:"le demi-sang"}, en:{m:"the warmblood", p:"ouorm-bleude"},
+           es:{m:"el caballo de sangre caliente"}, it:{m:"il cavallo a sangue caldo"},
+           de:{m:"das Warmblut", p:"varm-bloute"}, ja:{m:"温血種", p:"onketsushu"} },
+    def:{ fr:"Les chevaux de sport européens, entre le pur-sang et le trait. L'allemand possède la série complète et parfaitement logique : Vollblut (pur-sang), Warmblut (sang chaud), Kaltblut (trait).",
+          en:"The European sport horses, between the thoroughbred and the draught horse. German has the whole tidy series: Vollblut, Warmblut, Kaltblut.",
+          es:"Los caballos de deporte europeos, entre el purasangre y el de tiro. El alemán posee la serie completa y perfectamente lógica: Vollblut (purasangre), Warmblut (sangre caliente), Kaltblut (tiro).",
+          it:"I cavalli sportivi europei, tra il purosangue e il cavallo da tiro. Il tedesco possiede la serie completa e perfettamente logica: Vollblut (purosangue), Warmblut (sangue caldo), Kaltblut (tiro).",
+          de:"Die europäischen Sportpferde, zwischen Vollblut und Kaltblut. Das Deutsche hat die vollständige, völlig logische Reihe: Vollblut, Warmblut, Kaltblut.",
+          ja:"ヨーロッパのスポーツホース。サラブレッドと輓馬のあいだに位置します。ドイツ語には完璧に論理的な三点セットがあります：Vollblut（純血）、Warmblut（温血）、Kaltblut（冷血）。" } },
+
+  { ref:"trait", lecon:4, coll:"identite",
+    mots:{ fr:{m:"le cheval de trait"}, en:{m:"the draught horse", p:"draft horss", var:"draft horse (US)"},
+           es:{m:"el caballo de tiro"}, it:{m:"il cavallo da tiro"},
+           de:{m:"das Kaltblut", p:"kalt-bloute"}, ja:{m:"重種", p:"jūshu"} }, // ??
+    def:{ fr:"Les grands chevaux de force. ⚠️ Le mot anglais s'écrit draught en Grande-Bretagne et draft aux États-Unis, mais se prononce « draft » des deux côtés.",
+          en:"The big strong horses. The word is spelt draught in Britain and draft in America, but pronounced « draft » on both sides.",
+          es:"Los grandes caballos de fuerza. ⚠️ La palabra inglesa se escribe draught en Gran Bretaña y draft en Estados Unidos, pero se pronuncia « draft » en ambos lados.",
+          it:"I grandi cavalli da forza. ⚠️ La parola inglese si scrive draught in Gran Bretagna e draft negli Stati Uniti, ma si pronuncia « draft » da entrambe le parti.",
+          de:"Die großen Kraftpferde. ⚠️ Das englische Wort schreibt sich draught in Großbritannien und draft in den USA — gesprochen wird beides « draft ».",
+          ja:"力仕事のための大きな馬たち。⚠️ 英語の綴りはイギリスで draught、アメリカで draft — 発音はどちらも「ドラフト」です。" } }
   ],
 
+  /* ---- phrases complètes ---- */
   phrases: [
 
     { ref:"ph-jeunes-quel-age", lecon:1, mots:["jeune-cheval-sport"],
@@ -233,47 +381,38 @@ window.HYPE_LINGO_LEX.jeunes = {
       de:"Dieses Pferd hat sich für das nationale Finale qualifiziert.",
       ja:"この 馬 は 全国 決勝 に 進出 し まし た。" }
 
+,
+
+    { ref:"quel-age", lecon:4,
+      fr:"Quel âge a-t-il ?",
+      en:"How old is he ?",
+      es:"¿ Cuántos años tiene ?",
+      it:"Quanti anni ha ?",
+      de:"Wie alt ist er ?",
+      ja:"何歳 です か ?" },
+    { ref:"comment-est-il", lecon:4,
+      fr:"Il est calme ? Je débute.",
+      en:"Is he quiet ? I'm a beginner.",
+      es:"¿ Es tranquilo ? Soy principiante.",
+      it:"È tranquillo ? Sono principiante.",
+      de:"Ist er brav ? Ich bin Anfängerin.",
+      ja:"おとなしい です か ? 初心者 です。" },
+    { ref:"chaud-debutant", lecon:4,
+      fr:"Je préfère un cheval d'école.",
+      en:"I'd rather have a school horse.",
+      es:"Prefiero un caballo de escuela.",
+      it:"Preferisco un cavallo da scuola.",
+      de:"Ich möchte lieber ein Schulpferd.",
+      ja:"練習馬 の ほう が いい です。" },
+    { ref:"quelle-race", lecon:4,
+      fr:"C'est quelle race ?",
+      en:"What breed is he ?",
+      es:"¿ De qué raza es ?",
+      it:"Di che razza è ?",
+      de:"Welche Rasse ist er ?",
+      ja:"品種 は 何 です か ?" },
   ],
 
-  /* ==================================================================
-     LE DIALOGUE DE FONTAINEBLEAU — 17 août 2026, session 214.
-
-     LA SCÈNE : la Grande Semaine au Grand Parquet, la finale nationale
-     des jeunes chevaux. 18 phrases, 6 temps.
-
-     🟥 LES DIX-HUIT PHRASES SONT DE BLANDINE, avec leur traduction
-     anglaise et le lexique du chapitre.
-
-     🟥 LA LOGIQUE PÉDAGOGIQUE, la sienne, qui structure les temps :
-       **4 ANS → APPRENDRE · 5 ANS → DÉVELOPPER · 6 ANS → CONFIRMER**
-     ⚠️ NE PAS la présenter comme un barème réglementaire : c'est une
-     logique de formation, pas un texte de fédération.
-
-     🟥 ET LA SECONDE, qui donne sa place à la ville dans le voyage :
-       **FORMATION → QUALIFICATION → FINALE → VISIBILITÉ → VENTE**
-     Fontainebleau est le maillon entre GOLEGÃ et LEXINGTON (on élève)
-     et VÉRONE (on achète). Le temps 6 le dit explicitement : les
-     acheteurs sont là, un bon résultat augmente la valeur du cheval.
-
-     ⚠️ CE QUI REND CE CHAPITRE UNIQUE : partout ailleurs on cherche à
-     gagner. Ici la phrase centrale est **« ne cherche pas à gagner du
-     temps, laisse-le apprendre »** — et la dernière dit que l'objectif
-     n'est pas de gagner aujourd'hui. C'est le seul chapitre où la
-     victoire est explicitement secondaire.
-
-     ⚠️ **CYCLE CLASSIQUE** ET **CYCLE LIBRE** NE SE TRADUISENT PAS.
-     On les explique : *the French professional / amateur young horse
-     series*. Une traduction littérale ferait croire à un concept
-     universel qui n'existe pas.
-
-     ⚠️ MOTS EMPLOYÉS SANS ÊTRE DANS CE FICHIER, volontairement : `age`,
-     `caractere`, `calme`, `chaud`, `sang-chaud`, `race` viennent de
-     `cheval` leçon 4, que Fontainebleau reçoit aussi. Et `se-qualifier`
-     vient d'Aix, `progression` de Warendorf, `acheteur-vendeur` de
-     Vérone : c'est de la révision voulue.
-
-     `dit` : "joueuse" = elle produit · "club" = un éleveur, un coach.
-  ================================================================== */
   dialogue: {
     ville: "fontainebleau", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 18 phrases */
 
