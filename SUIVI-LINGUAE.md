@@ -1,3 +1,50 @@
+# 🏁 LES 34 VILLES ONT LEUR DIALOGUE — 17/08/2026, fin de session
+
+**34 villes sur 34 · 720 phrases en six langues · aucun trou de langue · tous les fichiers passés au contrôle.**
+
+## ⚠️ QUATRE FICHIERS NEUFS CE JOUR, et pourquoi
+
+Chaque fois qu'un chapitre ne correspondait pas à sa ville, on a créé un fichier plutôt que de forcer :
+· **`formation`** → WARENDORF, qui recevait du vocabulaire de matériel alors que son chapitre est la formation.
+· **`parade`** → SÉVILLE, qui recevait la tenue du cavalier (bombe, gilet airbag) alors que c'est la Feria, la parade, l'amazone. Une amazone en traje corto ne porte pas de gilet airbag.
+· **`jeunes`** → FONTAINEBLEAU, **34e VILLE CRÉÉE CE JOUR** : rien ne parlait du jeune cheval en compétition. *« On ne peut pas rater la Grande Semaine. »*
+· **`andalou`** → JEREZ, libérée quand sa leçon 4 de `cheval` est partie à Fontainebleau — elle disait tout du jeune cheval et rien de Jerez.
+
+## 🔄 LES BASCULES DE LEÇONS DU 17/08 — à ne pas défaire
+
+| ville | avant | après | pourquoi |
+|---|---|---|---|
+| **Vejer** | `ecurie` 3 (nourrir) | **`materiel` 3+4** | son chapitre s'appelle « Le matériel » |
+| **Séville** | `materiel` 3 | **`parade` 1** | la Feria, pas l'équipement |
+| **Fontainebleau** | *n'existait pas* | **`cheval` 4 + `jeunes` 1** | ville neuve |
+| **Jerez** | `cheval` 4 | **`andalou` 1** | l'art équestre, pas le sexe et l'âge |
+| **Warendorf** | `materiel` 4 | **`formation` 1** | la formation, pas l'équipement |
+
+🔴 **QUATRE LEÇONS SONT MAINTENANT ORPHELINES** — écrites, traduites en six langues, et personne ne les voit :
+· `ecurie` **2** (le curage : la paille, la fourche, la brouette)
+· `ecurie` **3** (nourrir : le foin, l'avoine, la pierre à sel, l'eau) — libérée par Vejer
+· `ecurie` **4** (les gestes : curer, pailler, sortir au pré)
+· `materiel` **2** (le filet, la têtière, le frontal, la muserolle, les rênes, le mors, la bride)
+🟥 **BLANDINE VEUT REGROUPER L'ENTRETIEN DANS UNE VILLE** : *« on mettra l'entretien des chevaux dans une ville avec les box et la nourriture, le foin etc »*. Les trois leçons de `ecurie` l'attendent. **À FAIRE.**
+
+## 🟥 LES PIÈGES DE LANGUE AJOUTÉS LE 17/08
+
+Tous documentés dans les `def`, tous fournis ou validés par Blandine :
+· **Lamotte** — les catégories de taille ne se traduisent pas ; « double poney » = *a large pony*
+· **Tokyo** — **bow** s'écrit pareil pour le salut et pour l'arc
+· **Santa Ynez** — **timing**, **feel**, **release** n'ont pas d'équivalent français
+· **Buenos Aires** — *a ten-goal player* ne marque pas dix buts ; **marquer** = *to score* ET *to mark*
+· **Spruce Meadows** — **to warm up ≠ to keep warm** ; *blanket* (CA) contre *rug* (UK)
+· **Warendorf** — 🟥 **SQUAD ≠ TEAM** ; l'allemand dit *der Kader*
+· **Vejer** — **TACK ≠ KIT** ; « material » ne traduit jamais « matériel »
+· **Séville** — **side-saddle** dit la monte ET la selle ; **turned out** est intraduisible ; *four-in-hand* compte par la main du meneur
+· **Vérone** — **to hold**, pas *to reserve* ; *failed the vetting* ne veut pas dire malade
+· **Fontainebleau** — **valorisation** n'existe pas en anglais ; *four-year-old* garde « year » au singulier
+· **Jerez** — 🟥 **HIGH SCHOOL** = haute école, pas le lycée
+· **Tamworth** — 🟥 **mob** et **muster** sont australiens ; **cutting ≠ drafting** ; *neck reining* nomme le mécanisme
+
+---
+
 # 📍 OÙ EN SONT LES DIALOGUES — 17/08/2026 au soir
 
 **27 villes sur 33 · 593 phrases en six langues · aucun trou de langue.**

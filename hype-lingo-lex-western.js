@@ -43,6 +43,87 @@ window.HYPE_LINGO_LEX.western = {
 
   /* ============ LEÇON 1 · LE WESTERN ET LE TROUPEAU ============ */
 
+  /* ================================================================
+     CINQ ENTRÉES AJOUTÉES le 17/08/2026, d'après le lexique fourni par
+     Blandine. Le fichier avait déjà l'essentiel de l'AUSTRALIEN — mob,
+     muster, yards, Stock Horse, neck reining — mais il lui manquait le
+     mot-titre, le bétail lui-même, et le geste de la corde.
+
+     🟥 LA NOTION PHARE DU CHAPITRE : **L'ANGLAIS AUSTRALIEN.**
+       anglais général → the herd  ·  🇦🇺 Tamworth → **the mob**
+       américain      → the roundup ·  🇦🇺 Tamworth → **the muster**
+     Ce ne sont pas des variantes régionales pittoresques : ce sont les
+     seuls mots employés là-bas. Dire « herd » en Nouvelle-Galles du Sud
+     s'entend comme un accent étranger.
+
+     ⚠️ ET CUTTING N'EST PAS DRAFTING :
+     · **cutting** = isoler une bête du troupeau et l'empêcher d'y
+       revenir. C'est du travail monté, et c'est une discipline.
+     · **drafting** = trier les animaux, généralement dans les yards,
+       souvent à pied. C'est de l'organisation.
+     NE PAS les employer l'un pour l'autre.
+
+     🟥 ET L'AKUBRA CÈDE LA PLACE AU CASQUE pour le travail rapide —
+     phrase de Blandine, et c'est ce qui rend le chapitre honnête : le
+     chapeau est l'identité, le casque est la sécurité, et les deux
+     coexistent dans la même journée.
+     ================================================================ */
+
+  { ref:"le-western", lecon:1, coll:"western",
+    mots:{ fr:{m:"le western"}, en:{m:"western riding", p:"wès-teurn"},
+           es:{m:"la monta western"}, it:{m:"la monta western"},
+           de:{m:"das Westernreiten", p:"wès-teurn-raï-teune"}, ja:{m:"ウエスタン馬術", p:"uesutan bajutsu"} },
+    def:{ fr:"⚠️ LE MOT VIENT DE L'OUEST AMÉRICAIN, mais la chose vient d'Espagne : la selle, la corne, le travail à une main descendent tous de la *vaquera* andalouse, arrivée par le Mexique. 🟥 En Australie, on ne dit pas vraiment « western » : on dit qu'on travaille le bétail, et on monte en Stock Saddle. Le mot est américain, le geste est universel.",
+          en:"The word comes from the American West, but the thing comes from Spain: the saddle, the horn, riding one-handed all descend from the Andalusian vaquera by way of Mexico. In Australia people don't really say « western » — they say they work cattle, and they ride in a stock saddle.",
+          es:"La palabra viene del Oeste americano, pero la cosa viene de España: la silla, la cabeza de silla y la monta a una mano descienden de la vaquera andaluza.",
+          it:"La parola viene dall'Ovest americano, ma la cosa viene dalla Spagna: la sella, il pomo e la monta a una mano discendono dalla vaquera andalusa.",
+          de:"Das Wort kommt aus dem amerikanischen Westen, die Sache aus Spanien: Sattel, Horn und einhändiges Reiten stammen von der andalusischen Vaquera.",
+          ja:"語はアメリカ西部から来ていますが、実体はスペイン由来です。鞍も、鞍頭も、片手手綱も、メキシコを経てアンダルシアのバケーラから伝わりました。オーストラリアでは western とはあまり言わず、「牛を扱う」と言い、ストックサドルに乗ります。" } },
+
+  { ref:"betail", lecon:1, coll:"betail",
+    mots:{ fr:{m:"le bétail"}, en:{m:"cattle", p:"ka-teul", var:"stock"},
+           es:{m:"el ganado"}, it:{m:"il bestiame"},
+           de:{m:"das Vieh", p:"fii"}, ja:{m:"牛", p:"ushi"} },
+    def:{ fr:"🟥 **CATTLE** EST TOUJOURS PLURIEL EN ANGLAIS — *the cattle are*, jamais « the cattle is » — et il n'a pas de singulier : une bête se dit *a head of cattle*, ou simplement *a cow*, *a steer*, *a bull*. ⚠️ En Australie on dit aussi **stock**, qui a donné *stockman*, *stock horse*, *stock saddle* : tout le vocabulaire du métier vient de ce mot.",
+          en:"« Cattle » is always plural and has no singular: one animal is a head of cattle, or just a cow, a steer, a bull. In Australia « stock » is used too, and it gave stockman, stock horse, stock saddle — the whole trade's vocabulary comes from it.",
+          es:"« Cattle » es siempre plural en inglés y no tiene singular. En Australia se dice también « stock », que dio stockman y stock horse.",
+          it:"« Cattle » è sempre plurale in inglese e non ha singolare. In Australia si usa anche « stock », che ha dato stockman e stock horse.",
+          de:"« Cattle » ist im Englischen immer Plural und hat keinen Singular. In Australien sagt man auch « stock » — daher stockman, stock horse, stock saddle.",
+          ja:"英語の cattle は常に複数扱いで、単数形がありません。一頭なら a head of cattle、または a cow、a steer、a bull と言います。オーストラリアでは stock とも言い、stockman、stock horse、stock saddle という職業の語彙すべてがここから生まれました。" } },
+
+  { ref:"paturage", lecon:1, coll:"betail",
+    mots:{ fr:{m:"la pâture"}, en:{m:"the paddock", p:"pa-dok"},
+           es:{m:"el pastizal"}, it:{m:"il pascolo"},
+           de:{m:"die Koppel", p:"ko-peul"}, ja:{m:"放牧地", p:"hōbokuchi"} },
+    def:{ fr:"🟥 FAUX AMI MAJEUR : en Australie **a paddock** n'est pas le paddock de détente d'un concours, ni un petit pré — c'est une PARCELLE DE PROPRIÉTÉ, qui peut faire des milliers d'hectares. On y met le bétail pendant des mois, et il faut des jours à cheval pour la parcourir. ⚠️ Le paddock de concours, lui, se dit *the collecting ring* — voir Wellington.",
+          en:"A major false friend: in Australia « a paddock » isn't a collecting ring or a small field — it's a property division that can run to thousands of hectares. Cattle live there for months, and it takes days on horseback to cross one.",
+          es:"Falso amigo: en Australia « paddock » no es un pequeño prado sino una parcela que puede tener miles de hectáreas.",
+          it:"Falso amico: in Australia « paddock » non è un piccolo prato ma una parcella che può contare migliaia di ettari.",
+          de:"Falscher Freund: in Australien ist « paddock » keine kleine Koppel, sondern eine Parzelle von tausenden Hektar.",
+          ja:"重大な偽の友。オーストラリアの paddock は下見馬場でも小さな放牧地でもなく、数千ヘクタールにもなる牧場の区画です。牛は何か月もそこで暮らし、馬で横断するのに何日もかかります。" } },
+
+  { ref:"dally", lecon:1, coll:"corde", v:true,
+    mots:{ fr:{m:"fixer la corde à la corne"}, en:{m:"to dally", p:"da-li"},
+           es:{m:"dar vuelta a la cabeza de silla"}, it:{m:"dare volta al pomo"},
+           de:{m:"das Seil um das Horn legen", p:"zaïl"}, ja:{m:"ロープを鞍頭に巻く", p:"rōpu o kuratō ni maku"} },
+    def:{ fr:"🟥 LE VERBE VIENT DE L'ESPAGNOL **« DALE VUELTA »**, « donne-lui un tour » : les vaqueros mexicains le criaient, les cowboys américains l'ont entendu *dally*. C'est enrouler la corde autour de la corne après avoir attrapé une bête. ⚠️ ET C'EST LÀ QUE LA CORNE SERT — pas à se tenir. Un doigt coincé entre la corde et la corne se perd : les vieux cowboys se reconnaissent à leurs mains.",
+          en:"The verb comes from Spanish « dale vuelta », give it a turn: Mexican vaqueros shouted it and American cowboys heard « dally ». It's winding the rope round the horn after you've roped an animal. That's what the horn is for — not for holding on. A finger caught between rope and horn is lost.",
+          es:"El verbo viene del español « dale vuelta »: los vaqueros mexicanos lo gritaban y los vaqueros americanos oyeron « dally ».",
+          it:"Il verbo viene dallo spagnolo « dale vuelta »: i vaqueros messicani lo gridavano e i cowboy americani hanno sentito « dally ».",
+          de:"Das Verb kommt vom spanischen « dale vuelta »: mexikanische Vaqueros riefen es, amerikanische Cowboys hörten « dally ».",
+          ja:"この動詞はスペイン語の dale vuelta（ひと巻きしろ）に由来します。メキシコのバケロが叫ぶのを、アメリカのカウボーイが dally と聞き取ったのです。牛を捕らえたあと、ロープを鞍頭に巻きつけること。鞍頭はこのためにあり、掴まるためではありません。ロープと鞍頭の間に挟まれた指は失われます。" } },
+
+  { ref:"akubra", lecon:1, coll:"tenue-western",
+    mots:{ fr:{m:"l'Akubra"}, en:{m:"the Akubra", p:"a-kou-bra", var:"the wide-brimmed hat"},
+           es:{m:"el Akubra"}, it:{m:"l'Akubra"},
+           de:{m:"der Akubra"}, ja:{m:"アクブラ帽", p:"akubura bō"} },
+    def:{ fr:"🟥 UNE MARQUE DEVENUE UN NOM COMMUN, comme Frigidaire ou Kleenex : la maison Akubra fabrique des feutres de poil de lapin depuis 1874, et en Australie le mot désigne le chapeau lui-même. ⚠️ **CE N'EST PAS UN STETSON** : bord plus large et plat, souvent relevé sur les côtés, calotte moins pincée. Un Australien ne dit jamais « cowboy hat ». 🟥 Et il cède la place au casque pour le travail rapide — le chapeau est l'identité, le casque la sécurité, et les deux coexistent dans la même journée.",
+          en:"A brand that became a common noun, like Hoover: Akubra has made rabbit-fur felt hats since 1874, and in Australia the word means the hat itself. It is NOT a Stetson: wider flatter brim, often turned up at the sides, less pinched crown. An Australian never says « cowboy hat ». And it gives way to a helmet for fast work.",
+          es:"Una marca convertida en nombre común: Akubra fabrica sombreros de fieltro desde 1874. No es un Stetson: ala más ancha y plana. Y cede el sitio al casco para el trabajo rápido.",
+          it:"Un marchio diventato nome comune: Akubra fa cappelli di feltro dal 1874. Non è uno Stetson: tesa più larga e piatta. E lascia il posto al casco per il lavoro veloce.",
+          de:"Eine Marke, die zum Gattungsnamen wurde: Akubra macht seit 1874 Filzhüte. Kein Stetson: breitere, flachere Krempe. Und er weicht dem Helm bei schneller Arbeit.",
+          ja:"商標が普通名詞になった例。アクブラ社は一八七四年からウサギ毛のフェルト帽を作っており、オーストラリアではこの語が帽子そのものを指します。ステットソンではありません。つばがより広く平らで、両脇が反り、山の折りが浅いのです。オーストラリア人は cowboy hat とは言いません。そして速い作業のときはヘルメットに替えます。" } },
+
   { ref:"selle-western", lecon:1, coll:"western",
     mots:{ fr:{m:"la selle western"}, en:{m:"the western saddle", p:"sa-deul"},
            es:{m:"la silla vaquera"}, it:{m:"la sella western"},
@@ -222,5 +303,205 @@ window.HYPE_LINGO_LEX.western = {
       de:"Wir sortieren sie vor Mittag in den Gattern.",
       ja:"正午 まで に 囲い で 仕分け し ます。" }
 
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE TAMWORTH — 17 août 2026, session 214.
+
+     LA SCÈNE : une journée de muster dans le bush australien, du
+     sellage au tri dans les yards. 18 phrases, 6 temps.
+
+     🟥 LES DIX-HUIT PHRASES SONT DE BLANDINE, avec leur traduction
+     anglaise et le lexique du chapitre.
+     🟥 SA STRUCTURE : **SELLE → DÉPART DANS LE BUSH → MUSTER → MOB →
+     CUTTING → YARDS → TRI.**
+
+     🟥 LA NOTION PHARE, ET CE QUI FAIT L'IDENTITÉ DE LA VILLE :
+     **L'ANGLAIS AUSTRALIEN.**
+       anglais général → the herd    ·  🇦🇺 → **the mob**
+       américain       → the roundup ·  🇦🇺 → **the muster**
+       (et *muster* est nom ET verbe en Australie)
+     ⚠️ Ce ne sont pas des variantes pittoresques : ce sont les seuls
+     mots employés là-bas. NE PAS « corriger » vers l'anglais général.
+
+     ⚠️ CUTTING N'EST PAS DRAFTING :
+     · **cutting** = isoler une bête et l'empêcher de revenir au
+       troupeau. Travail monté, et c'est une discipline à part entière.
+     · **drafting** = trier les animaux dans les yards, souvent à pied.
+       C'est de l'organisation.
+     Le dialogue les emploie aux temps 4 et 5, dans cet ordre.
+
+     🟥 **NECK REINING** NE SE TRADUIT PAS PAR « MONTER À UNE MAIN » :
+     l'anglais nomme LE MÉCANISME — la rêne extérieure qui se pose sur
+     l'encolure — là où le français nomme la main. *Does he neck rein?*
+     est la question qu'on pose avant de monter un cheval inconnu.
+
+     ⚠️ ET LA PHRASE 17 EST CELLE QUI REND LE CHAPITRE HONNÊTE : l'Akubra
+     cède la place au casque pour le travail rapide. Le chapeau est
+     l'identité, le casque la sécurité, et les deux coexistent dans la
+     même journée. NE PAS la retirer.
+
+     ⚠️ LA CORNE NE SERT PAS À SE TENIR. Elle sert à *dally* — enrouler
+     la corde après avoir attrapé une bête. Deux phrases le disent,
+     à deux lignes d'écart, exprès.
+
+     `dit` : "joueuse" = elle produit · "club" = un stockman.
+  ================================================================== */
+  dialogue: {
+    ville: "tamworth", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 18 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · le muster de demain ---- */
+      { ref:"dt-rassemble-demain", temps:1, dit:"joueuse", mots:["rassemblement","troupeau"],
+        fr:"On rassemble le troupeau demain matin ?",
+        en:"Are we mustering the mob tomorrow morning?",
+        es:"¿Reunimos el ganado mañana por la mañana?",
+        it:"Radunavamo la mandria domani mattina?",
+        de:"Treiben wir die Herde morgen früh zusammen?",
+        ja:"明日 の 朝、 群れ を 集め ます か ?" },
+
+      { ref:"dt-betail-disperse", temps:1, dit:"club", mots:["betail","paturage"],
+        fr:"Le bétail est encore dispersé dans les pâtures.",
+        en:"The cattle are still spread out across the paddocks.",
+        es:"El ganado sigue disperso por los pastizales.",
+        it:"Il bestiame è ancora sparso nei pascoli.",
+        de:"Das Vieh ist noch über die Koppeln verteilt.",
+        ja:"牛 は まだ 放牧地 に 散らばっ て い ます。" },
+
+      { ref:"dt-ramener-parcs", temps:1, dit:"club", mots:["troupeau","parcs","rassemblement"],
+        fr:"Il faut ramener tout le troupeau jusqu'aux parcs.",
+        en:"We need to bring the whole mob back to the yards.",
+        es:"Hay que llevar todo el ganado hasta los corrales.",
+        it:"Bisogna riportare tutta la mandria ai recinti.",
+        de:"Wir müssen die ganze Herde zu den Pferchen bringen.",
+        ja:"群れ 全体 を 囲い まで 連れ 戻さ なけれ ば なり ませ ん。" },
+
+      { ref:"dt-muster-plusieurs-heures", temps:1, dit:"club", mots:["rassemblement"],
+        fr:"Le rassemblement peut durer plusieurs heures.",
+        en:"The muster can take several hours.",
+        es:"La reunión puede durar varias horas.",
+        it:"Il raduno può durare parecchie ore.",
+        de:"Das Zusammentreiben kann mehrere Stunden dauern.",
+        ja:"集める の に 何 時間 も かかる こと が あり ます。" },
+
+      /* ---- temps 2 · quel cheval, quelle selle ---- */
+      { ref:"dt-quel-cheval", temps:2, dit:"joueuse", mots:["rassemblement","stock-horse"],
+        fr:"Tu prends quel cheval pour le muster ?",
+        en:"Which horse are you taking for the muster?",
+        es:"¿Qué caballo llevas para la reunión?",
+        it:"Che cavallo prendi per il raduno?",
+        de:"Welches Pferd nimmst du zum Zusammentreiben?",
+        ja:"集め に は どの 馬 で 出 ます か ?" },
+
+      { ref:"dt-habitue-betail", temps:2, dit:"club", mots:["stock-horse","betail"],
+        fr:"Ce cheval a l'habitude de travailler avec le bétail.",
+        en:"This horse is used to working cattle.",
+        es:"Este caballo está acostumbrado a trabajar con el ganado.",
+        it:"Questo cavallo è abituato a lavorare col bestiame.",
+        de:"Dieses Pferd ist es gewohnt, mit Vieh zu arbeiten.",
+        ja:"この 馬 は 牛 を 扱う 仕事 に 慣れ て い ます。" },
+
+      { ref:"dt-selle-longues-heures", temps:2, dit:"club", mots:["selle-western"],
+        fr:"Cette selle est faite pour passer de longues heures à cheval.",
+        en:"This saddle is designed for spending long hours in the saddle.",
+        es:"Esta silla está hecha para pasar largas horas a caballo.",
+        it:"Questa sella è fatta per passare lunghe ore a cavallo.",
+        de:"Dieser Sattel ist für lange Stunden im Sattel gebaut.",
+        ja:"この 鞍 は、 長 時間 の 騎乗 の ため に 作ら れ て い ます。" },
+
+      /* ---- temps 3 · monter à une main, et la corne ---- */
+      { ref:"dt-neck-rein", temps:3, dit:"joueuse", mots:["une-main"],
+        fr:"Il se monte à une main ?",
+        en:"Does he neck rein?",
+        es:"¿Se monta a una mano?",
+        it:"Si monta a una mano?",
+        de:"Lässt er sich einhändig reiten?",
+        ja:"片手 手綱 で 乗れ ます か ?" },
+
+      { ref:"dt-main-libre-corde", temps:3, dit:"club", mots:["corde","une-main"],
+        fr:"Garde une main libre pour la corde.",
+        en:"Keep one hand free for the rope.",
+        es:"Deja una mano libre para la cuerda.",
+        it:"Tieni una mano libera per la corda.",
+        de:"Halte eine Hand für das Seil frei.",
+        ja:"ロープ の ため に 片手 を 空け て おき ます。" },
+
+      { ref:"dt-pas-tenir-corne", temps:3, dit:"club", mots:["corne"],
+        fr:"Ne tiens pas la corne de la selle.",
+        en:"Don't hold the saddle horn.",
+        es:"No te agarres a la cabeza de la silla.",
+        it:"Non tenerti al pomo della sella.",
+        de:"Halt dich nicht am Sattelhorn fest.",
+        ja:"鞍頭 に つかまっ て は いけ ませ ん。" },
+
+      { ref:"dt-corne-pour-dally", temps:3, dit:"club", mots:["corne","dally","corde"],
+        fr:"La corne sert à fixer la corde, pas à se tenir.",
+        en:"The horn is for dallying the rope, not for holding on.",
+        es:"La cabeza de silla sirve para dar vuelta a la cuerda, no para agarrarse.",
+        it:"Il pomo serve per dare volta alla corda, non per tenersi.",
+        de:"Das Horn ist zum Umlegen des Seils da, nicht zum Festhalten.",
+        ja:"鞍頭 は ロープ を 巻く ため の もの で、 掴まる ため の もの で は あり ませ ん。" },
+
+      /* ---- temps 4 · le cutting ---- */
+      { ref:"dt-isoler-vache", temps:4, dit:"club", mots:["tri","troupeau"],
+        fr:"On va isoler cette vache du troupeau.",
+        en:"We're going to cut this cow out of the mob.",
+        es:"Vamos a apartar esta vaca del ganado.",
+        it:"Separiamo questa vacca dalla mandria.",
+        de:"Wir schneiden diese Kuh aus der Herde heraus.",
+        ja:"この 牛 を 群れ から 分け ます。" },
+
+      { ref:"dt-empeche-retour", temps:4, dit:"club", mots:["tri","troupeau"],
+        fr:"Empêche-la de retourner dans le troupeau.",
+        en:"Keep her from getting back into the mob.",
+        es:"Impídele volver al ganado.",
+        it:"Impediscile di tornare nella mandria.",
+        de:"Lass sie nicht zurück in die Herde.",
+        ja:"群れ に 戻ら せ ない よう に し ます。" },
+
+      { ref:"dt-laisse-lire-vache", temps:4, dit:"club", mots:["stock-horse","betail"],
+        fr:"Laisse le cheval lire les mouvements de la vache.",
+        en:"Let the horse read the cow.",
+        es:"Deja que el caballo lea los movimientos de la vaca.",
+        it:"Lascia che il cavallo legga i movimenti della vacca.",
+        de:"Lass das Pferd die Kuh lesen.",
+        ja:"牛 の 動き は、 馬 に 読ま せ ます。" },
+
+      { ref:"dt-tourne-vite", temps:4, dit:"club", mots:["stock-horse","betail"],
+        fr:"Ce cheval tourne très vite et reste attentif au bétail.",
+        en:"This horse turns very quickly and stays focused on the cattle.",
+        es:"Este caballo gira muy rápido y sigue atento al ganado.",
+        it:"Questo cavallo gira molto in fretta e resta attento al bestiame.",
+        de:"Dieses Pferd wendet sehr schnell und bleibt am Vieh.",
+        ja:"この 馬 は 回転 が 速く、 牛 から 目 を 離し ませ ん。" },
+
+      /* ---- temps 5 · les yards et le tri ---- */
+      { ref:"dt-trie-avant-midi", temps:5, dit:"club", mots:["tri","parcs"],
+        fr:"On les trie dans les parcs avant midi.",
+        en:"We draft them in the yards before midday.",
+        es:"Los clasificamos en los corrales antes del mediodía.",
+        it:"Li smistiamo nei recinti prima di mezzogiorno.",
+        de:"Wir sortieren sie vor Mittag in den Pferchen.",
+        ja:"昼 まで に 囲い の 中 で 選り分け ます。" },
+
+      /* ---- temps 6 · le chapeau, et le métier ---- */
+      /* 🟥 La phrase qui rend le chapitre honnête. */
+      { ref:"dt-akubra-casque", temps:6, dit:"club", mots:["akubra","chapeau-large"],
+        fr:"Il porte un Akubra, mais il mettra son casque pour le travail rapide.",
+        en:"He's wearing an Akubra, but he'll put his helmet on for faster work.",
+        es:"Lleva un Akubra, pero se pondrá el casco para el trabajo rápido.",
+        it:"Porta un Akubra, ma metterà il casco per il lavoro veloce.",
+        de:"Er trägt einen Akubra, setzt aber für die schnelle Arbeit den Helm auf.",
+        ja:"アクブラ帽 を かぶっ て い ます が、 速い 作業 の とき は ヘルメット に 替え ます。" },
+
+      { ref:"dt-travail-quotidien", temps:6, dit:"club", mots:["le-western","betail","troupeau"],
+        fr:"Ici, savoir déplacer un troupeau fait partie du travail quotidien.",
+        en:"Out here, moving cattle is part of the everyday job.",
+        es:"Aquí, saber mover el ganado forma parte del trabajo diario.",
+        it:"Qui, saper spostare una mandria fa parte del lavoro quotidiano.",
+        de:"Hier draußen gehört das Treiben von Vieh zur täglichen Arbeit.",
+        ja:"ここ で は、 群れ を 動かせる こと が 日々 の 仕事 の 一部 です。" }
+    ]
+  }
 };
