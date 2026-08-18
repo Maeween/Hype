@@ -661,7 +661,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Team Ambassadeurs Hype : les modérateurs en font partie automatiquement + membres nommés
-const HYPE_AMBASSADEURS = ["liamroux0@gmail.com", "evan.roux.2014@icloud.com", "rizeamegane@gmail.com", "deborah.guilmain@free.fr"];
+const HYPE_AMBASSADEURS = ["liamroux0@gmail.com", "evan.roux.2014@icloud.com", "rizeamegane@gmail.com", "deborah.guilmain@free.fr", "neliafrance.auboin@gmail.com"];
 function estAmbassadeurHype(u) { try { if (estModerateurHype(u)) return true; return !!(u && u.email && HYPE_AMBASSADEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 // Fond Studio Premium : palette de teintes (noir actif pour tous, le reste réservé aux ambassadeurs pour l'instant)
 const TEINTES_FOND_STUDIO = [
@@ -20816,12 +20816,28 @@ function HypeApp() {
         infolettre: false,
         partenaires: false,
     });
+    /* ============================================================
+       18/08/2026 (decision de Blandine) — ETRE AMBASSADEUR OUVRE LE PREMIUM.
+       Linguae le faisait deja (il lit la table hype_ambassadeurs) ; Hype disait
+       le contraire du MEME statut : une ambassadrice non abonnee y etait traitee
+       comme un compte gratuit (1 question Hey Baby, contenu verrouille).
+       Lecture ASYNCHRONE : avant la reponse le drapeau vaut false, c est-a-dire
+       le cas le plus restrictif — jamais l inverse, meme regle que le quota de
+       chevaux (voir hypeQuotaChevaux).
+       forcerGratuit garde au bouton admin « Mode Gratuit » (reserve aux deux
+       moderatrices) son pouvoir : sans lui, une moderatrice etant ambassadrice
+       d office, le bouton ne pourrait PLUS JAMAIS redescendre en gratuit et
+       Blandine perdrait sa seule facon de voir l app comme une cavaliere.
+       ============================================================ */
+    const [ambassadeur, setAmbassadeur] = useState(false);
+    const [forcerGratuit, setForcerGratuit] = useState(false);
     useEffect(() => {
         let actif = true;
         try {
             if (typeof utilisateurActuel !== "function" || typeof supa === "undefined") return;
             utilisateurActuel().then((u) => {
                 if (!u || !actif) return;
+                try { if (typeof estAmbassadeurHype === "function") setAmbassadeur(estAmbassadeurHype(u)); } catch (eAmb) { }
                 try {
                     const ancienUid = localStorage.getItem("hype_uid");
                     if (ancienUid && ancienUid !== u.id) {
@@ -21049,7 +21065,7 @@ function HypeApp() {
         peutReculer: historiqueEcrans.length > 0, peutAvancer: pileAvant.length > 0,
         langue, setLangue,
         t, tr,
-        premium: planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!profil.vip, estAbonne, planAbo, setPlanAbo, setPremium: (v) => setPlanAbo(v ? "annuel" : ""),
+        premium: !forcerGratuit && (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!profil.vip || ambassadeur), estAbonne, planAbo, setPlanAbo, setPremium: (v) => { setForcerGratuit(!v); setPlanAbo(v ? "annuel" : ""); },
         profil, setProfil,
         xp, setXp,
         serie, setSerie,
