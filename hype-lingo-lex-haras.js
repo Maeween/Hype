@@ -450,7 +450,15 @@ window.HYPE_LINGO_LEX.haras = {
      (tous existent dans ce chapitre, rappels compris).
      ================================================================ */
   dialogue: {
-    ville: "lexington",
+    /* ⚠️ 18/08 : TROIS CHAMPS AJOUTÉS par cohérence avec les 33 autres
+       dialogues du module — `lecon`, `temps`, `langues`. Ils étaient
+       absents de ce bloc.
+       🟥 LE MOTEUR N'EN A PAS BESOIN : `lingo-dialogue.html` ne lit que
+       `p.temps` sur CHAQUE PHRASE, et regroupe les scènes à partir de
+       là. Lexington fonctionnait donc déjà. Mais leur absence créait
+       une divergence de forme, et une session future aurait pu s'y
+       fier à tort. Vérifié avant d'écrire : rien d'autre à changer. */
+    ville: "lexington", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],
     titres: { 1:"L'arrivée au haras", 2:"La visite des étalons",
               3:"Poulinières et poulains", 4:"La lecture du pedigree",
               5:"Le choix d'un croisement", 6:"Yearlings et enchères" },
