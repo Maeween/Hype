@@ -35,6 +35,108 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
+**Version actuelle de l'index.html : 18/08/2026 (SESSION 139 · AMBASSADRICES PREMIUM, IDENTIFIANTS ÉTAPE 2b, QUOTA SUR LE NOM AFFICHÉ, LIMITE D'APPAREILS) — md5 `e40088faa14e997baabc8e7e47caa552`, 9 179 634 octets. COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bg, md5 `4b7570d20afc39ce329ac93b4fa91526`, 388 627 octets, `?v=19bg` — INCHANGÉ depuis le 17/08, il était resté en attente de push et part avec cet index.**
+
+⚠️ **TROIS SQL PASSÉS ET VÉRIFIÉS LE 18/08** — idempotents, mais aucune raison de les relancer : `changer-handle.sql`, `changer-pseudo.sql`, `appareils.sql`.
+
+⚠️ **ÉTAT PÉRIMÉ DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b).
+
+---
+
+## SESSION 139 — 18/08/2026
+
+### Les ambassadrices passent Premium
+
+**Nelia Auboin ajoutée** (`neliafrance.auboin@gmail.com`), et **être ambassadeur ouvre désormais le Premium dans Hype.**
+
+Cause réelle, trouvée en cherchant autre chose : **Linguae et Hype ne disaient pas la même chose du même statut.** Linguae lit `hype_ambassadeurs` et en déduit le Premium ; Hype ne lisait pas cette table du tout et n'accordait que les chevaux illimités et les six teintes de Fond Studio. Une ambassadrice non abonnée était donc traitée comme un compte gratuit sur presque tout — **une seule question à Hey Baby**, contenu verrouillé.
+
+**Deborah Guilmain manquait dans la table Supabase depuis sa création.** Les cinq lignes du 10/08 ont été posées d'un coup et jamais complétées : Deborah était ambassadrice dans `index.html` mais inconnue de Linguae. Deborah et Nelia insérées, table à **7 lignes** (colonnes : `email`, `nom`, `ajoute_le`).
+
+Trois modifications : `HYPE_AMBASSADEURS`, un drapeau `ambassadeur` renseigné à l'arrivée de l'utilisateur, et le calcul du `premium`. Lecture **asynchrone** : avant la réponse le drapeau vaut `false` — le cas le plus restrictif, jamais l'inverse.
+
+**`forcerGratuit` ajouté pour sauver le bouton admin « Mode Gratuit ».** Conséquence non nommée, signalée avant de coder : les modératrices étant ambassadrices d'office, le bouton n'aurait plus jamais pu redescendre en gratuit et Blandine perdait sa seule façon de voir l'app comme une cavalière. Il l'emporte maintenant sur tout, **y compris sur `vip`** — c'est plus qu'avant. Il ne persiste pas au rechargement, il ne peut donc pas la bloquer.
+
+Le bouton n'est visible que par `feinn@live.fr` et `malicia2008@hotmail.fr` : c'était déjà le cas, rien à restreindre.
+
+### Identifiants uniques — étape 2b
+
+**Voie B retenue, après un constat qui a changé le plan.** La PASSATION-138-bis prévoyait d'étendre `majProfil` à `handle`. Impossible : **`hype_handles_reserves` est en RLS lecture seule**, donc une écriture depuis le téléphone ne peut PAS poser la réservation de six mois. L'ancien identifiant redeviendrait libre à l'instant même — exactement ce que Blandine voulait empêcher. `majProfil` n'a donc **pas** été touché.
+
+**`hype_changer_handle(text)`** — SECURITY DEFINER, renvoie du `jsonb`. Vérifie dans l'ordre : connexion, mise en forme, identifiant déjà sien, mots interdits, réservations, quota, identifiant déjà porté. Puis verse l'ancien dans la réserve et écrit le nouveau, d'un seul bloc. Codes : `ok`, `format`, `interdit`, `reserve`, `pris`, `trop_tot`, `identique`, `non_connecte`.
+
+**Quotas décidés par Blandine :** premier changement **gratuit**, puis **30 jours** (et non 60 : « 60 c'est trop long »). Réservation de l'ancien : **6 mois**.
+
+**Trois choix faits par Claude, signalés et non contestés :**
+1. On peut **reprendre son propre ancien identifiant** même sous cloche — la réserve protège des autres, pas de soi-même.
+2. Demander l'identifiant qu'on porte déjà répond `identique` et **ne consomme pas le quota**.
+3. Un `delete` précède la pose de la réserve : sans lui, une contrainte d'unicité sur la table de réserve aurait fait lire « déjà pris » à tort.
+
+**Côté app :** l'écran de changement vit **sur Mon compte et nulle part ailleurs** — décision de Blandine, la page Cavalier est une vitrine, Mon compte est l'atelier. Deux temps volontaires : saisie avec aperçu de la normalisation, puis confirmation montrant `@avant → @après` en toutes lettres. Le second temps n'est pas une politesse : valider consomme le gratuit, et rien ne le rend.
+
+**Le libellé dit « rarement modifiable », JAMAIS « définitif »** — décision explicite de Blandine, promettre le définitif serait faux.
+
+**Le message d'invitation** s'affiche sur l'accueil aux seuls comptes `handle_a_valider`. **Aucune clé de localStorage, volontairement** : il revient à chaque ouverture tant que rien n'est validé. Il disparaît tout seul, la fonction SQL levant le drapeau au premier changement réussi.
+
+### Le nom affiché prend un quota
+
+**Constat de Blandine, vérifié dans le code : un commentaire n'enregistre que `user_id`.** Le nom affiché est donc relu sur le profil à chaque lecture. Karine commente aujourd'hui, se renomme Gertrude demain, et **tous ses anciens commentaires disent Gertrude**. Ses mots : « il peut se renommer et aller poster partout, c'est pas acceptable. »
+
+**`hype_changer_pseudo(text)`** — premier changement **gratuit**, puis **7 jours**. Deux colonnes ajoutées : `pseudo_change_le`, `pseudo_gratuit_fait`. Vérifié le 18/08 : **0 compte sur 41** démarre avec son gratuit consommé.
+
+**LA PREMIÈRE POSE N'EST PAS UN CHANGEMENT.** L'app écrit le pseudo toute seule à l'inscription : un profil encore vide passe hors quota, sinon l'inscription cassait au premier écran.
+
+**Le crayon de la page Cavalier passe désormais par cette fonction**, avec une phrase dorée **avant** la saisie (demande de Blandine : « une petite phrase pour expliquer qu'il y a qu'un changement gratuit »). Le panneau ne se ferme plus tout seul en cas de refus — il affiche pourquoi, dans la langue du cavalier.
+
+**L'identifiant est affiché sous chaque commentaire**, à gauche de la date. C'est lui qui rend le renommage inoffensif : le nom bouge, l'adresse non. A nécessité d'ajouter `handle` aux **9 requêtes** `select("id, pseudo, avatar_url")` — sans ça rien ne se serait affiché.
+
+**🔴 DETTE ASSUMÉE, CHOISIE PAR CLAUDE, VALIDÉE PAR BLANDINE (« comme tu sens tant que ça marche ») :** `majProfil({ pseudo })` reste ouvert. Le quota des 7 jours s'applique donc dans l'usage normal mais **se contourne** depuis une console. Fermer ce chemin oblige à toucher l'inscription — le seul endroit du lot qui casse quelque chose de vital et que Claude ne peut pas tester. **À faire le jour où Blandine peut créer un compte de test juste après un push.**
+
+### Limite d'appareils
+
+**Crainte de Blandine :** « il suffit que quelqu'un prenne un abonnement et il peut passer à ses enfants ». Aucune table ne comptait les appareils : un compte pouvait vivre sur dix téléphones.
+
+**`hype_appareils` + `hype_signaler_appareil(text, text)`.** **TROIS** appareils actifs — pas deux : un même iPhone occupe déjà deux places s'il a été essayé dans Safari **puis** installé sur l'écran d'accueil, deux stockages séparés qui ne se reconnaissent pas. Le quatrième **entre** et éjecte le plus ancien : jamais de refus, personne ne reste enfermé dehors avec un téléphone perdu.
+
+**Quatre comptes hors limite, nommés par Blandine :** Blandine, Malicia, Liam, Evan. ⚠️ **Mégane, Deborah et Nelia ne sont PAS exemptes** alors qu'elles sont ambassadrices — c'est la liste exacte donnée par Blandine, à confirmer si elle voulait toutes les ambassadrices.
+
+**Ce que ça ne fait pas : déconnecter à distance.** Supabase ne le permet pas depuis une fonction. On **marque** l'appareil évincé, l'app le lit à son réveil et se déconnecte elle-même. L'éviction prend effet à la réouverture, pas à la seconde. Suffisant pour rendre le partage à dix impraticable ; **ce n'est pas un verrou temps réel**, et Blandine le sait.
+
+Un appareil évincé qui revient l'apprend **une seule fois**, puis sa ligne est effacée — sinon il redemanderait à l'infini et resterait dehors pour toujours. Un appareil non vu depuis 60 jours libère sa place.
+
+**🔴 CE SQL NE FAIT ENCORE RIEN.** L'app doit tirer un identifiant d'appareil, appeler la fonction au démarrage et se déconnecter sur `evince`. **Passe app non écrite.**
+
+### 🔴 CORRECTION D'UNE ERREUR DE CLAUDE À NE PAS REFAIRE
+
+**LE PACK DUO N'EST PAS UNE OFFRE À DEUX COMPTES.** C'est **Premium + accès à l'IA sur un seul compte**. Claude a bâti tout un raisonnement sur l'idée fausse d'une offre familiale existante ; Blandine a corrigé. **Il n'existe aujourd'hui AUCUNE offre familiale dans Hype** — une mère qui veut équiper deux enfants n'a d'autre choix que de payer deux fois, ou de partager son compte. La limite d'appareils traite le symptôme, pas la cause.
+
+### 🔴 RÈGLES PAYÉES CETTE SESSION
+
+1. **NE PAS SE FIER À LA MÉMOIRE POUR L'ÉTAT DU CODE.** Claude « savait » que `hype_ambassadeurs` avait remplacé la liste en dur. Faux : `index.html` ne lit pas cette table. Seul le `grep` l'a montré.
+2. **UNE FONCTIONNALITÉ QUI VIT DANS DEUX APPS DOIT ÊTRE VÉRIFIÉE DANS LES DEUX.** Le statut ambassadeur disait deux choses différentes depuis des semaines, et personne ne l'avait vu.
+3. **UN AFFICHAGE NE SUFFIT PAS : IL FAUT QUE LA DONNÉE SOIT CHARGÉE.** L'identifiant sous les commentaires n'aurait rien montré — les 9 requêtes d'auteurs ne ramenaient pas `handle`.
+4. **LE COLLAGE SE TRONQUE SUR IPHONE.** Trois échecs SQL ce jour, aucun dû au SQL. Ne pas finir une requête par quelque chose de fragile (`order by 1, 2;` a perdu son `2;` et Supabase a collé son `limit 100` derrière la virgule). **Livrer les longs SQL en morceaux courts**, chacun autonome.
+5. **LES BOUTONS TAPPABLES SONT DANGEREUX PENDANT QUE BLANDINE ÉCRIT.** Ses mots : « ça me fait taper au hasard n'importe où ». Au moins une réponse enregistrée ne venait pas d'elle. **Ne plus en poser : poser les questions en texte.**
+
+### CE QUI RESTE À FAIRE
+
+- **Les mentions déjà publiées** affichent toujours le nom **figé** (`cible_nom`, rendu dans `hype-stories.js`). Demandé « dans le même lot » par Blandine, **non fait** : ouvrir un second gros fichier après 308 lignes modifiées sur l'index aurait refait la faute du 17/08. Passe dédiée et courte.
+- **Fermer `majProfil({ pseudo })`** (voir dette ci-dessus).
+- **La passe app de la limite d'appareils.**
+- **L'écran d'inscription qui bloque en japonais.** Identifié : c'est **`EcranPersonnalisation`** (« Dis-nous qui tu es », cartes Langue / Niveau / Objectif), deuxième page du deck d'inscription, visible seulement sur un compte neuf. ⚠️ **`EcranParcours` (« Quel cavalier es-tu ? », Loisir/Propriétaire/Compétition) n'est monté NULLE PART — code mort, il ne s'affiche déjà plus.** Diagnostic commencé : le même écran a déjà eu ce bug le 14/08 (hauteur figée, 97 px séquestrés, boutons inatteignables) ; il reste un **`maxHeight: 340` avec `overflow: hidden`** sur les cartes dépliées, qui couperait le contenu japonais sans barre de défilement. **Non confirmé** — Claude ne peut ni ouvrir l'app ni voir le rendu. Blandine veut le refaire.
+- **Trois offres à concevoir**, proposées par Blandine en fin de session : familiale, étudiante, professionnelle. Chacune demande un produit Stripe et sa propre logique ; l'étudiante suppose de prouver le statut.
+- Tout le reste de la PASSATION-138-bis : les deux comptes fantômes à supprimer, graver les cinq réglages du mur immersif, aligner « Mon récit » sur le Mur des songes, le nuancier d'onglets, le chaînage des à la une.
+
+### PRÉPARATION FLUTTER
+
+**Le meilleur gain à ce jour.** Trois règles métier vivent maintenant **en base** et non dans `index.html` : la formation d'un identifiant, le quota du nom, la limite d'appareils. Un futur client Flutter n'aura rien à réimplémenter et **ne pourra pas diverger**. L'app ne décide plus, elle demande et traduit.
+
+`hypeAppelChangement` et `hypeMessageChangement` sont posées sur `window` **dès leur naissance**, conformément à la règle de non-duplication du 17/08 : elles servent déjà deux appelants (le crayon et Mon compte) sans copie.
+
+**Dette reconnue :** la dette de duplication du 17/08 (`hsRegrouperCompos` / `hsGroupeALaUne`) n'a pas été traitée, et les trois arbitres tap-contre-glissé sont toujours là.
+
+---
+
 **Version actuelle de l'index.html : 17/08/2026 (SESSION 138 BIS · 17/08 · STORIES, À LA UNE, PAGE CAVALIER, PUIS LES IDENTIFIANTS UNIQUES ÉTAPE 2a) — md5 `a0bcf61973f3c64ae5a5892614e50311`, 9 151 248 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bg, md5 `4b7570d20afc39ce329ac93b4fa91526`, 388 627 octets, `?v=19bg`.** **SQL DÉJÀ PASSÉ le 17/08 à 21 h 11** (`identifiants-uniques.sql`) — ne pas le repasser, il est idempotent mais inutile.
 
 ⚠️ **ETATS PERIMES DU SOIR :** index `b5097956…` (avant l'étape 2a) ; stories `bedd52ae…` (19bf).
