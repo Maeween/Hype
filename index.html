@@ -128,7 +128,7 @@ async function monProfil() {
 }
 
 // Mettre à jour mon profil (n'envoie que les champs à changer)
-async function majProfil({ pseudo, avatar_url, ecurie, ecurie2, ecurie_perso, ville, teinte, histoire, ma_voix, ecurie_voix, ecurie_histoire, club_voix, club_histoire, ecurie_photo, est_mineur } = {}) {
+async function majProfil({ pseudo, avatar_url, ecurie, ecurie2, ecurie_perso, ville, teinte, histoire, ma_voix, ecurie_voix, ecurie_histoire, club_voix, club_histoire, ecurie_photo, est_mineur, handle_invitation_vue } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
   const champs = {};
@@ -147,6 +147,11 @@ async function majProfil({ pseudo, avatar_url, ecurie, ecurie2, ecurie_perso, vi
   if (club_histoire   !== undefined) champs.club_histoire   = club_histoire;
   if (ecurie_photo    !== undefined) champs.ecurie_photo    = ecurie_photo;
   if (est_mineur       !== undefined) champs.est_mineur     = est_mineur;
+  /* 18/08 (decision de Blandine, en cours de session) : « vu une fois, on ne
+     le reaffiche jamais » — que la personne ait clique Plus tard ou choisi
+     un identifiant. DOIT vivre sur le COMPTE, pas sur le telephone : sinon
+     une reconnexion sur un second appareil le montrerait a nouveau la-bas. */
+  if (handle_invitation_vue !== undefined) champs.handle_invitation_vue = handle_invitation_vue;
 
   // Detection « nouveau cavalier » : ecurie renseignee OU changee -> diffusion a la NOUVELLE ecurie
   let ancienneEcurie;
@@ -556,6 +561,66 @@ try {
     window.hypeMessageChangement = hypeMessageChangement;
   }
 } catch (eHC) { }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   18/08/2026 — SIGNALER CET APPAREIL (feu vert de Blandine : « le nombre
+   d'ecrans avec le meme compte »).
+
+   La base (hype_appareils / hype_signaler_appareil, voir appareils.sql) sait
+   deja evincer le plus ancien au-dela de trois. Ce bloc est ce qui manquait :
+   l app doit APPELER la fonction pour que la table serve a quelque chose.
+
+   Un identifiant d'appareil STABLE est tire une seule fois et garde en
+   localStorage — PAS dans le profil Supabase, chaque appareil doit garder
+   le sien. Rappel du SQL : Safari puis l app installee sur l ecran d accueil
+   sont deux stockages separes, donc DEUX identifiants meme sur le meme
+   telephone — c'est voulu, pas un doublon a corriger.
+   ═══════════════════════════════════════════════════════════════════════ */
+function hypeIdentifiantAppareil() {
+  try {
+    var cle = "hype_appareil_id";
+    var v = localStorage.getItem(cle);
+    if (v) return v;
+    v = (typeof crypto !== "undefined" && crypto.randomUUID) ? crypto.randomUUID()
+      : ("ap-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 12));
+    localStorage.setItem(cle, v);
+    return v;
+  } catch (e) { return "ap-secours-" + Math.random().toString(36).slice(2, 12); }
+}
+/* Un nom LISIBLE pour l'ecran "Mes appareils" — pas un identifiant technique.
+   Distingue Safari de l app installee, seule info qui explique a Blandine
+   pourquoi UN telephone peut compter pour deux. */
+function hypeNomAppareil() {
+  try {
+    var ua = (typeof navigator !== "undefined" && navigator.userAgent) || "";
+    var plateforme = /iPhone|iPad|iPod/.test(ua) ? "iPhone"
+      : /Android/.test(ua) ? "Android"
+      : /Macintosh/.test(ua) ? "Mac" : "Appareil";
+    var installee = false;
+    try { installee = (window.navigator && window.navigator.standalone) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches); } catch (eI) { }
+    return plateforme + " · " + (installee ? "app installée" : "navigateur");
+  } catch (e) { return "Appareil"; }
+}
+/* Appelee UNE FOIS par ouverture d'app (voir le useEffect d'arrivee). Renvoie
+   {ok, code, places, limite, exempt} ou null si hors-ligne. En cas de
+   'evince', c est a l appelant de deconnecter — ce helper ne le fait pas,
+   pour rester utilisable aussi depuis l ecran "Mes appareils" sans effet de
+   bord surprise. */
+async function hypeSignalerAppareil() {
+  try {
+    if (typeof supa === "undefined") return null;
+    var r = await supa.rpc("hype_signaler_appareil", { appareil: hypeIdentifiantAppareil(), nom: hypeNomAppareil() });
+    if (r && r.error) return null;
+    return (r && r.data) || null;
+  } catch (e) { return null; }
+}
+try {
+  if (typeof window !== "undefined") {
+    window.hypeIdentifiantAppareil = hypeIdentifiantAppareil;
+    window.hypeSignalerAppareil = hypeSignalerAppareil;
+  }
+} catch (eSA) { }
+
 function hypeHandleTexte(x) {
   try {
     var v = (x && typeof x === "object") ? (x.handle || "") : x;
@@ -20897,6 +20962,10 @@ function HypeApp() {
        ============================================================ */
     const [ambassadeur, setAmbassadeur] = useState(false);
     const [forcerGratuit, setForcerGratuit] = useState(false);
+    /* 18/08 — « le nombre d'ecrans avec le meme compte ». {places, limite,
+       exempt} pour l affichage dans Mon compte ; null tant qu'on ne sait pas
+       encore (ne JAMAIS afficher un chiffre invente). */
+    const [appareils, setAppareils] = useState(null);
     useEffect(() => {
         let actif = true;
         try {
@@ -20904,6 +20973,25 @@ function HypeApp() {
             utilisateurActuel().then((u) => {
                 if (!u || !actif) return;
                 try { if (typeof estAmbassadeurHype === "function") setAmbassadeur(estAmbassadeurHype(u)); } catch (eAmb) { }
+                /* Un seul appel par ouverture d'app. En cas de refus 'evince',
+                   on deconnecte immediatement — l'appareil vient de perdre sa
+                   place a un autre, plus recent. Un message reste affiche a
+                   l'ecran de connexion : voir HYPE_MSG_EVICTION plus bas. */
+                try {
+                    if (typeof hypeSignalerAppareil === "function") {
+                        hypeSignalerAppareil().then((r) => {
+                            if (!actif || !r) return;
+                            if (r.code === "evince") {
+                                try { window.HYPE_MSG_EVICTION = true; } catch (eM) { }
+                                try { if (typeof deconnexion === "function") deconnexion().catch(() => { }); } catch (eD) { }
+                                try { AUTH_MODE_SPECTRAL = "connexion"; } catch (eA) { }
+                                setEcran("connexion");
+                                return;
+                            }
+                            if (r.ok) setAppareils({ places: r.places, limite: r.limite, exempt: !!r.exempt });
+                        }).catch(() => { });
+                    }
+                } catch (eSA) { }
                 try {
                     const ancienUid = localStorage.getItem("hype_uid");
                     if (ancienUid && ancienUid !== u.id) {
@@ -21132,6 +21220,7 @@ function HypeApp() {
         langue, setLangue,
         t, tr,
         premium: !forcerGratuit && (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!profil.vip || ambassadeur), estAbonne, planAbo, setPlanAbo, setPremium: (v) => { setForcerGratuit(!v); setPlanAbo(v ? "annuel" : ""); },
+        appareils,
         profil, setProfil,
         xp, setXp,
         serie, setSerie,
@@ -23066,6 +23155,25 @@ function EcranConnexionSpectral() {
   var rSt = useState(function () { try { return localStorage.getItem("hype_rappeler") !== "0"; } catch (e) { return true; } });
   var rappeler = rSt[0], setRappeler = rSt[1];
   useEffect(function () { try { localStorage.setItem("hype_rappeler", rappeler ? "1" : "0"); } catch (e) { } }, [rappeler]);
+  /* 18/08 — apres une eviction (voir hype_signaler_appareil), l app a deja
+     deconnecte et redirige ici. On explique pourquoi, UNE fois, puis on
+     efface le drapeau pour ne pas le repeter au prochain passage sur cet
+     ecran (ex: bascule inscription <-> connexion). */
+  useEffect(function () {
+    try {
+      if (window.HYPE_MSG_EVICTION) {
+        window.HYPE_MSG_EVICTION = false;
+        setErreur(T(
+          "Tu as été déconnectée : la limite d'appareils pour ce compte a été atteinte.",
+          "You were signed out: this account's device limit was reached.",
+          "Se cerró tu sesión: se alcanzó el límite de dispositivos de esta cuenta.",
+          "Sei stata disconnessa: è stato raggiunto il limite di dispositivi di questo account.",
+          "\u30ed\u30b0\u30a2\u30a6\u30c8\u3055\u308c\u307e\u3057\u305f\uff1a\u3053\u306e\u30a2\u30ab\u30a6\u30f3\u30c8\u306e\u30c7\u30d0\u30a4\u30c9\u4e0a\u9650\u306b\u9054\u3057\u307e\u3057\u305f\u3002",
+          "Du wurdest abgemeldet: das Ger\u00e4telimit dieses Kontos wurde erreicht."
+        ));
+      }
+    } catch (eEv) { }
+  }, []);
   var poussieres = React.useMemo(function () { var l = []; for (var i = 0; i < 30; i++) { l.push({ l: Math.random() * 100, t: 28 + Math.random() * 66, s: 1.4 + Math.random() * 2.2, d: 7 + Math.random() * 9, del: Math.random() * 10 }); } return l; }, []);
   function traduireErr(err) { var m = String((err && err.message) || err || "").toLowerCase();
     if (m.indexOf("invalid login") >= 0) return T("Email ou mot de passe incorrect.", "Incorrect email or password.", "Email o contrase\u00f1a incorrectos.", "Email o password errati.", "\u30e1\u30fc\u30eb\u307e\u305f\u306f\u30d1\u30b9\u30ef\u30fc\u30c9\u304c\u9055\u3044\u307e\u3059\u3002", "E-Mail oder Passwort falsch.");
@@ -24909,6 +25017,17 @@ function EcranMonCompte() {
           React.createElement("span", { style: { fontSize: 13.5, color: COLORS.blanc, fontFamily: "'Montserrat', sans-serif", letterSpacing: "0.02em" } }, txtH),
           React.createElement("button", { onClick: function () { setHSaisie(String((profil && profil.handle) || "")); setHMsg(null); setHEtape("saisie"); }, style: { background: "none", border: "1px solid rgba(32,217,245,0.4)", borderRadius: 999, color: COLORS.turquoise, fontSize: 11, fontWeight: 700, padding: "4px 11px", cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
             tr({ fr: "Modifier", en: "Change", es: "Cambiar", it: "Modifica", ja: "\u5909\u66f4", de: "\u00c4ndern" })));
+      })(),
+      /* 18/08 — « le nombre d'ecrans avec le meme compte ». `ctx.appareils`
+         est null tant que le signalement n a pas repondu : on n affiche RIEN
+         plutot qu'un chiffre invente. */
+      (function () {
+        var ap = ctx && ctx.appareils;
+        if (!ap) return null;
+        var txt = ap.exempt
+          ? tr({ fr: "Appareils illimités", en: "Unlimited devices", es: "Dispositivos ilimitados", it: "Dispositivi illimitati", ja: "\u30c7\u30d0\u30a4\u30c9\u5236\u9650\u306a\u3057", de: "Unbegrenzte Ger\u00e4te" })
+          : tr({ fr: "Connecté sur", en: "Connected on", es: "Conectado en", it: "Connesso su", ja: "\u63a5\u7d9a\u4e2d\uff1a", de: "Verbunden auf" }) + " " + ap.places + "/" + ap.limite + " " + tr({ fr: "appareils", en: "devices", es: "dispositivos", it: "dispositivi", ja: "\u30c7\u30d0\u30a4\u30c9", de: "Ger\u00e4te" });
+        return React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: "#7A838D", marginTop: 6, fontFamily: "'Montserrat', sans-serif" } }, txt);
       })(),
       (profil && profil.ecurie) ? React.createElement("div", { style: { fontSize: 13, color: COLORS.grisDoux, marginTop: 2 } }, T.ecurie + " · " + profil.ecurie) : null,
       (profil && profil.ville) ? React.createElement("div", { style: { fontSize: 13, color: COLORS.grisDoux } }, T.ville + " · " + profil.ville) : null,
@@ -33588,14 +33707,28 @@ function InvitationIdentifiant() {
   var vS = React.useState(false); var visible = vS[0], setVisible = vS[1];
   var pS = React.useState(null);  var prof = pS[0], setProf = pS[1];
 
+  /* 18/08 (correction de Blandine, en cours de session) : le premier reglage
+     rouvrait le message a CHAQUE retour sur l'accueil dans la meme visite —
+     le declencheur etait l'ecran, pas la session. Corrige avec `dejaTente`
+     pour ne demander l'etat qu'une fois par ouverture d'app.
+     Et surtout : « vu une fois, on ne le reaffiche plus, JAMAIS » — quel que
+     soit le bouton presse. Marque sur le COMPTE (handle_invitation_vue),
+     pas sur le telephone : une reconnexion sur un autre appareil ne doit
+     pas le revoir non plus. */
+  var dejaTente = React.useRef(false);
+  function fermerDefinitivement() {
+    setVisible(false);
+    try { if (typeof majProfil === "function" && typeof supa !== "undefined") majProfil({ handle_invitation_vue: true }).catch(function () { }); } catch (eF) { }
+  }
   React.useEffect(function () {
-    if (!ctx || ctx.ecran !== "dashboard") return;
+    if (!ctx || ctx.ecran !== "dashboard" || dejaTente.current) return;
+    dejaTente.current = true;
     var actif = true;
     try {
       if (typeof monProfil !== "function" || typeof supa === "undefined") return;
       monProfil().then(function (r) {
         if (!actif || !r || !r.data) return;
-        if (!r.data.handle_a_valider) return;
+        if (!r.data.handle_a_valider || r.data.handle_invitation_vue) return;
         setProf(r.data);
         setTimeout(function () { if (actif) setVisible(true); }, 1600);
       }).catch(function () { });
@@ -33606,7 +33739,7 @@ function InvitationIdentifiant() {
   if (!visible || !prof) return null;
   var txtH = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(prof) : "";
 
-  return h("div", { onClick: function () { setVisible(false); }, style: { position: "fixed", inset: 0, zIndex: 8500, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 22px" } },
+  return h("div", { onClick: fermerDefinitivement, style: { position: "fixed", inset: 0, zIndex: 8500, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 22px" } },
     h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxWidth: 350, borderRadius: 22, border: "1px solid rgba(32,217,245,0.3)", background: "linear-gradient(180deg, rgba(14,22,30,0.99), rgba(8,11,15,0.99))", padding: "24px 20px", boxSizing: "border-box", textAlign: "center" } },
       h("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 16, letterSpacing: 1.6, color: "#20D9F5", textTransform: "uppercase", marginBottom: 12 } },
         tr({ fr: "Ton identifiant", en: "Your handle", es: "Tu identificador", it: "Il tuo identificativo", ja: "\u3042\u306a\u305f\u306e ID", de: "Deine Kennung" })),
@@ -33615,9 +33748,9 @@ function InvitationIdentifiant() {
         tr({ fr: "Un autre cavalier portait le m\u00eame nom que toi. Celui-ci t'a \u00e9t\u00e9 attribu\u00e9 automatiquement.", en: "Another rider had the same name as you. This one was given to you automatically.", es: "Otro jinete ten\u00eda tu mismo nombre. Este se te asign\u00f3 autom\u00e1ticamente.", it: "Un altro cavaliere aveva il tuo stesso nome. Questo ti \u00e8 stato assegnato automaticamente.", ja: "\u540c\u3058\u540d\u524d\u306e\u9a0e\u624b\u304c\u3044\u305f\u305f\u3081\u3001\u3053\u306e ID \u304c\u81ea\u52d5\u7684\u306b\u5272\u308a\u5f53\u3066\u3089\u308c\u307e\u3057\u305f\u3002", de: "Ein anderer Reiter hatte denselben Namen. Diese Kennung wurde dir automatisch zugeteilt." })),
       h("p", { style: { color: "#8A929C", fontSize: 13, lineHeight: 1.55, margin: "0 0 20px" } },
         tr({ fr: "Tu peux le garder, ou en choisir un autre depuis Mon compte.", en: "You can keep it, or pick another one from My account.", es: "Puedes conservarlo o elegir otro desde Mi cuenta.", it: "Puoi tenerlo o sceglierne un altro da Il mio account.", ja: "\u305d\u306e\u307e\u307e\u4f7f\u3046\u3053\u3068\u3082\u3001\u30a2\u30ab\u30a6\u30f3\u30c8\u304b\u3089\u5909\u66f4\u3059\u308b\u3053\u3068\u3082\u3067\u304d\u307e\u3059\u3002", de: "Du kannst sie behalten oder in Mein Konto eine andere w\u00e4hlen." })),
-      h("button", { onClick: function () { setVisible(false); try { if (ctx && ctx.setEcran) ctx.setEcran("moncompte"); } catch (eN) { } }, style: { width: "100%", padding: "13px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 14, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
+      h("button", { onClick: function () { fermerDefinitivement(); try { if (ctx && ctx.setEcran) ctx.setEcran("moncompte"); } catch (eN) { } }, style: { width: "100%", padding: "13px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 14, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
         tr({ fr: "Choisir mon identifiant", en: "Choose my handle", es: "Elegir mi identificador", it: "Scegliere il mio identificativo", ja: "ID \u3092\u9078\u3076", de: "Kennung w\u00e4hlen" })),
-      h("button", { onClick: function () { setVisible(false); }, style: { width: "100%", marginTop: 10, padding: "11px 0", borderRadius: 999, border: "none", background: "none", color: "#7A838D", fontSize: 12.5, fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
+      h("button", { onClick: fermerDefinitivement, style: { width: "100%", marginTop: 10, padding: "11px 0", borderRadius: 999, border: "none", background: "none", color: "#7A838D", fontSize: 12.5, fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
         tr({ fr: "Plus tard", en: "Later", es: "M\u00e1s tarde", it: "Pi\u00f9 tardi", ja: "\u3042\u3068\u3067", de: "Sp\u00e4ter" }))));
 }
 
