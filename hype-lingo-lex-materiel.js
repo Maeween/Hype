@@ -119,6 +119,64 @@ window.HYPE_LINGO_LEX.materiel = {
           de:"Der erhöhte Vorderteil des Sattels, an dem man sich beim Aufsteigen notfalls festhält. Hinten heißt es Hinterzwiesel.",
           ja:"鞍の前方の盛り上がり。乗るとき必要ならここをつかみます。後ろ側は後橋と呼びます。" } },
 
+  /* ================================================================
+     LES QUATRE PARTIES DE LA SELLE — ajoutees le 15/08/2026,
+     session 214, sur question puis decision de Blandine : « et les
+     parties de la selle genre pommeau troussequin quartier
+     etriviere ? » → choix A : on complete le lexique.
+     Le chapitre portait `selle`, `sangle`, `etriers`, `etrivieres`,
+     `pommeau` — et rien d'autre. Une sellerie ou l'on ne sait pas
+     nommer ce qu'on achete n'apprend pas grand-chose.
+     ⚠️ Le `def` de `pommeau` annoncait DEJA le troussequin dans les
+     six langues : les traductions ci-dessous en sont reprises a
+     l'identique (cantle · borren trasero · paletta · Hinterzwiesel ·
+     後橋). NE PAS les diverger.
+     ================================================================ */
+
+  { ref:"troussequin", lecon:1, coll:"selle",
+    mots:{ fr:{m:"le troussequin"}, en:{m:"the cantle", p:"kan-teul"},
+           es:{m:"el borrén trasero", var:"la trusa"}, it:{m:"la paletta"},
+           de:{m:"der Hinterzwiesel", p:"hin-teur-tsvi-zeul"}, ja:{m:"後橋", p:"kōkyō"} },
+    def:{ fr:"L'arrière relevé de la selle, dans ton dos. C'est lui qui te tient quand le cheval accélère — et c'est sa hauteur qui change tout entre une selle de dressage et une selle d'obstacle.",
+          en:"The raised back of the saddle, behind you. It holds you when the horse takes off — and its height is what separates a dressage saddle from a jumping one.",
+          es:"La parte trasera elevada de la silla, a tu espalda. Te sujeta cuando el caballo acelera, y su altura es lo que distingue una silla de doma de una de salto.",
+          it:"La parte posteriore rialzata della sella, dietro di te. Ti trattiene quando il cavallo parte — e la sua altezza è ciò che distingue una sella da dressage da una da salto.",
+          de:"Der erhöhte hintere Teil des Sattels, in deinem Rücken. Er hält dich, wenn das Pferd anzieht — und seine Höhe unterscheidet Dressur- von Springsattel.",
+          ja:"鞍の後ろの盛り上がり。馬が急に出たとき体を支えてくれます。この高さが馬場鞍と障害鞍の一番の違いです。" } },
+
+  { ref:"quartier", lecon:1, coll:"selle",
+    mots:{ fr:{m:"le quartier"}, en:{m:"the saddle flap", p:"sa-deul flap"},
+           es:{m:"el faldón"}, it:{m:"il quartiere"},
+           de:{m:"das Sattelblatt", p:"za-teul-blatt"}, ja:{m:"サドルフラップ", p:"sadoru furappu"} }, // ?? ja
+    def:{ fr:"Le grand pan de cuir sous ta jambe. Avancé et court pour l'obstacle, droit et long pour le dressage : c'est lui qui décide où ton genou tombe.",
+          en:"The large panel of leather under your leg. Forward-cut and short for jumping, straight and long for dressage: it decides where your knee sits.",
+          es:"El gran faldón de cuero bajo tu pierna. Adelantado y corto para el salto, recto y largo para la doma: decide dónde cae tu rodilla.",
+          it:"Il grande lembo di cuoio sotto la gamba. Avanzato e corto per il salto, dritto e lungo per il dressage: decide dove cade il ginocchio.",
+          de:"Das große Lederblatt unter deinem Bein. Vorgeschnitten und kurz zum Springen, gerade und lang für die Dressur: es bestimmt, wo dein Knie liegt.",
+          ja:"脚の下にある大きな革の部分。障害用は前傾で短く、馬場用はまっすぐで長い。膝の位置はここで決まります。" } },
+
+  { ref:"siege", lecon:1, coll:"selle",
+    mots:{ fr:{m:"le siège"}, en:{m:"the seat", p:"sitt"},
+           es:{m:"el asiento"}, it:{m:"il seggio"}, // ?? it
+           de:{m:"der Sitz", p:"zitts"}, ja:{m:"シート", p:"shīto"} }, // ?? ja
+    def:{ fr:"L'endroit où tu t'assois, entre le pommeau et le troussequin. Creux, il te place et te tient ; plat, il te laisse bouger. La taille d'une selle se mesure d'ailleurs par son siège, en pouces.",
+          en:"Where you sit, between pommel and cantle. Deep, it places and holds you; flat, it lets you move. A saddle's size is measured by its seat, in inches.",
+          es:"Donde te sientas, entre la perilla y el borrén trasero. Profundo, te coloca y te sujeta; plano, te deja moverte. La talla de una silla se mide por su asiento, en pulgadas.",
+          it:"Dove ti siedi, tra pomello e paletta. Profondo, ti posiziona e ti trattiene; piatto, ti lascia muovere. La misura di una sella si prende dal seggio, in pollici.",
+          de:"Wo du sitzt, zwischen Sattelkopf und Hinterzwiesel. Tief setzt er dich fest, flach lässt er dir Bewegung. Die Größe eines Sattels wird am Sitz gemessen, in Zoll.",
+          ja:"前橋と後橋の間、実際に座る部分。深いと座りが決まり、浅いと動きやすい。鞍のサイズはこの座席の長さ（インチ）で表します。" } },
+
+  { ref:"arcon", lecon:1, coll:"selle",
+    mots:{ fr:{m:"l'arçon"}, en:{m:"the tree", p:"trii"},
+           es:{m:"el fuste"}, it:{m:"il fusto", var:"l'incastellatura"}, // ?? it
+           de:{m:"der Sattelbaum", p:"za-teul-baoum"}, ja:{m:"ツリー", p:"tsurī"} }, // ?? ja
+    def:{ fr:"⚠️ **Le squelette de la selle, celui qu'on ne voit jamais** — et le mot anglais est **the tree**, littéralement « l'arbre ». Un arçon trop étroit blesse le garrot : c'est la première chose qu'un sellier regarde. L'allemand dit la même image : *Sattelbaum*.",
+          en:"The frame inside the saddle, never seen from outside. A tree that's too narrow pinches the withers — the first thing a saddler checks. French and German say “tree” too: *arçon*, *Sattelbaum*.",
+          es:"El esqueleto de la silla, que nunca se ve. Un fuste demasiado estrecho lastima la cruz: es lo primero que mira un guarnicionero. En inglés se dice *the tree*, el árbol.",
+          it:"Lo scheletro della sella, che non si vede mai. Un fusto troppo stretto ferisce il garrese: è la prima cosa che guarda un sellaio. In inglese si dice *the tree*, l'albero.",
+          de:"Das Gerüst im Sattel, von außen nie zu sehen. Ein zu enger Sattelbaum drückt den Widerrist — das Erste, was ein Sattler prüft. Englisch heißt es *the tree*.",
+          ja:"鞍の内部の骨組み。外からは見えません。狭すぎると鬐甲を痛めます。装鞍師が最初に確認する場所です。英語では the tree（木）と言います。" } },
+
   { ref:"selle-dressage", lecon:1, coll:"selle",
     mots:{ fr:{m:"la selle de dressage"}, en:{m:"the dressage saddle", p:"drè-sadj sa-deul"},
            es:{m:"la silla de doma"}, it:{m:"la sella da dressage"},
@@ -378,6 +436,104 @@ window.HYPE_LINGO_LEX.materiel = {
 
   /* ============ LEÇON 4 · PROTECTIONS ET GESTES ============ */
 
+  /* ================================================================
+     SEPT ENTRÉES AJOUTÉES le 17/08/2026, pour VEJER — d'après le lexique
+     fourni par Blandine.
+
+     🟥 VEJER REÇOIT LES LEÇONS 3 ET 4 de ce fichier (22 mots), décision
+     du 17/08. Son chapitre s'appelle « Le matériel » et ses phrases
+     mélangent volontairement : matériel du cheval, tenue du cavalier,
+     matériel de concours, matériel de rechange.
+     ⚠️ SÉVILLE PERD DONC LA LEÇON 3. Elle attend un chapitre qui lui
+     ressemble vraiment : Séville c'est la Feria de Abril, la parade — le
+     costume, les tresses, la selle andalouse, l'attelage. La leçon 3
+     contenait la bombe et le gilet airbag, qu'une amazone à la Feria ne
+     porte pas. NE PAS lui rendre la leçon 3 par défaut.
+     ⚠️ La leçon 2 (le filet, le mors, la bride) reste ORPHELINE.
+
+     🟥 LE PIÈGE DU CHAPITRE, déjà dans ce fichier et rappelé par elle :
+     **TACK ≠ KIT.** Le *tack* est ce que porte le cheval, le *kit* ou
+     *gear* ce que porte le cavalier. Et « material » ne traduit JAMAIS
+     « matériel d'équitation » : le mot collectif est *tack*.
+     ================================================================ */
+
+  { ref:"malle-concours", lecon:4, coll:"concours",
+    mots:{ fr:{m:"la malle de concours"}, en:{m:"the tack trunk", p:"tak treunk"},
+           es:{m:"el baúl de concurso"}, it:{m:"il baule da concorso"},
+           de:{m:"die Turnierkiste", p:"tour-nir-kiss-te"}, ja:{m:"馬具トランク", p:"bagu toranku"} },
+    def:{ fr:"⚠️ EN ANGLAIS **A TACK TRUNK**, jamais « a competition trunk ». C'est la malle qu'on charge dans le camion et qui contient tout : le matériel, les rechanges, les crampons, la clé, les produits de nettoyage. 🟥 La règle des concours : **tout ce qui n'est pas dans la malle n'existe pas** — on ne trouve rien sur place.",
+          en:"« A tack trunk », never « a competition trunk ». The trunk you load into the lorry, holding everything: tack, spares, studs, the wrench, the cleaning kit. The rule of shows: whatever isn't in the trunk doesn't exist.",
+          es:"En inglés « a tack trunk ». Es el baúl que se carga en el camión y contiene todo: material, repuestos, ramplones, la llave, los productos de limpieza.",
+          it:"In inglese « a tack trunk ». È il baule che si carica nel camion e contiene tutto: materiale, ricambi, ramponi, la chiave, i prodotti.",
+          de:"Englisch « a tack trunk ». Die Kiste, die in den Lkw kommt und alles enthält: Ausrüstung, Ersatzteile, Stollen, Schlüssel, Putzmittel.",
+          ja:"英語では a tack trunk と言います。馬運車に積み込むトランクで、馬具、予備、滑り止め、レンチ、手入れ用品のすべてが入ります。競技会の掟：トランクに入っていない物は存在しないのと同じです。" } },
+
+  { ref:"de-rechange", lecon:4, coll:"concours",
+    mots:{ fr:{m:"de rechange"}, en:{m:"spare", p:"spèr"},
+           es:{m:"de repuesto"}, it:{m:"di riserva"},
+           de:{m:"Ersatz-", p:"èr-zatts"}, ja:{m:"予備の", p:"yobi no"} },
+    def:{ fr:"🟥 LE MOT LE PLUS UTILE DU CHAPITRE, et il se place devant tout : **a spare bridle**, *spare reins*, *a spare girth*, *a spare saddle pad*. ⚠️ En anglais **spare** est un ADJECTIF qui précède, et il ne se met jamais au pluriel dans cette position — on dit *spare reins*, pas « spares reins ». Employé seul comme nom, il devient *the spares* : « les rechanges ». La phrase à retenir : *always keep spares in the tack trunk*.",
+          en:"The most useful word in the chapter, and it goes in front of everything: a spare bridle, spare reins, a spare girth. As an adjective it never takes an s in that position. Used alone as a noun it becomes « the spares ».",
+          es:"La palabra más útil del capítulo: brida de repuesto, riendas de repuesto, cincha de repuesto. En inglés « spare » va delante.",
+          it:"La parola più utile del capitolo: briglia di riserva, redini di riserva, sottopancia di riserva. In inglese « spare » precede il nome.",
+          de:"Das nützlichste Wort des Kapitels: Ersatztrense, Ersatzzügel, Ersatzgurt. Im Englischen steht « spare » davor.",
+          ja:"この章で最も役に立つ語。すべての名詞の前に置きます。a spare bridle、spare reins、a spare girth。形容詞なので、この位置では複数形になりません。名詞として単独で使うと the spares（予備一式）になります。" } },
+
+  { ref:"cle-crampons", lecon:4, coll:"concours",
+    mots:{ fr:{m:"la clé à crampons"}, en:{m:"the stud wrench", p:"steud rènntch", var:"the stud spanner (UK)"},
+           es:{m:"la llave de ramplones"}, it:{m:"la chiave per ramponi"},
+           de:{m:"der Stollenschlüssel", p:"chto-leune-chlu-sseul"}, ja:{m:"滑り止め用レンチ", p:"suberidome-yō renchi"} },
+    def:{ fr:"⚠️ DEUX MOTS POUR LE MÊME OUTIL : les Britanniques disent **a spanner**, les Américains **a wrench**. La même différence que pour toutes les clés — *a spanner* n'existe pas en anglais américain. 🟥 Elle vit dans la malle avec un écouvillon et de l'huile : les trous des fers se bouchent de terre entre deux concours, et un crampon qu'on ne peut pas visser ne sert à rien.",
+          en:"Two words for one tool: British riders say a spanner, Americans a wrench. It lives in the trunk with a tap and some oil — stud holes clog with dirt between shows, and a stud you can't screw in is no use.",
+          es:"Dos palabras para la misma herramienta según el país. Vive en el baúl con un limpiador de roscas y aceite.",
+          it:"Due parole per lo stesso attrezzo secondo il paese. Vive nel baule con uno scovolino e un po' d'olio.",
+          de:"Zwei Wörter für dasselbe Werkzeug, je nach Land. Er liegt in der Kiste zusammen mit einem Gewindeschneider und Öl.",
+          ja:"同じ工具に二つの語があります。イギリスでは spanner、アメリカでは wrench。トランクの中でネジ穴掃除の道具と油と一緒に置いておきます。蹄鉄のネジ穴は競技会の間に土で詰まり、ねじ込めない滑り止めは役に立ちません。" } },
+
+  { ref:"veste-concours", lecon:3, coll:"tenue",
+    mots:{ fr:{m:"la veste de concours"}, en:{m:"the show jacket", p:"chô djè-kite"},
+           es:{m:"la chaqueta de concurso"}, it:{m:"la giacca da concorso"},
+           de:{m:"das Turnierjackett", p:"tour-nir-ja-kète"}, ja:{m:"競技用ジャケット", p:"kyōgiyō jaketto"} },
+    def:{ fr:"⚠️ AVEC LA CULOTTE BLANCHE, c'est la tenue de piste. En anglais **breeches** est toujours au pluriel, comme « trousers » — on ne dit jamais « a breech ». 🟥 Et « le pantalon blanc » d'un concours se dit *white breeches*, jamais *white trousers* : le mot désigne une coupe d'équitation, pas un pantalon.",
+          en:"With white breeches, this is the ring outfit. « Breeches » is always plural, like trousers — never « a breech ». And show breeches are « white breeches », never « white trousers »: the word means a riding cut.",
+          es:"Con el pantalón blanco, es la ropa de pista. En inglés « breeches » va siempre en plural.",
+          it:"Con i pantaloni bianchi, è la tenuta da campo. In inglese « breeches » è sempre plurale.",
+          de:"Mit der weißen Reithose ist das die Turnierkleidung. Englisch « breeches » steht immer im Plural.",
+          ja:"白いキュロットと合わせて、競技用の服装になります。英語の breeches は trousers と同じく常に複数形で、単数形はありません。" } },
+
+  { ref:"bandes-repos", lecon:4, coll:"protection",
+    mots:{ fr:{m:"les bandes de repos"}, en:{m:"stable bandages", p:"sté-beul bann-di-djiz"},
+           es:{m:"las vendas de descanso"}, it:{m:"le fasce da riposo"},
+           de:{m:"die Stallbandagen", p:"chtall-bann-da-gueune"}, ja:{m:"厩舎用バンテージ", p:"kyūsha-yō banteji"} },
+    def:{ fr:"🟥 EN ANGLAIS ON DIT **STABLE BANDAGES**, jamais « rest bandages » : le mot dit OÙ on les met, pas pourquoi. On les pose le soir, après l'effort ou le transport, toujours sur du coton — jamais à même la peau. ⚠️ TROIS SORTES DE BANDES, à ne pas confondre : les *exercise bandages* pour le travail, les *stable bandages* pour la nuit, et les **polo wraps** — nées du polo mais devenues un standard mondial, et qui ne protègent pas grand-chose.",
+          en:"« Stable bandages », never « rest bandages »: the word says where they go, not why. Put on in the evening after work or travel, always over cotton, never straight onto the leg. Three kinds not to confuse: exercise bandages, stable bandages, and polo wraps.",
+          es:"En inglés « stable bandages ». Se ponen por la tarde, después del trabajo o del transporte, siempre sobre algodón, nunca directamente sobre la piel.",
+          it:"In inglese « stable bandages ». Si mettono la sera, dopo il lavoro o il trasporto, sempre sopra il cotone, mai a contatto con la pelle.",
+          de:"Englisch « stable bandages ». Man legt sie abends an, nach Arbeit oder Transport, immer über Watte, nie direkt aufs Bein.",
+          ja:"英語では stable bandages と言い、rest bandages とは言いません。「どこで使うか」を表す語です。運動や輸送のあと、夕方に巻きます。必ず綿の上から巻き、素肌に直接は巻きません。運動用、厩舎用、ポロ用の三種類を混同しないこと。" } },
+
+  { ref:"coton", lecon:4, coll:"protection",
+    mots:{ fr:{m:"le coton"}, en:{m:"the cottons", p:"ko-teunz", var:"quilted wraps"},
+           es:{m:"el algodón"}, it:{m:"il cotone"},
+           de:{m:"die Watte", p:"va-te"}, ja:{m:"綿パッド", p:"men paddo"} },
+    def:{ fr:"⚠️ CE QU'ON MET SOUS LES BANDES, et jamais l'inverse : sans coton, une bande serre en une ligne et coupe la circulation. En anglais on dit **cottons** au pluriel pour les fines, **quilted wraps** pour les matelassées épaisses. 🟥 Une bande sans coton fait plus de mal que pas de bande du tout — c'est l'erreur la plus fréquente de l'écurie.",
+          en:"What goes under the bandages, never the other way round: with no cotton a bandage bites in one line and cuts the circulation. « Cottons » for the thin ones, « quilted wraps » for the thick padded ones. A bandage without cotton does more harm than none at all.",
+          es:"Lo que se pone debajo de las vendas, nunca al contrario: sin algodón la venda aprieta en una línea y corta la circulación.",
+          it:"Ciò che si mette sotto le fasce, mai il contrario: senza cotone la fascia stringe su una linea e taglia la circolazione.",
+          de:"Was unter die Bandagen kommt, nie umgekehrt: ohne Watte schnürt die Bandage in einer Linie ein.",
+          ja:"バンテージの下に敷くもの。逆はありません。綿がないとバンテージが一本の線で締めつけ、血流を止めます。薄いものは cottons、厚いキルト状のものは quilted wraps と言います。綿なしのバンテージは、巻かないより有害です。" } },
+
+  { ref:"argile", lecon:4, coll:"protection",
+    mots:{ fr:{m:"l'argile"}, en:{m:"the clay", p:"kléï", var:"cooling clay"},
+           es:{m:"la arcilla"}, it:{m:"l'argilla"},
+           de:{m:"der Heilerde-Umschlag", p:"haïl-èr-de"}, ja:{m:"クレイ", p:"kurei"} },
+    def:{ fr:"On l'étale épaisse sur les tendons après un gros effort, et les bandes de repos la maintiennent toute la nuit. Elle sèche en refroidissant, et se brosse au matin. ⚠️ Le verbe anglais est **to clay up** — *to clay up his legs* — et le produit **cooling clay**. Il n'y a pas de verbe équivalent en français : on dit « mettre de l'argile ».",
+          en:"Spread thick on the tendons after hard work, held all night by stable bandages. It dries as it cools and brushes off in the morning. The verb is « to clay up » — to clay up his legs.",
+          es:"Se extiende gruesa sobre los tendones después de un gran esfuerzo, y las vendas de descanso la mantienen toda la noche.",
+          it:"Si stende spessa sui tendini dopo un grosso sforzo, e le fasce da riposo la tengono tutta la notte.",
+          de:"Dick auf die Sehnen aufgetragen nach großer Anstrengung, von Stallbandagen über Nacht gehalten. Sie trocknet kühlend und wird morgens abgebürstet.",
+          ja:"激しい運動のあと、腱に厚く塗ります。厩舎用バンテージで一晩押さえておきます。冷やしながら乾き、朝にブラシで落とします。英語には to clay up という動詞があり、フランス語にはありません。" } },
+
   { ref:"guetres", lecon:4, coll:"protections",
     mots:{ fr:{m:"les guêtres"}, en:{m:"the brushing boots", p:"breu-ching boutss", var:"boots · tendon boots"},
            es:{m:"las protecciones"}, it:{m:"i paracolpi"}, // ??
@@ -569,5 +725,423 @@ window.HYPE_LINGO_LEX.materiel = {
       it:"Dove metto la sella ?",
       de:"Wohin kommt der Sattel ?",
       ja:"鞍 は どこ に 置き ます か ?" }
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE WALSALL — 15 août 2026, session 214.
+
+     LA SCÈNE : la sellerie. On achète, on fait réparer, on essaie.
+     Walsall est la capitale historique de la sellerie anglaise.
+     20 phrases, 6 temps, 5 entendues.
+
+     🟥 LA TENUE DU CAVALIER N'EST PAS ICI. Blandine, 15/08 : « la tenue
+     ailleurs ». Puis, mieux : « sinon on fera une table spéciale tenue
+     de cavalier » → « note ça on va plutôt faire ça ». Une TABLE À PART
+     est donc décidée pour culotte, bottes, minichaps, gants, cravache,
+     éperons, tenue. ⚠️ LES MOTS RESTENT DANS CE FICHIER pour l'instant :
+     les déplacer coûterait une retraduction en six langues. Le jour du
+     déménagement, les verser d'abord dans la nouvelle table AVANT de
+     les retirer d'ici. NE PAS écrire de phrases de tenue dans ce
+     dialogue en attendant.
+     ⚠️ Aberystwyth avait été envisagé puis écarté par elle au profit de
+     la table à part. Ne pas ressortir cette piste.
+
+     ⚠️ LE TEMPS 3 EXISTE PARCE QUE LE LEXIQUE A ÉTÉ COMPLÉTÉ le même
+     jour : `troussequin`, `quartier`, `siege`, `arcon` viennent d'être
+     ajoutés (choix A de Blandine). Une première version de ce dialogue
+     employait « arçon » alors que le mot n'existait nulle part — faute
+     signalée avant écriture, corrigée par l'ajout.
+
+     🟥 `arcon` → **the tree** en anglais. C'est le piège du chapitre :
+     rien à voir avec un arbre. NE PAS « corriger » en `arch` ou `bow`.
+
+     LAISSÉS AU LEXIQUE SEUL, par le critère de Blandine (une phrase
+     n'existe que si on la dit vraiment sur place) : têtière, frontal,
+     sous-gorge, collier de chasse, martingale, gilet, airbag, savon
+     glycériné, bonnet. On les lit, on ne les demande pas au vendeur.
+
+     `dit` : "joueuse" = elle produit · "club" = elle entend et comprend
+     (ici, le sellier).
+  ================================================================== */
+  dialogue: {
+    ville: "walsall", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 20 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · j'entre dans la sellerie ---- */
+      { ref:"d-reparez-selles", temps:1, dit:"joueuse", mots:["selle"],
+        fr:"Est-ce que vous réparez les selles ?",
+        en:"Do you repair saddles?",
+        es:"¿Reparan sillas de montar?",
+        it:"Riparate le selle?",
+        de:"Reparieren Sie Sättel?",
+        ja:"鞍 の 修理 は し て い ます か ?" },
+
+      { ref:"d-sangle-usee", temps:1, dit:"joueuse", mots:["sangle"],
+        fr:"Ma sangle est usée, il m'en faut une neuve.",
+        en:"My girth is worn out, I need a new one.",
+        es:"Mi cincha está gastada, necesito una nueva.",
+        it:"Il mio sottopancia è consumato, me ne serve uno nuovo.",
+        de:"Mein Sattelgurt ist durchgescheuert, ich brauche einen neuen.",
+        ja:"腹帯 が すり切れ て い ます。 新しい もの が 必要 です。" },
+
+      { ref:"d-r-quelle-taille-sangle", temps:1, dit:"club", mots:["sangle"],
+        fr:"Quelle taille de sangle ?",
+        en:"What length of girth?",
+        es:"¿Qué talla de cincha?",
+        it:"Che misura di sottopancia?",
+        de:"Welche Gurtlänge?",
+        ja:"腹帯 の サイズ は ?" },
+
+      { ref:"d-mesurer-ancienne", temps:1, dit:"joueuse", mots:[],
+        fr:"Je ne sais pas, est-ce que je peux mesurer l'ancienne ?",
+        en:"I don't know — can I measure the old one?",
+        es:"No lo sé, ¿puedo medir la antigua?",
+        it:"Non lo so, posso misurare quello vecchio?",
+        de:"Ich weiß es nicht — kann ich den alten messen?",
+        ja:"わかり ませ ん。 古い もの を 測っ て も いい です か ?" },
+
+      /* ---- temps 2 · la selle ---- */
+      { ref:"d-selle-mixte-occasion", temps:2, dit:"joueuse", mots:["selle-mixte"],
+        fr:"Je cherche une selle mixte d'occasion.",
+        en:"I'm looking for a second-hand general purpose saddle.",
+        es:"Busco una silla mixta de segunda mano.",
+        it:"Cerco una sella mista usata.",
+        de:"Ich suche einen gebrauchten Vielseitigkeitssattel.",
+        ja:"中古 の 総合鞍 を 探し て い ます。" },
+
+      { ref:"d-essayer-sur-cheval", temps:2, dit:"joueuse", mots:["selle"],
+        fr:"Est-ce que je peux l'essayer sur mon cheval ?",
+        en:"Can I try it on my horse?",
+        es:"¿Puedo probarla en mi caballo?",
+        it:"Posso provarla sul mio cavallo?",
+        de:"Kann ich ihn auf meinem Pferd anprobieren?",
+        ja:"自分 の 馬 に 乗せ て 試し て も いい です か ?" },
+
+      { ref:"d-r-essai-gratuit", temps:2, dit:"club", mots:["selle"],
+        fr:"On peut la faire venir, l'essai est gratuit.",
+        en:"We can order it in — trying it costs nothing.",
+        es:"Podemos pedirla, la prueba es gratuita.",
+        it:"Possiamo farla arrivare, la prova è gratuita.",
+        de:"Wir können ihn kommen lassen, das Anprobieren ist kostenlos.",
+        ja:"取り寄せ でき ます。 試着 は 無料 です。" },
+
+      /* ---- temps 3 · les parties de la selle (lexique complété le 15/08) ---- */
+      { ref:"d-arcon-dos-large", temps:3, dit:"joueuse", mots:["arcon"],
+        fr:"Est-ce que l'arçon convient à un cheval au dos large ?",
+        en:"Will the tree fit a wide-backed horse?",
+        es:"¿El fuste vale para un caballo de dorso ancho?",
+        it:"Il fusto va bene per un cavallo di dorso largo?",
+        de:"Passt der Sattelbaum auf ein Pferd mit breitem Rücken?",
+        ja:"この ツリー は 背中 の 広い 馬 に 合い ます か ?" },
+
+      { ref:"d-r-siege-quartier", temps:3, dit:"club", mots:["siege","quartier"],
+        fr:"Le siège est un peu creux, et le quartier assez avancé.",
+        en:"The seat is fairly deep, and the flap quite forward-cut.",
+        es:"El asiento es algo profundo y el faldón bastante adelantado.",
+        it:"Il seggio è piuttosto profondo e il quartiere abbastanza avanzato.",
+        de:"Der Sitz ist recht tief und das Sattelblatt ziemlich vorgeschnitten.",
+        ja:"シート は やや 深く、 サドルフラップ は かなり 前傾 です。" },
+
+      { ref:"d-troussequin-haut", temps:3, dit:"joueuse", mots:["troussequin"],
+        fr:"Est-ce que le troussequin n'est pas trop haut ?",
+        en:"Isn't the cantle a bit too high?",
+        es:"¿No es un poco alto el borrén trasero?",
+        it:"La paletta non è un po' troppo alta?",
+        de:"Ist der Hinterzwiesel nicht ein bisschen zu hoch?",
+        ja:"後橋 が 少し 高 すぎ ませ ん か ?" },
+
+      { ref:"d-etrivieres-longues", temps:3, dit:"joueuse", mots:["etrivieres"],
+        fr:"Mes étrivières sont trop longues.",
+        en:"My stirrup leathers are too long.",
+        es:"Mis aciones son demasiado largas.",
+        it:"I miei staffili sono troppo lunghi.",
+        de:"Meine Steigbügelriemen sind zu lang.",
+        ja:"鐙革 が 長 すぎ ます。" },
+
+      /* ---- temps 4 · le filet et le mors ---- */
+      { ref:"d-muserolle-souple", temps:4, dit:"joueuse", mots:["muserolle"],
+        fr:"Il me faudrait une muserolle plus souple.",
+        en:"I'd need a softer noseband.",
+        es:"Necesitaría una muserola más blanda.",
+        it:"Mi servirebbe una capezzina più morbida.",
+        de:"Ich bräuchte einen weicheren Nasenriemen.",
+        ja:"もっと 柔らかい 鼻革 が ほしい です。" },
+
+      { ref:"d-quel-mors-jeune", temps:4, dit:"joueuse", mots:["mors"],
+        fr:"Quel mors est-ce que vous conseillez pour un jeune cheval ?",
+        en:"Which bit would you recommend for a young horse?",
+        es:"¿Qué bocado recomienda para un caballo joven?",
+        it:"Quale imboccatura consiglia per un cavallo giovane?",
+        de:"Welches Gebiss empfehlen Sie für ein junges Pferd?",
+        ja:"若い 馬 に は どの ハミ が いい です か ?" },
+
+      { ref:"d-r-filet-simple", temps:4, dit:"club", mots:["mors","filet"],
+        fr:"Un mors de filet simple, à double brisure.",
+        en:"A plain snaffle, French-link.",
+        es:"Un filete sencillo, de doble articulación.",
+        it:"Un filetto semplice, a doppio snodo.",
+        de:"Eine einfache Wassertrense, doppelt gebrochen.",
+        ja:"二重 関節 の シンプル な 水勒 ハミ です。" },
+
+      { ref:"d-renes-cuir-tresse", temps:4, dit:"joueuse", mots:["renes","cuir"],
+        fr:"Est-ce que vous avez des rênes en cuir tressé ?",
+        en:"Have you got plaited leather reins?",
+        varEn:"Have you got braided leather reins?",
+        es:"¿Tienen riendas de cuero trenzado?",
+        it:"Avete redini in cuoio intrecciato?",
+        de:"Haben Sie geflochtene Lederzügel?",
+        ja:"編ん だ 革 の 手綱 は あり ます か ?" },
+
+      /* ---- temps 5 · la protection ---- */
+      { ref:"d-guetres-ou-cloches", temps:5, dit:"joueuse", mots:["guetres","cloches"],
+        fr:"Est-ce qu'il me faut des guêtres ou des cloches ?",
+        en:"Do I need brushing boots or over-reach boots?",
+        varEn:"Do I need boots or bell boots?",
+        es:"¿Necesito protecciones o campanas?",
+        it:"Mi servono paracolpi o campane?",
+        de:"Brauche ich Gamaschen oder Hufglocken?",
+        ja:"プロテクター が 必要 です か、 ベルブーツ です か ?" },
+
+      { ref:"d-r-cloches-fers", temps:5, dit:"club", mots:["cloches"],
+        fr:"Les cloches, c'est pour qu'il ne s'arrache pas ses fers.",
+        en:"Over-reach boots stop him pulling his shoes off.",
+        es:"Las campanas evitan que se arranque las herraduras.",
+        it:"Le campane evitano che si strappi i ferri.",
+        de:"Die Hufglocken verhindern, dass er sich die Eisen abtritt.",
+        ja:"ベルブーツ は 蹄鉄 を 自分 で 外し て しまう の を 防ぎ ます。" },
+
+      { ref:"d-bandes-travail", temps:5, dit:"joueuse", mots:["bandes"],
+        fr:"Est-ce que vous vendez des bandes de travail ?",
+        en:"Do you sell exercise bandages?",
+        es:"¿Venden vendas de trabajo?",
+        it:"Vendete fasce da lavoro?",
+        de:"Verkaufen Sie Arbeitsbandagen?",
+        ja:"運動用 の バンテージ は 売っ て い ます か ?" },
+
+      /* ---- temps 6 · payer et repartir ---- */
+      { ref:"d-combien-reparation", temps:6, dit:"joueuse", mots:[],
+        fr:"Combien coûte la réparation ?",
+        en:"How much is the repair?",
+        es:"¿Cuánto cuesta la reparación?",
+        it:"Quanto costa la riparazione?",
+        de:"Was kostet die Reparatur?",
+        ja:"修理 は いくら です か ?" },
+
+      { ref:"d-faire-livrer", temps:6, dit:"joueuse", mots:[],
+        fr:"Est-ce que je peux le faire livrer ?",
+        en:"Can you have it delivered?",
+        es:"¿Me lo pueden enviar?",
+        it:"Potete farlo consegnare?",
+        de:"Können Sie es liefern lassen?",
+        ja:"配送 し て もらえ ます か ?" }
+    ]
+  }
+  ,
+  /* ==================================================================
+     LE DIALOGUE DE VEJER — 17 août 2026, session 214.
+     ⚠️ CE FICHIER PORTE DEUX DIALOGUES : `dialogue` = WALSALL (la
+     sellerie, leçon 1), `dialogueVejer` = VEJER (le matériel de
+     concours, leçons 3 et 4). Le moteur balaie toutes les clés
+     commençant par `dialogue` depuis le 16/08. NE PAS fusionner.
+
+     LA SCÈNE : une journée de concours, du camion au rangement du soir.
+     19 phrases, 6 temps.
+
+     🟥 DIX-HUIT PHRASES SUR DIX-NEUF SONT DE BLANDINE, avec leur
+     traduction anglaise. Sa consigne : mélanger VRAIMENT — matériel du
+     cheval, tenue du cavalier, matériel de concours, matériel de
+     rechange. Ce n'est pas une leçon de sellerie, c'est une journée.
+     🟥 ET SA LOGIQUE, qui structure les temps :
+     **CAMION → MALLE → SELLER → DÉTENTE → TENUE → ÉPREUVE → NETTOYER**
+
+     🟥 VEJER A REÇU LES LEÇONS 3 ET 4 le 17/08 (29 mots). Séville perd
+     la leçon 3 et attend un chapitre qui lui ressemble : la Feria de
+     Abril, la parade, le costume, les tresses. La leçon 3 contenait le
+     gilet airbag, qu'une amazone ne porte pas.
+     ⚠️ LA LEÇON 2 (le filet, le mors, la bride) EST ORPHELINE.
+
+     🟥 LE PIÈGE DU CHAPITRE : **TACK ≠ KIT.** Le *tack* est ce que porte
+     le cheval, le *kit* ou *gear* ce que porte le cavalier. Et
+     « material » ne traduit JAMAIS « matériel d'équitation » : le mot
+     collectif est **tack**. La première phrase du dialogue le met en
+     jeu : *where's my tack ?* n'est pas *where's my kit ?*
+
+     ⚠️ SECOND PIÈGE, le plus utile en concours : **SPARE**. Il se place
+     devant tout — *a spare bridle*, *spare reins*, *a spare girth* — et
+     ne prend jamais d's dans cette position. Trois phrases l'emploient.
+
+     ⚠️ Les phrases empruntent aux leçons 1 et 2 (la selle, la sangle,
+     les étriers, le filet, le mors, la muserolle, le collier de chasse,
+     la martingale) et à Burghley (les crampons, le numéro de têtière) :
+     c'est voulu, c'est de la révision. Voir `motsAilleurs`.
+
+     `dit` : "joueuse" = elle produit · "club" = le groom, un coéquipier.
+  ================================================================== */
+  dialogueVejer: {
+    ville: "vejer", lecon: 4, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 19 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · le camion et la malle ---- */
+      { ref:"dv-ou-materiel", temps:1, dit:"joueuse", mots:[],
+        fr:"Où est mon matériel ?",
+        en:"Where's my tack?",
+        es:"¿Dónde está mi material?",
+        it:"Dov'è il mio materiale?",
+        de:"Wo ist meine Ausrüstung?",
+        ja:"私 の 馬具 は どこ です か ?" },
+
+      { ref:"dv-malle-camion", temps:1, dit:"club", mots:["malle-concours"],
+        fr:"La malle de concours est déjà dans le camion.",
+        en:"The tack trunk is already in the lorry.",
+        es:"El baúl de concurso ya está en el camión.",
+        it:"Il baule da concorso è già nel camion.",
+        de:"Die Turnierkiste ist schon im Lkw.",
+        ja:"馬具 トランク は もう トラック に 積ん で あり ます。" },
+
+      { ref:"dv-tapis-sellerie", temps:1, dit:"joueuse", mots:[], motsAilleurs:["tapis"],
+        fr:"J'ai laissé mon tapis de selle dans la sellerie.",
+        en:"I left my saddle pad in the tack room.",
+        es:"He dejado mi mantilla en la guadarnés.",
+        it:"Ho lasciato il mio sottosella in selleria.",
+        de:"Ich habe meine Satteldecke in der Sattelkammer gelassen.",
+        ja:"ゼッケン を 馬具 部屋 に 置い て き まし た。" },
+
+      /* ---- temps 2 · seller ---- */
+      { ref:"dv-selle-adaptee", temps:2, dit:"joueuse", mots:["seller"], motsAilleurs:["selle","arcon"],
+        fr:"Cette selle est-elle bien adaptée à ce cheval ?",
+        en:"Does this saddle fit this horse properly?",
+        es:"¿Esta silla se adapta bien a este caballo?",
+        it:"Questa sella va bene per questo cavallo?",
+        de:"Passt dieser Sattel diesem Pferd richtig?",
+        ja:"この 鞍 は この 馬 に 合っ て い ます か ?" },
+
+      { ref:"dv-resserrer-sangle", temps:2, dit:"club", mots:["sangler"], motsAilleurs:["sangle"],
+        fr:"Il faut resserrer la sangle avant de monter.",
+        en:"You need to tighten the girth before mounting.",
+        es:"Hay que apretar la cincha antes de montar.",
+        it:"Bisogna stringere il sottopancia prima di montare.",
+        de:"Der Gurt muss vor dem Aufsteigen nachgezogen werden.",
+        ja:"乗る 前 に 腹帯 を 締め 直し ます。" },
+
+      { ref:"dv-etriers-trop-longs", temps:2, dit:"joueuse", mots:["regler-etrivieres"], motsAilleurs:["etriers","etrivieres"],
+        fr:"Mes étriers sont trop longs pour sauter.",
+        en:"My stirrups are too long for jumping.",
+        es:"Mis estribos están demasiado largos para saltar.",
+        it:"Le mie staffe sono troppo lunghe per saltare.",
+        de:"Meine Bügel sind zum Springen zu lang.",
+        ja:"障害 を 飛ぶ に は 鐙 が 長 すぎ ます。" },
+
+      { ref:"dv-remonter-un-trou", temps:2, dit:"joueuse", mots:["regler-etrivieres"], motsAilleurs:["etrivieres"],
+        fr:"Peux-tu les remonter d'un trou ?",
+        en:"Can you shorten them by one hole?",
+        es:"¿Puedes subirlos un agujero?",
+        it:"Puoi accorciarli di un buco?",
+        de:"Kannst du sie ein Loch kürzer machen?",
+        ja:"一 穴 分 短く し て もらえ ます か ?" },
+
+      /* ---- temps 3 · le filet et les réglages ---- */
+      { ref:"dv-quel-mors", temps:3, dit:"joueuse", mots:["brider"], motsAilleurs:["mors","filet"],
+        fr:"Quel mors utilises-tu avec ce cheval ?",
+        en:"What bit do you use on this horse?",
+        es:"¿Qué bocado usas con este caballo?",
+        it:"Che morso usi con questo cavallo?",
+        de:"Welches Gebiss benutzt du bei diesem Pferd?",
+        ja:"この 馬 に は どの ハミ を 使い ます か ?" },
+
+      { ref:"dv-muserolle-serree", temps:3, dit:"joueuse", mots:[], motsAilleurs:["muserolle"],
+        fr:"La muserolle est un peu trop serrée.",
+        en:"The noseband is a little too tight.",
+        es:"La muserola está un poco apretada.",
+        it:"La capezzina è un po' troppo stretta.",
+        de:"Der Nasenriemen ist etwas zu fest.",
+        ja:"鼻革 が 少し 締め すぎ です。" },
+
+      { ref:"dv-collier-martingale", temps:3, dit:"club", mots:["brider"], motsAilleurs:["collier-chasse","martingale"],
+        fr:"Mets-lui son collier de chasse et sa martingale.",
+        en:"Put his breastplate and martingale on.",
+        es:"Ponle el pretal y la gamarra.",
+        it:"Mettigli la pettorina e la martingala.",
+        de:"Leg ihm Vorderzeug und Martingal an.",
+        ja:"胸 がい と マルタンガール を つけ て ください。" },
+
+      /* ---- temps 4 · le rechange et les crampons ---- */
+      { ref:"dv-filet-renes-rechange", temps:4, dit:"club", mots:["de-rechange","malle-concours"], motsAilleurs:["filet","renes"],
+        fr:"Tu as pris un filet et des rênes de rechange ?",
+        en:"Did you pack a spare bridle and spare reins?",
+        es:"¿Has cogido una brida y unas riendas de repuesto?",
+        it:"Hai preso una briglia e delle redini di riserva?",
+        de:"Hast du eine Ersatztrense und Ersatzzügel eingepackt?",
+        ja:"予備 の 頭絡 と 手綱 は 持ち まし た か ?" },
+
+      { ref:"dv-sangle-rechange", temps:4, dit:"club", mots:["de-rechange"], motsAilleurs:["sangle"],
+        fr:"Garde une sangle de rechange près de la piste.",
+        en:"Keep a spare girth by the arena.",
+        es:"Ten una cincha de repuesto junto a la pista.",
+        it:"Tieni un sottopancia di riserva vicino al campo.",
+        de:"Halte einen Ersatzgurt am Platz bereit.",
+        ja:"予備 の 腹帯 を 馬場 の 近く に 置い て おき ます。" },
+
+      { ref:"dv-crampons-glissant", temps:4, dit:"club", mots:[],
+        fr:"Il nous faut des crampons aujourd'hui, le terrain est glissant.",
+        en:"We need studs today; the ground is slippery.",
+        es:"Hoy necesitamos ramplones: el terreno resbala.",
+        it:"Oggi ci servono i ramponi: il terreno è scivoloso.",
+        de:"Heute brauchen wir Stollen, der Boden ist rutschig.",
+        ja:"今日 は 地面 が 滑る ので、 滑り止め が 必要 です。" },
+
+      { ref:"dv-cle-dans-malle", temps:4, dit:"club", mots:["cle-crampons","malle-concours"],
+        fr:"La clé à crampons est dans la malle.",
+        en:"The stud wrench is in the tack trunk.",
+        es:"La llave de ramplones está en el baúl.",
+        it:"La chiave per ramponi è nel baule.",
+        de:"Der Stollenschlüssel liegt in der Kiste.",
+        ja:"滑り止め 用 の レンチ は トランク の 中 です。" },
+
+      /* ---- temps 5 · la tenue et l'épreuve ---- */
+      { ref:"dv-veste-pantalon", temps:5, dit:"joueuse", mots:["veste-concours","culotte","tenue"],
+        fr:"Ma veste de concours et mon pantalon blanc sont prêts.",
+        en:"My show jacket and white breeches are ready.",
+        es:"Mi chaqueta de concurso y mi pantalón blanco están listos.",
+        it:"La mia giacca da concorso e i pantaloni bianchi sono pronti.",
+        de:"Mein Turnierjackett und die weiße Reithose sind bereit.",
+        ja:"競技 用 ジャケット と 白 の キュロット は 用意 でき て い ます。" },
+
+      { ref:"dv-tapis-concours", temps:5, dit:"club", mots:[], motsAilleurs:["tapis"],
+        fr:"Mets le tapis de concours pour le parcours.",
+        en:"Put the show saddle pad on for the class.",
+        es:"Pon la mantilla de concurso para el recorrido.",
+        it:"Metti il sottosella da concorso per il percorso.",
+        de:"Leg die Turnier-Satteldecke für den Parcours auf.",
+        ja:"競技 用 の ゼッケン を つけ て 走行 に 出 ます。" },
+
+      { ref:"dv-numero-tetiere", temps:5, dit:"joueuse", mots:[],
+        fr:"Où est mon numéro de têtière ?",
+        en:"Where's my bridle number?",
+        es:"¿Dónde está mi número de cabezada?",
+        it:"Dov'è il mio numero da testiera?",
+        de:"Wo ist meine Kopfnummer?",
+        ja:"頭絡 に つける ゼッケン 番号 は どこ です か ?" },
+
+      /* ---- temps 6 · le soir, on range ---- */
+      { ref:"dv-nettoie-range", temps:6, dit:"club", mots:["cuir","savon","malle-concours","desseller","debrider"],
+        fr:"Après l'épreuve, on nettoie le matériel et on range tout dans la malle.",
+        en:"After the class, we clean the tack and put everything back in the trunk.",
+        es:"Después de la prueba, limpiamos el material y lo guardamos todo en el baúl.",
+        it:"Dopo la prova, puliamo il materiale e rimettiamo tutto nel baule.",
+        de:"Nach der Prüfung putzen wir die Ausrüstung und packen alles in die Kiste.",
+        ja:"競技 の あと、 馬具 を 手入れ し て、 すべて トランク に 戻し ます。" },
+
+      /* 🟥 Phrase de Blandine, demandée pour faire vivre l'argile et le
+         coton : c'est le geste du soir après un gros effort. */
+      { ref:"dv-argile-bandes", temps:6, dit:"club", mots:["argile","bandes-repos","coton"],
+        fr:"Mets-lui de l'argile et des bandes de repos avec du coton pour la nuit.",
+        en:"Put clay on his legs and stable bandages over cotton for the night.",
+        es:"Ponle arcilla y vendas de descanso sobre algodón para la noche.",
+        it:"Mettigli l'argilla e le fasce da riposo sopra il cotone per la notte.",
+        de:"Trag ihm Heilerde auf und leg Stallbandagen über Watte für die Nacht.",
+        ja:"夜 の 間、 脚 に クレイ を 塗り、 綿 の 上 から 厩舎 用 バンテージ を 巻き ます。" }
+    ]
+  }
 };

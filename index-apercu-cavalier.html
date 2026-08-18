@@ -443,6 +443,67 @@ function estUrlVideo(u) { try { return /\.(mp4|mov|webm|m4v|ogv)(\?|$)/i.test(St
    l URL transformee repond en erreur — chaque balise porte donc un onError qui repose l URL
    d origine (voir replierVignette). Le rendu reste donc correct dans les deux cas ; seul le gain
    de bande passante attend le passage en Pro. */
+/* ═══════════════════════════════════════════════════════════════════════════
+   IDENTIFIANTS UNIQUES — 17/08/2026, etape 2a (LECTURE SEULE)
+   Decision de Blandine : un identifiant unique EN PLUS du nom, affiche
+   « partout ou un cavalier apparait ». Le nom affiche ne change pour personne.
+
+   ⚠️ CES DEUX FONCTIONS NAISSENT SUR `window`, PAS DANS UNE PAGE. Regle de
+   non-duplication du 17/08 : ce qui doit vivre sur deux ecrans naît global des
+   le premier. L identifiant s affiche sur la page Cavalier, dans les listes de
+   cavaliers, dans les mentions de `hype-stories.js` et demain ailleurs : un
+   seul endroit sait le mettre en forme, et le module l appelle par `window`.
+
+   ⚠️ TOLERE UN IDENTIFIANT VIDE, VOLONTAIREMENT. La colonne `handle` est
+   NULLABLE et l app peut etre poussee AVANT le SQL : dans ce cas rien ne s
+   affiche, et rien ne casse. C est ce qui rend l ordre des pushs indifferent.
+
+   ⚠️ `hypeHandleNormalise` est le MIROIR EXACT de la fonction SQL
+   `hype_handle_normalise`. Les deux doivent rester identiques, sinon l app
+   proposera un identifiant que la base refusera — c est exactement le defaut
+   attrape DEUX FOIS en ecrivant la migration (garde plus laxiste que la
+   fonction). La VERITE est celle de la base ; ici on ne fait que predire, pour
+   un apercu et un message d erreur utile. Modifier l une exige de modifier l autre.
+   ═══════════════════════════════════════════════════════════════════════════ */
+var HYPE_HANDLE_DE   = "\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00C8\u00C9\u00CA\u00CB\u00E8\u00E9\u00EA\u00EB\u00CC\u00CD\u00CE\u00CF\u00EC\u00ED\u00EE\u00EF\u00D2\u00D3\u00D4\u00D5\u00D6\u00D8\u00F2\u00F3\u00F4\u00F5\u00F6\u00F8\u00D9\u00DA\u00DB\u00DC\u00F9\u00FA\u00FB\u00FC\u00C7\u00E7\u00D1\u00F1\u00DD\u00FD\u00FF\u0160\u0161\u017D\u017E";
+var HYPE_HANDLE_VERS = "AAAAAAaaaaaaEEEEeeeeIIIIiiiiOOOOOOooooooUUUUuuuuCcNnYyySsZz";
+function hypeHandleNormalise(src) {
+  try {
+    var s = String(src == null ? "" : src);
+    s = s.replace(/\u00C6/g, "AE").replace(/\u00E6/g, "ae")
+         .replace(/\u0152/g, "OE").replace(/\u0153/g, "oe")
+         .replace(/\u00DF/g, "ss");
+    var out = "";
+    for (var i = 0; i < s.length; i++) {
+      var k = HYPE_HANDLE_DE.indexOf(s.charAt(i));
+      out += (k >= 0) ? HYPE_HANDLE_VERS.charAt(k) : s.charAt(i);
+    }
+    s = out.toLowerCase();
+    s = s.replace(/[^a-z0-9._ -]/g, "");
+    s = s.replace(/[ -]+/g, ".");
+    s = s.replace(/([._])[._]+/g, "$1");
+    s = s.replace(/^[._]+/, "").replace(/[._]+$/, "");
+    s = s.replace(/^[^a-z]+/, "");
+    s = s.slice(0, 20).replace(/[._]+$/, "");
+    return (s.length >= 3) ? s : "";
+  } catch (e) { return ""; }
+}
+/* « @ambre », ou chaine vide si le cavalier n a pas encore d identifiant.
+   Accepte un profil entier ou un identifiant nu. */
+function hypeHandleTexte(x) {
+  try {
+    var v = (x && typeof x === "object") ? (x.handle || "") : x;
+    v = String(v == null ? "" : v).trim().replace(/^@+/, "");
+    return v ? ("@" + v) : "";
+  } catch (e) { return ""; }
+}
+try {
+  if (typeof window !== "undefined") {
+    window.hypeHandleNormalise = hypeHandleNormalise;
+    window.hypeHandleTexte = hypeHandleTexte;
+  }
+} catch (eHH) { }
+
 function vignetteHype(u, largeur, hauteur) {
   try {
     var s0 = String(u || "");
@@ -18779,7 +18840,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19bf"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19bg"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -20237,7 +20298,7 @@ function EcranCommunaute() {
     var surPlace = CAVALIERS.filter(function(c){ return c.surPlace; });
     function ouvrirProfilPublic(cav){
       try { if (typeof window !== "undefined") {
-        window.__cavalierPublic = { id: (cav.id || cav.user_id || null), pseudo: cav.pseudo, photo: (typeof avSrc === "function" ? avSrc(cav.avatar_url) : null) || null, ecurie: cav.ecurie || "", club: (cav.club || cav.ecurie || ""), ville: cav.ville || "" };
+        window.__cavalierPublic = { id: (cav.id || cav.user_id || null), pseudo: cav.pseudo, handle: cav.handle || "", photo: (typeof avSrc === "function" ? avSrc(cav.avatar_url) : null) || null, ecurie: cav.ecurie || "", club: (cav.club || cav.ecurie || ""), ville: cav.ville || "" };
         window.__cavalierOuvert = "__public";
       } } catch(e){}
       setEcran("cavalier");
@@ -25270,7 +25331,16 @@ function EcranMonCavalier() {
        remettre ailleurs. */
     h("div", { style: { padding: "12px 18px 14px", margin: "0 16px" } },
         h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 } },
-          h("div", { style: { display: "flex", alignItems: "center", gap: 8, minWidth: 0 } },
+          h("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-start", minWidth: 0, flex: 1 } },
+            /* 17/08 (etape 2a) — LE GROUPE DU NOM EST UNE COLONNE.
+               C etait une RANGEE (nom + crayon cote a cote). L identifiant doit
+               aller DESSOUS : pose en troisieme enfant de la rangee exterieure,
+               qui est en `space-between`, il s affichait A COTE du nom, entre lui
+               et les ronds. Faute commise puis attrapee avant livraison.
+               Le nom et son crayon gardent donc leur propre rangee, et la colonne
+               les empile avec l identifiant. `flex: 1` + `minWidth: 0` conservent
+               la coupe du nom trop long par des points de suspension. */
+            h("div", { style: { display: "flex", alignItems: "center", gap: 8, minWidth: 0, maxWidth: "100%" } },
             /* 17/08 (demande de Blandine, capture de 19 h 17 : « reduis encore
                tout ca, la taille de mon nom ainsi que l ecriture et de l encart
                du mur des songes »). Nom 26 -> 21, interlettrage 1 -> 0.8,
@@ -25278,6 +25348,19 @@ function EcranMonCavalier() {
                de la carte resserre (16/18 -> 12/14). */
             h("div", { style: { fontFamily: C, fontSize: 21, fontWeight: 700, letterSpacing: 0.8, color: "#F4F6F7", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, prenom),
             (!__estVisite) ? h("button", { onClick: function (ePs) { if (ePs && ePs.stopPropagation) ePs.stopPropagation(); setPseudoLocal((profil.prenom || profil.pseudo || "").trim()); setEditPseudo(true); }, "aria-label": "Modifier mon pseudo", style: { flexShrink: 0, width: 22, height: 22, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.18)", color: "#EDF2F5", fontSize: 10, cursor: "pointer" } }, "\u270E") : null),
+            /* 17/08 (etape 2a) — L IDENTIFIANT, SOUS LE NOM.
+               Petit et peu contraste, jamais a la taille du nom : la decision de
+               Blandine est de l afficher partout, la Design Bible impose que le
+               nom reste le sujet et l identifiant une simple adresse.
+               ⚠️ NE S AFFICHE QUE S IL EXISTE : tant que le SQL n est pas passe,
+               ou sur un profil visite charge sans la colonne, la ligne n existe
+               pas. Aucun trou, aucun « @undefined ». */
+            (function () {
+              var srcH = __estVisite ? (__visitePub || profil) : (profRecit || profil);
+              var txtH = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(srcH) : "";
+              if (!txtH) return null;
+              return h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 500, color: "rgba(234,242,244,0.42)", letterSpacing: "0.02em", marginTop: 3 } }, txtH);
+            })()),
           h("div", { style: { display: "flex", gap: 6, flexShrink: 0 } },
             /* ══════════════════════════════════════════════════════════════
                16/08 (feu vert de Blandine) — LES QUATRE RONDS RENTRENT SOUS UN
@@ -26672,6 +26755,18 @@ function EncartCavaliersSpectral(props) {
       o.surX ? h("button", { onClick: o.surX, "aria-label": "Retirer", style: { position: "absolute", top: 5, right: 5, width: 20, height: 20, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(7,10,13,0.85)", color: "#C7D0D6", fontSize: 11, lineHeight: "18px", padding: 0, cursor: "pointer" } }, "\u00d7") : null,
       o.surPlus ? h("button", { onClick: o.surPlus, "aria-label": "Suivre", style: { position: "absolute", top: 5, right: 5, width: 20, height: 20, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.6)", background: "linear-gradient(135deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, lineHeight: "18px", padding: 0, cursor: "pointer" } }, "+") : null,
       h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: cpt ? 11 : 12, fontWeight: 600, color: "#F4F7FA", marginTop: cpt ? 6 : 8, letterSpacing: "0.03em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, o.nom || "Cavalier"),
+      /* 17/08 (etape 2a) — L IDENTIFIANT DANS TOUTES LES LISTES DE CAVALIERS.
+         `EncartCavaliersSpectral` est appele SIX fois (Communaute, Club, Ecurie,
+         accueil...) : cette seule modification couvre les six. C est le dividende
+         de la regle de non-duplication — six copies auraient demande six
+         modifications, et au troisieme oubli une page divergerait.
+         ⚠️ Plus petit et moins contraste que le nom ; rien ne s affiche si l
+         identifiant est absent. */
+      (function () {
+        var tiH = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(o.handle || "") : "";
+        if (!tiH) return null;
+        return h("div", { style: { fontSize: cpt ? 8.5 : 9.5, fontWeight: 500, color: "rgba(234,242,244,0.34)", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, tiH);
+      })(),
       o.sousTitre ? h("div", { style: { fontSize: 8, letterSpacing: "0.16em", textTransform: "uppercase", color: "#5FE9F0", fontWeight: 700, marginTop: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, o.sousTitre) : null,
       o.galop ? h("div", { style: { width: 26, height: 1, background: "rgba(234,242,244,0.18)", margin: "7px auto 6px" } }) : null,
       o.galop ? h("div", { style: { fontSize: 10, color: "rgba(234,242,244,0.82)", fontWeight: 500 } }, o.galop) : null,
@@ -26688,6 +26783,7 @@ function EncartCavaliersSpectral(props) {
       photo: p.avatar_url || avaDefPour(p, i),
       initiale: iniE,
       nom: p.pseudo || "Cavalier",
+      handle: p.handle || "",
       sousTitre: p.ville || "",
       galop: p.galop ? ("Galop " + p.galop) : "",
       or: estOr,
@@ -26707,6 +26803,7 @@ function EncartCavaliersSpectral(props) {
       photo: p.avatar_url || avaDefPour(p, "s" + i),
       initiale: iniS,
       nom: p.pseudo || "Cavalier",
+      handle: p.handle || "",
       sousTitre: p.ville || "",
       mention: T("Sugg\u00e9r\u00e9", "Suggested", "Sugerido", "Suggerito", "\u63d0\u6848"),
       surPlus: props.onSuivre ? function (eP) { if (eP && eP.stopPropagation) eP.stopPropagation(); props.onSuivre(p, eP); } : null

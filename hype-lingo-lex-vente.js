@@ -55,6 +55,106 @@ window.HYPE_LINGO_LEX.vente = {
      traduction. Renomme `prix-achat`, et precise en meme temps.
      ⚠️ Trouve par le controle automatique des `ref` partages, pas a l'oeil. */
 
+  /* ================================================================
+     SEPT ENTRÉES AJOUTÉES le 17/08/2026, en fusion avec le lexique
+     fourni par Blandine pour VÉRONE.
+     Le fichier avait déjà le meilleur — le prix demandé, le marchand,
+     l'essai, la visite d'achat, la radiographie, négocier, le contrat,
+     la garantie et surtout LE VICE CACHÉ, qui est le mot juridique.
+     Il lui manquait les verbes et les personnes : vendre, acheter, qui
+     vend, qui achète.
+
+     🟥 LA PROGRESSION DU CHAPITRE, posée par elle :
+     **VOIR L'ANNONCE → VOIR LE CHEVAL → L'ESSAYER → VÉRIFIER LES
+     PAPIERS → VETTING → NÉGOCIER → ACHETER → TRANSPORT**
+     ⚠️ C'est l'ordre réel d'un achat, et il ne se saute pas : essayer
+     avant de voir monté, ou payer avant la visite, sont les deux
+     erreurs qui coûtent cher.
+
+     🟥 LA NOTION CENTRALE : **TRY** SE DÉCOMPOSE EN TROIS TEMPS.
+       *Can I see him ridden first?*  → le voir monté par quelqu'un
+       *Can I try him?*               → l'essayer
+       *Can I ride him myself?*       → le monter soi-même
+     ⚠️ Un vendeur qui refuse le premier temps est un signal.
+     ================================================================ */
+
+  { ref:"a-vendre", lecon:1, coll:"vente",
+    mots:{ fr:{m:"à vendre"}, en:{m:"for sale", p:"for séïl"},
+           es:{m:"en venta"}, it:{m:"in vendita"},
+           de:{m:"zu verkaufen", p:"tsou feur-kaou-feune"}, ja:{m:"売り出し中", p:"uridashichū"} },
+    def:{ fr:"⚠️ LA PREMIÈRE QUESTION, et elle n'est jamais impolie : dans une foire comme Vérone, demander si un cheval est à vendre fait partie de l'usage. 🟥 En anglais **for sale** s'oppose à *on loan* — en prêt — et à *for lease*, en location : trois façons d'avoir un cheval sans l'acheter, très courantes en Grande-Bretagne et inconnues ailleurs.",
+          en:"The first question, and never rude: at a fair like Verona, asking whether a horse is for sale is simply how it's done. « For sale » contrasts with « on loan » and « for lease » — three ways of having a horse without buying it, very common in Britain.",
+          es:"La primera pregunta, y nunca es descortés: en una feria como Verona, preguntar si un caballo está en venta forma parte del uso.",
+          it:"La prima domanda, e non è mai scortese: in una fiera come Verona, chiedere se un cavallo è in vendita fa parte dell'uso.",
+          de:"Die erste Frage, und nie unhöflich: auf einer Messe wie Verona gehört es dazu, zu fragen, ob ein Pferd zu verkaufen ist.",
+          ja:"最初に尋ねる質問で、失礼にはあたりません。ヴェローナのような見本市では、売り物かどうか聞くのは当然のことです。英語の for sale は on loan（貸与）や for lease（リース）と対になります。買わずに馬を持つ三つの方法で、イギリスではごく一般的です。" } },
+
+  { ref:"acheter-vendre", lecon:1, coll:"vente", v:true,
+    mots:{ fr:{m:"acheter", var:"vendre"}, en:{m:"to buy", p:"baï", var:"to sell"},
+           es:{m:"comprar", var:"vender"}, it:{m:"comprare", var:"vendere"},
+           de:{m:"kaufen", p:"kaou-feune", var:"verkaufen"}, ja:{m:"買う", p:"kau", var:"売る"} },
+    def:{ fr:"⚠️ EN ALLEMAND, **KAUFEN** ET **VERKAUFEN** NE DIFFÈRENT QUE D'UN PRÉFIXE — *ver-* renverse le sens. C'est un piège d'écoute réel : dans une phrase rapide, on entend le verbe et pas la particule. 🟥 Et l'anglais *to sell* a un passé irrégulier qu'on emploie tout le temps ici : *sold* — le mot qu'on voit affiché sur un box à la fin d'une foire.",
+          en:"In German « kaufen » and « verkaufen » differ by one prefix, which reverses the meaning — a real listening trap. And « to sell » has the irregular past used constantly here: SOLD, the word you see on a stable door at the end of a fair.",
+          es:"En alemán « kaufen » y « verkaufen » solo se distinguen por un prefijo que invierte el sentido. Una trampa real al oído.",
+          it:"In tedesco « kaufen » e « verkaufen » differiscono di un prefisso che rovescia il senso. Una vera trappola all'ascolto.",
+          de:"Kaufen und verkaufen unterscheiden sich nur durch die Vorsilbe, die den Sinn umkehrt — eine echte Hörfalle für Lernende.",
+          ja:"ドイツ語の kaufen（買う）と verkaufen（売る）は接頭辞ひとつの違いで意味が逆になります。速く話されると聞き分けにくい、本当の落とし穴です。英語の sell の過去分詞 sold は、見本市の最後に馬房の扉に貼られる語です。" } },
+
+  { ref:"acheteur-vendeur", lecon:1, coll:"vente",
+    mots:{ fr:{m:"l'acheteur", var:"le vendeur"}, en:{m:"the buyer", p:"baï-eur", var:"the seller"},
+           es:{m:"el comprador", var:"el vendedor"}, it:{m:"il compratore", var:"il venditore"},
+           de:{m:"der Käufer", p:"koï-feur", var:"der Verkäufer"}, ja:{m:"買い手", p:"kaite", var:"売り手"} },
+    def:{ fr:"🟥 UN TROISIÈME PERSONNAGE EXISTE, et il n'est ni l'un ni l'autre : **le marchand** (voir `marchand`), qui achète pour revendre. ⚠️ En anglais, distinguer *a private seller* d'*a dealer* est important : le premier vend son propre cheval et le connaît, le second en vend cent par an. Ni l'un ni l'autre n'est meilleur — mais on ne pose pas les mêmes questions.",
+          en:"There's a third figure who is neither: the dealer, who buys to sell on. Telling « a private seller » from « a dealer » matters: the first sells their own horse and knows it, the second sells a hundred a year. Neither is better — but you don't ask them the same questions.",
+          es:"Existe un tercer personaje: el tratante, que compra para revender. Distinguir un particular de un tratante es importante.",
+          it:"Esiste un terzo personaggio: il commerciante, che compra per rivendere. Distinguere un privato da un commerciante è importante.",
+          de:"Es gibt eine dritte Figur: den Händler, der kauft, um weiterzuverkaufen. Privatverkäufer und Händler zu unterscheiden ist wichtig.",
+          ja:"第三の登場人物がいます。転売のために買う「馬商」です。英語では private seller（個人）と dealer（業者）を区別することが重要です。前者は自分の馬を売り、その馬をよく知っています。後者は年に百頭を扱います。どちらが良いということはありませんが、尋ねる質問は変わります。" } },
+
+  { ref:"negociable", lecon:1, coll:"vente",
+    mots:{ fr:{m:"négociable"}, en:{m:"negotiable", p:"ni-gô-chi-a-beul"},
+           es:{m:"negociable"}, it:{m:"trattabile"},
+           de:{m:"verhandelbar", p:"feur-hann-deul-bar"}, ja:{m:"応相談", p:"ōsōdan"} },
+    def:{ fr:"⚠️ TROIS FAÇONS DE POSER LA QUESTION EN ANGLAIS, de la plus directe à la plus élégante : *is the price negotiable?* · *is there any room on the price?* — « y a-t-il de la marge ? » — et *what's your best price?* 🟥 La formule des annonces britanniques est **ONO**, pour *or nearest offer* : le prix affiché n'est qu'un point de départ.",
+          en:"Three ways to ask, from the bluntest to the smoothest: is the price negotiable? · is there any room on the price? · what's your best price? British adverts say ONO — or nearest offer — meaning the price is only a starting point.",
+          es:"Tres formas de preguntarlo en inglés. Los anuncios británicos usan « ONO », or nearest offer: el precio es solo un punto de partida.",
+          it:"Tre modi di chiederlo in inglese. Gli annunci britannici usano « ONO », or nearest offer: il prezzo è solo un punto di partenza.",
+          de:"Drei Arten zu fragen. Britische Anzeigen schreiben « ONO » — or nearest offer: der Preis ist nur ein Ausgangspunkt.",
+          ja:"英語には三つの尋ね方があります。直接的な is the price negotiable? から、is there any room on the price?（値引きの余地はありますか）、what's your best price? まで。イギリスの広告にある ONO は or nearest offer の略で、表示価格は出発点にすぎないという意味です。" } },
+
+  { ref:"resultats-competition", lecon:1, coll:"vente",
+    mots:{ fr:{m:"les résultats en compétition"}, en:{m:"the competition record", p:"rè-korde"},
+           es:{m:"el historial de competición"}, it:{m:"i risultati in gara"},
+           de:{m:"die Turnierbilanz", p:"tour-nir-bi-lantss"}, ja:{m:"競技成績", p:"kyōgi seiseki"} },
+    def:{ fr:"⚠️ EN ANGLAIS **RECORD** AU SINGULIER, jamais « records » : *his competition record* est l'ensemble de son palmarès, pas une liste de records. 🟥 Et il se vérifie : les fédérations publient les résultats en ligne. Un cheval annoncé à 1,40 m dont on ne trouve aucun classement à cette hauteur n'y a peut-être jamais tourné.",
+          en:"« Record » in the singular, never « records »: his competition record is his whole history, not a list of records. And it can be checked: federations publish results online. A horse advertised at 1.40 with no placings at that height may never have jumped it.",
+          es:"En inglés « record » va en singular. Y se puede comprobar: las federaciones publican los resultados en línea.",
+          it:"In inglese « record » è al singolare. E si può verificare: le federazioni pubblicano i risultati online.",
+          de:"Englisch « record » im Singular. Und es lässt sich prüfen: die Verbände veröffentlichen Ergebnisse online.",
+          ja:"英語では record は単数形で使い、複数形にはしません。「これまでの競技歴」全体を指します。そして確認できます。連盟が結果をネットで公開しているからです。一メートル四十と宣伝されていても、その高さの成績が見つからない馬は、飛んだことがないのかもしれません。" } },
+
+  { ref:"pedigree", lecon:1, coll:"vente",
+    mots:{ fr:{m:"le pedigree"}, en:{m:"the pedigree", p:"pè-di-grii"},
+           es:{m:"el pedigrí"}, it:{m:"il pedigree"},
+           de:{m:"die Abstammung", p:"app-chta-moung"}, ja:{m:"血統", p:"kettō"} },
+    def:{ fr:"⚠️ LE MOT VIENT DU FRANÇAIS **« PIED DE GRUE »** — les trois traits d'une patte d'oiseau que les généalogistes médiévaux dessinaient pour marquer une filiation. Passé en anglais, il nous est revenu méconnaissable. 🟥 L'allemand ne l'a pas emprunté : il dit *die Abstammung*, « la descendance », mot allemand ordinaire.",
+          en:"The word comes from French « pied de grue », crane's foot — the three strokes medieval genealogists drew to mark descent. It passed into English and came back unrecognisable. German didn't borrow it: it says Abstammung.",
+          es:"La palabra viene del francés « pied de grue », pata de grulla: los tres trazos que los genealogistas medievales dibujaban para marcar una filiación.",
+          it:"La parola viene dal francese « pied de grue », zampa di gru: i tre tratti che i genealogisti medievali disegnavano per segnare una discendenza.",
+          de:"Das Wort kommt vom französischen « pied de grue », Kranichfuß — die drei Striche, die mittelalterliche Genealogen für die Abstammung zeichneten. Deutsch hat es nicht übernommen.",
+          ja:"この語はフランス語の pied de grue（鶴の足）に由来します。中世の系譜学者が血筋を示すために描いた三本の線のことです。英語に入り、原形をとどめない形でフランス語に戻ってきました。ドイツ語は借用せず、Abstammung と言います。" } },
+
+  { ref:"reserver-cheval", lecon:1, coll:"vente", v:true,
+    mots:{ fr:{m:"réserver un cheval"}, en:{m:"to hold a horse", p:"hôlde", var:"to reserve"},
+           es:{m:"reservar un caballo"}, it:{m:"riservare un cavallo"},
+           de:{m:"ein Pferd reservieren", p:"ré-zèr-vii-reune"}, ja:{m:"馬を仮押さえする", p:"uma o karioae suru"} },
+    def:{ fr:"🟥 PIÈGE : EN ANGLAIS ON DIT **TO HOLD**, pas *to reserve* — *can you hold him until tomorrow?* Le verbe *to reserve* s'emploie pour une table ou une chambre, pas pour un cheval. ⚠️ Une réservation n'engage à rien tant qu'aucun acompte n'est versé : un vendeur peut vendre à quelqu'un d'autre le lendemain, et il en a le droit.",
+          en:"A trap: say « to hold », not « to reserve » — can you hold him until tomorrow? « Reserve » is for a table or a room, not a horse. And a hold binds no one until a deposit is paid: the seller may sell to someone else tomorrow, and is entitled to.",
+          es:"En inglés se dice « to hold », no « to reserve ». Y una reserva no compromete a nada mientras no haya señal.",
+          it:"In inglese si dice « to hold », non « to reserve ». E una riserva non impegna finché non c'è una caparra.",
+          de:"Im Englischen sagt man « to hold », nicht « to reserve ». Und eine Reservierung bindet niemanden, solange keine Anzahlung geleistet ist.",
+          ja:"落とし穴。英語では to reserve ではなく to hold と言います。reserve は席や部屋に使う語で、馬には使いません。そして手付金を払うまで仮押さえに拘束力はなく、翌日ほかの人に売られても文句は言えません。" } },
+
   { ref:"prix-achat", lecon:1, coll:"vente",
     mots:{ fr:{m:"le prix demandé"}, en:{m:"the asking price", p:"ass-king praïss"},
            es:{m:"el precio pedido"}, it:{m:"il prezzo richiesto"},
@@ -231,5 +331,204 @@ window.HYPE_LINGO_LEX.vente = {
       de:"Darf ich seinen Pass sehen ?",
       ja:"パスポート を 見 て も いい です か ?" }
 
-  ]
+  ],
+
+  /* ==================================================================
+     LE DIALOGUE DE VÉRONE — 17 août 2026, session 214.
+
+     LA SCÈNE : Fieracavalli, la foire aux chevaux de Vérone — l'une des
+     plus anciennes d'Europe, née en 1898. Un cheval est à vendre, on le
+     regarde, on l'essaie, on négocie. 18 phrases, 6 temps.
+
+     🟥 LES DIX-HUIT PHRASES SONT DE BLANDINE, avec leur traduction
+     anglaise et le lexique qui va avec.
+
+     🟥 LA PROGRESSION QU'ELLE A POSÉE, et qui structure les temps :
+     **VOIR L'ANNONCE → VOIR LE CHEVAL → L'ESSAYER → VÉRIFIER LES
+     PAPIERS → VETTING → NÉGOCIER → ACHETER → TRANSPORT**
+     ⚠️ CET ORDRE NE SE SAUTE PAS. Essayer avant d'avoir vu le cheval
+     monté, ou payer avant la visite vétérinaire, sont les deux erreurs
+     qui coûtent cher. NE PAS réordonner les temps.
+
+     🟥 LA NOTION CENTRALE : **TRY SE DÉCOMPOSE EN TROIS TEMPS.**
+       *Can I see him ridden first?*  → le voir monté par quelqu'un
+       *Can I try him?*               → l'essayer
+       *Can I ride him myself?*       → le monter soi-même
+     Le dialogue les enchaîne au temps 3. ⚠️ Un vendeur qui refuse le
+     premier temps est un signal — on ne monte pas un cheval inconnu
+     qu'on n'a pas vu bouger.
+
+     🟥 SECONDE NOTION : **LE VETTING.** En anglais britannique la visite
+     d'achat se dit *a vetting*, et le verbe *to vet* existe :
+       *has he been vetted recently?*  → a-t-il eu une visite ?
+       *he passed the vetting*         → il l'a passée
+       *he failed the vetting*         → elle a révélé un problème
+     ⚠️ « Failed » ne veut pas dire que le cheval est malade : il veut
+     dire qu'il n'est pas apte À CET USAGE-LÀ. Un cheval recalé pour du
+     1,40 m peut être parfait en promenade.
+
+     ⚠️ CE CHAPITRE EST LE SEUL OÙ L'ON RISQUE DE L'ARGENT. D'où le ton :
+     presque toutes les phrases sont des QUESTIONS, et les rares
+     affirmations sont des réserves — « nous devons encore réfléchir »,
+     « si la visite est bonne ». On n'achète pas un cheval en une phrase.
+
+     `dit` : "joueuse" = elle produit · "club" = le vendeur.
+  ================================================================== */
+  dialogue: {
+    ville: "verone", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 18 phrases */
+
+    phrases: [
+
+      /* ---- temps 1 · l'annonce ---- */
+      { ref:"dvr-a-vendre", temps:1, dit:"joueuse", mots:["a-vendre"],
+        fr:"Ce cheval est-il à vendre ?",
+        en:"Is this horse for sale?",
+        es:"¿Está en venta este caballo?",
+        it:"Questo cavallo è in vendita?",
+        de:"Ist dieses Pferd zu verkaufen?",
+        ja:"この 馬 は 売り物 です か ?" },
+
+      { ref:"dvr-quel-prix", temps:1, dit:"joueuse", mots:["prix-achat"],
+        fr:"Quel est son prix ?",
+        en:"How much is he?",
+        es:"¿Cuánto cuesta?",
+        it:"Quanto costa?",
+        de:"Was kostet er?",
+        ja:"いくら です か ?" },
+
+      { ref:"dvr-negociable", temps:1, dit:"joueuse", mots:["negociable","negocier"],
+        fr:"Le prix est-il négociable ?",
+        en:"Is the price negotiable?",
+        es:"¿Es negociable el precio?",
+        it:"Il prezzo è trattabile?",
+        de:"Ist der Preis verhandelbar?",
+        ja:"価格 は 応相談 です か ?" },
+
+      { ref:"dvr-depuis-combien", temps:1, dit:"joueuse", mots:["a-vendre","marchand"],
+        fr:"Depuis combien de temps est-il à vendre ?",
+        en:"How long has he been for sale?",
+        es:"¿Cuánto tiempo lleva en venta?",
+        it:"Da quanto tempo è in vendita?",
+        de:"Wie lange steht er schon zum Verkauf?",
+        ja:"どの くらい 前 から 売り に 出 て い ます か ?" },
+
+      /* ---- temps 2 · son passé ---- */
+      { ref:"dvr-quel-niveau", temps:2, dit:"joueuse", mots:["resultats-competition"],
+        fr:"Quel niveau a-t-il en compétition ?",
+        en:"What level has he competed at?",
+        es:"¿A qué nivel ha competido?",
+        it:"A che livello ha gareggiato?",
+        de:"Auf welchem Niveau ist er gegangen?",
+        ja:"競技 で は どの 水準 まで 出 て い ます か ?" },
+
+      { ref:"dvr-saute-130", temps:2, dit:"joueuse", mots:["resultats-competition"],
+        fr:"A-t-il déjà sauté des épreuves à 1,30 m ?",
+        en:"Has he already competed in 1.30-metre classes?",
+        es:"¿Ha saltado ya pruebas de 1,30 m?",
+        it:"Ha già gareggiato in prove di 1,30 m?",
+        de:"Ist er schon 1,30-m-Prüfungen gegangen?",
+        ja:"一メートル 三十 の 競技 に 出 た こと は あり ます か ?" },
+
+      { ref:"dvr-voir-resultats", temps:2, dit:"joueuse", mots:["resultats-competition"],
+        fr:"Puis-je voir ses résultats en compétition ?",
+        en:"Can I see his competition record?",
+        es:"¿Puedo ver su historial de competición?",
+        it:"Posso vedere i suoi risultati in gara?",
+        de:"Kann ich seine Turnierbilanz sehen?",
+        ja:"競技 成績 を 見せ て いただけ ます か ?" },
+
+      { ref:"dvr-pedigree-papiers", temps:2, dit:"joueuse", mots:["pedigree","passeport"],
+        fr:"Puis-je voir son pedigree et ses papiers ?",
+        en:"Can I see his pedigree and papers?",
+        es:"¿Puedo ver su pedigrí y sus papeles?",
+        it:"Posso vedere il suo pedigree e i documenti?",
+        de:"Kann ich seine Abstammung und die Papiere sehen?",
+        ja:"血統 と 書類 を 見せ て いただけ ます か ?" },
+
+      /* ---- temps 3 · le voir, l'essayer ---- */
+      { ref:"dvr-amateur", temps:3, dit:"joueuse", mots:["essai"],
+        fr:"Est-il facile à monter pour un cavalier amateur ?",
+        en:"Is he suitable for an amateur rider?",
+        es:"¿Es adecuado para un jinete amateur?",
+        it:"È adatto a un cavaliere amatore?",
+        de:"Ist er für einen Amateurreiter geeignet?",
+        ja:"アマチュア の 騎手 に も 扱い やすい です か ?" },
+
+      /* 🟥 Les trois temps du « try », dans l'ordre. */
+      { ref:"dvr-voir-monte", temps:3, dit:"joueuse", mots:["essai"],
+        fr:"Puis-je le voir monté avant de l'essayer ?",
+        en:"Can I see him ridden before I try him?",
+        es:"¿Puedo verlo montado antes de probarlo?",
+        it:"Posso vederlo montato prima di provarlo?",
+        de:"Kann ich ihn geritten sehen, bevor ich ihn probiere?",
+        ja:"試乗 する 前 に、 誰か が 乗っ て いる ところ を 見 られ ます か ?" },
+
+      { ref:"dvr-essayer-aujourdhui", temps:3, dit:"joueuse", mots:["essai"],
+        fr:"Est-ce que je peux l'essayer aujourd'hui ?",
+        en:"Can I try him today?",
+        es:"¿Puedo probarlo hoy?",
+        it:"Posso provarlo oggi?",
+        de:"Kann ich ihn heute probieren?",
+        ja:"今日 試乗 でき ます か ?" },
+
+      /* ---- temps 4 · la santé et le vetting ---- */
+      { ref:"dvr-sain-a-jour", temps:4, dit:"joueuse", mots:["visite-achat","passeport"],
+        fr:"Est-il sain et à jour dans ses soins vétérinaires ?",
+        en:"Is he sound and up to date with his veterinary care?",
+        es:"¿Está sano y al día con sus cuidados veterinarios?",
+        it:"È sano e in regola con le cure veterinarie?",
+        de:"Ist er gesund und tierärztlich auf dem Stand?",
+        ja:"健康 で、 獣医 の 処置 は 最新 です か ?" },
+
+      { ref:"dvr-radios-recentes", temps:4, dit:"joueuse", mots:["radiographie"],
+        fr:"Des radios récentes sont-elles disponibles ?",
+        en:"Are recent X-rays available?",
+        es:"¿Hay radiografías recientes disponibles?",
+        it:"Sono disponibili radiografie recenti?",
+        de:"Gibt es aktuelle Röntgenbilder?",
+        ja:"最近 の レントゲン は あり ます か ?" },
+
+      { ref:"dvr-visite-avant-achat", temps:4, dit:"joueuse", mots:["visite-achat","acheter-vendre"],
+        fr:"Je voudrais faire une visite vétérinaire avant de l'acheter.",
+        en:"I'd like to have a pre-purchase examination before buying him.",
+        es:"Quisiera hacer una revisión veterinaria de compra antes de adquirirlo.",
+        it:"Vorrei fare una visita veterinaria d'acquisto prima di comprarlo.",
+        de:"Ich möchte vor dem Kauf eine Ankaufsuntersuchung machen lassen.",
+        ja:"購入 の 前 に、 獣医 の 検査 を 受け さ せ たい です。" },
+
+      /* ---- temps 5 · négocier ---- */
+      { ref:"dvr-reflechir-prix", temps:5, dit:"joueuse", mots:["negocier","budget"],
+        fr:"Nous sommes intéressés, mais nous devons encore réfléchir au prix.",
+        en:"We're interested, but we still need to think about the price.",
+        es:"Estamos interesados, pero aún tenemos que pensar en el precio.",
+        it:"Siamo interessati, ma dobbiamo ancora riflettere sul prezzo.",
+        de:"Wir sind interessiert, müssen aber noch über den Preis nachdenken.",
+        ja:"関心 は あり ます が、 価格 に ついて は もう 少し 考え たい です。" },
+
+      { ref:"dvr-reserver-demain", temps:5, dit:"joueuse", mots:["reserver-cheval"],
+        fr:"Pouvez-vous réserver le cheval jusqu'à demain ?",
+        en:"Can you hold the horse until tomorrow?",
+        es:"¿Puede reservarme el caballo hasta mañana?",
+        it:"Può tenermi il cavallo fino a domani?",
+        de:"Können Sie das Pferd bis morgen zurückhalten?",
+        ja:"明日 まで この 馬 を 押さえ て いただけ ます か ?" },
+
+      /* ---- temps 6 · conclure ---- */
+      { ref:"dvr-transport-compris", temps:6, dit:"joueuse", mots:["prix-achat","contrat"],
+        fr:"Le transport est-il compris dans le prix ?",
+        en:"Is transport included in the price?",
+        es:"¿El transporte está incluido en el precio?",
+        it:"Il trasporto è compreso nel prezzo?",
+        de:"Ist der Transport im Preis enthalten?",
+        ja:"輸送費 は 価格 に 含ま れ て い ます か ?" },
+
+      { ref:"dvr-si-visite-bonne", temps:6, dit:"joueuse", mots:["visite-achat","contrat","acheter-vendre"],
+        fr:"Si la visite vétérinaire est bonne, nous finaliserons l'achat.",
+        en:"If the vetting goes well, we'll complete the purchase.",
+        es:"Si la revisión veterinaria sale bien, cerraremos la compra.",
+        it:"Se la visita veterinaria va bene, concluderemo l'acquisto.",
+        de:"Wenn die Ankaufsuntersuchung gut ausfällt, schließen wir den Kauf ab.",
+        ja:"獣医 検査 に 問題 が なけれ ば、 購入 を 決め ます。" }
+    ]
+  }
 };

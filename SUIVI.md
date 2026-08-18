@@ -35,7 +35,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 BIS · 17/08 · LES DEUX FIGEAGES DE STORY, L'À LA UNE, PUIS LA PAGE CAVALIER RESSERRÉE) — md5 `b5097956b193f3e8103c14bdfcdced5d`, 9 145 010 octets.
+**Version actuelle de l'index.html : 17/08/2026 (SESSION 138 BIS · 17/08 · STORIES, À LA UNE, PAGE CAVALIER, PUIS LES IDENTIFIANTS UNIQUES ÉTAPE 2a) — md5 `a0bcf61973f3c64ae5a5892614e50311`, 9 151 248 octets. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bg, md5 `4b7570d20afc39ce329ac93b4fa91526`, 388 627 octets, `?v=19bg`.** **SQL DÉJÀ PASSÉ le 17/08 à 21 h 11** (`identifiants-uniques.sql`) — ne pas le repasser, il est idempotent mais inutile.
+
+⚠️ **ETATS PERIMES DU SOIR :** index `b5097956…` (avant l'étape 2a) ; stories `bedd52ae…` (19bf).
 
 ⚠️ **ETAT PERIME :** index `237cad0b…` (meme session, avant la retouche de taille). `hype-stories.js` v19bf est INCHANGE et reste le compagnon. **COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bf, md5 `bedd52aece21d4417ce0b9be7f906248`, 386 779 octets, `?v=19bf`.** **IMAGE A LA RACINE, TOUJOURS REQUISE : `Hype_mur_immersif_encarts_transparents.png`.** Aucun SQL. Aucune image nouvelle. Temoin : `reprise 1.8 · baby 112 · memo 4 · stories 19bf`.**
 

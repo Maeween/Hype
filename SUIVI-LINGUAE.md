@@ -1,3 +1,81 @@
+# 📍 OÙ EN SONT LES DIALOGUES — 17/08/2026 au soir
+
+**27 villes sur 33 · 593 phrases en six langues · aucun trou de langue.**
+
+| ville | phrases | fichier |
+|---|---|---|
+| La Baule | 25 | `arrivee` — **refondue le 17/08** |
+| Le Morne | 23 | `balade` |
+| Connemara | 22 | `cheval` |
+| Newmarket | 21 | `ecurie` |
+| Lambourn | 20 | `pansage` |
+| Walsall | 20 | `materiel` |
+| Aberystwyth | 24 | `cours` |
+| Windsor | 21 | `dressage` · clé `dialogue` |
+| Wellington | 24 | `obstacle` |
+| Hickstead | 22 | `derby` |
+| **Burghley** | 21 | `cross` |
+| **Badminton** | 27 | `concours` · clé `dialogue` |
+| Kildare | 22 | `urgences-vet` |
+| Édimbourg | 21 | `urgences-med` |
+| Versailles | 26 | `dressage` · clé `dialogueVersailles` |
+| Saumur | 25 | `enseignant` |
+| **Rome** | 21 | `concours` · clé `dialogueRome` |
+| Golegã | — | `elevage` · fait dans l'autre conversation |
+| Lexington | 18 | `haras` · fait dans l'autre conversation |
+| **Lamotte-Beuvron** | 26 | `poney` |
+| **Dubaï** | 22 | `endurance` |
+| **Tokyo** | 20 | `tradition` |
+| **Santa Ynez** | 20 | `horsemanship` |
+| **Warendorf** | 20 | `formation` — **FICHIER NEUF** |
+| **Buenos Aires** | 20 | `polo` |
+| **Spruce Meadows** | 22 | `froid` |
+
+## 🎯 IL RESTE SIX VILLES
+
+| ville | chapitre | fichier · leçon |
+|---|---|---|
+| **Jerez** | Le cheval | `cheval` · 4 |
+| **Séville** | La présentation | `materiel` · 3 |
+| **Vejer** | L'intendance | `ecurie` · 3 |
+| **Oliva Nova** | S'engager | `concours` · 1 |
+| **Vérone** | Le commerce | `vente` · 1 |
+| **Aix-la-Chapelle** | Le grand concours | `obstacle` · 4 |
+| **Tamworth** | Le western | `western` · 1 |
+
+⚠️ **Blandine a DÉJÀ FOURNI les phrases et le lexique** d'**Oliva Nova** (l'engagement, avec le piège *s'engager ≠ to engage* et *une épreuve = a class*) et d'**Aix-la-Chapelle** (les qualificatives, les points cumulés, le seuil de qualification, *we're on the bubble*). **Elles sont dans la conversation du 17/08, non codées.**
+
+---
+
+# 🔧 CE QUI A CHANGÉ LE 17/08 — SEPT VILLES ET UN FICHIER NEUF
+
+**`hype-lingo-lex-formation.js` — FICHIER NEUF pour Warendorf.** Elle utilisait la **leçon 4 de `materiel`** alors que son chapitre s'appelle « La formation » : on lui servait du vocabulaire d'équipement. Décision de Blandine : *« crée formation à Warendorf »*, et *« on fera materiel ailleurs plus tard »* — **la leçon 4 de `materiel` reste donc LIBRE.**
+🟥 Son piège : **SQUAD ≠ TEAM.** Le *squad* est le groupe suivi dans la filière, la *team* les quatre qui partent au championnat. L'allemand dit **der Kader**. NE PAS traduire par « team ».
+
+**LA BAULE REFONDUE** — quatorze phrases retirées, dix-sept des siennes ajoutées. Le chapitre suit maintenant une démarche au lieu d'être un catalogue. 🟥 **Six phrases gardées contre tout** : « je ne suis jamais montée » (l'accord féminin), les deux du *canter*, et surtout **« galoper doucement, sans aller vite » → *a steady canter, not a gallop***, le seul endroit de l'app où le faux ami se vit des deux côtés.
+
+**DUBAÏ et LAMOTTE : aucune phrase écrite.** Les 22 et 26 phrases existaient déjà comme exercices dans leurs fichiers. Il n'y avait qu'à leur donner un temps et un locuteur. ⚠️ Les phrases d'exercice restent en place, inchangées.
+
+**Les pièges de langue ajoutés ce jour**, tous documentés dans les `def` :
+· **Lamotte** — les catégories de taille NE SE TRADUISENT PAS : un poney C n'existe qu'en France, ailleurs on compte en centimètres. Et **« double poney » ne se dit pas en anglais** : *a large pony*.
+· **Tokyo** — **bow** s'écrit pareil pour le salut et pour l'arc, se prononce autrement. Employé quatre fois exprès.
+· **Santa Ynez** — **timing**, **feel** et **release** n'ont pas de traduction française satisfaisante. NE PAS gommer l'écart.
+· **Buenos Aires** — **« a ten-goal player »** ne marque pas dix buts : c'est son handicap. Et **marquer** en français veut dire *to score* ET *to mark*.
+· **Spruce Meadows** — **to warm up ≠ to keep warm.** Un cheval peut avoir très chaud et n'être pas échauffé, et c'est ce qui blesse par temps froid. Plus **blanket** (Canada) contre **rug** (UK), **stall** contre **stable**.
+
+---
+
+# ⚠️ QUESTION EN SUSPENS — LA SEGMENTATION JAPONAISE
+
+Deux découpages coexistent dans le module et **personne n'a tranché** :
+· **Golegã** coupe morphème par morphème : « 属し て い ます 。 »
+· **Lexington, Dubaï et TOUS les dialogues écrits ici** coupent par groupes : « 今日 牧場 を 見学 できます か ? »
+
+L'exercice de remise en ordre n'a donc pas la même difficulté d'une ville à l'autre, et le japonais peut monter jusqu'à **19 jetons** sur une phrase — probablement trop pour un doigt sur un téléphone.
+🟥 **À trancher UNE FOIS, puis unifier.** Cela touche 27 villes déjà écrites. Recommandation de Claude : **par groupes**, parce que 19 jetons ne se manipulent pas.
+
+---
+
 # 🟥🟥🟥 LE SUIVI PART AVEC CHAQUE LIVRAISON DE `lingo.html` 🟥🟥🟥
 ### Posée le 17/08/2026 par Blandine : *« il manque le Linguae, note en obligatoire de le remettre à chaque fois que tu rends le lingo »*.
 

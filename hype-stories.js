@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bf";
+var HYPE_STORIES_VERSION = "19bg";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -3615,8 +3615,32 @@ function ComposeurStory(props) {
                   setMentionRes([]);
                   if (!estTague("cavalier", p.id)) basculerTag("cavalier", p.id, p.pseudo || "");
                 },
-                style: { padding: "8px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: 700, border: "1px solid " + tA(0.6), background: "rgba(32,217,245,0.1)", color: tn, flex: "0 0 auto" }
-              }, "@" + (p.pseudo || "Cavalier"));
+                style: { padding: "8px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: 700, border: "1px solid " + tA(0.6), background: "rgba(32,217,245,0.1)", color: tn, flex: "0 0 auto", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 1, lineHeight: 1.25, textAlign: "left" }
+              },
+                /* ⚠️ 19bg (17/08, etape 2a des identifiants uniques) — LA
+                   PASTILLE PORTE LE NOM *ET* L IDENTIFIANT.
+                   C EST ICI QUE LE PROBLEME DES DOUBLONS MORDAIT LE PLUS FORT.
+                   Mots de Blandine : « il faut qu on prevoie une solution pour
+                   les pseudos, on peut pas avoir 300 Ambre ». Cette pastille
+                   n affichait que `@pseudo` : six cavalieres nommees Ambre
+                   donnaient six pastilles RIGOUREUSEMENT IDENTIQUES, et il
+                   etait impossible de choisir la bonne.
+                   Le nom reste en tete, l identifiant se lit dessous, plus petit.
+                   ⚠️ LE TAG N A PAS CHANGE : il continue de porter `p.id`, donc
+                   l identite a toujours repose sur l identifiant technique, pas
+                   sur le nom. Rien n a jamais pu se melanger en base — c etait
+                   un probleme de RECONNAISSANCE A L ECRAN, et il se traite ici.
+                   ⚠️ `hypeHandleTexte` vient de l index par `window` (regle de
+                   non-duplication). Si le module tourne sans l index, ou si le
+                   SQL n est pas encore passe, la seconde ligne n existe pas et
+                   la pastille redevient exactement celle d avant. */
+                h("span", null, "@" + (p.pseudo || "Cavalier")),
+                (function () {
+                  var f = (typeof window !== "undefined" && window.hypeHandleTexte) ? window.hypeHandleTexte : null;
+                  var tH = f ? f(p.handle || "") : "";
+                  if (!tH) return null;
+                  return h("span", { style: { fontSize: 9.5, fontWeight: 500, color: "rgba(244,247,250,0.45)" } }, tH);
+                })());
             }))
           : null,
 

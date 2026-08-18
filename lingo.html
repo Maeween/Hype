@@ -2740,7 +2740,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-ecurie.js?l=2"></script>
 <script src="hype-lingo-lex-pansage.js?l=3"></script>
 <script src="hype-lingo-lex-cheval.js?l=4"></script>
-<script src="hype-lingo-lex-materiel.js?l=4"></script>
+<script src="hype-lingo-lex-materiel.js?l=5"></script>
 <!-- 🟥 17/08 : FICHIER NEUF POUR WARENDORF. Elle utilisait la LEÇON 4 de
      `materiel` alors que son chapitre s'appelle « La formation » — on lui
      servait du vocabulaire d'équipement. Décision de Blandine : « crée
@@ -2748,6 +2748,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      la leçon 4 de `materiel` reste donc LIBRE pour une autre ville.
      ⚠️ NE PAS rebrancher Warendorf sur `materiel`. -->
 <script src="hype-lingo-lex-formation.js?l=1"></script>
+<!-- 🟥 17/08 : FICHIER NEUF POUR SÉVILLE. Elle pointait sur `materiel` 3
+     (la tenue : bombe, gilet airbag, éperons), que VEJER a reçue le même
+     jour ; elle est restée quelques minutes sur `materiel` 2 (le filet,
+     le mors) à titre provisoire, ce qui ne disait rien d'elle.
+     Séville, c'est la FERIA DE ABRIL : la parade, le costume, les
+     tresses, l'amazone, l'attelage. Une amazone en traje corto ne porte
+     ni bombe ni gilet airbag.
+     ⚠️ NE PAS la rebrancher sur `materiel`. -->
+<script src="hype-lingo-lex-parade.js?l=1"></script>
 <script src="hype-lingo-lex-cours.js?l=3"></script>
 <script src="hype-lingo-lex-dressage.js?l=5"></script>
 <!-- 🟥 16/08 : LE CHAPITRE DE L'ENSEIGNANT, pour SAUMUR. Le role
@@ -2814,7 +2823,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-polo.js?l=3"></script>
 <!-- Le haras : chapitre cree le 6 aout 2026 pour Lexington (Kentucky).
      ⚠️ NE PAS CONFONDRE avec lex-elevage.js (Golega), qui fait NAITRE, ni
-     avec lex-vente.js (Verone), ou l'on achete un cheval pour soi en
+     avec lex-vente.js?l=1 (Verone), ou l'on achete un cheval pour soi en
      discutant. Ici on leve la main dans une salle et le prix monte. -->
 <script src="hype-lingo-lex-haras.js"></script>
 <!-- Le froid : chapitre cree le 6 aout 2026 pour Spruce Meadows (Alberta).
@@ -2828,7 +2837,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      vu « la neige », un mot qui n'existe plus. Regle du cache du 10/08 :
      tout fichier REMPLACE change d'adresse. A incrementer a chaque
      nouvelle version du lexique. -->
-<script src="hype-lingo-lex-froid.js?v=2"></script>
+<script src="hype-lingo-lex-froid.js?l=3"></script>
 <!-- L'endurance : chapitre cree le 6 aout 2026 pour Dubai, etape 24 et
      PREMIERE etape hors d'Europe. La seule discipline ou l'on compte en
      kilometres et en battements par minute.
@@ -6810,8 +6819,28 @@ var ETAPE_SRC = {
   lamotte:     [["poney",1]],
   golega:      [["elevage",1]],
   jerez:       [["cheval",4]],
-  seville:     [["materiel",3]],
-  vejer:       [["ecurie",3]],
+  /* 🔴 17/08 : SÉVILLE EST SANS CHAPITRE. Elle pointait sur `materiel` 3,
+     que VEJER a reçue le même jour. Laisser les deux dessus donnerait la
+     même leçon à deux villes.
+     ⚠️ SÉVILLE EST DONC BRANCHÉE SUR `materiel` LEÇON 2 (le filet, la
+     têtière, le frontal, la muserolle, la sous-gorge, les rênes, le mors,
+     la bride, le collier de chasse, la martingale) — la seule leçon libre
+     de ce fichier. C'EST UN PLACEMENT PROVISOIRE : le filet ne dit rien de
+     « La présentation », qui est la Feria de Abril, la parade, le costume
+     et les tresses. À REPRENDRE avec Blandine. */
+  seville:     [["parade",1]],
+  /* 🟥 17/08 : VEJER PASSE DE `ecurie` 3 À `materiel` 3+4. Son chapitre
+     s'appelle « Le matériel » et ses phrases mélangent volontairement le
+     matériel du cheval, la tenue du cavalier, le matériel de concours et
+     le rechange. Décision de Blandine.
+     ⚠️ SÉVILLE PERD LA LEÇON 3 de `materiel` et attend un chapitre qui lui
+     ressemble : la Feria de Abril, la parade, le costume, les tresses. La
+     leçon 3 contenait le gilet airbag, qu'une amazone ne porte pas.
+     ⚠️ ET `ecurie` LEÇON 3 (nourrir : le foin, l'avoine, l'eau) REDEVIENT
+     ORPHELINE, avec les leçons 2 et 4 du même fichier. Blandine veut
+     regrouper « l'entretien des chevaux, les box, la nourriture, le foin »
+     dans UNE ville — à faire. */
+  vejer:       [["materiel",3],["materiel",4]],
   oliva:       [["concours",1]],
   rome:        [["concours",4]],
   verone:      [["vente",1]],
@@ -6831,8 +6860,13 @@ var ETAPE_SRC = {
    enseigne bien les dialogues, et c'est ce qu'il faut annoncer au joueur. */
 /* `rome` puise dans `concours` mais n'enseigne pas s'engager : elle
    enseigne les gens du concours. Le mot d'accueil doit dire ça. */
-var ACCUEIL_VILLE = { labaule:"arrivee", edimbourg:"dialogues", lamotte:"poney", seville:"materiel", rome:"gens",
-                      vejer:"ecurie", oliva:"concours", warendorf:"materiel", aachen:"obstacle" };
+var ACCUEIL_VILLE = { labaule:"arrivee", edimbourg:"dialogues", lamotte:"poney", seville:"parade", rome:"gens",
+                      /* 🟥 17/08 : vejer "ecurie" -> "materiel" (elle a reçu materiel 3+4)
+                         et warendorf "materiel" -> "formation" (fichier neuf le même jour).
+                         ⚠️ CETTE TABLE EST DISTINCTE DE `ETAPE_SRC` : elle dit ce qu'on ANNONCE
+                         au joueur à l'arrivée, pas où les mots sont pris. Les deux doivent
+                         rester d'accord — c'est un piège, il y a DEUX endroits à changer. */
+                      vejer:"materiel", oliva:"concours", warendorf:"formation", aachen:"obstacle" };
 
 /* Construit le chapitre d'une ville en assemblant ses leçons sources.
    Les concepts sont copiés en surface et renumérotés 1..n : le reste du
