@@ -68,7 +68,11 @@
    déclenche le ménage des anciennes versions.
    ================================================================== */
 
-var CACHE = "linguae-v2";   /* v2 le 16/08 : les trois garde-fous. Changer CACHE force le menage des anciennes versions. */
+var CACHE = "linguae-v3";   /* 🟥 v3 le 18/08 : CINQ LEXIQUES AJOUTES AU SOCLE (voir SOCLE_JS).
+                               QUATRE D'ENTRE EUX MANQUAIENT DEJA — c'est le defaut du 16/08 qui
+                               se rejouait a l'identique. Changer CACHE force le menage des
+                               anciennes versions ; sans ce changement, rien ne se met a jour.
+                               v2 le 16/08 : les trois garde-fous. */
 
 /* 🟥🟥 LE DÉFAUT DU 16/08 — L'APP CASSÉE HORS LIGNE APRÈS UN DÉPLOIEMENT.
    Blandine, revenue de son vol : « j'aurais dû pouvoir accéder sans
@@ -115,7 +119,19 @@ var SOCLE_JS = [
   "hype-lingo-lex-urgences-vet.js", "hype-lingo-lex-urgences-med.js",
   "hype-lingo-lex-poney.js", "hype-lingo-lex-tradition.js", "hype-lingo-lex-western.js",
   "hype-lingo-lex-polo.js", "hype-lingo-lex-haras.js", "hype-lingo-lex-froid.js",
-  "hype-lingo-lex-endurance.js", "hype-lingo-lex-vente.js", "hype-lingo-lex-elevage.js"
+  "hype-lingo-lex-endurance.js", "hype-lingo-lex-vente.js", "hype-lingo-lex-elevage.js",
+  /* 🟥🟥 AJOUTES LE 18/08 — ET QUATRE D'ENTRE EUX ETAIENT DEJA MANQUANTS.
+     `andalou`, `formation`, `jeunes` et `parade` ont ete crees les 17 et
+     18/08 et charges par `lingo.html`, mais PERSONNE NE LES AVAIT INSCRITS
+     ICI. Conditions exactes du defaut du vol : hors reseau, Jerez,
+     Warendorf, Fontainebleau et Seville seraient tombees sur le fichier
+     vide du garde-fou C. Trouve en ajoutant Taupo.
+     ⚠️ LA REGLE, POUR LA TROISIEME FOIS : tout lexique ajoute a
+     `lingo.html` s'ajoute ICI dans le meme geste, et `CACHE` change. */
+  "hype-lingo-lex-andalou.js", "hype-lingo-lex-formation.js",
+  "hype-lingo-lex-jeunes.js", "hype-lingo-lex-parade.js",
+  /* 18/08 : Taupo, 35e ville, chapitre « Free riding » */
+  "hype-lingo-lex-liberte.js"
 ];
 
 /* Le socle : ce qui doit être là même si la ville n'a jamais été
