@@ -1,6 +1,18 @@
 /* hype-lingo-lex-pansage.js — Hype Lingo · Chapitre 2 · « Le pansage »
    ==================================================================
-   42 CONCEPTS, QUATRE LEÇONS.
+   30 CONCEPTS, QUATRE LEÇONS.
+
+   🟥 19/08/2026 — CHAPITRE ALLÉGÉ SUR DÉCISION DE BLANDINE. Il portait
+   42 concepts sur quatre leçons alors que LAMBOURN n'en lisait qu'une :
+   trente dormaient. Douze notions ont été RETIRÉES d'ici et versées dans
+   `hype-lingo-lex-pansage-reserve.js` (non chargé) :
+     · `sabot`, `sole`, `fourchette` — enseignés par FLYINGE (le pied et
+       la maréchalerie). NE PAS LES RECRÉER ICI : un concept = un `ref`
+       global. ⚠️ Chez Flyinge, `sabot` se dit « le pied » et non « le
+       sabot » — même `ref`, libellé français différent, à trancher.
+     · `brosse-eau`, `tondeuse`, `toupet`, `tondre`, `poussiere`, `mue`,
+       `tache`, `eclat`, `tique` — sans ville, en attente.
+   `ETAPE_SRC.lambourn` lit désormais LES QUATRE LEÇONS.
 
    UN CONCEPT = UN OBJET DU MONDE ÉQUESTRE avec ses 6 langues côte à côte.
    Aucune langue source : le moteur lit la langue de l'interface et propose
@@ -131,17 +143,6 @@ window.HYPE_LINGO_LEX.pansage = {
           de:"Kamm aus Metall oder Plastik, nur für die Mähne. Der Schweif wird mit den Fingern entwirrt: Der Kamm bricht die Haare, die Jahre zum Nachwachsen brauchen.",
           ja:"金属やプラスチックの櫛は、たてがみ専用。尾は指でほぐします。櫛は尾の毛を切ってしまい、生えそろうまで何年もかかるのです。" } },
 
-  { ref:"brosse-eau", lecon:1, coll:"outils",
-    mots:{ fr:{m:"la brosse à eau"}, en:{m:"the water brush", p:"ouo-teur broche"},
-           es:{m:"el cepillo de agua"}, it:{m:"la spazzola per l'acqua"}, // ??
-           de:{m:"die Wasserbürste", p:"va-seur-bur-ste"}, ja:{m:"水ブラシ", p:"mizu burashi"} },
-    def:{ fr:"Mouillée, elle couche la crinière et lave la paroi du sabot avant le graissage.",
-          en:"Used damp, it lays the mane down and washes the hoof wall before oiling.",
-          es:"Mojada, asienta la crin y lava la pared del casco antes del engrase.",
-          it:"Bagnata, appiattisce la criniera e lava la parete dello zoccolo prima dell'ingrassaggio.",
-          de:"Nass legt sie die Mähne an und wäscht die Hufwand vor dem Einfetten.",
-          ja:"濡らして使い、たてがみを寝かせ、油を塗る前に蹄の壁を洗います。" } },
-
   { ref:"couteau-chaleur", lecon:1, coll:"outils",
     mots:{ fr:{m:"le couteau de chaleur"}, en:{m:"the sweat scraper", p:"souètt skré-peur"},
            es:{m:"la rasqueta de sudor"}, it:{m:"il raschiatoio"}, // ??
@@ -153,17 +154,6 @@ window.HYPE_LINGO_LEX.pansage = {
           de:"Die biegsame Klinge, die nach der Arbeit Schweiß oder Wasser abzieht. Ein nass gelassenes Pferd erkältet sich, selbst im Sommer.",
           ja:"運動後の汗や水をこそげ取る、しなやかな板。濡れたまま放っておくと、馬は夏でも体を冷やします。" } },
 
-  { ref:"tondeuse", lecon:1, coll:"outils",
-    mots:{ fr:{m:"la tondeuse"}, en:{m:"the clippers", p:"kli-peurz"},
-           es:{m:"la esquiladora", var:"la máquina de esquilar"}, it:{m:"la tosatrice"},
-           de:{m:"die Schermaschine", p:"chèr-ma-chi-ne"}, ja:{m:"バリカン", p:"barikan"} },
-    def:{ fr:"On tond un cheval qui travaille l'hiver pour qu'il sèche vite. Le mot anglais est toujours au pluriel : « the clippers ».",
-          en:"A horse in winter work is clipped so it dries quickly. The English word is always plural: the clippers.",
-          es:"Se esquila al caballo que trabaja en invierno para que se seque rápido. La palabra inglesa va siempre en plural: « the clippers ».",
-          it:"Si tosa il cavallo che lavora d'inverno perché asciughi in fretta. La parola inglese è sempre al plurale: « the clippers ».",
-          de:"Ein Pferd, das im Winter arbeitet, wird geschoren, damit es schnell trocknet. Das englische Wort steht immer im Plural: « the clippers ».",
-          ja:"冬も運動する馬は、早く乾くように毛を刈ります。英語は必ず複数形で « the clippers » と言います。" } },
-
   { ref:"graisse-pieds", lecon:1, coll:"outils",
     mots:{ fr:{m:"la graisse à pieds", var:"l'onguent"}, en:{m:"hoof oil", p:"houf oïl", var:"hoof grease"},
            es:{m:"la grasa para cascos"}, it:{m:"il grasso per zoccoli"},
@@ -174,6 +164,8 @@ window.HYPE_LINGO_LEX.pansage = {
           it:"Si applica su uno zoccolo pulito e asciutto, parete e suola. Non tutti i giorni: il piede deve anche respirare.",
           de:"Wird auf den sauberen, trockenen Huf aufgetragen, Wand und Sohle. Nicht täglich: Der Huf muss auch atmen.",
           ja:"きれいに乾いた蹄に、壁と蹄底へ塗ります。毎日ではありません。蹄にも呼吸が必要です。" } },
+
+  /* ============ LEÇON 2 · LE CHEVAL SOUS LA BROSSE ============ */
 
   /* ============ LEÇON 2 · LE CHEVAL SOUS LA BROSSE ============ */
 
@@ -199,17 +191,6 @@ window.HYPE_LINGO_LEX.pansage = {
           de:"Das Langhaar am Hals. In der klassischen Tradition liegt es auf der rechten Seite.",
           ja:"首すじの長い毛。古典的な伝統では、右側に寝かせます。" } },
 
-  { ref:"toupet", lecon:2, coll:"corps",
-    mots:{ fr:{m:"le toupet"}, en:{m:"the forelock", p:"for-lok"},
-           es:{m:"el tupé", var:"el copete"}, it:{m:"il ciuffo"},
-           de:{m:"der Schopf", p:"chopf"}, ja:{m:"前髪", p:"maegami"} },
-    def:{ fr:"La mèche qui tombe entre les oreilles. On la ramène par-dessus le frontal quand on met le filet.",
-          en:"The lock falling between the ears, brought over the browband when bridling.",
-          es:"El mechón que cae entre las orejas. Se echa por encima de la frontalera al poner la cabezada.",
-          it:"Il ciuffo che cade tra le orecchie. Si porta sopra il frontale quando si mette la testiera.",
-          de:"Die Strähne zwischen den Ohren. Beim Auftrensen legt man sie über das Stirnband.",
-          ja:"両耳のあいだに垂れる房。頭絡をつけるとき、額革の上へ出します。" } },
-
   { ref:"queue", lecon:2, coll:"corps",
     mots:{ fr:{m:"la queue"}, en:{m:"the tail", p:"téïl"},
            es:{m:"la cola"}, it:{m:"la coda"},
@@ -220,39 +201,6 @@ window.HYPE_LINGO_LEX.pansage = {
           it:"⚠️ Il tedesco ha una parola propria per il cavallo: der Schweif. Schwanz, la parola corrente per la coda di un animale, non si usa in scuderia.",
           de:"⚠️ Beim Pferd sagt man der Schweif. Schwanz, das Alltagswort für Tierschwänze, ist im Stall fehl am Platz.",
           ja:"⚠️ ドイツ語には馬専用の言葉があります：der Schweif。動物のしっぽ一般を指す Schwanz は、厩舎では使いません。" } },
-
-  { ref:"sabot", lecon:2, coll:"corps",
-    mots:{ fr:{m:"le sabot"}, en:{m:"the hoof", p:"houf", var:"hooves au pluriel"},
-           es:{m:"el casco"}, it:{m:"lo zoccolo"},
-           de:{m:"der Huf", p:"houf"}, ja:{m:"蹄", p:"hitsume"} },
-    def:{ fr:"⚠️ En espagnol, casco veut dire à la fois le sabot et le casque : seul le contexte tranche. « Pas de pied, pas de cheval » se dit dans toutes les langues.",
-          en:"In Spanish, casco means both hoof and helmet — only context decides. « No foot, no horse » exists in every language.",
-          es:"⚠️ En español, casco significa a la vez la uña del pie y el casco de montar: solo el contexto decide. « Sin pie no hay caballo » se dice en todas las lenguas.",
-          it:"⚠️ In spagnolo casco significa sia lo zoccolo sia il casco da equitazione: decide solo il contesto. « Niente piede, niente cavallo » si dice in tutte le lingue.",
-          de:"⚠️ Im Spanischen heißt casco Huf UND Reithelm — nur der Zusammenhang entscheidet. « Ohne Huf kein Pferd » sagt man in allen Sprachen.",
-          ja:"⚠️ スペイン語の casco は蹄とヘルメットの両方を意味し、文脈だけが決め手です。「蹄なくして馬なし」は、どの言語にもある言い回しです。" } },
-
-  { ref:"sole", lecon:2, coll:"corps",
-    mots:{ fr:{m:"la sole"}, en:{m:"the sole", p:"sôl"},
-           es:{m:"la palma"}, it:{m:"la suola"},
-           de:{m:"die Sohle", p:"zô-le"}, ja:{m:"蹄底", p:"teitei"} },
-    def:{ fr:"Le dessous du pied, qu'on dégage au cure-pied. L'espagnol l'appelle la palma, la paume.",
-          en:"The underside of the foot, cleared with the hoof pick. Spanish calls it the palm.",
-          es:"La parte inferior del pie, que se despeja con el limpiacascos. El español la llama la palma.",
-          it:"La parte inferiore del piede, che si libera con il curasole. Lo spagnolo la chiama la palma.",
-          de:"Die Unterseite des Hufs, die man mit dem Auskratzer freilegt. Das Spanische nennt sie la palma, die Handfläche.",
-          ja:"蹄の裏側。蹄ピックで掃除する部分です。スペイン語では手のひらと同じ言葉 palma で呼びます。" } },
-
-  { ref:"fourchette", lecon:2, coll:"corps",
-    mots:{ fr:{m:"la fourchette"}, en:{m:"the frog", p:"frogue"},
-           es:{m:"la ranilla"}, it:{m:"il fettone"},
-           de:{m:"der Strahl", p:"chtral"}, ja:{m:"蹄叉", p:"teisa"} },
-    def:{ fr:"Le coussin en V au centre de la sole, qui amortit et pompe le sang. Chaque langue l'a baptisé autrement : une fourchette en français, une grenouille en anglais, un rayon en allemand.",
-          en:"The V-shaped cushion in the middle of the sole, which absorbs shock and pumps blood. Each language named it differently: a fork in French, a frog in English, a ray in German.",
-          es:"El cojín en V del centro de la palma, que amortigua y bombea la sangre. Cada lengua lo bautizó a su manera: un tenedor en francés, una rana en inglés, un radio en alemán.",
-          it:"Il cuscinetto a V al centro della suola, che ammortizza e pompa il sangue. Ogni lingua l'ha battezzato a modo suo: una forchetta in francese, una rana in inglese, un raggio in tedesco.",
-          de:"Das V-förmige Polster in der Sohlenmitte, das federt und Blut pumpt. Jede Sprache taufte es anders: Gabel auf Französisch, Frosch auf Englisch, Strahl auf Deutsch.",
-          ja:"蹄底の中央にあるV字のクッション。衝撃を吸収し、血液を送り出します。名前は言語ごとに別物です — フランス語ではフォーク、英語ではカエル、ドイツ語では光線。" } },
 
   { ref:"membres", lecon:2, coll:"corps",
     mots:{ fr:{m:"les membres"}, en:{m:"the legs", p:"lègz"},
@@ -286,6 +234,8 @@ window.HYPE_LINGO_LEX.pansage = {
           it:"Dal garrese alla testa. È da lì che si comincia la pulizia, mai dal posteriore.",
           de:"Vom Widerrist zum Kopf. Dort beginnt das Putzen — nie an der Hinterhand.",
           ja:"き甲から頭にかけての部分。手入れはここから始めます。後躯からは決して始めません。" } },
+
+  /* ============ LEÇON 3 · LES GESTES ============ */
 
   /* ============ LEÇON 3 · LES GESTES ============ */
 
@@ -355,17 +305,6 @@ window.HYPE_LINGO_LEX.pansage = {
           de:"⚠️ Doppelte Falle: « to plait » spricht sich in Großbritannien « platt », und die Amerikaner sagen « to braid ». Zwei Wörter für denselben Turnierhandgriff.",
           ja:"⚠️ 二重の罠：イギリスの « to plait » は「プラット」と発音し、アメリカでは « to braid » と言います。競技会の同じ作業に、二つの言葉。" } },
 
-  { ref:"tondre", lecon:3, coll:"gestes", v:true,
-    mots:{ fr:{m:"tondre"}, en:{m:"to clip", p:"klipp"},
-           es:{m:"esquilar"}, it:{m:"tosare"},
-           de:{m:"scheren", p:"ché-reune"}, ja:{m:"毛刈りをする", p:"kegari o suru"} }, // ??
-    def:{ fr:"Raser tout ou partie du poil d'hiver pour que le cheval sèche vite. ⚠️ En anglais c'est « to clip » ; « to shear » est réservé aux moutons.",
-          en:"Taking off all or part of the winter coat so the horse dries quickly. English says « to clip »; « to shear » belongs to sheep.",
-          es:"Rapar todo o parte del pelo de invierno para que el caballo se seque rápido. ⚠️ En inglés es « to clip »; « to shear » se reserva a las ovejas.",
-          it:"Rasare tutto o parte del pelo invernale perché il cavallo asciughi in fretta. ⚠️ In inglese è « to clip »; « to shear » è riservato alle pecore.",
-          de:"Das Winterfell ganz oder teilweise scheren, damit das Pferd schnell trocknet. ⚠️ Auf Englisch « to clip »; « to shear » gehört den Schafen.",
-          ja:"早く乾くように、冬毛の全部または一部を刈ること。⚠️ 英語では « to clip »。« to shear » は羊のための言葉です。" } },
-
   { ref:"secher", lecon:3, coll:"gestes", v:true,
     mots:{ fr:{m:"sécher"}, en:{m:"to dry off", p:"draï off"},
            es:{m:"secar"}, it:{m:"asciugare"},
@@ -401,6 +340,8 @@ window.HYPE_LINGO_LEX.pansage = {
 
   /* ============ LEÇON 4 · CE QU'ON ENLÈVE, CE QU'ON REPÈRE ============ */
 
+  /* ============ LEÇON 4 · CE QU'ON ENLÈVE, CE QU'ON REPÈRE ============ */
+
   { ref:"boue", lecon:4, coll:"etat",
     mots:{ fr:{m:"la boue"}, en:{m:"the mud", p:"meud"},
            es:{m:"el barro"}, it:{m:"il fango"},
@@ -411,17 +352,6 @@ window.HYPE_LINGO_LEX.pansage = {
           it:"Si lascia asciugare prima di toglierlo: spazzolato bagnato, si incrosta nel pelo.",
           de:"Man lässt ihn trocknen, bevor man ihn entfernt: Nass gebürstet, setzt er sich im Fell fest.",
           ja:"泥は乾いてから落とすこと。濡れたままブラシをかけると、毛の中に入り込んでしまいます。" } },
-
-  { ref:"poussiere", lecon:4, coll:"etat",
-    mots:{ fr:{m:"la poussière"}, en:{m:"the dust", p:"deust"},
-           es:{m:"el polvo"}, it:{m:"la polvere"},
-           de:{m:"der Staub", p:"chtaoub"}, ja:{m:"ほこり", p:"hokori"} },
-    def:{ fr:"Ce que la brosse dure fait remonter et que la brosse douce emporte. Un cheval poussiéreux n'est pas un cheval sale.",
-          en:"What the dandy brush lifts and the body brush carries away. A dusty horse is not a dirty one.",
-          es:"Lo que el cepillo duro hace subir y el suave se lleva. Un caballo polvoriento no es un caballo sucio.",
-          it:"Ciò che la spazzola dura fa risalire e la morbida porta via. Un cavallo polveroso non è un cavallo sporco.",
-          de:"Was die harte Bürste hochholt und die weiche mitnimmt. Ein staubiges Pferd ist kein schmutziges Pferd.",
-          ja:"硬いブラシが浮かせ、柔らかいブラシが持ち去るもの。埃をかぶった馬は、汚れた馬ではありません。" } },
 
   { ref:"sueur", lecon:4, coll:"etat",
     mots:{ fr:{m:"la sueur"}, en:{m:"the sweat", p:"souètt"},
@@ -445,28 +375,6 @@ window.HYPE_LINGO_LEX.pansage = {
           de:"In Mähne oder Schweif. Fürs nächste Stadium, wenn das Haar verfilzt, hat das Deutsche ein eigenes Wort: der Filz.",
           ja:"たてがみや尾にできるもつれ。その先の段階 — 毛がフェルト状に固まった状態 — をドイツ語は一語で言います：der Filz。" } },
 
-  { ref:"mue", lecon:4, coll:"etat",
-    mots:{ fr:{m:"la mue"}, en:{m:"the moult", p:"môlte", var:"shedding (US)"},
-           es:{m:"la muda"}, it:{m:"la muta"},
-           de:{m:"der Fellwechsel", p:"fèll-vèk-seul"}, ja:{m:"換毛", p:"kanmō", var:"換毛期 = la période"} },
-    def:{ fr:"Deux fois par an, le cheval change de poil. C'est la saison de l'étrille, des poignées de poils partout et des pansages deux fois plus longs.",
-          en:"Twice a year the horse changes coat. Curry comb season: handfuls of hair everywhere and grooming that takes twice as long.",
-          es:"Dos veces al año, el caballo cambia de pelo. Es la temporada de la almohaza, de los puñados de pelo por todas partes y de las limpiezas el doble de largas.",
-          it:"Due volte l'anno, il cavallo cambia il pelo. È la stagione della striglia, delle manciate di pelo ovunque e delle pulizie lunghe il doppio.",
-          de:"Zweimal im Jahr wechselt das Pferd sein Fell. Es ist die Saison des Striegels, der Haarbüschel überall und der doppelt langen Putzzeiten.",
-          ja:"馬は年に二度、毛が生え替わります。毛すきの季節、そこらじゅうに毛の束が舞う季節、手入れの時間が倍になる季節です。" } },
-
-  { ref:"tache", lecon:4, coll:"etat",
-    mots:{ fr:{m:"la tache"}, en:{m:"the stain", p:"stéïne", var:"stable stain"},
-           es:{m:"la mancha"}, it:{m:"la macchia"},
-           de:{m:"der Fleck", p:"flèk", var:"der Liegefleck"}, ja:{m:"汚れ", p:"yogore"} },
-    def:{ fr:"Sur un gris, la marque jaune laissée par la litière pendant la nuit. L'anglais et l'allemand ont un mot exprès : stable stain, Liegefleck.",
-          en:"On a grey, the yellow mark left by the bedding overnight. English and German both have a word for it: stable stain, Liegefleck.",
-          es:"En un tordo, la marca amarilla dejada por la cama durante la noche. El inglés y el alemán tienen palabra propia: stable stain, Liegefleck.",
-          it:"Su un grigio, la macchia gialla lasciata dalla lettiera durante la notte. L'inglese e il tedesco hanno la parola apposta: stable stain, Liegefleck.",
-          de:"Beim Schimmel der gelbe Fleck, den die Einstreu über Nacht hinterlässt. Englisch und Deutsch haben eigene Wörter: stable stain, Liegefleck.",
-          ja:"芦毛の馬に、夜のあいだ寝床がつける黄色い染み。英語とドイツ語には専用の言葉があります：stable stain、Liegefleck。" } },
-
   { ref:"propre", lecon:4, coll:"etat",
     mots:{ fr:{m:"propre"}, en:{m:"clean", p:"kline"},
            es:{m:"limpio"}, it:{m:"pulito"},
@@ -487,29 +395,7 @@ window.HYPE_LINGO_LEX.pansage = {
           es:"Hay que oírlo sin ofenderse: en una cuadra es una consigna, no un reproche.",
           it:"Da sentire senza offendersi: in scuderia è una consegna, non un rimprovero.",
           de:"Ohne Kränkung zu hören: Im Stall ist es eine Ansage, kein Vorwurf.",
-          ja:"むっとせずに聞くこと。厩舎では、これは指示であって非難ではありません。" } },
-
-  { ref:"eclat", lecon:4, coll:"etat",
-    mots:{ fr:{m:"l'éclat du poil"}, en:{m:"the shine", p:"chaïne", var:"bloom"},
-           es:{m:"el brillo"}, it:{m:"la lucentezza"},
-           de:{m:"der Glanz", p:"glanntss"}, ja:{m:"艶", p:"tsuya"} },
-    def:{ fr:"Le but du pansage. Les Britanniques parlent de « bloom » : l'éclat qui vient de l'alimentation et du travail, que la brosse révèle mais ne fabrique pas.",
-          en:"The point of grooming. The British speak of « bloom »: a shine that comes from feed and work, which the brush reveals but cannot create.",
-          es:"La meta de la limpieza. Los británicos hablan de « bloom »: el brillo que viene de la alimentación y del trabajo, que el cepillo revela pero no fabrica.",
-          it:"Lo scopo della pulizia. I britannici parlano di « bloom »: la lucentezza che viene dall'alimentazione e dal lavoro, che la spazzola rivela ma non fabbrica.",
-          de:"Das Ziel des Putzens. Die Briten sprechen vom « bloom »: der Glanz aus Fütterung und Arbeit, den die Bürste sichtbar macht, aber nicht erzeugt.",
-          ja:"手入れの目指すもの。イギリス人は « bloom » と言います。食事と運動から生まれる輝き — ブラシはそれを引き出すだけで、作り出しはしません。" } },
-
-  { ref:"tique", lecon:4, coll:"etat",
-    mots:{ fr:{m:"la tique"}, en:{m:"the tick", p:"tik"},
-           es:{m:"la garrapata"}, it:{m:"la zecca"},
-           de:{m:"die Zecke", p:"tsè-ke"}, ja:{m:"マダニ", p:"madani"} },
-    def:{ fr:"À chercher après chaque sortie au pré : sous le ventre, entre les cuisses, à la base de la crinière. Se retire d'un mouvement droit, sans tourner.",
-          en:"Look for them after every turnout: under the belly, between the thighs, at the base of the mane. Pull straight out, without twisting.",
-          es:"Se busca tras cada salida al prado: bajo el vientre, entre los muslos, en la base de la crin. Se retira con un movimiento recto, sin girar.",
-          it:"Da cercare dopo ogni uscita al prato: sotto il ventre, tra le cosce, alla base della criniera. Si toglie con un movimento dritto, senza girare.",
-          de:"Nach jedem Weidegang absuchen: unter dem Bauch, zwischen den Schenkeln, am Mähnenansatz. Gerade herausziehen, ohne zu drehen.",
-          ja:"放牧のあとは毎回探すこと。腹の下、内股、たてがみの付け根。抜くときはまっすぐに、ひねらずに。" } }
+          ja:"むっとせずに聞くこと。厩舎では、これは指示であって非難ではありません。" } }
   ],
 
   /* ---- phrases complètes ---- */
@@ -659,7 +545,15 @@ window.HYPE_LINGO_LEX.pansage = {
         de:"Immer alle vier Hufe, bevor du sattelst.",
         ja:"必ず 四本 とも、 鞍 を 置く 前 に。" },
 
-      { ref:"d-pierre-sabot", temps:3, dit:"joueuse", mots:["sabot"],
+      /* 🟥 19/08 : `mots:["sabot"]` RETIRÉ — `sabot` est parti à FLYINGE
+         (« le pied », chapitre du pied et de la maréchalerie). La phrase
+         reste, elle est naturelle et elle amène `curer-pieds` juste
+         après ; elle n'enseigne simplement plus de mot.
+         ⚠️ CHOIX PROVISOIRE DE CLAUDE, NON VALIDÉ PAR BLANDINE. Deux
+         autres options étaient posées : garder `sabot` en révision (mais
+         Lambourn est l'étape 5 et Flyinge la 36e, le mot serait inconnu),
+         ou réécrire la phrase vers un mot conservé. */
+      { ref:"d-pierre-sabot", temps:3, dit:"joueuse", mots:[],
         fr:"Il y a une pierre dans le sabot.",
         en:"There's a stone in his hoof.",
         es:"Tiene una piedra en el casco.",

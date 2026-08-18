@@ -53,11 +53,17 @@ window.HYPE_LINGO_LEX.flyinge = {
 
   /* ============ ANATOMIE DU PIED ============ */
 
+  /* 🟥 19/08 : LIBELLÉ FRANÇAIS CANONIQUE FIXÉ PAR BLANDINE — `le sabot`,
+     avec `le pied` en variante. La `ref` était partagée avec Lambourn, qui
+     disait « le sabot » ; deux libellés pour un même `ref` faisaient
+     arriver le mot déjà acquis sous un intitulé jamais vu. La ref est
+     désormais portée par FLYINGE SEULE, mais le libellé reste celui-ci.
+     L'idée du pied comme ensemble fonctionnel reste dans la définition. */
   { ref:"sabot", lecon:1, coll:"anatomie",
-    mots:{ fr:{m:"le pied", var:"le sabot"}, en:{m:"the hoof", p:"houf"},
+    mots:{ fr:{m:"le sabot", var:"le pied"}, en:{m:"the hoof", p:"houf"},
            es:{m:"el casco"}, it:{m:"lo zoccolo"},
            de:{m:"der Huf", p:"houf"}, ja:{m:"蹄", p:"hizume"} },
-    def:{ fr:"L'enveloppe cornée du pied, insensible en surface. ⚠️ Un abcès de pied — une infection sous la corne — est la cause la plus fréquente d'une boiterie soudaine et sévère ; il se soigne en perçant un point de sortie, jamais en attendant.",
+    def:{ fr:"L'enveloppe cornée, insensible en surface. Le maréchal, lui, dit « le pied » : il parle de l'ensemble, corne et tissus vivants ensemble. ⚠️ Un abcès de pied — une infection sous la corne — est la cause la plus fréquente d'une boiterie soudaine et sévère ; il se soigne en perçant un point de sortie, jamais en attendant.",
           en:"The horny casing of the foot, insensitive on the surface. A hoof abscess — infection trapped under the horn — is the most common cause of sudden, severe lameness.",
           es:"⚠️ La envoltura córnea del pie, insensible en superficie. Un absceso de casco — una infección bajo la córnea — es la causa más frecuente de una cojera repentina y severa.",
           it:"⚠️ L'involucro corneo del piede, insensibile in superficie. Un ascesso del piede — un'infezione sotto la corneo — è la causa più frequente di una zoppia improvvisa e grave.",

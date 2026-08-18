@@ -2738,7 +2738,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      Le chapitre 10 (Les dialogues) n'est pas encore ecrit.
      ================================================================== -->
 <script src="hype-lingo-lex-ecurie.js?l=2"></script>
-<script src="hype-lingo-lex-pansage.js?l=3"></script>
+<!-- ⚠️ ?l=4 DEPUIS LE 19/08 : le chapitre est passé de 42 à 30 concepts.
+     Sans ce numéro changé, le téléphone sert l'ancienne copie et Lambourn
+     réafficherait les douze notions retirées. -->
+<script src="hype-lingo-lex-pansage.js?l=4"></script>
 <!-- 🟥🟥 19/08 : LES BALISES DU DÉCOUPAGE, ENFIN POSÉES. Le découpage
      un-fichier-par-ville du 18/08 avait mis à jour `ETAPE_SRC`, `ETAPES`,
      `TH_FAMILLES` et `sw-linguae.js` — MAIS PAS CES BALISES. Onze villes
@@ -7077,7 +7080,13 @@ var ETAPE_SRC = {
   labaule:     [["arrivee",1]],
   maurice:     [["balade",1]],
   newmarket:   [["ecurie",1]],
-  lambourn:    [["pansage",1]],
+  /* 🟥 19/08 : LAMBOURN LIT DÉSORMAIS SES QUATRE LEÇONS. Elle n'en lisait
+     qu'une : douze concepts vus sur quarante-deux, et son dialogue citait
+     des mots de trois leçons jamais enseignées. Le fichier a été ramené à
+     30 concepts (douze retirés, neuf versés dans `pansage-reserve.js`,
+     trois rendus à Flyinge) et les quatre leçons sont maintenant jouées.
+     ⚠️ Le mot d'accueil reste `ACCUEIL_CHAP.pansage`, toujours valide. */
+  lambourn:    [["pansage",1],["pansage",2],["pansage",3],["pansage",4]],
   /* 🟥 18/08 : découpage un-fichier-par-ville. `cheval` → `connemara`
      (leçons 1+2+3 + races gb-irl, tout dans une seule leçon-fichier). */
   connemara:   [["connemara",1],["connemara",2],["connemara",3]],
