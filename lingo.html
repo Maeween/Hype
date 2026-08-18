@@ -2880,6 +2880,16 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <!-- ⚠️ ?l=4 DEPUIS LE 13/08 : `monter-a-cru` ajoute et la cle `dialogue`
      avec les 21 phrases du Morne. Meme raison que pour arrivee.js. -->
 <script src="hype-lingo-lex-balade.js?l=7"></script>
+
+<!-- 🟥 TAUPŌ, 35e ville, ajoutée le 18/08/2026 — LA MONTE EN LIBERTÉ.
+     Première ville néo-zélandaise du voyage, donc PREMIÈRE NATION NEUVE
+     depuis longtemps : `I18N_NAT` et `TH_PAVILLON` ont dû être complétés.
+     ⚠️ Ce fichier porte QUATRE RAPPELS (`monter-a-cru`, `travail-pied`,
+     `desensibilisation`, `relachement`) dont les `ref` sont repris à
+     l'identique du Morne et de Santa Ynez — règle posée par Blandine le
+     18/08 : UN CONCEPT = UN `ref` GLOBAL, plusieurs villes le réactivent.
+     Doit donc se charger APRÈS balade.js et horsemanship.js. -->
+<script src="hype-lingo-lex-liberte.js?l=1"></script>
 <!-- Les phrases manquantes de Saumur (dressage L2-L3) et de Vejer
      (ecurie L2-L3). Additif : refuse tout ref déjà présent. -->
 <script src="hype-lingo-phrases-monde.js"></script>
@@ -3527,7 +3537,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=43";   /* v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
+var VER = "?v=44";   /* v44 (18/08) : TAUPO, 35e ville. Nouvelle nation
+                        (Nouvelle-Zelande). Quatre images encore absentes
+                        (carte/fond/objet/video) — les replis les couvrent.
+                        v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
                         etait un autre rendu (1000x1500, SANS transparence) alors que
                         `ARCHES.gauchebiais` avait ete mesure sur la bonne image ; la
                         vue du pays ne pouvait donc pas passer dans l'arche.
@@ -3769,6 +3782,24 @@ var ETAPES = [
     selle a corne, ni le troupeau, ni le tri, ni la monte a une main.
     C'etait le plus gros angle mort du module. */
  {ref:"tamworth",  ch:"Le western",    v:"Tamworth",    nat:"Australie",      h:"15 h 40", ciel:["#141110","#D98F4A"], forme:"lande",    souv:"Une corde tressée",             ic:"licol"},
+ /* 🟥 TAUPŌ, 35e VILLE, ajoutée le 18/08/2026 sur demande de Blandine :
+    LE FREE RIDING. Alycia Burton et Classic Goldrush ont concouru en
+    concours complet à Taupō avant de développer cet univers — c'est ce
+    qui relie le lieu au chapitre, et la raison du choix.
+    PLACÉE ICI, entre Tamworth et Buenos Aires : le voyage descend
+    d'Australie en Nouvelle-Zélande avant de traverser le Pacifique.
+    ⚠️ PREMIÈRE VILLE DE NOUVELLE-ZÉLANDE — nation neuve, ajoutée dans
+    `I18N_NAT` ET dans `TH_PAVILLON`. Sans les deux, la ligne des nations
+    ment et le pavillon reste vide.
+    ⚠️ `forme:"lande"` est un emprunt assumé, comme pour Dubaï : aucune
+    des dix silhouettes ne dessine un lac volcanique.
+    ⚠️ `ic:"licol"` est le QUATRIÈME emploi de cette icône (Connemara,
+    Tamworth, Santa Ynez). C'est la plus proche d'une corde d'encolure,
+    mais elle mériterait son propre SVG — à trancher avec Blandine.
+    ⚠️ AUCUNE de ses images n'existe encore : carte-taupo.webp,
+    fond-taupo.webp, objet-taupo.webp, arrivee-taupo.mp4. Les replis les
+    couvrent, sauf la vidéo qui affichera son écran « Vidéo introuvable ». */
+ {ref:"taupo",     ch:"Free riding", v:"Taupō",  nat:"Nouvelle-Zélande", h:"16 h 00", ciel:["#0B1A1C","#5FA88C"], forme:"lande",    souv:"Une corde d\'encolure",       ic:"licol"},
  {ref:"buenos",    ch:"Le polo",       v:"Buenos Aires",nat:"Argentine",      h:"16 h 30", ciel:["#101812","#D9A055"], forme:"lande",    souv:"Un maillet de bambou",          ic:"alene"},
  /* ⚠️ LEXINGTON et SPRUCE MEADOWS ajoutées le 6 août 2026, étapes 27 et 28.
     ⚠️ IL RESTE UN CRÉNEAU À 15 h 40 pour Tamworth, entre Tokyo et Buenos
@@ -3874,7 +3905,10 @@ var I18N_NAT = {
  "Australie":      {en:"Australia", es:"Australia",it:"Australia", de:"Australien",ja:"オーストラリア"},
  "Argentine":      {en:"Argentina", es:"Argentina",it:"Argentina", de:"Argentinien",ja:"アルゼンチン"},
  "États-Unis":     {en:"United States", es:"Estados Unidos", it:"Stati Uniti", de:"USA", ja:"アメリカ"},
- "Canada":         {en:"Canada",    es:"Canadá",   it:"Canada",    de:"Kanada",    ja:"カナダ"}
+ "Canada":         {en:"Canada",    es:"Canadá",   it:"Canada",    de:"Kanada",    ja:"カナダ"},
+ /* 🟥 18/08 : NATION NEUVE, ajoutée avec Taupō. ⚠️ Doit toujours aller de
+    pair avec une entrée dans TH_PAVILLON — sinon le drapeau reste vide. */
+ "Nouvelle-Zélande":{en:"New Zealand", es:"Nueva Zelanda", it:"Nuova Zelanda", de:"Neuseeland", ja:"ニュージーランド"}
 };
 var I18N_H = {
  "19 h 55":{en:"7.55 pm", es:"19:55", it:"19:55", de:"19:55 Uhr", ja:"19時55分"},
@@ -3900,6 +3934,7 @@ var I18N_H = {
  "11 h 20":{en:"11.20 am",es:"11:20", it:"11:20", de:"11:20 Uhr", ja:"11時20分"},
  "14 h 30":{en:"2.30 pm", es:"14:30", it:"14:30", de:"14:30 Uhr", ja:"14時30分"},
  "15 h 40":{en:"3.40 pm", es:"15:40", it:"15:40", de:"15:40 Uhr", ja:"15時40分"},
+ "16 h 00":{en:"4.00 pm", es:"16:00", it:"16:00", de:"16:00 Uhr", ja:"16時00分"},
  "16 h 30":{en:"4.30 pm", es:"16:30", it:"16:30", de:"16:30 Uhr", ja:"16時30分"},
  "17 h 20":{en:"5.20 pm", es:"17:20", it:"17:20", de:"17:20 Uhr", ja:"17時20分"},
  "18 h 10":{en:"6.10 pm", es:"18:10", it:"18:10", de:"18:10 Uhr", ja:"18時10分"},
@@ -3913,6 +3948,22 @@ var ETAPES_I18N = {
    souv:{en:"A show jumping flag", es:"Un banderín del concurso",
          it:"Un bandierino del concorso", de:"Ein Turnierfähnchen",
          ja:"障害飛越大会の小旗"}},
+ /* 🟥 TAUPŌ, 18/08. ⚠️ `v` PORTE LE MACRON : Taupō, U+014D. Le nom affiché
+    au joueur doit être exactement TAUPŌ dans toutes les langues — seul le
+    japonais prend sa transcription. Vérifier après chaque copier-coller :
+    un « Taupo » sans macron est une faute, pas une simplification. */
+ taupo:{
+   /* 🟥 18/08 : LE CHAPITRE S'APPELLE « FREE RIDING » DANS LES SIX LANGUES,
+      decision de Blandine. Le terme anglais est celui que la discipline
+      emploie partout — le traduire l'affaiblirait. ⚠️ NE PAS le franciser
+      en « La monte en liberte » : cette formule reste le MOT du lexique
+      (`monte-liberte`), pas le nom du chapitre. */
+   ch:{en:"Free riding", es:"Free riding", it:"Free riding",
+       de:"Free riding", ja:"フリーライディング"},
+   v:{ja:"タウポ"},
+   souv:{en:"A neck rope", es:"Una cuerda al cuello",
+         it:"Una corda al collo", de:"Ein Halsseil",
+         ja:"ネックロープ"}},
  versailles:{
    ch:{en:"The art of riding", es:"El arte ecuestre", it:"L'arte equestre",
        de:"Die Reitkunst", ja:"馬術の芸術"},
@@ -4059,6 +4110,33 @@ var RECITS = {
     vallee). Cite UNE fois, sans pathos : les joueuses ont dix a quinze ans.
     ⚠️ Ne pas transformer ce chapitre en hommage — Blandine : le but est de
     decouvrir le monde et le monde equestre. */
+ /* 🟥 TAUPŌ, 18/08. LE `{f:}` EST LE POINT CULTUREL demandé par Blandine.
+    ⚠️ IL NE NOMME NI LA CAVALIÈRE NI LE CHEVAL — précédent exact de Santa
+    Ynez, où Monty Roberts est « un horseman de cette vallée ». Le fait ne
+    dit QUE ce que Blandine a fourni : un couple néo-zélandais a couru le
+    concours complet ici avant de faire connaître le Free Riding.
+    🟥 AUCUNE BIOGRAPHIE INVENTÉE : ni domicile, ni palmarès, ni date, ni
+    anecdote. Si Blandine veut nommer Alycia Burton et Classic Goldrush,
+    c'est CETTE LIGNE qu'on change, et rien d'autre dans l'app. */
+ taupo:{
+  fr:["Le lac occupe le cratère, et l'herbe court jusqu'aux volcans sans rencontrer une clôture.",
+      "On y voit des chevaux travailler sans longe, et des cavalières qui n'ont plus rien dans les mains.",
+      {f:"C'est ici, en concours complet, qu'un couple néo-zélandais a couru avant de faire connaître le Free Riding. Le spectaculaire est venu après le sport, pas à sa place."}],
+  en:["The lake fills the crater, and the grass runs to the volcanoes without meeting a fence.",
+      "Horses work here with no rope, and riders end up with nothing in their hands at all.",
+      {f:"It was here, in eventing, that a New Zealand pair competed before making free riding known. The spectacular came after the sport, not instead of it."}],
+  es:["El lago ocupa el cráter, y la hierba corre hasta los volcanes sin encontrar una valla.",
+      "Aquí se ve trabajar a los caballos sin cuerda, y a jinetes que ya no llevan nada en las manos.",
+      {f:"Fue aquí, en concurso completo, donde una pareja neozelandesa compitió antes de dar a conocer el free riding. Lo espectacular vino después del deporte, no en su lugar."}],
+  it:["Il lago occupa il cratere, e l'erba corre fino ai vulcani senza incontrare un recinto.",
+      "Qui si vedono cavalli lavorare senza corda, e cavallerizze che non hanno più nulla in mano.",
+      {f:"È qui, nel completo, che una coppia neozelandese ha gareggiato prima di far conoscere il free riding. Lo spettacolare è venuto dopo lo sport, non al suo posto."}],
+  de:["Der See füllt den Krater, und das Gras läuft bis zu den Vulkanen, ohne auf einen Zaun zu treffen.",
+      "Hier arbeiten Pferde ohne Seil, und Reiterinnen haben am Ende gar nichts mehr in den Händen.",
+      {f:"Hier, in der Vielseitigkeit, ist ein neuseeländisches Paar geritten, bevor es das freie Reiten bekannt machte. Das Spektakuläre kam nach dem Sport, nicht an seiner Stelle."}],
+  ja:["湖が火口を満たし、草地は柵に出会うことなく火山まで続いています。",
+      "ここでは、ロープなしで働く馬と、手に何も持たない騎手を見かけます。",
+      {f:"フリーライディングを世に知らせる前に、ニュージーランドのある人馬が総合馬術を走ったのがこの地です。華やかさは競技の後に来たのであって、競技の代わりに来たのではありません。"}]},
  santaynez:{
   fr:["La vallée sent la poussière chaude et l'eucalyptus, et rien ici ne se fait dans le bruit.",
       "On y apprend à demander si peu que le cheval réponde avant qu'on ait insisté.",
@@ -4747,6 +4825,12 @@ var POURQUOI = {
   it:"Un concorso internazionale con i piedi nell'acqua, e nove chilometri di spiaggia per una prima lezione.",
   de:"Ein internationales Springturnier mit den Füßen im Wasser — und neun Kilometer Strand für die erste Reitstunde.",
   ja:"海のすぐそばで開かれる国際障害馬術大会と、初めてのレッスンのための九キロの浜。"},
+ taupo:{fr:"Un lac au creux d'un volcan, des pâtures jusqu'à l'horizon, et des chevaux qu'on monte sans rien.",
+  en:"A lake in the hollow of a volcano, pasture to the horizon, and horses ridden with nothing at all.",
+  es:"Un lago en el hueco de un volcán, pastos hasta el horizonte, y caballos que se montan sin nada.",
+  it:"Un lago nel cavo di un vulcano, pascoli fino all'orizzonte, e cavalli che si montano senza nulla.",
+  de:"Ein See in der Mulde eines Vulkans, Weiden bis zum Horizont — und Pferde, die man ohne alles reitet.",
+  ja:"火山のくぼみに広がる湖、地平線まで続く牧草地。そして、何もつけずに乗る馬たち。"},
  maurice:{fr:"Un lagon sans vague, et des chevaux qui entrent dans l'eau jusqu'à nager.",
   en:"A lagoon without a single wave, and horses that walk in until they swim.",
   es:"Una laguna sin olas, y caballos que entran en el agua hasta nadar.",
@@ -4953,7 +5037,13 @@ var NIVEAU_VILLE = {
   versailles:3, saumur:3, edimbourg:3, verone:3, tokyo:3,
   /* niveau 3 : le chapitre porte sur des notions (timing, ressenti), pas
      sur des objets a nommer. On y parle. */
-  santaynez:3
+  santaynez:3,
+  /* 🟥 TAUPŌ EN NIVEAU 3, 18/08 : comme Santa Ynez, le chapitre porte des
+     NOTIONS (confiance, connexion, équilibre) et non des objets à nommer.
+     Le niveau 3 fait entrer les phrases à remettre dans l'ordre dès les
+     premières vagues, et le vocal dans le tirage. C'est un chapitre où
+     l'on parle. */
+  taupo:3
 };
 function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
 /* ==================================================================
@@ -5078,6 +5168,7 @@ var TH_PAVILLON = {
   "Japon":"\uD83C\uDDEF\uD83C\uDDF5", "Australie":"\uD83C\uDDE6\uD83C\uDDFA",
   "Argentine":"\uD83C\uDDE6\uD83C\uDDF7", "\u00c9tats-Unis":"\uD83C\uDDFA\uD83C\uDDF8",
   "Canada":"\uD83C\uDDE8\uD83C\uDDE6",
+  "Nouvelle-Z\u00e9lande":"\uD83C\uDDF3\uD83C\uDDFF",
   "Angleterre":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
   "\u00c9cosse":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC73\uDB40\uDC63\uDB40\uDC74\uDB40\uDC7F",
   "Pays de Galles":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC77\uDB40\uDC6C\uDB40\uDC73\uDB40\uDC7F"
@@ -6891,7 +6982,25 @@ var ETAPE_SRC = {
   santaynez:   [["horsemanship",1]],
   spruce:      [["froid",1]],
   warendorf:   [["formation",1]],
-  aachen:      [["obstacle",4]]
+  aachen:      [["obstacle",4]],
+  /* 🔴 18/08 : WELLINGTON N'AVAIT AUCUNE LIGNE ICI. Elle figurait dans
+     `ETAPES` et dans `CHAPITRE_DE` ("obstacle"), elle avait son dialogue et
+     son bouton de mise en situation — mais `chapVirtuel("wellington")`
+     renvoyait `null`, donc LA VILLE NE SERVAIT PAS UN SEUL MOT. Le défaut
+     datait de son ouverture comme 32e ville et n'avait jamais été vu.
+     ⚠️ TROIS LEÇONS, ce qui est une EXCEPTION : toutes les autres villes
+     n'en ont qu'une. C'est ce que le SUIVI annonce depuis le début
+     (« Wellington · obstacle · 1, 2, 3 », 24 mots), et c'est ce qui est
+     appliqué ici — le code est aligné sur le SUIVI, pas l'inverse.
+     ⚠️ Si Blandine ramène Wellington à UNE leçon, les mots des leçons 2 et
+     3 redeviennent invisibles. C'est la faute commise sur Saumur : ne pas
+     réduire sans le dire. */
+  wellington:  [["obstacle",1],["obstacle",2],["obstacle",3]],
+  /* 🟥 18/08 : TAUPŌ, fichier neuf `hype-lingo-lex-liberte.js`, une leçon.
+     ⚠️ NE PAS lui donner de leçon d'un autre fichier : ses quatre rappels
+     reprennent les `ref` du Morne et de Santa Ynez, ils arrivent donc déjà
+     acquis sans qu'aucune leçon ne soit partagée. */
+  taupo:       [["liberte",1]]
 };
 
 /* Le texte d'accueil d'un chapitre se choisit par le fichier source majoritaire,
@@ -7875,6 +7984,10 @@ var ACCUEIL_CHAP = {
   obstacle:{fr:"Le saut : les obstacles, le parcours, les fautes, les phases du saut.", en:"Jumping: the fences, the course, the faults, the phases of the jump.", es:"El salto: los obstáculos, el recorrido, las faltas, las fases del salto.", it:"Il salto: gli ostacoli, il percorso, le penalità, le fasi del salto.", de:"Das Springen: die Hindernisse, der Parcours, die Fehler, die Phasen des Sprungs.", ja:"飛越。障害、コース、減点、飛越の各局面。"},
   concours:{fr:"S'engager, arriver, passer, comprendre son classement.", en:"Entering, arriving, competing, reading your result.", es:"Inscribirse, llegar, competir, entender la clasificación.", it:"Iscriversi, arrivare, gareggiare, capire la classifica.", de:"Nennen, ankommen, starten, sein Ergebnis lesen.", ja:"申し込み、到着、出番、順位の読み方。"},
   urgences:{fr:"Ce qu'on ne veut jamais avoir à dire — et qu'il faut savoir dire vite.", en:"What you never want to say — and must be able to say fast.", es:"Lo que nunca quieres tener que decir, y que hay que saber decir rápido.", it:"Ciò che non si vuole mai dover dire — e che bisogna saper dire in fretta.", de:"Was man nie sagen will — und schnell sagen können muss.", ja:"言わずに済ませたい言葉。だから、すぐ言えなければならない。"},
+  /* 🟥 TAUPŌ, 18/08. Le mot d'accueil annonce LA PROGRESSION, pas le
+     spectaculaire : le Free Riding est l'aboutissement du chapitre, il ne
+     doit pas en être la promesse d'entrée. */
+  liberte:{fr:"Ce qui reste quand le matériel s'en va : le langage du corps, la voix, la corde d'encolure, la confiance.", en:"What is left when the equipment goes: body language, voice, the neck rope, trust.", es:"Lo que queda cuando el material desaparece: el lenguaje corporal, la voz, la cuerda al cuello, la confianza.", it:"Ciò che resta quando il materiale se ne va: il linguaggio del corpo, la voce, la corda al collo, la fiducia.", de:"Was bleibt, wenn die Ausrüstung geht: Körpersprache, Stimme, Halsseil, Vertrauen.", ja:"道具がなくなったときに残るもの。ボディランゲージ、声、ネックロープ、そして信頼。"},
   dialogues:{fr:"Parler à quelqu'un : demander, réserver, comprendre une réponse.", en:"Talking to someone: asking, booking, understanding the answer.", es:"Hablar con alguien: preguntar, reservar, entender la respuesta.", it:"Parlare con qualcuno: chiedere, prenotare, capire la risposta.", de:"Mit jemandem sprechen: fragen, buchen, die Antwort verstehen.", ja:"人と話す。尋ねる、予約する、返事を理解する。"}
 };
 /* Le nom d'une leçon : la ou les familles qu'elle contient. */

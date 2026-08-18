@@ -750,7 +750,7 @@ window.HYPE_LINGO_LEX.obstacle = {
      chef de piste, le commissaire au paddock ou le speaker.
   ================================================================== */
   dialogue: {
-    ville: "wellington", lecon: 1, temps: 7, langues: ["fr","en","es","it","de","ja"],   /* 24 phrases */
+    ville: "wellington", lecon: 1, temps: 7, langues: ["fr","en","es","it","de","ja"],   /* 22 phrases — 24 avant le retrait du 18/08 */
 
     phrases: [
 
@@ -870,21 +870,14 @@ window.HYPE_LINGO_LEX.obstacle = {
         de:"Das ist eine Nullrunde in neunundzwanzig Komma drei vier — damit setzt sie sich an die Spitze.",
         ja:"二十九 秒 三四 の クリア ラウンド。 暫定 首位 に 立ち まし た。" },
 
-      { ref:"d-quelle-position", temps:4, dit:"joueuse", mots:["numero"],
-        fr:"Je passe en quelle position ?",
-        en:"What number am I going in?",
-        es:"¿En qué puesto salgo?",
-        it:"In che ordine parto?",
-        de:"An welcher Startnummer bin ich dran?",
-        ja:"私 は 何 番目 に 出 ます か ?" },
-
-      { ref:"d-r-dix-septieme", temps:4, dit:"club", mots:["numero"],
-        fr:"Vous êtes la dix-septième à partir.",
-        en:"You're seventeenth to go.",
-        es:"Sale en decimoséptimo lugar.",
-        it:"Parte diciassettesima.",
-        de:"Sie sind als Siebzehnte dran.",
-        ja:"十七 番目 の 出番 です。" },
+      /* 🟥 DEUX PHRASES RETIREES le 18/08/2026 sur decision de Blandine
+         (marquees ❌ dans sa relecture) : « Je passe en quelle position ? »
+         et « Vous etes la dix-septieme a partir. » — refs `d-quelle-position`
+         et `d-r-dix-septieme`.
+         ⚠️ LE MOT `numero` N'EST PAS PERDU : il reste employe par
+         `d-oxer-ou-vertical` (temps 2) et `d-sest-arrete` (temps 5). Le
+         concept lui-meme n'a pas bouge du lexique.
+         ⚠️ NE PAS LES REMETTRE. Le dialogue passe de 24 a 22 phrases. */
 
       /* ---- temps 5 · ce qui s'est passé ---- */
       /* 🟥 Phrase de Blandine : « il s'est arrêté », pas « il a refusé ». */

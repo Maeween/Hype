@@ -1,3 +1,224 @@
+# 🇳🇿 TAUPŌ — 35e VILLE, 18/08/2026
+
+## 🟥 DEUX DÉCISIONS DE BLANDINE, EN FIN DE SESSION
+
+· **Le chapitre s'appelle « Free riding » dans les six langues.** Le terme anglais est celui que la discipline emploie partout ; le traduire l'affaiblirait. ⚠️ NE PAS le franciser en « La monte en liberté » — cette formule reste le **mot du lexique** (`monte-liberte`), pas le nom du chapitre. Les deux coexistent volontairement.
+· **Le récit évoque Alycia Burton et Classic Goldrush SANS LES NOMMER**, en attendant sa réponse. *« Pour l'instant, tu peux évoquer Alycia Goldrush, mais sans les nommer. »* Blandine lui a écrit le 18/08 pour demander l'autorisation. 🟥 Si elle accepte, **une seule ligne change** : le `{f:}` de `RECITS.taupo`. Rien d'autre dans l'app.
+· **La mention du filet obligatoire en concours FEI a été ÉCARTÉE.** Elle avait été proposée et vérifiée (article 539, filet obligatoire dans les trois épreuves), mais Blandine a tranché : *« laisse tomber l'histoire du filet obligatoire en concours, on s'en fout ».* ⚠️ NE PAS la réintroduire.
+
+**Le chapitre du Free Riding. Première ville néo-zélandaise du voyage.**
+
+Choisie par Blandine parce qu'Alycia Burton et Classic Goldrush ont concouru en concours complet à Taupō avant de développer cet univers : le lieu relie leur passé sportif à ce qui a suivi.
+
+## 🟥 LA RÈGLE POSÉE CE JOUR-LÀ, ET QUI VAUT POUR TOUTE LINGUAE
+
+**UN CONCEPT = UN `ref` GLOBAL. Plusieurs villes le réactivent dans des contextes différents.**
+
+Mots de Blandine, 18/08 : *« si un mot a déjà été vu, ne le remonte qu'une fois dans le quiz »*, puis *« utilise le MÊME `ref` pour tout concept déjà appris ailleurs »*.
+
+Un mot déjà acquis reprend son `ref`. Sa définition peut être réécrite pour le nouveau contexte, mais **il n'est pas recompté comme une acquisition neuve**. ⚠️ NE JAMAIS créer un `ref` parallèle pour un mot qui existe — pas de `cru-taupo` à côté de `monter-a-cru`.
+
+✅ **VÉRIFIÉ DANS LE MOTEUR : aucune modification n'est nécessaire.** `MAITRISE` est indexée par `ref`, donc un mot repris arrive déjà acquis et `etatChapitre()` ne le recompte pas. `lancer()` ne lui donne qu'un seul passage.
+⚠️ **Une seule nuance** : un mot dont la maîtrise vaut **exactement 3** peut sortir deux fois — une fois dans le bloc de révision d'ouverture (`ailleurs`, qui tire les `0 < m < 4`), une fois dans sa vague. Au-dessus de 3, jamais. Rare, sans gravité, non corrigé.
+
+## 🟥 LE CADRAGE : TAUPŌ N'EST PAS SANTA YNEZ 2
+
+· **Santa Ynez** = comment on communique, comment se construit la réponse. ASK → RESPONSE → RELEASE. **C'est là qu'on l'apprend.**
+· **Taupō** = jusqu'où cette communication permet d'aller quand on retire progressivement les aides matérielles.
+
+`pression`, `relachement`, `groundwork` et la désensibilisation y sont **rappelés une fois**, jamais réenseignés. ⚠️ Ne pas y refaire la mécanique de la pression.
+
+Progression du chapitre, dictée par Blandine : travail au sol → communication → pression/relâchement → travail en liberté → confiance → monte à cru → corde d'encolure → sans filet → Free Riding.
+🟥 **Le Free Riding est l'aboutissement, jamais le premier exercice.** Aucune phrase ne présente le retrait du matériel comme un point de départ. Idée directrice : **moins de matériel ne veut pas dire moins de préparation.**
+
+## Le fichier — `hype-lingo-lex-liberte.js` (neuf, `?l=1`)
+
+**18 concepts · 6 phrases · un dialogue de 27 répliques en 9 temps · 6 langues partout.**
+
+**Quatre rappels**, `ref` et `mots` recopiés à l'identique de leur fichier d'origine, seule la `def` change :
+
+| ref | vient de | nouvel angle à Taupō |
+|---|---|---|
+| `monter-a-cru` | `balade` (Le Morne) | l'équilibre et l'assiette, plus la baignade |
+| `travail-pied` | `horsemanship` | la **condition** du retrait du matériel |
+| `desensibilisation` | `horsemanship` | ce qui permet de sortir de la carrière sans filet |
+| `relachement` | `horsemanship` | le seul signal clair qui reste quand le matériel part |
+
+**Quatorze notions neuves** : `sans-filet` · `monte-liberte` · `travail-liberte` · `corde-encolure` · `langage-corps` · `poids-corps` · `voix` · `ordre-vocal` · `confiance` · `connexion` · `equilibre` · `recompenser` · `rappeler-cheval` · `reeduquer`.
+
+🟥 **LE VRAI GAIN DE LANGUE DU CHAPITRE — trois mots expliqués côte à côte :**
+· **bareback** = sans selle
+· **bitless** (croisé à Santa Ynez, « sans mors ») = un filet, mais rien dans la bouche
+· **bridleless** = plus de filet du tout
+Le `sans-mors` de Santa Ynez sert enfin à quelque chose. ⚠️ Ne pas fusionner ces trois entrées.
+
+Autres distinctions tenues : **liberty work** (à pied) ≠ **free riding** (monté) · **retrain** ≠ **to start a horse** · le mot **cue**, sans équivalent unique en français.
+
+## 🔴 QUATRE ENTRÉES À VÉRIFIER — LE SEUL POINT OUVERT DU CHAPITRE
+
+Elles sont marquées 🔴 dans le fichier. Ce sont des mots courants qui existent peut-être déjà ailleurs : si oui, **la règle du 18/08 impose de reprendre leur `ref` ET leurs `mots` d'origine**, en ne gardant d'ici que la définition.
+
+| ref | statut |
+|---|---|
+| `equilibre` | 🔴 **EXISTE AILLEURS, CONFIRMÉ** — employé en `motsAilleurs` par `dressage` et `concours`, donc défini dans un fichier non consulté (probablement `cours`). ⚠️ Les traductions de Taupō risquent de diverger de l'original : deux traductions pour un même `ref`. **À aligner.** |
+| `voix` | ⚠️ absent des fichiers consultés — plausible dans `cours` (les ordres de reprise) |
+| `confiance` | ⚠️ absent des fichiers consultés |
+| `recompenser` | ⚠️ absent des fichiers consultés — plausible dans `poney` |
+
+**Fichiers à ouvrir pour trancher : `hype-lingo-lex-cours.js` et `hype-lingo-lex-poney.js`.**
+
+## Les douze points de `lingo.html`
+
+`<script src>` · `ETAPES` · `ETAPES_I18N` · `I18N_NAT` · `TH_PAVILLON` · `I18N_H` · `RECITS` · `POURQUOI` · `NIVEAU_VILLE` · `ETAPE_SRC` · `ACCUEIL_CHAP` · `VER`
+
+· **Nation neuve : NOUVELLE-ZÉLANDE.** ⚠️ `I18N_NAT` **et** `TH_PAVILLON` — les deux, sinon la ligne des nations ment ou le pavillon reste vide.
+· **Placée entre Tamworth et Buenos Aires**, 16 h 00. Le voyage descend d'Australie en Nouvelle-Zélande avant le Pacifique.
+· **Niveau 3**, comme Santa Ynez : le chapitre porte des notions, pas des objets. On y parle.
+· **`ACCUEIL_VILLE` n'a PAS été touchée** : la clé de chapitre (`liberte`) et la ville coïncident, le repli suffit.
+· ⚠️ **`v:"Taupō"` PORTE LE MACRON** (U+014D). Le nom affiché doit être exactement TAUPŌ. Un « Taupo » sans macron est une faute, pas une simplification. Vérifier après chaque copier-coller.
+· ⚠️ **`forme:"lande"`** est un emprunt assumé, comme Dubaï : aucune des dix silhouettes ne dessine un lac volcanique.
+· ⚠️ **`ic:"licol"`** est son **quatrième** emploi (Connemara, Tamworth, Santa Ynez). C'est la plus proche d'une corde d'encolure, mais elle mériterait son SVG. **À trancher.**
+· **`POSE_PROPRE` / `POSE_34` : rien ajouté.** Une ville déclarée là sans son image retombe en silence.
+
+## 🟥 LE POINT CULTUREL NE NOMME PERSONNE — décision à confirmer
+
+`RECITS.taupo` porte un champ `{f:}` qui dit **seulement ce que Blandine a fourni** : un couple néo-zélandais a couru le concours complet ici avant de faire connaître le Free Riding.
+
+**Précédent suivi : Santa Ynez**, où Monty Roberts est « un horseman de cette vallée ». Aucune biographie inventée — ni domicile, ni palmarès, ni date, ni anecdote.
+
+🟥 **Si Blandine veut nommer Alycia Burton et Classic Goldrush, c'est CETTE LIGNE qu'on change, et rien d'autre dans l'app.** Non tranché.
+
+## Images — les quatre manquent
+
+`carte-taupo.webp` · `fond-taupo.webp` · `objet-taupo.webp` · `arrivee-taupo.mp4`
+
+Les replis couvrent les trois premières ; la vidéo affichera son écran « Vidéo introuvable ». Blandine a produit un visuel du saut à cru (cavalière bras ouverts, pie palomino, lac et volcans) — **nom de dépôt non tranché.**
+
+---
+
+# 🔴 DEUX DÉFAUTS EXISTANTS TROUVÉS ET CORRIGÉS LE 18/08
+
+## 1 · WELLINGTON NE SERVAIT AUCUN MOT
+
+**Elle n'avait aucune ligne dans `ETAPE_SRC`.** Elle figurait dans `ETAPES`, dans `CHAPITRE_DE` (`"obstacle"`), elle avait son dialogue et son bouton de mise en situation — mais `chapVirtuel("wellington")` renvoyait `null`. Le défaut datait de son ouverture comme 32e ville et n'avait jamais été vu.
+
+✅ Corrigé : `wellington: [["obstacle",1],["obstacle",2],["obstacle",3]]`, **aligné sur ce que le SUIVI annonçait déjà** (24 mots).
+
+⚠️ **TROIS LEÇONS, C'EST UNE EXCEPTION** — toutes les autres villes n'en ont qu'une. Si Wellington est un jour ramenée à une leçon, **les mots des leçons 2 et 3 redeviennent invisibles**. C'est exactement la faute commise sur Saumur : ne pas réduire sans le dire.
+
+✅ **Contrôle : plus aucune ville sans `ETAPE_SRC`.** 35 sur 35.
+
+## 2 · LE SOCLE HORS-LIGNE AVAIT LE DÉFAUT DU 16/08, À NOUVEAU
+
+`SOCLE_JS` de `sw-linguae.js` **ne listait pas** `andalou`, `formation`, `jeunes`, `parade` — les quatre fichiers créés les 17 et 18/08. Ce sont les conditions exactes du vol : `lingo.html` les réclame, ils ne descendent pas à l'installation, et hors réseau **Jerez, Warendorf, Fontainebleau et Séville tombent sur le fichier vide du garde-fou C**.
+
+🔴 **NON CORRIGÉ — le fichier n'était pas disponible.** Trois modifications à la main :
+1. `SOCLE_JS` ← `"hype-lingo-lex-liberte.js"`
+2. `SOCLE_JS` ← `"hype-lingo-lex-andalou.js"`, `"hype-lingo-lex-formation.js"`, `"hype-lingo-lex-jeunes.js"`, `"hype-lingo-lex-parade.js"`
+3. `CACHE` : `"linguae-v2"` → `"linguae-v3"` (sans quoi le ménage ne se déclenche pas)
+
+🟥 **RÈGLE À TENIR : tout lexique ajouté à `lingo.html` doit être ajouté à `SOCLE_JS` dans le même geste.** C'est le seul garde-fou, et il a lâché deux fois.
+
+---
+
+# ✂️ WELLINGTON — DEUX PHRASES RETIRÉES, 18/08
+
+Sur la relecture de Blandine (marquées ❌) :
+· `d-quelle-position` — « Je passe en quelle position ? »
+· `d-r-dix-septieme` — « Vous êtes la dix-septième à partir. »
+
+Le dialogue passe de **24 à 22 phrases**. ⚠️ **Le mot `numero` n'est pas perdu** : il reste employé par `d-oxer-ou-vertical` (temps 2) et `d-sest-arrete` (temps 5). Le concept n'a pas bougé du lexique. **Ne pas les remettre.**
+
+⚠️ **`dialogueAachen` intact** — 20 phrases. `obstacle` porte deux villes, un remplacement complet aurait effacé Aix.
+
+---
+
+# 🧱 LE CHANTIER OUVERT : UN LEXIQUE PAR VILLE
+
+Blandine, 18/08 : *« c'est un vrai bordel, je n'arrête pas de le dire, je ne comprends pas qu'on n'ait pas un lexique par ville »*.
+
+**Elle a raison, et ce n'était pas un choix.** Au départ c'était bien un fichier par ville, 42 mots chacun. Le 5 août, personne ne terminait un chapitre : la correction a été de découper par **leçon** et de laisser une ville piocher dans le fichier d'une autre. Ça a réglé la longueur et créé l'enchevêtrement.
+
+**C'est la cause directe des deux défauts ci-dessus** : la ville et ses mots ne vivent pas au même endroit, donc rien ne signale l'oubli.
+
+✅ **Un fichier par ville ne casserait PAS les rappels.** Ce qui fait qu'un mot arrive déjà acquis, c'est `MAITRISE[ref]`, pas le fichier. La règle du 18/08 serait même **plus facile à tenir** : on ne confondrait plus « partager un fichier » et « partager un mot ».
+
+⚠️ **DEUX AVERTISSEMENTS AVANT DE COMMENCER :**
+· 🟥 **Déplacer du contenu entre fichiers est l'opération qui a détruit `balade.js`.** Ville par ville, à la main, jamais par script.
+· 🟥 **Écrire chaque nouveau fichier comme de la DONNÉE PURE**, sans une ligne de logique — sinon la conversion JSON pour iOS refera le travail deux fois. C'est la Préparation Flutter appliquée : on modernise en passant.
+
+**Ordre proposé** : commencer par les fichiers à plusieurs villes — `concours` (trois villes), `obstacle` (deux), `materiel` (deux), `dressage` (deux).
+**Gain de côté** : les leçons orphelines (`ecurie` 2-3-4, `materiel` 2) redeviendraient visibles au lieu de dormir.
+
+⚠️ **À FAIRE DANS UNE CONVERSATION NEUVE**, avec les fichiers en main dès le premier message.
+
+---
+
+# ✈️ VERS L'APP STORE — LE VRAI VERROU, ET CE N'EST PAS LE DÉCOUPAGE
+
+🟥 **`estPremium()` lit `hype_premium` dans le `localStorage` posé par `index.html`, même domaine.**
+
+**Dans une app iOS autonome, `index.html` n'existe pas.** Linguae n'aurait aucun moyen de savoir qu'une abonnée est Premium — 31 villes sur 35 se fermeraient pour une abonnée qui paie.
+
+C'est une **dépendance à Hype en dur**, exactement ce que la doctrine Linguae autonome interdit. À côté, l'organisation des lexiques est cosmétique.
+
+**Ordre recommandé :** 1 · pousser le lot en cours · 2 · le premium autonome de Linguae · 3 · le découpage par ville.
+
+---
+
+# 🔁 LES VILLES REVISITÉES AVEC BLANDINE — état au 18/08 au soir
+
+**34 villes ont un dialogue. Onze n'ont pas encore été retravaillées avec elle.**
+
+## ✅ Refaites le 18/08 — trois villes
+
+| ville | avant | après | ce que ça change |
+|---|---|---|---|
+| **Versailles** | 26 phrases | **36** | passe en PAIRES question → réponse vécue. Chaque qualité s'explique par une réponse d'écuyer au lieu d'être posée comme une définition. |
+| **Windsor** | 21 phrases | **18** | *« moitié concours, moitié conseils de monte »*. L'ancien décrivait le décor, celui-ci enseigne À MONTER une reprise. |
+| **Le Morne** | 23 phrases | **25** | n'est plus « je réserve une balade » : comprendre le guide, gérer le terrain, entrer dans l'eau, gérer son cheval dans le groupe, préserver sa récupération. |
+
+**Vingt-deux entrées de lexique ajoutées** ce jour-là — neuf pour Windsor (ligne du milieu, diagonale, coin, piste, transition descendante, rééquilibrer, tomber sur les épaules, garrot, amplitude), trois pour Versailles (flexion, arrière-main, avant-main), quatre pour Le Morne (marée basse, sable ferme, file indienne, garder ses distances), plus les autres.
+
+🟥 **ET `self-carriage` A ÉTÉ FUSIONNÉ DANS `legerete`**, sur sa correction : *« quand on aborde l'équitation légère, c'est également avoir une équitation qui amène son cheval à se tenir par lui-même »*. Ce ne sont pas deux notions voisines mais la même vue des deux côtés. ⚠️ NE PAS redédoubler.
+
+## 🔴 LES SEPT VILLES QUI RESTENT
+
+| ville | chapitre | fichier · leçon |
+|---|---|---|
+| **Connemara** | Le cheval | `cheval` · 1 |
+| **Newmarket** | L'écurie | `ecurie` · 1 |
+| **Lambourn** | Le pansage | `pansage` · 1 |
+| **Walsall** | Le matériel | `materiel` · 1 |
+| **Aberystwyth** | En selle | `cours` · 1 |
+| **Wellington** | La tournée d'hiver | `obstacle` · 1, 2, 3 |
+| **Hickstead** | Le derby | `derby` · 1 |
+
+⚠️ **PIÈGE À CONNAÎTRE : un fichier modifié ne veut pas dire que la ville a été retravaillée.** `cheval` a bougé pour FONTAINEBLEAU (leçon 4), pas pour Connemara (leçon 1). `materiel` a bougé pour VEJER (leçons 3-4), pas pour Walsall (leçon 1). `obstacle` a bougé pour AIX (leçon 4), pas pour Wellington. Ne pas se fier à la date du fichier.
+
+⚠️ **SAUMUR est à part** : écrite AVEC Blandine le 16/08 — elle a dicté le tutoiement, le japonais poli, les phrases à ne pas changer, et fait retirer celle qu'elle trouvait mauvaise. Elle est probablement déjà comme elle la veut. **À lui demander avant de la refaire.**
+
+✅ **Golegã, Lexington, La Baule, Dubaï et Lamotte** sont faites — confirmé par Blandine le 18/08.
+
+🟥 **LA MÉTHODE QUI MARCHE**, éprouvée sur douze villes : elle fournit **18 phrases avec leur traduction anglaise** et **le lexique**, Claude vérifie ce qui existe déjà, ajoute ce qui manque, et écrit les six langues. ⚠️ Ne jamais faire réécrire un fichier entier ailleurs : un fichier sert souvent plusieurs villes.
+
+---
+
+# 🈳 LA SEGMENTATION JAPONAISE — TRANCHÉ LE 17/08
+
+**RÈGLE : ON COUPE PAR GROUPES DE SENS, PAS PAR MORPHÈMES.**
+Décision de Blandine : *« fais simple pour le japonais, ne fais que ce que tu es sûr de faire bien »*.
+
+· ✅ **Par groupes** — « 今日 牧場 を 見学 できます か ? » — c'est ce que portent **les 30 dialogues écrits ici**, et c'est la règle pour toute ville future.
+· ⚠️ **Par morphèmes** — « 属し て い ます 。 » — **GOLEGÃ SEULE** est écrite ainsi.
+
+🟥 **GOLEGÃ N'A PAS ÉTÉ RECOUPÉE, ET C'EST VOULU.** Passer des morphèmes aux groupes demande de savoir où un locuteur japonais couperait vraiment. Claude n'en est pas sûr, et **une mauvaise coupe apprendrait une segmentation fausse** — ce qui est pire que deux découpages qui coexistent. L'exercice y sera simplement plus difficile.
+⚠️ À reprendre **seulement** avec une relecture native. NE PAS « harmoniser » à l'aveugle.
+
+**Pourquoi les groupes plutôt que les morphèmes** : le japonais en morphèmes peut monter à **19 jetons** sur une phrase longue. Dix-neuf morceaux à faire glisser au doigt sur un téléphone, ce n'est plus le même exercice.
+
+---
+
 # 🏁 LES 34 VILLES ONT LEUR DIALOGUE — 17/08/2026, fin de session
 
 **34 villes sur 34 · 720 phrases en six langues · aucun trou de langue · tous les fichiers passés au contrôle.**
