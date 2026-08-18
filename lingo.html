@@ -7265,7 +7265,25 @@ var ACCUEIL_VILLE = { labaule:"arrivee", edimbourg:"dialogues", lamotte:"poney",
                          « dressage » avant le découpage et vaudrait « versailles » après,
                          une clé sans texte dans ACCUEIL_CHAP. Même défaut que Wellington
                          ce soir, corrigé avant qu'il ne se produise. */
-                      versailles:"dressage" };
+                      versailles:"dressage",
+                      /* 🟥🟥 19/08 : TROIS VILLES ENTRAIENT DANS LEUR LEÇON SANS UN MOT.
+                         Même défaut silencieux que La Baule, Wellington et Connemara
+                         avant elles — `if(acc)` saute la ligne sans rien signaler.
+                         · `walsall` et `windsor` : régression du découpage du 18/08.
+                           Leurs chapitres ont été renommés à leur nom de ville, mais
+                           `ACCUEIL_CHAP` est resté indexé sur `materiel` et `dressage`.
+                           Les deux textes existent déjà et décrivent toujours
+                           exactement ce que ces villes enseignent (Walsall = materiel
+                           leçon 1, Windsor = dressage leçon 1) : simple renvoi.
+                         · `kildare` : visait `urgences-vet`, mais la clé écrite dans
+                           `ACCUEIL_CHAP` est `urgences`. Défaut antérieur au découpage,
+                           né le 16/08 quand les urgences ont été séparées en deux
+                           fichiers sans que cette table suive.
+                           ⚠️ Le texte `urgences` a été écrit du temps où UN seul
+                           chapitre couvrait le cheval ET le cavalier. Il reste juste,
+                           mais ne dit pas que Kildare est le VÉTÉRINAIRE. À réécrire
+                           si Blandine le souhaite. */
+                      walsall:"materiel", windsor:"dressage", kildare:"urgences" };
 
 /* Construit le chapitre d'une ville en assemblant ses leçons sources.
    Les concepts sont copiés en surface et renumérotés 1..n : le reste du
