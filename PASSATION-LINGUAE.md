@@ -15,6 +15,7 @@
 · 🟥 **Ne jamais décider en silence.** Claude a donné quatre leçons à Saumur sans le dire, puis corrigé à une leçon sans dire que cela cachait trente mots. *« Tu pensais me le dire quand, si je t'avais pas posé la question ? »*
 · 🟥 **N'inventer aucun contenu équestre.** Trois fautes de fond sur Windsor, une sur le coin de cross, une sur le piano. **Quand on ne sait pas : on le dit et on demande.**
 · 🟥 **Sauvegarder avant tout script.** Claude a détruit `hype-lingo-lex-balade.js` avec un script d'extraction par motifs. **Éditer les lexiques à la main, vérifier avant d'écrire.**
+· 🟥 **UN FICHIER ABÎMÉ SE REFAIT DEPUIS L'ORIGINAL, JAMAIS PAR RAFISTOLAGE.** Règle posée par Blandine le 18/08 après deux casses de `urgences-med` : *« que ce soit systématique quand il y a un problème : on recommence en repartant du bon fichier envoyé initialement ».* Une réparation qui rétablit la syntaxe ne prouve pas que le contenu est intact. On reprend la copie envoyée, on vérifie son empreinte, on refait les modifications une par une. **Et on utilise un outil d'édition qui exige l'unicité du repère** — un `find()` prend la première occurrence, y compris dans un commentaire d'en-tête, et c'est exactement ce qui a cassé le fichier.
 
 ---
 

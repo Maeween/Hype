@@ -1,3 +1,106 @@
+# 🟥🟥 RÈGLE ABSOLUE — UN FICHIER ABÎMÉ SE REFAIT DEPUIS L'ORIGINAL
+
+**Posée par Blandine le 18/08/2026, après deux casses successives de `hype-lingo-lex-urgences-med.js` :**
+
+> *« Refais depuis le bon fichier que je t'ai envoyé si tu as eu des soucis. »*
+> *« Que ce soit systématique quand il y a un problème : on recommence en repartant du bon fichier envoyé initialement. »*
+
+## 🟥 LA PROCÉDURE, SANS EXCEPTION
+
+1. **Un fichier qui a cassé pendant une session est SUSPECT, même réparé.** Une réparation qui rétablit la syntaxe ne prouve pas que le contenu est intact.
+2. **On ne répare pas : on REPART de la copie envoyée par Blandine.** Elle est la référence, pas l'état du disque.
+3. **On refait les modifications une par une**, et on vérifie après chacune.
+4. **On compare l'empreinte** (`md5sum`) du point de départ avec l'original avant de recommencer. Si elle diffère, on n'a pas le bon fichier.
+
+## ⚠️ CE QUI A JUSTIFIÉ CETTE RÈGLE — 18/08, `urgences-med`
+
+Un repère de recherche (`dm-plaie-suture`) existait AUSSI dans un commentaire d'en-tête. L'insertion a donc atterri au tout début du fichier et **mangé le `/` d'ouverture du commentaire d'en-tête**. Deux fois de suite, le même piège.
+Le fichier a été rafistolé deux fois. Rien n'était perdu — mais **rien ne le prouvait**, et c'est exactement la manipulation qui a détruit `hype-lingo-lex-balade.js`.
+
+## 🟥 LES TROIS RÈGLES D'ÉDITION QUI EN DÉCOULENT
+
+· **Sauvegarder AVANT toute modification** — `cp fichier /tmp/fichier-SAUVEGARDE.js`, systématiquement.
+· **Utiliser un outil d'édition qui EXIGE L'UNICITÉ du repère.** Un `find()` prend la première occurrence, y compris dans un commentaire. Un remplacement qui refuse d'écrire quand le repère apparaît deux fois aurait évité les deux casses.
+· **Ne jamais chercher un `ref` de dialogue sans vérifier qu'il n'apparaît pas ailleurs** — les en-têtes de ces fichiers citent souvent les refs qu'ils décrivent.
+
+⚠️ **ET SIGNALER LA CASSE À BLANDINE DANS LA RÉPONSE**, même réparée. Un rafistolage silencieux est interdit par la règle du SUIVI sur les erreurs.
+
+---
+
+# 🚑 LES DEUX CHAPITRES D'URGENCE REFAITS — 18/08/2026
+
+## KILDARE · `urgences-vet` — 43 notions, 29 répliques
+
+**Quatre notions neuves** : `urgence` · `pouls` · `respiration` · `se-rouler`. Le fichier possédait `le pouls est trop rapide` mais **jamais le pouls seul** : on apprenait le signe d'alarme sans pouvoir nommer la chose mesurée.
+
+🟥 **LES NORMES SONT ÉCRITES DANS QUATRE ENTRÉES, EN SIX LANGUES** — demande expresse de Blandine : *« il faut bien que tu expliques dans chaque petit commentaire quels sont les normes »*.
+· `pouls` — **30 à 40** /min au repos · au-delà de 60, douleur sévère · au-delà de 80, critique
+· `respiration` — **8 à 14** /min au repos
+· `fievre` — **37,2 à 38,2 °C** · au-delà de 39, fièvre
+· `urgence` — les trois ensemble
+
+🟥 **LES VALEURS DE BLANDINE REMPLACENT CELLES DU FICHIER**, sur son accord : 37,2–38,2 au lieu de 37,5–38,5 · 30–40 au lieu de 28–40. **Y compris le japonais**, qui portait encore les anciennes en kanji (三十七度五分). ⚠️ Ne pas les ramener aux anciennes.
+
+**LA SCÈNE DES CONSTANTES** — pouls **68**, température **38**, respiration **20**.
+🟥 **LE POULS EST À 68, PAS À 36.** Le brief initial donnait 36, soit une valeur NORMALE dans une scène de colique — ça enseignait l'inverse de ce qu'on veut. ⚠️ **ET LA TEMPÉRATURE RESTE NORMALE À 38** : une colique ne fait pas monter la température, et il est utile de savoir qu'un cheval peut être en urgence avec une température parfaite. **NE PAS la « corriger » vers une valeur élevée** : ce serait enseigner « urgence = fièvre », qui est faux.
+La phrase donne le chiffre, le lexique donne la norme, la comparaison fait l'exercice.
+
+⚠️ **`aide` ET `fourbure` ONT ÉTÉ CONSERVÉS.** La liste de 37 les retirait ; `aide` porte le piège espagnol (**¡socorro!** et non ¡ayuda!) et le commentaire de Blandine exige « à l'aide » dans les deux chapitres d'urgence · `fourbure` est une urgence majeure et son entrée porte la note remarquable *aucun rapport phonétique entre les six langues*.
+
+🟥 **LA RÉPLIQUE DE COLIQUE A ÉTÉ RESSERRÉE**, règle de Blandine : *« si tu as un doute ne met pas »*. L'ancienne prescrivait un protocole complet (marcher, panier, poubelle d'eau à boire) — non garanti, et faire boire un cheval en colique n'est pas anodin. Il reste ce qui ne se discute pas : retirer la nourriture, empêcher le roulé, le vétérinaire arrive.
+⚠️ **`marcher-cheval` ET `immobiliser` N'ONT PAS ÉTÉ TOUCHÉS.** Blandine a confirmé le 18/08 : *« on marche pour les coliques ; par contre en cas de coup de sang il faut l'immobiliser »*. La marche vit dans l'entrée avec sa raison (le roulé qui retourne l'intestin), pas sous forme d'ordre dans le dialogue.
+
+---
+
+## ÉDIMBOURG · `urgences-med` — 38 notions, 28 répliques
+
+🟥 **CE FICHIER A ÉTÉ REFAIT DEPUIS LA COPIE ENVOYÉE PAR BLANDINE**, empreinte `md5` vérifiée, après deux casses en cours de session. Voir la règle absolue en tête de ce SUIVI. Structure comparée à l'originale : clés identiques.
+
+**LES 37 `ref` D'ORIGINE SONT TOUTES CONSERVÉES**, vérifié une par une.
+
+### Six définitions corrigées, chacune dans les six langues
+
+🟥 **`ne-pas-retirer-bombe`** — L'ANCIENNE ÉTAIT TROP ABSOLUE : « on la laisse jusqu'aux secours, même si la personne étouffe », sans exception respiratoire. Elle dit maintenant : casque en place **si la personne respire normalement** ; si les voies aériennes sont menacées ou si elle ne respire pas normalement, **la respiration devient prioritaire**. Remplacement du casque **selon les recommandations du fabricant**, et non plus comme règle universelle.
+⚠️ NE PAS revenir à une formule sans exception respiratoire.
+
+🟥 **`bouger-pas`** — ajout : **on ne demande pas de « tester » ses mouvements.** Bouger un membre pour voir si ça marche est exactement le geste à éviter. On interroge les SENSATIONS.
+
+🟥 **`commotion`** — les **onze signes d'alerte** insérés dans les six langues, plus « pas de retour à cheval le jour même, reprise selon avis médical ». ⚠️ Le japonais utilise son séparateur `・`, pas le point médian latin — c'est correct, ne pas « harmoniser ».
+
+🟥 **`fracture`** — **on ne diagnostique plus sur place** : on décrit ce qu'on voit (membre déformé, douleur importante, impossibilité d'appui), on ne force pas le mouvement, on attend l'évaluation médicale.
+
+🟥 **`points-de-suture`** — la phrase « au-delà de six à huit heures, on ne recoud plus » **RETIRÉE**, trop absolue. Vérifié absent du fichier entier. Il ne reste que l'intérêt de langue : *stitches* courant, *sutures* médical.
+
+**`numero-urgence`** — **999 ou 112 en tête pour Édimbourg**, les deux fonctionnent au Royaume-Uni. Les autres numéros du monde restent dans la définition, jamais dans les phrases.
+
+### La 38e notion — `apres-une-chute`
+
+🟥 **POURQUOI C'EST UN CONCEPT ET PAS UN ENCART AFFICHÉ.** Vérifié dans `lingo.html` le 18/08 : le moteur ne lit que `ref`, `mots`, `def`, `lecon`, `coll`, `v`. **Il n'existe AUCUN champ d'encart**, et rien ne le rendrait. Un vrai encart demanderait de toucher l'écran de leçon — chantier à part.
+Avantage de la solution retenue : la séquence **passe au quiz**, donc elle se révise.
+Les dix points de Blandine y sont, avec leurs garde-fous : « si formé », « suivre les consignes des secours », « ne pas tester ». Les joueuses ont dix à quinze ans.
+⚠️ **NE PAS transformer cette entrée en protocole autonome.**
+
+### Sept opérations sur le dialogue — 21 → 28 répliques
+
+🟥 **`dm-bouger-tout` SUPPRIMÉE** (« est-ce que tu peux bouger toutes les parties de ton corps ? ») — remplacée par `dm-sens-bras-jambes`, `dm-fourmillements` et `dm-r-ne-bouge-pas`. **C'est la correction la plus importante du lot** : les fourmillements et engourdissements donnent la même information sans faire bouger personne. ⚠️ NE JAMAIS réintroduire.
+
+🟥 **`dm-souhaites-urgences` SUPPRIMÉE** — quand les signes d'urgence sont là, on n'attend pas l'accord de la victime. Posée à quelqu'un de confus après un choc à la tête, la question retarde l'appel. Remplacée par `dm-medicaments`.
+
+🟥 **L'APPEL EST DÉCOUPÉ** — `dm-appel-1` enchaînait chute, respiration, tête et mémoire en une réplique. Devient `dm-appel-tombee` + `dm-appel-tete-memoire` + `dm-appel-adresse`. ⚠️ NE PAS LES REFUSIONNER.
+
+**`dm-composer-numero` → `dm-999-112`** · **ajouts** `dm-r-ne-rappelle-pas`, `dm-pas-remonter-aujourdhui`, `dm-surveiller` · **`dm-plaie-suture` → `dm-plaie-pression`** : le pronostic (« il faudra peut-être des points ») remplacé par le geste utile, **la pression directe**.
+
+### Sources
+
+**NHS** — first aid after an incident, priorité airway/breathing · **St John Ambulance** — spinal injury, head injury, fractures, bleeding · **British Eventing** — concussion et retour à cheval.
+⚠️ Elles vivent **dans les commentaires techniques uniquement**, jamais dans le texte vu par la joueuse, et **aucune URL** n'est écrite dans le fichier.
+
+### Ce qui n'a pas bougé
+
+**Ni `lingo.html` ni le socle hors-ligne** : Kildare et Édimbourg étaient déjà branchées, `urgences-vet` et `urgences-med` sont déjà dans `SOCLE_JS`. Une seule leçon chacune, comme avant.
+
+---
+
 # 🇳🇿 TAUPŌ — 35e VILLE, 18/08/2026
 
 ## 🟥 DEUX DÉCISIONS DE BLANDINE, EN FIN DE SESSION
@@ -88,11 +191,19 @@ Elles sont marquées 🔴 dans le fichier. Ce sont des mots courants qui existen
 
 🟥 **Si Blandine veut nommer Alycia Burton et Classic Goldrush, c'est CETTE LIGNE qu'on change, et rien d'autre dans l'app.** Non tranché.
 
-## Images — les quatre manquent
+## Images et vidéo — TROIS LIVRÉES, UNE MANQUE
 
-`carte-taupo.webp` · `fond-taupo.webp` · `objet-taupo.webp` · `arrivee-taupo.mp4`
+| fichier | état |
+|---|---|
+| `carte-taupo.webp` | ✅ livrée — 1086×1448, qualité 88 |
+| `fond-taupo.webp` | ✅ livrée — même image, qualité 86 |
+| `arrivee-taupo.mp4` | ✅ livrée — **convertie de HEVC en H.264**, 1080×1890, 6,6 s, 4,1 Mo |
+| `objet-taupo.webp` | 🔴 **MANQUE** — la corde d'encolure. Le repli ne couvre pas : la sellerie affichera un trou. |
 
-Les replis couvrent les trois premières ; la vidéo affichera son écran « Vidéo introuvable ». Blandine a produit un visuel du saut à cru (cavalière bras ouverts, pie palomino, lac et volcans) — **nom de dépôt non tranché.**
+⚠️ **LA VIDÉO ÉTAIT EN HEVC**, sortie d'iPhone. Converti en H.264 high profile, `yuv420p`, `+faststart` — sans quoi Safari desktop et une partie d'Android ne la lisent pas. Toujours vérifier le codec d'une vidéo d'arrivée : `ffprobe` puis `libx264` si besoin.
+⚠️ **1080×1890, pas 1080×1920.** C'est la sortie native du fichier de Blandine, non recadrée volontairement. Les autres arrivées sont en 1920. À trancher si l'écart se voit à l'écran.
+
+🟥 **TAUPŌ AJOUTÉE À `TITRE_SOMBRE`.** Sa carte est un plein jour : tiers supérieur mesuré à **115,0 de luminance**, au-dessus du seuil de 100. Un titre crème y serait invisible. ⚠️ **Si la carte est remplacée — notamment par une vraie photo d'Alycia Burton — IL FAUT REMESURER.** La liste dépend de l'image, pas de la ville.
 
 ---
 

@@ -1,6 +1,6 @@
 /* hype-lingo-lex-urgences-med.js — Hype Linguae · « Les urgences du cavalier »
    ==================================================================
-   37 CONCEPTS, UNE SEULE LEÇON. Ville : ÉDIMBOURG.
+   38 CONCEPTS, UNE SEULE LEÇON. Ville : ÉDIMBOURG.
 
    🟥 POURQUOI CE FICHIER EXISTE — 16 août 2026, session 214.
    L'ancien `hype-lingo-lex-urgences.js` mélangeait les urgences DU
@@ -90,7 +90,7 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
     mots:{ fr:{m:"le numéro d'urgence"}, en:{m:"the emergency number", p:"neum-beur"},
            es:{m:"el número de emergencias"}, it:{m:"il numero d'emergenza"},
            de:{m:"die Notrufnummer", p:"nôte-rouf-nou-meur"}, ja:{m:"緊急通報番号", p:"kinkyū tsūhō bangō"} },
-    def:{ fr:"🟥 **112 — TOUTE L'EUROPE**, Union comprise, plus le Royaume-Uni, l'Irlande, la Suisse, la Norvège et la Turquie. Il fonctionne depuis n'importe quel portable, **même sans carte SIM, même verrouillé, même sans crédit**, et il bascule sur le réseau d'un autre opérateur si le tien ne capte pas. C'est le seul numéro à retenir en voyage.\\nLes autres pays du voyage : **999** Royaume-Uni et Irlande (le numéro historique, encore le plus utilisé) · **911** États-Unis, Canada, Mexique · **000** Australie · **119** Japon (ambulance et pompiers ; le 110 est la police) · **107** Argentine · **998** Émirats arabes unis · **192** Brésil · **10177** Afrique du Sud.",
+    def:{ fr:"🟥 **À ÉDIMBOURG : 999 OU 112**, les deux fonctionnent au Royaume-Uni. Et **112 — TOUTE L'EUROPE**, Union comprise, plus le Royaume-Uni, l'Irlande, la Suisse, la Norvège et la Turquie. Il fonctionne depuis n'importe quel portable, **même sans carte SIM, même verrouillé, même sans crédit**, et il bascule sur le réseau d'un autre opérateur si le tien ne capte pas. C'est le seul numéro à retenir en voyage.\\nLes autres pays du voyage : **999** Royaume-Uni et Irlande (le numéro historique, encore le plus utilisé) · **911** États-Unis, Canada, Mexique · **000** Australie · **119** Japon (ambulance et pompiers ; le 110 est la police) · **107** Argentine · **998** Émirats arabes unis · **192** Brésil · **10177** Afrique du Sud.",
           en:"112 works across all of Europe, including the UK and Ireland, from any mobile — with no SIM, locked, out of credit — and it will hop onto another network if yours has no signal. Elsewhere: 999 UK and Ireland, 911 US and Canada, 000 Australia, 119 Japan, 107 Argentina, 998 UAE, 192 Brazil, 10177 South Africa.",
           es:"El 112 funciona en toda Europa desde cualquier móvil, incluso sin SIM, bloqueado o sin saldo. Además: 999 Reino Unido e Irlanda, 911 EE. UU. y Canadá, 000 Australia, 119 Japón, 107 Argentina, 998 Emiratos, 192 Brasil, 10177 Sudáfrica.",
           it:"Il 112 funziona in tutta Europa da qualsiasi cellulare, anche senza SIM, bloccato o senza credito. Inoltre: 999 Regno Unito e Irlanda, 911 USA e Canada, 000 Australia, 119 Giappone, 107 Argentina, 998 Emirati, 192 Brasile, 10177 Sudafrica.",
@@ -213,12 +213,12 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
     mots:{ fr:{m:"la commotion cérébrale"}, en:{m:"concussion", p:"keune-keu-cheune"},
            es:{m:"la conmoción cerebral"}, it:{m:"la commozione cerebrale"},
            de:{m:"die Gehirnerschütterung", p:"gué-hirn-èr-chu-te-roung"}, ja:{m:"脳震盪", p:"nōshintō"} },
-    def:{ fr:"🟥 LA BLESSURE LA PLUS FRÉQUENTE ET LA PLUS SOUS-ESTIMÉE. Elle n'exige NI perte de connaissance NI choc violent : un cavalier qui se relève seul, parle normalement et se sent bien peut être commotionné. Les signes : il ne se rappelle pas la chute, il répète les mêmes questions, il a mal à la tête, il voit trouble. 🟥 **UNE COMMOTION INTERDIT DE REMONTER**, ce jour-là et souvent des jours après. La règle du monde équestre est : *if in doubt, sit them out*.",
-          en:"The commonest and most underestimated injury. It needs NEITHER loss of consciousness NOR a violent blow: a rider who gets up alone, talks normally and feels fine can be concussed. Signs: no memory of the fall, repeating the same questions, headache, blurred vision. Concussion means NO RIDING — that day and often for days. « If in doubt, sit them out. »",
-          es:"La lesión más frecuente y más subestimada. No requiere pérdida de conocimiento ni golpe violento. Una conmoción prohíbe volver a montar ese día y a menudo varios días.",
-          it:"La lesione più frequente e più sottovalutata. Non richiede né perdita di coscienza né un colpo violento. Una commozione vieta di rimontare.",
-          de:"Die häufigste und am meisten unterschätzte Verletzung. Sie braucht weder Bewusstlosigkeit noch einen heftigen Schlag. Eine Gehirnerschütterung bedeutet: nicht mehr aufsteigen.",
-          ja:"最も多く、最も軽視される怪我。意識を失う必要も、強い衝撃も必要ありません。自分で立ち上がり、普通に話し、本人は大丈夫だと言っても脳震盪のことがあります。落馬を覚えていない、同じ質問を繰り返す、頭痛、視界のぼやけが兆候です。脳震盪ならその日は乗りません。多くの場合、数日間乗れません。" } },
+    def:{ fr:"🟥 LA BLESSURE LA PLUS FRÉQUENTE ET LA PLUS SOUS-ESTIMÉE. Elle n'exige NI perte de connaissance NI choc violent : un cavalier qui se relève seul, parle normalement et se sent bien peut être commotionné.\n\n**LES SIGNES D'ALERTE APRÈS UN CHOC À LA TÊTE** — perte de connaissance · ne pas se rappeler la chute · confusion · répéter les mêmes questions · vomissements répétés · somnolence croissante · troubles de l'équilibre · vision double ou trouble · difficulté à parler ou à marcher · convulsion · aggravation de l'état de conscience.\n\n🟥 **PAS DE RETOUR À CHEVAL LE JOUR MÊME**, et la reprise se fait selon avis médical. La règle du monde équestre est : *if in doubt, sit them out*.",
+          en:"The commonest and most underestimated injury. It needs NEITHER loss of consciousness NOR a violent blow: a rider who gets up alone, talks normally and feels fine can be concussed.\n\nWARNING SIGNS AFTER A BLOW TO THE HEAD — loss of consciousness · not remembering the fall · confusion · repeated questions · repeated vomiting · increasing drowsiness · balance problems · double or blurred vision · difficulty speaking or walking · seizure · worsening level of consciousness.\n\nNo getting back on that day, and return to riding follows medical advice. « If in doubt, sit them out. »",
+          es:"La lesión más frecuente y más subestimada. No requiere pérdida de conocimiento ni golpe violento: quien se levanta solo, habla con normalidad y se siente bien puede tener una conmoción.\n\n**SEÑALES DE ALERTA TRAS UN GOLPE EN LA CABEZA** — pérdida de conocimiento · no recordar la caída · confusión · repetir las mismas preguntas · vómitos repetidos · somnolencia creciente · problemas de equilibrio · visión doble o borrosa · dificultad para hablar o andar · convulsión · empeoramiento del nivel de conciencia.\n\n🟥 **No se vuelve a montar ese día**, y la reanudación sigue el criterio médico.",
+          it:"La lesione più frequente e più sottovalutata. Non richiede né perdita di coscienza né un colpo violento: chi si rialza da solo, parla normalmente e si sente bene può avere una commozione.\n\n**SEGNALI D'ALLARME DOPO UN COLPO ALLA TESTA** — perdita di coscienza · non ricordare la caduta · confusione · ripetere le stesse domande · vomito ripetuto · sonnolenza crescente · problemi di equilibrio · vista doppia o offuscata · difficoltà a parlare o camminare · convulsione · peggioramento dello stato di coscienza.\n\n🟥 **Non si rimonta quel giorno**, e la ripresa segue il parere medico.",
+          de:"Die häufigste und am meisten unterschätzte Verletzung. Sie braucht weder Bewusstlosigkeit noch einen heftigen Schlag: wer allein aufsteht, normal spricht und sich gut fühlt, kann eine Gehirnerschütterung haben.\n\n**WARNZEICHEN NACH EINEM SCHLAG AUF DEN KOPF** — Bewusstlosigkeit · keine Erinnerung an den Sturz · Verwirrtheit · wiederholte gleiche Fragen · wiederholtes Erbrechen · zunehmende Schläfrigkeit · Gleichgewichtsstörungen · Doppelbilder oder verschwommenes Sehen · Sprech- oder Gehschwierigkeiten · Krampfanfall · sich verschlechterndes Bewusstsein.\n\n🟥 **An diesem Tag wird nicht wieder aufgestiegen**, und die Rückkehr richtet sich nach ärztlichem Rat.",
+          ja:"最も多く、最も軽視される怪我。意識を失う必要も、強い衝撃も必要ありません。自分で立ち上がり、普通に話し、本人は大丈夫だと言っても脳震盪のことがあります。\n\n**頭部を打ったあとの警告サイン** — 意識を失う・落馬を覚えていない・混乱・同じ質問を繰り返す・繰り返す嘔吐・眠気が増していく・平衡感覚の異常・物が二重に見える、ぼやける・話しにくい、歩きにくい・けいれん・意識の状態が悪くなっていく。\n\n🟥 **その日は馬に乗りません。** 再開は医師の判断に従います。" } },
 
   { ref:"perdre-connaissance", lecon:1, coll:"chute",
     mots:{ fr:{m:"perdre connaissance"}, en:{m:"to be knocked out", p:"nokt aoute", var:"to lose consciousness"},
@@ -257,12 +257,12 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
     mots:{ fr:{m:"la fracture"}, en:{m:"a broken bone", p:"brô-keune bône", var:"a fracture"},
            es:{m:"la fractura"}, it:{m:"la frattura"},
            de:{m:"der Bruch", p:"brourr"}, ja:{m:"骨折", p:"kossetsu"} },
-    def:{ fr:"⚠️ EN ANGLAIS ORDINAIRE ON DIT **a broken bone**, ou *I've broken my arm* : « a fracture » est le mot du médecin et de la radio. Sur un accident, on dit ce qu'on voit — *I think her arm's broken*.",
-          en:"Everyday English says « a broken bone » or « I've broken my arm »: « a fracture » is the doctor's word. At the scene you say what you see: « I think her arm's broken ».",
-          es:"En inglés corriente se dice « a broken bone »; « a fracture » es la palabra del médico.",
-          it:"In inglese corrente si dice « a broken bone »; « a fracture » è la parola del medico.",
-          de:"Alltagsenglisch sagt « a broken bone »; « a fracture » ist das Arztwort.",
-          ja:"日常英語では a broken bone、または I've broken my arm と言います。a fracture は医師や画像診断の語です。" } },
+    def:{ fr:"⚠️ EN ANGLAIS ORDINAIRE ON DIT **a broken bone**, ou *I've broken my arm* : « a fracture » est le mot du médecin et de la radio. 🟥 SUR UN ACCIDENT, ON NE DIAGNOSTIQUE PAS : on décrit ce qu'on voit — membre déformé, douleur importante, impossibilité de prendre appui. On ne force pas le mouvement et on attend l'évaluation médicale. La bonne formule est *I think her arm's broken*, jamais une certitude.",
+          en:"Everyday English says « a broken bone » or « I've broken my arm »: « a fracture » is the doctor's word. At the scene you do not diagnose — you describe what you see: a deformed limb, severe pain, unable to bear weight. Don't force the movement, and wait for medical assessment. « I think her arm's broken » is the right phrasing, never a certainty.",
+          es:"En inglés corriente se dice « a broken bone »; « a fracture » es la palabra del médico. 🟥 En un accidente no se diagnostica: se describe lo que se ve — miembro deformado, dolor importante, imposibilidad de apoyar. No se fuerza el movimiento y se espera la evaluación médica.",
+          it:"In inglese corrente si dice « a broken bone »; « a fracture » è la parola del medico. 🟥 Su un incidente non si diagnostica: si descrive quello che si vede — arto deformato, dolore importante, impossibilità di appoggiare. Non si forza il movimento e si attende la valutazione medica.",
+          de:"Alltagsenglisch sagt « a broken bone »; « a fracture » ist das Arztwort. 🟥 Am Unfallort stellt man keine Diagnose: man beschreibt, was man sieht — verformtes Glied, starke Schmerzen, kein Auftreten möglich. Die Bewegung nicht erzwingen und die ärztliche Beurteilung abwarten.",
+          ja:"日常英語では a broken bone、または I've broken my arm と言います。a fracture は医師や画像診断の語です。🟥 事故の現場では診断しません。見えることを述べます — 手足の変形、強い痛み、体重をかけられない。動きを無理に確かめず、医師の評価を待ちます。" } },
 
   { ref:"entorse", lecon:1, coll:"chute",
     mots:{ fr:{m:"l'entorse"}, en:{m:"a sprain", p:"spréïne"},
@@ -312,7 +312,7 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
     mots:{ fr:{m:"les points de suture"}, en:{m:"stitches", p:"stit-chizz"},
            es:{m:"los puntos de sutura"}, it:{m:"i punti di sutura"},
            de:{m:"die Stiche", p:"chti-che"}, ja:{m:"縫合", p:"hōgō"} },
-    def:{ fr:"⚠️ CE MOT EST AUSSI DANS LE CHAPITRE VÉTÉRINAIRE : une plaie se décrit de la même façon sur un homme et sur un cheval. L'anglais courant dit **stitches** ; *sutures* est le mot du chirurgien. Et la fenêtre est la même : au-delà de six à huit heures, on ne recoud plus.",
+    def:{ fr:"⚠️ CE MOT EST AUSSI DANS LE CHAPITRE VÉTÉRINAIRE : une plaie se décrit de la même façon sur un homme et sur un cheval. L'anglais courant dit **stitches** ; *sutures* est le mot du chirurgien.",
           en:"This word is in the equine chapter too — a wound is described the same way on a person and on a horse. « Stitches » in everyday English; « sutures » is the surgeon's word.",
           es:"Esta palabra está también en el capítulo veterinario. El inglés corriente dice « stitches ».",
           it:"Questa parola è anche nel capitolo veterinario. L'inglese corrente dice « stitches ».",
@@ -360,23 +360,23 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
     mots:{ fr:{m:"ne pas bouger"}, en:{m:"don't move", p:"dônte mouve"},
            es:{m:"no moverse"}, it:{m:"non muoversi"},
            de:{m:"sich nicht bewegen", p:"be-vé-gueune"}, ja:{m:"動かない", p:"ugokanai"} },
-    def:{ fr:"🟥 LA CONSIGNE LA PLUS IMPORTANTE DU CHAPITRE, et celle qui va contre tous les réflexes : quelqu'un qui vient de tomber veut se relever pour montrer que ça va. ⚠️ On ne relève JAMAIS quelqu'un qui a mal à la nuque ou au dos, et on ne le laisse pas se relever seul.",
-          en:"The most important instruction here, and it goes against every instinct: someone who's just fallen wants to get up to show they're fine. Never sit up or stand up anyone with neck or back pain.",
-          es:"La consigna más importante, y va contra todos los reflejos: quien acaba de caer quiere levantarse para demostrar que está bien.",
-          it:"La consegna più importante, e va contro ogni riflesso: chi è appena caduto vuole rialzarsi per mostrare che sta bene.",
-          de:"Die wichtigste Anweisung hier, und sie widerspricht jedem Reflex: wer gerade gestürzt ist, will aufstehen.",
-          ja:"この章で最も重要な指示。そして本能に反します。落ちた人は「大丈夫」と示すために立ち上がろうとします。首や背中が痛い人は、絶対に起こさず、自分で立たせません。" } },
+    def:{ fr:"🟥 LA CONSIGNE LA PLUS IMPORTANTE DU CHAPITRE, et celle qui va contre tous les réflexes : quelqu'un qui vient de tomber veut se relever pour montrer que ça va. ⚠️ On ne relève JAMAIS quelqu'un qui a mal à la nuque ou au dos, et on ne le laisse pas se relever seul. 🟥 ET ON NE LUI DEMANDE PAS DE « TESTER » SES MOUVEMENTS : bouger un membre pour voir si ça marche est exactement ce qu'il ne faut pas faire. On interroge les SENSATIONS — fourmillements, engourdissements — et on attend les secours, sauf danger immédiat.",
+          en:"The most important instruction here, and it goes against every instinct: someone who's just fallen wants to get up to show they're fine. Never sit up or stand up anyone with neck or back pain. And never ask them to test their movements: moving a limb to see whether it works is exactly what not to do. Ask about sensation instead — tingling, numbness — and wait for the paramedics, unless there is immediate danger.",
+          es:"La consigna más importante, y va contra todos los reflejos: quien acaba de caer quiere levantarse para demostrar que está bien. ⚠️ Nunca se levanta a alguien con dolor de cuello o espalda, y no se le pide que « pruebe » sus movimientos: mover un miembro para ver si funciona es justo lo que no hay que hacer. Se pregunta por las sensaciones — hormigueo, entumecimiento — y se espera a los servicios de emergencia, salvo peligro inmediato.",
+          it:"La consegna più importante, e va contro ogni riflesso: chi è appena caduto vuole rialzarsi per mostrare che sta bene. ⚠️ Non si rialza mai chi ha male al collo o alla schiena, e non gli si chiede di « provare » i movimenti: muovere un arto per vedere se funziona è proprio ciò che non va fatto. Si chiede delle sensazioni — formicolii, intorpidimento — e si aspettano i soccorsi, salvo pericolo immediato.",
+          de:"Die wichtigste Anweisung hier, und sie widerspricht jedem Reflex: wer gerade gestürzt ist, will aufstehen. ⚠️ Niemanden mit Hals- oder Rückenschmerzen aufrichten, und ihn seine Bewegungen nicht « testen » lassen: ein Glied zu bewegen, um zu sehen, ob es geht, ist genau das Falsche. Man fragt nach dem Gefühl — Kribbeln, Taubheit — und wartet auf den Rettungsdienst, außer bei unmittelbarer Gefahr.",
+          ja:"この章で最も重要な指示。そして本能に反します。落ちた人は「大丈夫」と示すために立ち上がろうとします。首や背中が痛い人は、絶対に起こさず、自分で立たせません。🟥 そして動きを「試させて」はいけません。手足を動かして確かめるのは、まさにやってはいけないことです。感覚を尋ねます — ぴりぴり感、しびれ — そして差し迫った危険がなければ、救急を待ちます。" } },
 
   { ref:"ne-pas-retirer-bombe", lecon:1, coll:"geste",
     mots:{ fr:{m:"ne pas retirer la bombe"}, en:{m:"don't take the hat off", p:"téïk ze hatt off"},
            es:{m:"no quitar el casco"}, it:{m:"non togliere il cap"},
            de:{m:"die Kappe nicht abnehmen", p:"app-né-meune"}, ja:{m:"ヘルメットを外さない", p:"herumetto o hazusanai"} },
-    def:{ fr:"🟥 LA CONSIGNE QU'ON OUBLIE, ET LA PLUS DANGEREUSE À IGNORER. Retirer une bombe demande de soulever la tête : si la nuque est touchée, ce seul geste peut faire le mal. On la laisse en place jusqu'aux secours, même si la personne étouffe de chaleur, même si elle le demande. ⚠️ Et après tout choc, **la bombe est à changer**, même intacte à l'œil : la mousse s'écrase une fois et ne protège plus.",
-          en:"The instruction people forget, and the most dangerous to ignore. Taking a hat off means lifting the head: if the neck is injured, that one movement can do the damage. Leave it on until help arrives, even if they ask. And after any impact the hat must be replaced, even if it looks fine.",
-          es:"La consigna que se olvida y la más peligrosa de ignorar. Quitar el casco obliga a levantar la cabeza. Se deja puesto hasta que lleguen los servicios.",
-          it:"La consegna che si dimentica e la più pericolosa da ignorare. Togliere il cap richiede di sollevare la testa. Si lascia fino all'arrivo dei soccorsi.",
-          de:"Die Anweisung, die man vergisst, und die gefährlichste. Die Kappe abzunehmen heißt, den Kopf zu heben. Sie bleibt drauf, bis Hilfe kommt.",
-          ja:"忘れられがちで、無視すると最も危険な指示。ヘルメットを外すには頭を持ち上げる必要があり、首を痛めていればその動作だけで損傷が起きます。本人が求めても、救急が来るまで外しません。そして衝撃を受けたヘルメットは、見た目が無傷でも交換します。" } },
+    def:{ fr:"🟥 LA CONSIGNE QU'ON OUBLIE, ET LA PLUS DANGEREUSE À IGNORER. Après une chute avec suspicion de traumatisme crânien ou cervical, ne retire pas inutilement la bombe et évite de bouger la tête ou le cou : ce seul geste peut faire le mal. Laisse-la en place en attendant les secours **si la personne respire normalement**. ⚠️ SI LES VOIES AÉRIENNES SONT MENACÉES OU SI ELLE NE RESPIRE PAS NORMALEMENT, la respiration devient prioritaire. Après un choc important, le casque doit être contrôlé et généralement remplacé, selon les recommandations du fabricant.",
+          en:"The instruction people forget, and the most dangerous to ignore. After a fall with a suspected head or neck injury, don't remove the riding hat unnecessarily and avoid moving the head or neck — that one movement can do the damage. Leave it in place while waiting for help if the casualty is breathing normally. If the airway is compromised or the casualty is not breathing normally, airway and breathing take priority. After a significant impact, the hat should be checked and usually replaced according to the manufacturer's guidance.",
+          es:"La consigna que se olvida y la más peligrosa de ignorar. Tras una caída con sospecha de lesión craneal o cervical, no quites el casco innecesariamente y evita mover la cabeza o el cuello. Déjalo puesto mientras esperas a los servicios de emergencia **si la persona respira normalmente**. ⚠️ Si la vía aérea está comprometida o no respira con normalidad, la vía aérea y la respiración son prioritarias. Tras un impacto importante, el casco debe revisarse y en general sustituirse según las indicaciones del fabricante.",
+          it:"La consegna che si dimentica e la più pericolosa da ignorare. Dopo una caduta con sospetto trauma cranico o cervicale, non togliere il cap inutilmente ed evita di muovere la testa o il collo. Lascialo in sede aspettando i soccorsi **se la persona respira normalmente**. ⚠️ Se le vie aeree sono compromesse o se non respira normalmente, vie aeree e respirazione hanno la priorità. Dopo un impatto importante il cap va controllato e di norma sostituito, secondo le indicazioni del produttore.",
+          de:"Die Anweisung, die man vergisst, und die gefährlichste. Nach einem Sturz mit Verdacht auf Kopf- oder Halsverletzung den Helm nicht unnötig abnehmen und Kopf und Hals nicht bewegen. Er bleibt drauf, bis Hilfe kommt — **wenn die Person normal atmet**. ⚠️ Sind die Atemwege bedroht oder atmet sie nicht normal, haben Atemwege und Atmung Vorrang. Nach einem starken Aufprall muss der Helm überprüft und in der Regel ersetzt werden, nach den Angaben des Herstellers.",
+          ja:"忘れられがちで、無視すると最も危険な指示。頭部や首の受傷が疑われる落馬のあとは、ヘルメットを不必要に外さず、頭や首を動かさないこと。その動作だけで損傷が起きることがあります。**呼吸が正常なら**、救急が来るまでそのままにします。⚠️ 気道が脅かされている、あるいは呼吸が正常でない場合は、気道と呼吸が優先します。強い衝撃を受けたあとのヘルメットは点検し、製造元の指示に従って通常は交換します。" } },
 
   { ref:"ne-pas-remonter", lecon:1, coll:"geste",
     mots:{ fr:{m:"ne pas remonter"}, en:{m:"not to get back on", p:"guètt bak onn"},
@@ -479,7 +479,42 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
           es:"El gesto que se olvida: todos se inclinan sobre el jinete y el caballo se va libre. No es amabilidad con el caballo: es apartar el peligro.",
           it:"Il gesto che si dimentica: tutti si chinano sul cavaliere e il cavallo se ne va libero. Non è gentilezza: è togliere il pericolo.",
           de:"Was alle vergessen: alle beugen sich über den Reiter, und das Pferd geht los. Es ist keine Fürsorge fürs Pferd, sondern Gefahrenabwehr.",
-          ja:"誰もが忘れる動作。全員が騎手にかがみ込む間に、馬は手綱を引きずって離れていきます。馬を気遣うためではなく、事故現場の危険を除くためです。" } }
+          ja:"誰もが忘れる動作。全員が騎手にかがみ込む間に、馬は手綱を引きずって離れていきます。馬を気遣うためではなく、事故現場の危険を除くためです。" } },
+
+  /* ==================================================================
+     LA SÉQUENCE APRÈS UNE CHUTE — 38e notion, ajoutée le 18/08/2026 sur
+     demande de Blandine (« créer un encart pédagogique dans le chapitre »).
+
+     🟥 POURQUOI C'EST UN CONCEPT ET PAS UN ENCART. Le moteur ne lit que
+     `ref`, `mots`, `def`, `lecon`, `coll` et `v` — il n'existe AUCUN champ
+     d'encart, et `lingo.html` n'en rendrait aucun. Vérifié dans le code le
+     18/08. Un vrai encart affiché demanderait de toucher l'écran de leçon :
+     c'est un chantier à part, noté au SUIVI.
+     La séquence vit donc dans une entrée de lexique, ce qui a un avantage :
+     elle passe au quiz comme le reste, donc elle se révise.
+     ⚠️ SES `mots` NE SONT PAS UN TERME À APPRENDRE mais un intitulé. Si le
+     champ d'encart existe un jour, cette entrée s'y déplace.
+
+     🟥 LES SIX FORMULATIONS SONT PRUDENTES, ET C'EST VOLONTAIRE. Aucune
+     n'ordonne un geste technique : « si formé », « suivre les consignes des
+     secours », « ne pas tester ». Les joueuses ont dix à quinze ans.
+     Références pédagogiques : NHS — first aid after an incident, priorité
+     airway/breathing · St John Ambulance — spinal injury, head injury,
+     fractures · British Eventing — concussion et retour à cheval.
+     ⚠️ NE PAS transformer cette entrée en protocole autonome, et ne jamais
+     y écrire d'URL : les sources restent dans ce commentaire.
+  ================================================================== */
+  { ref:"apres-une-chute", lecon:1, coll:"geste",
+    mots:{ fr:{m:"après une chute"}, en:{m:"after a fall", p:"af-teur e fol"},
+           es:{m:"después de una caída"}, it:{m:"dopo una caduta"},
+           de:{m:"nach einem Sturz", p:"nakh aï-nem chtourts"},
+           ja:{m:"落馬のあと", p:"rakuba no ato"} },
+    def:{ fr:"🟥 LA SÉQUENCE À CONNAÎTRE PAR CŒUR : **protéger · vérifier la réponse · vérifier la respiration · ne pas déplacer · appeler · continuer à surveiller.**\n\n1. Sécuriser la zone : cheval libre, autres chevaux, circulation, obstacles.\n2. Vérifier si la personne répond.\n3. Vérifier si elle respire normalement.\n4. En cas de suspicion de lésion du dos ou de la nuque, ne pas la déplacer inutilement et ne pas lui demander de tester ses mouvements.\n5. Ne pas retirer inutilement la bombe si elle respire normalement et qu'un traumatisme cervical ou crânien est possible.\n6. Si elle ne respire pas normalement, les voies aériennes et la respiration deviennent prioritaires : suivre les consignes des secours, et pratiquer les gestes de réanimation seulement si l'on est formé.\n7. Appeler le 999 ou le 112 au Royaume-Uni.\n8. Continuer à surveiller respiration et état de conscience jusqu'à l'arrivée des secours.\n9. Après un choc à la tête avec suspicion de commotion : pas de retour à cheval le jour même.\n10. Fracture suspectée : ne pas « tester » le membre et ne pas forcer le mouvement.",
+          en:"The sequence to know by heart: protect · check response · check breathing · don't move · call for help · keep monitoring.\n\n1. Make the area safe: loose horse, other horses, traffic, obstacles.\n2. Check whether the person responds.\n3. Check whether they are breathing normally.\n4. If a back or neck injury is suspected, don't move them unnecessarily and don't ask them to test their movements.\n5. Don't remove the riding hat unnecessarily if they are breathing normally and a head or neck injury is possible.\n6. If they are not breathing normally, airway and breathing take priority: follow the instructions of the emergency services, and only perform resuscitation if you are trained.\n7. Call 999 or 112 in the UK.\n8. Keep checking breathing and level of response until help arrives.\n9. After a blow to the head with suspected concussion: no getting back on that day.\n10. Suspected broken bone: don't test the limb and don't force the movement.",
+          es:"🟥 LA SECUENCIA QUE HAY QUE SABER DE MEMORIA: **proteger · comprobar la respuesta · comprobar la respiración · no mover · llamar · seguir vigilando.**\n\n1. Asegurar la zona: caballo suelto, otros caballos, tráfico, obstáculos.\n2. Comprobar si la persona responde.\n3. Comprobar si respira con normalidad.\n4. Si se sospecha lesión de espalda o cuello, no moverla innecesariamente y no pedirle que pruebe sus movimientos.\n5. No quitar el casco innecesariamente si respira con normalidad y es posible una lesión craneal o cervical.\n6. Si no respira con normalidad, la vía aérea y la respiración son prioritarias: seguir las indicaciones de los servicios de emergencia, y practicar la reanimación solo si se está formado.\n7. Llamar al 999 o al 112 en el Reino Unido.\n8. Seguir vigilando respiración y nivel de conciencia hasta que llegue la ayuda.\n9. Tras un golpe en la cabeza con sospecha de conmoción: no se vuelve a montar ese día.\n10. Sospecha de fractura: no « probar » el miembro ni forzar el movimiento.",
+          it:"🟥 LA SEQUENZA DA SAPERE A MEMORIA: **proteggere · verificare la risposta · verificare il respiro · non spostare · chiamare · continuare a sorvegliare.**\n\n1. Mettere in sicurezza la zona: cavallo libero, altri cavalli, traffico, ostacoli.\n2. Verificare se la persona risponde.\n3. Verificare se respira normalmente.\n4. Se si sospetta una lesione alla schiena o al collo, non spostarla inutilmente e non chiederle di provare i movimenti.\n5. Non togliere inutilmente il cap se respira normalmente ed è possibile un trauma cranico o cervicale.\n6. Se non respira normalmente, vie aeree e respirazione hanno la priorità: seguire le indicazioni dei soccorsi, e praticare la rianimazione solo se formati.\n7. Chiamare il 999 o il 112 nel Regno Unito.\n8. Continuare a controllare respiro e stato di coscienza fino all'arrivo dei soccorsi.\n9. Dopo un colpo alla testa con sospetta commozione: non si rimonta quel giorno.\n10. Sospetta frattura: non « provare » l'arto e non forzare il movimento.",
+          de:"🟥 DIE REIHENFOLGE, DIE MAN AUSWENDIG KENNEN MUSS: **schützen · Reaktion prüfen · Atmung prüfen · nicht bewegen · Hilfe rufen · weiter überwachen.**\n\n1. Die Stelle sichern: freies Pferd, andere Pferde, Verkehr, Hindernisse.\n2. Prüfen, ob die Person reagiert.\n3. Prüfen, ob sie normal atmet.\n4. Bei Verdacht auf Rücken- oder Halsverletzung nicht unnötig bewegen und nicht ihre Bewegungen testen lassen.\n5. Den Helm nicht unnötig abnehmen, wenn sie normal atmet und eine Kopf- oder Halsverletzung möglich ist.\n6. Atmet sie nicht normal, haben Atemwege und Atmung Vorrang: den Anweisungen des Rettungsdienstes folgen, und Wiederbelebung nur durchführen, wenn man geschult ist.\n7. In Großbritannien 999 oder 112 rufen.\n8. Atmung und Bewusstsein weiter überwachen, bis Hilfe kommt.\n9. Nach einem Schlag auf den Kopf mit Verdacht auf Gehirnerschütterung: an diesem Tag nicht wieder aufsteigen.\n10. Verdacht auf Bruch: das Glied nicht « testen » und die Bewegung nicht erzwingen.",
+          ja:"🟥 暗記しておく手順 — **安全を確保する・反応を確かめる・呼吸を確かめる・動かさない・救急を呼ぶ・観察を続ける。**\n\n1. 現場の安全を確保する。放れ馬、ほかの馬、交通、障害物。\n2. 本人に反応があるか確かめる。\n3. 呼吸が正常かどうか確かめる。\n4. 背中や首の受傷が疑われる場合、不必要に動かさず、動きを試させない。\n5. 呼吸が正常で、頭部や首の受傷の可能性があるなら、ヘルメットを不必要に外さない。\n6. 呼吸が正常でない場合は気道と呼吸が優先。救急の指示に従い、心肺蘇生は訓練を受けている場合にのみ行う。\n7. イギリスでは 999 または 112 に電話する。\n8. 救急が到着するまで、呼吸と意識の状態を観察し続ける。\n9. 頭を打って脳震盪が疑われるときは、その日は馬に乗らない。\n10. 骨折が疑われるときは、手足を「試さず」、動きを無理に確かめない。" } }
 
   ],
 
@@ -526,7 +561,7 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
      LE DIALOGUE D'ÉDIMBOURG — 16 août 2026, session 214.
 
      LA SCÈNE : une cavalière vient de tomber. On l'examine sur place,
-     on appelle, on gère autour. 21 phrases, 6 temps.
+     on appelle, on gère autour. 28 phrases, 6 temps.
 
      🟥 DIX-HUIT PHRASES SUR VINGT-ET-UNE SONT DE BLANDINE.
      🟥 ET L'ORDRE EST LE CONTENU. Ses questions suivent la séquence
@@ -617,13 +652,39 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
         de:"Mein Nacken und mein Rücken tun weh.",
         ja:"首 の 後ろ と 背中 が 痛い です。" },
 
-      { ref:"dm-bouger-tout", temps:2, dit:"joueuse", mots:["bouger-pas"],
-        fr:"Est-ce que tu peux bouger toutes les parties de ton corps ?",
-        en:"Can you move everything?",
-        es:"¿Puedes mover todas las partes del cuerpo?",
-        it:"Riesci a muovere tutte le parti del corpo?",
-        de:"Kannst du alles bewegen?",
-        ja:"体 の どこ も 動かせ ます か ?" },
+      /* 🟥🟥 PHRASE SUPPRIMÉE LE 18/08/2026 SUR DEMANDE DE BLANDINE, et c'est
+         la correction la plus importante de ce lot.
+         L'ANCIENNE DISAIT : « Est-ce que tu peux bouger toutes les parties de
+         ton corps ? » — `ref` `dm-bouger-tout`. On NE DEMANDE PAS à une victime
+         avec suspicion de lésion cervicale ou rachidienne de tester ses
+         mouvements : c'est exactement le geste à éviter.
+         REMPLACÉE PAR DEUX QUESTIONS DE SENSATION, qui donnent la même
+         information sans faire bouger personne, plus la consigne d'attente.
+         Référence pédagogique : St John Ambulance — spinal injury.
+         ⚠️ NE JAMAIS réintroduire `dm-bouger-tout`. */
+      { ref:"dm-sens-bras-jambes", temps:2, dit:"joueuse", mots:["bouger-pas","douleur"],
+        fr:"Est-ce que tu sens normalement tes bras et tes jambes ?",
+        en:"Can you feel your arms and legs normally?",
+        es:"¿Sientes con normalidad los brazos y las piernas?",
+        it:"Senti normalmente le braccia e le gambe?",
+        de:"Spürst du Arme und Beine normal?",
+        ja:"腕 と 脚 は 普通 に 感じ ます か ?" },
+
+      { ref:"dm-fourmillements", temps:2, dit:"joueuse", mots:["bouger-pas","nuque","dos"],
+        fr:"Est-ce que tu as des fourmillements ou des engourdissements ?",
+        en:"Have you got any tingling or numbness?",
+        es:"¿Tienes hormigueo o entumecimiento?",
+        it:"Hai formicolii o intorpidimento?",
+        de:"Hast du ein Kribbeln oder Taubheitsgefühl?",
+        ja:"ぴりぴり する 感じ や、 しびれ は あり ます か ?" },
+
+      { ref:"dm-r-ne-bouge-pas", temps:2, dit:"club", mots:["bouger-pas","secours"],
+        fr:"Ne bouge pas. On attend les secours.",
+        en:"Don't move. We'll wait for the paramedics.",
+        es:"No te muevas. Esperamos a los servicios de emergencia.",
+        it:"Non ti muovere. Aspettiamo i soccorsi.",
+        de:"Beweg dich nicht. Wir warten auf den Rettungsdienst.",
+        ja:"動か ない で。 救急 を 待ち ます。" },
 
       /* ---- temps 3 · la tête ---- */
       { ref:"dm-tete-a-tape", temps:3, dit:"joueuse", mots:["commotion"],
@@ -658,6 +719,25 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
         de:"Sie war ein paar Sekunden ohne Bewusstsein.",
         ja:"数 秒 間、 意識 が あり ませ ん でし た。" },
 
+      /* 🟥 Deux phrases de Blandine, 18/08. La perte de mémoire de la chute est
+         le signe de commotion le plus fiable, et le plus facile à vérifier sans
+         toucher à personne. */
+      { ref:"dm-r-ne-rappelle-pas", temps:3, dit:"club", mots:["perte-memoire","chute"],
+        fr:"Elle ne se rappelle pas de sa chute.",
+        en:"She doesn't remember the fall.",
+        es:"No se acuerda de la caída.",
+        it:"Non si ricorda della caduta.",
+        de:"Sie erinnert sich nicht an den Sturz.",
+        ja:"彼女 は 落馬 を 覚え て い ませ ん。" },
+
+      { ref:"dm-pas-remonter-aujourdhui", temps:3, dit:"joueuse", mots:["ne-pas-remonter","commotion"],
+        fr:"Sa tête a tapé : elle ne remonte pas aujourd'hui.",
+        en:"She hit her head — she's not getting back on today.",
+        es:"Se ha golpeado la cabeza: hoy no vuelve a montar.",
+        it:"Ha battuto la testa: oggi non rimonta.",
+        de:"Sie hat sich den Kopf gestoßen — heute steigt sie nicht wieder auf.",
+        ja:"頭 を 打ち まし た。 今日 は もう 乗り ませ ん。" },
+
       /* ---- temps 4 · les antécédents et le consentement ---- */
       { ref:"dm-problemes-medicaux", temps:4, dit:"joueuse", mots:[],
         fr:"Est-ce que tu as des problèmes médicaux en particulier à signaler ?",
@@ -667,13 +747,20 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
         de:"Hast du Vorerkrankungen, die wir wissen sollten?",
         ja:"伝え て おく べき 病気 や 治療 は あり ます か ?" },
 
-      { ref:"dm-souhaites-urgences", temps:4, dit:"joueuse", mots:["urgence","appeler"],
-        fr:"Est-ce que tu souhaites qu'on appelle les urgences ?",
-        en:"Do you want us to call an ambulance?",
-        es:"¿Quieres que llamemos a urgencias?",
-        it:"Vuoi che chiamiamo il soccorso?",
-        de:"Möchtest du, dass wir den Rettungsdienst rufen?",
-        ja:"救急 を 呼び ましょう か ?" },
+      /* 🟥 PHRASE SUPPRIMÉE LE 18/08 SUR DEMANDE DE BLANDINE : « Est-ce que tu
+         souhaites qu'on appelle les urgences ? » — `ref` `dm-souhaites-urgences`.
+         Quand les signes d'urgence sont déjà là, on n'attend pas l'accord de la
+         victime pour appeler. Posée à quelqu'un de confus après un choc à la
+         tête, la question retarde l'appel.
+         REMPLACÉE par la question des médicaments, utile aux secours.
+         ⚠️ NE PAS la réintroduire. */
+      { ref:"dm-medicaments", temps:4, dit:"joueuse", mots:["medecin"],
+        fr:"Est-ce que tu prends des médicaments ?",
+        en:"Are you on any medication?",
+        es:"¿Tomas algún medicamento?",
+        it:"Prendi dei farmaci?",
+        de:"Nimmst du Medikamente?",
+        ja:"何 か 薬 を 飲ん で い ます か ?" },
 
       { ref:"dm-personne-a-prevenir", temps:4, dit:"joueuse", mots:["telephone"],
         fr:"Où peut-on trouver les coordonnées d'une personne à prévenir ?",
@@ -692,22 +779,50 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
         de:"Ruf den Rettungsdienst.",
         ja:"救急 に 電話 し て ください。" },
 
-      { ref:"dm-composer-numero", temps:5, dit:"joueuse", mots:["numero-urgence"],
-        fr:"Est-ce que quelqu'un peut composer le numéro d'urgence médicale ?",
-        en:"Can someone dial the emergency number?",
-        es:"¿Puede alguien marcar el número de emergencias?",
-        it:"Qualcuno può fare il numero d'emergenza?",
-        de:"Kann jemand die Notrufnummer wählen?",
-        ja:"誰か 緊急 通報 番号 に かけ て もらえ ます か ?" },
+      /* 🟥 18/08 : REMPLACE « est-ce que quelqu'un peut composer le numéro
+         d'urgence médicale ? », trop vague dans une urgence. À Édimbourg, 999 et
+         112 fonctionnent tous les deux. Les autres numéros du monde restent dans
+         la DÉFINITION de `numero-urgence`, pas dans les phrases — demande de
+         Blandine. */
+      { ref:"dm-999-112", temps:5, dit:"joueuse", mots:["numero-urgence","appeler"],
+        fr:"Compose le 999 ou le 112.",
+        en:"Dial 999 or 112.",
+        es:"Marca el 999 o el 112.",
+        it:"Chiama il 999 o il 112.",
+        de:"Wähle 999 oder 112.",
+        ja:"999 か 112 に かけ て。" },
 
       /* 🟥 L'appel, en deux phrases sur sa demande. */
-      { ref:"dm-appel-1", temps:5, dit:"joueuse", mots:["chute","tomber","respirer","perte-memoire"],
-        fr:"J'ai une cavalière qui est tombée de cheval et qui a du mal à respirer. Sa tête a tapé le sol, et elle n'a plus de souvenirs de la chute.",
-        en:"I've got a rider who's come off and is having trouble breathing. She hit her head, and she doesn't remember the fall.",
-        es:"Tengo a una jinete que se ha caído del caballo y le cuesta respirar. Se ha golpeado la cabeza y no recuerda la caída.",
-        it:"Ho una cavaliera caduta da cavallo che fa fatica a respirare. Ha battuto la testa e non ricorda la caduta.",
-        de:"Ich habe eine Reiterin, die vom Pferd gefallen ist und Mühe hat zu atmen. Sie hat sich den Kopf gestoßen und erinnert sich nicht an den Sturz.",
-        ja:"落馬 し た 騎手 が い て、 息 が し にくい 状態 です。 頭 を 地面 に 打ち、 落馬 の こと を 覚え て い ませ ん。" },
+      /* 🟥 18/08 — L'APPEL EST DÉCOUPÉ, sur demande de Blandine : « l'appel doit
+         rester découpé en plusieurs phrases courtes, ne pas refusionner tout en
+         une phrase longue ».
+         L'ancienne `dm-appel-1` enchaînait la chute, la respiration, le choc à la
+         tête et la perte de mémoire dans une seule réplique — impossible à dire
+         au téléphone, et impossible à réutiliser.
+         ⚠️ NE PAS LES REFUSIONNER. */
+      { ref:"dm-appel-tombee", temps:5, dit:"joueuse", mots:["tomber","respirer"],
+        fr:"Une cavalière est tombée de cheval. Elle a du mal à respirer.",
+        en:"A rider has come off her horse. She's having trouble breathing.",
+        es:"Una jinete se ha caído del caballo. Le cuesta respirar.",
+        it:"Una cavallerizza è caduta da cavallo. Fa fatica a respirare.",
+        de:"Eine Reiterin ist vom Pferd gestürzt. Sie hat Mühe zu atmen.",
+        ja:"騎手 が 落馬 し まし た。 呼吸 が 苦し そう です。" },
+
+      { ref:"dm-appel-tete-memoire", temps:5, dit:"joueuse", mots:["commotion","perte-memoire"],
+        fr:"Elle a tapé la tête et elle ne se rappelle pas de sa chute.",
+        en:"She hit her head and she doesn't remember the fall.",
+        es:"Se ha golpeado la cabeza y no se acuerda de la caída.",
+        it:"Ha battuto la testa e non si ricorda della caduta.",
+        de:"Sie hat sich den Kopf gestoßen und erinnert sich nicht an den Sturz.",
+        ja:"頭 を 打ち、 落馬 を 覚え て い ませ ん。" },
+
+      { ref:"dm-appel-adresse", temps:5, dit:"joueuse", mots:["adresse"],
+        fr:"Nous sommes aux écuries. Je vous donne l'adresse exacte.",
+        en:"We're at the stables. I'll give you the exact address.",
+        es:"Estamos en las cuadras. Le doy la dirección exacta.",
+        it:"Siamo alle scuderie. Le do l'indirizzo esatto.",
+        de:"Wir sind am Stall. Ich gebe Ihnen die genaue Adresse.",
+        ja:"厩舎 に い ます。 正確な 住所 を お伝え し ます。" },
 
       { ref:"dm-appel-2", temps:5, dit:"joueuse", mots:["ambulance","adresse"],
         fr:"Il faut envoyer une ambulance rapidement aux écuries.",
@@ -736,13 +851,31 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
         de:"Kann jemand das Pferd einfangen und sich um es kümmern?",
         ja:"誰か 馬 を 捕まえ て、 見 て い て もらえ ます か ?" },
 
-      { ref:"dm-plaie-suture", temps:6, dit:"joueuse", mots:["plaie","sang","points-de-suture"],
-        fr:"La plaie est ouverte, ça saigne. Il se peut qu'il y ait besoin de quelques points de suture.",
-        en:"The cut's open and it's bleeding. It might need a few stitches.",
-        es:"La herida está abierta y sangra. Puede que necesite algunos puntos.",
-        it:"La ferita è aperta e sanguina. Potrebbero servire qualche punto.",
-        de:"Die Wunde ist offen und blutet. Sie braucht vielleicht ein paar Stiche.",
-        ja:"傷 が 開い て 血 が 出 て い ます。 数 針 縫う 必要 が ある かも しれ ませ ん。" }
+      /* 🟥 18/08 : LA SURVEILLANCE CONTINUE, phrase de Blandine. C'est le geste
+         qu'on oublie une fois l'appel passé — et le seul qui permette de dire aux
+         secours que l'état s'aggrave. */
+      { ref:"dm-surveiller", temps:6, dit:"joueuse", mots:["respirer","perdre-connaissance"],
+        fr:"Continue à surveiller sa respiration et son état de conscience.",
+        en:"Keep checking her breathing and level of response.",
+        es:"Sigue vigilando su respiración y su nivel de conciencia.",
+        it:"Continua a controllare il respiro e lo stato di coscienza.",
+        de:"Überwache weiter ihre Atmung und ihr Bewusstsein.",
+        ja:"呼吸 と 意識 の 状態 を 見 続け て。" },
+
+      /* 🟥 18/08 : RÉÉCRITE sur demande de Blandine. L'ancienne disait « il se
+         peut qu'il y ait besoin de quelques points de suture » — un PRONOSTIC,
+         alors que le geste utile sur place est la PRESSION DIRECTE.
+         `points-de-suture` reste au lexique et garde son intérêt de langue
+         (stitches courant / sutures médical).
+         Référence pédagogique : St John Ambulance — bleeding, direct pressure.
+         ⚠️ NE PAS y remettre de pronostic médical. */
+      { ref:"dm-plaie-pression", temps:6, dit:"joueuse", mots:["plaie","sang"],
+        fr:"La plaie est ouverte et elle saigne. Maintenez une pression directe dessus.",
+        en:"The cut is open and bleeding. Keep direct pressure on it.",
+        es:"La herida está abierta y sangra. Mantén una presión directa encima.",
+        it:"La ferita è aperta e sanguina. Mantieni una pressione diretta sopra.",
+        de:"Die Wunde ist offen und blutet. Halte direkten Druck darauf.",
+        ja:"傷 が 開い て 出血 し て い ます。 直接 圧迫 を 続け て ください。" }
     ]
   }
 };
