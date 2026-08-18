@@ -68,12 +68,11 @@
    déclenche le ménage des anciennes versions.
    ================================================================== */
 
-var CACHE = "linguae-v5";   /* 🟥 v5 le 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE, suite (cheval ->
-                               connemara + fontainebleau). hype-lingo-lex-cheval.js RETIRE du
-                               socle, deux fichiers neufs AJOUTES.
-                               v4 : obstacle -> wellington+aachen ; concours -> badminton+oliva+
-                               rome+concours-reserve. v3 : cinq lexiques ajoutes (liberte,
-                               andalou, formation, jeunes, parade). v2 : les trois garde-fous. */
+var CACHE = "linguae-v6";   /* 🟥 v6 le 18/08 : FLYINGE, nouvelle ville (maréchalerie), fichier neuf
+                               ajoute au socle.
+                               v5 : cheval -> connemara + fontainebleau(fusionne dans jeunes). v4 :
+                               obstacle -> wellington+aachen ; concours -> badminton+oliva+rome+
+                               concours-reserve. v3 : cinq lexiques ajoutes. v2 : les trois garde-fous. */
 
 /* 🟥🟥 LE DÉFAUT DU 16/08 — L'APP CASSÉE HORS LIGNE APRÈS UN DÉPLOIEMENT.
    Blandine, revenue de son vol : « j'aurais dû pouvoir accéder sans
@@ -146,7 +145,9 @@ var SOCLE_JS = [
      `hype-lingo-lex-jeunes.js`, deja dans ce socle depuis la v3 — donc
      rien a ajouter pour Fontainebleau ici, tout casserait si on
      dupliquait `jeunes.js`. */
-  "hype-lingo-lex-connemara.js"
+  "hype-lingo-lex-connemara.js",
+  /* 18/08 : Flyinge, 36e ville, « Le pied et la maréchalerie ». */
+  "hype-lingo-lex-flyinge.js"
 ];
 
 /* Le socle : ce qui doit être là même si la ville n'a jamais été

@@ -3814,7 +3814,24 @@ var ETAPES = [
     une seule autre ville. `forme:"lande"` est deja dessinee — pas de
     nouveau SVG a produire pour une etape de plus. */
  {ref:"santaynez", ch:"Le horsemanship", v:"Santa Ynez", nat:"États-Unis",   h:"17 h 45", ciel:["#101418","#E0B27A"], forme:"lande",    souv:"Un hackamore de crin",          ic:"licol"},
- {ref:"spruce",    ch:"Le froid",      v:"Spruce Meadows", nat:"Canada",      h:"18 h 10", ciel:["#0B1420","#8FB4C8"], forme:"lande",    souv:"Une couverture d'hiver",        ic:"seau"}
+ {ref:"spruce",    ch:"Le froid",      v:"Spruce Meadows", nat:"Canada",      h:"18 h 10", ciel:["#0B1420","#8FB4C8"], forme:"lande",    souv:"Une couverture d'hiver",        ic:"seau"},
+ /* 🟥🟥 18/08 : FLYINGE AJOUTÉE, 36e ÉTAPE — sur brief détaillé de
+    Blandine. Insérée ICI, dernière du cycle : 19 h 00 tient entre
+    Spruce Meadows (18 h 10) et La Baule (19 h 30, qui rouvre le cycle),
+    sans toucher une seule autre heure.
+    ⚠️ CHOIX NON VALIDÉS PAR BLANDINE, À REVOIR :
+    · `ciel` : bleu nuit et or, d'après l'image de référence du fer
+      ouvragé qu'elle a envoyée (croix suédoise, couronne, blason).
+    · `forme:"haras"` — réutilisée (Lexington l'a déjà), pas de nouveau
+      SVG à produire, comme le veut la pratique établie pour ce champ.
+    · `ic:"fer"` — réutilisée d'Aberystwyth. Un vrai doublon visible,
+      mais le seul qui ait un sens thématique pour un chapitre de
+      maréchalerie ; aucune icône neuve n'a été demandée ce soir.
+    · `souv:"Un fer à cheval doré"` — cohérent avec l'image envoyée,
+      mais inventé, jamais dit par Blandine.
+    Aucune image (`carte-flyinge.webp`, `fond-flyinge.webp`,
+    `objet-flyinge.webp`) n'existe encore : les replis s'appliquent. */
+ {ref:"flyinge",   ch:"La maréchalerie", v:"Flyinge", nat:"Suède",          h:"19 h 00", ciel:["#111A2E","#C9A227"], forme:"haras",   souv:"Un fer à cheval doré",           ic:"fer"}
 ];
 /* ==================================================================
    TOUTES LES VILLES SONT OUVERTES (7 août 2026)
@@ -3894,6 +3911,9 @@ var I18N_NAT = {
  "France":         {en:"France",  es:"Francia",    it:"Francia",     de:"Frankreich", ja:"フランス"},
  "Espagne":        {en:"Spain",   es:"España",     it:"Spagna",      de:"Spanien",    ja:"スペイン"},
  "Allemagne":      {en:"Germany", es:"Alemania",   it:"Germania",    de:"Deutschland",ja:"ドイツ"},
+ /* 🟥 18/08 : SUÈDE AJOUTÉE pour Flyinge, 36e ville — nation neuve,
+    complétée ici ET dans TH_PAVILLON (les deux endroits obligatoires). */
+ "Suède":          {en:"Sweden",  es:"Suecia",     it:"Svezia",      de:"Schweden",   ja:"スウェーデン"},
  /* ⚠️ LES 9 NATIONS MANQUANTES (v34) : I18N_NAT n'en couvrait que 7 sur
     16, c'est pour ca que la ligne des nations mentait. Completee depuis
     ETAPES. */
@@ -3938,6 +3958,8 @@ var I18N_H = {
  "16 h 30":{en:"4.30 pm", es:"16:30", it:"16:30", de:"16:30 Uhr", ja:"16時30分"},
  "17 h 20":{en:"5.20 pm", es:"17:20", it:"17:20", de:"17:20 Uhr", ja:"17時20分"},
  "18 h 10":{en:"6.10 pm", es:"18:10", it:"18:10", de:"18:10 Uhr", ja:"18時10分"},
+ /* 18/08 : Flyinge, entre Spruce Meadows (18 h 10) et La Baule (19 h 30). */
+ "19 h 00":{en:"7.00 pm", es:"19:00", it:"19:00", de:"19:00 Uhr", ja:"19時"},
  "13 h 05":{en:"1.05 pm", es:"13:05", it:"13:05", de:"13:05 Uhr", ja:"13時5分"},
  "12 h 10":{en:"12.10 pm",es:"12:10", it:"12:10", de:"12:10 Uhr", ja:"12時10分"}
 };
@@ -5096,13 +5118,22 @@ var TH_FAMILLES = [
      famille passe donc de 4 à 5 clés, et le compteur de thèmes de 22 à
      23. Rien d'autre à toucher : tuiles, onglets et ancres se génèrent
      depuis cette table. */
+  /* 🟥🟥 18/08 : RÉGRESSION TROUVÉE ET CORRIGÉE. Cette table utilisait
+     encore les anciennes clés `cheval`, `obstacle`, `concours` après
+     leur découpage en fichiers par ville — `thVillesDe(cle)` cherche
+     une correspondance EXACTE dans `ETAPE_SRC`, donc Wellington, Aachen,
+     Badminton, Oliva, Rome et Connemara avaient disparu de cet écran de
+     thèmes (invisibles, mais toujours jouables par la carte). `jeunes`
+     (Fontainebleau) et `flyinge` ajoutées dans la foulée.
+     ⚠️ Toujours pas dedans : `liberte` (Taupō). Gap antérieur à ce
+     soir, non corrigé ici — à trancher avec Blandine. */
   { cles:["arrivee","balade","urgences-vet","urgences-med","vente"],
     nom:{fr:"Au club", en:"At the club", es:"En el club", it:"Al club", de:"Im Verein", ja:"クラブで"} },
-  { cles:["pansage","materiel","ecurie","cheval","horsemanship","elevage","haras"],
+  { cles:["pansage","materiel","ecurie","connemara","jeunes","flyinge","horsemanship","elevage","haras"],
     nom:{fr:"À pied", en:"On the ground", es:"A pie", it:"Da terra", de:"Am Boden", ja:"地上から"} },
-  { cles:["cours","dressage","obstacle","froid"],
+  { cles:["cours","dressage","wellington","aachen","froid"],
     nom:{fr:"À cheval", en:"In the saddle", es:"A caballo", it:"In sella", de:"Im Sattel", ja:"馬上で"} },
-  { cles:["concours","cross"],
+  { cles:["badminton","oliva","rome","cross"],
     nom:{fr:"Le concours", en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会"} },
   { cles:["poney","polo","western","endurance","tradition"],
     nom:{fr:"Les disciplines", en:"The disciplines", es:"Las disciplinas", it:"Le discipline", de:"Die Disziplinen", ja:"各種目"} }
@@ -5168,6 +5199,8 @@ var TH_PAVILLON = {
   "Japon":"\uD83C\uDDEF\uD83C\uDDF5", "Australie":"\uD83C\uDDE6\uD83C\uDDFA",
   "Argentine":"\uD83C\uDDE6\uD83C\uDDF7", "\u00c9tats-Unis":"\uD83C\uDDFA\uD83C\uDDF8",
   "Canada":"\uD83C\uDDE8\uD83C\uDDE6",
+  /* 18/08 : Suède, pour Flyinge. */
+  "Suède":"\uD83C\uDDF8\uD83C\uDDEA",
   "Nouvelle-Z\u00e9lande":"\uD83C\uDDF3\uD83C\uDDFF",
   "Angleterre":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
   "\u00c9cosse":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC73\uDB40\uDC63\uDB40\uDC74\uDB40\uDC7F",
@@ -7025,7 +7058,11 @@ var ETAPE_SRC = {
      ⚠️ NE PAS lui donner de leçon d'un autre fichier : ses quatre rappels
      reprennent les `ref` du Morne et de Santa Ynez, ils arrivent donc déjà
      acquis sans qu'aucune leçon ne soit partagée. */
-  taupo:       [["liberte",1]]
+  taupo:       [["liberte",1]],
+  /* 🟥 18/08 : FLYINGE, 36e ville, chapitre « Le pied et la maréchalerie ».
+     `marechal` et `fer` réutilisés depuis `connemara.js` via motsAilleurs
+     dans le dialogue — pas recréés ici. */
+  flyinge:     [["flyinge",1]]
 };
 
 /* Le texte d'accueil d'un chapitre se choisit par le fichier source majoritaire,
@@ -7039,7 +7076,21 @@ var ACCUEIL_VILLE = { labaule:"arrivee", edimbourg:"dialogues", lamotte:"poney",
                          ⚠️ CETTE TABLE EST DISTINCTE DE `ETAPE_SRC` : elle dit ce qu'on ANNONCE
                          au joueur à l'arrivée, pas où les mots sont pris. Les deux doivent
                          rester d'accord — c'est un piège, il y a DEUX endroits à changer. */
-                      vejer:"materiel", oliva:"concours", warendorf:"formation", aachen:"obstacle" };
+                      vejer:"materiel", oliva:"concours", warendorf:"formation", aachen:"obstacle",
+                      /* 🟥🟥 18/08 : RÉGRESSION TROUVÉE ET CORRIGÉE, même défaut que La Baule
+                         avant sa correction — un mot d'accueil manquant ne plante rien, il
+                         disparaît juste en silence (`if(acc)` à la ligne du rendu). Sans ces
+                         deux lignes, `ACCUEIL_CHAP["wellington"]` et `["connemara"]` sont
+                         introuvables puisque ces clés n'ont jamais existé dans cette table :
+                         Wellington et Connemara entraient dans leur leçon sans un mot. Les
+                         textes repris sont ceux qui existaient déjà, pile ajustés au contenu
+                         réel de chaque ville. */
+                      wellington:"obstacle", connemara:"cheval",
+                      /* ⚠️ BADMINTON ET FLYINGE N'ONT AUCUN TEXTE EXISTANT À REPRENDRE — leur
+                         contenu ne recoupe aucun texte déjà écrit pour une autre ville. Deux
+                         entrées créées ci-dessous dans ACCUEIL_CHAP : CE SONT DES BROUILLONS
+                         DE CLAUDE, jamais vus par Blandine, à valider ou réécrire. */
+                      badminton:"badminton", flyinge:"flyinge" };
 
 /* Construit le chapitre d'une ville en assemblant ses leçons sources.
    Les concepts sont copiés en surface et renumérotés 1..n : le reste du
@@ -7983,6 +8034,12 @@ var COLL_NOM = {
   mots:{fr:"Les mots qui sauvent", en:"The words that save", es:"Las palabras que salvan", it:"Le parole che salvano", de:"Die Worte, die retten", ja:"命を救う言葉"}
 };
 var ACCUEIL_CHAP = {
+  /* 🟥🟥 18/08 : DEUX ENTRÉES AJOUTÉES, BROUILLONS NON VALIDÉS PAR BLANDINE.
+     Sans elles, Badminton et Flyinge affichaient leur leçon sans le mot
+     manuscrit sous le titre — même défaut silencieux que La Baule avant
+     sa correction. Le texte est provisoire, à revoir ou réécrire. */
+  badminton:{fr:"Le concours complet : le cross, le barème, le classement provisoire.", en:"Eventing: the cross-country, the scoring, the running order.", es:"El concurso completo: el cross, el bareme, la clasificación provisional.", it:"Il concorso completo: il cross, il bareme, la classifica provvisoria.", de:"Die Vielseitigkeit: das Gelände, die Wertung, die Zwischenrangliste.", ja:"総合馬術 — クロスカントリー、採点、暫定順位。"},
+  flyinge:{fr:"Le pied et la maréchalerie : parer, ferrer, comprendre les choix du maréchal.", en:"The foot and farriery: trimming, shoeing, understanding the farrier's choices.", es:"El casco y la herrería: recortar, herrar, comprender las decisiones del herrador.", it:"Lo zoccolo e la maniscalcheria: pareggiare, ferrare, capire le scelte del maniscalco.", de:"Der Huf und der Hufbeschlag: bearbeiten, beschlagen, die Entscheidungen des Hufschmieds verstehen.", ja:"蹄と装蹄 — 削蹄、装蹄、装蹄師の判断を理解する。"},
   cross:{fr:"Le terrain et son équipement : les obstacles fixes, les crampons, la toque, le chronomètre.", en:"The country and its kit: the fixed fences, the studs, the hat cover, the stopwatch.", es:"El terreno y su equipo: los obstáculos fijos, los tacos, la funda del casco, el cronómetro.", it:"Il terreno e il suo equipaggiamento: gli ostacoli fissi, i ramponi, la copertura del casco, il cronometro.", de:"Das Gelände und seine Ausrüstung: die festen Hindernisse, die Stollen, der Helmbezug, die Stoppuhr.", ja:"クロスの地形と装備 — 固定障害、スタッド、ヘルメットカバー、ストップウォッチ。"},
   /* `balade` : le chapitre du Morne. `arrivee` : celui de La Baule, qui
      n'avait AUCUN mot d'accueil depuis qu'elle est devenue l'étape 1 —
