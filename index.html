@@ -234,7 +234,7 @@ async function listerMesConversations() {
 
     // profils des autres participants (pour les DM)
     const autresIds = (tousParticipants || []).map(function (p) { return p.utilisateur_id; }).filter(function (id) { return id !== user.id; });
-    const { data: profils } = autresIds.length ? await supa.from("profiles").select("id, pseudo, avatar_url").in("id", autresIds) : { data: [] };
+    const { data: profils } = autresIds.length ? await supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", autresIds) : { data: [] };
     const profilParId = {}; (profils || []).forEach(function (p) { profilParId[p.id] = p; });
 
     const out = [];
@@ -379,7 +379,7 @@ async function listerCommentairesPhoto(photoUrl) {
     const lignes = (r && r.data) || [];
     const ids = lignes.map(function (l) { return l.user_id; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; });
     if (!ids.length) return { data: lignes, error: r && r.error };
-    const p = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", ids);
+    const p = await supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", ids);
     const parId = {}; ((p && p.data) || []).forEach(function (pp) { parId[pp.id] = pp; });
     return { data: lignes.map(function (l) { return Object.assign({}, l, { profil: parId[l.user_id] || null }); }), error: r && r.error };
   } catch (e) { return { data: [], error: e }; }
@@ -490,6 +490,72 @@ function hypeHandleNormalise(src) {
 }
 /* « @ambre », ou chaine vide si le cavalier n a pas encore d identifiant.
    Accepte un profil entier ou un identifiant nu. */
+/* ═══════════════════════════════════════════════════════════════════════════
+   18/08/2026 — CHANGER SON IDENTIFIANT ET SON NOM (feu vert de Blandine)
+
+   L app ne DECIDE de rien : elle demande, la base tranche. Les deux
+   fonctions SQL (hype_changer_handle, hype_changer_pseudo) portent la
+   regle complete — format, mots interdits, reservations, quota. Ici on ne
+   fait que transmettre et traduire la reponse.
+
+   POURQUOI PAS majProfil : hype_handles_reserves est en RLS lecture seule.
+   Une ecriture directe depuis le telephone ne peut PAS poser la reservation
+   de six mois, donc l ancien identifiant redeviendrait libre a l instant —
+   exactement ce que Blandine voulait empecher.
+
+   Quotas decides le 18/08 : identifiant 30 jours, nom affiche 7 jours,
+   premier changement gratuit dans les deux cas.
+   ═══════════════════════════════════════════════════════════════════════ */
+async function hypeAppelChangement(fonction, valeur) {
+  try {
+    if (typeof supa === "undefined") return { ok: false, code: "reseau" };
+    var r = await supa.rpc(fonction, { nouveau: String(valeur == null ? "" : valeur) });
+    if (r && r.error) return { ok: false, code: "reseau", detail: r.error };
+    var d = r && r.data ? r.data : null;
+    if (!d) return { ok: false, code: "reseau" };
+    return d;
+  } catch (e) { return { ok: false, code: "reseau" }; }
+}
+/* Traduit un code de la base en phrase lisible, dans la langue du cavalier.
+   `prochain` est la date lue dans la reponse, pour dire QUAND ce sera possible. */
+function hypeMessageChangement(code, langue, prochain) {
+  var lg = String(langue || "fr");
+  var jours = "";
+  try {
+    if (prochain) {
+      var d = Math.ceil((new Date(prochain) - new Date()) / 86400000);
+      if (d > 0) jours = String(d);
+    }
+  } catch (eJ) { }
+  var M = {
+    format:       { fr: "Trop court, ou aucun caractère utilisable.", en: "Too short, or no usable characters.", es: "Demasiado corto o sin caracteres utilizables.", it: "Troppo corto o senza caratteri utilizzabili.", ja: "短すぎるか、使える文字がありません。", de: "Zu kurz oder keine verwendbaren Zeichen." },
+    interdit:     { fr: "Cet identifiant est réservé par Hype.", en: "This handle is reserved by Hype.", es: "Este identificador está reservado por Hype.", it: "Questo identificativo è riservato da Hype.", ja: "この ID は Hype が予約しています。", de: "Diese Kennung ist von Hype reserviert." },
+    reserve:      { fr: "Cet identifiant appartenait à quelqu'un : il reste réservé quelque temps.", en: "This handle belonged to someone: it stays reserved for a while.", es: "Este identificador era de alguien: sigue reservado un tiempo.", it: "Questo identificativo era di qualcuno: resta riservato per un po'.", ja: "この ID は以前の利用者のため、しばらく予約されています。", de: "Diese Kennung gehörte jemandem und bleibt eine Weile reserviert." },
+    pris:         { fr: "Déjà pris par un autre cavalier.", en: "Already taken by another rider.", es: "Ya lo usa otro jinete.", it: "Già preso da un altro cavaliere.", ja: "他の騎手が使用中です。", de: "Bereits von einem anderen Reiter vergeben." },
+    identique:    { fr: "C'est déjà le tien.", en: "That's already yours.", es: "Ya es el tuyo.", it: "È già il tuo.", ja: "すでにあなたのものです。", de: "Das ist bereits deins." },
+    non_connecte: { fr: "Connecte-toi pour modifier ça.", en: "Sign in to change this.", es: "Inicia sesión para cambiarlo.", it: "Accedi per modificarlo.", ja: "変更するにはログインしてください。", de: "Melde dich an, um das zu ändern." },
+    reseau:       { fr: "Impossible pour l'instant. Réessaie.", en: "Not possible right now. Try again.", es: "No es posible ahora. Inténtalo de nuevo.", it: "Non è possibile ora. Riprova.", ja: "現在できません。もう一度お試しください。", de: "Gerade nicht möglich. Versuche es erneut." }
+  };
+  if (code === "trop_tot") {
+    var TT = {
+      fr: jours ? ("Encore " + jours + " jour" + (jours === "1" ? "" : "s") + " avant de pouvoir le changer.") : "Pas encore possible.",
+      en: jours ? (jours + " more day" + (jours === "1" ? "" : "s") + " before you can change it.") : "Not possible yet.",
+      es: jours ? ("Faltan " + jours + " día" + (jours === "1" ? "" : "s") + " para cambiarlo.") : "Todavía no es posible.",
+      it: jours ? ("Ancora " + jours + " giorno" + (jours === "1" ? "" : "i") + " prima di cambiarlo.") : "Non ancora possibile.",
+      ja: jours ? ("変更できるまであと " + jours + " 日です。") : "まだ変更できません。",
+      de: jours ? ("Noch " + jours + " Tag" + (jours === "1" ? "" : "e") + " bis zur nächsten Änderung.") : "Noch nicht möglich."
+    };
+    return TT[lg] || TT.fr;
+  }
+  var e = M[code] || M.reseau;
+  return e[lg] || e.fr;
+}
+try {
+  if (typeof window !== "undefined") {
+    window.hypeAppelChangement = hypeAppelChangement;
+    window.hypeMessageChangement = hypeMessageChangement;
+  }
+} catch (eHC) { }
 function hypeHandleTexte(x) {
   try {
     var v = (x && typeof x === "object") ? (x.handle || "") : x;
@@ -822,7 +888,7 @@ async function membresAlbum(albumId) {
   try { var r = await supa.from("albums_membres").select("*").eq("album_id", albumId);
     var ms = (r && r.data) || []; var ids = ms.map(function (m) { return m.user_id; });
     if (!ids.length) return { data: [], error: null };
-    var p = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", ids);
+    var p = await supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", ids);
     var parId = {}; ((p && p.data) || []).forEach(function (pp) { parId[pp.id] = pp; });
     return { data: ms.map(function (m) { return Object.assign({}, m, { profil: parId[m.user_id] || null }); }), error: null };
   } catch (e) { return { data: [], error: String(e) }; }
@@ -1200,7 +1266,7 @@ async function fil({ seulementSuivis = false } = {}) {
 
   // 2) les profils des auteurs (une seule requête)
   const idsAuteurs = [...new Set(resultats.map(r => r.user_id))];
-  const { data: profils } = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", idsAuteurs);
+  const { data: profils } = await supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", idsAuteurs);
   const parId = {};
   (profils || []).forEach(p => { parId[p.id] = p; });
 
@@ -1516,7 +1582,7 @@ async function listerCommentaires(cible) {
   if (error) return { data: [], error };
   const ids = [...new Set((data || []).map(c => c.user_id))];
   let parId = {};
-  if (ids.length) { const { data: profs } = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", ids); (profs || []).forEach(pp => { parId[pp.id] = pp; }); }
+  if (ids.length) { const { data: profs } = await supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", ids); (profs || []).forEach(pp => { parId[pp.id] = pp; }); }
   const liste = (data || []).map(c => Object.assign({}, c, { auteur: parId[c.user_id] || { pseudo: "Cavalier", avatar_url: null } }));
   return { data: liste, error: null };
 }
@@ -21538,6 +21604,7 @@ function Router() {
                 (ecran === "messagerie" || ecran === "messagerie-fil") && React.createElement(EcranMessagerie, null),
                 ),
                 React.createElement(OverlayQuoiDeNeuf, null),
+                React.createElement(InvitationIdentifiant, null),
                 React.createElement(InvitationsEcurieHype, null),
                 showNav && React.createElement(NavBar, null)))));
 }
@@ -24742,6 +24809,16 @@ function EcranMonCompte() {
   var stMsg = useState(null); var msg = stMsg[0], setMsg = stMsg[1];            /* { t:"err"|"ok", x:"…" } */
   var stB = useState(false); var busy = stB[0], setBusy = stB[1];
   var stV = useState(false); var voirMdp = stV[0], setVoirMdp = stV[1];
+  /* 18/08 — L IDENTIFIANT SE CHANGE ICI ET NULLE PART AILLEURS.
+     Decision de Blandine : « l'identifiant c'est plutot sur le compte qu'on
+     le change ». La page Cavalier reste une vitrine, Mon compte est l atelier.
+     `hEtape` : "" (ferme) | "saisie" | "confirme". L ecran de confirmation
+     montre l avant et l apres en toutes lettres — une fois valide, le
+     changement gratuit est consomme, meme si on regrette la seconde d apres. */
+  var stH  = useState("");    var hEtape = stH[0], setHEtape = stH[1];
+  var stHv = useState("");    var hSaisie = stHv[0], setHSaisie = stHv[1];
+  var stHm = useState(null);  var hMsg = stHm[0], setHMsg = stHm[1];
+  var stHb = useState(false); var hOccupe = stHb[0], setHOccupe = stHb[1];
 
   useEffect(function () {
     if (!dispo) { setUser(null); return; }
@@ -24821,6 +24898,18 @@ function EcranMonCompte() {
       React.createElement("div", { style: { width: 86, height: 86, borderRadius: "50%", background: "rgba(32,217,245,0.185)", border: "1px solid rgba(32,217,245,0.82)", boxShadow: "0 0 34px rgba(32,217,245,0.407)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel', serif", fontSize: 34, color: COLORS.turquoise, marginBottom: 10 } }, initiale),
       nom ? React.createElement("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 26, fontWeight: 600, letterSpacing: 1.5, color: COLORS.blanc, textAlign: "center" } }, nom) : null,
       React.createElement("div", { style: { fontSize: 13, color: COLORS.grisDoux } }, user.email || ""),
+      /* 18/08 : l identifiant unique et son acces au changement. Ne s affiche
+         que s il existe — un compte charge avant le passage du SQL n a pas la
+         colonne, et il ne doit alors rien se passer plutot qu un « @undefined ». */
+      (function () {
+        var txtH = "";
+        try { txtH = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(profil || {}) : ""; } catch (eH) { }
+        if (!txtH) return null;
+        return React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginTop: 4 } },
+          React.createElement("span", { style: { fontSize: 13.5, color: COLORS.blanc, fontFamily: "'Montserrat', sans-serif", letterSpacing: "0.02em" } }, txtH),
+          React.createElement("button", { onClick: function () { setHSaisie(String((profil && profil.handle) || "")); setHMsg(null); setHEtape("saisie"); }, style: { background: "none", border: "1px solid rgba(32,217,245,0.4)", borderRadius: 999, color: COLORS.turquoise, fontSize: 11, fontWeight: 700, padding: "4px 11px", cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
+            tr({ fr: "Modifier", en: "Change", es: "Cambiar", it: "Modifica", ja: "\u5909\u66f4", de: "\u00c4ndern" })));
+      })(),
       (profil && profil.ecurie) ? React.createElement("div", { style: { fontSize: 13, color: COLORS.grisDoux, marginTop: 2 } }, T.ecurie + " · " + profil.ecurie) : null,
       (profil && profil.ville) ? React.createElement("div", { style: { fontSize: 13, color: COLORS.grisDoux } }, T.ville + " · " + profil.ville) : null,
       React.createElement("div", { style: { fontSize: 11.5, letterSpacing: 2, textTransform: "uppercase", color: COLORS.turquoise, marginTop: 16 } }, "\u2713 " + T.connecteA),
@@ -24835,7 +24924,79 @@ function EcranMonCompte() {
       React.createElement("button", { onClick: function () { setEcran("dashboard"); }, style: { marginTop: 28, padding: "13px 34px", borderRadius: 999, background: COLORS.turquoise, border: "none", color: "#04252A", fontSize: 14.5, fontWeight: 800, cursor: "pointer" } }, T.retourAccueil),
       React.createElement("button", { onClick: sortir, style: { marginTop: 12, padding: "12px 30px", borderRadius: 999, background: "none", border: "1px solid rgba(255,255,255,0.18)", color: COLORS.grisDoux, fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: busy ? 0.55 : 1 } }, T.deconnexion),
       React.createElement("button", { onClick: function () { setVoirSuppr(true); }, style: { marginTop: 18, background: "none", border: "none", color: COLORS.grisTresDoux, fontSize: 12.5, fontFamily: "'Montserrat', sans-serif", textDecoration: "underline", cursor: "pointer", padding: 8 } }, (SUPPR_I18N[langue] || SUPPR_I18N.fr).lien),
-      React.createElement(LienQuoiDeNeuf, { compte: true }));
+      React.createElement(LienQuoiDeNeuf, { compte: true }),
+      /* ═══════════════════════════════════════════════════════════════════
+         18/08 — L ECRAN DE CHANGEMENT D IDENTIFIANT.
+         Deux temps VOLONTAIRES. Le second n est pas une politesse : valider
+         consomme le changement gratuit, et rien ne le rend. On montre donc
+         l avant et l apres en toutes lettres avant d ecrire.
+         Le libelle dit « rarement modifiable », JAMAIS « definitif » —
+         decision explicite de Blandine : promettre le definitif serait faux,
+         puisqu un changement reste possible tous les 30 jours.
+         ═══════════════════════════════════════════════════════════════════ */
+      hEtape ? React.createElement("div", { onClick: function () { if (!hOccupe) { setHEtape(""); setHMsg(null); } }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.82)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 74px) 0 0" } },
+        React.createElement("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 370, borderRadius: 20, border: "1px solid rgba(32,217,245,0.34)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px", boxSizing: "border-box" } },
+          React.createElement("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 15, letterSpacing: 1.6, color: COLORS.blanc, textAlign: "center", textTransform: "uppercase", marginBottom: 6 } },
+            tr({ fr: "Mon identifiant", en: "My handle", es: "Mi identificador", it: "Il mio identificativo", ja: "\u79c1\u306e ID", de: "Meine Kennung" })),
+
+          (hEtape === "saisie") ? React.createElement(React.Fragment, null,
+            React.createElement("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 8px", lineHeight: 1.5 } },
+              tr({ fr: "C'est ton adresse dans Hype. Elle n'existe qu'une fois, et se modifie rarement.", en: "It's your address inside Hype. It exists only once, and rarely changes.", es: "Es tu direcci\u00f3n en Hype. Existe una sola vez y se cambia pocas veces.", it: "\u00c8 il tuo indirizzo in Hype. Esiste una sola volta e cambia raramente.", ja: "Hype \u3067\u306e\u3042\u306a\u305f\u306e\u4f4f\u6240\u3067\u3059\u3002\u4e00\u3064\u3060\u3051\u3067\u3001\u307e\u308c\u306b\u3057\u304b\u5909\u66f4\u3067\u304d\u307e\u305b\u3093\u3002", de: "Das ist deine Adresse in Hype. Sie existiert nur einmal und \u00e4ndert sich selten." })),
+            React.createElement("p", { style: { color: "#C9A44A", fontSize: 11.5, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } },
+              tr({ fr: "Un seul changement est offert. Ensuite, 30 jours entre deux changements.", en: "One change is free. After that, 30 days between changes.", es: "Un cambio es gratuito. Despu\u00e9s, 30 d\u00edas entre cambios.", it: "Un cambio \u00e8 offerto. Poi, 30 giorni tra due cambi.", ja: "\u5909\u66f4\u306f1\u56de\u7121\u6599\u3067\u3059\u3002\u305d\u306e\u5f8c\u306f30\u65e5\u9593\u306e\u9593\u9694\u304c\u5fc5\u8981\u3067\u3059\u3002", de: "Eine \u00c4nderung ist gratis. Danach 30 Tage zwischen \u00c4nderungen." })),
+            React.createElement("input", { value: hSaisie, onChange: function (eI) { setHSaisie(eI.target.value); setHMsg(null); }, maxLength: 24, autoCapitalize: "none", autoCorrect: "off", spellCheck: false, placeholder: "@\u2026", style: { width: "100%", boxSizing: "border-box", padding: "13px 14px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: COLORS.blanc, fontSize: 15, fontFamily: "'Montserrat', sans-serif", outline: "none" } }),
+            /* Apercu : ce que la BASE en fera. Simple prediction — la verite
+               reste celle du serveur, et le message d erreur le dira. */
+            (function () {
+              var apercu = "";
+              try { apercu = (typeof hypeHandleNormalise === "function") ? hypeHandleNormalise(hSaisie) : ""; } catch (eN) { }
+              if (!apercu) return null;
+              return React.createElement("p", { style: { color: COLORS.turquoise, fontSize: 12.5, textAlign: "center", margin: "10px 0 0", fontFamily: "'Montserrat', sans-serif" } }, "@" + apercu);
+            })(),
+            hMsg ? React.createElement("p", { style: { color: "#F0A0A0", fontSize: 12, textAlign: "center", margin: "10px 0 0", lineHeight: 1.45 } }, hMsg) : null,
+            React.createElement("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
+              React.createElement("button", { onClick: function () { setHEtape(""); setHMsg(null); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer" } },
+                tr({ fr: "Annuler", en: "Cancel", es: "Cancelar", it: "Annulla", ja: "\u30ad\u30e3\u30f3\u30bb\u30eb", de: "Abbrechen" })),
+              React.createElement("button", { onClick: function () {
+                  var a = "";
+                  try { a = (typeof hypeHandleNormalise === "function") ? hypeHandleNormalise(hSaisie) : ""; } catch (eN2) { }
+                  if (!a) { setHMsg((typeof hypeMessageChangement === "function") ? hypeMessageChangement("format", langue) : ""); return; }
+                  setHMsg(null); setHEtape("confirme");
+                }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer" } },
+                tr({ fr: "Continuer", en: "Continue", es: "Continuar", it: "Continua", ja: "\u7d9a\u3051\u308b", de: "Weiter" })))
+          ) : React.createElement(React.Fragment, null,
+            React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 12, margin: "16px 0 6px" } },
+              React.createElement("span", { style: { fontSize: 14.5, color: "#7A838D", textDecoration: "line-through", fontFamily: "'Montserrat', sans-serif" } }, (typeof hypeHandleTexte === "function") ? hypeHandleTexte(profil || {}) : ""),
+              React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 16 } }, "\u2192"),
+              React.createElement("span", { style: { fontSize: 16, color: COLORS.turquoise, fontWeight: 700, fontFamily: "'Montserrat', sans-serif" } }, "@" + ((typeof hypeHandleNormalise === "function") ? hypeHandleNormalise(hSaisie) : ""))),
+            React.createElement("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "12px 0 0", lineHeight: 1.5 } },
+              tr({ fr: "Ton ancien identifiant restera r\u00e9serv\u00e9 six mois : personne ne pourra le prendre.", en: "Your former handle stays reserved for six months: nobody can take it.", es: "Tu identificador anterior queda reservado seis meses: nadie podr\u00e1 tomarlo.", it: "Il tuo vecchio identificativo resta riservato sei mesi: nessuno potr\u00e0 prenderlo.", ja: "\u4ee5\u524d\u306e ID \u306f6\u30f6\u6708\u4e88\u7d04\u3055\u308c\u3001\u8ab0\u3082\u4f7f\u3048\u307e\u305b\u3093\u3002", de: "Deine alte Kennung bleibt sechs Monate reserviert: niemand kann sie nehmen." })),
+            React.createElement("p", { style: { color: "#C9A44A", fontSize: 11.5, textAlign: "center", margin: "8px 0 0", lineHeight: 1.5 } },
+              tr({ fr: "Tu pourras le changer \u00e0 nouveau dans 30 jours.", en: "You'll be able to change it again in 30 days.", es: "Podr\u00e1s cambiarlo de nuevo en 30 d\u00edas.", it: "Potrai cambiarlo di nuovo tra 30 giorni.", ja: "\u6b21\u306e\u5909\u66f4\u306f30\u65e5\u5f8c\u304b\u3089\u3067\u3059\u3002", de: "Du kannst sie in 30 Tagen erneut \u00e4ndern." })),
+            hMsg ? React.createElement("p", { style: { color: "#F0A0A0", fontSize: 12, textAlign: "center", margin: "12px 0 0", lineHeight: 1.45 } }, hMsg) : null,
+            React.createElement("div", { style: { display: "flex", gap: 10, marginTop: 18 } },
+              React.createElement("button", { onClick: function () { if (!hOccupe) { setHEtape("saisie"); setHMsg(null); } }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer" } },
+                tr({ fr: "Retour", en: "Back", es: "Atr\u00e1s", it: "Indietro", ja: "\u623b\u308b", de: "Zur\u00fcck" })),
+              React.createElement("button", { onClick: function () {
+                  if (hOccupe) return;
+                  setHOccupe(true); setHMsg(null);
+                  (async function () {
+                    var r = { ok: false, code: "reseau" };
+                    try { if (typeof hypeAppelChangement === "function") r = await hypeAppelChangement("hype_changer_handle", hSaisie); } catch (eC) { }
+                    setHOccupe(false);
+                    if (r && r.ok) {
+                      var v = r.handle || "";
+                      setProfil(function (pp) { return Object.assign({}, pp || {}, { handle: v, handle_a_valider: false }); });
+                      try { if (typeof setProfilApp === "function") setProfilApp(function (pp) { return Object.assign({}, pp || {}, { handle: v, handle_a_valider: false }); }); } catch (eS) { }
+                      setHEtape(""); setHSaisie(""); setHMsg(null);
+                      return;
+                    }
+                    setHMsg((typeof hypeMessageChangement === "function") ? hypeMessageChangement(r && r.code, langue, r && r.prochain_le) : "");
+                    if (r && (r.code === "pris" || r.code === "reserve" || r.code === "interdit" || r.code === "format")) setHEtape("saisie");
+                  })();
+                }, disabled: hOccupe, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: hOccupe ? "default" : "pointer", opacity: hOccupe ? 0.55 : 1 } },
+                tr({ fr: "Confirmer", en: "Confirm", es: "Confirmar", it: "Conferma", ja: "\u78ba\u5b9a", de: "Best\u00e4tigen" })))
+          ))) : null);
   } else {
     var ins = (mode === "inscription");
     corps = React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 0, paddingTop: 12 } },
@@ -25283,12 +25444,33 @@ function EcranMonCavalier() {
   var ecSt = React.useState(false); var editClub = ecSt[0], setEditClub = ecSt[1];
   var psSt = React.useState(false); var editPseudo = psSt[0], setEditPseudo = psSt[1];
   var plSt = React.useState(""); var pseudoLocal = plSt[0], setPseudoLocal = plSt[1];
+  var pmSt = React.useState(null); var msgPseudo = pmSt[0], setMsgPseudo = pmSt[1];
+  var pbSt = React.useState(false); var occupePseudo = pbSt[0], setOccupePseudo = pbSt[1];
+  /* 18/08 : le renommage passe DESORMAIS par hype_changer_pseudo.
+     Blandine : « il peut se renommer et aller poster partout, c'est pas
+     acceptable ». Premier changement gratuit, puis 7 jours. La regle vit en
+     base ; ici on affiche seulement ce qu'elle repond. L ecran ne se ferme
+     plus tout seul : en cas de refus le cavalier doit lire pourquoi. */
   function sauverPseudo() {
     var nom = (pseudoLocal || "").trim();
     if (!nom) { setEditPseudo(false); return; }
-    setProfil(function (pp) { return Object.assign({}, pp, { prenom: nom, pseudo: nom }); });
-    try { if (typeof majProfil === "function" && typeof supa !== "undefined") majProfil({ pseudo: nom }).catch(function () { }); } catch (eP) { }
-    setEditPseudo(false);
+    if (occupePseudo) return;
+    setOccupePseudo(true); setMsgPseudo(null);
+    (async function () {
+      var r = { ok: false, code: "reseau" };
+      try { if (typeof hypeAppelChangement === "function") r = await hypeAppelChangement("hype_changer_pseudo", nom); } catch (eA) { }
+      setOccupePseudo(false);
+      if (r && r.ok) {
+        var v = r.pseudo || nom;
+        setProfil(function (pp) { return Object.assign({}, pp, { prenom: v, pseudo: v }); });
+        setMsgPseudo(null); setEditPseudo(false);
+        return;
+      }
+      if (r && r.code === "identique") { setEditPseudo(false); return; }
+      var lgP = "fr"; try { lgP = (ctx && ctx.langue) ? ctx.langue : "fr"; } catch (eL) { }
+      setMsgPseudo((typeof hypeMessageChangement === "function")
+        ? hypeMessageChangement(r && r.code, lgP, r && r.prochain_le) : "");
+    })();
   }
   var elSt = React.useState({ club: profil.club || "" }); var clubLocal = elSt[0], setClubLocal = elSt[1];
   function sauverClub(nomForce) {
@@ -25703,10 +25885,16 @@ function EcranMonCavalier() {
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon pseudo", "My username", "Mi seud\u00f3nimo", "Il mio pseudonimo", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0")),
         h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("C'est le nom que verront les autres cavaliers.", "This is the name other riders will see.", "Es el nombre que ver\u00e1n los dem\u00e1s jinetes.", "\u00c8 il nome che vedranno gli altri cavalieri.", "\u4ed6\u306e\u9a0e\u624b\u306b\u8868\u793a\u3055\u308c\u308b\u540d\u524d\u3067\u3059\u3002")),
+        /* 18/08 (demande de Blandine) : « quand les gens cliquent, il faut
+           qu'il y ait une petite phrase pour expliquer qu'il y a qu'un
+           changement gratuit ». Elle est posee AVANT la saisie, pas apres :
+           un avertissement lu apres coup ne sert a rien. */
+        h("p", { style: { color: "#C9A44A", fontSize: 11.5, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5, fontFamily: "'Montserrat',sans-serif" } }, T("Un seul changement est offert. Ensuite, il faudra attendre 7 jours entre deux changements.", "One change is free. After that, you'll need to wait 7 days between changes.", "Un cambio es gratuito. Despu\u00e9s habr\u00e1 que esperar 7 d\u00edas entre cambios.", "Un cambio \u00e8 offerto. Poi bisogner\u00e0 attendere 7 giorni tra due cambi.", "\u5909\u66f4\u306f1\u56de\u7121\u6599\u3067\u3059\u3002\u305d\u306e\u5f8c\u306f7\u65e5\u9593\u306e\u9593\u9694\u304c\u5fc5\u8981\u3067\u3059\u3002", "Eine \u00c4nderung ist gratis. Danach sind 7 Tage Wartezeit n\u00f6tig.")),
+        msgPseudo ? h("p", { style: { color: "#F0A0A0", fontSize: 12, textAlign: "center", margin: "0 0 12px", lineHeight: 1.45, fontFamily: "'Montserrat',sans-serif" } }, msgPseudo) : null,
         h("input", { value: pseudoLocal, onChange: function (eI) { setPseudoLocal(eI.target.value); }, maxLength: 24, placeholder: T("Ton pseudo\u2026", "Your username\u2026", "Tu seud\u00f3nimo\u2026", "Il tuo pseudonimo\u2026", "\u30e6\u30fc\u30b6\u30fc\u30cd\u30fc\u30e0\u2026"), style: { width: "100%", boxSizing: "border-box", padding: "13px 14px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14.5, fontFamily: "'Montserrat',sans-serif", outline: "none" } }),
         h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
           h("button", { onClick: function () { setEditPseudo(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
-          h("button", { onClick: sauverPseudo, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58"))))) : null,
+          h("button", { onClick: sauverPseudo, disabled: occupePseudo, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: occupePseudo ? "default" : "pointer", opacity: occupePseudo ? 0.55 : 1, fontFamily: "'Montserrat',sans-serif" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58"))))) : null,
     editClub ? h("div", { onClick: function(){ setEditClub(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", paddingTop: "16vh" } },
       h("div", { onClick: function(e){ e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + __ta(0.4) + "", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon club", "My club", "Mi club", "Il mio club", "\u30de\u30a4\u30af\u30e9\u30d6", "Mein Verein")),
@@ -27226,7 +27414,7 @@ function ClocheNotifs() {
       var ids = [];
       lp.concat(lc).forEach(function (n) { if (n.acteur && ids.indexOf(n.acteur) < 0) ids.push(n.acteur); });
       if (ids.length) {
-        var rpr = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", ids);
+        var rpr = await supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", ids);
         var map = {}; ((rpr && rpr.data) || []).forEach(function (p) { map[p.id] = p; }); setProfilsN(map);
       }
       try { supa.from("notifications").delete().eq("destinataire", u.id).lt("created_at", since); } catch (e) { }
@@ -29949,7 +30137,22 @@ function MurHype(props) {
           : h("div", { style: { width: 32, height: 32, borderRadius: "50%", flexShrink: 0, background: a.avatar_url ? ("url(" + a.avatar_url + ") center/cover") : "" + tAm(0.14) + "", border: "1px solid " + tAm(0.35) + "", display: "flex", alignItems: "center", justifyContent: "center", color: TQmCl, fontSize: 13, fontWeight: 800, fontFamily: M2 } }, a.avatar_url ? "" : ((a.pseudo || "C").charAt(0).toUpperCase())),
         h("div", { style: { minWidth: 0 } },
           h("div", { style: { fontSize: 13, fontWeight: 700, color: estAnn ? "#F0DBA2" : "#EDF2F5", fontFamily: M2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", letterSpacing: estAnn ? 0.8 : 0 } }, estAnn ? T("Nouveaut\u00e9 Hype", "Hype News", "Novedad Hype", "Novit\u00e0 Hype", "Hype\u306e\u65b0\u7740") : (a.pseudo || "Cavalier")),
-          h("div", { style: { fontSize: 10.5, color: "#5B646E", fontFamily: M2 } }, datePost(p.created_at))),
+          /* 18/08 (feu vert de Blandine) — L IDENTIFIANT SOUS LE COMMENTAIRE.
+             Son constat : un commentaire n enregistre que `user_id`, donc le
+             nom affiche est relu a chaque lecture. « Karine » qui se renomme
+             « Gertrude » voit TOUS ses anciens commentaires changer de nom.
+             L identifiant, lui, ne bouge pas et reste reserve six mois apres
+             un changement : ecrit ici, se renommer ne masque plus rien.
+             Ne s affiche jamais pour une annonce Hype, ni si la colonne est
+             absente (compte charge avant le SQL). */
+          h("div", { style: { display: "flex", alignItems: "center", gap: 7, fontSize: 10.5, color: "#5B646E", fontFamily: M2 } },
+            (function () {
+              var tH = "";
+              try { tH = (!estAnn && typeof hypeHandleTexte === "function") ? hypeHandleTexte(a) : ""; } catch (eH) { }
+              if (!tH) return null;
+              return h("span", { style: { color: "rgba(234,242,244,0.34)", letterSpacing: "0.02em" } }, tH);
+            })(),
+            h("span", null, datePost(p.created_at)))),
         (moi && !estAnn && (p.user_id === moi.id || estModerateurHype(moi))) ? h("button", { onClick: function () { suppr(p); }, "aria-label": "Supprimer", style: { background: "none", border: "none", color: "#5B646E", fontSize: 14, cursor: "pointer", padding: 4 } }, "\uD83D\uDDD1") : null),
       p.texte ? h("div", { style: { fontSize: 13.5, color: "#DCE3E8", lineHeight: 1.5, fontFamily: M2, whiteSpace: "pre-wrap" } }, estAnn ? hypeTexteMulti(p.texte, langue) : p.texte) : null,
       p.photo_url ? (estUrlVideo(p.photo_url)
@@ -32406,7 +32609,7 @@ function EcranEcurieHype() {
           var ids = ((rc && rc.data) || []).map(function (c) { return c.user_id; }).filter(Boolean);
           ids = ids.filter(function (v, i) { return ids.indexOf(v) === i; });
           if (ids.length) {
-            var rp = await supa.from("profiles").select("id, pseudo, avatar_url").in("id", ids);
+            var rp = await supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", ids);
             if (ok && rp && rp.data) { var m = {}; rp.data.forEach(function (p) { m[p.id] = p; }); setProprios(m); }
           }
         } catch (eC) { if (ok) setCommList([]); }
@@ -32696,7 +32899,7 @@ function EcranMessagerie() {
     var actif = true;
     var t = setTimeout(function () {
       utilisateurActuel().then(function (moi) {
-        supa.from("profiles").select("id, pseudo, avatar_url").ilike("pseudo", "%" + q + "%").neq("id", moi ? moi.id : "").limit(20).then(function (r) {
+        supa.from("profiles").select("id, pseudo, avatar_url, handle").ilike("pseudo", "%" + q + "%").neq("id", moi ? moi.id : "").limit(20).then(function (r) {
           if (actif) { setResultatsRech((r && r.data) || []); setRechEnCours(false); }
         });
       });
@@ -32761,7 +32964,7 @@ function EcranMessagerie() {
       supa.from("conversations_participants").select("utilisateur_id").eq("conversation_id", conv.id).then(function (rp) {
         var ids = ((rp && rp.data) || []).map(function (x) { return x.utilisateur_id; });
         if (!ids.length) return;
-        supa.from("profiles").select("id, pseudo, avatar_url").in("id", ids).then(function (rpr) {
+        supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", ids).then(function (rpr) {
           var profils = {}; ((rpr && rpr.data) || []).forEach(function (p) { profils[p.id] = p; });
           setProfilsGroupe(function (prev) { return Object.assign({}, prev, profils); });
         });
@@ -33361,6 +33564,61 @@ function EcranQuoiDeNeuf() {
           h("span", { className: "v" }, "1.0"),
           h("span", { className: "q" }, majM("premiere", langue)))),
       h("div", { className: "pied" }, "HYPE")));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   18/08/2026 — L INVITATION A CHOISIR SON IDENTIFIANT.
+
+   Ne s affiche QU AUX comptes marques `handle_a_valider` par la migration du
+   17/08 : les six dont le nom etait en double et qui ont recu un identifiant
+   suffixe (@blandine2, @liam2, @dominique.h) sans l avoir choisi.
+
+   JAMAIS BLOQUANT, decision de Blandine : il se ferme, on entre, et il
+   REVIENT a l ouverture suivante tant que rien n est valide. Un message vu
+   une fois puis oublie ne sert a rien — c est pour cela qu il n y a aucune
+   cle de localStorage ici, contrairement a OverlayQuoiDeNeuf.
+
+   Il disparait tout seul : la fonction SQL met `handle_a_valider` a false
+   des le premier changement reussi.
+   ═══════════════════════════════════════════════════════════════════════ */
+function InvitationIdentifiant() {
+  var ctx = useApp(); var h = React.createElement;
+  var langue = (ctx && ctx.langue) || "fr";
+  var tr = (ctx && ctx.tr) ? ctx.tr : function (o) { return o.fr; };
+  var vS = React.useState(false); var visible = vS[0], setVisible = vS[1];
+  var pS = React.useState(null);  var prof = pS[0], setProf = pS[1];
+
+  React.useEffect(function () {
+    if (!ctx || ctx.ecran !== "dashboard") return;
+    var actif = true;
+    try {
+      if (typeof monProfil !== "function" || typeof supa === "undefined") return;
+      monProfil().then(function (r) {
+        if (!actif || !r || !r.data) return;
+        if (!r.data.handle_a_valider) return;
+        setProf(r.data);
+        setTimeout(function () { if (actif) setVisible(true); }, 1600);
+      }).catch(function () { });
+    } catch (e) { }
+    return function () { actif = false; };
+  }, [ctx && ctx.ecran]);
+
+  if (!visible || !prof) return null;
+  var txtH = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(prof) : "";
+
+  return h("div", { onClick: function () { setVisible(false); }, style: { position: "fixed", inset: 0, zIndex: 8500, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 22px" } },
+    h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxWidth: 350, borderRadius: 22, border: "1px solid rgba(32,217,245,0.3)", background: "linear-gradient(180deg, rgba(14,22,30,0.99), rgba(8,11,15,0.99))", padding: "24px 20px", boxSizing: "border-box", textAlign: "center" } },
+      h("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 16, letterSpacing: 1.6, color: "#20D9F5", textTransform: "uppercase", marginBottom: 12 } },
+        tr({ fr: "Ton identifiant", en: "Your handle", es: "Tu identificador", it: "Il tuo identificativo", ja: "\u3042\u306a\u305f\u306e ID", de: "Deine Kennung" })),
+      txtH ? h("div", { style: { fontSize: 22, color: "#F4F7FA", fontFamily: "'Montserrat', sans-serif", fontWeight: 600, margin: "0 0 14px" } }, txtH) : null,
+      h("p", { style: { color: "#8A929C", fontSize: 13, lineHeight: 1.55, margin: "0 0 6px" } },
+        tr({ fr: "Un autre cavalier portait le m\u00eame nom que toi. Celui-ci t'a \u00e9t\u00e9 attribu\u00e9 automatiquement.", en: "Another rider had the same name as you. This one was given to you automatically.", es: "Otro jinete ten\u00eda tu mismo nombre. Este se te asign\u00f3 autom\u00e1ticamente.", it: "Un altro cavaliere aveva il tuo stesso nome. Questo ti \u00e8 stato assegnato automaticamente.", ja: "\u540c\u3058\u540d\u524d\u306e\u9a0e\u624b\u304c\u3044\u305f\u305f\u3081\u3001\u3053\u306e ID \u304c\u81ea\u52d5\u7684\u306b\u5272\u308a\u5f53\u3066\u3089\u308c\u307e\u3057\u305f\u3002", de: "Ein anderer Reiter hatte denselben Namen. Diese Kennung wurde dir automatisch zugeteilt." })),
+      h("p", { style: { color: "#8A929C", fontSize: 13, lineHeight: 1.55, margin: "0 0 20px" } },
+        tr({ fr: "Tu peux le garder, ou en choisir un autre depuis Mon compte.", en: "You can keep it, or pick another one from My account.", es: "Puedes conservarlo o elegir otro desde Mi cuenta.", it: "Puoi tenerlo o sceglierne un altro da Il mio account.", ja: "\u305d\u306e\u307e\u307e\u4f7f\u3046\u3053\u3068\u3082\u3001\u30a2\u30ab\u30a6\u30f3\u30c8\u304b\u3089\u5909\u66f4\u3059\u308b\u3053\u3068\u3082\u3067\u304d\u307e\u3059\u3002", de: "Du kannst sie behalten oder in Mein Konto eine andere w\u00e4hlen." })),
+      h("button", { onClick: function () { setVisible(false); try { if (ctx && ctx.setEcran) ctx.setEcran("moncompte"); } catch (eN) { } }, style: { width: "100%", padding: "13px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 14, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
+        tr({ fr: "Choisir mon identifiant", en: "Choose my handle", es: "Elegir mi identificador", it: "Scegliere il mio identificativo", ja: "ID \u3092\u9078\u3076", de: "Kennung w\u00e4hlen" })),
+      h("button", { onClick: function () { setVisible(false); }, style: { width: "100%", marginTop: 10, padding: "11px 0", borderRadius: 999, border: "none", background: "none", color: "#7A838D", fontSize: 12.5, fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
+        tr({ fr: "Plus tard", en: "Later", es: "M\u00e1s tarde", it: "Pi\u00f9 tardi", ja: "\u3042\u3068\u3067", de: "Sp\u00e4ter" }))));
 }
 
 /* --- Overlay : une seule fois par version, sur l'accueil --- */
