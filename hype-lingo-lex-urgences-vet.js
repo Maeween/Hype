@@ -324,7 +324,7 @@ window.HYPE_LINGO_LEX["urgences-vet"] = {
     mots:{ fr:{m:"le pouls est trop rapide"}, en:{m:"his pulse is too fast", p:"peulss"},
            es:{m:"el pulso es demasiado rápido"}, it:{m:"il polso è troppo veloce"},
            de:{m:"der Puls ist zu schnell", p:"poulss"}, ja:{m:"脈が速すぎる", p:"myaku ga hayasugiru" } },
-    def:{ fr:"🟥 LE CHIFFRE QUI DIT LA GRAVITÉ. Au repos, un cheval bat entre vingt-huit et quarante fois par minute. Au-delà de soixante au repos, la douleur est sévère ; au-delà de quatre-vingts, c'est critique. ⚠️ On le prend sous la ganache, à l'artère, ou avec l'oreille au coude gauche.",
+    def:{ fr:"🟥 LE CHIFFRE QUI DIT LA GRAVITÉ. Au repos, un cheval adulte bat entre trente et quarante fois par minute. Au-delà de soixante au repos, la douleur est sévère ; au-delà de quatre-vingts, c'est critique. ⚠️ On le prend sous la ganache, à l'artère, ou avec l'oreille au coude gauche.",
           en:"The number that tells you how bad it is. At rest a horse's heart beats twenty-eight to forty times a minute. Over sixty at rest means severe pain; over eighty is critical. Take it under the jaw, or with your ear behind the left elbow.",
           es:"La cifra que dice la gravedad. En reposo, entre veintiocho y cuarenta por minuto. Más de sesenta indica dolor severo.",
           it:"Il numero che dice la gravità. A riposo, tra ventotto e quaranta al minuto. Oltre sessanta, dolore severo.",
@@ -346,12 +346,12 @@ window.HYPE_LINGO_LEX["urgences-vet"] = {
     mots:{ fr:{m:"il a de la fièvre"}, en:{m:"he's got a temperature", p:"tèm-pri-tcheur", var:"a fever"},
            es:{m:"tiene fiebre"}, it:{m:"ha la febbre"},
            de:{m:"er hat Fieber", p:"fii-beur"}, ja:{m:"熱がある", p:"netsu ga aru" } },
-    def:{ fr:"⚠️ EN ANGLAIS ON DIT **a temperature**, pas « a fever » : *has he got a temperature ?* veut dire « a-t-il de la fièvre ? ». Dire « a fever » se comprend mais sonne médical. La normale du cheval est de 37,5 à 38,5 °C — au-delà de 39, c'est de la fièvre.",
+    def:{ fr:"⚠️ EN ANGLAIS ON DIT **a temperature**, pas « a fever » : *has he got a temperature ?* veut dire « a-t-il de la fièvre ? ». Dire « a fever » se comprend mais sonne médical. La normale du cheval adulte au repos est de 37,2 à 38,2 °C — au-delà de 39, c'est de la fièvre.",
           en:"British riders say « a temperature », not « a fever ». Normal for a horse is 37.5 to 38.5 °C; over 39 is a temperature.",
           es:"En inglés se dice « a temperature ». Lo normal en el caballo es 37,5-38,5 °C.",
           it:"In inglese si dice « a temperature ». Il normale del cavallo è 37,5-38,5 °C.",
           de:"Englisch sagt « a temperature ». Normal beim Pferd sind 37,5 bis 38,5 °C.",
-          ja:"英語では a fever ではなく a temperature と言います。馬の平熱は三十七度五分〜三十八度五分。三十九度を超えると発熱です。" } },
+          ja:"英語では a fever ではなく a temperature と言います。馬の平熱は三十七度二分〜三十八度二分。三十九度を超えると発熱です。" } },
 
   { ref:"mouche", lecon:1, coll:"signe",
     mots:{ fr:{m:"il mouche du nez"}, en:{m:"he's got a nasal discharge", p:"né-zeul diss-tchardj", var:"his nose is running"},
@@ -520,7 +520,76 @@ window.HYPE_LINGO_LEX["urgences-vet"] = {
           es:"Se grita « ¡ caballo suelto ! ». No es una urgencia médica sino una alerta de seguridad: el peligro es la carretera.",
           it:"Si grida « cavallo libero ! ». Non è un'urgenza medica ma un allarme di sicurezza: il pericolo è la strada.",
           de:"Man ruft « freies Pferd ! ». Kein medizinischer Notfall, sondern ein Sicherheitsalarm: die Gefahr ist die Straße.",
-          ja:"英語では「LOOSE HORSE !」と二語で叫びます。競技会や厩舎では全員が対応を知っています。門を閉め、走らず、叫ぶのをやめます。医療の緊急ではなく、安全の警報です。危険は道路です。" } }
+          ja:"英語では「LOOSE HORSE !」と二語で叫びます。競技会や厩舎では全員が対応を知っています。門を閉め、走らず、叫ぶのをやめます。医療の緊急ではなく、安全の警報です。危険は道路です。" } },
+
+  /* ==================================================================
+     QUATRE NOTIONS AJOUTÉES LE 18/08/2026, sur le lexique fourni par
+     Blandine pour Kildare. Le chapitre passe de 39 à 43 mots.
+
+     🟥 POURQUOI ELLES. Le fichier possédait déjà « le pouls est trop
+     rapide » et « marcher un cheval pour éviter qu'il se roule » — mais
+     JAMAIS le pouls seul, ni la respiration, ni « se rouler » seul. On
+     apprenait le signe d'alarme sans pouvoir nommer la chose mesurée.
+
+     🟥 LES NORMES SONT ÉCRITES DANS CHAQUE ENTRÉE, sur demande expresse de
+     Blandine : « il faut bien que tu expliques dans chaque petit
+     commentaire quels sont les normes pour la température, le pouls etc ».
+     ⚠️ NE PAS les retirer pour raccourcir une définition.
+
+     🟥 VALEURS HARMONISÉES SUR LES SIENNES, 18/08 :
+       Température  37,2 – 38,2 °C
+       Pouls        30 – 40 battements/min
+       Respiration  8 – 14 respirations/min
+     ⚠️ LE FICHIER DISAIT AUTRE CHOSE AVANT CE JOUR : `fievre` annonçait
+     37,5–38,5 °C, `pouls-rapide` 28–40. Les deux ont été corrigés sur ses
+     valeurs, qui sont les références usuelles chez le cheval adulte au
+     repos. C'EST UN CHANGEMENT DE CONTENU MÉDICAL DÉJÀ EN LIGNE, assumé et
+     validé par elle. Ne pas revenir aux anciens chiffres.
+  ================================================================== */
+
+  { ref:"urgence", lecon:1, coll:"urgence",
+    mots:{ fr:{m:"l'urgence"}, en:{m:"the emergency", p:"i-meur-djeun-si"},
+           es:{m:"la urgencia"}, it:{m:"l'urgenza"},
+           de:{m:"der Notfall", p:"nôt-fal"}, ja:{m:"緊急", p:"kinkyū"} },
+    def:{ fr:"Le mot qui fait venir quelqu'un tout de suite. 🟥 LES TROIS CHIFFRES À SAVOIR PAR CŒUR, chez un cheval adulte au repos : 37,2 à 38,2 °C · 30 à 40 battements/min · 8 à 14 respirations/min. Les donner au téléphone vaut mieux que n'importe quelle description : un vétérinaire décide sur ces trois nombres.",
+          en:"The word that gets someone to come at once. The three figures to know by heart, for a resting adult horse: 37.2–38.2 °C, 30–40 beats per minute, 8–14 breaths per minute. Giving those on the phone beats any description: a vet decides on those three numbers.",
+          es:"La palabra que hace que alguien venga enseguida. 🟥 LAS TRES CIFRAS QUE HAY QUE SABER DE MEMORIA, en un caballo adulto en reposo: 37,2 a 38,2 °C · 30 a 40 latidos/min · 8 a 14 respiraciones/min. Darlas por teléfono vale más que cualquier descripción.",
+          it:"La parola che fa venire qualcuno subito. 🟥 LE TRE CIFRE DA SAPERE A MEMORIA, in un cavallo adulto a riposo: 37,2 a 38,2 °C · 30 a 40 battiti/min · 8 a 14 respiri/min. Darle al telefono vale più di qualsiasi descrizione.",
+          de:"Das Wort, das jemanden sofort kommen lässt. 🟥 DIE DREI ZAHLEN, DIE MAN AUSWENDIG KENNEN MUSS, beim erwachsenen Pferd in Ruhe: 37,2 bis 38,2 °C · 30 bis 40 Schläge/min · 8 bis 14 Atemzüge/min. Sie am Telefon zu nennen ist mehr wert als jede Beschreibung.",
+          ja:"すぐに来てもらうための言葉。🟥 暗記すべき三つの数値 — 成馬の安静時で、体温 37.2〜38.2 °C・心拍 30〜40回/分・呼吸 8〜14回/分。電話でこの三つを伝えることは、どんな説明よりも役に立ちます。獣医はこの三つの数字で判断するのです。" } },
+
+  { ref:"pouls", lecon:1, coll:"signe",
+    mots:{ fr:{m:"le pouls"}, en:{m:"the pulse", p:"peulss"},
+           es:{m:"el pulso"}, it:{m:"il polso"},
+           de:{m:"der Puls", p:"poulss"}, ja:{m:"脈拍", p:"myakuhaku"} },
+    def:{ fr:"🟥 NORME AU REPOS : 30 à 40 battements par minute chez un cheval adulte. Au-delà de 60 au repos, la douleur est sévère ; au-delà de 80, c'est critique. On le prend sous la ganache, à l'artère. ⚠️ Le mot anglais **pulse** ne se prononce pas comme il s'écrit, et c'est le premier chiffre qu'un vétérinaire demande au téléphone.",
+          en:"Resting norm: 30 to 40 beats per minute in an adult horse. Above 60 at rest the pain is severe; above 80 it is critical. You take it under the jaw, on the artery. It is the first figure a vet asks for on the phone.",
+          es:"🟥 NORMA EN REPOSO: 30 a 40 latidos por minuto en un caballo adulto. Por encima de 60 en reposo el dolor es intenso; por encima de 80 es crítico. Se toma bajo la quijada, en la arteria. ⚠️ Es la primera cifra que pide un veterinario por teléfono.",
+          it:"🟥 NORMA A RIPOSO: 30 a 40 battiti al minuto in un cavallo adulto. Oltre 60 a riposo il dolore è severo; oltre 80 è critico. Si prende sotto la ganascia, sull'arteria. ⚠️ È la prima cifra che un veterinario chiede al telefono.",
+          de:"🟥 RUHENORM: 30 bis 40 Schläge pro Minute beim erwachsenen Pferd. Über 60 in Ruhe ist der Schmerz stark; über 80 ist es kritisch. Man fühlt ihn unter dem Ganaschenrand, an der Arterie. ⚠️ Es ist die erste Zahl, die ein Tierarzt am Telefon verlangt.",
+          ja:"🟥 安静時の基準 — 成馬で毎分30〜40回。安静時に60を超えれば痛みは強く、80を超えれば危機的です。下顎の下、動脈で取ります。⚠️ 獣医が電話で最初に尋ねる数字がこれです。" } },
+
+  { ref:"respiration", lecon:1, coll:"signe",
+    mots:{ fr:{m:"la respiration"}, en:{m:"breathing", p:"bri-zing", var:"respiratory rate"},
+           es:{m:"la respiración"}, it:{m:"la respirazione"},
+           de:{m:"die Atmung", p:"at-moung"}, ja:{m:"呼吸", p:"kokyū"} },
+    def:{ fr:"🟥 NORME AU REPOS : 8 à 14 respirations par minute chez un cheval adulte. On compte le flanc qui monte et descend pendant quinze secondes, et on multiplie par quatre. ⚠️ L'anglais courant dit **breathing** ; le vétérinaire dira **respiratory rate**. Connaître les deux évite de rester bloquée au téléphone.",
+          en:"Resting norm: 8 to 14 breaths per minute in an adult horse. You count the flank rising and falling for fifteen seconds and multiply by four. Everyday English says breathing; a vet will say respiratory rate. Knowing both keeps you going on the phone.",
+          es:"🟥 NORMA EN REPOSO: 8 a 14 respiraciones por minuto en un caballo adulto. Se cuenta el flanco que sube y baja durante quince segundos y se multiplica por cuatro. ⚠️ El inglés corriente dice **breathing**; el veterinario dirá **respiratory rate**.",
+          it:"🟥 NORMA A RIPOSO: 8 a 14 respiri al minuto in un cavallo adulto. Si conta il fianco che sale e scende per quindici secondi e si moltiplica per quattro. ⚠️ L'inglese corrente dice **breathing**; il veterinario dirà **respiratory rate**.",
+          de:"🟥 RUHENORM: 8 bis 14 Atemzüge pro Minute beim erwachsenen Pferd. Man zählt fünfzehn Sekunden die Flanke und nimmt es mal vier. ⚠️ Alltagsenglisch sagt **breathing**, der Tierarzt sagt **respiratory rate**. Beide zu kennen hilft am Telefon.",
+          ja:"🟥 安静時の基準 — 成馬で毎分8〜14回。脇腹の上下を十五秒数えて四倍します。⚠️ 日常英語では **breathing**、獣医は **respiratory rate** と言います。両方知っていれば、電話で言葉に詰まりません。" } },
+
+  { ref:"se-rouler", lecon:1, coll:"signe", v:true,
+    mots:{ fr:{m:"se rouler"}, en:{m:"to roll", p:"rôl"},
+           es:{m:"revolcarse"}, it:{m:"rotolarsi"},
+           de:{m:"sich wälzen", p:"zich val-tsen"}, ja:{m:"転がる", p:"korogaru"} },
+    def:{ fr:"Se coucher et se retourner sur le dos. ⚠️ Un cheval sain se roule au pré par plaisir — ce n'est pas un signe. C'est en colique qu'il devient dangereux : un roulé violent peut retourner l'intestin, et une colique traitable devient chirurgicale. C'est toute la raison du geste `marcher un cheval`.",
+          en:"Lying down and turning over onto the back. A healthy horse rolls in the field for pleasure — that is not a sign. It becomes dangerous during colic: a violent roll can twist the gut, and a treatable colic becomes surgical. That is the whole reason for walking him.",
+          es:"Tumbarse y darse la vuelta sobre el dorso. ⚠️ Un caballo sano se revuelca en el prado por gusto: no es un signo. Es en el cólico cuando se vuelve peligroso: un revolcón violento puede torcer el intestino, y un cólico tratable se vuelve quirúrgico.",
+          it:"Coricarsi e rotolarsi sul dorso. ⚠️ Un cavallo sano si rotola al pascolo per piacere: non è un segno. È durante la colica che diventa pericoloso: un rotolamento violento può torcere l'intestino, e una colica curabile diventa chirurgica.",
+          de:"Sich hinlegen und auf den Rücken drehen. ⚠️ Ein gesundes Pferd wälzt sich auf der Weide zum Vergnügen — kein Anzeichen. Bei einer Kolik wird es gefährlich: heftiges Wälzen kann den Darm verdrehen, und eine behandelbare Kolik wird zum Operationsfall.",
+          ja:"横になり、背中を地面に向けて転がること。⚠️ 健康な馬は放牧地で気持ちよく転がります — それは兆候ではありません。危険になるのは腹痛のときです。激しく転がると腸がねじれ、治療できたはずの腹痛が手術になります。" } }
 
   ],
 
@@ -568,7 +637,7 @@ window.HYPE_LINGO_LEX["urgences-vet"] = {
      LE DIALOGUE DE KILDARE — 16 août 2026, session 214.
 
      LA SCÈNE : un appel au vétérinaire, en pleine nuit, à l'étranger.
-     22 phrases, 7 temps. Le vétérinaire mène l'échange : il pose les
+     29 phrases, 7 temps. Le vétérinaire mène l'échange : il pose les
      questions, la joueuse décrit ce qu'elle voit.
 
      🟥 QUINZE PHRASES SUR VINGT-DEUX SONT DE BLANDINE, dictées le
@@ -610,7 +679,7 @@ window.HYPE_LINGO_LEX["urgences-vet"] = {
      `dit` : "joueuse" = elle produit · "club" = le vétérinaire.
   ================================================================== */
   dialogue: {
-    ville: "kildare", lecon: 1, temps: 7, langues: ["fr","en","es","it","de","ja"],   /* 22 phrases */
+    ville: "kildare", lecon: 1, temps: 7, langues: ["fr","en","es","it","de","ja"],   /* 29 phrases — 22 avant le lot du 18/08 */
 
     phrases: [
 
@@ -651,13 +720,22 @@ window.HYPE_LINGO_LEX["urgences-vet"] = {
         ja:"馬 の 呼吸 が 荒く、 前足 で 地面 を 掻い て、 横 に なり ます。" },
 
       /* 🟥 Phrase de Blandine : la suite de gestes réelle. */
-      { ref:"dk-r-colique-gestes", temps:2, dit:"club", mots:["colique","marcher-cheval","panier"],
-        fr:"Il fait peut-être une colique. Marchez-le, empêchez-le de se rouler, et mettez-lui un panier pour éviter qu'il mange. Retirez la nourriture de son box et remplissez une poubelle d'eau qu'il puisse boire.",
-        en:"He might be colicking. Walk him, don't let him roll, and put a muzzle on him so he can't eat. Take the feed out of his stable and fill a big tub with water so he can drink.",
-        es:"Puede tener un cólico. Paséelo, no le deje revolcarse y póngale un bozal para que no coma. Saque la comida del box y llene un bidón de agua para que pueda beber.",
-        it:"Potrebbe avere una colica. Lo faccia camminare, non lo lasci rotolare e gli metta la museruola perché non mangi. Tolga il mangime dal box e riempia un bidone d'acqua perché possa bere.",
-        de:"Er hat vielleicht eine Kolik. Führen Sie ihn, lassen Sie ihn nicht wälzen, und legen Sie ihm einen Fresskorb an, damit er nicht frisst. Nehmen Sie das Futter aus der Box und füllen Sie eine große Wanne mit Wasser, damit er trinken kann.",
-        ja:"疝痛 かも しれ ませ ん。 歩か せ て、 転がら せ ない で、 食べ ない よう に 口かご を つけ て ください。 馬房 から 飼料 を 出し、 大きな 桶 に 水 を 入れ て 飲め る よう に し て ください。" },
+      { ref:"dk-r-colique-gestes", temps:2, dit:"club", mots:["colique","marcher-cheval","panier","se-rouler"],
+        /* 🟥 RÉÉCRITE LE 18/08 SUR RÈGLE DE BLANDINE : « si tu as un doute ne
+           met pas ». L'ancienne version prescrivait un protocole complet
+           (marcher, panier, poubelle d'eau à boire) que Claude ne pouvait pas
+           garantir — et faire boire un cheval en colique n'est pas anodin.
+           ⚠️ CE QUI RESTE EST CE QUI NE SE DISCUTE PAS : retirer la nourriture,
+           empêcher le roulé, faire venir le vétérinaire. Blandine a confirmé le
+           18/08 qu'on marche bien pour la colique — c'est dit dans l'entrée
+           `marcher-cheval`, avec sa raison, et non ici sous forme d'ordre.
+           ⚠️ NE PAS y réintroduire de protocole de soin. */
+        fr:"Il fait peut-être une colique. Retirez toute nourriture et empêchez-le de se rouler : j'arrive.",
+        en:"He may be colicking. Take all his feed away and stop him rolling — I'm on my way.",
+        es:"Puede que tenga un cólico. Retire toda la comida y evite que se revuelque: voy en camino.",
+        it:"Potrebbe avere una colica. Tolga tutto il cibo ed eviti che si rotoli: sto arrivando.",
+        de:"Er hat vielleicht eine Kolik. Nehmen Sie ihm alles Futter weg und verhindern Sie, dass er sich wälzt — ich bin auf dem Weg.",
+        ja:"疝痛 かも しれ ませ ん。 飼料 を すべて 下げ て、 転がら せ ない で ください。 今 向かい ます。" },
 
       /* 🟥 Phrase de Blandine : l'ordre de surveillance. */
       { ref:"dk-r-prenez-pouls", temps:2, dit:"club", mots:["pouls-rapide"],
@@ -667,6 +745,88 @@ window.HYPE_LINGO_LEX["urgences-vet"] = {
         it:"Gli prenda il polso e mi avverta se è troppo veloce.",
         de:"Messen Sie den Puls und sagen Sie mir, wenn er zu schnell ist.",
         ja:"脈 を 取っ て、 速 すぎ たら 知らせ て ください。" },
+
+      /* ==================================================================
+         LA SCÈNE DES CONSTANTES — ajoutée le 18/08/2026, lexique de Blandine.
+         🟥 POURQUOI ELLE EXISTE. Le fichier possédait `le pouls est trop
+         rapide` au lexique, mais AUCUNE phrase ne faisait jamais dire un
+         chiffre. On apprenait le signe d'alarme sans jamais comparer une
+         valeur à une norme.
+         🟥 LE POULS EST À 68, PAS À 36. La première version du brief donnait
+         36 — soit une valeur NORMALE dans une scène de colique, ce qui
+         apprenait l'inverse de ce qu'on veut. Décision prise avec Blandine le
+         18/08. La température, elle, RESTE NORMALE À 38 : une colique ne fait
+         pas monter la température, et il est utile de savoir qu'un cheval peut
+         être en urgence avec une température parfaite.
+         ⚠️ NE PAS « corriger » la température vers une valeur élevée : ce
+         serait enseigner « urgence = fièvre », qui est faux.
+         ⚠️ Les normes sont écrites dans les entrées `pouls`, `respiration`,
+         `fievre` et `urgence`, dans les six langues. Elles ne sont PAS répétées
+         dans les phrases : la phrase donne le chiffre, le lexique donne la
+         norme, et c'est la comparaison qui fait l'exercice.
+      ================================================================== */
+      { ref:"dk-pouls-68", temps:2, dit:"joueuse", mots:["pouls","pouls-rapide"],
+        fr:"Son pouls est à soixante-huit battements par minute.",
+        en:"His pulse is sixty-eight beats per minute.",
+        es:"Su pulso está a sesenta y ocho latidos por minuto.",
+        it:"Il suo polso è a sessantotto battiti al minuto.",
+        de:"Sein Puls liegt bei achtundsechzig Schlägen pro Minute.",
+        ja:"脈 は 一 分間 に 六十八 です。" },
+
+      { ref:"dk-quelle-temperature", temps:3, dit:"club", mots:["fievre"],
+        fr:"Quelle est sa température ?",
+        en:"What's his temperature?",
+        es:"¿Qué temperatura tiene?",
+        it:"Quanto ha di temperatura?",
+        de:"Welche Temperatur hat er?",
+        ja:"体温 は どれ くらい です か ?" },
+
+      { ref:"dk-temperature-38", temps:3, dit:"joueuse", mots:["fievre"],
+        fr:"Sa température est de trente-huit degrés.",
+        en:"His temperature is thirty-eight degrees.",
+        es:"Su temperatura es de treinta y ocho grados.",
+        it:"La sua temperatura è di trentotto gradi.",
+        de:"Seine Temperatur ist achtunddreißig Grad.",
+        ja:"体温 は 三十八 度 です。" },
+
+      { ref:"dk-respire-20", temps:3, dit:"joueuse", mots:["respiration","respire-fort"],
+        fr:"Il respire à vingt respirations par minute au repos.",
+        en:"He's breathing at twenty breaths per minute at rest.",
+        es:"Respira a veinte respiraciones por minuto en reposo.",
+        it:"Respira a venti respiri al minuto a riposo.",
+        de:"Er atmet zwanzig Mal pro Minute in Ruhe.",
+        ja:"安静 時 に 一 分間 二十 回 呼吸 し て い ます。" },
+
+      /* 🟥 Phrase de Blandine, 18/08 : elle vise une erreur réelle et très
+         fréquente — soulever le pansement pour vérifier, ce qui rouvre le
+         saignement à chaque fois. */
+      { ref:"dk-r-maintenir-pression", temps:4, dit:"club", mots:["compression","bandage"],
+        fr:"Maintenez la pression. Ne soulevez pas le pansement toutes les trente secondes pour regarder.",
+        en:"Keep the pressure on. Don't keep lifting the dressing to check the wound.",
+        es:"Mantenga la presión. No levante el vendaje cada treinta segundos para mirar.",
+        it:"Mantenga la pressione. Non solleva la medicazione ogni trenta secondi per guardare.",
+        de:"Halten Sie den Druck. Heben Sie den Verband nicht alle dreißig Sekunden an, um nachzusehen.",
+        ja:"圧迫 を 続け て ください。 三十 秒 ごと に 当て布 を 持ち上げ て 見 ない で ください。" },
+
+      /* 🟥 Phrase de Blandine : le médicament, la dose et la voie viennent du
+         vétérinaire. La formulation dit bien « le vétérinaire m'a demandé »,
+         pour qu'aucune joueuse ne comprenne qu'on improvise une injection. */
+      { ref:"dk-im-ou-iv", temps:2, dit:"joueuse", mots:["piqure-im-iv"],
+        fr:"Le vétérinaire m'a demandé de lui faire une injection. C'est en IM ou en IV ?",
+        en:"The vet has asked me to give him an injection. Is it IM or IV?",
+        es:"El veterinario me ha pedido ponerle una inyección. ¿Es IM o IV?",
+        it:"Il veterinario mi ha chiesto di fargli un'iniezione. È IM o IV?",
+        de:"Der Tierarzt hat mich gebeten, ihm eine Spritze zu geben. Ist das IM oder IV?",
+        ja:"獣医 に 注射 を 頼ま れ まし た。 筋肉 内 です か、 静脈 内 です か ?" },
+
+      /* 🟥 Phrase de Blandine : ne jamais médiquer sans instruction. */
+      { ref:"dk-r-aucun-medicament", temps:2, dit:"club", mots:["sedatif"],
+        fr:"Ne lui donnez aucun médicament sans instruction du vétérinaire.",
+        en:"Don't give him any medication unless the vet tells you to.",
+        es:"No le dé ningún medicamento sin indicación del veterinario.",
+        it:"Non gli dia alcun farmaco senza indicazione del veterinario.",
+        de:"Geben Sie ihm kein Medikament ohne Anweisung des Tierarztes.",
+        ja:"獣医 の 指示 が ない かぎり、 薬 は 一切 与え ない で ください。" },
 
       /* 🟥 Phrase de Blandine : la vraie question du téléphone. */
       { ref:"dk-r-im-ou-iv", temps:2, dit:"club", mots:["piqure-im-iv"],
