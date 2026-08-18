@@ -2739,8 +2739,21 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      ================================================================== -->
 <script src="hype-lingo-lex-ecurie.js?l=2"></script>
 <script src="hype-lingo-lex-pansage.js?l=3"></script>
-<script src="hype-lingo-lex-cheval.js?l=4"></script>
-<script src="hype-lingo-lex-materiel.js?l=5"></script>
+<!-- 🟥🟥 19/08 : LES BALISES DU DÉCOUPAGE, ENFIN POSÉES. Le découpage
+     un-fichier-par-ville du 18/08 avait mis à jour `ETAPE_SRC`, `ETAPES`,
+     `TH_FAMILLES` et `sw-linguae.js` — MAIS PAS CES BALISES. Onze villes
+     pointaient donc vers un fichier que personne ne chargeait et ouvraient
+     leur leçon sur « Ce chapitre n'a pas encore de vocabulaire ».
+     ⚠️ `cheval.js`, `materiel.js`, `dressage.js`, `obstacle.js` et
+     `concours.js` NE SONT PLUS CHARGÉS. Ils restent au dépôt, ne pas les
+     rebrancher : le contenu a déménagé, il n'a pas été dupliqué. -->
+<!-- ex-`cheval` leçons 1+2+3 (robes, marques, anatomie) + le bloc `races`.
+     La leçon 4 est partie à Fontainebleau, dans `jeunes.js`. -->
+<script src="hype-lingo-lex-connemara.js?l=1"></script>
+<!-- ex-`materiel` : leçon 1 à Walsall, leçons 3+4 à Vejer.
+     La leçon 2 (le filet) dort dans `materiel-reserve.js`, non chargé. -->
+<script src="hype-lingo-lex-walsall.js?l=1"></script>
+<script src="hype-lingo-lex-vejer.js?l=1"></script>
 <!-- 🟥 17/08 : FICHIER NEUF POUR WARENDORF. Elle utilisait la LEÇON 4 de
      `materiel` alors que son chapitre s'appelle « La formation » — on lui
      servait du vocabulaire d'équipement. Décision de Blandine : « crée
@@ -2768,22 +2781,34 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      mondes, quatre-vingt-dix kilomètres. -->
 <script src="hype-lingo-lex-andalou.js?l=1"></script>
 <script src="hype-lingo-lex-cours.js?l=3"></script>
-<script src="hype-lingo-lex-dressage.js?l=7"></script>
+<!-- ex-`dressage` : leçon 1 à Windsor, leçon 3 à Versailles.
+     Les leçons 2+4 dorment dans `dressage-reserve.js`, non chargé.
+     ⚠️ La leçon 2 (les mouvements) est employée en `motsAilleurs` par le
+     dialogue de Versailles — ne pas la dupliquer ici. -->
+<script src="hype-lingo-lex-windsor.js?l=1"></script>
+<script src="hype-lingo-lex-versailles.js?l=1"></script>
 <!-- 🟥 16/08 : LE CHAPITRE DE L'ENSEIGNANT, pour SAUMUR. Le role
      « enseignant » etait annonce depuis le 6 aout dans lex-cours.js
      mais n'avait aucune ville. Saumur a perdu la lecon 3 de dressage
      (partie a Versailles) le meme jour : sans ce fichier elle serait
      VIDE. -->
 <script src="hype-lingo-lex-enseignant.js?l=1"></script>
-<!-- ⚠️ ?l=4 : definition du vertical corrigee le 11/08 (erreur de fond
-     relevee par Blandine : on S'ELOIGNE d'un vertical, on ne s'en
-     rapproche pas — c'est a l'oxer qu'on vient plus pres). -->
-<script src="hype-lingo-lex-obstacle.js?l=6"></script>
+<!-- ex-`obstacle` : leçons 1+2+3 à Wellington, leçon 4 à Aachen.
+     ⚠️ La correction du 11/08 sur la définition du vertical (on S'ÉLOIGNE
+     d'un vertical, on ne s'en rapproche pas — c'est à l'oxer qu'on vient
+     plus près) a suivi le contenu dans `wellington.js`. -->
+<script src="hype-lingo-lex-wellington.js?l=1"></script>
+<script src="hype-lingo-lex-aachen.js?l=1"></script>
 <!-- v76 : le chapitre du Derby de Hickstead — nouveau format 15-18 mots.
      `obstacle` EST BRANCHE SUR WELLINGTON depuis le 16/08/2026 (32e ville,
      la tournee d'hiver de Floride). Il ne dort plus. -->
 <script src="hype-lingo-lex-derby.js?l=2"></script>
-<script src="hype-lingo-lex-concours.js?l=7"></script>
+<!-- ex-`concours` : leçons 2+3 à Badminton, leçon 1 à Oliva, leçon 4 à Rome.
+     Le reste dort dans `concours-reserve.js`, non chargé (`trac`, `van`,
+     `embarquer`, `tableau`). -->
+<script src="hype-lingo-lex-badminton.js?l=1"></script>
+<script src="hype-lingo-lex-oliva.js?l=1"></script>
+<script src="hype-lingo-lex-rome.js?l=1"></script>
 <script src="hype-lingo-lex-cross.js?l=1"></script>
 <!-- Santa Ynez, 31e etape (8 aout 2026). Le horsemanship : `timing`,
      `feel` et `release` n'ont pas de traduction francaise satisfaisante,
@@ -2890,6 +2915,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      18/08 : UN CONCEPT = UN `ref` GLOBAL, plusieurs villes le réactivent.
      Doit donc se charger APRÈS balade.js et horsemanship.js. -->
 <script src="hype-lingo-lex-liberte.js?l=1"></script>
+<!-- 🟥 FLYINGE, 36e ville, ajoutée le 18/08/2026 — LE PIED ET LA
+     MARÉCHALERIE. Nation neuve (Suède) : `I18N_NAT` et `TH_PAVILLON`
+     complétés aux DEUX endroits.
+     ⚠️ `marechal` et `fer` NE SONT PAS dans ce fichier : ils existent
+     dans `connemara.js` et sont repris via `motsAilleurs`. Doit donc se
+     charger APRÈS connemara.js. -->
+<script src="hype-lingo-lex-flyinge.js?l=1"></script>
 <!-- Les phrases manquantes de Saumur (dressage L2-L3) et de Vejer
      (ecurie L2-L3). Additif : refuse tout ref déjà présent. -->
 <script src="hype-lingo-phrases-monde.js"></script>
@@ -3537,7 +3569,17 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=44";   /* v44 (18/08) : TAUPO, 35e ville. Nouvelle nation
+var VER = "?v=45";   /* 🟥 v45 (19/08) : LES ONZE BALISES DU DECOUPAGE POSEES.
+                        Onze villes servaient « Ce chapitre n'a pas encore de
+                        vocabulaire » depuis le 18/08 : les tables etaient a
+                        jour, les balises de chargement ne l'etaient pas. Cinq anciens
+                        fichiers retires du chargement (cheval, materiel,
+                        dressage, obstacle, concours) — toujours au depot.
+                        Quatre vignettes ajoutees : carte-wellington-vignette,
+                        -fontainebleau-, -taupo-, -flyinge- (450x600, .jpg).
+                        VERSAILLES N'A TOUJOURS PAS SA VIGNETTE : sa carte est
+                        en paysage 900x618, recadrage en attente de Blandine.
+                        v44 (18/08) : TAUPO, 35e ville. Nouvelle nation
                         (Nouvelle-Zelande). Quatre images encore absentes
                         (carte/fond/objet/video) — les replis les couvrent.
                         v36 (14/08) : `sellerie-gauche-biais.webp` REMPLACEE — l'ancienne
