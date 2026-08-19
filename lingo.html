@@ -2953,11 +2953,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-villes.js?l=1"></script>
 <!-- Les huit villes du tour du monde. Se charge APRÈS le fichier des dix
      et complète le même objet clé par clé, sans jamais écraser. -->
-<!-- ⚠️ ?l=2 DEPUIS LE 19/08 : les HUIT dernières villes ont reçu leur
+<!-- ⚠️ ?l=3 DEPUIS LE 19/08 : les HUIT dernières villes ont reçu leur
      lettre et leurs trois volets (Wellington, Burghley, Versailles,
-     Fontainebleau, Barcelone, Taupō, Santa Ynez, Flyinge). Les 37 étapes
-     ont désormais toutes leur entrée VILLES. -->
-<script src="hype-lingo-villes-monde.js?l=2"></script>
+     Fontainebleau, Barcelone, Taupō, Santa Ynez, Flyinge) — VERSION v3,
+     réécrite sur retours de Blandine puis corrigée point par point avec
+     elle (?l=2, la v1 jugée « creuse », n'a vécu qu'une soirée). Les 37
+     étapes ont toutes leur entrée VILLES. -->
+<script src="hype-lingo-villes-monde.js?l=3"></script>
 
 <!-- ==================================================================
      10/08/2026 — LINGUAE A SON PROPRE ACCÈS SUPABASE
@@ -3595,7 +3597,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=55";   /* 🟥 v55 (19/08) : hype-lingo-villes-monde.js?l=2 — les 8 dernieres
+var VER = "?v=56";   /* 🟥 v56 (19/08) : volets v3 (?l=3) — les 8 entrees reecrites sur
+                        retours de Blandine + recit Taupo « dans ce pays » (6 langues).
+                        v55 (19/08) : hype-lingo-villes-monde.js?l=2 — les 8 dernieres
                         villes recoivent lettre + volets, table complete 37/37.
                         v54 (19/08) : souvenir de Taupo -> « Un souvenir en Free Ride ».
                         v53 (19/08) : six chapitres ajoutes a TH_FAMILLES (formation,
@@ -4263,22 +4267,22 @@ var RECITS = {
  taupo:{
   fr:["Le lac occupe le cratère, et l'herbe court jusqu'aux volcans sans rencontrer une clôture.",
       "On y voit des chevaux travailler sans longe, et des cavalières qui n'ont plus rien dans les mains.",
-      {f:"C'est ici, en concours complet, qu'un couple néo-zélandais a couru avant de faire connaître le Free Riding. Le spectaculaire est venu après le sport, pas à sa place."}],
+      {f:"C'est dans ce pays qu'un couple a couru en concours complet avant de faire connaître le Free Riding. Le spectaculaire est venu après le sport, pas à sa place."}],
   en:["The lake fills the crater, and the grass runs to the volcanoes without meeting a fence.",
       "Horses work here with no rope, and riders end up with nothing in their hands at all.",
-      {f:"It was here, in eventing, that a New Zealand pair competed before making free riding known. The spectacular came after the sport, not instead of it."}],
+      {f:"It was in this country that a pair competed in eventing before making free riding known. The spectacular came after the sport, not instead of it."}],
   es:["El lago ocupa el cráter, y la hierba corre hasta los volcanes sin encontrar una valla.",
       "Aquí se ve trabajar a los caballos sin cuerda, y a jinetes que ya no llevan nada en las manos.",
-      {f:"Fue aquí, en concurso completo, donde una pareja neozelandesa compitió antes de dar a conocer el free riding. Lo espectacular vino después del deporte, no en su lugar."}],
+      {f:"Fue en este país donde una pareja compitió en concurso completo antes de dar a conocer el free riding. Lo espectacular vino después del deporte, no en su lugar."}],
   it:["Il lago occupa il cratere, e l'erba corre fino ai vulcani senza incontrare un recinto.",
       "Qui si vedono cavalli lavorare senza corda, e cavallerizze che non hanno più nulla in mano.",
-      {f:"È qui, nel completo, che una coppia neozelandese ha gareggiato prima di far conoscere il free riding. Lo spettacolare è venuto dopo lo sport, non al suo posto."}],
+      {f:"È in questo paese che una coppia ha gareggiato nel completo prima di far conoscere il free riding. Lo spettacolare è venuto dopo lo sport, non al suo posto."}],
   de:["Der See füllt den Krater, und das Gras läuft bis zu den Vulkanen, ohne auf einen Zaun zu treffen.",
       "Hier arbeiten Pferde ohne Seil, und Reiterinnen haben am Ende gar nichts mehr in den Händen.",
-      {f:"Hier, in der Vielseitigkeit, ist ein neuseeländisches Paar geritten, bevor es das freie Reiten bekannt machte. Das Spektakuläre kam nach dem Sport, nicht an seiner Stelle."}],
+      {f:"In diesem Land ist ein Paar Vielseitigkeit geritten, bevor es das freie Reiten bekannt machte. Das Spektakuläre kam nach dem Sport, nicht an seiner Stelle."}],
   ja:["湖が火口を満たし、草地は柵に出会うことなく火山まで続いています。",
       "ここでは、ロープなしで働く馬と、手に何も持たない騎手を見かけます。",
-      {f:"フリーライディングを世に知らせる前に、ニュージーランドのある人馬が総合馬術を走ったのがこの地です。華やかさは競技の後に来たのであって、競技の代わりに来たのではありません。"}]},
+      {f:"フリーライディングを世に知らせる前に、ある人馬が総合馬術を走ったのがこの国です。華やかさは競技の後に来たのであって、競技の代わりに来たのではありません。"}]},
  santaynez:{
   fr:["La vallée sent la poussière chaude et l'eucalyptus, et rien ici ne se fait dans le bruit.",
       "On y apprend à demander si peu que le cheval réponde avant qu'on ait insisté.",
