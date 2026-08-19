@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Hype</title>
+<!--
+  HYPE ▸ 19/08/2026 (feu vert de Blandine, urgence en direct) — PAGE DE
+  PARTAGE PUBLIQUE D'UNE STORY.
+
+  Pourquoi ce fichier existe : un lien partage (#s=<id>) menait vers
+  index.html complet — 9 Mo, toute l'app, et surtout le meme mecanisme
+  que la navigation connectee. Constat de Blandine : « il ne faut pas
+  exiger de connexion pour la partager ou pour l'avoir, sinon personne
+  ne va l'avoir ». Une story destinee a quelqu'un HORS de Hype (sa mere,
+  au telephone, sans compte) doit s'ouvrir pour n'importe qui.
+
+  Ce fichier est volontairement SEPARE d'index.html : une seule requete
+  REST directe (pas le SDK Supabase complet), une seule photo, aucune
+  barre de navigation, aucun etat de connexion attendu. Si Supabase
+  refuse la lecture anonyme (regle RLS cote base, hors de portee du
+  code), la page le dit clairement plutot que de rester blanche —
+  c'est la seule chose que ce fichier NE PEUT PAS reparer seul.
+
+  Toujours brande Hype, avec un bouton « Decouvrir Hype » bien visible :
+  Blandine a confirme que le but reste de faire decouvrir l'app, pas
+  seulement d'afficher une photo nue.
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #060709; min-height: 100%; }
+  body {
+    font-family: 'Montserrat', sans-serif;
+    color: #F4F7FA;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0 0 40px;
+  }
+  .entete {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(env(safe-area-inset-top) + 18px) 0 14px;
+  }
+  .marque {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #C9D6DC 45%, #8FA6AF 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .scene { width: 100%; max-width: 460px; padding: 0 18px; }
+
+  .carte {
+    position: relative;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #0c0f13;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+  .carte img {
+    width: 100%;
+    display: block;
+    max-height: 78vh;
+    object-fit: contain;
+    background: #04070d;
+  }
+  .auteur-bandeau {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 15px;
+  }
+  .av {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(32,217,245,0.14);
+    border: 1px solid rgba(32,217,245,0.35);
+    background-size: cover; background-position: center;
+    flex-shrink: 0;
+  }
+  .nom-auteur { font-size: 13.5px; font-weight: 700; color: #F4F7FA; line-height: 1.2; }
+  .sous-ligne { font-size: 11.5px; color: #8A929C; margin-top: 1px; }
+
+  .legende {
+    padding: 0 15px 16px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #D6DCE1;
+    white-space: pre-wrap;
+  }
+  .lieu {
+    display: flex; align-items: center; gap: 5px;
+    padding: 0 15px 16px;
+    font-size: 12.5px;
+    color: #7FCBD6;
+  }
+
+  .cta {
+    margin-top: 28px;
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+  }
+  .cta-phrase {
+    font-size: 12.5px;
+    color: #8A929C;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .cta a {
+    display: block;
+    width: 100%;
+    padding: 15px 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #1FB8C4, #5FE9F0);
+    color: #04252A;
+    font-size: 14.5px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 8px 28px rgba(32,217,245,0.22);
+  }
+
+  .etat {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 90px 30px 0;
+    text-align: center;
+  }
+  .etat .titre { font-family: 'Cinzel', serif; font-size: 17px; color: #F4F7FA; margin-bottom: 10px; }
+  .etat .texte { font-size: 13.5px; color: #8A929C; line-height: 1.6; max-width: 300px; }
+
+  .halo {
+    position: absolute; top: -60px; left: 50%; width: 320px; height: 320px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(32,217,245,0.14) 0%, rgba(32,217,245,0) 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="entete"><span class="marque">HYPE</span></div>
+<div class="scene" id="scene">
+  <div class="etat" id="etatChargement">
+    <div class="titre">Ouverture&hellip;</div>
+  </div>
+</div>
+
+<div class="cta" id="zoneCta" style="display:none;">
+  <p class="cta-phrase">Rejoins l'univers équestre de Hype pour ne plus rien manquer.</p>
+  <a href="https://majestic-melba-997a68.netlify.app">Découvrir Hype</a>
+</div>
+
+<script>
+(function () {
+  var SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
+  var CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
+  var LIEN_APP = "https://majestic-melba-997a68.netlify.app";
+
+  function param(nom) {
+    try {
+      var u = new URL(window.location.href);
+      return u.searchParams.get(nom);
+    } catch (e) { return null; }
+  }
+
+  function echapper(txt) {
+    var d = document.createElement("div");
+    d.textContent = txt == null ? "" : String(txt);
+    return d.innerHTML;
+  }
+
+  function afficherEtat(titre, texte) {
+    document.getElementById("scene").innerHTML =
+      '<div class="etat"><div class="titre">' + echapper(titre) + '</div>' +
+      (texte ? '<div class="texte">' + echapper(texte) + '</div>' : '') + '</div>';
+    document.getElementById("zoneCta").style.display = "block";
+  }
+
+  function dateLisible(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+    } catch (e) { return ""; }
+  }
+
+  async function requeteRest(chemin) {
+    var r = await fetch(SUPABASE_URL + "/rest/v1/" + chemin, {
+      headers: { "apikey": CLE, "Authorization": "Bearer " + CLE }
+    });
+    if (!r.ok) throw new Error("http-" + r.status);
+    return await r.json();
+  }
+
+  async function demarrer() {
+    var id = param("id");
+    if (!id) { afficherEtat("Lien incomplet", "Cette adresse ne pointe vers aucune story."); return; }
+
+    var story;
+    try {
+      var lignes = await requeteRest(
+        "hype_stories?id=eq." + encodeURIComponent(id) +
+        "&select=id,user_id,photo_url,legende,lieu,ecurie,expire_le,created_at"
+      );
+      story = lignes && lignes[0];
+    } catch (eReq) {
+      /* Une erreur reseau/HTTP peut aussi vouloir dire que la lecture
+         anonyme est refusee cote Supabase (regle RLS) — voir le
+         commentaire d'entete : ce fichier ne peut pas corriger cela
+         lui-meme, seule Blandine peut ajuster la politique de la table. */
+      afficherEtat("Impossible d'ouvrir cette story", "Réessaie dans un instant, ou ouvre-la directement dans Hype.");
+      return;
+    }
+
+    if (!story) { afficherEtat("Story introuvable", "Elle a peut-être été retirée."); return; }
+    if (story.expire_le && new Date(story.expire_le).getTime() < Date.now()) {
+      afficherEtat("Cette story n'est plus visible", "Les stories Hype restent en ligne quelques jours seulement.");
+      return;
+    }
+
+    var auteur = null;
+    try {
+      var profils = await requeteRest(
+        "profiles?id=eq." + encodeURIComponent(story.user_id) + "&select=pseudo,avatar_url,handle"
+      );
+      auteur = profils && profils[0];
+    } catch (eP) { auteur = null; }
+
+    var nomAuteur = (auteur && auteur.pseudo) ? auteur.pseudo : "Un cavalier Hype";
+    var avatarUrl = auteur && auteur.avatar_url;
+    var sousLigne = (story.ecurie ? story.ecurie : "Hype") + " · " + dateLisible(story.created_at);
+
+    var html = ''
+      + '<div class="carte">'
+      +   '<img src="' + echapper(story.photo_url) + '" alt="">'
+      +   '<div class="auteur-bandeau">'
+      +     '<div class="av" style="' + (avatarUrl ? 'background-image:url(' + echapper(avatarUrl) + ')' : '') + '"></div>'
+      +     '<div><div class="nom-auteur">' + echapper(nomAuteur) + '</div><div class="sous-ligne">' + echapper(sousLigne) + '</div></div>'
+      +   '</div>'
+      +   (story.legende ? '<div class="legende">' + echapper(story.legende) + '</div>' : '')
+      +   (story.lieu ? '<div class="lieu">📍 ' + echapper(story.lieu) + '</div>' : '')
+      + '</div>';
+
+    document.getElementById("scene").innerHTML = html;
+    document.getElementById("zoneCta").style.display = "block";
+
+    try {
+      document.title = nomAuteur + " sur Hype";
+    } catch (eT) { }
+  }
+
+  demarrer();
+})();
+</script>
+</body>
+</html>

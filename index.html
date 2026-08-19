@@ -19826,8 +19826,21 @@ const LIEN_APP = "https://majestic-melba-997a68.netlify.app"; // lien public de 
 async function hypePartager(famille, valeur, titre, options) {
     var o = options || {};
     try {
-        var base = (typeof location !== "undefined" && location.origin) ? (location.origin + location.pathname) : LIEN_APP;
-        var u = base + "#" + famille + "=" + encodeURIComponent(String(valeur || ""));
+        var base = (typeof location !== "undefined" && location.origin) ? location.origin : LIEN_APP;
+        /* 19/08 (feu vert de Blandine, urgence en direct) : « il ne faut pas
+           exiger de connexion pour la partager ou pour l'avoir, sinon
+           personne ne va l'avoir ». Une story menait vers index.html complet
+           (9 Mo, tout l'app), heritant du meme mecanisme que la navigation
+           connectee — c'est pour ca qu'un lien envoye a quelqu'un hors de
+           Hype n'ouvrait jamais la bonne story. Seule la famille "s" (story)
+           part desormais vers une page a part, story.html : une requete
+           publique directe, aucun compte requis. Les autres familles
+           (g, b, c, a, v, u, e) continuent de mener vers l'app, inchangees.
+           Si Supabase refuse la lecture anonyme (regle RLS), story.html le
+           dit clairement — ce que le code seul ne peut pas reparer. */
+        var u = (famille === "s")
+            ? base + "/story.html?id=" + encodeURIComponent(String(valeur || ""))
+            : base + location.pathname + "#" + famille + "=" + encodeURIComponent(String(valeur || ""));
         var tx = (titre ? String(titre) : "Hype") + " \u2014 Hype \uD83D\uDC0E";
         /* Une image quand l'appelant en fournit une : c'est ce qui fait la
            difference dans WhatsApp et Instagram. Meme garde-fou de taille que
