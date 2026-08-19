@@ -27,6 +27,30 @@
 
 window.HYPE_LINGO_LEX = window.HYPE_LINGO_LEX || {};
 
+/* 🟥🟥 19/08/2026 — CHAPITRE RAMENÉ À 37 CONCEPTS, DÉCISION DE BLANDINE.
+   Newmarket ne lisait que sa leçon 1 : 10 concepts vus sur 42, trente-deux
+   dormants. Elle lit désormais SES QUATRE LEÇONS — 10 / 11 / 8 / 8.
+
+   CINQ CONCEPTS SONT PARTIS À BARCELONE (étape 23, « Voyager avec son
+   cheval ») : `longe`, `attacher`, `couverture` (ex-L4), `filet-foin` et
+   `ration` (ex-L3). Ils vivent maintenant dans
+   `hype-lingo-lex-barcelone.js` avec leurs `ref` d'origine.
+   ⚠️ NE PAS LES RECRÉER ICI.
+
+   🟢 QUATRE CONCEPTS RESTENT VOLONTAIREMENT ICI ET SONT REPRIS À
+   BARCELONE EN RAPPEL : `eau`, `seau`, `foin`, `licol`. Newmarket est
+   l'étape 4, Barcelone la 23 — sans eux, le joueur aurait fait tout le
+   chapitre de l'écurie sans jamais apprendre « l'eau » ni « le seau ».
+   ⚠️ LEUR PRÉSENCE DANS DEUX FICHIERS N'EST PAS UN DOUBLON : `MAITRISE`
+   est indexée par `ref`, ils arrivent déjà acquis à Barcelone. Même
+   mécanisme que `balade` (La Baule → Maurice) ou `monter-a-cru`
+   (Maurice → Taupō). NE PAS TENTER DE DÉDUPLIQUER.
+
+   Quatre phrases du dialogue et une phrase d'exercice ont été réécrites —
+   elles citaient les concepts partis. Les 17 autres phrases du dialogue
+   sont intactes.
+   ================================================================== */
+
 window.HYPE_LINGO_LEX.ecurie = {
   ref: "ecurie",
   chapitre: 1,
@@ -305,16 +329,6 @@ window.HYPE_LINGO_LEX.ecurie = {
           de:"Gemähtes, getrocknetes Gras: die Basis der Ration. Ein Pferd frisst täglich 1,5 bis 2 % seines Gewichts.",
           ja:"刈って乾かした草。飼料の基本です。馬は毎日、体重の1.5〜2%を食べます。" } },
 
-  { ref:"filet-foin", lecon:3, coll:"nourriture",
-    mots:{ fr:{m:"le filet à foin"}, en:{m:"the haynet", p:"hé-nett"},
-           es:{m:"la red de heno"}, it:{m:"la rete per il fieno"},
-           de:{m:"das Heunetz", p:"hoï-nets"}, ja:{m:"干し草ネット", p:"hoshikusa netto"} },
-    def:{ fr:"Filet à mailles serrées qui ralentit la prise de foin. À accrocher assez haut pour qu'un pied ne s'y prenne pas.",
-          en:"Small-mesh net that slows hay intake. Tie it high enough that a foot cannot get caught.",
-          es:"Red de malla estrecha que ralentiza la toma de heno. Se cuelga bastante alto para que un pie no se enganche.",
-          it:"Rete a maglie strette che rallenta l'assunzione del fieno. Da appendere abbastanza in alto perché un piede non vi si impigli.",
-          de:"Engmaschiges Netz, das die Heuaufnahme verlangsamt. Hoch genug aufhängen, damit sich kein Huf verfängt.",
-          ja:"目の細かい網で、乾草を食べる速さをゆるめます。蹄が引っかからない高さに吊るすこと。" } },
 
   { ref:"granules", lecon:3, coll:"nourriture",
     mots:{ fr:{m:"les granulés"}, en:{m:"the nuts", p:"neutts", var:"the pellets · hard feed (GB) · grain (US)"},
@@ -349,16 +363,6 @@ window.HYPE_LINGO_LEX.ecurie = {
           de:"Die Hülle des Weizenkorns. Diente dem berühmten Mash — in großen Mengen heute nicht mehr empfohlen.",
           ja:"小麦の粒の外皮。かつては例のふすま粥に使われましたが、今では大量に与えることは勧められません。" } },
 
-  { ref:"ration", lecon:3, coll:"nourriture",
-    mots:{ fr:{m:"la ration"}, en:{m:"the feed", p:"fid", var:"the ration"},
-           es:{m:"la ración"}, it:{m:"la razione"},
-           de:{m:"die Futterration", p:"fou-teur-ra-tsion"}, ja:{m:"飼料", p:"shiryō"} },
-    def:{ fr:"Ce qu'un cheval reçoit à un repas donné. Se pèse, ne s'estime pas à l'œil.",
-          en:"What a horse gets at a given meal. It is weighed, not guessed.",
-          es:"Lo que un caballo recibe en una comida dada. Se pesa, no se calcula a ojo.",
-          it:"Ciò che un cavallo riceve a un dato pasto. Si pesa, non si stima a occhio.",
-          de:"Was ein Pferd zu einer Mahlzeit bekommt. Wird gewogen, nicht nach Augenmaß geschätzt.",
-          ja:"一回の食事で馬に与える量。目分量ではなく、量りで計ります。" } },
 
   { ref:"pierre-sel", lecon:3, coll:"nourriture",
     mots:{ fr:{m:"la pierre à sel"}, en:{m:"the salt lick", p:"solt-lik", var:"the mineral block"},
@@ -395,16 +399,6 @@ window.HYPE_LINGO_LEX.ecurie = {
           de:"Kopfstück ohne Gebiss, zum Halten und Führen an der Hand. Ein Pferd nie damit frei laufen lassen.",
           ja:"ハミのない頭絡。馬を引いて歩くためのもの。これを着けたまま放してはいけません。" } },
 
-  { ref:"longe", lecon:4, coll:"materiel",
-    mots:{ fr:{m:"la longe"}, en:{m:"the lead rope", p:"lid-rop"},
-           es:{m:"el ramal"}, it:{m:"la longhina", var:"« longia » = la longe longue de travail en cercle"},
-           de:{m:"der Führstrick", p:"fur-chtrik"}, ja:{m:"引き手", p:"hikite", var:"リード (rīdo), emprunté à l'anglais"} },
-    def:{ fr:"Corde attachée au licol pour mener le cheval. Ne jamais l'enrouler autour de la main. L'italien distingue nettement : « longhina » pour mener en main, « longia » pour longer en cercle.",
-          en:"Rope clipped to the headcollar for leading. Never wrap it around your hand. Italian keeps two words: « longhina » for leading, « longia » for the lunge line.",
-          es:"Cuerda atada a la cabezada para llevar al caballo. Nunca enrollarla alrededor de la mano. El italiano distingue claramente: « longhina » para llevar de la mano, « longia » para dar cuerda en círculo.",
-          it:"Corda attaccata alla capezza per condurre il cavallo. Mai avvolgerla attorno alla mano. L'italiano distingue nettamente: « longhina » per condurre a mano, « longia » per longiare in circolo.",
-          de:"Strick an der Halfter, um das Pferd zu führen. Nie um die Hand wickeln. Das Italienische unterscheidet klar: « longhina » zum Führen, « longia » zum Longieren im Kreis.",
-          ja:"無口につないで馬を引くための綱。手に巻きつけないこと。イタリア語は明確に区別します — 引くのは « longhina »、円で調馬索をかけるのは « longia »。" } },
 
   { ref:"anneau", lecon:4, coll:"materiel",
     mots:{ fr:{m:"l'anneau d'attache"}, en:{m:"the tie ring", p:"taï-ring"},
@@ -417,16 +411,6 @@ window.HYPE_LINGO_LEX.ecurie = {
           de:"Fester Punkt zum Anbinden, immer mit einer Schnur, die bei Panik reißt. Das Japanische benennt den Ort (繋ぎ場, « der Anbindeplatz ») statt des Rings: Sprachen zerschneiden die Welt nicht gleich.",
           ja:"馬をつなぐ固定点。パニックのときに切れるよう、必ず細紐を介して。日本語は輪ではなく場所を名づけます — 繋ぎ場。言語による世界の切り取り方は同じではありません。" } },
 
-  { ref:"couverture", lecon:4, coll:"materiel",
-    mots:{ fr:{m:"la couverture"}, en:{m:"the rug", p:"reug", var:"the blanket (US)"},
-           es:{m:"la manta"}, it:{m:"la coperta"},
-           de:{m:"die Decke", p:"dè-ke"}, ja:{m:"馬着", p:"bachaku", var:"馬服 existe mais est rare"} },
-    def:{ fr:"Protège du froid, de la pluie ou des mouches selon le modèle. Se contrôle chaque jour : une sangle qui tourne blesse.",
-          en:"Protects from cold, rain or flies depending on the type. Check it daily — a twisted strap causes rubs.",
-          es:"Protege del frío, de la lluvia o de las moscas según el modelo. Se controla cada día: una cincha que gira hiere.",
-          it:"Protegge dal freddo, dalla pioggia o dalle mosche secondo il modello. Si controlla ogni giorno: una cinghia che gira ferisce.",
-          de:"Schützt je nach Modell vor Kälte, Regen oder Fliegen. Täglich kontrollieren: Ein verrutschter Gurt scheuert wund.",
-          ja:"型によって寒さ、雨、虫から守ります。毎日の点検を。ずれたベルトは擦り傷をつくります。" } },
 
   { ref:"curer", lecon:4, coll:"gestes", v:true,
     mots:{ fr:{m:"curer le box"}, en:{m:"to muck out", p:"tou-meuk-aoute"},
@@ -494,16 +478,6 @@ window.HYPE_LINGO_LEX.ecurie = {
           de:"Das Pferd nach der Arbeit abspritzen. Beim heißen Pferd beginnt man an den Beinen, nie an der Nierenpartie. Das Japanische unterscheidet drei Handgriffe, die das Französische vermengt: nass machen, Beine kühlen, shampoonieren.",
           ja:"運動後に馬を水で流すこと。熱い馬にはまず脚から — 腰からは絶対にかけません。日本語は、水をかける・脚を冷やす・シャンプーで洗う、の三つを言い分けます。" } },
 
-  { ref:"attacher", lecon:4, coll:"gestes", v:true,
-    mots:{ fr:{m:"attacher"}, en:{m:"to tie up", p:"tou-taï-eup"},
-           es:{m:"atar"}, it:{m:"legare"},
-           de:{m:"anbinden", p:"an-bin-den"}, ja:{m:"繋ぐ", p:"tsunagu"} },
-    def:{ fr:"Fixer le cheval par la longe pour le panser ou le seller. Nœud à dégagement rapide, jamais un nœud serré.",
-          en:"Secure the horse by the lead rope to groom or tack up. Quick-release knot, never a tight one.",
-          es:"Sujetar al caballo por la cuerda para limpiarlo o ensillarlo. Nudo de desate rápido, jamás un nudo apretado.",
-          it:"Legare il cavallo con la longhina per pulirlo o sellarlo. Nodo a scioglimento rapido, mai un nodo stretto.",
-          de:"Das Pferd am Strick anbinden, zum Putzen oder Satteln. Immer ein Panikknoten, nie ein fester Knoten.",
-          ja:"手入れや装鞍のために綱で馬をつなぐこと。結び方は必ず引き解け結びで、固結びは厳禁です。" } }
   ],
 
   /* ---- phrases du chapitre : le moteur les découpe en tuiles ---- */
@@ -543,13 +517,17 @@ window.HYPE_LINGO_LEX.ecurie = {
       it:"Non ha più acqua.",
       de:"Er hat kein Wasser mehr.",
       ja:"水 が なくなり ました 。" },
-    { ref:"ou-attacher", lecon:4,
-      fr:"Je peux attacher mon cheval ici ?",
-      en:"Can I tie my horse up here ?",
-      es:"¿ Puedo atar mi caballo aquí ?",
-      it:"Posso legare il mio cavallo qui ?",
-      de:"Kann ich mein Pferd hier anbinden ?",
-      ja:"ここ に 馬 を 繋いで も いい です か ?" }
+    /* 🟥 19/08 : TEXTE REMPLACÉ, `ref` CONSERVÉE. L'ancienne phrase
+       employait `attacher`, parti à Barcelone. Garder l'identifiant évite
+       toute dépendance cachée ; seul le texte change.
+       ⚠️ ES/IT/DE/JA écrits par Claude, non relus par un natif. */
+    { ref:"ou-attacher", lecon:4, mots:["anneau","box"],
+      fr:"L'anneau est à côté de la porte du box.",
+      en:"The tie ring is next to the stable door.",
+      es:"La argolla está junto a la puerta del box.",
+      it:"L'anello è accanto alla porta del box.",
+      de:"Der Anbindering ist neben der Boxentür.",
+      ja:"係留 リング は 馬房 の 扉 の 横 に あり ます。" }
   ],
 
   /* ==================================================================
@@ -583,7 +561,12 @@ window.HYPE_LINGO_LEX.ecurie = {
   ================================================================== */
   dialogue: {
     ville: "newmarket", lecon: 1, temps: 6, langues: ["fr","en","es","it","de","ja"],   /* 21 phrases */
-
+    /* 🟥 19/08 : table `titres` ajoutée — même schéma que Golegã et
+       Barcelone. ⚠️ CHAMP INERTE côté `lingo.html` : c'est la page fille
+       `lingo-dialogue.html` qui l'emploie, et elle n'a pas été fournie.
+       Traductions écrites par Claude, non relues par un natif. */
+    titres: { 1:"Arriver à l'écurie", 2:"Faire les boxes", 3:"Nettoyer",
+              4:"Eau et nourriture", 5:"La routine des chevaux", 6:"Fin de journée" },
     phrases: [
 
       /* ---- temps 1 · j'arrive et je cherche mon chemin ---- */
@@ -678,13 +661,15 @@ window.HYPE_LINGO_LEX.ecurie = {
         de:"Hat er schon gefressen?",
         ja:"もう 食べ まし た か ?" },
 
-      { ref:"d-quelle-ration", temps:4, dit:"joueuse", mots:["ration"],
-        fr:"Quelle est sa ration ?",
-        en:"What's his feed?",
-        es:"¿Cuál es su ración?",
-        it:"Qual è la sua razione?",
-        de:"Wie sieht seine Futterration aus?",
-        ja:"飼料 は どのくらい です か ?" },
+      /* 🟥 19/08 : RÉÉCRITE. Elle citait `ration`, parti à Barcelone.
+         ⚠️ ES/IT/DE/JA écrits par Claude, non relus par un natif. */
+      { ref:"d-quelle-ration", temps:4, dit:"joueuse", mots:["granules","avoine"],
+        fr:"Ce cheval mange des granulés et un peu d'avoine ?",
+        en:"Does this horse have pellets and a little oats?",
+        es:"¿Este caballo come pienso y un poco de avena?",
+        it:"Questo cavallo mangia mangime e un po' d'avena?",
+        de:"Bekommt dieses Pferd Pellets und ein wenig Hafer?",
+        ja:"この 馬 は ペレット と 少し の 燕麦 を 食べ ます か ?" },
 
       { ref:"d-plus-eau", temps:4, dit:"joueuse", mots:["eau"],
         fr:"Il n'a plus d'eau.",
@@ -694,13 +679,17 @@ window.HYPE_LINGO_LEX.ecurie = {
         de:"Er hat kein Wasser mehr.",
         ja:"水 が なくなっ て い ます。" },
 
-      { ref:"d-remplir-filet", temps:4, dit:"joueuse", mots:["filet-foin","foin"],
-        fr:"Est-ce que je remplis le filet à foin ?",
-        en:"Shall I fill the haynet?",
-        es:"¿Relleno la red de heno?",
-        it:"Riempio la rete per il fieno?",
-        de:"Soll ich das Heunetz füllen?",
-        ja:"干し草 ネット に 入れ ます か ?" },
+      /* 🟥 19/08 : RÉÉCRITE. Elle citait `filet-foin`, parti à Barcelone.
+         `foin` reste enseigné ici — c'est un des quatre mots gardés à
+         Newmarket puis rappelés à Barcelone.
+         ⚠️ ES/IT/DE/JA écrits par Claude, non relus par un natif. */
+      { ref:"d-remplir-filet", temps:4, dit:"joueuse", mots:["foin","mangeoire"],
+        fr:"Est-ce que je mets du foin dans la mangeoire ?",
+        en:"Shall I put some hay in the manger?",
+        es:"¿Pongo heno en el comedero?",
+        it:"Metto del fieno nella mangiatoia?",
+        de:"Soll ich Heu in die Krippe geben?",
+        ja:"飼い葉桶 に 干し草 を 入れ ます か ?" },
 
       { ref:"d-r-mesure-granules", temps:4, dit:"club", mots:["granules","foin"],
         fr:"Une mesure de granulés le matin, du foin le soir.",
@@ -720,22 +709,25 @@ window.HYPE_LINGO_LEX.ecurie = {
         de:"Wo ist sein Halfter?",
         ja:"ハルター は どこ です か ?" },
 
-      { ref:"d-ou-attacher", temps:5, dit:"joueuse", mots:["attacher"],
-        fr:"Où est-ce que je peux l'attacher ?",
-        en:"Where can I tie him up?",
-        es:"¿Dónde puedo atarlo?",
-        it:"Dove posso legarlo?",
-        de:"Wo kann ich ihn anbinden?",
-        ja:"どこ に 繋い で も いい です か ?" },
+      /* 🟥 19/08 : RÉÉCRITE. Elle citait `attacher`, parti à Barcelone.
+         ⚠️ ES/IT/DE/JA écrits par Claude, non relus par un natif. */
+      { ref:"d-ou-attacher", temps:5, dit:"joueuse", mots:["pailler","paille"],
+        fr:"Il faut remettre de la paille dans ce box ?",
+        en:"Does this stable need bedding down with straw?",
+        es:"¿Hay que volver a poner paja en este box?",
+        it:"Bisogna rimettere della paglia in questo box?",
+        de:"Muss diese Box neu mit Stroh eingestreut werden?",
+        ja:"この 馬房 に 藁 を 入れ 直し ます か ?" },
 
-      { ref:"d-couverture", temps:5, dit:"joueuse", mots:["couverture"],
-        fr:"Est-ce qu'il faut lui mettre une couverture ?",
-        en:"Does he need a rug on?",
-        varEn:"Does he need a blanket on?",
-        es:"¿Hay que ponerle la manta?",
-        it:"Bisogna mettergli la coperta?",
-        de:"Muss er eine Decke bekommen?",
-        ja:"馬着 を 着せ た ほう が いい です か ?" },
+      /* 🟥 19/08 : RÉÉCRITE. Elle citait `couverture`, parti à Barcelone.
+         ⚠️ ES/IT/DE/JA écrits par Claude, non relus par un natif. */
+      { ref:"d-couverture", temps:5, dit:"joueuse", mots:["pierre-sel"],
+        fr:"Est-ce qu'il faut vérifier sa pierre à sel ?",
+        en:"Should I check his salt lick?",
+        es:"¿Hay que comprobar su piedra de sal?",
+        it:"Bisogna controllare la sua pietra di sale?",
+        de:"Soll ich seinen Salzleckstein kontrollieren?",
+        ja:"塩 の 塊 を 確認 し た ほう が いい です か ?" },
 
       /* ---- temps 6 · sortir, rentrer, doucher ---- */
       { ref:"d-sortir-paddock", temps:6, dit:"joueuse", mots:["sortir","paddock"],

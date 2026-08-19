@@ -3591,7 +3591,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=51";   /* 🟥 v51 (19/08) : ABERYSTWYTH ouvre ses 4 lecons, 10 -> 42 concepts.
+var VER = "?v=53";   /* 🟥 v53 (19/08) : six chapitres ajoutes a TH_FAMILLES (formation,
+                        liberte, enseignant, andalou, derby, parade).
+                        v52 (19/08) : BURGHLEY ouvre sa lecon 2, 18 -> 21 concepts.
+                        PLUS AUCUN CONCEPT DORMANT DANS LE MODULE.
+                        v51 (19/08) : ABERYSTWYTH ouvre ses 4 lecons, 10 -> 42 concepts.
                         v50 (19/08) : NEWMARKET ouvre ses 4 lecons, 10 -> 37 concepts.
                         v49 (19/08) : LA BAULE ouvre sa lecon 2 (la securite), 15 -> 26
                         concepts enseignes a l'etape 1. 19 phrases ajoutees.
@@ -5369,18 +5373,27 @@ var TH_FAMILLES = [
      (Fontainebleau) et `flyinge` ajoutées dans la foulée.
      ⚠️ Toujours pas dedans : `liberte` (Taupō). Gap antérieur à ce
      soir, non corrigé ici — à trancher avec Blandine. */
-  { cles:["arrivee","balade","urgences-vet","urgences-med","vente"],
+  { cles:["arrivee","balade","urgences-vet","urgences-med","vente","formation"],
     nom:{fr:"Au club", en:"At the club", es:"En el club", it:"Al club", de:"Im Verein", ja:"クラブで"} },
   /* 🟥 19/08 : `barcelone` ajoutée ici — tout le chapitre du transport se
-     fait à pied, jamais en selle. ⚠️ `liberte` (Taupō) MANQUE TOUJOURS dans
-     cette table, gap antérieur, non corrigé. */
-  { cles:["pansage","walsall","vejer","ecurie","connemara","jeunes","flyinge","horsemanship","elevage","haras","barcelone"],
+     fait à pied, jamais en selle.
+     🟢 SIX CHAPITRES MANQUAIENT DANS CETTE TABLE, ajoutés le même soir :
+     `formation` (Warendorf) → Au club · `liberte` (Taupō) → À pied ·
+     `enseignant` (Saumur) et `andalou` (Jerez) → À cheval ·
+     `derby` (Hickstead) → Le concours · `parade` (Séville) → Les disciplines.
+     Ce sont EXACTEMENT les six villes qui n'avaient pas non plus de mot
+     d'accueil : le même oubli, à deux endroits. Défaut silencieux — un
+     chapitre absent de cette table ne remonte simplement dans aucun thème.
+     ⚠️ LES SIX AFFECTATIONS SONT UN CHOIX DE CLAUDE, à valider par
+     Blandine. Aucune n'est évidente : `formation` pourrait aussi aller
+     dans « Les disciplines », `parade` dans « À cheval ». */
+  { cles:["pansage","walsall","vejer","ecurie","connemara","jeunes","flyinge","horsemanship","elevage","haras","barcelone","liberte"],
     nom:{fr:"À pied", en:"On the ground", es:"A pie", it:"Da terra", de:"Am Boden", ja:"地上から"} },
-  { cles:["cours","windsor","versailles","wellington","aachen","froid"],
+  { cles:["cours","windsor","versailles","wellington","aachen","froid","enseignant","andalou"],
     nom:{fr:"À cheval", en:"In the saddle", es:"A caballo", it:"In sella", de:"Im Sattel", ja:"馬上で"} },
-  { cles:["badminton","oliva","rome","cross"],
+  { cles:["badminton","oliva","rome","cross","derby"],
     nom:{fr:"Le concours", en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会"} },
-  { cles:["poney","polo","western","endurance","tradition"],
+  { cles:["poney","polo","western","endurance","tradition","parade"],
     nom:{fr:"Les disciplines", en:"The disciplines", es:"Las disciplinas", it:"Le discipline", de:"Die Disziplinen", ja:"各種目"} }
 ];
 
@@ -7231,7 +7244,12 @@ var ETAPE_SRC = {
      `lecon:3` d'origine dans hype-lingo-lex-badminton.js — sans cette
      seconde paire, ils resteraient invisibles. */
   badminton:   [["badminton",2],["badminton",3]],
-  burghley:    [["cross",1]],
+  /* 🟥 19/08 : BURGHLEY OUVRE SA LEÇON 2 — 18 -> 21 concepts. Trois
+     obstacles de cross dormaient (`talus`, `contre-bas`, `gue`), et son
+     dialogue les citait DÉJÀ quatre fois : « Le 14, c'est le gué ou le
+     contre-bas ? », « Il s'est arrêté au contre-bas »… Des mots entendus,
+     jamais enseignés. Le fichier n'a pas changé, seul son branchement. */
+  burghley:    [["cross",1],["cross",2]],
   /* ⚠️ v36 (decision B de Blandine, 9 aout) : les termes les plus urgents
      regroupes dans UNE ville offerte. Kildare recoit les lecons 1 (les
      secours), 3 (les urgences du cheval) et 4 (les mots a crier) — le kit
