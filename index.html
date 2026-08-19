@@ -792,7 +792,7 @@ function dernierVuHype(last, tr) {
 function estModerateurHype(u) { try { return !!(u && u.email && HYPE_MODERATEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email).toLowerCase().trim() === "feinn@live.fr"); } catch (e) { return false; } }
 // Team Ambassadeurs Hype : les modérateurs en font partie automatiquement + membres nommés
-const HYPE_AMBASSADEURS = ["liamroux0@gmail.com", "evan.roux.2014@icloud.com", "rizeamegane@gmail.com", "deborah.guilmain@free.fr", "neliafrance.auboin@gmail.com"];
+const HYPE_AMBASSADEURS = ["liamroux0@gmail.com", "evanroux569@gmail.com", "rizeamegane@gmail.com", "deborah.guilmain@free.fr", "neliafrance.auboin@gmail.com"];
 function estAmbassadeurHype(u) { try { if (estModerateurHype(u)) return true; return !!(u && u.email && HYPE_AMBASSADEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
 // Fond Studio Premium : palette de teintes (noir actif pour tous, le reste réservé aux ambassadeurs pour l'instant)
 const TEINTES_FOND_STUDIO = [
@@ -1146,7 +1146,7 @@ async function chargerEpinglesHB(chevalId) {
   try {
     const user = await utilisateurActuel();
     if (!user) return { data: [], error: null };
-    let req = supa.from("echanges_heybaby_epingles").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20);
+    let req = supa.from("echanges_heybaby_epingles").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(500);
     req = chevalId ? req.eq("cheval_id", chevalId) : req.is("cheval_id", null);
     return await req;
   } catch (e) { return { data: [], error: String(e) }; }
@@ -43045,7 +43045,15 @@ function EcranAssistantIA() {
     useEffect(() => { var _a; (_a = finRef.current) === null || _a === void 0 ? void 0 : _a.scrollIntoView({ behavior: "smooth" }); }, [messages, enCours]);
     const arreter = () => { try { if (abortRef.current) { hbLog("arrêt demandé par le cavalier"); abortRef.current.abort("stop"); } } catch (e) { } };
     const TXT = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
-    const LIMITE_EPINGLES_PREMIUM = 4;
+    /* 19/08/2026 (décision de Blandine) — PLAFONDS D'ÉPINGLES RELEVÉS.
+       Avant : 4 à vie pour un Premium, aucun plafond pour ai/duo. Le 4 était
+       hors de proportion (un Premium pose ~120 questions par mois) et ne
+       protégeait rien : une épingle est une ligne de texte, la réponse IA est
+       déjà générée et payée au moment de la question. Les plans ai et duo
+       reçoivent un plafond haut là où ils n'en avaient aucun — volontaire,
+       pour garder une borne. Ce sont des totaux À VIE, pas des quotas
+       périodiques : compterEpinglesHB ne filtre sur aucune date. */
+    const LIMITE_EPINGLES = planAbo === "duo" ? 80 : planAbo === "ai" ? 50 : 20;
     const chevauxCibles = (typeof CHEVAUX_FICHE !== "undefined" && CHEVAUX_FICHE)
         ? Object.keys(CHEVAUX_FICHE).map((cid) => ({ id: cid, nom: (CHEVAUX_FICHE[cid] && CHEVAUX_FICHE[cid].nom) || cid }))
         : (chevaux || []);
@@ -43057,10 +43065,8 @@ function EcranAssistantIA() {
     };
     const validerEpingle = async (chevalId, chevalNom) => {
         try {
-            if (planAbo !== "ai" && planAbo !== "duo") {
-                const r0 = await compterEpinglesHB();
-                if ((r0.count || 0) >= LIMITE_EPINGLES_PREMIUM) { setEpingleCible({ limite: true }); return; }
-            }
+            const r0 = await compterEpinglesHB();
+            if ((r0.count || 0) >= LIMITE_EPINGLES) { setEpingleCible({ limite: true, plafond: LIMITE_EPINGLES }); return; }
             const cible = epingleCible || {};
             const r = await epinglerEchangeHB({ question: cible.question, reponse: cible.reponse, chevalId: chevalId, chevalNom: chevalNom });
             setEpingleCible(null);
@@ -43281,7 +43287,7 @@ function EcranAssistantIA() {
                     React.createElement(BoutonPrincipal, { texte: t("decouvrir_premium"), couleur: COLORS.turquoise, onClick: () => { setEpingleCible(null); setEcran("premium"); } }))
                 : epingleCible.limite ? React.createElement(React.Fragment, null,
                     React.createElement("p", { style: { margin: "0 0 6px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("Limite atteinte", "Limit reached", "L\u00edmite alcanzado", "Limite raggiunto", "\u4e0a\u9650\u306b\u9054\u3057\u307e\u3057\u305f")),
-                    React.createElement("p", { style: { margin: "0 0 4px", fontSize: 13, color: COLORS.encreDoux, textAlign: "center", lineHeight: 1.5 } }, TXT("Tu as d\u00e9j\u00e0 4 conseils \u00e9pingl\u00e9s, le maximum du Cercle Crystal.", "You already have 4 pinned pieces of advice, the Crystal Circle maximum.", "Ya tienes 4 consejos fijados, el m\u00e1ximo del C\u00edrculo Crystal.", "Hai gi\u00e0 4 consigli fissati, il massimo del Cerchio Crystal.", "Crystal\u30b5\u30fc\u30af\u30eb\u306e\u4e0a\u9650\u3067\u3042\u308b4\u4ef6\u3092\u3059\u3067\u306b\u30d4\u30f3\u7559\u3081\u3057\u3066\u3044\u307e\u3059\u3002")),
+                    React.createElement("p", { style: { margin: "0 0 4px", fontSize: 13, color: COLORS.encreDoux, textAlign: "center", lineHeight: 1.5 } }, TXT("Tu as d\u00e9j\u00e0 " + (epingleCible.plafond || 20) + " conseils \u00e9pingl\u00e9s, le maximum de ton abonnement.", "You already have " + (epingleCible.plafond || 20) + " pinned pieces of advice, your plan's maximum.", "Ya tienes " + (epingleCible.plafond || 20) + " consejos fijados, el m\u00e1ximo de tu suscripci\u00f3n.", "Hai gi\u00e0 " + (epingleCible.plafond || 20) + " consigli fissati, il massimo del tuo abbonamento.", (epingleCible.plafond || 20) + "\u4ef6\u3092\u3059\u3067\u306b\u30d4\u30f3\u7559\u3081\u3057\u3066\u3044\u307e\u3059\u3002\u3054\u5951\u7d04\u306e\u4e0a\u9650\u3067\u3059\u3002")),
                     React.createElement("p", { style: { margin: "0 0 14px", fontSize: 12.5, color: COLORS.turquoise, textAlign: "center", fontWeight: 700 } }, TXT("L'abonnement AI illimit\u00e9 arrive bient\u00f4t \u2728", "The unlimited AI plan is coming soon \u2728", "La suscripci\u00f3n AI ilimitada llega pronto \u2728", "L'abbonamento AI illimitato arriva presto \u2728", "\u7121\u5236\u9650\u306eAI\u30d7\u30e9\u30f3\u304c\u307e\u3082\u306a\u304f\u767b\u5834\u3057\u307e\u3059 \u2728")),
                     React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", padding: "12px 0", borderRadius: 14, background: COLORS.creme, color: COLORS.encre, fontWeight: 700, fontSize: 14, border: "none" } }, TXT("Compris", "Got it", "Entendido", "Capito", "\u4e86\u89e3")))
                 : React.createElement(React.Fragment, null,
