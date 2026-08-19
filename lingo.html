@@ -2737,7 +2737,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      charges par personne.
      Le chapitre 10 (Les dialogues) n'est pas encore ecrit.
      ================================================================== -->
-<script src="hype-lingo-lex-ecurie.js?l=2"></script>
+<!-- ⚠️ ?l=3 DEPUIS LE 19/08 : 42 -> 37 concepts, quatre phrases du
+     dialogue et un exercice réécrits, table `titres` ajoutée. Sans ce
+     numéro changé, le téléphone sert l'ancienne copie et Newmarket
+     réafficherait les cinq concepts partis à Barcelone. -->
+<script src="hype-lingo-lex-ecurie.js?l=3"></script>
 <!-- ⚠️ ?l=4 DEPUIS LE 19/08 : le chapitre est passé de 42 à 30 concepts.
      Sans ce numéro changé, le téléphone sert l'ancienne copie et Lambourn
      réafficherait les douze notions retirées. -->
@@ -2792,6 +2796,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      parade, ici la formation artistique. Deux villes espagnoles, deux
      mondes, quatre-vingt-dix kilomètres. -->
 <script src="hype-lingo-lex-andalou.js?l=1"></script>
+<!-- ⚠️ Le fichier n'a PAS changé le 19/08 — seul `ETAPE_SRC.aberystwyth`
+     a bougé. `?l=3` reste donc valide, ne pas l'incrémenter sans raison. -->
 <script src="hype-lingo-lex-cours.js?l=3"></script>
 <!-- ex-`dressage` : leçon 1 à Windsor, leçon 3 à Versailles.
      Les leçons 2+4 dorment dans `dressage-reserve.js`, non chargé.
@@ -3585,7 +3591,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=49";   /* 🟥 v49 (19/08) : LA BAULE ouvre sa lecon 2 (la securite), 15 -> 26
+var VER = "?v=51";   /* 🟥 v51 (19/08) : ABERYSTWYTH ouvre ses 4 lecons, 10 -> 42 concepts.
+                        v50 (19/08) : NEWMARKET ouvre ses 4 lecons, 10 -> 37 concepts.
+                        v49 (19/08) : LA BAULE ouvre sa lecon 2 (la securite), 15 -> 26
                         concepts enseignes a l'etape 1. 19 phrases ajoutees.
                         v48 (19/08) : les TROIS vues de TAUPO posees (objet + pose + pose-34,
                         le cadre du cheval sautant), `POSE_PROPRE` et `POSE_34`
@@ -7179,7 +7187,13 @@ var ETAPE_SRC = {
      OUVERTE — décision de Blandine. Ne pas l'ajouter ici sans elle. */
   labaule:     [["arrivee",1],["arrivee",2]],
   maurice:     [["balade",1]],
-  newmarket:   [["ecurie",1]],
+  /* 🟥 19/08 : NEWMARKET OUVRE SES QUATRE LEÇONS — 10 / 11 / 8 / 8, soit
+     37 concepts au lieu de 10. Trente-deux dormaient depuis juillet.
+     Cinq concepts sont partis à Barcelone (`longe`, `attacher`,
+     `couverture`, `filet-foin`, `ration`) ; `eau`, `seau`, `foin` et
+     `licol` restent ici et y sont repris en rappel — décision de Blandine,
+     Newmarket est l'étape 4 et Barcelone la 23. */
+  newmarket:   [["ecurie",1],["ecurie",2],["ecurie",3],["ecurie",4]],
   /* 🟥 19/08 : LAMBOURN LIT DÉSORMAIS SES QUATRE LEÇONS. Elle n'en lisait
      qu'une : douze concepts vus sur quarante-deux, et son dialogue citait
      des mots de trois leçons jamais enseignées. Le fichier a été ramené à
@@ -7192,7 +7206,16 @@ var ETAPE_SRC = {
   connemara:   [["connemara",1],["connemara",2],["connemara",3]],
   /* 🟥 18/08 : découpage un-fichier-par-ville. `materiel` → `walsall`. */
   walsall:     [["walsall",1]],
-  aberystwyth: [["cours",1]],
+  /* 🟥 19/08 : ABERYSTWYTH OUVRE SES QUATRE LEÇONS — 10 -> 42 concepts.
+     Trente-deux dormaient : la position du cavalier, les figures de manège
+     et les mots de l'enseignant. Son dialogue citait déjà 24 mots répartis
+     sur les quatre leçons, dont 18 jamais enseignés, et 6 de ses 7 phrases
+     d'exercice ne s'affichaient pas.
+     🟢 Rien n'appartient à une autre ville : Aberystwyth est seule sur
+     `cours`. Et l'ordre du voyage y gagne — `piste`, `diagonale`, `coin`
+     et `ligne-milieu` s'apprennent maintenant AU COURS (étape 7) avant
+     d'être retrouvés en dressage à Windsor (étape 8), et non l'inverse. */
+  aberystwyth: [["cours",1],["cours",2],["cours",3],["cours",4]],
   /* 🟥 18/08 : découpage un-fichier-par-ville. `dressage` → `windsor`. */
   windsor:     [["windsor",1]],
   /* v76 : Hickstead enseigne LE DERBY (decision de Blandine, 11/08 : « on
