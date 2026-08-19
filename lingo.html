@@ -2850,7 +2850,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      AUCUN bouton de mise en situation n'apparait — et on cherche
      pourquoi pendant une heure.
      REGLE : tout changement dans un lexique = incrementer son ?l=. -->
-<script src="hype-lingo-lex-arrivee.js?l=6"></script>
+<!-- ⚠️ ?l=7 DEPUIS LE 19/08 : 19 phrases pédagogiques ajoutées, `lecons`
+     corrigé de 2 à 3, et `cours-collectif` retiré du marquage de deux
+     phrases du dialogue. Sans ce numéro changé, le téléphone sert
+     l'ancienne copie et la leçon 2 s'ouvre sans ses phrases. -->
+<script src="hype-lingo-lex-arrivee.js?l=7"></script>
 <!-- La tradition : chapitre cree le 6 aout 2026 pour Tokyo.
      ⚠️ Le seul chapitre du module qui enseigne des CONVENTIONS et non des
      objets. Et le seul ou deux mots francais distincts se confondent en
@@ -3581,7 +3585,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=47";   /* 🟥 v47 (19/08) : `objet-barcelone.webp` posee, souvenir de Barcelone
+var VER = "?v=49";   /* 🟥 v49 (19/08) : LA BAULE ouvre sa lecon 2 (la securite), 15 -> 26
+                        concepts enseignes a l'etape 1. 19 phrases ajoutees.
+                        v48 (19/08) : les TROIS vues de TAUPO posees (objet + pose + pose-34,
+                        le cadre du cheval sautant), `POSE_PROPRE` et `POSE_34`
+                        completees.
+                        v47 (19/08) : `objet-barcelone.webp` posee, souvenir de Barcelone
                         corrige (« Des hibiscus en jarre bleue »).
                         v46 (19/08) : BARCELONE, 37e VILLE — « Voyager avec
                         son cheval ». Placee entre Vejer et Oliva sur decision
@@ -6939,8 +6948,13 @@ function selleriePiece(nom){
    ⚠️ UNE VILLE DECLAREE ICI SANS SON FICHIER retombe silencieusement sur
    `objet-<ville>.webp` : la vue annoncee n'existe pas, sans erreur
    visible. Ne declarer une ville qu'avec son image en main. */
-var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1, kildare:1, badminton:1, tamworth:1};
-var POSE_PROPRE = {walsall:1, dubai:1, oliva:1, versailles:1};
+/* 🟥 19/08 : TAUPŌ ajoutée aux DEUX tables — ses trois vues existent
+   désormais (`objet-taupo.webp` de face, `pose-taupo.webp` propre,
+   `pose-taupo-34.webp` de biais), toutes en fond transparent.
+   ⚠️ Sans ces deux lignes, la sellerie servirait `objet-taupo.webp` pour
+   les trois angles : le cadre serait toujours vu de face. */
+var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1, kildare:1, badminton:1, tamworth:1, taupo:1};
+var POSE_PROPRE = {walsall:1, dubai:1, oliva:1, versailles:1, taupo:1};
 /* 16/08 : versailles ajoutee — le couvre-reins royal a une vraie vue
    PLIEE pour la sellerie (`pose-versailles.webp`), distincte de la vue
    deployee de la vitrine. Voir la regle des TROIS ETATS en tete du
@@ -7153,7 +7167,17 @@ var ETAPE_SRC = {
      documentée dans hype-linguae-repartition-v2.md. Le choix retenu
      pour chaque ville est celui qui correspond le mieux à sa lettre et
      à ses volets déjà écrits (détail dans SUIVI.md, session du jour). */
-  labaule:     [["arrivee",1]],
+  /* 🟥 19/08 : LA BAULE OUVRE SA LEÇON 2 — LA SÉCURITÉ. Onze concepts
+     dormaient depuis toujours à l'ÉTAPE 1 du voyage : passer devant,
+     jamais derrière, prévenir avant de toucher, ne pas enrouler la longe,
+     garder ses distances, lâcher, attacher sa bombe, chaussures fermées…
+     Le bloc avait été écrit exprès parce que « la sécurité n'existait
+     NULLE PART dans les 378 mots d'origine », et il n'était montré à
+     personne. La Baule passe de 15 à 26 concepts enseignés.
+     ⚠️ LA LEÇON 3 (l'organisation du cours : cours particulier, collectif,
+     assurance, durée, annuler) RESTE DANS LE FICHIER MAIS N'EST PAS
+     OUVERTE — décision de Blandine. Ne pas l'ajouter ici sans elle. */
+  labaule:     [["arrivee",1],["arrivee",2]],
   maurice:     [["balade",1]],
   newmarket:   [["ecurie",1]],
   /* 🟥 19/08 : LAMBOURN LIT DÉSORMAIS SES QUATRE LEÇONS. Elle n'en lisait

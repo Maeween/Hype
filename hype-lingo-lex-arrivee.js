@@ -37,7 +37,13 @@ window.HYPE_LINGO_LEX.arrivee = {
   titre: { fr:"L'arrivée dans un club", en:"Arriving at a yard",
            es:"Llegar a un club", it:"Arrivare in un club",
            de:"Ankommen im Reitverein", ja:"クラブに着く" },
-  lecons: 2,
+  /* 🟥 19/08 : 2 -> 3. Le fichier a TOUJOURS contenu trois leçons ; ce
+     compteur en annonçait deux. Sans effet sur le moteur, qui filtre par
+     `c.lecon`, mais faux à la lecture. ⚠️ NE PAS CONFONDRE avec le nombre
+     de leçons OUVERTES à La Baule : `ETAPE_SRC.labaule` en ouvre DEUX,
+     la leçon 3 (l'organisation du cours) reste dans le fichier sans être
+     enseignée. */
+  lecons: 3,
 
   concepts: [
 
@@ -507,7 +513,158 @@ window.HYPE_LINGO_LEX.arrivee = {
       es:"No te muevas, cojo el caballo.",
       it:"Non muoverti, prendo il cavallo.",
       de:"Bleib liegen — ich fange das Pferd.",
-      ja:"動か ない で。 馬 は 捕まえ ます。" },],
+      ja:"動か ない で。 馬 は 捕まえ ます。" },
+
+  /* 🟥🟥 19/08/2026 — DIX-NEUF PHRASES AJOUTÉES SUR BRIEF DE BLANDINE.
+     Le brief en proposait 26 ; SEPT ont été écartées parce qu'elles font
+     doublon avec les sept phrases déjà en place ci-dessus (réserver un
+     cours, la bombe fournie, le cheval calme, passer devant / derrière,
+     la longe autour de la main, ne pas bouger). Fusion, pas remplacement :
+     les sept anciennes sont intactes, avec leurs `ref` d'origine.
+     Total : 7 + 19 = 26 phrases, et LES 26 CONCEPTS ENSEIGNÉS À LA BAULE
+     sont désormais couverts au moins une fois.
+     ⚠️ Contrairement aux sept anciennes, ces phrases déclarent leurs
+     `mots`. C'est voulu : les anciennes ont `mots:[]` et ne pointent vers
+     aucun concept — les laisser telles quelles évite de toucher à ce qui
+     marche, mais la différence de traitement est à trancher un jour.
+     ⚠️ TRADUCTIONS ES/IT/DE/JA ÉCRITES PAR CLAUDE, JAMAIS RELUES PAR UN
+     NATIF. Les FR et EN sont ceux du brief de Blandine, mot pour mot.
+     Le japonais suit la segmentation par espaces déjà en usage ici. */
+
+  { ref:"ph-lb-quel-niveau", lecon:1, mots:["niveau"],
+      fr:"Quel niveau faut-il avoir ?",
+      en:"What level do I need?",
+      es:"¿Qué nivel hay que tener?",
+      it:"Che livello bisogna avere?",
+      de:"Welches Niveau braucht man?",
+      ja:"どの レベル が 必要 です か。" },
+  { ref:"ph-lb-je-suis-debutant", lecon:1, mots:["debutant"],
+      fr:"Je suis débutant.",
+      en:"I'm a beginner.",
+      es:"Soy principiante.",
+      it:"Sono principiante.",
+      de:"Ich bin Anfänger.",
+      ja:"私 は 初心者 です。" },
+  { ref:"ph-lb-tarif-balade", lecon:1, mots:["tarif", "balade"],
+      fr:"Quel est le tarif de la balade ?",
+      en:"How much is the ride?",
+      es:"¿Cuánto cuesta el paseo?",
+      it:"Quanto costa la passeggiata?",
+      de:"Was kostet der Ausritt?",
+      ja:"外乗 の 料金 は いくら です か。" },
+  { ref:"ph-lb-balade-groupe", lecon:1, mots:["balade", "le-groupe"],
+      fr:"La balade se fait-elle en groupe ?",
+      en:"Is the ride in a group?",
+      es:"¿El paseo se hace en grupo?",
+      it:"La passeggiata si fa in gruppo?",
+      de:"Findet der Ausritt in der Gruppe statt?",
+      ja:"外乗 は グループ で 行き ます か。" },
+  { ref:"ph-lb-commencer-au-pas", lecon:1, mots:["pas"],
+      fr:"Nous commencerons au pas.",
+      en:"We'll start at a walk.",
+      es:"Empezaremos al paso.",
+      it:"Cominceremo al passo.",
+      de:"Wir fangen im Schritt an.",
+      ja:"まず 常歩 から 始め ます。" },
+  { ref:"ph-lb-pourra-trotter", lecon:1, mots:["trot"],
+      fr:"Est-ce qu'on pourra trotter ?",
+      en:"Will we be able to trot?",
+      es:"¿Podremos trotar?",
+      it:"Potremo trottare?",
+      de:"Werden wir traben können?",
+      ja:"速歩 も でき ます か。" },
+  { ref:"ph-lb-galop-confirmes", lecon:1, mots:["galop", "cavalier-confirme"],
+      fr:"Le galop est réservé aux cavaliers confirmés.",
+      en:"The canter is for experienced riders only.",
+      es:"El galope es solo para jinetes experimentados.",
+      it:"Il galoppo è riservato ai cavalieri esperti.",
+      de:"Der Galopp ist erfahrenen Reitern vorbehalten.",
+      ja:"駈歩 は 経験者 だけ です。" },
+  { ref:"ph-lb-porter-bottes", lecon:1, mots:["bottes"],
+      fr:"Dois-je porter des bottes ?",
+      en:"Do I need to wear riding boots?",
+      es:"¿Tengo que llevar botas?",
+      it:"Devo mettere degli stivali?",
+      de:"Muss ich Reitstiefel tragen?",
+      ja:"ブーツ を 履く 必要 が あり ます か。" },
+  { ref:"ph-lb-suis-confirme", lecon:1, mots:["cavalier-confirme"],
+      fr:"Je suis cavalier confirmé.",
+      en:"I'm an experienced rider.",
+      es:"Soy jinete experimentado.",
+      it:"Sono un cavaliere esperto.",
+      de:"Ich bin ein erfahrener Reiter.",
+      ja:"私 は 経験者 です。" },
+  { ref:"ph-lb-cheval-plus-rapide", lecon:1, mots:["cheval-rapide"],
+      fr:"J'aimerais un cheval un peu plus rapide.",
+      en:"I'd like a slightly faster horse.",
+      es:"Querría un caballo un poco más rápido.",
+      it:"Vorrei un cavallo un po' più veloce.",
+      de:"Ich hätte gern ein etwas schnelleres Pferd.",
+      ja:"もう少し 速い 馬 が いい です。" },
+  { ref:"ph-lb-cheval-sympa", lecon:1, mots:["cheval-sympa"],
+      fr:"Ce cheval est très sympa.",
+      en:"This horse is very friendly.",
+      es:"Este caballo es muy simpático.",
+      it:"Questo cavallo è molto simpatico.",
+      de:"Dieses Pferd ist sehr umgänglich.",
+      ja:"この 馬 は とても 人懐こい です。" },
+  { ref:"ph-lb-heure-groupe", lecon:1, mots:["le-groupe"],
+      fr:"À quelle heure part le groupe ?",
+      en:"What time does the group leave?",
+      es:"¿A qué hora sale el grupo?",
+      it:"A che ora parte il gruppo?",
+      de:"Wann bricht die Gruppe auf?",
+      ja:"グループ は 何時 に 出発 し ます か。" },
+  { ref:"ph-lb-parle-avant-toucher", lecon:2, mots:["prevenir-toucher"],
+      fr:"Parle-lui avant de le toucher.",
+      en:"Speak to him before you touch him.",
+      es:"Háblale antes de tocarlo.",
+      it:"Parlagli prima di toccarlo.",
+      de:"Sprich mit ihm, bevor du ihn anfasst.",
+      ja:"触る 前 に 声 を かけ て。" },
+  { ref:"ph-lb-garde-distances", lecon:2, mots:["distance"],
+      fr:"Garde tes distances avec les autres chevaux.",
+      en:"Keep your distance from the other horses.",
+      es:"Guarda las distancias con los demás caballos.",
+      it:"Mantieni le distanze dagli altri cavalli.",
+      de:"Halte Abstand zu den anderen Pferden.",
+      ja:"ほか の 馬 と は 距離 を 取っ て。" },
+  { ref:"ph-lb-attention-il-bouge", lecon:2, mots:["attention"],
+      fr:"Attention, il bouge !",
+      en:"Mind out, he's moving!",
+      es:"¡Cuidado, se mueve!",
+      it:"Attenzione, si muove!",
+      de:"Achtung, er bewegt sich!",
+      ja:"気 を つけ て、 動い て いる よ。" },
+  { ref:"ph-lb-tiens-le-cheval", lecon:2, mots:["tenir-cheval"],
+      fr:"Tiens le cheval pendant que j'ouvre la porte.",
+      en:"Hold the horse while I open the gate.",
+      es:"Sujeta el caballo mientras abro la puerta.",
+      it:"Tieni il cavallo mentre apro il cancello.",
+      de:"Halt das Pferd, während ich das Tor öffne.",
+      ja:"門 を 開ける 間、 馬 を 持っ て い て。" },
+  { ref:"ph-lb-lache-si-tu-tombes", lecon:2, mots:["lacher"],
+      fr:"Lâche la longe si tu tombes.",
+      en:"Let go of the lead rope if you fall.",
+      es:"Suelta el ramal si te caes.",
+      it:"Lascia la longhina se cadi.",
+      de:"Lass den Strick los, wenn du fällst.",
+      ja:"落ち たら 引き綱 は 手放し て。" },
+  { ref:"ph-lb-attache-ta-bombe", lecon:2, mots:["casque-attache"],
+      fr:"Attache bien ta bombe avant de monter.",
+      en:"Do your riding hat up before you get on.",
+      es:"Abróchate bien el casco antes de montar.",
+      it:"Allaccia bene il cap prima di salire.",
+      de:"Mach deine Reitkappe zu, bevor du aufsitzt.",
+      ja:"乗る 前 に ヘルメット の あご紐 を 締め て。" },
+  { ref:"ph-lb-chaussures-fermees", lecon:2, mots:["chaussures-fermees"],
+      fr:"Il faut porter des chaussures fermées.",
+      en:"You need to wear closed shoes.",
+      es:"Hay que llevar zapatos cerrados.",
+      it:"Bisogna portare scarpe chiuse.",
+      de:"Man muss geschlossene Schuhe tragen.",
+      ja:"つま先 の 覆わ れ た 靴 を 履い て ください。" }
+  ],
 
   /* ==================================================================
      LE DIALOGUE DE LA BAULE — 13 août 2026, session 210.
@@ -667,7 +824,11 @@ window.HYPE_LINGO_LEX.arrivee = {
       /* 🟥 PHRASE DE BLANDINE. Remplace « quel est votre niveau ? » posée
          par le club : c'est la JOUEUSE qui doit savoir demander le niveau
          requis, pas subir la question. */
-      { ref:"d-quel-niveau-requis", temps:2, dit:"joueuse", mots:["niveau","cours-collectif"],
+      /* 🟥 19/08 : `cours-collectif` RETIRÉ du marquage de ces deux phrases.
+     Le concept est en leçon 3, que La Baule n'enseigne pas : le mot
+     pointait dans le vide. Le TEXTE des phrases est inchangé — elles sont
+     naturelles et restent à leur place. */
+  { ref:"d-quel-niveau-requis", temps:2, dit:"joueuse", mots:["niveau"],
         fr:"Quel niveau faut-il avoir pour participer à ce cours ?",
         en:"What level do I need to take part in this lesson?",
         es:"¿Qué nivel hace falta para participar en esta clase?",
@@ -687,7 +848,7 @@ window.HYPE_LINGO_LEX.arrivee = {
       /* 🟥 TROIS PHRASES DE BLANDINE. Elles remplacent « les tarifs pour
          l'année » et « réserver le mercredi après-midi » : un cavalier de
          passage réserve UNE séance, pour DEMAIN. */
-      { ref:"d-inscrire-demain", temps:3, dit:"joueuse", mots:["reserver","cours-collectif"],
+      { ref:"d-inscrire-demain", temps:3, dit:"joueuse", mots:["reserver"],
         fr:"Je voudrais m'inscrire pour un cours demain matin.",
         en:"I'd like to book a lesson for tomorrow morning.",
         es:"Quisiera inscribirme en una clase para mañana por la mañana.",
