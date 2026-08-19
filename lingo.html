@@ -2953,7 +2953,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-villes.js?l=1"></script>
 <!-- Les huit villes du tour du monde. Se charge APRÈS le fichier des dix
      et complète le même objet clé par clé, sans jamais écraser. -->
-<script src="hype-lingo-villes-monde.js?l=1"></script>
+<!-- ⚠️ ?l=2 DEPUIS LE 19/08 : les HUIT dernières villes ont reçu leur
+     lettre et leurs trois volets (Wellington, Burghley, Versailles,
+     Fontainebleau, Barcelone, Taupō, Santa Ynez, Flyinge). Les 37 étapes
+     ont désormais toutes leur entrée VILLES. -->
+<script src="hype-lingo-villes-monde.js?l=2"></script>
 
 <!-- ==================================================================
      10/08/2026 — LINGUAE A SON PROPRE ACCÈS SUPABASE
@@ -3591,7 +3595,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=54";   /* 🟥 v54 (19/08) : souvenir de Taupo -> « Un souvenir en Free Ride ».
+var VER = "?v=55";   /* 🟥 v55 (19/08) : hype-lingo-villes-monde.js?l=2 — les 8 dernieres
+                        villes recoivent lettre + volets, table complete 37/37.
+                        v54 (19/08) : souvenir de Taupo -> « Un souvenir en Free Ride ».
                         v53 (19/08) : six chapitres ajoutes a TH_FAMILLES (formation,
                         liberte, enseignant, andalou, derby, parade).
                         v52 (19/08) : BURGHLEY ouvre sa lecon 2, 18 -> 21 concepts.
