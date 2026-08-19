@@ -35600,6 +35600,43 @@ function ComplementsBiomeca(props) {
             React.createElement("span", { style: { display: "block", fontSize: 12.5, color: COLORS.grisDoux, lineHeight: 1.5 } }, desc)),
         React.createElement("span", { style: { color: turq, fontSize: 18, flexShrink: 0 } }, "\u203A"));
 
+    /* 19/08/2026 (feu vert de Blandine) — LES PASTILLES DE QUESTIONS DEVIENNENT
+       TAPABLES. Elles etaient de simples <span> decoratifs depuis leur creation :
+       le texte s'affichait, le tap ne faisait rien. Le mecanisme d'arrivee
+       contextuelle existait pourtant deja (window.__hbCoursCtx, consomme par
+       l'ecran assistant ligne ~42810) — il etait alimente par la fin de cours et
+       par le QCM, jamais par ce bloc. On recopie donc EXACTEMENT la meme
+       construction qu'a la fin du cours (meme resolution du cheval, memes
+       champs), en ajoutant seulement `question` pour que la pastille tapee
+       arrive ecrite dans le champ de saisie — pas envoyee toute seule, la
+       cavaliere doit pouvoir la reformuler. */
+    const __hbDepuisCours = (q) => {
+        try {
+            var idC = app.coursOuvert || coursId;
+            var gid = app.galopOuvert;
+            var titreC = "";
+            try {
+                var lst = (typeof obtenirCoursParGalop === "function") ? (obtenirCoursParGalop(gid, langue) || []) : [];
+                var cObj = lst.filter(function (c) { return c && c.id === idC; })[0];
+                if (cObj && typeof cObj.titre === "string") titreC = cObj.titre;
+            } catch (eT) { }
+            if (!titreC) { try { titreC = app.tr ? app.tr({ fr: "Ce chapitre", en: "This chapter", es: "Este capítulo", it: "Questo capitolo", ja: "この章", de: "Dieses Kapitel" }) : "Ce chapitre"; } catch (eT2) { titreC = "Ce chapitre"; } }
+            var nomCheval = null;
+            try {
+                var sel = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : null;
+                var liste = Array.isArray(app.chevaux) ? app.chevaux : [];
+                if (sel) {
+                    var tv = liste.filter(function (c) { return c && (c.id === sel || c.nom === sel); })[0];
+                    if (tv && tv.nom) nomCheval = tv.nom;
+                    else if (typeof CHEVAUX_FICHE !== "undefined" && CHEVAUX_FICHE[sel] && CHEVAUX_FICHE[sel].nom) nomCheval = CHEVAUX_FICHE[sel].nom;
+                }
+                if (!nomCheval && liste.length && liste[0] && liste[0].nom) nomCheval = liste[0].nom;
+            } catch (eSel) { }
+            window.__hbCoursCtx = { galop: gid, coursId: idC, titre: titreC, score: null, cheval: nomCheval, question: q || "" };
+        } catch (eCtx) { }
+        try { if (typeof setEcran === "function") setEcran("assistant"); } catch (eN) { }
+    };
+
     const allerQcm = () => {
         try {
             const id = app.coursOuvert;
@@ -35635,7 +35672,7 @@ function ComplementsBiomeca(props) {
             p(NV.hbTexte),
             /* 5 exemples de questions : de quoi lancer la conversation sans occuper tout l'ecran */
             React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 7, margin: "2px 0 14px" } },
-                (T.hbQuestions || []).slice(0, 5).map((q, i) => React.createElement("span", { key: i, style: { fontSize: 12.5, color: COLORS.encre, background: COLORS.nuit, border: `1px solid ${COLORS.ligne}`, borderRadius: 999, padding: "8px 13px", lineHeight: 1.4 } }, q))),
+                (T.hbQuestions || []).slice(0, 5).map((q, i) => React.createElement("button", { key: i, onClick: () => __hbDepuisCours(q), style: { fontSize: 12.5, color: COLORS.encre, background: COLORS.nuit, border: `1px solid ${COLORS.ligne}`, borderRadius: 999, padding: "8px 13px", lineHeight: 1.4, fontFamily: "'Montserrat', sans-serif", textAlign: "left", cursor: "pointer" } }, q))),
             React.createElement("button", { onClick: () => { try { if (typeof setEcran === "function") setEcran("assistant"); } catch (e) { } }, style: { width: "100%", marginTop: 6, padding: 13, borderRadius: 999, border: `1px solid ${turq}`, background: `${turq}1F`, color: COLORS.encre, fontFamily: "'Montserrat', sans-serif", fontSize: 14.5, fontWeight: 700, cursor: "pointer" } }, NV.hbBtn)),
             { bord: turq + "57", fond: `linear-gradient(160deg, ${turq}12, ${COLORS.nuitClaire})` }),
         /* --- Invitation aux bonus --- */
@@ -42812,13 +42849,20 @@ function EcranAssistantIA() {
     const retourAssistant = () => {
         try {
             var cc = coursCtx;
-            if (cc && cc.depuisQuiz && cc.coursId) {
+            /* 19/08/2026 (feu vert de Blandine : « retour en arriere indispensable
+               sinon on les sort des galops ») — le retour precis existait deja mais
+               etait reserve a l'arrivee depuis le QCM. Il suffit d'un coursId pour
+               savoir ou revenir : la condition s'ouvre donc a toute arrivee depuis
+               un cours (pastilles de questions comprises). Le cas du QCM ne change
+               pas : lui seul saute au dernier bloc, les autres reviennent au debut
+               du chapitre, la ou la cavaliere lisait. */
+            if (cc && cc.coursId) {
                 try {
                     var gid = cc.galop || galopOuvert;
                     var liste = obtenirCoursParGalop(gid, langue) || [];
                     var cObj = liste.filter(function (c) { return c && c.id === cc.coursId; })[0];
                     var dernier = (cObj && cObj.blocs && cObj.blocs.length) ? (cObj.blocs.length - 1) : 0;
-                    SAUT_BLOC_INITIAL = dernier;
+                    SAUT_BLOC_INITIAL = cc.depuisQuiz ? dernier : 0;
                     if (typeof setGalopOuvert === "function" && gid) setGalopOuvert(gid);
                     if (typeof setCoursOuvert === "function") setCoursOuvert(cc.coursId);
                     setEcran("cours");
