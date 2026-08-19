@@ -43053,7 +43053,8 @@ function EcranAssistantIA() {
        reçoivent un plafond haut là où ils n'en avaient aucun — volontaire,
        pour garder une borne. Ce sont des totaux À VIE, pas des quotas
        périodiques : compterEpinglesHB ne filtre sur aucune date. */
-    const LIMITE_EPINGLES = planAbo === "duo" ? 80 : planAbo === "ai" ? 50 : 20;
+    const PLAFOND_DUO = 80;
+    const LIMITE_EPINGLES = planAbo === "duo" ? PLAFOND_DUO : planAbo === "ai" ? 50 : 20;
     const chevauxCibles = (typeof CHEVAUX_FICHE !== "undefined" && CHEVAUX_FICHE)
         ? Object.keys(CHEVAUX_FICHE).map((cid) => ({ id: cid, nom: (CHEVAUX_FICHE[cid] && CHEVAUX_FICHE[cid].nom) || cid }))
         : (chevaux || []);
@@ -43070,8 +43071,29 @@ function EcranAssistantIA() {
             const cible = epingleCible || {};
             const r = await epinglerEchangeHB({ question: cible.question, reponse: cible.reponse, chevalId: chevalId, chevalNom: chevalNom });
             setEpingleCible(null);
-            setToastHB(r && r.error ? TXT("Connecte-toi pour \u00e9pingler", "Sign in to pin", "Con\u00e9ctate para fijar", "Accedi per fissare", "\u30d4\u30f3\u7559\u3081\u306b\u306f\u30ed\u30b0\u30a4\u30f3\u304c\u5fc5\u8981\u3067\u3059") : TXT("Conseil \u00e9pingl\u00e9 \u2713", "Advice pinned \u2713", "Consejo fijado \u2713", "Consiglio fissato \u2713", "\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30d4\u30f3\u7559\u3081\u3057\u307e\u3057\u305f \u2713"));
-            setTimeout(() => setToastHB(null), 2400);
+            /* 19/08/2026 (demande de Blandine) — AVERTISSEMENT AVANT LE PLAFOND.
+               Le compte est déjà fait juste au-dessus (r0) : aucune requête en
+               plus. À partir de 5 épingles restantes, le bandeau annonce le
+               décompte et, pour tout plan sous Duo, l'existence d'un plafond
+               plus haut. Un abonné Duo étant au sommet, il ne voit que le
+               décompte. Le bandeau passe alors à deux lignes et reste 4 s au
+               lieu de 2,4 s, sinon la seconde ligne n'a pas le temps d'être lue. */
+            var restantes = LIMITE_EPINGLES - ((r0.count || 0) + 1);
+            if (r && r.error) {
+                setToastHB(TXT("Connecte-toi pour \u00e9pingler", "Sign in to pin", "Con\u00e9ctate para fijar", "Accedi per fissare", "\u30d4\u30f3\u7559\u3081\u306b\u306f\u30ed\u30b0\u30a4\u30f3\u304c\u5fc5\u8981\u3067\u3059"));
+                setTimeout(() => setToastHB(null), 2400);
+            } else if (restantes <= 5) {
+                var l1 = restantes <= 0
+                    ? TXT("Conseil \u00e9pingl\u00e9 \u2713 \u2014 c'\u00e9tait la derni\u00e8re sur " + LIMITE_EPINGLES, "Advice pinned \u2713 \u2014 that was the last of " + LIMITE_EPINGLES, "Consejo fijado \u2713 \u2014 era el \u00faltimo de " + LIMITE_EPINGLES, "Consiglio fissato \u2713 \u2014 era l'ultimo su " + LIMITE_EPINGLES, "\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30d4\u30f3\u7559\u3081\u3057\u307e\u3057\u305f \u2713 \u2014 " + LIMITE_EPINGLES + "\u4ef6\u4e2d\u306e\u6700\u5f8c\u306e1\u4ef6\u3067\u3059")
+                    : TXT("Conseil \u00e9pingl\u00e9 \u2713 \u2014 plus que " + restantes + " sur " + LIMITE_EPINGLES, "Advice pinned \u2713 \u2014 " + restantes + " left of " + LIMITE_EPINGLES, "Consejo fijado \u2713 \u2014 quedan " + restantes + " de " + LIMITE_EPINGLES, "Consiglio fissato \u2713 \u2014 ne restano " + restantes + " su " + LIMITE_EPINGLES, "\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30d4\u30f3\u7559\u3081\u3057\u307e\u3057\u305f \u2713 \u2014 " + LIMITE_EPINGLES + "\u4ef6\u4e2d\u6b8b\u308a" + restantes + "\u4ef6");
+                var l2 = planAbo === "duo" ? null
+                    : TXT("N'h\u00e9site pas \u00e0 passer \u00e0 un abonnement sup\u00e9rieur : l'abonnement Duo en propose " + PLAFOND_DUO + ".", "Feel free to move up a plan: the Duo plan offers " + PLAFOND_DUO + ".", "No dudes en pasar a una suscripci\u00f3n superior: la Duo ofrece " + PLAFOND_DUO + ".", "Puoi passare a un abbonamento superiore: il Duo ne offre " + PLAFOND_DUO + ".", "\u4e0a\u4f4d\u30d7\u30e9\u30f3\u3078\u306e\u5909\u66f4\u3082\u3054\u691c\u8a0e\u304f\u3060\u3055\u3044\u3002Duo\u30d7\u30e9\u30f3\u306a\u3089" + PLAFOND_DUO + "\u4ef6\u3067\u3059\u3002");
+                setToastHB(l2 ? [l1, l2] : [l1]);
+                setTimeout(() => setToastHB(null), 4000);
+            } else {
+                setToastHB(TXT("Conseil \u00e9pingl\u00e9 \u2713", "Advice pinned \u2713", "Consejo fijado \u2713", "Consiglio fissato \u2713", "\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30d4\u30f3\u7559\u3081\u3057\u307e\u3057\u305f \u2713"));
+                setTimeout(() => setToastHB(null), 2400);
+            }
         } catch (e) { setEpingleCible(null); }
     };
     const envoyer = async (texte) => {
@@ -43286,9 +43308,24 @@ function EcranAssistantIA() {
                     React.createElement("p", { style: { margin: "0 0 14px", fontSize: 13, color: COLORS.encreDoux, textAlign: "center", lineHeight: 1.5 } }, TXT("R\u00e9serv\u00e9 aux membres du Cercle Crystal : garde tes meilleurs conseils sur ta page cavalier et tes fiches chevaux.", "Reserved for Crystal Circle members: keep your best advice on your rider page and horse profiles.", "Reservado a los miembros del C\u00edrculo Crystal: guarda tus mejores consejos en tu p\u00e1gina y tus fichas de caballos.", "Riservato ai membri del Cerchio Crystal: conserva i migliori consigli sulla tua pagina e sulle schede dei tuoi cavalli.", "Crystal\u30b5\u30fc\u30af\u30eb\u4f1a\u54e1\u9650\u5b9a\uff1a\u304a\u6c17\u306b\u5165\u308a\u306e\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30da\u30fc\u30b8\u306b\u4fdd\u5b58\u3067\u304d\u307e\u3059\u3002")),
                     React.createElement(BoutonPrincipal, { texte: t("decouvrir_premium"), couleur: COLORS.turquoise, onClick: () => { setEpingleCible(null); setEcran("premium"); } }))
                 : epingleCible.limite ? React.createElement(React.Fragment, null,
+                    /* 19/08/2026 (choix de Blandine, maquette A) — LA MASCOTTE.
+                       Fichier à la racine du dépôt, appelé en chemin direct :
+                       pas d'entrée dans HYPE_IMGS, donc rien à défaire si elle
+                       change. WebP obligatoire ici, la transparence est ce qui
+                       la détache du fond sombre — un JPEG poserait un carré
+                       blanc. ⚠️ si le fichier n'est pas poussé, onError efface
+                       simplement l'image : la modale reste entière. */
+                    React.createElement("img", { src: "mascotte-abo.webp", alt: "", onError: (e) => { try { e.target.style.display = "none"; } catch (eI) { } }, style: { display: "block", width: 104, height: "auto", margin: "0 auto 6px", filter: "drop-shadow(0 6px 20px rgba(32,217,245,0.28))" } }),
                     React.createElement("p", { style: { margin: "0 0 6px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("Limite atteinte", "Limit reached", "L\u00edmite alcanzado", "Limite raggiunto", "\u4e0a\u9650\u306b\u9054\u3057\u307e\u3057\u305f")),
                     React.createElement("p", { style: { margin: "0 0 4px", fontSize: 13, color: COLORS.encreDoux, textAlign: "center", lineHeight: 1.5 } }, TXT("Tu as d\u00e9j\u00e0 " + (epingleCible.plafond || 20) + " conseils \u00e9pingl\u00e9s, le maximum de ton abonnement.", "You already have " + (epingleCible.plafond || 20) + " pinned pieces of advice, your plan's maximum.", "Ya tienes " + (epingleCible.plafond || 20) + " consejos fijados, el m\u00e1ximo de tu suscripci\u00f3n.", "Hai gi\u00e0 " + (epingleCible.plafond || 20) + " consigli fissati, il massimo del tuo abbonamento.", (epingleCible.plafond || 20) + "\u4ef6\u3092\u3059\u3067\u306b\u30d4\u30f3\u7559\u3081\u3057\u3066\u3044\u307e\u3059\u3002\u3054\u5951\u7d04\u306e\u4e0a\u9650\u3067\u3059\u3002")),
-                    React.createElement("p", { style: { margin: "0 0 14px", fontSize: 12.5, color: COLORS.turquoise, textAlign: "center", fontWeight: 700 } }, TXT("L'abonnement AI illimit\u00e9 arrive bient\u00f4t \u2728", "The unlimited AI plan is coming soon \u2728", "La suscripci\u00f3n AI ilimitada llega pronto \u2728", "L'abbonamento AI illimitato arriva presto \u2728", "\u7121\u5236\u9650\u306eAI\u30d7\u30e9\u30f3\u304c\u307e\u3082\u306a\u304f\u767b\u5834\u3057\u307e\u3059 \u2728")),
+                    planAbo === "duo" ? null : React.createElement("p", { style: { margin: "0 0 12px", fontSize: 12.5, color: COLORS.turquoise, textAlign: "center", fontWeight: 700, lineHeight: 1.5 } }, TXT("Souhaites-tu passer \u00e0 l'abonnement sup\u00e9rieur ? L'abonnement Duo en propose " + PLAFOND_DUO + ".", "Would you like to move up a plan? The Duo plan offers " + PLAFOND_DUO + ".", "\u00bfQuieres pasar a la suscripci\u00f3n superior? La suscripci\u00f3n Duo ofrece " + PLAFOND_DUO + ".", "Vuoi passare all'abbonamento superiore? L'abbonamento Duo ne offre " + PLAFOND_DUO + ".", "\u4e0a\u4f4d\u30d7\u30e9\u30f3\u306b\u5909\u66f4\u3057\u307e\u3059\u304b\uff1fDuo\u30d7\u30e9\u30f3\u306a\u3089" + PLAFOND_DUO + "\u4ef6\u307e\u3067\u53ef\u80fd\u3067\u3059\u3002")),
+                    /* 19/08/2026 (demande de Blandine) — LE MESSAGE MÈNE À L'OFFRE.
+                       Même bouton et mêmes libellés que la limite de questions
+                       quotidiennes (ligne ~43285) : on recopie le mécanisme en
+                       place plutôt que d'en inventer un. ⚠️ setEcran("premium")
+                       ouvre la page générale des formules, il n'existe aucun
+                       moyen d'atterrir directement sur l'offre Duo. */
+                    planAbo === "duo" ? null : React.createElement("div", { style: { marginBottom: 10 } }, React.createElement(BoutonPrincipal, { texte: t(premium ? "decouvrir_pack_duo" : "decouvrir_premium"), couleur: COLORS.turquoise, onClick: () => { setEpingleCible(null); setEcran("premium"); } })),
                     React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", padding: "12px 0", borderRadius: 14, background: COLORS.creme, color: COLORS.encre, fontWeight: 700, fontSize: 14, border: "none" } }, TXT("Compris", "Got it", "Entendido", "Capito", "\u4e86\u89e3")))
                 : React.createElement(React.Fragment, null,
                     React.createElement("p", { style: { margin: "0 0 12px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("\u00c9pingler sur\u2026", "Pin to\u2026", "Fijar en\u2026", "Fissa su\u2026", "\u30d4\u30f3\u7559\u3081\u5148\u2026")),
@@ -43296,7 +43333,7 @@ function EcranAssistantIA() {
                         React.createElement("button", { onClick: () => validerEpingle(null, null), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: `${COLORS.turquoise}14`, border: `1px solid ${COLORS.turquoise}55`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83C\uDFC7 " + TXT("Ma page cavalier", "My rider page", "Mi p\u00e1gina de jinete", "La mia pagina cavaliere", "\u30de\u30a4\u9a0e\u624b\u30da\u30fc\u30b8")),
                         chevauxCibles.map((cv) => React.createElement("button", { key: cv.id, onClick: () => validerEpingle(cv.id, cv.nom), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: COLORS.nuit, border: `1px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83D\uDC34 " + cv.nom))),
                     React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", marginTop: 12, padding: "11px 0", borderRadius: 14, background: "transparent", color: COLORS.encreDoux, fontWeight: 700, fontSize: 13, border: "none" } }, TXT("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb"))))) : null,
-        toastHB ? React.createElement("div", { style: { position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)", zIndex: 99, background: "rgba(18,24,32,0.92)", border: `1px solid ${COLORS.turquoise}66`, color: COLORS.blanc, borderRadius: 999, padding: "9px 18px", fontSize: 13, fontWeight: 600, whiteSpace: "nowrap" } }, toastHB) : null));
+        toastHB ? React.createElement("div", { style: { position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)", zIndex: 99, background: "rgba(18,24,32,0.92)", border: `1px solid ${COLORS.turquoise}66`, color: COLORS.blanc, borderRadius: Array.isArray(toastHB) ? 16 : 999, padding: Array.isArray(toastHB) ? "10px 18px" : "9px 18px", fontSize: 13, fontWeight: 600, whiteSpace: Array.isArray(toastHB) ? "normal" : "nowrap", maxWidth: Array.isArray(toastHB) ? "78vw" : undefined, textAlign: "center", lineHeight: 1.45 } }, Array.isArray(toastHB) ? toastHB.map((ln, i) => React.createElement("div", { key: i, style: i ? { fontSize: 12, fontWeight: 500, color: COLORS.turquoise, marginTop: 3 } : null }, ln)) : toastHB) : null));
 }
 
 function BulleMessage({ role, contenu, enCours, image, imageMarque, intro, onEpingler }) {
