@@ -4,6 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Hype</title>
+<!-- 19/08 (demande de Blandine : « pas de systeme de lien pour cliquer
+     dessus ? ») — CARTE DE PREVISUALISATION. Toute la logique JS plus bas
+     ne sert a rien pour ces balises : les robots qui construisent
+     l'aperçu WhatsApp/Instagram/Facebook ne l'executent jamais, ils lisent
+     UNIQUEMENT le HTML brut, tel quel. Donc ces six lignes doivent rester
+     statiques, ecrites en dur — pas la meme photo a chaque partage (ça,
+     ça demanderait un vrai serveur), mais une image Hype fixe, soignee,
+     plutot que rien. Attend un fichier /partage-apercu.jpg a la racine du
+     site (1200x630, format attendu par WhatsApp/Facebook) — tant qu'il
+     n'existe pas, la carte s'affiche juste sans image, pas casse pour
+     autant. */ -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hype">
+<meta property="og:title" content="Une story sur Hype 🐎">
+<meta property="og:description" content="Ton univers équestre : clubs, cavaliers, moments de vie d'écurie.">
+<meta property="og:image" content="/partage-apercu.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <!--
   HYPE ▸ 19/08/2026 (feu vert de Blandine, urgence en direct) — PAGE DE
   PARTAGE PUBLIQUE D'UNE STORY.
