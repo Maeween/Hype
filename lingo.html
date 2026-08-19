@@ -3149,9 +3149,20 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       }catch(e){ /* réseau : authRepondu reste false */ }
 
       if(!u){
-        /* pas de session ET la base a répondu → « 0 » est la vérité.
-           Pas de session mais AUCUNE réponse → on ne touche à rien. */
-        if(authRepondu && navigator.onLine) poser("0");
+        /* 🟥🟥 19/08 — RÉGRESSION DE DOCTRINE CORRIGÉE, demande de
+           Blandine : « pourquoi à chaque fois j'apparais non premium,
+           il faut régler ça y compris hors ligne ».
+           AVANT : pas de session + base répondante → poser("0").
+           C'ÉTAIT LE PAYWALL FANTÔME : la session Supabase saute (cause
+           côté Hype, chantier séparé — passation du 19/08), le pont
+           concluait « déconnectée » et EFFAÇAIT le Premium constaté la
+           veille. Être déconnectée n'est pas être désabonnée.
+           MAINTENANT : l'absence de session NE RÉTROGRADE JAMAIS.
+           Le « 0 » ne s'écrit plus qu'à UN endroit : session ouverte +
+           table lue + abonnement réellement inactif (aboLu, plus bas).
+           Contrepartie assumée et dite : une vraie désabonnée garde
+           l'accès SUR SON APPAREIL jusqu'à sa prochaine connexion.
+           🟥 NE PAS remettre un poser("0") ici. */
         return;
       }
 
@@ -3581,6 +3592,27 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   };
 
   try{ pont(); }catch(e){}
+
+  /* 🟥 19/08 — LE PONT SE RELANCE TOUT SEUL, demande de Blandine
+     (« y compris hors ligne ») :
+     · au RETOUR DU RÉSEAU (`online`) — l'étiquette posée hors ligne se
+       recolle à la vérité serveur dès que possible ;
+     · au RÉVEIL DE L'APP (`visibilitychange` → visible) — une PWA iOS
+       peut rester des jours en arrière-plan, la session se revalide au
+       retour au lieu d'attendre une réouverture complète.
+     Un garde-fou d'une minute évite de marteler la base quand on
+     bascule d'app en app. `pont()` reste inoffensif à répéter : hors
+     ligne il ne fait RIEN (test navigator.onLine en tête). */
+  var __pontDernier = Date.now();
+  function pontSiUtile(){
+    if(Date.now() - __pontDernier < 60000) return;
+    __pontDernier = Date.now();
+    try{ pont(); }catch(e){}
+  }
+  window.addEventListener("online", pontSiUtile);
+  document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState === "visible") pontSiUtile();
+  });
 })();
 </script>
 
@@ -3641,7 +3673,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=58";   /* 🟥 v58 (19/08) : Apy passe a la pose « Lecture » (planche spectrale,
+var VER = "?v=59";   /* 🟥 v59 (19/08) : le Premium ne se retrograde PLUS sur absence de
+                        session (paywall fantome corrige) + le pont se relance au
+                        retour du reseau et au reveil de l'app.
+                        v58 (19/08) : Apy passe a la pose « Lecture » (planche spectrale,
                         ?i=2) et s'ajoute a la porte de creation de compte (porteA).
                         v57 (19/08) : le passeport du paywall — bloc « Déjà du voyage ?
                         Présente ton passeport » avec Apy, ouvre l'écran de compte.
