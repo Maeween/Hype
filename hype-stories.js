@@ -1708,6 +1708,48 @@ function BandeauStories(props) {
     return function () { vivantRef.current = false; };
   }, []);
 
+  /* 18/08 (feu vert de Blandine, urgence en direct) — OUVRIR LA STORY
+     PARTAGEE. La moitie du mecanisme existait depuis le 14/08 : un lien
+     #s=<id> pose bien `window.__storyOuverte` et amene sur Communaute
+     (CIBLE_DIRECTE, index.html) — mais RIEN ne lisait cette variable
+     ensuite. Un lien partage ouvrait donc l'ecran general, jamais la story
+     precise. Trouve en suivant l'enregistrement d'ecran de Blandine :
+     le lien s'ouvrait (pas de plantage, juste un chargement lourd sur
+     la premiere tentative), mais retombait sur « Carte des clubs ».
+     On attend que `groupes` soit charge (la liste peut arriver apres ce
+     rendu), on cherche l'id dans chaque groupe -- y compris parmi les
+     membres d'une composition (`compo`), puisque la couverture peut ne
+     pas etre celle qui a ete partagee -- puis on ouvre au bon rang.
+     La variable est effacee apres usage, trouvee ou non : sinon un
+     re-rendu la relirait et rouvrirait la story alors qu'on vient de la
+     fermer. */
+  React.useEffect(function () {
+    try {
+      if (typeof window === "undefined" || !window.__storyOuverte) return;
+      if (!groupes || !groupes.length) return;
+      var idCherche = String(window.__storyOuverte);
+      for (var gi = 0; gi < groupes.length; gi++) {
+        var stories = (groupes[gi] && groupes[gi].stories) || [];
+        for (var si = 0; si < stories.length; si++) {
+          var st = stories[si];
+          var correspond = st && String(st.id) === idCherche;
+          if (!correspond && st && st.compo && st.compo.length) {
+            correspond = st.compo.some(function (m) { return m && String(m.id) === idCherche; });
+          }
+          if (correspond) {
+            setOuvert(gi);
+            setDepartS(si);
+            window.__storyOuverte = null;
+            return;
+          }
+        }
+      }
+      /* Pas trouvee (story expiree, ou deja retiree) : on efface quand
+         meme pour ne pas retenter a chaque re-rendu de la liste. */
+      window.__storyOuverte = null;
+    } catch (eDL) { }
+  }, [groupes]);
+
   function choisirFichier() {
     if (!moiId) { bip(hsT("connecte", lg)); return; }
     try { fileRef.current && fileRef.current.click(); } catch (e) { }
@@ -5402,35 +5444,14 @@ function CompositionStory(props) {
           });
         }))
       : null,
-    /* 18/08 (feu vert de Blandine, demande urgente : "je n'ai pas de bouton
-       pour partager ailleurs") — LE COEUR ET LE PARTAGE, absents de cette
-       visionneuse-ci alors qu'ils existent depuis le 14/08 dans l'autre
-       (VisionneuseStories, story simple). CompositionStory (photo + tirages)
-       n'a jamais recu ces deux boutons. Meme code, meme position, meme
-       fonction hypePartager unique (index.html) — rien n'est redecide ici. */
-    (story && story.id)
-      ? h(CoeurStory, { key: "cr" + story.id, storyId: story.id, langue: lg })
-      : null,
-    (story && story.id && typeof window !== "undefined" && typeof window.hypePartager === "function")
-      ? h("button", {
-          onClick: function (ev) {
-            if (ev && ev.stopPropagation) ev.stopPropagation();
-            try {
-              var titP = (story.pseudo ? (story.pseudo + " \u2014 ") : "") + (story.lieu || "Story");
-              window.hypePartager("s", story.id, titP, { image: (grande && src(grande)) || story.photo_url || null });
-            } catch (eP) { }
-          },
-          onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-          "aria-label": (lg === "en" ? "Share" : lg === "es" ? "Compartir" : lg === "it" ? "Condividi" : lg === "ja" ? "\u5171\u6709" : lg === "de" ? "Teilen" : "Partager"),
-          style: {
-            position: "absolute", right: 14, bottom: 14, zIndex: 10,
-            height: 38, padding: "0 14px 0 12px", borderRadius: 999, cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-            border: "1px solid rgba(255,255,255,0.25)", background: "rgba(6,7,9,0.72)",
-            color: "#DCE3E8", fontSize: 13, fontWeight: 700, lineHeight: 1, whiteSpace: "nowrap"
-          }
-        }, h("span", { style: { fontSize: 16, lineHeight: 1 } }, "\u21AA"), (lg === "en" ? "Share" : lg === "es" ? "Compartir" : lg === "it" ? "Condividi" : lg === "ja" ? "\u5171\u6709" : lg === "de" ? "Teilen" : "Partager"))
-      : null,
+    /* 18/08 — RETIRE : CompositionStory n'est pas un ecran autonome, elle
+       s'affiche COMME ENFANT de VisionneuseStories (voir la ligne qui
+       l'appelle : "hsAvecDecor(story) ? h(CompositionStory, ...)"), qui
+       possede DEJA son propre coeur et son propre bouton de partage tout
+       autour. Les ajouter ici en creait un DEUXIEME jeu, mal positionne
+       de surcroit (absolu dans un conteneur qui defile, donc ancre au bas
+       du CONTENU total et non de l'ecran — d'ou "en plein milieu des
+       images" signale par Blandine). Trouve par sa capture d'ecran. */
     surcouche);
 }
 
