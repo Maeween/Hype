@@ -104,6 +104,25 @@
     color: #7FCBD6;
   }
 
+  .tirages {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .tirage {
+    flex: 0 0 auto;
+    width: 84px;
+    height: 84px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.9);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  }
+  .tirage img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
   .cta {
     margin-top: 28px;
     width: 100%;
@@ -208,7 +227,7 @@
     try {
       var lignes = await requeteRest(
         "hype_stories?id=eq." + encodeURIComponent(id) +
-        "&select=id,user_id,photo_url,legende,lieu,ecurie,expire_le,created_at"
+        "&select=id,user_id,photo_url,legende,lieu,ecurie,expire_le,created_at,groupe,disposition"
       );
       story = lignes && lignes[0];
     } catch (eReq) {
@@ -226,6 +245,35 @@
       return;
     }
 
+    /* 19/08 (feu vert de Blandine, en direct : « on voit qu'une photo alors
+       qu'il y en a plein ») — LES STORIES COMPOSEES. Le partage n'attache
+       et ne pointe que vers UNE ligne (celle ouverte au moment du tap sur
+       Partager) ; les autres photos de la meme composition vivent dans
+       d'autres lignes, reliees par `groupe`. Meme convention que
+       hsRegrouperCompos (hype-stories.js) : trie par date de creation, la
+       couverture est celle qui porte une `disposition`, sinon la plus
+       ancienne — cette page ne decide de rien de nouveau, elle recopie la
+       regle deja en place pour que couverture et legende restent les memes
+       qu'affichees dans l'app. */
+    var membres = [story];
+    if (story.groupe) {
+      try {
+        var groupe = await requeteRest(
+          "hype_stories?groupe=eq." + encodeURIComponent(story.groupe) +
+          "&select=id,photo_url,legende,lieu,ecurie,created_at,disposition,expire_le" +
+          "&order=created_at.asc"
+        );
+        if (groupe && groupe.length) {
+          membres = groupe.filter(function (m) {
+            return !m.expire_le || new Date(m.expire_le).getTime() >= Date.now();
+          });
+          if (!membres.length) membres = [story];
+        }
+      } catch (eG) { /* echec silencieux : on retombe sur la seule photo partagee */ }
+    }
+    var couverture = membres.filter(function (m) { return m && m.disposition; })[0] || membres[0];
+    story = Object.assign({}, story, couverture);
+
     var auteur = null;
     try {
       var profils = await requeteRest(
@@ -238,6 +286,17 @@
     var avatarUrl = auteur && auteur.avatar_url;
     var sousLigne = (story.ecurie ? story.ecurie : "Hype") + " · " + dateLisible(story.created_at);
 
+    /* Bande des autres photos : toutes SAUF la couverture deja affichee en
+       grand, dans leur ordre chronologique. Vide (donc invisible) pour une
+       story simple, sans composition — rien ne change pour ce cas, le plus
+       courant. */
+    var autres = membres.filter(function (m) { return m && m.id !== couverture.id; });
+    var bandeTirages = autres.length
+      ? '<div class="tirages">' + autres.map(function (m) {
+          return '<div class="tirage"><img src="' + echapper(m.photo_url) + '" alt=""></div>';
+        }).join('') + '</div>'
+      : '';
+
     var html = ''
       + '<div class="carte">'
       +   '<img src="' + echapper(story.photo_url) + '" alt="">'
@@ -247,7 +306,8 @@
       +   '</div>'
       +   (story.legende ? '<div class="legende">' + echapper(story.legende) + '</div>' : '')
       +   (story.lieu ? '<div class="lieu">📍 ' + echapper(story.lieu) + '</div>' : '')
-      + '</div>';
+      + '</div>'
+      + bandeTirages;
 
     document.getElementById("scene").innerHTML = html;
     document.getElementById("zoneCta").style.display = "block";

@@ -18971,7 +18971,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19bj"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19bk"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -19841,7 +19841,16 @@ async function hypePartager(famille, valeur, titre, options) {
         var u = (famille === "s")
             ? base + "/story.html?id=" + encodeURIComponent(String(valeur || ""))
             : base + location.pathname + "#" + famille + "=" + encodeURIComponent(String(valeur || ""));
+        /* 19/08 (feu vert de Blandine, en direct : « entre l'adresse a
+           rallonge et la photo unique sans texte c'est pas top ») — LE
+           TEXTE DU PARTAGE. Avant : seulement le pseudo/lieu + signature,
+           jamais la legende ecrite par l'auteure. La legende passe
+           desormais en tete, quand l'appelant la fournit — c'est elle qui
+           donne envie d'ouvrir, pas la signature. Rien ne casse pour les
+           appelants qui n'envoient rien de plus (clubs, cavaliers,
+           articles) : o.legende est optionnel. */
         var tx = (titre ? String(titre) : "Hype") + " \u2014 Hype \uD83D\uDC0E";
+        if (o.legende) { tx = String(o.legende).trim().slice(0, 220) + "\n\n" + tx; }
         /* Une image quand l'appelant en fournit une : c'est ce qui fait la
            difference dans WhatsApp et Instagram. Meme garde-fou de taille que
            partagerFiche (31/07) : au-dela de 8 Mo, on partage le lien seul. */

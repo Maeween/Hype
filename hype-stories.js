@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bj";
+var HYPE_STORIES_VERSION = "19bk";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -6046,7 +6046,7 @@ function VisionneuseStories(props) {
                 if (ev && ev.stopPropagation) ev.stopPropagation();
                 try {
                   var titP = (story.pseudo ? (story.pseudo + " \u2014 ") : "") + (story.lieu || "Story");
-                  window.hypePartager("s", story.id, titP, { image: story.photo_url || null });
+                  window.hypePartager("s", story.id, titP, { image: story.photo_url || null, legende: story.legende || null });
                 } catch (eP) { }
               },
               onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
