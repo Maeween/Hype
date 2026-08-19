@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bh";
+var HYPE_STORIES_VERSION = "19bi";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -5421,15 +5421,15 @@ function CompositionStory(props) {
             } catch (eP) { }
           },
           onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-          "aria-label": "Partager",
+          "aria-label": (lg === "en" ? "Share" : lg === "es" ? "Compartir" : lg === "it" ? "Condividi" : lg === "ja" ? "\u5171\u6709" : lg === "de" ? "Teilen" : "Partager"),
           style: {
             position: "absolute", right: 14, bottom: 14, zIndex: 10,
-            width: 42, height: 42, borderRadius: 999, cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center",
+            height: 38, padding: "0 14px 0 12px", borderRadius: 999, cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
             border: "1px solid rgba(255,255,255,0.25)", background: "rgba(6,7,9,0.72)",
-            color: "#DCE3E8", fontSize: 17, lineHeight: 1, padding: 0
+            color: "#DCE3E8", fontSize: 13, fontWeight: 700, lineHeight: 1, whiteSpace: "nowrap"
           }
-        }, "\u21AA")
+        }, h("span", { style: { fontSize: 16, lineHeight: 1 } }, "\u21AA"), (lg === "en" ? "Share" : lg === "es" ? "Compartir" : lg === "it" ? "Condividi" : lg === "ja" ? "\u5171\u6709" : lg === "de" ? "Teilen" : "Partager"))
       : null,
     surcouche);
 }
@@ -6029,15 +6029,19 @@ function VisionneuseStories(props) {
                 } catch (eP) { }
               },
               onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
-              "aria-label": "Partager",
+              "aria-label": (lg === "en" ? "Share" : lg === "es" ? "Compartir" : lg === "it" ? "Condividi" : lg === "ja" ? "\u5171\u6709" : lg === "de" ? "Teilen" : "Partager"),
               style: {
-                position: "absolute", right: 14, bottom: 14, zIndex: 10,
-                width: 42, height: 42, borderRadius: 999, cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
+                /* 18/08 (feu vert de Blandine, vu en video) : la pastille musique et
+                   ce bouton visaient EXACTEMENT le meme coin — bottom:14/right:14 —
+                   et se marchaient dessus des qu'une story porte une musique.
+                   On monte le bouton au-dessus dans ce cas precis seulement. */
+                position: "absolute", right: 14, bottom: (story && story.musique) ? 62 : 14, zIndex: 10,
+                height: 38, padding: "0 14px 0 12px", borderRadius: 999, cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                 border: "1px solid rgba(255,255,255,0.25)", background: "rgba(6,7,9,0.72)",
-                color: "#DCE3E8", fontSize: 17, lineHeight: 1, padding: 0
+                color: "#DCE3E8", fontSize: 13, fontWeight: 700, lineHeight: 1, whiteSpace: "nowrap"
               }
-            }, "\u21AA")
+            }, h("span", { style: { fontSize: 16, lineHeight: 1 } }, "\u21AA"), (lg === "en" ? "Share" : lg === "es" ? "Compartir" : lg === "it" ? "Condividi" : lg === "ja" ? "\u5171\u6709" : lg === "de" ? "Teilen" : "Partager"))
           : null,
         /* La pastille son : n'apparaît que si la story porte une musique.
            JAMAIS d'autoplay (règle iOS) : c'est elle qu'on touche pour lancer
