@@ -19808,7 +19808,7 @@ const COURS_GALOP1_I18N = [{"id": "g1-c15", "icone": "🛡️", "type": {"fr": "
 const AppContext = createContext(null);
 const useApp = () => useContext(AppContext);
 const DEV_OUVRIR_PAGE = ""; // raccourci : "" = app normale | "compte" | "parcours" | "licence" | "parc" | ...
-const LIEN_APP = "https://majestic-melba-997a68.netlify.app"; // lien public de l'appli — vide pour l'instant. Le bouton Partager ET le QR code le lisent.
+const LIEN_APP = "https://2hype.netlify.app"; // lien public de l'appli — vide pour l'instant. Le bouton Partager ET le QR code le lisent.
 
 /* ================= 14/08 — PARTAGER (feu vert de Blandine) =================
    UNE seule fonction pour tout Hype : « chaque partie importante de Hype
@@ -42889,7 +42889,7 @@ function EcranAssistantIA() {
                 + "Réponds UNIQUEMENT par un objet JSON valide, sans texte autour, de la forme : "
                 + '{"cavalier":"fiche cavalier mise à jour, <=1200 caractères","chevaux":[{"nom":"NomDuCheval","fiche":"fiche mise à jour, <=500 caractères"}]}. '
                 + "N'inclus dans \"chevaux\" que les chevaux réellement évoqués dans cette conversation. Si aucune mise à jour, renvoie {\"cavalier\":\"\",\"chevaux\":[]}.";
-            const API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "https://majestic-melba-997a68.netlify.app/.netlify/functions/assistant";
+            const API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "https://2hype.netlify.app/.netlify/functions/assistant";
             fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigneSynthese, messages: [{ role: "user", content: "Fais la synthèse maintenant." }] }) })
                 .then((r) => r.json())
                 .then((data) => {
@@ -43061,7 +43061,7 @@ function EcranAssistantIA() {
             } catch (e) { }
         };
         try {
-            const API_ASSISTANT = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "https://majestic-melba-997a68.netlify.app/.netlify/functions/assistant";
+            const API_ASSISTANT = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "https://2hype.netlify.app/.netlify/functions/assistant";
             // --- Construction de l'appel principal (comportement historique, inchangé pour texte et vidéo) ---
             let systemEnvoye = getSystemPrompt(langue, { profil: profil, chevaux: chevaux, premium: premium, planAbo: planAbo, xp: xp, serie: serie, galopOuvert: galopOuvert, coursOuvert: coursOuvert, memoire: memoireHB, fiches: fichesEcurie, coursCtx: coursCtx, avecPhoto: !!imgEnvoyee, avecVideo: Array.isArray(framesEnvoyees) && framesEnvoyees.length > 0, nbFrames: Array.isArray(framesEnvoyees) ? framesEnvoyees.length : 0, avecTimestamps: !!(Array.isArray(framesEnvoyees) && framesEnvoyees.length && framesEnvoyees[0] && typeof framesEnvoyees[0] === "object") });
             let messagesEnvoyes = (function () { const fenetre = nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).slice(-10); return fenetre.map((m, iM) => { const dernier = iM === fenetre.length - 1; if (dernier && m.frames && m.frames.length) { const blocs = m.frames.map(function (fr) { const data = (fr && typeof fr === "object") ? fr.data : fr; const t = (fr && typeof fr === "object" && typeof fr.t === "number") ? fr.t : null; const v = data.indexOf(","); const mt = data.slice(5, data.indexOf(";")) || "image/jpeg"; const img = { type: "image", source: { type: "base64", media_type: mt, data: data.slice(v + 1) } }; return t !== null ? [{ type: "text", text: "t=" + t + "s" }, img] : [img]; }).flat(); blocs.push({ type: "text", text: (m.contenu ? m.contenu : tr({ fr: "Analyse cette vid\u00e9o.", en: "Analyse this video.", es: "Analiza este v\u00eddeo.", it: "Analizza questo video.", ja: "\u3053\u306e\u52d5\u753b\u3092\u5206\u6790\u3057\u3066\u304f\u3060\u3055\u3044\u3002", de: "Analysiere dieses Video." }) ) }); return { role: m.role, content: blocs }; } if (dernier && m.image) { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return { role: m.role, content: blocs }; } return { role: m.role, content: m.contenu || "(photo envoy\u00e9e pr\u00e9c\u00e9demment)" }; }); })();
