@@ -4,9 +4,20 @@
    Contenu déplacé tel quel depuis hype-lingo-lex-concours.js, leçon 3
    — AUCUNE définition modifiée.
 
-   🟥 SANS VILLE POUR L'INSTANT, sur décision de Blandine (18/08) : ces
-   4 concepts (le jour du concours, hors piste — le van, l'embarquement,
-   le tableau d'affichage, le trac) attendent une ville future.
+   🟥 19/08/2026 — `van` ET `embarquer` SONT PARTIS À BARCELONE.
+   Ils attendaient ici « une ville future » depuis le 18/08 : c'est
+   `hype-lingo-lex-barcelone.js`, « Voyager avec son cheval ». Les deux
+   concepts y sont repris À L'IDENTIQUE — même `ref`, mêmes six langues,
+   même définition, y compris le faux ami van/trailer/horsebox.
+   ⚠️ NE PAS LES REMETTRE ICI : deux fichiers portant la même `ref`
+   casseraient la règle UN CONCEPT = UN `ref` GLOBAL.
+   ⚠️ CE FICHIER A ÉTÉ RECONSTRUIT À PARTIR DE LA COPIE COLLÉE DANS LA
+   CONVERSATION du 19/08, le fichier du dépôt n'ayant pas été fourni.
+   Le reste est repris caractère pour caractère. À vérifier au diff.
+
+   🟥 IL RESTE DEUX CONCEPTS, TOUJOURS SANS VILLE : le tableau
+   d'affichage et le trac. Ils ne relèvent pas du transport et n'ont pas
+   suivi à Barcelone — ils attendent toujours.
    ⚠️ `speaker`, `appel`, `resultat`, `remise-prix`, `groom` — les 5
    AUTRES concepts de cette même leçon 3 d'origine — ont rejoint
    `hype-lingo-lex-badminton.js`, avec les deux phrases qui les
@@ -28,28 +39,6 @@ window.HYPE_LINGO_LEX["concours-reserve"] = {
 
 
   /* ============ LEÇON 3 · LE JOUR J ============ */
-
-  { ref:"van", lecon:3, coll:"jour-j",
-    mots:{ fr:{m:"le van"}, en:{m:"the trailer", p:"tré-leur", var:"horsebox = le camion (GB)"},
-           es:{m:"el remolque", var:"el camión"}, it:{m:"il van", var:"il camion"},
-           de:{m:"der Pferdeanhänger", p:"pfèr-de-an-hèn-gueur"}, ja:{m:"馬運車", p:"bāunsha"} }, // ??
-    def:{ fr:"⚠️ Faux ami à double fond : le mot français « van » vient de l'anglais *caravan*, mais l'anglais dit **trailer** pour le van attelé et **horsebox** pour le camion. Un Américain, lui, dit *trailer* pour les deux.",
-          en:"French « van » comes from caravan, but English says trailer for the towed one and horsebox for the lorry.",
-          es:"⚠️ Falso amigo de doble fondo: la palabra francesa « van » viene del inglés *caravan*, pero el inglés dice **trailer** para el remolque y **horsebox** para el camión. Un americano dice *trailer* para los dos.",
-          it:"⚠️ Falso amico a doppio fondo: la parola francese « van » viene dall'inglese *caravan*, ma l'inglese dice **trailer** per il rimorchio e **horsebox** per il camion. Un americano dice *trailer* per entrambi.",
-          de:"⚠️ Falscher Freund mit doppeltem Boden: Das französische « van » kommt vom englischen *caravan* — aber Englisch sagt **trailer** für den Anhänger und **horsebox** für den LKW. Ein Amerikaner sagt für beides *trailer*.",
-          ja:"⚠️ 二重底の偽りの友：フランス語の « van » は英語の *caravan* 由来なのに、当の英語は牽引式を **trailer**、トラック型を **horsebox** と言います。アメリカ人はどちらも *trailer* です。" } },
-
-  { ref:"embarquer", lecon:3, coll:"jour-j", v:true,
-    mots:{ fr:{m:"embarquer"}, en:{m:"to load", p:"lôde", var:"to box up"},
-           es:{m:"embarcar", var:"cargar"}, it:{m:"caricare"},
-           de:{m:"verladen", p:"fèr-la-deune"}, ja:{m:"積み込む", p:"tsumikomu"} }, // ??
-    def:{ fr:"Faire monter le cheval dans le van. Le premier obstacle de la journée, et parfois le plus difficile : un cheval qui refuse d'embarquer fait manquer l'épreuve avant même d'être sellé.",
-          en:"Getting the horse in. The first obstacle of the day, and sometimes the hardest one.",
-          es:"Hacer subir al caballo al remolque. El primer obstáculo del día, y a veces el más difícil: un caballo que se niega a embarcar hace perder la prueba antes incluso de ensillar.",
-          it:"Far salire il cavallo nel van. Il primo ostacolo della giornata, e a volte il più difficile: un cavallo che rifiuta di salire fa mancare la prova prima ancora di sellare.",
-          de:"Das Pferd in den Hänger verladen. Das erste Hindernis des Tages — und manchmal das schwerste: Ein Pferd, das nicht verlädt, lässt die Prüfung platzen, bevor gesattelt ist.",
-          ja:"馬をトレーラーに乗せること。その日最初の障害物であり、ときに最難関です。積み込みを拒む馬は、鞍を置く前から競技を台無しにしてしまいます。" } },
 
   { ref:"tableau", lecon:3, coll:"jour-j",
     mots:{ fr:{m:"le tableau d'affichage"}, en:{m:"the noticeboard", p:"nô-tiss-bord", var:"the board"},

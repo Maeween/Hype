@@ -1,3 +1,265 @@
+# 🚨 FIN DE SESSION — 19/08/2026
+
+**La session qui a trouvé le trou du 18/08.** Onze villes étaient MUETTES en ligne depuis la veille : les tables du découpage un-fichier-par-ville avaient toutes été mises à jour, mais **les balises `<script>` de `lingo.html` n'avaient jamais suivi**. Le reste de la soirée a été un audit complet du module, ville par ville, plus la création de Barcelone.
+
+---
+
+## 🔴 LE DÉFAUT PRINCIPAL — ONZE VILLES SANS VOCABULAIRE
+
+`ETAPE_SRC`, `ETAPES`, `TH_FAMILLES`, `RECITS` et `sw-linguae.js` étaient à jour après le découpage du 18/08. **Les balises de chargement de `lingo.html`, non.** Elles appelaient encore les cinq anciens fichiers thématiques et aucun des onze neufs.
+
+Résultat en ligne : **Connemara, Walsall, Windsor, Wellington, Badminton, Versailles, Vejer, Oliva, Rome, Aachen et Flyinge** ouvraient leur leçon sur *« Ce chapitre n'a pas encore de vocabulaire »*.
+
+**Corrigé** : 11 balises ajoutées, 5 retirées (`cheval`, `materiel`, `dressage`, `obstacle`, `concours` — toujours au dépôt, jamais rebranchés). `VER` passé à `?v=45`.
+
+🟥 **LA LEÇON À RETENIR, POUR LA QUATRIÈME FOIS** : un lexique ajouté se déclare à **TROIS** endroits — la balise `<script>` de `lingo.html`, `SOCLE_JS` de `sw-linguae.js`, et `ETAPE_SRC`. Le 18/08, deux sur trois avaient été faits. Vérifier les trois avant toute livraison.
+
+---
+
+## 🖼️ LES CASES NOIRES — CE N'ÉTAIT PAS LES CARTES
+
+Diagnostic initial faux, corrigé en lisant le code : la grille des villes n'affiche **pas** `carte-<ref>.webp` mais **`carte-<ref>-vignette.jpg`**, 450×600, fabriquée depuis la carte pleine (décision du 13/08, session 210 — les cartes pleines faisaient décoder 130 Mo de bitmaps). Les cartes de Blandine étaient bien en ligne ; **c'étaient les vignettes qui manquaient**, pour les villes créées après le 13/08.
+
+**Cinq vignettes produites** : Wellington, Fontainebleau, Taupō, Flyinge, Versailles.
+⚠️ **Versailles est la seule carte du module en PAYSAGE** (900×618). Sa vignette est un recadrage portrait décalé de 80 px, qui garde la statue et la façade et perd les jardins de gauche. **Une carte refaite en portrait reste préférable.**
+⚠️ Taupō est la seule carte en 1086×1448 (316 Ko contre ~110 ailleurs). Sans conséquence, à revoir un jour.
+
+🟥 **Correction d'un diagnostic de la passation du 18/08** : la ville sans image « en position 19, probablement Jerez » était **FONTAINEBLEAU**. Jerez est intacte.
+
+---
+
+## 🐴 LAMBOURN — LE CHAPITRE ALLÉGÉ, PUIS RÉÉQUILIBRÉ
+
+`hype-lingo-lex-pansage.js` portait **42 concepts sur 4 leçons alors que Lambourn n'en lisait qu'une** : 12 vus, 30 dormants. Et son dialogue citait 24 mots répartis sur les quatre leçons — 16 venaient de leçons jamais enseignées.
+
+**Décision de Blandine, en deux temps.** D'abord 30 concepts, puis **33** après relecture : `brosse-eau`, `toupet` et `tondre` remis, jugés trop utiles pour dormir. Répartition finale **11 / 7 / 10 / 5**.
+
+- `ETAPE_SRC.lambourn` lit désormais **ses quatre leçons**
+- `hype-lingo-lex-pansage-reserve.js` créé, **6 concepts** : `tondeuse`, `poussiere`, `mue`, `tache`, `eclat`, `tique`
+- ⚠️ **`tondre` est enseigné SANS `tondeuse`** — décision explicite de Blandine. Seul geste du chapitre dont l'outil reste en réserve.
+- `sabot`, `sole`, `fourchette` retirés : **Flyinge les porte**
+- 🟥 **Libellé canonique de la ref `sabot` fixé par Blandine : « le sabot »**, variante « le pied ». Flyinge disait « le pied » en principal — deux libellés pour un même `ref` faisaient arriver le mot déjà acquis sous un intitulé jamais vu. La définition de Flyinge garde l'idée du pied comme ensemble fonctionnel.
+- Dialogue : **2 phrases touchées sur 20**. #9 devient « Il reste encore de la boue autour des pieds. » (l'ancienne citait `sabot`), #12 reçoit le « la » qui manquait.
+- ⚠️ La `ref` `d-pierre-sabot` a été **conservée** pour une phrase qui parle maintenant de boue. Renommer serait plus propre — mais `lingo-dialogue.html` n'a pas été fourni et on ignore si ces `ref` servent de clé de progression.
+
+---
+
+## 📋 L'AUDIT COMPLET DES 36 VILLES — LE RÉSULTAT
+
+Tous les fichiers lexiques ont été ouverts et croisés avec `ETAPE_SRC`. **113 concepts dormants, sur QUATRE villes seulement.**
+
+| ville | étape | fichier | vus / total | dormant |
+|---|---|---|---|---|
+| Newmarket | 4 | `ecurie` | 10 / 42 | **32** |
+| Aberystwyth | 7 | `cours` | 10 / 42 | **32** 🆕 jamais signalée |
+| La Baule | **1** | `arrivee` | 15 / 31 | **16** |
+| Burghley | 11 | `cross` | 18 / 21 | **3** |
+| ~~Lambourn~~ | 5 | `pansage` | 33 / 33 | ✅ réglé |
+
+**Les 31 autres villes sont impeccables** : tout est lu, aucun mot hors fichier, toutes les phrases d'exercice s'affichent.
+
+🟢 **Ce n'était donc pas « du bordel partout ».** Les quatre villes concernées sont toutes dans les onze premières étapes, écrites en juillet avec des chapitres de 42 concepts sur 4 leçons. **Tout ce qui a été écrit après Burghley est propre.**
+
+### 🔴 LA BAULE EST LE CAS LE PLUS GRAVE
+C'est **l'étape 1**, et ce qui dort est **le bloc de sécurité de 11 mots** — celui écrit exprès parce que *« la sécurité n'existait NULLE PART dans les 378 mots d'origine »*. Il n'est montré à personne, devant un débutant qui n'a jamais approché un cheval. Plus 3 phrases d'exercice invisibles (toutes de sécurité) et `cours-collectif` cité deux fois par le dialogue sans être enseigné.
+⚠️ `arrivee.js` déclare `lecons: 2` alors qu'il en contient **trois**. Incohérence à corriger quoi qu'il arrive.
+
+**Deux briefs de passation écrits** : `BRIEF-LABAULE.md` et `BRIEF-NEWMARKET.md`, pour traitement en conversation séparée.
+
+---
+
+## 💬 LA TABLE DES MOTS D'ACCUEIL — COMPLÈTE POUR LA PREMIÈRE FOIS
+
+Onze villes entraient dans leur leçon **sans le mot manuscrit sous le titre**. Défaut silencieux : `if(acc)` saute la ligne sans rien signaler.
+
+- **3 rebranchements**, texte déjà existant : `walsall`→`materiel`, `windsor`→`dressage` (régression du découpage), `kildare`→`urgences` (la clé écrite était `urgences-vet`, défaut né le 16/08 quand les urgences ont été séparées)
+- **8 textes neufs**, écrits APRÈS lecture du fichier de chaque ville, concept par concept : `andalou` (Jerez), `formation` (Warendorf), `derby` (Hickstead), `enseignant` (Saumur), `poney` (Lamotte), `jeunes` (Fontainebleau), `parade` (Séville), `horsemanship` (Santa Ynez)
+
+**Résultat : 0 ville sans mot d'accueil sur 36.** 33 entrées, toutes en 6 langues.
+⚠️ **Les 8 français sont à valider par Blandine**, les traductions ne sont pas relues par un natif.
+⚠️ Le texte `urgences` a été écrit quand un seul chapitre couvrait cheval ET cavalier : il reste juste mais ne dit pas que Kildare est le vétérinaire.
+
+---
+
+## 🇪🇸 BARCELONE — 37e VILLE, « VOYAGER AVEC SON CHEVAL »
+
+Créée sur brief écrit de Blandine. **30 concepts sur 3 leçons** (9 / 10 / 11), **dialogue de 21 phrases sur 6 temps**, 6 langues partout.
+
+🟥 **LE BRIEF ANNONÇAIT 21 REFS NEUVES — IL Y EN A 15.** Le croisement en a rattrapé six qui existaient déjà : `passeport` (connemara, vente), `trousse-secours` (urgences-med), `van` et `embarquer` (concours-reserve), `pause` (cours), `temperature` (froid). **Les traductions du brief n'ont pas été retenues pour celles-là** — c'est la version en place qui fait foi (`licol` reste « the headcollar / the halter (US) », pas « halter »).
+
+**15 rappels au total**, repris à l'identique : les 9 d'`ecurie` plus ces 6.
+
+- 🟥 **`van` et `embarquer` SORTENT de `concours-reserve.js`**, qui les gardait depuis le 18/08 « pour une ville future ». Le fichier tombe à **2 concepts** : `tableau` et `trac`, toujours sans ville.
+- 🟥 **`arrivee` du brief est devenu `arrivee-transport`** — décision de Blandine. `arrivee` est déjà le nom du chapitre de La Baule ; aucune collision technique, mais un homonyme illisible.
+- ⚠️ Le champ `dit` (joueuse / club) du dialogue **a été attribué par Claude**, le brief ne le précisait pas. Trois phrases à la joueuse : 1, 5, 12.
+- ⚠️ **Segmentation japonaise non découpée par espaces**, contrairement à `pansage.js`. C'est le japonais du brief, gardé tel quel. L'écart entre villes reste la question ouverte du module.
+- ⚠️ Les `coll:` des rappels sont ceux de leur fichier d'origine, non réalignés sur Barcelone.
+
+**Médias produits** : `carte-barcelone.webp` (900×1200, q88), `carte-barcelone-vignette.jpg` (450×600), `arrivee-barcelone.mp4` (HEVC → H.264, **muette**, 720×1280, 7,1 s, 6,2 Mo → 1,6 Mo). Filigrane « Ai » visible, non effacé — même décision que Flyinge, `delogo` fait pire sur les textures.
+🔴 **Manquent** : `fond-barcelone.webp`, `objet-barcelone.webp`.
+🔴 **La première image envoyée pour Barcelone a été écartée** : paysage, avec « BARCELONA » et « LONGINES FEI JUMPING NATIONS CUP » incrustés — texte et marques réelles, interdits du prompt des cartes postales. La seconde (débarquement au-dessus de la ville, 3:4 exact, sans texte) a été retenue.
+
+🔴 **BARCELONE N'EST BRANCHÉE NULLE PART.** Le lexique existe, rien d'autre. Manquent : `ETAPES` (position dans le voyage, heure, `ciel`, `forme`, `souv`, `ic`), `ETAPE_SRC.barcelone`, `ACCUEIL_VILLE`/`ACCUEIL_CHAP`, `RECITS`/`POURQUOI`, `TH_FAMILLES`, la balise `<script>`, `SOCLE_JS` de `sw-linguae.js`, et `VER`. **En attente de la décision de Blandine sur la place de Barcelone dans le voyage.**
+
+---
+
+## 📊 NEWMARKET — DIAGNOSTIC FAIT, PATCH NON APPLIQUÉ
+
+Brief de refonte reçu : 33 concepts sur 4 leçons (10 / 10 / 6 / 7), les 9 refs partant à Barcelone, dialogue de 21 phrases réécrit. **Diagnostic §9 rendu, rien codé.**
+
+Points établis :
+- le dialogue **et** les exercices vivent dans `hype-lingo-lex-ecurie.js` — pas de fichier séparé
+- `ecurie.dialogue` n'a **aucune table `titres`** de scènes
+- les 6 phrases d'exercice ont **`mots:[]`** — elles ne déclarent aucun concept, seulement leur `lecon`
+- les 9 refs ne sont utilisées **nulle part ailleurs** dans le module : transfert propre
+- 7 phrases du dialogue actuel sur 21 les citent (#12 à #18, tout le temps 4 et tout le temps 5)
+
+🟥 **LE POINT BLOQUANT, PÉDAGOGIQUE ET NON TECHNIQUE** : `seau`, `eau`, `foin`, `licol` quittent Newmarket (**étape 4**) pour Barcelone, dont la place n'est pas fixée. Si Barcelone tombe vers l'étape 20, le joueur fait tout le chapitre de l'écurie — nourrir, faire les boxes — **sans jamais apprendre « l'eau », « le seau », « le foin » ni « le licol »**. Trois phrases du nouveau dialogue frôlent le trou (#13, #17, #21). **À trancher avant de coder.**
+
+---
+
+## ⚠️ INCIDENT DE SESSION, SIGNALÉ
+
+Un `str_replace` a **avalé le début de la ligne `andalou`** dans `ACCUEIL_CHAP`, laissant une erreur de syntaxe dans le fichier de travail. **Signalé immédiatement, aucun rafistolage** : reprise depuis la dernière copie vérifiée, puis réapplication avec une ancre sûre. Même méthode pour une extraction de concepts qui avait emporté deux lignes de trop dans `pansage.js`.
+
+⚠️ **`concours-reserve.js` a été RECONSTRUIT depuis la copie collée dans la conversation**, le fichier du dépôt n'ayant jamais été fourni en pièce jointe (contrairement à `dressage-reserve.js`). Le reste est repris caractère pour caractère. **À vérifier au diff avant de pousser.**
+
+---
+
+## 📦 LE LOT DE LA SESSION
+
+| fichier | état |
+|---|---|
+| `lingo.html` | 11 balises ajoutées, 5 retirées, `VER` → `?v=45`, `ETAPE_SRC.lambourn` à 4 leçons, `pansage.js?l=4`, `ACCUEIL_VILLE` +3, `ACCUEIL_CHAP` +8 |
+| `hype-lingo-lex-pansage.js` | 42 → **33 concepts**, 4 leçons, dialogue retouché sur 2 phrases |
+| `hype-lingo-lex-pansage-reserve.js` | **NEUF** — 6 concepts, chargé par personne |
+| `hype-lingo-lex-flyinge.js` | libellé canonique de `sabot` |
+| `hype-lingo-lex-barcelone.js` | **NEUF** — 30 concepts, 21 phrases. **NON BRANCHÉ** |
+| `hype-lingo-lex-concours-reserve.js` | 4 → **2 concepts** (reconstruit, à diffuser au diff) |
+| 6 vignettes `.jpg` | wellington, fontainebleau, taupo, flyinge, versailles, barcelone |
+| `carte-barcelone.webp`, `arrivee-barcelone.mp4` | prêtes |
+
+---
+
+## 🔴 CE QUI RESTE OUVERT
+
+1. **La place de Barcelone dans le voyage** — bloque son branchement ET la refonte de Newmarket.
+2. **La Baule** — le bloc de sécurité dormant à l'étape 1. Brief écrit.
+3. **Aberystwyth** — 32 concepts dormants dans `cours`, découverte de cette session, aucun brief encore.
+4. **Burghley** — 3 concepts (`talus`, `contre-bas`, `gue`), dont deux cités par son dialogue.
+5. **`lingo-dialogue.html` jamais fourni** — seul point du diagnostic resté ouvert, commun à toutes les villes : on ignore si le dialogue crédite la maîtrise d'un mot non enseigné dans sa ville.
+6. **`fond-barcelone.webp` et `objet-barcelone.webp`** à produire.
+7. **`carte-versailles.webp` en paysage** — à refaire en portrait si le recadrage ne convient pas.
+8. **Les 8 mots d'accueil neufs** à valider par Blandine.
+9. **Les 5 anciens fichiers** (`cheval`, `materiel`, `dressage`, `obstacle`, `concours`) toujours au dépôt — à supprimer seulement après vérification en ligne du nouveau lot.
+
+---
+
+## 🍏 VERS L'APP STORE
+
+Rien de neuf côté architecture iOS cette session. Mais le module y a gagné : **plus une seule ville muette, plus une seule case noire, plus un seul mot d'accueil manquant sur 36 villes.** Un audit complet du vocabulaire enseigné existe désormais — 113 concepts dormants identifiés, localisés, quantifiés. C'est la première fois que l'état réel du contenu tient sur une page. Une soumission App Store demande de savoir ce que l'app contient : c'est fait.
+
+---
+---
+
+# 🌙 FIN DE SESSION — 18/08/2026, tard le soir
+
+**Session la plus longue du chantier.** Suite directe de l'entrée « DÉCOUPAGE UN-FICHIER-PAR-VILLE » ci-dessous : tout ce qui s'est passé après le découpage obstacle/concours initial. Cette entrée-ci couvre le reste — Flyinge, la suite du découpage, Aberystwyth, deux vidéos, deux récits oubliés trouvés en auditant, et ce qui reste ouvert.
+
+## ✅ LE DÉCOUPAGE UN-FICHIER-PAR-VILLE, TERMINÉ
+
+**Toutes les villes ont désormais un fichier et un seul.** Après obstacle/concours/cheval (entrée précédente), la même méthode a été appliquée à `dressage.js` et `materiel.js` :
+
+· `dressage.js` → **`windsor.js`** (leçon 1, 19 concepts) + **`versailles.js`** (leçon 3, 14 concepts, dialogue renommé `dialogue`) + **`dressage-reserve.js`** (leçons 2+4 orphelines, 25 concepts — la leçon 2 « mouvements » est déjà employée en `motsAilleurs` par le dialogue de Versailles, ne pas la dupliquer)
+· `materiel.js` → **`walsall.js`** (leçon 1, 14 concepts) + **`vejer.js`** (leçons 3+4, 29 concepts, dialogue renommé `dialogue`) + **`materiel-reserve.js`** (leçon 2 orpheline, 10 concepts, « le filet »)
+
+🟥 **MÉTHODE CONSTANTE SUR TOUT LE CHANTIER, du début à la fin** : extraction ligne à ligne (`sed -n 'X,Yp'`), jamais par script de motifs. Chaque comptage vérifié après coup (concepts, phrases, phrases de dialogue) contre l'original.
+
+⚠️ **Deux régressions trouvées EN COURS DE ROUTE, corrigées avant qu'elles n'atteignent le dépôt** — aucune des deux n'avait été anticipée au moment du découpage initial :
+1. **`TH_FAMILLES`** (l'écran de tri par thème) citait encore les anciennes clés (`obstacle`, `concours`, `cheval`, `dressage`, `materiel`) : les villes découpées avaient disparu de cet écran (toujours jouables par la carte, invisibles au tri). Toutes les nouvelles clés y sont maintenant.
+2. **`ACCUEIL_VILLE`/`ACCUEIL_CHAP`** (le mot manuscrit sous le titre d'une leçon) : Wellington, Connemara, Badminton et Flyinge entraient dans leur leçon sans un mot d'accueil — même défaut que La Baule avant sa correction en session 95. Walsall, Windsor, Vejer avaient déjà un renvoi vers l'ancien nom de chapitre (resté valide, rien à faire). **Versailles n'en avait aucun** — corrigé avant de se produire.
+   ⚠️ **Badminton et Flyinge ont un texte D'ACCUEIL DE LEÇON écrit par Claude, jamais vu par Blandine** — à valider.
+
+🔴 **`hype-lingo-lex-obstacle.js`, `concours.js`, `cheval.js`, `dressage.js`, `materiel.js` SONT TOUJOURS SUR LE DÉPÔT**, inchangés. Retirés du socle (`SOCLE_JS`) et d'`ETAPE_SRC`, jamais supprimés. **À supprimer une fois tout vérifié en ligne, pas avant.**
+
+## 🐴 CONNEMARA — LE DIALOGUE REFAIT
+
+Diagnostic de la session précédente confirmé et corrigé : `ETAPE_SRC.connemara` enseignait les robes (leçon 1) mais son dialogue parlait presque exclusivement d'âge/sexe/caractère (leçon 4, jamais enseignée à cette ville).
+
+**Décision de Blandine** : Connemara reçoit désormais les leçons **1+2+3** de l'ancien `cheval.js` (robes, marques, anatomie — 30 concepts) plus le bloc `races` (8 races propres au voyage GB-Irlande). Fontainebleau garde seule la leçon 4.
+
+**Nouveau dialogue écrit** : 22 phrases, 7 temps, scène « on me présente le Connemara que je vais monter ». Tous les `mots:[...]` vérifiés existants (concepts leçons 1-3 ou bloc `races`), rien de la leçon 4.
+⚠️ **Traductions ES/IT/DE/JA des phrases neuves écrites par Claude** (celles qui recoupent l'ancien dialogue reprennent le vocabulaire déjà validé du fichier) — relecture native à faire, comme pour tout le chapitre.
+
+🟢 **Correction d'un diagnostic antérieur** : `connemara` et `pur-sang`, signalés comme des `ref` introuvables dans une session précédente, existent bel et bien — dans le bloc `races`, que je n'avais pas regardé au moment du diagnostic. Rien n'était cassé.
+
+## 🏇 FLYINGE — 36e VILLE, CRÉÉE CE SOIR
+
+Brief complet de Blandine : « Le pied et la maréchalerie », Suède.
+
+**23 concepts neufs** (`sabot`, `paroi`, `sole`, `fourchette`, `ligne-blanche`, `pince`, `talons`, `parage`, `parer-pied`, `ferrer`, `clou-fer`, `pincon`, `pincon-pince`, `pincons-lateraux`, `garniture`, `rolling`, `mortaise-crampon`, `tarauder-mortaise`, `crampon`, `fer-perdu`, `fer-bouge`, `pieds-nus`, `hipposandale`) + **24 phrases de dialogue**.
+🟥 **`marechal` et `fer` NE SONT PAS RECRÉÉS** — ils existent déjà dans `connemara.js`, réutilisés via `motsAilleurs`. Les ~20 termes techniques complémentaires du brief (déferrer, fer antérieur/postérieur, sole fine/sensible/friable, maladie de la ligne blanche, abcès, close nail/nail prick, etc.) sont glissés en encart (⚠️) dans les définitions des concepts principaux, PAS en fiches séparées — décision explicite de Blandine.
+
+**Ajoutée partout où il le fallait** : `ETAPE_SRC.flyinge`, `ETAPES` (36e étape, 19 h 00, entre Spruce Meadows et La Baule), `I18N_NAT`/`TH_PAVILLON` (Suède, nation neuve — les DEUX endroits), `SOCLE_JS` (v7).
+
+⚠️ **Choix non validés par Blandine, signalés en commentaire dans le code** : `ciel` (bleu-or, d'après l'image du fer ouvragé qu'elle a envoyée), `forme:"haras"` et `ic:"fer"` (réutilisés, pas de nouveau SVG produit), `souv:"Un fer à cheval doré"` (inventé). `RECITS.flyinge` et `POURQUOI.flyinge` sont des brouillons non validés.
+
+🔴 **Aucune image n'existe** : `carte-flyinge.webp`, `fond-flyinge.webp`, `objet-flyinge.webp` — les replis s'appliquent.
+
+### La carte postale de Flyinge
+Deux images envoyées par Blandine pour choisir : la première (cheval au pré devant les bâtiments, lumière douce, aucun texte) respecte le prompt des cartes postales à la lettre — retenue. La seconde (maréchal au travail, texte « FLYINGE » visible, visage du maréchal visible) casse plusieurs interdits du prompt — écartée, peut inspirer l'ambiance sans servir de carte.
+
+### La vidéo d'arrivée
+`.mov` envoyé (HEVC, 1080×1890, son) → converti H.264, redimensionné, **muette** (règle confirmée dans le SUIVI : « le film d'ouverture reste muet — sans ça iOS refuse le démarrage automatique »). Un filigrane « Ai » discret en haut à gauche : **effacement testé et abandonné** — sur les passages avec de la texture derrière (un arbre), le filtre `delogo` crée un artefact en damier pire que le filigrane d'origine. Livrée telle quelle, filigrane visible par endroits.
+
+### Les trois images du fer ouvragé (Flyinge, croix suédoise/couronne)
+Envoyées comme référence pour une future ville — puis, ce soir, trois autres images (un cheval sautant devant un jump fleuri, cadre en bois, trois angles) envoyées avec la précision : **c'est pour la sellerie, pas pour le système d'icônes de collection**. Mon inquiétude initiale sur le décalage de style ne s'appliquait donc pas — une peinture encadrée a sa place dans une sellerie. **Rien fait avec ces trois images pour l'instant** — la conversation est passée à la demande de SUIVI/passation avant que j'aie pu les traiter.
+
+## 📖 ABERYSTWYTH — LE BRIEF EXÉCUTÉ (`hype-lingo-lex-cours.js`)
+
+Brief détaillé de Blandine, envoyé une fois, exécuté dans son intégralité — diff vérifié, 8 changements exactement, rien d'autre touché. 42 concepts et 24 phrases de dialogue intacts, aucune `ref` modifiée.
+
+**4 définitions corrigées** : `au-galop` (FR+EN — canter est l'allure normale, gallop plus rapide, sans absolus), `transition` (FR+EN — retire la formulation vague sur le jugement de la reprise), `renes-longues` (FR+EN complétés — distingue l'usage courant de *free walk on a long rein* comme mouvement de dressage précis ; l'ordre oral passe de « Free walk on a long rein ! » à « Long reins ! »), `monter` (FR seule, EN gardé comme demandé).
+
+**3 phrases du dialogue corrigées** : #5 (« stirrup leathers », clarté), #11 (ne plus traduire littéralement « tenir son dos » par *hold your back*), #19 (coudes au galop, formulation plus naturelle).
+
+## 🔍 DEUX AUTRES VILLES SANS RÉCIT, TROUVÉES EN AUDITANT TOUTE LA TABLE
+
+Pas seulement les villes créées ce soir — un audit complet de `RECITS`/`POURQUOI` contre les 36 villes d'`ETAPES` a trouvé :
+· **`burghley`** — n'avait NI `RECITS` NI `POURQUOI`. Écran d'arrivée entièrement vide, même défaut que Fontainebleau avant sa correction. **Les deux écrits ce soir**, brouillons non validés.
+· **`versailles`** — avait `POURQUOI` mais pas `RECITS` (dégradée, pas vide : elle retombait sur la phrase du pourquoi). `RECITS.versailles` écrit ce soir, brouillon non validé.
+· **`santaynez`** — a `RECITS` mais pas `POURQUOI`. **Pas un problème réel** : `RECITS` est lu en priorité, `POURQUOI` n'est qu'un repli. Rien touché.
+
+## 🎬 LA VIDÉO DE TAUPŌ REFAITE
+
+Nouveau `.mov` envoyé pour remplacer l'ancienne vidéo d'arrivée. Même traitement que Flyinge : HEVC → H.264, redimensionnée à 720 px de large, muette. **Filigrane « Ai » effacé proprement cette fois** — fond uni (ciel) sur tout le clip, contrairement à Flyinge, testé image par image sur les cinq plans.
+
+🔴 **Point de contenu signalé et accepté tel quel** : le plan central du clip montre la cavalière avec bombe, bride et rênes, sautant un obstacle coloré en carrière — alors que le chapitre Taupō enseigne justement le travail **en liberté** (sans selle ni bride), et que le prompt des cartes postales l'interdit explicitement pour cette ville. Signalé à Blandine, qui a tranché : *« Oui garde là j'en ai marre de le refaire »*. **Ne pas revenir dessus sans qu'elle le redemande.**
+
+## 🔴 CE QUI RESTE OUVERT
+
+1. **Les 4 `ref` de Taupō** (`equilibre`, `voix`, `confiance`, `recompenser`) — cherchées dans `cours.js` et `poney.js` en tout début de session, **introuvables dans les deux**. Jamais retrouvées depuis. Soit elles sont à créer, soit elles vivent dans un fichier jamais ouvert ce soir.
+
+2. **Le bug premium** — Blandine a signalé Linguae ne reconnaissant plus l'abonnement. Le code vérifié (`estPremium()`, le pont Supabase) est déjà correctement patché pour le bug d'avion du 16/08 — rien de cassé trouvé côté client. **Demandé à Blandine de vérifier sa ligne dans `abonnements_premium` (statut actif, date non expirée)** — sans réponse à ce jour. Si la base elle-même est fausse, le code n'y peut rien.
+
+3. **Les images manquantes** — confirmées par capture d'écran de Blandine : **Taupō, Versailles, Wellington**, et une ville en position 19 (probablement Jerez). **Flyinge** : certaine, toute neuve. ⚠️ **Au-delà de cette liste, aucune affirmation faite** — le domaine bloque l'accès automatisé (vérifié ce soir), et la règle du SUIVI est claire : « dire "je ne l'ai pas" et non "il manque" ». Pas d'inventaire au-delà de ce que Blandine a montré.
+
+4. **`lingo-controle.html` / `lingo-controle-images.html`** — outils mentionnés dans le SUIVI (interrogent le site en ligne lui-même, mesurent chaque fichier, disent ce qui existe contre ce que le code appelle) mais **jamais envoyés dans cette conversation**. Exactement l'outil qu'il faudrait pour sortir du point 3 sans deviner. À demander en priorité à la prochaine session si l'inventaire des images doit avancer.
+
+5. **Les trois images « sellerie »** (cheval sautant, cadre bois, trois angles) — reçues, leur usage clarifié (sellerie, pas objet de collection), **rien fait avec encore**.
+
+6. **Les deux fichiers de réserve** (`dressage-reserve.js` : 25 concepts sur deux leçons ; `materiel-reserve.js` : 10 concepts) — sans ville, en attente comme convenu.
+
+7. **Textes brouillons non validés par Blandine**, tous signalés en commentaire dans le code : `ACCUEIL_CHAP.badminton`, `ACCUEIL_CHAP.flyinge`, `RECITS`/`POURQUOI` de `fontainebleau`, `flyinge`, `burghley`, `versailles`.
+
+## ✅ FICHIERS LIVRÉS CE SOIR (LOT COMPLET)
+
+`lingo.html` · `sw-linguae.js` (v7) · `hype-lingo-lex-wellington.js` · `hype-lingo-lex-aachen.js` · `hype-lingo-lex-badminton.js` · `hype-lingo-lex-oliva.js` · `hype-lingo-lex-rome.js` · `hype-lingo-lex-concours-reserve.js` · `hype-lingo-lex-connemara.js` · `hype-lingo-lex-jeunes.js` · `hype-lingo-lex-flyinge.js` · `hype-lingo-lex-windsor.js` · `hype-lingo-lex-versailles.js` · `hype-lingo-lex-dressage-reserve.js` · `hype-lingo-lex-walsall.js` · `hype-lingo-lex-vejer.js` · `hype-lingo-lex-materiel-reserve.js` · `hype-lingo-lex-cours.js` (brief Aberystwyth) · `arrivee-flyinge.mp4` · `arrivee-taupo.mp4`
+
+Tout vérifié par `node --check` avant chaque livraison. Comptages (concepts/phrases/dialogue) vérifiés contre l'original à chaque découpage.
+
+---
+
 # 🧱 DÉCOUPAGE UN-FICHIER-PAR-VILLE — 18/08/2026, session du soir
 
 **Chantier annoncé dans la passation, commencé le soir même** : *« c'est un vrai bordel, je n'arrête pas de le dire »*. Deux chapitres partagés entre plusieurs villes (`obstacle`, `concours`) découpés en six fichiers, un par ville, plus une réserve.

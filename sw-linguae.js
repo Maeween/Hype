@@ -68,7 +68,7 @@
    déclenche le ménage des anciennes versions.
    ================================================================== */
 
-var CACHE = "linguae-v7";   /* 🟥 v7 le 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE, dressage + materiel
+var CACHE = "linguae-v8";   /* 🟥 v7 le 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE, dressage + materiel
                                -> walsall, vejer, materiel-reserve, windsor, versailles,
                                dressage-reserve. TOUTES LES VILLES ONT DESORMAIS UN FICHIER ET UN
                                SEUL.
@@ -153,6 +153,10 @@ var SOCLE_JS = [
      Ces deux fichiers sont RETIRES ci-dessus. Toutes les villes ont
      desormais un fichier et un seul. */
   "hype-lingo-lex-walsall.js", "hype-lingo-lex-vejer.js", "hype-lingo-lex-materiel-reserve.js",
+  /* 🟥 19/08 : BARCELONE, 37e ville — « Voyager avec son cheval ».
+     ⚠️ `pansage-reserve.js` et les autres reserves ne sont PAS ici : aucune
+     ville ne les reclame, ils n'ont rien a faire dans le socle hors ligne. */
+  "hype-lingo-lex-barcelone.js",
   "hype-lingo-lex-windsor.js", "hype-lingo-lex-versailles.js", "hype-lingo-lex-dressage-reserve.js"
 ];
 
