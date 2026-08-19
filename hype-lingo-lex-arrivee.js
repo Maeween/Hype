@@ -459,7 +459,7 @@ window.HYPE_LINGO_LEX.arrivee = {
 
   phrases: [
 
-  { ref:"ph-reserver-demain", lecon:1,
+  { ref:"ph-reserver-demain", lecon:1, mots:["reserver"],
       fr:"Je voudrais réserver un cours.",
       en:"I would like to book a lesson.",
       es:"Quisiera reservar una clase.",
@@ -467,7 +467,7 @@ window.HYPE_LINGO_LEX.arrivee = {
       de:"Ich möchte eine Reitstunde buchen.",
       ja:"レッスン を 予約 し たい です。" },
 
-  { ref:"ph-je-debute", lecon:1,
+  { ref:"ph-je-debute", lecon:1, mots:["cheval-calme", "debutant"],
       fr:"Vous avez un cheval très calme ?",
       en:"Do you have a very quiet horse ?",
       es:"¿ Tiene un caballo muy tranquilo ?",
@@ -475,7 +475,7 @@ window.HYPE_LINGO_LEX.arrivee = {
       de:"Haben Sie ein ganz braves Pferd ?",
       ja:"とても おとなしい 馬 は い ます か ?" },
 
-  { ref:"ph-bombe-tarif", lecon:1,
+  { ref:"ph-bombe-tarif", lecon:1, mots:["bombe-fournie"],
       fr:"La bombe est fournie ?",
       en:"Is a hat provided ?",
       es:"¿ Incluyen el casco ?",
@@ -483,7 +483,7 @@ window.HYPE_LINGO_LEX.arrivee = {
       de:"Ist ein Helm dabei ?",
       ja:"ヘルメット は 借り られ ます か ?" },
 
-  { ref:"ph-groupe-debutants", lecon:1,
+  { ref:"ph-groupe-debutants", lecon:1, mots:["le-groupe", "debutant"],
       fr:"Nous sommes quatre, deux débutants.",
       en:"There are four of us, two beginners.",
       es:"Somos cuatro, dos principiantes.",
@@ -491,7 +491,7 @@ window.HYPE_LINGO_LEX.arrivee = {
       de:"Wir sind vier, zwei Anfänger.",
       ja:"四人 です。 二人 は 初心者 です。" },
 
-  { ref:"ph-derriere", lecon:2,
+  { ref:"ph-derriere", lecon:2, mots:["jamais-derriere", "passer-devant"],
       fr:"Ne passe pas derrière lui, passe devant.",
       en:"Don't walk behind him, go round the front.",
       es:"No pases por detrás, pasa por delante.",
@@ -499,7 +499,7 @@ window.HYPE_LINGO_LEX.arrivee = {
       de:"Geh nicht hinter ihm vorbei, geh vorne herum.",
       ja:"後ろ を 通ら ないで、 前 を 通っ て。" },
 
-  { ref:"ph-longe", lecon:2,
+  { ref:"ph-longe", lecon:2, mots:["longe-main"],
       fr:"La longe, jamais autour de la main.",
       en:"Never wrap it round your hand.",
       es:"Nunca alrededor de la mano.",
@@ -507,7 +507,7 @@ window.HYPE_LINGO_LEX.arrivee = {
       de:"Nie um die Hand wickeln.",
       ja:"引き綱 は 手 に 巻か ない で。" },
 
-  { ref:"ph-ca-va", lecon:2,
+  { ref:"ph-ca-va", lecon:2, mots:["chute-bouge-pas"],
       fr:"Ne bouge pas, j'attrape le cheval.",
       en:"Don't move — I'll catch the horse.",
       es:"No te muevas, cojo el caballo.",
@@ -523,10 +523,12 @@ window.HYPE_LINGO_LEX.arrivee = {
      les sept anciennes sont intactes, avec leurs `ref` d'origine.
      Total : 7 + 19 = 26 phrases, et LES 26 CONCEPTS ENSEIGNÉS À LA BAULE
      sont désormais couverts au moins une fois.
-     ⚠️ Contrairement aux sept anciennes, ces phrases déclarent leurs
-     `mots`. C'est voulu : les anciennes ont `mots:[]` et ne pointent vers
-     aucun concept — les laisser telles quelles évite de toucher à ce qui
-     marche, mais la différence de traitement est à trancher un jour.
+     🟢 19/08, dans la foulée : LES SEPT ANCIENNES ONT REÇU LEURS `mots`.
+     Elles avaient `mots:[]` et ne pointaient vers aucun concept — sept
+     notions n'étaient donc couvertes que par le texte, jamais déclarées.
+     Seuls les `mots` ont été ajoutés : aucun texte, aucune `ref`, aucune
+     traduction n'a bougé. Les 26 concepts de La Baule sont maintenant
+     tous rattachés à au moins une phrase.
      ⚠️ TRADUCTIONS ES/IT/DE/JA ÉCRITES PAR CLAUDE, JAMAIS RELUES PAR UN
      NATIF. Les FR et EN sont ceux du brief de Blandine, mot pour mot.
      Le japonais suit la segmentation par espaces déjà en usage ici. */
