@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT + FUSION DES BASES CLUBS + LES CLUBS HABITÉS EN OR) — md5 `61ea26f5d9206b287e997b8bdf76b430`, 9 241 249 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 147 · LE ZOOM iOS SUR TOUS LES CHAMPS + LE PANNEAU DES ORIGINES) — md5 `a0166eb0ed1599a39ca2d7cab734007a`, 9 247 984 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -59,6 +59,89 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 ⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
 
 ⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 147 — 20/08/2026 (fin d'après-midi) · LE ZOOM iOS SUR TOUS LES CHAMPS + LE PANNEAU DES ORIGINES
+
+**Base** : `index.html` md5 `1c2af2d5bc2dddb80ae9556b177bc24d` (sortie de la 146, codée sur une autre page), 9 245 221 o. Livré en `be987b2c299b7af5fec1fba8f9110c9e`, 9 245 725 o. Aucun fichier compagnon touché.
+
+**Vérification d'entrée faite** : les neuf correctifs des sessions 144 et 145 sont tous présents dans l'index reçu (`motifEcurie`, bulles mémorisées à l'affichage, `hype-clubs-db-4` déclaré, clubs habités en or, garde-fou `!c.v`, `getSession` à la sortie du globe, boutons sociaux retirés, bascule lisible, champs de connexion à 16 px). Rien n'a été perdu par le travail parallèle.
+
+### Suite directe de la 145 — les six champs restants
+
+La 145 a corrigé le zoom iOS sur les **champs de connexion** (14,5 → 16 px) et recensé **six autres champs de saisie sous le seuil**, laissés en attente de validation. **Blandine a validé.**
+
+| Ligne (index 146) | Type | Avant | Après |
+|---|---|---|---|
+| 36882 | texte — « Comment tu t'appelles ? » | 15 | **16** |
+| 40597 | texte | 13 | **16** |
+| 42300 | zone de texte | 14 | **16** |
+| 43430 | texte — barre de saisie Hey Baby | 14 | **16** |
+| 44686 | texte — code parrainage `HYPE-XXXXXX` | 13 | **16** |
+| 45331 | texte — nom d'un ami | 14 | **16** |
+
+**Rappel du mécanisme** : iOS Safari zoome automatiquement sur tout champ dont la police calculée est **inférieure à 16 px**, et ne dézoome jamais seul. L'app reste zoomée, donc décalée et coupée, jusqu'à un pincement manuel. 16 px est le seuil exact.
+
+**Les deux cas sensibles ont été vérifiés AVANT de poser**, pas après :
+- Le code `HYPE-XXXXXX` (44686) et la barre Hey Baby (43430) sont en `flex: 1` avec `minWidth: 0` : ils s'adaptent à la place disponible, **aucun débordement possible** malgré le texte plus grand.
+- La zone de texte (42300) n'a pas de hauteur figée.
+
+**Comptage après correction : 0 champ de saisie sous 16 px dans tout l'index** (hors iframes, qui n'ont pas de champ).
+
+**À l'écran : +** rien · **−** rien. Le texte tapé dans ces six champs est légèrement plus grand ; l'écart se voit surtout sur les deux qui étaient à 13 px.
+
+**Contrôles** : `node --check` sur les 16 blocs inline · les deux iframes désescapées et leur JS interne vérifié (GLOBE_HTML_HYPE 3 blocs, FRANCE_MAP_HTML 1 bloc) · marqueurs de scroll inchangés (clip 2, verrou 5, puits 4, zéro `overscroll-behavior:none` sur body).
+
+### 🔴 LE PANNEAU DES ORIGINES — CONTENU INATTEIGNABLE, CORRIGÉ
+
+Signalé par Blandine : *« c'est pas clair les grands-parents, en plus ça demande les infos que du père et pas sur la mère, et après ça veut pas scroll vers le bas pour fermer »*, puis : *« en fait c'est l'arrière qui scroll »* et *« c'est un peu le bordel les origines, normalement ça tient largement »*.
+
+**Les champs côté mère existaient bien.** Les quatre (`pp`, `pm`, `mp`, `mm`) sont présents depuis la 146. Le problème n'était pas leur absence : **ils étaient hors d'atteinte**.
+
+**Cause, vérifiée sur l'enregistrement d'écran fourni** : entre la première et la dernière image, le panneau est **rigoureusement identique** — seule la photo du cheval, derrière, a défilé. Le panneau n'avait **ni `maxHeight` ni `overflowY`** : le doigt le traversait et allait chercher la fiche en dessous. « Mère de la mère » et les boutons Annuler / Enregistrer étaient sous le bord de l'écran, inaccessibles.
+
+Avec seulement père et mère, ça tenait. **Les quatre champs ajoutés en 146 ont fait déborder le panneau, sans que personne ne le voie.** Le panneau des tags du même fichier (ligne ~32597) avait déjà `maxHeight: 80vh` + `overflowY: auto` — c'est exactement le réglage qui manquait ici.
+
+**Correctifs :**
+1. **Panneau défilable** : `maxHeight: calc(100dvh - env(safe-area-inset-top) - 110px)`, `overflowY: auto`, `WebkitOverflowScrolling: touch`, `overscrollBehavior: contain` (le geste ne fuit plus vers la fiche derrière).
+2. **`scrollTop = 0` à l'ouverture**, posé sur la `ref` — règle scrollTop du 10/08 appliquée d'office.
+3. **Panneau élargi** : 88 % / 360 px max → **92 % / 420 px max**. Il était étroit au point de forcer une colonne unique.
+4. **Grands-parents sur DEUX COLONNES**, groupés par côté, avec **le nom du parent en intertitre** : « Du côté de Quarnac du mesnil » puis Père / Mère côte à côte, « Du côté d'Orlena du vert vallon Z » puis Père / Mère. Les libellés passent de « Père du père », « Mère du père », « Père de la mère », « Mère de la mère » — quatre formules quasi identiques — à un simple **Père / Mère** sous un titre qui dit de qui on parle.
+
+**Hauteur du panneau : 13 lignes verticales → 11**, et surtout la partie grands-parents devient lisible d'un coup d'œil. Si le parent n'est pas encore saisi, l'intertitre retombe sur « Côté père » / « Côté mère ». Traduit en 6 langues.
+
+**À l'écran : +** rien de nouveau · **−** rien ne disparaît. Le panneau devient défilable, plus large, et les quatre grands-parents s'affichent en deux colonnes au lieu de quatre lignes.
+
+### 🔴 INCIDENT — PAGE BLANCHE EN LIGNE, FAUSSE ALERTE
+
+Blandine, 17 h 42 : *« j'arrive plus à ouvrir Hype comme ça depuis plein de secondes »*, capture d'une page **entièrement blanche**.
+
+**Diagnostic immédiat, et à retenir : une page BLANCHE signifie que le fichier n'est pas arrivé, PAS que le code est cassé.** Le fond de Hype est `#14161a` (sombre) et le HTML contient un `<div id="boot">Hype — chargement…</div>`. Si l'index s'était chargé, l'écran serait noir avec ce texte. **Du blanc = rien n'a été servi.** Inutile de chercher dans le code.
+
+Cause réelle : **le déploiement Netlify n'était pas terminé.** Résolu seul.
+
+Pistes examinées et écartées en chemin :
+- `hype-clubs-db-4.js` absent du serveur : un `<script src>` manquant échoue en silence, ça ne bloque rien.
+- Le service worker : `sw.js` (version du 26/07) **n'installe aucun gestionnaire `fetch`**, vide ses caches et se désinscrit. Il ne peut rien bloquer — il existe précisément parce qu'une version antérieure (la 5, avec abandon des requêtes à 7 secondes et repli sur un cache vidé) avait déjà produit une page blanche.
+
+⚠️ **Blandine signale avoir « plein de sw en mémoire ».** Si un jour une page blanche persiste, **le premier réflexe est de vérifier quel `sw.js` est réellement en ligne** : s'il contient un `addEventListener("fetch")` ou un délai de 7 secondes, c'est une ancienne version et elle reproduira le bug de juillet.
+
+### 🟡 EN COURS AU MOMENT DE L'INCIDENT — LES CLUBS HOMONYMES
+
+Travail de mesure interrompu par la page blanche, à reprendre.
+
+**Problème** : 38 noms de clubs sont portés par plusieurs établissements, **172 clubs concernés**, dont **78 nommés exactement « Centre Équestre »**. Le rapprochement s'arrête au premier trouvé : une cavalière qui déclare ce nom est rattachée à un club **au hasard**, sans aucun signal. Actif aujourd'hui.
+
+**Proposition de Blandine** : *« quand ils mettent centre équestre, sinon faut les obliger à mettre la ville »*.
+
+⚠️ **Mesure faite : ça ne marcherait pas.** Sur les 172 clubs ambigus, **seuls 22 ont une ville renseignée (13 %)** — et **4 sur 78** pour les « Centre Équestre ». On aurait la ville de la cavalière d'un côté et **rien à quoi la comparer** de l'autre.
+
+⚠️ **Précision essentielle apportée par Blandine** : *« on ne monte pas forcément où on habite »*. Le champ `profiles.ville` est le **domicile**, pas le lieu où elle monte. **Ne JAMAIS croiser les deux** : une Parisienne montant à Itteville serait rattachée au mauvais club sans que personne ne le voie.
+
+**Voie retenue, à confirmer** : ne rien demander de plus, mais **montrer la différence**. Quand une saisie correspond à plusieurs clubs, afficher la liste avec leur position et laisser choisir. Les 172 clubs ambigus ont **tous** leurs coordonnées (département renseigné sur 21 seulement, mais `lat`/`lon` sur 172/172). Les 78 « Centre Équestre » sont réellement dispersés — plus proche voisin à **1,9 km**, emprise 43,1 à 50,8 de latitude — donc parfaitement distinguables dès qu'une position s'affiche.
+
+**Décision en attente de Blandine** : afficher le **département** (déduit des coordonnées par une grille de bornes, aucune permission requise) ou la **distance** (plus parlant, mais exige la géolocalisation de la cavalière). Recommandation de Claude : le département.
 
 ---
 
