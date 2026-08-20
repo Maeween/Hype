@@ -1058,9 +1058,17 @@ async function hypeClubsHabites() {
       var k = clefClubG(c.nom); if (k && !parClef[k]) parClef[k] = c;
       var y = noyauEcurie(c.nom); if (y && !parNoyau[y]) parNoyau[y] = c;
     });
+    /* 20/08 : ecritures declarees par les cavalieres qui ne se rapprochent d'aucun nom de club
+       par les regles normales. Correspondances confirmees par Blandine, une par une.
+       Cle = ce qui est tape, valeur = le nom du club dans HYPE_CLUBS. */
+    var HYPE_ALIAS_CLUBS = {
+      "sep": "Societe d'Equitation de Paris (SEP)",
+      "ecurie des lichere": "\u00c9curies des Lich\u00e8res"
+    };
     var vus = {}, sortie = [];
     Object.keys(compte).forEach(function (nom) {
-      var c = parClef[clefClubG(nom)] || parNoyau[noyauEcurie(nom)];
+      var vise = HYPE_ALIAS_CLUBS[clefClubG(nom)] || nom;
+      var c = parClef[clefClubG(vise)] || parNoyau[noyauEcurie(vise)];
       if (!c || typeof c.lat !== "number" || typeof c.lon !== "number") return;
       var cle = c.lat.toFixed(4) + "," + c.lon.toFixed(4);
       if (vus[cle]) { vus[cle].mem += compte[nom]; return; }
