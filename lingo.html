@@ -1855,10 +1855,16 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    les IGNORAIT, et Apy s'affichait en pleine largeur sur la présentation
    (« un peu gros comparé au reste », Blandine — c'était surtout illégal).
    Sorties du bloc, elles s'appliquent : 64 px, comme dessiné. */
+/* 🟥 20/08 v65 : le passeport retrouve SON ENCART (constat de Blandine :
+   posé nu, il semblait légendé par « le voyage continue au-delà des
+   mots », qui appartient aux portes Hype). Même famille que les cartes
+   de la page, et 34px d'air avant la phrase des portes. */
 #inPass{display:flex;align-items:center;gap:14px;justify-content:center;
-  width:100%;margin:14px 0 0;padding:10px 6px;border:0;background:none;cursor:pointer}
+  width:100%;margin:22px 0 34px;padding:14px 16px;cursor:pointer;
+  border:1px solid rgba(90,200,220,.16);border-radius:18px;
+  background:rgba(10,16,20,.42)}
 #inPass img{height:64px;width:auto;flex:0 0 auto}
-#inVoyage{display:block;width:100%;margin:26px 0 0;padding:0;border:0;background:none;cursor:pointer;position:relative}
+#inVoyage{display:block;width:100%;margin:30px 0 0;padding:0;border:0;background:none;cursor:pointer;position:relative}
 #inVoyage img{display:block;width:100%;height:auto;border-radius:18px}
 #inVoyageT{position:absolute;left:18px;bottom:14px;font-family:'Cinzel',serif;
   font-size:15px;letter-spacing:.6px;color:#F4F7FA;text-shadow:0 1px 8px rgba(0,0,0,.75)}
@@ -2333,7 +2339,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <div class="pt large"><b data-t="pt4t">L'essentiel en cas d'urgence</b><i data-t="pt4d">Kildare pour le cheval, Édimbourg pour le cavalier. Ces mots sont offerts, partout.</i>
         <span class="ptOu" id="inOuKildare" data-t="ouKildare">S'apprend à Kildare · Irlande ›</span></div>
     </div>
-    <button id="inSuite" data-t="choisirDest">Choisir ma destination</button>
+    <!-- 🟥 20/08 v66 : le BOUTON « Choisir ma destination » est RETIRÉ DE
+         L'ÉCRAN (décision de Blandine : il faisait doublon avec l'encart
+         « Continue ton voyage », même geste, deux invitations — « même moi
+         je m'y perds »). L'encart devient LE grand geste de la page, et
+         son libellé passe à « Choisis ta destination ».
+         ⚠️ Le bouton reste dans la page en display:none : le code le
+         clique (S("inSuite").click()) et d'anciens chemins le visent.
+         NE PAS le supprimer, seulement le cacher. -->
+    <button id="inSuite" data-t="choisirDest" style="display:none">Choisir ma destination</button>
     <!-- 🟥 19/08 v60 : le passeport, aussi sur la présentation — demande de
          Blandine (« on en mette un plus visible sur cette page, en dessous
          de choisir ma destination »). Même Apy, mêmes libellés, même
@@ -3735,7 +3749,12 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=64";   /* 🟥 v64 (20/08) : l'encart « Continue ton voyage » (apy-voyage.webp)
+var VER = "?v=66";   /* 🟥 v66 (20/08) : le bouton « Choisir ma destination » retire de
+                        l'ecran (doublon avec l'encart) — l'encart devient LE geste,
+                        libelle « Choisis ta destination » (6 langues).
+                        v65 (20/08) : le passeport de la presentation retrouve son encart
+                        (cadre + fond verre) et 34px d'air avant la phrase des portes.
+                        v64 (20/08) : l'encart « Continue ton voyage » (apy-voyage.webp)
                         sur la presentation, au-dessus du passeport — placement de
                         Blandine. Tap -> inSuite.
                         v63 (20/08) : Apy passe a la version BLEU PROFOND retrouvee par
@@ -8238,8 +8257,8 @@ var UI = {
  pwCta:{fr:"Découvrir l'abonnement", en:"See the subscription", es:"Ver la suscripción",
    it:"Scopri l'abbonamento", de:"Zum Abo", ja:"プランを見る"},
  /* 🟥 19/08 : les deux lignes du passeport du paywall. */
- continueVoyage:{fr:"Continue ton voyage", en:"Continue your journey", es:"Continúa tu viaje",
-   it:"Continua il tuo viaggio", de:"Setz deine Reise fort", ja:"旅を続けよう"},
+ continueVoyage:{fr:"Choisis ta destination", en:"Choose your destination", es:"Elige tu destino",
+   it:"Scegli la tua destinazione", de:"Wähl dein Reiseziel", ja:"行き先を選ぼう"},
  pwOuvre:{fr:"Ouverture de Hype…", en:"Opening Hype…", es:"Abriendo Hype…",
    it:"Apertura di Hype…", de:"Hype wird geöffnet…", ja:"Hypeを開いています…"},
  pwDeja:{fr:"Déjà du voyage ?", en:"Already travelling?", es:"¿Ya eres del viaje?",
