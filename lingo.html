@@ -1849,11 +1849,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .pwPassL1{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.4px;color:#F4F7FA}
 .pwPassL2{font-family:'Montserrat',sans-serif;font-style:italic;font-size:12.5px;
   color:var(--turquoise, #20D9F5);opacity:.92}
-@keyframes pwPassEntre{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}
+@keyframes pwPassEntre{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+/* 🟥 20/08 v62 — CES DEUX RÈGLES ÉTAIENT TOMBÉES DANS LE @keyframes
+   ci-dessus (une accolade mal comptée à l'insertion v60) : le navigateur
+   les IGNORAIT, et Apy s'affichait en pleine largeur sur la présentation
+   (« un peu gros comparé au reste », Blandine — c'était surtout illégal).
+   Sorties du bloc, elles s'appliquent : 64 px, comme dessiné. */
 #inPass{display:flex;align-items:center;gap:14px;justify-content:center;
   width:100%;margin:14px 0 0;padding:10px 6px;border:0;background:none;cursor:pointer}
 #inPass img{height:64px;width:auto;flex:0 0 auto}
-}
 
 /* la porte du compte (v44, decisions de Blandine du 9 aout) : A turquoise
    et SOUPLE sur « Partir » (proposee une fois, « Plus tard » laisse passer),
@@ -3718,7 +3722,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=61";   /* 🟥 v61 (20/08) : la sync progression reessaie sans `sellerie` si la
+var VER = "?v=62";   /* 🟥 v62 (20/08) : les regles #inPass sorties du @keyframes ou elles
+                        etaient tombees (Apy geante sur la presentation corrigee).
+                        v61 (20/08) : la sync progression reessaie sans `sellerie` si la
                         colonne manque (8 jours de « base muette » soldes), le pont
                         devient window.pontLingua, et l'ecran du compte resynchronise
                         et affiche la verite fraiche (carnet + Premium).
