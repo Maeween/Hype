@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 147 · LE ZOOM iOS SUR TOUS LES CHAMPS + LE PANNEAU DES ORIGINES) — md5 `a0166eb0ed1599a39ca2d7cab734007a`, 9 247 984 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 147 · LE ZOOM iOS SUR TOUS LES CHAMPS + LE PANNEAU DES ORIGINES) — md5 `3c62e010f7438bdae40eed5dc9e28c24`, 9 248 001 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -92,6 +92,28 @@ La 145 a corrigé le zoom iOS sur les **champs de connexion** (14,5 → 16 px) e
 **À l'écran : +** rien · **−** rien. Le texte tapé dans ces six champs est légèrement plus grand ; l'écart se voit surtout sur les deux qui étaient à 13 px.
 
 **Contrôles** : `node --check` sur les 16 blocs inline · les deux iframes désescapées et leur JS interne vérifié (GLOBE_HTML_HYPE 3 blocs, FRANCE_MAP_HTML 1 bloc) · marqueurs de scroll inchangés (clip 2, verrou 5, puits 4, zéro `overscroll-behavior:none` sur body).
+
+### 🟡 ZOOM LIMITÉ À 3 — À L'ESSAI, RÉVERSIBLE EN UN MOT
+
+Blandine : *« dès qu'on zoome tout saute »*, *« il faudrait délimiter jusqu'où on peut zoomer »*.
+
+**Cause du « tout saute »** : l'app positionne ses éléments en **`dvh`** (hauteur de la fenêtre *visible*). Le pincement change cette fenêtre à chaque image, donc tout ce qui est calé en `dvh` se recalcule en continu. L'écran Monde en est plein : `#globe` 58dvh, recherche 69, filtres 86, conteneur 102.
+
+**Livré** : `maximum-scale=3` ajouté à la balise viewport du document principal (une seule occurrence, ligne 1 — les iframes ont leur propre viewport, non touché).
+
+⚠️ **Ce que ça fait et ne fait pas** : ça limite **jusqu'où** on peut zoomer, ça n'empêche **pas** les sauts pendant le pincement sur la plage autorisée. C'est un essai, à juger sur l'app réelle.
+
+⚠️ **Risque d'accessibilité assumé, à surveiller** : `maximum-scale` s'applique aussi au zoom d'agrandissement dont une cavalière malvoyante peut avoir besoin. **3 a été retenu comme compromis** — le zoom volontaire reste confortable, seules les valeurs extrêmes sont coupées. **Ne jamais descendre à 1 ni ajouter `user-scalable=no`** : blocage possible en revue App Store, et Safari récent ignore parfois ces valeurs pour cette raison même. **Réversible : retirer `maximum-scale=3` de la balise.**
+
+### 🔵 LA VRAIE CORRECTION DES SAUTS — ANALYSÉE, NON FAITE
+
+Trois leviers identifiés, présentés à Blandine, aucun engagé :
+1. **Remplacer `dvh` par `svh`** sur les éléments positionnés. `svh` est la hauteur *petite*, elle **ne bouge pas** quand la fenêtre visible change — c'est l'unité faite exactement pour ça. Le globe utilise déjà `34svh` à un endroit.
+   ⚠️ **Contrepartie** : dans Safari ouvert normalement, quand la barre d'adresse se rétracte, `svh` ne suit pas → bande vide en bas. **Mais en app installée (le cas de Blandine et des cavalières), `svh` et `dvh` valent la même chose : aucun effet négatif.**
+2. Poser les positions en **pourcentage d'un conteneur** fixe plutôt qu'en unités de fenêtre. Définitif, plus lourd.
+3. `touch-action` sur les zones sans pincement utile — déjà en place sur le canvas du globe.
+
+**Recommandation de Claude** : commencer par le levier 1 **sur le globe seul**, iframe isolée donc annulable sans toucher au reste. Décision de Blandine en attente.
 
 ### 🔴 LE PANNEAU DES ORIGINES — CONTENU INATTEIGNABLE, CORRIGÉ
 
