@@ -581,8 +581,17 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    ⚠️ IMAGE TEMPORAIRE, a refaire (Blandine, 13/08 : « on verra plus tard
    pour faire mieux »). Le rendu genere se voit sur la vegetation.
 ================================================================== */
+/* 🟥 19/08 v60 — L'AFFICHE NE SE MONTRE PLUS QUE SI ON A BESOIN D'ELLE.
+   Constat de Blandine : « avant même d'avoir le film, on a l'image de
+   fond, celle qui doit le remplacer — j'ai l'affiche un centième de
+   seconde, le film sort ». Elle était posée EN MÊME TEMPS que le film se
+   lançait : démarrage rapide = flash garanti. Désormais opacité 0 par
+   défaut ; elle ne se révèle (fondu .45s) que si le film n'a pas commencé
+   après 350 ms (réseau lent) ou s'il est refusé — les deux cas pour
+   lesquels elle existe. Film rapide : noir → film, sans elle. */
 #ouvAffiche{position:absolute;inset:0;background-size:cover;background-position:center;
- pointer-events:none;z-index:1}
+ pointer-events:none;z-index:1;opacity:0;transition:opacity .45s ease}
+#ouvFilm.attend #ouvAffiche,#ouvFilm.refuse #ouvAffiche{opacity:1}
 #ouvVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
  pointer-events:none;transition:opacity .8s ease;z-index:2}
 #ouvFilm.joue #ouvVid{opacity:1}
@@ -1823,21 +1832,28 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    tapable. Filet or pâle au-dessus : la frontière entre le monde de
    l'achat (doré) et celui du voyageur (turquoise). Apparition lente,
    Design Bible : rien ne clignote. */
+/* 🟥🟥 20/08 v60 — LE GEL DE 22 SECONDES, filmé par Blandine : le paywall
+   restait figé sous ses taps, puis l'écran de compte s'ouvrait d'un coup
+   (le tap attendait le dégel dans la file). CAUSE : `filter:drop-shadow`
+   sur l'image d'Apy À L'INTÉRIEUR du `backdrop-filter:blur(14px)` du
+   paywall — l'empilement fait caler le compositeur WebKit sur iOS. Le
+   halo et l'animation d'entrée sont RETIRÉS. 🟥 RÈGLE : jamais de
+   `filter` sur un enfant d'un calque en `backdrop-filter`. */
 #pwPass{display:flex;align-items:center;gap:14px;justify-content:center;
   width:100%;margin:18px 0 0;padding:16px 6px 2px;border:0;background:none;cursor:pointer;
-  border-top:1px solid rgba(212,175,55,.16);
-  animation:pwPassEntre .6s ease .15s both}
-#pwPassImg{height:76px;width:auto;flex:0 0 auto;
-  filter:drop-shadow(0 4px 14px rgba(14,75,94,.45))}
-.paApy{display:block;height:92px;width:auto;margin:2px auto 8px;
-  filter:drop-shadow(0 6px 18px rgba(32,217,245,.22));
-  animation:pwPassEntre .6s ease .1s both}
+  border-top:1px solid rgba(212,175,55,.16)}
+#pwPassImg{height:76px;width:auto;flex:0 0 auto}
+.paApy{display:block;height:92px;width:auto;margin:2px auto 8px}
 
 .pwPassTxt{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left}
 .pwPassL1{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.4px;color:#F4F7FA}
 .pwPassL2{font-family:'Montserrat',sans-serif;font-style:italic;font-size:12.5px;
   color:var(--turquoise, #20D9F5);opacity:.92}
-@keyframes pwPassEntre{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes pwPassEntre{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}
+#inPass{display:flex;align-items:center;gap:14px;justify-content:center;
+  width:100%;margin:14px 0 0;padding:10px 6px;border:0;background:none;cursor:pointer}
+#inPass img{height:64px;width:auto;flex:0 0 auto}
+}
 
 /* la porte du compte (v44, decisions de Blandine du 9 aout) : A turquoise
    et SOUPLE sur « Partir » (proposee une fois, « Plus tard » laisse passer),
@@ -2310,6 +2326,18 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
         <span class="ptOu" id="inOuKildare" data-t="ouKildare">S'apprend à Kildare · Irlande ›</span></div>
     </div>
     <button id="inSuite" data-t="choisirDest">Choisir ma destination</button>
+    <!-- 🟥 19/08 v60 : le passeport, aussi sur la présentation — demande de
+         Blandine (« on en mette un plus visible sur cette page, en dessous
+         de choisir ma destination »). Même Apy, mêmes libellés, même
+         destination que le paywall : une mascotte, trois portes, une idée.
+         Tap → ouvrirCompte(), le compte (z70) passe devant l'intro (z45). -->
+    <button id="inPass" type="button">
+      <img src="apy-passeport.webp?i=2" alt="" onerror="this.style.display='none'">
+      <span class="pwPassTxt">
+        <span class="pwPassL1" data-t="pwDeja">Déjà du voyage ?</span>
+        <span class="pwPassL2" data-t="pwPasseport">Présente ton passeport</span>
+      </span>
+    </button>
     <!-- v56 : la porte vers Hype (maquettes validees par Blandine). -->
     <p id="inPassage" data-t="passageHype">Et quand tu veux, le voyage continue au-delà des mots.</p>
     <div id="inPortes">
@@ -3673,7 +3701,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=59";   /* 🟥 v59 (19/08) : le Premium ne se retrograde PLUS sur absence de
+var VER = "?v=60";   /* 🟥 v60 (19/08-20/08) : les flashs de l'ouverture (affiche en vrai
+                        secours, sortie sans re-flash, prechauffage des images du
+                        demarrage), l'encart passeport sur la presentation, et les
+                        boutons du paywall en delegation avec retour visuel.
+                        v59 (19/08) : le Premium ne se retrograde PLUS sur absence de
                         session (paywall fantome corrige) + le pont se relance au
                         retour du reseau et au reveil de l'app.
                         v58 (19/08) : Apy passe a la pose « Lecture » (planche spectrale,
@@ -8160,6 +8192,8 @@ var UI = {
  pwCta:{fr:"Découvrir l'abonnement", en:"See the subscription", es:"Ver la suscripción",
    it:"Scopri l'abbonamento", de:"Zum Abo", ja:"プランを見る"},
  /* 🟥 19/08 : les deux lignes du passeport du paywall. */
+ pwOuvre:{fr:"Ouverture de Hype…", en:"Opening Hype…", es:"Abriendo Hype…",
+   it:"Apertura di Hype…", de:"Hype wird geöffnet…", ja:"Hypeを開いています…"},
  pwDeja:{fr:"Déjà du voyage ?", en:"Already travelling?", es:"¿Ya eres del viaje?",
    it:"Già in viaggio?", de:"Schon auf Reisen?", ja:"もう旅の仲間？"},
  pwPasseport:{fr:"Présente ton passeport", en:"Show your passport", es:"Presenta tu pasaporte",
@@ -8620,17 +8654,28 @@ function villeAutorisee(refVille){
 }
 function ouvrirPaywall(){ S("paywall").classList.add("on"); }
 function fermerPaywall(){ S("paywall").classList.remove("on"); }
-S("pwTard").addEventListener("click", fermerPaywall);
-/* 🟥 19/08 : le passeport ferme le paywall PUIS ouvre l'écran de compte —
-   dans cet ordre, pour que fermerCompte() + remonterSiVide() redéposent
-   la cavalière sur le carnet et jamais sur un paywall orphelin. Après
-   connexion, elle retouche sa ville : si le Premium est reconnu
-   (estPremium()), la ville s'ouvre. */
-S("pwPass").addEventListener("click", function(){ fermerPaywall(); ouvrirCompte(); });
-S("pwAller").addEventListener("click", function(){
-  /* la page d'abonnement Hype : meme racine Netlify, porte deja cablee
-     dans CIBLE_DIRECTE (cle premium). */
-  location.href="./index.html#premium";
+/* 🟥🟥 19/08, v60 — LES TROIS BOUTONS PASSENT EN DÉLÉGATION, sur constat
+   de Blandine en ligne : « rien ne marche sur les liens du passeport,
+   rien n'est branché ou tout est figé ». Le câblage individuel était
+   pourtant sain (vérifié : ordre des blocs, ids uniques, aucune erreur
+   de chargement). La délégation retire TOUTE dépendance à l'ordre
+   d'exécution : un seul écouteur sur #paywall, posé ici, attrape le tap
+   où qu'il tombe dans la boîte — y compris sur l'image d'Apy.
+   ⚠️ « Découvrir l'abonnement » navigue vers index.html : 9,2 Mo. Sur
+   réseau lent, iOS plein écran n'affiche AUCUN indicateur — l'écran
+   semblait mort pendant le téléchargement. Le bouton se fige donc et
+   annonce « Ouverture de Hype… » AVANT de partir : la navigation n'est
+   plus jamais muette. */
+S("paywall").addEventListener("click", function(ev){
+  var c = ev.target && ev.target.closest ? ev.target.closest("#pwAller,#pwTard,#pwPass") : null;
+  if(!c) return;
+  ev.preventDefault();
+  if(c.id==="pwTard"){ fermerPaywall(); return; }
+  if(c.id==="pwPass"){ fermerPaywall(); ouvrirCompte(); return; }
+  /* pwAller */
+  c.disabled = true;
+  c.textContent = T("pwOuvre");
+  setTimeout(function(){ location.href="./index.html#premium"; }, 60);
 });
 /* ==================================================================
    LA PORTE DU COMPTE (v44, decisions de Blandine du 9 aout).
@@ -9286,6 +9331,13 @@ function versCompteDepuisPorte(){
   S("porteB").classList.remove("on");
   versConnexion();
 }
+/* 🟥 v60 : le passeport de la présentation — délégation, comme le paywall. */
+S("intro").addEventListener("click", function(ev){
+  var c = ev.target && ev.target.closest ? ev.target.closest("#inPass") : null;
+  if(!c) return;
+  ev.preventDefault();
+  ouvrirCompte();
+});
 S("paCta").addEventListener("click", versCompteDepuisPorte);
 S("paTard").addEventListener("click", function(){
   try{ localStorage.setItem("hype_lingua_passeport_vu","1"); }catch(e){}
@@ -11709,6 +11761,14 @@ function lancerFilm(){
      varies et le rognage y couterait de l'information. */
   S("ouvFilm").classList.add("joue");
   S("ouverture").classList.add("joue");
+  /* 🟥 v60 : l'affiche n'apparaît que si le film se fait attendre. Le
+     drapeau `attend` tombe dès la première image jouée (evt `playing`,
+     déjà écouté plus bas). 350 ms : sous ce délai l'œil ne réclame rien. */
+  S("ouvFilm").classList.remove("attend");
+  if(window.__filmAttente) clearTimeout(window.__filmAttente);
+  window.__filmAttente = setTimeout(function(){
+    if(!S("ouvFilm").classList.contains("fini")) S("ouvFilm").classList.add("attend");
+  }, 350);
   var j=v.play();
   if(j&&j.catch) j.catch(function(){ S("ouvFilm").classList.add("refuse"); });
   /* Le film fait 10,1 s mesurees. Le bouton de sortie apparaissait avant
@@ -11724,6 +11784,19 @@ function lancerFilm(){
      fin. Laisse a 10500, il aurait retenu le bouton cinq secondes de trop
      sur un ecran fige. ⚠️ A REGLER A NOUVEAU si le film est remplace. */
   FILM_FILET=setTimeout(function(){ S("ouvFilm").classList.add("fini"); }, 5600);
+
+  /* 🟥 19/08 v60 — LE PRÉCHAUFFAGE : les cinq secondes du film sont du
+     temps mort réseau, on y télécharge EN SILENCE les images des écrans
+     qui suivent. Sans ça, chaque écran « pope » son image à l'arrivée
+     — le stroboscope décrit par Blandine. Les URLs sont EXACTEMENT
+     celles des feuilles de style et du code (requête comprise : une URL
+     qui diffère d'un `?v=` est une entrée de cache différente).
+     Le service worker range tout au passage pour les fois suivantes. */
+  try{
+    ["lingua-langues.webp","lingua-affiche.webp","fond-newmarket.webp",
+     "tour-monde.webp?v=34","fond-lingua.webp","carnet-ferme.webp"+VER,
+     "apy-passeport.webp?i=2"].forEach(function(u){ (new Image()).src = u; });
+  }catch(e){}
 }
 
 (function(){
@@ -11735,7 +11808,10 @@ function lancerFilm(){
   v.addEventListener("error",function(){
     if(S("ouvFilm").classList.contains("joue")) terminerOuverture();
   });
-  v.addEventListener("playing",function(){ S("ouvFilm").classList.remove("refuse"); });
+  v.addEventListener("playing",function(){
+    S("ouvFilm").classList.remove("refuse","attend");
+    if(window.__filmAttente){ clearTimeout(window.__filmAttente); window.__filmAttente=null; }
+  });
   S("ouvRelance").addEventListener("click",function(){
     S("ouvFilm").classList.remove("refuse");
     var j=v.play();
@@ -12080,8 +12156,18 @@ function montrerCarnet(){
 function terminerOuverture(){
   var v=S("ouvVid");
   if(FILM_FILET){ clearTimeout(FILM_FILET); FILM_FILET=null; }
-  try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){}
-  S("ouvFilm").classList.remove("joue","fini","refuse");
+  if(window.__filmAttente){ clearTimeout(window.__filmAttente); window.__filmAttente=null; }
+  /* 🟥 19/08 v60 — LE FLASH DE SORTIE, décrit par Blandine : « il
+     s'arrête, réapparaît une deuxième fois et ressaute aussitôt ».
+     LA CAUSE : on vidait la SOURCE de la vidéo AVANT de retirer les
+     classes. Pendant cette frame, la vidéo devenait transparente et
+     laissait voir l'affiche en dessous — sa « deuxième apparition » —
+     puis le conteneur disparaissait. L'ORDRE EST INVERSÉ : les classes
+     tombent D'ABORD (#ouvFilm repasse en display:none, tout disparaît
+     d'un bloc), la source n'est vidée qu'après, hors écran.
+     🟥 NE PAS remettre le v.pause()/load() avant le retrait des classes. */
+  S("ouvFilm").classList.remove("joue","fini","refuse","attend");
+  setTimeout(function(){ try{ v.pause(); v.removeAttribute("src"); v.load(); }catch(e){} }, 80);
   S("ouverture").classList.remove("joue","parti");
   S("ouverture").scrollTop=0;
   /* v58 : apres le film d'un habitue, la presentation prend le relais.
