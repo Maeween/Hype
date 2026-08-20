@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 148 · LES POINTS ARGENTÉS + LE DÉLAI DE ROTATION DU GLOBE) — md5 `9dc2892f376ee47eebb4a3f9e6955f72`, 9250946 octets. `index.html` SEUL — `hype-stories.js` reste 19bl.**
+**Version actuelle de l'index.html : 21/08/2026 (SESSION 148 · POINTS ARGENTÉS, ÉTAPE 2 : LE POINT OUVRE LES STORIES) — md5 `d1e7b53fdb659659a625d12001886f7b`, 9253573 octets. ⚠️ **DEUX FICHIERS À POUSSER ENSEMBLE** : `hype-stories.js` passe en **19bm** (md5 `5a9ce376b3119c68c32c66ef4426a41c`, 397519 octets) et le `?v=` de l'index suit.**
 
 **Ancienne version (147) — 20/08/2026 (SESSION 147 · LE ZOOM iOS + LE PANNEAU DES ORIGINES + LA LÉGENDE PERDUE) — md5 `662196b17552c4d6236cec2a63e6731d`, 9 248 000 octets. ⚠️ `hype-stories.js` MODIFIÉ (VERSION 19bl, md5 `c4b4f8fe5513bea8b682430ee8ad19f2`, 395 641 o) : les DEUX se poussent ensemble. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
@@ -107,9 +107,29 @@ Réponse au constat de la 147 (« rien n'est testé avant la mise en ligne »). 
 
 **« Les plus populaires » n'est pas à jour** : des clubs à 1 membre passent devant Écurie Feinn qui en a 13. Le tri se fait bien sur `mem`. **Cause inconnue, aucune hypothèse inventée.**
 
-### ⚠️ CE QUI EST CODÉ ET NON LIVRÉ
+### ✅ L'ÉTAPE 2 — LE POINT ARGENTÉ OUVRE LES STORIES DU LIEU
 
-**L'étape 2** (le point argenté ouvre les stories du lieu) est écrite et testée, **jamais poussée** : `hsStoriesDuLieu` + `hsMemeLieu` + export de `VisionneuseStories` dans `hype-stories.js` (19bm), tap dans l'iframe, visionneuse dans `EcranMonde`. Fichier de travail conservé. **Elle attend que Blandine puisse voir un point.**
+Demande de Blandine : *« un point qu'on ne peut pas ouvrir ne sert à rien »*. Reconstruite sur la version en ligne du délai de rotation, donc **le 2500 est conservé**.
+
+**Rien n'a été réécrit.** `hsStoriesDuLieu(nom)` appelle `hsListerStories` — qui porte déjà les blocages, les profils, le repliage des compositions et l'ordre de la file — puis ne garde que les stories dont le lieu retombe sur le club touché (`hsMemeLieu`, via `clefClubG` puis `noyauEcurie`). Un groupe vide disparaît. **La forme rendue est exactement celle qu'attend `VisionneuseStories`.**
+
+⚠️ `VisionneuseStories` n'était pas publiée sur `window` (seuls `BandeauStories`, `RailALaUne`, `MurImmersif` l'étaient) : **c'est la raison du second fichier.**
+
+Côté iframe : `visStory` (zones touchables, remises à zéro à chaque image) testé AVANT les clubs — un point argenté prime sur le club qu'il recouvre. Le tap remonte `hype-story-lieu` au récepteur de `EcranMonde`. Si aucune story ne survit d'ici l'ouverture, un bandeau « Plus rien en ligne ici » s'affiche 2,6 s (6 langues) — **jamais un écran vide sans explication.**
+
+**À l'écran : +** le point argenté devient tapable et ouvre les stories du lieu · **+** bandeau « Plus rien en ligne ici » quand le lieu s'est vidé · **−** rien.
+
+**Testé** (`test-tap.js`) : la zone touchable existe, un tap dessus remonte le bon nom, **un tap à côté ne remonte rien**, et le rapprochement des lieux est correct sur 6 cas dont « Santa Ponsa , Mallorca . España ».
+
+### 🟡 LE GLOBE LISIBLE — ARRÊTÉ PAR BLANDINE, TRAVAIL CONSERVÉ
+
+*« laisse notre globe au moins il est joli faute d'être efficace, on reverra tout ça plus tard »*.
+
+**Ce qui a été établi, à ne pas refaire** : densifier la grille NE SERT À RIEN (testé à 1,5° / 1,25° / 1° — l'Europe reste un pâté, parce qu'on REMPLIT les terres). La bonne voie est de semer les points **le long des côtes**. Maquette faite (`maquette-continents.html`, 3 globes manipulables au doigt), coût mesuré : **+22 Ko à 90 km, +35 Ko à 70 km** — bien moins que les 150 Ko annoncés, et sans halo supplémentaire donc sans risque de ralentissement.
+
+🔴 **POURQUOI ÇA A ÉCHOUÉ, ET C'EST LA VRAIE LEÇON** : le fichier utilisé était le **Natural Earth 110m**, où **toute la France tient dans 30 sommets**. Ce n'est pas l'échantillonnage qui était trop grossier, **c'est la source**. Blandine : *« les contours ressemblent à rien »* — exact, et vérifié après coup. **Pour reprendre : demander `ne_50m_land.json` (dossier `50m/physical` du même dépôt).** Le poids dans l'app ne dépend PAS de la taille de la source, seulement du pas de semis.
+
+⚠️ Claude a d'abord accusé sa propre maquette d'un défaut de boutons, **à tort** : vérification faite, « Amériques » vise bien lng −85, c'était un glissement au doigt. Dit ici pour que personne ne « corrige » ces vues.
 
 ### ⚠️ LES DEUX COLONNES SQL PASSÉES ET INUTILISÉES
 

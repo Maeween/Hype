@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bl";
+var HYPE_STORIES_VERSION = "19bm";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1393,6 +1393,40 @@ async function hsListerStories() {
   } catch (e) { return { data: [], moiId: null, error: String(e) }; }
 }
 
+/* 20/08 (session 148, etape 2) — LES STORIES D'UN LIEU.
+   Point d'entree du point argente du globe. On NE REFAIT RIEN : on appelle
+   hsListerStories, qui porte deja les blocages, les profils, le repliage des
+   compositions et l'ordre de la file, puis on ne garde que les stories dont
+   le lieu retombe sur le club touche. Un groupe vide disparait.
+   La forme rendue est EXACTEMENT celle qu'attend VisionneuseStories. */
+function hsMemeLieu(a, b) {
+  try {
+    var x = String(a || "").trim(), y = String(b || "").trim();
+    if (!x || !y) return false;
+    if (x === y) return true;
+    if (typeof clefClubG === "function" && clefClubG(x) && clefClubG(x) === clefClubG(y)) return true;
+    if (typeof noyauEcurie === "function" && noyauEcurie(x) && noyauEcurie(x) === noyauEcurie(y)) return true;
+    return false;
+  } catch (e) { return false; }
+}
+async function hsStoriesDuLieu(nomLieu) {
+  try {
+    var cible = String(nomLieu || "").trim();
+    if (!cible) return { data: [], moiId: null, error: null };
+    var r = await hsListerStories();
+    if (!r || r.error) return { data: [], moiId: (r && r.moiId) || null, error: (r && r.error) || null };
+    var out = [];
+    (r.data || []).forEach(function (g) {
+      var ss = (g.stories || []).filter(function (s) { return s && hsMemeLieu(s.lieu, cible); });
+      if (!ss.length) return;
+      var g2 = {}; for (var k in g) { if (Object.prototype.hasOwnProperty.call(g, k)) g2[k] = g[k]; }
+      g2.stories = ss;
+      out.push(g2);
+    });
+    return { data: out, moiId: r.moiId, error: null };
+  } catch (e) { return { data: [], moiId: null, error: String(e) }; }
+}
+
 /* ---------------------------------------------------------------------------
    LES STORIES À LA UNE
    Demande de Blandine du 12/08 : « on peut garder en mémoire les story en
@@ -1529,6 +1563,7 @@ try {
     window.hsTagsDeStory = hsTagsDeStory;
     window.hsModifierStory = hsModifierStory;
     window.hsSuggererLieux = hsSuggererLieux;
+    window.hsStoriesDuLieu = hsStoriesDuLieu;
     window.hsMentionEnCours = hsMentionEnCours;
     window.hsInsererMention = hsInsererMention;
     window.hsDecouperLegende = hsDecouperLegende;
@@ -6474,6 +6509,9 @@ try {
     window.BandeauStories = BandeauStories;
     window.RailALaUne = RailALaUne;
     window.MurImmersif = MurImmersif;
+    /* 20/08 (148) : la visionneuse devient appelable depuis l'exterieur du
+       module — l'ecran Monde en a besoin pour ouvrir un point argente. */
+    window.VisionneuseStories = VisionneuseStories;
     window.PastilleMusiquePage = PastilleMusiquePage;
     window.ChoixALaUne = ChoixALaUne;
     window.ModifierStory = ModifierStory;
