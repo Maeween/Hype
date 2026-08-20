@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 147 · LE ZOOM iOS SUR TOUS LES CHAMPS + LE PANNEAU DES ORIGINES) — md5 `3c62e010f7438bdae40eed5dc9e28c24`, 9 248 001 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 147 · LE ZOOM iOS + LE PANNEAU DES ORIGINES + LA LÉGENDE PERDUE) — md5 `7ae9999d6fbb4f2ef7a1d81871a27754`, 9 248 001 octets. ⚠️ `hype-stories.js` MODIFIÉ (VERSION 19bl, md5 `c4b4f8fe5513bea8b682430ee8ad19f2`, 395 641 o) : les DEUX se poussent ensemble. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -62,7 +62,7 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 
 ---
 
-## SESSION 147 — 20/08/2026 (fin d'après-midi) · LE ZOOM iOS SUR TOUS LES CHAMPS + LE PANNEAU DES ORIGINES
+## SESSION 147 — 20/08/2026 (fin d'après-midi) · LE ZOOM iOS + LE PANNEAU DES ORIGINES + LA LÉGENDE PERDUE
 
 **Base** : `index.html` md5 `1c2af2d5bc2dddb80ae9556b177bc24d` (sortie de la 146, codée sur une autre page), 9 245 221 o. Livré en `be987b2c299b7af5fec1fba8f9110c9e`, 9 245 725 o. Aucun fichier compagnon touché.
 
@@ -92,6 +92,30 @@ La 145 a corrigé le zoom iOS sur les **champs de connexion** (14,5 → 16 px) e
 **À l'écran : +** rien · **−** rien. Le texte tapé dans ces six champs est légèrement plus grand ; l'écart se voit surtout sur les deux qui étaient à 13 px.
 
 **Contrôles** : `node --check` sur les 16 blocs inline · les deux iframes désescapées et leur JS interne vérifié (GLOBE_HTML_HYPE 3 blocs, FRANCE_MAP_HTML 1 bloc) · marqueurs de scroll inchangés (clip 2, verrou 5, puits 4, zéro `overscroll-behavior:none` sur body).
+
+### 🔴 LA LÉGENDE DES STORIES COMPOSÉES — PERDUE À L'AFFICHAGE, CORRIGÉE AUX DEUX BOUTS
+
+Signalé par Blandine : sa story de Santa Ponsa avait *« du texte, apparemment c'est plus le cas »*. Capture d'origine (14/08) : photo + légende « Éclipse en direct depuis Santa Ponsa 😍😍 Bonnes vacances à tous ! » + 3 vignettes. Aujourd'hui : photo + 2 vignettes, **plus de texte**.
+
+**Le texte n'a JAMAIS été effacé.** Vérifié en base par Blandine : dans chaque groupe, **une seule ligne porte la légende, les autres sont `(vide)`** — et toutes sont marquées ✓, aucune n'est expirée.
+
+**Hypothèse de l'expiration ÉCARTÉE** : Claude avait d'abord supposé qu'une ligne du groupe expirait et emportait la légende. Les dates lues en base (17/09, 26/08) l'infirment. Dit ici pour qu'aucune page ne reprenne cette piste.
+
+**La vraie cause : deux règles indépendantes qui doivent tomber sur la même ligne, et qui n'y arrivent pas toujours.**
+- **À la publication** (`hype-stories.js` ~3110) : la légende n'était transmise que pour **`iF === 0`**, la première photo de la boucle.
+- **À la lecture** (`hsRegrouperCompos` ~527) : la couverture est **la première ligne portant une `disposition`**, après tri par `created_at`.
+
+Les envois partent **en parallèle** : rien ne garantit que la photo `iF === 0` soit la première enregistrée. Quand les deux règles divergent, la couverture retenue a une légende vide et **le texte disparaît de l'écran alors qu'il est intact en base**.
+
+**Correctif 1 — LECTURE** (répare les stories DÉJÀ publiées, sans toucher à la base) : au repliage d'un groupe, la légende, le lieu et la musique sont pris sur le **premier membre qui en a un**, quel que soit son rang. Simulé sur le cas exact de Blandine (légende sur le 2ᵉ membre, disposition sur le 1ᵉʳ) : **la légende et le lieu reviennent, les 4 photos sont là.**
+
+**Correctif 2 — PUBLICATION** (empêche que ça se reproduise) : en mode composition, la légende part désormais sur **toutes les lignes du groupe**. Quelques octets par ligne, et la dépendance à une coïncidence disparaît. **Les deux sont nécessaires** : le second ne répare rien de l'existant, le premier ne protège pas l'avenir.
+
+`hype-stories.js` passe en **VERSION 19bl**, et le `?v=` de l'index suit.
+
+**À l'écran : +** la légende et le lieu réapparaissent sur les stories composées où ils étaient masqués · **−** rien.
+
+**🟡 NON EXPLIQUÉ, à ne pas confondre** : la capture d'origine montrait **3 vignettes**, il n'en reste que **2**. Aucune ligne expirée en base. Cause inconnue — **Claude n'a pas inventé de seconde explication.** À reprendre séparément.
 
 ### 🟡 ZOOM LIMITÉ À 3 — À L'ESSAI, RÉVERSIBLE EN UN MOT
 

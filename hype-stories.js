@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bk";
+var HYPE_STORIES_VERSION = "19bl";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -526,7 +526,27 @@ function hsRegrouperCompos(stories) {
       if (!e || !e.membres) return e;
       var m = e.membres.slice().sort(function (a, b) { return String(a.created_at) < String(b.created_at) ? -1 : 1; });
       var couv = m.filter(function (x) { return x && x.disposition; })[0] || m[0];
+      /* 20/08 (session 147) : LA LEGENDE NE SE PERD PLUS. Elle n'etait ecrite que sur la
+         PREMIERE photo envoyee (iF===0 dans le composeur) alors que la couverture est
+         choisie ici sur un tout autre critere : la premiere ligne portant une `disposition`.
+         Les envois partent en parallele, rien ne garantit que ce soit la meme ligne — quand
+         elles divergent, la couverture a une legende vide et le texte de l'autrice
+         DISPARAIT DE L'AFFICHAGE alors qu'il est intact en base. Constate par Blandine le
+         20/08 sur sa story de Santa Ponsa, confirme en base (une ligne portait le texte,
+         les trois autres etaient vides). On prend desormais la legende, le lieu et les tags
+         du PREMIER MEMBRE QUI EN A UN, quel que soit son rang. Lecture seule : rien n'est
+         reecrit, et toutes les compositions deja publiees sont reparees d'un coup. */
+      var __avec = function (champ) {
+        for (var i = 0; i < m.length; i++) {
+          var v = m[i] && m[i][champ];
+          if (v !== null && v !== undefined && String(v).trim() !== "") return v;
+        }
+        return null;
+      };
       var st2 = Object.assign({}, couv, { compo: m, disposition: couv.disposition || "hd" });
+      if (!st2.legende) { var __lg = __avec("legende"); if (__lg) st2.legende = __lg; }
+      if (!st2.lieu)    { var __li = __avec("lieu");    if (__li) st2.lieu = __li; }
+      if (!st2.musique) { var __mu = __avec("musique"); if (__mu) st2.musique = __mu; }
       return st2;
     }).filter(function (x) { return !!x; });
   } catch (e) { return stories || []; }
@@ -3107,7 +3127,11 @@ function ComposeurStory(props) {
         } catch (eCd) { fEnvoi = fichiersOrdonnes[iF]; }
         var rI = await hsPublierStory(
           fEnvoi,
-          iF === 0 ? legende : null,
+          /* 20/08 (session 147) : la legende part desormais sur TOUTES les lignes du
+             groupe, plus seulement sur la premiere. Elle ne dependait que d'une
+             coincidence — que la ligne iF===0 soit aussi celle retenue comme couverture
+             a la lecture. Quelques octets par ligne, et la classe de bug disparait. */
+          (grpId ? legende : (iF === 0 ? legende : null)),
           lieu,
           iF === 0 ? tags : [],
           musique,
