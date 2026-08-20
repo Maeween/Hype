@@ -91,6 +91,49 @@ Signalé par Blandine en fin de séance, capture 03 h 40 : *« le retour des not
 
 **Reste non vérifié** : Blandine parle de « l'annonce que les story sont en ligne ». Elle a été rattachée à l'annonce de mise à jour (`HYPE_MAJ`, la seule annonce de ce type sur l'accueil), **par déduction et non par confirmation**. Si une autre bannière existe ailleurs, elle n'est pas traitée — à confirmer au prochain test.
 
+### 🔴 CORRECTION D'UNE ERREUR DE CLAUDE — IL Y A DEUX BASES DE CLUBS, PAS UNE
+
+**Tout le §« côté base clubs » ci-dessous porte sur `HYPE_CLUBS` (les 3 055 de l'extraction OSM). C'est la MAUVAISE base pour la carte.** Erreur signalée par Blandine : *« Écurie Feinn et SEP étaient dans les premières ajoutées »*. Vérification faite, elle a raison.
+
+**Le globe a sa PROPRE liste, écrite en dur dans l'index** : `const CLUBS=[…]`, **131 entrées**, champs `{nom, ville, region, lat, lng, type, disc, mem, adresse, stages, events, cours, tel, site, moi}`. Le champ s'appelle **`lng`**, pas `lon` — c'est pourquoi toutes les recherches de la nuit sont passées à côté.
+
+**Entrées riches (ville, adresse, téléphone, discipline, nombre de membres) : c'est une liste TENUE À LA MAIN, pas une extraction.** C'est la vraie base de Blandine.
+
+**Rapprochement des 10 écritures déclarées contre cette liste : 6 sur 10, soit 30 cavaliers sur 34** (et non 1 sur 34 comme conclu plus haut).
+
+| Écurie déclarée | Ville | lat / lng |
+|---|---|---|
+| Ecurie Feinn | Itteville (91) | 48.5317111 / 2.3569945 |
+| Societe d'Equitation de Paris (SEP) | Paris (Bois de Boulogne) | 48.878358 / 2.259772 |
+| Societe Equestre L'Etrier de Paris | Paris (Bois de Boulogne) | 48.873185 / 2.2569657 |
+| Club Hippique du Touring | Paris (Bois de Boulogne) | 48.8780411 / 2.2599927 |
+| Cercle Hippique de la Breche aux Loups | Ozoir-la-Ferrière | 48.7578105 / 2.6967215 |
+| Jardy Equitation (Haras de Jardy) | Marnes-la-Coquette | 48.8276332 / 2.1530057 |
+
+**⚠️ Le chiffre de 131 n'est PAS périmé.** La consigne « ne jamais citer 131 » visait le total de l'annuaire (~3 000, base OSM). **131 est le compte exact et actuel de la liste du globe.** Les deux notes se contredisaient parce qu'elles parlaient de deux objets différents. À corriger dans les passations.
+
+### 🔴 LA LISTE DU GLOBE EXISTE EN DEUX EXEMPLAIRES — À TRAITER AVANT TOUT AJOUT
+
+Comptage exhaustif : `const CLUBS=[` apparaît **deux fois**.
+- **Ligne 24412** — liste JSON normale, **131 entrées**, dans les « données partagées du globe ».
+- **Ligne 32966** — à l'intérieur de `var GLOBE_HTML_HYPE = "…"`, une **iframe entière encodée en chaîne échappée** (`\"nom\"`). Contient **les mêmes clubs**, Feinn, SEP, Étrier, Touring, Brèche aux Loups et Jardy compris.
+
+**Ajouter un club dans une seule des deux crée exactement la divergence que la règle de non-duplication de la session 138 interdit.** La seconde étant échappée dans une chaîne, elle ne s'édite pas comme du JSON : toute modification doit respecter l'échappement, sous peine de casser l'iframe entière.
+
+**🟡 RIEN N'A ÉTÉ MODIFIÉ.** Décision de Blandine requise avant tout ajout : dédoublonner d'abord (passer la liste par `parent.CLUBS`, même origine donc accessible), ou écrire dans les deux en connaissance de cause.
+
+### Identifications faites cette nuit (recherches de Blandine, à réutiliser)
+
+| Écurie déclarée | Identifié | Coordonnées |
+|---|---|---|
+| Ecurie des lichere | **Les Écuries des Lichères**, 3 Rue des Lichères, 89570 Neuvy-Sautour (Yonne) | **48.03215 / 3.7662** — présentes dans `HYPE_CLUBS` (OSM), vérifiées cohérentes avec Neuvy-Sautour. **Absentes de la liste du globe.** |
+| Lardy | **Les Écuries de Lardy**, La Honville, 91510 Lardy — 07 88 50 11 98 | **aucune** dans les deux bases. Estimation du bourg de Lardy ≈ 48.5175 / 2.2680, **non relevée sur place**. |
+| Écurie de la malle | **NON IDENTIFIÉE.** Piste « Les Écuries de la Malle », Saint-Brice-Courcelles (près de Reims, 51) — **non confirmée**, et à 200 km de toutes les autres écuries des cavaliers. | — |
+
+⚠️ **Ne pas poser de point pour « Écurie de la malle » tant que le lieu n'est pas confirmé** : entre la Marne et l'Île-de-France il y a 200 km, un point posé au jugé serait faux sans que personne ne le sache. Le seul qui sait est le cavalier concerné.
+
+**Décision de Blandine : ajouter les clubs manquants à la main** (voie A des quatre présentées). Le reste des voies — faire choisir le club dans une liste, carte de l'instant, report — reste non tranché.
+
 ### Point de départ : le chantier de la carte de la communauté
 
 Séance ouverte sur `CHANTIER-CARTE-COMMUNAUTE.md` (§5 : « mesurer d'abord »). La mesure a déplacé le sujet.
