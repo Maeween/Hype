@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT + FUSION DES BASES CLUBS, ÉTAPE 1) — md5 `6559b9e40fa77ad3a52eb0fcae12379d`, 9 236 882 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT + FUSION DES BASES CLUBS + LES CLUBS HABITÉS EN OR) — md5 `96f5327ce8236850868be78c0e352816`, 9 240 314 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -91,6 +91,64 @@ Signalé par Blandine en fin de séance, capture 03 h 40 : *« le retour des not
 
 **Reste non vérifié** : Blandine parle de « l'annonce que les story sont en ligne ». Elle a été rattachée à l'annonce de mise à jour (`HYPE_MAJ`, la seule annonce de ce type sur l'accueil), **par déduction et non par confirmation**. Si une autre bannière existe ailleurs, elle n'est pas traitée — à confirmer au prochain test.
 
+### ✅ ÉTAPE 2 LIVRÉE — LES CLUBS HABITÉS EN OR SUR LE GLOBE
+
+**Décision de Blandine** (ses mots) : *« On peut faire les deux ? Garder les anciens en visu sur le globe et ajouter les vrais ? Et qu'à terme on puisse garder uniquement les vrais ? »* — puis validation de **l'or** pour distinguer les clubs habités.
+
+**Deux murs identifiés avant de coder, et contournés plutôt que franchis :**
+1. **Le rendu.** La boucle de dessin du globe pose `shadowColor` + `shadowBlur` **par point, à chaque image**. À 131 points c'est fluide ; verser les 3 145 aurait multiplié par 24 le nombre d'ombres calculées — le mur annoncé dans `CHANTIER-CARTE-COMMUNAUTE.md`. **Le globe garde donc ses 131 + quelques points habités, jamais les 3 145.**
+2. **Les couleurs.** Le globe code le type sur une lettre (`o`, `p`, `e`, `s`, `c`, `P`) via `COL[c.type]` et `TLAB()`. `HYPE_CLUBS` porte `horse_riding` / `equestrian` / `club`. Un branchement direct aurait rendu **tous les clubs turquoise sans libellé de type**. Contourné : les clubs habités reçoivent l'or, pas une lettre de type.
+
+**Le champ `seed:true` existait déjà** sur les 131 et servait déjà à l'affichage de la fiche (badge dédié au lieu du type). **Personne ne s'en était servi pour distinguer vitrine et réel.** C'est ce champ qui porte la sortie de transition : le jour où Blandine veut ne garder que les vrais clubs, il suffit de cesser de verser les `seed` — **une ligne, rien à démonter**.
+
+**Ce qui a été fait, côté iframe** (`GLOBE_HTML_HYPE`) — écrit **en guillemets simples uniquement**, donc zéro échappement ajouté :
+- `hypeMajHabites(l)` : pour chaque club habité reçu, cherche le point le plus proche dans `CLUBS`. **À moins de 1,5 km, c'est le même club** → il devient `habite:true`, `seed:false`, et récupère son nombre de cavalières. Au-delà, il est ajouté. **Un club à la fois vitrine et habité ne fait jamais deux points.**
+- Écoute du message `hype-clubs-habites` sur le canal `postMessage` **déjà existant** (`hype-lang`, `hype-exit`, `hype-onboarding`).
+- Couleur : `(c.habite||c.priorite) ? '#E8C887' : (COL[c.type]||'#20D9F5')`. Taille : les habités passent en `big`, comme les prioritaires.
+
+**Côté parent** : `hypeClubsHabites()` posée juste avant `chevauxDeLEcurie`. Lecture seule sur `profiles(ecurie, ecurie2)`, résolution contre `HYPE_CLUBS` (les 3 145) **d'abord au nom exact normalisé (`clefClubG`), puis par noyau (`noyauEcurie`)**, regroupement par coordonnée à 4 décimales, envoi dans le `onLoad` de l'iframe. **Un club non résolu est ignoré en silence, jamais placé au hasard.**
+
+**Table de correspondance `HYPE_ALIAS_CLUBS`** (posée dans `hypeClubsHabites`) : les écritures qui ne se rapprochent d'aucun nom de club par les règles normales, **confirmées une par une par Blandine**.
+- `sep` → `Societe d'Equitation de Paris (SEP)` — confirmé : *« Sep renvoie vers Société d'équitation de Paris »*
+- `ecurie des lichere` → `Écuries des Lichères` — le singulier ne retrouvait pas le pluriel (`lichere` contre `licheres`)
+
+⚠️ **Cette table ne se remplit QUE sur confirmation explicite de Blandine.** Ne jamais y ajouter une correspondance déduite : un mauvais alias déplace une cavalière dans un autre club sans que personne ne le voie.
+
+**Résultat simulé sur les données réelles : 8 points d'or, 33 cavalières sur 34.**
+
+| Club | Cav. |
+|---|---|
+| Ecurie Feinn | 13 |
+| Societe d'Equitation de Paris (SEP) | 13 |
+| Societe Equestre L'Etrier de Paris | 2 |
+| Cercle Hippique de la Brèche aux Loups · Club Hippique du Touring · Écuries des Lichères · Jardy Equitation · Les Ecuries de Lardy | 1 chacun |
+
+**🟡 Une seule déclaration NON résolue : « Écurie de la malle »**, non identifiée (voir plus bas). Laissée dehors volontairement — mieux vaut un point manquant qu'un point faux à 200 km.
+
+**À l'écran : +** les clubs où au moins une cavalière est inscrite s'affichent en or et en plus gros sur le globe · **−** rien ne disparaît, les 131 vitrines restent en turquoise.
+
+**⚠️ VÉRIFICATION SPÉCIFIQUE FAITE — à refaire à chaque touche d'iframe.** `node --check` **ne voit pas** une iframe cassée : son contenu est une chaîne. Protocole appliqué ici, à reprendre : désescaper la chaîne (`GLOBE_HTML_HYPE`, `FRANCE_MAP_HTML`), remplacer `<\/` par `</`, extraire les blocs `<script>` internes, `node --check` sur chacun. Résultat : **GLOBE_HTML_HYPE 95 831 car / 3 blocs valides · FRANCE_MAP_HTML 28 074 car / 1 bloc valide.**
+
+### 🔴 INCIDENT — LE GLOBE FIGÉ EN LIGNE, CAUSÉ PAR LA LIVRAISON `9c0c9665`
+
+**Signalé par Blandine : globe coincé, ne tourne plus.** Version en ligne au moment du constat : `9c0c9665a4b2c01a0f3f461493cb1d9c`. **Cause confirmée dans le code, pas déduite.**
+
+Le globe calcule le vecteur 3D de chaque club **une seule fois au démarrage** : `CLUBS.forEach(c => { c.v = v3(c.lat, c.lng); c.ph = Math.random()*6.28; })`. La boucle de dessin fait ensuite `rot(c.v)` à chaque image.
+
+`hypeMajHabites` ajoutait les clubs habités absents de la liste des 131 par `CLUBS.push({...})` **sans `v` ni `ph`**. `rot(undefined)` lève une `TypeError` **à l'intérieur de `requestAnimationFrame`** : `draw()` meurt, plus aucune image n'est produite, le globe se fige.
+
+**Les six clubs déjà présents dans les 131 passaient** (ils avaient leur vecteur). **Seuls les deux ajoutés — Écuries des Lichères et Les Écuries de Lardy — déclenchaient le plantage.** D'où un bug invisible en simulation de résolution : la simulation vérifiait *quels* clubs sortaient, pas *si le rendu survivait*.
+
+**Deux corrections :**
+1. Les clubs ajoutés reçoivent `v: v3(c.lat, c.lng)` et `ph`. Garde `if (typeof v3 !== 'function') continue;` — au cas où le message arriverait avant l'initialisation.
+2. **Garde-fou permanent** : `if (!c.v) return;` en tête des **deux** boucles de dessin (globe ligne ~33010 et carte ligne ~24652). Un club mal formé est désormais ignoré au lieu de figer l'animation.
+
+**Vérifié par simulation de la séquence complète** (init des vecteurs → réception → boucle de dessin) : 4 clubs, 0 sans vecteur, 4 points dessinés, aucun plantage.
+
+**⚠️ LEÇON À GARDER : `node --check` et la vérification des iframes désescapées ne détectent PAS une erreur d'exécution.** Les deux contrôles étaient verts sur `9c0c9665`. Une modification qui **ajoute des entrées à une structure consommée par une boucle d'animation** doit être vérifiée en simulant le rendu, pas seulement la syntaxe. Ajouter à la liste des contrôles.
+
+**⚠️ Second incident de séance** : le fichier de travail de Claude avait perdu les modifications du globe (revenu à `6559b9e…`) au moment de préparer le correctif. Détecté par empreinte avant toute écriture, repris depuis la copie livrée. Aucune perte.
+
 ### ✅ FUSION DES BASES CLUBS — ÉTAPE 1 LIVRÉE
 
 **Décision de Blandine** (ses mots) : *« il s'agit d'insérer tes 131 si jamais les clubs ils sont pas déjà dans plusieurs milliers, de façon à garder une liste unique à la fin, et en y insérant également les fichiers qu'on ajoute à la main »* · *« ta liste 131 c'est celle qui doit disparaître à terme, elle se fait avaler par l'autre »*.
@@ -109,20 +167,6 @@ Signalé par Blandine en fin de séance, capture 03 h 40 : *« le retour des not
 - Déclaration ajoutée dans `index.html` **après `hype-clubs-db-3.js` et avant `hype-clubs-loader.js`** — l'ordre est impératif, le loader lit les quatre variables au moment où il s'exécute.
 
 ⚠️ **LES TROIS FICHIERS SE POUSSENT ENSEMBLE.** `index.html` seul → le loader cherche une variable qui n'existe pas et retombe sur `[]` : comportement inchangé, mais les 90 clubs manquent. `hype-clubs-db-4.js` seul sans le loader → fichier chargé, jamais concaténé.
-
-### 🔴 ÉTAPE 2 — NON FAITE, À DÉCIDER À TÊTE REPOSÉE
-
-**Verser 90 clubs dans `HYPE_CLUBS` n'affiche encore rien sur la carte : le globe ne lit pas cette base.** Il tourne sur ses trois copies internes de 131 (voir plus bas). L'étape 1 enrichit l'annuaire — utile immédiatement pour la page Mon Club, qui est le seul écran à lire `HYPE_CLUBS` (ligne 26739) — mais la carte, non.
-
-**Ce qui reste à faire pour que les 131 disparaissent vraiment :**
-1. Rebrancher le globe sur `parent.HYPE_CLUBS` (même origine, `srcDoc` donc accessible) au lieu de `ECURIES_SEED`.
-2. Idem pour `FRANCE_MAP_HTML` et sa liste compacte `ECURIES`.
-3. Supprimer alors les trois copies : `const CLUBS` (24412), `ECURIES` (19953), `ECURIES_SEED` (32966).
-4. Retirer le libellé **« 131 clubs en France »** (une seule occurrence, ligne 19953, dans `FRANCE_MAP_HTML`). ⚠️ **Non retiré : le laisser tant que la carte affiche réellement 131 clubs, sinon le libellé mentirait dans l'autre sens.**
-
-⚠️ **Deux copies vivent dans des chaînes ÉCHAPPÉES d'iframe** (`\"nom\"`). Une erreur d'échappement ne casse pas une ligne : elle casse **l'iframe entière**, le globe devient une page blanche, et **`node --check` ne le voit pas**. Prévoir une vérification par désérialisation de la chaîne, pas seulement une vérification de syntaxe.
-
-⚠️ **ORDRE IMPÉRATIF** : l'étape 1 doit être poussée AVANT l'étape 2. Rebrancher le globe sur `HYPE_CLUBS` sans le fichier 4 **fait disparaître l'Écurie Feinn, la SEP, l'Étrier et le Touring de la carte**.
 
 ### 🔴 INCIDENT DE SÉANCE — À DIRE
 
