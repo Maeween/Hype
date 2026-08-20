@@ -2336,7 +2336,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          destination que le paywall : une mascotte, trois portes, une idée.
          Tap → ouvrirCompte(), le compte (z70) passe devant l'intro (z45). -->
     <button id="inPass" type="button">
-      <img src="apy-passeport.webp?i=2" alt="" onerror="this.style.display='none'">
+      <img src="apy-passeport.webp?i=3" alt="" onerror="this.style.display='none'">
       <span class="pwPassTxt">
         <span class="pwPassL1" data-t="pwDeja">Déjà du voyage ?</span>
         <span class="pwPassL2" data-t="pwPasseport">Présente ton passeport</span>
@@ -2619,7 +2619,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       <!-- ⚠️ ?i=2 : la premiere version (aquarelle claire) a ete remplacee le
            soir meme par la pose « Lecture » de la planche spectrale sombre —
            detourage net, style Linguae. Incrementer ?i a chaque remplacement. -->
-      <img id="pwPassImg" src="apy-passeport.webp?i=2" alt=""
+      <img id="pwPassImg" src="apy-passeport.webp?i=3" alt=""
            onerror="this.style.display='none'">
       <span class="pwPassTxt">
         <span class="pwPassL1" data-t="pwDeja">Déjà du voyage ?</span>
@@ -2635,7 +2635,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     <!-- 🟥 19/08 : Apy (pose Lecture, planche spectrale) au-dessus du titre —
          idee de Blandine : la meme mascotte accueille la creation de compte
          ET le paywall. Meme fichier, meme ?i. onerror : le texte vit seul. -->
-    <img class="paApy" src="apy-passeport.webp?i=2" alt=""
+    <img class="paApy" src="apy-passeport.webp?i=3" alt=""
          onerror="this.style.display='none'">
     <h2 data-t="paTitre">Ton passeport de voyage</h2>
     <p class="pwTxt" data-t="paTxt">Crée ton compte Hype avant de partir : ta progression, tes cartes postales et tes souvenirs te suivront partout, sur tous tes appareils.</p>
@@ -3722,7 +3722,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=62";   /* 🟥 v62 (20/08) : les regles #inPass sorties du @keyframes ou elles
+var VER = "?v=63";   /* 🟥 v63 (20/08) : Apy passe a la version BLEU PROFOND retrouvee par
+                        Blandine (pose Lecture d'origine, dessinee sombre) — ?i=3 sur
+                        les QUATRE emplacements (3 <img> + le prechauffage).
+                        v62 (20/08) : les regles #inPass sorties du @keyframes ou elles
                         etaient tombees (Apy geante sur la presentation corrigee).
                         v61 (20/08) : la sync progression reessaie sans `sellerie` si la
                         colonne manque (8 jours de « base muette » soldes), le pont
@@ -11835,7 +11838,7 @@ function lancerFilm(){
   try{
     ["lingua-langues.webp","lingua-affiche.webp","fond-newmarket.webp",
      "tour-monde.webp?v=34","fond-lingua.webp","carnet-ferme.webp"+VER,
-     "apy-passeport.webp?i=2"].forEach(function(u){ (new Image()).src = u; });
+     "apy-passeport.webp?i=3"].forEach(function(u){ (new Image()).src = u; });
   }catch(e){}
 }
 
