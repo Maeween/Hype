@@ -35,7 +35,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 147 · LE ZOOM iOS + LE PANNEAU DES ORIGINES + LA LÉGENDE PERDUE) — md5 `7ae9999d6fbb4f2ef7a1d81871a27754`, 9 248 001 octets. ⚠️ `hype-stories.js` MODIFIÉ (VERSION 19bl, md5 `c4b4f8fe5513bea8b682430ee8ad19f2`, 395 641 o) : les DEUX se poussent ensemble. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 148 · LES POINTS ARGENTÉS DES STORIES) — md5 `bbb7f04ad912e52ad9960f76d54f32c7`, 9 250 946 octets. `index.html` SEUL — `hype-stories.js` n'est PAS modifié (reste 19bl, `?v=19bl` inchangé), `hype-clubs-db-4.js` et `hype-clubs-loader.js` non plus.**
+
+**Ancienne version (147) — 20/08/2026 (LE ZOOM iOS + LE PANNEAU DES ORIGINES + LA LÉGENDE PERDUE) — md5 `662196b17552c4d6236cec2a63e6731d`, 9 248 000 octets. ⚠️ `hype-stories.js` MODIFIÉ (VERSION 19bl, md5 `c4b4f8fe5513bea8b682430ee8ad19f2`, 395 641 o) : les DEUX se poussent ensemble. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -59,6 +61,79 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 ⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
 
 ⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 148 — 20/08/2026 (soir) · LES POINTS ARGENTÉS DES STORIES — ÉTAPE 1
+
+⚠️ **Collision de numérotation, dite d'avance :** une « Session 148 » datée du 15/08 existe déjà plus bas dans ce fichier (stories 19af/19ag). Les deux séries de numéros coexistent depuis le 19/08. Ce 148-ci suit le 147 du 20/08 de l'en-tête.
+
+### 🟢 LE CHANGEMENT DE DIRECTION — LA POSITION NE VIENT PLUS DU TÉLÉPHONE
+
+La 147 avait tranché : géolocalisation à la publication, arrondie à ~1 km. **Blandine a changé de voie ce soir, et c'est mieux.**
+
+Ses mots, qui donnent l'usage réel : *« le but c'est quand même que les cavaliers principalement mineurs puissent aussi voir qui est en concours quand ils font des déplacements sur le gros concours »*, *« si on peut pas indiquer la story sur place des concours, franchement c'est nul ça sert à rien »*.
+
+**Ce qu'elle décrit n'est pas « où est cette cavalière », c'est « qui publie depuis ce concours ».** Le point n'a donc pas besoin d'être posé sur la personne : il se pose sur **le lieu de l'épreuve**.
+
+**Voie retenue : le point vient du champ « lieu » déjà choisi à la publication**, jamais de l'appareil.
+
+Ce que ça règle d'un coup :
+- **Aucune géolocalisation**, donc plus rien à arbitrer sur les mineurs : ils publient et voient comme tout le monde.
+- **Plusieurs cavalières au même concours = UN seul point**, plus lumineux. C'est ce que Blandine veut voir, et c'est plus lisible que dix points éparpillés.
+- Aucune donnée personnelle ne quitte l'appareil.
+
+⚠️ **Débat tenu avant, à ne pas rouvrir sans elle.** Claude a refusé le point de position pour les comptes mineurs, même arrondi à la ville : un point qui pulse dit « maintenant », et sur une petite commune il désigne une personne. Blandine a objecté, à raison, que le rapprochement est de toute façon faisable depuis la story. La distinction retenue : la story demande un effort et reste dans son cercle, **le point s'allume sur un globe que n'importe qui fait tourner**. Le sujet est devenu sans objet avec la voie « lieu choisi ».
+
+### CE QUI EST LIVRÉ — ÉTAPE 1 SEULE
+
+**Blandine : « ben d'abord les points ».** L'ouverture des stories au tap est l'étape 2, **non faite**.
+
+**Côté index — `hypeStoriesLieux()`** (juste après `hypeClubsHabites`) : lit les stories non expirées (`select("lieu")`, 300 max), rapproche chaque `lieu` des **131 clubs de `CLUBS`** par `clefClubG` puis `noyauEcurie` — exactement le patron des clubs habités — regroupe par coordonnées et compte.
+
+**L'envoi** part sur le `load` de l'iframe, à côté de celui des clubs habités, canal `hype-stories-lieux`.
+
+**Côté iframe** : `STORY_PTS` — **un tableau SÉPARÉ, jamais `CLUBS`.** Décision de Claude, annoncée à Blandine et sans objet pour elle (« je comprends rien », dit franchement — la question était mal posée, c'était de la plomberie).
+⚠️ **C'est ce qui protège du globe figé du 20/08 au matin** : un point poussé dans `CLUBS` sans son vecteur 3D casse la boucle de dessin. Ici la boucle de dessin des clubs n'est pas touchée. Bénéfice de bord : les points n'apparaissent **ni dans la recherche, ni dans le compte « X affichés », ni dans « les plus populaires »**.
+
+**Le dessin** : anneau argenté `#DCE9EF` + cœur `#EDF4F8`, pulsation `T*0.055`, posé après les clubs. **Non cliquable** (rien n'entre dans `vis`).
+
+**L'extinction est gratuite** : la requête ne lit que les stories non expirées. Plus de story vivante sur un lieu = plus de point au prochain chargement de l'écran Monde.
+
+### 🔵 CE QUI A ÉTÉ TESTÉ — ET C'EST NOUVEAU
+
+**Réponse au constat de la 147 : « rien n'est testé avant la mise en ligne ».** Deux bancs d'essai écrits ce soir, à garder :
+
+**`test-globe.js`** — fait **tourner** le JS de l'iframe dans un faux navigateur (canvas enregistreur, faux DOM), pas seulement `node --check` :
+1. le script s'exécute · 2. première image : 1 852 cercles · 3. message reçu · 4. `STORY_PTS` = 2, **vecteurs présents** · 5. **100 images d'affilée sans erreur** · 6. liste vide, lieu sans coordonnées, message sans liste : rien ne casse · 7. **clubs habités toujours dorés (153 cercles)**.
+⚠️ Le test compte 5 arcs argentés pour 4 attendus : **artefact du faux canvas** (le stub ne restaure pas les styles sur `restore()`), 2 anneaux + 2 cœurs vérifiés à l'unité. Pas un défaut du code.
+
+**`test-lieux.js`** — le rapprochement avec les **vraies** fonctions de l'index et les **vrais** 131 clubs :
+- les 5 lieux choisis dans les suggestions retombent tous sur le bon club, aux bonnes coordonnées ;
+- « Santa Ponsa , Mallorca . España », « chez moi », « la carrière », vide → **aucun point**, comme prévu ;
+- **131 / 131 clubs se retrouvent eux-mêmes.**
+
+**Ce que ces tests ne voient toujours pas** : le rendu réel sur iPhone, et le comportement de Supabase. Ils attrapent les erreurs d'exécution, pas les erreurs de goût.
+
+### À l'écran : + / −
+
+**+** des points argentés qui pulsent sur le globe, aux clubs portant une story en cours · **−** rien. Aucun écran, bouton ou comportement existant n'est retiré.
+
+### CE QUI RESTE POUR L'ÉTAPE 2
+
+**Taper le point ouvre les stories du lieu.** Non fait, et c'est un vrai morceau : la visionneuse vit dans la page mère, le point dans l'iframe — il faut remonter par `postMessage` et brancher `hsListerStories` filtré sur le lieu.
+
+### ⚠️ LES DEUX COLONNES SQL SONT PASSÉES ET NE SERVENT PAS ENCORE
+
+`lat` et `lon` ont été ajoutées à `hype_stories` par Blandine le 20/08 à 22 h 19 (« Success. No rows returned »), **avant** le changement de voie. **Elles sont vides et inutilisées.** Rien à défaire : elles resserviront le jour où une géolocalisation d'appoint sera décidée pour les majeures. **Ne pas les supprimer, ne pas les remplir sans décision.**
+
+⚠️ **Le repli de `hsPublierStory` (ligne ~1013) n'a PAS été touché** : il ne supprime que `lieu`, `musique`, `fond`. Si un jour `lat`/`lon` partent dans la ligne d'insertion, **il faudra les ajouter à ce repli**, sinon une colonne manquante fait perdre la story entière.
+
+### PRÉPARATION FLUTTER
+
+`hypeStoriesLieux()` sort une règle nommée — « quels lieux sont vivants en ce moment » — qui ne dépend d'aucun écran : la forme d'un futur `StoryRepository.lieuxActifs()`. Elle ne renvoie que des données (nom, lat, lng, compte), aucun élément d'affichage.
+
+**Ce qui reste, et c'est le même fond qu'en 147** : le lieu d'une story est **une chaîne de texte**, jamais un identifiant de club. Le rapprochement marche à 131/131 aujourd'hui **parce que la suggestion recopie le nom exact** — le jour où un nom de club change dans `CLUBS`, les stories déjà publiées perdent leur point sans bruit. Le remède est le même que pour les écuries : un `club_id`, qui n'existe toujours nulle part.
 
 ---
 
@@ -92,6 +167,65 @@ La 145 a corrigé le zoom iOS sur les **champs de connexion** (14,5 → 16 px) e
 **À l'écran : +** rien · **−** rien. Le texte tapé dans ces six champs est légèrement plus grand ; l'écart se voit surtout sur les deux qui étaient à 13 px.
 
 **Contrôles** : `node --check` sur les 16 blocs inline · les deux iframes désescapées et leur JS interne vérifié (GLOBE_HTML_HYPE 3 blocs, FRANCE_MAP_HTML 1 bloc) · marqueurs de scroll inchangés (clip 2, verrou 5, puits 4, zéro `overscroll-behavior:none` sur body).
+
+### ✅ LE PANNEAU DES CLUBS DU GLOBE — ENFIN VISIBLE
+
+Le panneau « **Les plus populaires** » / « **Les écuries proches** » était posé à **205dvh** alors que son conteneur `.wrap` fait **102dvh avec `overflow:hidden`**. Il était donc **hors du cadre, rogné, jamais visible**.
+
+**Ce n'est ni une régression ni une suppression** : vérifié à l'identique dans un index d'avant nos sessions (`index_8.html`, 10,9 Mo) — le CSS y est rigoureusement le même. **Il n'avait tout simplement jamais pu s'afficher**, sauf en mode d'accueil, où `body.onb` le remonte à 80dvh. C'est pour ça que Blandine l'avait vu la toute première fois, avant de créer son compte, et jamais depuis.
+
+**Maquette présentée** (`maquette-globe.html`, 4 écrans : état actuel + 3 positions, aux vraies proportions et avec ses vrais clubs). **Choix de Blandine : « B mais en descendant un poil plus ».**
+
+**Livré** : `#around` passe de **205dvh à 78dvh**, `.filters` de **86dvh à 93dvh**. Le panneau comble le grand vide entre la recherche (69dvh) et les filtres. Rien n'est tassé, la page ne s'allonge pas.
+
+**Le mode d'accueil n'est PAS touché** : `body.onb #around{top:80dvh}` et `body.onb .filters{top:96dvh}` restent tels quels.
+
+**À l'écran : +** les plus populaires et les écuries proches apparaissent sur l'écran Monde · **−** rien.
+
+⚠️ **INCIDENT DE CODAGE — et la leçon qui va avec.** Le commentaire explicatif posé d'abord **à l'intérieur de la chaîne `GLOBE_HTML_HYPE`** contenait des **apostrophes non échappées** : elles ont terminé la chaîne JavaScript et **cassé tout le bloc inline**. Détecté par `node --check`, commentaire retiré, syntaxe rétablie, explication déplacée ici.
+**RÈGLE À RETENIR : ne JAMAIS écrire de commentaire en français à l'intérieur d'une chaîne d'iframe (`GLOBE_HTML_HYPE`, `FRANCE_MAP_HTML`).** Les apostrophes, les guillemets et les accents y sont des pièges. Le commentaire va dans le SUIVI, pas dans la chaîne.
+
+### 🔴🔴 CHANTIER À OUVRIR — LES SOUVENIRS (« À LA UNE ») SONT INUTILISABLES
+
+Mots de Blandine, 19 h 36 : *« c'est vraiment n'importe quoi, il y a 3 bugs à la seconde »*, *« ça sert à rien d'avoir des stories si rien ne fonctionne »*, *« comment c'est possible d'avoir des dizaines de bugs sur un seul truc mis en ligne, on en a déjà corrigé au moins 20 »*.
+
+**Sa question mérite une réponse honnête, et elle est le cœur de ce chantier : ce ne sont pas vingt bugs, c'est UN défaut de conception qui produit un symptôme différent selon l'endroit où on appuie.**
+
+**LE DÉFAUT DE FOND** : « Garder en souvenir » copie les **photos** d'une story dans un **album** (`albums_cheval`), puis l'affichage demande à cet album de se comporter comme une story. Ce sont deux objets qui n'ont ni la même structure, ni les mêmes champs, ni le même cycle de vie. `albums_cheval` porte `photos`, `nom`, `couverture`, `promu`, `visibilite` — **aucun champ pour la légende, le lieu, la disposition ou la musique**. Chaque fois qu'on rapproche les deux à un endroit, l'écart ressort ailleurs.
+
+#### Les six bugs constatés le 20/08 au soir (aucun corrigé)
+
+1. **Impossible d'avancer d'une image à l'autre.** Ni tap, ni swipe. On subit le minuteur jusqu'au bout. *« t'es coincé à attendre le timer qui se déroule »*
+2. **Retirer des images ne s'applique pas.** *« tu les retires et ça bug de partout, elles reset »* — les photos réapparaissent.
+3. **Écran noir au retour.** On quitte, on revient : la photo ne charge pas (rond de chargement figé au centre), **mais le lieu s'affiche quand même**. Capture 19 h 35.
+4. **Le lieu s'affiche EN DOUBLE** sur la même vue — une fois sous l'en-tête, une fois en bas. Capture 19 h 35.
+5. **Le zoom reste coincé.** Difficulté à dézoomer, l'app reste agrandie. ⚠️ **Constaté APRÈS la pose de `maximum-scale=3`** — donc non résolu par cette limite.
+6. **Le souvenir n'a pas le bon contenu.** « Good Times » n'affiche qu'une photo et un grand vide, là où la story d'origine en avait quatre plus sa légende.
+
+#### Ce qui est DÉJÀ VÉRIFIÉ — ne pas le refaire
+
+- **La colonne `garde` existe et fonctionne.** **18 lignes** portent `garde = true` en base (lecture faite par Blandine le 20/08 à 19 h 03).
+- **Les légendes sont INTACTES en base.** « Éclipse en direct depuis Santa Ponsa 😍😍 Bonnes vacances à tous ! » est bien là, sur le groupe `db749c8f-af89-4e08-ae98-fa…`. Les trois autres lignes du même groupe sont `(sans texte)` — c'est normal, la légende n'est écrite qu'une fois par groupe.
+- **Aucune ligne n'est expirée.** Dates jusqu'au 17/09 et 26/08, toutes ✓.
+- **AUCUN SQL N'EST NÉCESSAIRE.** Tout est déjà en base.
+- **Point d'entrée identifié** : `hsListerALaUne(userId)` (`hype-stories.js` ~1412) retourne des **albums**, pas des stories. C'est là qu'il faut intervenir.
+- `hsGarderEnSouvenir` (~1461) marque déjà `garde: true` sur **toutes** les lignes du groupe — le marquage est bon, **c'est la lecture qui manque**.
+
+#### 🟢 DÉCISION DE BLANDINE (ses mots)
+
+*« Je veux vraiment retrouver la story exactement comme elle est en ligne, avec toutes les photos et avec sa légende. Sinon elle n'a aucun sens. »* · *« Et pas avec des photos qui s'ouvrent une par une sans légende. »* · **« On remplace »** (l'album par la vraie story).
+
+**Direction validée** : les souvenirs ne copient plus les photos dans un album — **ils ROUVRENT la story d'origine**. On lit les stories `garde = true` **sans le filtre `expire_le`**, on les replie avec `hsRegrouperCompos`, et la visionneuse habituelle les affiche telles quelles : toutes les photos, la légende, le lieu, la disposition, la musique. Rien n'est reconstruit — c'est littéralement la même story.
+
+L'album existant reste en base : rien n'est supprimé, on ajoute un chemin de lecture.
+
+#### ⚠️ LA CAUSE DE FOND DERRIÈRE LA CAUSE DE FOND — RIEN N'EST TESTÉ AVANT LA MISE EN LIGNE
+
+**Blandine est la première utilisatrice de chaque version.** `node --check` et la vérification des iframes désescapées ne voient **aucune** erreur d'exécution : le globe figé du matin était vert aux deux contrôles, la légende perdue aussi, la photo qui ne charge pas aussi.
+
+**C'est probablement le chantier le plus rentable de tous.** Tant qu'il n'existe pas, chaque livraison est un pari, et Blandine paie les erreurs en temps et en fatigue.
+
+⚠️ **Note pour la page suivante** : le 20/08, cinq livraisons ont été faites en une journée, une par symptôme signalé, sans jamais s'arrêter sur le fond. **Ne pas reproduire ce mode.** Sur ce chantier : présenter le plan, le faire valider, livrer une fois, vérifier.
 
 ### 🔴 LA LÉGENDE DES STORIES COMPOSÉES — PERDUE À L'AFFICHAGE, CORRIGÉE AUX DEUX BOUTS
 
