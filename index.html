@@ -26278,6 +26278,14 @@ function CoachmarkHype(props) {
     var id = props.id, titre = props.titre, texte = props.texte, emoji = props.emoji || "\uD83D\uDCA1", fait = !!props.fait;
     var ctxCm = useApp(); var tr = ctxCm.tr;
     var stV = React.useState(function () { return !coachmarkVu(id); }); var visible = stV[0], setVisible = stV[1];
+    /* 20/08 (session 144) : la bulle n'etait memorisee QUE si on tapait dessus. L'effet ci-dessous
+       (fait) ne pouvait pas s'en charger : la bulle de la cloche n'est rendue que panneau ferme
+       ((!ouvert) ? ... : null), donc taper sur la cloche la DEMONTE avant que l'effet ait tourne.
+       Or « tape sur la cloche » est justement ce que la bulle demande de faire. Resultat : elle
+       revenait a chaque rechargement pour qui suivait la consigne. Elle est desormais memorisee
+       DES QU'ELLE EST AFFICHEE : un conseil affiche a fait son travail, quel que soit le geste
+       qui suit. Les deux anciens chemins (fait, fermer) restent en place, ils ne nuisent pas. */
+    React.useEffect(function () { if (visible) coachmarkMarquerVu(id); }, []);
     React.useEffect(function () {
         if (fait && visible) { coachmarkMarquerVu(id); setVisible(false); }
     }, [fait]);
@@ -33829,7 +33837,7 @@ function OverlayQuoiDeNeuf() {
     var vu = null;
     try { vu = localStorage.getItem("hype_maj_vue"); } catch (e) { vu = rep.version; }
     if (vu === rep.version) return;
-    var id = setTimeout(function () { setVisible(true); }, 1100);
+    var id = setTimeout(function () { setVisible(true); try { localStorage.setItem("hype_maj_vue", rep.version); } catch (eV) { } }, 1100); /* 20/08 (session 144) : la version n'etait enregistree que par fermer(), c'est-a-dire trois gestes precis (fond, « En selle », « Tout voir »). Quitter l'accueil, se deconnecter ou changer d'onglet sans fermer ne laissait aucune trace : l'annonce revenait indefiniment. Elle est desormais enregistree AU MOMENT DE L'AFFICHAGE. fermer() continue d'ecrire la meme valeur, sans effet de bord. */
     return function () { clearTimeout(id); };
   }, [ctx && ctx.ecran]);
 

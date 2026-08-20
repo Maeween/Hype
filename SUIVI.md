@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES) — md5 `217e590ae78f7a69fb4af211930c2be9`, 9 235 604 octets. Aucun changement visuel, aucun fichier compagnon modifié : `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT) — md5 `f3aa5786888d2bb8c5eaca4e7cfbeb0f`, 9 236 840 octets. Aucun changement visuel, aucun fichier compagnon modifié : `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -62,9 +62,34 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 
 ---
 
-## SESSION 144 — 20/08/2026 (nuit, ~3 h) · LES MEMBRES INVISIBLES
+## SESSION 144 — 20/08/2026 (nuit, ~3 h) · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT
 
 **Base de travail** : `index.html` md5 `b6ac91f1eb6a390fe38db928fae28f84` (sortie de la 143), fourni par Blandine en cours de séance. Livré en `217e590ae78f7a69fb4af211930c2be9`, 9 235 604 octets. Aucun fichier compagnon touché.
+
+### 🔴 SECOND CHANTIER — LES BULLES QUI REVIENNENT À CHAQUE DÉCONNEXION
+
+Signalé par Blandine en fin de séance, capture 03 h 40 : *« le retour des notifs et de la petite annonce que les story sont en ligne, l'enfer, 9e fois de la journée, à chaque déco elles sont revenues »*. Sujet déjà ouvert en session antérieure, conclusion alors portée au SUIVI : **« mécanisme SAIN »**. Ce diagnostic était juste **mais incomplet** — il ne testait qu'un seul chemin.
+
+**Deux hypothèses posées puis ÉCARTÉES cette nuit, dites comme telles :**
+- *La purge du stockage au changement de compte* (lignes 21042 et 23255, écrite le 27/07) : elle épargne `hype_uid`, `hype_rappeler`, `hype_teinte`, `hype_maj_vue`, `hype_install_vu` et efface tout le reste, `hype_coach_*` compris. **Écartée** : Blandine se reconnecte sur son propre compte, la condition `ancienUid !== u.id` n'est jamais vraie.
+- *Le stockage local saturé* : **écartée** après lecture — les photos originales sont stockées comme **URL** (`original: avantFsUrl`), pas en base64. Rien d'assez lourd pour atteindre le quota.
+
+**La vraie cause, lue dans le code — la même pour les deux bulles : une bulle n'est mémorisée que par un geste de fermeture précis, jamais par le fait d'avoir été affichée.**
+
+**1 · La bulle « Tes notifications sont ici »** (`CoachmarkHype`, 26276). Deux chemins d'enregistrement : `fermer()` (taper sur la bulle) et un `useEffect` sur `fait`. Or la bulle de la cloche n'est rendue que **panneau fermé** — `var coachCloche = (!ouvert) ? … : null` (27718). Taper sur la cloche la **démonte avant que son effet ait pu tourner** : le `fait: ouvert` est du **code mort**. Et « tape sur la cloche » est exactement ce que la bulle demande de faire. Qui suit la consigne ne la mémorise jamais.
+
+**2 · L'annonce de mise à jour** (« Quoi de neuf » / stories, 33827). `hype_maj_vue` n'était écrite que par `fermer()`, joignable par **trois gestes seulement** : le fond, « En selle », « Tout voir ». Quitter l'accueil, changer d'onglet ou se déconnecter sans fermer ne laissait **aucune trace**.
+
+**Correctif livré — les deux sont désormais mémorisées AU MOMENT DE L'AFFICHAGE.**
+- `CoachmarkHype` : un `useEffect` de montage écrit `hype_coach_<id>` dès que la bulle est visible.
+- Annonce de mise à jour : `hype_maj_vue` est écrite dans le `setTimeout` qui déclenche l'affichage.
+- **Les anciens chemins sont conservés** (`fait`, `fermer()`) : ils écrivent la même valeur, sans effet de bord. Rien n'est supprimé.
+
+⚠️ **Changement de comportement à connaître** : une bulle affichée est consommée, même si elle n'est pas lue. C'est le prix de la fin de la récurrence, et c'est le comportement standard d'un conseil ponctuel. Réversible en retirant les deux effets ajoutés. Les 4 autres coachmarks de l'index (tableaux spectraux, agenda du club, rattachement de cheval) bénéficient du même correctif, ils partagent le composant.
+
+**À l'écran : +** rien · **−** la bulle des notifications et l'annonce de mise à jour ne reviennent plus une fois affichées.
+
+**Reste non vérifié** : Blandine parle de « l'annonce que les story sont en ligne ». Elle a été rattachée à l'annonce de mise à jour (`HYPE_MAJ`, la seule annonce de ce type sur l'accueil), **par déduction et non par confirmation**. Si une autre bannière existe ailleurs, elle n'est pas traitée — à confirmer au prochain test.
 
 ### Point de départ : le chantier de la carte de la communauté
 
