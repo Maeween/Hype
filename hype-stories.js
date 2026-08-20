@@ -5253,8 +5253,24 @@ function CompositionStory(props) {
        story, et le retour d'iOS reste bloque (regle 19c/19y/19z).
      `overscrollBehavior: contain` empeche le defilement de se propager a la
      page derriere. On ne touche NI a PhotoZoomHype NI au verrou multi-doigts :
-     aucun calque n'est ajoute au-dessus de la photo (regle du 02/08). */
-  return h("div", { style: { position: "relative", width: "100%", maxWidth: "100%", minWidth: 0, height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", touchAction: "pan-y", display: "flex", flexDirection: "column", justifyContent: "flex-start", padding: "8px " + MARGE_COMPO + "px calc(env(safe-area-inset-bottom) + 10px)", boxSizing: "border-box", gap: 10 } },
+     aucun calque n'est ajoute au-dessus de la photo (regle du 02/08).
+
+     ⚠️ 20/08/2026 (signalement de Blandine, capture a 02 h 05 : « le coeur
+     dans les story ainsi que le bouton Partager empietent sur les images »).
+     LA CAUSE, MESUREE : le coeur (CoeurStory, ligne ~322 : left 14, bottom 14)
+     et le bouton Partager (ligne ~6068 : right 14, bottom 14 — ou bottom 62
+     quand la story porte une musique) sont poses en `position: absolute` sur
+     le lecteur. Ils ne sont donc PAS dans le flux de cette colonne, qui
+     defilait jusqu'a 10 px du bas et glissait ses tirages DESSOUS. Sur la
+     capture, le Partager couvrait la 3e vignette et le coeur mordait la 1re.
+     CE QUI CHANGE : la colonne RESERVE la bande basse au lieu de l'ignorer.
+     64 px suffisent quand le Partager est a bottom 14 (38 px de haut + 14 de
+     marge + un peu d'air) ; 112 px quand une musique le remonte a bottom 62,
+     la pastille son occupant alors le coin.
+     ⚠️ AUCUN deplacement du coeur ni du Partager : ils gardent exactement la
+     place validee en 19ak et 19aq. Seule la reserve change. Si l'un des deux
+     bouge un jour, ces deux nombres doivent bouger avec lui. */
+  return h("div", { style: { position: "relative", width: "100%", maxWidth: "100%", minWidth: 0, height: "100%", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", touchAction: "pan-y", display: "flex", flexDirection: "column", justifyContent: "flex-start", padding: "8px " + MARGE_COMPO + "px calc(env(safe-area-inset-bottom) + " + ((story && story.musique) ? 112 : 64) + "px)", boxSizing: "border-box", gap: 10 } },
 
     cadres,
     h(hsBoutonForme, {
