@@ -1858,6 +1858,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #inPass{display:flex;align-items:center;gap:14px;justify-content:center;
   width:100%;margin:14px 0 0;padding:10px 6px;border:0;background:none;cursor:pointer}
 #inPass img{height:64px;width:auto;flex:0 0 auto}
+#inVoyage{display:block;width:100%;margin:26px 0 0;padding:0;border:0;background:none;cursor:pointer;position:relative}
+#inVoyage img{display:block;width:100%;height:auto;border-radius:18px}
+#inVoyageT{position:absolute;left:18px;bottom:14px;font-family:'Cinzel',serif;
+  font-size:15px;letter-spacing:.6px;color:#F4F7FA;text-shadow:0 1px 8px rgba(0,0,0,.75)}
 
 /* la porte du compte (v44, decisions de Blandine du 9 aout) : A turquoise
    et SOUPLE sur « Partir » (proposee une fois, « Plus tard » laisse passer),
@@ -2335,6 +2339,15 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
          de choisir ma destination »). Même Apy, mêmes libellés, même
          destination que le paywall : une mascotte, trois portes, une idée.
          Tap → ouvrirCompte(), le compte (z70) passe devant l'intro (z45). -->
+    <!-- 🟥 20/08 v64 : L'ENCART « CONTINUE TON VOYAGE » — image retrouvée
+         par Blandine (Apy au bord du chemin étoilé, flèche dessinée dans
+         l'image même). Placement décidé par elle : sur la présentation,
+         AU-DESSUS du passeport, un peu d'espace entre les deux. Tap →
+         inSuite (choisir sa destination) : la flèche mène au voyage. -->
+    <button id="inVoyage" type="button">
+      <img src="apy-voyage.webp?i=1" alt="" onerror="this.parentNode.style.display='none'">
+      <span id="inVoyageT" data-t="continueVoyage">Continue ton voyage</span>
+    </button>
     <button id="inPass" type="button">
       <img src="apy-passeport.webp?i=3" alt="" onerror="this.style.display='none'">
       <span class="pwPassTxt">
@@ -3722,7 +3735,10 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=63";   /* 🟥 v63 (20/08) : Apy passe a la version BLEU PROFOND retrouvee par
+var VER = "?v=64";   /* 🟥 v64 (20/08) : l'encart « Continue ton voyage » (apy-voyage.webp)
+                        sur la presentation, au-dessus du passeport — placement de
+                        Blandine. Tap -> inSuite.
+                        v63 (20/08) : Apy passe a la version BLEU PROFOND retrouvee par
                         Blandine (pose Lecture d'origine, dessinee sombre) — ?i=3 sur
                         les QUATRE emplacements (3 <img> + le prechauffage).
                         v62 (20/08) : les regles #inPass sorties du @keyframes ou elles
@@ -8222,6 +8238,8 @@ var UI = {
  pwCta:{fr:"Découvrir l'abonnement", en:"See the subscription", es:"Ver la suscripción",
    it:"Scopri l'abbonamento", de:"Zum Abo", ja:"プランを見る"},
  /* 🟥 19/08 : les deux lignes du passeport du paywall. */
+ continueVoyage:{fr:"Continue ton voyage", en:"Continue your journey", es:"Continúa tu viaje",
+   it:"Continua il tuo viaggio", de:"Setz deine Reise fort", ja:"旅を続けよう"},
  pwOuvre:{fr:"Ouverture de Hype…", en:"Opening Hype…", es:"Abriendo Hype…",
    it:"Apertura di Hype…", de:"Hype wird geöffnet…", ja:"Hypeを開いています…"},
  pwDeja:{fr:"Déjà du voyage ?", en:"Already travelling?", es:"¿Ya eres del viaje?",
@@ -9376,7 +9394,9 @@ function versCompteDepuisPorte(){
 }
 /* 🟥 v60 : le passeport de la présentation — délégation, comme le paywall. */
 S("intro").addEventListener("click", function(ev){
-  var c = ev.target && ev.target.closest ? ev.target.closest("#inPass") : null;
+  var t = ev.target;
+  if(t && t.closest && t.closest("#inVoyage")){ ev.preventDefault(); S("inSuite").click(); return; }
+  var c = t && t.closest ? t.closest("#inPass") : null;
   if(!c) return;
   ev.preventDefault();
   ouvrirCompte();
