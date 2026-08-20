@@ -35,9 +35,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 148 · LES POINTS ARGENTÉS DES STORIES) — md5 `bbb7f04ad912e52ad9960f76d54f32c7`, 9 250 946 octets. `index.html` SEUL — `hype-stories.js` n'est PAS modifié (reste 19bl, `?v=19bl` inchangé), `hype-clubs-db-4.js` et `hype-clubs-loader.js` non plus.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 148 · LES POINTS ARGENTÉS + LE DÉLAI DE ROTATION DU GLOBE) — md5 `9dc2892f376ee47eebb4a3f9e6955f72`, 9250946 octets. `index.html` SEUL — `hype-stories.js` reste 19bl.**
 
-**Ancienne version (147) — 20/08/2026 (LE ZOOM iOS + LE PANNEAU DES ORIGINES + LA LÉGENDE PERDUE) — md5 `662196b17552c4d6236cec2a63e6731d`, 9 248 000 octets. ⚠️ `hype-stories.js` MODIFIÉ (VERSION 19bl, md5 `c4b4f8fe5513bea8b682430ee8ad19f2`, 395 641 o) : les DEUX se poussent ensemble. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Ancienne version (147) — 20/08/2026 (SESSION 147 · LE ZOOM iOS + LE PANNEAU DES ORIGINES + LA LÉGENDE PERDUE) — md5 `662196b17552c4d6236cec2a63e6731d`, 9 248 000 octets. ⚠️ `hype-stories.js` MODIFIÉ (VERSION 19bl, md5 `c4b4f8fe5513bea8b682430ee8ad19f2`, 395 641 o) : les DEUX se poussent ensemble. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -64,76 +64,61 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 
 ---
 
-## SESSION 148 — 20/08/2026 (soir) · LES POINTS ARGENTÉS DES STORIES — ÉTAPE 1
-
-⚠️ **Collision de numérotation, dite d'avance :** une « Session 148 » datée du 15/08 existe déjà plus bas dans ce fichier (stories 19af/19ag). Les deux séries de numéros coexistent depuis le 19/08. Ce 148-ci suit le 147 du 20/08 de l'en-tête.
+## SESSION 148 — 20/08/2026 (soir) · LES POINTS ARGENTÉS DES STORIES + LE GLOBE QUI NE TIENT PAS EN PLACE
 
 ### 🟢 LE CHANGEMENT DE DIRECTION — LA POSITION NE VIENT PLUS DU TÉLÉPHONE
 
-La 147 avait tranché : géolocalisation à la publication, arrondie à ~1 km. **Blandine a changé de voie ce soir, et c'est mieux.**
+La 147 avait tranché : géolocalisation à la publication. **Blandine a changé de voie, et c'est mieux.** Ses mots, qui donnent l'usage réel : *« le but c'est que les cavaliers principalement mineurs puissent voir qui est en concours »*, *« si on peut pas indiquer la story sur place des concours, ça sert à rien »*.
 
-Ses mots, qui donnent l'usage réel : *« le but c'est quand même que les cavaliers principalement mineurs puissent aussi voir qui est en concours quand ils font des déplacements sur le gros concours »*, *« si on peut pas indiquer la story sur place des concours, franchement c'est nul ça sert à rien »*.
+Ce qu'elle décrit n'est pas « où est cette cavalière » mais **« qui publie depuis ce concours »**. Le point se pose donc sur **le lieu déjà choisi à la publication**, jamais sur l'appareil. Aucune géolocalisation, donc plus rien à arbitrer sur les mineurs, et plusieurs cavalières au même concours = **un seul point**.
 
-**Ce qu'elle décrit n'est pas « où est cette cavalière », c'est « qui publie depuis ce concours ».** Le point n'a donc pas besoin d'être posé sur la personne : il se pose sur **le lieu de l'épreuve**.
+⚠️ **Débat tenu, ne pas rouvrir sans elle** : Claude a refusé le point de position pour un compte mineur, même arrondi à la ville. Blandine a objecté que le rapprochement est de toute façon faisable depuis la story. Distinction retenue : la story demande un effort, **le point s'allume sur un globe que n'importe qui fait tourner**. Devenu sans objet avec la voie « lieu choisi ».
 
-**Voie retenue : le point vient du champ « lieu » déjà choisi à la publication**, jamais de l'appareil.
+### CE QUI EST LIVRÉ
 
-Ce que ça règle d'un coup :
-- **Aucune géolocalisation**, donc plus rien à arbitrer sur les mineurs : ils publient et voient comme tout le monde.
-- **Plusieurs cavalières au même concours = UN seul point**, plus lumineux. C'est ce que Blandine veut voir, et c'est plus lisible que dix points éparpillés.
-- Aucune donnée personnelle ne quitte l'appareil.
+**Étape 1 — les points argentés.** `hypeStoriesLieux()` (après `hypeClubsHabites`) lit les stories non expirées, rapproche chaque `lieu` des **131 clubs de `CLUBS`** par `clefClubG` puis `noyauEcurie`, regroupe par coordonnées. Envoi sur le `load` de l'iframe, canal `hype-stories-lieux`.
+Côté iframe : `STORY_PTS`, **tableau SÉPARÉ, jamais `CLUBS`** — c'est ce qui protège du globe figé du matin, et les points n'apparaissent ni dans la recherche, ni dans le compte, ni dans « les plus populaires ». Anneau `#DCE9EF` + cœur `#EDF4F8`, pulsation `T*0.055`. Extinction gratuite (la requête ne lit que le vivant).
 
-⚠️ **Débat tenu avant, à ne pas rouvrir sans elle.** Claude a refusé le point de position pour les comptes mineurs, même arrondi à la ville : un point qui pulse dit « maintenant », et sur une petite commune il désigne une personne. Blandine a objecté, à raison, que le rapprochement est de toute façon faisable depuis la story. La distinction retenue : la story demande un effort et reste dans son cercle, **le point s'allume sur un globe que n'importe qui fait tourner**. Le sujet est devenu sans objet avec la voie « lieu choisi ».
-
-### CE QUI EST LIVRÉ — ÉTAPE 1 SEULE
-
-**Blandine : « ben d'abord les points ».** L'ouverture des stories au tap est l'étape 2, **non faite**.
-
-**Côté index — `hypeStoriesLieux()`** (juste après `hypeClubsHabites`) : lit les stories non expirées (`select("lieu")`, 300 max), rapproche chaque `lieu` des **131 clubs de `CLUBS`** par `clefClubG` puis `noyauEcurie` — exactement le patron des clubs habités — regroupe par coordonnées et compte.
-
-**L'envoi** part sur le `load` de l'iframe, à côté de celui des clubs habités, canal `hype-stories-lieux`.
-
-**Côté iframe** : `STORY_PTS` — **un tableau SÉPARÉ, jamais `CLUBS`.** Décision de Claude, annoncée à Blandine et sans objet pour elle (« je comprends rien », dit franchement — la question était mal posée, c'était de la plomberie).
-⚠️ **C'est ce qui protège du globe figé du 20/08 au matin** : un point poussé dans `CLUBS` sans son vecteur 3D casse la boucle de dessin. Ici la boucle de dessin des clubs n'est pas touchée. Bénéfice de bord : les points n'apparaissent **ni dans la recherche, ni dans le compte « X affichés », ni dans « les plus populaires »**.
-
-**Le dessin** : anneau argenté `#DCE9EF` + cœur `#EDF4F8`, pulsation `T*0.055`, posé après les clubs. **Non cliquable** (rien n'entre dans `vis`).
-
-**L'extinction est gratuite** : la requête ne lit que les stories non expirées. Plus de story vivante sur un lieu = plus de point au prochain chargement de l'écran Monde.
+**Le délai de rotation** : `now-lastTouch>1400` passe à **2500**. Sur les mots de Blandine : *« elle s'arrête tant qu'on a le doigt dessus, dès qu'on lâche elle repart »* — c'est déjà le comportement, seul le délai change.
 
 ### 🔵 CE QUI A ÉTÉ TESTÉ — ET C'EST NOUVEAU
 
-**Réponse au constat de la 147 : « rien n'est testé avant la mise en ligne ».** Deux bancs d'essai écrits ce soir, à garder :
-
-**`test-globe.js`** — fait **tourner** le JS de l'iframe dans un faux navigateur (canvas enregistreur, faux DOM), pas seulement `node --check` :
-1. le script s'exécute · 2. première image : 1 852 cercles · 3. message reçu · 4. `STORY_PTS` = 2, **vecteurs présents** · 5. **100 images d'affilée sans erreur** · 6. liste vide, lieu sans coordonnées, message sans liste : rien ne casse · 7. **clubs habités toujours dorés (153 cercles)**.
-⚠️ Le test compte 5 arcs argentés pour 4 attendus : **artefact du faux canvas** (le stub ne restaure pas les styles sur `restore()`), 2 anneaux + 2 cœurs vérifiés à l'unité. Pas un défaut du code.
-
-**`test-lieux.js`** — le rapprochement avec les **vraies** fonctions de l'index et les **vrais** 131 clubs :
-- les 5 lieux choisis dans les suggestions retombent tous sur le bon club, aux bonnes coordonnées ;
-- « Santa Ponsa , Mallorca . España », « chez moi », « la carrière », vide → **aucun point**, comme prévu ;
-- **131 / 131 clubs se retrouvent eux-mêmes.**
-
-**Ce que ces tests ne voient toujours pas** : le rendu réel sur iPhone, et le comportement de Supabase. Ils attrapent les erreurs d'exécution, pas les erreurs de goût.
+Réponse au constat de la 147 (« rien n'est testé avant la mise en ligne »). Deux bancs d'essai, **à garder** :
+- **`test-globe.js`** fait TOURNER le JS de l'iframe (faux canvas, faux DOM) : script exécuté, 100 images d'affilée sans erreur, `STORY_PTS` avec ses vecteurs, cas limites (liste vide, lieu sans coordonnées, message sans liste), **clubs habités toujours dorés**.
+- **`test-lieux.js`** : **131 / 131** clubs se retrouvent eux-mêmes ; « Santa Ponsa , Mallorca . España », « chez moi », vide → aucun point.
+- **`test-tap.js`** (étape 2, non livrée) : le tap remonte le bon lieu, un tap à côté ne remonte rien.
 
 ### À l'écran : + / −
 
-**+** des points argentés qui pulsent sur le globe, aux clubs portant une story en cours · **−** rien. Aucun écran, bouton ou comportement existant n'est retiré.
+**+** points argentés pulsants sur les clubs portant une story en cours · **−** rien.
 
-### CE QUI RESTE POUR L'ÉTAPE 2
+### 🔴 CE QUE LA VIDÉO DE BLANDINE A RÉVÉLÉ — QUATRE DÉFAUTS ANCIENS, AUCUN DE LA 148
 
-**Taper le point ouvre les stories du lieu.** Non fait, et c'est un vrai morceau : la visionneuse vit dans la page mère, le point dans l'iframe — il faut remonter par `postMessage` et brancher `hsListerStories` filtré sur le lieu.
+**Prouvé par comparaison ligne à ligne de l'iframe avant/après : la 148 n'ajoute que trois blocs** (déclaration, dessin, détection du tap). Les lignes de rotation et de zoom sont **identiques au caractère près**.
 
-### ⚠️ LES DEUX COLONNES SQL SONT PASSÉES ET NE SERVENT PAS ENCORE
+1. **🔴 LA BANDE DE 26 PX QUI ÉJECTE.** Une bande invisible `position:absolute; left:0; width:26; zIndex:7` posée par-dessus le globe : un glissement de +60 px vers la droite déclenche `retourEcran()`. **C'est exactement le geste qui tourne le globe.** Blandine : *« à la fin je me fais virer de la page »*. ⚠️ **NE PAS LA RETIRER : « c'est moi qui l'avais demandée »** (ses mots). À concilier autrement.
+2. **L'élan qui traîne** : `vyaw *= 0.98` par image → ~6 s avant l'arrêt. **Laissé tel quel** : `pointerdown` remet l'élan à zéro, donc le doigt l'arrête net. Constat de Blandine, exact.
+3. **`maximum-scale=3`** (posé en 147) bride le zoom. **Non touché, et volontairement** : agrandir le zoom sur une grille de 2,5° n'écarte que les mêmes points. Le zoom n'aura de sens qu'après la grille fine.
+4. **🔴 LES CONTINENTS ILLISIBLES.** Grille de **2,5°** : la France tient dans 4 points sur 4. Blandine : *« je serais incapable de dire où est la France et où est l'Espagne »*, *« déjà qu'on puisse reconnaître les pays et les continents on sera bien »*. **L'objectif est la SILHOUETTE, pas le détail.**
 
-`lat` et `lon` ont été ajoutées à `hype_stories` par Blandine le 20/08 à 22 h 19 (« Success. No rows returned »), **avant** le changement de voie. **Elles sont vides et inutilisées.** Rien à défaire : elles resserviront le jour où une géolocalisation d'appoint sera décidée pour les majeures. **Ne pas les supprimer, ne pas les remplir sans décision.**
+**Chiffres relevés** : 2 215 points aujourd'hui (moitié visible). Grille 1,25° → 8 860 (×4). ⚠️ **Ce qui coûte cher n'est pas le calcul, c'est le halo** (`shadowBlur`) posé sur les points clairs. Voie retenue : grille plus fine **sans augmenter le nombre de halos**. Blandine doute que ça tienne — à mesurer sur son appareil, pas à affirmer.
 
-⚠️ **Le repli de `hsPublierStory` (ligne ~1013) n'a PAS été touché** : il ne supprime que `lieu`, `musique`, `fond`. Si un jour `lat`/`lon` partent dans la ligne d'insertion, **il faudra les ajouter à ce repli**, sinon une colonne manquante fait perdre la story entière.
+### 🟡 NON DIAGNOSTIQUÉ
+
+**« Les plus populaires » n'est pas à jour** : des clubs à 1 membre passent devant Écurie Feinn qui en a 13. Le tri se fait bien sur `mem`. **Cause inconnue, aucune hypothèse inventée.**
+
+### ⚠️ CE QUI EST CODÉ ET NON LIVRÉ
+
+**L'étape 2** (le point argenté ouvre les stories du lieu) est écrite et testée, **jamais poussée** : `hsStoriesDuLieu` + `hsMemeLieu` + export de `VisionneuseStories` dans `hype-stories.js` (19bm), tap dans l'iframe, visionneuse dans `EcranMonde`. Fichier de travail conservé. **Elle attend que Blandine puisse voir un point.**
+
+### ⚠️ LES DEUX COLONNES SQL PASSÉES ET INUTILISÉES
+
+`lat` et `lon` ajoutées à `hype_stories` le 20/08 à 22 h 19, **avant** le changement de voie. Vides, sans effet. **Ne pas les supprimer, ne pas les remplir sans décision.** Si elles servent un jour, **les ajouter au repli de `hsPublierStory` (~1013)**, sinon une colonne manquante fait perdre la story entière.
 
 ### PRÉPARATION FLUTTER
 
-`hypeStoriesLieux()` sort une règle nommée — « quels lieux sont vivants en ce moment » — qui ne dépend d'aucun écran : la forme d'un futur `StoryRepository.lieuxActifs()`. Elle ne renvoie que des données (nom, lat, lng, compte), aucun élément d'affichage.
-
-**Ce qui reste, et c'est le même fond qu'en 147** : le lieu d'une story est **une chaîne de texte**, jamais un identifiant de club. Le rapprochement marche à 131/131 aujourd'hui **parce que la suggestion recopie le nom exact** — le jour où un nom de club change dans `CLUBS`, les stories déjà publiées perdent leur point sans bruit. Le remède est le même que pour les écuries : un `club_id`, qui n'existe toujours nulle part.
+`hypeStoriesLieux()` sort une règle nommée — « quels lieux sont vivants » — indépendante de tout écran : forme d'un futur `StoryRepository.lieuxActifs()`.
+**Ce qui reste** : le lieu d'une story est **une chaîne de texte**, jamais un identifiant. 131/131 marchent **parce que la suggestion recopie le nom exact** — le jour où un nom change dans `CLUBS`, les stories publiées perdent leur point sans bruit. Même remède que pour les écuries : un `club_id`, toujours inexistant.
 
 ---
 
