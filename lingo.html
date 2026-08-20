@@ -2006,9 +2006,14 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #compte .cpVue{display:none;padding:0 26px 46px;max-width:430px;margin:0 auto}
 #compte .cpVue.on{display:block;animation:cpEntre .42s ease}
 @keyframes cpEntre{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
-#cpFermer{position:absolute;top:14px;left:14px;z-index:2;width:38px;height:38px;
-  border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.35);
-  color:var(--gris);font-size:19px;cursor:pointer}
+/* 🟥 20/08 v68 : LA CROIX SE VOIT ENFIN (constat de Blandine : « une fois
+   sur la page mon compte on ne sait plus comment la quitter » — elle
+   existait, noyée derrière la lueur du globe). Pastille en verre fumé,
+   bord turquoise, même famille que le retour des villes. */
+#cpFermer{position:absolute;top:16px;left:16px;z-index:2;width:40px;height:40px;
+  border-radius:50%;border:1px solid rgba(32,217,245,.35);cursor:pointer;
+  background:rgba(6,7,9,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  color:#F4F7FA;font-size:22px;line-height:38px;text-align:center;padding:0}
 .cpAffiche{position:relative;height:36vh;min-height:225px;overflow:hidden;
   background:url("lingua-affiche.webp") center/cover no-repeat}
 .cpAffiche::after{content:"";position:absolute;inset:0;
@@ -2380,7 +2385,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
         </button>
         <span class="inPassFilet"></span>
         <button type="button" class="inPassLigne" data-cpvue="cpCreation">
-          <span class="pwPassL1" data-t="pwNouvelle">Nouvelle cavalière ?</span>
+          <span class="pwPassL1" data-t="pwNouvelle">Premier voyage ?</span>
           <span class="pwPassL2" data-t="pwCreer">Crée ton passeport</span>
         </button>
       </span>
@@ -3765,7 +3770,13 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=67";   /* 🟥 v67 (20/08) : les deux encarts a 200px, et le passeport devient
+var VER = "?v=69";   /* 🟥 v69 (20/08) : le prechauffage attend le premier `playing` du film
+                        (sur 3G il affamait la video — 5 s de lancement, constat de
+                        Blandine). Film refuse ou en erreur : depart immediat.
+                        v68 (20/08) : « Premier voyage ? » (sans genre, 6 langues), la
+                        croix du compte visible (pastille verre), et le glisser vers
+                        le bas ferme l'ecran du compte.
+                        v67 (20/08) : les deux encarts a 200px, et le passeport devient
                         double — connexion ET creation, chacune vers sa vue.
                         v66 (20/08) : le bouton « Choisir ma destination » retire de
                         l'ecran (doublon avec l'encart) — l'encart devient LE geste,
@@ -8279,8 +8290,8 @@ var UI = {
    it:"Scegli la tua destinazione", de:"Wähl dein Reiseziel", ja:"行き先を選ぼう"},
  pwOuvre:{fr:"Ouverture de Hype…", en:"Opening Hype…", es:"Abriendo Hype…",
    it:"Apertura di Hype…", de:"Hype wird geöffnet…", ja:"Hypeを開いています…"},
- pwNouvelle:{fr:"Nouvelle cavalière ?", en:"New to the journey?", es:"¿Nueva en el viaje?",
-   it:"Nuova nel viaggio?", de:"Neu auf der Reise?", ja:"旅は初めて？"},
+ pwNouvelle:{fr:"Premier voyage ?", en:"First journey?", es:"¿Primer viaje?",
+   it:"Primo viaggio?", de:"Erste Reise?", ja:"旅は初めて？"},
  pwCreer:{fr:"Crée ton passeport", en:"Create your passport", es:"Crea tu pasaporte",
    it:"Crea il tuo passaporto", de:"Erstell deinen Pass", ja:"パスポートを作ろう"},
  pwDeja:{fr:"Déjà du voyage ?", en:"Already travelling?", es:"¿Ya eres del viaje?",
@@ -9396,6 +9407,20 @@ function sellerieMaj(){
 (function(){
   function br(id, fn){ var e=S(id); if(e) e.addEventListener("click", fn); }
   br("cpFermer", fermerCompte);
+  /* 🟥 v68 : le geste iOS naturel — glisser vers le bas ferme le compte.
+     Seuil 90px, uniquement si l'écran est déjà en haut de son défilement
+     (sinon on laisse le défilement faire son travail). */
+  (function(){
+    var y0=null;
+    S("compte").addEventListener("touchstart",function(e){
+      y0 = (S("compte").scrollTop<=0 && e.touches && e.touches[0]) ? e.touches[0].clientY : null;
+    },{passive:true});
+    S("compte").addEventListener("touchmove",function(e){
+      if(y0===null) return;
+      if((e.touches[0].clientY - y0) > 90){ y0=null; fermerCompte(); }
+    },{passive:true});
+    S("compte").addEventListener("touchend",function(){ y0=null; },{passive:true});
+  })();
   br("ouvSellerie", ouvrirSellerie);   /* ⚠️ 14/08 : rebranché, filtré par le rang */
   br("cpVersCo", function(){ cpVue("cpConnexion"); });
   br("cpVersCr", function(){ cpVue("cpCreation"); });
@@ -11877,7 +11902,7 @@ function lancerFilm(){
     if(!S("ouvFilm").classList.contains("fini")) S("ouvFilm").classList.add("attend");
   }, 350);
   var j=v.play();
-  if(j&&j.catch) j.catch(function(){ S("ouvFilm").classList.add("refuse"); });
+  if(j&&j.catch) j.catch(function(){ S("ouvFilm").classList.add("refuse"); prechaufferOuverture(); });
   /* Le film fait 10,1 s mesurees. Le bouton de sortie apparaissait avant
      au bout de 2 s, quoi qu'il arrive : huit secondes AVANT la fin, donc
      on sautait en pleine sequence. Il n'apparait plus qu'a la vraie fin
@@ -11892,17 +11917,23 @@ function lancerFilm(){
      sur un ecran fige. ⚠️ A REGLER A NOUVEAU si le film est remplace. */
   FILM_FILET=setTimeout(function(){ S("ouvFilm").classList.add("fini"); }, 5600);
 
-  /* 🟥 19/08 v60 — LE PRÉCHAUFFAGE : les cinq secondes du film sont du
-     temps mort réseau, on y télécharge EN SILENCE les images des écrans
-     qui suivent. Sans ça, chaque écran « pope » son image à l'arrivée
-     — le stroboscope décrit par Blandine. Les URLs sont EXACTEMENT
-     celles des feuilles de style et du code (requête comprise : une URL
-     qui diffère d'un `?v=` est une entrée de cache différente).
-     Le service worker range tout au passage pour les fois suivantes. */
+}
+
+/* 🟥 20/08 v69 — LE PRÉCHAUFFAGE ATTEND QUE LE FILM JOUE. La v60 le
+   lançait À L'INSTANT du démarrage : sur 5G, invisible ; sur 3G, les
+   sept téléchargements AFFAMAIENT la vidéo (constat de Blandine : « sa
+   vidéo a mis au moins 5 secondes à se lancer »). Désormais la vidéo
+   prend la route EN PREMIER, les images partent au premier `playing` —
+   pendant que le film tourne, la bande passante restante leur suffit.
+   Film refusé ou en erreur : pas de flux à protéger, départ immédiat.
+   Une seule fois par session (drapeau). */
+var __prechauffe=false;
+function prechaufferOuverture(){
+  if(__prechauffe) return; __prechauffe=true;
   try{
     ["lingua-langues.webp","lingua-affiche.webp","fond-newmarket.webp",
      "tour-monde.webp?v=34","fond-lingua.webp","carnet-ferme.webp"+VER,
-     "apy-passeport.webp?i=3"].forEach(function(u){ (new Image()).src = u; });
+     "apy-passeport.webp?i=3","apy-voyage.webp?i=1"].forEach(function(u){ (new Image()).src = u; });
   }catch(e){}
 }
 
@@ -11913,16 +11944,18 @@ function lancerFilm(){
      l'ecran. Sinon le v.load() de terminerOuverture, qui vide la source,
      peut relancer terminerOuverture en boucle. */
   v.addEventListener("error",function(){
+    prechaufferOuverture();  /* v69 : film mort = rien à protéger */
     if(S("ouvFilm").classList.contains("joue")) terminerOuverture();
   });
   v.addEventListener("playing",function(){
     S("ouvFilm").classList.remove("refuse","attend");
     if(window.__filmAttente){ clearTimeout(window.__filmAttente); window.__filmAttente=null; }
+    prechaufferOuverture();   /* v69 : les images partent APRÈS la vidéo */
   });
   S("ouvRelance").addEventListener("click",function(){
     S("ouvFilm").classList.remove("refuse");
     var j=v.play();
-    if(j&&j.catch) j.catch(function(){ S("ouvFilm").classList.add("refuse"); });
+    if(j&&j.catch) j.catch(function(){ S("ouvFilm").classList.add("refuse"); prechaufferOuverture(); });
   });
   S("thFermer").addEventListener("click", fermerThemes);
 S("ouvPasser").addEventListener("click",terminerOuverture);
