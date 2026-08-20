@@ -1,3 +1,88 @@
+# ☀️ SESSION DU 20/08/2026 — LA JOURNÉE DES RÉPARATIONS PROFONDES
+
+**De v60 à v70 en une journée.** La session du 19 avait branché le contenu ; celle-ci a réparé ce que les cavalières VIVENT : le démarrage, le paywall, le compte, la synchronisation — et Apy est entrée dans Linguae pour de bon.
+
+## 🔓 LES HUIT JOURS DE SILENCE — LA SYNC RESSUSCITÉE (SQL + v61)
+
+**Le fil tiré** : « Mon carnet : 0 mots » alors que Blandine a des mots épinglés. La cause, écrite dans le code depuis la session 209 : la lecture de `hype_lingua_progression` réclame la colonne `sellerie`, dont le SQL n'avait JAMAIS été exécuté. Depuis le 12/08, le select échouait et « base muette : on ne touche à rien » coupait TOUTE la synchronisation — carnet, maîtrise, cartes — en silence.
+
+- **Blandine a exécuté le SQL le 20/08 à 12 h 58** (« Success. No rows returned ») — verrou levé.
+- **v61 — la sync devient incassable** : si le select échoue, on RÉESSAIE sans `sellerie` ; « base muette » ne s'applique plus qu'aux vrais silences. Plus jamais huit jours de panne pour une colonne.
+- **v61 — l'écran du compte devient LE JUGE DE PAIX** : connecté, il relance le pont (`window.pontLingua`, seul nom public) et réécrit ses lignes avec la vérité fraîche. Rouvrir l'écran = resynchroniser, sans bouton.
+- **✅ VÉRIFIÉ EN LIGNE à 15 h 24** : Premium « Actif » en turquoise, **15 mots revenus**. Chantier compte/Premium/progression : RÉGLÉ côté Linguae.
+- ⚠️ Les mots épinglés ENTRE le 12 et le 20/08 vivaient en local sur l'ancien domaine : probablement inaccessibles. Avant le 12/08 : revenus. Après le 20/08 : repartent normalement.
+
+## 🧊 LE GEL DE 22 SECONDES — LA RÈGLE WEBKIT (v60)
+
+Filmé par Blandine : le paywall figé sous ses taps ~22 s, puis l'écran de compte s'ouvre d'un coup (le tap attendait le dégel dans la file). **CAUSE : `filter:drop-shadow` sur l'image d'Apy À L'INTÉRIEUR du `backdrop-filter:blur` du paywall** — l'empilement fait caler le compositeur WebKit iOS. Halo et animation d'entrée RETIRÉS des trois Apy.
+🟥 **RÈGLE GRAVÉE (code + ici) : jamais de `filter` sur un enfant d'un calque en `backdrop-filter`.**
+Au passage, v60 : les trois boutons du paywall passent EN DÉLÉGATION (un écouteur sur #paywall), et « Découvrir l'abonnement » se fige et annonce « Ouverture de Hype… » avant de naviguer — la navigation de 9,2 Mo n'est plus jamais muette.
+
+## 🎬 LES FLASHS DE L'OUVERTURE — SOLDÉS (v60)
+
+Les trois correctifs validés la veille, livrés :
+1. **L'affiche est un VRAI secours** : opacité 0 par défaut, elle ne se révèle que si le film n'a pas démarré après 350 ms ou s'il est refusé. Démarrage rapide : noir → film, sans elle.
+2. **La sortie sans re-flash** : les classes tombent D'ABORD (le conteneur disparaît d'un bloc), la source vidéo n'est vidée qu'après (80 ms), hors écran. 🟥 Ne pas remettre le pause()/load() avant le retrait des classes.
+3. **Le préchauffage** : pendant les 5 s du film, les 7 images des écrans suivants se téléchargent en silence (URLs EXACTES, requête comprise). Plus de « stroboscope ».
+📌 Établi au passage : batterie jaune = mode économie d'énergie = iOS INTERDIT l'auto-lecture → l'affiche + « Lancer le film » est le comportement PRÉVU, pas un bug. (Option « sauter le film d'office en mode éco » proposée, EN ATTENTE de décision.)
+
+## 🐴 APY ENTRE DANS LINGUAE — ET LA PRÉSENTATION SE RÉORGANISE (v57→v68)
+
+- **Apy version définitive** : la pose Lecture BLEU PROFOND retrouvée par Blandine (dessinée sombre d'origine, IMG_3161) remplace mon recoloriage — `apy-passeport.webp`, **`?i=3` sur les QUATRE emplacements** (3 <img> + le préchauffage ; incrémenter `?i` à chaque remplacement).
+- **v62, incident réparé** : mes règles #inPass étaient tombées DANS un `@keyframes` (accolade mal comptée) — ignorées par le navigateur, Apy s'affichait en pleine largeur. Sorties du bloc. 🟥 Contrôle ajouté : toute nouvelle règle CSS se vérifie HORS de tout @keyframes.
+- **v64-v66 — l'encart « Choisis ta destination »** : le paysage retrouvé par Blandine (Apy au chemin étoilé, flèche dessinée — `apy-voyage.webp`) devient LE grand geste de la présentation. Le bouton « Choisir ma destination » est RETIRÉ de l'écran (doublon relevé par Blandine : « même moi je m'y perds ») mais reste en display:none — le code le clique. 🟥 Ne pas le supprimer.
+- **v67 — les deux encarts à 200 px**, et **le passeport devient DOUBLE** : « Déjà du voyage ? / Présente ton passeport » → vue connexion · « Premier voyage ? / Crée ton passeport » (v68, sans genre — « ça pourrait être un cavalier aussi ») → vue création. Chaque ligne mène à SA vue ; connectée, les deux mènent au compte.
+- **v65** : le passeport avait perdu son encart et semblait légendé par la phrase des portes Hype — cadre rendu, 34 px d'air.
+
+## ✳️ L'ÉCRAN DU COMPTE — ON SAIT EN SORTIR (v68)
+
+Constat : « une fois sur la page mon compte on ne sait plus comment la quitter » — la croix existait, noyée derrière la lueur du globe. **v68** : pastille verre fumé 40 px à bord turquoise, et **le glisser vers le bas ferme l'écran** (seuil 90 px, seulement depuis le haut du défilement).
+
+## ⚠️ INCIDENTS DU JOUR, SIGNALÉS ET TRACÉS
+
+1. Le correctif v59 (rétrogradation) avait été APPLIQUÉ EN MÉMOIRE mais jamais écrit (script arrêté avant la sauvegarde) — attrapé par le contrôle post-livraison, réappliqué, PROUVÉ (1 seul `poser("0")` exécutable).
+2. Les règles #inPass dans le @keyframes (v62, ci-dessus).
+3. Le gabarit v67 citait `parentNode` au lieu de `this.style` — l'assertion a bloqué AVANT toute écriture : fichier intact, gabarit corrigé, rejoué. Les assertions font exactement leur travail.
+
+## 📦 LE LOT DU JOUR (tout livré, à l'état poussé selon Blandine)
+
+| fichier | contenu |
+|---|---|
+| `lingo.html` | v60 → **v68** (tout ci-dessus) |
+| `apy-passeport.webp` | Apy Lecture bleu profond, détourée, `?i=3` |
+| `apy-voyage.webp` | l'encart paysage « Choisis ta destination », 51 Ko |
+| `carte-versailles.webp` + vignette | recomposées : statue + coucher de soleil, façade raccourcie |
+| `lingo-sellerie.html` | crash du zoom corrigé (ombres éteintes en zoom, ZMAX 2,2) |
+
+## 🌇 FIN D'APRÈS-MIDI — v69, v70, ET LE CRASH DE LA SELLERIE
+
+**v69 — le préchauffage apprend la politesse.** Sur la 3G de campagne, les 7 téléchargements lancés À L'INSTANT du démarrage du film l'affamaient (« sa vidéo a mis au moins 5 secondes à se lancer »). Désormais la vidéo part SEULE ; les images partent au premier `playing` (fonction `prechaufferOuverture`, drapeau une-fois). Film refusé (mode éco) ou en erreur : départ immédiat, rien à protéger. ⚠️ Posée par chirurgie de LIGNES après deux gabarits refusés par les assertions — le vrai fichier différait du souvenir, et `j.catch` existait DEUX fois (les deux préchauffent désormais).
+
+**Versailles retrouve sa statue ET son soleil.** La carte recadrée avait perdu la statue (« c'est dommage ») ; Blandine a fourni l'originale paysage + trois recadrages. Verdict : « idéalement réduire la longueur du bâtiment pour avoir cheval et coucher de soleil ». FAIT PAR CHIRURGIE D'IMAGE (pas d'IA générative) : bande de façade [196..632] retirée, couture fondue sur 56 px — invisible dans le halo du soleil. `carte-versailles.webp` + `carte-versailles-vignette.jpg` recomposées, ratio 3:4 exact. **v70 = casse-cache du lot** (v69 étant déjà en ligne).
+
+**🔴→🟢 LE CRASH DU ZOOM DE LA SELLERIE — TROUVÉ ET CORRIGÉ** (`lingo-sellerie.html`, enfin reçu). « Un problème récurrent est survenu » = WebKit tué en boucle. LA CAUSE, cousine du gel du paywall : le zoom applique `scale()` à tout l'intérieur des murs, et chaque objet posé porte un `filter:drop-shadow` — un élément filtré est rastérisé dans SA couche mémoire À L'ÉCHELLE DU ZOOM × Retina ×3 : ~8 000 px de large PAR OBJET. Correctifs : (1) `#scene.zoomee` posé par `appliquerZoom()` dès ZOOM>1,01 → `filter:none` sur tous les `.obj` (ombres invisibles à ce grossissement, retour au zoom 1) ; (2) `ZMAX` 3 → 2,2 (au-delà de la résolution réelle des images) — la `grandeVue` (saine : simple <img>) reste le chemin pour voir un objet en grand.
+🟥 **RÈGLE ÉLARGIE : jamais de `filter` sur un élément d'un calque flouté OU mis à l'échelle.**
+
+**Vues de biais du couvre-reins** (« vu de dos et découpé en plein milieu ») : Blandine les GARDE pour ailleurs — seul le découpage est mauvais, et un découpage ne s'invente pas ce qui a été coupé : SOURCES À FOURNIR (ou régénérer) avant toute réfection.
+
+---
+
+## 🔴 CE QUI RESTE OUVERT
+
+1. **La session qui saute** — cause racine côté Hype (`index.html`), passation `PASSATION-HYPE-SESSION.md` remise. Depuis v59, être déconnectée ne coûte plus rien dans Linguae ; se reconnecter ne sert qu'à synchroniser.
+2. **Clonbinane** — fichier `apprentissage.js` à obtenir EN `.txt`, place au voyage, médias, textes. QUATRE déclarations.
+3. **Les 5 anciens thématiques** à supprimer du dépôt après vérification en ligne.
+4. **Mode éco** : sauter le film d'office ? (proposé, en attente)
+5. ✅ `carte-versailles` refaite (statue + soleil). RESTE : les vues de biais du couvre-reins à redécouper — SOURCES à fournir.
+6. Le ton des 29 anciennes lettres/volets vs les 8 nouvelles — lissage à faire avec la relecture native.
+7. Hauteur des encarts (200 px) — à ajuster si Blandine le souhaite après vue en ligne.
+
+## 🍏 VERS L'APP STORE
+
+La journée a réglé trois choses qu'une revue App Store aurait épinglées : un démarrage propre (plus de flashs), un paywall qui offre la connexion (exigence Apple : accès au compte existant AVANT l'achat — le passeport y répond), et une synchronisation robuste. La règle WebKit du gel (filter dans backdrop-filter) est exactement le genre de piège qui aurait été invisible en TestFlight et mortel en prod : elle est documentée. Reste, pour l'autonomie : le manifeste dédié est en place, la question du film en mode éco, et Clonbinane pour compléter le monde.
+
+---
+
 # 🚨 FIN DE SESSION — 19/08/2026
 
 **La session qui a trouvé le trou du 18/08.** Onze villes étaient MUETTES en ligne depuis la veille : les tables du découpage un-fichier-par-ville avaient toutes été mises à jour, mais **les balises `<script>` de `lingo.html` n'avaient jamais suivi**. Le reste de la session a été un audit complet du module ville par ville, la création de Barcelone, et le rattrapage de tout ce qui manquait en silence.

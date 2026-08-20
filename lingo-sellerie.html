@@ -70,6 +70,18 @@ body{background:#0B0805;font-family:'Montserrat',sans-serif;color:#E8DCC0}
    Un objet sans z-index etait donc peint SOUS le mur : invisible et
    intouchable. D'ou le 6 ci-dessous, et le 14 quand il est tenu. */
 .obj{position:absolute;z-index:6;touch-action:none;cursor:grab;filter:drop-shadow(4px 9px 8px rgba(0,0,0,.55))}
+/* 🟥🟥 20/08 — LE CRASH DU ZOOM (« Un problème récurrent est survenu »,
+   filmé par Blandine sur le couvre-reins de Versailles). Un élément
+   portant un `filter` est rastérisé dans SA propre couche mémoire, À
+   L'ÉCHELLE DU ZOOM × le Retina (×3) : un objet de 900 px devient une
+   couche de ~8 000 px PAR OBJET posé. WebKit explose, iOS tue la page.
+   Dès que la scène est zoomée (`#scene.zoomee`, posé par appliquerZoom),
+   TOUTES les ombres portées s'éteignent — invisibles à ce grossissement
+   de toute façon. Elles reviennent au zoom 1.
+   🟥 RÈGLE (élargie du gel du paywall, 20/08) : jamais de `filter` sur
+   un élément d'un calque flouté OU mis à l'échelle. */
+#scene.zoomee .obj{filter:none}
+#scene.zoomee .obj.tenu{filter:none}
 .obj img{width:100%;height:auto;display:block;pointer-events:none}
 .obj.tenu{filter:drop-shadow(0 0 14px rgba(201,169,97,.7));z-index:14}
 /* le jumeau : le MEME objet, vu depuis l'autre angle. Il ne se saisit pas
@@ -863,7 +875,10 @@ function brancher(r){
    celui-ci est le notre : il agrandit le calque « dedans » du mur, objets
    compris, puisqu'ils sont dedans et places en %. Le decalage est borne
    par (z-1)/(2z) : avec (z-1)/2 on sortait du mur en plein noir. */
-var ZOOM = 1, ZX = 0, ZY = 0, ZMAX = 3;
+/* v20/08 : ZMAX 3 -> 2.2 — au-delà on dépasse la résolution réelle des
+   images (rien à gagner que du flou et de la mémoire). La grandeVue
+   reste le chemin pour voir un objet en grand. */
+var ZOOM = 1, ZX = 0, ZY = 0, ZMAX = 2.2;
 function bornerZoom(){
   var m = (ZOOM - 1) / (2 * ZOOM) * 100;
   ZX = Math.max(-m, Math.min(m, ZX));
@@ -876,6 +891,9 @@ function appliquerZoom(){
   for(var i = 0; i < l.length; i++){
     l[i].style.transform = 'translate(-50%,-50%) scale(' + ZOOM + ') translate(' + ZX + '%,' + ZY + '%)';
   }
+  /* v20/08 : au moindre zoom, les ombres des objets s'éteignent (crash
+     mémoire WebKit — voir la règle en tête des styles .obj). */
+  S('scene').classList.toggle('zoomee', ZOOM > 1.01);
   S('zVal').textContent = (Math.round(ZOOM * 10) / 10) + '\u00D7';
 }
 function zoomer(f){
