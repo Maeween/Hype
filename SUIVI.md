@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT + FUSION DES BASES CLUBS + LES CLUBS HABITÉS EN OR) — md5 `febdf19d6a606c22e9110dbe105e7e73`, 9 240 753 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT + FUSION DES BASES CLUBS + LES CLUBS HABITÉS EN OR) — md5 `61ea26f5d9206b287e997b8bdf76b430`, 9 241 249 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -59,6 +59,35 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 ⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
 
 ⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 146 — 20/08/2026 (fin d'après-midi) · LA FICHE CHEVAL : GRANDS-PARENTS, HISTOIRE DÉPLIABLE, RESPIRATION
+
+*(Session tenue dans la conversation Linguae — Blandine remplissait la fiche de One Dream de Feinn, Quarnac du Mesnil × Orlena du Vert Vallon Z. Base de travail : l'index.html GitHub fourni par Blandine EN FIN de session — il contenait ~40 000 caractères des sessions 143-145 absents de la copie de la veille ; les correctifs ont été réappliqués dessus, l'écrasement a été évité de justesse grâce à la règle « partir du fichier fourni au moment de la session ».)*
+
+**1 · 🟢 GRANDS-PARENTS (régression, « primordial » pour l'élevage).** Le dos de la carte origines sait rendre 3 générations (grille `aG2`/`aG3` intacte), mais l'éditeur ne proposait plus que père/mère — et pire, `sauverOrigines()` réécrivait les origines « à plat » : **chaque enregistrement effaçait les grands-parents existants**. Correctifs : (a) 4 champs dans la modale sous un intertitre « Grands-parents » — Père du père · Mère du père · Père de la mère · Mère de la mère, 6 langues ; (b) préremplissage depuis l'existant (`ogE.pere.pere.nom`…) ; (c) sauvegarde IMBRIQUÉE et NON DESTRUCTRICE via un helper `noeud(nomTxt, ancien)` : nom inchangé (insensible à la casse) → conserve `detail` + ses propres ascendants (arrière-GP) ; champ vidé (les champs sont préremplis) → choix de suppression ; `ogN.pedigree` réaligné s'il existe (recto + verso, même source). Effet direct demandé par Blandine : le recto « PÈRE × PÈRE DE MÈRE » s'alimente dès la saisie du père de la mère.
+
+**2 · 🟢 HISTOIRE DÉPLIABLE SUR PLACE.** Le récit est ENTIER en base — aucune limite de caractères, c'est un clamp d'affichage (`.hbio`). « Découvrir son histoire » routait vers le panneau Souvenirs (muet chez Blandine). Décision Blandine : « laisser l'onglet se dérouler plus grand ». Fait : état `histoireDepliee`, le bouton déplie/replie le récit sur place, libellé bascule « ▴ Replier son histoire » (6 langues). Le panneau Souvenirs reste accessible par la carte HISTOIRE → SOUVENIRS.
+
+**3 · 🟢 RESPIRATION.** « Trop espacé, ça devient vide » : séparateurs cristal 48→26 px (annule l'écart élargi du 31/07, décision Blandine du jour). « Les pastilles Confiance… collent sous la description » : 18 px d'air au-dessus.
+
+**À l'écran : + / −**
++ Modale origines : intertitre « Grands-parents » + 4 champs préremplis.
++ « Découvrir son histoire » déplie le récit ; « ▴ Replier son histoire » quand c'est ouvert.
++ Recto de la carte origines : « père × père de mère » se remplit dès saisie.
+− Les grands vides entre sections sont réduits ; les pastilles sont décollées de la description.
+− Le bouton n'ouvre PLUS le panneau Souvenirs (toujours accessible via la carte Histoire).
+
+**Pour One Dream** : côté Quarnac → père du père **Jarnac**, mère du père **Elma du Mesnil** ; côté Orlena → père de la mère **Ogano Sitte** (le recto affichera « Quarnac du Mesnil × Ogano Sitte »).
+
+**🔴 En observation / à trancher**
+- Panneau Souvenirs : ne s'ouvrait pas au tap malgré propriété reconnue (crayon origines visible, One Dream dans Mes chevaux, connectée). Retester après cette livraison ; si ça persiste, chercher un recouvrement de la zone tapable.
+- Crayon ✎ « Modifier l'histoire » : réapparu ? À confirmer au même test.
+- **Fil vs Médias sur la fiche** : « on met une photo sur l'un elle arrive sur l'autre, on comprend pas qui fait quoi ». À clarifier — fusion, ou rôles nets (« Sa vie » / « Galerie ») — décision à prendre avec Blandine.
+- **Validée en principe, maquette à faire : les événements dans le fil communauté** — nouveau cheval créé, nouvelle inscription cavalier (⚠️ consentement), stories postées.
+
+**Préparation Flutter** : aucune amélioration d'architecture réalisée (session corrective ciblée).
 
 ---
 
@@ -163,9 +192,24 @@ utilisateurActuel().then(u => { if (u) dashboard; else { mode="inscription"; con
 
 **À l'écran : −** trois ronds Apple / Google / Facebook et le séparateur « OU » · **+** un bouton encadré à la place du lien texte. Aucun écran ajouté ou supprimé.
 
+### ✅ LE DÉCALAGE VERS LA DROITE À LA RECONNEXION — TROUVÉ ET CORRIGÉ
+
+Symptôme signalé plusieurs fois : *« quand je me reco je suis de nouveau sur des trucs complètement collés à droite »*, cartes qui débordent, barre du bas coupée. Indice décisif donné par Blandine dès le 20/08 à 02 h 40 : **« je dézoome et ça se remet en place »**.
+
+**Ce n'était PAS un débordement horizontal.** La piste suivie jusqu'ici — un élément plus large que l'écran créant un `scrollLeft` — ne pouvait pas être la cause : `html, body { overflow-x: clip !important }` (ligne 1843) **interdit déjà tout défilement horizontal de la page**.
+
+**La page n'est pas décalée, elle est ZOOMÉE.** iOS Safari zoome automatiquement sur tout champ de saisie dont la police calculée est **inférieure à 16 px** — comportement d'accessibilité, non désactivable autrement qu'en atteignant le seuil. Et il **ne dézoome jamais seul** : l'app reste zoomée, donc décalée et coupée, jusqu'à un pincement manuel. D'où l'indice de Blandine, qui était la clé.
+
+**Pourquoi seulement à la reconnexion** : c'est le seul moment où elle tape dans un champ de saisie au chargement de l'app.
+
+**Correctif** : `champStyle` de `EcranConnexionSpectral` passe de **14,5 px à 16 px**. Un point et demi, invisible à l'œil, mais c'est le seuil exact d'iOS — en dessous il zoome, à partir de 16 il ne zoome pas.
+
+⚠️ **HUIT AUTRES CHAMPS sous 16 px ailleurs dans l'app** (lignes ~36006 · 11 px, ~36835 · 15, ~39350 · 13, ~42238 · 13,5, ~43383 · 14, ~44212 · 11,5, ~44643 · 13, ~45285 · 14). **NON TOUCHÉS** : les passer à 16 px change la taille du texte à l'écran, c'est visible, et Blandine doit le valider. Chacun produira le même zoom parasite dès qu'une cavalière y tapera.
+
+⚠️ **Ne JAMAIS corriger ça par `maximum-scale=1` dans la balise viewport.** Ça supprimerait le zoom parasite, mais aussi le pincement pour zoomer de toute l'app — régression d'accessibilité pour les cavalières qui en ont besoin.
+
 ### 🟡 NON TRAITÉ CETTE SÉANCE
 
-- **Le décalage vers la droite à la reconnexion** — signalé à nouveau par Blandine (*« quand je me reco je suis de nouveau sur des trucs complètement collés à droite »*). Autre mécanisme, volontairement laissé de côté pour livrer proprement les trois correctifs ci-dessus.
 - **Le panneau des clubs du globe** (`#around` à 205dvh, hors du cadre de `.wrap` qui fait 102dvh). Trois positions proposées à Blandine (92dvh sous les filtres · 76dvh dans le vide actuel · conteneur étendu à 118dvh), **aucune choisie**. Défaut d'origine, présent à l'identique dans l'ancien index — pas une régression.
 - **Les stories sur la carte.** Règle tranchée par Blandine : *la ville de la story, sauf si un centre équestre est clairement cité, auquel cas c'est lui.* Couleur retenue : **argent** (le turquoise est déjà la couleur par défaut de tous les clubs, l'or celle des clubs habités). Point pulsant, qui s'éteint avec la story. **Mesure du champ `lieu` non faite** — sans elle on ignore si la règle attrape quelque chose.
 - **Diplôme de quizz** : trois maquettes livrées (Crystal noir 9:16 · Givre 4:5 · Le sceau carré). Blandine fait faire le fond ailleurs ; prompt fourni avec bouton de copie. Décidé : **un seul résultat affiché, pas un barème** ; nom et écurie de la cavalière ; fond **muet** (ni Galop, ni score, ni langue) pour éviter une image par Galop et par langue.

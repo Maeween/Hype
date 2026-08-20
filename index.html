@@ -31656,6 +31656,9 @@ function EcranCheval() {
     } catch (eR) { try { echec(); } catch (e2R) { } }
   }
   var eoSt = React.useState(false); var editOrig = eoSt[0], setEditOrig = eoSt[1];
+  /* 20/08 : l histoire se DEPLIE SUR PLACE (demande Blandine : « laisser l onglet se derouler
+     plus grand ») — le bouton Decouvrir son histoire ne route plus vers le panneau Souvenirs. */
+  var vhSt = React.useState(false); var histoireDepliee = vhSt[0], setHistoireDepliee = vhSt[1];
   var olSt = React.useState({ pere: "", mere: "", naisseur: "" }); var origLocal = olSt[0], setOrigLocal = olSt[1];
   function ouvrirEditOrigines() {
     var ogE = (c && c.origines) || {};
@@ -31665,6 +31668,12 @@ function EcranCheval() {
       sire: ogE.sire || "",
       pere: (ogE.pere && (ogE.pere.nom || ogE.pere)) || "",
       mere: (ogE.mere && (ogE.mere.nom || ogE.mere)) || "",
+      /* 20/08 : GRANDS-PARENTS (regression signalee par Blandine — « avant on pouvait ») :
+         l editeur perdait les 2e/3e generations que le dos de la carte sait pourtant afficher. */
+      pp: (ogE.pere && ogE.pere.pere && (ogE.pere.pere.nom || ogE.pere.pere)) || "",
+      pm: (ogE.pere && ogE.pere.mere && (ogE.pere.mere.nom || ogE.pere.mere)) || "",
+      mp: (ogE.mere && ogE.mere.pere && (ogE.mere.pere.nom || ogE.mere.pere)) || "",
+      mm: (ogE.mere && ogE.mere.mere && (ogE.mere.mere.nom || ogE.mere.mere)) || "",
       naisseur: ogE.naisseur || ""
     });
     setEditOrig(true);
@@ -31672,9 +31681,38 @@ function EcranCheval() {
   async function sauverOrigines() {
     try {
       var pe = (origLocal.pere || "").trim(), me = (origLocal.mere || "").trim(), na = (origLocal.naisseur || "").trim();
-      var ogN = Object.assign({}, (c && c.origines) || {});
-      ogN.pere = pe ? { nom: pe } : null;
-      ogN.mere = me ? { nom: me } : null;
+      var ogA = (c && c.origines) || {};
+      var ogN = Object.assign({}, ogA);
+      /* 20/08 : sauvegarde IMBRIQUEE et NON DESTRUCTRICE. L ancienne version ecrivait
+         pere/mere « a plat » : chaque enregistrement EFFACAIT les grands-parents existants.
+         Regle : un nom inchange conserve son detail ET ses propres ascendants (arriere-GP) ;
+         un champ vide (les champs sont preremplis) est un choix de suppression. */
+      function noeud(nomTxt, ancien) {
+        nomTxt = String(nomTxt || "").trim();
+        if (!nomTxt) return null;
+        var n = { nom: nomTxt };
+        if (ancien && typeof ancien === "object" && String(ancien.nom || "").trim().toLowerCase() === nomTxt.toLowerCase()) {
+          if (ancien.detail) n.detail = ancien.detail;
+          if (ancien.pere) n.pere = ancien.pere;
+          if (ancien.mere) n.mere = ancien.mere;
+        }
+        return n;
+      }
+      var ancP = (ogA.pere && typeof ogA.pere === "object") ? ogA.pere : null;
+      var ancM = (ogA.mere && typeof ogA.mere === "object") ? ogA.mere : null;
+      ogN.pere = noeud(pe, ancP);
+      if (ogN.pere) {
+        var vPP = noeud(origLocal.pp, ancP && ancP.pere), vPM = noeud(origLocal.pm, ancP && ancP.mere);
+        if (vPP) ogN.pere.pere = vPP; else delete ogN.pere.pere;
+        if (vPM) ogN.pere.mere = vPM; else delete ogN.pere.mere;
+      }
+      ogN.mere = noeud(me, ancM);
+      if (ogN.mere) {
+        var vMP = noeud(origLocal.mp, ancM && ancM.pere), vMM = noeud(origLocal.mm, ancM && ancM.mere);
+        if (vMP) ogN.mere.pere = vMP; else delete ogN.mere.pere;
+        if (vMM) ogN.mere.mere = vMM; else delete ogN.mere.mere;
+      }
+      if (ogN.pedigree) ogN.pedigree = { pere: ogN.pere, mere: ogN.mere }; /* recto+verso : meme source */
       if (na) ogN.naisseur = na; else delete ogN.naisseur;
       var siV = (origLocal.sire || "").trim(); if (siV) ogN.sire = siV; else delete ogN.sire; /* 30/07 : champ SIRE (decision Blandine, remplace la fausse ligne FFE) */
       setEditOrig(false);
@@ -31952,7 +31990,7 @@ function EcranCheval() {
     return t.replace(/jeunes?\s+chevaux/gi, "JC").replace(/\s*\u00b7\s*obstacle/i, " \u00b7 obst.");
   }
   function cristal(kC) { /* 31/07 : separateur cristal entre chapitres (maquette 5 validee) */
-    return h("div", { key: "cr" + kC, style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 48px" } }, /* 31/07 soir : ecart PLUS GRAND et SYMETRIQUE de part et d autre du cristal (demande Blandine) */
+    return h("div", { key: "cr" + kC, style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 26px" /* 20/08 : resserre (48->26) — « trop espace, ca devient vide » */ } }, /* 31/07 soir : ecart PLUS GRAND et SYMETRIQUE de part et d autre du cristal (demande Blandine) */
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, transparent, " + tA(0.4) + ")" } }),
       h("span", { style: { color: teinteCl, fontSize: 10 } }, "\u25c6"),
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.4) + ", transparent)" } }));
@@ -32191,14 +32229,14 @@ function EcranCheval() {
             h("div", { className: "hype-cristal", style: { margin: "18px 0 20px" } },
               h("style", null, "@keyframes hypeSpin{to{transform:rotate(1turn)}}.hype-cristal{position:relative;border-radius:18px;padding:1.6px;overflow:hidden;isolation:isolate}.hype-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + teinte + " 82%," + teinteCl + " 90%,transparent 100%);animation:hypeSpin 4.5s linear infinite}.hype-cristal>.hype-cristal-cc{position:relative;z-index:1;border-radius:16.5px;background:#070B10}"),
               h("div", { className: "hype-cristal-cc", style: { padding: "12px 14px" } },
-            h("p", { className: "hbio", style: { margin: 0 } }, recit,
+            h("p", { className: "hbio", style: histoireDepliee ? { margin: 0, display: "block", overflow: "visible", maxWidth: "none" } : { margin: 0 } }, recit,
               (c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id) ? h("span", { role: "button", onClick: ouvrirEditHistoire, title: "Modifier l'histoire", style: { marginLeft: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + tA(0.5), fontSize: 11, color: teinteCl, cursor: "pointer", verticalAlign: "middle" } }, "\u270e") : null))),
-            h("div", { className: "hcta", onClick: function () { setPanneau("souvenirs"); } }, "\u2728 " + T("D\u00e9couvrir son histoire", "Discover its story", "Descubrir su historia", "Scopri la sua storia", "\u7269\u8a9e\u3092\u898b\u308b", "Seine Geschichte entdecken")));
+            h("div", { className: "hcta", onClick: function () { setHistoireDepliee(!histoireDepliee); } }, histoireDepliee ? ("\u25B4 " + T("Replier son histoire", "Collapse the story", "Plegar su historia", "Richiudi la sua storia", "\u7269\u8a9e\u3092\u305f\u305f\u3080", "Geschichte einklappen")) : ("\u2728 " + T("D\u00e9couvrir son histoire", "Discover its story", "Descubrir su historia", "Scopri la sua storia", "\u7269\u8a9e\u3092\u898b\u308b", "Seine Geschichte entdecken"))));
         })(),
 
 
 
-        h("div", { className: "rise", style: { animationDelay: ".05s", display: "flex", gap: 7, overflowX: "auto", padding: "2px 0 8px", WebkitOverflowScrolling: "touch" } },
+        h("div", { className: "rise", style: { animationDelay: ".05s", display: "flex", gap: 7, overflowX: "auto", padding: "18px 0 8px" /* 20/08 : air au-dessus des pastilles (collaient sous la description) */, WebkitOverflowScrolling: "touch" } },
           [["confiance", T("Confiance", "Trust", "Confianza", "Fiducia", "信頼", "Vertrauen")], ["complicite", T("Complicité", "Bond", "Complicidad", "Intesa", "絆", "Verbundenheit")], ["respect", T("Respect", "Respect", "Respeto", "Rispetto", "尊重", "Respekt")], ["franchise", T("Franchise", "Boldness", "Franqueza", "Franchezza", "率直さ", "Mut")], ["sante", T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit")], ["moyens", T("Moyens", "Ability", "Medios", "Mezzi", "能力", "Durchschnittlich")]].map(function (pr) {
             var vv = statsCh[pr[0]];
             return h("div", { key: pr[0], onClick: function () { setEditStat({ cle: pr[0], l: pr[1] }); }, style: { flex: "0 0 auto", display: "flex", alignItems: "baseline", gap: 5, background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 999, padding: "6px 12px", cursor: "pointer" } },
@@ -32610,7 +32648,15 @@ function EcranCheval() {
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon cheval", "My horse", "Mi caballo", "Il mio cavallo", "\u79c1\u306e\u99ac", "Mein Pferd")),
         h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("Renseigne sa race, son \u00e2ge et ses origines.", "Fill in your horse's bloodline.", "Completa los or\u00edgenes de tu caballo.", "Inserisci le origini del tuo cavallo.", "\u99ac\u306e\u8840\u7d71\u3092\u5165\u529b\u3057\u3088\u3046\u3002", "Gib seine Rasse, sein Alter und seine Herkunft an.")),
-        [["sire", "N\u00b0 SIRE"], ["race", T("Race", "Breed", "Raza", "Razza", "\u54c1\u7a2e", "Rasse")], ["age", T("\u00c2ge (ans)", "Age (years)", "Edad (a\u00f1os)", "Et\u00e0 (anni)", "\u5e74\u9f62", "Alter (Jahre)")], ["pere", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater")], ["mere", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter")], ["naisseur", T("Naisseur / \u00e9leveur", "Breeder", "Criador", "Allevatore", "\u751f\u7523\u8005", "Züchter / Aufzüchter")]].map(function (chp) {
+        [["sire", "N\u00b0 SIRE"], ["race", T("Race", "Breed", "Raza", "Razza", "\u54c1\u7a2e", "Rasse")], ["age", T("\u00c2ge (ans)", "Age (years)", "Edad (a\u00f1os)", "Et\u00e0 (anni)", "\u5e74\u9f62", "Alter (Jahre)")], ["pere", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater")], ["mere", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter")], [null, T("Grands-parents", "Grandparents", "Abuelos", "Nonni", "\u7956\u7236\u6bcd", "Gro\u00dfeltern")],
+          ["pp", T("P\u00e8re du p\u00e8re", "Sire of sire", "Padre del padre", "Padre del padre", "\u7236\u306e\u7236", "Vater des Vaters")],
+          ["pm", T("M\u00e8re du p\u00e8re", "Dam of sire", "Madre del padre", "Madre del padre", "\u7236\u306e\u6bcd", "Mutter des Vaters")],
+          ["mp", T("P\u00e8re de la m\u00e8re", "Sire of dam", "Padre de la madre", "Padre della madre", "\u6bcd\u306e\u7236", "Vater der Mutter")],
+          ["mm", T("M\u00e8re de la m\u00e8re", "Dam of dam", "Madre de la madre", "Madre della madre", "\u6bcd\u306e\u6bcd", "Mutter der Mutter")],
+          ["naisseur", T("Naisseur / \u00e9leveur", "Breeder", "Criador", "Allevatore", "\u751f\u7523\u8005", "Züchter / Aufzüchter")]].map(function (chp, iC) {
+          if (!chp[0]) { /* 20/08 : intertitre Grands-parents */
+            return h("div", { key: "gt" + iC, style: { fontFamily: "'Cinzel',serif", fontSize: 11, letterSpacing: "0.22em", color: "#9BE8F2", textTransform: "uppercase", textAlign: "center", margin: "16px 0 10px", paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.08)" } }, chp[1]);
+          }
           return h("div", { key: chp[0], style: { marginBottom: 10 } },
             h("div", { style: { fontSize: 8.5, letterSpacing: "0.2em", color: "#7DDDE8", textTransform: "uppercase", fontWeight: 700, marginBottom: 5, fontFamily: "'Montserrat',sans-serif" } }, chp[1]),
             h("input", { value: origLocal[chp[0]] || "", onChange: function (eI) { var v = eI.target.value; setOrigLocal(function (oo) { var nn = Object.assign({}, oo); nn[chp[0]] = v; return nn; }); }, maxLength: 60, placeholder: "\u2014", style: { width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none" } }));
