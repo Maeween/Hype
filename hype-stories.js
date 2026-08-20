@@ -4360,9 +4360,18 @@ var HS_MUR_COULEURS = [
   { nom: "Turquoise", hex: "#20D9F5" }
 ];
 
-/* Réglage de départ = celui retenu en fin de session 135 bis, à reconfirmer :
-   fondu large · voile 22 % · désaturation 80 % · nappe 50 % · pétrole. */
-var HS_MUR_DEFAUTS = { voile: 22, desat: 80, nappe: 50, couleur: 2, fondu: 3, adapt: false };
+/* Réglage de départ — 20/08/2026, RÉGLAGE VALIDÉ PAR BLANDINE sur son écran,
+   il remplace celui « à reconfirmer » de la session 135 bis (voile 22 ·
+   désaturation 80 · nappe 50 · pétrole) :
+   fondu large · voile 22 % · désaturation 0 % · nappe 20 % · turquoise.
+   ⚠️ Le turquoise en nappe est déconseillé juste au-dessus (« c'est une
+   lumière, pas une matière ») — Blandine l'a constaté sur son écran et l'a
+   choisi malgré tout. C'est sa décision, ne pas la « corriger ».
+   ⚠️ Ceci ne change QUE le défaut. hsMurReglages() lit HS_MUR_CLE en local et
+   l'applique par-dessus : un cavalier ayant déjà touché au panneau garde SON
+   réglage. Écraser les réglages existants effacerait son choix — non fait,
+   non demandé. */
+var HS_MUR_DEFAUTS = { voile: 22, desat: 0, nappe: 20, couleur: 4, fondu: 3, adapt: false };
 var HS_MUR_CLE = "hype_mur_immersif_v1";
 
 function hsMurReglages() {

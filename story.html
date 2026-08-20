@@ -42,7 +42,28 @@
   Toujours brande Hype, avec un bouton « Decouvrir Hype » bien visible :
   Blandine a confirme que le but reste de faire decouvrir l'app, pas
   seulement d'afficher une photo nue.
--->
+
+  ─────────────────────────────────────────────────────────────────────
+  20/08/2026 (session 142) — RECONSTRUCTION + VISIONNEUSE.
+
+  ⚠️ INCIDENT A CONNAITRE : ce fichier a ete livre une premiere fois en
+  session 141 (visionneuse + domaine corrige) mais la livraison n'est
+  JAMAIS PARTIE sur GitHub — verifie le 20/08 sur le fichier en ligne,
+  qui portait encore l'ancien domaine deux fois et des vignettes muettes.
+  Refait ici. Deuxieme point : le fichier n'arrive pas sur le disque des
+  sessions (deja le cas en 141), il a donc ete reconstruit depuis la
+  copie passee dans la conversation — copie recuperee par Blandine
+  directement sur GitHub, donc fiable, mais AUCUNE comparaison md5 n'a
+  ete possible.
+
+  CE QUI A CHANGE :
+  - Les vignettes de 84 px etaient purement decoratives. Elles ouvrent
+    desormais une visionneuse plein ecran. La photo de couverture aussi.
+  - Les 2 adresses de l'ancien domaine corrigees (LIEN_APP + bouton
+    « Decouvrir Hype »).
+  Aucune requete supplementaire : les photos sont deja chargees, la
+  visionneuse ne fait que les afficher en grand.
+  ───────────────────────────────────────────────────────────────────── -->
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
   * { box-sizing: border-box; }
@@ -91,6 +112,8 @@
     object-fit: contain;
     background: #04070d;
   }
+  /* La couverture s'ouvre aussi : le doigt doit sentir qu'elle est tapable. */
+  .carte img.ouvrable { cursor: zoom-in; -webkit-tap-highlight-color: transparent; }
   .auteur-bandeau {
     display: flex;
     align-items: center;
@@ -137,6 +160,8 @@
     overflow: hidden;
     border: 2px solid rgba(255,255,255,0.9);
     box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    cursor: zoom-in;
+    -webkit-tap-highlight-color: transparent;
   }
   .tirage img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -179,6 +204,68 @@
     background: radial-gradient(circle, rgba(32,217,245,0.14) 0%, rgba(32,217,245,0) 70%);
     pointer-events: none;
   }
+
+  /* ── LA VISIONNEUSE ──────────────────────────────────────────────
+     Couche plein ecran, fond noir presque opaque, la photo au centre en
+     `contain` pour ne jamais rogner. Les commandes sont posees PAR-DESSUS
+     mais en dehors de la photo autant que possible : la croix en haut a
+     droite dans la zone de securite, le compteur en bas au centre, les
+     fleches sur les cotes verticalement centrees. Le fond entier ferme au
+     tap — c'est le geste attendu et il n'exige aucune precision. */
+  .visio {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(3,5,8,0.96);
+    display: none;
+    align-items: center; justify-content: center;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  }
+  .visio.on { display: flex; }
+  .visio img {
+    max-width: 100%;
+    max-height: calc(100vh - 140px);
+    object-fit: contain;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+  }
+  .v-fermer {
+    position: absolute;
+    top: calc(env(safe-area-inset-top) + 12px);
+    right: 14px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(18,24,32,0.75);
+    color: #F4F7FA;
+    font-size: 20px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .v-fleche {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(18,24,32,0.75);
+    color: #F4F7FA;
+    font-size: 22px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .v-prec { left: 10px; }
+  .v-suiv { right: 10px; }
+  .v-compteur {
+    position: absolute;
+    bottom: calc(env(safe-area-inset-bottom) + 20px);
+    left: 50%; transform: translateX(-50%);
+    font-size: 12.5px; font-weight: 600;
+    color: #C9D6DC;
+    background: rgba(18,24,32,0.8);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px;
+    padding: 6px 14px;
+  }
 </style>
 </head>
 <body>
@@ -192,14 +279,24 @@
 
 <div class="cta" id="zoneCta" style="display:none;">
   <p class="cta-phrase">Rejoins l'univers équestre de Hype pour ne plus rien manquer.</p>
-  <a href="https://majestic-melba-997a68.netlify.app">Découvrir Hype</a>
+  <a href="https://2hype.netlify.app">Découvrir Hype</a>
+</div>
+
+<!-- La visionneuse vit hors de #scene : #scene est reecrit entierement par
+     innerHTML a chaque etat, elle serait effacee avec. -->
+<div class="visio" id="visio">
+  <button class="v-fermer" id="vFermer" aria-label="Fermer">&times;</button>
+  <button class="v-fleche v-prec" id="vPrec" aria-label="Photo précédente">&lsaquo;</button>
+  <img id="vImage" src="" alt="">
+  <button class="v-fleche v-suiv" id="vSuiv" aria-label="Photo suivante">&rsaquo;</button>
+  <div class="v-compteur" id="vCompteur"></div>
 </div>
 
 <script>
 (function () {
   var SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
   var CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
-  var LIEN_APP = "https://majestic-melba-997a68.netlify.app";
+  var LIEN_APP = "https://2hype.netlify.app";
 
   function param(nom) {
     try {
@@ -235,6 +332,65 @@
     if (!r.ok) throw new Error("http-" + r.status);
     return await r.json();
   }
+
+  /* ── LA VISIONNEUSE ────────────────────────────────────────────────
+     20/08 (demande de Blandine : « fais en sorte que quand on partage une
+     story les images du bas puissent s'ouvrir en grand »).
+     `galerie` est rempli une fois la story affichee : couverture EN
+     PREMIER, puis les autres dans l'ordre chronologique — le meme ordre
+     que la bande de vignettes, pour que l'index d'une vignette soit
+     directement son rang dans la galerie.
+     Aucune requete : ces adresses sont deja celles des <img> de la page,
+     donc deja en cache du navigateur. */
+  var galerie = [];
+  var iVisio = 0;
+  var elVisio = document.getElementById("visio");
+  var elVImage = document.getElementById("vImage");
+  var elVCompteur = document.getElementById("vCompteur");
+  var elVPrec = document.getElementById("vPrec");
+  var elVSuiv = document.getElementById("vSuiv");
+
+  function peindreVisio() {
+    if (!galerie.length) return;
+    if (iVisio < 0) iVisio = galerie.length - 1;
+    if (iVisio >= galerie.length) iVisio = 0;
+    elVImage.src = galerie[iVisio];
+    elVCompteur.textContent = (iVisio + 1) + " / " + galerie.length;
+    /* Une seule photo : les fleches et le compteur n'ont rien a dire. */
+    var multi = galerie.length > 1;
+    elVPrec.style.display = multi ? "flex" : "none";
+    elVSuiv.style.display = multi ? "flex" : "none";
+    elVCompteur.style.display = multi ? "block" : "none";
+  }
+
+  function ouvrirVisio(i) {
+    if (!galerie.length) return;
+    iVisio = i || 0;
+    peindreVisio();
+    elVisio.classList.add("on");
+    /* Le fond ne doit pas defiler derriere la couche plein ecran. */
+    try { document.body.style.overflow = "hidden"; } catch (e) { }
+  }
+
+  function fermerVisio() {
+    elVisio.classList.remove("on");
+    try { elVImage.src = ""; } catch (e) { }
+    try { document.body.style.overflow = ""; } catch (e) { }
+  }
+
+  document.getElementById("vFermer").addEventListener("click", function (ev) { ev.stopPropagation(); fermerVisio(); });
+  elVPrec.addEventListener("click", function (ev) { ev.stopPropagation(); iVisio--; peindreVisio(); });
+  elVSuiv.addEventListener("click", function (ev) { ev.stopPropagation(); iVisio++; peindreVisio(); });
+  /* Tap sur le fond = fermer. Le tap sur la photo elle-meme ne ferme pas :
+     on peut vouloir la regarder sans la perdre d'un doigt mal place. */
+  elVisio.addEventListener("click", function (ev) { if (ev.target === elVisio) fermerVisio(); });
+  elVImage.addEventListener("click", function (ev) { ev.stopPropagation(); });
+  document.addEventListener("keydown", function (ev) {
+    if (!elVisio.classList.contains("on")) return;
+    if (ev.key === "Escape") fermerVisio();
+    else if (ev.key === "ArrowLeft") { iVisio--; peindreVisio(); }
+    else if (ev.key === "ArrowRight") { iVisio++; peindreVisio(); }
+  });
 
   async function demarrer() {
     var id = param("id");
@@ -309,14 +465,19 @@
        courant. */
     var autres = membres.filter(function (m) { return m && m.id !== couverture.id; });
     var bandeTirages = autres.length
-      ? '<div class="tirages">' + autres.map(function (m) {
-          return '<div class="tirage"><img src="' + echapper(m.photo_url) + '" alt=""></div>';
+      ? '<div class="tirages">' + autres.map(function (m, k) {
+          return '<div class="tirage" data-i="' + (k + 1) + '"><img src="' + echapper(m.photo_url) + '" alt=""></div>';
         }).join('') + '</div>'
       : '';
 
+    /* La galerie de la visionneuse : couverture d'abord, puis les autres.
+       L'index 0 est donc la couverture, et `data-i` d'une vignette vaut
+       son rang + 1 — d'ou le (k + 1) ci-dessus. */
+    galerie = [couverture.photo_url].concat(autres.map(function (m) { return m.photo_url; }));
+
     var html = ''
       + '<div class="carte">'
-      +   '<img src="' + echapper(story.photo_url) + '" alt="">'
+      +   '<img class="ouvrable" id="imgCouv" src="' + echapper(story.photo_url) + '" alt="">'
       +   '<div class="auteur-bandeau">'
       +     '<div class="av" style="' + (avatarUrl ? 'background-image:url(' + echapper(avatarUrl) + ')' : '') + '"></div>'
       +     '<div><div class="nom-auteur">' + echapper(nomAuteur) + '</div><div class="sous-ligne">' + echapper(sousLigne) + '</div></div>'
@@ -328,6 +489,21 @@
 
     document.getElementById("scene").innerHTML = html;
     document.getElementById("zoneCta").style.display = "block";
+
+    /* Les gestionnaires sont poses APRES l'ecriture du innerHTML : avant,
+       les elements n'existent pas encore. */
+    try {
+      var couv = document.getElementById("imgCouv");
+      if (couv) couv.addEventListener("click", function () { ouvrirVisio(0); });
+      var vign = document.querySelectorAll(".tirage");
+      for (var k = 0; k < vign.length; k++) {
+        (function (el) {
+          el.addEventListener("click", function () {
+            ouvrirVisio(parseInt(el.getAttribute("data-i"), 10) || 0);
+          });
+        })(vign[k]);
+      }
+    } catch (eH) { }
 
     try {
       document.title = nomAuteur + " sur Hype";
