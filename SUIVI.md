@@ -35,11 +35,669 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 18/08/2026 (SESSION 139 · AMBASSADRICES PREMIUM, IDENTIFIANTS ÉTAPE 2b, QUOTA SUR LE NOM AFFICHÉ, LIMITE D'APPAREILS) — md5 `e40088faa14e997baabc8e7e47caa552`, 9 179 634 octets. COMPAGNON OBLIGATOIRE : `hype-stories.js` v19bg, md5 `4b7570d20afc39ce329ac93b4fa91526`, 388 627 octets, `?v=19bg` — INCHANGÉ depuis le 17/08, il était resté en attente de push et part avec cet index.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES) — md5 `217e590ae78f7a69fb4af211930c2be9`, 9 235 604 octets. Aucun changement visuel, aucun fichier compagnon modifié : `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
-⚠️ **TROIS SQL PASSÉS ET VÉRIFIÉS LE 18/08** — idempotents, mais aucune raison de les relancer : `changer-handle.sql`, `changer-pseudo.sql`, `appareils.sql`.
+**Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
-⚠️ **ÉTAT PÉRIMÉ DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b).
+**Ancienne version (142) — 20/08/2026 (SESSION 142 · PLAFONDS D'ÉPINGLES, MASCOTTE, MUR IMMERSIF, VISIONNEUSE DE PARTAGE) — md5 `fb12878280f26de83204cd36160d62e6`, 9 208 661 octets. COMPAGNONS OBLIGATOIRES : `hype-stories.js` md5 `6b6f1f4faf74de62bcb439c33e6e14ae`, 393 866 octets · `story.html` md5 `0499769080190fa63de4f80e515fe7bf`, 20 689 octets · **NOUVEAU FICHIER IMAGE** `mascotte-abo.webp` (306×382, 29 ko) à pousser À LA RACINE du dépôt.**
+
+⚠️ **`mascotte-abo.webp` doit être poussée avec l'index.** Sans elle, un `onError` masque simplement l'image et la modale reste entière — rien n'est cassé, mais il n'y a pas de poney.
+
+✅ **L'ANCIEN DOMAINE EST ÉLIMINÉ PARTOUT.** Vérifié le 20/08 : `index.html` → 0 occurrence de `majestic-melba` (3 × `2hype.netlify.app`) · `story.html` → 0 occurrence (2 × `2hype`) · `hype-stories.js` → 0. L'alerte rouge qui figurait ici est levée.
+
+**Ancienne version (141, page Hype) — 19/08/2026 (DOMAINE RÉPARÉ, PASTILLES HEY BABY, RETOUR AU COURS) — md5 `328b523b52f09c52ba548df4721b9b9e`, 9 202 899 octets. POUSSÉE ET VÉRIFIÉE EN LIGNE. États intermédiaires périmés de la même session : `97b5d49463295c3c0dd8bf725610522b` (correctif de domaine seul).**
+
+🔴 **INCIDENT DE SUIVI RELEVÉ LE 20/08 — DEUX SESSIONS ONT PORTÉ LE NUMÉRO 141, ET LE TRAVAIL DE L'UNE N'ÉTAIT PAS CONSIGNÉ.**
+Ce fichier ne contenait que la **141 tenue par la page Linguae** (redirection du domaine, aucune modification d'index). La **141 tenue par la page Hype** — correctif de domaine ×3, pastilles Hey Baby, retour au cours, première visionneuse de `story.html` — n'y figurait NULLE PART : recherche faite sur ses trois md5 (`328b523b…`, `97b5d494…`, `f3ca9aa0…`) et sur sa fonction `__hbDepuisCours`, **zéro occurrence**. L'en-tête annonçait donc encore l'index de la 140 comme version courante, avec une alerte « 3 fois l'ancien domaine » déjà réglée et poussée.
+Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, à sa place chronologique, sans toucher à la 141 Linguae.
+⚠️ C'est le troisième épisode de collision de numérotation (sessions 16, 22-23-24 du 28/07, puis celui-ci). La règle en tête du fichier est bonne ; ce qui manque, c'est qu'une session ne peut pas savoir qu'une autre a pris son numéro **en parallèle**. Seul remède connu : lire le SUIVI au moment de livrer, pas seulement au moment d'arriver.
+
+**Ancienne version (139, suite) — 18/08/2026 (GRAND MÉNAGE DE TRADUCTION — GLOBE DES CLUBS RÉÉCRIT, 29 ARIA-LABEL, ÉCRAN D'INSCRIPTION) — md5 `60f5f41c5ef8856c54c6fa6fb72b47d8`, 9 198 176 octets. Compagnon : `hype-stories.js` v19bg, md5 `4b7570d20afc39ce329ac93b4fa91526`.**
+
+⚠️ **QUATRE SQL PASSÉS ET VÉRIFIÉS LE 18/08** — idempotents, mais aucune raison de les relancer : `changer-handle.sql`, `changer-pseudo.sql`, `appareils.sql`, et la colonne `handle_invitation_vue` sur `profiles`.
+
+⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
+
+⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 144 — 20/08/2026 (nuit, ~3 h) · LES MEMBRES INVISIBLES
+
+**Base de travail** : `index.html` md5 `b6ac91f1eb6a390fe38db928fae28f84` (sortie de la 143), fourni par Blandine en cours de séance. Livré en `217e590ae78f7a69fb4af211930c2be9`, 9 235 604 octets. Aucun fichier compagnon touché.
+
+### Point de départ : le chantier de la carte de la communauté
+
+Séance ouverte sur `CHANTIER-CARTE-COMMUNAUTE.md` (§5 : « mesurer d'abord »). La mesure a déplacé le sujet.
+
+**Côté base clubs** (`hype-clubs-db-1/2/3.js`, lus, non modifiés) : **3 055 clubs**, zéro sans `lat`/`lon`, zéro `id` en double. Trois constats :
+- **38 noms sont portés par plusieurs clubs, soit 172 clubs** — dont **78 « Centre Équestre »** et 15 « Poney Club ». Le rapprochement de la page Mon Club (`clefClub`, ligne 26736) s'arrête au premier trouvé : un cavalier qui déclare « Centre Equestre » est rattaché à un club au hasard, sans signal. **Non corrigé cette nuit.**
+- 406 noms portent une apostrophe (377 droites, 29 courbes). L'iPhone saisit la courbe ; `clefClub` ne normalise pas ce caractère.
+- Le champ `departement` n'existe que sur **450 entrées sur 3 055** — un regroupement par département n'est pas alimentable en l'état.
+
+**Côté cavaliers** (SQL en lecture seule, exécuté par Blandine) : **41 profils, 34 déclarent une écurie, 3 une deuxième. 10 écritures distinctes**, ramenées à 9 clubs réels (Blandine : « Société d'équitation de Paris c'est la SEP »).
+
+**Rapprochement des deux : 1 sur 10.** Seul le Cercle Hippique de la Brèche aux Loups tombe dans la base. **31 cavaliers sur 34 appartiennent à un club absent des 3 055** — recherches « feinn », « equitation de paris », « etrier de paris », « touring » : zéro résultat chacune. L'extraction OSM ne contient que **8 clubs dans Paris et la petite couronne ouest** et ignore les trois grands clubs du Bois de Boulogne. Deux autres écuries existent sous une autre orthographe (« Écuries des Lichères », « Haras de Jardy »).
+
+**Conséquence : brancher la carte sur `HYPE_CLUBS` aujourd'hui n'afficherait rien.** Le §5 du chantier l'avait anticipé — le vrai sujet devient « comment un cavalier déclare son club ». **Décision non prise, carte non touchée.**
+
+### Le bug trouvé en chemin — et corrigé
+
+En repérant les points d'appel, lecture de `noyauEcurie` (ligne 1016). Elle retire les mots vides (`de`, `d`, `du`, `la`, `hippique`, `equestre`, `club`…) **y compris au milieu du nom**, puis le résultat sert de motif `ILIKE '%…%'` **contre le texte d'origine, qui contient toujours ces mots**. Le motif ne peut plus retrouver le nom dont il est issu.
+
+Vérifié en base (requête reproduisant les motifs exacts, une colonne, lecture seule) :
+
+| Club | Motif produit | Cavaliers remontés |
+|---|---|---|
+| Societe d'Equitation de Paris (SEP) | `%societe equitation paris sep%` | **0** (12 attendus) |
+| Societe Equestre L'Etrier de Paris | `%societe l etrier paris%` | **0** (2) |
+| Cercle Hippique de la Breche aux Loups | `%cercle breche aux loups%` | **0** (1) |
+| Jardy Equitation (Haras de Jardy) | `%jardy equitation haras jardy%` | **0** (1) |
+| Ecurie Feinn / Sep / Touring / Malle / Lichères / Lardy | courts | corrects |
+
+**16 cavaliers sur 34 ne voyaient personne sur leur page Mon Club, et n'apparaissaient chez personne.** Les clubs touchés sont ceux dont le nom est le **plus complet** — donc les mieux renseignés. Le cavalier ayant écrit « Sep » était le seul de la SEP à voir les 13 autres.
+
+**Correctif livré** : ajout d'une fonction `motifEcurie(nom)` juste après `noyauEcurie`, qui recolle les mots restants avec des jokers (`%societe%equitation%paris%sep%`) — le `%` absorbe les mots retirés. Les 4 constructions de motif `ILIKE` l'utilisent (lignes ~1042 `chevauxDeLEcurie`, ~26662 Mon Club, ~28202 cavaliers du club sur l'accueil, ~28828 Ma page Écurie), chacune avec repli sur l'ancien calcul si la fonction manque.
+
+**`noyauEcurie` n'est PAS modifiée** — choix d'implémentation fait au moment du codage, plus prudent que ce qui avait été annoncé à Blandine. Elle sert aussi à **comparer deux noyaux entre eux** (lignes 773 clubs revendiqués, 26135/26136 tableaux du club, 26648 bannière du club, 26751 tag « Club officiel ») : ces 5 comparaisons devaient rester intactes, et le sont. **Bilan : 4 lignes modifiées, 13 ajoutées, 0 ligne supprimée.**
+
+Simulation sur les 10 écritures réelles : **+16 cavaliers rendus visibles, aucune régression** sur les 6 clubs qui fonctionnaient (Feinn 13→13, Sep 13→13, Touring/Malle/Lichères/Lardy 1→1).
+
+**Contrôles** : `node --check` sur les **16 blocs inline**, tous verts. Marqueurs de scroll identiques avant/après (`overflow-x:clip` 2, `html{overscroll-behavior:none}` 1, `hypeVerrouScroll` 5, `hypeLibererPuitsTactiles` 4). Aucun interdit CSS introduit.
+
+### À l'écran
+
+- **+** Les membres réapparaissent sur Mon Club et Ma page Écurie pour la SEP (12), l'Étrier de Paris (2), la Brèche aux Loups (1) et Jardy (1). Idem pour la bande « Ma communauté équestre » de l'accueil et les chevaux de l'écurie.
+- **−** Rien ne disparaît. Aucun écran, aucun bouton, aucun texte modifié.
+
+### Observations posées, NON traitées
+
+- **Un nom d'écurie vide produit toujours le motif `%%`**, qui remonte tout le monde. Comportement **identique à avant** (aucune régression introduite), mais les points 26662 et 28828 n'ont pas de garde-fou sur `monClub` vide. À trancher.
+- **Le rattachement homonyme** (78 « Centre Équestre ») reste ouvert, indépendamment de la carte.
+- **« Sep » et « Societe d'Equitation de Paris (SEP) »** se rejoignent désormais par le motif. Aucune table d'alias n'a été créée — elle avait été validée par Blandine puis rendue inutile par ce correctif, ce qui lui a été signalé avant codage.
+- **Correction d'une affirmation de Claude en cours de séance** : il avait déduit — sans le lire — que le cavalier « Sep » était isolé. C'était l'inverse. Déduction annoncée comme telle et corrigée dès lecture du code.
+
+### Vers l'App Store / Préparation Flutter
+
+`motifEcurie` est un premier morceau du domaine **Academy/Community** sorti de l'improvisation par écran : la règle « quels cavaliers appartiennent à ce club » vivait jusqu'ici **recopiée dans 4 expressions inline**, chacune légèrement différente (`&&` ici, `?:` là, repli variable). Elle a maintenant **un seul point de vérité nommé**, ce qui est exactement la forme attendue d'un futur `ClubRepository.membresDe(club)`.
+
+Ce que ça ne règle pas : la notion de club reste **une chaîne de texte**, jamais un identifiant. `club_id` n'existe toujours nulle part dans l'index (zéro occurrence, vérifié). Tant que le rattachement est textuel, chaque nouvelle règle de rapprochement sera une rustine sur la précédente. **C'est le vrai chantier d'architecture derrière la carte de la communauté.**
+
+Services/Repositories créés : aucun. Composants partagés : aucun. Dépendances retirées : aucune. Dette ajoutée : aucune (une fonction globale de plus, mais elle en remplace 4 copies inline).
+
+---
+
+## SESSION 143 — 20/08/2026 · L'ALLEMAND PARTOUT DANS L'INDEX
+
+**Index livré : md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.** (État intermédiaire périmé de la même session : `e9bdbdf2a8a2e0aaaf853931e72958b0`, avant la correction du globe.) Base de départ : `fb12878280f26de83204cd36160d62e6` (session 142), md5 vérifié avant la première modification. Aucun fichier compagnon touché — `hype-stories.js`, `story.html`, `mascotte-abo.webp` inchangés.
+
+### À l'écran : + rien / − rien
+
+**Aucun changement visuel.** Aucun écran, bouton ou comportement n'apparaît ni ne disparaît. La seule chose qui change : un cavalier en allemand voit de l'allemand là où il voyait du français. En FR/EN/ES/IT/JA, l'app est identique au caractère près, à une exception documentée plus bas (le haut fait Polyglotte, demandé par Blandine).
+
+### Le constat de départ
+
+`tr()` (l. 21145) et les dictionnaires par langue (`DICT[langue] || DICT.fr`) retombent **silencieusement** sur le français quand `de` manque. Aucune erreur, aucun avertissement, rien de visible côté développement. **651 textes** étaient dans ce cas.
+
+Trois mécanismes de traduction cohabitent dans le fichier, et il a fallu les traiter séparément :
+
+| | mécanisme | textes | état |
+|---|---|---:|---|
+| **A** | objets `{ fr:"…", en:"…" }` lus par `tr()` | **506** | ✅ traduits |
+| **B** | dictionnaires `{ fr:{…}, en:{…} }` lus par `DICT[langue]` | **129** | ✅ traduits |
+| **C** | fonction `TXT(fr, en, es, it, ja)` de Hey Baby | **16** | ✅ traduits |
+
+Comptage de contrôle après livraison : **`A 1302 · sans de : 0`** · **`B 0 dictionnaire sans de`** · **`C signature à 6 paramètres, 16 appels complétés`**.
+
+### Famille A — 506 objets
+
+473 ancres textuelles distinctes, 502 occurrences remplacées (45 littéraux étaient présents plusieurs fois dans le fichier — « Examen blanc », « Hey Baby », « Articles », « Or », « France »… — tous traités, l'allemand étant le même partout), plus 4 cas concaténés traités un par un.
+
+**La clé `de` est ajoutée en dernière position**, comme dans tous les objets déjà traduits du fichier. Aucune clé existante déplacée, aucun ordre modifié — ce qui évite complètement le piège de l'ordre variable (`fr, en, ja, es, it` dans le bloc principal, `fr, en, es, it, ja` ailleurs, `fr, en, it, es, ja` vers 20055).
+
+**Les 4 concaténés**, faits à la main :
+- **l. 43259** — `"Comment appliquer ce cours avec " + cheval + " ?"`. En allemand le verbe part en fin de phrase : `"Wie wende ich diesen Kurs bei " + cheval + " an?"`. Une traduction morceau par morceau aurait donné une phrase fausse.
+- **l. 28032** — « À venir · J-N » → `"Demnächst · noch " + n + (n > 1 ? " Tage" : " Tag")`, avec la gestion du singulier/pluriel sur le modèle de l'anglais et de l'espagnol déjà en place.
+- **l. 27056** — message de doublon de cheval dans l'écurie, avec le nom et le propriétaire injectés.
+- **l. 42798** — `reglesVideoFrames`, la consigne d'analyse multi-frames envoyée à Hey Baby.
+
+### Famille B — 7 dictionnaires, 129 textes
+
+Une branche `de: { … }` complète ajoutée après la dernière branche de langue de chaque dictionnaire. Correspondance clé à clé vérifiée contre la branche `fr` : **7/7 exacts, 0 clé manquante, 0 clé en trop.**
+
+| l. | dictionnaire | écran | clés |
+|---:|---|---|---:|
+| 27371 | `DICT` | Installer Hype (iOS / Android / ordinateur / Mac) | 34 |
+| 24946 | `DICT` | Mon compte · inscription · connexion · erreurs | 33 |
+| 28013 | `D` | Accueil Hype Universe | 32 |
+| 27283 | `DICT` | Partager l'appli (QR code) | 9 |
+| 40223 | `TXT` | Brevet du Galop 1 · avatar débloqué | 9 |
+| 45495 | `DICT` | Bandeau « Installe Hype » | 7 |
+| 27534 | `T` | Dates relatives (à l'instant, min, h, hier, j) | 5 |
+
+C'étaient les écrans du premier contact : un cavalier allemand qui installait Hype voyait l'écran d'installation et l'écran Mon compte entièrement en français.
+
+### Famille C — Hey Baby
+
+Signature élargie de cinq à six paramètres (l. 43047) :
+`const TXT = (fr, en, es, it, ja, de) => tr({ fr, en, es, it, ja, de });`
+puis les **16 appels** complétés (épingles, plafonds, lecture vidéo, Cercle Crystal, limites). Les textes livrés en session 142 sur les plafonds d'épingles, volontairement restés à 5 langues pour ne pas créer une exception isolée, sont repris dans ce lot.
+
+### Le haut fait Polyglotte — 5 → 6 langues (décision de Blandine)
+
+Sur son feu vert explicite. La description et les quatre paliers passent de 5 à 6 langues, **dans les six langues**. Les compteurs de quiz (« 5 quiz en 6 langues ») sont restés intacts — vérifié par assertion sur les six chaînes concernées.
+
+⚠️ **Vérifié avant de toucher : ce haut fait est purement décoratif.** `palierAtteint` vaut `-1` en dur dans `BADGES_I18N` et **n'est jamais affecté nulle part dans le fichier** (3 lectures, 0 écriture). Aucune logique n'a donc été désalignée par ce changement. Le vrai système en service est `HYPE_FAMILLES` (l. 44742), dont la famille `polyglotte` gère déjà les seuils `[2, 3, 4, 5, 6]` et est déjà traduite en allemand.
+
+🔶 **À arbitrer par Blandine :** il y a maintenant un trou. Bilingue = 2, Trilingue = 3, Quadrilingue = 4, Polyglotte = 6. Rien à 5. Soit on ajoute un palier intermédiaire, soit on assume le saut. Je n'ai pas tranché.
+
+### Contrôles passés avant livraison
+
+- `node --check` sur les **16 blocs `<script>` inline** → **16/16 OK**
+- `overflow-x: clip` : 2 · `html { overscroll-behavior: none }` : 1 · `hypeVerrouScroll` : 5 · `hypeLibererPuitsTactiles` : 4 → **les quatre marqueurs sont là**
+- `overscroll-behavior: none` touchant `body` : **0**
+- comptage de structure inchangé : `function` 3440 → 3440 · `const` 2625 → 2625 · `React.createElement` 3742 → 3742. **Aucune structure de code n'a bougé**, seules des chaînes ont été ajoutées.
+- +6 lignes, +25 691 octets
+
+✅ **LE DERNIER `overflow-x:hidden` NU DU FICHIER EST CORRIGÉ (feu vert de Blandine en fin de session).** Le contrôle automatique signalait un `html,body{…overflow-x:hidden}` **sans `clip`** à la ligne 32945. Il n'était **pas** dans la feuille de style de l'app : il était **à l'intérieur de la chaîne `GLOBE_HTML_HYPE`**, le document du globe des clubs chargé en iframe — donc sans effet sur le défilement de Hype, dont les deux règles étaient déjà correctes et doublées.
+
+Corrigé en un mot : `overflow-x:hidden` → `overflow-x:hidden;overflow-x:clip`. +16 octets, 0 ligne, aucun effet visible. **Le détecteur passe à 0 pour la première fois** : `overflow-x: clip` 3 · `overflow-x:hidden` sans `clip` **0** · `overscroll-behavior:none` sur `body` **0**. Plus aucune occurrence nue nulle part dans le fichier, iframe comprise.
+
+### Vocabulaire allemand — aligné sur l'existant
+
+Le glossaire a été tiré de l'allemand **déjà présent** dans le fichier, pas retraduit librement : `cavalier` → *Reiter*, `écurie` → *Stall*, `club` → *Verein*, `accueil` → *Startseite*, `communauté` → *Community*, `cours` → *Kurs*, `examen` → *Prüfung*, `niveau` → *Level*, `badge` → *Abzeichen*. Tutoiement (`du`) partout, y compris là où le français vouvoie, parce que tout l'allemand en place tutoie.
+
+🔶 **Trois choix restent à valider par Blandine** (marqués « déduction de Claude ») :
+1. **`Galop`** invariable pour le niveau FFE, comme « Galop 2 und Galop 3 sind komplett » et « Galop-Bibliothek ». Le fichier contient aussi 5 occurrences en « Galopp » (double p — qui désigne l'**allure** en allemand, pas le niveau) : « Galopp-Kurs », « Galopp-Abzeichen », « pro Galopp ». **L'existant est incohérent** ; je n'y ai pas touché. Une harmonisation serait à faire séparément.
+2. **`große Taten`** pour « hauts faits », par cohérence avec le seul existant (« Grosse Tat vollbracht »). L'usage standard des apps serait *Erfolge*, mais *Erfolge* est déjà pris par « Palmarès ».
+3. **`Probeprüfung`** pour « examen blanc ». Aucun existant sur lequel s'appuyer.
+
+Ces trois choix sont un remplacement global à faire si Blandine veut en changer — les traductions sont conservées dans `ALLEMAND-INDEX-506.json` et `ALLEMAND-INDEX-FAMILLES-B-C.json`.
+
+### Incident de la session précédente, corrigé
+
+La note de chantier v2 annonçait **8 dictionnaires et ~195 textes** pour la famille B. Le chiffre juste est **7 dictionnaires et 129 textes**. Cause : la détection lisait une fenêtre de 3 000 caractères après chaque `fr:{` ; le dictionnaire `PT` de la l. 23540 fait 3 764 caractères et place sa branche `de` **à la fin**, hors fenêtre. Il était en réalité **déjà entièrement traduit** (66 clés). C'était le plus gros bloc annoncé, et il servait d'argument principal pour l'ordre d'attaque. Corrigé dans `CHANTIER-ALLEMAND.md` (§0 bis). **La méthode fiable est l'appariement d'accolades sur l'objet entier, sans fenêtre** — c'est celle utilisée pour le comptage de contrôle ci-dessus.
+
+### Préparation Flutter
+
+**Aucune amélioration d'architecture réalisée sur cette session.** Le travail était de la traduction pure ; y greffer un refactor aurait rendu la vérification impossible et contrevient à la doctrine (pas de refonte massive, pas de changement de comportement).
+
+Ce que la session a mis à nu, et qui vaut d'être noté pour la suite : **trois mécanismes de traduction concurrents dans un même fichier** (objets lus par `tr()`, dictionnaires indexés par langue, fonction à paramètres positionnels). C'est exactement le genre de dispersion qui coûte cher au passage à Flutter, où les textes vivent dans une ressource unique. Le jour où un `Repository` de textes sera créé, les trois pourront converger vers lui — progressivement, à l'occasion des fichiers déjà ouverts, jamais en une fois. Rien à faire maintenant.
+
+**Services / Repositories créés :** aucun. **Composants partagés :** aucun. **Dépendances retirées :** aucune. **Dette ajoutée :** aucune — la signature de `TXT` passe de 5 à 6 paramètres, ce qui la remet en cohérence avec les six langues du reste de l'app.
+
+### Reste à faire sur l'allemand
+
+- Arbitrer les trois points de vocabulaire ci-dessus.
+- Arbitrer le trou à 5 langues dans les hauts faits linguistiques.
+- ~~Reprendre le `overflow-x:hidden` sans `clip` du globe (l. 32945).~~ ✅ **fait en fin de session.**
+
+### 🔴 CHANTIER « GALOPP » — OUVERT PUIS ARRÊTÉ AVANT TOUTE MODIFICATION
+
+Blandine a donné son feu vert pour passer les « Galopp » (niveau) en « Galop ». **Rien n'a été modifié** : le comptage a révélé que le chantier n'a pas la taille annoncée, et surtout qu'il contient un piège linguistique.
+
+**Erreur de comptage à signaler.** J'avais annoncé « 5 occurrences », puis « 453 ». Les deux sont faux. Le premier venait d'un échantillon tronqué, le second d'une regex `Galopp` qui capturait aussi **l'italien** (*galoppo*, *galoppare*, *controgaloppo*) — 345 occurrences italiennes noyées dans le total.
+
+**Chiffres réels, en allemand seul : 521 occurrences.**
+
+| | nombre | exemples |
+|---|---:|---|
+| **NIVEAU** — à passer en `Galop` | **151** | `Galopp 3`, `Galopps`, `Galopp-Kurs`, `Galopp-Abzeichen`, `Galopp-4-Niveau` |
+| **ALLURE** — à ne surtout pas toucher | **370** | `Galoppsprünge`, `Arbeitsgalopp`, `Konter-Galopp`, `angaloppieren`, `der Galopp`, `Handgalopp`, `Außengalopp` |
+
+🔴 **LE PIÈGE : `Galopps` est ambigu.** C'est à la fois le **pluriel du niveau** (*deine Galopps*, *Alle Galopps*, *die 7 Galopps*) et le **génitif de l'allure** (*die Qualität des Galopps*, *vom Tempo des Galopps*, *die Dreitaktbewegung des Galopps*). Relevé exact : **6 génitifs** contre **18 pluriels**. Une règle automatique sur le mot seul écrirait `des Galops` dans les cours de biomécanique — du faux allemand, invisible pour un lecteur francophone, au milieu des G1 à G7.
+
+`Handgalopp` (galop à juste) et `Außengalopp` (galop à faux) sont deux autres composés qui ressemblent à des mots de niveau sans en être.
+
+**Méthode requise** : classer les 521 occurrences **par le déterminant qui précède**, pas par le mot seul, puis relire les 151 candidats un par un. Une session dédiée. Ne jamais lancer de remplacement global sur `Galopp`.
+
+---
+
+## SESSION 142 — 19-20/08/2026 (nuit) · LES ÉPINGLES HEY BABY, LES ABONNEMENTS AMBASSADEURS, LE MUR IMMERSIF
+
+*(Page Hype. Livre `index.html`, `hype-stories.js`, `story.html`. `lingo.html` lu en SEULE LECTURE — fichier en cours de codage sur une autre page, la règle « une seule page codeuse » est respectée pour lui.)*
+
+### 🟢 LES ÉPINGLES HEY BABY NE SONT PAS PERDUES (point 2 de la passation 141, traité en premier)
+
+Table `echanges_heybaby_epingles` (`user_id`, `cheval_id`, `cheval_nom`, `question`, `reponse`, `created_at`).
+
+Comptage du 19/08 : **55 épingles · 3 personnes · dernière écrite le 19/08 à 12 h 27 UTC**, soit APRÈS le renommage. La table a écrit normalement pendant toute la panne. Répartition : **44 · 7 · 4**. Le renommage ne touche que le stockage local, jamais Supabase — c'est maintenant mesuré, plus seulement raisonné.
+
+### 🔴 CE QUI ÉTAIT VRAIMENT CASSÉ — DEUX PLAFONDS QUE PERSONNE N'AVAIT REVUS
+
+Dominique disait avoir perdu des épingles. Ce n'était pas une perte.
+
+**Le plafond d'enregistrement.** `LIMITE_EPINGLES_PREMIUM = 4` (ligne 43048) — **total à vie, pas périodique** : `compterEpinglesHB` ne filtre sur aucune date. Une fois à 4, un Premium ne peut plus rien épingler tant qu'il n'en supprime pas une, et il ne le découvre qu'au moment où ça bloque. Les plans `ai` et `duo` en étaient totalement exemptés (illimité).
+
+Disproportion mesurée : un Premium a 4 questions/jour, soit ~120 par mois. Conserver 4 réponses à vie, c'est une sur trente.
+
+**Le coût réel d'une épingle est quasi nul** : une ligne de texte (réponse plafonnée à 12 000 caractères, question à 2 000), ~5 ko au pire. Mille épingles = 5 Mo sur les 8 Go du plan Pro. **Aucun appel IA n'est refait** — la réponse est générée et payée au moment de la question, l'épingle ne fait que la ranger. Le plafond ne protégeait donc aucune ressource.
+
+**Le plafond d'affichage.** `chargerEpinglesHB` lisait `.limit(20)`. Avec 44 épingles, au moins 24 étaient en base mais **jamais chargées**. C'est ça que Dominique a « perdu ».
+
+Second mécanisme cumulatif : `.eq("cheval_id", X)` sur une fiche cheval, `.is("cheval_id", null)` ailleurs. Une épingle rattachée à un cheval n'apparaît **que** sur la fiche de ce cheval.
+
+**Mesure finale sur le compte à 44** : `1 cheval_id · heybaby`. Les 44 sont toutes sur un seul cheval — et Blandine confirme qu'un **vrai cheval s'appelle Hey Baby** (probablement celui de Liam, donc le compte à 44 n'est peut-être pas Dominique ; la requête avec les pseudos n'a jamais été passée). Elles s'affichaient donc uniquement sur cette fiche, tronquées à 20. **Le correctif les fait toutes réapparaître. Rien n'a jamais été effacé.**
+
+### ✅ LIVRAISONS
+
+#### `index.html` — md5 `fb12878280f26de83204cd36160d62e6` · 9 208 661 o
+Cumule les quatre passes de la nuit. États intermédiaires périmés : `a4bb1010ad50b129549804dd2346a880`, `da5e533ff71463ee9e39b845bfd19e55`, `66e275062146e9fb59711937771a6038`.
+
+**1. Plafonds relevés** (décision de Blandine)
+`LIMITE_EPINGLES = planAbo === "duo" ? PLAFOND_DUO : planAbo === "ai" ? 50 : 20`
+Premium **20** · `ai` **50** · `duo` **80**, au lieu de 4 / illimité / illimité. Totaux à vie, comme avant.
+⚠️ `ai` et `duo` reçoivent un plafond **là où ils n'en avaient AUCUN** — volontaire, discuté et assumé (« au pire on fera un pack plus gros par la suite »). L'exemption `if (planAbo !== "ai" && planAbo !== "duo")` a été retirée : le contrôle s'applique désormais à tous les plans.
+
+**2. Affichage relevé** — `.limit(20)` → `.limit(500)`. Sans ça, relever le plafond aurait produit des épingles enregistrées et invisibles.
+
+**3. Message de limite refait**
+- Le « 4 » était **écrit en dur dans les 5 langues** → devient `epingleCible.plafond`, le vrai plafond du plan. Sans ce changement le message aurait menti dès la livraison.
+- « le maximum du Cercle Crystal » → « le maximum de ton abonnement ».
+- « L'abonnement AI illimité arrive bientôt ✨ » **retirée** : `ai` n'est plus illimité. Décision de Blandine : *« on avait précisé nulle part que c'était illimité avant, donc c'est mieux de rien mettre »*, puis remplacée par une proposition explicite.
+- Nouvelle phrase : « Souhaites-tu passer à l'abonnement supérieur ? L'abonnement Duo en propose 80. »
+- **Bouton ajouté** « Découvrir le pack Duo » → `setEcran("premium")`. **Recopie exacte** du bouton de la limite de questions quotidiennes (ligne ~43285) : mêmes libellés déjà traduits (`decouvrir_pack_duo` / `decouvrir_premium`), même comportement. Aucun mécanisme nouveau inventé.
+- Tout ce bloc est masqué pour un abonné `duo`, qui est au sommet : il ne voit que son décompte et « Compris ».
+
+**4. Avertissement avant le plafond** (demande de Blandine)
+À partir de **5 restantes**, le bandeau de confirmation devient deux lignes :
+> Conseil épinglé ✓ — plus que 3 sur 20
+> N'hésite pas à passer à un abonnement supérieur : l'abonnement Duo en propose 80.
+
+À 0 restante : « c'était la dernière sur 20 », plutôt qu'un « plus que 0 » bancal.
+**Aucune requête ajoutée** : le comptage se fait déjà avant l'insertion (`r0`), le nombre restant est gratuit.
+`toastHB` accepte désormais une chaîne OU un tableau de lignes ; **le cas simple est strictement inchangé**. Deux lignes → coins à 16 au lieu de la pastille 999, largeur max 78 vw, 4 s au lieu de 2,4 s (sinon la seconde ligne n'a pas le temps d'être lue).
+Pas de bouton dans le bandeau : une pastille qui s'efface en 4 s ne peut pas porter d'action fiable.
+
+**5. `PLAFOND_DUO = 80`** — constante unique lue par les deux messages dans les 5 langues. Changer le plafond met les phrases à jour toutes seules.
+
+**6. Mascotte** (maquette A, choisie par Blandine sur 4 propositions)
+`mascotte-abo.webp` à 104 px en haut de la modale de limite, halo `drop-shadow(0 6px 20px rgba(32,217,245,0.28))`. `onError` masque l'image si le fichier n'est pas poussé.
+Chemin direct, **pas d'entrée dans `HYPE_IMGS`** : réversible, ne touche pas au dictionnaire. WebP obligatoire ici — la transparence est ce qui détache le poney du fond sombre, un JPEG poserait un carré blanc.
+
+**7. Ligne 795 — adresse d'Evan corrigée** : `evan.roux.2014@icloud.com` → `evanroux569@gmail.com`.
+
+#### `hype-stories.js` — md5 `6b6f1f4faf74de62bcb439c33e6e14ae` · 393 866 o
+*(md5 de départ vérifié : `d4251d8647cf59e414d60081d124263e`, la v19bk annoncée.)*
+
+**1. Mur immersif — le réglage de Blandine devient le défaut** (ligne 4374)
+`{ voile: 22, desat: 0, nappe: 20, couleur: 4, fondu: 3, adapt: false }` au lieu de `{ voile: 22, desat: 80, nappe: 50, couleur: 2, fondu: 3, adapt: false }`.
+Soit : fondu large · voile 22 % · désaturation **0** · nappe **20** · **turquoise** (index 4).
+⚠️ Le turquoise en nappe est **déconseillé par le commentaire du code lui-même** (« c'est une lumière, pas une matière ») — il y était proposé pour que Blandine le constate elle-même. Elle l'a constaté sur son écran et l'a choisi. **Décision de Blandine, ne pas la « corriger ».**
+⚠️ Ceci ne change QUE le défaut : `hsMurReglages()` lit `hype_mur_immersif_v1` en local et l'applique par-dessus. Un cavalier ayant déjà touché au panneau garde SON réglage. **Écraser les réglages existants effacerait son choix — non fait, non demandé.**
+
+**2. Le cœur et le Partager n'empiètent plus sur les vignettes** (signalé sur capture à 02 h 05)
+Cause mesurée : le cœur (`CoeurStory`, ligne ~322 : left 14, bottom 14) et le bouton Partager (ligne ~6068 : right 14, bottom 14 — ou **bottom 62 quand la story porte une musique**) sont en `position: absolute` sur le lecteur. Ils ne sont donc **pas dans le flux** de la colonne de composition, qui défilait jusqu'à 10 px du bas et glissait ses tirages **dessous**. Sur la capture, le Partager couvrait la 3e vignette et le cœur mordait la 1re.
+Correctif : la colonne **réserve** la bande basse. Son `paddingBottom` passe de `calc(env(safe-area-inset-bottom) + 10px)` à `+ 64px`, et `+ 112px` quand une musique remonte le Partager.
+⚠️ **Aucun déplacement du cœur ni du Partager** : ils gardent la place validée en 19ak et 19aq. Seule la réserve change. Si l'un des deux bouge un jour, ces deux nombres doivent bouger avec lui.
+⚠️ **Aucun `stopPropagation`, aucun `touchAction`, aucun seuil de geste n'a été touché.** La zone porte les incidents documentés 19h / 19al / 19bd / 19be ; rien ne justifiait d'y entrer.
+
+#### `story.html` — md5 `0499769080190fa63de4f80e515fe7bf` · 20 689 o
+
+🔴 **INCIDENT : la livraison de la session 141 (page Hype) n'est jamais partie sur GitHub.** Vérifié le 20/08 sur le fichier récupéré en ligne par Blandine : il portait encore l'ancien domaine **2 fois** et des vignettes **sans aucun gestionnaire de tap**. Refait ici.
+
+⚠️ **Deuxième incident, récurrent : `story.html` n'arrive pas sur le disque des sessions** (déjà le cas en 141). Reconstruit depuis la copie passée dans la conversation — copie que Blandine venait de récupérer **directement sur GitHub**, donc fiable, mais **aucune comparaison md5 n'a été possible**.
+
+- Les vignettes de 84 px et la photo de couverture ouvrent une **visionneuse plein écran** : flèches ‹ ›, compteur « 2 / 5 », fermeture au tap sur le fond / la croix / Échap. Flèches et compteur masqués s'il n'y a qu'une photo.
+- La galerie est construite **couverture d'abord, puis les autres dans l'ordre chronologique** — le même ordre que la bande, pour que `data-i` d'une vignette soit son rang.
+- Le tap sur la photo elle-même **ne ferme pas** : on peut la regarder sans la perdre d'un doigt mal placé.
+- `document.body.style.overflow = "hidden"` pendant l'ouverture, restauré à la fermeture.
+- La visionneuse vit **hors de `#scene`** : `#scene` est réécrit entièrement par `innerHTML`, elle serait effacée avec.
+- Les **2 adresses** de l'ancien domaine corrigées (`LIEN_APP` + bouton « Découvrir Hype »).
+- **Aucune requête supplémentaire** : les photos sont déjà chargées.
+
+### 🖥️ À l'écran : + / −
+
+**+** Un bouton « Découvrir le pack Duo » dans la modale de limite d'épingles
+**+** La mascotte à 104 px en haut de cette modale
+**+** Le bandeau devient deux lignes à partir de 5 épingles restantes
+**+** Toutes les photos d'une story partagée s'ouvrent en grand et se parcourent
+**~** Les phrases du message de limite reformulées ; **plus aucune mention d'« illimité » dans le fichier**
+**~** Les vignettes d'une story composée ne passent plus sous le cœur ni sous le Partager ; le bas de la colonne remonte de 54 px (102 avec musique)
+**~** Nouveau défaut du mur immersif pour qui n'y a jamais touché
+**−** Rien retiré. Bandeau d'un épinglage ordinaire, apparence des vignettes, place du cœur et du Partager : inchangés.
+
+**Vérifications à chaque livraison** : `node --check` sur les 16 blocs inline de l'index → 0 erreur · `node --check` sur `hype-stories.js` et sur le bloc de `story.html` → 0 erreur · `overflow-x:clip` ✓ · `overscroll-behavior:none` ✓ · `hypeVerrouScroll` ×4 · `hypeLibererPuitsTactiles` ×4 · ancien domaine **0 dans les trois fichiers**.
+⚠️ `verif.py` **non exécuté** : le script n'était pas disponible dans la session (comme en 141).
+⚠️ **Non vérifié en rendu** : l'avertissement des 5 restantes (il faut plus de 15 épingles sur un compte Premium) et la réserve basse avec musique.
+
+### 🗄️ ABONNEMENTS — CE QUI A ÉTÉ FAIT EN BASE
+
+Blandine voulait passer Evan et Liam en duo gratuit, 30 ans. **Ils avaient déjà tout.**
+
+| Compte | Plan | Expiration |
+|---|---|---|
+| `evanroux569@gmail.com` | duo / actif | **jamais** (existait déjà) |
+| `liamroux0@gmail.com` | duo / actif | jamais → 2056 → **remis à jamais** |
+| `liamroux0@gmail.fr` | duo / actif | jamais (compte de test Android) |
+
+La clause `not exists` de l'insert a empêché un doublon qui aurait cassé `maybeSingle()` (ligne 21337) et fait perdre son abonnement à Evan.
+
+#### 🔴 ERREUR DE CLAUDE — À RETENIR
+J'ai affirmé qu'Evan et Liam n'avaient pas d'abonnement supérieur **sans avoir lu une seule ligne de `abonnements_premium`**. J'avais seulement vérifié que l'email iCloud d'Evan n'existait pas dans `auth.users` — ce qui ne dit **rien** de son abonnement, les deux mécanismes étant séparés. Pour Liam j'ai fait pire : proposé un `update` de `expire_le` sans avoir lu sa valeur ; l'update a **raccourci un abonnement illimité** à 2056 (remis à `null` ensuite).
+La requête juste était disponible d'emblée : partir de `abonnements_premium` et joindre les emails, pas l'inverse. **~40 minutes perdues.** Mots de Blandine : *« essaye de vérifier ce que tu me fais faire »*.
+**Règle posée** : ne jamais faire exécuter une écriture sans avoir lu l'état exact de ce qui est modifié ; dire explicitement quand une conclusion est déduite et non vue.
+
+#### Comptes découverts au passage
+- **Evan est sous `evanroux569@gmail.com`**, PAS l'adresse iCloud de `HYPE_AMBASSADEURS`. Il n'a donc **jamais été reconnu comme ambassadeur** (`estAmbassadeurHype` compare l'email exact) : ni teintes Fond Studio, ni quota chevaux illimité. Corrigé ligne 795.
+- **Liam a deux comptes** : `.com` (principal, dernière connexion 14/08) et `.fr` (test Android, 10/08, *« son fr est sur android pour regarder quand ça bug »*). Le `.fr` est **volontaire — ce n'est pas un compte fantôme, ne pas le supprimer**.
+- 🟡 `lingo.html` contient encore l'adresse iCloud périmée dans sa liste `SECOURS`. À corriger quand le fichier sera libre.
+
+#### Le trou des ambassadeurs
+Ligne 21244 : être ambassadeur met `premium` à vrai **mais laisse `planAbo` vide**. Or **les quotas Hey Baby se lisent sur `planAbo`**. Un ambassadeur non abonné a donc 4 questions/jour et le plafond d'épingles le plus bas — l'inverse de ce que Blandine voulait. Concerne **Mégane, Déborah, Nélia** (Evan et Liam ont un vrai `duo` en base).
+🟡 **Décision non prise** : leur créer une ligne `duo` en base, ou faire dire `duo` à `planAbo` quand la personne est ambassadeur (touche un point central lu par plusieurs écrans).
+
+**Quotas Hey Baby, pour mémoire** — questions **par jour** : 1 gratuit · 4 Premium · 15 `ai` · 20 `duo`. Le compteur vit dans `localStorage` (`hype_heybaby_quota`, clé datée du jour) : il se réinitialise si le stockage est vidé — **le renommage a offert un quota neuf à tout le monde** — et ne suit pas d'un appareil à l'autre. Ce n'est pas un compteur serveur.
+
+### 🔍 DIAGNOSTICS (rien livré)
+
+#### 🟢 BUG B — LE DIAGNOSTIC DE LA PASSATION ÉTAIT FAUX
+La passation 141 disait : « Linguae lit `localStorage.getItem("hype_premium")`, écrit par Hype ». **Inexact.**
+
+Vérifié : `hype_premium` **n'apparaît nulle part dans `index.html`** — ni en lecture ni en écriture. Hype n'écrit jamais cette clé et n'a pas à le faire.
+
+`lingo.html` (md5 `7f7b3b60a38cb21bd8aa94d9058a3547`, lu en seule lecture) possède **son propre pont Premium autonome** (~ligne 3010) : il crée son client Supabase, interroge `abonnements_premium` lui-même, et écrit `hype_premium` tout seul. **Le raccord n'est pas cassé — il n'existe pas et n'a pas lieu d'exister.** Bonne nouvelle pour la doctrine d'autonomie : Linguae est déjà indépendant sur ce point.
+
+Les deux fichiers partagent la même session : même origine, `persistSession: true`, `autoRefreshToken: true`, adaptateurs de stockage identiques (localStorage avec repli sessionStorage).
+
+Le pont ne pose `"0"` que dans un cas : `getUser()` **a répondu** et il n'y a aucune session. **Le paywall Linguae est donc le symptôme d'une session absente, pas d'un Premium mal transmis. Le bug B est le bug A vu depuis Linguae.**
+
+#### 🟡 BUG A — CAUSE TOUJOURS INCONNUE
+Piste explorée puis **écartée** : le changement d'origine. Le stockage d'un navigateur est attaché à l'origine ; le renommage a rendu inaccessible celui de l'ancien domaine, ce qui produit mécaniquement, **une fois**, les trois symptômes (session perdue, paywall Linguae, bulles revenues via `hype_coach_*`).
+
+🔴 **MAIS** Blandine signale que **les paywalls Linguae étaient déjà récurrents AVANT le renommage**. Le changement d'origine n'est donc pas la cause — au mieux un aggravant ponctuel.
+
+**Piste retenue à la place** : `sb.auth.getUser()` valide le jeton auprès du serveur à chaque appel (148 appels à `utilisateurActuel()` dans l'index). Une réponse « pas de session » peut arriver **sans déconnexion réelle** — jeton momentanément refusé, rafraîchissement en cours, latence. Le pont conclut alors au désabonnement sur un incident passager. Cela produirait exactement des paywalls intermittents et récurrents.
+
+Autres constats : Hype n'a **qu'un seul `signOut`** (ligne 88), appelé depuis 5 endroits dont un seul automatique (l'éviction d'appareil, écartée ci-dessous).
+
+⚠️ **Conséquence sur l'achat du domaine** (gelé) : la migration produira quand même une perte de stockage unique chez tous les abonnés. **Une constante d'environnement n'y changera rien — c'est le navigateur, pas le code.** Le seul remède est de prévenir les cavaliers avant.
+
+#### 🔧 CORRECTIF EN COURS SUR LA PAGE LINGUAE (ne pas doublonner)
+Deux changements proposés dans `lingo.html` par la page parallèle, cohérents avec ce diagnostic :
+1. **Ne plus rétrograder à « 0 » sur simple absence de session** (ligne ~3154). Le « 0 » ne s'écrirait que si la base a répondu **connectée** et dit « abonnement non actif ». C'est l'application, à un second étage, de la doctrine déjà inscrite dans le fichier depuis le correctif du 16/08 (« le Premium perdu dans l'avion ») : *on ne pose « 0 » que si la base a VRAIMENT RÉPONDU*. Le chemin de l'absence de session avait été oublié. **Être déconnectée n'est pas être désabonnée.**
+2. Relance du pont sur `online` + `visibilitychange`.
+
+🟡 **À savoir** : ces correctifs suppriment le **symptôme**, pas la cause. Après eux, une session qui saute ne se verra plus dans Linguae — **on perd le témoin** qui servait à diagnostiquer le bug A côté Hype. Bon choix pour les abonnés, à assumer côté diagnostic.
+
+#### 🟡 LA LIMITE D'APPAREILS NE FONCTIONNE PAS
+Piste explorée pour le bug A, écartée, mais elle a révélé autre chose.
+
+Mécanisme du 18/08 : `hypeIdentifiantAppareil()` tire un UUID stable rangé dans `localStorage.hype_appareil_id`, `hypeSignalerAppareil()` appelle le RPC `hype_signaler_appareil`, **limite de 3 appareils**, éviction du plus ancien au-delà → `deconnexion()` immédiate (ligne 21008) + message ligne 23206. Le commentaire du code le dit lui-même : Safari et la PWA installée sont deux stockages séparés, donc **deux identifiants sur un seul téléphone**.
+
+Mesures : `hype_appareils` est **vide (0 ligne)** · la fonction `hype_signaler_appareil` **existe** · elle **contient bien un `insert`** · son corps porte **une liste d'emails exemptés écrite en dur** — `feinn@live.fr`, `malicia…`, les deux modératrices.
+
+**Conclusion : Blandine est exemptée, donc jamais évincée — le bug A qu'elle vit ne vient pas de là.** Et la table reste vide parce que la testeuse principale sort avant l'insertion.
+
+🟡 Reste ouvert : pour un abonné **non exempté**, le mécanisme est actif avec une limite de 3, et le renommage a **régénéré son `hype_appareil_id`**. `appareils.sql` est nécessaire pour aller plus loin. À noter aussi : `hypeSignalerAppareil` **avale toute erreur** (`if (r && r.error) return null`) — aucune trace en cas de panne.
+⚠️ L'écran « Mes appareils » affiche donc un compte vide.
+
+#### 🔴 L'ALLEMAND MANQUE DANS 506 ENDROITS
+Demande de Blandine : *« vérifie l'allemand, ça devrait être partout »*.
+
+Mesure sur `index.html` : **1 302 objets multilingues `{fr:…}`, dont 506 sans `de:`**. Quand `de` manque, `tr` (ligne 21145) retombe **silencieusement** sur le français : un cavalier allemand voit du français, sans aucune erreur visible.
+
+Répartition : **19213–19999 → 376** (dictionnaire de textes d'interface appelés par `t(…)`, ordre `fr, en, ja, es, it` — l'allemand n'y a jamais été ajouté) · 32000–33999 → 59 (Cristal/IPO) · 26000–27999 → 22 · 34000–35999 → 12 · 28000–29999 → 8 · 42000–43999 → 8 (Hey Baby) · reste épars → 21.
+**376 sur 506 tiennent dans un seul bloc.**
+
+⚠️ Cas particulier Hey Baby : sa fonction `TXT` (ligne 43047) **ne prend que 5 arguments** (`fr, en, es, it, ja`). Il faut **élargir la signature à six AVANT** de pouvoir y mettre du DE, puis repasser sur ses 16 appels. Les textes livrés cette nuit suivent volontairement l'existant à 5 langues, pour ne pas introduire une exception isolée — **ils sont à reprendre dans ce chantier**.
+⚠️ L'ordre des clés varie d'un bloc à l'autre : **insérer `de` par nom de clé, jamais par position**.
+
+🟡 **Chantier de traduction à part entière, non lancé. Document dédié rédigé : `CHANTIER-ALLEMAND.md`** (constat, carte par zone, méthode, script de comptage, pièges). Décision de périmètre à prendre : tout, ou le bloc principal d'abord.
+
+#### 🔴 LES CHEVAUX ÉCRITS EN DUR — PAS NETTOYÉS, DONNÉES FAUSSES
+Signalé par Blandine : *« normalement on avait retiré tous les chevaux codés en dur et j'en vois encore »*, *« on les a remplis d'images, tout se mélange, c'est le bordel »*.
+
+Exemple vérifié — **l'âge d'Elfe de Feinn est écrit en dur à trois endroits, avec deux valeurs différentes** :
+- ligne **28169** (`carteCheval`, carrousel d'accueil) → « Selle Français · **6 ans** »
+- ligne **29310** (`CHEVAUX_FICHE`) → « Selle Français · **7 ans** · Dressage »
+- ligne **32883** (`chevauxFeinnEH`) → « SF · **7** ans · IPO 128 »
+
+Blandine est certaine de n'avoir jamais saisi « 6 ans ». Ces chiffres ont été tapés dans le code à des moments différents et **vieillissent sur place**. Elfe apparaît en tout à **7 endroits** du fichier (dont `AFFICHES_SECOURS` ligne 28975, la teinte ligne 29343, la liste d'ids ligne 19944).
+
+Contexte : `NOMS_MIGRES` (ligne 31366) porte le commentaire « noms réels des chevaux de Liam en base » — les 7 chevaux **ONT** été migrés vers Supabase, mais **les anciennes cartes en dur n'ont jamais été retirées**. La règle du 30/07 est pourtant explicite (ligne 31391) : *« la base prime, le code en dur n'est qu'un secours »*.
+
+✅ **Ce qui marche déjà** : la **fiche cheval** elle-même est correcte (`chevalDyn || CHEVAUX_FICHE[id]`). La migration y a été faite proprement, elle n'a simplement **jamais été étendue aux deux listes**. Le chantier n'est donc pas « tout refaire » : c'est **brancher ces deux listes sur la même source que la fiche**.
+
+**Le carrousel d'accueil — décision de produit à prendre** (`manegeCartesAcc`, ligne 28167). Blandine : *« on peut pas laisser ça comme ça »*. Trois voies évoquées, **aucune tranchée** :
+- **retirer le carrousel** — le plus simple et le plus honnête ;
+- **le brancher sur les vrais chevaux du cavalier connecté** — le plus utile, mais il faut décider ce que voit un nouveau venu sans cheval ;
+- **des chevaux célèbres** (idée de Blandine) — donne du contenu à tous, colle à la direction artistique, mais demande images + textes et pose une **question de droits sur les photos**.
+*Avis de Claude, à valider ou écarter : les vrais chevaux du cavalier avec un repli propre. Ce n'est PAS une décision de Blandine à ce stade.*
+
+Autre suspect à examiner : `chevauxDemo` ligne **25567**, réservé au compte Feinn, qui **ajoute les chevaux en dur à la liste** en filtrant ceux dont le nom existe déjà. Si ce filtre rate, un même cheval apparaît en double.
+
+🟡 **Rien n'a été modifié sur ce sujet cette nuit** — y compris l'âge d'Elfe, laissé en l'état faute de décision sur la voie à suivre.
+
+#### 🟡 LE BOUTON « + AJOUTER À MON ÉCURIE 💎 » S'AFFICHE SUR DES CHEVAUX DÉJÀ PRÉSENTS
+Capture du 20/08 à 01 h 02 : le bouton apparaît en bas d'une fiche cheval alors que le cheval figure déjà dans la grille « MES CHEVAUX ». Concerne les chevaux de `NOMS_MIGRES` (double existence : carte en dur + ligne en base). Libellé ligne 32876.
+**Hypothèse NON VÉRIFIÉE** : le bouton teste la présence par identifiant de base, et une fiche ouverte depuis la carte en dur n'en a pas.
+**Information manquante** : que se passe-t-il si on appuie — doublon créé, ou rien ? Ça départage un bouton mal conditionné d'un vrai risque de duplication.
+
+#### 🟡 CIBLER L'OFFRE DUO DANS L'ÉCRAN PREMIUM — FAISABLE
+`setEcran("premium")` ouvre la page générale des formules ; l'abonné doit trouver Duo lui-même.
+Vérifié dans `PV5_TPL` (gabarit de 15 567 caractères) : le bloc Duo est identifiable (classes `duo`, `btn-duo`). Les seuls `id` du gabarit sont des dégradés SVG, mais rien n'empêche d'en poser un sur la section.
+Mécanisme proposé : une cible (`window.__cibleAbo = "duo"`) posée avant `setEcran`, et `EcranPremium` défile jusqu'à la section au montage. ~30 lignes.
+⚠️ Le `scrollTo(0, 0)` du montage est la règle scrollTop=0 : il faut le **conditionner, pas le supprimer**.
+🟡 Chantier séparé, non lancé.
+
+#### 🔴 LA CARTE DE LA COMMUNAUTÉ — BRANCHEMENT LAISSÉ À MI-CHEMIN, SANS QUE PERSONNE LE SIGNALE
+Blandine pensait ce chantier terminé (*« j'y ai passé une soirée entière en plus »*). **Il ne l'est pas.**
+
+**Ce qui existe** : la tuile « position » sur la page compte (lignes 44161–44180), son interrupteur, le libellé « Ta position apparaît sur la carte de la communauté » en 6 langues, l'écriture en base via `syncProfilDistant({ sur_carte: v })`, la colonne `profiles.sur_carte`.
+
+🔴 **Ce qui manque, mesuré** :
+1. **`sur_carte` n'est LU nulle part.** 3 occurrences dans tout le fichier : le commentaire (43964), l'état local (43967), l'écriture (44176). **Aucun écran ne consulte cette valeur.** Le consentement est recueilli, stocké, jamais utilisé.
+2. **Le défaut est « visible »** (`profil.sur_carte !== false`, ligne 43967) — donc tout compte sans valeur explicite apparaîtrait.
+3. **`est_mineur` et `sur_carte` ne se croisent NULLE PART.** Un compte déclaré mineur a le même défaut qu'un adulte. Aucune conséquence à l'écran aujourd'hui (aucune carte n'affiche de cavaliers), mais **le jour où la carte est branchée, tous les mineurs y seraient par défaut** — l'inverse de ce que Blandine avait demandé. **La règle mineurs doit être posée AVANT de brancher la carte.**
+
+**Décision de Blandine (nuit du 20/08)** : la carte n'affiche **pas** des points partout, seulement les clubs où au moins un cavalier est inscrit — et **rien d'individuel dessus** : *« c'est juste signaler où est-ce qu'il y a des clubs avec un inscrit, c'est tout »*. Pas de nom, pas d'avatar, pas de nombre. Aucune donnée personnelle affichée.
+*⚠️ Claude était allé trop loin dans la prudence sur ce point, en raisonnant sur des avatars que Blandine n'avait jamais proposé d'afficher. À ne pas refaire : elle a deux abonnés, la friction a un coût réel.*
+
+**Deuxième idée, distincte et peut-être plus utile — LA CARTE DE L'INSTANT** : *« quelqu'un en vacances [...] ou en déplacement concours quelque part, et il a envie de pouvoir voir les autres cavaliers sur place »*. Temporaire et volontaire : le point vit le temps de la story puis disparaît (`expire_le` existe déjà). ⚠️ Obstacle : le champ `lieu` d'une story est du **texte libre**, sans coordonnée — il faudrait une géolocalisation à la publication, ou un rapprochement avec la base des clubs qui ne marchera que pour un club connu. **À ne pas confondre avec la table `presences`** (lignes 1489–1516), qui concerne un `evenement` et n'a ni coordonnée ni lien club.
+
+🟡 **Document dédié rédigé : `CHANTIER-CARTE-COMMUNAUTE.md`**, pour qu'une autre page reprenne le sujet depuis le début.
+
+#### 🔴 BUG — TOUT EST DÉCALÉ VERS LA DROITE À CHAQUE RECONNEXION
+Captures du 20/08 à 02 h 40 : cartes qui débordent, barre du bas coupée (« Hey Baby Pre… »). Constaté sur l'accueil ET la page Cavalier — donc pas un composant isolé.
+**Indice décisif donné par Blandine : *« je dézoome et ça se remet en place après »*.** La page est donc réellement plus large que l'écran au chargement ; le navigateur zoome pour compenser, et un dézoom manuel force le recalcul.
+→ **Débordement horizontal transitoire, présent seulement au montage après connexion.** Touche la famille des interdits CSS (`overflow-x: clip`) : à traiter avec méthode, pas à la volée. Non diagnostiqué, aucune piste vérifiée.
+
+#### 🟡 LA CARTE DES CLUBS — FORMAT ENFIN VÉRIFIÉ
+`hype-clubs-loader.js` ne fait que concaténer `HYPE_CLUBS_DB_1/2/3` dans `window.HYPE_CLUBS`.
+`hype-clubs-db-3.js` (147 068 o) : **1 019 clubs**, source OSM nettoyée, format `{"id","nom","type","lat","lon","site","tel"}` — **latitude et longitude sont bien présentes sur chaque entrée**. Soit environ **3 000 clubs** au total sur les trois fichiers.
+La carte est donc branchable. 🟡 Mais **la décision de rendu reste à présenter avant tout code** : 3 000 points ne se dessinent pas un par un sur iPhone (regroupement par département ou par grille).
+⚠️ Rappel : ne jamais citer le chiffre de 131 clubs, périmé depuis des mois.
+
+### 📌 DÉCISIONS DE BLANDINE (ne pas rediscuter)
+
+- **Plafonds d'épingles : Premium 20 · `ai` 50 · `duo` 80.** Un pack plus gros viendra plus tard si besoin.
+- **Un plafond haut vaut mieux qu'aucun plafond** — d'où la borne posée sur `ai` et `duo`, qui n'en avaient pas.
+- **Aucune mention d'« illimité »** : *« on avait précisé nulle part que c'était illimité avant, donc c'est mieux de rien mettre »*.
+- **Formulation retenue** : « Souhaites-tu passer à l'abonnement supérieur ? L'abonnement Duo en propose 80. » — parler d'« abonnement Duo », les identifiants `ai`/`duo` n'ayant pas de nom client établi.
+- **Le message mène à l'offre** : bouton cliquable dans la modale de limite.
+- **Maquette A** : mascotte dans la modale, rien dans le bandeau (la vignette 34 px a été écartée — le poney n'est plus identifiable en moins d'une seconde, contraire à la règle de direction artistique).
+- **Mur immersif** : voile 22 · désature 0 · nappe 20 · **turquoise** · fondu large · fondu adouci décoché, en défaut pour tous.
+- **Liam `.fr` conservé** : compte de test Android volontaire.
+
+### 📋 RESTE OUVERT
+
+1. 🔴 **Bug A** — cause inconnue. Les paywalls Linguae préexistaient au renommage : l'explication par le changement d'origine est écartée. Piste : `getUser()` qui répond « pas de session » sur un incident passager. Chantier côté `index.html`.
+2. 🔴 **L'allemand** — 506 objets sans `de`. Voir `CHANTIER-ALLEMAND.md`. Décision de périmètre à prendre.
+3. 🔴 **Chevaux en dur** — carrousel d'accueil (3 voies, à trancher) et `chevauxFeinnEH` à brancher sur la base. Âge d'Elfe faux, laissé en l'état.
+4. 🟡 **Ambassadeurs sans `planAbo`** (Mégane, Déborah, Nélia) : ligne en base ou correctif code — décision à prendre.
+5. 🟡 **Bouton « Ajouter à mon écurie »** affiché sur des chevaux déjà présents. Savoir ce qu'un appui produit.
+6. 🟡 **`hype_appareils` vide** + `appareils.sql` à fournir. Écran « Mes appareils » sans contenu.
+7. 🟡 **Ciblage de l'offre Duo** dans `EcranPremium` (faisabilité vérifiée, ~30 lignes).
+8. 🟡 **`lingo.html`** : adresse iCloud périmée dans `SECOURS` ; `localStorage.setItem("hype_premium","0")` en dur ligne 9124, hors du pont — contexte à vérifier. **Fichier codé sur une autre page, ne pas y toucher.**
+9. 🔴 **Carte de la communauté — branchement à mi-chemin.** `sur_carte` stocké mais jamais lu · défaut « visible » · **règle mineurs inexistante, à poser AVANT tout branchement**. Décision de Blandine : points sur les clubs ayant au moins un inscrit, rien d'individuel affiché. Voir `CHANTIER-CARTE-COMMUNAUTE.md`.
+9 bis. 🟡 **Carte de l'instant** (idée distincte) : afficher un point le temps d'une story — vacances, concours. ⚠️ Le champ `lieu` est du texte libre, sans coordonnée.
+9 ter. 🔴 **Décalage vers la droite à chaque reconnexion.** Se corrige au dézoom → débordement horizontal transitoire au montage. Non diagnostiqué.
+10. Chevaux d'écurie hors profil Cavalier + épinglage volontaire (décision de stockage à prendre)
+11. Icône d'écran d'accueil à refaire depuis `https://2hype.netlify.app`
+12. `partage-apercu.jpg` (1200×630) à créer et pousser à la racine — les balises Open Graph de `story.html` l'attendent
+13. Bug du sélecteur de photos : accepte 8 photos (`HS_MULTI_MAX = 5`), cause inconnue
+14. Achat du domaine → après le point 1. **Prévoir de prévenir les cavaliers** (voir bug A).
+15. D-U-N-S : rappel posé au 26/08/2026 à 10 h
+16. Anciennes tâches inchangées : mentions publiées (`cible_nom` figé), `majProfil({pseudo})`, écran d'inscription japonais (`EcranPersonnalisation`), titre « YOUR WORLD » du globe, confirmation email, 2 comptes fantômes, 2 aria-label restants
+
+### PRÉPARATION FLUTTER
+
+**Aucune amélioration d'architecture réalisée sur cette session** — travail de contenu, de diagnostic et de réglage.
+
+Trois observations pour la modélisation, toutes du même ordre : des règles métier écrites en dur, éparpillées, sans point unique.
+
+**Les quotas ne sont pas modélisés.** `LIMITE_JOUR` et `LIMITE_EPINGLES` sont deux ternaires écrits à la main dans le composant Hey Baby, lus depuis `planAbo`. Le chiffre du plafond était en plus **recopié dans le texte du message, dans les 5 langues** — d'où un message qui aurait menti dès le premier changement. `PLAFOND_DUO` corrige localement, mais la vraie forme est un objet **Plan** portant ses quotas, interrogé par les écrans. Un service `Abonnement` exposant `quotaQuestions()` / `quotaEpingles()` rendrait impossible qu'un chiffre existe à deux endroits.
+
+**Le rang et l'abonnement sont confondus.** Être ambassadeur ouvre `premium` mais laisse `planAbo` vide, alors que les quotas se lisent sur `planAbo`. `lingo.html` a rencontré exactement le même problème et l'a résolu en séparant explicitement `SECOURS` de `MODERATRICES` (commentaire du 14/08). Ce sont **trois notions distinctes** — abonnement payant, rang communautaire, filet de secours — traitées comme une seule. À séparer dans la frontière « Communauté ».
+
+**Les listes de personnes vivent dans le code ET dans la base.** `HYPE_AMBASSADEURS` (index, ligne 795), `SECOURS` et `MODERATRICES` (`lingo.html`), plus une liste d'emails écrite en dur **dans la fonction SQL** `hype_signaler_appareil`. Quatre copies, désynchronisées : l'adresse périmée d'Evan a survécu partout, et il n'a jamais reçu ce qui lui était destiné. Une table unique lue par tous serait la seule source. C'est le pendant exact de la leçon du domaine écrit à trois endroits, notée en 141.
+
+**Témoin** : ⚠️ à relever dans l'index livré (stories 19bk).
+
+---
+
+## SESSION 141 (PAGE HYPE) — 19/08/2026, soirée · SECTION RÉTABLIE LE 20/08
+
+> 🔴 **Cette section manquait entièrement de ce fichier.** Le travail ci-dessous a été livré ET poussé le 19/08 au soir, mais n'a jamais été consigné : `SUIVI.md` ne contenait que la 141 de la page Linguae, et son en-tête annonçait encore l'index de la 140 avec une alerte de domaine déjà réglée. Recherche faite le 20/08 sur les md5 `328b523b…`, `97b5d494…`, `f3ca9aa0…` et sur `__hbDepuisCours` : **zéro occurrence**. Rétablie ici à partir de la passation de la session, à sa place chronologique.
+
+### 🔴 CE QUI ÉTAIT CASSÉ — HEY BABY NE RÉPONDAIT PLUS
+L'`index.html` en ligne (md5 `d42193a9c9dcbd21fd776be2b9034ee2`) contenait encore l'ancien domaine **3 fois** : `LIEN_APP` (ligne 19811, bouton Partager + QR code), `API` (42892, Hey Baby), `API_ASSISTANT` (43064, Hey Baby).
+
+Point aggravant vérifié : les deux dernières ont un repli `window.HYPE_API`, **mais cette variable n'est définie nulle part** dans le fichier. C'est donc bien l'adresse écrite en dur qui servait — vers un site ne portant plus qu'une page de redirection, **sans fonctions Netlify**. Les appels partaient dans le vide.
+
+Le remplacement avait été fait le 19/08 au soir puis **perdu** (fichier de travail écrasé pendant les manips Netlify).
+
+`hype-stories.js` v19bk : 0 occurrence, propre.
+
+### ✅ LIVRAISONS
+**1. `index.html` — remplacement de domaine.** md5 `97b5d49463295c3c0dd8bf725610522b` · 9 199 765 → 9 199 717 o (−48 o, la longueur exacte gagnée par les 3 adresses raccourcies). **Poussé et vérifié en ligne : Hey Baby répond de nouveau.**
+
+**2. `index.html` — pastilles Hey Baby + retour au cours.** md5 `328b523b52f09c52ba548df4721b9b9e` · **9 202 899 o** (contient aussi le correctif de domaine, remplace le précédent).
+
+*Diagnostic* : les 5 questions suggérées en fin de cours (`ComplementsBiomeca`, ligne 35638) étaient de simples `<span>` **décoratifs, sans aucun gestionnaire de clic — depuis leur création**. Ce n'est pas une régression du renommage. Le composant est partagé par **tous les cours**, donc le symptôme était général.
+
+Le mécanisme d'arrivée contextuelle existait déjà et était **complet** : `window.__hbCoursCtx`, consommé ligne 42810, transporte `galop`, `coursId`, `titre`, `cheval`, `question`, `score`, `depuisQuiz`. Il était alimenté par la fin de cours (35046, 35287, 39836) et le QCM (39904) — **jamais par ce bloc**.
+
+*Correctif* : nouvelle fonction `__hbDepuisCours(q)` dans `ComplementsBiomeca`, qui recopie exactement la construction de la fin de cours (même résolution du cheval via `window.__chevalOuvert` / `CHEVAUX_FICHE`) en ajoutant `question`. Les pastilles deviennent des `<button>` — **apparence inchangée**.
+
+*Retour arrière* (`retourAssistant`, ligne 42852) : le retour précis existait mais était conditionné à `cc.depuisQuiz`. Condition élargie à `cc.coursId`. `SAUT_BLOC_INITIAL` devient `cc.depuisQuiz ? dernier : 0` — **le comportement du QCM ne change pas d'un pouce**, les pastilles reviennent au début du chapitre.
+
+**3. `story.html` — visionneuse des photos.** md5 `f3ca9aa030e0e33c3eae117d2307cdd8` · 18 334 o.
+⚠️ **Reconstruit depuis les copies passées dans le fil** : le fichier n'est jamais arrivé sur le disque de la session, md5 non comparable à GitHub.
+🔴 **CETTE LIVRAISON N'EST JAMAIS PARTIE SUR GITHUB** — constaté le 20/08 (session 142), le fichier en ligne portait encore l'ancien domaine 2 fois et des vignettes muettes. Refaite en 142.
+
+### 🖥️ À l'écran : + / −
+**+** Hey Baby répond de nouveau
+**+** Les 5 questions suggérées deviennent tappables dans **tous** les cours — Hey Baby s'ouvre sur « 📖 [titre du chapitre] », la question déjà écrite dans le champ, les suggestions du chapitre affichées
+**+** La flèche retour ramène au bon galop et au bon chapitre
+**~** Le bouton Partager et le QR code pointent sur la bonne adresse
+**−** Rien retiré. Apparence des pastilles inchangée.
+
+### 🔍 DIAGNOSTICS SANS CODE
+**La bulle « Tes notifications sont ici » — mécanisme SAIN.** `CoachmarkHype` (26262) écrit `hype_coach_cloche-notifs = "1"` via `coachmarkMarquerVu` (26256) et relit au montage. Le code est correct. Vue 6 fois dans la soirée ; navigation privée **écartée** (captures : navigation normale, 9 onglets, Chrome). Test de fin de séance : bulle fermée → app quittée → rouverte → **elle n'est pas revenue**. Hypothèse retenue : les rechargements en cascade pendant les manips de domaine.
+
+**Chevaux persos vs chevaux d'écurie sur la page Cavalier.** La distinction **existe déjà en base** : colonne `chevaux.ecurie`, valeur `"__perso__"` posée à la création (ligne 827). Le libellé « ◇ Cheval de l'écurie » s'affiche sous les cartes mais est **purement décoratif** : les deux catégories restent mélangées sous « MES CHEVAUX ». Ligne 834 filtre bien (`.eq("ecurie","__perso__")`), **lignes 843 et 1542 ne filtrent que sur `user_id`**. **Décision de Blandine** : les chevaux d'écurie **sortent** du profil Cavalier, avec épinglage volontaire de quelques-uns. 🟡 Stockage à trancher : colonne de `chevaux` (partagée) ou liste côté profil (**recommandé**).
+
+### 🏷️ RECHERCHES DE NOM (faites, résultats acquis — ne pas refaire)
+**App Store** — `Hype` : des centaines d'apps · `Hype World` : **pris à l'identique** · `Hyped` : libre · **`2Hype` : terrain vide** · `Linguae` : libre, mais voisin **Dictionnaire Linguee (DeepL)**, même prononciation 🟡
+**INPI** — `Hype` : **1 484 marques**, 192 entreprises · `Hyped` : 6 / 3 · **`2Hype` : 0 / 0 / 0**. 🟡 Un zéro signifie « aucun dépôt identique », pas « le dépôt passerait » : l'INPI juge aussi la **ressemblance**.
+**Domaines** — `2hype.com` **pris** (collectif de YouTubeurs américains, 100 Thieves) · `.fr` non vendu par Netlify (AFNIC, résidence UE requise) → registrar français puis rattachement · ⚠️ toujours regarder la colonne *Renewal* chez Netlify (`.life` 5,99 → **45,99 $**, `.energy` 23,99 → **172,99 $**)
+**Notes de langue** — `hype` (nom) = le battage, la survente ; `hyped up` (adj.) = surexcité, à fond : c'est ce second sens qui convient. **`Hype Horse` / `Horse Hype` à éviter** — en anglais un *hype horse* est « un cheval survendu ». `2Hype` se lit *too hype*. Sur « hype » seul personne ne gagne la recherche App Store : le territoire réel est *équitation, galop, cheval, poney, cavalier*, à placer en **sous-titre** (30 car.) et dans le **champ mots-clés** (100 car., invisible).
+
+### PRÉPARATION FLUTTER
+**L'adresse du site est écrite dans le code**, à trois endroits, avec un repli (`window.HYPE_API`) **jamais défini** — une fausse sécurité. Une seule constante d'environnement portée par la frontière « Données » aurait rendu le renommage indolore.
+**`window.__hbCoursCtx` est un contrat implicite bien conçu mais non tenu** : quatre sites d'appel le remplissaient, un cinquième l'ignorait, et rien ne le signalait — d'où des pastilles muettes pendant des semaines. Un contrat Repository typé rendrait cet oubli impossible. Cas d'école pour la modélisation du module Cours.
+
+---
+
+## SESSION 141 — 19/08/2026, fin de soirée
+
+*(Session tenue par la page Linguae, exceptionnellement : la crise du domaine a débordé sur Hype. AUCUNE modification de `index.html` — la règle « une seule page codeuse » est respectée, l'index reste celui de la session 140, md5 `d42193a9…`.)*
+
+### 🔴 La redirection de la session 140 NE COUVRAIT QUE LA RACINE — réparée
+
+« Les anciens liens fonctionnent — vérifié en ligne » (session 140) était vrai pour la racine SEULEMENT. Vérifié ce soir par Blandine : `majestic-melba-997a68.netlify.app/lingo.html` rendait un **404**, puis après un premier correctif, redirigait vers l'ACCUEIL en perdant le chemin. Tous les liens publiés (Facebook, Instagram : `…/lingo.html`, `…/lingo.html#lecon=mauri…`) tombaient donc à côté.
+
+**Réparation déployée et confirmée par Blandine (« ça a l'air bon »)** : le site de redirection porte désormais DEUX fichiers HTML — `index.html` (la racine) et `404.html` (Netlify le sert pour TOUTE adresse inconnue, donc pour chaque sous-page). Les deux recollent chemin + query + hash en JavaScript : `location.replace("https://2hype.netlify.app" + location.pathname + location.search + location.hash)`. `…/lingo.html#lecon=maurice` arrive donc sur la MÊME page chez 2hype.
+
+⚠️ Méthode de dépôt, pour la prochaine fois : le sélecteur de fichiers iOS grise les fichiers SANS extension (`_redirects` impossible) et a refusé zip et dossiers au début de soirée — d'où le 100 % HTML. Le zip « à plat » (fichiers à la racine, sans dossier) est finalement passé.
+⚠️ Netlify propose « Rename to index.html? » quand on ne dépose que `404.html` : REFUSER (« Deploy without renaming »), le 404 doit garder son nom.
+🔴 **NE PAS « réparer » cette redirection** : elle est volontairement en HTML+JS, pas en `_redirects`/`netlify.toml`.
+
+### L'amnésie de domaine — les « bugs » de la soirée qui n'en étaient pas
+
+Domaine neuf = stockage neuf, pour chaque appareil, UNE fois. Constaté et expliqué ce soir : bulles de bienvenue revenues, page « Quelle langue veux-tu apprendre ? » revue, vidéo d'intro complète avec flashs de premier chargement (analysée image par image : c'est la séquence normale de première visite, cache vide), identifiants redemandés. **Aucune régression de code.** Chaque écran revu une fois se remet en cache.
+
+⚠️ Les raccourcis PWA installés PENDANT la panne sont défectueux de naissance (ouvrent Safari au lieu du plein écran). Remède transmis à Blandine : supprimer les deux raccourcis, recharger `https://2hype.netlify.app` proprement, réinstaller.
+
+### 🔴🔴 TROIS VRAIS BUGS CONFIRMÉS — CHANTIER PRIORITAIRE, PASSATION ÉCRITE
+
+Déclaré prioritaire par Blandine : *« on ne peut pas se connecter cinq fois par session »*.
+
+- **A · La session saute** — reconnexions multiples par session. Préexiste au renommage (« on a déjà eu cette conversation »). Un correctif antérieur existe peut-être dans l'index : le retrouver, comprendre pourquoi il ne tient pas.
+- **B · Premium non reconnu dans Linguae** — paywall affiché à Blandine connectée-Premium. Mécanisme établi : Linguae lit `localStorage.hype_premium`, que HYPE écrit. Si la note s'écrit trop tard/sous condition/jamais sur le nouveau domaine → paywall. ⚠️ Blandine ne sait pas si c'est le Premium ou le COMPTE qui saute — test qui départage documenté dans la passation.
+- **C · La bulle « Tes notifications sont ici » revient après fermeture**, dans la même session. « On avait déjà réglé ça » — retrouver le correctif d'époque et pourquoi il ne tient plus. Vérifier la navigation privée (question posée, jamais répondue).
+
+Hypothèse de travail (à vérifier) : les trois touchent le même sous-système — CE QUE HYPE ÉCRIT EN LOCAL ET QUAND. Un diagnostic, trois correctifs.
+
+➕ UX à prévoir dans la foulée (validée dans le principe par la situation, pas encore par Blandine) : le paywall de Linguae n'offre AUCUN chemin vers la connexion (« je ne sais même pas comment retourner à la page pour me connecter »). Un lien « Déjà abonné ? Se connecter » — côté `lingo.html`, page Linguae, à coordonner.
+
+**→ Document de passation : `PASSATION-HYPE-SESSION.md`** — contexte complet, fichiers à demander en une fois (`index.html`, `sw.js`, module de session éventuel), règles, test de départage. La conversation qui prend ce chantier commence par lui.
+
+### ⚠️ Incident assumé par la page : un livrable nommé `index.html`
+
+La page de redirection livrée ce soir s'appelait `index.html` — même nom que l'index de Hype. En l'enregistrant, Blandine a ÉCRASÉ sa copie locale de l'index dans ses téléchargements (récupérée ensuite depuis GitHub, la source de vérité — rien de perdu au dépôt). **RÈGLE NOUVELLE, ABSOLUE : aucun livrable ne porte le nom d'un fichier vivant du projet.** Préfixer (`patch-…`, `redirection-…`) et demander le renommage au moment du dépôt.
+
+### Rappel inchangé de la session 140, toujours LA première tâche de la prochaine page codeuse
+
+🔴 L'index (md5 `d42193a9…`) contient encore **3 occurrences de l'ancien domaine** (LIEN_APP ~19811, API Hey Baby ~42892 et ~43064) et `story.html` **2** : Hey Baby risque de ne plus répondre tant que ce n'est pas remplacé par `2hype`. Le remplacement du 19/08 a été perdu (fichier écrasé) — à refaire et livrer.
+
+### Côté Linguae (pour mémoire, tenu par SUIVI-LINGUAE.md)
+
+Le lot du 19/08 est poussé et vérifié en ligne (Taupō contrôlée écran contre tables : conforme). Dernière livraison en attente de push : `lingo.html` v54 (souvenir de Taupō → « Un souvenir en Free Ride », l'objet reste le cadre — décision de Blandine). Fil ouvert : « il manquait des morceaux sur une ville cet après-midi » — jamais identifié, en attente d'une capture.
+
+---
+
+## SESSION 140 — 19/08/2026
+
+### Le partage de story, du bouton à la page publique
+
+**Bouton « Partager » ajouté dans `VisionneuseStories`** (hype-stories.js) : pastille avec le mot traduit en 6 langues + icône `\u21AA`. Elle remonte à `bottom: 62` quand `story.musique` existe — collision confirmée en vidéo avec la pastille « Hype Beat », toutes deux à `right:14/bottom:14` sinon. **Un premier essai dans `CompositionStory` a été retiré** : cette vue s'affiche À L'INTÉRIEUR de la visionneuse, le bouton y faisait doublon.
+
+**`hypePartager` (index.html, construit le 14/08) enfin branché.** Il accepte maintenant `o.legende` (optionnel) : la légende de la story passe en tête du texte partagé. La famille `"s"` pointe vers `story.html?id=...` ; les autres familles (g, b, c, a, v, u, e) inchangées.
+
+**Ouverture d'une story partagée dans l'app** : `useEffect` dans `BandeauStories` qui lit `window.__storyOuverte`, attend le chargement de `groupes`, cherche l'id (y compris parmi les membres `compo`), appelle `setOuvert(gi)`/`setDepartS(si)`, puis efface la variable. **12 cas simulés en Python, 12/12 conformes** (story simple, 2e groupe, membre de composition, couverture, expirée, groupes vides, `compo=None`).
+
+### story.html — la story sans compte
+
+**Nouveau fichier `story.html` (12,4 Ko), autonome, sans SDK, sans barre de navigation.** Requête REST directe vers Supabase avec la clé anon. Affiche : photo + légende + lieu + auteur + **bande de tirages** (toutes les photos du même `groupe`, tri chronologique, couverture = celle qui porte une `disposition`) + bouton « Découvrir Hype ». Balises Open Graph **statiques** ajoutées — elles attendent un fichier `/partage-apercu.jpg` (1200×630) à la racine du dépôt, PAS ENCORE FOURNI.
+
+**SQL `story-lecture-publique.sql` PASSÉ ET VÉRIFIÉ (2 rows)** : deux policies RLS pour le rôle `anon` — `hype_stories_lecture_publique` (`using (expire_le > now())`) et `profiles_lecture_publique_partage` (`using (true)`). Idempotent, aucun drop. Cause du « Story introuvable » initial : la requête réussissait mais revenait vide, faute de policy.
+
+⚠️ **Décision consciente de Blandine** : stories non expirées et profils deviennent lisibles par quiconque a le lien, même sans compte. Réversible par deux `drop policy`.
+
+### Migration de domaine : 2hype.netlify.app
+
+- **Site principal renommé** `majestic-melba-997a68` → **`2hype`** (« hype » indisponible). Adresse : `https://2hype.netlify.app`.
+- **Second site Netlify créé**, nommé `majestic-melba-997a68` (nom libéré), contenant une seule page de redirection (`redirection-ancien-lien.html`, renommée `index.html` par Netlify au dépôt). **Les anciens liens fonctionnent — vérifié en ligne.**
+- Le `netlify.toml` de redirection a été **abandonné** : le sélecteur Netlify mobile n'accepte que du HTML seul (ni .toml, ni .zip).
+
+🔴 **Conséquence à corriger (voir bloc rouge en tête)** : le second site n'a AUCUNE fonction Netlify. Les appels Hey Baby codés sur l'ancien domaine tombent dans le vide.
+
+⚠️ **Incident PWA, cause assumée par la page** : les icônes déjà installées pointent vers l'ancien domaine ; iOS sort du mode plein écran dès qu'une redirection change de domaine — limite documentée, non contournable par le code. Personne d'autre que Blandine n'avait installé l'icône (confirmé par elle) : **elle doit recréer la sienne depuis `https://2hype.netlify.app`** (Partager → Sur l'écran d'accueil).
+
+### Achat d'un vrai nom de domaine — EN COURS, non abouti
+
+Blandine veut acheter maintenant, tant que personne n'a réinstallé, pour éviter une 3e migration. Un domaine acheté s'**ajoute** par-dessus `2hype.netlify.app` sans le remplacer → redirections préservées. Netlify vend des domaines avec DNS + HTTPS automatiques (~10-15 €/an pour un .fr).
+
+**Chemin exact, confirmé par recherche Google** : page du projet 2hype → bouton **« Project navigation »** → **« Domain management »** (entre « Web security » et « Forms ») → **« Add a domain »** → **« Buy a new domain »**.
+
+Pièges rencontrés (~1 h perdue, à ne pas refaire) : la recherche interne « domain » renvoie vers les docs (1re ligne « Ask Netlify AI » présélectionnée) ; toutes les adresses directes devinées (`/teams/feinn/dns`, `/domains`, `/projects/2hype/settings/domain`…) donnent « Page not found » ; « Domain management » n'existe PAS au niveau de l'équipe, seulement dans le menu du projet. **Recommandation : finir sur ordinateur**, la barre latérale y montre « Domains » en permanence. La conversation s'est arrêtée là (limite d'images atteinte).
+
+### Préparation Flutter
+
+`story.html` est la première surface Hype servie hors du monolithe : page autonome qui lit Supabase en REST pur, sans SDK ni état partagé — exactement le contrat « Repository » visé. Le futur module Flutter de partage pourra reprendre tel quel le couple (policy anon + requête REST + tri du `groupe`).
 
 ---
 
@@ -76,7 +734,43 @@ Le bouton n'est visible que par `feinn@live.fr` et `malicia2008@hotmail.fr` : c'
 
 **Le libellé dit « rarement modifiable », JAMAIS « définitif »** — décision explicite de Blandine, promettre le définitif serait faux.
 
-**Le message d'invitation** s'affiche sur l'accueil aux seuls comptes `handle_a_valider`. **Aucune clé de localStorage, volontairement** : il revient à chaque ouverture tant que rien n'est validé. Il disparaît tout seul, la fonction SQL levant le drapeau au premier changement réussi.
+**Le message d'invitation** s'affiche sur l'accueil aux seuls comptes `handle_a_valider`. ⚠️ **DÉCISION REVUE PLUS TARD DANS LA MÊME SESSION, voir plus bas : « vu une fois, jamais réaffiché ».** Ce qui suit décrivait la toute première version, corrigée avant tout push.
+
+### Grand ménage de traduction (déclenché par Blandine, en fin de session)
+
+**Origine.** Blandine a signalé plusieurs écrans en français malgré une langue différente réglée, et a dit une phrase qui doit rester une règle : « je n'ai jamais dit qu'une partie des traductions n'était pas faite » — reproche légitime. Jusqu'ici Claude corrigeait au fur et à mesure des captures reçues, sans jamais faire le tour. Correction de méthode assumée : chercher activement, pas seulement réagir.
+
+**Le globe des clubs — réécriture complète.** `GLOBE_HTML_HYPE`, 96 Ko de HTML autonome chargé dans une iframe (`Hype Universe`), possédait déjà un système de traduction mais **corrompu et très incomplet** :
+- Le japonais et l'italien de « voir la fiche » (`voir`) étaient du **charabia d'encodage illisible**, l'apostrophe française cassée (« Câest »). Réécrit proprement.
+- **L'allemand n'existait pas du tout.**
+- Une vingtaine de textes — les six filtres du bas (Tous/Partenaires/Centres d'examen/Écuries/Stages/Concours), les titres des deux panneaux tournants, le message d'aide, l'état « aucun club trouvé », les six étiquettes de type de structure, le compteur de résultats, le bouton « Affiche des stages » — **ne faisaient partie d'aucun système**, jamais reliés à rien.
+- Le gestionnaire qui reçoit le changement de langue ne mettait à jour que **4 petits bouts de texte** ; étendu pour tout rafraîchir (filtres, panneau courant, compteur, résultats de recherche).
+
+**Méthode de réencodage — leçon retenue de la corruption trouvée.** Le fichier a été décodé en HTML lisible, modifié comme un fichier normal, revérifié par `node --check`, puis **réencodé avec `json.dumps` (outil, pas à la main)** avant réinsertion dans `index.html`, avec re-protection systématique des fermetures `</...>` pour ne pas casser la balise `<script>` englobante. C'est très probablement ainsi que la corruption précédente est née — une édition manuelle des échappements. Vérifié après coup : la balise script ne se referme pas prématurément.
+
+⚠️ **Limite assumée, non testée visuellement** : c'est le plus gros morceau de code touché ce soir, et Claude n'a vu son rendu à aucun moment. Un contrôle de Blandine sur le globe, dans une langue autre que le français, reste la meilleure garantie.
+
+**Trois bugs isolés corrigés en parallèle :**
+- Le bouton « Continuer » de `EcranProfilSetup` (première page d'inscription — prénom, âge) était figé en français ; branché sur la clé `continuer` qui existait déjà dans la table `t()`.
+- La légende et le bouton « Explorer » de la carte « Hype Universe » sur l'accueil (`EcranDashboard`) parlaient français quelle que soit la langue.
+- **29 des 31** étiquettes d'accessibilité (`aria-label`) « Retour »/« Fermer »/« Supprimer »/« Ajouter »/« Modifier » figées en français, réparties dans 26 composants différents — invisibles à l'œil, lues seulement par les liseuses d'écran. Chacune branchée sur le mécanisme *réellement disponible* dans son composant (`T()` local, `tr()` destructuré, ou `ctx.tr()`), vérifié un par un avant d'écrire, pas de copier-coller à l'aveugle.
+
+**2 aria-label laissées de côté volontairement :** `VignetteZoom` et `PhotoZoomable` — deux des cinq visionneuses photo que Blandine veut unifier (dette déjà notée). Elles ne reçoivent la langue de nulle part ; les corriger aurait exigé de modifier leur signature et tous leurs appelants, trop invasif pour une correction d'accessibilité mineure. Rattaché au chantier d'unification existant, pas une nouvelle dette.
+
+**Ouvert, non résolu : le titre « YOUR WORLD ».** Vu par Blandine sur l'écran du globe, introuvable dans le code par recherche de texte. Hypothèse non confirmée : texte baké dans une image de fond plutôt que du HTML — si vrai, pas corrigeable par du code, demande une nouvelle image par langue (travail de design). **À vérifier** : est-ce que ce titre change quand la langue du compte change ailleurs dans l'app ?
+
+### Correction en cours de session : le message d'invitation ne doit jamais revenir
+
+**Deux défauts trouvés par Blandine en testant, avant le premier push de la journée.**
+
+1. **Le déclencheur se relançait à chaque retour sur l'accueil dans la même visite**, pas seulement à l'ouverture de l'app — un bug d'implémentation, pas un choix. Corrigé avec une réf `dejaTente` : la vérification ne se fait plus qu'une fois par ouverture.
+2. **La règle elle-même a changé.** Hier : « il revient tant que rien n'est validé ». Aujourd'hui, mot de Blandine : « une fois que c'est lu on ne le raffiche à jamais » — que la personne clique « Plus tard » ou choisisse un identifiant, peu importe.
+
+**Marqué sur le COMPTE, pas sur le téléphone** (choix explicite de Blandine, question posée avant de coder) : `handle_invitation_vue`, nouvelle colonne sur `profiles`, écrite via `majProfil` à la fermeture — les trois façons de fermer (les deux boutons, et le tap en dehors du panneau) marquent toutes la même chose. Une reconnexion sur un second appareil ne le reverra donc pas non plus.
+
+Pas de nouvelle fonction SQL : une colonne simple, sans quota ni réservation, donc pas besoin d'un `SECURITY DEFINER` — `majProfil` suffit, comme pour `pseudo` ou `ecurie`.
+
+---
 
 ### Le nom affiché prend un quota
 
