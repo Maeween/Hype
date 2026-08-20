@@ -2,7 +2,7 @@
 
 **La session qui a trouvé le trou du 18/08.** Onze villes étaient MUETTES en ligne depuis la veille : les tables du découpage un-fichier-par-ville avaient toutes été mises à jour, mais **les balises `<script>` de `lingo.html` n'avaient jamais suivi**. Le reste de la session a été un audit complet du module ville par ville, la création de Barcelone, et le rattrapage de tout ce qui manquait en silence.
 
-**État final : `VER` → `?v=52`, `CACHE` du service worker → `linguae-v8`, 37 villes.**
+**État final : `VER` → `?v=59`, `CACHE` du service worker → `linguae-v8`, 37 villes — TOUT EST POUSSÉ ET EN LIGNE.**
 
 ## 🟢 LE CHIFFRE DE LA SESSION : 113 → 5 CONCEPTS DORMANTS
 
@@ -210,6 +210,82 @@ Son dialogue **les citait déjà quatre fois** — « Le 14, c'est le gué ou le
 
 ---
 
+## 📖 LES VOLETS DÉPLIANTS ET LES LETTRES — LA TROISIÈME TABLE, ENFIN COMPLÈTE
+
+**La découverte qui répond à « il manque des morceaux sur les villes »** (constaté par Blandine cet après-midi sur plusieurs villes, puis démontré en comparant Taupō à Aix-la-Chapelle) : chaque ville possède une TROISIÈME table, hors lexique et hors `lingo.html` — **`VILLES[ref]`**, portée par `hype-lingo-villes.js` (10 villes britanniques) et `hype-lingo-villes-monde.js` (le reste). Elle contient **la lettre manuscrite** (verso de la carte postale) et **les trois volets dépliants** de l'écran d'arrivée (ex. Aachen : « LE CHIO », « LE BARRAGE », « SI TU Y ALLAIS »).
+
+🔴 **Le code masque EN SILENCE les volets d'une ville absente de cette table** (`display:none`) et sert un verso de repli. **Huit villes vivaient ainsi depuis leur création, sans que rien ne le signale** : Wellington, Burghley, Versailles, Fontainebleau, Barcelone, Taupō, Santa Ynez, Flyinge. L'audit du 19/08 ne pouvait pas les voir : il vérifiait les tables DE `lingo.html`, et ces deux fichiers n'y sont pas.
+
+**✅ RÉGLÉ LE SOIR MÊME — EN DEUX VERSIONS.** Une v1 d'abord (`?l=2`), poussée puis **jugée par Blandine : « moins rêveur et moins instructif, fait à la va-vite — d'habitude je referme, j'ai appris des trucs, on a l'impression de lire un livre »**. Réécriture complète en **v3 (`?l=3`, la version qui vit)**, corrigée point par point AVEC elle :
+
+- **Wellington** : volet « oxer » REMPLACÉ par « Le Grand Prix du samedi soir » (Saturday Night Lights) — double faute relevée par Blandine : l'oxer carré rendait la règle « barre arrière plus haute » fausse, et un obstacle du lexique n'a rien à faire dans un volet de lieu.
+- **Fontainebleau** : Cycle Classique = **4 à 7 ans** (pas 4-6, relevé par Blandine).
+- **Versailles** : Blandine doutait qu'on puisse voir travailler les chevaux — VÉRIFIÉ EN LIGNE : les « Matinales des Écuyers » existent (séances de travail ouvertes au public, visite de la Grande Écurie comprise). Fait ajouté : les épreuves olympiques 2024 dans les jardins.
+- **Taupō, la plus retravaillée** : enrichie (centre équestre national, chevaux sauvages des **Kaimanawa** au sud du lac) ; volet connexion évoquant SANS LA NOMMER la cavalière néo-zélandaise du « délire initial » du chapitre (1,70 m sans selle ni filet, chevaux dits dangereux rééduqués, « on a crié au montage ») ; **Free Riding corrigé : à pied PUIS À CHEVAL, « surtout à cheval »** (Blandine) ; corde d'encolure réhabilitée dans le « Si tu y allais ». **Option A choisie par Blandine** (« une cavalière de ce pays » — elle est basée côté Auckland, pas à Taupō). 🟥 EN CONSÉQUENCE, LE RÉCIT de Taupō (RECITS, lingo.html) corrigé dans LES 6 LANGUES : « C'est ici » → « C'est dans ce pays » (ja : この地 → この国).
+- Burghley, Barcelone, Santa Ynez, Flyinge : validés tels quels.
+
+Technique : FR tous validés · ⚠️ EN/ES/IT/DE/JA écrits par Claude, non relus · 37 entrées complètes vérifiées par script, 0 défaut · balise `?l=1` → `?l=2` → **`?l=3`**, `VER` → `?v=56` · pas de `sw` à toucher.
+⚠️ Incident d'assemblage (v1) signalé : double-échappement des guillemets EN/DE — fichier REFAIT depuis l'original, guillemets → apostrophes, et la v3 porte un contrôle automatique anti-échappement avant insertion.
+🟢 Le voyage n'a plus AUCUN texte de repli : 37 lettres, 111 volets.
+
+---
+
+## 🇦🇺 CLONBINANE — LE CHAPITRE ÉCRIT QUI N'A JAMAIS EU SA VILLE
+
+En triant le vrac de fichiers envoyé par Blandine, un lexique inconnu : **`hype-lingo-lex-apprentissage.js`**. Le SUIVI le connaît : un des **quatre chapitres écrits le 9 août** (froid/Spruce, haras/Lexington, apprentissage/**Clonbinane**, horsemanship/Santa Ynez). Trois ont été câblés — **Clonbinane jamais**. Point ouvert historique retrouvé : *« Le passeport, Clonbinane à câbler (…), puis Compiègne. »*
+
+C'est une **38e ville en attente**, lexique complet déjà écrit. ⚠️ Le fichier n'est jamais arrivé sur le disque de la session (3 tentatives, sélecteur iOS) — le jour venu : le demander EN PIÈCE JOINTE, décider sa place dans le voyage, produire ses médias, et suivre la règle des TROIS déclarations + l'entrée VILLES (leçon de ce soir : quatre tables, pas trois).
+
+---
+
+## 🛂 LE PASSEPORT DU PAYWALL — APY ENTRE DANS LINGUAE (v57-v58)
+
+**Le manque, dans les mots de Blandine** : *« je ne sais même pas comment retourner à la page pour me connecter »*. Une cavalière DÉJÀ abonnée face au paywall n'avait que deux issues : le doré (qui la revendait) ou « Plus tard » (qui la chassait).
+
+**✅ LIVRÉ ET POUSSÉ (v57 puis v58)** :
+- **Sur le paywall** (`#pwPass`, entre le CTA doré et « Plus tard ») : filet or pâle, **Apy** + « **Déjà du voyage ?** » (Cinzel) / « *Présente ton passeport* » (italique turquoise). Tap → `fermerPaywall()` PUIS `ouvrirCompte()` — dans cet ordre, pour que le filet v67 (`remonterSiVide`) redépose toujours sur le carnet. Connexion SANS quitter l'app (écran de compte v66). Après connexion, retoucher la ville : `estPremium()` décide. 6 langues (`pwDeja`, `pwPasseport`). `onerror` : le texte vit seul si l'image manque.
+- **Sur la porte de création de compte** (`porteA`) : la même Apy au-dessus de « Ton passeport de voyage » (`.paApy`, 92 px, halo turquoise) — idée de Blandine : une mascotte, deux portes, une idée.
+
+**Apy version Linguae** : d'abord découpée de la planche AQUARELLE claire (pose parchemin) recolorée bleu profond — son lavis peint collé au corps a résisté à trois détourages (« le découpage déborde un peu partout »). **Remplacée par la pose « Lecture » de la planche SPECTRALE SOMBRE** (fond noir → alpha par luminance, net) — le style « Apy plus sombre » voulu pour Linguae. Fichier : **`apy-passeport.webp`** à la racine, **`?i=2` sur les deux `<img>`** (casse-cache ; incrémenter `?i` à chaque remplacement d'image de même nom).
+
+⚠️ Si le Premium n'est toujours pas reconnu APRÈS connexion par ce chemin, ce n'est pas ce bouton : c'est le bug B de la passation Hype (`hype_premium` non écrit).
+
+⚠️ **INCIDENT DE FIN DE SESSION, ASSUMÉ** : en consignant cette section, un script fautif a VIDÉ l'entrée de session en local (remplacement conditionnel mal écrit → variable à `None` → fichier 0 octet). Signalé immédiatement. **Réparé depuis la copie maîtresse : le SUIVI poussé sur GitHub, renvoyé par Blandine** — la présente entrée est la reconstruction, complétée des sections v3/passeport/états. Leçon : JAMAIS de `s=s.replace(...) if cond else None` ; et le SUIVI pousse à chaque étape, c'est ce qui a sauvé la soirée.
+
+---
+
+## 🔓 LE PAYWALL FANTÔME — LE PREMIUM NE SE RÉTROGRADE PLUS (v59)
+
+**La demande de Blandine** : *« pourquoi à chaque fois je dois me reco ou j'apparais non premium, il faut régler ça y compris hors ligne »*.
+
+**LE DIAGNOSTIC, confirmé en croisant avec la conversation Hype** (qui a corrigé au passage l'hypothèse de la passation : Linguae écrit `hype_premium` ELLE-MÊME via son pont ligne ~3010, Hype n'écrit jamais cette clé) : la session Supabase saute (cause côté Hype, toujours en chantier là-bas) → `getUser()` répond « aucune session » → le pont concluait « déconnectée » → **`poser("0")` effaçait le Premium constaté la veille** → paywall. Être déconnectée n'est pas être désabonnée.
+
+**✅ LIVRÉ (v59), deux correctifs :**
+1. **L'absence de session NE RÉTROGRADE PLUS JAMAIS.** Le `poser("0")` du bloc `!u` est SUPPRIMÉ. Preuve exécutable au contrôle : il ne reste qu'UN `poser("0")` dans le code du pont — celui d'`aboLu` (session ouverte + table lue + abonnement réellement inactif). Contrepartie assumée et dite : une vraie désabonnée garde l'accès sur SON appareil jusqu'à sa prochaine connexion.
+2. **Le pont se relance seul** : `online` (retour du réseau) + `visibilitychange` → visible (réveil de la PWA), avec garde-fou d'une minute (`pontSiUtile`). Hors ligne, `pont()` ne fait toujours RIEN (test en tête, correctif de l'avion du 16/08 intact).
+
+⚠️ Incident de méthode signalé : la PREMIÈRE passe du correctif 1 n'avait pas été ÉCRITE (script arrêté à la vérification, sans `write`) — attrapé par le contrôle « poser("0") restants », reprise immédiate. Leçon : le contrôle compte le CODE (commentaires retirés), pas les occurrences brutes.
+
+🔴 CE QUE v59 NE RÉPARE PAS : pourquoi la session saute — chantier `index.html`, conversation Hype (passation du 19/08). Quand il sera réglé, plus de reconnexions du tout ; en attendant, une déconnexion ne coûte plus rien dans Linguae.
+
+---
+
+## 🔓 LE PAYWALL FANTÔME — LE PREMIUM NE SE RÉTROGRADE PLUS (v59)
+
+**La demande de Blandine** : *« pourquoi à chaque fois je dois me reco ou j'apparais non premium, il faut régler ça y compris hors ligne »*.
+
+**Le diagnostic, confirmé en parallèle par la conversation Hype** (qui a corrigé au passage l'hypothèse fausse de la passation : Linguae n'attend RIEN de Hype, son pont écrit `hype_premium` lui-même) : la session Supabase saute (cause côté Hype, toujours ouverte, chantier `index.html`) → le pont voyait `getUser()` répondre sans session → **`poser("0")` effaçait le Premium constaté la veille**. Être déconnectée n'est pas être désabonnée.
+
+**✅ LIVRÉ (v59), deux correctifs dans le pont de `lingo.html`** :
+1. **L'absence de session NE RÉTROGRADE PLUS JAMAIS.** Le « 0 » ne s'écrit plus qu'à UN endroit : session ouverte + table `abonnements_premium` lue + abonnement réellement inactif (`aboLu`). **Prouvé par script sur le fichier livré : 1 seul `poser("0")` exécutable dans tout le pont** (les autres occurrences sont des commentaires d'histoire). Contrepartie assumée et dite : une vraie désabonnée garde l'accès sur son appareil jusqu'à sa prochaine connexion.
+2. **Le pont se relance seul** au retour du réseau (`online`) et au réveil de l'app (`visibilitychange` → visible), garde-fou d'une minute contre le martèlement. Hors ligne il ne fait toujours RIEN (doctrine du 16/08 intacte).
+
+⚠️ Incident de méthode, signalé : la première passe du correctif 1 n'avait PAS été écrite (script arrêté avant la sauvegarde) — attrapé par le contrôle post-livraison qui comptait les `poser("0")`, corrigé, puis PROUVÉ en retirant les commentaires du code. Leçon : le contrôle compte le CODE, pas le texte.
+
+🔴 CE QUI RESTE (conversation Hype, passation du 19/08) : POURQUOI la session saute. Tant que ce n'est pas réglé, la reconnexion reste nécessaire pour SYNCHRONISER — mais elle n'est plus jamais nécessaire pour JOUER.
+
+---
+
 ## ⚠️ INCIDENTS DE SESSION, SIGNALÉS
 
 Un `str_replace` a **avalé le début de la ligne `andalou`** dans `ACCUEIL_CHAP`, laissant une erreur de syntaxe dans le fichier de travail. **Signalé immédiatement, aucun rafistolage** : reprise depuis la dernière copie vérifiée. Même méthode pour une extraction de concepts qui avait emporté deux lignes de trop dans `pansage.js`.
@@ -234,6 +310,8 @@ Un `str_replace` a **avalé le début de la ligne `andalou`** dans `ACCUEIL_CHAP
 | 6 vignettes `.jpg` | wellington, fontainebleau, taupo, flyinge, versailles, barcelone |
 | médias Barcelone | carte, fond, objet, vidéo |
 | médias Taupō | objet + pose + pose-34 |
+| `hype-lingo-villes-monde.js` | 29 → **37 entrées** (8 lettres + 24 volets, 6 langues) · v1 `?l=2` remplacée le soir même par **v3 `?l=3`** |
+| `apy-passeport.webp` | NOUVEAU — Apy pose « Lecture » (planche spectrale), racine, `?i=2` |
 
 **Contrôles passés à chaque livraison** : `node --check` sur les 5 blocs inline et sur chaque `.js` · balises `<script>` équilibrées · 0 ville sans mot d'accueil · 0 ville sans récit · 0 ville sans fichier chargé · aucun fichier de `lingo.html` absent de `SOCLE_JS` · aucune ref morte dans les dialogues et exercices touchés.
 
@@ -241,7 +319,7 @@ Un `str_replace` a **avalé le début de la ligne `andalou`** dans `ACCUEIL_CHAP
 
 ## 🔴 CE QUI RESTE OUVERT
 
-1. **`lingo-dialogue.html` jamais fourni** — on ignore si un dialogue crédite la maîtrise d'un mot non enseigné dans sa ville. Question commune à toutes les villes, et le seul point du diagnostic resté sans réponse de toute la session.
+1. ✅ **RÉSOLU EN FIN DE SESSION — `lingo-dialogue.html` reçu et lu : il N'ÉCRIT RIEN.** Aucun `setItem`, aucun `fetch`, aucun appel Supabase. Ses `mots:[…]` ne servent qu'à afficher (prononciations, mots-clés, récapitulatif) ; `MAITRISE` n'est jamais créditée par un dialogue. Conséquences : aucun acquis n'a jamais été faussé par les mots dormants ; les `ref` de phrases (`d-pierre-sabot`…) ne servent de clé à rien et peuvent être renommées sans risque.
 2. **Les textes écrits par Claude, à valider** : les 8 mots d'accueil neufs, le récit / le pourquoi / l'heure de Barcelone, les 19 phrases de La Baule (ES/IT/DE/JA), les 5 phrases réécrites de Newmarket et ses titres de scènes.
 3. **Le souvenir de Taupō** dans `ETAPES` ne correspond plus à son objet (le cadre du cheval sautant).
 4. **`carte-versailles.webp` en paysage** — à refaire en portrait si le recadrage ne convient pas.
@@ -249,6 +327,8 @@ Un `str_replace` a **avalé le début de la ligne `andalou`** dans `ACCUEIL_CHAP
 6. **Les 5 anciens fichiers** (`cheval`, `materiel`, `dressage`, `obstacle`, `concours`) toujours au dépôt — à supprimer seulement après vérification en ligne.
 7. **`liberte` (Taupō) manque toujours dans `TH_FAMILLES`** — gap antérieur, non corrigé, signalé dans le code.
 8. **La leçon 3 de La Baule reste fermée** — 5 concepts, décision volontaire de Blandine. Ne pas la rouvrir sans elle.
+9. **Clonbinane (`apprentissage`)** — 38e ville en attente, lexique écrit depuis le 9/08, jamais câblé. Puis Compiègne. Fichier à obtenir en pièce jointe.
+10. **Le chantier Hype (session/Premium/bulle)** — passation `PASSATION-HYPE-SESSION.md` remise, entrée 141 posée dans le SUIVI Hype. Conversation séparée.
 
 ---
 
