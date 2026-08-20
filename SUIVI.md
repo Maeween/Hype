@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT + FUSION DES BASES CLUBS + LES CLUBS HABITÉS EN OR) — md5 `96f5327ce8236850868be78c0e352816`, 9 240 314 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT + FUSION DES BASES CLUBS + LES CLUBS HABITÉS EN OR) — md5 `febdf19d6a606c22e9110dbe105e7e73`, 9 240 753 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -128,6 +128,49 @@ Signalé par Blandine en fin de séance, capture 03 h 40 : *« le retour des not
 **À l'écran : +** les clubs où au moins une cavalière est inscrite s'affichent en or et en plus gros sur le globe · **−** rien ne disparaît, les 131 vitrines restent en turquoise.
 
 **⚠️ VÉRIFICATION SPÉCIFIQUE FAITE — à refaire à chaque touche d'iframe.** `node --check` **ne voit pas** une iframe cassée : son contenu est une chaîne. Protocole appliqué ici, à reprendre : désescaper la chaîne (`GLOBE_HTML_HYPE`, `FRANCE_MAP_HTML`), remplacer `<\/` par `</`, extraire les blocs `<script>` internes, `node --check` sur chacun. Résultat : **GLOBE_HTML_HYPE 95 831 car / 3 blocs valides · FRANCE_MAP_HTML 28 074 car / 1 bloc valide.**
+
+## SESSION 145 — 20/08/2026 (après-midi) · LA FAUSSE DÉCONNEXION
+
+### 🔴 LE BUG A EST TROUVÉ — CE N'ÉTAIT PAS UNE DÉCONNEXION
+
+Blandine, 16 h 22 : *« je me suis fait redéco encore une fois, on ne peut pas continuer à ce rythme, il faut que tu trouves d'où ça vient »*. Capture jointe : écran **« Créer mon compte »** avec son email prérempli.
+
+**Cette capture était l'indice décisif.** Une vraie déconnexion renvoie vers `AUTH_MODE_SPECTRAL = "connexion"`. Elle était sur **`"inscription"`**. Un seul endroit de l'index met ce mode : **la sortie de l'écran Monde**, ligne ~33036.
+
+```js
+utilisateurActuel().then(u => { if (u) dashboard; else { mode="inscription"; connexion; } })
+                   .catch(()  => { mode="inscription"; connexion; })
+```
+
+`utilisateurActuel()` (ligne 92) est `supa.auth.getUser()` — **un appel RÉSEAU au serveur Supabase à chaque fois**. Un réseau qui hoquette une seconde renvoie null, ou lève : dans les deux cas la cavalière atterrit sur l'écran d'inscription **alors que sa session est parfaitement valide**. Elle n'était jamais déconnectée.
+
+Ça explique la fréquence : Blandine a passé la journée sur le globe, donc a traversé ce code des dizaines de fois, en 5G depuis une écurie.
+
+**Correctif** : `supa.auth.getSession()`, qui lit le jeton **en local, sans réseau** — c'est sa raison d'être. Et **en cas d'échec on ne bascule plus jamais vers l'inscription** : on reste sur le tableau de bord. Les 148 autres appels à `utilisateurActuel()` ne sont **pas** touchés — un seul point corrigé, celui qui produisait le symptôme.
+
+**Pistes définitivement écartées, vérifiées et non plus déduites :**
+- **La limite d'appareils** : Blandine a lu `prosrc` de `hype_signaler_appareil`, **`feinn@live.fr` figure bien dans la liste d'exemption**. La passation 142 avait raison, c'est maintenant confirmé par lecture et non par déduction.
+- Le raccord Premium Linguae, le renommage de domaine : déjà écartés en 142.
+
+⚠️ **Reste ouvert** : `getUser()` reste utilisé aux 148 autres emplacements. Chacun est un appel réseau qui peut renvoyer null sur un réseau instable. Aucun autre ne bascule vers l'inscription, mais certains peuvent afficher un contenu vide ou un paywall. **Chantier de fond : introduire un `sessionLocale()` et ne garder `getUser()` que là où une validation serveur est réellement nécessaire.**
+
+### ✅ ÉCRAN DE CONNEXION — DEUX DEMANDES DE BLANDINE
+
+*« On avait dit qu'on retirerait les connexions Facebook etc. qui n'existaient pas, et il faudrait que "Se connecter" et "un compte" soient plus proches et plus lisibles, souvent on n'en voit qu'un seul. »*
+
+- **Apple, Google et Facebook retirés**, ainsi que le séparateur « OU ». Ces trois fournisseurs n'ont jamais été configurés côté Supabase : les ronds appelaient `bientot`, ils ne menaient nulle part. La fonction `rondSocial` est conservée mais n'est plus appelée — la retirer n'aurait rien changé à l'écran.
+- **La bascule entre les deux modes est passée de 12,5 px à 15 px**, plus aérée, et le lien devient un **bouton encadré turquoise** au lieu d'un mot dans une phrase grise. Les deux entrées se lisent maintenant comme deux choix.
+
+**À l'écran : −** trois ronds Apple / Google / Facebook et le séparateur « OU » · **+** un bouton encadré à la place du lien texte. Aucun écran ajouté ou supprimé.
+
+### 🟡 NON TRAITÉ CETTE SÉANCE
+
+- **Le décalage vers la droite à la reconnexion** — signalé à nouveau par Blandine (*« quand je me reco je suis de nouveau sur des trucs complètement collés à droite »*). Autre mécanisme, volontairement laissé de côté pour livrer proprement les trois correctifs ci-dessus.
+- **Le panneau des clubs du globe** (`#around` à 205dvh, hors du cadre de `.wrap` qui fait 102dvh). Trois positions proposées à Blandine (92dvh sous les filtres · 76dvh dans le vide actuel · conteneur étendu à 118dvh), **aucune choisie**. Défaut d'origine, présent à l'identique dans l'ancien index — pas une régression.
+- **Les stories sur la carte.** Règle tranchée par Blandine : *la ville de la story, sauf si un centre équestre est clairement cité, auquel cas c'est lui.* Couleur retenue : **argent** (le turquoise est déjà la couleur par défaut de tous les clubs, l'or celle des clubs habités). Point pulsant, qui s'éteint avec la story. **Mesure du champ `lieu` non faite** — sans elle on ignore si la règle attrape quelque chose.
+- **Diplôme de quizz** : trois maquettes livrées (Crystal noir 9:16 · Givre 4:5 · Le sceau carré). Blandine fait faire le fond ailleurs ; prompt fourni avec bouton de copie. Décidé : **un seul résultat affiché, pas un barème** ; nom et écurie de la cavalière ; fond **muet** (ni Galop, ni score, ni langue) pour éviter une image par Galop et par langue.
+
+---
 
 ### 🔴 INCIDENT — LE GLOBE FIGÉ EN LIGNE, CAUSÉ PAR LA LIVRAISON `9c0c9665`
 
