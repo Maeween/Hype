@@ -3442,6 +3442,20 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
       var r = await sb.from("hype_lingua_progression")
                       .select("cartes,maitrise,faits,sprint,quiz,carnet,sellerie")
                       .eq("user_id", u.id).maybeSingle();
+      /* 🟥 20/08 v61 — LA SYNC NE MEURT PLUS SUR UNE COLONNE. Du 12 au
+         20/08, la colonne `sellerie` (SQL de la session 209) manquait en
+         base : le select échouait et « base muette » coupait TOUTE la
+         synchronisation, carnet et maîtrise compris — huit jours de
+         silence, découverts par « Mon carnet : 0 mots » (Blandine, qui a
+         exécuté le SQL le 20/08 à 12 h 58). Désormais, si la lecture
+         échoue, on RÉESSAIE sans `sellerie` : le reste de la progression
+         voyage quand même. La doctrine « base muette : on ne touche à
+         rien » ne s'applique plus qu'aux VRAIS silences. */
+      if(r && r.error){
+        r = await sb.from("hype_lingua_progression")
+                    .select("cartes,maitrise,faits,sprint,quiz,carnet")
+                    .eq("user_id", u.id).maybeSingle();
+      }
       if(!r || r.error) return;               /* base muette : on ne touche à RIEN */
       if(r.data){ ligneExiste = true; base = r.data; }
 
@@ -3619,6 +3633,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
     }catch(err){ return false; }
   };
 
+  /* 🟥 v61 : le pont devient appelable par l'écran du compte —
+     `window.pontLingua` est le SEUL nom public, ne pas en ajouter. */
+  window.pontLingua = pont;
   try{ pont(); }catch(e){}
 
   /* 🟥 19/08 — LE PONT SE RELANCE TOUT SEUL, demande de Blandine
@@ -3701,7 +3718,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=60";   /* 🟥 v60 (19/08-20/08) : les flashs de l'ouverture (affiche en vrai
+var VER = "?v=61";   /* 🟥 v61 (20/08) : la sync progression reessaie sans `sellerie` si la
+                        colonne manque (8 jours de « base muette » soldes), le pont
+                        devient window.pontLingua, et l'ecran du compte resynchronise
+                        et affiche la verite fraiche (carnet + Premium).
+                        v60 (19/08-20/08) : les flashs de l'ouverture (affiche en vrai
                         secours, sortie sans re-flash, prechauffage des images du
                         demarrage), l'encart passeport sur la presentation, et les
                         boutons du paywall en delegation avec retour visuel.
@@ -8779,6 +8800,19 @@ async function cpRemplirMien(){
     try{ pre = (u.user_metadata && (u.user_metadata.prenom || u.user_metadata.pseudo)) || ""; }catch(e){}
     if(!pre && u.email) pre = String(u.email).split("@")[0];
     if(pre) S("cpMienNom").textContent = String(pre).toUpperCase();
+    /* 🟥 20/08 v61 — L'ÉCRAN DEVIENT LE JUGE DE PAIX (constat de
+       Blandine : « Premium — » alors qu'elle est connectée). L'affichage
+       ci-dessus n'était qu'une photo de l'étiquette locale, prise avant
+       que le pont ait parlé à la base. Connectée, on RELANCE le pont
+       (abonnement + progression) et on réécrit les deux lignes avec la
+       vérité fraîche. Rouvrir cet écran = resynchroniser, sans bouton. */
+    if(window.pontLingua){
+      try{ await window.pontLingua(); }catch(e2){}
+      var n2 = 0; try{ n2 = (window.carnetListe ? window.carnetListe().length : 0); }catch(e3){}
+      S("cpMienCarnet").textContent = n2 + (n2 === 1 ? " mot" : " mots");
+      S("cpMienPrem").textContent = estPremium() ? "Actif" : "—";
+      S("cpMienPrem").style.color = estPremium() ? "var(--turquoise)" : "";
+    }
   }catch(e){}
 }
 
