@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT) — md5 `f3aa5786888d2bb8c5eaca4e7cfbeb0f`, 9 236 840 octets. Aucun changement visuel, aucun fichier compagnon modifié : `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
+**Version actuelle de l'index.html : 20/08/2026 (SESSION 144 · LES MEMBRES INVISIBLES + LES BULLES QUI REVIENNENT + FUSION DES BASES CLUBS, ÉTAPE 1) — md5 `6559b9e40fa77ad3a52eb0fcae12379d`, 9 236 882 octets. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
 **Ancienne version (143) — 20/08/2026 (SESSION 143 · L'ALLEMAND PARTOUT) — md5 `b6ac91f1eb6a390fe38db928fae28f84`, 9 234 368 octets.**
 
@@ -91,6 +91,61 @@ Signalé par Blandine en fin de séance, capture 03 h 40 : *« le retour des not
 
 **Reste non vérifié** : Blandine parle de « l'annonce que les story sont en ligne ». Elle a été rattachée à l'annonce de mise à jour (`HYPE_MAJ`, la seule annonce de ce type sur l'accueil), **par déduction et non par confirmation**. Si une autre bannière existe ailleurs, elle n'est pas traitée — à confirmer au prochain test.
 
+### ✅ FUSION DES BASES CLUBS — ÉTAPE 1 LIVRÉE
+
+**Décision de Blandine** (ses mots) : *« il s'agit d'insérer tes 131 si jamais les clubs ils sont pas déjà dans plusieurs milliers, de façon à garder une liste unique à la fin, et en y insérant également les fichiers qu'on ajoute à la main »* · *« ta liste 131 c'est celle qui doit disparaître à terme, elle se fait avaler par l'autre »*.
+
+**Cible retenue : `HYPE_CLUBS` (les milliers) devient la source unique. Les trois copies de 131 disparaissent à terme.**
+
+**Recouvrement mesuré** (131 contre 3 055, comparaison par nom normalisé puis par noyau + distance < 15 km) :
+- **29** présents au nom exact
+- **13** présents sous une variante à moins de 15 km
+- **89 vraiment absents** — et ce ne sont pas des clubs mineurs : Parc Équestre Fédéral (FFE), Grandes Écuries de Chantilly, Centre Équestre de la Villette, la Cartoucherie, Sheva (École d'Alfort), Polo Club de Chantilly, et les quatre clubs des cavalières : Écurie Feinn, SEP, Étrier de Paris, Touring. **La liste des 131 est une sélection franco-parisienne soignée que l'extraction OSM a ratée.**
+
+**Livré : `hype-clubs-db-4.js`, 90 entrées** (les 89 + Les Écuries de Lardy, identifiée cette nuit).
+- Format **aligné sur les fichiers 1/2/3** : le champ est **`lon`**, pas `lng`. Vérifié : zéro `lng` dans le fichier, tous les `lat`/`lon` numériques.
+- Identifiants préfixés **`hype-001` … `hype-090`** : ils ne viennent pas d'OSM, **une régénération de l'extraction ne les écrasera jamais**.
+- `hype-clubs-loader.js` **modifié** : concatène désormais `HYPE_CLUBS_DB_4`. Total attendu **3 145 clubs**.
+- Déclaration ajoutée dans `index.html` **après `hype-clubs-db-3.js` et avant `hype-clubs-loader.js`** — l'ordre est impératif, le loader lit les quatre variables au moment où il s'exécute.
+
+⚠️ **LES TROIS FICHIERS SE POUSSENT ENSEMBLE.** `index.html` seul → le loader cherche une variable qui n'existe pas et retombe sur `[]` : comportement inchangé, mais les 90 clubs manquent. `hype-clubs-db-4.js` seul sans le loader → fichier chargé, jamais concaténé.
+
+### 🔴 ÉTAPE 2 — NON FAITE, À DÉCIDER À TÊTE REPOSÉE
+
+**Verser 90 clubs dans `HYPE_CLUBS` n'affiche encore rien sur la carte : le globe ne lit pas cette base.** Il tourne sur ses trois copies internes de 131 (voir plus bas). L'étape 1 enrichit l'annuaire — utile immédiatement pour la page Mon Club, qui est le seul écran à lire `HYPE_CLUBS` (ligne 26739) — mais la carte, non.
+
+**Ce qui reste à faire pour que les 131 disparaissent vraiment :**
+1. Rebrancher le globe sur `parent.HYPE_CLUBS` (même origine, `srcDoc` donc accessible) au lieu de `ECURIES_SEED`.
+2. Idem pour `FRANCE_MAP_HTML` et sa liste compacte `ECURIES`.
+3. Supprimer alors les trois copies : `const CLUBS` (24412), `ECURIES` (19953), `ECURIES_SEED` (32966).
+4. Retirer le libellé **« 131 clubs en France »** (une seule occurrence, ligne 19953, dans `FRANCE_MAP_HTML`). ⚠️ **Non retiré : le laisser tant que la carte affiche réellement 131 clubs, sinon le libellé mentirait dans l'autre sens.**
+
+⚠️ **Deux copies vivent dans des chaînes ÉCHAPPÉES d'iframe** (`\"nom\"`). Une erreur d'échappement ne casse pas une ligne : elle casse **l'iframe entière**, le globe devient une page blanche, et **`node --check` ne le voit pas**. Prévoir une vérification par désérialisation de la chaîne, pas seulement une vérification de syntaxe.
+
+⚠️ **ORDRE IMPÉRATIF** : l'étape 1 doit être poussée AVANT l'étape 2. Rebrancher le globe sur `HYPE_CLUBS` sans le fichier 4 **fait disparaître l'Écurie Feinn, la SEP, l'Étrier et le Touring de la carte**.
+
+### 🔴 INCIDENT DE SÉANCE — À DIRE
+
+Deux erreurs de Claude cette nuit sur ce sujet, toutes deux par **déduction non vérifiée** :
+1. « La base OSM ignore les clubs de Blandine, donc la carte afficherait 1 point. » Faux dans sa conclusion : Claude n'avait mesuré qu'une des bases et ignorait l'existence de la liste du globe (champ `lng`, jamais cherché). Signalé par Blandine.
+2. Sur la consigne « fusionne les deux listes », Claude a **écrit dans les trois copies de 131** en supposant que c'était la cible, alors que Blandine visait la base des milliers. **Annulé intégralement**, empreinte du fichier vérifiée revenue à `f3aa5786888d2bb8c5eaca4e7cfbeb0f` avant de repartir. Aucune trace laissée.
+
+**Réflexe à garder** : ne pas transformer une orientation en cible technique sans la nommer à voix haute et attendre.
+
+### 🔴 LES LISTES DE 131 EXISTENT EN TROIS EXEMPLAIRES — LE DÉCOMPTE EXACT
+
+Comptage refait proprement après **deux erreurs de comptage de Claude** (d'abord « deux copies », puis « une copie à 169 entrées » — les 169 étaient en réalité le tableau `VILLES`, Paris/Marseille/Lyon…, pas des clubs) :
+
+| Copie | Emplacement | Entrées | Format |
+|---|---|---|---|
+| **A** | `var ECURIES=[…]` dans `FRANCE_MAP_HTML`, ligne 19953 | **131** | compact `{n, v, lat, lng, t, p, tel}`, **échappé** |
+| **B** | `const CLUBS=[…]`, ligne 24412 | **131** | complet `{nom, ville, region, lat, lng, type, disc, mem, adresse, stages, events, cours, tel, site, moi}` |
+| **C** | `ECURIES_SEED=[…]` dans `GLOBE_HTML_HYPE`, ligne 32966 | **131** | complet + `seed:true`, **échappé** |
+
+`const CLUBS=[]` à la ligne 32966 est **vide** : le globe se remplit par `CLUBS.push(...ECURIES_SEED)`.
+
+**Le champ des trois copies est `lng`. Celui de `HYPE_CLUBS` est `lon`.** C'est cette seule différence de nom qui a fait passer Claude à côté de la liste du globe pendant toute la première partie de la séance.
+
 ### 🔴 CORRECTION D'UNE ERREUR DE CLAUDE — IL Y A DEUX BASES DE CLUBS, PAS UNE
 
 **Tout le §« côté base clubs » ci-dessous porte sur `HYPE_CLUBS` (les 3 055 de l'extraction OSM). C'est la MAUVAISE base pour la carte.** Erreur signalée par Blandine : *« Écurie Feinn et SEP étaient dans les premières ajoutées »*. Vérification faite, elle a raison.
@@ -111,16 +166,6 @@ Signalé par Blandine en fin de séance, capture 03 h 40 : *« le retour des not
 | Jardy Equitation (Haras de Jardy) | Marnes-la-Coquette | 48.8276332 / 2.1530057 |
 
 **⚠️ Le chiffre de 131 n'est PAS périmé.** La consigne « ne jamais citer 131 » visait le total de l'annuaire (~3 000, base OSM). **131 est le compte exact et actuel de la liste du globe.** Les deux notes se contredisaient parce qu'elles parlaient de deux objets différents. À corriger dans les passations.
-
-### 🔴 LA LISTE DU GLOBE EXISTE EN DEUX EXEMPLAIRES — À TRAITER AVANT TOUT AJOUT
-
-Comptage exhaustif : `const CLUBS=[` apparaît **deux fois**.
-- **Ligne 24412** — liste JSON normale, **131 entrées**, dans les « données partagées du globe ».
-- **Ligne 32966** — à l'intérieur de `var GLOBE_HTML_HYPE = "…"`, une **iframe entière encodée en chaîne échappée** (`\"nom\"`). Contient **les mêmes clubs**, Feinn, SEP, Étrier, Touring, Brèche aux Loups et Jardy compris.
-
-**Ajouter un club dans une seule des deux crée exactement la divergence que la règle de non-duplication de la session 138 interdit.** La seconde étant échappée dans une chaîne, elle ne s'édite pas comme du JSON : toute modification doit respecter l'échappement, sous peine de casser l'iframe entière.
-
-**🟡 RIEN N'A ÉTÉ MODIFIÉ.** Décision de Blandine requise avant tout ajout : dédoublonner d'abord (passer la liste par `parent.CLUBS`, même origine donc accessible), ou écrire dans les deux en connaissance de cause.
 
 ### Identifications faites cette nuit (recherches de Blandine, à réutiliser)
 
