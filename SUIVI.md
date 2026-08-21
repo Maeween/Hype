@@ -35,7 +35,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 21/08/2026 (SESSION 148 · POINTS ARGENTÉS, ÉTAPE 2 : LE POINT OUVRE LES STORIES) — md5 `d1e7b53fdb659659a625d12001886f7b`, 9253573 octets. ⚠️ **DEUX FICHIERS À POUSSER ENSEMBLE** : `hype-stories.js` passe en **19bm** (md5 `5a9ce376b3119c68c32c66ef4426a41c`, 397519 octets) et le `?v=` de l'index suit.**
+**Version actuelle de l'index.html : 21/08/2026 (SESSION 150 · LES CINQ BOUTONS EN FUMÉ TURQUOISE) — md5 `1021b46ed9d10ea1b1f696b4f2e1a612`, 9 254 541 octets.** Seule modification de code : cinq boutons d'action passés au Fumé Turquoise. `hype-stories.js` reste en **19bm** (md5 `5a9ce376b3119c68c32c66ef4426a41c`), inchangé. ⚠️ **Le domaine est désormais `2hype.netlify.app`** — voir la session 150.
+
+**Ancienne version (148) — 21/08/2026 (SESSION 148 · POINTS ARGENTÉS, ÉTAPE 2) — md5 `d1e7b53fdb659659a625d12001886f7b`. ⚠️ **DEUX FICHIERS ENSEMBLE** : `hype-stories.js` en **19bm** (md5 `5a9ce376b3119c68c32c66ef4426a41c`). La session 149 (21/08) n'a livré AUCUN code — incident Linguae, Netlify, cadrage du chantier résultats.**
 
 **Ancienne version (147) — 20/08/2026 (SESSION 147 · LE ZOOM iOS + LE PANNEAU DES ORIGINES + LA LÉGENDE PERDUE) — md5 `662196b17552c4d6236cec2a63e6731d`, 9 248 000 octets. ⚠️ `hype-stories.js` MODIFIÉ (VERSION 19bl, md5 `c4b4f8fe5513bea8b682430ee8ad19f2`, 395 641 o) : les DEUX se poussent ensemble. ⚠️ NOUVEAU FICHIER COMPAGNON OBLIGATOIRE : `hype-clubs-db-4.js` (90 clubs, 15 794 o) + `hype-clubs-loader.js` MODIFIÉ. Les trois doivent être poussés ENSEMBLE. `hype-stories.js`, `story.html` et `mascotte-abo.webp` restent ceux de la 142.**
 
@@ -61,6 +63,304 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 ⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
 
 ⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 150 — 21/08/2026 (soir) · LA PANNE DES ABONNEMENTS, LE DOMAINE PERDU, ET LE FUMÉ TURQUOISE
+---
+
+## 🔴 ADRESSES DE PRODUCTION — à lire avant tout
+
+| Quoi | Valeur |
+|---|---|
+| **Domaine actuel** | `https://2hype.netlify.app` |
+| Ancien domaine | `majestic-melba-997a68.netlify.app` — **MORT**, ne plus jamais l'écrire |
+| Hype | `2hype.netlify.app/` (`index.html`) |
+| Linguae | `2hype.netlify.app/lingo.html` |
+| Contrôle Linguae | `2hype.netlify.app/lingo-controle.html` |
+| Webhook Stripe | `https://2hype.netlify.app/.netlify/functions/stripe-webhook` |
+| Destination Stripe | `energetic-voyage` · `we_1Tpn0SHnB1OJ7FOmnwktg1k0` |
+
+⚠️ **Le projet Netlify `majestic-melba-997a68` existe toujours** et il est en ligne. Ce n'était pas un renommage : `2hype` est un **projet distinct**, créé le 20/08. Les deux coexistent.
+
+🟥 **CINQ ENDROITS À REPRENDRE À CHAQUE CHANGEMENT DE DOMAINE.** C'est l'oubli de cette liste qui a coûté la soirée du 21/08 :
+1. **Destination Stripe** (Développeurs → Webhooks → Modifier la destination)
+2. **Redirections d'authentification Supabase** (Auth → URL Configuration)
+3. **`LIEN_APP`** dans `index.html` (utilisé par `resetPasswordForEmail`)
+4. **Liens envoyés aux cavalières** (posts, messages)
+5. **Variables d'environnement** du nouveau projet Netlify
+
+Recommandation posée : prendre un **vrai nom de domaine** avant tout autre changement. Un domaine à soi ne bouge plus, même en changeant d'hébergeur. Le nom actuel n'est **pas** définitif (dit par Blandine).
+
+---
+
+## LA PANNE — trois cavalières sans Premium
+
+**Symptôme** : Aurélie Bussonnais (18:26), Lauren Sojfer (19:07) et Violaine paient, Stripe encaisse, **aucune ligne n'apparaît dans `abonnements_premium`**.
+
+**Cause n°1 — trouvée et corrigée.** La destination Stripe pointait encore vers l'ancien domaine. Stripe **ne suit pas les redirections** : l'adresse répondait dans Safari mais échouait pour le webhook. Chiffres relevés : **11 événements envoyés, 8 en échec**, dont 5 le 21/08. Corrigé à 19:38 via *Modifier la destination* — l'identifiant `we_…` est resté le même, **donc la clé de signature n'a pas changé** et rien n'était à toucher côté Netlify.
+
+**Cause n°2 — trouvée, NON corrigée.** Après correction, le renvoi de l'`invoice.paid` d'Aurélie répond **200 OK** — et **n'écrit rien**. Lecture de `stripe-webhook.js` :
+
+- `invoice.paid` appelle `majParAbonnement()`, qui fait un **PATCH** filtré sur `stripe_subscription`. Si aucune ligne ne correspond, PostgREST met à jour **zéro ligne sans erreur**, la fonction log « Renouvellement enregistré » et répond 200. **`invoice.paid` ne crée jamais rien.**
+- Seul `checkout.session.completed` crée une ligne (`upsertAbonnement`, clé `user_id`) — et il **abandonne avec un 200 muet** quand `client_reference_id` est absent (`log("ALERTE : paiement sans client_reference_id")`).
+
+C'est le même défaut qui explique le **Duo de Dominique** (jamais arrivé, validé à la main) et les **cinq lignes sans email** du 13 et 16/07.
+
+**Rustine posée ce soir.** Insertion manuelle pour Aurélie et Lauren : `actif` · `mensuel` · expire le **22/09** (32 jours, comme le filet du code). `user_id` récupéré depuis `auth.users`, `on conflict (user_id)` pour rester compatible avec le webhook réparé. `stripe_subscription` d'Aurélie renseigné (`sub_1U6vHOHnB1OJ7FOm8CifUSr0`), celui de Lauren laissé vide. **Vérifié : 2 lignes en base.** Elles doivent se déconnecter/reconnecter.
+
+⚠️ **La rustine ne répare rien.** La prochaine cavalière qui paie retombera dans le trou.
+
+---
+
+## LA TABLE `abonnements_premium`
+
+Colonnes vues : `user_id`, `email`, `stripe_customer`, `stripe_subscription`, `plan`, `statut`, `expire_le`, `maj_le` (+ un identifiant de ligne non observé). **Clé du webhook : `user_id`** — pas l'email.
+
+🔴 **Cinq lignes sur dix n'ont aucun email** (13/07 10:03–10:29, 16/07 14:53, plans `duo` et `annuel`, toutes `actif`). Hypothèse **non vérifiée** : essais de juillet pendant le branchement Stripe. À trancher avant tout ménage.
+
+⚠️ **Piège SQL rencontré deux fois** : une concaténation avec une colonne `NULL` rend **toute la ligne NULL** et la fait disparaître du résultat. Toujours envelopper **chaque** champ dans `coalesce()`, y compris les dates.
+
+---
+
+## LES CAVALIÈRES — état au 21/08 20h15
+
+| | État | Suite |
+|---|---|---|
+| **Dominique** (`dominique.wirtschafter@orange.fr`) | actif · duo · 15/08 | Premium OK. **Le Duo a dû être validé à la main** — cause non cherchée |
+| **Aurélie** (`a.bussonnais@outlook.com`) | actif · mensuel · 22/09 | Rustine. **Doublon de compte** : possède aussi `au.bussonnais@gmail.com` (03/08) |
+| **Lauren** (`laurenmanivetsojfer@gmail.com`) | actif · mensuel · 22/09 | Rustine. `sub_` à renseigner |
+| **Violaine** | — | A dit vouloir s'abonner, **paiement non confirmé** |
+| **Barbara** (`basia.baster@poczta.fm`) | impayé | **Refus banque `do_not_honor`** sur AmEx ••1000, trois fois (16, 19, 21/08). Ni Stripe ni Blandine ne peuvent lever ça : à elle d'appeler son émetteur ou de changer de carte |
+
+**Le doublon d'Aurélie** est le cas d'école du chantier « écran d'entrée » : elle a créé un compte en croyant se connecter, a payé depuis celui-là, et attendait son Premium sur l'autre.
+
+---
+
+## L'ÉCRAN D'ENTRÉE — maquette faite, non livrée
+
+Fichier : **`maquette-entree-hype.html`** (autonome, mascotte intégrée en base64).
+
+**Six écrans.** Principe : on choisit son chemin **avant** de voir le moindre champ, et un titre Cinzel dit toujours où l'on est.
+1. Le seuil — deux boutons, aucun formulaire
+2. Se connecter
+3. Créer mon compte
+4. Ouvre ta boîte mail *(n'existe pas aujourd'hui)*
+5. Mot de passe oublié *(mascotte)*
+6. Nouveau mot de passe *(mascotte, remplace le `window.prompt`)*
+
+### Les deux images de l'écran d'entrée — à livrer avec
+
+| Fichier | Format | Où | Pourquoi |
+|---|---|---|---|
+| `cheval-fond-connexion-620.jpg` | **619×1100 · 50 Ko** | **Fond plein écran du seuil (écran 1)** | C'est **cette version-là** qui part dans l'app |
+| `cheval-fond-connexion.png` | 941×1672 · 1,7 Mo | archive uniquement | ⛔ **Ne jamais livrer l'original** : 1,7 Mo en photo d'accueil = attente sur réseau moyen. À 50 Ko c'est instantané et parfaitement net sur un écran de téléphone |
+| `poney-mascotte.png` | 327×340 · transparent | Écrans 5 et 6 | **PNG obligatoire** — il a besoin de sa transparence, un JPEG lui collerait un fond |
+
+**Le fond de l'écran 1 ne porte AUCUN filtre, AUCUN voile.** Il n'en a pas besoin : le cheval occupe le haut, le bas de l'image est déjà noir, et c'est là qu'on fait descendre le wordmark et les boutons. Le halo turquoise habituel est **retiré** sur cet écran — la lumière vient de la photo, deux sources se contrarieraient.
+
+⚠️ **La photo est passée de l'écran 2 à l'écran 1** en cours de maquette (choix de Blandine). Le seuil est le seul écran sans formulaire, donc le seul où l'image respire. Sur la connexion, elle se battait avec deux champs, une case et deux boutons.
+
+**Mascotte** : poney cristal détouré fourni par Blandine, recadré en `poney-mascotte.png`. Placé **uniquement** sur les écrans 5 et 6 — les moments bloqués. **Jamais sur l'écran 1** (le cheval est le héros, test Porsche) **ni sur le 4** (moment positif ; il faudrait une autre pose, l'air content — Blandine doit l'envoyer).
+
+### Ce qui existe déjà dans `index.html` — vérifié
+- Le lien **« Mot de passe oublié ? »** existe, ligne ~23402, **mais** : 11,5 px, collé à droite de « Se rappeler de moi », et affiché **uniquement en mode connexion**.
+- `resetPasswordForEmail` fonctionne, avec retour vers `LIEN_APP`.
+- Le nouveau mot de passe se saisit dans un **`window.prompt` du navigateur** (ligne ~100, sur `PASSWORD_RECOVERY`).
+- 🔴 **Le `catch` est vide** : « Email de réinitialisation envoyé ! » s'affiche **même quand l'envoi a échoué**.
+
+### 🟥 Confirmation par e-mail — validée, à ne PAS activer seule
+Blandine veut l'imposer. **Conséquence à nommer avant** : Supabase envoie par son service par défaut, bridé à quelques courriels/heure pour tout le projet. Activer la confirmation sans serveur d'envoi propre = **des cavalières enfermées dehors**, pire que le doublon. **Serveur d'envoi (Resend, Brevo…) d'abord, confirmation ensuite.** Et l'inscription ne renverra plus de session : **l'écran 4 devient obligatoire**.
+
+*Question posée, jamais répondue : y a-t-il déjà un serveur d'envoi branché sur Supabase ?*
+
+---
+
+## 🟡 NOUVEAU BUG SIGNALÉ — page Écurie perso
+
+Sur la page **Écurie perso** du compte d'Aurélie, l'écurie s'affiche **« Société d'Équitation de Paris Écurie personnelle »** — concaténation du club de rattachement et du libellé. Devrait afficher **son nom**, ou simplement **« Écurie personnelle »**. Non diagnostiqué, non touché.
+
+---
+
+## 💰 NETLIFY — deux abonnements ?
+
+Blandine a payé **un second abonnement hier (~35 $)** alors que l'ancien avait encore des crédits. Chez Netlify **l'abonnement est attaché à l'équipe, pas au projet** : deux projets sous une même équipe partagent le plan. **Soupçon : `2hype` a été créé sous une équipe différente.** À vérifier dans Team → Billing pour chaque équipe. Ne rien annuler avant de savoir quel projet porte quoi. À relier à la facture de ~140 $ à regarder vers le 24/08.
+
+---
+
+## 🎨 LE **FUMÉ TURQUOISE** — traitement officiel des boutons d'action
+
+Nom posé le 21/08/2026. **À réutiliser tel quel** partout où un bouton turquoise plein paraît trop dur.
+
+⚠️ **Ne pas confondre avec le « verre fumé » tout court**, qui désigne déjà les champs de saisie et les panneaux translucides de l'app. Le Fumé Turquoise, c'est le verre fumé **plus la lueur au bord droit** — et cette lueur n'appartient qu'aux boutons d'action.
+
+**Le principe** : le fond part du graphite et ne s'éclaire qu'au **bord droit**. Le turquoise cesse d'être une couleur de surface pour devenir un **fumé turquoise** : une lueur qui ne prend qu'au bord. Conforme au pilier 3 de la Design Bible — la lumière guide le regard, elle ne décore jamais.
+
+### En CSS
+```css
+background: linear-gradient(100deg, rgba(16,21,24,.86) 40%, rgba(32,217,245,.20) 100%);
+border: 1px solid rgba(32,217,245,.32);
+box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 6px 22px rgba(0,0,0,.42);
+backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+color: #E4F3F7;
+```
+
+### En objet de style JS (React sans JSX)
+```js
+background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)",
+border: "1px solid rgba(32,217,245,0.32)",
+boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)",
+backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)",
+color: "#E4F3F7"
+```
+
+### Règles d'emploi
+- **Texte toujours clair** (`#E4F3F7`). Un texte sombre (`#04252A`) devient illisible sur ce fond. Trois boutons ont dû être repassés en clair.
+- **Graisse redescendue** : 600 pour un grand bouton, 700 pour une pilule. Le verre porte moins bien les graisses lourdes que l'aplat.
+- **État désactivé** : `rgba(32,217,245,0.14)` en fond plein, sans liseré.
+- ⛔ **Pas sur les surfaces de moins de ~40 px.** Une lumière rasante ne se lit pas sur une pastille — elle vire au gris.
+- ⛔ **Pas quand le dégradé signale un état** (onglet actif d'un sélecteur). Le plein sert alors à distinguer, pas à décorer.
+- ⛔ **Jamais sur une photo de cheval.** C'est une surface d'interface, pas un traitement d'image.
+
+### Où il est posé (session 150)
+`index.html` lignes **23404** (Se connecter) · **27151** (Créer mon profil) · **30190** (Publier) · **30235** (Remettre cette photo) · **43976** (Demander conseil).
+
+**Gardent leur dégradé plein** : 20762 (pastille), 26309 ×3 (`.agc-addc`, `.agc-type.on`, `.agc-ok`), 33101 (`Continuer` d'iframe, style en chaîne échappée).
+
+*Retenu parmi six propositions comparées dans `palette-boutons.html` — choix de Blandine, variante B.*
+
+---
+
+## Préparation Flutter
+
+Aucune amélioration d'architecture réalisée cette session. Reste à moderniser (liste tenue) : les 148 `getUser()`, `sur_carte` lu nulle part, 506 objets sans `de`, les chevaux écrits en dur, la logique d'abonnement dispersée entre `index.html` et la fonction Netlify.
+
+---
+
+## À l'écran : + / −
+
+**Aucun changement.** Rien n'a été livré, `index.html` n'a pas été touché. Seules modifications : la destination Stripe et deux lignes en base.
+
+
+---
+
+## SESSION 149 — 21/08/2026 · L'INCIDENT LINGUAE, LA FACTURE NETLIFY, ET LE CHANTIER DES RÉSULTATS EN CONCOURS
+
+**Aucune livraison de code.** Une maquette, un incident réparé, un chantier cadré.
+
+---
+
+### 🔴 INCIDENT — HYPE ÉCRASÉ PAR LINGUAE (12 h 45 → 13 h 15)
+
+**Symptôme** : ouvrir Hype menait à l'écran d'intro de Linguae. Signalé par Blandine ET par plusieurs cavalières venues s'inscrire.
+
+**Diagnostic, dans l'ordre où il a été fait :**
+1. Test en navigation privée sur `2hype.netlify.app` → **Linguae s'affiche**. Donc ce n'est PAS un cache d'appareil : c'est le site qui sert la mauvaise page. Toutes les visiteuses étaient touchées.
+2. `sw-linguae.js` **mis hors de cause** : `lingo.html` l'enregistre avec `{scope:"/lingo"}` — vérifié dans le fichier, pas seulement dans son commentaire. Il ne contrôle pas `/`.
+3. Les six occurrences de `lingo.html` dans l'index sont **toutes des boutons**. Aucune redirection automatique.
+4. **Conclusion** : le fichier `index.html` du dépôt ne contenait plus Hype.
+
+**Cause confirmée par la page Linguae** : elle avait livré un fichier sous le nom `index.html`, poussé à la racine, qui a écrasé Hype.
+
+**Réparation** : Blandine a repoussé l'`index.html` de Hype (148). Rétabli sans autre geste.
+
+🟥 **DIAGNOSTIC ERRONÉ REÇU ET REFUSÉ — À NE PAS REJOUER.** La page Linguae a demandé de changer la constante `CACHE` du service worker de Hype, en affirmant qu'il servait Linguae depuis son cache. **Refusé après lecture des fichiers** : les quatre versions de `sw.js` fournies sont soit « réseau d'abord » (v3, v4 — le cache ne sert qu'en cas d'échec réseau), soit « de retrait » (26/07 — **aucun** gestionnaire `fetch`). Dans les quatre cas, changer le nom du cache n'aurait rien changé. Blandine a confirmé ensuite : *« ça y est ça remarche chez mes cavaliers »*, sans qu'aucun correctif n'ait été poussé. **La réparation du dépôt a suffi.**
+
+### 🔴 RÈGLE POSÉE — LE NOM DES FICHIERS EST LA SEULE PROTECTION
+
+Les deux apps partagent la racine : **Hype = `index.html`, Linguae = `lingo.html`.** Rien n'empêche l'une d'écraser l'autre.
+
+⚠️ **La règle de livraison « livrer nommé `index.html` » ne vaut QUE pour Hype.** Une page Linguae qui l'applique produit exactement cet incident. Blandine pousse depuis un iPhone des fichiers de 8 à 9 Mo qu'elle ne peut pas ouvrir pour vérifier : **le nom est le seul garde-fou.**
+
+**Vérifié côté Linguae après l'incident** (rapporté par sa page) : 37 villes déclarées aux quatre endroits obligatoires, aucun lexique perdu, `lingo.html` en v71, `sw-linguae.js` en `linguae-v9`. **Aucune autre perte.**
+
+### 💰 NETLIFY — SITE EN PAUSE LE MATIN, PASSAGE EN PRO
+
+Le site a été **coupé** (« Site not available — reached its usage limits »), Linguae avec. Plan gratuit = **300 crédits/mois en plafond dur**, un déploiement de production = **15 crédits** → **20 déploiements par mois**. Blandine en a fait des dizaines en deux jours.
+
+**Résolu** : passage au plan **Pro (33 $)**, 5 000 crédits, auto-recharge **activé**. Reprise automatique.
+
+⚠️ **À REGARDER DANS DEUX OU TROIS JOURS** : sur un mois, la facture atteignait ~140 $ **pour deux abonnés**. Les déploiements (~5 $) et la bande passante (~1 $/1 000 chargements) **n'expliquent pas ce montant**. Les compteurs étaient à zéro le 21/08 (cycle qui repart) : impossible de conclure. **Candidats non vérifiés** : compute des fonctions, requêtes web, inférence AI. **Ne pas conclure sans l'écran Team → Usage rempli.**
+
+🟥 **CONSÉQUENCE SUR MA MÉTHODE** : cinq livraisons dans une soirée = 75 crédits. **Grouper les corrections en une seule livraison** n'est plus seulement une question de qualité, c'est une question de coût.
+
+**Piste de fond, non engagée** : l'index fait 9,25 Mo par chargement. Les images encodées en dur en font probablement l'essentiel. Les sortir ferait baisser la facture ET le temps de chargement.
+
+---
+
+### 🟢 LE CHANTIER DES RÉSULTATS EN CONCOURS — CADRÉ, RIEN DE CODÉ
+
+**Demande de Blandine** : sur la page d'un cavalier, ses totaux, puis une ligne par cheval, puis le détail dans une fenêtre qui s'ouvre. Et la même chose vue depuis le cheval.
+
+**Ce qui existe déjà, vérifié** : la table `resultats` (indexée par cavalier, avec `cheval_id`) ET la colonne JSON `chevaux.palmares`. **La page cavalier lit déjà les deux.** Manquent : les totaux, le regroupement par cheval, la fenêtre de détail.
+
+### 🔴 LA RÈGLE MÉTIER — « CLASSÉ », CE N'EST PAS « TERMINÉ »
+
+**Donnée par Blandine, je ne l'aurais pas devinée :**
+- **Le top 8** est appelé à la remise des prix, **mais seulement s'il est aussi dans le premier quart.**
+- **Être classé = être dans le premier quart des partants.** 20 partants → 5 classés. 40 → 10.
+
+⚠️ **La colonne `Quart` est DONNÉE par la FFE** (`1er`, `2e`, `3e`, `4e`). **Ne jamais la recalculer** — la lire.
+
+**Totaux justes** : Victoires = place 1 · Podiums = 1, 2, 3 · **Classements = `Quart` valant `1er`**.
+🟥 **Mon calcul de la maquette est FAUX sur ce point** : il compte toutes les sorties comme des classements (75 pour Liam, qui est le nombre de SORTIES). **À refaire.**
+
+**Affichage — décision de Blandine** : *« je vais pas afficher ce qui est pas dans le premier quart »*. Les totaux comptent tout, **le détail n'affiche que le premier quart**. Option « tout afficher » laissée au cavalier : **notée, volontairement pas faite** tant que la page n'a pas vécu.
+
+### 🟢 LA SAISIE — RÉSOLUE PAR LE PDF TELEMAT
+
+**Le problème** : 400 lignes à saisir à la main = fonctionnalité morte. Blandine : *« ça va être beaucoup moins fun »*.
+
+**Voie écartée — aller chercher chez la FFE.** Aucune interface publique trouvée. Et la FFE précise que la publication des performances est encadrée par la CNIL, l'accord étant donné à la prise de licence **pour le système de la FFE**. Une app tierce qui aspire sort de ce cadre. **Passe par un accord avec la FFE, pas par un contournement.**
+
+**Voie retenue — la cavalière apporte, l'app met en page.** Distinction posée avec Blandine et qui tient : elle consulte ses propres résultats, c'est son droit ; c'est **son geste** qui fait entrer la donnée.
+
+🟢 **LA TROUVAILLE DE LA SESSION — LA CAPTURE « PAGE ENTIÈRE » EN PDF.** Sur iPhone : capture d'écran → **appuyer sur la vignette avant qu'elle disparaisse** → onglet **« Page entière »** → **Enregistrer le PDF dans Fichiers**. Safari uniquement.
+- **Le texte reste du texte** : lu directement, rien à déchiffrer, fiabilité quasi totale.
+- **Une saison entière par fichier** : ~7 envois pour toute la carrière d'un couple, au lieu de ~130 captures.
+- ⚠️ **Une capture pleine page enregistrée en IMAGE arrive en 225 px de large — illisible.** Exiger le PDF.
+- **Testé sur Webster 2019** : 16 résultats lus sans une hésitation, plus **toute la cavalerie de Feinn** (17 chevaux avec race et taille) en tête du document — de quoi créer les fiches chevaux sans saisie.
+- ⚠️ **Déformation constante à corriger** : `38e / 47` sort en `38 / 47 e`, `12e / 26 - SF` en `12 / 26 - SF e`. Règle régulière, donc corrigeable — mais **l'écran de relecture reste obligatoire**.
+
+**Champs retenus** : date, épreuve, concours, place, partants, quart. **Pénalités et chrono ABANDONNÉS** (cachés derrière les `+`) — décision de Blandine : *« des fois ils font 45 points en piste, on a pas forcément envie de les afficher »*. Donc **aucune manipulation avant la capture**.
+
+**Garde-fous posés** : ne garder que **ses** lignes (une page de classement montre d'autres cavalières) · **relecture avant enregistrement**, jamais d'insertion automatique.
+
+### 🟡 CE QUI RESTE À TRANCHER
+
+- **Où vivent les résultats** : en dur dans l'app (chaque concours = une livraison) ou **table Supabase** avec saisie (table + écran + droits). La seconde est la bonne, c'est un chantier.
+- **Une couleur par cheval**, choisie sur sa fiche, conservée sur ses pins de carte. Demande de Blandine, déjà dans la maquette.
+
+---
+
+### 🟡 LE PASSEPORT CAVALIER ET LA CARTE — CADRÉ, RIEN DE CODÉ
+
+**Demande** : les déplacements et résultats sur la carte de France. Icône coupe pour une victoire, palmier pour des vacances. **Deux usages de LA MÊME carte** : dans la Communauté (tout le monde), sur la page cavalier (lui seul). Un seul chantier, ce qui change est ce qu'on lui donne à afficher.
+
+✅ **La carte existe déjà** (`FRANCE_MAP_HTML`, 28 074 o) et elle est **vectorielle**, donc lisible — contrairement au globe.
+
+**Le rattachement des lieux** : 47 libellés dans le fichier Rizotto, mais **~25 lieux réels**. Bois-le-Roi apparaît sous **7 écritures** (Espace Marcel Rozier, Espace Rozier / MGE, UCPA Bois-le-Roi…), Milly sous 4, Fontainebleau sous 5.
+🟥 **Rattacher LA COMMUNE, pas le libellé du concours.** Le nom de l'épreuve reste affiché ; le pin se pose sur la ville.
+
+🔴 **TROU DANS LA BASE DES CLUBS.** Croisement fait sur les **3 145** clubs (db-1 à db-4, tous reçus) : **7 communes sur 23**. Manquent Milly, Barbizon, Fontainebleau, Liverdy, Bois-le-Roi — le cœur de la Seine-et-Marne équestre, et le Grand Parquet où se court l'Open de France.
+⚠️ **Le rapprochement par mots communs INVENTE** : Bois-le-Roi est tombé sur la SEP au Bois de Boulogne, Saint-Lô sur Châtenay-Malabry. **Même piège que le rattachement des écuries.**
+
+**`hype-clubs-db-5.js` à créer**, sur demande de Blandine (*« 95 % des concours sont dans un club »*) — les grands rendez-vous entrent dans la base au même titre qu'un club, avec **un type propre** pour ne pas polluer « les écuries proches ». Bénéfice de bord : ils deviennent choisissables dans le champ `lieu` d'une story, donc **ils peuvent porter un point argenté** (session 148).
+
+**Liste validée** : Parc Équestre Fédéral (**déjà en base**, 47.6038 / 2.0102) · Grand Parquet Fontainebleau · Rosières-aux-Salines (**déjà en base**, Pôle hippique de Lorraine) · Jumping International de Bordeaux · Equita Lyon · Salon du Cheval de Paris (Villepinte) · **Salon du Cheval de Nancy** · Le Mans Boulerie Jump · Sologn'Pony.
+
+**Pour les coordonnées** : demander à Blandine le fichier officiel des communes —
+`https://geo.api.gouv.fr/communes?fields=nom,code,centre,departement&format=json` (Safari → Partager → Enregistrer dans Fichiers).
+⚠️ **NE PAS redemander `communes.json` d'unpkg/Etalab** : reçu le 21/08, 37 638 communes, **aucune coordonnée**. Erreur de ma part.
+⚠️ **Mes outils de calcul n'ont pas internet et perdent les paramètres d'URL** : je ne peux pas récupérer ces fichiers moi-même, c'est Blandine qui télécharge.
+
+---
+
+### PRÉPARATION FLUTTER
+
+**Aucune amélioration d'architecture réalisée** — pas de code livré cette session.
+
+Ce que le chantier des résultats fera apparaître, et qu'il faut voir venir : un résultat est un objet à part entière (date, épreuve, lieu, place, partants, quart) qui appartient à **un couple cavalier × cheval**. Aujourd'hui il vit à deux endroits — la table `resultats` et le JSON `chevaux.palmares` — sans que rien ne garantisse leur cohérence. **C'est le moment de choisir un point de vérité unique**, avant d'y verser des centaines de lignes. Même diagnostic de fond qu'en 147 et 148 : le lieu est une chaîne de texte, jamais un identifiant.
 
 ---
 
