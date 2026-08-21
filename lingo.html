@@ -2103,6 +2103,129 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 #ouverture .cpAcces{margin-top:18px}
 .cpAcces b{color:var(--encre);font-weight:600}
 .cpAcces img{width:24px;height:24px;border-radius:7px;flex-shrink:0}
+
+/* ==================================================================
+   LE LEXIQUE (v71) — l'index alphabetique de tous les mots du voyage.
+   Demande de Blandine : « juste quand quelqu'un est presse qu'il puisse
+   trouver son mot directement par ordre alphabetique ».
+
+   Verrou retenu (option B, 20/08) : la liste est COMPLETE pour tout le
+   monde ; les mots des villes non possedees ont leur ligne ILLISIBLE
+   DES DEUX COTES. Flouter la seule colonne de droite se contournerait
+   en inversant les drapeaux — le verrou porte donc sur le concept,
+   jamais sur la colonne.
+
+   RÈGLE WEBKIT RESPECTEE : aucun `filter` nulle part ici. Le texte
+   verrouille est rendu transparent avec un `text-shadow` — ni gel du
+   compositeur, ni rasterisation par element.
+   ================================================================== */
+#lexique{position:fixed;inset:0;z-index:47;display:none;flex-direction:column;
+ background:radial-gradient(120% 55% at 50% -8%,rgba(32,217,245,.13),transparent 62%),
+            radial-gradient(90% 40% at 100% 100%,rgba(32,217,245,.05),transparent 70%),
+            var(--noir,#060709);
+ padding-top:calc(env(safe-area-inset-top) + 8px)}
+#lexique.on{display:flex}
+
+#lxHaut{display:flex;align-items:center;justify-content:space-between;
+ padding:8px 18px 2px;flex:0 0 auto}
+#lxHaut button{width:34px;height:34px;border-radius:50%;
+ border:1px solid rgba(32,217,245,.30);background:rgba(32,217,245,.06);
+ color:#20D9F5;font-size:17px;line-height:1;cursor:pointer;padding:0}
+#lxHaut h1{font-family:'Cinzel',serif;font-weight:500;font-size:19px;
+ color:#F4F7FA;margin:0;letter-spacing:.01em}
+
+/* le couple de langues — signature de l'ecran */
+#lxCouple{display:flex;align-items:stretch;margin:14px 18px 10px;flex:0 0 auto;
+ border:1px solid rgba(244,247,250,.10);border-radius:16px;overflow:hidden;
+ background:rgba(17,20,23,.55);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.lxCote{flex:1;padding:13px 15px;background:none;border:0;color:inherit;
+ font:inherit;text-align:left;cursor:pointer;min-width:0}
+.lxCote .lxLib{display:block;font-size:9px;letter-spacing:.24em;text-transform:uppercase;
+ color:rgba(244,247,250,.38);margin-bottom:8px;font-weight:400}
+.lxCote .lxVal{display:flex;align-items:center;gap:9px}
+.lxCote .lxDr{font-size:18px;line-height:1}
+.lxCote .lxNom{font-size:12.5px;font-weight:500;letter-spacing:.02em;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#lxFleche{width:42px;display:flex;align-items:center;justify-content:center;
+ color:#20D9F5;font-size:15px;background:rgba(32,217,245,.05);
+ border-left:1px solid rgba(244,247,250,.10);border-right:1px solid rgba(244,247,250,.10)}
+
+#lxCherche{position:relative;margin:0 18px 4px;flex:0 0 auto}
+#lxCherche input{width:100%;padding:14px 15px 14px 42px;
+ background:rgba(17,20,23,.55);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+ border:1px solid rgba(244,247,250,.10);border-radius:14px;color:#F4F7FA;
+ font-family:'Montserrat',sans-serif;font-size:14px;font-weight:400;letter-spacing:.01em}
+#lxCherche input::placeholder{color:rgba(244,247,250,.30);font-weight:300}
+#lxCherche input:focus{outline:none;border-color:rgba(32,217,245,.42)}
+#lxLoupe{position:absolute;left:16px;top:50%;transform:translateY(-50%);
+ width:13px;height:13px;border:1.4px solid rgba(244,247,250,.42);border-radius:50%}
+#lxLoupe::after{content:"";position:absolute;right:-5px;bottom:-4px;width:6px;height:1.4px;
+ background:rgba(244,247,250,.42);transform:rotate(45deg)}
+
+#lxCompte{font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+ color:rgba(244,247,250,.32);padding:13px 20px 4px;flex:0 0 auto}
+#lxCompte b{color:#20D9F5;font-weight:500}
+
+#lxListe{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+ padding:0 20px calc(env(safe-area-inset-bottom) + 26px);position:relative}
+.lxLettre{position:sticky;top:0;z-index:3;font-family:'Cinzel',serif;
+ font-size:12px;letter-spacing:.3em;color:#20D9F5;padding:18px 2px 9px;
+ background:linear-gradient(#060709 62%,rgba(6,7,9,0))}
+.lxMot{display:flex;align-items:baseline;gap:13px;padding:14px 2px;
+ border-bottom:1px solid rgba(244,247,250,.055);cursor:pointer}
+.lxTerme{flex:1;min-width:0}
+.lxTerme .lxT{font-size:15px;font-weight:400;letter-spacing:.01em;line-height:1.3;color:#F4F7FA}
+.lxTerme .lxOu{display:block;margin-top:5px;font-size:9.5px;letter-spacing:.15em;
+ text-transform:uppercase;color:rgba(32,217,245,.60);font-weight:400}
+.lxTrad{text-align:right;font-size:14px;font-weight:300;color:rgba(244,247,250,.74);
+ letter-spacing:.01em;max-width:45%;line-height:1.35}
+/* --- ligne verrouillee : illisible des DEUX cotes, sans `filter` --- */
+.lxMot.lxClos .lxT,.lxMot.lxClos .lxTrad{color:transparent;
+ text-shadow:0 0 9px rgba(244,247,250,.42);-webkit-user-select:none;user-select:none}
+.lxMot.lxClos .lxOu{color:rgba(32,217,245,.34)}
+.lxCad{width:25px;height:25px;flex:0 0 25px;align-self:center;
+ border:1px solid rgba(32,217,245,.34);border-radius:8px;background:rgba(32,217,245,.07);
+ display:flex;align-items:center;justify-content:center}
+.lxCad svg{width:11px;height:11px;stroke:#20D9F5;fill:none;stroke-width:1.6}
+
+#lxRail{position:absolute;right:3px;top:50%;transform:translateY(-50%);z-index:5;
+ display:flex;flex-direction:column;gap:1px;padding:8px 3px}
+#lxRail button{background:none;border:0;padding:1px 4px;cursor:pointer;
+ font-family:'Montserrat',sans-serif;font-weight:500;font-size:9px;
+ letter-spacing:.05em;color:rgba(244,247,250,.30)}
+
+.lxVide{padding:54px 4px;color:rgba(244,247,250,.42);font-size:13px;line-height:1.65}
+.lxVide b{display:block;font-family:'Cinzel',serif;font-size:16px;color:#F4F7FA;
+ font-weight:500;margin-bottom:9px}
+
+/* feuille de choix des langues */
+#lxFond{position:fixed;inset:0;z-index:48;background:rgba(6,7,9,.72);
+ opacity:0;pointer-events:none;transition:opacity .22s}
+#lxFond.on{opacity:1;pointer-events:auto}
+#lxFeuille{position:fixed;left:0;right:0;bottom:0;z-index:49;background:#111417;
+ border-top:1px solid rgba(244,247,250,.10);border-radius:22px 22px 0 0;
+ padding:24px 20px calc(env(safe-area-inset-bottom) + 30px);
+ transform:translateY(102%);transition:transform .26s cubic-bezier(.22,1,.36,1)}
+#lxFeuille.on{transform:translateY(0)}
+#lxFeuilleTitre{font-family:'Cinzel',serif;font-size:16px;font-weight:500;
+ margin:0 0 18px;text-align:center;color:#F4F7FA}
+#lxLangues{display:flex;flex-direction:column;gap:2px;max-width:400px;margin:0 auto}
+.lxLg{display:flex;align-items:center;gap:13px;padding:13px 12px;background:none;
+ border:0;border-radius:12px;color:#F4F7FA;font:inherit;cursor:pointer;
+ text-align:left;width:100%}
+.lxLg .lxLgDr{font-size:20px}
+.lxLg .lxLgNm{font-size:13.5px;font-weight:400;letter-spacing:.02em}
+.lxLg.lxPris{opacity:.28;pointer-events:none}
+.lxLg .lxPt{margin-left:auto;color:#20D9F5;font-size:11px}
+
+/* la vignette du bandeau d'entree — vignette A, validee le 20/08 */
+.oLexVign{background:linear-gradient(155deg,#0F1D26,#070E14);
+ display:flex;align-items:center;justify-content:center;position:relative}
+.oLexVign i{font-family:'Cinzel',serif;font-style:normal;font-size:26px;
+ font-weight:500;color:#20D9F5;letter-spacing:-.02em;line-height:1}
+.oLexVign::after{content:"";position:absolute;right:8px;top:12px;bottom:12px;width:5px;
+ background:repeating-linear-gradient(rgba(32,217,245,.55) 0 1.5px,transparent 1.5px 6px)}
+@media (prefers-reduced-motion:reduce){#lxFeuille,#lxFond{transition:none}}
 </style>
 </head>
 <body>
@@ -2823,6 +2946,39 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <div id="cvVoile">
     <div id="cvFiche"></div>
   </div>
+</div>
+
+<!-- LE LEXIQUE (v71) — index alphabetique. La liste est construite au
+     vol depuis window.HYPE_LINGO_LEX croise avec ETAPE_SRC : aucune
+     correspondance mot -> ville n'est ecrite ici. -->
+<div id="lexique">
+  <div id="lxHaut">
+    <button id="lxFermer" type="button" aria-label="Fermer">&lsaquo;</button>
+    <h1 id="lxTitre">Le lexique</h1>
+    <button type="button" style="opacity:0;pointer-events:none" tabindex="-1">&nbsp;</button>
+  </div>
+  <div id="lxCouple">
+    <button class="lxCote" id="lxBtnG" type="button">
+      <span class="lxLib" id="lxLibG">Je lis en</span>
+      <span class="lxVal"><span class="lxDr" id="lxDrG"></span><span class="lxNom" id="lxNomG"></span></span>
+    </button>
+    <div id="lxFleche">&rarr;</div>
+    <button class="lxCote" id="lxBtnD" type="button">
+      <span class="lxLib" id="lxLibD">Je cherche en</span>
+      <span class="lxVal"><span class="lxDr" id="lxDrD"></span><span class="lxNom" id="lxNomD"></span></span>
+    </button>
+  </div>
+  <div id="lxCherche">
+    <span id="lxLoupe"></span>
+    <input id="lxQ" type="search" autocomplete="off" autocorrect="off" spellcheck="false">
+  </div>
+  <div id="lxCompte"></div>
+  <div id="lxListe"><nav id="lxRail"></nav><div id="lxCorps"></div></div>
+</div>
+<div id="lxFond"></div>
+<div id="lxFeuille">
+  <p id="lxFeuilleTitre">Je lis en</p>
+  <div id="lxLangues"></div>
 </div>
 
 <div id="porteB">
@@ -3770,7 +3926,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=70";   /* 🟥 v70 (20/08) : casse-cache du lot d'images Versailles — la carte
+var VER = "?v=71";   /* 🟥 v71 (20/08) : le lexique alphabetique.
+   v70 (20/08) : casse-cache du lot d'images Versailles — la carte
                         recomposee (statue + coucher de soleil, facade raccourcie) et
                         sa vignette remplacent les fichiers en ligne.
                         v69 (20/08) : le prechauffage attend le premier `playing` du film
@@ -5909,6 +6066,21 @@ function pousserVille(){
       el("span",{class:"oT","data-t":"monCarnet"}),
       "Les mots et les passages que tu gardes avec toi.",
       function(){ ouvrirCarnetVoyage(); });
+  })());
+
+  /* v71 : LE QUATRIEME BANDEAU — le lexique. Demande de Blandine le
+     20/08 : trouver un mot directement, sans traverser sa ville.
+     Vignette A validee : une initiale en Cinzel + la tranche d'un
+     dictionnaire. Aucune image a charger. */
+  b.appendChild((function(){
+    var v=el("span",{class:"oEventail"});
+    var t=el("span",{class:"oLexVign"});
+    t.appendChild(el("i",{text:"A"}));
+    v.appendChild(t);
+    return oBandeau("ouvLexique", true, v,
+      el("span",{class:"oT","data-t":"leLexique"}),
+      "Tous les mots du voyage, par ordre alphabetique.",
+      function(){ ouvrirLexique(); });
   })());
 
   /* ⚠️ LE PLIEUR « COMMENT CA MARCHE ? » EST SUPPRIME (v34, decision de
@@ -12732,6 +12904,245 @@ try{ appliquerLangue(); }catch(err){}
         });
     }catch(e){}
   });
+})();
+</script>
+
+<script>
+/* ==================================================================
+   LE LEXIQUE (v71) — bloc AUTONOME.
+
+   Il ne depend que de choses deja publiques dans la page :
+   window.HYPE_LINGO_LEX, ETAPES, ETAPE_SRC, chapVirtuel, eV,
+   villeAutorisee, ouvrirPaywall, langueUI, VOYAGE_LANGUE, S, el.
+   Aucune fonction d'ici n'est appelee ailleurs, sauf `ouvrirLexique`
+   (le bandeau des outils) — exposee sur window a la fin.
+
+   L'INDEX SE CALCULE, il ne s'ecrit pas : pour chaque ville de ETAPES
+   on demande son chapitre virtuel, et chaque concept trouve retient
+   la ville qui l'enseigne. Une ville neuve entre donc au lexique sans
+   qu'une ligne bouge ici.
+
+   🟥 VERROU (option B, validee le 20/08) : la ligne d'un concept dont
+   la ville n'est pas possedee devient illisible DES DEUX COTES. Le
+   verrou porte sur le concept, pas sur la colonne — inverser les
+   drapeaux ne le contourne pas.
+
+   🟥 AUCUN `filter` DANS CET ECRAN. Le brouillage passe par
+   `color:transparent` + `text-shadow`. La regle WebKit des deux crashs
+   du 20/08 (filter dans un calque floute ou mis a l'echelle) tient.
+   ================================================================== */
+(function(){
+
+  var LX_LANGUES = [
+    {c:"fr", dr:"\uD83C\uDDEB\uD83C\uDDF7"},
+    {c:"en", dr:"\uD83C\uDDEC\uD83C\uDDE7"},
+    {c:"es", dr:"\uD83C\uDDEA\uD83C\uDDF8"},
+    {c:"it", dr:"\uD83C\uDDEE\uD83C\uDDF9"},
+    {c:"de", dr:"\uD83C\uDDE9\uD83C\uDDEA"},
+    {c:"ja", dr:"\uD83C\uDDEF\uD83C\uDDF5"}
+  ];
+
+  /* libelles de l'ecran, dans les six langues d'interface. Table locale
+     et non ajout a l'i18n generale : le bloc reste demontable. */
+  var LXT = {
+    titre:{fr:"Le lexique",en:"The glossary",es:"El l\u00e9xico",it:"Il lessico",de:"Das Lexikon",ja:"\u5358\u8a9e\u96c6"},
+    lisEn:{fr:"Je lis en",en:"I read in",es:"Leo en",it:"Leggo in",de:"Ich lese auf",ja:"\u8aad\u3080\u8a00\u8a9e"},
+    cherche:{fr:"Je cherche en",en:"I want it in",es:"Lo busco en",it:"Lo cerco in",de:"Ich suche auf",ja:"\u63a2\u3059\u8a00\u8a9e"},
+    placeholder:{fr:"Chercher un mot\u2026",en:"Search a word\u2026",es:"Buscar una palabra\u2026",it:"Cerca una parola\u2026",de:"Ein Wort suchen\u2026",ja:"\u5358\u8a9e\u3092\u691c\u7d22\u2026"},
+    mots:{fr:"mots",en:"words",es:"palabras",it:"parole",de:"W\u00f6rter",ja:"\u8a9e"},
+    ouverts:{fr:"mots ouverts",en:"words unlocked",es:"palabras abiertas",it:"parole aperte",de:"W\u00f6rter offen",ja:"\u89e3\u9664\u6e08\u307f"},
+    aDecouvrir:{fr:"\u00e0 d\u00e9couvrir",en:"to discover",es:"por descubrir",it:"da scoprire",de:"zu entdecken",ja:"\u672a\u89e3\u9664"},
+    rien:{fr:"Aucun mot",en:"No word",es:"Ninguna palabra",it:"Nessuna parola",de:"Kein Wort",ja:"\u8a72\u5f53\u306a\u3057"},
+    rienTxt:{fr:"Ce terme n'est pas encore dans le voyage.",en:"This term isn't part of the journey yet.",es:"Este t\u00e9rmino a\u00fan no est\u00e1 en el viaje.",it:"Questo termine non \u00e8 ancora nel viaggio.",de:"Dieses Wort geh\u00f6rt noch nicht zur Reise.",ja:"\u3053\u306e\u8a9e\u306f\u307e\u3060\u65c5\u306b\u3042\u308a\u307e\u305b\u3093\u3002"},
+    nomLangue:{
+      fr:{fr:"Fran\u00e7ais",en:"Anglais",es:"Espagnol",it:"Italien",de:"Allemand",ja:"Japonais"},
+      en:{fr:"French",en:"English",es:"Spanish",it:"Italian",de:"German",ja:"Japanese"},
+      es:{fr:"Franc\u00e9s",en:"Ingl\u00e9s",es:"Espa\u00f1ol",it:"Italiano",de:"Alem\u00e1n",ja:"Japon\u00e9s"},
+      it:{fr:"Francese",en:"Inglese",es:"Spagnolo",it:"Italiano",de:"Tedesco",ja:"Giapponese"},
+      de:{fr:"Franz\u00f6sisch",en:"Englisch",es:"Spanisch",it:"Italienisch",de:"Deutsch",ja:"Japanisch"},
+      ja:{fr:"\u30d5\u30e9\u30f3\u30b9\u8a9e",en:"\u82f1\u8a9e",es:"\u30b9\u30da\u30a4\u30f3\u8a9e",it:"\u30a4\u30bf\u30ea\u30a2\u8a9e",de:"\u30c9\u30a4\u30c4\u8a9e",ja:"\u65e5\u672c\u8a9e"}
+    }
+  };
+  function lxUI(){ try{ return langueUI(); }catch(e){ return "fr"; } }
+  function lxT(k){ var o=LXT[k]; var u=lxUI(); return (o && (o[u]||o.fr)) || ""; }
+  function lxNomDe(c){ var t=LXT.nomLangue[lxUI()]||LXT.nomLangue.fr; return t[c]||c; }
+  function lxDrapeau(c){ for(var i=0;i<LX_LANGUES.length;i++) if(LX_LANGUES[i].c===c) return LX_LANGUES[i].dr; return ""; }
+
+  var lxG=null, lxD=null, lxCible="G", lxIndex=null;
+
+  /* --- l'index : concept -> ville, calcule depuis ETAPE_SRC --- */
+  function lxConstruire(){
+    var out=[], vus={};
+    try{
+      for(var i=0;i<ETAPES.length;i++){
+        var e=ETAPES[i], ch=null;
+        try{ ch=chapVirtuel(e.ref); }catch(e1){ ch=null; }
+        if(!ch || !ch.concepts) continue;
+        for(var j=0;j<ch.concepts.length;j++){
+          var c=ch.concepts[j];
+          if(!c || !c.ref || !c.mots) continue;
+          if(vus[c.ref]) continue;      /* un concept = un ref global */
+          vus[c.ref]=1;
+          out.push({ref:c.ref, mots:c.mots, ville:e.ref, nom:eV(e)});
+        }
+      }
+    }catch(e2){}
+    return out;
+  }
+
+  function lxMot(o,lg){ var m=o.mots&&o.mots[lg]; return (m&&m.m)||""; }
+  /* le japonais se range sur sa prononciation quand elle existe
+     (`mots.ja.p`), sinon sur ses propres caracteres. */
+  function lxTri(o,lg){
+    var m=o.mots&&o.mots[lg]; if(!m) return "";
+    if(lg==="ja" && m.p) return String(m.p).toLowerCase();
+    return String(m.m||"").toLowerCase();
+  }
+  function lxInitiale(s){
+    if(!s) return "\u2022";
+    var c=s.charAt(0);
+    try{ c=c.normalize("NFD").charAt(0); }catch(e){}
+    return c.toUpperCase();
+  }
+  function lxOuverte(v){ try{ return villeAutorisee(v); }catch(e){ return true; } }
+
+  function lxDessiner(){
+    if(!lxIndex) lxIndex=lxConstruire();
+    var q=(S("lxQ").value||"").trim().toLowerCase();
+    var arr=lxIndex.filter(function(o){
+      if(!lxMot(o,lxG) && !lxMot(o,lxD)) return false;
+      if(!q) return true;
+      return lxMot(o,lxG).toLowerCase().indexOf(q)>=0
+          || lxMot(o,lxD).toLowerCase().indexOf(q)>=0;
+    });
+    arr.sort(function(a,b){
+      var x=lxTri(a,lxG), y=lxTri(b,lxG);
+      try{ return x.localeCompare(y, lxG==="ja"?"ja":"fr"); }
+      catch(e){ return x<y?-1:(x>y?1:0); }
+    });
+
+    var corps=S("lxCorps"); if(!corps) return;
+    var html="", cour="", lettres=[], ouverts=0;
+    for(var i=0;i<arr.length;i++){
+      var o=arr[i], L=lxInitiale(lxTri(o,lxG));
+      if(L!==cour){ cour=L; lettres.push(L);
+        html+='<div class="lxLettre" id="lxL-'+encodeURIComponent(L)+'">'+lxEch(L)+'</div>'; }
+      var clos=!lxOuverte(o.ville);
+      if(!clos) ouverts++;
+      html+='<div class="lxMot'+(clos?' lxClos':'')+'" data-v="'+lxEch(o.ville)+'" data-c="'+(clos?1:0)+'">'
+          +   '<div class="lxTerme"><div class="lxT">'+lxEch(lxMot(o,lxG))+'</div>'
+          +   '<span class="lxOu">'+lxEch(o.nom)+'</span></div>'
+          +   '<div class="lxTrad">'+lxEch(lxMot(o,lxD))+'</div>'
+          +   (clos?'<div class="lxCad"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>':'')
+          + '</div>';
+    }
+    corps.innerHTML = html || '<div class="lxVide"><b>'+lxEch(lxT("rien"))+'</b>'+lxEch(lxT("rienTxt"))+'</div>';
+
+    var tousOuverts=(ouverts===arr.length);
+    S("lxCompte").innerHTML = tousOuverts
+      ? '<b>'+arr.length+'</b> '+lxEch(lxT("mots"))
+      : '<b>'+ouverts+'</b> '+lxEch(lxT("ouverts"))+' \u00b7 '+(arr.length-ouverts)+' '+lxEch(lxT("aDecouvrir"));
+
+    var rail=S("lxRail");
+    rail.innerHTML = lettres.map(function(L){
+      return '<button type="button" data-l="'+encodeURIComponent(L)+'">'+lxEch(L)+'</button>';
+    }).join("");
+  }
+  function lxEch(t){
+    return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+           .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function lxPoserCouple(){
+    S("lxDrG").textContent=lxDrapeau(lxG); S("lxNomG").textContent=lxNomDe(lxG);
+    S("lxDrD").textContent=lxDrapeau(lxD); S("lxNomD").textContent=lxNomDe(lxD);
+    S("lxLibG").textContent=lxT("lisEn"); S("lxLibD").textContent=lxT("cherche");
+    S("lxTitre").textContent=lxT("titre");
+    S("lxQ").setAttribute("placeholder", lxT("placeholder"));
+  }
+
+  function lxOuvrirFeuille(quel){
+    lxCible=quel;
+    S("lxFeuilleTitre").textContent = (quel==="G") ? lxT("lisEn") : lxT("cherche");
+    var autre=(quel==="G")?lxD:lxG, ici=(quel==="G")?lxG:lxD;
+    S("lxLangues").innerHTML = LX_LANGUES.map(function(l){
+      return '<button class="lxLg'+(l.c===autre?' lxPris':'')+'" type="button" data-c="'+l.c+'">'
+           +   '<span class="lxLgDr">'+l.dr+'</span>'
+           +   '<span class="lxLgNm">'+lxEch(lxNomDe(l.c))+'</span>'
+           +   (l.c===ici?'<span class="lxPt">\u25cf</span>':'')
+           + '</button>';
+    }).join("");
+    S("lxFond").classList.add("on"); S("lxFeuille").classList.add("on");
+  }
+  function lxFermerFeuille(){
+    S("lxFond").classList.remove("on"); S("lxFeuille").classList.remove("on");
+  }
+
+  /* ---------- ouverture / fermeture de l'ecran ---------- */
+  function ouvrirLexique(){
+    /* les langues repartent du couple naturel a CHAQUE ouverture : le
+       selecteur est local a cette page (decision de Blandine, 20/08) et
+       ne touche jamais la langue apprise. */
+    try{ lxG = lxUI() || "fr"; }catch(e){ lxG = "fr"; }
+    try{ lxD = VOYAGE_LANGUE || "en"; }catch(e){ lxD = "en"; }
+    if(lxD === lxG){ lxD = (lxG === "en") ? "fr" : "en"; }
+    lxIndex = null;                       /* recalcul : une ville a pu s'ouvrir */
+    S("lxQ").value = "";
+    lxPoserCouple();
+    lxDessiner();
+    S("lexique").classList.add("on");
+    var l=S("lxListe"); if(l) l.scrollTop=0;   /* regle scrollTop */
+  }
+  function fermerLexique(){
+    lxFermerFeuille();
+    S("lexique").classList.remove("on");
+  }
+
+  /* ---------- cablage, EN DELEGATION (regle du 19/08) ---------- */
+  function lxBrancher(){
+    if(!S("lexique")) return;
+    S("lxFermer").addEventListener("click", fermerLexique);
+    S("lxBtnG").addEventListener("click", function(){ lxOuvrirFeuille("G"); });
+    S("lxBtnD").addEventListener("click", function(){ lxOuvrirFeuille("D"); });
+    S("lxFond").addEventListener("click", lxFermerFeuille);
+    S("lxQ").addEventListener("input", lxDessiner);
+
+    S("lxLangues").addEventListener("click", function(ev){
+      var b = ev.target && ev.target.closest ? ev.target.closest(".lxLg") : null;
+      if(!b || b.classList.contains("lxPris")) return;
+      var c = b.getAttribute("data-c");
+      if(lxCible === "G") lxG = c; else lxD = c;
+      lxPoserCouple(); lxFermerFeuille(); lxDessiner();
+      var l=S("lxListe"); if(l) l.scrollTop=0;
+    });
+
+    S("lxCorps").addEventListener("click", function(ev){
+      var m = ev.target && ev.target.closest ? ev.target.closest(".lxMot") : null;
+      if(!m) return;
+      if(m.getAttribute("data-c") === "1"){ try{ ouvrirPaywall(); }catch(e){} return; }
+      var v = m.getAttribute("data-v");
+      for(var i=0;i<ETAPES.length;i++){
+        if(ETAPES[i].ref === v){
+          fermerLexique();
+          try{ partirVersVille(i); }catch(e){}
+          return;
+        }
+      }
+    });
+
+    S("lxRail").addEventListener("click", function(ev){
+      var b = ev.target && ev.target.closest ? ev.target.closest("button") : null;
+      if(!b) return;
+      var el2 = document.getElementById("lxL-"+b.getAttribute("data-l"));
+      if(el2) el2.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", lxBrancher);
+  }else{ lxBrancher(); }
+
+  window.ouvrirLexique = ouvrirLexique;
 })();
 </script>
 </body>
