@@ -2177,6 +2177,11 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .lxTerme .lxT{font-size:15px;font-weight:400;letter-spacing:.01em;line-height:1.3;color:#F4F7FA}
 .lxTerme .lxOu{display:block;margin-top:5px;font-size:9.5px;letter-spacing:.15em;
  text-transform:uppercase;color:rgba(32,217,245,.60);font-weight:400}
+/* la variante : `mots.fr.var` — « le sabot » dit aussi « le pied ».
+   Elle s'affiche en second, et la recherche la trouve. */
+.lxTerme .lxVar{font-size:12.5px;font-weight:300;color:rgba(244,247,250,.42);
+ margin-left:7px;letter-spacing:.01em}
+.lxMot.lxClos .lxVar{color:transparent;text-shadow:0 0 9px rgba(244,247,250,.30)}
 .lxTrad{text-align:right;font-size:14px;font-weight:300;color:rgba(244,247,250,.74);
  letter-spacing:.01em;max-width:45%;line-height:1.35}
 /* --- ligne verrouillee : illisible des DEUX cotes, sans `filter` --- */
@@ -12991,6 +12996,7 @@ try{ appliquerLangue(); }catch(err){}
   }
 
   function lxMot(o,lg){ var m=o.mots&&o.mots[lg]; return (m&&m.m)||""; }
+  function lxVar(o,lg){ var m=o.mots&&o.mots[lg]; return (m&&m["var"])||""; }
   /* le japonais se range sur sa prononciation quand elle existe
      (`mots.ja.p`), sinon sur ses propres caracteres. */
   function lxTri(o,lg){
@@ -13013,7 +13019,9 @@ try{ appliquerLangue(); }catch(err){}
       if(!lxMot(o,lxG) && !lxMot(o,lxD)) return false;
       if(!q) return true;
       return lxMot(o,lxG).toLowerCase().indexOf(q)>=0
-          || lxMot(o,lxD).toLowerCase().indexOf(q)>=0;
+          || lxMot(o,lxD).toLowerCase().indexOf(q)>=0
+          || lxVar(o,lxG).toLowerCase().indexOf(q)>=0
+          || lxVar(o,lxD).toLowerCase().indexOf(q)>=0;
     });
     arr.sort(function(a,b){
       var x=lxTri(a,lxG), y=lxTri(b,lxG);
@@ -13030,7 +13038,8 @@ try{ appliquerLangue(); }catch(err){}
       var clos=!lxOuverte(o.ville);
       if(!clos) ouverts++;
       html+='<div class="lxMot'+(clos?' lxClos':'')+'" data-v="'+lxEch(o.ville)+'" data-c="'+(clos?1:0)+'">'
-          +   '<div class="lxTerme"><div class="lxT">'+lxEch(lxMot(o,lxG))+'</div>'
+          +   '<div class="lxTerme"><div class="lxT">'+lxEch(lxMot(o,lxG))
+          +   (lxVar(o,lxG)?'<span class="lxVar">'+lxEch(lxVar(o,lxG))+'</span>':'')+'</div>'
           +   '<span class="lxOu">'+lxEch(o.nom)+'</span></div>'
           +   '<div class="lxTrad">'+lxEch(lxMot(o,lxD))+'</div>'
           +   (clos?'<div class="lxCad"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>':'')
