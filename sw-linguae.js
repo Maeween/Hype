@@ -68,7 +68,25 @@
    déclenche le ménage des anciennes versions.
    ================================================================== */
 
-var CACHE = "linguae-v8";   /* 🟥 v7 le 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE, dressage + materiel
+var CACHE = "linguae-v9";   /* 🟥 v9 le 21/08 : LE LEXIQUE (lingo.html v71) — un ecran
+                               entier de plus dans la page. Sans ce changement de nom, le
+                               service worker aurait continue a servir la v70 depuis son
+                               cache et le lexique ne serait jamais arrive aux cavalieres.
+
+                               ⚠️ LES SIX FICHIERS SANS VILLE DU SOCLE (cheval, concours,
+                               obstacle, concours-reserve, dressage-reserve,
+                               materiel-reserve) NE SONT PAS UN OUBLI. Ils portent des
+                               concepts ecrits, traduits et relus, mis de cote au grand
+                               regroupement. Decision de Blandine le 21/08 : les GARDER,
+                               une ville future pourra s'y brancher sans rien reecrire —
+                               et les avoir en cache les rend disponibles hors ligne le
+                               jour ou elle arrivera. NE PAS LES RETIRER.
+                               🟥 Si un jour ils partent du depot : les retirer de SOCLE_JS
+                               D'ABORD, pousser, verifier, et seulement ensuite supprimer
+                               les fichiers. L'ordre inverse fait echouer l'installation du
+                               service worker et casse le hors-ligne pour tout le monde.
+
+                               v7 le 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE, dressage + materiel
                                -> walsall, vejer, materiel-reserve, windsor, versailles,
                                dressage-reserve. TOUTES LES VILLES ONT DESORMAIS UN FICHIER ET UN
                                SEUL.
