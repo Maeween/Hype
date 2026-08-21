@@ -66,6 +66,126 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 
 ---
 
+## SESSION 151 — 21/08/2026 (soir) · L'ÉCRAN D'ENTRÉE : CE QUE LE CODE A RÉVÉLÉ
+
+**État à l'ouverture de la session.** Fichier de travail reçu de Blandine : `index.html`, md5 `1021b46ed9d10ea1b1f696b4f2e1a612`, 9 254 541 octets.
+⚠️ Ce md5 **ne correspond pas** à celui noté en passation pour la 148 (`d1e7b53f…`). Vérifié dans le fichier reçu : les **cinq Fumé Turquoise de la 150 y sont**, `majestic-melba` n'apparaît **plus nulle part**, et `2hype.netlify` apparaît **trois fois**. C'est donc bien la version d'après la 150, domaine à jour. **Rien n'a été livré à ce stade.**
+
+### Les trois images de l'écran d'entrée — vérifiées
+
+| Fichier | Dimensions | Poids | Sort |
+|---|---|---|---|
+| `cheval-fond-connexion-620.jpg` | 619 × 1100 | 50 Ko | **Retenu** — fond de l'écran 1 |
+| `cheval-fond-connexion.png` | 941 × 1672 | 1,69 Mo | Écarté (poids) |
+| `poney-mascotte.png` | 327 × 340, transparent | 158 Ko | Écrans 5 et 6 |
+
+🟢 **Contrôle fait** : les deux fichiers retenus sont **exactement** ceux déjà intégrés en base64 dans `maquette-entree-hype.html` (md5 identiques, `25530ed1…` et `79c1f8c7…`). La maquette n'est donc pas une approximation : **c'est le rendu réel**.
+
+⚠️ **Un mesurage a été fait puis abandonné** : réencoder le PNG à 940 px de large ne coûtait que 67 Ko. Écarté — **le choix du 620 est celui de Blandine**, écrit en passation.
+
+⚠️ **Le second poney « à l'air content » n'a pas été envoyé.** Et les notes se contredisent : le SUIVI 150 le destinait à l'**écran 4** (ouvre ta boîte mail), la passation 151 à l'**écran 6**. **À trancher avec Blandine.** En attendant, les écrans 5 et 6 portent le poney existant, comme dans la maquette.
+
+### 🔴 TROIS DÉCOUVERTES DANS LE CODE — elles changent le plan de la maquette
+
+**1. L'écran 1 (le seuil) n'a nulle part où se brancher.**
+`intro` n'est **pas** une porte d'entrée : c'est le deck animé (`EcranHypeUniverse` + `EcranPersonnalisation`, ligne 23149), avec son iframe d'animation. Aujourd'hui, arriver sur `connexion` place la cavalière **directement devant les champs** — c'est exactement le piège dans lequel Aurélie est tombée.
+**Voie retenue** : faire du seuil le **premier mode de `EcranConnexionSpectral`** (ligne 23256), et non une nouvelle route dans le routeur (ligne 21753). Conséquence : les **trois** appels `setEcran("connexion")` (lignes 21100, 28343, 44421) n'ont rien à changer, et le retour vers `intro` continue de fonctionner.
+
+**2. 🟥 Le bloc « attente de confirmation » du 18/08 est du CODE MORT.**
+Relevé dans tout le fichier : `setAttenteConfirmation` **une seule occurrence** — sa propre déclaration, ligne 23275. `renvoyerConfirmation` **n'est jamais appelé**. `attenteConfirmation` n'est jamais lu.
+**Ce qui se passe réellement aujourd'hui** (ligne 23355) : une inscription qui ne renvoie pas de session affiche une petite ligne turquoise et **bascule en mode connexion**. Il n'y a **aucun** écran « ouvre ta boîte mail ».
+🔴 **À corriger dans les notes** : le SUIVI 150 disait que cet écran « n'existe pas », la passation du 18/08 disait qu'il « existait déjà côté code ». **Les deux étaient à côté** : le code existe, il n'est branché à rien. Le bouton « renvoyer le lien » est déjà écrit — il suffit de l'appeler.
+
+**3. Le `catch` vide est confirmé, ligne 23364.**
+`catch (e) { }` puis « Email de réinitialisation envoyé ! » **dans tous les cas**, y compris quand l'envoi a échoué. Le même défaut existe une seconde fois ligne 23432, dans `EcranAuth` (ligne 23414) — un **doublon hérité** de l'écran de connexion, laissé de côté volontairement, **à examiner plus tard** : il n'est pas établi qu'il soit encore atteignable.
+
+### Ce qui n'est pas touché, et pourquoi
+- **Le réglage Supabase « Confirm email »** : inchangé. La question du serveur d'envoi propre (Resend, Brevo…) reste **sans réponse depuis le 21/08**. L'écran 4 peut être codé sans activer quoi que ce soit — il ne s'affichera que le jour où la confirmation sera réellement en service.
+- **`EcranAuth`** (23414) : doublon hérité, non modifié.
+
+### Conséquence de livraison à nommer
+Les deux images partent dans `images/` (l'app y range déjà tous ses visuels — 115 chemins `images/` dans le fichier, dont `images/IMG_CONNEXION_HERO.jpg` qui sert de fond actuel). **Elles doivent être poussées dans le MÊME push que l'`index.html`**, sinon le seuil s'affiche sur fond noir. **Un seul déploiement.**
+
+### Préparation Flutter
+Aucune amélioration d'architecture réalisée à ce stade. La liste reste : les 148 `getUser()`, `sur_carte` lu nulle part, 506 objets sans `de`, les chevaux écrits en dur, la logique d'abonnement dispersée, **et désormais le doublon `EcranAuth` / `EcranConnexionSpectral`**.
+
+### LIVRÉ — `index.html` md5 `bd295e50d2f0159749d29d9df628e44a` (9 276 067 octets)
+
+Parti de `1021b46ed9d10ea1b1f696b4f2e1a612`. Quatre modifications, aucune autre :
+1. **Le composant `EcranConnexionSpectral`** entièrement réécrit (ex-lignes 23254–23412). Six modes : `seuil` · `connexion` · `inscription` · `confirmation` · `oubli` · `reset`.
+2. **`PASSWORD_RECOVERY`** (ligne ~101) : le `window.prompt` du navigateur est remplacé par un drapeau `window.HYPE_RECUP_MDP` + l'événement `hype-recup-mdp`. L'écran les lit à son montage ET en écoute — ce gestionnaire peut se déclencher avant que React soit monté.
+3. **Sortie du globe sans session** : `AUTH_MODE_SPECTRAL = "seuil"` au lieu de `"inscription"`. 🔴 **Bug trouvé au passage** : l'ancienne ligne posait `"inscription"` puis appelait `__versLogin()` qui l'écrasait aussitôt par `"connexion"`. L'intention était morte — toute nouvelle visiteuse arrivait sur « Se connecter ».
+4. **Les deux déconnexions** (barre du haut et menu) mènent au seuil, plus aux champs.
+
+**Vérifications faites** : `node --check` sur les **16 blocs inline** — 16/16. Désescapement et contrôle du JS interne des iframes : `ANIM_HTML_HYPE` 3/3, `GLOBE_HTML_HYPE` 3/3, `FRANCE_MAP_HTML` 1/1. Les six chemins d'images présents une fois chacun.
+
+### 🖼 SIX IMAGES À POUSSER DANS `images/` — MÊME PUSH QUE L'INDEX
+
+| fichier | poids | où |
+|---|---|---|
+| `cheval-fond-connexion-620.jpg` | 50 Ko | fond plein écran du seuil |
+| `poney-bonjour.webp` | 71 Ko | écran 2, au-dessus du bouton |
+| `poney-barre.webp` | 58 Ko | écran 3, à cheval sur le bouton |
+| `poney-mail.webp` | 98 Ko | écran 4, au-dessus du bouton |
+| `poney-mascotte.png` | 158 Ko | écran 5 |
+| `poney-tasse.webp` | 91 Ko | écran 6 |
+
+⚠️ **Sans elles, le seuil s'affiche sur fond noir et les poneys en image cassée.**
+
+🔴 **PIÈGE DES IMAGES DU GÉNÉRATEUR — établi le 21/08, à ne pas réapprendre.**
+- **La réduction de couleurs sur une image RGBA DÉTRUIT la transparence.** `quantize()` appliqué à l'alpha a rendu les fonds partiellement opaques (28, 236…) : un rectangle plus clair apparaissait autour de chaque poney. **Méthode correcte** : réduire les couleurs de l'image SEULE, puis rattacher l'alpha d'origine intact.
+- **Le générateur laisse un voile invisible** sur toute la toile — turquoise à **5 sur 255**. Invisible sur blanc, il remonte le noir de `6,7,9` à `6,10,13` **pile aux dimensions de l'image**. **Correction** : effacer tout ce qui est sous **34** d'opacité, puis retendre le reste (puissance 0,85) pour ne pas maigrir le contour.
+- **Trois fichiers sont arrivés aplatis** : deux en RGB avec le damier cuit dans les pixels, un en JPEG. **Toujours vérifier le mode et le taux de transparence avant de découper.**
+
+### 🎨 LES CINQ PONEYS ET LEURS QUATRE VOIX
+
+| écran | poney | ce qu'il dit | teinte |
+|---|---|---|---|
+| 1 · Le seuil | *aucun* | le cheval est le héros | — |
+| 2 · Se connecter | il salue | **How U doin' ?** *(anglais dans les 6 langues)* | 205° |
+| 3 · Créer mon compte | il dépasse de la barre | *muet* | 195° |
+| 4 · Ouvre ta boîte mail | il porte le courrier | Sûrement une lettre d'amour… | 194° |
+| 5 · Mot de passe oublié | il se cache les yeux | Tant que tu ne m'oublies pas… | 202° |
+| 6 · Nouveau mot de passe | il tient sa tasse | Je t'attendrai… | 197° |
+
+**Règles posées le 21/08, à tenir pour toute nouvelle mascotte :**
+- **Le titre Cinzel vient TOUJOURS avant le poney.** On dit d'abord où l'on est, il commente ensuite.
+- **Il se tient juste au-dessus du bouton** : il accompagne le geste au lieu de retarder le formulaire.
+- **Sa réplique s'efface dès qu'une erreur s'affiche** — il ne plaisante pas au-dessus d'un problème.
+- **L'anglais est réservé au décoratif et au fétiche.** Un bouton, une erreur, une consigne : toujours dans la langue de la cavalière.
+- **En français, pas d'italique sur « m' »** — une élision penchée ressemble à une coquille. Dans les autres langues le pronom est un mot entier, on peut l'appuyer.
+- 🎨 **Le prompt de génération est conservé** : le point qui fait tout le travail est *« every blue must lean green rather than purple »*, sans quoi les modèles glissent vers le bleu roi. La famille tient aujourd'hui entre **194 et 205°**, turquoise Hype à 189°.
+
+### 🩵 LE LAGON — teinte des écritures secondaires
+
+`#7FCBD6`, choisi par Blandine parmi **26 bleus** comparés dans `palette-bleus.html`. Il porte : petits libellés en capitales, liens soulignés, adresse mail de l'écran 4, texte du bouton creux.
+⛔ **Le turquoise franc `#20D9F5` reste réservé aux LUMIÈRES et aux ÉTATS** : case cochée, jauge de force, lueur des boutons. Une écriture de 9,5 px en turquoise pur se lit dure ; une lumière en lagon ne se voit plus.
+
+### Les autres corrections de la livraison
+
+- **L'œil** est posé à droite des trois champs de mot de passe.
+- **La jauge de force porte son nom** (« MOT DE PASSE MOYEN »…). Sans libellé, quatre barres turquoise ne disent rien — Blandine elle-même a demandé ce que c'était.
+- **Flèche de retour sur les cinq écrans** hors seuil, avec le rappel « GLISSER POUR REVENIR ».
+- **Glissement propre à l'entrée** : le swipe de l'app (`onNavTouchStart`, ~21707) est conditionné à la barre de navigation, **absente ici** — il ne s'y déclenchait jamais. Mêmes réglages que le reste de l'app : 65 px, franchement horizontal, jamais depuis un champ.
+- **Le `catch` vide est réparé** : « email envoyé ! » ne s'affiche plus quand l'envoi a échoué.
+- **Le prénom est demandé à l'inscription** et sert de pseudo.
+
+### À l'écran : + / −
+
+**+ Un écran de seuil** avec le cheval en fond plein écran, « Se connecter » et « Créer mon compte », avant tout formulaire.
+**+ Un écran « Ouvre ta boîte mail »** avec renvoi du lien et « recommencer avec une autre adresse ».
+**+ Un écran « Retrouver mon mot de passe »** dédié, avec son propre champ.
+**+ Un écran « Choisis un nouveau mot de passe »**, qui remplace la boîte grise du navigateur.
+**+ Cinq poneys, quatre répliques, un champ Prénom, l'œil sur les mots de passe, le nom de la jauge, une flèche de retour et le glissement sur cinq écrans.**
+**− La boîte grise `window.prompt`** du navigateur au retour du mail.
+**− Le lien « Mot de passe oublié ? » à 11,5 px collé à la case** — il devient une ligne à lui, en 14 px souligné.
+**− L'arrivée directe sur les champs** : on choisit désormais son chemin avant de voir la moindre saisie.
+**− Le message sec après inscription** qui renvoyait sur l'écran de connexion sans rien expliquer.
+
+⚠️ **Inchangé volontairement** : le réglage Supabase « Confirm email » (`HYPE_CONFIRMATION_EMAIL = false` dans le code, à passer à `true` **le jour où un serveur d'envoi propre est branché, pas avant**), et `EcranAuth` ligne ~23414, doublon hérité.
+
+---
+
 ## SESSION 150 — 21/08/2026 (soir) · LA PANNE DES ABONNEMENTS, LE DOMAINE PERDU, ET LE FUMÉ TURQUOISE
 ---
 

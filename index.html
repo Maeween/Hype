@@ -99,16 +99,12 @@ async function utilisateurActuel() {
 try {
   supa.auth.onAuthStateChange(function (eventRP) {
     if (eventRP === "PASSWORD_RECOVERY") {
-      setTimeout(function () {
-        var np = window.prompt("Choisis ton nouveau mot de passe (6 caract\u00e8res minimum) :");
-        if (np && np.length >= 6) {
-          supa.auth.updateUser({ password: np }).then(function (rRP) {
-            alert(rRP && rRP.error ? "Impossible de changer le mot de passe. R\u00e9essaie depuis l'email." : "Mot de passe mis \u00e0 jour ! Tu es connect\u00e9e \u2728");
-          });
-        } else if (np !== null) {
-          alert("Mot de passe trop court (6 caract\u00e8res minimum). Rouvre le lien de l'email pour r\u00e9essayer.");
-        }
-      }, 400);
+      /* 21/08 (session 151) : la boite grise du navigateur (window.prompt) est
+         remplacee par le 6e ecran d'entree. Ce gestionnaire peut se declencher
+         AVANT que React soit monte : on pose un drapeau que l'ecran lit a son
+         montage, ET on previent par un evenement s'il est deja la. */
+      try { window.HYPE_RECUP_MDP = true; } catch (eRP1) { }
+      try { window.dispatchEvent(new Event("hype-recup-mdp")); } catch (eRP2) { }
     }
   });
 } catch (eRPG) { }
@@ -23251,8 +23247,31 @@ function shade(hex, percent) {
     b = Math.max(0, Math.min(255, b));
     return `#${[r, g, b].map((c) => Math.round(c).toString(16).padStart(2, "0")).join("")}`;
 }
-var AUTH_MODE_SPECTRAL = "connexion";
+var AUTH_MODE_SPECTRAL = "seuil";
 const IMG_CONNEXION_HERO = "images/IMG_CONNEXION_HERO.jpg";
+/* 21/08 (session 151) — l'ecran d'entree. Six fichiers fournis par Blandine,
+   a pousser dans images/ DANS LE MEME PUSH que cet index, sinon les ecrans
+   s'affichent sans leur poney et le seuil sur fond noir. */
+const IMG_ENTREE_FOND = "images/cheval-fond-connexion-620.jpg";
+const PONEY_BONJOUR = "images/poney-bonjour.webp";   /* ecran 2 — il salue */
+const PONEY_BARRE = "images/poney-barre.webp";       /* ecran 3 — a cheval sur le bouton */
+const PONEY_MAIL = "images/poney-mail.webp";         /* ecran 4 — il porte le courrier */
+const PONEY_CACHE = "images/poney-mascotte.png";     /* ecran 5 — il se cache les yeux */
+const PONEY_TASSE = "images/poney-tasse.webp";       /* ecran 6 — il patiente */
+/* Teinte « lagon clair » : celle des ECRITURES secondaires (petits libelles,
+   liens, bouton creux). Le turquoise franc #20D9F5 reste reserve aux LUMIERES
+   et aux etats (case cochee, jauge, lueur des boutons). Choix de Blandine,
+   21/08/2026, retenu parmi 26 bleus compares dans palette-bleus.html. */
+const LAGON = "#7FCBD6";
+/* 21/08 (session 151) — NE PASSER A true QUE LE JOUR OU :
+   1) un serveur d'envoi propre (Resend, Brevo...) est branche sur Supabase, ET
+   2) « Confirm email » est reellement active cote projet Supabase.
+   Le service d'envoi PAR DEFAUT de Supabase est bride a quelques courriels par
+   heure POUR TOUT LE PROJET : l'activer seul enferme les cavalieres dehors.
+   Tant que c'est false, on n'ANNONCE pas un email qui ne partira pas — mais
+   l'ecran « ouvre ta boite mail » existe et s'affiche quand meme si Supabase
+   renvoie une inscription sans session. */
+var HYPE_CONFIRMATION_EMAIL = false;
 function EcranConnexionSpectral() {
   var h = React.createElement;
   var ctx = useApp(); var setEcran = ctx.setEcran, setProfil = ctx.setProfil, tr = ctx.tr;
@@ -23261,37 +23280,78 @@ function EcranConnexionSpectral() {
   var mSt = useState(AUTH_MODE_SPECTRAL); var mode = mSt[0], setMode = mSt[1];
   var eSt = useState(""); var email = eSt[0], setEmail = eSt[1];
   var pSt = useState(""); var mdp = pSt[0], setMdp = pSt[1];
+  var prSt = useState(""); var prenom = prSt[0], setPrenom = prSt[1];
+  var nvSt = useState(""); var nouveauMdp = nvSt[0], setNouveauMdp = nvSt[1];
   var vSt = useState(false); var voirMdp = vSt[0], setVoirMdp = vSt[1];
   var cSt = useState(false); var enCours = cSt[0], setEnCours = cSt[1];
   var errSt = useState(""); var erreur = errSt[0], setErreur = errSt[1];
   var rSt = useState(function () { try { return localStorage.getItem("hype_rappeler") !== "0"; } catch (e) { return true; } });
   var rappeler = rSt[0], setRappeler = rSt[1];
-  /* 18/08 (feu vert de Blandine, comptes a venir uniquement) : la porte
-     "email confirme" existe DEJA cote code — Supabase renvoie une session
-     nulle apres inscription quand "Confirm email" est actif sur le projet,
-     et ce cas etait deja gere ici, juste avec un texte sec. Ce qui suit
-     REDIGE le message dans les mots de Blandine et ajoute le bouton pour
-     renvoyer l'email — la logique de blocage elle-meme n'a pas change. */
-  var acSt = useState(false); var attenteConfirmation = acSt[0], setAttenteConfirmation = acSt[1];
   var aeSt = useState(""); var emailEnAttente = aeSt[0], setEmailEnAttente = aeSt[1];
   var rvSt = useState(""); var renvoiMsg = rvSt[0], setRenvoiMsg = rvSt[1];
+  /* Ou mene le retour, depuis chaque ecran. Le seuil sort vers l'intro. */
+  var RETOURS = { connexion: "seuil", inscription: "seuil", confirmation: "inscription", oubli: "connexion", reset: "connexion" };
+  function allerA(m) { setErreur(""); setMode(m); }
+  function revenir() {
+    if (mode === "seuil") { setEcran("intro"); return; }
+    allerA(RETOURS[mode] || "seuil");
+  }
+  /* 21/08 (session 151) — regle scrollTop : chaque changement d'ecran remet le
+     defilement en haut. Sans ca, on arrive au milieu de l'ecran suivant. */
+  useEffect(function () { try { window.scrollTo(0, 0); } catch (e) { } }, [mode]);
+  /* 21/08 (session 151) — le lien « nouveau mot de passe » recu par email.
+     Le drapeau est pose tres tot, au tout debut du fichier, avant meme que
+     React soit monte : on le lit au montage ET on ecoute l'evenement. */
+  useEffect(function () {
+    function versReset() { try { window.HYPE_RECUP_MDP = false; } catch (e) { } setErreur(""); setMode("reset"); }
+    try { if (window.HYPE_RECUP_MDP) versReset(); } catch (e) { }
+    try { window.addEventListener("hype-recup-mdp", versReset); } catch (e) { }
+    return function () { try { window.removeEventListener("hype-recup-mdp", versReset); } catch (e) { } };
+  }, []);
+  /* 21/08 (session 151) — glissement pour revenir. Le systeme de swipe de
+     l'app (onNavTouchStart, ~21707) est conditionne a la barre de navigation,
+     absente de ces ecrans : il ne s'y declenche jamais. On en pose un propre,
+     avec LES MEMES reglages, pour que le geste ait le meme toucher partout :
+     65 px de course, franchement horizontal, et jamais depuis un champ de
+     saisie — sinon selectionner du texte fait changer d'ecran. */
+  var toucheRef = React.useRef(null);
+  function surToucheDebut(e) {
+    try {
+      var c = e.target;
+      if (c && c.closest && c.closest("input, textarea, select, button")) { toucheRef.current = null; return; }
+      var t0 = e.changedTouches[0];
+      toucheRef.current = { x: t0.clientX, y: t0.clientY };
+    } catch (eT) { toucheRef.current = null; }
+  }
+  function surToucheFin(e) {
+    var d = toucheRef.current; toucheRef.current = null;
+    if (!d || enCours) return;
+    try {
+      var t1 = e.changedTouches[0];
+      var dx = t1.clientX - d.x, dy = t1.clientY - d.y;
+      if (dx > 65 && Math.abs(dx) > Math.abs(dy) * 1.6) revenir();
+    } catch (eF) { }
+  }
   function renvoyerConfirmation() {
     if (!emailEnAttente || renvoiMsg === "envoi") return;
     setRenvoiMsg("envoi");
     (async function () {
-      try { await supa.auth.resend({ type: "signup", email: emailEnAttente }); setRenvoiMsg("envoye"); }
+      try {
+        var rR = await supa.auth.resend({ type: "signup", email: emailEnAttente });
+        setRenvoiMsg(rR && rR.error ? "erreur" : "envoye");
+      }
       catch (eR) { setRenvoiMsg("erreur"); }
     })();
   }
   useEffect(function () { try { localStorage.setItem("hype_rappeler", rappeler ? "1" : "0"); } catch (e) { } }, [rappeler]);
   /* 18/08 — apres une eviction (voir hype_signaler_appareil), l app a deja
      deconnecte et redirige ici. On explique pourquoi, UNE fois, puis on
-     efface le drapeau pour ne pas le repeter au prochain passage sur cet
-     ecran (ex: bascule inscription <-> connexion). */
+     efface le drapeau pour ne pas le repeter au prochain passage. */
   useEffect(function () {
     try {
       if (window.HYPE_MSG_EVICTION) {
         window.HYPE_MSG_EVICTION = false;
+        setMode("connexion");
         setErreur(T(
           "Tu as été déconnectée : la limite d'appareils pour ce compte a été atteinte.",
           "You were signed out: this account's device limit was reached.",
@@ -23308,11 +23368,13 @@ function EcranConnexionSpectral() {
     if (m.indexOf("invalid login") >= 0) return T("Email ou mot de passe incorrect.", "Incorrect email or password.", "Email o contrase\u00f1a incorrectos.", "Email o password errati.", "\u30e1\u30fc\u30eb\u307e\u305f\u306f\u30d1\u30b9\u30ef\u30fc\u30c9\u304c\u9055\u3044\u307e\u3059\u3002", "E-Mail oder Passwort falsch.");
     if (m.indexOf("already") >= 0) return T("Un compte existe d\u00e9j\u00e0 avec cet email. Connecte-toi.", "An account already exists with this email.", "Ya existe una cuenta con este email.", "Esiste gi\u00e0 un account con questa email.", "\u3053\u306e\u30e1\u30fc\u30eb\u306f\u767b\u9332\u6e08\u307f\u3067\u3059\u3002", "Ein Konto mit dieser E-Mail existiert bereits. Melde dich an.");
     if (m.indexOf("at least 6") >= 0 || m.indexOf("password should") >= 0) return T("Mot de passe : 6 caract\u00e8res minimum.", "Password: 6 characters minimum.", "Contrase\u00f1a: m\u00ednimo 6 caracteres.", "Password: minimo 6 caratteri.", "\u30d1\u30b9\u30ef\u30fc\u30c9\u306f6\u6587\u5b57\u4ee5\u4e0a\u3002", "Passwort: mindestens 6 Zeichen.");
-    if (m.indexOf("valid email") >= 0 || m.indexOf("invalid format") >= 0 || m.indexOf("unable to validate") >= 0) return T("Adresse email invalide.", "Invalid email address.", "Email no v\u00e1lido.", "Email non valida.", "\u7121\u52b9\u306a\u30e1\u30fc\u30eb\u3067\u3059\u3002", "Ungültige E-Mail-Adresse.");
-    if (m.indexOf("not confirmed") >= 0) return T("Confirme d'abord ton email (regarde ta bo\u00eete mail), puis reviens.", "Confirm your email first, then come back.", "Confirma primero tu email.", "Conferma prima la tua email.", "\u5148\u306b\u30e1\u30fc\u30eb\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Bestätige zuerst deine E-Mail (schau in dein Postfach) und komm dann zurück.");
+    if (m.indexOf("valid email") >= 0 || m.indexOf("invalid format") >= 0 || m.indexOf("unable to validate") >= 0) return T("Adresse email invalide.", "Invalid email address.", "Email no v\u00e1lido.", "Email non valida.", "\u7121\u52b9\u306a\u30e1\u30fc\u30eb\u3067\u3059\u3002", "Ung\u00fcltige E-Mail-Adresse.");
+    if (m.indexOf("not confirmed") >= 0) return T("Confirme d'abord ton email (regarde ta bo\u00eete mail), puis reviens.", "Confirm your email first, then come back.", "Confirma primero tu email.", "Conferma prima la tua email.", "\u5148\u306b\u30e1\u30fc\u30eb\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Best\u00e4tige zuerst deine E-Mail und komm dann zur\u00fcck.");
+    if (m.indexOf("same password") >= 0 || m.indexOf("should be different") >= 0) return T("Choisis un mot de passe diff\u00e9rent de l'ancien.", "Choose a password different from the old one.", "Elige una contrase\u00f1a distinta de la anterior.", "Scegli una password diversa dalla precedente.", "\u4ee5\u524d\u3068\u9055\u3046\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002", "W\u00e4hle ein anderes Passwort als das alte.");
+    if (m.indexOf("expired") >= 0 || (m.indexOf("token") >= 0 && m.indexOf("invalid") >= 0)) return T("Le lien a expir\u00e9. Redemande-en un depuis l'\u00e9cran de connexion.", "The link has expired. Request a new one from the sign-in screen.", "El enlace ha caducado. Pide otro desde la pantalla de inicio de sesi\u00f3n.", "Il link \u00e8 scaduto. Chiedine un altro dalla schermata di accesso.", "\u30ea\u30f3\u30af\u306e\u6709\u52b9\u671f\u9650\u304c\u5207\u308c\u307e\u3057\u305f\u3002\u30ed\u30b0\u30a4\u30f3\u753b\u9762\u304b\u3089\u518d\u5ea6\u304a\u9001\u308a\u304f\u3060\u3055\u3044\u3002", "Der Link ist abgelaufen. Fordere \u00fcber den Anmeldebildschirm einen neuen an.");
     return T("Un souci est survenu. R\u00e9essaie.", "Something went wrong. Try again.", "Algo sali\u00f3 mal.", "Qualcosa \u00e8 andato storto.", "\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002", "Ein Fehler ist aufgetreten. Versuche es erneut."); }
   var estStandalone = false; try { estStandalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true; } catch (eSA) { }
-  var encartInstall = estStandalone ? null : h("button", {
+  var encartInstall = estStandalone ? null : h("button", { key: "install",
       onClick: function () { try { window.__hypeInstallerRetour = "connexion"; } catch (eIR) { } setEcran("installer"); },
       style: { width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "13px 15px", marginTop: 16, borderRadius: 18, cursor: "pointer", textAlign: "left", position: "relative", overflow: "hidden",
         background: "linear-gradient(135deg, rgba(32,217,245,0.10), rgba(17,20,23,0.85))", border: "1px solid rgba(32,217,245,0.35)",
@@ -23343,72 +23405,259 @@ function EcranConnexionSpectral() {
     } catch (e) { } setEcran("dashboard"); })(); }
   function valider() { if (enCours) return; setErreur("");
     var em = email.trim();
-    if (!em || !mdp) { setErreur(T("Remplis email et mot de passe.", "Fill in email and password.", "Completa email y contrase\u00f1a.", "Compila email e password.", "\u30e1\u30fc\u30eb\u3068\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3002", "Fülle E-Mail und Passwort aus.")); return; }
+    if (!em || !mdp) { setErreur(T("Remplis email et mot de passe.", "Fill in email and password.", "Completa email y contrase\u00f1a.", "Compila email e password.", "\u30e1\u30fc\u30eb\u3068\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3002", "F\u00fclle E-Mail und Passwort aus.")); return; }
     setEnCours(true);
     (async function () { try {
       if (mode === "inscription") {
-        var pseudoDep = ""; try { var etA = JSON.parse(localStorage.getItem("augalop_etat_v1") || "null"); if (etA && etA.profil && etA.profil.prenom) pseudoDep = String(etA.profil.prenom).slice(0, 30); } catch (e) { }
+        var pseudoDep = prenom.trim().slice(0, 30);
+        if (!pseudoDep) { try { var etA = JSON.parse(localStorage.getItem("augalop_etat_v1") || "null"); if (etA && etA.profil && etA.profil.prenom) pseudoDep = String(etA.profil.prenom).slice(0, 30); } catch (e) { } }
         if (!pseudoDep && ctx.profil && ctx.profil.prenom) pseudoDep = String(ctx.profil.prenom).slice(0, 30);
         if (!pseudoDep) pseudoDep = em.split("@")[0];
         var r1 = await inscription(em, mdp, pseudoDep);
         if (r1.error) { setErreur(traduireErr(r1.error)); setEnCours(false); return; }
-        if (!r1.data || !r1.data.session) { setErreur("OK::" + T("Compte cr\u00e9\u00e9 ! V\u00e9rifie tes emails pour l'activer, puis reviens te connecter.", "Account created! Check your email, then sign in.", "\u00a1Cuenta creada! Revisa tu email.", "Account creato! Controlla la tua email.", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210\uff01\u30e1\u30fc\u30eb\u3092\u78ba\u8a8d\u3002", "Konto erstellt! Überprüfe deine E-Mails, um es zu aktivieren, und melde dich dann an.")); setMode("connexion"); setEnCours(false); return; }
+        /* Supabase ne renvoie PAS de session quand « Confirm email » est actif :
+           le compte existe mais dort tant que le lien n'est pas touche. C'est
+           l'ecran 4. Avant le 21/08 la cavaliere ne voyait qu'une ligne de
+           texte et se retrouvait sur l'ecran de connexion sans comprendre. */
+        if (!r1.data || !r1.data.session) { setEmailEnAttente(em); setRenvoiMsg(""); setErreur(""); setMode("confirmation"); setEnCours(false); return; }
       } else {
         var r2 = await connexion(em, mdp);
         if (r2.error) { setErreur(traduireErr(r2.error)); setEnCours(false); return; }
       }
       apresConnexion();
-    } catch (e) { setErreur(T("Connexion impossible. V\u00e9rifie ta connexion internet.", "Connection failed. Check your internet.", "Conexi\u00f3n imposible.", "Connessione impossibile.", "\u63a5\u7d9a\u3067\u304d\u307e\u305b\u3093\u3002", "Verbindung nicht möglich. Überprüfe deine Internetverbindung.")); setEnCours(false); } })(); }
+    } catch (e) { setErreur(T("Connexion impossible. V\u00e9rifie ta connexion internet.", "Connection failed. Check your internet.", "Conexi\u00f3n imposible.", "Connessione impossibile.", "\u63a5\u7d9a\u3067\u304d\u307e\u305b\u3093\u3002", "Verbindung nicht m\u00f6glich. \u00dcberpr\u00fcfe deine Internetverbindung.")); setEnCours(false); } })(); }
+  /* 21/08 (session 151) — AVANT, le catch etait VIDE et « email envoye ! »
+     s'affichait meme quand rien n'etait parti. L'erreur est desormais dite. */
   function mdpOublie() { if (enCours) return; var em = email.trim();
     if (!em) { setErreur(T("Entre d'abord ton email ci-dessus.", "Enter your email above first.", "Escribe primero tu email.", "Inserisci prima la tua email.", "\u5148\u306b\u30e1\u30fc\u30eb\u3092\u5165\u529b\u3002", "Gib zuerst oben deine E-Mail ein.")); return; }
-    setEnCours(true); (async function () { try { var dest = (typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : window.location.origin; await supa.auth.resetPasswordForEmail(em, { redirectTo: dest }); } catch (e) { } setErreur("OK::" + T("Email de r\u00e9initialisation envoy\u00e9 ! Regarde ta bo\u00eete mail.", "Reset email sent! Check your inbox.", "Email de restablecimiento enviado.", "Email di reimpostazione inviata.", "\u518d\u8a2d\u5b9a\u30e1\u30fc\u30eb\u3092\u9001\u4fe1\u3002", "E-Mail zum Zurücksetzen gesendet! Schau in dein Postfach.")); setEnCours(false); })(); }
-  function bientot() { setErreur("OK::" + T("Bient\u00f4t disponible \u2728", "Coming soon \u2728", "Muy pronto \u2728", "Presto disponibile \u2728", "\u8fd1\u65e5\u516c\u958b \u2728", "Bald verfügbar ✨")); }
-  /* 20/08 (session 145) : fontSize passe de 14,5 a 16 px. iOS Safari ZOOME AUTOMATIQUEMENT sur tout champ de saisie dont la police est INFERIEURE A 16 px, et ne dezoome jamais seul : toute l'app restait zoomee, decalee et coupee, jusqu'a un pincement manuel. C'est la cause du « tout est colle a droite quand je me reconnecte » signale par Blandine (elle ne tape dans un champ au chargement qu'a ce moment-la). 16 px est le seuil exact : en dessous iOS zoome, a partir de 16 il ne zoome pas. */
+    setEnCours(true); setErreur("");
+    (async function () {
+      try {
+        var dest = (typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : window.location.origin;
+        var rMO = await supa.auth.resetPasswordForEmail(em, { redirectTo: dest });
+        if (rMO && rMO.error) { setErreur(traduireErr(rMO.error)); setEnCours(false); return; }
+        setErreur("OK::" + T("Email de r\u00e9initialisation envoy\u00e9 ! Regarde ta bo\u00eete mail.", "Reset email sent! Check your inbox.", "Email de restablecimiento enviado.", "Email di reimpostazione inviata.", "\u518d\u8a2d\u5b9a\u30e1\u30fc\u30eb\u3092\u9001\u4fe1\u3002", "E-Mail zum Zur\u00fccksetzen gesendet! Schau in dein Postfach."));
+      } catch (eMO) { setErreur(traduireErr(eMO)); }
+      setEnCours(false);
+    })(); }
+  function enregistrerNouveauMdp() { if (enCours) return;
+    if (!nouveauMdp || nouveauMdp.length < 6) { setErreur(T("Mot de passe : 6 caract\u00e8res minimum.", "Password: 6 characters minimum.", "Contrase\u00f1a: m\u00ednimo 6 caracteres.", "Password: minimo 6 caratteri.", "\u30d1\u30b9\u30ef\u30fc\u30c9\u306f6\u6587\u5b57\u4ee5\u4e0a\u3002", "Passwort: mindestens 6 Zeichen.")); return; }
+    setEnCours(true); setErreur("");
+    (async function () {
+      try {
+        var rNP = await supa.auth.updateUser({ password: nouveauMdp });
+        if (rNP && rNP.error) { setErreur(traduireErr(rNP.error)); setEnCours(false); return; }
+        apresConnexion();
+      } catch (eNP) { setErreur(traduireErr(eNP)); setEnCours(false); }
+    })(); }
+  /* 20/08 (session 145) : fontSize a 16 px. iOS Safari ZOOME AUTOMATIQUEMENT sur tout champ de saisie dont la police est INFERIEURE A 16 px, et ne dezoome jamais seul. 16 px est le seuil exact. */
   var champStyle = { width: "100%", padding: "15px 16px 15px 46px", borderRadius: 16, border: "1px solid rgba(190,215,222,0.16)", background: "rgba(12,17,22,0.72)", color: "#F4F7FA", fontSize: 16, fontFamily: M, outline: "none", boxSizing: "border-box", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" };
+  var champMdpStyle = Object.assign({}, champStyle, { paddingRight: 46 });
   var icoWrap = { position: "absolute", left: 15, top: "50%", transform: "translateY(-50%)", opacity: 0.75, pointerEvents: "none", display: "flex" };
   function svgIco(paths) { return h("svg", { viewBox: "0 0 24 24", width: 17, height: 17, fill: "none", stroke: "#20D9F5", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" }, paths); }
   var icoUser = svgIco([h("circle", { key: 1, cx: 12, cy: 8, r: 3.4 }), h("path", { key: 2, d: "M5 20c1.4-3.4 4-5 7-5s5.6 1.6 7 5" })]);
   var icoLock = svgIco([h("rect", { key: 1, x: 5, y: 11, width: 14, height: 9, rx: 2.2 }), h("path", { key: 2, d: "M8.5 11V8a3.5 3.5 0 0 1 7 0v3" })]);
   var icoOeil = svgIco([h("path", { key: 1, d: "M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6z" }), h("circle", { key: 2, cx: 12, cy: 12, r: 2.6 })]);
-  function rondSocial(cle, svgPath) {
-    return h("button", { key: cle, onClick: bientot, "aria-label": cle, style: { width: 46, height: 46, borderRadius: "50%", border: "1px solid rgba(190,215,222,0.2)", background: "rgba(12,17,22,0.7)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
-      h("svg", { viewBox: "0 0 24 24", width: 19, height: 19, fill: "#F4F7FA" }, h("path", { d: svgPath })));
+  var icoPlume = svgIco([h("path", { key: 1, d: "M4 20c6-1 10-4 12-9" }), h("path", { key: 2, d: "M20 4c-6 0-11 3-12 9 0 0 4 1 7-1s5-5 5-8z" })]);
+  /* ---------- briques communes aux six ecrans ---------- */
+  var styleFume = { background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7" };
+  function boutonPlein(texte, onClick, cle, sansMarge) {
+    return h("button", { key: cle || "bp", onClick: onClick, disabled: enCours, style: Object.assign({}, styleFume, { marginTop: sansMarge ? 0 : 14, width: "100%", padding: "15px", borderRadius: 16, fontFamily: M, fontSize: 15, fontWeight: 600, letterSpacing: 0.9, cursor: "pointer", animation: "cxPulse 3.2s ease-in-out infinite", opacity: enCours ? 0.7 : 1, position: "relative", zIndex: 1 }) },
+      enCours ? "\u2026" : texte);
   }
-  return h("div", { style: { position: "relative", minHeight: "100dvh", background: "#060709", overflow: "hidden" } },
-    h("style", null, "@keyframes cxRespire{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.05)}}@keyframes cxDerive{0%{opacity:0;transform:translateY(10px)}15%{opacity:.85}85%{opacity:.5}100%{opacity:0;transform:translateY(-60px)}}@keyframes cxPulse{0%,100%{box-shadow:0 6px 26px rgba(32,217,245,.35)}50%{box-shadow:0 6px 44px rgba(32,217,245,.6)}}@keyframes cxNet{0%,100%{opacity:.32}50%{opacity:.65}}"),
-    h("div", { style: { position: "absolute", top: "4dvh", left: "50%", width: "140vw", height: "56dvh", background: "radial-gradient(ellipse at center, rgba(32,217,245,0.2) 0%, transparent 62%)", animation: "cxRespire 7s ease-in-out infinite", pointerEvents: "none" } }),
-    h("img", { src: IMG_CONNEXION_HERO, alt: "", style: { position: "absolute", top: 0, left: 0, width: "100%", height: "56dvh", objectFit: "contain", objectPosition: "center top", pointerEvents: "none" } }),
-    h("div", { style: { position: "absolute", top: "38dvh", left: 0, right: 0, height: "20dvh", background: "linear-gradient(180deg,rgba(6,7,9,0) 0%,#060709 92%)", pointerEvents: "none" } }),
-    h("div", { style: { position: "absolute", inset: 0, pointerEvents: "none" } }, poussieres.map(function (p, i) { return h("span", { key: i, style: { position: "absolute", left: p.l + "%", top: p.t + "%", width: p.s, height: p.s, borderRadius: "50%", background: "rgba(140,235,246,0.8)", animation: "cxDerive " + p.d + "s linear " + p.del + "s infinite" } }); })),
-    h("svg", { viewBox: "0 0 400 120", preserveAspectRatio: "none", style: { position: "absolute", bottom: 0, left: 0, width: "100%", height: 110, opacity: 0.5, animation: "cxNet 6s ease-in-out infinite", pointerEvents: "none" } },
-      h("polyline", { points: "0,95 60,70 130,88 200,58 270,84 330,62 400,90", fill: "none", stroke: "rgba(32,217,245,0.35)", strokeWidth: 1 }),
-      [[60, 70], [130, 88], [200, 58], [270, 84], [330, 62]].map(function (pt, i) { return h("circle", { key: i, cx: pt[0], cy: pt[1], r: 2, fill: "#20D9F5", opacity: 0.8 }); })),
-    h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", right: 12, zIndex: 6 } }, h(SelecteurLangue, { compact: true })),
-    h("button", { onClick: function () { setEcran("intro"); }, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 12, zIndex: 6, width: 38, height: 38, borderRadius: "50%", background: "rgba(9,13,17,0.5)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: 19, cursor: "pointer", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" } }, "\u2039"),
-    h("div", { style: { position: "relative", zIndex: 3, minHeight: "100dvh", display: "flex", flexDirection: "column", maxWidth: 430, margin: "0 auto", padding: "45dvh 24px calc(18px + env(safe-area-inset-bottom))" } },
-      h("div", { style: { textAlign: "center" } },
+  function boutonCreux(texte, onClick, cle) {
+    return h("button", { key: cle || "bc", onClick: onClick, style: { marginTop: 11, width: "100%", padding: "15px", borderRadius: 16, background: "transparent", border: "1px solid rgba(32,217,245,0.42)", color: LAGON, fontFamily: M, fontSize: 15, fontWeight: 600, letterSpacing: 0.9, cursor: "pointer" } }, texte);
+  }
+  function petitLibelle(texte) { return h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: 2.5, color: LAGON, marginBottom: 7 } }, texte); }
+  function grandTitre(texte) { return h("div", { style: { fontFamily: C, fontSize: 23, fontWeight: 600, letterSpacing: 0.7, lineHeight: 1.25, color: "#F4F7FA" } }, texte); }
+  function lienLagon(texte, onClick, cle) {
+    return h("button", { key: cle || "ll", onClick: onClick, style: { background: "none", border: "none", padding: 0, color: LAGON, fontFamily: M, fontSize: 14, fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" } }, texte);
+  }
+  /* Fleche de retour + rappel du geste, en tete de chaque ecran sauf le seuil. */
+  function barreRetour() {
+    return h("div", { key: "br", style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 } },
+      h("button", { onClick: revenir, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { background: "none", border: "none", color: "#AEB8C0", fontSize: 24, lineHeight: 1, padding: "2px 8px 2px 0", cursor: "pointer" } }, "\u2190"),
+      h("span", { style: { fontFamily: M, fontSize: 9, letterSpacing: 1.6, color: "#4E5A62" } },
+        T("GLISSER POUR REVENIR", "SWIPE TO GO BACK", "DESLIZA PARA VOLVER", "SCORRI PER TORNARE", "\u30b9\u30ef\u30a4\u30d7\u3067\u623b\u308b", "WISCHEN ZUM ZUR\u00dcCK")));
+  }
+  function ligneErreur() {
+    if (!erreur) return null;
+    return h("div", { key: "err", style: { marginTop: 12, marginBottom: 2, fontSize: 12.5, textAlign: "center", lineHeight: 1.5, fontFamily: M, color: erreur.indexOf("OK::") === 0 ? "#5FE9F0" : "#FF7B7B" } }, erreur.replace("OK::", ""));
+  }
+  function champ(cle, ico, props) {
+    return h("div", { key: cle, style: { position: "relative" } }, h("span", { style: icoWrap }, ico), h("input", Object.assign({ style: champStyle }, props)));
+  }
+  /* Champ de mot de passe avec son oeil a droite : sans lui, une faute de
+     frappe est invisible et la connexion echoue sans qu'on sache pourquoi. */
+  function champMdp(cle, props) {
+    return h("div", { key: cle, style: { position: "relative" } },
+      h("span", { style: icoWrap }, icoLock),
+      h("input", Object.assign({ type: voirMdp ? "text" : "password", style: champMdpStyle }, props)),
+      h("button", { onClick: function () { setVoirMdp(!voirMdp); }, "aria-label": T("Afficher le mot de passe", "Show password", "Mostrar la contrase\u00f1a", "Mostra la password", "\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u8868\u793a", "Passwort anzeigen"), style: { position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", opacity: voirMdp ? 1 : 0.55, padding: 6, display: "flex" } }, icoOeil));
+  }
+  /* Jauge de force. Elle porte son nom a droite : sans libelle, quatre barres
+     turquoise ne disent rien — releve par Blandine le 21/08. */
+  function forceMdp(m) { var n = 0; if (!m) return 0; if (m.length >= 6) n++; if (m.length >= 10) n++; if (/[0-9]/.test(m)) n++; if (/[^a-zA-Z0-9]/.test(m) || (/[a-z]/.test(m) && /[A-Z]/.test(m))) n++; return Math.min(n, 4); }
+  function jauge(m) {
+    var f = forceMdp(m);
+    var mot = f <= 1
+      ? T("MOT DE PASSE FAIBLE", "WEAK PASSWORD", "CONTRASE\u00d1A D\u00c9BIL", "PASSWORD DEBOLE", "\u30d1\u30b9\u30ef\u30fc\u30c9\uff1a\u5f31\u3044", "SCHWACHES PASSWORT")
+      : (f === 2 ? T("MOT DE PASSE MOYEN", "MEDIUM PASSWORD", "CONTRASE\u00d1A MEDIA", "PASSWORD MEDIA", "\u30d1\u30b9\u30ef\u30fc\u30c9\uff1a\u666e\u901a", "MITTLERES PASSWORT")
+      : (f === 3 ? T("MOT DE PASSE BON", "GOOD PASSWORD", "CONTRASE\u00d1A BUENA", "PASSWORD BUONA", "\u30d1\u30b9\u30ef\u30fc\u30c9\uff1a\u826f\u3044", "GUTES PASSWORT")
+      : T("MOT DE PASSE SOLIDE", "STRONG PASSWORD", "CONTRASE\u00d1A S\u00d3LIDA", "PASSWORD SOLIDA", "\u30d1\u30b9\u30ef\u30fc\u30c9\uff1a\u5f37\u56fa", "STARKES PASSWORT")));
+    return h("div", { key: "jg", style: { display: "flex", alignItems: "center", gap: 10, margin: "2px 2px 4px" } },
+      h("div", { style: { display: "flex", gap: 5, flex: 1 } },
+        [0, 1, 2, 3].map(function (i) { return h("span", { key: i, style: { height: 3, flex: 1, borderRadius: 2, background: i < f ? "#20D9F5" : "rgba(190,215,222,0.16)" } }); })),
+      h("span", { style: { fontFamily: M, fontSize: 9, letterSpacing: 1.6, color: "#7C8A93", whiteSpace: "nowrap" } }, m ? mot : ""));
+  }
+  function basculeBas(question, lienTexte, onClick) {
+    return h("div", { key: "bb", style: { marginTop: "auto", paddingTop: 24, textAlign: "center" } },
+      h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#AEB8C0", marginBottom: 9 } }, question),
+      lienLagon(lienTexte, onClick, "bbl"));
+  }
+  /* Le poney et sa replique. Il vient TOUJOURS apres le titre : on dit d'abord
+     ou l'on est, il commente ensuite. */
+  function poney(src, largeur, cle) {
+    return h("img", { key: cle || "po", src: src, alt: "", style: { display: "block", width: largeur, margin: "0 auto", filter: "drop-shadow(0 0 24px rgba(32,217,245,0.26))" } });
+  }
+  function replique(texte, cle, marque) {
+    return h("div", { key: cle || "rp", style: { textAlign: "center", fontFamily: M, fontSize: marque ? 13.5 : 12.5, fontWeight: marque ? 700 : 400, fontStyle: marque ? "italic" : "normal", color: marque ? "#D6DFE4" : "#AEB8C0", lineHeight: 1.6, margin: marque ? "2px 0 10px" : "4px 0 18px" } }, texte);
+  }
+  /* ---------- le contenu, ecran par ecran ---------- */
+  var contenu;
+  if (mode === "seuil") {
+    contenu = [
+      h("div", { key: "s1", style: { marginTop: "auto", textAlign: "center" } },
         h("div", { style: { fontFamily: C, fontSize: 38, fontWeight: 600, letterSpacing: 10, paddingLeft: 10, background: "linear-gradient(180deg,#FFFFFF 0%,#C9D6DC 45%,#8FA6AF 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" } }, "HYPE"),
-        h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: 4.5, color: "#7FCBD6", marginTop: 4, textTransform: "uppercase" } }, T("Ton univers \u00e9questre", "Your equestrian world", "Tu universo ecuestre", "Il tuo universo equestre", "\u3042\u306a\u305f\u306e\u4e57\u99ac\u30ef\u30fc\u30eb\u30c9", "Deine Reitwelt"))),
-      h("div", { style: { marginTop: 22, display: "flex", flexDirection: "column", gap: 12 } },
-        h("div", { style: { position: "relative" } }, h("span", { style: icoWrap }, icoUser),
-          h("input", { type: "email", autoComplete: "email", placeholder: "Email", value: email, onChange: function (e) { setEmail(e.target.value); }, style: champStyle })),
-        h("div", { style: { position: "relative" } }, h("span", { style: icoWrap }, icoLock),
-          h("input", { type: voirMdp ? "text" : "password", autoComplete: "current-password", placeholder: T("Mot de passe", "Password", "Contrase\u00f1a", "Password", "\u30d1\u30b9\u30ef\u30fc\u30c9", "Passwort"), value: mdp, onChange: function (e) { setMdp(e.target.value); }, style: champStyle }),
-          h("button", { onClick: function () { setVoirMdp(!voirMdp); }, "aria-label": "Afficher", style: { position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", opacity: voirMdp ? 1 : 0.55, padding: 6, display: "flex" } }, icoOeil))),
-      h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 } },
-        h("button", { onClick: function () { setRappeler(!rappeler); }, style: { display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 } },
-          h("span", { style: { width: 17, height: 17, borderRadius: 5, border: "1px solid " + (rappeler ? "#20D9F5" : "rgba(190,215,222,0.35)"), background: rappeler ? "rgba(32,217,245,0.9)" : "transparent", boxShadow: rappeler ? "0 0 10px rgba(32,217,245,0.6)" : "none", display: "flex", alignItems: "center", justifyContent: "center", color: "#04252A", fontSize: 11, fontWeight: 800 } }, rappeler ? "\u2713" : ""),
-          h("span", { style: { fontSize: 11.5, color: "#AEB8C0", fontFamily: M } }, T("Se rappeler de moi", "Remember me", "Recu\u00e9rdame", "Ricordami", "\u30ed\u30b0\u30a4\u30f3\u3092\u4fdd\u6301", "Angemeldet bleiben"))),
-        mode === "connexion" ? h("button", { onClick: mdpOublie, style: { background: "none", border: "none", color: "#7FCBD6", fontSize: 11.5, fontFamily: M, cursor: "pointer", padding: 0 } }, T("Mot de passe oubli\u00e9 ?", "Forgot password?", "\u00bfOlvidaste tu contrase\u00f1a?", "Password dimenticata?", "\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5fd8\u308c\u305f\uff1f", "Passwort vergessen?")) : null),
-      erreur ? h("div", { style: { marginTop: 10, fontSize: 12, textAlign: "center", lineHeight: 1.45, fontFamily: M, color: erreur.indexOf("OK::") === 0 ? "#5FE9F0" : "#FF7B7B" } }, erreur.replace("OK::", "")) : null,
-      h("button", { onClick: valider, disabled: enCours, style: { marginTop: 14, width: "100%", padding: "15px", borderRadius: 16, border: "1px solid rgba(32,217,245,0.32)", background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", color: "#E4F3F7", fontFamily: M, fontSize: 15, fontWeight: 600, letterSpacing: 0.9, cursor: "pointer", animation: "cxPulse 3.2s ease-in-out infinite", opacity: enCours ? 0.7 : 1 } },
-        enCours ? "\u2026" : ((mode === "inscription" ? T("Cr\u00e9er mon compte", "Create my account", "Crear mi cuenta", "Crea il mio account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210", "Mein Konto erstellen") : T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3", "Anmelden")) + "  \u2192")),
-      /* 20/08 (session 145, demande de Blandine) : separateur « OU » et connexions Apple / Google / Facebook RETIRES. Ces trois fournisseurs n'ont jamais ete configures cote Supabase : les boutons ne menaient nulle part. */
-      encartInstall,
-      h("div", { style: { textAlign: "center", marginTop: 22, fontSize: 15, fontFamily: M, color: "#B9C7CE", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 7, lineHeight: 1.5 } }, /* 20/08 (session 145) : les deux entrees etaient a 12,5 px et se lisaient comme une seule phrase grise — Blandine n'en voyait qu'une. Passees a 15 px, plus aerees, et le lien devient un vrai bouton encadre. */
-        mode === "inscription" ? T("D\u00e9j\u00e0 un compte ? ", "Already have an account? ", "\u00bfYa tienes cuenta? ", "Hai gi\u00e0 un account? ", "\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u304a\u6301\u3061\uff1f ", "Schon ein Konto? ") : T("Pas encore de compte ? ", "No account yet? ", "\u00bfSin cuenta? ", "Non hai un account? ", "\u30a2\u30ab\u30a6\u30f3\u30c8\u672a\u4f5c\u6210\uff1f ", "Noch kein Konto? "),
-        h("button", { onClick: function () { setErreur(""); setMode(mode === "inscription" ? "connexion" : "inscription"); }, style: { background: "rgba(32,217,245,0.10)", border: "1px solid rgba(32,217,245,0.42)", borderRadius: 999, color: "#20D9F5", fontWeight: 700, fontSize: 15, fontFamily: M, cursor: "pointer", padding: "9px 18px", lineHeight: 1.15 } },
-          mode === "inscription" ? T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3", "Anmelden") : T("Cr\u00e9er un compte", "Create account", "Crear cuenta", "Crea account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210", "Konto erstellen")))))
+        h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: 4.5, color: LAGON, marginTop: 4, textTransform: "uppercase" } }, T("Ton univers \u00e9questre", "Your equestrian world", "Tu universo ecuestre", "Il tuo universo equestre", "\u3042\u306a\u305f\u306e\u4e57\u99ac\u30ef\u30fc\u30eb\u30c9", "Deine Reitwelt"))),
+      h("div", { key: "s2", style: { marginTop: 26 } },
+        boutonPlein(T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3", "Anmelden"), function () { allerA("connexion"); }, "sc"),
+        boutonCreux(T("Cr\u00e9er mon compte", "Create my account", "Crear mi cuenta", "Crea il mio account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210", "Mein Konto erstellen"), function () { allerA("inscription"); }, "cc"),
+        encartInstall)
+    ];
+  } else if (mode === "connexion") {
+    contenu = [
+      barreRetour(),
+      h("div", { key: "c1", style: { textAlign: "center", marginBottom: 22 } },
+        petitLibelle(T("TU AS D\u00c9J\u00c0 UN COMPTE", "YOU ALREADY HAVE AN ACCOUNT", "YA TIENES UNA CUENTA", "HAI GI\u00c0 UN ACCOUNT", "\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u304a\u6301\u3061\u306e\u65b9", "DU HAST BEREITS EIN KONTO")),
+        grandTitre(T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3", "Anmelden"))),
+      h("div", { key: "c2", style: { display: "flex", flexDirection: "column", gap: 12 } },
+        champ("ce", icoUser, { type: "email", autoComplete: "email", placeholder: "Email", value: email, onChange: function (e) { setEmail(e.target.value); } }),
+        champMdp("cp", { autoComplete: "current-password", placeholder: T("Mot de passe", "Password", "Contrase\u00f1a", "Password", "\u30d1\u30b9\u30ef\u30fc\u30c9", "Passwort"), value: mdp, onChange: function (e) { setMdp(e.target.value); } })),
+      h("div", { key: "c3", style: { display: "flex", alignItems: "center", gap: 9, marginTop: 14 } },
+        h("button", { onClick: function () { setRappeler(!rappeler); }, style: { display: "flex", alignItems: "center", gap: 9, background: "none", border: "none", cursor: "pointer", padding: 0 } },
+          h("span", { style: { width: 18, height: 18, borderRadius: 5, border: "1px solid " + (rappeler ? "#20D9F5" : "rgba(190,215,222,0.35)"), background: rappeler ? "rgba(32,217,245,0.9)" : "transparent", boxShadow: rappeler ? "0 0 10px rgba(32,217,245,0.6)" : "none", display: "flex", alignItems: "center", justifyContent: "center", color: "#04252A", fontSize: 12, fontWeight: 800 } }, rappeler ? "\u2713" : ""),
+          h("span", { style: { fontSize: 12, color: "#AEB8C0", fontFamily: M } }, T("Se rappeler de moi", "Remember me", "Recu\u00e9rdame", "Ricordami", "\u30ed\u30b0\u30a4\u30f3\u3092\u4fdd\u6301", "Angemeldet bleiben")))),
+      ligneErreur(),
+      /* Le poney descend au contact du bouton : il accompagne le geste au lieu
+         de retarder le formulaire. « How U doin' » reste en anglais dans les
+         six langues — c'est une replique, pas une consigne (choix du 21/08). */
+      h("div", { key: "c4", style: { marginTop: 14 } }, poney(PONEY_BONJOUR, 112, "pob")),
+      replique("How U doin'\u2009?", "rpb", true),
+      boutonPlein(T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3", "Anmelden") + "  \u2192", valider, "cv", true),
+      /* Le lien de secours quitte les 11,5 px colles a la case « se rappeler » :
+         il prend sa propre ligne, en 14 px souligne, la ou le regard tombe
+         quand la connexion vient d'echouer. */
+      h("div", { key: "c5", style: { textAlign: "center", marginTop: 16 } },
+        lienLagon(T("J'ai oubli\u00e9 mon mot de passe", "I forgot my password", "He olvidado mi contrase\u00f1a", "Ho dimenticato la password", "\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u5fd8\u308c\u307e\u3057\u305f", "Ich habe mein Passwort vergessen"), function () { setErreur(""); setMode("oubli"); }, "co")),
+      basculeBas(
+        T("Pas encore de compte ?", "No account yet?", "\u00bfSin cuenta todav\u00eda?", "Non hai ancora un account?", "\u307e\u3060\u30a2\u30ab\u30a6\u30f3\u30c8\u304c\u306a\u3044\uff1f", "Noch kein Konto?"),
+        T("Cr\u00e9er mon compte", "Create my account", "Crear mi cuenta", "Crea il mio account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210", "Mein Konto erstellen"),
+        function () { allerA("inscription"); })
+    ];
+  } else if (mode === "inscription") {
+    contenu = [
+      barreRetour(),
+      h("div", { key: "i1", style: { marginBottom: 22 } },
+        petitLibelle(T("PREMI\u00c8RE FOIS ICI", "FIRST TIME HERE", "PRIMERA VEZ AQU\u00cd", "PRIMA VOLTA QUI", "\u306f\u3058\u3081\u3066\u306e\u65b9", "ZUM ERSTEN MAL HIER")),
+        grandTitre(T("Cr\u00e9er mon compte", "Create my account", "Crear mi cuenta", "Crea il mio account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210", "Mein Konto erstellen")),
+        HYPE_CONFIRMATION_EMAIL ? h("div", { style: { fontFamily: M, fontSize: 12, color: "#AEB8C0", lineHeight: 1.55, marginTop: 9 } }, T("Tu recevras un mail pour confirmer ton adresse.", "You'll get an email to confirm your address.", "Recibir\u00e1s un correo para confirmar tu direcci\u00f3n.", "Riceverai un'email per confermare il tuo indirizzo.", "\u30e1\u30fc\u30eb\u30a2\u30c9\u30ec\u30b9\u78ba\u8a8d\u306e\u30e1\u30fc\u30eb\u304c\u5c4a\u304d\u307e\u3059\u3002", "Du bekommst eine E-Mail, um deine Adresse zu best\u00e4tigen.")) : null),
+      h("div", { key: "i2", style: { display: "flex", flexDirection: "column", gap: 12 } },
+        champ("ip", icoPlume, { type: "text", autoComplete: "given-name", placeholder: T("Ton pr\u00e9nom", "Your first name", "Tu nombre", "Il tuo nome", "\u540d\u524d", "Dein Vorname"), value: prenom, onChange: function (e) { setPrenom(e.target.value); } }),
+        champ("ie", icoUser, { type: "email", autoComplete: "email", placeholder: "Email", value: email, onChange: function (e) { setEmail(e.target.value); } }),
+        champMdp("im", { autoComplete: "new-password", placeholder: T("Mot de passe : 6 caract\u00e8res minimum", "Password: 6 characters minimum", "Contrase\u00f1a: m\u00ednimo 6 caracteres", "Password: minimo 6 caratteri", "\u30d1\u30b9\u30ef\u30fc\u30c9\uff1a6\u6587\u5b57\u4ee5\u4e0a", "Passwort: mindestens 6 Zeichen"), value: mdp, onChange: function (e) { setMdp(e.target.value); } })),
+      jauge(mdp),
+      ligneErreur(),
+      /* Le poney est A CHEVAL sur la barre : ses pattes se posent sur le bord
+         haut du bouton, il regarde par-dessus au moment ou l'on cree son
+         compte. Il est le seul muet des cinq — il n'a pas besoin de parler. */
+      h("div", { key: "i3", style: { position: "relative", marginTop: 84 } },
+        h("img", { src: PONEY_BARRE, alt: "", style: { position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: "calc(100% - 17px)", width: 128, zIndex: 2, pointerEvents: "none", filter: "drop-shadow(0 0 22px rgba(32,217,245,0.30))" } }),
+        boutonPlein(T("Cr\u00e9er mon compte", "Create my account", "Crear mi cuenta", "Crea il mio account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210", "Mein Konto erstellen") + "  \u2192", valider, "iv", true)),
+      basculeBas(
+        T("Tu as d\u00e9j\u00e0 un compte ?", "Already have an account?", "\u00bfYa tienes una cuenta?", "Hai gi\u00e0 un account?", "\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u304a\u6301\u3061\uff1f", "Schon ein Konto?"),
+        T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3", "Anmelden"),
+        function () { allerA("connexion"); })
+    ];
+  } else if (mode === "confirmation") {
+    contenu = [
+      barreRetour(),
+      h("div", { key: "f1", style: { textAlign: "center", marginTop: 10 } },
+        h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 600, letterSpacing: 0.6, marginBottom: 12, color: "#F4F7FA" } }, T("Ouvre ta bo\u00eete mail", "Check your inbox", "Abre tu correo", "Apri la tua casella mail", "\u30e1\u30fc\u30eb\u3092\u78ba\u8a8d\u3057\u3066\u306d", "\u00d6ffne dein Postfach")),
+        h("div", { style: { fontFamily: M, fontSize: 14, fontWeight: 600, color: LAGON, marginBottom: 14, wordBreak: "break-all" } }, emailEnAttente),
+        h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#AEB8C0", lineHeight: 1.65, marginBottom: 8 } }, T("Un lien t'y attend. Touche-le et ton compte est ouvert.", "A link is waiting there. Tap it and your account is open.", "Te espera un enlace. T\u00f3calo y tu cuenta queda abierta.", "Ti aspetta un link. Toccalo e il tuo account \u00e8 aperto.", "\u30ea\u30f3\u30af\u304c\u5c4a\u3044\u3066\u3044\u307e\u3059\u3002\u30bf\u30c3\u30d7\u3059\u308c\u3070\u30a2\u30ab\u30a6\u30f3\u30c8\u304c\u958b\u304d\u307e\u3059\u3002", "Dort wartet ein Link. Tippe ihn an, und dein Konto ist offen.")),
+        h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#AEB8C0", lineHeight: 1.65 } }, T("Rien re\u00e7u ? Regarde dans les ind\u00e9sirables.", "Nothing yet? Check your spam folder.", "\u00bfNada? Mira en el correo no deseado.", "Niente? Guarda nella posta indesiderata.", "\u5c4a\u304b\u306a\u3044\u5834\u5408\u306f\u8ff7\u60d1\u30e1\u30fc\u30eb\u3092\u78ba\u8a8d\u3002", "Nichts da? Schau im Spam-Ordner nach.")),
+        renvoiMsg === "envoye" ? h("div", { style: { marginTop: 14, fontFamily: M, fontSize: 12.5, color: "#5FE9F0" } }, T("Lien renvoy\u00e9.", "Link sent again.", "Enlace reenviado.", "Link inviato di nuovo.", "\u30ea\u30f3\u30af\u3092\u518d\u9001\u4fe1\u3057\u307e\u3057\u305f\u3002", "Link erneut gesendet.")) : null,
+        renvoiMsg === "erreur" ? h("div", { style: { marginTop: 14, fontFamily: M, fontSize: 12.5, color: "#FF7B7B", lineHeight: 1.5 } }, T("L'envoi a \u00e9chou\u00e9. R\u00e9essaie dans quelques minutes.", "Sending failed. Try again in a few minutes.", "El env\u00edo fall\u00f3. Int\u00e9ntalo en unos minutos.", "Invio non riuscito. Riprova tra qualche minuto.", "\u9001\u4fe1\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002\u6570\u5206\u5f8c\u306b\u518d\u8a66\u884c\u3002", "Senden fehlgeschlagen. Versuche es in ein paar Minuten erneut.")) : null),
+      /* Le poney descend au contact du bouton, comme sur la connexion. Sa
+         replique s'efface des qu'un message d'erreur s'affiche : il ne
+         plaisante pas au-dessus d'un probleme. */
+      h("div", { key: "f2", style: { marginTop: "auto", paddingTop: 20 } },
+        poney(PONEY_MAIL, 152, "pom"),
+        renvoiMsg === "erreur" ? null : replique(T("S\u00fbrement une lettre d'amour\u2026", "Probably a love letter\u2026", "Seguro que es una carta de amor\u2026", "Sar\u00e0 una lettera d'amore\u2026", "\u304d\u3063\u3068\u30e9\u30d6\u30ec\u30bf\u30fc\u3060\u3088\u2026", "Bestimmt ein Liebesbrief\u2026"), "rpm"),
+        h("button", { onClick: renvoyerConfirmation, style: { width: "100%", padding: "15px", borderRadius: 16, background: "transparent", border: "1px solid rgba(190,215,222,0.2)", color: "#AEB8C0", fontFamily: M, fontSize: 15, fontWeight: 500, letterSpacing: 0.6, cursor: "pointer", opacity: renvoiMsg === "envoi" ? 0.6 : 1 } },
+          renvoiMsg === "envoi" ? "\u2026" : T("Renvoyer le lien", "Send the link again", "Reenviar el enlace", "Invia di nuovo il link", "\u30ea\u30f3\u30af\u3092\u518d\u9001\u4fe1", "Link erneut senden")),
+        h("div", { style: { textAlign: "center", marginTop: 18, fontFamily: M, fontSize: 11, color: "#6C7A83", lineHeight: 1.6 } },
+          T("Ce n'est pas la bonne adresse ?", "Wrong address?", "\u00bfNo es la direcci\u00f3n correcta?", "Non \u00e8 l'indirizzo giusto?", "\u30a2\u30c9\u30ec\u30b9\u304c\u9055\u3044\u307e\u3059\u304b\uff1f", "Nicht die richtige Adresse?"),
+          h("br", null),
+          lienLagon(T("Recommencer avec une autre", "Start over with another one", "Empezar con otra", "Ricominciare con un'altra", "\u5225\u306e\u30a2\u30c9\u30ec\u30b9\u3067\u3084\u308a\u76f4\u3059", "Mit einer anderen neu beginnen"), function () { setEmail(""); setMdp(""); allerA("inscription"); }, "fr2")))
+    ];
+  } else if (mode === "oubli") {
+    contenu = [
+      barreRetour(),
+      h("div", { key: "o1", style: { textAlign: "center", marginBottom: 14 } },
+        petitLibelle(T("ON T'ENVOIE UN LIEN", "WE'LL SEND YOU A LINK", "TE ENVIAMOS UN ENLACE", "TI INVIAMO UN LINK", "\u30ea\u30f3\u30af\u3092\u304a\u9001\u308a\u3057\u307e\u3059", "WIR SCHICKEN DIR EINEN LINK")),
+        grandTitre(T("Retrouver mon mot de passe", "Recover my password", "Recuperar mi contrase\u00f1a", "Recuperare la mia password", "\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u518d\u8a2d\u5b9a", "Mein Passwort wiederfinden"))),
+      poney(PONEY_CACHE, 172, "poc"),
+      /* En francais le pronom est colle au verbe : pas d'italique sur « m' »,
+         ca ressemblerait a une coquille. Dans les autres langues il est un mot
+         entier, donc on peut l'appuyer — mais on garde la meme sobriete. */
+      replique(T("Tant que tu ne m'oublies pas\u2026", "As long as you don't forget me\u2026", "Mientras no me olvides\u2026", "Basta che tu non ti dimentichi di me\u2026", "\u307c\u304f\u306e\u3053\u3068\u3092\u5fd8\u308c\u306a\u3051\u308c\u3070\u2026", "Solange du mich nicht vergisst\u2026"), "rpc"),
+      champ("oe", icoUser, { type: "email", autoComplete: "email", placeholder: T("Ton email", "Your email", "Tu email", "La tua email", "\u30e1\u30fc\u30eb\u30a2\u30c9\u30ec\u30b9", "Deine E-Mail"), value: email, onChange: function (e) { setEmail(e.target.value); } }),
+      ligneErreur(),
+      boutonPlein(T("M'envoyer le lien", "Send me the link", "Env\u00edame el enlace", "Inviami il link", "\u30ea\u30f3\u30af\u3092\u9001\u308b", "Schick mir den Link"), mdpOublie, "ov"),
+      h("div", { key: "o3", style: { marginTop: "auto", paddingTop: 24, textAlign: "center" } },
+        lienLagon(T("Revenir \u00e0 la connexion", "Back to sign in", "Volver al inicio de sesi\u00f3n", "Torna all'accesso", "\u30ed\u30b0\u30a4\u30f3\u306b\u623b\u308b", "Zur\u00fcck zur Anmeldung"), function () { allerA("connexion"); }, "or"))
+    ];
+  } else {
+    contenu = [
+      barreRetour(),
+      h("div", { key: "r1", style: { textAlign: "center", marginBottom: 14 } },
+        petitLibelle(T("DEPUIS TON MAIL", "FROM YOUR EMAIL", "DESDE TU CORREO", "DALLA TUA EMAIL", "\u30e1\u30fc\u30eb\u304b\u3089", "AUS DEINER E-MAIL")),
+        grandTitre(T("Choisis un nouveau mot de passe", "Choose a new password", "Elige una nueva contrase\u00f1a", "Scegli una nuova password", "\u65b0\u3057\u3044\u30d1\u30b9\u30ef\u30fc\u30c9\u3092\u9078\u3093\u3067\u306d", "W\u00e4hle ein neues Passwort"))),
+      poney(PONEY_TASSE, 140, "pot"),
+      replique(T("Je t'attendrai\u2026", "I'll be waiting for you\u2026", "Te esperar\u00e9\u2026", "Ti aspetter\u00f2\u2026", "\u5f85\u3063\u3066\u308b\u304b\u3089\u306d\u2026", "Ich werde auf dich warten\u2026"), "rpt"),
+      champMdp("rm", { autoComplete: "new-password", placeholder: T("Nouveau mot de passe", "New password", "Nueva contrase\u00f1a", "Nuova password", "\u65b0\u3057\u3044\u30d1\u30b9\u30ef\u30fc\u30c9", "Neues Passwort"), value: nouveauMdp, onChange: function (e) { setNouveauMdp(e.target.value); } }),
+      jauge(nouveauMdp),
+      ligneErreur(),
+      boutonPlein(T("Enregistrer et entrer", "Save and enter", "Guardar y entrar", "Salva ed entra", "\u4fdd\u5b58\u3057\u3066\u5165\u308b", "Speichern und eintreten"), enregistrerNouveauMdp, "rv"),
+      h("div", { key: "r3", style: { marginTop: "auto", paddingTop: 24, textAlign: "center" } },
+        lienLagon(T("Revenir \u00e0 la connexion", "Back to sign in", "Volver al inicio de sesi\u00f3n", "Torna all'accesso", "\u30ed\u30b0\u30a4\u30f3\u306b\u623b\u308b", "Zur\u00fcck zur Anmeldung"), function () { allerA("connexion"); }, "rr"))
+    ];
+  }
+  var estSeuil = mode === "seuil";
+  return h("div", { onTouchStart: surToucheDebut, onTouchEnd: surToucheFin,
+      style: Object.assign({ position: "relative", minHeight: "100dvh", background: "#060709", overflow: "hidden" },
+      estSeuil ? { backgroundImage: "url(" + IMG_ENTREE_FOND + ")", backgroundSize: "cover", backgroundPosition: "top center", backgroundRepeat: "no-repeat" } : {}) },
+    h("style", null, "@keyframes cxDerive{0%{opacity:0;transform:translateY(10px)}15%{opacity:.85}85%{opacity:.5}100%{opacity:0;transform:translateY(-60px)}}@keyframes cxPulse{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 6px 26px rgba(32,217,245,.22)}50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 6px 40px rgba(32,217,245,.38)}}@keyframes cxRespire{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.05)}}"),
+    /* Le halo turquoise n'existe que hors du seuil : sur le seuil, la lumiere,
+       c'est la photo. Regle absolue — AUCUN voile, AUCUN filtre sur le cheval. */
+    estSeuil ? null : h("div", { style: { position: "absolute", top: "-6dvh", left: "50%", width: "120vw", height: "44dvh", background: "radial-gradient(ellipse at center, rgba(32,217,245,0.13) 0%, transparent 66%)", animation: "cxRespire 7s ease-in-out infinite", pointerEvents: "none" } }),
+    h("div", { style: { position: "absolute", inset: 0, pointerEvents: "none" } }, poussieres.map(function (p, i) { return h("span", { key: i, style: { position: "absolute", left: p.l + "%", top: p.t + "%", width: p.s, height: p.s, borderRadius: "50%", background: "rgba(140,235,246,0.8)", animation: "cxDerive " + p.d + "s linear " + p.del + "s infinite" } }); })),
+    h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", right: 12, zIndex: 6 } }, h(SelecteurLangue, { compact: true })),
+    estSeuil ? h("button", { onClick: revenir, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 12, zIndex: 6, width: 38, height: 38, borderRadius: "50%", background: "rgba(9,13,17,0.5)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: 19, cursor: "pointer", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" } }, "\u2039") : null,
+    h("div", { style: { position: "relative", zIndex: 3, minHeight: "100dvh", display: "flex", flexDirection: "column", maxWidth: 430, margin: "0 auto", padding: "calc(env(safe-area-inset-top) + 62px) 24px calc(22px + env(safe-area-inset-bottom))" } },
+      contenu))
 }
 /* ---------- AUTHENTIFICATION ---------- */
 function EcranAuth() {
@@ -28340,7 +28589,7 @@ function L5acc(fr, en, es, it, ja, de) { return lg === "en" ? en : lg === "es" ?
         React.createElement("div", { className: "hero-pulse" }),
         React.createElement("div", { className: "hero-side" }),
         React.createElement("div", { className: "hero-grad" }),
-        React.createElement("button", { onClick: function () { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "connexion"; setEcran("connexion"); }, "aria-label": "Se d\u00e9connecter", title: "Se d\u00e9connecter", style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 58, zIndex: 6, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
+        React.createElement("button", { onClick: function () { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "seuil"; setEcran("connexion"); }, "aria-label": "Se d\u00e9connecter", title: "Se d\u00e9connecter", style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 58, zIndex: 6, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
           React.createElement("svg", { viewBox: "0 0 24 24", width: 16, height: 16, fill: "none", stroke: "rgba(255,255,255,0.85)", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
             React.createElement("path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }),
             React.createElement("path", { d: "M16 17l5-5-5-5" }),
@@ -33142,7 +33391,7 @@ function EcranMonde(){
         supa.auth.getSession().then(function(r){
           var sess = r && r.data && r.data.session;
           if (sess && sess.user) { aller("dashboard"); }
-          else { AUTH_MODE_SPECTRAL = "inscription"; __versLogin(); }
+          else { try{ AUTH_MODE_SPECTRAL = "seuil"; }catch(eA2){} aller("connexion"); }
         }).catch(function(){ aller("dashboard"); });
       } else { aller("dashboard"); }
     }
@@ -44418,7 +44667,7 @@ function EcranProfil() {
                 cle: "deco", couleur: COLORS.corail,
                 titre: t("se_deconnecter"),
                 sous: tr({ fr: "Sur cet appareil", en: "On this device", es: "En este dispositivo", it: "Su questo dispositivo", ja: "この端末で", de: "Auf diesem Gerät" }),
-                onClick: () => { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "connexion"; setEcran("connexion"); },
+                onClick: () => { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "seuil"; setEcran("connexion"); },
                 ico: [React.createElement("path", { key: "a", d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }), React.createElement("path", { key: "b", d: "M16 17l5-5-5-5" }), React.createElement("path", { key: "c", d: "M21 12H9" })],
             }),
         ]),
