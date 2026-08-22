@@ -164,6 +164,198 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 
 ---
 
+## SESSION 152j — 23/08/2026 · LE FILIGRANE RETIRÉ
+
+**Livré : `index.html`**, md5 `658a4a84070f0932158d9add02f23d6d`, 9 327 590 octets.
+Part **seul**. `hype-import-ffe.js` reste celui de 152i (`26da2f7b…`).
+État de départ vérifié avant écriture : `3bcab475…` ✅ (aucune autre page n'avait touché le fichier).
+
+### LA DEMANDE
+
+*« Le filigrane il ne devrait pas être partout en fait »*, puis *« retire-le partout,
+on remettra des photos s'il faut, mais là il nous envahit »*. **Décision de Blandine.**
+
+### L'INVENTAIRE DE `PHOTO_SAUT` (`k29`, le cheval qui saute)
+
+| Clé | Ligne | État |
+|---|---|---|
+| `watermark` | 21889 | filigrane global, tous écrans sauf `galops` et `profil` — **retiré** |
+| `hero_splash` | 23379 | splash de démarrage — **conservé** |
+| `hero_splash` | 23317 | page 1 du carrousel d'intro (`PageLogo`) — **conservé** |
+| `premium_hero` | 19418 | déclaré, **jamais lu** — code mort |
+| `auth_hero` | 19419 | déclaré, **jamais lu** — code mort |
+| `hero_dashboard` | 45153 | repli du fond de carte cheval, **inatteignable** (`CHEVAL_DEFAUT`/`k4` gagne toujours) |
+
+Les trois dernières lignes sont **signalées, non touchées** — aucun feu vert.
+
+### LE CHANGEMENT
+
+**Une seule ligne.** `watermark: PHOTO_SAUT` → `watermark: null`.
+
+Le calque du Router teste `PHOTOS.watermark && ecran !== …` : avec `null`, il ne se rend
+plus du tout. Le `<div data-hype-filigrane>` et sa règle CSS `pointer-events:none`
+(ligne 22004) **restent en place**, inutilisés. **Pour remettre une photo : rendre une
+image à cette clé, rien d'autre à toucher.** Réversible en un mot.
+
+**Contrôle passé** : les 149 blocs `<script>` passent `node --check` — **0 échec, exactement
+comme avant** (comparaison faite sur les deux fichiers) · diff complet du fichier :
+**13 lignes, toutes au même endroit**, aucune dérive ailleurs.
+
+### 🔴 CONSÉQUENCE SIGNALÉE, NON TRANCHÉE
+
+Le fond qui apparaît derrière n'est **pas** le noir profond de la Bible : c'est
+`COLORS.nuit` = **`#12161C`**, un anthracite, posé à la fois sur `html, body`
+(GlobalStyles, ligne 21998) et sur le conteneur du Router.
+
+Blandine a répondu « noir profond seul » au choix proposé. **`#12161C` n'est pas
+`#060709`.** Et sans la photo, ce fond devient **parfaitement plat** — ce que la Bible
+Hype Spectral interdit explicitement (*« le noir est une matière, jamais plat »*).
+
+**Non corrigé : `COLORS.nuit` est lu partout dans l'app, le changer est une décision de
+direction artistique, pas une réparation.** Question posée à Blandine.
+
+### À l'écran : + / −
+
+- **−** la photo du cheval qui saute en arrière-plan de **tous** les écrans : accueil,
+  dashboard, écurie, fiche cheval, communauté, Hey Baby, import, réglages, messagerie…
+- **+** rien. Le fond devient l'aplat `#12161C` déjà présent dessous.
+- **inchangé** : le splash de démarrage et la page 1 du carrousel gardent leur photo.
+  Les écrans `galops` et `profil` n'avaient déjà pas le filigrane.
+
+### Préparation Flutter
+
+Aucun refactor. Mais le passage en revue a mis au jour **trois clés mortes dans `PHOTOS`**
+(`premium_hero`, `auth_hero`, et `hero_dashboard` inatteignable) : le dictionnaire d'images
+promet des usages qui n'existent plus. C'est exactement le genre de contrat flou qu'une
+frontière Design System devra assainir — **noté, pas fait**, aucun feu vert.
+
+---
+
+## SESSION 152i — 23/08/2026 · L'ERREUR SORTAIT DANS LE VIDE
+
+**Livré : `hype-import-ffe.js` seul**, md5 `26da2f7b49f85c72431055c305e8bfc5`, 34 969 octets.
+`index.html` **inchangé** (`3bcab475…`) · `hype-resultats.js` **inchangé** (`0f7d3654…`).
+
+### 🟥 UNE DES SIX « PISTES ÉCARTÉES » ÉTAIT FAUSSE
+
+La passation portait *« l'erreur est muette — écartée : un bloc rouge est prévu sous le
+bouton, il ne s'affiche pas »*. **Le bloc s'affichait. Personne ne pouvait le voir.**
+
+Dans `vueRelecture()`, le bloc `E.err` était ajouté **APRÈS** `.hi-pied`, qui porte
+`padding: 16px 16px 120px`. Le composant React `HypeImportEcran` ajoute encore
+`paddingBottom: 90`. L'erreur atterrissait donc **120 à 210 px sous le bouton**, hors de
+l'écran, et **rien ne faisait défiler la page jusqu'à elle**.
+
+Même mécanique pour le « … » : il s'affichait bien, mais il redevenait « Enregistrer N
+résultats » dès la retombée de la promesse — le pouce de Blandine est sur le bouton.
+
+🟥 **Ne jamais remettre un bloc d'erreur après `.hi-pied`.** Commentaire posé dans le code.
+
+### 🟢 LA PISTE 1 EST MORTE — par preuve, pas par supposition
+
+`ref.current` n'est pas détaché. **L'écouteur délégué fonctionne, c'est démontré** : les
+coches, les pastilles cavalier et le bouton **« Continuer »** de l'écran des niveaux passent
+tous par le *même* écouteur, et « Continuer » est un `<button class="hi-bt">`
+**strictement identique** à « Enregistrer ». Puisque l'écran de relecture s'atteint, le
+gestionnaire part. Inutile d'y retourner.
+
+### CE QUI CHANGE DANS LE FICHIER
+
+Sept lignes dans `vueRelecture()`. Le bloc d'erreur entre **dans** `.hi-pied`, **avant** le
+bouton, avec `margin:0 0 12px`.
+
+**Contrôle passé** : `node --check` · les deux blocs d'export intacts (13 exports lus) ·
+banc d'essai — avec erreur, l'ordre est `hi-pied` → `hi-err` → bouton ✅ · **sans erreur, le
+HTML produit est strictement identique à l'ancien** (comparaison caractère par caractère) ✅.
+
+### ⚠️ CE QUI N'EST PAS RÉSOLU
+
+**On ne sait toujours pas POURQUOI l'enregistrement échoue.** Cette livraison ne répare
+rien : elle rend l'échec **lisible**. Le prochain tap sur « Enregistrer » dira le vrai
+message. C'est un instrument, pas une réparation — et c'est dit à Blandine ainsi.
+
+Trois issues possibles au prochain essai :
+1. **un texte rouge apparaît au-dessus du bouton** → on a enfin l'erreur réelle ;
+2. **l'écran au trophée apparaît avec « 0 résultat »** → `enregistrerImportFFE` a filtré
+   toutes les lignes (voir ci-dessous) ;
+3. **toujours rien du tout** → alors le gestionnaire ne part vraiment pas, et il faudra
+   l'affichage en dur dès la première ligne du gestionnaire.
+
+### 🔴 TROUVÉ AU PASSAGE — deux règles métier violées dans `enregistrerImportFFE()`
+
+Sans rapport avec le bouton, **signalé à Blandine, non corrigé** (pas de feu vert) :
+
+```js
+const aEcrire = (lignes || []).filter(function (r) {
+  return r && r.garder && r.date && r.statut === "classe";
+});
+```
+
+- **« ON ENREGISTRE TOUT »** : faux. Les lignes **décochées sont jetées**, pas enregistrées
+  en `visible = false`.
+- **« Éliminés et abandons comptent dans le palmarès »** : impossible. Ils arrivent
+  décochés **et** portent `statut !== "classe"` — **ils ne sont jamais écrits.**
+- La colonne **`visible`** n'est **jamais renseignée** à l'insertion : tout le mécanisme
+  posé hier soir est inutilisé.
+
+### À l'écran : + / −
+
+- **+** le message rouge d'erreur d'enregistrement, désormais **au-dessus** du bouton
+  « Enregistrer », donc visible.
+- **−** le même message à son ancienne position, sous le bouton et hors écran.
+- Rien d'autre n'apparaît ni ne disparaît. Aucun autre écran touché.
+
+### Préparation Flutter
+
+Aucune amélioration d'architecture réalisée sur cette session — livraison volontairement
+réduite à sept lignes d'instrumentation, sur un fichier dont l'état est fragile après six
+versions en deux jours.
+
+**Leçon d'architecture à retenir malgré tout** : un message d'erreur posé en **fin** de
+flux HTML n'est pas un message d'erreur, c'est un journal invisible. Tout retour d'échec
+doit être rendu **au point d'action** — à côté du bouton qui a échoué. À reprendre pour
+chaque écran qui affiche un `E.err` ou équivalent.
+
+---
+
+## SESSION 152h — 23/08/2026 (minuit) · ARRÊT — LE BOUTON RÉSISTE
+
+**Aucun fichier livré.** État inchangé : `index.html` `3bcab475…` ·
+`hype-import-ffe.js` `fde090e6…` · `hype-resultats.js` `0f7d3654…`.
+
+### 🔴 SIX VERSIONS, LE BOUTON NE PART TOUJOURS PAS
+
+Le bouton « Enregistrer N résultats » s'enfonce visiblement — donc le tap l'atteint — et
+**rien ne se passe** : pas de « … », pas de message d'erreur, aucune trace.
+
+**Six pistes écartées avec preuve** (position sous la barre, compte à zéro, `onEnregistrer`
+absent, erreur muette, écouteur perdu au redessin, cheval inconnu). Aucune n'a rien changé.
+
+🟥 **Le fait que même le message d'erreur ne s'affiche pas** est le signe le plus fort :
+soit le gestionnaire ne s'exécute pas, soit `refaire()` ne redessine rien.
+
+### 🔵 LES DEUX PISTES POUR DEMAIN
+
+1. **`ref.current` est peut-être détaché du document.** Le composant React
+   `HypeImportEcran` a un `useEffect` avec `[]` : si React recrée le nœud interne, le HTML
+   du module est perdu et l'écouteur mémorisé n'est plus dans la page visible.
+   **→ vérifier que `ref.current` est toujours dans le document au moment du tap.**
+2. **Un parent ou un élément superposé avale l'événement** (`pointer-events`).
+
+**Pour trancher sans console** : écrire un texte visible dans le conteneur dès la première
+ligne du gestionnaire. S'il n'apparaît pas → piste 1.
+
+### 🟥 POURQUOI ON S'ARRÊTE
+
+Blandine travaille **depuis hier matin**. Deux nuits. J'ai livré six versions sur ce seul
+bouton, **en tirant à l'aveugle faute d'avoir jamais vu l'erreur réelle** — et j'ai cassé
+l'app une fois dans la journée (152e). Continuer sans voir l'erreur, c'est reproduire ça.
+
+**`PASSATION-IMPORT.md`** livré : tout le diagnostic, les pistes écartées avec leur preuve,
+les règles apprises, les huit chantiers ouverts.
+
+---
+
 ## SESSION 152g — 22/08/2026 (23h45) · UN SEUL ÉCOUTEUR, POSÉ UNE FOIS
 
 **Fichier livré** : `hype-import-ffe.js` (`fde090e60f8b4ec5d0a51d082f33952a`, 34 Ko).

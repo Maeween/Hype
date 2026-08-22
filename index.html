@@ -19417,7 +19417,13 @@ const PHOTOS = {
     galop_baby: HYPE_IMGS["k450"], // Baby — bandeau EcranGalopDetail (fille+poney constellation)
     premium_hero: PHOTO_SAUT,
     auth_hero: PHOTO_SAUT,
-    watermark: PHOTO_SAUT, // filigrane fixe en arrière-plan, derrière tout le contenu
+    /* 23/08 — FILIGRANE RETIRÉ. Décision de Blandine : « il nous envahit ».
+       Le calque du Router (ligne ~21889) teste `PHOTOS.watermark &&` : avec null,
+       il ne se rend plus du tout, sur AUCUN écran. Le <div data-hype-filigrane>
+       et sa règle CSS `pointer-events:none` restent en place, inutilisés.
+       POUR LE REMETTRE : rendre une image ici, rien d'autre à toucher.
+       Le splash et la page 1 du carrousel gardent leur photo (hero_splash). */
+    watermark: null,
 };
 // Rendu d'une bannière photo avec overlay sombre pour la lisibilité du texte,
 // ou un dégradé de substitution si aucune URL n'est encore fournie.
