@@ -21436,18 +21436,30 @@ function HypeApp() {
         async function lireAbo(u) {
             try {
                 if (!u || typeof supa === "undefined") return;
-                const r = await supa.from("abonnements_premium").select("plan,statut,expire_le").eq("user_id", u.id).maybeSingle();
-                const abo = r && r.data;
+                /* maybeSingle() rend null des qu il y a PLUSIEURS lignes pour le meme
+   compte : le Premium etait refuse en silence sur un doublon. On lit
+   la liste et on garde la ligne active la plus lointaine.          */
+                const r = await supa.from("abonnements_premium").select("plan,statut,expire_le").eq("user_id", u.id);
+                const lignesAb = (r && r.data) || [];
+                const abo = lignesAb.slice().sort(function (a, b) {
+                  const ea = (a.statut === "actif") ? 1 : 0, eb = (b.statut === "actif") ? 1 : 0;
+                  if (ea !== eb) return eb - ea;
+                  return String(b.expire_le || "").localeCompare(String(a.expire_le || ""));
+                })[0];
                 if (fini || !abo) return;
                 const actif = abo.statut === "actif" && (!abo.expire_le || new Date(abo.expire_le).getTime() > Date.now());
                 if (actif && (abo.plan === "mensuel" || abo.plan === "annuel" || abo.plan === "ai" || abo.plan === "duo")) setPlanAbo(abo.plan);
                 else setPlanAbo("");
-            } catch (eAbo) { }
+            } catch (eAbo) { try { console.warn("Premium : lecture impossible", eAbo); } catch (e2) { } }
         }
-        (async () => { try { const { data } = await supa.auth.getUser(); lireAbo(data && data.user); } catch (e) { } })();
+        /* 22/08 session 152 : lireAbo appelait getUser() EN DIRECT, sans passer
+   par utilisateurActuel(). Serveur lent ou muet = utilisateur vide =
+   lireAbo sort a la premiere ligne = CADENAS malgre un abonnement
+   valide. Vu chez une abonnee le 22/08. On lit la session en memoire. */
+        (async () => { try { const uAb = await utilisateurActuel(); lireAbo(uAb); } catch (e) { } })();
         let abonneAuth = null;
         try { const res = supa.auth.onAuthStateChange((_e, s) => lireAbo(s && s.user)); abonneAuth = res && res.data && res.data.subscription; } catch (e) { }
-        const relance = () => { (async () => { try { const { data } = await supa.auth.getUser(); lireAbo(data && data.user); } catch (e) { } })(); };
+        const relance = () => { (async () => { try { const uAb = await utilisateurActuel(); lireAbo(uAb); } catch (e) { } })(); };
         window.addEventListener("hype-resync-abo", relance);
         return () => { fini = true; window.removeEventListener("hype-resync-abo", relance); try { if (abonneAuth) abonneAuth.unsubscribe(); } catch (e) { } };
     }, []);
@@ -24406,13 +24418,28 @@ const LIEN_ABO_MENSUEL = "https://buy.stripe.com/28EaEX6aZ0OQbWF4SPfQI0c"; // ab
 window.hypeOuvrirPaiement = async function (url) {
     let lien = url;
     let u = null;
-    try { const { data } = await supa.auth.getUser(); u = data && data.user; } catch (e) { }
+    /* 22/08 session 152 : on lit la SESSION, pas le serveur. getUser() en
+       direct renvoyait null sur reseau lent et bloquait un paiement valide. */
+    try { u = await utilisateurActuel(); } catch (e) { }
     // Verrou : pas de paiement sans compte, sinon impossible de livrer le Premium.
     if (!u || !u.id) {
         try { alert("Connecte-toi d'abord \u00e0 ton compte Hype pour t'abonner \u2014 ton Premium s'activera automatiquement apr\u00e8s le paiement."); } catch (e) { }
         try { window.dispatchEvent(new CustomEvent("hype-aller-compte")); } catch (e) { }
         return;
     }
+    /* 22/08 session 152 — CONFIRMER LE COMPTE AVANT DE PAYER.
+       Une abonnee avait deux comptes et a paye depuis l un en utilisant
+       l autre : Premium invisible, une matinee perdue a chercher. Le
+       Premium se pose sur le COMPTE qui paie : on le fait confirmer. */
+    try {
+        var okCompte = window.confirm(
+            "Tu vas t'abonner avec ce compte :\n\n" + (u.email || "(sans adresse)") +
+            "\n\nTon Premium sera actif sur CE compte uniquement.\nC'est bien celui que tu utilises ?");
+        if (!okCompte) {
+            try { window.dispatchEvent(new CustomEvent("hype-aller-compte")); } catch (eC) { }
+            return;
+        }
+    } catch (eConf) { }
     try {
         if (u && u.id) {
             lien += (lien.indexOf("?") === -1 ? "?" : "&") + "client_reference_id=" + encodeURIComponent(u.id);
@@ -45785,6 +45812,40 @@ function EcranPremium() {
     var ctx = useApp();
     var setEcran = ctx.setEcran, langue = ctx.langue, tr = ctx.tr, premium = ctx.premium, planAbo = ctx.planAbo, profilP = ctx.profil;
     useEffect(function () { try { window.scrollTo(0, 0); } catch (e) { } }, []);
+    /* 22/08 session 152 — DIRE SUR QUEL COMPTE ON EST.
+       Une abonnee possedait deux comptes, a paye depuis l un, utilisait
+       l autre, et voyait des cadenas sans comprendre. Rien a l ecran ne
+       lui disait laquelle des deux adresses etait connectee. Cette ligne
+       repond a la seule question qu on se pose ici : « j ai paye, non ? ». */
+    var stMailP = useState(""); var mailP = stMailP[0], setMailP = stMailP[1];
+    useEffect(function () {
+        var vivant = true;
+        (async function () {
+            try {
+                var uP = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+                if (vivant && uP && uP.email) setMailP(uP.email);
+            } catch (eMP) { }
+        })();
+        return function () { vivant = false; };
+    }, []);
+    var bandeauCompte = mailP ? React.createElement("div", {
+        style: {
+            maxWidth: 430, margin: "0 auto 4px", padding: "10px 14px", borderRadius: 12,
+            background: premium ? "rgba(32,217,245,0.07)" : "rgba(232,200,135,0.07)",
+            border: "1px solid " + (premium ? "rgba(32,217,245,0.24)" : "rgba(232,200,135,0.26)"),
+            fontSize: 11.5, lineHeight: 1.5, textAlign: "center",
+            color: premium ? "rgba(244,247,250,0.78)" : "rgba(244,247,250,0.72)"
+        }
+    },
+        tr({ fr: "Connectée avec", en: "Signed in as", es: "Conectada con", it: "Connessa con", ja: "ログイン中", de: "Angemeldet als" }),
+        " ",
+        React.createElement("b", { style: { color: premium ? "#20D9F5" : "#E8C887", fontWeight: 700, wordBreak: "break-all" } }, mailP),
+        React.createElement("div", { style: { marginTop: 4, opacity: 0.85 } },
+            premium
+                ? tr({ fr: "Abonnement actif sur ce compte.", en: "Subscription active on this account.", es: "Suscripción activa en esta cuenta.", it: "Abbonamento attivo su questo account.", ja: "このアカウントは有効です。", de: "Abo auf diesem Konto aktiv." })
+                : tr({ fr: "Aucun abonnement sur ce compte. Si tu as payé, c'était peut-être avec une autre adresse.", en: "No subscription on this account. If you paid, it may have been with another address.", es: "Sin suscripción en esta cuenta. Si pagaste, quizá fue con otra dirección.", it: "Nessun abbonamento su questo account. Se hai pagato, forse era con un altro indirizzo.", ja: "このアカウントに有効な登録はありません。", de: "Kein Abo auf diesem Konto. Falls du bezahlt hast, war es vielleicht eine andere Adresse." })
+        )
+    ) : null;
     var L = PV5_TXT[langue] || PV5_TXT.fr;
     if (premium) {
         var planLigneP = planAbo === "annuel" ? tr({ fr: "Abonnement annuel \u00b7 Tarif Fondateur \u2713", en: "Annual plan \u00b7 Founder rate \u2713", es: "Plan anual \u00b7 Tarifa Fundador \u2713", it: "Piano annuale \u00b7 Tariffa Fondatore \u2713", ja: "\u5e74\u9593\u30d7\u30e9\u30f3 \u2713", de: "Jahresabo \u00b7 Gr\u00fcnderpreis \u2713" })
@@ -45802,6 +45863,7 @@ function EcranPremium() {
     for (var k in L) { htmlPage = htmlPage.split("{{" + k + "}}").join(L[k]); }
     htmlPage = htmlPage.split("{{IMG}}").join(PV5_IMG);
     return (React.createElement("div", { className: premium ? "pv5 pv5abonne" : "pv5", style: { position: "relative" } },
+        bandeauCompte,
         React.createElement("style", { dangerouslySetInnerHTML: { __html: PV5_CSS + ".pv5abonne h1.big{font-size:21px;letter-spacing:3px}" } }),
         React.createElement("button", { onClick: function () { setEcran("dashboard"); }, "aria-label": tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "\u623b\u308b", de: "Zur\u00fcck" }), style: { position: "absolute", top: "calc(12px + env(safe-area-inset-top))", left: 12, zIndex: 20, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", color: "#EAF1F4", fontSize: 24, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, "\u2039"),
         React.createElement("div", { style: { position: "absolute", top: "calc(12px + env(safe-area-inset-top))", left: 58, zIndex: 20 } },
