@@ -21935,6 +21935,11 @@ function Router() {
                 ecran === "profil" && React.createElement(EcranProfil, null),
                 ecran === "ecurie" && React.createElement(EcranEcurie, null),
                 ecran === "import-resultats" && React.createElement(HypeImportEcran, {
+                  mots: {
+                    titre: T("Importer mes résultats", "Import my results", "Importar mis resultados", "Importa i miei risultati", "結果を取り込む", "Meine Ergebnisse importieren"),
+                    attente: T("Préparation de l'import…", "Preparing import…", "Preparando…", "Preparazione…", "準備中…", "Import wird vorbereitet…"),
+                    err: T("L'import n'a pas pu s'ouvrir.", "Import could not open.", "No se pudo abrir.", "Impossibile aprire.", "開けませんでした。", "Import konnte nicht öffnen.")
+                  },
                   onFermer: function () { setEcran("cheval"); },
                   onEnregistrer: function (lignes) {
                     return enregistrerImportFFE(window.HYPE_CHEVAL_IMPORT || null, lignes)
@@ -32000,40 +32005,66 @@ function GrilleSouvenirs(props) {
    Meme methode que l app pour OpenCV du Fond Studio.
    Si le fichier ne se charge pas, on le dit — pas d ecran blanc.      */
 function HypeImportEcran(props) {
+  /* 22/08 session 152 — ÉCRAN D'IMPORT.
+     ⚠️ Ce composant ne lit PAS le contexte de l'app : il ne peut donc pas
+     appeler T() ni tr(), qui ont besoin de `tr` fourni par useApp().
+     C'est ce qui l'a fait planter au premier essai (« Un caillou dans le
+     sabot », 22/08 20h13). Les textes passent par props.mots, fournis
+     par l'écran appelant qui, lui, a le contexte.                      */
+  var mots = props.mots || {};
   var ref = React.useRef(null);
-  var stP = React.useState(!(typeof window !== "undefined" && window.HYPE_IMPORT));
+  var stP = React.useState(!(typeof window !== "undefined" && window.HYPE_IMPORT && window.HYPE_IMPORT.rendre));
   var chargeEnCours = stP[0], setCharge = stP[1];
   var stE = React.useState(null); var errCh = stE[0], setErrCh = stE[1];
 
   React.useEffect(function () {
     var vivant = true;
     function dessiner() {
-      if (!vivant || !ref.current || !window.HYPE_IMPORT || !window.HYPE_IMPORT.rendre) return;
+      if (!vivant || !ref.current) return;
+      if (!window.HYPE_IMPORT || !window.HYPE_IMPORT.rendre) {
+        setErrCh("module non chargé"); return;
+      }
       try {
         window.HYPE_IMPORT.reinitialiser();
         window.HYPE_IMPORT.rendre(ref.current, {
           onEnregistrer: props.onEnregistrer,
           onFermer: props.onFermer
         });
-      } catch (eIm) { setErrCh(String(eIm && eIm.message ? eIm.message : eIm)); }
+      } catch (eIm) {
+        setErrCh(String(eIm && eIm.message ? eIm.message : eIm));
+      }
     }
-    if (window.HYPE_IMPORT && window.HYPE_IMPORT.rendre) { dessiner(); return function () { vivant = false; }; }
-    var s = document.createElement("script");
-    s.src = "hype-import-ffe.js?v=1";
-    s.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
-    s.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
-    document.head.appendChild(s);
+    if (window.HYPE_IMPORT && window.HYPE_IMPORT.rendre) {
+      setCharge(false); setTimeout(dessiner, 0);
+      return function () { vivant = false; };
+    }
+    var sc = document.createElement("script");
+    sc.src = "hype-import-ffe.js?v=1";
+    sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
+    sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
+    document.head.appendChild(sc);
     return function () { vivant = false; };
   }, []);
 
-  return React.createElement("div", { style: { minHeight: "60vh" } },
+  return React.createElement("div", { style: { minHeight: "60vh", paddingBottom: 90 } },
+    React.createElement("div", {
+      style: { display: "flex", alignItems: "center", gap: 12, padding: "16px 16px 0" }
+    },
+      React.createElement("span", {
+        onClick: props.onFermer,
+        style: { fontSize: 22, color: "#20D9F5", lineHeight: 1, padding: "1px 5px", cursor: "pointer" }
+      }, "\u2039"),
+      React.createElement("span", {
+        style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 16, fontWeight: 600 }
+      }, mots.titre || "Importer mes résultats")),
     chargeEnCours ? React.createElement("div", {
       style: { padding: "40px 20px", textAlign: "center", fontSize: 12.5, color: "#8A929C" }
-    }, T("Préparation de l'import…", "Preparing import…", "Preparando…", "Preparazione…", "準備中…", "Import wird vorbereitet…")) : null,
+    }, mots.attente || "Préparation de l'import…") : null,
     errCh ? React.createElement("div", {
       style: { margin: 16, padding: "15px 16px", borderRadius: 14, fontSize: 12, lineHeight: 1.6,
-               color: "#FFB4BC", background: "rgba(255,90,110,0.08)", border: "1px solid rgba(255,90,110,0.32)" }
-    }, T("L'import n'a pas pu s'ouvrir.", "Import could not open.", "No se pudo abrir.", "Impossibile aprire.", "開けませんでした。", "Import konnte nicht öffnen.") + " " + errCh) : null,
+               color: "#FFB4BC", background: "rgba(255,90,110,0.08)",
+               border: "1px solid rgba(255,90,110,0.32)" }
+    }, (mots.err || "L'import n'a pas pu s'ouvrir.") + " " + errCh) : null,
     React.createElement("div", { ref: ref })
   );
 }
@@ -33039,7 +33070,11 @@ function EcranCheval() {
           var nbR = ((palmTous || [])).length;
           if (!nbC && !nbR) return null;
           return h("div", { style: { display: "flex", gap: 7, margin: "12px 16px 2px" } },
-            [["coupes", T("Coupes", "Cups", "Copas", "Coppe", "\u30ab\u30c3\u30d7", "Pokale"), nbC], ["resultats", T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse"), nbR]].map(function (pl) {
+            /* 22/08 session 152 : la pilule « Résultats » est RETIRÉE à la
+               demande de Blandine — elle n'aboutissait à rien de lisible.
+               La pilule « Coupes » et le rail de coupes restent intacts.
+               Le résumé des résultats vit désormais sous le bloc IPO.   */
+            [["coupes", T("Coupes", "Cups", "Copas", "Coppe", "\u30ab\u30c3\u30d7", "Pokale"), nbC]].map(function (pl) {
               if (!pl[2]) return null;
               var onP = ongletPerf === pl[0];
               return h("button", { key: "pl" + pl[0], onClick: function () { setOngletPerf(pl[0]); }, style: { padding: "7px 14px", borderRadius: 999, border: "1px solid " + (onP ? tA(0.75) : "rgba(255,255,255,0.14)"), background: onP ? tA(0.14) : "rgba(255,255,255,0.04)", color: onP ? teinteCl : "rgba(237,242,245,0.62)", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, pl[1] + " " + pl[2]);
@@ -33075,6 +33110,137 @@ function EcranCheval() {
               h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pI, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblI),
               h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null);
         })() : null,
+
+        /* ═══ 22/08 session 152 — LE RÉSUMÉ DES RÉSULTATS ═══════════════
+           Maquette validée par Blandine : structure B (liseré à gauche dans
+           la teinte du cheval), fond « Souffle » (la lueur ne touche que le
+           coin bas-droit), UN ENCART PAR SACRE avec son année et sa
+           catégorie, hauteurs FIXES à 62 px, noms jamais coupés,
+           plafond à SEPT puis « et N autres ».
+           🟥 Se pose SOUS la carte IPO. Le rail de coupes reste intact.  */
+        (function () {
+          var lignes = (lignesPourModule || []).filter(function (r) {
+            return r && (r.place != null || r.classement);
+          });
+          var proprio = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+          if (!lignes.length && !proprio) return null;
+
+          function nbDe(r) {
+            if (r.place != null) return Number(r.place);
+            var m = String(r.classement || "").match(/^\s*(\d+)/);
+            return m ? Number(m[1]) : null;
+          }
+          var faits = lignes.map(function (r) {
+            return { pl: nbDe(r), part: r.partants ? Number(r.partants) : null,
+                     nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "",
+                     an: (r.date_epreuve || "").slice(0, 4) };
+          }).filter(function (f) { return f.pl != null; });
+
+          var nV = faits.filter(function (f) { return f.pl === 1; }).length;
+          var nP = faits.filter(function (f) { return f.pl <= 3; }).length;
+          var nC = lignes.filter(function (r) { return Number(r.quart) === 1; }).length;
+
+          faits.sort(function (a, b) {
+            var d = (a.pl === 1 ? 0 : a.pl <= 3 ? 1 : 2) - (b.pl === 1 ? 0 : b.pl <= 3 ? 1 : 2);
+            if (d !== 0) return d;
+            return (b.part || 0) - (a.part || 0);
+          });
+          var vus = faits.slice(0, 7), reste = faits.length - vus.length;
+
+          function ch(n, lb, or) {
+            return h("div", { style: { flex: 1, textAlign: "center" } },
+              h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 23, lineHeight: 1,
+                color: or ? "#D9B56C" : "#EDF2F5" } }, String(n)),
+              h("div", { style: { fontSize: 7.5, letterSpacing: "0.13em", textTransform: "uppercase",
+                color: "#8A929C", marginTop: 5, fontWeight: 700 } }, lb));
+          }
+
+          /* 22/08 : le bloc est le CHEMIN vers l'import. Sans lui, le bouton
+             n'était plus atteignable depuis le retrait de la pilule
+             « Résultats » — Blandine l'a trouvé par hasard.            */
+          return h("div", {
+            onClick: function () {
+              if (!faits.length && proprio) { ouvrirImportFFE(); return; }
+              bientot();
+            },
+            style: {
+              margin: "14px 16px 0", borderRadius: 16, overflow: "hidden", cursor: "pointer",
+              border: "1px solid rgba(255,255,255,0.09)",
+              borderLeft: "3px solid " + teinteCl,
+              /* le « Souffle » : la lueur ne prend qu'au coin bas-droit */
+              background: "radial-gradient(140% 100% at 118% 100%, " + tA(0.14) + ", transparent 58%),"
+                        + " linear-gradient(160deg, rgba(18,23,27,0.9), rgba(11,14,17,0.92))",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 22px rgba(0,0,0,0.38)"
+            }
+          },
+            h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "13px 15px 0" } },
+              h("span", { style: { fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase",
+                fontWeight: 800, color: "#8A929C" } },
+                T("En concours", "In competition", "En concurso", "In gara", "\u7af6\u6280", "Im Turnier")),
+              h("span", { style: { marginLeft: "auto", fontSize: 15, color: "rgba(242,246,248,0.3)" } }, "\u203a")),
+
+            h("div", { style: { display: "flex", gap: 8, padding: "12px 15px 0" } },
+              ch(faits.length, T("Sorties", "Starts", "Salidas", "Uscite", "\u51fa\u5834", "Starts")),
+              ch(nV, T("Victoires", "Wins", "Victorias", "Vittorie", "\u512a\u52dd", "Siege"), true),
+              ch(nP, T("Podiums", "Podiums", "Podios", "Podi", "\u5165\u8cde", "Podien")),
+              ch(nC, T("Classements", "Placings", "Clasificados", "Piazzamenti", "\u5165\u8cde\u570f", "Platzierungen"))),
+
+            faits.length ? h("div", { style: { marginTop: 13, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+              vus.map(function (f, iF) {
+                return h("div", { key: "hf" + iF, style: {
+                  display: "flex", alignItems: "center", gap: 10, padding: "0 14px", height: 62,
+                  borderBottom: iF < vus.length - 1 ? "1px solid rgba(255,255,255,0.045)" : "none" } },
+                  h("span", { style: { flex: "0 0 40px", textAlign: "center",
+                    fontFamily: "'Cinzel',Georgia,serif", fontSize: 15, lineHeight: 1,
+                    color: f.pl === 1 ? "#D9B56C" : "rgba(242,246,248,0.5)" } },
+                    String(f.pl) + (f.pl === 1 ? "er" : "e")),
+                  h("span", { style: { flex: 1, minWidth: 0, overflow: "hidden" } },
+                    h("span", { style: { fontSize: 12.5, fontWeight: 600, color: "#EDF2F5",
+                      lineHeight: 1.28, display: "-webkit-box", WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical", overflow: "hidden" } }, f.nom),
+                    h("span", { style: { display: "block", fontSize: 10, color: "#8A929C",
+                      marginTop: 3, whiteSpace: "nowrap", overflow: "hidden",
+                      textOverflow: "ellipsis" } },
+                      [f.ep, f.part ? (String(f.pl) + (f.pl === 1 ? "er" : "e") + " sur " + f.part) : null,
+                       f.cav].filter(Boolean).join(" \u00b7 "))),
+                  f.an ? h("span", { style: { flex: "0 0 38px", textAlign: "right", fontSize: 10.5,
+                    color: "#6E7780", fontFamily: "'Cinzel',Georgia,serif" } }, f.an) : null);
+              }),
+              reste > 0 ? h("div", { style: { padding: "9px 15px", textAlign: "center",
+                fontSize: 10.5, color: "#8A929C" } },
+                T("et " + reste + " autre" + (reste > 1 ? "s" : ""),
+                  "and " + reste + " more", "y " + reste + " m\u00e1s",
+                  "e altri " + reste, "\u4ed6 " + reste + " \u4ef6",
+                  "und " + reste + " weitere")) : null) : null,
+
+            h("div", { style: { padding: "11px 15px 13px", textAlign: "center", fontSize: 11,
+              fontWeight: 700, letterSpacing: "0.04em", color: teinteCl,
+              borderTop: "1px solid rgba(255,255,255,0.07)" } },
+              faits.length
+                ? T("Voir tout son palmar\u00e8s \u2192", "See the full record \u2192",
+                    "Ver todo su palmar\u00e9s \u2192", "Vedi tutto il palmar\u00e8s \u2192",
+                    "\u5168\u3066\u306e\u6210\u7e3e \u2192", "Alle Erfolge ansehen \u2192")
+                : T("Aucun r\u00e9sultat pour l'instant", "No results yet", "A\u00fan sin resultados",
+                    "Nessun risultato", "\u307e\u3060\u6210\u7e3e\u306f\u3042\u308a\u307e\u305b\u3093",
+                    "Noch keine Ergebnisse")));
+        })(),
+
+        /* le chemin franc vers l'import, sous le résumé */
+        (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("button", {
+          onClick: function () { ouvrirImportFFE(); },
+          style: {
+            display: "block", width: "calc(100% - 32px)", margin: "10px 16px 0",
+            padding: "14px", borderRadius: 14, fontSize: 12.5, fontWeight: 700,
+            letterSpacing: "0.03em", cursor: "pointer",
+            color: "rgba(217,181,108,0.95)", background: "rgba(217,181,108,0.045)",
+            border: "1.5px dashed rgba(217,181,108,0.32)",
+            fontFamily: "'Montserrat',sans-serif"
+          }
+        }, "\u2913 " + T("Importer mes r\u00e9sultats FFE", "Import my FFE results",
+             "Importar mis resultados FFE", "Importa i miei risultati FFE",
+             "FFE\u306e\u7d50\u679c\u3092\u53d6\u308a\u8fbc\u3080",
+             "Meine FFE-Ergebnisse importieren")) : null,
+
         (ongletPerf === "resultats" && palmTous && palmTous.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
           ((c.flots && c.flots.length) ? palmTous.filter(function (pF) { return pF && pF.auth === "perso"; }) : palmTous).slice(0, 6).map(function (rP, iR) {
             var rgP = parseInt(rP.rang, 10);
