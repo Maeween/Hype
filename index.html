@@ -1344,76 +1344,6 @@ async function supprimerMurEvenement(id) {
   return await supa.from("mur_evenement").delete().eq("id", id).eq("user_id", user.id);
 }
 
-/* --- 22/08 session 152 : ENREGISTRER UN IMPORT DE TELEMAT ----------------
-   Écrit les lignes relues par la cavalière dans `resultats`.
-   🟥 N'est appelée QUE depuis l'écran de relecture, après validation.
-      Aucune insertion automatique, jamais.
-
-   ⚠️ GARDE-FOU CONTRE LES DOUBLONS : une cavalière importera deux fois la
-   même saison, c'est certain. On lit d'abord ce que le cheval a déjà, et
-   on écarte toute ligne de MÊME date + MÊME épreuve + MÊME concours.
-   Sans ça, un second import créerait 44 lignes de plus en silence.
-
-   `origine` vaut « import » : c'est ce qui permettra au fil de ne pas se
-   noyer sous sept saisons d'un coup.                                    */
-async function enregistrerImportFFE(chevalId, lignes) {
-  const user = await utilisateurActuel();
-  if (!user) return { n: 0, doublons: 0, error: "Pas connecté" };
-  if (!chevalId) return { n: 0, doublons: 0, error: "Cheval inconnu" };
-  const aEcrire = (lignes || []).filter(function (r) {
-    return r && r.garder && r.date && r.statut === "classe";
-  });
-  if (!aEcrire.length) return { n: 0, doublons: 0 };
-
-  /* ce que le cheval a déjà */
-  let deja = [];
-  try {
-    const d = await supa.from("resultats")
-      .select("date_epreuve,epreuve,concours")
-      .eq("cheval_id", chevalId);
-    deja = (d && d.data) || [];
-  } catch (eL) { }
-  const cle = function (d, e, c) {
-    return [String(d || ""), String(e || "").toLowerCase().trim(),
-            String(c || "").toLowerCase().trim()].join("|");
-  };
-  const vues = {};
-  deja.forEach(function (r) { vues[cle(r.date_epreuve, r.epreuve, r.concours)] = true; });
-
-  const neufs = [], seen = {};
-  let doublons = 0;
-  aEcrire.forEach(function (r) {
-    const k = cle(r.date, r.epreuve, r.concours);
-    if (vues[k] || seen[k]) { doublons++; return; }
-    seen[k] = true;
-    neufs.push({
-      user_id: user.id,
-      cheval_id: chevalId,
-      concours: r.concours || "",
-      epreuve: r.epreuve || "",
-      date_epreuve: r.date,
-      place: r.place,
-      partants: r.partants,
-      quart: r.quart,          /* donné par la FFE, jamais calculé */
-      cavalier: r.cavalier || "",
-      origine: "import",
-      classement: (r.place != null && r.partants != null)
-        ? (r.place + (r.place === 1 ? "er" : "e") + " / " + r.partants) : ""
-    });
-  });
-  if (!neufs.length) return { n: 0, doublons: doublons };
-
-  /* par paquets de 50 : un import de sept saisons fait 166 lignes */
-  let n = 0;
-  for (let i = 0; i < neufs.length; i += 50) {
-    const r = await supa.from("resultats").insert(neufs.slice(i, i + 50)).select("id");
-    if (r && r.error) return { n: n, doublons: doublons, error: String(r.error.message || r.error) };
-    n += (r && r.data ? r.data.length : 0);
-  }
-  /* 🟥 aucune diffusion à l'écurie : sept saisons noieraient le fil. */
-  return { n: n, doublons: doublons };
-}
-
 async function publierResultat({ concours, classement, fichierPhoto, media_url } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
@@ -25527,32 +25457,9 @@ function EcranMonCompte() {
   }
 
   function sortir() {
-    /* 22/08 session 152 — LA DÉCONNEXION NE SE VOYAIT PAS.
-       signOut() fermait bien la session cote Supabase, mais rien ici ne
-       remettait l ecran a zero : le profil, le pseudo et l etat
-       « connectee » restaient affiches. Une abonnee a cru pendant une
-       journee entiere qu elle ne pouvait pas se deconnecter. Elle a alors
-       saisi les identifiants de son AUTRE compte : l app a d abord refuse,
-       puis l a « reconnectee » sur la session encore ouverte. Elle croyait
-       avoir change de compte sans avoir jamais bouge.
-       ⚠️ Le `!dispo` bloquait AUSSI le bouton en silence.
-       On vide donc l etat local ET on renvoie sur l ecran d entree.    */
-    if (busy) return;
+    if (busy || !dispo) return;
     setBusy(true);
-    setMsg(null);
-    function finir() {
-      try { setUser(null); } catch (e1) { }
-      try { setProfil(null); } catch (e2) { }
-      try { if (typeof setProfilApp === "function") setProfilApp(null); } catch (e3) { }
-      try { if (typeof setChSuppr === "function") setChSuppr([]); } catch (e4) { }
-      setBusy(false);
-      try {
-        if (typeof AUTH_MODE_SPECTRAL !== "undefined") AUTH_MODE_SPECTRAL = "seuil";
-        setEcran("connexion");
-      } catch (e5) { }
-    }
-    if (!dispo) { finir(); return; }
-    deconnexion().then(finir).catch(finir);
+    deconnexion().then(function () { setBusy(false); setMsg(null); }).catch(function () { setBusy(false); });
   }
 
   var stIn = { width: "100%", boxSizing: "border-box", background: "rgba(13,20,28,0.6)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 14, padding: "14px 16px", color: COLORS.blanc, fontSize: 16, outline: "none", fontFamily: "inherit" };
