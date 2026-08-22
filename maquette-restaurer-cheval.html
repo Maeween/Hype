@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     MAQUETTE v2 — CARTE « RETROUVER UN CHEVAL »
+     22/08/2026 · Fichier AUTONOME de présentation.
+     ⚠️ NE VA PAS EN PRODUCTION. Ne jamais renommer index.html.
+     Emplacement visé : EcranMonCompte, entre « Se déconnecter » (L25467)
+     et « Supprimer mon compte » (L25468).
+     ═══════════════════════════════════════════════════════════════════ -->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Maquette · Retrouver un cheval</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --noir:#060709; --anthracite:#111417;
+    --turq:#20D9F5; --turql:#5FE9F0; --or:#E8C887;
+    --blanc:#F4F7FA; --gris:#8A929C; --grisdoux:#5B646E;
+    --C:'Cinzel',Georgia,serif; --M:'Montserrat',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#0A0B0D;color:var(--blanc);
+    font-family:var(--M);overflow-x:clip;-webkit-text-size-adjust:100%}
+
+  /* ---- barre de maquette, HORS application ------------------------ */
+  .mq{padding:16px 14px 6px;text-align:center;border-bottom:1px solid rgba(255,255,255,.06)}
+  .mq h1{margin:0;font-family:var(--C);font-size:15px;letter-spacing:1.5px;font-weight:600;color:#C9D3DA}
+  .mq p{margin:6px 0 12px;font-size:10.5px;color:var(--grisdoux);letter-spacing:.04em}
+  .etats{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding-bottom:14px}
+  .etats button{font-family:var(--M);font-size:10.5px;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;padding:7px 12px;border-radius:999px;cursor:pointer;
+    background:none;border:1px solid rgba(255,255,255,.14);color:var(--gris);transition:.25s}
+  .etats button:hover{border-color:rgba(32,217,245,.4);color:#B8C4CC}
+  .etats button[aria-pressed="true"]{border-color:rgba(32,217,245,.75);color:var(--turq);
+    background:rgba(32,217,245,.08)}
+  .etats button:focus-visible{outline:2px solid var(--turq);outline-offset:2px}
+
+  /* ---- cadre téléphone -------------------------------------------- */
+  .tel{max-width:390px;margin:22px auto 44px;background:var(--noir);
+    border:1px solid rgba(255,255,255,.07);border-radius:34px;
+    padding:30px 22px 40px;position:relative;overflow:hidden}
+  .tel::before{content:"";position:absolute;left:50%;top:-90px;width:340px;height:340px;
+    transform:translateX(-50%);border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(32,217,245,.07),transparent 66%)}
+  .tel>*{position:relative}
+
+  /* ---- contexte Mon compte, grisé pour situer ---------------------- */
+  .ctx{opacity:.4;pointer-events:none;text-align:center}
+  .ctx .rond{width:78px;height:78px;border-radius:50%;margin:0 auto;
+    background:rgba(32,217,245,.16);border:1px solid rgba(32,217,245,.7);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--C);font-size:30px;color:var(--turq)}
+  .ctx .nom{font-family:var(--C);font-size:24px;letter-spacing:1.4px;margin-top:12px}
+  .ctx .mail{font-size:12.5px;color:var(--gris);margin-top:3px}
+  .ctx .co{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--turq);margin-top:16px}
+  .ctx .bt1{margin:26px auto 0;width:200px;padding:13px;border-radius:999px;
+    background:var(--turq);color:#04252A;font-weight:800;font-size:14px}
+  .ctx .bt2{margin:12px auto 0;width:180px;padding:12px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.18);color:var(--gris);font-size:13px;font-weight:600}
+  .ctx .lien{margin-top:20px;font-size:12.5px;color:#4A525B;text-decoration:underline}
+
+  .reperage{font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+    color:#39414A;text-align:center;margin:16px 0 4px}
+
+  /* ═══ LA CARTE ═══════════════════════════════════════════════════ */
+  .carte{margin:20px 0 4px;border-radius:22px;padding:24px 18px 18px;
+    background:linear-gradient(168deg,rgba(20,24,28,.96),rgba(9,11,14,.99));
+    border:1px solid rgba(232,200,135,.20);
+    box-shadow:0 18px 46px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.035);
+    animation:venir .7s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes venir{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+
+  .lab{font-size:9px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--or);text-align:center;opacity:.9}
+  .titre{font-family:var(--C);font-size:19px;font-weight:600;letter-spacing:1.1px;
+    text-align:center;margin-top:10px;color:#F7FAFC}
+
+  .bloc{margin-top:22px;padding-top:20px;border-top:1px solid rgba(255,255,255,.055)}
+  .bloc:first-of-type{border-top:none;padding-top:0}
+
+  .tete{display:flex;align-items:center;gap:13px}
+  /* photo du cheval : AUCUN filtre, AUCUN voile. Ici un substitut. */
+  .photo{width:48px;height:48px;border-radius:50%;flex:none;overflow:hidden;
+    background:#181C20;border:1px solid rgba(255,255,255,.1);
+    display:flex;align-items:center;justify-content:center}
+  .photo span{font-family:var(--C);font-size:18px;color:#5A646E}
+  .chnom{font-family:var(--C);font-size:16.5px;font-weight:600;letter-spacing:.6px;color:#EEF4F7;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .phrase{font-size:12.5px;line-height:1.65;color:#828C96;margin:14px 2px 0}
+  .phrase em{font-style:normal;color:#AEB8C1}
+
+  .btr{display:block;width:100%;margin-top:16px;
+    font-family:var(--M);font-size:13px;font-weight:700;letter-spacing:.06em;
+    padding:13px 16px;border-radius:999px;cursor:pointer;transition:.3s;
+    background:rgba(32,217,245,.07);border:1px solid rgba(32,217,245,.5);color:var(--turql)}
+  .btr:hover{background:rgba(32,217,245,.16);border-color:var(--turq);
+    box-shadow:0 0 22px rgba(32,217,245,.24)}
+  .btr:focus-visible{outline:2px solid var(--turq);outline-offset:3px}
+  .btr[disabled]{opacity:.55;cursor:default;box-shadow:none}
+
+  /* ---- le mot de retour, après le clic ---------------------------- */
+  .retour{margin-top:16px;padding:16px 16px 15px;border-radius:16px;
+    background:rgba(32,217,245,.05);border:1px solid rgba(32,217,245,.26);
+    animation:venir .55s cubic-bezier(.2,.7,.3,1) both}
+  .retour .r1{font-family:var(--C);font-size:15px;letter-spacing:.7px;color:#EAF7FA}
+  .retour .r2{font-size:11.5px;line-height:1.6;color:#7E8A93;margin-top:8px}
+
+  .vide{text-align:center;padding:26px 10px;font-size:11.5px;color:#3C444C;font-style:italic}
+
+  /* ---- notes ------------------------------------------------------ */
+  .notes{max-width:390px;margin:0 auto 70px;padding:0 24px;font-size:11.5px;
+    line-height:1.75;color:#6E7780}
+  .notes h2{font-family:var(--C);font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:#9AA4AD;margin:26px 0 10px;font-weight:600}
+  .notes b{color:#AEB8C0;font-weight:600}
+  .notes ul{margin:0;padding-left:17px}
+  .notes li{margin-bottom:8px}
+  .att{border-left:2px solid rgba(232,200,135,.5);padding-left:12px;color:#8B8272}
+  .notes code{font-size:10.5px;color:#8FA0AA}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="mq">
+  <h1>Carte « Retrouver un cheval »</h1>
+  <p>Maquette v2 · ne va pas en production · 22/08/2026</p>
+  <div class="etats" role="group" aria-label="États de la carte">
+    <button data-e="un" aria-pressed="true">Un cheval</button>
+    <button data-e="deux" aria-pressed="false">Deux chevaux</button>
+    <button data-e="retour" aria-pressed="false">Après le clic</button>
+    <button data-e="rien" aria-pressed="false">Rien à retrouver</button>
+  </div>
+</div>
+
+<div class="tel">
+
+  <div class="ctx">
+    <div class="rond">B</div>
+    <div class="nom">Blandine</div>
+    <div class="mail">feinn@live.fr</div>
+    <div class="co">✓ Connectée</div>
+    <div class="bt1">Continuer</div>
+    <div class="bt2">Se déconnecter</div>
+  </div>
+
+  <div class="reperage">↓ la carte se pose ici ↓</div>
+
+  <div id="zone"></div>
+
+  <div class="reperage">↑ puis reprend Mon compte ↑</div>
+
+  <div class="ctx"><div class="lien">Supprimer mon compte</div></div>
+
+</div>
+
+<div class="notes">
+  <h2>Ce qui est dessiné</h2>
+  <ul>
+    <li>Ta phrase, telle que tu l'as dite : <b>« Rizotto t'attendra 30 jours à la porte de l'écurie, si tu changes d'avis. »</b></li>
+    <li>Le bouton porte le nom du cheval : <b>Retrouver Rizotto</b>. Il est placé sous la ligne, pas à droite — avec un nom long comme « Hey Baby Please » il tient quand même.</li>
+    <li>Le mot de retour n'arrive qu'<b>après le clic</b>, au moment où elle est soulagée. C'est là seulement qu'on parle de la prochaine fois.</li>
+    <li>Rien à retrouver = <b>rien du tout</b>. Pas de cadre vide, pas de message.</li>
+  </ul>
+
+  <h2>Ce qui n'est pas tranché</h2>
+  <ul class="att">
+    <li><b>La phrase dit « 30 jours » et ne bouge pas.</b> Au 25<sup>e</sup> jour elle sera fausse. Tu voulais voir à quoi ça ressemble avant d'en décider — c'est fait, on en reparle.</li>
+    <li><b>Les ronds de photo sont des substituts</b> (initiale). En vrai c'est la photo du cheval, brute, sans filtre ni voile.</li>
+    <li><b>Le deuxième passage n'est pas dessiné</b> — quand la restauration offerte a déjà servi. Il lui faudra sa propre phrase.</li>
+    <li><b>Le cas du quota gratuit</b> : si la place est reprise, le bouton ne peut pas aboutir tel quel.</li>
+  </ul>
+
+  <h2>Rappels du chantier</h2>
+  <ul>
+    <li>Deux colonnes seront nécessaires : <code>supprime_le</code> et <code>restaure_le</code>.</li>
+    <li>Plus de purge à 30 jours — on ne supprime plus rien.</li>
+    <li>10 endroits à filtrer dans <code>index.html</code>. <code>hype-resultats.js</code> n'est pas concerné.</li>
+  </ul>
+</div>
+
+<script>
+(function(){
+  var JEUX = {
+    un:     [{n:"Rizotto d'Émery"}],
+    deux:   [{n:"Rizotto d'Émery"},{n:"Elfe de Feinn"}],
+    retour: [{n:"Rizotto d'Émery", ok:true}],
+    rien:   []
+  };
+
+  function prenom(n){ return String(n||"").trim().split(/\s+/)[0] || n; }
+
+  function blocCheval(c){
+    var p = prenom(c.n);
+    var h = '<div class="bloc">'
+          + '<div class="tete">'
+          +   '<div class="photo"><span>' + c.n.charAt(0) + '</span></div>'
+          +   '<div class="chnom">' + c.n + '</div>'
+          + '</div>';
+    if (c.ok){
+      h += '<div class="retour">'
+        +    '<div class="r1">' + p + ' est rentré. Il va bien.</div>'
+        +    '<div class="r2">Garde-le au chaud — une prochaine fois, la porte ne resterait pas ouverte aussi longtemps.</div>'
+        +  '</div>';
+    } else {
+      h += '<div class="phrase">' + p + ' t\'attendra 30 jours à la porte de l\'écurie, <em>si tu changes d\'avis.</em></div>'
+        +  '<button class="btr">Retrouver ' + p + '</button>';
+    }
+    return h + '</div>';
+  }
+
+  function rendre(cle){
+    var l = JEUX[cle] || [], z = document.getElementById("zone");
+    if(!l.length){
+      z.innerHTML = '<div class="vide">— aucune carte : rien à retrouver —</div>';
+      return;
+    }
+    var h = '<div class="carte">'
+          + '<div class="lab">À la porte de l\'écurie</div>'
+          + '<div class="titre">' + (l.length > 1 ? "Ils t'attendent" : "Il t'attend") + '</div>';
+    l.forEach(function(c){ h += blocCheval(c); });
+    z.innerHTML = h + '</div>';
+
+    z.querySelectorAll(".btr").forEach(function(b){
+      b.addEventListener("click", function(){
+        b.disabled = true;
+        b.textContent = "…";
+        setTimeout(function(){ rendre("retour"); }, 550);
+      });
+    });
+  }
+
+  var bts = document.querySelectorAll(".etats button");
+  bts.forEach(function(b){
+    b.addEventListener("click", function(){
+      bts.forEach(function(o){ o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+      rendre(b.getAttribute("data-e"));
+    });
+  });
+
+  rendre("un");
+})();
+</script>
+</body>
+</html>

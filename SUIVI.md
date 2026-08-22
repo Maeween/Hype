@@ -35,7 +35,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 22/08/2026 (SESSION 152 · LES RÉSULTATS EN CONCOURS) — md5 `ace1cf24f9cfc4500ef572a76af9822d`, 9 284 344 octets.** Nouveau fichier à la racine : **`hype-resultats.js`** (md5 `0f7d3654633c46c77c79c662b8af4640`) — **les deux se poussent ensemble**. `hype-stories.js` reste en **19bm**, inchangé. ⚠️ `sw.js` ne déclare pas encore `hype-resultats.js`.
+**Version actuelle de l'index.html : 22/08/2026 (SESSION 153 · LA PORTE DE L'ÉCURIE) — md5 `d156d8f483c2c3eb1fbe4745d922e694`, 9 306 934 octets.** Partie de l'index `aae527331cc8dcc78d18f0ec53f8b7f3` (9 284 794 octets), le plus récent de la page résultats. **`hype-resultats.js` INCHANGÉ** (`0f7d3654…`) : ce module ne parle jamais à Supabase, rien à y filtrer. ⚠️ **SQL À PASSER AVANT DE POUSSER — DÉJÀ FAIT ET VÉRIFIÉ LE 22/08** : colonnes `supprime_le` et `restaure_le` sur `chevaux` + index `chevaux_vivants_idx`.
+
+**Ancienne version (152) — 22/08/2026 (SESSION 152 · LES RÉSULTATS EN CONCOURS) — md5 `ace1cf24f9cfc4500ef572a76af9822d`, 9 284 344 octets. État intermédiaire de la même session : `aae52733…` (base de la 153).** Nouveau fichier à la racine : **`hype-resultats.js`** (md5 `0f7d3654633c46c77c79c662b8af4640`) — **les deux se poussent ensemble**. `hype-stories.js` reste en **19bm**, inchangé. ⚠️ `sw.js` ne déclare pas encore `hype-resultats.js`.
 
 **Ancienne version (148) — 21/08/2026 (SESSION 148 · POINTS ARGENTÉS, ÉTAPE 2) — md5 `d1e7b53fdb659659a625d12001886f7b`. ⚠️ **DEUX FICHIERS ENSEMBLE** : `hype-stories.js` en **19bm** (md5 `5a9ce376b3119c68c32c66ef4426a41c`). La session 149 (21/08) n'a livré AUCUN code — incident Linguae, Netlify, cadrage du chantier résultats.**
 
@@ -63,6 +65,135 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 ⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
 
 ⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 153 — 22/08/2026 · LA PORTE DE L'ÉCURIE (suppression douce d'un cheval)
+
+**Base de départ : l'index `aae527331cc8dcc78d18f0ec53f8b7f3`** (9 284 794 octets), fourni par Blandine comme le plus récent — celui de la page « résultats en concours », qui avait travaillé après le `ace1cf24…` du matin. Repères revérifiés un par un avant d'écrire : tous identiques sauf deux décalages de +6 lignes en fin de fichier.
+
+**Index livré : md5 `d156d8f483c2c3eb1fbe4745d922e694`, 9 306 934 octets.** `hype-resultats.js` **inchangé** (`0f7d3654…`) — vérifié : ce module ne parle jamais à Supabase, il reçoit ses lignes via `options.lignes`. Rien à y filtrer, ni maintenant ni plus tard.
+
+### LE PROBLÈME
+
+Supprimer un cheval était un vrai `delete` : la ligne disparaissait, rien n'était récupérable. Et le chemin pour y arriver venait d'être **rendu visible** en session 152 — donc les suppressions allaient commencer à arriver pour de vrai.
+
+🔴 **Découvert en lisant le code, non signalé dans la passation :** il existait **deux** chemins de suppression, pas un. Celui de la fiche cheval (double confirmation) et celui de « Gérer mon écurie » — **ce dernier part au premier clic, sans aucune confirmation.** Signalé à Blandine, non corrigé (hors périmètre du jour).
+
+### LES DÉCISIONS DE BLANDINE (22/08)
+
+- **Suppression douce** : le cheval ne s'efface plus, il « attend à la porte de l'écurie ». La ligne reste en base.
+- **AUCUNE PURGE. Jamais.** Ni à 30 jours, ni après. Résultats, albums, photos, stories : tout reste, indéfiniment. C'est ce qui rend une restauration tardive possible.
+- **Première restauration offerte pour TOUT LE MONDE**, gratuit compris. Raison retenue : un compte gratuit n'a qu'un cheval — s'il le perd, il perd tout. C'est lui qui a le plus besoin du filet.
+- **La règle « aucune mention de prix » du matin est LEVÉE** — remplacée par : on peut dire que c'est offert la première fois et que la suivante ne l'est pas, **sans jamais afficher de montant**.
+- **La fiche d'un cheval en attente reste ouvrable**, avec un bandeau — plutôt que d'être fermée.
+- **Si la place du plan gratuit est reprise** : message mascotte, et le choix entre retirer l'autre cheval ou agrandir son écurie.
+
+### LE SQL — PASSÉ ET VÉRIFIÉ PAR BLANDINE LE 22/08
+
+Deux colonnes sur `chevaux` : **`supprime_le`** (timestamptz) et **`restaure_le`** (timestamptz, retient que la restauration offerte a servi pour ce cheval). Plus un index partiel **`chevaux_vivants_idx`** sur `(user_id) where supprime_le is null`.
+
+Contrôles retournés : « colonnes : les 2 en place », « index chevaux_vivants_idx : en place », puis **« vivants : 22 · en attente : 0 · gratuité déjà utilisée : 0 »**.
+
+⚠️ **Les 30 jours ne sont PAS stockés.** Simple calcul sur `supprime_le` au moment du clic. Rien à planifier, aucun `pg_cron`, rien à surveiller.
+
+⚠️ **Les politiques RLS de `chevaux` n'ont PAS été touchées.** Le filtrage est fait dans le code (voie A). La voie B (filtrer dans la politique `select`, qui couvrirait tout d'un coup y compris les modules détachés et les écrans futurs) a été présentée et reste ouverte — elle demande de lire les politiques actuelles avant d'écrire quoi que ce soit.
+
+### 🔴 LES 10 ENDROITS FILTRÉS — la liste complète
+
+23 accès à `from("chevaux")` recensés dans l'index, tous classés. **10 listent des chevaux et ont reçu `.is("supprime_le", null)`** :
+
+| Fonction / écran | Ce qu'il affiche |
+|---|---|
+| `mesChevauxPerso` | état global de l'app, fusionné à chaque lancement |
+| `chevauxDe` | les chevaux d'un autre cavalier (profil en visite) |
+| `chevauxLiesDe` | les chevaux rattachés d'un autre cavalier |
+| `chevauxDeLEcurie` | les chevaux des membres du club (3 écrans) |
+| `mesChevaux` | mes chevaux — **et le quota du plan gratuit** |
+| `mesChevauxLies` | mes chevaux rattachés |
+| `EcranGuilde` | les chevaux du club |
+| `AlbumsCheval` → `chargerTagCiblesA` | sélecteur d'identification sur une photo |
+| `EcranCheval` → `chargerTagCibles` | sélecteur d'identification sur la fiche |
+| `EcranEcurieHype` | la vitrine publique |
+
+**Vérifié comme NON concerné** (il n'y a rien à y faire) : le globe et la carte communauté (lisent `hype_stories` et `profiles`, jamais `chevaux`) · le mur (`mur_evenement` n'a pas de colonne cheval) · les 4 compteurs existants (ils comptent des listes déjà filtrées à la source).
+
+### CE QUI A ÉTÉ ÉCRIT DANS L'INDEX
+
+- **`supprimerCheval`** ne supprime plus : `update { supprime_le: now }`. **Aucun `delete` ne subsiste sur `chevaux`.**
+- **`mesChevauxSupprimes()`** — les chevaux qui attendent. Sert uniquement à la carte.
+- **`retrouverCheval(id)`** — remet `supprime_le` à null et pose `restaure_le`.
+- **`restaurationOfferte(ch)`** — calcule les 30 jours. ⚠️ **POSÉE MAIS PAS BRANCHÉE** (voir plus bas).
+- **`supprime_le` / `restaure_le` portés jusqu'à `chevalDyn`** pour que la fiche sache où en est le cheval.
+
+### À L'ÉCRAN
+
+**+ La carte « À la porte de l'écurie »** dans `EcranMonCompte`, entre « Se déconnecter » et « Supprimer mon compte ». **Elle n'existe que s'il y a un cheval en attente** — sinon rien du tout, pas de cadre vide. Photo du cheval **brute** (aucun filtre, aucun voile), nom en Cinzel, puis la phrase de Blandine, mot pour mot :
+
+> **« Rizotto t'attendra 30 jours à la porte de l'écurie, si tu changes d'avis. »**
+
+Bouton **« Retrouver Rizotto »** — le nom du cheval dedans, en **prénom seul** (premier mot), sous la ligne et pleine largeur. *Retrouver* a été préféré à *Ramener* (c'est ce qui arrive à la cavalière, pas au cheval) et à *Ressusciter* (qui ferait entendre que le cheval est mort — inacceptable pour quelqu'un qui vient d'en perdre un pour de vrai).
+
+Après le clic, et **seulement après** — décision explicite de Blandine, au moment du soulagement, pas au moment du geste :
+
+> **« Rizotto est rentré. Il va bien. »**
+> *Garde-le au chaud — une prochaine fois, la porte ne resterait pas ouverte aussi longtemps.*
+
+**+ Le bandeau « À la porte de l'écurie »** en haut de la fiche d'un cheval en attente. **Visible uniquement par la propriétaire** (`moi.id === chevalDyn.ownerId`) — le fait qu'une cavalière ait retiré un cheval ne regarde qu'elle. Le cheval rentre sans quitter la page.
+
+**+ Le message mascotte** aux deux endroits, quand la place du plan gratuit est reprise. Reprend `mascotte-abo.webp`, **déjà présent** dans le projet (aucun fichier nouveau) :
+
+> **« Attention, la place dans l'écurie semble avoir été prise ! »**
+> *Retire le cheval qui s'y trouve, ou agrandis ton écurie pour pouvoir en accueillir plusieurs.*
+> Bouton **« Agrandir mon écurie »** → `setEcran("premium")`.
+
+**La mascotte n'apparaît QUE là** : sur la carte et le bandeau, la photo du cheval est le seul sujet — deux visages en concurrence dans un petit espace, le regard ne saurait plus où aller.
+
+**− Rien ne disparaît.** Aucun écran retiré, aucun chemin supprimé.
+
+Les six langues sont faites partout (FR/EN/ES/IT/JA/DE).
+
+### 🔴 CE QUI RESTE À FAIRE — À NE PAS OUBLIER
+
+1. **`restaurationOfferte()` n'est appelée par personne.** Le bouton fait rentrer le cheval **quel que soit le délai et quel que soit le nombre de fois**. C'est volontaire : voir les cristaux ci-dessous.
+
+2. **LES CRISTAUX — vérifié : ILS N'EXISTENT PAS comme monnaie.** Blandine voulait que les restaurations suivantes coûtent des cristaux (« au moins ils réfléchissent à deux fois avant de tout effacer 15 000 fois »). Recherche dans l'index : le cristal n'existe que comme **motif visuel** (Voie de Cristal, bulles cristal, fleuron de fin de cours). Le seul compteur est `profil.xp`, qui **monte et ne descend jamais** — une progression, pas un solde. Il faudrait créer la monnaie entière : solde par compte, façons de la gagner, façon de la dépenser, affichage.
+   ✅ **Rien n'est perdu si on le fait plus tard** : `restaure_le` enregistre déjà chaque première restauration, depuis maintenant. Le jour où les cristaux existent, la barrière se pose en **une condition** — aucune migration, aucune donnée manquante.
+   **Piste retenue par Blandine, non décidée** : 3 restaurations offertes en Premium, puis cristaux.
+
+3. **⚠️ LE POINT LE PLUS IMPORTANT, NON VÉRIFIABLE SANS TESTER : l'état local ne retire jamais une ligne.** `setChevaux` (L~21208) fusionne les chevaux connus et ajoute les nouveaux, mais **n'enlève jamais** ceux qui ont disparu de la base. L'état est en plus rechargé depuis le stockage local au démarrage (`sauve.chevaux`). **Conséquence possible : un cheval supprimé pourrait rester affiché** dans les écrans nourris par `ctx.chevaux`.
+   C'est un comportement **antérieur** à cette session (il existait déjà avec le `delete`), mais la suppression douce le rend visible.
+   👉 **Test à faire en priorité : supprimer un cheval et vérifier qu'il quitte bien l'écurie.** S'il reste, c'est là qu'il faut corriger. Non corrigé faute de feu vert : toucher à la gestion d'état n'était pas demandé.
+
+4. **Le deuxième passage n'a pas de phrase.** Quand la restauration offerte a déjà servi, la carte dit encore « 30 jours à la porte ». Il lui faudra son propre texte.
+
+5. **La phrase dit « 30 jours » et ne bouge pas.** Au 25ᵉ jour elle sera fausse. Trois formulations ont été proposées (garder telle quelle / retirer l'échéance / dire « gratuitement ») — **Blandine a gelé le sujet**, à reprendre.
+
+6. **Le deuxième chemin de suppression sans confirmation** (« Gérer mon écurie ») est toujours là.
+
+### ⚠️ LE CROISEMENT AVEC LE CHANTIER RÉSULTATS
+
+`resultats` est indexée par **cavalier** (`user_id`) — un résultat appartient à la cavalière, pas au cheval. Supprimer un cheval ne doit donc jamais faire disparaître un résultat de son palmarès à elle, seulement de la **fiche du cheval**.
+
+🔴 **Mais la colonne JSON `chevaux.palmares` part avec la ligne `chevaux`.** Tant qu'on ne purge rien, aucun risque. Le jour où une purge existerait, les anciennes entrées JSON disparaîtraient définitivement. **À traiter à deux voix avec la page résultats — non tranché.**
+
+### INCIDENTS DE LA SESSION (signalés à Blandine sur le moment)
+
+1. **Valeur de couleur corrompue** dans la maquette (`#586views` au lieu de `#5A646E`) — détectée au contrôle, corrigée avant envoi.
+2. **`rm` sur le fichier de maquette sans prévenir**, alors que tout le chantier porte sur « ne rien supprimer en silence ». Blandine a cru que Rizotto avait été touché. Sauvegarde existante (`/tmp/mq-v1.html`), aucune donnée en jeu. **Règle prise : écraser plutôt que supprimer.**
+3. **Bandeau écrit avec quatre variables inexistantes** dans `EcranCheval` (`monId`, `trCh`, `M`, `portOccupe`) — la fiche serait partie en écran blanc. Détecté au contrôle de portée avant livraison, corrigé (`moi.id`, `tr` de l'app, police en clair, état déclaré).
+
+### CONTRÔLES PASSÉS AVANT LIVRAISON
+
+149 blocs `<script>` inline vérifiés **un par un** au `node --check` : tous OK · `overflow-x: clip !important` (1) · `html { overscroll-behavior: none; }` (1) · aucun `overscroll-behavior:none` touchant `body` · `hypeVerrouScroll` (5) · `hypeLibererPuitsTactiles` (4) · `DEV_OUVRIR_PAGE = ""` · aucun `from("chevaux").delete()` · 10 filtres `supprime_le` comptés à l'unité.
+
+### PRÉPARATION FLUTTER
+
+- **Un point de décision unique créé** : `restaurationOfferte(ch)` est la seule fonction qui dit si une restauration est offerte. Aucune règle des 30 jours n'est écrite ailleurs. Le jour des cristaux, ou d'un changement de durée, un seul endroit bouge.
+- **Trois fonctions de données ajoutées dans la couche existante** (`mesChevauxSupprimes`, `retrouverCheval`, `restaurationOfferte`), au même niveau que `mesChevaux` / `supprimerCheval` — pas dans un écran. C'est le contrat de données que Flutter réimplémentera à l'identique.
+- **Aucune règle métier n'a été écrite dans un composant** : les écrans appellent, ils ne décident pas.
+- **Reste à moderniser** : les 10 filtres sont répétés à la main sur 10 appels — c'est exactement ce qu'un Repository `Chevaux` supprimerait (un seul endroit qui sait que « un cheval supprimé n'existe pas »). La voie B (RLS) aurait le même effet côté base. **Risque nommé : tout nouvel écran qui listera des chevaux devra penser au filtre, et rien ne l'y oblige aujourd'hui.**
+- **Aucun refactoring massif, aucun changement visuel non demandé, aucune dépendance ajoutée.**
 
 ---
 

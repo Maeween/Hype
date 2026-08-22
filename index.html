@@ -844,7 +844,7 @@ async function ajouterChevalPerso({ nom, discipline, robe, age, note, photoDataU
 async function mesChevauxPerso() {
   const user = await utilisateurActuel();
   if (!user) return { data: [], error: null };
-  return await supa.from("chevaux").select("*").eq("user_id", user.id).eq("ecurie", "__perso__").order("created_at", { ascending: false });
+  return await supa.from("chevaux").select("*").eq("user_id", user.id).eq("ecurie", "__perso__").is("supprime_le", null).order("created_at", { ascending: false });
 }
 async function mesResultats() {
   const user = await utilisateurActuel();
@@ -853,7 +853,7 @@ async function mesResultats() {
 }
 async function chevauxDe(userId) {
   if (!userId || typeof supa === "undefined") return { data: [], error: null };
-  return await supa.from("chevaux").select("*").eq("user_id", userId).order("created_at", { ascending: false });
+  return await supa.from("chevaux").select("*").eq("user_id", userId).is("supprime_le", null).order("created_at", { ascending: false });
 }
 async function chevauxLiesDe(userId) {
   try {
@@ -861,7 +861,7 @@ async function chevauxLiesDe(userId) {
     var rl = await supa.from("chevaux_liens").select("cheval_id").eq("user_id", userId);
     var idsL = ((rl && rl.data) || []).map(function (l) { return l.cheval_id; });
     if (!idsL.length) return { data: [], error: null };
-    return await supa.from("chevaux").select("*").in("id", idsL);
+    return await supa.from("chevaux").select("*").in("id", idsL).is("supprime_le", null);
   } catch (eCLD) { return { data: [], error: null }; }
 }
 async function resultatsDe(userId) {
@@ -1135,7 +1135,7 @@ async function chevauxDeLEcurie(nomEcurie, exclureUserId) {
     var vus = {}, ids = [];
     mm.forEach(function (p) { if (p && p.id && !vus[p.id] && p.id !== exclureUserId) { vus[p.id] = true; ids.push(p.id); } });
     if (!ids.length) return { data: [], error: null };
-    var rc = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url").in("user_id", ids).order("created_at", { ascending: false }).limit(30);
+    var rc = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url").in("user_id", ids).is("supprime_le", null).order("created_at", { ascending: false }).limit(30);
     var parId = {}; mm.forEach(function (p) { parId[p.id] = p.pseudo; });
     return { data: (rc.data || []).map(function (ch) { return Object.assign({}, ch, { __prop: parId[ch.user_id] || null }); }), error: rc.error || null };
   } catch (e) { return { data: [], error: String(e) }; }
@@ -1642,7 +1642,7 @@ async function ajouterCheval({ nom, race, age, discipline, fichierPhoto } = {}) 
 async function mesChevaux() {
   const user = await utilisateurActuel();
   if (!user) return { data: [], error: "Pas connecté" };
-  return await supa.from("chevaux").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+  return await supa.from("chevaux").select("*").eq("user_id", user.id).is("supprime_le", null).order("created_at", { ascending: false });
 }
 /* --- Chevaux rattaches (liens ecurie) ---------------------- */
 async function lierCheval(chevalId) {
@@ -1662,14 +1662,45 @@ async function mesChevauxLies() {
     var rl = await supa.from("chevaux_liens").select("cheval_id").eq("user_id", user.id);
     var idsL = ((rl && rl.data) || []).map(function (l) { return l.cheval_id; });
     if (!idsL.length) return { data: [], error: null };
-    var rc = await supa.from("chevaux").select("*").in("id", idsL).order("created_at", { ascending: false });
+    var rc = await supa.from("chevaux").select("*").in("id", idsL).is("supprime_le", null).order("created_at", { ascending: false });
     return { data: ((rc && rc.data) || []).map(function (ch) { return Object.assign({}, ch, { __lien: true }); }), error: (rc && rc.error) || null };
   } catch (e) { return { data: [], error: String(e) }; }
 }
+/* 22/08 — SUPPRESSION DOUCE. Le cheval n est plus effacé : il attend a la porte
+   de l ecurie. La ligne reste en base, invisible partout (filtre .is("supprime_le", null)).
+   Rien n est jamais purgé : ni resultats, ni albums, ni photos, ni stories. */
 async function supprimerCheval(id) {
   const user = await utilisateurActuel();
   if (!user) return { error: "Pas connecté" };
-  return await supa.from("chevaux").delete().eq("id", id).eq("user_id", user.id);
+  return await supa.from("chevaux").update({ supprime_le: new Date().toISOString() }).eq("id", id).eq("user_id", user.id);
+}
+/* Les chevaux qui attendent a la porte. Sert UNIQUEMENT a la carte de Mon compte. */
+async function mesChevauxSupprimes() {
+  try {
+    const user = await utilisateurActuel();
+    if (!user || typeof supa === "undefined" || !supa) return { data: [], error: null };
+    return await supa.from("chevaux").select("id, nom, photo_url, supprime_le, restaure_le")
+      .eq("user_id", user.id).not("supprime_le", "is", null)
+      .order("supprime_le", { ascending: false }).limit(20);
+  } catch (e) { return { data: [], error: String(e) }; }
+}
+/* Le faire rentrer. restaure_le retient que la restauration OFFERTE a servi
+   pour ce cheval : elle ne sera plus offerte une seconde fois. */
+async function retrouverCheval(id) {
+  const user = await utilisateurActuel();
+  if (!user) return { error: "Pas connecté" };
+  return await supa.from("chevaux").update({ supprime_le: null, restaure_le: new Date().toISOString() })
+    .eq("id", id).eq("user_id", user.id);
+}
+/* La restauration est-elle encore offerte ? 30 jours a compter du depart.
+   Rien n est stocké : simple calcul au moment du clic. */
+function restaurationOfferte(ch) {
+  try {
+    if (!ch || !ch.supprime_le) return false;
+    if (ch.restaure_le) return false;
+    var j = (Date.now() - new Date(ch.supprime_le).getTime()) / 86400000;
+    return j <= 30;
+  } catch (e) { return false; }
 }
 async function modifierCheval(id, { nom, race, age, discipline, teinte, fichierPhoto } = {}) {
   const user = await utilisateurActuel();
@@ -25316,7 +25347,7 @@ function EcranSupprimerCompte({ email, onAnnuler }) {
 /* ===== ECRAN MON COMPTE — comptes Supabase (inscription / connexion) ===== */
 function EcranMonCompte() {
   var ctx = useApp();
-  var setEcran = ctx.setEcran, langue = ctx.langue, profilApp = ctx.profil, setProfilApp = ctx.setProfil, tr = ctx.tr;
+  var setEcran = ctx.setEcran, langue = ctx.langue, profilApp = ctx.profil, setProfilApp = ctx.setProfil, tr = ctx.tr, premium = ctx.premium;
   var svSt = React.useState(false); var voirSuppr = svSt[0], setVoirSuppr = svSt[1];
 
   var DICT = {
@@ -25351,6 +25382,16 @@ function EcranMonCompte() {
   var stHm = useState(null);  var hMsg = stHm[0], setHMsg = stHm[1];
   var stHb = useState(false); var hOccupe = stHb[0], setHOccupe = stHb[1];
 
+  /* 22/08 — LES CHEVAUX QUI ATTENDENT A LA PORTE.
+     Supprimer un cheval ne l efface plus : il patiente en base. Cette carte
+     est le SEUL endroit de l app ou il reste visible, et le seul moyen de le
+     faire rentrer. Elle n existe que s il y a quelqu un a la porte. */
+  var stCS = useState([]);    var chSuppr = stCS[0], setChSuppr = stCS[1];
+  var stCSb = useState(null); var chOccupe = stCSb[0], setChOccupe = stCSb[1];  /* id en cours */
+  var stCSr = useState(null); var chRentre = stCSr[0], setChRentre = stCSr[1];  /* {id,nom} */
+  var stCSe = useState(null); var chErr = stCSe[0], setChErr = stCSe[1];
+  var stCSp = useState(false); var chPlein = stCSp[0], setChPlein = stCSp[1];  /* 22/08 : la place du plan gratuit est prise */
+
   useEffect(function () {
     if (!dispo) { setUser(null); return; }
     var actif = true;
@@ -25362,6 +25403,15 @@ function EcranMonCompte() {
       try { if (abo && abo.data && abo.data.subscription) abo.data.subscription.unsubscribe(); } catch (e) {}
     };
   }, []);
+
+  useEffect(function () {
+    if (!user || !dispo || typeof mesChevauxSupprimes !== "function") { setChSuppr([]); return; }
+    var actif = true;
+    mesChevauxSupprimes().then(function (r) {
+      if (actif && r && r.data) setChSuppr(r.data);
+    }).catch(function () { });
+    return function () { actif = false; };
+  }, [user]);
 
   useEffect(function () {
     if (!user || !dispo) { setProfil(null); return; }
@@ -25465,6 +25515,91 @@ function EcranMonCompte() {
           }, style: { marginTop: 14, background: "none", border: "1px solid rgba(201,164,74,0.55)", color: "#F0D48A", fontSize: 12, fontWeight: 700, padding: "8px 16px", borderRadius: 999, cursor: "pointer" } }, "\uD83C\uDF93 " + tr({ fr: "Je suis professionnel ou enseignant", en: "I'm a professional or instructor", es: "Soy profesional o profesor", it: "Sono un professionista o istruttore", de: "Ich bin Profi oder Ausbilder", ja: "プロ・指導者です" })),
       React.createElement("button", { onClick: function () { setEcran("dashboard"); }, style: { marginTop: 28, padding: "13px 34px", borderRadius: 999, background: COLORS.turquoise, border: "none", color: "#04252A", fontSize: 14.5, fontWeight: 800, cursor: "pointer" } }, T.retourAccueil),
       React.createElement("button", { onClick: sortir, style: { marginTop: 12, padding: "12px 30px", borderRadius: 999, background: "none", border: "1px solid rgba(255,255,255,0.18)", color: COLORS.grisDoux, fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: busy ? 0.55 : 1 } }, T.deconnexion),
+
+      /* ═══════════════════════════════════════════════════════════════════
+         22/08 — LA PORTE DE L ECURIE.
+         Supprimer un cheval ne l efface plus. Il attend ici, et nulle part
+         ailleurs : c est le seul endroit de l app ou il reste visible.
+         La carte n existe QUE s il y a quelqu un a la porte — sinon elle
+         inquieterait pour rien. Rien n est jamais purge derriere : ni les
+         resultats, ni les albums, ni les photos.
+         Le mot sur la prochaine fois n arrive qu APRES le clic, au moment
+         du soulagement — decision de Blandine du 22/08.
+         ═══════════════════════════════════════════════════════════════════ */
+      (chSuppr && chSuppr.length) ? React.createElement("div", { style: { width: "100%", maxWidth: 340, marginTop: 26, borderRadius: 22, padding: "22px 18px 18px", background: "linear-gradient(168deg, rgba(20,24,28,0.96), rgba(9,11,14,0.99))", border: "1px solid rgba(232,200,135,0.20)", boxShadow: "0 18px 46px rgba(0,0,0,0.6)" } },
+        React.createElement("div", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.34em", textTransform: "uppercase", color: "#E8C887", textAlign: "center", opacity: 0.9, fontFamily: "'Montserrat', sans-serif" } },
+          tr({ fr: "\u00c0 la porte de l'\u00e9curie", en: "At the stable gate", es: "A la puerta de la cuadra", it: "Alla porta della scuderia", ja: "\u53a9\u820e\u306e\u9580\u306e\u305d\u3070\u3067", de: "Am Stalltor" })),
+        React.createElement("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 19, fontWeight: 600, letterSpacing: 1.1, textAlign: "center", marginTop: 10, color: "#F7FAFC" } },
+          (chSuppr.length > 1)
+            ? tr({ fr: "Ils t'attendent", en: "They're waiting for you", es: "Te esperan", it: "Ti aspettano", ja: "\u5f85\u3063\u3066\u3044\u307e\u3059", de: "Sie warten auf dich" })
+            : tr({ fr: "Il t'attend", en: "He's waiting for you", es: "Te espera", it: "Ti aspetta", ja: "\u5f85\u3063\u3066\u3044\u307e\u3059", de: "Er wartet auf dich" })),
+
+        chSuppr.map(function (ch, iCh) {
+          var nomC = (ch && ch.nom) || "";
+          var petit = String(nomC).trim().split(/\s+/)[0] || nomC;
+          var rentre = chRentre && chRentre.id === ch.id;
+          return React.createElement("div", { key: ch.id, style: { marginTop: iCh ? 22 : 22, paddingTop: iCh ? 20 : 0, borderTop: iCh ? "1px solid rgba(255,255,255,0.055)" : "none" } },
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 13 } },
+              /* photo BRUTE : aucun filtre, aucun voile — regle absolue */
+              React.createElement("div", { style: { width: 48, height: 48, borderRadius: "50%", flex: "none", overflow: "hidden", background: "#181C20", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" } },
+                ch.photo_url
+                  ? React.createElement("img", { src: ch.photo_url, alt: nomC, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+                  : React.createElement("span", { style: { fontFamily: "'Cinzel', serif", fontSize: 18, color: "#5A646E" } }, (nomC.charAt(0) || "?").toUpperCase())),
+              React.createElement("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 16.5, fontWeight: 600, letterSpacing: 0.6, color: "#EEF4F7", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, nomC)),
+
+            rentre
+              ? React.createElement("div", { style: { marginTop: 16, padding: "16px 16px 15px", borderRadius: 16, background: "rgba(32,217,245,0.05)", border: "1px solid rgba(32,217,245,0.26)" } },
+                  React.createElement("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 15, letterSpacing: 0.7, color: "#EAF7FA" } },
+                    tr({ fr: petit + " est rentr\u00e9. Il va bien.", en: petit + " is home. All is well.", es: petit + " ha vuelto. Est\u00e1 bien.", it: petit + " \u00e8 rientrato. Sta bene.", ja: petit + " \u304c\u5e30\u3063\u3066\u304d\u307e\u3057\u305f\u3002\u5143\u6c17\u3067\u3059\u3002", de: petit + " ist zur\u00fcck. Alles gut." })),
+                  React.createElement("div", { style: { fontSize: 11.5, lineHeight: 1.6, color: "#7E8A93", marginTop: 8, fontFamily: "'Montserrat', sans-serif" } },
+                    tr({ fr: "Garde-le au chaud \u2014 une prochaine fois, la porte ne resterait pas ouverte aussi longtemps.", en: "Keep him close \u2014 next time, the gate would not stay open as long.", es: "Cu\u00eddalo \u2014 la pr\u00f3xima vez, la puerta no quedar\u00eda abierta tanto tiempo.", it: "Tienilo al caldo \u2014 la prossima volta, la porta non resterebbe aperta cos\u00ec a lungo.", ja: "\u5927\u5207\u306b\u3057\u3066\u3042\u3052\u3066\u304f\u3060\u3055\u3044\u3002\u6b21\u306f\u3001\u9580\u306f\u3053\u308c\u307b\u3069\u9577\u304f\u306f\u958b\u3044\u3066\u3044\u307e\u305b\u3093\u3002", de: "Pass gut auf ihn auf \u2014 beim n\u00e4chsten Mal bliebe das Tor nicht so lange offen." })))
+              : React.createElement(React.Fragment, null,
+                  React.createElement("div", { style: { fontSize: 12.5, lineHeight: 1.65, color: "#828C96", margin: "14px 2px 0", fontFamily: "'Montserrat', sans-serif" } },
+                    tr({ fr: petit + " t'attendra 30 jours \u00e0 la porte de l'\u00e9curie, si tu changes d'avis.", en: petit + " will wait 30 days at the stable gate, if you change your mind.", es: petit + " te esperar\u00e1 30 d\u00edas a la puerta de la cuadra, por si cambias de opini\u00f3n.", it: petit + " ti aspetter\u00e0 30 giorni alla porta della scuderia, se cambi idea.", ja: petit + " \u306f\u53a9\u820e\u306e\u9580\u306e\u305d\u3070\u3067 30 \u65e5\u9593\u5f85\u3063\u3066\u3044\u307e\u3059\u3002\u6c17\u304c\u5909\u308f\u3063\u305f\u3089\u3001\u3044\u3064\u3067\u3082\u3002", de: petit + " wartet 30 Tage am Stalltor, falls du es dir anders \u00fcberlegst." })),
+                  React.createElement("button", { disabled: chOccupe === ch.id, onClick: function () {
+                      if (chOccupe) return;
+                      setChOccupe(ch.id); setChErr(null); setChPlein(false);
+                      (async function () {
+                        /* 22/08 — LA PLACE DU PLAN GRATUIT.
+                           Un compte gratuit n a droit qu a UN cheval. Si la place a ete
+                           reprise pendant l absence, on ne fait rentrer personne en douce :
+                           on le dit, et on laisse les deux sorties ouvertes (retirer l autre,
+                           ou passer en Premium). Decision de Blandine du 22/08. */
+                        if (!premium && typeof mesChevaux === "function") {
+                          var rPl = null;
+                          try { rPl = await mesChevaux(); } catch (ePl) { rPl = null; }
+                          if (rPl && rPl.data && rPl.data.length >= 1) { setChOccupe(null); setChPlein(true); return; }
+                        }
+                        var r = null;
+                        try { r = await retrouverCheval(ch.id); } catch (eR) { r = { error: String(eR) }; }
+                        setChOccupe(null);
+                        if (r && r.error) {
+                          setChErr(tr({ fr: "Il n'a pas pu rentrer. R\u00e9essaie dans un moment.", en: "He could not come back. Try again in a moment.", es: "No ha podido volver. Int\u00e9ntalo en un momento.", it: "Non \u00e8 riuscito a rientrare. Riprova tra poco.", ja: "\u623b\u308b\u3053\u3068\u304c\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3057\u3070\u3089\u304f\u3057\u3066\u304b\u3089\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002", de: "Er konnte nicht zur\u00fcck. Versuche es sp\u00e4ter noch einmal." }));
+                          return;
+                        }
+                        setChRentre({ id: ch.id, nom: nomC });
+                      })();
+                    }, style: { display: "block", width: "100%", marginTop: 16, fontFamily: "'Montserrat', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: "0.06em", padding: "13px 16px", borderRadius: 999, cursor: chOccupe === ch.id ? "default" : "pointer", background: "rgba(32,217,245,0.07)", border: "1px solid rgba(32,217,245,0.5)", color: "#5FE9F0", opacity: chOccupe === ch.id ? 0.55 : 1 } },
+                    (chOccupe === ch.id)
+                      ? "\u2026"
+                      : tr({ fr: "Retrouver " + petit, en: "Bring " + petit + " back", es: "Recuperar a " + petit, it: "Ritrovare " + petit, ja: petit + " \u3092\u8fce\u3048\u306b\u884c\u304f", de: petit + " zur\u00fcckholen" }))));
+        }),
+
+        chErr ? React.createElement("div", { style: { marginTop: 14, fontSize: 11.5, color: "#F0A0A0", textAlign: "center", lineHeight: 1.5, fontFamily: "'Montserrat', sans-serif" } }, chErr) : null,
+
+        chPlein ? React.createElement("div", { style: { marginTop: 16, padding: "16px 15px 14px", borderRadius: 16, border: "1px solid rgba(232,200,135,0.34)", background: "rgba(232,200,135,0.05)" } },
+          /* la mascotte n apparait QUE la : il n y a pas de cheval a montrer.
+             Sur la carte, la photo du cheval reste le seul sujet. */
+          React.createElement("img", { src: "mascotte-abo.webp", alt: "", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (eI2) { } }, style: { display: "block", width: 84, height: "auto", margin: "0 auto 10px", filter: "drop-shadow(0 6px 20px rgba(232,200,135,0.22))" } }),
+          React.createElement("div", { style: { fontSize: 12.5, lineHeight: 1.65, color: "#D8CFBB", textAlign: "center", fontWeight: 600, fontFamily: "'Montserrat', sans-serif", marginBottom: 6 } },
+            tr({ fr: "Attention, la place dans l'\u00e9curie semble avoir \u00e9t\u00e9 prise !", en: "Careful \u2014 the stall seems to have been taken!", es: "\u00a1Cuidado, la plaza en la cuadra parece ocupada!", it: "Attenzione, il posto in scuderia sembra essere stato preso!", ja: "\u6ce8\u610f\uff01\u53a9\u820e\u306e\u5834\u6240\u304c\u57cb\u307e\u3063\u3066\u3044\u308b\u3088\u3046\u3067\u3059\u3002", de: "Achtung \u2014 der Platz im Stall scheint belegt zu sein!" })),
+          React.createElement("div", { style: { fontSize: 12, lineHeight: 1.65, color: "#C6BEA9", textAlign: "center", fontFamily: "'Montserrat', sans-serif" } },
+            tr({ fr: "Retire le cheval qui s'y trouve, ou agrandis ton \u00e9curie pour pouvoir en accueillir plusieurs.", en: "Take out the horse inside, or make your stable bigger to welcome several at once.", es: "Retira el caballo que est\u00e1 dentro, o agranda tu cuadra para poder acoger a varios.", it: "Togli il cavallo che c'\u00e8, oppure ingrandisci la scuderia per accoglierne pi\u00f9 di uno.", ja: "\u4eca\u3044\u308b\u99ac\u3092\u5916\u3059\u304b\u3001\u53a9\u820e\u3092\u5e83\u3052\u3066\u4f55\u982d\u3067\u3082\u8fce\u3048\u3089\u308c\u308b\u3088\u3046\u306b\u3057\u307e\u3057\u3087\u3046\u3002", de: "Nimm das Pferd heraus, das drin steht, oder vergr\u00f6\u00dfere deinen Stall, um mehrere aufzunehmen." })),
+          React.createElement("button", { onClick: function () { setEcran("premium"); }, style: { display: "block", width: "100%", maxWidth: 260, margin: "13px auto 0", padding: "11px 16px", borderRadius: 999, border: "1px solid rgba(232,200,135,0.6)", background: "none", color: "#F0D48A", fontFamily: "'Montserrat', sans-serif", fontSize: 12.5, fontWeight: 700, cursor: "pointer" } },
+            tr({ fr: "Agrandir mon \u00e9curie", en: "Make my stable bigger", es: "Agrandar mi cuadra", it: "Ingrandire la mia scuderia", ja: "\u53a9\u820e\u3092\u5e83\u3052\u308b", de: "Meinen Stall vergr\u00f6\u00dfern" }))) : null
+
+      ) : null,
+
       React.createElement("button", { onClick: function () { setVoirSuppr(true); }, style: { marginTop: 18, background: "none", border: "none", color: COLORS.grisTresDoux, fontSize: 12.5, fontFamily: "'Montserrat', sans-serif", textDecoration: "underline", cursor: "pointer", padding: 8 } }, (SUPPR_I18N[langue] || SUPPR_I18N.fr).lien),
       React.createElement(LienQuoiDeNeuf, { compte: true }),
       /* ═══════════════════════════════════════════════════════════════════
@@ -27039,7 +27174,7 @@ function EcranGuilde() {
     } } catch (eM) { }
     try { if (typeof supa !== "undefined" && supa) { var m = await supa.from("mur_evenement").select("photo_url, auteur, created_at").eq("evenement", "club:" + monClub).order("created_at", { ascending: false }).limit(60); if (m && m.data) { var ph = m.data.filter(function (p) { return p && p.photo_url; }).slice(0, 12); if (ph.length) setPhotosClub(ph); } } } catch (eP) { }
     if (idsMembres.length) {
-      try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url, palmares").in("user_id", idsMembres).order("created_at", { ascending: false }).limit(24); if (cv && cv.data && cv.data.length) setChevauxClub(cv.data); } catch (eCv) { }
+      try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url, palmares").in("user_id", idsMembres).is("supprime_le", null).order("created_at", { ascending: false }).limit(24); if (cv && cv.data && cv.data.length) setChevauxClub(cv.data); } catch (eCv) { }
       /* 02/08 : les resultats vivent a DEUX endroits qui ne se parlaient pas — la table
          resultats (fil, communaute) et la colonne JSON chevaux.palmares (saisie depuis la fiche
          cheval). La page club ne lisait que la premiere : tout ce que Blandine ajoutait sur la
@@ -30908,7 +31043,7 @@ function AlbumsCheval(props) {
     var out = { chevaux: [], amis: [], ecuries: [] };
     try {
       try { if (typeof CHEVAUX_FICHE !== "undefined") { for (var hid in CHEVAUX_FICHE) { var cf = CHEVAUX_FICHE[hid]; if (cf) out.chevaux.push({ id: hid, nom: cf.nom }); } } } catch (eC) { }
-      try { var rc = await supa.from("chevaux").select("id, nom").limit(50); ((rc && rc.data) || []).forEach(function (c) { out.chevaux.push({ id: "db:" + c.id, nom: c.nom }); }); } catch (eD) { }
+      try { var rc = await supa.from("chevaux").select("id, nom").is("supprime_le", null).limit(50); ((rc && rc.data) || []).forEach(function (c) { out.chevaux.push({ id: "db:" + c.id, nom: c.nom }); }); } catch (eD) { }
       try { if (typeof mesAmis === "function") { var ra = await mesAmis(); ((ra && ra.data) || []).forEach(function (a) { out.amis.push({ id: a.id, nom: a.pseudo }); }); } } catch (eA) { }
       try { var u2 = await utilisateurActuel(); if (u2) { var pr = await supa.from("profiles").select("ecurie, ecurie2").eq("id", u2.id).single(); if (pr && pr.data) { if (pr.data.ecurie) out.ecuries.push({ id: pr.data.ecurie, nom: pr.data.ecurie }); if (pr.data.ecurie2) out.ecuries.push({ id: pr.data.ecurie2, nom: pr.data.ecurie2 }); } } } catch (eE) { }
     } catch (e) { }
@@ -31790,7 +31925,7 @@ function EcranCheval() {
             : await supa.from("chevaux").select("*").eq("id", id).single();
           if (actif && r && r.data) {
             var secours = (NOMS_MIGRES[id] && CHEVAUX_FICHE[id]) ? CHEVAUX_FICHE[id] : {};
-            if (!secours.nom) { try { for (var kSec in NOMS_MIGRES) { if (NOMS_MIGRES[kSec] === r.data.nom && CHEVAUX_FICHE[kSec]) { secours = CHEVAUX_FICHE[kSec]; break; } } } catch (eSec) { } } /* 31/07 : secours retrouve par NOM aussi (coupes disparues via ouverture par identifiant base — bug signale par Blandine) */ var palmDb = null; try { palmDb = (typeof r.data.palmares === "string") ? JSON.parse(r.data.palmares) : r.data.palmares; } catch (ePj) { } var origDb = null; try { origDb = (typeof r.data.origines === "string") ? JSON.parse(r.data.origines) : r.data.origines; } catch (eOj) { } setChevalDyn({ teinte: r.data.teinte || null, nom: r.data.nom || "Cheval", photo: r.data.photo_url || secours.photo || UV3_H1, tag: secours.tag || null, info: [r.data.race, r.data.age ? (String(r.data.age) + " ans") : null, r.data.discipline].filter(Boolean).join(" · "), flots: (secours.flots || []), palmares: (palmDb && palmDb.length ? palmDb : (secours.palmares || [])), origines: (origDb || secours.origines || null), histoire: r.data.histoire || (secours.histoire || null), dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
+            if (!secours.nom) { try { for (var kSec in NOMS_MIGRES) { if (NOMS_MIGRES[kSec] === r.data.nom && CHEVAUX_FICHE[kSec]) { secours = CHEVAUX_FICHE[kSec]; break; } } } catch (eSec) { } } /* 31/07 : secours retrouve par NOM aussi (coupes disparues via ouverture par identifiant base — bug signale par Blandine) */ var palmDb = null; try { palmDb = (typeof r.data.palmares === "string") ? JSON.parse(r.data.palmares) : r.data.palmares; } catch (ePj) { } var origDb = null; try { origDb = (typeof r.data.origines === "string") ? JSON.parse(r.data.origines) : r.data.origines; } catch (eOj) { } setChevalDyn({ teinte: r.data.teinte || null, nom: r.data.nom || "Cheval", photo: r.data.photo_url || secours.photo || UV3_H1, tag: secours.tag || null, info: [r.data.race, r.data.age ? (String(r.data.age) + " ans") : null, r.data.discipline].filter(Boolean).join(" · "), flots: (secours.flots || []), palmares: (palmDb && palmDb.length ? palmDb : (secours.palmares || [])), origines: (origDb || secours.origines || null), histoire: r.data.histoire || (secours.histoire || null), dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, supprime_le: r.data.supprime_le || null, restaure_le: r.data.restaure_le || null, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
             try {
               if (r.data.user_id && typeof supa !== "undefined" && supa) {
                 var rPro = await supa.from("profiles").select("pseudo, ecurie").eq("id", r.data.user_id).maybeSingle();
@@ -31894,13 +32029,15 @@ function EcranCheval() {
     setBusyFiche(false);
   }
   var pehSt = React.useState(false); var partageEH = pehSt[0], setPartageEH = pehSt[1];
+  var portSt = React.useState(false); var portOccupe = portSt[0], setPortOccupe = portSt[1];  /* 22/08 : clic en cours sur le bandeau « a la porte » */
+  var portPlSt = React.useState(false); var portPlein = portPlSt[0], setPortPlein = portPlSt[1];  /* 22/08 : la place du plan gratuit est prise */
   var tagSt = React.useState(null); var tagOuvert = tagSt[0], setTagOuvert = tagSt[1];
   var tagCiblesSt = React.useState(null); var tagCibles = tagCiblesSt[0], setTagCibles = tagCiblesSt[1];
   async function chargerTagCibles() {
     var out = { chevaux: [], amis: [], ecuries: [] };
     try { var u = await utilisateurActuel();
       try { for (var hid in CHEVAUX_FICHE) { var cf = CHEVAUX_FICHE[hid]; if (cf) out.chevaux.push({ id: hid, nom: cf.nom }); } } catch (eC) { }
-      try { var rc = await supa.from("chevaux").select("id, nom").limit(50); ((rc && rc.data) || []).forEach(function (c) { out.chevaux.push({ id: "db:" + c.id, nom: c.nom }); }); } catch (eD) { }
+      try { var rc = await supa.from("chevaux").select("id, nom").is("supprime_le", null).limit(50); ((rc && rc.data) || []).forEach(function (c) { out.chevaux.push({ id: "db:" + c.id, nom: c.nom }); }); } catch (eD) { }
       try { if (typeof mesAmis === "function") { var ra = await mesAmis(); ((ra && ra.data) || []).forEach(function (a) { out.amis.push({ id: a.id, nom: a.pseudo, photo: a.avatar_url }); }); } } catch (eA) { }
       try { if (profil && profil.ecurie) out.ecuries.push({ id: profil.ecurie, nom: profil.ecurie }); if (profil && profil.ecurie2) out.ecuries.push({ id: profil.ecurie2, nom: profil.ecurie2 }); } catch (eE) { }
     } catch (e) { }
@@ -32387,6 +32524,51 @@ function EcranCheval() {
     h("style", { dangerouslySetInnerHTML: { __html: ECHV_CSS } }),
     h("style", { dangerouslySetInnerHTML: { __html: ECHV_R_CSS } }),
     h("div", { className: "app" },
+
+      /* ═══════════════════════════════════════════════════════════════════
+         22/08 — LE BANDEAU « A LA PORTE ».
+         Un cheval en attente disparait de tous les ecrans, mais sa fiche
+         reste ouvrable par un lien deja partage. Plutot que de la fermer,
+         decision de Blandine : elle s ouvre, et dit ou en est le cheval.
+         Le bandeau n apparait QUE pour la proprietaire — personne d autre
+         n a a savoir qu un cheval a ete retire.
+         ═══════════════════════════════════════════════════════════════════ */
+      (function () {
+        if (!c || !c.supprime_le || !c.dbId) return null;
+        if (!(moi && chevalDyn && chevalDyn.ownerId === moi.id)) return null;
+        var petitP = String(c.nom || "").trim().split(/\s+/)[0] || (c.nom || "");
+        return h("div", { style: { margin: "0 0 2px", padding: "16px 18px 15px", background: "linear-gradient(168deg, rgba(20,24,28,0.97), rgba(9,11,14,0.99))", borderBottom: "1px solid rgba(232,200,135,0.24)" } },
+          h("div", { style: { fontSize: 9, fontWeight: 700, letterSpacing: "0.34em", textTransform: "uppercase", color: "#E8C887", textAlign: "center", opacity: 0.9, fontFamily: "'Montserrat', sans-serif" } },
+            tr({ fr: "\u00c0 la porte de l'\u00e9curie", en: "At the stable gate", es: "A la puerta de la cuadra", it: "Alla porta della scuderia", ja: "\u53a9\u820e\u306e\u9580\u306e\u305d\u3070\u3067", de: "Am Stalltor" })),
+          h("div", { style: { fontSize: 12.5, lineHeight: 1.65, color: "#828C96", textAlign: "center", margin: "10px 6px 0", fontFamily: "'Montserrat', sans-serif" } },
+            tr({ fr: petitP + " t'attendra 30 jours \u00e0 la porte de l'\u00e9curie, si tu changes d'avis.", en: petitP + " will wait 30 days at the stable gate, if you change your mind.", es: petitP + " te esperar\u00e1 30 d\u00edas a la puerta de la cuadra, por si cambias de opini\u00f3n.", it: petitP + " ti aspetter\u00e0 30 giorni alla porta della scuderia, se cambi idea.", ja: petitP + " \u306f\u53a9\u820e\u306e\u9580\u306e\u305d\u3070\u3067 30 \u65e5\u9593\u5f85\u3063\u3066\u3044\u307e\u3059\u3002", de: petitP + " wartet 30 Tage am Stalltor, falls du es dir anders \u00fcberlegst." })),
+          h("button", { disabled: !!portOccupe, onClick: function () {
+              if (portOccupe) return;
+              setPortOccupe(true); setPortPlein(false);
+              (async function () {
+                /* la place du plan gratuit : meme regle que dans Mon compte */
+                if (!ctx.premium && typeof mesChevaux === "function") {
+                  var rPl2 = null;
+                  try { rPl2 = await mesChevaux(); } catch (ePl2) { rPl2 = null; }
+                  if (rPl2 && rPl2.data && rPl2.data.length >= 1) { setPortOccupe(false); setPortPlein(true); return; }
+                }
+                var rP = null;
+                try { rP = await retrouverCheval(c.dbId); } catch (ePb) { rP = { error: String(ePb) }; }
+                setPortOccupe(false);
+                if (rP && rP.error) return;
+                setChevalDyn(function (pv) { return Object.assign({}, pv || {}, { supprime_le: null }); });
+              })();
+            }, style: { display: "block", width: "100%", maxWidth: 300, margin: "14px auto 0", fontFamily: "'Montserrat', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: "0.06em", padding: "12px 16px", borderRadius: 999, cursor: portOccupe ? "default" : "pointer", background: "rgba(32,217,245,0.07)", border: "1px solid rgba(32,217,245,0.5)", color: "#5FE9F0", opacity: portOccupe ? 0.55 : 1 } },
+            portOccupe ? "\u2026" : tr({ fr: "Retrouver " + petitP, en: "Bring " + petitP + " back", es: "Recuperar a " + petitP, it: "Ritrovare " + petitP, ja: petitP + " \u3092\u8fce\u3048\u306b\u884c\u304f", de: petitP + " zur\u00fcckholen" })),
+          portPlein ? h("div", { style: { marginTop: 14, padding: "16px 15px 14px", borderRadius: 16, border: "1px solid rgba(232,200,135,0.34)", background: "rgba(232,200,135,0.05)", maxWidth: 320, margin: "14px auto 0" } },
+            h("img", { src: "mascotte-abo.webp", alt: "", onError: function (eIm2) { try { eIm2.target.style.display = "none"; } catch (eI3) { } }, style: { display: "block", width: 84, height: "auto", margin: "0 auto 10px", filter: "drop-shadow(0 6px 20px rgba(232,200,135,0.22))" } }),
+            h("div", { style: { fontSize: 12.5, lineHeight: 1.65, color: "#D8CFBB", textAlign: "center", fontWeight: 600, fontFamily: "'Montserrat', sans-serif", marginBottom: 6 } },
+              tr({ fr: "Attention, la place dans l'\u00e9curie semble avoir \u00e9t\u00e9 prise !", en: "Careful \u2014 the stall seems to have been taken!", es: "\u00a1Cuidado, la plaza en la cuadra parece ocupada!", it: "Attenzione, il posto in scuderia sembra essere stato preso!", ja: "\u6ce8\u610f\uff01\u53a9\u820e\u306e\u5834\u6240\u304c\u57cb\u307e\u3063\u3066\u3044\u308b\u3088\u3046\u3067\u3059\u3002", de: "Achtung \u2014 der Platz im Stall scheint belegt zu sein!" })),
+            h("div", { style: { fontSize: 12, lineHeight: 1.65, color: "#C6BEA9", textAlign: "center", fontFamily: "'Montserrat', sans-serif" } },
+              tr({ fr: "Retire le cheval qui s'y trouve, ou agrandis ton \u00e9curie pour pouvoir en accueillir plusieurs.", en: "Take out the horse inside, or make your stable bigger to welcome several at once.", es: "Retira el caballo que est\u00e1 dentro, o agranda tu cuadra para poder acoger a varios.", it: "Togli il cavallo che c'\u00e8, oppure ingrandisci la scuderia per accoglierne pi\u00f9 di uno.", ja: "\u4eca\u3044\u308b\u99ac\u3092\u5916\u3059\u304b\u3001\u53a9\u820e\u3092\u5e83\u3052\u3066\u4f55\u982d\u3067\u3082\u8fce\u3048\u3089\u308c\u308b\u3088\u3046\u306b\u3057\u307e\u3057\u3087\u3046\u3002", de: "Nimm das Pferd heraus, das drin steht, oder vergr\u00f6\u00dfere deinen Stall, um mehrere aufzunehmen." })),
+            h("button", { onClick: function () { setEcran("premium"); }, style: { display: "block", width: "100%", maxWidth: 260, margin: "13px auto 0", padding: "11px 16px", borderRadius: 999, border: "1px solid rgba(232,200,135,0.6)", background: "none", color: "#F0D48A", fontFamily: "'Montserrat', sans-serif", fontSize: 12.5, fontWeight: 700, cursor: "pointer" } },
+              tr({ fr: "Agrandir mon \u00e9curie", en: "Make my stable bigger", es: "Agrandar mi cuadra", it: "Ingrandire la mia scuderia", ja: "\u53a9\u820e\u3092\u5e83\u3052\u308b", de: "Meinen Stall vergr\u00f6\u00dfern" }))) : null);
+      })(),
 
       h("header", { className: "hero" },
         /* 02/08 : photo doublee dans l en-tete (signale par Blandine, screenshots My Dream et
@@ -33282,7 +33464,7 @@ function EcranEcurieHype() {
       var u = await utilisateurActuel(); if (ok) setMoiEH(u || null);
       if (typeof supa !== "undefined" && supa) {
         try {
-          var rc = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("partage_ecurie_hype", true).limit(60);
+          var rc = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("partage_ecurie_hype", true).is("supprime_le", null).limit(60);
           if (ok) setCommList((rc && rc.data) || []);
           var ids = ((rc && rc.data) || []).map(function (c) { return c.user_id; }).filter(Boolean);
           ids = ids.filter(function (v, i) { return ids.indexOf(v) === i; });
