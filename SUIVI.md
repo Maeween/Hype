@@ -35,7 +35,7 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 21/08/2026 (SESSION 150 · LES CINQ BOUTONS EN FUMÉ TURQUOISE) — md5 `1021b46ed9d10ea1b1f696b4f2e1a612`, 9 254 541 octets.** Seule modification de code : cinq boutons d'action passés au Fumé Turquoise. `hype-stories.js` reste en **19bm** (md5 `5a9ce376b3119c68c32c66ef4426a41c`), inchangé. ⚠️ **Le domaine est désormais `2hype.netlify.app`** — voir la session 150.
+**Version actuelle de l'index.html : 22/08/2026 (SESSION 152 · LES RÉSULTATS EN CONCOURS) — md5 `ace1cf24f9cfc4500ef572a76af9822d`, 9 284 344 octets.** Nouveau fichier à la racine : **`hype-resultats.js`** (md5 `0f7d3654633c46c77c79c662b8af4640`) — **les deux se poussent ensemble**. `hype-stories.js` reste en **19bm**, inchangé. ⚠️ `sw.js` ne déclare pas encore `hype-resultats.js`.
 
 **Ancienne version (148) — 21/08/2026 (SESSION 148 · POINTS ARGENTÉS, ÉTAPE 2) — md5 `d1e7b53fdb659659a625d12001886f7b`. ⚠️ **DEUX FICHIERS ENSEMBLE** : `hype-stories.js` en **19bm** (md5 `5a9ce376b3119c68c32c66ef4426a41c`). La session 149 (21/08) n'a livré AUCUN code — incident Linguae, Netlify, cadrage du chantier résultats.**
 
@@ -63,6 +63,231 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 ⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
 
 ⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 152 — 21-22/08/2026 (nuit) · LES RÉSULTATS EN CONCOURS, ET TROIS BUGS D'ABONNEMENT
+
+**Fichiers livrés** : `index.html` (md5 `ace1cf24f9cfc4500ef572a76af9822d`, 9 284 344 octets) · **`hype-resultats.js`** (md5 `0f7d3654633c46c77c79c662b8af4640`, nouveau fichier, 42 Ko).
+
+⚠️ **Les deux se poussent ENSEMBLE.** L'index appelle `hype-resultats.js` : poussé seul, la fiche cheval cherche un fichier absent.
+
+⚠️ **`sw.js` n'a PAS été mis à jour** — le nouveau fichier n'est pas déclaré au cache. Il fonctionne en ligne, pas hors connexion. Fichier non fourni à cette session.
+
+---
+
+### 🟢 LE CHANTIER PRINCIPAL — LES RÉSULTATS EN CONCOURS
+
+#### Ce qui a été livré
+
+**`hype-resultats.js`**, module **détaché** sur le modèle de `hype-cours-baby.js` — décision de Blandine : *« ça évite que tout s'écroule et ce sera plus facile pour la transition »*. Il embarque sa propre feuille de style, ne dépend ni de React ni de rien, et s'il plante l'app tourne quand même.
+
+**Trois points de contact seulement dans l'index** :
+- la balise `<script src="hype-resultats.js?v=1">`, après `hype-stories.js`
+- le composant `HypeResultatsHote` (juste avant `EcranCheval`) — un conteneur, rien d'autre ; si le module n'est pas chargé il ne rend **rien** et la fiche continue
+- l'appel dans le panneau **Performances**, sous la liste existante
+
+**Le SQL est passé** (confirmé par Blandine) : sept colonnes ajoutées à `resultats` — `date_epreuve`, `epreuve`, `place`, `partants`, `quart`, `origine` (défaut `main`), `cavalier`. Contrôle lu : `resultats : 17 colonnes · 6/6 nouvelles en place`, puis `cavalier : en place`.
+
+#### 🔴 LES RÈGLES MÉTIER — toutes données par Blandine
+
+**LE QUART EST DONNÉ PAR LA FFE. On le lit, on ne le calcule JAMAIS.** Un classement = `quart === 1`.
+
+**L'ENJEU PRIME SUR LA HAUTEUR** (mots de Blandine). Ordre de force d'un concours :
+1. **titre** (5000)
+2. **grand rendez-vous** rang 1 (4000)
+3. **grand chelem** (3000)
+4. **très grosse échéance** rang 2 (2500)
+5. victoire (2000) · podium (1000) · classement (500)
+
+La hauteur d'épreuve et le nombre de partants ne départagent qu'**à égalité**.
+
+**L'échelle des hauteurs**, donnée par Blandine :
+**As Élite › As 1 › As 2 › Amateur 1/2/3 › Poney Élite › Poney 1 › Poney 2 › Poney 3 › Poney 4 › Club**
+- **Poney 1 D = Poney 1**, même niveau
+- **Amateur 3 = même hauteur que Poney Élite, mais concurrence plus dure → au-dessus**
+- ⚠️ **Club** : placé en bas par déduction de Claude, **à confirmer**
+
+**Les grands rendez-vous**, deux rangs :
+- **rang 1** : Jumping International de Bordeaux · Equita Lyon · Salon du Cheval de Paris · Salon du Cheval de Nancy · Sologn'Pony · **Europoney**
+- **rang 2 (très grosse échéance)** : Open de France · BIP · Grand Parquet · Classic Summer Tour
+- 🟥 **Le Mans est volontairement SORTI** de la liste (*« Le Mans en vrai tu peux le laisser normal »*)
+- 🟥 **Fontainebleau n'est PAS un critère en soi.** Blandine a d'abord dit « Fontainebleau = toujours grosse échéance », puis s'est ravisée : ce sont les **événements** qui comptent (Summer Tour, Open de France, BIP), pas la commune.
+- **Europoney** : nom officiel choisi par Blandine pour `ROSIERES AUX SALINES` **et** `LORRAINE EURO PONEY`, deux écritures du même rendez-vous.
+
+**Les préparatoires** : tous les sans-faute sont premiers ex æquo. La ligne **reste visible**, garde le rang écrit par la FFE, porte l'étiquette **« Préparatoire »**, et **n'entre dans aucun des trois comptes**.
+⚠️ Blandine a écarté d'écrire « sans faute » à la place du rang : *« les gens peuvent comprendre que peut-être que les autres tours n'étaient pas sans faute »*.
+
+**Les doubles et triples** se comptent **sur tout le concours**, pas sur la journée (décision du 22/08) — le week-end des 29-30 mai 2021 à Barbizon a deux victoires sur deux jours et passait à travers. Libellés retenus : **Double victoire · Triple victoire · Double podium · Triple podium**.
+
+**Le cumul des cartes** : même titre **au même lieu**, ou même rendez-vous. Les doubles et triples se cumulent **tous ensemble** (*« sinon ça prend trop de place sur le rail »*). Une carte cumulée affiche **« à N occasions »** et les rangs de chaque année, **lisibles sans taper**.
+
+**UNE carte par concours**, son fait le plus fort seulement — sinon l'Open de France 2021 sortait deux fois (grand rendez-vous **et** Champion de France) et Barbizon 2021 en chelem **et** en double.
+
+**Les équivalences de lieux** (`MEMES_LIEUX`) : **Milly-la-Forêt = HDL Jump Milly**, confirmé par Blandine. 🟥 **Chaque équivalence vient d'elle, jamais d'une ressemblance de mots** — c'est le garde-fou contre « Bois-le-Roi → Bois de Boulogne ».
+
+**Le tri** : trois boutons — **Les plus forts · Par date · Par hauteur**. Le tri joue **DANS chaque année**, le groupement par année reste (*« sinon on perd le repère du temps »*). Le choix est retenu en local.
+
+**Une ligne saisie à la main n'a pas de quart** : elle **reste visible** mais ne compte pas dans les Classements. Sans cette règle, les saisies existantes de Blandine disparaissaient purement et simplement — attrapé par banc d'essai avant livraison.
+
+#### 🟢 LE LECTEUR DE TELEMAT — éprouvé sur sept saisons
+
+`lecteur-resultats-ffe.js` (banc d'essai, **hors dépôt**) a lu les **sept PDF** de Rizotto fournis par Blandine : **230 lignes, 3 anomalies seulement**, toutes des quarts que la FFE donne différemment du contrôle, sur de petits effectifs. Aucune ligne illisible, aucun quart inventé.
+
+Statuts reconnus : classé · non partant · éliminé · abandon · épreuve annulée. Formes de classement gérées : `38e / 47`, `1er / 3`, `12e / 26 - SF`, `El. / 42`, et la déformation `38 / 47 e`.
+
+**Méthode de capture** (Safari uniquement) : capture d'écran → appuyer sur la vignette avant qu'elle disparaisse → onglet **« Page entière »** → **Enregistrer le PDF dans Fichiers**. ⚠️ **PDF obligatoire** : une capture pleine page en image arrive en 225 px de large, illisible.
+
+#### 🔴 LE FICHIER EXCEL DE RIZOTTO EST FAUX — il ne doit plus servir d'étalon
+
+Le telemat l'a démenti sur trois points :
+
+| | Excel | Telemat |
+|---|---|---|
+| lignes classées | 87 | **166** |
+| cavaliers | 3 | **5** (Louane Maduro et Mathilde Douillet manquaient) |
+| Equita Lyon | absent | **4 sorties**, dont **9e sur 88** à Eurexpo en 2023 |
+| Salon du Cheval de Paris | absent | **2e sur 70** en 2019 |
+
+🟥 **Le « Champion de France 2021 » de l'Excel était une ligne fantôme** datée du 04/07/2021, sans partants. Le telemat n'a **rien** au 04/07. Le vrai résultat est le **03/07/2021, 1er sur 48, `CSO Poney 1 D Grand Prix Open Reg` à `FONTAINEBLEAU OPEN REGION`**.
+
+**Décision de Blandine** : ce sacre s'affiche **« VAINQUEUR OPEN DE FRANCE 2021 »**. C'était l'interrégional qui remplaçait l'**Open Poney** cette année-là. ⚠️ **Ce libellé vient d'elle, pas du telemat** — la FFE n'écrit que « Open Reg ». Il sera donc **saisi à la main**, un import ne le recréera pas.
+
+#### Le périmètre retenu
+
+**Décision de Blandine** : on s'arrête à **2020 inclus**, cavaliers **Liam · Evan · Chloé**. Soit **155 sorties · 47 victoires · 75 podiums · 84 classements**.
+
+Écartées volontairement : les 11 sorties de **Louane Maduro** et **Mathilde Douillet** (sept. 2019 – mars 2020), dont le **Salon du Cheval de Paris 2019** et sa toute première victoire.
+
+⚠️ **Rizotto a 21 ans et a couru avec Julie Benoit avant.** Blandine a arrêté la discussion : *« stop on fait ça pour l'instant »*. **La question du point de départ d'un palmarès reste entière** — voir chantiers ouverts.
+
+#### Les maquettes produites (toutes hors dépôt)
+
+`maquette-cheval-resultats.html` · `maquette-page-performances.html` · `maquette-performances-2.html` · `maquette-memoires-5-directions.html` · `maquette-performances-encarts.html` · **`atelier-performances.html`**.
+
+**L'atelier** mérite d'être gardé : six canaux de couleur réglables séparément (accent 22 nuances, métal 17 en dégradé, écriture 9, cartes 15, surfaces 3, fond 15), plus la portée de l'accent. **6,8 millions de combinaisons**, chaque nuance essayée sans échec. Le code CSS de la combinaison choisie s'affiche en bas du panneau.
+
+⚠️ **Blandine a dit que l'app est « trop turquoise »** : *« à force de voir du turquoise du turquoise, j'ai envie de vomir un peu ; il faut que ça reste discret, du noir, du gris, du blanc »*. Le turquoise apparaissait **47 fois** dans la maquette. **Décision non prise** — elle continue ses essais dans l'atelier.
+
+⚠️ Elle a aussi écarté les oranges : *« je les trouve vomitives »*. Et demandé **or / argent / bronze selon la place** — 1er, 2e, 3e. **Non implémenté.**
+
+---
+
+### 🔴 LES TROIS BUGS D'ABONNEMENT — matinée du 22/08
+
+Une abonnée (Aurélie) signale des cadenas malgré son paiement. La recherche a duré trois heures et a mis au jour **quatre défauts réels**, plus une cause finale qui n'était aucun d'eux.
+
+#### Ce qui a été réparé
+
+**1. `utilisateurActuel()` (ligne ~1652) — la fausse déconnexion.**
+Elle appelait `supa.auth.getUser()`, qui **interroge le serveur** à chaque fois. Réseau lent, jeton à rafraîchir : elle renvoie `null` et l'app conclut que personne n'est connecté. Elle lit désormais **`getSession()` d'abord** (session en mémoire, sans réseau), `getUser()` en secours.
+🟢 **Cette fonction est appelée 148 fois : la réparer ici les répare toutes.** C'est la liste des « 148 `getUser()` » du SUIVI.
+
+**2. `lireAbo` (bloc ~21422) appelait `getUser()` EN DIRECT**, sans passer par `utilisateurActuel()`. Serveur muet = utilisateur vide = `lireAbo` sort à la première ligne = **cadenas malgré un abonnement valide**. Corrigé.
+
+**3. `maybeSingle()` rendait `null` sur un DOUBLON.** Deux lignes d'abonnement pour un même compte = Premium refusé **en silence**. L'app lit maintenant toutes les lignes et garde **l'active la plus lointaine**. Éprouvé sur six cas.
+
+**4. Le `catch` du Premium était muet.** Il trace désormais dans la console.
+
+**5. `hypeOuvrirPaiement` (~24418)** passait aussi par `getUser()` brut : un paiement pouvait être bloqué sur réseau lent. Corrigé.
+
+#### 🟢 LA VRAIE CAUSE — elle n'était dans aucun de ces défauts
+
+Requête passée par Blandine :
+- `au.bussonnais@gmail.com` → **AUCUN ABONNEMENT**
+- `a.bussonnais@outlook.com` → **actif · mensuel**
+
+**Elle a payé depuis outlook et utilise gmail.** Rien à l'écran ne lui disait sur quel compte elle était.
+
+**Décision de Blandine** : ne rien déplacer tant qu'elle n'a pas vérifié que l'abonnement fonctionne **depuis outlook**. Si oui → on pourra déplacer vers gmail en confiance. Si non → il y a un second problème.
+⚠️ **Déplacer l'abonnement suppose de déplacer aussi `stripe_customer` et `stripe_subscription`**, sinon le prochain renouvellement recréera une ligne sur outlook.
+
+#### Ce qui a été ajouté pour que ça ne se reproduise pas
+
+**La confirmation avant de payer** (`hypeOuvrirPaiement`) : *« Tu vas t'abonner avec ce compte : … — ton Premium sera actif sur CE compte uniquement. C'est bien celui que tu utilises ? »* Refus → renvoi vers Mon compte, rien n'est payé.
+
+**Le bandeau sur la page d'abonnement** (`EcranPremium`), en six langues : *« Connectée avec … — aucun abonnement sur ce compte. Si tu as payé, c'était peut-être avec une autre adresse. »* Turquoise si l'abonnement est bon, doré sinon.
+
+🔵 **Idée de Blandine** : la confirmation protège la **future** abonnée, le bandeau sauve celle qui **a déjà payé**. Les deux, à deux moments différents.
+
+---
+
+### 🔴 CE QUI N'EST PAS RÉSOLU — À REPRENDRE EN PRIORITÉ
+
+**1. LES CADENAS S'AFFICHENT POUR TOUT LE MONDE, Y COMPRIS UNE MODÉRATRICE.**
+Blandine (`feinn@live.fr`, dans `HYPE_MODERATEURS`) voit les cadenas sur les Galops 2 à 7 — **après** le push des correctifs. Le chemin du code est pourtant bon : `estAmbassadeurHype()` renvoie vrai pour un modérateur, et `premium` inclut `ambassadeur` (ligne 21347).
+Le blocage est ligne **21099** : `utilisateurActuel().then((u) => { if (!u || !actif) return; ...})` — si `u` est vide, le statut n'est jamais posé. Mais `utilisateurActuel()` a été réparé. **Cause non trouvée.**
+
+**2. 🟥 LE CADENAS N'EMPÊCHE RIEN.** Blandine ouvre les cours verrouillés. Le contrôle existe pourtant ligne **24658** (`if (verrouille) { setEcran("premium"); return; }`) — donc **il existe au moins un autre chemin vers un cours, sans contrôle**. C'est une faille : n'importe qui peut lire le Premium. **Non cherchée, non corrigée.**
+
+**3. Le module des résultats écrase l'affichage** sur la fiche cheval : les blocs se chevauchent, illisible. Une marge et un filet ont été ajoutés, insuffisants. **Conflit de styles entre le module et le CSS de la fiche, non diagnostiqué.** Blandine n'a pas tranché entre réparer et neutraliser.
+
+**4. Le palmarès en dur ne descend pas en base.** Les quatre lignes texte de Rizotto viennent de `CHEVAUX_FICHE`, parce que sa colonne `palmares` en base est vide. Le module les affiche via `lignesPourModule`. **Le jour où la base sera remplie, il y aura le vrai ET le secours, en double.**
+
+**5. L'outil d'import n'existe pas.** Le bouton **⤓ Importer mes résultats** affiche « Bientôt disponible ».
+
+**6. Les titres ne sont stockés nulle part.** Le module sait les afficher, aucune table ne les porte. Il reçoit une liste vide. **À décider** : petite table à part, ou colonne sur la ligne de résultat.
+
+**7. La fenêtre « Ajouter un résultat » ne remplit aucune des nouvelles colonnes.** Elle demande une année, une médaille, un texte libre. Pas de date, pas de partants, pas de quart, pas de cavalier séparé.
+
+---
+
+### 🟥 CE QUI EST INTOUCHABLE — dit par Blandine
+
+**Le rail de flots (`c.flots`) de la fiche cheval — les coupes en images — est fait à la main, en dur, et NE DOIT PAS ÊTRE TOUCHÉ.** Ni déplacé, ni remplacé, ni migré. *« Attention touche pas à mon rail de flots, mets les résultats en dessous. »*
+
+⚠️ Ne pas le confondre avec `palmares` (les quatre lignes texte), qui est un autre champ et n'est en dur que **par accident**.
+
+---
+
+### 🟡 AUTRES CORRECTIFS DE LA SESSION
+
+**Le menu de la fiche cheval était invisible.** Trois points de 1,4 px sans étiquette — Blandine elle-même ne trouvait pas où supprimer un cheval. Ils ont maintenant **un fond et un cadre**. Et la confirmation nomme le cheval : *« Confirmer la suppression de My Dream »*.
+
+🔵 **Trois fois le même mal ce matin** : ajouter un résultat, se déconnecter, supprimer un cheval — la fonction existe, le chemin est introuvable. À garder en tête pour tout nouvel écran.
+
+⚠️ **La ligne du palmarès est cliquable et ouvre la fenêtre d'AJOUT** — on tape un résultat existant, on tombe dans un formulaire vide. C'est comme ça que Blandine avait trouvé la fenêtre « par hasard ». Non corrigé.
+
+**Décision de Blandine (22/08)** : le tableau immersif reste affiché **même si la journée n'a aucune story**. Pas d'écran vide, pas de repli.
+
+---
+
+### 🟡 CHANTIERS OUVERTS — notés, non traités
+
+**La suppression douce d'un cheval.** `supprimerCheval()` fait un vrai `delete` : rien n'est récupérable. Or le chemin vient d'être rendu visible — **les suppressions vont arriver pour de vrai**. Décidé : colonne `supprime_le`, restauration **gratuite 30 jours**, carte dans Mon compte qui ne s'affiche que s'il y a quelque chose. 🟥 **Aucune mention de prix à l'écran.** Une page parallèle prépare le dossier (`PASSATION-SUPPRESSION-DOUCE.md`), **sans coder**.
+
+**Le volume à terme.** Inquiétude de Blandine : *« si 2000 personnes font ça avec des gros résultats ou 50 albums photos »*. Une carrière importée ≈ 230 lignes. Résultats, photos et stories d'un cheval supprimé restent orphelins aujourd'hui.
+
+**Les cristaux.** Idée de Blandine : une monnaie interne pour les services ponctuels. ⚠️ Réserves posées et acceptées : ne pas faire payer une **restauration** (se retourne contre l'app), ni l'**import de résultats** (c'est ce qui rend les fiches vivantes), et attention à la coexistence avec l'abonnement. Piste retenue : ce qui relève du **plaisir**, pas du service — teintes, poses, cadres. ⚠️ Une monnaie virtuelle achetée passe par **l'achat in-app Apple** (15–30 %).
+
+**Le point de départ d'un palmarès.** Un cheval de 21 ans, c'est sept saisons FFE à télécharger une par une, et quinze ans avant. Trois pistes évoquées : la cavalière choisit son point de départ · la page dit ce qui manque (« 7 saisons sur 21 ») · le palmarès commence à l'arrivée du cheval chez elle. ⚠️ **On ne sait pas jusqu'où la FFE laisse redescendre dans le sélecteur de saison.**
+
+**La carte du grand chelem de Liverdy.** Blandine annonce que Liam a fini 1er, 2e et 3e au Championnat régional du 01/05/2023 (Rizotto 1er sur 51). Il manque **le nom et la place des deux autres poneys**. Le mécanisme est écrit et se déclenchera tout seul.
+
+**Restent en attente** : les cinq écritures de Fontainebleau pour la table des lieux · l'ordre or/argent/bronze selon la place · le choix de palette dans l'atelier.
+
+---
+
+### Préparation Flutter
+
+🟢 **Vraie avancée d'architecture cette session** : premier **module métier détaché** de l'index (`hype-resultats.js`, 42 Ko). Il contient toute la logique des résultats — référentiels, calculs, rendu — et n'a que **trois points de contact** avec l'index. Il embarque sa propre feuille de style et n'a aucune dépendance. C'est exactement la frontière de domaine que la doctrine réclame : le jour de Flutter, il se réimplémente à l'identique sans toucher au reste.
+
+🟢 **Dette réduite** : `utilisateurActuel()` est devenue le point unique de vérité pour l'identité, et **148 appels** en bénéficient d'un coup. Les `getUser()` bruts sont passés de 5 à 2.
+
+**Reste à moderniser** : les 2 `getUser()` restants · `sur_carte` lu nulle part · 506 objets sans `de` · les chevaux écrits en dur (`CHEVAUX_FICHE`, 49 occurrences) · la logique d'abonnement dispersée entre `index.html` et la fonction Netlify · le palmarès en dur qui doublonnera avec la base.
+
+**Risque introduit** : le module dessine en HTML brut (`innerHTML`) dans un conteneur React. C'est volontaire — aucune dépendance — mais **les deux mondes cohabitent sur la même page**, et c'est probablement la source du chevauchement d'affichage non résolu.
+
+---
+
+### À l'écran : + / −
+
+**+** Sur la fiche cheval, panneau **Performances** : quatre totaux (Sorties · Victoires · Podiums · Classements), le mot du poney (plus belle victoire, plus beau podium, plus beau classement), le rail des grands moments, les cavaliers détaillés, les concours en encarts dépliables avec album, trois boutons de tri, et **⤓ Importer mes résultats**.
+**+** Sur la page d'abonnement : le bandeau qui nomme le compte connecté et dit s'il a un abonnement.
+**+** À chaque paiement : la fenêtre de confirmation du compte.
+**+** Sur la fiche cheval : le menu (trois points) devient un bouton encadré, visible.
+
+**−** Rien. L'ancienne liste de résultats et « + Ajouter un résultat » restent en place, en filet de sécurité.
 
 ---
 
@@ -183,6 +408,64 @@ Parti de `1021b46ed9d10ea1b1f696b4f2e1a612`. Quatre modifications, aucune autre 
 **− Le message sec après inscription** qui renvoyait sur l'écran de connexion sans rien expliquer.
 
 ⚠️ **Inchangé volontairement** : le réglage Supabase « Confirm email » (`HYPE_CONFIRMATION_EMAIL = false` dans le code, à passer à `true` **le jour où un serveur d'envoi propre est branché, pas avant**), et `EcranAuth` ligne ~23414, doublon hérité.
+
+---
+
+## 📧 LES MAILS SUPABASE — écrits, NON POSÉS
+
+**Fichier livré** : `mail-reinitialisation.html` · **image** : `poney-mail-courrier.png` (320 px, 118 Ko, PNG obligatoire).
+
+🔴 **NON COLLÉ DANS SUPABASE.** L'éditeur de code de la page *Authentication → Emails* **refuse le collage depuis un iPhone** — testé une heure durant le 22/08 vers 3 h : appui long, geste à trois doigts, version bureau de Safari. Aucun ne passe. **À faire depuis un ordinateur**, trente secondes. Le texte anglais par défaut était revenu entre-temps : l'effacement n'avait pas été enregistré (bouton **Save changes** tout en bas, à ne pas oublier).
+
+### Ce qui est arrêté
+
+**Objet** : `HYPE — ton cheval t'attend` — au singulier, volontairement : il désigne LE sien, celui qui est en face de son nom sur le tableau.
+
+**Corps** (voix du poney, écrit avec Blandine ligne à ligne) :
+> Sur le tableau de l'écurie, ton nom est toujours écrit à la craie, juste en face de ton cheval. Rien n'a bougé.
+>
+> Je crois qu'il t'attend.
+>
+> **[ Choisir un nouveau mot de passe ]**
+>
+> Ce lien est valable pendant une heure. Après, pas de panique : tu pourras simplement en demander un nouveau depuis l'écran de connexion.
+>
+> Tu n'as pas demandé à changer ton mot de passe ?
+> Ignore simplement cet e-mail. Ton compte reste intact et ton mot de passe ne sera pas modifié.
+>
+> Et entre nous… quelques carottes pourraient aider à faire oublier ton absence. 🥕🐴
+
+**Retenu parmi 19 versions comparées.** Écartées : « Ça arrive à tout le monde » (phrase que toutes les apps écrivent, ne vient de personne), « À tout de suite ! » (signature déguisée, sonne relance commerciale), toute signature en bas (« L'équipe Hype » ramènerait un « nous » dans une conversation entre elle et son cheval).
+**Le mail se termine sur la blague, jamais sur l'avertissement** — l'avertissement a déjà été donné juste avant.
+
+### Contraintes techniques des mails — établies, à ne pas réapprendre
+- **Cinzel n'existe pas dans les mails** (Gmail et Outlook suppriment les polices web). Georgia est son plus proche parent disponible partout.
+- **Le Fumé Turquoise ne passe pas** : Outlook supprime les dégradés CSS, le bouton sortirait gris. **Aplat plein `#20D9F5` + texte `#04252A`**, en `<table>` avec `bgcolor`. C'est le seul endroit de Hype où la règle des boutons ne s'applique pas.
+- **Le WebP ne s'affiche pas dans plusieurs clients mail.** Les images de mail sont en **PNG**, à 2× la taille d'affichage pour les écrans Retina.
+- **Le poney est placé EN DERNIER**, après le texte utile : beaucoup de boîtes bloquent les images par défaut, le mail doit rester entier sans elle.
+- **Un seul modèle = une seule langue.** Choix retenu : français, plus **deux lignes en anglais sous le bouton**, en lagon italique 12,5 px pour qu'on voie que c'est une note de traduction. Les six langues ne seront possibles qu'avec un serveur d'envoi propre, donc après le domaine.
+- ⚠️ **`{{ .ConfirmationURL }}` ne doit jamais être touché** — c'est Supabase qui y met le vrai lien.
+
+### 🟥 LE VERROU DU DOMAINE — ce qui bloque quoi
+
+**« Supabase Auth » ne peut PAS être changé** depuis les modèles : l'expéditeur appartient au service d'envoi. Il ne deviendra « Hype » qu'avec un serveur propre (Resend, Brevo), qui exige de **prouver la propriété d'un domaine par des enregistrements DNS**. Or `2hype.netlify.app` est un sous-domaine de Netlify : le DNS n'est pas accessible.
+
+**Le domaine débloque trois choses d'un coup** : l'expéditeur « Hype », un webhook Stripe qui ne casse plus jamais en changeant d'hébergeur, et la confirmation par e-mail que Blandine veut imposer.
+
+🟥 **SIXIÈME ENDROIT À REPRENDRE AU CHANGEMENT DE DOMAINE** (la liste des cinq en devient six) : **l'adresse des images dans les modèles de mail**. Un mail ne peut pas afficher une image « du site » — il lui faut une adresse complète. Aujourd'hui `https://2hype.netlify.app/images/poney-mail-courrier.png`. Signalé en commentaire en tête du fichier livré.
+**Le reste ne bougera pas** : les modèles vivent dans Supabase, pas dans le domaine.
+
+### Reste à faire sur les mails
+- Coller le modèle de réinitialisation (ordinateur).
+- Écrire les deux autres : **confirmation d'inscription** — pour celui-là l'image du tableau ne marche plus, son nom n'y est pas encore : c'est justement ce qu'on peut raconter, **on l'y écrit pour la première fois** — et **changement d'adresse**.
+
+### 🐴 LA MASCOTTE — sans nom à ce jour
+
+**C'est un poney, masculin**, confirmé par Blandine. Il parle au masculin dans les quatre répliques.
+**Aucun nom retenu** parmi une quarantaine proposés (lumière, poney de club, inventés courts, eau, attente, japonais, mythologie). Familles explorées et refusées en bloc : les six premières. ⚠️ **Kelpie est à proscrire** : dans la légende écossaise, le cheval d'eau noie les enfants qui montent sur son dos.
+**À reprendre plus tard**, décision de Blandine.
+
+**Un visuel mis en réserve** : le poney penché sur une mappemonde avec une boussole. **C'est Linguae**, pas Hype — les 37 villes, le voyage. À ne pas brûler ailleurs.
 
 ---
 
