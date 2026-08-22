@@ -5375,7 +5375,13 @@ var RECITS = {
       {f:"In Clonbinane wurden bedeutende Arbeiten zur Kognition, zum Verhalten und zu den Lernmechanismen des Pferdes durchgeführt. Diese Forschung hat zur Entwicklung der modernen Equitation Science beigetragen."}],
   ja:["ブッシュは夜明け前に目を覚まし、放牧地の馬たちはほとんど同時に顔を上げる。",
       "ここでは、求めをくり返す前に、それが引き出した答えを観察する。",
-      {f:"クロンビナンでは、馬の認知、行動、学習の仕組みに関する重要な研究が行われてきた。これらの研究は、現代の科学的馬術の発展に寄与している。"}]},
+      {f:"クロンビナンでは、馬の認知、行動、学習の仕組みに関する重要な研究が行われてきた。これらの研究は、現代の科学的馬術の発展に寄与している。"}],
+  /* 🟡 ARABE DORMANT (21/08) — aucun écran ne lit ce champ, le sélecteur
+     reste à six langues. Relu une fois en croisé, JAMAIS par un natif.
+     Sans signes vocaliques, comme tout l'arabe du projet. */
+  ar:["تستيقظ الأدغال قبل بزوغ النهار، وترفع خيول المرعى رؤوسها معا تقريبا.",
+      "هنا، قبل تكرار الطلب، نراقب الاستجابة التي يثيرها.",
+      {f:"احتضنت كلونبينان أبحاثا مهمة حول إدراك الحصان وسلوكه وآليات تعلّمه. أسهمت هذه الأبحاث في تطوّر الفروسية العلمية الحديثة."}]},
  flyinge:{
   fr:["Le feu de la forge, et la patience du fer qui se plie avant de tenir.",
       "Ici, on ne dresse pas le cheval — on prépare le sol sur lequel il se tient.",
@@ -5712,7 +5718,9 @@ var POURQUOI = {
   it:"L'appuntamento francese dei giovani cavalli sportivi, dove si decide il loro futuro.",
   de:"Frankreichs Treffpunkt für junge Sportpferde, an dem ihre Zukunft entschieden wird.",
   ja:"フランスの若いスポーツホースたちの集いの場。その未来が決まる場所。"},
- clonbinane:{fr:"Le bush du Victoria, où l'on regarde comment un cheval apprend avant de lui demander.",
+ /* 🟡 `ar` dormant — voir RECITS. */
+ clonbinane:{ar:"أدغال فيكتوريا، حيث تراقب كيف يتعلم الحصان قبل أن تطلب منه شيئا.",
+  fr:"Le bush du Victoria, où l'on regarde comment un cheval apprend avant de lui demander.",
   en:"The Victorian bush, where you watch how a horse learns before asking anything of him.",
   es:"El bush de Victoria, donde se observa cómo aprende un caballo antes de pedirle nada.",
   it:"Il bush del Victoria, dove si guarda come impara un cavallo prima di chiedergli qualcosa.",
@@ -8880,7 +8888,9 @@ var ACCUEIL_CHAP = {
      manuscrit sous le titre — même défaut silencieux que La Baule avant
      sa correction. Le texte est provisoire, à revoir ou réécrire. */
   badminton:{fr:"Le concours complet : le cross, le barème, le classement provisoire.", en:"Eventing: the cross-country, the scoring, the running order.", es:"El concurso completo: el cross, el bareme, la clasificación provisional.", it:"Il concorso completo: il cross, il bareme, la classifica provvisoria.", de:"Die Vielseitigkeit: das Gelände, die Wertung, die Zwischenrangliste.", ja:"総合馬術 — クロスカントリー、採点、暫定順位。"},
-  clonbinane:{fr:"Comment le cheval apprend : observer, le seuil, le signal, le relâchement, la pause.", en:"How a horse learns: observing, threshold, the cue, the release, the break.", es:"Cómo aprende el caballo: observar, el umbral, la señal, la soltura, la pausa.", it:"Come impara il cavallo: osservare, la soglia, il segnale, il rilascio, la pausa.", de:"Wie das Pferd lernt: beobachten, die Schwelle, das Signal, das Nachgeben, die Pause.", ja:"馬の学び方 — 観察、閾値、合図、解放、休憩。"},
+  /* 🟡 `ar` dormant — voir RECITS. */
+  clonbinane:{ar:"كيف يتعلم الحصان: المراقبة، العتبة، الإشارة، تخفيف الضغط، الاستراحة.",
+  fr:"Comment le cheval apprend : observer, le seuil, le signal, le relâchement, la pause.", en:"How a horse learns: observing, threshold, the cue, the release, the break.", es:"Cómo aprende el caballo: observar, el umbral, la señal, la soltura, la pausa.", it:"Come impara il cavallo: osservare, la soglia, il segnale, il rilascio, la pausa.", de:"Wie das Pferd lernt: beobachten, die Schwelle, das Signal, das Nachgeben, die Pause.", ja:"馬の学び方 — 観察、閾値、合図、解放、休憩。"},
   flyinge:{fr:"Le pied et la maréchalerie : parer, ferrer, comprendre les choix du maréchal.", en:"The foot and farriery: trimming, shoeing, understanding the farrier's choices.", es:"El casco y la herrería: recortar, herrar, comprender las decisiones del herrador.", it:"Lo zoccolo e la maniscalcheria: pareggiare, ferrare, capire le scelte del maniscalco.", de:"Der Huf und der Hufbeschlag: bearbeiten, beschlagen, die Entscheidungen des Hufschmieds verstehen.", ja:"蹄と装蹄 — 削蹄、装蹄、装蹄師の判断を理解する。"},
   cross:{fr:"Le terrain et son équipement : les obstacles fixes, les crampons, la toque, le chronomètre.", en:"The country and its kit: the fixed fences, the studs, the hat cover, the stopwatch.", es:"El terreno y su equipo: los obstáculos fijos, los tacos, la funda del casco, el cronómetro.", it:"Il terreno e il suo equipaggiamento: gli ostacoli fissi, i ramponi, la copertura del casco, il cronometro.", de:"Das Gelände und seine Ausrüstung: die festen Hindernisse, die Stollen, der Helmbezug, die Stoppuhr.", ja:"クロスの地形と装備 — 固定障害、スタッド、ヘルメットカバー、ストップウォッチ。"},
   /* `balade` : le chapitre du Morne. `arrivee` : celui de La Baule, qui

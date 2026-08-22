@@ -85,6 +85,19 @@
    Les corrections sur la punition, la distance et la rampe étaient déjà
    appliquées à la passe précédente.
 
+   ✅ TROISIÈME PASSE, relecture complète des 62 entrées. Corrigés :
+   · `observer` et `progresser` étaient des VERBES conjugués (يراقب,
+     يتقدم) là où le lexique présente une notion — passés au nom
+     d'action (المراقبة, التقدم خطوة بخطوة) ;
+   · `relachement` — رفعه pouvait se lire « augmenter la pression »,
+     remplacé par إزالته ;
+   · `anticipation` — الاستباق rendu par التوقع المسبق, plus immédiat ;
+   · جواب remplacé par استجابة partout : c'est le mot de l'apprentissage ;
+   · le paddock — المرعى était le pâturage, c'est الحظيرة الخارجية ;
+   · plusieurs définitions étaient traduites trop littéralement du
+     français (habituation, seuil, fuite, troupeau, observer) ;
+   · le récit d'arrivée : أعمالا (travaux, vague) → أبحاثا (recherches).
+
    🟡 CETTE RELECTURE N'EST PAS UNE VALIDATION NATIVE. Elle vient d'une
    seconde source automatique, pas d'un arabophone. Le contrôle humain
    reste à faire avant toute activation. Toutes les traductions EN/ES/IT/DE/JA
@@ -129,7 +142,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           de:"Was ein Verhalten wahrscheinlicher macht: das Ende der Frage, die Stimme, ein Kraulen, Futter.",
           ja:"ある行動が起こりやすくなる要因。要求の終了、声、かいてやること、餌。",
           /* ar? terme technique — à faire relire */
-          ar:"كل ما يجعل سلوكا ما أكثر احتمالا: توقف الطلب، أو الصوت، أو المداعبة، أو الطعام." } },
+          ar:"كل ما يزيد احتمال تكرار سلوك ما: توقف الضغط، أو الصوت، أو المداعبة، أو الطعام." } },
 
   { ref:"habituation", lecon:1, coll:"science",
     mots:{ fr:{m:"l'habituation"}, en:{m:"habituation", p:"ha-bi-tiou-é-cheune"},
@@ -144,7 +157,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           de:"Aufhören, auf Harmloses zu reagieren, weil man es immer wieder ohne Folgen erlebt hat.",
           ja:"危険のないものに反応しなくなること。何度も出会い、何も起こらないことで生じる。",
           /* ar? terme technique — à faire relire */
-          ar:"التوقف عن رد الفعل تجاه شيء لا خطر فيه، بعد لقائه مرة بعد مرة دون أن يحدث شيء." } },
+          ar:"التراجع التدريجي للاستجابة لمثير غير خطر نتيجة التعرض المتكرر له دون عواقب." } },
 
   { ref:"seuil", lecon:1, coll:"science",
     mots:{ fr:{m:"le seuil de réaction"}, en:{m:"the threshold", p:"thresh-old"},
@@ -159,7 +172,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           de:"Der Punkt, ab dem das Pferd nicht mehr denkt und flieht. Über der Schwelle lernt es nichts.",
           ja:"これを超えると馬は考えるのをやめ、逃げ出す境目。閾値を超えた馬は何も学ばない。",
           /* ar? terme technique — à faire relire */
-          ar:"الحد الذي يتوقف الحصان بعده عن التفكير فيهرب. فوق عتبته لا يتعلم شيئا." } },
+          ar:"الحد الذي إذا تجاوزه الحصان يتوقف عن التفكير ويميل إلى الهروب. عندما يتجاوز الحصان عتبته، لا يستطيع التعلم." } },
 
   { ref:"fuite", lecon:1, coll:"nature",
     mots:{ fr:{m:"la fuite"}, en:{m:"flight", p:"flaït"},
@@ -172,7 +185,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           it:"La prima risposta di un erbivoro davanti all'ignoto. Non è un difetto di carattere.",
           de:"Die erste Antwort eines Pflanzenfressers auf das Unbekannte. Kein Charakterfehler.",
           ja:"未知のものに対する草食動物の最初の答え。性格の欠点ではない。",
-          ar:"أول جواب يعطيه حيوان عاشب أمام المجهول. وهي ليست عيبا في الطبع." } },
+          ar:"أول استجابة يبديها الحيوان العاشب أمام المجهول، وهي ليست عيبا في طبعه." } },
 
   { ref:"troupeau", lecon:1, coll:"nature",
     mots:{ fr:{m:"le troupeau"}, en:{m:"the herd", p:"heurd"},
@@ -185,7 +198,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           it:"Il gruppo dove il cavallo trova sicurezza. Da solo è più inquieto e impara peggio.",
           de:"Die Gruppe, in der ein Pferd Sicherheit findet. Allein ist es unruhiger — und lernt schlechter.",
           ja:"馬が安心を得る集団。ひとりでは不安が強く、学習も進みにくい。",
-          ar:"المجموعة التي يجد فيها الحصان أمانه. وحده يكون أكثر قلقا، ويتعلم أقل." } },
+          ar:"المجموعة التي يجد فيها الحصان أمانه. عندما يكون وحده، يزداد قلقه ويتعلم بكفاءة أقل." } },
 
   { ref:"repetition", lecon:1, coll:"science",
     mots:{ fr:{m:"la répétition"}, en:{m:"repetition", p:"ré-pé-ti-cheune"},
@@ -199,7 +212,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           it:"Ripetere la stessa richiesta nello stesso modo. Insegna la costanza, non la fermezza.",
           de:"Dieselbe Frage auf dieselbe Weise stellen. Beständigkeit lehrt, nicht Härte.",
           ja:"同じ要求を同じやり方で繰り返すこと。教えるのは厳しさではなく一貫性。",
-          ar:"إعادة الطلب نفسه بالطريقة نفسها. الثبات هو ما يعلم، لا الشدة." } },
+          ar:"إعادة الطلب نفسه بالطريقة نفسها. الاتساق هو ما يساعد على التعلم، لا الشدة." } },
 
   { ref:"pause", lecon:1, coll:"science",
     mots:{ fr:{m:"la pause"}, en:{m:"the break", p:"brék"},
@@ -226,21 +239,21 @@ window.HYPE_LINGO_LEX.apprentissage = {
           it:"Due richieste opposte insieme. Un cavallo che non capisce non è un cavallo che rifiuta.",
           de:"Zwei gegensätzliche Fragen gleichzeitig. Ein Pferd, das nicht versteht, verweigert nicht.",
           ja:"相反する二つの要求が同時に出ること。理解できない馬は、拒否している馬ではない。",
-          ar:"طلبان متناقضان في وقت واحد. الحصان الذي لا يفهم ليس حصانا يرفض." } },
+          ar:"طلبان متناقضان في وقت واحد. عدم فهم الحصان لا يعني أنه يرفض." } },
 
   { ref:"observer", lecon:1, coll:"nature", v:true,
     mots:{ fr:{m:"observer"}, en:{m:"to observe", p:"tou ob-zeurv"},
            es:{m:"observar"}, it:{m:"osservare"},
            de:{m:"beobachten", p:"bé-o-bakh-ten"},
            ja:{m:"観察する", p:"kansatsu suru"},
-           ar:{m:"يراقب"} },
+           ar:{m:"المراقبة"} },
     def:{ fr:"Regarder longtemps avant de demander : l'oreille, l'œil, le poids sur les pieds disent tout.",
           en:"Watching a long while before asking: the ear, the eye, the weight on the feet say everything.",
           es:"Mirar largo rato antes de pedir: la oreja, el ojo, el peso sobre los pies lo dicen todo.",
           it:"Guardare a lungo prima di chiedere: l'orecchio, l'occhio, il peso sui piedi dicono tutto.",
           de:"Lange schauen, bevor man fragt: Ohr, Auge und das Gewicht auf den Hufen sagen alles.",
           ja:"求める前に、長く見ること。耳、目、脚にかかる重さがすべてを語る。",
-          ar:"أن تنظر طويلا قبل أن تطلب: الأذن والعين وثقل الجسم على القوائم تقول كل شيء." } },
+          ar:"التأني في المراقبة قبل إعطاء الطلب: فالأذنان والعينان وتوزيع الوزن على القوائم تكشف الكثير." } },
 
   /* ---- les six ajouts du 21/08, définitions mesurées ---- */
 
@@ -256,7 +269,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           de:"Eine Folge, die ein Verhalten unwahrscheinlicher macht. Falsch eingesetzt oder zu spät, kann sie Angst, Verwirrung oder Abwehrverhalten auslösen.",
           ja:"ある行動が起こりにくくなる結果。使い方を誤ったり遅すぎたりすると、恐れや混乱、防御的な行動を引き起こすことがある。",
           /* ar? terme technique — à faire relire */
-          ar:"نتيجة تجعل سلوكا ما أقل احتمالا. إذا أسيء استعمالها أو جاءت متأخرة، قد تسبب الخوف أو الارتباك أو سلوكا دفاعيا." } },
+          ar:"نتيجة تجعل سلوكا ما أقل احتمالا. إذا أسيء استعمالها أو جاءت متأخرة، قد تسبب الخوف أو الارتباك أو سلوكيات دفاعية." } },
 
   { ref:"desensibilisation", lecon:1, coll:"science",
     mots:{ fr:{m:"la désensibilisation"}, en:{m:"desensitisation", p:"di-senn-si-taï-zé-cheune"},
@@ -271,7 +284,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           de:"Das Pferd schrittweise dem aussetzen, was es beunruhigt, in einer Intensität, die es aushalten kann, ohne eine starke Flucht-, Kampf- oder Erstarrungsreaktion auszulösen.",
           ja:"馬が不安に感じるものに、耐えられる強さで少しずつ触れさせること。強い逃走・闘争・フリーズ反応を引き起こさない範囲で行う。",
           /* ar? terme technique — à faire relire */
-          ar:"تعريض الحصان تدريجيا لما يقلقه، إلى الحد الذي يستطيع تحمله، دون إثارة رد فعل قوي من هروب أو مقاومة أو تجمد." } },
+          ar:"تعريض الحصان تدريجيا لما يقلقه، بدرجة يستطيع تحملها، دون إثارة رد فعل قوي من هروب أو مقاومة أو تجمد." } },
 
   { ref:"relachement", lecon:1, coll:"science",
     mots:{ fr:{m:"le relâchement"}, en:{m:"the release", p:"ri-lisse"},
@@ -284,13 +297,13 @@ window.HYPE_LINGO_LEX.apprentissage = {
           it:"La diminuzione o il ritiro della pressione appena compare la risposta cercata. La precisione di quel momento aiuta il cavallo a capire.",
           de:"Das Verringern oder Wegnehmen des Drucks, sobald die gesuchte Antwort erscheint. Die Genauigkeit dieses Augenblicks hilft dem Pferd zu verstehen.",
           ja:"求めていた反応が現れた瞬間に圧を弱める、あるいは取り除くこと。その瞬間の正確さが、馬の理解を助ける。",
-          ar:"تخفيف الضغط أو رفعه فور ظهور الجواب المطلوب. دقة هذه اللحظة هي ما يساعد الحصان على الفهم." } },
+          ar:"تخفيف الضغط أو إزالته فور ظهور الاستجابة المطلوبة. ويساعد التوقيت الدقيق لهذا التخفيف الحصان على الفهم." } },
 
   { ref:"anticipation", lecon:1, coll:"science",
     mots:{ fr:{m:"l'anticipation"}, en:{m:"anticipation", p:"ann-ti-si-pé-cheune"},
            es:{m:"la anticipación"}, it:{m:"l'anticipazione"},
            de:{m:"das Vorwegnehmen", p:"for-vèk-né-menn"}, ja:{m:"先取り", p:"sakidori"},
-           ar:{m:"الاستباق"} },
+           ar:{m:"التوقع المسبق"} },
     def:{ fr:"Le cheval répond avant que le signal soit complètement donné. Cela peut montrer qu'il a reconnu la situation, mais il faut vérifier qu'il reste attentif à une demande claire.",
           en:"The horse answers before the cue is fully given. It can show he has recognised the situation, but check that he stays attentive to a clear ask.",
           es:"El caballo responde antes de que la señal esté completa. Puede indicar que ha reconocido la situación, pero conviene comprobar que sigue atento a una petición clara.",
@@ -298,7 +311,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           de:"Das Pferd antwortet, bevor das Signal ganz gegeben ist. Das kann zeigen, dass es die Situation erkannt hat — prüfe aber, ob es einer klaren Frage aufmerksam bleibt.",
           ja:"合図が出しきられる前に馬が答えること。状況を理解している証かもしれないが、明確な求めに注意を向け続けているかを確かめる必要がある。",
           /* ar? terme technique — à faire relire */
-          ar:"أن يجيب الحصان قبل أن تكتمل الإشارة. قد يدل ذلك على أنه عرف الموقف، لكن يجب التأكد من أنه يبقى منتبها لطلب واضح." } },
+          ar:"أن يستجيب الحصان قبل اكتمال الإشارة. قد يدل ذلك على أنه تعرف إلى الموقف، لكن يجب التأكد من بقائه منتبها لإشارة واضحة." } },
 
   { ref:"calme", lecon:1, coll:"nature",
     mots:{ fr:{m:"le calme"}, en:{m:"calmness", p:"kâm-nesse"},
@@ -317,14 +330,14 @@ window.HYPE_LINGO_LEX.apprentissage = {
     mots:{ fr:{m:"progresser"}, en:{m:"to progress", p:"tou pro-gresse"},
            es:{m:"progresar"}, it:{m:"progredire"},
            de:{m:"vorankommen", p:"for-ann-ko-menn"}, ja:{m:"進歩する", p:"shinpo suru"},
-           ar:{m:"يتقدم خطوة بخطوة"} },
+           ar:{m:"التقدم خطوة بخطوة"} },
     def:{ fr:"Avancer par étapes lorsque le cheval a compris la précédente. Aller trop vite peut provoquer de la confusion.",
           en:"Moving on in steps once the horse has understood the previous one. Going too fast can cause confusion.",
           es:"Avanzar por etapas cuando el caballo ha comprendido la anterior. Ir demasiado rápido puede provocar confusión.",
           it:"Avanzare per tappe quando il cavallo ha capito la precedente. Andare troppo in fretta può creare confusione.",
           de:"Schritt für Schritt weitergehen, wenn das Pferd den vorigen verstanden hat. Zu schnell zu gehen kann Verwirrung stiften.",
           ja:"前の段階を馬が理解してから、次へ進むこと。急ぎすぎると混乱を招くことがある。",
-          ar:"أن تتقدم خطوة بعد أن يكون الحصان قد فهم الخطوة السابقة. التسرع قد يسبب الارتباك." } }
+          ar:"التقدم مرحلة تلو الأخرى بعد أن يفهم الحصان المرحلة السابقة. فالتسرع قد يسبب الارتباك." } }
 
   ],
 
@@ -375,7 +388,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Prima di tirare, osserva tutto il suo corpo: lo sguardo, l'incollatura, i piedi e il respiro.",
       de:"Bevor du ziehst, schau auf den ganzen Körper: Auge, Hals, Hufe und Atmung.",
       ja:"引く前に、体全体を見てください。目、首、脚、そして呼吸を。",
-      ar:"قبل أن تشدي، راقبي جسده كله: نظرته، عنقه، قوائمه، وتنفسه." },
+      ar:"قبل أن تشدي الحبل، راقبي جسده كله: نظرته، عنقه، قوائمه، وتنفسه." },
 
     { ref:"d-clo-tremble", temps:1, dit:"joueuse", mots:["seuil"],
       fr:"Il tremble et il recule dès qu'il voit la rampe.",
@@ -422,7 +435,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Allontanati finché il suo corpo non si rilassa.",
       de:"Geh weg, bis sein Körper weicher wird.",
       ja:"体の緊張がゆるむところまで離れてください。",
-      ar:"ابتعدي حتى يلين جسده." },
+      ar:"ابتعدي حتى يسترخي جسده." },
 
     /* ---- temps 3 · vérifier avant de se rapprocher ---- */
 
@@ -433,7 +446,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Soffia e abbassa la testa. Il suo corpo sembra meno teso.",
       de:"Er schnaubt ab und senkt den Kopf. Sein Körper wirkt weniger angespannt.",
       ja:"鼻を鳴らして頭を下げました。体の緊張も少し和らいで見えます。",
-      ar:"ينفخ ويخفض رأسه. جسده يبدو أقل توترا." },
+      ar:"يزفر ويخفض رأسه. ويبدو جسده أقل توترا." },
 
     { ref:"d-clo-continue-observer", temps:3, dit:"club", mots:["observer"],
       fr:"Oui, mais continue d'observer l'ensemble de son comportement avant de te rapprocher.",
@@ -462,7 +475,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Quante volte bisogna ricominciare?",
       de:"Wie oft müssen wir das wiederholen?",
       ja:"何回くり返せばいいですか。",
-      ar:"كم مرة يجب أن نعيد؟" },
+      ar:"كم مرة يجب أن أكرر المحاولة؟" },
 
     { ref:"d-clo-peu-qualite", temps:4, dit:"club", mots:["repetition","confusion"],
       fr:"Peu de répétitions de qualité. Arrête-toi avant qu'il se fatigue ou se mette en confusion.",
@@ -471,7 +484,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Poche ripetizioni di qualità. Fermati prima che si stanchi o si confonda.",
       de:"Wenige gute Wiederholungen. Hör auf, bevor er müde oder verwirrt wird.",
       ja:"質のよいくり返しを少しだけ。疲れたり混乱したりする前にやめましょう。",
-      ar:"تكرارات قليلة وجيدة. توقفي قبل أن يتعب أو يلتبس عليه الأمر." },
+      ar:"كرري المحاولة مرات قليلة وبجودة. وتوقفي قبل أن يتعب أو يختلط عليه الأمر." },
 
     { ref:"d-clo-ordinaire", temps:4, dit:"club", mots:["habituation"],
       fr:"À force de revoir la rampe sans que rien n'arrive, elle deviendra ordinaire.",
@@ -518,7 +531,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"È sceso da solo e aspetta.",
       de:"Er ist von allein wieder heruntergegangen und wartet.",
       ja:"自分から降りて、待っています。",
-      ar:"نزل من تلقاء نفسه وهو ينتظر." },
+      ar:"نزل من تلقاء نفسه، ثم بقي ينتظر." },
 
     { ref:"d-clo-laisse", temps:5, dit:"club", mots:["pause"],
       fr:"Laisse-le. La pause lui laisse le temps de traiter ce qui vient de se passer.",
@@ -538,7 +551,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Gli altri cavalli lo guardano dal paddock.",
       de:"Die anderen Pferde schauen ihm von der Koppel aus zu.",
       ja:"ほかの馬たちが放牧地から見ています。",
-      ar:"الخيول الأخرى تنظر إليه من المرعى." },
+      ar:"الخيول الأخرى تنظر إليه من الحظيرة الخارجية." },
 
     { ref:"d-clo-presence", temps:6, dit:"club", mots:["troupeau"],
       fr:"Leur présence peut le rassurer, à condition qu'elle n'augmente pas son agitation.",
@@ -565,7 +578,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Ha anticipato perché ha riconosciuto la situazione. Ora osserva se resta attento al tuo segnale.",
       de:"Er hat vorweggenommen, weil er die Situation erkannt hat. Beobachte jetzt, ob er deinem Signal aufmerksam bleibt.",
       ja:"状況を理解したから先取りしたのです。では、あなたの合図に注意を向け続けているか見てください。",
-      ar:"توقع المطلوب لأنه تعرف إلى الموقف. راقبي الآن إن كان يبقى منتبها لإشارتك." },
+      ar:"توقع المطلوب لأنه تعرف إلى الموقف. راقبي الآن ما إذا كان لا يزال منتبها لإشارتك." },
 
     { ref:"d-clo-deux-pieds", temps:6, dit:"joueuse", mots:["progresser"],
       fr:"Il a posé deux pieds sur le pont sans reculer.",
@@ -574,7 +587,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Ha messo due piedi sulla pedana senza indietreggiare.",
       de:"Er hat zwei Hufe auf die Rampe gesetzt, ohne zurückzuweichen.",
       ja:"後ずさりせずに、二本の脚をスロープに乗せました。",
-      ar:"وضع قائمتين على منحدر المقطورة دون أن يتراجع." },
+      ar:"وضع قائمتيه الأماميتين على منحدر المقطورة دون أن يتراجع." },
 
     { ref:"d-clo-assimilee", temps:6, dit:"club", mots:["progresser","seuil"],
       fr:"C'est suffisant pour aujourd'hui. Cette étape est assimilée. Mieux vaut terminer sur une réponse calme que dépasser son seuil en voulant tout obtenir.",
