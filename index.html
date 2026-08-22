@@ -19057,7 +19057,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19bm"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=19bm"></script><script src="hype-resultats.js?v=1"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -31685,6 +31685,33 @@ function GrilleSouvenirs(props) {
     (toutVu && photos.length > LIM_SOUV) ? h("button", { onClick: function () { setToutVu(false); try { if (grilleRef.current && grilleRef.current.scrollIntoView) grilleRef.current.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eS) { } }, style: { display: "block", margin: "12px auto 0", padding: "9px 22px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("R\u00e9duire", "Collapse", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null);
 }
 
+/* --- 22/08 session 152 : hote du module hype-resultats.js -----------------
+   Un simple conteneur. Le module dessine dedans. Si le fichier n est pas
+   charge (reseau, cache), le composant ne rend RIEN et la fiche continue
+   de fonctionner avec l ancienne liste juste au-dessus.                  */
+function HypeResultatsHote(props) {
+  var ref = React.useRef(null);
+  var pret = (typeof window !== "undefined") && window.HYPE_RESULTATS;
+  React.useEffect(function () {
+    if (!pret || !ref.current) return;
+    try {
+      window.HYPE_RESULTATS.reinitialiser();
+      window.HYPE_RESULTATS.rendre(ref.current, {
+        lignes: props.lignes || [],
+        titres: props.titres || [],
+        proprietaire: !!props.proprietaire,
+        onAjout: props.onAjout,
+        onImport: props.onImport
+      });
+    } catch (eHR) {
+      console.warn("hype-resultats indisponible :", eHR);
+      try { ref.current.innerHTML = ""; } catch (eHR2) { }
+    }
+  }, [props.chevalId, props.lignes, props.proprietaire]);
+  if (!pret) return null;
+  return React.createElement("div", { ref: ref });
+}
+
 function EcranCheval() {
   function rareteIndice(v) {
     if (!(v >= 120)) return null;
@@ -32723,6 +32750,8 @@ function EcranCheval() {
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.15) 0%, rgba(6,7,9,0) 35%, rgba(6,7,9,0.55) 78%, #060709 100%)" } })),
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : null,
         (palmTous && palmTous.length) ? h("div", { className: "panel" }, palmTous.map(prow)) : h("div", { className: "empty" }, T("Le palmarès commence ici.", "The record starts here.", "El palmarés empieza aquí.", "Il palmarès inizia qui.", "戦績はここから始まります。", "Die Erfolge beginnen hier.")),
+        /* 22/08 session 152 : la page des resultats vit dans hype-resultats.js. Si le fichier manque ou plante, on retombe sur l ancienne liste ci-dessus et le bouton d ajout — la fiche ne casse jamais. */
+        h(HypeResultatsHote, { chevalId: id, lignes: resDb, proprietaire: !!(chevalDyn && moi && chevalDyn.ownerId === moi.id), onAjout: function () { setPanneau(null); ouvrirAjoutResultat(); }, onImport: function () { if (typeof bientot === "function") bientot(); } }),
         h("button", { className: "addbtn", onClick: function () { if (chevalDyn && moi && chevalDyn.ownerId === moi.id) { setPanneau(null); ouvrirAjoutResultat(); } else bientot(); } }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加", "Ein Ergebnis hinzufügen"))) : null,
       panneau === "souvenirs" ? h("div", null,
         h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
