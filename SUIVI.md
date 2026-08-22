@@ -127,7 +127,7 @@ Donc **tout événement Stripe sur ton adresse réécrira ta ligne**, comme ce s
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 22/08/2026 (SESSION 152e · CORRECTIF D'URGENCE, l'app ne démarrait plus) — md5 `ce29110c22411b8b4d86caa603a532cc`, 9 326 467 octets.** Deux fichiers l'accompagnent à la racine : **`hype-import-ffe.js`** (`c9f33b195fac0c81b35bd434b2320695`) et **`hype-resultats.js`** (`0f7d3654633c46c77c79c662b8af4640`) — 🟥 **les trois se poussent ensemble**. ⚠️ `sw.js` ne les déclare pas encore.
+**Version actuelle de l'index.html : 22/08/2026 — md5 `3bcab4752999c3382992a525f6da0f1c`.** Deux fichiers l'accompagnent à la racine : **`hype-import-ffe.js`** (SESSION 152g · `fde090e60f8b4ec5d0a51d082f33952a`) et **`hype-resultats.js`** (`0f7d3654633c46c77c79c662b8af4640`) — 🟥 **les trois se poussent ensemble**. ⚠️ `sw.js` ne les déclare pas encore.
 
 **Ancienne version (152 · L'IMPORT DES TELEMATS) — md5 `326514c511840de91df06f978622a8cc`, 9 314 570 octets.**
 
@@ -161,6 +161,121 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 ⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
 
 ⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 152g — 22/08/2026 (23h45) · UN SEUL ÉCOUTEUR, POSÉ UNE FOIS
+
+**Fichier livré** : `hype-import-ffe.js` (`fde090e60f8b4ec5d0a51d082f33952a`, 34 Ko).
+`index.html` inchangé (`3bcab4752999c3382992a525f6da0f1c`).
+
+### 🔴 LE BOUTON « ENREGISTRER » NE PARTAIT JAMAIS
+
+Symptôme final : le bouton s'enfonce, **rien ne se passe** — pas même le « … » d'attente,
+et **aucune trace** dans la console. Donc l'écouteur n'était jamais appelé.
+
+**Trois corrections successives n'ont rien changé** : le bouton sorti de sous la barre du
+bas, le cheval retenu en `localStorage`, l'erreur rendue visible. Le tap atteignait bien le
+bouton (il s'enfonce), et le compte de lignes cochées valait 12 — donc ni la position, ni
+le verrou du compte.
+
+### 🟥 LA CORRECTION : SUPPRIMER LA CAUSE, PAS LA CHERCHER
+
+Les écouteurs étaient posés **sur chaque bouton**, et **réattachés à chaque redessin** —
+soit à chaque coche, chaque filtre, chaque changement de niveau. Cause exacte de la perte
+non identifiée (timing du redessin, ou nœud remplacé entre l'attache et le tap).
+
+**Remplacé par UN SEUL écouteur, posé UNE FOIS sur le conteneur**, qui lit la cible au
+moment du tap en remontant l'arbre. Il survit à tous les redessins et ne peut plus se
+détacher. Passé de ~20 écouteurs à **2** (le conteneur, plus le champ de fichier qui ne se
+délègue pas).
+
+Vérifié : après trois rendus successifs, **toujours un seul écouteur**.
+
+L'enregistrement est aussi sorti dans sa propre fonction, avec un `try` autour de l'appel :
+une erreur lancée **avant** la promesse ne peut plus passer inaperçue.
+
+🔵 **Règle** : dans un module qui redessine son HTML entièrement, **ne jamais attacher
+d'écouteur à un élément interne**. Un seul sur le conteneur, délégué.
+
+### ⚠️ NON VÉRIFIÉ
+
+L'enregistrement réel en base **n'a jamais abouti à ce jour**. Le banc d'essai confirme que
+les 12 lignes cochées de la saison 2020 sont toutes classées et datées — elles passeront
+donc le filtre de `enregistrerImportFFE`. Mais **le trajet complet jusqu'à Supabase reste
+à éprouver sur le téléphone**.
+
+---
+
+## SESSION 152f — 22/08/2026 (23h30) · L'IMPORT LIT LES PDF — MAIS N'ENREGISTRE PAS
+
+**Fichiers livrés** : `index.html` (`3bcab4752999c3382992a525f6da0f1c`) ·
+`hype-import-ffe.js` (`3bb6aef8532809b4176fc6eed4b4966e`) · `hype-resultats.js` inchangé.
+🟥 **Les trois se poussent ensemble.**
+
+### 🟢 CE QUI MARCHE — la lecture du PDF
+
+🔵 **PDF.js tourne pour de vrai.** C'était le seul point sans aucune garantie (mon
+environnement n'a pas internet). Vérifié sur l'écran de Blandine à 23h13 : un PDF telemat
+choisi depuis Fichiers est lu, les fiches sont reconstruites, **les places, les partants,
+les quarts et les cavaliers sont justes**, et le regroupement par position fonctionne.
+
+### 🔴 CE QUI NE MARCHE PAS — le bouton « Enregistrer »
+
+**Symptôme** : le bouton s'enfonce visiblement, **et rien ne se passe.** Pas même le
+« … » d'attente. Donc le tap l'atteint, mais le gestionnaire ne part pas — ou sort
+immédiatement.
+
+**Trois causes traitées ce soir, sans que ça règle le problème :**
+1. le bouton était en `position:sticky` et passait **sous la barre du bas de l'app** →
+   remis dans le flux avec 120 px de marge. *(le tap l'atteint bien, donc ce n'était pas ça)*
+2. `window.HYPE_CHEVAL_IMPORT` pouvait être vide après un rechargement →
+   le cheval est désormais **retenu aussi en `localStorage`**
+3. toute erreur d'enregistrement restait **muette** → elle s'affiche maintenant en rouge
+   sous le bouton, et une trace part dans la console
+
+🔴 **Piste NON explorée, la plus probable** : le bouton est désactivé quand le nombre de
+lignes cochées vaut zéro. Ce compte est fait sur les lignes **visibles** (filtrées par
+cavalier), alors que `garder` est posé sur **toutes** les lignes. Si le filtre et les
+cases se désaccordent, le bouton s'affiche actif tout en étant inerte.
+**À vérifier en premier demain.**
+
+### 🟢 DEUX CORRECTIFS D'AFFICHAGE
+
+**Lisibilité** — les lignes décochées étaient à 42 % d'opacité **sur une photo de fond** :
+illisibles. Elles sont à pleine opacité sur fond opaque, seul le texte est assourdi, et la
+liste a son propre fond sombre.
+
+**Suffixe résiduel** — « MAGNANVILLE er », « BARBIZON e » : le suffixe ordinal de la forme
+déformée `1 / 13 er` restait collé au nom du concours. Vérifié sur la saison 2020 :
+**zéro résidu**.
+
+### 🟡 SIGNALÉ, NON TRAITÉ — la carte des clubs
+
+Écran **Communauté** : la carte est **turquoise sur turquoise** — fond, grille en
+pointillés, contour, points, titre, sous-titre. Plus rien ne ressort.
+Piste proposée à Blandine, non validée : grille et contour en **gris très sombre**,
+le turquoise réservé aux **points** (les clubs).
+
+🔴 **« 131 clubs en France » est FAUX et écrit en dur.** Le globe en contient plusieurs
+milliers. Ce chiffre date de plusieurs mois. **Ne jamais le citer de mémoire.**
+
+### ⚠️ ÉTAT DE FIN DE JOURNÉE
+
+Blandine a commencé **hier matin**. Deux nuits de travail. L'app a été cassée une fois
+aujourd'hui (session 152e) **par moi**.
+
+**Ce qui reste ouvert, par priorité :**
+1. 🔴 **le bouton Enregistrer de l'import** — voir la piste ci-dessus
+2. 🔴 **les cadenas s'affichent pour une modératrice**, et **le cadenas n'empêche rien**
+   (faille, cf. session 152)
+3. **le module `hype-resultats.js` reste neutralisé** — affichage à refaire dans le style
+   de l'app
+4. **l'écran d'import n'est plus traduit** (trois textes en français en dur)
+5. **`sw.js`** ne déclare aucun des deux modules
+6. la **carte des clubs** trop bleue et son compteur faux
+7. **Aurélie** : abonnement sur `a.bussonnais@outlook.com`, elle utilise gmail.
+   Rien n'est tranché entre « elle bascule » et « on déplace l'abonnement ».
 
 ---
 

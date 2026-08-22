@@ -575,95 +575,113 @@
     brancher(hote, options);
   }
 
+  /* ==== LES GESTES ======================================================
+     🟥 22/08 : les écouteurs étaient posés sur CHAQUE bouton, et
+     réattachés à chaque redessin. Le bouton « Enregistrer » ne répondait
+     pas — même pas le « … » — et aucune trace ne partait : l'écouteur
+     n'était jamais appelé. Cause exacte non identifiée (timing du
+     redessin, ou nœud remplacé entre l'attache et le tap).
+
+     On supprime la cause entière : UN SEUL écouteur, posé une fois sur le
+     conteneur, qui lit la cible au moment du tap. Il survit à tous les
+     redessins et ne peut plus se détacher.                             */
   function brancher(hote, options) {
     function refaire() { rendre(hote, options); }
 
+    /* le champ de fichier ne se délègue pas : il change, il ne se tape pas */
     var f = hote.querySelector('[data-hi="fichier"]');
-    if (f) f.addEventListener("change", function () {
-      var fic = f.files && f.files[0];
-      if (!fic) return;
-      E.err = null; E.nomFichier = fic.name; E.etape = "lecture"; refaire();
-      window.HYPE_IMPORT.texteDuPdf(fic).then(function (txt) {
-        var o = window.HYPE_IMPORT.lire(txt);
-        if (!o.lignes.length) {
-          E.err = "Aucun résultat trouvé dans ce PDF. Vérifie que c'est bien la page " +
-                  "entière de ton telemat, et non une capture en image.";
-          E.etape = "choix"; refaire(); return;
-        }
-        E.lignes = o.lignes; E.cavalier = ""; E.niveau = "classe";
+    if (f && !f.__hiBranche) {
+      f.__hiBranche = true;
+      f.addEventListener("change", function () {
+        var fic = f.files && f.files[0];
+        if (!fic) return;
+        E.err = null; E.nomFichier = fic.name; E.etape = "lecture"; refaire();
+        window.HYPE_IMPORT.texteDuPdf(fic).then(function (txt) {
+          var o = window.HYPE_IMPORT.lire(txt);
+          if (!o.lignes.length) {
+            E.err = "Aucun résultat trouvé dans ce PDF. Vérifie que c'est bien la page " +
+                    "entière de ton telemat, et non une capture en image.";
+            E.etape = "choix"; refaire(); return;
+          }
+          E.lignes = o.lignes; E.cavalier = ""; E.niveau = "classe";
+          window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
+          E.etape = "niveau"; refaire();
+        }).catch(function (e) {
+          E.err = "Le fichier n'a pas pu être lu. " + (e && e.message ? e.message : "");
+          E.etape = "choix"; refaire();
+        });
+      });
+    }
+
+    if (hote.__hiGestes) return;   /* un seul écouteur, pour toujours */
+    hote.__hiGestes = true;
+
+    hote.addEventListener("click", function (ev) {
+      var el = ev.target;
+      /* on remonte jusqu'à l'élément porteur d'une action */
+      var cible = null;
+      while (el && el !== hote) {
+        if (el.getAttribute && (el.getAttribute("data-hi") ||
+            el.getAttribute("data-hi-l") || el.getAttribute("data-hi-cav") ||
+            el.getAttribute("data-hi-nv"))) { cible = el; break; }
+        el = el.parentNode;
+      }
+      if (!cible) return;
+
+      var nv = cible.getAttribute("data-hi-nv");
+      if (nv) {
+        E.niveau = nv;
         window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
-        E.etape = "niveau"; refaire();
-      }).catch(function (e) {
-        E.err = "Le fichier n'a pas pu être lu. " + (e && e.message ? e.message : "");
-        E.etape = "choix"; refaire();
-      });
-    });
-
-    hote.querySelectorAll("[data-hi-nv]").forEach(function (el) {
-      el.addEventListener("click", function () {
-        E.niveau = el.getAttribute("data-hi-nv");
-        window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
-        refaire();
-      });
-    });
-    var bV = hote.querySelector('[data-hi="versrelecture"]');
-    if (bV) bV.addEventListener("click", function () { E.etape = "relecture"; refaire(); });
-
-    hote.querySelectorAll("[data-hi-l]").forEach(function (el) {
-      el.addEventListener("click", function () {
-        var n = Number(el.getAttribute("data-hi-l"));
-        E.lignes.forEach(function (r) { if (r.rang === n) r.garder = !r.garder; });
-        refaire();
-      });
-    });
-    hote.querySelectorAll("[data-hi-cav]").forEach(function (el) {
-      el.addEventListener("click", function () {
-        E.cavalier = el.getAttribute("data-hi-cav") || ""; refaire();
-      });
-    });
-
-    var bE = hote.querySelector('[data-hi="enregistrer"]');
-    /* 22/08 : le bouton ne répondait pas. Deux causes possibles, traitées
-       toutes les deux : il passait SOUS la barre du bas de l'app (le tap
-       ne l'atteignait pas — corrigé par le padding de 120 px), et une
-       erreur d'enregistrement restait muette. On trace désormais tout. */
-    if (!bE) { try { console.warn("Import : bouton Enregistrer introuvable"); } catch (e0) { } }
-    if (bE) bE.addEventListener("click", function () {
-      try { console.log("Import : enregistrement demandé"); } catch (e0) { }
-      if (E.occupe) return;
-      var vis = E.cavalier
-        ? E.lignes.filter(function (r) { return r.cavalier === E.cavalier; })
-        : E.lignes;
-      var aGarder = vis.filter(function (r) { return r.garder; });
-      if (!aGarder.length) return;
-      E.occupe = true; refaire();
-      if (typeof options.onEnregistrer !== "function") {
-        E.occupe = false;
-        E.err = "l'app n'a pas fourni de quoi enregistrer (onEnregistrer manquant).";
         refaire(); return;
       }
-      Promise.resolve(options.onEnregistrer(aGarder)).then(function (n) {
-        E.occupe = false; E.enregistres = (typeof n === "number" ? n : aGarder.length);
-        E.etape = "fin"; refaire();
-      }).catch(function (e) {
-        E.occupe = false;
-        try { console.warn("Import : échec de l'enregistrement", e); } catch (e2) { }
-        E.err = (e && e.message ? e.message : String(e));
-        E.etape = "relecture"; refaire();
-      });
-    });
+      var lg = cible.getAttribute("data-hi-l");
+      if (lg) {
+        var n = Number(lg);
+        E.lignes.forEach(function (r) { if (r.rang === n) r.garder = !r.garder; });
+        refaire(); return;
+      }
+      var cv = cible.getAttribute("data-hi-cav");
+      if (cv !== null) { E.cavalier = cv || ""; refaire(); return; }
 
-    var bA = hote.querySelector('[data-hi="annuler"]');
-    if (bA) bA.addEventListener("click", function () {
-      reinitialiser();
-      if (typeof options.onFermer === "function") options.onFermer(); else refaire();
-    });
-    var bR = hote.querySelector('[data-hi="encore"]');
-    if (bR) bR.addEventListener("click", function () { reinitialiser(); refaire(); });
-    var bF = hote.querySelector('[data-hi="fermer"]');
-    if (bF) bF.addEventListener("click", function () {
-      reinitialiser();
-      if (typeof options.onFermer === "function") options.onFermer();
+      var act = cible.getAttribute("data-hi");
+      if (act === "versrelecture") { E.etape = "relecture"; refaire(); return; }
+      if (act === "annuler" || act === "fermer") {
+        reinitialiser();
+        if (typeof options.onFermer === "function") options.onFermer(); else refaire();
+        return;
+      }
+      if (act === "encore") { reinitialiser(); refaire(); return; }
+      if (act === "enregistrer") { enregistrer(hote, options, refaire); return; }
+    }, false);
+  }
+
+  function enregistrer(hote, options, refaire) {
+    if (E.occupe) return;
+    var vis = E.cavalier
+      ? E.lignes.filter(function (r) { return r.cavalier === E.cavalier; })
+      : E.lignes;
+    var aGarder = vis.filter(function (r) { return r.garder; });
+    if (!aGarder.length) {
+      E.err = "aucune ligne cochée."; refaire(); return;
+    }
+    if (typeof options.onEnregistrer !== "function") {
+      E.err = "l'app n'a pas fourni de quoi enregistrer."; refaire(); return;
+    }
+    E.err = null; E.occupe = true; refaire();
+    var p;
+    try { p = options.onEnregistrer(aGarder); }
+    catch (eS) {
+      E.occupe = false; E.err = (eS && eS.message) ? eS.message : String(eS);
+      refaire(); return;
+    }
+    Promise.resolve(p).then(function (n) {
+      E.occupe = false;
+      E.enregistres = (typeof n === "number") ? n : aGarder.length;
+      E.etape = "fin"; refaire();
+    }).catch(function (e) {
+      E.occupe = false;
+      E.err = (e && e.message) ? e.message : String(e);
+      E.etape = "relecture"; refaire();
     });
   }
 
