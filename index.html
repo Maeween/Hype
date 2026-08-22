@@ -90,8 +90,25 @@ async function deconnexion() {
 
 // Qui est connecté ? (renvoie l'utilisateur, ou null)
 async function utilisateurActuel() {
-  const { data } = await supa.auth.getUser();
-  return data?.user ?? null;
+  /* 22/08 session 152 — LA FAUSSE DECONNEXION.
+     getUser() interroge le SERVEUR a chaque appel. Reseau lent, jeton a
+     rafraichir, coupure : il renvoie null, et l app conclut que personne
+     n est connecte. Symptomes vus chez une abonnee le 22/08 : le menu
+     propose « Se connecter » alors qu elle est connectee, impossible de
+     se deconnecter, et surtout CADENAS PARTOUT — lireAbo() n est jamais
+     parti. Son profil s affichait pourtant.
+     getSession() lit la session DEJA EN MEMOIRE, sans reseau. On la lit
+     d abord ; getUser() ne sert plus que de secours.
+     Cette fonction est appelee 148 fois : la reparer ici les repare toutes. */
+  try {
+    const { data: ds } = await supa.auth.getSession();
+    const us = ds && ds.session && ds.session.user;
+    if (us) return us;
+  } catch (eS) { }
+  try {
+    const { data } = await supa.auth.getUser();
+    return (data && data.user) || null;
+  } catch (eU) { return null; }
 }
 
 // Être prévenu à chaque connexion / déconnexion.
