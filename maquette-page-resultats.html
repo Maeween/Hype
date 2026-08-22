@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Maquette · la page des résultats</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --t: 32,217,245; --or: 217,181,108; }
+  *{box-sizing:border-box}
+  html{overscroll-behavior:none}
+  html,body{margin:0;background:#04070A;color:#F2F6F8;
+    font-family:Montserrat,-apple-system,system-ui,sans-serif;
+    overflow-x:hidden;overflow-x:clip}
+  sup{font-size:9px}
+
+  /* barre de maquette, hors app */
+  .mq{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.07);
+    background:rgba(4,7,10,.96)}
+  .mq p{margin:0 0 4px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgb(var(--t))}
+  .mq h1{margin:0 0 9px;font-family:Cinzel,serif;font-size:14px;font-weight:600}
+  .mq .r{display:flex;gap:6px}
+  .mq .r b{flex:1;text-align:center;font-size:10px;font-weight:700;padding:8px 4px;border-radius:10px;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.1);color:#8A929C}
+  .mq .r b.on{border-color:rgba(var(--t),.7);color:rgb(var(--t))}
+
+  .ecran{max-width:430px;margin:0 auto;padding:0 0 70px}
+
+  /* ——— l'en-tête de la page ——— */
+  .haut{padding:15px 16px 0;display:flex;align-items:flex-start;gap:12px}
+  .haut .x{font-size:21px;color:rgb(var(--t));line-height:1;padding:1px 4px;flex:0 0 auto;cursor:pointer}
+  .haut .ti{flex:1;min-width:0}
+  .haut .ti .k{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(var(--t),.85);font-weight:800}
+  .haut .ti h2{margin:5px 0 0;font-family:Cinzel,serif;font-size:20px;font-weight:600;line-height:1.15}
+  .haut .ti .s{font-size:10.5px;color:#8A929C;margin-top:5px}
+
+  .chiffres{display:flex;gap:7px;padding:16px 16px 0}
+  .ch{flex:1;text-align:center;padding:12px 3px;border-radius:13px;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
+  .ch b{display:block;font-family:Cinzel,serif;font-size:23px;line-height:1;color:#EDF2F5}
+  .ch.v b{color:rgba(var(--or),.95)}
+  .ch span{display:block;font-size:7.5px;letter-spacing:.13em;text-transform:uppercase;
+    color:#8A929C;margin-top:5px;font-weight:700}
+
+  /* ——— filtres et tri ——— */
+  .st{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#8A929C;font-weight:800;
+    margin:26px 18px 10px;text-indent:.2em;display:flex;align-items:baseline;justify-content:space-between}
+  .st em{font-style:normal;font-size:10px;letter-spacing:.02em;text-transform:none;color:#5E6771}
+  .rangee{display:flex;gap:6px;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+  .rangee::-webkit-scrollbar{display:none}
+  .pil{flex:0 0 auto;font-size:10.5px;font-weight:700;padding:9px 13px;border-radius:20px;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:#8A929C}
+  .pil.on{border-color:rgba(var(--t),.55);color:rgb(var(--t))}
+  .tri{display:flex;gap:6px;padding:0 16px;margin-top:8px}
+  .tri b{flex:1;text-align:center;font-size:10.5px;font-weight:700;padding:9px 5px;border-radius:10px;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:#8A929C}
+  .tri b.on{border-color:rgba(var(--t),.55);color:rgb(var(--t))}
+
+  /* ——— l'année ——— */
+  .an{margin:22px 16px 9px;padding:11px 13px;border-radius:13px;display:flex;align-items:center;gap:11px;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);cursor:pointer;
+    -webkit-tap-highlight-color:transparent}
+  .an .y{font-family:Cinzel,serif;font-size:19px;color:rgb(var(--t));line-height:1;flex:0 0 auto}
+  .an .rs{flex:1;font-size:10.5px;color:#8A929C;line-height:1.5}
+  .an .rs i{font-style:normal;font-family:Cinzel,serif;font-size:12px;font-weight:700;
+    color:rgba(var(--or),.95)}
+  .an .c{font-size:13px;color:#5E6771;flex:0 0 auto;transition:transform .2s}
+  .an.ferme .c{transform:rotate(-90deg)}
+  .corps{padding:0 16px}
+  .corps.ferme{display:none}
+
+  /* ——— un concours ——— */
+  .enc{border-radius:15px;overflow:hidden;margin-bottom:9px;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    background:linear-gradient(160deg,rgba(255,255,255,.03),rgba(255,255,255,.008));
+    border:1px solid rgba(255,255,255,.08)}
+  .enc.sacre{border-color:rgba(var(--or),.34)}
+  .enc.gros{border-color:rgba(var(--or),.18)}
+  .eh{display:flex;align-items:flex-start;gap:12px;padding:12px 13px}
+  .eh .g{flex:0 0 46px;text-align:center;font-family:Cinzel,serif;font-size:25px;line-height:.95;
+    color:rgba(242,246,248,.42);padding-top:2px}
+  .eh .g.v{color:rgba(var(--or),.95)}
+  .eh .g .sur{display:block;font-family:Montserrat,sans-serif;font-size:10px;font-weight:600;
+    color:#6E7780;margin-top:3px}
+  .eh .co{flex:1;min-width:0}
+  .eh .titre{font-family:Cinzel,serif;font-size:14px;font-weight:600;line-height:1.25;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .eh .sac{font-family:Cinzel,serif;font-size:14px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.09em;color:rgba(var(--or),.95);line-height:1.3}
+  .eh .lieu{font-size:11px;color:#8A929C;margin-top:5px}
+  .eh .qd{font-size:10px;color:#6E7780;margin-top:3px}
+  .eh .vg{flex:0 0 50px;height:50px;border-radius:11px;display:flex;align-items:center;
+    justify-content:center;border:1px dashed rgba(255,255,255,.13);
+    background:rgba(255,255,255,.014);font-size:16px;color:rgba(255,255,255,.22)}
+  .etq{display:inline-block;margin-top:7px;padding:2px 8px 3px;border-radius:20px;
+    font-size:7.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+    color:rgba(var(--or),.95);background:rgba(var(--or),.1);border:1px solid rgba(var(--or),.3)}
+  .etq.gr{color:#8A929C;background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.13)}
+
+  .eps{padding:0 13px 11px}
+  .ep{display:flex;align-items:flex-start;gap:10px;padding:9px 0 9px 58px;
+    border-top:1px solid rgba(255,255,255,.05)}
+  .ep .r{flex:0 0 34px;text-align:center;font-family:Cinzel,serif;font-size:13px;color:#8A929C}
+  .ep .r.v{color:rgba(var(--or),.95)}
+  .ep .n{flex:1;min-width:0}
+  .ep .n b{display:block;font-size:11.5px;font-weight:600;color:rgba(242,246,248,.78)}
+  .ep .n span{display:block;font-size:10px;color:#6E7780;margin-top:3px}
+
+  .vide{padding:40px 24px;text-align:center;font-size:12px;color:#5E6771;line-height:1.7}
+
+  .rem{font-size:11px;line-height:1.65;color:#8A929C;margin:22px 18px 0;
+    padding:12px 14px;border-radius:12px;background:rgba(var(--or),.05);
+    border:1px solid rgba(var(--or),.2)}
+  .rem b{color:rgba(var(--or),.95);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="mq">
+  <p>Maquette · ne va pas en production</p>
+  <h1>La page des résultats</h1>
+  <div class="r">
+    <b class="on" data-t="32,217,245">Crystal</b>
+    <b data-t="217,181,108">Doré</b>
+    <b data-t="92,122,94">Vert</b>
+    <b data-t="198,75,92">Bordeaux</b>
+  </div>
+</div>
+
+<div class="ecran" id="ecran"></div>
+
+<script>
+/* ═══ Les vraies données de Rizotto, telemat FFE ═══════════════════════
+   Ce que la page recevra : une ligne par épreuve, groupée en concours.  */
+var D = [
+  { an:"2024", lieu:"Jumping International de Bordeaux", qd:"3 et 4 février 2024",
+    rdv:1, eps:[
+      { pl:1, part:47, nom:"Poney 1 Grand Prix", cav:"Liam Roux" },
+      { pl:3, part:48, nom:"Poney 1 Vitesse", cav:"Liam Roux" } ] },
+  { an:"2024", sacre:"Champion des Territoires", lieu:"Milly-la-Forêt", qd:"10 mars 2024",
+    eps:[ { pl:1, part:21, nom:"Poney 1 D Grand Prix · Chp des Territoires", cav:"Liam Roux" } ] },
+  { an:"2024", lieu:"Salon du Cheval de Nancy", qd:"27 et 28 janvier 2024", rdv:1,
+    eps:[
+      { pl:5, part:41, nom:"Poney 1 Grand Prix", cav:"Liam Roux" },
+      { pl:25, part:36, nom:"Amateur 3 Vitesse", cav:"Liam Roux" } ] },
+  { an:"2024", lieu:"Maisons-Laffitte by Horse", qd:"23 mars 2024",
+    eps:[ { pl:2, part:78, nom:"Amateur 3 Grand Prix (1 m)", cav:"Liam Roux" } ] },
+
+  { an:"2023", sacre:"Champion régional", lieu:"Liverdy-en-Brie", qd:"1 mai 2023",
+    eps:[ { pl:1, part:51, nom:"Poney 1 D Grand Prix · Chp Régional", cav:"Liam Roux" } ] },
+  { an:"2023", sacre:"Champion des Territoires", lieu:"Milly-la-Forêt", qd:"19 mars 2023",
+    eps:[
+      { pl:1, part:43, nom:"Poney 2 D Grand Prix · Chp des Territoires", cav:"Liam Roux" },
+      { pl:2, part:27, nom:"Poney 1 D Grand Prix · Chp des Territoires", cav:"Liam Roux" } ] },
+  { an:"2023", lieu:"Equita Lyon", qd:"4 et 5 novembre 2023", rdv:1,
+    eps:[
+      { pl:9, part:88, nom:"Poney 1 D Grand Prix", cav:"Liam Roux" },
+      { pl:58, part:88, nom:"Poney 1 D Vitesse", cav:"Liam Roux" } ] },
+  { an:"2023", lieu:"Sologn'Pony", qd:"24 et 26 août 2023", rdv:1,
+    eps:[
+      { pl:1, part:19, nom:"Poney 1 Grand Prix", cav:"Liam Roux" },
+      { pl:8, part:16, nom:"Critérium de France Poney 1", cav:"Liam Roux" } ] },
+  { an:"2023", lieu:"BIP", qd:"7 mai 2023", rdv:2,
+    eps:[ { pl:2, part:72, nom:"Poney 1 D Grand Prix", cav:"Liam Roux" } ] },
+
+  { an:"2021", sacre:"Vainqueur Open de France", lieu:"Open de France", qd:"3 juillet 2021", rdv:2,
+    eps:[
+      { pl:1, part:48, nom:"Poney 1 D Grand Prix Open Rég.", cav:"Liam Roux" },
+      { pl:3, part:49, nom:"Poney 2 D Grand Prix Open Rég.", cav:"Liam Roux" } ] },
+  { an:"2021", lieu:"Barbizon", qd:"29 et 30 mai 2021",
+    eps:[
+      { pl:1, part:28, nom:"Poney Élite Grand Prix", cav:"Liam Roux" },
+      { pl:1, part:34, nom:"Poney 1 Grand Prix", cav:"Liam Roux" },
+      { pl:3, part:40, nom:"Poney 2 Grand Prix", cav:"Liam Roux" } ] }
+];
+
+var FERMEES = {}, FILTRE = "", TRI = "force";
+var CAVS = ["Liam Roux", "Evan Roux", "Chloé Desforges"];
+
+function suff(p){ return Number(p) === 1 ? "er" : "e"; }
+function force(c){
+  var m = c.eps[0];
+  return (c.sacre ? 5000 : 0) + (c.rdv === 1 ? 4000 : (c.rdv === 2 ? 2500 : 0)) +
+         (m.pl === 1 ? 2000 : (m.pl <= 3 ? 1000 : 500)) + Math.min(99, m.part) / 100;
+}
+
+function haut(){
+  return '<div class="haut"><span class="x">‹</span><div class="ti">' +
+    '<div class="k">Son palmarès</div><h2>Rizotto d\'Émery</h2>' +
+    '<div class="s">Poney Français de Selle · 2020 — 2026</div></div></div>' +
+    '<div class="chiffres">' +
+      '<div class="ch"><b>155</b><span>Sorties</span></div>' +
+      '<div class="ch v"><b>47</b><span>Victoires</span></div>' +
+      '<div class="ch"><b>75</b><span>Podiums</span></div>' +
+      '<div class="ch"><b>84</b><span>Classements</span></div></div>';
+}
+
+function filtres(){
+  var h = '<div class="st">Ses cavaliers</div><div class="rangee">';
+  h += '<div class="pil' + (FILTRE === "" ? " on" : "") + '" data-f="">Tous · 155</div>';
+  var n = { "Liam Roux":135, "Evan Roux":16, "Chloé Desforges":4 };
+  CAVS.forEach(function (c) {
+    h += '<div class="pil' + (FILTRE === c ? " on" : "") + '" data-f="' + c + '">' +
+         c + ' · ' + n[c] + '</div>';
+  });
+  h += '</div><div class="tri">';
+  [["force","Les plus forts"],["date","Par date"],["hauteur","Par hauteur"]].forEach(function (o) {
+    h += '<b class="' + (TRI === o[0] ? "on" : "") + '" data-tr="' + o[0] + '">' + o[1] + '</b>';
+  });
+  return h + '</div>';
+}
+
+function encart(c){
+  var m = c.eps[0];
+  var cl = "enc" + (c.sacre ? " sacre" : (c.rdv ? " gros" : ""));
+  var h = '<div class="' + cl + '"><div class="eh">';
+  h += '<div class="g' + (m.pl === 1 ? " v" : "") + '">' + m.pl + '<sup>' + suff(m.pl) + '</sup>' +
+       '<span class="sur">/' + m.part + '</span></div>';
+  h += '<div class="co">';
+  if (c.sacre){
+    h += '<div class="sac">' + c.sacre + ' ' + c.an + '</div>';
+    h += '<div class="lieu">' + c.lieu + '</div>';
+  } else {
+    h += '<div class="titre">' + c.lieu + '</div>';
+  }
+  h += '<div class="qd">' + c.qd + (c.eps.length > 1 ? ' · ' + c.eps.length + ' épreuves' : '') + '</div>';
+  if (c.rdv) h += '<span class="etq' + (c.rdv === 2 ? '' : '') + '">' +
+    (c.rdv === 1 ? 'Grand rendez-vous' : 'Très grosse échéance') + '</span>';
+  h += '</div><div class="vg">+</div></div>';
+  h += '<div class="eps">';
+  c.eps.forEach(function (e) {
+    h += '<div class="ep"><span class="r' + (e.pl === 1 ? " v" : "") + '">' +
+      e.pl + suff(e.pl) + '</span><span class="n"><b>' + e.nom + '</b>' +
+      '<span>' + e.pl + suff(e.pl) + ' sur ' + e.part + ' partants · ' + e.cav + '</span></span></div>';
+  });
+  return h + '</div></div>';
+}
+
+function liste(){
+  var par = {};
+  D.forEach(function (c) { (par[c.an] = par[c.an] || []).push(c); });
+  var h = '<div class="st">Ses concours<em>' + D.length + ' au total</em></div>';
+  Object.keys(par).sort().reverse().forEach(function (a) {
+    var l = par[a], f = FERMEES[a] ? " ferme" : "";
+    var v = 0, p = 0;
+    l.forEach(function (c) { c.eps.forEach(function (e) {
+      if (e.pl === 1) v++; if (e.pl <= 3) p++; }); });
+    h += '<div class="an' + f + '" data-an="' + a + '"><span class="y">' + a + '</span>' +
+      '<span class="rs"><i>' + v + '</i> victoire' + (v > 1 ? 's' : '') + ' &nbsp;·&nbsp; ' +
+      p + ' podium' + (p > 1 ? 's' : '') + ' &nbsp;·&nbsp; ' + l.length + ' concours</span>' +
+      '<span class="c">▾</span></div>';
+    h += '<div class="corps' + f + '" data-co="' + a + '">';
+    l.slice().sort(function (x, y) {
+      if (TRI === "date") return 0;
+      return force(y) - force(x);
+    }).forEach(function (c) { h += encart(c); });
+    h += '</div>';
+  });
+  return h;
+}
+
+function poser(){
+  var h = haut() + filtres() + liste();
+  h += '<div class="rem"><b>Ce que montre la maquette :</b> l\'en-tête avec les quatre chiffres, ' +
+    'le filtre par cavalier, les trois tris, puis les concours année par année. ' +
+    'Les titres s\'écrivent en capitales dorées avec leur année ; les grands rendez-vous ' +
+    'portent leur étiquette. Le carré en pointillés à droite accueillera les photos.<br><br>' +
+    '⚠️ Onze concours seulement ici, pour que la page reste lisible. La vraie en aura 58.</div>';
+  document.getElementById("ecran").innerHTML = h;
+
+  document.querySelectorAll("[data-an]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      var a = el.getAttribute("data-an");
+      FERMEES[a] = !FERMEES[a];
+      el.classList.toggle("ferme");
+      var c = document.querySelector('[data-co="' + a + '"]');
+      if (c) c.classList.toggle("ferme");
+    });
+  });
+  document.querySelectorAll("[data-f]").forEach(function (el) {
+    el.addEventListener("click", function () { FILTRE = el.getAttribute("data-f"); poser(); });
+  });
+  document.querySelectorAll("[data-tr]").forEach(function (el) {
+    el.addEventListener("click", function () { TRI = el.getAttribute("data-tr"); poser(); });
+  });
+}
+poser();
+
+document.querySelectorAll(".mq .r b").forEach(function (b) {
+  b.addEventListener("click", function () {
+    document.querySelectorAll(".mq .r b").forEach(function (x) { x.classList.remove("on"); });
+    b.classList.add("on");
+    document.documentElement.style.setProperty("--t", b.getAttribute("data-t"));
+  });
+});
+</script>
+</body>
+</html>
