@@ -25457,9 +25457,32 @@ function EcranMonCompte() {
   }
 
   function sortir() {
-    if (busy || !dispo) return;
+    /* 22/08 session 152 — LA DÉCONNEXION NE SE VOYAIT PAS.
+       signOut() fermait bien la session cote Supabase, mais rien ici ne
+       remettait l ecran a zero : le profil, le pseudo et l etat
+       « connectee » restaient affiches. Une abonnee a cru pendant une
+       journee entiere qu elle ne pouvait pas se deconnecter. Elle a alors
+       saisi les identifiants de son AUTRE compte : l app a d abord refuse,
+       puis l a « reconnectee » sur la session encore ouverte. Elle croyait
+       avoir change de compte sans avoir jamais bouge.
+       ⚠️ Le `!dispo` bloquait AUSSI le bouton en silence.
+       On vide donc l etat local ET on renvoie sur l ecran d entree.    */
+    if (busy) return;
     setBusy(true);
-    deconnexion().then(function () { setBusy(false); setMsg(null); }).catch(function () { setBusy(false); });
+    setMsg(null);
+    function finir() {
+      try { setUser(null); } catch (e1) { }
+      try { setProfil(null); } catch (e2) { }
+      try { if (typeof setProfilApp === "function") setProfilApp(null); } catch (e3) { }
+      try { if (typeof setChSuppr === "function") setChSuppr([]); } catch (e4) { }
+      setBusy(false);
+      try {
+        if (typeof AUTH_MODE_SPECTRAL !== "undefined") AUTH_MODE_SPECTRAL = "seuil";
+        setEcran("connexion");
+      } catch (e5) { }
+    }
+    if (!dispo) { finir(); return; }
+    deconnexion().then(finir).catch(finir);
   }
 
   var stIn = { width: "100%", boxSizing: "border-box", background: "rgba(13,20,28,0.6)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 14, padding: "14px 16px", color: COLORS.blanc, fontSize: 16, outline: "none", fontFamily: "inherit" };
