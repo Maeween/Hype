@@ -126,6 +126,12 @@
 '.hr-ch i.hr-c{color:rgba(var(--hr-tx),.72)}',
 '.hr-fl{color:rgba(var(--hr-tx),.24);font-size:16px;flex:0 0 auto}',
 
+'.hr-tri{display:flex;gap:6px;padding:0 16px 2px}',
+'.hr-tri b{flex:1;text-align:center;font-weight:600;font-size:10.5px;letter-spacing:.03em;',
+'  padding:9px 6px;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;',
+'  background:rgba(var(--hr-sf),.03);border:1px solid rgba(var(--hr-tx),.1);',
+'  color:rgba(var(--hr-tx),.5)}',
+'.hr-tri b.hr-on{border-color:rgba(var(--hr-acc),.5);color:rgba(var(--hr-acc),.95)}',
 '.hr-liste{padding:0 16px}',
 '.hr-at{margin:22px 0 10px;padding:11px 13px;border-radius:13px;background:rgba(var(--hr-sf),.03);',
 '  border:1px solid rgba(var(--hr-tx),.08);display:flex;align-items:center;gap:11px;cursor:pointer;',
@@ -664,11 +670,37 @@
     return h + "</div>";
   }
 
-  function blocListe(gr, fermees, ouverts, filtre) {
+    /* force · date · hauteur — le cavalier choisit. */
+  function comparer(tri) {
+    if (tri === "date")
+      return function (x, y) { return x.deb < y.deb ? 1 : -1; };
+    if (tri === "hauteur")
+      return function (x, y) {
+        var d = hauteur(y.meilleur.ep) - hauteur(x.meilleur.ep);
+        if (d !== 0) return d;
+        var p = (y.meilleur.partants || 0) - (x.meilleur.partants || 0);
+        return p !== 0 ? p : (x.deb < y.deb ? 1 : -1);
+      };
+    return function (x, y) {
+      var d = force(y) - force(x);
+      return d !== 0 ? d : (x.deb < y.deb ? 1 : -1);
+    };
+  }
+
+  function blocSelecteurTri(tri) {
+    var opts = [["force", "Les plus forts"], ["date", "Par date"], ["hauteur", "Par hauteur"]];
+    return '<div class="hr-tri">' + opts.map(function (o) {
+      return '<b class="' + (tri === o[0] ? "hr-on" : "") + '" data-hr-tri="' + o[0] + '">' +
+             o[1] + "</b>";
+    }).join("") + "</div>";
+  }
+
+function blocListe(gr, fermees, ouverts, filtre, tri) {
     var m = {};
     gr.forEach(function (g) { var a = (g.deb || "").slice(0, 4); (m[a] = m[a] || []).push(g); });
     var h = '<div class="hr-st">' + (filtre ? "Ses concours avec " + ech(prenom(filtre)) : "Ses concours") +
-            "<em>" + gr.length + "</em></div>" + '<div class="hr-liste">';
+            "<em>" + gr.length + "</em></div>";
+    h += blocSelecteurTri(tri) + '<div class="hr-liste">';
     Object.keys(m).sort().reverse().forEach(function (a) {
       var gs = m[a], f = fermees[a] ? " hr-ferme" : "";
       var tous = []; gs.forEach(function (g) { tous = tous.concat(g.l); });
@@ -678,11 +710,11 @@
         " &nbsp;·&nbsp; " + t.p + " podium" + (t.p > 1 ? "s" : "") +
         " &nbsp;·&nbsp; " + gs.length + " concours</span><span class=\"hr-ch2\">▾</span></div>";
       h += '<div class="hr-ac' + f + '" data-hr-corps="' + a + '">';
-      /* Les grands rendez-vous et les titres ouvrent chaque année. */
-      gs.slice().sort(function (x, y) {
-        var d = force(y) - force(x);
-        return d !== 0 ? d : (x.deb < y.deb ? 1 : -1);
-      }).forEach(function (g) { h += blocEncart(g, !!ouverts[g.cle]); });
+      /* Le tri joue DANS chaque année : le groupement par année reste,
+         sinon on perd le repère du temps.  (Blandine, 22/08)            */
+      gs.slice().sort(comparer(tri)).forEach(function (g) {
+        h += blocEncart(g, !!ouverts[g.cle]);
+      });
       h += "</div>";
     });
     return h + "</div>";
@@ -692,7 +724,14 @@
      hote    : l'élément où dessiner
      options : { lignes, titres, proprietaire, onAjout, onImport }        */
 
-  var ETAT = { filtre: "", choisi: null, fermees: {}, ouverts: {} };
+  var CLE_TRI = "hype_res_tri";
+  function triRetenu() {
+    try { return window.localStorage.getItem(CLE_TRI) || "force"; } catch (e) { return "force"; }
+  }
+  function retenirTri(t) {
+    try { window.localStorage.setItem(CLE_TRI, t); } catch (e) { }
+  }
+  var ETAT = { filtre: "", choisi: null, fermees: {}, ouverts: {}, tri: triRetenu() };
 
   function rendre(hote, options) {
     if (!hote) return;
@@ -719,7 +758,7 @@
     h += blocMot(ls, titres, ETAT.filtre);
     h += blocRail(gm, ETAT.choisi);
     h += blocCavaliers(toutes, ETAT.filtre);
-    h += blocListe(gr, ETAT.fermees, ETAT.ouverts, ETAT.filtre);
+    h += blocListe(gr, ETAT.fermees, ETAT.ouverts, ETAT.filtre, ETAT.tri);
     if (options.proprietaire) {
       h += '<button class="hr-bt" data-hr="import">⤓ Importer mes résultats</button>';
       h += '<button class="hr-bt" data-hr="ajout">+ Ajouter un résultat</button>';
@@ -768,6 +807,13 @@
         if (typeof options.onSouvenirs === "function") options.onSouvenirs(el.getAttribute("data-hr-vis"));
       });
     });
+    hote.querySelectorAll("[data-hr-tri]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        ETAT.tri = el.getAttribute("data-hr-tri");
+        retenirTri(ETAT.tri);
+        refaire();
+      });
+    });
     hote.querySelectorAll('[data-hr="import"]').forEach(function (el) {
       el.addEventListener("click", function () {
         if (typeof options.onImport === "function") options.onImport();
@@ -780,7 +826,7 @@
     });
   }
 
-  function reinitialiser() { ETAT = { filtre: "", choisi: null, fermees: {}, ouverts: {} }; }
+  function reinitialiser() { ETAT = { filtre: "", choisi: null, fermees: {}, ouverts: {}, tri: triRetenu() }; }
 
   /* ==== 9. CE QU'ON EXPOSE =============================================== */
   var API = {
