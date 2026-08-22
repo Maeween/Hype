@@ -68,7 +68,7 @@
    déclenche le ménage des anciennes versions.
    ================================================================== */
 
-var CACHE = "linguae-v9";   /* 🟥 v9 le 21/08 : LE LEXIQUE (lingo.html v71) — un ecran
+var CACHE = "linguae-v10";   /* 🟥 v9 le 21/08 : LE LEXIQUE (lingo.html v71) — un ecran
                                entier de plus dans la page. Sans ce changement de nom, le
                                service worker aurait continue a servir la v70 depuis son
                                cache et le lexique ne serait jamais arrive aux cavalieres.
@@ -167,6 +167,8 @@ var SOCLE_JS = [
   "hype-lingo-lex-connemara.js",
   /* 18/08 : Flyinge, 36e ville, « Le pied et la maréchalerie ». */
   "hype-lingo-lex-flyinge.js",
+  /* 21/08 : Clonbinane. */
+  "hype-lingo-lex-apprentissage.js",
   /* 🟥🟥 18/08 : DECOUPAGE UN-FICHIER-PAR-VILLE, dressage.js et materiel.js.
      Ces deux fichiers sont RETIRES ci-dessus. Toutes les villes ont
      desormais un fichier et un seul. */

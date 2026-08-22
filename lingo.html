@@ -3229,6 +3229,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      dans `connemara.js` et sont repris via `motsAilleurs`. Doit donc se
      charger APRÈS connemara.js. -->
 <script src="hype-lingo-lex-flyinge.js?l=1"></script>
+<!-- 21/08 : Clonbinane, « L'apprentissage ». 16 concepts, dialogue de 25 répliques. -->
+<script src="hype-lingo-lex-apprentissage.js?l=1"></script>
 <!-- Les phrases manquantes de Saumur (dressage L2-L3) et de Vejer
      (ecurie L2-L3). Additif : refuse tout ref déjà présent. -->
 <script src="hype-lingo-phrases-monde.js"></script>
@@ -3931,7 +3933,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=71";   /* 🟥 v71 (20/08) : le lexique alphabetique.
+var VER = "?v=72";   /* 🟥 v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
+                        video d'arrivee et affiche sont des fichiers NEUFS.
+                        v71 (20/08) : le lexique alphabetique.
    v70 (20/08) : casse-cache du lot d'images Versailles — la carte
                         recomposee (statue + coucher de soleil, facade raccourcie) et
                         sa vignette remplacent les fichiers en ligne.
@@ -4329,7 +4333,27 @@ var ETAPES = [
       mais inventé, jamais dit par Blandine.
     Aucune image (`carte-flyinge.webp`, `fond-flyinge.webp`,
     `objet-flyinge.webp`) n'existe encore : les replis s'appliquent. */
- {ref:"flyinge",   ch:"La maréchalerie", v:"Flyinge", nat:"Suède",          h:"19 h 00", ciel:["#111A2E","#C9A227"], forme:"haras",   souv:"Un fer à cheval doré",           ic:"fer"}
+ {ref:"flyinge",   ch:"La maréchalerie", v:"Flyinge", nat:"Suède",          h:"19 h 00", ciel:["#111A2E","#C9A227"], forme:"haras",   souv:"Un fer à cheval doré",           ic:"fer"},
+
+ /* ==================================================================
+    38e VILLE — CLONBINANE, VICTORIA (21 août 2026). « L'apprentissage ».
+    Le chapitre de la manière dont le cheval apprend : observer, seuil,
+    signal, renforcement, relâchement, pause, progression.
+
+    · `h:"06 h 40"` — l'aube, après Édimbourg (05 h 25). Un chapitre qui
+      demande d'observer avant d'agir se place au lever du jour.
+    · `ciel` — nuit bleutée virant à l'ocre : le soleil qui monte sur le
+      bush du Victoria. Accordé à la vidéo d'arrivée.
+    · `forme:"lande"` — la seule des onze silhouettes qui évoque un
+      espace ouvert sans bâti. `village` aurait menti : il n'y en a pas.
+    · `souv` + `ic:"manteau"` — choix de Blandine le 21/08. Elle a
+      écarté le carnet d'observation d'abord proposé : `carnet` est déjà
+      l'icône d'Édimbourg ET de Golegã, un troisième aurait été de trop.
+      Le manteau en toile huilée est le premier VÊTEMENT de la
+      collection — aucune autre icône n'est un habit.
+    · L'AUSTRALIE est un pays neuf dans le voyage : voir I18N_NAT.
+    ================================================================== */
+ {ref:"clonbinane",ch:"L'apprentissage",v:"Clonbinane",nat:"Australie",   h:"06 h 40", ciel:["#0E1A20","#C9A16B"], forme:"lande",   souv:"Un manteau australien en toile huilée", ic:"manteau"}
 ];
 /* ==================================================================
    TOUTES LES VILLES SONT OUVERTES (7 août 2026)
@@ -5326,6 +5350,32 @@ var RECITS = {
   ja:["四歳の若い馬が馬場に入る。まだ自分の価値もわからないままに。",
       "ここでチャンピオンを審査するのではない。可能性が育っていく姿を見守るのだ。",
       {f:"フォンテーヌブローは毎年、フランス若馬選手権「グランド・スメーヌ」を開催する。"}]},
+ /* CLONBINANE (21/08). ⚠️ Les deux affirmations de la première écriture
+    ont été retirées sur décision de Blandine : « c'est ici qu'on a mesuré
+    pour la première fois » et « toute l'équitation éthologique repose sur
+    ce travail ». Invérifiables, et la seconde fausse — Santa Ynez raconte
+    déjà une autre source. Ne pas les réintroduire.
+    « presque ensemble » est volontaire : un troupeau ne réagit jamais
+    d'un seul bloc. Ne pas durcir en affirmation absolue. */
+ clonbinane:{
+  fr:["Le bush s'éveille avant le jour, et les chevaux du paddock lèvent la tête presque ensemble.",
+      "Ici, avant de répéter une demande, on observe la réponse qu'elle provoque.",
+      {f:"Clonbinane a accueilli d'importants travaux consacrés à la cognition, au comportement et aux mécanismes d'apprentissage du cheval. Ces recherches ont contribué au développement de l'équitation scientifique moderne."}],
+  en:["The bush wakes before daylight, and the horses in the paddock lift their heads almost together.",
+      "Here, before repeating an ask, you watch the answer it brings.",
+      {f:"Clonbinane has hosted substantial work on equine cognition, behaviour and the mechanisms of learning. That research has contributed to the development of modern equitation science."}],
+  es:["El bush despierta antes del día, y los caballos del paddock levantan la cabeza casi a la vez.",
+      "Aquí, antes de repetir una petición, se observa la respuesta que provoca.",
+      {f:"Clonbinane ha acogido importantes trabajos dedicados a la cognición, el comportamiento y los mecanismos de aprendizaje del caballo. Esas investigaciones han contribuido al desarrollo de la equitación científica moderna."}],
+  it:["Il bush si sveglia prima del giorno, e i cavalli del paddock alzano la testa quasi insieme.",
+      "Qui, prima di ripetere una richiesta, si osserva la risposta che provoca.",
+      {f:"Clonbinane ha ospitato importanti lavori dedicati alla cognizione, al comportamento e ai meccanismi di apprendimento del cavallo. Queste ricerche hanno contribuito allo sviluppo dell'equitazione scientifica moderna."}],
+  de:["Der Busch erwacht vor dem Tag, und die Pferde auf der Koppel heben fast gleichzeitig den Kopf.",
+      "Hier beobachtet man erst die Antwort auf eine Frage, bevor man sie wiederholt.",
+      {f:"In Clonbinane wurden bedeutende Arbeiten zur Kognition, zum Verhalten und zu den Lernmechanismen des Pferdes durchgeführt. Diese Forschung hat zur Entwicklung der modernen Equitation Science beigetragen."}],
+  ja:["ブッシュは夜明け前に目を覚まし、放牧地の馬たちはほとんど同時に顔を上げる。",
+      "ここでは、求めをくり返す前に、それが引き出した答えを観察する。",
+      {f:"クロンビナンでは、馬の認知、行動、学習の仕組みに関する重要な研究が行われてきた。これらの研究は、現代の科学的馬術の発展に寄与している。"}]},
  flyinge:{
   fr:["Le feu de la forge, et la patience du fer qui se plie avant de tenir.",
       "Ici, on ne dresse pas le cheval — on prépare le sol sur lequel il se tient.",
@@ -5400,6 +5450,10 @@ var ICONES = {
     vitrine. Même trait que les dix autres : viewBox 60, or #D4AF37,
     épaisseur 2, aucun remplissage.
     ================================================================== */
+ /* Le manteau australien de Clonbinane (21/08). Premier vêtement de la
+    collection : col relevé, cape d'épaule, ceinture, fente centrale
+    pour monter à cheval. Même trait que les autres. */
+ manteau:'<path d="M24 12 h12 M24 12 l-10 6 v30 h32 v-30 l-10 -6 M14 18 q16 10 32 0 M22 32 h16 M30 20 v28 M26 10 h8 v4 h-8 Z" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  lampion:'<path d="M30 10 v6 M20 16 h20 l-3 6 h-14 Z M22 22 q-4 12 8 14 q12 -2 8 -14 M26 40 h8 M30 44 v8" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  toise:'<path d="M30 8 v40 M20 48 h20 M24 14 h12 M24 22 h12 M24 30 h12 M24 38 h12 M14 12 h10" fill="none" stroke="#D4AF37" stroke-width="2"/>',
  jarre:'<path d="M24 12 h12 M26 12 q-12 8 -10 22 q2 14 14 14 q12 0 14 -14 q2 -14 -10 -22 M18 30 q12 6 24 0" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
@@ -5658,6 +5712,12 @@ var POURQUOI = {
   it:"L'appuntamento francese dei giovani cavalli sportivi, dove si decide il loro futuro.",
   de:"Frankreichs Treffpunkt für junge Sportpferde, an dem ihre Zukunft entschieden wird.",
   ja:"フランスの若いスポーツホースたちの集いの場。その未来が決まる場所。"},
+ clonbinane:{fr:"Le bush du Victoria, où l'on regarde comment un cheval apprend avant de lui demander.",
+  en:"The Victorian bush, where you watch how a horse learns before asking anything of him.",
+  es:"El bush de Victoria, donde se observa cómo aprende un caballo antes de pedirle nada.",
+  it:"Il bush del Victoria, dove si guarda come impara un cavallo prima di chiedergli qualcosa.",
+  de:"Der Busch von Victoria, wo man zusieht, wie ein Pferd lernt, bevor man es etwas fragt.",
+  ja:"ヴィクトリアのブッシュ。何かを求める前に、馬がどう学ぶのかを見る場所。"},
  flyinge:{fr:"Le haras national suédois, où l'on apprend ce que le maréchal fait vraiment pour le pied.",
   en:"Sweden's national stud, where you learn what the farrier really does for the foot.",
   es:"El criadero nacional sueco, donde se aprende lo que el herrador realmente hace por el casco.",
@@ -7775,7 +7835,10 @@ var ETAPE_SRC = {
   /* 🟥 18/08 : FLYINGE, 36e ville, chapitre « Le pied et la maréchalerie ».
      `marechal` et `fer` réutilisés depuis `connemara.js` via motsAilleurs
      dans le dialogue — pas recréés ici. */
-  flyinge:     [["flyinge",1]]
+  flyinge:     [["flyinge",1]],
+  /* 21/08 : Clonbinane. Fichier `apprentissage`, une seule leçon.
+     16 concepts, phrases vides, dialogue de 25 répliques en 6 temps. */
+  clonbinane:  [["apprentissage",1]]
 };
 
 /* Le texte d'accueil d'un chapitre se choisit par le fichier source majoritaire,
@@ -8817,6 +8880,7 @@ var ACCUEIL_CHAP = {
      manuscrit sous le titre — même défaut silencieux que La Baule avant
      sa correction. Le texte est provisoire, à revoir ou réécrire. */
   badminton:{fr:"Le concours complet : le cross, le barème, le classement provisoire.", en:"Eventing: the cross-country, the scoring, the running order.", es:"El concurso completo: el cross, el bareme, la clasificación provisional.", it:"Il concorso completo: il cross, il bareme, la classifica provvisoria.", de:"Die Vielseitigkeit: das Gelände, die Wertung, die Zwischenrangliste.", ja:"総合馬術 — クロスカントリー、採点、暫定順位。"},
+  clonbinane:{fr:"Comment le cheval apprend : observer, le seuil, le signal, le relâchement, la pause.", en:"How a horse learns: observing, threshold, the cue, the release, the break.", es:"Cómo aprende el caballo: observar, el umbral, la señal, la soltura, la pausa.", it:"Come impara il cavallo: osservare, la soglia, il segnale, il rilascio, la pausa.", de:"Wie das Pferd lernt: beobachten, die Schwelle, das Signal, das Nachgeben, die Pause.", ja:"馬の学び方 — 観察、閾値、合図、解放、休憩。"},
   flyinge:{fr:"Le pied et la maréchalerie : parer, ferrer, comprendre les choix du maréchal.", en:"The foot and farriery: trimming, shoeing, understanding the farrier's choices.", es:"El casco y la herrería: recortar, herrar, comprender las decisiones del herrador.", it:"Lo zoccolo e la maniscalcheria: pareggiare, ferrare, capire le scelte del maniscalco.", de:"Der Huf und der Hufbeschlag: bearbeiten, beschlagen, die Entscheidungen des Hufschmieds verstehen.", ja:"蹄と装蹄 — 削蹄、装蹄、装蹄師の判断を理解する。"},
   cross:{fr:"Le terrain et son équipement : les obstacles fixes, les crampons, la toque, le chronomètre.", en:"The country and its kit: the fixed fences, the studs, the hat cover, the stopwatch.", es:"El terreno y su equipo: los obstáculos fijos, los tacos, la funda del casco, el cronómetro.", it:"Il terreno e il suo equipaggiamento: gli ostacoli fissi, i ramponi, la copertura del casco, il cronometro.", de:"Das Gelände und seine Ausrüstung: die festen Hindernisse, die Stollen, der Helmbezug, die Stoppuhr.", ja:"クロスの地形と装備 — 固定障害、スタッド、ヘルメットカバー、ストップウォッチ。"},
   /* `balade` : le chapitre du Morne. `arrivee` : celui de La Baule, qui
