@@ -88,6 +88,34 @@ async function deconnexion() {
   return await supa.auth.signOut();
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   22/08 (session 153c) — LA DECONNEXION N EXISTE PLUS QU ICI.
+   Il y avait TROIS boutons « Se deconnecter » : Mon compte, l accueil,
+   et le profil. Chacun avait sa propre copie du geste. Le correctif du
+   22/08 (session 152) n a repare QUE celui de Mon compte — les deux
+   autres se contentaient de lancer deconnexion() sans l attendre et de
+   changer d ecran, SANS RIEN VIDER. L abonnee arrivait donc sur l ecran
+   d entree en croyant etre sortie, alors que l app gardait son profil,
+   son plan d abonnement et ses acces : au retour, elle etait « toujours
+   connectee », et les cadenas Premium restaient ceux du compte precedent.
+   Regle de non-duplication du 17/08 : un seul endroit sait se deconnecter.
+   Les ecrans lui passent leurs propres videurs d etat, elle fait le reste.
+   ═══════════════════════════════════════════════════════════════════════ */
+async function hypeSeDeconnecter(videurs) {
+  /* on ferme la session AVANT de bouger : sinon on change d ecran sur une
+     session encore ouverte, et c est exactement le bug d origine. */
+  try { await deconnexion(); } catch (eSD) { }
+  /* chaque videur est independant : qu un seul echoue ne doit pas empecher
+     les suivants de vider ce qu ils tiennent. */
+  try {
+    (videurs || []).forEach(function (f) {
+      try { if (typeof f === "function") f(); } catch (eV) { }
+    });
+  } catch (eL) { }
+  try { if (typeof AUTH_MODE_SPECTRAL !== "undefined") AUTH_MODE_SPECTRAL = "seuil"; } catch (eA) { }
+  return true;
+}
+
 // Qui est connecté ? (renvoie l'utilisateur, ou null)
 async function utilisateurActuel() {
   /* 22/08 session 152 — LA FAUSSE DECONNEXION.
@@ -25561,8 +25589,9 @@ function EcranMonCompte() {
         setEcran("connexion");
       } catch (e5) { }
     }
+    /* 22/08 : Mon compte passe desormais par la MEME porte que les deux autres. */
     if (!dispo) { finir(); return; }
-    deconnexion().then(finir).catch(finir);
+    hypeSeDeconnecter([]).then(finir).catch(finir);
   }
 
   var stIn = { width: "100%", boxSizing: "border-box", background: "rgba(13,20,28,0.6)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 14, padding: "14px 16px", color: COLORS.blanc, fontSize: 16, outline: "none", fontFamily: "inherit" };
@@ -28870,7 +28899,7 @@ function L5acc(fr, en, es, it, ja, de) { return lg === "en" ? en : lg === "es" ?
         React.createElement("div", { className: "hero-pulse" }),
         React.createElement("div", { className: "hero-side" }),
         React.createElement("div", { className: "hero-grad" }),
-        React.createElement("button", { onClick: function () { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "seuil"; setEcran("connexion"); }, "aria-label": "Se d\u00e9connecter", title: "Se d\u00e9connecter", style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 58, zIndex: 6, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
+        React.createElement("button", { onClick: function () { hypeSeDeconnecter([function () { try { if (ctx && typeof ctx.setProfil === "function") ctx.setProfil(null); } catch (eP) { } }]).then(function () { setEcran("connexion"); }); }, "aria-label": "Se d\u00e9connecter", title: "Se d\u00e9connecter", style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 58, zIndex: 6, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
           React.createElement("svg", { viewBox: "0 0 24 24", width: 16, height: 16, fill: "none", stroke: "rgba(255,255,255,0.85)", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
             React.createElement("path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }),
             React.createElement("path", { d: "M16 17l5-5-5-5" }),
@@ -45107,7 +45136,7 @@ function EcranProfil() {
                 cle: "deco", couleur: COLORS.corail,
                 titre: t("se_deconnecter"),
                 sous: tr({ fr: "Sur cet appareil", en: "On this device", es: "En este dispositivo", it: "Su questo dispositivo", ja: "この端末で", de: "Auf diesem Gerät" }),
-                onClick: () => { try { if (typeof deconnexion === "function") { deconnexion().catch(function () { }); } } catch (e) { } AUTH_MODE_SPECTRAL = "seuil"; setEcran("connexion"); },
+                onClick: () => { hypeSeDeconnecter([function () { try { if (typeof setProfil === "function") setProfil(null); } catch (eP) { } }]).then(function () { setEcran("connexion"); }); },
                 ico: [React.createElement("path", { key: "a", d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }), React.createElement("path", { key: "b", d: "M16 17l5-5-5-5" }), React.createElement("path", { key: "c", d: "M21 12H9" })],
             }),
         ]),

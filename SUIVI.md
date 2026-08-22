@@ -35,7 +35,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 22/08/2026 (SESSION 153 · LA PORTE DE L'ÉCURIE) — md5 `d156d8f483c2c3eb1fbe4745d922e694`, 9 306 934 octets.** Partie de l'index `aae527331cc8dcc78d18f0ec53f8b7f3` (9 284 794 octets), le plus récent de la page résultats. **`hype-resultats.js` INCHANGÉ** (`0f7d3654…`) : ce module ne parle jamais à Supabase, rien à y filtrer. ⚠️ **SQL À PASSER AVANT DE POUSSER — DÉJÀ FAIT ET VÉRIFIÉ LE 22/08** : colonnes `supprime_le` et `restaure_le` sur `chevaux` + index `chevaux_vivants_idx`.
+**Version actuelle de l'index.html : 22/08/2026 (SESSION 152 · L'IMPORT DES TELEMATS) — md5 `326514c511840de91df06f978622a8cc`, 9 314 570 octets.** Deux fichiers à la racine l'accompagnent : **`hype-import-ffe.js`** (`c9f33b195fac0c81b35bd434b2320695`) et **`hype-resultats.js`** (`0f7d3654633c46c77c79c662b8af4640`) — 🟥 **les trois se poussent ensemble**. ⚠️ `sw.js` ne les déclare pas encore.
+
+**Ancienne version (153) — 22/08/2026 (SESSION 153 · LA PORTE DE L'ÉCURIE) — md5 `d156d8f483c2c3eb1fbe4745d922e694`, 9 306 934 octets.** Partie de l'index `aae527331cc8dcc78d18f0ec53f8b7f3` (9 284 794 octets), le plus récent de la page résultats. **`hype-resultats.js` INCHANGÉ** (`0f7d3654…`) : ce module ne parle jamais à Supabase, rien à y filtrer. ⚠️ **SQL À PASSER AVANT DE POUSSER — DÉJÀ FAIT ET VÉRIFIÉ LE 22/08** : colonnes `supprime_le` et `restaure_le` sur `chevaux` + index `chevaux_vivants_idx`.
 
 **Ancienne version (152) — 22/08/2026 (SESSION 152 · LES RÉSULTATS EN CONCOURS) — md5 `ace1cf24f9cfc4500ef572a76af9822d`, 9 284 344 octets. État intermédiaire de la même session : `aae52733…` (base de la 153).** Nouveau fichier à la racine : **`hype-resultats.js`** (md5 `0f7d3654633c46c77c79c662b8af4640`) — **les deux se poussent ensemble**. `hype-stories.js` reste en **19bm**, inchangé. ⚠️ `sw.js` ne déclare pas encore `hype-resultats.js`.
 
@@ -65,6 +67,78 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 ⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
 
 ⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 153b — 22/08/2026 (soir) · MY DREAM QUITTE HYPE
+
+**Index livré : `3b55daab3d48a08b6af9e08aa9d3f212`, 9 310 879 octets.** Base : `f7ad2f70…`. Aucun SQL. `hype-resultats.js` non touché.
+
+### CE QUI A ÉTÉ ÉTABLI AVANT DE TOUCHER À QUOI QUE CE SOIT
+
+Blandine ne trouvait pas l'option « Supprimer » dans le menu d'un cheval. **Ce n'était pas un bug** : la fiche ouverte était une **fiche de démo écrite en dur**, sans `dbId`, d'où le menu réduit à trois actions photo et le message « Cette fiche est une fiche spéciale Hype ».
+
+⚠️ **Piège écarté de justesse : il y a DEUX My Dream.** Celle de démo (Selle Français, 6 ans, image générée) et **My Dream de Feinn**, la vraie ponette de Blandine (Welsh PB, 4 ans, Apy de Rêve, photo de concours, liséré or). Noms, races et âges différents — aucune ambiguïté une fois vérifié, mais la confusion était possible.
+
+**Requête passée en base le 22/08** sur les 7 fiches de `CHEVAUX_FICHE`, pour savoir lesquelles ont une vraie ligne :
+
+| | |
+|---|---|
+| **En base (1 exemplaire chacun)** | Boréalis de Feinn · Cooltax · Elfe de Feinn · Hey Baby Please · Rizotto d'Emery · Tully Blue moon |
+| **PAS en base** | **My Dream** — la seule |
+
+`NOMS_MIGRES` déclarait les 7 comme migrées : **c'était une intention, pas un constat.** Ne jamais s'y fier sans interroger la base.
+
+### LES 9 ENDROITS RETIRÉS
+
+`mydream` vivait à **9 endroits**, pas 3 comme d'abord annoncé à Blandine (correction faite avant d'agir) :
+
+| Où | Effet visible |
+|---|---|
+| `CHEVAUX_FICHE.mydream` | la fiche |
+| `manegeCartesAcc` | la vignette de **l'accueil** |
+| `chevauxFeinnEH` | sa ligne dans **l'Écurie Hype** |
+| `CAVALIERS.liam.chevaux` | son nom chez **Liam Roux** |
+| route `"cheval-mydream"` | le lien direct |
+| `NOMS_MIGRES.mydream` | — |
+| `CHEVAUX_SPECTRAL.mydream` | — |
+| `AFFICHES_SECOURS["My Dream"]` | — |
+| **repli de `EcranCheval`** | — (voir ci-dessous) |
+
+**Zéro occurrence de `mydream` et de `"My Dream"` restante.**
+
+🔴 **LE PIÈGE PRINCIPAL — le repli de la fiche cheval.** `EcranCheval` calculait son identifiant ainsi : *hash de l'URL · sinon `DEV_OUVRIR_PAGE` · sinon `"mydream"`*. **My Dream était le cheval par défaut de tout l'écran fiche.** Le retirer sans toucher à cette ligne aurait fait tomber toute ouverture sans identifiant sur un cheval inexistant (nom « … », page vide). **Repli basculé sur `rizotto`** (décision de Blandine) — invisible à l'écran, ça n'ajoute Rizotto nulle part.
+
+⚠️ **L'image `UV3_H1` est CONSERVÉE** (11 usages) : c'est la **photo par défaut de tout cheval sans photo** et la couverture de La Baule. On retire la fiche, jamais l'image.
+
+### À L'ÉCRAN
+
+**−** la vignette My Dream sur l'accueil · **−** sa ligne dans l'Écurie Hype · **−** son nom chez Liam Roux · **−** sa fiche et le lien `#cheval-mydream`
+**+** rien.
+
+### 🔴 À TRAITER — LA RECHERCHE PAR NOM EST UNE BOMBE À RETARDEMENT
+
+Les 6 fiches restantes vont chercher leur cheval en base avec `.eq("nom", "…")` — **sur toute la table, sans filtre de propriétaire, en prenant le plus ancien** (`order created_at asc, limit 1`).
+
+**Conséquence : si une cavalière crée un cheval nommé exactement « Cooltax », « Hey Baby Please » ou « Rizotto d'Emery » et que sa ligne est plus ancienne, c'est LE SIEN qui s'affichera sur la fiche vitrine de Hype** — avec sa photo, ses origines, son histoire.
+
+Vérifié le 22/08 : chacun des 6 est à **1 exemplaire**, donc **ça ne s'est pas encore produit**. Mais « My Dream » et « Hey Baby » sont des noms fréquents. **Le rattachement devrait se faire par `id`, pas par nom.** Non corrigé — hors périmètre, mais à ne pas laisser traîner.
+
+⚠️ **Autre point ouvert** : les 6 chevaux en base appartiennent vraisemblablement au compte de **Liam**, qui n'est plus sur le projet. À vérifier un jour.
+
+### INCIDENT DE LA SESSION
+
+**Un motif de remplacement sur 9 a échoué** (la ligne de l'Écurie Hype) : les accents y sont écrits **en clair** alors qu'ils sont en séquences `\uXXXX` partout ailleurs dans le fichier. Signalé à Blandine sur le moment, repris avec la forme exacte, vérifié à 0 occurrence. **Leçon : ne jamais présumer de l'encodage d'une ligne dans ce fichier — le contrôle de comptage après chaque remplacement est ce qui a rattrapé l'erreur.**
+
+### CONTRÔLES PASSÉS
+
+149 blocs `<script>` vérifiés un par un au `node --check` : tous OK · `overflow-x: clip !important` (1) · `html { overscroll-behavior: none; }` (1) · `hypeVerrouScroll` (5) · `hypeLibererPuitsTactiles` (4) · `DEV_OUVRIR_PAGE = ""` · **suppression douce de la 153 revérifiée intacte** : 10 filtres `supprime_le`, aucun `from("chevaux").delete()`, `mesChevauxSupprimes` / `retrouverCheval` / `chPlein` / `portPlein` tous présents.
+
+### PRÉPARATION FLUTTER
+
+- **Une source de vérité en moins.** My Dream existait en trois jeux de données incohérents (fiche : 6 ans · accueil : 4 ans · Écurie Hype : 6 ans). Sa disparition retire trois copies divergentes du même cheval.
+- **Dette nommée, non corrigée** : le rattachement fiche↔base se fait **par nom** et non par identifiant. C'est exactement le genre de contrat de données qu'un Repository `Chevaux` devra fixer avant toute migration — un identifiant, jamais un libellé.
+- **Aucune fonction créée, aucun refactoring, aucun changement visuel non demandé.** Retrait pur.
 
 ---
 
@@ -419,6 +493,157 @@ Le blocage est ligne **21099** : `utilisateurActuel().then((u) => { if (!u || !a
 **+** Sur la fiche cheval : le menu (trois points) devient un bouton encadré, visible.
 
 **−** Rien. L'ancienne liste de résultats et « + Ajouter un résultat » restent en place, en filet de sécurité.
+
+---
+
+### 🟢 FIN DE SESSION 152 — L'IMPORT DES TELEMATS EST BRANCHÉ
+
+**Fichiers** : `index.html` (md5 `326514c511840de91df06f978622a8cc`, 9 314 570 octets) ·
+**`hype-import-ffe.js`** (md5 `c9f33b195fac0c81b35bd434b2320695`, **nouveau**) ·
+`hype-resultats.js` (md5 `0f7d3654633c46c77c79c662b8af4640`).
+🟥 **Les trois se poussent ENSEMBLE.**
+
+#### Le parcours, tel qu'il est en ligne
+
+Fiche cheval → panneau **Performances** → **⤓ Importer mes résultats** (propriétaire seulement)
+→ écran d'import : choix du PDF · lecture · **« Que souhaites-tu voir apparaître ? »** · relecture · enregistrement.
+
+#### 🔴 LE PIÈGE DU PDF — traité et vérifié
+
+Dans un PDF, les mots arrivent dans l'ordre où ils ont été **dessinés**, pas lus.
+`38e / 47` ressortait en `38 / 47 e`. Le module regroupe les fragments **par ligne**
+(même hauteur à 2,5 points près) puis les trie **de gauche à droite**.
+Éprouvé sur des fragments volontairement mélangés : la ligne est reconstruite juste.
+
+**PDF.js (1 Mo) est chargé À LA DEMANDE**, jamais au démarrage — même méthode que
+l'app pour OpenCV du Fond Studio.
+
+#### Les décisions de Blandine (22/08, soir)
+
+🟥 **ÉLIMINÉS ET ABANDONS COMPTENT DANS LE PALMARÈS.** On ne dit **jamais** l'inverse
+à l'écran. *« Leur fais pas des promesses qu'on tiendra pas. »* La mention « ne compte
+pas dans le palmarès » a été retirée du code.
+
+🟥 **Forfaits et épreuves annulées ne s'affichent pas** : le cheval n'a pas couru.
+Effet mesuré : la saison 2024 passe de **44 lignes à 27** à relire.
+
+🟥 **ON ENREGISTRE TOUT, LE FILTRE NE DÉCIDE QUE DE L'AFFICHAGE.** Décision prise après
+la question de Blandine : *« si elle garde que les podiums, il se passe quoi ? »*.
+Ce qui n'est pas coché n'est **pas perdu** — colonne `visible`. Elle pourra changer
+d'avis sans réimporter, et le réglage pourra différer entre la fiche du cheval et
+celle du cavalier.
+*Calcul fait pour rassurer : une ligne ≈ 200 octets, une carrière entière ≈ 45 Ko.
+2 000 cavalières × 3 chevaux ≈ 280 Mo. Ce sont les photos qui coûtent, pas le texte.*
+
+**Les quatre niveaux** (chiffres calculés sur le fichier avant affichage) :
+Ses podiums · Son top 8 · Ses classements (le premier quart) · Tous ses résultats.
+⚠️ « premier quart » et « classé » sont **la même chose** — ne pas les proposer deux fois.
+
+**Trois traitements dans la relecture** : premier quart **en gras**, coché · autres
+classés en écriture normale, décochés · **éliminés et abandons en gris italique**, décochés.
+
+#### Le SQL passé ce soir
+
+```sql
+alter table resultats add column if not exists visible boolean not null default true;
+create index if not exists resultats_cheval_date on resultats (cheval_id, date_epreuve desc);
+```
+Contrôle lu : `visible : en place · index : créé`. L'index rend instantanée la lecture
+d'une fiche à 230 lignes.
+
+#### Le garde-fou anti-doublons
+
+`enregistrerImportFFE()` lit d'abord ce que le cheval a déjà et écarte toute ligne de
+**même date + même épreuve + même concours**. Sans lui, un second import de la même
+saison créerait 44 lignes de plus en silence. Insertion par paquets de 50.
+🟥 **Aucune diffusion à l'écurie** : sept saisons noieraient le fil.
+
+#### ⚠️ CE QUI N'EST PAS VÉRIFIÉ
+
+🔴 **PDF.js n'a jamais tourné.** Mon environnement n'a pas internet : la lecture est
+éprouvée sur le **texte** des PDF, mais l'ouverture d'un fichier depuis l'iPhone n'a
+jamais été vue fonctionner. **Le premier essai réel reste à faire.**
+
+⚠️ `sw.js` ne déclare **ni** `hype-resultats.js` **ni** `hype-import-ffe.js`.
+Fonctionne en ligne, pas hors connexion.
+
+---
+
+### 🔴 LE BUG QUI A COÛTÉ LA JOURNÉE — la déconnexion
+
+**Symptôme** : une abonnée ne pouvait pas se déconnecter, sur Safari **comme sur Chrome**.
+Elle a saisi les identifiants de son autre compte : l'app a d'abord refusé
+(*« mot de passe ou boîte mail incorrecte »*), puis l'a « reconnectée » sur la session
+encore ouverte. **Elle croyait avoir changé de compte sans avoir jamais bougé.**
+
+**Cause, ligne ~25459** : `sortir()` appelait `signOut()` puis se contentait de
+`setBusy(false)`. La session était bien fermée côté Supabase, mais **rien ne remettait
+l'écran à zéro** — profil, pseudo, état « connectée » restaient affichés.
+Second verrou : `if (busy || !dispo) return` bloquait le bouton **en silence**.
+
+**Réparé** : l'état local est vidé (`user`, `profil`, `profilApp`, `chSuppr`) et
+l'écran revient à la connexion. Éprouvé sur trois cas — Supabase répond, échoue, absent.
+
+#### Ce que la matinée a aussi mis au jour
+
+- **`utilisateurActuel()`** interrogeait le serveur (`getUser()`) à chaque appel.
+  Lit désormais **`getSession()`** d'abord. **148 appels réparés d'un coup.**
+- **`lireAbo` appelait `getUser()` en direct**, sans passer par elle : serveur muet =
+  cadenas malgré un abonnement valide. Corrigé.
+- **`maybeSingle()` rendait `null` sur un doublon** d'abonnement → Premium refusé en
+  silence. Lit maintenant toutes les lignes, garde l'active la plus lointaine.
+- Le **`catch` du Premium était muet**. Il trace.
+- **`hypeOuvrirPaiement`** passait aussi par `getUser()` brut. Corrigé.
+
+#### La vraie cause, elle, n'était aucun de ces défauts
+
+`au.bussonnais@gmail.com` → **AUCUN ABONNEMENT** · `a.bussonnais@outlook.com` → **actif · mensuel**.
+Elle a payé depuis outlook et vit sur gmail. **La rustine du mois est sur OUTLOOK.**
+
+⚠️ Rien ne tranché : soit elle bascule sur outlook, soit on déplace l'abonnement vers
+gmail — et alors il faut déplacer **aussi** `stripe_customer` et `stripe_subscription`,
+sinon le prochain renouvellement recréera une ligne sur outlook.
+
+**Deux garde-fous posés** : la **confirmation du compte avant tout paiement**, et le
+**bandeau sur la page d'abonnement** qui nomme le compte connecté et dit s'il a un
+abonnement. En six langues.
+
+---
+
+### 🔴 RESTE OUVERT — priorités
+
+1. **LES CADENAS S'AFFICHENT POUR UNE MODÉRATRICE.** Blandine (`feinn@live.fr`) les voit
+   sur les Galops 2 à 7, **après** les correctifs. Cause non trouvée.
+2. 🟥 **LE CADENAS N'EMPÊCHE RIEN.** Elle ouvre les cours verrouillés. Le contrôle existe
+   ligne ~24658 — donc **il existe un autre chemin sans contrôle**. C'est une faille.
+   Non cherchée.
+3. **Le module `hype-resultats.js` est NEUTRALISÉ** (`false &&`) : il dessine du HTML brut
+   dans un conteneur React, les blocs se superposaient et le zoom plantait.
+   Ses **calculs restent bons et éprouvés** ; c'est l'affichage qui est à refaire
+   **dans le style de l'app**, sous le bloc IPO.
+4. **Le palmarès en dur de `CHEVAUX_FICHE` doublonnera** avec la base dès le premier import.
+5. **Les titres ne sont stockés nulle part.** Aucune table. À décider.
+6. La fenêtre **« Ajouter un résultat »** ne remplit **aucune** des nouvelles colonnes.
+
+### 🟡 Décidé pour le bloc de la fiche cheval (non codé)
+
+Structure **B** (liseré à gauche, teinte du cheval) · fond **Souffle** (lueur au coin
+bas-droit seulement) · **un encart par sacre**, année dans le nom + catégorie dessous ·
+hauteurs **fixes à 62 px** · noms jamais coupés · **plafond à 7**.
+⚠️ Blandine trouve l'app **trop turquoise** : *« à force j'ai envie de vomir un peu »*.
+Elle a écarté les oranges. Choix de palette **non tranché** — atelier livré
+(`atelier-performances.html`, 6 canaux, 6,8 millions de combinaisons).
+
+### 🟡 Leçon de méthode
+
+🔴 **Une maquette autonome ne prouve rien sur le rendu dans l'app.** Des heures passées
+sur des maquettes, et le vrai défaut n'est apparu qu'à la première capture réelle.
+**Pour un écran qui vit dans l'index : livrer une version d'essai dans l'app, en petit.**
+Les maquettes restent bonnes pour **décider** (l'ordre, les règles, ce qu'on affiche),
+pas pour valider un rendu.
+
+🔵 **Trois fois le même mal le 22/08** : ajouter un résultat, se déconnecter, supprimer un
+cheval — **la fonction existe, le chemin est introuvable**. À vérifier pour tout nouvel écran.
 
 ---
 
