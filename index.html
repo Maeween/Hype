@@ -21947,7 +21947,14 @@ function Router() {
                   },
                   onFermer: function () { setEcran("cheval"); },
                   onEnregistrer: function (lignes) {
-                    return enregistrerImportFFE(window.HYPE_CHEVAL_IMPORT || null, lignes)
+                    /* 22/08 : si l'app a rechargé entre l'ouverture de l'écran
+                       et l'enregistrement, HYPE_CHEVAL_IMPORT est vide et la
+                       fonction refusait avec « Cheval inconnu » SANS RIEN
+                       AFFICHER. On garde le cheval aussi en mémoire locale. */
+                    var chId = window.HYPE_CHEVAL_IMPORT || null;
+                    if (!chId) { try { chId = window.localStorage.getItem("hype_cheval_import") || null; } catch (eL) { } }
+                    if (!chId) return Promise.reject(new Error("le cheval n'a pas été retrouvé — rouvre l'import depuis sa fiche."));
+                    return enregistrerImportFFE(chId, lignes)
                       .then(function (r) {
                         if (r && r.error) throw new Error(r.error);
                         return (r && r.n) || 0;
@@ -32225,7 +32232,10 @@ function EcranCheval() {
      l ecran d import ne sait pas de quelle fiche il vient.            */
   function ouvrirImportFFE() {
     if (!(chevalDyn && moi && chevalDyn.ownerId === moi.id)) { bientot(); return; }
-    try { window.HYPE_CHEVAL_IMPORT = c.dbId || null; } catch (eCI) { }
+    try {
+      window.HYPE_CHEVAL_IMPORT = c.dbId || null;
+      if (c.dbId) window.localStorage.setItem("hype_cheval_import", String(c.dbId));
+    } catch (eCI) { }
     setPanneau(null);
     setEcran("import-resultats");
   }
