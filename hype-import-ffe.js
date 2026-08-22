@@ -532,12 +532,18 @@
     });
     h += "</div>";
 
-    h += '<div class="hi-pied">' +
-      '<button class="hi-bt" data-hi="enregistrer"' + (gardees ? "" : " disabled") + '>' +
+    /* 🟥 23/08 — LE BLOC D'ERREUR EST REMONTÉ AU-DESSUS DU BOUTON.
+       Il était posé APRÈS `.hi-pied`, qui porte `padding-bottom:120px`, et le
+       composant React ajoute encore 90px. L'erreur atterrissait 120 à 210 px
+       SOUS le bouton, hors de l'écran, et rien ne faisait défiler la page
+       jusqu'à elle. On a cru pendant deux jours qu'aucune erreur ne sortait :
+       elle sortait, dans le vide. Ne jamais remettre ce bloc après `.hi-pied`. */
+    h += '<div class="hi-pied">';
+    if (E.err) h += '<div class="hi-err" style="margin:0 0 12px">' +
+      '<b>L\'enregistrement a échoué</b>' + ech(E.err) + '</div>';
+    h += '<button class="hi-bt" data-hi="enregistrer"' + (gardees ? "" : " disabled") + '>' +
       (E.occupe ? "…" : "Enregistrer " + gardees + " résultat" + (gardees > 1 ? "s" : "")) + "</button>" +
       '<button class="hi-bt2" data-hi="annuler">Annuler, ne rien enregistrer</button></div>';
-    if (E.err) h += '<div class="hi-err" style="margin:0 16px 90px"><b>L\'enregistrement a échoué</b>' +
-      ech(E.err) + '</div>';
     return h;
   }
 
