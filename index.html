@@ -1344,6 +1344,76 @@ async function supprimerMurEvenement(id) {
   return await supa.from("mur_evenement").delete().eq("id", id).eq("user_id", user.id);
 }
 
+/* --- 22/08 session 152 : ENREGISTRER UN IMPORT DE TELEMAT ----------------
+   Écrit les lignes relues par la cavalière dans `resultats`.
+   🟥 N'est appelée QUE depuis l'écran de relecture, après validation.
+      Aucune insertion automatique, jamais.
+
+   ⚠️ GARDE-FOU CONTRE LES DOUBLONS : une cavalière importera deux fois la
+   même saison, c'est certain. On lit d'abord ce que le cheval a déjà, et
+   on écarte toute ligne de MÊME date + MÊME épreuve + MÊME concours.
+   Sans ça, un second import créerait 44 lignes de plus en silence.
+
+   `origine` vaut « import » : c'est ce qui permettra au fil de ne pas se
+   noyer sous sept saisons d'un coup.                                    */
+async function enregistrerImportFFE(chevalId, lignes) {
+  const user = await utilisateurActuel();
+  if (!user) return { n: 0, doublons: 0, error: "Pas connecté" };
+  if (!chevalId) return { n: 0, doublons: 0, error: "Cheval inconnu" };
+  const aEcrire = (lignes || []).filter(function (r) {
+    return r && r.garder && r.date && r.statut === "classe";
+  });
+  if (!aEcrire.length) return { n: 0, doublons: 0 };
+
+  /* ce que le cheval a déjà */
+  let deja = [];
+  try {
+    const d = await supa.from("resultats")
+      .select("date_epreuve,epreuve,concours")
+      .eq("cheval_id", chevalId);
+    deja = (d && d.data) || [];
+  } catch (eL) { }
+  const cle = function (d, e, c) {
+    return [String(d || ""), String(e || "").toLowerCase().trim(),
+            String(c || "").toLowerCase().trim()].join("|");
+  };
+  const vues = {};
+  deja.forEach(function (r) { vues[cle(r.date_epreuve, r.epreuve, r.concours)] = true; });
+
+  const neufs = [], seen = {};
+  let doublons = 0;
+  aEcrire.forEach(function (r) {
+    const k = cle(r.date, r.epreuve, r.concours);
+    if (vues[k] || seen[k]) { doublons++; return; }
+    seen[k] = true;
+    neufs.push({
+      user_id: user.id,
+      cheval_id: chevalId,
+      concours: r.concours || "",
+      epreuve: r.epreuve || "",
+      date_epreuve: r.date,
+      place: r.place,
+      partants: r.partants,
+      quart: r.quart,          /* donné par la FFE, jamais calculé */
+      cavalier: r.cavalier || "",
+      origine: "import",
+      classement: (r.place != null && r.partants != null)
+        ? (r.place + (r.place === 1 ? "er" : "e") + " / " + r.partants) : ""
+    });
+  });
+  if (!neufs.length) return { n: 0, doublons: doublons };
+
+  /* par paquets de 50 : un import de sept saisons fait 166 lignes */
+  let n = 0;
+  for (let i = 0; i < neufs.length; i += 50) {
+    const r = await supa.from("resultats").insert(neufs.slice(i, i + 50)).select("id");
+    if (r && r.error) return { n: n, doublons: doublons, error: String(r.error.message || r.error) };
+    n += (r && r.data ? r.data.length : 0);
+  }
+  /* 🟥 aucune diffusion à l'écurie : sept saisons noieraient le fil. */
+  return { n: n, doublons: doublons };
+}
+
 async function publierResultat({ concours, classement, fichierPhoto, media_url } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
@@ -20054,7 +20124,7 @@ const CIBLE_DIRECTE = (function () {
             }
         }
         if (h) cle = h;
-        const MAP = { "monecurie": { ecran: "ecurie" }, "monclub": { ecran: "guilde" }, "contact": { galop: 4, cours: "g4-contact", page: 0 }, "aides": { galop: 4, cours: "g4-aides", page: 0 }, "transitions": { galop: 4, cours: "g4-transitions", page: 0 }, "incurvation": { galop: 4, cours: "g4-incurvation", page: 0 }, "vitesse": { galop: 4, cours: "g4-vitesse", page: 0 }, "epaules-hanches": { galop: 4, cours: "g4-epaules-hanches", page: 0 }, "protections": { galop: 4, cours: "g4-protections", page: 0 }, "obstacles-equilibre": { galop: 4, cours: "g4-obstacles-equilibre", page: 0 }, "soins-travail": { galop: 4, cours: "g4-soins-travail", page: 0 }, "identite": { galop: 4, cours: "g4-identite", page: 0 }, "nourrir": { galop: 4, cours: "g4-nourrir", page: 0 }, "exterieur": { galop: 4, cours: "g4-exterieur", page: 0 }, "abord": { galop: 3, cours: "g3-c3", page: 0 }, "phases": { galop: 3, cours: "g3-saut", page: 0 }, "sante": { galop: 4, cours: "g4-c5", page: 0 }, "impulsion": { galop: 6, cours: "g6-c2", page: 0 }, "biomeca": { galop: 4, cours: "g4-biomeca", page: 0 }, "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, "phases-saut": { ecran: "phases-saut" }, phasessaut: { ecran: "phases-saut" }, "entrainer-tracer": { ecran: "entrainer-tracer" }, tracer: { ecran: "entrainer-tracer" }, "challenge-reprise": { ecran: "challenge-reprise" }, challenge: { ecran: "challenge-reprise" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-mydream": { ecran: "cheval" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, /* 06/08 : deux cibles pour les cours issus de la scission. Les libelles
+        const MAP = { "monecurie": { ecran: "ecurie" }, "monclub": { ecran: "guilde" }, "contact": { galop: 4, cours: "g4-contact", page: 0 }, "aides": { galop: 4, cours: "g4-aides", page: 0 }, "transitions": { galop: 4, cours: "g4-transitions", page: 0 }, "incurvation": { galop: 4, cours: "g4-incurvation", page: 0 }, "vitesse": { galop: 4, cours: "g4-vitesse", page: 0 }, "epaules-hanches": { galop: 4, cours: "g4-epaules-hanches", page: 0 }, "protections": { galop: 4, cours: "g4-protections", page: 0 }, "obstacles-equilibre": { galop: 4, cours: "g4-obstacles-equilibre", page: 0 }, "soins-travail": { galop: 4, cours: "g4-soins-travail", page: 0 }, "identite": { galop: 4, cours: "g4-identite", page: 0 }, "nourrir": { galop: 4, cours: "g4-nourrir", page: 0 }, "exterieur": { galop: 4, cours: "g4-exterieur", page: 0 }, "abord": { galop: 3, cours: "g3-c3", page: 0 }, "phases": { galop: 3, cours: "g3-saut", page: 0 }, "sante": { galop: 4, cours: "g4-c5", page: 0 }, "impulsion": { galop: 6, cours: "g6-c2", page: 0 }, "biomeca": { galop: 4, cours: "g4-biomeca", page: 0 }, "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, "phases-saut": { ecran: "phases-saut" }, phasessaut: { ecran: "phases-saut" }, "entrainer-tracer": { ecran: "entrainer-tracer" }, tracer: { ecran: "entrainer-tracer" }, "challenge-reprise": { ecran: "challenge-reprise" }, challenge: { ecran: "challenge-reprise" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "ecurie", galop: null, cours: null, page: null }, monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, /* 06/08 : deux cibles pour les cours issus de la scission. Les libelles
        babypaille, babydescend, etc. ne correspondent plus aux titres reels
        depuis longtemps — decalage anterieur, non corrige ici. */
       babyarret: { galop: "baby", cours: "baby-c16", page: 0 },
@@ -20075,7 +20145,7 @@ var FRANCE_MAP_HTML = "<!DOCTYPE html><html lang=\"fr\"><head><meta charset=\"ut
 var IMG_CAVALIER_LIAM = HYPE_IMGS["k231"];
 var CAVALIERS = {
   liam: { nom: "Liam Roux", photo: IMG_CAVALIER_LIAM, club: "\u00c9curie Feinn", ville: "Itteville", niveau: "Galop 7", disc: "CSO",
-    chevaux: ["mydream","rizotto","elfe","venus","idao","tully","heybaby"],
+    chevaux: ["rizotto","elfe","venus","idao","tully","heybaby"],
     bio: "Cavalier de l'\u00c9curie Feinn, Liam monte l'ensemble de la cavalerie en comp\u00e9tition, du CSO Club au Grand Prix." }
 };
 function EcranCavalier(){
@@ -21836,6 +21906,16 @@ function Router() {
                 ecran === "stats" && React.createElement(EcranStats, null),
                 ecran === "profil" && React.createElement(EcranProfil, null),
                 ecran === "ecurie" && React.createElement(EcranEcurie, null),
+                ecran === "import-resultats" && React.createElement(HypeImportEcran, {
+                  onFermer: function () { setEcran("cheval"); },
+                  onEnregistrer: function (lignes) {
+                    return enregistrerImportFFE(window.HYPE_CHEVAL_IMPORT || null, lignes)
+                      .then(function (r) {
+                        if (r && r.error) throw new Error(r.error);
+                        return (r && r.n) || 0;
+                      });
+                  }
+                }),
                 ecran === "cheval" && React.createElement(EcranCheval, null),
                 ecran === "ecurie-hype" && React.createElement(EcranEcurieHype, null),
                 ecran === "album-ecurie" && React.createElement(EcranAlbumEcurie, null),
@@ -25457,9 +25537,32 @@ function EcranMonCompte() {
   }
 
   function sortir() {
-    if (busy || !dispo) return;
+    /* 22/08 session 152 — LA DÉCONNEXION NE SE VOYAIT PAS.
+       signOut() fermait bien la session cote Supabase, mais rien ici ne
+       remettait l ecran a zero : le profil, le pseudo et l etat
+       « connectee » restaient affiches. Une abonnee a cru pendant une
+       journee entiere qu elle ne pouvait pas se deconnecter. Elle a alors
+       saisi les identifiants de son AUTRE compte : l app a d abord refuse,
+       puis l a « reconnectee » sur la session encore ouverte. Elle croyait
+       avoir change de compte sans avoir jamais bouge.
+       ⚠️ Le `!dispo` bloquait AUSSI le bouton en silence.
+       On vide donc l etat local ET on renvoie sur l ecran d entree.    */
+    if (busy) return;
     setBusy(true);
-    deconnexion().then(function () { setBusy(false); setMsg(null); }).catch(function () { setBusy(false); });
+    setMsg(null);
+    function finir() {
+      try { setUser(null); } catch (e1) { }
+      try { setProfil(null); } catch (e2) { }
+      try { if (typeof setProfilApp === "function") setProfilApp(null); } catch (e3) { }
+      try { if (typeof setChSuppr === "function") setChSuppr([]); } catch (e4) { }
+      setBusy(false);
+      try {
+        if (typeof AUTH_MODE_SPECTRAL !== "undefined") AUTH_MODE_SPECTRAL = "seuil";
+        setEcran("connexion");
+      } catch (e5) { }
+    }
+    if (!dispo) { finir(); return; }
+    deconnexion().then(finir).catch(finir);
   }
 
   var stIn = { width: "100%", boxSizing: "border-box", background: "rgba(13,20,28,0.6)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 14, padding: "14px 16px", color: COLORS.blanc, fontSize: 16, outline: "none", fontFamily: "inherit" };
@@ -28690,7 +28793,6 @@ function L5acc(fr, en, es, it, ja, de) { return lg === "en" ? en : lg === "es" ?
   }
   function manegeCartesAcc(sfx) {
     return React.createElement(React.Fragment, { key: "mng" + sfx },
-      carteCheval(UV3_H1, "My Dream", "Selle Fran\u00e7ais \u00b7 4 ans", "mydream"),
       carteCheval(UV3_H2, "Elfe de Feinn", "Selle Fran\u00e7ais \u00b7 6 ans", "elfe"),
       carteCheval(UV3_H3, "Rizotto", "Poney \u00b7 12 ans", "rizotto"),
       React.createElement("button", { className: "hcard hcard-add", onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { flex: "0 0 auto" } },
@@ -29497,7 +29599,7 @@ function EcranEcurie() {
         eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬")),
         h("div", { className: "chgrid" }, (function () {
           /* 30/07 bascule migration : plus de liste demo ; les chevaux base heritent des affiches du code en secours. */
-          var AFFICHES_SECOURS = { "My Dream": UV3_H1, "Elfe de Feinn": UV3_H2, "Rizotto d'Emery": UV3_H3, "Cooltax": ECURIE_H4, "Bor\u00e9alis de Feinn": ECURIE_H5, "Tully Blue moon": IMG_TULLY, "Hey Baby Please": IMG_HEYBABY_CHEVAL };
+          var AFFICHES_SECOURS = { "Elfe de Feinn": UV3_H2, "Rizotto d'Emery": UV3_H3, "Cooltax": ECURIE_H4, "Bor\u00e9alis de Feinn": ECURIE_H5, "Tully Blue moon": IMG_TULLY, "Hey Baby Please": IMG_HEYBABY_CHEVAL };
           var reels = (chevauxEc || []).map(function (r) { return { img: r.photo_url || AFFICHES_SECOURS[r.nom] || UV3_H1, nom: r.nom, disc: r.race || r.discipline || "", id: r.id }; });
           var tousCh = reels;
           var slots = premium ? tousCh : tousCh.slice(0, 6);
@@ -29795,12 +29897,12 @@ const IMG_FLOT_BX1 = HYPE_IMGS["k303"];
 const IMG_COUPE_OPEN = HYPE_IMGS["k304"];
 var IMG_TULLY = HYPE_IMGS["k305"];
 var IMG_HEYBABY_CHEVAL = HYPE_IMGS["k306"];
+/* 22/08 — My Dream retiré (session 153). C'était la SEULE des 7 fiches de démo
+   sans ligne réelle en base : les six autres ont été migrées et existent pour de
+   vrai, elle non. Vérifié en base le 22/08 : « My Dream : PAS en base ».
+   L'image UV3_H1 est CONSERVÉE : elle sert de photo par défaut à tout cheval sans
+   photo, et de couverture à La Baule. */
 var CHEVAUX_FICHE = {
-  mydream: {
-    nom: "My Dream", photo: UV3_H1, tag: "Champion", info: "Selle Français · 6 ans · CSO",
-    flots: [],
-    palmares: []
-  },
   rizotto: {
     nom: "Rizotto d'Emery", photo: UV3_H3, info: "Poney Français de Selle · 21 ans · CSO",
     histoire: "Rizotto est un poney d'exception, l'un des meilleurs de sa génération avec plus de 200 victoires et un indice de 161 sous la selle de Liam Roux en 2021. Il remporte notamment l'Open de France cette année-là.\n\nIl fut également vainqueur de nombreuses compétitions en Super As, et remporte notamment le Salon International de Bordeaux en 2024, encore avec Liam.\n\nDifficile d'évoquer Rizotto sans parler de Webster, son compagnon d'écurie. Un IPO de 170 décroché la même année, toujours sous la selle de Liam, et une place parmi les cinq meilleurs poneys français aux résultats. Engagés dans les mêmes épreuves, les deux formaient un duo de choc !\n\nSon histoire est aussi marquée par un geste rare de générosité de sa propriétaire, Julie Benoit, qui a permis à cette belle aventure sportive et familiale de se poursuivre, en faisant don de son poney à Liam ❤️\n\nRizotto est désormais en semi-retraite et emmène parfois Evan Roux gagner une épreuve, avec toujours autant de plaisir 😆\n\nCette histoire extraordinaire est donc couplée à un geste extraordinaire, grâce auquel Rizotto a définitivement trouvé sa place à l'écurie Feinn ❤️\n\nUn geste inoubliable 🙏",
@@ -29864,7 +29966,6 @@ function teinteClaire(hex) { try { var h9 = String(hex).replace("#", ""); functi
 
 /* ===== FICHE CHEVAL — teinte spectrale + devise (éditables) ===== */
 var CHEVAUX_SPECTRAL = {
-  mydream: { teinte: "#20D9F5" },
   elfe:    { teinte: "#20D9F5" },
   rizotto: { teinte: "#EAC77A" },
   venus:   { teinte: "#20D9F5" },
@@ -31864,6 +31965,50 @@ function GrilleSouvenirs(props) {
     (toutVu && photos.length > LIM_SOUV) ? h("button", { onClick: function () { setToutVu(false); try { if (grilleRef.current && grilleRef.current.scrollIntoView) grilleRef.current.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eS) { } }, style: { display: "block", margin: "12px auto 0", padding: "9px 22px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("R\u00e9duire", "Collapse", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null);
 }
 
+/* --- 22/08 session 152 : L'ÉCRAN D'IMPORT DES RÉSULTATS FFE -------------
+   hype-import-ffe.js pèse 27 Ko et charge PDF.js (1 Mo) A LA DEMANDE :
+   on ne l apporte QUE lorsqu on ouvre l ecran, jamais au demarrage.
+   Meme methode que l app pour OpenCV du Fond Studio.
+   Si le fichier ne se charge pas, on le dit — pas d ecran blanc.      */
+function HypeImportEcran(props) {
+  var ref = React.useRef(null);
+  var stP = React.useState(!(typeof window !== "undefined" && window.HYPE_IMPORT));
+  var chargeEnCours = stP[0], setCharge = stP[1];
+  var stE = React.useState(null); var errCh = stE[0], setErrCh = stE[1];
+
+  React.useEffect(function () {
+    var vivant = true;
+    function dessiner() {
+      if (!vivant || !ref.current || !window.HYPE_IMPORT || !window.HYPE_IMPORT.rendre) return;
+      try {
+        window.HYPE_IMPORT.reinitialiser();
+        window.HYPE_IMPORT.rendre(ref.current, {
+          onEnregistrer: props.onEnregistrer,
+          onFermer: props.onFermer
+        });
+      } catch (eIm) { setErrCh(String(eIm && eIm.message ? eIm.message : eIm)); }
+    }
+    if (window.HYPE_IMPORT && window.HYPE_IMPORT.rendre) { dessiner(); return function () { vivant = false; }; }
+    var s = document.createElement("script");
+    s.src = "hype-import-ffe.js?v=1";
+    s.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
+    s.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
+    document.head.appendChild(s);
+    return function () { vivant = false; };
+  }, []);
+
+  return React.createElement("div", { style: { minHeight: "60vh" } },
+    chargeEnCours ? React.createElement("div", {
+      style: { padding: "40px 20px", textAlign: "center", fontSize: 12.5, color: "#8A929C" }
+    }, T("Préparation de l'import…", "Preparing import…", "Preparando…", "Preparazione…", "準備中…", "Import wird vorbereitet…")) : null,
+    errCh ? React.createElement("div", {
+      style: { margin: 16, padding: "15px 16px", borderRadius: 14, fontSize: 12, lineHeight: 1.6,
+               color: "#FFB4BC", background: "rgba(255,90,110,0.08)", border: "1px solid rgba(255,90,110,0.32)" }
+    }, T("L'import n'a pas pu s'ouvrir.", "Import could not open.", "No se pudo abrir.", "Impossibile aprire.", "開けませんでした。", "Import konnte nicht öffnen.") + " " + errCh) : null,
+    React.createElement("div", { ref: ref })
+  );
+}
+
 /* --- 22/08 session 152 : hote du module hype-resultats.js -----------------
    Un simple conteneur. Le module dessine dedans. Si le fichier n est pas
    charge (reseau, cache), le composant ne rend RIEN et la fiche continue
@@ -31910,12 +32055,12 @@ function EcranCheval() {
   var ctx = useApp();
   var setEcran = ctx.setEcran, tr = ctx.tr;
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
-  var id = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : ((typeof location !== "undefined" && (location.hash.match(/cheval-([\w-]+)/) || [])[1]) || (typeof DEV_OUVRIR_PAGE !== "undefined" && (String(DEV_OUVRIR_PAGE).match(/^cheval-([\w-]+)$/) || [])[1]) || "mydream");
+  var id = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : ((typeof location !== "undefined" && (location.hash.match(/cheval-([\w-]+)/) || [])[1]) || (typeof DEV_OUVRIR_PAGE !== "undefined" && (String(DEV_OUVRIR_PAGE).match(/^cheval-([\w-]+)$/) || [])[1]) || "rizotto");   /* 22/08 : repli de la fiche cheval, My Dream retirée */
   var chDynSt = React.useState(null); var chevalDyn = chDynSt[0], setChevalDyn = chDynSt[1];
   React.useEffect(function () {
     var actif = true;
     /* 30/07 bascule migration : les 7 fiches demo vivent desormais en base ; le code n'est plus qu'un secours. */
-    var NOMS_MIGRES = { mydream: "My Dream", rizotto: "Rizotto d'Emery", elfe: "Elfe de Feinn", venus: "Cooltax", idao: "Bor\u00e9alis de Feinn", tully: "Tully Blue moon", heybaby: "Hey Baby Please" }; /* noms reels des chevaux de Liam en base */
+    var NOMS_MIGRES = { rizotto: "Rizotto d'Emery", elfe: "Elfe de Feinn", venus: "Cooltax", idao: "Bor\u00e9alis de Feinn", tully: "Tully Blue moon", heybaby: "Hey Baby Please" }; /* noms reels des chevaux de Liam en base */
     if (CHEVAUX_FICHE[id] && !NOMS_MIGRES[id]) { setChevalDyn(null); return; }
     (async function () {
       try {
@@ -32021,6 +32166,15 @@ function EcranCheval() {
     } catch (eEd) { }
     setBusyFiche(false);
   }
+  /* 22/08 session 152 : on retient le cheval visé avant d ouvrir l import,
+     l ecran d import ne sait pas de quelle fiche il vient.            */
+  function ouvrirImportFFE() {
+    if (!(chevalDyn && moi && chevalDyn.ownerId === moi.id)) { bientot(); return; }
+    try { window.HYPE_CHEVAL_IMPORT = c.dbId || null; } catch (eCI) { }
+    setPanneau(null);
+    setEcran("import-resultats");
+  }
+
   async function confirmerSupprFiche() {
     if (!c.dbId || busyFiche) return;
     if (!confSupprFiche) { setConfSupprFiche(true); return; }
@@ -33008,7 +33162,8 @@ function EcranCheval() {
    Les CALCULS de hype-resultats.js restent bons et eprouves ; c est
    l affichage qui sera refait dans le style de l app, sous le bloc IPO.
    Remettre `true` ci-dessous pour le reactiver.                      */
-        false && h(HypeResultatsHote, { chevalId: id, lignes: lignesPourModule, proprietaire: !!(chevalDyn && moi && chevalDyn.ownerId === moi.id), onAjout: function () { setPanneau(null); ouvrirAjoutResultat(); }, onImport: function () { if (typeof bientot === "function") bientot(); } }),
+        false && h(HypeResultatsHote, { chevalId: id, lignes: lignesPourModule, proprietaire: !!(chevalDyn && moi && chevalDyn.ownerId === moi.id), onAjout: function () { setPanneau(null); ouvrirAjoutResultat(); }, onImport: function () { ouvrirImportFFE(); } }),
+        (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("button", { className: "addbtn", onClick: function () { ouvrirImportFFE(); }, style: { marginBottom: 8 } }, "\u2913 " + T("Importer mes résultats", "Import my results", "Importar mis resultados", "Importa i miei risultati", "結果を取り込む", "Meine Ergebnisse importieren")) : null,
         h("button", { className: "addbtn", onClick: function () { if (chevalDyn && moi && chevalDyn.ownerId === moi.id) { setPanneau(null); ouvrirAjoutResultat(); } else bientot(); } }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加", "Ein Ergebnis hinzufügen"))) : null,
       panneau === "souvenirs" ? h("div", null,
         h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
@@ -33575,7 +33730,6 @@ function EcranEcurieHype() {
   var ansEH = T("ans", "yo", "años", "anni", "歳");
   var chevauxFeinnEH = [
     { img: UV3_H3, nom: "Rizotto", l2: "PFS · 21 " + ansEH, l3: "IPO 161", id: "rizotto", halo: "#D9B56C" },
-    { img: UV3_H1, nom: "My Dream", l2: "SF · 6 " + ansEH, l3: T("Champion", "Champion", "Campeón", "Campione", "チャンピオン"), id: "mydream", fav: true },
     { img: UV3_H2, nom: "Elfe de Feinn", l2: "SF · 7 " + ansEH, l3: "IPO 128", id: "elfe", fav: true },
     { img: ECURIE_H4, nom: "Cooltax", l2: "SF · 7 " + ansEH, l3: T("Élite", "Elite", "Élite", "Élite", "エリート"), id: "venus" },
     { img: ECURIE_H5, nom: "Boréalis de Feinn", l2: "SF · 15 " + ansEH, l3: T("Élite", "Elite", "Élite", "Élite", "エリート"), id: "idao" },

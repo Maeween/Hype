@@ -1,0 +1,667 @@
+/* ============================================================================
+   HYPE — IMPORT DES RÉSULTATS FFE
+   Fichier détaché, chargé par index.html à la demande.
+   Écrit le 22/08/2026 (session 152).
+
+   Ce qu'il fait :
+     · ouvre un PDF telemat choisi par la cavalière
+     · le lit AVEC LES POSITIONS des mots, pas dans l'ordre du flux
+     · reconstruit les fiches, ligne par ligne
+     · rend une liste à relire — RIEN n'est enregistré sans validation
+
+   Ce qu'il ne fait PAS :
+     · il ne calcule JAMAIS le quart. La FFE le donne, on le lit.
+     · il n'écrit rien en base tout seul.
+
+   🔴 LE PIÈGE, écrit au SUIVI et vérifié ici :
+   dans un PDF, les mots arrivent dans l'ordre où ils ont été DESSINÉS,
+   pas dans l'ordre où on les lit. « 38e / 47 » ressort en « 38 / 47 e ».
+   On regroupe donc les fragments par LIGNE (leur hauteur à l'écran),
+   puis on les trie de gauche à droite. Sans ça, tout se mélange.
+   ========================================================================== */
+
+(function () {
+  "use strict";
+
+  var PDFJS_URL = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js";
+  var PDFJS_WORKER = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+  var chargement = null;
+
+  /* ==== 1. CHARGER PDF.js — seulement quand on en a besoin =============
+     Un mégaoctet : hors de question de l'imposer à toutes les cavalières
+     au démarrage. Même méthode que l'app pour OpenCV.                  */
+  function chargerPdfJs() {
+    if (typeof window !== "undefined" && window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (chargement) return chargement;
+    chargement = new Promise(function (ok, non) {
+      var s = document.createElement("script");
+      s.src = PDFJS_URL;
+      s.onload = function () {
+        try {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+          ok(window.pdfjsLib);
+        } catch (e) { non(e); }
+      };
+      s.onerror = function () { non(new Error("PDF.js n'a pas pu être chargé")); };
+      document.head.appendChild(s);
+    });
+    return chargement;
+  }
+
+  /* ==== 2. LIRE LE PDF EN GARDANT LES POSITIONS ========================
+     Chaque fragment porte ses coordonnées. On les range par ligne
+     (même hauteur à 2,5 points près), puis de gauche à droite.        */
+  function texteDuPdf(fichier) {
+    return chargerPdfJs().then(function (pdfjsLib) {
+      return fichier.arrayBuffer();
+    }).then(function (buf) {
+      return window.pdfjsLib.getDocument({ data: buf }).promise;
+    }).then(function (doc) {
+      var pages = [];
+      for (var i = 1; i <= doc.numPages; i++) pages.push(i);
+      return pages.reduce(function (chaine, n) {
+        return chaine.then(function (acc) {
+          return doc.getPage(n).then(function (page) {
+            return page.getTextContent();
+          }).then(function (tc) {
+            return acc + "\n" + lignesDePage(tc.items);
+          });
+        });
+      }, Promise.resolve(""));
+    });
+  }
+
+  function lignesDePage(items) {
+    var lignes = [];
+    items.forEach(function (it) {
+      var t = String(it.str || "");
+      if (!t.trim()) return;
+      var y = Math.round((it.transform ? it.transform[5] : 0) * 10) / 10;
+      var x = it.transform ? it.transform[4] : 0;
+      /* on cherche une ligne déjà ouverte à la même hauteur (± 2,5 pts) */
+      var l = null;
+      for (var i = 0; i < lignes.length; i++) {
+        if (Math.abs(lignes[i].y - y) <= 2.5) { l = lignes[i]; break; }
+      }
+      if (!l) { l = { y: y, mots: [] }; lignes.push(l); }
+      l.mots.push({ x: x, t: t });
+    });
+    lignes.sort(function (a, b) { return b.y - a.y; });   /* de haut en bas */
+    return lignes.map(function (l) {
+      l.mots.sort(function (a, b) { return a.x - b.x; }); /* de gauche à droite */
+      return l.mots.map(function (m) { return m.t; }).join(" ")
+        .replace(/\s+/g, " ").trim();
+    }).join("\n");
+  }
+
+  /* ==== 3. LE LECTEUR — repris du banc d'essai, éprouvé sur 7 saisons == */
+
+  var ETIQUETTES = [
+    { cle: "date",       lib: "Date" },
+    { cle: "epreuve",    lib: "Épreuve" },
+    { cle: "concours",   lib: "Concours" },
+    { cle: "classement", lib: "Classement" },
+    { cle: "monteur",    lib: "Monté par" },
+    { cle: "points",     lib: "Pts qualif. Chpt" },
+    { cle: "quart",      lib: "Quart" }
+  ];
+
+  function etiquetteDe(ligne) {
+    for (var i = 0; i < ETIQUETTES.length; i++) {
+      var lib = ETIQUETTES[i].lib;
+      if (ligne === lib) return { cle: ETIQUETTES[i].cle, valeur: "" };
+      if (ligne.indexOf(lib + " ") === 0)
+        return { cle: ETIQUETTES[i].cle, valeur: ligne.slice(lib.length).trim() };
+    }
+    return null;
+  }
+
+  function nb(x) { var n = parseInt(String(x || "").replace(/[^\d]/g, ""), 10); return isNaN(n) ? null : n; }
+
+  /* Le classement et tous ses visages, vus en vrai dans tes sept PDF :
+     « 38e / 47 » · « 1er / 3 » · « 12e / 26 - SF » · « El. / 42 »
+     · « Epreuve annulee » · « Non Partant - Forfait » · « Ab. / 3 »   */
+  function lireClassement(txt) {
+    var t = String(txt || "").replace(/\s+/g, " ").trim();
+    if (!t) return { statut: "absent" };
+    if (/^[ÉE]preuve\s+annul/i.test(t))  return { statut: "annulee" };
+    if (/^(El\.?|Elim)/i.test(t))        return { statut: "elimine", partants: nb(t.split("/")[1]) };
+    if (/^(NP|Non\s*Part)/i.test(t))     return { statut: "non_partant" };
+    if (/^(Ab\.?|Aband)/i.test(t))       return { statut: "abandon", partants: nb(t.split("/")[1]) };
+    var m = t.match(/^(\d+)\s*(?:er|ère|e)?\s*\/\s*(\d+)\s*(?:-\s*(.+))?$/i);
+    if (m) return { statut: "classe", place: nb(m[1]), partants: nb(m[2]), mention: (m[3] || "").trim() };
+    /* forme déformée : le suffixe ordinal rejeté en fin de ligne */
+    m = t.match(/^(\d+)\s*\/\s*(\d+)\s*(?:-\s*(.+?))?\s+(?:er|ère|e)$/i);
+    if (m) return { statut: "classe", place: nb(m[1]), partants: nb(m[2]),
+                    mention: (m[3] || "").trim(), deforme: true };
+    return { statut: "illisible", brut: t };
+  }
+
+  function lireQuart(txt) { var m = String(txt || "").match(/(\d)\s*(?:er|ère|e)?/i); return m ? parseInt(m[1], 10) : null; }
+  function lireDate(txt) {
+    var m = String(txt || "").match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    return m ? m[3] + "-" + m[2] + "-" + m[1] : null;
+  }
+  /* Sert UNIQUEMENT de contrôle : on n'écrit jamais ce quart-là.
+     Règle retrouvée avec Blandine, vérifiée 21 fois sur 21 :
+     taille d'un quart = partants ÷ 4, ARRONDI AU SUPÉRIEUR.          */
+  function quartAttendu(place, partants) {
+    if (!place || !partants) return null;
+    return Math.min(4, Math.ceil(place / Math.ceil(partants / 4)));
+  }
+
+  function lireFiches(texte) {
+    var lignes = String(texte).split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+    var fiches = [], cour = null, derniere = null;
+    for (var i = 0; i < lignes.length; i++) {
+      var ligne = lignes[i];
+      if (ligne === "+") continue;
+      var e = etiquetteDe(ligne);
+      if (e && e.cle === "date" && /\d{2}\/\d{2}\/\d{4}/.test(e.valeur)) {
+        if (cour) fiches.push(cour);
+        cour = { date: e.valeur }; derniere = "date"; continue;
+      }
+      if (!cour) continue;
+      if (e) {
+        /* Piège vu en vrai : quand le nom de l'épreuve tient sur deux
+           lignes, l'étiquette « Épreuve » arrive APRÈS sa valeur.    */
+        if (e.cle === "epreuve" && e.valeur === "" && cour.attente) {
+          cour.epreuve = cour.attente; delete cour.attente;
+        } else { cour[e.cle] = e.valeur; }
+        derniere = e.cle; continue;
+      }
+      /* La date, le quart et les points ne se poursuivent JAMAIS sur
+         deux lignes : ce qui suit est le début d'une épreuve.        */
+      var suite = derniere && ["date", "quart", "points"].indexOf(derniere) === -1;
+      if (suite && cour[derniere] !== undefined && cour[derniere] !== "")
+        cour[derniere] = (cour[derniere] + " " + ligne).trim();
+      else cour.attente = (cour.attente ? cour.attente + " " : "") + ligne;
+    }
+    if (cour) fiches.push(cour);
+    return fiches.filter(function (f) {
+      return f.classement !== undefined || f.concours !== undefined;
+    });
+  }
+
+  function lire(texte) {
+    var sorties = [], alertes = [];
+    lireFiches(texte).forEach(function (f, rang) {
+      var c = lireClassement(f.classement);
+      var q = lireQuart(f.quart);
+      var r = {
+        rang: rang + 1,
+        date: lireDate(f.date),
+        epreuve: (f.epreuve || f.attente || "").replace(/^CSO\s+/i, "").replace(/\s+/g, " ").trim(),
+        concours: (f.concours || "").replace(/\s+/g, " ").trim(),
+        cavalier: (f.monteur || "").replace(/\s+/g, " ").trim(),
+        place: c.place || null,
+        partants: c.partants || null,
+        quart: q,
+        statut: c.statut,
+        garder: c.statut === "classe"
+      };
+      if (c.statut === "illisible") { r.doute = "classement illisible : « " + c.brut + " »"; r.garder = false; }
+      if (c.deforme)                  r.doute = "classement lu en forme déformée";
+      if (!r.date)                  { r.doute = "date absente"; r.garder = false; }
+      if (!r.epreuve)                 r.doute = "épreuve absente";
+      var att = quartAttendu(r.place, r.partants);
+      if (att && r.quart && att !== r.quart)
+        r.doute = "quart incohérent : la FFE dit " + r.quart + "e, le calcul donne " + att + "e";
+      if (att && !r.quart && c.statut === "classe")
+        r.doute = "quart absent — à confirmer";
+      if (r.doute) alertes.push(r);
+      /* Un forfait ou une epreuve annulee : le cheval n a pas couru.
+         On ne les propose meme pas.                                   */
+      if (c.statut !== "non_partant" && c.statut !== "annulee") sorties.push(r);
+    });
+    return { lignes: sorties, alertes: alertes };
+  }
+
+  /* ==== 3bis. LES QUATRE NIVEAUX ======================================
+     🟥 Le filtre N'EFFACE RIEN. Decision de Blandine (22/08) : on
+     enregistre TOUT, le filtre ne fait que decider ce qui s'affiche
+     — colonne `visible`. Elle pourra changer d avis sans reimporter.
+     🟥 Eliminés et abandons COMPTENT dans le palmarès. On ne dit jamais
+     l inverse a l ecran. Ils arrivent seulement decoches, en gris
+     italique, pour qu elle decide.                                     */
+  function estPodium(r){ return r.statut === "classe" && r.place != null && r.place <= 3; }
+  function estTop8(r){ return r.statut === "classe" && r.place != null && r.place <= 8; }
+  function estClasse(r){ return r.statut === "classe" && r.quart === 1; }
+  function aUnRang(r){ return r.statut === "classe" && r.place != null; }
+
+  var NIVEAUX = [
+    { c:"podiums", t:"Ses podiums",        s:"1er, 2e, 3e",                 f:estPodium },
+    { c:"top8",    t:"Son top 8",          s:"les huit premières places",   f:estTop8 },
+    { c:"classe",  t:"Ses classements",    s:"le premier quart",            f:estClasse },
+    { c:"tous",    t:"Tous ses résultats", s:"éliminés et abandons compris", f:function(){ return true; } }
+  ];
+
+  function compter(lignes){
+    return NIVEAUX.map(function (n) {
+      return { c:n.c, t:n.t, s:n.s, n: lignes.filter(n.f).length };
+    });
+  }
+  /* Applique le choix : coche ce qui entre, decoche le reste.
+     Tout reste enregistre — `garder` ne pilote que `visible`.          */
+  function appliquer(lignes, cle){
+    var niv = NIVEAUX.filter(function (n) { return n.c === cle; })[0] || NIVEAUX[2];
+    lignes.forEach(function (r) { r.garder = !!niv.f(r); });
+    return lignes;
+  }
+
+  /* ==== 4. LE TRI PAR CAVALIER =========================================
+     Un telemat contient les lignes de TOUS les cavaliers du cheval.    */
+  function cavaliers(lignes) {
+    var m = {};
+    lignes.forEach(function (r) { if (r.cavalier) m[r.cavalier] = (m[r.cavalier] || 0) + 1; });
+    return Object.keys(m).sort(function (a, b) { return m[b] - m[a]; })
+      .map(function (n) { return { nom: n, n: m[n] }; });
+  }
+
+  /* ==== 5. CE QU'ON EXPOSE ============================================ */
+  var API = {
+    chargerPdfJs: chargerPdfJs,
+    texteDuPdf: texteDuPdf,
+    lignesDePage: lignesDePage,
+    lire: lire,
+    cavaliers: cavaliers,
+    compter: compter,
+    appliquer: appliquer,
+    NIVEAUX: NIVEAUX,
+    lireClassement: lireClassement,
+    quartAttendu: quartAttendu
+  };
+  if (typeof window !== "undefined") window.HYPE_IMPORT = API;
+  if (typeof module !== "undefined" && module.exports) module.exports = API;
+})();
+
+/* ═══════════════ L'ÉCRAN DE RELECTURE ═══════════════ */
+
+(function () {
+  "use strict";
+
+  var STYLE = [
+'.hi{--t:32,217,245;--or:217,181,108;--tx:242,246,248;',
+'  font-family:Montserrat,-apple-system,system-ui,sans-serif;color:rgb(var(--tx))}',
+'.hi *{box-sizing:border-box}',
+'.hi sup{font-size:9px}',
+
+'.hi-h{padding:16px 16px 0}',
+'.hi-k{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;',
+'  color:rgba(var(--t),.85);font-weight:800}',
+'.hi-h h2{margin:6px 0 0;font-family:Cinzel,Georgia,serif;font-size:19px;font-weight:600;line-height:1.2}',
+'.hi-h p{margin:7px 0 0;font-size:11.5px;line-height:1.6;color:#8A929C}',
+
+'.hi-etapes{display:flex;gap:6px;padding:14px 16px 0}',
+'.hi-etapes i{flex:1;height:3px;border-radius:2px;background:rgba(var(--tx),.12)}',
+'.hi-etapes i.on{background:rgb(var(--t))}',
+
+'.hi-zone{margin:16px;padding:26px 18px;border-radius:16px;text-align:center;',
+'  border:1.5px dashed rgba(var(--t),.35);background:rgba(var(--t),.035);cursor:pointer;',
+'  -webkit-tap-highlight-color:transparent}',
+'.hi-zone .ic{font-size:26px;line-height:1}',
+'.hi-zone b{display:block;font-size:13px;font-weight:700;margin-top:11px;color:rgba(var(--t),.95)}',
+'.hi-zone span{display:block;font-size:11px;color:#8A929C;margin-top:7px;line-height:1.6}',
+'.hi-zone input{display:none}',
+
+'.hi-aide{margin:0 16px;padding:13px 14px;border-radius:12px;font-size:11px;line-height:1.7;',
+'  color:#8A929C;background:rgba(var(--tx),.03);border:1px solid rgba(var(--tx),.08)}',
+'.hi-aide b{color:rgba(var(--tx),.85);font-weight:700}',
+'.hi-aide ol{margin:8px 0 0;padding-left:18px}',
+'.hi-aide li{margin-bottom:5px}',
+
+'.hi-att{margin:16px;padding:22px 18px;text-align:center;border-radius:16px;',
+'  background:rgba(var(--tx),.03);border:1px solid rgba(var(--tx),.08)}',
+'.hi-att b{display:block;font-size:13px;font-weight:700}',
+'.hi-att span{display:block;font-size:11px;color:#8A929C;margin-top:8px}',
+
+'.hi-err{margin:16px;padding:15px 16px;border-radius:14px;font-size:12px;line-height:1.6;',
+'  color:#FFB4BC;background:rgba(255,90,110,.08);border:1px solid rgba(255,90,110,.32)}',
+'.hi-err b{display:block;font-weight:700;margin-bottom:5px;color:#FF9AA6}',
+
+'.hi-bilan{display:flex;gap:7px;padding:16px 16px 0}',
+'.hi-bi{flex:1;text-align:center;padding:12px 3px;border-radius:13px;',
+'  background:rgba(var(--tx),.03);border:1px solid rgba(var(--tx),.08)}',
+'.hi-bi b{display:block;font-family:Cinzel,Georgia,serif;font-size:22px;line-height:1}',
+'.hi-bi span{display:block;font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;',
+'  color:#8A929C;margin-top:5px;font-weight:700}',
+'.hi-bi.ok b{color:rgba(var(--t),.95)}',
+'.hi-bi.dt b{color:rgba(var(--or),.95)}',
+'.hi-bi.no b{color:rgba(var(--tx),.4)}',
+
+'.hi-st{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#8A929C;font-weight:800;',
+'  margin:24px 18px 10px;text-indent:.2em;display:flex;align-items:baseline;justify-content:space-between}',
+'.hi-st em{font-style:normal;font-size:10px;letter-spacing:.02em;text-transform:none;color:#5E6771}',
+
+'.hi-cavs{display:flex;gap:6px;padding:0 16px;overflow-x:auto;scrollbar-width:none}',
+'.hi-cavs::-webkit-scrollbar{display:none}',
+'.hi-cav{flex:0 0 auto;font-size:10.5px;font-weight:700;padding:9px 13px;border-radius:20px;',
+'  cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;',
+'  background:rgba(var(--tx),.03);border:1px solid rgba(var(--tx),.1);color:#8A929C}',
+'.hi-cav.on{border-color:rgba(var(--t),.55);color:rgba(var(--t),.95)}',
+
+'.hi-liste{padding:0 16px}',
+'.hi-l{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;margin-bottom:7px;',
+'  border-radius:13px;cursor:pointer;-webkit-tap-highlight-color:transparent;',
+'  background:rgba(var(--tx),.028);border:1px solid rgba(var(--tx),.08)}',
+'.hi-l.off{opacity:.42}',
+'.hi-l.dt{border-color:rgba(var(--or),.34);background:rgba(var(--or),.04)}',
+'.hi-case{flex:0 0 20px;height:20px;border-radius:6px;margin-top:2px;display:flex;',
+'  align-items:center;justify-content:center;font-size:12px;font-weight:800;',
+'  border:1.5px solid rgba(var(--tx),.25);color:transparent}',
+'.hi-l:not(.off) .hi-case{background:rgba(var(--t),.9);border-color:rgba(var(--t),.9);color:#04252A}',
+'.hi-rg{flex:0 0 46px;text-align:center;font-family:Cinzel,Georgia,serif;font-size:15px;',
+'  color:rgba(var(--tx),.55);line-height:1.15}',
+'.hi-rg.v{color:rgba(var(--or),.95)}',
+'.hi-rg small{display:block;font-family:Montserrat,sans-serif;font-size:9px;font-weight:600;',
+'  color:#6E7780;margin-top:2px}',
+'.hi-co{flex:1;min-width:0}',
+'.hi-co b{display:block;font-size:12px;font-weight:600;line-height:1.3}',
+'.hi-co .li{display:block;font-size:10.5px;color:#8A929C;margin-top:3px}',
+'.hi-co .qd{display:block;font-size:10px;color:#6E7780;margin-top:3px}',
+'.hi-doute{display:block;margin-top:7px;font-size:10px;line-height:1.5;',
+'  color:rgba(var(--or),.95);padding:6px 9px;border-radius:9px;',
+'  background:rgba(var(--or),.09);border:1px solid rgba(var(--or),.26)}',
+'.hi-hors{display:block;margin-top:7px;font-size:10px;color:#6E7780}',
+
+'.hi-nv{margin-top:17px}',
+'.hi-n{display:flex;align-items:center;gap:12px;padding:13px 13px;margin-bottom:8px;',
+'  border-radius:13px;cursor:pointer;-webkit-tap-highlight-color:transparent;',
+'  background:rgba(var(--tx),.025);border:1px solid rgba(var(--tx),.09)}',
+'.hi-n.on{border-color:rgba(var(--t),.55);background:rgba(var(--t),.06)}',
+'.hi-rd{flex:0 0 18px;height:18px;border-radius:50%;border:1.5px solid rgba(var(--tx),.28);',
+'  display:flex;align-items:center;justify-content:center}',
+'.hi-n.on .hi-rd{border-color:rgb(var(--t))}',
+'.hi-n.on .hi-rd::after{content:"";width:9px;height:9px;border-radius:50%;background:rgb(var(--t))}',
+'.hi-n .co{flex:1;min-width:0}',
+'.hi-n .co b{display:block;font-size:12.5px;font-weight:600}',
+'.hi-n .co span{display:block;font-size:10.5px;color:#8A929C;margin-top:3px}',
+'.hi-n .nb{flex:0 0 auto;font-family:Cinzel,Georgia,serif;font-size:16px;color:rgba(var(--tx),.55)}',
+'.hi-n.on .nb{color:rgb(var(--t))}',
+'.hi-l.hors .hi-co b,.hi-l.hors .hi-co .li{font-style:italic;color:rgba(var(--tx),.42)}',
+'.hi-l.hors .hi-rg{font-style:italic;color:rgba(var(--tx),.34)}',
+'.hi-l.quart .hi-co b{font-weight:700}',
+'.hi-pied{position:sticky;bottom:0;padding:12px 16px calc(14px + env(safe-area-inset-bottom));',
+'  background:linear-gradient(180deg,transparent,rgba(6,9,12,.94) 34%)}',
+'.hi-bt{display:block;width:100%;padding:15px;border-radius:14px;font-size:13px;font-weight:700;',
+'  letter-spacing:.03em;cursor:pointer;-webkit-tap-highlight-color:transparent;',
+'  color:#04252A;background:rgba(var(--t),.9);border:1px solid rgba(var(--t),.9)}',
+'.hi-bt[disabled]{opacity:.45;cursor:default}',
+'.hi-bt2{display:block;width:100%;margin-top:8px;padding:13px;border-radius:14px;font-size:12px;',
+'  font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;color:#8A929C;',
+'  background:none;border:1px solid rgba(var(--tx),.13)}',
+'.hi-fin{margin:16px;padding:26px 20px;border-radius:16px;text-align:center;',
+'  background:rgba(var(--t),.05);border:1px solid rgba(var(--t),.26)}',
+'.hi-fin .ic{font-size:30px}',
+'.hi-fin b{display:block;font-family:Cinzel,Georgia,serif;font-size:17px;margin-top:12px}',
+'.hi-fin span{display:block;font-size:11.5px;color:#8A929C;margin-top:9px;line-height:1.6}'
+  ].join("");
+
+  function poserStyle() {
+    if (typeof document === "undefined" || document.getElementById("hype-import-css")) return;
+    var s = document.createElement("style");
+    s.id = "hype-import-css"; s.textContent = STYLE;
+    document.head.appendChild(s);
+  }
+
+  /* ==== l'état de l'écran ============================================== */
+  var E = { etape: "choix", lignes: [], cavalier: "", err: null, nomFichier: "", occupe: false, niveau: "classe" };
+
+  function ech(s) {
+    return String(s === null || s === undefined ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function suff(p) { return Number(p) === 1 ? "er" : "e"; }
+  function jour(d) { if (!d) return "date inconnue"; var p = d.split("-"); return p[2] + "/" + p[1] + "/" + p[0]; }
+  function joli(s) {
+    if (!s) return "";
+    if (s !== s.toUpperCase()) return s;
+    var petits = ["de","du","des","la","le","les","en","et","sur","d","l","aux","au"];
+    return s.toLowerCase().split(/\s+/).map(function (m, i) {
+      return (i > 0 && petits.indexOf(m) >= 0) ? m : m.charAt(0).toUpperCase() + m.slice(1);
+    }).join(" ");
+  }
+
+  /* ==== 1 · CHOISIR LE FICHIER ========================================= */
+  function vueChoix() {
+    var h = '<div class="hi-h"><div class="hi-k">Importer mes résultats</div>' +
+      '<h2>Ton telemat FFE</h2>' +
+      '<p>Une saison par fichier. L\'app lit, tu relis, et rien ne s\'enregistre sans toi.</p></div>' +
+      '<div class="hi-etapes"><i class="on"></i><i></i><i></i></div>';
+    h += '<label class="hi-zone"><div class="ic">⤓</div>' +
+      '<b>Choisir un PDF</b>' +
+      '<span>Depuis Fichiers, sur ton téléphone</span>' +
+      '<input type="file" accept="application/pdf,.pdf" data-hi="fichier"></label>';
+    h += '<div class="hi-aide"><b>Comment obtenir ce PDF</b>' +
+      '<ol><li>Ouvre ton telemat FFE <b>dans Safari</b></li>' +
+      '<li>Fais une capture d\'écran, puis <b>appuie sur la vignette</b> avant qu\'elle disparaisse</li>' +
+      '<li>Choisis l\'onglet <b>« Page entière »</b></li>' +
+      '<li><b>Enregistrer le PDF dans Fichiers</b></li></ol>' +
+      '⚠️ Il faut bien un <b>PDF</b> : une capture en image ne se lit pas.</div>';
+    if (E.err) h += '<div class="hi-err"><b>Ça n\'a pas marché</b>' + ech(E.err) + '</div>';
+    return h;
+  }
+
+  /* ==== 2 · LA LECTURE EN COURS ======================================== */
+  function vueLecture() {
+    return '<div class="hi-h"><div class="hi-k">Importer mes résultats</div>' +
+      '<h2>Lecture en cours…</h2></div>' +
+      '<div class="hi-etapes"><i class="on"></i><i class="on"></i><i></i></div>' +
+      '<div class="hi-att"><b>' + ech(E.nomFichier) + '</b>' +
+      '<span>Quelques secondes. Rien n\'est enregistré pour l\'instant.</span></div>';
+  }
+
+  /* ==== 2bis · QUE VEUT-ELLE VOIR ? ===================================
+     Posé AVANT d'afficher 27 lignes à relire. Le filtre n'efface rien :
+     tout sera enregistré, il décide seulement de ce qui s'affiche.    */
+  function vueChoixNiveau() {
+    var n = window.HYPE_IMPORT.compter(E.lignes);
+    var h = '<div class="hi-h"><div class="hi-k">' + ech(E.nomFichier) + '</div>' +
+      '<h2>Que souhaites-tu voir apparaître ?</h2>' +
+      '<p>Tout sera enregistré de toute façon — tu pourras changer d\'avis ' +
+      'plus tard sans réimporter.</p></div>' +
+      '<div class="hi-etapes"><i class="on"></i><i class="on"></i><i></i></div>';
+    h += '<div class="hi-nv">';
+    n.forEach(function (o) {
+      h += '<div class="hi-n' + (E.niveau === o.c ? " on" : "") + '" data-hi-nv="' + o.c + '">' +
+        '<span class="hi-rd"></span><span class="co"><b>' + o.t + '</b>' +
+        '<span>' + o.s + '</span></span><span class="nb">' + o.n + '</span></div>';
+    });
+    h += '</div><div class="hi-pied">' +
+      '<button class="hi-bt" data-hi="versrelecture">Continuer</button>' +
+      '<button class="hi-bt2" data-hi="annuler">Annuler</button></div>';
+    return h;
+  }
+
+  /* ==== 3 · LA RELECTURE — le cœur ===================================== */
+  function vueRelecture() {
+    var toutes = E.lignes;
+    var vis = E.cavalier ? toutes.filter(function (r) { return r.cavalier === E.cavalier; }) : toutes;
+    var gardees = vis.filter(function (r) { return r.garder; }).length;
+    var doutes = vis.filter(function (r) { return r.doute; }).length;
+    var horsPiste = vis.length - vis.filter(function (r) { return r.statut === "classe"; }).length;
+
+    var h = '<div class="hi-h"><div class="hi-k">Étape 3 sur 3</div>' +
+      '<h2>Relis avant d\'enregistrer</h2>' +
+      '<p>Coche ce que tu veux voir apparaître. Les lignes en doré demandent ' +
+      'ton œil : l\'app n\'est pas sûre d\'elle.</p></div>' +
+      '<div class="hi-etapes"><i class="on"></i><i class="on"></i><i class="on"></i></div>';
+
+    h += '<div class="hi-bilan">' +
+      '<div class="hi-bi ok"><b>' + gardees + '</b><span>à garder</span></div>' +
+      '<div class="hi-bi dt"><b>' + doutes + '</b><span>à vérifier</span></div>' +
+      '<div class="hi-bi no"><b>' + horsPiste + '</b><span>hors piste</span></div></div>';
+
+    var cavs = (window.HYPE_IMPORT ? window.HYPE_IMPORT.cavaliers(toutes) : []);
+    if (cavs.length > 1) {
+      h += '<div class="hi-st">Qui montait<em>garde seulement tes lignes</em></div><div class="hi-cavs">';
+      h += '<div class="hi-cav' + (E.cavalier === "" ? " on" : "") + '" data-hi-cav="">Tous · ' + toutes.length + '</div>';
+      cavs.forEach(function (c) {
+        h += '<div class="hi-cav' + (E.cavalier === c.nom ? " on" : "") + '" data-hi-cav="' + ech(c.nom) + '">' +
+          ech(joli(c.nom)) + ' · ' + c.n + '</div>';
+      });
+      h += '</div>';
+    }
+
+    h += '<div class="hi-st">Les lignes lues<em>' + vis.length + '</em></div><div class="hi-liste">';
+    vis.forEach(function (r) {
+      var classe = r.statut === "classe";
+      h += '<div class="hi-l' + (r.garder ? "" : " off") + (r.doute ? " dt" : "") +
+        (classe ? (r.quart === 1 ? " quart" : "") : " hors") +
+        '" data-hi-l="' + r.rang + '">' +
+        '<span class="hi-case">✓</span>' +
+        '<span class="hi-rg' + (r.place === 1 ? " v" : "") + '">' +
+        (classe ? (r.place + "<sup>" + suff(r.place) + "</sup>" +
+          (r.partants ? "<small>sur " + r.partants + "</small>" : ""))
+                : "—<small>" + ech(motStatut(r.statut)) + "</small>") + "</span>" +
+        '<span class="hi-co"><b>' + ech(r.epreuve || "épreuve inconnue") + "</b>" +
+        '<span class="li">' + ech(joli(r.concours)) + "</span>" +
+        '<span class="qd">' + jour(r.date) +
+        (r.quart ? " · quart " + r.quart + "e" : " · quart non donné") +
+        (r.cavalier ? " · " + ech(joli(r.cavalier)) : "") + "</span>" +
+        (r.doute ? '<span class="hi-doute">⚠️ ' + ech(r.doute) + "</span>" : "") +
+        "</span></div>";
+    });
+    h += "</div>";
+
+    h += '<div class="hi-pied">' +
+      '<button class="hi-bt" data-hi="enregistrer"' + (gardees ? "" : " disabled") + '>' +
+      (E.occupe ? "…" : "Enregistrer " + gardees + " résultat" + (gardees > 1 ? "s" : "")) + "</button>" +
+      '<button class="hi-bt2" data-hi="annuler">Annuler, ne rien enregistrer</button></div>';
+    return h;
+  }
+
+  function motStatut(s) {
+    return s === "non_partant" ? "forfait"
+      : s === "elimine" ? "éliminé"
+      : s === "abandon" ? "abandon"
+      : s === "annulee" ? "annulée"
+      : s === "illisible" ? "illisible" : "—";
+  }
+
+  /* ==== 4 · C'EST FAIT ================================================= */
+  function vueFin(n) {
+    return '<div class="hi-fin"><div class="ic">🏆</div>' +
+      "<b>" + n + " résultat" + (n > 1 ? "s enregistrés" : " enregistré") + "</b>" +
+      "<span>Son palmarès vient de grandir. Tu peux importer une autre saison " +
+      "quand tu veux.</span></div>" +
+      '<div class="hi-pied"><button class="hi-bt" data-hi="encore">Importer une autre saison</button>' +
+      '<button class="hi-bt2" data-hi="fermer">Revenir à sa fiche</button></div>';
+  }
+
+  /* ==== LE RENDU ======================================================== */
+  function rendre(hote, options) {
+    if (!hote) return;
+    options = options || {};
+    poserStyle();
+    if (hote.className.indexOf("hi") < 0) hote.className += " hi";
+
+    var h = E.etape === "choix" ? vueChoix()
+      : E.etape === "lecture" ? vueLecture()
+      : E.etape === "niveau" ? vueChoixNiveau()
+      : E.etape === "relecture" ? vueRelecture()
+      : vueFin(E.enregistres || 0);
+    hote.innerHTML = h;
+    brancher(hote, options);
+  }
+
+  function brancher(hote, options) {
+    function refaire() { rendre(hote, options); }
+
+    var f = hote.querySelector('[data-hi="fichier"]');
+    if (f) f.addEventListener("change", function () {
+      var fic = f.files && f.files[0];
+      if (!fic) return;
+      E.err = null; E.nomFichier = fic.name; E.etape = "lecture"; refaire();
+      window.HYPE_IMPORT.texteDuPdf(fic).then(function (txt) {
+        var o = window.HYPE_IMPORT.lire(txt);
+        if (!o.lignes.length) {
+          E.err = "Aucun résultat trouvé dans ce PDF. Vérifie que c'est bien la page " +
+                  "entière de ton telemat, et non une capture en image.";
+          E.etape = "choix"; refaire(); return;
+        }
+        E.lignes = o.lignes; E.cavalier = ""; E.niveau = "classe";
+        window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
+        E.etape = "niveau"; refaire();
+      }).catch(function (e) {
+        E.err = "Le fichier n'a pas pu être lu. " + (e && e.message ? e.message : "");
+        E.etape = "choix"; refaire();
+      });
+    });
+
+    hote.querySelectorAll("[data-hi-nv]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        E.niveau = el.getAttribute("data-hi-nv");
+        window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
+        refaire();
+      });
+    });
+    var bV = hote.querySelector('[data-hi="versrelecture"]');
+    if (bV) bV.addEventListener("click", function () { E.etape = "relecture"; refaire(); });
+
+    hote.querySelectorAll("[data-hi-l]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        var n = Number(el.getAttribute("data-hi-l"));
+        E.lignes.forEach(function (r) { if (r.rang === n) r.garder = !r.garder; });
+        refaire();
+      });
+    });
+    hote.querySelectorAll("[data-hi-cav]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        E.cavalier = el.getAttribute("data-hi-cav") || ""; refaire();
+      });
+    });
+
+    var bE = hote.querySelector('[data-hi="enregistrer"]');
+    if (bE) bE.addEventListener("click", function () {
+      if (E.occupe) return;
+      var vis = E.cavalier
+        ? E.lignes.filter(function (r) { return r.cavalier === E.cavalier; })
+        : E.lignes;
+      var aGarder = vis.filter(function (r) { return r.garder; });
+      if (!aGarder.length) return;
+      E.occupe = true; refaire();
+      Promise.resolve(
+        typeof options.onEnregistrer === "function" ? options.onEnregistrer(aGarder) : null
+      ).then(function (n) {
+        E.occupe = false; E.enregistres = (typeof n === "number" ? n : aGarder.length);
+        E.etape = "fin"; refaire();
+      }).catch(function (e) {
+        E.occupe = false;
+        E.err = "L'enregistrement a échoué. " + (e && e.message ? e.message : "");
+        E.etape = "relecture"; refaire();
+      });
+    });
+
+    var bA = hote.querySelector('[data-hi="annuler"]');
+    if (bA) bA.addEventListener("click", function () {
+      reinitialiser();
+      if (typeof options.onFermer === "function") options.onFermer(); else refaire();
+    });
+    var bR = hote.querySelector('[data-hi="encore"]');
+    if (bR) bR.addEventListener("click", function () { reinitialiser(); refaire(); });
+    var bF = hote.querySelector('[data-hi="fermer"]');
+    if (bF) bF.addEventListener("click", function () {
+      reinitialiser();
+      if (typeof options.onFermer === "function") options.onFermer();
+    });
+  }
+
+  function reinitialiser() {
+    E = { etape: "choix", lignes: [], cavalier: "", err: null, nomFichier: "", occupe: false, niveau: "classe" };
+  }
+
+  /* ==== ce qu'on ajoute à HYPE_IMPORT ================================== */
+  if (typeof window !== "undefined" && window.HYPE_IMPORT) {
+    window.HYPE_IMPORT.rendre = rendre;
+    window.HYPE_IMPORT.reinitialiser = reinitialiser;
+    window.HYPE_IMPORT.etat = function () { return E; };
+  }
+  /* ⚠️ Ce fichier contient DEUX blocs. Le second ne doit pas ecraser les
+     exports du premier, sinon le banc d essai ne voit plus la lecture. */
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports.rendre = rendre;
+    module.exports.reinitialiser = reinitialiser;
+    module.exports.etat = function () { return E; };
+  }
+})();
