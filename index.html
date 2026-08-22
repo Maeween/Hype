@@ -21935,10 +21935,15 @@ function Router() {
                 ecran === "profil" && React.createElement(EcranProfil, null),
                 ecran === "ecurie" && React.createElement(EcranEcurie, null),
                 ecran === "import-resultats" && React.createElement(HypeImportEcran, {
+                  /* 🟥 22/08 — AUCUNE FONCTION DE TRADUCTION ICI.
+                     Le Router ne demande pas `tr` dans son useApp(), et cet
+                     objet est évalué à CHAQUE rendu, même hors de l'écran
+                     d'import. Une traduction posée ici a fait planter TOUTE
+                     l'app au démarrage le 22/08 à 20h47. Textes en clair. */
                   mots: {
-                    titre: T("Importer mes résultats", "Import my results", "Importar mis resultados", "Importa i miei risultati", "結果を取り込む", "Meine Ergebnisse importieren"),
-                    attente: T("Préparation de l'import…", "Preparing import…", "Preparando…", "Preparazione…", "準備中…", "Import wird vorbereitet…"),
-                    err: T("L'import n'a pas pu s'ouvrir.", "Import could not open.", "No se pudo abrir.", "Impossibile aprire.", "開けませんでした。", "Import konnte nicht öffnen.")
+                    titre: "Importer mes résultats",
+                    attente: "Préparation de l'import…",
+                    err: "L'import n'a pas pu s'ouvrir."
                   },
                   onFermer: function () { setEcran("cheval"); },
                   onEnregistrer: function (lignes) {
@@ -29463,7 +29468,7 @@ function EcranEcurie() {
   var _ecSg = React.useState(null), suggestionsEc = _ecSg[0], setSuggestionsEc = _ecSg[1];
   var _ecCm = React.useState([]), chevauxMembres = _ecCm[0], setChevauxMembres = _ecCm[1];
   var monClubEc = (((ctx.profil && (ctx.profil.ecurie || ctx.profil.club)) || "").trim()) || T("Mon \u00e9curie", "My stable", "Mi cuadra", "La mia scuderia", "\u99ac\u5c4b", "Mein Stall");
-  var titreEcuriePerso = (((ctx.profil && ctx.profil.ecurie_perso) || "").trim()) || T("Mon univers Hype", "My Hype world", "Mi universo Hype", "Il mio universo Hype", "\u79c1\u306eHype\u30ef\u30fc\u30eb\u30c9", "Meine Hype-Welt") /* 06/08 : nom d'affichage libre de la page perso ; monClubEc reste le nom du CLUB pour toutes les requetes (membres, chevaux, notifications) */ /* 27/07 : le repli etait "\u00c9curie Feinn" : tout cavalier sans club renseigne voyait l'ecurie personnelle de Blandine. */;
+  var titreEcuriePerso = (((ctx.profil && ctx.profil.ecurie_perso) || "").trim()) || monClubEc /* 06/08 : nom d'affichage libre de la page perso ; monClubEc reste le nom du CLUB pour toutes les requetes (membres, chevaux, notifications) */ /* 27/07 : le repli etait "\u00c9curie Feinn" : tout cavalier sans club renseigne voyait l'ecurie personnelle de Blandine. */;
   React.useEffect(function () { (async function () {
     try { if (typeof cavaliersChoisisEcurie === "function" && typeof supa !== "undefined") { var rx = await cavaliersChoisisEcurie(); if (rx && rx.data && rx.data.length) setChoisisEc(rx.data); else { setChoisisEc([]); setTimeout(async function () { try { var rx2 = await cavaliersChoisisEcurie(); if (rx2 && rx2.data && rx2.data.length) setChoisisEc(rx2.data); } catch (eC2) { } }, 2500); } } else setChoisisEc([]); } catch (eC) { setChoisisEc([]); }
     try { if (typeof supa !== "undefined" && supa) {
@@ -29588,7 +29593,7 @@ function EcranEcurie() {
           h("div", { className: "info" },
             /* 15/08 (mot de Blandine) : « rajouter perso apres mon ecurie comme ca plus
    de doute possible avec celle d un club ». */
-            h("div", { className: "e" }, T("Ton univers", "Your world", "Tu universo", "Il tuo universo", "\u3042\u306a\u305f\u306e\u4e16\u754c", "Deine Welt")),
+            h("div", { className: "e" }, T("Ton écurie perso", "Your personal stable", "Tu cuadra personal", "La tua scuderia personale", "あなたの個人厩舎")),
             h("h1", { style: { display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" } },
               h("span", null, titreEcuriePerso),
               h("button", {
