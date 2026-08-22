@@ -192,7 +192,10 @@
         rang: rang + 1,
         date: lireDate(f.date),
         epreuve: (f.epreuve || f.attente || "").replace(/^CSO\s+/i, "").replace(/\s+/g, " ").trim(),
-        concours: (f.concours || "").replace(/\s+/g, " ").trim(),
+        /* 22/08 : le suffixe ordinal de la forme déformée « 1 / 13 er »
+           restait collé au nom du concours (« MAGNANVILLE er »).      */
+        concours: (f.concours || "").replace(/\s+/g, " ").trim()
+                    .replace(/\s+(er|ère|e)$/i, "").trim(),
         cavalier: (f.monteur || "").replace(/\s+/g, " ").trim(),
         place: c.place || null,
         partants: c.partants || null,
@@ -344,7 +347,12 @@
 '.hi-l{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;margin-bottom:7px;',
 '  border-radius:13px;cursor:pointer;-webkit-tap-highlight-color:transparent;',
 '  background:rgba(var(--tx),.028);border:1px solid rgba(var(--tx),.08)}',
-'.hi-l.off{opacity:.42}',
+'.hi-l{background:rgba(10,13,17,.92)}',
+'.hi-l.off{opacity:1;background:rgba(10,13,17,.86)}',
+'.hi-l.off .hi-co b{color:rgba(var(--tx),.62)}',
+'.hi-l.off .hi-co .li,.hi-l.off .hi-co .qd{color:rgba(var(--tx),.42)}',
+'.hi-l.off .hi-rg{color:rgba(var(--tx),.45)}',
+'.hi-liste{background:rgba(4,7,10,.72);border-radius:14px;padding:10px 16px}',
 '.hi-l.dt{border-color:rgba(var(--or),.34);background:rgba(var(--or),.04)}',
 '.hi-case{flex:0 0 20px;height:20px;border-radius:6px;margin-top:2px;display:flex;',
 '  align-items:center;justify-content:center;font-size:12px;font-weight:800;',
@@ -381,8 +389,8 @@
 '.hi-l.hors .hi-co b,.hi-l.hors .hi-co .li{font-style:italic;color:rgba(var(--tx),.42)}',
 '.hi-l.hors .hi-rg{font-style:italic;color:rgba(var(--tx),.34)}',
 '.hi-l.quart .hi-co b{font-weight:700}',
-'.hi-pied{position:sticky;bottom:0;padding:12px 16px calc(14px + env(safe-area-inset-bottom));',
-'  background:linear-gradient(180deg,transparent,rgba(6,9,12,.94) 34%)}',
+'.hi-pied{position:relative;padding:16px 16px 120px;',
+'  background:none}',
 '.hi-bt{display:block;width:100%;padding:15px;border-radius:14px;font-size:13px;font-weight:700;',
 '  letter-spacing:.03em;cursor:pointer;-webkit-tap-highlight-color:transparent;',
 '  color:#04252A;background:rgba(var(--t),.9);border:1px solid rgba(var(--t),.9)}',
@@ -528,6 +536,8 @@
       '<button class="hi-bt" data-hi="enregistrer"' + (gardees ? "" : " disabled") + '>' +
       (E.occupe ? "…" : "Enregistrer " + gardees + " résultat" + (gardees > 1 ? "s" : "")) + "</button>" +
       '<button class="hi-bt2" data-hi="annuler">Annuler, ne rien enregistrer</button></div>';
+    if (E.err) h += '<div class="hi-err" style="margin:0 16px 90px"><b>L\'enregistrement a échoué</b>' +
+      ech(E.err) + '</div>';
     return h;
   }
 
@@ -613,7 +623,13 @@
     });
 
     var bE = hote.querySelector('[data-hi="enregistrer"]');
+    /* 22/08 : le bouton ne répondait pas. Deux causes possibles, traitées
+       toutes les deux : il passait SOUS la barre du bas de l'app (le tap
+       ne l'atteignait pas — corrigé par le padding de 120 px), et une
+       erreur d'enregistrement restait muette. On trace désormais tout. */
+    if (!bE) { try { console.warn("Import : bouton Enregistrer introuvable"); } catch (e0) { } }
     if (bE) bE.addEventListener("click", function () {
+      try { console.log("Import : enregistrement demandé"); } catch (e0) { }
       if (E.occupe) return;
       var vis = E.cavalier
         ? E.lignes.filter(function (r) { return r.cavalier === E.cavalier; })
@@ -621,14 +637,18 @@
       var aGarder = vis.filter(function (r) { return r.garder; });
       if (!aGarder.length) return;
       E.occupe = true; refaire();
-      Promise.resolve(
-        typeof options.onEnregistrer === "function" ? options.onEnregistrer(aGarder) : null
-      ).then(function (n) {
+      if (typeof options.onEnregistrer !== "function") {
+        E.occupe = false;
+        E.err = "l'app n'a pas fourni de quoi enregistrer (onEnregistrer manquant).";
+        refaire(); return;
+      }
+      Promise.resolve(options.onEnregistrer(aGarder)).then(function (n) {
         E.occupe = false; E.enregistres = (typeof n === "number" ? n : aGarder.length);
         E.etape = "fin"; refaire();
       }).catch(function (e) {
         E.occupe = false;
-        E.err = "L'enregistrement a échoué. " + (e && e.message ? e.message : "");
+        try { console.warn("Import : échec de l'enregistrement", e); } catch (e2) { }
+        E.err = (e && e.message ? e.message : String(e));
         E.etape = "relecture"; refaire();
       });
     });

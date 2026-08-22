@@ -1,5 +1,97 @@
 # SUIVI HYPE
 
+---
+
+# 🔴 À FAIRE — ABONNEMENTS · rappel posé le 22/08/2026 (22h20)
+
+> **À traiter à tête reposée. Rien n'est urgent, rien n'est perdu, personne n'est bloqué.**
+> Le webhook est **réparé et prouvé** (test réel du 22/08 : création · paiement · annulation, les trois passent).
+> Il ne reste que du rattrapage sur trois cavalières et un peu de ménage.
+
+---
+
+## ⏰ RENDEZ-VOUS DU 22 SEPTEMBRE — le seul vrai délai
+
+**Aurélie** (`a.bussonnais@outlook.com`) et **Lauren** (`laurenmanivetsojfer@gmail.com`) ont un Premium **posé à la main** le 21/08, valable jusqu'au **22/09**. Leur ligne est incomplète : le `stripe_subscription` de Lauren est **vide**.
+
+Stripe les prélèvera bien le 22/09. Le webhook réparé devrait alors **recréer leur ligne tout seul** en les retrouvant par leur adresse mail.
+
+🔴 **VÉRIFIER LE 23/09** que leur Premium s'est bien renouvelé :
+
+```sql
+select email || ' · ' || coalesce(statut,'?') || ' · ' || coalesce(plan,'?')
+  || ' · expire le ' || coalesce(to_char(expire_le,'DD/MM/YY'),'?')
+  || ' · ' || coalesce(stripe_subscription,'SANS SUB') as ligne
+from public.abonnements_premium
+where email in ('a.bussonnais@outlook.com','laurenmanivetsojfer@gmail.com');
+```
+
+Si la date n'a pas bougé au 23/09, poser une ligne à la main comme le 21/08 et chercher pourquoi.
+
+---
+
+## 🟠 LE RATTRAPAGE PROPRE (optionnel, quand tu veux)
+
+Renvoyer les événements en échec depuis Stripe réécrirait les trois lignes **correctement**, avec leurs vrais identifiants — mieux que nos écritures manuelles.
+
+**Chemin :** `dashboard.stripe.com/webhooks` → `energetic-voyage` → onglet **Événements envoyés**.
+⚠️ Ouvrir dans un **onglet Safari neuf** (appui long → « Ouvrir dans Safari »), sinon la fiche reste filtrée sur un seul événement — piège rencontré le 21/08.
+
+**À renvoyer :** les événements **en échec** du 21/08 vers 18:26 (Aurélie) et 19:07 (Lauren) · celui de **Dominique du 15/08** pour son Duo.
+
+**Un seul d'abord**, puis vérifier :
+
+```sql
+select email || ' · ' || coalesce(statut,'?') || ' · ' || coalesce(plan,'?')
+  || ' · ' || coalesce(to_char(maj_le,'DD/MM HH24:MI'),'jamais')
+  || ' · ' || coalesce(stripe_subscription,'sans sub') as ligne
+from public.abonnements_premium
+where maj_le > now() - interval '20 minutes';
+```
+
+Ligne réapparue avec un `sub_` et l'heure du renvoi = gagné, enchaîner les autres.
+
+---
+
+## 🟡 DOMINIQUE — le Duo jamais arrivé
+
+`dominique.wirtschafter@orange.fr` — son **Premium** est passé le 15/08, son **Duo** jamais. Elle a déjà eu une ligne. Cause connue : l'ancien webhook n'écrivait rien quand `client_reference_id` manquait. **Corrigé, mais le passé n'est pas rattrapé.**
+
+Deux voies : renvoyer son événement du 15/08 (propre), ou poser sa ligne à la main.
+
+---
+
+## 🟡 BARBARA — rien à réparer, un mot à écrire
+
+`basia.baster@poczta.fm` — paiement **refusé par sa banque** (`do_not_honor`, AmEx ••1000), trois fois : 16, 19 et 21/08. Statut `impaye`, ce qui est **juste**.
+
+**Ni Stripe ni Hype ne peuvent lever ce refus.** Lui écrire : son paiement est refusé par sa banque, qu'elle les appelle ou change de carte. Elle ne le sait peut-être pas.
+
+---
+
+## 🟡 MÉNAGE, sans urgence
+
+- **Cinq lignes sans email** dans `abonnements_premium` (13/07 10:03–10:29 et 16/07 14:53, `duo` et `annuel`, toutes `actif`). Hypothèse **non vérifiée** : essais de juillet pendant le branchement Stripe. Ne rien supprimer avant d'avoir tranché.
+- **Doublon de compte d'Aurélie** : `au.bussonnais@gmail.com` (03/08) et `a.bussonnais@outlook.com` (21/08, celui qui porte le Premium). **Lui demander lequel elle utilise** avant de toucher à quoi que ce soit.
+- **Deux abonnements Netlify** : chez Netlify le plan est attaché à **l'équipe**, pas au projet. Vérifier Team → Billing pour chaque équipe. À relier à la facture de ~140 $.
+- **Un paiement « Annulé » de 99,99 €** le 20/08 par Link : tunnel abandonné, **rien encaissé**. Mais quelqu'un s'intéresse au plan annuel.
+
+---
+
+## ⚪ TON COMPTE
+
+`feinn@live.fr` est **`actif · duo · expire le 22/08/2027`**, remis à la main après le test.
+
+⚠️ **Cette ligne n'est pas protégée.** `HYPE_AMBASSADEURS` (ligne 836) ne donne **pas** le Premium — vérifié dans le code : elle sert à `estAmbassadeurHype` pour les accès anticipés, tandis que le Premium est décidé par `lireAbo` (ligne 21565) qui lit **uniquement** la table. Les deux circuits sont séparés.
+
+Donc **tout événement Stripe sur ton adresse réécrira ta ligne**, comme ce soir. Idée à faire à froid : une exception permanente dans le code, sur le modèle des ambassadeurs, pour que ton Premium ne dépende plus de la table.
+
+---
+
+**Fait le 22/08 : webhook corrigé et déployé · testé en réel (12,99 € payés puis remboursés, 0,44 € de frais) · création, paiement et annulation vérifiés en base.**
+
+---
+
 > Ce fichier circule entre les pages de travail. Chaque page qui arrive le lit, chaque page qui repart le met à jour avant de le refaire circuler. Objectif : que Blandine n'ait rien à retenir par cœur.
 
 **Règle d'or : une seule page "codeuse" à la fois.** Les autres pages peuvent réfléchir, lister, préparer des maquettes — mais ne livrent pas de fichier index.html tant que ce n'est pas leur tour, pour éviter d'écraser le travail d'une autre page.
