@@ -35,7 +35,9 @@
 4bis. **CONTROLE AUTOMATIQUE AVANT CHAQUE LIVRAISON (depuis le 17/08)** — la page qui livre passe un script qui refuse la livraison sur trois motifs : (a) un `overflow-x:hidden` sans `clip` sur `html`/`body`, (b) un `overscroll-behavior:none` touchant `body`, (c) un bloc `<script>` inline qui ne passe pas `node --check`. Le script recense TOUTES les regles `html`/`body` du fichier, pas seulement la premiere trouvee. Il ne part pas sur le serveur. C'est la seule protection qui attrape une REGRESSION DE LIGNEE, puisque le bug n'est jamais revenu par une modification volontaire de ces lignes mais par une base periemee.
 4. **Avant toute livraison d'index, vérifier la présence des marqueurs : `overflow-x: clip !important` (1), `html { overscroll-behavior: none; }` (1), `hypeVerrouScroll` (≥3), `hypeLibererPuitsTactiles` (≥3).** S'ils manquent, la base est une lignée périmée : STOP, signaler à Blandine.
 
-**Version actuelle de l'index.html : 22/08/2026 (SESSION 152 · L'IMPORT DES TELEMATS) — md5 `326514c511840de91df06f978622a8cc`, 9 314 570 octets.** Deux fichiers à la racine l'accompagnent : **`hype-import-ffe.js`** (`c9f33b195fac0c81b35bd434b2320695`) et **`hype-resultats.js`** (`0f7d3654633c46c77c79c662b8af4640`) — 🟥 **les trois se poussent ensemble**. ⚠️ `sw.js` ne les déclare pas encore.
+**Version actuelle de l'index.html : 22/08/2026 (SESSION 152d · LE BLOC RÉSUMÉ SOUS L'IPO) — md5 `e26f77a43ad1c034f0cdaf413b3fd1bc`, 9 326 461 octets.** Deux fichiers l'accompagnent à la racine : **`hype-import-ffe.js`** (`c9f33b195fac0c81b35bd434b2320695`) et **`hype-resultats.js`** (`0f7d3654633c46c77c79c662b8af4640`) — 🟥 **les trois se poussent ensemble**. ⚠️ `sw.js` ne les déclare pas encore.
+
+**Ancienne version (152 · L'IMPORT DES TELEMATS) — md5 `326514c511840de91df06f978622a8cc`, 9 314 570 octets.**
 
 **Ancienne version (153) — 22/08/2026 (SESSION 153 · LA PORTE DE L'ÉCURIE) — md5 `d156d8f483c2c3eb1fbe4745d922e694`, 9 306 934 octets.** Partie de l'index `aae527331cc8dcc78d18f0ec53f8b7f3` (9 284 794 octets), le plus récent de la page résultats. **`hype-resultats.js` INCHANGÉ** (`0f7d3654…`) : ce module ne parle jamais à Supabase, rien à y filtrer. ⚠️ **SQL À PASSER AVANT DE POUSSER — DÉJÀ FAIT ET VÉRIFIÉ LE 22/08** : colonnes `supprime_le` et `restaure_le` sur `chevaux` + index `chevaux_vivants_idx`.
 
@@ -67,6 +69,154 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 ⚠️ **ÉTAT PÉRIMÉ SUPPLÉMENTAIRE DE LA MÊME SESSION :** index `f9865aeee1cf64b0b7160295928883a0`, `d6fcfda70decedfb4e34c48d854b6362`, `c92825a2e44f77b1c60e4ac1b87577bc`, `f5efeab8455d495d19bf093ecea1f3bb`, `1bb6743cef6ca5a5b5b3dd11407c5464`, `a39175e7dbc73fc719d27bba6e9f8c9f` (états intermédiaires successifs, tous dépassés par `60f5f41c…`).
 
 ⚠️ **ÉTATS PÉRIMÉS DE LA MÊME SESSION :** index `68594c8c620efb35ab0f4d80b519060f` (après les ambassadrices, avant l'étape 2b) · index `e40088faa14e997baabc8e7e47caa552` (étape 2b complète, avant la correction du message d'invitation).
+
+---
+
+## SESSION 152d — 22/08/2026 (soir) · LE BLOC RÉSUMÉ SOUS L'IPO, ET L'IMPORT RÉPARÉ
+
+**Index livré : `e26f77a43ad1c034f0cdaf413b3fd1bc`, 9 326 461 octets.**
+Base : `e7295098…` (session 153c). 🟥 **Le travail de la 153c sur la déconnexion est
+conservé intégralement** — mes modifications ont été rejouées PAR-DESSUS le sien, pas l'inverse.
+Fichiers compagnons inchangés : `hype-import-ffe.js` (`c9f33b19…`) · `hype-resultats.js` (`0f7d3654…`).
+🟥 **Les trois se poussent ensemble.**
+
+### 🔴 CE QUI A PLANTÉ — et pourquoi
+
+Premier essai de l'import : **« Un caillou dans le sabot »**, 22/08 à 20h13.
+Trace : `HypeImportEcran@…:32003:9`.
+
+**Cause** : `HypeImportEcran` appelait **`T(...)`** pour ses trois textes. Or `T()` a besoin
+de `tr`, fourni par `useApp()` — et ce composant **ne lit pas le contexte**. Il plantait au
+premier rendu, avant même d'avoir chargé quoi que ce soit.
+
+**Réparé** : les textes arrivent désormais par **`props.mots`**, fournis par l'écran appelant
+qui, lui, a le contexte. Le composant a aussi reçu un **bouton retour** — il n'en avait aucun.
+
+🔵 **Règle à retenir** : un composant posé hors de l'arbre de `useApp()` ne peut appeler
+**ni `T()` ni `tr()`**. Lui passer ses textes en props.
+
+### 🟢 LE BLOC RÉSUMÉ DES RÉSULTATS — enfin posé
+
+🔴 **Il avait été demandé une dizaine de fois et validé en maquette, mais jamais codé.**
+Après la maquette, j'ai enchaîné sur l'import sans jamais revenir le poser. Blandine l'a
+signalé. C'est corrigé.
+
+**Emplacement** : sous la carte IPO, dans le panneau du cheval. **Le rail de coupes n'est
+pas touché.**
+
+**Conforme à la maquette validée** :
+- structure **B** — liseré de 3 px à gauche, dans la **teinte du cheval** (`teinteCl`)
+- fond **« Souffle »** — la lueur ne prend qu'au coin bas-droit, jamais sur toute la surface
+- quatre chiffres : Sorties · Victoires · Podiums · Classements
+- **un encart par fait**, hauteur **fixe à 62 px** : plus aucune ligne ne se tasse
+- noms sur **deux lignes maximum**, jamais coupés en plein milieu
+- **plafond à sept**, puis « et N autres »
+- pied : « Voir tout son palmarès → », ou « Aucun résultat pour l'instant »
+
+### 🟥 LA PILULE « RÉSULTATS » EST RETIRÉE
+
+Demande explicite de Blandine : *« tu retires juste le petit truc derrière avec écrit
+résultat et qui marche pas en plus »*. La pilule **Coupes** et le rail restent intacts.
+
+⚠️ Cette pilule venait de la **session 153** (autre page), pas de la 152 — d'où
+l'incompréhension : Blandine ne l'avait jamais vue avant ce jour.
+
+### 🟢 LE CHEMIN VERS L'IMPORT — il n'y en avait plus
+
+Le retrait de la pilule a coupé le seul accès au bouton d'import : Blandine l'a trouvé
+**par hasard**. Deux chemins francs posés :
+- un bouton **⤓ Importer mes résultats FFE**, doré pointillé, **juste sous le bloc résumé**
+- le bloc lui-même mène à l'import **quand le cheval n'a aucun résultat** et qu'on est propriétaire
+
+🔵 **Quatrième fois le même mal en deux jours** : ajouter un résultat, se déconnecter,
+supprimer un cheval, importer — **la fonction existe, le chemin est introuvable.**
+À vérifier systématiquement pour tout nouvel écran.
+
+### ⚠️ TOUJOURS PAS VÉRIFIÉ
+
+🔴 **PDF.js n'a jamais tourné.** Mon environnement n'a pas internet. Le plantage de 20h13
+venait du composant, **pas de la lecture** — mais l'ouverture d'un vrai PDF depuis l'iPhone
+**reste à éprouver**. C'est le seul point du chantier qui n'a aucune garantie.
+
+⚠️ `sw.js` ne déclare **ni** `hype-resultats.js` **ni** `hype-import-ffe.js`.
+
+### 🟡 DEUX PAGES SUR LE MÊME FICHIER — ce que ça a coûté
+
+L'autre page a livré la **153c** pendant que je travaillais sur `3b55daab…`. Ma livraison
+`ccbf1845…` **ne contenait pas son travail sur la déconnexion**. Rattrapé : j'ai repris son
+index et rejoué mes quatre modifications dessus, une par une, avec contrôle sur chacune.
+
+🟥 **À faire systématiquement** : avant toute livraison, **comparer le md5 de son index de
+travail avec celui du SUIVI**. S'ils diffèrent, repartir du plus récent.
+
+---
+
+## SESSION 153c — 22/08/2026 (soir) · UNE SEULE PORTE DE SORTIE (la déconnexion)
+
+**Index livré : `e7295098b61cf9201dde852209b64696`, 9 316 546 octets.** Base : `326514c5…` (l'import des telemats). Aucun SQL. Fichiers compagnons non touchés.
+
+### LE SYMPTÔME
+
+Signalé par Blandine : une cavalière **arrive à se connecter mais pas à se déconnecter**. C'est la suite directe du bug de la session 152 — sauf que celui-là avait été déclaré réglé.
+
+### CE QUI S'EST RÉELLEMENT PASSÉ
+
+🔴 **Le correctif du 22/08 (session 152) n'a réparé qu'UN bouton sur TROIS.**
+
+Il y avait trois boutons « Se déconnecter » dans l'app, chacun avec **sa propre copie du geste** :
+
+| Écran | État avant | |
+|---|---|---|
+| **Mon compte** — `sortir()` | ✅ réparé en 152 | vidait tout, attendait, renvoyait à l'entrée |
+| **Accueil** — `EcranUnivers` | ❌ jamais touché | |
+| **Profil** — `EcranProfil` | ❌ jamais touché | |
+
+Les deux non réparés faisaient exactement ce que faisait l'ancien code cassé :
+
+```js
+deconnexion().catch(function () { });   // lancé, JAMAIS attendu
+AUTH_MODE_SPECTRAL = "seuil";
+setEcran("connexion");
+```
+
+Trois défauts en trois lignes : **rien n'est vidé** (ni `profil`, ni `profilApp`, ni `user`) · **la déconnexion n'est pas attendue** (on change d'écran sur une session peut-être encore ouverte) · **l'erreur est avalée en silence**.
+
+Résultat pour la cavalière : elle voit l'écran d'entrée, se croit sortie, et au retour dans l'app **son profil est toujours là**.
+
+⚠️ **CONSÉQUENCE DIRECTE SUR LES ACCÈS PREMIUM** — c'est le point qui compte pour le chantier règlement/Premium en cours : tant que l'état local garde l'ancien profil, `profilApp.estPro`, le plan d'abonnement et les cadenas **restent ceux du compte précédent**. Une déconnexion incomplète suffit à expliquer un accès Premium incohérent, sans qu'il y ait le moindre problème de paiement. **À garder en tête avant de chercher ailleurs.**
+
+### CE QUI A ÉTÉ FAIT — décision de Blandine : extraire, pas recopier
+
+Les deux options ont été présentées : recopier la logique dans les deux boutons (rapide, mais **4 copies** au lieu de 2 — exactement ce qu'interdit la règle de non-duplication du 17/08) ou **extraire une fonction unique**. Blandine a choisi l'extraction.
+
+**`hypeSeDeconnecter(videurs)`** — posée juste après `deconnexion()`, c'est désormais **le seul endroit de l'app qui sait se déconnecter** :
+
+1. `await deconnexion()` — on ferme la session **avant** de bouger. C'était le bug d'origine.
+2. chaque videur d'état est appelé dans son propre `try` : qu'un seul échoue n'empêche pas les suivants.
+3. `AUTH_MODE_SPECTRAL = "seuil"`.
+
+Les écrans lui passent leurs propres videurs (ils n'ont pas les mêmes états sous la main) et s'occupent seuls de la navigation.
+
+**Les TROIS boutons y sont branchés**, y compris `sortir()` de Mon compte qui a été rebranché dessus : **il ne reste aucune copie du geste**. Vérifié : `0` occurrence de l'ancien motif.
+
+### À L'ÉCRAN
+
+**+** rien · **−** rien. Le bouton fait simplement ce qu'il annonce.
+
+### ⚠️ SIGNALÉ, NON CORRIGÉ
+
+**Aucun des trois boutons ne vide `chevaux`** (la liste gardée en mémoire). `sortir()` ne le faisait pas non plus, ce n'est donc pas une régression. Mais concrètement : **sur un téléphone partagé, la personne suivante peut voir les chevaux de la précédente** avant que la base ne réponde. Corriger dépassait la demande — en attente du feu vert de Blandine.
+
+### CONTRÔLES PASSÉS
+
+149 blocs `<script>` vérifiés un par un au `node --check` : tous OK · `overflow-x: clip !important` (1) · `html { overscroll-behavior: none; }` (1) · `hypeVerrouScroll` (5) · `hypeLibererPuitsTactiles` (4) · `DEV_OUVRIR_PAGE = ""` · **My Dream toujours à 0** · **10 filtres `supprime_le` intacts**, aucun `from("chevaux").delete()` · `0` bouton de déconnexion non réparé.
+
+### PRÉPARATION FLUTTER
+
+- **Une duplication supprimée, la plus coûteuse de la journée** : 3 copies du geste de déconnexion → 1. C'est précisément le scénario décrit par la règle du 17/08 (« pas un bug différent à chaque page ») et il s'était réalisé : un correctif appliqué à une copie sur trois avait laissé le bug vivant deux jours.
+- **Un point de décision unique de plus** : après `restaurationOfferte()` (153), `hypeSeDeconnecter()` fixe le contrat « que veut dire se déconnecter ». Flutter le réimplémentera une fois, pas trois.
+- **Méthode conforme à la doctrine** : correction de bug utilisée comme occasion de simplifier, sans réécriture, sans changement visuel, sans dépendance nouvelle.
+- **Reste à moderniser** : les videurs d'état sont passés à la main par chaque écran — un vrai service d'authentification tiendrait la liste lui-même. Et `chevaux` n'est vidé nulle part (voir ci-dessus).
 
 ---
 

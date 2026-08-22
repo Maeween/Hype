@@ -32009,7 +32009,7 @@ function HypeImportEcran(props) {
      ⚠️ Ce composant ne lit PAS le contexte de l'app : il ne peut donc pas
      appeler T() ni tr(), qui ont besoin de `tr` fourni par useApp().
      C'est ce qui l'a fait planter au premier essai (« Un caillou dans le
-     sabot », 22/08 20h13). Les textes passent par props.mots, fournis
+     sabot », 22/08 20h13). Les textes arrivent par props.mots, fournis
      par l'écran appelant qui, lui, a le contexte.                      */
   var mots = props.mots || {};
   var ref = React.useRef(null);
@@ -32021,18 +32021,14 @@ function HypeImportEcran(props) {
     var vivant = true;
     function dessiner() {
       if (!vivant || !ref.current) return;
-      if (!window.HYPE_IMPORT || !window.HYPE_IMPORT.rendre) {
-        setErrCh("module non chargé"); return;
-      }
+      if (!window.HYPE_IMPORT || !window.HYPE_IMPORT.rendre) { setErrCh("module non chargé"); return; }
       try {
         window.HYPE_IMPORT.reinitialiser();
         window.HYPE_IMPORT.rendre(ref.current, {
           onEnregistrer: props.onEnregistrer,
           onFermer: props.onFermer
         });
-      } catch (eIm) {
-        setErrCh(String(eIm && eIm.message ? eIm.message : eIm));
-      }
+      } catch (eIm) { setErrCh(String(eIm && eIm.message ? eIm.message : eIm)); }
     }
     if (window.HYPE_IMPORT && window.HYPE_IMPORT.rendre) {
       setCharge(false); setTimeout(dessiner, 0);
@@ -32047,23 +32043,17 @@ function HypeImportEcran(props) {
   }, []);
 
   return React.createElement("div", { style: { minHeight: "60vh", paddingBottom: 90 } },
-    React.createElement("div", {
-      style: { display: "flex", alignItems: "center", gap: 12, padding: "16px 16px 0" }
-    },
-      React.createElement("span", {
-        onClick: props.onFermer,
-        style: { fontSize: 22, color: "#20D9F5", lineHeight: 1, padding: "1px 5px", cursor: "pointer" }
-      }, "\u2039"),
-      React.createElement("span", {
-        style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 16, fontWeight: 600 }
-      }, mots.titre || "Importer mes résultats")),
+    React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "16px 16px 0" } },
+      React.createElement("span", { onClick: props.onFermer,
+        style: { fontSize: 22, color: "#20D9F5", lineHeight: 1, padding: "1px 5px", cursor: "pointer" } }, "\u2039"),
+      React.createElement("span", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 16, fontWeight: 600 } },
+        mots.titre || "Importer mes résultats")),
     chargeEnCours ? React.createElement("div", {
       style: { padding: "40px 20px", textAlign: "center", fontSize: 12.5, color: "#8A929C" }
     }, mots.attente || "Préparation de l'import…") : null,
     errCh ? React.createElement("div", {
       style: { margin: 16, padding: "15px 16px", borderRadius: 14, fontSize: 12, lineHeight: 1.6,
-               color: "#FFB4BC", background: "rgba(255,90,110,0.08)",
-               border: "1px solid rgba(255,90,110,0.32)" }
+               color: "#FFB4BC", background: "rgba(255,90,110,0.08)", border: "1px solid rgba(255,90,110,0.32)" }
     }, (mots.err || "L'import n'a pas pu s'ouvrir.") + " " + errCh) : null,
     React.createElement("div", { ref: ref })
   );
@@ -33070,10 +33060,10 @@ function EcranCheval() {
           var nbR = ((palmTous || [])).length;
           if (!nbC && !nbR) return null;
           return h("div", { style: { display: "flex", gap: 7, margin: "12px 16px 2px" } },
-            /* 22/08 session 152 : la pilule « Résultats » est RETIRÉE à la
-               demande de Blandine — elle n'aboutissait à rien de lisible.
-               La pilule « Coupes » et le rail de coupes restent intacts.
-               Le résumé des résultats vit désormais sous le bloc IPO.   */
+            /* 22/08 session 152 : pilule « Résultats » RETIRÉE à la demande
+               de Blandine — elle n'aboutissait à rien de lisible. La pilule
+               « Coupes » et le rail restent intacts. Le résumé des résultats
+               vit désormais sous la carte IPO.                          */
             [["coupes", T("Coupes", "Cups", "Copas", "Coppe", "\u30ab\u30c3\u30d7", "Pokale"), nbC]].map(function (pl) {
               if (!pl[2]) return null;
               var onP = ongletPerf === pl[0];
