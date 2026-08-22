@@ -2,40 +2,27 @@
 // Reçoit les événements signés de Stripe et met à jour la table Supabase
 // "abonnements_premium". Aucune dépendance npm : signature vérifiée via Web Crypto.
 //
-// Variables d'environnement Netlify (Site configuration → Environment variables) :
-//   STRIPE_WEBHOOK_SECRET      (commence par "whsec_", fournie par Stripe à la création du webhook)
-//   SUPABASE_SERVICE_ROLE_KEY  (clé "service_role" de Supabase — SECRÈTE, jamais côté app)
+// Variables d'environnement Netlify :
+//   STRIPE_WEBHOOK_SECRET      (commence par "whsec_")
+//   SUPABASE_SERVICE_ROLE_KEY  (clé "service_role" — SECRÈTE, jamais côté app)
 //
-// Événements Stripe à cocher lors de la création du webhook :
-//   checkout.session.completed · invoice.paid · customer.subscription.deleted
+// Événements écoutés :
+//   checkout.session.completed · invoice.paid · invoice.payment_failed
+//   · customer.subscription.deleted
 //
 // ─────────────────────────────────────────────────────────────────────────────
-// 🟥 SESSION DU 15/08/2026 — POURQUOI CE FICHIER A ÉTÉ REPRIS
+// RÉVISION DU 21/08/2026 — après la soirée où trois cavalières ont payé sans
+// recevoir leur Premium. Trois défauts corrigés :
 //
-// Signalement de Blandine : Dominique et Barbara payaient et n'avaient plus le
-// Premium. Vérifications faites avec elle, dans l'ordre :
-//   · Stripe : les deux abonnements ACTIFS (14 et 16 juillet). Elles paient.
-//   · Supabase : les deux lignes existent, statut "actif" — donc le paiement
-//     initial avait bien été rattaché au compte.
-//   · MAIS `expire_le` valait le 15/08 12h16 pour Dominique (dépassé de trois
-//     heures au moment du diagnostic) et le 17/08 pour Barbara — soit
-//     exactement les 32 jours du filet de sécurité posés à la souscription.
-//     Aucun renouvellement n'avait jamais prolongé ces dates.
-//   · Webhook Stripe : les trois événements écoutés, `invoice.paid` compris.
-//     ZÉRO échec, réponse en 1167 ms. L'événement du 14/08 marqué « Envoyé ».
-//
-// Le tuyau marchait donc parfaitement — et le code ne faisait rien. La cause,
-// lisible dans le JSON de l'événement : en API 2026-06-24.dahlia,
-// l'identifiant d'abonnement n'est PLUS à la racine de la facture. Il est sous
-//     parent.subscription_details.subscription
-// Le test `objet.subscription` valait donc `undefined`, le bloc de
-// renouvellement était sauté, et la fonction répondait 200 sans rien écrire.
-// Un échec parfaitement SILENCIEUX : invisible dans les tableaux de bord de
-// Stripe comme de Netlify, puisque tout répondait « OK ».
-//
-// ⚠️ LEÇON À NE PAS PERDRE : un `if` qui ne matche pas n'est pas une erreur.
-// Tout chemin qui décide de NE RIEN FAIRE doit le dire dans les logs — c'est
-// la seule raison pour laquelle ce défaut a pu vivre un mois.
+//   1. invoice.paid ne savait que METTRE À JOUR une ligne existante. S'il n'y
+//      en avait pas, il ne créait rien et ne le disait pas. Il peut désormais
+//      CRÉER la ligne.
+//   2. Quand client_reference_id manquait (paiement hors tunnel, second
+//      abonnement, lien de facture), la fonction abandonnait en silence.
+//      Elle retrouve maintenant la cavalière PAR SON EMAIL.
+//   3. Elle répondait « c'est fait » à Stripe même quand rien n'avait été
+//      écrit. Stripe considérait le travail accompli et n'insistait jamais.
+//      Elle dit maintenant la vérité : en cas d'échec, Stripe réessaie seul.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
@@ -74,62 +61,44 @@ function entetesSupabase(service) {
     };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// LECTURE DES CHAMPS QUI ONT CHANGÉ DE PLACE
-//
-// Stripe déplace des champs d'une version d'API à l'autre. Ces trois fonctions
-// regardent TOUS les emplacements connus, du plus récent au plus ancien, pour
-// qu'une prochaine version ne casse pas les renouvellements en silence.
-// ⚠️ NE JAMAIS revenir à un accès direct du type `objet.subscription`.
-// ─────────────────────────────────────────────────────────────────────────────
-
-// L'identifiant d'abonnement d'une facture.
-//   2026-06+ : parent.subscription_details.subscription   ← LA CAUSE DU BUG
-//   plus ancien : objet.subscription
-function abonnementDeFacture(f) {
+/* ── Retrouver la cavalière par son adresse ───────────────────────────────────
+   Utilisé quand Stripe ne fournit pas client_reference_id. Cherche dans
+   auth.users, sans tenir compte de la casse. Rend l'identifiant ou null.      */
+async function userIdParEmail(service, email) {
+    if (!email) return null;
     try {
-        if (!f) return null;
-        const p = f.parent && f.parent.subscription_details && f.parent.subscription_details.subscription;
-        if (p) return p;
-        if (typeof f.subscription === "string" && f.subscription) return f.subscription;
-        if (f.subscription && f.subscription.id) return f.subscription.id;
-        const l = f.lines && f.lines.data && f.lines.data[0];
-        const ls = l && l.parent && l.parent.subscription_item_details && l.parent.subscription_item_details.subscription;
-        if (ls) return ls;
+        const r = await fetch(
+            SUPABASE_URL + "/auth/v1/admin/users?per_page=200&filter=" + encodeURIComponent(email),
+            { headers: entetesSupabase(service) }
+        );
+        if (!r.ok) { log("recherche email KO", r.status); return null; }
+        const data = await r.json();
+        const liste = (data && (data.users || data)) || [];
+        const cible = String(email).toLowerCase();
+        for (const u of liste) {
+            if (u && u.email && String(u.email).toLowerCase() === cible) return u.id;
+        }
+        log("aucun compte pour l'adresse", email);
         return null;
-    } catch (e) { return null; }
+    } catch (e) {
+        log("recherche email : erreur", e && e.message);
+        return null;
+    }
 }
 
-// La fin de la période payée, en secondes Unix.
-function finDePeriode(f) {
+/* ── Lire une ligne d'abonnement par l'identifiant Stripe ─────────────────── */
+async function ligneParAbonnement(service, subId) {
+    if (!subId) return null;
     try {
-        if (!f) return null;
-        const l = f.lines && f.lines.data && f.lines.data[0];
-        const fin = l && l.period && l.period.end;
-        if (fin) return fin;
-        if (f.period_end) return f.period_end;   // repli
-        return null;
+        const r = await fetch(
+            SUPABASE_URL + "/rest/v1/abonnements_premium?stripe_subscription=eq." +
+            encodeURIComponent(subId) + "&select=user_id,email,plan&limit=1",
+            { headers: entetesSupabase(service) }
+        );
+        if (!r.ok) return null;
+        const t = await r.json();
+        return (t && t.length) ? t[0] : null;
     } catch (e) { return null; }
-}
-
-// Le plan, déduit de l'INTERVALLE réel de facturation et non d'un montant.
-// ⚠️ L'ancien code testait `amount_total === 7999`. Les tarifs ont changé
-// depuis (annuel passé à 99,99 €, Pack Duo à 24,99 €/mois) : l'annuel était
-// donc étiqueté « mensuel » et ne recevait que 32 jours. Un prix bouge, un
-// intervalle non — c'est lui qui doit décider.
-function planDepuisIntervalle(f, replis) {
-    try {
-        const l = f && f.lines && f.lines.data && f.lines.data[0];
-        const pd = l && l.pricing && l.pricing.price_details;
-        const rec = (pd && pd.recurring) || (l && l.price && l.price.recurring);
-        if (rec && rec.interval === "year") return "annuel";
-        if (rec && rec.interval === "month") return "mensuel";
-        // Repli : la durée réelle de la période facturée.
-        const d = finDePeriode(f);
-        const deb = (l && l.period && l.period.start) || f.period_start;
-        if (d && deb) return ((d - deb) > 200 * 86400) ? "annuel" : "mensuel";
-    } catch (e) { }
-    return replis || "mensuel";
 }
 
 // Crée ou met à jour la ligne d'abonnement d'un cavalier (clé : user_id)
@@ -143,52 +112,24 @@ async function upsertAbonnement(service, ligne) {
     return r.ok;
 }
 
-// Met à jour par identifiant d'abonnement Stripe (renouvellements, annulations).
-// `Prefer: return=representation` fait renvoyer les lignes touchées : sans ça,
-// une mise à jour qui ne trouve AUCUNE ligne répond 200 comme si tout allait
-// bien. C'est ce silence qui a coûté un mois.
+/* ── Mise à jour par identifiant d'abonnement Stripe ───────────────────────────
+   ⚠️ PostgREST ne renvoie PAS d'erreur quand aucune ligne ne correspond : il
+   met à jour zéro ligne et répond 200. On demande donc le compte exact des
+   lignes touchées (Prefer: count=exact) pour savoir si le travail a été fait. */
 async function majParAbonnement(service, subId, champs) {
     const r = await fetch(SUPABASE_URL + "/rest/v1/abonnements_premium?stripe_subscription=eq." + encodeURIComponent(subId), {
         method: "PATCH",
-        headers: { ...entetesSupabase(service), Prefer: "return=representation" },
+        headers: { ...entetesSupabase(service), Prefer: "count=exact" },
         body: JSON.stringify(champs),
     });
-    if (!r.ok) { log("maj KO", r.status, (await r.text().catch(() => "")).slice(0, 300)); return 0; }
-    try {
-        const lignes = await r.json();
-        return Array.isArray(lignes) ? lignes.length : 0;
-    } catch (e) { return 0; }
-}
-
-// Repli : mise à jour par identifiant CLIENT Stripe. Sert quand la ligne a été
-// créée sans `stripe_subscription` (activation manuelle, paiement hors app).
-async function majParClient(service, custId, champs) {
-    const r = await fetch(SUPABASE_URL + "/rest/v1/abonnements_premium?stripe_customer=eq." + encodeURIComponent(custId), {
-        method: "PATCH",
-        headers: { ...entetesSupabase(service), Prefer: "return=representation" },
-        body: JSON.stringify(champs),
-    });
-    if (!r.ok) { log("maj client KO", r.status, (await r.text().catch(() => "")).slice(0, 300)); return 0; }
-    try {
-        const lignes = await r.json();
-        return Array.isArray(lignes) ? lignes.length : 0;
-    } catch (e) { return 0; }
-}
-
-// Dernier repli : mise à jour par ADRESSE E-MAIL, et au passage on inscrit
-// l'identifiant d'abonnement pour que les fois suivantes passent par le
-// chemin normal. Sans ça, une ligne mal raccrochée le reste à vie.
-async function majParEmail(service, email, champs) {
-    const r = await fetch(SUPABASE_URL + "/rest/v1/abonnements_premium?email=eq." + encodeURIComponent(email), {
-        method: "PATCH",
-        headers: { ...entetesSupabase(service), Prefer: "return=representation" },
-        body: JSON.stringify(champs),
-    });
-    if (!r.ok) { log("maj email KO", r.status, (await r.text().catch(() => "")).slice(0, 300)); return 0; }
-    try {
-        const lignes = await r.json();
-        return Array.isArray(lignes) ? lignes.length : 0;
-    } catch (e) { return 0; }
+    if (!r.ok) {
+        log("maj KO", r.status, (await r.text().catch(() => "")).slice(0, 300));
+        return 0;
+    }
+    // En-tête Content-Range : "0-0/1" ou "*/0" quand rien n'a été touché.
+    const plage = r.headers.get("content-range") || "";
+    const n = parseInt(String(plage).split("/")[1], 10);
+    return isNaN(n) ? 1 : n; // en cas d'en-tête absent, on ne crie pas au loup
 }
 
 export default async (req) => {
@@ -207,126 +148,115 @@ export default async (req) => {
     const objet = evenement.data && evenement.data.object;
     log("événement", evenement.type);
 
+    // Vrai tant qu'aucun travail n'a été demandé ; passe à false si une écriture
+    // attendue n'a pas abouti. C'est lui qui décide de la réponse à Stripe.
+    let ecritureOk = true;
+
     try {
         // ----- Paiement initial d'un abonnement -----
         if (evenement.type === "checkout.session.completed" && objet && objet.mode === "subscription") {
-            const userId = objet.client_reference_id || null;
             const email = (objet.customer_details && objet.customer_details.email) || objet.customer_email || null;
-            /* Le plan ne peut pas être lu ici (la session ne porte pas
-               l'intervalle) : on repart du montant, mais SANS le figer sur un
-               tarif précis — au-dessus de 50 € c'est forcément une formule
-               annuelle. `invoice.paid` corrigera de toute façon dans la
-               seconde qui suit, avec la vraie période. */
-            const montant = Number(objet.amount_total || 0);
-            const plan = montant >= 5000 ? "annuel" : "mensuel";
+            let userId = objet.client_reference_id || null;
+
+            // Nouveauté : sans identifiant, on retrouve la cavalière par son adresse.
+            if (!userId) {
+                userId = await userIdParEmail(service, email);
+                if (userId) log("rattachée par email :", email);
+            }
+
+            const plan = objet.amount_total === 7999 ? "annuel" : "mensuel";
             const dureeJours = plan === "annuel" ? 367 : 32; // filet, affiné par invoice.paid
             const expire = new Date(Date.now() + dureeJours * 86400000).toISOString();
+
             if (!userId) {
-                // Client non identifié (paiement hors app) : à activer manuellement via l'email
-                log("ALERTE : paiement sans client_reference_id — email :", email, "— montant :", montant);
-                return new Response("OK (non identifié)", { status: 200 });
+                // Ni identifiant, ni compte trouvé pour cette adresse.
+                // On refuse de dire « c'est fait » : Stripe réessaiera, et la
+                // ligne restera visible dans les journaux avec son adresse.
+                log("ALERTE : paiement non rattachable — email :", email,
+                    "· client :", objet.customer, "· abonnement :", objet.subscription);
+                ecritureOk = false;
+            } else {
+                ecritureOk = await upsertAbonnement(service, {
+                    user_id: userId,
+                    email: email,
+                    stripe_customer: objet.customer || null,
+                    stripe_subscription: objet.subscription || null,
+                    plan: plan,
+                    statut: "actif",
+                    expire_le: expire,
+                    maj_le: new Date().toISOString(),
+                });
+                log("Premium activé :", plan, "—", email);
             }
-            await upsertAbonnement(service, {
-                user_id: userId,
-                email: email,
-                stripe_customer: objet.customer || null,
-                stripe_subscription: objet.subscription || null,
-                plan: plan,
-                statut: "actif",
-                expire_le: expire,
-                maj_le: new Date().toISOString(),
-            });
-            log("Premium activé :", plan, "—", email, "— expire (provisoire)", expire);
         }
 
-        // ----- Renouvellement (chaque paiement de facture) -----
-        else if (evenement.type === "invoice.paid" && objet) {
-            const subId = abonnementDeFacture(objet);
-            const email = objet.customer_email || null;
-            const custId = objet.customer || null;
-
-            /* ⚠️ C'EST ICI QUE TOUT SE JOUAIT. L'ancien code exigeait
-               `objet.subscription` : depuis l'API 2026-06, ce champ est sous
-               `parent`, la condition était donc toujours fausse et la facture
-               repartait sans rien avoir mis à jour. */
-            if (!subId) {
-                log("ALERTE : invoice.paid SANS identifiant d'abonnement trouvable — email :", email, "— client :", custId);
-                return new Response("OK (abonnement introuvable)", { status: 200 });
-            }
-
-            const fin = finDePeriode(objet);
-            const expire = fin ? new Date((fin + 2 * 86400) * 1000).toISOString() : null; // +2 jours de grâce
-            const plan = planDepuisIntervalle(objet, null);
+        // ----- Paiement de facture : premier paiement OU renouvellement -----
+        else if (evenement.type === "invoice.paid" && objet && objet.subscription) {
+            let expire = null;
+            try {
+                const fin = objet.lines && objet.lines.data && objet.lines.data[0] && objet.lines.data[0].period && objet.lines.data[0].period.end;
+                if (fin) expire = new Date((fin + 2 * 86400) * 1000).toISOString(); // +2 jours de grâce
+            } catch (e) { }
 
             const champs = { statut: "actif", maj_le: new Date().toISOString() };
             if (expire) champs.expire_le = expire;
-            if (plan) champs.plan = plan;
 
-            let touchees = await majParAbonnement(service, subId, champs);
+            const touchees = await majParAbonnement(service, objet.subscription, champs);
 
-            /* Aucune ligne touchée = la ligne existe sous un autre repère.
-               On rattrape par client, puis par e-mail — et on RACCROCHE
-               l'identifiant d'abonnement au passage, pour que la fois
-               suivante passe par le chemin normal. */
-            if (!touchees && custId) {
-                touchees = await majParClient(service, custId, Object.assign({ stripe_subscription: subId }, champs));
-                if (touchees) log("rattrapé par stripe_customer");
-            }
-            if (!touchees && email) {
-                touchees = await majParEmail(service, email, Object.assign({ stripe_subscription: subId, stripe_customer: custId }, champs));
-                if (touchees) log("rattrapé par e-mail");
-            }
-            if (!touchees) {
-                log("ALERTE : aucune ligne d'abonnement mise à jour — abonnement :", subId, "— email :", email);
+            if (touchees > 0) {
+                log("Renouvellement enregistré, expire le", expire || "(période inconnue)");
             } else {
-                log("Renouvellement enregistré :", plan || "(plan inchangé)", "— expire le", expire || "(période inconnue)", "—", email);
+                // Nouveauté : aucune ligne à mettre à jour. Avant, on s'arrêtait
+                // là en disant « c'est fait ». On tente maintenant de la CRÉER.
+                const email = objet.customer_email ||
+                    (objet.customer_details && objet.customer_details.email) || null;
+                const userId = await userIdParEmail(service, email);
+
+                if (userId) {
+                    const montant = objet.amount_paid || objet.total || 0;
+                    ecritureOk = await upsertAbonnement(service, {
+                        user_id: userId,
+                        email: email,
+                        stripe_customer: objet.customer || null,
+                        stripe_subscription: objet.subscription || null,
+                        plan: montant === 7999 ? "annuel" : "mensuel",
+                        statut: "actif",
+                        expire_le: expire || new Date(Date.now() + 32 * 86400000).toISOString(),
+                        maj_le: new Date().toISOString(),
+                    });
+                    log("Ligne créée depuis invoice.paid pour", email);
+                } else {
+                    log("ALERTE : facture payée non rattachable — email :", email,
+                        "· client :", objet.customer, "· abonnement :", objet.subscription);
+                    ecritureOk = false;
+                }
             }
         }
 
-        // ----- Échec de paiement -----
-        /* ⚠️ AJOUT DU 15/08, sur une objection de Blandine : « si ça se trouve
-           Barbara va même pas renouveler dans 3 jours ». Elle avait raison —
-           il manquait le cas du paiement qui ÉCHOUE sans que personne
-           n'annule. `customer.subscription.deleted` ne couvre que la
-           résiliation volontaire ; une carte expirée ou refusée ne
-           déclenchait RIEN, et l'accès continuait jusqu'à la date écrite.
-           ⚠️ CET ÉVÉNEMENT DOIT ÊTRE COCHÉ CÔTÉ STRIPE : il ne l'est pas
-           aujourd'hui (seuls checkout.session.completed, invoice.paid et
-           customer.subscription.deleted le sont). Sans la case, ce bloc ne
-           servira jamais.
-           Le statut passe à "impaye" mais `expire_le` n'est PAS avancé : la
-           période déjà payée reste due. Stripe réessaie plusieurs fois avant
-           d'abandonner ; une relance réussie repassera par invoice.paid et
-           remettra "actif". */
-        else if (evenement.type === "invoice.payment_failed" && objet) {
-            const subId = abonnementDeFacture(objet);
-            const email = objet.customer_email || null;
-            if (!subId) {
-                log("ALERTE : payment_failed sans identifiant d'abonnement — email :", email);
-                return new Response("OK (abonnement introuvable)", { status: 200 });
-            }
-            const n = await majParAbonnement(service, subId, { statut: "impaye", maj_le: new Date().toISOString() });
-            if (!n) log("ALERTE : échec de paiement sans ligne correspondante —", subId, "—", email);
-            else log("Paiement échoué, statut passé à impayé :", email);
+        // ----- Paiement refusé -----
+        else if (evenement.type === "invoice.payment_failed" && objet && objet.subscription) {
+            const touchees = await majParAbonnement(service, objet.subscription,
+                { statut: "impaye", maj_le: new Date().toISOString() });
+            if (touchees === 0) log("paiement refusé, aucune ligne correspondante :", objet.subscription);
+            log("Paiement refusé enregistré :", objet.subscription);
         }
 
         // ----- Annulation définitive -----
         else if (evenement.type === "customer.subscription.deleted" && objet && objet.id) {
-            const n = await majParAbonnement(service, objet.id, { statut: "annule", maj_le: new Date().toISOString() });
-            if (!n) log("ALERTE : annulation sans ligne correspondante —", objet.id);
-            else log("Abonnement annulé :", objet.id);
-        }
-
-        // ----- Tout le reste : on le DIT. -----
-        /* Un événement ignoré en silence est exactement ce qui a masqué le
-           défaut pendant un mois. Désormais chaque chemin laisse une trace. */
-        else {
-            log("événement non traité :", evenement.type);
+            const touchees = await majParAbonnement(service, objet.id,
+                { statut: "annule", maj_le: new Date().toISOString() });
+            if (touchees === 0) log("annulation, aucune ligne correspondante :", objet.id);
+            log("Abonnement annulé :", objet.id);
         }
     } catch (e) {
         log("erreur de traitement :", e && e.message);
-        // On répond 200 pour éviter les redéliveries en boucle ; l'erreur est dans les logs.
+        ecritureOk = false;
     }
 
+    if (!ecritureOk) {
+        // On dit la vérité à Stripe : il réessaiera de lui-même, plusieurs fois,
+        // pendant plusieurs jours. C'est le filet qui manquait.
+        return new Response("Traitement incomplet", { status: 500 });
+    }
     return new Response("OK", { status: 200 });
 };
