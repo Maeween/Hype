@@ -27,9 +27,10 @@
 '.hr-zone{--hr-acc:32,217,245;--hr-met:232,200,135;--hr-tx:244,247,250;',
 '  --hr-sf:255,255,255;--hr-c1:#0c1116;--hr-c2:#080b0e;',
 '  --hr-mg:linear-gradient(150deg,#F0DDB0 0%,#E8C887 46%,#C9A468 100%);',
-'  font-family:Montserrat,-apple-system,system-ui,sans-serif;padding:0 0 8px}',
+'  font-family:Montserrat,-apple-system,system-ui,sans-serif;padding:18px 0 8px;',
+'  margin-top:14px;border-top:1px solid rgba(var(--hr-tx),.07)}',
 '.hr-zone *{box-sizing:border-box}',
-'.hr-rien{padding:26px 16px;text-align:center;font-size:12.5px;color:rgba(var(--hr-tx),.42)}',
+'.hr-rien{padding:10px 16px 18px;text-align:center;font-size:12.5px;color:rgba(var(--hr-tx),.42)}',
 
 '.hr-totaux{display:flex;gap:7px;padding:4px 16px 0}',
 '.hr-tot{flex:1;text-align:center;padding:13px 3px;border-radius:13px;',
@@ -198,13 +199,12 @@
 '  color:rgba(var(--hr-tx),.4);line-height:1.6}',
 '.hr-vierge b{color:rgba(var(--hr-acc),.9);font-weight:600}',
 
-'.hr-bt{display:block;width:calc(100% - 32px);margin:14px 16px 0;padding:14px;border-radius:13px;',
-'  font-family:Montserrat,sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;',
-'  cursor:pointer;-webkit-tap-highlight-color:transparent;color:#E4F3F7;',
-'  background:linear-gradient(100deg,rgba(16,21,24,.86) 40%,rgba(32,217,245,.20) 100%);',
-'  border:1px solid rgba(32,217,245,.32);',
-'  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 6px 22px rgba(0,0,0,.42);',
-'  -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px)}'
+'.hr-bt{display:block;width:calc(100% - 32px);margin:16px 16px 0;padding:16px;border-radius:14px;',
+'  font-family:Montserrat,sans-serif;font-size:13px;font-weight:600;letter-spacing:.03em;',
+'  cursor:pointer;-webkit-tap-highlight-color:transparent;',
+'  color:rgba(var(--hr-met),.95);background:rgba(var(--hr-met),.045);',
+'  border:1.5px dashed rgba(var(--hr-met),.32)}',
+'.hr-bt:active{background:rgba(var(--hr-met),.09)}'
   ].join("");
 
   function poserStyle() {
@@ -746,8 +746,7 @@ function blocListe(gr, fermees, ouverts, filtre, tri) {
 
     if (!toutes.length) {
       hote.innerHTML = '<div class="hr-rien">Aucun résultat pour l\'instant.</div>' +
-        (options.proprietaire ? '<button class="hr-bt" data-hr="import">⤓ Importer mes résultats</button>' +
-          '<button class="hr-bt" data-hr="ajout">+ Ajouter un résultat</button>' : "");
+        (options.proprietaire ? '<button class="hr-bt" data-hr="import">⤓ Importer mes résultats</button>' : "");
       brancher(hote, options);
       return;
     }
@@ -759,9 +758,10 @@ function blocListe(gr, fermees, ouverts, filtre, tri) {
     h += blocRail(gm, ETAT.choisi);
     h += blocCavaliers(toutes, ETAT.filtre);
     h += blocListe(gr, ETAT.fermees, ETAT.ouverts, ETAT.filtre, ETAT.tri);
+    /* Un seul bouton : « Ajouter » existe deja dans l index, juste dessous.
+       En poser un second faisait doublon a l ecran (vu le 22/08).       */
     if (options.proprietaire) {
       h += '<button class="hr-bt" data-hr="import">⤓ Importer mes résultats</button>';
-      h += '<button class="hr-bt" data-hr="ajout">+ Ajouter un résultat</button>';
     }
     hote.innerHTML = h;
     brancher(hote, options);
