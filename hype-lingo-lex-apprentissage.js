@@ -212,7 +212,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           it:"Ripetere la stessa richiesta nello stesso modo. Insegna la costanza, non la fermezza.",
           de:"Dieselbe Frage auf dieselbe Weise stellen. Beständigkeit lehrt, nicht Härte.",
           ja:"同じ要求を同じやり方で繰り返すこと。教えるのは厳しさではなく一貫性。",
-          ar:"إعادة الطلب نفسه بالطريقة نفسها. الاتساق هو ما يساعد على التعلم، لا الشدة." } },
+          ar:"إعادة الطلب نفسه بالطريقة نفسها. الاتساق هو ما يساعد على التعلم، لا الحزم المفرط." } },
 
   { ref:"pause", lecon:1, coll:"science",
     mots:{ fr:{m:"la pause"}, en:{m:"the break", p:"brék"},
@@ -324,7 +324,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
           it:"Uno stato in cui il cavallo resta abbastanza disponibile per percepire i segnali e rispondere senza scivolare in una forte reazione di fuga, lotta o blocco.",
           de:"Ein Zustand, in dem das Pferd aufnahmefähig genug bleibt, um Signale wahrzunehmen und zu antworten, ohne in eine starke Flucht-, Kampf- oder Erstarrungsreaktion zu kippen.",
           ja:"合図を受け取り、強い逃走・闘争・フリーズ反応に陥ることなく答えられるだけの余裕が、馬に残っている状態。",
-          ar:"حالة يبقى فيها الحصان قادرا بما يكفي على تلقي الإشارات والاستجابة، دون أن ينزلق إلى رد فعل قوي من هروب أو مقاومة أو تجمد." } },
+          ar:"حالة يبقى فيها الحصان قادرا على تلقي الإشارات والاستجابة لها، من دون أن يدخل في رد فعل قوي من الهروب أو المقاومة أو التجمد." } },
 
   { ref:"progresser", lecon:1, coll:"science", v:true,
     mots:{ fr:{m:"progresser"}, en:{m:"to progress", p:"tou pro-gresse"},
@@ -370,7 +370,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Non vuole salire nel van.",
       de:"Er will nicht in den Hänger.",
       ja:"馬運車に乗ってくれません。",
-      ar:"لا يريد أن يصعد إلى المقطورة." },
+      ar:"لا يريد أن يدخل المقطورة." },
 
     { ref:"d-clo-peut-etre", temps:1, dit:"club", mots:["confusion"],
       fr:"Il ne cherche peut-être pas à refuser. Son comportement indique surtout qu'il est inquiet.",
@@ -408,7 +408,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Sopra la sua soglia, diventa molto meno disponibile a capire la tua richiesta.",
       de:"Über seiner Schwelle ist er viel weniger aufnahmefähig für deine Frage.",
       ja:"閾値を超えると、あなたの求めを理解する余裕がぐっと少なくなります。",
-      ar:"فوق عتبته، يصبح أقل قدرة بكثير على فهم ما تطلبينه." },
+      ar:"عندما يتجاوز عتبة استجابته، يصبح أقل قدرة بكثير على فهم ما تطلبينه." },
 
     { ref:"d-clo-punir", temps:2, dit:"joueuse", mots:["punition"],
       fr:"Est-ce qu'il faut le punir pour qu'il avance ?",
@@ -458,7 +458,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       ar:"نعم، لكن واصلي مراقبة سلوكه كله قبل أن تقتربي." },
 
     { ref:"d-clo-un-pas", temps:3, dit:"club", mots:["desensibilisation","seuil"],
-      fr:"Approche d'un pas, à une intensité qu'il peut tolérer, puis arrête-toi.",
+      fr:"Approche d'un pas, jusqu'à une distance qu'il peut tolérer, puis arrête-toi.",
       en:"Come one step closer, at an intensity he can tolerate, then stop.",
       es:"Acércate un paso, a una intensidad que pueda tolerar, y detente.",
       it:"Avvicinati di un passo, a un'intensità che può tollerare, poi fermati.",
@@ -484,7 +484,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Poche ripetizioni di qualità. Fermati prima che si stanchi o si confonda.",
       de:"Wenige gute Wiederholungen. Hör auf, bevor er müde oder verwirrt wird.",
       ja:"質のよいくり返しを少しだけ。疲れたり混乱したりする前にやめましょう。",
-      ar:"كرري المحاولة مرات قليلة وبجودة. وتوقفي قبل أن يتعب أو يختلط عليه الأمر." },
+      ar:"كرري المحاولة مرات قليلة، على أن يكون كل تكرار متقنا. وتوقفي قبل أن يتعب أو يختلط عليه الأمر." },
 
     { ref:"d-clo-ordinaire", temps:4, dit:"club", mots:["habituation"],
       fr:"À force de revoir la rampe sans que rien n'arrive, elle deviendra ordinaire.",
@@ -493,7 +493,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"A forza di rivedere la pedana senza che accada nulla, diventerà una cosa normale.",
       de:"Wenn er die Rampe immer wieder sieht und nichts passiert, wird sie gewöhnlich.",
       ja:"何も起こらないままスロープを見つづけるうちに、それは当たり前のものになります。",
-      ar:"بتكرار رؤية منحدر المقطورة دون أن يحدث شيء، سيصير أمرا عاديا." },
+      ar:"مع تكرار رؤية منحدر المقطورة من دون أن يحدث شيء، سيصبح منظره أمرا عاديا بالنسبة إليه." },
 
     { ref:"d-clo-un-pied", temps:4, dit:"joueuse", mots:["signal"],
       fr:"Il a avancé un pied dès que j'ai fermé mes doigts sur la longe.",
@@ -502,7 +502,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Ha portato avanti un piede appena ho chiuso le dita sulla longhina.",
       de:"Er hat einen Huf vorgesetzt, sobald ich die Finger am Strick geschlossen habe.",
       ja:"リードに指をかけたとたん、前脚を一歩出しました。",
-      ar:"قدم إحدى قوائمه إلى الأمام بمجرد أن أغلقت أصابعي على حبل القيادة." },
+      ar:"قدم إحدى قوائمه إلى الأمام بمجرد أن ضممت أصابعي حول حبل القيادة." },
 
     /* ---- temps 5 · relâcher et laisser le temps ---- */
 
@@ -551,7 +551,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
       it:"Gli altri cavalli lo guardano dal paddock.",
       de:"Die anderen Pferde schauen ihm von der Koppel aus zu.",
       ja:"ほかの馬たちが放牧地から見ています。",
-      ar:"الخيول الأخرى تنظر إليه من الحظيرة الخارجية." },
+      ar:"الخيول الأخرى تنظر إليه من المرعى المسيج." },
 
     { ref:"d-clo-presence", temps:6, dit:"club", mots:["troupeau"],
       fr:"Leur présence peut le rassurer, à condition qu'elle n'augmente pas son agitation.",

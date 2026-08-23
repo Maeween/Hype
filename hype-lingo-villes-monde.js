@@ -356,32 +356,37 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       de:["Es war das erste Mal, dass ich in einer fremden Sprache nach einem Pferd fragte.",
           "Ich machte fast alles falsch, man verstand mich trotzdem, und man gab mir einen sehr braven Fuchs. Wir gingen im Schritt zum Strand hinunter, und zwanzig Minuten lang sagte ich kein Wort."],
       ja:["自分の言葉ではない言語で馬を頼んだのは、あれが初めてだった。",
-          "ほとんど言い間違えたけれど、それでも通じて、とてもおとなしい栗毛を出してくれた。常歩で浜へ下りていくあいだ、私は二十分間ひとことも話さなかった。"]},
+          "ほとんど言い間違えたけれど、それでも通じて、とてもおとなしい栗毛を出してくれた。常歩で浜へ下りていくあいだ、私は二十分間ひとことも話さなかった。"],
+      /* 🟡 arabe dormant (23/08) — aucun écran ne le lit. */
+      ar:["كانت تلك أول مرة أطلب فيها حصانا بلغة ليست لغتي.", "أخطأت في كل شيء تقريبا، لكنهم فهموني على أي حال، وأعطوني حصانا كستنائي اللون هادئا جدا. نزلنا نحو الشاطئ على مشية الخطو، ولم أنطق بكلمة طوال عشرين دقيقة."]},
     volets:[
       {t:{fr:"Le Jumping", en:"The Jumping", es:"El Jumping", it:"Il Jumping",
-          de:"Das Jumping", ja:"ジャンピング"},
+          de:"Das Jumping", ja:"ジャンピング", ar:"مسابقة القفز"},
        c:{fr:"Chaque printemps, les carrières s'installent face à l'océan et les meilleurs cavaliers du monde y sautent à cent mètres de la plage. C'est l'un des plus anciens concours internationaux d'Europe, et le sable de la piste vient de la mer.",
           en:"Every spring the arenas go up facing the ocean, and the best riders in the world jump a hundred metres from the beach. It is one of Europe's oldest international shows, and the sand in the ring comes from the sea.",
           es:"Cada primavera las pistas se montan frente al océano y los mejores jinetes del mundo saltan a cien metros de la playa. Es uno de los concursos internacionales más antiguos de Europa, y la arena de la pista viene del mar.",
           it:"Ogni primavera i campi si allestiscono di fronte all'oceano e i migliori cavalieri del mondo saltano a cento metri dalla spiaggia. È uno dei più antichi concorsi internazionali d'Europa, e la sabbia del campo viene dal mare.",
           de:"Jedes Frühjahr entstehen die Plätze mit Blick auf den Ozean, und die besten Reiter der Welt springen hundert Meter vom Strand entfernt. Es ist eines der ältesten internationalen Turniere Europas — und der Sand im Parcours kommt aus dem Meer.",
-          ja:"春になると、大西洋に面して馬場が設けられ、世界最高の騎手たちが浜から百メートルの場所で障害を跳びます。ヨーロッパでもっとも古い国際大会のひとつで、走行路の砂は海から来たものです。"}},
+          ja:"春になると、大西洋に面して馬場が設けられ、世界最高の騎手たちが浜から百メートルの場所で障害を跳びます。ヨーロッパでもっとも古い国際大会のひとつで、走行路の砂は海から来たものです。",
+          ar:"في كل ربيع تنصب الميادين في مواجهة المحيط، ويقفز فيها أفضل فرسان العالم على بعد مئة متر من الشاطئ. وهي من أقدم المسابقات الدولية في أوروبا، ورمل الميدان نفسه يأتي من البحر."}},
       {t:{fr:"La plage", en:"The beach", es:"La playa", it:"La spiaggia",
-          de:"Der Strand", ja:"浜辺"},
+          de:"Der Strand", ja:"浜辺", ar:"الشاطئ"},
        c:{fr:"Neuf kilomètres de sable, et le droit d'y monter hors saison, tôt le matin. L'eau salée est réputée bonne pour les tendons — on y descend les chevaux au pas dans les vagues, sans les faire nager.",
           en:"Nine kilometres of sand, and the right to ride there out of season, early in the morning. Salt water is held to be good for tendons: horses are walked into the waves, not made to swim.",
           es:"Nueve kilómetros de arena, y el derecho a montar allí fuera de temporada, temprano por la mañana. El agua salada se considera buena para los tendones: se entra a los caballos al paso en las olas, sin hacerlos nadar.",
           it:"Nove chilometri di sabbia, e il diritto di montarvi fuori stagione, presto al mattino. L'acqua salata è ritenuta buona per i tendini: si fanno entrare i cavalli al passo tra le onde, senza farli nuotare.",
           de:"Neun Kilometer Sand — und außerhalb der Saison darf man dort frühmorgens reiten. Salzwasser gilt als gut für die Sehnen: man führt die Pferde im Schritt in die Wellen, ohne sie schwimmen zu lassen.",
-          ja:"九キロの砂浜。シーズン外の早朝には、そこで乗ることが許されています。塩水は腱に良いとされ、馬は常歩で波に入れられます — 泳がせるのではなく。"}},
+          ja:"九キロの砂浜。シーズン外の早朝には、そこで乗ることが許されています。塩水は腱に良いとされ、馬は常歩で波に入れられます — 泳がせるのではなく。",
+          ar:"تسعة كيلومترات من الرمال، ويسمح بالركوب عليها خارج الموسم في الصباح الباكر. ويقال إن ماء البحر المالح مفيد للأوتار، فينزل بالخيول إلى الأمواج على مشية الخطو، من دون أن تسبح."}},
       {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi",
-          de:"Wenn du hinführest", ja:"もし行くなら"},
+          de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
        c:{fr:"Réserve la veille et dis ton niveau franchement : personne ne juge un débutant, tout le monde juge un débutant qui s'est présenté comme cavalier. Demande si la bombe est fournie, elle l'est presque toujours.",
           en:"Book the day before and be honest about your level: nobody judges a beginner, everybody judges a beginner who claimed to be a rider. Ask whether a hat is provided — it almost always is.",
           es:"Reserva el día antes y di tu nivel con franqueza: nadie juzga a un principiante, todos juzgan a un principiante que se presentó como jinete. Pregunta si el casco está incluido, casi siempre lo está.",
           it:"Prenota il giorno prima e di' il tuo livello con franchezza: nessuno giudica un principiante, tutti giudicano un principiante che si è presentato come cavaliere. Chiedi se il cap è fornito: quasi sempre lo è.",
           de:"Buche am Vortag und sag dein Können ehrlich: niemand verurteilt einen Anfänger, alle verurteilen einen Anfänger, der sich als Reiter ausgegeben hat. Frag, ob eine Kappe gestellt wird — fast immer ja.",
-          ja:"前日に予約し、自分の技量を正直に伝えること。初心者を悪く言う人はいませんが、経験者だと言った初心者は別です。ヘルメットの貸し出しがあるか尋ねてください。ほとんどの場合あります。"}}
+          ja:"前日に予約し、自分の技量を正直に伝えること。初心者を悪く言う人はいませんが、経験者だと言った初心者は別です。ヘルメットの貸し出しがあるか尋ねてください。ほとんどの場合あります。",
+          ar:"احجزي قبل يوم واذكري مستواك بصراحة: لا أحد يلوم مبتدئة، لكن الجميع يلوم من قدمت نفسها كفارسة متمرسة. واسألي إن كانت الخوذة متوفرة، فهي متوفرة في معظم الأحوال."}}
     ]
   };
 
@@ -844,32 +849,37 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       es:["Veinte bajo cero esta mañana, y todo el mundo estaba fuera.","El vaho subía de los boxes en columnas rectas, las Rocosas cerraban el horizonte, y la primera pregunta que me hicieron no fue « ¿montas? » sino « ¿el tuyo ha bebido? »."],
       it:["Meno venti stamattina, e tutti erano fuori.","Il vapore saliva dai box in colonne dritte, le Montagne Rocciose chiudevano l'orizzonte, e la prima domanda che mi hanno fatto non è stata « monti? » ma « il tuo ha bevuto? »."],
       de:["Minus zwanzig heute Morgen, und alle waren draußen.","Der Dampf stieg in geraden Säulen aus den Boxen, die Rockys schlossen den Horizont, und die erste Frage, die man mir stellte, war nicht « reitest du? », sondern « hat deiner getrunken? »."],
-      ja:["今朝は氷点下二十度。それでも、みんな外にいた。","馬房から湯気がまっすぐな柱になって立ちのぼり、地平線はロッキー山脈が閉じていた。最初に聞かれたのは「乗るの？」ではなく「きみの馬、水は飲んだ？」だった。"]},
+      ja:["今朝は氷点下二十度。それでも、みんな外にいた。","馬房から湯気がまっすぐな柱になって立ちのぼり、地平線はロッキー山脈が閉じていた。最初に聞かれたのは「乗るの？」ではなく「きみの馬、水は飲んだ？」だった。"],
+      /* 🟡 arabe dormant (23/08) — aucun écran ne le lit. */
+      ar:["عشرون تحت الصفر هذا الصباح، والجميع كان في الخارج.", "كان البخار يتصاعد من الحجرات في أعمدة مستقيمة، وجبال الروكي تسد الأفق، وأول سؤال طرح علي لم يكن «هل تركبين؟» بل «هل شرب حصانك؟»."]},
     volets:[
-     {t:{fr:"Spruce Meadows", en:"Spruce Meadows", es:"Spruce Meadows", it:"Spruce Meadows", de:"Spruce Meadows", ja:"スプルース・メドウズ"},
+     {t:{fr:"Spruce Meadows", en:"Spruce Meadows", es:"Spruce Meadows", it:"Spruce Meadows", de:"Spruce Meadows", ja:"スプルース・メドウズ", ar:"سبروس ميدوز"},
       c:{
           fr:"Aux portes de Calgary, l'un des grands rendez-vous du saut d'obstacles mondial. Créé par une famille dans les années 1970, le site accueille chaque été des tournois où viennent les meilleurs cavaliers du monde — et son grand prix compte parmi les plus dotés du sport.",
           en:"On the edge of Calgary, one of the world's great show jumping venues. Built by one family in the 1970s, it hosts tournaments every summer that draw the best riders in the world — and its grand prix ranks among the richest in the sport.",
           es:"A las puertas de Calgary, una de las grandes citas del salto de obstáculos mundial. Creado por una familia en los años setenta, el recinto acoge cada verano torneos a los que acuden los mejores jinetes del mundo — y su gran premio figura entre los mejor dotados del deporte.",
           it:"Alle porte di Calgary, uno dei grandi appuntamenti del salto ostacoli mondiale. Creato da una famiglia negli anni Settanta, il sito ospita ogni estate tornei che richiamano i migliori cavalieri del mondo — e il suo gran premio è tra i più ricchi dello sport.",
           de:"Vor den Toren Calgarys liegt einer der großen Treffpunkte des Weltspringsports. In den 1970er-Jahren von einer Familie aufgebaut, empfängt die Anlage jeden Sommer Turniere mit den besten Reitern der Welt — und ihr Großer Preis gehört zu den höchstdotierten des Sports.",
-          ja:"カルガリー郊外にある、世界の障害馬術の大舞台のひとつ。一九七〇年代にひとつの家族が築き、毎年夏には世界のトップ騎手が集まる大会が開かれます。そのグランプリは、この競技で最も賞金の高い大会のひとつに数えられます。"}},
-     {t:{fr:"Le chinook", en:"The chinook", es:"El chinook", it:"Il chinook", de:"Der Chinook", ja:"チヌーク"},
+          ja:"カルガリー郊外にある、世界の障害馬術の大舞台のひとつ。一九七〇年代にひとつの家族が築き、毎年夏には世界のトップ騎手が集まる大会が開かれます。そのグランプリは、この競技で最も賞金の高い大会のひとつに数えられます。",
+          ar:"على أبواب كالغاري، أحد أكبر مواعيد القفز في العالم. أنشأته عائلة في سبعينيات القرن الماضي، ويستضيف كل صيف بطولات يأتي إليها أفضل فرسان العالم، وجائزته الكبرى من بين الأعلى قيمة في هذه الرياضة."}},
+     {t:{fr:"Le chinook", en:"The chinook", es:"El chinook", it:"Il chinook", de:"Der Chinook", ja:"チヌーク", ar:"رياح الشينوك"},
       c:{
           fr:"L'Alberta connaît un vent qui n'existe presque nulle part ailleurs : le chinook, un vent chaud qui descend des Rocheuses et peut faire remonter la température de vingt degrés en quelques heures. Les chevaux le sentent avant les thermomètres — et avant nous.",
           en:"Alberta has a wind that exists almost nowhere else: the chinook, a warm wind that rolls down from the Rockies and can lift the temperature by twenty degrees in a few hours. The horses feel it before the thermometers do — and before we do.",
           es:"Alberta conoce un viento que casi no existe en ningún otro lugar: el chinook, un viento cálido que baja de las Rocosas y puede subir la temperatura veinte grados en unas horas. Los caballos lo sienten antes que los termómetros — y antes que nosotros.",
           it:"L'Alberta conosce un vento che quasi non esiste altrove: il chinook, un vento caldo che scende dalle Montagne Rocciose e può far risalire la temperatura di venti gradi in poche ore. I cavalli lo sentono prima dei termometri — e prima di noi.",
           de:"Alberta kennt einen Wind, den es fast nirgendwo sonst gibt: den Chinook, einen warmen Wind, der von den Rockys herabfällt und die Temperatur in wenigen Stunden um zwanzig Grad steigen lassen kann. Die Pferde spüren ihn vor den Thermometern — und vor uns.",
-          ja:"アルバータには、ほかではめったに出会えない風があります。チヌーク — ロッキー山脈から吹き下ろす暖かい風で、数時間で気温を二十度も上げることがあります。馬たちは温度計より先に、そして私たちより先に、それを感じ取ります。"}},
-     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+          ja:"アルバータには、ほかではめったに出会えない風があります。チヌーク — ロッキー山脈から吹き下ろす暖かい風で、数時間で気温を二十度も上げることがあります。馬たちは温度計より先に、そして私たちより先に、それを感じ取ります。",
+          ar:"تعرف ألبرتا رياحا لا وجود لها في أماكن كثيرة: الشينوك، رياح دافئة تهبط من جبال الروكي وقد ترفع درجة الحرارة عشرين درجة في ساعات. والخيول تشعر بها قبل موازين الحرارة، وقبلنا نحن."}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
       c:{
           fr:"Viens en été pour le grand tournoi, sous le soleil et devant les tribunes pleines. Mais si tu veux comprendre ce chapitre, reviens un matin d'hiver : l'écurie à moins vingt, l'eau qu'on casse, la buée — c'est là que le pays se raconte vraiment.",
           en:"Come in summer for the great tournament, in the sun, in front of full stands. But if you want to understand this chapter, come back on a winter morning: the yard at minus twenty, the water you break, the steam — that is where this country really tells its story.",
           es:"Ven en verano para el gran torneo, bajo el sol y ante las gradas llenas. Pero si quieres entender este capítulo, vuelve una mañana de invierno: la cuadra a veinte bajo cero, el agua que se rompe, el vaho — ahí es donde este país se cuenta de verdad.",
           it:"Vieni d'estate per il grande torneo, sotto il sole e davanti alle tribune piene. Ma se vuoi capire questo capitolo, torna una mattina d'inverno: la scuderia a meno venti, l'acqua da rompere, il vapore — è lì che questo paese si racconta davvero.",
           de:"Komm im Sommer zum großen Turnier, in der Sonne, vor vollen Tribünen. Aber wenn du dieses Kapitel verstehen willst, komm an einem Wintermorgen wieder: der Stall bei minus zwanzig, das Wasser, das man aufbricht, der Dampf — dort erzählt sich dieses Land wirklich.",
-          ja:"夏に来れば、太陽の下、満員のスタンドの前で大きな大会が見られます。でもこの章を理解したいなら、冬の朝にもう一度来てください。氷点下二十度の厩舎、割って開ける水、立ちのぼる湯気 — この国の本当の物語は、そこにあります。"}}
+          ja:"夏に来れば、太陽の下、満員のスタンドの前で大きな大会が見られます。でもこの章を理解したいなら、冬の朝にもう一度来てください。氷点下二十度の厩舎、割って開ける水、立ちのぼる湯気 — この国の本当の物語は、そこにあります。",
+          ar:"تعالي في الصيف من أجل البطولة الكبرى، تحت الشمس وأمام مدرجات ممتلئة. لكن إن أردت أن تفهمي هذا الفصل، فعودي في صباح شتوي: الإسطبل عند عشرين تحت الصفر، والجليد الذي يكسر، والبخار — هناك يروي البلد نفسه حقا."}}
     ]
   };
 
@@ -1198,6 +1208,67 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"Chiedi la forgia invece dei maneggi, e resta per una ferratura a caldo: il fumo che sale dal ferro posato un secondo sulla corna disegna esattamente i punti di contatto. Cinque secoli di sapere stanno in quella nuvola — e saprai finalmente perché si dice « pareggiare » un piede, come si allestisce una nave.",
           de:"Bitte um die Schmiede statt der Reithallen, und bleib für ein Heißbeschlagen: Der Rauch, der vom eine Sekunde auf das Horn gesetzten Eisen aufsteigt, zeichnet genau die Kontaktpunkte. Fünf Jahrhunderte Wissen stecken in dieser Wolke — und du weißt endlich, warum man einen Huf « ausrichtet », wie man ein Schiff ausrichtet.",
           ja:"馬場ではなく鍛冶場を頼んで、熱間装蹄まで見ていってください。蹄の角質に一秒だけ当てた蹄鉄から立ちのぼる煙が、接点を正確に描き出します。五世紀分の知恵がその煙の中にあります — そして「蹄を整える」という言葉の意味が、船を整えるのと同じ意味だと、ようやくわかるはずです。"}}
+    ]
+  };
+
+  /* ============ CLONBINANE · l'apprentissage ============
+     Ajoutée le 23/08/2026. La ville existait depuis le 21/08 dans ETAPES
+     et dans hype-lingo-lex-apprentissage.js, mais pas ici : son ecran
+     d'arrivee n'avait ni lettre ni volets. Textes valides par Blandine.
+     ⚠️ La lettre est au MASCULIN comme les 37 autres — le narrateur est
+     le meme dans tout le voyage. Le premier jet etait au feminin.
+     ⚠️ Volet 2 : le fait est VERIFIE — 1er International Equitation
+     Science Symposium, 26-27 aout 2005, Australian Equine Behaviour
+     Centre pres de Melbourne, 90 delegues de 7 pays. */
+  MONDE.clonbinane = {
+    lieu:"Victoria · Australie", carte:true, niveau:1,
+    image:"la chaise au bord du rond de longe, avant le jour",
+    lettre:{
+      fr:["Je suis arrivé avec une heure d'avance, et je ne l'ai pas regretté.",
+          "On m'a montré une chaise au bord du rond de longe et on m'a demandé d'observer. Pendant quarante minutes, j'ai regardé une jument répondre à des signaux presque invisibles — et c'est là que j'ai compris ce que j'étais venu apprendre."],
+      en:["I turned up an hour early, and I did not regret it.",
+          "They showed me a chair beside the round pen and asked me to watch. For forty minutes I watched a mare answer signals I could barely see — and that is when I understood what I had come to learn."],
+      es:["Llegué con una hora de antelación, y no me arrepentí.",
+          "Me señalaron una silla junto al picadero redondo y me pidieron que observara. Durante cuarenta minutos vi a una yegua responder a señales casi invisibles, y ahí entendí lo que había venido a aprender."],
+      it:["Sono arrivato con un'ora di anticipo, e non me ne sono pentito.",
+          "Mi hanno indicato una sedia accanto al tondino e mi hanno chiesto di osservare. Per quaranta minuti ho guardato una cavalla rispondere a segnali quasi invisibili, ed è lì che ho capito cosa ero venuto a imparare."],
+      de:["Ich kam eine Stunde zu früh, und ich habe es nicht bereut.",
+          "Man zeigte mir einen Stuhl am Rand des Round Pen und bat mich zuzusehen. Vierzig Minuten lang sah ich einer Stute zu, die auf kaum sichtbare Signale antwortete — und da verstand ich, wozu ich gekommen war."],
+      ja:["一時間早く着いたが、後悔はしなかった。",
+          "丸馬場のそばの椅子を示され、見ているように言われた。四十分のあいだ、ほとんど目に見えない合図に応える牝馬を見ていた。そのとき、自分が何を学びに来たのかが分かった。"],
+      /* 🟡 arabe dormant (23/08) — aucun ecran ne le lit. */
+      ar:["وصلت قبل الموعد بساعة، ولم أندم على ذلك.",
+          "أشاروا إلى كرسي بجانب حلبة التدريب الدائرية وطلبوا مني أن أراقب. وطوال أربعين دقيقة، رأيت فرسا تستجيب لإشارات تكاد لا ترى — وعندها فهمت ما جئت لأتعلمه."]},
+    volets:[
+      {t:{fr:"Le bush", en:"The bush", es:"El bush", it:"Il bush",
+          de:"Der Busch", ja:"ブッシュ", ar:"البرية الأسترالية"},
+       c:{fr:"Clonbinane est un hameau du Victoria, à une heure au nord de Melbourne, au milieu de collines plantées d'eucalyptus. Les paddocks y sont immenses, les chevaux vivent largement dehors, et les journées de travail commencent tôt pour profiter des heures les plus fraîches.",
+          en:"Clonbinane is a hamlet in Victoria, an hour north of Melbourne, among hills planted with eucalypts. The paddocks are vast, the horses live largely outdoors, and the working day starts early to make the most of the cooler hours.",
+          es:"Clonbinane es una aldea de Victoria, a una hora al norte de Melbourne, entre colinas plantadas de eucaliptos. Los paddocks son inmensos, los caballos viven en gran parte al aire libre, y la jornada empieza temprano para aprovechar las horas más frescas.",
+          it:"Clonbinane è un villaggio del Victoria, a un'ora a nord di Melbourne, tra colline piantate a eucalipti. I paddock sono immensi, i cavalli vivono in gran parte all'aperto, e la giornata comincia presto per approfittare delle ore più fresche.",
+          de:"Clonbinane ist ein Weiler in Victoria, eine Stunde nördlich von Melbourne, zwischen Hügeln voller Eukalyptusbäume. Die Koppeln sind riesig, die Pferde leben größtenteils draußen, und der Arbeitstag beginnt früh, um die kühlsten Stunden zu nutzen.",
+          ja:"クロンビナンはヴィクトリア州の小さな集落で、メルボルンの北へ車で一時間、ユーカリの丘に囲まれている。放牧地は広大で、馬たちは多くの時間を外で過ごし、仕事は涼しい時間を生かすため早くに始まる。",
+          ar:"كلونبينان قرية صغيرة في ولاية فيكتوريا، على بعد ساعة إلى الشمال من ملبورن، وسط تلال تكسوها أشجار الأوكالبتوس. مساحات الرعي المسورة هناك شاسعة، وتقضي الخيول معظم وقتها في الخارج، ويبدأ يوم العمل باكرا للاستفادة من ساعات النهار الأكثر برودة."}},
+      {t:{fr:"L'équitation scientifique", en:"Equitation science", es:"La equitación científica",
+          it:"L'equitazione scientifica", de:"Equitation Science", ja:"科学的馬術",
+          ar:"الفروسية العلمية"},
+       c:{fr:"Depuis les années 1990, Clonbinane est liée au développement d'une approche du dressage fondée sur l'observation, la cognition et les mécanismes d'apprentissage du cheval. En 2005, le hameau a accueilli une conférence internationale consacrée à cette nouvelle discipline : l'équitation scientifique.",
+          en:"Since the 1990s Clonbinane has been linked to the development of a training approach built on observation, cognition and the mechanisms of equine learning. In 2005 the hamlet hosted an international conference devoted to this new field: equitation science.",
+          es:"Desde los años noventa, Clonbinane está ligada al desarrollo de un enfoque de la doma basado en la observación, la cognición y los mecanismos de aprendizaje del caballo. En 2005, la aldea acogió una conferencia internacional dedicada a esta nueva disciplina: la equitación científica.",
+          it:"Dagli anni Novanta, Clonbinane è legata allo sviluppo di un approccio all'addestramento fondato sull'osservazione, la cognizione e i meccanismi di apprendimento del cavallo. Nel 2005 il villaggio ha ospitato una conferenza internazionale dedicata a questa nuova disciplina: l'equitazione scientifica.",
+          de:"Seit den 1990er Jahren ist Clonbinane mit der Entwicklung eines Ausbildungsansatzes verbunden, der auf Beobachtung, Kognition und den Lernmechanismen des Pferdes beruht. 2005 richtete der Weiler eine internationale Konferenz zu diesem neuen Fach aus: der Equitation Science.",
+          ja:"一九九〇年代以降、クロンビナンは観察と認知、そして馬の学習の仕組みに基づく調教のあり方の発展と結びついてきた。二〇〇五年、この集落はこの新しい分野 — 科学的馬術 — に捧げられた国際会議を迎えている。",
+          ar:"منذ تسعينيات القرن الماضي، ارتبطت كلونبينان بتطور نهج في تدريب الخيول يقوم على المراقبة والإدراك وآليات تعلم الحصان. وفي عام 2005، استضافت القرية مؤتمرا دوليا كرس لهذا المجال العلمي الجديد: الفروسية العلمية."}},
+      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras alli",
+          it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら",
+          ar:"لو ذهبت إلى هناك"},
+       c:{fr:"Viens tôt, et accepte de commencer par ne rien faire. Ici, on te demandera de regarder avant de toucher : où le cheval pose son poids, ce que font ses oreilles, à quel moment il souffle. C'est un apprentissage qui paraît lent, et qui fait gagner des mois.",
+          en:"Come early, and accept doing nothing at first. Here you will be asked to look before you touch: where the horse puts his weight, what his ears are doing, the moment he blows out. It is a slow-looking way to learn that saves you months.",
+          es:"Ven temprano y acepta empezar sin hacer nada. Aquí te pedirán mirar antes de tocar: dónde apoya el peso el caballo, qué hacen sus orejas, en qué momento resopla. Es un aprendizaje que parece lento y que hace ganar meses.",
+          it:"Arriva presto e accetta di cominciare senza fare nulla. Qui ti chiederanno di guardare prima di toccare: dove il cavallo mette il peso, cosa fanno le sue orecchie, in che momento soffia. È un apprendimento che sembra lento e che fa guadagnare mesi.",
+          de:"Komm früh und nimm hin, dass du zuerst nichts tust. Hier wirst du gebeten, zu schauen, bevor du anfasst: wohin das Pferd sein Gewicht legt, was seine Ohren tun, wann es abschnaubt. Ein Lernen, das langsam wirkt und Monate spart.",
+          ja:"早く来て、まず何もしない時間を受け入れること。ここでは触れる前に見ることを求められる。馬がどこに体重を置くか、耳が何をしているか、どの瞬間に鼻を鳴らすか。遅く見えて、何か月も短縮してくれる学び方だ。",
+          ar:"تعالي باكرا، وتقبلي أن تكون المراقبة وحدها هي البداية. هنا سيطلب منك أن تنظري قبل أن تلمسي: كيف يوزع الحصان ثقله، وكيف يحرك أذنيه، وفي أي لحظة يزفر. إنه أسلوب تعلم يبدو بطيئا، لكنه يوفر عليك شهورا."}}
     ]
   };
 
