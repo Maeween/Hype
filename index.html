@@ -21898,7 +21898,14 @@ function Router() {
         }
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: showNav ? 84 : 0, overflow: "hidden" } },
+        React.createElement("div", { style: { maxWidth: 480, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: showNav ? 84 : 0,
+          /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
+             un conteneur de defilement, et WebKit y accroche parfois la NavBar
+             en `position:fixed` : elle restait plantee au milieu de l ecran
+             (constate par Blandine les 23/08 10h18 et 18h30). `clip` coupe
+             pareil a l oeil sans creer de conteneur de defilement.
+             Meme famille que le bug Android d aout : ne JAMAIS remettre hidden ici. */
+          overflow: "clip" } },
             PHOTOS.watermark && ecran !== "galops" && ecran !== "profil" && (React.createElement("div", { "data-hype-filigrane": "1", style: {
                     position: "fixed",
                     top: 0, left: "50%", transform: "translateX(-50%)",
