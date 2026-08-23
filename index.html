@@ -19242,7 +19242,14 @@ const FOND_VOYAGE = HYPE_IMGS["k25"];
 /* ---------- DESIGN TOKENS — Thème sombre (gris anthracite / bleu nuit + turquoise) ---------- */
 const COLORS = {
     // Fonds
-    nuit: "#12161C", // fond principal
+    /* 23/08 — NOIR PROFOND. Décision de Blandine : « passe le fond en noir
+       profond ». #060709 est la valeur exacte de la Bible Hype Spectral.
+       Ancienne valeur : #12161C (anthracite). Lu ~154 fois dans l app :
+       fonds d ecran, panneaux pleine page, et couleur du TEXTE sur les
+       boutons turquoise (le contraste y augmente, il ne baisse pas).
+       Les deux boutons #12161C en dur de l ecran d impression (l.41250 et
+       41254) sont sur papier blanc : volontairement NON touches. */
+    nuit: "#060709", // fond principal
     nuitClaire: "#1B212A", // cartes, surfaces élevées
     nuitElevee: "#232B36", // surfaces encore plus élevées (modales, inputs actifs)
     nuitBordure: "#2A323D", // séparateurs, bordures sur fond sombre
@@ -32053,7 +32060,14 @@ function HypeImportEcran(props) {
       return function () { vivant = false; };
     }
     var sc = document.createElement("script");
-    sc.src = "hype-import-ffe.js?v=1";
+    /* 🟥 23/08 — VERSION INCREMENTEE. Ce ?v= n avait JAMAIS bouge en six
+       livraisons et deux jours : Safari servait sa copie du module et
+       ignorait chaque nouveau fichier pousse. Preuve a l image sur
+       l enregistrement du 23/08 10h18. LE VOISIN, hype-stories.js, est
+       incremente a chaque fois (v=19bm) — faire PAREIL ICI.
+       🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
+       Sinon la livraison n arrive jamais sur le telephone. */
+    sc.src = "hype-import-ffe.js?v=2";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);

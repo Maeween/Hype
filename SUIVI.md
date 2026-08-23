@@ -164,6 +164,165 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 
 ---
 
+## SESSION 152l — 23/08/2026 (10h30) · LE BOUTON MARCHAIT DEPUIS LE DÉBUT
+
+**Livré : `index.html`** md5 `b150507d2cf6ab57009243deff6061d7`, 9 328 599 octets
+**+ `hype-import-ffe.js`** md5 `26da2f7b49f85c72431055c305e8bfc5` (celui de 152i).
+🟥 **LES DEUX VONT ENSEMBLE.** L'index appelle `?v=2`, ce fichier n'existe sur le serveur
+que si le `.js` est poussé aussi. Pousser l'index seul = écran d'import mort.
+
+### 🟢 LA PREUVE — enregistrement d'écran du 23/08, 10h18
+
+Vidéo décomposée à 10 images/seconde. Sur les **trois** taps de Blandine, le bouton passe
+à **« … »** pendant ~200 ms, puis revient à « Enregistrer 12 résultats ».
+
+Ce que ça établit, **sans aucune déduction** :
+
+1. le tap **atteint** le gestionnaire délégué ;
+2. `E.occupe` passe à vrai et **`refaire()` redessine** ;
+3. `options.onEnregistrer` **est appelé** — 200 ms, c'est un aller-retour réseau réel ;
+4. la promesse **retombe en échec** (sinon `E.etape` passerait à `"fin"`, écran au trophée) ;
+5. `E.err` est donc renseigné, et l'erreur est rendue.
+
+🟥 **LE BOUTON N'A JAMAIS ÉTÉ EN CAUSE.** Deux jours, six versions et une casse de l'app
+entière pour un gestionnaire qui fonctionnait. **Ce qui rate, c'est l'ENREGISTREMENT**, et
+il rate en silence. Toutes les pistes de la passation du 22/08 sont mortes.
+
+### 🟥 ET LA CAUSE DU SILENCE : LE CACHE
+
+Aucun bloc rouge **au-dessus** du bouton sur la vidéo — or c'est précisément ce que 152i a
+livré hier soir. **Donc le téléphone n'exécute pas le fichier d'hier soir.**
+
+`index.html` chargeait le module à `hype-import-ffe.js?v=1`. **Ce numéro n'a jamais été
+incrémenté**, en six livraisons et deux jours. Safari a gardé sa copie et ignoré chaque
+push. Le voisin `hype-stories.js?v=19bm` est incrémenté à chaque fois, lui.
+
+**Toutes les corrections livrées sur ce module depuis avant-hier n'ont jamais tourné.**
+
+### LE CHANGEMENT
+
+**Une ligne** (32063) : `?v=1` → **`?v=2`**, avec la règle posée en commentaire juste
+au-dessus : *toute livraison de `hype-import-ffe.js` incrémente ce numéro.*
+
+**Contrôle passé** : 149 blocs `<script>`, **0 échec** · diff cumulé de la session :
+**26 lignes sur 3 endroits** (fond noir profond, filigrane, version) · adresse relue dans
+le fichier final : `hype-import-ffe.js?v=2` ✅.
+
+⚠️ `hype-resultats.js?v=1` a **le même défaut**, non corrigé (module neutralisé, pas de
+feu vert).
+
+### CE QU'ON SAURA AU PROCHAIN TAP
+
+Avec `?v=2`, le module de 152i arrive enfin, et le bloc rouge est **au-dessus** du bouton.
+Le prochain tap affichera **le vrai message d'erreur de l'enregistrement**. C'est la
+première fois en deux jours qu'on pourra le lire.
+
+### À l'écran : + / −
+
+- **+** rien de nouveau. **−** rien.
+- **effet réel** : l'écran d'import exécutera enfin le code livré depuis avant-hier —
+  écouteur délégué, et message d'erreur remonté au-dessus du bouton.
+
+### 🔴 OUVERT, VU MAIS NON TRAITÉ
+
+1. **Le rail MÉDIAS de la fiche cheval est rogné des deux côtés.** À droite, la 2ᵉ carte
+   album est coupée par le bord de l'écran. À gauche, le mot vertical « MÉDIAS » perd son
+   M : il est posé à `left: -3` (ligne 33265) dans un conteneur en `overflow: hidden`.
+   Signalé à Blandine, **elle n'a pas encore dit ce qu'elle voulait**.
+2. **« On ne lit vraiment rien »** sur l'écran de relecture : lignes décochées à 42 %
+   d'opacité (lieu, date) et 62 % (titre). Non corrigé.
+3. **Halo et turquoise des stories à alléger.** Demandé le 23/08, non traité.
+4. **`enregistrerImportFFE` viole deux règles métier** (éliminés/abandons jamais écrits,
+   colonne `visible` jamais renseignée). Non corrigé.
+5. La coquille de chargement reste `#14161a` alors que le fond est passé à `#060709`.
+
+### Préparation Flutter
+
+Aucun refactor. La session confirme le manque relevé en 152k : **les trois modules
+externes n'ont pas de règle de versionnement commune**, et c'est cette absence qui a coûté
+deux jours. Une constante de version unique lue par les `sc.src` supprimerait la classe
+d'erreur entière. **Noté, pas fait**, aucun feu vert. En attendant, la règle est écrite en
+dur dans le commentaire à la ligne 32057.
+
+---
+
+## SESSION 152k — 23/08/2026 (01h35) · LE FOND EN NOIR PROFOND
+
+**Livré : `index.html`**, md5 `4ec52bb9e26121382891072c3a014474`, 9 328 104 octets.
+Contient AUSSI le retrait du filigrane de 152j (les deux changements sont cumulés dans
+ce fichier — `658a4a84…` est périmé, ne pas le pousser).
+
+### LA DEMANDE
+
+*« Passe déjà le fond en noir profond »* — **décision de Blandine**, après avoir constaté
+que le retrait du filigrane laissait un anthracite plat.
+
+### LE CHANGEMENT
+
+**Une ligne.** `COLORS.nuit` : `#12161C` → **`#060709`**, la valeur exacte de la Bible
+Hype Spectral.
+
+Le jeton est lu **~154 fois** : fonds d'écran, panneaux pleine page, et **couleur du TEXTE
+sur les boutons turquoise** (le contraste y augmente, il ne baisse pas). `nuitClaire`
+`#1B212A`, `nuitElevee` `#232B36` et `nuitBordure` `#2A323D` **ne bougent pas** : les
+cartes et les bordures se détachent donc **plus** qu'avant sur le fond, pas moins.
+
+**Non touchés, volontairement** : les deux boutons `#12161C` écrits en dur de l'écran
+d'impression (lignes 41250 et 41254). Ils sont sur **papier blanc**.
+
+**Contrôle passé** : 149 blocs `<script>`, **0 échec**, identique à l'état de départ ·
+diff cumulé du fichier depuis le début de session : **21 lignes, à deux endroits**, rien
+ailleurs.
+
+### 🔴 CONSÉQUENCE SIGNALÉE, NON TRANCHÉE
+
+**La coquille de chargement reste `#14161a`** (ligne 2, la feuille posée avant que React
+démarre). Pendant la seconde d'ouverture de l'app, le fond sera donc **légèrement plus
+clair**, puis basculera au noir profond.
+
+**Non corrigé : Blandine n'a pas demandé cette ligne.** Un mot suffit, c'est un mot à
+changer.
+
+### À l'écran : + / −
+
+- **modifié** : le fond de **tous** les écrans passe de l'anthracite `#12161C` au noir
+  profond `#060709`. Cartes, bordures et surfaces élevées inchangées — elles ressortent
+  davantage.
+- **+** rien. **−** rien. Aucun écran, aucun bouton n'apparaît ni ne disparaît.
+- **inchangé** : l'écran d'impression (papier blanc).
+
+### 🔴 CE QUI RESTE OUVERT, DIT PAR BLANDINE CETTE NUIT
+
+1. 🔴 **Le bouton Enregistrer ne part toujours pas** — même après 152i. **Voir ci-dessous.**
+2. 🔴 **« On ne lit vraiment rien »** sur l'écran de relecture de l'import. Cause vue dans
+   le code : les lignes décochées sont à `rgba(var(--tx),.42)` pour le lieu et la date, et
+   `.62` pour le titre — sur fond `rgba(10,13,17,.86)`. **Illisible, et c'est la majorité
+   des lignes.** Correction non faite, aucun feu vert.
+3. **Alléger la densité du halo et le turquoise des stories** (capture du 23/08 01h30).
+   Demandé, non traité.
+
+### 🟥 LA PISTE DU CACHE — posée, sans réponse encore
+
+`index.html` charge le module à `hype-import-ffe.js?v=1`. **Ce `?v=1` n'a jamais été
+incrémenté** en six versions et deux jours. Le voisin, dans la même ligne du fichier,
+porte `hype-stories.js?v=19bm` — lui est incrémenté à chaque livraison.
+
+**Déduction de Claude — à valider** : l'iPhone sert probablement encore la toute première
+version du module depuis son cache, ce qui expliquerait qu'aucune des six livraisons n'ait
+jamais rien changé. **Proposé à Blandine, pas encore autorisé.**
+
+⚠️ `hype-resultats.js?v=1` a le même défaut.
+
+### Préparation Flutter
+
+Aucune amélioration d'architecture. Mais la session met au jour un manque de gabarit :
+**les modules externes n'ont pas de règle de versionnement commune** — `hype-stories.js`
+est incrémenté à la main et rigoureusement, `hype-import-ffe.js` et `hype-resultats.js`
+sont restés figés à `v=1`. Une constante de version unique, lue par les trois `sc.src`,
+supprimerait la classe d'erreur entière. **Noté, pas fait**, aucun feu vert.
+
+---
+
 ## SESSION 152j — 23/08/2026 · LE FILIGRANE RETIRÉ
 
 **Livré : `index.html`**, md5 `658a4a84070f0932158d9add02f23d6d`, 9 327 590 octets.
