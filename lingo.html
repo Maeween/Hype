@@ -4487,11 +4487,13 @@ var I18N_H = {
 };
 var ETAPES_I18N = {
  labaule:{
-   ch:{en:"Arriving", es:"La llegada", it:"L'arrivo", de:"Die Ankunft", ja:"到着"},
-   v:{ja:"ラ・ボール"},
+   /* 🟡 `ar` dormant (23/08) — aucun écran ne lit ces champs. */
+   ch:{en:"Arriving", es:"La llegada", it:"L'arrivo", de:"Die Ankunft", ja:"到着",
+       ar:"الوصول"},
+   v:{ja:"ラ・ボール", ar:"لا بول"},
    souv:{en:"A show jumping flag", es:"Un banderín del concurso",
          it:"Un bandierino del concorso", de:"Ein Turnierfähnchen",
-         ja:"障害飛越大会の小旗"}},
+         ja:"障害飛越大会の小旗", ar:"راية تذكارية من مسابقة القفز"}},
  /* 🟥 TAUPŌ, 18/08. ⚠️ `v` PORTE LE MACRON : Taupō, U+014D. Le nom affiché
     au joueur doit être exactement TAUPŌ dans toutes les langues — seul le
     japonais prend sa transcription. Vérifier après chaque copier-coller :
@@ -4724,7 +4726,12 @@ var RECITS = {
       {f:"Das internationale Springturnier findet dort jedes Frühjahr statt, hundert Meter vom Strand entfernt — eines der ältesten Europas."}],
   ja:["蹄の下の砂はまだ冷たく、海はまだ引ききっていない。",
       "ここでは、言葉を話せるようになる前に、馬を借りることを覚える。",
-      {f:"毎年春、浜から百メートルの場所で国際障害飛越大会が開かれる。ヨーロッパで最も古い大会のひとつだ。"}]},
+      {f:"毎年春、浜から百メートルの場所で国際障害飛越大会が開かれる。ヨーロッパで最も古い大会のひとつだ。"}],
+  /* 🟡 ARABE DORMANT (23/08) — aucun écran ne lit ce champ. Sans signes
+     vocaliques. JAMAIS relu par un arabophone. */
+  ar:["الرمل ما زال باردا تحت الحافر، والبحر لم ينته من الانحسار.",
+      "هنا تتعلمين كيف تطلبين حصانا قبل أن تعرفي حتى كيف تتحدثين باللغة.",
+      {f:"تقام هنا كل ربيع مسابقة القفز الدولية، على بعد مئة متر من الشاطئ، وهي من أقدم المسابقات في أوروبا."}]},
 
  maurice:{
   fr:["L'eau est tiède dès le matin, et le lagon ne fait pas une vague jusqu'au récif.",
@@ -5516,7 +5523,9 @@ var S = document.getElementById.bind(document);
 var POURQUOI = {
  /* Les huit du tour du monde, ajoutées le 5 août 2026 : sans elles, le
     dépliant de l'itinéraire s'ouvrait sur du vide pour ces villes. */
- labaule:{fr:"Le Jumping international les pieds dans l'eau, et neuf kilomètres de plage pour un premier cours.",
+ /* 🟡 `ar` dormant — voir le récit. */
+ labaule:{ar:"مسابقة القفز الدولية على شاطئ البحر، وتسعة كيلومترات من الرمال لأول درس.",
+  fr:"Le Jumping international les pieds dans l'eau, et neuf kilomètres de plage pour un premier cours.",
   en:"An international jumping show with its feet in the water, and nine kilometres of beach for a first lesson.",
   es:"Un concurso internacional con los pies en el agua, y nueve kilómetros de playa para una primera clase.",
   it:"Un concorso internazionale con i piedi nell'acqua, e nove chilometri di spiaggia per una prima lezione.",
@@ -6933,7 +6942,9 @@ function souvenirObtenu(ref){
    six langues, lue par tx().
    ================================================================== */
 var PHRASES_FIN = {
- labaule:{fr:"Pousser la porte d'une écurie dans une autre langue, c'est déjà voyager. <b>La tienne s'ouvre ici.</b>",
+ /* 🟡 `ar` dormant — voir le récit. */
+ labaule:{ar:"أن تفتحي باب إسطبل بلغة أخرى، فذلك سفر في حد ذاته. <b>وباب رحلتك ينفتح هنا.</b>",
+  fr:"Pousser la porte d'une écurie dans une autre langue, c'est déjà voyager. <b>La tienne s'ouvre ici.</b>",
   en:"Walking into a yard in another language is already travelling. <b>Yours starts here.</b>",
   es:"Entrar en una cuadra en otro idioma ya es viajar. <b>La tuya empieza aquí.</b>",
   it:"Entrare in una scuderia in un'altra lingua è già viaggiare. <b>La tua inizia qui.</b>",
