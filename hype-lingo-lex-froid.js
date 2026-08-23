@@ -164,7 +164,7 @@ window.HYPE_LINGO_LEX.froid = {
           it:"La neve non è il problema, il ghiaccio sì. Un terreno innevato si può ancora montare; un terreno gelato sotto la neve no, e non si vede.",
           de:"Nicht der Schnee ist das Problem, sondern das Eis. Auf verschneitem Boden kann man reiten; auf gefrorenem darunter nicht, und man sieht es nicht.",
           ja:"問題は雪ではなく氷です。雪の積もった地面はまだ乗れますが、その下が凍っていれば乗れません。そして外からは見えません。だから「雪が降ったか」より「地面は凍っているか」のほうが重要なのです。",
-          ar:"الثلج ليس هو المشكلة، بل الجليد تحته. أرض مغطاة بالثلج يمكن الركوب عليها، أما أرض متجمدة تحت الثلج فلا، ولا تراها العين. لذلك السؤال المهم: هل الأرض متجمدة؟" } },
+          ar:"الثلج ليس هو المشكلة، بل الجليد المختبئ تحته. يمكن الركوب على أرض مغطاة بالثلج، أما الأرض المتجمدة تحته فلا تصلح للركوب، وقد لا يمكن رؤية الجليد. لذلك يكون السؤال الأهم: هل الأرض متجمدة؟" } },
 
   { ref:"glissant", lecon:1, coll:"froid",
     mots:{ fr:{m:"glissant"}, en:{m:"slippery", p:"sli-peu-ri"},
@@ -177,7 +177,7 @@ window.HYPE_LINGO_LEX.froid = {
           it:"La parola che si grida indicando un punto preciso. Un cavallo che scivola una volta trotta corto e teso per giorni.",
           de:"Das Wort, das man ruft und dabei auf eine genaue Stelle zeigt. Ein Pferd, das einmal rutscht, geht tagelang kurz und angespannt.",
           ja:"一点を指しながら言う言葉で、漠然と使うものではありません。一度滑った馬は何日も歩幅を詰め、緊張したまま動きます。地面への恐怖はすぐに根づき、なかなか消えません。",
-          ar:"تقال هذه الكلمة عند الإشارة إلى موضع محدد، لا لوصف المكان عموما. إذا انزلق الحصان مرة واحدة فقد يبقى متوترا لأيام، لأن الخوف من الأرض يتكون بسرعة ويزول ببطء." } },
+          ar:"تقال هذه الكلمة عند الإشارة إلى موضع محدد، لا لوصف المكان عموما. إذا انزلق الحصان مرة واحدة، فقد يقصر خطواته في الخبب ويبقى متوترا لأيام. فالخوف من الأرض يتكون بسرعة ويزول ببطء، ولذلك يفضل إلغاء الحصة على الخروج فوق الجليد الزلق." } },
 
   { ref:"manege-chauffe", lecon:1, coll:"froid",
     mots:{ fr:{m:"le manège chauffé"}, en:{m:"the heated arena", p:"hii-tid a-rii-na"},
@@ -216,7 +216,7 @@ window.HYPE_LINGO_LEX.froid = {
           it:"Il cappotto che il cavallo si fabbrica da solo appena le giornate si accorciano: risponde alla luce, non alla temperatura, e arriva quindi PRIMA del freddo. I peli si rizzano e trattengono uno strato d'aria tiepida: scalda l'aria, non il pelo. Un cavallo con la neve che non si scioglie è un cavallo che non ha freddo.",
           de:"Der Mantel, den sich das Pferd selbst wachsen lässt, sobald die Tage kürzer werden: er antwortet auf das Licht, nicht auf die Temperatur, und kommt darum VOR der Kälte. Die Haare stellen sich auf und halten eine warme Luftschicht: die Luft wärmt, nicht das Haar. Ein Pferd, auf dem der Schnee liegen bleibt, friert nicht.",
           ja:"日が短くなると馬が自ら作り上げる毛のコート。気温ではなく光に応えるため、寒さより先に生えてくる。毛が立ち、その間に暖かい空気の層を閉じ込める。暖めているのは毛ではなく空気だ。背の雪が解けない馬は、寒がっていない馬である。",
-          ar:"المعطف الذي يصنعه الحصان لنفسه حين تقصر الأيام: يستجيب للضوء لا للحرارة، فيسبق البرد. يقف الشعر ويحبس طبقة من الهواء الدافئ، والهواء هو ما يدفئ لا الشعر. حصان يغطيه ثلج لا يذوب هو حصان لا يشعر بالبرد." } },
+          ar:"المعطف الذي يصنعه الحصان لنفسه حين تقصر الأيام: يستجيب للضوء لا للحرارة، فيسبق البرد. ينتصب الشعر ويحبس طبقة من الهواء الدافئ، والهواء هو ما يدفئ لا الشعر. حصان يغطيه ثلج لا يذوب هو حصان لا يشعر بالبرد." } },
 
   { ref:"buee", lecon:1, coll:"froid",
     mots:{ fr:{m:"la buée"}, en:{m:"the steam", p:"stiim"},
@@ -261,7 +261,7 @@ window.HYPE_LINGO_LEX.froid = {
           it:"Mettere la coperta — o scegliere di non metterla: un cavallo col pelo invernale, fuori, spesso ne fa benissimo a meno, e coprire troppo lo fa sudare sotto il telo, esattamente ciò che si voleva evitare. La mano sotto la coperta, alla spalla, decide meglio del termometro.",
           de:"Die Decke auflegen — oder bewusst darauf verzichten: ein Pferd im Winterfell, draußen, kommt oft sehr gut ohne aus, und zu warm eingedeckt schwitzt es unter dem Tuch — genau das, was man vermeiden wollte. Die Hand unter der Decke an der Schulter entscheidet besser als das Thermometer.",
           ja:"馬着を着せること。あるいは着せない選択をすること。冬毛の馬は屋外でも馬着なしで元気に過ごすことが多い。着せすぎれば布の下で汗をかき、それこそ避けたかったことになる。肩のあたりで馬着の下に手を入れる。体温計よりも確かな判断だ。",
-          ar:"وضع الغطاء، أو اختيار عدم وضعه: حصان بالشعر الشتوي في الخارج يستغني عنه غالبا، والإفراط في التغطية يجعله يعرق تحت القماش، وهو ما أردنا تجنبه. وضع اليد تحت الغطاء عند الكتف أدق من الاعتماد على مقياس الحرارة." } },
+          ar:"وضع الغطاء، أو اختيار عدم وضعه: فالحصان ذو الشعر الشتوي الذي يعيش في الخارج يستغني عنه غالبا، والإفراط في التغطية يجعله يعرق تحت القماش، وهو ما أردنا تجنبه. وضع اليد تحت الغطاء عند الكتف أدق من الاعتماد على مقياس الحرارة." } },
 
   { ref:"chemise", lecon:1, coll:"froid",
     mots:{ fr:{m:"la chemise séchante", var:"la polaire"},
@@ -276,7 +276,7 @@ window.HYPE_LINGO_LEX.froid = {
           it:"Il telo che si getta su un cavallo bagnato di sudore perché asciughi senza raffreddarsi: la lana o il pile bevono l'umidità e la fanno passare. Si mette dopo il lavoro, si toglie quando è asciutto, e solo allora si rimette la coperta. Il freddo non ha mai fatto ammalare un cavallo — l'umidità sotto un telo sì.",
           de:"Das Tuch, das man einem schweißnassen Pferd überwirft, damit es trocknet, ohne auszukühlen: Wolle oder Fleece nimmt die Feuchte auf und lässt sie durch. Nach der Arbeit drauf, ab, sobald das Pferd trocken ist — und erst dann kommt die Decke wieder. Kälte hat noch kein Pferd krank gemacht — eingeschlossene Nässe schon.",
           ja:"汗でぬれた馬にかけ、冷やさずに乾かすための布。ウールやフリースが湿気を吸い、外へ通す。運動のあとにかけ、乾いたら外し、そのあとで初めて馬着を戻す。馬を病気にするのは寒さではない。布の下にこもった湿気である。",
-          ar:"القماش الذي يوضع على حصان مبلل بالعرق ليجف دون أن يبرد: الصوف أو الفليس يمتص الرطوبة ويمررها إلى الخارج. يوضع بعد العمل، ويرفع حين يجف الحصان، وعندها فقط يعاد الغطاء. البرد لم يمرض حصانا قط، أما الرطوبة تحت القماش فنعم." } },
+          ar:"القماش الذي يوضع على حصان مبلل بالعرق ليجف دون أن يبرد: الصوف أو النسيج الصوفي الصناعي يمتص الرطوبة ويمررها إلى الخارج. يوضع بعد العمل، ويرفع حين يجف الحصان، وعندها فقط يعاد الغطاء. البرد لم يمرض حصانا قط، أما الرطوبة تحت القماش فنعم." } },
 
   { ref:"couvrerein", lecon:1, coll:"froid",
     mots:{ fr:{m:"le couvre-reins"}, en:{m:"the quarter sheet", p:"kouor-teur chiit",
@@ -291,7 +291,7 @@ window.HYPE_LINGO_LEX.froid = {
           it:"La coperta corta che resta SUL cavallo mentre lo si monta, posata dietro la sella. Tiene al caldo i muscoli del dorso e della groppa durante il riscaldamento e le soste, quando il cavallo si raffredda stando fermo. È il gesto più quotidiano dell'inverno, e il più dimenticato.",
           de:"Die kurze Decke, die beim Reiten AUF dem Pferd bleibt, hinter dem Sattel. Sie hält die Muskeln von Rücken und Kruppe warm — beim Lösen und beim Stehen, wenn ein Pferd auskühlt, ohne sich zu bewegen. Der alltäglichste Wintergriff, und der am häufigsten vergessene.",
           ja:"騎乗中も馬にかけたままにする短い馬着。鞍の後ろに置く。準備運動や待機のあいだ、動かずに冷えていく背と尻の筋肉を温かく保つ。冬のもっとも日常的な所作であり、もっとも忘れられやすい所作でもある。",
-          ar:"الغطاء القصير الذي يبقى على الحصان أثناء ركوبه، خلف السرج. يبقي عضلات الظهر والكفل دافئة أثناء الإحماء والاستراحات، حين ينتظر الحصان ويبرد دون حركة. أكثر عادات الشتاء يومية، وأكثرها نسيانا." } },
+          ar:"الغطاء القصير الذي يبقى على الحصان أثناء ركوبه، خلف السرج. يبقي عضلات الظهر والكفل دافئة أثناء الإحماء والاستراحات، حين ينتظر الحصان ويبرد دون حركة. إنه من أكثر تجهيزات الشتاء استعمالا، ومع ذلك فهو من أكثرها تعرضا للنسيان." } },
 
   { ref:"bonnetlaine", lecon:1, coll:"cavalier",
     mots:{ fr:{m:"le bonnet"}, en:{m:"the beanie", p:"bii-ni", var:"the toque"},
@@ -366,7 +366,7 @@ window.HYPE_LINGO_LEX.froid = {
           it:"Una resistenza nella vasca, e l'acqua resta liquida e tiepida a −30 °C. Non è un lusso: è l'unica attrezzatura invernale che salvi davvero i cavalli. Dove non c'è, si rompe il ghiaccio due volte al giorno e si porta l'acqua calda a mano.",
           de:"Ein Heizstab im Becken, und das Wasser bleibt bei −30 °C flüssig und lauwarm. Kein Luxus: das einzige Winterzubehör, das wirklich Pferde rettet. Wo es keines gibt, bricht man zweimal täglich das Eis und schleppt warmes Wasser.",
           ja:"水槽に発熱体を入れておけば、マイナス30度でも水は凍らず、ぬるいまま保たれる。贅沢品ではない。冬の設備のなかで、本当に馬の命を救う唯一のものだ。これがない場所では、一日二回氷を割り、湯を手で運ぶ。",
-          ar:"مقاومة كهربائية في الحوض، فيبقى الماء سائلا فاترا عند ثلاثين تحت الصفر. ليس ترفا: إنه من أهم تجهيزات الشتاء لحماية الخيول. وعند عدم توفره، يجب كسر الجليد مرتين يوميا ونقل الماء الدافئ باليد." } },
+          ar:"توضع مقاومة كهربائية في الحوض، فيبقى الماء سائلا وفاترا حتى عند ثلاثين درجة تحت الصفر. ليس ترفا: إنه من أهم تجهيزات الشتاء لحماية الخيول. وعند عدم توفره، يجب كسر الجليد مرتين يوميا ونقل الماء الدافئ باليد." } },
 
   { ref:"deshydratation", lecon:1, coll:"froid",
     mots:{ fr:{m:"la déshydratation"}, en:{m:"dehydration", p:"di-haï-dré-cheune"},
@@ -380,7 +380,7 @@ window.HYPE_LINGO_LEX.froid = {
           it:"Il vero pericolo dell'inverno, e nessuno se l'aspetta: un cavallo bere quasi nulla quando l'acqua è ghiacciata, e il fieno secco dell'inverno non contiene una goccia — mentre l'erba d'estate ne è imbevuta. Così nascono le coliche di gennaio. Non si sorveglia il freddo, si sorvegliano gli abbeveratoi.",
           de:"Die wahre Gefahr des Winters, und niemand rechnet mit ihr: ein Pferd trinkt kaum, wenn das Wasser eisig ist, und das trockene Winterheu enthält keinen Tropfen — anders als das Sommergras. So entstehen die Koliken im Januar. Man beobachtet nicht die Kälte, man beobachtet die Tränken.",
           ja:"冬の本当の危険であり、誰も予想しない。水が氷のように冷たければ馬はほとんど飲まず、冬の乾いた干し草には水分が一滴も含まれていない。夏の草はたっぷり含んでいるのに。こうして一月の腹痛が生まれる。見張るべきは寒さではなく、水である。",
-          ar:"خطر الشتاء الحقيقي، ولا أحد يتوقعه: الحصان لا يكاد يشرب عندما يكون الماء شديد البرودة، والدريس الجاف في الشتاء يحتوي على قدر قليل جدا من الماء، بخلاف عشب الصيف المشبع. وهكذا تزداد حالات المغص في الشتاء. لا نراقب البرد، بل نراقب المشارب." } },
+          ar:"خطر الشتاء الحقيقي، ولا أحد يتوقعه: الحصان لا يكاد يشرب عندما يكون الماء شديد البرودة، والدريس الجاف في الشتاء يحتوي على قدر قليل جدا من الماء، بخلاف عشب الصيف المشبع. وهكذا تزداد حالات المغص في الشتاء. لا نراقب البرد وحده، بل نراقب أحواض الشرب قبل كل شيء." } },
 
   { ref:"boire", lecon:1, coll:"froid", v:true,
     mots:{ fr:{m:"faire boire"}, en:{m:"to water a horse", p:"tou oua-teur"},
@@ -421,7 +421,7 @@ window.HYPE_LINGO_LEX.froid = {
           it:"La fine dell'inverno, e la sua stagione più fangosa: il terreno si scongela dall'alto e l'acqua non se ne va, perché sotto è ancora gelato. I piedi restano bagnati, la pelle dei pastorali si irrita, e si aspetta una settimana prima di riprendere. Il disgelo rovina più stagioni del gelo.",
           de:"Das Ende des Winters und seine schlammigste Zeit: der Boden taut von oben, und das Wasser kann nicht ab, weil es darunter noch gefroren ist. Die Hufe stehen nass, die Haut der Ballen wird wund, und man wartet eine Woche, bevor man wieder arbeitet. Das Tauwetter kostet mehr Saisons als der Frost.",
           ja:"冬の終わり、そして最も泥深い季節。地面は表面から解けるが、下はまだ凍っているため水が抜けない。蹄は濡れたままになり、球節の皮膚は荒れ、運動再開まで一週間待つ。凍結よりも雪解けのほうが、多くのシーズンを壊す。",
-          ar:"نهاية الشتاء، وأكثر مواسمه وحلا: تذوب الطبقة العليا من الأرض، لكن الماء لا يتصرف لأن الطبقات السفلى تبقى متجمدة. تنقع الحوافر، ويتهيج جلد أسفل القوائم، وننتظر أسبوعا قبل العودة إلى العمل. قد يضر ذوبان الجليد بموسم العمل أكثر من البرد نفسه." } },
+          ar:"نهاية الشتاء، وأكثر مواسمه وحلا: تذوب الطبقة العليا من الأرض، لكن الماء لا يجد طريقا للتصريف لأن الطبقات السفلى تبقى متجمدة. تنقع الحوافر، ويتهيج جلد أسفل القوائم، وننتظر أسبوعا قبل العودة إلى العمل. قد يضر ذوبان الجليد بموسم العمل أكثر من البرد نفسه." } },
 
   { ref:"chinook", lecon:1, coll:"froid",
     mots:{ fr:{m:"le chinook"}, en:{m:"the chinook", p:"chi-nouk"},
@@ -489,7 +489,7 @@ window.HYPE_LINGO_LEX.froid = {
              it:"Acqua tiepida, ne bere il doppio.",
              de:"Lauwarmes Wasser, es trinkt doppelt so viel.",
              ja:"ぬるい水なら、二倍飲む。",
-      ar:"يشرب من الماء الفاتر ضعف الكمية التي يشربها من الماء البارد." }
+      ar:"يشرب من الماء الفاتر ضعف ما يشربه من الماء البارد." }
 
   ],
 
@@ -720,7 +720,7 @@ window.HYPE_LINGO_LEX.froid = {
         it:"Con l'acqua tiepida ne beve il doppio.",
         de:"Bei lauwarmem Wasser trinkt er doppelt so viel.",
         ja:"ぬるま湯 なら、 倍 の 量 を 飲み ます。",
-      ar:"يشرب من الماء الفاتر ضعف الكمية التي يشربها من الماء البارد." },
+      ar:"يشرب من الماء الفاتر ضعف ما يشربه من الماء البارد." },
 
       { ref:"df-abreuvoir-gele", temps:6, dit:"club", mots:["abrchauffant","boire"],
         fr:"L'abreuvoir est gelé, il faut casser la glace.",

@@ -2,25 +2,43 @@
 
 **36ᵉ ville · « Le froid » · Canada, Alberta**
 
-**Fiche unique et complète.** Tout ce qui a été traduit en arabe pour cette ville : les textes d'accueil, la lettre, les volets, les mots, le dialogue, les phrases.
+**Fiche unique et complète.** Textes d'accueil, lettre, volets, mots, dialogue, phrases.
 
-Le piège du chapitre : *to warm up n'est pas to keep warm*. En arabe, l'opposition doit rester nette.
+Le piège du chapitre : *to warm up n'est pas to keep warm*. L'opposition doit rester nette.
 
-Le français d'origine est au-dessus de chaque ligne arabe. **Pour signaler une correction, cite le numéro.**
+Le français est au-dessus de chaque ligne arabe. **Pour signaler une correction, cite le numéro.**
 
-Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jamais relu par un arabophone.**
+Arabe standard moderne, sans signes vocaliques. Les **consignes** sont au féminin ; la **lettre** est au masculin, comme dans les 38 villes.
+
+🟡 **Reste à valider par une personne arabophone du milieu équestre.**
+
+---
+
+## LES TERMES DE RÉFÉRENCE
+
+*Fixés en relecture. À employer partout, dans toutes les villes.*
+
+| français | arabe |
+|---|---|
+| le bush | البرية الأسترالية |
+| le paddock | المرعى المسيج |
+| le seuil de réaction | عتبة الاستجابة |
+| le rond de longe | حلبة التدريب الدائرية |
+| l'équitation scientifique | الفروسية العلمية |
+| la rampe du van | منحدر المقطورة |
+| la longe | حبل القيادة |
+| l'abreuvoir | حوض الشرب |
+| le degré sous zéro | درجة تحت الصفر |
 
 ---
 
 ## A · L'ÉCRAN D'ARRIVÉE
 
-*Ce que la cavalière lit en découvrant la ville.*
-
 **A1** — *phrase 1*
 
 > Moins vingt-deux au thermomètre de l'écurie, et le premier geste de la journée est de casser la glace.
 
-<div dir="rtl" lang="ar">اثنتان وعشرون تحت الصفر على مقياس حرارة الإسطبل، وأول عمل في اليوم هو كسر الجليد.</div>
+<div dir="rtl" lang="ar">اثنتان وعشرون درجة تحت الصفر على مقياس حرارة الإسطبل، وأول عمل في اليوم هو كسر الجليد.</div>
 
 **A2** — *phrase 2*
 
@@ -38,19 +56,19 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > L'hiver albertain, où l'on apprend que le froid ne tue pas par le froid mais par la soif.
 
-<div dir="rtl" lang="ar">شتاء ألبرتا، حيث تتعلم أن البرد لا يقتل بالبرد، بل بالعطش.</div>
+<div dir="rtl" lang="ar">شتاء ألبرتا، حيث تتعلمين أن البرد لا يقتل بالبرد، بل بالعطش.</div>
 
 **A5** — *chapeau du chapitre*
 
 > L'hiver, les chevaux comptent sur toi plus que jamais. **Et la buée au-dessus des box vaut tous les étés.**
 
-<div dir="rtl" lang="ar">في الشتاء، تعتمد عليك الخيول أكثر من أي وقت. <b>وبخار أنفاسها فوق الحجرات يعادل كل الصيف.</b></div>
+<div dir="rtl" lang="ar">في الشتاء، تعتمد عليك الخيول أكثر من أي وقت مضى. <b>وبخار أنفاسها فوق الحجرات يساوي دفء كل فصول الصيف.</b></div>
 
 ---
 
 ## B · LA LETTRE
 
-*Écrite à la première personne, au masculin — le narrateur est le même dans les 38 villes.*
+*À la première personne, au masculin.*
 
 **B1**
 
@@ -62,13 +80,11 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > La buée montait des box en colonnes droites, les Rocheuses fermaient l'horizon, et la première question qu'on m'a posée n'était pas « tu montes ? » mais « il a bu, le tien ? ».
 
-<div dir="rtl" lang="ar">كان البخار يتصاعد من الحجرات في أعمدة مستقيمة، وجبال الروكي تسد الأفق، وأول سؤال طرح علي لم يكن «هل تركبين؟» بل «هل شرب حصانك؟».</div>
+<div dir="rtl" lang="ar">كان البخار يتصاعد من الحجرات في أعمدة مستقيمة، وكانت جبال الروكي تسد الأفق. وأول سؤال طرح علي لم يكن: «هل تركب؟»، بل: «هل شرب حصانك؟»</div>
 
 ---
 
 ## C · LES TROIS VOLETS
-
-*Les bandeaux qui se déplient sous la carte postale.*
 
 **C1 — Spruce Meadows**
 
@@ -76,7 +92,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Aux portes de Calgary, l'un des grands rendez-vous du saut d'obstacles mondial. Créé par une famille dans les années 1970, le site accueille chaque été des tournois où viennent les meilleurs cavaliers du monde — et son grand prix compte parmi les plus dotés du sport.
 
-<div dir="rtl" lang="ar">على أبواب كالغاري، أحد أكبر مواعيد القفز في العالم. أنشأته عائلة في سبعينيات القرن الماضي، ويستضيف كل صيف بطولات يأتي إليها أفضل فرسان العالم، وجائزته الكبرى من بين الأعلى قيمة في هذه الرياضة.</div>
+<div dir="rtl" lang="ar">عند أبواب كالغاري يقع أحد أكبر ملتقيات قفز الحواجز في العالم. أنشأته عائلة في سبعينيات القرن الماضي، ويستضيف كل صيف بطولات يشارك فيها أفضل فرسان العالم، وتعد جائزته الكبرى من أعلى الجوائز قيمة في هذه الرياضة.</div>
 
 **C2 — Le chinook**
 
@@ -84,7 +100,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > L'Alberta connaît un vent qui n'existe presque nulle part ailleurs : le chinook, un vent chaud qui descend des Rocheuses et peut faire remonter la température de vingt degrés en quelques heures. Les chevaux le sentent avant les thermomètres — et avant nous.
 
-<div dir="rtl" lang="ar">تعرف ألبرتا رياحا لا وجود لها في أماكن كثيرة: الشينوك، رياح دافئة تهبط من جبال الروكي وقد ترفع درجة الحرارة عشرين درجة في ساعات. والخيول تشعر بها قبل موازين الحرارة، وقبلنا نحن.</div>
+<div dir="rtl" lang="ar">تعرف ألبرتا رياحا لا وجود لها في أماكن كثيرة: الشينوك، رياح دافئة تهبط من جبال الروكي وقد ترفع درجة الحرارة عشرين درجة في ساعات. وتشعر بها الخيول قبل أن تسجلها أجهزة قياس الحرارة، وقبل أن نشعر بها نحن.</div>
 
 **C3 — Si tu y allais**
 
@@ -92,7 +108,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Viens en été pour le grand tournoi, sous le soleil et devant les tribunes pleines. Mais si tu veux comprendre ce chapitre, reviens un matin d'hiver : l'écurie à moins vingt, l'eau qu'on casse, la buée — c'est là que le pays se raconte vraiment.
 
-<div dir="rtl" lang="ar">تعالي في الصيف من أجل البطولة الكبرى، تحت الشمس وأمام مدرجات ممتلئة. لكن إن أردت أن تفهمي هذا الفصل، فعودي في صباح شتوي: الإسطبل عند عشرين تحت الصفر، والجليد الذي يكسر، والبخار — هناك يروي البلد نفسه حقا.</div>
+<div dir="rtl" lang="ar">تعالي في الصيف من أجل البطولة الكبرى، تحت الشمس وأمام مدرجات ممتلئة. لكن إن أردت أن تفهمي هذا الفصل، فعودي في صباح شتوي: الإسطبل عند عشرين درجة تحت الصفر، والماء الذي يجب كسر جليده، وبخار الأنفاس — هناك يكشف هذا البلد عن حقيقته.</div>
 
 ---
 
@@ -120,7 +136,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > ⚠️ LA NEIGE N'EST PAS LE PROBLÈME, LE VERGLAS EN EST UN. Un sol enneigé reste montable ; un sol gelé sous la neige ne l'est pas, et on ne le voit pas. 🟥 C'est pourquoi la question « est-ce que le sol est gelé ? » compte plus que « est-ce qu'il a neigé ? ».
 
-<div dir="rtl" lang="ar">الثلج ليس هو المشكلة، بل الجليد تحته. أرض مغطاة بالثلج يمكن الركوب عليها، أما أرض متجمدة تحت الثلج فلا، ولا تراها العين. لذلك السؤال المهم: هل الأرض متجمدة؟</div>
+<div dir="rtl" lang="ar">الثلج ليس هو المشكلة، بل الجليد المختبئ تحته. يمكن الركوب على أرض مغطاة بالثلج، أما الأرض المتجمدة تحته فلا تصلح للركوب، وقد لا يمكن رؤية الجليد. لذلك يكون السؤال الأهم: هل الأرض متجمدة؟</div>
 
 **D4 — glissant**
 
@@ -128,7 +144,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Le mot qu'on crie en désignant un endroit précis, pas une généralité. ⚠️ Un cheval qui glisse une fois se met à trotter court et à se tendre pendant des jours : la peur du sol s'installe vite et se défait lentement. C'est pourquoi on préfère renoncer à une séance plutôt que sortir sur du verglas.
 
-<div dir="rtl" lang="ar">تقال هذه الكلمة عند الإشارة إلى موضع محدد، لا لوصف المكان عموما. إذا انزلق الحصان مرة واحدة فقد يبقى متوترا لأيام، لأن الخوف من الأرض يتكون بسرعة ويزول ببطء.</div>
+<div dir="rtl" lang="ar">تقال هذه الكلمة عند الإشارة إلى موضع محدد، لا لوصف المكان عموما. إذا انزلق الحصان مرة واحدة، فقد يقصر خطواته في الخبب ويبقى متوترا لأيام. فالخوف من الأرض يتكون بسرعة ويزول ببطء، ولذلك يفضل إلغاء الحصة على الخروج فوق الجليد الزلق.</div>
 
 **D5 — le manège chauffé**
 
@@ -152,7 +168,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Le manteau que le cheval se fabrique tout seul dès que les jours raccourcissent — il répond à la lumière, pas à la température, et arrive donc AVANT le froid. Les poils se dressent et emprisonnent une couche d'air tiède : c'est l'air qui réchauffe, pas le poil. Un cheval couvert de neige qui ne fond pas est un cheval qui n'a pas froid.
 
-<div dir="rtl" lang="ar">المعطف الذي يصنعه الحصان لنفسه حين تقصر الأيام: يستجيب للضوء لا للحرارة، فيسبق البرد. يقف الشعر ويحبس طبقة من الهواء الدافئ، والهواء هو ما يدفئ لا الشعر. حصان يغطيه ثلج لا يذوب هو حصان لا يشعر بالبرد.</div>
+<div dir="rtl" lang="ar">المعطف الذي يصنعه الحصان لنفسه حين تقصر الأيام: يستجيب للضوء لا للحرارة، فيسبق البرد. ينتصب الشعر ويحبس طبقة من الهواء الدافئ، والهواء هو ما يدفئ لا الشعر. حصان يغطيه ثلج لا يذوب هو حصان لا يشعر بالبرد.</div>
 
 **D8 — la buée**
 
@@ -176,7 +192,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Mettre la couverture — ou choisir de ne pas la mettre : un cheval en poil d'hiver, dehors, s'en passe souvent très bien, et trop couvrir fait transpirer sous la toile, ce qui est exactement ce qu'on voulait éviter. La main sous la couverture, à l'épaule, tranche mieux que le thermomètre.
 
-<div dir="rtl" lang="ar">وضع الغطاء، أو اختيار عدم وضعه: حصان بالشعر الشتوي في الخارج يستغني عنه غالبا، والإفراط في التغطية يجعله يعرق تحت القماش، وهو ما أردنا تجنبه. وضع اليد تحت الغطاء عند الكتف أدق من الاعتماد على مقياس الحرارة.</div>
+<div dir="rtl" lang="ar">وضع الغطاء، أو اختيار عدم وضعه: فالحصان ذو الشعر الشتوي الذي يعيش في الخارج يستغني عنه غالبا، والإفراط في التغطية يجعله يعرق تحت القماش، وهو ما أردنا تجنبه. وضع اليد تحت الغطاء عند الكتف أدق من الاعتماد على مقياس الحرارة.</div>
 
 **D11 — la chemise séchante *(la polaire)***
 
@@ -184,7 +200,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > La toile qu'on jette sur un cheval trempé de sueur pour qu'il sèche sans se refroidir : la laine ou la polaire boit l'humidité et la fait passer à travers. On la met après le travail, on l'enlève quand le cheval est sec, et alors seulement on remet la couverture. Le froid n'a jamais rendu un cheval malade — l'humidité sous une toile, oui.
 
-<div dir="rtl" lang="ar">القماش الذي يوضع على حصان مبلل بالعرق ليجف دون أن يبرد: الصوف أو الفليس يمتص الرطوبة ويمررها إلى الخارج. يوضع بعد العمل، ويرفع حين يجف الحصان، وعندها فقط يعاد الغطاء. البرد لم يمرض حصانا قط، أما الرطوبة تحت القماش فنعم.</div>
+<div dir="rtl" lang="ar">القماش الذي يوضع على حصان مبلل بالعرق ليجف دون أن يبرد: الصوف أو النسيج الصوفي الصناعي يمتص الرطوبة ويمررها إلى الخارج. يوضع بعد العمل، ويرفع حين يجف الحصان، وعندها فقط يعاد الغطاء. البرد لم يمرض حصانا قط، أما الرطوبة تحت القماش فنعم.</div>
 
 **D12 — le couvre-reins**
 
@@ -192,7 +208,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > La couverture courte qu'on garde SUR le cheval pendant qu'on le monte, posée derrière la selle. Elle tient les muscles du dos et de la croupe au chaud pendant la détente et les pauses, quand le cheval attend et refroidit sans bouger. C'est le geste le plus quotidien de l'hiver, et celui qu'on oublie le plus.
 
-<div dir="rtl" lang="ar">الغطاء القصير الذي يبقى على الحصان أثناء ركوبه، خلف السرج. يبقي عضلات الظهر والكفل دافئة أثناء الإحماء والاستراحات، حين ينتظر الحصان ويبرد دون حركة. أكثر عادات الشتاء يومية، وأكثرها نسيانا.</div>
+<div dir="rtl" lang="ar">الغطاء القصير الذي يبقى على الحصان أثناء ركوبه، خلف السرج. يبقي عضلات الظهر والكفل دافئة أثناء الإحماء والاستراحات، حين ينتظر الحصان ويبرد دون حركة. إنه من أكثر تجهيزات الشتاء استعمالا، ومع ذلك فهو من أكثرها تعرضا للنسيان.</div>
 
 **D13 — le bonnet**
 
@@ -232,7 +248,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Une résistance dans le bac, et l'eau reste liquide et tiède par −30 °C. Ce n'est pas un luxe : c'est le seul matériel d'hiver qui sauve vraiment des chevaux. Là où il n'y en a pas, on casse la glace deux fois par jour et on porte l'eau chaude à la main.
 
-<div dir="rtl" lang="ar">مقاومة كهربائية في الحوض، فيبقى الماء سائلا فاترا عند ثلاثين تحت الصفر. ليس ترفا: إنه من أهم تجهيزات الشتاء لحماية الخيول. وعند عدم توفره، يجب كسر الجليد مرتين يوميا ونقل الماء الدافئ باليد.</div>
+<div dir="rtl" lang="ar">توضع مقاومة كهربائية في الحوض، فيبقى الماء سائلا وفاترا حتى عند ثلاثين درجة تحت الصفر. ليس ترفا: إنه من أهم تجهيزات الشتاء لحماية الخيول. وعند عدم توفره، يجب كسر الجليد مرتين يوميا ونقل الماء الدافئ باليد.</div>
 
 **D18 — la déshydratation**
 
@@ -240,7 +256,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Le vrai danger de l'hiver, et personne ne s'y attend : un cheval ne boit presque pas quand l'eau est glacée, et le foin sec de l'hiver ne contient pas une goutte d'eau — là où l'herbe d'été en est gorgée. C'est ainsi que naissent les coliques de janvier. On ne surveille pas le froid, on surveille les abreuvoirs.
 
-<div dir="rtl" lang="ar">خطر الشتاء الحقيقي، ولا أحد يتوقعه: الحصان لا يكاد يشرب عندما يكون الماء شديد البرودة، والدريس الجاف في الشتاء يحتوي على قدر قليل جدا من الماء، بخلاف عشب الصيف المشبع. وهكذا تزداد حالات المغص في الشتاء. لا نراقب البرد، بل نراقب المشارب.</div>
+<div dir="rtl" lang="ar">خطر الشتاء الحقيقي، ولا أحد يتوقعه: الحصان لا يكاد يشرب عندما يكون الماء شديد البرودة، والدريس الجاف في الشتاء يحتوي على قدر قليل جدا من الماء، بخلاف عشب الصيف المشبع. وهكذا تزداد حالات المغص في الشتاء. لا نراقب البرد وحده، بل نراقب أحواض الشرب قبل كل شيء.</div>
 
 **D19 — faire boire**
 
@@ -264,7 +280,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > La fin de l'hiver, et sa saison la plus boueuse : le sol dégèle par le haut et l'eau ne s'en va pas, parce qu'il reste gelé dessous. Les pieds trempent, la peau des paturons s'irrite, et l'on attend une semaine avant de retravailler. Le dégel casse plus de saisons que le froid.
 
-<div dir="rtl" lang="ar">نهاية الشتاء، وأكثر مواسمه وحلا: تذوب الطبقة العليا من الأرض، لكن الماء لا يتصرف لأن الطبقات السفلى تبقى متجمدة. تنقع الحوافر، ويتهيج جلد أسفل القوائم، وننتظر أسبوعا قبل العودة إلى العمل. قد يضر ذوبان الجليد بموسم العمل أكثر من البرد نفسه.</div>
+<div dir="rtl" lang="ar">نهاية الشتاء، وأكثر مواسمه وحلا: تذوب الطبقة العليا من الأرض، لكن الماء لا يجد طريقا للتصريف لأن الطبقات السفلى تبقى متجمدة. تنقع الحوافر، ويتهيج جلد أسفل القوائم، وننتظر أسبوعا قبل العودة إلى العمل. قد يضر ذوبان الجليد بموسم العمل أكثر من البرد نفسه.</div>
 
 **D22 — le chinook**
 
@@ -408,7 +424,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > L'eau tiède, il en boit deux fois plus.
 
-<div dir="rtl" lang="ar">يشرب من الماء الفاتر ضعف الكمية التي يشربها من الماء البارد.</div>
+<div dir="rtl" lang="ar">يشرب من الماء الفاتر ضعف ما يشربه من الماء البارد.</div>
 
 **E21** · **Le club**
 
@@ -460,8 +476,8 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > L'eau tiède, il en boit deux fois plus.
 
-<div dir="rtl" lang="ar">يشرب من الماء الفاتر ضعف الكمية التي يشربها من الماء البارد.</div>
+<div dir="rtl" lang="ar">يشرب من الماء الفاتر ضعف ما يشربه من الماء البارد.</div>
 
 ---
 
-*23/08/2026 · 60 entrées : 5 textes d'accueil, 2 de lettre, 3 volets, 22 mots, 22 répliques, 6 phrases.*
+*23/08/2026 · 60 entrées.*

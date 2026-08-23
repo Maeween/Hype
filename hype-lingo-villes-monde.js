@@ -851,7 +851,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       de:["Minus zwanzig heute Morgen, und alle waren draußen.","Der Dampf stieg in geraden Säulen aus den Boxen, die Rockys schlossen den Horizont, und die erste Frage, die man mir stellte, war nicht « reitest du? », sondern « hat deiner getrunken? »."],
       ja:["今朝は氷点下二十度。それでも、みんな外にいた。","馬房から湯気がまっすぐな柱になって立ちのぼり、地平線はロッキー山脈が閉じていた。最初に聞かれたのは「乗るの？」ではなく「きみの馬、水は飲んだ？」だった。"],
       /* 🟡 arabe dormant (23/08) — aucun écran ne le lit. */
-      ar:["عشرون تحت الصفر هذا الصباح، والجميع كان في الخارج.", "كان البخار يتصاعد من الحجرات في أعمدة مستقيمة، وجبال الروكي تسد الأفق، وأول سؤال طرح علي لم يكن «هل تركبين؟» بل «هل شرب حصانك؟»."]},
+      ar:["عشرون تحت الصفر هذا الصباح، والجميع كان في الخارج.", "كان البخار يتصاعد من الحجرات في أعمدة مستقيمة، وكانت جبال الروكي تسد الأفق. وأول سؤال طرح علي لم يكن: «هل تركب؟»، بل: «هل شرب حصانك؟»"]},
     volets:[
      {t:{fr:"Spruce Meadows", en:"Spruce Meadows", es:"Spruce Meadows", it:"Spruce Meadows", de:"Spruce Meadows", ja:"スプルース・メドウズ", ar:"سبروس ميدوز"},
       c:{
@@ -861,7 +861,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"Alle porte di Calgary, uno dei grandi appuntamenti del salto ostacoli mondiale. Creato da una famiglia negli anni Settanta, il sito ospita ogni estate tornei che richiamano i migliori cavalieri del mondo — e il suo gran premio è tra i più ricchi dello sport.",
           de:"Vor den Toren Calgarys liegt einer der großen Treffpunkte des Weltspringsports. In den 1970er-Jahren von einer Familie aufgebaut, empfängt die Anlage jeden Sommer Turniere mit den besten Reitern der Welt — und ihr Großer Preis gehört zu den höchstdotierten des Sports.",
           ja:"カルガリー郊外にある、世界の障害馬術の大舞台のひとつ。一九七〇年代にひとつの家族が築き、毎年夏には世界のトップ騎手が集まる大会が開かれます。そのグランプリは、この競技で最も賞金の高い大会のひとつに数えられます。",
-          ar:"على أبواب كالغاري، أحد أكبر مواعيد القفز في العالم. أنشأته عائلة في سبعينيات القرن الماضي، ويستضيف كل صيف بطولات يأتي إليها أفضل فرسان العالم، وجائزته الكبرى من بين الأعلى قيمة في هذه الرياضة."}},
+          ar:"عند أبواب كالغاري يقع أحد أكبر ملتقيات قفز الحواجز في العالم. أنشأته عائلة في سبعينيات القرن الماضي، ويستضيف كل صيف بطولات يشارك فيها أفضل فرسان العالم، وتعد جائزته الكبرى من أعلى الجوائز قيمة في هذه الرياضة."}},
      {t:{fr:"Le chinook", en:"The chinook", es:"El chinook", it:"Il chinook", de:"Der Chinook", ja:"チヌーク", ar:"رياح الشينوك"},
       c:{
           fr:"L'Alberta connaît un vent qui n'existe presque nulle part ailleurs : le chinook, un vent chaud qui descend des Rocheuses et peut faire remonter la température de vingt degrés en quelques heures. Les chevaux le sentent avant les thermomètres — et avant nous.",
@@ -870,7 +870,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"L'Alberta conosce un vento che quasi non esiste altrove: il chinook, un vento caldo che scende dalle Montagne Rocciose e può far risalire la temperatura di venti gradi in poche ore. I cavalli lo sentono prima dei termometri — e prima di noi.",
           de:"Alberta kennt einen Wind, den es fast nirgendwo sonst gibt: den Chinook, einen warmen Wind, der von den Rockys herabfällt und die Temperatur in wenigen Stunden um zwanzig Grad steigen lassen kann. Die Pferde spüren ihn vor den Thermometern — und vor uns.",
           ja:"アルバータには、ほかではめったに出会えない風があります。チヌーク — ロッキー山脈から吹き下ろす暖かい風で、数時間で気温を二十度も上げることがあります。馬たちは温度計より先に、そして私たちより先に、それを感じ取ります。",
-          ar:"تعرف ألبرتا رياحا لا وجود لها في أماكن كثيرة: الشينوك، رياح دافئة تهبط من جبال الروكي وقد ترفع درجة الحرارة عشرين درجة في ساعات. والخيول تشعر بها قبل موازين الحرارة، وقبلنا نحن."}},
+          ar:"تعرف ألبرتا رياحا لا وجود لها في أماكن كثيرة: الشينوك، رياح دافئة تهبط من جبال الروكي وقد ترفع درجة الحرارة عشرين درجة في ساعات. وتشعر بها الخيول قبل أن تسجلها أجهزة قياس الحرارة، وقبل أن نشعر بها نحن."}},
      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
       c:{
           fr:"Viens en été pour le grand tournoi, sous le soleil et devant les tribunes pleines. Mais si tu veux comprendre ce chapitre, reviens un matin d'hiver : l'écurie à moins vingt, l'eau qu'on casse, la buée — c'est là que le pays se raconte vraiment.",
@@ -879,7 +879,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"Vieni d'estate per il grande torneo, sotto il sole e davanti alle tribune piene. Ma se vuoi capire questo capitolo, torna una mattina d'inverno: la scuderia a meno venti, l'acqua da rompere, il vapore — è lì che questo paese si racconta davvero.",
           de:"Komm im Sommer zum großen Turnier, in der Sonne, vor vollen Tribünen. Aber wenn du dieses Kapitel verstehen willst, komm an einem Wintermorgen wieder: der Stall bei minus zwanzig, das Wasser, das man aufbricht, der Dampf — dort erzählt sich dieses Land wirklich.",
           ja:"夏に来れば、太陽の下、満員のスタンドの前で大きな大会が見られます。でもこの章を理解したいなら、冬の朝にもう一度来てください。氷点下二十度の厩舎、割って開ける水、立ちのぼる湯気 — この国の本当の物語は、そこにあります。",
-          ar:"تعالي في الصيف من أجل البطولة الكبرى، تحت الشمس وأمام مدرجات ممتلئة. لكن إن أردت أن تفهمي هذا الفصل، فعودي في صباح شتوي: الإسطبل عند عشرين تحت الصفر، والجليد الذي يكسر، والبخار — هناك يروي البلد نفسه حقا."}}
+          ar:"تعالي في الصيف من أجل البطولة الكبرى، تحت الشمس وأمام مدرجات ممتلئة. لكن إن أردت أن تفهمي هذا الفصل، فعودي في صباح شتوي: الإسطبل عند عشرين درجة تحت الصفر، والماء الذي يجب كسر جليده، وبخار الأنفاس — هناك يكشف هذا البلد عن حقيقته."}}
     ]
   };
 
