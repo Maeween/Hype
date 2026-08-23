@@ -164,6 +164,95 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 
 ---
 
+## SESSION 157 — 23/08/2026 (22h40) · 🟥 INCIDENT — L'APP PLANTAIT SUR LA FICHE CHEVAL
+
+**Livré : `index.html`** md5 `268f4078c633567a9c01d4cde4a92032`. Part **seul**.
+`hype-import-ffe.js` inchangé (`509c5391…`), toujours à pousser s'il ne l'est pas.
+
+### 🟥 L'INCIDENT — signalé par Blandine à 22h35
+
+« Un caillou dans le sabot » sur la fiche cheval. Trace : `EcranCheval` → `forEach` →
+ligne 33815.
+
+**Cause : j'ai supprimé une fonction sans le voir.** En session 155, le remplacement du bloc
+de dessin (tuile en vrai carré, deux icônes) découpait de `function punaise` jusqu'à
+`var blocs`. **`function grille` était dedans**, et mon nouveau bloc ne la contenait pas.
+
+L'appel `blocs.push(grille(jeu, "s" + a))` tombait alors sur **l'autre `grille` du fichier**,
+celle des RÉGLAGES (ligne ~47196), qui attend des arguments entièrement différents. L'app
+tombait.
+
+🟥 **`node --check` n'a rien vu, et ne pouvait rien voir : la syntaxe était parfaite.** C'est
+mot pour mot le piège écrit dans la passation du 22/08. Trois livraisons ont été faites
+entre-temps sans que ça se voie.
+
+🟥 **Le nom `grille` existe DEUX FOIS dans `index.html`.** Ne jamais se fier à la portée :
+vérifier que la définition locale est encore là.
+
+### LA PARADE, POSÉE AUJOURD'HUI
+
+**La page est désormais RENDUE hors navigateur avant livraison.** Un banc extrait le bloc
+tel quel de `index.html`, simule `h`, `T`, `tA`, les faits et les épingles, et exécute le
+rendu. Résultat de ce soir : **127 nœuds**, épinglés en tête, quatre saisons, places et
+partants corrects.
+
+C'est le seul contrôle qui aurait attrapé ce bug. **À rejouer à chaque modification de la
+page des résultats.**
+
+### AUSSI DANS CETTE LIVRAISON
+
+**La barre du bas passe au bleu nuit des onglets** — choix de Blandine.
+`COLORS.nuitClaire` (`#1B212A`, la couleur des cartes) → `#172D41` fondu vers `#0A0E12`,
+le bleu relevé à la pipette dans le fond de sa coupe, déjà posé sur les onglets du palmarès.
+
+Même effet de bord que le turquoise devenu néon : on avait assombri le fond à `#060709`
+sans retoucher ce qui se pose dessus.
+
+### CE QUI A ÉTÉ ÉCARTÉ, MESURÉ
+
+**Le noir de page ne change pas.** Blandine a entouré « le noir qu'elle veut » : relevé au
+pixel dans sa capture, c'est **`#060709`** — celui qu'elle a déjà. Ce qui la gênait était le
+gris **`#151515`** du navigateur intégré d'iOS autour de la maquette, pas son fond.
+🟥 Toute maquette de couleur doit désormais être **plein écran**, sinon iOS fausse le
+jugement.
+
+### À l'écran : + / −
+
+- **+** la fiche cheval fonctionne à nouveau (elle était morte depuis la session 155)
+- **modifié** : la barre du bas passe du gris des cartes au bleu nuit des onglets
+- **−** rien
+
+### Contrôles passés
+
+149 blocs `<script>`, 0 échec · `function grille(liste, cle)` présente ×1 · l'ancien fond de
+barre a bien disparu · **page rendue hors navigateur, 127 nœuds** · diff cumulé : 510 lignes
+sur 23 endroits.
+
+### 🔴 TOUJOURS OUVERT
+
+1. **Les chiffres de la fiche sont faux** : 2 victoires pour 53 classés, impossible — les
+   PDF donnent 49 sur 166. Une requête a été passée à Blandine à 22h07, sans réponse.
+   **Rien de ce qui est empilé par-dessus ne repose sur du juste tant que ce n'est pas vu.**
+2. **Le tri met « 3ᵉ sur 4 » avant « 2ᵉ sur 30 »** : `meilleursPalmares` range par rang puis
+   par taille du peloton. Défaut de conception de ma part, non corrigé.
+3. **La vidéo d'aide n'est pas branchée.** `aide-import.mp4` (1,45 Mo) et sa couverture E
+   sont prêtes, la maquette est validée (centrée, 280 px, plein écran au tap). Reste à
+   poser dans l'écran d'import et à pousser les deux fichiers sur GitHub.
+4. **La barre du bas se plante toujours au milieu de l'écran** par moments. `overflow: clip`
+   n'a rien réglé — l'hypothèse était fausse. La sortie identifiée est
+   `ReactDOM.createPortal` vers le `body`, **non faite**.
+
+### Préparation Flutter
+
+Aucune amélioration d'architecture. Mais l'incident tranche une question de méthode :
+**un banc qui exécute vaut mieux que dix contrôles de syntaxe.** Le socle de fonctions pures
+constitué depuis la session 153 (`faitsPalmares`, `epinglesPalmares`, `meilleursPalmares`,
+`courtEpreuve`, `reparerAccents`, le compteur de sorties) est précisément ce qui rend ce
+banc possible : elles se simulent en dix lignes. **C'est l'argument le plus concret en
+faveur du module `palmares.js` détachable** — non fait, aucun feu vert.
+
+---
+
 ## SESSION 156 — 23/08/2026 (nuit) · LES DEUX ENTONNOIRS
 
 **Livrés ENSEMBLE : `index.html`** md5 `c8c3ea808b7ecde49eeea6f085acfc24` **+ `hype-import-ffe.js`** md5 `509c539119c16ecd56abf684ab04e4dc`.
