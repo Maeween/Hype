@@ -164,6 +164,383 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 
 ---
 
+## SESSION 156 — 23/08/2026 (nuit) · LES DEUX ENTONNOIRS
+
+**Livrés ENSEMBLE : `index.html`** md5 `c8c3ea808b7ecde49eeea6f085acfc24` **+ `hype-import-ffe.js`** md5 `509c539119c16ecd56abf684ab04e4dc`.
+🟥 L'index appelle `?v=3`. Pousser l'index seul = écran d'import mort.
+
+### LA MESURE QUI A TOUT TRANCHÉ
+
+Le lecteur du module a été **rejoué hors du téléphone** sur les sept telemat de Rizotto
+d'Émery. Il lit **178 lignes** — exactement tout ce que le cheval a couru. **Le lecteur
+n'a jamais rien raté.**
+
+La base, elle, n'avait que **85** lignes (2020 : 13, 2021 : 20, 2022 : 18, 2023 : 19,
+2024 : 6, 2025 : 5, 2026 : 4, plus 2019). Il manquait ~72 lignes **classées** — donc ni
+les éliminés (12 en tout), ni le garde-fou anti-doublons.
+
+### LA CAUSE — deux entonnoirs, ligne 663 du module
+
+```js
+var vis = E.cavalier ? toutes.filter(…) : toutes;
+var aGarder = vis.filter(function (r) { return r.garder; });
+```
+
+🟥 **La règle était écrite en commentaire juste au-dessus des NIVEAUX, et le code faisait
+l'inverse depuis le début** : *« enregistre TOUT, le filtre ne fait que décider ce qui
+s'affiche — colonne `visible` »*.
+
+- **L'écran de choix** posait `garder` selon le niveau. Avec « Ses classements », seules
+  les lignes de **quart 1** partaient. Le reste était **jeté**, pas caché.
+  (La fiche affichait 60 classements pour 85 lignes : les ordres de grandeur collent.)
+- **Le filtre cavalier** : une pastille allumée au moment d'enregistrer, et seules les
+  lignes de ce cavalier partaient.
+
+**Conséquence pour la session 154 :** la correction posée le soir même dans
+`enregistrerImportFFE` était juste mais **inopérante** — elle attendait des lignes que le
+module ne lui envoyait jamais. Corrigé en amont ici.
+
+### CE QUI CHANGE
+
+**Le module envoie tout ce qui a été couru.** `garder` ne pilote plus que `visible`, le
+filtre cavalier ne pilote plus que l'affichage. Seuls forfaits et épreuves annulées restent
+dehors — le cheval n'a pas couru.
+
+**Le bouton devient honnête.** Il annonçait « Enregistrer N résultats » avec N = les lignes
+cochées, alors qu'il en écrit bien plus. Il annonce le vrai total, et une phrase sous lui
+dit ce que font les coches.
+
+**Le cavalier entre dans la clé anti-doublons.** Sans lui, deux passages du même jour, même
+épreuve, même concours, montés par deux cavalières différentes n'en faisaient qu'un.
+Cas réel : CEZ DE RAMBOUILLET, 22/09/2019, Club 2 Grand Prix — Mathilde Douillet 15ᵉ sur 61
+et Louane Maduro 33ᵉ sur 61. La seconde était écartée en silence.
+
+**`?v=2` → `?v=3`** : le module change, la version DOIT suivre (règle de la session 152l).
+
+### Banc d'essai, chaîne complète sur les sept saisons
+
+Niveau le **plus restrictif** appliqué (« Ses classements »), donc le pire cas :
+
+| | |
+|---|---|
+| lues par le module | 178 |
+| **envoyées à l'enregistrement** | **178** |
+| dont cochées (visible) | 90 |
+| dont décochées (gardées, non affichées) | 88 |
+| dont éliminés / abandons | 12 |
+| perdues par la clé **avec** cavalier | **0** |
+| perdues par la clé sans cavalier | 2 |
+
+### À l'écran : + / −
+
+- **modifié** : le bouton annonce le vrai total enregistré, plus le nombre de cochées
+- **+** une phrase sous le bouton : « Tout est enregistré, N lignes décochées seront gardées
+  sans être affichées »
+- **−** le message « aucune ligne cochée » : il ne peut plus se produire
+
+### 🟥 CE QUE BLANDINE DOIT FAIRE APRÈS LE PUSH
+
+**Réimporter les sept saisons**, en choisissant **« Tous ses résultats »**. Les ~93 lignes
+manquantes ne sont nulle part et n'apparaîtront pas seules. Le garde-fou n'écrira que ce
+qui manque.
+
+### Contrôles passés
+
+`node --check` sur le module · 149 blocs `<script>` de l'index, **0 échec** · lecteur rejoué
+sur les 7 PDF · chaîne complète rejouée, 178/178, aucune perte.
+
+⚠️ Toujours **aucune vérification au rendu**.
+
+### Préparation Flutter
+
+Aucun refactor. Mais la session met au jour un défaut de méthode plus grave que le bug :
+**le commentaire disait la règle, le code faisait l'inverse, et personne ne l'a vu pendant
+deux jours.** Un commentaire n'est pas un contrat. La parade est un banc d'essai comme
+celui d'aujourd'hui — le lecteur du module tourne hors navigateur, sur de vrais PDF, en
+quelques secondes. **À garder et à rejouer à chaque modification de l'import.**
+
+---
+
+## SESSION 155 — 23/08/2026 (nuit) · DE VRAIS CARRÉS
+
+**Livré : `index.html`** md5 `a2d432260333ebcd50fd7999e1461461`. Part **seul**.
+🟥 **Une requête SQL AVANT de pousser** (voir plus bas).
+
+### CE QUE BLANDINE A DIT, ET CE QUI EN A ÉTÉ FAIT
+
+**« Ce ne sont pas des carrés, c'est des rectangles qui vont vers le bas. »**
+Exact. La tuile portait `minHeight: 196` : le texte la poussait vers le bas et rien ne
+l'arrêtait. Elle porte maintenant **`aspectRatio: "1 / 1"`** — donc un carré, toujours — et
+`2.1 / 1` en pleine largeur. Le texte est **borné** au lieu de pousser : titre sur 2 lignes,
+épreuve sur 1, cavalier sur 1, tous coupés proprement.
+
+**« On ne la voit plus du tout, celle pour épingler. »**
+Deux causes, corrigées ensemble. Le trait était en **blanc à 22 pour cent** sur du presque
+noir — invisible sur un téléphone : passé à **48 pour cent**. Et les deux gestes étaient au
+même coin : la **punaise passe en HAUT À GAUCHE**, le **format en BAS À DROITE**.
+
+**« Tu ne peux pas raconter ta vie sur l'encart. »**
+`courtEpreuve()` ôte la discipline en tête (déjà donnée par le contexte) et abrège :
+`Grand Prix` → `GP`, `Circuit Dpt` → `Dpt`, `Chp Reg` → `Chp Rég`, `Chp des Territoires`
+→ `Territoires`, `Excellence` → `Exc.`
+*« CSO Poney 1 D Grand Prix Chp Reg Circuit Dpt »* (44 signes) devient
+**« Poney 1 D GP Chp Rég Dpt »** (24).
+🟥 **Le nom complet reste intact en base.** Ce raccourci ne sert QU'À l'affichage.
+
+**Trouvé au passage : la FFE renvoie du texte cassé.** *« PrÃÂ©paratoire »*, *« SpÃÂ©ciale »* —
+doublement encodé. Réparé par **table directe** : `decodeURIComponent(escape(...))` lève
+« URI malformed » sur ces chaînes et ne répare rien du tout. Vérifié sur les telemat 2021
+et 2024.
+
+### LE FORMAT AU DOIGT — nouvelle fonction
+
+Une icône en bas à droite de chaque tuile : rectangle large quand elle est carrée, carré
+quand elle est large. Réservée au propriétaire, comme la punaise.
+`resultats.format_large` : `null` = jamais choisi → **règle automatique conservée**
+(victoire sur 40 partants ou plus = large, **choix de Blandine** au questionnaire),
+`true` / `false` = son choix, qui gagne toujours.
+
+### 🟥 LA REQUÊTE SQL
+
+```sql
+alter table public.resultats
+  add column if not exists format_large boolean;
+notify pgrst, 'reload schema';
+```
+
+### À l'écran : + / −
+
+- **modifié** : les carrés sont de vrais carrés, les noms d'épreuves sont abrégés, les
+  accents cassés de la FFE sont réparés
+- **+** une icône de format en bas à droite de chaque tuile (propriétaire seulement)
+- **−** la punaise du coin haut-droit : elle passe en haut à gauche
+- **−** du texte : titre borné à 2 lignes, épreuve à 1, cavalier à 1
+
+### Contrôles passés
+
+149 blocs `<script>`, **0 échec** · `courtEpreuve` rejoué sur les vrais libellés des sept
+telemat · réparation d'accents vérifiée sur les quatre cas cassés.
+
+⚠️ **Aucune vérification au rendu.** En particulier : avec `aspectRatio`, un texte trop long
+est désormais **coupé** au lieu de déborder. Si Blandine voit des noms tronqués trop tôt,
+c'est ce réglage qu'il faudra desserrer, pas le carré.
+
+### Préparation Flutter
+
+`courtEpreuve()` et `reparerAccents()` sont **deux fonctions pures de plus** dans le socle,
+sans dépendance à React ni au DOM. Elles rejoignent `faitsPalmares()`,
+`epinglesPalmares()`, `meilleursPalmares()` et le compteur de sorties. **Six fonctions de
+domaine** existent maintenant pour le palmarès. **Reste à faire, et ça devient urgent** :
+elles vivent toutes dans `EcranCheval`, qui gonfle. Un module `palmares.js` détachable,
+sur le modèle de `hype-stories.js`, est le prochain geste — non fait, aucun feu vert.
+
+---
+
+## SESSION 154 — 23/08/2026 (soir) · LES CHIFFRES DISAIENT FAUX
+
+**Livré : `index.html`** md5 `3db62fac3b796c63ef48811e95534aa7`. Part **seul**.
+Contient aussi la session 153 (page des résultats, épingles) et le `overflow: clip`.
+
+### CE QUE LES SEPT PDF DISENT VRAIMENT
+
+Comptage fait sur les sept telemat de Rizotto d'Émery (2020→2026), extraits et
+dépouillés ligne à ligne :
+
+| | |
+|---|---|
+| lignes dans les PDF | **230** |
+| a couru (parcours) | **178** |
+| — classés | 166 |
+| — éliminés + abandons | 12 |
+| n'a pas couru (37 forfaits + 15 annulées) | 52 |
+| victoires | **49** |
+| podiums | **81** |
+| sorties (week-end groupé) | **94** |
+
+L'app affichait **64 sorties et 37 victoires**. Deux causes distinctes.
+
+### 1. L'IMPORT NE GARDAIT PAS TOUT — corrigé
+
+`enregistrerImportFFE` filtrait sur `r.garder && r.statut === "classe"`. Ça violait **deux
+décisions de Blandine** écrites dans la passation du 22/08 :
+
+- *« ON ENREGISTRE TOUT, le filtre ne décide que de ce qui s'affiche »* — les lignes
+  décochées étaient **jetées**, pas écrites en `visible = false`. Elle ne pouvait pas
+  changer d'avis sans tout réimporter.
+- *« Éliminés et abandons COMPTENT dans le palmarès »* — ils portent `statut` `elimine`
+  ou `abandon`, ils étaient **écartés d'office**. 12 parcours manquants.
+
+Désormais : tout ce qui a été couru est écrit. Seuls **forfaits et épreuves annulées**
+restent exclus — le cheval n'a pas couru, c'est la règle. `visible` porte le choix de la
+coche. Le `classement` des non-classés vaut `El.` ou `Ab.`.
+
+### 2. LES COMPTEURS COMPTAIENT AUTRE CHOSE — corrigé
+
+**« SORTIES » comptait les lignes**, donc les parcours. **Décision de Blandine : une sortie
+est un déplacement** — même concours, jours consécutifs = une seule sortie. Un week-end à
+Barbizon compte pour un.
+
+⚠️ **94, et non 93.** Ma première mesure utilisait la semaine ISO, qui coupait en deux un
+concours à cheval sur dimanche et lundi. La règle posée dans le code regroupe les **jours
+consécutifs**, sans trou de calendrier. Vérifié en rejouant le code livré sur les 178
+parcours réels.
+
+**« CLASSEMENTS » comptait les `quart === 1`**, c'est-à-dire le premier quart du peloton —
+pas les classements. Renommé **« CLASSÉS »**, et compte les parcours qui ont une place.
+
+Victoires et podiums restent comptés **sur les parcours** : gagner deux épreuves dans le
+week-end, c'est deux victoires.
+
+### 🟥 CE QUI RESTE FAUX TANT QUE BLANDINE N'A PAS RÉIMPORTÉ
+
+La base ne contient que 64 lignes sur 178. **Les lignes manquantes ne sont nulle part** :
+elles n'apparaîtront pas toutes seules. Il faut **réimporter les sept saisons**. Le
+garde-fou anti-doublons est en place, un réimport n'écrira que ce qui manque.
+
+### À l'écran : + / −
+
+- **modifié** : « SORTIES » affiche les jours de concours groupés par week-end, plus les
+  parcours · « CLASSEMENTS » devient « CLASSÉS » et compte les parcours classés
+- **+** après réimport : les éliminés et abandons apparaissent dans le palmarès
+- **−** rien ne disparaît
+
+### Contrôles passés
+
+149 blocs `<script>`, **0 échec** · le calcul des sorties **rejoué à l'identique** sur les
+178 parcours extraits des PDF : 94 sorties, 49 victoires, 81 podiums, 166 classés.
+
+⚠️ Toujours **aucune vérification au rendu**.
+
+### Préparation Flutter
+
+Le compteur de sorties est écrit en **fonction close, sans dépendance à React** : il prend
+des lignes, il rend un nombre. Il rejoint `faitsPalmares()`, `epinglesPalmares()` et
+`meilleursPalmares()` de la session 153 dans le socle de calcul réutilisable. **Reste à
+faire** : ces quatre fonctions vivent encore dans le composant `EcranCheval`, elles
+devraient sortir dans un module de domaine — c'est le prochain geste naturel, non fait.
+
+---
+
+## SESSION 153 — 23/08/2026 · LA PAGE DES RÉSULTATS EXISTE
+
+🟥 **CORRECTIF AJOUTÉ À 18h35 — la barre du bas.** Le fichier livré est désormais
+`7b4f7b92c155a5a8c75562c0880db40b` (et non `ae99012f…`, périmé, ne pas pousser).
+
+Le conteneur interne du Router (ligne 21901, celui en `maxWidth: 480`) portait
+`overflow: "hidden"`. Ça en fait un **conteneur de défilement**, et WebKit y accroche
+parfois la `NavBar` en `position: fixed` — elle restait **plantée au milieu de l'écran**,
+constaté par Blandine à 10h18 puis à 18h30. Passé en **`overflow: "clip"`** : même coupe
+à l'œil, sans conteneur de défilement.
+
+Même famille que le bug de défilement Android d'août, même remède. 🟥 **Ne jamais remettre
+`hidden` ici.** Vérifié : aucun ancêtre de la NavBar ne porte `transform`, `filter`,
+`backdrop-filter` ni `will-change` — `overflow` était le seul suspect.
+
+⚠️ **C'est une hypothèse, pas une preuve.** Le défaut est intermittent : il faudra que
+Blandine scrolle plusieurs fois avant de pouvoir dire que c'est réglé.
+
+**Livré : `index.html`** md5 `ae99012f80e14c82209a740c8b570500`, 9 345 811 octets.
+Part **seul**. `hype-import-ffe.js` inchangé (`26da2f7b…`).
+🟥 **Une requête SQL est à passer AVANT de pousser** (voir plus bas) : sans la colonne
+`epingle_rang`, la page s'affiche mais chaque tap sur une punaise renverra une erreur.
+État de départ vérifié : `b150507d…` ✅, identique à la livraison du matin.
+
+### LA VICTOIRE DE LA JOURNÉE — l'import écrit enfin
+
+`Could not find the 'cavalier' column of 'resultats'` : la colonne n'existait pas. La table
+portait **`monteur`**, vide et lue nulle part. Blandine a tranché — **renommer en base**,
+pas dans le code : `alter table public.resultats rename column monteur to cavalier;` puis
+`notify pgrst, 'reload schema';`. **64 sorties, 37 victoires, 56 podiums, 60 classements**
+sont en base sur Rizotto d'Émery.
+
+🟥 **Le bouton n'a JAMAIS été en cause.** Preuve à l'image, enregistrement du 23/08 10h18
+décomposé à 10 im/s : le bouton passait à « … » 200 ms à chaque tap. Deux jours de chasse
+sur un gestionnaire qui marchait, pendant que le vrai message d'erreur s'affichait 120 px
+sous l'écran et qu'un `?v=1` figé empêchait toute correction d'arriver sur le téléphone.
+
+### CE QUI EST CODÉ
+
+**1. La page des résultats** (panneau `palmares` de la fiche cheval), en **React dans
+`index.html`** — `hype-resultats.js` reste neutralisé, il n'est pas ressuscité.
+Maquette validée : tuiles « Fraction » (place en grand + le mot PLACE + « sur N partants »),
+pondérée, rangée par saison, épinglés en tête. Le rail de flots reste **intact**, dessiné
+juste au-dessus comme avant.
+
+**2. L'épingle.** Punaise en trait fin sur chaque tuile, visible **seulement pour le
+propriétaire du cheval**. Pleine et dans la teinte quand elle est posée.
+🟥 Un épinglé **quitte sa saison** — il n'apparaît jamais deux fois (vérifié au banc).
+🟥 Les lignes du palmarès **écrit en dur** dans `CHEVAUX_FICHE` n'ont pas de ligne en base :
+elles ne sont **pas épinglables**, leur punaise n'est pas affichée.
+
+**3. La fiche cheval.** Rien d'épinglé → les 7 meilleurs calculés, **exactement comme
+avant**. Des épinglés → ils passent devant, les meilleurs remplissent derrière jusqu'à 7.
+Plafond de SEPT inchangé.
+
+**4. Le chemin.** Le bloc « EN CONCOURS » appelait `bientot()` dès qu'il y avait un
+résultat — c'est la pastille « Bientôt disponible » que Blandine voyait. Il ouvre
+maintenant le panneau `palmares`. Sans résultat et sur son propre cheval, il ouvre
+toujours l'import.
+
+### 🟥 LA REQUÊTE SQL — à passer AVANT de pousser
+
+```sql
+alter table public.resultats
+  add column if not exists epingle_rang smallint;
+notify pgrst, 'reload schema';
+```
+
+`null` = pas épinglé. Sinon le rang de pose (1, 2, 3…), qui garde l'ordre.
+
+### DÉDUCTIONS DE CLAUDE — à valider, ce ne sont PAS des décisions de Blandine
+
+- **plafond à 7 épinglés**, aligné sur le plafond de la fiche. Un message le dit si on
+  dépasse. Elle n'a jamais donné de chiffre.
+- **ordre des épinglés** : celui de la pose. Elle n'a pas tranché entre ça et « le plus
+  récent d'abord ».
+- **une tuile passe en pleine largeur** si c'est une victoire sur 40 partants ou plus.
+  Le seuil est de moi.
+
+### DÉFAUTS TROUVÉS PENDANT L'ÉCRITURE, ET CORRIGÉS
+
+- `__id` manquait dans le résumé de la fiche : un épinglé ressortait **deux fois**.
+- une saison dont **tous** les résultats sont épinglés disparaissait sans un mot. Elle
+  reste affichée, avec son bilan complet et le bandeau « N remontés en haut ».
+- les lignes de la table portent `id`, pas `__id` : la première version des épingles ne
+  visait aucune ligne.
+
+### À l'écran : + / −
+
+- **+** la page des résultats complète, atteignable en tapant le bloc « EN CONCOURS »
+  ou « Voir tout son palmarès → »
+- **+** une punaise sur chaque tuile, **pour le propriétaire du cheval uniquement**
+- **+** un message si on dépasse sept épinglés, un autre si l'enregistrement échoue
+- **−** la pastille « Bientôt disponible » sur le bloc EN CONCOURS
+- **−** l'ancienne liste `palmTous.map(prow)` du panneau Performances
+- **inchangé** : le rail de flots, la vidéo de teinte en tête de panneau, les boutons
+  « Importer mes résultats » et « Ajouter un résultat », les onglets Souvenirs/Vidéos
+
+### Contrôles passés
+
+149 blocs `<script>`, **0 échec** · banc d'essai de la logique épingles : aucun doublon,
+les épinglés quittent leur saison, les lignes en dur ne sont pas épinglables · diff :
+**289 lignes sur 7 endroits**.
+
+⚠️ **Rien n'a été vérifié au rendu** — pas de navigateur ici. La page n'a jamais été
+affichée. Premier tap = premier test.
+
+### Préparation Flutter
+
+Deux fonctions pures créées et **partagées** entre la page et le résumé de la fiche :
+`faitsPalmares()` (une seule normalisation des lignes, quelle que soit leur origine —
+table ou dur), `epinglesPalmares()` et `meilleursPalmares()` (le tri, isolé du dessin).
+C'est le premier endroit du palmarès où le calcul et l'affichage sont séparés : Flutter
+pourra reprendre ces trois fonctions telles quelles. `idEpinglable()` fixe au passage un
+contrat clair — ce qui vient de la base est modifiable, ce qui est écrit en dur ne l'est
+pas. **Reste à moderniser** : `palmTous` et `prow` survivent pour la page club et le profil
+cavalier, ils font le même travail en double.
+
+---
+
 ## SESSION 152l — 23/08/2026 (10h30) · LE BOUTON MARCHAIT DEPUIS LE DÉBUT
 
 **Livré : `index.html`** md5 `b150507d2cf6ab57009243deff6061d7`, 9 328 599 octets

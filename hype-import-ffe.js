@@ -321,6 +321,7 @@
 '.hi-err{margin:16px;padding:15px 16px;border-radius:14px;font-size:12px;line-height:1.6;',
 '  color:#FFB4BC;background:rgba(255,90,110,.08);border:1px solid rgba(255,90,110,.32)}',
 '.hi-err b{display:block;font-weight:700;margin-bottom:5px;color:#FF9AA6}',
+'.hi-note{margin:11px 2px 13px;font-size:11px;line-height:1.55;color:rgba(240,246,250,.52)}',
 
 '.hi-bilan{display:flex;gap:7px;padding:16px 16px 0}',
 '.hi-bi{flex:1;text-align:center;padding:12px 3px;border-radius:13px;',
@@ -532,18 +533,29 @@
     });
     h += "</div>";
 
-    /* 🟥 23/08 — LE BLOC D'ERREUR EST REMONTÉ AU-DESSUS DU BOUTON.
-       Il était posé APRÈS `.hi-pied`, qui porte `padding-bottom:120px`, et le
-       composant React ajoute encore 90px. L'erreur atterrissait 120 à 210 px
-       SOUS le bouton, hors de l'écran, et rien ne faisait défiler la page
-       jusqu'à elle. On a cru pendant deux jours qu'aucune erreur ne sortait :
-       elle sortait, dans le vide. Ne jamais remettre ce bloc après `.hi-pied`. */
-    h += '<div class="hi-pied">';
-    if (E.err) h += '<div class="hi-err" style="margin:0 0 12px">' +
-      '<b>L\'enregistrement a échoué</b>' + ech(E.err) + '</div>';
-    h += '<button class="hi-bt" data-hi="enregistrer"' + (gardees ? "" : " disabled") + '>' +
-      (E.occupe ? "…" : "Enregistrer " + gardees + " résultat" + (gardees > 1 ? "s" : "")) + "</button>" +
+    /* 🟥 23/08 : le bouton disait « Enregistrer N résultats » avec N = les
+       lignes COCHÉES. Or on enregistre TOUT ce qui a été couru, les
+       décochées comprises (elles arrivent en visible = false). Le bouton
+       annonçait donc moins que ce qu il faisait. Il dit maintenant le
+       vrai total, et une phrase sous lui explique le rôle des coches. */
+    var aEcrire = E.lignes.filter(function (r) {
+      return r && r.date && r.statut !== "non_partant" && r.statut !== "annulee";
+    }).length;
+    var caches = aEcrire - E.lignes.filter(function (r) { return r.garder; }).length;
+    h += '<div class="hi-pied">' +
+      '<button class="hi-bt" data-hi="enregistrer"' + (aEcrire ? "" : " disabled") + '>' +
+      (E.occupe ? "…" : "Enregistrer " + aEcrire + " résultat" + (aEcrire > 1 ? "s" : "")) + "</button>" +
+      '<div class="hi-note">' +
+      (caches > 0
+        ? ("Tout est enregistré. " + caches + " ligne" + (caches > 1 ? "s" : "") +
+           " décochée" + (caches > 1 ? "s" : "") + " " + (caches > 1 ? "seront" : "sera") +
+           " gardée" + (caches > 1 ? "s" : "") + " sans être affichée" + (caches > 1 ? "s" : "") +
+           " — tu pourras changer d'avis sans réimporter.")
+        : "Tout est enregistré. Les coches ne décident que de ce qui s'affiche.") +
+      "</div>" +
       '<button class="hi-bt2" data-hi="annuler">Annuler, ne rien enregistrer</button></div>';
+    if (E.err) h += '<div class="hi-err" style="margin:0 16px 90px"><b>L\'enregistrement a échoué</b>' +
+      ech(E.err) + '</div>';
     return h;
   }
 
@@ -663,12 +675,28 @@
 
   function enregistrer(hote, options, refaire) {
     if (E.occupe) return;
-    var vis = E.cavalier
-      ? E.lignes.filter(function (r) { return r.cavalier === E.cavalier; })
-      : E.lignes;
-    var aGarder = vis.filter(function (r) { return r.garder; });
+    /* 🟥 23/08 session 156 — ON ENVOIE TOUT. C EST LA REGLE DE BLANDINE,
+       elle etait ecrite en commentaire au-dessus des NIVEAUX et le code
+       faisait l inverse depuis le debut.
+
+       AVANT, deux entonnoirs vidaient l envoi :
+         · le filtre cavalier : si une pastille etait allumee, seules les
+           lignes de ce cavalier partaient ;
+         · `r.garder`, pose par l ecran de choix : avec « Ses classements »
+           seules les lignes de quart 1 partaient, le reste etait JETE.
+       Mesure du 23/08 sur les sept telemat de Rizotto d Emery : le lecteur
+       lit 178 lignes, la base n en avait que 85.
+
+       Desormais `garder` ne pilote QUE la colonne `visible`. Le filtre
+       cavalier ne pilote QUE l affichage a l ecran. Rien n est perdu,
+       Blandine peut changer d avis sans reimporter.
+       Ne sont ecartes que forfaits et epreuves annulees : le cheval n a
+       pas couru. E.lignes ne les contient deja pas, on redouble ici.   */
+    var aGarder = E.lignes.filter(function (r) {
+      return r && r.date && r.statut !== "non_partant" && r.statut !== "annulee";
+    });
     if (!aGarder.length) {
-      E.err = "aucune ligne cochée."; refaire(); return;
+      E.err = "aucune ligne à enregistrer."; refaire(); return;
     }
     if (typeof options.onEnregistrer !== "function") {
       E.err = "l'app n'a pas fourni de quoi enregistrer."; refaire(); return;

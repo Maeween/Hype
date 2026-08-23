@@ -1388,8 +1388,23 @@ async function enregistrerImportFFE(chevalId, lignes) {
   const user = await utilisateurActuel();
   if (!user) return { n: 0, doublons: 0, error: "Pas connecté" };
   if (!chevalId) return { n: 0, doublons: 0, error: "Cheval inconnu" };
+  /* 🟥 23/08 session 154 — ON ENREGISTRE TOUT CE QUI A ÉTÉ COURU.
+     L ancienne règle était `r.garder && r.statut === "classe"`. Elle violait
+     deux décisions de Blandine, écrites dans la passation :
+       · « ON ENREGISTRE TOUT. Le filtre ne décide que de ce qui S AFFICHE. »
+         -> les lignes décochées étaient JETÉES au lieu d être écrites en
+            visible = false. Blandine ne pouvait pas changer d avis sans
+            tout réimporter.
+       · « Éliminés et abandons COMPTENT dans le palmarès. »
+         -> ils portent statut "elimine" / "abandon", ils étaient écartés.
+            12 parcours manquants sur les 7 saisons de Rizotto d Émery.
+     Ne sont exclus que forfaits et épreuves annulées : le cheval n a pas
+     couru, la règle le dit. Le module les a déjà écartés en amont, on
+     redouble ici par sécurité.
+     `visible` porte désormais le choix de la coche.                      */
   const aEcrire = (lignes || []).filter(function (r) {
-    return r && r.garder && r.date && r.statut === "classe";
+    return r && r.date && r.statut !== "non_partant" && r.statut !== "annulee"
+             && r.statut !== "absent" && r.statut !== "illisible";
   });
   if (!aEcrire.length) return { n: 0, doublons: 0 };
 
@@ -1397,21 +1412,28 @@ async function enregistrerImportFFE(chevalId, lignes) {
   let deja = [];
   try {
     const d = await supa.from("resultats")
-      .select("date_epreuve,epreuve,concours")
+      .select("date_epreuve,epreuve,concours,cavalier")
       .eq("cheval_id", chevalId);
     deja = (d && d.data) || [];
   } catch (eL) { }
-  const cle = function (d, e, c) {
+  /* 🟥 23/08 : LE CAVALIER FAIT PARTIE DE LA CLÉ.
+     Sans lui, deux passages du MÊME jour, dans la MÊME épreuve, au MÊME
+     concours, montés par deux cavaliers différents, n en faisaient qu un.
+     Cas réel : CEZ DE RAMBOUILLET, 22/09/2019, Club 2 Grand Prix —
+     Mathilde Douillet 15e sur 61, Louane Maduro 33e sur 61. La seconde
+     était écartée en silence. */
+  const cle = function (d, e, c, m) {
     return [String(d || ""), String(e || "").toLowerCase().trim(),
-            String(c || "").toLowerCase().trim()].join("|");
+            String(c || "").toLowerCase().trim(),
+            String(m || "").toLowerCase().trim()].join("|");
   };
   const vues = {};
-  deja.forEach(function (r) { vues[cle(r.date_epreuve, r.epreuve, r.concours)] = true; });
+  deja.forEach(function (r) { vues[cle(r.date_epreuve, r.epreuve, r.concours, r.cavalier)] = true; });
 
   const neufs = [], seen = {};
   let doublons = 0;
   aEcrire.forEach(function (r) {
-    const k = cle(r.date, r.epreuve, r.concours);
+    const k = cle(r.date, r.epreuve, r.concours, r.cavalier);
     if (vues[k] || seen[k]) { doublons++; return; }
     seen[k] = true;
     neufs.push({
@@ -1425,8 +1447,11 @@ async function enregistrerImportFFE(chevalId, lignes) {
       quart: r.quart,          /* donné par la FFE, jamais calculé */
       cavalier: r.cavalier || "",
       origine: "import",
+      /* la coche ne décide QUE de l affichage, plus de l enregistrement */
+      visible: (r.garder !== false),
       classement: (r.place != null && r.partants != null)
-        ? (r.place + (r.place === 1 ? "er" : "e") + " / " + r.partants) : ""
+        ? (r.place + (r.place === 1 ? "er" : "e") + " / " + r.partants)
+        : (r.statut === "elimine" ? "El." : r.statut === "abandon" ? "Ab." : "")
     });
   });
   if (!neufs.length) return { n: 0, doublons: doublons };
@@ -32074,7 +32099,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=2";
+    sc.src = "hype-import-ffe.js?v=3";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);
@@ -32249,6 +32274,94 @@ function EcranCheval() {
      PLAFOND_EPINGLES : 7, comme le plafond de la fiche (choix de Claude,
      pas de Blandine — a revoir si elle en veut plus ou moins).        */
   var PLAFOND_EPINGLES = 7;
+
+  /* ═══ 23/08 session 155 — LE FORMAT DE LA TUILE ═══════════════════════
+     Blandine choisit elle-meme quelles tuiles passent en pleine largeur.
+     resultats.format_large : null = jamais choisi -> regle automatique
+     (une victoire sur 40 partants ou plus passe en large), true / false =
+     son choix, qui gagne toujours.                                       */
+  var fmSt = React.useState({}); var fmLocal = fmSt[0], setFmLocal = fmSt[1];
+  function formatLarge(r, gagne, part) {
+    var idr = idEpinglable(r);
+    var v = null;
+    if (idr && Object.prototype.hasOwnProperty.call(fmLocal, idr)) v = fmLocal[idr];
+    else if (r && r.format_large != null) v = !!r.format_large;
+    if (v != null) return v;
+    return !!(gagne && (part || 0) >= 40);   /* la regle par defaut */
+  }
+  function basculerFormat(r, gagne, part) {
+    var idr = idEpinglable(r);
+    if (!idr) return;
+    var neuf = !formatLarge(r, gagne, part);
+    var maj = {}; maj[idr] = neuf;
+    setFmLocal(function (p) { return Object.assign({}, p, maj); });
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa) return;
+        var rep = await supa.from("resultats").update({ format_large: neuf }).eq("id", idr);
+        if (rep && rep.error) throw new Error(rep.error.message || rep.error);
+      } catch (eF) {
+        var retour = {}; retour[idr] = (r.format_large == null) ? null : !!r.format_large;
+        setFmLocal(function (p) { return Object.assign({}, p, retour); });
+        setToast(T("Le format n'a pas pu être enregistré : ", "Could not save the layout: ",
+          "No se pudo guardar el formato: ", "Impossibile salvare il formato: ",
+          "レイアウトを保存できませんでした：", "Format konnte nicht gespeichert werden: ")
+          + String(eF && eF.message ? eF.message : eF));
+        setTimeout(function () { setToast(null); }, 5200);
+      }
+    })();
+  }
+
+  /* ═══ 23/08 session 155 — LE NOM D ÉPREUVE RACCOURCI ══════════════════
+     🟥 « CSO Poney 1 D Grand Prix Chp Reg Circuit Dpt » ne rentre pas dans
+     un carre. Blandine : « tu ne peux pas raconter ta vie sur l encart ».
+     On ote la discipline en tete (elle est deja donnee par le contexte) et
+     on abrege les formules longues. Le nom COMPLET reste en base, intact :
+     ce raccourci ne sert QU A l affichage.                                */
+  /* 🟥 table directe, et non decodeURIComponent(escape(...)) : sur
+     « PrÃÂ©paratoire » ce dernier leve « URI malformed » et ne repare rien.
+     Verifie le 23/08 sur les telemat 2021 et 2024 de Rizotto d Émery.    */
+  var ACCENTS_CASSES = [
+    ["\u00C3\u0082\u00C2\u00A9", "\u00E9"], ["\u00C3\u0082\u00C2\u00A8", "\u00E8"],
+    ["\u00C3\u0082\u00C2\u00AA", "\u00EA"], ["\u00C3\u0082\u00C2\u00A0", "\u00E0"],
+    ["\u00C3\u0082\u00C2\u00A7", "\u00E7"], ["\u00C3\u0082\u00C2\u00B4", "\u00F4"],
+    ["\u00C3\u0082\u00C2\u00B9", "\u00F9"], ["\u00C3\u0082\u00C2\u00AE", "\u00EE"],
+    ["\u00C3\u0082\u00C2\u00AF", "\u00EF"], ["\u00C3\u0082\u00C2\u00BB", "\u00FB"],
+    ["\u00C3\u0082\u00C2\u00AB", "\u00EB"], ["\u00C3\u0082\u00C2\u00A2", "\u00E2"],
+    ["\u00C3\u00A9", "\u00E9"], ["\u00C3\u00A8", "\u00E8"], ["\u00C3\u00AA", "\u00EA"],
+    ["\u00C3\u00A0", "\u00E0"], ["\u00C3\u00A7", "\u00E7"], ["\u00C3\u00B4", "\u00F4"],
+    ["\u00C3\u00B9", "\u00F9"], ["\u00C3\u00AE", "\u00EE"], ["\u00C3\u00AF", "\u00EF"],
+    ["\u00C3\u00BB", "\u00FB"], ["\u00C3\u00AB", "\u00EB"], ["\u00C3\u00A2", "\u00E2"]
+  ];
+  function reparerAccents(x) {
+    ACCENTS_CASSES.forEach(function (p) { x = x.split(p[0]).join(p[1]); });
+    return x;
+  }
+  function courtEpreuve(t) {
+    var x = String(t || "").trim();
+    if (!x) return "";
+    /* 🟥 la FFE renvoie du texte doublement encode : « PrÃÂ©paratoire ».
+       On repare avant tout le reste, sinon ca s affiche tel quel a l ecran. */
+    if (x.indexOf("\u00C3") >= 0) x = reparerAccents(x);
+    x = x.replace(/^(CSO|CCE|CSA|Dressage|Hunter|Endurance|TREC|Attelage|Western|Pony ?Games)\s+/i, "");
+    x = x.replace(/Grand\s+Prix/gi, "GP");
+    x = x.replace(/Championnat/gi, "Chp");
+    x = x.replace(/\bChp\s+de\s+France\b/gi, "Chp France");
+    x = x.replace(/\bChp\s+des\s+Territoires\b/gi, "Territoires");
+    x = x.replace(/\bChp\s+R[ée]g\b/gi, "Chp Rég");
+    x = x.replace(/\bChp\s+Dpt\b/gi, "Chp Dpt");
+    x = x.replace(/\bCircuit\s+Dpt\b/gi, "Dpt");
+    x = x.replace(/\bCircuit\s+R[ée]g\b/gi, "Rég");
+    x = x.replace(/\bOpen\s+R[ée]g\b/gi, "Open Rég");
+    x = x.replace(/Pr[ée]paratoire/gi, "Prépa");
+    x = x.replace(/\bSp[ée]ciale\s+au\s+chrono\b/gi, "Spéciale");
+    x = x.replace(/\bCriterium\s+de\s+France\b/gi, "Critérium France");
+    x = x.replace(/\bet\s+-\s*/gi, "et − ");        /* « Minime 1 et - » = et moins */
+    x = x.replace(/\bExcellence\b/gi, "Exc.");
+    x = x.replace(/\bTour\s+de\s+France\b/gi, "TDA");
+    x = x.replace(/\s{2,}/g, " ").trim();
+    return x;
+  }
   var epSt = React.useState({}); var epLocal = epSt[0], setEpLocal = epSt[1];
   function idEpinglable(r) {
     /* seules les lignes venues de la table ont un identifiant en base ;
@@ -33278,9 +33391,43 @@ function EcranCheval() {
                      an: (r.date_epreuve || "").slice(0, 4), __id: r.id || null };
           }).filter(function (f) { return f.pl != null; });
 
+          /* 🟥 23/08 session 154 — LES QUATRE CHIFFRES, RÉÉCRITS.
+             Ce qui n allait pas, mesuré sur les 7 PDF de Rizotto d Émery :
+               · « SORTIES » comptait les LIGNES, donc les parcours (178),
+                 pas les sorties. Décision de Blandine : une sortie = un
+                 déplacement, donc MÊME CONCOURS sur des JOURS CONSÉCUTIFS
+                 = UNE sortie. Un week-end ne compte qu une fois. -> 93.
+               · « CLASSEMENTS » comptait les quart 1, c est-à-dire le
+                 premier quart du peloton, pas les classements. -> devient
+                 PODIUMS / CLASSÉS, et le quart n est plus affiché ici.
+             Victoires et podiums se comptent sur les parcours, pas sur les
+             sorties : gagner deux épreuves dans le week-end, c est deux
+             victoires.                                                    */
           var nV = faits.filter(function (f) { return f.pl === 1; }).length;
           var nP = faits.filter(function (f) { return f.pl <= 3; }).length;
-          var nC = lignes.filter(function (r) { return Number(r.quart) === 1; }).length;
+          var nC = faits.length; /* parcours classés */
+          var nS = (function () {
+            /* regroupe par concours, puis fusionne les jours qui se suivent */
+            var parLieu = {};
+            lignes.forEach(function (r) {
+              var d = String(r.date_epreuve || "");
+              if (!d) return;
+              var k = String(r.concours || "").toLowerCase().trim();
+              (parLieu[k] = parLieu[k] || {})[d] = true;
+            });
+            var total = 0;
+            Object.keys(parLieu).forEach(function (k) {
+              var jours = Object.keys(parLieu[k]).sort();
+              var prec = null;
+              jours.forEach(function (j) {
+                var t = Date.parse(j + "T00:00:00Z");
+                /* nouveau déplacement si plus d un jour d écart */
+                if (prec == null || isNaN(t) || (t - prec) > 86400000) total++;
+                if (!isNaN(t)) prec = t;
+              });
+            });
+            return total;
+          })();
 
           faits.sort(function (a, b) {
             var d = (a.pl === 1 ? 0 : a.pl <= 3 ? 1 : 2) - (b.pl === 1 ? 0 : b.pl <= 3 ? 1 : 2);
@@ -33347,10 +33494,10 @@ function EcranCheval() {
               h("span", { style: { marginLeft: "auto", fontSize: 15, color: "rgba(242,246,248,0.3)" } }, "\u203a")),
 
             h("div", { style: { display: "flex", gap: 8, padding: "12px 15px 0" } },
-              ch(faits.length, T("Sorties", "Starts", "Salidas", "Uscite", "\u51fa\u5834", "Starts")),
+              ch(nS, T("Sorties", "Outings", "Salidas", "Uscite", "\u51fa\u5834", "Turniertage")),
               ch(nV, T("Victoires", "Wins", "Victorias", "Vittorie", "\u512a\u52dd", "Siege"), true),
               ch(nP, T("Podiums", "Podiums", "Podios", "Podi", "\u5165\u8cde", "Podien")),
-              ch(nC, T("Classements", "Placings", "Clasificados", "Piazzamenti", "\u5165\u8cde\u570f", "Platzierungen"))),
+              ch(nC, T("Class\u00e9s", "Placed", "Clasificados", "Piazzamenti", "\u5165\u8cde\u570f", "Platziert"))),
 
             faits.length ? h("div", { style: { marginTop: 13, borderTop: "1px solid rgba(255,255,255,0.07)" } },
               vus.map(function (f, iF) {
@@ -33533,36 +33680,48 @@ function EcranCheval() {
           var idsEp = {}; epg.forEach(function (f) { if (f.id) idsEp[f.id] = 1; });
           var proprio = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
 
-          function punaise(f) {
-            if (!proprio || !f.epinglable) return null;
-            var on = f.epingle != null;
-            return h("div", {
-              role: "button",
-              aria_label: on ? "Retirer l'épingle" : "Épingler",
-              onClick: function (ev) { try { ev.stopPropagation(); } catch (e) { } basculerEpingle(f.ref, poses); },
-              style: {
-                position: "absolute", top: 8, right: 8, width: 30, height: 30, zIndex: 4,
-                display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer"
-              }
-            }, h("svg", {
-              viewBox: "0 0 24 24", width: 15, height: 15,
-              fill: on ? teinteCl : "none", stroke: on ? teinteCl : "rgba(255,255,255,0.22)",
-              strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round",
-              style: { opacity: on ? 0.8 : 1 }
-            },
-              h("path", { d: "M12 17v5" }),
-              h("path", { d: "M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" })));
+          /* ── les deux gestes, aux deux extrêmes de la tuile ──────────
+             🟥 23/08 session 155 : la punaise et le format étaient au même
+             coin, Blandine ne voyait plus la punaise. Punaise EN HAUT À
+             GAUCHE, format EN BAS À DROITE. Et le trait passe de 22 % à
+             48 % de blanc : à 22 % sur du presque noir, elle est invisible
+             sur un téléphone.                                            */
+          function bouton(coin, actif, dessin, action, titre) {
+            var pos = { position: "absolute", zIndex: 4, width: 30, height: 30,
+              display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" };
+            if (coin === "hg") { pos.top = 6; pos.left = 6; } else { pos.bottom = 6; pos.right = 6; }
+            return h("div", { role: "button", "aria-label": titre, onClick: function (ev) {
+              try { ev.stopPropagation(); ev.preventDefault(); } catch (e) { } action();
+            }, style: pos },
+              h("svg", { viewBox: "0 0 24 24", width: 15, height: 15,
+                fill: "none", stroke: actif ? teinteCl : "rgba(255,255,255,0.48)",
+                strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" }, dessin));
+          }
+          var DESSIN_PUNAISE = [
+            h("path", { key: "a", d: "M12 17v5" }),
+            h("path", { key: "b", d: "M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" })
+          ];
+          /* format : un rectangle large quand la tuile est carrée (« passe en
+             large »), un carré quand elle est large (« reviens en carré ») */
+          function dessinFormat(estLarge) {
+            return estLarge
+              ? [h("rect", { key: "c", x: 6, y: 6, width: 12, height: 12, rx: 2 })]
+              : [h("rect", { key: "l", x: 3, y: 8, width: 18, height: 8, rx: 2 })];
           }
 
-          function tuile(f, large, cle) {
+          function tuile(f, cle) {
             var gagne = (f.pl === 1);
-            var largeurTexte = large ? 126 : 62;
+            var large = formatLarge(f.ref, gagne, f.part);
+            var reserve = large ? 118 : 40;   /* place gardée pour la coupe */
             return h("div", {
               key: cle,
               style: {
                 gridColumn: large ? "span 2" : "auto",
-                minHeight: large ? 212 : 196,
-                borderRadius: 14, padding: "15px 15px 16px", position: "relative", overflow: "hidden",
+                /* 🟥 un carré est un CARRÉ. aspectRatio, jamais minHeight :
+                   avec minHeight le texte poussait la tuile vers le bas et
+                   on obtenait des rectangles. Le texte est borné à la place. */
+                aspectRatio: large ? "2.1 / 1" : "1 / 1",
+                borderRadius: 14, padding: "13px 13px 12px", position: "relative", overflow: "hidden",
                 display: "flex", flexDirection: "column",
                 border: "1px solid " + (gagne ? tA(0.22) : "rgba(255,255,255,0.09)"),
                 opacity: f.hors ? 0.62 : 1,
@@ -33572,44 +33731,45 @@ function EcranCheval() {
                   : "linear-gradient(155deg, rgba(18,21,25,0.9), rgba(9,12,15,0.95))"
               }
             },
-              punaise(f),
-              h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',Georgia,serif", fontSize: 10,
-                letterSpacing: "0.16em", color: gagne ? teinteCl : "#6E7780", paddingRight: 28 } }, f.an),
+              (proprio && f.epinglable) ? bouton("hg", f.epingle != null, DESSIN_PUNAISE,
+                function () { basculerEpingle(f.ref, poses); },
+                f.epingle != null ? "Retirer l'épingle" : "Épingler") : null,
+              (proprio && f.epinglable) ? bouton("bd", false, dessinFormat(large),
+                function () { basculerFormat(f.ref, gagne, f.part); },
+                large ? "Repasser en carré" : "Passer en pleine largeur") : null,
+
+              h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',Georgia,serif", fontSize: 9.5,
+                letterSpacing: "0.16em", color: gagne ? teinteCl : "#6E7780",
+                paddingLeft: proprio ? 26 : 0 } }, f.an),
               h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',Georgia,serif",
-                fontSize: large ? 17 : 13, fontWeight: 600, lineHeight: 1.3, marginTop: 12,
-                color: "#EDF2F5", fontStyle: f.hors ? "italic" : "normal",
-                paddingRight: largeurTexte, display: "-webkit-box", WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical", overflow: "hidden" } }, f.nom),
-              f.ep ? h("div", { style: { flex: "0 0 auto", fontSize: 9.5, color: "#8A929C", marginTop: 8,
-                lineHeight: 1.45, paddingRight: largeurTexte, display: "-webkit-box", WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical", overflow: "hidden" } }, f.ep) : null,
-              f.cav ? h("div", { style: { flex: "0 0 auto", fontSize: large ? 11 : 10, color: "#8A929C",
-                marginTop: 6, fontWeight: 500, paddingRight: largeurTexte, whiteSpace: "nowrap",
+                fontSize: large ? 16 : 12, fontWeight: 600, lineHeight: 1.26, marginTop: 8,
+                color: "#EDF2F5", fontStyle: f.hors ? "italic" : "normal", paddingRight: reserve,
+                display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+                overflow: "hidden" } }, f.nom),
+              f.ep ? h("div", { style: { flex: "0 0 auto", fontSize: 9, color: "#8A929C", marginTop: 5,
+                lineHeight: 1.35, paddingRight: reserve, display: "-webkit-box", WebkitLineClamp: 1,
+                WebkitBoxOrient: "vertical", overflow: "hidden" } }, courtEpreuve(f.ep)) : null,
+              f.cav ? h("div", { style: { flex: "0 0 auto", fontSize: 9.5, color: "#8A929C",
+                marginTop: 4, fontWeight: 500, paddingRight: reserve, whiteSpace: "nowrap",
                 overflow: "hidden", textOverflow: "ellipsis",
                 fontStyle: f.hors ? "italic" : "normal" } }, f.cav) : null,
-              h("div", { style: { flex: "0 0 auto", marginTop: "auto", paddingTop: 12, paddingRight: largeurTexte } },
+              h("div", { style: { flex: "0 0 auto", marginTop: "auto", paddingRight: reserve,
+                paddingBottom: proprio ? 16 : 0 } },
                 (f.pl == null)
-                  ? h("span", { style: { fontSize: 14, fontStyle: "italic", color: "#8A929C" } },
+                  ? h("span", { style: { fontSize: 13, fontStyle: "italic", color: "#8A929C" } },
                       T("Non classé", "Not placed", "Sin clasificar", "Non classificato", "不入賞", "Nicht platziert"))
                   : h("span", null,
-                      h("span", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: large ? 44 : 32,
+                      h("span", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: large ? 38 : 27,
                         lineHeight: 1, color: gagne ? teinteCl : "#EDF2F5" } }, String(f.pl)),
-                      h("sup", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: large ? 17 : 13,
+                      h("sup", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: large ? 15 : 11,
                         color: gagne ? teinteCl : "#EDF2F5" } }, f.pl === 1 ? "\u02b3\u1d49" : "\u1d49"),
-                      h("span", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: large ? 14 : 11.5,
-                        letterSpacing: "0.14em", textTransform: "uppercase", marginLeft: 5,
+                      h("span", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: large ? 13 : 10,
+                        letterSpacing: "0.13em", textTransform: "uppercase", marginLeft: 4,
                         color: gagne ? teinteCl : "#8A929C" } },
                         T("place", "place", "puesto", "posto", "位", "Platz"))),
-                f.part ? h("span", { style: { display: "block", fontSize: 10.5, color: "#6E7780", marginTop: 8 } },
-                  T("sur " + f.part + " partants", "of " + f.part + " starters", "de " + f.part + " participantes",
-                    "su " + f.part + " partenti", f.part + "頭中", "von " + f.part + " Startern")) : null));
-          }
-
-          function grille(liste, cle) {
-            /* pondérée : au-delà de 40 partants, la tuile prend la largeur */
-            return h("div", { key: cle, style: { display: "grid", gridTemplateColumns: "1fr 1fr",
-              gap: 10, paddingTop: 14, alignItems: "stretch" } },
-              liste.map(function (f, i) { return tuile(f, (f.part || 0) >= 40 && f.pl === 1, cle + "-" + i); }));
+                f.part ? h("span", { style: { display: "block", fontSize: 9.5, color: "#6E7780", marginTop: 5 } },
+                  T("sur " + f.part, "of " + f.part, "de " + f.part, "su " + f.part,
+                    f.part + "\u982d\u4e2d", "von " + f.part)) : null));
           }
 
           var blocs = [];
