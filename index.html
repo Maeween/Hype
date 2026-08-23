@@ -32229,6 +32229,114 @@ function EcranCheval() {
   var toastSt = React.useState(null); var toast = toastSt[0], setToast = toastSt[1];
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
   var medSt = React.useState({}); var mediasInfo = medSt[0], setMediasInfo = medSt[1];
+
+  /* ═══ 23/08 session 153 — LES ÉPINGLES DU PALMARÈS ════════════════════
+     Un résultat épinglé quitte sa saison et ouvre la page ; c est lui, et
+     lui seul, qui remonte sur la fiche du cheval (décision de Blandine).
+     La valeur vit dans resultats.epingle_rang : null = pas épinglé, sinon
+     le rang de pose (1, 2, 3…). Le rang sert a garder l ordre de pose.
+     🟥 Seules les lignes venues de la TABLE peuvent etre epinglees. Le
+     palmares ecrit en dur dans CHEVAUX_FICHE n a pas de ligne en base,
+     donc pas d epingle possible — sa punaise n est pas affichee.
+     epLocal : reponse immediate au tap, avant le retour de Supabase.
+     PLAFOND_EPINGLES : 7, comme le plafond de la fiche (choix de Claude,
+     pas de Blandine — a revoir si elle en veut plus ou moins).        */
+  var PLAFOND_EPINGLES = 7;
+  var epSt = React.useState({}); var epLocal = epSt[0], setEpLocal = epSt[1];
+  function idEpinglable(r) {
+    /* seules les lignes venues de la table ont un identifiant en base ;
+       celles ecrites en dur dans CHEVAUX_FICHE portent un id "dur-N". */
+    if (!r || !r.id) return null;
+    return (String(r.id).indexOf("dur-") === 0) ? null : r.id;
+  }
+  function rangEpingle(r) {
+    var idr = idEpinglable(r);
+    if (!idr) return null;
+    if (Object.prototype.hasOwnProperty.call(epLocal, idr)) return epLocal[idr];
+    return (r.epingle_rang == null) ? null : Number(r.epingle_rang);
+  }
+  function basculerEpingle(r, dejaPoses) {
+    var idr = idEpinglable(r);
+    if (!idr) return;
+    var actuel = rangEpingle(r);
+    var neuf;
+    if (actuel != null) neuf = null;
+    else {
+      if (dejaPoses >= PLAFOND_EPINGLES) {
+        setToast(T("Sept épinglés au maximum — retires-en un d'abord.",
+          "Seven pinned at most — remove one first.",
+          "Siete fijados como máximo — quita uno antes.",
+          "Massimo sette fissati — rimuovine uno prima.",
+          "ピン留めは最大7件です。まず1件外してください。",
+          "Höchstens sieben angeheftet — entferne zuerst eines."));
+        setTimeout(function () { setToast(null); }, 3000);
+        return;
+      }
+      neuf = dejaPoses + 1;
+    }
+    var maj = {}; maj[idr] = neuf;
+    setEpLocal(function (p) { return Object.assign({}, p, maj); });
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa) return;
+        var rep = await supa.from("resultats").update({ epingle_rang: neuf }).eq("id", idr);
+        if (rep && rep.error) throw new Error(rep.error.message || rep.error);
+      } catch (eEp) {
+        /* 🟥 aucune reparation silencieuse : on remet l affichage comme avant
+           ET on le dit a l ecran. */
+        var retour = {}; retour[idr] = actuel;
+        setEpLocal(function (p) { return Object.assign({}, p, retour); });
+        setToast(T("L'épingle n'a pas pu être enregistrée : ", "Could not save the pin: ",
+          "No se pudo guardar: ", "Impossibile salvare: ", "保存できませんでした：",
+          "Konnte nicht gespeichert werden: ") + String(eEp && eEp.message ? eEp.message : eEp));
+        setTimeout(function () { setToast(null); }, 5200);
+      }
+    })();
+  }
+
+  /* ═══ 23/08 session 153 — LES FAITS DU PALMARÈS ═══════════════════════
+     Une seule normalisation, lue par la page ET par le résumé de la fiche.
+     Elle sort : place (nombre), partants, concours, épreuve, cavalier,
+     année, et le rang d épingle. Le quart vient de la FFE, jamais recalculé. */
+  function faitsPalmares() {
+    var out = [];
+    ((lignesPourModule) || []).forEach(function (r) {
+      if (!r) return;
+      var pl = null;
+      if (r.place != null) pl = Number(r.place);
+      else { var mm = String(r.classement || "").match(/^\s*(\d+)/); if (mm) pl = Number(mm[1]); }
+      out.push({
+        ref: r,
+        id: r.id || null,
+        pl: pl,
+        part: r.partants ? Number(r.partants) : null,
+        nom: r.concours || "",
+        ep: r.epreuve || "",
+        cav: r.cavalier || "",
+        an: String(r.date_epreuve || "").slice(0, 4) || String(r.annee || ""),
+        quart: (r.quart == null) ? null : Number(r.quart),
+        hors: (pl == null),
+        epingle: rangEpingle(r),
+        epinglable: !!idEpinglable(r)
+      });
+    });
+    return out;
+  }
+  /* les épinglés, dans l ordre où Blandine les a posés */
+  function epinglesPalmares(fts) {
+    return (fts || []).filter(function (f) { return f.epingle != null; })
+                      .sort(function (a, b) { return a.epingle - b.epingle; });
+  }
+  /* les meilleurs, comme avant : victoires, puis podiums, puis le reste,
+     et à rang égal le plus gros champ d abord. */
+  function meilleursPalmares(fts) {
+    return (fts || []).filter(function (f) { return f.pl != null; })
+      .sort(function (a, b) {
+        var d = (a.pl === 1 ? 0 : a.pl <= 3 ? 1 : 2) - (b.pl === 1 ? 0 : b.pl <= 3 ? 1 : 2);
+        if (d !== 0) return d;
+        return (b.part || 0) - (a.part || 0);
+      });
+  }
   var csSt = React.useState(false); var confSuppr = csSt[0], setConfSuppr = csSt[1];
   var menuFicheSt = React.useState(false); var menuFiche = menuFicheSt[0], setMenuFiche = menuFicheSt[1];
   var editFicheSt = React.useState(false); var editFiche = editFicheSt[0], setEditFiche = editFicheSt[1];
@@ -33156,9 +33264,11 @@ function EcranCheval() {
             return m ? Number(m[1]) : null;
           }
           var faits = lignes.map(function (r) {
+            /* 🟥 23/08 : __id ajouté — sans lui, un résultat épinglé ressortait
+               DEUX FOIS sur la fiche (une fois en tête, une fois dans la suite). */
             return { pl: nbDe(r), part: r.partants ? Number(r.partants) : null,
                      nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "",
-                     an: (r.date_epreuve || "").slice(0, 4) };
+                     an: (r.date_epreuve || "").slice(0, 4), __id: r.id || null };
           }).filter(function (f) { return f.pl != null; });
 
           var nV = faits.filter(function (f) { return f.pl === 1; }).length;
@@ -33170,7 +33280,29 @@ function EcranCheval() {
             if (d !== 0) return d;
             return (b.part || 0) - (a.part || 0);
           });
-          var vus = faits.slice(0, 7), reste = faits.length - vus.length;
+          /* 🟥 23/08 — LES ÉPINGLÉS D ABORD (décision de Blandine).
+             Rien d épinglé  -> les 7 meilleurs calculés, exactement comme avant.
+             Des épinglés     -> ils passent devant, les meilleurs remplissent
+             derrière jusqu à sept. Le plafond de SEPT ne bouge pas.        */
+          var ftsE = faitsPalmares();
+          var epgE = epinglesPalmares(ftsE);
+          var vus, reste;
+          if (epgE.length) {
+            var prisE = {};
+            var tete = epgE.map(function (f) {
+              if (f.id) prisE[f.id] = 1;
+              return { pl: f.pl, part: f.part, nom: f.nom, ep: f.ep, cav: f.cav, an: f.an, __ep: true };
+            }).filter(function (f) { return f.pl != null; });
+            var suite = faits.filter(function (f) {
+              return !(f.__id && prisE[f.__id]);
+            });
+            var fusion = tete.concat(suite);
+            vus = fusion.slice(0, 7);
+            reste = faits.length - vus.filter(function (f) { return !f.__ep; }).length - tete.length;
+            if (reste < 0) reste = 0;
+          } else {
+            vus = faits.slice(0, 7); reste = faits.length - vus.length;
+          }
 
           function ch(n, lb, or) {
             return h("div", { style: { flex: 1, textAlign: "center" } },
@@ -33184,9 +33316,12 @@ function EcranCheval() {
              n'était plus atteignable depuis le retrait de la pilule
              « Résultats » — Blandine l'a trouvé par hasard.            */
           return h("div", {
+            /* 🟥 23/08 : ce bloc disait « bientôt » des qu il y avait un resultat.
+               Il ouvre desormais la page des resultats (panneau palmares).
+               Sans resultat et si c est son cheval, il ouvre toujours l import. */
             onClick: function () {
               if (!faits.length && proprio) { ouvrirImportFFE(); return; }
-              bientot();
+              setPanneau("palmares");
             },
             style: {
               margin: "14px 16px 0", borderRadius: 16, overflow: "hidden", cursor: "pointer",
@@ -33374,7 +33509,156 @@ function EcranCheval() {
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, preload: "auto", ref: function (elV) { try { if (!elV) return; elV.muted = true; elV.setAttribute("playsinline", ""); var pV = elV.play(); if (pV && pV.catch) pV.catch(function () { setTimeout(function () { try { var p2 = elV.play(); if (p2 && p2.catch) p2.catch(function () { }); } catch (e7) { } }, 120); }); } catch (e8) { } }, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.15) 0%, rgba(6,7,9,0) 35%, rgba(6,7,9,0.55) 78%, #060709 100%)" } })),
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : null,
-        (palmTous && palmTous.length) ? h("div", { className: "panel" }, palmTous.map(prow)) : h("div", { className: "empty" }, T("Le palmarès commence ici.", "The record starts here.", "El palmarés empieza aquí.", "Il palmarès inizia qui.", "戦績はここから始まります。", "Die Erfolge beginnen hier.")),
+        /* ═══ 23/08 session 153 — LA PAGE DES RÉSULTATS ══════════════════
+           Maquette validée par Blandine : tuiles « Fraction » (place en
+           grand + le mot PLACE + « sur N partants »), pondérée (les gros
+           champs prennent la largeur), rangée par saison, épinglés en tête.
+           🟥 Un épinglé QUITTE sa saison — il n apparaît jamais deux fois.
+           🟥 Le rail de flots reste intact, il est dessiné juste au-dessus.
+           Écrit en React : le module hype-resultats.js reste neutralisé.   */
+        (function () {
+          var fts = faitsPalmares();
+          if (!fts.length) return h("div", { className: "empty" },
+            T("Le palmarès commence ici.", "The record starts here.", "El palmarés empieza aquí.",
+              "Il palmarès inizia qui.", "戦績はここから始まります。", "Die Erfolge beginnen hier."));
+          var epg = epinglesPalmares(fts);
+          var poses = epg.length;
+          var idsEp = {}; epg.forEach(function (f) { if (f.id) idsEp[f.id] = 1; });
+          var proprio = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+
+          function punaise(f) {
+            if (!proprio || !f.epinglable) return null;
+            var on = f.epingle != null;
+            return h("div", {
+              role: "button",
+              aria_label: on ? "Retirer l'épingle" : "Épingler",
+              onClick: function (ev) { try { ev.stopPropagation(); } catch (e) { } basculerEpingle(f.ref, poses); },
+              style: {
+                position: "absolute", top: 8, right: 8, width: 30, height: 30, zIndex: 4,
+                display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer"
+              }
+            }, h("svg", {
+              viewBox: "0 0 24 24", width: 15, height: 15,
+              fill: on ? teinteCl : "none", stroke: on ? teinteCl : "rgba(255,255,255,0.22)",
+              strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round",
+              style: { opacity: on ? 0.8 : 1 }
+            },
+              h("path", { d: "M12 17v5" }),
+              h("path", { d: "M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" })));
+          }
+
+          function tuile(f, large, cle) {
+            var gagne = (f.pl === 1);
+            var largeurTexte = large ? 126 : 62;
+            return h("div", {
+              key: cle,
+              style: {
+                gridColumn: large ? "span 2" : "auto",
+                minHeight: large ? 212 : 196,
+                borderRadius: 14, padding: "15px 15px 16px", position: "relative", overflow: "hidden",
+                display: "flex", flexDirection: "column",
+                border: "1px solid " + (gagne ? tA(0.22) : "rgba(255,255,255,0.09)"),
+                opacity: f.hors ? 0.62 : 1,
+                background: gagne
+                  ? ("radial-gradient(120% 90% at 108% 108%, " + tA(0.13) + ", transparent 60%),"
+                     + " linear-gradient(155deg, rgba(20,24,28,0.92), rgba(9,12,15,0.95))")
+                  : "linear-gradient(155deg, rgba(18,21,25,0.9), rgba(9,12,15,0.95))"
+              }
+            },
+              punaise(f),
+              h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',Georgia,serif", fontSize: 10,
+                letterSpacing: "0.16em", color: gagne ? teinteCl : "#6E7780", paddingRight: 28 } }, f.an),
+              h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',Georgia,serif",
+                fontSize: large ? 17 : 13, fontWeight: 600, lineHeight: 1.3, marginTop: 12,
+                color: "#EDF2F5", fontStyle: f.hors ? "italic" : "normal",
+                paddingRight: largeurTexte, display: "-webkit-box", WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical", overflow: "hidden" } }, f.nom),
+              f.ep ? h("div", { style: { flex: "0 0 auto", fontSize: 9.5, color: "#8A929C", marginTop: 8,
+                lineHeight: 1.45, paddingRight: largeurTexte, display: "-webkit-box", WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical", overflow: "hidden" } }, f.ep) : null,
+              f.cav ? h("div", { style: { flex: "0 0 auto", fontSize: large ? 11 : 10, color: "#8A929C",
+                marginTop: 6, fontWeight: 500, paddingRight: largeurTexte, whiteSpace: "nowrap",
+                overflow: "hidden", textOverflow: "ellipsis",
+                fontStyle: f.hors ? "italic" : "normal" } }, f.cav) : null,
+              h("div", { style: { flex: "0 0 auto", marginTop: "auto", paddingTop: 12, paddingRight: largeurTexte } },
+                (f.pl == null)
+                  ? h("span", { style: { fontSize: 14, fontStyle: "italic", color: "#8A929C" } },
+                      T("Non classé", "Not placed", "Sin clasificar", "Non classificato", "不入賞", "Nicht platziert"))
+                  : h("span", null,
+                      h("span", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: large ? 44 : 32,
+                        lineHeight: 1, color: gagne ? teinteCl : "#EDF2F5" } }, String(f.pl)),
+                      h("sup", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: large ? 17 : 13,
+                        color: gagne ? teinteCl : "#EDF2F5" } }, f.pl === 1 ? "\u02b3\u1d49" : "\u1d49"),
+                      h("span", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: large ? 14 : 11.5,
+                        letterSpacing: "0.14em", textTransform: "uppercase", marginLeft: 5,
+                        color: gagne ? teinteCl : "#8A929C" } },
+                        T("place", "place", "puesto", "posto", "位", "Platz"))),
+                f.part ? h("span", { style: { display: "block", fontSize: 10.5, color: "#6E7780", marginTop: 8 } },
+                  T("sur " + f.part + " partants", "of " + f.part + " starters", "de " + f.part + " participantes",
+                    "su " + f.part + " partenti", f.part + "頭中", "von " + f.part + " Startern")) : null));
+          }
+
+          function grille(liste, cle) {
+            /* pondérée : au-delà de 40 partants, la tuile prend la largeur */
+            return h("div", { key: cle, style: { display: "grid", gridTemplateColumns: "1fr 1fr",
+              gap: 10, paddingTop: 14, alignItems: "stretch" } },
+              liste.map(function (f, i) { return tuile(f, (f.part || 0) >= 40 && f.pl === 1, cle + "-" + i); }));
+          }
+
+          var blocs = [];
+          if (epg.length) {
+            blocs.push(h("div", { key: "et", style: { display: "flex", alignItems: "center", gap: 9, paddingTop: 6 } },
+              h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: teinteCl, stroke: teinteCl,
+                strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", style: { opacity: 0.78 } },
+                h("path", { d: "M12 17v5" }),
+                h("path", { d: "M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" })),
+              h("span", { style: { fontSize: 9.5, letterSpacing: "0.22em", textTransform: "uppercase",
+                color: teinteCl, fontWeight: 700 } }, T("Épinglés", "Pinned", "Fijados", "Fissati", "ピン留め", "Angeheftet")),
+              h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg," + tA(0.45) + ", transparent)" } }),
+              h("span", { style: { fontSize: 9.5, color: "#6E7780" } }, epg.length + " / " + PLAFOND_EPINGLES)));
+            blocs.push(h("div", { key: "ets", style: { paddingTop: 7, fontSize: 11, color: "#8A929C", lineHeight: 1.6 } },
+              T("Ce sont eux qui ouvrent la fiche du cheval.", "These open the horse's profile.",
+                "Son los que abren la ficha del caballo.", "Sono loro ad aprire la scheda del cavallo.",
+                "馬のページの先頭に表示されます。", "Sie eröffnen das Pferdeprofil.")));
+            blocs.push(grille(epg, "epg"));
+          }
+
+          /* le reste, par saison décroissante — sans les épinglés */
+          /* 🟥 les saisons sont listées à partir de TOUS les faits, épinglés
+             compris : sinon une saison dont tout est épinglé disparaissait
+             de la page sans un mot (constaté au banc d essai le 23/08). */
+          var parAn = {};
+          fts.forEach(function (f) {
+            var a = f.an || "\u2014";
+            parAn[a] = parAn[a] || [];
+            if (!(f.id && idsEp[f.id])) parAn[a].push(f);
+          });
+          Object.keys(parAn).sort(function (a, b) { return String(b).localeCompare(String(a)); })
+            .forEach(function (a) {
+              var jeu = meilleursPalmares(parAn[a]).concat(parAn[a].filter(function (f) { return f.pl == null; }));
+              var tot = fts.filter(function (f) { return (f.an || "\u2014") === a; });
+              var nv = tot.filter(function (f) { return f.pl === 1; }).length;
+              blocs.push(h("div", { key: "cap" + a, style: { display: "flex", alignItems: "baseline",
+                gap: 10, paddingTop: 26 } },
+                h("span", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 18, color: teinteCl } }, a),
+                h("span", { style: { fontSize: 10, color: "#8A929C" } },
+                  tot.length + " " + T("sorties", "starts", "salidas", "uscite", "出走", "Starts")
+                  + (nv ? (" \u00b7 " + nv + " " + T("victoires", "wins", "victorias", "vittorie", "勝", "Siege")) : "")),
+                h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg," + tA(0.4) + ", transparent)" } })));
+              if (jeu.length) blocs.push(grille(jeu, "s" + a));
+              var montes = tot.length - jeu.length;
+              if (montes > 0) blocs.push(h("div", { key: "m" + a, style: { marginTop: 12, padding: "11px 13px",
+                borderRadius: 11, border: "1px dashed " + tA(0.28), fontSize: 10.5, color: "#8A929C" } },
+                montes + " " + (montes > 1
+                  ? T("résultats épinglés, remontés en haut", "pinned results, moved to the top",
+                      "resultados fijados, arriba", "risultati fissati, in alto", "件をピン留め（上部に表示）",
+                      "angeheftete Ergebnisse, oben")
+                  : T("résultat épinglé, remonté en haut", "pinned result, moved to the top",
+                      "resultado fijado, arriba", "risultato fissato, in alto", "件をピン留め（上部に表示）",
+                      "angeheftetes Ergebnis, oben"))));
+            });
+          return h("div", null, blocs);
+        })(),
         /* 22/08 session 152 : la page des resultats vit dans hype-resultats.js. Si le fichier manque ou plante, on retombe sur l ancienne liste ci-dessus et le bouton d ajout — la fiche ne casse jamais. */
         /* 22/08 session 152 — MODULE NEUTRALISE. Il dessine du HTML brut dans un
    conteneur React : les deux mondes se marchent dessus, les blocs se
