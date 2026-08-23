@@ -126,7 +126,7 @@ window.HYPE_LINGO_LEX.arrivee = {
           it:"Una lezione da soli con l'istruttore, in opposizione alla lezione collettiva. Più cara, ma la scelta giusta quando non si parla la lingua.",
           de:"Eine Stunde allein mit dem Reitlehrer, im Gegensatz zur Gruppenstunde. Teurer, aber die richtige Wahl, wenn man die Sprache nicht spricht.",
           ja:"先生とマンツーマンのレッスン。グループレッスンの反対です。割高ですが、言葉が話せないときは正しい選択です。",
-          ar:"درس فردي مع المدرب، بخلاف الدرس الجماعي. أغلى ثمنا، لكنه الخيار الصحيح عندما لا تتقن اللغة." } },
+          ar:"درس فردي مع المدرب، بخلاف الدرس الجماعي. أغلى ثمنا، لكنه الخيار الصحيح عندما لا تتقنين اللغة." } },
 
   { ref:"cours-collectif", lecon:3, coll:"inscrire",
     mots:{ fr:{m:"le cours collectif"}, en:{m:"the group lesson", p:"groupe"},
@@ -139,7 +139,7 @@ window.HYPE_LINGO_LEX.arrivee = {
           it:"Una lezione con più cavalieri. È la lezione ordinaria di un club, e quella dove si sente più vocabolario reale.",
           de:"Eine Stunde mit mehreren Reitern. Es ist die gewöhnliche Clubstunde — und die, in der man das meiste echte Vokabular hört.",
           ja:"数人で受けるレッスン。クラブのふつうのレッスンであり、生きた語彙がいちばん聞こえてくる場所でもあります。",
-          ar:"درس مع عدة فرسان. هو الدرس المعتاد في النادي، وفيه تسمع أكبر قدر من المفردات الحقيقية." } },
+          ar:"درس مع عدة فرسان. هو الدرس المعتاد في النادي، وفيه تسمعين أكبر قدر من المفردات المستخدمة فعلا." } },
 
   { ref:"niveau", lecon:1, coll:"inscrire",
     mots:{ fr:{m:"le niveau"}, en:{m:"the level", p:"lè-veul"},
@@ -220,7 +220,7 @@ window.HYPE_LINGO_LEX.arrivee = {
           it:"La richiesta che conta di più, e quella che si osa fare più raramente. Non dice che hai paura: dice che vuoi goderti la tua lezione.",
           de:"Die Bitte, die am meisten zählt — und die man sich am seltensten traut. Sie sagt nicht, dass du Angst hast: Sie sagt, dass du deine Stunde genießen willst.",
           ja:"いちばん大事なのに、なかなか口に出せないお願い。怖がっているという意味ではありません。レッスンを楽しみたい、という意味です。",
-          ar:"أهم طلب على الإطلاق، وأقله جرأة على قوله. فهو لا يعني أنك خائفة، بل أنك تريد أن تستمتع بدرسك." } },
+          ar:"إنه أهم طلب على الإطلاق، مع أن كثيرا من الفارسات يترددن في قوله. فهو لا يعني أنك خائفة، بل يعني أنك تريدين الاستمتاع بدرسك." } },
 
   { ref:"balade", lecon:1, coll:"inscrire",
     mots:{ fr:{m:"la balade"}, en:{m:"the hack", p:"hak", var:"the trail ride"},
@@ -272,7 +272,7 @@ window.HYPE_LINGO_LEX.arrivee = {
           it:"L'andatura a due tempi, quella che scuote di più un principiante — e quella che si chiede più spesso in passeggiata per coprire terreno.",
           de:"Die Gangart im Zweitakt, die einen Anfänger am meisten durchschüttelt — und die auf dem Ausritt am häufigsten verlangt wird, um Strecke zu machen.",
           ja:"二拍子の歩法。初心者がいちばん揺さぶられる歩法であり、外乗で距離を稼ぐためにいちばんよく求められる歩法でもあります。",
-          ar:"المشية ذات الإيقاع الثنائي، وهي أكثر ما يهز المبتدئ — وأكثر ما يطلب في النزهة لقطع المسافات." } },
+          ar:"مشية ذات إيقاع ثنائي، وهي أكثر المشيات إزعاجا للمبتدئة، كما تستخدم كثيرا في النزهات لقطع المسافات." } },
 
   /* ⚠️ AUCUN `var` SUR CE MOT — 12 août 2026, session 210.
      Il portait `var:"a gallop"`. Deux dégâts : l'app affichait
@@ -295,7 +295,7 @@ window.HYPE_LINGO_LEX.arrivee = {
           it:"⚠️ Falso amico in inglese: « canter » è il galoppo tranquillo di tutti i giorni; « gallop » è il galoppo da corsa, a tutta velocità. Di' « canter » se vuoi solo avanzare.",
           de:"⚠️ Falscher Freund im Englischen: « canter » ist der ruhige Alltagsgalopp; « gallop » ist der Renngalopp in vollem Tempo. Sag « canter », wenn du einfach nur vorwärts willst.",
           ja:"⚠️ 英語の落とし穴：ふだんの落ち着いた駈歩は « canter »、全速力の襲歩は « gallop »。ただ走りたいだけなら « canter » と言うこと。",
-          ar:"العدو الخفيف هو السرعة المعتادة والمتحكم فيها أثناء الركوب، أما العدو السريع فهو عدو السباق بأقصى سرعة. إذا كنت تريدين التقدم بهدوء، فاطلبي العدو الخفيف." } },
+          ar:"العدو الخفيف هو إيقاع العدو المعتاد والمتحكم فيه أثناء الركوب، أما العدو السريع فهو عدو السباق بأقصى سرعة. إذا كنت تريدين التقدم بهدوء، فاطلبي العدو الخفيف." } },
 
   { ref:"bottes", lecon:1, coll:"inscrire",
     mots:{ fr:{m:"les bottes"}, en:{m:"the boots", p:"boutss"},
@@ -308,7 +308,7 @@ window.HYPE_LINGO_LEX.arrivee = {
           it:"Con il cap, l'unico pezzo di equipaggiamento che viene davvero controllato: tacco netto, gambale alto, mai scarpe da ginnastica. Alcuni centri prestano mini-chaps se non hai stivali.",
           de:"Neben dem Helm das eine Ausrüstungsstück, das wirklich geprüft wird: klarer Absatz, hoher Schaft, nie Turnschuhe. Manche Ställe verleihen Chaps, wenn du keine Stiefel hast.",
           ja:"ヘルメットと並んで、本当にチェックされる唯一の装備。かかとのある靴、高さのある筒、スニーカーは厳禁。ブーツがなければミニチャップスを貸してくれるセンターもあります。",
-          ar:"مع الخوذة، هي قطعة المعدات الوحيدة التي ستطلب منك فعلا: كعب واضح، وساق مرتفعة، ولا حذاء رياضي أبدا. وتعير بعض المراكز واقيات قصيرة للساق إذا لم تكن لديك." } },
+          ar:"مع الخوذة، هي قطعة المعدات الوحيدة التي ستطلب منك فعلا: كعب واضح، وساق طويلة، ولا حذاء رياضي أبدا. وتعير بعض المراكز واقيات قصيرة للساق إذا لم تكن لديك." } },
 
   { ref:"duree-reprise", lecon:3, coll:"inscrire",
     mots:{ fr:{m:"une heure de cours"}, en:{m:"an hour's lesson"},
@@ -322,7 +322,7 @@ window.HYPE_LINGO_LEX.arrivee = {
           it:"⚠️ Attenzione al falso amico: in tedesco una « Reitstunde » indica la lezione in generale, spesso quarantacinque minuti — non sessanta.",
           de:"⚠️ Vorsicht: Die « Reitstunde » meint die Unterrichtseinheit — oft fünfundvierzig Minuten, nicht sechzig.",
           ja:"⚠️ 紛らわしい言葉に注意：ドイツ語の « Reitstunde » はレッスン一回のこと。多くは四十五分で、六十分ではありません。",
-          ar:"مدة الدرس المعتادة. انتبه: في بعض اللغات تعني كلمة «ساعة الركوب» الدرس عموما، وقد يكون خمسا وأربعين دقيقة لا ستين." } },
+          ar:"مدة الدرس المعتادة. انتبهي: في بعض اللغات تعني كلمة «ساعة الركوب» الدرس عموما، وقد يكون خمسا وأربعين دقيقة لا ستين." } },
 
   { ref:"annuler", lecon:3, coll:"inscrire",
     mots:{ fr:{m:"annuler"}, en:{m:"to cancel", p:"kann-seul"},
@@ -335,7 +335,7 @@ window.HYPE_LINGO_LEX.arrivee = {
           it:"Da saper dire, e presto: una lezione prenotata è quasi ovunque dovuta, anche se non ci si presenta.",
           de:"Muss man sagen können — und früh: Eine gebuchte Stunde wird fast überall berechnet, ob man kommt oder nicht.",
           ja:"早めに言えるようにしておくこと。予約したレッスンは、行かなくても、ほぼどこでも料金が発生します。",
-          ar:"يجب أن تعرف كيف تقولها، ومبكرا: فالدرس المحجوز مستحق في معظم الأماكن حتى إن لم تحضر." } },
+          ar:"يجب أن تعرفي كيف تقولينها، وأن تفعلي ذلك مبكرا. ففي معظم الأماكن يبقى ثمن الدرس المحجوز مستحقا حتى إن لم تحضري." } },
 
   /* ============ LEÇON 2 · LA SÉCURITÉ ============ */
 
@@ -421,7 +421,7 @@ window.HYPE_LINGO_LEX.arrivee = {
           it:"⚠️ La parola da riconoscere prima di saperla dire. In un club britannico si grida « mind out » o « heads up », raramente « attention ».",
           de:"⚠️ Das Wort, das man erkennen muss, bevor man es sagen kann. Im britischen Stall ruft man « mind out » oder « heads up », selten « attention ».",
           ja:"⚠️ 言えるようになる前に、聞き取れるべき言葉。イギリスのクラブで飛ぶのは « mind out » や « heads up » — « attention » はめったに聞きません。",
-          ar:"الكلمة التي يجب أن تعرفها قبل أن تعرف كيف تقولها. تصرخ في النوادي للتحذير الفوري." } },
+          ar:"كلمة يجب أن تفهميها قبل أن تتعلمي قولها، وتستخدم في نوادي الفروسية للتحذير الفوري." } },
 
   { ref:"tenir-cheval", lecon:2, coll:"securite",
     mots:{ fr:{m:"tiens-le"}, en:{m:"hold him", p:"hôlde"},
@@ -607,7 +607,7 @@ window.HYPE_LINGO_LEX.arrivee = {
       it:"Siamo in quattro, due principianti.",
       de:"Wir sind vier, zwei Anfänger.",
       ja:"四人 です。 二人 は 初心者 です。",
-      ar:"نحن أربعة، اثنان منا مبتدئان." },
+      ar:"نحن أربع، اثنتان منا مبتدئتان." },
 
   { ref:"ph-derriere", lecon:2, mots:["jamais-derriere", "passer-devant"],
       fr:"Ne passe pas derrière lui, passe devant.",
@@ -805,7 +805,7 @@ window.HYPE_LINGO_LEX.arrivee = {
       it:"Bisogna portare scarpe chiuse.",
       de:"Man muss geschlossene Schuhe tragen.",
       ja:"つま先 の 覆わ れ た 靴 を 履い て ください。",
-      ar:"يجب ارتداء حذاء مغلق." }
+      ar:"يجب ارتداء أحذية مغلقة." }
   ],
 
   /* ==================================================================
@@ -1039,7 +1039,7 @@ window.HYPE_LINGO_LEX.arrivee = {
         it:"Si sente a suo agio al passo, al trotto e al galoppo?",
         de:"Fühlen Sie sich im Schritt, im Trab und im Galopp sicher?",
         ja:"常歩、 速歩、 駆歩 は 大丈夫 です か ?",
-      ar:"هل أنت مرتاحة في مشية الخطو والخبب والعدو الخفيف؟" },
+      ar:"هل تشعرين بالراحة عند الركوب في مشية الخطو والخبب والعدو الخفيف؟" },
 
       { ref:"d-q-deja-galope", temps:4, dit:"club", mots:["galop"],
         fr:"Vous avez déjà galopé ?",
@@ -1048,7 +1048,7 @@ window.HYPE_LINGO_LEX.arrivee = {
         it:"Ha già galoppato?",
         de:"Sind Sie schon einmal galoppiert?",
         ja:"駆歩 を し た こと は あり ます か ?",
-      ar:"هل سبق لك أن سرت بالحصان في العدو الخفيف؟" },
+      ar:"هل سبق لك أن ركبت بالعدو الخفيف؟" },
 
       /* ---- temps 5 · l'équipement obligatoire ---- */
       /* 🟥 TROIS PHRASES DE BLANDINE sur le cheval qu'on reçoit. Elles
@@ -1146,7 +1146,7 @@ window.HYPE_LINGO_LEX.arrivee = {
         it:"È possibile fare una passeggiata sulla spiaggia?",
         de:"Ist ein Ausritt am Strand möglich?",
         ja:"浜辺 で の 外乗 は でき ます か ?",
-      ar:"هل يمكن القيام بنزهة على ظهر الخيل على الشاطئ؟" },
+      ar:"هل يمكن القيام بنزهة على الخيل على الشاطئ؟" },
 
       { ref:"d-balade-cinq", temps:6, dit:"joueuse", mots:["reserver","balade","le-groupe"],
         fr:"Je voudrais réserver une balade pour cinq personnes.",

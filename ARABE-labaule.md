@@ -2,19 +2,47 @@
 
 **1ʳᵉ ville · « L'arrivée » · France**
 
-**Fiche unique et complète.** Tout ce qui a été traduit en arabe pour cette ville : les textes d'accueil, la lettre, les volets, les mots, le dialogue, les phrases.
+**Fiche unique et complète.** Textes d'accueil, lettre, volets, mots, dialogue, phrases.
 
-🟥 **Chapitre de sécurité.** « Lâche ! », « ne passe pas derrière lui ». Les ordres sont volontairement **courts et directs** — merci de ne pas les allonger.
+🟥 **Chapitre de sécurité.** Les ordres sont volontairement **courts et directs** — merci de ne pas les allonger.
 
-Le français d'origine est au-dessus de chaque ligne arabe. **Pour signaler une correction, cite le numéro.**
+Le français est au-dessus de chaque ligne arabe. **Pour signaler une correction, cite le numéro.**
 
-Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jamais relu par un arabophone.**
+🟥 **Règle de genre :** les **consignes** sont au féminin (le club s'adresse à une cavalière) ; la **lettre** est au masculin, le narrateur étant le même dans les 38 villes.
+
+Arabe standard moderne, sans signes vocaliques.
+
+🟡 **Reste à valider par une personne arabophone du milieu équestre.**
+
+---
+
+## LES TERMES DE RÉFÉRENCE
+
+*Fixés en relecture. À employer partout, dans toutes les villes.*
+
+| français | arabe |
+|---|---|
+| le pas | مشية الخطو |
+| le trot | الخبب |
+| le galop (contrôlé) | العدو الخفيف |
+| le galop de course | العدو السريع |
+| le saut d'obstacles | قفز الحواجز |
+| la longe | حبل القيادة |
+| la bombe | الخوذة |
+| le seuil de réaction | عتبة الاستجابة |
+| le paddock | المرعى المسيج |
+| le bush | البرية الأسترالية |
+| le rond de longe | حلبة التدريب الدائرية |
+| la rampe du van | منحدر المقطورة |
+| l'abreuvoir | حوض الشرب |
+| l'équitation scientifique | الفروسية العلمية |
+| le degré sous zéro | درجة تحت الصفر |
+| *forward horse* | حصان ذو اندفاع طبيعي |
+| *genuine horse* | حصان موثوق وطيب الطباع |
 
 ---
 
 ## A · L'ÉCRAN D'ARRIVÉE
-
-*Ce que la cavalière lit en découvrant la ville.*
 
 **A1** — *phrase 1*
 
@@ -32,13 +60,13 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Le Jumping international s'y court chaque printemps, à cent mètres de la plage — l'un des plus anciens concours d'Europe.
 
-<div dir="rtl" lang="ar">تقام هنا كل ربيع مسابقة القفز الدولية، على بعد مئة متر من الشاطئ، وهي من أقدم المسابقات في أوروبا.</div>
+<div dir="rtl" lang="ar">تقام هنا كل ربيع مسابقة دولية لقفز الحواجز، على بعد مئة متر من الشاطئ، وهي من أقدم المسابقات في أوروبا.</div>
 
 **A4** — *résumé de la ville*
 
 > Le Jumping international les pieds dans l'eau, et neuf kilomètres de plage pour un premier cours.
 
-<div dir="rtl" lang="ar">مسابقة القفز الدولية على شاطئ البحر، وتسعة كيلومترات من الرمال لأول درس.</div>
+<div dir="rtl" lang="ar">مسابقة دولية لقفز الحواجز على شاطئ البحر، وتسعة كيلومترات من الرمال لأول درس.</div>
 
 **A5** — *chapeau du chapitre*
 
@@ -50,7 +78,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 ## B · LA LETTRE
 
-*Écrite à la première personne, au masculin — le narrateur est le même dans les 38 villes.*
+*À la première personne, au masculin.*
 
 **B1**
 
@@ -68,15 +96,13 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 ## C · LES TROIS VOLETS
 
-*Les bandeaux qui se déplient sous la carte postale.*
-
 **C1 — Le Jumping**
 
-<div dir="rtl" lang="ar"><b>مسابقة القفز</b></div>
+<div dir="rtl" lang="ar"><b>مسابقة قفز الحواجز</b></div>
 
 > Chaque printemps, les carrières s'installent face à l'océan et les meilleurs cavaliers du monde y sautent à cent mètres de la plage. C'est l'un des plus anciens concours internationaux d'Europe, et le sable de la piste vient de la mer.
 
-<div dir="rtl" lang="ar">في كل ربيع تنصب الميادين في مواجهة المحيط، ويقفز فيها أفضل فرسان العالم على بعد مئة متر من الشاطئ. وهي من أقدم المسابقات الدولية في أوروبا، ورمل الميدان نفسه يأتي من البحر.</div>
+<div dir="rtl" lang="ar">في كل ربيع تقام ميادين قفز الحواجز في مواجهة المحيط، ويتنافس فيها أفضل فرسان العالم على بعد مئة متر من الشاطئ. وهي من أقدم المسابقات الدولية في أوروبا، ورمل الميدان نفسه يأتي من البحر.</div>
 
 **C2 — La plage**
 
@@ -84,7 +110,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Neuf kilomètres de sable, et le droit d'y monter hors saison, tôt le matin. L'eau salée est réputée bonne pour les tendons — on y descend les chevaux au pas dans les vagues, sans les faire nager.
 
-<div dir="rtl" lang="ar">تسعة كيلومترات من الرمال، ويسمح بالركوب عليها خارج الموسم في الصباح الباكر. ويقال إن ماء البحر المالح مفيد للأوتار، فينزل بالخيول إلى الأمواج على مشية الخطو، من دون أن تسبح.</div>
+<div dir="rtl" lang="ar">تسعة كيلومترات من الرمال، ويسمح بالركوب عليها خارج الموسم في الصباح الباكر. ويقال إن ماء البحر المالح مفيد للأوتار، لذلك ينزل الفرسان بخيولهم إلى الأمواج على مشية الخطو، من دون جعلها تسبح.</div>
 
 **C3 — Si tu y allais**
 
@@ -112,7 +138,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Une reprise seul avec l'enseignant, par opposition au cours collectif. Plus cher, mais le bon choix quand on ne parle pas la langue.
 
-<div dir="rtl" lang="ar">درس فردي مع المدرب، بخلاف الدرس الجماعي. أغلى ثمنا، لكنه الخيار الصحيح عندما لا تتقن اللغة.</div>
+<div dir="rtl" lang="ar">درس فردي مع المدرب، بخلاف الدرس الجماعي. أغلى ثمنا، لكنه الخيار الصحيح عندما لا تتقنين اللغة.</div>
 
 **D3 — le cours collectif**
 
@@ -120,7 +146,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Une reprise à plusieurs. C'est le cours ordinaire d'un club, et celui où l'on entend le plus de vocabulaire réel.
 
-<div dir="rtl" lang="ar">درس مع عدة فرسان. هو الدرس المعتاد في النادي، وفيه تسمع أكبر قدر من المفردات الحقيقية.</div>
+<div dir="rtl" lang="ar">درس مع عدة فرسان. هو الدرس المعتاد في النادي، وفيه تسمعين أكبر قدر من المفردات المستخدمة فعلا.</div>
 
 **D4 — le niveau**
 
@@ -168,7 +194,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > La demande qui compte le plus, et qu'on ose rarement faire. Elle ne dit pas que tu as peur, elle dit que tu veux profiter de ta reprise.
 
-<div dir="rtl" lang="ar">أهم طلب على الإطلاق، وأقله جرأة على قوله. فهو لا يعني أنك خائفة، بل أنك تريد أن تستمتع بدرسك.</div>
+<div dir="rtl" lang="ar">إنه أهم طلب على الإطلاق، مع أن كثيرا من الفارسات يترددن في قوله. فهو لا يعني أنك خائفة، بل يعني أنك تريدين الاستمتاع بدرسك.</div>
 
 **D10 — la balade**
 
@@ -200,7 +226,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > L'allure à deux temps, celle qui secoue le plus un débutant — et celle qu'on demande le plus souvent en balade pour couvrir du terrain.
 
-<div dir="rtl" lang="ar">المشية ذات الإيقاع الثنائي، وهي أكثر ما يهز المبتدئ — وأكثر ما يطلب في النزهة لقطع المسافات.</div>
+<div dir="rtl" lang="ar">مشية ذات إيقاع ثنائي، وهي أكثر المشيات إزعاجا للمبتدئة، كما تستخدم كثيرا في النزهات لقطع المسافات.</div>
 
 **D14 — au galop**
 
@@ -208,7 +234,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > ⚠️ Faux ami en anglais : « canter » est le galop tranquille de tous les jours ; « gallop » est le galop de course, à pleine vitesse. Dis « canter » si tu veux juste avancer.
 
-<div dir="rtl" lang="ar">العدو الخفيف هو السرعة المعتادة والمتحكم فيها أثناء الركوب، أما العدو السريع فهو عدو السباق بأقصى سرعة. إذا كنت تريدين التقدم بهدوء، فاطلبي العدو الخفيف.</div>
+<div dir="rtl" lang="ar">العدو الخفيف هو إيقاع العدو المعتاد والمتحكم فيه أثناء الركوب، أما العدو السريع فهو عدو السباق بأقصى سرعة. إذا كنت تريدين التقدم بهدوء، فاطلبي العدو الخفيف.</div>
 
 **D15 — les bottes**
 
@@ -216,7 +242,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Avec la bombe, la seule pièce d'équipement qu'on te demandera vraiment : talon net, tige haute, jamais de baskets. Certains centres prêtent des mini-chaps si tu n'en as pas.
 
-<div dir="rtl" lang="ar">مع الخوذة، هي قطعة المعدات الوحيدة التي ستطلب منك فعلا: كعب واضح، وساق مرتفعة، ولا حذاء رياضي أبدا. وتعير بعض المراكز واقيات قصيرة للساق إذا لم تكن لديك.</div>
+<div dir="rtl" lang="ar">مع الخوذة، هي قطعة المعدات الوحيدة التي ستطلب منك فعلا: كعب واضح، وساق طويلة، ولا حذاء رياضي أبدا. وتعير بعض المراكز واقيات قصيرة للساق إذا لم تكن لديك.</div>
 
 **D16 — une heure de cours**
 
@@ -224,7 +250,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > ⚠️ Attention au faux ami : en allemand, une « Reitstunde » désigne la leçon en général, souvent quarante-cinq minutes — pas soixante.
 
-<div dir="rtl" lang="ar">مدة الدرس المعتادة. انتبه: في بعض اللغات تعني كلمة «ساعة الركوب» الدرس عموما، وقد يكون خمسا وأربعين دقيقة لا ستين.</div>
+<div dir="rtl" lang="ar">مدة الدرس المعتادة. انتبهي: في بعض اللغات تعني كلمة «ساعة الركوب» الدرس عموما، وقد يكون خمسا وأربعين دقيقة لا ستين.</div>
 
 **D17 — annuler**
 
@@ -232,7 +258,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > À savoir dire, et tôt : une reprise réservée est presque partout due, même si l'on ne vient pas.
 
-<div dir="rtl" lang="ar">يجب أن تعرف كيف تقولها، ومبكرا: فالدرس المحجوز مستحق في معظم الأماكن حتى إن لم تحضر.</div>
+<div dir="rtl" lang="ar">يجب أن تعرفي كيف تقولينها، وأن تفعلي ذلك مبكرا. ففي معظم الأماكن يبقى ثمن الدرس المحجوز مستحقا حتى إن لم تحضري.</div>
 
 **D18 — passer devant lui**  🟥 *ordre de sécurité*
 
@@ -280,7 +306,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > ⚠️ Le mot qu'il faut reconnaître avant de savoir le dire. En club britannique on crie souvent « mind out » ou « heads up », rarement « attention ».
 
-<div dir="rtl" lang="ar">الكلمة التي يجب أن تعرفها قبل أن تعرف كيف تقولها. تصرخ في النوادي للتحذير الفوري.</div>
+<div dir="rtl" lang="ar">كلمة يجب أن تفهميها قبل أن تتعلمي قولها، وتستخدم في نوادي الفروسية للتحذير الفوري.</div>
 
 **D24 — tiens-le**  🟥 *ordre de sécurité*
 
@@ -422,13 +448,13 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Vous êtes à l'aise au pas, au trot, au galop ?
 
-<div dir="rtl" lang="ar">هل أنت مرتاحة في مشية الخطو والخبب والعدو الخفيف؟</div>
+<div dir="rtl" lang="ar">هل تشعرين بالراحة عند الركوب في مشية الخطو والخبب والعدو الخفيف؟</div>
 
 **E12** · **Le club**
 
 > Vous avez déjà galopé ?
 
-<div dir="rtl" lang="ar">هل سبق لك أن سرت بالحصان في العدو الخفيف؟</div>
+<div dir="rtl" lang="ar">هل سبق لك أن ركبت بالعدو الخفيف؟</div>
 
 ### Temps 5
 
@@ -486,7 +512,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Est-il possible de faire une balade sur la plage ?
 
-<div dir="rtl" lang="ar">هل يمكن القيام بنزهة على ظهر الخيل على الشاطئ؟</div>
+<div dir="rtl" lang="ar">هل يمكن القيام بنزهة على الخيل على الشاطئ؟</div>
 
 **E22** · **La cavalière**
 
@@ -538,7 +564,7 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Nous sommes quatre, deux débutants.
 
-<div dir="rtl" lang="ar">نحن أربعة، اثنان منا مبتدئان.</div>
+<div dir="rtl" lang="ar">نحن أربع، اثنتان منا مبتدئتان.</div>
 
 **F5**
 
@@ -670,8 +696,8 @@ Arabe standard moderne, sans signes vocaliques, consignes **au féminin**. **Jam
 
 > Il faut porter des chaussures fermées.
 
-<div dir="rtl" lang="ar">يجب ارتداء حذاء مغلق.</div>
+<div dir="rtl" lang="ar">يجب ارتداء أحذية مغلقة.</div>
 
 ---
 
-*23/08/2026 · 92 entrées : 5 textes d'accueil, 2 de lettre, 3 volets, 31 mots, 25 répliques, 26 phrases.*
+*23/08/2026 · 92 entrées.*
