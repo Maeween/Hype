@@ -358,7 +358,7 @@ window.HYPE_LINGO_LEX.apprentissage = {
      ================================================================== */
   dialogue: {
     ville: "clonbinane", lecon: 1, temps: 6,
-    langues: ["fr","en","es","it","de","ja"],
+    langues: ["fr","en","es","it","de","ja","ar"],
     phrases: [
 
     /* ---- temps 1 · observer avant d'interpréter ---- */
