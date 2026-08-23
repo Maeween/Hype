@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!-- ═══════════════════════════════════════════════════════════════════
+     HYPE — DIAGNOSTIC PREMIUM · 22/08/2026
+     Page AUTONOME. Elle ne touche a RIEN : aucune ecriture, aucun
+     enregistrement. Elle lit et elle affiche, c est tout.
+     A POUSSER A LA RACINE, a cote de index.html, sous le nom
+     diag-premium.html — JAMAIS index.html.
+     Elle partage le meme domaine, donc la meme session : elle voit
+     exactement ce que l app voit.
+     A SUPPRIMER une fois le probleme trouve.
+     ═══════════════════════════════════════════════════════════════ -->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Diagnostic Premium</title>
+<style>
+  :root{--noir:#060709;--turq:#20D9F5;--or:#E8C887;--rouge:#F0A0A0;--vert:#7FE3A8;--gris:#8A929C}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--noir);color:#F4F7FA;font-family:-apple-system,system-ui,sans-serif;
+       padding:22px 16px 60px;overflow-x:clip;-webkit-text-size-adjust:100%}
+  h1{font-size:16px;letter-spacing:.18em;text-transform:uppercase;color:var(--turq);margin:0 0 4px}
+  .sub{font-size:11px;color:#5B646E;margin-bottom:20px}
+  .bloc{border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:14px 14px 12px;margin-bottom:12px;
+        background:rgba(17,20,23,.7)}
+  .tit{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris);margin-bottom:9px}
+  .l{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:5px 0;
+     border-top:1px solid rgba(255,255,255,.05);align-items:flex-start}
+  .l:first-of-type{border-top:none}
+  .k{color:#7C858F;flex:none}
+  .v{text-align:right;word-break:break-all;font-family:ui-monospace,monospace;font-size:11.5px}
+  .ok{color:var(--vert)} .ko{color:var(--rouge)} .att{color:var(--or)}
+  pre{background:#0B0E11;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px;
+      font-size:10.5px;overflow-x:auto;color:#9AA4AD;margin:8px 0 0;white-space:pre-wrap;word-break:break-all}
+  .verdict{border-radius:14px;padding:16px;margin-bottom:14px;font-size:13.5px;line-height:1.6;
+           border:1px solid var(--or);background:rgba(232,200,135,.07)}
+  .verdict b{display:block;font-size:15px;margin-bottom:6px}
+</style>
+</head>
+<body>
+<h1>Diagnostic Premium</h1>
+<div class="sub">Page de lecture seule &middot; n&rsquo;&eacute;crit rien &middot; &agrave; supprimer apr&egrave;s usage</div>
+<div id="out">Lecture en cours&hellip;</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var URL_SUPA = "https://ldpjebgtskzdokrublfg.supabase.co";
+  var CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
+  var ETAT_CLE = "augalop_etat_v1";
+  var MODERATEURS = ["feinn@live.fr","malicia2008@hotmail.fr"];
+  var PLANS_OK = ["mensuel","annuel","duo"];      /* la porte du Premium, ligne 21476 */
+  var PLANS_LUS = ["mensuel","annuel","ai","duo"]; /* ce que lireAbo accepte, ligne 21580 */
+
+  /* MEME stockage que l app : localStorage d abord, sessionStorage en secours. */
+  var stockageHype = {
+    getItem: function(k){ try{ var v=localStorage.getItem(k); if(v===null){ try{v=sessionStorage.getItem(k);}catch(e){} } return v; }catch(e){ return null; } },
+    setItem: function(){}, removeItem: function(){}
+  };
+
+  function esc(x){ return String(x==null?"":x).replace(/[<>&]/g,function(c){return {"<":"&lt;",">":"&gt;","&":"&amp;"}[c];}); }
+  function ligne(k,v,cl){ return '<div class="l"><span class="k">'+esc(k)+'</span><span class="v '+(cl||"")+'">'+esc(v)+'</span></div>'; }
+
+  (async function(){
+    var h = "", verdict = "", user = null;
+    try {
+      var supa = supabase.createClient(URL_SUPA, CLE, { auth: { storage: stockageHype, persistSession: true, autoRefreshToken: true } });
+
+      /* ---- 1 · la session ---- */
+      var ds = null, errS = null;
+      try { var rS = await supa.auth.getSession(); ds = rS && rS.data; errS = rS && rS.error; } catch(e){ errS = e; }
+      user = ds && ds.session && ds.session.user;
+
+      h += '<div class="bloc"><div class="tit">1 &middot; la session</div>';
+      h += ligne("session trouvee", user ? "OUI" : "NON", user ? "ok" : "ko");
+      h += ligne("email", user ? user.email : "\u2014", user ? "" : "ko");
+      h += ligne("identifiant", user ? user.id : "\u2014");
+      h += ligne("moderatrice", user && MODERATEURS.indexOf(String(user.email||"").toLowerCase().trim())!==-1 ? "OUI" : "non");
+      if (errS) h += '<pre>'+esc(errS.message||errS)+'</pre>';
+      h += '</div>';
+
+      /* ---- 2 · ce que la base repond VRAIMENT ---- */
+      h += '<div class="bloc"><div class="tit">2 &middot; la requete de l app</div>';
+      if (!user) {
+        h += ligne("requete", "impossible : pas de session", "ko");
+        verdict = "<b>Aucune session.</b> L\u2019app ne sait pas qui tu es \u2014 c\u2019est pour \u00e7a qu\u2019elle ne pose aucun Premium. Le probl\u00e8me est dans la connexion, pas dans l\u2019abonnement.";
+      } else {
+        var r = null, err = null, data = null;
+        try { r = await supa.from("abonnements_premium").select("plan,statut,expire_le").eq("user_id", user.id); data = r && r.data; err = r && r.error; }
+        catch(e){ err = e; }
+
+        h += ligne("erreur renvoyee", err ? "OUI" : "aucune", err ? "ko" : "ok");
+        h += ligne("lignes recues", data ? data.length : 0, (data && data.length) ? "ok" : "ko");
+        if (err) h += '<pre>'+esc(JSON.stringify(err,null,1))+'</pre>';
+        if (data) h += '<pre>'+esc(JSON.stringify(data,null,1))+'</pre>';
+        h += '</div>';
+
+        /* ---- 3 · le calcul exact de l app ---- */
+        var lignes = data || [];
+        var abo = lignes.slice().sort(function(a,b){
+          var ea=(a.statut==="actif")?1:0, eb=(b.statut==="actif")?1:0;
+          if(ea!==eb) return eb-ea;
+          return String(b.expire_le||"").localeCompare(String(a.expire_le||""));
+        })[0];
+
+        h += '<div class="bloc"><div class="tit">3 &middot; le calcul de lireAbo</div>';
+        if (!abo) {
+          h += ligne("ligne retenue", "AUCUNE", "ko");
+          h += ligne("consequence", "lireAbo sort sans rien poser", "ko");
+        } else {
+          var actif = abo.statut === "actif" && (!abo.expire_le || new Date(abo.expire_le).getTime() > Date.now());
+          h += ligne("plan", abo.plan || "(vide)");
+          h += ligne("statut", abo.statut || "(vide)", abo.statut==="actif" ? "ok" : "ko");
+          h += ligne("expire le", abo.expire_le || "jamais");
+          h += ligne("juge actif", actif ? "OUI" : "NON", actif ? "ok" : "ko");
+          h += ligne("plan accepte par lireAbo", PLANS_LUS.indexOf(abo.plan)!==-1 ? "OUI" : "NON", PLANS_LUS.indexOf(abo.plan)!==-1 ? "ok" : "ko");
+          h += ligne("plan ouvre le Premium", PLANS_OK.indexOf(abo.plan)!==-1 ? "OUI" : "NON", PLANS_OK.indexOf(abo.plan)!==-1 ? "ok" : "att");
+        }
+        h += '</div>';
+
+        /* ---- verdict ---- */
+        if (err) verdict = "<b>La base refuse la lecture.</b> C\u2019est l\u00e0 qu\u2019est le probl\u00e8me \u2014 voir le message ci-dessus.";
+        else if (!lignes.length) verdict = "<b>La base r\u00e9pond, mais avec z\u00e9ro ligne.</b> Aucun abonnement n\u2019est rattach\u00e9 \u00e0 CE compte (" + (user.email||"") + "). Le paiement est peut-\u00eatre sur une autre adresse.";
+        else if (!abo) verdict = "<b>Des lignes existent mais aucune n\u2019est retenue.</b> Cas inattendu \u2014 envoie la capture.";
+        else {
+          var actif2 = abo.statut === "actif" && (!abo.expire_le || new Date(abo.expire_le).getTime() > Date.now());
+          if (!actif2) verdict = "<b>La ligne existe mais n\u2019est pas jug\u00e9e active.</b> statut = " + abo.statut + ", expire = " + (abo.expire_le||"jamais") + ".";
+          else if (PLANS_OK.indexOf(abo.plan) === -1) verdict = "<b>Le plan \u00ab " + abo.plan + " \u00bb n\u2019ouvre pas le Premium.</b> Il est lu, mais absent de la liste qui d\u00e9verrouille (ligne 21476).";
+          else verdict = "<b>Tout est bon jusqu\u2019ici.</b> L\u2019app DEVRAIT avoir le Premium. Si tu vois encore des cadenas, la cause est apr\u00e8s ce point \u2014 dans l\u2019affichage, pas dans l\u2019abonnement.";
+        }
+      }
+
+      /* ---- 4 · ce qui est garde dans le telephone ---- */
+      var sauve = null, brut = null;
+      try { brut = localStorage.getItem(ETAT_CLE); sauve = JSON.parse(brut || "null"); } catch(e){}
+      h += '<div class="bloc"><div class="tit">4 &middot; garde dans le telephone</div>';
+      h += ligne("etat local trouve", sauve ? "OUI" : "NON");
+      h += ligne("planAbo memorise", (sauve && typeof sauve.planAbo === "string") ? (sauve.planAbo || "(vide)") : "\u2014");
+      h += ligne("vip", (sauve && sauve.profil) ? String(!!sauve.profil.vip) : "\u2014");
+      h += ligne("poids de l etat", brut ? (Math.round(brut.length/1024) + " ko") : "\u2014");
+      h += '</div>';
+
+    } catch (eG) {
+      h += '<div class="bloc"><div class="tit">panne du diagnostic</div><pre>'+esc(eG && (eG.stack||eG.message||eG))+'</pre></div>';
+      verdict = "<b>Le diagnostic lui-m\u00eame a plant\u00e9.</b> Envoie la capture.";
+    }
+
+    document.getElementById("out").innerHTML = (verdict ? '<div class="verdict">'+verdict+'</div>' : "") + h;
+  })();
+})();
+</script>
+</body>
+</html>
