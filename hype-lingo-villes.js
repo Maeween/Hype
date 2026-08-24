@@ -397,35 +397,41 @@ badminton:{
     de:["Es hatte die ganze Nacht geregnet.",
         "Ich ging die Geländestrecke zu Fuß ab, wie die Reiter am Vortag. Die Holzhindernisse sind höher als im Fernsehen, die Erde klebte an den Stiefeln, und das große Haus sah uns aus der Tiefe des Nebels zu."],
     ja:["一晩じゅう雨が降っていた。",
-        "前日の騎手たちと同じように、クロスカントリーのコースを歩いた。木の障害はテレビで見るより高く、泥がブーツにまとわりつき、霧の奥から大きな館がこちらを見つめていた。"]},
+        "前日の騎手たちと同じように、クロスカントリーのコースを歩いた。木の障害はテレビで見るより高く、泥がブーツにまとわりつき、霧の奥から大きな館がこちらを見つめていた。"],
+    /* 🟡 arabe dormant (24/08) — relecture 1 appliquée. */
+    ar:["كان المطر قد هطل طوال الليل.",
+        "سرت على قدمي في مسار اختراق الضاحية، كما يفعل الفرسان في اليوم السابق للمسابقة. بدت الحواجز الخشبية أعلى مما تظهر على شاشة التلفزيون، والتصق الطين بحذائي، بينما كان القصر الكبير يطل علينا من عمق الضباب."]},
   volets:[
    {t:{fr:"Le concours complet", en:"Eventing", es:"El concurso completo",
-       it:"Il completo", de:"Die Vielseitigkeit", ja:"総合馬術"},
+       it:"Il completo", de:"Die Vielseitigkeit", ja:"総合馬術", ar:"الفروسية الثلاثية"},
     c:{
       fr:"Trois épreuves dans le même week-end, avec le même cheval : le dressage, le cross, et le saut d'obstacles. C'est la discipline qui demande le plus de polyvalence, et Badminton est l'un des rares concours du plus haut niveau mondial.",
       en:"Three tests in the same weekend, with the same horse: dressage, cross-country, and show jumping. It is the discipline that demands the most versatility, and Badminton is one of the very few events at the highest world level.",
       es:"Tres pruebas en el mismo fin de semana, con el mismo caballo: la doma, el cross y el salto de obstáculos. Es la disciplina que exige más polivalencia, y Badminton es uno de los raros concursos del más alto nivel mundial.",
       it:"Tre prove nello stesso fine settimana, con lo stesso cavallo: il dressage, il cross e il salto ostacoli. È la disciplina che richiede più versatilità, e Badminton è uno dei rari concorsi del massimo livello mondiale.",
       de:"Drei Prüfungen am selben Wochenende, mit demselben Pferd: Dressur, Gelände und Springen. Es ist die Disziplin, die die meiste Vielseitigkeit verlangt, und Badminton ist eines der wenigen Turniere auf höchstem Weltniveau.",
-      ja:"同じ週末に、同じ一頭の馬で三つの競技を。馬場馬術、クロスカントリー、そして障害飛越。最も幅広い能力が求められる競技であり、バドミントンはその世界最高レベルに数えられる数少ない大会のひとつです。"}},
+      ja:"同じ週末に、同じ一頭の馬で三つの競技を。馬場馬術、クロスカントリー、そして障害飛越。最も幅広い能力が求められる競技であり、バドミントンはその世界最高レベルに数えられる数少ない大会のひとつです。",
+      ar:"ثلاثة اختبارات مع الحصان نفسه والفارس نفسه: الترويض، واختراق الضاحية، وقفز الحواجز. وهي من أكثر تخصصات الفروسية تطلبا لتنوع المهارات، وبادمينتون واحدة من مسابقات النخبة القليلة التي تقام على أعلى مستوى عالمي."}},
    {t:{fr:"Le parc", en:"The park", es:"El parque",
-       it:"Il parco", de:"Der Park", ja:"公園"},
+       it:"Il parco", de:"Der Park", ja:"公園", ar:"الحديقة"},
     c:{
       fr:"Les épreuves se déroulent dans le parc d'une grande demeure géorgienne, siège des ducs de Beaufort. Les obstacles de cross y sont taillés dans le bois massif et portent des noms que les cavaliers connaissent par cœur — ils reviennent d'une année sur l'autre.",
       en:"The competition takes place in the park of a great Georgian house, seat of the Dukes of Beaufort. The cross-country fences are cut from solid timber and carry names riders know by heart — they come back year after year.",
       es:"Las pruebas se desarrollan en el parque de una gran mansión georgiana, sede de los duques de Beaufort. Los obstáculos de cross están tallados en madera maciza y llevan nombres que los jinetes conocen de memoria — vuelven de un año a otro.",
       it:"Le prove si svolgono nel parco di una grande dimora georgiana, sede dei duchi di Beaufort. Gli ostacoli di cross vi sono intagliati nel legno massiccio e portano nomi che i cavalieri conoscono a memoria — tornano di anno in anno.",
       de:"Die Prüfungen finden im Park eines großen georgianischen Anwesens statt, Sitz der Herzöge von Beaufort. Die Geländehindernisse sind aus massivem Holz gezimmert und tragen Namen, die die Reiter auswendig kennen — sie kehren Jahr für Jahr zurück.",
-      ja:"競技は、ボーフォート公爵家の居城である壮大なジョージ王朝様式の館の庭園で行われます。クロスカントリーの障害は無垢の木材から削り出され、騎手たちが諳んじる名前を持っています — 年が変わっても、また戻ってくるのです。"}},
+      ja:"競技は、ボーフォート公爵家の居城である壮大なジョージ王朝様式の館の庭園で行われます。クロスカントリーの障害は無垢の木材から削り出され、騎手たちが諳んじる名前を持っています — 年が変わっても、また戻ってくるのです。",
+      ar:"تقام الاختبارات في حديقة قصر جورجي كبير هو مقر دوقات بوفورت. وتصنع حواجز اختراق الضاحية من الخشب الصلب، ويحمل كثير منها أسماء يعرفها الفرسان عن ظهر قلب، إذ تعود بعض المعالم من عام إلى آخر."}},
    {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí",
-       it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+       it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
     c:{
       fr:"Fais le tour du cross à pied. C'est en marchant qu'on comprend ce que la télévision ne montre pas : les dénivelés, les changements de sol, et la longueur réelle du parcours. On finit essoufflé sans avoir sauté une seule fois.",
       en:"Walk the cross-country course. It is on foot that you understand what television does not show: the gradients, the changes of ground, and the real length of the course. You finish out of breath without having jumped once.",
       es:"Da la vuelta al cross a pie. Es caminando como se entiende lo que la televisión no muestra: los desniveles, los cambios de suelo, y la longitud real del recorrido. Se acaba sin aliento sin haber saltado ni una vez.",
       it:"Fai il giro del cross a piedi. È camminando che si capisce ciò che la televisione non mostra: i dislivelli, i cambi di terreno, e la lunghezza reale del percorso. Si finisce senza fiato senza aver saltato una sola volta.",
       de:"Geh die Geländestrecke zu Fuß ab. Erst im Gehen versteht man, was das Fernsehen nicht zeigt: die Steigungen, die Bodenwechsel und die wirkliche Länge der Strecke. Man kommt außer Atem an, ohne ein einziges Mal gesprungen zu sein.",
-      ja:"クロスカントリーのコースを歩いて一周してみて。テレビが映さないものは、歩いてこそ分かります。起伏、変わりゆく地面、そしてコースの本当の長さ。一度も跳んでいないのに、最後には息が切れているはずです。"}}
+      ja:"クロスカントリーのコースを歩いて一周してみて。テレビが映さないものは、歩いてこそ分かります。起伏、変わりゆく地面、そしてコースの本当の長さ。一度も跳んでいないのに、最後には息が切れているはずです。",
+      ar:"تفقدي مسار اختراق الضاحية سيرا على الأقدام. فبالمشي تفهمين ما لا يظهره التلفزيون: الصعود والهبوط، وتغير طبيعة الأرض، والطول الحقيقي للمسار. وقد تصلين إلى النهاية لاهثة من دون أن تكوني قد قفزت حاجزا واحدا."}}
   ]},
 
 /* ============ 9 · KILDARE · Les urgences ============ */
