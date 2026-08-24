@@ -33987,8 +33987,65 @@ function EcranCheval() {
    l affichage qui sera refait dans le style de l app, sous le bloc IPO.
    Remettre `true` ci-dessous pour le reactiver.                      */
         false && h(HypeResultatsHote, { chevalId: id, lignes: lignesPourModule, proprietaire: !!(chevalDyn && moi && chevalDyn.ownerId === moi.id), onAjout: function () { setPanneau(null); ouvrirAjoutResultat(); }, onImport: function () { ouvrirImportFFE(); } }),
-        (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("button", { className: "addbtn", onClick: function () { ouvrirImportFFE(); }, style: { marginBottom: 8 } }, "\u2913 " + T("Importer mes résultats", "Import my results", "Importar mis resultados", "Importa i miei risultati", "結果を取り込む", "Meine Ergebnisse importieren")) : null,
-        h("button", { className: "addbtn", onClick: function () { if (chevalDyn && moi && chevalDyn.ownerId === moi.id) { setPanneau(null); ouvrirAjoutResultat(); } else bientot(); } }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加", "Ein Ergebnis hinzufügen"))) : null,
+        /* ═══ 24/08 session 162 — LE BLOC DÉCOUVERTE DE L IMPORT ═══════════
+           Décisions de Blandine, prises une par une ce soir :
+           · la vidéo est CENTRÉE, 280 px — pas une carte horizontale ;
+           · la phrase est encadrée de DEUX FILETS COURTS (écriture n° 8).
+             Elle ne porte AUCUNE couleur : sur une fiche dorée ou crimson
+             elle ne bouge pas d un cheveu. La teinte reste au seul bouton ;
+           · le bouton porte un LISERÉ à gauche, comme le bloc résultats
+             juste au-dessus, et AUCUN FOND. « Les boutons remplis, c est
+             horrible » — vu en crimson, sans appel ;
+           · libellé « Importer mes résultats OFFICIELS » : « importer »
+             seul pouvait se lire comme « saisir à la main » ;
+           🟥 « + Ajouter un résultat » EST RETIRÉ D ICI. Vérifié dans le
+              code : deux boutons « + » existent déjà au bout du rail
+              (clés `addres` et `addres2`) et ouvrent la même chose. Le
+              troisième faisait doublon.
+           🟥 « Comment préparer mon fichier ? » n est PAS ici : il se
+              jouera sur l écran d import, avec la seconde vidéo.
+           ⚠️ La vidéo porte une IMAGE DE COUVERTURE : si iOS refuse la
+              lecture automatique, on voit la mascotte, pas un carré noir. */
+        (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("div", { style: { marginTop: 34 } },
+          h("div", { style: { position: "relative", width: "100%", maxWidth: 280, margin: "0 auto",
+                              borderRadius: 16, overflow: "hidden", background: "#000",
+                              border: "1px solid rgba(255,255,255,.07)" } },
+            h("video", { src: "palmares-video.mp4?v=1", poster: "palmares-video.jpg?v=1",
+                         autoPlay: true, muted: true, loop: true, playsInline: true,
+                         "webkit-playsinline": "true", preload: "metadata",
+                         onClick: function (eV) { try { var v = eV.currentTarget;
+                           if (v.requestFullscreen) v.requestFullscreen();
+                           else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); } catch (eF) { } },
+                         style: { width: "100%", display: "block" } }),
+            h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: "32%",
+                                pointerEvents: "none",
+                                background: "linear-gradient(180deg,rgba(6,7,9,0),rgba(6,7,9,.9))" } })),
+          /* la phrase, entre deux filets courts — écriture n° 8 */
+          h("div", { style: { position: "relative", margin: "26px auto 0", maxWidth: "17em",
+                              padding: "19px 0", textAlign: "center" } },
+            h("div", { style: { position: "absolute", top: 0, left: "32%", right: "32%",
+                                height: 1, background: "#2A323D" } }),
+            h("div", { style: { fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic",
+                                fontSize: 24, lineHeight: 1.3, fontWeight: 400, color: "#F4F7FA" } },
+              T("Tes résultats officiels, à redécouvrir sur Hype.",
+                "Your official results, to rediscover on Hype.",
+                "Tus resultados oficiales, para redescubrir en Hype.",
+                "I tuoi risultati ufficiali, da riscoprire su Hype.",
+                "公式成績を Hype で見つけ直そう。",
+                "Deine offiziellen Ergebnisse, neu entdeckt auf Hype.")),
+            h("div", { style: { position: "absolute", bottom: 0, left: "32%", right: "32%",
+                                height: 1, background: "#2A323D" } })),
+          /* le bouton : un liseré, aucun fond */
+          h("button", { onClick: function () { ouvrirImportFFE(); },
+            style: { width: "100%", marginTop: 26, padding: 14, border: 0,
+                     borderLeft: "2px solid " + teinte, borderRadius: "0 12px 12px 0",
+                     background: "linear-gradient(90deg,rgba(255,255,255,.045),transparent 60%)",
+                     color: "#F4F7FA", fontSize: 12.5, fontWeight: 700,
+                     fontFamily: "'Montserrat',sans-serif", textAlign: "left", cursor: "pointer" } },
+            T("Importer mes résultats officiels", "Import my official results",
+              "Importar mis resultados oficiales", "Importa i miei risultati ufficiali",
+              "公式成績を取り込む", "Meine offiziellen Ergebnisse importieren"),
+            h("span", { style: { float: "right", color: teinte, fontWeight: 400 } }, "\u2192"))) : null) : null,
       panneau === "souvenirs" ? h("div", null,
         h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
         h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),        h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),

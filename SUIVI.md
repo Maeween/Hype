@@ -13454,3 +13454,266 @@ La séparation `faits` / `faitsComptes` est le premier endroit du code où **ce 
 et **ce qui se compte** sont deux objets distincts. C'est exactement la frontière que le futur
 module `palmares.js` devra porter. Le banc a pu extraire le bloc et le rejouer hors React :
 troisième fois que ce gabarit attrape une faute avant livraison.
+
+---
+
+## Session 161 ter — 24/08, 21h · Les flots, les coupes, et la sellerie
+
+**RIEN N'EST CODÉ. Aucune décision technique prise. Notes de conception uniquement.**
+
+### 🎨 Ce que Blandine a envoyé
+
+Seize images de référence (33 Mo au total) : coupes cristal facettées en sept teintes
+(turquoise, or, bleu roi, rubis, crimson, argent, tricolore), flots tricolores à médaillon
+cheval doré, médailles à ruban, et deux planches d'univers — **« Au Galop by Crystal »**,
+sept niveaux, une même identité, seule la lumière change. Plus la planche **Collection
+Lamotte** : six variantes d'un même flot, avec « anneaux millésimés » par année.
+
+**La direction est posée : même objet, même géométrie, la LUMIÈRE dit le niveau.** C'est
+déjà la logique des sept galops. Rien à réinventer.
+
+### 🟢 Décidé par Blandine ce soir
+
+🟥 **Le tampon ne se pose JAMAIS par-dessus une coupe ou un flot.** Côte à côte, toujours.
+Rien ne doit voiler ses images. (« Je vais faire des design de dingue. »)
+
+🟥 **Les coupes actuellement dans l'app sont PROVISOIRES.** `IMG_COUPE_OPEN`, `IMG_FLOT_BX1`,
+`IMG_FLOT_BX3` sont des images posées en attendant les siennes. Ne pas les traiter comme
+définitives. Les vraies arrivent, dont celles des 2ᵉ et 3ᵉ places et les flots.
+
+🟥 **La sellerie devient le mur à flots** — c'est là qu'on accroche les trophées, comme dans
+une vraie écurie. Piste retenue, à construire.
+
+🟥 **LES DEUX, ET LA CAVALIÈRE CHOISIT.** Question posée : le mur se remplit-il tout seul, ou
+la cavalière l'arrange-t-elle ? Réponse : **on propose le mur et les étagères déjà remplies,
+ou elle le fait elle-même.** Départ automatique, reprise en main possible. C'est la réponse
+à la fourche « vue qui se remplit » / « mur qu'on range » : ni l'une ni l'autre seule.
+
+### ⚠️ Les trois contraintes relevées, à ne pas oublier
+
+**1. Le poids.** Une seule coupe pèse **2,3 Mo** — plus lourd que la vidéo d'aide de l'écran
+d'import (1,45 Mo). Seize images = 33 Mo. Passage obligé par le **WebP**, comme les vignettes
+de modèles. Rappel : les transformations d'image Supabase demandent le plan Pro, le projet est
+en Free, donc le redimensionnement côté serveur ne fonctionne pas — il faut livrer les images
+déjà au bon format.
+
+**2. Le nombre.** Rizotto a 144 résultats. Une image par concours est impossible. La planche
+Lamotte donne elle-même la sortie : **« personnalisation incluse — place, cavalier, cheval,
+épreuve »**. Donc : **une image par niveau, et l'app écrit le texte par-dessus** (Cinzel, or).
+Cinq ou six objets dessinés → cent quarante affichés. Le flot de Bordeaux et celui du
+Critérium sont le même ruban avec un texte différent.
+
+**3. Le déclencheur — NON TRANCHÉ, la question reste ouverte.** Qu'est-ce qui fait qu'un
+concours mérite l'objet exceptionnel ? Deux voies proposées, aucune choisie :
+- **une liste tenue par Blandine** (Open de France, Championnat de France, Salon de Bordeaux,
+  Equita Lyon, Critérium) que l'app reconnaît dans le libellé importé ;
+- **son choix, résultat par résultat.**
+
+🟥 **L'app ne doit JAMAIS décider seule qu'un concours est important.** Ce serait inventer —
+même faute que calculer le quart. La règle du quart s'applique ici par analogie.
+
+### ❓ Reste à éclaircir
+
+Blandine a écrit « la sellerie qu'on devra construire **dans linguae** ». **Mot non compris,
+à lui redemander** — ne rien supposer.
+
+### 📌 Où ça s'articule avec le reste
+
+- Le **tampon « officiel »** (maquette livrée, choix en attente) devient partiellement inutile
+  sur le mur : un flot qui ouvre un résultat importé est sa propre preuve.
+- Un flot **relié à son résultat** (tap → concours, place, cavalier, date) évite d'avoir deux
+  endroits qui racontent la même chose. Règle de non-duplication du 17/08.
+- Le rail `c.flots` de la fiche cheval reste **INTOUCHABLE** tant que rien n'est décidé.
+
+---
+
+# 🟥🟥🟥 LE PONT HYPE ↔ LINGUAE 🟥🟥🟥
+### Posé le 24/08/2026 au soir par Blandine · **RIEN N'EST CODÉ, AUCUNE LIGNE**
+
+🟥 **LINGUAE PART SUR L'APP STORE EN PREMIER.** Il sera prêt avant Hype. Dit par Blandine
+le 24/08 : *« je vais sûrement le push en premier sur Apple Store car il sera prêt avant,
+mais l'idée c'est que les deux communiquent. »*
+
+🟥 **CE QUI PART SUR L'APP STORE NE SE CORRIGE PLUS EN UNE MINUTE.** Une page web se
+repousse ; une application déposée passe par une revue et une mise à jour que chaque
+cavalière doit installer. **Toute convention de nommage, tout identifiant d'objet, toute
+clé partagée doit être arrêtée AVANT le dépôt.** C'est la raison d'être de cette note.
+
+🟥 **LES DEUX DOIVENT COMMUNIQUER.** Un flot ou une coupe gagnés dans Hype (palmarès importé
+des classements officiels) doivent pouvoir se poser dans la sellerie de Linguae.
+
+🟥 **MÊME BASE SUPABASE — À CONFIRMER D'UN MOT.** Question posée à Blandine : « Linguae
+lit-il la même base Supabase que Hype ? » Réponse : *« c'est ça »*. **Compris comme OUI,
+mais c'est une DÉDUCTION, pas une vérification.** Si c'est oui, un objet gagné dans Hype se
+pose dans Linguae sans rien construire. Si c'est non, il faut un pont, et **il faut le
+savoir avant le dépôt sur l'App Store.**
+
+## Ce que Linguae a déjà, et que Hype n'a pas
+
+**Une vraie pièce.** Murs (`gauche`, `fond`, `entree`, vitrine), porte-selles, étagère,
+console basse. Des objets qui s'y posent, avec leurs angles de vue.
+
+**Les objets de récompense sont déjà là** : `coupe-2`, `flot-tartan`, `medaille`,
+`medaillon`, `fer-trophee`, `cristal`, `obstacle`, `globe-2`.
+
+**La convention des vues, fixée le 16/08 et à NE PAS réinventer côté Hype :**
+
+| état | fichier | où il sert |
+|---|---|---|
+| déployé | `objet-<ville>.webp` | la vitrine — à plat, entier, détouré |
+| plié / posé | `pose-<ville>.webp` | **la sellerie**, sur une étagère ou une malle (`POSE_PROPRE`) |
+| de biais | `pose-<ville>-34.webp` | l'objet vu de trois quarts (`POSE_34`) |
+| porté | `porte-<ville>.webp` | habiller un cheval — **mécanisme à construire** |
+
+Le suffixe `-2` / `-3` dit le nombre de vues d'un objet. Blandine, 24/08 : *« en général
+je lui fais un plan de face et deux de biais. »*
+
+⚠️ **Une ville déclarée dans `POSE_PROPRE` ou `POSE_34` sans son image retombe EN SILENCE**
+sur la face. C'est la faute du 24/08 (préfixe `pose-` écrit en suffixe `-pose`) : l'armoire
+se serait affichée de face aux trois angles **sans erreur visible**. Le même piège attend
+les coupes et les flots venus de Hype.
+
+## Ce que Hype apporterait
+
+Un palmarès **importé des classements officiels** : 144 résultats pour Rizotto d'Émery,
+dont 49 victoires et 81 podiums, chacun avec sa date, son concours, son épreuve, sa place,
+son nombre de partants et son cavalier. De quoi **mériter** un objet, et pas seulement le
+choisir.
+
+Décision de Blandine du 24/08 sur ce mur : **il peut arriver déjà rempli, et la cavalière
+peut le refaire à sa main.** Les deux, elle choisit.
+
+## 🟠 À trancher AVANT le dépôt sur l'App Store
+
+1. **Même base, ou pont ?** (voir plus haut — un mot suffit)
+2. **L'identifiant d'un objet gagné.** Linguae nomme par VILLE (`coupe-lamotte`). Hype
+   nommerait par RÉSULTAT (un concours, une date, une place). Les deux systèmes doivent se
+   parler sans se marcher dessus.
+3. **Qui possède l'objet** : le cheval, la cavalière, ou le couple ? Un flot se gagne à deux.
+4. **Le poids.** Les coupes envoyées par Blandine le 24/08 pèsent **2,3 Mo chacune**. La
+   sellerie de Linguae travaille en `.webp`. Toute image venue de Hype devra passer par là.
+
+
+## 🟢 Précisé par Blandine, 24/08 au soir — DEUX ORIGINES, UNE MÊME ÉTAGÈRE
+
+Ce ne sont pas deux systèmes qui se disputent la même place. Ce sont **deux provenances**
+pour les mêmes rayonnages :
+
+- **Linguae** : *« ils peuvent en gagner un ou deux dans les souvenirs »* — récompense de
+  parcours, attachée à une VILLE traversée.
+- **Hype** : *« nous on amènera les vraies »* — objets gagnés en concours, attachés à un
+  RÉSULTAT (date, épreuve, place, partants, cavalier), importé des classements officiels.
+
+**Conséquence pour l'affichage** : ce qui compte sous un objet, c'est sa PROVENANCE. Le
+concours et l'année pour les vraies, la ville pour les souvenirs. Une ligne suffit — pas
+besoin d'écrire « officiel », l'origine se lit d'elle-même. (Ça allège d'autant la question
+du tampon, maquette livrée le 24/08, choix encore en attente côté Hype.)
+
+🟠 **Possibilité gardée ouverte par Blandine, NON DÉCIDÉE** : *« s'il faut je nommerai
+d'autres objets souvenirs à la place là-bas. »* Si la coupe, le flot et la médaille doivent
+revenir aux vrais résultats, les souvenirs de Linguae changeraient d'objet.
+
+**Les trois concernés** : `coupe-2`, `flot-tartan`, `medaille`. Les autres (étrille, selle,
+licol, fanion, palmier, malle…) ne prétendent à rien et ne bougent pas.
+
+🟥 **À DÉCIDER AVANT LE DÉPÔT SUR L'APP STORE.** Renommer un objet après publication oblige
+chaque cavalière à réinstaller. Avant, c'est un fichier qu'on renomme.
+
+⚠️ **Rappel d'un point resté ouvert depuis le 16/08, exactement sur ce sujet** : Badminton
+porte encore « une cocarde », alors que Blandine avait dit que **cocarde ne se dit pas** (on
+dit LE FLOT) et qu'elle voulait **la coupe** pour cette ville. Le changement n'a jamais été
+fait. Huit jours.
+
+---
+
+## Session 162 — 24/08, minuit · Le bloc découverte de l'import
+
+### 🎬 Les deux vidéos
+
+Blandine a fourni deux séquences de sa mascotte, 15 s chacune, en HEVC.
+
+| | reçu | livré |
+|---|---|---|
+| `palmares-video.mp4` — l'accroche (papiers → coupes → mascotte ensevelie) | 12,3 Mo | **1,35 Mo** |
+| `aide-import-2.mp4` — le téléphone (remplacera l'aide de l'écran d'import) | 11,8 Mo | **0,93 Mo** |
+
+H.264 (le HEVC ne se lit pas hors Safari), muettes, 540×960, plus leurs images de couverture.
+
+🟥 **Filigrane « Ai » effacé sur les deux. Numéros de scène effacés sur la première.** Ils
+BOUGEAIENT d'une scène à l'autre et passaient parfois sur une coupe : un cache noir y aurait
+laissé un rectangle. Détection de cercle image par image, comblement par la couleur du fond.
+**Deux méthodes ratées avant la bonne**, notées dans `nettoyer.py` pour ne pas les refaire.
+
+🟥 **NE JAMAIS réutiliser le détecteur de ronds sur la seconde vidéo.** Essayé : il a pris la
+CRINIÈRE et l'ŒIL de la mascotte pour des ronds de scène — 33 fausses détections, vérifiées
+image par image. Elle ne porte aucun numéro. `filigrane.py` ne touche qu'au coin fixe.
+
+⚠️ **Restent, signalés à Blandine et acceptés :** le texte français déformé sur les papiers
+(« RÉSULTATS OFFICIELS » illisible) — elle l'accepte, les explications étant écrites par
+l'interface dans les sept langues ; et un très léger cercle plus sombre sur deux ou trois
+images de la première vidéo, invisible en mouvement.
+
+### 🔧 Livré dans `index.html` — le bloc, sous les résultats
+
+vidéo 280 px centrée · filet · *Tes résultats officiels, à redécouvrir sur Hype.* · filet ·
+bouton à liseré **Importer mes résultats officiels →**
+
+**Les décisions de Blandine, prises une par une ce soir :**
+
+🟥 **Aucun bouton rempli.** Vu en crimson, le pavé de couleur pleine largeur écrasait l'écran.
+Un liseré à gauche, aucun fond. Vaut pour tous les boutons à venir.
+
+🟥 **La teinte est un ACCENT, pas une matière.** Un seul point de couleur par écran. Le filet
+du contour, le halo, le rond Play, la flèche du tutoriel, le bord de la feuille : tous retirés.
+
+🟥 **Les lisérés suivent la teinte de la fiche.** Ils restaient dorés en crimson — faute
+corrigée. Le grand nombre de l'IPO et les victoires suivent aussi. Les places `1ᵉʳ` / `3ᵉ`
+restent en or (une première place est dorée dans la vraie vie) — **à confirmer**.
+
+🟥 **L'encart des résultats se referme après « et 141 autres »** — fond ET liseré. Il
+englobait la vidéo et les boutons. Ce qui suit se pose sur le noir de la page.
+
+🟥 **L'IPO passe AU-DESSUS du rail de coupes.** Le rail descend contre les résultats, puisque
+c'est d'eux qu'il parle. Le rail lui-même n'a pas changé d'un pixel — seulement sa place,
+avec l'accord explicite de Blandine (la passation le disait intouchable).
+
+🟥 **« + Ajouter un résultat » RETIRÉ du bas.** Vérifié dans le code : deux boutons « + »
+existent déjà au bout du rail (`addres`, `addres2`). Le troisième faisait doublon.
+
+🟥 **« Comment préparer mon fichier ? » n'est pas ici** — il se jouera sur l'écran d'import,
+avec la seconde vidéo.
+
+🟥 **Le libellé dit « officiels »** : « importer » seul pouvait se lire comme « saisir ».
+
+**L'écriture de la phrase, choisie sur treize propositions : la n° 8** — Cormorant italique
+entre deux filets courts. Elle ne porte **aucune couleur** : sur une fiche dorée ou crimson
+elle ne bouge pas. La teinte reste au seul bouton.
+
+Textes en six langues via `T(...)`. Vidéo appelée en `?v=1` — **toute nouvelle version du
+fichier devra incrémenter ce numéro**, même piège que le module d'import les 21 et 22/08.
+
+### ✅ Le banc
+
+`banc-bloc.js` extrait le bloc **tel quel** de `index.html` et le rend avec un faux `h()`.
+**Dix-neuf essais, tous passent** : vidéo muette, en boucle, `playsInline`, couverture,
+fichier versionné ; un seul bouton, sans fond, liseré dans la teinte, libellé « officiels »,
+qui ouvre bien l'import ; deux filets, phrase complète en Cormorant italique sans teinte ;
+plus de « Ajouter » ni de « Comment préparer » ; **et rien du tout pour une visiteuse**.
+
+`banc-compteurs.js` rejoué : 49 · 81 · 144, toujours bon.
+`diff` : **un seul morceau**, lignes 33990-34048.
+
+### 📦 À pousser — QUATRE fichiers, ils vont ENSEMBLE
+
+`index.html` · `palmares-video.mp4` · `palmares-video.jpg` · (`aide-import-2.mp4` quand
+l'écran d'import sera fait). Sans les vidéos, le bloc affiche un cadre vide.
+
+### 🟠 Reste ouvert sur ce chantier
+
+1. **L'écran d'import** : y brancher `aide-import-2.mp4` à la place de l'aide actuelle, et
+   y poser « Comment préparer mon fichier ? ». ⚠️ Remplacer le fichier sous le MÊME nom ne
+   suffira pas — cache. Nom neuf ou `?v=`.
+2. **Les places en or** sur une fiche crimson — à confirmer.
+3. **Le tampon « officiel »** — maquette livrée, choix jamais fait.
+4. **La vidéo apparaissait en carré noir** sur les captures de Blandine dans le navigateur
+   intégré. L'image de couverture est là pour ça, mais **à vérifier sur l'app réelle**.
