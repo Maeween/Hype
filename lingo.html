@@ -3934,7 +3934,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=77";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=78";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -4665,10 +4665,12 @@ var ETAPES_I18N = {
    souv:{en:"A zinc bucket", es:"Un cubo de zinc", it:"Un secchio di zinco",
          de:"Ein Zinkeimer", ja:"亜鉛のバケツ"}},
  oliva:{
-   ch:{en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"申し込む"},
-   v:{ja:"オリバ・ノバ"},
+   /* 🟡 `ar` dormant (24/08) — relecture 1 appliquée. */
+   ch:{en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"申し込む",
+       ar:"التسجيل في المسابقة"},
+   v:{ja:"オリバ・ノバ", ar:"أوليفا نوفا"},
    souv:{en:"A tour number bib", es:"Un dorsal de gira", it:"Un numero di gara",
-         de:"Eine Startnummer der Tour", ja:"ツアーのゼッケン"}},
+         de:"Eine Startnummer der Tour", ja:"ツアーのゼッケン", ar:"لوحة رقم مشاركة من الجولة الشتوية"}},
  warendorf:{
    ch:{en:"Training", es:"La formación", it:"La formazione", de:"Die Ausbildung", ja:"育成"},
    v:{ja:"ヴァーレンドルフ"},
@@ -4727,8 +4729,10 @@ var ETAPES_I18N = {
    souv:{en:"A red flag", es:"Un banderín rojo", it:"Una bandierina rossa",
          de:"Ein rotes Fähnchen", ja:"赤い旗"}},
  badminton:{
-   ch:{en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会"},
-   v:{ja:"バドミントン"},
+   /* 🟡 `ar` dormant (24/08) — relecture 1 appliquée. */
+   ch:{en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会",
+       ar:"المسابقة"},
+   v:{ja:"バドミントン", ar:"بادمينتون"},
    /* 🟥 17/08 : « UNE COCARDE » REMPLACÉE PAR LE TROPHÉE. Blandine,
       16/08 : « cocarde ça se dit pas » — on dit LE FLOT en français, et
       le flot est déjà le souvenir de Lamotte-Beuvron. Elle voulait la
@@ -4739,7 +4743,7 @@ var ETAPES_I18N = {
       FRANÇAIS qui clochait. */
    souv:{en:"The Badminton trophy", es:"El trofeo de Badminton",
          it:"Il trofeo di Badminton", de:"Die Badminton-Trophäe",
-         ja:"バドミントンのトロフィー"}},
+         ja:"バドミントンのトロフィー", ar:"تذكار بطولة بادمينتون"}},
  kildare:{
    /* 🟡 `ar` dormant (23/08). */
    ch:{en:"Emergencies", es:"Las urgencias", it:"Le emergenze", de:"Notfälle", ja:"緊急時",
@@ -5071,7 +5075,11 @@ var RECITS = {
       {f:"Eine der schwersten Vielseitigkeitsprüfungen der Welt."}],
   ja:["広い庭園、大きな館、そして五月の泥。四日間、三つの種目、たった一頭の馬。",
       "クロスカントリーは、曖昧さを許さない。",
-      {f:"世界で最も過酷な総合馬術競技のひとつ。"}]},
+      {f:"世界で最も過酷な総合馬術競技のひとつ。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["الحديقة، والقصر الكبير، ووحل شهر مايو. أربعة أيام، وثلاثة اختبارات، وحصان واحد.",
+      "اختبار اختراق الضاحية لا يسمح بالتقريب أو التردد.",
+      {f:"واحدة من أقوى مسابقات الفروسية الثلاثية في العالم."}]},
  /* Rome, ajoute le 6 aout 2026 avec l'etape. */
  rome:{
   fr:["Les pins du parc font de l'ombre sur la piste, et la ville continue juste derriere le mur.",
@@ -5428,7 +5436,11 @@ var RECITS = {
       {f:"Während der Norden Europas friert, ziehen ganze Ställe hierher, für Wochen Turnier in der Sonne."}],
   ja:["最初の午前は馬上ではなく、事務局で過ぎた。",
       "ゼッケン、ライセンス、出番表。そのすべてが、私の話せない言葉で言われた。",
-      {f:"北ヨーロッパが凍るあいだ、厩舎ごとここへ下ってきて、陽の下で何週間も競技を続ける。"}]
+      {f:"北ヨーロッパが凍るあいだ、厩舎ごとここへ下ってきて、陽の下で何週間も競技を続ける。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["قضيت صباحي الأول في مكتب التسجيل، لا على صهوة حصان.",
+      "رقم مشاركة، ورخصة فروسية، وقائمة انطلاق، وكل شيء كان يقال بلغة لا أتكلمها.",
+      {f:"بينما يتجمد شمال أوروبا، تنتقل إسطبلات بأكملها إلى هنا لقضاء عدة أسابيع من المسابقات تحت الشمس."}]
  },
  warendorf:{
   fr:["On m'a reprise trois fois sur la même sangle. Pas sèchement : montré, refait, remontré.",
@@ -5805,7 +5817,9 @@ var POURQUOI = {
   it:"Due mesi di circuito invernale, e la vita quotidiana di un grande campo.",
   de:"Zwei Monate Wintertour — und der Alltag eines großen Turnierlagers.",
   ja:"二か月続く冬のツアー。大きな仮設厩舎の日常。"},
- oliva:{fr:"Le soleil en janvier, et des semaines de concours au bord de la mer.",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ oliva:{ar:"شمس يناير، وأسابيع من المسابقات بالقرب من البحر.",
+  fr:"Le soleil en janvier, et des semaines de concours au bord de la mer.",
   en:"January sunshine, and weeks of competition by the sea.",
   es:"Sol en enero, y semanas de concurso junto al mar.",
   it:"Il sole a gennaio, e settimane di concorsi in riva al mare.",
@@ -5879,7 +5893,9 @@ var POURQUOI = {
   it:"Il Derby Bank: la banchina da competizione più alta al mondo.",
   de:"Der Derby Bank: der höchste Turnierwall der Welt.",
   ja:"ダービー・バンク。競技用の土手として世界一の高さ。"},
- badminton:{fr:"L'un des concours complets les plus relevés de la planète.",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ badminton:{ar:"واحدة من أقوى مسابقات الفروسية الثلاثية في العالم.",
+  fr:"L'un des concours complets les plus relevés de la planète.",
   en:"One of the toughest three-day events on the planet.",
   es:"Uno de los concursos completos más exigentes del planeta.",
   it:"Uno dei concorsi completi più impegnativi del pianeta.",
@@ -7183,7 +7199,9 @@ var PHRASES_FIN = {
   it:"Un ostacolo si supera prima nella testa. <b>Guarda lontano: il tuo cavallo ti seguirà.</b>",
   de:"Ein Sprung wird zuerst im Kopf gemeistert. <b>Schau weit voraus — dein Pferd folgt dir.</b>",
   ja:"障害はまず頭の中で跳ぶもの。<b>遠くを見て。馬はきっとついてくる。</b>"},
- badminton:{fr:"Un concours se gagne bien avant le jour du concours. <b>Chaque détente compte déjà.</b>",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ badminton:{ar:"يبدأ الفوز بالمسابقة قبل يومها بوقت طويل. <b>فكل حصة إحماء لها أهميتها.</b>",
+  fr:"Un concours se gagne bien avant le jour du concours. <b>Chaque détente compte déjà.</b>",
   en:"A competition is won long before competition day. <b>Every warm-up already counts.</b>",
   es:"Un concurso se gana mucho antes del día del concurso. <b>Cada calentamiento ya cuenta.</b>",
   it:"Una gara si vince molto prima del giorno della gara. <b>Ogni lavoro alla corda conta già.</b>",
@@ -7241,7 +7259,9 @@ var PHRASES_FIN = {
   it:"Una scuderia che funziona bene sono cavalli che stanno bene. <b>La gestione è una cura come le altre.</b>",
   de:"Ein gut geführter Stall bedeutet Pferde, denen es gut geht. <b>Auch Organisation ist eine Form der Pflege.</b>",
   ja:"きちんと回る厩舎には、元気な馬がいる。<b>厩舎の仕事も、大切なケアのひとつ。</b>"},
- oliva:{fr:"S'engager sur un concours, c'est se donner un rendez-vous avec soi-même. <b>Ose le prendre.</b>",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ oliva:{ar:"أن تسجلي في مسابقة يعني أن تحددي موعدا مع نفسك. <b>تجرئي على خوضه.</b>",
+  fr:"S'engager sur un concours, c'est se donner un rendez-vous avec soi-même. <b>Ose le prendre.</b>",
   en:"Entering a show is making an appointment with yourself. <b>Dare to keep it.</b>",
   es:"Inscribirse en un concurso es darse una cita con uno mismo. <b>Atrévete a acudir.</b>",
   it:"Iscriversi a una gara è darsi un appuntamento con se stessi. <b>Osa presentarti.</b>",
@@ -9066,7 +9086,7 @@ var COLL_NOM = {
   "cheval-urg":{fr:"Sur le cheval", en:"On the horse", es:"En el caballo",
         it:"Sul cavallo", de:"Am Pferd", ja:"馬について"},
   "jour-j":{fr:"Le jour J", en:"The big day", es:"El día del concurso",
-        it:"Il giorno di gara", de:"Der Turniertag", ja:"当日"},
+        it:"Il giorno di gara", de:"Der Turniertag", ja:"当日", ar:"يوم المسابقة"},
   races:{fr:"Les races", en:"The breeds", es:"Las razas", it:"Le razze",
         de:"Die Rassen", ja:"品種"},
   lieu:{fr:"Le lieu", en:"The place", es:"El lugar", it:"Il luogo", de:"Der Ort", ja:"場所"},
@@ -9107,8 +9127,11 @@ var COLL_NOM = {
   saut:{fr:"Les phases du saut", en:"The phases of the jump", es:"Las fases del salto",
         it:"Le fasi del salto", de:"Die Phasen des Sprungs", ja:"飛越の各局面"},
   engager:{fr:"S'engager", en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"出場申込"},
-  complet:{fr:"Le concours complet", en:"Eventing", es:"El concurso completo", it:"Il concorso completo", de:"Die Vielseitigkeit", ja:"総合馬術"},
-  "jour-j":{fr:"Le jour J", en:"The day itself", es:"El día del concurso", it:"Il giorno della gara", de:"Der Turniertag", ja:"試合当日"},
+  complet:{fr:"Le concours complet", en:"Eventing", es:"El concurso completo", it:"Il concorso completo", de:"Die Vielseitigkeit", ja:"総合馬術",
+    /* 🟡 ar dormant (24/08). */ ar:"الفروسية الثلاثية"},
+  /* 🟥 24/08 : famille absente depuis le découpage du 18/08 — validée par Blandine. */
+  concours:{fr:"Le concours", en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会", ar:"المسابقة"},
+  "jour-j":{fr:"Le jour J", en:"The day itself", es:"El día del concurso", it:"Il giorno della gara", de:"Der Turniertag", ja:"試合当日", ar:"يوم المسابقة"},
   gens:{fr:"Les gens", en:"The people", es:"La gente", it:"Le persone", de:"Die Leute", ja:"人びと"},
   alerte:{fr:"Donner l'alerte", en:"Raising the alarm", es:"Dar la alarma", it:"Dare l'allarme", de:"Alarm schlagen", ja:"通報する"},
   "cheval-urg":{fr:"Sur le cheval", en:"On the horse", es:"En el caballo", it:"Sul cavallo", de:"Am Pferd", ja:"馬の状態"},
@@ -9145,7 +9168,11 @@ var ACCUEIL_CHAP = {
      Sans elles, Badminton et Flyinge affichaient leur leçon sans le mot
      manuscrit sous le titre — même défaut silencieux que La Baule avant
      sa correction. Le texte est provisoire, à revoir ou réécrire. */
-  badminton:{fr:"Le concours complet : le cross, le barème, le classement provisoire.", en:"Eventing: the cross-country, the scoring, the running order.", es:"El concurso completo: el cross, el bareme, la clasificación provisional.", it:"Il concorso completo: il cross, il bareme, la classifica provvisoria.", de:"Die Vielseitigkeit: das Gelände, die Wertung, die Zwischenrangliste.", ja:"総合馬術 — クロスカントリー、採点、暫定順位。"},
+  /* 🟡 ar dormant (24/08) — voir RECITS. */
+  badminton:{ar:"الفروسية الثلاثية: اختراق الضاحية، وطريقة احتساب النقاط، والترتيب المؤقت.",
+   fr:"Le concours complet : le cross, le barème, le classement provisoire.", en:"Eventing: the cross-country, the scoring, the running order.", es:"El concurso completo: el cross, el bareme, la clasificación provisional.", it:"Il concorso completo: il cross, il bareme, la classifica provvisoria.", de:"Die Vielseitigkeit: das Gelände, die Wertung, die Zwischenrangliste.", ja:"総合馬術 — クロスカントリー、採点、暫定順位。"},
+  /* 🟥 24/08 : clé absente depuis le découpage du 18/08. Texte écrit par Claude, validé dans son principe par Blandine — le relecteur propose une variante, à trancher. 🟡 ar dormant. */
+  oliva:{fr:"S'engager : l'épreuve, le dossard, la liste de départ.", en:"Entering: the class, the number, the start list.", es:"Inscribirse: la prueba, el dorsal, la lista de salida.", it:"Iscriversi: la prova, il numero, la lista di partenza.", de:"Nennen: die Prüfung, die Startnummer, die Startliste.", ja:"エントリー — 競技、ゼッケン、出走リスト。", ar:"التسجيل في المسابقة: الشوط، ورقم المشاركة، وقائمة الانطلاق."},
   /* 🟡 `ar` dormant — voir RECITS. */
   clonbinane:{ar:"كيف يتعلم الحصان: المراقبة، عتبة الاستجابة، الإشارة، تخفيف الضغط، والاستراحة.",
   fr:"Comment le cheval apprend : observer, le seuil, le signal, le relâchement, la pause.", en:"How a horse learns: observing, threshold, the cue, the release, the break.", es:"Cómo aprende el caballo: observar, el umbral, la señal, la soltura, la pausa.", it:"Come impara il cavallo: osservare, la soglia, il segnale, il rilascio, la pausa.", de:"Wie das Pferd lernt: beobachten, die Schwelle, das Signal, das Nachgeben, die Pause.", ja:"馬の学び方 — 観察、閾値、合図、解放、休憩。"},
