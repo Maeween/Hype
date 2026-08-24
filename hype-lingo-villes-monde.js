@@ -230,32 +230,38 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       es:["Pasé mi primera mañana en la secretaría, no encima de un caballo.", "Hacía falta un dorsal, una licencia, una lista de salida — y todo se decía en un idioma que yo no hablaba. Aprendí más palabras esa mañana que en una semana."],
       it:["Ho passato la mia prima mattina in segreteria, non a cavallo.", "Servivano un numero, una licenza, una lista di partenza — e tutto si diceva in una lingua che non parlavo. Ho imparato più parole quella mattina che in una settimana."],
       de:["Meinen ersten Vormittag verbrachte ich im Meldebüro, nicht auf einem Pferd.", "Es brauchte eine Nummer, eine Lizenz, eine Startliste — und alles wurde in einer Sprache gesagt, die ich nicht sprach. An diesem Vormittag lernte ich mehr Wörter als in einer ganzen Woche."],
-      ja:["最初の午前中は馬の上ではなく、事務所で過ごした。", "ゼッケン、ライセンス、出場順のリスト。そのすべてが、私の話せない言葉でやり取りされていた。あの午前中に覚えた単語は、一週間分より多かった。"]},
+      ja:["最初の午前中は馬の上ではなく、事務所で過ごした。", "ゼッケン、ライセンス、出場順のリスト。そのすべてが、私の話せない言葉でやり取りされていた。あの午前中に覚えた単語は、一週間分より多かった。"],
+      /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+      ar:["قضيت صباحي الأول في مكتب التسجيل، لا على صهوة حصان.",
+          "كنت أحتاج إلى رقم مشاركة، ورخصة فروسية، وقائمة انطلاق، وكان كل شيء يقال بلغة لا أتكلمها. تعلمت في ذلك الصباح من الكلمات أكثر مما تعلمته خلال أسبوع كامل."]},
     volets:[
-     {t:{fr:"La tournée d'hiver", en:"The winter tour", es:"La gira de invierno", it:"Il circuito invernale", de:"Die Wintertour", ja:"冬のツアー"},
+     {t:{fr:"La tournée d'hiver", en:"The winter tour", es:"La gira de invierno", it:"Il circuito invernale", de:"Die Wintertour", ja:"冬のツアー", ar:"الجولة الشتوية"},
       c:{
           fr:"Pendant que le nord de l'Europe gèle, des écuries entières descendent ici pour plusieurs semaines de concours au soleil. Les chevaux voyagent, les familles suivent, et une petite ville de toile s'installe autour des pistes.",
           en:"While northern Europe freezes, whole stables come down here for weeks of competition in the sun. The horses travel, the families follow, and a small canvas town grows up around the arenas.",
           es:"Mientras el norte de Europa se hiela, cuadras enteras bajan aquí para semanas de concurso al sol. Los caballos viajan, las familias siguen, y una pequeña ciudad de lona crece alrededor de las pistas.",
           it:"Mentre il nord Europa gela, scuderie intere scendono qui per settimane di concorso al sole. I cavalli viaggiano, le famiglie seguono, e attorno ai campi cresce una piccola città di tela.",
           de:"Während Nordeuropa friert, ziehen ganze Ställe für Wochen hierher, zu Turnieren in der Sonne. Die Pferde reisen, die Familien folgen, und rund um die Plätze wächst eine kleine Zeltstadt.",
-          ja:"北ヨーロッパが凍りつくあいだ、厩舎ごとこの地に下りてきて、陽射しの下で何週間も競技を続けます。馬が移動し、家族がついてきて、馬場のまわりに小さな布の町ができあがります。"}},
-     {t:{fr:"S'engager", en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"エントリーする"},
+          ja:"北ヨーロッパが凍りつくあいだ、厩舎ごとこの地に下りてきて、陽射しの下で何週間も競技を続けます。馬が移動し、家族がついてきて、馬場のまわりに小さな布の町ができあがります。",
+          ar:"بينما يتجمد شمال أوروبا، تنتقل إسطبلات بأكملها إلى هنا لقضاء عدة أسابيع من المسابقات تحت الشمس. تسافر الخيول، وتتبعها العائلات، وتنشأ حول الميادين مدينة صغيرة من الخيام."}},
+     {t:{fr:"S'engager", en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"エントリーする", ar:"التسجيل في المسابقة"},
       c:{
           fr:"Avant de sauter, il faut s'inscrire : choisir son épreuve, présenter sa licence, retirer son dossard, vérifier l'ordre de passage. Ce vocabulaire-là ne s'apprend pas à cheval, il s'apprend au guichet.",
           en:"Before you jump, you enter: choose your class, show your licence, collect your number, check the order of go. That vocabulary isn't learned on a horse; it's learned at the desk.",
           es:"Antes de saltar hay que inscribirse: elegir la prueba, presentar la licencia, recoger el dorsal, comprobar el orden de salida. Ese vocabulario no se aprende a caballo, se aprende en la ventanilla.",
           it:"Prima di saltare bisogna iscriversi: scegliere la categoria, presentare la licenza, ritirare il numero, controllare l'ordine di partenza. Quel vocabolario non si impara a cavallo, si impara allo sportello.",
           de:"Bevor man springt, meldet man: die Prüfung wählen, die Lizenz vorzeigen, die Nummer abholen, die Startfolge prüfen. Diese Wörter lernt man nicht im Sattel, sondern am Schalter.",
-          ja:"飛ぶ前に、まず申し込みます。種目を選び、ライセンスを見せ、ゼッケンを受け取り、出場順を確かめる。この語彙は馬上ではなく、受付の窓口で覚えるものです。"}},
-     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+          ja:"飛ぶ前に、まず申し込みます。種目を選び、ライセンスを見せ、ゼッケンを受け取り、出場順を確かめる。この語彙は馬上ではなく、受付の窓口で覚えるものです。",
+          ar:"قبل القفز، لا بد أولا من التسجيل: اختيار الشوط، وتقديم رخصة الفروسية، واستلام رقم المشاركة، والتحقق من ترتيب الانطلاق. هذه المفردات لا تتعلمينها على صهوة الحصان، بل عند مكتب التسجيل."}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
       c:{
           fr:"Reste une demi-journée près de la piste d'échauffement. C'est là qu'on entend les vraies conversations : le refus qu'on commente, la faute qu'on explique, la ligne qu'on refait autrement.",
           en:"Spend half a day beside the warm-up arena. That's where the real conversations happen: the refusal being discussed, the fault being explained, the line being ridden differently next time.",
           es:"Quédate media jornada junto a la pista de calentamiento. Ahí se oyen las conversaciones de verdad: el rehúse que se comenta, la falta que se explica, la línea que se rehace de otra manera.",
           it:"Resta mezza giornata vicino al campo prova. È lì che si sentono i discorsi veri: il rifiuto commentato, l'errore spiegato, la linea rifatta in un altro modo.",
           de:"Bleib einen halben Tag am Abreiteplatz. Dort hört man die echten Gespräche: die Verweigerung, die besprochen wird, der Fehler, der erklärt wird, die Linie, die man nächstes Mal anders reitet.",
-          ja:"半日、練習馬場のそばにいてください。本当の会話が聞こえるのはそこです。拒止をめぐるやり取り、失敗の説明、次はどう回るかという相談。"}}
+          ja:"半日、練習馬場のそばにいてください。本当の会話が聞こえるのはそこです。拒止をめぐるやり取り、失敗の説明、次はどう回るかという相談。",
+          ar:"ابقي نصف يوم قرب ميدان الإحماء، فهناك تسمعين الحوارات الحقيقية: رفض الحصان الذي يناقش، والخطأ الذي يفسر، وخط الحواجز الذي يعاد تنفيذه بطريقة مختلفة."}}
     ]},
 
   /* ============ WARENDORF · les gestes de la formation ============ */
@@ -421,37 +427,32 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       de:["Das Wasser stieg bis zum Sattel, und da begriff ich, dass der Ausritt erst dort anfing.",
           "Das Pferd ging in die Lagune, als käme es nach Hause. Irgendwann verließen seine Hufe den Grund, ich gab den Zügel nach, wie man es mir gesagt hatte, und es schwamm. Ich habe noch nie etwas so Berauschendes erlebt."],
       ja:["水が鞍まで上がってきたとき、外乗はここから始まるのだと分かった。",
-          "馬は自分の家に帰るようにラグーンへ入っていった。あるところで蹄が底を離れ、言われたとおり手綱をゆるめると、馬は泳いだ。あんなに胸が高鳴ったことはない。"],
-      /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
-      ar:["ارتفع الماء إلى مستوى السرج، وعندها فهمت أن النزهة تبدأ من هنا فقط.", "دخل الحصان البحيرة الشاطئية كأنه يعود إلى بيته. وفي لحظة، فارقت حوافره القاع، فأرخيت العنان كما قيل لي، وبدأ يسبح. لم أعش قط لحظة بهذا القدر من الإثارة."]},
+          "馬は自分の家に帰るようにラグーンへ入っていった。あるところで蹄が底を離れ、言われたとおり手綱をゆるめると、馬は泳いだ。あんなに胸が高鳴ったことはない。"]},
     volets:[
       {t:{fr:"Le lagon", en:"The lagoon", es:"La laguna", it:"La laguna",
-          de:"Die Lagune", ja:"ラグーン", ar:"البحيرة الشاطئية"},
+          de:"Die Lagune", ja:"ラグーン"},
        c:{fr:"Le récif casse la houle à un kilomètre du bord : entre les deux, l'eau est plate, tiède et claire jusqu'au fond. C'est ce qui rend la baignade à cheval possible ici alors qu'elle est dangereuse presque partout ailleurs — pas de vague pour déséquilibrer, pas de trou pour surprendre. On n'entre jamais dans la passe, l'ouverture par laquelle le lagon se vide vers le large.",
           en:"The reef breaks the swell a kilometre out: between the two, the water is flat, warm and clear to the bottom. That is what makes riding into the sea possible here when it is dangerous almost everywhere else — no wave to unbalance you, no hole to surprise you. You never enter the pass, the gap where the lagoon empties out to sea.",
           es:"El arrecife rompe el oleaje a un kilómetro de la orilla: entre los dos, el agua está plana, tibia y clara hasta el fondo. Eso hace posible aquí el baño a caballo, peligroso en casi todas partes: ninguna ola que desequilibre, ningún hoyo que sorprenda. Nunca se entra en el paso, la abertura por donde la laguna se vacía hacia el mar.",
           it:"La barriera rompe l'onda lunga a un chilometro da riva: in mezzo, l'acqua è piatta, tiepida e trasparente fino al fondo. È questo che rende possibile qui il bagno a cavallo, pericoloso quasi in ogni altro posto: nessuna onda che squilibri, nessuna buca che sorprenda. Non si entra mai nel passo, l'apertura da cui la laguna si svuota verso il largo.",
           de:"Das Riff bricht die Dünung einen Kilometer draußen: dazwischen ist das Wasser flach, warm und bis zum Grund klar. Das macht das Baden zu Pferd hier möglich, wo es fast überall sonst gefährlich ist — keine Welle, die aus dem Gleichgewicht bringt, kein Loch, das überrascht. In den Pass, die Öffnung, durch die sich die Lagune zum offenen Meer entleert, reitet man nie.",
-          ja:"サンゴ礁が沖合一キロでうねりを砕くため、その内側の水は平らで、ぬるく、底まで澄んでいます。ほかの多くの場所では危険な「馬と入る海」が、ここでは成り立つ理由です。体勢を崩す波もなく、不意の深みもありません。ラグーンの水が外洋へ抜ける水路には、決して入りません。",
-          ar:"يكسر الحاجز المرجاني أمواج البحر على بعد كيلومتر من الشاطئ، وتكون المياه بينه وبين الشاطئ ساكنة ودافئة وصافية حتى القاع. وهذا ما يجعل دخول الماء على ظهور الخيل ممكنا هنا، مع أنه خطر في معظم الأماكن الأخرى: فلا أمواج تخل بالتوازن، ولا حفر عميقة تفاجئك. ولا تدخلي أبدا في الممر البحري الذي تخرج عبره مياه البحيرة نحو البحر المفتوح."}},
+          ja:"サンゴ礁が沖合一キロでうねりを砕くため、その内側の水は平らで、ぬるく、底まで澄んでいます。ほかの多くの場所では危険な「馬と入る海」が、ここでは成り立つ理由です。体勢を崩す波もなく、不意の深みもありません。ラグーンの水が外洋へ抜ける水路には、決して入りません。"}},
       {t:{fr:"Se baigner", en:"Going in", es:"Bañarse", it:"Fare il bagno",
-          de:"Ins Wasser", ja:"水に入る", ar:"الاستحمام"},
+          de:"Ins Wasser", ja:"水に入る"},
        c:{fr:"On dessine la sortie autour de la marée, pas autour de l'horaire : à marée basse la bande de sable mouillé porte le galop, à marée haute il n'y a plus de plage. On reste en selle : l'eau monte jusqu'à la selle et le cheval nage avec toi dessus. Quand les pieds quittent le fond, il nage tout seul ; la seule chose à faire est de lui laisser la tête libre. La baignade est réservée aux cavaliers déjà confirmés, et il faut savoir nager.",
           en:"The ride is planned around the tide, not the timetable: at low tide the strip of wet sand carries a canter, at high tide there is no beach left. You stay in the saddle: the water rises to it and the horse swims with you on its back. When the hooves leave the bottom it swims by itself; the only thing to do is leave its head free. The swim is for experienced riders only, and you must be able to swim.",
           es:"La salida se organiza según la marea, no según el horario: con marea baja la franja de arena mojada aguanta el galope, con marea alta no queda playa. Se queda uno en la silla: el agua sube hasta ella y el caballo nada contigo encima. Cuando los cascos dejan el fondo, nada solo; lo único que hay que hacer es dejarle la cabeza libre. El baño es solo para jinetes experimentados, y hay que saber nadar.",
           it:"L'uscita si organizza sulla marea, non sull'orario: con la marea bassa la striscia di sabbia bagnata regge il galoppo, con la marea alta non c'è più spiaggia. Si resta in sella: l'acqua sale fino alla sella e il cavallo nuota con te sopra. Quando gli zoccoli lasciano il fondo, nuota da sé; l'unica cosa da fare è lasciargli la testa libera. Il bagno è riservato ai cavalieri esperti, e bisogna saper nuotare.",
           de:"Der Ausritt richtet sich nach der Tide, nicht nach dem Stundenplan: bei Ebbe trägt der Streifen nassen Sandes den Galopp, bei Flut bleibt kein Strand übrig. Man bleibt im Sattel: das Wasser steigt bis zum Sattel, und das Pferd schwimmt mit dir darauf. Verlassen die Hufe den Grund, schwimmt es von selbst; das Einzige, was zu tun ist: den Kopf frei lassen. Das Baden ist erfahrenen Reitern vorbehalten, und schwimmen können muss man.",
-          ja:"出発は時刻表ではなく潮で決めます。引き潮なら濡れた砂の帯が駈歩を支え、満ち潮では浜そのものがなくなります。鞍には乗ったままです。水は鞍の高さまで上がり、馬はあなたを乗せて泳ぎます。蹄が底を離れれば馬は自分で泳ぎます。こちらがすべきことは、頭を自由にしてやることだけです。水浴は経験のある騎乗者に限られ、泳げることが条件です。",
-          ar:"تخطط النزهة وفقا لحركة المد والجزر، لا وفقا للساعة: عند الجزر يصبح شريط الرمل المبلل صالحا للعدو، وعند المد لا يبقى شاطئ. وتبقين في السرج: يصل الماء إلى مستوى السرج، ويسبح الحصان وأنت على ظهره. وحين تفارق حوافره القاع يبدأ السباحة بنفسه، وما عليك إلا أن تتركي له حرية تحريك رأسه ورقبته. ويقتصر هذا النشاط على الفارسات المتمرسات اللواتي يعرفن السباحة."}},
+          ja:"出発は時刻表ではなく潮で決めます。引き潮なら濡れた砂の帯が駈歩を支え、満ち潮では浜そのものがなくなります。鞍には乗ったままです。水は鞍の高さまで上がり、馬はあなたを乗せて泳ぎます。蹄が底を離れれば馬は自分で泳ぎます。こちらがすべきことは、頭を自由にしてやることだけです。水浴は経験のある騎乗者に限られ、泳げることが条件です。"}},
       {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi",
-          de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
+          de:"Wenn du hinführest", ja:"もし行くなら"},
        c:{fr:"Réserve la veille, dis ton niveau franchement — la baignade demande un cavalier confirmé — mets ton maillot sous ta tenue, emporte une serviette et de quoi te changer, et demande l'heure de la marée avant l'heure du rendez-vous. Pars tôt le matin : à midi le sable brûle et l'ombre n'existe pas. Au retour, on rince le cheval à l'eau douce ; le sel qui sèche sur le poil irrite et raidit.",
           en:"Book the day before, be honest about your level — the swim needs an experienced rider — put your swimsuit on under your clothes, take a towel and something to change into, and ask for the tide time before the meeting time. Go early: at midday the sand burns and there is no shade. Afterwards the horse is rinsed with fresh water; salt drying on the coat irritates and stiffens it.",
           es:"Reserva el día antes, di tu nivel con franqueza —el baño exige jinete experimentado—, ponte el bañador debajo de la ropa, lleva una toalla y ropa para cambiarte, y pregunta la hora de la marea antes que la hora de la cita. Sal temprano: al mediodía la arena quema y no hay sombra. Al volver se aclara el caballo con agua dulce; la sal que se seca en la capa irrita y endurece.",
           it:"Prenota il giorno prima, di' il tuo livello con franchezza — il bagno richiede un cavaliere esperto —, mettiti il costume sotto i vestiti, porta un telo e qualcosa per cambiarti, e chiedi l'ora della marea prima dell'ora dell'appuntamento. Parti presto: a mezzogiorno la sabbia scotta e l'ombra non esiste. Al rientro si sciacqua il cavallo con acqua dolce; il sale che asciuga sul mantello irrita e indurisce.",
           de:"Buche am Vortag, sag dein Können ehrlich — für das Baden braucht es einen erfahrenen Reiter —, zieh die Badehose unter die Reitsachen, nimm ein Handtuch und Wechselkleidung mit, und frage nach der Tide, bevor du nach der Uhrzeit fragst. Reite früh: mittags brennt der Sand, und Schatten gibt es nicht. Danach wird das Pferd mit Süßwasser abgespült; trocknendes Salz im Fell reizt und macht es stumpf.",
-          ja:"前日に予約し、自分の技量は正直に伝えること（水浴には経験が求められます）。水着は服の下に着ておき、タオルと着替えを持っていくこと。集合時刻より先に、潮の時刻を尋ねてください。朝の早い時間に出ること。正午の砂は焼けるように熱く、日陰はありません。帰ったら真水で馬を洗い流します。毛に乾いた塩は、皮膚を荒らし、毛を硬くします。",
-          ar:"احجزي في اليوم السابق، واذكري مستواك بصراحة، فدخول الماء يتطلب فارسة متمرسة. ارتدي لباس السباحة تحت ملابسك، وخذي منشفة وملابس لتبديلها، واسألي عن توقيت المد والجزر قبل تحديد موعد الانطلاق. انطلقي في الصباح الباكر، فالرمل يصبح حارقا عند الظهيرة ولا يوجد ظل. وعند العودة، اشطفي الحصان بالماء العذب، لأن الملح الجاف يهيج جلده ويجعل شعره خشنا."}}
+          ja:"前日に予約し、自分の技量は正直に伝えること（水浴には経験が求められます）。水着は服の下に着ておき、タオルと着替えを持っていくこと。集合時刻より先に、潮の時刻を尋ねてください。朝の早い時間に出ること。正午の砂は焼けるように熱く、日陰はありません。帰ったら真水で馬を洗い流します。毛に乾いた塩は、皮膚を荒らし、毛を硬くします。"}}
     ]
   };
 
