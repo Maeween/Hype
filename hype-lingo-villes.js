@@ -254,7 +254,7 @@ aberystwyth:{
     ja:["今朝、海の中を駆けた。",
         "浜辺には誰もいなかった。コブは一瞬もためらわず水に入り、最後は波の中を駆け抜けた。ブーツの上で塩が乾いていき、私はひとりで笑っていた。"],
       /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
-      ar:["هذا الصباح، عدوت داخل البحر.", "كان الشاطئ خاليا. دخل حصان الكوب الماء من دون تردد لحظة واحدة، وانتهى بنا الأمر نعدو داخل الأمواج. جف الملح على حذائي، وكنت أبتسم وحدي."]},
+      ar:["هذا الصباح، انطلقت بالحصان عدوا في البحر.", "كان الشاطئ خاليا. دخل الكوب الماء من دون لحظة تردد، وأنهينا جولتنا بالعدو بين الأمواج. جف الملح على حذائي، وكنت أبتسم وحدي."]},
   volets:[
    {t:{fr:"Le Welsh pony and cob", en:"The Welsh pony and cob", es:"El poni y cob galés",
        it:"Il Welsh pony and cob", de:"Das Welsh Pony and Cob", ja:"ウェルシュ・ポニー＆コブ", ar:"المهر والكوب الويلزيان"},
@@ -265,7 +265,7 @@ aberystwyth:{
       it:"Un solo libro genealogico, quattro sezioni. La A, il pony di montagna, il più piccolo. La B, più fine, montata dai bambini in gara. La C, tarchiata, molto usata negli attacchi. La D, il Welsh cob, abbastanza grande da portare un adulto. Il Ceredigion è la sua terra.",
       de:"Ein einziges Zuchtbuch, vier Sektionen. Die A, das Bergpony, das kleinste. Die B, feiner, von Kindern im Turnier geritten. Die C, gedrungen, viel im Fahrsport genutzt. Die D, das Welsh Cob, groß genug, um einen Erwachsenen zu tragen. Ceredigion ist seine Heimat.",
       ja:"血統書はひとつ、セクションは四つ。Aは山のポニーで最も小さく、Bはより繊細で子どもたちが競技で乗ります。Cはがっしりとして馬車競技で活躍し、Dのウェルシュ・コブは大人を乗せられる大きさ。ケレディジョンこそ、その故郷です。",
-      ar:"سجل أنساب واحد، وأربعة أقسام. القسم ألف: مهر الجبل، وهو الأصغر. والقسم باء: أنحف بنية، ويركبه الأطفال في المسابقات. والقسم جيم: ممتلئ البنية، ويستعمل كثيرا في الجر. والقسم دال: الكوب الويلزي، وهو كبير بما يكفي ليحمل بالغا. ومقاطعة كيريديجون هي أرضه."}},
+      ar:"سجل أنساب واحد وأربعة أقسام. القسم ألف هو مهر الجبال، وهو الأصغر. والقسم باء أدق بنية، ويركبه الأطفال في المسابقات. والقسم جيم قوي ومكتنز البنية، ويستخدم كثيرا في جر العربات. أما القسم دال فهو الكوب الويلزي، وهو كبير بما يكفي ليمتطيه شخص بالغ. ومقاطعة كيريديجون هي موطنه."}},
    {t:{fr:"Le rendez-vous", en:"The meeting place", es:"La cita",
        it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地", ar:"الموعد"},
     c:{
@@ -275,7 +275,7 @@ aberystwyth:{
       it:"L'Aberystwyth and Ceredigion County Show, affiliato alla Welsh Pony and Cob Society, assegna la sua medaglia al miglior soggetto di ogni sezione. È lì che si capisce cosa vogliono dire davvero quelle quattro lettere.",
       de:"Die Aberystwyth and Ceredigion County Show, der Welsh Pony and Cob Society angeschlossen, verleiht ihre Medaille an das beste Tier jeder Sektion. Dort versteht man, was diese vier Buchstaben wirklich bedeuten.",
       ja:"ウェルシュ・ポニー＆コブ協会公認のアベリストウィス＆ケレディジョン・カウンティショーでは、各セクションの最優秀馬にメダルが贈られます。あの四つの文字が本当は何を意味するのか、そこで初めて分かります。",
-      ar:"معرض أبريستويث وكيريديجون، المنتسب إلى جمعية المهر والكوب الويلزيين، يمنح ميداليته لأفضل فرد في كل قسم. وهناك تفهمين ما تعنيه هذه الحروف الأربعة حقا."}},
+      ar:"معرض أبريستويث وكيريديجون، المنتسب إلى جمعية المهر والكوب الويلزيين، يمنح ميداليته لأفضل جواد في كل قسم. وهناك تفهمين ما تعنيه هذه الحروف الأربعة حقا."}},
    {t:{fr:"Le savais-tu ?", en:"Did you know?", es:"¿Lo sabías?",
        it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？", ar:"هل كنت تعرفين؟"},
     c:{
@@ -285,7 +285,7 @@ aberystwyth:{
       it:"La Trans Wales Trail, una traversata del Galles di più giorni a cavallo, si conclude con un galoppo nel mare d'Irlanda, vicino a qui. E un sentiero risale verso i monti Cambrici, dove un tempo i fattori radunavano i pony dei pascoli di montagna per portare i visitatori in escursione.",
       de:"Der Trans Wales Trail, eine mehrtägige Durchquerung von Wales zu Pferd, endet mit einem Galopp in die Irische See, ganz in der Nähe. Und ein Pfad steigt zu den Kambrischen Bergen hinauf, wo die Bauern einst die Ponys von den Bergweiden zusammentrieben, um Besucher auf Wanderritte mitzunehmen.",
       ja:"数日かけてウェールズを馬で横断するトランス・ウェールズ・トレイルは、この近くのアイリッシュ海への駆け込みで幕を閉じます。そしてカンブリア山地へ続く小道では、かつて農夫たちが山の放牧地からポニーを集め、訪れる人々をトレッキングに連れ出していました。",
-      ar:"مسار عبر ويلز، وهو رحلة على ظهر الخيل تستغرق أياما، ينتهي بعدو داخل البحر الإيرلندي قريبا من هنا. وثمة درب يصعد نحو جبال كامبريان، حيث كان المزارعون يجمعون المهور من مراعي الجبل ليأخذوا الزوار في نزهات."}}
+      ar:"مسار ترانس ويلز رحلة على ظهور الخيل تستغرق عدة أيام وتعبر بلاد ويلز، وتنتهي بالعدو في البحر الإيرلندي بالقرب من هنا. ويمتد درب آخر نحو جبال كامبريان، حيث كان المزارعون يجمعون مهور المراعي الجبلية ويصحبون الزوار في رحلات على ظهور الخيل."}}
   ]},
 /* ============ 6 · WINDSOR · Le dressage ============ */
 windsor:{

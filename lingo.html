@@ -3934,7 +3934,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=74";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=77";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -4149,7 +4149,7 @@ var ETAPES = [
   {ref:"burghley",  ch:"Le cross",     v:"Burghley",    nat:"Angleterre",     h:"02 h 55", ciel:["#0A1424","#16263C"], forme:"manoir",   souv:"Une paire de crampons",        ic:"fer"},
  {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Le trophée de Badminton",                  ic:"trophee"},
  {ref:"kildare",   ch:"Les urgences", v:"Kildare",     nat:"Irlande",        h:"04 h 10", ciel:["#0C1A2C","#20344B"], forme:"haras",    souv:"Une trousse de secours",               ic:"trousse"},
- {ref:"edimbourg", ch:"Les urgences du cavalier",v:"Édimbourg",   nat:"Écosse",         h:"05 h 25", ciel:["#16283F","#C58B45"], forme:"edim",     souv:"Un carnet de mots",            ic:"carnet"},
+ {ref:"edimbourg", ch:"Les urgences du cavalier",v:"Édimbourg",   nat:"Écosse",         h:"05 h 25", ciel:["#16283F","#C58B45"], forme:"edim",     souv:"Une armoire à pharmacie",      ic:"pharmacie"},
  /* ---- les huit destinations du tour du monde, ajoutées le 5 août 2026 ----
     Le champ `h` est un reste du chemin d'une nuit, abandonné avec lui : il
     ne raconte plus une progression, seulement une heure d'arrivée plausible.
@@ -4764,8 +4764,8 @@ var ETAPES_I18N = {
    ch:{en:"Rider emergencies", es:"Urgencias del jinete", it:"Le urgenze del cavaliere",
        de:"Notfälle beim Reiter", ja:"騎手の緊急事態", ar:"إسعاف الفارسة"},
    v:{en:"Edinburgh", es:"Edimburgo", it:"Edimburgo", de:"Edinburgh", ja:"エディンバラ"},
-   souv:{en:"A notebook of words", es:"Un cuaderno de palabras", it:"Un quaderno di parole",
-         de:"Ein Wörterheft", ja:"言葉の手帳"}}
+   souv:{en:"A first aid cabinet", es:"Un botiquín de pared", it:"Un armadietto di pronto soccorso",
+         de:"Ein Verbandsschrank", ja:"救急箱の戸棚", ar:"خزانة الإسعافات الأولية"}}
 };
 
 /* ==================================================================
@@ -4993,9 +4993,9 @@ var RECITS = {
       "駈歩は波の中で終わる。長靴に塩が乾き、ポニーが鼻を鳴らす。",
       {f:"ウェルシュポニーとウェルシュコブの土地。四つのセクションがあり、最小のものから大人が乗るコブまで。"}],
   /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
-  ar:["البحر الإيرلندي، وشاطئ خال، وخيول الكوب تحفر الرمل عند حافة الموج.",
-      "ينتهي العدو داخل الأمواج. يجف الملح على الأحذية، وتنفخ المهور من مناخرها.",
-      {f:"أرض المهر الويلزي وحصان الكوب الويلزي. أربعة أقسام، من أصغرها إلى الكوب الذي يحمل البالغين."}]},
+  ar:["البحر الإيرلندي، وشاطئ خال، وخيول كوب تضرب الرمل بحوافرها عند حافة الماء.",
+      "ينتهي العدو بين الأمواج. يجف الملح على الحذاء، ويزفر المهر.",
+      {f:"موطن المهر الويلزي والكوب الويلزي: أربعة أقسام، من مهر الجبال الصغير إلى الكوب الذي يمتطيه البالغون."}]},
  windsor:{
   fr:["Les tours au fond, le sable ratissé, le silence. Un cheval seul, une piste, des lettres.",
       "Ici, la précision est une forme de politesse.",
@@ -5628,6 +5628,10 @@ var ICONES = {
  /* Le manteau australien de Clonbinane (21/08). Premier vêtement de la
     collection : col relevé, cape d'épaule, ceinture, fente centrale
     pour monter à cheval. Même trait que les autres. */
+ /* L'armoire à pharmacie d'Édimbourg (24/08). Armoire murale à porte
+    vitrée : anneau de suspension, fronton en arche, croix sur le fronton,
+    deux étagères, bouton de porte. Même trait que les autres. */
+ pharmacie:'<path d="M30 6 a3 3 0 1 1 0.1 0 M30 12 v3 M16 26 q14 -14 28 0 M14 26 h32 v28 h-32 Z M18 30 h26 v20 h-26 Z M18 38 h26 M18 44 h26 M28 20 h4 M30 18 v4 M42 40 a1.5 1.5 0 1 0 0.1 0" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  manteau:'<path d="M24 12 h12 M24 12 l-10 6 v30 h32 v-30 l-10 -6 M14 18 q16 10 32 0 M22 32 h16 M30 20 v28 M26 10 h8 v4 h-8 Z" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  lampion:'<path d="M30 10 v6 M20 16 h20 l-3 6 h-14 Z M22 22 q-4 12 8 14 q12 -2 8 -14 M26 40 h8 M30 44 v8" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  toise:'<path d="M30 8 v40 M20 48 h20 M24 14 h12 M24 22 h12 M24 30 h12 M24 38 h12 M14 12 h10" fill="none" stroke="#D4AF37" stroke-width="2"/>',
@@ -5850,7 +5854,7 @@ var POURQUOI = {
   de:"Die Stadt des Leders. Hier werden Sättel noch von Hand genäht.",
   ja:"革の町。ここでは今も鞍を手で縫っている。"},
  /* 🟡 `ar` dormant — voir le récit. */
- aberystwyth:{ar:"أرض حصان الكوب الويلزي، وشاطئ تنتهي فيه النزهات بالعدو داخل البحر.",
+ aberystwyth:{ar:"موطن الكوب الويلزي، وشاطئ تنتهي عنده الرحلات بعدو بين أمواج البحر.",
   fr:"Le pays du Welsh cob — et une plage où les randonnées finissent au galop dans la mer.",
   en:"Welsh cob country — and a beach where rides end at a gallop in the sea.",
   es:"La tierra del Welsh cob, y una playa donde las rutas terminan al galope dentro del mar.",
@@ -7160,7 +7164,7 @@ var PHRASES_FIN = {
   de:"Gut gepflegtes Leder hält ein Reiterleben lang. <b>Gute Pflege zahlt sich immer aus.</b>",
   ja:"よく手入れされた革は、騎手の一生に寄り添う。<b>道具への愛情は必ず返ってくる。</b>"},
  /* 🟡 `ar` dormant — voir le récit. */
- aberystwyth:{ar:"الخطوات الأولى على حافة البحر لا تنسى. <b>ويبقى منها شيء في كل مرة تركبين فيها.</b>",
+ aberystwyth:{ar:"الخطوات الأولى عند حافة البحر لا تنسى. <b>ويبقى شيء من ذكراها كلما امتطيت حصانا.</b>",
   fr:"Les premières foulées au bord de la mer ne s'oublient pas. <b>Chaque mise en selle en garde un peu.</b>",
   en:"Your first strides by the sea are never forgotten. <b>Every ride keeps a little of them.</b>",
   es:"Los primeros pasos junto al mar no se olvidan. <b>Cada monta guarda un poco de ellos.</b>",
@@ -7653,13 +7657,20 @@ function selleriePiece(nom){
    `pose-taupo-34.webp` de biais), toutes en fond transparent.
    ⚠️ Sans ces deux lignes, la sellerie servirait `objet-taupo.webp` pour
    les trois angles : le cadre serait toujours vu de face. */
-var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1, kildare:1, badminton:1, tamworth:1, taupo:1};
-var POSE_PROPRE = {walsall:1, dubai:1, oliva:1, versailles:1, taupo:1};
+/* 🟥 24/08 : EDIMBOURG ajoutée aux deux tables — l'armoire à pharmacie a
+   ses trois vues (`objet-edimbourg.webp` de face, `pose-edimbourg.webp`
+   posée, `pose-edimbourg-34.webp` de biais), toutes en fond transparent.
+   Sans ces deux lignes, la sellerie servirait la vue de face aux trois
+   angles. Le souvenir a changé le même jour : le carnet de mots est
+   devenu l'armoire, en même temps que le chapitre est devenu
+   « Les urgences du cavalier ». */
+var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1, kildare:1, badminton:1, tamworth:1, taupo:1, edimbourg:1};
+var POSE_PROPRE = {walsall:1, dubai:1, oliva:1, versailles:1, taupo:1, edimbourg:1};
 /* 16/08 : versailles ajoutee — le couvre-reins royal a une vraie vue
    PLIEE pour la sellerie (`pose-versailles.webp`), distincte de la vue
    deployee de la vitrine. Voir la regle des TROIS ETATS en tete du
    SUIVI : deploye / plie / porte. */   /* ceux qui ont leur propre vue posee */
-var GROS_POSE = {walsall:30, dubai:30, lambourn:27, connemara:27, newmarket:24, oliva:34};
+var GROS_POSE = {walsall:30, dubai:30, lambourn:27, connemara:27, newmarket:24, oliva:34, edimbourg:26};
 function sellerieObjets(){
   var l = [];
   ETAPES.forEach(function(e){
