@@ -424,35 +424,40 @@ kildare:{
     de:["Ein Licht, das um drei Uhr morgens brennt.",
         "Der Tierarzt kam schnell. Wir sprachen leise, und ich lernte, dass man in solchen Momenten die Dinge in wenigen Worten sagen können muss: er lahmt, er schwitzt, er frisst nicht mehr."],
     ja:["朝の三時に灯っていた、ひとつの明かり。",
-        "獣医はすぐに来てくれた。私たちは声をひそめて話し、そして学んだ — こういうときは、短い言葉で伝えられなければいけない。跛行しています、汗をかいています、食べなくなりました。"]},
+        "獣医はすぐに来てくれた。私たちは声をひそめて話し、そして学んだ — こういうときは、短い言葉で伝えられなければいけない。跛行しています、汗をかいています、食べなくなりました。"],
+      /* 🟡 arabe dormant (23/08) — aucun écran ne le lit. */
+      ar:["ضوء مضاء في الثالثة صباحا.", "وصل الطبيب البيطري سريعا. تحدثنا بصوت خافت، وتعلمت أنه في مثل هذه اللحظات يجب أن تعرف قول الأشياء بكلمات قليلة: إنه يعرج، إنه يتعرق، لم يعد يأكل."]},
   volets:[
    {t:{fr:"Le haras national", en:"The national stud", es:"El haras nacional",
-       it:"L'allevamento nazionale", de:"Das Nationalgestüt", ja:"国立牧場"},
+       it:"L'allevamento nazionale", de:"Das Nationalgestüt", ja:"国立牧場", ar:"المزرعة الوطنية للخيول"},
     c:{
       fr:"L'Irish National Stud se trouve à Tully, tout près de la ville, à côté des pistes du Curragh. C'est là que l'Irlande élève et présente ses pur-sang, et le domaine se visite.",
       en:"The Irish National Stud is at Tully, just outside the town, beside the gallops of the Curragh. It is where Ireland breeds and shows its thoroughbreds, and the estate is open to visitors.",
       es:"El Irish National Stud se encuentra en Tully, muy cerca de la ciudad, junto a las pistas del Curragh. Es allí donde Irlanda cría y presenta sus purasangres, y el dominio se puede visitar.",
       it:"L'Irish National Stud si trova a Tully, vicinissimo alla città, accanto alle piste del Curragh. È lì che l'Irlanda alleva e presenta i suoi purosangue, e la tenuta si visita.",
       de:"Das Irish National Stud liegt in Tully, ganz nah bei der Stadt, neben den Bahnen des Curragh. Dort züchtet und zeigt Irland seine Vollblüter, und das Anwesen kann besichtigt werden.",
-      ja:"アイリッシュ・ナショナル・スタッドは町のすぐそば、タリーにあり、カラの調教馬場に隣接しています。アイルランドがサラブレッドを育て、披露する場所で、敷地は見学できます。"}},
+      ja:"アイリッシュ・ナショナル・スタッドは町のすぐそば、タリーにあり、カラの調教馬場に隣接しています。アイルランドがサラブレッドを育て、披露する場所で、敷地は見学できます。",
+      ar:"تقع المزرعة الوطنية الإيرلندية للخيول في تولي، قرب المدينة مباشرة، إلى جانب مضامير الكوراه. هناك تربي إيرلندا خيولها الأصيلة وتعرضها، والموقع مفتوح للزيارة."}},
    {t:{fr:"Le savais-tu ?", en:"Did you know?", es:"¿Lo sabías?",
-       it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？"},
+       it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？", ar:"هل كنت تعرفين؟"},
     c:{
       fr:"Sur le domaine du haras, on trouve un jardin japonais créé au début du XX siècle par des jardiniers venus du Japon. Un jardin japonais au milieu des paddocks irlandais : personne ne s'attend à ça en venant voir des chevaux.",
       en:"On the stud's estate there is a Japanese garden created in the early 20th century by gardeners who came from Japan. A Japanese garden in the middle of Irish paddocks: nobody expects that when they come to see horses.",
       es:"En el dominio del haras hay un jardín japonés creado a principios del siglo XX por jardineros llegados de Japón. Un jardín japonés en medio de los paddocks irlandeses: nadie se espera eso al venir a ver caballos.",
       it:"Nella tenuta dell'allevamento si trova un giardino giapponese creato all'inizio del Novecento da giardinieri venuti dal Giappone. Un giardino giapponese in mezzo ai paddock irlandesi: nessuno se lo aspetta venendo a vedere dei cavalli.",
       de:"Auf dem Gelände des Gestüts gibt es einen japanischen Garten, Anfang des 20. Jahrhunderts von Gärtnern aus Japan angelegt. Ein japanischer Garten mitten zwischen irischen Koppeln: Damit rechnet niemand, der Pferde ansehen kommt.",
-      ja:"牧場の敷地内には、二十世紀初頭に日本から来た庭師たちがつくった日本庭園があります。アイルランドのパドックの真ん中に日本庭園 — 馬を見に来て、これを予想する人はいません。"}}, // ?? date et origine des jardiniers à confirmer
+      ja:"牧場の敷地内には、二十世紀初頭に日本から来た庭師たちがつくった日本庭園があります。アイルランドのパドックの真ん中に日本庭園 — 馬を見に来て、これを予想する人はいません。",
+      ar:"داخل المزرعة توجد حديقة يابانية أنشأها في مطلع القرن العشرين بستانيون قدموا من اليابان. حديقة يابانية وسط مراعي إيرلندا: لا أحد يتوقع ذلك حين يأتي لرؤية الخيول."}}, // ?? date et origine des jardiniers à confirmer
    {t:{fr:"Pourquoi ce chapitre est gratuit", en:"Why this chapter is free", es:"Por qué este capítulo es gratis",
-       it:"Perché questo capitolo è gratuito", de:"Warum dieses Kapitel gratis ist", ja:"この章が無料である理由"},
+       it:"Perché questo capitolo è gratuito", de:"Warum dieses Kapitel gratis ist", ja:"この章が無料である理由", ar:"لماذا هذا الفصل مجاني"},
     c:{
       fr:"Savoir dire « il a une colique » ou « appelez le vétérinaire » dans le pays où l'on se trouve n'est pas du confort. Ce chapitre est offert dans les six langues, partout, à tout le monde.",
       en:"Knowing how to say “he has colic” or “call the vet” in the country you are in is not a luxury. This chapter is free in all six languages, everywhere, for everyone.",
       es:"Saber decir « tiene un cólico » o « llamen al veterinario » en el país donde uno se encuentra no es un lujo. Este capítulo se ofrece en los seis idiomas, en todas partes, a todo el mundo.",
       it:"Saper dire « ha una colica » o « chiamate il veterinario » nel paese in cui ci si trova non è un comfort. Questo capitolo è offerto nelle sei lingue, ovunque, a tutti.",
       de:"„Er hat eine Kolik“ oder „Rufen Sie den Tierarzt“ in dem Land sagen zu können, in dem man sich befindet, ist kein Luxus. Dieses Kapitel ist in allen sechs Sprachen gratis, überall, für alle.",
-      ja:"いま自分がいる国の言葉で「疝痛です」「獣医を呼んでください」と言えること — それは贅沢ではありません。この章は六つの言語すべてで、どこでも、誰にでも無料で開かれています。"}}
+      ja:"いま自分がいる国の言葉で「疝痛です」「獣医を呼んでください」と言えること — それは贅沢ではありません。この章は六つの言語すべてで、どこでも、誰にでも無料で開かれています。",
+      ar:"أن تعرفي كيف تقولين «إنه مصاب بمغص» أو «اتصلي بالطبيب البيطري» بلغة البلد الذي توجدين فيه ليس من باب الرفاهية. لذلك يقدم هذا الفصل مجانا بجميع اللغات المتاحة، في كل مكان وللجميع."}}
   ]},
 
 /* ============ 10 · ÉDIMBOURG · Les dialogues ============ */
@@ -471,35 +476,40 @@ edimbourg:{
     de:["Ich fragte nach dem Weg und verstand nichts.",
         "Er wiederholte es langsamer, lächelnd, und diesmal ja. Das Pflaster war durchnässt, der Wind kalt, die Stadt stieg in alle Richtungen an — und hier habe ich wirklich gelernt zuzuhören."],
     ja:["道を尋ねて、何ひとつ聞き取れなかった。",
-        "相手は微笑みながら、ゆっくりと繰り返してくれた。今度は分かった。石畳はずぶ濡れで、風は冷たく、街はあらゆる方向へ登っていた — 本当の意味で「聞く」ことを学んだのは、この街でだった。"]},
+        "相手は微笑みながら、ゆっくりと繰り返してくれた。今度は分かった。石畳はずぶ濡れで、風は冷たく、街はあらゆる方向へ登っていた — 本当の意味で「聞く」ことを学んだのは、この街でだった。"],
+      /* 🟡 arabe dormant (23/08) — aucun écran ne le lit. */
+      ar:["سألت عن طريقي، ولم أفهم شيئا.", "أعاد الكلام ببطء وهو يبتسم، وهذه المرة فهمت. كانت الحجارة مبللة، والريح باردة، والمدينة تصعد في كل الاتجاهات — وهنا تعلمت حقا كيف أصغي."]},
   volets:[
    {t:{fr:"L'accent", en:"The accent", es:"El acento",
-       it:"L'accento", de:"Der Akzent", ja:"訛り"},
+       it:"L'accento", de:"Der Akzent", ja:"訛り", ar:"اللكنة"},
     c:{
       fr:"L'anglais d'Écosse ne s'entend pas comme celui du Sud : les voyelles sont plus courtes, le « r » se prononce franchement, et le vocabulaire a ses propres mots. Comprendre ici, c'est comprendre partout.",
       en:"Scottish English does not sound like the English of the South: the vowels are shorter, the “r” is sounded fully, and the vocabulary has words of its own. If you can understand here, you can understand anywhere.",
       es:"El inglés de Escocia no suena como el del Sur: las vocales son más cortas, la « r » se pronuncia con franqueza, y el vocabulario tiene sus propias palabras. Entender aquí es entender en todas partes.",
       it:"L'inglese di Scozia non suona come quello del Sud: le vocali sono più corte, la « r » si pronuncia con decisione, e il vocabolario ha le sue parole. Capire qui è capire ovunque.",
       de:"Das Englisch Schottlands klingt nicht wie das des Südens: Die Vokale sind kürzer, das „r“ wird deutlich gesprochen, und der Wortschatz hat seine eigenen Wörter. Wer hier versteht, versteht überall.",
-      ja:"スコットランドの英語は南部の英語とは響きが違います。母音は短く、「r」ははっきりと発音され、語彙には独自の言葉があります。ここで聞き取れるなら、世界のどこでも聞き取れます。"}},
+      ja:"スコットランドの英語は南部の英語とは響きが違います。母音は短く、「r」ははっきりと発音され、語彙には独自の言葉があります。ここで聞き取れるなら、世界のどこでも聞き取れます。",
+      ar:"لا تبدو الإنجليزية في اسكتلندا عند سماعها كالإنجليزية في الجنوب: حروف العلة أقصر، وحرف الراء ينطق بوضوح، وتضم اللهجة مفردات خاصة بها. من يفهم الإنجليزية هنا يستطيع فهمها في كل مكان."}},
    {t:{fr:"Le rendez-vous", en:"The meeting place", es:"La cita",
-       it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地"},
+       it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地", ar:"الموعد"},
     c:{
       fr:"Le Royal Highland Show se tient chaque été à Ingliston, aux portes de la ville. C'est le grand rendez-vous agricole et équestre écossais, et l'endroit où voir les races du pays — le Highland pony et le Clydesdale, ce cheval de trait aux longs crins bas de jambe.",
       en:"The Royal Highland Show is held every summer at Ingliston, on the edge of the city. It is Scotland's great agricultural and equestrian gathering, and the place to see the country's breeds — the Highland pony and the Clydesdale, that draught horse with long feather on its lower legs.",
       es:"El Royal Highland Show se celebra cada verano en Ingliston, a las puertas de la ciudad. Es la gran cita agrícola y ecuestre escocesa, y el lugar donde ver las razas del país — el poni Highland y el Clydesdale, ese caballo de tiro con largas cernejas en la parte baja de las patas.",
       it:"Il Royal Highland Show si tiene ogni estate a Ingliston, alle porte della città. È il grande appuntamento agricolo ed equestre scozzese, e il posto dove vedere le razze del paese — l'Highland pony e il Clydesdale, quel cavallo da tiro con lunghe criniere sul basso degli arti.",
       de:"Die Royal Highland Show findet jeden Sommer in Ingliston vor den Toren der Stadt statt. Sie ist das große schottische Landwirtschafts- und Pferdetreffen und der Ort, um die Rassen des Landes zu sehen — das Highland Pony und das Clydesdale, jenes Zugpferd mit langem Behang an den unteren Beinen.",
-      ja:"ロイヤル・ハイランド・ショーは毎年夏、街のすぐ外のイングリストンで開かれます。スコットランド最大の農業と馬の祭典で、この国の品種に出会える場所 — ハイランドポニーと、脚の下部に長い飾り毛をなびかせる輓馬クライズデールに。"}},
+      ja:"ロイヤル・ハイランド・ショーは毎年夏、街のすぐ外のイングリストンで開かれます。スコットランド最大の農業と馬の祭典で、この国の品種に出会える場所 — ハイランドポニーと、脚の下部に長い飾り毛をなびかせる輓馬クライズデールに。",
+      ar:"يقام معرض رويال هايلاند كل صيف في إنغليستون، على مشارف المدينة. وهو الملتقى الزراعي والفروسي الكبير في اسكتلندا، والمكان الذي يمكنك فيه رؤية سلالات البلاد، مثل مهر الهايلاند وحصان كلايدزديل، وهو حصان جر يتميز بشعر طويل حول أسفل قوائمه."}},
    {t:{fr:"La fin du voyage", en:"The end of the journey", es:"El final del viaje",
-       it:"La fine del viaggio", de:"Das Ende der Reise", ja:"旅の終わり"},
+       it:"La fine del viaggio", de:"Das Ende der Reise", ja:"旅の終わり", ar:"نهاية الرحلة"},
     c:{
-      fr:"Dix villes, cinq nations, une langue. Tu es parti d'une écurie du Suffolk et tu arrives dans une capitale — et entre les deux, tu as appris à dire ce que tu fais avec un cheval.",
-      en:"Ten towns, five nations, one language. You set out from a yard in Suffolk and you arrive in a capital — and in between, you have learned to say what you do with a horse.",
-      es:"Diez ciudades, cinco naciones, una lengua. Partiste de una cuadra del Suffolk y llegas a una capital — y entre las dos, has aprendido a decir lo que haces con un caballo.",
-      it:"Dieci città, cinque nazioni, una lingua. Sei partito da una scuderia del Suffolk e arrivi in una capitale — e tra le due, hai imparato a dire quello che fai con un cavallo.",
-      de:"Zehn Städte, fünf Nationen, eine Sprache. Du bist von einem Stall in Suffolk aufgebrochen und kommst in einer Hauptstadt an — und dazwischen hast du gelernt zu sagen, was du mit einem Pferd tust.",
-      ja:"十の街、五つの国、ひとつの言語。サフォークの厩舎から旅立ったきみは、いま首都にたどり着く — そしてその道のりで、馬とともにあるくらしを言葉にすることを学んだ。"}}
+      fr:"Dix villes, quatre nations, une langue. Tu es parti d'une écurie du Suffolk et tu arrives dans une capitale — et entre les deux, tu as appris à dire ce que tu fais avec un cheval.",
+      en:"Ten towns, four nations, one language. You set out from a yard in Suffolk and you arrive in a capital — and in between, you have learned to say what you do with a horse.",
+      es:"Diez ciudades, cuatro naciones, una lengua. Partiste de una cuadra del Suffolk y llegas a una capital — y entre las dos, has aprendido a decir lo que haces con un caballo.",
+      it:"Dieci città, quattro nazioni, una lingua. Sei partito da una scuderia del Suffolk e arrivi in una capitale — e tra le due, hai imparato a dire quello che fai con un cavallo.",
+      de:"Zehn Städte, vier Nationen, eine Sprache. Du bist von einem Stall in Suffolk aufgebrochen und kommst in einer Hauptstadt an — und dazwischen hast du gelernt zu sagen, was du mit einem Pferd tust.",
+      ja:"十の街、五つの国、ひとつの言語。サフォークの厩舎から旅立ったきみは、いま首都にたどり着く — そしてその道のりで、馬とともにあるくらしを言葉にすることを学んだ。",
+      ar:"عشر مدن، وأربع أمم، ولغة واحدة. انطلقت من إسطبل في سوفولك ووصلت إلى عاصمة — وبينهما تعلمت أن تقول ما تفعله مع حصان."}}
   ]}
 
 };

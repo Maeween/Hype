@@ -4619,8 +4619,10 @@ var ETAPES_I18N = {
          it:"Il trofeo di Badminton", de:"Die Badminton-Trophäe",
          ja:"バドミントンのトロフィー"}},
  kildare:{
-   ch:{en:"Emergencies", es:"Las urgencias", it:"Le emergenze", de:"Notfälle", ja:"緊急時"},
-   v:{ja:"キルデア"},
+   /* 🟡 `ar` dormant (23/08). */
+   ch:{en:"Emergencies", es:"Las urgencias", it:"Le emergenze", de:"Notfälle", ja:"緊急時",
+       ar:"الحالات الطارئة"},
+   v:{ja:"キルデア", ar:"كيلدير"},
    /* 🟥 17/08 : le STÉTHOSCOPE remplacé par LA TROUSSE DE SECOURS.
       Blandine : « je voulais changer le stéthoscope pour Kildare, on peut
       trouver autre chose en rapport avec les soins ». Le stéthoscope
@@ -4631,7 +4633,7 @@ var ETAPES_I18N = {
       savoir ce qu'elle contient ». */
    souv:{en:"An equine first aid kit", es:"Un botiquín equino",
          it:"Una cassetta di pronto soccorso", de:"Ein Verbandskasten fürs Pferd",
-         ja:"馬用の救急箱"}},
+         ja:"馬用の救急箱", ar:"حقيبة إسعافات أولية للخيل"}},
  edimbourg:{
    ch:{en:"Conversations", es:"Las conversaciones", it:"I dialoghi", de:"Gespräche", ja:"会話"},
    v:{en:"Edinburgh", es:"Edimburgo", it:"Edimburgo", de:"Edinburgh", ja:"エディンバラ"},
@@ -4961,7 +4963,11 @@ var RECITS = {
       {f:"Das irische Nationalgestüt liegt in Tully, ganz nah, neben den Bahnen des Curragh."}],
   ja:["午前三時、灯りがひとつ点いている。獣医が着き、みな声を落とす。",
       "速く、正確に伝える。跛行している、汗をかいている、飼料を食べない。",
-      {f:"アイルランド国立牧場はすぐ近くのタリーにあり、カラーの調教コースに隣接している。"}]},
+      {f:"アイルランド国立牧場はすぐ近くのタリーにあり、カラーの調教コースに隣接している。"}],
+  /* 🟡 ARABE DORMANT (23/08) — aucun écran ne lit ce champ. */
+  ar:["ضوء مضاء في الثالثة صباحا. يصل الطبيب البيطري، ونتحدث بصوت خافت.",
+      "قولي بسرعة وبدقة: إنه يعرج، ويتعرق، ولم يعد يأكل.",
+      {f:"تقع المزرعة الوطنية الإيرلندية للخيول في تولي، على مقربة، إلى جانب مضامير الكوراه."}]},
 
  /* ==================================================================
     LES HUIT RECITS MANQUANTS — ecrits le 6 aout 2026.
@@ -5335,7 +5341,11 @@ var RECITS = {
       {f:"Ende der Reise: zehn Städte, vier Nationen, eine Sprache."}],
   ja:["石畳、冷たい風、垂直の街。ここでようやく言葉を交わす。カフェで、駅で、クラブで。",
       "そして、その訛りは教わったものとは違う。",
-      {f:"旅の終わり。十の街、四つの国、ひとつの言語。"}]},
+      {f:"旅の終わり。十の街、四つの国、ひとつの言語。"}],
+  /* 🟡 ARABE DORMANT (23/08) — aucun écran ne lit ce champ. */
+  ar:["أحجار الرصف، وريح باردة، ومدينة شديدة الانحدار. هنا تتكلمين أخيرا، في المقهى والمحطة والنادي.",
+      "واللكنة ليست تلك التي تعلمتها.",
+      {f:"نهاية الرحلة: عشر مدن، وأربع أمم، ولغة واحدة."}]},
  /* 🟥🟥 18/08 : DEUX BROUILLONS AJOUTÉS, JAMAIS VUS PAR BLANDINE. Sans
     eux, Fontainebleau (créée le 17/08) et Flyinge (créée ce soir)
     affichaient une zone de récit entièrement vide — le même défaut que
@@ -5714,13 +5724,17 @@ var POURQUOI = {
   it:"Uno dei concorsi completi più impegnativi del pianeta.",
   de:"Eine der anspruchsvollsten Vielseitigkeitsprüfungen der Welt.",
   ja:"世界で最も難度の高い総合馬術競技のひとつ。"},
- kildare:{fr:"Le haras national irlandais, à deux pas des pistes du Curragh.",
+ /* 🟡 `ar` dormant — voir le récit. */
+ kildare:{ar:"المزرعة الوطنية الإيرلندية للخيول، على بعد خطوات من مضامير الكوراه.",
+  fr:"Le haras national irlandais, à deux pas des pistes du Curragh.",
   en:"The Irish National Stud, a step away from the Curragh gallops.",
   es:"La yeguada nacional irlandesa, a dos pasos de las pistas del Curragh.",
   it:"L'allevamento nazionale irlandese, a due passi dalle piste del Curragh.",
   de:"Das irische Nationalgestüt, nur einen Schritt von den Bahnen des Curragh entfernt.",
   ja:"アイルランド国立牧場。カラーの調教コースのすぐ隣。"},
- edimbourg:{fr:"Fin du voyage. Une capitale, un accent, et tout ce que tu sais déjà dire.",
+ /* 🟡 `ar` dormant — voir le récit. */
+ edimbourg:{ar:"نهاية الرحلة. عاصمة، ولكنة، وكل ما صرت تعرفين قوله.",
+  fr:"Fin du voyage. Une capitale, un accent, et tout ce que tu sais déjà dire.",
   en:"End of the journey. A capital, an accent, and everything you can already say.",
   es:"Fin del viaje. Una capital, un acento y todo lo que ya sabes decir.",
   it:"Fine del viaggio. Una capitale, un accento, e tutto quello che sai già dire.",
@@ -7004,13 +7018,17 @@ var PHRASES_FIN = {
   it:"Una gara si vince molto prima del giorno della gara. <b>Ogni lavoro alla corda conta già.</b>",
   de:"Ein Turnier wird lange vor dem Turniertag gewonnen. <b>Jedes Abreiten zählt schon.</b>",
   ja:"競技は当日よりずっと前に決まっている。<b>今日の練習が、もう本番の一部。</b>"},
- kildare:{fr:"Savoir dire « il boite » dans une autre langue peut changer une journée. <b>Tu sauras le dire.</b>",
+ /* 🟡 `ar` dormant — voir le récit. */
+ kildare:{ar:"أن تعرفي قول «إنه يعرج» بلغة أخرى قد يغير مجرى يوم كامل. <b>وستعرفين قولها.</b>",
+  fr:"Savoir dire « il boite » dans une autre langue peut changer une journée. <b>Tu sauras le dire.</b>",
   en:"Knowing how to say “he's lame” in another language can change a whole day. <b>Now you can.</b>",
   es:"Saber decir «cojea» en otro idioma puede cambiar un día entero. <b>Ahora sabrás decirlo.</b>",
   it:"Saper dire «zoppica» in un'altra lingua può cambiare una giornata. <b>Ora sai dirlo.</b>",
   de:"„Er lahmt“ in einer anderen Sprache sagen zu können, kann einen Tag verändern. <b>Jetzt kannst du es.</b>",
   ja:"「跛行しています」を外国語で言えることが、その日を変えることもある。<b>きみはもう言える。</b>"},
- edimbourg:{fr:"Oser poser une question dans une autre langue, c'est déjà parler. <b>La prochaine, tu la poseras sans y penser.</b>",
+ /* 🟡 `ar` dormant — voir le récit. */
+ edimbourg:{ar:"أن تجرئي على طرح سؤال بلغة أخرى فذلك كلام في حد ذاته. <b>والسؤال التالي ستطرحينه من دون تفكير.</b>",
+  fr:"Oser poser une question dans une autre langue, c'est déjà parler. <b>La prochaine, tu la poseras sans y penser.</b>",
   en:"Daring to ask a question in another language is already speaking it. <b>The next one will come without thinking.</b>",
   es:"Atreverse a preguntar en otro idioma ya es hablarlo. <b>La próxima te saldrá sin pensar.</b>",
   it:"Osare fare una domanda in un'altra lingua è già parlarla. <b>La prossima ti verrà senza pensarci.</b>",
