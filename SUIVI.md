@@ -13354,3 +13354,103 @@ si le compte et la base se contredisent.
 
 `delaiDeGarde` est une fonction pure, sans React ni DOM, testable en dix lignes — même
 gabarit que les sept de la session 160. Elle a sa place dans le futur module Données.
+
+---
+
+## Session 161 bis — 24/08, 20h50 · Les quatre nombres de la fiche
+
+### 🔎 L'écart, expliqué à l'unité près
+
+La fiche de Rizotto affichait **51 victoires · 84 podiums · 147 classés** ; les sept PDF
+donnent **49 · 81 · 143**. Trois requêtes SQL et une lecture du code ont donné le compte exact :
+
+| | |
+|---|---|
+| lignes des PDF (`origine = 'import'`) | 49 · 81 · 143 |
+| + 3 lignes écrites en dur dans `CHEVAUX_FICHE` (1ᵉʳ, 3ᵉ, 1ᵉʳ) | +2 · +3 · +3 |
+| + Equitalyon, saisi à la main par Blandine (9ᵉ, sans partants) | +0 · +0 · +1 |
+| = ce que la fiche affichait | **51 · 84 · 147** |
+
+**Deux hypothèses mortes en route, preuve en main :**
+- **doublons en base** → faux. `doublons_exacts = 0`, `sans_cavalier = 0`, `victoires = 49`.
+  La base est propre, le garde-fou anti-doublons fonctionne.
+- **lignes d'un autre cheval qui remontent** → faux. `resDb` est filtré par `cheval_id`.
+  Erreur de ma part, annoncée à Blandine et corrigée dans la conversation.
+
+**La cause, vue dans le code** (`lignesPourModule`) : la fiche empile DEUX sources — la table
+`resultats` **et** le palmarès écrit en dur dans `CHEVAUX_FICHE`. Chez Rizotto, trois lignes :
+Bordeaux 2024 Grand Prix, Bordeaux 2024 Vitesse, Open de France 2021. **Ce sont les mêmes
+résultats que ceux des PDF**, sous un autre libellé (la FFE nomme l'Open autrement) — donc
+comptés deux fois. Ces lignes n'ont ni date réelle ni partants : `nbDe()` relit la place dans
+le TEXTE (`1ᵉʳ`) et les compte comme les autres.
+
+🟥 **Le commentaire de la fusion affirmait qu'elles « ne comptent pas dans les Classements ».**
+C'était faux depuis le début. Troisième fois cette semaine qu'un commentaire mentait.
+
+### 🔧 Livré — `index.html` seul
+
+**Décision de Blandine, prise pendant la session : les laisser sur la page, les retirer du
+compteur.** Deux listes désormais, deux rôles :
+- `faits` — ce qui **s'affiche**. Inchangé, garde tout, lignes en dur comprises.
+- `faitsComptes` — ce qui **se compte**. Écarte les lignes en dur.
+
+🟥 **Le filtre ne porte PAS sur `origine === "main"`.** Equitalyon porte `main` en base : ce
+filtre l'aurait effacé des compteurs alors que c'est un vrai résultat, absent des PDF. Le
+filtre porte sur l'identifiant `dur-` que la fusion pose elle-même, et qui n'existe que là.
+
+**Rien d'autre ne bouge** : la liste, les épinglés, « Voir tout son palmarès », et le rail de
+coupes (`c.flots`, intouchable) sont inchangés.
+
+⚠️ **Faute attrapée avant livraison, à mon actif.** Premier jet : j'avais filtré `faits`
+lui-même — ce qui retirait les trois lignes de la PAGE, exactement le contraire de la demande.
+Repéré en relisant l'usage de la variable, refait avant tout envoi.
+
+### ✅ Le banc
+
+`banc-compteurs.js` **extrait le bloc de calcul tel quel** de `index.html` et le rejoue comme
+fonction (il contient un `return`), sur des données reproduisant le cas réel : 143 classés
+importés, 3 lignes en dur, 1 Equitalyon. **Sept essais, tous passent** : 49 · 81 · 144, les
+trois lignes en dur toujours affichées, Equitalyon toujours compté, aucune ligne en dur dans
+les comptes, et aucune sortie fantôme ajoutée par leurs fausses dates du 1er janvier.
+
+`diff` : **trois morceaux, tous entre les lignes 33480 et 33515**, le seul bloc visé.
+
+**Attendu sur sa fiche après ce push : 49 victoires · 81 podiums · 144 classés.**
+
+### 📦 À pousser
+
+**`index.html` seul.** Le module ne change pas → `?v=5` reste juste.
+Ce fichier contient AUSSI le délai de garde livré plus tôt dans la soirée.
+
+### 🆕 Demandé par Blandine ce soir — MAQUETTE D'ABORD, rien de codé
+
+**Un tampon sur les résultats importés**, pour montrer qu'ils viennent des classements
+officiels et non d'une déclaration. Elle a dit « genre un tampon Certified ». **Maquette
+demandée, pas de code.**
+
+Deux réserves posées, à trancher par elle :
+- **le mot.** « Certified » affirme que quelqu'un certifie ; or Hype recopie un PDF que la
+  cavalière télécharge elle-même. C'est le raisonnement qui a fait retirer la FFE du diplôme.
+  Formulations proposées : **« Importé des résultats officiels »**, ou **« Officiel »**.
+- **la portée.** Une mention sur la fiche entière serait fausse chez Rizotto (143 importés +
+  1 saisi à la main). **Marquer ligne par ligne** semble plus juste, et met en valeur ce qui
+  est officiel sans mentir sur le reste. `origine` porte déjà l'information.
+
+### 🔴 Toujours ouvert
+
+1. **la barre du bas** — visible sur toutes les captures de ce soir, jamais inspectée en direct
+2. **le quart calculé** — l'écran de relecture affiche « quart incohérent : la FFE dit 4e, le
+   calcul donne 3e ». Donc l'app CALCULE un quart quelque part, ce que la règle interdit
+   (« le quart est donné par la FFE, on ne le calcule JAMAIS »). À trouver et à retirer.
+3. **« quart 1e »** au lieu de « 1er » sous chaque ligne de relecture — cosmétique, valeur juste
+4. **la photo de Rizotto qui change après coup** — même racine probable que les compteurs :
+   la fiche en dur s'affiche avant que la base arrive
+5. **Equitalyon sans partants** — il est compté, mais le barème du mérite le traite comme une
+   9ᵉ sur un partant, donc il reste en queue. Lui donner ses partants, ou l'épingler.
+
+### Préparation Flutter
+
+La séparation `faits` / `faitsComptes` est le premier endroit du code où **ce qui s'affiche**
+et **ce qui se compte** sont deux objets distincts. C'est exactement la frontière que le futur
+module `palmares.js` devra porter. Le banc a pu extraire le bloc et le rejouer hors React :
+troisième fois que ce gabarit attrape une faute avant livraison.

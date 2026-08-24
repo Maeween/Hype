@@ -33478,6 +33478,32 @@ function EcranCheval() {
           var lignes = (lignesPourModule || []).filter(function (r) {
             return r && (r.place != null || r.classement);
           });
+          /* ═══ 24/08 session 161 — LES LIGNES ÉCRITES EN DUR NE COMPTENT PLUS ═══
+             Mesuré ce soir sur Rizotto d Émery : la fiche affichait 51 victoires,
+             84 podiums, 147 classés, là où les sept PDF donnent 49 · 81 · 143.
+             L écart venait d ici. `lignesPourModule` empile DEUX sources : la
+             table `resultats` ET le palmarès écrit en dur dans CHEVAUX_FICHE
+             (trois lignes chez Rizotto : deux 1ᵉʳ et une 3ᵉ). Ces trois-là sont
+             les MÊMES résultats que ceux des PDF — Bordeaux 2024 Grand Prix et
+             Vitesse, l Open de France 2021 que la FFE nomme autrement. Comptés
+             deux fois : +2 victoires, +3 podiums.
+             🟥 Le commentaire de la fusion prétendait déjà qu elles « ne comptent
+             pas dans les Classements ». C était faux : n ayant pas de colonne
+             `place`, elles passent par la relecture du TEXTE (`1ᵉʳ`), et nbDe()
+             les compte comme n importe quelle autre. Un commentaire n est pas
+             un contrat — troisième fois cette semaine.
+             DÉCISION DE BLANDINE, 24/08 au soir : elles RESTENT sur la page, dans
+             la liste, dans les épinglés, dans « Voir tout son palmarès ». Elles
+             sortent des QUATRE NOMBRES uniquement.
+             🟥 ON NE FILTRE PAS SUR `origine === "main"`. Le résultat d Equitalyon,
+             saisi à la main par Blandine (9ᵉ, sans partants), porte lui aussi
+             `main` en base : ce filtre l aurait effacé des compteurs alors que
+             c est un VRAI résultat, absent des PDF. On filtre sur l identifiant
+             « dur- » que la fusion pose elle-même, et qui n existe que là.
+             Attendu après ce correctif : 49 · 81 · 144 (les PDF + Equitalyon). */
+          var lignesComptees = lignes.filter(function (r) {
+            return !(r && typeof r.id === "string" && r.id.indexOf("dur-") === 0);
+          });
           var proprio = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
           if (!lignes.length && !proprio) return null;
 
@@ -33506,13 +33532,20 @@ function EcranCheval() {
              Victoires et podiums se comptent sur les parcours, pas sur les
              sorties : gagner deux épreuves dans le week-end, c est deux
              victoires.                                                    */
-          var nV = faits.filter(function (f) { return f.pl === 1; }).length;
-          var nP = faits.filter(function (f) { return f.pl <= 3; }).length;
-          var nC = faits.length; /* parcours classés */
+          /* 🟥 24/08 : `faits` est ce qui S AFFICHE — il garde TOUT, lignes en
+             dur comprises. `faitsComptes` est ce qui SE COMPTE. Deux listes,
+             deux rôles : c est la seule façon de tenir la décision de Blandine
+             (« les laisser sur la page, les retirer du compteur »). */
+          var faitsComptes = faits.filter(function (f) {
+            return !(f && typeof f.__id === "string" && f.__id.indexOf("dur-") === 0);
+          });
+          var nV = faitsComptes.filter(function (f) { return f.pl === 1; }).length;
+          var nP = faitsComptes.filter(function (f) { return f.pl <= 3; }).length;
+          var nC = faitsComptes.length; /* parcours classés */
           var nS = (function () {
             /* regroupe par concours, puis fusionne les jours qui se suivent */
             var parLieu = {};
-            lignes.forEach(function (r) {
+            lignesComptees.forEach(function (r) {
               var d = String(r.date_epreuve || "");
               if (!d) return;
               var k = String(r.concours || "").toLowerCase().trim();
