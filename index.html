@@ -1384,8 +1384,40 @@ async function supprimerMurEvenement(id) {
 
    `origine` vaut « import » : c'est ce qui permettra au fil de ne pas se
    noyer sous sept saisons d'un coup.                                    */
+/* 🟥 24/08 session 161 — LE DÉLAI DE GARDE.
+   Le module d'import est irréprochable : son gestionnaire enveloppe l'appel
+   dans un try/catch, et son .then COMME son .catch remettent `occupe` à
+   false puis redessinent. Il n'existe donc AUCUN chemin où le bouton reste
+   sur « … » — sauf un seul : la promesse ne retombe jamais.
+   C'est ce que Blandine voit depuis le 24/08. Or cette fonction fait trois
+   `await` réseau sans aucun délai de garde : si l'un pend, l'écran est mort
+   et rien n'est écrit. 154 ne bougeait plus pour cette raison.
+   Ce garde-fou ne répare rien : il NOMME la coupable. */
+function delaiDeGarde(promesse, secondes, quoi) {
+  return new Promise(function (ok, non) {
+    var fini = false;
+    var t = setTimeout(function () {
+      if (fini) return;
+      fini = true;
+      non(new Error("DELAI:" + quoi));
+    }, secondes * 1000);
+    Promise.resolve(promesse).then(function (v) {
+      if (fini) return; fini = true; clearTimeout(t); ok(v);
+    }, function (e) {
+      if (fini) return; fini = true; clearTimeout(t); non(e);
+    });
+  });
+}
+
 async function enregistrerImportFFE(chevalId, lignes) {
-  const user = await utilisateurActuel();
+  let user = null;
+  try {
+    user = await delaiDeGarde(utilisateurActuel(), 15, "connexion");
+  } catch (eU) {
+    return { n: 0, doublons: 0, error: (String(eU && eU.message).indexOf("DELAI:") === 0)
+      ? "La connexion n'a pas répondu au bout de 15 secondes. Rien n'a été écrit — réessaie."
+      : "La connexion a échoué. Rien n'a été écrit." };
+  }
   if (!user) return { n: 0, doublons: 0, error: "Pas connecté" };
   if (!chevalId) return { n: 0, doublons: 0, error: "Cheval inconnu" };
   /* 🟥 23/08 session 154 — ON ENREGISTRE TOUT CE QUI A ÉTÉ COURU.
@@ -1409,13 +1441,24 @@ async function enregistrerImportFFE(chevalId, lignes) {
   if (!aEcrire.length) return { n: 0, doublons: 0 };
 
   /* ce que le cheval a déjà */
+  /* 🟥 24/08 : ce `catch` était VIDE. Si la lecture échouait, `deja` restait
+     vide et TOUT était réécrit en doublon, en silence. Et si elle pendait,
+     l'écran mourait ici. On ne continue plus à l'aveugle : sans cette liste,
+     le garde-fou anti-doublons ne vaut rien, donc on s'arrête et on le dit. */
   let deja = [];
   try {
-    const d = await supa.from("resultats")
-      .select("date_epreuve,epreuve,concours,cavalier")
-      .eq("cheval_id", chevalId);
+    const d = await delaiDeGarde(
+      supa.from("resultats")
+        .select("date_epreuve,epreuve,concours,cavalier")
+        .eq("cheval_id", chevalId),
+      15, "lecture");
+    if (d && d.error) throw new Error(String(d.error.message || d.error));
     deja = (d && d.data) || [];
-  } catch (eL) { }
+  } catch (eL) {
+    return { n: 0, doublons: 0, error: (String(eL && eL.message).indexOf("DELAI:") === 0)
+      ? "La lecture de son palmarès n'a pas répondu au bout de 15 secondes. Rien n'a été écrit — réessaie."
+      : "Son palmarès n'a pas pu être lu, donc rien n'a été écrit (sans lui, tout serait enregistré en double)." };
+  }
   /* 🟥 23/08 : LE CAVALIER FAIT PARTIE DE LA CLÉ.
      Sans lui, deux passages du MÊME jour, dans la MÊME épreuve, au MÊME
      concours, montés par deux cavaliers différents, n en faisaient qu un.
@@ -1459,7 +1502,18 @@ async function enregistrerImportFFE(chevalId, lignes) {
   /* par paquets de 50 : un import de sept saisons fait 166 lignes */
   let n = 0;
   for (let i = 0; i < neufs.length; i += 50) {
-    const r = await supa.from("resultats").insert(neufs.slice(i, i + 50)).select("id");
+    let r;
+    try {
+      r = await delaiDeGarde(
+        supa.from("resultats").insert(neufs.slice(i, i + 50)).select("id"),
+        15, "ecriture");
+    } catch (eI) {
+      /* 🟥 l'écriture peut être partielle : on rend ce qui est passé AVANT. */
+      return { n: n, doublons: doublons, error: (String(eI && eI.message).indexOf("DELAI:") === 0)
+        ? ("L'écriture n'a pas répondu au bout de 15 secondes. " + n + " ligne" + (n > 1 ? "s ont" : " a")
+           + " été enregistrée" + (n > 1 ? "s" : "") + " sur " + neufs.length + " avant l'arrêt.")
+        : String((eI && eI.message) || eI) };
+    }
     if (r && r.error) return { n: n, doublons: doublons, error: String(r.error.message || r.error) };
     n += (r && r.data ? r.data.length : 0);
   }

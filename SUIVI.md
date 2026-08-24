@@ -13276,3 +13276,81 @@ Voir `PASSATION-stories.md`, remis à jour.
 La réparation de ce soir valide le gabarit posé à la session 157 : **une fonction nommée par intention, qui connaît tous les emplacements possibles d'un champ et journalise quand elle ne trouve rien**. `abonnementDeFacture` a résisté à un changement d'API qui avait cassé le code précédent en silence. À reprendre pour chaque lecture d'une source externe — c'est la frontière Données qui se dessine.
 
 **Témoin** : reprise 1.8 · baby 112 · memo 4 · stories 19an · modèles 28.
+
+---
+
+## Session 161 — 24/08, soir · Le délai de garde sur l'enregistrement
+
+### 🔎 Ce qui a été établi, et comment
+
+Trois jours qu'on cherchait pourquoi le bouton « Enregistrer » affiche « … » puis plus rien,
+et pourquoi la base reste bloquée à **154 lignes** quoi qu'il arrive.
+
+Deux hypothèses sont **mortes cette session, preuve en main** :
+
+- **« le `cavalier` manque dans le `select` du garde-fou anti-doublons »** — faux. Le code
+  dit `select("date_epreuve,epreuve,concours,cavalier")`. Le cavalier est bien dans la clé.
+- **« la base refuse les éliminés parce que `place` est `NOT NULL` »** — faux. Relevé en SQL :
+  `place`, `partants`, `quart`, `cavalier`, `classement` sont tous **nullables**. Seule
+  `visible` est `NOT NULL`, et le code lui donne toujours un booléen.
+
+**Ce que le module a permis de démontrer** (lecture de `hype-import-ffe.js`, l. 767-793) :
+son gestionnaire enveloppe l'appel dans un `try/catch`, et son `.then` **comme** son `.catch`
+remettent `occupe` à `false` puis redessinent. L'écran de fin ne lit que des nombres, il ne
+peut pas planter. **Il n'existe donc aucun chemin où le bouton reste sur « … » — sauf un
+seul : la promesse ne retombe jamais.** Ni réussite, ni erreur.
+
+Or `enregistrerImportFFE` fait **trois `await` réseau sans aucun délai de garde**. Si l'un
+pend, l'écran est mort et rien n'est écrit. **Une seule cause pour les deux symptômes.**
+
+### 🔧 Ce qui a été livré — `index.html` seul
+
+Une fonction `delaiDeGarde(promesse, secondes, quoi)` et **trois gardes de 15 s**, une par
+étape, chacune avec un message qui **nomme la coupable** :
+
+- la connexion n'a pas répondu → « Rien n'a été écrit — réessaie. »
+- la lecture de son palmarès n'a pas répondu → idem
+- l'écriture n'a pas répondu → « N lignes ont été enregistrées sur M avant l'arrêt. »
+
+**Ce n'est pas une réparation, c'est un instrument de mesure.** Il donne le nom de l'étape
+qui pend, ce qu'aucune inspection depuis un iPhone ne pouvait donner.
+
+🟥 **Un `catch` vide a été refermé au passage.** La lecture de ce qui est déjà en base était
+enveloppée dans `catch (eL) { }` : si elle échouait, `deja` restait vide et **tout était
+réécrit en doublon, en silence**. Désormais on s'arrête et on le dit. C'est un changement de
+comportement, assumé : sans cette liste, le garde-fou anti-doublons ne vaut rien.
+
+### ✅ Le banc
+
+`banc.js` extrait le bloc **tel quel** de `index.html`, raccourcit les délais et exécute la
+fonction contre une base simulée. **Dix essais, tous passent** : les quatre du cas normal (4
+lignes écrites, forfait et annulée écartés, éliminé et abandon **enregistrés**, la coche ne
+pilote que `visible`, tout-déjà-là → 4 doublons), les **trois pendaisons** (aucune ne reste
+en l'air, chacune nomme son étape), et les trois pannes franches.
+
+Le banc a d'abord **échoué sur trois essais** — c'était la base simulée qui ne savait pas
+faire `insert(...).select("id")`, pas le code. Corrigée, relancée.
+
+`diff` contre l'original : **six morceaux, tous entre les lignes 1386 et 1462**, c'est-à-dire
+la seule fonction visée. Rien d'autre n'a bougé.
+
+### 📦 À pousser
+
+**`index.html` seul.** Le module ne change pas → **`?v=5` reste juste**, rien à incrémenter.
+
+### 🔴 Ce que ça ne règle pas
+
+La barre du bas, la photo de Rizotto qui change après coup, « coincée sur sa page » : intacts.
+Et le nom de l'étape qui pend **n'est pas encore connu** — il le sera au prochain import.
+
+### ⚠️ Piste notée, non traitée
+
+`insert(...).select("id")` compte les lignes **relues après écriture**. Si une règle RLS
+interdit la relecture, `n` vaudrait **0 alors que les lignes sont bien écrites**. Ça
+expliquerait d'anciens « 0 résultat enregistré » suivis d'une base qui grossit. À vérifier
+si le compte et la base se contredisent.
+
+### Préparation Flutter
+
+`delaiDeGarde` est une fonction pure, sans React ni DOM, testable en dix lignes — même
+gabarit que les sept de la session 160. Elle a sa place dans le futur module Données.
