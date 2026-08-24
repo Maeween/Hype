@@ -13698,7 +13698,14 @@ fichier devra incrémenter ce numéro**, même piège que le module d'import les
 **Dix-neuf essais, tous passent** : vidéo muette, en boucle, `playsInline`, couverture,
 fichier versionné ; un seul bouton, sans fond, liseré dans la teinte, libellé « officiels »,
 qui ouvre bien l'import ; deux filets, phrase complète en Cormorant italique sans teinte ;
-plus de « Ajouter » ni de « Comment préparer » ; **et rien du tout pour une visiteuse**.
+plus de « Ajouter » ni de « Comment préparer » ; **et pour une visiteuse : la vidéo et la phrase OUI, le bouton NON**.
+
+🟥 **Corrigé juste après le premier jet, sur décision de Blandine :** la condition
+`ownerId === moi.id` enveloppait TOUT le bloc, donc une visiteuse ne voyait rien. La vidéo est
+une **vitrine** — quelqu'un qui ouvre la fiche de Rizotto doit voir ce que l'import donne et
+avoir envie de le faire chez elle. Seul le **bouton** reste réservé à la propriétaire : on ne
+peut pas importer chez quelqu'un d'autre. **Rien à la place du bouton pour une visiteuse** —
+son choix ; le renvoi vers sa propre écurie a été proposé et écarté pour l'instant.
 
 `banc-compteurs.js` rejoué : 49 · 81 · 144, toujours bon.
 `diff` : **un seul morceau**, lignes 33990-34048.
